@@ -1,0 +1,94 @@
+menu "Ralink Flash Type support"
+
+config MTD_RALINK
+	bool "Ralink MTD support"
+	depends on MTD
+
+config MTD_NOR_RALINK
+	bool "NOR Flash Support"
+	default y
+	depends on MTD_RALINK && (RALINK_RT3052 || RALINK_RT3883)
+
+config MTD_SPI_RALINK
+	bool "SPI Flash Support"
+	depends on MTD_RALINK
+
+config MTD_SPI_FAST_CLOCK
+	bool "Use double SPI clock (up to 50MHz)"
+	depends on MTD_SPI_RALINK && !(RALINK_MT7621 || RALINK_MT7628)
+
+config MTD_SPI_DUAL_READ
+	bool "Use Fast Read Dual I/O"
+	depends on MTD_SPI_RALINK && (RALINK_MT7620 || RALINK_MT7621 || RALINK_MT7628)
+
+config MTD_NAND_RALINK
+	bool "NAND Flash Support"
+	depends on MTD_RALINK && !(RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7621 || RALINK_MT7628)
+
+#config MTD_NAND_MTK
+#	bool "NAND Flash Support"
+#	depends on MTD_RALINK && (RALINK_MT7621)
+#	select MTD_NAND
+#	select MTD_NAND_IDS
+#	select MTD_NAND_ECC
+
+choice
+	prompt "Flash Size"
+	default RT2880_FLASH_8M
+
+config RT2880_FLASH_4M
+	bool "4M"
+
+config RT2880_FLASH_8M
+	bool "8M"
+
+config RT2880_FLASH_16M
+	bool "16M"
+
+config RT2880_FLASH_32M
+	bool "32M"
+	depends on MTD_SPI_RALINK
+
+config RT2880_FLASH_AUTO
+	bool "Autodetect size"
+	depends on (MTD_NAND_RALINK || MTD_NAND_MTK)
+
+endchoice
+
+config RT2880_MTD_PHYSMAP_START
+	hex
+	default 0xBF000000 if RALINK_RT3052
+	default 0x1C000000 if !RALINK_RT3052
+
+config RT2880_MTD_PHYSMAP_LEN
+	hex
+	default 0x1000000
+
+config RT2880_MTD_PHYSMAP_BUSWIDTH
+	int
+	default 2
+
+choice
+	prompt "Root File System Type"
+	default RT2880_ROOTFS_IN_FLASH
+
+config  RT2880_ROOTFS_IN_RAM
+	bool "RootFS_in_RAM"
+	select BLK_DEV_INITRD
+	select BLK_DEV_RAM
+
+config  RT2880_ROOTFS_IN_FLASH
+	bool "RootFS_in_FLASH"
+endchoice
+
+config ROOTFS_IN_FLASH_NO_PADDING
+	bool 'No Padding between Kernel and RootFS'
+	default y
+	depends on RT2880_ROOTFS_IN_FLASH
+
+config MTD_KERNEL_PART_SIZ
+	hex 'MTD Kernel Partition Size (Unit:Bytes)'
+	default 0xD0000
+	depends on RT2880_ROOTFS_IN_FLASH && !ROOTFS_IN_FLASH_NO_PADDING
+
+endmenu

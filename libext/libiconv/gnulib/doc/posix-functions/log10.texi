@@ -1,0 +1,15 @@
+@node log10
+@section @code{log10}
+@findex log10
+
+POSIX specification:@* @url{http://www.opengroup.org/onlinepubs/9699919799/functions/log10.html}
+
+Gnulib module: log10
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

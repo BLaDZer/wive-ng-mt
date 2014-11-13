@@ -1,0 +1,136 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/dnsmasq ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t dnsserver"
+
+start() {
+  get_param
+  gen_hosts
+    if [ "$dnsPEnabled" = "1" ] && [ -f $cname ]; then
+	$LOG "Starting DNSMASQ"
+	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
+	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" -f &
+    fi
+}
+
+gen_hosts() {
+  $LOG "Generate /etc/hosts file."
+    echo "$HostName" > /etc/hostname
+    hostname -F /etc/hostname
+
+    echo "127.0.0.1	localhost"			> /etc/hosts
+    echo "127.0.0.1	localhost $HostName.lo"		>> /etc/hosts
+    echo "$lan_ipaddr	$HostName.lo"			>> /etc/hosts
+    echo "$lan_ipaddr	gateway.lo"			>> /etc/hosts
+
+    if [ "$real_wan_ipaddr" != "" ]; then
+	# get domainname from dhcp client
+	DHCPCDOMAIN=`cat /etc/resolv.conf | grep domain | awk {' print $2 '}`
+	if [ "$DHCPCDOMAIN" != "" ]; then
+	    WANDOMAINNAME="$HostName.$DHCPCDOMAIN"
+	else
+	    WANDOMAINNAME="wan.$HostName.lo"
+	fi
+
+	echo "$real_wan_ipaddr $WANDOMAINNAME"	>> /etc/hosts
+	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" != "0" ]; then
+	    echo "::1	localhost lo6.$WANDOMAINNAME"	>> /etc/hosts
+	    ip -6 -o addr show scope global | cut -f1 -d/ | awk {' print $4"   ipv6."$2".Wive-NG-MT.lo"'} >> /etc/hosts
+	fi
+    fi
+
+    # if dynamic dns and dmz enable - dnsmasq must set DDNS=DMZIP
+    # if dynamic dns and dmz disable - dnsmasq must set DDNS=WANIP
+    if [ "$DDNS" != "" ] && [ "$DDNSAccount" != "" ]; then
+	if [ "$DMZEnable" = "1" ] && [ "$DMZIPAddress" != "" ]; then
+	    echo "$DMZIPAddress		$DDNS"		>> /etc/hosts
+	elif [ "$real_wan_ipaddr" != "" ]; then
+	    echo "$real_wan_ipaddr	$DDNS"		>> /etc/hosts
+	fi
+    fi
+
+    # read for all write by root
+    chmod 644 /etc/hosts > /dev/null 2>&1
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 dnsPEnabled DDNS DDNSAccount DMZEnable DMZIPAddress`
+
+    cname="/etc/dnsmasq.conf"
+    fname="/etc/resolv.conf"
+    hname="/etc/hosts"
+
+    cachesize="512"
+    forwardmax="384"
+
+    # read for all write by root
+    chmod 644 "$cname" > /dev/null 2>&1
+    chmod 644 "$fname" > /dev/null 2>&1
+    chmod 644 "$hname" > /dev/null 2>&1
+}
+
+reload() {
+    get_param
+    gen_hosts
+    is_run=`pidof dnsmasq`
+    if [ "$is_run" != "" ]; then
+	$LOG "Send HUP to dnsmasq."
+	killall -q -SIGHUP dnsmasq
+    else
+	start
+    fi
+}
+
+stop() {
+    if [ -f /var/run/dnsmasq.pid ]; then
+	$LOG "Stopping DNSMASQ"
+	pid=`pidof dnsmasq`
+	count=0
+	# try 3 times for correct shutdown
+	while kill "$pid" > /dev/null 2>&1; do
+	    pid=`pidof dnsmasq`
+	    count="$(($count+1))"
+	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		break
+	    fi
+	    usleep 500000
+	done
+	# if not correct terminate need kill
+	if [ "$pid" != "" ]; then
+	    kill -SIGKILL "$pid" > /dev/null 2>&1
+	    if [ -f /var/run/dnsmasq.pid ]; then
+		rm -f /var/run/dnsmasq.pid
+	    fi
+	fi
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        reload)
+            reload
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+PWD=`pwd`
+
+rm -rf $PWD/releases
+mkdir -p $PWD/releases
+
+DEVLIST="MT7620-2T2R-8M MT7620-2T2R-4M"
+
+./clear
+
+for devname in $DEVLIST
+do
+    ./clear RELEASE
+    nice -19 ./compile "$devname" || exit 1
+    cp -f $PWD/images/*.zip $PWD/releases
+done

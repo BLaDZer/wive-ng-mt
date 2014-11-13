@@ -1,0 +1,115 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/tc ]; then
+    exit 0
+fi
+
+# include functions and env
+. /etc/scripts/global.sh
+
+if [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
+    exit 0
+fi
+
+# chek wan is up
+wan_up=`ip -4 -o link show $real_wan_if up | grep -c ""` > /dev/null 2>&1
+if [ "$wan_up" = "0" ]; then
+    exit 0
+fi
+
+LOG="logger -t QoS"
+IPTSCR="/etc/qos_firewall"
+
+start() {
+if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ] || [ "$simple_qos" = "1" ]; then
+    $LOG "Set default rules."
+    set_def
+
+    # create iptables stub
+    printf "#!/bin/sh\n\n" > $IPTSCR
+
+    ######################################
+    # netfilter script generate
+    ######################################
+
+    # tos based simple qos
+    if [ "$simple_qos" = "1" ]; then
+	/etc/scripts/config-qos-simple.sh
+    fi
+
+    # set execute bits for all
+    if [ -f $IPTSCR ]; then
+	chmod 755 $IPTSCR
+    fi
+
+    ######################################
+    # call shaper helpers
+    ######################################
+    if [ "$QoSEnable" = "1" ]; then
+	/etc/scripts/config-qos-tc_prio.sh
+    elif [ "$QoSEnable" = "2" ]; then
+	/etc/scripts/config-qos-complex.sh
+    fi
+fi
+}
+
+set_def() {
+    INTERFACES=`ls /proc/sys/net/ipv4/conf/ | grep -vE "lo|all|default"`
+    for i in $INTERFACES; do
+	tc qdisc del dev $i root > /dev/null 2>&1
+	tc qdisc del dev $i ingress > /dev/null 2>&1
+    done
+}
+
+show() {
+    echo "############################################"
+    echo "###############QOS-IN-IF####################"
+    echo "############################################"
+    echo "############QDISC $real_wan_if"
+    tc -s -d qdisc show dev $real_wan_if
+    echo "############CLASS $real_wan_if"
+    tc -s -d class show dev $real_wan_if
+    echo "############FILTER $real_wan_if"
+    tc -s -d filter show dev $real_wan_if
+    echo "############################################"
+    echo "###############QOS-OUT-IF###################"
+    echo "############################################"
+    echo "############QDISC $lan_if"
+    tc -s -d qdisc show dev $lan_if
+    echo "############CLASS $lan_if"
+    tc -s -d class show dev $lan_if
+    echo "############FILTER $lan_if"
+    tc -s -d filter show dev $lan_if
+    echo "############################################"
+}
+
+stop() {
+ $LOG "Stopping SHAPER"
+    # Drop all QoS rules
+    set_def
+    rm -f $IPTSCR
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        show)
+	    show
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

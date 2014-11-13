@@ -1,0 +1,105 @@
+#!/bin/sh
+
+#include global config
+. /etc/scripts/global.sh
+
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+
+PPP_FIREWALL="/tmp/ppp_firewall_${PPP_IFACE}"
+
+LOG="logger -t pppd"
+
+eval `nvram_buf_get 2860 vpnPeerDNS chilli_net`
+
+    $LOG "Disable forwarding for $PPP_IFACE interface"
+    sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=0
+
+    $LOG "Restore netfilter rules from pppd"
+    iptables -D FORWARD -o $PPP_IFACE -j ACCEPT > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j MASQUERADE > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $chilli_net -j MASQUERADE > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j MASQUERADE > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
+    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
+
+    if [ -e $PPP_FIREWALL ]; then
+	rm -f $PPP_FIREWALL
+    fi
+
+    #replace dns to default
+    if [ "$vpnPeerDNS" = "on" ] && [ -f /etc/ppp/resolv.conf ] && [ -f /tmp/resolv.conf.tmp.$PPP_IFACE ]; then
+	$LOG "Restore DNS from pppd"
+	cp -f /tmp/resolv.conf.tmp.$PPP_IFACE /etc/resolv.conf
+	# read for all write by root
+	chmod 644 /etc/resolv.conf > /dev/null 2>&1
+	rm -f /etc/ppp/resolv.conf > /dev/null 2>&1
+	rm -f /tmp/resolv.conf.tmp.$PPP_IFACE > /dev/null 2>&1
+	rm -f /tmp/resolv.$PPP_IFACE > /dev/null 2>&1
+    else
+	##########################################################
+	# Regenerate resolv only if wan_static_dns on		 #
+	##########################################################
+	if [ "$wan_static_dns" = "on" ]; then
+	    service resolv start
+	fi
+    fi
+
+    #remove portforward rules
+    if [ -f /etc/portforward_vpn ]; then
+	/etc/portforward_vpn "D" "$PPP_IFACE" "$PPP_LOCAL" > /dev/null 2>&1
+    fi
+
+    #remove route rules
+    if [ -f /etc/routes_ppp_replace ]; then
+	$LOG "Delete user routes"
+	/etc/routes_ppp_replace del $PPP_IFACE > /dev/null 2>&1
+    fi
+
+    $LOG "Restore default gateway"
+    #clear all default route
+    if [ -f /tmp/ip-down-route-reload ] || [ -f /tmp/default.gw ]; then
+	while ip -4 route del default ; do
+    	    :
+	done
+    fi
+
+    #restore default gateway
+    if [ -f /tmp/default.gw ]; then
+	#resote old dgw
+	olddgw=`tail -qn1 /tmp/default.gw`
+	if [ "$olddgw" != "" ]; then
+	    ip -4 route replace default via $olddgw
+	fi
+    else
+	if [ -f /tmp/ip-down-route-reload ]; then
+	    /tmp/ip-down-route-reload
+	    rm -f /tmp/ip-down-route-reload
+	fi
+    fi
+
+    # all tunnels and ipv6 deconfig before reconfigure - prevent loop
+    if [ -d /proc/sys/net/ipv6 ]; then
+        service six stop
+    fi
+
+    $LOG "Flush route cache"
+    ip route flush cache
+
+    $LOG "Restart need service and rebuild shaper and iptables rules"
+    services_restart.sh pppd
+
+#run scrips from /etc/ppp/ip-down.d/
+export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
+if [ -d /etc/ppp/ip-down.d/ -a -x /bin/run-parts ]; then
+    run-parts /etc/ppp/ip-down.d/
+fi
+    #remove exported vpn_if_name
+    rm -f /tmp/vpn_if_name
+
+$LOG "Down is OK"

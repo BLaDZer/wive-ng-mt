@@ -1,0 +1,16 @@
+Files:
+tests/test-vasprintf-posix.c
+tests/minus-zero.h
+tests/nan.h
+tests/macros.h
+
+Depends-on:
+stdint
+float
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-vasprintf-posix
+check_PROGRAMS += test-vasprintf-posix
+

@@ -1,0 +1,42 @@
+@node lstat
+@section @code{lstat}
+@findex lstat
+
+POSIX specification:@* @url{http://www.opengroup.org/onlinepubs/9699919799/functions/lstat.html}
+
+Gnulib module: lstat
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+On platforms where @code{off_t} is a 32-bit type, @code{lstat} may not
+correctly report the size of files or block devices larger than 2 GB.
+(Cf. @code{AC_SYS_LARGEFILE}.)
+@item
+For symlinks, when the argument ends in a slash, some platforms don't
+dereference the argument:
+Solaris 9.
+@item
+On some platforms, @code{lstat("file/",buf)} succeeds instead of
+failing with @code{ENOTDIR}.
+Solaris 9.
+@item
+On Windows platforms (excluding Cygwin), symlinks are not supported, so
+@code{lstat} does not exist.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On Windows platforms (excluding Cygwin), @code{st_ino} is always 0.
+@item
+Because of the definition of @code{struct stat}, it is not possible to
+portably replace @code{stat} via an object-like macro.  Therefore,
+expressions such as @code{(islnk ? lstat : stat) (name, buf)} are not
+portable, and should instead be written @code{islnk ? lstat (name,
+buf) : stat (name, buf)}.
+@item
+On some file systems, @code{st_size} contains bogus information for
+symlinks; use the gnulib module areadlink-with-size for a better way
+to get symlink contents.
+@end itemize

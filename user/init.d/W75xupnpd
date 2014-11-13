@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/xupnpd ]; then
+    exit 0
+fi
+
+LOG="logger -t xupnpd "
+
+start() {
+    get_param
+    if [ "$xupnpd" = "1" ]; then
+	# store feeds only in ram - not real rwfs
+	if [ ! -d /tmp/xupnpd-feeds ]; then
+	    rm -rf /etc/xupnpd/xupnpd-feeds
+	    mkdir -p /tmp/xupnpd-feeds
+	    ln -sf /tmp/xupnpd-feeds /etc/xupnpd/xupnpd-feeds
+	fi
+	( # send to background
+	    # check ip adress set at wan
+	    if [ "$wan_is_not_null" = "0" ]; then
+    		$LOG "Wait 15 sec before start..."
+		sleep 15
+	    fi
+
+    	    $LOG "Start"
+	    export XUPNPDROOTDIR=/etc/xupnpd
+	    nice -n -9 xupnpd
+	) & # send to background
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 xupnpd`
+}
+
+stop() {
+    if [ -f /var/run/xupnpd.pid ]; then
+	$LOG "Stop xupnpd."
+	killall -q xupnpd
+	killall -q -SIGKILL xupnpd
+	rm -f /var/run/xupnpd.pid
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

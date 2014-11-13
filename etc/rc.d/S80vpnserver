@@ -1,0 +1,204 @@
+#!/bin/sh
+
+#################################################
+# configure L2TP server helper			#
+#################################################
+
+# include global config
+. /etc/scripts/global.sh
+
+# default variables
+LOG="logger -t vpn-server"
+ppp="/etc/ppp-l2tpsrv"
+var="/var/run/xl2tpd-srv"
+
+start() {
+ # get param
+ get_param
+
+ if [ "$l2tp_srv_enabled" = "1" ] && [ "$l2tp_srv_ip_range" != "" ] && \
+    [ "$l2tp_srv_ip_local" != "" ] && [ "$configured" = "1" ] && \
+    [ ! "`pidof xl2tpd-srv`" ]; then
+
+    $LOG "Start l2tp vpn server"
+
+    # load kernel modules
+    load_modules
+
+    # start daemon
+    mkdir -p $var
+    (sleep 5 && xl2tpd-srv $full_l2tpd_opts) &
+ fi
+}
+
+load_modules() {
+    if [ ! -d /sys/module/pppol2tp ]; then
+	mod="ppp_generic pppox pppol2tp"
+	for module in $mod
+	do
+    	    modprobe -q $module
+	done
+    fi
+}
+
+gen_configs() {
+
+# Generate passord files. Support 10 users
+configured=0
+echo > $ppp/chap-secrets
+for i in `seq 0 9`; do
+    l2tp_srv_user=`nvram_get 2860 l2tp_srv_user"$i"`
+    l2tp_srv_pass=`nvram_get 2860 l2tp_srv_pass"$i"`
+    if [ "$l2tp_srv_user" != "" ] && [ "$l2tp_srv_pass" != "" ]; then
+	printf "$l2tp_srv_user * $l2tp_srv_pass *\n" >> $ppp/chap-secrets
+	configured=1
+    fi
+done
+
+#  Generate l2tp nad pppd config
+if [ "$configured" = "0" ]; then
+    $LOG "One or more users need be configured. Stop."
+else
+printf "
+[global]
+listen-addr = 0.0.0.0
+auth file = $ppp/chap-secrets\n
+
+[lns default]\n
+ip range = $l2tp_srv_ip_range
+local ip = $l2tp_srv_ip_local
+exclusive = yes
+refuse authentication = no
+require authentication = yes
+require chap = yes
+pppoptfile = $ppp/options.l2tp\n
+" > $ppp/l2tpd.conf
+
+printf "
+auth
+lcp-echo-interval 3
+lcp-echo-failure 8
+nodeflate
+noipx
+nomp
+$l2tp_srv_proxyarp
+refuse-pap
+refuse-chap
+refuse-eap
+refuse-mschap
+require-mschap-v2
+$l2tp_srv_mppe_enabled
+$l2tp_srv_mppe_no_stateful
+lock
+minunit 10
+external_chap_sec
+ip-up-script $ppp/ip-up
+ip-down-script $ppp/ip-down
+$l2tp_srv_ms_dns
+$l2tp_srv_ms_wins
+$l2tp_srv_lcp_adapt
+$l2tp_srv_mtu_size
+$l2tp_srv_mru_size\n
+" > $ppp/options.l2tp
+fi
+}
+
+get_param() {
+    ###########################################################################
+    # get some variables
+    ###########################################################################
+    eval `nvram_buf_get 2860 l2tp_srv_enabled l2tp_srv_ip_range l2tp_srv_ip_local l2tp_srv_user l2tp_srv_pass l2tp_srv_proxyarp \
+	    l2tp_srv_lcp_adapt l2tp_srv_mtu_size l2tp_srv_mru_size l2tp_srv_debug dnsPEnabled SmbEnabled l2tp_srv_mppe_enabled`
+    ###########################################################################
+    # replace param for direct use
+    ###########################################################################
+    if [ "$l2tp_srv_lcp_adapt" = "" ] || [ "$l2tp_srv_lcp_adapt" = "0" ]; then
+	l2tp_srv_lcp_adapt=
+    else
+	l2tp_srv_lcp_adapt="lcp-echo-adaptive"
+    fi
+    if [ "$l2tp_srv_mtu_size" = "" ] || [ "$l2tp_srv_mtu_size" = "AUTO" ]; then
+	l2tp_srv_mtu_size=
+    else
+	l2tp_srv_mtu_size="mtu $l2tp_srv_mtu_size"
+    fi
+    if [ "$l2tp_srv_mru_size" = "" ] || [ "$l2tp_srv_mru_size" = "AUTO" ]; then
+	l2tp_srv_mru_size=
+    else
+	l2tp_srv_mru_size="mru $l2tp_srv_mru_size"
+    fi
+    if [ "$l2tp_srv_debug" = "" ] || [ "$l2tp_srv_debug" = "0" ]; then
+	l2tp_srv_debug=
+    else
+	l2tp_srv_debug="-D"
+    fi
+    if [ "$dnsPEnabled" = "1" ] && [ "$lan_ipaddr" != "" ] && [ "$lan_ipaddr" != "0.0.0.0" ]; then
+	l2tp_srv_ms_dns="ms-dns $lan_ipaddr"
+    else
+	l2tp_srv_ms_dns=
+    fi
+    if [ "$SmbEnabled" = "1" ] && [ "$lan_ipaddr" != "" ] && [ "$lan_ipaddr" != "0.0.0.0" ]; then
+	l2tp_srv_ms_wins="ms-wins $lan_ipaddr"
+    else
+	l2tp_srv_ms_wins=
+    fi
+    if [ "$l2tp_srv_proxyarp" = "" ] || [ "$l2tp_srv_proxyarp" = "0" ]; then
+	l2tp_srv_proxyarp="noproxyarp"
+    else
+	l2tp_srv_proxyarp="proxyarp"
+    fi
+    if [ "$l2tp_srv_mppe_enabled" = "" ] || [ "$l2tp_srv_mppe_enabled" = "0" ]; then
+	l2tp_srv_mppe_enabled=
+	l2tp_srv_mppe_no_stateful=
+    else
+	l2tp_srv_mppe_enabled="require-mppe-128"
+	l2tp_srv_mppe_no_stateful="nomppe-stateful"
+    fi
+    # final options compile
+    gen_configs
+    full_l2tpd_opts="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid -C $var/l2tp-control $l2tp_srv_debug"
+}
+
+stop() {
+    $LOG "Stop l2tp vpn server"
+    # try firt disconnect all clients
+    if [ -e $var/l2tp-control ] && [ -f $var/l2tpd.pid ]; then
+	echo "d default" > $var/l2tp-control
+	usleep 500000
+    fi
+    # stop vpn server
+    if [ -f $var/l2tpd.pid ]; then
+	pid=`cat $var/l2tpd.pid`
+	count=0
+	# try 3 times for correct shutdown
+	while kill "$pid" > /dev/null 2>&1; do
+	    usleep 500000
+	    count="$(($count+1))"
+	    if [ "$count" = "5" ]; then
+		break
+	    fi
+	done
+	# if not correct terminate need kill
+	kill -SIGKILL "$pid" > /dev/null 2>&1
+	rm -f $var/l2tpd.pid
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+	stop)
+            stop
+            ;;
+
+	restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart|reload}"
+            exit 1
+esac

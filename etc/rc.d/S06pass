@@ -1,0 +1,50 @@
+#!/bin/sh
+
+LOG="logger -t pass"
+
+start() {
+ $LOG "Set current password"
+    # get user/password
+    get_param
+
+    # generate pass file
+    printf "$Login::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n" > /etc/passwd
+
+    # generate group file
+    printf "$Login:x:0:$Login\nnobody:x:99:\n"		>  /etc/group
+    printf "$Login:x:0:$Login\nnogroup:x:65534:\n"	>> /etc/group
+
+    # set new password
+    echo "$Login:$Password" > /tmp/tmpchpw
+    chpasswd -m < /tmp/tmpchpw
+    rm -f /tmp/tmpchpw
+}
+
+get_param() {
+    # do not use eval + bufget
+    Login=`nvram_get 2860 Login`
+    Password=`nvram_get 2860 Password`
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

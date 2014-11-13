@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/udpxy ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t udpxy"
+
+start() {
+    get_param
+    if [ "$UDPXYMode" != "0" ] && [ "$UDPXYPort" != "" ]; then
+      ( # send to background
+
+	# check ip adress set at wan
+	if [ "$wan_is_not_null" = "0" ]; then
+    	    $LOG "Wait 15 sec before start..."
+	    sleep 15
+	fi
+
+	pid=`pidof udpxy`
+	if [ "$pid" != "" ]; then
+	    $LOG "UDPXY stop"
+	    killall -q udpxy
+	    killall -q -SIGKILL udpxy
+	    usleep 500000
+	fi
+
+	export UDPXY_RCV_TMOUT=10
+	export UDPXY_DHOLD_TMOUT=5
+	export UDPXY_SREAD_TMOUT=5
+	export UDPXY_SWRITE_TMOUT=5
+	export UDPXY_SSEL_TMOUT=5
+        export UDPXY_ALLOW_PAUSES=1
+        export UDPXY_SOCKBUF_LEN=2097152
+
+        $LOG "UDPXY start"
+	udpxy -m $wan_if -n -20 -c 8 -B 2Mb -H 5 -p "$UDPXYPort" -l /var/log/udpxy.log
+       ) & # send to background
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 UDPXYPort`
+}
+
+stop() {
+    pid=`pidof udpxy`
+    if [ "$pid" != "" ]; then
+	$LOG "UDPXY stop"
+	killall -q udpxy
+	killall -q -SIGKILL udpxy
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

@@ -1,0 +1,42 @@
+*~
+*.o
+*.lo
+*.a
+*.la
+/build*/
+/libevent/*
+
+# autotools stuff
+/m4/lt*.m4
+/m4/libtool.m4
+/aclocal.m4
+/ltmain.sh
+/install-sh
+/config.guess
+/config.h.in
+/config.sub
+/autom4te.cache/
+/compile
+/configure
+/depcomp
+/missing
+/test-driver
+
+# automake
+/Makefile.in
+/src/Makefile.in
+/src/client/Makefile.in
+/src/lib/Makefile.in
+/src/daemon/Makefile.in
+/src/compat/Makefile.in
+/src/Makefile.in
+/tests/Makefile.in
+/osx/Makefile.in
+/ar-lib
+
+# cscope
+/cscope.*
+/GPATH
+/GRTAGS
+/GSYMS
+/GTAGS

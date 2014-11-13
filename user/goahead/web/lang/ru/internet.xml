@@ -1,0 +1,156 @@
+<po>
+  <message msgid="inet apply" msgstr="Применить" />
+  <message msgid="inet cancel" msgstr="Отмена" />
+  <message msgid="inet enable" msgstr="Вкл." />
+  <message msgid="inet disable" msgstr="Выкл." />
+
+  <message msgid="inet mac" msgstr="MAC адрес" />
+  <message msgid="inet ip" msgstr="IP адрес" />
+  <message msgid="inet server" msgstr="IP сервера" />
+  <message msgid="inet netmask" msgstr="Маска подсети" />
+  <message msgid="inet lan2" msgstr="LAN 2" />
+  <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
+  <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
+  <message msgid="inet gateway" msgstr="Шлюз по умолчанию" />
+  <message msgid="inet pri dns" msgstr="Основной DNS" />
+  <message msgid="inet sec dns" msgstr="Вторичный DNS" />
+  <message msgid="inet user" msgstr="Имя пользователя" />
+  <message msgid="inet password" msgstr="Пароль" />
+  <message msgid="inet pass2" msgstr="Подтверждение пароля" />
+  <message msgid="inet hostname" msgstr="Имя хоста" />
+
+  <message msgid="wan title" msgstr="Настройик Wide Area Network (WAN)" />
+  <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
+  <message msgid="wan connection type" msgstr="Тип подключения WAN:" />
+  <message msgid="wan connection type static" msgstr="STATIC (фиксированный IP)" />
+  <message msgid="wan connection type dhcp" msgstr="DHCP (автоматическая настройка)" />
+  <message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
+  <message msgid="wan connection type l2tp" msgstr="L2TP" />
+  <message msgid="wan connection type pptp" msgstr="PPTP" />
+  <message msgid="wan protocol opmode" msgstr="Режим работы" />
+  <message msgid="wan protocol opmode keepalive" msgstr="Всегда активно" />
+  <message msgid="wan protocol opmode ondemand" msgstr="По требованию" />
+  <message msgid="wan protocol opmode manual" msgstr="Вручную" />
+
+  <message msgid="wan static mode" msgstr="Фиксированные настройки" />
+  <message msgid="wan dhcp mode" msgstr="DHCP" />
+  <message msgid="wan pppoe mode" msgstr="PPPoE" />
+  <message msgid="wan l2tp mode" msgstr="L2TP" />
+  <message msgid="wan pptp mode" msgstr="PPTP" />
+  <message msgid="wan 3G mode" msgstr="3G" />
+  <message msgid="wan 3G modem" msgstr="USB 3G модем" />
+  <message msgid="wan address mode" msgstr="Тип адреса" />
+  <message msgid="wan address mode static" msgstr="Статический" />
+  <message msgid="wan address mode dynamic" msgstr="Динамический" />
+  <message msgid="lan title" msgstr="Настрйоки локальной сети (LAN)" />
+  <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
+  <message msgid="lan setup" msgstr="Настройки LAN" />
+  <message msgid="lan dhcp type" msgstr="Тип DHCP" />
+  <message msgid="lan dhcp type server" msgstr="Сервер" />
+  <message msgid="lan dhcp start" msgstr="Начальный IP пула" />
+  <message msgid="lan dhcp end" msgstr="Конечный IP пула" />
+  <message msgid="lan dhcp lease" msgstr="Время выделения" />
+  <message msgid="lan dhcp static" msgstr="Назначены статически" />
+  <message msgid="lan stp" msgstr="802.1d Spanning Tree" />
+  <message msgid="lan arpp" msgstr="ARP прокси (parprouted)" />
+  <message msgid="lan cdp" msgstr="Link Layer Cisco Discovery (cdp)" />
+  <message msgid="lan lltd" msgstr="Link Layer Topology Discovery (lltd)" />
+  <message msgid="lan lldpd" msgstr="Link Layer Discovery Daemon (lldpd)" />
+  <message msgid="lan snmp" msgstr="SNMP daemon (snmpd)" />
+  <message msgid="lan igmpp" msgstr="Multicast route (igmpproxy)" />
+  <message msgid="lan upnp" msgstr="Auto portmap service (miniupnpd)" />
+  <message msgid="lan radvd" msgstr="Router Advertisement Daemon (radvd)" />
+  <message msgid="lan dhcpv6" msgstr="DHCPv6 server (dhcp6s)" />
+  <message msgid="lan dnsp" msgstr="DNS Proxy (dnsmasqd)" />
+
+  <message msgid="dhcp title" msgstr="Список DHCP клиентов" />
+  <message msgid="dhcp introduction" msgstr="Здесь вы можете увидеть DHCP клиентов." />
+  <message msgid="dhcp clients" msgstr="DHCP клиенты" />
+  <message msgid="dhcp expire" msgstr="Истекает" />
+
+  <message msgid="vpn title" msgstr="Проброс VPN" />
+  <message msgid="vpn introduction" msgstr="Проброс VPN, включая L2TP, IPSec, и PPTP." />
+  <message msgid="vpn pass thru" msgstr="Проброс VPN" />
+  <message msgid="vpn l2tp pass thru" msgstr="Проброс L2TP" />
+  <message msgid="vpn ipsec pass thru" msgstr="Проброс IPSec" />
+  <message msgid="vpn pptp pass thru" msgstr="Проброс PPTP" />
+
+  <message msgid="routing title" msgstr="Статические маршруты" />
+  <message msgid="routing Introduction" msgstr="Вы можете здесь настроить статические маршруты или включить протокол динамической маршрутизации." />
+  <message msgid="routing add rule" msgstr="Добавить маршрут" />
+  <message msgid="routing routing dest" msgstr="Назначение" />
+  <message msgid="routing range" msgstr="Диапазон" />
+  <message msgid="routing netmask" msgstr="Маска" />
+  <message msgid="routing gateway" msgstr="Шлюз" />
+  <message msgid="routing interface" msgstr="Интерфейс" />
+  <message msgid="routing custom" msgstr="(вручную)" />
+  <message msgid="routing comment" msgstr="Комментарий" />
+  <message msgid="routing submit" msgstr="Применить" />
+  <message msgid="routing reset" msgstr="Сброс" />
+  <message msgid="routing Number" msgstr="№" />
+  <message msgid="routing del title" msgstr="Текущая таблица маршрутизации:" />
+  <message msgid="routing del dest" msgstr="Назначение" />
+  <message msgid="routing del netmask" msgstr="Маска" />
+  <message msgid="routing del gateway" msgstr="Шлюз" />
+  <message msgid="routing del flags" msgstr="Флаги" />
+  <message msgid="routing del metric" msgstr="Метрика" />
+  <message msgid="routing del ref" msgstr="Ref" />
+  <message msgid="routing del use" msgstr="Use" />
+  <message msgid="routing del interface" msgstr="Интерфейс" />
+  <message msgid="routing del comment" msgstr="Комментарий" />
+  <message msgid="routing del" msgstr="Удалить" />
+  <message msgid="routing del reset" msgstr="Сброс" />
+  <message msgid="routing host" msgstr="Хост" />
+  <message msgid="routing net" msgstr="Сеть" />
+  <message msgid="routing LAN" msgstr="LAN" />
+  <message msgid="routing WAN" msgstr="WAN" />
+
+  <message msgid="routing dynamic Title" msgstr="Динамическая маршрутизация" />
+  <message msgid="routing dynamic Title2" msgstr="Протокол динамической маршрутизации" />
+  <message msgid="routing dynamic rip disable" msgstr="Выкл." />
+  <message msgid="routing dynamic rip enable" msgstr="Вкл." />
+  <message msgid="routing dynamic rip apply" msgstr="Применить" />
+  <message msgid="routing dynamic rip reset" msgstr="Сброс" />
+
+  <message msgid="qos title" msgstr="Настройки Quality of Service" />
+  <message msgid="qos intro" msgstr="Вы можете настроить правила для приоритезации траффика отдельных приложений." />
+  <message msgid="qos setup" msgstr="Настройки QoS" />
+  <message msgid="qos str" msgstr="Quality of Service" />
+  <message msgid="qos disable" msgstr="Выкл." />
+  <message msgid="qos enable" msgstr="Вкл." />
+  <message msgid="qos dscpmarkeronly" msgstr="Только метки DSCP" />
+  <message msgid="qos upload bandwidth" msgstr="Исходящий канал:" />
+  <message msgid="qos bandwidth custom" msgstr="Пользовательские настройки" />
+  <message msgid="qos download bandwidth" msgstr="Входящий канал:" />
+  <message msgid="qos setup submit" msgstr="Сохранить" />
+  <message msgid="qos setup reset" msgstr="Сброс" />
+  <message msgid="qos group" msgstr="Группа" />
+  <message msgid="qos group attr" msgstr="Аттрибут" />
+  <message msgid="qos group modify" msgstr="Изменить" />
+  <message msgid="qos rule no" msgstr="Нет" />
+  <message msgid="qos rule name" msgstr="Имя" />
+  <message msgid="qos rule prio" msgstr="Группа" />
+  <message msgid="qos rule info" msgstr="Инфо" />
+  <message msgid="qos rule add" msgstr="Добавить" />
+  <message msgid="qos rule del" msgstr="Удалить" />
+  <message msgid="qos loaddefault" msgstr="Настройки по умолчанию" />
+  <message msgid="qos Rate" msgstr="Rate:" />
+  <message msgid="qos Ceil" msgstr="Ceil:" />
+  <message msgid="qos AF Name" msgstr="Название группы" />
+  <message msgid="qos AF Upload Bandwidth" msgstr="% исходящего канала" />
+
+  <message msgid="qos classifier title" msgstr="Настройки классификатора" />
+  <message msgid="qos classifier name" msgstr="Имя" />
+  <message msgid="qos classifier group" msgstr="Группа" />
+  <message msgid="qos classifier mac" msgstr="MAC адрес" />
+  <message msgid="qos classifier dip" msgstr="IP адрес назначения" />
+  <message msgid="qos classifier sip" msgstr="IP адрес источника" />
+  <message msgid="qos classifier pktlen" msgstr="Длинна пакета" />
+  <message msgid="qos classifier dscp" msgstr="DSCP" />
+  <message msgid="qos classifier proto" msgstr="Протокол" />
+  <message msgid="qos classifier dport" msgstr="Порт назначения" />
+  <message msgid="qos classifier sport" msgstr="Порт источника" />
+  <message msgid="qos classifier l7" msgstr="Приложение" />
+  <message msgid="qos classifier remark" msgstr="Поставить метку DSCP:" />
+  <message msgid="qos classifier auto" msgstr="Авто" />
+</po>

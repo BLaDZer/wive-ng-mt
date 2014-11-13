@@ -1,0 +1,274 @@
+#!/bin/sh
+
+# only clean load start this
+if [ -f /tmp/nvram_checked ] && [ "$1" != "genmac" ]; then
+    exit 0
+fi
+
+LOG="logger -t checkconf"
+
+start() {
+    # get variables
+    get_param
+
+    # include kernel config
+    . /etc/scripts/config.sh
+
+    $LOG "Check firmware update or clean boot."
+    FORCE_REBUILD_MAC="NO"
+    if [ "$IS_WIVE" = "YES" ]; then
+	$LOG ">>>> NORMAL BOOT <<<<"
+    else
+	$LOG "First boot, firmware trunclated or before burn not wive installed"
+	if [ -f /bin/eth_mac ]; then
+	    $LOG "Try read mac from old factory"
+	    RALINKMAC="00:0C:43"
+	    ISDEFWMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
+	    ISDEFLMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
+	    FIRSTBITSW=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+	    FIRSTBITSL=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+	    if [ "$ISDEFWMAC" != "1" ] && [ "$ISDEFLMAC" != "1" ] && [ $FIRSTBITSW != "FF" ] && [ $FIRSTBITSL != "FF" ]; then
+		$LOG "Store original mac adress."
+		OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+		OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    else
+		OLDMACWAN=""
+		OLDMACLAN=""
+	    fi
+	    if [ $FIRSTBITSW = "FF" ] || [ $FIRSTBITSL = "FF" ]; then
+		    $LOG "Clear and load defaults to nvram."
+    		    fs nvramreset
+		    rm -f /etc/backup/nvram_backup.dat
+		    ########################################
+		    # force rebuild mac if reset to defaults
+		    ########################################
+		    FORCE_REBUILD_MAC="YES"
+	    fi
+	fi
+	$LOG "Burn RF template to flash"
+	fs burnrf
+	$LOG ">>>> RESTORE NVRAM <<<<"
+	if [ -f /etc/backup/nvram_backup.dat ]; then
+	    $LOG "Load backuped setting to nvram."
+    	    fs load_nvram
+	else
+	    $LOG "Clear and load defaults to nvram."
+    	    fs nvramreset
+	    ########################################
+	    # force rebuild mac if reset to defaults
+	    ########################################
+	    FORCE_REBUILD_MAC="YES"
+	fi
+	$LOG "Reset OK. Continue boot..."
+	########################################
+	# renew variables after load
+	# always check mac if reset or restored
+	########################################
+	get_param
+	CHECKMAC="YES"
+    fi
+
+######################################## MINIMAL CONFIG FOR NORMAL START #########################################
+    #
+    # check mac correct set if check mac in nvram set to not NO and web not start
+    # set mask for macs generate and vendor name
+    # vend mask must not be vald if nvram defaults loaded
+    #
+    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
+    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    if [ "$CHECKMAC" != "NO" ]; then
+        if [ $MAC_TEST = "0" ] || [ $WMAC_TEST = "0" ] || [ $WMAC2_TEST = "0" ] || [ $LANMAC_TEST = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
+	    $LOG "MAC is not in vendor range or sdk defaults - start MAC generate"
+	    genmac
+	fi
+    fi
+
+    #
+    # OperationMode adjustment:
+    #   if AP client was not compiled and operation mode was set "3" -> set $OperationMode "1"
+    #   if Station was not compiled and operation mode was set "2" -> set $OperationMode "1"
+    #   if OperationMode = "4" and chilli spot daemon not exist -> set $OperationMode "1"
+    if   [ "$OperationMode" = "3" ] && [ "$CONFIG_RT2860V2_AP_APCLI" = "" ]; then
+	nvram_set 2860 OperationMode 1
+	OperationMode="1"
+    elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" = "" ]; then
+	nvram_set 2860 OperationMode 1
+	OperationMode="1"
+    elif [ "$OperationMode" = "4" ] && [ ! -f /bin/chilli ]; then
+	nvram_set 2860 OperationMode 1
+	OperationMode="1"
+    fi
+
+    #
+    #	set default ipv6 mode to disabled if not set
+    #
+    if [ "$IPv6OpMode" = "" ]; then
+	nvram_set IPv6OpMode 0
+    fi
+    #
+    #	set default offload mode to complex if not set
+    #
+    if [ "$offloadMode" = "" ]; then
+	nvram_set offloadMode 3
+    fi
+    #
+    #	drop apcli specific flags in not apcli enabled modes
+    #
+    if [ "$OperationMode" != "3" ]; then
+	if [ "$ApCliBridgeOnly" != "0" ] || [ "$ApCliClientOnly" != "0" ]; then
+	    nvram_set ApCliBridgeOnly 0
+	    nvram_set ApCliClientOnly 0
+	fi
+    fi
+
+    #
+    # timezone
+    #
+    if [ "$TZ" = "" ]; then
+        nvram_set 2860 "OMST-7"
+    fi
+
+    #
+    # user and password need set
+    #
+    if [ "$Login" = "" ] || [ "$Password" = "" ]; then
+        nvram_set 2860 Login "Admin"
+        nvram_set 2860 Password "Admin"
+    fi
+
+    #
+    # dafault lan ip/mask
+    #
+    if [ "$lan_ipaddr" = "" ] || [ "$lan_netmask" = "" ]; then
+	nvram_set 2860 lan_ipaddr 192.168.1.1
+	nvram_set 2860 lan_netmask 255.255.255.0
+    fi
+
+    #
+    # need hostname
+    #
+    if [ "$HostName" = "" ]; then
+	HostName="Wive-NG-MT"
+	nvram_set 2860 HostName "$HostName"
+    fi
+    echo "$HostName" > /etc/hostname
+    hostname -F /etc/hostname
+
+    #
+    # samba configs to
+    #
+    if [ -f /bin/smbd ] || [ -f /bin/nmbd ]; then
+	if [ "$WorkGroup" = "" ] || [ "$SmbNetBIOS" = "" ] || [ "$SmbString" = "" ]; then
+	    WorkGroup="LOCALNET"
+	    SmbNetBIOS="$HostName"
+	    SmbString="$HostName-SERVER"
+	    nvram_set 2860 WorkGroup LOCALNET
+	    nvram_set 2860 SmbNetBIOS "$SmbNetBIOS"
+	    nvram_set 2860 SmbString "$SmbString"
+	fi
+    fi
+
+    #
+    # Udpxy default port
+    #
+    if [ -f /bin/udpxy ] && [ "$UDPXYPort" = "" ]; then
+	nvram_set 2860 UDPXYPort 81
+    fi
+
+    #
+    # WebUI default port
+    #
+    if [ "$RemoteManagementPort" = "" ]; then
+	nvram_set 2860 RemoteManagementPort 80
+    fi
+
+    #
+    # SSH default port
+    #
+    if [ "$RemoteSSHPort" = "" ]; then
+	nvram_set 2860 RemoteSSHPort 22
+    fi
+
+    # set checked flag
+    touch /tmp/nvram_checked
+}
+
+get_param() {
+    # get parametrs
+    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
+	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
+	    ApCliBridgeOnly ApCliClientOnly`
+
+    # default mac vendor mask for generate new macs if need
+    VENDMASK="F0:82:50"
+}
+
+genmac() {
+    # get variables
+    get_param
+
+    mac_wan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
+    mac_lan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
+    mac_wlan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
+    mac_wlan2=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
+
+    if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ]; then
+	$LOG "Use original macs for wan/lan readed by factory before replace"
+	nvram_set 2860 CHECKMAC NO
+	MAC="$OLDMACWAN"
+	LANMAC="$OLDMACLAN"
+	VENDMASK=`echo $MAC | cut -f -3 -d :`
+    else
+	$LOG "Write new generated wan/lan macs"
+	MAC="$VENDMASK:$mac_wan"
+	LANMAC="$VENDMASK:$mac_lan"
+    fi
+
+    WMAC="$VENDMASK:$mac_wlan"
+    WMAC2="$VENDMASK:$mac_wlan2"
+
+    $LOG "Set WAN   MAC - $MAC"
+    $LOG "Set LAN   MAC - $LANMAC"
+    $LOG "Set WLAN1 MAC - $WMAC"
+    $LOG "Set WLAN2 MAC - $WMAC2"
+
+    if [ -f /bin/eth_mac ]; then
+	FWMAC=`echo $MAC | sed "s/:/ /g"`
+	FLMAC=`echo $LANMAC | sed "s/:/ /g"`
+	eth_mac w wan $FWMAC
+	eth_mac w lan $FLMAC
+    fi
+
+    nvram_set 2860 WAN_MAC_ADDR   "$MAC"
+    nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
+    nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"
+    nvram_set 2860 WLAN2_MAC_ADDR "$WMAC2"
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	genmac)
+	    genmac
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

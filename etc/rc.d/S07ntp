@@ -1,0 +1,69 @@
+#!/bin/sh
+
+LOG="logger -t ntp"
+
+start() {
+    # generate new timezone file
+    TZ_generate
+    # start time sync daemon
+    ntp_start
+}
+
+TZ_generate() {
+    TZ=`nvram_get 2860 TZ`
+
+    echo "$TZ" > /etc/tmpTZ
+    sed -e 's#.*_\(-*\)0*\(.*\)#GMT-\1\2#' /etc/tmpTZ > /etc/tmpTZ2
+    sed -e 's#\(.*\)--\(.*\)#\1\2#' /etc/tmpTZ2 > /etc/TZ
+    rm -rf /etc/tmpTZ
+    rm -rf /etc/tmpTZ2
+
+    if [ -f /etc/compile-date ] && [ ! -f /tmp/time_restored ]; then
+        echo "Restore time to build time or save time."
+	BUILDDATE=`cat /etc/compile-date`
+        if [ "$BUILDDATE" != "" ]; then
+	    date -s "$BUILDDATE"
+	    touch /tmp/time_restored
+        fi
+    fi
+}
+
+ntp_start() {
+    # if app not exist
+    if [ ! -f /bin/ntpd ]; then
+	exit 0
+    fi
+
+    eval `nvram_buf_get 2860 NTPEnabled NTPServerIP`
+    if [ "$NTPEnabled" = "on" ] && [ "$NTPServerIP" != "" ]; then
+	$LOG "Starting NTPD"
+	ntpd -d -p "$NTPServerIP" > /dev/null 2>&1 &
+    fi
+}
+
+stop() {
+    if [ -f /var/run/ntpd.pid ]; then
+	$LOG "Stopping NTPD"
+	killall -q ntpd
+	killall -q -SIGKILL ntpd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

@@ -1,0 +1,2 @@
+::sysinit:/etc/rc.d/start
+ttyS0::respawn:/bin/sh

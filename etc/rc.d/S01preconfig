@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# only clean load start this
+if [ -f /tmp/is_preconfigured ]; then
+    exit 0
+fi
+
+LOG="echo PRECONFIG"
+
+start() {
+    $LOG "Preconfigure..."
+
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+
+    # start reset button check
+    butcheck &
+
+    # create fstab if not exist
+    touch /etc/fstab
+
+    mount -t devpts /dev/pts /dev/pts
+    mount -a
+    chmod 777 /tmp
+
+    $LOG "Delete old configs."
+    rm_conf="zebra.conf ripd.conf macipfilter websfilter portforward ppp_firewall routes_ppp_replace qos_firewall ppp/resolv.conf"
+    for file in $rm_conf ; do
+	rm -f /etc/$file
+    done
+
+    $LOG "Create some folders in var and etc."
+    ndirs="/var/run /var/lock /var/lock/subsys /var/log /var/tmp /var/run/xl2tpd /etc/ppp/ip-up.d /etc/ppp/ip-down.d"
+    for dir in $ndirs ; do
+	mkdir -p "$dir" > /dev/null 2>&1
+    done
+
+    # this may be need for some apps
+    ln -sf /var/lock /var/locks
+
+    # set is_preconfigured flag
+    touch /tmp/is_preconfigured
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

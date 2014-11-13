@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/zebra ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+if [ "$OperationMode" = "0" ]; then
+    exit 0
+fi
+
+LOG="logger -t zebra"
+
+start() {
+    RIPEnable=`nvram_get 2860 RIPEnable`
+    if [ "$RIPEnable" = "1" ] && [ -f /etc/zebra.conf ]; then
+	$LOG "Starting ZEBRA"
+	zebra -d -f /etc/zebra.conf
+    fi
+}
+
+stop() {
+    pid=`pidof zebra`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping ZEBRA"
+	killall -q zebra
+	killall -q -SIGKILL zebra
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

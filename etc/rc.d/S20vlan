@@ -1,0 +1,38 @@
+#!/bin/sh
+
+LOG="logger -t vlan"
+
+start() {
+    if [ -f /etc/scripts/switchadv.sh ]; then
+	#this hook for advanced SWITCH/VLAN map configure
+	$LOG "Call user /etc/scripts/switchadv.sh script VLANCONF mode."
+	/etc/scripts/switchadv.sh "VLANCONF"
+    fi
+}
+
+stop() {
+    if [ -f /etc/scripts/switchadv.sh ]; then
+	#this hook for advanced SWITCH/VLAN map configure
+	$LOG "Call user /etc/scripts/switchadv.sh script VLANDECONF mode."
+	/etc/scripts/switchadv.sh "VLANDECONF"
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

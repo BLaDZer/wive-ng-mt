@@ -1,0 +1,64 @@
+#!/bin/sh
+
+LOG="logger -t goahead"
+
+start() {
+ $LOG "Start goahead"
+    #set bootcomplite flag
+    touch /tmp/bootgood
+
+    boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+    if [ -f /bin/goahead ]; then
+	#blink wps/sys led at boot time before goahead start
+	if [ -f /bin/gpio ]; then
+	    for i in $boot_leds_blink; do
+	    gpio l $i 0 4000 0 0 0
+	    done
+	fi
+	$LOG "Copy web pages to tmpfs."
+	mkdir -p /tmp/web
+	cp -rpf /web/* /tmp/web
+	if [ -d /etc/web ]; then
+	    $LOG "Copy user web pages to tmpfs."
+    	    cp -rpf /etc/web/* /tmp/web
+	fi
+	$LOG "Start WEB Managment Server."
+	goahead &
+    else
+	# if goahead not found
+	if [ -f /bin/gpio ]; then
+	    for i in $boot_leds_blink; do
+	    gpio l $i 1 10 0 0 4000
+	    done
+	fi
+	echo "GOAHEAD NOT FOUND!!! FIX THIS AND REBUILD FIRMWARE."
+	exit 1
+    fi
+}
+
+stop() {
+    if [ -f /var/run/goahead.pid ]; then
+	$LOG "Stop goahead"
+	killall -q goahead
+	killall -q -SIGKILL goahead
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

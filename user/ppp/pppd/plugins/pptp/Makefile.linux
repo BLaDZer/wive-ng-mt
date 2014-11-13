@@ -1,0 +1,59 @@
+#-------------------------------------------------------------------------------------
+# Copyright 2006, Texas Instruments Incorporated
+#
+# This program has been modified from its original operation by Texas Instruments
+# to do the following:
+# 
+# 1. Size Optimizations.
+#
+# THIS MODIFIED SOFTWARE AND DOCUMENTATION ARE PROVIDED
+# "AS IS," AND TEXAS INSTRUMENTS MAKES NO REPRESENTATIONS 
+# OR WARRENTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+# TO, WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY 
+# PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR 
+# DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, 
+# COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS. 
+#-------------------------------------------------------------------------------------
+
+DESTDIR = $(INSTROOT)@DESTDIR@
+BINDIR = $(DESTDIR)/sbin
+LIBDIR = $(DESTDIR)/lib/pppd/$(PPPDVERSION)
+
+PPPDVERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
+
+CFLAGS +=  -I.. -I../.. -I../../../include/linux -I../../../include $(COPTS)
+
+LDFLAGS	= -shared
+
+INSTALL = install
+
+all: pptp.so
+
+PLUGINDIR = $(LIBDIR)/plugins
+
+PLUGINSRCS = pptp.c pptp_callmgr.c pptp_ctrl.c util.c vector.c dirutil.c pptp_quirks.c orckit_quirks.c inststr.c
+
+ifeq (.depend,$(wildcard .depend))
+include .depend
+endif
+
+
+libpptp.a: pptp_callmgr.o pptp_ctrl.o util.o vector.o dirutil.o pptp_quirks.o orckit_quirks.o inststr.o
+	ar -rc $@ $^
+
+pptp.so: libpptp.a
+	$(CC) -o $@ pptp.c $(CFLAGS) $(LDFLAGS) $^
+	mv -f pptp.so libpptp.so
+
+%.so: %.c
+	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) $^
+
+clean: 
+	rm -f *.o *.so *.a
+
+
+install: all
+	$(INSTALL) -m 4750 libpptp.so $(LIBDIR)
+
+depend:
+	$(CPP) -M $(CFLAGS) $(PLUGINSRCS) >.depend

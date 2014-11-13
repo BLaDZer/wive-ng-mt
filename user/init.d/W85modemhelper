@@ -1,0 +1,235 @@
+#!/bin/sh
+
+if [ -e /tmp/modem_helper ]; then
+    echo "Modemhelper already started!"
+    exit 1
+fi
+
+touch /tmp/modem_helper
+
+# constants
+LOG="logger -t modem helper"
+
+# default interface name
+MDEFIFN="ppp_modem"
+RETURN=0
+
+start() {
+    # get local params
+    get_param
+
+    if [ "$MODEMENABLED" = "1" ]; then
+	if [ -f /var/run/ppp-$MDEFIFN.pid -o -f /var/run/$MDEFIFN.pid ]; then
+    	    rm -f /tmp/modem_helper
+	    echo "pppd: already started!"
+	    RETURN=1
+	    return
+	fi
+
+        $LOG "Start Modemhelper"
+
+	# if first start need wait
+	if [ ! -e /tmp/modem_ready ]; then
+	    $LOG "Wait device ready before connect"
+	    # set not first time flag
+	    touch /tmp/modem_ready
+	    # wait goahead start and ready
+    	    while [ ! -f /tmp/bootgood ]; do
+		# Sleep until file does exists/is created
+		sleep 3
+	    done
+	    # waith others services start
+	    sleep 15
+	fi
+
+	mkdir -p $PPPDIR/peers
+	# generate new chat scripts
+	if [ "$MODEMTYPE" = "0" ]; then
+	    $LOG "Prepare chat-file for WCDMA/UMTS/GPRS modems"
+	    echo "	ABORT '~'
+	ABORT 'BUSY'
+	ABORT 'NO CARRIER'
+	ABORT 'ERROR'
+	REPORT 'CONNECT'
+	'' 'ATZ'" > $PPPDIR/peers/chat
+	if [ "$MODEMATENABLED" = "1" ]; then
+	if [ "$MODEMAT1" != "" ]; then
+        echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
+	fi
+	if [ "$MODEMAT2" != "" ]; then
+		echo "	'' '$MODEMAT2'" >> $PPPDIR/peers/chat
+	fi
+	if [ "$MODEMAT3" != "" ]; then
+		echo "	'' '$MODEMAT3'" >> $PPPDIR/peers/chat
+	fi
+	fi
+		echo "	SAY 'Calling WCDMA/UMTS/GPRS'
+	'' 'AT+CGDCONT=1,\"IP\",\"$APN\"'
+	'OK' 'ATD$MODEMDIALNUMBER'
+	'CONNECT' ''" >> $PPPDIR/peers/chat
+	elif [ "$MODEMTYPE" = "1" ]; then
+	    $LOG "Prepare chat-file for CDMA/EVDO modems"
+	    echo "	ABORT '~'
+	ABORT 'BUSY'
+	ABORT 'NO CARRIER'
+	ABORT 'ERROR'
+	ABORT 'NO DIAL TONE'
+	ABORT 'NO ANSWER'
+	ABORT 'DELAYED'
+	REPORT 'CONNECT'
+	'' 'ATZ'" > $PPPDIR/peers/chat
+	if [ "$MODEMATENABLED" = "1" ]; then
+	if  [ "$MODEMAT1" != "" ]; then
+	    echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
+	fi
+	if  [ "$MODEMAT2" != "" ]; then
+	    echo "	'' '$MODEMAT2'" >> $PPPDIR/peers/chat
+	fi
+	if [ "$MODEMAT3" != "" ]; then
+	    echo "	'' '$MODEMAT3'" >> $PPPDIR/peers/chat
+	fi
+	fi
+	    echo "	SAY 'Calling CDMA/EVDO'
+	'' 'ATDT#777'
+	'CONNECT' 'ATO'
+	'' ''" >> $PPPDIR/peers/chat
+	fi
+
+	$LOG "Generate ppp options file"
+	echo "
+	$MODEMDEBUG
+	$MODEMPORT
+	$MODEMSPEED
+	linkname $MDEFIFN
+	crtscts
+	noipdefault
+	lock
+	ipcp-accept-local
+	lcp-echo-interval 60
+	lcp-echo-failure 6
+	$MODEMMTU
+	$MODEMMRU
+	usepeerdns
+	defaultroute
+	noauth
+	maxfail 0
+	holdoff 5
+	nodetach
+	persist
+	user $MODEMUSERNAME
+	password $MODEMPASSWORD
+	connect \"/usr/sbin/chat -s -S -V -t 60 -f $PPPDIR/peers/chat 2> $CHATLOG\"" > $OPTFILE
+
+	$LOG "Starting GSM_modem pppd..."
+	pppd call dialup $PPPDOPT & >> $CHATLOG
+    fi
+}
+
+stop() {
+    # first send HUP for terminate connections and try some times
+    # second send TERM for exit pppd process
+    # if process not terminated send KILL
+    if [ -f /var/run/ppp-$MDEFIFN.pid ]; then
+	pid=`grep '^[0-9]\{1,\}$' /var/run/ppp-$MDEFIFN.pid`
+    else
+        pid=`ps w| awk '/pppd call dialup.*ppp_modem/ && !/awk/ { print $1; }'`
+    fi
+
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping modemhelper"
+
+        # close connection
+        kill -SIGHUP "$pid"
+
+	# terminate pppd
+	count=0
+        while kill $pid > /dev/null 2>&1; do
+	    if [ "$count" = "2" ]; then
+		kill -SIGKILL "$pid"  > /dev/null 2>&1
+		count=0
+		sleep 2
+	    fi
+	    count="$(($count+1))"
+	    sleep 2
+	done
+	rm -f /var/run/ppp-$MDEFIFN.pid
+	rm -f /var/run/$MDEFIFN.pid
+	rm -f $PPPDIR/peers/chat
+    fi
+}
+
+get_param() {
+    # get local param always
+    eval `nvram_buf_get 2860 MODEMENABLED MODEMTYPE WMODEMPORT MODEMSPEED MODEMUSERNAME \
+	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU APN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
+
+    # check base needed parametrs
+    if [ "$MODEMTYPE" = "" ]; then
+	$LOG "Modemtype is not correct - exit."
+	rm -f /tmp/modem_helper
+	exit 1
+    fi
+    if [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ]; then
+	$LOG "For GSM/3G mode need set correct dial number (example *99#), current $MODEMDIALNUMBER. Exit."
+	rm -f /tmp/modem_helper
+	exit 1
+    fi
+    # select device and exist check
+    if [ "$WMODEMPORT" = "AUTO" ]; then
+	MODEMPORT="/dev/modem"
+    else
+	MODEMPORT="/dev/$WMODEMPORT"
+    fi
+    if [ ! -e "$MODEMPORT" ]; then
+	$LOG "Device $MODEMPORT not exist!!! Please read log and check config."
+	rm -f /tmp/modem_helper
+	exit 1
+    fi
+    # correct others params
+    if [ "$MODEMUSERNAME" = "" ] || [ "$MODEMPASSWORD" = "" ]; then
+	$LOG "Username or password not set - use default pair internet/internet as stub."
+	MODEMUSERNAME="internet"
+	MODEMPASSWORD="internet"
+    fi
+    if [ "$MODEMSPEED" = "AUTO" ]; then
+	MODEMSPEED=""
+    fi
+    if [ "$MODEMMTU" = "" ] || [ "$MODEMMTU" = "AUTO" ]; then
+        MODEMMRU=""
+        MODEMMTU=""
+    else
+        MODEMMRU="mru $MODEMMTU"
+        MODEMMTU="mtu $MODEMMTU"
+    fi
+    if [ "$MODEMDEBUG" = "1" ]; then
+        MODEMDEBUG="debug"
+    else
+	MODEMDEBUG=""
+    fi
+
+    PPPDIR="/etc/ppp"
+    OPTFILE="$PPPDIR/peers/dialup"
+    CHATLOG="/var/log/chat.log"
+    PPPDOPT="file $OPTFILE ifname $MDEFIFN $MODEMDEBUG -detach"
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    RETURN=1
+esac
+
+rm -f /tmp/modem_helper
+exit $RETURN

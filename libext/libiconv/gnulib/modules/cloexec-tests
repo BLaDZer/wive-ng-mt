@@ -1,0 +1,12 @@
+Files:
+tests/test-cloexec.c
+tests/macros.h
+
+Depends-on:
+binary-io
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-cloexec
+check_PROGRAMS += test-cloexec

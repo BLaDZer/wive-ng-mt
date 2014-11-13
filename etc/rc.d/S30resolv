@@ -1,0 +1,80 @@
+#!/bin/sh
+
+LOG="logger -t resolv"
+
+start() {
+get_param
+if [ ! -f /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
+    # drop current
+    rm -f $fname
+    touch $fname
+
+    # add domain name option
+    echo "domain $HostName.lo" >> $fname
+
+    # put manual dns to resolv.conf
+    # if nameservers is null add 127.0.0.1
+    # if nameservers not valid use googledns
+    if [ "$wan_primary_dns" != "" ] || [ "$wan_secondary_dns" != "" ]; then
+	$LOG "Generate resolv DNS1: $wan_primary_dns DNS2: $wan_secondary_dns"
+	if [ "$wan_primary_dns" != "" ]; then
+	    echo "nameserver $wan_primary_dns" >> $fname
+	fi
+	if [ "$wan_secondary_dns" != "" ]; then
+	    echo "nameserver $wan_secondary_dns" >> $fname
+	fi
+    elif  [ "$wan_primary_dns" = "" ] && [ "$wan_secondary_dns" = "" ] && [ "$dnsPEnabled" = "1" ]; then
+	$LOG "Generate resolv at local."
+	echo "nameserver 127.0.0.1" > $fname
+    else
+	$LOG "Not correct DNS use Google dns"
+	echo "nameserver 8.8.8.8" >> $fname
+	echo "nameserver 8.8.4.4" >> $fname
+    fi
+    if [ "$IPv6OpMode" != "0" ]; then
+	if [ -f /etc/resolvipv6.conf ]; then
+	    $LOG "Add ISP ipv6 servers for local resolv"
+	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
+	else
+	    $LOG "Add google ipv6 servers for local resolv"
+	    echo "nameserver 2001:4860:4860::8888" >> $fname
+	    echo "nameserver 2001:4860:4860::8844" >> $fname
+	fi
+    fi
+    # read for all write by root
+    chmod 644 "$fname" > /dev/null 2>&1
+fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName`
+    fname="/etc/resolv.conf"
+
+    #if no file create
+    if [ -f $fname ]; then
+        touch $fname
+    fi
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

@@ -1,0 +1,162 @@
+#!/bin/sh
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t dhcpd"
+
+start() {
+  dhcpEnabled=`nvram_get 2860 dhcpEnabled`
+    if [ "$dhcpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	$LOG "Configure dhcpserver"
+	get_param
+
+	# cleanup old configs
+	> /etc/udhcpd.conf
+	touch /var/udhcpd.dhcpLeases
+
+	# default work interface
+	config-udhcpd.sh -i "$lan_if"
+
+	# ip range for dynamic leases
+	if [ "$dhcpStart" != "" ] && [ "$dhcpStart" != "0.0.0.0" ] && \
+	    [ "$dhcpEnd" != "" ] && [ "$dhcpEnd" != "0.0.0.0" ]; then
+	    config-udhcpd.sh -s "$dhcpStart"
+	    config-udhcpd.sh -e "$dhcpEnd"
+	fi
+	# netmask for clients
+	if [ "$dhcpMask" != "" ] && [ "$dhcpMask" != "0.0.0.0" ]; then
+	    config-udhcpd.sh -m "$dhcpMask"
+	else
+	    config-udhcpd.sh -m "$lan_netmask"
+	fi
+	# default gateway for clients
+	if [ "$dhcpGateway" != "" ] && [ "$dhcpGateway" != "0.0.0.0" ] && [ "$dhcpGateway" != "$lan_ipaddr" ]; then
+	    config-udhcpd.sh -g "$dhcpGateway"
+	else
+	    config-udhcpd.sh -g "$lan_ipaddr"
+	fi
+	# dns servers for clients
+	if [ "$dnsPEnabled" = "1" ]; then
+	    # use dnsmasq for relay
+	    dhcpPriDns="$lan_ipaddr"
+	    dhcpSecDns=""
+	else
+	    # dns proxy/relay disabled mode
+	    # if dns server at DHCP Server page not set or set as lan_ip use system dns servers as uplink
+	    # else use user defines in dhcpPriDns and dhcpSecDns variables
+	    if [ "$dhcpPriDns" != "" -o "$dhcpSecDns" != "" ] && \
+		[ "$dhcpPriDns" != "0.0.0.0" -a "$dhcpSecDns" != "0.0.0.0" ] && \
+		[ "$dhcpPriDns" != "$lan_ipaddr" -a "$dhcpSecDns" != "$lan_ipaddr" ]; then
+		# nothing
+		:
+	    else
+		if [ -f /etc/resolv.conf ]; then
+		    # parse resolv.conf file
+		    servers=`grep nameserver < /etc/resolv.conf | grep -v "::" | uniq | tail -q -n2 | awk {' print $2 '}`
+		    dhcpPriDns=""
+		    dhcpSecDns=""
+		    count=0
+		    for dns_ip in $servers; do
+			count="$(($count+1))"
+			if [ "$count" = "1" ] && [ "$dns_ip" != "" ]; then
+		    	    dhcpPriDns="$dns_ip"
+			fi
+			if [ "$count" = "2" ] && [ "$dns_ip" != "" ]; then
+			    dhcpSecDns="$dns_ip"
+			fi
+		    done
+		fi
+	    fi
+	fi
+	set_dns
+	# wins servers for clients
+	if [ "$SmbEnabled" = "1" ] || [ -f /tmp/wins.dhcp ]; then
+		if [ -f /tmp/wins.dhcp ]; then
+		    # use uplink wins if adress recived by uplink dhcp
+		    wins_srvs=`cat /tmp/wins.dhcp | tail -n1`
+		    config-udhcpd.sh -w "$wins_srvs"
+		else
+		    # use local samba server as wins server
+		    config-udhcpd.sh -w "$lan_ipaddr"
+		fi
+	fi
+	# lease time
+	if [ "$dhcpLease" != "" ] && [ "$dhcpLease" != "0" ]; then
+		config-udhcpd.sh -t "$dhcpLease"
+	else
+		config-udhcpd.sh -t "86400"
+	fi
+	# domain suffix for clients
+	if [ "$dhcpDomain" != "" ]; then
+		config-udhcpd.sh -D "$dhcpDomain"
+	else
+		config-udhcpd.sh -D "$HostName"
+	fi
+	# Write static DHCP leases
+	if [ -e /etc/dhcpd_static.conf ]; then
+		cat /etc/dhcpd_static.conf | while read line; do
+			config-udhcpd.sh -S $line;
+		done;
+	fi
+	$LOG "Start dhcpserver"
+	config-udhcpd.sh -r
+    elif [ "$dhcpEnabled" = "2" ]; then
+	$LOG "Start dhcprelay"
+	dhcprelay $lan_if $wan_if &
+    else
+	$LOG "DHCP server disabled. OPMODE=$OperationMode APCLIBR=$ApCliBridgeOnly"
+    fi
+
+    # if dnsmasq disabled need reset LAN ports for clients renew params
+    if [ "$dnsPEnabled" = "0" -a "$wan_static_dns" != "on" ] || [ "$dhcpEnabled" = "2" ]; then
+	    if [ "$CONFIG_RAETH_ESW" != "" ]; then
+		$LOG "Reinit LAN ports."
+		config-vlan.sh 2 RRRRR > /dev/null 2>&1
+	    fi
+    fi
+
+}
+
+set_dns()
+{
+    if [ "$dhcpPriDns" != "" ] || [ "$dhcpSecDns" != "" ]; then
+	config-udhcpd.sh -d "$dhcpPriDns" "$dhcpSecDns"
+    else
+	config-udhcpd.sh -d "8.8.8.8" "8.8.4.4"
+    fi
+}
+
+get_param() {
+    # dhcpd params
+    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpLease SmbEnabled dnsPEnabled `
+}
+
+stop() {
+    if [ -f /var/run/udhcpd.pid ]; then
+	$LOG "Stop dhcpserver "
+	killall -q udhcpd
+	killall -q dhcprelay
+	killall -q -SIGKILL udhcpd
+	killall -q -SIGKILL dhcprelay
+    fi
+}
+
+case "$1" in
+	start)
+		start
+		;;
+
+	stop)
+		stop
+		;;
+
+	restart)
+		stop
+		start
+		;;
+
+	*)
+		echo $"Usage: $0 {start|stop|restart}"
+		exit 1
+esac

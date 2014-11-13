@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# ipv6-down
+# Called by pppd after IPV6CP/down was finished

@@ -1,0 +1,300 @@
+<hr>
+<b>WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.</b>
+<br>
+<b>Conditions of commercial use are discussed individually.</b>
+<hr>
+<b>News and changes in Russian:</b><br>
+<a href="http://wive-ng.sf.net">wive-ng.sf.net - development opensource routers firmware</a><br>
+<br>
+<b>Bug report please send to support[at]nag.ru or sfstudio[at]mail.ru</b>
+<hr>
+<b>Release tree changes:</b><br>
+<b>0.0.x-0.30.x</b><br>
+1) full new codebase.<br>
+2) sync with 4.2.1.0 SDK.<br>
+3) toolchain: move to 4.8.4 gcc svn version (after 4.8.3 release 4.8 tree apply only bugfixes).<br>
+4) webui: add wan mac change logic.<br>
+5) fix drop nvram in fs fullreset in some situations.<br>
+6) defaults: temp disable multicast2unicast.<br>
+7) rf calib: use avarage calibs if need fullreset or factory part crash.<br>
+8) init.d: add workaround for fix txring fill in drivers if M2U enabled.<br>
+9) init.d: fix disabled forwarding after sysctl rebuild.<br>
+10) init.d: fix get vendid at new mac generate.<br>
+11) init.d: fix double vlan tag disable from UI.<br>
+12) init.d: rewrite logic for ipv6 suppor (need write logic for more modes support).<br>
+13) init.d: add base rules for upnpv6 pinholes.<br>
+14) init.d: radvd,dhcpv6: read dns server from uplink if recived.<br>
+15) igmpproxy: lan snoping: fix infinitive loop if find unused endtry.<br>
+16) igmpproxy: wifi snoping: fix manipulate snooping records in wifi drivers, and mac lookup.<br>
+17) goahead: add base webUI for ipv6 configure (need write logic for more modes support).<br>
+18) goahead: add replace RWFS (/etc folder) by webui (full or different components).<br>
+19) goahead: add dhcpv6 server control in misc.<br>
+20) goahead: fix add portforward rules (syntax compat with new iptables fix).<br>
+21) openssl up to 0.9.8zc version.<br>
+23) apps: port wive-dhcpv6 (need write client logic, server logic work good).<br>
+24) apps: add and use sambav3 for > 4Mb flash sizes images.<br>
+25) apps: dropbear: up to 2014.66 version.<br>
+26) apps: miniupnpd: add ipv6 support if configured.<br>
+27) apps: ppp,busybox,miniupnpd: build with no strict aliasing (safe build with new compilers).<br>
+28) libs: add libnfnetlink (need for ipv6 miniupnpd support).<br>
+29) miniupnpd: version up to 1.8.20141022.<br>
+30) busybox: apply lzop upstream patch (zcat suspended - break depmod).<br>
+31) kernel: link time optimization.<br>
+32) kernel: hash speed optimization.<br>
+33) kernel: add autodetect ramsize support.<br>
+34) kernel: ralink hw_nat: correct ppe work at revH (206 PPE).<br>
+35) kernel: ralink hw_nat: skip mark and imq target from PPE.<br>
+36) kernel: ralink hw_nat: webstr target fix from PPE.<br>
+37) kernel: ralink hw_nat: pass workloads in PPE for some cases.<br>
+38) kernel: ralink hw_nat: foe header in some cases.<br>
+39) kernel: ralink hw_nat: show destination port on PpeHitBindForceToCpuHandler failed.<br>
+40) kernel: hw_nat, raeth: MT762x external switch control improvements.<br>
+41) kernel: hw_nat, raeth: reinit PPE engine after FE reset (RT3x5x/RT3883), reset PPE engine on FE reset (MT762x).<br>
+42) kernel: ralink wifi: fix some ATE issues.<br>
+43) kernel: ralink wifi: use my version mcast filter table and backport small snooping fixes from 4.x.x driver.<br>
+44) kernel: ralink wifi: prevent skb double free in igmp_snoop processiong.<br>
+45) kernel: ralink wifi: workaround for stop tx if client not correct disconnect.<br>
+46) kernel: ralink wifi: rx/tx optimization (remove stupid wrappers in time critical code).<br>
+47) kernel: fastroute/fastnat: implement for new kernel.<br>
+48) kernel: fastroute/fastnat: optimization skip logic.<br>
+49) kernel: rewrite min3, max3 and clamp using min and max.<br>
+50) kernel: fix compat with new gcc compiler versions.<br>
+51) kernel: arp at media state change send arp broadcast packet for arp table update(fix issue with some radio and switches).<br>
+52) kernel: arp: do not perturb drop profiles with ignored ARP packets.<br>
+53) kernel: arp: make arp_invalidate static.<br>
+54) kernel: sit: fix ipip6_tunnel_lookup device matching criteria.<br>
+55) kernel: skbuff: fix ftrace handling in skb_unshare.<br>
+56) kernel: packet: handle too big packets for PACKET_V3.<br>
+57) kernel: lro: remove dead code.<br>
+58) kernel: jiffies: fix timeval conversion to jiffies.<br>
+59) kernel: futex: Unlock hb->lock in futex_wait_requeue_pi() error path.<br>
+60) kernel: locking/mutexes: Optimize mutex trylock slowpath.<br>
+61) kernel: fix nasty 32-bit overflow bug in buffer i/o code.<br>
+62) kernel: xhci: fix null pointer dereference if xhci initialization fails.<br>
+63) kernel: usb: host: xhci: fix compliance mode workaround.<br>
+64) kernel: storage: add single-LUN quirk for Jaz USB adapter.<br>
+65) kernel: softirq: reduce latencies.<br>
+66) kernel: 8021q: fix vlan device to inherit the unicast filtering capability flag.<br>
+67) kernel: netfilter: conntrack: disable generic tracking for known protocols.<br>
+68) kernel: netfilter: nf_conntrack: remove dead code.<br>
+69) kernel: netfilter: push reasm skb through instead of original frag skbs.<br>
+70) kernel: mips: fix jump label support.<br>
+71) kernel: mips: modules: rellocate for prevent long call.<br>
+71) kernel: mips: Use inline function to access current thread pointer.<br>
+72) kernel: mips: Improve atomic.h robustness.<br>
+73) kernel: mips: vmlinux.lds.h: Allow architectures to add sections to the front of .bss.<br>
+74) kernel: mips: Align swapper_pg_dir to 64K for better TLB Refill code.<br>
+75) kernel: mips: R4k clock source initialization bug fix.<br>
+76) kernel: mips: Discard .eh_frame sections in linker script.<br>
+77) kernel: mips: mcount: Adjust stack pointer for static trace in MIPS32.<br>
+78) kernel: mips: O32/32-bit: Fix bug which can cause incorrect system call restarts.<br>
+79) kernel: af_unix: fix a fatal race with bit fields.<br>
+80) kernel: unix/dgram: peek beyond 0-sized skbs.<br>
+81) kernel: unix/dgram: fix peeking with an offset larger than data in queue.<br>
+82) kernel: unix/stream: fix peeking with an offset larger than data in queue.<br>
+83) kenrel: route: Remove redirect_genid<br>
+84) kernel: net: only use a single page of slop in MAX_SKB_FRAGS.<br>
+85) kernel: net: pack skb_shared_info more efficiently.<br>
+86) kernel: net: use consume_skb() in place of kfree_skb().<br>
+87) kernel: net: optimize csum_replace2().<br>
+88) kernel: net: optimise csum_replace4().<br>
+89) kernel: net: optimise inet_proto_csum_replace4().<br>
+90) kernel: net: skbuff: const-ify casts in skb_queue_* functions.<br>
+91) kernel: net: remove function sk_reset_txq().<br>
+92) kernel: net: Use consume_skb() to free gso segmented skb.<br>
+93) kernel: net: remove redundant code in dev_hard_start_xmit().<br>
+94) kernel: net: core: let skb_partial_csum_set() set transport header.<br>
+95) kernel: net: cacheline adjust struct netns_frags, inet_frags and inet_frag_queue for better frag performance.<br>
+96) kernel: net: compute skb->rxhash if nic hash may be 3-tuple.<br>
+97) kernel: net: make skb_gso_segment error handling more robust.<br>
+98) kernel: ipv[4|6]: correct dropwatch false positive in local_deliver_finish.<br>
+99) kernel: ipv4: igmp: fix v3 general query drop monitor false positive.<br>
+100) kernel: ipv4: consistent reporting of pmtu data in case of corking.<br>
+101) kernel: ipv4: fix ip header ident selection in __ip_make_skb().<br>
+102) kernel: ipv4: fix ip_send_skb().<br>
+103) kernel: ipv4: fix buffer overflow in ip_options_compile().<br>
+104) kernel: ipv4: Cache ip_error() routes even when not forwarding.<br>
+105) kernel: ipv4: distinguish EHOSTUNREACH from the ENETUNREACH.<br>
+106) kernel: ipv4: ip_forward: perform skb->pkt_type check at the beginning.<br>
+107) kernel: ipv4: arp: update neighbour address when a gratuitous arp is received and arp_accept is set.<br>
+108) kernel: ipv4: revert: use a 64bit load/store in output path (profit on x86_64 only).<br>
+109) kernel: ipv6: remove aca_lock spinlock from struct ifacaddr6.<br>
+110) kernel: ipv6: Do not warn for informational ICMP messages, regardless of type.<br>
+111) kernel: ipv6: removed unused inet6 address state.<br>
+112) kernel: ipv6: remove unused function ipv6_inherit_linklocal().<br>
+113) kernel: l2tp: fix race while getting PMTU on PPP pseudo-wire.<br>
+114) kernel: l2tp: exclude session versions check if l2tp v3 support not builded (small speedup).<br>
+115) kernel: l2tp: remove debug in in time critical code (small speedup).<br>
+116) kernel: tcp: fix ooo_okay setting vs Small Queues.<br>
+117) kernel: tcp: md5: remove unneeded check in tcp_v4_parse_md5_keys.<br>
+118) kernel: tcp: make tcp_cwnd_application_limited() static.<br>
+119) kernel: tcp: do not leak non zero tstamp in output packets.<br>
+120) kernel: tcp: reduce the bloat caused by tcp_is_cwnd_limited().<br>
+121) kernel: tcp: use zero-window when free_space is low.<br>
+122) kernel: tcp: optimize some skb_shinfo(skb) uses.<br>
+123) kernel: tcp: remove redundant code in __tcp_retransmit_skb().<br>
+124) kernel: tcp: remove the sk_can_gso() check from tcp_set_skb_tso_segs().<br>
+125) kernel: tcp: tcp_transmit_skb() optimizations.<br>
+126) kernel: tcp: Always set options to 0 before calling tcp_established_options.<br>
+127) kernel: tcp: tcp_tso_segment() small optimization.<br>
+128) kernel: tcp: make tcp_clear_md5_list static.<br>
+129) kernel: increase rwfs size for 8Mb devices to 512kb (prepare for add custom webui upload to rwfs).<br>
+<br>
+<br>
+<b>0.3x.x</b><br>
+1) build system: ppp,miniupnpd and busybox build with -fno-strict-aliasing for safe build with new gcc.<br>
+2) build system: xz tool up to 5.0.7 version.<br>
+3) build system: xz tune rootfs pack for decrease image size.<br>
+4) build system: toolchain: update gcc to 4.8.4(svn up version).<br>
+5) radvd: up to 2.8 version.<br>
+6) miniupnpd up to: 1.9 version.<br>
+7) igmpproxy: add igmpv3 support and cleanup.<br>
+8) goahead: remove bogus double restart ripd/zebra.<br>
+9) goahead: remove dead mesh support.<br>
+10) pppd: cap MTU to the user configured value.<br>
+11) init.d: fix reinit switch (now support internal esw only).<br>
+12) init.d: enable multicast2unicast in wifi drivers only if igmpproxy enabled.<br>
+13) init.d: move dhcpv6 client start to wan config.<br>
+14) init.d: use ISP DNS ipv6 servers for local resolv if recived.<br>
+15) init.d: ipv6: need check ipv4 adress on wan only in tunneling modes.<br>
+16) init.d: fix pcp/nat-pmp control port accept from lan.<br>
+17) init.d: fix get wan_if for IPv6<br>
+18) init.d: move ipv6 config and radvd/dhcp6s start in S20six script.<br>
+19) init.d: more remove init at goahead dependency.<br>
+20) init.d: rearrange first step config for more linear boot.<br>
+21) init.d: flush only scope route at deconfig ipv6.<br>
+22) init.d: more safe samba restart.<br>
+23) init.d: add /etc/script/switchadv.sh hook for advanced switch (vlan/portmap/etc) configure.<br>
+24) init.d: rework config-switch.sh (cleanup and more direct steps configs).<br>
+25) kernel: use the deterministic mode of AR if available.<br>
+26) kernel: periodically refresh ralink watchdog from net/core/dev (prevent reboot at very high load).<br>
+27) kernel: skip fastnat/fastroute from mark/connmark.<br>
+28) kernel: add missing linux/prefetch.h include to net/core/sock.c.<br>
+29) kernel: shmem: fix nlink for rename overwrite directory.<br>
+30) kernel: fs: namespace: suppress 'may be used uninitialized' warnings.<br>
+31) kernel: nfsd: Fix ACL null pointer deref.<br>
+32) kernel: softirq: use const char * const for softirq_to_name, whitespace neatening.<br>
+33) kernel: mtd: mtd_blkdevs: Replace request handler kthread with a workqueue.<br>
+34) kernel: mtd: merge mtdchar module with mtdcore.<br>
+35) kernel: mtd: introduce mtd_block_isreserved().<br>
+36) kernel: mtd: account for BBT blocks when a partition is being allocated.<br>
+37) kernel: mtd: correct upper bounds check for mtd_*() APIs.<br>
+38) kernel: mtd: mtdchar: return expected errors on mmap() call.<br>
+39) kernel: mtd: mtdchar: handle chips that have user otp but no factory otp.<br>
+40) kernel: mtd: mtd_blkdevs: handle REQ_FLUSH request and do explicit flush of writeback buffer.<br>
+41) kenrel: mtd: cfi_cmdset_0002: allow retry/timeout loop to exit.<br>
+42) kernel: squashfs: sanity check information from disk.<br>
+43) kernel: squashfs: fix corruption check in get_dir_index_using_name().<br>
+44) kernel: squashfs: fix corruption checks in squashfs_lookup().<br>
+45) kernel: squashfs: fix corruption checks in squashfs_readdir().<br>
+46) kenrel: squashfs: revert bogus commit from OpenWRT tree.<br>
+47) kernel: pptp: use for_each_set_bit_from.<br>
+48) kernel: pptp: fix sparse pointer warning.<br>
+49) kernel: pptp: fix byte order warnings.<br>
+50) kernel: raeth: always skb_pad in xmit path (fix stop PPPE work at wifi offload + PPPOE uplink).<br>
+51) kernel: raeth: optimize skb_shinfo(skb) uses.<br>
+52) kernel: raeth: use RAETH_DEBUG from kernel config.<br>
+53) kernel: raeth: add support NAPI and enable by default (speedup).<br>
+54) kernel: raeth: fetch pending FE counters before FE reset.<br>
+55) kernel: raeth: properly reset irq status on softirq exit.<br>
+56) kernel: netfilter: nf_conntrack: flush net_gre->keymap_list only from gre helper.<br>
+57) kernel: netfilter: nf_defrag_ipv6.o included twice.<br>
+58) kernel: netfilter: nf_conntrack: avoid large timeout for mid-stream pickup.<br>
+59) kernel: ipv4: igmp: fix v3 general query drop monitor false positive.<br>
+60) kernel: ipv4: raise IP_MAX_MTU to theoretical limit.<br>
+61) kernel: ipv6: reuse ip6_frag_id from ip6_ufo_append_data.<br>
+62) kernel: sched: rework check_for_tasks().<br>
+63) kernel: net: loopback: set default mtu to 64K.<br>
+<br>
+<br>
+<b>0.4x.x</b><br>
+1) defaults: init.d: fix work ipv6 on some devices if igmp snooping disabled.<br>
+2) goahead: rearrange services in misc pages for more usefull.<br>
+3) init.d: cleanup and optimize (next step).<br>
+4) init.d: add static routes for all resolved vpn server adresses.<br>
+5) init.d: remove web_wait logic, not more need and unused some time.<br>
+6) init.d: vpnhelper: direct set iface name in static routes to vpn servers.<br>
+7) busybox: udhcpc: allow unicast RENEW for lease time from 60s, allow first unicast RENEW on force renew performed (fix short leases under ISP with DHCP snooping).<br>
+8) kernel: irq: consolidate do_softirq() arch overriden implementations.<br>
+9) kernel: irq: optimize call to softirq on hardirq exit.<br>
+10) kernel: irq: improve a bit softirq debugging.<br>
+11) kernel: irq: justify the various softirq stack choices.<br>
+12) kernel: irq: optimize softirq stack selection in irq exit.<br>
+13) kernel: irq: ensure irq_exit() code runs with interrupts disabled.<br>
+14) kernel: irq: sanitize invoke_softirq.<br>
+15) kernel: irq: force hardirq exit's softirq processing on its own stack.<br>
+16) kernel: irq: don't re-enable interrupts at the end of irq_exit.<br>
+17) kernel: irq: remove IRQ_EXIT_OFFSET workaround.<br>
+18) kernel: softirq: remove support for triggering softirq work on softirqs patch.<br>
+19) kernel: softirq: use ffs() in __do_softirq().<br>
+20) kernel: genirq: correct fuzzy and fragile IRQ_RETVAL() definition.<br>
+21) kernel: lockdep: correctly annotate hardirq context in irq_exit().<br>
+22) kernel: printk/cache: mark printk_once test variable __read_mostly.<br>
+23) kernel: printk: add printk_deferred_once.<br>
+24) kernel: kprobes: make hash_64() as always inlined.<br>
+25) kernel: sections: fix const sections for crc32 table.<br>
+26) kernel: ipv6: store Router Alert option in IP6CB directly.<br>
+27) kernel: linux/kernel.h: DIV_ROUND_CLOSEST add support negative dividends (and depends).<br>
+28) kernel: mm: mark mm-inline functions as __always_inline.<br>
+29) kernel: mips: fix strnlen_user() return value in case of overlong strings.<br>
+30) kernel: mcast: define and use MRT[6]_MAX in ip[6]_mroute_opt().<br>
+31) kernel: sched: fix the theoretical signal_wake_up() vs schedule() race.<br>
+32) kernel: fix lockup related to stop_machine being stuck in __do_softirq.<br>
+33) kernel: raeth: fix NAPI race issue.<br>
+34) kernel: raeth: ack all not RX/TX interrupts before enter to NAPI poll mode.<br>
+35) kernel: net/core: make GRO/napi_frags_skb() methods static.<br>
+36) kernel: net: add ETH_P_802_3_MIN.<br>
+37) kernel: net: skbuff: Use ALIGN macro instead of open coding it.<br>
+38) kernel: net: dont use ifindices in hash fns.<br>
+39) kernel: net: reset mac header in dev_start_xmit().<br>
+40) kernel: ipv4: Do not cache routing failures due to disabled forwarding.<br>
+41) kernel: netfilter: nf_conntrack: constify sk_buff argument to nf_ct_attach().<br>
+<br>
+<br>
+<b>0.5x.x</b><br>
+1) init.d: dnsmasq: increase cache size and allowen forward per one time limit.<br>
+2) init.d: optimize get parametrs from nvram (more variable always avail by call global script).<br>
+3) init.d: cleanup and optimize wifi/apcli init logic.<br>
+4) init.d: remove old unused hacks.<br>
+5) init.d: fix apcli mode connect after apply before reboot.<br>
+6) init.d: always tune wifi after ifacse up.<br>
+7) init.d: tune parametrs for apcli to.<br>
+8) init.d: do not use goahead.pid as boot complete flag, use /tmp/goodboot instead (more independed from goahead logic).<br>
+9) init.d: rework cdp-send start.<br>
+10) init.d: in ap/apcli bridge mode enable Multicast2Unicast independed Igmpproxy enabled.<br>
+11) apps: add lldpd daemon and control tools.<br>
+12) miniupnpd: up to version 1.9.20141108.<br>
+13) goahead: fix print error messages at update fw/restore settings/load rwfs.<br>
+14) goahead: read lan/wan ifnames from /tmp/*an_if_name exported by init.d in global script.<br>
+15) goahead: fix get mode vpn.<br>
+16) goahead: add show real ip adress vpn/wan in status page.<br>
+17) kernel: lockdep: fix oops in processing workqueue.<br>
+18) kernel: workqueue: change BUG_ON() to WARN_ON().<br>
+19) kernel: workqueue: don't use WQ_HIGHPRI for unbound workqueues.<br>
+20) kernel: raeth: disable TSO for rev <207 (rev206 has TSO bug to).<br>
+21) kernel: raeth: use DLY_INT (with aggregate up to 2 INT and max 40us delay) for NAPI (decrease CPU usage on medium FE load).<br>
+22) kernel: raeth: add support independent TX rings (w/o cross lock) for 2xRGMII mode (RT3883/MT7621).<br>
+23) kernel: raeth: improvements for external switch case, move stats update from softirq to workqueue.<br>
+24) kernel: ralink_wifi: fix apscan support.<br>
+25) kernel: ralink_wifi: update eeprom array in driver.<br>
+26) kernel: ralink_wifi: patch fix dhcp issue on new Apple and others buggy clients (use RATE_6 instead of 24).<br>
+27) kernel: ralink_wifi: fia and enable decrease interference effects logic (dynamicvga and friends).<br>
+28) kernel: net: sysctl: set frto=2, bug TCP: snd_cwnd is null http://patchwork.ozlabs.org/patch/234793/<br>
+29) kernel: net: apply http://patchwork.ozlabs.org/patch/234793/ fix (in future need backport new FRTO code).<br>
+30) kernel: net: fastnat/fastroute: use ip_route_input_noref(), to avoid 4 atomic ops per packet.<br>
+31) kernel: net: fix network-related panic in Linux 3.2.63 and later (CVE-2014-7207).<br>
+32) kernel: net: ipv[46] - Remove 2 unnecessary NETDEBUG OOM messages.<br>
+33) kernel: ipv6: mld: fix add_grhead skb_over_panic for devs with large MTUs.<br>
+<br>
+<br>
+<b>1.0.0</b><br>
+<br>
+<br>
+<b>TODO:</b><br>
+1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
+2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
+3) add vlan support logic and web configure (need more info by NAG).<br>
+4) full russian ui (need help community or employ the web developer).<br>
+<br>
+<br>
+<br>

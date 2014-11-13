@@ -1,0 +1,25 @@
+#!/bin/sh
+
+ROOTDIR=`pwd`
+export ROOTDIR=$ROOTDIR
+if [ ! -e $ROOTDIR/linux ]; then
+    ln -sf linux-3.4.x linux
+fi
+
+echo "-------------REMOVE_IMAGES---------------"
+rm -rf $ROOTDIR/images
+if [ "$1" != "RELEASE" ]; then
+    rm -rf $ROOTDIR/releases
+fi
+
+echo "------------FULL_DISTCLEAN---------------"
+make clean
+rm -f linux
+
+echo "------------REMOVE_FABRICT---------------"
+rm -rf $ROOTDIR/user/rt2880_app/ated/*
+rm -rf $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate/*
+
+echo "-------------RESTORE_DIRS----------------"
+mkdir -p $ROOTDIR/releases
+mkdir -p $ROOTDIR/images

@@ -1,0 +1,30 @@
+# Options for all pppd sessions
+lock
+noauth
+noipdefault
+nolog
+noktune
+
+# Redial options
+idle 0
+maxfail 0
+holdoff 5
+
+# IPX protocol
+noipx
+
+# Turn off compression protocols we know won't be used
+nomp
+novj
+novjccomp
+nopcomp
+noaccomp
+nobsdcomp
+nodeflate
+
+# Turn off EAP auth protocol support
+refuse-eap
+
+# Minimum autoincrement pppX name
+# Need for fix vpn ifname to ppp0
+minunit 1

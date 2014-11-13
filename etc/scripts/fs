@@ -1,0 +1,215 @@
+#!/bin/sh
+
+# Modified by N.Leiten and adopted for Wive-firmware, renamed in "fs"
+# "flash" is a part of midge - mini distribuition for adm5120 based routers.
+# Full rewrite for Wive-NG (RT3050/RT3052/RT3662/RT3883/MT7620) by Evgeniy Manachkin.
+# Copyright (C) 2004-2005 by Vladislav Moskovets <midge at vlad.org.ua>
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU GPL v2 or later.
+
+# Maximum rwfs to write
+RWFSSIZEHEX="0x`cat /proc/mtd | grep "RW-FS" | awk {' print $2 '}`"
+TGZfs_size=`echo $(($RWFSSIZEHEX))`
+
+# mtd dev for rfs
+MTDRWFS=/dev/mtdblock5
+
+# constants
+BACKUPCGF=/etc/backup/nvram_backup.dat
+RWCONFIGS=/etc/Wireless/rf.bin
+
+get_size() {
+  ls -sk "$1" | sed -e "s/ \+/ /g" | cut -d" " -f2
+}
+
+usage() {
+  echo "Usage: $0 | save | load | restore | backup_nvram | nvramreset | burnrf | change_mac | fullreset |" >&2
+  echo "____________________________________________________________________________" >&2
+  echo " " >&2
+  echo "save - Save rwfs to mtd." >&2
+  echo "load - Load rwfs from mtd." >&2
+  echo "restore - Crash RW-FS and reboot for restore clean rwfs." >&2
+  echo "backup_nvram - Save nvram snapshot to rwfs in $BACKUPCGF" >&2
+  echo "nvramreset - Nvarm clean and load default config." >&2
+  echo "burnrf - Burn RF config template to Factory." >&2
+  echo "change_mac - Change/clone wan mac adree." >&2
+  echo "fullreset - 1. Full zero write in config,factory and rwfs particions." >&2
+  echo "	    2. Reboot device." >&2
+  echo "	    3. Write temlate for RF config (Factory) to flash." >&2
+  echo "	    4. Load and write default setting (Config) to flash." >&2
+  echo "	    5. Generate new macs, keys and others." >&2
+  echo "	    6. Generate new mac and flash it." >&2
+  echo "____________________________________________________________________________" >&2
+ exit 1
+}
+
+load() {
+    local dst=/
+    echo "Loading TGZfs"
+    bzcat $MTDRWFS | tar xf - -C $dst>>/dev/null
+}
+
+save() {
+    echo "Save curent date and current time to rwfs"
+    date +%Y%m%d%H%M > /etc/compile-date
+    echo "Compress config files"
+    tmp="/tmp/tgzfs"
+    tar cf - /etc | bzip2 -9 > $tmp
+    if [ "$(get_size $tmp)" -lt $(($TGZfs_size/1024)) ]; then
+	echo "Write RW-FS to flash ($(get_size $tmp)kB of $(($TGZfs_size/1024))kB)"
+	mtd_write write $tmp RW-FS
+	echo "Config saved. OK."
+    else
+	echo "Error: File $tmp too big: $(get_size $tmp)k"
+    fi
+    rm -f $tmp
+}
+
+restore() {
+    echo "Clear rwfs."
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    mtd_write erase RW-FS
+    echo "Now reboot..."
+    reboot
+}
+
+nvramreset() {
+    ###############################################################
+    # cleanup with skip clean macs and is_wive and checkmacs flags
+    ###############################################################
+    echo "Load user defaults."
+    # remove backuped config
+    rm -f /etc/backup/nvram_backup.dat
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    nvram_default 2860
+}
+
+burnrf() {
+    echo "Erase wifi Factory part and write defaults"
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    mtd_write erase Factory
+    mtd_write write $RWCONFIGS Factory
+}
+
+fullreset() {
+    echo "Stop services and unload modules..."
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    killall -q goahead
+    killall -q -SIGKILL goahead
+    wifi_unload.sh
+    rm -f /tmp/nvram_checked
+    rm -f /tmp/bootgood
+    burnrf
+    nvramreset
+    echo "Generate new MACS."
+    service checkconf genmac
+    echo "Erase RW-FS partitions"
+    mtd_write erase RW-FS
+    echo "Set boot flag to regenerate all."
+    nvram_set CHECKMAC "YES"
+    nvram_set IS_WIVE "NO"
+    echo "Now reboot..."
+    reboot
+}
+
+backup_nvram() {
+    mkdir -p /etc/backup
+    echo "Store settings to backup file...."
+    echo "#The following line must not be removed." > "$BACKUPCGF"
+    echo "Default" >> "$BACKUPCGF"
+    ralink_init show 2860 >> "$BACKUPCGF"
+}
+
+load_nvram() {
+    echo "Load settings from backup file...."
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    ralink_init renew 2860 "$BACKUPCGF"
+}
+
+change_mac() {
+    echo "Set WAN MAC = $1"
+    # blink wps/sec led at boot time before goahead start
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for i in $boot_leds_blink; do
+	    gpio l $i 1 1 0 0 1000
+	done
+    fi
+    nvram_set 2860 CHECKMAC NO
+    FWMAC=`echo $1 | sed "s/:/ /g"`
+    eth_mac w wan $FWMAC
+    nvram_set 2860 WAN_MAC_ADDR "$1"
+    sync
+    echo "Now reboot"
+    reboot
+}
+
+main() {
+  local cmd="$1"
+  [ -z "$cmd" ] && usage
+  shift
+  case "$cmd" in
+    load)
+      load $@
+      ;;
+    save)
+      save $@
+      ;;
+    restore)
+      restore $@
+      ;;
+    nvramreset)
+      nvramreset $@
+      ;;
+    burnrf)
+      burnrf $@
+      ;;
+    fullreset)
+      fullreset $@
+      ;;
+    backup_nvram)
+      backup_nvram $@
+      ;;
+    load_nvram)
+      load_nvram $@
+      ;;
+    change_mac)
+      change_mac $@
+      ;;
+    *)
+      usage $@
+      ;;
+  esac
+}
+
+main $@

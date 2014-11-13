@@ -1,0 +1,14 @@
+Files:
+tests/init.sh
+tests/signature.h
+tests/test-atexit.sh
+tests/test-atexit.c
+
+Depends-on:
+unistd
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-atexit.sh
+check_PROGRAMS += test-atexit

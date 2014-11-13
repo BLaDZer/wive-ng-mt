@@ -1,0 +1,171 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/smbd ] || [ ! -f /bin/nmbd ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t samba"
+
+start() {
+SmbEnabled=`nvram_get 2860 SmbEnabled`
+if [ "$SmbEnabled" = "1" ]; then
+    get_param
+
+    echo "[global]" > $CONFIG
+    echo "    socket options = $socket_options" >> $CONFIG
+    echo "    workgroup = $WorkGroup" >> $CONFIG
+    echo "    netbios name = $SmbNetBIOS" >> $CONFIG
+    echo "    server string = $SmbString" >> $CONFIG
+    echo "    os level = $SmbOsLevel" >> $CONFIG
+    echo "    force user = $Login" >> $CONFIG
+    echo "    time server = $ntp_support" >> $CONFIG
+
+    # external wins register support
+    if [ -f /tmp/wins.dhcp ]; then
+	wins_srvs=`cat /tmp/wins.dhcp | tail -n1`
+	echo "wins server			= $wins_srvs"			>> $CONFIG
+	echo "wins proxy			= yes"				>> $CONFIG
+	echo "name resolve order		= lmhosts host wins bcast"	>> $CONFIG
+    else
+	# for file share mode need increase buffers size
+	if [ "$interfaces" != "" ]; then
+	    echo "    interfaces = $interfaces" >> $CONFIG
+	fi
+	echo "domain master			= yes"				>> $CONFIG
+	echo "preferred master			= yes"				>> $CONFIG
+	echo "local master			= yes"				>> $CONFIG
+	echo "wins support			= yes"				>> $CONFIG
+	echo "name resolve order		= lmhosts host bcast"		>> $CONFIG
+    fi
+
+    # check samba version
+    if [ "$is_smb_v3" != "0" ]; then
+	echo "    hosts allow = $lan_ipaddr/$lan_netmask" >> $CONFIG
+    fi
+
+    # add template to config
+    cat $TEMPLATE >> $CONFIG
+
+    # share /media
+    if [ -d /proc/bus/usb ]; then
+	if [ "$public" != "" ]; then
+	    echo "[public]" >> $CONFIG
+	    echo "    comment = pub" >> $CONFIG
+	    echo "    path = $public" >> $CONFIG
+	    echo "    public = yes" >> $CONFIG
+	    echo "    browseable = yes" >> $CONFIG
+	    echo "    guest ok = yes" >> $CONFIG
+	    echo "    guest only = yes" >> $CONFIG
+	    echo "    writable = yes" >> $CONFIG
+	    echo "" >> $CONFIG
+	fi
+    fi
+
+    if [ -f /var/lock/smbd.pid ] || [ -f /var/lock/nmbd.pid ]; then
+	killall -q smbd
+	killall -q nmbd
+	killall -q -SIGKILL smbd
+	killall -q -SIGKILL nmbd
+    fi
+
+    find /var/log -type f -name "*mbd*" | while read samba_log; do
+	echo > "$samba_log"
+    done
+
+    $LOG "Starting WINS/SMB SERVER."
+    nmbd -s /etc/smb.conf -d0 -D &
+    nice -n 10 smbd -s /etc/smb.conf -d0 -D &
+fi
+}
+
+
+get_param() {
+    eval `nvram_buf_get 2860 WorkGroup SmbNetBIOS SmbString SmbOsLevel SmbTimeserver NTPEnabled NTPServerIP Login l2tp_srv_enabled`
+    CONFIG="/etc/smb.conf"
+    TEMPLATE="/etc/smb.conf.template"
+
+    if [ "$SmbTimeserver" = "1" ] && [ "$NTPEnabled" = "on" ] && [ "$NTPServerIP" != "" ]; then
+	ntp_support="yes"
+    else
+	ntp_support="no"
+    fi
+    if [ -d /proc/bus/usb ]; then
+	socket_options="SO_BROADCAST IPTOS_THROUGHPUT TCP_NODELAY SO_RCVBUF=65536 SO_SNDBUF=65536" >> $CONFIG
+    else
+	socket_options="SO_BROADCAST IPTOS_THROUGHPUT TCP_NODELAY SO_RCVBUF=4096 SO_SNDBUF=4096" >> $CONFIG
+    fi
+
+    if [ "$l2tp_srv_enabled" = "1" ]; then
+	interfaces=""
+    else
+	interfaces="lo 127.0.0.1/255.0.0.0 $lan_if $lan_ipaddr/$lan_netmask"
+    fi
+
+    is_smb_v3=`grep -c "NTFS" < $TEMPLATE`
+}
+
+stop() {
+    if [ -f /var/lock/smbd.pid ]; then
+	$LOG "Stop SMBD."
+	count=0
+	# try 3 times for correct shutdown
+	while kill "$pid" > /dev/null 2>&1; do
+	    pid=`pidof smbd`
+	    count="$(($count+1))"
+	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		break
+	    fi
+	    usleep 500000
+	done
+	# if not correct terminate need kill
+	if [ "$pid" != "" ]; then
+	    kill -SIGKILL "$pid" > /dev/null 2>&1
+	    if [ -f /var/lock/smbd.pid ]; then
+		rm -f /var/lock/smbd.pid
+	    fi
+	fi
+    fi
+    if [ -f /var/lock/nmbd.pid ]; then
+	$LOG "Stop NMBD."
+	count=0
+	# try 3 times for correct shutdown
+	while kill "$pid" > /dev/null 2>&1; do
+	    pid=`pidof nmbd`
+	    count="$(($count+1))"
+	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		break
+	    fi
+	    usleep 500000
+	done
+	# if not correct terminate need kill
+	if [ "$pid" != "" ]; then
+	    kill -SIGKILL "$pid" > /dev/null 2>&1
+	    if [ -f /var/lock/nmbd.pid ]; then
+		rm -f /var/lock/nmbd.pid
+	    fi
+	fi
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+	stop)
+            stop
+            ;;
+
+	restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

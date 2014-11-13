@@ -1,0 +1,80 @@
+.EXPORT_ALL_VARIABLES:
+
+# PPP top-level Makefile for Linux.
+-include ../../config.arch
+
+CC 	?= gcc
+COPTS	 = -fPIC -fno-strict-aliasing
+LIBS	 =
+
+CFLAGS = -Os
+DESTDIR = $(INSTROOT)@DESTDIR@
+BINDIR = $(DESTDIR)/sbin
+INCDIR = $(ROOTDIR)/linux/include $(DESTDIR)/include
+MANDIR = $(DESTDIR)/share/man
+ETCDIR = $(INSTROOT)@SYSCONF@/ppp
+
+# uid 0 = root
+INSTALL= install
+
+all:
+ifdef CONFIG_USER_PPPD_CHAT
+	cd chat; $(MAKE) $(MFLAGS) all
+endif
+	cd pppd/plugins; $(MAKE) $(MFLAGS) all
+	cd pppd; $(MAKE) $(MFLAGS) all
+#	cd pppstats; $(MAKE) $(MFLAGS) all
+#	cd pppdump; $(MAKE) $(MFLAGS) all
+
+install: $(BINDIR) $(MANDIR)/man8 install-progs install-devel
+
+install-progs:
+ifdef CONFIG_USER_PPPD_CHAT
+	cd chat; $(MAKE) $(MFLAGS) install
+endif
+	cd pppd/plugins; $(MAKE) $(MFLAGS) install
+	cd pppd; $(MAKE) $(MFLAGS) install
+#	cd pppstats; $(MAKE) $(MFLAGS) install
+#	cd pppdump; $(MAKE) $(MFLAGS) install
+
+install-etcppp: $(ETCDIR) $(ETCDIR)/options $(ETCDIR)/pap-secrets \
+	$(ETCDIR)/chap-secrets
+
+install-devel:
+	cd pppd; $(MAKE) $(MFLAGS) install-devel
+
+$(ETCDIR)/options:
+	$(INSTALL) -m 644 etc.ppp/options $@
+$(ETCDIR)/pap-secrets:
+	$(INSTALL) -m 600 etc.ppp/pap-secrets $@
+$(ETCDIR)/chap-secrets:
+	$(INSTALL) -m 600 etc.ppp/chap-secrets $@
+
+$(BINDIR):
+	$(INSTALL) -d -m 755 $@
+$(MANDIR)/man8:
+	$(INSTALL) -d -m 755 $@
+$(ETCDIR):
+	$(INSTALL) -d -m 755 $@
+
+romfs: install
+	cp -fv ./filesystem/lib/pppd/2.4.7/* $(ROOTDIR)/romfs/lib
+	cp -fv ./filesystem/sbin/* $(ROOTDIR)/romfs/bin
+
+clean:
+	rm -f `find . -name '*.[oas]' -print`
+	rm -f `find . -name 'core' -print`
+	rm -f `find . -name '*~' -print`
+	rm -rf filesystem
+	cd chat; $(MAKE) clean
+	cd pppd/plugins; $(MAKE) clean
+	cd pppd; $(MAKE) clean
+#	cd pppstats; $(MAKE) clean
+#	cd pppdump; $(MAKE) clean
+
+dist-clean:	clean
+	rm -f Makefile `find . -name Makefile -print`
+
+# no tests yet, one day...
+installcheck:
+	true

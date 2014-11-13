@@ -1,0 +1,18 @@
+Files:
+tests/test-frexpl.c
+tests/minus-zero.h
+tests/nan.h
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+fpucw
+isnanl-nolibm
+signbit
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-frexpl-nolibm
+check_PROGRAMS += test-frexpl-nolibm
+test_frexpl_nolibm_SOURCES = test-frexpl.c

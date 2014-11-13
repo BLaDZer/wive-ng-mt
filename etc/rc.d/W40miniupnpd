@@ -1,0 +1,107 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/miniupnpd ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+if [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
+    exit 0
+fi
+
+LOG="logger -t upnpd"
+
+start() {
+ get_param
+    if [ "$upnpEnabled" = "1" -a "$real_wan_ipaddr" != "" ] && [ "$OperationMode" != "0" -o "$vpnEnabled" = "on" ]; then
+	$LOG "Starting UPNP at $real_wan_ipaddr"
+	if [ ! -f /var/upnp_leases ]; then
+	    touch /var/upnp_leases
+	fi
+	gen_config
+	ip -4 route replace $upmpm_net dev $lan_if
+        miniupnpd -f /etc/miniupnpd.conf -i "$real_wan_if" -o "$real_wan_ipaddr" -a "$lan_if" -z "$HostName" &
+    fi
+}
+
+gen_config() {
+####################generate config###########################
+printf "
+minissdpdsocket=/var/run/minissdpd.sock
+friendly_name=Wive-NG
+manufacturer_name=Wive-NG
+manufacturer_url=http://wive-ng.sf.net
+model_name=Wive-NG
+model_description=Wive-NG
+model_url=http://wive.ng.sf.net
+lease_file=/var/upnp_leases
+ext_ifname=$real_wan_if
+listening_ip=$lan_if
+enable_natpmp=yes
+enable_upnp=yes
+bitrate_up=90000000
+bitrate_down=90000000
+secure_mode=no
+system_uptime=yes
+notify_interval=60
+clean_ruleset_threshold=20
+clean_ruleset_interval=600
+http_port=8666
+allow 1024-65535 $lan_ipaddr/$lan_netmask 1024-65535
+deny 0-65535 0.0.0.0/0 0-65535
+model_number=1
+" > /etc/miniupnpd.conf
+###############################################################
+cat /etc/miniupnpd.conf.uuid >> /etc/miniupnpd.conf
+###############################################################
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 upnpEnabled`
+}
+
+stop() {
+    if [ -f /var/run/miniupnpd.pid ]; then
+	$LOG "Stoping UPNP"
+	count=0
+	# try 3 times for correct shutdown
+	while kill "$pid" > /dev/null 2>&1; do
+	    pid=`pidof miniupnpd`
+	    count="$(($count+1))"
+	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		break
+	    fi
+	    usleep 500000
+	done
+	# if not correct terminate need kill
+	if [ "$pid" != "" ]; then
+	    kill -SIGKILL "$pid" > /dev/null 2>&1
+	    if [ -f /var/run/miniupnpd.pid ]; then
+		rm -f /var/run/miniupnpd.pid
+	    fi
+	fi
+	ip -4 route del "$upmpm_net" dev "$lan_if" > /dev/null 2>&1
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

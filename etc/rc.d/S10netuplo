@@ -1,0 +1,35 @@
+#!/bin/sh
+
+LOG="logger -t lo"
+
+start() {
+ $LOG "Start loopback interface."
+    ip link set lo up
+    ip -4 addr flush dev lo
+    ip -4 addr add 127.0.0.1/8 dev lo
+    ip -4 route replace 127.0.0.0/8 dev lo
+    ip -4 route replace 127.0.0.0/8 dev lo table default
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

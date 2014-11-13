@@ -1,0 +1,17 @@
+<po>
+  <message msgid="services dhcp title" msgstr="DHCP Server" />
+  <message msgid="services dhcp introduction" msgstr="On this page you can configure DHCP server parameters." />
+  <message msgid="services dhcp setup" msgstr="DHCP Server Setup" />
+
+  <message msgid="services misc title" msgstr="Miscellaneous services" />
+  <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
+  <message msgid="services misc setup" msgstr="Miscellaneous services setup" />
+
+  <message msgid="services ntp title" msgstr="Network Time Settings" />
+  <message msgid="services ntp introduction" msgstr="Here you can configure Network Time Protocol settings." />
+  <message msgid="services ntp setup" msgstr="NTP settings setup" />
+
+  <message msgid="services ddns title" msgstr="Dynamic DNS Settings" />
+  <message msgid="services ddns introduction" msgstr="Here you can configure Dynamic DNS settings." />
+  <message msgid="services ddns setup" msgstr="Dynamic DNS setup" />
+</po>

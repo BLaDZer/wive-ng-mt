@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/crond ]; then
+    exit 0
+fi
+
+LOG="logger -t cron"
+
+start() {
+    eval `nvram_buf_get 2860 CrondEnable Login`
+    if [ "$CrondEnable" = "1" ]; then
+	$LOG "Starting crontab"
+	ln -sf /etc/crontabs/root /etc/crontabs/$Login
+	crond -l 0 -L /var/log/cron.log
+    fi
+}
+
+stop() {
+    if [ -f /var/run/crond.pid ]; then
+	$LOG "Stopping crontab"
+	killall -q crond
+	killall -q -SIGKILL crond
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

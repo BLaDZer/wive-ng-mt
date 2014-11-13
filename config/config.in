@@ -1,0 +1,142 @@
+mainmenu_name "Wive-NG-MT SDK Embedded Linux Application Configuration"
+
+mainmenu_option next_comment
+comment 'Library Configuration'
+
+comment 'Force build (Normally built when required)'
+bool 'Build libz'		CONFIG_LIB_ZLIB
+bool 'Build libusb1'		CONFIG_LIB_USB1
+bool 'Build libevent'		CONFIG_LIB_EVENT
+bool 'Build libcurl'		CONFIG_LIB_CURL
+bool 'Build libpcap'		CONFIG_LIB_PCAP
+bool 'Build libnatpmp'          CONFIG_LIB_NATPMP
+bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
+bool 'Build libupnp'		CONFIG_LIB_UPNP
+bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
+bool 'Build libiconv'           CONFIG_LIB_ICONV
+
+#############################################################################
+
+mainmenu_option next_comment
+comment 'Network Applications'
+
+bool 'go-ahead webserver'				CONFIG_USER_GOAHEAD_HTTPD
+dep_bool '  enable IPv6 support'			CONFIG_USER_GOAHEAD_IPV6 $CONFIG_USER_GOAHEAD_HTTPD
+dep_bool '  enable SSL support'				CONFIG_USER_GOAHEAD_SSL $CONFIG_USER_GOAHEAD_HTTPD
+dep_bool '  enable hostname support'			CONFIG_USER_GOAHEAD_HOSTNAME $CONFIG_USER_GOAHEAD_HTTPD
+dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_GOAHEAD_HTTPD
+
+bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
+bool 'samba server'				CONFIG_USER_SAMBA
+bool 'samba server v3'                          CONFIG_USER_SAMBA3
+dep_bool 'samba server wins only'               CONFIG_USER_SAMBA3_WINS $CONFIG_USER_SAMBA3
+bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
+if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
+    define_bool CONFIG_LIB_EVENT y
+    define_bool CONFIG_LIB_CURL y
+    define_bool CONFIG_LIB_ZLIB y
+    define_bool CONFIG_USER_OPENSSL y
+fi
+if [ "$CONFIG_USER_SAMBA" = "y" ] || [ "$CONFIG_USER_SAMBA3" = "y" ] || [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
+    bool 'storage apps, scripts and goahead conf' CONFIG_USER_STORAGE
+fi
+bool 'igmp proxy (RFC4605)'			CONFIG_USER_IGMP_PROXY
+bool 'udpxy'					CONFIG_USER_UDPXY
+bool 'wive-utils'				CONFIG_USER_WIVE
+bool 'kabinet auth utils'			CONFIG_USER_KABINET
+bool 'inadyn (DDNS Client)'     		CONFIG_USER_INADYN
+bool 'iptables'					CONFIG_USER_IPTABLES_IPTABLES
+bool 'iptables-tools'				CONFIG_USER_IPTABLES_SAVE_RESTORE
+bool 'ip6tables'				CONFIG_USER_IPTABLES_IP6TABLES
+bool 'dropbear (sshd daemon)'            	CONFIG_USER_DROPBEAR
+bool 'p910nd (small printer daemon)'            CONFIG_USER_P910ND
+bool 'pppd'                             	CONFIG_USER_PPPD
+if [ "$CONFIG_USER_PPPD" = "y" ]; then
+    bool 'pppd-chat'				CONFIG_USER_PPPD_CHAT
+fi
+bool 'xl2tp'                                  	CONFIG_USER_XL2TPD
+bool 'Proxy ARP daemon'				CONFIG_USER_PARPROUTED
+bool 'ripd-zebra (RIP)' 			CONFIG_USER_ZEBRA
+bool 'snmpd'	                                CONFIG_USER_SNMPD
+bool 'miniupnpd'				CONFIG_USER_MINIUPNPD
+bool 'xupnpd'					CONFIG_USER_XUPNPD
+bool 'radvd (Router Advertisement Daemon)'	CONFIG_USER_RADVD
+bool 'dhcp6 (Dynamic Confiuration Daemon)'	CONFIG_USER_DHCP6
+dep_bool '  dhcp6 server'			CONFIG_USER_DHCP6_SERVER $CONFIG_USER_DHCP6
+dep_bool '  dhcp6 client'			CONFIG_USER_DHCP6_CLIENT $CONFIG_USER_DHCP6
+bool 'Cisco Discovery Protocol'			CONFIG_USER_CDP
+bool 'Link Layer Topology Discovery Protocol'	CONFIG_USER_LLTD
+bool 'Link Layer Discovery Protocol'		CONFIG_USER_LLDPD
+bool 'wpa-supplicant'				CONFIG_USER_WPA_SUPPLICANT
+bool 'wireless_tools support'			CONFIG_USER_WIRELESS_TOOLS
+
+if [ "$CONFIG_USER_LLDPD" = "y" ]; then
+	define_bool CONFIG_LIB_EVENT y
+fi
+if [ "$CONFIG_USER_WPA_SUPPLICANT" = "y" ]; then
+	define_bool CONFIG_LIB_OPENSSL y
+fi
+
+#############################################################################
+
+mainmenu_option next_comment
+comment 'Miscellaneous Applications'
+
+bool 'busybox'                  CONFIG_USER_BUSYBOX_BUSYBOX
+bool 'ethtool'			CONFIG_USER_ETHTOOL
+bool 'tcpdump'			CONFIG_USER_TCPDUMP
+endmenu
+
+#############################################################################
+
+mainmenu_option next_comment
+comment 'Ralink RT288x Application'
+
+bool 'RT288x Application'		CONFIG_RT2880_APP
+if [ "$CONFIG_RT2880_APP" = "y" ]; then
+bool 'RT2880 Register R/W'		CONFIG_RT2880_REG_RW
+bool 'RT2880 MiiMgr '			CONFIG_RT2880_MII_MGR
+bool 'RT2880 NVRAM'			CONFIG_RT2880_NVRAM
+bool 'RT2880 RALINK INIT'		CONFIG_RT2880_RAINIT
+bool 'RT2880 MTD Application'		CONFIG_RT2880_MTD
+bool 'RT2880 eth_mac Tool'		CONFIG_ETHMAC_TOOL
+bool 'RT2880 GPIO Test'			CONFIG_RT2880_GPIO_TEST
+bool 'HW NAT'                   	CONFIG_RALINKAPP_HWNAT
+bool 'ATE Agent'			CONFIG_RALINKAPP_ATED
+if [ "$CONFIG_RALINKAPP_HWNAT" = "y" ]; then
+    bool 'HW NAT Accounting'		CONFIG_RALINKAPP_HWNAT_AC
+    bool 'HW NAT ACL'			CONFIG_RALINKAPP_HWNAT_ACL
+    bool 'HW NAT Up/Download Metr'	CONFIG_RALINKAPP_HWNAT_MTR
+fi
+bool 'iproute2 support'			CONFIG_USER_IPROUTE2
+if [ "$CONFIG_USER_IPROUTE2" = "y" ]; then
+    bool 'iproute2 ip util support'	CONFIG_USER_IPROUTE2_IP
+    bool 'iproute2 tc util support'	CONFIG_USER_IPROUTE2_TC
+fi
+bool 'ESW embedded Switch Command'	CONFIG_RTESW_SWITCH
+bool 'Software QOS support'		CONFIG_RALINKAPP_SWQOS
+if [ "$CONFIG_RALINKAPP_SWQOS" = "y" ]; then
+    define_bool CONFIG_USER_IPROUTE2_TC
+fi
+fi
+endmenu
+
+##############################################################################
+
+mainmenu_option next_comment
+comment '3G support'
+bool 'usb-modeswitch'		CONFIG_USB_MODESWITCH
+if [ "$CONFIG_USB_MODESWITCH" = "y" ]; then
+	define_bool CONFIG_LIB_USB1 y
+fi
+endmenu
+
+##############################################################################
+
+mainmenu_option next_comment
+comment 'Optimization options.'
+bool 'Enable crazy minimize code size by gcc for libs (save flash and speeddown ~10% per lib)'		CONFIG_LIB_SMALLSIZE
+bool 'Enable crazy minimize code size by gcc for user apps (save flash and speeddown ~10% per app)'	CONFIG_USER_SMALLSIZE
+bool 'Enable crazy minimize used RAM  by gcc for libs (save RAM and speeddown ~5% per lib)'		CONFIG_LIB_SAVERAM
+bool 'Enable crazy minimize used RAM  by gcc for user apps (save RAM and speeddown ~5% per app)'	CONFIG_USER_SAVERAM
+endmenu

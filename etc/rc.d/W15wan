@@ -1,0 +1,184 @@
+#!/bin/sh
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t wan"
+
+# configure and start zeroconf daemon
+zero_conf() {
+    # reload global
+    . /etc/scripts/global.sh
+
+    wan_is_not_null=`ip -o -4 addr show $wan_if scope global | wc -l`
+    if [ "$wan_is_not_null" = "0" ]; then
+	zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1
+    fi
+}
+
+# configure and start dhcp client
+udhcpc_opts() {
+    # reload global
+    . /etc/scripts/global.sh
+
+    eval `nvram_buf_get 2860 dhcpRequestIP wan_manual_mtu`
+    if [ "$dhcpRequestIP" != "" ]; then
+	dhcpRequestIP="-r $dhcpRequestIP"
+    else
+	dhcpRequestIP=""
+    fi
+    if [ "$wan_manual_mtu" = "0" ] || [ "$wan_manual_mtu" = "" ]; then
+	wan_manual_mtu="-O mtu"
+    else
+	wan_manual_mtu=""
+    fi
+    if [ "$IPv6OpMode" = "2" ]; then
+	rd_support="-O ip6rd"
+    else
+	rd_support=""
+    fi
+    UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a \
+		-s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
+		-O routes -O staticroutes -O msstaticroutes -O wins \
+		$rd_support $wan_manual_mtu -x hostname:$HostName -f &"
+
+    # remove routes updated flags
+    rm -f /tmp/routes_applied
+}
+
+start() {
+ $LOG "Start WAN config"
+    get_param
+
+    # preconfigure WAN interface
+    wan_if_preconf
+
+    ####################################################################################
+    # Start config wan and start configure daemon depend by current mode
+    ####################################################################################
+
+    # enable wan interface
+    ip link set "$wan_if" up
+
+    if [ "$wanConnectionMode" = "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
+	if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	    # lan and wan ip should not be the same except in bridge mode
+	    if [ "$wan_ipaddr" = "" ] || [ "$wan_netmask" = "" ]; then
+		$LOG "ERROR: WAN's IP address/nemask not set. Need set this in WAN config!!!"
+		exit 0
+	    fi
+	    if [ "$wan_ipaddr" = "$lan_ipaddr" ]; then
+		$LOG "ERROR: WAN's IP address is set identical to LAN. Need change LAN_IP adress!!!"
+		exit 0
+	    fi
+	    # wan interface up and default gateway
+	    ifconfig "$wan_if" "$wan_ipaddr" netmask "$wan_netmask"
+	    # always treat bridge mode having static wan connection
+	    # route mode
+	    if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
+		ip -4 route replace default via $wan_gateway
+	    fi
+	    # add routes configured in web
+	    if [ -f /etc/routes_replace ]; then
+		$LOG "Add user routes."
+		/etc/routes_replace replace "$phys_lan_if" "$wan_if"
+	    fi
+	    # Add route to multicast subnet
+	    if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
+		$LOG "Add route to multicast subnet."
+		ip -4 route replace "$mcast_net" dev "$wan_if"
+	    fi
+	else
+	    # wan interface up and default gateway
+	    ifconfig br0 $lan_ipaddr netmask $lan_netmask
+	    # if bridge mode dgw on dev br0 set
+	    if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
+    		ip -4 route replace default dev br0 via $wan_gateway
+	    else
+    		ip -4 route replace default dev br0
+	    fi
+        fi
+    elif [ "$wanConnectionMode" = "DHCP" ] && [ "$vpnPurePPPOE" != "1" ]; then
+	# get udhcp param
+	udhcpc_opts
+	$LOG "Start DHCP client."
+	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
+	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
+	    $LOG "Start DHCPv6 client."
+	    dhcp6c $real_wan_if
+	    (sleep 2 && dhcp6c $real_wan_if > /dev/null 2>&1) &
+	fi
+    elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
+	$LOG "Call zeroconf for get wan ip address."
+	zero_conf
+    else
+	$LOG "Unknown mode. Please reset device."
+    fi
+}
+
+wan_if_preconf() {
+    # if not bridge wan up
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	# drop adress from wan if pure pppoe enabled
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
+	    $LOG "PURE PPPOE Mode - NOT start dhcpc or config wan!"
+	    ip -4 addr flush dev "$wan_if"
+	fi
+	# set manual mtu to wan if set
+	if [ "$wan_manual_mtu" != "0" ] && [ "$wan_manual_mtu" != "" ]; then
+	    $LOG "Set manual MTU to WAN $wan_manual_mtu"
+	    ip link set mtu $wan_manual_mtu dev "$wan_if"
+	fi
+	# enable/disable forward for wan
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
+	    # no need forward for phys wan
+	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=0
+	else
+	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
+	fi
+    fi
+}
+
+get_param() {
+    # get parametrs
+    eval `nvram_buf_get 2860 xupnpd IPv6Dhcpc`
+}
+
+stop() {
+    # stop all vpn services
+    service vpnhelper stop
+    # stop dhcp and zeroconf client
+    killall -q udhcpc
+    killall -q dhcp6c
+    killall -q zcip
+    killall -q -SIGKILL udhcpc
+    killall -q -SIGKILL dhcp6c
+    killall -q -SIGKILL zcip
+
+    # this prevent flood/loop with ic+ aplink/downlink switches
+    flush_arp_cache
+    # in gw/hotspot modes down wlan if not bridge and not ethconvert
+    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" -a "$ApCliBridgeOnly" != "1" ]; then
+	# down wan iface
+	ip link set "$wan_if" down > /dev/null 2>&1
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

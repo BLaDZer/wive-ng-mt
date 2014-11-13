@@ -1,0 +1,45 @@
+#!/bin/sh
+
+#path to shell
+export SHELL=/bin/sh
+
+#terminal settings
+export TERM=xterm
+export TERMCAP=/etc/termcap
+export TERMINFO=/etc/xterm
+export CONSOLE=/dev/console
+export HISTSIZE=1000
+
+#export for some apps
+export HOSTNAME=`/bin/hostname`
+
+#paths settings
+if [ -d /opt/etc ]; then
+    export PATH=/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/etc/scripts
+else
+    export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/etc/scripts
+fi
+export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
+export HOME=${HOME:-/}
+export TMPDIR=/tmp/
+export TMP=/tmp/
+export PS1='[`hostname`@`echo $PWD`]# '
+
+#locale settings
+export LANG=ru_RU.UTF-8
+export LC_CTYPE=ru_RU.UTF-8
+export LC_NUMERIC=ru_RU.UTF-8
+export LC_TIME=ru_RU.UTF-8
+export LC_COLLATE=ru_RU.UTF-8
+export LC_MONETARY=ru_RU.UTF-8
+export LC_MESSAGES=ru_RU.UTF-8
+export LC_PAPER=ru_RU.UTF-8
+export LC_NAME=ru_RU.UTF-8
+export LC_ADDRESS=ru_RU.UTF-8
+export LC_TELEPHONE=ru_RU.UTF-8
+export LC_MEASUREMENT=ru_RU.UTF-8
+export LC_IDENTIFICATION=ru_RU.UTF-8
+export LC_ALL=
+
+#last particion mounted to /media set as public for samba and torrent home dir
+export public=`df -h | grep "/dev/sd" | grep "media" | awk {' print $6 '} | tail -q -n1`

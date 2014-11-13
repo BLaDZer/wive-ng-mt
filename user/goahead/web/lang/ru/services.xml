@@ -1,0 +1,17 @@
+<po>
+  <message msgid="services dhcp title" msgstr="DHCP сервер" />
+  <message msgid="services dhcp introduction" msgstr="Здесь вы моженте настроить параметры DHCP сервера." />
+  <message msgid="services dhcp setup" msgstr="Настройки DHCP сервера" />
+
+  <message msgid="services misc title" msgstr="Прочие настройки" />
+  <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
+  <message msgid="services misc setup" msgstr="Настройки прочих сервисов" />
+
+  <message msgid="services ntp title" msgstr="Настройки NTP" />
+  <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить параметры Network Time Protocol." />
+  <message msgid="services ntp setup" msgstr="Настройки NTP" />
+
+  <message msgid="services ddns title" msgstr="Настройки Dynamic DNS" />
+  <message msgid="services ddns introduction" msgstr="Здесь вы можете настроить параметры Dynamic DNS." />
+  <message msgid="services ddns setup" msgstr="Настройки DDNS" />
+</po>

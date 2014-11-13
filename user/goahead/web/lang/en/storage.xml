@@ -1,0 +1,48 @@
+<po>
+  <message msgid="storage disable" msgstr="Disable" />
+  <message msgid="storage enable" msgstr="Enable" />
+  <message msgid="storage add" msgstr="Add" />
+  <message msgid="storage edit" msgstr="Edit" />
+  <message msgid="storage del" msgstr="Delete" />
+  <message msgid="storage apply" msgstr="Apply" />
+  <message msgid="storage cancel" msgstr="Cancel" />
+  <message msgid="storage reset" msgstr="Reset" />
+
+  <message msgid="storage adm title" msgstr="Administration" />
+  <message msgid="storage adm introduction" msgstr="" />
+  <message msgid="storage adm user" msgstr="User Management" />
+  <message msgid="storage user name" msgstr="User Name" />
+  <message msgid="storage user maxlogins" msgstr="Max. Logins" />
+  <message msgid="storage user download" msgstr="Download" />
+  <message msgid="storage user upload" msgstr="Upload" />
+  <message msgid="storage user overwrite" msgstr="Overwrite" />
+  <message msgid="storage user erase" msgstr="Erase" />
+
+  <message msgid="adduser name" msgstr="User Name" />
+  <message msgid="adduser password" msgstr="Password" />
+  <message msgid="adduser mullogins" msgstr="Multiple Logins Capability" />
+  <message msgid="adduser maxlogins" msgstr="Maximum Login" />
+  <message msgid="adduser download" msgstr="Download Capability" />
+  <message msgid="adduser upload" msgstr="Upload Capability" />
+  <message msgid="adduser overwrite" msgstr="Overwrite Capability" />
+  <message msgid="adduser erase" msgstr="Erase Capability" />
+  
+  <message msgid="ftp title" msgstr="FTP Settings" />
+  <message msgid="ftp introduction" msgstr="" />
+  <message msgid="ftp server setup" msgstr="FTP Server Setup" />
+  <message msgid="ftp server enable" msgstr="FTP Server" />
+  <message msgid="ftp server anonymous" msgstr="Anonymous Login" />
+  <message msgid="ftp server port" msgstr="FTP Port" />
+  <message msgid="ftp server maxusers" msgstr="Max. Users" />
+  <message msgid="ftp server logintimeout" msgstr="Login Timeout" />
+  <message msgid="ftp server staytimeout" msgstr="Stay Timeout" />
+  
+  <message msgid="smb title" msgstr="SAMBA Settings" />
+  <message msgid="smb introduction" msgstr="" />
+  <message msgid="smb server setup" msgstr="SAMBA Server Setup" />
+  <message msgid="smb server enable" msgstr="SAMBA Server" />
+  <message msgid="smb server workgroup" msgstr="Workgroup" />
+  <message msgid="smb server netbios" msgstr="NetBIOS Name" />
+  <message msgid="smb server string" msgstr="Server String" />
+ 
+</po>

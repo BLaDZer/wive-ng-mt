@@ -1,0 +1,23 @@
+Description:
+Rotate bits in unsigned 8, 16, and 32 bit integers.
+
+Files:
+lib/bitrotate.h
+
+Depends-on:
+stdint
+
+configure.ac:
+AC_REQUIRE([AC_C_INLINE])
+
+Makefile.am:
+lib_SOURCES += bitrotate.h
+
+Include:
+"bitrotate.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+Simon Josefsson

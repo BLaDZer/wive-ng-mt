@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/lld2d ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t lldpd"
+
+start() {
+    get_param
+    if [ "$lldpdEnabled" = "1" ]; then
+	$LOG "Starting LLDPD"
+	mkdir -p /etc/lldpd.d
+        lldpd -s -e -f -M2 -L/sbin/lldpcli
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 lldpdEnabled`
+}
+
+stop() {
+    pid=`pidof lld2d`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping LLDPD"
+	killall -q lldpd
+	killall -q lldpcli
+	killall -q -SIGKILL lldpd
+	killall -q -SIGKILL lldpcli
+    fi
+    rm -f /var/run/lldpd.socket
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

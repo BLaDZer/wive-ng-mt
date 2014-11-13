@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#include global config
+. /etc/scripts/global.sh
+
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+PPP_NUM=`echo $PPP_IFACE | sed 's/[^0-65535]//g'`
+
+# disable proxyarp
+if [ "$l2tp_srv_proxyarp" = "1" ] || [ "$parproutedEnabled" = "1" ]; then
+    $LOG "Enable proxyarp for $PPP_IFACE"
+    sysctl -wq net.ipv4.conf.$PPP_IFACE.proxy_arp=0
+fi
+
+# disable forward
+sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=0
+
+# del rules
+iptables -D l2tpsrvfwd -i $PPP_IFACE -j ACCEPT > /dev/null 2>&1
+iptables -D l2tpsrvfwd -o $PPP_IFACE -j ACCEPT > /dev/null 2>&1
+iptables -D POSTROUTING -t nat ! -o $PPP_IFACE -j MASQUERADE > /dev/null 2>&1
+
+# udpxy
+iptables -D servicelimit -i $PPP_IFACE -m state --state NEW -p tcp --dport $UDPXYPort -j ACCEPT > /dev/null 2>&1
+
+# samba
+iptables -D servicelimit -i $PPP_IFACE -p udp --dport 137:138 -j ACCEPT > /dev/null 2>&1
+iptables -D servicelimit -i $PPP_IFACE -m state --state NEW -p tcp -m multiport --dport 139,445 -j ACCEPT > /dev/null 2>&1
+
+export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM

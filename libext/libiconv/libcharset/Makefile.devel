@@ -1,0 +1,33 @@
+# This is the developer's makefile, not the user's makefile.
+# Don't use it unless you know exactly what you do!
+
+SHELL = /bin/sh
+MAKE = make
+AUTOCONF = autoconf
+AUTOHEADER = autoheader
+ACLOCAL = aclocal
+CP = cp
+RM = rm -f
+
+all : configures include/localcharset.h.build.in
+	mkdir -p autoconf
+
+autoconf/aclocal.m4 : $(wildcard m4/*.m4)
+	mkdir -p autoconf
+	$(ACLOCAL) -I m4 --output=$@
+
+configures : configure config.h.in
+
+configure : configure.ac autoconf/aclocal.m4
+	$(AUTOCONF) --include autoconf
+
+config.h.in : configure.ac autoconf/aclocal.m4
+	$(AUTOHEADER) --include autoconf
+	touch config.h.in
+
+include/localcharset.h.build.in : include/localcharset.h.in include/export.h
+	sed -e 's/extern \([^"]\)/extern LIBCHARSET_DLL_EXPORTED \1/' \
+	    -e '/#define _LOCALCHARSET_H/r include/export.h' \
+	  < $< > $@
+
+force :

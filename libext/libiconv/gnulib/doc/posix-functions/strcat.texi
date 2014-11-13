@@ -1,0 +1,15 @@
+@node strcat
+@section @code{strcat}
+@findex strcat
+
+POSIX specification:@* @url{http://www.opengroup.org/onlinepubs/9699919799/functions/strcat.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

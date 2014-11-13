@@ -1,0 +1,27 @@
+# Options for all pppd sessions
+lock
+noauth
+noipdefault
+nolog
+noktune
+
+# Redial options
+idle 0
+maxfail 0
+holdoff 5
+
+# Disable ARP proxy and IPX protocol
+noproxyarp
+noipx
+
+# Turn off compression protocols we know won't be used
+nomp
+novj
+novjccomp
+nopcomp
+noaccomp
+nobsdcomp
+nodeflate
+
+# Turn off EAP auth protocol support
+refuse-eap

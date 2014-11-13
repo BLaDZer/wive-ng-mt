@@ -1,0 +1,114 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/transmission-daemon ] || [ ! -d /proc/bus/usb ]; then
+    exit 0
+fi
+
+#include global config
+. /etc/scripts/global.sh
+
+LOG="logger -t transmission"
+
+wait_for_close() {
+    # if need kill transmission-daemon
+    pid=`pidof transmission-daemon`
+    if [ "$pid" != "" ]; then
+        $LOG "Stop transmission daemon."
+        killall -q transmission-daemon
+        # wait one second and reread pid
+        sleep 1
+	pid=`pidof transmission-daemon`
+        #wait before save files and connections stop
+        count=0
+        while [ "$pid" != "" ] && [ "$count" != "15" ]; do
+            sleep 1
+	    count="$(($count+1))"
+	    pid=`pidof transmission-daemon`
+	done
+	#kill if not stopped
+	killall -q -SIGKILL transmission-daemon
+    fi
+}
+
+start() {
+    get_param
+    if [ "$TransmissionEnabled" = "1" ]; then
+      ( # send to background
+
+	# if need kill transmission-daemon
+	wait_for_close
+
+	# 10*10=100 seconds check media mount and exit
+	count=0
+	while [ "$public" = "" ]; do
+	    count="$(($count+1))"
+	    if [ "$count" != "10" ]; then
+		$LOG "Disc not mounted... Please check USB connection. Wait 10sec and recheck. $count"
+	        sleep 10
+		# recheck public set
+		. /etc/profile
+	    else
+		exit 0
+	    fi
+	done
+
+	$LOG "Start transmission daemon."
+	mkdir -p $TRANSMISSION_HOME
+	if [ "$TransAuthor" = "1" ]; then
+		authory="-t -u $TransLogin -v $TransPass"
+	else
+		authory="-T"
+	fi
+	nice -n 15 /bin/transmission-daemon -p $TransRPCPort -P $TransInPort $authory -w $TRANSMISSION_DOWNLOADS -x /var/run/transmission-daemon.pid
+      ) & # send to background
+    fi
+}
+
+stop() {
+    # if need kill transmission-daemon
+    wait_for_close
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 TransmissionEnabled TransRPCPort TransAuthor TransInPort TransLogin TransPass`
+
+    #include profile variables
+    . /etc/profile
+
+    #export variables for transmissions
+    export TRANSMISSION_WEB_HOME=/share/transmission/web
+    export XDG_DATA_HOME=/share/transmission/web
+    export XDG_DATA_DIRS=/share/transmission/web
+
+    #default download dir
+    if [ -e /bin/transmission-daemon ] && [ "$public" != "" ]; then
+	export TRANSMISSION_HOME="$public"/transmission
+    else
+	export TRANSMISSION_HOME="/media/sda1/transmission"
+    fi
+    export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+	stop)
+            stop
+            ;;
+
+	restart)
+            stop
+            start
+            ;;
+
+	reload)
+            killall -HUP transmission-daemon
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart|reload}"
+            exit 1
+esac

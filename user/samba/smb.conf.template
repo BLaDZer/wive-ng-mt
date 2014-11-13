@@ -1,0 +1,16 @@
+############TEMPLATE SECTION START######################
+    bind interfaces only	= Yes
+    lock directory		= /var/lock
+    lock dir			= /var/lock
+    syslog			= 1
+    syslog only			= yes
+    max log size		= 10
+    max disk size		= 0
+    security			= share
+    encrypt passwords		= yes
+    announce version		= 4.9
+    dns proxy			= no
+    guest account		= nobody
+    coding system		= utf8
+    client code page		= 866
+############TEMPLATE SECTION END########################

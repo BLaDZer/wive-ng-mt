@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/lld2d ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t lld2d"
+
+start() {
+    get_param
+    if [ "$lltdEnabled" = "1" ]; then
+	$LOG "Starting LLD2D"
+	if [ "$RadioOff" = "1" ]; then
+	    lld2d $lan_if
+	else
+	    lld2d $lan_if $first_wlan_root_if
+	fi
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 lltdEnabled RadioOff`
+}
+
+stop() {
+    pid=`pidof lld2d`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping LLD2D"
+	killall -q lld2d
+	killall -q -SIGKILL lld2d
+	rm -rf /var/run/lld2d-* > /dev/null 2>&1
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

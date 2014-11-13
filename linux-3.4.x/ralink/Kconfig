@@ -1,0 +1,116 @@
+menu "Ralink Module"
+
+###########
+# Debuging
+###########
+source "drivers/net/rt_rdm/Kconfig"
+
+#############
+# Wired
+#############
+menu "Ethernet Ralink RT3xxx/RT5xxx/MT762x wire driver"
+source "drivers/net/raeth/Kconfig"
+endmenu
+
+#############
+# Wireless
+#############
+menu "Platform config for Ralink RT3xxx/RT5xxx"
+
+choice
+	prompt "RF Type"
+	depends on RALINK_RT5350
+	default RALINK_RT5350_1T1R
+
+	config  RALINK_RT5350_1T1R
+	bool "1T1R"
+endchoice
+
+choice
+	prompt "RF Type"
+	depends on RALINK_RT3052
+	default RALINK_RT3052_2T2R
+
+	config  RALINK_RT3050_1T1R
+	bool "1T1R"
+
+	config  RALINK_RT3051_1T2R
+	bool "1T2R"
+
+	config  RALINK_RT3052_2T2R
+	bool "2T2R"
+endchoice
+
+choice
+	prompt "RF Type"
+	depends on  RALINK_RT3352
+
+	config  RALINK_RT3352_2T2R
+	bool "2T2R"
+endchoice
+
+choice
+	prompt "RF Type"
+	depends on RALINK_RT3883
+
+	config  RALINK_RT3662_2T2R
+	bool "2T3R (RT3662)"
+
+	config  RALINK_RT3883_3T3R
+	bool "3T3R (RT3883)"
+endchoice
+endmenu
+
+menu "AP MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
+source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_ap/Kconfig"
+endmenu
+menu "Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
+source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_sta/Kconfig"
+endmenu
+
+#######
+# NAT
+#######
+menu "NAT acell mode"
+choice
+	prompt "Ralink Hardware NAT mode"
+
+config RA_NAT_NONE
+	bool "Disable NAT acceleration"
+
+config RA_NAT_HW
+	bool "Hardware NAT acceleration"
+	depends on !(RALINK_RT5350 || RALINK_MT7628)
+endchoice
+
+if RA_NAT_HW
+source "net/nat/hw_nat/Kconfig"
+endif
+endmenu
+
+#######
+# Fastpath
+#######
+source "net/nat/bcm_nat/Kconfig"
+
+#######
+# DEV
+#######
+menu "Ralink Devices"
+config RT3XXX_EHCI_OHCI
+	bool "Ralink USB2 EHCI/OHCI controller support"
+	depends on (RALINK_RT3883 || RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7620 || RALINK_MT7628)
+	select USB_ARCH_HAS_OHCI
+	select USB_ARCH_HAS_EHCI
+
+config RTDEV_USB
+bool
+default y if (RT305x_INIC_USB || RT3572_AP || RT5572_AP)
+
+config RTDEV_MII
+bool
+default y if (RT305x_INIC_MII || RT3352_INIC_MII)
+endmenu
+
+endmenu
+

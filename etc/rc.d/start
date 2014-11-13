@@ -1,0 +1,68 @@
+#!/bin/sh
+
+##########################################################
+# Start all init scripts in /etc/rc.d
+# executing them in numerical order.
+##########################################################
+
+LOG="echo INIT"
+MTDDEVICE=/dev/mtdblock5
+ROOTDEVICE=/dev/mtdblock4
+TMPROOTFSD="/tmp/rootfs"
+
+##########################################################
+# prepare filesystems
+# use tmpfs if present
+##########################################################
+tmpfs_av=`grep tmpfs -c < /proc/filesystems`
+if [ "$tmpfs_av" != "0" ]; then
+    # mount /tmp /etc in /var
+    mkdir -p /var/tmpfs
+    mount -o bind /var/tmpfs /tmp
+    # make dir for rwfs and bind it
+    mkdir -p /var/rwfs
+    mount -o bind /var/rwfs /etc
+fi
+
+##########################################################
+# prepare devices and rwfs
+# autocreate some dev nodes and refresh from mkdevs script
+##########################################################
+$LOG "Touch mdev."
+mdev -s
+
+$LOG "Mount $TMPROOTFSD"
+mkdir $TMPROOTFSD
+mount $ROOTDEVICE $TMPROOTFSD -o ro
+
+if [ -d /dev ]; then
+    $LOG "Create some persistent nodes in dev."
+    $TMPROOTFSD/etc/rc.d/mkdevs
+else
+    $LOG "DEVFS NOT EXIST STOP !!!"
+    exit 1
+fi
+
+$LOG "Init RW particion"
+bzcat $MTDDEVICE | tar xf - -C / > /dev/null 2>&1
+
+if [ -f /etc/filesystem.ok ] && [ -f /etc/rc.d/rcS ]; then
+    $LOG "RW File system is ok - preparing..."
+  else
+    $LOG "File system is clear or poor."
+    cp -af $TMPROOTFSD/etc/* /etc
+    $LOG "Restored. Save after full boot and configure."
+    touch /etc/filesystem.ok
+fi
+
+$LOG "Umount $TMPROOTFSD"
+umount -fl $TMPROOTFSD
+rm -rf $TMPROOTFSD
+
+##########################################################
+# include profile variables
+##########################################################
+. /etc/profile
+
+$LOG "Start init now."
+/bin/sh /etc/rc.d/rcS &

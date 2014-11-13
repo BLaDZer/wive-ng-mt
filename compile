@@ -1,0 +1,138 @@
+#!/bin/sh
+
+DOS2UNIX=NO
+FULLREBUILD=NO
+VERSIONPKG="1.0.0.RU.`date +%d%m%Y`"
+
+#---Set_env_ROOTDIR_to_current_dir---#
+ROOTDIR=`pwd`
+export ROOTDIR=$ROOTDIR
+export FIRMROOT=$ROOTDIR
+export LINUXDIR=$ROOTDIR/linux
+
+#-------Set_env_LANG------#
+export LANG=en_US
+export LC_ALL=POSIX
+
+#---------MODEL------------#
+if [ "$1" = "" ]; then
+    MODE=MT7620-2T2R-8M
+    #MODE=MT7620-2T2R-4M
+else
+    MODE=$1
+fi
+#-------FABRICMODE---------#
+if [ "$2" = "" ]; then
+    FMODE=""
+else
+    FMODE="YES"
+fi
+
+#------------------------------------#
+#WR-N for full and WR-NL for ligth HW
+if [ "$MODE" = "MT7620-2T2R-8M" ]; then
+    DEVNAME="SNR-CPE-W4N-MT"
+elif [ "$MODE" = "MT7620-2T2R-4M" ]; then
+    DEVNAME="SNR-CPE-W4N-MT"
+else
+    echo "Not supported (unknown) mode."
+    exit 1
+fi
+
+#use for product id and model name
+export PRODUCTID="$DEVNAME"
+export MODEL_NAME="$DEVNAME"
+export KERNEL_VER="$VERSIONPKG"
+
+echo "_________________________________________________________"
+echo "> Building for $PRODUCTID version $KERNEL_VER <"
+echo "_________________________________________________________"
+
+
+echo ""								>  $ROOTDIR/sdk_version.h
+echo "#define RT288X_SDK_VERSION \"$DEVNAME-$VERSIONPKG\""	>> $ROOTDIR/sdk_version.h
+echo "#define DEVNAME  \"$DEVNAME\""				>> $ROOTDIR/sdk_version.h
+echo "#define VERSIONPKG  \"$VERSIONPKG\""			>> $ROOTDIR/sdk_version.h
+echo "#define VERSIONSTR \"$DEVNAME-$VERSIONPKG\""		>> $ROOTDIR/sdk_version.h
+echo ""								>> $ROOTDIR/sdk_version.h
+echo ""								>  $ROOTDIR/version
+echo "RT288X_SDK_VERSION = \"$VERSIONPKG\""			>> $ROOTDIR/version
+echo "DEVNAME = \"$DEVNAME\""					>> $ROOTDIR/version
+echo "VERSIONPKG = \"$VERSIONPKG\""				>> $ROOTDIR/version
+echo "VERSIONSTR = \"$DEVNAME-$VERSIONPKG\""			>> $ROOTDIR/version
+echo ""								>> $ROOTDIR/version
+
+#for clear all binary
+if [ "$FULLREBUILD" = "YES" ] ; then
+echo -------------------------------FULL-CLEAR-------------------------------
+    ./clear
+fi
+
+rm -rfv $ROOTDIR/romfs/*
+rm -rfv $ROOTDIR/images/*
+ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
+
+echo --------------------------------COPY-CONFIG-----------------------------
+#######################################################################
+ln -fs $ROOTDIR/vendors/Ralink/RTxxxx/config.arch config.arch
+ln -fs $ROOTDIR/config/autoconf.h		$ROOTDIR/autoconf.h
+#######################################################################
+
+#################################PER-DEVICES###########################
+if [ "$MODE" = "MT7620-2T2R-8M" ] ; then
+    cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7620-2T2R-8M		$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-8M			$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-8M			$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib-8M				$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7620-2T2R-4M" ] ; then
+    cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7620-2T2R-4M		$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-4M			$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-4M			$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib-4M				$ROOTDIR/lib/.config
+else
+    echo "Config files not found."
+    exit 1
+fi
+
+# enable ATE and others support for fabric
+if [ "$FMODE" = "YES" ]; then
+    echo "BUILD FABRIC MODE"
+    echo "Copy ATE code to tree"
+    mkdir -p $ROOTDIR/user/rt2880_app/ated
+    cp -rf /mnt/svalka/linux/ate/ated/* $ROOTDIR/user/rt2880_app/ated
+    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
+    cp -rf /mnt/svalka/linux/ate/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
+
+    sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
+    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+    sed 's/# CONFIG_TELNETD is not set/CONFIG_TELNETD=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
+    mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
+    sed 's/# CONFIG_FEATURE_TELNETD_INETD_WAIT is not set/CONFIG_FEATURE_TELNETD_INETD_WAIT=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
+    mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
+    sed 's/# CONFIG_RALINKAPP_ATED is not set/CONFIG_RALINKAPP_ATED=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
+    mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
+fi
+
+#for wantusoid`s like.
+if [ "$DOS2UNIX" = "YES" ] ; then
+echo ---------------------------------DOS2UNIX--------------------------------
+    find -type f -exec dos2unix {} \;
+fi
+
+echo -------------------------------MAKE-OLDCONFIGS---------------------------
+make oldconfig
+make dep
+
+echo ---------------------------------MAKE-ALL--------------------------------
+make
+
+if [ -f Uboot/uboot.bin ] && [ -f images/zImage.lzma ] ; then
+echo -------------------------------MAKE-FULLDUMP-----------------------------
+    make -C fulldump
+fi
+
+echo -----------------------------------PACK----------------------------------
+mv -f images/*.bin "images/$DEVNAME-$MODE.$VERSIONPKG.bin"
+zip -r images/$DEVNAME-$MODE.$VERSIONPKG.bin.zip images/*.bin
+
+echo ---------------------------------END BUILD-------------------------------

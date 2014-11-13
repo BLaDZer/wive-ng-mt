@@ -1,0 +1,291 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -d /proc/sys/net/ipv6 ]; then
+    exit 0
+fi
+
+#get params
+. /etc/scripts/global.sh
+
+if [ "$OperationMode" = "0" ]; then
+    exit 0
+fi
+
+LOG="logger -t ipv6"
+
+calculate_and_set_mtu() {
+    # get mtu from wan
+    wanmtu=`ip -4 -o link show dev $real_wan_if | awk {' print $5 '}`
+    if [ "$wanmtu" = "" ]; then
+	#min of max for tun at wan
+	$LOG "Use default MTU 1460"
+	wanmtu="1460"
+    fi
+    # calculate mtu
+    let "sitmtu=$wanmtu - 20"
+    let "ipvmtu=$sitmtu - 40"
+
+    # set mtu for lan
+    sysctl -wq  net.ipv6.conf."$lan_if".mtu="$ipvmtu"
+    if [ "$Lan2Enabled" = "1" ]; then
+	sysctl -wq  net.ipv6.conf."$lan2_if".mtu="$ipvmtu"
+    fi
+}
+
+start() {
+    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6Dhcpc`
+    if [ "$IPv6OpMode" != "0" ]; then
+
+	# check wan ip set, need v4 adress at wan for tunnels config
+	if [ "$IPv6OpMode" != "1" ] && [ "$real_wan_ipaddr" = "" ]; then
+	    $LOG "No ipv4 adress on wan, exit..."
+	    exit 1
+	fi
+
+	# enable ipv6
+	sysctl -wq net.ipv6.conf.all.disable_ipv6=0
+
+	# addr del->add change need for notify kernel and regenerage arp table
+        if [ "$IPv6OpMode" = "1" ]; then
+	    # this section for native/dualstack mode
+	    if [ "$IPv6Dhcpc" = "1" ]; then
+    		$LOG "Native IPv6 support with DHCP/RA uplink"
+	    fi
+        elif [ "$IPv6OpMode" = "2" ]; then
+    	    $LOG "Tunel ipv6 in ipv4 configure and up"
+	    # calculate and set mtu
+    	    calculate_and_set_mtu
+	    # this section for 6RD tunnel mode
+	    relay6to4="$IPv6SrvAddr"										# The 6rd IPv4-gateway
+	    ipv6subnet="$(echo -n `printf '%02X:' ${real_wan_ipaddr//./ } | awk -F: '{print($1$2":"$3$4)}'`)"	# Calculate subnet from real ipv4 adress
+	    if [ "$IPv6IPAddr" != "" ] && [ "$IPv6PrefixLen" != "" ]; then
+		ipv6prefix="$IPv6IPAddr"
+	    else
+    		ipv6prefix="2a02:2560"										# Your ISP's IPv6-prefix
+		IPv6PrefixLen="32"
+	    fi
+	    $LOG "Tune and up $six_wan_if interface"
+	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/128 dev $real_wan_if			> /dev/null 2>&1
+	    ip -6 addr add ${ipv6prefix}:${ipv6subnet}::abca/128 dev $real_wan_if
+	    ip tunnel add $six_wan_if mode sit local $real_wan_ipaddr ttl 64
+	    ip tunnel 6rd dev $six_wan_if 6rd-prefix ${ipv6prefix}::/${IPv6PrefixLen}
+	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/${IPv6PrefixLen} dev $six_wan_if		> /dev/null 2>&1
+	    ip -6 addr add ${ipv6prefix}:${ipv6subnet}::abca/${IPv6PrefixLen} dev $six_wan_if
+	    ip link set $six_wan_if up
+	    $LOG "Replace ipv6 dgw to ::${relay6to4} dev $six_wan_if"
+	    ip -6 route replace ::/0 via ::${relay6to4} dev $six_wan_if metric 1
+	    $LOG "Set mtu $sitmtu to $six_wan_if"
+	    sysctl -wq net.ipv6.conf.$six_wan_if.mtu="$sitmtu"
+	    ip link set mtu $sitmtu dev $six_wan_if
+        elif [ "$IPv6OpMode" = "3" ]; then
+	    # this section for 6to4 tunnel mode
+    	    $LOG "Tunel ipv6 in ipv4 configure and up"
+    	    calculate_and_set_mtu										# Calculate and set mtu
+	    IPv6PrefixLen="64"                                                                                  # Default 6to4 prefix length
+	    ipv6subnet="2000"											# Default 6to4 subnet
+    	    ipv6prefix=`echo $real_wan_ipaddr | awk -F. '{ printf "2002:%02x%02x:%02x%02x", $1, $2, $3, $4 }'`	# Calculate prefix
+	    if [ "$IPv6SrvAddr" = "" ]; then
+		relay6to4="192.88.99.1"										# Default 6to4 IPv4-gateway
+	    else
+		relay6to4="$IPv6SrvAddr"									# Manual 6to4 IPv4-gateway
+	    fi
+	    $LOG "Up $six_wan_if interface"
+	    ip -6 link set $six_wan_if up
+	    $LOG "Set mtu $sitmtu to $six_wan_if"
+	    sysctl -wq net.ipv6.conf.$six_wan_if.mtu="$sitmtu"
+	    ip link set mtu $sitmtu dev $six_wan_if
+	    $LOG "Add adress ${ipv6prefix}::1/16 to $six_wan_if"
+	    ip -6 addr del ${ipv6prefix}::1/16 dev $six_wan_if				> /dev/null 2>&1
+	    ip -6 addr add ${ipv6prefix}::1/16 dev $six_wan_if
+	    $LOG "Add route to ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if"
+	    ip -6 route replace ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if metric 1
+	fi
+
+	$LOG "Enable ipv6 forward"
+	# set defaults (this workaround, need review code in kernel)
+	sysctl -wq net.ipv6.conf.all.forwarding=1
+	sysctl -wq net.ipv6.conf.all.accept_ra=1
+	sysctl -wq net.ipv6.conf.all.accept_ra_pinfo=1
+	sysctl -wq net.ipv6.conf.all.autoconf=1
+
+	if [ "$IPv6OpMode" = "1" ]; then
+	    if [ "$IPv6Dhcpc" = "1" ]; then
+		$LOG "Always accept router advertisements for autoconfigure from wan $real_wan_if."
+		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=2
+
+		$LOG "Replace Ipv6 DGW to $real_wan_if"
+		ip -6 route replace default dev "$real_wan_if" metric 0
+	    else
+    		$LOG "Native IPv6 support static configured"
+		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=0
+
+                $LOG "Set ${IPv6WANIPAddr}/${IPv6WANPrefixLen} to $real_wan_if"
+		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $real_wan_if	> /dev/null 2>&1
+		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $real_wan_if
+
+                $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
+		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if	> /dev/null 2>&1
+		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
+
+		$LOG "Replace Ipv6 DGW to $real_wan_if via $IPv6GWAddr"
+		ip -6 route replace default dev "$real_wan_if" via "$IPv6WANIPAddr" metric 0
+	    fi
+	    # fix me... need write logic for auto configure
+	    radvdEnabled="0"
+	    dhcpv6Enabled="0"
+	else
+	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces(security need)."
+    	    sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0
+    	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
+    	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
+	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
+		$LOG "Tunneled ipv6 acess mode not need ipv6 adress and route at wan ifaces - drop it."
+		ip -6 route flush dev $wan_if					> /dev/null 2>&1
+		ip -6 route flush dev $real_wan_if				> /dev/null 2>&1
+		ip -6 addr flush dev $wan_if					> /dev/null 2>&1
+		ip -6 addr flush dev $real_wan_if				> /dev/null 2>&1
+	    fi
+	    SUBNET="${ipv6prefix}:${ipv6subnet}"
+	    PREFIX="${SUBNET}::1/${IPv6PrefixLen}"
+	    $LOG "Set ${SUBNET}::1/${IPv6PrefixLen} to $lan_if"
+	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
+	    ip -6 addr add ${PREFIX} dev $lan_if
+	fi
+
+	flush_net_caches
+
+	# check parametrs
+	if [ "$SUBNET" = "" ] || [ "$PREFIX" = "" ]; then
+	    $LOG "Configuration is not correct, need check config in setwork settings => IPv6, radvd and dhcpv6 server not started."
+	    exit 0
+	fi
+
+	# read dnsservers reciverd from dhcp
+	if [ -f /etc/resolvipv6.conf ]; then
+	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
+	    $LOG "Use DNS recived from ISP $DNSADRESSES"
+	fi
+	if [ "$DNSADRESSES" = "" ]; then
+	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
+	    $LOG "Use public DNS $DNSADRESSES"
+	fi
+
+	if [ "$radvdEnabled" = "1" ]; then
+	    $LOG "Configure radvd"
+    	    printf "
+    	    interface $lan_if
+            {
+                AdvSendAdvert on;
+                MinRtrAdvInterval 3;
+                MaxRtrAdvInterval 10;
+                AdvDefaultPreference high;
+		AdvOtherConfigFlag on;
+                prefix ${PREFIX}
+                {
+                        AdvOnLink off;
+                        AdvAutonomous on;
+                        AdvRouterAddr on;
+    	    " > /etc/radvd.conf
+	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
+    	    printf "
+                        Base6to4Interface $real_wan_if;
+    	    " >> /etc/radvd.conf
+	    fi
+    	    printf "
+                        AdvPreferredLifetime 20;
+                        AdvValidLifetime 30;
+                };
+                RDNSS $DNSADRESSES
+                {
+                        AdvRDNSSLifetime 10;
+                };
+            };
+    	    " >> /etc/radvd.conf
+
+	    $LOG "Starting radvd"
+	    radvd -C /etc/radvd.conf --debug=0 --logmethod=syslog &
+	fi
+
+	if [ "$dhcpv6Enabled" = "1" ]; then
+	    $LOG "Configure dhcp6s"
+    	    printf "
+	    option domain-name-servers $DNSADRESSES;
+
+	    interface $lan_if {
+		allow rapid-commit;
+		address-pool pool1 3600;
+	    };
+
+	    pool pool1 {
+		range ${SUBNET}::2 to ${SUBNET}::254 ;
+	    };
+    	    " > /etc/dhcp6s.conf
+
+	    $LOG "Starting dhcp6s"
+	    dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
+    	fi
+
+	flush_net_caches
+    fi
+}
+
+stop() {
+    if [ -f /var/run/radvd.pid ]; then
+	$LOG  "Stop radvd and dhcpv6 daemons."
+
+        # disable ra for all ifaces
+	sysctl -wq net.ipv6.conf.all.accept_ra=0		> /dev/null 2>&1
+        sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
+    	sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
+    	sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
+    	sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
+    	sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0	> /dev/null 2>&1
+
+	# disable ipv6
+	sysctl -wq net.ipv6.conf.all.disable_ipv6=1
+
+	killall -q radvd
+	killall -q -SIGKILL radvd
+
+	killall -q dhcp6s
+	killall -q -SIGKILL dhcp6s
+
+	# cleanup global adresses
+	echo "#!/bin/sh" > /tmp/ip6addrdel
+	ip -6 -o addr show scope global | awk {' print "ip -6 addr del " $4 " dev " $2 '} >> /tmp/ip6addrdel
+	chmod 777 /tmp/ip6addrdel
+	sh /tmp/ip6addrdel
+	rm -f /tmp/ip6addrdel
+	flush_net_caches
+
+	ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
+	ip -6 route flush scope all dev sit0				> /dev/null 2>&1
+	ip -6 route flush scope all dev $real_wan_if			> /dev/null 2>&1
+
+	ip link set dev 6rd down					> /dev/null 2>&1
+	ip link set dev sit0 down					> /dev/null 2>&1
+	ip tunnel del 6rd						> /dev/null 2>&1
+
+	flush_net_caches
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

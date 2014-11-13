@@ -1,0 +1,72 @@
+/****** Controls ******/
+select
+{
+	font-size: 13px;
+}
+
+select.mid
+{
+	width: 192px;
+}
+
+select.half
+{
+	width: 100px;
+}
+
+select.wide
+{
+	width: 256px;
+}
+
+select.short
+{
+	width: 48px;
+}
+
+input.mid
+{
+	width: 192px;
+}
+
+input.normal
+{
+	width: 128px;
+}
+
+input.wide
+{
+	width: 256px;
+}
+input.superwide
+{
+	width: 400px;
+}
+input.half
+{
+	width: 94px;
+}
+input.short_qos
+{
+	width: 64px;
+}
+input.short
+{
+	width: 48px;
+}
+
+input.small
+{
+	width: 36px;
+}
+
+input.xsmall
+{
+	width: 24px;
+}
+
+span.radio
+{
+	width: 96px;
+	display: inline-block;
+}

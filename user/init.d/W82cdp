@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/cdp-send ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t cdp"
+
+
+start() {
+    get_param
+    if [ "$cdpEnabled" = "1" ]; then
+	DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	r_hostname=`hostname`
+	$LOG "Send CDP request options $r_version $r_hostname $wan_if"
+	cdp-send -t 120 -m $DEVNAME -s $VERSIONPKG -n $r_hostname "$wan_if" > /dev/null 2>&1
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 cdpEnabled`
+}
+
+stop() {
+    if [ "`pidof cdp-send`" ]; then
+	$LOG "Stopping CDP-SEND"
+	killall -q cdp-send
+	killall -q -SIGKILL cdp-send
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

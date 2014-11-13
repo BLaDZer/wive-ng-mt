@@ -1,0 +1,23 @@
+Description:
+timespec-related declarations
+
+Files:
+lib/timespec.h
+m4/timespec.m4
+
+Depends-on:
+time
+
+configure.ac:
+gl_TIMESPEC
+
+Makefile.am:
+
+Include:
+"timespec.h"
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert and Jim Meyering

@@ -1,0 +1,50 @@
+#!/bin/sh
+
+LOG="logger -t watchdog"
+
+start() {
+    get_param
+    ###############SYSTEM_DOG################################################
+    if [ "$WatchdogEnabled" = "1" ]; then
+	$LOG "Start watchdog"
+	nice -n -10 watchdog -T 120 -t 10 -F /dev/watchdog > /dev/null 2>&1 &
+    fi
+    ###############PINGER_DOG################################################
+    if [ "$pinger_check_on" = "1" ]; then
+	$LOG "Start pinger"
+	nice -n -10 /etc/scripts/pinger.sh &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 WatchdogEnabled pinger_check_on`
+}
+
+stop() {
+    if [ -f /var/run/watchdog.pid ]; then
+	$LOG "Stop watchdog"
+	killall -q watchdog
+	killall -q -SIGKILL watchdog
+	killall -q pinger.sh
+	killall -q -SIGKILL pinger.sh
+    fi
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

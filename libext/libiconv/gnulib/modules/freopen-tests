@@ -1,0 +1,13 @@
+Files:
+tests/test-freopen.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-freopen
+check_PROGRAMS += test-freopen
+

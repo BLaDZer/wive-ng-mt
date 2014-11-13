@@ -1,0 +1,15 @@
+If you have already start your rt305x project by using SDK3.0 or SDK3.1.
+We recommand that you should update the following software component from SDK3.2 
+to fix some bugs and IOT issue.
+
+1.copy drivers/net/wireless/rt2860v2 from sdk3.2 to your sdk
+  copy drivers/net/wireless/rt2860v2_ap from sdk3.2 to your sdk
+  copy drivers/net/wireless/rt2860v2_sta from sdk3.2 to your sdk
+
+2.copy drivers/net/raeth from sdk3.2 to your sdk
+
+3.copy drivers/flash from sdk3.2 to your sdk
+
+4.use sdk3.2 uboot instead
+
+5.copy drivers/usb/dwc_otg from sdk3.2 to your sdk

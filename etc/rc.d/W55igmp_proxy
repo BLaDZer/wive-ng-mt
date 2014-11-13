@@ -1,0 +1,118 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/igmpproxy ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+wait_connect
+
+LOG="logger -t igmpproxy"
+
+start() {
+  # if igmpproxy enable and mode not full bridge
+    if [ "$igmpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+      ( # send to background
+
+	# check ip adress set at wan
+	if [ "$wan_is_not_null" = "0" ]; then
+    	    $LOG "Wait 15 sec before start..."
+	    sleep 15
+	fi
+
+	#generate config file
+	get_param
+	gen_config
+
+	# if need kill igmpproxy
+	igmp_is_start=`pidof igmpproxy`
+	if [ "$igmp_is_start" != "" ]; then
+	    $LOG "Stopping IGMPPROXY"
+	    killall -q igmpproxy
+	    killall -q -SIGKILL igmpproxy
+	    usleep 500000
+	fi
+
+        $LOG "Starting IGMPPROXY"
+    	igmpproxy $OPTS /etc/igmpproxy.conf &
+
+      ) & # send to background
+    fi
+}
+
+gen_config() {
+####################generate config###########################
+printf "
+quickleave
+phyint $wan_if upstream ratelimit 0 threshold 1
+altnet 0.0.0.0/0
+phyint $lan_if downstream ratelimit 0 threshold 1
+phyint $vpn_if disabled
+" > /etc/igmpproxy.conf
+##############################################################
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 igmpSnoopMode wan_port tv_port`
+    # if external dual phy switch mode not use software snooping
+    if [ "$CONFIG_RAETH_GMAC2" = "" ]; then
+	####################################
+	# wan port number set
+	####################################
+	if [ "$wan_port" = "0" ]; then
+           # switch managment mode enabled
+           igmpPort="w"
+	fi
+	####################################
+	# correct mode for igmpsnooping
+	####################################
+	if [ "$tv_port" = "1" ] || [ "$igmpSnoopMode" = "n" ]; then
+	    # if  tvport enabled = force disable snooping
+	    igmpSnoopMode="n"
+	else
+	    # default snooping auto mode enable
+	    igmpSnoopMode=""
+	fi
+	####################################
+	# gen options for daemon
+	####################################
+	if [ "$igmpPort" != "" ] || [ "$igmpSnoopMode" != "" ]; then
+           OPTS="-$igmpPort$igmpSnoopMode"
+	else
+           OPTS=""
+	fi
+    else
+	OPTS=""
+    fi
+}
+
+stop() {
+    pid=`pidof igmpproxy`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping IGMPPROXY"
+	killall -q igmpproxy
+	killall -q -SIGKILL igmpproxy
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

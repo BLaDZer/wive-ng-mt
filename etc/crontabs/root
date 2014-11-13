@@ -1,0 +1,7 @@
+SHELL=/bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/etc/scripts
+MAILTO=root
+HOME=/
+
+# run-parts
+* */2 * * * echo > /var/log/cron.log

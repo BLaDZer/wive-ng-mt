@@ -1,0 +1,8 @@
+NAME="Wive-NG-MT"
+VERSION="1"
+ID=wive-ng
+ID_LIKE="wive-ng-mt"
+PRETTY_NAME="Wive-NG-MT"
+HOME_URL="http://wive-ng.sf.net"
+SUPPORT_URL="http://wive-ng.sf.net"
+BUG_REPORT_URL="http://wive-ng.sf.net"

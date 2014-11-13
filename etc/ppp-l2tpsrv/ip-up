@@ -1,0 +1,56 @@
+#!/bin/sh
+
+#include global config
+. /etc/scripts/global.sh
+
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+PPP_NUM=`echo $PPP_IFACE | sed 's/[^0-65535]//g'`
+LOG="logger -t L2TP server"
+
+# get some variables
+eval `nvram_buf_get 2860 l2tp_srv_nat_enabled l2tp_srv_proxyarp parproutedEnabled SmbEnabled`
+
+if [ "$l2tp_srv_proxyarp" != "1" ] && [ "$parproutedEnabled" != "1" ]; then
+    #disable multicast on $PPP_IFACE interface
+    ifconfig $PPP_IFACE -allmulti
+    ifconfig $PPP_IFACE -multicast
+fi
+
+#add rules
+if [ "$l2tp_srv_nat_enabled" != "" ] && [ "$l2tp_srv_nat_enabled" != "0" ]; then
+    $LOG "Add masqrade for client $PPP_REMOTE"
+    iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
+    iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
+    iptables -A POSTROUTING -t nat -o ! $PPP_IFACE -j MASQUERADE
+fi
+
+# allow udpxy for l2tp clients
+if [ "$UDPXYMode" != "0" ]; then
+    $LOG "Udpxy allow from $PPP_IFACE"
+    iptables -A servicelimit -i $PPP_IFACE -m state --state NEW -p tcp --dport $UDPXYPort -j ACCEPT
+fi
+
+# allow samba/wins for l2tp clients
+if [ "$SmbEnabled" = "1" ]; then
+    $LOG "Samba allow from $PPP_IFACE"
+    iptables -A servicelimit -i $PPP_IFACE -p udp --dport 137:138 -j ACCEPT
+    iptables -A servicelimit -i $PPP_IFACE -m state --state NEW -p tcp -m multiport --dport 139,445 -j ACCEPT
+fi
+
+$LOG "Add low prio route to client $PPP_REMOTE network metric 100$PPP_NUM."
+ip -4 route replace default dev $PPP_IFACE metric 100$PPP_NUM via $PPP_REMOTE > /dev/null 2>&1
+
+$LOG "Enable forwarding for $PPP_IFACE interface"
+sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
+
+if [ "$l2tp_srv_proxyarp" = "1" ] || [ "$parproutedEnabled" = "1" ]; then
+    $LOG "Enable proxyarp for $PPP_IFACE"
+    sysctl -wq net.ipv4.conf.$PPP_IFACE.proxy_arp=1
+fi
+
+export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM

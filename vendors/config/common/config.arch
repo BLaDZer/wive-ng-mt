@@ -1,0 +1,111 @@
+# Common definitions for all architectures
+# Included from the various <arch>/config.arch files
+
+HOST_BUILD = $(shell (uname -m) 2>/dev/null || echo unknown)-pc-linux-gnu
+
+# A macro to make testing gcc features easier
+check-gcc-flag = $(shell \
+    if $(CC) $(strip $(1)) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
+    then echo "$(strip $(1))"; else echo "$(strip $(2))"; fi)
+
+check-gcc-nowarn = $(shell \
+    if $(CC) -W$(strip $(1)) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
+    then echo "-Wno-$(strip $(1))"; else echo "$(strip $(2))"; fi)
+
+# We could include a lot more here, but for now, just the libraries
+UCLINUX_COMMON_LIB = 0
+
+ifdef UCLINUX_BUILD_LIB
+	UCLINUX_COMMON_LIB = 1
+endif
+
+ifdef UCLINUX_BUILD_USER
+	UCLINUX_COMMON_LIB = 1
+endif
+
+ifeq ($(UCLINUX_COMMON_LIB),1)
+	# Static versions of libraries
+	SLIBFLEX	=	-lfl
+	SLIBNVRAM	=	-lnvram
+	SLIBICONV	=	-liconv
+	SLIBC		=	-lc
+	SLIBM		=	-lm
+	SLIBINTL	=	-lintl
+	SLIBAES		=	-laes
+	SLIBDES		=	-ldes
+	SLIBNETOLD	=	-lnetold
+	SLIBPCAP	=	-lpcap
+	SLIBNET		=	-lnet
+	SLIBNL		=	-lnl
+	SLIBSSL		=	-lssl
+	SLIBCRYPTO	=	-lcrypto
+	SLIBATM		=	-latm
+	SLIBCRYPT	=	-Wl,-Bstatic -Wl,-Bstatic -lcrypt
+	SLIBEXPAT	=	-lexpat
+	SLIBIXML	=	-lixml
+	SLIBJPEG	=	-ljpeg
+	SLIBPNG		=	-lpng
+	SLIBSTDCPP	=	-Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
+	SLIBTHREADUTIL	=	-lthreadutil
+	SLIBPTHREAD	=	-lpthread
+	SLIBCURL	=	-lcurl
+	SLIBPCAP	=	-lpcap
+	SLIBEVENT	=	-levent
+	SLIBUSB		=	-lusb
+	SLIBUSB_1_0	=	-lusb-1.0
+	SLIBNFNETLINK	=	-lnfnetlink
+	SLIBUPNP	=	-lupnp
+	SLIBZ		=	-lz
+
+	# Dynamic versions
+	LIBDL		=	-ldl
+	LIBEXPAT	=	-lexpat
+	LIBGCC		=	-lgcc
+	LIBIBERTY	=	-liberty
+	LIBIO		=	-lio
+	LIBIOSTREAM	=	-liostream
+	LIBTCL		=	-ltcl
+	LIBNVRAM	=	$(SLIBNVRAM)
+	LIBFLEX		=	$(SLIBFLEX)
+	LIBICONV	=	$(SLIBICONV)
+	LIBC		=	$(SLIBC)
+	LIBM		=	$(SLIBM)
+	LIBINTL		=	$(SLIBINTL)
+	LIBAES		=	$(SLIBAES)
+	LIBDES		=	$(SLIBDES)
+	LIBNETOLD	=	$(SLIBNETOLD)
+	LIBPCAP		=	$(SLIBPCAP)
+	LIBNET		=	$(SLIBNET)
+	LIBNL		=	$(SLIBNL)
+	LIBSSL		=	$(SLIBSSL)
+	LIBCRYPTO	=	$(SLIBCRYPTO)
+	LIBATM		=	$(SLIBATM)
+	LIBCRYPT	=	-lcrypt
+	LIBIXML		=	$(SLIBIXML)
+	LIBJPEG		=	$(SLIBJPEG)
+	LIBPNG		=	$(SLIBPNG)
+	LIBSTDCPP	=	$(SLIBSTDCPP)
+	LIBTHREADUTIL	=	$(SLIBTHREADUTIL)
+	LIBPTHREAD	=	$(SLIBPTHREAD)
+	LIBEVENT	=	$(SLIBEVENT)
+	LIBUSB		=	$(SLIBUSB)
+	LIBUSB_1_0	=	$(SLIBUSB_1_0)
+	LIBCURL		=	$(SLIBCURL)
+	LIBPCAP		=	$(SLIBPCAP)
+	LIBNFNETLINK	=	$(SLIBNFNETLINK)
+	LIBUPNP		=	$(SLIBUPNP)
+	LIBZ		=	$(SLIBZ)
+	LIBRESOLV	=	-lresolv
+	LIBUTIL		=	-lutil
+
+	# STLPort
+	# Note that STL_INCDIR is not included by default since
+	# it can cause conflicts
+	STL_INCDIR=$(ROOTDIR)/include/STLport
+	STL_LIBDIR=$(ROOTDIR)/lib/STLport/lib
+
+	ifeq "$(shell $(LD) --fatal-warnings 2>&1 | grep 'unrecognized option')" ""
+		# Linker warnings are almost always a sign of badness
+		LDFLAGS  += -Wl,--fatal-warnings
+	endif
+endif

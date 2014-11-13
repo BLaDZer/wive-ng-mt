@@ -1,0 +1,58 @@
+#!/bin/sh
+
+LOG="logger -t genkey"
+
+start() {
+    if [ ! -f /etc/dropbear/dropbear_dss_host_key ] && [ -f /bin/dropbear ]; then
+	$LOG "No DSS key found. Generate new host key."
+	mkdir -p /etc/dropbear
+    	dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key &
+	$LOG "Wait dropbaer key generate ant first start"
+	sleep 5
+    fi
+
+    if [ ! -f /etc/miniupnpd.conf.uuid ] && [ -f /bin/miniupnpd ]; then
+       $LOG "No UPNP UUID found. Generate new UUID."
+       num=0
+        for i in `seq 1 36`; do
+            id=`cat /dev/urandom | hexdump | head -1 | cut -c9`
+            num=`expr $num + 1`
+            if [ "$num" = "9" ] || [ "$num" = "19" ] || [ "$num" = "24" ]; then
+	        id="-"
+            fi
+            outid="$outid$id"
+        done
+        serial=`echo "$outid" | cut -f1 -d-`
+        $LOG "UPNP UUID is $outid , serial is $serial"
+	printf "uuid=$outid\nserial=$serial\n" > /etc/miniupnpd.conf.uuid
+    fi
+
+    if [ -f /bin/dhcp6s ] && [ ! -e /etc/dhcp6cctlkey -o ! -e /etc/dhcp6sctlkey ]; then
+	$LOG "Gen dhcp6 ctl keys"
+	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6cctlkey
+	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6sctlkey
+    fi
+}
+
+stop() {
+    :
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac

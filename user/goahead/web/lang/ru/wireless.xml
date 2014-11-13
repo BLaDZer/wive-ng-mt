@@ -1,0 +1,276 @@
+<po>
+  <message msgid="wireless apply" msgstr="Применить" />
+  <message msgid="wireless cancel" msgstr="Отмена" />
+  <message msgid="wireless close" msgstr="Закрыть" />
+  <message msgid="wireless enable" msgstr="Вкл." />
+  <message msgid="wireless disable" msgstr="Выкл." />
+  <message msgid="wireless allow" msgstr="Разрешить" />
+  <message msgid="wireless reject" msgstr="Запретить" />
+  <message msgid="wireless auto" msgstr="Авто" />
+  <message msgid="wireless long" msgstr="Длинный" />
+  <message msgid="wireless on" msgstr="Вкл." />
+  <message msgid="wireless off" msgstr="Выкл." />
+  <message msgid="wireless none" msgstr="Нет" />
+
+  <message msgid="station add" msgstr="Добавить" />
+  <message msgid="station del" msgstr="Удалить" />
+  <message msgid="station edit" msgstr="Править" />
+  <message msgid="station active" msgstr="Активировать" />
+  <message msgid="station enable" msgstr="вкл." />
+  <message msgid="station used" msgstr=" Используется:&#160;&#160;" />
+  <message msgid="station select" msgstr="&#160;" />
+  <message msgid="station ssid" msgstr="SSID" />
+  <message msgid="station channel" msgstr="Канал" />
+  <message msgid="station encryp" msgstr="Шифрование" />
+  <message msgid="station auth" msgstr="Аутентификация" />
+  <message msgid="station network type" msgstr="Тип сети" />
+
+  <message msgid="basic title" msgstr="Основные настройки Wi-Fi " />
+  <message msgid="basic introduction" msgstr="Вы можете настроить минимум параметров Wi-Fi для связи, таких как название сети (SSID) и номер канала. Точка доступа может быть легко настроена минимумом опций. " />
+  <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
+  <message msgid="basic radio button" msgstr="Wi-Fi вкл./выкл." />
+  <message msgid="basic network mode" msgstr="Режим работы" />
+  <message msgid="basic ssid" msgstr="Название сети(SSID)" />
+  <message msgid="basic multiple ssid" msgstr="Множественный SSID" />
+  <message msgid="basic hssid" msgstr="Скрытый" />
+  <message msgid="basic isolated" msgstr="Изолированный" />
+  <message msgid="basic broadcast ssid" msgstr="Широковещательная рассылка SSID" />
+  <message msgid="basic apisolated" msgstr="Изолированная AP" />
+  <message msgid="basic mbssidapisolated" msgstr="MBSSID изоляция AP" />
+  <message msgid="basic bssid" msgstr="BSSID" />
+  <message msgid="basic frequency" msgstr="Частота (канал)" />
+  <message msgid="basic frequency auto" msgstr="Автовыбор" />
+  <message msgid="basic rate" msgstr="Скорость" />
+  <message msgid="basic wds title" msgstr="Wireless Distribution System(WDS)" />
+  <message msgid="basic wds mode" msgstr="Режим WDS" />
+  <message msgid="basic wds phy mode" msgstr="Физический режим" />
+  <message msgid="basic wds encryp type" msgstr="Тип шифрования" />
+  <message msgid="basic wds encryp key" msgstr="Ключ шифрования" />
+  <message msgid="basic wds ap macaddr" msgstr="AP MAC адрес" />
+  <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
+  <message msgid="basic ht op mode" msgstr="Operating Mode" />
+  <message msgid="basic ht op mixed" msgstr="Mixed Mode" />
+  <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
+  <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
+  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant(RDG)" />
+  <message msgid="basic ht extension channel" msgstr="Дополнительный канал" />
+  <message msgid="basic ht amsdu" msgstr="Агрегация MSDU(A-MSDU)" />
+  <message msgid="basic ht addba" msgstr="Auto Block ACK" />
+  <message msgid="basic ht delba" msgstr="Отклонять запрос BA" />
+  <message msgid="basic other" msgstr="Прочее" />
+  <message msgid="basic ht txstream" msgstr="HT TxStream" />
+  <message msgid="basic ht rxstream" msgstr="HT RxStream" />
+
+  <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
+  <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />
+  <message msgid="adv wireless" msgstr="Расширенные настройки Wi-Fi" />
+  <message msgid="adv bgpro" msgstr="Режим защиты BG" />
+  <message msgid="adv basic data rate" msgstr="Основные скорости обмена" />
+  <message msgid="adv basic data rate default" msgstr="Стандартные(1-2-5.5-11 Mbps)" />
+  <message msgid="adv basic data rate all" msgstr="Все(1-2-5.5-6-11-12-24 Mbps)" />
+  <message msgid="adv beacon interval" msgstr="Интервал маяка" />
+  <message msgid="adv beacon interval range" msgstr="(20 - 999, по умолчанию 100)" />
+  <message msgid="adv dtim" msgstr="Интервал DTIM" />
+  <message msgid="adv dtim range" msgstr="(диапазон 1 - 255, по умолчанию 1)" />
+  <message msgid="adv fragment threshold" msgstr="Макс. размер фрагмента" />
+  <message msgid="adv fragment threshold range" msgstr="(256 - 2346, по умолчанию 2346)" />
+  <message msgid="adv rts threshold" msgstr="Пороговое значение RTS" />
+  <message msgid="adv rts threshold range" msgstr="(1 - 2347, по умолчанию 2347)" />
+  <message msgid="adv tx power" msgstr="Мощность передатчика" />
+  <message msgid="adv tx power range" msgstr="(1 - 100, по умолчанию 100)" />
+  <message msgid="adv short preamble" msgstr="Короткая преамбула" />
+  <message msgid="adv short slot" msgstr="Короткий слот" />
+  <message msgid="adv tx burst" msgstr="Пакетная отправка" />
+  <message msgid="adv pkt aggregate" msgstr="Pkt_Aggregate" />
+  <message msgid="adv 80211h" msgstr="Поддержка IEEE 802.11H" />
+  <message msgid="adv 80211h disable describe" msgstr="(только в диапазоне A)" />
+  <message msgid="adv rdregion" msgstr="DFS RDRegion" />
+  <message msgid="adv country code" msgstr="Код страны" />
+  <message msgid="adv country code us" msgstr="US (United States)" />
+  <message msgid="adv country code jp" msgstr="JP (Japan)" />
+  <message msgid="adv country code ru" msgstr="RU (Russia)" />
+  <message msgid="adv country code fr" msgstr="FR (France)" />
+  <message msgid="adv country code tw" msgstr="TW (Taiwan)" />
+  <message msgid="adv country code ie" msgstr="IE (Ireland)" />
+  <message msgid="adv country code hk" msgstr="HK (Hong Kong)" />
+  <message msgid="adv carrier" msgstr="Carrier Detect" />
+  <message msgid="adv wmm" msgstr="Wi-Fi Multimedia" />
+  <message msgid="adv wmm capable" msgstr="Поддержка WMM" />
+  <message msgid="adv apds capable" msgstr="Поддержка APSD" />
+  <message msgid="adv dls capable" msgstr="Поддержка DLS" />
+  <message msgid="adv wmm parameter" msgstr="Настройки WMM" />
+  <message msgid="adv wmm configuration" msgstr="Конфигурация WMM" />
+  <message msgid="adv multicast2unicast converter" msgstr="Конвертер Multicast-to-Unicast (IGMP Snooping)" />
+  <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
+  <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
+  <message msgid="wmm sta parameter" msgstr="Настройки WMM станции" />
+
+  <message msgid="secure select ssid" msgstr="Выберите SSID" />
+  <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />
+  <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных." />
+  <message msgid="secure ssid choice" msgstr="Выбор SSID" />
+  <message msgid="secure security policy" msgstr="Политики безопасности -- " />
+  <message msgid="secure security mode" msgstr="Режим безопасности" />
+  <message msgid="secure encryp type" msgstr="Тип шифрования" />
+  <message msgid="secure wep" msgstr="Wire Equivalence Protection (WEP)" />
+  <message msgid="secure wep default key" msgstr="Ключ по умолчанию" />
+  <message msgid="secure wep default key1" msgstr="Ключ 1" />
+  <message msgid="secure wep default key2" msgstr="Ключ 2" />
+  <message msgid="secure wep default key3" msgstr="Ключ 3" />
+  <message msgid="secure wep default key4" msgstr="Ключ 4" />
+  <message msgid="secure wep key" msgstr="WEP ключи" />
+  <message msgid="secure wep key1" msgstr="WEP ключ 1 :" />
+  <message msgid="secure wep key2" msgstr="WEP ключ 2 :" />
+  <message msgid="secure wep key3" msgstr="WEP ключ 3 :" />
+  <message msgid="secure wep key4" msgstr="WEP ключ 4 :" />
+  <message msgid="secure wpa" msgstr="WPA" />
+  <message msgid="secure wpa algorithm" msgstr="WPA алгоритмы" />
+  <message msgid="secure wpa pass phrase" msgstr="Ключевая фраза" />
+  <message msgid="secure wpa key renew interval" msgstr="Интервал смены ключа" />
+  <message msgid="secure wpa pmk cache period" msgstr="Период кеширования PMK" />
+  <message msgid="secure wpa preauth" msgstr="Пре-аутентификация" />
+  <message msgid="secure 8021x wep" msgstr="802.1x WEP" />
+  <message msgid="secure 1x wep" msgstr=" WEP " />
+  <message msgid="secure radius" msgstr="Радиус-сервер" />
+  <message msgid="secure radius ipaddr" msgstr=" IP адрес " />
+  <message msgid="secure radius port" msgstr=" Порт " />
+  <message msgid="secure radius shared secret" msgstr=" Shared Secret " />
+  <message msgid="secure radius session timeout" msgstr=" Тайм-аут сессии " />
+  <message msgid="secure radius idle timeout" msgstr=" Тайм-аут неактивности " />
+  <message msgid="secure access policy" msgstr=" Политика доступа " />
+  <message msgid="secure access policy capable" msgstr=" Политика " />
+  <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />
+  <message msgid="secure access policy del" msgstr="Удалить" />
+
+  <message msgid="wps title" msgstr="Настройки Wi-Fi Protected" />
+  <message msgid="wps introduction" msgstr="Вы можете легко изменить настройки, выбрав PIN или PBC метод настройки WPS." />
+  <message msgid="wps config" msgstr="Конфигурация WPS" />
+  <message msgid="wps wps" msgstr="WPS: " />
+  <message msgid="wps summary" msgstr="Сводка WPS" />
+  <message msgid="wps current status" msgstr="Статус WPS: " />
+  <message msgid="wps configured" msgstr="WPS настроено: " />
+  <message msgid="wps ssid" msgstr="WPS SSID: " />
+  <message msgid="wps auth mode" msgstr="Аутентификация WPS: " />
+  <message msgid="wps encryp type" msgstr="Шифрование WPS: " />
+  <message msgid="wps default key index" msgstr="Номер WPS ключа по умолчаинию: " />
+  <message msgid="wps ap pin" msgstr="AP PIN: " />
+  <message msgid="wps reset oob" msgstr="Сброс OOB" />
+  <message msgid="wps progress" msgstr="Настройки WPS" />
+  <message msgid="wps mode" msgstr="Режим WPS" />
+  <message msgid="wps pin mode" msgstr="PIN " />
+  <message msgid="wps pbc mode" msgstr="PBC " />
+  <message msgid="wps pin num" msgstr="PIN" />
+  <message msgid="wps status" msgstr="Статус WPS" />
+
+  <message msgid="stalist title" msgstr="Список станций" />
+  <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
+  <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
+  <message msgid="stalist macaddr" msgstr="MAC адрес" />
+
+  <message msgid="prof title" msgstr="Профиль станции" />
+  <message msgid="prof introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />
+  <message msgid="prof list" msgstr="Список профилей" />
+  <message msgid="prof profile" msgstr="Профиль" />
+
+  <message msgid="link title" msgstr="Статус соединения станции" />
+  <message msgid="link introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />
+  <message msgid="link link status" msgstr="Статус соединения" />
+  <message msgid="link status" msgstr="Статус" />
+  <message msgid="link extra info" msgstr="Доп. инфо" />
+  <message msgid="link speed" msgstr="Скорость соединения" />
+  <message msgid="link throughput" msgstr="Пропускная способность" />
+  <message msgid="link quality" msgstr="Качество связи" />
+  <message msgid="link signal strength" msgstr="Уровень сигнала " />
+  <message msgid="link noise level" msgstr="Уровень шума" />
+  <message msgid="link ht" msgstr="HT" />
+  <message msgid="link snr" msgstr="SNR" />
+
+  <message msgid="scan title" msgstr="Доступные точки доступа" />
+  <message msgid="scan introduction" msgstr="Здесь отображается информация о доступных точках доступа. Вы можете выбрать одну из них для соединения либо сохранить ее как профиль." />
+  <message msgid="scan site survey" msgstr="Список AP" />
+  <message msgid="scan bssid" msgstr="BSSID" />
+  <message msgid="scan rssi" msgstr="RSSI" />
+  <message msgid="scan connet" msgstr="Соединиться" />
+  <message msgid="scan rescan" msgstr="Поиск" />
+  <message msgid="scan add profile" msgstr="Добавить профиль" />
+
+  <message msgid="addprof system config" msgstr="Системные настройки" />
+  <message msgid="addprof profile name" msgstr="Название профиля" />
+  <message msgid="addprof adhoc" msgstr="802.11 Ad Hoc" />
+  <message msgid="addprof infrastructure" msgstr="Инфраструктура" />
+  <message msgid="addprof power save" msgstr="Режим энергосбережения" />
+  <message msgid="addprof cam" msgstr="CAM (Constantly Awake Mode)" />
+  <message msgid="addprof preamble type" msgstr="Тип преамбулы 11B" />
+  <message msgid="addprof secure policy" msgstr="Политики безопасности" />
+  <message msgid="addprof wep key length" msgstr="Длинна WEP ключа" />
+  <message msgid="addprof wep key entry method" msgstr="Метод указания WEP ключа" />
+  <message msgid="addprof hex" msgstr="Шестнадцатиричный" />
+  <message msgid="addprof ascii" msgstr="Ascii текст" />
+  <message msgid="addprof 8021X Auth Type" msgstr="Тип аутентификации" />
+  <message msgid="addprof tunnel auth" msgstr="Туннельная аутентификация" />
+  <message msgid="addprof identity" msgstr="Identity" />
+  <message msgid="addprof passwd" msgstr="Пароль" />
+  <message msgid="addprof client cert" msgstr="Сертификат клиента" />
+  <message msgid="addprof client cert path" msgstr="Путь к сертификату клиента" />
+  <message msgid="addprof private key path" msgstr="Путь к секретному ключу" />
+  <message msgid="addprof private key passwd" msgstr="Пароль секретного ключа" />
+  <message msgid="addprof ca cert" msgstr="Сертификат CA" />
+  <message msgid="addprof ca cert path" msgstr="Путь к сертификату CA" />
+
+  <message msgid="statistic title" msgstr="Статистика станции" />
+  <message msgid="statistic introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />
+  <message msgid="statistic tx" msgstr="Transmit Statistics" />
+  <message msgid="statistic rx" msgstr="Receive Statistics" />
+  <message msgid="statistic reset counter" msgstr="Reset Counters" />
+
+  <message msgid="staadv title" msgstr="Расширенная конфигурация станции" />
+  <message msgid="staadv introduction" msgstr="Здесь представлены опции для тонкой настройки станции." />
+  <message msgid="staadv config" msgstr="Расширенная конфигурация" />
+  <message msgid="staadv infra" msgstr="Режим Wi-Fi(Infra)" />
+  <message msgid="staadv country" msgstr="Региональный код страны" />
+  <message msgid="staadv bgprotect" msgstr="Защита B/G" />
+  <message msgid="staadv tx rate" msgstr="Скорость передачи" />
+  <message msgid="staadv bw" msgstr="BW" />
+  <message msgid="staadv gi" msgstr="GI" />
+
+  <message msgid="qos title" msgstr="Конфигурация QoS" />
+  <message msgid="qos introduction" msgstr="Настройки качества обслуживания" />
+  <message msgid="qos config" msgstr="Настройки Qos" />
+  <message msgid="qos wmm" msgstr="WMM" />
+  <message msgid="qos wmm power save" msgstr="Энергосбережение WMM" />
+  <message msgid="qos wmm ps mode" msgstr="Режим PS" />
+  <message msgid="qos dls" msgstr="Настройки Direct Link" />
+  <message msgid="qos dls timeoutvalue" msgstr="Тайм-аут" />
+  <message msgid="qos second" msgstr=" сек" />
+  <message msgid="qos dls status" msgstr="Статус DLS" />
+  <message msgid="qos dls timeout" msgstr="Тайм-аут" />
+  <message msgid="qos teardown" msgstr="Обрыв" />
+
+  <message msgid="11n title" msgstr="Конфигурация 11n станции" />
+  <message msgid="11n introduction" msgstr="." />
+  <message msgid="11n config" msgstr="Настрйоки 11n" />
+  <message msgid="11n ampdu" msgstr="Агрегация MPDU" />
+  <message msgid="11n ampdu manual" msgstr="Вручную" />
+  <message msgid="11n mpdu density" msgstr="Плотность MPDU" />
+
+  <message msgid="about title" msgstr="Информация о станции" />
+  <message msgid="about introduction" msgstr="." />
+  <message msgid="about about" msgstr="О станции" />
+  <message msgid="about driver version" msgstr="Версия драйвера" />
+
+  <message msgid="stawps title" msgstr="Wi-Fi Protected Setup (STA)" />
+  <message msgid="stawps introduction" msgstr=" Вы можете легко изменить настройки, выбрав PIN или PBC метод настройки WPS." />
+  <message msgid="stawps scan" msgstr=" Поиск WPS AP " />
+  <message msgid="stawps refresh" msgstr="Обновить" />
+  <message msgid="stawps mode" msgstr="Режим" />
+  <message msgid="stawps enrollee" msgstr="Enrollee" />
+  <message msgid="stawps registrar" msgstr="Registrar" />
+  <message msgid="stawps pin start" msgstr="PIN Start" />
+  <message msgid="stawps pbc start" msgstr="PBC Start" />
+  <message msgid="stawps renew pin" msgstr="Обновить PIN" />
+  <message msgid="stawps registrar set" msgstr=" Настрйоки Registrar" />
+  <message msgid="stawps wep key type" msgstr="Тип WEP ключа" />
+  <message msgid="stawps wep key index" msgstr="Номер WEP ключа" />
+  <message msgid="stawps key" msgstr="Ключ" />
+  <message msgid="stawps submit" msgstr=" Отправить " />
+</po>

@@ -1,0 +1,26 @@
+Description:
+Compute SHA384 and SHA512 checksums.
+
+Files:
+lib/sha512.h
+lib/sha512.c
+m4/sha512.m4
+
+Depends-on:
+stdint
+u64
+
+configure.ac:
+gl_SHA512
+
+Makefile.am:
+lib_SOURCES += sha512.c
+
+Include:
+"sha512.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

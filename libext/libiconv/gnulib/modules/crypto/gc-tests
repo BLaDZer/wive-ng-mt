@@ -1,0 +1,10 @@
+Files:
+tests/test-gc.c
+
+Depends-on:
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-gc
+check_PROGRAMS += test-gc

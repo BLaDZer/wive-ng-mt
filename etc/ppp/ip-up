@@ -1,0 +1,146 @@
+#!/bin/sh
+
+#include global config
+. /etc/scripts/global.sh
+
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+LOG="logger -t pppd"
+
+eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upnpEnabled parproutedEnabled chilli_net`
+
+    #export for goahead and vpnhelper
+    echo -n "$PPP_IFACE" > /tmp/vpn_if_name
+
+    #if wan ip not get
+    if [ "$PPP_LOCAL" = "" ]; then
+	use_snat=0
+    fi
+
+    if [ "$parproutedEnabled" != "1" ] && [ "$IPv6OpMode" != "1" ]; then
+	#disable multicast on $PPP_IFACE interface
+        ifconfig $PPP_IFACE -allmulti
+        ifconfig $PPP_IFACE -multicast
+    fi
+
+    #Get current dgw
+    GWSTRING=`ip -4 route | grep ^default`
+    if [ "$GWSTRING" != "" ] && [ "$vpnDGW" = "1" ]; then
+        RESTORESTRING="ip route replace $GWSTRING"
+        $LOG "Store old default route to file. $GWSTRING "
+        rm -f /tmp/ip-down-route-reload
+        (
+	    echo '#!/bin/sh'
+	    echo ''
+	    echo "$RESTORESTRING"
+	) > /tmp/ip-down-route-reload
+	chmod 755 /tmp/ip-down-route-reload
+	$LOG "Remove vpnDGW"
+	#clear all default route
+	while ip -4 route del default ; do
+    	    :
+	done
+    else
+	$LOG "No dgw stored."
+	RESTORESTRING=""
+	rm -f /tmp/ip-down-route-reload
+    fi
+
+    #Route to VPN server over WAN select
+    if [ "$vpnType" != "0" ]; then
+	$LOG "Modify route table need for buggy nas"
+	#Remove auto route in VPN
+	ip -4 route del $PPP_REMOTE  > /dev/null 2>&1
+        ip -4 route del dev $PPP_IFACE  > /dev/null 2>&1
+	if [ -f /tmp/default.gw ] && [ -f /tmp/vpnip ]; then
+	    newdgw=`tail -qn1 /tmp/default.gw`
+	    vpnServerIP=`tail -qn1 /tmp/vpnip`
+	    if [ "$vpnServerIP" != "" ] && [ "$newdgw" != "" ] && [ "$vpnServerIP" = "$PPP_REMOTE" ]; then
+		$LOG "Replace route to $vpnServerIP via $newdgw for ppp remote $PPP_REMOTE Corbina ?...."
+		ip -4 route del $vpnServerIP > /dev/null 2>&1
+		ip -4 route replace $vpnServerIP via $newdgw
+		$LOG "Drop OUTPUT to $vpnServerIP over $PPP_IFACE"
+                iptables -I OUTPUT -o $PPP_IFACE -d $vpnServerIP -j DROP
+	    fi
+	fi
+    fi
+
+    #Replace default route to ppp tunnel
+    if [ "$vpnDGW" = "1" ]; then
+	$LOG "Replace default route to $PPP_IFACE"
+	ip -4 route replace default metric 10 dev $PPP_IFACE
+    fi
+
+    #user route add
+    if [ -f /etc/routes_ppp_replace ]; then
+        $LOG "Add user routes from ip-up for $PPP_IFACE"
+        /etc/routes_ppp_replace replace $PPP_IFACE
+    fi
+
+    #replace dns from pppd
+    if [ "$vpnPeerDNS" = "on" ] && [ -f /etc/ppp/resolv.conf ]; then
+	$LOG "Replace DNS from pppd"
+	cp -f /etc/resolv.conf /tmp/resolv.conf.tmp.$PPP_IFACE
+	cat /etc/ppp/resolv.conf /etc/resolv.conf  > /tmp/resolv.$PPP_IFACE
+	cp -f /tmp/resolv.$PPP_IFACE /etc/resolv.conf
+	# read for all write by root
+	chmod 644 /etc/resolv.conf > /dev/null 2>&1
+    else
+	##########################################################
+	# Regenerate resolv only if wan_static_dns on		 #
+	##########################################################
+	if [ "$wan_static_dns" = "on" ]; then
+	    service resolv start
+	fi
+    fi
+
+    PPP_FIREWALL="/tmp/ppp_firewall_${PPP_IFACE}"
+
+    #########################GENERATE VPN NETFILTER SCRIPT########################################################################
+    echo "iptables -A FORWARD -o $PPP_IFACE -j ACCEPT" > $PPP_FIREWALL
+    #NAT in vpn
+    if [ "$vpnNAT" = "on" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	if  [ "$use_snat" = "1" ] && [ "$PPP_LOCAL" != "" ] ; then
+	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
+	    if [ "$OperationMode" = 4 ]; then
+		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
+	    fi
+	    if [ "$Lan2Enabled" = "1" ]; then
+		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
+	    fi
+	else
+	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j MASQUERADE" >> $PPP_FIREWALL
+	    if [ "$OperationMode" = 4 ]; then
+		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j MASQUERADE" >> $PPP_FIREWALL
+	    fi
+	    if [ "$Lan2Enabled" = "1" ]; then
+		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j MASQUERADE" >> $PPP_FIREWALL
+	    fi
+	fi
+	if [ -f /etc/portforward_vpn ] && [ -f $PPP_FIREWALL ] && [ "$PortForwardEnable" = "1" ]; then
+	    echo "/etc/portforward_vpn A $PPP_IFACE $PPP_LOCAL" >> $PPP_FIREWALL
+        fi
+    fi
+    chmod 755 $PPP_FIREWALL
+
+    #########################CALL SERVICE HELPER##################################################################################
+
+    $LOG "Flush route cache"
+    ip route flush cache
+
+    $LOG "Restart dns server, dyndns, ntp sync and rebuild shaper and iptables rules"
+    services_restart.sh pppd
+
+    $LOG "Enable forwarding for $PPP_IFACE interface"
+    sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
+
+#run scrips from /etc/ppp/ip-up.d/
+export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
+if [ -d /etc/ppp/ip-up.d/ -a -x /bin/run-parts ]; then
+    run-parts /etc/ppp/ip-up.d/
+fi
+$LOG "All is start OK"

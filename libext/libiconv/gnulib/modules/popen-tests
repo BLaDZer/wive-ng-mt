@@ -1,0 +1,15 @@
+Files:
+tests/test-popen.h
+tests/test-popen.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+dup2
+sys_wait
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-popen
+check_PROGRAMS += test-popen

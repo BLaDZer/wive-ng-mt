@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/snmpd ]; then
+    exit 0
+fi
+
+LOG="logger -t snmpd"
+
+start() {
+    get_param
+    if [ "$snmpd" != "" ] && [ "$snmpd" != "0" ]; then
+	$LOG "Starting SNMPD"
+	snmpd -h "$lan_ipaddr" -c "$HostName" &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 snmpd HostName lan_ipaddr`
+}
+
+stop() {
+    pid=`pidof snmpd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping SNMPD"
+	killall -q snmpd
+	killall -q -SIGKILL snmpd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

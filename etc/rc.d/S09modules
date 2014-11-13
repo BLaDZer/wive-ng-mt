@@ -1,0 +1,228 @@
+#!/bin/sh
+
+# get params
+. /etc/scripts/global.sh
+
+# include kernel config
+. /etc/scripts/config.sh
+
+LOG="logger -t modules"
+
+start() {
+    get_param
+    # generate modules dep if need
+    if [ ! -f /etc/modules.dep ]; then
+        $LOG "Start modules.dep generate."
+        depmod -a -n > /etc/modules.dep
+    fi
+
+    # if goahead started
+    if [  -f /tmp/bootgood ]; then
+	# clear conntrack and routes tables/caches
+	flush_net_caches
+
+	# wifi reconfigure only after goahead start
+	$LOG "Prepare wifi config."
+	gen_wifi_config
+	if [ "$OperationMode" = "2" ] && [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
+	    WLAN_MAC_ADDR="$macCloneMac"
+	    $LOG "STA Macclone mode. MAC: $WLAN_MAC_ADDR"
+	else
+	    $LOG "AP/STA Normal mode. MAC: $WLAN_MAC_ADDR"
+	fi
+	mac="mac=$WLAN_MAC_ADDR"
+
+    	if [ "$OperationMode" = "2" ]; then
+	    $LOG "Load wifi STA module."
+    	    modprobe -q rt2860v2_sta "$mac"
+	else
+	    $LOG "Load wifi AP module."
+    	    modprobe -q rt2860v2_ap  "$mac"
+	    if [ "$second_wlan_root_if" != "" ]; then
+		# second mac adress
+		mac="mac=$WLAN2_MAC_ADDR"
+		$LOG "Load RT3090 external wifi AP module."
+		modprobe -q rt3090_ap "$mac"
+	    fi
+	fi
+
+	# root interfaces must be up first
+	$LOG "WiFi interfaces up."
+	ifconfig $first_wlan_root_if txqueuelen	"$txqueuelen"
+	ip link set $first_wlan_root_if up
+	if [ "$second_wlan_root_if" != "" ]; then
+	    $LOG "WiFi $second_wlan_root_if interface up."
+	    # others modes
+	    ifconfig $second_wlan_root_if txqueuelen	"$txqueuelen"
+	    ip link set $second_wlan_root_if up
+	fi
+	if [ "$OperationMode" = "3" ]; then
+	    $LOG "WiFi APCLI interface up."
+	    # apcli mode sta interface
+	    if [ "$first_wlan_apcli" != "" ]; then
+		ifconfig $first_wlan_apcli txqueuelen	"$txqueuelen"
+		ip link set $first_wlan_apcli up
+	    fi
+	    if [ "$second_wlan_apcli" != "" ]; then
+		ifconfig $second_wlan_apcli txqueuelen	"$txqueuelen"
+		ip link set $second_wlan_apcli up
+	    fi
+	fi
+	$LOG "Tune wifi modules after load..."
+	retune_wifi
+
+	# not load this modules after goahead start
+	# load conntrack helpers modules
+	load_nat_helpers
+    fi
+}
+
+gen_wifi_config() {
+    rm -f /etc/Wireless/RT2860/RT2860.dat
+    rm -f /etc/Wireless/iNIC/RT2860AP.dat
+    ralink_init make_wireless_config rt2860
+}
+
+retune_wifi() {
+    get_param
+    # preconfigure wifi
+    /etc/scripts/wifi.sh $first_wlan_root_if &
+    if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ] && [ "$ApCliEnable" = "1" ]; then
+	/etc/scripts/wifi.sh $first_wlan_apcli &
+    fi
+    if [ "$second_wlan_root_if" != "" ]; then
+	# preconfigure second wlan root interface to
+	/etc/scripts/wifi.sh $second_wlan_root_if &
+	if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ]; then
+	    /etc/scripts/wifi.sh $second_wlan_apcli &
+	fi
+    fi
+}
+
+load_nat_helpers() {
+    # not load nf_nat helpers in bridge mode
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	# load conntrack helpers
+	eval `nvram_buf_get 2860 fwAlgSIP fwAlgGRE fwAlgPPTP fwAlgH323 fwAlgFTP fwAlgRTSP ipt_account`
+	if [ "$fwAlgSIP" != "0" ]; then
+	    modprobe -q nf_conntrack_sip
+	    modprobe -q nf_nat_sip
+	fi
+	if [ "$fwAlgGRE" != "0" ]; then
+	    modprobe -q nf_conntrack_proto_gre
+	    modprobe -q nf_nat_proto_gre
+	fi
+	if [ "$fwAlgPPTP" != "0" ]; then
+	    modprobe -q nf_conntrack_pptp
+	    modprobe -q nf_nat_pptp
+	fi
+	if [ "$fwAlgH323" != "0" ]; then
+	    modprobe -q nf_conntrack_h323
+	    modprobe -q nf_nat_h323
+	fi
+	if [ "$fwAlgFTP" != "0" ]; then
+	    modprobe -q nf_conntrack_ftp
+	    modprobe -q nf_nat_ftp
+	fi
+	if [ "$fwAlgRTSP" != "0" ]; then
+	    modprobe -q nf_conntrack_rtsp
+	    modprobe -q nf_nat_rtsp
+	fi
+    	if [ "$ipt_account" = "1" ]; then
+	    modprobe -q ipt_account
+	fi
+    fi
+}
+
+wlan_down_all() {
+    get_param
+    $LOG "Shutdown all wireless interfaces."
+    # always clear conntrack and routes tables/caches
+    flush_net_caches
+
+    # flush ip address from all wireless interfaces, remove from bridge and down
+    # first down single vifs
+    if [ "$first_wlan_apcli" != "" ]; then
+	delif_from_br $first_wlan_apcli
+    fi
+    if [ "$second_wlan_apcli" != "" ]; then
+	delif_from_br $seond_wlan_apcli
+    fi
+    # second down multiple vifs
+    if [ "$first_wlan_wds" != "" ]; then
+	for i in `seq 0 3`; do
+	    delif_from_br ${first_wlan_wds}${i}
+	done
+    fi
+    if [ "$second_wlan_wds" != "" ]; then
+	for i in `seq 0 3`; do
+	    delif_from_br ${second_wlan_wds}${i}
+	done
+    fi
+    # next down second radio module to
+    if [ "$second_wlan" != "" ]; then
+	for i in `seq 7 -1 0`; do
+	    delif_from_br ${second_wlan}${i}
+	done
+    fi
+    # root and mbssid interfaces must down end
+    if [ "$first_wlan" != "" ]; then
+	for i in `seq 7 -1 0`; do
+	    delif_from_br ${first_wlan}${i}
+	done
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac ApCliEnable`
+}
+
+stop() {
+    $LOG "link wifi down first"
+    wlan_down_all
+    if [ -d /sys/module/hw_nat ]; then
+        $LOG "Unload hw_nat and wireless modules."
+        mod="hw_nat rt2860v2_ap rt2860v2_sta rt3090_ap"
+    else
+        $LOG "Unload wireless modules."
+        mod="rt2860v2_ap rt2860v2_sta rt3090_ap"
+    fi
+    for module in $mod
+    do
+	if [ -d /sys/module/$module ]; then
+	    rmmod $module > /dev/null 2>&1
+	fi
+    done
+}
+
+case "$1" in
+
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	wlan_down_all)
+	    wlan_down_all
+	    ;;
+
+	retune_wifi)
+	    retune_wifi
+	    ;;
+
+	gen_wifi_config)
+	    gen_wifi_config
+	    ;;
+
+	restart)
+	    stop
+	    start
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart|wlan_down_all|retune_wifi}"
+	    exit 1
+esac
