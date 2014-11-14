@@ -288,6 +288,7 @@
 <br>
 <br>
 <b>1.0.0</b><br>
+1) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
 <br>
 <br>
 <b>TODO:</b><br>
