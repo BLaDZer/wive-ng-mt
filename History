@@ -293,6 +293,7 @@
 3) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
 4) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
 5) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
+6) kernel: wifi drivers: decrease life check packets max count and decrease life time for more speed cleanup died clients.<br>
 <br>
 <br>
 <b>TODO:</b><br>
