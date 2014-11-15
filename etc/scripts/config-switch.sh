@@ -105,7 +105,7 @@ if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
 		CMODE="LLLLW"
 	    fi
 	fi
-    elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" -a "$ApCliBridgeOnly" = "1" ]; then
+    elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 		CMODE="LLLLL"
     fi
     $LOG '##### ESW config vlan partition $CMODE #####'
