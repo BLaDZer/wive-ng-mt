@@ -916,7 +916,7 @@ static void outputTimerForReload(webs_t wp, long delay)
 /* goform/setOpMode */
 static void setOpMode(webs_t wp, char_t *path, char_t *query)
 {
-	char	*mode, *old_mode
+	char	*mode, *old_mode;
 
 	nvram_init(RT2860_NVRAM);
 
