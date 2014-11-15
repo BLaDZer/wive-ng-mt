@@ -916,38 +916,37 @@ static void outputTimerForReload(webs_t wp, long delay)
 /* goform/setOpMode */
 static void setOpMode(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*mode;
-
-	int	need_commit = 0;
-	mode = websGetVar(wp, T("opMode"), T("0"));
+	char	*mode, *old_mode
 
 	nvram_init(RT2860_NVRAM);
-	char	*old_mode = nvram_bufget(RT2860_NVRAM, "OperationMode");
+
+	/* get modes */
+	mode = websGetVar(wp, T("opMode"), T("0"));
+	old_mode = nvram_bufget(RT2860_NVRAM, "OperationMode");
 
 	/* new OperationMode */
 	if (strncmp(mode, old_mode, 2))
 	{
 		nvram_bufset(RT2860_NVRAM, "OperationMode", mode);
 #ifdef CONFIG_USER_CHILLISPOT
-		if (!strncmp(mode, "4", 2)) {
-			nvram_bufset(RT2860_NVRAM, "offloadMode", "0");
+		if (!strncmp(mode, "4", 2))
 			nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "0");
-		}
 #endif
 		/* from or to ap client mode */
 		if (!strncmp(mode, "3", 2))
 			nvram_bufset(RT2860_NVRAM, "ApCliEnable", "1");
-		else if (!strncmp(old_mode, "3", 2))
+		else if (!strncmp(old_mode, "3", 2)) {
+			/* from apcli to other mode need drop bridge only flag to */
 			nvram_bufset(RT2860_NVRAM, "ApCliEnable", "0");
-		need_commit = 1;
-	}
-
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
+			nvram_bufset(RT2860_NVRAM, "ApCliBridgeOnly", "0");
+		}
+		nvram_commit(RT2860_NVRAM);
 #ifdef CONFIG_USER_802_1X
-	if (need_commit)
 		updateFlash8021x(RT2860_NVRAM);
 #endif
+	}
+	nvram_close(RT2860_NVRAM);
+
 	outputTimerForReload(wp, 50000);
 	sleep(2);	/* wait for websDone() to finish tcp http session(close socket) */
 	reboot_now();

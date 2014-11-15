@@ -288,9 +288,11 @@
 <br>
 <br>
 <b>1.0.x</b><br>
-1) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
-2) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
-3) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
+1) init.d: optimize and small fix switch and offload configure.<br>
+2) goahead: fix swith from/to apcli with apcli bridge only modes.<br>
+3) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
+4) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
+5) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -412,7 +412,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	char_t *nat_fp = nvram_bufget(RT2860_NVRAM, "offloadMode");
 	if (CHK_IF_DIGIT(nat_fp, 2) || CHK_IF_DIGIT(nat_fp, 3))
 	{
-		char_t *nat_th = websGetVar(wp, "hwnatThreshold", "30");
+		char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
 		if (nat_th != NULL)
 			nvram_bufset(RT2860_NVRAM, "hw_nat_bind", nat_th);
 	}
