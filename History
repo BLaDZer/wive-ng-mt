@@ -287,9 +287,10 @@
 33) kernel: ipv6: mld: fix add_grhead skb_over_panic for devs with large MTUs.<br>
 <br>
 <br>
-<b>1.0.0</b><br>
+<b>1.0.x</b><br>
 1) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
 2) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
+3) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
 <br>
 <br>
 <b>TODO:</b><br>
