@@ -294,8 +294,10 @@
 4) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
 5) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
 6) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
-7) kernel: wifi drivers: decrease life check packets max count and decrease life time for more speed cleanup died clients.<br>
-8) kernel: raeth: fix raise spurious interrupts.<br>
+7) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
+8) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
+9) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
+10) kernel: raeth: fix raise spurious interrupts.<br>
 <br>
 <br>
 <b>TODO:</b><br>
