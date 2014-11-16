@@ -43,7 +43,7 @@ cmd_iface_pattern(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "iface-pattern set to new value %s",
+	log_debug("lldpctl", "iface-pattern set to new value %s",
 	    value?value:"(none)");
 	lldpctl_atom_dec_ref(config);
 	return 1;
@@ -102,7 +102,7 @@ cmd_system_description(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "description set to new value %s",
+	log_debug("lldpctl", "description set to new value %s",
 	    value?value:"(none)");
 	lldpctl_atom_dec_ref(config);
 	return 1;
@@ -129,7 +129,7 @@ cmd_management(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "management pattaren set to new value %s",
+	log_debug("lldpctl", "management pattaren set to new value %s",
 	    value?value:"(none)");
 	lldpctl_atom_dec_ref(config);
 	return 1;
@@ -156,7 +156,7 @@ cmd_hostname(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "system name set to new value %s",
+	log_debug("lldpctl", "system name set to new value %s",
 	    value?value:"(none)");
 	lldpctl_atom_dec_ref(config);
 	return 1;
@@ -227,7 +227,7 @@ cmd_bondslave_srcmac_type(struct lldpctl_conn_t *conn, struct writer *w,
 		return 0;
 	}
 
-	log_info("lldpctl", "bond slave src mac set to new value: %s",
+	log_debug("lldpctl", "bond slave src mac set to new value: %s",
 	    value_str);
 	lldpctl_atom_dec_ref(config);
 

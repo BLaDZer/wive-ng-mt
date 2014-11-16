@@ -433,7 +433,7 @@ levent_init(struct lldpd *cfg)
 	event_set_log_callback(levent_log_cb);
 	if (!(cfg->g_base = event_base_new()))
 		fatalx("unable to create a new libevent base");
-	log_info("event", "libevent %s initialized with %s method",
+	log_debug("event", "libevent %s initialized with %s method",
 		  event_get_version(),
 		  event_base_get_method(cfg->g_base));
 

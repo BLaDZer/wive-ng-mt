@@ -662,7 +662,7 @@ priv_init(const char *chrootdir, int ctl, uid_t uid, gid_t gid)
 		exit(0);
 	}
 #else
-	log_warnx("priv", "no privilege separation available");
+	log_debug("priv", "no privilege separation available");
 	priv_ping();
 #endif
 }

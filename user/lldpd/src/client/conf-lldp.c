@@ -40,7 +40,7 @@ cmd_txdelay(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "transmit delay set to new value");
+	log_debug("lldpctl", "transmit delay set to new value");
 	lldpctl_atom_dec_ref(config);
 	return 1;
 }
@@ -64,7 +64,7 @@ cmd_txhold(struct lldpctl_conn_t *conn, struct writer *w,
 		lldpctl_atom_dec_ref(config);
 		return 0;
 	}
-	log_info("lldpctl", "transmit hold set to new value %s", cmdenv_get(env, "tx-hold"));
+	log_debug("lldpctl", "transmit hold set to new value %s", cmdenv_get(env, "tx-hold"));
 	lldpctl_atom_dec_ref(config);
 	return 1;
 }
@@ -110,7 +110,7 @@ cmd_portid_type(struct lldpctl_conn_t *conn, struct writer *w,
 		return 0;
 	}
 
-	log_info("lldpctl", "LLDP PortID TLV type set to new value : %s", value_str);
+	log_debug("lldpctl", "LLDP PortID TLV type set to new value : %s", value_str);
 	lldpctl_atom_dec_ref(config);
 
 	return 1;
