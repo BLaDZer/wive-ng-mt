@@ -63,6 +63,7 @@
 /* IGMP SNOOPING CHECK */
 #ifdef RALINK_ESW_SUPPORT
 #include "linux/autoconf.h"
+#include "ralink.h"
 
 #if defined(CONFIG_RALINK_RT3052)
 #define PROCREG_GMAC	"/proc/rt3052/gmac"
@@ -125,10 +126,6 @@ extern char		s4[];
 //#################################################################################
 //  Lib function prototypes.
 //#################################################################################
-
-#ifdef RALINK_ESW_SUPPORT
-extern uint32_t WanPort;              // Wan port number
-#endif
 
 /* syslog.c
  */

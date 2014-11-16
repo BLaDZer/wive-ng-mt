@@ -769,7 +769,7 @@ INT Set_IgmpSn_Enable_Proc(
 }
 
 INT Set_IgmpSn_AddEntry_Proc(
-	IN PRTMP_ADAPTER pAd, 
+	IN PRTMP_ADAPTER pAd,
 	IN PSTRING arg)
 {
 	INT i;

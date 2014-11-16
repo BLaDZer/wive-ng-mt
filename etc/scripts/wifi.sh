@@ -35,11 +35,9 @@ else
 fi
 ########################################MULTICAST param##########################################
 if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
-    if [ "$M2UEnabled" = "1" ] && \
-	[ "$igmpEnabled" = "1" -o "$OperationMode" = "0" -o "$ApCliBridgeOnly" = "1" ]; then
-	iwpriv "$1" set IgmpSnEnable=1
-    else
-	iwpriv "$1" set IgmpSnEnable=0
+    # only for M2U disabled mode,
+    # param for M2U mode tuned direct from igmpproxy
+    if [ "$M2UEnabled" != "1" ]
 	if [ "$McastPhyMode" != "" ]; then
 	    iwpriv "$1" set McastPhyMode="$McastPhyMode"
 	fi

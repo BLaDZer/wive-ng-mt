@@ -223,7 +223,6 @@ int insertRoute(uint32_t group, int ifx) {
     }
 
     // Santiycheck the VIF index...
-    //if(ifx < 0 || ifx >= MAX_MC_VIFS) {
     if(ifx >= MAX_MC_VIFS) {
         my_log(LOG_WARNING, 0, "The VIF Ix %d is out of range (0-%d). Table insert failed.",ifx,MAX_MC_VIFS);
         return 0;

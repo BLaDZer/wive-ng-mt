@@ -4,6 +4,7 @@ IGMP_PROXY_OBJ= igmpproxy.o config.o confread.o request.o mcgroup.o rttable.o \
 
 -include $(LINUX_CONFIG)
 
+CFLAGS += -Wno-unused-value
 CFLAGS += -I$(LINUXDIR) -I$(LINUXDIR)/include
 CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
 CONF_H  = $(LINUXDIR)/include/linux/autoconf.h
@@ -11,8 +12,6 @@ CONF_H  = $(LINUXDIR)/include/linux/autoconf.h
 ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
 # allow add snoop records to wifi drivers from igmpproxy
 CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT
-# auto enable igmp snooping in wifi drivers
-#CFLAGS+= -DWIFI_IGMPSNOOP_AUTO
 endif
 
 ifdef CONFIG_RALINK_RT6855

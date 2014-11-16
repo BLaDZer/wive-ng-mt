@@ -63,8 +63,6 @@ void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr);
 void rtwifi_remove_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
-void rtwifi_fini(void);
-void rtwifi_init(void);
 #endif
 
 // function prototype
@@ -75,7 +73,6 @@ static int	portLookUpByIP(char *ip);
 
 // global variables.
 static struct group 	*group_list = NULL;
-
 static int		snooping_enabled = 0;
 
 static struct group *find_entry(uint32 ip_addr)
@@ -111,13 +108,11 @@ static int arpLookUp(char *ip, char *arp)
 		if(!strcmp(ip, ip_entry)){
 			strcpy(arp, hw_address);
 			fclose(fp);
-			if(!strcmp("00:00:00:00:00:00", hw_address)){
+			if(!strcmp("00:00:00:00:00:00", hw_address))
 				return -1;
-			}
 			return 0;
 		}
 	}
-
 	fclose(fp);
 	return -1;
 }
@@ -175,7 +170,7 @@ static struct group *build_entry(uint32 m_ip_addr, uint32 u_ip_addr)
 
 	new_entry = (struct group *)malloc(sizeof(struct group));
 	if(!new_entry){
-		my_log(LOG_WARNING, 0, "*** rtGSW: Out of memory.");
+		my_log(LOG_DEBUG, 0, "*** rtGSW: Out of memory.");
 		return NULL;
 	}
 	//printf("%s, %s\n", __FUNCTION__,  inetFmt(htonl(m_ip_addr), s1));
@@ -224,13 +219,13 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 
 	entry = find_entry(m_ip_addr);
 	if(!entry){
-		my_log(LOG_WARNING, 0, "*** rtGSW: can't find the group [%s].", inetFmt(htonl(m_ip_addr), s1));
+		my_log(LOG_DEBUG, 0, "*** rtGSW: can't find the group [%s].", inetFmt(htonl(m_ip_addr), s1));
 		return;
 	}
 
 	pos = entry->members;
 	if(!pos){
-		my_log(LOG_WARNING, 0, "*** rtGSW: group [%s] member list is empty.", inetFmt(htonl(m_ip_addr), s1));
+		my_log(LOG_DEBUG, 0, "*** rtGSW: group [%s] member list is empty.", inetFmt(htonl(m_ip_addr), s1));
 		return;
 	}
 
@@ -253,9 +248,9 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	if(del){
 		free(del);
 	}else{
-		my_log(LOG_WARNING, 0, "************************************************");
-		my_log(LOG_WARNING, 0, "*** rtGSW: can't delete [%s] in the group [%s].", inetFmt(htonl(u_ip_addr), s1) , inetFmt(htonl(m_ip_addr), s2));
-		my_log(LOG_WARNING, 0, "************************************************");
+		my_log(LOG_DEBUG, 0, "************************************************");
+		my_log(LOG_DEBUG, 0, "*** rtGSW: can't delete [%s] in the group [%s].", inetFmt(htonl(u_ip_addr), s1) , inetFmt(htonl(m_ip_addr), s2));
+		my_log(LOG_DEBUG, 0, "************************************************");
 	}
 	update_group_port_map(entry);
 
@@ -321,7 +316,7 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 	/* create a new member */
 	new_member = (struct group_member *)malloc(sizeof(struct group_member));
 	if(!new_member){
-			my_log(LOG_WARNING, 0, "*** rtGSW: Out of memory.");
+			my_log(LOG_DEBUG, 0, "*** rtGSW: Out of memory.");
 			return NULL;
 	}
 	tmp.s_addr				= htonl(u_ip_addr);
@@ -359,7 +354,7 @@ void sweap_no_report_members(void)
 				craft_mip |= ((unsigned long)(pos->a2) << 16) ;
 				craft_mip |= ((unsigned long)(pos->a3) << 24) ;
 
-				my_log(LOG_WARNING, 0, "*** rtGSW!: remove [%s] in the group [%s].", inetFmt(htonl(member->ip_addr), s1) , inetFmt(craft_mip, s2));
+				my_log(LOG_DEBUG, 0, "*** rtGSW!: remove [%s] in the group [%s].", inetFmt(htonl(member->ip_addr), s1) , inetFmt(craft_mip, s2));
 				remove_member( ntohl(craft_mip), member->ip_addr);
 			}
 
@@ -423,7 +418,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 
 	if(!entry){
 		// This entry isn't in the list.
-		my_log(LOG_WARNING, 0, "*** rtGSW: can't find group entry [%s].", inetFmt(htonl(m_ip_addr), s1));
+		my_log(LOG_DEBUG, 0, "*** rtGSW: can't find group entry [%s].", inetFmt(htonl(m_ip_addr), s1));
 		return;
 	}
 
@@ -447,7 +442,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 	}
 
 	if(delete_found)
-		my_log(LOG_WARNING, 0, "*** rtGSW: group entry [%s] found undeleted member.", inetFmt(htonl(m_ip_addr), s1));
+		my_log(LOG_DEBUG, 0, "*** rtGSW: group entry [%s] found undeleted member.", inetFmt(htonl(m_ip_addr), s1));
 
 	if(entry->members == NULL || new_portmap == 0){
 		entry->port_map = 0;
@@ -466,7 +461,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 				group_pos = group_pos->next;
 			}
 			if(!found){
-				my_log(LOG_WARNING, 0, "*** rtGSW: can't find grou entry [%s].", inetFmt(htonl(m_ip_addr), s1));
+				my_log(LOG_DEBUG, 0, "*** rtGSW: can't find grou entry [%s].", inetFmt(htonl(m_ip_addr), s1));
 				return;
 			}
 		}
@@ -508,9 +503,9 @@ static void update_group_port_map(struct group *entry)
 	while(pos){
 		if(pos->port_num == -1){
 			// can't find which port it's in, so opens all ports for it.
-			my_log(LOG_WARNING, 0, "****************************************");
-			my_log(LOG_WARNING, 0, "*** rtGSW: can't find %s's port number.", inetFmt(htonl(pos->ip_addr), s1));
-			my_log(LOG_WARNING, 0, "****************************************");
+			my_log(LOG_DEBUG, 0, "****************************************");
+			my_log(LOG_DEBUG, 0, "*** rtGSW: can't find %s's port number.", inetFmt(htonl(pos->ip_addr), s1));
+			my_log(LOG_DEBUG, 0, "****************************************");
 			new_portmap =  (0x5f & ~(WanPort)); // All Lan ports
 			break;
 		}else{
@@ -542,7 +537,8 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 		if( (entry = build_entry(m_ip_addr, u_ip_addr)) == NULL)
 			return;
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-		rtwifi_insert_multicast_ip(m_ip_addr);
+		if(auto_wifi_snooping)
+		    rtwifi_insert_multicast_ip(m_ip_addr);
 #endif
 		if(group_list)
 			entry->next = group_list;
@@ -550,7 +546,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 	}
 	new_member = insert_member(entry, m_ip_addr, u_ip_addr);
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-	if(new_member && new_member->port_num == OTHER_INTERFACE)
+	if(auto_wifi_snooping && new_member && new_member->port_num == OTHER_INTERFACE)
 		rtwifi_insert_member(m_ip_addr, u_ip_addr);
 #endif
 	update_group_port_map(entry);
@@ -628,14 +624,8 @@ void rt_fini(void)
 
 	/* del 224.0.0.1( 01:00:5e:00:00:01) from mac table */
 	destory_all_hosts_rule();
-
 	remove_all_groups();
-
 	rt_switch_fini();
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-	rtwifi_fini();
-#endif
-
 }
 
 void rt_init(int se)
@@ -650,10 +640,11 @@ void rt_init(int se)
 	/* add 224.0.0.1( 01:00:5e:00:00:01) to mac table */
 	create_all_hosts_rule();
 
+	/* add wifi interface */
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-	rtwifi_init();
+	if (addRTWiFiIntf("ra0") == -1)
+	    my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
 #endif
-
 }
 
 typedef union _MACHTTRANSMIT_SETTING {
@@ -701,54 +692,53 @@ typedef struct _RT_802_11_MAC_TABLE {
 } RT_802_11_MAC_TABLE;
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-void rtwifi_init(void)
+void rtwifi_enable(void)
 {
-#ifdef WIFI_IGMPSNOOP_AUTO
 	int i;
 	char cmd[128];
-	for(i=0; i<rtwifi_intf_count ; i++){
+	for(i=0; i<rtwifi_intf_count ; i++) {
+		my_log(LOG_DEBUG, 0, "Enable M2U for %s", rtwifi_intfs[i]);
 		sprintf(cmd, "iwpriv %s set IgmpSnEnable=1", rtwifi_intfs[i]);
-		printf("%s\n", cmd);
 		system(cmd);
 	}
-#endif
-}
-
-void rtwifi_fini(void)
-{
-#ifdef WIFI_IGMPSNOOP_AUTO
-	int i;
-	char cmd[128];
-	for(i=0; i<rtwifi_intf_count ; i++){
-		sprintf(cmd, "iwpriv %s set IgmpSnEnable=0", rtwifi_intfs[i]);
-		printf("%s\n", cmd);
-		system(cmd);
-	}
-#endif
+	auto_wifi_snooping++;
 }
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
 	int i;
 	char mac[32], cmd[128];
-	if( arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1){
+	if( arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1) {
 		for(i=0; i<rtwifi_intf_count ; i++){
+			my_log(LOG_DEBUG, 0, "Add %s to wifi driver snooping table %s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
 			sprintf(cmd, "iwpriv %s set IgmpAdd=%s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
-			printf("%s\n", cmd);
 			system(cmd);
 		}
 	}else
-		my_log(LOG_WARNING, 0, "Can't find Mac address(%s)", u_ip_addr);
+		my_log(LOG_DEBUG, 0, "Can't find Mac address(%s)", u_ip_addr);
 }
 
+void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
+{
+	int i;
+	char mac[32], cmd[128];
+	if( arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1) {
+		for(i=0; i<rtwifi_intf_count ; i++){
+			my_log(LOG_DEBUG, 0, "Del %s from wifi driver snooping table %s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
+			sprintf(cmd, "iwpriv %s set IgmpDel=%s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
+			system(cmd);
+		}
+	}else
+		my_log(LOG_DEBUG, 0, "Can't find Mac address(%s)", inetFmt(htonl(u_ip_addr), s1));
+}
 
 void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 {
 	int i;
 	char cmd[128];
-	for(i=0; i<rtwifi_intf_count ; i++){
+	for(i=0; i<rtwifi_intf_count ; i++) {
 		sprintf(cmd, "iwpriv %s set IgmpAdd=%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1));
-		printf("%s\n", cmd);
+		my_log(LOG_DEBUG, 0, "Add %s to wifi driver snooping table", inetFmt(htonl(m_ip_addr), s1));
 		system(cmd);
 	}
 }
@@ -757,27 +747,13 @@ void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 {
 	int i;
 	char cmd[128];
-	for(i=0; i<rtwifi_intf_count ; i++){
+	for(i=0; i<rtwifi_intf_count ; i++) {
 		sprintf(cmd, "iwpriv %s set IgmpDel=%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1));
+		my_log(LOG_DEBUG, 0, "Remove %s from wifi driver snooping table", inetFmt(htonl(m_ip_addr), s1));
 		printf("%s\n", cmd);
 		system(cmd);
 	}
 }
-
-void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
-{
-	int i;
-	char mac[32], cmd[128];
-	if( arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1){
-		for(i=0; i<rtwifi_intf_count ; i++){
-			sprintf(cmd, "iwpriv %s set IgmpDel=%s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
-			printf("%s\n", cmd);
-			system(cmd);
-		}
-	}else
-		my_log(LOG_WARNING, 0, "Can't find Mac address(%s)", inetFmt(htonl(u_ip_addr), s1));
-}
-
 
 int addRTWiFiIntf(char *wifi)
 {
@@ -798,15 +774,17 @@ int _WiFiSTALookUPByMac(char *wifi, unsigned int mac1, unsigned int mac2)
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	strncpy(iwr.ifr_name, wifi, IFNAMSIZ);
 	iwr.u.data.pointer = (caddr_t) &table;
+
 	if (s < 0) {
-		my_log(LOG_WARNING, 0, "ioctl sock failed!");
+		my_log(LOG_DEBUG, 0, "ioctl sock failed!");
 		return 0;
 	}
 	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT, &iwr) < 0) {
-		my_log(LOG_WARNING, 0, "ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT failed!");
+		my_log(LOG_DEBUG, 0, "ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT failed!");
 		close(s);
 		return 0;
 	}
+
 	close(s);
 
 	for (i = 0; i < table.Num; i++) {
@@ -841,10 +819,11 @@ int WiFiSTALookUPByMac(char *mac)
 	mac1 = strtoll(mac_entry1, 0, 16);
 	mac2 = strtol(mac_entry2, 0, 16);
 
-	for(i=0; i<rtwifi_intf_count; i++){
+	for(i=0; i<rtwifi_intf_count; i++) {
 		if(_WiFiSTALookUPByMac(rtwifi_intfs[i], mac1, mac2) == 1)
 			return 1;
 	}
+
 	return 0;
 }
 #endif
@@ -852,10 +831,10 @@ int WiFiSTALookUPByMac(char *mac)
 static void strip_mac(char *mac)
 {
 	char *pos = mac, *strip = mac;
-	while(*pos != '\0'){
+	while(*pos != '\0') {
 		if(*pos == ':')
 			pos++;
-		else{
+		else {
 			*strip = *pos;
 			strip++;
 			pos++;
@@ -879,9 +858,10 @@ static void sendUDP(char *ip)
 	user_addr.sin_addr.s_addr = inet_addr(ip);
 
 	if((socket_fd = socket(AF_INET,SOCK_DGRAM, 0)) == -1) {
-		my_log(LOG_WARNING, 0, "*** rtGSW: socket error");
+		my_log(LOG_DEBUG, 0, "*** rtGSW: socket error");
 		return;
 	}
+
 	strcpy(buf, "arp please");
 	sendto(socket_fd, buf, strlen(buf), 0, (struct sockaddr *)&user_addr, sizeof(user_addr));
 	close(socket_fd);
@@ -900,23 +880,22 @@ static int portLookUpByIP(char *ip)
 {
 	char mac[32];
 	int rc;
-	if( arpLookUp(ip, mac) == -1){
-		my_log(LOG_WARNING, 0, "*** rtGSW: Warning, Can't get mac address for %s", ip);
-		// send an udp then wait.
+	if( arpLookUp(ip, mac) == -1) {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: Warning, Can't get mac address for %s", ip);
+		/* send an udp then wait. */
 		sendUDP(ip);
 		usleep(20000);
-		if(arpLookUp(ip, mac) == -1){
-			my_log(LOG_WARNING, 0, "*** rtGSW: Give up for %s", ip);
-			// means flooding.
+		if(arpLookUp(ip, mac) == -1){ 
+			my_log(LOG_DEBUG, 0, "*** rtGSW: Give up for %s", ip);
+			/* means flooding. */
 			return -1;
 		}
-	}else{
-		my_log(LOG_WARNING, 0, "*** rtGSW: Get mac address for %s\n", ip);
-		my_log(LOG_WARNING, 0, "*** rtGSW: mac address for %s\n", mac);
+	} else {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: mac address for %s is %s\n",ip, mac);
 	}
+
 	strip_mac(mac);
 	rc = portLookUpByMac(mac);
-
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 	if(rc == -1){
 		if( (rc = WiFiSTALookUPByMac(mac)) != -1)

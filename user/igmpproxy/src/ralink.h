@@ -33,6 +33,16 @@ struct group
 #define WRITE_DELAY     150                     /* ms */
 
 extern void dump_table(void);
+
+extern void rt_init(int se);
+extern void rt_fini(void);
+
+extern uint32_t WanPort;
 extern void rt_switch_init(void);
 extern void rt_switch_fini(void);
+
+extern int auto_wifi_snooping;
+extern void rtwifi_enable(void);
+extern int addRTWiFiIntf(char *wifi);
+
 extern int portLookUpByMac(char *mac);

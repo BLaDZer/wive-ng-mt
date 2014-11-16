@@ -46,9 +46,10 @@ static const char Usage[] =
 "   -d   Run in debug mode. Output all messages on stderr\n"
 #ifdef RALINK_ESW_SUPPORT
 "   --------------igmp_snooping_config------------------\n"
-"   -w   Wan at port 0/4. Only in switch management mode\n"
+"   -w	 Wan at port 0/4. Only in switch management mode\n"
 "   -f	 Force igmp_snooping enable (default auto)	\n"
 "   -n	 Force igmp_snooping disable (default auto)	\n"
+"   -a	 Auto enable wifi M2U if need			\n"
 "   ----------------------------------------------------\n"
 #endif
 "   -v   Be verbose. Give twice to see even debug messages.\n"
@@ -76,10 +77,11 @@ static int sighandled = 0;
 int         upStreamVif;
 
 #ifdef RALINK_ESW_SUPPORT
-extern void rt_init(int se);
-extern void rt_fini(void);
 /* wan port select */
 uint32_t WanPort = 0x1;
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+int auto_wifi_snooping;
+#endif
 #endif
 /**
 *   Program main method. Is invoked when the program is started
@@ -93,6 +95,9 @@ int main( int ArgCn, char *ArgVc[] ) {
 #ifdef RALINK_ESW_SUPPORT
     int sw;
     int force_snooping = 1;
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+    auto_wifi_snooping = 0;
+#endif
 
     /* check esw exist */
     FILE *fp = fopen(PROCREG_GMAC, "r");
@@ -109,7 +114,7 @@ int main( int ArgCn, char *ArgVc[] ) {
 
     // Parse the commandline options and setup basic settings..
 #ifdef RALINK_ESW_SUPPORT
-    for (c; (c = getopt(ArgCn, ArgVc, "dwnvh")) != -1;) {
+    for (c; (c = getopt(ArgCn, ArgVc, "dwnvha")) != -1;) {
 #else
     for (c; (c = getopt(ArgCn, ArgVc, "dvh")) != -1;) {
 #endif
@@ -123,6 +128,9 @@ int main( int ArgCn, char *ArgVc[] ) {
             break;
         case 'n':
 	    force_snooping = 0;
+            break;
+        case 'a':
+	    auto_wifi_snooping = 1;
             break;
 #endif
         case 'v':
@@ -202,8 +210,8 @@ int main( int ArgCn, char *ArgVc[] ) {
     } while ( false );
 
 #ifdef RALINK_ESW_SUPPORT
-	if (sw)
-    	    rt_fini();
+    if (sw)
+        rt_fini();
 #endif
 
     // Inform that we are exiting.

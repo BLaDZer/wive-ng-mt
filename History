@@ -291,14 +291,16 @@
 1) init.d: optimize and small fix switch and offload configure.<br>
 2) init.d: add shortname for LAN (need to lldpd daemon for hostname resolutions).<br>
 3) goahead: fix swith from/to apcli with apcli bridge only modes.<br>
-4) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
-5) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
-6) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
-7) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
-8) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
-9) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
-10) kernel: raeth: fix raise spurious interrupts.<br>
-11) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
+4) igmpproxy: auto enable Multicast2Unicast in wifi driver at first request.<br>
+5) igmpproxy: fix wifi igmp records managment.<br>
+6) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
+7) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
+8) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
+9) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
+10) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
+11) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
+12) kernel: raeth: fix raise spurious interrupts.<br>
+13) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -56,34 +56,37 @@ phyint $vpn_if disabled
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 igmpSnoopMode wan_port tv_port`
-    # if external dual phy switch mode not use software snooping
-    if [ "$CONFIG_RAETH_GMAC2" = "" ]; then
-	####################################
-	# wan port number set
-	####################################
-	if [ "$wan_port" = "0" ]; then
-           # switch managment mode enabled
-           igmpPort="w"
-	fi
-	####################################
-	# correct mode for igmpsnooping
-	####################################
-	if [ "$tv_port" = "1" ] || [ "$igmpSnoopMode" = "n" ]; then
-	    # if  tvport enabled = force disable snooping
-	    igmpSnoopMode="n"
-	else
-	    # default snooping auto mode enable
-	    igmpSnoopMode=""
-	fi
-	####################################
-	# gen options for daemon
-	####################################
-	if [ "$igmpPort" != "" ] || [ "$igmpSnoopMode" != "" ]; then
-           OPTS="-$igmpPort$igmpSnoopMode"
-	else
-           OPTS=""
-	fi
+    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled wan_port tv_port`
+    ####################################
+    # wan port number set
+    ####################################
+    if [ "$wan_port" = "0" ]; then
+	# switch managment mode enabled
+	igmpPort="w"
+    fi
+    ####################################
+    # auto M2U enable in wifi drivers
+    ####################################
+    if [ "$M2UEnabled" = "1" ]; then
+	M2UEnabled="a"
+    else
+	M2UEnabled=""
+    fi
+    ####################################
+    # correct mode for igmpsnooping
+    ####################################
+    if [ "$tv_port" = "1" ] || [ "$igmpSnoopMode" = "n" ]; then
+	# if  tvport enabled = force disable snooping
+	igmpSnoopMode="n"
+    else
+        # default snooping auto mode enable
+        igmpSnoopMode=""
+    fi
+    ####################################
+    # gen options for daemon
+    ####################################
+    if [ "$igmpPort" != "" ] || [ "$igmpSnoopMode" != "" ] || [ "$M2UEnabled" != "" ]; then
+	OPTS="-$igmpPort$igmpSnoopMode$M2UEnabled"
     else
 	OPTS=""
     fi
