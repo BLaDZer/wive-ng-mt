@@ -221,7 +221,7 @@ asroot_gethostbyname()
 	if (uname(&un) < 0)
 		fatal("privsep", "failed to get system information");
 	if ((hp = gethostbyname(un.nodename)) == NULL) {
-		log_info("privsep", "unable to get system name");
+		log_debug("privsep", "unable to get system name");
 #ifdef HAVE_RES_INIT
 		res_init();
 #endif
