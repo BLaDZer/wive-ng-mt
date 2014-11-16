@@ -55,10 +55,8 @@ endif
 endif
 
 #for all cleanap
-SUBDIRS_APP =  goahead iptables miniupnp rt2880_app wpa_supplicant ethtool
-SUBDIRS_APP += igmpproxy lldt lldpd ppp busybox inadyn udpxy xl2tpd
-SUBDIRS_APP += dnsmasq iproute2 wive-utils kabinet radvd dhcp6 wireless_tools zebra dropbear
-SUBDIRS_APP += ntfs-3g p910nd transmission samba samba3 cdp-tools xupnpd snmpd
+SUBDIRS_APP = $(shell LC_ALL=C; ls)
+
 #
 # must run the vendor build first
 #

@@ -55,7 +55,7 @@ endif
 endif
 
 #for all cleanap
-SUBDIRS_LIBS := libcurl libevent libiconv libnatpmp libnfnetlink libpcap libupnp libusb-1.0 openssl zlib
+SUBDIRS_LIBS = $(shell LC_ALL=C; ls)
 
 #
 # must run the vendor build first
