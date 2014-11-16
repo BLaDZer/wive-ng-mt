@@ -12,6 +12,6 @@ DEVLIST="MT7620-2T2R-8M MT7620-2T2R-4M"
 for devname in $DEVLIST
 do
     ./clear RELEASE
-    nice -19 ./compile "$devname" || exit 1
+    nice -19 ./compile "$devname" $1 || exit 1
     cp -f $PWD/images/*.zip $PWD/releases
 done
