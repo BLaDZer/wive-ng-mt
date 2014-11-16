@@ -298,6 +298,7 @@
 8) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
 9) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
 10) kernel: raeth: fix raise spurious interrupts.<br>
+11) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
 <br>
 <br>
 <b>TODO:</b><br>

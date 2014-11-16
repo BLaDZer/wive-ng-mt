@@ -400,7 +400,7 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 #define MGMT_RING_SIZE          32
 #define RX_RING_SIZE            64
 #else
-#define TX_RING_SIZE            128 /*64*/
+#define TX_RING_SIZE            64 /*64*/
 #define MGMT_RING_SIZE          128
 #define RX_RING_SIZE            128 /*64 */
 #endif
