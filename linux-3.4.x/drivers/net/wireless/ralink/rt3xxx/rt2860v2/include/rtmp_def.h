@@ -118,9 +118,6 @@
 #define MAX_NUM_OF_TUPLE_CACHE  2
 #define MAX_MCAST_LIST_SIZE     32
 #define MAX_LEN_OF_VENDOR_DESC  64
-/*#define MAX_SIZE_OF_MCAST_PSQ   (NUM_OF_LOCAL_TXBUF >> 2) // AP won't spend more than 1/4 of total buffers on M/BCAST PSQ */
-#define MAX_SIZE_OF_MCAST_PSQ               32
-
 #define MAX_RX_PROCESS_CNT	(RX_RING_SIZE)
 
 /*
@@ -142,9 +139,10 @@
 	clConfig.clNum = RX_RING_SIZE * 4;
 */
 
-#define MAX_PACKETS_IN_MCAST_PS_QUEUE		32
-#define MAX_PACKETS_IN_PS_QUEUE				128	/*32 */
-#define WMM_NUM_OF_AC                       4	/* AC0, AC1, AC2, and AC3 */
+#define MAX_PACKETS_IN_MCAST_NORMAL_QUEUE	16
+#define MAX_PACKETS_IN_MCAST_PS_QUEUE		16
+#define MAX_PACKETS_IN_PS_QUEUE			128	/*32 */
+#define WMM_NUM_OF_AC				4	/* AC0, AC1, AC2, and AC3 */
 
 #ifdef CONFIG_AP_SUPPORT
 #ifdef IGMP_SNOOP_SUPPORT

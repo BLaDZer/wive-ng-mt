@@ -303,7 +303,8 @@
 13) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
 14) kernel: raeth: fix raise spurious interrupts.<br>
 15) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
-16) kernel: fastroute: increase CB offcet (found used offset 41 in wifi drivers).<br>
+16) kernel: ralink wifi: limit to 16 numbers of mcast packets in normal/ps queue.<br>
+17) kernel: fastroute: increase CB offcet (found used offset 41 in wifi drivers).<br>
 <br>
 <br>
 <b>TODO:</b><br>

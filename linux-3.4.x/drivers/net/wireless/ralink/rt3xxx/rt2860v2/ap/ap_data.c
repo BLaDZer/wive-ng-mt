@@ -5344,8 +5344,8 @@ NDIS_STATUS APInsertPsQueue(
 	{
 		if (pMacEntry->PsQueue.Number >= MAX_PACKETS_IN_PS_QUEUE)
 		{
-			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);			
-			return NDIS_STATUS_FAILURE;			
+			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+			return NDIS_STATUS_FAILURE;
 		}
 		else
 		{

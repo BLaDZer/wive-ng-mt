@@ -1183,7 +1183,7 @@ NDIS_STATUS IgmpPktClone(
 			else
 			{
 				/* insert the pkt to TxSwQueue. */
-				if (pAd->TxSwQueue[QueIdx].Number >= pAd->TxSwQMaxLen)
+				if (pAd->TxSwQueue[QueIdx].Number >= MAX_PACKETS_IN_MCAST_NORMAL_QUEUE)
 				{
 #ifdef BLOCK_NET_IF
 					StopNetIfQueue(pAd, QueIdx, pSkbClone);
