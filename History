@@ -288,20 +288,21 @@
 <br>
 <br>
 <b>1.0.x</b><br>
-1) init.d: optimize and small fix switch and offload configure.<br>
-2) init.d: add shortname for LAN (need to lldpd daemon for hostname resolutions).<br>
-3) init.d: automount.sh: fix check cold boot.<br>
-4) goahead: fix swith from/to apcli with apcli bridge only modes.<br>
-5) igmpproxy: auto enable Multicast2Unicast in wifi driver at first request.<br>
-6) igmpproxy: fix wifi igmp records managment.<br>
-7) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
-8) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
-9) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
-10) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
-11) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
-12) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
-13) kernel: raeth: fix raise spurious interrupts.<br>
-14) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
+1) defaults: disable Multicast to Unicast by default in drivers (if need please enable).<br>
+2) init.d: optimize and small fix switch and offload configure.<br>
+3) init.d: add shortname for LAN (need to lldpd daemon for hostname resolutions).<br>
+4) init.d: automount.sh: fix check cold boot.<br>
+5) goahead: fix swith from/to apcli with apcli bridge only modes.<br>
+6) igmpproxy: auto enable Multicast2Unicast in wifi driver at first request.<br>
+7) igmpproxy: fix wifi igmp records managment.<br>
+8) kernel: mm: page-writeback: inline account_page_dirtied() into single caller.<br>
+9) kernel: ipv4: fix nexthop attlen check in fib_nh_match.<br>
+10) kernel: hw_nat: spin_(un)lock must be Bottom Halve (prevent deadlock).<br>
+11) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
+12) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
+13) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
+14) kernel: raeth: fix raise spurious interrupts.<br>
+15) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
 <br>
 <br>
 <b>TODO:</b><br>
@@ -309,6 +310,7 @@
 2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
 3) add vlan support logic and web configure (need more info by NAG).<br>
 4) full russian ui (need help community or employ the web developer).<br>
+5) fix tx ring full if M2U enabled in some situations (need new drivers with fix it from mediatek).<br>
 <br>
 <br>
 <br>
