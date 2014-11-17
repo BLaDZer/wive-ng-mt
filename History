@@ -306,6 +306,10 @@
 16) kernel: fastroute: increase CB offcet (found used offset 41 in wifi drivers).<br>
 <br>
 <br>
+<b>1.1.x</b><br>
+1) kernel: fix tx ring full issue at M2U enabled.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
