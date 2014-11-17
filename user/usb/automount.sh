@@ -97,12 +97,10 @@ swap_off() {
 }
 
 touchservices() {
-    if [ "$MDEV_LABEL" != "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
-	# restart only if not cold boot
-	. /etc/scripts/web_wait.sh
-	web_wait
+    # restart only if not cold boot
+    sync
+    if [ -f /tmp/bootgood ] && [ "$MDEV_LABEL" != "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
 	# restart HDD depended services
-	sync
 	service xupnpd restart
 	service samba restart
 	service transmission restart
