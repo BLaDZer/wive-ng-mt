@@ -4734,7 +4734,6 @@ static VOID RT6352_AsicMeasureFalseCCA(
 	UINT32 reg;
 
 	/* Set to high gain LNA */
-	//printk("Stored_BBP_R65=%x @%s \n", pAd->CommonCfg.MO_Cfg.Stored_BBP_R65, __FUNCTION__);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R65, pAd->CommonCfg.MO_Cfg.Stored_BBP_R65);
 
 	/* clear false cca counter */
@@ -4748,8 +4747,8 @@ static VOID RT6352_AsicMitigateMicrowave(
 	IN PRTMP_ADAPTER pAd)
 {
 	UINT8	RegValue;
-	printk("Detect Microwave Oven...\n");
 
+	DBGPRINT_RAW(RT_DEBUG_WARN, ("Detect Microwave Oven...\n");
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R65, &RegValue);
 	RegValue |= 0x08;
 	RegValue &= 0xfd; /*BBP_R65[3:2] from 3 into 2 */
