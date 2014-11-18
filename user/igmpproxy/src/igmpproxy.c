@@ -66,8 +66,9 @@ void    igmpProxyRun();
 #ifdef RALINK_ESW_SUPPORT
 /* wan port select */
 uint32_t WanPort = 0x1;
+int auto_lan_snooping = 1;
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-int auto_wifi_snooping;
+int auto_wifi_snooping = 0;
 #endif
 #endif
 
@@ -91,25 +92,18 @@ int main( int ArgCn, char *ArgVc[] ) {
     int c;
 
 #ifdef RALINK_ESW_SUPPORT
-    int force_snooping = 1;
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-    auto_wifi_snooping = 0;
-#endif
-
     /* check esw exist */
     FILE *fp = fopen(PROCREG_GMAC, "r");
     if(!fp) {
 	fprintf(stderr, "igmpproxy: proc switch managment file not exist, disable LAN snooping.\n");
-	force_snooping = 0; /* disable if proc file not exist */
+	auto_lan_snooping = 0; /* disable if proc file not exist */
     } else
     	fclose(fp);
 
     // set default wan port position
     WanPort = 0x1;
-#endif
 
     // Parse the commandline options and setup basic settings..
-#ifdef RALINK_ESW_SUPPORT
     for (c; (c = getopt(ArgCn, ArgVc, "dwnvha")) != -1;) {
 #else
     for (c; (c = getopt(ArgCn, ArgVc, "dvh")) != -1;) {
@@ -123,11 +117,13 @@ int main( int ArgCn, char *ArgVc[] ) {
 	    WanPort = 0x10;
             break;
         case 'n':
-	    force_snooping = 0;
+	    auto_lan_snooping = 0;
             break;
+#ifdef WIFI_IGMPSNOOP_SUPPORT
         case 'a':
 	    auto_wifi_snooping = 1;
             break;
+#endif
 #endif
         case 'v':
             LogLevel++;
@@ -159,20 +155,19 @@ int main( int ArgCn, char *ArgVc[] ) {
     // Write debug notice with file path...
     my_log(LOG_DEBUG, 0, "Searching for config file at '%s'" , configFilePath);
 
-#ifdef RALINK_ESW_SUPPORT
-    if (force_snooping) {
-	/* add wifi interface */
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-	if (addRTWiFiIntf("ra0") == -1)
-	    my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
+    // Register WLAN interface
+    if (addRTWiFiIntf("ra0") == -1)
+        my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
 #endif
-        if(force_snooping == 0) {
-	    my_log(LOG_INFO, 0, "Force igmp_snooping disable.");
-	    rt_init(0);	/* disable snooping */
-	} else {
-    	    my_log(LOG_INFO, 0, "Enable igmp_snooping.");
-	    rt_init(1);	/* automatic (default) */
-	}
+#ifdef RALINK_ESW_SUPPORT
+    if (auto_lan_snooping) {
+        if(auto_lan_snooping == 0)
+	    my_log(LOG_INFO, 0, "Force LAN igmp_snooping disable.");
+	else
+    	    my_log(LOG_INFO, 0, "Auto mode LAN igmp_snooping.");
+
+	rt_init();
     }
 #endif
 
@@ -212,7 +207,7 @@ int main( int ArgCn, char *ArgVc[] ) {
     } while ( false );
 
 #ifdef RALINK_ESW_SUPPORT
-    if (force_snooping)
+    if (auto_lan_snooping)
         rt_fini();
 #endif
 

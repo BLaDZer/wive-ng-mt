@@ -278,13 +278,3 @@ int openConfigFile(char *filename);
 void closeConfigFile();
 char* nextConfigToken();
 char* getCurrentConfigToken();
-
-#ifdef RALINK_ESW_SUPPORT
-typedef u_int8_t   uint8;
-typedef u_int16_t  uint16;
-typedef u_int32_t  uint32;
-
-extern void remove_member(uint32 m_ip_addr, uint32 u_ip_addr);
-extern void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr);
-extern void clear_all_entries_report(void);
-#endif

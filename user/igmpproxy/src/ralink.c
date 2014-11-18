@@ -73,7 +73,6 @@ static int	portLookUpByIP(char *ip);
 
 // global variables.
 static struct group 	*group_list = NULL;
-static int		snooping_enabled = 0;
 
 static struct group *find_entry(uint32 ip_addr)
 {
@@ -210,7 +209,7 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	char cmd[128];
 	unsigned char *a;
 #endif
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
@@ -335,7 +334,7 @@ void sweap_no_report_members(void)
 {
 	struct group *pos = group_list;
 
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	while(pos){
@@ -371,7 +370,7 @@ void clear_all_entries_report(void)
 {
 	struct group *pos = group_list;
 
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	while(pos){
@@ -388,7 +387,7 @@ void remove_all_members(struct group *entry)
 {
 	struct group_member *del, *pos = entry->members;
 
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	while(pos){
@@ -409,7 +408,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 	int delete_found = 0;
 	struct group_member *mem_pos, *tmp;
 
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
@@ -481,7 +480,7 @@ void remove_all_groups(void)
 {
 	struct group *del, *pos = group_list;
 
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	/*  TODO: call remove_multicast_ip() instead. */
@@ -529,7 +528,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 #if defined (CONFIG_PPE_MCAST)
 	unsigned char *a;
 #endif
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	if(!entry){
@@ -583,11 +582,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 		printf("%s\n", cmd);
 	}
 #endif /*WIFI_IGMPSNOOP_SUPPORT*/
-
-
 #endif
-
-
 	return;
 }
 
@@ -619,7 +614,7 @@ static void destory_all_hosts_rule()
 
 void rt_fini(void)
 {
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	/* del 224.0.0.1( 01:00:5e:00:00:01) from mac table */
@@ -628,11 +623,9 @@ void rt_fini(void)
 	rt_switch_fini();
 }
 
-void rt_init(int se)
+void rt_init(void)
 {
-	snooping_enabled = se;
-
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	rt_switch_init();
@@ -911,7 +904,7 @@ static int portLookUpByIP(char *ip)
 
 void sigUSR1Handler(int signo)
 {
-	if(!snooping_enabled)
+	if(!auto_lan_snooping)
 		return;
 
 	dump_entry();
