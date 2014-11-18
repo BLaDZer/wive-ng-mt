@@ -639,12 +639,6 @@ void rt_init(int se)
 
 	/* add 224.0.0.1( 01:00:5e:00:00:01) to mac table */
 	create_all_hosts_rule();
-
-	/* add wifi interface */
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-	if (addRTWiFiIntf("ra0") == -1)
-	    my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
-#endif
 }
 
 typedef union _MACHTTRANSMIT_SETTING {

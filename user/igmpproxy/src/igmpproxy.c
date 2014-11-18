@@ -91,7 +91,6 @@ int main( int ArgCn, char *ArgVc[] ) {
     int c;
 
 #ifdef RALINK_ESW_SUPPORT
-    int sw;
     int force_snooping = 1;
 #ifdef WIFI_IGMPSNOOP_SUPPORT
     auto_wifi_snooping = 0;
@@ -99,12 +98,11 @@ int main( int ArgCn, char *ArgVc[] ) {
 
     /* check esw exist */
     FILE *fp = fopen(PROCREG_GMAC, "r");
-    if(!fp)
-	sw=0;
-    else {
-	sw=1;
-	fclose(fp);
-    }
+    if(!fp) {
+	fprintf(stderr, "igmpproxy: proc switch managment file not exist, disable LAN snooping.\n");
+	force_snooping = 0; /* disable if proc file not exist */
+    } else
+    	fclose(fp);
 
     // set default wan port position
     WanPort = 0x1;
@@ -145,7 +143,7 @@ int main( int ArgCn, char *ArgVc[] ) {
     }
 
     if (optind != ArgCn - 1) {
-	fputs("You must specify the configuration file.\n", stderr);
+	fprintf(stderr, "You must specify the configuration file.\n");
 	exit(1);
     }
     char *configFilePath = ArgVc[optind];
@@ -161,6 +159,23 @@ int main( int ArgCn, char *ArgVc[] ) {
     // Write debug notice with file path...
     my_log(LOG_DEBUG, 0, "Searching for config file at '%s'" , configFilePath);
 
+#ifdef RALINK_ESW_SUPPORT
+    if (force_snooping) {
+	/* add wifi interface */
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+	if (addRTWiFiIntf("ra0") == -1)
+	    my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
+#endif
+        if(force_snooping == 0) {
+	    my_log(LOG_INFO, 0, "Force igmp_snooping disable.");
+	    rt_init(0);	/* disable snooping */
+	} else {
+    	    my_log(LOG_INFO, 0, "Enable igmp_snooping.");
+	    rt_init(1);	/* automatic (default) */
+	}
+    }
+#endif
+
     do {
 
         // Loads the config file...
@@ -174,17 +189,6 @@ int main( int ArgCn, char *ArgVc[] ) {
             my_log(LOG_ERR, 0, "Unable to initialize IGMPproxy.");
             break;
         }
-#ifdef RALINK_ESW_SUPPORT
-	if (sw) {
-	    if(force_snooping == 0) {
-        	my_log(LOG_INFO, 0, "Force igmp_snooping disable.");
-		rt_init(0);	/* disable snooping */
-	    } else {
-        	my_log(LOG_INFO, 0, "Enable igmp_snooping.");
-		rt_init(1);	/* automatic (default) */
-	    }
-	}
-#endif
 	if ( !Log2Stderr ) {
 
 	    // Only daemon goes past this line...
@@ -208,7 +212,7 @@ int main( int ArgCn, char *ArgVc[] ) {
     } while ( false );
 
 #ifdef RALINK_ESW_SUPPORT
-    if (sw)
+    if (force_snooping)
         rt_fini();
 #endif
 

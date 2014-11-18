@@ -146,7 +146,7 @@ static void sync_internal_mac_table(void *argu)
 
 			if (value & 0x4000) {
 				my_log(LOG_WARNING, 0, "*** rtGSW: end of table. %d", i);
-				my_log(LOG_INFO, 0, "sync table at_table_end 1\n\r");
+				my_log(LOG_INFO, 0, "sync table at_table_end 1");
 				internal_mac_table[i+1].mac1 = END_OF_MAC_TABLE;
 				return;
 			}
@@ -155,7 +155,7 @@ static void sync_internal_mac_table(void *argu)
 			i++;
 		}else if (value & 0x4000) { //at_table_end
 			my_log(LOG_DEBUG, 0, "*** rtGSW: found the last entry (not ready). %d", i);
-			my_log(LOG_INFO, 0, "sync table at_table_end\n\r");
+			my_log(LOG_INFO, 0, "sync table at_table_end");
 			internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
 			return;
 		} else
