@@ -76,12 +76,6 @@ void acceptGroupReport(uint32_t src, uint32_t group, uint8_t type) {
         return;
     }
 
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-    // enable M2U in wifi
-    if (auto_wifi_snooping < 2)
-	rtwifi_enable();
-#endif
-
     // We have a IF so check that it's an downstream IF.
     if(sourceVif->state == IF_STATE_DOWNSTREAM) {
 

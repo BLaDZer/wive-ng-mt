@@ -185,11 +185,6 @@ void clearAllRoutes() {
 
     // Send a notice that the routing table is empty...
     my_log(LOG_NOTICE, 0, "All routes removed. Routing table is empty.");
-
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-    if (auto_wifi_snooping > 1)
-	rtwifi_disable();
-#endif
 }
 
 /**
@@ -530,11 +525,6 @@ int removeRoute(struct RouteTable*  croute) {
 
     logRouteTable("Remove route");
 
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-    if (auto_wifi_snooping > 1 && routing_table == NULL)
-	rtwifi_disable();
-#endif
-
     return result;
 }
 
@@ -680,6 +670,14 @@ void logRouteTable(char *header) {
         my_log(LOG_DEBUG, 0, "-----------------------------------------------------");
         if(croute==NULL) {
             my_log(LOG_DEBUG, 0, "No routes in table...");
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+	    // Disable M2U in wifi
+	    if (auto_wifi_snooping > 1) {
+		rtwifi_disable();
+		/* set 1 for enable auto logic and wait new req */
+		auto_wifi_snooping = 1;
+	    }
+#endif
         } else {
             do {
                 char st = 'I';
@@ -695,16 +693,20 @@ void logRouteTable(char *header) {
                     sprintf(src + strlen(src), "Src%d: %s, ", i, inetFmt(croute->originAddrs[i], s1));
                 }
 
-                my_log(LOG_DEBUG, 0, "#%d: %sDst: %s, Age:%d, St: %c, OutVifs: 0x%08x",
-                    rcount, src, inetFmt(croute->group, s2),
-                    croute->ageValue, st,
-                    croute->vifBits);
+		my_log(LOG_DEBUG, 0, "#%d: %sDst: %s, Age:%d, St: %c, OutVifs: 0x%08x",
+		    rcount, src, inetFmt(croute->group, s2), croute->ageValue, st, croute->vifBits);
 
                 croute = croute->nextroute; 
 
                 rcount++;
             } while ( croute != NULL );
-        }
-
-	my_log(LOG_DEBUG, 0, "-----------------------------------------------------");
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+	    // enable M2U in wifi (prevent double call iwpriv)
+	    if (auto_wifi_snooping > 0 && auto_wifi_snooping < 2) {
+		rtwifi_enable();
+		auto_wifi_snooping++;
+	    }
+#endif
+    }
+    my_log(LOG_DEBUG, 0, "-----------------------------------------------------");
 }

@@ -697,11 +697,10 @@ void rtwifi_enable(void)
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
-		my_log(LOG_NOTICE, 0, "Enable M2U for %s interface", rtwifi_intfs[i]);
+		my_log(LOG_DEBUG, 0, "Enable M2U for %s interface", rtwifi_intfs[i]);
 		sprintf(cmd, "iwpriv %s set IgmpSnEnable=1", rtwifi_intfs[i]);
 		system(cmd);
 	}
-	auto_wifi_snooping++;
 }
 
 void rtwifi_disable(void)
@@ -709,11 +708,10 @@ void rtwifi_disable(void)
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
-		my_log(LOG_NOTICE, 0, "Enable Disable for %s interface", rtwifi_intfs[i]);
+		my_log(LOG_DEBUG, 0, "Disable M2U for %s interface", rtwifi_intfs[i]);
 		sprintf(cmd, "iwpriv %s set IgmpSnEnable=0", rtwifi_intfs[i]);
 		system(cmd);
 	}
-	auto_wifi_snooping = 1;
 }
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
@@ -903,7 +901,7 @@ static int portLookUpByIP(char *ip)
 			return -1;
 		}
 	} else {
-		my_log(LOG_DEBUG, 0, "*** rtGSW: mac address for %s is %s\n",ip, mac);
+		my_log(LOG_DEBUG, 0, "*** rtGSW: mac address for %s is %s",ip, mac);
 	}
 
 	strip_mac(mac);

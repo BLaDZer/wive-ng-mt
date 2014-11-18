@@ -290,7 +290,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	char wholestr[13];
 	char tmpstr[9];
 
-        my_log(LOG_INFO, 0, "updateMacTable: delay_delete is %d\n\r", delay_delete);
+        my_log(LOG_INFO, 0, "updateMacTable: delay_delete is %d", delay_delete);
 	sprintf(wholestr, "%s%02x%02x%02x", "01005e", entry->a1, entry->a2, entry->a3);
 
 	strncpy(tmpstr, wholestr, 8);
@@ -299,7 +299,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value = strtoul(tmpstr, NULL, 16);
 
 	reg_write(REG_ESW_WT_MAC_ATA1, value);
-	my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
+	my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA1 is 0x%x",value);
 
 
 	strncpy(tmpstr, &wholestr[8], 4);
@@ -315,7 +315,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value |= ((LAN_VLAN_ID) << 0); //LAN ID ==1
 #endif
 	reg_write(REG_ESW_WT_MAC_ATA2, value);
-	my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+	my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 	value1 = value; //save for later usage
 
 	value = 0;
@@ -327,7 +327,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 		/*
 		 * fill the port map
 		 */
-		my_log(LOG_INFO, 0, "entry->port_map is 0x%x\n\r", entry->port_map);
+		my_log(LOG_INFO, 0, "entry->port_map is 0x%x", entry->port_map);
 		value |= (entry->port_map & (0x7f)) << 4;
 
                 value |= (0xff << 24); //w_age_field
@@ -348,7 +348,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 			value |= ((WAN_VLAN_ID) << 0); //WAN ID ==2
 
 			reg_write(REG_ESW_WT_MAC_ATA2, value);
-			my_log(LOG_INFO, 0, "WAN REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+			my_log(LOG_INFO, 0, "WAN REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 
 			value1 = (WanPort << 4);
 			value1 |= (0x1 << 10);//port 6 cpu port
@@ -362,7 +362,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 			reg_write(REG_ESW_WT_MAC_ATC, value1);
 
 			wait_switch_done();
-			my_log(LOG_INFO, 0, "for wan port is done\n\r");
+			my_log(LOG_INFO, 0, "for wan port is done");
 		}
 	}else{
 			/*
@@ -383,7 +383,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 			value |= (2 << 0); //WAN ID ==2
 
 			reg_write(REG_ESW_WT_MAC_ATA2, value);
-			my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+			my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 
 			value = 0; //STATUS=0, delete mac
 			reg_write(REG_ESW_WT_MAC_ATWD, value);

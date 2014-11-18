@@ -233,7 +233,6 @@ void disableMRouter( void );
 void addVIF( struct IfDesc *Dp );
 int addMRoute( struct MRouteDesc * Dp );
 int delMRoute( struct MRouteDesc * Dp );
-int getVifIx( struct IfDesc *IfDp );
 
 /* config.c
  */

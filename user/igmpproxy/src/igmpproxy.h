@@ -102,8 +102,6 @@ extern char     s2[];
 extern char		s3[];
 extern char		s4[];
 
-
-
 //#################################################################################
 //  Lib function prototypes.
 //#################################################################################
@@ -203,7 +201,6 @@ void disableMRouter( void );
 void addVIF( struct IfDesc *Dp );
 int addMRoute( struct MRouteDesc * Dp );
 int delMRoute( struct MRouteDesc * Dp );
-int getVifIx( struct IfDesc *IfDp );
 
 /* config.c
  */
