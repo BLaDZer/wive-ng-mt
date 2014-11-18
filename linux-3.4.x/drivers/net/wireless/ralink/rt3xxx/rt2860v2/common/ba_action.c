@@ -881,14 +881,13 @@ VOID BATableFreeOriEntry(
 
 	pBAEntry =&pAd->BATable.BAOriEntry[Idx];
 
+	NdisAcquireSpinLock(&pAd->BATabLock);
 	if (pBAEntry->ORI_BA_Status != Originator_NONE)
 	{
 		pEntry = &pAd->MacTab.Content[pBAEntry->Wcid];
 		pEntry->BAOriWcidArray[pBAEntry->TID] = 0;
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: Wcid = %d, TID = %d\n", __FUNCTION__, pBAEntry->Wcid, pBAEntry->TID));
 
-
-		NdisAcquireSpinLock(&pAd->BATabLock);
 		if (pBAEntry->ORI_BA_Status == Originator_Done)
 		{
 			pAd->BATable.numDoneOriginator -= 1;
@@ -903,8 +902,8 @@ VOID BATableFreeOriEntry(
 		
 		pBAEntry->ORI_BA_Status = Originator_NONE;
 		pBAEntry->Token = 0;
-		NdisReleaseSpinLock(&pAd->BATabLock);
 	}
+	NdisReleaseSpinLock(&pAd->BATabLock);
 }
 
 
@@ -921,20 +920,19 @@ VOID BATableFreeRecEntry(
 
 	pBAEntry =&pAd->BATable.BARecEntry[Idx];
 
+	NdisAcquireSpinLock(&pAd->BATabLock);
 	if (pBAEntry->REC_BA_Status != Recipient_NONE)
 	{
 		pEntry = &pAd->MacTab.Content[pBAEntry->Wcid];
 		pEntry->BARecWcidArray[pBAEntry->TID] = 0;
 
-		NdisAcquireSpinLock(&pAd->BATabLock);
-		
 		ASSERT(pAd->BATable.numAsRecipient != 0);
 
 		pAd->BATable.numAsRecipient -= 1;
 
 		pBAEntry->REC_BA_Status = Recipient_NONE;
-		NdisReleaseSpinLock(&pAd->BATabLock);
 	}
+	NdisReleaseSpinLock(&pAd->BATabLock);
 }
 
 

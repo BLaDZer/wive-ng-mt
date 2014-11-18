@@ -5271,7 +5271,7 @@ VOID RT6352_ReCalibration(
 {
 	UINT32 MTxCycle = 0;
 	UINT32 MacValue = 0, MacSysCtrl = 0;
-	UCHAR BBPR30Value, RFB0_R39, RFB0_R42, RFValue;
+	UCHAR BBPR30Value = 0, RFB0_R39, RFB0_R42, RFValue;
 
 	DBGPRINT(RT_DEBUG_TRACE, (" Do ReCalibration !!!\n"));
 

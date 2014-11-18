@@ -315,16 +315,18 @@ TX_POWER_TUNING_ENTRY_STRUCT RT3352_TxPowerTuningTable[] =
 };
 
 /* The desired TSSI over CCK */
-CHAR desiredTSSIOverCCK[4] = {0};
+extern CHAR desiredTSSIOverCCK[4];
 
 /* The desired TSSI over OFDM */
-CHAR desiredTSSIOverOFDM[8] = {0};
+extern CHAR desiredTSSIOverOFDM[8];
 
 /* The desired TSSI over HT */
-CHAR desiredTSSIOverHT[16] = {0};
+extern CHAR desiredTSSIOverHT[16];
 
 /* The desired TSSI over HT using STBC */
-CHAR desiredTSSIOverHTUsingSTBC[8] = {0};
+extern CHAR desiredTSSIOverHTUsingSTBC[8];
+
+VOID RT3352_AsicInitDesiredTSSITable(IN PRTMP_ADAPTER pAd);
 #endif /* RTMP_INTERNAL_TX_ALC */
 
 /*
