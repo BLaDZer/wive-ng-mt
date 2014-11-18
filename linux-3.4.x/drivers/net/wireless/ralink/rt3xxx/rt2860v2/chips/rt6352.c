@@ -4748,7 +4748,7 @@ static VOID RT6352_AsicMitigateMicrowave(
 {
 	UINT8	RegValue;
 
-	DBGPRINT_RAW(RT_DEBUG_WARN, ("Detect Microwave Oven...\n");
+	DBGPRINT_RAW(RT_DEBUG_WARN, ("Detect Microwave Oven...\n"));
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R65, &RegValue);
 	RegValue |= 0x08;
 	RegValue &= 0xfd; /*BBP_R65[3:2] from 3 into 2 */
