@@ -307,8 +307,9 @@
 <br>
 <br>
 <b>1.1.x</b><br>
-1) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
-2) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
+1) igmpproxy: auto disable Multicast2Unicast in wifi driver if real mulicast route table is empty.<br>
+2) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
+3) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
 <br>
 <br>
 <b>TODO:</b><br>

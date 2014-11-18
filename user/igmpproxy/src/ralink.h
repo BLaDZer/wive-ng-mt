@@ -1,3 +1,23 @@
+#include <linux/autoconf.h>
+
+#if defined(CONFIG_RALINK_RT3052)
+#define PROCREG_GMAC	"/proc/rt3052/gmac"
+#elif defined(CONFIG_RALINK_RT3352)
+#define PROCREG_GMAC	"/proc/rt3352/gmac"
+#elif defined (CONFIG_RALINK_RT5350)
+#define PROCREG_GMAC	"/proc/rt5350/gmac"
+#elif defined(CONFIG_RALINK_RT3883)
+#define PROCREG_GMAC	"/proc/rt3883/gmac"
+#elif defined (CONFIG_RALINK_RT6855)
+#define PROCREG_GMAC	"/proc/rt6855/gmac"
+#elif defined (CONFIG_RALINK_RT63365)
+#define PROCREG_GMAC	"/proc/rt63365/gmac"
+#elif defined (CONFIG_RALINK_MT7620)
+#define PROCREG_GMAC	"/proc/mt7620/gmac"
+#else
+#define PROCREG_GMAC	"/proc/rt3052/gmac"
+#endif
+
 #define PAGE_SIZE		0x1000  /* 4096 */
 #define OTHER_INTERFACE		7	/* port 7  (wifi)  */
 
@@ -27,6 +47,7 @@ struct group
 	struct group	*next;
 };
 
+typedef u_int32_t  uint32;
 
 #define READMODE        0x0
 #define WRITEMODE       0x1
@@ -41,8 +62,14 @@ extern uint32_t WanPort;
 extern void rt_switch_init(void);
 extern void rt_switch_fini(void);
 
-extern int auto_wifi_snooping;
 extern void rtwifi_enable(void);
-extern int addRTWiFiIntf(char *wifi);
+extern void rtwifi_disable(void);
 
+extern void sweap_no_report_members(void);
+extern void remove_multicast_ip(uint32 m_ip_addr);
+
+extern void sigUSR1Handler(int signo);
+
+extern int auto_wifi_snooping;
+extern int addRTWiFiIntf(char *wifi);
 extern int portLookUpByMac(char *mac);

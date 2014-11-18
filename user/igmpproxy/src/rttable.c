@@ -66,7 +66,7 @@ static struct RouteTable   *routing_table;
 // Prototypes
 void logRouteTable(char *header);
 int  internAgeRoute(struct RouteTable*  croute);
-int internUpdateKernelRoute(struct RouteTable *route, int activate);
+int  internUpdateKernelRoute(struct RouteTable *route, int activate);
 
 /**
 *   Initializes the routing table.
@@ -169,13 +169,11 @@ void clearAllRoutes() {
         remainroute = croute->nextroute;
 
         // Log the cleanup in debugmode...
-        my_log(LOG_DEBUG, 0, "Removing route entry for %s",
-                     inetFmt(croute->group, s1));
+        my_log(LOG_DEBUG, 0, "Removing route entry for %s", inetFmt(croute->group, s1));
 
         // Uninstall current route
-        if(!internUpdateKernelRoute(croute, 0)) {
+        if(!internUpdateKernelRoute(croute, 0))
             my_log(LOG_WARNING, 0, "The removal from Kernel failed.");
-        }
 
         // Send Leave message upstream.
         sendJoinLeaveUpstream(croute, 0);
@@ -187,6 +185,11 @@ void clearAllRoutes() {
 
     // Send a notice that the routing table is empty...
     my_log(LOG_NOTICE, 0, "All routes removed. Routing table is empty.");
+
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+    if (auto_wifi_snooping > 1)
+	rtwifi_disable();
+#endif
 }
 
 /**
@@ -410,11 +413,6 @@ int activateRoute(uint32_t group, uint32_t originAddr) {
     return result;
 }
 
-#ifdef RALINK_ESW_SUPPORT
-extern void sweap_no_report_members(void);
-extern void remove_multicast_ip(uint32 m_ip_addr);
-#endif
-
 /**
 *   This function loops through all routes, and updates the age 
 *   of any active routes.
@@ -493,9 +491,8 @@ int removeRoute(struct RouteTable*  croute) {
     int result = 1;
     
     // If croute is null, no routes was found.
-    if(croute==NULL) {
+    if(croute==NULL)
         return 0;
-    }
 
     // Log the cleanup in debugmode...
     my_log(LOG_DEBUG, 0, "Removed route entry for %s from table.",
@@ -510,11 +507,8 @@ int removeRoute(struct RouteTable*  croute) {
     }
 
     // Send Leave request upstream if group is joined
-    if(croute->upstrState == ROUTESTATE_JOINED || 
-       (croute->upstrState == ROUTESTATE_CHECK_LAST_MEMBER && !conf->fastUpstreamLeave)) 
-    {
+    if(croute->upstrState == ROUTESTATE_JOINED || (croute->upstrState == ROUTESTATE_CHECK_LAST_MEMBER && !conf->fastUpstreamLeave)) 
         sendJoinLeaveUpstream(croute, 0);
-    }
 
     // Update pointers...
     if(croute->prevroute == NULL) {
@@ -535,6 +529,11 @@ int removeRoute(struct RouteTable*  croute) {
     croute = NULL;
 
     logRouteTable("Remove route");
+
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+    if (auto_wifi_snooping > 1 && routing_table == NULL)
+	rtwifi_disable();
+#endif
 
     return result;
 }
@@ -594,8 +593,7 @@ int internAgeRoute(struct RouteTable*  croute) {
             croute->ageActivity = 0;
         } else {
 
-            my_log(LOG_DEBUG, 0, "Removing group %s. Died of old age.",
-                         inetFmt(croute->group,s1));
+            my_log(LOG_DEBUG, 0, "Removing group %s. Died of old age.", inetFmt(croute->group,s1));
 
             // No activity was registered within the timelimit, so remove the route.
             removeRoute(croute);
@@ -605,7 +603,7 @@ int internAgeRoute(struct RouteTable*  croute) {
             *  "vifBits == 0" means the dest IF is still unknown.
             */
            if(croute->vifBits > 0)
-			 remove_multicast_ip(ntohl(croute->group));
+		 remove_multicast_ip(ntohl(croute->group));
 #endif
         }
         // Tell that the route was updated...

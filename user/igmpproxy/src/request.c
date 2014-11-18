@@ -78,12 +78,8 @@ void acceptGroupReport(uint32_t src, uint32_t group, uint8_t type) {
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
     // enable M2U in wifi
-    if (auto_wifi_snooping < 2) {
-	my_log(LOG_DEBUG, 0, "Enable M2U in wifi drivers.");
+    if (auto_wifi_snooping < 2)
 	rtwifi_enable();
-    } else {
-	my_log(LOG_DEBUG, 0, "M2U in wifi drivers allready enabled.");
-    }
 #endif
 
     // We have a IF so check that it's an downstream IF.

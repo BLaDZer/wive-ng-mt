@@ -58,13 +58,18 @@ PACKAGE_STRING "\n"
 ;
 
 // Local function Prototypes
-#ifdef RALINK_ESW_SUPPORT
-void sigUSR1Handler(int signo);
-#endif
 static void signalHandler(int);
 int     igmpProxyInit();
 void    igmpProxyCleanUp();
 void    igmpProxyRun();
+
+#ifdef RALINK_ESW_SUPPORT
+/* wan port select */
+uint32_t WanPort = 0x1;
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+int auto_wifi_snooping;
+#endif
+#endif
 
 // Global vars...
 static int sighandled = 0;
@@ -76,13 +81,6 @@ static int sighandled = 0;
 // The upstream VIF index
 int         upStreamVif;
 
-#ifdef RALINK_ESW_SUPPORT
-/* wan port select */
-uint32_t WanPort = 0x1;
-#ifdef WIFI_IGMPSNOOP_SUPPORT
-int auto_wifi_snooping;
-#endif
-#endif
 /**
 *   Program main method. Is invoked when the program is started
 *   on commandline. The number of commandline arguments, and a

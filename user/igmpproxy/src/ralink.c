@@ -697,11 +697,23 @@ void rtwifi_enable(void)
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
-		my_log(LOG_DEBUG, 0, "Enable M2U for %s", rtwifi_intfs[i]);
+		my_log(LOG_NOTICE, 0, "Enable M2U for %s interface", rtwifi_intfs[i]);
 		sprintf(cmd, "iwpriv %s set IgmpSnEnable=1", rtwifi_intfs[i]);
 		system(cmd);
 	}
 	auto_wifi_snooping++;
+}
+
+void rtwifi_disable(void)
+{
+	int i;
+	char cmd[128];
+	for(i=0; i<rtwifi_intf_count ; i++) {
+		my_log(LOG_NOTICE, 0, "Enable Disable for %s interface", rtwifi_intfs[i]);
+		sprintf(cmd, "iwpriv %s set IgmpSnEnable=0", rtwifi_intfs[i]);
+		system(cmd);
+	}
+	auto_wifi_snooping = 1;
 }
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)

@@ -62,26 +62,7 @@
 
 /* IGMP SNOOPING CHECK */
 #ifdef RALINK_ESW_SUPPORT
-#include "linux/autoconf.h"
 #include "ralink.h"
-
-#if defined(CONFIG_RALINK_RT3052)
-#define PROCREG_GMAC	"/proc/rt3052/gmac"
-#elif defined(CONFIG_RALINK_RT3352)
-#define PROCREG_GMAC	"/proc/rt3352/gmac"
-#elif defined (CONFIG_RALINK_RT5350)
-#define PROCREG_GMAC	"/proc/rt5350/gmac"
-#elif defined(CONFIG_RALINK_RT3883)
-#define PROCREG_GMAC	"/proc/rt3883/gmac"
-#elif defined (CONFIG_RALINK_RT6855)
-#define PROCREG_GMAC	"/proc/rt6855/gmac"
-#elif defined (CONFIG_RALINK_RT63365)
-#define PROCREG_GMAC	"/proc/rt63365/gmac"
-#elif defined (CONFIG_RALINK_MT7620)
-#define PROCREG_GMAC	"/proc/mt7620/gmac"
-#else
-#define PROCREG_GMAC	"/proc/rt3052/gmac"
-#endif
 #endif
 
 /*
