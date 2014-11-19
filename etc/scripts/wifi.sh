@@ -41,6 +41,15 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     if [ "$McastMcs" != "" ]; then
         iwpriv "$1" set McastMcs="$McastMcs"
     fi
+    # in bridged mode direct enable Multicast2Unicast in wifi drivers if enabled
+    # in others modes auto enable by igmpproxy
+    if [ "$OperationMode" = "0" -o "$OperationMode" = "3" ]; then
+	if [ "$M2UEnabled" = "1" ]; then
+	    iwpriv "$1" set IgmpSnEnable=1
+	else
+	    iwpriv "$1" set IgmpSnEnable=0
+	fi
+    fi
 fi
 ########################################GREEN mode###############################################
 if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ]; then

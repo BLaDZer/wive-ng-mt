@@ -310,9 +310,10 @@
 1) init.d: fix diable offloads in bridged modes.<br>
 2) init.d: fix LLLLL config for bridget modes.<br>
 3) init.d: fix kext switch workaround.<br>
-4) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
-5) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
-6) kernel: tcp: limit GSO packets to half cwnd.<br>
+4) init.d: in bridged mode direct enable Multicast2Unicast in wifi drivers independed by igmpproxy enable.<br>
+5) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
+6) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
+7) kernel: tcp: limit GSO packets to half cwnd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
