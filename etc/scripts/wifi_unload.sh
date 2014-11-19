@@ -37,37 +37,6 @@ if [ -f /proc/sys/kernel/hotplug ]; then
     echo > /proc/sys/kernel/hotplug
 fi
 
-unload_ra0() {
-    service modules wlan_down_all
-    ip link set eth2.2 down > /dev/null 2>&1
-}
-
-unload_ra0br0() {
-    br0_mac=`ifconfig br0 | sed -n '/HWaddr/p' | sed -e 's/.*HWaddr \(.*\)/\1/'`
-    br0_ip=`ifconfig br0 | sed -n '/inet addr:/p' | sed -e 's/ *inet addr:\(.*\)  Bcast.*/\1/'`
-    br0_netmask=`ifconfig br0 | sed -n '/inet addr:/p' | sed -e 's/.*Mask:\(.*\)/\1/'`
-    ra0_mac=`ifconfig ra0 | sed -n '/HWaddr/p' | sed -e 's/.*HWaddr\ \(.*\)/\1/'`
-
-    if [ "$ra0_mac" = "$br0_mac" ]; then
-	# destory br0
-	if [ -d /proc/sys/net/ipv4/conf/br0 ]; then
-	    ip link set br0 down > /dev/null 2>&1
-	    brctl delbr br0 > /dev/null 2>&1
-	fi
-	# disable WAN and WLAN
-	unload_ra0
-	if [ "$1" != "" ]; then
-	    # mirror br0 to eth2x
-	    ip link set "$1" down > /dev/null 2>&1
-	    ifconfig "$1" hw ether $br0_mac
-	    ifconfig "$1" $br0_ip netmask $br0_netmask
-	    ip link set "$1" up
-	fi
-    else
-	unload_ra0
-    fi
-}
-
 unload_modules() {
     echo "Unload modules"
     # unload modules all unused
