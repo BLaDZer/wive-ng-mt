@@ -600,10 +600,12 @@ KBUILD_CFLAGS += $(call cc-option, -fconserve-stack)
 # disable invalid "can't wrap" optimizations for signed / pointers
 KBUILD_CFLAGS += $(call cc-option, -fno-strict-overflow)
 
-# disable new loop optimization mode in 4.8.x and later - fix regressions
+# disable new loop optimization mode in 4.8.x and later breaks broken SPEC 2006 benchmarks
+# and uncorrect codeganeration in some situations (slowdown and buggy)
 KBUILD_CFLAGS += $(call cc-option, -fno-aggressive-loop-optimizations)
 
-# fix ~10% performance regression at 4.8.x and 4.7.x gcc
+# fix ~10-20% performance regression at 4.8.x and 4.7.x gcc
+KBUILD_CFLAGS += $(call cc-option, -fno-tree-partial-pre)
 KBUILD_CFLAGS += $(call cc-option, -fno-tree-slsr)
 
 # fix gcc-4.9.x miscompilation of load_balance() in scheduler
