@@ -899,10 +899,12 @@ static int portLookUpByIP(char *ip)
 	strip_mac(mac);
 	rc = portLookUpByMac(mac);
 #ifdef WIFI_IGMPSNOOP_SUPPORT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 	if(rc == -1){
 		if( (rc = WiFiSTALookUPByMac(mac)) != -1)
 			return OTHER_INTERFACE;
 	}
+#endif
 #endif
 	return rc;
 }
