@@ -13,4 +13,3 @@ endif
 ifeq ($(CONFIG_LANGUAGE),chinese)
 VERSIONPKG := $(VERSIONPKG)C
 endif
-

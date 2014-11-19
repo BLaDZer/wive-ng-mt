@@ -1,6 +1,9 @@
 *.o
+*.o.*
 *.la
+*.la.*
 *.so
+*.so.*
 *.dep
 *.deps
 *.depend

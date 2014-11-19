@@ -249,9 +249,4 @@ endif
 #
 # fall through,  do other config options perhaps
 #
-
-############################################################################
-# fix crosscompile for some apps
-# export PKG_CONFIG /bin/false
-
 ############################################################################
