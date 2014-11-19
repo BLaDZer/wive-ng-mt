@@ -1191,7 +1191,7 @@ NDIS_STATUS IgmpPktClone(
 					StopNetIfQueue(pAd, QueIdx, pSkbClone);
 #endif /* BLOCK_NET_IF */
 					RELEASE_NDIS_PACKET(pAd, pSkbClone, NDIS_STATUS_FAILURE);
-					return NDIS_STATUS_RESOURCES;
+					return NDIS_STATUS_FAILURE;
 				}
 				else
 				{

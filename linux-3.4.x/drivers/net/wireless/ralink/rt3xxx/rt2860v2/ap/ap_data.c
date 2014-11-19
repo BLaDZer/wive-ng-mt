@@ -247,12 +247,6 @@ VOID	APSendPackets(
 
 ========================================================================
 */
-#ifdef IGMP_SNOOP_SUPPORT
-#define MCAST_DROP_BUDGET 7000					/* how many pkts send this short limits if tx full for help free txq 7k pkts per 1500b ~ 10Mb */
-static INT IgmpSnoopDropCountLimit, RetryLimitsNeedRestore;	/* need global */
-TX_RTY_CFG_STRUC TxRtyCfg, TxRtyCfgtmp;				/* temp store retry limits */
-#endif
-
 NDIS_STATUS APSendPacket(
 	IN	PRTMP_ADAPTER	pAd,
 	IN	PNDIS_PACKET	pPacket)
@@ -586,23 +580,6 @@ NDIS_STATUS APSendPacket(
 		{
 			NDIS_STATUS PktCloneResult = IgmpPktClone(pAd, pSrcBufVA, pPacket, InIgmpGroup, pGroupEntry, QueIdx, UserPriority);
 			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
-			if (PktCloneResult == NDIS_STATUS_RESOURCES) {
-			    /* printk("TxSwQueue FULL, temp decrease TxRetry limits\n"); */
-			    /* temp set S/L retry to 0 for fast drop packets */
-			    RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg.word);
-			    TxRtyCfgtmp.word = TxRtyCfg.word;
-			    TxRtyCfg.field.LongRtyLimit = 0x1;
-			    TxRtyCfg.field.ShortRtyLimit = 0x1;
-			    RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg.word);
-			    /* Flag for restore shot retry Limits */
-			    RetryLimitsNeedRestore = 1;
-			    /* How packets try send with short timeout */
-			    IgmpSnoopDropCountLimit=MCAST_DROP_BUDGET;
-			    /* Increase send error counter */
-			    pMacEntry->ContinueTxFailCnt++;
-			    /* do not return STATUS RESOURCE */
-			    PktCloneResult = NDIS_STATUS_FAILURE;
-			}
 			return PktCloneResult; /* need to always return to prevent skb double free. */
 		}
 		else
@@ -631,20 +608,6 @@ NDIS_STATUS APSendPacket(
 #ifdef DOT11_N_SUPPORT
 	RTMP_BASetup(pAd, pMacEntry, UserPriority);
 #endif /* DOT11_N_SUPPORT */
-#ifdef IGMP_SNOOP_SUPPORT
-	if (IgmpSnoopDropCountLimit > 0) {
-	    IgmpSnoopDropCountLimit--;
-	} else {
-	    /* restore S/L retry limits */
-	    if (RetryLimitsNeedRestore == 1) {
-		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg.word);
-		TxRtyCfg.field.LongRtyLimit = TxRtyCfgtmp.field.LongRtyLimit;
-		TxRtyCfg.field.ShortRtyLimit = TxRtyCfgtmp.field.ShortRtyLimit;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg.word);
-		RetryLimitsNeedRestore=0;
-	    }
-	}
-#endif
 	return NDIS_STATUS_SUCCESS;
 }
 

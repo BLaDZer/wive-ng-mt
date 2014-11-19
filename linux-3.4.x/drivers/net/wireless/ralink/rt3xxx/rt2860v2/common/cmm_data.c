@@ -1268,41 +1268,6 @@ BOOLEAN CanDoAggregateTransmit(
 	
 }
 
-#define ENTRY_RETRY_INTERVAL	(50 * OS_HZ / 1000)
-static inline BOOLEAN traffic_jam_chk(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *tr_entry)
-{
-	BOOLEAN drop_it = FALSE;
-
-	if (!IS_ENTRY_NONE(tr_entry))
-	{
-		ULONG Now32;
-
-		NdisGetSystemUpTime(&Now32);
-
-#ifdef CONFIG_AP_SUPPORT
-#ifdef WDS_SUPPORT
-		if (IS_ENTRY_WDS(tr_entry))
-		{
-			if (tr_entry->LockEntryTx &&
-				RTMP_TIME_BEFORE(Now32, tr_entry->TimeStamp_toTxRing + WDS_ENTRY_RETRY_INTERVAL))
-				drop_it = TRUE;
-		}
-		else
-#endif /* WDS_SUPPORT */
-		if (tr_entry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
-		{
-			if(RTMP_TIME_BEFORE(Now32, tr_entry->TimeStamp_toTxRing + ENTRY_RETRY_INTERVAL))
-				drop_it = TRUE;
-		}
-		else
-#endif /* CONFIG_AP_SUPPORT */
-		{
-			tr_entry->TimeStamp_toTxRing = Now32;
-		}
-	}
-
-	return drop_it;
-}
 
 /*
 	========================================================================
@@ -1479,19 +1444,69 @@ VOID RTMPDeQueuePacket(
 			}
 			else 
 			{
-				/*when jam happen, drop following 1min to HW TxRing Pkts*/
+				/*when WDS Jam happen, drop following 1min to HW TxRing Pkts*/
 				MAC_TABLE_ENTRY *pMacEntry = NULL;
 				UCHAR RAWcid;
 				RAWcid = RTMP_GET_PACKET_WCID(pPacket);
 				pMacEntry = &pAd->MacTab.Content[RAWcid];
 
-				/*TODO: shiang-usw, remove this check to other place!!*/
-				if (traffic_jam_chk(pAd, pMacEntry) == TRUE) {
-				    DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_TXQ, ("%s(): traffic jam detected! free pkt!\n", __FUNCTION__));
+#ifdef WDS_SUPPORT
+				/*
+					It WDS life checking.
+					WDS need to check the peer is come back or not
+					by sending few (2 ~3) WDS Packet out to peer.
+					It must be checked first.
+				*/
+				if(IS_ENTRY_WDS(pMacEntry))
+				{
+					ULONG Now32;
+					NdisGetSystemUpTime(&Now32);
+					if(pMacEntry->LockEntryTx && RTMP_TIME_BEFORE(Now32, pMacEntry->TimeStamp_toTxRing + WDS_ENTRY_RETRY_INTERVAL))
+					{
+						pEntry = RemoveHeadQueue(pQueue);
 						RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
 						DEQUEUE_UNLOCK(&pAd->irq_lock, bIntContext, IrqFlags);
 						Count++;
 						continue;
+					}
+					else
+					    NdisGetSystemUpTime(&pMacEntry->TimeStamp_toTxRing);
+				}
+				else
+#endif /* WDS_SUPPORT */
+				if (!IS_ENTRY_NONE(pMacEntry)
+					&& (pMacEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck))
+				{
+					/*
+						Sample Lin, 20100412
+
+						For non-WDS interface, we need to send packet to detect
+						the link periodically; Or when
+						pMacEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck,
+						no any chance to clear pMacEntry->ContinueTxFailCnt.
+
+						EX: When pMacEntry->ContinueTxFailCnt >=
+						pAd->ApCfg.EntryLifeCheck, the condition will not be
+						removed and we will drop all packets for the pEntry.
+						But maybe the signal becomes better.
+						So we try to send a packet periodically and we will
+						get the tx status in tx done interrupt.
+						If the tx status is success, pMacEntry->ContinueTxFailCnt
+						will be cleared to 0.
+					*/
+#define ENTRY_RETRY_INTERVAL	(50 * OS_HZ / 1000)
+					ULONG Now32;
+					NdisGetSystemUpTime(&Now32);
+					if(RTMP_TIME_BEFORE(Now32, pMacEntry->TimeStamp_toTxRing + ENTRY_RETRY_INTERVAL))
+					{
+						pEntry = RemoveHeadQueue(pQueue);
+						RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+						DEQUEUE_UNLOCK(&pAd->irq_lock, bIntContext, IrqFlags);
+						Count++;
+						continue;
+					}
+					else
+					    NdisGetSystemUpTime(&pMacEntry->TimeStamp_toTxRing);
 				}
 			}
 #ifdef P2P_SUPPORT
