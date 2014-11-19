@@ -12,6 +12,7 @@ CONF_H  = $(LINUXDIR)/include/linux/autoconf.h
 ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
 # allow add snoop records to wifi drivers from igmpproxy
 CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT
+#CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT_AUTO_DISABLE
 endif
 
 ifdef CONFIG_RALINK_RT6855

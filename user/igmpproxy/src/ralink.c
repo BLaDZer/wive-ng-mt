@@ -664,14 +664,7 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	int			SoundingRespSnr[3];
 } RT_802_11_MAC_ENTRY;
 
-#if defined (CONFIG_RT2860V2_AP_WAPI) || defined (CONFIG_RT3090_AP_WAPI) || \
-    defined (CONFIG_RT3572_AP_WAPI) || defined (CONFIG_RT5392_AP_WAPI) || \
-    defined (CONFIG_RT5572_AP_WAPI) || defined (CONFIG_RT5592_AP_WAPI) || \
-    defined (CONFIG_RT3593_AP_WAPI) || defined (CONFIG_RT3680_iNIC_AP_WAPI)
-#define MAX_NUMBER_OF_MAC               96
-#else
 #define MAX_NUMBER_OF_MAC               32 // if MAX_MBSSID_NUM is 8, this value can't be larger than 211
-#endif
 
 typedef struct _RT_802_11_MAC_TABLE {
 	unsigned long            Num;
@@ -692,6 +685,7 @@ void rtwifi_enable(void)
 
 void rtwifi_disable(void)
 {
+#ifdef WIFI_IGMPSNOOP_SUPPORT_AUTO_DISABLE
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
@@ -699,6 +693,7 @@ void rtwifi_disable(void)
 		sprintf(cmd, "iwpriv %s set IgmpSnEnable=0", rtwifi_intfs[i]);
 		system(cmd);
 	}
+#endif
 }
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)

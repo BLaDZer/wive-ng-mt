@@ -49,7 +49,7 @@ static const char Usage[] =
 "   -w	 Wan at port 0/4. Only in switch management mode\n"
 "   -f	 Force igmp_snooping enable (default auto)	\n"
 "   -n	 Force igmp_snooping disable (default auto)	\n"
-"   -a	 Auto enable wifi M2U if need			\n"
+"   -a	 Auto enable wifi M2U by client request		\n"
 "   ----------------------------------------------------\n"
 #endif
 "   -v   Be verbose. Give twice to see even debug messages.\n"
@@ -381,14 +381,11 @@ void igmpProxyRun() {
 
             // Read IGMP request, and handle it...
             if( FD_ISSET( MRouterFD, &ReadFDS ) ) {
-    
-                recvlen = recvfrom(MRouterFD, recv_buf, RECV_BUF_SIZE,
-                                   0, NULL, &dummy);
+                recvlen = recvfrom(MRouterFD, recv_buf, RECV_BUF_SIZE, 0, NULL, &dummy);
                 if (recvlen < 0) {
                     if (errno != EINTR) my_log(LOG_ERR, errno, "recvfrom");
                     continue;
                 }
-
                 acceptIgmp(recvlen);
             }
         }

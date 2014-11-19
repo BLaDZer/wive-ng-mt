@@ -300,17 +300,18 @@
 10) kernel: ralink wifi: decrease life check packets count, decrease life time and check interval for more speed cleanup died clients.<br>
 11) kernel: ralink wifi: add lost increment retry count in jam traffic detect path.<br>
 12) kernel: ralink wifi: backport unify jam traffic detect logic from v4 drivers.<br>
-13) kernel: raeth: fix raise spurious interrupts.<br>
-14) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
-15) kernel: ralink wifi: limit to 16 numbers of mcast packets in normal/ps queue.<br>
+13) kernel: ralink wifi: decrease tx ring size (set 64 instead of 128).<br>
+14) kernel: ralink wifi: limit to 16 numbers of mcast packets in normal/ps queue.<br>
+15) kernel: raeth: fix raise spurious interrupts.<br>
 16) kernel: fastroute: increase CB offcet (found used offset 41 in wifi drivers).<br>
 <br>
 <br>
 <b>1.1.x</b><br>
-1) igmpproxy: auto disable Multicast2Unicast in wifi driver if real mulicast route table is empty.<br>
-2) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
-3) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
-4) kernel: tcp: limit GSO packets to half cwnd.<br>
+1) defaults: disable M2U by default (if need must be enable in WebUI).<br>
+2) igmpproxy: rework snooping managment code (only enable by request mode support).<br>
+3) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
+4) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
+5) kernel: tcp: limit GSO packets to half cwnd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
