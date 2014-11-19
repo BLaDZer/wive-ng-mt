@@ -599,9 +599,8 @@ static void mt7620_gsw_init(void)
 	mii_mgr_write(4, 16, 0x1313);
 #endif
 #endif
-	if ((ralink_asic_rev_id & 0xf) >= 5) {
-		*(volatile u32 *)(RALINK_ETH_SW_BASE+0x701c) = 0x800000c; //enlarge FE2SW_IPG
-	}
+	if ((ralink_asic_rev_id & 0xf) >= 5)
+		*(volatile u32 *)(RALINK_ETH_SW_BASE+0x701c) = 0x0800000c; //enlarge FE2SW_IPG
 
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x0004) = 0x00000007;	// PPE_PORT=7, PPE_EN=0
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x270c) = 0x000fff10;	// disable P7 mac learning

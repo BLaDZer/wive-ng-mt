@@ -227,6 +227,7 @@ config6855Esw()
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 
+	#switch reg w 701c 0800000c		#enlarge FE2SW_IPG
 
 	$LOG "Switch configured for $1 mode."
 
