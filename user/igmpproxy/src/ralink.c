@@ -672,6 +672,16 @@ typedef struct _RT_802_11_MAC_TABLE {
 } RT_802_11_MAC_TABLE;
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
+int addRTWiFiIntf(char *wifi)
+{
+	if(strlen(wifi) > IFNAMSIZ)
+		return -1;
+	if(rtwifi_intf_count >= RTWIFI_INTFS_MAX)
+		return -1;
+	strcpy(rtwifi_intfs[rtwifi_intf_count++], wifi);
+	return 0;
+}
+
 void rtwifi_enable(void)
 {
 	int i;
@@ -698,6 +708,7 @@ void rtwifi_disable(void)
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
 	if( arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1) {
@@ -708,10 +719,12 @@ void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 		}
 	}else
 		my_log(LOG_DEBUG, 0, "Can't find Mac address(%s)", u_ip_addr);
+#endif
 }
 
 void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
 	if( arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1) {
@@ -722,10 +735,12 @@ void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 		}
 	}else
 		my_log(LOG_DEBUG, 0, "Can't find Mac address(%s)", inetFmt(htonl(u_ip_addr), s1));
+#endif
 }
 
 void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 {
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
@@ -733,10 +748,12 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 		my_log(LOG_DEBUG, 0, "Add %s to wifi driver snooping table", inetFmt(htonl(m_ip_addr), s1));
 		system(cmd);
 	}
+#endif
 }
 
 void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 {
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
@@ -745,18 +762,10 @@ void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 		printf("%s\n", cmd);
 		system(cmd);
 	}
+#endif
 }
 
-int addRTWiFiIntf(char *wifi)
-{
-	if(strlen(wifi) > IFNAMSIZ)
-		return -1;
-	if(rtwifi_intf_count >= RTWIFI_INTFS_MAX)
-		return -1;
-	strcpy(rtwifi_intfs[rtwifi_intf_count++], wifi);
-	return 0;
-}
-
+#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
 int _WiFiSTALookUPByMac(char *wifi, unsigned int mac1, unsigned int mac2)
 {
 	int i, s;
@@ -818,6 +827,7 @@ int WiFiSTALookUPByMac(char *mac)
 
 	return 0;
 }
+#endif
 #endif
 
 static void strip_mac(char *mac)

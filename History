@@ -308,7 +308,7 @@
 <br>
 <b>1.1.x</b><br>
 1) defaults: disable M2U by default (if need must be enable in WebUI).<br>
-2) igmpproxy: rework snooping managment code (only enable by request mode support).<br>
+2) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
 3) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
 4) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
 5) kernel: tcp: limit GSO packets to half cwnd.<br>
