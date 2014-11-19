@@ -1,62 +1,140 @@
 #EXTM3U name="Ростелеком"
-#EXTINF:-1 group-title="Эфир - Омск" ,Первый
-udp://@239.3.2.3:3000
+#EXTINF:-1 group-title="Эфир - Омск" ,Первый канал
+udp://@239.1.128.1:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,Россия 1
-udp://@239.3.2.6:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,ТВ Центр
-udp://@239.3.2.1:3000
+udp://@239.1.128.2:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,НТВ 
+udp://@239.1.128.3:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Россия 24
+udp://@233.7.70.68:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,5 канал Петербург
+udp://@239.1.128.5:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Россия К 
+udp://@239.1.128.6:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Россия 2 
+udp://@239.1.128.7:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Карусель (+0) 
+udp://@233.7.70.40:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,СТС 
+udp://@239.1.128.14:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,ТНТ
-udp://@239.3.2.2:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,НТВ
-udp://@239.3.2.4:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Домашний
-udp://@239.3.2.5:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Пятница
-udp://@239.3.2.7:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,СТС
-udp://@239.3.2.8:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,ТВ3
-udp://@239.3.2.9:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,РЕН-ТВ
-udp://@239.3.2.10:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,7 ТВ
-udp://@239.3.2.11:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,5 канал Санкт-Петербург
-udp://@239.3.2.12:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Культура
-udp://@239.3.2.13:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Перец
-udp://@239.3.2.14:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Россия 2
-udp://@239.3.2.15:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,Ю
-udp://@239.3.2.16:3000
-#EXTINF:-1 group-title="Эфир - Омск" ,РБК Омск
-udp://@239.3.2.17:3000
-#EXTINF:-1 group-title="Эфир - Москва" ,Первый канал HD
-udp://@233.7.70.200:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,Россия HD
-udp://@233.7.70.201:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,ТВЦ
-udp://@233.7.70.203:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,ТВЦ
-udp://@233.7.70.219:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,5 канал
-udp://@233.7.70.60:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,Россия 2
-udp://@233.7.70.172:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,ТВ3
-udp://@233.7.70.220:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,ТВ3
+udp://@239.1.128.12:4000 
+#EXTINF:-1 group-title="Эфир - Омск" ,ТВ3 
 udp://@233.7.70.221:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,НТВ
-udp://@233.7.70.64:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,Перец
-udp://@233.7.70.165:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,Перец / Ахтуба ТВ
-udp://@233.7.70.66:5000
-#EXTINF:-1 group-title="Эфир - Москва" ,ОТР
+#EXTINF:-1 group-title="Эфир - Омск" ,ТВЦентр
+udp://@233.7.70.219:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,РЕН-ТВ 
+udp://@239.1.128.13:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,МУЗ ТВ 
+udp://@233.7.70.137:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Домашний 
+udp://@239.1.128.16:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Перец (ДТВ) 
+udp://@239.1.128.17:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Звезда
+udp://@233.7.70.69:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ОРТРК 
+udp://@239.1.128.20:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,Агро ТВ
+udp://@233.7.70.57:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Russia Today 
+udp://@233.7.70.82:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,РБК-ТВ
+udp://@233.7.70.22:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,France 24 (fr) 
+udp://@233.7.70.149:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,CNN
+udp://@233.7.70.150:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,TV XXI Век 
+udp://@233.7.70.35:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,National Geographic 
+udp://@233.7.70.32:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Домашние Животные
+udp://@233.7.70.91:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Вопрос и ответ
+udp://@233.7.70.92:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Психология 21
+udp://@233.7.70.93:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Drive
+udp://@233.7.70.31:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Охота и рыбалка 
+udp://@233.7.70.48:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Усадьба ТВ 
+udp://@233.7.70.51:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Ocean TV 
+udp://@233.7.70.95:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Здоровое ТВ 
+udp://@233.7.70.49:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,English Club TV 
+udp://@233.7.70.96:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Euronews
+udp://@233.7.70.42:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,СГУ ТВ
+udp://@233.7.70.23:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Канал Disney 
+udp://@233.7.70.9:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Мульт 
+udp://@233.7.70.57:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Радость моя 
+udp://@233.7.70.100:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Мать и дитя 
+udp://@233.7.70.41:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Amazing life
+udp://@233.7.70.21:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,E!Entertaiment 
+udp://@233.7.70.72:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Fashion TV 
+udp://@233.7.70.47:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Style 
+udp://@233.7.70.140:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Юмор ТВ
+udp://@233.7.70.46:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,2x2(+2) 
+udp://@233.7.70.124:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТДК 
+udp://@233.7.70.50:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,A-ONE 
+udp://@233.7.70.52:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,RUSSIAN MUSICBOX
+udp://@233.7.70.54:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,О2 Молодежный
+udp://@233.7.70.55:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,RU.TV 
+udp://@233.7.70.83:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,MCM TOP 
+udp://@233.7.70.109:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport 
+udp://@233.7.70.45:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport 2 
+udp://@233.7.70.81:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,КХЛ
+udp://@233.7.70.37:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Спорт 1 
+udp://@233.7.70.75:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Fashion TV
+udp://@233.7.70.47:5000
+#EXTINF:-1 group-title="Эфир - Омск" , Style
+udp://@233.7.70.140:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,World Fashion
 udp://@233.7.70.141:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Эксперт ТВ
+udp://@233.7.70.20:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,Про деньги
+udp://@233.7.70.142:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТРО 
+udp://@233.7.70.143:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТНВ
+udp://@233.7.70.144:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,МИР ТВ
+udp://@233.7.70.58:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,701.Союз
+udp://@233.7.70.24:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТВ Клуб
+udp://@233.7.70.146:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТТС
+udp://@233.7.70.147:5000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТОП ШОП
+udp://@233.7.70.56:5000
 #EXTINF:-1 group-title="Музыкальные" ,Music Box TV
 udp://@233.7.70.53:5000
 #EXTINF:-1 group-title="Музыкальные" ,VH1 Classic
