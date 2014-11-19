@@ -173,7 +173,7 @@ config6855Esw()
 		#VLAN member port
 		switch vlan set 0 1 11110111
 		switch vlan set 1 2 00001011
-	elif [ "$1" = "LLLLWW" ]; then
+	elif [ "$1" = "LLLWW" ]; then
 		#set PVID
 		switch reg w 2014 10001 #port0
 		switch reg w 2114 10001 #port1
@@ -268,10 +268,10 @@ if [ "$1" = "3" ]; then
 		reinit_all_phys
 	elif [ "$2" = "LLLLW" ]; then
 		config6855Esw LLLLW
-	elif [ "$2" = "WLLLL" ]; then
-		config6855Esw WLLLL
 	elif [ "$2" = "LLLWW" ]; then
 		config6855Esw LLLWW
+	elif [ "$2" = "WLLLL" ]; then
+		config6855Esw WLLLL
 	elif [ "$2" = "WWLLL" ]; then
 		config6855Esw WWLLL
 	elif [ "$2" = "12345" ]; then
