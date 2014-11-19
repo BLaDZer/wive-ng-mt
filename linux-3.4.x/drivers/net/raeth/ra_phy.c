@@ -599,13 +599,13 @@ static void mt7620_gsw_init(void)
 	mii_mgr_write(4, 16, 0x1313);
 #endif
 #endif
-
 	if ((ralink_asic_rev_id & 0xf) >= 5) {
 		*(volatile u32 *)(RALINK_ETH_SW_BASE+0x701c) = 0x800000c; //enlarge FE2SW_IPG
 	}
 
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x0004) = 0x00000007;	// PPE_PORT=7, PPE_EN=0
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x270c) = 0x000fff10;	// disable P7 mac learning
+
 #if defined (CONFIG_RAETH_ESW)
 	/* Use internal switch, enable vlan control, enable egress tags */
 #if defined (CONFIG_RAETH_HAS_PORT5)
@@ -647,7 +647,6 @@ static void mt7620_gsw_init(void)
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x2610) = 0x81000000;	// P6 is user port, admit all frames
 #endif
 #endif
-
 	/* Port 6 (CPU) */
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x3600) = 0x0005e33b;	// (P6, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 	*(volatile u32 *)(RALINK_ETH_SW_BASE+0x0010) = 0x7f7f7fe0;	// Set Port6 CPU Port

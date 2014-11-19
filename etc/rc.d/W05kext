@@ -126,11 +126,9 @@ offload() {
 	        $LOG "hw_nat: set binding threshold to $hw_nat_bind."
 	        hw_nat -N $hw_nat_bind > /dev/null 2>&1
 	    fi
-	    switchworkaround
 	else
 	    if [ -d /sys/module/hw_nat ]; then
 		rmmod hw_nat > /dev/null 2>&1
-		switchworkaround
 	    fi
 	fi
     else
@@ -144,9 +142,9 @@ offload() {
 	fi
 	if [ -d /sys/module/hw_nat ]; then
 	    rmmod hw_nat > /dev/null 2>&1
-	    switchworkaround
 	fi
     fi
+    switchworkaround
 }
 
 pthrough() {

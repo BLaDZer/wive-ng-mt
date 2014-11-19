@@ -253,7 +253,7 @@ restore6855Esw()
 
 if [ "$1" = "3" ]; then
 	SWITCH_MODE=3
-	if [ "$2" = "0" ]; then
+	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
 		restore6855Esw
 	elif [ "$2" = "EEEEE" ]; then
 		enableEsw

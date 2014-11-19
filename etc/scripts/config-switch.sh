@@ -108,7 +108,7 @@ if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 		CMODE="LLLLL"
     fi
-    $LOG '##### ESW config vlan partition $CMODE #####'
+    $LOG "##### ESW config vlan partition $CMODE #####"
     /etc/scripts/config-vlan.sh $SWITCH_MODE "$CMODE" > /dev/null 2>&1
 fi
 }
