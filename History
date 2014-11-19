@@ -310,8 +310,10 @@
 1) defaults: disable M2U by default (if need must be enable in WebUI).<br>
 2) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
 3) kernel: ralink wifi: fix tx ring full issue at M2U enabled.<br>
-4) kernel: ralink wifi: fix m2u filter tabel. Add MDNS and fix IgmpV3 filter.<br>
-5) kernel: tcp: limit GSO packets to half cwnd.<br>
+4) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
+5) kernel: ralink wifi: add increase tx fail count im M2U path before drop packet.<br>
+6) kernel: ralink wifi: rework tune retry limits at TxQ full and remode disabe m2u conversion in this case.<br>
+7) kernel: tcp: limit GSO packets to half cwnd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
