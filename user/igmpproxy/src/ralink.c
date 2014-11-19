@@ -708,7 +708,7 @@ void rtwifi_disable(void)
 
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
 	if( arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1) {
@@ -724,7 +724,7 @@ void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 
 void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
 	if( arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1) {
@@ -740,7 +740,7 @@ void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 
 void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 {
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
@@ -753,7 +753,7 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 
 void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 {
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char cmd[128];
 	for(i=0; i<rtwifi_intf_count ; i++) {
@@ -765,7 +765,7 @@ void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 #endif
 }
 
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 int _WiFiSTALookUPByMac(char *wifi, unsigned int mac1, unsigned int mac2)
 {
 	int i, s;
@@ -899,7 +899,7 @@ static int portLookUpByIP(char *ip)
 	strip_mac(mac);
 	rc = portLookUpByMac(mac);
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-#ifdef WIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+#ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	if(rc == -1){
 		if( (rc = WiFiSTALookUPByMac(mac)) != -1)
 			return OTHER_INTERFACE;

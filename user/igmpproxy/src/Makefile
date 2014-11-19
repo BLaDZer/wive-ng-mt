@@ -10,10 +10,12 @@ CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
 CONF_H  = $(LINUXDIR)/include/linux/autoconf.h
 
 ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
-# allow add snoop records to wifi drivers from igmpproxy
+# auto enable Multicast to Unicast in wifi drivers by user req
 CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT
+# auto disable Multicast to Unicast in wifi drivers if route table empty
 CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT_AUTO_DISABLE
-#CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT_SATATIC_MANAGMENT
+# allow add snoop records to wifi drivers from igmpproxy (2.7.x.x drivers have TxRing issue, not enable it)
+#CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 endif
 
 ifdef CONFIG_RALINK_RT6855
