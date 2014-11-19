@@ -83,7 +83,7 @@ unload_apps() {
 
 free_mem_cahce() {
     # small workaround for defrag ane clean mem
-    sysctl -wq vm.min_free_kbytes=2048
+    sysctl -wq vm.min_free_kbytes=3192
     sync
     sysctl -wq vm.min_free_kbytes=1024
 }

@@ -34,4 +34,3 @@ PPP_DISC 8863 # PPPoE discovery messages
 PPP_SES 8864 # PPPoE session messages
 ATMFATE 8884 # Frame-based ATM Transport over Ethernet
 LOOP 9000 loopback # loop proto
-

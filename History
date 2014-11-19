@@ -312,9 +312,10 @@
 3) init.d: fix LLLWW config.<br>
 4) init.d: fix kext switch workaround.<br>
 5) init.d: in bridged mode direct enable Multicast2Unicast in wifi drivers independed by igmpproxy enable.<br>
-6) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
-7) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
-8) kernel: tcp: limit GSO packets to half cwnd.<br>
+6) sysctl: tune defaults more optimal for 64Mb ram devices.<br>
+7) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
+8) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
+9) kernel: tcp: limit GSO packets to half cwnd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
