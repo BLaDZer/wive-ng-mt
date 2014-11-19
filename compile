@@ -21,6 +21,7 @@ if [ "$1" = "" ]; then
 else
     MODE=$1
 fi
+
 #-------FABRICMODE---------#
 if [ "$2" = "" ]; then
     FMODE=""
