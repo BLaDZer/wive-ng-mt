@@ -317,6 +317,7 @@
 8) buildsystem: small cleanup and more safe gcc flags use for wireless modules (driver code in some cases ugly and mabe uncrorrect build with this options).<br>
 9) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
 10) kernel: tcp: limit GSO packets to half cwnd.<br>
+11) kernel: fix misuses of f_count() in ppp.<br>
 <br>
 <br>
 <b>TODO:</b><br>
