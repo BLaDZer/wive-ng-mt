@@ -95,9 +95,9 @@ if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
 	# tv and sip
 	if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
-		CMODE="WWwLL"
+		CMODE="WWWLL"
             else
-		CMODE="LLwWW"
+		CMODE="LLWWW"
 	    fi
 	# only tv
 	elif [ "$tv_port" = "1" ]; then

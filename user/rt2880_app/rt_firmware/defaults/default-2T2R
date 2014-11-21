@@ -264,6 +264,7 @@ TransInPort=51413
 TransAccess=1
 TransAuthor=0
 tv_port=0
+sip_port=0
 TxBurst=0
 BurstMode=0
 TXPath=2

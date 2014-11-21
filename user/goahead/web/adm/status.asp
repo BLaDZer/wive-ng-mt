@@ -66,6 +66,8 @@ function showPortStatus()
 	var wan = 1 * form.wan_port.value;
 	var stb_port = (!form.tv_stbEnabled.checked) ? -1 :
 			(wan == 0) ? 1 : wan - 1;
+	var sip_port = (!form.sip_stbEnabled.checked) ? -1 :
+			(wan == 0) ? 1 : wan - 2;
 	var content = '';
 
 	for (i=0; i<pstatus.length; i++)
@@ -91,6 +93,8 @@ function showPortStatus()
 			text = '<span style="color: #027fff;">WAN</span>';
 		else if (i == stb_port)
 			text = '<span style="color: #ff00d2;">TV</span>';
+		else if (i == sip_port)
+			text = '<span style="color: #ffd200;">SIP</span>';
 
 		content = content + '<td class="port_status" style="background-color: #ffffff; border: 0px; background-image: url(\'/graphics/' + image + '.gif\'); "><b>' + text + '</b></td>';
 	}
@@ -130,7 +134,8 @@ function initTranslation()
 function PageInit()
 {
 	var ethtoolb = "<% getETHTOOLBuilt(); %>";
-	var tv_stb   = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB
+	var tv_stb   = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
+	var sip_stb   = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
 
 	if (ethtoolb == "1")
 		showElement('div_ethtool');
@@ -146,6 +151,7 @@ function PageInit()
 
 	form.wan_port.value = wan_port;
 	form.tv_stbEnabled.checked = (tv_stb == '1');
+	form.sip_stbEnabled.checked = (sip_stb == '1');
 
 	var gigaphy = '<% gigaphy(); %>';
 
@@ -231,8 +237,12 @@ function setWanPort(form)
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
           </tr>
           <tr>
-            <td class="head" id="wMacAddressClone">TV/STB</td>
+            <td class="head" id="wMacAddressClone">TV/STB/VLAN1</td>
             <td><input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();"></td>
+          </tr>
+          <tr>
+            <td class="head" id="wMacAddressClone">SIP/STB/VLAN2</td>
+            <td><input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();"></td>
           </tr>
           <tr>
             <td class="head">Port 1 mode</td>
