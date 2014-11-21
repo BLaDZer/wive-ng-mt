@@ -58,6 +58,20 @@ phyint $vpn_if disabled
 get_param() {
     eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled wan_port tv_port`
     ####################################
+    # remap wan if to vlan bridge
+    ####################################
+    if [ "$VlanEnabled" = "1" ]; then
+	if [ "$tv_port_mcast" = "1" ]; then
+	    wan_if="$vlantvif"
+	fi
+	if [ "$sip_port_mcast" = "1" ]; then
+	    wan_if="$vlansipif"
+	fi
+        $LOG "Replace route to multicast subnet via $wan_if."
+        ip -4 route replace "$mcast_net" dev "$wan_if"
+    fi
+
+    ####################################
     # wan port number set
     ####################################
     if [ "$wan_port" = "0" ]; then

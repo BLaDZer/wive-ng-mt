@@ -9,31 +9,43 @@ start() {
     if [ "$VlanEnabled" = "1" ] && [ ! -f /tmp/bootgood ]; then
 	if [ "$tv_port" = "1" ]; then
 	    $LOG "Add bridge for TV/STB"
-	    brctl addbr vlantv
+	    brctl addbr "$vlantvif"
 	    vconfig add eth2 3
-	    ip link set eth2 3
-	    brctl addif vlantv eth2.3
+	    ip link set eth2.3 up
+	    brctl addif "$vlantvif" eth2.3
 	    for i in $tv_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $tv_portVLAN"
-		vconfig add $phys_wan_if $i
-		brctl addif vlantv "$phys_wan_if.$i"
-		ip link set  "$phys_wan_if.$i" up
+		vconfig add "$phys_wan_if" "$i"
+		brctl addif "$vlantvif" "$phys_wan_if.$i"
+		ip link set "$phys_wan_if.$i" up
 	    done
-	    ip link set vlantv up
+	    if [ "$tv_port_mcast" ]; then
+		# generate random ip from zeroconfig range end set need for igmpproxy work
+		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+		ip -4 addr flush dev "$vlantvif"
+		ip -4 addr add "$rndip"/32 dev "$vlantvif"
+	    fi
+	    ip link set "$vlantvif" up
 	fi
 	if [ "$sip_port" = "1" ]; then
 	    $LOG "Add bridge for SIP/STB"
-	    brctl addbr vlansip
+	    brctl addbr "$vlansipif"
 	    vconfig add eth2 4
-	    ip link set eth2 4
-	    brctl addif vlansip eth2.4
+	    ip link set eth2.4 up
+	    brctl addif "$vlansipif" eth2.4
 	    for i in $sip_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $sip_portVLAN"
-		vconfig add $phys_wan_if $i
-		brctl addif vlansip "$phys_wan_if.$i"
-		ip link set  "$phys_wan_if.$i" up
+		vconfig add "$phys_wan_if" "$i"
+		brctl addif "$vlansipif" "$phys_wan_if.$i"
+		ip link set "$phys_wan_if.$i" up
 	    done
-	    ip link set vlansip up
+	    if [ "$sip_port_mcast" ]; then
+		# generate random ip from zeroconfig range end set need for igmpproxy work
+		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+		ip -4 addr flush dev "$vlansipif"
+		ip -4 addr add "$rndip"/32 dev "$vlansipif"
+	    fi
+	    ip link set "$vlansipif" up
 	fi
     fi
 }

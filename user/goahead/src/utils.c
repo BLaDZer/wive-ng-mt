@@ -959,6 +959,8 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	char* w_port = websGetVar(wp, T("wan_port"), T("0"));
 	char* tv_port = websGetVar(wp, T("tv_stbEnabled"), T("off"));
 	char* sip_port = websGetVar(wp, T("sip_stbEnabled"), T("off"));
+	char* tv_port_mcast = websGetVar(wp, T("tv_stbMcast"), T("off"));
+	char* sip_port_mcast = websGetVar(wp, T("sip_stbMcast"), T("off"));
 	char* tv_portVLAN = websGetVar(wp, T("tv_stbVLAN"), T(""));
 	char* sip_portVLAN = websGetVar(wp, T("sip_stbVLAN"), T(""));
 
@@ -985,6 +987,8 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 
 	nvram_bufset(RT2860_NVRAM, "tv_port", (strcmp(tv_port, "on")==0) ? "1" : "0");
 	nvram_bufset(RT2860_NVRAM, "sip_port", (strcmp(sip_port, "on")==0) ? "1" : "0");
+	nvram_bufset(RT2860_NVRAM, "tv_port_mcast", (strcmp(tv_port_mcast, "on")==0) ? "1" : "0");
+	nvram_bufset(RT2860_NVRAM, "sip_port_mcast", (strcmp(sip_port_mcast, "on")==0) ? "1" : "0");
 	nvram_bufset(RT2860_NVRAM, "tv_portVLAN", tv_portVLAN);
 	nvram_bufset(RT2860_NVRAM, "sip_portVLAN", sip_portVLAN);
 

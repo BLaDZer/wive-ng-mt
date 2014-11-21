@@ -133,9 +133,11 @@ function initTranslation()
 
 function PageInit()
 {
-	var ethtoolb = "<% getETHTOOLBuilt(); %>";
-	var tv_stb   = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
-	var sip_stb  = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
+	var ethtoolb       = "<% getETHTOOLBuilt(); %>";
+	var tv_stb         = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
+	var sip_stb        = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
+	var tv_stb_mcast   = "<% getCfgZero(1, "tv_port_mcast"); %>"; // TV/STB/VLAN1
+	var sip_stb_mcast  = "<% getCfgZero(1, "sip_port_mcast"); %>"; // SIP/STB/VLAN2
 
 	if (ethtoolb == "1")
 		showElement('div_ethtool');
@@ -152,6 +154,8 @@ function PageInit()
 	form.wan_port.value = wan_port;
 	form.tv_stbEnabled.checked = (tv_stb == '1');
 	form.sip_stbEnabled.checked = (sip_stb == '1');
+	form.tv_stbMcast.checked = (tv_stb_mcast == '1');
+	form.sip_stbMcast.checked = (sip_stb_mcast == '1');
 
 	var gigaphy = '<% gigaphy(); %>';
 
@@ -238,12 +242,14 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="tv_stb">TV/STB/VLAN1</td>
-            <td><input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+            <td>Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+		McastProxy:<input name="tv_stbMcast" type="checkbox" onChange="showPortStatus();">&nbsp;<br>
             VlanID(s):<input name="tv_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
           </tr>
           <tr>
             <td class="head" id="sip_stb">SIP/STB/VLAN2</td>
-            <td><input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+            <td>Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+		McastProxy:<input name="sip_stbMcast" type="checkbox" onChange="showPortStatus();">&nbsp;<br>
             VlanID(s):<input name="sip_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
           </tr>
           <tr>

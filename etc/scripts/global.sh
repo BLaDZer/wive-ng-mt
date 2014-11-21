@@ -39,14 +39,14 @@ txqueuelen="1000"
 eval `nvram_buf_get 2860 HostName OperationMode \
 	wanConnectionMode wan_ipaddr wan_netmask wan_gateway wan_static_dns wan_manual_mtu \
 	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
+	tv_port sip_port tv_portVLAN sip_portVLAN tv_port_mcast sip_port_mcast \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode \
 	ApCliBridgeOnly \
 	MODEMENABLED \
-	QoSEnable simple_qos \
-	tv_port sip_port tv_portVLAN sip_portVLAN`
+	QoSEnable simple_qos`
 
 # name/mask for first wlanmodule used in system logic
 getFirstWlanIfName() {
@@ -216,11 +216,15 @@ getWanReady() {
     realwan_is_not_null=`ip -o -4 addr show $real_wan_if scope global | wc -l` > /dev/null 2>&1
 }
 
-getVlanEnabled() {
+getVlanConfig() {
     if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
 	VlanEnabled="1"
+	vlantvif="vlantv"
+	vlansipif="vlansip"
     else
 	VlanEnabled="0"
+	vlantvif=""
+	vlansipif=""
     fi
 }
 
@@ -293,4 +297,4 @@ getWanIfName
 getTunIfName
 getWanIpaddr
 getWanReady
-getVlanEnabled
+getVlanConfig

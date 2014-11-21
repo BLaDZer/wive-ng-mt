@@ -34,6 +34,16 @@ start() {
 	    iptables -A servicelimit -p igmp -i $lan_if -j ACCEPT
 	    iptables -A servicelimit -d $mcast_net -i $wan_if -j ACCEPT
 	    iptables -A servicelimit -s $mcast_net -i $wan_if -j ACCEPT
+	    if [ "$VlanEnabled" = "1" ]; then
+		if [ "$tv_port_mcast" = "1" ]; then
+		    iptables -A servicelimit -d $mcast_net -i $vlantvif -j ACCEPT
+		    iptables -A servicelimit -s $mcast_net -i $vlantvif -j ACCEPT
+		fi
+		if [ "$sip_port_mcast" = "1" ]; then
+		    iptables -A servicelimit -d $mcast_net -i $vlansipif -j ACCEPT
+		    iptables -A servicelimit -s $mcast_net -i $vlansipif -j ACCEPT
+		fi
+	    fi
 	fi
 	if [ "$dhcpEnabled" != "0" ]; then
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
