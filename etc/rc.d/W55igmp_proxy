@@ -69,6 +69,7 @@ get_param() {
 	fi
         $LOG "Replace route to multicast subnet via $wan_if."
         ip -4 route replace "$mcast_net" dev "$wan_if"
+	sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
     fi
 
     ####################################
