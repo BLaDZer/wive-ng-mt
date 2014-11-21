@@ -326,11 +326,13 @@
 17) kernel: mips: jump_label.c: Handle the microMIPS J instruction encoding.<br>
 <br>
 <br>
+<b>1.2.x</b><br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
-3) add vlan support logic and web configure (need more info by NAG).<br>
-4) full russian ui (need help community or employ the web developer).<br>
+3) full russian ui (need help community or employ the web developer).<br>
 <br>
 <br>
 <br>
