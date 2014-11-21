@@ -11,6 +11,7 @@ start() {
 	    $LOG "Add bridge for TV/STB"
 	    brctl addbr vlantv
 	    vconfig add eth2 3
+	    ip link set eth2 3
 	    brctl addif vlantv eth2.3
 	    for i in $tv_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $tv_portVLAN"
@@ -24,6 +25,7 @@ start() {
 	    $LOG "Add bridge for SIP/STB"
 	    brctl addbr vlansip
 	    vconfig add eth2 4
+	    ip link set eth2 4
 	    brctl addif vlansip eth2.4
 	    for i in $sip_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $sip_portVLAN"
