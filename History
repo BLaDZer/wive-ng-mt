@@ -326,6 +326,7 @@
 1) init.d/goahead: add vlan support for bridge port TV/SIP/STB modes.<br>
 2) init.d/goahead: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
 3) init.d/goahead: add get mcast from VLAN TV/SIP/STB bridges.<br>
+4) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
