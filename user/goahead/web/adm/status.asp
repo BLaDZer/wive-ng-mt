@@ -135,7 +135,7 @@ function PageInit()
 {
 	var ethtoolb = "<% getETHTOOLBuilt(); %>";
 	var tv_stb   = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
-	var sip_stb   = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
+	var sip_stb  = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
 
 	if (ethtoolb == "1")
 		showElement('div_ethtool');
@@ -237,12 +237,14 @@ function setWanPort(form)
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
           </tr>
           <tr>
-            <td class="head" id="wMacAddressClone">TV/STB/VLAN1</td>
-            <td><input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();"></td>
+            <td class="head" id="tv_stb">TV/STB/VLAN1</td>
+            <td><input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+            VlanID(s):<input name="tv_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
           </tr>
           <tr>
-            <td class="head" id="wMacAddressClone">SIP/STB/VLAN2</td>
-            <td><input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();"></td>
+            <td class="head" id="sip_stb">SIP/STB/VLAN2</td>
+            <td><input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
+            VlanID(s):<input name="sip_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
           </tr>
           <tr>
             <td class="head">Port 1 mode</td>

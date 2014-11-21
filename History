@@ -314,14 +314,15 @@
 5) init.d: in bridged mode direct enable Multicast2Unicast in wifi drivers independed by igmpproxy enable.<br>
 6) init.d: switch_config: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
 7) goahead: switch_config: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
-8) sysctl: tune defaults more optimal for 64Mb ram devices.<br>
-9) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
-10) buildsystem: small cleanup and more safe gcc flags use for wireless modules (driver code in some cases ugly and mabe uncrorrect build with this options).<br>
-11) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
-12) kernel: tcp: limit GSO packets to half cwnd.<br>
-13) kernel: fix misuses of f_count() in ppp.<br>
-14) kernel: mips: jump_label.c: Correct the span of the J instruction.<br>
-15) kernel: mips: jump_label.c: Handle the microMIPS J instruction encoding.<br>
+8) goahead: switch_config: add vlan support for bridge port TV/SIP/STB modes.<br>
+10) sysctl: tune defaults more optimal for 64Mb ram devices.<br>
+11) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
+12) buildsystem: small cleanup and more safe gcc flags use for wireless modules (driver code in some cases ugly and mabe uncrorrect build with this options).<br>
+13) kernel: ralink wifi: fix m2u filter table. Add MDNS and fix IgmpV3 filter.<br>
+14) kernel: tcp: limit GSO packets to half cwnd.<br>
+15) kernel: fix misuses of f_count() in ppp.<br>
+16) kernel: mips: jump_label.c: Correct the span of the J instruction.<br>
+17) kernel: mips: jump_label.c: Handle the microMIPS J instruction encoding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
