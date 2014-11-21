@@ -67,7 +67,7 @@ function showPortStatus()
 	var stb_port = (!form.tv_stbEnabled.checked) ? -1 :
 			(wan == 0) ? 1 : wan - 1;
 	var sip_port = (!form.sip_stbEnabled.checked) ? -1 :
-			(wan == 0) ? 1 : wan - 2;
+			(wan == 0) ? 2 : wan - 2;
 	var content = '';
 
 	for (i=0; i<pstatus.length; i++)
