@@ -93,7 +93,7 @@ if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
 	# manual vlan configured
-	if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+	if [ "$VlanEnabled" = "1" ]; then
 		CMODE="VLANS"
 	# tv and sip
 	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
