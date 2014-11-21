@@ -177,10 +177,6 @@ if [ "$MODE" != "connect_sta" ]; then
     if [ "$MODE" != "wifionly" ]; then
 	$LOG "Reconfigure lan..."
 	service lan restart
-	if [ -f /etc/scripts/switchadv.sh ]; then
-	    $LOG "Reconfigure vlans..."
-	    service vlan restart
-	fi
     fi
 fi
 

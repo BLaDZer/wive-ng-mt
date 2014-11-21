@@ -162,11 +162,7 @@ config6855Esw()
 	    switch reg w 2${i}10 810000c0	#ports 0-5 as transparent port
 	done
 
-	if [ -f /etc/scripts/switchadv.sh ]; then
-		#this hook for advanced SWITCH/VLAN map configure
-		$LOG "Call user /etc/scripts/switchadv.sh script SWITCHCONF mode."
-		/etc/scripts/switchadv.sh "SWITCHCONF"
-	elif [ "$1" = "LLLLW" ]; then
+	if [ "$1" = "LLLLW" ]; then
 		#set PVID
 		switch reg w 2014 10001 #port0
 		switch reg w 2114 10001 #port1
@@ -269,6 +265,98 @@ config6855Esw()
 		switch vlan set 3 4 00010011
 		switch vlan set 4 5 00001011
 		switch vlan set 5 6 00000111
+	elif [ "$1" = "VLANS" ]; then
+	    eval `nvram_buf_get 2860 wan_port tv_port sip_port`
+	    $LOG "TV/STB/SIP with VLANs mode enabled."
+	    # internal VLAN for TV = 3, for SIP = 4
+	    if [ "$wan_port" = "4" ]; then
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    #set PVID
+		    switch reg w 2014 10002 #port0
+		    switch reg w 2114 10003 #port1
+		    switch reg w 2214 10004 #port2
+		    switch reg w 2314 10001 #port3
+		    switch reg w 2414 10001 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 00011111
+		    switch vlan set 1 2 10000011
+		    switch vlan set 2 3 01000011
+		    switch vlan set 3 4 00100011
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    #set PVID
+		    switch reg w 2014 10002 #port0
+		    switch reg w 2114 10003 #port1
+		    switch reg w 2214 10001 #port2
+		    switch reg w 2314 10001 #port3
+		    switch reg w 2414 10001 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 00111111
+		    switch vlan set 1 2 10000011
+		    switch vlan set 2 3 01000011
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		# without bridget ports
+		    #set PVID
+		    switch reg w 2014 10002 #port0
+		    switch reg w 2114 10001 #port1
+		    switch reg w 2214 10004 #port2
+		    switch reg w 2314 10001 #port3
+		    switch reg w 2414 10001 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 01011111
+		    switch vlan set 1 2 10000011
+		    switch vlan set 2 4 00100011
+		fi
+	    else
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    #set PVID
+		    switch reg w 2014 10001 #port0
+		    switch reg w 2114 10001 #port1
+		    switch reg w 2214 10004 #port2
+		    switch reg w 2314 10003 #port3
+		    switch reg w 2414 10002 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 11000111
+		    switch vlan set 1 2 00001011
+		    switch vlan set 2 3 00010011
+		    switch vlan set 3 4 00100011
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    #set PVID
+		    switch reg w 2014 10001 #port0
+		    switch reg w 2114 10001 #port1
+		    switch reg w 2214 10001 #port2
+		    switch reg w 2314 10003 #port3
+		    switch reg w 2414 10002 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 11100111
+		    switch vlan set 1 2 00001011
+		    switch vlan set 2 3 00010011
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		    #set PVID
+		    switch reg w 2014 10001 #port0
+		    switch reg w 2114 10001 #port1
+		    switch reg w 2214 10001 #port2
+		    switch reg w 2314 10003 #port3
+		    switch reg w 2414 10002 #port4
+		    switch reg w 2514 10001 #port5
+		    #VLAN member port
+		    switch vlan set 0 1 11010111
+		    switch vlan set 1 2 00001011
+		    switch vlan set 2 4 00100011
+		else
+		    $LOG "Error vlan config..."
+		fi
+	    fi
 	fi
 
 	switch reg w 3500 00008000		#port 5 link down
@@ -328,6 +416,8 @@ if [ "$1" = "3" ]; then
 		config6855Esw WWWLL
 	elif [ "$2" = "12345" ]; then
 		config6855Esw 12345
+	elif [ "$2" = "VLANS" ]; then
+		config6855Esw VLANS
 	else
 		echo "unknown vlan type $2"
 		echo ""

@@ -45,7 +45,8 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	IPv6OpMode \
 	ApCliBridgeOnly \
 	MODEMENABLED \
-	QoSEnable simple_qos`
+	QoSEnable simple_qos \
+	tv_port sip_port tv_portVLAN sip_portVLAN`
 
 # name/mask for first wlanmodule used in system logic
 getFirstWlanIfName() {
@@ -215,6 +216,14 @@ getWanReady() {
     realwan_is_not_null=`ip -o -4 addr show $real_wan_if scope global | wc -l` > /dev/null 2>&1
 }
 
+getVlanEnabled() {
+    if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+	VlanEnabled="1"
+    else
+	VlanEnabled="0"
+    fi
+}
+
 # reconnect to AP
 wifi_reconnect() {
     if [ "$OperationMode" = "2" ]; then
@@ -284,3 +293,4 @@ getWanIfName
 getTunIfName
 getWanIpaddr
 getWanReady
+getVlanEnabled

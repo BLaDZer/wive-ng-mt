@@ -313,8 +313,9 @@
 4) init.d: fix kext switch workaround.<br>
 5) init.d: in bridged mode direct enable Multicast2Unicast in wifi drivers independed by igmpproxy enable.<br>
 6) init.d: switch_config: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
-7) goahead: switch_config: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
-8) goahead: switch_config: add vlan support for bridge port TV/SIP/STB modes.<br>
+7) init.d: switch_config: add vlan support for bridge port TV/SIP/STB modes.<br>
+8) goahead: switch_config: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
+9) goahead: switch_config: add vlan support for bridge port TV/SIP/STB modes.<br>
 10) sysctl: tune defaults more optimal for 64Mb ram devices.<br>
 11) igmpproxy: rework snooping managment code (temp disable static records managent).<br>
 12) buildsystem: small cleanup and more safe gcc flags use for wireless modules (driver code in some cases ugly and mabe uncrorrect build with this options).<br>

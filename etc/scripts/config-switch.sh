@@ -40,7 +40,7 @@ get_switch_type() {
 doublevlantag() {
     if [ -f /proc/sys/net/core/vlan_double_tag ]; then
 	# always disabled in modes with all lan ports in one bridge
-        if [ "$vlan_double_tag" = "1" ] && [ "$OperationMode" != "0" -a "$OperationMode" != "2" -a "$OperationMode" != "3" ]; then
+        if [ "$vlan_double_tag" = "1" || "$VlanEnabled" = "1" ] && [ "$OperationMode" != "0" -a "$OperationMode" != "2" -a "$OperationMode" != "3" ]; then
 	    $LOG "Double vlan tag enabled."
 	    DOUBLE_TAG=1
 	else
@@ -92,8 +92,11 @@ if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     # In gate mode and hotspot mode configure vlans
     ##########################################################################
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
+	# manual vlan configured
+	if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+		CMODE="VLANS"
 	# tv and sip
-	if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
 		CMODE="WWWLL"
             else

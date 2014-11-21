@@ -2,19 +2,43 @@
 
 LOG="logger -t vlan"
 
+# get params
+. /etc/scripts/global.sh
+
 start() {
-    if [ -f /etc/scripts/switchadv.sh ]; then
-	#this hook for advanced SWITCH/VLAN map configure
-	$LOG "Call user /etc/scripts/switchadv.sh script VLANCONF mode."
-	/etc/scripts/switchadv.sh "VLANCONF"
+    if [ "$VlanEnabled" = "1" ] && [ ! -f /tmp/bootgood ]; then
+	if [ "$tv_port" = "1" ]; then
+	    $LOG "Add bridge for TV/STB"
+	    brctl addbr vlantv
+	    vconfig add eth2 3
+	    brctl addif vlantv eth2.3
+	    for i in $tv_portVLAN; do
+		$LOG "Add vlan $i for TV/STB port input (WAN) $tv_portVLAN"
+		vconfig add $phys_wan_if $i
+		brctl addif vlantv "$phys_wan_if.$i"
+		ip link set  "$phys_wan_if.$i" up
+	    done
+	    ip link set vlantv up
+	fi
+	if [ "$sip_port" = "1" ]; then
+	    $LOG "Add bridge for SIP/STB"
+	    brctl addbr vlansip
+	    vconfig add eth2 4
+	    brctl addif vlansip eth2.4
+	    for i in $sip_portVLAN; do
+		$LOG "Add vlan $i for TV/STB port input (WAN) $sip_portVLAN"
+		vconfig add $phys_wan_if $i
+		brctl addif vlansip "$phys_wan_if.$i"
+		ip link set  "$phys_wan_if.$i" up
+	    done
+	    ip link set vlansip up
+	fi
     fi
 }
 
 stop() {
-    if [ -f /etc/scripts/switchadv.sh ]; then
-	#this hook for advanced SWITCH/VLAN map configure
-	$LOG "Call user /etc/scripts/switchadv.sh script VLANDECONF mode."
-	/etc/scripts/switchadv.sh "VLANDECONF"
+    if [ "$VlanEnabled" = "1" ]; then
+	$LOG "Remove"
     fi
 }
 
