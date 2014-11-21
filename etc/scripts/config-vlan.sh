@@ -20,8 +20,12 @@ usage() {
 	echo "  $0 3 FFFFF - config RT3052 Full reinit switch"
 	echo "  $0 3 LLLLW - config Ralink RT6855/MT7620/MT7621 ESW with VLAN and WAN at port 4"
 	echo "  $0 3 WLLLL - config Ralink RT6855/MT7620/MT7621 ESW with VLAN and WAN at port 0"
-	echo "  $0 3 LLLWW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0-2 and WAN at port 3-4"
+	echo "  $0 3 LLLWW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0-1 and WAN at port 2-4"
 	echo "  $0 3 WWLLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 2-4 and WAN at port 0-1"
+	echo "  $0 3 LLWWW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0-2 and WAN at port 3-4"
+	echo "  $0 3 WWWLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 3-4 and WAN at port 0-2"
+	echo "  $0 3 LLWLW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
+	echo "  $0 3 WLWLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
 	echo "  $0 3 12345 - config Ralink RT6855/MT7620/MT7621 ESW with VLAN 1~5 at port 0~4"
 	exit 0
 }
@@ -184,6 +188,28 @@ config6855Esw()
 		#VLAN member port
 		switch vlan set 0 1 11100111
 		switch vlan set 1 2 00011011
+	elif [ "$1" = "LLWWW" ]; then
+		#set PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10002 #port3
+		switch reg w 2414 10002 #port4
+		switch reg w 2514 10001 #port5
+		#VLAN member port
+		switch vlan set 0 1 11000111
+		switch vlan set 1 2 00111011
+	elif [ "$1" = "LLWLW" ]; then
+		#set PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10002 #port4
+		switch reg w 2514 10001 #port5
+		#VLAN member port
+		switch vlan set 0 1 11010111
+		switch vlan set 1 2 00101011
 	elif [ "$1" = "WLLLL" ]; then
 		#set PVID
 		switch reg w 2014 10002 #port0
@@ -206,6 +232,28 @@ config6855Esw()
 		#VLAN member port
 		switch vlan set 0 1 00111111
 		switch vlan set 1 2 11000011
+	elif [ "$1" = "WWWLL" ]; then
+		#set PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10002 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		switch reg w 2514 10001 #port5
+		#VLAN member port
+		switch vlan set 0 1 00011111
+		switch vlan set 1 2 11100011
+	elif [ "$1" = "WLWLL" ]; then
+		#set PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		switch reg w 2514 10001 #port5
+		#VLAN member port
+		switch vlan set 0 1 01011111
+		switch vlan set 1 2 10100011
 	elif [ "$1" = "12345" ]; then
 		#set PVID
 		switch reg w 2014 10001 #port0
@@ -270,10 +318,14 @@ if [ "$1" = "3" ]; then
 		config6855Esw LLLLW
 	elif [ "$2" = "LLLWW" ]; then
 		config6855Esw LLLWW
+	elif [ "$2" = "LLWWW" ]; then
+		config6855Esw LLWWW
 	elif [ "$2" = "WLLLL" ]; then
 		config6855Esw WLLLL
 	elif [ "$2" = "WWLLL" ]; then
 		config6855Esw WWLLL
+	elif [ "$2" = "WWWLL" ]; then
+		config6855Esw WWWLL
 	elif [ "$2" = "12345" ]; then
 		config6855Esw 12345
 	else

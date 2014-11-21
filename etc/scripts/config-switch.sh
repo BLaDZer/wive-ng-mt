@@ -11,7 +11,7 @@
 LOG="logger -t ESW"
 
 # get need variables
-eval `nvram_buf_get 2860 wan_port tv_port vlan_double_tag ForceRenewDHCP`
+eval `nvram_buf_get 2860 wan_port tv_port sip_port vlan_double_tag ForceRenewDHCP`
 
 ##############################################################################
 # BASE FOR ALL ESW
@@ -85,31 +85,47 @@ set_vlan_portmap() {
 if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
     $LOG '######### Clear switch partition  ###########'
-    /etc/scripts/config-vlan.sh $SWITCH_MODE 0 > /dev/null 2>&1
+    /etc/scripts/config-vlan.sh $SWITCH_MODE "LLLLL" > /dev/null 2>&1
     ##########################################################################
     configs_system_vlans
     ##########################################################################
     # In gate mode and hotspot mode configure vlans
     ##########################################################################
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
-	if [ "$wan_port" = "4" ]; then
-	    if [ "$tv_port" = "1" ]; then
-		CMODE="WWLLL"
-	    else
-		CMODE="WLLLL"
+	# tv and sip
+	if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WWwLL"
+            else
+		CMODE="LLwWW"
 	    fi
-	else
-	    if [ "$tv_port" = "1" ]; then
+	# only tv
+	elif [ "$tv_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WWLLL"
+            else
 		CMODE="LLLWW"
-	    else
+	    fi
+	# only sip
+	elif [ "$sip_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WLWLL"
+            else
+		CMODE="LLWLW"
+	    fi
+	# without bridget ports
+	else
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WLLLL"
+            else
 		CMODE="LLLLW"
 	    fi
 	fi
+	$LOG "##### ESW config vlan partition $CMODE #####"
+	/etc/scripts/config-vlan.sh $SWITCH_MODE "$CMODE" > /dev/null 2>&1
     elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 		CMODE="LLLLL"
     fi
-    $LOG "##### ESW config vlan partition $CMODE #####"
-    /etc/scripts/config-vlan.sh $SWITCH_MODE "$CMODE" > /dev/null 2>&1
 fi
 }
 
