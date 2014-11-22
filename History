@@ -331,6 +331,7 @@
 6) init.d/dnsserv: correct steps generate hosts.<br>
 6) init.d/lanconf: remove not needed swicth clear call.<br>
 7) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
+8) goahead: add M2U conversion managment.<br>
 
 <br>
 <br>

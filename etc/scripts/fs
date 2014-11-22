@@ -138,7 +138,6 @@ fullreset() {
 
 backup_nvram() {
     mkdir -p /etc/backup
-    echo "Store settings to backup file...."
     echo "#The following line must not be removed." > "$BACKUPCGF"
     echo "Default" >> "$BACKUPCGF"
     ralink_init show 2860 >> "$BACKUPCGF"

@@ -109,6 +109,7 @@ function initValue()
 	var stp = <% getCfgZero(1, "stpEnabled"); %>;
 	var igmp = <% getCfgZero(1, "igmpEnabled"); %>;
 	var igmp_snoop = '<% getCfgGeneral(1, "igmpSnoopMode"); %>';
+	var igmpM2UConv = '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';
 	var upnp = <% getCfgZero(1, "upnpEnabled"); %>;
 	var xupnpd = <% getCfgZero(1, "xupnpd"); %>;
 	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
@@ -149,6 +150,7 @@ function initValue()
 	form.stpEnbl.options.selectedIndex = 1*stp;
 	form.igmpEnbl.options.selectedIndex = (igmpb == '1') ? 1*igmp : 0;
 	form.igmpSnoop.value = igmp_snoop;
+	form.igmpM2UConv.value = igmpM2UConv;
 	form.upnpEnbl.options.selectedIndex = 1*upnp;
 	form.xupnpdEnbl.options.selectedIndex = 1*xupnpd;
 	form.radvdEnbl.options.selectedIndex = 1*radvd;
@@ -295,6 +297,7 @@ function pingerSelect(form)
 function igmpSelect(form)
 {
 	displayElement( [ 'igmpSnoop', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
+	displayElement( [ 'igmpM2UConv', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
 }
 
 function httpRmtSelect(form)
@@ -630,10 +633,19 @@ function displayServiceStatus()
             <td>&nbsp;</td>
           </tr>
           <tr id="igmpSnoop">
-            <td class="head" id="lIgmpp">LAN IGMP snooping</td>
+            <td class="head" id="lIgmpp">Multicast IGMP snooping</td>
             <td colspan="4"><select name="igmpSnoop" class="half">
                 <option value="">Auto</option>
                 <option value="n">Disable</option>
+              </select></td>
+          </tr>
+          <tr id="igmpM2UConv">
+            <td class="head" id="ligmpp">Multicast to Unicast conversion</td>
+            <td colspan="4"><select name="igmpM2UConv" class="half">
+                <option value="wlan">Wlan</option>
+                <option value="lan">Lan</option>
+                <option value="all">All</option>
+                <option value="">Disable</option>
               </select></td>
           </tr>
           <tr id="udpxy">
