@@ -51,9 +51,7 @@ start() {
 }
 
 stop() {
-    if [ "$VlanEnabled" = "1" ]; then
-	$LOG "Remove"
-    fi
+    :
 }
 
 case "$1" in
