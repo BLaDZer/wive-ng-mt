@@ -258,9 +258,6 @@ int main(int argc, char** argv)
 	    /* Rescan usb devices after start */
 	    doSystem("service hotplug rescan");
 #endif
-	    /* Backup nvram setting and save rwfs */
-	    doSystem("[ ! -f /etc/backup/nvram_backup.dat ] && (sleep 25 && fs backup_nvram && fs save) &");
-
 	    ledAlways(GPIO_POWER_LED, LED_ON);		//Turn on power LED
 	}
 

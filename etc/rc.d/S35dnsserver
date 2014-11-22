@@ -31,6 +31,16 @@ gen_hosts() {
     echo "$lan_ipaddr	gateway.lo"			>> /etc/hosts
 
     if [ "$real_wan_ipaddr" != "" ]; then
+	# if dynamic dns and dmz enable - dnsmasq must set DDNS=DMZIP
+	# if dynamic dns and dmz disable - dnsmasq must set DDNS=WANIP
+	if [ "$DDNS" != "" ] && [ "$DDNSAccount" != "" ]; then
+	    if [ "$DMZEnable" = "1" ] && [ "$DMZIPAddress" != "" ]; then
+		echo "$DMZIPAddress	$DDNS"		>> /etc/hosts
+	    else
+		echo "$real_wan_ipaddr	$DDNS"		>> /etc/hosts
+	    fi
+	fi
+
 	# get domainname from dhcp client
 	DHCPCDOMAIN=`cat /etc/resolv.conf | grep domain | awk {' print $2 '}`
 	if [ "$DHCPCDOMAIN" != "" ]; then
@@ -46,18 +56,10 @@ gen_hosts() {
 	fi
     fi
 
-    # if dynamic dns and dmz enable - dnsmasq must set DDNS=DMZIP
-    # if dynamic dns and dmz disable - dnsmasq must set DDNS=WANIP
-    if [ "$DDNS" != "" ] && [ "$DDNSAccount" != "" ]; then
-	if [ "$DMZEnable" = "1" ] && [ "$DMZIPAddress" != "" ]; then
-	    echo "$DMZIPAddress		$DDNS"		>> /etc/hosts
-	elif [ "$real_wan_ipaddr" != "" ]; then
-	    echo "$real_wan_ipaddr	$DDNS"		>> /etc/hosts
-	fi
-    fi
-
     # read for all write by root
-    chmod 644 /etc/hosts > /dev/null 2>&1
+    chmod 644 "$cname" > /dev/null 2>&1
+    chmod 644 "$fname" > /dev/null 2>&1
+    chmod 644 "$hname" > /dev/null 2>&1
 }
 
 get_param() {
@@ -69,11 +71,6 @@ get_param() {
 
     cachesize="512"
     forwardmax="384"
-
-    # read for all write by root
-    chmod 644 "$cname" > /dev/null 2>&1
-    chmod 644 "$fname" > /dev/null 2>&1
-    chmod 644 "$hname" > /dev/null 2>&1
 }
 
 reload() {

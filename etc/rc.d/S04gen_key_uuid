@@ -7,8 +7,6 @@ start() {
 	$LOG "No DSS key found. Generate new host key."
 	mkdir -p /etc/dropbear
     	dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key &
-	$LOG "Wait dropbaer key generate ant first start"
-	sleep 5
     fi
 
     if [ ! -f /etc/miniupnpd.conf.uuid ] && [ -f /bin/miniupnpd ]; then

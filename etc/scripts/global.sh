@@ -269,13 +269,6 @@ flush_net_caches() {
     echo f > /proc/net/nf_conntrack
 }
 
-# flush arp cache in switch
-flush_arp_cache() {
-    if [ -e /bin/switch ]; then
-	switch clear > /dev/null 2>&1
-    fi
-}
-
 delif_from_br() {
     ip -4 addr flush dev $1 > /dev/null 2>&1
     ip link set $1 down > /dev/null 2>&1

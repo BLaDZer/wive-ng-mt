@@ -155,8 +155,6 @@ stop() {
     killall -q -SIGKILL dhcp6c
     killall -q -SIGKILL zcip
 
-    # this prevent flood/loop with ic+ aplink/downlink switches
-    flush_arp_cache
     # in gw/hotspot modes down wlan if not bridge and not ethconvert
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" -a "$ApCliBridgeOnly" != "1" ]; then
 	# down wan iface
