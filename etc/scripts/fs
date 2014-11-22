@@ -137,6 +137,7 @@ fullreset() {
 }
 
 backup_nvram() {
+    echo "Save settings to backup file...."
     mkdir -p /etc/backup
     echo "#The following line must not be removed." > "$BACKUPCGF"
     echo "Default" >> "$BACKUPCGF"
