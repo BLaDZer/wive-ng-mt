@@ -334,6 +334,7 @@
 8) goahead: add M2U conversion managment.<br>
 9) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
 10) kernel: pptp: fix stack info leak in pptp_getname().<br>
+11) kernel: bridge: implement multicast fast leave.<br>
 
 <br>
 <br>
