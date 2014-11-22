@@ -48,10 +48,11 @@ gen_hosts() {
 	else
 	    WANDOMAINNAME="wan.$HostName.lo"
 	fi
+	echo "$real_wan_ipaddr	$WANDOMAINNAME"		>> /etc/hosts
 
-	echo "$real_wan_ipaddr $WANDOMAINNAME"	>> /etc/hosts
+	# ipv6 stub
 	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" != "0" ]; then
-	    echo "::1	localhost lo6.$WANDOMAINNAME"	>> /etc/hosts
+	    echo "::1	localhost"			>> /etc/hosts
 	    ip -6 -o addr show scope global | cut -f1 -d/ | awk {' print $4"   ipv6."$2".Wive-NG-MT.lo"'} >> /etc/hosts
 	fi
     fi
