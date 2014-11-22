@@ -335,6 +335,7 @@
 9) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
 10) kernel: pptp: fix stack info leak in pptp_getname().<br>
 11) kernel: bridge: implement multicast fast leave.<br>
+12) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
 
 <br>
 <br>
