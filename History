@@ -323,19 +323,20 @@
 <br>
 <br>
 <b>1.2.x</b><br>
-1) init.d/goahead: add vlan support for bridge port TV/SIP/STB modes.<br>
-2) init.d/goahead: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
-3) init.d/goahead: add get mcast from VLAN TV/SIP/STB bridges.<br>
-4) init.d/goahead: move delayed backup from goahead to init.d web script.<br>
-5) init.d/genkeys: remove not need sleep (move to goahead boot complite).<br>
-6) init.d/dnsserv: correct steps generate hosts.<br>
-6) init.d/lanconf: remove not needed swicth clear call.<br>
-7) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
-8) goahead: add M2U conversion managment.<br>
-9) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-10) kernel: pptp: fix stack info leak in pptp_getname().<br>
-11) kernel: bridge: implement multicast fast leave.<br>
-12) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
+1) init.d/genkeys: remove not need sleep (move to goahead boot complite).<br>
+2) init.d/dnsserv: correct steps generate hosts.<br>
+3) init.d/lanconf: remove not needed swicth clear call.<br>
+4) init.d/goahead: add vlan support for bridge port TV/SIP/STB modes.<br>
+5) init.d/goahead: add 3WAN/2LAN modes for STB+SIP bridget ports mode.<br>
+6) init.d/goahead: add get mcast from VLAN TV/SIP/STB bridges.<br>
+7) init.d/goahead: move delayed backup from goahead to init.d web script.<br>
+8) init.d/goahead: add M2U conversion managment.<br>
+9) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
+10) kernel: bridge: implement multicast fast leave.<br>
+11) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
+12) kernel: ralink_wifi: disable igmp snooping<br>
+13) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
+14) kernel: pptp: fix stack info leak in pptp_getname().<br>
 
 <br>
 <br>
