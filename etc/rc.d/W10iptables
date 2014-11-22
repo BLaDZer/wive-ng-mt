@@ -214,6 +214,16 @@ start() {
 		$LOG "Set igmp forward rules"
 		iptables -A FORWARD -d $mcast_net -o $lan_if -j ACCEPT
 		iptables -A FORWARD -s $mcast_net -i $lan_if -j ACCEPT
+		if [ "$VlanEnabled" = "1" ]; then
+		    if [ "$tv_port_mcast" = "1" ]; then
+			iptables -A FORWARD -d $mcast_net -o $vlantvif -j ACCEPT
+			iptables -A FORWARD -s $mcast_net -i $vlantvif -j ACCEPT
+		    fi
+		    if [ "$sip_port_mcast" = "1" ]; then
+			iptables -A FORWARD -d $mcast_net -o $vlansipif -j ACCEPT
+			iptables -A FORWARD -s $mcast_net -i $vlansipif -j ACCEPT
+		    fi
+		fi
 	    fi
 	    if [ -f /etc/macipfilter ] && [ "$IPPortFilterEnable" = "1" ]; then
 		$LOG "Set macipport_filter rules"
