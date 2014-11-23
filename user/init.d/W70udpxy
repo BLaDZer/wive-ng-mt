@@ -38,7 +38,7 @@ start() {
         export UDPXY_SOCKBUF_LEN=2097152
 
         $LOG "UDPXY start"
-	udpxy -m $wan_if -n -20 -c 8 -B 2Mb -H 5 -p "$UDPXYPort" -l /var/log/udpxy.log
+	udpxy -m $wan_if -n -20 -c 16 -B 2Mb -H 10 -p "$UDPXYPort" -l /var/log/udpxy.log
        ) & # send to background
     fi
 }
