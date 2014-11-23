@@ -335,13 +335,14 @@
 10) igmpproxy: ignore igmpv3 block_old_sources<br>
 11) kernel: bridge: implement multicast fast leave.<br>
 12) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
-13) kernel: ralink_wifi: disable igmp snooping<br>
-14) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-15) kernel: pptp: fix stack info leak in pptp_getname().<br>
-16) kernel: random: add and use memzero_explicit() for clearing data.<br>
-17) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-18) kernel: mm, page_alloc: add unlikely macro to help compiler optimization.<br>
-19) kernel: ralink ehci/ohci: improve host mode init.<br>
+13) kernel: ralink ehci/ohci: improve host mode init.<br>
+14) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
+15) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
+16) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
+17) kernel: pptp: fix stack info leak in pptp_getname().<br>
+18) kernel: random: add and use memzero_explicit() for clearing data.<br>
+19) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+20) kernel: mm, page_alloc: add unlikely macro to help compiler optimization.<br>
 <br>
 <br>
 <b>TODO:</b><br>
