@@ -332,15 +332,16 @@
 7) init.d/goahead: move delayed backup from goahead to init.d web script.<br>
 8) init.d/goahead: add M2U conversion managment.<br>
 9) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
-10) kernel: bridge: implement multicast fast leave.<br>
-11) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
-12) kernel: ralink_wifi: disable igmp snooping<br>
-13) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-14) kernel: pptp: fix stack info leak in pptp_getname().<br>
-15) kernel: random: add and use memzero_explicit() for clearing data.<br>
-16) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-17) kernel: mm, page_alloc: add unlikely macro to help compiler optimization.<br>
-18) kernel: ralink ehci/ohci: improve host mode init.<br>
+10) igmpproxy: ignore igmpv3 block_old_sources<br>
+11) kernel: bridge: implement multicast fast leave.<br>
+12) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
+13) kernel: ralink_wifi: disable igmp snooping<br>
+14) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
+15) kernel: pptp: fix stack info leak in pptp_getname().<br>
+16) kernel: random: add and use memzero_explicit() for clearing data.<br>
+17) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+18) kernel: mm, page_alloc: add unlikely macro to help compiler optimization.<br>
+19) kernel: ralink ehci/ohci: improve host mode init.<br>
 <br>
 <br>
 <b>TODO:</b><br>
