@@ -22,9 +22,11 @@
 /* Bridge group multicast address 802.1d (pg 51). */
 const u8 br_group_address[ETH_ALEN] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x00 };
 
+#ifdef CONFIG_BRIDGE_NF_EBTABLES
 /* Hook for brouter */
 br_should_route_hook_t __rcu *br_should_route_hook __read_mostly;
 EXPORT_SYMBOL(br_should_route_hook);
+#endif
 
 static inline int br_pass_frame_up(struct sk_buff *skb)
 {
@@ -159,8 +161,9 @@ rx_handler_result_t __fastpathbridge br_handle_frame(struct sk_buff **pskb)
 	struct net_bridge_port *p;
 	struct sk_buff *skb = *pskb;
 	const unsigned char *dest = eth_hdr(skb)->h_dest;
+#ifdef CONFIG_BRIDGE_NF_EBTABLES
 	br_should_route_hook_t *rhook;
-
+#endif
 	if (unlikely(skb->pkt_type == PACKET_LOOPBACK))
 		return RX_HANDLER_PASS;
 
@@ -217,6 +220,7 @@ rx_handler_result_t __fastpathbridge br_handle_frame(struct sk_buff **pskb)
 forward:
 	switch (p->state) {
 	case BR_STATE_FORWARDING:
+#ifdef CONFIG_BRIDGE_NF_EBTABLES
 		rhook = rcu_dereference(br_should_route_hook);
 		if (rhook) {
 			if ((*rhook)(skb)) {
@@ -226,12 +230,12 @@ forward:
 			dest = eth_hdr(skb)->h_dest;
 		}
 		/* fall through */
+#endif
 	case BR_STATE_LEARNING:
 		if (!compare_ether_addr(p->br->dev->dev_addr, dest))
 			skb->pkt_type = PACKET_HOST;
 
-		BR_HOOK(NFPROTO_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL,
-			br_handle_frame_finish);
+		BR_HOOK(NFPROTO_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL, br_handle_frame_finish);
 		break;
 	default:
 drop:

@@ -447,16 +447,16 @@ void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source,
 	fdb = fdb_find_rcu(head, addr);
 	if (likely(fdb)) {
 		/* attempt to update an entry for a local interface */
-		if (unlikely(fdb->is_local)) {
 #if 0
+		if (unlikely(fdb->is_local)) {
 			if (net_ratelimit())
 				br_warn(br, "received packet on %s with "
 					"own address as source address\n",
 					source->dev->name);
-#else
-			;
-#endif
 		} else {
+#else
+		if (likely(!fdb->is_local)) {
+#endif
 			/* fastpath: update of existing entry */
 			fdb->dst = source;
 			fdb->updated = jiffies;
