@@ -34,13 +34,16 @@ else
     iwpriv "$1" set RadioOn=1
 fi
 ########################################MULTICAST param##########################################
-if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
+if [ "$CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC" != "" ]; then
+    # always set mcast mode if enabled
     if [ "$McastPhyMode" != "" ]; then
         iwpriv "$1" set McastPhyMode="$McastPhyMode"
     fi
     if [ "$McastMcs" != "" ]; then
         iwpriv "$1" set McastMcs="$McastMcs"
     fi
+fi
+if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     # in bridged mode direct enable Multicast2Unicast in wifi drivers if enabled
     # in others modes auto enable by igmpproxy
     if [ "$OperationMode" = "0" -o "$OperationMode" = "3" ]; then

@@ -131,7 +131,7 @@ config  RT2860V2_AP_IGMP_SNOOP
 
 config  RT2860V2_AP_MCAST_RATE_SPECIFIC
 	bool "User specific TX rate of mcast packets"
-	default y
+	default n
 	depends on RT2860V2_AP
 
 config  RT2860V2_AP_NETIF_BLOCK

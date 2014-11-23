@@ -1087,7 +1087,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
-
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_RT2860V2_STA_VIDEO_TURBINE)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
