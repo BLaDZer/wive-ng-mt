@@ -340,6 +340,7 @@
 15) kernel: random: add and use memzero_explicit() for clearing data.<br>
 16) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
 17) kernel: mm, page_alloc: add unlikely macro to help compiler optimization.<br>
+18) kernel: ralink ehci/ohci: improve host mode init.<br>
 <br>
 <br>
 <b>TODO:</b><br>
