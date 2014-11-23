@@ -1,8 +1,6 @@
 #ifndef _NVRAM_H
 #define _NVRAM_H 	1
 
-#include <linux/autoconf.h>
-
 /* nvram parse blocks */
 #define FLASH_BLOCK_NUM	1
 #define ENV_BLK_SIZE 0x1000

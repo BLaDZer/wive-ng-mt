@@ -19,7 +19,6 @@
 #define MODULE_IKANOS
 
 #include "rt_config.h"
-#include <linux/autoconf.h>
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/skbuff.h>

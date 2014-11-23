@@ -34,8 +34,6 @@
 #ifndef __RALINK_GPIO_H__
 #define __RALINK_GPIO_H__
 
-#include <linux/autoconf.h>
-
 #ifdef __KERNEL__
 #include <linux/kernel.h>
 #include <asm/rt2880/rt_mmap.h>
