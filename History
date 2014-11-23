@@ -337,7 +337,7 @@
 12) kernel: ralink_wifi: disable igmp snooping<br>
 13) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
 14) kernel: pptp: fix stack info leak in pptp_getname().<br>
-
+15) kernel: random: add and use memzero_explicit() for clearing data.<br>
 <br>
 <br>
 <b>TODO:</b><br>
