@@ -546,6 +546,7 @@ else
 PHONY += include/config/auto.conf
 
 include/config/auto.conf:
+	ln -sf $(srctree)/include/generated/autoconf.h  $(srctree)/include/linux/autoconf.h 
 	$(Q)test -e include/generated/autoconf.h -a -e $@ || (		\
 	echo;								\
 	echo "  ERROR: Kernel configuration is invalid.";		\
@@ -941,6 +942,7 @@ endef
 
 # vmlinux image - including updated kernel symbols
 vmlinux: $(vmlinux-lds) $(vmlinux-init) $(vmlinux-main) vmlinux.o $(kallsyms.o) FORCE
+	ln -sf $(srctree)/include/generated/autoconf.h  $(srctree)/include/linux/autoconf.h 
 ifdef CONFIG_HEADERS_CHECK
 	$(Q)$(MAKE) -f $(srctree)/Makefile headers_check
 endif
@@ -1192,7 +1194,7 @@ endif # CONFIG_MODULES
 CLEAN_DIRS  += $(MODVERDIR)
 CLEAN_FILES +=	linux vmlinux System.map Module.symvers \
                 .tmp_kallsyms* .tmp_version .tmp_vmlinux* .tmp_System.map \
-                scripts/kconfig/mconf scripts/kconfig/conf
+                scripts/kconfig/mconf scripts/kconfig/conf include/linux/autoconf.h
 
 # Directories & files removed with 'make mrproper'
 MRPROPER_DIRS  += include/config usr/include include/generated          \
