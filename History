@@ -338,6 +338,7 @@
 13) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
 14) kernel: pptp: fix stack info leak in pptp_getname().<br>
 15) kernel: random: add and use memzero_explicit() for clearing data.<br>
+16) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
 <br>
 <br>
 <b>TODO:</b><br>
