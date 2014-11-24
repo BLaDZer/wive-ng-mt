@@ -344,6 +344,7 @@
 19) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
 20) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
 21) kernel: mm/mempolicy: remove per-process flag.<br>
+22) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
 <br>
 <br>
 <b>TODO:</b><br>
