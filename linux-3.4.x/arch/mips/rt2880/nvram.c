@@ -7,9 +7,6 @@
 #include <linux/slab.h>
 #include "nvram.h"
 
-/* cleanup and build config part */
-#define NEED_REINIT 0xFDEAD
-
 extern int ra_mtd_write_nm(char *name, loff_t to, size_t len, const u_char *buf);
 extern int ra_mtd_read_nm(char *name, loff_t from, size_t len, u_char *buf);
 
@@ -26,10 +23,7 @@ static block_t fb[FLASH_BLOCK_NUM] = {
 static int init_nvram_block(int index);
 static int ra_nvram_close(int index);
 
-#ifndef CONFIG_RAETH_LRO
-static
-#endif
-char const *nvram_get(int index, char *name);
+static char const *nvram_get(int index, char *name);
 static int const nvram_getall(int index, char *buf);
 
 static int nvram_set(int index, char *name, char *value);
@@ -126,31 +120,17 @@ static uint32_t nv_crc32(uint32_t crc, const char *buf, uint32_t len)
 
 static int ralink_nvram_open(struct inode *inode, struct file *file)
 {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-	MOD_INC_USE_COUNT;
-#else
 	try_module_get(THIS_MODULE);
-#endif
 	return 0;
 }
 
 static int ralink_nvram_release(struct inode *inode, struct file *file)
 {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-	MOD_DEC_USE_COUNT;
-#else
 	module_put(THIS_MODULE);
-#endif
 	return 0;
 }
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-static long ralink_nvram_ioctl(struct file *file, unsigned int req,
-		unsigned long arg)
-#else
-static int ralink_nvram_ioctl(struct inode *inode, struct file *file, unsigned int req,
-		unsigned long arg)
-#endif
+static long ralink_nvram_ioctl(struct file *file, unsigned int req, unsigned long arg)
 {
 	int index, len;
 	const char *p;
@@ -537,10 +517,7 @@ static int nvram_set(int index, char *name, char *value)
 	return 0;
 }
 
-#ifndef CONFIG_RAETH_LRO
-static
-#endif
-char const *nvram_get(int index, char *name)
+static char const *nvram_get(int index, char *name)
 {
 	int idx;
 	static char const *ret;
@@ -565,9 +542,6 @@ char const *nvram_get(int index, char *name)
 	up(&nvram_sem);
 	return NULL;
 }
-#ifdef CONFIG_RAETH_LRO
-EXPORT_SYMBOL(nvram_get);
-#endif
 
 static int const nvram_getall(int index, char *buf) 
 {

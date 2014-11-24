@@ -2232,11 +2232,7 @@ static int32_t PpeEngStop(void)
 
 struct net_device *ra_dev_get_by_name(const char *name)
 {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
 	return dev_get_by_name(&init_net, name);
-#else
-	return dev_get_by_name(name);
-#endif
 }
 
 int PpeRsHandler(struct net_device *dev, int hold)
@@ -2244,7 +2240,7 @@ int PpeRsHandler(struct net_device *dev, int hold)
 #if defined (CONFIG_RA_HW_NAT_PCI)
 	if (!dev)
 		return -1;
-	
+
 	if (hold) {
 		if (DstPort[DP_NIC0] == dev || DstPort[DP_NIC1] == dev)
 			return 1;

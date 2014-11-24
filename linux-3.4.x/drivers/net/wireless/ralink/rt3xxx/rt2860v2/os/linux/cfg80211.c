@@ -227,19 +227,11 @@ Note:
 	};
 ========================================================================
 */
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35))
 static int CFG80211_OpsChannelSet(
 	IN struct wiphy					*pWiphy,
 	IN struct net_device			*pDev,
 	IN struct ieee80211_channel		*pChan,
 	IN enum nl80211_channel_type	ChannelType)
-
-#else
-static int CFG80211_OpsChannelSet(
-	IN struct wiphy					*pWiphy,
-	IN struct ieee80211_channel		*pChan,
-	IN enum nl80211_channel_type	ChannelType)
-#endif /* LINUX_VERSION_CODE */
 {
 	VOID *pAd;
 	CFG80211_CB *p80211CB;
@@ -1522,10 +1514,8 @@ struct cfg80211_ops CFG80211_Ops = {
 #endif /* LINUX_VERSION_CODE */
 #endif /* LINUX_VERSION_CODE */
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35))
 	/* configure connection quality monitor RSSI threshold */
 	.set_cqm_rssi_config		= NULL,
-#endif /* LINUX_VERSION_CODE */
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,37))
 	/* notify driver that a management frame type was registered */

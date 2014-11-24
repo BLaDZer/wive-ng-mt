@@ -1,6 +1,9 @@
 #ifndef _NVRAM_H
 #define _NVRAM_H 	1
 
+/* need clenup and build flag */
+#define NEED_REINIT 0xFDEAD
+
 /* nvram parse blocks */
 #define FLASH_BLOCK_NUM	1
 #define ENV_BLK_SIZE 0x1000
@@ -75,11 +78,9 @@ typedef struct nvram_ioctl_s {
 	int size;
 } nvram_ioctl_t;
 
-
 #define RALINK_NVRAM_IOCTL_GET		0x01
 #define RALINK_NVRAM_IOCTL_GETALL	0x02
 #define RALINK_NVRAM_IOCTL_SET		0x03
 #define RALINK_NVRAM_IOCTL_COMMIT	0x04
 #define RALINK_NVRAM_IOCTL_CLEAR	0x05
-
 #endif

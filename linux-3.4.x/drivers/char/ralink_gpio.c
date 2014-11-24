@@ -51,41 +51,42 @@
 static  devfs_handle_t devfs_handle;
 #endif
 
-int ralink_gpio_major = 252;
-int ralink_gpio_irqnum = 0;
-u32 ralink_gpio_intp = 0;
-u32 ralink_gpio_edge = 0;
+static int ralink_gpio_major = 252;
+static int ralink_gpio_irqnum;
+static u32 ralink_gpio_intp;
+static u32 ralink_gpio_edge;
 #if defined (RALINK_GPIO_HAS_2722)
-u32 ralink_gpio2722_intp = 0;
-u32 ralink_gpio2722_edge = 0;
+static u32 ralink_gpio2722_intp;
+static u32 ralink_gpio2722_edge;
 #elif defined (RALINK_GPIO_HAS_4524)
-u32 ralink_gpio3924_intp = 0;
-u32 ralink_gpio3924_edge = 0;
-u32 ralink_gpio4540_intp = 0;
-u32 ralink_gpio4540_edge = 0;
+static u32 ralink_gpio3924_intp;
+static u32 ralink_gpio3924_edge;
+static u32 ralink_gpio4540_intp;
+static u32 ralink_gpio4540_edge;
 #elif defined (RALINK_GPIO_HAS_5124)
-u32 ralink_gpio3924_intp = 0;
-u32 ralink_gpio3924_edge = 0;
-u32 ralink_gpio5140_intp = 0;
-u32 ralink_gpio5140_edge = 0;
+static u32 ralink_gpio3924_intp;
+static u32 ralink_gpio3924_edge;
+static u32 ralink_gpio5140_intp;
+static u32 ralink_gpio5140_edge;
 #elif defined (RALINK_GPIO_HAS_9524) || defined (RALINK_GPIO_HAS_7224)
-u32 ralink_gpio3924_intp = 0;
-u32 ralink_gpio3924_edge = 0;
-u32 ralink_gpio7140_intp = 0;
-u32 ralink_gpio7140_edge = 0;
+static u32 ralink_gpio3924_intp;
+static u32 ralink_gpio3924_edge;
+static u32 ralink_gpio7140_intp;
+static u32 ralink_gpio7140_edge;
 #if defined (RALINK_GPIO_HAS_7224)
-u32 ralink_gpio72_intp = 0;
-u32 ralink_gpio72_edge = 0;
+static u32 ralink_gpio72_intp;
+static u32 ralink_gpio72_edge;
 #else
-u32 ralink_gpio9572_intp = 0;
-u32 ralink_gpio9572_edge = 0;
+static u32 ralink_gpio9572_intp;
+static u32 ralink_gpio9572_edge;
 #endif
 #elif defined (RALINK_GPIO_HAS_9532)
-u32 ralink_gpio6332_intp = 0;
-u32 ralink_gpio6332_edge = 0;
-u32 ralink_gpio9564_intp = 0;
-u32 ralink_gpio9564_edge = 0;
+static u32 ralink_gpio6332_intp;
+static u32 ralink_gpio6332_edge;
+static u32 ralink_gpio9564_intp;
+static u32 ralink_gpio9564_edge;
 #endif
+
 ralink_gpio_reg_info ralink_gpio_info[RALINK_GPIO_NUMBER];
 extern unsigned long volatile jiffies;
 
@@ -95,39 +96,40 @@ extern unsigned long volatile jiffies;
 struct timer_list ralink_gpio_led_timer;
 ralink_gpio_led_info ralink_gpio_led_data[RALINK_GPIO_NUMBER];
 
-u32 ra_gpio_led_set = 0;
-u32 ra_gpio_led_clr = 0;
+static u32 ra_gpio_led_set;
+static u32 ra_gpio_led_clr;
 #if defined (RALINK_GPIO_HAS_2722)
-u32 ra_gpio2722_led_set = 0;
-u32 ra_gpio2722_led_clr = 0;
+static u32 ra_gpio2722_led_set;
+static u32 ra_gpio2722_led_clr;
 #elif defined (RALINK_GPIO_HAS_4524)
-u32 ra_gpio3924_led_set = 0;
-u32 ra_gpio3924_led_clr = 0;
-u32 ra_gpio4540_led_set = 0;
-u32 ra_gpio4540_led_clr = 0;
+static u32 ra_gpio3924_led_set;
+static u32 ra_gpio3924_led_clr;
+static u32 ra_gpio4540_led_set;
+static u32 ra_gpio4540_led_clr;
 #elif defined (RALINK_GPIO_HAS_5124)
-u32 ra_gpio3924_led_set = 0;
-u32 ra_gpio3924_led_clr = 0;
-u32 ra_gpio5140_led_set = 0;
-u32 ra_gpio5140_led_clr = 0;
+static u32 ra_gpio3924_led_set;
+static u32 ra_gpio3924_led_clr;
+static u32 ra_gpio5140_led_set;
+static u32 ra_gpio5140_led_clr;
 #elif defined (RALINK_GPIO_HAS_9524) || defined (RALINK_GPIO_HAS_7224)
-u32 ra_gpio3924_led_set = 0;
-u32 ra_gpio3924_led_clr = 0;
-u32 ra_gpio7140_led_set = 0;
-u32 ra_gpio7140_led_clr = 0;
+static u32 ra_gpio3924_led_set;
+static u32 ra_gpio3924_led_clr;
+static u32 ra_gpio7140_led_set;
+static u32 ra_gpio7140_led_clr;
 #if defined (RALINK_GPIO_HAS_7224)
-u32 ra_gpio72_led_set = 0;
-u32 ra_gpio72_led_clr = 0;
+static u32 ra_gpio72_led_set;
+static u32 ra_gpio72_led_clr;
 #else
-u32 ra_gpio9572_led_set = 0;
-u32 ra_gpio9572_led_clr = 0;
+static u32 ra_gpio9572_led_set;
+static u32 ra_gpio9572_led_clr;
 #endif
 #elif defined (RALINK_GPIO_HAS_9532)
-u32 ra_gpio6332_led_set = 0;
-u32 ra_gpio6332_led_clr = 0;
-u32 ra_gpio9564_led_set = 0;
-u32 ra_gpio9564_led_clr = 0;
+static u32 ra_gpio6332_led_set;
+static u32 ra_gpio6332_led_clr;
+static u32 ra_gpio9564_led_set;
+static u32 ra_gpio9564_led_clr;
 #endif
+
 struct ralink_gpio_led_status_t {
 	int ticks;
 	unsigned int ons;
@@ -282,13 +284,7 @@ int ralink_gpio_led_set(ralink_gpio_led_info led)
 }
 EXPORT_SYMBOL(ralink_gpio_led_set);
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-long ralink_gpio_ioctl(struct file *file, unsigned int req,
-		unsigned long arg)
-#else
-int ralink_gpio_ioctl(struct inode *inode, struct file *file, unsigned int req,
-		unsigned long arg)
-#endif
+static long ralink_gpio_ioctl(struct file *file, unsigned int req, unsigned long arg)
 {
 	unsigned long tmp;
 	ralink_gpio_reg_info info;
@@ -772,40 +768,27 @@ int ralink_gpio_ioctl(struct inode *inode, struct file *file, unsigned int req,
 	return 0;
 }
 
-int ralink_gpio_open(struct inode *inode, struct file *file)
+static int ralink_gpio_open(struct inode *inode, struct file *file)
 {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-	MOD_INC_USE_COUNT;
-#else
 	try_module_get(THIS_MODULE);
-#endif
 	return 0;
 }
 
-int ralink_gpio_release(struct inode *inode, struct file *file)
+static int ralink_gpio_release(struct inode *inode, struct file *file)
 {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-	MOD_DEC_USE_COUNT;
-#else
 	module_put(THIS_MODULE);
-#endif
 	return 0;
 }
 
-struct file_operations ralink_gpio_fops =
+static struct file_operations ralink_gpio_fops =
 {
 	owner:		THIS_MODULE,
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
 	unlocked_ioctl:	ralink_gpio_ioctl,
-#else
-	ioctl:		ralink_gpio_ioctl,
-#endif
 	open:		ralink_gpio_open,
 	release:	ralink_gpio_release,
 };
 
 #ifdef CONFIG_RALINK_GPIO_LED
-
 #if RALINK_GPIO_LED_LOW_ACT
 #define __LED_ON(gpio)      ra_gpio_led_clr |= RALINK_GPIO(gpio);
 #define __LED_OFF(gpio)     ra_gpio_led_set |= RALINK_GPIO(gpio);
@@ -2033,7 +2016,7 @@ static void ralink_gpio_led_do_timer(unsigned long unused)
 	add_timer(&ralink_gpio_led_timer);
 }
 
-void ralink_gpio_led_init_timer(void)
+static void ralink_gpio_led_init_timer(void)
 {
 	int i;
 
@@ -2170,7 +2153,7 @@ void __exit ralink_gpio_exit(void)
  * interrupt comes
  * (called by interrupt handler)
  */
-void ralink_gpio_notify_user(int usr)
+static void ralink_gpio_notify_user(int usr)
 {
 	struct task_struct *p = NULL;
 
@@ -2182,12 +2165,8 @@ void ralink_gpio_notify_user(int usr)
 	if ((int)ralink_gpio_info[ralink_gpio_irqnum].pid < 2)
 		printk(KERN_ERR NAME ": don't send any signal if pid is 0 or 1\n");
 		return;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-	p = find_task_by_vpid(ralink_gpio_info[ralink_gpio_irqnum].pid);
-#else
-	p = find_task_by_pid(ralink_gpio_info[ralink_gpio_irqnum].pid);
-#endif
 
+	p = find_task_by_vpid(ralink_gpio_info[ralink_gpio_irqnum].pid);
 	if (NULL == p) {
 		printk(KERN_ERR NAME ": no registered process to notify\n");
 		return;
@@ -2210,7 +2189,7 @@ void ralink_gpio_notify_user(int usr)
  * 2. clear PIOINT by writing 1
  * (called by interrupt handler)
  */
-void ralink_gpio_save_clear_intp(void)
+static void ralink_gpio_save_clear_intp(void)
 {
 	ralink_gpio_intp = le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIOINT));
 	ralink_gpio_edge = le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIOEDGE));
@@ -2274,11 +2253,7 @@ void ralink_gpio_save_clear_intp(void)
 #endif
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-void ralink_gpio_irq_handler(unsigned int irq, struct irqaction *irqaction)
-#else
 irqreturn_t ralink_gpio_irq_handler(int irq, void *irqaction)
-#endif
 {
 	struct gpio_time_record {
 		unsigned long falling;
@@ -2675,11 +2650,7 @@ irqreturn_t ralink_gpio_irq_handler(int irq, void *irqaction)
 
 struct irqaction ralink_gpio_irqaction = {
 	.handler = ralink_gpio_irq_handler,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
 	.flags = IRQF_DISABLED,
-#else
-	.flags = SA_INTERRUPT,
-#endif
 	.name = "ralink_gpio",
 };
 

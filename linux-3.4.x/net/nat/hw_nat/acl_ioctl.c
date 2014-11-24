@@ -85,13 +85,7 @@ uint32_t RunIoctlDelHandler(AclPlcyNode * DelNode, enum AclProtoType Proto)
 	return Result;
 }
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-long AclIoctl(struct file *file, unsigned int cmd, unsigned long arg)
-#else
-int
-AclIoctl(struct inode *inode, struct file *filp,
-	 unsigned int cmd, unsigned long arg)
-#endif
+static long AclIoctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct acl_args *opt = (struct acl_args *)arg;
 	struct acl_list_args *opt2 = (struct acl_list_args *)arg;
@@ -171,11 +165,7 @@ AclIoctl(struct inode *inode, struct file *filp,
 }
 
 struct file_operations acl_fops = {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
       unlocked_ioctl:AclIoctl,
-#else
-      ioctl:AclIoctl,
-#endif
 };
 
 int AclRegIoctlHandler(void)

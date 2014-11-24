@@ -95,13 +95,7 @@ uint32_t AcBndryCheck(AcPlcyNode * NewNode)
 
 }
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-long AcIoctl(struct file *file, unsigned int cmd, unsigned long arg)
-#else
-int
-AcIoctl(struct inode *inode, struct file *filp,
-	unsigned int cmd, unsigned long arg)
-#endif
+static long AcIoctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct ac_args *opt = (struct ac_args *)arg;
 	AcPlcyNode node;
@@ -161,11 +155,7 @@ AcIoctl(struct inode *inode, struct file *filp,
 }
 
 struct file_operations ac_fops = {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
       unlocked_ioctl:AcIoctl,
-#else
-      ioctl:AcIoctl,
-#endif
 };
 
 int AcRegIoctlHandler(void)

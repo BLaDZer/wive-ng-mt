@@ -82,12 +82,7 @@ uint32_t MtrBndryCheck(MtrPlcyNode * NewNode)
 
 }
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
-long MtrIoctl(struct file *file, unsigned int cmd, unsigned long arg)
-#else
-int MtrIoctl(struct inode *inode, struct file *filp,
-	 unsigned int cmd, unsigned long arg)
-#endif
+static long MtrIoctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct mtr_args *opt = (struct mtr_args *)arg;
 	struct mtr_list_args *opt2 = (struct mtr_list_args *)arg;
@@ -150,11 +145,7 @@ int MtrIoctl(struct inode *inode, struct file *filp,
 }
 
 struct file_operations mtr_fops = {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
       unlocked_ioctl:MtrIoctl,
-#else
-      ioctl:MtrIoctl,
-#endif
 };
 
 int MtrRegIoctlHandler(void)
