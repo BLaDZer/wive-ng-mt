@@ -430,7 +430,9 @@ struct sk_buff {
 				nfctinfo:3;
 	__u8			pkt_type:3,
 				fclone:2,
+#if IS_ENABLED(CONFIG_IP_VS)
 				ipvs_property:1,
+#endif
 				peeked:1,
 				nf_trace:1;
 	kmemcheck_bitfield_end(flags1);
