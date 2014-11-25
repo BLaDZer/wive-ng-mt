@@ -73,7 +73,9 @@ void free_irqno(unsigned int irq)
  */
 void ack_bad_irq(unsigned int irq)
 {
+#ifndef CONFIG_MIPS_MT_DISABLED
 	smtc_im_ack_irq(irq);
+#endif
 	printk("unexpected IRQ # %d\n", irq);
 }
 
@@ -142,7 +144,9 @@ void __fastpathsys do_IRQ(unsigned int irq)
 {
 	irq_enter();
 	check_stack_overflow();
+#ifndef CONFIG_MIPS_MT_DISABLED
 	if (!smtc_handle_on_other_cpu(irq))
+#endif
 		generic_handle_irq(irq);
 	irq_exit();
 }
