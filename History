@@ -339,12 +339,13 @@
 14) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
 15) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
 16) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-17) kernel: pptp: fix stack info leak in pptp_getname().<br>
-18) kernel: random: add and use memzero_explicit() for clearing data.<br>
-19) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-20) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
-21) kernel: mm/mempolicy: remove per-process flag.<br>
-22) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
+17) kernel: mips: fix address type used for early memory detection.<br>
+18) kernel: pptp: fix stack info leak in pptp_getname().<br>
+19) kernel: random: add and use memzero_explicit() for clearing data.<br>
+20) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+21) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
+22) kernel: mm/mempolicy: remove per-process flag.<br>
+23) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
 <br>
 <br>
 <b>TODO:</b><br>
