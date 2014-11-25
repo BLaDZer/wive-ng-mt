@@ -3761,7 +3761,7 @@ static inline void __cache_free(struct kmem_cache *cachep, void *objp,
  * Allocate an object from this cache.  The flags are only relevant
  * if the cache has no available objects.
  */
-void *kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+void __fastpathsys *kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
 {
 	void *ret = __cache_alloc(cachep, flags, __builtin_return_address(0));
 

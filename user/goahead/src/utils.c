@@ -45,10 +45,12 @@ int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceN
  */
 void reboot_now(void)
 {
+	sync();
+	sleep(2);
 #ifdef CONFIG_USER_STORAGE
 	doSystem("/etc/scripts/wifi_unload.sh && reboot &");
 #else
-	doSystem("sleep 2 && reboot &");
+	doSystem("reboot &");
 #endif
 }
 

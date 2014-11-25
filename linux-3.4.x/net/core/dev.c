@@ -1679,7 +1679,7 @@ static inline bool skb_loop_sk(struct packet_type *ptype, struct sk_buff *skb)
  *	taps currently in use.
  */
 
-static void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
+static void __fastpathnet dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct packet_type *ptype;
 	struct sk_buff *skb2 = NULL;
@@ -2199,7 +2199,7 @@ static inline int skb_needs_linearize(struct sk_buff *skb,
 				!(features & NETIF_F_SG)));
 }
 
-int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
+int __fastpathnet dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
 			struct netdev_queue *txq)
 {
 	const struct net_device_ops *ops = dev->netdev_ops;
@@ -3079,7 +3079,7 @@ enqueue:
  *
  */
 
-int netif_rx(struct sk_buff *skb)
+int __fastpathnet netif_rx(struct sk_buff *skb)
 {
 	int ret;
 
@@ -3465,7 +3465,7 @@ out:
  *	NET_RX_SUCCESS: no congestion
  *	NET_RX_DROP: packet was dropped
  */
-int netif_receive_skb(struct sk_buff *skb)
+int __fastpathnet netif_receive_skb(struct sk_buff *skb)
 {
 	net_timestamp_check(netdev_tstamp_prequeue, skb);
 
@@ -3855,7 +3855,7 @@ static void net_rps_action_and_irq_enable(struct softnet_data *sd)
 		local_irq_enable();
 }
 
-static int process_backlog(struct napi_struct *napi, int quota)
+static int __fastpathnet process_backlog(struct napi_struct *napi, int quota)
 {
 	int work = 0;
 	struct softnet_data *sd = container_of(napi, struct softnet_data, backlog);
@@ -3994,7 +3994,7 @@ void netif_napi_del(struct napi_struct *napi)
 }
 EXPORT_SYMBOL(netif_napi_del);
 
-static void net_rx_action(struct softirq_action *h)
+static void __fastpathnet net_rx_action(struct softirq_action *h)
 {
 	struct softnet_data *sd = &__get_cpu_var(softnet_data);
 	unsigned long time_limit = jiffies + 2;

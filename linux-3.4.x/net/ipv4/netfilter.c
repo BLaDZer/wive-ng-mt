@@ -154,7 +154,7 @@ static int nf_ip_reroute(struct sk_buff *skb,
 	return 0;
 }
 
-__sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
+__sum16 __fastpathnet nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
 			    unsigned int dataoff, u_int8_t protocol)
 {
 	const struct iphdr *iph = ip_hdr(skb);

@@ -242,7 +242,6 @@ void dhcpStoreAliases(const char *dhcp_config)
 		// Output routing table to file
 		fwrite(dhcp_config, strlen(dhcp_config), 1, fd);
 		fclose(fd);
-		sync();
 
 		// Call rwfs to store data
 		system("fs save");

@@ -354,7 +354,7 @@ void websCgiCleanup()
 
 				if(wp->has_firmware_upload_clean){
 					sync();
-					doSystem("sleep 3 && reboot &");
+					doSystem("sleep 2 && reboot &");
 				}
 			}
 		}

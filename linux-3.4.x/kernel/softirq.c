@@ -248,7 +248,7 @@ static inline void lockdep_softirq_end(void) { }
 #define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
 #define MAX_SOFTIRQ_RESTART 10
 
-asmlinkage void __do_softirq(void)
+asmlinkage void __fastpathsys __do_softirq(void)
 {
 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
 	struct softirq_action *h;
@@ -408,7 +408,7 @@ void __fastpathsys irq_exit(void)
 /*
  * This function must run with irqs disabled!
  */
-inline void raise_softirq_irqoff(unsigned int nr)
+inline void __fastpathsys raise_softirq_irqoff(unsigned int nr)
 {
 	__raise_softirq_irqoff(nr);
 
@@ -425,7 +425,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 		wakeup_softirqd();
 }
 
-void raise_softirq(unsigned int nr)
+void __fastpathsys raise_softirq(unsigned int nr)
 {
 	unsigned long flags;
 
@@ -434,7 +434,7 @@ void raise_softirq(unsigned int nr)
 	local_irq_restore(flags);
 }
 
-void __raise_softirq_irqoff(unsigned int nr)
+void __fastpathsys __raise_softirq_irqoff(unsigned int nr)
 {
 	trace_softirq_raise(nr);
 	or_softirq_pending(1UL << nr);

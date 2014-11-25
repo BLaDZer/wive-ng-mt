@@ -75,7 +75,7 @@ __setup("ether=", netdev_boot_setup);
  * Set the protocol type. For a packet of type ETH_P_802_3/2 we put the length
  * in here instead.
  */
-int eth_header(struct sk_buff *skb, struct net_device *dev,
+int __fastpathnet eth_header(struct sk_buff *skb, struct net_device *dev,
 	       unsigned short type,
 	       const void *daddr, const void *saddr, unsigned len)
 {

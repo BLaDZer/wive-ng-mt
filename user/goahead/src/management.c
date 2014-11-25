@@ -107,18 +107,17 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 #endif
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		websHeader(wp);
 		websWrite(wp, T("<h2>Adminstrator Settings</h2><br>\n"));
 		websWrite(wp, T("adm user: %s<br>\n"), admuser);
 		websWrite(wp, T("adm pass: %s<br>\n"), admpass);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 }
 
@@ -134,17 +133,16 @@ static void setSysLang(webs_t wp, char_t *path, char_t *query)
 	nvram_set(RT2860_NVRAM, "Language", lang);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		websHeader(wp);
 		websWrite(wp, T("<h2>Language Selection</h2><br>\n"));
 		websWrite(wp, T("language: %s<br>\n"), lang);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 }
 
@@ -180,19 +178,18 @@ static void NTP(webs_t wp, char_t *path, char_t *query)
 		doSystem("service ntp stop");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		websHeader(wp);
 		websWrite(wp, T("<h2>NTP Settings</h2><br>\n"));
 		websWrite(wp, T("NTPEnabled: %s<br>\n"), ntpEnabled);
 		websWrite(wp, T("NTPserver: %s<br>\n"), ntpServer);
 		websWrite(wp, T("TZ: %s<br>\n"), tz);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 }
 
@@ -258,9 +255,9 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 	doSystem("service ddns restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		websHeader(wp);
 		websWrite(wp, T("<h2>DDNS Settings</h2><br>\n"));
 		websWrite(wp, T("DDNSProvider: %s<br>\n"), ddns_provider);
@@ -268,10 +265,9 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("DDNSAccount: %s<br>\n"), ddns_acc);
 		websWrite(wp, T("DDNSPassword: %s<br>\n"), ddns_pass);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 }
 #endif

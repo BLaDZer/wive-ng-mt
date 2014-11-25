@@ -978,9 +978,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	setupSecurityLed();
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
@@ -1008,10 +1008,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
 		websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 
 #if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_RT2860V2_STA_WSC)
@@ -1170,8 +1169,8 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (! submitUrl[0]) {
 #ifdef PRINT_DEBUG
+	if (! submitUrl[0]) {
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
@@ -1191,9 +1190,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
 	} else
+#endif
 		websRedirect(wp, submitUrl);
 
     // restart wireless network
@@ -1233,9 +1232,9 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("wds_mode: %s<br>\n"), wds_mode);
@@ -1247,10 +1246,9 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("wds_encryp_key3: %s<br>\n"), wds_encryp_key3);
 		websWrite(wp, T("wds_list: %s<br>\n"), wds_list);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 
 	// restart wireless network
@@ -1740,17 +1738,16 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 		trace(0, "** error in AccessPolicyHandle()\n");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("<h2>MBSSID index: %d, Security Mode: %s Done</h2><br>\n"), mbssid, security_mode);
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 
 	doSystem("internet.sh wifionly");

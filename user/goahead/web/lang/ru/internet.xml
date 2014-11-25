@@ -111,46 +111,4 @@
   <message msgid="routing dynamic rip enable" msgstr="Вкл." />
   <message msgid="routing dynamic rip apply" msgstr="Применить" />
   <message msgid="routing dynamic rip reset" msgstr="Сброс" />
-
-  <message msgid="qos title" msgstr="Настройки Quality of Service" />
-  <message msgid="qos intro" msgstr="Вы можете настроить правила для приоритезации траффика отдельных приложений." />
-  <message msgid="qos setup" msgstr="Настройки QoS" />
-  <message msgid="qos str" msgstr="Quality of Service" />
-  <message msgid="qos disable" msgstr="Выкл." />
-  <message msgid="qos enable" msgstr="Вкл." />
-  <message msgid="qos dscpmarkeronly" msgstr="Только метки DSCP" />
-  <message msgid="qos upload bandwidth" msgstr="Исходящий канал:" />
-  <message msgid="qos bandwidth custom" msgstr="Пользовательские настройки" />
-  <message msgid="qos download bandwidth" msgstr="Входящий канал:" />
-  <message msgid="qos setup submit" msgstr="Сохранить" />
-  <message msgid="qos setup reset" msgstr="Сброс" />
-  <message msgid="qos group" msgstr="Группа" />
-  <message msgid="qos group attr" msgstr="Аттрибут" />
-  <message msgid="qos group modify" msgstr="Изменить" />
-  <message msgid="qos rule no" msgstr="Нет" />
-  <message msgid="qos rule name" msgstr="Имя" />
-  <message msgid="qos rule prio" msgstr="Группа" />
-  <message msgid="qos rule info" msgstr="Инфо" />
-  <message msgid="qos rule add" msgstr="Добавить" />
-  <message msgid="qos rule del" msgstr="Удалить" />
-  <message msgid="qos loaddefault" msgstr="Настройки по умолчанию" />
-  <message msgid="qos Rate" msgstr="Rate:" />
-  <message msgid="qos Ceil" msgstr="Ceil:" />
-  <message msgid="qos AF Name" msgstr="Название группы" />
-  <message msgid="qos AF Upload Bandwidth" msgstr="% исходящего канала" />
-
-  <message msgid="qos classifier title" msgstr="Настройки классификатора" />
-  <message msgid="qos classifier name" msgstr="Имя" />
-  <message msgid="qos classifier group" msgstr="Группа" />
-  <message msgid="qos classifier mac" msgstr="MAC адрес" />
-  <message msgid="qos classifier dip" msgstr="IP адрес назначения" />
-  <message msgid="qos classifier sip" msgstr="IP адрес источника" />
-  <message msgid="qos classifier pktlen" msgstr="Длинна пакета" />
-  <message msgid="qos classifier dscp" msgstr="DSCP" />
-  <message msgid="qos classifier proto" msgstr="Протокол" />
-  <message msgid="qos classifier dport" msgstr="Порт назначения" />
-  <message msgid="qos classifier sport" msgstr="Порт источника" />
-  <message msgid="qos classifier l7" msgstr="Приложение" />
-  <message msgid="qos classifier remark" msgstr="Поставить метку DSCP:" />
-  <message msgid="qos classifier auto" msgstr="Авто" />
 </po>

@@ -53,14 +53,14 @@
 #include <asm/rt2880/rt_mmap.h>
 #include <asm/rt2880/eureka_ep430.h>
 
-static void mask_ralink_irq(struct irq_data *id)
+static void __fastpathsys mask_ralink_irq(struct irq_data *id)
 {
 	if (id->irq > 5) {
 		*(volatile u32 *)(RALINK_INTDIS) = (1 << id->irq);
 	}
 }
 
-static void unmask_ralink_irq(struct irq_data *id)
+static void __fastpathsys unmask_ralink_irq(struct irq_data *id)
 {
 	if (id->irq > 5) {
 		*(volatile u32 *)(RALINK_INTENA) = (1 << id->irq);
@@ -142,7 +142,7 @@ static void ralink_hw0_irqdispatch(int prio)
 	do_IRQ(irq);
 }
 
-asmlinkage void plat_irq_dispatch(void)
+asmlinkage void __fastpathsys plat_irq_dispatch(void)
 {
 	unsigned int pending;
 #if defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_MT7620) || \

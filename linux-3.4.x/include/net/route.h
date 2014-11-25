@@ -169,7 +169,7 @@ static inline struct rtable *ip_route_output_gre(struct net *net, struct flowi4 
 extern int ip_route_input_common(struct sk_buff *skb, __be32 dst, __be32 src,
 				 u8 tos, struct net_device *devin, bool noref);
 
-static inline int ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src,
+static inline int __fastpathnet ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src,
 				 u8 tos, struct net_device *devin)
 {
 	return ip_route_input_common(skb, dst, src, tos, devin, false);

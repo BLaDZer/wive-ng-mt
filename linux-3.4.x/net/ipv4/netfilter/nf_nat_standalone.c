@@ -73,7 +73,7 @@ static void nat_decode_session(struct sk_buff *skb, struct flowi *fl)
 }
 #endif
 
-static unsigned int
+static unsigned int __fastpathnet
 nf_nat_fn(unsigned int hooknum,
 	  struct sk_buff *skb,
 	  const struct net_device *in,
@@ -150,7 +150,7 @@ nf_nat_fn(unsigned int hooknum,
 	return nf_nat_packet(ct, ctinfo, hooknum, skb);
 }
 
-static unsigned int
+static unsigned int __fastpathnet
 nf_nat_in(unsigned int hooknum,
 	  struct sk_buff *skb,
 	  const struct net_device *in,
@@ -168,7 +168,7 @@ nf_nat_in(unsigned int hooknum,
 	return ret;
 }
 
-static unsigned int
+static unsigned int __fastpathnet
 nf_nat_out(unsigned int hooknum,
 	   struct sk_buff *skb,
 	   const struct net_device *in,

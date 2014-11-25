@@ -2120,9 +2120,9 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
 	if (! submitUrl[0])
 	{
-#ifdef PRINT_DEBUG
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("<h3>LAN Interface Setup</h3><br>\n"));
@@ -2141,10 +2141,9 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 			websWrite(wp, T("SecDns: %s<br>\n"), sd);
 		}
 		websFooter(wp);
-#endif
 		websDone(wp, 200);
-	}
-	else
+	} else
+#endif
 		websRedirect(wp, submitUrl);
 
 	doSystem("internet.sh");
@@ -2314,36 +2313,39 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	if (strcmp(oldmac, mac) == 0) {
-		submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-		if ( !submitUrl[0] ) {
-		    // debug print
-		    websHeader(wp);
-		    websWrite(wp, T("<h2>Mode: %s</h2><br>\n"), ctype);
-		    if (!strncmp(ctype, "STATIC", 7))
-		    {
-			websWrite(wp, T("IP Address: %s<br>\n"), ip);
-			websWrite(wp, T("Subnet Mask: %s<br>\n"), nm);
-			websWrite(wp, T("Default Gateway: %s<br>\n"), gw);
-		    }
-		    websFooter(wp);
-		    websDone(wp, 200);
-		} else
-		    websRedirect(wp, submitUrl);
-		/* Prevent deadloop at WAN apply change if VPN started */
-		doSystem("ip route flush cache && service vpnhelper stop && service wan stop");
-		initInternet();
-	} else {
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
+	if ( !submitUrl[0] ) {
+	    // debug print
+	    websHeader(wp);
+	    websWrite(wp, T("<h2>Mode: %s</h2><br>\n"), ctype);
+	    if (!strncmp(ctype, "STATIC", 7))
+	    {
+		websWrite(wp, T("IP Address: %s<br>\n"), ip);
+		websWrite(wp, T("Subnet Mask: %s<br>\n"), nm);
+		websWrite(wp, T("Default Gateway: %s<br>\n"), gw);
+	    }
+	    websFooter(wp);
+	    websDone(wp, 200);
+	}
+#endif
+	if (strcmp(oldmac, mac) != 0) {
+		websHeader(wp);
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR", mac);
 		nvram_bufset(RT2860_NVRAM, "CHECKMAC", "NO");
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		websWrite(wp, T("Please wait - reboot for mac change.\n"));
-		sleep(1);
-		sync();
-		reboot_now();
-	}
+		websWrite(wp, T("<h2>Please save and reboot from left menu for apply new mac.</h2><br>\n"));
+		websFooter(wp);
+		websDone(wp, 200);
+	} else
+		websRedirect(wp, submitUrl);
+
+	/* Prevent deadloop at WAN apply change if VPN started */
+	doSystem("ip route flush cache && service vpnhelper stop && service wan stop");
+	initInternet();
+
 }
 
 /* goform/setIPv6 */
