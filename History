@@ -350,6 +350,7 @@
 25) kernel: mm/mempolicy: remove per-process flag.<br>
 26) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
 27) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
+28) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
 <br>
 <br>
 <b>TODO:</b><br>
