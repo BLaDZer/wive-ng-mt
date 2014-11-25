@@ -341,12 +341,13 @@
 16) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
 17) kernel: mips: fix address type used for early memory detection.<br>
 18) kernel: mips: lib: memset: Use macro to build the __bzero symbol.<br>
-19) kernel: pptp: fix stack info leak in pptp_getname().<br>
-20) kernel: random: add and use memzero_explicit() for clearing data.<br>
-21) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-22) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
-23) kernel: mm/mempolicy: remove per-process flag.<br>
-24) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
+19) kernel: mips: lib: memset: Add EVA support for the __bzero function.<br>
+20) kernel: pptp: fix stack info leak in pptp_getname().<br>
+21) kernel: random: add and use memzero_explicit() for clearing data.<br>
+22) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+23) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
+24) kernel: mm/mempolicy: remove per-process flag.<br>
+25) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
 <br>
 <br>
 <b>TODO:</b><br>
