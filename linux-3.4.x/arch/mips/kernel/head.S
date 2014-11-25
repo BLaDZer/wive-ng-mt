@@ -126,7 +126,19 @@
 	 * Reserved space for exception handlers.
 	 * Necessary for machines which link their kernels at KSEG0.
 	 */
-	.fill	0x400
+#if !defined (CONFIG_RALINK_RT3883) && \
+    !defined (CONFIG_RALINK_RT3352) && \
+    !defined (CONFIG_RALINK_RT3052) && \
+    !defined (CONFIG_RALINK_RT6855) && \
+    !defined (CONFIG_RALINK_RT5350) && \
+    !defined (CONFIG_RALINK_MT7620)
+	.fill   0x400
+#else
+	/* workaround for 4Mb SPI flash boot */
+	j       kernel_entry
+	nop
+	.fill   0x3f4
+#endif
 #endif
 
 EXPORT(_stext)
