@@ -349,7 +349,7 @@
 24) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
 25) kernel: mm/mempolicy: remove per-process flag.<br>
 26) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
-27) kernel: try enchane sections speed hack.<br>
+27) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
 <br>
 <br>
 <b>TODO:</b><br>

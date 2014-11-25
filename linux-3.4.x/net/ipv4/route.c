@@ -303,7 +303,7 @@ static unsigned int		rt_hash_log  __read_mostly;
 static DEFINE_PER_CPU(struct rt_cache_stat, rt_cache_stat);
 #define RT_CACHE_STAT_INC(field) __this_cpu_inc(rt_cache_stat.field)
 
-static inline unsigned int __fastpathnet rt_hash(__be32 daddr, __be32 saddr, int idx,
+static inline unsigned int rt_hash(__be32 daddr, __be32 saddr, int idx,
 				   int genid)
 {
 	return jhash_3words((__force u32)daddr, (__force u32)saddr,
@@ -2449,7 +2449,7 @@ martian_source_keep_err:
 	goto out;
 }
 
-int __fastpathnet ip_route_input_common(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+int ip_route_input_common(struct sk_buff *skb, __be32 daddr, __be32 saddr,
 			   u8 tos, struct net_device *dev, bool noref)
 {
 	struct rtable * rth;

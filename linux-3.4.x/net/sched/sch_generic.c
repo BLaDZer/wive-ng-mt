@@ -187,7 +187,7 @@ static inline int qdisc_restart(struct Qdisc *q)
 	return sch_direct_xmit(skb, q, dev, txq, root_lock);
 }
 
-void __fastpathnet __qdisc_run(struct Qdisc *q)
+void __qdisc_run(struct Qdisc *q)
 {
 	int quota = weight_p;
 
@@ -446,7 +446,7 @@ static inline struct sk_buff_head *band2list(struct pfifo_fast_priv *priv,
 	return priv->q + band;
 }
 
-static int __fastpathnet pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc)
+static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc)
 {
 	if (skb_queue_len(&qdisc->q) < qdisc_dev(qdisc)->tx_queue_len) {
 		int band = prio2band[skb->priority & TC_PRIO_MAX];
@@ -461,7 +461,7 @@ static int __fastpathnet pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *q
 	return qdisc_drop(skb, qdisc);
 }
 
-static struct __fastpathnet sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
 {
 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
 	int band = bitmap2band[priv->bitmap];

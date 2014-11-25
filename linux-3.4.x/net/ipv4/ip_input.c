@@ -342,7 +342,7 @@ inline
 #else
 static
 #endif
-int __fastpathnet ip_rcv_finish(struct sk_buff *skb)
+int ip_rcv_finish(struct sk_buff *skb)
 {
 	const struct iphdr *iph = ip_hdr(skb);
 	struct rtable *rt;
@@ -394,7 +394,7 @@ drop:
 /*
  * 	Main IP Receive routine.
  */
-int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev)
+int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev)
 {
 	const struct iphdr *iph;
 	u32 len;

@@ -39,7 +39,7 @@
 #include <net/route.h>
 #include <net/xfrm.h>
 
-static int __fastpathnet ip_forward_finish(struct sk_buff *skb)
+static int ip_forward_finish(struct sk_buff *skb)
 {
 	struct ip_options * opt	= &(IPCB(skb)->opt);
 
@@ -51,7 +51,7 @@ static int __fastpathnet ip_forward_finish(struct sk_buff *skb)
 	return dst_output(skb);
 }
 
-int __fastpathnet ip_forward(struct sk_buff *skb)
+int ip_forward(struct sk_buff *skb)
 {
 	struct iphdr *iph;	/* Our header */
 	struct rtable *rt;	/* Route we use */

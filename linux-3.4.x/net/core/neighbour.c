@@ -1279,7 +1279,7 @@ EXPORT_SYMBOL(neigh_compat_output);
 
 /* Slow and careful. */
 
-int __fastpathnet neigh_resolve_output(struct neighbour *neigh, struct sk_buff *skb)
+int neigh_resolve_output(struct neighbour *neigh, struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
 	int rc = 0;
@@ -1321,7 +1321,7 @@ EXPORT_SYMBOL(neigh_resolve_output);
 
 /* As fast as possible without hh cache */
 
-int __fastpathnet neigh_connected_output(struct neighbour *neigh, struct sk_buff *skb)
+int neigh_connected_output(struct neighbour *neigh, struct sk_buff *skb)
 {
 	struct net_device *dev = neigh->dev;
 	unsigned int seq;
