@@ -29,7 +29,7 @@ extern bool manip_pkt(u_int16_t proto, struct sk_buff *skb, unsigned int iphdrof
  * Direct send packets to output.
  * Stolen from ip_finish_output2.
  */
-static inline int bcm_fast_path_output(struct sk_buff *skb)
+static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
 	struct net_device *dev = dst->dev;

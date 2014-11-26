@@ -342,7 +342,7 @@ inline
 #else
 static
 #endif
-int ip_rcv_finish(struct sk_buff *skb)
+int __fastpathnet ip_rcv_finish(struct sk_buff *skb)
 {
 	const struct iphdr *iph = ip_hdr(skb);
 	struct rtable *rt;

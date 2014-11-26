@@ -64,7 +64,7 @@ const char * const softirq_to_name[NR_SOFTIRQS] = {
  * to the pending events, so lets the scheduler to balance
  * the softirq load for us.
  */
-static void wakeup_softirqd(void)
+static void __fastpathsys wakeup_softirqd(void)
 {
 	/* Interrupts are disabled: no need to stop preemption */
 	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
@@ -318,7 +318,7 @@ restart:
 
 
 
-asmlinkage void do_softirq(void)
+asmlinkage void __fastpathsys do_softirq(void)
 {
 	__u32 pending;
 	unsigned long flags;
@@ -357,7 +357,7 @@ void __fastpathsys irq_enter(void)
 	__irq_enter();
 }
 
-static inline void invoke_softirq(void)
+static inline void __fastpathsys invoke_softirq(void)
 {
 	if (!force_irqthreads) {
 		lockdep_softirq_from_hardirq();
@@ -440,7 +440,7 @@ void __fastpathsys __raise_softirq_irqoff(unsigned int nr)
 	or_softirq_pending(1UL << nr);
 }
 
-void open_softirq(int nr, void (*action)(struct softirq_action *))
+void __fastpathsys open_softirq(int nr, void (*action)(struct softirq_action *))
 {
 	softirq_vec[nr].action = action;
 }

@@ -133,7 +133,7 @@ static inline unsigned int is_local_svc(u_int8_t protonm)
 /*
  * check SKB really accesseble
  */
-static inline int skb_is_ready(struct sk_buff *skb)
+static inline int __fastpathnet skb_is_ready(struct sk_buff *skb)
 {
 	/*
 	 * cloned in non writable mode pakets must skip from fastpaths
@@ -149,7 +149,7 @@ static inline int skb_is_ready(struct sk_buff *skb)
  * 1 - clean route without adress changes
  * 0 - route with adress changes
  */
-static inline int is_pure_routing(struct nf_conn *ct)
+static inline int __fastpathnet is_pure_routing(struct nf_conn *ct)
 {
 	struct nf_conntrack_tuple *t1, *t2;
 

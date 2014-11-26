@@ -339,7 +339,7 @@ inline
 #else
 static
 #endif
-bool
+bool __fastpathnet
 manip_pkt(u_int16_t proto,
 	  struct sk_buff *skb,
 	  unsigned int iphdroff,
