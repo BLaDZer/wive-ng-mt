@@ -43,7 +43,8 @@
 #define LED_POWER	9
 #define BTN_RESET	10
 #elif defined (MT7620_ASIC_BOARD)
-#define LED_POWER	39
+/* system led indicastor recovery mode */
+#define LED_POWER	38
 #define BTN_RESET	1
 #endif
 
