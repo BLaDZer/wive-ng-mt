@@ -331,27 +331,28 @@
 6) init.d/goahead: add get mcast from VLAN TV/SIP/STB bridges.<br>
 7) init.d/goahead: move delayed backup from goahead to init.d web script.<br>
 8) init.d/goahead: add M2U conversion managment.<br>
-9) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
-10) goahead: cleanup dead code and fix debug.<br>
-11) igmpproxy: ignore igmpv3 block_old_sources<br>
-12) kernel: bridge: implement multicast fast leave.<br>
-13) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
-14) kernel: ralink ehci/ohci: improve host mode init.<br>
-15) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
-16) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
-17) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-18) kernel: mips: fix address type used for early memory detection.<br>
-19) kernel: mips: lib: memset: Use macro to build the __bzero symbol.<br>
-20) kernel: mips: lib: memset: Add EVA support for the __bzero function.<br>
-21) kernel: pptp: fix stack info leak in pptp_getname().<br>
-22) kernel: random: add and use memzero_explicit() for clearing data.<br>
-23) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-24) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
-25) kernel: mm/mempolicy: remove per-process flag.<br>
-26) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
-27) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
-28) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
-39) kernel: apply optimize_mips_memcpy_memset_cache.<br>
+9) init.d/l2tpsrv: fix masqrade rule add.<br>
+10) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
+11) goahead: cleanup dead code and fix debug.<br>
+12) igmpproxy: ignore igmpv3 block_old_sources<br>
+13) kernel: bridge: implement multicast fast leave.<br>
+14) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
+15) kernel: ralink ehci/ohci: improve host mode init.<br>
+16) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
+17) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
+18) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
+19) kernel: mips: fix address type used for early memory detection.<br>
+20) kernel: mips: lib: memset: Use macro to build the __bzero symbol.<br>
+21) kernel: mips: lib: memset: Add EVA support for the __bzero function.<br>
+22) kernel: pptp: fix stack info leak in pptp_getname().<br>
+23) kernel: random: add and use memzero_explicit() for clearing data.<br>
+24) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+25) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
+26) kernel: mm/mempolicy: remove per-process flag.<br>
+27) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
+28) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
+29) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
+40) kernel: apply optimize_mips_memcpy_memset_cache.<br>
 <br>
 <br>
 <b>TODO:</b><br>
