@@ -78,9 +78,6 @@
 	.endm
 
 	.set	noreorder
-#ifdef CONFIG_SPEEDHACK
-	.section .text.fastpath, "a"
-#endif
 	.align	5
 
 	/*
