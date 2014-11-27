@@ -956,6 +956,4 @@ char *bstrdupANoBalloc(char *s)
 	strcpy(buf, s);
 	return buf;
 }
-
 #endif /* NO_BALLOC */
-/******************************************************************************/

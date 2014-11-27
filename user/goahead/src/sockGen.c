@@ -1085,7 +1085,4 @@ int socketSockBuffered(int sock)
 	}
 	return 0;
 }
-
 #endif /* (!WIN) | LITTLEFOOT | WEBS */
-
-/******************************************************************************/

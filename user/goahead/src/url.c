@@ -218,6 +218,3 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 	*pbuf = buf;
 	return 0;
 }
-
-/******************************************************************************/
-

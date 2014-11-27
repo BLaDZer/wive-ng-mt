@@ -580,5 +580,3 @@ void websSetDefaultDir(char_t *dir)
 	}
 	websDefaultDir = bstrdup(B_L, dir);
 }
-
-/******************************************************************************/

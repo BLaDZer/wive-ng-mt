@@ -103,7 +103,4 @@ extern void		dbZero(int did);
 
 extern char_t	*basicGetProductDir();
 extern void		basicSetProductDir(char_t *proddir);
-
 #endif /* _h_EMFDB */
-
-/******************************************************************************/

@@ -1078,8 +1078,4 @@ extern void		harnessTesting(char_t *msg, ...);
 extern void		harnessPassed();
 extern void		harnessFailed(int line);
 extern int		harnessLevel();
-
 #endif /* _h_UEMF */
-
-/******************************************************************************/
-

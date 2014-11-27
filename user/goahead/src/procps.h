@@ -27,5 +27,4 @@ extern int               procps_read_args(pid_t procnum, cmdline_t *pcmdline);
 extern int               procps_find(const char *procname, size_t elems, pid_t *pids);
 extern int               procps_count(const char *procname);
 extern cmdline_t        *procps_list();
-
 #endif /* _PROCPS_H */

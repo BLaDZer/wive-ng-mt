@@ -809,4 +809,3 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 
 	return 0;
 }
-

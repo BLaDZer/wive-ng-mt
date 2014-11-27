@@ -40,7 +40,4 @@ extern int 		ejSetGlobalFunction(int eid, char_t *name,
 extern void		ejSetVar(int eid, char_t *var, char_t *value);
 extern int		ejGetVar(int eid, char_t *var, char_t **value);
 extern char_t	*ejEval(int eid, char_t *script, char_t **emsg);
-
 #endif /* _h_EJ */
-
-/*****************************************************************************/

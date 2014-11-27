@@ -137,7 +137,3 @@ void websPageSeek(webs_t wp, long offset)
 	lseek(wp->docfd, offset, SEEK_CUR);
 #endif
 }
-
-/******************************************************************************/
-
-

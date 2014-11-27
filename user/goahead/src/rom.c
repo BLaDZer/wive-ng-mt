@@ -187,8 +187,4 @@ long websRomPageSeek(webs_t wp, long offset, int origin)
 
 	return (wip->pos = pos);
 }
-
 #endif /* WEBS_PAGE_ROM */
-
-/******************************************************************************/
-

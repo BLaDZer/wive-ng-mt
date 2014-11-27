@@ -21,16 +21,15 @@
 
 /*********************************** Locals ***********************************/
 
-static websUrlHandlerType	*websUrlHandler;			/* URL handler list */
-static int					websUrlHandlerMax;			/* Number of entries */
-static int					urlHandlerOpenCount = 0;	/* count of apps */
+static websUrlHandlerType *websUrlHandler;	/* URL handler list */
+static int websUrlHandlerMax = 0;		/* Number of entries */
+static int urlHandlerOpenCount = 0;		/* count of apps */
 
 /**************************** Forward Declarations ****************************/
 
-static int 		websUrlHandlerSort(const void *p1, const void *p2);
-static int 		websPublishHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, 
-				int sid, char_t *url, char_t *path, char_t *query);
-static char_t	*websCondenseMultipleChars(char_t *strToCondense, char_t cCondense);
+static int websUrlHandlerSort(const void *p1, const void *p2);
+static int websPublishHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int sid, char_t *url, char_t *path, char_t *query);
+static char_t *websCondenseMultipleChars(char_t *strToCondense, char_t cCondense);
 
 /*********************************** Code *************************************/
 /*
@@ -412,6 +411,3 @@ static char_t *websCondenseMultipleChars(char_t *strToCondense, char_t cCondense
 
 	return strToCondense;
 }
-
-/******************************************************************************/
-

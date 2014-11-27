@@ -182,6 +182,3 @@ static int compile(char_t *fileList, char_t *prefix)
 	fflush(stdout);
 	return 0;
 }
-
-/******************************************************************************/
-

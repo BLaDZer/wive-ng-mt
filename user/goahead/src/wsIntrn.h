@@ -303,8 +303,4 @@ extern void 	 websSetEmfEnvironment(webs_t wp);
 extern int writeUniToAsc(int fid, void *buf, unsigned int len);
 extern int readAscToUni(int fid, void **buf, unsigned int len);
 #endif
-
 #endif /* _h_WEBS_INTERNAL */
-
-/******************************************************************************/
-

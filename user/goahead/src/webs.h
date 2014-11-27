@@ -236,8 +236,4 @@ extern void 	websReadEvent(webs_t wp);
 #ifdef EMF
 extern void 	 websFormExplain(webs_t wp, char_t *path, char_t *query);
 #endif
-
 #endif /* _h_WEBS */
-
-/******************************************************************************/
-

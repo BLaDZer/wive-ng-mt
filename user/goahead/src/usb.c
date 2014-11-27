@@ -212,4 +212,3 @@ int initUSB(void)
 {
 	return 0;
 }
-

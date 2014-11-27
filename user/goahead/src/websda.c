@@ -240,6 +240,3 @@ char_t *websCalcDigest(webs_t wp)
 	return NULL;
 #endif /* DIGEST_ACCESS_SUPPORT */
 }
-
-/******************************************************************************/
-

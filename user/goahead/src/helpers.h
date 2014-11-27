@@ -87,6 +87,4 @@ extern void fetchIndexedParam(const char *buf, int index, char *retbuf);
 extern int initSplitter(string_split_t *buf);
 extern int splitString(string_split_t *buf, const char *string, char splitter);
 extern int freeSplitter(string_split_t *buf);
-
 #endif /* HELPERS_H_ */
-

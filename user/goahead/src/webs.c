@@ -3086,6 +3086,3 @@ static time_t dateParse(time_t tip, char_t *cmd)
 }
 
 #endif /* WEBS_IF_MODIFIED_SUPPORT */
-
-/******************************************************************************/
-

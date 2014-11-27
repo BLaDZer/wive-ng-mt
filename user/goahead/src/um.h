@@ -177,9 +177,4 @@ extern int			umSetAccessLimitGroup(char_t *url, char_t *group);
 
 extern accessMeth_t	umGetAccessMethodForURL(char_t *url);
 extern bool_t		umUserCanAccessURL(char_t *user, char_t *url);
-
 #endif /* _h_UM */
-
-/******************************************************************************/
-
-

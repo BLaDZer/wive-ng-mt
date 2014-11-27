@@ -717,5 +717,3 @@ static int charConvert(ej_t* ep, int base, int maxDig)
 	}
 	return lval;
 }
-
-/******************************************************************************/

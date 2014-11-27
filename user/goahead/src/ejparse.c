@@ -1799,5 +1799,3 @@ static void ejRemoveNewlines(ej_t *ep, int state)
 
 	ejLexPutbackToken(ep, tid, ep->token);
 }
-
-/******************************************************************************/

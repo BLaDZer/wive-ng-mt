@@ -2533,4 +2533,3 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	return;
 }
 #endif //CONFIG_USER_CHILLISPOT
-

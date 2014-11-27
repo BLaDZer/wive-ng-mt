@@ -83,10 +83,5 @@ extern int	websSSLFlush(websSSL_t *wsp);
 
 extern int	websSSLSetKeyFile(char_t *keyFile);
 extern int	websSSLSetCertFile(char_t *certFile);
-
 #endif /* WEBS_SSL_SUPPORT */
-
 #endif /* _h_websSSL */
-
-/*****************************************************************************/
-

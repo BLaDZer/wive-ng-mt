@@ -112,7 +112,4 @@ extern int psSocketWrite(SOCKET sock, sslBuf_t *out);
 extern void setSocketBlock(SOCKET sock);
 extern void setSocketNonblock(SOCKET sock);
 extern void setSocketNodelay(SOCKET sock);
-
 #endif /* _h_SSLSOCKET */
-
-/******************************************************************************/
