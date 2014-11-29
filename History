@@ -354,6 +354,7 @@
 29) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
 40) kernel: apply optimize_mips_memcpy_memset_cache.<br>
 41) kernel: ralink spi: allow set FAST/DOR/DIOR from kernel config, support DOR on Macronix chips.<br>
+42) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
 <br>
 <br>
 <b>TODO:</b><br>
