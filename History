@@ -335,30 +335,31 @@
 10) goahead: use mtd_write erase RW-FS instead of direct crash rwfs.<br>
 11) goahead: cleanup dead code and fix debug.<br>
 12) igmpproxy: ignore igmpv3 block_old_sources<br>
-13) kernel: bridge: implement multicast fast leave.<br>
-14) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
-15) kernel: ralink ehci/ohci: improve host mode init.<br>
-16) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
-17) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
-18) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
-19) kernel: mips: fix address type used for early memory detection.<br>
-20) kernel: mips: lib: memset: Use macro to build the __bzero symbol.<br>
-21) kernel: mips: lib: memset: Add EVA support for the __bzero function.<br>
-22) kernel: pptp: fix stack info leak in pptp_getname().<br>
-23) kernel: random: add and use memzero_explicit() for clearing data.<br>
-24) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
-25) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
-26) kernel: mm/mempolicy: remove per-process flag.<br>
-27) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
-28) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
-29) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
-40) kernel: apply optimize_mips_memcpy_memset_cache.<br>
-41) kernel: ralink spi: allow set FAST/DOR/DIOR from kernel config, support DOR on Macronix chips.<br>
-42) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
-43) kernel: bridge: send query as soon as leave is received.<br>
-44) kernel: bridge: multicast: enable snooping on general queries only.<br>
-45) kernel: bridge: multicast: allow leave and fast_leave for M2U records.<br>
-46) kernel: disable IPv6 offload for SDRAM memory devices (4Mb FLASH samples).<br>
+13) miniupnpd: up to 1.9.20141128 version.<br>
+14) kernel: bridge: implement multicast fast leave.<br>
+15) kernel: bridge: add support multicast-to-unicast (M2U) conversion.<br>
+16) kernel: ralink ehci/ohci: improve host mode init.<br>
+17) kernel: ralink_wifi: disable igmp snooping and mcast rate specific.<br>
+18) kernel: ralink_wifi: fix SGI use/indication in rate_ctl.<br>
+19) kernel: mips: oprofile: Fix backtrace on 64-bit kernel.<br>
+20) kernel: mips: fix address type used for early memory detection.<br>
+21) kernel: mips: lib: memset: Use macro to build the __bzero symbol.<br>
+22) kernel: mips: lib: memset: Add EVA support for the __bzero function.<br>
+23) kernel: pptp: fix stack info leak in pptp_getname().<br>
+24) kernel: random: add and use memzero_explicit() for clearing data.<br>
+25) kernel: mm/memory.c: use entry = ACCESS_ONCE(*pte) in handle_pte_fault().<br>
+26) kernel: mm/page_alloc: add unlikely macro to help compiler optimization.<br>
+27) kernel: mm/mempolicy: remove per-process flag.<br>
+28) kernel: ppp: build ppp* as static (sligth optimize performance, small increase ram usage).<br>
+29) kernel: enchane sections speed hack(fastpathsys ~2% cpu free).<br>
+30) kernel: ipv4: Make IP_MULTICAST_ALL and IP_MSFILTER work on raw sockets.<br>
+31) kernel: apply optimize_mips_memcpy_memset_cache.<br>
+32) kernel: ralink spi: allow set FAST/DOR/DIOR from kernel config, support DOR on Macronix chips.<br>
+33) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
+34) kernel: bridge: send query as soon as leave is received.<br>
+35) kernel: bridge: multicast: enable snooping on general queries only.<br>
+36) kernel: bridge: multicast: allow leave and fast_leave for M2U records.<br>
+37) kernel: disable IPv6 offload for SDRAM memory devices (4Mb FLASH samples).<br>
 <br>
 <br>
 <b>TODO:</b><br>
