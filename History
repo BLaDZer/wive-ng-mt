@@ -358,6 +358,7 @@
 43) kernel: bridge: send query as soon as leave is received.<br>
 44) kernel: bridge: multicast: enable snooping on general queries only.<br>
 45) kernel: bridge: multicast: allow leave and fast_leave for M2U records.<br>
+46) kernel: disable IPv6 offload for SDRAM memory devices (4Mb FLASH samples).<br>
 <br>
 <br>
 <b>TODO:</b><br>

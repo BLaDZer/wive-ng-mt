@@ -67,11 +67,9 @@ static int udp_offload __read_mostly = 0;
 module_param(udp_offload, int, S_IRUGO);
 MODULE_PARM_DESC(udp_offload, "PPE IPv4 NAT offload for UDP proto");
 
-#if defined (CONFIG_RA_HW_NAT_IPV6)
 int ipv6_offload __read_mostly = 0;
 module_param(ipv6_offload, int, S_IRUGO);
 MODULE_PARM_DESC(ipv6_offload, "PPE IPv6 routes offload");
-#endif
 
 uint16_t lan_vid __read_mostly = CONFIG_RA_HW_NAT_LAN_VLANID;
 module_param(lan_vid, ushort, S_IRUGO|S_IWUSR);
