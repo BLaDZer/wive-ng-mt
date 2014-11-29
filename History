@@ -357,6 +357,7 @@
 42) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
 43) kernel: bridge: send query as soon as leave is received.<br>
 44) kernel: bridge: multicast: enable snooping on general queries only.<br>
+45) kernel: bridge: multicast: allow leave and fast_leave for M2U records.<br>
 <br>
 <br>
 <b>TODO:</b><br>
