@@ -355,6 +355,7 @@
 40) kernel: apply optimize_mips_memcpy_memset_cache.<br>
 41) kernel: ralink spi: allow set FAST/DOR/DIOR from kernel config, support DOR on Macronix chips.<br>
 42) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
+43) kernel: bridge: send query as soon as leave is received.<br>
 <br>
 <br>
 <b>TODO:</b><br>
