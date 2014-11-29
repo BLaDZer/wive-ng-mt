@@ -86,15 +86,15 @@ gen_wifi_config() {
 retune_wifi() {
     get_param
     # preconfigure wifi
-    /etc/scripts/wifi.sh $first_wlan_root_if &
+    (sleep 5 && /etc/scripts/wifi.sh $first_wlan_root_if) &
     if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ] && [ "$ApCliEnable" = "1" ]; then
-	/etc/scripts/wifi.sh $first_wlan_apcli &
+	(sleep 5 && /etc/scripts/wifi.sh $first_wlan_apcli) &
     fi
     if [ "$second_wlan_root_if" != "" ]; then
 	# preconfigure second wlan root interface to
-	/etc/scripts/wifi.sh $second_wlan_root_if &
+	(sleep 5 && /etc/scripts/wifi.sh $second_wlan_root_if) &
 	if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ]; then
-	    /etc/scripts/wifi.sh $second_wlan_apcli &
+	    (sleep 5 && /etc/scripts/wifi.sh $second_wlan_apcli) &
 	fi
     fi
 }
