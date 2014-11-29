@@ -356,6 +356,7 @@
 41) kernel: ralink spi: allow set FAST/DOR/DIOR from kernel config, support DOR on Macronix chips.<br>
 42) kernel: bridge: fix netfilter/NF_BR_LOCAL_OUT for own, locally generated queries.<br>
 43) kernel: bridge: send query as soon as leave is received.<br>
+44) kernel: bridge: multicast: enable snooping on general queries only.<br>
 <br>
 <br>
 <b>TODO:</b><br>
