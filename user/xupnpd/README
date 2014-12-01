@@ -1,6 +1,6 @@
 xupnpd - eXtensible UPnP agent
 
-Copyright (C) 2011-2013 Anton Burdinuk
+Copyright (C) 2011-2014 Anton Burdinuk
     
 clark15b@gmail.com
 
@@ -11,4 +11,4 @@ Thanks to Igor Drach for DreamBox plugin
 Thanks to Iskrenkov Alexey for Cygwin port
 Thanks to Zyxmon (http://zyxmon.org), Smorygo Philipp
 Thanks to Semik for Gentoo patch
-
+Thanks to Alexander E. Patrakov for mcast-ifindex patch
