@@ -76,11 +76,9 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto automake --download-all
 	urpmi --auto libgmpxx-devel --download-all
 	urpmi --auto libmpc-devel --download-all
-	urpmi --auto libquadmath-devel --download-all
 	urpmi --auto gcc-cpp --download-all
 	urpmi --auto gcc-c++ --download-all
 	urpmi --auto gcc-gfortran --download-all
-	urpmi --auto gcc-objc --download-all
 	urpmi --auto gcc-plugins --download-all
 	urpmi --auto colorgcc --download-all
 	urpmi --auto texinfo --download-all

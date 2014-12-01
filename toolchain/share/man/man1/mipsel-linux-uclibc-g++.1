@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GCC 1"
-.TH GCC 1 "2014-10-30" "gcc-4.8.4" "GNU"
+.TH GCC 1 "2014-11-27" "gcc-4.8.4" "GNU"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -18394,8 +18394,8 @@ the rules of the \s-1ABI.\s0
 Set the instruction set, register set, and instruction scheduling parameters
 for machine type \fIcpu_type\fR.  Supported values for \fIcpu_type\fR are
 \&\fBv7\fR, \fBcypress\fR, \fBv8\fR, \fBsupersparc\fR, \fBhypersparc\fR,
-\&\fBleon\fR, \fBleon3\fR, \fBsparclite\fR, \fBf930\fR, \fBf934\fR,
-\&\fBsparclite86x\fR, \fBsparclet\fR, \fBtsc701\fR, \fBv9\fR,
+\&\fBleon\fR, \fBleon3\fR, \fBleon3v7\fR, \fBsparclite\fR, \fBf930\fR,
+\&\fBf934\fR, \fBsparclite86x\fR, \fBsparclet\fR, \fBtsc701\fR, \fBv9\fR,
 \&\fBultrasparc\fR, \fBultrasparc3\fR, \fBniagara\fR, \fBniagara2\fR,
 \&\fBniagara3\fR and \fBniagara4\fR.
 .Sp
@@ -18413,7 +18413,7 @@ implementations.
 .RS 4
 .IP "v7" 4
 .IX Item "v7"
-cypress
+cypress, leon3v7
 .IP "v8" 4
 .IX Item "v8"
 supersparc, hypersparc, leon, leon3
@@ -18479,11 +18479,11 @@ option \fB\-mcpu=\fR\fIcpu_type\fR does.
 The same values for \fB\-mcpu=\fR\fIcpu_type\fR can be used for
 \&\fB\-mtune=\fR\fIcpu_type\fR, but the only useful values are those
 that select a particular \s-1CPU\s0 implementation.  Those are \fBcypress\fR,
-\&\fBsupersparc\fR, \fBhypersparc\fR, \fBleon\fR, \fBleon3\fR, \fBf930\fR,
-\&\fBf934\fR, \fBsparclite86x\fR, \fBtsc701\fR, \fBultrasparc\fR,
-\&\fBultrasparc3\fR, \fBniagara\fR, \fBniagara2\fR, \fBniagara3\fR and
-\&\fBniagara4\fR.  With native Solaris and GNU/Linux toolchains, \fBnative\fR
-can also be used.
+\&\fBsupersparc\fR, \fBhypersparc\fR, \fBleon\fR, \fBleon3\fR,
+\&\fBleon3v7\fR, \fBf930\fR, \fBf934\fR, \fBsparclite86x\fR, \fBtsc701\fR,
+\&\fBultrasparc\fR, \fBultrasparc3\fR, \fBniagara\fR, \fBniagara2\fR,
+\&\fBniagara3\fR and \fBniagara4\fR.  With native Solaris and GNU/Linux
+toolchains, \fBnative\fR can also be used.
 .IP "\fB\-mv8plus\fR" 4
 .IX Item "-mv8plus"
 .PD 0

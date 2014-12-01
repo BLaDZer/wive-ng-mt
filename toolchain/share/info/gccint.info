@@ -30671,11 +30671,6 @@ the stack.
      compiler will run out of spill registers and print a fatal error
      message.
 
- -- Target Hook: unsigned int TARGET_FLAGS_REGNUM
-     If the target has a dedicated flags register, and it needs to use
-     the post-reload comparison elimination pass, then this value should
-     be set appropriately.
-
 
 File: gccint.info,  Node: Scalar Return,  Next: Aggregate Return,  Prev: Register Arguments,  Up: Stack and Calling
 
@@ -32109,7 +32104,6 @@ interested in most macros in this section.
 
 * CC0 Condition Codes::      Old style representation of condition codes.
 * MODE_CC Condition Codes::  Modern representation of condition codes.
-* Cond Exec Macros::         Macros to control conditional execution.
 
 
 File: gccint.info,  Node: CC0 Condition Codes,  Next: MODE_CC Condition Codes,  Up: Condition Code
@@ -32177,7 +32171,7 @@ machine-specific information by defining 'CC_STATUS_MDEP'.
      patterns in two places, the 'md' file and in 'NOTICE_UPDATE_CC'.
 
 
-File: gccint.info,  Node: MODE_CC Condition Codes,  Next: Cond Exec Macros,  Prev: CC0 Condition Codes,  Up: Condition Code
+File: gccint.info,  Node: MODE_CC Condition Codes,  Prev: CC0 Condition Codes,  Up: Condition Code
 
 17.16.2 Representation of condition codes using registers
 ---------------------------------------------------------
@@ -32217,10 +32211,11 @@ File: gccint.info,  Node: MODE_CC Condition Codes,  Next: Cond Exec Macros,  Pre
      comparisons whose argument is a 'plus':
 
           #define SELECT_CC_MODE(OP,X,Y) \
-            (GET_MODE_CLASS (GET_MODE (X)) == MODE_FLOAT          \
-             ? ((OP == EQ || OP == NE) ? CCFPmode : CCFPEmode)    \
-             : ((GET_CODE (X) == PLUS || GET_CODE (X) == MINUS    \
-                 || GET_CODE (X) == NEG) \
+            (GET_MODE_CLASS (GET_MODE (X)) == MODE_FLOAT           \
+             ? ((OP == LT || OP == LE || OP == GT || OP == GE)     \
+                ? CCFPEmode : CCFPmode)                            \
+             : ((GET_CODE (X) == PLUS || GET_CODE (X) == MINUS     \
+                 || GET_CODE (X) == NEG || GET_CODE (x) == ASHIFT) \
                 ? CC_NOOVmode : CCmode))
 
      Another reason to use modes is to retain information on which
@@ -32262,10 +32257,11 @@ File: gccint.info,  Node: MODE_CC Condition Codes,  Next: Cond Exec Macros,  Pre
      You need not define this macro if it would always returns zero or
      if the floating-point format is anything other than
      'IEEE_FLOAT_FORMAT'.  For example, here is the definition used on
-     the SPARC, where floating-point inequality comparisons are always
-     given 'CCFPEmode':
+     the SPARC, where floating-point inequality comparisons are given
+     either 'CCFPEmode' or 'CCFPmode':
 
-          #define REVERSIBLE_CC_MODE(MODE)  ((MODE) != CCFPEmode)
+          #define REVERSIBLE_CC_MODE(MODE) \
+             ((MODE) != CCFPEmode && (MODE) != CCFPmode)
 
  -- Macro: REVERSE_CONDITION (CODE, MODE)
      A C expression whose value is reversed condition code of the CODE
@@ -32274,7 +32270,7 @@ File: gccint.info,  Node: MODE_CC Condition Codes,  Next: Cond Exec Macros,  Pre
      case machine has some non-standard way how to reverse certain
      conditionals.  For instance in case all floating point conditions
      are non-trapping, compiler may freely convert unordered compares to
-     ordered one.  Then definition may look like:
+     ordered ones.  Then definition may look like:
 
           #define REVERSE_CONDITION(CODE, MODE) \
              ((MODE) != CCFPmode ? reverse_condition (CODE) \
@@ -32308,15 +32304,10 @@ File: gccint.info,  Node: MODE_CC Condition Codes,  Next: Cond Exec Macros,  Pre
      same.  If they are, it returns that mode.  If they are different,
      it returns 'VOIDmode'.
 
-
-File: gccint.info,  Node: Cond Exec Macros,  Prev: MODE_CC Condition Codes,  Up: Condition Code
-
-17.16.3 Macros to control conditional execution
------------------------------------------------
-
-There is one macro that may need to be defined for targets supporting
-conditional execution, independent of how they represent conditional
-branches.
+ -- Target Hook: unsigned int TARGET_FLAGS_REGNUM
+     If the target has a dedicated flags register, and it needs to use
+     the post-reload comparison elimination pass, then this value should
+     be set appropriately.
 
 
 File: gccint.info,  Node: Costs,  Next: Scheduling,  Prev: Condition Code,  Up: Target Macros
@@ -45756,7 +45747,6 @@ Concept Index
 * condition codes:                       Comparisons.        (line   20)
 * conditional execution:                 Conditional Execution.
                                                              (line    6)
-* conditional execution <1>:             Cond Exec Macros.   (line    6)
 * Conditional Expressions:               Conditional Expressions.
                                                              (line    6)
 * conditions, in patterns:               Patterns.           (line   43)
@@ -47689,7 +47679,6 @@ Concept Index
 * predicates and machine modes:          Predicates.         (line   31)
 * predication:                           Conditional Execution.
                                                              (line    6)
-* predication <1>:                       Cond Exec Macros.   (line    6)
 * predict.def:                           Profile information.
                                                              (line   24)
 * PREFERRED_DEBUGGING_TYPE:              All Debuggers.      (line   41)
@@ -47934,9 +47923,9 @@ Concept Index
 * reverse probability:                   Profile information.
                                                              (line   66)
 * REVERSE_CONDITION:                     MODE_CC Condition Codes.
-                                                             (line   91)
+                                                             (line   93)
 * REVERSIBLE_CC_MODE:                    MODE_CC Condition Codes.
-                                                             (line   77)
+                                                             (line   78)
 * right rotate:                          Arithmetic.         (line  196)
 * right shift:                           Arithmetic.         (line  191)
 * 'rintM2' instruction pattern:          Standard Names.     (line  662)
@@ -48415,14 +48404,14 @@ Concept Index
 * TARGET_CANNOT_FORCE_CONST_MEM:         Addressing Modes.   (line  234)
 * TARGET_CANNOT_MODIFY_JUMPS_P:          Misc.               (line  778)
 * TARGET_CANONICALIZE_COMPARISON:        MODE_CC Condition Codes.
-                                                             (line   54)
+                                                             (line   55)
 * TARGET_CANONICAL_VA_LIST_TYPE:         Register Arguments. (line  292)
 * TARGET_CAN_ELIMINATE:                  Elimination.        (line   73)
 * TARGET_CAN_FOLLOW_JUMP:                Misc.               (line  687)
 * TARGET_CAN_INLINE_P:                   Target Attributes.  (line  157)
 * TARGET_CASE_VALUES_THRESHOLD:          Misc.               (line   46)
 * TARGET_CC_MODES_COMPATIBLE:            MODE_CC Condition Codes.
-                                                             (line  119)
+                                                             (line  121)
 * TARGET_CHECK_PCH_TARGET_FLAGS:         PCH Target.         (line   26)
 * TARGET_CHECK_STRING_OBJECT_FORMAT_ARG: Run-time Target.    (line  119)
 * TARGET_CLASS_LIKELY_SPILLED_P:         Register Classes.   (line  489)
@@ -48494,10 +48483,11 @@ Concept Index
 * TARGET_EXTRA_LIVE_ON_ENTRY:            Tail Calls.         (line   20)
 * TARGET_EXTRA_PRE_INCLUDES:             Misc.               (line  844)
 * TARGET_FIXED_CONDITION_CODE_REGS:      MODE_CC Condition Codes.
-                                                             (line  104)
+                                                             (line  106)
 * TARGET_FIXED_POINT_SUPPORTED_P:        Storage Layout.     (line  521)
 * target_flags:                          Run-time Target.    (line   51)
-* TARGET_FLAGS_REGNUM:                   Register Arguments. (line  391)
+* TARGET_FLAGS_REGNUM:                   MODE_CC Condition Codes.
+                                                             (line  134)
 * TARGET_FLT_EVAL_METHOD:                Type Layout.        (line  147)
 * TARGET_FN_ABI_VA_LIST:                 Register Arguments. (line  287)
 * TARGET_FOLD_BUILTIN:                   Misc.               (line  627)
@@ -49492,94 +49482,93 @@ Node: Frame Registers1282166
 Node: Elimination1290425
 Node: Stack Arguments1294655
 Node: Register Arguments1301839
-Node: Scalar Return1322142
-Node: Aggregate Return1328229
-Node: Caller Saves1332440
-Node: Function Entry1333617
-Node: Profiling1344711
-Node: Tail Calls1346410
-Node: Stack Smashing Protection1348313
-Node: Varargs1349941
-Node: Trampolines1356628
-Node: Library Calls1362671
-Node: Addressing Modes1367610
-Node: Anchored Addresses1387625
-Node: Condition Code1390268
-Node: CC0 Condition Codes1392397
-Node: MODE_CC Condition Codes1395643
-Node: Cond Exec Macros1402167
-Node: Costs1402513
-Node: Scheduling1418975
-Node: Sections1438392
-Node: PIC1454090
-Node: Assembler Format1456149
-Node: File Framework1457287
-Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1464219
-Node: Data Output1467489
-Node: Uninitialized Data1475258
-Node: Label Output1480269
-Node: Initialization1503225
-Node: Macros for Initialization1509186
-Node: Instruction Output1515905
-Node: Dispatch Tables1526400
-Node: Exception Region Output1530778
-Node: Alignment Output1537456
-Node: Debugging Info1542002
-Node: All Debuggers1542672
-Node: DBX Options1545527
-Node: DBX Hooks1550965
-Node: File Names and DBX1552274
-Node: SDB and DWARF1554386
-Node: VMS Debug1560458
-Node: Floating Point1561045
-Node: Mode Switching1565521
-Node: Target Attributes1569517
-Node: Emulated TLS1577831
-Node: MIPS Coprocessors1581221
-Node: PCH Target1582518
-Node: C++ ABI1584360
-Node: Named Address Spaces1589154
-Node: Misc1594088
-Ref: TARGET_SHIFT_TRUNCATION_MASK1600830
-Node: Host Config1645986
-Node: Host Common1647054
-Node: Filesystem1649428
-Node: Host Misc1653543
-Node: Fragments1655992
-Node: Target Fragment1657187
-Node: Host Fragment1667815
-Node: Collect21668055
-Node: Header Dirs1670691
-Node: Type Information1672114
-Node: GTY Options1675333
-Node: User GC1689667
-Node: GGC Roots1693398
-Node: Files1694111
-Node: Invoking the garbage collector1696818
-Node: Troubleshooting1698323
-Node: Plugins1699398
-Node: Plugins loading1700516
-Node: Plugin API1701386
-Node: Plugins pass1708414
-Node: Plugins GC1710385
-Node: Plugins description1712050
-Node: Plugins attr1712586
-Node: Plugins recording1714473
-Node: Plugins gate1715323
-Node: Plugins tracking1715914
-Node: Plugins building1716502
-Node: LTO1718289
-Node: LTO Overview1719150
-Node: LTO object file layout1724982
-Node: IPA1729612
-Node: WHOPR1738577
-Node: Internal flags1743266
-Node: Funding1744478
-Node: GNU Project1746962
-Node: Copying1747611
-Node: GNU Free Documentation License1785123
-Node: Contributors1810244
-Node: Option Index1847645
-Node: Concept Index1848449
+Node: Scalar Return1321920
+Node: Aggregate Return1328007
+Node: Caller Saves1332218
+Node: Function Entry1333395
+Node: Profiling1344489
+Node: Tail Calls1346188
+Node: Stack Smashing Protection1348091
+Node: Varargs1349719
+Node: Trampolines1356406
+Node: Library Calls1362449
+Node: Addressing Modes1367388
+Node: Anchored Addresses1387403
+Node: Condition Code1390046
+Node: CC0 Condition Codes1392105
+Node: MODE_CC Condition Codes1395351
+Node: Costs1402221
+Node: Scheduling1418683
+Node: Sections1438100
+Node: PIC1453798
+Node: Assembler Format1455857
+Node: File Framework1456995
+Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1463927
+Node: Data Output1467197
+Node: Uninitialized Data1474966
+Node: Label Output1479977
+Node: Initialization1502933
+Node: Macros for Initialization1508894
+Node: Instruction Output1515613
+Node: Dispatch Tables1526108
+Node: Exception Region Output1530486
+Node: Alignment Output1537164
+Node: Debugging Info1541710
+Node: All Debuggers1542380
+Node: DBX Options1545235
+Node: DBX Hooks1550673
+Node: File Names and DBX1551982
+Node: SDB and DWARF1554094
+Node: VMS Debug1560166
+Node: Floating Point1560753
+Node: Mode Switching1565229
+Node: Target Attributes1569225
+Node: Emulated TLS1577539
+Node: MIPS Coprocessors1580929
+Node: PCH Target1582226
+Node: C++ ABI1584068
+Node: Named Address Spaces1588862
+Node: Misc1593796
+Ref: TARGET_SHIFT_TRUNCATION_MASK1600538
+Node: Host Config1645694
+Node: Host Common1646762
+Node: Filesystem1649136
+Node: Host Misc1653251
+Node: Fragments1655700
+Node: Target Fragment1656895
+Node: Host Fragment1667523
+Node: Collect21667763
+Node: Header Dirs1670399
+Node: Type Information1671822
+Node: GTY Options1675041
+Node: User GC1689375
+Node: GGC Roots1693106
+Node: Files1693819
+Node: Invoking the garbage collector1696526
+Node: Troubleshooting1698031
+Node: Plugins1699106
+Node: Plugins loading1700224
+Node: Plugin API1701094
+Node: Plugins pass1708122
+Node: Plugins GC1710093
+Node: Plugins description1711758
+Node: Plugins attr1712294
+Node: Plugins recording1714181
+Node: Plugins gate1715031
+Node: Plugins tracking1715622
+Node: Plugins building1716210
+Node: LTO1717997
+Node: LTO Overview1718858
+Node: LTO object file layout1724690
+Node: IPA1729320
+Node: WHOPR1738285
+Node: Internal flags1742974
+Node: Funding1744186
+Node: GNU Project1746670
+Node: Copying1747319
+Node: GNU Free Documentation License1784831
+Node: Contributors1809952
+Node: Option Index1847353
+Node: Concept Index1848157
 
 End Tag Table

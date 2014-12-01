@@ -334,6 +334,10 @@ enum
 #ifdef CONFIG_NAT_CONE
 	NET_NF_CONNTRACK_NAT_MODE=33,
 #endif
+#ifdef CONFIG_BCM_NAT
+	NET_NF_CONNTRACK_FASTNAT=34,
+	NET_NF_CONNTRACK_FASTROUTE=35,
+#endif
 };
 
 /* /proc/sys/net/ipv4 */

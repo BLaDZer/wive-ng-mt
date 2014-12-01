@@ -18,12 +18,24 @@
 #define NF_STOLEN 2
 #define NF_QUEUE 3
 #define NF_REPEAT 4
+
+#ifndef CONFIG_BCM_NAT
 #define NF_STOP 5
 #if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
 #define NF_IMQ_QUEUE 6
 #define NF_MAX_VERDICT NF_IMQ_QUEUE
 #else
 #define NF_MAX_VERDICT NF_STOP
+#endif
+#else
+#define NF_FAST_NAT 5
+#define NF_STOP 6
+#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#define NF_IMQ_QUEUE 7
+#define NF_MAX_VERDICT NF_IMQ_QUEUE
+#else
+#define NF_MAX_VERDICT NF_STOP
+#endif
 #endif
 
 /* we overload the higher bits for encoding auxiliary data such as the queue
