@@ -48,7 +48,7 @@
 /*
  * Start release pagecache (via kswapd) at the percentage.
  */
-int pagecache_ratio __read_mostly = 5;
+int pagecache_ratio __read_mostly = 100;
 static unsigned long pagecache_limit = 0;
 
 /* Call reclaim after exceeding the limit by this threshold */
