@@ -183,7 +183,7 @@ multicast() {
     	    # for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
     	    phys_lan_if="eth2"
 	fi
-	if [ "$igmpM2UConvMode" != "" ] && [ "$igmpEnabled" = "1" ];then
+	if [ "$igmpM2UConvMode" != "" ]; then
 	    if [ "$igmpM2UConvMode" = "all" ]; then
 		INTERFACES="$phys_lan_if $first_wlan_root_if"
 	    elif [ "$igmpM2UConvMode" = "lan" ]; then
