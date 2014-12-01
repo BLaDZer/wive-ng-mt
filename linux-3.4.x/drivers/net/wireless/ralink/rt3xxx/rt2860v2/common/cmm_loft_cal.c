@@ -644,8 +644,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	UCHAR LOFT_DC_Search_Result[CHAIN_NUM][RF_ALC_NUM][2]; /* 0: I_PATH; 1: Q_PATH */
 	UCHAR gain_error_result[CHAIN_NUM], phase_error_result[CHAIN_NUM];
 	UCHAR RF_gain[] = {0x0, 0x1, 0x2, 0x4,0x8,0xc};
-	UCHAR RFVGA_gain_table[]=
-	  { 0x24, 0x25, 0x26, 0x27,   //[0:2:6]
+	UCHAR RFVGA_gain_table[]={0x24, 0x25, 0x26, 0x27,   //[0:2:6]
             0x28, 0x2c, 0x2d, 0x2e,   //[8:2:14]
 	    0x2f, 0x30, 0x31, 0x38,   //[16:2:22]
 	    0x39, 0x3a, 0x3b, 0x3c,   //[24:2:30]

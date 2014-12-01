@@ -1173,6 +1173,7 @@ BOOLEAN STARxDoneInterruptHandle(
 		if (pRxWI->MPDUtotalByteCount < 14)
 		{
 			Status = NDIS_STATUS_FAILURE;
+			RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
 			continue;
 		}
 

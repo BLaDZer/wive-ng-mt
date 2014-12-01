@@ -1340,6 +1340,7 @@ typedef struct _MLME_AUX {
     UCHAR               VarIEs[MAX_VIE_LEN];
     LONG				Rssi; /* Record the rssi value when receive Probe Rsp. */
 	RALINK_TIMER_STRUCT ProbeTimer, ApCliAssocTimer, ApCliAuthTimer;
+	RALINK_TIMER_STRUCT WpaDisassocAndBlockAssocTimer;
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 

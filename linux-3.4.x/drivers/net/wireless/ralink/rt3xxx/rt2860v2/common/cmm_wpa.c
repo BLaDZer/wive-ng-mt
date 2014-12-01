@@ -1752,10 +1752,7 @@ VOID PeerPairMsg4Action(
 		else
 		{
         	/* 5. init Group 2-way handshake if necessary.*/
-	        WPAStart2WayGroupHS(pAd, pEntry);
-
-        	pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
-			RTMPModTimer(&pEntry->RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
+			RTMPSetTimer(&pEntry->Start2WayGroupHSTimer, 200);
 		}
     }while(FALSE);
     
@@ -2108,6 +2105,25 @@ VOID EnqueueStartForPSKExec(
 		
 }
 
+VOID Start2WayGroupHSExec(
+    IN PVOID SystemSpecific1, 
+    IN PVOID FunctionContext, 
+    IN PVOID SystemSpecific2, 
+    IN PVOID SystemSpecific3) 
+{
+    MAC_TABLE_ENTRY *pEntry = (MAC_TABLE_ENTRY *)FunctionContext;
+
+    if ((pEntry) && IS_ENTRY_CLIENT(pEntry))
+    {
+    	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)pEntry->pAd;
+
+		/* init Group 2-way handshake if necessary.*/
+		WPAStart2WayGroupHS(pAd, pEntry);
+
+		pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
+		RTMPModTimer(&pEntry->RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
+    }
+}
 
 VOID MlmeDeAuthAction(
     IN PRTMP_ADAPTER    pAd, 
@@ -5201,5 +5217,25 @@ VOID RTMPSetWcidSecurityInfo(
 							Wcid,
 							KeyTabFlag);
 
+}
+
+/** from wpa_supplicant
+ * inc_byte_array - Increment arbitrary length byte array by one
+ * @counter: Pointer to byte array
+ * @len: Length of the counter in bytes
+ *
+ * This function increments the last byte of the counter by one and continues
+ * rolling over to more significant bytes if the byte was incremented from
+ * 0xff to 0x00.
+ */
+void inc_byte_array(UCHAR *counter, int len)
+{
+	int pos = len - 1;
+	while (pos >= 0) {
+		counter[pos]++;
+		if (counter[pos] != 0)
+			break;
+		pos--;
+	}
 }
 

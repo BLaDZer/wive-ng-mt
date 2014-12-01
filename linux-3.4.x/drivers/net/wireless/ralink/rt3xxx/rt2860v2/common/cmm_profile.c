@@ -926,7 +926,6 @@ static void rtmp_read_ap_client_from_file(
 
 	}
 	
-	/*ApCliWPAPSK*/
 	for (i = 0; i < MAX_APCLI_NUM; i++)
 	{
 		pApCliEntry = &pAd->ApCfg.ApCliTab[i];
@@ -1289,6 +1288,9 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 			{
 				pAd->ApCfg.MBSSID[i].bWmmCapable = TRUE;
 				bEnableWmm = TRUE;
+#ifdef MULTI_CLIENT_SUPPORT
+				pAd->CommonCfg.bWmm = TRUE;
+#endif /* MULTI_CLIENT_SUPPORT */
 			}
 			else /*Disable*/
 			{
@@ -1349,7 +1351,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->CommonCfg.APEdcaParm.Cwmin[i] = (UCHAR) simple_strtol(macptr, 0, 10);
-
+#ifdef MULTI_CLIENT_SUPPORT
+        		/* record profile cwmin */
+        		if (i == 0)
+            		    pAd->CommonCfg.APCwmin = pAd->CommonCfg.APEdcaParm.Cwmin[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 			DBGPRINT(RT_DEBUG_TRACE, ("APCwmin[%d]=%d\n", i, pAd->CommonCfg.APEdcaParm.Cwmin[i]));
 	    }
 	}
@@ -1359,7 +1365,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->CommonCfg.APEdcaParm.Cwmax[i] = (UCHAR) simple_strtol(macptr, 0, 10);
-
+#ifdef MULTI_CLIENT_SUPPORT
+        		/* record profile cwmax */
+        		if (i == 0)
+            		    pAd->CommonCfg.APCwmax= pAd->CommonCfg.APEdcaParm.Cwmax[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 			DBGPRINT(RT_DEBUG_TRACE, ("APCwmax[%d]=%d\n", i, pAd->CommonCfg.APEdcaParm.Cwmax[i]));
 	    }
 	}
@@ -1399,7 +1409,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->ApCfg.BssEdcaParm.Cwmin[i] = (UCHAR) simple_strtol(macptr, 0, 10);
-
+#ifdef MULTI_CLIENT_SUPPORT
+        		/* record profile cwmin */
+        		if (i == 0)
+            		    pAd->CommonCfg.BSSCwmin = pAd->ApCfg.BssEdcaParm.Cwmin[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 			DBGPRINT(RT_DEBUG_TRACE, ("BSSCwmin[%d]=%d\n", i, pAd->ApCfg.BssEdcaParm.Cwmin[i]));
 	    }
 	}
@@ -3022,6 +3036,14 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				pAd->ApCfg.DtimPeriod = (UCHAR) simple_strtol(tmpbuf, 0, 10);
 				DBGPRINT(RT_DEBUG_TRACE, ("DtimPeriod=%d\n", pAd->ApCfg.DtimPeriod));
 			}
+#ifdef BAND_STEERING
+			/* Band Steering Enable/Disable */
+			if(RTMPGetKeyParameter("BandSteering", tmpbuf, 10, pBuffer, TRUE))
+			{
+				pAd->ApCfg.BandSteering = (UCHAR) simple_strtol(tmpbuf, 0, 10);
+				DBGPRINT(RT_DEBUG_TRACE, ("BandSteering=%d\n", pAd->ApCfg.BandSteering));
+			}
+#endif /* BAND_STEERING */
 		}
 #endif /* CONFIG_AP_SUPPORT */					
 	    /*TxPower*/
@@ -3762,10 +3784,8 @@ NDIS_STATUS	RTMPSetProfileParameters(
 						{
 							for (i = 1; i < pAd->ApCfg.BssidNum; i++)
 							{
-								pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyMethod = 
-										pAd->ApCfg.MBSSID[0].WPAREKEY.ReKeyMethod;
-								DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) ReKeyMethod=%ld\n", 
-													i, pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyMethod));
+						pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyMethod = pAd->ApCfg.MBSSID[0].WPAREKEY.ReKeyMethod;
+						DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) ReKeyMethod=%ld\n", i, pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyMethod));
 							}	
 						}
 					}
@@ -3793,10 +3813,8 @@ NDIS_STATUS	RTMPSetProfileParameters(
 						{
 							for (i = 1; i < pAd->ApCfg.BssidNum; i++)
 							{
-								pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyInterval = 
-										pAd->ApCfg.MBSSID[0].WPAREKEY.ReKeyInterval;
-								DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) ReKeyInterval=%ld\n", 
-															i, pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyInterval));
+						pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyInterval = pAd->ApCfg.MBSSID[0].WPAREKEY.ReKeyInterval;
+						DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) ReKeyInterval=%ld\n", i, pAd->ApCfg.MBSSID[i].WPAREKEY.ReKeyInterval));
 							}
 						}
 					}
@@ -5666,7 +5684,7 @@ UCHAR GetSkuPerRatePwr(
 	pwr_diff = pwr_diff >> 12;
 
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s: pwr_diff = 0x%x, rate_pwr = 0x%x, rate_pwr1 = 0x%x !!!\n",
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: pwr_diff = 0x%x, rate_pwr = 0x%x, base rate_pwr = 0x%x !!!\n",
 					__FUNCTION__, pwr_diff, rate_pwr, rate_pwr1));
 	return rate_pwr;
 

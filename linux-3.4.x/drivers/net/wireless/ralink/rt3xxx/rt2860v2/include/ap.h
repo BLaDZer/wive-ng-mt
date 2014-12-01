@@ -254,6 +254,12 @@ VOID APMlmeScanReqAction(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem);
 
+#ifdef CON_WPS
+VOID APMlmeScanCompleteAction(
+        IN PRTMP_ADAPTER pAd,
+        IN MLME_QUEUE_ELEM *Elem);
+#endif /* CON_WPS */
+
 VOID APPeerBeaconAtScanAction(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem);

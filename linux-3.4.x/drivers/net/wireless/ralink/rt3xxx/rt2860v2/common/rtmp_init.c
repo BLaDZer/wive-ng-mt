@@ -2760,6 +2760,7 @@ VOID NICUpdateRawCounters(
 	    	pAd->PrivateInfo.PhyRxErrCnt += RxStaCnt1.field.PlcpErr;
 			/* Update False CCA counter*/
 			pAd->RalinkCounters.OneSecFalseCCACnt += RxStaCnt1.field.FalseCca;
+			pAd->RalinkCounters.OneSecFalseCCACnt1 = RxStaCnt1.field.FalseCca;
 			pAd->RalinkCounters.FalseCCACnt += RxStaCnt1.field.FalseCca;
 #ifdef RALINK_ATE
 		}
@@ -2911,18 +2912,22 @@ VOID NICUpdateRawCounters(
 				pDiag->TxDescCnt[ArrayCurIdx][i]= 0;
 				pDiag->TxSWQueCnt[ArrayCurIdx][i] =0;
 				pDiag->TxMcsCnt[ArrayCurIdx][i] = 0;
+				pDiag->TxSGICnt[ArrayCurIdx][i] = 0;
 				pDiag->RxMcsCnt[ArrayCurIdx][i] = 0;
+				pDiag->RxSGICnt[ArrayCurIdx][i] = 0;
 			}
 			pDiag->TxDataCnt[ArrayCurIdx] = 0;
 			pDiag->TxFailCnt[ArrayCurIdx] = 0;
 			pDiag->RxDataCnt[ArrayCurIdx] = 0;
 			pDiag->RxCrcErrCnt[ArrayCurIdx]  = 0;
 /*			for (i = 9; i < 16; i++)*/
-			for (i = 9; i < 24; i++) /* 3*3*/
+			for (i = 9; i < MAX_MCS_SET; i++) /* 3*3*/
 			{
 				pDiag->TxDescCnt[ArrayCurIdx][i] = 0;
 				pDiag->TxMcsCnt[ArrayCurIdx][i] = 0;
+				pDiag->TxSGICnt[ArrayCurIdx][i] = 0;
 				pDiag->RxMcsCnt[ArrayCurIdx][i] = 0;
+				pDiag->RxSGICnt[ArrayCurIdx][i] = 0;
 }
 
 			if (pDiag->ArrayCurIdx == pDiag->ArrayStartIdx)
@@ -3152,6 +3157,15 @@ VOID UserCfgExit(
 #endif /* MAC_REPEATER_SUPPORT */
 
 	pAd->CommonCfg.bEnTemperatureTrack = FALSE;
+
+#ifdef CONFIG_AP_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+	{
+#ifdef BAND_STEERING
+		BndStrg_Release(pAd);
+#endif /* BAND_STEERING */
+	}
+#endif /* CONFIG_AP_SUPPORT */
 }
 
 /*
@@ -3229,6 +3243,12 @@ VOID	UserCfgInit(
 #endif /* RTMP_TEMPERATURE_COMPENSATION */
 #endif /* RTMP_INTERNAL_TX_ALC || RTMP_TEMPERATURE_COMPENSATION */
 
+#ifdef THERMAL_PROTECT_SUPPORT
+	pAd->force_one_tx_stream = FALSE;
+	pAd->last_thermal_pro_temp = 0;
+	pAd->thermal_pro_criteria = 80;
+#endif /* THERMAL_PROTECT_SUPPORT */
+	
 	pAd->RfIcType = RFIC_2820;
 
 	/* Init timer for reset complete event*/
@@ -3681,6 +3701,14 @@ VOID	UserCfgInit(
 	/* Default Config change flag*/
 	pAd->bConfigChanged = FALSE;
 
+#ifdef CONFIG_AP_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+	{
+		pAd->ApCfg.ScanChannelCnt = 0;
+		pAd->ApCfg.bImprovedScan = FALSE;
+	}
+#endif /* CONFIG_AP_SUPPORT */
+
 	/* */
 	/* part III. AP configurations*/
 	
@@ -3867,7 +3895,9 @@ VOID	UserCfgInit(
 
 #ifdef APCLI_SUPPORT
 		pAd->ApCfg.FlgApCliIsUapsdInfoUpdated = FALSE;
-
+#ifdef APCLI_CERT_SUPPORT
+		pAd->bApCliCertTest = FALSE;
+#endif /* APCLI_CERT_SUPPORT */
 		for(j = 0; j < MAX_APCLI_NUM; j++) 
 		{
 			pAd->ApCfg.ApCliTab[j].AuthMode = Ndis802_11AuthModeOpen;
@@ -3893,10 +3923,15 @@ VOID	UserCfgInit(
 			pAd->ApCfg.ApCliTab[j].SavedPMKNum=0;
 			RTMPZeroMemory(pAd->ApCfg.ApCliTab[j].SavedPMK, (PMKID_NO * sizeof(BSSID_INFO)));
 #endif/*APCLI_WPA_SUPPLICANT_SUPPORT*/
+			pAd->ApCfg.ApCliTab[j].bBlockAssoc=FALSE;
+			pAd->ApCfg.ApCliTab[j].MicErrCnt=0;
 
 		}
 #endif /* APCLI_SUPPORT */
 		pAd->ApCfg.EntryClientCount = 0;
+#ifdef MULTI_CLIENT_SUPPORT
+		pAd->ApCfg.ChangeTxOpClient = 0;
+#endif /* MULTI_CLIENT_SUPPORT */
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -4030,6 +4065,10 @@ VOID	UserCfgInit(
 #ifdef MCS_LUT_SUPPORT
 	pAd->bUseHwTxLURate = TRUE;
 #endif /* MCS_LUT_SUPPORT */
+
+#ifdef PEER_DELBA_TX_ADAPT
+	pAd->MacTab.DelBA_Client_Count = 0;
+#endif /* PEER_DELBA_TX_ADAPT */
 
 #if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 	pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
@@ -4428,7 +4467,8 @@ VOID	RTMPCancelTimer(
 	}
 	else
 	{
-		DBGPRINT(RT_DEBUG_INFO,("RTMPCancelTimer failed, Timer hasn't been initialize!\n"));
+		//DBGPRINT(RT_DEBUG_INFO,("RTMPCancelTimer failed, Timer hasn't been initialize!\n"));
+		DBGPRINT_ERR(("RTMPCancelTimer failed, Timer hasn't been initialize!\n"));
 	}
 
 	RTMP_SEM_UNLOCK(&TimerSemLock);
