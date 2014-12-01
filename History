@@ -360,6 +360,7 @@
 35) kernel: bridge: multicast: enable snooping on general queries only.<br>
 36) kernel: bridge: multicast: allow leave and fast_leave for M2U records.<br>
 37) kernel: disable IPv6 offload for SDRAM memory devices (4Mb FLASH samples).<br>
+38) kernel: pppoe: missed check for destination addr in PADT frame processing.<br>
 <br>
 <br>
 <b>TODO:</b><br>
