@@ -3693,13 +3693,11 @@ VOID RTMPIoctlGetSiteSurvey(
 
 	TotalLen = sizeof(CHAR)*((MAX_LEN_OF_BSS_TABLE)*max_len) + 100;
 
-#if 0
-/* this break ap scan */
 	if (wrq->u.data.length == 0)
 		BufLen = IW_SCAN_MAX_DATA;
 	else
 		BufLen = wrq->u.data.length;
-#endif
+
 	os_alloc_mem(NULL, (PUCHAR *)&msg, TotalLen);
 
 	if (msg == NULL)
