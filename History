@@ -366,9 +366,10 @@
 1) toolchain: sync with 4.8.4 gcc svn version (after 4.8.3 release 4.8 tree apply only bugfixes).<br>
 2) toolchain: kernel headers up 02.12.2014.<br>
 3) toolchain: rebuild for 32bit hosts (need for prebuildede build compat).<br>
-4) kernel: update to 3.4.105.<br>
-5) kernel: pppoe: missed check for destination addr in PADT frame processing.<br>
-6) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
+4) miniupnpd: up to 1.9.20141204 version.<br>
+5) kernel: update to 3.4.105.<br>
+6) kernel: pppoe: missed check for destination addr in PADT frame processing.<br>
+7) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
 <br>
 <br>
 <b>TODO:</b><br>
