@@ -215,8 +215,9 @@ static int internal_dev_recv(struct vport *vport, struct sk_buff *skb)
 
 	skb_dst_drop(skb);
 	nf_reset(skb);
+#ifdef CONFIG_XFRM
 	secpath_reset(skb);
-
+#endif
 	skb->dev = netdev;
 	skb->pkt_type = PACKET_HOST;
 	skb->protocol = eth_type_trans(skb, netdev);

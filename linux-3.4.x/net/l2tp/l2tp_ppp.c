@@ -254,8 +254,10 @@ static void pppol2tp_recv(struct l2tp_session *session, struct sk_buff *skb, int
 		 * - reset netfilter information as it doesn't apply
 		 *   to the inner packet either
 		 */
+#ifdef CONFIG_XFRM
 		secpath_reset(skb);
 		skb_dst_drop(skb);
+#endif
 		nf_reset(skb);
 
 		po = pppox_sk(sk);

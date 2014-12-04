@@ -134,9 +134,9 @@ static void l2tp_eth_dev_recv(struct l2tp_session *session, struct sk_buff *skb,
 
 	if (!pskb_may_pull(skb, ETH_HLEN))
 		goto error;
-
+#ifdef CONFIG_XFRM
 	secpath_reset(skb);
-
+#endif
 	/* checksums verified by L2TP */
 	skb->ip_summed = CHECKSUM_NONE;
 

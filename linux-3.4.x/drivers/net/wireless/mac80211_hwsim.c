@@ -659,7 +659,9 @@ static bool mac80211_hwsim_tx_frame_no_nl(struct ieee80211_hw *hw,
 	skb_orphan(skb);
 	skb_dst_drop(skb);
 	skb->mark = 0;
+#ifdef CONFIG_XFRM
 	secpath_reset(skb);
+#endif
 	nf_reset(skb);
 
 	/* Copy skb to all enabled radios that are on the current frequency */

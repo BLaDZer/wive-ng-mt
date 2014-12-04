@@ -614,9 +614,9 @@ static int ipgre_rcv(struct sk_buff *skb)
 					  iph->saddr, iph->daddr, key,
 					  gre_proto))) {
 		struct pcpu_tstats *tstats;
-
+#ifdef CONFIG_XFRM
 		secpath_reset(skb);
-
+#endif
 		skb->protocol = gre_proto;
 		/* WCCP version 1 and 2 protocol decoding.
 		 * - Change protocol to IP

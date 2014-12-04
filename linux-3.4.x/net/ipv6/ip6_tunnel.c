@@ -754,7 +754,9 @@ static int ip6_tnl_rcv(struct sk_buff *skb, __u16 protocol,
 			rcu_read_unlock();
 			goto discard;
 		}
+#ifdef CONFIG_XFRM
 		secpath_reset(skb);
+#endif
 		skb->mac_header = skb->network_header;
 		skb_reset_network_header(skb);
 		skb->protocol = htons(protocol);

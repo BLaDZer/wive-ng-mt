@@ -433,8 +433,10 @@ struct sk_buff {
 #if IS_ENABLED(CONFIG_IP_VS)
 				ipvs_property:1,
 #endif
-				peeked:1,
-				nf_trace:1;
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+				nf_trace:1,
+#endif
+				peeked:1;
 	kmemcheck_bitfield_end(flags1);
 	__be16			protocol;
 
@@ -2456,12 +2458,12 @@ static inline void nf_reset(struct sk_buff *skb)
 #endif
 }
 
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
 static inline void nf_reset_trace(struct sk_buff *skb)
 {
-#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
 	skb->nf_trace = 0;
-#endif
 }
+#endif
 
 /* Note: This doesn't put any conntrack and bridge info in dst. */
 static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src)

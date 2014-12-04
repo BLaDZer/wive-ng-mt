@@ -997,14 +997,14 @@ secpath_put(struct sec_path *sp)
 
 extern struct sec_path *secpath_dup(struct sec_path *src);
 
+#ifdef CONFIG_XFRM
 static inline void
 secpath_reset(struct sk_buff *skb)
 {
-#ifdef CONFIG_XFRM
 	secpath_put(skb->sp);
 	skb->sp = NULL;
-#endif
 }
+#endif
 
 static inline int
 xfrm_addr_any(const xfrm_address_t *addr, unsigned short family)

@@ -395,9 +395,9 @@ static int ipip_rcv(struct sk_buff *skb)
 			kfree_skb(skb);
 			return 0;
 		}
-
+#ifdef CONFIG_XFRM
 		secpath_reset(skb);
-
+#endif
 		skb->mac_header = skb->network_header;
 		skb_reset_network_header(skb);
 		skb->protocol = htons(ETH_P_IP);

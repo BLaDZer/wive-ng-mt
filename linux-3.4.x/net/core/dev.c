@@ -1632,7 +1632,6 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
 	}
 #endif
 	skb_orphan(skb);
-	nf_reset(skb);
 
 	if (unlikely(!is_skb_forwardable(dev, skb))) {
 		atomic_long_inc(&dev->rx_dropped);
@@ -1646,9 +1645,13 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
 	skb->pkt_type = PACKET_HOST;
 	skb->protocol = eth_type_trans(skb, dev);
 	skb->mark = 0;
+#ifdef CONFIG_XFRM
 	secpath_reset(skb);
+#endif
 	nf_reset(skb);
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
 	nf_reset_trace(skb);
+#endif
 	return netif_rx(skb);
 }
 EXPORT_SYMBOL_GPL(dev_forward_skb);

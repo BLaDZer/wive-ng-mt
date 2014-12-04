@@ -371,6 +371,8 @@
 6) kernel: update to 3.4.105.<br>
 7) kernel: pppoe: missed check for destination addr in PADT frame processing.<br>
 8) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
+9) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
+10) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
 <br>
 <br>
 <b>TODO:</b><br>
