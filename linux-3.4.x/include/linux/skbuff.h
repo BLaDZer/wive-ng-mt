@@ -1640,7 +1640,8 @@ static inline int pskb_network_may_pull(struct sk_buff *skb, unsigned int len)
  */
 #ifndef NET_SKB_PAD
 #if defined (CONFIG_RALINK_RT3052) || defined (CONFIG_RALINK_RT3352) ||  defined (CONFIG_RALINK_RT3883) || \
-    defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT6855) || defined (CONFIG_RALINK_MT7620)
+    defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT6855) || defined (CONFIG_RALINK_MT7620) \
+    defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
 /* ralink depended hacks */
 #define NET_SKB_PAD		96
 #define NET_SKB_PAD_ORIG	max(64, L1_CACHE_BYTES)
