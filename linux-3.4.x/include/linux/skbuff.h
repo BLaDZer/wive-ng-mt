@@ -36,11 +36,15 @@
 #include <linux/imq.h>
 #endif
 
+/* now not used by any drivers, remove or try use in raeth in future */
+//#define SKB_RECYCLE_SUPPORT
+
 /* Don't change this without changing skb_csum_unnecessary! */
 #define CHECKSUM_NONE 0
 #define CHECKSUM_UNNECESSARY 1
 #define CHECKSUM_COMPLETE 2
 #define CHECKSUM_PARTIAL 3
+
 
 #define SKB_DATA_ALIGN(X)	ALIGN(X, SMP_CACHE_BYTES)
 #define SKB_WITH_OVERHEAD(X)	\
@@ -593,7 +597,9 @@ static inline struct sk_buff *alloc_skb_fclone(unsigned int size,
 	return __alloc_skb(size, priority, 1, NUMA_NO_NODE);
 }
 
+#ifdef SKB_RECYCLE_SUPPORT
 extern bool skb_recycle_check(struct sk_buff *skb, int skb_size);
+#endif
 
 extern struct sk_buff *skb_morph(struct sk_buff *dst, struct sk_buff *src);
 #if IS_ENABLED(CONFIG_MACVTAP)
