@@ -69,6 +69,41 @@ volatile sig_atomic_t sigchld_received;
 volatile sig_atomic_t sigusr1_received;;
 volatile sig_atomic_t sighup_received;
 
+struct control_requests_handler {
+    char type;
+    int (*handler) (FILE* resf, char* bufp);
+};
+
+int control_handle_available(FILE* resf, char* bufp);
+int control_handle_lns_add_modify(FILE* resf, char* bufp);
+int control_handle_lns_status(FILE* resf, char* bufp);
+int control_handle_tunnel(FILE* respf, char* bufp);
+int control_handle_lac_connect(FILE* resf, char* bufp);
+int control_handle_lac_outgoing_call(FILE* resf, char* bufp);
+int control_handle_lac_hangup(FILE* resf, char* bufp);
+int control_handle_lac_disconnect(FILE* resf, char* bufp);
+int control_handle_lac_add_modify(FILE* resf, char* bufp);
+int control_handle_lac_remove(FILE* resf, char* bufp);
+int control_handle_lac_status(FILE* resf, char* bufp);
+int control_handle_lns_remove(FILE* resf, char* bufp);
+
+struct control_requests_handler control_handlers[] = {
+    {CONTROL_PIPE_REQ_AVAILABLE, &control_handle_available},
+    {CONTROL_PIPE_REQ_LNS_ADD_MODIFY, &control_handle_lns_add_modify},
+    {CONTROL_PIPE_REQ_LNS_STATUS, &control_handle_lns_status},
+    {CONTROL_PIPE_REQ_TUNNEL, &control_handle_tunnel},
+    {CONTROL_PIPE_REQ_LAC_CONNECT, &control_handle_lac_connect},
+    {CONTROL_PIPE_REQ_LAC_OUTGOING_CALL, &control_handle_lac_outgoing_call},
+    {CONTROL_PIPE_REQ_LAC_HANGUP, &control_handle_lac_hangup},
+    {CONTROL_PIPE_REQ_LAC_DISCONNECT, &control_handle_lac_disconnect},
+    {CONTROL_PIPE_REQ_LAC_ADD_MODIFY, &control_handle_lac_add_modify},
+    {CONTROL_PIPE_REQ_LAC_REMOVE, &control_handle_lac_remove},
+    {CONTROL_PIPE_REQ_LAC_STATUS, &control_handle_lac_status},
+    {CONTROL_PIPE_REQ_LNS_REMOVE, &control_handle_lns_remove},
+
+    {0, NULL}
+};
+
 void init_tunnel_list (struct tunnel_list *t)
 {
     t->head = NULL;
@@ -914,7 +949,7 @@ void write_res (FILE* res_file, const char *fmt, ...)
     va_end (args);
 }
 
-int parse_one_line_lac (char* bufp, struct lac *tc)
+int parse_one_line (char* bufp, int context, void* tc)
 {
     /* FIXME: I should check for incompatible options */
     char *s, *d, *t;
@@ -954,7 +989,7 @@ int parse_one_line_lac (char* bufp, struct lac *tc)
 #endif
         /* Okay, bit twidling is done.  Let's handle this */
         
-        switch (parse_one_option (s, t, CONTEXT_LAC, tc))
+        switch (parse_one_option (s, t, context, tc))
         {
         case -1:
             l2tp_log (LOG_WARNING, "%s: error token %d\n",
@@ -971,83 +1006,215 @@ int parse_one_line_lac (char* bufp, struct lac *tc)
     return 0;
 }
 
-void do_control ()
+int parse_one_line_lac (char* bufp, struct lac *tc){
+    return parse_one_line(bufp, CONTEXT_LAC, tc);
+}
+
+int parse_one_line_lns (char* bufp, struct lns *tc){
+    return parse_one_line(bufp, CONTEXT_LNS, tc);
+}
+
+struct lns* find_lns_by_name(char* name){
+    struct lns *cursor;
+
+    /* ml: First check to see if we are searching for default */
+    if(strcmp(name, "default") == 0){
+        return deflns;
+    }
+
+    cursor  = lnslist;
+    while (cursor)
 {
-    char buf[CONTROL_PIPE_MESSAGE_SIZE];
-    char *bufp; /* current buffer pointer */
-    char *host;
-    char *tunstr;
-    char *callstr;
+        if(strcasecmp (cursor->entname, name) ==0){
+            return cursor;
+        }
+        cursor = cursor->next;
+    };
 
-    char *authname = NULL;
-    char *password = NULL;
-    char delims[] = " ";
-    char *sub_str;              /* jz: use by the strtok function */
-    char *tmp_ptr;              /* jz: use by the strtok function */
+    return NULL; /* ml: Ok we could not find anything*/
+}
+
+int control_handle_available(FILE* resf, char* bufp){
     struct lac *lac;
-    struct lac *prev_lac;     /* for lac removing */
-    int call;
-    int tunl;
-    int cnt = -1;
-    int done = 0;
+    struct lns *lns;
 
-    bzero(buf, sizeof(buf));
-    buf[0]='\0';
-    
-    char* res_filename; /* name of file to write result of command */
-    FILE* resf; /* stream for write result of command */
-
-    while (!done)
+    write_res (resf, "%02i OK\n", 0);
+    lns = lnslist;
+    int lns_count = 0;
+    while (lns)
     {
-        cnt = read (control_fd, buf, sizeof (buf));
-        if (cnt <= 0)
+        write_res (resf, "%02i AVAILABLE lns.%d.name=%s\n", 0, lns_count, lns->entname);
+        lns_count++;
+        lns= lns->next;
+    };
+    
+    /* Can the default really be NULL?*/
+    if(deflns){
+        write_res (resf, "%02i AVAILABLE lns.%d.name=%s\n", 0, lns_count, deflns->entname);
+        lns_count++;
+    }                                               
+
+    write_res (resf, "%02i AVAILABLE lns.cout=%d\n", 0, lns_count);
+
+    lac  = laclist;
+    int lac_count = 0;
+    while (lac)
         {
-            if(cnt < 0 && errno != EINTR) {
-                perror("controlfd");
+        write_res (resf, "%02i AVAILABLE lac.%d.name=%s\n", 0, lac_count, lac->entname);
+        lac_count++;
+        lac= lac->next;
+    };
+
+    if(deflac){
+        write_res (resf, "%02i AVAILABLE lac.%d.name=%s\n", 0, lac_count, deflac->entname);
+        lac_count++;
             }
-            done = 1;
-            break;
+
+    write_res (resf, "%02i AVAILABLE lac.count=%d\n", 0, lac_count);
+    return 1;
         }
 
-        if (buf[cnt - 1] == '\n')
-            buf[--cnt] = 0;
-#ifdef DEBUG_CONTROL
-        l2tp_log (LOG_DEBUG, "%s: Got message %s (%d bytes long)\n",
-                   __FUNCTION__, buf, cnt);
-#endif
-        bufp = buf;
-        /* check if caller want to get result */
-        if (bufp[0] == '@')
+int control_handle_lns_add_modify(FILE* resf, char* bufp){
+    struct lns *lns;
+    char* tunstr;
+    char delims[] = " ";
+    tunstr = strtok (&bufp[1], delims);
+    lns = find_lns_by_name(tunstr);
+    if(!lns){
+        lns = new_lns();
+        if(lns){ /* This seems a bit stupid, but new_lns() can return NULL */
+            /* ml: Give me a name please :) */
+            strncpy (lns->entname, tunstr, sizeof (lns->entname));
+
+            /* ml: Is there any good reason why I cant add it now? */
+            lns->next = lnslist;
+            lnslist = lns;
+        }
+    }
+
+    if(lns){
+        bufp = tunstr + strlen (tunstr) + 1;
+        if (parse_one_line_lns (bufp, lns))
         {
-            /* parse filename (@/path/to/file *...), where * is command */
-            res_filename = &bufp[1];
-            int fnlength = strcspn(res_filename, " ");
-            if ((fnlength == 0) || (res_filename[fnlength] == '\0')){
-                l2tp_log (LOG_DEBUG,
-                    "%s: Can't parse result filename or command\n",
-                    __FUNCTION__
-                );
-                continue;
+            write_res (resf, "%02i Configuration parse error\n", 3);
+        }else{
+            write_res (resf, "%02i OK: Saved value\n", 0);
+        }
+    }else{
+        write_res (resf, "%02i Error: Could not find lns and could not create it\n", 1);
             }
-            res_filename[fnlength] = '\0';
-            bufp = &res_filename[fnlength + 1]; /* skip filename in bufp */
 
-            /*FIXME: check quotes to allow filenames with spaces?
-              (do not forget quotes escaping to allow filenames with quotes)*/
+    return 1;
+}
 
-            /*FIXME: write to res_filename may cause SIGPIPE, need to catch it*/
-            resf = fopen (res_filename, "w");
-            if (!resf) {
-                l2tp_log (LOG_DEBUG, "%s: Can't open result file %s\n",
-                      __FUNCTION__, res_filename);
-                continue;
+int control_handle_lns_remove(FILE* resf, char* bufp){
+    char *tunstr;
+    struct lns* lns;
+    struct lns* prev_lns;
+    struct tunnel* t;
+    struct call* c;
+
+    tunstr = strchr (bufp, ' ') + 1;
+    lns = lnslist;
+    prev_lns = NULL;
+    while (lns && strcasecmp (lns->entname, tunstr) != 0)
+    {
+        prev_lns = lns;
+        lns= lns->next;
             }
-        } else
-            resf = NULL;
+    if (!lns)
+    {
+        l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n", tunstr);
+        write_res (resf, "%02i No such tunnel '%s'\n", 1, tunstr);
+        return 0;
+    }
 
-        switch (bufp[0])
+    /* We need to destroy the tunnels associated with this guy */
+    t = tunnels.head;
+    while(t){
+        if(t->lns == lns){
+            c = t->call_head;
+
+            while (c)
         {
-        case 't':
+                call_close (c);
+                c = c->next;
+            };
+        }
+        t = t->next;
+    }
+
+    if (prev_lns == NULL){
+        lnslist = lns->next;
+    }else{
+        prev_lns->next = lns->next;
+    }
+
+    free(lns);
+    write_res (resf, "%02i OK\n", 0);
+    return 1;
+}
+
+int control_handle_lns_status(FILE* resf, char* bufp){
+    struct lns *lns;
+    char* tunstr;
+    char delims[] = " ";
+
+    tunstr = strtok (&bufp[1], delims);
+    lns = find_lns_by_name(tunstr);
+    if(lns){
+        /* Lets keep it simple, what is useful first */
+        write_res (resf, "%02i OK\n", 0);
+
+        int active_tunnel_count = 0;
+        struct tunnel* t = tunnels.head;
+        while(t){
+            if(t->lns == lns){
+                /* Lets provide some information on each tunnel */
+                write_res (resf, "%02i STATUS tunnels.%d.id=%d\n", 0, active_tunnel_count, t->tid);
+                write_res (resf, "%02i STATUS tunnels.%d.peer=%s:%d\n", 0, active_tunnel_count,
+                        IPADDY (t->peer.sin_addr), ntohs (t->peer.sin_port));
+
+                /* And some call stats */
+                struct call *c = t->call_head;
+                int active_call_count = 0;
+                while(c){
+                    write_res (resf, "%02i STATUS tunnels.%d.calls.%d.id=%d\n", 0,
+                            active_tunnel_count, active_call_count, c->ourcid);
+
+                    write_res (resf, "%02i STATUS tunnels.%d.calls.%d.tx_bytes=%d\n", 0,
+                            active_tunnel_count, active_call_count, c->tx_bytes);
+                    write_res (resf, "%02i STATUS tunnels.%d.calls.%d.rx_bytes=%d\n", 0,
+                            active_tunnel_count, active_call_count, c->rx_bytes);
+
+                    write_res (resf, "%02i STATUS tunnels.%d.calls.%d.tx_pkts=%d\n", 0,
+                            active_tunnel_count, active_call_count, c->tx_pkts);
+
+                    write_res (resf, "%02i STATUS tunnels.%d.calls.%d.rx_pkts=%d\n", 0,
+                            active_tunnel_count, active_call_count, c->rx_pkts);
+
+                    c = c->next;
+                    active_call_count++;
+                }
+
+                write_res (resf, "%02i STATUS tunnels.%d.calls.count=%d\n", 0,
+                        active_tunnel_count, active_call_count);
+
+                active_tunnel_count++;
+            }
+            t = t->next;
+        }
+
+        write_res (resf, "%02i STATUS tunnels.count=%d\n", 0, active_tunnel_count);
+    }else{
+        write_res (resf, "%02i Error: Could not find lns\n", 1);
+    }
+
+    return 1;
+}
+
+int control_handle_tunnel(FILE* resf, char* bufp){
+    char* host;
             host = strchr (bufp, ' ') + 1;
 #ifdef DEBUG_CONTROL
             l2tp_log (LOG_DEBUG, "%s: Attempting to tunnel to %s\n",
@@ -1057,10 +1224,18 @@ void do_control ()
                 write_res (resf, "%02i OK\n", 0);
             else
                 write_res (resf, "%02i Error\n", 1);
-            break;
-        case 'c':
-            switch_io = 1;  /* jz: Switch for Incoming - Outgoing Calls */
+    return 1;
+}
+
+int control_handle_lac_connect(FILE* resf, char* bufp){
+    char* tunstr = NULL;
+    char* authname= NULL;
+    char* password = NULL;
+    int tunl = 0;
+    char delims[] = " ";
+    struct lac* lac;
             
+    switch_io = 1;  /* jz: Switch for Incoming - Outgoing Calls */
             tunstr = strtok (&bufp[1], delims);
 
             /* Are these passed on the command line? */
@@ -1090,7 +1265,7 @@ void do_control ()
                     write_res (resf, "%02i Session '%s' already active!\n", 1, 
                                  lac->entname);
                 }
-                break;
+        return 0;
             }
 
             /* did not find a tunnel by name, look by number */
@@ -1099,7 +1274,7 @@ void do_control ()
             {
                 l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n", tunstr);
                 write_res (resf, "%02i No such tunnel '%s'\n", 1, tunstr);
-                break;
+        return 0;
             }
 #ifdef DEBUG_CONTROL
             l2tp_log (LOG_DEBUG, "%s: Attempting to call on tunnel %d\n",
@@ -1109,9 +1284,17 @@ void do_control ()
                 write_res (resf, "%02i OK\n", 0);
             else
                 write_res (resf, "%02i Error\n", 1);
-            break;
             
-       case 'o':          /* jz: option 'o' for doing a outgoing call */
+    return 1;
+}
+
+int control_handle_lac_outgoing_call(FILE* resf, char* bufp){
+    char* sub_str;
+    char* tunstr;
+    char* tmp_ptr;
+    struct lac* lac;
+    int tunl;
+
             switch_io = 0;  /* jz: Switch for incoming - outgoing Calls */
             
             sub_str = strchr (bufp, ' ') + 1;
@@ -1138,7 +1321,7 @@ void do_control ()
                     write_res (resf, "%02i Session '%s' already active!\n", 1, 
                                lac->entname);
                 }
-                break;
+        return 0;
             }
 
             /* did not find a tunnel by name, look by number */
@@ -1147,7 +1330,7 @@ void do_control ()
             {
                 l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n", tunstr);
                 write_res (resf, "%02i No such tunnel '%s'\n", 1, tunstr);
-                break;
+        return 0;
             }
 #ifdef DEBUG_CONTROL
             l2tp_log (LOG_DEBUG, "%s: Attempting to call on tunnel %d\n",
@@ -1157,9 +1340,13 @@ void do_control ()
                 write_res (resf, "%02i OK\n", 0);
             else
                 write_res (resf, "%02i Error\n", 1);
-            break;
+    return 1;
+}
+
+int control_handle_lac_hangup(FILE* resf, char* bufp){
+    char* callstr;
+    int call;
             
-        case 'h':
             callstr = strchr (bufp, ' ') + 1;
             call = atoi (callstr);
 #ifdef DEBUG_CONTROL
@@ -1168,9 +1355,14 @@ void do_control ()
 #endif
             lac_hangup (call);
             write_res (resf, "%02i OK\n", 0);
-            break;
+    return 1;
+}
 
-        case 'd':
+int control_handle_lac_disconnect(FILE* resf, char* bufp){
+    char* tunstr;
+    struct lac* lac;
+    int tunl = 0;
+
             tunstr = strchr (bufp, ' ') + 1;
             lac = laclist;
             while (lac)
@@ -1189,32 +1381,34 @@ void do_control ()
                         write_res (resf, "%02i Session '%s' not up\n", 1,
                                   lac->entname);
                     }
-                    break;
+            return 0;
                 }
                 lac = lac->next;
             }
             if (lac)
-                break;
+        return 0;
             tunl = atoi (tunstr);
             if (!tunl)
             {
                 l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n", tunstr);
                 write_res (resf, "%02i No such tunnel '%s'\n", 1, tunstr);
-                break;
+        return 0;
             }
+
 #ifdef DEBUG_CONTROL
             l2tp_log (LOG_DEBUG, "%s: Attempting to disconnect tunnel %d\n",
                       __FUNCTION__, tunl);
 #endif
             lac_disconnect (tunl);
             write_res (resf, "%02i OK\n", 0);
-            break;
-        case 's':
-            show_status ();
-            break;
-        case 'a':
-            /* add new or modify existing lac configuration */
-            {               
+    return 1;
+}
+
+int control_handle_lac_add_modify(FILE* resf, char* bufp){
+    char* tunstr;
+    struct lac* lac;
+    char delims[] = " ";
+
                 int create_new_lac = 0; 
                 tunstr = strtok (&bufp[1], delims);
                 if ((!tunstr) || (!strlen (tunstr)))
@@ -1222,7 +1416,7 @@ void do_control ()
                     write_res (resf,
                         "%02i Configuration parse error: lac-name expected\n", 1);
                     l2tp_log (LOG_CRIT, "%s: lac-name expected\n", __FUNCTION__);
-                    break;
+        return 0;
                 }
                 /* go to the end  of tunnel name*/
                 bufp = tunstr + strlen (tunstr) + 1; 
@@ -1231,7 +1425,7 @@ void do_control ()
                 while (lac)
                 {
                     if (!strcasecmp (tunstr, lac->entname))
-                        break;
+            return 0;
                     lac = lac->next;
                 }
                 if (!lac)
@@ -1244,7 +1438,7 @@ void do_control ()
                             "%02i Could't create new lac: no memory\n", 2);
                         l2tp_log (LOG_CRIT,
                             "%s: Couldn't create new lac\n", __FUNCTION__);
-                        break;
+            return 0;
                     }
                     create_new_lac = 1;
                 }
@@ -1253,7 +1447,7 @@ void do_control ()
                 if (parse_one_line_lac (bufp, lac))
                 {
                     write_res (resf, "%02i Configuration parse error\n", 3);
-                    break;
+        return 0;
                 }
                 if (create_new_lac)
                 {
@@ -1272,9 +1466,14 @@ void do_control ()
                     /* FIXME: Should I check magic_lac_dial result somehow? */
                 }
                 write_res (resf, "%02i OK\n", 0);
+    return 1;
             }
-            break;
-        case 'r':
+
+int control_handle_lac_remove(FILE* resf, char* bufp){
+    char *tunstr;
+    struct lac* lac;
+    struct lac* prev_lac;
+
             // find lac in laclist
             tunstr = strchr (bufp, ' ') + 1;
             lac = laclist;
@@ -1286,10 +1485,9 @@ void do_control ()
             }
             if (!lac)
             {
-                l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n",
-                          tunstr);
+        l2tp_log (LOG_DEBUG, "No such tunnel '%s'\n", tunstr);
                 write_res (resf, "%02i No such tunnel '%s'\n", 1, tunstr);
-                break;
+        return 0;
             }
             // disconnect lac
             lac->active = 0;
@@ -1303,11 +1501,95 @@ void do_control ()
                 laclist = lac->next;
             else
                 prev_lac->next = lac->next;
+
             free(lac);
-            lac = NULL;
             write_res (resf, "%02i OK\n", 0);            
+    return 1;
+}
+
+int control_handle_lac_status(FILE* resf, char* bufp){
+    show_status ();
+    return 1;
+}
+
+void do_control ()
+{
+    char buf[CONTROL_PIPE_MESSAGE_SIZE];
+    char *bufp; /* current buffer pointer */
+
+    int cnt = -1;
+    int done = 0;
+    int handler_found = 0;
+    struct control_requests_handler* handler = NULL; 
+
+    bzero(buf, sizeof(buf));
+    buf[0]='\0';
+
+    char* res_filename; /* name of file to write result of command */
+    FILE* resf; /* stream for write result of command */
+
+    while (!done)
+    {
+        cnt = read (control_fd, buf, sizeof (buf));
+        if (cnt <= 0)
+        {
+            if(cnt < 0 && errno != EINTR) {
+                perror("controlfd");
+            }
+            done = 1;
             break;
-        default:
+        }
+
+        if (buf[cnt - 1] == '\n')
+            buf[--cnt] = 0;
+#ifdef DEBUG_CONTROL
+        l2tp_log (LOG_DEBUG, "%s: Got message %s (%d bytes long)\n",
+                __FUNCTION__, buf, cnt);
+#endif
+        bufp = buf;
+        /* check if caller want to get result */
+        if (bufp[0] == '@')
+        {
+            /* parse filename (@/path/to/file *...), where * is command */
+            res_filename = &bufp[1];
+            int fnlength = strcspn(res_filename, " ");
+            if ((fnlength == 0) || (res_filename[fnlength] == '\0')){
+                l2tp_log (LOG_DEBUG,
+                        "%s: Can't parse result filename or command\n",
+                        __FUNCTION__
+                        );
+                continue;
+            }
+            res_filename[fnlength] = '\0';
+            bufp = &res_filename[fnlength + 1]; /* skip filename in bufp */
+
+            /*FIXME: check quotes to allow filenames with spaces?
+              (do not forget quotes escaping to allow filenames with quotes)*/
+
+            /*FIXME: write to res_filename may cause SIGPIPE, need to catch it*/
+            resf = fopen (res_filename, "w");
+            if (!resf) {
+                l2tp_log (LOG_DEBUG, "%s: Can't open result file %s\n",
+                        __FUNCTION__, res_filename);
+                continue;
+            }
+        }else{
+            resf = NULL;
+        }
+
+        /* Search for a handler based on request type */
+        for(handler = control_handlers; handler->handler; handler++){
+
+            /* If handler is found, then handle the request and set handler_found = 1 */
+            if(handler->type == bufp[0]){
+                handler->handler(resf, bufp);
+                handler_found = 1;
+                break;
+            }
+        }
+
+        /* Does nto appear as though we found a handler, so respond with an error*/
+        if(!handler_found){
             l2tp_log (LOG_DEBUG, "Unknown command %c\n", bufp[0]);
             write_res (resf, "%02i Unknown command %c\n", 1, bufp[0]);
         }
