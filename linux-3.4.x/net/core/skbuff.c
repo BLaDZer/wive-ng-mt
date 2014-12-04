@@ -566,7 +566,7 @@ static void skb_release_all(struct sk_buff *skb)
  *	always call kfree_skb
  */
 
-void __fastpathnet __kfree_skb(struct sk_buff *skb)
+void __kfree_skb(struct sk_buff *skb)
 {
 	skb_release_all(skb);
 	kfree_skbmem(skb);
@@ -580,7 +580,7 @@ EXPORT_SYMBOL(__kfree_skb);
  *	Drop a reference to the buffer and free it if the usage count has
  *	hit zero.
  */
-void __fastpathnet kfree_skb(struct sk_buff *skb)
+void kfree_skb(struct sk_buff *skb)
 {
 	if (unlikely(!skb))
 		return;
@@ -601,7 +601,7 @@ EXPORT_SYMBOL(kfree_skb);
  *	Functions identically to kfree_skb, but kfree_skb assumes that the frame
  *	is being dropped after a failure and notes that
  */
-void __fastpathnet consume_skb(struct sk_buff *skb)
+void consume_skb(struct sk_buff *skb)
 {
 	if (unlikely(!skb))
 		return;
