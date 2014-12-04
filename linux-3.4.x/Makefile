@@ -349,7 +349,7 @@ CHECK		= sparse
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 ifdef CONFIG_RT2880_FLASH_4M
-CFLAGS_MODULE   = -Os -fno-caller-saves
+CFLAGS_MODULE   = -Os -fno-caller-saves -fno-reorder-blocks
 else
 CFLAGS_MODULE   =
 endif
@@ -569,7 +569,7 @@ endif # $(dot-config)
 all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= -Os -fno-caller-saves
+KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks
 else
 KBUILD_CFLAGS	+= -O2
 endif
