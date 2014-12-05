@@ -378,7 +378,8 @@
 13) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
 14) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
 15) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
-16) kernel: net: remove route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
+16) kernel: net: revert route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
+17) kernel: tcp: allow for bigger reordering level.<br>
 <br>
 <br>
 <b>TODO:</b><br>
