@@ -45,7 +45,7 @@ static int hw_offload_tso = 1;
 #endif
 
 #if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
-#ifdef RAETH_MODULE
+#ifdef CONFIG_RAETH_MODULE
 extern int (*ra_sw_nat_hook_rx)(struct sk_buff *skb);
 extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
 extern int (*ra_sw_nat_hook_ec)(int engine_init);
