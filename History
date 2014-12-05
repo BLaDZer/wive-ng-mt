@@ -380,6 +380,7 @@
 15) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
 16) kernel: net: revert route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
 17) kernel: tcp: allow for bigger reordering level.<br>
+18) kernel: introduce and use generic init task(prepare import mips fixes).<br>
 <br>
 <br>
 <b>TODO:</b><br>
