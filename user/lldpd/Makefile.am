@@ -2,7 +2,7 @@ include doxygen.am
 
 ACLOCAL_AMFLAGS = -I m4
 
-CFLAGS	+= -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-aggressive-loop-optimizations
+CFLAGS	+= -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
 CFLAGS	+= -ffunction-sections -fdata-sections
 LDFLAGS	+= -Wl,--gc-sections
 

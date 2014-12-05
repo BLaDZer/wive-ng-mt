@@ -17,7 +17,7 @@ UCONF_H	= $(ROOTDIR)/config/autoconf.h
 LDFLAGS += -static
 
 # system cgi scripts always optimize for size
-CFLAGS  += -Os -fno-caller-saves -fno-unwind-tables -fno-asynchronous-unwind-tables 
+CFLAGS  += -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables 
 CFLAGS  += -I$(LINUXDIR)/include -DUPLOAD_FIRMWARE_SUPPORT
 
 UPLOAD_CGI 		= upload.cgi

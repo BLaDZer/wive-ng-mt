@@ -7,7 +7,7 @@ THISDIR  	:= $(shell pwd)
 
 CFLAGS    	+= -ffunction-sections -fdata-sections -I$(THISDIR)/source/include
 ifndef CONFIG_USER_STORAGE
-CFLAGS    	+= -Os -fno-caller-saves -fno-unwind-tables -fno-asynchronous-unwind-tables
+CFLAGS    	+= -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 endif
 
 CXXFLAGS  	+= $(CFLAGS)
