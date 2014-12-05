@@ -369,12 +369,14 @@
 4) miniupnpd: up to 1.9.20141204 version.<br>
 5) xl2tpd: up to Nov 26, 2014 git version.<br>
 6) kernel: update to 3.4.105.<br>
-7) kernel: pppoe: missed check for destination addr in PADT frame processing.<br>
-8) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
-9) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
-10) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
-11) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
-12) kernel: net: remove route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
+7) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
+8) kernel: ralink_wifi: add support 64 bit interface counters.<br>
+9) kernel: ralink_wifi: backport ApCliRcvBeaconTime fix from 3.x.x.x driver.<br>
+10) kernel: net: pppoe: missed check for destination addr in PADT frame processing.<br>
+11) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
+12) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
+13) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
+14) kernel: net: remove route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
 <br>
 <br>
 <b>TODO:</b><br>
