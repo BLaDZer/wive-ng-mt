@@ -1225,7 +1225,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 #ifdef CONFIG_BCM_NAT
 	if ((nf_conntrack_fastnat || nf_conntrack_fastroute) && pf == PF_INET)
 	    /* gather fragments before fastpath/fastnat, ipv4 only. */
-	    if (ip_hdr(skb)->frag_off & htons(IP_MF|IP_OFFSET))
+	    if (ip_is_fragment(ip_hdr(skb)))
 		    if(nf_ct_ipv4_gather_frags(skb, hooknum == NF_INET_PRE_ROUTING ? IP_DEFRAG_CONNTRACK_IN : IP_DEFRAG_CONNTRACK_OUT))
 			return NF_STOLEN;
 #endif
