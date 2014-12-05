@@ -105,7 +105,7 @@ EXPORT_SYMBOL_GPL(web_str_loaded);
 #endif
 
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
-static inline unsigned int is_local_svc(u_int8_t protonm)
+static inline unsigned int __fastpathnet is_local_svc(u_int8_t protonm)
 {
 	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4/icmp proto must be skip from hardware offload
 	    and mark as interested by ALG  for correct tracking this */
@@ -133,7 +133,7 @@ static inline unsigned int is_local_svc(u_int8_t protonm)
 /*
  * check SKB really accesseble
  */
-static inline int __fastpathnet skb_is_ready(struct sk_buff *skb)
+static inline unsigned int __fastpathnet skb_is_ready(struct sk_buff *skb)
 {
 	/*
 	 * cloned in non writable mode pakets must skip from fastpaths

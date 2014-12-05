@@ -372,11 +372,13 @@
 7) kernel: ralink_wifi: update to 2.7.2.0/2.6.2.0 (20140820) AP/STA drivers.<br>
 8) kernel: ralink_wifi: add support 64 bit interface counters.<br>
 9) kernel: ralink_wifi: backport ApCliRcvBeaconTime fix from 3.x.x.x driver.<br>
-10) kernel: net: pppoe: missed check for destination addr in PADT frame processing.<br>
-11) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
-12) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
-13) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
-14) kernel: net: remove route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
+10) kernel: raeth: ppe: move hoocks to raeth instead off external code if raeth static build (more consistent code generate).<br>
+11) kernel: raeth: move raeth up in link order place (mast be before ppp and wireless modules for more consistent code generate).<br>
+12) kernel: net: pppoe: missed check for destination addr in PADT frame processing.<br>
+13) kernel: net: core: Remove redundant call to nf_reset in dev_forward_skb.<br>
+14) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
+15) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
+16) kernel: net: remove route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
 <br>
 <br>
 <b>TODO:</b><br>

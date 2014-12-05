@@ -26,6 +26,8 @@ obj-$(CONFIG_VIRTIO_NET) += virtio_net.o
 #
 # Networking Drivers
 #
+obj-$(CONFIG_RALINK_RDM) += rt_rdm/
+obj-$(CONFIG_RAETH) += raeth/
 obj-$(CONFIG_ARCNET) += arcnet/
 obj-$(CONFIG_DEV_APPLETALK) += appletalk/
 obj-$(CONFIG_CAIF) += caif/
@@ -71,6 +73,3 @@ obj-$(CONFIG_USB_IPHETH)        += usb/
 obj-$(CONFIG_USB_CDC_PHONET)   += usb/
 
 obj-$(CONFIG_HYPERV_NET) += hyperv/
-
-obj-$(CONFIG_RALINK_RDM) += rt_rdm/
-obj-$(CONFIG_RAETH) += raeth/

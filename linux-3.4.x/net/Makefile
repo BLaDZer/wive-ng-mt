@@ -71,12 +71,16 @@ obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
 obj-$(CONFIG_NFC)		+= nfc/
 obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
 
+# This is hooks for Ralink PPE
 ifneq ($(CONFIG_RA_NAT_NONE),y)
+# if raeth not module build move hook to raether.c
+ifneq ($(CONFIG_RAETH),y)
 obj-y				+= nat/foe_hook/
 endif
-
-# Broadcom Software NAT Offload
-obj-$(CONFIG_BCM_NAT)		+= nat/bcm_nat/
+endif
 
 # Ralink hardware NAT/PPPOE Offload support
 obj-$(CONFIG_RA_NAT_HW)         += nat/hw_nat/
+
+# Software NAT Offload
+obj-$(CONFIG_BCM_NAT)		+= nat/bcm_nat/
