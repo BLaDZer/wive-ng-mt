@@ -132,11 +132,11 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 		u32 lo_word = 0;
 		u32 hi_word = 0;
 		u32 an_state = sysRegRead(REG_ESW_PHY_POLLING);
-		
+
 		/* check AN polling On */
 		if (an_state & (1UL<<31))
-			sysRegWrite(REG_ESW_PHY_POLLING, an_state & ~(1UL<<31));
-		
+		    sysRegWrite(REG_ESW_PHY_POLLING, an_state & ~(1UL<<31));
+
 		// phase1: write page address phase
 		if (__mii_mgr_write(phy_addr, 0x1f, ((phy_register >> 6) & 0x3FF))) {
 			// phase2: write address & read low word phase
@@ -148,10 +148,10 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 				}
 			}
 		}
-	
+
 		if (an_state & (1UL<<31))
 			sysRegWrite(REG_ESW_PHY_POLLING, an_state | (1UL<<31));
-		
+
 		return result;
 	} else
 #endif
@@ -166,11 +166,11 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 	if (phy_addr == MT7530_MDIO_ADDR) {
 		u32 result = 0;
 		u32 an_state = sysRegRead(REG_ESW_PHY_POLLING);
-		
+
 		/* check AN polling */
 		if (an_state & (1UL<<31))
 			sysRegWrite(REG_ESW_PHY_POLLING, an_state & ~(1UL<<31));
-		
+
 		// phase1: write page address phase
 		if (__mii_mgr_write(MT7530_MDIO_ADDR, 0x1f, (phy_register >> 6) & 0x3FF)) {
 			// phase2: write address & write low word phase
@@ -180,10 +180,10 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 					result = 1;
 			}
 		}
-		
+
 		if (an_state & (1UL<<31))
 			sysRegWrite(REG_ESW_PHY_POLLING, an_state | (1UL<<31));
-		
+
 		return result;
 	} else
 #endif
@@ -324,37 +324,3 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 	}
 }
 #endif
-
-u32 mii_mgr_init(void)
-{
-	/* early config MDIO port for external switch control */
-
-#if defined (CONFIG_RALINK_RT3883)
-	/* set MDIO pins to Normal mode */
-	*(volatile u32 *)(RALINK_REG_GPIOMODE) &= ~RALINK_GPIOMODE_MDIO;
-#if defined (CONFIG_GE1_RGMII_FORCE_1000)
-	/* set MDIO clock to 4 MHz, disable PHY auto-polling */
-	sysRegWrite(MDIO_CFG, INIT_VALUE_OF_FORCE_1000_FD);
-#endif
-#if defined (CONFIG_GE2_RGMII_FORCE_1000)
-	sysRegWrite(MDIO_CFG2, INIT_VALUE_OF_FORCE_1000_FD);
-#endif
-#elif defined (CONFIG_RALINK_MT7620)
-	/* set MDIO pins to Normal mode */
-	*(volatile u32 *)(RALINK_REG_GPIOMODE) &= ~RALINK_GPIOMODE_MDIO;
-
-	/* set MDIO clock to 3.125 MHz, disable PHY auto-polling */
-	sysRegWrite(RALINK_ETH_SW_BASE+0x7000, 0x44000504);
-
-#if !defined (CONFIG_RAETH_ESW)
-	/* disable internal PHY 0~4, set internal PHY base address to 12 */
-	sysRegWrite(RALINK_ETH_SW_BASE+0x7014, 0x1fec000c);
-#endif
-#endif
-
-	return 0;
-}
-
-EXPORT_SYMBOL(mii_mgr_init);
-EXPORT_SYMBOL(mii_mgr_read);
-EXPORT_SYMBOL(mii_mgr_write);
