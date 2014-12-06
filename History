@@ -383,6 +383,9 @@
 18) kernel: introduce and use generic init task(prepare import mips fixes).<br>
 <br>
 <br>
+<b>2.0.x</b><br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
