@@ -85,10 +85,9 @@ EXPORT_SYMBOL_GPL(nf_conntrack_hash_rnd);
 
 #ifdef CONFIG_NAT_CONE
 unsigned int nf_conntrack_nat_mode __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_nat_mode);
-extern char wan_name[IFNAMSIZ];
+char wan_name[IFNAMSIZ] = {0};
 #if defined (CONFIG_PPP) || defined (CONFIG_PPP_MODULE)
-extern char wan_ppp[IFNAMSIZ];
+char wan_name_ppp[IFNAMSIZ] = {0};
 #endif
 #endif
 
@@ -96,7 +95,6 @@ extern char wan_ppp[IFNAMSIZ];
 unsigned int nf_conntrack_fastnat __read_mostly;
 EXPORT_SYMBOL_GPL(nf_conntrack_fastnat);
 unsigned int nf_conntrack_fastroute __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_fastroute);
 #endif
 
 #if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
@@ -1111,19 +1109,14 @@ resolve_normal_ct(struct net *net, struct nf_conn *tmpl,
          *             Restricted Cone=dst_ip/port & proto & src_ip
          *
          */
-	if ((nf_conntrack_nat_mode > 0) && (protonum == IPPROTO_UDP)) {
+	if ((nf_conntrack_nat_mode > 0 && protonum == IPPROTO_UDP && skb->dev != NULL) &&
 #if defined (CONFIG_PPP) || defined (CONFIG_PPP_MODULE)
-		if ((skb->dev != NULL) && (strcmp(skb->dev->name, wan_name) == 0 || strcmp(skb->dev->name, wan_ppp) == 0)) {
+		(strcmp(skb->dev->name, wan_name) == 0 || strcmp(skb->dev->name, wan_name_ppp) == 0)) {
 #else
-		if ((skb->dev != NULL) && (strcmp(skb->dev->name, wan_name) == 0)) {
+		(strcmp(skb->dev->name, wan_name) == 0)) {
 #endif
-			/* CASE III To Cone NAT */
-			h = __nf_cone_conntrack_find_get(net, &tuple, hash);
-		}
-		else {
-			/* CASE I.II.IV To Linux NAT */
-			h = __nf_conntrack_find_get(net, &tuple, hash);
-		}
+		/* CASE III To Cone NAT */
+		h = __nf_cone_conntrack_find_get(net, &tuple, hash);
 	} else
 #endif
 	{
