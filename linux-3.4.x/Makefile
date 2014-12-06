@@ -373,8 +373,8 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -std=gnu89 \
-		   -fno-delete-null-pointer-checks
+		   -std=gnu89
+
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -568,13 +568,15 @@ endif # $(dot-config)
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
 
+include $(srctree)/arch/$(SRCARCH)/Makefile
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks
+KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks $(call cc-disable-warning,maybe-uninitialized,)
 else
 KBUILD_CFLAGS	+= -O2
 endif
 
-include $(srctree)/arch/$(SRCARCH)/Makefile
+KBUILD_CFLAGS   += $(call cc-option,-fno-delete-null-pointer-checks,)
 
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
@@ -588,14 +590,14 @@ ifndef CONFIG_CC_STACKPROTECTOR
 KBUILD_CFLAGS += $(call cc-option, -fno-stack-protector)
 endif
 
-# use pipe at build time
+# use pipe at build time (build speedup)
 KBUILD_CFLAGS  += $(call cc-option, -pipe)
 
 # crazy optimizations
 KBUILD_CFLAGS += $(call cc-option, -ffast-math)
 KBUILD_CFLAGS += $(call cc-option, -fforce-addr)
 
-# enable for all inlude -Os (default enabled only >-O2)
+# enable for all include -Os (default enabled only >=O2)
 KBUILD_CFLAGS += $(call cc-option, -funit-at-a-time)
 
 # conserve stack if available
@@ -614,9 +616,6 @@ KBUILD_CFLAGS += $(call cc-option, -fno-tree-slsr)
 
 # fix gcc-4.9.x miscompilation of load_balance() in scheduler
 KBUILD_CFLAGS += $(call cc-option, -fno-var-tracking-assignments)
-
-# disable variable traking for reduce debug info
-KBUILD_CFLAGS += $(call cc-option, -fno-var-tracking)
 
 # warn about C99 declaration after statement
 KBUILD_CFLAGS += $(call cc-disable-warning, -Wdeclaration-after-statement)
