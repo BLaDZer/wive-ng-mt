@@ -57,7 +57,11 @@ iptable_filter_hook(unsigned int hook, struct sk_buff *skb,
 	net = dev_net((in != NULL) ? in : out);
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
 	nf_ct_get(skb, &ctinfo);
-	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter && !web_str_loaded)
+	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+	    && !web_str_loaded
+#endif
+	    )
 	    return NF_ACCEPT;
 #endif
 	return ipt_do_table(skb, hook, in, out, net->ipv4.iptable_filter);

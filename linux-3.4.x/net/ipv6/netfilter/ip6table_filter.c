@@ -48,7 +48,11 @@ ip6table_filter_hook(unsigned int hook, struct sk_buff *skb,
 	enum ip_conntrack_info ctinfo;
 
 	nf_ct_get(skb, &ctinfo);
-	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter && !web_str_loaded)
+	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+	    && !web_str_loaded
+#eni
+	    )
 	    return NF_ACCEPT;
 #endif
 	return ip6t_do_table(skb, hook, in, out, net->ipv6.ip6table_filter);
