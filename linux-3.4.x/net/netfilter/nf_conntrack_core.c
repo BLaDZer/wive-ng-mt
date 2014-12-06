@@ -526,7 +526,7 @@ begin:
 }
 
 /* Find a connection corresponding to a tuple. */
-struct nf_conntrack_tuple_hash *
+static struct nf_conntrack_tuple_hash *
 __nf_cone_conntrack_find_get(struct net *net,
 			     const struct nf_conntrack_tuple *tuple, u32 hash)
 {
@@ -552,15 +552,6 @@ begin:
 
 	return h;
 }
-
-struct nf_conntrack_tuple_hash *
-nf_cone_conntrack_find_get(struct net *net,
-			   const struct nf_conntrack_tuple *tuple)
-{
-	return __nf_cone_conntrack_find_get(net, tuple,
-					    hash_conntrack_raw(tuple));
-}
-EXPORT_SYMBOL_GPL(nf_cone_conntrack_find_get);
 #endif
 
 /* Find a connection corresponding to a tuple. */
