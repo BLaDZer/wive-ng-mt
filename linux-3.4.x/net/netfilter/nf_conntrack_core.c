@@ -66,28 +66,21 @@ extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
 int (*nfnetlink_parse_nat_setup_hook)(struct nf_conn *ct,
 				      enum nf_nat_manip_type manip,
 				      const struct nlattr *attr) __read_mostly;
-EXPORT_SYMBOL_GPL(nfnetlink_parse_nat_setup_hook);
-
 DEFINE_SPINLOCK(nf_conntrack_lock);
 EXPORT_SYMBOL_GPL(nf_conntrack_lock);
-
-unsigned int nf_conntrack_htable_size __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_htable_size);
-
-unsigned int nf_conntrack_max __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_max);
 
 DEFINE_PER_CPU(struct nf_conn, nf_conntrack_untracked);
 EXPORT_PER_CPU_SYMBOL(nf_conntrack_untracked);
 
+unsigned int nf_conntrack_max __read_mostly;
+unsigned int nf_conntrack_htable_size __read_mostly;
 unsigned int nf_conntrack_hash_rnd __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_hash_rnd);
 
 #ifdef CONFIG_NAT_CONE
 unsigned int nf_conntrack_nat_mode __read_mostly;
-char wan_name[IFNAMSIZ] = {0};
+char wan_name[IFNAMSIZ] __read_mostly = {0};
 #if defined (CONFIG_PPP) || defined (CONFIG_PPP_MODULE)
-char wan_name_ppp[IFNAMSIZ] = {0};
+char wan_name_ppp[IFNAMSIZ] __read_mostly = {0};
 #endif
 #endif
 

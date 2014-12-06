@@ -25,7 +25,7 @@ config NETFILTER_RALINK_SWQOS_SUPPORT
 	 If unsure, say N.
 
 config NETFILTER_NETLINK
-	tristate "Netfilter NFNETLINK interface"
+	bool "Netfilter NFNETLINK interface"
 
 config NETFILTER_NETLINK_ACCT
 tristate "Netfilter NFACCT over NFNETLINK interface"
