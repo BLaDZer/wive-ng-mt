@@ -379,11 +379,13 @@
 14) kernel: net: skbuff: reduce struct size if nf_trace disable.<br>
 15) kernel: net: exclude skb_recycle code from real build, small codesize reduce.<br>
 16) kernel: net: revert route cache garbage collector changes introdused in 3.4.105 (~5% speed regression after this changes).<br>
-17) kernel: tcp: allow for bigger reordering level.<br>
-18) kernel: introduce and use generic init task(prepare import mips fixes).<br>
 <br>
 <br>
 <b>2.0.x</b><br>
+1) kernel: mips: backport some upstream fixes.<br>
+3) kernel: net/raeth: small cleanup.<br>
+4) kernel: tcp: allow for bigger reordering level.<br>
+5) kernel: introduce and use generic init task(prepare import mips fixes).<br>
 <br>
 <br>
 <b>TODO:</b><br>
