@@ -19,6 +19,7 @@
 #define _LINUX_NET_H
 
 #include <linux/socket.h>
+#include <linux/jump_label.h>
 #include <asm/socket.h>
 
 #define NPROTO		AF_MAX
