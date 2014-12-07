@@ -387,7 +387,8 @@
 3) kernel: inetdevice: fixed signed integer overflow.<br>
 4) kernel: net/raeth: small cleanup.<br>
 5) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
-6) kernel: tcp: allow for bigger reordering level.<br>
+6) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
+7) kernel: tcp: allow for bigger reordering level.<br>
 <br>
 <br>
 <b>TODO:</b><br>
