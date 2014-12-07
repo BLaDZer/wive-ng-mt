@@ -389,9 +389,10 @@
 5) kernel: net/raeth: small cleanup.<br>
 6) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
 7) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
-8) kernel: tcp: allow for bigger reordering level.<br>
-9) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-10) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
+8) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
+9) kernel: tcp: allow for bigger reordering level.<br>
+10) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+11) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
 <br>
 <br>
 <b>TODO:</b><br>
