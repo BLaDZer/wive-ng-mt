@@ -582,7 +582,7 @@ nf_conntrack_find_get(struct net *net,
 }
 EXPORT_SYMBOL_GPL(nf_conntrack_find_get);
 
-static void  __fastpathnet __nf_conntrack_hash_insert(struct nf_conn *ct,
+static void __nf_conntrack_hash_insert(struct nf_conn *ct,
 				       unsigned int hash,
 				       unsigned int repl_hash)
 {
@@ -1378,7 +1378,7 @@ out:
 EXPORT_SYMBOL_GPL(nf_conntrack_in);
 #endif
 
-bool __fastpathnet nf_ct_invert_tuplepr(struct nf_conntrack_tuple *inverse,
+bool nf_ct_invert_tuplepr(struct nf_conntrack_tuple *inverse,
 			  const struct nf_conntrack_tuple *orig)
 {
 	bool ret;
@@ -1417,7 +1417,7 @@ void nf_conntrack_alter_reply(struct nf_conn *ct,
 EXPORT_SYMBOL_GPL(nf_conntrack_alter_reply);
 
 /* Refresh conntrack for this many jiffies and do accounting if do_acct is 1 */
-void __fastpathnet __nf_ct_refresh_acct(struct nf_conn *ct,
+void __nf_ct_refresh_acct(struct nf_conn *ct,
 			  enum ip_conntrack_info ctinfo,
 			  const struct sk_buff *skb,
 			  unsigned long extra_jiffies,
