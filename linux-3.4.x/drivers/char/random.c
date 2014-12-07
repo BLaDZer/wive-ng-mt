@@ -567,6 +567,7 @@ struct fast_pool {
  * collector.  It's hardcoded for an 128 bit pool and assumes that any
  * locks that might be needed are taken by the caller.
  */
+#ifdef CONFIG_RANDOMNESS_IRQ
 static void fast_mix(struct fast_pool *f, const void *in, int nbytes)
 {
 	const char	*bytes = in;
@@ -583,6 +584,7 @@ static void fast_mix(struct fast_pool *f, const void *in, int nbytes)
 	f->count = i;
 	f->rotate = input_rotate;
 }
+#endif
 
 /*
  * Credit (or debit) the entropy store with n bits of entropy
