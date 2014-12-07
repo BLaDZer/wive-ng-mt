@@ -33,7 +33,6 @@ int send_sigusr_dhcpc __read_mostly = 9;
 EXPORT_SYMBOL(send_sigusr_dhcpc);
 #endif
 
-static int zero;
 static int one = 1;
 static int tcp_retr1_max = 255;
 static int ip_local_port_range_min[] = { 1, 1 };
