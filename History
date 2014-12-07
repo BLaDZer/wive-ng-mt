@@ -384,9 +384,10 @@
 <b>2.0.x</b><br>
 1) kernel: introduce and use generic init task(prepare import mips fixes).<br>
 2) kernel: mips: backport some upstream fixes.<br>
-3) kernel: net/raeth: small cleanup.<br>
-4) kernel: tcp: allow for bigger reordering level.<br>
-5) kernel: inetdevice: fixed signed integer overflow.<br>
+3) kernel: inetdevice: fixed signed integer overflow.<br>
+4) kernel: net/raeth: small cleanup.<br>
+5) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
+6) kernel: tcp: allow for bigger reordering level.<br>
 <br>
 <br>
 <b>TODO:</b><br>
