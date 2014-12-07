@@ -245,7 +245,6 @@ RXPath=2
 SecurityMode=0
 session_timeout_interval=0
 ShortSlot=1
-simple_qos=0
 SmbEnabled=0
 SmbNetBIOS=Wive-NG-MT
 SmbOsLevel=255
