@@ -89,7 +89,7 @@ config RANDOMNESS_IRQ
 
 	  This option increase entropy to urandom, and add some latency
 	  to irq process. Disable this if need decrease latency and not
-	  need strong crypographics ranodom mode.
+	  need strong crypographics random mode.
 
 endmenu
 endif
