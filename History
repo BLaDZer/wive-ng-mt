@@ -382,10 +382,11 @@
 <br>
 <br>
 <b>2.0.x</b><br>
-1) kernel: mips: backport some upstream fixes.<br>
+1) kernel: introduce and use generic init task(prepare import mips fixes).<br>
+2) kernel: mips: backport some upstream fixes.<br>
 3) kernel: net/raeth: small cleanup.<br>
 4) kernel: tcp: allow for bigger reordering level.<br>
-5) kernel: introduce and use generic init task(prepare import mips fixes).<br>
+5) kernel: inetdevice: fixed signed integer overflow.<br>
 <br>
 <br>
 <b>TODO:</b><br>
