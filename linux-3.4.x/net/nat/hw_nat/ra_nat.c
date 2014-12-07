@@ -635,9 +635,9 @@ int PpeHitBindForceToCpuHandler(struct sk_buff *skb, struct FoeEntry *foe_entry)
 		return 1;
 	}
 
-	if (!(dev->flags & IFF_UP)) {
+	if (!netif_running(dev)) {
 		/* wifi/ext interface is down, simple drop skb */
-		kfree_skb(skb);
+		dev_kfree_skb(skb);
 		return 0;
 	}
 
@@ -678,7 +678,7 @@ int PpeHitBindForceMcastToWiFiHandler(struct sk_buff *skb)
 
 	for (i = DP_RA0; i < MAX_WIFI_IF_NUM; i++) {
 		dev = DstPort[i];
-		if (dev && (dev->flags & IFF_UP)) {
+		if (dev && netif_running(dev)) {
 			skb2 = skb_clone(skb, GFP_ATOMIC);
 			if (skb2) {
 				skb2->dev = dev;
@@ -687,7 +687,7 @@ int PpeHitBindForceMcastToWiFiHandler(struct sk_buff *skb)
 		}
 	}
 
-	kfree_skb(skb);
+	dev_kfree_skb(skb);
 
 	return 0;
 }
