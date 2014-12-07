@@ -59,11 +59,11 @@ function bodyOnLoad(form)
           </tr>
           <tr>
             <td class="head" id="QoSStr">Type of QoS</td>
-            <td><select name="QoSSelect" onChange="QoSSelectChange(this.form);" class="mid">
+            <td><select name="QoSSelect" onChange="QoSSelectChange(this.form);" class="wide">
                 <option value="0">Disable</option>
-                <option value="1">Simple priority based QoS				</option>
-                <option value="2">Complex with shaper (ports based mark + HTB limit)	</option>
-                <option value="3">Automatic Controlled Delay AQM (CODEL)		</option>
+                <option value="1">Simple priority based QoS</option>
+                <option value="2">Complex with shaper (ports based mark + HTB limit)</option>
+                <option value="3">Automatic Fair Queue Controlled Delay AQM (CODEL)</option>
               </select></td>
           </tr>
           <tr id="BWSettings">

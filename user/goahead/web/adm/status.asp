@@ -233,9 +233,6 @@ function setWanPort(form)
             <td class="head">WAN port</td>
             <td><select name="wan_port" onChange="showPortStatus();" class="short">
                 <option value="0">1</option>
-                <!--			<option value="1">2</option>
-			<option value="2">3</option>
-			<option value="3">4</option> -->
                 <option value="4">5</option>
               </select>
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>

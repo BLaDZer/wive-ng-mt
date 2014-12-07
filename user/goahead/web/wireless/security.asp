@@ -1023,7 +1023,6 @@ function onPreAuthenticationClick(type)
                 </select></td>
             </tr>
           </table>
-          
           <!-- WEP -->
           <table id="div_wep" name="div_wep" class="form" style="visibility: hidden;">
             <tr>
