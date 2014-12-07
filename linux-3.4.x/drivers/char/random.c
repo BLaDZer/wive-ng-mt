@@ -742,6 +742,7 @@ void add_input_randomness(unsigned int type, unsigned int code,
 }
 EXPORT_SYMBOL_GPL(add_input_randomness);
 
+#ifdef CONFIG_RANDOMNESS_IRQ
 static DEFINE_PER_CPU(struct fast_pool, irq_randomness);
 
 void add_interrupt_randomness(int irq, int irq_flags)
@@ -785,6 +786,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
 	}
 	credit_entropy_bits(r, 1);
 }
+#endif
 
 #ifdef CONFIG_BLOCK
 void add_disk_randomness(struct gendisk *disk)

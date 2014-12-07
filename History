@@ -391,6 +391,7 @@
 7) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
 8) kernel: tcp: allow for bigger reordering level.<br>
 9) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+10) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<b>
 <br>
 <br>
 <b>TODO:</b><br>

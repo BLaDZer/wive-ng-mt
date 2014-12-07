@@ -83,5 +83,13 @@ config SPARSE_IRQ
 
 	  If you don't know what to do here, say N.
 
+config RANDOMNESS_IRQ
+	bool "Allow commit to random pool every irq"
+	---help---
+
+	  This option increase entropy to urandom, and add some latency
+	  to irq process. Disable this if need decrease latency and not
+	  need strong crypographics ranodom mode.
+
 endmenu
 endif
