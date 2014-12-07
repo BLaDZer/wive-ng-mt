@@ -34,14 +34,8 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 	if (QoS_type == NULL)
 		QoS_type = "0";
 
-	char_t *simpleqos = websGetVar(wp, T("simple_qos"), T("0"));
-	if (strcmp(simpleqos, "on") != 0)
-		simpleqos = "off";
-	simpleqos = (strcmp(simpleqos, "on") == 0) ? "1" : "0";
-
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "QoSEnable", QoS_type);
-	nvram_bufset(RT2860_NVRAM, "simple_qos", simpleqos);
 
 	if (CHK_IF_DIGIT(QoS_type, 2))
 		setupParameters(wp, QoS_args, 0);

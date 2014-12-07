@@ -7,7 +7,7 @@
 # include global
 . /etc/scripts/global.sh
 
-LOG="logger -t Prio port based QoS"
+LOG="logger -t Simple Prio port based QoS"
 
     $LOG "Load netsched  modules."
     mod="sch_esfq sch_sfq cls_u32 em_u32"

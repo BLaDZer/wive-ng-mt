@@ -46,7 +46,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	IPv6OpMode \
 	ApCliBridgeOnly \
 	MODEMENABLED \
-	QoSEnable simple_qos`
+	QoSEnable`
 
 # name/mask for first wlanmodule used in system logic
 getFirstWlanIfName() {

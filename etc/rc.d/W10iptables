@@ -268,11 +268,9 @@ start() {
 	    fi
 	fi
 ###########################################QOS-SIMPLE######################################
-	if [ -f /etc/qos_firewall ] && [ "$ROUTE_MODE" = "on" ]; then
-	    if [ "$simple_qos" = "1" ] || [ "$QoSEnable" != "0" ]; then
-		$LOG "Add QoS rules"
-		/etc/qos_firewall
-	    fi
+	if [ -f /etc/qos_firewall ] && [ "$QoSEnable" != "0" ] && [ "$ROUTE_MODE" = "on" ]; then
+	    $LOG "Add QoS rules"
+	    /etc/qos_firewall
 	fi
 ###########################################NAT-NAPTM#######################################
 	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then

@@ -13,8 +13,6 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-
-
 function QoSSelectChange(form)
 {
 	var complex_on = form.QoSSelect.value == '2';
@@ -23,27 +21,26 @@ function QoSSelectChange(form)
 	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW',
 	'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP' ], complex_on );
 }
+
 function initializeForm(form)
 {
-form.QoSSelect.value	= '<% getCfgGeneral(1, "QoSEnable"); %>';
-var simpleqos		= '<% getCfgGeneral(1, "simple_qos"); %>';
-form.simple_qos.checked = (simpleqos == '1');
-
-form.UpBW.value    		= '<% getCfgGeneral(1, "QoS_rate_up"); %>';
-form.UpBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
-form.DownBW.value		= '<% getCfgGeneral(1, "QoS_rate_down"); %>';
-form.DownBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_down"); %>';
-form.UpVPNBW.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_up"); %>';
-form.UpVPNBWL.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
-form.QoS_HPP.value		= '<% getCfgGeneral(1, "QoS_high_pp"); %>';
-form.QoS_LPP.value		= '<% getCfgGeneral(1, "QoS_low_pp"); %>';
-
+	form.QoSSelect.value		= '<% getCfgGeneral(1, "QoSEnable"); %>';
+	form.UpBW.value    		= '<% getCfgGeneral(1, "QoS_rate_up"); %>';
+	form.UpBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
+	form.DownBW.value		= '<% getCfgGeneral(1, "QoS_rate_down"); %>';
+	form.DownBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_down"); %>';
+	form.UpVPNBW.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_up"); %>';
+	form.UpVPNBWL.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
+	form.QoS_HPP.value		= '<% getCfgGeneral(1, "QoS_high_pp"); %>';
+	form.QoS_LPP.value		= '<% getCfgGeneral(1, "QoS_low_pp"); %>';
 }
+
 function bodyOnLoad(form)
 {
-		initializeForm (form);
-		QoSSelectChange(form);
+	initializeForm (form);
+	QoSSelectChange(form);
 }
+
 </script>
 </head>
 <!--     body      -->
@@ -52,25 +49,22 @@ function bodyOnLoad(form)
   <tr>
     <td><h1 id="QoSTitleStr">Quality of Service Settings </h1>
       <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>
-      <p>For correct operation of QoS (mode Ralink, Priority-Based and Complex) automatically turning off <b>NAT offload mode</b>.
-        Please note that turning off <b>NAT offload mode</b> will increase CPU usage up to 50%.</p>
+      <p>For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>.
+        Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</p>
       <hr>
       <form method="post" name="QoSSetup" action="/goform/QoSSetup">
         <table class="form">
           <tr>
-            <td class="title" colspan="2" id="QoSSetupStr">QoS Setup </td>
+            <td class="title" colspan="2" id="QoSSetupStr">QoS Setup</td>
           </tr>
           <tr>
             <td class="head" id="QoSStr">Type of QoS</td>
             <td><select name="QoSSelect" onChange="QoSSelectChange(this.form);" class="mid">
                 <option value="0">Disable</option>
-                <option value="1">Simple priority based</option>
-                <option value="2">Complex with shaper</option>
+                <option value="1">Simple priority based QoS				</option>
+                <option value="2">Complex with shaper (ports based mark + HTB limit)	</option>
+                <option value="3">Automatic Controlled Delay AQM (CODEL)		</option>
               </select></td>
-          </tr>
-          <tr>
-            <td class="head">Simple QoS</td>
-            <td><input type="checkbox" name="simple_qos"></td>
           </tr>
           <tr id="BWSettings">
             <td class="title" colspan="2" id="QoSSetupBW">Bandwidth settings</td>

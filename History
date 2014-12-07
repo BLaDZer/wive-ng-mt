@@ -382,17 +382,19 @@
 <br>
 <br>
 <b>2.0.x</b><br>
-1) kernel: introduce and use generic init task(prepare import mips fixes).<br>
-2) kernel: mips: backport some upstream fixes.<br>
-3) kernel: fastpath: cleanup and small optimize.<br>
-4) kernel: inetdevice: fixed signed integer overflow.<br>
-5) kernel: net/raeth: small cleanup.<br>
-6) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
-7) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
-8) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
-9) kernel: tcp: allow for bigger reordering level.<br>
-10) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-11) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
+1) init.d/goahead: add codel auto qos mode support in WebUI.<br>
+2) init.d/goahead: remove simple tos based qos support(use port based or codel instead for).<br>
+3) kernel: introduce and use generic init task.<br>
+4) kernel: mips: backport some upstream fixes.<br>
+5) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
+6) kernel: fastpath: cleanup and small optimize.<br>
+7) kernel: inetdevice: fixed signed integer overflow.<br>
+8) kernel: net/raeth: small cleanup.<br>
+9) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
+10) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
+11) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
+12) kernel: tcp: allow for bigger reordering level.<br>
+13) kernel: netfilter: cttimeout: fix buffer overflow.<br>
 <br>
 <br>
 <b>TODO:</b><br>

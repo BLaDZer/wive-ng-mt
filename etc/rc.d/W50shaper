@@ -22,7 +22,7 @@ LOG="logger -t QoS"
 IPTSCR="/etc/qos_firewall"
 
 start() {
-if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ] || [ "$simple_qos" = "1" ]; then
+if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ]; then
     $LOG "Set default rules."
     set_def
 
@@ -32,11 +32,6 @@ if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ] || [ "$simple_qos" = "1" ]; the
     ######################################
     # netfilter script generate
     ######################################
-
-    # tos based simple qos
-    if [ "$simple_qos" = "1" ]; then
-	/etc/scripts/config-qos-simple.sh
-    fi
 
     # set execute bits for all
     if [ -f $IPTSCR ]; then
@@ -50,6 +45,8 @@ if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ] || [ "$simple_qos" = "1" ]; the
 	/etc/scripts/config-qos-tc_prio.sh
     elif [ "$QoSEnable" = "2" ]; then
 	/etc/scripts/config-qos-complex.sh
+    elif [ "$QoSEnable" = "3" ]; then
+	/etc/scripts/config-qos-codel.sh
     fi
 fi
 }
