@@ -51,7 +51,7 @@ ip6table_filter_hook(unsigned int hook, struct sk_buff *skb,
 	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter
 #if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
 	    && !web_str_loaded
-#eni
+#endif
 	    )
 	    return NF_ACCEPT;
 #endif
