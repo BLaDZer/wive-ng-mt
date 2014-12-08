@@ -395,9 +395,10 @@
 11) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
 12) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
 13) kernel: net: performance fix for process_backlog.<br>
-14) kernel: tcp: allow for bigger reordering level.<br>
-15) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-16) kernel: pkt_sched: avoid requeues if possible.<br>
+14) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
+15) kernel: tcp: allow for bigger reordering level.<br>
+16) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+17) kernel: pkt_sched: avoid requeues if possible.<br>
 <br>
 <br>
 <b>TODO:</b><br>
