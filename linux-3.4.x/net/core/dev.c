@@ -4023,7 +4023,7 @@ static void net_rx_action(struct softirq_action *h)
 		 * Allow this to run for 2 jiffies since which will allow
 		 * an average latency of 1.5/HZ.
 		 */
-		if (unlikely(budget <= 0 || time_after_eq(jiffies, time_limit)))
+		if (unlikely(budget <= 0 || time_after_eq(jiffies, time_limit))) {
 #if defined(CONFIG_RALINK_TIMER_WDG) || defined(CONFIG_RALINK_TIMER_WDG_MODULE)
     			/* Refresh Ralink hardware watchdog timer, prevent reboot in big traffic */
     			if(wdg_load_value)
