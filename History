@@ -396,6 +396,7 @@
 12) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
 13) kernel: tcp: allow for bigger reordering level.<br>
 14) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+15) kernel: pkt_sched: avoid requeues if possible.<br>
 <br>
 <br>
 <b>TODO:</b><br>
