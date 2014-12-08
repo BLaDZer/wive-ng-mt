@@ -65,8 +65,13 @@
 #define TEST_OFFSET	127
 #elif defined (CONFIG_RALINK_MT7620) || \
     defined (CONFIG_RALINK_MT7621)
+#ifdef CONFIG_HIGHMEM
 #define MAX_RAM_SIZE  (512*1024*1024)
 #define TEST_OFFSET	511
+#else
+#define MAX_RAM_SIZE  (256*1024*1024)
+#define TEST_OFFSET	255
+#endif
 #else
 #define MAX_RAM_SIZE  (64*1024*1024)
 #define TEST_OFFSET	63
