@@ -1,4 +1,13 @@
-$Id: Changelog.txt,v 1.385 2014/12/04 10:21:32 nanard Exp $
+$Id: Changelog.txt,v 1.391 2014/12/09 09:48:04 nanard Exp $
+
+2014/12/09:
+  fix upnp_add_inboundpinhole() : check inet_pton() return
+  fix upnp_redirect() : check inet_aton() return
+  fix potential memory corruption in upnpsoap.c/GetListOfPortMappings()
+  fix buffer overrun in ParseHttpHeaders() if Content-Length doesn't contain any digit !
+  check if BuildHeader_upnphttp() failed to allocate memory
+    Credits goes to Stephen Röttger of the Google Security Team for identifying
+    the vulnerabilities
 
 2014/12/04:
   check "sysctl -n net.ipv6.bindv6only" for linux
