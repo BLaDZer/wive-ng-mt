@@ -398,11 +398,12 @@
 14) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
 15) kernel: net: performance fix for process_backlog.<br>
 16) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
-17) kernel: tcp: allow for bigger reordering level.<br>
-18) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-19) kernel: pkt_sched: avoid requeues if possible.<br>
-20) kernel: net_sched: more precise pkt_len computation.<br>
-21) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
+17) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+18) kernel: pkt_sched: avoid requeues if possible.<br>
+19) kernel: net_sched: more precise pkt_len computation.<br>
+20) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
+21) kernel: tcp: allow for bigger reordering level.<br>
+22) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
 <br>
 <br>
 <b>TODO:</b><br>
