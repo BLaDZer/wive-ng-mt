@@ -401,6 +401,7 @@
 17) kernel: tcp: allow for bigger reordering level.<br>
 18) kernel: netfilter: cttimeout: fix buffer overflow.<br>
 19) kernel: pkt_sched: avoid requeues if possible.<br>
+20) kernel: net_sched: more precise pkt_len computation.<br>
 <br>
 <br>
 <b>TODO:</b><br>
