@@ -405,6 +405,7 @@
 21) kernel: tcp: allow for bigger reordering level.<br>
 22) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
 23) kernel: tcp: tcp_make_synack() can use alloc_skb().<br>
+24) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
 <br>
 <br>
 <b>TODO:</b><br>
