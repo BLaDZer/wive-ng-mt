@@ -616,6 +616,8 @@ int internUpdateKernelRoute(struct RouteTable *route, int activate) {
     unsigned                Ix;
     int i;
 
+    memset(&mrDesc, 0, sizeof(mrDesc));
+
     for (i = 0; i < MAX_ORIGINS; i++) {
         if (route->originAddrs[i] == 0) {
             continue;

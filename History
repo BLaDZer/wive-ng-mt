@@ -385,27 +385,28 @@
 1) init.d/goahead: add codel auto qos mode support in WebUI.<br>
 2) init.d/goahead: remove simple tos based qos support(use port based or codel instead for).<br>
 3) miniupnpd: up to 1.9.20141209 version.<br>
-4) kernel: arch/ralink: fix mem autodetect if highmem support disabled(limit to 256Mb).<br>
-5) kernel: introduce and use generic init task.<br>
-6) kernel: mips: backport some upstream fixes.<br>
-7) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
-8) kernel: enable BQL/DQL by default for 8Mb flash with DDR RAM devices(decrease latency).<br>
-9) kernel: fastpath: cleanup and small optimize.<br>
-10) kernel: inetdevice: fixed signed integer overflow.<br>
-11) kernel: net/raeth: small cleanup.<br>
-12) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
-13) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
-14) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
-15) kernel: net: performance fix for process_backlog.<br>
-16) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
-17) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-18) kernel: pkt_sched: avoid requeues if possible.<br>
-19) kernel: net_sched: more precise pkt_len computation.<br>
-20) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
-21) kernel: tcp: allow for bigger reordering level.<br>
-22) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
-23) kernel: tcp: tcp_make_synack() can use alloc_skb().<br>
-24) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
+4) igmpproxy: fix init mrDesc.<br>
+5) kernel: arch/ralink: fix mem autodetect if highmem support disabled(limit to 256Mb).<br>
+6) kernel: introduce and use generic init task.<br>
+7) kernel: mips: backport some upstream fixes.<br>
+8) kernel: irq: disallow commit to random entropy pool from every irq(decrease latency).<br>
+9) kernel: enable BQL/DQL by default for 8Mb flash with DDR RAM devices(decrease latency).<br>
+10) kernel: fastpath: cleanup and small optimize.<br>
+11) kernel: inetdevice: fixed signed integer overflow.<br>
+12) kernel: net/raeth: small cleanup.<br>
+13) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
+14) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
+15) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
+16) kernel: net: performance fix for process_backlog.<br>
+17) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
+18) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+19) kernel: pkt_sched: avoid requeues if possible.<br>
+20) kernel: net_sched: more precise pkt_len computation.<br>
+21) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
+22) kernel: tcp: allow for bigger reordering level.<br>
+23) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
+24) kernel: tcp: tcp_make_synack() can use alloc_skb().<br>
+25) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
 <br>
 <br>
 <b>TODO:</b><br>
