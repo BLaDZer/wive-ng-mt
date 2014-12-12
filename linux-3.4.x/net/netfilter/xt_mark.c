@@ -40,11 +40,10 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 
 	skb->mark = (skb->mark & ~info->mask) ^ info->mark;
 #ifdef CONFIG_BCM_NAT
-	if(nf_conntrack_fastnat) {
-	    enum ip_conntrack_info ctinfo;
-	    struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
-		ct->fastnat |= NF_FAST_NAT_DENY;
-	}
+	enum ip_conntrack_info ctinfo;
+	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+
+	ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
 #if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
 	FOE_ALG_MARK(skb);
@@ -57,11 +56,10 @@ mark_mt(const struct sk_buff *skb, struct xt_action_param *par)
 {
 	const struct xt_mark_mtinfo1 *info = par->matchinfo;
 #ifdef CONFIG_BCM_NAT
-	if(nf_conntrack_fastnat) {
-	    enum ip_conntrack_info ctinfo;
-	    struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
-		ct->fastnat |= NF_FAST_NAT_DENY;
-	}
+	enum ip_conntrack_info ctinfo;
+	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+
+	ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
 #if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
 	FOE_ALG_MARK(skb);

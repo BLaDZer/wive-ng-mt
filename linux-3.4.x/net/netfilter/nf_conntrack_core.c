@@ -86,7 +86,6 @@ char wan_name_ppp[IFNAMSIZ] __read_mostly = {0};
 
 #ifdef CONFIG_BCM_NAT
 unsigned int nf_conntrack_fastnat __read_mostly;
-EXPORT_SYMBOL_GPL(nf_conntrack_fastnat);
 unsigned int nf_conntrack_fastroute __read_mostly;
 #endif
 
