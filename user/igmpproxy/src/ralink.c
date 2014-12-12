@@ -65,6 +65,14 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
 #endif
 
+#if defined (CONFIG_PPE_MCAST)
+#if defined (CONFIG_RAETH_GMAC2)
+#define HNAT_VID	0
+#else
+#define HNAT_VID	2 
+#endif
+#endif
+
 // function prototype
 extern uint32_t WanPort;
 static void update_group_port_map(struct group *entry);
@@ -103,7 +111,7 @@ static int arpLookUp(char *ip, char *arp)
 
 	while(fgets(buf, sizeof(buf), fp)){
 		char ip_entry[32], hw_type[8], flags[8], hw_address[32];
-		sscanf(buf, "%s %s %s %s", ip_entry, hw_type, flags, hw_address);
+		sscanf(buf, "%31s %7s %7s %31s", ip_entry, hw_type, flags, hw_address);
 		if(!strcmp(ip, ip_entry)){
 			strcpy(arp, hw_address);
 			fclose(fp);
@@ -263,9 +271,9 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	a = (u_char *)&m_ip_addr;
 	if((entry->port_map & 0x7f) == 0 ){
 #if defined (CONFIG_RAETH_QDMA)
-		sprintf(cmd, "hw_nat -C 0 01:00:5e:%02x:%02x:%02x 2 2 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 2 2 0",HNAT_VID,a[2],a[1],a[0]);
 #else
-		sprintf(cmd, "hw_nat -C 0 01:00:5e:%02x:%02x:%02x 2 0 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 2 0 0",HNAT_VID,a[2],a[1],a[0]);
 #endif
 		system(cmd);
 		printf("%s\n", cmd);
@@ -273,9 +281,9 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 
 	if((entry->port_map & 0x80) == 0){
 #if defined (CONFIG_RAETH_QDMA)
-		sprintf(cmd, "hw_nat -C 0 01:00:5e:%02x:%02x:%02x 8 8 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 8 8 0",HNAT_VID,a[2],a[1],a[0]);
 #else
-		sprintf(cmd, "hw_nat -C 0 01:00:5e:%02x:%02x:%02x 1 0 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 1 0 0",HNAT_VID,a[2],a[1],a[0]);
 #endif
 		system(cmd);
 		printf("%s\n", cmd);
@@ -563,9 +571,9 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 	    return;
 	if(entry->port_map & 0x7f){
 #if defined (CONFIG_RAETH_QDMA)
-		sprintf(cmd, "hw_nat -B 0 01:00:5e:%02x:%02x:%02x 2 2 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 2 2 0",HNAT_VID,a[2],a[1],a[0]);
 #else
-		sprintf(cmd, "hw_nat -B 0 01:00:5e:%02x:%02x:%02x 2 0 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 2 0 0",HNAT_VID,a[2],a[1],a[0]);
 #endif
 		system(cmd);
 		printf("%s\n", cmd);
@@ -574,9 +582,9 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 	if(entry->port_map & 0x80){
 #if defined (CONFIG_RAETH_QDMA)
-		sprintf(cmd, "hw_nat -B 0 01:00:5e:%02x:%02x:%02x 8 8 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 8 8 0",HNAT_VID,a[2],a[1],a[0]);
 #else
-		sprintf(cmd, "hw_nat -B 0 01:00:5e:%02x:%02x:%02x 1 0 0",a[2],a[1],a[0]);
+		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 1 0 0",HNAT_VID,a[2],a[1],a[0]);
 #endif
 		system(cmd);
 		printf("%s\n", cmd);

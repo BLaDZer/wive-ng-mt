@@ -110,12 +110,14 @@ void dump_table(void)
 	int i=0;
 	unsigned int mac1;
 	char show_buf[128];
+	while (i < 2048){
 	mac1 = internal_mac_table[i].mac1;
-	while( i< 2048 && mac1 != END_OF_MAC_TABLE){
+	    if (mac1 != END_OF_MAC_TABLE){
 		sprintf(show_buf, "%08x%04x, %08x %08x,\n", internal_mac_table[i].mac1, internal_mac_table[i].mac2, internal_mac_table[i].port_map, internal_mac_table[i].vid);
 		printf("%s\n", show_buf);
 		i++;
-		mac1 = internal_mac_table[i].mac1;
+	    }else
+		return;
 	}
 }
 
@@ -127,11 +129,11 @@ static void sync_internal_mac_table(void *argu)
 	usleep(ITERATIONTIMEOUT);
 	while( i < 0x7fe) {
 		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if (value & (0x1 << 13)) { //search_rdy
+		if ((value & (0x1 << 13)) && (((value >> 15) &0x1) == 0)) { //search_rdy and Address Table is not busy
 			reg_read(REG_ESW_TABLE_ATRD, &value1);
 			if ((value1 & 0xff000000) == 0) {
 				my_log(LOG_WARNING, 0, "*** rtGSW: found an unused entry (age = 3'b000), stop check!");
-				reg_write(REG_ESW_TABLE_SEARCH, 0x2); //search for next address
+				reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 				break;
 			}
 
