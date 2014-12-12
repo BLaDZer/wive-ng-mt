@@ -205,13 +205,6 @@ function initValue()
 	displayElement('dnsproxy', dnsp == '1');
 
 	// Set-up NAT fastpath
-	var qos_en = defaultNumber("<% getCfgGeneral(1, "QoSEnable"); %>", "0");
-	if (qos_en == '0')
-	{
-		form.offloadMode.options.add(new Option('Software', '1'));
-		form.offloadMode.options.add(new Option('Complex', '3'));
-	}
-
 	if (opmode == "4")
 	{
 		form.offloadMode.value = defaultNumber("0", "1");
@@ -401,7 +394,9 @@ function displayServiceStatus()
             <td class="head"><a name="nat_fastpath_ref"></a>NAT offload mode</td>
             <td colspan="4"><select name="offloadMode" class="half" onChange="offloadModeSelect(this.form);">
                 <option value="0">Disable</option>
+                <option value="1">Software</option>
                 <option value="2">Hardware</option>
+                <option value="3">Complex</option>
               </select></td>
           </tr>
           <tr id="wifihw_row">
