@@ -46,7 +46,7 @@ int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceN
 void reboot_now(void)
 {
 	sync();
-	sleep(2);
+	Sleep(2);
 #ifdef CONFIG_USER_STORAGE
 	doSystem("/etc/scripts/wifi_unload.sh && reboot &");
 #else
@@ -950,7 +950,6 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	outputTimerForReload(wp, 50000);
-	sleep(2);	/* wait for websDone() to finish tcp http session(close socket) */
 	reboot_now();
 }
 

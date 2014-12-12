@@ -298,15 +298,12 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 	else if (strncmp(dhcp_tp, "DISABLE", 8)==0)
 		nvram_set(RT2860_NVRAM, "dhcpEnabled", "0");
 
+	// Store leases to rwfs
+	if (strncmp(dhcp_tp, "SERVER", 7)==0)
+		dhcpStoreAliases(static_leases);
+
 	// Restart DHCP service
 	doSystem("service dhcpd restart");
-
-	// Store leases to rwfs. ALWAYS AFTER RESTART DHCP!!!
-	if (strncmp(dhcp_tp, "SERVER", 7)==0)
-	{
-		Sleep(2);
-		dhcpStoreAliases(static_leases);
-	}
 
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	if (submitUrl != NULL)

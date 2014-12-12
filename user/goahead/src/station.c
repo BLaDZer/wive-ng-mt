@@ -288,7 +288,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 			close(s);
 			return -1;
 		}
-		sleep(2);
+		Sleep(2);
 		QueryCount++;
 	}
 
@@ -342,7 +342,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 		ret = OidQueryInformation(OID_802_11_BSSID_LIST, s, "ra0", pBssidList, lBufLen);
 		if (errno == EAGAIN)
 		{
-			sleep(1);
+			Sleep(1);
 			// fprintf(stderr, "errno == EAGAIN\n");
 			EAGAIN_Count++;
 			if (EAGAIN_Count>25)

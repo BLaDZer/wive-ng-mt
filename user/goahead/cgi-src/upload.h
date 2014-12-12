@@ -143,9 +143,9 @@ void html_header()
 		"<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"
 		"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
 	);
-	
+
 	char data[2048];
-	
+
 	// Copy /js/ajax.js to stdout
 	FILE *fd = fopen("/web/js/ajax.js", "r");
 	if (fd != NULL)
@@ -153,10 +153,10 @@ void html_header()
 		size_t count;
 		printf("<script type=\"text/javascript\">\n");
 		printf("// Here is script copied from file /js/ajax.js\n");
-		
+
 		while ((count = fread(data, sizeof(char), sizeof(data)/sizeof(char), fd)) > 0)
 			fwrite(data, sizeof(char), count, stdout);
-		
+
 		fclose(fd);
 	}
 	else
