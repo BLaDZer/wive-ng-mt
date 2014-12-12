@@ -411,8 +411,9 @@
 27) kernel: tcp: remove TCPCT.<br>
 28) kernel: tcp: use TCP_SKB_CB(skb)->tcp_flags in input path.<br>
 29) kernel: tcp: use tcp_flags in tcp_data_queue().<br>
-30) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
-31) kernel: neigh: remove dynamic neigh table registration support.<br>
+30) kernel: tcp: do not copy headers in tcp_collapse().<br>
+31) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
+32) kernel: neigh: remove dynamic neigh table registration support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
