@@ -407,6 +407,7 @@
 23) kernel: tcp: allow for bigger reordering level.<br>
 24) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
 25) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
+26) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
 <br>
 <br>
 <b>TODO:</b><br>
