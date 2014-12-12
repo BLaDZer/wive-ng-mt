@@ -410,6 +410,7 @@
 26) kernel: tcp: remove unused tw_cookie_values from tcp_timewait_sock.<br>
 27) kernel: tcp: remove TCPCT.<br>
 28) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
+29) kernel: neigh: remove dynamic neigh table registration support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
