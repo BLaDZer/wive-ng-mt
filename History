@@ -394,28 +394,29 @@
 10) kernel: enable BQL/DQL by default for 8Mb flash with DDR RAM devices(decrease latency).<br>
 11) kernel: fastpath: cleanup and small optimize.<br>
 12) kernel: inetdevice: fixed signed integer overflow.<br>
-13) kernel: net/raeth: small cleanup.<br>
-14) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
-15) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
-16) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
-17) kernel: net: performance fix for process_backlog.<br>
-18) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
-19) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-20) kernel: pkt_sched: avoid requeues if possible.<br>
-21) kernel: net_sched: more precise pkt_len computation.<br>
-22) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
-23) kernel: tcp: allow for bigger reordering level.<br>
-24) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
-25) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
-26) kernel: tcp: remove unused tw_cookie_values from tcp_timewait_sock.<br>
-27) kernel: tcp: remove TCPCT.<br>
-28) kernel: tcp: use TCP_SKB_CB(skb)->tcp_flags in input path.<br>
-29) kernel: tcp: use tcp_flags in tcp_data_queue().<br>
-30) kernel: tcp: do not copy headers in tcp_collapse().<br>
-31) kernel: tcp: remove bad timeout logic in fast recovery.<br>
-32) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
-33) kernel: neigh: remove dynamic neigh table registration support.<br>
-34) kernel: lib/idr: update to current 3.18 tree (compat mode).<br>
+13) kernel: neigh: remove dynamic neigh table registration support.<br>
+14) kernel: lib/idr: update to current 3.18 tree (compat mode).<br>
+15) kernel: net/raeth: small cleanup.<br>
+16) kernel: net: avoid to hang up on sending due to sysctl configuration overflow.<br>
+17) kernel: net: ipmr: limit MRT_TABLE identifiers.<br>
+18) kernel: net: net_sched: backport codel/fq_codel from 3.17 kernel tree.<br>
+19) kernel: net: performance fix for process_backlog.<br>
+20) kernel: net: reduce net_rx_action() latency to 2 HZ.<br>
+21) kernel: pkt_sched: avoid requeues if possible.<br>
+22) kernel: net_sched: more precise pkt_len computation.<br>
+23) kernel: net_sched: better precise estimation on packet length for untrusted packets.<br>
+24) kernel: tcp: allow for bigger reordering level.<br>
+25) kernel: tcp: fix possible NULL dereference in tcp_vX_send_reset().<br>
+26) kernel: tcp: tcp_make_synack() consumes dst parameter.<br>
+27) kernel: tcp: remove unused tw_cookie_values from tcp_timewait_sock.<br>
+28) kernel: tcp: remove TCPCT.<br>
+29) kernel: tcp: use TCP_SKB_CB(skb)->tcp_flags in input path.<br>
+30) kernel: tcp: use tcp_flags in tcp_data_queue().<br>
+31) kernel: tcp: do not copy headers in tcp_collapse().<br>
+32) kernel: tcp: remove bad timeout logic in fast recovery.<br>
+33) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
+34) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+35) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
 <br>
 <br>
 <b>TODO:</b><br>
