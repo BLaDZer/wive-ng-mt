@@ -8,11 +8,6 @@
 #include    "firewall.h"
 #include    "helpers.h"
 
-
-static void QoSSetup(webs_t wp, char_t *path, char_t *query);
-void formDefineQoS(void) {
-	websFormDefine(T("QoSSetup"), QoSSetup);
-}
 const parameter_fetch_t QoS_args[] =
 	{
 	{ T("UpBW"), "QoS_rate_up", 0, T("") },
@@ -48,4 +43,8 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 		websRedirect(wp, submitUrl);
 	else
 		websDone(wp, 200);
+}
+
+void formDefineQoS(void) {
+	websFormDefine(T("QoSSetup"), QoSSetup);
 }
