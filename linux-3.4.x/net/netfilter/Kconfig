@@ -56,8 +56,8 @@ config NETFILTER_NETLINK_LOG
 	  and ip6t_LOG modules.
 
 config NF_CONNTRACK
-	tristate "Netfilter connection tracking support"
-	default m if NETFILTER_ADVANCED=n
+	bool "Netfilter connection tracking support"
+	default y if NETFILTER_ADVANCED=n
 	help
 	  Connection tracking keeps a record of what packets have passed
 	  through your machine, in order to figure out how they are related
