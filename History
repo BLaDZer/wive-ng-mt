@@ -415,6 +415,7 @@
 31) kernel: tcp: remove bad timeout logic in fast recovery.<br>
 32) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
 33) kernel: neigh: remove dynamic neigh table registration support.<br>
+34) kernel: lib/idr: update to current 3.18 tree (compat mode).<br>
 <br>
 <br>
 <b>TODO:</b><br>

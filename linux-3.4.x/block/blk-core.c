@@ -774,7 +774,7 @@ static bool blk_rq_should_init_elevator(struct bio *bio)
  * Get a free request from @q.  This function may fail under memory
  * pressure or if @q is dead.
  *
- * Must be callled with @q->queue_lock held and,
+ * Must be called with @q->queue_lock held and,
  * Returns %NULL on failure, with @q->queue_lock held.
  * Returns !%NULL on success, with @q->queue_lock *not held*.
  */
@@ -931,7 +931,7 @@ out:
  * Get a free request from @q.  This function keeps retrying under memory
  * pressure and fails iff @q is dead.
  *
- * Must be callled with @q->queue_lock held and,
+ * Must be called with @q->queue_lock held and,
  * Returns %NULL on failure, with @q->queue_lock held.
  * Returns !%NULL on success, with @q->queue_lock *not held*.
  */
