@@ -773,7 +773,7 @@ config NETFILTER_XT_MATCH_CONNBYTES
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
 config NETFILTER_XT_MATCH_CONNLIMIT
-	tristate '"connlimit" match support"'
+	bool '"connlimit" match support"'
 	depends on NF_CONNTRACK
 	depends on NETFILTER_ADVANCED
 	---help---

@@ -226,9 +226,6 @@ nf_ct_get_tuple(const struct sk_buff *skb,
 
 	return l4proto->pkt_to_tuple(skb, dataoff, tuple);
 }
-#ifndef CONFIG_SPEEDHACK
-EXPORT_SYMBOL_GPL(nf_ct_get_tuple);
-#endif
 
 bool
 nf_ct_get_tuplepr(const struct sk_buff *skb, unsigned int nhoff,
@@ -631,9 +628,6 @@ out:
 	spin_unlock_bh(&nf_conntrack_lock);
 	return -EEXIST;
 }
-#ifndef CONFIG_SPEEDHACK
-EXPORT_SYMBOL_GPL(nf_conntrack_hash_check_insert);
-#endif
 
 /* Confirm a connection given skb; places it in hash table */
 int __fastpathnet
