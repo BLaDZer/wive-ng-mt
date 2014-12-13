@@ -125,7 +125,7 @@ void nf_unregister_hooks(struct nf_hook_ops *reg, unsigned int n)
 }
 EXPORT_SYMBOL(nf_unregister_hooks);
 
-unsigned int __fastpathnet nf_iterate(struct list_head *head,
+unsigned int nf_iterate(struct list_head *head,
 			struct sk_buff *skb,
 			unsigned int hook,
 			const struct net_device *indev,
@@ -233,9 +233,6 @@ next_hook:
 	rcu_read_unlock();
 	return ret;
 }
-#ifndef CONFIG_SPEEDHACK
-EXPORT_SYMBOL(nf_hook_slow);
-#endif
 
 int skb_make_writable(struct sk_buff *skb, unsigned int writable_len)
 {
