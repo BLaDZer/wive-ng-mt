@@ -415,9 +415,10 @@
 31) kernel: tcp: use tcp_flags in tcp_data_queue().<br>
 32) kernel: tcp: do not copy headers in tcp_collapse().<br>
 33) kernel: tcp: remove bad timeout logic in fast recovery.<br>
-34) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
-35) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-36) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
+34) kernel: tcp: be more strict before accepting ECN negociation.<br>
+35) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
+36) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+37) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
 <br>
 <br>
 <b>TODO:</b><br>
