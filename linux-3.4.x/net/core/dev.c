@@ -2023,8 +2023,8 @@ struct sk_buff *skb_gso_segment(struct sk_buff *skb,
 	if (unlikely(skb->ip_summed != CHECKSUM_PARTIAL)) {
 		skb_warn_bad_offload(skb);
 
-		if (skb_header_cloned(skb) &&
-		    (err = pskb_expand_head(skb, 0, 0, GFP_ATOMIC)))
+		err = skb_cow_head(skb, 0);
+		if (err < 0)
 			return ERR_PTR(err);
 	}
 
