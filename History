@@ -421,9 +421,10 @@
 37) kernel: tcp: Increase timeout for SYN segments.<br>
 38) kernel: tcp: ecn: dont delay ACKS after CE.<br>
 39) kernel: tcp: Remove redundant code entering quickack mode.<br>
-40) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
-41) kernel: netfilter: cttimeout: fix buffer overflow.<br>
-42) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
+40) kernel: ipv4: gso: send_check() & segment() cleanups.<br>
+41) kernel: ipv6: fix 'inet6_rtm_getroute' to release 'rt->dst' in case of 'alloc_skb' failure.<br>
+42) kernel: netfilter: cttimeout: fix buffer overflow.<br>
+43) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
 <br>
 <br>
 <b>TODO:</b><br>
