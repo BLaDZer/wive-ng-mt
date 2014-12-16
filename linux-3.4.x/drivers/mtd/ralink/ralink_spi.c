@@ -307,11 +307,14 @@ struct chip_info {
 
 /* REVISIT: fill in JEDEC ids, for parts that have them */
 static struct chip_info chips_data [] = {
+//64Mb
+	{ "MT25QL512AB",	0x20, 0xba201044, 64 * 1024, 1024, 1 },
 //32Mb
 	{ "MX25L25635E",	0xc2, 0x2019c220, 64 * 1024, 512, 1 },
 	{ "S25FL256S",		0x01, 0x02194D01, 64 * 1024, 512, 1 },
 	{ "W25Q256FV",          0xef, 0x40190000, 64 * 1024, 512, 1 },
 	{ "S25FL256S",          0x01, 0x02194D01, 64 * 1024, 512, 1 },
+	{ "N25Q256A",		0x20, 0xba191000, 64 * 1024, 512, 1 },
 //16Mb
 	{ "MX25L12805D",	0xc2, 0x2018c220, 64 * 1024, 256, 0 },
 	{ "S25FL128P",		0x01, 0x20180301, 64 * 1024, 256, 0 },
@@ -666,7 +669,7 @@ static int raspi_4byte_mode(int enable)
 	if (flash->chip->id == 0x01) // Spansion
 	{
 		u8 br, br_cfn; // bank register
-		
+
 		if (enable)
 		{
 			br = 0x81;
@@ -681,7 +684,7 @@ static int raspi_4byte_mode(int enable)
 			ra_and(RT2880_SPICFG_REG, ~(SPICFG_ADDRMODE));
 #endif
 		}
-		
+
 		raspi_write_rg(&br, OPCODE_BRWR);
 		raspi_read_rg(&br_cfn, OPCODE_BRRD);
 		if (br_cfn != br)
@@ -694,7 +697,9 @@ static int raspi_4byte_mode(int enable)
 	{
 		ssize_t retval;
 		u8 code;
-		
+
+		raspi_write_enable();
+
 		if (enable)
 		{
 			code = 0xB7; /* EN4B, enter 4-byte mode */

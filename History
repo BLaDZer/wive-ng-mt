@@ -430,7 +430,8 @@
 <br>
 <b>2.0.x</b><br>
 1) kernel: ralink_gpio: switch to schedule_work.<br>
-2) kernel: ralink_gpio: fix 9532 support..<br>
+2) kernel: ralink_gpio: fix 9532 support.<br>
+3) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
