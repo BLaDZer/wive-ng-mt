@@ -8,11 +8,11 @@
  * mmap w 0x00001234 0x1	-- write mode
  */
 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <math.h> 
-#include <sys/mman.h> 
-#include <fcntl.h> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 #include <errno.h>
 
 #define PAGE_SIZE		0x1000 	/* 4096 */
@@ -23,7 +23,7 @@
 
 int main(int argc, char *argv[])
 {
-	int fd; 
+	int fd;
 	unsigned int addr;
 	unsigned int round;
 	void *start;
@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
 	}
 
 	fd = open("/dev/mem", O_RDWR | O_SYNC );
-	if ( fd < 0 ) { 
-		printf("open file /dev/mem error. %s\n", strerror(errno)); 
-		return 0; 
-	} 
+	if ( fd < 0 ) {
+		printf("open file /dev/mem error. %s\n", strerror(errno));
+		return 0;
+	}
 
 	// round addr to PAGE_SIZE
 	round = addr;								// keep old value
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
 	start = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
 	if(	(int)start == -1 ){
-		printf("mmap() failed at phsical address:%d %s\n", addr, strerror(errno)); 
+		printf("mmap() failed at phsical address:%d %s\n", addr, strerror(errno));
 		close(fd);
 		return 0;
 	}
@@ -77,5 +77,5 @@ int main(int argc, char *argv[])
 
 	munmap(start, PAGE_SIZE);
 	close(fd);
-	return 0; 
+	return 0;
 }

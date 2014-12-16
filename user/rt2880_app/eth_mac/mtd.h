@@ -251,7 +251,7 @@ extern struct mtd_info *__get_mtd_device(struct mtd_info *mtd, int num);
 static inline struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num)
 {
 	struct mtd_info *ret;
-	
+
 	ret = __get_mtd_device(mtd, num);
 
 	if (ret && ret->module && !try_inc_mod_count(ret->module))
@@ -295,7 +295,7 @@ int default_mtd_readv(struct mtd_info *mtd, struct iovec *vecs,
 #define MTD_WRITEECC(mtd, args...) (*(mtd->write_ecc))(mtd, args)
 #define MTD_READOOB(mtd, args...) (*(mtd->read_oob))(mtd, args)
 #define MTD_WRITEOOB(mtd, args...) (*(mtd->write_oob))(mtd, args)
-#define MTD_SYNC(mtd) do { if (mtd->sync) (*(mtd->sync))(mtd);  } while (0) 
+#define MTD_SYNC(mtd) do { if (mtd->sync) (*(mtd->sync))(mtd);  } while (0)
 #endif /* MTDC */
 
 /*
@@ -315,8 +315,5 @@ int default_mtd_readv(struct mtd_info *mtd, struct iovec *vecs,
 #else /* CONFIG_MTD_DEBUG */
 #define DEBUG(n, args...)
 #endif /* CONFIG_MTD_DEBUG */
-
 #endif /* __KERNEL__ */
-
 #endif /* __MTD_MTD_H__ */
-

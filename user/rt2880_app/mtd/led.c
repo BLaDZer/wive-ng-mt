@@ -1,6 +1,6 @@
 /* vi: set sw=4 ts=4 sts=4: */
 /*
- *	utils.c -- System Utilities 
+ *	utils.c -- System Utilities
  *
  *	Copyright (c) Ralink Technology Corporation All Rights Reserved.
  *
@@ -18,8 +18,7 @@
  *   times: stop blinking after <times> times of blinking
  * where 1 tick == 100 ms
  */
-static int gpioLedSet(int gpio, unsigned int on, unsigned int off,
-		unsigned int blinks, unsigned int rests, unsigned int times)
+static int gpioLedSet(int gpio, unsigned int on, unsigned int off, unsigned int blinks, unsigned int rests, unsigned int times)
 {
 	int fd;
 	ralink_gpio_led_info led;

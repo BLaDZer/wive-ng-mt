@@ -284,7 +284,7 @@ not_nand:
 		/* buffer may contain data already (from trx check) */
 		r = 0;
 		if( (BUFSIZE) > len ){
-			r = read(imagefd, buf , len);		
+			r = read(imagefd, buf , len);
 		}else
 			r = read(imagefd, buf , BUFSIZE);
 
@@ -338,7 +338,7 @@ not_nand:
 		 * Post-FlashWrite check
 		 */
 		if(write_check){
- 			/* trigger filesystem to sync with everything! */ 
+ 			/* trigger filesystem to sync with everything! */
  			sync();
 
  			if( lseek(fd, -r, SEEK_CUR) == -1){
@@ -417,7 +417,7 @@ int getFileSize(char *filename)
 	}
 	if (fstat(fd, &StatBuf) == -1){
 		close(fd);
-		return -1;	  
+		return -1;
 	}
 	close(fd);
 	return StatBuf.st_size;
@@ -565,4 +565,3 @@ int main (int argc, char **argv)
 	}
 	return 0;
 }
-

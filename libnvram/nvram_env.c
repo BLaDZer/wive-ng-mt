@@ -112,6 +112,7 @@ int nvram_init(int index)
 		free(fb[index].env.data);
 		return -1;
 	}
+
 	if ( ioctl(fd, RALINK_NVRAM_IOCTL_GETALL, &nvr) < 0 )
 	{
 		perror("ioctl");
@@ -120,15 +121,16 @@ int nvram_init(int index)
 		free(fb[index].env.data);
 		return -1;
 	}
+
         if(fd)
 	    close(fd);
 
 	//parse env to cache
 	p = fb[index].env.data;
-	for ( i = 0; i < MAX_CACHE_ENTRY; i++ )
+	for (i = 0; i < MAX_CACHE_ENTRY; i++)
 	{
 		/* Store var name */
-		if ( NULL == (q = strchr(p, '=')) )
+		if (NULL == (q = strchr(p, '=')))
 		{
 			LIBNV_PRINT("parsed failed - cannot find '='\n");
 			break;
@@ -139,7 +141,7 @@ int nvram_init(int index)
 
 		/* Store var value */
 		p = q + 1; //value
-		if ( NULL == (q = strchr(p, '\0')) )
+		if (NULL == (q = strchr(p, '\0')))
 		{
 			LIBNV_PRINT("parsed failed - cannot find '\\0'\n");
 			FREE(fb[index].cache[i].name);
@@ -154,6 +156,7 @@ int nvram_init(int index)
 		if (*p == '\0') //end of env
 			break;
 	}
+
 	if (i == MAX_CACHE_ENTRY)
 		LIBNV_PRINT("run out of env cache, please increase MAX_CACHE_ENTRY\n");
 
@@ -201,6 +204,7 @@ static int cache_idx(int index, char *name)
 		if (!strcmp(name, fb[index].cache[i].name))
 			return i;
 	}
+
 	return -1;
 }
 
@@ -215,7 +219,7 @@ char *nvram_get(int index, char *name)
 	if (!recv)
 	    recv = "";
 
-    return recv;
+	return recv;
 }
 
 int nvram_set(int index, char *name, char *value)
@@ -317,9 +321,7 @@ char *nvram_bufget(int index, char *name)
 	//no default value set?
 	//btw, we don't return NULL anymore!
 	LIBNV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
-
 	FREE(nvr.value);
-
 	return "";
 }
 
@@ -342,6 +344,7 @@ int nvram_bufset(int index, char *name, char *value)
 		perror(NV_DEV);
 		return -1;
 	}
+
 	if (ioctl(fd, RALINK_NVRAM_IOCTL_SET, &nvr) < 0)
 	{
 		if (errno == EOVERFLOW)
@@ -368,12 +371,12 @@ int nvram_bufset(int index, char *name, char *value)
 		}
 		fb[index].cache[idx].name = strdup(name);
 		fb[index].cache[idx].value = strdup(value);
-	}
-	else {
+	} else {
 		//abandon the previous value
 		FREE(fb[index].cache[idx].value);
 		fb[index].cache[idx].value = strdup(value);
 	}
+
 	LIBNV_PRINT("bufset %d '%s'->'%s'\n", index, name, value);
 	fb[index].dirty = 1;
 	return 0;
@@ -470,8 +473,7 @@ void toggleNvramDebug()
 	if (libnvram_debug) {
 		libnvram_debug = 0;
 		printf("%s: turn off debugging\n", __FILE__);
-	}
-	else {
+	} else {
 		libnvram_debug = 1;
 		printf("%s: turn ON debugging\n", __FILE__);
 	}
@@ -487,43 +489,44 @@ int renew_nvram(int mode, char *fname)
 	int found = 0, need_commit = 0;
 
 	fp = fopen(fname, "ro");
-	if ( !fp )
+	if (!fp)
 	{
 		perror("fopen");
 		return -1;
 	}
 
 	//find "Default" first
-	while ( fgets(buf, BUFSZ, fp) )
+	while (fgets(buf, BUFSZ, fp))
 	{
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
-		if ( !strncmp(buf, "Default\n", 8) )
+		if (!strncmp(buf, "Default\n", 8))
 		{
 			found = 1;
 			break;
 		}
 	}
-	if ( !found )
+
+	if (!found)
 	{
 		printf("file format error!\n");
 		fclose(fp);
 		return -1;
 	}
 
-	if ( nvram_init(mode) == -1 )
+	if (nvram_init(mode) == -1)
 	{
 		fclose(fp);
 		return -1;
 	}
 
-	while ( fgets(buf, BUFSZ, fp) )
+	while (fgets(buf, BUFSZ, fp))
 	{
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
-		if ( !(p = strchr(buf, '=')) )
+		if (!(p = strchr(buf, '=')))
 		{
-			if ( need_commit )
+			if (need_commit)
 			{
 				nvram_commit(mode);
 				need_commit = 0;
@@ -554,7 +557,7 @@ void nvram_buflist(int index)
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
 		if (!fb[index].cache[i].name)
 			break;
-		printf("  '%s'='%s'\n", fb[index].cache[i].name, fb[index].cache[i].value);
+		printf("%s=%s\n", fb[index].cache[i].name, fb[index].cache[i].value);
 	}
 }
 

@@ -5,7 +5,6 @@
 #include <fcntl.h>
 #include "rdm.h"
 
-
 int ra_reg_write(int offset, int value)
 {
     int fd;
@@ -23,7 +22,7 @@ int ra_reg_write(int offset, int value)
 	close(fd);
 	return -1;
     }
-	
+
     close(fd);
     return 0;
 }
@@ -44,9 +43,8 @@ int ra_reg_read(int offset)
 	close(fd);
 	return -1;
     }
-	
+
     close(fd);
-	
     return offset;
 }
 
@@ -97,7 +95,7 @@ int main(int argc, char *argv[])
 		printf("[interval]: 1 ~ 1000. [count]: 1 ~ 1000. [offset_number]: 0 ~ 15.\n");
 		return 0;
 	}
-	
+
 	p = argv[1];
 	if (*p == 'r')
 	{
@@ -142,7 +140,6 @@ int main(int argc, char *argv[])
 		{
 			method = RT_RDM_CMD_SET_BASE;
 		}
-		
 
 		if (method != RT_RDM_CMD_SET_BASE)
 		{
@@ -152,11 +149,9 @@ int main(int argc, char *argv[])
 				printf("Open pseudo device failed\n");
 				return 0;
 			}
-	
+
 			ioctl(fd, method, offset);
-	
 			close(fd);
-	
 			return 0;
 		}
 	}
@@ -176,13 +171,13 @@ int main(int argc, char *argv[])
 	else if (*p == 'o')
 	{
 		method = RT_RDM_CMD_DUMP_QUEUE_OFFSET;
-	}	
+	}
 	else
 	{
 		printf("method must be either r p d f w s m q o\n");
 		return 0;
 	}
-	
+
 	p = argv[2];
 	if (*p == '0' && *(p+1) == 'x')
 		p += 2;
@@ -209,7 +204,7 @@ int main(int argc, char *argv[])
 		}
 		p++;
 	}
-	
+
 	if (method == RT_RDM_CMD_WRITE || method == RT_RDM_CMD_DUMP_QUEUE  || method == RT_RDM_CMD_DUMP_QUEUE_OFFSET)
 	{
 		p = argv[3];
@@ -219,7 +214,7 @@ int main(int argc, char *argv[])
 		{
 			printf("invalid value\n");
 		}
-		
+
 		method = (method | (offset << 16));
 		while (*p != '\0')
 		{
@@ -258,11 +253,9 @@ int main(int argc, char *argv[])
 	}
 
 	ioctl(fd, method, &offset);
-	if (method == RT_RDM_CMD_READ) {
-		printf("0x%x\n", offset);	
-	}
-	
-	close(fd);
+	if (method == RT_RDM_CMD_READ) 
+		printf("0x%x\n", offset);
 
+	close(fd);
 	return 0;
 }

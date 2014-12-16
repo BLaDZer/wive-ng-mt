@@ -227,8 +227,8 @@ int egress_rate_set(int on_off, int port, int bw)
 	}
 	return 0;
 }
-#if RT_TABLE_MANIPULATE
 
+#if RT_TABLE_MANIPULATE
 int
 getnext (
 	char *	src,
@@ -295,8 +295,6 @@ ip_to_str (
     /* sprintf(str, "%d.%d.%d.%d", c[0], c[1], c[2], c[3]); */
     sprintf(str, "%d.%d.%d.%d", c[3], c[2], c[1], c[0]);
 }
-
-
 
 void acl_dip_meter(int argc, char *argv[])
 {
@@ -442,7 +440,6 @@ void acl_dip_meter(int argc, char *argv[])
 	if (i == 20)
 		printf("timeout.\n");
 }
-
 
 void acl_dip_trtcm(int argc, char *argv[])
 {
@@ -741,8 +738,6 @@ void acl_ethertype(int argc, char *argv[])
 	if (i == 20)
 		printf("timeout.\n");
 }
-
-
 
 void acl_dip_modify(int argc, char *argv[])
 {
@@ -1044,9 +1039,6 @@ void acl_dip_pppoe(int argc, char *argv[])
 		printf("timeout.\n");
 
 }
-
-
-
 
 void acl_dip_add(int argc, char *argv[])
 {
@@ -2325,8 +2317,7 @@ void vlan_set(int argc, char *argv[])
 	}
 	reg_write(REG_ESW_VLAN_ID_BASE + 4*(idx/2), value);
 
-
-	#if 0 // for testing
+#if 0 /* for testing */
 	if (argc > 6) {
 		stag = strtoul(argv[6], NULL, 0);
 		if (stag < 0 || 4095 < stag) {
@@ -2348,16 +2339,13 @@ void vlan_set(int argc, char *argv[])
 			return;
 		}
 	}
-	#else
+#else
 	/*test port stag*/
 	if (argc > 6) {
 		stag = strtoul(argv[6], NULL, 16);
 		printf("STAG index is 0x%x\n", stag);
 	}
-
-
-
-	#endif
+#endif
 
 	//set vlan member
 	value = (j << 16);
@@ -2461,8 +2449,6 @@ void igmp_off()
 	printf("config igmpsnoop off.\n");
 }
 
-
-
 void igmp_disable(int argc, char *argv[])
 {
 	unsigned int reg_offset, value;
@@ -2487,7 +2473,6 @@ void igmp_disable(int argc, char *argv[])
 
 }
 
-
 void igmp_enable(int argc, char *argv[])
 {
 	unsigned int reg_offset, value;
@@ -2510,11 +2495,6 @@ void igmp_enable(int argc, char *argv[])
 	reg_write(reg_offset, value);
 
 }
-
-
-
-
-
 
 int main(int argc, char *argv[])
 {

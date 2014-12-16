@@ -49,8 +49,6 @@ struct mtd_oob_buf {
 #define MTD_BLOCK_MAJOR 31
 #define MAX_MTD_DEVICES 16
 
-
-
 #define MTD_ABSENT		0
 #define MTD_RAM			1
 #define MTD_ROM			2
@@ -59,8 +57,6 @@ struct mtd_oob_buf {
 #define MTD_PEROM		5
 #define MTD_OTHER		14
 #define MTD_UNKNOWN		15
-
-
 
 #define MTD_CLEAR_BITS		1       // Bits can be cleared (flash)
 #define MTD_SET_BITS		2       // Bits can be set
@@ -251,7 +247,7 @@ extern struct mtd_info *__get_mtd_device(struct mtd_info *mtd, int num);
 static inline struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num)
 {
 	struct mtd_info *ret;
-	
+
 	ret = __get_mtd_device(mtd, num);
 
 	if (ret && ret->module && !try_inc_mod_count(ret->module))
@@ -315,8 +311,5 @@ int default_mtd_readv(struct mtd_info *mtd, struct iovec *vecs,
 #else /* CONFIG_MTD_DEBUG */
 #define DEBUG(n, args...)
 #endif /* CONFIG_MTD_DEBUG */
-
 #endif /* __KERNEL__ */
-
 #endif /* __MTD_MTD_H__ */
-
