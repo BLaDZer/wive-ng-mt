@@ -428,6 +428,11 @@
 44) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
 <br>
 <br>
+<b>2.0.x</b><br>
+1) kernel: ralink_gpio: switch to schedule_work.<br>
+2) kernel: ralink_gpio: fix 9532 support..<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
