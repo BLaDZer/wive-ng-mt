@@ -428,7 +428,7 @@
 44) kernel: netfilter: nf_conntrack: add nf_ct_timeout_lookup.<br>
 <br>
 <br>
-<b>2.0.x</b><br>
+<b>2.1.x</b><br>
 1) reg tool: small fixup.<br>
 2) mii tool: fixup and add 7628 support.<br>
 3) gpio tool: fix 9532 mode support.<br>
