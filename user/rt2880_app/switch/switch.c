@@ -63,21 +63,25 @@ void usage(char *cmd)
 	printf(" %s filt [mac] [portmap]                 - add a SA filtering entry to switch table\n", cmd);
 	printf(" %s filt [mac] [portmap] [vlan id]       - add a SA filtering entry to switch table\n", cmd);
 	printf(" %s filt [mac] [portmap] [vlan id] [age] - add a SA filtering entry to switch table\n", cmd);
+	printf(" %s igmpsnoop on [Query Interval] [default router portmap] - turn on IGMP snoop and  router port learning (Query Interval 1~255)\n", cmd);
+	printf(" %s igmpsnoop off                                  - turn off IGMP snoop and router port learning\n", cmd);
+	printf(" %s igmpsnoop enable [port#]                       - enable IGMP HW leave/join/Squery/Gquery\n", cmd);
+	printf(" %s igmpsnoop disable [port#]                      - disable IGMP HW leave/join/Squery/Gquery\n", cmd);
 	printf(" %s mymac [mac] [portmap]                  - add a mymac entry to switch table\n", cmd);
 	printf(" %s mirror monitor [portnumber]            - enable port mirror and indicate monitor port number\n", cmd);
 	printf(" %s mirror target [portnumber] [0:off, 1:rx, 2:tx, 3:all]  - set port mirror target\n", cmd);
 	printf(" %s phy [phy_addr]			 - dump phy register of specific port\n", cmd);
 	printf(" %s phy					 - dump all phy registers\n", cmd);
+	printf(" %s pvid [port] [pvid]                - set pvid on port 0~4 \n", cmd);
 	printf(" %s reg r [offset]                       - register read from offset\n", cmd);
 	printf(" %s reg w [offset] [value]               - register write value to offset\n", cmd);
 	printf(" %s sip add [sip] [dip] [portmap]            - add a sip entry to switch table\n", cmd);
 	printf(" %s sip del [sip] [dip]		             - del a sip entry to switch table\n", cmd);
 	printf(" %s sip dump                                 - dump switch sip table\n", cmd);
 	printf(" %s sip clear                                - clear switch sip table\n", cmd);
+	printf(" %s tag on [port]                        - keep vlan tag for egress packet on prot 0~4\n", cmd); 
+	printf(" %s tag off [port]                       - remove vlan tag for egress packet on port 0~4\n", cmd);
 	printf(" %s vlan dump                            - dump switch table\n", cmd);
-	printf(" %s tag on [port]                        - tag vid on port 0~4 \n", cmd);
-	printf(" %s tag off [port]                       - untag vid on port 0~4 \n", cmd);	
-	printf(" %s pvid on [port] [pvid]                - set pvid on port 0~4 \n", cmd);
 #if defined (CONFIG_RALINK_MT7621)
 	printf(" %s vlan set [vlan idx (NULL)][vid] [portmap]  - set vlan id and associated member\n", cmd);
 #else
@@ -297,9 +301,6 @@ ip_to_str (
 void acl_dip_meter(int argc, char *argv[])
 {
 	unsigned int i, j, value, ip_value, meter;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 7) {
 		printf("insufficient arguments!\n");
@@ -446,10 +447,7 @@ void acl_dip_meter(int argc, char *argv[])
 void acl_dip_trtcm(int argc, char *argv[])
 {
 	unsigned int i, j, value, ip_value;
-	unsigned int idx, vid;
 	unsigned int CIR, CBS, PIR, PBS;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -629,9 +627,6 @@ void acl_dip_trtcm(int argc, char *argv[])
 void acl_ethertype(int argc, char *argv[])
 {
 	unsigned int i, j, value, ethertype;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -752,9 +747,6 @@ void acl_ethertype(int argc, char *argv[])
 void acl_dip_modify(int argc, char *argv[])
 {
 	unsigned int i, j, value, ip_value;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -904,9 +896,6 @@ void acl_dip_modify(int argc, char *argv[])
 void acl_dip_pppoe(int argc, char *argv[])
 {
 	unsigned int i, j, value, ip_value;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -1062,9 +1051,6 @@ void acl_dip_pppoe(int argc, char *argv[])
 void acl_dip_add(int argc, char *argv[])
 {
 	unsigned int i, j, value, ip_value;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -1217,9 +1203,6 @@ void acl_dip_add(int argc, char *argv[])
 void acl_l4_add(int argc, char *argv[])
 {
 	unsigned int i, j, value;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -1327,9 +1310,6 @@ void acl_l4_add(int argc, char *argv[])
 void acl_sp_add(int argc, char *argv[])
 {
 	unsigned int i, j, value;
-	unsigned int idx, vid;
-        int stag = 0;
-	char tmpstr[16];
 
 	if (argc < 6) {
 		printf("insufficient arguments!\n");
@@ -1495,7 +1475,6 @@ void dip_dump(void)
 void dip_add(int argc, char *argv[])
 {
 	unsigned int i, j, value;
-	char tmpstr[9];
 
 	str_to_ip(&value, argv[3]);
 
@@ -1548,8 +1527,7 @@ void dip_add(int argc, char *argv[])
 
 void dip_del(int argc, char *argv[])
 {
-	unsigned int i, j, value;
-	char tmpstr[9];
+	unsigned int i, value;
 
 	str_to_ip(&value, argv[3]);
 
@@ -1649,7 +1627,6 @@ void sip_dump(void)
 void sip_add(int argc, char *argv[])
 {
 	unsigned int i, j, value;
-	char tmpstr[9];
 
 	str_to_ip(&value, argv[3]);//SIP
 
@@ -1703,8 +1680,7 @@ void sip_add(int argc, char *argv[])
 
 void sip_del(int argc, char *argv[])
 {
-	unsigned int i, j, value;
-	char tmpstr[9];
+	unsigned int i, value;
 
 	str_to_ip(&value, argv[3]);
 
@@ -1834,7 +1810,7 @@ void table_add(int argc, char *argv[])
 
 	if (argc > 4) {
 		j = strtoul(argv[4], NULL, 0);
-		if (j < 0 || 4095 < j) {
+		if ( 4095 < j) {
 			printf("wrong vid range, should be within 0~4095\n");
 			return;
 		}
@@ -1881,7 +1857,7 @@ void table_add(int argc, char *argv[])
 
 	if (argc > 6) {
 		j = strtoul(argv[6], NULL, 0);
-		if (j < 0 || 7 < j) {
+		if ( 7 < j) {
 			printf("wrong eg-tag range, should be within 0~7\n");
 			return;
 		}
@@ -1977,7 +1953,8 @@ void table_del(int argc, char *argv[])
 void table_clear(void)
 {
 
-	int i, value, mac;
+	int value;
+
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8002);
 	usleep(5000);
 	reg_read(REG_ESW_WT_MAC_ATC, &value);
@@ -2437,6 +2414,108 @@ void vlan_set(int argc, char *argv[])
 }
 #endif
 
+void igmp_on(int argc, char *argv[])
+{
+	unsigned int i, j, value;
+	int interval;
+
+	if (argc < 5) {
+		printf("insufficient arguments!\n");
+		return;
+	}
+	interval = strtoul(argv[3], NULL, 0);
+
+	if (strlen(argv[4]) != 7) {
+		printf("portmap format error, should be of length 7\n");
+		return;
+	}
+	j = 0;
+	for (i = 0; i < 7; i++) {
+		if (argv[4][i] != '0' && argv[4][i] != '1') {
+			printf("portmap format error, should be of combination of 0 or 1\n");
+			return;
+		}
+		j += (argv[4][i] - '0') * (1 << i);
+	}
+
+	//set ISC: IGMP Snooping Control Register (offset: 0x0018)
+	value = j ;
+	value |= (interval << 8);//QRY_INTL
+	value |= (2 << 16);//robust value
+	value |= (1 << 18);//enable
+
+	reg_write(REG_ESW_ISC, value);
+
+	printf("config igmpsnoop.\n");
+}
+
+
+void igmp_off()
+{
+	unsigned int value;
+
+	//set ISC: IGMP Snooping Control Register (offset: 0x0018)
+	reg_read(REG_ESW_ISC, &value);
+	value &= ~(1 << 18);//disable
+	reg_write(REG_ESW_ISC, value);
+	printf("config igmpsnoop off.\n");
+}
+
+
+
+void igmp_disable(int argc, char *argv[])
+{
+	unsigned int reg_offset, value;
+	int port_num;
+
+	if (argc < 4) {
+		printf("insufficient arguments!\n");
+		return;
+	}
+	port_num = strtoul(argv[3], NULL, 0);
+	if (port_num < 0 || 6 < port_num) {
+		printf("wrong port range, should be within 0~6\n");
+		return;
+	}
+
+	//set ISC: IGMP Snooping Control Register (offset: 0x0018)
+	reg_offset = 0x2008 ;
+	reg_offset |= (port_num << 8);
+	value = 0x8000;
+
+	reg_write(reg_offset, value);
+
+}
+
+
+void igmp_enable(int argc, char *argv[])
+{
+	unsigned int reg_offset, value;
+	int port_num;
+
+	if (argc < 4) {
+		printf("insufficient arguments!\n");
+		return;
+	}
+	port_num = strtoul(argv[3], NULL, 0);
+	if (port_num < 0 || 6 < port_num) {
+		printf("wrong port range, should be within 0~6\n");
+		return;
+	}
+
+	//set ISC: IGMP Snooping Control Register (offset: 0x0018)
+	reg_offset = 0x2008 ;
+	reg_offset |= (port_num << 8);
+	value = 0x9755;
+	reg_write(reg_offset, value);
+
+}
+
+
+
+
+
+
 int main(int argc, char *argv[])
 {
     switch_init();
@@ -2653,7 +2732,20 @@ int main(int argc, char *argv[])
 		reg_write(offset, value);
 		printf("Set port %d pvid %d.\n", port, pvid);
 	}
-
+	else if (!strncmp(argv[1], "igmpsnoop", 10)) {
+		if (argc < 3)
+			usage(argv[0]);
+		if (!strncmp(argv[2], "on", 3))
+			igmp_on(argc, argv);
+		else if (!strncmp(argv[2], "off", 4))
+			igmp_off();
+		else if (!strncmp(argv[2], "enable", 7))
+			igmp_enable(argc, argv);
+		else if (!strncmp(argv[2], "disable", 8))
+			igmp_disable(argc, argv);
+		else
+			usage(argv[0]);
+	}
 	else
 		usage(argv[0]);
 

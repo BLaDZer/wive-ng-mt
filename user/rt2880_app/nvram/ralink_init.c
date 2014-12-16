@@ -61,7 +61,7 @@ int ra_nv_set(int argc,char **argv)
 		fz = DEFAULT_FLASH_ZONE_NAME;
 		key = argv[1];
 		value = argv[2];
-	} else if (argc == 4) {
+	} else {
 		fz = argv[1];
 		key = argv[2];
 		value = argv[3];
@@ -209,10 +209,9 @@ static int nvram_load_default(void)
 
 static int gen_wifi_config(int getmode)
 {
-	FILE *fp;
+	FILE *fp = NULL;
 	int  i, ssid_num = 1, inic = 0, mode = getmode;
-	char tx_rate[16], wmm_enable[16];
-	char temp[2], buf[4];
+	char tx_rate[32], wmm_enable[32];
 
 	if (mode == RT2860_NVRAM) {
 		system("mkdir -p /etc/Wireless/RT2860");
@@ -229,6 +228,11 @@ static int gen_wifi_config(int getmode)
 #endif
 	} else {
 		printf("gen_wifi_config: mode unknown...\n");
+		return 0;
+	}
+
+	if (!fp){
+		printf("gen_wifi_config: fopen failed.\n");
 		return 0;
 	}
 
@@ -259,23 +263,25 @@ static int gen_wifi_config(int getmode)
 
 		//TxRate(FixedRate)
 		ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
-		bzero(tx_rate, sizeof(char)*16);
+		if (ssid_num > 16)
+			ssid_num = 16;
+		else if (ssid_num < 0)
+			ssid_num = 0;
+		bzero(tx_rate, sizeof(tx_rate));
 		for (i = 0; i < ssid_num; i++)
 		{
-			sprintf(tx_rate+strlen(tx_rate), "%d", atoi(nvram_bufget(mode, "TxRate")));
-			sprintf(tx_rate+strlen(tx_rate), "%c", ';');
+			snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRate")));
+			snprintf(tx_rate+strlen(tx_rate), 1, "%c", ';');
 		}
-		tx_rate[strlen(tx_rate) - 1] = '\0';
 		fprintf(fp, "TxRate=%s\n", tx_rate);
 
 		//WmmCapable
-		bzero(wmm_enable, sizeof(char)*16);
+		bzero(wmm_enable, sizeof(wmm_enable));
 		for (i = 0; i < ssid_num; i++)
 		{
-			sprintf(wmm_enable+strlen(wmm_enable), "%d", atoi(nvram_bufget(mode, "WmmCapable")));
-			sprintf(wmm_enable+strlen(wmm_enable), "%c", ';');
+			snprintf(wmm_enable+strlen(wmm_enable), 1, "%d", atoi(nvram_bufget(mode, "WmmCapable")));
+			snprintf(wmm_enable+strlen(wmm_enable), 1, "%c", ';');
 		}
-		wmm_enable[strlen(wmm_enable) - 1] = '\0';
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
 		//WscConfStatus

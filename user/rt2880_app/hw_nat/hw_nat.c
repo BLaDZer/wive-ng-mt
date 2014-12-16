@@ -466,7 +466,7 @@ int main(int argc, char *argv[])
 #else
     case HW_NAT_GET_AC_CNT:
 	    HwNatGetAGCnt(&args3);
-	    printf("Byte cnt=%d\n", args3.ag_byte_cnt);
+	    printf("Byte cnt=%llu\n", args3.ag_byte_cnt);
 	    printf("Pkt cnt=%d\n", args3.ag_pkt_cnt);
 	    result = args3.result;
 	    break;

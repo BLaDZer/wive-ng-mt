@@ -287,25 +287,25 @@ int gpio_set_dir_g(int r, int dir, int gpio_num)
 	}
 #if defined(CONFIG_RALINK_MT7620)
 	if (gpio_num >= 24 && gpio_num <=39){
-		gpio_num = gpio_num - 24; 
+		gpio_num = gpio_num - 24;
 	}else if(gpio_num >=40 && gpio_num<=71){
-		gpio_num = gpio_num - 40; 
+		gpio_num = gpio_num - 40;
 	}else if(gpio_num == 72){
-		gpio_num = gpio_num - 72; 
+		gpio_num = gpio_num - 72;
 	}
-		
+
 #elif defined(CONFIG_RALINK_MT7621)
 	if (gpio_num >= 32 && gpio_num <=63){
-		gpio_num = gpio_num - 32; 
+		gpio_num = gpio_num - 32;
 	}else if(gpio_num >=64 && gpio_num<=95){
-		gpio_num = gpio_num - 64; 
+		gpio_num = gpio_num - 64;
 	}
-	
+
 #elif defined(CONFIG_RALINK_MT7628)
 	if (gpio_num >= 32 && gpio_num <=63){
-		gpio_num = gpio_num - 32; 
+		gpio_num = gpio_num - 32;
 	}else if(gpio_num >=64 && gpio_num<=95){
-		gpio_num = gpio_num - 64; 
+		gpio_num = gpio_num - 64;
 	}
 #endif
 	if (ioctl(fd, req, (0xffffffff) & (1 << gpio_num) ) < 0) {
@@ -621,7 +621,7 @@ void gpio_test_write(void)
 
 void gpio_test_read_g(int gpio_number)
 {
-	int i, d, value0, value1, value2, value3;
+	int d, value0, value1, value2, value3;
 
 #if defined (CONFIG_RALINK_RT3052)
 	gpio_set_dir(gpio5140, gpio_in);
@@ -694,24 +694,24 @@ void gpio_test_read_g(int gpio_number)
 		gpio_set_dir_g(gpio3924, gpio_in, gpio_number);
 		gpio_read_int(gpio3924, &d);
 		value2 = d;
-	}	
+	}
 	if(gpio_number <= 23){
 		gpio_set_dir_g(gpio2300, gpio_in, gpio_number);
 		gpio_read_int(gpio2300, &d);
 		value3 = d;
 	}
-  if(gpio_number == 72 ){
+	if(gpio_number == 72 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value0 & (1 << (gpio_number-72))) >> (gpio_number - 72  ));
-	}	
-  if(gpio_number >= 40 && gpio_number <=71 ){
+	}
+	if(gpio_number >= 40 && gpio_number <=71 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value1 & (1 << (gpio_number-40))) >> (gpio_number - 40)  );
-	}	
-  if(gpio_number >= 24 && gpio_number <=39 ){
+	}
+	if(gpio_number >= 24 && gpio_number <=39 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value2 & (1 << (gpio_number-24))) >> (gpio_number - 24)  );
-	}	
+	}
 	if(gpio_number <= 23){
 
 		printf("gpio %d = %d\n", gpio_number, (value3 & (1 << gpio_number)) >> (gpio_number));
@@ -719,10 +719,10 @@ void gpio_test_read_g(int gpio_number)
 	 if(gpio_number > 72 ){
 
 		printf("MT7620 just have 72 GPIO pin\n");
-	}	
+	}
 
 #elif defined (CONFIG_RALINK_MT7621)
-  if(gpio_number >= 64 && gpio_number <=95 ){
+	if(gpio_number >= 64 && gpio_number <=95 ){
 		gpio_set_dir_g(gpio9564, gpio_in, gpio_number);
 		gpio_read_int(gpio9564, &d);
 		value0 = d;
@@ -737,26 +737,25 @@ void gpio_test_read_g(int gpio_number)
 		gpio_read_int(gpio3100, &d);
 		value2 = d;
 	}
-	
-  if(gpio_number >= 64 && gpio_number <=95 ){
+	if(gpio_number >= 64 && gpio_number <=95 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value0 & (1 << (gpio_number - 64))) >> (gpio_number - 64)  );
-	}	
-  if(gpio_number >= 32 && gpio_number <=63 ){
+	}
+	if(gpio_number >= 32 && gpio_number <=63 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value1 & (1 << (gpio_number - 32))) >> (gpio_number - 32)  );
-	}	
+	}
 	if(gpio_number <= 31){
 
 		printf("gpio %d = %d\n", gpio_number, (value2 & (1 << gpio_number)) >> (gpio_number));
 	}
-	 if(gpio_number > 95 ){
+	if(gpio_number > 95 ){
 
 		printf("MT7621 just have 95 GPIO pin\n");
-	}		
-	
+	}
+
 #elif defined (CONFIG_RALINK_MT7628)
-  if(gpio_number >= 64 && gpio_number <=95 ){
+	if(gpio_number >= 64 && gpio_number <=95 ){
 		gpio_set_dir_g(gpio9564, gpio_in, gpio_number);
 		gpio_read_int(gpio9564, &d);
 		value0 = d;
@@ -771,23 +770,23 @@ void gpio_test_read_g(int gpio_number)
 		gpio_read_int(gpio3100, &d);
 		value2 = d;
 	}
-	
- if(gpio_number >= 64 && gpio_number <=95 ){
+
+	if(gpio_number >= 64 && gpio_number <=95 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value0 & (1 << (gpio_number - 64))) >> (gpio_number - 64)  );
-	}	
-  if(gpio_number >= 32 && gpio_number <=63 ){
+	}
+	if(gpio_number >= 32 && gpio_number <=63 ){
 
 		printf("gpio %d = %d\n", gpio_number, (value1 & (1 << (gpio_number - 32))) >> (gpio_number - 32)  );
-	}	
+	}
 	if(gpio_number <= 31){
 
 		printf("gpio %d = %d\n", gpio_number, (value2 & (1 << gpio_number)) >> (gpio_number));
 	}
-	 if(gpio_number > 95 ){
+	if(gpio_number > 95 ){
 
 		printf("MT7628 just have 95 GPIO pin\n");
-	}		
+	}
 #else
 	gpio_set_dir(gpio2300, gpio_in);
 	gpio_read_int(gpio2300, &d);
