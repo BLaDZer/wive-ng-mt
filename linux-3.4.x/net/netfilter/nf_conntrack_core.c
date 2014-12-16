@@ -101,10 +101,8 @@ static inline unsigned int is_local_svc(u_int8_t protonm)
 	    and mark as interested by ALG  for correct tracking this */
 	switch (protonm) {
 	    case IPPROTO_IPIP:
-#if defined(CONFIG_IPV6) && defined(RA_HW_NAT_IPV6)
-#ifndef CONFIG_HNAT_V2
+#if !defined(CONFIG_RA_HW_NAT_IPV6) || !defined(CONFIG_HNAT_V2)
 	    case IPPROTO_IPV6:
-#endif
 #endif
 	    case IPPROTO_ICMP:
 	    case IPPROTO_GRE:
