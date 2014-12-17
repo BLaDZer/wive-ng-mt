@@ -429,15 +429,16 @@
 <br>
 <br>
 <b>2.1.x</b><br>
-1) reg tool: small fixup.<br>
-2) mii tool: fixup and add 7628 support.<br>
-3) gpio tool: fix 9532 mode support.<br>
-4) nvram lib: do not direct read from flash at show.<br>
-5) nvram tool: fix generate wifi config.<br>
-6) switch tool: add igmp snooping managment.<br>
-7) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-8) kernel: ralink_gpio: switch to schedule_work.<br>
-9) kernel: ralink_gpio: fix 9532 mode support.<br>
+1) uboot: update to last version.<br>
+2) reg tool: small fixup.<br>
+3) mii tool: fixup and add 7628 support.<br>
+4) gpio tool: fix 9532 mode support.<br>
+5) nvram lib: do not direct read from flash at show.<br>
+6) nvram tool: fix generate wifi config.<br>
+7) switch tool: add igmp snooping managment.<br>
+8) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+9) kernel: ralink_gpio: switch to schedule_work.<br>
+10) kernel: ralink_gpio: fix 9532 mode support.<br>
 <br>
 <br>
 <b>TODO:</b><br>

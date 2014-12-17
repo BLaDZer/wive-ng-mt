@@ -178,6 +178,13 @@ void serial_setbrg (void)
 	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) |= cpu_to_le32(1<<19|1<<12);
 	/* RST Control change from W1C to W1W0 to reset, update 20080812 */
 	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) &= ~(1<<19|1<<12);
+
+#if 0
+	u32 reg;
+	reg = *(unsigned long *)(RT2880_GPIOMODE_REG);
+	reg &= ~(0x7 << 2); //UARTF as UART mode
+	*(unsigned long *)(RT2880_GPIOMODE_REG) =  reg;
+#endif
 #elif defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
 	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) |= cpu_to_le32(1<<19|1<<20|1<<21);
 	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) &= ~(1<<19|1<<20|1<<21);

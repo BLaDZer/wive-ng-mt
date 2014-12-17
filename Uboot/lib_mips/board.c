@@ -66,6 +66,7 @@ extern int timer_init(void);
 extern void  rt2880_eth_halt(struct eth_device* dev);
 
 extern void setup_internal_gsw(void); 
+extern void setup_external_gsw(void); 
 //extern void pci_init(void);
 
 extern int incaip_set_cpuclk(void);
@@ -259,7 +260,7 @@ static void Init_System_Mode(void)
 				mips_bus_feq = 166666667;
 		}
 	}
-#elif defined(MT7620_ASIC_BOARD) || defined(MT7628_ASIC_BOARD)
+#elif defined(MT7620_ASIC_BOARD)
 	reg = RALINK_REG(RALINK_CPLLCFG1_REG);
 	if( reg & ((0x1UL) << 24) ){
 		mips_cpu_feq = (480*1000*1000);	/* from BBP PLL */
@@ -291,6 +292,17 @@ static void Init_System_Mode(void)
 	}else{					/* SDR (MT7620 E2) */
 		mips_bus_feq = mips_cpu_feq/5;
 	}
+#elif defined (MT7628_ASIC_BOARD)
+	reg = RALINK_REG(RALINK_CLKCFG0_REG);
+	if (reg & (0x1<<1)) {
+		mips_cpu_feq = (480*1000*1000)/CPU_FRAC_DIV;
+	}else if (reg & 0x1) {
+		mips_cpu_feq = ((RALINK_REG(RALINK_SYSCTL_BASE+0x10)>>6)&0x1) ? (40*1000*1000)/CPU_FRAC_DIV \
+					   : (25*1000*1000)/CPU_FRAC_DIV;
+	}else {
+		mips_cpu_feq = (575*1000*1000)/CPU_FRAC_DIV;
+	}
+	mips_bus_feq = mips_cpu_feq/3;
 #elif defined(MT7621_ASIC_BOARD)
 	reg = RALINK_REG(RALINK_SYSCTL_BASE + 0x2C);
 	if( reg & ((0x1UL) << 30)) {
@@ -610,7 +622,7 @@ void board_init_f(ulong bootflag)
 #elif defined MT7621_ASIC_BOARD
 	value = le32_to_cpu(*(volatile u_long *)(RALINK_SPI_BASE + 0x3c));
 	value &= ~(0xFFF);
-	value |= 7; //work-around 3-wire SPI issue (3 for RFB, 5 for EVB)
+	value |= 5; //work-around 3-wire SPI issue (3 for RFB, 5 for EVB)
 	*(volatile u_long *)(RALINK_SPI_BASE + 0x3c) = cpu_to_le32(value);	
 #elif  defined MT7628_ASIC_BOARD
 	value = le32_to_cpu(*(volatile u_long *)(RALINK_SPI_BASE + 0x3c));
@@ -619,8 +631,7 @@ void board_init_f(ulong bootflag)
 	*(volatile u_long *)(RALINK_SPI_BASE + 0x3c) = cpu_to_le32(value);	
 #endif
 
-#if defined(MT7620_FPGA_BOARD) || defined(MT7620_ASIC_BOARD) || \
-    defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
+#if defined(MT7620_FPGA_BOARD) || defined(MT7620_ASIC_BOARD)
 /* Adjust CPU Freq from 60Mhz to 600Mhz(or CPLL freq stored from EE) */
 	value = RALINK_REG(RT2880_SYSCLKCFG_REG);
 	fdiv = ((value>>8)&0x1F);
@@ -633,8 +644,28 @@ void board_init_f(ulong bootflag)
 		RALINK_REG(RT2880_SYSCLKCFG_REG) = value;
 		udelay(10);
 	};	
+#elif defined(MT7628_ASIC_BOARD)
+	value = RALINK_REG(RALINK_DYN_CFG0_REG);
+	fdiv = (unsigned long)((value>>8)&0x0F);
+	if ((CPU_FRAC_DIV < 1) || (CPU_FRAC_DIV > 10))
+	frac = (unsigned long)(value&0x0F);
+	else
+		frac = CPU_FRAC_DIV;
+	i = 0;
 
-
+	while(frac < fdiv) {
+		value = RALINK_REG(RALINK_DYN_CFG0_REG);
+		fdiv = ((value>>8)&0x0F);
+		fdiv--;
+		value &= ~(0x0F<<8);
+		value |= (fdiv<<8);
+		RALINK_REG(RALINK_DYN_CFG0_REG) = value;
+		udelay(500);
+		i++;
+		value = RALINK_REG(RALINK_DYN_CFG0_REG);
+		fdiv = ((value>>8)&0x0F);
+		//frac = (unsigned long)(value&0x0F);
+	}	
 #elif defined (MT7621_ASIC_BOARD)
 #if (MT7621_CPU_FREQUENCY!=50)
 	value = RALINK_REG(RALINK_CUR_CLK_STS_REG);
@@ -701,6 +732,7 @@ void board_init_f(ulong bootflag)
 	value |= (1 << 18);
 #elif defined (MT7621_FPGA_BOARD) || defined (MT7621_ASIC_BOARD)
 	/* nothing */
+	//value |= (1<<26 | 1<<25 | 1<<24); /* PCIE de-assert for E3 */
 #else
 	//2880 -> 3052 reset Frame Engine from 18 to 21
 	value |= (1 << 21);
@@ -1339,6 +1371,10 @@ void board_init_r (gd_t *id, ulong dest_addr)
 
 	Init_System_Mode(); /*  Get CPU rate */
 
+#if defined(MT7628_ASIC_BOARD)	/* Enable WLED share pin */
+	RALINK_REG(RALINK_SYSCTL_BASE+0x3C)|= (1<<8);	
+	RALINK_REG(RALINK_SYSCTL_BASE+0x64)&= ~((0x3<<16)|(0x3));
+#endif	
 #if defined(RT3052_ASIC_BOARD) || defined(RT3352_ASIC_BOARD) || defined(RT5350_ASIC_BOARD)
 	//turn on all Ethernet LEDs around 0.5sec.
 #if 0
@@ -1368,6 +1404,12 @@ void board_init_r (gd_t *id, ulong dest_addr)
 	config_usb_mtk_xhci();
 #endif
 #endif
+
+#ifdef RALINK_PCIE0_RST
+	void disable_pcie();
+	disable_pcie();
+#endif
+
 	u32 reg = RALINK_REG(RT2880_RSTSTAT_REG);
 	if(reg & RT2880_WDRST ){
 		printf("***********************\n");
@@ -1472,6 +1514,20 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #endif
 #endif //CFG_ENV_IS_IN_FLASH
 
+#if defined(MT7628_ASIC_BOARD)
+	/* Enable ePA/eLNA share pin */
+	{
+		char ee35;
+		raspi_read((char *)&ee35, CFG_FACTORY_ADDR-CFG_FLASH_BASE+0x35, 1);
+		if (ee35 & 0x2)
+		{
+			RALINK_REG(RALINK_SYSCTL_BASE+0x60)|= ((0x3<<24)|(0x3 << 6));
+		}
+	}
+
+	// reset MIPS now also reset Andes
+	RALINK_REG(RALINK_SYSCTL_BASE+0x38)|= 0x200;	
+#endif	
 	/* initialize malloc() area */
 	mem_malloc_init();
 	malloc_bin_reloc();
@@ -1763,7 +1819,15 @@ void board_init_r (gd_t *id, ulong dest_addr)
 	printf("============================================ \n");
 	printf("Ralink UBoot Version: %s\n", RALINK_LOCAL_VERSION);
 	printf("-------------------------------------------- \n");
-	printf("%s %s %s\n",CHIP_TYPE, CHIP_VERSION, GMAC_MODE);
+#ifdef RALINK_DUAL_CORE_FUN	
+	printf("%s %s %s %s\n", CHIP_TYPE, RALINK_REG(RT2880_CHIP_REV_ID_REG)>>16&0x1 ? "MT7621A" : "MT7621N", "DualCore", GMAC_MODE);
+#else
+	if(RALINK_REG(RT2880_CHIP_REV_ID_REG)>>17&0x1) {
+		printf("%s %s %s %s\n", CHIP_TYPE, RALINK_REG(RT2880_CHIP_REV_ID_REG)>>16&0x1 ? "MT7621A" : "MT7621N", "SingleCore", GMAC_MODE);
+	}else {
+		printf("%s %s%s %s\n", CHIP_TYPE, RALINK_REG(RT2880_CHIP_REV_ID_REG)>>16&0x1 ? "MT7621A" : "MT7621N", "S", GMAC_MODE);
+	}
+#endif
 	printf("DRAM_CONF_FROM: %s \n", RALINK_REG(RT2880_SYSCFG_REG)>>9&0x1 ? "Auto-Detection" : "EEPROM");
 	printf("DRAM_TYPE: %s \n", RALINK_REG(RT2880_SYSCFG_REG)>>4&0x1 ? "DDR2": "DDR3");
 	printf("DRAM bus: %d bit\n", DRAM_BUS);
@@ -1871,11 +1935,13 @@ void board_init_r (gd_t *id, ulong dest_addr)
     #endif
 	rt6855A_gsw_init();
 #elif defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
-    #if defined (MAC_TO_MT7530_MODE) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
 	//enable MDIO
 	RALINK_REG(0xbe000060) &= ~(1 << 12); //set MDIO to Normal mode
 	RALINK_REG(0xbe000060) &= ~(1 << 14); //set RGMII1 to Normal mode
 	RALINK_REG(0xbe000060) &= ~(1 << 15); //set RGMII2 to Normal mode
+    #if defined (MT7621_USE_GE2) && defined (GE_RGMII_FORCE_1000)
+	setup_external_gsw();
+    #elif defined (MAC_TO_MT7530_MODE) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
 	setup_internal_gsw();
     #endif
 #elif defined (RT3883_ASIC_BOARD) && defined (RTL8367_SW)
@@ -2762,5 +2828,22 @@ static int watchdog_reset()
 	}
 
 	return 0;
+}
+#endif
+
+#ifdef RALINK_PCIE0_RST
+void disable_pcie(void)
+{
+	u32 val;
+	
+	val = RALINK_REG(RT2880_RSTCTRL_REG);    // assert RC RST
+	val |= RALINK_PCIE0_RST;
+	RALINK_REG(RT2880_RSTCTRL_REG) = val;
+
+#if defined (MT7628_ASIC_BOARD)
+	val = RALINK_REG(RT2880_CLKCFG1_REG);    // disable PCIe clock
+	val &= ~RALINK_PCIE_CLK_EN;
+	RALINK_REG(RT2880_CLKCFG1_REG) = val;
+#endif
 }
 #endif

@@ -295,6 +295,18 @@ check_nmi: # Verify we are here due to a reset (and not NMI.)
 
 	set_tag 0x01
 
+#if 0	// set GPIO19(PERST_N) to output mode and pull low
+	li	t0, 0xbe000600
+	lw	t1, 0(t0)
+	li	t2, 1<<19
+	or	t1, t1, t2
+	sw	t1, 0(t0)
+	li	t0, 0xbe000620
+	lw	t1, 0(t0)
+	li	t2, ~(1<<19)
+	and	t1, t1, t2
+	sw	t1, 0(t0)
+#endif
     mfc0    r4_temp_data, $12                   # Read CP0 Status
     srl     r4_temp_data, 19                    # Shift [NMI] into LSBs.
     andi    r4_temp_data, r4_temp_data, 1       # Inspect CP0 Config[AT]
@@ -479,7 +491,7 @@ finish_initialisation:
 	la	sp, 0(t0)
 	set_tag 0x06	
 	lui	t9, %hi(board_init_f)
-	ori t9, %lo(board_init_f)
+	addiu t9, %lo(board_init_f)
 	jr	t9
 	nop
 
@@ -546,7 +558,7 @@ set_gpr_boot_values:
 	ext	    r23_cpu_num, r4_temp_data, 0, 4     # Extract CPUNum
     li      r24_malta_word, MALTA_DISP_ADDR     # Need for reporting failed assertions.
     lui     r28_global_addr, %hi(_gp)                # All vpe share globals.
-	ori		r28_global_addr, %lo(_gp)
+	addiu	r28_global_addr, %lo(_gp)
     li      r29_stack_addr, STACK_BASE_ADDR     # Each vpe gets it's own stack.
     ins     r29_stack_addr, r23_cpu_num, STACK_SIZE_LOG2, 3
 
@@ -933,9 +945,23 @@ init_mc:
 #define RALINK_RSTCTRL_REG     		(RALINK_SYSCTL_BASE+0x34)
 
 
-	//increase SPI clock ASAP
+	//set SPI clock to system bus /(5+2)
 	li	t0, RALINK_SPI_BASE + 0x3c
-	sw	zero, 0(t0)
+	//sw	zero, 0(t0)
+	li	t1, ~0x0FFF
+	lw	t2, 0(t0)
+	and	t2, t2, t1
+	ori	t2, t2, 0x5
+	sw	t2, 0(t0)
+
+	/* change CPU ratio from 1/A to 1/1 */
+	li	t0, RALINK_DYN_CFG0_REG
+	li	t1, ~(0x0F<<8)
+	lw	t2, 0(t0)
+	and	t2, t2, t1
+	li	t1, 1<<8
+	or  t2, t2, t1
+	sw	t2, 0(t0)
 	
 	/* enter accessible PSE SRAM */
 
@@ -983,7 +1009,7 @@ DLY:
 	sw		t1, 0(t0)
 
 	lui		t0, %hi(uboot_end_data)
-	ori		t0, t0, %lo(uboot_end_data)
+	addiu	t0, t0, %lo(uboot_end_data)
 	li		t1, 0xBE108800
 	li		t3, (24*1024-256-0x800)
 	
@@ -1092,14 +1118,14 @@ DLY:
 	sw		t1, 0(t0)
 	set_tag 0xC
 	lui		t9, %hi(mempll_init)
-	ori		t9, t9, %lo(mempll_init)
+	addiu	t9, t9, %lo(mempll_init)
 	jalr    t9
 	nop
 MEMPLL_INIT_DONE:	
 #endif
 	set_tag 0xD
 	lui		t9, %hi(ddr_initialize)
-	ori		t9, t9, %lo(ddt_initialize)
+	addiu	t9, t9, %lo(ddt_initialize)
 	jalr    t9
 	nop
 	set_tag 0xE
@@ -1131,11 +1157,11 @@ DDR_INIT_DONE:
 #endif // UBOOT_ROM //
 COPY_WAITCODE:
 	lui	t0, %hi(waitcode_start)
-	ori	t0, t0, %lo(waitcode_start)
+	addiu	t0, t0, %lo(waitcode_start)
 	lui	t1, %hi(waitcode_end)
-	ori	t1, t1, %lo(waitcode_end)
+	addiu	t1, t1, %lo(waitcode_end)
 	lui	t2, %hi(WAITCODE_IN_RAM)
-	ori	t2, t2, %lo(WAITCODE_IN_RAM)
+	addiu	t2, t2, %lo(WAITCODE_IN_RAM)
 1:
 	lw	t3, 0(t0)
 	sw	t3, 0(t2)
@@ -1771,7 +1797,7 @@ nextvpe:
 	# vpe1 of each core can execute cached as it's L1 I$ has already been initialized.
     # and the L2$ has been initialized or "disabled" via CCA override.
 	lui	r5_temp_addr, %hi(__reset_vector)
-	ori	r5_temp_addr, %lo(__reset_vector)
+	addiu	r5_temp_addr, %lo(__reset_vector)
 #if !defined (MTK_NAND)
 	ins     r5_temp_addr, $0, 29, 1 # Convert to cached kseg0 address in case we linked to kseg1.
 #endif	
@@ -1844,7 +1870,7 @@ relocate_code:
 
 	li	t0, CONFIG_SYS_MONITOR_BASE
 	lui	t3, %hi(in_ram)
-	ori	t3, t3, %lo(in_ram)
+	addiu	t3, t3, %lo(in_ram)
 	lw	t2, -12(t3)		# t2 <-- uboot_end_data
 	move	t1, a2
 	move	s2, a2			# s2 <-- destination address
@@ -1938,10 +1964,10 @@ in_ram:
 	set_tag	0x9
 	move	a0, s0			# a0 <-- gd
 	lui	t9, %hi(board_init_r)
-	ori	t9, t9, %lo(board_init_r)
+	addiu	t9, t9, %lo(board_init_r)
 #if 1	/* VIOSOFT: FIXME */
 	lui	t8, %hi(_start)
-	ori	t8, t8, %lo(_start)
+	addiu	t8, t8, %lo(_start)
 	sub	t9, t8
 	add	t9, s2, t9
 #endif	/* VIOSOFT */

@@ -256,7 +256,10 @@ struct chip_info {
 struct chip_info *spi_chip_info = NULL;
 
 static struct chip_info chips_data [] = {
+//64Mb
+	{ "MT25QL512AB",	0x20, 0xba201044, 64 * 1024, 1024, 1 },        
 //32Mb
+	{ "N25Q256A",		0x20, 0xba191000, 64 * 1024, 512, 1 },
 	{ "MX25L25635E",	0xc2, 0x2019c220, 64 * 1024, 512, 1 },
 	{ "S25FL256S",		0x01, 0x02194D01, 64 * 1024, 512, 1 },
 	{ "W25Q256FV",          0xef, 0x40190000, 64 * 1024, 512, 1 },
@@ -634,6 +637,7 @@ static int raspi_4byte_mode(int enable)
 		u8 code;
 
 		raspi_wait_ready(1);
+	    raspi_write_enable();
 	
 		if (enable)
 		{

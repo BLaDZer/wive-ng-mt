@@ -73,6 +73,12 @@ void udelay (unsigned long usec)
 		/*NOP*/;
 }
 
+void mdelay(unsigned long msec)
+{
+	while (msec--)
+		udelay(1000);
+}
+
 #if 0
 /*
  * This function is derived from PowerPC code (read timebase as long long).
