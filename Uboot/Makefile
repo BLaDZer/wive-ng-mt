@@ -59,10 +59,10 @@ TOPDIR := $(shell export LC_ALL=C; if [ "$$PWD" != "" ]; then echo $$PWD; else p
 export	TOPDIR
 
 ifeq ($(MT7621_MP), y)
-CONFIG_CROSS_COMPILER_PATH ?= /opt/Wive-RTNL/Uboot/toolchain/mips-2012.03/bin/
+CONFIG_CROSS_COMPILER_PATH ?= /opt/Wive-MT/Uboot/toolchain/mips-2012.03/bin/
 else
 # boot build only old gcc....
-CONFIG_CROSS_COMPILER_PATH ?= /opt/Wive-RTNL/Uboot/toolchain/bin
+CONFIG_CROSS_COMPILER_PATH ?= /opt/Wive-MT/Uboot/toolchain/bin
 endif
 
 ifeq (include/config.mk,$(wildcard include/config.mk))
