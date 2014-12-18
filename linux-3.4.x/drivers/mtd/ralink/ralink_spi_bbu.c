@@ -1122,7 +1122,7 @@ static int raspi_probe(void)
 		rt2880_partitions[3].size = ntohl(hdr.ih_ksz);
 		rt2880_partitions[4].size = IMAGE1_SIZE - (MTD_BOOT_PART_SIZE +
 				MTD_CONFIG_PART_SIZE + MTD_FACTORY_PART_SIZE +
-				MTD_STORE_PART_SIZE +
+				MTD_RWFS_PART_SIZE +
 				ntohl(hdr.ih_ksz));
 	}
 #endif
