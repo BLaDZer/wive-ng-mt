@@ -440,6 +440,7 @@
 9) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
 10) kernel: ralink_gpio: switch to schedule_work.<br>
 11) kernel: ralink_gpio: fix 9532 mode support.<br>
+12) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
 <br>
 <br>
 <b>TODO:</b><br>
