@@ -6,7 +6,7 @@
 #include <linux/sysctl.h>
 
 /* Nat mode type */
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 #define NAT_MODE_LINUX		0
 #define NAT_MODE_FCONE		1
 #define NAT_MODE_RCONE		2
@@ -19,7 +19,7 @@
 #define NF_QUEUE 3
 #define NF_REPEAT 4
 
-#ifndef CONFIG_BCM_NAT
+#if !defined(CONFIG_BCM_NAT)
 #define NF_STOP 5
 #if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
 #define NF_IMQ_QUEUE 6

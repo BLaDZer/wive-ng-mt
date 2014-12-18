@@ -263,7 +263,7 @@ struct in6_flowlabel_req {
 
 /*
  * Multicast Routing:
- * see include/uapi/linux/mroute6.h.
+ * see include/linux/mroute6.h.
  *
  * MRT6_BASE			200
  * ...

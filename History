@@ -429,20 +429,21 @@
 <br>
 <br>
 <b>2.1.x</b><br>
-1) uboot: update to last version.<br>
-2) reg tool: small fixup.<br>
-3) mii tool: fixup and add 7628 support.<br>
-4) gpio tool: fix 9532 mode support.<br>
-5) nvram lib: do not direct read from flash at show.<br>
-6) nvram tool: fix generate wifi config.<br>
-7) switch tool: add igmp snooping managment.<br>
-8) hw_nat: FoE entry range check, entry valid check.<br>
-9) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-10) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
-11) kernel: ralink_gpio: switch to schedule_work.<br>
-12) kernel: ralink_gpio: fix 9532 mode support.<br>
-13) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
-14) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
+1) toolchain: update kernel headers and sync gcc with upstream.<br>
+2) uboot: update to last version.<br>
+3) reg tool: small fixup.<br>
+4) mii tool: fixup and add 7628 support.<br>
+5) gpio tool: fix 9532 mode support.<br>
+6) nvram lib: do not direct read from flash at show.<br>
+7) nvram tool: fix generate wifi config.<br>
+8) switch tool: add igmp snooping managment.<br>
+9) hw_nat: FoE entry range check, entry valid check.<br>
+10) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+11) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
+12) kernel: ralink_gpio: switch to schedule_work.<br>
+13) kernel: ralink_gpio: fix 9532 mode support.<br>
+14) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
+15) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
 <br>
 <br>
 <b>TODO:</b><br>

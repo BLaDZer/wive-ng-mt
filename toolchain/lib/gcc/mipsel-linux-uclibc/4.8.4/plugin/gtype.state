@@ -4,7 +4,7 @@
 ;;; Don't parse this file wihout knowing GCC gengtype internals.
 ;;; This file should be parsed by the same gengtype which wrote it.
 
-(!version  "4.8.4 20141127 (prerelease)")
+(!version  "4.8.4 20141211 (prerelease)")
 
 (!srcdir  "../../gcc-4.8.4/gcc")
 
@@ -30576,7 +30576,7 @@ nil )
 (!pair  "critical_name_mutexes"
 (!type already_seen 1384)
 
-(!srcfileloc  "omp-low.c" 6338)
+(!srcfileloc  "omp-low.c" 6398)
 
 (!options 
 (!option param2_is type 
@@ -30591,7 +30591,7 @@ nil )
 (!pair  "tmp_ompfn_id_num"
 (!type already_seen 9)
 
-(!srcfileloc  "omp-low.c" 1554)
+(!srcfileloc  "omp-low.c" 1555)
 nil )
 (!pair  "parallelized_functions"
 (!type already_seen 120)
