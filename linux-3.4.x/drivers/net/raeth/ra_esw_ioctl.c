@@ -37,7 +37,7 @@
 #include "ra_esw_ioctl.h"
 #include "ra_esw_ioctl_def.h"
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../../../net/nat/hw_nat/ra_nat.h"
 #include "../../../net/nat/hw_nat/foe_fdb.h"
 extern int (*ra_sw_nat_hook_rx)(struct sk_buff *skb);
@@ -672,7 +672,7 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 #endif
 
 #if defined (CONFIG_RALINK_MT7620) && !defined (CONFIG_MT7530_GSW)
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	if (ra_sw_nat_hook_rx != NULL)
 		esw_port_ingress_mode_set(LAN_PORT_CPU, PVLAN_INGRESS_MODE_FALLBACK);
 	else

@@ -24,7 +24,7 @@
 #include "ra_esw_ioctl.h"
 #endif
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../../../net/nat/hw_nat/ra_nat.h"
 #include "../../../net/nat/hw_nat/foe_fdb.h"
 #endif
@@ -44,7 +44,7 @@ static int hw_offload_tso = 1;
 #endif
 #endif
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #ifdef CONFIG_RAETH_MODULE
 extern int (*ra_sw_nat_hook_rx)(struct sk_buff *skb);
 extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
@@ -95,7 +95,7 @@ struct net_device *dev_raether = NULL;
 
 //////////////////////////////////////////////////////////////
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 struct FoeEntry *get_foe_table(dma_addr_t *dma_handle, uint32_t *FoeTblSize)
 {
 	if (dma_handle)
@@ -140,7 +140,7 @@ static void raeth_ring_free(END_DEVICE *ei_local)
 		}
 	}
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* free PPE FoE table */
 	if (PpeFoeBase) {
 		dma_free_coherent(NULL, FOE_4TB_SIZ * sizeof(struct FoeEntry), PpeFoeBase, PpeFoeBasePhy);
@@ -154,7 +154,7 @@ static int raeth_ring_alloc(END_DEVICE *ei_local)
 {
 	int i, k;
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* PPE FoE Table */
 	PpeFoeBase = (struct FoeEntry *)dma_alloc_coherent(NULL, FOE_4TB_SIZ * sizeof(struct FoeEntry), &PpeFoeBasePhy, GFP_KERNEL);
 #endif
@@ -215,7 +215,7 @@ static void fill_hw_vlan_tx(void)
 		vlan_4k_map[i] = (u8)i;
 	}
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* map VLAN TX for external offload (use slots 11..15) */
 	i = 11;
 #if defined (CONFIG_RA_HW_NAT_WIFI)
@@ -957,7 +957,7 @@ static inline int raeth_recv(struct net_device* dev, END_DEVICE* ei_local, int w
 #endif
 		rx_skb->tail = rx_skb->data + length;
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 		FOE_MAGIC_TAG(rx_skb) = FOE_MAGIC_GE;
 		DO_FILL_FOE_DESC(rx_skb, (rxd_info4 & ~(RX4_DMA_ALG_SET)));
 #endif
@@ -1001,7 +1001,7 @@ static inline int raeth_recv(struct net_device* dev, END_DEVICE* ei_local, int w
 /* ra_sw_nat_hook_rx return 1 --> continue
  * ra_sw_nat_hook_rx return 0 --> FWD & without netif_rx
  */
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 		if((ra_sw_nat_hook_rx == NULL) ||
 		   (ra_sw_nat_hook_rx != NULL && ra_sw_nat_hook_rx(rx_skb)))
 #endif
@@ -1058,7 +1058,7 @@ static inline int raeth_xmit(struct sk_buff* skb, struct net_device *dev, END_DE
 		return NETDEV_TX_OK;
 	}
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	if (ra_sw_nat_hook_tx != NULL) {
 #if defined (CONFIG_RA_HW_NAT_WIFI) || defined (CONFIG_RA_HW_NAT_PCI)
 		if (IS_DPORT_PPE_VALID(skb))
@@ -1840,7 +1840,7 @@ void ei_uninit(struct net_device *dev)
 	netif_napi_del(&ei_local->napi);
 #endif
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* down PPE engine before free ring */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(0);
@@ -1876,7 +1876,7 @@ int ei_open(struct net_device *dev)
 
 	spin_lock_irqsave(&ei_local->page_lock, flags);
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* down PPE engine before FE reset */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(0);
@@ -1891,7 +1891,7 @@ int ei_open(struct net_device *dev)
 	fe_mac2_addr_set(ei_local->PseudoDev->dev_addr);
 #endif
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* up PPE engine after FE init */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(1);

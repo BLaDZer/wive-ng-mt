@@ -529,7 +529,7 @@ static bool tcp_in_window(const struct nf_conn *ct,
 	s16 receiver_offset;
 	bool res;
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	if(ra_sw_nat_hook_rx != NULL)
 		return true;
 #else

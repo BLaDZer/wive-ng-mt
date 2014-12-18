@@ -185,7 +185,7 @@ int ip6_output(struct sk_buff *skb)
 		return 0;
 	}
 
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	/* IMQ-patch: moved setting skb->dev and skb->protocol from
 	 * ip6_finish_output2 to fix crashing at netif_skb_features(). */
 	skb->protocol = htons(ETH_P_IPV6);

@@ -72,17 +72,17 @@
 
 #include "kmap_skb.h"
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../net/nat/hw_nat/ra_nat.h"
 #endif
 
 static struct kmem_cache *skbuff_head_cache __read_mostly;
 static struct kmem_cache *skbuff_fclone_cache __read_mostly;
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 static struct kmem_cache *skbuff_cb_store_cache __read_mostly;
 #endif
 
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 /* Control buffer save/restore for IMQ devices */
 struct skb_cb_table {
 	char			cb[48] __aligned(8);
@@ -512,7 +512,7 @@ static void skb_release_head_state(struct sk_buff *skb)
 		WARN_ON(in_irq());
 		skb->destructor(skb);
 	}
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	/*
 	 * This should not happen. When it does, avoid memleak by restoring
 	 * the chain of cb-backups.
@@ -680,7 +680,7 @@ static void __copy_skb_header(struct sk_buff *new, const struct sk_buff *old)
 	new->sp			= secpath_get(old->sp);
 #endif
 	memcpy(new->cb, old->cb, sizeof(old->cb));
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	skb_copy_stored_cb(new, old);
 #endif
 	new->csum		= old->csum;
@@ -3063,7 +3063,7 @@ void __init skb_init(void)
 						0,
 						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
 						NULL);
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	skbuff_cb_store_cache = kmem_cache_create("skbuff_cb_store_cache",
 						  sizeof(struct skb_cb_table),
 						  0,

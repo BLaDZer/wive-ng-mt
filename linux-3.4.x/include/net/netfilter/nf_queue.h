@@ -31,7 +31,7 @@ extern int nf_unregister_queue_handler(u_int8_t pf,
 extern void nf_unregister_queue_handlers(const struct nf_queue_handler *qh);
 extern void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict);
 
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 extern void nf_queue_entry_release_refs(struct nf_queue_entry *entry);
 extern void nf_register_queue_imq_handler(const struct nf_queue_handler *qh);
 extern void nf_unregister_queue_imq_handler(void);

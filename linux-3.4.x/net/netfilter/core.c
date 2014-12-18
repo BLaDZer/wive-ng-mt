@@ -210,7 +210,7 @@ next_hook:
 		ret = NF_DROP_GETERR(verdict);
 		if (ret == 0)
 			ret = -EPERM;
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	} else if ((verdict & NF_VERDICT_MASK) == NF_QUEUE ||
 		   (verdict & NF_VERDICT_MASK) == NF_IMQ_QUEUE) {
 		int err = nf_queue(skb, elem, pf, hook, indev, outdev, okfn,

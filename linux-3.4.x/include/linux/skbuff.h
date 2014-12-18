@@ -32,7 +32,7 @@
 #include <linux/hrtimer.h>
 #include <linux/dma-mapping.h>
 #include <linux/netdev_features.h>
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 #include <linux/imq.h>
 #endif
 
@@ -115,7 +115,7 @@ struct net_device;
 struct scatterlist;
 struct pipe_inode_info;
 
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 struct nf_conntrack {
 	atomic_t use;
 };
@@ -406,7 +406,7 @@ struct sk_buff {
 	 * first. This is owned by whoever has the skb queued ATM.
 	 */
 	char			cb[48] __aligned(8);
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	void			*cb_next;
 #endif
 
@@ -445,10 +445,10 @@ struct sk_buff {
 	__be16			protocol;
 
 	void			(*destructor)(struct sk_buff *skb);
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	struct nf_conntrack	*nfct;
 #endif
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	struct nf_queue_entry	*nf_queue_entry;
 #endif
 #ifdef CONFIG_BRIDGE_NETFILTER
@@ -485,7 +485,7 @@ struct sk_buff {
 	/* 9/11 bit hole (depending on ndisc_nodetype presence) */
 	kmemcheck_bitfield_end(flags2);
 
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	__u8			imq_flags:IMQ_F_BITS;
 #endif
 
@@ -574,7 +574,7 @@ static inline struct rtable *skb_rtable(const struct sk_buff *skb)
 }
 
 
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 extern int skb_save_cb(struct sk_buff *skb);
 extern int skb_restore_cb(struct sk_buff *skb);
 #endif
@@ -2428,7 +2428,7 @@ static inline __sum16 skb_checksum_complete(struct sk_buff *skb)
 	       0 : __skb_checksum_complete(skb);
 }
 
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 extern void nf_conntrack_destroy(struct nf_conntrack *nfct);
 static inline void nf_conntrack_put(struct nf_conntrack *nfct)
 {
@@ -2455,7 +2455,7 @@ static inline void nf_bridge_get(struct nf_bridge_info *nf_bridge)
 #endif /* CONFIG_BRIDGE_NETFILTER */
 static inline void nf_reset(struct sk_buff *skb)
 {
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	nf_conntrack_put(skb->nfct);
 	skb->nfct = NULL;
 #endif
@@ -2475,12 +2475,12 @@ static inline void nf_reset_trace(struct sk_buff *skb)
 /* Note: This doesn't put any conntrack and bridge info in dst. */
 static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src)
 {
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	dst->nfct = src->nfct;
 	nf_conntrack_get(src->nfct);
 	dst->nfctinfo = src->nfctinfo;
 #endif
-#if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+#if IS_ENABLED(CONFIG_IMQ)
 	dst->imq_flags = src->imq_flags;
 	dst->nf_queue_entry = src->nf_queue_entry;
 #endif
@@ -2492,7 +2492,7 @@ static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src)
 
 static inline void nf_copy(struct sk_buff *dst, const struct sk_buff *src)
 {
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	nf_conntrack_put(dst->nfct);
 #endif
 #ifdef CONFIG_BRIDGE_NETFILTER

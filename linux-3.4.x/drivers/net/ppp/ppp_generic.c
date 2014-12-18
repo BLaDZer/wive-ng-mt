@@ -56,7 +56,7 @@
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../../../net/nat/hw_nat/ra_nat.h"
 #endif
 

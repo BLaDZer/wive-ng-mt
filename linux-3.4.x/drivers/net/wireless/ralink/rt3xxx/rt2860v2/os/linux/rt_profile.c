@@ -573,7 +573,7 @@ void announce_802_3_packet(
 	PACKET_CB_ASSIGN(pNetPkt, 22) = 0xa8;
 #endif
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #if !defined (CONFIG_RA_NAT_NONE)
 	/*
 	 * ra_sw_nat_hook_rx return 1 --> continue
@@ -798,7 +798,7 @@ int	RTMPSendPackets(
 		return 0;
 	}
 
-#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #if !defined (CONFIG_RA_NAT_NONE)
 	if (ra_sw_nat_hook_tx != NULL)
 	{

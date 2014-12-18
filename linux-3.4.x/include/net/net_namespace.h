@@ -17,7 +17,7 @@
 #include <net/netns/ipv6.h>
 #include <net/netns/dccp.h>
 #include <net/netns/x_tables.h>
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 #include <net/netns/conntrack.h>
 #endif
 #include <net/netns/xfrm.h>
@@ -80,12 +80,12 @@ struct net {
 #if IS_ENABLED(CONFIG_IPV6)
 	struct netns_ipv6	ipv6;
 #endif
-#if defined(CONFIG_IP_DCCP) || defined(CONFIG_IP_DCCP_MODULE)
+#if IS_ENABLED(CONFIG_IP_DCCP)
 	struct netns_dccp	dccp;
 #endif
 #ifdef CONFIG_NETFILTER
 	struct netns_xt		xt;
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	struct netns_ct		ct;
 #endif
 	struct sock		*nfnl;
