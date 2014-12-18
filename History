@@ -442,6 +442,7 @@
 11) kernel: ralink_gpio: switch to schedule_work.<br>
 12) kernel: ralink_gpio: fix 9532 mode support.<br>
 13) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
+14) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
 <br>
 <br>
 <b>TODO:</b><br>
