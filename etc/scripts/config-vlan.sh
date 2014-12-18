@@ -99,7 +99,6 @@ link_up() {
 
 reset_all_phys() {
 	$LOG "Reset all phy port"
-	eval `nvram_buf_get 2860 OperationMode wan_port`
 	if [ "$OperationMode" = "1" ]; then
 	    # Ports down skip WAN port
 	    if [ "$wan_portN" = "0" ]; then
@@ -131,7 +130,6 @@ reset_all_phys() {
 
 reset_wan_phys() {
 	$LOG "Reset wan phy port"
-	eval `nvram_buf_get 2860 OperationMode wan_port`
 	if [ "$OperationMode" = "1" ]; then
 	    if [ "$wan_portN" = "0" ]; then
 		link_down 4
@@ -266,7 +264,6 @@ config6855Esw()
 		switch vlan set 4 5 00001011
 		switch vlan set 5 6 00000111
 	elif [ "$1" = "VLANS" ]; then
-	    eval `nvram_buf_get 2860 wan_port tv_port sip_port`
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
 	    if [ "$wan_port" = "4" ]; then
@@ -359,6 +356,12 @@ config6855Esw()
 	    fi
 	fi
 
+	if [ "$green_ethernet" = "1" ]; then
+	    for i in `seq 0 6`; do
+		switch reg w 2${i}04 ff0003		#ports 0-6 enable green ethernet mode
+	    done
+	fi
+
 	switch reg w 3500 00008000		#port 5 link down
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
@@ -387,6 +390,8 @@ restore6855Esw()
 	#clear mac table if vlan configuration changed
 	switch clear
 }
+
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port green_ethernet`
 
 if [ "$1" = "3" ]; then
 	SWITCH_MODE=3

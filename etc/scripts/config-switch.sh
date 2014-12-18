@@ -65,9 +65,11 @@ configs_system_vlans() {
 	    $LOG "Add vlans interfaces"
 	    if [ ! -d /proc/sys/net/ipv4/conf/eth2.1 ]; then
 		vconfig add eth2 1
+		set_vlan_map eth2.1
 	    fi
 	    if [ ! -d /proc/sys/net/ipv4/conf/eth2.2 ]; then
 		vconfig add eth2 2
+		set_vlan_map eth2.2
 	    fi
 	    if [ -f /etc/scripts/switchadv.sh ]; then
 		#this hook for advanced SWITCH/VLAN map configure

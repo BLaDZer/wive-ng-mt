@@ -11,11 +11,13 @@ start() {
 	    $LOG "Add bridge for TV/STB"
 	    brctl addbr "$vlantvif"
 	    vconfig add eth2 3
+	    set_vlan_map eth2.3
 	    ip link set eth2.3 up
 	    brctl addif "$vlantvif" eth2.3
 	    for i in $tv_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $tv_portVLAN"
 		vconfig add "$phys_wan_if" "$i"
+		set_vlan_map "$phys_wan_if.$i"
 		brctl addif "$vlantvif" "$phys_wan_if.$i"
 		ip link set "$phys_wan_if.$i" up
 	    done
@@ -36,6 +38,7 @@ start() {
 	    for i in $sip_portVLAN; do
 		$LOG "Add vlan $i for TV/STB port input (WAN) $sip_portVLAN"
 		vconfig add "$phys_wan_if" "$i"
+		set_vlan_map "$phys_wan_if.$i"
 		brctl addif "$vlansipif" "$phys_wan_if.$i"
 		ip link set "$phys_wan_if.$i" up
 	    done

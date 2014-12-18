@@ -281,6 +281,16 @@ readdif_to_br() {
     ip link set $1 up
 }
 
+set_vlan_map()
+{
+    for i in `seq 0 7`; do
+	# vlan priority tag => skb->priority mapping
+        vconfig set_ingress_map $1 $i $i
+	# skb->priority => vlan priority tag mapping
+        vconfig set_egress_map $1  $i $i
+    done
+}
+
 # get params
 getFirstWlanIfName
 getSecWlanIfName
