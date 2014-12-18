@@ -436,9 +436,10 @@
 5) nvram lib: do not direct read from flash at show.<br>
 6) nvram tool: fix generate wifi config.<br>
 7) switch tool: add igmp snooping managment.<br>
-8) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-9) kernel: ralink_gpio: switch to schedule_work.<br>
-10) kernel: ralink_gpio: fix 9532 mode support.<br>
+8) hw_nat: FoE entry range check, entry valid check.<br>
+9) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+10) kernel: ralink_gpio: switch to schedule_work.<br>
+11) kernel: ralink_gpio: fix 9532 mode support.<br>
 <br>
 <br>
 <b>TODO:</b><br>

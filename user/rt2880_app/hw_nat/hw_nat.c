@@ -28,6 +28,10 @@ void show_usage(void)
     printf("Show All Foe Binded Entry\n");
     printf("Ex: hw_nat -g\n\n");
 
+    printf("Unbind Foe Entry\n");
+    printf("hw_nat -x [entry_num]\n");
+    printf("Ex: hw_nat -x 1234\n\n");
+
 #if !defined (CONFIG_HNAT_V2)
     printf("Enable DSCP Remark\n");
     printf("Ex: hw_nat -A [0/1]\n\n");
@@ -111,9 +115,9 @@ int main(int argc, char *argv[])
 {
     int opt;
 #if !defined (CONFIG_HNAT_V2)
-    char options[] = "efg?c:d:A:B:C:D:E:F:G:H:I:J:K:L:M:N:O:P:Q:T:U:V:Z:6:";
+    char options[] = "efg?c:x:d:A:B:C:D:E:F:G:H:I:J:K:L:M:N:O:P:Q:T:U:V:Z:6:";
 #else
-    char options[] = "aefg?c:d:A:N:O:P:Q:T:U:V:Z:6:";
+    char options[] = "aefg?c:x:d:A:N:O:P:Q:T:U:V:Z:6:";
 #endif
     int method = 0;
     int i=0;
@@ -145,6 +149,10 @@ int main(int argc, char *argv[])
 #endif
 	case 'c':
 		method = HW_NAT_DUMP_ENTRY;
+		entry_num = strtoll(optarg, NULL, 10);
+		break;
+	case 'x':
+		method = HW_NAT_UNBIND_ENTRY;
 		entry_num = strtoll(optarg, NULL, 10);
 		break;
 	case 'd':
@@ -407,6 +415,9 @@ int main(int argc, char *argv[])
     case HW_NAT_DUMP_ENTRY:
 	    result = HwNatDumpEntry(entry_num);
 	    break;
+    case HW_NAT_UNBIND_ENTRY:
+	    result = HwNatUnBindEntry(entry_num);
+	    break;
     case HW_NAT_DEBUG:
 	    result = HwNatDebug(debug);
 	    break;
@@ -507,11 +518,14 @@ int main(int argc, char *argv[])
 	    HwNatSetConfig(&args4, method);
 	    result = args4.result;
 	    break;
+    default:
+	    result = HWNAT_FAIL;
+	    break;
     }
 
-    if(result==HWNAT_SUCCESS){
+    if(result == HWNAT_SUCCESS){
 	printf("done\n");
-    }else if(result==HWNAT_ENTRY_NOT_FOUND) {
+    }else if(result == HWNAT_ENTRY_NOT_FOUND) {
 	printf("entry not found\n");
     }else {
 	printf("fail\n");
