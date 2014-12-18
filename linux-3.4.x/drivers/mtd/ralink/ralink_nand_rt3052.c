@@ -1825,6 +1825,7 @@ static struct nand_ecclayout ra_oob_layout = {
 	// 5th byte is bad-block flag.
 };
 
+extern int ra_check_flash_type(void);
 static int __init ra_nand_init(void) 
 {
 	struct ra_nand_chip *ra;

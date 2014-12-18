@@ -1151,6 +1151,7 @@ struct chip_info *chip_prob(void)
  * matches what the READ command supports, at least until this driver
  * understands FAST_READ (for clocks over 25 MHz).
  */
+extern int ra_check_flash_type(void);
 static int raspi_probe(void)
 {
 	struct chip_info *chip;
