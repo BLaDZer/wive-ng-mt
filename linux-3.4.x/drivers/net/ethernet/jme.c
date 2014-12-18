@@ -1861,8 +1861,8 @@ jme_open(struct net_device *netdev)
 
 	tasklet_enable(&jme->linkch_task);
 	tasklet_enable(&jme->txclean_task);
-	tasklet_hi_enable(&jme->rxclean_task);
-	tasklet_hi_enable(&jme->rxempty_task);
+	tasklet_enable(&jme->rxclean_task);
+	tasklet_enable(&jme->rxempty_task);
 
 	rc = jme_request_irq(jme);
 	if (rc)
