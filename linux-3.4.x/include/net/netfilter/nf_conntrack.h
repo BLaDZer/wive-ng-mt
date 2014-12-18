@@ -120,7 +120,7 @@ struct nf_conn {
 	/* Timer function; drops refcnt when it goes off. */
 	struct timer_list timeout;
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	u_int32_t fastnat;
 #endif
 
@@ -337,7 +337,7 @@ extern unsigned int nf_conntrack_max;
 extern unsigned int nf_conntrack_hash_rnd;
 void init_nf_conntrack_hash_rnd(void);
 
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 extern unsigned int nf_conntrack_nat_mode;
 #endif
 

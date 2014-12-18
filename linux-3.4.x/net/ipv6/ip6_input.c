@@ -46,7 +46,7 @@
 #include <net/xfrm.h>
 
 #if defined (CONFIG_RA_HW_NAT_IPV6)
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #endif
 #endif
@@ -272,7 +272,7 @@ discard:
 int ip6_input(struct sk_buff *skb)
 {
 #if defined (CONFIG_RA_HW_NAT_IPV6)
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_ALG_MARK(skb);
 #endif
 #endif

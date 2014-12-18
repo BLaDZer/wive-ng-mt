@@ -21,7 +21,7 @@
 #include <net/netfilter/nf_conntrack.h>
 #endif
 
-#ifndef CONFIG_BCM_NAT
+#if !defined(CONFIG_BCM_NAT)
 static
 #endif
 inline int __fastpathnet nf_ct_ipv4_gather_frags(struct sk_buff *skb, u_int32_t user)

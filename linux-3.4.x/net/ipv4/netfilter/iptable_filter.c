@@ -18,7 +18,7 @@
 
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
 #include <net/netfilter/nf_conntrack.h>
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 extern unsigned int web_str_loaded;
 #endif
 #endif
@@ -58,7 +58,7 @@ iptable_filter_hook(unsigned int hook, struct sk_buff *skb,
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
 	nf_ct_get(skb, &ctinfo);
 	if ((ctinfo == IP_CT_ESTABLISHED_REPLY || ctinfo == IP_CT_ESTABLISHED) && net->ct.skip_filter
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	    && !web_str_loaded
 #endif
 	    )

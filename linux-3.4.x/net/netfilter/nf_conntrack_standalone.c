@@ -18,7 +18,7 @@
 #include <linux/security.h>
 #include <linux/inet.h>
 #include <net/net_namespace.h>
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 #include "../nat/bcm_nat/bcm_nat.h"
 #endif
 #ifdef CONFIG_SYSCTL
@@ -234,7 +234,7 @@ static int ct_seq_show(struct seq_file *s, void *v)
 	if (ct_show_secctx(s, ct))
 		goto release;
 
-#if defined(CONFIG_NETFILTER_XT_MATCH_LAYER7) || defined(CONFIG_NETFILTER_XT_MATCH_LAYER7_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_LAYER7)
 	if(ct->layer7.app_proto)
 		if(seq_printf(s, "l7proto=%s ", ct->layer7.app_proto))
 			goto release;
@@ -530,7 +530,7 @@ static struct ctl_table nf_ct_sysctl_table[] = {
 		.proc_handler	= proc_dointvec,
 	},
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	{
 		.procname	= "nf_conntrack_fastnat",
 		.data		= &nf_conntrack_fastnat,

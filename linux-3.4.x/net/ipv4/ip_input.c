@@ -146,11 +146,11 @@
 #include <linux/mroute.h>
 #include <linux/netlink.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #endif
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 #include "../nat/bcm_nat/bcm_nat.h"
 #endif
 /*
@@ -270,14 +270,14 @@ int ip_local_deliver(struct sk_buff *skb)
 			return 0;
 	}
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #if defined (CONFIG_HNAT_V2)
 	/* skip SIT tunnels */
 	if (ip_hdr(skb)->protocol != IPPROTO_IPV6)
 #endif
 	FOE_ALG_MARK(skb);
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	if(skb->cb[NF_FAST_ROUTE]) {
 	    skb->cb[NF_FAST_ROUTE]=0;
 	    return ip_local_deliver_finish(skb);
@@ -336,7 +336,7 @@ drop:
 	return true;
 }
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 inline
 #else
 static
@@ -455,7 +455,7 @@ int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, 
 		goto drop;
 	}
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	if (!nf_conntrack_fastnat && !nf_conntrack_fastroute)
 #endif
 	/* Remove any debris in the socket control block */

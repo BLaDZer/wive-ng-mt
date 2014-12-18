@@ -28,7 +28,7 @@
 #include <linux/netfilter/x_tables.h>
 #include <linux/netfilter/xt_connmark.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #include "../nat/hw_nat/frame_engine.h"
 #endif
@@ -57,10 +57,10 @@ connmark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	case XT_CONNMARK_SET:
 		newmark = (ct->mark & ~info->ctmask) ^ info->ctmark;
 		if (ct->mark != newmark) {
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 			ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
-#if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 			FOE_ALG_MARK(skb);
 #endif
 			ct->mark = newmark;

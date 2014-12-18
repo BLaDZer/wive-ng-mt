@@ -47,17 +47,17 @@
 #include <net/netfilter/nf_nat.h>
 #include <net/netfilter/nf_nat_core.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
 #endif
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 #include <net/ip.h>
 #include "../nat/bcm_nat/bcm_nat.h"
 #endif
 
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 #include <linux/tcp.h>
 #endif
 
@@ -76,25 +76,25 @@ unsigned int nf_conntrack_max __read_mostly;
 unsigned int nf_conntrack_htable_size __read_mostly;
 unsigned int nf_conntrack_hash_rnd __read_mostly;
 
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 unsigned int nf_conntrack_nat_mode __read_mostly;
 char wan_name[IFNAMSIZ] __read_mostly = {0};
-#if defined (CONFIG_PPP) || defined (CONFIG_PPP_MODULE)
+#if IS_ENABLED(CONFIG_PPP)
 char wan_name_ppp[IFNAMSIZ] __read_mostly = {0};
 #endif
 #endif
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 unsigned int nf_conntrack_fastnat __read_mostly;
 unsigned int nf_conntrack_fastroute __read_mostly;
 #endif
 
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 unsigned int web_str_loaded  __read_mostly = 0;
 EXPORT_SYMBOL_GPL(web_str_loaded);
 #endif
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 static inline unsigned int is_local_svc(u_int8_t protonm)
 {
 	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4/icmp proto must be skip from hardware offload
@@ -117,7 +117,7 @@ static inline unsigned int is_local_svc(u_int8_t protonm)
 };
 #endif
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 /*
  * check SKB really accesseble
  */
@@ -155,7 +155,7 @@ static u32 hash_conntrack_raw(const struct nf_conntrack_tuple *tuple)
 {
 	unsigned int n;
 
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 	u32 a, b;
 
 	if (nf_conntrack_nat_mode == NAT_MODE_FCONE) {
@@ -317,7 +317,7 @@ destroy_conntrack(struct nf_conntrack *nfct)
 	 * too. */
 	nf_ct_remove_expectations(ct);
 
-#if defined(CONFIG_NETFILTER_XT_MATCH_LAYER7) || defined(CONFIG_NETFILTER_XT_MATCH_LAYER7_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_LAYER7)
 	if(ct->layer7.app_proto)
 		kfree(ct->layer7.app_proto);
 	if(ct->layer7.app_data)
@@ -460,7 +460,7 @@ begin:
 	return NULL;
 }
 
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 static inline bool
 nf_ct_cone_tuple_equal(const struct nf_conntrack_tuple *t1,
 		       const struct nf_conntrack_tuple *t2)
@@ -984,7 +984,7 @@ init_conntrack(struct net *net, struct nf_conn *tmpl,
 #ifdef CONFIG_NF_CONNTRACK_SECMARK
 		ct->secmark = exp->master->secmark;
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 		ct->fastnat = NF_FAST_NAT_DENY;
 #endif
 		nf_conntrack_get(&ct->master->ct_general);
@@ -1035,7 +1035,7 @@ resolve_normal_ct(struct net *net, struct nf_conn *tmpl,
 
 	/* look for tuple match */
 	hash = hash_conntrack_raw(&tuple);
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
         /*
          * Based on NAT treatments of UDP in RFC3489:
          *
@@ -1091,7 +1091,7 @@ resolve_normal_ct(struct net *net, struct nf_conn *tmpl,
          *
          */
 	if ((nf_conntrack_nat_mode > 0 && protonum == IPPROTO_UDP && skb->dev != NULL) &&
-#if defined (CONFIG_PPP) || defined (CONFIG_PPP_MODULE)
+#if IS_ENABLED(CONFIG_PPP)
 		(strcmp(skb->dev->name, wan_name) == 0 || strcmp(skb->dev->name, wan_name_ppp) == 0)) {
 #else
 		(strcmp(skb->dev->name, wan_name) == 0)) {
@@ -1153,13 +1153,13 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	u_int8_t protonum;
 	int set_reply = 0;
 	int ret;
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	int pure_route = 0;
 	extern int bcm_do_fastroute(struct nf_conn *ct,	struct sk_buff *skb, unsigned int hooknum, int set_reply);
 	extern int bcm_do_fastnat(struct nf_conn *ct, enum ip_conntrack_info ctinfo, struct sk_buff *skb,
 				    struct nf_conntrack_l3proto *l3proto, struct nf_conntrack_l4proto *l4proto);
 #endif
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	struct nf_conn_help *help;
 	unsigned int skip_offload = SKIP_NO;
 #endif
@@ -1186,7 +1186,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		goto out;
 	}
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	if ((nf_conntrack_fastnat || nf_conntrack_fastroute) && pf == PF_INET)
 	    /* gather fragments before fastpath/fastnat, ipv4 only. */
 	    if (ip_is_fragment(ip_hdr(skb)))
@@ -1248,7 +1248,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		goto out;
 	}
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/*
 	 * skip ALG marked packets from all fastpaths
 	 */
@@ -1258,7 +1258,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		goto skip_alg_of;
 	}
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	/*
 	* full skip not ipv4 and mcast/bcast traffic by software offload and filtering section
 	* allow only established/reply tpc/udp protocol packets for processing in software offload
@@ -1282,11 +1282,11 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	    }
 	}
 #endif
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* this code section may be used for skip some types traffic,
 	    only if hardware nat support enabled or software fastnat support enabled */
 	if (!pure_route && (ra_sw_nat_hook_tx != NULL || nf_conntrack_fastnat)) {
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	    /* skip xt_webstr HTTP headers */
 	    if (web_str_loaded && pf == PF_INET && protonum == IPPROTO_TCP && CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) {
 		struct tcphdr _tcph, *tcph;
@@ -1314,14 +1314,14 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	}
 #endif
 skip_alg_of:
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* skip several proto only from hw_nat */
 	if (ra_sw_nat_hook_tx != NULL &&
 		(skip_offload == SKIP_ALL || (hooknum != NF_INET_LOCAL_OUT && FOE_ALG(skb) == 0 && pf == PF_INET && is_local_svc(protonum)))) {		/* skip PPE */
 		    FOE_ALG_MARK(skb);
 	}
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	/* skip several proto only from sw_nat */
 	if (nf_conntrack_fastnat) {
 	    if (skip_offload == SKIP_ALL || skip_offload == SKIP_SWO) {											/* skip SW */
@@ -1338,7 +1338,7 @@ skip_alg_of:
 
 #endif
 	if (set_reply && !test_and_set_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	    if (nf_conntrack_fastnat && pf == PF_INET && hooknum == NF_INET_LOCAL_OUT)
 		ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
@@ -1787,11 +1787,11 @@ static int nf_conntrack_init_init_net(void)
 	int max_factor = 2;
 	int ret, cpu;
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	nf_conntrack_fastnat = 0;
 	nf_conntrack_fastroute = 0;
 #endif
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 	nf_conntrack_nat_mode = NAT_MODE_LINUX;
 #endif
 

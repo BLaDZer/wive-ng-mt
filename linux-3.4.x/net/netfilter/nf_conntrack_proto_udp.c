@@ -250,7 +250,7 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_udp4 __read_mostly =
 	.packet			= udp_packet,
 	.get_timeouts		= udp_get_timeouts,
 	.new			= udp_new,
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	.error                  = NULL,
 #else
 	.error			= udp_error,

@@ -16,7 +16,7 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 #include "../net/nat/bcm_nat/bcm_nat.h"
 #endif
 
@@ -706,10 +706,10 @@ static const struct bin_table bin_net_netfilter_table[] = {
 	{ CTL_INT,	NET_NF_CONNTRACK_FRAG6_LOW_THRESH,	"nf_conntrack_frag6_low_thresh" },
 	{ CTL_INT,	NET_NF_CONNTRACK_FRAG6_HIGH_THRESH,	"nf_conntrack_frag6_high_thresh" },
 	{ CTL_INT,	NET_NF_CONNTRACK_CHECKSUM,		"nf_conntrack_checksum" },
-#ifdef CONFIG_NAT_CONE
+#if defined(CONFIG_NAT_CONE)
 	{ CTL_INT,	NET_NF_CONNTRACK_NAT_MODE,		"nf_conntrack_nat_mode" },
 #endif
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	{ CTL_INT,	NET_NF_CONNTRACK_FASTNAT,		"nf_conntrack_fastnat" },
 	{ CTL_INT,	NET_NF_CONNTRACK_FASTROUTE,		"nf_conntrack_fastroute" },
 #endif

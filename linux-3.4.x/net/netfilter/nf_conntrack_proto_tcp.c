@@ -29,7 +29,7 @@
 #include <net/netfilter/ipv4/nf_conntrack_ipv4.h>
 #include <net/netfilter/ipv6/nf_conntrack_ipv6.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #ifndef CONFIG_RA_NAT_NONE
 extern int (*ra_sw_nat_hook_rx)(struct sk_buff *skb);
@@ -1588,7 +1588,7 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp4 __read_mostly =
 	.packet 		= tcp_packet,
 	.get_timeouts		= tcp_get_timeouts,
 	.new 			= tcp_new,
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	.error			= NULL,
 #else
 	.error			= tcp_error,

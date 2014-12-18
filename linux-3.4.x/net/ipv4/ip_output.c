@@ -80,7 +80,7 @@
 #include <linux/netlink.h>
 #include <linux/tcp.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../../net/nat/hw_nat/ra_nat.h"
 #include "../../net/nat/hw_nat/frame_engine.h"
 #endif
@@ -92,7 +92,7 @@ int __ip_local_out(struct sk_buff *skb)
 {
 	struct iphdr *iph = ip_hdr(skb);
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_AI_UNHIT(skb);
 #endif
 	iph->tot_len = htons(skb->len);
@@ -220,7 +220,7 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 	return -EINVAL;
 }
 
-#ifndef CONFIG_BCM_NAT
+#if !defined(CONFIG_BCM_NAT)
 static
 #endif
 inline int ip_skb_dst_mtu(struct sk_buff *skb)

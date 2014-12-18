@@ -7,7 +7,7 @@
 #include <linux/netfilter/xt_IMQ.h>
 #include <linux/imq.h>
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #include "../nat/hw_nat/frame_engine.h"
 #endif
@@ -19,7 +19,7 @@ static unsigned int imq_target(struct sk_buff *pskb,
 
 	pskb->imq_flags = (mr->todev & IMQ_F_IFMASK) | IMQ_F_ENQUEUE;
 
-#if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_ALG_MARK(skb);
 #endif
 	return XT_CONTINUE;

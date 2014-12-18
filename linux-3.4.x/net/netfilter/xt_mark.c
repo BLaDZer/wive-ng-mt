@@ -16,11 +16,11 @@
 #include <linux/netfilter/xt_mark.h>
 #include <linux/netfilter/x_tables.h>
 
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 #include <net/netfilter/nf_conntrack.h>
 #endif
 
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #include "../nat/hw_nat/frame_engine.h"
 #endif
@@ -39,13 +39,13 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	const struct xt_mark_tginfo2 *info = par->targinfo;
 
 	skb->mark = (skb->mark & ~info->mask) ^ info->mark;
-#ifdef CONFIG_BCM_NAT
+#if defined(CONFIG_BCM_NAT)
 	enum ip_conntrack_info ctinfo;
 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
 
 	ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
-#if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_ALG_MARK(skb);
 #endif
 	return XT_CONTINUE;
@@ -55,15 +55,7 @@ static bool
 mark_mt(const struct sk_buff *skb, struct xt_action_param *par)
 {
 	const struct xt_mark_mtinfo1 *info = par->matchinfo;
-#ifdef CONFIG_BCM_NAT
-	enum ip_conntrack_info ctinfo;
-	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
 
-	ct->fastnat |= NF_FAST_NAT_DENY;
-#endif
-#if  defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
-	FOE_ALG_MARK(skb);
-#endif
 	return ((skb->mark & info->mask) == info->mark) ^ info->invert;
 }
 

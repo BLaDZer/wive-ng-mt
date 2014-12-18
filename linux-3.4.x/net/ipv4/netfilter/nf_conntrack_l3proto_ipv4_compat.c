@@ -179,7 +179,7 @@ static int ct_seq_show(struct seq_file *s, void *v)
 	if (ct_show_secctx(s, ct))
 		goto release;
 
-#if defined(CONFIG_NETFILTER_XT_MATCH_LAYER7) || defined(CONFIG_NETFILTER_XT_MATCH_LAYER7_MODULE)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_LAYER7)
 	if(ct->layer7.app_proto)
 		if(seq_printf(s, "l7proto=%s ", ct->layer7.app_proto))
 			goto release;
