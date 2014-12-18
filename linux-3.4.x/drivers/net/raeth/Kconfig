@@ -294,6 +294,11 @@ config  RAETH_MEMORY_OPTIMIZATION
 	depends on RAETH
 	default n
 
+config RAETH_SKB_RECYCLE_2K
+	bool "SKB Recycling"
+	depends on RAETH
+	default n
+
 config  RAETH_DEBUG
 	bool "Include additional debug messages and ring dump feature"
 	depends on RAETH
@@ -323,4 +328,3 @@ config 100PHY
 bool
 default y if (GE1_MII_AN || GE2_MII_AN)
 depends on RAETH
-

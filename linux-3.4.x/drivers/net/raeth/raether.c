@@ -187,7 +187,11 @@ static int raeth_ring_alloc(END_DEVICE *ei_local)
 	
 	/* allocate RX skbuff */
 	for (i = 0; i < NUM_RX_DESC; i++) {
+#if defined (CONFIG_RAETH_SKB_RECYCLE_2K)
+		ei_local->rx_buff[i] = skbmgr_dev_alloc_skb2k();
+#else
 		ei_local->rx_buff[i] = dev_alloc_skb(MAX_RX_LENGTH + NET_IP_ALIGN);
+#endif
 		if (!ei_local->rx_buff[i])
 			goto err_cleanup;
 #if !defined (RAETH_PDMA_V2)
@@ -914,7 +918,11 @@ static inline int raeth_recv(struct net_device* dev, END_DEVICE* ei_local, int w
 		
 		/* We have to check the free memory size is big enough
 		 * before pass the packet to cpu */
+#if defined (CONFIG_RAETH_SKB_RECYCLE_2K)
+		new_skb = skbmgr_dev_alloc_skb2k();
+#else
 		new_skb = __dev_alloc_skb(MAX_RX_LENGTH + NET_IP_ALIGN, GFP_ATOMIC);
+#endif
 		if (unlikely(new_skb == NULL)) {
 #if defined (RAETH_PDMA_V2)
 			rx_ring->rxd_info2_u32 = RX2_DMA_SDL0_SET(MAX_RX_LENGTH);
@@ -2118,7 +2126,9 @@ int __init raeth_init(void)
 #if defined (CONFIG_RAETH_BQL)
 	printk("%s: Byte Queue Limits (BQL) support\n", RAETH_DEV_NAME);
 #endif
-
+#if defined (CONFIG_RAETH_SKB_RECYCLE_2K)
+	printk("%s: SkbRecycle support\n", RAETH_DEV_NAME);
+#endif
 	return 0;
 }
 

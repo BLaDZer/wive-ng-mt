@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.105.1 Kernel Configuration
+# Linux/mips 3.4.105.6 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1218,6 +1218,7 @@ CONFIG_RAETH_DHCP_TOUCH=y
 # CONFIG_RAETH_SNMPD is not set
 # CONFIG_RAETH_READ_MAC_FROM_MTD is not set
 # CONFIG_RAETH_MEMORY_OPTIMIZATION is not set
+CONFIG_RAETH_SKB_RECYCLE_2K=y
 # CONFIG_RAETH_DEBUG is not set
 
 #
