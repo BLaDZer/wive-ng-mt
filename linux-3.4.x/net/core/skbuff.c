@@ -2962,15 +2962,16 @@ err:
 EXPORT_SYMBOL_GPL(skb_segment);
 
 #if defined(CONFIG_RAETH_SKB_RECYCLE_2K)
-#define SKBMGR_RX_BUF_LEN                       SKB_WITH_OVERHEAD(2048)
-#define SKBMGR_DEF_HOT_LIST_LEN                 512
+
+#define SKBMGR_RX_BUF_LEN		SKB_WITH_OVERHEAD(2048)
+#define SKBMGR_DEF_HOT_LIST_LEN		512
 
 int skbmgr_hot_list_len = SKBMGR_DEF_HOT_LIST_LEN;
 int skbmgr_max_list_len = 0;
 
-struct sk_buff_head		rx0_recycle;
+struct sk_buff_head rx0_recycle;
 
-struct sk_buff __fastpathnet *skbmgr_alloc_skb2k(void)
+inline struct sk_buff *skbmgr_alloc_skb2k(void)
 {
         struct sk_buff *skb;
 	unsigned long flags;
@@ -2987,7 +2988,7 @@ struct sk_buff __fastpathnet *skbmgr_alloc_skb2k(void)
                 if (unlikely(skb == NULL))
                         goto try_normal;
 
-		size = skb->truesize - sizeof(struct sk_buff);
+		size = skb->truesize - SKB_TRUESIZE(0);
                 data = skb->head;
 
 		/*
@@ -3021,18 +3022,15 @@ try_normal:
         return skb;
 }
 
-int __fastpathnet skbmgr_recycling_callback(struct sk_buff *skb)
+inline int skbmgr_recycling_callback(struct sk_buff *skb)
 {
 
 	unsigned long flags;
 
 	if (skb_queue_len(&rx0_recycle) < skbmgr_hot_list_len) {
 
-                if ((skb->truesize - sizeof(struct sk_buff) != SKBMGR_RX_BUF_LEN) ||
-                        (skb_shinfo(skb)->nr_frags) ||
-                        (skb_shinfo(skb)->frag_list)) {
+                if ((skb->truesize - SKB_TRUESIZE(0) != SKBMGR_RX_BUF_LEN) || (skb_shinfo(skb)->nr_frags) || (skb_shinfo(skb)->frag_list))
                         return 0;
-                }
 
                 if (skb_queue_len(&rx0_recycle) > skbmgr_max_list_len)
                         skbmgr_max_list_len = skb_queue_len(&rx0_recycle) + 1;
@@ -3045,20 +3043,6 @@ int __fastpathnet skbmgr_recycling_callback(struct sk_buff *skb)
         }
 
         return 0;
-}
-
-void skbmgr_free_all_skbs(void)
-{
-        struct sk_buff *skb;
-        int i;
-
-        for (i=0; i<NR_CPUS; i++) {
-                while ((skb = skb_dequeue(&rx0_recycle)) != NULL) {
-                        skb->skb_recycling_callback = NULL;
-                        kfree_skbmem(skb);
-                }
-        }
-
 }
 #endif
 
