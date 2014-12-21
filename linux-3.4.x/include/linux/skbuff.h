@@ -442,9 +442,6 @@ struct sk_buff {
 	__be16			protocol;
 
 	void			(*destructor)(struct sk_buff *skb);
-#if defined(CONFIG_RAETH_SKB_RECYCLE_2K)
-	int                     (*skb_recycling_callback)(struct sk_buff *skb);
-#endif
 #if IS_ENABLED(CONFIG_NF_CONNTRACK)
 	struct nf_conntrack	*nfct;
 #endif
@@ -2570,19 +2567,6 @@ static inline bool skb_is_gso_v6(const struct sk_buff *skb)
 {
 	return skb_shinfo(skb)->gso_type & SKB_GSO_TCPV6;
 }
-
-#if defined(CONFIG_RAETH_SKB_RECYCLE_2K)
-struct sk_buff *skbmgr_alloc_skb2k(void);
-int skbmgr_recycling_callback(struct sk_buff *skb);
-
-static inline struct sk_buff *skbmgr_dev_alloc_skb2k(void)
-{
-        struct sk_buff *skb = skbmgr_alloc_skb2k();
-        if (likely(skb))
-                skb_reserve(skb, NET_SKB_PAD);
-        return skb;
-}
-#endif
 
 extern void __skb_warn_lro_forwarding(const struct sk_buff *skb);
 

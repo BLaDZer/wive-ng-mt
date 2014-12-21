@@ -294,11 +294,6 @@ config  RAETH_MEMORY_OPTIMIZATION
 	depends on RAETH
 	default n
 
-config RAETH_SKB_RECYCLE_2K
-	bool "SKB Recycling"
-	depends on RAETH
-	default n
-
 config  RAETH_DEBUG
 	bool "Include additional debug messages and ring dump feature"
 	depends on RAETH

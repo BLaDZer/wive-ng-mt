@@ -445,8 +445,7 @@
 14) kernel: ralink_gpio: fix 9532 mode support.<br>
 15) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
 16) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
-17) kernel: skb/raeth: add skb_recycle2k support.<br>
-18) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
+17) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
