@@ -422,19 +422,19 @@ else
       ;;
     openbsd*)
       if test -f /usr/libexec/ld.so; then
-      hardcode_direct=yes
-      if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
-        hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
-      else
-        case "$host_os" in
-          openbsd[01].* | openbsd2.[0-7] | openbsd2.[0-7].*)
-            hardcode_libdir_flag_spec='-R$libdir'
-            ;;
-          *)
-            hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
-            ;;
-        esac
-      fi
+        hardcode_direct=yes
+        if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
+          hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
+        else
+          case "$host_os" in
+            openbsd[01].* | openbsd2.[0-7] | openbsd2.[0-7].*)
+              hardcode_libdir_flag_spec='-R$libdir'
+              ;;
+            *)
+              hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
+              ;;
+          esac
+        fi
       else
         ld_shlibs=no
       fi

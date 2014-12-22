@@ -1,7 +1,7 @@
 #! /bin/sh
 # Common wrapper for a few potentially missing GNU programs.
 
-scriptversion=2013-10-28.13; # UTC
+scriptversion=2012-06-26.16; # UTC
 
 # Copyright (C) 1996-2013 Free Software Foundation, Inc.
 # Originally written by Fran,cois Pinard <pinard@iro.umontreal.ca>, 1996.
@@ -37,10 +37,10 @@ case $1 in
     exit 0
     ;;
 
---run)
+  --run)
     # Back-compat with the calling convention used by older automake.
-  shift
-  ;;
+    shift
+    ;;
 
   -h|--h|--he|--hel|--help)
     echo "\
@@ -99,7 +99,7 @@ elif test $st -eq 127; then
 else
   # Program was found and executed, but failed.  Give up.
   exit $st
-    fi
+fi
 
 perl_URL=http://www.perl.org/
 flex_URL=http://flex.sourceforge.net/
@@ -138,17 +138,17 @@ give_advice ()
 
   configure_deps="'configure.ac' or m4 files included by 'configure.ac'"
   case $normalized_program in
-  autoconf*)
+    autoconf*)
       echo "You should only need it if you modified 'configure.ac',"
       echo "or m4 files included by it."
       program_details 'autoconf'
-    ;;
-  autoheader*)
+      ;;
+    autoheader*)
       echo "You should only need it if you modified 'acconfig.h' or"
       echo "$configure_deps."
       program_details 'autoheader'
-    ;;
-  automake*)
+      ;;
+    automake*)
       echo "You should only need it if you modified 'Makefile.am' or"
       echo "$configure_deps."
       program_details 'automake'
@@ -157,29 +157,29 @@ give_advice ()
       echo "You should only need it if you modified 'acinclude.m4' or"
       echo "$configure_deps."
       program_details 'aclocal'
-    ;;
-  autom4te*)
+      ;;
+   autom4te*)
       echo "You might have modified some maintainer files that require"
-      echo "the 'autom4te' program to be rebuilt."
+      echo "the 'automa4te' program to be rebuilt."
       program_details 'autom4te'
-    ;;
-  bison*|yacc*)
+      ;;
+    bison*|yacc*)
       echo "You should only need it if you modified a '.y' file."
       echo "You may want to install the GNU Bison package:"
       echo "<$gnu_software_URL/bison/>"
-    ;;
-  lex*|flex*)
+      ;;
+    lex*|flex*)
       echo "You should only need it if you modified a '.l' file."
       echo "You may want to install the Fast Lexical Analyzer package:"
       echo "<$flex_URL>"
-    ;;
-  help2man*)
+      ;;
+    help2man*)
       echo "You should only need it if you modified a dependency" \
            "of a man page."
       echo "You may want to install the GNU Help2man package:"
       echo "<$gnu_software_URL/help2man/>"
     ;;
-  makeinfo*)
+    makeinfo*)
       echo "You should only need it if you modified a '.texi' file, or"
       echo "any other file indirectly affecting the aspect of the manual."
       echo "You might want to install the Texinfo package:"
@@ -188,15 +188,15 @@ give_advice ()
       echo "using a buggy 'make' (AIX, DU, IRIX), in which case you might"
       echo "want to install GNU make:"
       echo "<$gnu_software_URL/make/>"
-    ;;
-  *)
+      ;;
+    *)
       echo "You might have modified some files without having the proper"
       echo "tools for further handling them.  Check the 'README' file, it"
       echo "often tells you about the needed prerequisites for installing"
       echo "this package.  You may also peek at any GNU archive site, in"
       echo "case some other package contains this missing '$1' program."
-    ;;
-esac
+      ;;
+  esac
 }
 
 give_advice "$1" | sed -e '1s/^/WARNING: /' \

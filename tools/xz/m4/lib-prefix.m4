@@ -199,25 +199,25 @@ sixtyfour bits
       fi
       ;;
     *)
-  searchpath=`(LC_ALL=C $CC -print-search-dirs) 2>/dev/null | sed -n -e 's,^libraries: ,,p' | sed -e 's,^=,,'`
-  if test -n "$searchpath"; then
-    acl_save_IFS="${IFS= 	}"; IFS=":"
-    for searchdir in $searchpath; do
-      if test -d "$searchdir"; then
-        case "$searchdir" in
-          */lib64/ | */lib64 ) acl_libdirstem=lib64 ;;
+      searchpath=`(LC_ALL=C $CC -print-search-dirs) 2>/dev/null | sed -n -e 's,^libraries: ,,p' | sed -e 's,^=,,'`
+      if test -n "$searchpath"; then
+        acl_save_IFS="${IFS= 	}"; IFS=":"
+        for searchdir in $searchpath; do
+          if test -d "$searchdir"; then
+            case "$searchdir" in
+              */lib64/ | */lib64 ) acl_libdirstem=lib64 ;;
               */../ | */.. )
                 # Better ignore directories of this form. They are misleading.
                 ;;
-          *) searchdir=`cd "$searchdir" && pwd`
-             case "$searchdir" in
-               */lib64 ) acl_libdirstem=lib64 ;;
-             esac ;;
-        esac
+              *) searchdir=`cd "$searchdir" && pwd`
+                 case "$searchdir" in
+                   */lib64 ) acl_libdirstem=lib64 ;;
+                 esac ;;
+            esac
+          fi
+        done
+        IFS="$acl_save_IFS"
       fi
-    done
-    IFS="$acl_save_IFS"
-  fi
       ;;
   esac
   test -n "$acl_libdirstem2" || acl_libdirstem2="$acl_libdirstem"

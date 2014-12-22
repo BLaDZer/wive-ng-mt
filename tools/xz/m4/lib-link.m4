@@ -20,7 +20,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS],
   AC_REQUIRE([AC_LIB_RPATH])
   pushdef([Name],[translit([$1],[./-], [___])])
   pushdef([NAME],[translit([$1],[abcdefghijklmnopqrstuvwxyz./-],
-                               [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
+                                [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
   AC_CACHE_CHECK([how to link with lib[]$1], [ac_cv_lib[]Name[]_libs], [
     AC_LIB_LINKFLAGS_BODY([$1], [$2])
     ac_cv_lib[]Name[]_libs="$LIB[]NAME"
@@ -60,7 +60,7 @@ AC_DEFUN([AC_LIB_HAVE_LINKFLAGS],
   AC_REQUIRE([AC_LIB_RPATH])
   pushdef([Name],[translit([$1],[./-], [___])])
   pushdef([NAME],[translit([$1],[abcdefghijklmnopqrstuvwxyz./-],
-                               [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
+                                [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
 
   dnl Search for lib[]Name and define LIB[]NAME, LTLIB[]NAME and INC[]NAME
   dnl accordingly.
@@ -179,7 +179,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
 [
   AC_REQUIRE([AC_LIB_PREPARE_MULTILIB])
   pushdef([NAME],[translit([$1],[abcdefghijklmnopqrstuvwxyz./-],
-                               [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
+                                [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
   pushdef([PACK],[m4_ifdef([acl_frompackage_]NAME, [acl_frompackage_]NAME, lib[$1])])
   pushdef([PACKUP],[translit(PACK,[abcdefghijklmnopqrstuvwxyz./-],
                                   [ABCDEFGHIJKLMNOPQRSTUVWXYZ___])])
@@ -304,8 +304,8 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
               if test -f "$dir/$libname.$acl_libext"; then
                 found_dir="$dir"
                 found_a="$dir/$libname.$acl_libext"
-                fi
               fi
+            fi
             if test "X$found_dir" != "X"; then
               if test -f "$dir/$libname.la"; then
                 found_la="$dir/$libname.la"
@@ -321,7 +321,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
                   dnl First look for a shared library.
                   if test -n "$acl_shlibext"; then
                     if test -f "$dir/$libname$shrext"; then
-                    found_dir="$dir"
+                      found_dir="$dir"
                       found_so="$dir/$libname$shrext"
                     else
                       if test "$acl_library_names_spec" = '$libname$shrext$versuffix'; then
@@ -333,15 +333,15 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
                         if test -n "$ver" && test -f "$dir/$libname$shrext.$ver"; then
                           found_dir="$dir"
                           found_so="$dir/$libname$shrext.$ver"
-                    fi
-                  else
+                        fi
+                      else
                         eval library_names=\"$acl_library_names_spec\"
                         for f in $library_names; do
                           if test -f "$dir/$f"; then
-                      found_dir="$dir"
+                            found_dir="$dir"
                             found_so="$dir/$f"
                             break
-                      fi
+                          fi
                         done
                       fi
                     fi

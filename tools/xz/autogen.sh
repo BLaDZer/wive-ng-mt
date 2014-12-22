@@ -14,7 +14,7 @@
 
 set -e -x
 
-${AUTOPOINT:-autopoint} -f
+#${AUTOPOINT:-autopoint} -f
 ${LIBTOOLIZE:-libtoolize} -c -f || glibtoolize -c -f
 ${ACLOCAL:-aclocal} -I m4
 ${AUTOCONF:-autoconf}
