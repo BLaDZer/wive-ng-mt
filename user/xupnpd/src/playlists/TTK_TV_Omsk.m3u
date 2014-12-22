@@ -121,7 +121,7 @@ udp://@239.54.7.58:1224
 udp://@239.54.5.43:1224
 #EXTINF:-1 tvg-shift=-1 tvg-logo="Перец" tvg-name="Перец" crop=688x556+16+8,Перец
 udp://@239.54.5.4:1224
-#EXTINF:-1 tvg-shift=-1 tvg-logo="Перец" tvg-name="Перец" crop=688x556+16+8,Перец
+#EXTINF:-1 tvg-shift=0 tvg-logo="Россия Культура" tvg-name="Россия_Культура" crop=688x556+16+8,Россия К
 udp://@239.54.5.75:1224
 #EXTINF:-1 tvg-shift=1 tvg-logo="ТВЦ" tvg-name="ТВЦ" crop=688x556+16+8,ТВЦ
 udp://@239.54.5.63:1224
@@ -181,6 +181,8 @@ udp://@239.54.7.99:1224
 udp://@239.54.5.79:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК
 udp://@239.54.5.19:1224
+#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Lifenews" crop=688x556+16+8 aspect-ratio=16:9,Lifenews
+udp://@239.54.5.160:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Дождь" tvg-name="Дождь" crop=688x556+16+8 aspect-ratio=16:9,Дождь
 udp://@239.54.7.96:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Комсомольская_правда" crop=688x556+16+8,Комсомольская правда
@@ -205,8 +207,8 @@ udp://@239.54.5.82:1224
 udp://@239.54.5.31:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Усадьба ТВ" tvg-name="Усадьба" crop=688x556+16+8,Усадьба
 udp://@239.54.5.113:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Агро-ТВ" tvg-name="Агро ТВ" crop=688x556+16+8,АГРО ТВ
-udp://@239.54.5.13:1224
+#EXTINF:-1 tvg-shift=3 tvg-logo="Russian Travel Guide" tvg-name="Russian_Travel_Guide_(RTG_TV)" crop=688x556+16+8,Russian Travel Guide
+udp://@239.54.7.8:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Amazing Life" tvg-name="Amazing_Life_(Удивительная_жизнь)" crop=688x556+16+8,Amazing Life
 udp://@239.54.5.14:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="HD Life" tvg-name="HD_Life" crop=688x556+16+8 aspect-ratio=16:9,HD Life
