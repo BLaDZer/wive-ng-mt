@@ -250,14 +250,18 @@ int try_sendto(fd_set * writefds)
 					/* uncatched error */
 					if(sockaddr_to_string(elt->dest_addr, addr_str, sizeof(addr_str)) <= 0)
 						addr_str[0] = '\0';
-					syslog(LOG_ERR, "%s(sock=%d, len=%u, dest=%s): sendto: %m",
+#ifdef DEBUG
+					syslog(LOG_DEBUG, "%s(sock=%d, len=%u, dest=%s): sendto: %m",
 					       "try_sendto", elt->sockfd, (unsigned)elt->len,
 					       addr_str);
+#endif
 					ret--;
 				}
 			} else if((int)n != (int)elt->len) {
-				syslog(LOG_WARNING, "%s: %d bytes sent out of %d",
+#ifdef DEBUG
+				syslog(LOG_DEBUG, "%s: %d bytes sent out of %d",
 				       "try_sendto", (int)n, (int)elt->len);
+#endif
 			}
 				/* remove from the list */
 				LIST_REMOVE(elt, entries);
