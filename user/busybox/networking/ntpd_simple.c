@@ -11,9 +11,6 @@
 #ifndef IPTOS_LOWDELAY
 # define IPTOS_LOWDELAY 0x10
 #endif
-#ifndef IP_PKTINFO
-# error "Sorry, your kernel has to support IP_PKTINFO"
-#endif
 
 
 /* Sync to peers every N secs */
@@ -251,7 +248,7 @@ error_interval(void)
 {
 	unsigned interval, r;
 	interval = INTERVAL_QUERY_PATHETIC * QSCALE_OFF_MAX / QSCALE_OFF_MIN;
-	r = (unsigned)random() % (unsigned)(interval / 10);
+	r = (unsigned)rand() % (unsigned)(interval / 10);
 	return (interval + r);
 }
 
@@ -329,8 +326,8 @@ send_query_to_peer(peer_t *p)
 	 *
 	 * Save the real transmit timestamp locally.
 	 */
-	p->p_xmt_msg.m_xmttime.int_partl = random();
-	p->p_xmt_msg.m_xmttime.fractionl = random();
+	p->p_xmt_msg.m_xmttime.int_partl = rand();
+	p->p_xmt_msg.m_xmttime.fractionl = rand();
 	p->p_xmttime = gettime1900d();
 
 	if (do_sendto(p->p_fd, /*from:*/ NULL, /*to:*/ &p->p_lsa->u.sa, /*addrlen:*/ p->p_lsa->len,
@@ -534,7 +531,7 @@ scale_interval(unsigned requested)
 {
 	unsigned interval, r;
 	interval = requested * G.scale;
-	r = (unsigned)random() % (unsigned)(MAX(5, interval / 10));
+	r = (unsigned)rand() % (unsigned)(MAX(5, interval / 10));
 	return (interval + r);
 }
 static void
@@ -710,7 +707,7 @@ recv_and_process_client_pkt(void /*int fd*/)
 	msg.m_status = G.synced ? G.leap : LI_ALARM;
 	msg.m_status |= (query_status & VERSION_MASK);
 	msg.m_status |= ((query_status & MODE_MASK) == MODE_CLIENT) ?
-			 MODE_SERVER : MODE_SYM_PAS;
+			MODE_SERVER : MODE_SYM_PAS;
 	msg.m_stratum = G.stratum;
 	msg.m_ppoll = query_ppoll;
 	msg.m_precision_exp = G_precision_exp;
@@ -828,7 +825,7 @@ static NOINLINE void ntp_init(char **argv)
 	unsigned opts;
 	llist_t *peers;
 
-	srandom(getpid());
+	srand(getpid());
 
 	if (getuid())
 		bb_error_msg_and_die(bb_msg_you_must_be_root);

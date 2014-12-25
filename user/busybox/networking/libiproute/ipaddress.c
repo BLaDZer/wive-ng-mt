@@ -314,14 +314,14 @@ static int FAST_FUNC print_addrinfo(const struct sockaddr_nl *who UNUSED_PARAM,
 	if (rta_tb[IFA_BROADCAST]) {
 		printf("brd %s ",
 			rt_addr_n2a(ifa->ifa_family,
-				    RTA_DATA(rta_tb[IFA_BROADCAST]),
+					RTA_DATA(rta_tb[IFA_BROADCAST]),
 					abuf, sizeof(abuf))
 		);
 	}
 	if (rta_tb[IFA_ANYCAST]) {
 		printf("any %s ",
 			rt_addr_n2a(ifa->ifa_family,
-				    RTA_DATA(rta_tb[IFA_ANYCAST]),
+					RTA_DATA(rta_tb[IFA_ANYCAST]),
 					abuf, sizeof(abuf))
 		);
 	}
@@ -720,7 +720,7 @@ static int ipaddr_modify(int cmd, char **argv)
 		}
 		brd = peer;
 		if (brd.bitlen <= 30) {
-			for (i=31; i>=brd.bitlen; i--) {
+			for (i = 31; i >= brd.bitlen; i--) {
 				if (brd_len == -1)
 					brd.data[0] |= htonl(1<<(31-i));
 				else

@@ -55,9 +55,9 @@
 //usage:#define iproute_full_usage "\n\n"
 //usage:       "iproute { list | flush } SELECTOR\n"
 //usage:       "iproute get ADDRESS [from ADDRESS iif STRING]\n"
-//usage:       "			[oif STRING] [tos TOS]\n"
+//usage:       "	[oif STRING] [tos TOS]\n"
 //usage:       "iproute { add | del | change | append | replace | test } ROUTE\n"
-//usage:       "			SELECTOR := [root PREFIX] [match PREFIX] [proto RTPROTO]\n"
+//usage:       "	SELECTOR := [root PREFIX] [match PREFIX] [proto RTPROTO]\n"
 //usage:       "	ROUTE := [TYPE] PREFIX [tos TOS] [proto RTPROTO] [metric METRIC]"
 //usage:
 //usage:#define iprule_trivial_usage

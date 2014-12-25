@@ -66,7 +66,7 @@ int dmesg_main(int argc UNUSED_PARAM, char **argv)
 					;
 			} else {
 				last = buf[in++];
-			putchar(last);
+				putchar(last);
 			}
 			if (in >= len)
 				break;

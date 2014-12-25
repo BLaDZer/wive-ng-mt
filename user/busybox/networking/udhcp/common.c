@@ -63,6 +63,7 @@ const struct dhcp_optflag dhcp_optflags[] = {
 	{ OPTION_U8                               , 0x85 }, /* DHCP_VLAN_PRIORITY */
 #endif
 	{ OPTION_STRING                           , 0xd1 }, /* DHCP_PXE_CONF_FILE */
+	{ OPTION_STRING                           , 0xd2 }, /* DHCP_PXE_PATH_PREFIX */
 	{ OPTION_6RD                              , 0xd4 }, /* DHCP_6RD           */
 	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0xf9 }, /* DHCP_MS_STATIC_ROUTES */
 	{ OPTION_STRING                           , 0xfc }, /* DHCP_WPAD          */
@@ -130,6 +131,7 @@ const char dhcp_option_strings[] ALIGN1 =
 	"vlanpriority" "\0"/* DHCP_VLAN_PRIORITY  */
 #endif
 	"pxeconffile" "\0" /* DHCP_PXE_CONF_FILE  */
+	"pxepathprefix" "\0" /* DHCP_PXE_PATH_PREFIX  */
 	"ip6rd" "\0"       /* DHCP_6RD            */
 	"msstaticroutes""\0"/* DHCP_MS_STATIC_ROUTES */
 	"wpad" "\0"        /* DHCP_WPAD           */
@@ -376,12 +378,12 @@ static NOINLINE void attach_option(
 	struct option_set *existing;
 	char *allocated;
 
-		allocated = allocate_tempopt_if_needed(optflag, buffer, &length);
+	allocated = allocate_tempopt_if_needed(optflag, buffer, &length);
 #if ENABLE_FEATURE_UDHCP_RFC3397
-		if ((optflag->flags & OPTION_TYPE_MASK) == OPTION_DNS_STRING) {
-			/* reuse buffer and length for RFC1035-formatted string */
-			allocated = buffer = (char *)dname_enc(NULL, 0, buffer, &length);
-		}
+	if ((optflag->flags & OPTION_TYPE_MASK) == OPTION_DNS_STRING) {
+		/* reuse buffer and length for RFC1035-formatted string */
+		allocated = buffer = (char *)dname_enc(NULL, 0, buffer, &length);
+	}
 #endif
 
 	existing = udhcp_find_option(*opt_list, optflag->code);

@@ -1546,7 +1546,7 @@ static void remember_in_history(char *str)
 	state->cur_history = i;
 	state->cnt_history = i;
 # if ENABLE_FEATURE_EDITING_SAVEHISTORY && !ENABLE_FEATURE_EDITING_SAVE_ON_EXIT
-		save_history(str);
+	save_history(str);
 # endif
 }
 
@@ -1846,7 +1846,7 @@ static void parse_and_put_prompt(const char *prmt_ptr)
 			cp = prmt_ptr;
 			c = *cp;
 			if (c != 't') /* don't treat \t as tab */
-			c = bb_process_escape_sequence(&prmt_ptr);
+				c = bb_process_escape_sequence(&prmt_ptr);
 			if (prmt_ptr == cp) {
 				if (*cp == '\0')
 					break;
@@ -1883,12 +1883,12 @@ static void parse_and_put_prompt(const char *prmt_ptr)
 						if (!cwd_buf)
 							cwd_buf = (char *)bb_msg_unknown;
 						else {
-					/* /home/user[/something] -> ~[/something] */
-					l = strlen(home_pwd_buf);
-					if (l != 0
-					 && strncmp(home_pwd_buf, cwd_buf, l) == 0
-					 && (cwd_buf[l]=='/' || cwd_buf[l]=='\0')
-					) {
+							/* /home/user[/something] -> ~[/something] */
+							l = strlen(home_pwd_buf);
+							if (l != 0
+							 && strncmp(home_pwd_buf, cwd_buf, l) == 0
+							 && (cwd_buf[l] == '/' || cwd_buf[l] == '\0')
+							) {
 								cwd_buf[0] = '~';
 								overlapping_strcpy(cwd_buf + 1, cwd_buf + l);
 							}
@@ -1896,7 +1896,7 @@ static void parse_and_put_prompt(const char *prmt_ptr)
 					}
 					pbuf = cwd_buf;
 					if (c == 'w')
-					break;
+						break;
 					cp = strrchr(pbuf, '/');
 					if (cp)
 						pbuf = (char*)cp + 1;
@@ -2256,9 +2256,13 @@ int FAST_FUNC read_line_input(line_input_t *st, const char *prompt, char *comman
 	INIT_S();
 
 	if (tcgetattr(STDIN_FILENO, &initial_settings) < 0
-	 || !(initial_settings.c_lflag & ECHO)
+	 || (initial_settings.c_lflag & (ECHO|ICANON)) == ICANON
 	) {
-		/* Happens when e.g. stty -echo was run before */
+		/* Happens when e.g. stty -echo was run before.
+		 * But if ICANON is not set, we don't come here.
+		 * (example: interactive python ^Z-backgrounded,
+		 * tty is still in "raw mode").
+		 */
 		parse_and_put_prompt(prompt);
 		/* fflush_all(); - done by parse_and_put_prompt */
 		if (fgets(command, maxsize, stdin) == NULL)
@@ -2607,7 +2611,7 @@ int FAST_FUNC read_line_input(line_input_t *st, const char *prompt, char *comman
 			 * standard readline bindings (IOW: bash) do.
 			 * Often, Alt-<key> generates ESC-<key>.
 			 */
-			ic = lineedit_read_key(read_key_buffer, timeout);
+			ic = lineedit_read_key(read_key_buffer, 50);
 			switch (ic) {
 				//case KEYCODE_LEFT: - bash doesn't do this
 				case 'b':

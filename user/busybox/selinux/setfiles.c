@@ -498,9 +498,9 @@ static int process_one(char *name)
 
 	if (S_ISDIR(sb.st_mode) && recurse) {
 		if (recursive_action(name,
-				     ACTION_RECURSE,
-				     apply_spec,
-				     apply_spec,
+				ACTION_RECURSE,
+				apply_spec,
+				apply_spec,
 				NULL, 0) != TRUE
 		) {
 			bb_error_msg("error while labeling %s", name);
@@ -585,7 +585,7 @@ int setfiles_main(int argc UNUSED_PARAM, char **argv)
 		flags = getopt32(argv, "de:f:ilnpqr:svo:FW"
 				IF_FEATURE_SETFILES_CHECK_OPTION("c:"),
 			&exclude_dir, &input_filename, &rootpath, &out_filename,
-				 IF_FEATURE_SETFILES_CHECK_OPTION(&policyfile,)
+				IF_FEATURE_SETFILES_CHECK_OPTION(&policyfile,)
 			&verbose);
 	}
 	argv += optind;

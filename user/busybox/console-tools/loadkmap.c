@@ -48,6 +48,7 @@ int loadkmap_main(int argc UNUSED_PARAM, char **argv)
 	if (argv[1])
 		bb_show_usage();
 /* bb_warn_ignoring_args(argv[1]); */
+
 	fd = get_console_fd_or_die();
 /* or maybe:
 	opt = getopt32(argv, "C:", &tty_name);
@@ -63,11 +64,11 @@ int loadkmap_main(int argc UNUSED_PARAM, char **argv)
 	for (i = 0; i < MAX_NR_KEYMAPS; i++) {
 		if (flags[i] != 1)
 			continue;
-			xread(STDIN_FILENO, ibuff, NR_KEYS * sizeof(uint16_t));
-			for (j = 0; j < NR_KEYS; j++) {
-				ke.kb_index = j;
-				ke.kb_table = i;
-				ke.kb_value = ibuff[j];
+		xread(STDIN_FILENO, ibuff, NR_KEYS * sizeof(uint16_t));
+		for (j = 0; j < NR_KEYS; j++) {
+			ke.kb_index = j;
+			ke.kb_table = i;
+			ke.kb_value = ibuff[j];
 			/*
 			 * Note: table[idx:0] can contain special value
 			 * K_ALLOCATED (marks allocated tables in kernel).
@@ -78,9 +79,9 @@ int loadkmap_main(int argc UNUSED_PARAM, char **argv)
 			 * K_BARENUMLOCK == K(KT_SPEC,19).
 			 * So far we just ignore these errors:
 			 */
-				ioctl(fd, KDSKBENT, &ke);
-			}
+			ioctl(fd, KDSKBENT, &ke);
 		}
+	}
 
 	if (ENABLE_FEATURE_CLEAN_UP) {
 		close(fd);

@@ -185,12 +185,12 @@ int inotifyd_main(int argc, char **argv)
 							ie->name);
 					fflush(stdout);
 				} else {
-//				bb_error_msg("exec %s %08X\t%s\t%s\t%s", args[0],
-//					ie->mask, events, watches[ie->wd], ie->len ? ie->name : "");
-				args[1] = events;
-				args[2] = watches[ie->wd];
-				args[3] = ie->len ? ie->name : NULL;
-				spawn_and_wait((char **)args);
+//					bb_error_msg("exec %s %08X\t%s\t%s\t%s", args[0],
+//						ie->mask, events, watches[ie->wd], ie->len ? ie->name : "");
+					args[1] = events;
+					args[2] = watches[ie->wd];
+					args[3] = ie->len ? ie->name : NULL;
+					spawn_and_wait((char **)args);
 				}
 				// we are done if all files got final x event
 				if (ie->mask & 0x8000) {

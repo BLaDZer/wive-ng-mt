@@ -18,8 +18,8 @@
 //usage:#define ftpget_full_usage "\n\n"
 //usage:       "Download a file via FTP\n"
 //usage:	IF_FEATURE_FTPGETPUT_LONG_OPTIONS(
-//usage:     "\n	-c,--continue	Continue previous transfer"
-//usage:     "\n	-v,--verbose	Verbose"
+//usage:     "\n	-c,--continue		Continue previous transfer"
+//usage:     "\n	-v,--verbose		Verbose"
 //usage:     "\n	-u,--username USER	Username"
 //usage:     "\n	-p,--password PASS	Password"
 //usage:     "\n	-P,--port NUM		Port"
@@ -37,7 +37,7 @@
 //usage:#define ftpput_full_usage "\n\n"
 //usage:       "Upload a file to a FTP server\n"
 //usage:	IF_FEATURE_FTPGETPUT_LONG_OPTIONS(
-//usage:     "\n	-v,--verbose	Verbose"
+//usage:     "\n	-v,--verbose		Verbose"
 //usage:     "\n	-u,--username USER	Username"
 //usage:     "\n	-p,--password PASS	Password"
 //usage:     "\n	-P,--port NUM		Port"

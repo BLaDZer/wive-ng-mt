@@ -97,7 +97,7 @@ char* FAST_FUNC INET_rresolve(struct sockaddr_in *s_in, int numeric, uint32_t ne
 	if (s_in->sin_family != AF_INET) {
 #ifdef DEBUG
 		bb_error_msg("rresolve: unsupported address family %d!",
-				  s_in->sin_family);
+				s_in->sin_family);
 #endif
 		errno = EAFNOSUPPORT;
 		return NULL;
@@ -175,7 +175,7 @@ int FAST_FUNC INET6_resolve(const char *name, struct sockaddr_in6 *sin6)
 		return -1;
 	}
 	memcpy(sin6, ai->ai_addr, sizeof(*sin6));
-		freeaddrinfo(ai);
+	freeaddrinfo(ai);
 	return 0;
 }
 
@@ -194,7 +194,7 @@ char* FAST_FUNC INET6_rresolve(struct sockaddr_in6 *sin6, int numeric)
 	if (sin6->sin6_family != AF_INET6) {
 #ifdef DEBUG
 		bb_error_msg("rresolve: unsupported address family %d!",
-				  sin6->sin6_family);
+				sin6->sin6_family);
 #endif
 		errno = EAFNOSUPPORT;
 		return NULL;
