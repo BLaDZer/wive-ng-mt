@@ -451,6 +451,7 @@
 20) kernel: net: rearrange loop in net_rx_action.<br>
 21) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
 22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+23) kernel: net: gro: dev_gro_receive() cleanup.<br>
 <br>
 <br>
 <b>TODO:</b><br>
