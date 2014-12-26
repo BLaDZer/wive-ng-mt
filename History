@@ -454,6 +454,7 @@
 23) kernel: net: gro: dev_gro_receive() cleanup.<br>
 24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
 25) kernel: net_dma: simple removal (broken and not used).<br>
+26) kernel: net_dma: revert copied_early.<br>
 <br>
 <br>
 <b>TODO:</b><br>
