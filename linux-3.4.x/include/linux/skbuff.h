@@ -28,7 +28,6 @@
 #include <linux/textsearch.h>
 #include <net/checksum.h>
 #include <linux/rcupdate.h>
-#include <linux/dmaengine.h>
 #include <linux/hrtimer.h>
 #include <linux/dma-mapping.h>
 #include <linux/netdev_features.h>
@@ -484,10 +483,6 @@ struct sk_buff {
 
 #if IS_ENABLED(CONFIG_IMQ)
 	__u8			imq_flags:IMQ_F_BITS;
-#endif
-
-#ifdef CONFIG_NET_DMA
-	dma_cookie_t		dma_cookie;
 #endif
 #ifdef CONFIG_NETWORK_SECMARK
 	__u32			secmark;

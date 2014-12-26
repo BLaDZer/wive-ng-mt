@@ -453,6 +453,7 @@
 22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
 23) kernel: net: gro: dev_gro_receive() cleanup.<br>
 24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
+25) kernel: net_dma: simple removal (broken and not used).<br>
 <br>
 <br>
 <b>TODO:</b><br>
