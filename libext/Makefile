@@ -106,8 +106,8 @@ endif
 
 clean:
 	# ">>>>>>>>>>>>>>>> START FULL CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
+	-cd openssl ; $(MAKE) clean ; cd ..
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i dist-clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i mrproper; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
-	-cd openssl ; $(MAKE) clean ; cd ..

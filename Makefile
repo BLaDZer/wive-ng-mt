@@ -306,6 +306,8 @@ clean:
 	find $(ROOTDIR) -type f -name '.config.cmd' | xargs rm -f
 	find $(ROOTDIR)/lib -type f -name '*.o' | xargs rm -f
 	find $(ROOTDIR)/lib -type f -name '*.so' | xargs rm -f
+	find $(ROOTDIR)/libext -type f -name '*.o' | xargs rm -f
+	find $(ROOTDIR)/libext -type f -name '*.so' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.o' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.so' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.lo' | xargs rm -f
