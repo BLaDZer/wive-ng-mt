@@ -4045,9 +4045,12 @@ static void net_rx_action(struct softirq_action *h)
 
 	local_irq_disable();
 
-	while (!list_empty(&sd->poll_list)) {
+	for (;;) {
 		struct napi_struct *n;
 		int work, weight;
+
+		if (list_empty(&sd->poll_list))
+			    break;
 
 		/* If softirq window is exhuasted then punt.
 		 * Allow this to run for 2 jiffies since which will allow
@@ -4059,7 +4062,9 @@ static void net_rx_action(struct softirq_action *h)
     			if(wdg_load_value)
 			    on_refresh_wdg_timer(0);
 #endif
-			goto softnet_break;
+			sd->time_squeeze++;
+			__raise_softirq_irqoff(NET_RX_SOFTIRQ);
+			break;
 		}
 
 		local_irq_enable();
@@ -4109,7 +4114,7 @@ static void net_rx_action(struct softirq_action *h)
 
 		netpoll_poll_unlock(have);
 	}
-out:
+
 	net_rps_action_and_irq_enable(sd);
 
 #ifdef CONFIG_NET_DMA
@@ -4119,13 +4124,6 @@ out:
 	 */
 	dma_issue_pending_all();
 #endif
-
-	return;
-
-softnet_break:
-	sd->time_squeeze++;
-	__raise_softirq_irqoff(NET_RX_SOFTIRQ);
-	goto out;
 }
 
 static gifconf_func_t *gifconf_list[NPROTO];
