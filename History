@@ -452,6 +452,7 @@
 21) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
 22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
 23) kernel: net: gro: dev_gro_receive() cleanup.<br>
+24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
 <br>
 <br>
 <b>TODO:</b><br>
