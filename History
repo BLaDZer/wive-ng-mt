@@ -449,7 +449,8 @@
 18) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
 19) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
 20) kernel: net: rearrange loop in net_rx_action.<br>
-21) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+21) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
+22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
 <br>
 <br>
 <b>TODO:</b><br>
