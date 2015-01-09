@@ -12,11 +12,11 @@
  */
 
 //config:config UDHCPC6
-//config:	bool "udhcp client for DHCPv6 (udhcpc6)"
-//config:	default n  # not yet ready
+//config:       bool "udhcp client for DHCPv6 (udhcpc6)"
+//config:       default n  # not yet ready
 //config:	depends on FEATURE_IPV6
-//config:	help
-//config:	  udhcpc6 is a DHCPv6 client
+//config:       help
+//config:         udhcpc6 is a DHCPv6 client
 
 //applet:IF_UDHCPC6(APPLET(udhcpc6, BB_DIR_USR_BIN, BB_SUID_DROP))
 
@@ -711,7 +711,7 @@ static int d6_raw_socket(int ifindex)
 		/* jump to L3 if udp dport is CLIENT_PORT6, else to L4 */
 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, 68, 0, 1),
 		/* L3: accept packet */
-		BPF_STMT(BPF_RET|BPF_K, 0x7fffffff),
+		BPF_STMT(BPF_RET|BPF_K, 0xffffffff),
 		/* L4: discard packet */
 		BPF_STMT(BPF_RET|BPF_K, 0),
 	};

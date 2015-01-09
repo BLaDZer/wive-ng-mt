@@ -22,6 +22,7 @@
  *
  * Licensed under GPLv2 or later, see file LICENSE in this source tree.
  */
+
 /* TODO: security with -C DESTDIR option can be enhanced.
  * Consider tar file created via:
  * $ tar cvf bug.tar anything.txt
@@ -158,6 +159,13 @@
 
 
 #define block_buf bb_common_bufsiz1
+
+
+#if !ENABLE_FEATURE_SEAMLESS_GZ && !ENABLE_FEATURE_SEAMLESS_BZ2
+/* Do not pass gzip flag to writeTarFile() */
+#define writeTarFile(tar_fd, verboseFlag, recurseFlags, include, exclude, gzip) \
+	writeTarFile(tar_fd, verboseFlag, recurseFlags, include, exclude)
+#endif
 
 
 #if ENABLE_FEATURE_TAR_CREATE
@@ -428,13 +436,13 @@ static int writeTarHeader(struct TarBallInfo *tbInfo,
 		 && (filesize <= 0x3fffffffffffffffffffffffLL)
 #endif
 		) {
-			/* GNU tar uses "base-256 encoding" for very large numbers.
-			 * Encoding is binary, with highest bit always set as a marker
-			 * and sign in next-highest bit:
-			 * 80 00 .. 00 - zero
-			 * bf ff .. ff - largest positive number
-			 * ff ff .. ff - minus 1
-			 * c0 00 .. 00 - smallest negative number
+	                /* GNU tar uses "base-256 encoding" for very large numbers.
+	                 * Encoding is binary, with highest bit always set as a marker
+	                 * and sign in next-highest bit:
+	                 * 80 00 .. 00 - zero
+	                 * bf ff .. ff - largest positive number
+	                 * ff ff .. ff - minus 1
+	                 * c0 00 .. 00 - smallest negative number
 			 */
 			char *p8 = header.size + sizeof(header.size);
 			do {
@@ -614,12 +622,21 @@ static int FAST_FUNC writeFileToTarball(const char *fileName, struct stat *statb
 	return TRUE;
 }
 
-#if SEAMLESS_COMPRESSION
+#if ENABLE_FEATURE_SEAMLESS_GZ || ENABLE_FEATURE_SEAMLESS_BZ2
+# if !(ENABLE_FEATURE_SEAMLESS_GZ && ENABLE_FEATURE_SEAMLESS_BZ2)
+#  define vfork_compressor(tar_fd, gzip) vfork_compressor(tar_fd)
+# endif
 /* Don't inline: vfork scares gcc and pessimizes code */
-static void NOINLINE vfork_compressor(int tar_fd, const char *gzip)
+static void NOINLINE vfork_compressor(int tar_fd, int gzip)
 {
 	pid_t gzipPid;
-
+# if ENABLE_FEATURE_SEAMLESS_GZ && ENABLE_FEATURE_SEAMLESS_BZ2
+	const char *zip_exec = (gzip == 1) ? "gzip" : "bzip2";
+# elif ENABLE_FEATURE_SEAMLESS_GZ
+	const char *zip_exec = "gzip";
+# else /* only ENABLE_FEATURE_SEAMLESS_BZ2 */
+	const char *zip_exec = "bzip2";
+# endif
 	// On Linux, vfork never unpauses parent early, although standard
 	// allows for that. Do we want to waste bytes checking for it?
 # define WAIT_FOR_CHILD 0
@@ -632,6 +649,11 @@ static void NOINLINE vfork_compressor(int tar_fd, const char *gzip)
 	xpiped_pair(gzipDataPipe);
 
 	signal(SIGPIPE, SIG_IGN); /* we only want EPIPE on errors */
+
+# if defined(__GNUC__) && __GNUC__
+	/* Avoid vfork clobbering */
+	(void) &zip_exec;
+# endif
 
 	gzipPid = xvfork();
 
@@ -648,7 +670,7 @@ static void NOINLINE vfork_compressor(int tar_fd, const char *gzip)
 		xmove_fd(gzipDataPipe.rd, 0);
 		xmove_fd(tar_fd, 1);
 		/* exec gzip/bzip2 program/applet */
-		BB_EXECLP(gzip, gzip, "-f", (char *)0);
+		BB_EXECLP(zip_exec, zip_exec, "-f", (char *)0);
 		vfork_exec_errno = errno;
 		_exit(EXIT_FAILURE);
 	}
@@ -671,21 +693,16 @@ static void NOINLINE vfork_compressor(int tar_fd, const char *gzip)
 # endif
 	if (vfork_exec_errno) {
 		errno = vfork_exec_errno;
-		bb_perror_msg_and_die("can't execute '%s'", gzip);
+		bb_perror_msg_and_die("can't execute '%s'", zip_exec);
 	}
 }
-#endif /* SEAMLESS_COMPRESSION */
+#endif /* ENABLE_FEATURE_SEAMLESS_GZ || ENABLE_FEATURE_SEAMLESS_BZ2 */
 
 
-#if !SEAMLESS_COMPRESSION
-/* Do not pass gzip flag to writeTarFile() */
-#define writeTarFile(tar_fd, verboseFlag, recurseFlags, include, exclude, gzip) \
-	writeTarFile(tar_fd, verboseFlag, recurseFlags, include, exclude)
-#endif
 /* gcc 4.2.1 inlines it, making code bigger */
 static NOINLINE int writeTarFile(int tar_fd, int verboseFlag,
 	int recurseFlags, const llist_t *include,
-	const llist_t *exclude, const char *gzip)
+	const llist_t *exclude, int gzip)
 {
 	int errorFlag = FALSE;
 	struct TarBallInfo tbInfo;
@@ -698,7 +715,7 @@ static NOINLINE int writeTarFile(int tar_fd, int verboseFlag,
 	 * can avoid including the tarball into itself....  */
 	xfstat(tbInfo.tarFd, &tbInfo.tarFileStatBuf, "can't stat tar file");
 
-#if SEAMLESS_COMPRESSION
+#if ENABLE_FEATURE_SEAMLESS_GZ || ENABLE_FEATURE_SEAMLESS_BZ2
 	if (gzip)
 		vfork_compressor(tbInfo.tarFd, gzip);
 #endif
@@ -733,7 +750,7 @@ static NOINLINE int writeTarFile(int tar_fd, int verboseFlag,
 	if (errorFlag)
 		bb_error_msg("error exit delayed from previous errors");
 
-#if SEAMLESS_COMPRESSION
+#if ENABLE_FEATURE_SEAMLESS_GZ || ENABLE_FEATURE_SEAMLESS_BZ2
 	if (gzip) {
 		int status;
 		if (safe_waitpid(-1, &status, 0) == -1)
@@ -745,9 +762,11 @@ static NOINLINE int writeTarFile(int tar_fd, int verboseFlag,
 #endif
 	return errorFlag;
 }
-#else /* !FEATURE_TAR_CREATE */
-# define writeTarFile(...) 0
-#endif
+#else
+int writeTarFile(int tar_fd, int verboseFlag,
+	int recurseFlags, const llist_t *include,
+	const llist_t *exclude, int gzip);
+#endif /* FEATURE_TAR_CREATE */
 
 #if ENABLE_FEATURE_TAR_FROM
 static llist_t *append_file_list_to_list(llist_t *list)
@@ -1119,7 +1138,7 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 			 && flags == O_RDONLY
 			 && !(opt & OPT_ANY_COMPRESS)
 			) {
-				tar_handle->src_fd = open_zipped(tar_filename, /*fail_if_not_compressed:*/ 0);
+				tar_handle->src_fd = open_zipped(tar_filename);
 				if (tar_handle->src_fd < 0)
 					bb_perror_msg_and_die("can't open '%s'", tar_filename);
 			} else {
@@ -1131,24 +1150,18 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 	if (base_dir)
 		xchdir(base_dir);
 
-	//if (SEAMLESS_COMPRESSION)
+	//if (SEAMLESS_COMPRESSION || OPT_COMPRESS)
 	//	/* We need to know whether child (gzip/bzip/etc) exits abnormally */
 	//	signal(SIGCHLD, check_errors_in_children);
 
 	/* Create an archive */
 	if (opt & OPT_CREATE) {
-#if SEAMLESS_COMPRESSION
-		const char *zipMode = NULL;
-		if (opt & OPT_COMPRESS)
-			zipMode = "compress";
-		if (opt & OPT_GZIP)
-			zipMode = "gzip";
-		if (opt & OPT_BZIP2)
-			zipMode = "bzip2";
-		if (opt & OPT_LZMA)
-			zipMode = "lzma";
-		if (opt & OPT_XZ)
-			zipMode = "xz";
+#if ENABLE_FEATURE_SEAMLESS_GZ || ENABLE_FEATURE_SEAMLESS_BZ2
+		int zipMode = 0;
+		if (ENABLE_FEATURE_SEAMLESS_GZ && (opt & OPT_GZIP))
+			zipMode = 1;
+		if (ENABLE_FEATURE_SEAMLESS_BZ2 && (opt & OPT_BZIP2))
+			zipMode = 2;
 #endif
 		/* NB: writeTarFile() closes tar_handle->src_fd */
 		return writeTarFile(tar_handle->src_fd, verboseFlag,
@@ -1159,7 +1172,7 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 	}
 
 	if (opt & OPT_ANY_COMPRESS) {
-		USE_FOR_MMU(IF_DESKTOP(long long) int FAST_FUNC (*xformer)(transformer_state_t *xstate);)
+		USE_FOR_MMU(IF_DESKTOP(long long) int FAST_FUNC (*xformer)(transformer_aux_data_t *aux, int src_fd, int dst_fd);)
 		USE_FOR_NOMMU(const char *xformer_prog;)
 
 		if (opt & OPT_COMPRESS)
@@ -1178,7 +1191,7 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 			USE_FOR_MMU(xformer = unpack_xz_stream;)
 			USE_FOR_NOMMU(xformer_prog = "unxz";)
 
-		fork_transformer_with_sig(tar_handle->src_fd, xformer, xformer_prog);
+		open_transformer_with_sig(tar_handle->src_fd, xformer, xformer_prog);
 		/* Can't lseek over pipes */
 		tar_handle->seek = seek_by_read;
 		/*tar_handle->offset = 0; - already is */

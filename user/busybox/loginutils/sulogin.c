@@ -54,7 +54,7 @@ int sulogin_main(int argc UNUSED_PARAM, char **argv)
 		int r;
 
 		r = ask_and_check_password_extended(pwd, timeout,
-			"Give root password for system maintenance\n"
+				"Give root password for system maintenance\n"
 			"(or type Control-D for normal startup):"
 		);
 		if (r < 0) {

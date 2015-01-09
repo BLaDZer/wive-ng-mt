@@ -39,8 +39,7 @@ int FAST_FUNC arpping(uint32_t test_nip,
 		const uint8_t *safe_mac,
 		uint32_t from_ip,
 		uint8_t *from_mac,
-		const char *interface,
-		unsigned timeo)
+		const char *interface)
 {
 	int timeout_ms;
 	struct pollfd pfd[1];
@@ -48,9 +47,6 @@ int FAST_FUNC arpping(uint32_t test_nip,
 	int rv = 1;             /* "no reply received" yet */
 	struct sockaddr addr;   /* for interface name */
 	struct arpMsg arp;
-
-	if (!timeo)
-		return 1;
 
 	s = socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP));
 	if (s == -1) {
@@ -87,7 +83,7 @@ int FAST_FUNC arpping(uint32_t test_nip,
 	}
 
 	/* wait for arp reply, and check it */
-	timeout_ms = (int)timeo;
+	timeout_ms = 2000;
 	do {
 		typedef uint32_t aliased_uint32_t FIX_ALIASING;
 		int r;
@@ -128,7 +124,7 @@ int FAST_FUNC arpping(uint32_t test_nip,
 		 * this is more under/overflow-resistant
 		 * (people did see overflows here when system time jumps):
 		 */
-	} while ((unsigned)timeout_ms <= timeo);
+	} while ((unsigned)timeout_ms <= 2000);
 
  ret:
 	close(s);

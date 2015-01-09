@@ -112,7 +112,7 @@ struct dyn_lease* FAST_FUNC find_lease_by_nip(uint32_t nip)
 }
 
 /* Check if the IP is taken; if it is, add it to the lease table */
-static int nobody_responds_to_arp(uint32_t nip, const uint8_t *safe_mac, unsigned arpping_ms)
+static int nobody_responds_to_arp(uint32_t nip, const uint8_t *safe_mac)
 {
 	struct in_addr temp;
 	int r;
@@ -120,8 +120,7 @@ static int nobody_responds_to_arp(uint32_t nip, const uint8_t *safe_mac, unsigne
 	r = arpping(nip, safe_mac,
 			server_config.server_nip,
 			server_config.server_mac,
-			server_config.interface,
-			arpping_ms);
+			server_config.interface);
 	if (r)
 		return r;
 
@@ -133,7 +132,7 @@ static int nobody_responds_to_arp(uint32_t nip, const uint8_t *safe_mac, unsigne
 }
 
 /* Find a new usable (we think) address */
-uint32_t FAST_FUNC find_free_or_expired_nip(const uint8_t *safe_mac, unsigned arpping_ms)
+uint32_t FAST_FUNC find_free_or_expired_nip(const uint8_t *safe_mac)
 {
 	uint32_t addr;
 	struct dyn_lease *oldest_lease = NULL;
@@ -178,7 +177,7 @@ uint32_t FAST_FUNC find_free_or_expired_nip(const uint8_t *safe_mac, unsigned ar
 		lease = find_lease_by_nip(nip);
 		if (!lease) {
 //TODO: DHCP servers do not always sit on the same subnet as clients: should *ping*, not arp-ping!
-			if (nobody_responds_to_arp(nip, safe_mac, arpping_ms))
+			if (nobody_responds_to_arp(nip, safe_mac))
 				return nip;
 		} else {
 			if (!oldest_lease || lease->expires < oldest_lease->expires)
@@ -195,7 +194,7 @@ uint32_t FAST_FUNC find_free_or_expired_nip(const uint8_t *safe_mac, unsigned ar
 
 	if (oldest_lease
 	 && is_expired_lease(oldest_lease)
-	 && nobody_responds_to_arp(oldest_lease->lease_nip, safe_mac, arpping_ms)
+	 && nobody_responds_to_arp(oldest_lease->lease_nip, safe_mac)
 	) {
 		return oldest_lease->lease_nip;
 	}

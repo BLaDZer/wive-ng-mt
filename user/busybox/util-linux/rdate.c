@@ -1,7 +1,7 @@
 /* vi: set sw=4 ts=4: */
 /*
  * The Rdate command will ask a time server for the RFC 868 time
- * and optionally set the system time.
+ *  and optionally set the system time.
  *
  * by Sterling Huxley <sterling@europa.com>
  *
@@ -38,7 +38,7 @@ static time_t askremotedate(const char *host)
 	if (safe_read(fd, &nett, 4) != 4)    /* read time from server */
 		bb_error_msg_and_die("%s did not send the complete time", host);
 	if (ENABLE_FEATURE_CLEAN_UP)
-		close(fd);
+	close(fd);
 
 	/* Convert from network byte order to local byte order.
 	 * RFC 868 time is the number of seconds

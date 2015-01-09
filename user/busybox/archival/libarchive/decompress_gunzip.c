@@ -293,8 +293,8 @@ static unsigned fill_bitbuffer(STATE_PARAM unsigned bitbuffer, unsigned *current
  * m:	maximum lookup bits, returns actual
  */
 static int huft_build(const unsigned *b, const unsigned n,
-			const unsigned s, const unsigned short *d,
-			const unsigned char *e, huft_t **t, unsigned *m)
+			   const unsigned s, const unsigned short *d,
+			   const unsigned char *e, huft_t **t, unsigned *m)
 {
 	unsigned a;             /* counter for codes of length k */
 	unsigned c[BMAX + 1];   /* bit length count table */
@@ -971,7 +971,7 @@ static int inflate_get_next_window(STATE_PARAM_ONLY)
 
 /* Called from unpack_gz_stream() and inflate_unzip() */
 static IF_DESKTOP(long long) int
-inflate_unzip_internal(STATE_PARAM transformer_state_t *xstate)
+inflate_unzip_internal(STATE_PARAM int in, int out)
 {
 	IF_DESKTOP(long long) int n = 0;
 	ssize_t nwrote;
@@ -980,7 +980,7 @@ inflate_unzip_internal(STATE_PARAM transformer_state_t *xstate)
 	gunzip_window = xmalloc(GUNZIP_WSIZE);
 	gunzip_outbuf_count = 0;
 	gunzip_bytes_out = 0;
-	gunzip_src_fd = xstate->src_fd;
+	gunzip_src_fd = in;
 
 	/* (re) initialize state */
 	method = -1;
@@ -1002,8 +1002,9 @@ inflate_unzip_internal(STATE_PARAM transformer_state_t *xstate)
 
 	while (1) {
 		int r = inflate_get_next_window(PASS_STATE_ONLY);
-		nwrote = transformer_write(xstate, gunzip_window, gunzip_outbuf_count);
-		if (nwrote == (ssize_t)-1) {
+		nwrote = full_write(out, gunzip_window, gunzip_outbuf_count);
+		if (nwrote != (ssize_t)gunzip_outbuf_count) {
+			bb_perror_msg("write");
 			n = -1;
 			goto ret;
 		}
@@ -1033,22 +1034,22 @@ inflate_unzip_internal(STATE_PARAM transformer_state_t *xstate)
 /* For unzip */
 
 IF_DESKTOP(long long) int FAST_FUNC
-inflate_unzip(transformer_state_t *xstate)
+inflate_unzip(transformer_aux_data_t *aux, int in, int out)
 {
 	IF_DESKTOP(long long) int n;
 	DECLARE_STATE;
 
 	ALLOC_STATE;
 
-	to_read = xstate->bytes_in;
+	to_read = aux->bytes_in;
 //	bytebuffer_max = 0x8000;
 	bytebuffer_offset = 4;
 	bytebuffer = xmalloc(bytebuffer_max);
-	n = inflate_unzip_internal(PASS_STATE xstate);
+	n = inflate_unzip_internal(PASS_STATE in, out);
 	free(bytebuffer);
 
-	xstate->crc32 = gunzip_crc;
-	xstate->bytes_out = gunzip_bytes_out;
+	aux->crc32 = gunzip_crc;
+	aux->bytes_out = gunzip_bytes_out;
 	DEALLOC_STATE;
 	return n;
 }
@@ -1106,7 +1107,7 @@ static uint32_t buffer_read_le_u32(STATE_PARAM_ONLY)
 	return res;
 }
 
-static int check_header_gzip(STATE_PARAM transformer_state_t *xstate)
+static int check_header_gzip(STATE_PARAM transformer_aux_data_t *aux)
 {
 	union {
 		unsigned char raw[8];
@@ -1168,7 +1169,8 @@ static int check_header_gzip(STATE_PARAM transformer_state_t *xstate)
 		}
 	}
 
-	xstate->mtime = SWAP_LE32(header.formatted.mtime);
+	if (aux)
+		aux->mtime = SWAP_LE32(header.formatted.mtime);
 
 	/* Read the header checksum */
 	if (header.formatted.flags & 0x02) {
@@ -1180,27 +1182,27 @@ static int check_header_gzip(STATE_PARAM transformer_state_t *xstate)
 }
 
 IF_DESKTOP(long long) int FAST_FUNC
-unpack_gz_stream(transformer_state_t *xstate)
+unpack_gz_stream(transformer_aux_data_t *aux, int src_fd, int dst_fd)
 {
 	uint32_t v32;
 	IF_DESKTOP(long long) int total, n;
 	DECLARE_STATE;
 
 #if !ENABLE_FEATURE_SEAMLESS_Z
-	if (check_signature16(xstate, GZIP_MAGIC))
+	if (check_signature16(aux, src_fd, GZIP_MAGIC))
 		return -1;
 #else
-	if (xstate->check_signature) {
+	if (aux && aux->check_signature) {
 		uint16_t magic2;
 
-		if (full_read(xstate->src_fd, &magic2, 2) != 2) {
+		if (full_read(src_fd, &magic2, 2) != 2) {
  bad_magic:
 			bb_error_msg("invalid magic");
 			return -1;
 		}
 		if (magic2 == COMPRESS_MAGIC) {
-			xstate->check_signature = 0;
-			return unpack_Z_stream(xstate);
+			aux->check_signature = 0;
+			return unpack_Z_stream(aux, src_fd, dst_fd);
 		}
 		if (magic2 != GZIP_MAGIC)
 			goto bad_magic;
@@ -1213,16 +1215,16 @@ unpack_gz_stream(transformer_state_t *xstate)
 	to_read = -1;
 //	bytebuffer_max = 0x8000;
 	bytebuffer = xmalloc(bytebuffer_max);
-	gunzip_src_fd = xstate->src_fd;
+	gunzip_src_fd = src_fd;
 
  again:
-	if (!check_header_gzip(PASS_STATE xstate)) {
+	if (!check_header_gzip(PASS_STATE aux)) {
 		bb_error_msg("corrupted data");
 		total = -1;
 		goto ret;
 	}
 
-	n = inflate_unzip_internal(PASS_STATE xstate);
+	n = inflate_unzip_internal(PASS_STATE src_fd, dst_fd);
 	if (n < 0) {
 		total = -1;
 		goto ret;

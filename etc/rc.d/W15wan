@@ -10,8 +10,8 @@ zero_conf() {
     # reload global
     . /etc/scripts/global.sh
 
+    wan_is_not_null=`ip -o -4 addr show $wan_if scope global | wc -l`
     if [ "$wan_is_not_null" = "0" ]; then
-	export LOGGING=syslog
 	zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1
     fi
 }

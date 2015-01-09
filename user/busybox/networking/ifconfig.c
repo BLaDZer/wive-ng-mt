@@ -431,7 +431,7 @@ int ifconfig_main(int argc UNUSED_PARAM, char **argv)
 #if ENABLE_FEATURE_IFCONFIG_HW
 					} else {	/* A_CAST_HOST_COPY_IN_ETHER */
 						/* This is the "hw" arg case. */
-						smalluint hw_class = index_in_substrings("ether\0"
+						smalluint hw_class= index_in_substrings("ether\0"
 								IF_FEATURE_HWIB("infiniband\0"), *argv) + 1;
 						if (!hw_class || !*++argv)
 							bb_show_usage();
@@ -442,7 +442,7 @@ int ifconfig_main(int argc UNUSED_PARAM, char **argv)
 					}
 #endif
 					memcpy( ((char *)&ifr) + a1op->ifr_offset,
-						p, sizeof(struct sockaddr));
+						   p, sizeof(struct sockaddr));
 				} else {
 					/* FIXME: error check?? */
 					unsigned long i = strtoul(*argv, NULL, 0);

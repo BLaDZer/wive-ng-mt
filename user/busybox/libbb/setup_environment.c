@@ -40,7 +40,7 @@ void FAST_FUNC setup_environment(const char *shell, int flags, const struct pass
 	if (!(flags & SETUP_ENV_NO_CHDIR)) {
 		if (chdir(pw->pw_dir) != 0) {
 			bb_error_msg("can't change directory to '%s'", pw->pw_dir);
-			xchdir((flags & SETUP_ENV_TO_TMP) ? "/tmp" : "/");
+		xchdir((flags & SETUP_ENV_TO_TMP) ? "/tmp" : "/");
 		}
 	}
 

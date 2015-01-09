@@ -295,7 +295,7 @@ int nameif_main(int argc UNUSED_PARAM, char **argv)
 			goto found;
 		}
 		/* Nothing found for current interface */
-		continue;
+			continue;
  found:
 		if (strcmp(ifr.ifr_name, ch->ifname) != 0) {
 			strcpy(ifr.ifr_newname, ch->ifname);

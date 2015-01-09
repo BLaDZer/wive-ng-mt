@@ -11,9 +11,6 @@
 # include <syslog.h>
 #endif
 
-#if ENABLE_FEATURE_SYSLOG
-smallint syslog_level = LOG_ERR;
-#endif
 smallint logmode = LOGMODE_STDIO;
 const char *msg_eol = "\n";
 
@@ -73,7 +70,7 @@ void FAST_FUNC bb_verror_msg(const char *s, va_list p, const char* strerr)
 	}
 #if ENABLE_FEATURE_SYSLOG
 	if (logmode & LOGMODE_SYSLOG) {
-		syslog(syslog_level, "%s", msg + applet_len);
+		syslog(LOG_ERR, "%s", msg + applet_len);
 	}
 #endif
 	free(msg);

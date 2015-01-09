@@ -133,7 +133,7 @@
 # include <security/pam_appl.h>
 # include <security/pam_misc.h>
 #endif
-#if ENABLE_FEATURE_USE_SENDFILE
+#if ENABLE_FEATURE_HTTPD_USE_SENDFILE
 # include <sys/sendfile.h>
 #endif
 /* amount of buffering in a pipe */
@@ -796,9 +796,9 @@ static void parse_conf(const char *path, int flag)
 		/* the line is not recognized */
  config_error:
 		bb_error_msg("config error '%s' in '%s'", buf, filename);
-	} /* while (fgets) */
+	 } /* while (fgets) */
 
-	fclose(f);
+	 fclose(f);
 }
 
 #if ENABLE_FEATURE_HTTPD_ENCODE_URL_STR
@@ -1104,15 +1104,15 @@ static NOINLINE void cgi_io_loop_and_exit(int fromCgi_rd, int toCgi_wr, int post
 
 	/* NB: breaking out of this loop jumps to log_and_exit() */
 	out_cnt = 0;
-	pfd[FROM_CGI].fd = fromCgi_rd;
-	pfd[FROM_CGI].events = POLLIN;
-	pfd[TO_CGI].fd = toCgi_wr;
+		pfd[FROM_CGI].fd = fromCgi_rd;
+		pfd[FROM_CGI].events = POLLIN;
+			pfd[TO_CGI].fd = toCgi_wr;
 	while (1) {
 		/* Note: even pfd[0].events == 0 won't prevent
 		 * revents == POLLHUP|POLLERR reports from closed stdin.
 		 * Setting fd to -1 works: */
 		pfd[0].fd = -1;
-		pfd[0].events = POLLIN;
+				pfd[0].events = POLLIN;
 		pfd[0].revents = 0; /* probably not needed, paranoia */
 
 		/* We always poll this fd, thus kernel always sets revents: */
@@ -1320,7 +1320,7 @@ static void send_cgi_and_exit(
 		int dir;
 		*script = '\0';
 		dir = is_directory(url + 1, /*followlinks:*/ 1);
-		*script = '/';
+			*script = '/';
 		if (!dir) {
 			/* not directory, found script.cgi/PATH_INFO */
 			break;
@@ -1624,7 +1624,7 @@ static NOINLINE void send_file_and_exit(const char *url, int what)
 #endif
 	if (what & SEND_HEADERS)
 		send_headers(HTTP_OK);
-#if ENABLE_FEATURE_USE_SENDFILE
+#if ENABLE_FEATURE_HTTPD_USE_SENDFILE
 	{
 		off_t offset = range_start;
 		while (1) {
@@ -1654,7 +1654,7 @@ static NOINLINE void send_file_and_exit(const char *url, int what)
 			break;
 	}
 	if (count < 0) {
- IF_FEATURE_USE_SENDFILE(fin:)
+ IF_FEATURE_HTTPD_USE_SENDFILE(fin:)
 		if (verbose > 1)
 			bb_perror_msg("error");
 	}
@@ -1721,9 +1721,9 @@ static int pam_talker(int num_msg,
 		case PAM_PROMPT_ECHO_OFF:
 			s = userinfo->pw;
 			break;
-		case PAM_ERROR_MSG:
-		case PAM_TEXT_INFO:
-			s = "";
+	        case PAM_ERROR_MSG:
+        	case PAM_TEXT_INFO:
+        		s = "";
 			break;
 		default:
 			free(response);
@@ -1850,7 +1850,7 @@ static int check_user_passwd(const char *path, char *user_and_passwd)
 				 */
 				goto check_encrypted;
 # endif /* ENABLE_PAM */
-			}
+				}
 			/* Else: passwd is from httpd.conf, it is either plaintext or encrypted */
 
 			if (passwd[0] == '$' && isdigit(passwd[1])) {
@@ -2049,7 +2049,7 @@ static void handle_incoming_and_exit(const len_and_sockaddr *fromAddr)
 			}
 			if (*tptr == '.') {
 				if (tptr[1] == '.' && (tptr[2] == '/' || tptr[2] == '\0')) {
-					/* "..": be careful */
+				/* "..": be careful */
 					/* protect root */
 					if (urlp == urlcopy)
 						send_headers_and_exit(HTTP_BAD_REQUEST);

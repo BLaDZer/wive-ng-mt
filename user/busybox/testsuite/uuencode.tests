@@ -9,8 +9,8 @@
 . ./testing.sh
 
 # testing "test name" "command(s)" "expected result" "file input" "stdin"
-# file input will be file called "input"
-# test can create a file "actual" instead of writing to stdout
+#   file input will be file called "input"
+#   test can create a file "actual" instead of writing to stdout
 
 # Test setup of standard input
 umask 0

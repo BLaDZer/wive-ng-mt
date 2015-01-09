@@ -162,7 +162,7 @@ int kill_main(int argc UNUSED_PARAM, char **argv)
 		sid = getsid(pid);
 		/* Stop all processes */
 		if (signo != SIGSTOP && signo != SIGCONT)
-			kill(-1, SIGSTOP);
+		kill(-1, SIGSTOP);
 		/* Signal all processes except those in our session */
 		while ((p = procps_scan(p, PSSCAN_PID|PSSCAN_SID)) != NULL) {
 			char **args;
@@ -206,7 +206,7 @@ int kill_main(int argc UNUSED_PARAM, char **argv)
  resume:
 		/* And let them continue */
 		if (signo != SIGSTOP && signo != SIGCONT)
-			kill(-1, SIGCONT);
+		kill(-1, SIGCONT);
 		return ret;
 	}
 

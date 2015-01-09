@@ -41,7 +41,6 @@
 #include <setjmp.h>
 #include <fnmatch.h>
 #include <sys/times.h>
-#include <sys/utsname.h> /* for setting $HOSTNAME */
 
 #include "busybox.h" /* for applet_names */
 #include "unicode.h"
@@ -142,13 +141,6 @@
 //config:	depends on ASH
 //config:	help
 //config:	  Enable support for test builtin in ash.
-//config:
-//config:config ASH_HELP
-//config:	bool "help builtin"
-//config:	default y
-//config:	depends on ASH
-//config:	help
-//config:	  Enable help builtin in ash.
 //config:
 //config:config ASH_CMDCMD
 //config:	bool "'command' command to override shell builtins"
@@ -2128,22 +2120,6 @@ lookupvar(const char *name)
 	return NULL;
 }
 
-static void reinit_unicode_for_ash(void)
-{
-	/* Unicode support should be activated even if LANG is set
-	 * _during_ shell execution, not only if it was set when
-	 * shell was started. Therefore, re-check LANG every time:
-	 */
-	if (ENABLE_FEATURE_CHECK_UNICODE_IN_ENV
-	 || ENABLE_UNICODE_USING_LOCALE
-	) {
-		const char *s = lookupvar("LC_ALL");
-		if (!s) s = lookupvar("LC_CTYPE");
-		if (!s) s = lookupvar("LANG");
-		reinit_unicode(s);
-	}
-}
-
 /*
  * Search the environment of a builtin command.
  */
@@ -3647,7 +3623,7 @@ getjob(const char *name, int getctl)
 
 	if (is_number(p)) {
 		num = atoi(p);
-		if (num <= njobs) {
+		if (num < njobs) {
 			jp = jobtab + num - 1;
 			if (jp->used)
 				goto gotit;
@@ -6411,15 +6387,7 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 				len = number(loc);
 			}
 		}
-		if (pos < 0) {
-			/* ${VAR:$((-n)):l} starts n chars from the end */
-			pos = orig_len + pos;
-		}
-		if ((unsigned)pos >= orig_len) {
-			/* apart from obvious ${VAR:999999:l},
-			 * covers ${VAR:$((-9999999)):l} - result is ""
-			 * (bash-compat)
-			 */
+		if (pos >= orig_len) {
 			pos = 0;
 			len = 0;
 		}
@@ -6829,15 +6797,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 		varunset(p, var, 0, 0);
 
 	if (subtype == VSLENGTH) {
-		ssize_t n = varlen;
-		if (n > 0) {
-			reinit_unicode_for_ash();
-			if (unicode_status == UNICODE_ON) {
-				const char *val = lookupvar(var);
-				n = unicode_strlen(val);
-			}
-		}
-		cvtnum(n > 0 ? n : 0);
+		cvtnum(varlen > 0 ? varlen : 0);
 		goto record;
 	}
 
@@ -8819,8 +8779,8 @@ setinteractive(int on)
 		if (!did_banner) {
 			/* note: ash and hush share this string */
 			out1fmt("\n\n%s %s\n"
-				IF_ASH_HELP("Enter 'help' for a list of built-in commands.\n")
-				"\n",
+				"Enter 'help' for a list of built-in commands."
+				"\n\n",
 				bb_banner,
 				"built-in shell (ash)"
 			);
@@ -9000,9 +8960,6 @@ mklocal(char *name)
 			vp->flags |= VSTRFIXED|VTEXTFIXED;
 			if (eq)
 				setvareq(name, 0);
-			else
-				/* "local VAR" unsets VAR: */
-				setvar(name, NULL, 0);
 		}
 	}
 	lvp->vp = vp;
@@ -9073,7 +9030,7 @@ static int exportcmd(int, char **) FAST_FUNC;
 #if ENABLE_ASH_GETOPTS
 static int getoptscmd(int, char **) FAST_FUNC;
 #endif
-#if ENABLE_ASH_HELP
+#if !ENABLE_FEATURE_SH_EXTRA_QUIET
 static int helpcmd(int, char **) FAST_FUNC;
 #endif
 #if MAX_HISTORY
@@ -9149,7 +9106,7 @@ static const struct builtincmd builtintab[] = {
 	{ BUILTIN_REGULAR       "getopts" , getoptscmd },
 #endif
 	{ BUILTIN_NOSPEC        "hash"    , hashcmd    },
-#if ENABLE_ASH_HELP
+#if !ENABLE_FEATURE_SH_EXTRA_QUIET
 	{ BUILTIN_NOSPEC        "help"    , helpcmd    },
 #endif
 #if MAX_HISTORY
@@ -9696,7 +9653,16 @@ preadfd(void)
 # if ENABLE_FEATURE_TAB_COMPLETION
 		line_input_state->path_lookup = pathval();
 # endif
-		reinit_unicode_for_ash();
+		/* Unicode support should be activated even if LANG is set
+		 * _during_ shell execution, not only if it was set when
+		 * shell was started. Therefore, re-check LANG every time:
+		 */
+		{
+			const char *s = lookupvar("LC_ALL");
+			if (!s) s = lookupvar("LC_CTYPE");
+			if (!s) s = lookupvar("LANG");
+			reinit_unicode(s);
+		}
 		nr = read_line_input(line_input_state, cmdedit_prompt, buf, IBUFSIZ, timeout);
 		if (nr == 0) {
 			/* Ctrl+C pressed */
@@ -12626,7 +12592,10 @@ trapcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 
 /* ============ Builtins */
 
-#if ENABLE_ASH_HELP
+#if !ENABLE_FEATURE_SH_EXTRA_QUIET
+/*
+ * Lists available builtins
+ */
 static int FAST_FUNC
 helpcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 {
@@ -12644,7 +12613,7 @@ helpcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 			col = 0;
 		}
 	}
-# if ENABLE_FEATURE_SH_STANDALONE
+#if ENABLE_FEATURE_SH_STANDALONE
 	{
 		const char *a = applet_names;
 		while (*a) {
@@ -12656,11 +12625,11 @@ helpcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 			a += strlen(a) + 1;
 		}
 	}
-# endif
+#endif
 	out1fmt("\n\n");
 	return EXIT_SUCCESS;
 }
-#endif
+#endif /* FEATURE_SH_EXTRA_QUIET */
 
 #if MAX_HISTORY
 static int FAST_FUNC
@@ -12786,7 +12755,7 @@ timescmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 	const unsigned char *p;
 	struct tms buf;
 
-	clk_tck = bb_clk_tck();
+	clk_tck = sysconf(_SC_CLK_TCK);
 	times(&buf);
 
 	p = timescmd_str;
@@ -13045,12 +13014,7 @@ init(void)
 		setvar2("PPID", utoa(getppid()));
 #if ENABLE_ASH_BASH_COMPAT
 		p = lookupvar("SHLVL");
-		setvar("SHLVL", utoa((p ? atoi(p) : 0) + 1), VEXPORT);
-		if (!lookupvar("HOSTNAME")) {
-			struct utsname uts;
-			uname(&uts);
-			setvar2("HOSTNAME", uts.nodename);
-		}
+		setvar2("SHLVL", utoa(p ? atoi(p) + 1 : 1));
 #endif
 		p = lookupvar("PWD");
 		if (p) {

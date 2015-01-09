@@ -519,8 +519,8 @@ int conspy_main(int argc UNUSED_PARAM, char **argv)
 
 			// Do exit processing
 			if (!(option_mask32 & FLAG(Q))) {
-				for (i = 0; i < bytes_read; i++) {
-					if (k[i] != '\033')
+			for (i = 0; i < bytes_read; i++) {
+				if (k[i] != '\033')
 						G.escape_count = -1;
 					if (++G.escape_count >= 3)
 						cleanup(EXIT_SUCCESS);

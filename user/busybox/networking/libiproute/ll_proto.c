@@ -170,8 +170,8 @@ int FAST_FUNC ll_proto_a2n(unsigned short *id, char *buf)
 	for (i = 0; i < ARRAY_SIZE(llproto_ids); i++) {
 		if (strcasecmp(name, buf) == 0) {
 			i = llproto_ids[i];
-			goto good;
-		}
+			 goto good;
+		 }
 		name += strlen(name) + 1;
 	}
 	errno = 0;

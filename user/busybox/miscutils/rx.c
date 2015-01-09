@@ -108,11 +108,11 @@ static int receive(/*int read_fd, */int file_fd)
 			}
 		}
 		/* Write previously received block */
-		errno = 0;
-		if (full_write(file_fd, blockBuf, blockLength) != blockLength) {
+			errno = 0;
+			if (full_write(file_fd, blockBuf, blockLength) != blockLength) {
 			bb_perror_msg(bb_msg_write_error);
-			goto fatal;
-		}
+				goto fatal;
+			}
 
 		timeout = TIMEOUT;
 		reply_char = NAK;
@@ -153,9 +153,9 @@ static int receive(/*int read_fd, */int file_fd)
 			blockBuf[i] = cc;
 		}
 
-		cksum_or_crc = read_byte(TIMEOUT);
-		if (cksum_or_crc < 0)
-			goto timeout;
+			cksum_or_crc = read_byte(TIMEOUT);
+			if (cksum_or_crc < 0)
+				goto timeout;
 		if (do_crc) {
 			cksum_or_crc = (cksum_or_crc << 8) | read_byte(TIMEOUT);
 			if (cksum_or_crc < 0)
@@ -193,8 +193,8 @@ static int receive(/*int read_fd, */int file_fd)
 		}
 		if (cksum_or_crc != expected) {
 			bb_error_msg(do_crc ? "crc error, expected 0x%04x, got 0x%04x"
-					: "checksum error, expected 0x%02x, got 0x%02x",
-				expected, cksum_or_crc);
+			                   : "checksum error, expected 0x%02x, got 0x%02x",
+					expected, cksum_or_crc);
 			goto error;
 		}
 

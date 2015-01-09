@@ -443,7 +443,7 @@ int dd_main(int argc UNUSED_PARAM, char **argv)
 			}
 		} else {
 			if (write_and_stats(ibuf, n, obs, outfile))
-				goto out_status;
+			goto out_status;
 		}
 
 		if (flags & FLAG_FSYNC) {

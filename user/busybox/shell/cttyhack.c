@@ -173,16 +173,16 @@ int cttyhack_main(int argc UNUSED_PARAM, char **argv)
 		if (fd < 0)
 			goto ret;
 	}
-	//bb_error_msg("switching to '%s'", console);
-	dup2(fd, 0);
-	dup2(fd, 1);
-	dup2(fd, 2);
-	while (fd > 2)
-		close(fd--);
-	/* Some other session may have it as ctty,
+		//bb_error_msg("switching to '%s'", console);
+		dup2(fd, 0);
+		dup2(fd, 1);
+		dup2(fd, 2);
+		while (fd > 2)
+			close(fd--);
+		/* Some other session may have it as ctty,
 	 * try to steal it from them:
-	 */
-	ioctl(0, TIOCSCTTY, 1);
- ret:
+		 */
+		ioctl(0, TIOCSCTTY, 1);
+ret:
 	BB_EXECVP_or_die(argv);
 }

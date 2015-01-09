@@ -33,8 +33,8 @@ void volume_id_set_unicode16(char *str, size_t len, const uint8_t *buf, enum end
 			c = (buf[i] << 8) | buf[i+1];
 		if (c == 0)
 			break;
-		if (j+1 >= len)
-			break;
+			if (j+1 >= len)
+				break;
 		if (c < 0x80) {
 			/* 0xxxxxxx */
 		} else {
@@ -43,11 +43,11 @@ void volume_id_set_unicode16(char *str, size_t len, const uint8_t *buf, enum end
 				break;
 			if (c < 0x800) {
 				/* 110yyyxx 10xxxxxx */
-			} else {
-				if (j+3 >= len)
-					break;
+		} else {
+			if (j+3 >= len)
+				break;
 				/* 1110yyyy 10yyyyxx 10xxxxxx */
-				str[j++] = (uint8_t) (0xe0 | (c >> 12));
+			str[j++] = (uint8_t) (0xe0 | (c >> 12));
 				topbits = 0x80;
 			}
 			str[j++] = (uint8_t) (topbits | ((c >> 6) & 0x3f));
@@ -129,7 +129,7 @@ void volume_id_set_label_string(struct volume_id *id, const uint8_t *buf, size_t
 
 void volume_id_set_label_unicode16(struct volume_id *id, const uint8_t *buf, enum endian endianess, size_t count)
 {
-	volume_id_set_unicode16(id->label, sizeof(id->label), buf, endianess, count);
+	 volume_id_set_unicode16(id->label, sizeof(id->label), buf, endianess, count);
 }
 
 void volume_id_set_uuid(struct volume_id *id, const uint8_t *buf, enum uuid_format format)

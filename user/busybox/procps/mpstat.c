@@ -775,6 +775,12 @@ static void main_loop(void)
 
 /* Initialization */
 
+/* Get number of clock ticks per sec */
+static ALWAYS_INLINE unsigned get_hz(void)
+{
+	return sysconf(_SC_CLK_TCK);
+}
+
 static void alloc_struct(int cpus)
 {
 	int i;
@@ -867,7 +873,7 @@ int mpstat_main(int UNUSED_PARAM argc, char **argv)
 	G.cpu_nr = get_cpu_count();
 
 	/* Get number of clock ticks per sec */
-	G.hz = bb_clk_tck();
+	G.hz = get_hz();
 
 	/* Calculate number of interrupts per processor */
 	G.irqcpu_nr = get_irqcpu_nr(PROCFS_INTERRUPTS, NR_IRQS) + NR_IRQCPU_PREALLOC;

@@ -34,14 +34,14 @@ struct modinfo_env {
 	int tags;
 };
 
-static void display(const char *data, const char *pattern, int flag)
+static int display(const char *data, const char *pattern, int flag)
 {
 	if (flag) {
 		int n = printf("%s:", pattern);
 		while (n++ < 16)
 			bb_putchar(' ');
 	}
-	printf("%s%c", data, (option_mask32 & OPT_0) ? '\0' : '\n');
+	return printf("%s%c", data, (option_mask32 & OPT_0) ? '\0' : '\n');
 }
 
 static void modinfo(const char *path, const char *version,
@@ -103,10 +103,9 @@ static void modinfo(const char *path, const char *version,
 			if (strncmp(ptr, pattern, length) == 0 && ptr[length] == '=') {
 				/* field prefixes are 0x80 or 0x00 */
 				if ((ptr[-1] & 0x7F) == '\0') {
-					ptr += length + 1;
-					display(ptr, pattern, (1<<j) != tags);
-					ptr += strlen(ptr);
-				}
+				ptr += length + 1;
+				ptr += display(ptr, pattern, (1<<j) != tags);
+			}
 			}
 			++ptr;
 		}

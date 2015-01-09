@@ -36,7 +36,7 @@ testing "mount -o remount,mand" \
 "mount -o loop mount.image1m $testdir "\
 "&& grep -Fc $testdir </proc/mounts "\
 "&& mount -o remount,mand $testdir "\
-"&& grep -F $testdir </proc/mounts | grep -c '[, ]mand[, ]'"\
+"&& grep -F $testdir </proc/mounts | grep -c '[, ]mand[, ]'" \
 "|| grep -F $testdir </proc/mounts" \
 	"1\n""1\n" \
 	"" ""

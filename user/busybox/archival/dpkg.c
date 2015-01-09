@@ -14,6 +14,7 @@
  *
  * Licensed under GPLv2 or later, see file LICENSE in this source tree.
  */
+
 /*
  * known difference between busybox dpkg and the official dpkg that i don't
  * consider important, its worth keeping a note of differences anyway, just to
@@ -1038,8 +1039,8 @@ static int check_deps(deb_file_t **deb_file, int deb_start /*, int dep_max_count
 			if (package_edge->type == EDGE_CONFLICTS) {
 				const unsigned package_num =
 					search_package_hashtable(package_edge->name,
-								package_edge->version,
-								package_edge->operator);
+								 package_edge->version,
+								 package_edge->operator);
 				int result = 0;
 				if (package_hashtable[package_num] != NULL) {
 					status_num = search_status_hashtable(name_hashtable[package_hashtable[package_num]->name]);
@@ -1126,7 +1127,7 @@ static int check_deps(deb_file_t **deb_file, int deb_start /*, int dep_max_count
 				 */
 				if (root_of_alternatives && package_edge->type != root_of_alternatives->type - 1)
 					bb_error_msg_and_die("fatal error, package dependencies corrupt: %d != %d - 1",
-							package_edge->type, root_of_alternatives->type);
+							     package_edge->type, root_of_alternatives->type);
 
 				if (package_hashtable[package_num] != NULL)
 					result = !package_satisfies_dependency(package_num, package_edge->type);

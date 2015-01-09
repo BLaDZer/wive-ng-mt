@@ -469,10 +469,10 @@ static int exec_conf(void)
 #ifdef SIGWINCH
 	{
 		struct sigaction sa;
-		sa.sa_handler = winch_handler;
-		sigemptyset(&sa.sa_mask);
-		sa.sa_flags = SA_RESTART;
-		sigaction(SIGWINCH, &sa, NULL);
+	sa.sa_handler = winch_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGWINCH, &sa, NULL);
 	}
 #endif
 

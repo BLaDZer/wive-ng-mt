@@ -207,7 +207,7 @@ typedef struct tsplitter_s {
 
 /* simple token classes */
 /* Order and hex values are very important!!!  See next_token() */
-#define	TC_SEQSTART	1			/* ( */
+#define	TC_SEQSTART	 1				/* ( */
 #define	TC_SEQTERM	(1 << 1)		/* ) */
 #define	TC_REGEXP	(1 << 2)		/* /.../ */
 #define	TC_OUTRDR	(1 << 3)		/* | > >> */
@@ -1184,8 +1184,8 @@ static uint32_t next_token(uint32_t expected)
 					debug_printf_parse("%s: token found:'%s' TC_ARRAY\n", __func__, t_string);
 				} else
 					debug_printf_parse("%s: token found:'%s' TC_VARIABLE\n", __func__, t_string);
+				}
 			}
-		}
  token_found:
 		g_pos = p;
 
@@ -1540,14 +1540,12 @@ static void chain_group(void)
 			debug_printf_parse("%s: OC_BREAK\n", __func__);
 			n = chain_node(OC_EXEC);
 			n->a.n = break_ptr;
-			chain_expr(t_info);
 			break;
 
 		case OC_CONTINUE:
 			debug_printf_parse("%s: OC_CONTINUE\n", __func__);
 			n = chain_node(OC_EXEC);
 			n->a.n = continue_ptr;
-			chain_expr(t_info);
 			break;
 
 		/* delete, next, nextfile, return, exit */
@@ -3118,13 +3116,13 @@ static rstream *next_input_file(void)
 			F = stdin;
 			break;
 		}
-		ind = getvar_s(incvar(intvar[ARGIND]));
-		fname = getvar_s(findvar(iamarray(intvar[ARGV]), ind));
+			ind = getvar_s(incvar(intvar[ARGIND]));
+			fname = getvar_s(findvar(iamarray(intvar[ARGV]), ind));
 		if (fname && *fname && !is_assignment(fname)) {
-			F = xfopen_stdin(fname);
+				F = xfopen_stdin(fname);
 			break;
 		}
-	}
+		}
 
 	files_happen = TRUE;
 	setvar_s(intvar[FILENAME], fname);
@@ -3217,22 +3215,22 @@ int awk_main(int argc, char **argv)
 			bb_show_usage();
 	}
 	while (list_f) {
-		char *s = NULL;
-		FILE *from_file;
+			char *s = NULL;
+			FILE *from_file;
 
-		g_progname = llist_pop(&list_f);
-		from_file = xfopen_stdin(g_progname);
-		/* one byte is reserved for some trick in next_token */
-		for (i = j = 1; j > 0; i += j) {
-			s = xrealloc(s, i + 4096);
-			j = fread(s + i, 1, 4094, from_file);
-		}
-		s[i] = '\0';
-		fclose(from_file);
-		parse_program(s + 1);
-		free(s);
+			g_progname = llist_pop(&list_f);
+			from_file = xfopen_stdin(g_progname);
+			/* one byte is reserved for some trick in next_token */
+			for (i = j = 1; j > 0; i += j) {
+				s = xrealloc(s, i + 4096);
+				j = fread(s + i, 1, 4094, from_file);
+			}
+			s[i] = '\0';
+			fclose(from_file);
+			parse_program(s + 1);
+			free(s);
 	}
-	g_progname = "cmd. line";
+		g_progname = "cmd. line";
 #if ENABLE_FEATURE_AWK_GNU_EXTENSIONS
 	while (list_e) {
 		parse_program(llist_pop(&list_e));

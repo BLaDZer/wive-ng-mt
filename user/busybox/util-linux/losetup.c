@@ -73,17 +73,17 @@ int losetup_main(int argc UNUSED_PARAM, char **argv)
 	if (opt == OPT_a) {
 		int n;
 		for (n = 0; n < MAX_LOOP_NUM; n++) {
-			char *s;
+		char *s;
 
-			sprintf(dev, LOOP_FORMAT, n);
-			s = query_loop(dev);
+		sprintf(dev, LOOP_FORMAT, n);
+		s = query_loop(dev);
 			if (s) {
 				printf("%s: %s\n", dev, s);
 				free(s);
 			}
 		}
-		return EXIT_SUCCESS;
-	}
+				return EXIT_SUCCESS;
+			}
 
 	/* contains -f */
 	if (opt & OPT_f) {
@@ -95,7 +95,7 @@ int losetup_main(int argc UNUSED_PARAM, char **argv)
 				bb_error_msg_and_die("no free loop devices");
 			sprintf(dev, LOOP_FORMAT, n++);
 			s = query_loop(dev);
-			free(s);
+				free(s);
 		} while (s);
 		/* now: dev is next free "/dev/loopN" */
 		if ((opt == OPT_f) && !argv[0]) {
@@ -117,8 +117,8 @@ int losetup_main(int argc UNUSED_PARAM, char **argv)
 		if (argv[0]) {
 			if (set_loop(&d, argv[0], offset, (opt & OPT_r)) < 0)
 				bb_simple_perror_msg_and_die(argv[0]);
-			return EXIT_SUCCESS;
-		}
+	return EXIT_SUCCESS;
+}
 	}
 
 	bb_show_usage(); /* does not return */

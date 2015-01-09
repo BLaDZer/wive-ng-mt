@@ -126,8 +126,8 @@ int cryptpw_main(int argc UNUSED_PARAM, char **argv)
 
 	password = argv[0];
 	if (!password) {
-		/* Only mkpasswd, and only from tty, prompts.
-		 * Otherwise it is a plain read. */
+			/* Only mkpasswd, and only from tty, prompts.
+			 * Otherwise it is a plain read. */
 		password = (isatty(STDIN_FILENO) && applet_name[0] == 'm')
 			? bb_ask_stdin("Password: ")
 			: xmalloc_fgetline(stdin)

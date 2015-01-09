@@ -65,7 +65,7 @@ int lsof_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 				if (entry->d_name[0] == '.')
 					continue;
 
-				safe_strncpy(name + baseofs, entry->d_name, 10);
+					safe_strncpy(name + baseofs, entry->d_name, 10);
 				if ((fdlink = xmalloc_readlink(name)) != NULL) {
 					printf("%d\t%s\t%s\n", proc->pid, proc->exe, fdlink);
 					free(fdlink);

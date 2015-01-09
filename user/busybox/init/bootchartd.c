@@ -393,11 +393,11 @@ int bootchartd_main(int argc UNUSED_PARAM, char **argv)
 			 && (strcmp(token[1], "on") == 0 || strcmp(token[1], "yes") == 0)
 			) {
 				process_accounting = 1;
-			}
 		}
+	}
 		config_close(parser);
-		if ((int)sample_period_us <= 0)
-			sample_period_us = 1; /* prevent division by 0 */
+	if ((int)sample_period_us <= 0)
+		sample_period_us = 1; /* prevent division by 0 */
 	}
 
 	/* Create logger child: */

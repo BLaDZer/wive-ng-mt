@@ -141,11 +141,11 @@ uuidcache_init(int scan_devices)
 	 * (Maybe add scanning of /sys/block/XXX/dev for devices
 	 * somehow not having their /dev/XXX entries created?) */
 	if (scan_devices)
-		recursive_action("/dev", ACTION_RECURSE,
-			uuidcache_check_device, /* file_action */
-			NULL, /* dir_action */
-			NULL, /* userData */
-			0 /* depth */);
+	recursive_action("/dev", ACTION_RECURSE,
+		uuidcache_check_device, /* file_action */
+		NULL, /* dir_action */
+		NULL, /* userData */
+		0 /* depth */);
 
 	return uuidCache;
 }

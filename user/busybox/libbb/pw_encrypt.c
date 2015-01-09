@@ -142,14 +142,7 @@ char* FAST_FUNC pw_encrypt(const char *clear, const char *salt, int cleanup)
 
 char* FAST_FUNC pw_encrypt(const char *clear, const char *salt, int cleanup)
 {
-	char *s;
-
-	s = crypt(clear, salt);
-	/*
-	 * glibc used to return "" on malformed salts (for example, ""),
-	 * but since 2.17 it returns NULL.
-	 */
-	return xstrdup(s ? s : "");
+	return xstrdup(crypt(clear, salt));
 }
 
 #endif

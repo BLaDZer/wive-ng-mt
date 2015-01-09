@@ -349,7 +349,7 @@ int acpid_main(int argc UNUSED_PARAM, char **argv)
 
 	if (ENABLE_FEATURE_CLEAN_UP) {
 		while (nfd--)
-			close(pfd[nfd].fd);
+				close(pfd[nfd].fd);
 		free(pfd);
 	}
 	remove_pidfile(opt_pidfile);

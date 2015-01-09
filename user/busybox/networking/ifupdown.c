@@ -243,8 +243,8 @@ static char *parse(const char *command, struct interface_defn_t *ifd)
 		case '\\':
 			if (command[1])
 				command++;
-			addstr(&result, command, 1);
-			command++;
+				addstr(&result, command, 1);
+				command++;
 			break;
 		case '[':
 			if (command[1] == '[' && opt_depth < MAX_OPT_DEPTH) {
@@ -555,7 +555,7 @@ static int FAST_FUNC dhcp_up(struct interface_defn_t *ifd, execfn *exec)
 		return 0;
 #  endif
 	for (i = 0; i < ARRAY_SIZE(ext_dhcp_clients); i++) {
-		if (executable_exists(ext_dhcp_clients[i].name))
+		if (exists_execable(ext_dhcp_clients[i].name))
 			return execute(ext_dhcp_clients[i].startcmd, ifd, exec);
 	}
 	bb_error_msg("no dhcp clients found");
@@ -592,7 +592,7 @@ static int FAST_FUNC dhcp_down(struct interface_defn_t *ifd, execfn *exec)
 	unsigned i;
 
 	for (i = 0; i < ARRAY_SIZE(ext_dhcp_clients); i++) {
-		if (executable_exists(ext_dhcp_clients[i].name)) {
+		if (exists_execable(ext_dhcp_clients[i].name)) {
 			result = execute(ext_dhcp_clients[i].stopcmd, ifd, exec);
 			if (result)
 				break;
@@ -685,18 +685,6 @@ static const struct address_family_t addr_inet = {
 
 #endif  /* FEATURE_IFUPDOWN_IPV4 */
 
-static int FAST_FUNC link_up_down(struct interface_defn_t *ifd UNUSED_PARAM, execfn *exec UNUSED_PARAM)
-{
-	return 1;
-}
-
-static const struct method_t link_methods[] = {
-	{ "none", link_up_down, link_up_down }
-};
-
-static const struct address_family_t addr_link = {
-	"link", ARRAY_SIZE(link_methods), link_methods
-};
 
 /* Returns pointer to the next word, or NULL.
  * In 1st case, advances *buf to the word after this one.
@@ -786,7 +774,7 @@ static struct interfaces_file_t *read_interfaces(const char *filename, struct in
 	enum { NONE, IFACE, MAPPING } currently_processing = NONE;
 
 	if (!defn)
-		defn = xzalloc(sizeof(*defn));
+	defn = xzalloc(sizeof(*defn));
 
 	debug_noise("reading %s file:\n", filename);
 	f = xfopen_for_read(filename);
@@ -843,7 +831,6 @@ static struct interfaces_file_t *read_interfaces(const char *filename, struct in
 #if ENABLE_FEATURE_IFUPDOWN_IPV6
 				&addr_inet6,
 #endif
-				&addr_link,
 				NULL
 			};
 			char *iface_name;
@@ -1074,7 +1061,7 @@ static int iface_up(struct interface_defn_t *iface)
 
 static int iface_down(struct interface_defn_t *iface)
 {
-	if (!iface->method->down(iface, check)) return -1;
+	if (!iface->method->down(iface,check)) return -1;
 	set_environ(iface, "stop", "pre-down");
 	if (!execute_all(iface, "down")) return 0;
 	if (!iface->method->down(iface, doit)) return 0;

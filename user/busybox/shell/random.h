@@ -12,24 +12,16 @@
 PUSH_AND_SET_FUNCTION_VISIBILITY_TO_HIDDEN
 
 typedef struct random_t {
-	/* State of random number generators: */
-
-	/* Galois LFSR (fast but weak) */
-	int32_t galois_LFSR; /* must be signed! */
-
-	/* LCG (fast but weak) */
-	uint32_t LCG;
-
-	/* 64-bit xorshift (fast, moderate strength) */
-	uint32_t xs64_x;
-	uint32_t xs64_y;
+	/* Random number generators */
+	int32_t galois_LFSR; /* Galois LFSR (fast but weak). signed! */
+	uint32_t LCG;        /* LCG (fast but weak) */
 } random_t;
 
 #define UNINITED_RANDOM_T(rnd) \
 	((rnd)->galois_LFSR == 0)
 
 #define INIT_RANDOM_T(rnd, nonzero, v) \
-	((rnd)->galois_LFSR = (rnd)->xs64_x = (nonzero), (rnd)->LCG = (rnd)->xs64_y = (v))
+	((rnd)->galois_LFSR = (nonzero), (rnd)->LCG = (v))
 
 #define CLEAR_RANDOM_T(rnd) \
 	((rnd)->galois_LFSR = 0)

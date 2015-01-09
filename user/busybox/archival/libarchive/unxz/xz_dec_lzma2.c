@@ -407,6 +407,7 @@ static void XZ_FUNC dict_uncompressed(
 
 		b->out_pos += copy_size;
 		b->in_pos += copy_size;
+
 	}
 }
 

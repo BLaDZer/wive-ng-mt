@@ -29,8 +29,8 @@ char FAST_FUNC filter_accept_reject_list(archive_handle_t *archive_handle)
 	if (archive_handle->accept) {
 		accept_entry = find_list_entry2(archive_handle->accept, key);
 		if (!accept_entry) {
-			return EXIT_FAILURE;
-		}
+		return EXIT_FAILURE;
+	}
 	}
 
 	/* Accepted */

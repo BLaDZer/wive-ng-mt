@@ -45,12 +45,12 @@ sym_args = " ".join(sys.argv[3 + flag_timing + dashes:])
 def getsizes(file):
     sym, alias, lut = {}, {}, {}
     for l in os.popen("readelf -W -s %s %s" % (sym_args, file)).readlines():
-        l = l.strip()
-        if not (len(l) and l[0].isdigit() and len(l.split()) == 8):
-            continue
-        num, value, size, typ, bind, vis, ndx, name = l.split()
-        if ndx == "UND": continue # skip undefined
-        if typ in ["SECTION", "FILES"]: continue # skip sections and files
+            l = l.strip()
+            if not (len(l) and l[0].isdigit() and len(l.split()) == 8):
+                continue
+            num, value, size, typ, bind, vis, ndx, name = l.split()
+            if ndx == "UND": continue # skip undefined
+            if typ in ["SECTION", "FILES"]: continue # skip sections and files
         if "." in name: name = "static." + name.split(".")[0]
         value = int(value, 16)
         size = int(size, 16) if size.startswith('0x') else int(size)
