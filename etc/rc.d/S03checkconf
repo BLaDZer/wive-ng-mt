@@ -202,7 +202,7 @@ get_param() {
 	    ApCliBridgeOnly ApCliClientOnly`
 
     # default mac vendor mask for generate new macs if need
-    VENDMASK="F0:82:50"
+    VENDMASK="F8:F0:82"
 }
 
 genmac() {
