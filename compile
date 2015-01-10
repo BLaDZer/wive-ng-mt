@@ -106,6 +106,11 @@ if [ "$FMODE" = "YES" ]; then
 
     sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+    sed 's/CONFIG_RT2860V2_AP_MBSS=y/# CONFIG_RT2860V2_AP_MBSS is not set/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
+    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+    sed 's/CONFIG_RT2860V2_AP_APCLI=y/# CONFIG_RT2860V2_AP_APCLI is not set/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
+    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+
     sed 's/# CONFIG_TELNETD is not set/CONFIG_TELNETD=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
     mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
     sed 's/# CONFIG_FEATURE_TELNETD_INETD_WAIT is not set/CONFIG_FEATURE_TELNETD_INETD_WAIT=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
