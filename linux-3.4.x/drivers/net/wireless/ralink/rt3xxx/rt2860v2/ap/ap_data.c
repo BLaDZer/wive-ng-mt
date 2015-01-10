@@ -3534,8 +3534,9 @@ VOID APRxDErrorHandle(
 	PRT28XX_RXD_STRUC			pRxD = &(pRxBlk->RxD);
 	PRXWI_STRUC			pRxWI = pRxBlk->pRxWI;
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
-        //MAC_TABLE_ENTRY		*pEntry;
-	
+#ifndef APCLI_CERT_SUPPORT
+        MAC_TABLE_ENTRY		*pEntry;
+#endif	
 #ifdef MAC_REPEATER_SUPPORT
 	if (pAd->ApCfg.bMACRepeaterEn)	
 		MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
