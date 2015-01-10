@@ -191,25 +191,40 @@ checkmacandfactory() {
 	fi
 	if [ $FIRSTBITSW = "FF" ] || [ $FIRSTBITSL = "FF" ]; then
 	    $LOG "Mac adresses poor. Clear and load defaults to nvram."
-    	    fs nvramreset
-	    rm -f /etc/backup/nvram_backup.dat
 	    ########################################
 	    # force rebuild mac if reset to defaults
 	    ########################################
 	    FORCE_REBUILD_MAC="YES"
+	    CHECKMAC="YES"
+	fi
+	if [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ]; then
+	    # check macs consistent
+	    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$OLDMACWAN" -c`
+	    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$OLDMACLAN" -c`
+    	    if [ $MAC_TEST = "0" ] || [ $LANMAC_TEST = "0" ]; then
+	        $LOG "MACs not consistent in factory and nvram, write factory MACs to nvram."
+		########################################
+		# force rebuild mac if unconsistent
+		########################################
+		FORCE_REBUILD_MAC="YES"
+		CHECKMAC="YES"
+	    fi
 	fi
     fi
 
+    # check macs in vendor range
     MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
     WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
     WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
     LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
     if [ "$CHECKMAC" != "NO" ]; then
         if [ $MAC_TEST = "0" ] || [ $WMAC_TEST = "0" ] || [ $WMAC2_TEST = "0" ] || [ $LANMAC_TEST = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
-	    $LOG "MAC is not in vendor range or sdk defaults - start MAC generate"
+	    $LOG "MAC is not in vendor range or sdk defaults or unconsistent - start MAC generate"
+	    rm -f /etc/backup/nvram_backup.dat
 	    genmac
 	fi
     fi
+
 }
 
 genmac() {
