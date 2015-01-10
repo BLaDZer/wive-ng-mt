@@ -5,7 +5,7 @@ if [ -f /tmp/nvram_checked ] && [ "$1" != "genmac" ]; then
     exit 0
 fi
 
-LOG="logger -t checkconf"
+LOG="echo checkconf "
 
 start() {
     # get variables
@@ -16,35 +16,11 @@ start() {
 
     $LOG "Check firmware update or clean boot."
     FORCE_REBUILD_MAC="NO"
+
     if [ "$IS_WIVE" = "YES" ]; then
 	$LOG ">>>> NORMAL BOOT <<<<"
     else
-	$LOG "First boot, firmware trunclated or before burn not wive installed"
-	if [ -f /bin/eth_mac ]; then
-	    $LOG "Try read mac from old factory"
-	    RALINKMAC="00:0C:43"
-	    ISDEFWMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
-	    ISDEFLMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
-	    FIRSTBITSW=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-	    FIRSTBITSL=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-	    if [ "$ISDEFWMAC" != "1" ] && [ "$ISDEFLMAC" != "1" ] && [ $FIRSTBITSW != "FF" ] && [ $FIRSTBITSL != "FF" ]; then
-		$LOG "Store original mac adress."
-		OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-		OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	    else
-		OLDMACWAN=""
-		OLDMACLAN=""
-	    fi
-	    if [ $FIRSTBITSW = "FF" ] || [ $FIRSTBITSL = "FF" ]; then
-		    $LOG "Clear and load defaults to nvram."
-    		    fs nvramreset
-		    rm -f /etc/backup/nvram_backup.dat
-		    ########################################
-		    # force rebuild mac if reset to defaults
-		    ########################################
-		    FORCE_REBUILD_MAC="YES"
-	    fi
-	fi
+	$LOG ">>>> First boot, firmware trunclated or before burn not wive installed <<<<"
 	$LOG "Burn RF template to flash"
 	fs burnrf
 	$LOG ">>>> RESTORE NVRAM <<<<"
@@ -68,23 +44,9 @@ start() {
 	CHECKMAC="YES"
     fi
 
-######################################## MINIMAL CONFIG FOR NORMAL START #########################################
-    #
-    # check mac correct set if check mac in nvram set to not NO and web not start
-    # set mask for macs generate and vendor name
-    # vend mask must not be vald if nvram defaults loaded
-    #
-    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
-    WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
-    WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
-    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
-    if [ "$CHECKMAC" != "NO" ]; then
-        if [ $MAC_TEST = "0" ] || [ $WMAC_TEST = "0" ] || [ $WMAC2_TEST = "0" ] || [ $LANMAC_TEST = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
-	    $LOG "MAC is not in vendor range or sdk defaults - start MAC generate"
-	    genmac
-	fi
-    fi
+    checkmacandfactory
 
+######################################## MINIMAL CONFIG FOR NORMAL START #########################################
     #
     # OperationMode adjustment:
     #   if AP client was not compiled and operation mode was set "3" -> set $OperationMode "1"
@@ -203,6 +165,51 @@ get_param() {
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
+}
+
+checkmacandfactory() {
+    #
+    # check mac correct set if check mac in nvram set to not NO and web not start
+    # set mask for macs generate and vendor name
+    # vend mask must not be vald if nvram defaults loaded
+    #
+
+    # read and check defaults macs from factory
+    if [ -f /bin/eth_mac ]; then
+        RALINKMAC="00:0C:43"
+        ISDEFWMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
+        ISDEFLMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
+        FIRSTBITSW=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+        FIRSTBITSL=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+        if [ "$ISDEFWMAC" != "1" ] && [ "$ISDEFLMAC" != "1" ] && [ $FIRSTBITSW != "FF" ] && [ $FIRSTBITSL != "FF" ]; then
+	    OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    $LOG "Factory mac adresess: $OLDMACWAN $OLDMACLAN"
+	else
+	    OLDMACWAN=""
+	    OLDMACLAN=""
+	fi
+	if [ $FIRSTBITSW = "FF" ] || [ $FIRSTBITSL = "FF" ]; then
+	    $LOG "Mac adresses poor. Clear and load defaults to nvram."
+    	    fs nvramreset
+	    rm -f /etc/backup/nvram_backup.dat
+	    ########################################
+	    # force rebuild mac if reset to defaults
+	    ########################################
+	    FORCE_REBUILD_MAC="YES"
+	fi
+    fi
+
+    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
+    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+    if [ "$CHECKMAC" != "NO" ]; then
+        if [ $MAC_TEST = "0" ] || [ $WMAC_TEST = "0" ] || [ $WMAC2_TEST = "0" ] || [ $LANMAC_TEST = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
+	    $LOG "MAC is not in vendor range or sdk defaults - start MAC generate"
+	    genmac
+	fi
+    fi
 }
 
 genmac() {
