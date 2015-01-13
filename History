@@ -457,6 +457,7 @@
 26) kernel: net_dma: revert copied_early.<br>
 27) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
 28) kernel: mm: fix swapoff hang after page migration and fork.<br>
+29) kernel: tun: fixed unsigned/signed comparison.<br>
 <br>
 <br>
 <b>TODO:</b><br>
