@@ -430,30 +430,31 @@
 <br>
 <b>2.1.x</b><br>
 1) toolchain: update kernel headers and sync gcc with upstream.<br>
-2) xz: up to 5.0.8 version.<br>
-3) uboot: update to last version.<br>
-4) reg tool: small fixup.<br>
-5) mii tool: fixup and add 7628 support.<br>
-6) gpio tool: fix 9532 mode support.<br>
-7) nvram lib: do not direct read from flash at show.<br>
-8) nvram tool: fix generate wifi config.<br>
-9) switch tool: add igmp snooping managment.<br>
-10) hw_nat: FoE entry range check, entry valid check.<br>
-11) init.d: more enchange esw/vlan config logic.<br>
-12) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-13) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
-14) kernel: ralink_gpio: switch to schedule_work.<br>
-15) kernel: ralink_gpio: fix 9532 mode support.<br>
-16) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
-17) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
-18) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
-19) kernel: net: rearrange loop in net_rx_action.<br>
-20) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
-21) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
-22) kernel: net: gro: dev_gro_receive() cleanup.<br>
-23) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
-24) kernel: net_dma: simple removal (broken and not used).<br>
-25) kernel: net_dma: revert copied_early.<br>
+2) busybox: update to 1.23.0 version.<br>
+3) xz: up to 5.0.8 version.<br>
+4) uboot: update to last version.<br>
+5) reg tool: small fixup.<br>
+6) mii tool: fixup and add 7628 support.<br>
+7) gpio tool: fix 9532 mode support.<br>
+8) nvram lib: do not direct read from flash at show.<br>
+9) nvram tool: fix generate wifi config.<br>
+10) switch tool: add igmp snooping managment.<br>
+11) hw_nat: FoE entry range check, entry valid check.<br>
+12) init.d: more enchange esw/vlan config logic.<br>
+13) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+14) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
+15) kernel: ralink_gpio: switch to schedule_work.<br>
+16) kernel: ralink_gpio: fix 9532 mode support.<br>
+17) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
+18) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
+19) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
+20) kernel: net: rearrange loop in net_rx_action.<br>
+21) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
+22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+23) kernel: net: gro: dev_gro_receive() cleanup.<br>
+24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
+25) kernel: net_dma: simple removal (broken and not used).<br>
+26) kernel: net_dma: revert copied_early.<br>
 <br>
 <br>
 <b>TODO:</b><br>

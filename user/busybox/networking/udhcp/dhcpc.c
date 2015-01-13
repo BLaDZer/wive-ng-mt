@@ -54,7 +54,7 @@ static const char udhcpc_longopts[] ALIGN1 =
 	"foreground\0"     No_argument       "f"
 	"background\0"     No_argument       "b"
 	"broadcast\0"      No_argument       "B"
-	IF_FEATURE_UDHCPC_ARPING("arping\0"	No_argument       "a")
+	IF_FEATURE_UDHCPC_ARPING("arping\0"	Optional_argument "a")
 	IF_FEATURE_UDHCP_PORT("client-port\0"	Required_argument "P")
 	;
 #endif
@@ -869,13 +869,13 @@ static NOINLINE int udhcp_recv_raw_packet(struct dhcp_packet *dhcp_pkt, int fd)
 	msg.msg_controllen = sizeof(cmsgbuf);
 	for (;;) {
 		bytes = recvmsg(fd, &msg, 0);
-	if (bytes < 0) {
+		if (bytes < 0) {
 			if (errno == EINTR)
 				continue;
-		log1("Packet read error, ignoring");
-		/* NB: possible down interface, etc. Caller should pause. */
-		return bytes; /* returns -1 */
-	}
+			log1("Packet read error, ignoring");
+			/* NB: possible down interface, etc. Caller should pause. */
+			return bytes; /* returns -1 */
+		}
 		break;
 	}
 
@@ -1012,8 +1012,6 @@ static int udhcp_raw_socket(int ifindex)
 		 *
 		 * Copyright: 2006, 2007 Stefan Rompf <sux@loplof.de>.
 		 * License: GPL v2.
-		 *
-		 * TODO: make conditional?
 		 */
 		static const struct sock_filter filter_instr[] = {
 			/* load 9th byte (protocol) */
@@ -1030,9 +1028,10 @@ static int udhcp_raw_socket(int ifindex)
 			BPF_STMT(BPF_LD|BPF_H|BPF_IND, 2),
 			/* jump to L3 if udp dport is CLIENT_PORT, else to L4 */
 			BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, 68, 0, 1),
-			/* L3: accept packet */
-			BPF_STMT(BPF_RET|BPF_K, 0xffffffff),
-			/* L4: discard packet */
+			/* L3: accept packet ("accept 0x7fffffff bytes") */
+			/* Accepting 0xffffffff works too but kernel 2.6.19 is buggy */
+			BPF_STMT(BPF_RET|BPF_K, 0x7fffffff),
+			/* L4: discard packet ("accept zero bytes") */
 			BPF_STMT(BPF_RET|BPF_K, 0),
 		};
 		static const struct sock_fprog filter_prog = {
@@ -1150,7 +1149,7 @@ static void client_background(void)
 //usage:# define IF_UDHCP_VERBOSE(...)
 //usage:#endif
 //usage:#define udhcpc_trivial_usage
-//usage:       "[-fbq"IF_UDHCP_VERBOSE("v")IF_FEATURE_UDHCPC_ARPING("a")"RB] [-t N] [-T SEC] [-A SEC/-n]\n"
+//usage:       "[-fbq"IF_UDHCP_VERBOSE("v")"RB]"IF_FEATURE_UDHCPC_ARPING(" [-a[MSEC]]")" [-t N] [-T SEC] [-A SEC/-n]\n"
 //usage:       "	[-i IFACE]"IF_FEATURE_UDHCP_PORT(" [-P PORT]")" [-s PROG] [-p PIDFILE]\n"
 //usage:       "	[-oC] [-r IP] [-V VENDOR] [-F NAME] [-x OPT:VAL]... [-O OPT]..."
 //usage:#define udhcpc_full_usage "\n"
@@ -1174,7 +1173,7 @@ static void client_background(void)
 //usage:	)
 //usage:     "\n	-S,--syslog		Log to syslog too"
 //usage:	IF_FEATURE_UDHCPC_ARPING(
-//usage:     "\n	-a,--arping		Use arping to validate offered address"
+//usage:     "\n	-a[MSEC],--arping[=MSEC] Validate offered address with ARP ping"
 //usage:	)
 //usage:     "\n	-r,--request IP		Request this IP address"
 //usage:     "\n	-o,--no-default-options	Don't request any options (unless -O is given)"
@@ -1211,7 +1210,7 @@ static void client_background(void)
 //usage:	)
 //usage:     "\n	-S		Log to syslog too"
 //usage:	IF_FEATURE_UDHCPC_ARPING(
-//usage:     "\n	-a		Use arping to validate offered address"
+//usage:     "\n	-a[MSEC]	Validate offered address with ARP ping"
 //usage:	)
 //usage:     "\n	-r IP		Request this IP address"
 //usage:     "\n	-o		Don't request any options (unless -O is given)"
@@ -1236,8 +1235,9 @@ static void client_background(void)
 int udhcpc_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 {
-	uint8_t *temp, *message;
+	uint8_t *message;
 	const char *str_V, *str_h, *str_F, *str_r;
+	IF_FEATURE_UDHCPC_ARPING(const char *str_a = "2000";)
 	IF_FEATURE_UDHCP_PORT(char *str_P;)
 	void *clientid_mac_ptr;
 	llist_t *list_O = NULL;
@@ -1252,6 +1252,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 	int timeout; /* must be signed */
 	unsigned already_waited_sec;
 	unsigned opt;
+	IF_FEATURE_UDHCPC_ARPING(unsigned arpping_ms;)
 	int max_fd;
 	int retval;
 	fd_set rfds;
@@ -1269,7 +1270,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 	IF_LONG_OPTS(applet_long_options = udhcpc_longopts;)
 	opt = getopt32(argv, "CV:H:h:F:i:np:qRr:s:T:t:SA:O:ox:fB"
 		USE_FOR_MMU("b")
-		IF_FEATURE_UDHCPC_ARPING("a")
+		IF_FEATURE_UDHCPC_ARPING("a::")
 		IF_FEATURE_UDHCP_PORT("P:")
 		"v"
 		, &str_V, &str_h, &str_h, &str_F
@@ -1278,9 +1279,10 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		, &discover_timeout, &discover_retries, &tryagain_timeout /* T,t,A */
 		, &list_O
 		, &list_x
+		IF_FEATURE_UDHCPC_ARPING(, &str_a)
 		IF_FEATURE_UDHCP_PORT(, &str_P)
 		IF_UDHCP_VERBOSE(, &dhcp_verbose)
-		);
+	);
 	if (opt & (OPT_h|OPT_H)) {
 		//msg added 2011-11
 		bb_error_msg("option -h NAME is deprecated, use -x hostname:NAME");
@@ -1309,6 +1311,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		SERVER_PORT = CLIENT_PORT - 1;
 	}
 #endif
+	IF_FEATURE_UDHCPC_ARPING(arpping_ms = xatou(str_a);)
 	while (list_O) {
 		char *optstr = llist_pop(&list_O);
 		unsigned n = bb_strtou(optstr, NULL, 0);
@@ -1646,6 +1649,8 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		case INIT_SELECTING:
 			/* Must be a DHCPOFFER */
 			if (*message == DHCPOFFER) {
+				uint8_t *temp;
+
 /* What exactly is server's IP? There are several values.
  * Example DHCP offer captured with tchdump:
  *
@@ -1675,8 +1680,8 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				if (!temp) {
 					bb_error_msg("no server ID, using 0.0.0.0");
 				} else {
-				/* it IS unaligned sometimes, don't "optimize" */
-				move_from_unaligned32(server_addr, temp);
+					/* it IS unaligned sometimes, don't "optimize" */
+					move_from_unaligned32(server_addr, temp);
 				}
 				/*xid = packet.xid; - already is */
 				requested_ip = packet.yiaddr;
@@ -1693,8 +1698,10 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		case RENEW_REQUESTED:
 		case REBINDING:
 			if (*message == DHCPACK) {
+				unsigned start;
 				uint32_t lease_seconds;
 				struct in_addr temp_addr;
+				uint8_t *temp;
 
 				temp = udhcp_get_option(&packet, DHCP_LEASE_TIME);
 				if (!temp) {
@@ -1725,7 +1732,8 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 							NULL,
 							(uint32_t) 0,
 							client_config.client_mac,
-							client_config.interface)
+							client_config.interface,
+							arpping_ms)
 					) {
 						bb_info_msg("Offered address is in use "
 							"(got ARP reply), declining");
@@ -1746,11 +1754,14 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 #endif
 				/* enter bound state */
 				timeout = lease_seconds / 2;
-					temp_addr.s_addr = packet.yiaddr;
-					bb_info_msg("Lease of %s obtained, lease time %u",
-						inet_ntoa(temp_addr), (unsigned)lease_seconds);
+				temp_addr.s_addr = packet.yiaddr;
+				bb_info_msg("Lease of %s obtained, lease time %u",
+					inet_ntoa(temp_addr), (unsigned)lease_seconds);
 				requested_ip = packet.yiaddr;
+
+				start = monotonic_sec();
 				udhcp_run_script(&packet, state == REQUESTING ? "bound" : "renew");
+				already_waited_sec = (unsigned)monotonic_sec() - start;
 
 				state = BOUND;
 				change_listen_mode(LISTEN_NONE);
@@ -1768,10 +1779,30 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 #endif
 				/* make future renew packets use different xid */
 				/* xid = random_xid(); ...but why bother? */
-				already_waited_sec = 0;
+
 				continue; /* back to main loop */
 			}
 			if (*message == DHCPNAK) {
+				/* If network has more than one DHCP server,
+				 * "wrong" server can reply first, with a NAK.
+				 * Do not interpret it as a NAK from "our" server.
+				 */
+				if (server_addr != 0) {
+					uint32_t svid;
+					uint8_t *temp;
+
+					temp = udhcp_get_option(&packet, DHCP_SERVER_ID);
+					if (!temp) {
+ non_matching_svid:
+						log1("%s with wrong server ID, ignoring packet",
+							"Received DHCP NAK"
+						);
+						continue;
+					}
+					move_from_unaligned32(svid, temp);
+					if (svid != server_addr)
+						goto non_matching_svid;
+				}
 				/* return to init state */
 				bb_info_msg("Received DHCP NAK");
 				udhcp_run_script(&packet, "nak");

@@ -87,7 +87,7 @@
 //usage:
 //usage:#define modprobe_trivial_usage
 //usage:	"[-alrqvsD" IF_FEATURE_MODPROBE_BLACKLIST("b") "]"
-//usage:	" MODULE [symbol=value]..."
+//usage:	" MODULE [SYMBOL=VALUE]..."
 //usage:#define modprobe_full_usage "\n\n"
 //usage:       "	-a	Load multiple MODULEs"
 //usage:     "\n	-l	List (MODULE is a pattern)"
@@ -136,7 +136,7 @@ static const char modprobe_longopts[] ALIGN1 =
 	/* module-init-tools 3.11.1 has only long opt --show-depends
 	 * but no short -D, we provide long opt for scripts which
 	 * were written for 3.11.1: */
-	"show-depends\0" No_argument "D"
+	"show-depends\0"     No_argument "D"
 	// "use-blacklist\0" No_argument "b"
 	;
 #endif
@@ -171,7 +171,7 @@ struct globals {
 } FIX_ALIASING;
 #define G (*ptr_to_globals)
 #define INIT_G() do { \
-        SET_PTR_TO_GLOBALS(xzalloc(sizeof(G))); \
+	SET_PTR_TO_GLOBALS(xzalloc(sizeof(G))); \
 } while (0)
 
 
@@ -237,6 +237,17 @@ static ALWAYS_INLINE struct module_entry *get_modentry(const char *module)
 static void add_probe(const char *name)
 {
 	struct module_entry *m;
+
+	/*
+	 * get_or_add_modentry() strips path from name and works
+	 * on remaining basename.
+	 * This would make "rmmod dir/name" and "modprobe dir/name"
+	 * to work like "rmmod name" and "modprobe name",
+	 * which is wrong, and can be abused via implicit modprobing:
+	 * "ifconfig /usbserial up" tries to modprobe netdev-/usbserial.
+	 */
+	if (strchr(name, '/'))
+		bb_error_msg_and_die("malformed module name '%s'", name);
 
 	m = get_or_add_modentry(name);
 	if (!(option_mask32 & (OPT_REMOVE | OPT_SHOW_DEPS))

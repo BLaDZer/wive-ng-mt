@@ -934,7 +934,7 @@ xbsd_readlabel(struct partition *p)
 		fdisk_fatal(unable_to_read);
 
 	memmove(d, &disklabelbuffer[BSD_LABELSECTOR * SECTOR_SIZE + BSD_LABELOFFSET],
-		   sizeof(struct xbsd_disklabel));
+			sizeof(struct xbsd_disklabel));
 
 	if (d->d_magic != BSD_DISKMAGIC || d->d_magic2 != BSD_DISKMAGIC)
 		return 0;

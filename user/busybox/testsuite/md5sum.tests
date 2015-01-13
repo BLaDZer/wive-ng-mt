@@ -35,8 +35,8 @@ done | "$sum"
 )`
 
 if test x"$result" = x"$expected  -"; then
-    echo "PASS: $sum"
-    exit 0
+	echo "PASS: $sum"
+	exit 0
 fi
 
 echo "FAIL: $sum (r:$result exp:$expected)"

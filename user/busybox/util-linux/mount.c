@@ -841,31 +841,31 @@ enum {
  */
 
 struct nfs2_fh {
-	char                    data[32];
+	char            data[32];
 };
 struct nfs3_fh {
-	unsigned short          size;
-	unsigned char           data[64];
+	unsigned short  size;
+	unsigned char   data[64];
 };
 
 struct nfs_mount_data {
-	int		version;		/* 1 */
-	int		fd;			/* 1 */
-	struct nfs2_fh	old_root;		/* 1 */
-	int		flags;			/* 1 */
-	int		rsize;			/* 1 */
-	int		wsize;			/* 1 */
-	int		timeo;			/* 1 */
-	int		retrans;		/* 1 */
-	int		acregmin;		/* 1 */
-	int		acregmax;		/* 1 */
-	int		acdirmin;		/* 1 */
-	int		acdirmax;		/* 1 */
-	struct sockaddr_in addr;		/* 1 */
-	char		hostname[256];		/* 1 */
-	int		namlen;			/* 2 */
-	unsigned int	bsize;			/* 3 */
-	struct nfs3_fh	root;			/* 4 */
+	int		version;	/* 1 */
+	int		fd;		/* 1 */
+	struct nfs2_fh	old_root;	/* 1 */
+	int		flags;		/* 1 */
+	int		rsize;		/* 1 */
+	int		wsize;		/* 1 */
+	int		timeo;		/* 1 */
+	int		retrans;	/* 1 */
+	int		acregmin;	/* 1 */
+	int		acregmax;	/* 1 */
+	int		acdirmin;	/* 1 */
+	int		acdirmax;	/* 1 */
+	struct sockaddr_in addr;	/* 1 */
+	char		hostname[256];	/* 1 */
+	int		namlen;		/* 2 */
+	unsigned int	bsize;		/* 3 */
+	struct nfs3_fh	root;		/* 4 */
 };
 
 /* bits in the flags field */
@@ -934,7 +934,7 @@ static bool_t xdr_fhandle(XDR *xdrs, fhandle objp)
 static bool_t xdr_fhstatus(XDR *xdrs, fhstatus *objp)
 {
 	if (!xdr_u_int(xdrs, &objp->fhs_status))
-		 return FALSE;
+		return FALSE;
 	if (objp->fhs_status == 0)
 		return xdr_fhandle(xdrs, objp->fhstatus_u.fhs_fhandle);
 	return TRUE;
@@ -948,8 +948,8 @@ static bool_t xdr_dirpath(XDR *xdrs, dirpath *objp)
 static bool_t xdr_fhandle3(XDR *xdrs, fhandle3 *objp)
 {
 	return xdr_bytes(xdrs, (char **)&objp->fhandle3_val,
-			   (unsigned int *) &objp->fhandle3_len,
-			   FHSIZE3);
+			(unsigned int *) &objp->fhandle3_len,
+			FHSIZE3);
 }
 
 static bool_t xdr_mountres3_ok(XDR *xdrs, mountres3_ok *objp)
@@ -957,10 +957,10 @@ static bool_t xdr_mountres3_ok(XDR *xdrs, mountres3_ok *objp)
 	if (!xdr_fhandle3(xdrs, &objp->fhandle))
 		return FALSE;
 	return xdr_array(xdrs, &(objp->auth_flavours.auth_flavours_val),
-			   &(objp->auth_flavours.auth_flavours_len),
-			   ~0,
-			   sizeof(int),
-			   (xdrproc_t) xdr_int);
+			&(objp->auth_flavours.auth_flavours_len),
+			~0,
+			sizeof(int),
+			(xdrproc_t) xdr_int);
 }
 
 static bool_t xdr_mountstat3(XDR *xdrs, mountstat3 *objp)
@@ -1529,19 +1529,19 @@ static NOINLINE int nfsmount(struct mntent *mp, unsigned long vfsflags, char *fi
 		switch (pm_mnt.pm_prot) {
 		case IPPROTO_UDP:
 			mclient = clntudp_create(&mount_server_addr,
-						 pm_mnt.pm_prog,
-						 pm_mnt.pm_vers,
-						 retry_timeout,
-						 &msock);
+						pm_mnt.pm_prog,
+						pm_mnt.pm_vers,
+						retry_timeout,
+						&msock);
 			if (mclient)
 				break;
 			mount_server_addr.sin_port = htons(pm_mnt.pm_port);
 			msock = RPC_ANYSOCK;
 		case IPPROTO_TCP:
 			mclient = clnttcp_create(&mount_server_addr,
-						 pm_mnt.pm_prog,
-						 pm_mnt.pm_vers,
-						 &msock, 0, 0);
+						pm_mnt.pm_prog,
+						pm_mnt.pm_vers,
+						&msock, 0, 0);
 			break;
 		default:
 			mclient = NULL;
@@ -1562,18 +1562,18 @@ static NOINLINE int nfsmount(struct mntent *mp, unsigned long vfsflags, char *fi
 
 			if (pm_mnt.pm_vers == 3)
 				clnt_stat = clnt_call(mclient, MOUNTPROC3_MNT,
-					      (xdrproc_t) xdr_dirpath,
-					      (caddr_t) &pathname,
-					      (xdrproc_t) xdr_mountres3,
-					      (caddr_t) &status,
-					      total_timeout);
+						(xdrproc_t) xdr_dirpath,
+						(caddr_t) &pathname,
+						(xdrproc_t) xdr_mountres3,
+						(caddr_t) &status,
+						total_timeout);
 			else
 				clnt_stat = clnt_call(mclient, MOUNTPROC_MNT,
-					      (xdrproc_t) xdr_dirpath,
-					      (caddr_t) &pathname,
-					      (xdrproc_t) xdr_fhstatus,
-					      (caddr_t) &status,
-					      total_timeout);
+						(xdrproc_t) xdr_dirpath,
+						(caddr_t) &pathname,
+						(xdrproc_t) xdr_fhstatus,
+						(caddr_t) &status,
+						total_timeout);
 
 			if (clnt_stat == RPC_SUCCESS)
 				goto prepare_kernel_data; /* we're done */
@@ -1856,8 +1856,8 @@ static int singlemount(struct mntent *mp, int ignore_busy)
 				len, share,
 				share + len + 1  /* "dir1/dir2" */
 			);
- 			parse_mount_options(unc, &filteropts);
- 			if (ENABLE_FEATURE_CLEAN_UP) free(unc);
+			parse_mount_options(unc, &filteropts);
+			if (ENABLE_FEATURE_CLEAN_UP) free(unc);
 		}
 
 		lsa = host2sockaddr(hostname, 0);
@@ -1921,7 +1921,7 @@ static int singlemount(struct mntent *mp, int ignore_busy)
 			next = mp->mnt_type ? strchr(mp->mnt_type, ',') : NULL;
 			if (next)
 				*next = '\0';
-		rc = mount_it_now(mp, vfsflags, filteropts);
+			rc = mount_it_now(mp, vfsflags, filteropts);
 			if (rc == 0 || !next)
 				break;
 			mp->mnt_type = next + 1;

@@ -66,7 +66,7 @@ struct vlan_ioctl_args {
  * The return value is the last data entry for the matching string. */
 static const char *xfind_str(const char *table, const char *str)
 {
-	while (strcasecmp(str, table+1) != 0) {
+	while (strcasecmp(str, table + 1) != 0) {
 		if (!table[0])
 			bb_show_usage();
 		table += table[0];
@@ -76,9 +76,9 @@ static const char *xfind_str(const char *table, const char *str)
 
 static const char cmds[] ALIGN1 = {
 	4, ADD_VLAN_CMD, 7,
-	'a', 'd', 'd', 0,
+	'a','d','d',0,
 	3, DEL_VLAN_CMD, 7,
-	'r', 'e', 'm', 0,
+	'r','e','m',0,
 	3, SET_VLAN_NAME_TYPE_CMD, 17,
 	's','e','t','_','n','a','m','e','_','t','y','p','e',0,
 	5, SET_VLAN_FLAG_CMD, 12,
@@ -119,7 +119,7 @@ int vconfig_main(int argc, char **argv)
 
 	if (ifr.cmd == SET_VLAN_NAME_TYPE_CMD) {
 		/* set_name_type */
-		ifr.u.name_type = *xfind_str(name_types+1, argv[1]);
+		ifr.u.name_type = *xfind_str(name_types + 1, argv[1]);
 	} else {
 		strncpy_IFNAMSIZ(ifr.device1, argv[1]);
 		p = argv[2];

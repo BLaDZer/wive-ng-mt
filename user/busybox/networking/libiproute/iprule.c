@@ -73,14 +73,14 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 	if (tb[RTA_SRC]) {
 		if (r->rtm_src_len != host_len) {
 			printf("%s/%u", rt_addr_n2a(r->rtm_family,
-							 RTA_DATA(tb[RTA_SRC]),
-							 abuf, sizeof(abuf)),
+							RTA_DATA(tb[RTA_SRC]),
+							abuf, sizeof(abuf)),
 				r->rtm_src_len
-				);
+			);
 		} else {
 			fputs(format_host(r->rtm_family,
-						       RTA_PAYLOAD(tb[RTA_SRC]),
-						       RTA_DATA(tb[RTA_SRC]),
+						RTA_PAYLOAD(tb[RTA_SRC]),
+						RTA_DATA(tb[RTA_SRC]),
 						abuf, sizeof(abuf)),
 				stdout
 			);

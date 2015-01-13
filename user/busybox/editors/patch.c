@@ -480,14 +480,14 @@ int patch_main(int argc UNUSED_PARAM, char **argv)
 				}
 
 				// handle -p path truncation.
-				for (i=0, s = name; *s;) {
+				for (i = 0, s = name; *s;) {
 					if ((option_mask32 & FLAG_PATHLEN) && TT.prefix == i)
 						break;
 					if (*s++ != '/')
 						continue;
 					while (*s == '/')
 						s++;
-						i++;
+					i++;
 					name = s;
 				}
 

@@ -129,6 +129,9 @@ static int sysctl_act_on_setting(char *setting)
 
 	if (fd < 0) {
 		switch (errno) {
+		case EACCES:
+			/* Happens for write-only settings, e.g. net.ipv6.route.flush */
+			goto end;
 		case ENOENT:
 			if (option_mask32 & FLAG_SHOW_KEY_ERRORS)
 				bb_error_msg("error: '%s' is an unknown key", outname);
@@ -149,9 +152,9 @@ static int sysctl_act_on_setting(char *setting)
 		xwrite_str(fd, value);
 		close(fd);
 		if (!(option_mask32 & FLAG_QUIET)) {
-		if (option_mask32 & FLAG_SHOW_KEYS)
-			printf("%s = ", outname);
-		puts(value);
+			if (option_mask32 & FLAG_SHOW_KEYS)
+				printf("%s = ", outname);
+			puts(value);
 		}
 	} else {
 		char c;
@@ -205,7 +208,7 @@ static int sysctl_act_recursive(const char *path)
 				continue; /* d_name is "." or ".." */
 			/* if path was ".", drop "./" prefix: */
 			retval |= sysctl_act_recursive((next[0] == '.' && next[1] == '/') ?
-					    next + 2 : next);
+					next + 2 : next);
 			free(next);
 		}
 		closedir(dirp);
