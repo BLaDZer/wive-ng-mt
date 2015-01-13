@@ -453,11 +453,12 @@
 22) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
 23) kernel: net: gro: dev_gro_receive() cleanup.<br>
 24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
-25) kernel: net_dma: simple removal (broken and not used).<br>
-26) kernel: net_dma: revert copied_early.<br>
-27) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
-28) kernel: mm: fix swapoff hang after page migration and fork.<br>
-29) kernel: tun: fixed unsigned/signed comparison.<br>
+25) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
+26) kernel: net_dma: simple removal (broken and not used).<br>
+27) kernel: net_dma: revert copied_early.<br>
+28) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
+29) kernel: mm: fix swapoff hang after page migration and fork.<br>
+30) kernel: tun: fixed unsigned/signed comparison.<br>
 <br>
 <br>
 <b>TODO:</b><br>
