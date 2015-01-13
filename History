@@ -455,6 +455,7 @@
 24) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
 25) kernel: net_dma: simple removal (broken and not used).<br>
 26) kernel: net_dma: revert copied_early.<br>
+27) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
 <br>
 <br>
 <b>TODO:</b><br>
