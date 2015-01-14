@@ -41,8 +41,8 @@ start() {
 	    if [ "$second_wlan_root_if" != "" ]; then
 		# second mac adress
 		mac="mac=$WLAN2_MAC_ADDR"
-		$LOG "Load RT3090 external wifi AP module."
-		modprobe -q rt3090_ap "$mac"
+		$LOG "Load external wifi AP module."
+		modprobe -q mt7610_ap "$mac"
 	    fi
 	fi
 
@@ -182,10 +182,10 @@ stop() {
     wlan_down_all
     if [ -d /sys/module/hw_nat ]; then
         $LOG "Unload hw_nat and wireless modules."
-        mod="hw_nat rt2860v2_ap rt2860v2_sta rt3090_ap"
+        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap"
     else
         $LOG "Unload wireless modules."
-        mod="rt2860v2_ap rt2860v2_sta rt3090_ap"
+        mod="rt2860v2_ap rt2860v2_sta mt7610_ap"
     fi
     for module in $mod
     do

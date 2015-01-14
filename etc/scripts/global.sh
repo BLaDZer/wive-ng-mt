@@ -68,16 +68,16 @@ getFirstWlanIfName() {
 # this if flag say second physical wlan module exist
 # and name/mask for second wlanmodule used in system logic
 getSecWlanIfName() {
-    if [ "$CONFIG_RT3090_AP" != "" ]; then
+    if [ "$CONFIG_MT7610_AP" != "" ]; then
 	second_wlan_root_if="rai0"			# is root interface name
 	second_wlan="rai"				# this is mask name vifs for second wlan module
-	if [ "$CONFIG_RT3090_AP_MBSS" != "" ]; then
+	if [ "$CONFIG_MT7610_AP_MBSS" != "" ]; then
 	    second_wlan_mbss="rai"			# this is mask name vifs for second mbss wlan module
 	fi
-	if [ "$CONFIG_RT3090_AP_APCLI" != "" ]; then
+	if [ "$CONFIG_MT7610_AP_APCLI" != "" ]; then
 	    second_wlan_apcli="apclii0"			# this is name vif for first acli wlan module
 	fi
-	if [ "$CONFIG_RT3090_AP_WDS" != "" ]; then
+	if [ "$CONFIG_MT7610_AP_WDS" != "" ]; then
 	    second_wlan_wds="wdsi"			# this is mask name vifs for second wds wlan module
 	fi
     fi
