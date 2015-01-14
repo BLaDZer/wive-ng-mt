@@ -31,7 +31,7 @@ fi
 
 #------------------------------------#
 #WR-N for full and WR-NL for ligth HW
-if [ "$MODE" = "MT7620-2T2R-5GHZ-8M" ]; then
+if [ "$MODE" = "MT7620-2T2R-5GHZ-16M" ]; then
     DEVNAME="SNR-CPE-W4N-5GHZ-MT"
 elif [ "$MODE" = "MT7620-2T2R-8M" ]; then
     DEVNAME="SNR-CPE-W4N-MT"
@@ -82,8 +82,8 @@ ln -fs $ROOTDIR/config/autoconf.h		$ROOTDIR/autoconf.h
 #######################################################################
 
 #################################PER-DEVICES###########################
-if [ "$MODE" = "MT7620-2T2R-5GHZ-8M" ] ; then
-    cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7620-2T2R-5GHZ-8M	$ROOTDIR/linux/.config
+if [ "$MODE" = "MT7620-2T2R-5GHZ-16M" ] ; then
+    cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7620-2T2R-5GHZ-16M	$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-8M			$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-8M			$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib-8M				$ROOTDIR/lib/.config
