@@ -217,7 +217,7 @@ static int gen_wifi_config(int getmode)
 		system("mkdir -p /etc/Wireless/RT2860");
 		fp = fopen("/etc/Wireless/RT2860/RT2860.dat", "w+");
 		printf("Build config for fist WiFi module.\n");
-#if defined(CONFIG_RT3090_AP) || defined(CONFIG_RT3090_AP_MODULE)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 	} else if (mode == RTINIC_NVRAM) {
 		system("mkdir -p /etc/Wireless/iNIC");
 		fp = fopen("/etc/Wireless/iNIC/RT2860AP.dat", "w+");
@@ -792,7 +792,7 @@ int main(int argc, char *argv[])
 			if (!strncmp(argv[2], "2860", 5) ||
 			    !strncasecmp(argv[2], "rt2860", 7)) { //b-compatible
 				gen_wifi_config(RT2860_NVRAM);
-#if defined(CONFIG_RT3090_AP) || defined(CONFIG_RT3090_AP_MODULE)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 				gen_wifi_config(RTINIC_NVRAM);
 #endif
 			} else

@@ -528,7 +528,7 @@ typedef struct _RT_802_11_MAC_TABLE {
 	RT_802_11_MAC_ENTRY      Entry[32]; //MAX_LEN_OF_MAC_TABLE = 32
 } RT_802_11_MAC_TABLE;
 
-#if defined(CONFIG_RT3090_AP) || defined(CONFIG_RT3090_AP_MODULE)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 typedef struct _RT_802_11_MAC_ENTRY2 {
     unsigned char		ApIdx;
     unsigned char       	Addr[6];

@@ -451,7 +451,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	int i, s;
 	struct iwreq iwr;
 	RT_802_11_MAC_TABLE table = {0};
-#if defined(CONFIG_RT3090_AP) || defined(CONFIG_RT3090_AP_MODULE)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 	RT_802_11_MAC_TABLE2 table2 = {0};
 #endif
 	s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -510,7 +510,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("</tr>"));
 	}
 	close(s);
-#if defined(CONFIG_RT3090_AP) || defined(CONFIG_RT3090_AP_MODULE)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	strncpy(iwr.ifr_name, "rai0", IFNAMSIZ);
