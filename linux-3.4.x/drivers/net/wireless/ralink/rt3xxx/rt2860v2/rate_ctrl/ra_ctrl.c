@@ -647,7 +647,7 @@ VOID APMlmeSetTxRate(
 	UCHAR tx_mode = pTxRate->Mode;
 
 #ifdef DOT11_N_SUPPORT
-	if (tx_mode == MODE_HTMIX || tx_mode == MODE_HTGREENFIELD)
+	if (tx_mode >= MODE_HTMIX)
 	{
 	    if ((pTxRate->STBC) && (pEntry->MaxHTPhyMode.field.STBC))
 		pEntry->HTPhyMode.field.STBC = STBC_USE;
@@ -1634,7 +1634,7 @@ VOID MlmeRALog(
 	)
 	{
 		BOOLEAN stbc;
-#if defined(STREAM_MODE_SUPPORT) || defined(DBG)
+#if defined (DBG) || defined (STREAM_MODE_SUPPORT)
 		BOOLEAN csd=FALSE;
 #endif
 		ULONG tp;

@@ -118,6 +118,9 @@
 #define MAX_NUM_OF_TUPLE_CACHE  2
 #define MAX_MCAST_LIST_SIZE     32
 #define MAX_LEN_OF_VENDOR_DESC  64
+/*#define MAX_SIZE_OF_MCAST_PSQ   (NUM_OF_LOCAL_TXBUF >> 2) // AP won't spend more than 1/4 of total buffers on M/BCAST PSQ */
+#define MAX_SIZE_OF_MCAST_PSQ               32
+
 #define MAX_RX_PROCESS_CNT	(RX_RING_SIZE)
 
 /*

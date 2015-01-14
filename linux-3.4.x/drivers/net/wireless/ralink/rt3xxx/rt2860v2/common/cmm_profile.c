@@ -5392,10 +5392,9 @@ NDIS_STATUS	RTMPSetSingleSKUParameters(
 
 			}
 		}
-
-
 	}
 
+#ifdef DBG
 	{
 		CH_POWER *ch, *ch_temp;
 		DlListForEachSafe(ch, ch_temp, &pAd->SingleSkuPwrList, CH_POWER, List)
@@ -5426,9 +5425,9 @@ NDIS_STATUS	RTMPSetSingleSKUParameters(
 				printk("%d ", ch->PwrHT40[i]);
 			}
 			printk("\n");
-
 		}
 	}
+#endif
 
 	pAd->bOpenFileSuccess = TRUE;
 
