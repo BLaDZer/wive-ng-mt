@@ -429,7 +429,7 @@
 <br>
 <br>
 <b>2.1.x</b><br>
-1) toolchain: update kernel headers and sync gcc with upstream.<br>
+1) toolchain: update kernel headers and gcc up to 4.8.4 release.<br>
 2) busybox: update to 1.23.0 version.<br>
 3) busybox: sync with upstream (busybox-1.23.0-ash.patch, busybox-1.23.0-modprobe.patch, busybox-1.23.0-vi.patch).<br>
 4) busybox: downgrade zcip code to 1.22.x version(easy fix new gcc issue, need rewrite later).<br>
