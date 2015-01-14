@@ -6,10 +6,21 @@ romfs:
 	mkdir -p $(ROMFSDIR)/etc/Wireless
 	mkdir -p $(ROMFSDIR)/etc/default
 	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860
-	# 2T2R MODE 7620 with internal LNA
-	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN			/etc/Wireless/MT7620_AP_2T2R-4L_V13.BIN
+# 2T2R MODE 7620 with internal LNA
 	$(ROMFSINST) -S	defaults/default-2T2R				/etc/default/nvram_default
-	$(ROMFSINST) -s /etc/Wireless/MT7620_AP_2T2R-4L_V13.BIN 	/etc/Wireless/rf.bin
+ifdef CONFIG_RALINK_MT7620
+	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN			/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN
+	$(ROMFSINST) -s /etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN 	/etc/Wireless/rf.bin
+endif
+# external PCI-E modules
+ifdef CONFIG_MT7610_AP
+	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
+	$(ROMFSINST) -S MT7610E-V10-FEM.bin				/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
+endif
+ifdef CONFIG_MT76X2_AP
+	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
+	$(ROMFSINST) -S MT7612E_EEPROM.bin				/etc/Wireless/iNIC/MT7612E_EEPROM.bin
+endif
 #install profiles symlinks for all chips
 	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860AP
 	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860STA

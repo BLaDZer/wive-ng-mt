@@ -1329,6 +1329,16 @@ CONFIG_RT2860V2_STA_SNMP=y
 # CONFIG_RT2860V2_STA_DBG is not set
 
 #
+# AP MODE MediaTek MT7610E PCIe Wireless Driver
+#
+# CONFIG_MT7610_AP is not set
+
+#
+# AP MODE MediaTek MT7602E/MT7612E PCIe Wireless Driver
+#
+# CONFIG_MT76X2_AP is not set
+
+#
 # NAT acell mode
 #
 # CONFIG_RA_NAT_NONE is not set

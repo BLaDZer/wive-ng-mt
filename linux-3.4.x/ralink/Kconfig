@@ -64,8 +64,17 @@ endmenu
 menu "AP MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
 source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_ap/Kconfig"
 endmenu
+
 menu "Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
 source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_sta/Kconfig"
+endmenu
+
+menu "AP MODE MediaTek MT7610E PCIe Wireless Driver"
+source "drivers/net/wireless/ralink/rtpci/mt7610_ap/Kconfig"
+endmenu
+
+menu "AP MODE MediaTek MT7602E/MT7612E PCIe Wireless Driver"
+source "drivers/net/wireless/ralink/rtpci/mt76x2_ap/Kconfig"
 endmenu
 
 #######
@@ -110,7 +119,10 @@ default y if (RT305x_INIC_USB || RT3572_AP || RT5572_AP)
 config RTDEV_MII
 bool
 default y if (RT305x_INIC_MII || RT3352_INIC_MII)
+
+config RTDEV_PCI
+bool
+default y if (MT7610_AP || MT76X2_AP)
 endmenu
 
 endmenu
-
