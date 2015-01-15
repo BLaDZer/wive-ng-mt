@@ -330,8 +330,6 @@ CONFIG_PCIEAER=y
 # CONFIG_PCIEAER_INJECT is not set
 # CONFIG_PCIEASPM is not set
 CONFIG_MMU=y
-# CONFIG_PCCARD is not set
-# CONFIG_HOTPLUG_PCI is not set
 # CONFIG_RAPIDIO is not set
 
 #
@@ -679,8 +677,6 @@ CONFIG_WEXT_PRIV=y
 #
 # Generic Driver Options
 #
-# CONFIG_UEVENT_HELPER_PATH is not set
-# CONFIG_DEVTMPFS is not set
 CONFIG_STANDALONE=y
 # CONFIG_PREVENT_FIRMWARE_BUILD is not set
 # CONFIG_FW_LOADER is not set
