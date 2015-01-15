@@ -40,7 +40,7 @@ struct _RTMP_ADAPTER;
 #ifdef RTMP_FLASH_SUPPORT
 #ifdef RTMP_MAC_PCI
 
-#define EEPROM_DEFAULT_FILE_PATH			"/etc/Wireless/MT7610E-V10-FEM.bin"
+#define EEPROM_DEFAULT_FILE_PATH			"/etc/Wireless/iNIC/MT7610E-V10-FEM.bin"
 
 #endif /* RTMP_MAC_PCI */
 

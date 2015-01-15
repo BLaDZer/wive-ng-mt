@@ -51,11 +51,11 @@
 #endif
 
 #if (CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_SECOND_CARD == 7612)
-#define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/MT7612E_EEPROM.bin"
+#define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/iNIC/MT7612E_EEPROM.bin"
 #endif
 
 #if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_SECOND_CARD == 7602)
-#define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/MT7602E_EEPROM.bin"
+#define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/iNIC/MT7602E_EEPROM.bin"
 #endif
 
 /* For ioctl check usage */
