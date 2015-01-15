@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.105.6 Kernel Configuration
+# Linux/mips 3.4.105.7 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1196,7 +1196,7 @@ CONFIG_SPEEDHACK=y
 # CONFIG_RALINK_RDM is not set
 
 #
-# Ethernet Ralink RT3xxx/RT5xxx/MT762x wire driver
+# Ralink Wired Ethernet Driver
 #
 CONFIG_RAETH=y
 CONFIG_RAETH_NAPI=y
@@ -1221,7 +1221,31 @@ CONFIG_RAETH_DHCP_TOUCH=y
 # CONFIG_RAETH_DEBUG is not set
 
 #
-# Platform config for Ralink RT3xxx/RT5xxx
+# Ralink Wireless 802.11 Support
+#
+
+#
+# 1st Wireless Interface
+#
+# CONFIG_RT_FIRST_IF_NONE is not set
+CONFIG_RT_FIRST_IF_RT2860=y
+CONFIG_RT_FIRST_IF_RANGE_2GHZ=y
+# CONFIG_RT_FIRST_IF_RANGE_5GHZ is not set
+CONFIG_RT_FIRST_IF_EEPROM_FLASH=y
+CONFIG_RT_FIRST_IF_RF_OFFSET=0x40000
+CONFIG_RT_FIRST_CARD=2860
+CONFIG_RT_FIRST_CARD_EEPROM="flash"
+
+#
+# 2nd Wireless Interface
+#
+CONFIG_RT_SECOND_IF_NONE=y
+# CONFIG_RT_SECOND_IF_MT7610E is not set
+# CONFIG_RT_SECOND_IF_MT7612E is not set
+# CONFIG_RT_SECOND_IF_MT7602E is not set
+
+#
+# Wireless drivers settings
 #
 
 #
@@ -1264,16 +1288,6 @@ CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE=y
 # Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver
 #
 # CONFIG_RT2860V2_STA is not set
-
-#
-# AP MODE MediaTek MT7610E PCIe Wireless Driver
-#
-# CONFIG_MT7610_AP is not set
-
-#
-# AP MODE MediaTek MT7602E/MT7612E PCIe Wireless Driver
-#
-# CONFIG_MT76X2_AP is not set
 
 #
 # NAT acell mode

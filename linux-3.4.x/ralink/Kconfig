@@ -8,74 +8,176 @@ source "drivers/net/rt_rdm/Kconfig"
 #############
 # Wired
 #############
-menu "Ethernet Ralink RT3xxx/RT5xxx/MT762x wire driver"
+menu "Ralink Wired Ethernet Driver"
 source "drivers/net/raeth/Kconfig"
 endmenu
 
 #############
 # Wireless
 #############
-menu "Platform config for Ralink RT3xxx/RT5xxx"
+menu "Ralink Wireless 802.11 Support"
+
+comment "1st Wireless Interface"
 
 choice
-	prompt "RF Type"
-	depends on RALINK_RT5350
-	default RALINK_RT5350_1T1R
+	prompt "Choose 1st Wireless Interface"
+	config RT_FIRST_IF_NONE
+	bool "None"
 
-	config  RALINK_RT5350_1T1R
-	bool "1T1R"
+	config RT_FIRST_IF_RT2860
+	bool "RT2860v2 APSoC"
+	depends on !(RALINK_MT7621 || RALINK_MT7628)
+
+	config RT_FIRST_IF_MT7610E
+	bool "MT7610E PCIe"
+	depends on RALINK_MT7621
+
+	config RT_FIRST_IF_MT7612E
+	bool "MT7612E PCIe"
+	depends on RALINK_MT7621
+
+	config RT_FIRST_IF_MT7602E
+	bool "MT7602E PCIe"
+	depends on RALINK_MT7621
 endchoice
 
 choice
-	prompt "RF Type"
-	depends on RALINK_RT3052
-	default RALINK_RT3052_2T2R
+	prompt "Range of 1st Wireless Interface"
+	depends on !RT_FIRST_IF_NONE
 
-	config  RALINK_RT3050_1T1R
-	bool "1T1R"
+	config RT_FIRST_IF_RANGE_2GHZ
+	bool "2.4 GHz"
+	depends on !(RT_FIRST_IF_MT7610E)
 
-	config  RALINK_RT3051_1T2R
-	bool "1T2R"
-
-	config  RALINK_RT3052_2T2R
-	bool "2T2R"
+	config RT_FIRST_IF_RANGE_5GHZ
+	bool "5GHz"
+	depends on !(RT_FIRST_IF_MT7602E)
 endchoice
 
 choice
-	prompt "RF Type"
-	depends on  RALINK_RT3352
+	prompt "EEPROM Type of 1st Wireless Interface"
+	depends on !RT_FIRST_IF_NONE
 
-	config  RALINK_RT3352_2T2R
-	bool "2T2R"
+	config RT_FIRST_IF_EEPROM_FLASH
+	bool "FLASH partition"
+
+	config RT_FIRST_IF_EEPROM_EFUSE
+	bool "eFUSE on-die"
+	depends on !(RT_FIRST_IF_RT2860)
+
+	config RT_FIRST_IF_EEPROM_PROM
+	bool "EEPROM chip"
+	depends on !(RT_FIRST_IF_RT2860)
+endchoice
+
+config  RT_FIRST_IF_RF_OFFSET
+	hex "EEPROM FLASH Offset of 1st Wireless Interface"
+	depends on RT_FIRST_IF_EEPROM_FLASH
+	default 0x40000
+
+config  RT_FIRST_CARD
+	int
+	depends on !RT_FIRST_IF_NONE
+	default 2860 if RT_FIRST_IF_RT2860
+	default 7610 if RT_FIRST_IF_MT7610E
+	default 7612 if RT_FIRST_IF_MT7612E
+	default 7602 if RT_FIRST_IF_MT7602E
+
+config RT_FIRST_CARD_EEPROM
+	string
+	depends on !RT_FIRST_IF_NONE
+	default "prom" if RT_FIRST_IF_EEPROM_PROM
+	default "efuse" if RT_FIRST_IF_EEPROM_EFUSE
+	default "flash" if RT_FIRST_IF_EEPROM_FLASH
+
+comment "2nd Wireless Interface"
+
+choice
+	prompt "Choose 2nd Wireless Interface"
+	config RT_SECOND_IF_NONE
+	bool "None"
+
+	config RT_SECOND_IF_MT7610E
+	bool "MT7610E PCIe"
+
+	config RT_SECOND_IF_MT7612E
+	bool "MT7612E PCIe"
+
+	config RT_SECOND_IF_MT7602E
+	bool "MT7602E PCIe"
 endchoice
 
 choice
-	prompt "RF Type"
-	depends on RALINK_RT3883
+	prompt "Range of 2nd Wireless Interface"
+	depends on !RT_SECOND_IF_NONE
 
-	config  RALINK_RT3662_2T2R
-	bool "2T3R (RT3662)"
+	config RT_SECOND_IF_RANGE_2GHZ
+	bool "2.4 GHz"
+	depends on !(RT_SECOND_IF_MT7610E)
 
-	config  RALINK_RT3883_3T3R
-	bool "3T3R (RT3883)"
+	config RT_SECOND_IF_RANGE_5GHZ
+	bool "5GHz"
+	depends on !(RT_SECOND_IF_MT7602E)
 endchoice
-endmenu
+
+choice
+	prompt "EEPROM Type of 2nd Wireless Interface"
+	depends on !(RT_SECOND_IF_NONE || RT_SECOND_IF_RT3352_INIC)
+
+	config RT_SECOND_IF_EEPROM_FLASH
+	bool "FLASH partition"
+
+	config RT_SECOND_IF_EEPROM_EFUSE
+	bool "eFUSE on-die"
+
+	config RT_SECOND_IF_EEPROM_PROM
+	bool "EEPROM chip"
+endchoice
+
+config  RT_SECOND_IF_RF_OFFSET
+	hex "EEPROM FLASH Offset of 2nd Wireless Interface"
+	depends on RT_SECOND_IF_EEPROM_FLASH
+	default 0x48000
+
+config  RT_SECOND_CARD
+	int
+	depends on !RT_SECOND_IF_NONE
+	default 7610 if RT_SECOND_IF_MT7610E
+	default 7612 if RT_SECOND_IF_MT7612E
+	default 7602 if RT_SECOND_IF_MT7602E
+
+config RT_SECOND_CARD_EEPROM
+	string
+	depends on !RT_SECOND_IF_NONE
+	default "prom" if RT_SECOND_IF_EEPROM_PROM
+	default "efuse" if RT_SECOND_IF_EEPROM_EFUSE
+	default "flash" if RT_SECOND_IF_EEPROM_FLASH
+
+comment "Wireless drivers settings"
+	depends on (!RT_FIRST_IF_NONE || !RT_SECOND_IF_NONE)
 
 menu "AP MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
 source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_ap/Kconfig"
 endmenu
-
 menu "Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
 source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_sta/Kconfig"
 endmenu
 
+if (RT_FIRST_IF_MT7610E || RT_SECOND_IF_MT7610E)
 menu "AP MODE MediaTek MT7610E PCIe Wireless Driver"
 source "drivers/net/wireless/ralink/rtpci/mt7610_ap/Kconfig"
 endmenu
+endif
 
+if (RT_FIRST_IF_MT7612E || RT_FIRST_IF_MT7602E || RT_SECOND_IF_MT7612E || RT_SECOND_IF_MT7602E)
 menu "AP MODE MediaTek MT7602E/MT7612E PCIe Wireless Driver"
 source "drivers/net/wireless/ralink/rtpci/mt76x2_ap/Kconfig"
 endmenu
+endif
+
+endmenu
+
+
 
 #######
 # NAT
