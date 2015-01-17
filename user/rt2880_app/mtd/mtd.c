@@ -59,7 +59,7 @@
 #include <sys/reboot.h>
 #include <linux/reboot.h>
 #include <linux/autoconf.h>
-#include "mtd.h"
+#include "mtd-abi.h"
 #include "led.h"
 
 #ifdef CONFIG_MTD_NAND_RALINK

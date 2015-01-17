@@ -9,8 +9,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <linux/autoconf.h>  //kernel config
-
-#include "mtd.h"
+#include "mtd-abi.h"
 
 #if defined (CONFIG_RALINK_RT6855A) || defined (CONFIG_RALINK_MT7621)
 #define LAN_OFFSET    0xE000
