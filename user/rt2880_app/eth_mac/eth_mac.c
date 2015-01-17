@@ -24,10 +24,6 @@
 
 #define MACADDR_LEN 	6
 
-#define MEMGETINFO	_IOR('M', 1, struct mtd_info_user)
-#define MEMERASE	_IOW('M', 2, struct erase_info_user)
-#define MEMUNLOCK	_IOW('M', 6, struct erase_info_user)
-
 static int mtd_open(const char *name, int flags)
 {
 	FILE *fp;
