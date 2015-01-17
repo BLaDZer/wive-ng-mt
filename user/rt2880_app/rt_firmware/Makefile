@@ -16,6 +16,9 @@ endif
 ifdef CONFIG_MT7610_AP
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
 	$(ROMFSINST) -S MT7610E-V10-FEM.bin				/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
+ifdef CONFIG_MT7610_AP_SINGLE_SKU
+	$(ROMFSINST) -S SingleSKU_5G.dat				/etc/Wireless/iNIC/SingleSKU.dat
+endif
 endif
 ifdef CONFIG_MT76X2_AP
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
