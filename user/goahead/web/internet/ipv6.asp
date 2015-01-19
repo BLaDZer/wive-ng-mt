@@ -71,6 +71,7 @@ function SwitchOpMode()
 function initValue()
 {
 	var opmode = "<% getCfgZero(1, "IPv6OpMode"); %>";
+	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
 	var opmode_len = document.ipv6_cfg.ipv6_opmode.options.length;
 
 	if (ipv66rdb == "1") {
@@ -103,6 +104,11 @@ function initValue()
 		document.ipv6_cfg.ipv6_6rd_border_ipaddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
 	} else if (opmode == "3") {
 		document.ipv6_cfg.IPv6SrvAddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
+	}
+
+	document.ipv6_cfg.IPv6Dhcpc.checked = (dhcp6c == "1");
+	if (dhcp6c == "1") {
+	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 	}
 }
 
@@ -303,6 +309,10 @@ function CheckValue()
       <option value="1" id="v6Static">Native dynamic/static IP Connection</option>
     </select>
   </td>
+</tr>
+<tr id="dhp6cRowDisplay">
+  <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp</td>
+  <td><input name="IPv6Dhcpc" type="checkbox"></td>
 </tr>
 </table>
 <!-- STATIC IP --!>

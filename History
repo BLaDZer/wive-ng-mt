@@ -447,28 +447,29 @@
 16) pppd: fix segfault pppol2tp plugin on IPv6 disabled (broken L2TP).<br>
 17) xupnpd: update to 401r.<br>
 18) xupnpd: lua: update to 5.3.0 version.<br>
-19) dhcp6c: fix duid generate for WAN (temp hack, add read from commandline in future).<br>  
-20) kernel: ralink: prepare 7621 support.<br>
-21) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-22) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
-23) kernel: ralink_gpio: switch to schedule_work.<br>
-24) kernel: ralink_gpio: fix 9532 mode support.<br>
-25) kernel: ralink_wifi: add drivers for 7610/76x2 pci-e chips.<br>
-26) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
-27) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
-28) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
-29) kernel: netfilter: conntrack: avoid zeroing timer.<br>
-30) kernel: net: rearrange loop in net_rx_action.<br>
-31) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
-32) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
-33) kernel: net: gro: dev_gro_receive() cleanup.<br>
-34) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
-35) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
-36) kernel: net_dma: simple removal (broken and not used).<br>
-37) kernel: net_dma: revert copied_early.<br>
-38) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
-39) kernel: mm: fix swapoff hang after page migration and fork.<br>
-40) kernel: tun: fixed unsigned/signed comparison.<br>
+19) init.d/goahead: add support native ipv6 with dhcp client mode.<br>
+20) dhcp6c: fix duid generate for WAN (temp hack, add read from commandline in future).<br>  
+21) kernel: ralink: prepare 7621 support.<br>
+22) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+23) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
+24) kernel: ralink_gpio: switch to schedule_work.<br>
+25) kernel: ralink_gpio: fix 9532 mode support.<br>
+26) kernel: ralink_wifi: add drivers for 7610/76x2 pci-e chips.<br>
+27) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
+28) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
+29) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
+30) kernel: netfilter: conntrack: avoid zeroing timer.<br>
+31) kernel: net: rearrange loop in net_rx_action.<br>
+32) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
+33) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+34) kernel: net: gro: dev_gro_receive() cleanup.<br>
+35) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
+36) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
+37) kernel: net_dma: simple removal (broken and not used).<br>
+38) kernel: net_dma: revert copied_early.<br>
+39) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
+40) kernel: mm: fix swapoff hang after page migration and fork.<br>
+41) kernel: tun: fixed unsigned/signed comparison.<br>
 <br>
 <br>
 <b>TODO:</b><br>

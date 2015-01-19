@@ -56,17 +56,16 @@ function initValue()
 	if (e!=null)
 		e.innerHTML = _("treeapp closeall");
 }
-if (ipv6b == "1") {
-	a.add(307, 300, _("treeapp ipv6"), 		    "javascript:go('internet/ipv6.asp');");
-}
 
 function setUnderFirmwareUpload(flag){
 	isFimwareUpload = flag;
 }
+
 function go(zz) {
 	if(!isFimwareUpload)
 		top.view.location=zz;
 }
+
 function refresh(){
 	window.location.reload(false);
 }
