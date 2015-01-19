@@ -414,7 +414,7 @@ function displayServiceStatus()
               </select></td>
           </tr>
           <tr id="sixhw_row">
-            <td class="head">IPV6 hardware nat offload</td>
+            <td class="head">IPV6 hardware route offload</td>
             <td colspan="4"><select name="hw_nat_sixPT" class="half">
                 <option value="0">Disable</option>
                 <option value="1">Enable</option>
