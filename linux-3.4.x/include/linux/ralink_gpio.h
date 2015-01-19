@@ -43,9 +43,15 @@
 #define RALINK_GPIO_DEVNAME	"gpio"		//nodename
 #define GPIO_DEV		"/dev/gpio"	//userlevel devname
 
+#ifdef CONFIG_MT7610_AP
+/* BUTTONS GPIO */
+#define GPIO_BTN_RESET		13
+#define GPIO_BTN_WPS		13
+#else
 /* BUTTONS GPIO */
 #define GPIO_BTN_RESET		1
 #define GPIO_BTN_WPS		2
+#endif
 /* LEDS GPIO */
 #define GPIO_POWER_LED		38
 #define GPIO_LED_SEC_GREEN      0 /* stub */
