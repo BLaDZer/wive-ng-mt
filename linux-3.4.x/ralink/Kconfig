@@ -77,7 +77,7 @@ config  RT_FIRST_IF_RF_OFFSET
 
 config  RT_FIRST_CARD
 	int
-	depends on !RT_FIRST_IF_NONE
+	default 0    if RT_FIRST_IF_NONE
 	default 2860 if RT_FIRST_IF_RT2860
 	default 7610 if RT_FIRST_IF_MT7610E
 	default 7612 if RT_FIRST_IF_MT7612E
@@ -141,7 +141,7 @@ config  RT_SECOND_IF_RF_OFFSET
 
 config  RT_SECOND_CARD
 	int
-	depends on !RT_SECOND_IF_NONE
+	default 0    if RT_SECOND_IF_NONE
 	default 7610 if RT_SECOND_IF_MT7610E
 	default 7612 if RT_SECOND_IF_MT7612E
 	default 7602 if RT_SECOND_IF_MT7602E
