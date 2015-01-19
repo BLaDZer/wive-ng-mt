@@ -105,7 +105,7 @@ start() {
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
 	    $LOG "Wait v4 configure (15sec) and start DHCPv6 client."
-	    dhcp6c $real_wan_if
+	    sysctl -wq net.ipv6.conf.$real_wan_if.disable_ipv6=0
 	    (sleep 15 && dhcp6c $real_wan_if > /dev/null 2>&1) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
