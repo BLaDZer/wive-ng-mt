@@ -104,9 +104,9 @@ start() {
 	$LOG "Start DHCP client."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
-	    $LOG "Start DHCPv6 client."
+	    $LOG "Wait v4 configure (15sec) and start DHCPv6 client."
 	    dhcp6c $real_wan_if
-	    (sleep 2 && dhcp6c $real_wan_if > /dev/null 2>&1) &
+	    (sleep 15 && dhcp6c $real_wan_if > /dev/null 2>&1) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."

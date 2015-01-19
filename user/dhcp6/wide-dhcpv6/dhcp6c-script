@@ -15,4 +15,7 @@ if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
             echo nameserver $nameserver >> $new_resolv_conf
         done
     fi
+    
+    # reconfigure dhcpv6 and radvd
+    service six dhcpradvdreconf
 fi

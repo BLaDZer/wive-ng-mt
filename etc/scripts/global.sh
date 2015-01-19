@@ -200,11 +200,11 @@ getWanIpaddr() {
 
     # get from if and return physical wan ip
     if [ "$wan_ipaddr" = "" ]; then
-	wan_ipaddr=`ip -o -4 addr show dev $wan_if scope global | awk ' {print $4}' | cut -f1 -d"/"` > /dev/null 2>&1
+	wan_ipaddr=`ip -o -4 addr show dev $wan_if scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
     fi
 
     # get from if and return vpn or physical wan ip
-    real_wan_ipaddr=`ip -o -4 addr show dev $real_wan_if scope global | awk ' {print $4}' | cut -f1 -d"/"` > /dev/null 2>&1
+    real_wan_ipaddr=`ip -o -4 addr show dev $real_wan_if scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
     if [ "$real_wan_ipaddr" = "" ]; then
 	real_wan_ipaddr="$wan_ipaddr"
     fi

@@ -121,15 +121,13 @@ start() {
 		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $real_wan_if
 
                 $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
-		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if	> /dev/null 2>&1
+		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if		> /dev/null 2>&1
 		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
 
 		$LOG "Replace Ipv6 DGW to $real_wan_if via $IPv6GWAddr"
 		ip -6 route replace default dev "$real_wan_if" via "$IPv6WANIPAddr" metric 0
+		dhcpradvdreconf
 	    fi
-	    # fix me... need write logic for auto configure
-	    radvdEnabled="0"
-	    dhcpv6Enabled="0"
 	else
 	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces(security need)."
     	    sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0
@@ -147,8 +145,8 @@ start() {
 	    $LOG "Set ${SUBNET}::1/${IPv6PrefixLen} to $lan_if"
 	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
 	    ip -6 addr add ${PREFIX} dev $lan_if
+	    dhcpradvdreconf
 	fi
-	dhcpradvdreconf
 	flush_net_caches
     fi
 }
@@ -156,6 +154,8 @@ start() {
 dhcpradvdreconf() {
     get_param
     if [ "$IPv6OpMode" != "0" ]; then
+	$LOG "Reconfigure radvd and dhcpv6 server"
+	
 	# prevent double start
 	killall -q radvd
 	killall -q -SIGKILL radvd
@@ -163,17 +163,23 @@ dhcpradvdreconf() {
 	killall -q dhcp6s
 	killall -q -SIGKILL dhcp6s
 
-	# check parametrs
-	if [ "$SUBNET" = "" ] || [ "$PREFIX" = "" ]; then
-	    $LOG "Configuration is not correct, need check config in setwork settings => IPv6, radvd and dhcpv6 server not started."
+	# get prefix direct from lan iface if not set
+	if [ "$PREFIX" = "" ]; then
+	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
+	    $LOG "Get prefix from local interface $PREFIX"
+	fi
+
+	if [ "$PREFIX" = "" ]; then
+	    $LOG "Prefix not configured... Exit."
 	    exit 0
 	fi
-	
+		
 	# read dnsservers reciverd from dhcp
 	if [ -f /etc/resolvipv6.conf ]; then
 	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
 	    $LOG "Use DNS recived from ISP $DNSADRESSES"
 	fi
+
 	if [ "$DNSADRESSES" = "" ]; then
 	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
 	    $LOG "Use public DNS $DNSADRESSES"
@@ -224,11 +230,14 @@ dhcpradvdreconf() {
 		allow rapid-commit;
 		address-pool pool1 3600;
 	    };
-
-	    pool pool1 {
-		range ${SUBNET}::2 to ${SUBNET}::254 ;
-	    };
     	    " > /etc/dhcp6s.conf
+	    if [ "$SUBNET" = "" ]; then
+    		printf "
+		pool pool1 {
+		    range ${SUBNET}::2 to ${SUBNET}::254 ;
+		};
+    		" >> /etc/dhcp6s.conf
+    	    fi
 
 	    $LOG "Starting dhcp6s"
 	    dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
@@ -300,6 +309,6 @@ case "$1" in
 	    ;;
 
 	*)
-	    echo $"Usage: $0 {start|stop|restart}"
+	    echo $"Usage: $0 {start|stop|restart|dhcpradvdreconf}"
 	    exit 1
 esac
