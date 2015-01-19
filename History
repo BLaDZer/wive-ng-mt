@@ -433,39 +433,40 @@
 2) busybox: update to 1.23.0 version.<br>
 3) busybox: sync with upstream (busybox-1.23.0-ash.patch, busybox-1.23.0-modprobe.patch, busybox-1.23.0-vi.patch).<br>
 4) busybox: downgrade zcip code to 1.22.x version(easy fix new gcc issue, need rewrite later).<br>
-5) xz: up to 5.0.8 version.<br>
-6) uboot: update to last version.<br>
-7) reg tool: small fixup.<br>
-8) mii tool: fixup and add 7628 support.<br>
-9) gpio tool: fix 9532 mode support.<br>
-10) nvram lib: do not direct read from flash at show.<br>
-11) nvram tool: fix generate wifi config.<br>
-12) switch tool: add igmp snooping managment.<br>
-13) hw_nat: FoE entry range check, entry valid check.<br>
-14) init.d: more enchange esw/vlan config logic.<br>
-15) pppd: fix segfault pppol2tp plugin on IPv6 disabled (broken L2TP).<br>
-16) xupnpd: update to 401r.<br>
-17) xupnpd: lua: update to 5.3.0 version.<br>
-18) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
-19) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
-20) kernel: ralink_gpio: switch to schedule_work.<br>
-21) kernel: ralink_gpio: fix 9532 mode support.<br>
-22) kernel: ralink_wifi: add drivers for 7610/76x2 pci-e chips.<br>
-23) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
-24) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
-25) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
-26) kernel: netfilter: conntrack: avoid zeroing timer.<br>
-27) kernel: net: rearrange loop in net_rx_action.<br>
-28) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
-29) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
-30) kernel: net: gro: dev_gro_receive() cleanup.<br>
-31) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
-32) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
-33) kernel: net_dma: simple removal (broken and not used).<br>
-34) kernel: net_dma: revert copied_early.<br>
-35) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
-36) kernel: mm: fix swapoff hang after page migration and fork.<br>
-37) kernel: tun: fixed unsigned/signed comparison.<br>
+5) busybox: fix create char device /dev/mtdX as block device (child for /dev/mtdblockX).<br>
+6) xz: up to 5.0.8 version.<br>
+7) uboot: update to last version.<br>
+8) reg tool: small fixup.<br>
+9) mii tool: fixup and add 7628 support.<br>
+10) gpio tool: fix 9532 mode support.<br>
+11) nvram lib: do not direct read from flash at show.<br>
+12) nvram tool: fix generate wifi config.<br>
+13) switch tool: add igmp snooping managment.<br>
+14) hw_nat: FoE entry range check, entry valid check.<br>
+15) init.d: more enchange esw/vlan config logic.<br>
+16) pppd: fix segfault pppol2tp plugin on IPv6 disabled (broken L2TP).<br>
+17) xupnpd: update to 401r.<br>
+18) xupnpd: lua: update to 5.3.0 version.<br>
+19) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
+20) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
+21) kernel: ralink_gpio: switch to schedule_work.<br>
+22) kernel: ralink_gpio: fix 9532 mode support.<br>
+23) kernel: ralink_wifi: add drivers for 7610/76x2 pci-e chips.<br>
+24) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
+25) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
+26) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
+27) kernel: netfilter: conntrack: avoid zeroing timer.<br>
+28) kernel: net: rearrange loop in net_rx_action.<br>
+29) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
+30) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+31) kernel: net: gro: dev_gro_receive() cleanup.<br>
+32) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
+33) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
+34) kernel: net_dma: simple removal (broken and not used).<br>
+35) kernel: net_dma: revert copied_early.<br>
+36) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
+37) kernel: mm: fix swapoff hang after page migration and fork.<br>
+38) kernel: tun: fixed unsigned/signed comparison.<br>
 <br>
 <br>
 <b>TODO:</b><br>
