@@ -93,7 +93,7 @@ function vimeo_get_video_url(vimeo_url)
 
     local vimeo_id=string.match(vimeo_url,'.+/(%w+)$')
 
-    local config=plugin_download('http://player.vimeo.com/v2/video/'..vimeo_id..'/config')
+    local config=plugin_download('http://player.vimeo.com/video/'..vimeo_id..'/config')
 
     if config then
         local x=json.decode(config)
@@ -106,6 +106,7 @@ function vimeo_get_video_url(vimeo_url)
             else
                 url=x.request.files.h264.hd or x.request.files.h264.sd
         end
+        -- x.request.files.hls.all
     end
     end
 
