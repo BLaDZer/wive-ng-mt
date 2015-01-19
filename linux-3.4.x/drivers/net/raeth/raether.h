@@ -10,7 +10,7 @@
 
 #include "ra_ethreg.h"
 
-#define RAETH_VERSION		"v3.1.5"
+#define RAETH_VERSION		"v3.1.6"
 #define RAETH_DEV_NAME		"raeth"
 
 #define DEV_NAME		"eth2"
@@ -118,7 +118,6 @@ typedef struct _END_DEVICE
 #endif
 } END_DEVICE, *PEND_DEVICE;
 
-
 #if defined (CONFIG_PSEUDO_SUPPORT)
 typedef struct _PSEUDO_ADAPTER
 {
@@ -142,6 +141,7 @@ int VirtualIF_ioctl(struct net_device * net_dev, struct ifreq * ifr, int cmd);
 
 #if defined (CONFIG_RAETH_ESW_CONTROL)
 int  esw_ioctl_init(void);
+int  esw_control_post_init(void);
 void esw_ioctl_uninit(void);
 #endif
 

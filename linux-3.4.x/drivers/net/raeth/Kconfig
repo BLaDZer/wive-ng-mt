@@ -50,10 +50,12 @@ config RAETH_SG_DMA_TX
 config RAETH_TSO
 	bool "TSOv4 (TCP Segmentaton Offload)"
 	depends on RAETH_SG_DMA_TX && (RALINK_MT7620 || RALINK_MT7621)
+	default n
 
 config RAETH_TSOV6
 	bool "TSOv6 (TCP Segmentaton Offload for IPv6)"
 	depends on RAETH_TSO && IPV6
+	default n
 
 choice
 	prompt "GMAC is connected to"
@@ -97,6 +99,7 @@ choice
 	config  GE1_MAC_ESW
 		bool "Integrated ESW"
 		depends on (RALINK_RT3052 || RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7620 || RALINK_MT7628)
+		select RAETH_ESW if (RALINK_RT5350 || RALINK_MT7628)
 endchoice
 
 config RAETH_HAS_PORT5
@@ -114,7 +117,7 @@ choice
 		bool "Giga_SW/iNIC (RGMII)"
 
 	config P5_RGMII_TO_MT7530_MODE
-		bool "MT7530 GigaSW (P5 RGMII -> MT7530 P6)"
+		bool "MT7530 GigaSW (P5 RGMII -> MT7530 GMAC P6)"
 		depends on RALINK_MT7620
 		select MT7530_GSW
 
@@ -159,6 +162,11 @@ choice
 	config GE2_RGMII_AN
 		bool "RGMII_AN (GigaPhy)"
 
+	config GE2_INTERNAL_GMAC_P5
+		bool "Internal GigaSW (GE2 -> MT7530 GMAC P5)"
+		depends on (RALINK_MT7621)
+		select MT7530_GSW
+
 	config GE2_INTERNAL_GPHY_P4
 		bool "Internal GigaPHY Port 4 (GE2 -> MT7530 P4 AN)"
 		depends on (RALINK_MT7621)
@@ -180,6 +188,10 @@ choice
 
 	config P4_MAC_TO_PHY_MODE
 		bool "Giga_Phy (RGMII + AN)"
+
+	config P4_RGMII_TO_MT7530_GMAC_P5
+		bool "MT7530 GigaSW (P4 RGMII -> MT7530 GMAC P5)"
+		select MT7530_GSW
 
 	config P4_MAC_TO_MT7530_GPHY_P4
 		bool "MT7530 GigaPhy Port4 (P4 RGMII -> MT7530 P4 AN)"
@@ -240,18 +252,18 @@ config  RAETH_ESW_CONTROL
 	default n
 
 config  RAETH_ESW_PORT_WAN
-	int "ESW WAN Port ID (0..4)"
+	int "ESW WAN Port ID (0..5)"
 	depends on RAETH_ESW_CONTROL
 	default 4
 	help
-	  please choose port ID from range 0..4
+	  please choose port ID from range 0..5
 
 config  RAETH_ESW_PORT_LAN1
-	int "ESW LAN1 Port ID (0..4)"
+	int "ESW LAN1 Port ID (0..5)"
 	depends on RAETH_ESW_CONTROL
 	default 3
 	help
-	  please choose port ID from range 0..4
+	  please choose port ID from range 0..5
 
 config  RAETH_ESW_PORT_LAN2
 	int "ESW LAN2 Port ID (0..4)"

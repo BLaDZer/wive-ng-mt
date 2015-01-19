@@ -20,11 +20,14 @@
 #if defined (CONFIG_RAETH_DHCP_TOUCH)
 #include "ra_esw_dhcpc.h"
 #endif
+#if defined (CONFIG_GE2_INTERNAL_GPHY_P0) || defined (CONFIG_GE2_INTERNAL_GPHY_P4)
+#include "ra_esw_mt7621.h"
+#endif
 #if defined (CONFIG_RAETH_ESW_CONTROL)
 #include "ra_esw_ioctl.h"
 #endif
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 #include "../../../net/nat/hw_nat/ra_nat.h"
 #include "../../../net/nat/hw_nat/foe_fdb.h"
 #endif
@@ -44,24 +47,17 @@ static int hw_offload_tso = 1;
 #endif
 #endif
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
-#ifdef CONFIG_RAETH_MODULE
-extern int (*ra_sw_nat_hook_rx)(struct sk_buff *skb);
-extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
-extern int (*ra_sw_nat_hook_ec)(int engine_init);
-#else
-int (*ra_sw_nat_hook_rx) (struct sk_buff * skb) = NULL;
-int (*ra_sw_nat_hook_tx) (struct sk_buff * skb, int gmac_no) = NULL;
-int (*ra_sw_nat_hook_rs) (struct net_device *dev, int hold) = NULL;
-int (*ra_sw_nat_hook_ec) (int engine_init) = NULL;
-
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
+struct FoeEntry *PpeFoeBase = NULL;
+dma_addr_t PpeFoeBasePhy = 0;
+int (*ra_sw_nat_hook_rx)(struct sk_buff *skb) = NULL;
+int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no) = NULL;
+int (*ra_sw_nat_hook_rs)(struct net_device *dev, int hold) = NULL;
+int (*ra_sw_nat_hook_ec)(int engine_init) = NULL;
 EXPORT_SYMBOL(ra_sw_nat_hook_rx);
 EXPORT_SYMBOL(ra_sw_nat_hook_tx);
 EXPORT_SYMBOL(ra_sw_nat_hook_rs);
 EXPORT_SYMBOL(ra_sw_nat_hook_ec);
-#endif
-struct FoeEntry *PpeFoeBase = NULL;
-dma_addr_t PpeFoeBasePhy = 0;
 #endif
 
 #if defined (CONFIG_RAETH_READ_MAC_FROM_MTD)
@@ -95,7 +91,7 @@ struct net_device *dev_raether = NULL;
 
 //////////////////////////////////////////////////////////////
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 struct FoeEntry *get_foe_table(dma_addr_t *dma_handle, uint32_t *FoeTblSize)
 {
 	if (dma_handle)
@@ -140,7 +136,7 @@ static void raeth_ring_free(END_DEVICE *ei_local)
 		}
 	}
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* free PPE FoE table */
 	if (PpeFoeBase) {
 		dma_free_coherent(NULL, FOE_4TB_SIZ * sizeof(struct FoeEntry), PpeFoeBase, PpeFoeBasePhy);
@@ -154,7 +150,7 @@ static int raeth_ring_alloc(END_DEVICE *ei_local)
 {
 	int i, k;
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* PPE FoE Table */
 	PpeFoeBase = (struct FoeEntry *)dma_alloc_coherent(NULL, FOE_4TB_SIZ * sizeof(struct FoeEntry), &PpeFoeBasePhy, GFP_KERNEL);
 #endif
@@ -215,7 +211,7 @@ static void fill_hw_vlan_tx(void)
 		vlan_4k_map[i] = (u8)i;
 	}
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* map VLAN TX for external offload (use slots 11..15) */
 	i = 11;
 #if defined (CONFIG_RA_HW_NAT_WIFI)
@@ -248,9 +244,9 @@ static void update_hw_vlan_tx(void)
 	for (i = 0; i < 8; i++) {
 		reg_vlan = ((u32)vlan_id_map[(i*2)+1] << 16) | (u32)vlan_id_map[i*2];
 #if defined (CONFIG_RALINK_MT7620)
-		*(volatile u32 *)(RALINK_FRAME_ENGINE_BASE + 0x430 + i*4) = reg_vlan;
+		sysRegWrite(RALINK_FRAME_ENGINE_BASE + 0x430 + i*4, reg_vlan);
 #else
-		*(volatile u32 *)(RALINK_FRAME_ENGINE_BASE + 0x0a8 + i*4) = reg_vlan;
+		sysRegWrite(RALINK_FRAME_ENGINE_BASE + 0x0a8 + i*4, reg_vlan);
 #endif
 	}
 }
@@ -299,6 +295,7 @@ static void fe_reset(void)
 	val |= RALINK_ESW_RST;
 #endif
 
+	/* Reset PPE at this point */
 #if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621)
 	val |= RALINK_PPE_RST;
 #endif
@@ -319,9 +316,8 @@ static void fe_reset(void)
 		val_clk &= 0xffffff9f;
 		val_clk |= (0x1 << 5);
 		sysRegWrite(REG_CLK_CFG_0, val_clk);
-		mdelay(1);
+		udelay(1000);
 	}
-
 	val &= ~(RALINK_ETH_RST);
 #endif
 
@@ -335,7 +331,7 @@ static void fe_reset(void)
 
 	val &= ~(RALINK_FE_RST);
 	sysRegWrite(REG_RSTCTRL, val);
-	udelay(10);
+	udelay(100);
 }
 
 static void fe_mac1_addr_set(unsigned char p[6])
@@ -957,7 +953,7 @@ static inline int raeth_recv(struct net_device* dev, END_DEVICE* ei_local, int w
 #endif
 		rx_skb->tail = rx_skb->data + length;
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 		FOE_MAGIC_TAG(rx_skb) = FOE_MAGIC_GE;
 		DO_FILL_FOE_DESC(rx_skb, (rxd_info4 & ~(RX4_DMA_ALG_SET)));
 #endif
@@ -1001,7 +997,7 @@ static inline int raeth_recv(struct net_device* dev, END_DEVICE* ei_local, int w
 /* ra_sw_nat_hook_rx return 1 --> continue
  * ra_sw_nat_hook_rx return 0 --> FWD & without netif_rx
  */
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 		if((ra_sw_nat_hook_rx == NULL) ||
 		   (ra_sw_nat_hook_rx != NULL && ra_sw_nat_hook_rx(rx_skb)))
 #endif
@@ -1058,7 +1054,7 @@ static inline int raeth_xmit(struct sk_buff* skb, struct net_device *dev, END_DE
 		return NETDEV_TX_OK;
 	}
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	if (ra_sw_nat_hook_tx != NULL) {
 #if defined (CONFIG_RA_HW_NAT_WIFI) || defined (CONFIG_RA_HW_NAT_PCI)
 		if (IS_DPORT_PPE_VALID(skb))
@@ -1315,6 +1311,47 @@ static inline void raeth_xmit_clean(struct net_device *dev, END_DEVICE *ei_local
 	__netif_tx_unlock(txq);
 }
 
+#if defined (CONFIG_GE2_INTERNAL_GPHY_P0) || defined (CONFIG_GE2_INTERNAL_GPHY_P4)
+static irqreturn_t dispatch_int_status2(END_DEVICE *ei_local)
+{
+	u32 reg_int_val;
+
+	reg_int_val = sysRegRead(FE_INT_STATUS2);
+	if (unlikely(!reg_int_val))
+		return IRQ_NONE;
+
+	sysRegWrite(FE_INT_STATUS2, reg_int_val);
+
+	if (!ei_local->active)
+		return IRQ_HANDLED;
+
+	if (reg_int_val & GE2_LINK_INT) {
+#if defined (CONFIG_GE2_INTERNAL_GPHY_P0)
+		u32 port_id = 0;
+#else
+		u32 port_id = 4;
+#endif
+		u32 link_state = sysRegRead(RALINK_ETH_SW_BASE+0x0208);
+		if (link_state & 0x1) {
+			/* MT7621 E2 has FC bug */
+			if ((ralink_asic_rev_id & 0xFFFF) == 0x0101) {
+				u32 link_speed = (link_state >> 2) & 0x3;
+				mt7621_esw_fc_delay_set((link_speed == 1) ? 1 : 0);
+			}
+		}
+		
+		esw_link_status_changed(port_id, link_state & 0x1);
+	}
+
+	return IRQ_HANDLED;
+}
+#else
+static inline irqreturn_t dispatch_int_status2(END_DEVICE *ei_local)
+{
+	return IRQ_NONE;
+}
+#endif
+
 #if defined (CONFIG_RAETH_NAPI)
 static int __fastpathnet ei_napi_poll(struct napi_struct *napi, int budget)
 {
@@ -1344,6 +1381,7 @@ static int __fastpathnet ei_napi_poll(struct napi_struct *napi, int budget)
 		local_irq_save(flags);
 		__napi_complete(napi);
 		sysRegWrite(FE_INT_STATUS, FE_INT_MASK_TX_RX);
+		dispatch_int_status2(ei_local);
 		if (ei_local->active)
 			sysRegWrite(FE_INT_ENABLE, FE_INT_INIT_VALUE);
 		local_irq_restore(flags);
@@ -1410,7 +1448,7 @@ static irqreturn_t __fastpathnet ei_interrupt(int irq, void *dev_id)
 
 	reg_int_val = sysRegRead(FE_INT_STATUS);
 	if (unlikely(!reg_int_val))
-		return IRQ_NONE;
+		return dispatch_int_status2(ei_local);
 
 #if defined (CONFIG_RAETH_NAPI)
 	if (napi_schedule_prep(&ei_local->napi)) {
@@ -1442,6 +1480,8 @@ static irqreturn_t __fastpathnet ei_interrupt(int irq, void *dev_id)
 			tasklet_hi_schedule(&ei_local->rx_tasklet);
 		}
 	}
+
+	dispatch_int_status2(ei_local);
 #endif /* CONFIG_RAETH_NAPI */
 
 	return IRQ_HANDLED;
@@ -1840,7 +1880,7 @@ void ei_uninit(struct net_device *dev)
 	netif_napi_del(&ei_local->napi);
 #endif
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* down PPE engine before free ring */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(0);
@@ -1876,7 +1916,7 @@ int ei_open(struct net_device *dev)
 
 	spin_lock_irqsave(&ei_local->page_lock, flags);
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* down PPE engine before FE reset */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(0);
@@ -1891,7 +1931,11 @@ int ei_open(struct net_device *dev)
 	fe_mac2_addr_set(ei_local->PseudoDev->dev_addr);
 #endif
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined (CONFIG_RAETH_ESW_CONTROL)
+	esw_control_post_init();
+#endif
+
+#if defined (CONFIG_RA_HW_NAT) || defined (CONFIG_RA_HW_NAT_MODULE)
 	/* up PPE engine after FE init */
 	if (ra_sw_nat_hook_ec != NULL)
 		ra_sw_nat_hook_ec(1);
@@ -1912,7 +1956,7 @@ int ei_open(struct net_device *dev)
 	err = request_irq(SURFBOARDINT_ESW, esw_interrupt, IRQF_DISABLED, "ralink_esw", dev);
 
 	/* enable MT7620 ESW or MT7621 GSW interrupt */
-	*((volatile u32 *)(RALINK_INTENA)) = RALINK_INTCTL_ESW;
+	sysRegWrite(RALINK_INTENA, RALINK_INTCTL_ESW);
 #elif defined (CONFIG_MT7530_INT_GPIO)
 	// todo, needed capture GPIO interrupt for external MT7530
 #endif
@@ -1926,7 +1970,7 @@ int ei_open(struct net_device *dev)
 	sysRegWrite(FE_INT_ENABLE, FE_INT_INIT_VALUE);
 #if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621)
 	sysRegWrite(FE_INT_STATUS2, 0xffffffff);
-	sysRegWrite(FE_INT_ENABLE2, 0);
+	sysRegWrite(FE_INT_ENABLE2, FE_INT_INIT2_VALUE);
 #endif
 
 #if defined (CONFIG_RAETH_NAPI)
@@ -2048,22 +2092,22 @@ int __init raeth_init(void)
 	struct net_device *dev;
 
 #if defined (CONFIG_RALINK_MT7620)
-#if defined (CONFIG_RAETH_CHECKSUM_OFFLOAD)
-	/* MT7620 has CDM bugs at least
-	  1. TX Checksum Gen raise abnormal TX flood and FrameEngine hungs ECO_ID=3-4
-	  2. TSO stuck ECO_ID=3-6 */
-#if defined (CONFIG_RAETH_TSO)
-	if ((ralink_asic_rev_id & 0xf) < 7)
-		hw_offload_tso = 0;
-#endif
+	/* MT7620 has CDM bugs at least ECO_ID=3
+	  1. TX Checksum Gen raise abnormal TX flood and FrameEngine hungs
+	  2. TSO stuck */
 	if ((ralink_asic_rev_id & 0xf) < 5) {
+#if defined (CONFIG_RAETH_CHECKSUM_OFFLOAD)
 		hw_offload_csg = 0;
 #if defined (CONFIG_RAETH_SG_DMA_TX)
 		hw_offload_gso = 0;
+#if defined (CONFIG_RAETH_TSO)
+		hw_offload_tso = 0;
+#endif
+#endif
 #endif
 	}
 #endif
-#endif
+
 	dev = alloc_etherdev(sizeof(END_DEVICE));
 	if (!dev)
 		return -ENOMEM;
@@ -2118,6 +2162,7 @@ int __init raeth_init(void)
 #if defined (CONFIG_RAETH_BQL)
 	printk("%s: Byte Queue Limits (BQL) support\n", RAETH_DEV_NAME);
 #endif
+
 	return 0;
 }
 

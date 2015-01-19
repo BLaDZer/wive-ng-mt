@@ -8,17 +8,15 @@
 
 #define ETHER_ADDR_LEN			6
 
-#define PHYS_TO_K1(physaddr)		KSEG1ADDR(physaddr)
 #define phys_to_bus(a)			(a & 0x1FFFFFFF)
-
-#define sysRegRead(phys)		(*(volatile u32 *)PHYS_TO_K1(phys))
-#define sysRegWrite(phys, val)		((*(volatile u32 *)PHYS_TO_K1(phys)) = (val))
 
 /* Register Map Detail */
 #define REG_SYSCFG1			(RALINK_SYSCTL_BASE + 0x14)
 
 // Define Whole FE Reset Register
 #define REG_RSTCTRL			(RALINK_SYSCTL_BASE + 0x34)
+
+#define REG_AGPIOCFG			(RALINK_SYSCTL_BASE + 0x3C)
 
 #if defined (CONFIG_RALINK_MT7621)
 #define REG_CLK_CFG_0			(RALINK_SYSCTL_BASE + 0x2C)
@@ -36,15 +34,12 @@
 #define RX_DLY_INT			BIT(30)
 #define TX_COHERENT			BIT(29)
 #define TX_DLY_INT			BIT(28)
-
 #define RX_DONE_INT1			BIT(17)
 #define RX_DONE_INT0			BIT(16)
-
 #define TX_DONE_INT3			BIT(3)
 #define TX_DONE_INT2			BIT(2)
 #define TX_DONE_INT1			BIT(1)
 #define TX_DONE_INT0			BIT(0)
-
 #if defined (CONFIG_RALINK_MT7621)
 #define RLS_COHERENT			BIT(29)
 #define RLS_DLY_INT			BIT(28)
@@ -65,7 +60,6 @@
 #define GE1_STA_CHG			BIT(18)
 #define TX_COHERENT			BIT(17)
 #define RX_COHERENT			BIT(16)
-
 #define TX_DONE_INT3			BIT(11)
 #define TX_DONE_INT2			BIT(10)
 #define TX_DONE_INT1			BIT(9)
@@ -93,6 +87,13 @@
 #if defined (CONFIG_RALINK_MT7621)
 #define GE2_LINK_INT			BIT(25)
 #endif
+
+#if defined (CONFIG_GE2_INTERNAL_GPHY_P0) || defined (CONFIG_GE2_INTERNAL_GPHY_P4)
+#define FE_INT_INIT2_VALUE		(GE2_LINK_INT)
+#else
+#define FE_INT_INIT2_VALUE		0
+#endif
+
 
 /* Register Categories Definition */
 #define RAFRAMEENGINE_OFFSET		0x0000
@@ -287,7 +288,7 @@
 #define GDMA1_MAC_ADRL			(RALINK_FRAME_ENGINE_BASE+RAGDMA_OFFSET+0x0C)
 #define GDMA1_MAC_ADRH			(RALINK_FRAME_ENGINE_BASE+RAGDMA_OFFSET+0x10)
 
-#define	GDMA2_FWD_CFG			(RALINK_FRAME_ENGINE_BASE+RAGDMA2_OFFSET+0x00)
+#define GDMA2_FWD_CFG			(RALINK_FRAME_ENGINE_BASE+RAGDMA2_OFFSET+0x00)
 #define GDMA2_SCH_CFG			(RALINK_FRAME_ENGINE_BASE+RAGDMA2_OFFSET+0x04)
 #define GDMA2_SHPR_CFG			(RALINK_FRAME_ENGINE_BASE+RAGDMA2_OFFSET+0x08)
 #define GDMA2_MAC_ADRL			(RALINK_FRAME_ENGINE_BASE+RAGDMA2_OFFSET+0x0C)
@@ -534,15 +535,14 @@
 
 #define TD_SET				0x08000000	/* Setup Packet */
 
-
-#define RSTCTL				(0x34)
-#define RSTCTL_RSTENET1			(1<<19)
-#define RSTCTL_RSTENET2			(1<<20)
-
 #define INIT_VALUE_OF_RT3883_PSE_FQ_CFG	0xff908000
 #define INIT_VALUE_OF_PSE_FQFC_CFG	0x80504000
 #define INIT_VALUE_OF_FORCE_100_FD	0x1001BC01
+#if defined (CONFIG_RTL8367) || defined (CONFIG_RTL8367_MODULE)
+#define INIT_VALUE_OF_FORCE_1000_FD	0x0001DC01
+#else
 #define INIT_VALUE_OF_FORCE_1000_FD	0x1F01DC01
+#endif
 
 
 /*=========================================
