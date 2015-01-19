@@ -201,11 +201,6 @@ function checkIpv6Addr(ip_addr, len)
 function CheckValue()
 {
 	if (document.ipv6_cfg.ipv6_opmode.value == "1") {
-		if (document.ipv6_cfg.ipv6_lan_ipaddr.value == "" &&
-		    document.ipv6_cfg.ipv6_wan_ipaddr.value == "") {
-			alert("please fill LAN/WAN IPv6 Address!");
-			return false;
-		}
 		if (document.ipv6_cfg.ipv6_lan_ipaddr.value != "") {
 			if (!checkIpv6Addr(document.ipv6_cfg.ipv6_lan_ipaddr.value, 128)) {
 				alert("invalid IPv6 IP address!");
