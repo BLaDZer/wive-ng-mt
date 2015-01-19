@@ -113,9 +113,6 @@ start() {
 	    if [ "$IPv6Dhcpc" = "1" ]; then
 		$LOG "Always accept router advertisements for autoconfigure from wan $real_wan_if."
 		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=2
-
-		$LOG "Replace Ipv6 DGW to $real_wan_if"
-		ip -6 route replace default dev "$real_wan_if" metric 0
 	    else
     		$LOG "Native IPv6 support static configured"
 		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=0
