@@ -385,7 +385,7 @@ server6_init()
 	}
 
 	/* get our DUID */
-	if (get_duid(DUID_FILE, &server_duid)) {
+	if (get_duid(DUID_FILE, &server_duid, LAN_DEF)) {
 		debug_printf(LOG_ERR, FNAME, "failed to get a DUID");
 		exit(1);
 	}

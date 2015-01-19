@@ -28,6 +28,15 @@
  * SUCH DAMAGE.
  */
 
+#if defined(CONFIG_RAETH_ESW)				/* internal ralink esw */
+#define WAN_DEF "eth2.2"
+#elif defined(CONFIG_RAETH_GMAC2)			/* vetisse or rtl8367m dual phy */
+#define WAN_DEF "eth3"
+#else
+#define WAN_DEF "eth2.2"				/* this is stub support only switched devices */
+#endif
+#define LAN_DEF "br0"
+
 #ifdef __KAME__
 #define IN6_IFF_INVALID (IN6_IFF_ANYCAST|IN6_IFF_TENTATIVE|\
 		IN6_IFF_DUPLICATED|IN6_IFF_DETACHED)
@@ -156,7 +165,7 @@ extern int in6_addrscopebyif __P((struct in6_addr *, char *));
 extern int in6_scope __P((struct in6_addr *));
 extern void setloglevel __P((int));
 extern void debug_printf __P((int, const char *, const char *, ...));
-extern int get_duid __P((char *, struct duid *));
+extern int get_duid __P((char *, struct duid *, const char *));
 extern void dhcp6_init_options __P((struct dhcp6_optinfo *));
 extern void dhcp6_clear_options __P((struct dhcp6_optinfo *));
 extern int dhcp6_copy_options __P((struct dhcp6_optinfo *,

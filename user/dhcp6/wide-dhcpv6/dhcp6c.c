@@ -268,7 +268,7 @@ client6_init()
 	int error, on = 1;
 
 	/* get our DUID */
-	if (get_duid(DUID_FILE, &client_duid)) {
+	if (get_duid(DUID_FILE, &client_duid, WAN_DEF)) {
 		debug_printf(LOG_ERR, FNAME, "failed to get a DUID");
 		exit(1);
 	}

@@ -993,9 +993,10 @@ in6_matchflags(addr, ifnam, flags)
 }
 
 int
-get_duid(idfile, duid)
+get_duid(idfile, duid, ifname)
 	char *idfile;
 	struct duid *duid;
+	const char *ifname;
 {
 	FILE *fp = NULL;
 	u_int16_t len = 0, hwtype;
@@ -1015,7 +1016,7 @@ get_duid(idfile, duid)
 	} else {
 		int l;
 
-		if ((l = gethwid(tmpbuf, sizeof(tmpbuf), NULL, &hwtype)) < 0) {
+		if ((l = gethwid(tmpbuf, sizeof(tmpbuf), ifname, &hwtype)) < 0) {
 			debug_printf(LOG_INFO, FNAME,
 			    "failed to get a hardware address");
 			goto fail;
