@@ -35,16 +35,7 @@ calculate_and_set_mtu() {
 
 start() {
     get_param
-    if [ "$IPv6OpMode" != "0" ]; then
-	# check wan ip set, need v4 adress at wan for tunnels config
-	if [ "$IPv6OpMode" != "1" ] && [ "$real_wan_ipaddr" = "" ]; then
-	    $LOG "No ipv4 adress on wan, exit..."
-	    exit 1
-	fi
-
-	# enable ipv6
-	sysctl -wq net.ipv6.conf.all.disable_ipv6=0
-
+    if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	# addr del->add change need for notify kernel and regenerage arp table
         if [ "$IPv6OpMode" = "1" ]; then
 	    # this section for native/dualstack mode
@@ -83,13 +74,6 @@ start() {
 	    $LOG "Add route to ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if"
 	    ip -6 route replace ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if metric 1
 	fi
-
-	$LOG "Enable ipv6 forward"
-	# set defaults (this workaround, need review code in kernel)
-	sysctl -wq net.ipv6.conf.all.forwarding=1
-	sysctl -wq net.ipv6.conf.all.accept_ra=1
-	sysctl -wq net.ipv6.conf.all.accept_ra_pinfo=1
-	sysctl -wq net.ipv6.conf.all.autoconf=1
 
 	if [ "$IPv6OpMode" = "1" ]; then
 	    if [ "$IPv6Dhcpc" = "1" ]; then
@@ -134,7 +118,7 @@ start() {
 
 dhcpradvdreconf() {
     get_param
-    if [ "$IPv6OpMode" != "0" ]; then
+    if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	$LOG "Reconfigure radvd and dhcpv6 server"
 	
 	# prevent double start
@@ -235,8 +219,22 @@ dhcpradvdreconf() {
 get_param() {
     eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6Dhcpc`
 
-    # 6RD mode
-    if [ "$IPv6OpMode" = "2" ]; then
+    if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
+	# check wan ip set, need v4 adress at wan for tunnels config
+	if [ "$IPv6OpMode" != "1" ] && [ "$real_wan_ipaddr" = "" ]; then
+    	    $LOG "No ipv4 adress on wan (need for tunnel mode), exit..."
+    	    exit 1
+	fi
+
+        $LOG "Enable ipv6 and forwarding"
+        sysctl -wq net.ipv6.conf.all.disable_ipv6=0
+        sysctl -wq net.ipv6.conf.all.forwarding=1
+        sysctl -wq net.ipv6.conf.all.accept_ra=1
+        sysctl -wq net.ipv6.conf.all.accept_ra_pinfo=1
+        sysctl -wq net.ipv6.conf.all.autoconf=1
+
+        # 6RD mode
+        if [ "$IPv6OpMode" = "2" ]; then
 	    relay6to4="$IPv6SrvAddr"										# The 6rd IPv4-gateway
 	    ipv6subnet="$(echo -n `printf '%02X:' ${real_wan_ipaddr//./ } | awk -F: '{print($1$2":"$3$4)}'`)"	# Calculate subnet from real ipv4 adress
 	    if [ "$IPv6IPAddr" != "" ] && [ "$IPv6PrefixLen" != "" ]; then
@@ -247,8 +245,8 @@ get_param() {
 	    fi
 	    SUBNET="${ipv6prefix}:${ipv6subnet}"
 	    PREFIX="${SUBNET}::1/${IPv6PrefixLen}"
-    # 6TO4 mode
-    elif [ "$IPv6OpMode" = "3" ]; then
+        # 6TO4 mode
+        elif [ "$IPv6OpMode" = "3" ]; then
 	    IPv6PrefixLen="64"                                                                                  # Default 6to4 prefix length
 	    ipv6subnet="2000"											# Default 6to4 subnet
     	    ipv6prefix=`echo $real_wan_ipaddr | awk -F. '{ printf "2002:%02x%02x:%02x%02x", $1, $2, $3, $4 }'`	# Calculate prefix
@@ -259,11 +257,12 @@ get_param() {
 	    fi
 	    SUBNET="${ipv6prefix}:${ipv6subnet}"
 	    PREFIX="${SUBNET}::1/${IPv6PrefixLen}"
+        fi
     fi
 }
 
 stop() {
-    if [ -f /var/run/radvd.pid ]; then
+    if [ -f /var/run/radvd.pid ] || [ -f /var/run/dhcp6s.pid ]; then
 	$LOG  "Stop radvd and dhcpv6 daemons."
 
         # disable ra for all ifaces
