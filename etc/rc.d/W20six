@@ -34,9 +34,8 @@ calculate_and_set_mtu() {
 }
 
 start() {
-    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6Dhcpc`
+    get_param
     if [ "$IPv6OpMode" != "0" ]; then
-
 	# check wan ip set, need v4 adress at wan for tunnels config
 	if [ "$IPv6OpMode" != "1" ] && [ "$real_wan_ipaddr" = "" ]; then
 	    $LOG "No ipv4 adress on wan, exit..."
@@ -149,15 +148,27 @@ start() {
 	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
 	    ip -6 addr add ${PREFIX} dev $lan_if
 	fi
-
+	dhcpradvdreconf
 	flush_net_caches
+    fi
+}
+
+dhcpradvdreconf() {
+    get_param
+    if [ "$IPv6OpMode" != "0" ]; then
+	# prevent double start
+	killall -q radvd
+	killall -q -SIGKILL radvd
+
+	killall -q dhcp6s
+	killall -q -SIGKILL dhcp6s
 
 	# check parametrs
 	if [ "$SUBNET" = "" ] || [ "$PREFIX" = "" ]; then
 	    $LOG "Configuration is not correct, need check config in setwork settings => IPv6, radvd and dhcpv6 server not started."
 	    exit 0
 	fi
-
+	
 	# read dnsservers reciverd from dhcp
 	if [ -f /etc/resolvipv6.conf ]; then
 	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
@@ -222,9 +233,11 @@ start() {
 	    $LOG "Starting dhcp6s"
 	    dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
     	fi
-
-	flush_net_caches
     fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6Dhcpc`
 }
 
 stop() {
@@ -275,6 +288,10 @@ case "$1" in
 
 	stop)
 	    stop
+	    ;;
+
+	dhcpradvdreconf)
+	    dhcpradvdreconf
 	    ;;
 
 	restart)
