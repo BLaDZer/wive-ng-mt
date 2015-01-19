@@ -204,7 +204,7 @@ dhcpradvdreconf() {
 
 	if [ "$dhcpv6Enabled" = "1" ]; then
 	    $LOG "Configure dhcp6s"
-	    if [ "$SUBNET" = "" ]; then
+	    if [ "$SUBNET" != "" ]; then
     		printf "
 		option domain-name-servers $DNSADRESSES;
 
