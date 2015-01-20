@@ -43,17 +43,21 @@
 #define RALINK_GPIO_DEVNAME	"gpio"		//nodename
 #define GPIO_DEV		"/dev/gpio"	//userlevel devname
 
-#ifdef CONFIG_MT7610_AP
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT76X2_AP)
 /* BUTTONS GPIO */
 #define GPIO_BTN_RESET		13
 #define GPIO_BTN_WPS		13
+/* LEDS GPIO */
+#define GPIO_POWER_LED		0 /* stub */
 #else
 /* BUTTONS GPIO */
 #define GPIO_BTN_RESET		1
 #define GPIO_BTN_WPS		2
-#endif
 /* LEDS GPIO */
 #define GPIO_POWER_LED		38
+#endif
+
+/* LEDS GPIO */
 #define GPIO_LED_SEC_GREEN      0 /* stub */
 #define GPIO_LED_WAN_GREEN      40
 #define GPIO_LED_WAN_ORANGE     40
@@ -532,10 +536,14 @@
 
 // if you would like to enable GPIO mode for other pins, please modify this value
 // !! Warning: changing this value may make other features(MDIO, PCI, etc) lose efficacy
-#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_RALINK_MT7620)
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT76X2_AP)
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_PA_G | RALINK_GPIOMODE_GE1 | RALINK_GPIOMODE_GE2)
+#else
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_PA_G | RALINK_GPIOMODE_GE1 | RALINK_GPIOMODE_GE2 | RALINK_GPIOMODE_EPHY)
+#endif
+#elif defined (CONFIG_RALINK_MT7621)
 #define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3 | RALINK_GPIOMODE_WDT)
-#elif defined (CONFIG_RALINK_MT7620)
-#define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_I2C)
 #elif defined (CONFIG_RALINK_MT7628)
 #define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3) | (RALINK_GPIOMODE_SPI_CS1) | (RALINK_GPIOMODE_WDT)
 #else
