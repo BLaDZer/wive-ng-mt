@@ -65,7 +65,7 @@ void gpio_wait(void) {
 	     * if pressed wait and up count after one minit stop wait and call fullreset
 	     */
 #ifdef DEBUG
-	    printf("butcheck: pressed 0x%x\n", d);
+	    printf("butcheck: pressed 0x%x, test %d, selected %d\n", d, !TEST_BIT(d, GPIO_BTN_RESET), GPIO_BTN_RESET);
 #endif
 	    if ((!TEST_BIT(d, GPIO_BTN_RESET)) && presstime < FULLRESETTIME) {
 		presstime++;
