@@ -40,11 +40,27 @@ start() {
         if [ "$IPv6OpMode" = "1" ]; then
 	    # this section for native/dualstack mode
 	    if [ "$IPv6Dhcpc" = "1" ]; then
-    		$LOG "Native IPv6 support with DHCP/RA uplink"
+    		$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $real_wan_if."
+		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=2
+	    else
+    		$LOG "Native IPv6 support static configured. Disable router advertisements for wan $real_wan_if"
+		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=0
+
+                $LOG "Set ${IPv6WANIPAddr}/${IPv6WANPrefixLen} to $real_wan_if"
+		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $real_wan_if	> /dev/null 2>&1
+		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $real_wan_if
+
+                $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
+		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if		> /dev/null 2>&1
+		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
+
+		$LOG "Replace Ipv6 DGW to $real_wan_if via $IPv6GWAddr"
+		ip -6 route replace default dev "$real_wan_if" via "$IPv6WANIPAddr" metric 0
+		dhcpradvdreconf
 	    fi
         elif [ "$IPv6OpMode" = "2" ]; then
+	    # this section for 6rd tunnel mode
     	    $LOG "Tunel ipv6 in ipv4 configure and up"
-	    # calculate and set mtu
     	    calculate_and_set_mtu
 	    $LOG "Tune and up $six_wan_if interface"
 	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/128 dev $real_wan_if			> /dev/null 2>&1
@@ -75,27 +91,8 @@ start() {
 	    ip -6 route replace ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if metric 1
 	fi
 
-	if [ "$IPv6OpMode" = "1" ]; then
-	    if [ "$IPv6Dhcpc" = "1" ]; then
-		$LOG "Always accept router advertisements for autoconfigure from wan $real_wan_if."
-		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=2
-	    else
-    		$LOG "Native IPv6 support static configured"
-		sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=0
-
-                $LOG "Set ${IPv6WANIPAddr}/${IPv6WANPrefixLen} to $real_wan_if"
-		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $real_wan_if	> /dev/null 2>&1
-		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $real_wan_if
-
-                $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
-		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if		> /dev/null 2>&1
-		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
-
-		$LOG "Replace Ipv6 DGW to $real_wan_if via $IPv6GWAddr"
-		ip -6 route replace default dev "$real_wan_if" via "$IPv6WANIPAddr" metric 0
-		dhcpradvdreconf
-	    fi
-	else
+	if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
+	    # tune after tunnels configured
 	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces(security need)."
     	    sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
