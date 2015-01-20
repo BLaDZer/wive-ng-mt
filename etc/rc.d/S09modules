@@ -92,9 +92,9 @@ retune_wifi() {
     fi
     if [ "$second_wlan_root_if" != "" ]; then
 	# preconfigure second wlan root interface to
-	(sleep 5 && /etc/scripts/wifi.sh $second_wlan_root_if) &
+	(sleep 5 && /etc/scripts/wifi.sh $second_wlan_root_if "5GHZ") &
 	if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ]; then
-	    (sleep 5 && /etc/scripts/wifi.sh $second_wlan_apcli) &
+	    (sleep 5 && /etc/scripts/wifi.sh $second_wlan_apcli "5GHZ") &
 	fi
     fi
 }

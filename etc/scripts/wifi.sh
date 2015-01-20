@@ -55,7 +55,7 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     fi
 fi
 ########################################GREEN mode###############################################
-if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ]; then
+if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ] && [ "$2" != "5GHZ" ]; then
     if [ "$HT_OpMode" = "1" ] || [ "$GreenAP" = "1" ]; then
 	iwpriv "$1" set GreenAP=1
     else
@@ -63,7 +63,7 @@ if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ]; then
     fi
 fi
 #####################################Reduce interference#########################################
-if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ]; then
+if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; then
     if [ "$DyncVgaEnable" = "1" ]; then
 	iwpriv "$1" set DyncVgaEnable=1
     else
