@@ -48,6 +48,8 @@ int gpio_set_dir(void) {
 	return 0;
 }
 
+//#define DEBUG
+
 #define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
 
 #define LOADDEFAULTS		5
@@ -62,6 +64,9 @@ void gpio_wait(void) {
 	     * gpio number = bit for test (if 0 - pressed, if 1 - open)
 	     * if pressed wait and up count after one minit stop wait and call fullreset
 	     */
+#ifdef DEBUG
+	    printf("butcheck: pressed 0x%x\n", d);
+#endif
 	    if ((!TEST_BIT(d, GPIO_BTN_RESET)) && presstime < FULLRESETTIME) {
 		presstime++;
 	    } else {

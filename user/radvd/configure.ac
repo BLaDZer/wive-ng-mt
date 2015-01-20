@@ -13,7 +13,7 @@ dnl
 dnl
 
 dnl If adding rcX to version, be sure to separate with a '-' 
-AC_INIT(radvd, [2.8])
+AC_INIT(radvd, [2.9])
 AC_CONFIG_SRCDIR(radvd.c)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
@@ -42,7 +42,7 @@ case "$target" in
 		AC_MSG_ERROR(
 [currently only Linux and BSD 4.4 with NRLs IPv6 code are
 supported. If you have such a system and it is not guessed correctly 
-you must specifiy it with --target on the configure command line])
+you must specify it with --target on the configure command line])
         ;;
 esac
 
@@ -160,7 +160,6 @@ AC_CHECK_HEADERS( \
 	net/if_types.h \
 	sys/param.h \
 	sys/sockio.h \
-	sys/sysctl.h \
 	sys/time.h \
 	time.h \
 )
@@ -183,6 +182,7 @@ AC_MSG_RESULT(no))
 dnl Checks for library functions.
 AC_CHECK_FUNCS(getopt_long)
 AC_CHECK_FUNCS(ppoll)
+AC_CHECK_FUNCS(sysctl)
 
 CONDITIONAL_SOURCES="device-${arch}.${OBJEXT} ${CONDITIONAL_SOURCES}"
 #if test x${arch} = xlinux ; then
