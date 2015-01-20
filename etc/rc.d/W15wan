@@ -48,6 +48,9 @@ udhcpc_opts() {
 
 # configure dhcp client
 dhcp6c_opts() {
+    # reload global
+    . /etc/scripts/global.sh
+
     ID=`ip -o link show dev $real_wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
     ID=`printf "%d" "$ID"`
     printf "
