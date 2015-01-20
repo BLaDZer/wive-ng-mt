@@ -3549,19 +3549,21 @@ VOID APRxDErrorHandle(
 	{		
 		if (pRxWI->WirelessCliID < MaxWcidNum)
 		{
+			MAC_TABLE_ENTRY	*pEntry = NULL;
+			PHEADER_802_11	pHeader = pRxBlk->pHeader;
 #ifdef APCLI_SUPPORT
 			PCIPHER_KEY pWpaKey;
-			MAC_TABLE_ENTRY	    			*pEntry = NULL;
 			UCHAR							FromWhichBSSID = BSS0;
 			UCHAR			Wcid;
-			PHEADER_802_11	pHeader = pRxBlk->pHeader;
 
 			Wcid = pRxWI->WirelessCliID;
 			if (VALID_WCID(Wcid))
 					pEntry = ApCliTableLookUpByWcid(pAd, Wcid, pHeader->Addr2);
 			else
+#endif
 					pEntry = MacTableLookup(pAd, pHeader->Addr2);
 
+#ifdef APCLI_SUPPORT
 			if (pEntry && IS_ENTRY_APCLI(pEntry))
 			{			
 				FromWhichBSSID = pEntry->MatchAPCLITabIdx + MIN_NET_DEVICE_FOR_APCLI;
