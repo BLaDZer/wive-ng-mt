@@ -16,7 +16,7 @@ zero_conf() {
     fi
 }
 
-# configure and start dhcp client
+# configure dhcp client
 udhcpc_opts() {
     # reload global
     . /etc/scripts/global.sh
@@ -44,6 +44,28 @@ udhcpc_opts() {
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
+}
+
+# configure dhcp client
+dhcp6c_opts() {
+    ID=`ip -o link show dev $real_wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
+    ID=`printf "%d" "$ID"`
+    printf "
+    interface $real_wan_if {
+	send ia-pd $ID;
+	send ia-na $ID;
+	send rapid-commit;
+	request domain-name-servers;
+	script \"/etc/scripts/dhcp6c-script\";
+    };
+    id-assoc pd $ID {
+	prefix-interface $lan_if {
+	    sla-id 0;
+	    sla-len 8;
+	};
+    };
+    id-assoc na $ID { };
+    " > /etc/dhcp6c.conf
 }
 
 start() {
@@ -111,6 +133,7 @@ start() {
 	    sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra_pinfo=1
 	    sysctl -wq net.ipv6.conf.$real_wan_if.autoconf=1
 	    $LOG "Wait v4 configure (15sec) and start DHCPv6 client."
+	    dhcp6c_opts
 	    (sleep 15 && dhcp6c $real_wan_if > /dev/null 2>&1) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
