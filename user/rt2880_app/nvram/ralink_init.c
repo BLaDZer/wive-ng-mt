@@ -220,7 +220,7 @@ static int gen_wifi_config(int getmode)
 #if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 	} else if (mode == RTINIC_NVRAM) {
 		system("mkdir -p /etc/Wireless/iNIC");
-		fp = fopen("/etc/Wireless/iNIC/RT2860AP.dat", "w+");
+		fp = fopen("/etc/Wireless/iNIC/iNIC_ap.dat", "w+");
 		/* after select file for write back to native 2860 mode */
 		inic = 1;
 		mode = RT2860_NVRAM;
