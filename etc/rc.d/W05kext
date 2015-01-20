@@ -185,11 +185,11 @@ multicast() {
 	fi
 	if [ "$igmpM2UConvMode" != "" ]; then
 	    if [ "$igmpM2UConvMode" = "all" ]; then
-		INTERFACES="$phys_lan_if $first_wlan_root_if"
+		INTERFACES="$phys_lan_if $first_wlan_root_if $second_wlan_root_if"
 	    elif [ "$igmpM2UConvMode" = "lan" ]; then
 		INTERFACES="$phys_lan_if"
 	    elif [ "$igmpM2UConvMode" = "wlan" ]; then
-		INTERFACES="$first_wlan_root_if"
+		INTERFACES="$first_wlan_root_if $second_wlan_root_if"
 	    fi
 	    if [ "$INTERFACES" != "" ]; then
 		$LOG "Enable bridge fast leave and multicast to unicast conversion for $INTERFACES"
@@ -199,7 +199,7 @@ multicast() {
 		done
 	    fi
 	else
-	    INTERFACES="$phys_lan_if $first_wlan_root_if"
+	    INTERFACES="$phys_lan_if $first_wlan_root_if $second_wlan_root_if"
 	    $LOG "Disable bridge fast leave and multicast to unicast conversion for $INTERFACES"
 	    for i in $INTERFACES; do
 		echo 0 > /sys/devices/virtual/net/$i/brport/multicast_fast_leave
