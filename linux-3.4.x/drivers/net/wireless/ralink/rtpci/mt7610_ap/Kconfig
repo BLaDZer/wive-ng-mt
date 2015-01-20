@@ -146,7 +146,7 @@ config  MT7610_AP_SINGLE_SKU
 config  MT7610_AP_READ_MAC_FROM_MTD
 	bool "Read and set MAC from MTD/EEPROM"
 	depends on MT7610_AP
-	default y
+	default n
 
 config  MT7610_AP_BIG_ENDIAN
 	bool "Big-endian platform Support"
