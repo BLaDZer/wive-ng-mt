@@ -43,7 +43,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
-	IPv6OpMode \
+	IPv6OpMode IPv6Dhcpc \
 	ApCliBridgeOnly \
 	MODEMENABLED \
 	QoSEnable`

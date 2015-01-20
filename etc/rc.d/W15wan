@@ -73,7 +73,6 @@ dhcp6c_opts() {
 
 start() {
  $LOG "Start WAN config"
-    get_param
 
     # preconfigure WAN interface
     wan_if_preconf
@@ -168,11 +167,6 @@ wan_if_preconf() {
 	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
 	fi
     fi
-}
-
-get_param() {
-    # get parametrs
-    eval `nvram_buf_get 2860 xupnpd IPv6Dhcpc`
 }
 
 stop() {

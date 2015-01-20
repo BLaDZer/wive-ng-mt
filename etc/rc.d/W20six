@@ -217,7 +217,7 @@ dhcpradvdreconf() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6Dhcpc`
+    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr`
 
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	# check wan ip set, need v4 adress at wan for tunnels config
