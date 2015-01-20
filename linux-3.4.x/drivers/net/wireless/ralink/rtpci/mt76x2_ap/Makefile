@@ -210,7 +210,9 @@ endif
 ###################
 #  CFLAGS
 ##################
-
+# disable some not safe flags
+EXTRA_CFLAGS += -fno-fast-math -fno-force-addr
+# disable some warnings
 EXTRA_CFLAGS  = -Wall -Wstrict-prototypes -Wno-trigraphs -Wno-unused -Wno-declaration-after-statement
 EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/include
 ifeq ($(CONFIG_MT76X2_AP_ATE),y)
@@ -221,9 +223,11 @@ EXTRA_CFLAGS += -DCONFIG_AP_SUPPORT -DUAPSD_SUPPORT -DDOT11_N_SUPPORT -DDOT1X_SU
 EXTRA_CFLAGS += -DAP_SCAN_SUPPORT -DSCAN_SUPPORT
 EXTRA_CFLAGS += -DRTMP_MAC_PCI -DRTMP_PCI_SUPPORT
 EXTRA_CFLAGS += -DSTATS_COUNT_SUPPORT -DENHANCED_STAT_DISPLAY
-EXTRA_CFLAGS += -DRESOURCE_PRE_ALLOC -DCONFIG_RT_FIRST_CARD=2860
+EXTRA_CFLAGS += -DRESOURCE_PRE_ALLOC
 
+ifeq ($(CONFIG_RT_FIRST_CARD),2860)
 EXTRA_CFLAGS += -DRT_SOC_SUPPORT
+endif
 
 # do not lock CountryRegion from EEPROM
 EXTRA_CFLAGS += -DEEPROM_COUNTRY_UNLOCK
