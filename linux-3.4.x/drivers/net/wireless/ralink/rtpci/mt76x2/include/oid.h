@@ -76,12 +76,12 @@
 #else
 #ifdef MT76x2
 #ifdef MAC_REPEATER_SUPPORT			//((MAX_EXT_MAC_ADDR_SIZE + 1) * MAC_APCLI_NUM)
-#define MAX_NUMBER_OF_MAC			64	/* (116 - ((16 + 1) * 1)) */
+#define MAX_NUMBER_OF_MAC			32	/* (116 - ((16 + 1) * 1)) */
 #else
-#define MAX_NUMBER_OF_MAC			64	/* 116 */
+#define MAX_NUMBER_OF_MAC			32	/* 116 */
 #endif /* MAC_REPEATER_SUPPORT */
 #else
-#define MAX_NUMBER_OF_MAC			64	/* if MAX_MBSSID_NUM is 8, this value can't be larger than 211 */
+#define MAX_NUMBER_OF_MAC			32	/* if MAX_MBSSID_NUM is 8, this value can't be larger than 211 */
 #endif /* MT76X2 */
 #endif
 #define MAX_NUMBER_OF_ACL			64
