@@ -204,11 +204,8 @@ else
     gate_config
 fi
 
-# reconfigure wan port in normal path
-if [ "$MODE" != "wifionly" ]; then
-    $LOG "Reconfigure wan..."
-    service wan restart
-fi
+# reconfigure wan port
+service wan restart
 
 # some daemons need restart
 services_restart.sh all
