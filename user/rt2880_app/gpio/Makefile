@@ -1,7 +1,7 @@
 EXEC = gpio butcheck
 
-CFLAGS += -I$(LINUXDIR) -I$(LINUXDIR)/include
-CONF_H  = $(LINUXDIR)/include/linux/autoconf.h
+CFLAGS += -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
+CONF_H  = -I$(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: $(EXEC)
 

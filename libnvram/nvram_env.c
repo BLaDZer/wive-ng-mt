@@ -565,6 +565,6 @@ int nvram_show(int mode)
 {
 	nvram_init(mode);
 	nvram_buflist(mode);
-	nvram_close(index);
+	nvram_close(mode);
 	return 0;
 }

@@ -2,7 +2,7 @@ OBJS = ap0.o aps.o asl.o asn.o asx.o avl.o host.o mis.o miv0.o miv1.o miv2.o miv
 
 LIBRARY = libsnmplib.a
 
-CFLAGS += -I$(LINUXDIR) -I$(LINUXDIR)/include
+CFLAGS += -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 
 all: $(LIBRARY)
 

@@ -1,4 +1,4 @@
-CFLAGS    += -ffunction-sections -fdata-sections -I$(LINUXDIR) -I$(LINUXDIR)/include
+CFLAGS    += -ffunction-sections -fdata-sections -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 CXXFLAGS  += -ffunction-sections -fdata-sections
 LDFLAGS   += -Wl,--gc-sections
 

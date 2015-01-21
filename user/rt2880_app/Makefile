@@ -9,7 +9,7 @@ SUBDIRS_APP = mii_mgr nvram reg switch gpio mtd hw_nat switch_rtl eth_mac ated
 #allways agressive optimize for size
 CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables -femit-struct-debug-baseonly -fno-var-tracking
 CFLAGS	+= -ffunction-sections -fdata-sections
-CFLAGS	+= -I$(LINUXDIR) -I$(LINUXDIR)/include
+CFLAGS	+= -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 LDFLAGS	+= -Wl,--gc-sections
 
 ifdef CONFIG_RALINK_RT3052
