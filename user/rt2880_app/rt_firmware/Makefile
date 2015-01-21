@@ -14,16 +14,16 @@ ifdef CONFIG_RALINK_MT7620
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 ifeq	($(CONFIG_INTERNAL_PA_INTERNAL_LNA),y)
 	# Handle several power design for MT7620 - iPA + iLNA
-	mv -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
+	cp -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
 else ifeq ($(CONFIG_INTERNAL_PA_EXTERNAL_LNA),y)
 	# Handle several power design for MT7620 - iPA + eLNA
-	mv -f MT7620_AP_2T2R-4L_external_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
+	cp -f MT7620_AP_2T2R-4L_external_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
 else ifeq ($(CONFIG_EXTERNAL_PA_EXTERNAL_LNA),y)
 	# Handle several power design for MT7620 - ePA + eLNA
-	mv -f MT7620_AP_2T2R-4L_external_LNA_external_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
+	cp -f MT7620_AP_2T2R-4L_external_LNA_external_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
 else
 	# Handle several power design for MT7620 - iLAN+iPA as default.
-	mv -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
+	cp -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN	MT7620_AP_2T2R-4L_V15.BIN
 endif
 	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN			/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN
 	$(ROMFSINST) -s /etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN 	/etc/Wireless/rf.bin
