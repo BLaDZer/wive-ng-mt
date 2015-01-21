@@ -478,8 +478,7 @@
 <br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
-2) add support dualstack ipv6/4 with dhcp v6/ra/6rd uplink support (need more info from ISP).<br>
-3) full russian ui (need help community or employ the web developer).<br>
+2) full russian ui (need help community or employ the web developer).<br>
 <br>
 <br>
 <br>
