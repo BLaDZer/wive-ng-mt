@@ -87,16 +87,6 @@ ifeq ($(CONFIG_MT76X2_AP_ATE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/chips/mt76x2_ate.o
 endif
 
-########################################################
-# Rate adaptation related files
-########################################################
-#ifeq ($(CONFIG_NEW_RATE_ADAPT_SUPPORT),y)
-#ifeq ($(CONFIG_AGS_SUPPORT),y)
-#EXTRA_CFLAGS += -DAGS_ADAPT_SUPPORT
-#rate_objs += $(RT_WIFI_DIR)/rate_ctrl/alg_ags.o
-#endif
-#endif
-
 ifeq ($(CONFIG_MT76X2_AP_ATE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/common/rt_ate.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/common/ate_pci.o
@@ -210,10 +200,10 @@ endif
 ###################
 #  CFLAGS
 ##################
+# disable some warnings
+EXTRA_CFLAGS := -Wall -Wstrict-prototypes -Wno-trigraphs -Wno-unused -Wno-declaration-after-statement
 # disable some not safe flags
 EXTRA_CFLAGS += -fno-fast-math -fno-force-addr
-# disable some warnings
-EXTRA_CFLAGS  = -Wall -Wstrict-prototypes -Wno-trigraphs -Wno-unused -Wno-declaration-after-statement
 EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/include
 ifeq ($(CONFIG_MT76X2_AP_ATE),y)
 EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/ate/include
