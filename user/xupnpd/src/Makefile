@@ -68,9 +68,11 @@ dreambox:
 
 
 embedded:
-	PATH=$(PATH):$(UTILS) make -C $(LUA) CC=$(SDK)/gcc a MYCFLAGS='$(LUAMYCFLAGS)'
-	$(SDK)/gcc -Os -c -B$(UTILS) -o md5.o md5c.c
-	$(SDK)/gcc $(CFLAGS) -B$(UTILS) -DWITH_URANDOM -o xupnpd-$(TARGET) $(SRC) md5.o -llua -lm -ldl
+	export PATH
+	export STAGING_DIR
+	make -C $(LUA) CC=$(CROSS_COMPILE)gcc a MYCFLAGS='$(LUAMYCFLAGS)'
+	$(CROSS_COMPILE)gcc -Os -c -o md5.o md5c.c
+	$(CROSS_COMPILE)gcc $(CFLAGS) -DWITH_URANDOM -o xupnpd $(SRC) md5.o -llua -lm -ldl
 
 clean:
 	make -C $(LUA) clean
