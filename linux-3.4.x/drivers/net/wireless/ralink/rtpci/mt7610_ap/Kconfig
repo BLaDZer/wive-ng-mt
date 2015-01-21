@@ -161,6 +161,7 @@ config  MT7610_AP_MC_SUPPORT
 config  MT7610_AP_ATE
 	bool "Provide ATE testmode commands support"
 	depends on MT7610_AP
+	select MT7610_AP_QA
 	default n
 
 config  MT7610_AP_QA

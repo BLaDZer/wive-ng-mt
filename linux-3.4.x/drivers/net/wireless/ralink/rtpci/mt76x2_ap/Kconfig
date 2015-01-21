@@ -172,6 +172,7 @@ config  MT76X2_AP_MC_SUPPORT
 config  MT76X2_AP_ATE
 	bool "Provide ATE testmode commands support"
 	depends on MT76X2_AP
+	select MT76X2_AP_QA
 	default n
 
 config  MT76X2_AP_QA
