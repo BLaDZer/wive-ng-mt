@@ -444,7 +444,7 @@
 13) switch tool: add igmp snooping managment.<br>
 14) hw_nat: FoE entry range check, entry valid check.<br>
 15) pppd: fix segfault pppol2tp plugin on IPv6 disabled (broken L2TP).<br>
-16) xupnpd: update to 401r.<br>
+16) xupnpd: update to 403r.<br>
 17) xupnpd: lua: update to 5.3.0 version.<br>
 18) init.d: more enchange esw/vlan config logic.<br>
 19) init.d/goahead: add support native ipv6 with dhcp client mode.<br>
