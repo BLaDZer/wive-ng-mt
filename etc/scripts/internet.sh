@@ -166,8 +166,8 @@ ethcv_config() {
 # some reload and reconfigure
 if [ "$MODE" != "connect_sta" ]; then
     if [ "$MODE" != "wifionly" ]; then
-	$LOG "all tunnels and ipv6 deconfig before modules reload (prevent race)"
-	if [ -d /proc/sys/net/ipv6 ]; then
+	$LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
+	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
 	    service six stop
 	fi
 	service vpnhelper stop_safe

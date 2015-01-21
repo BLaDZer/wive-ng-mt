@@ -53,8 +53,8 @@ fi
 case "$1" in
     deconfig)
 	$LOG "All deconfig."
-	# all tunnelss and ipv6 deconfig before modules reload - prevent loop
-	if [ -d /proc/sys/net/ipv6 ]; then
+	# all tunnelss in ipv6 deconfig before modules reload - prevent loop
+	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
 	    service six stop
 	fi
 	service vpnhelper stop_safe
@@ -73,8 +73,8 @@ case "$1" in
 
     leasefail)
 	$LOG "Lease fail."
-	# all tunnels and ipv6 deconfig before modules reload - prevent loop
-	if [ -d /proc/sys/net/ipv6 ]; then
+	# all tunnels in ipv6 deconfig before modules reload - prevent loop
+	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
 	    service six stop
 	fi
 	service vpnhelper stop_safe

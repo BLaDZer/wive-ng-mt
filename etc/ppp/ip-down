@@ -84,7 +84,7 @@ eval `nvram_buf_get 2860 vpnPeerDNS chilli_net`
     fi
 
     # all tunnels and ipv6 deconfig before reconfigure - prevent loop
-    if [ -d /proc/sys/net/ipv6 ]; then
+    if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
         service six stop
     fi
 
