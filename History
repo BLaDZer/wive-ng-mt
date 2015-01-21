@@ -477,6 +477,10 @@
 46) kernel: ipv6: stop sending PTB packets for MTU < 1280.<br>
 <br>
 <br>
+<b>2.2.x</b><br>
+1) build_system: add some variants for 7620 based dual band.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
