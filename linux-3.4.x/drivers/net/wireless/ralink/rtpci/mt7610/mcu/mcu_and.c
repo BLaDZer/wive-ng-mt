@@ -70,10 +70,12 @@ INT ral_pci_andes_erasefw(RTMP_ADAPTER *pAd)
 	NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
 	UINT32 ILMLen, DLMLen;
 	USHORT FWVersion, BuildVersion;
-	UINT32 Loop = 0, idx = 0, val = 0;
+	UINT32 idx = 0, val = 0;
 	UINT32 StartOffset, EndOffset;
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
-
+#ifdef DBG
+	UINT32 Loop = 0;
+#endif
 	ILMLen = (*(pChipCap->FWImageName + 3) << 24) | (*(pChipCap->FWImageName + 2) << 16) |
 			 (*(pChipCap->FWImageName + 1) << 8) | (*pChipCap->FWImageName);
 
@@ -418,8 +420,6 @@ INT PCIKickOutCmd(
 }
 #endif /* RTMP_PCI_SUPPORT */
 
-
-
 VOID MCUCtrlInit(PRTMP_ADAPTER pAd)
 {
 	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
@@ -457,7 +457,7 @@ VOID MCUCtrlExit(PRTMP_ADAPTER pAd)
 }
 
 
-static inline UCHAR GetCmdSeq(PRTMP_ADAPTER pAd)
+inline UCHAR GetCmdSeq(PRTMP_ADAPTER pAd)
 {
 	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
 
@@ -598,42 +598,42 @@ error:
 	return Ret;
 }
 
-static VOID CmdDoneHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID CmdDoneHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
 }
 
 
-static VOID CmdErrorHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID CmdErrorHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
 }
 
 
-static VOID CmdRetryHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID CmdRetryHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
 }
 
 
-static VOID PwrRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID PwrRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
 }
 
 
-static VOID WowRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID WowRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
 }
 
 
-static VOID CarrierDetectRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID CarrierDetectRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
@@ -641,7 +641,7 @@ static VOID CarrierDetectRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 }
 
 
-static VOID DFSDetectRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
+VOID DFSDetectRspEventHandler(PRTMP_ADAPTER pAd, UCHAR *Data)
 {
 
 
