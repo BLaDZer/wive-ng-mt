@@ -301,9 +301,8 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(ChannelGeography);
 #endif
 		FPRINT_NUM(AutoChannelSelect);
-
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_NUM(BssidNum);
+#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(SSID2);
 		FPRINT_STR(SSID3);
 		FPRINT_STR(SSID4);
@@ -311,16 +310,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(SSID6);
 		FPRINT_STR(SSID7);
 		FPRINT_STR(SSID8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(SSID9);
-		FPRINT_STR(SSID10);
-		FPRINT_STR(SSID11);
-		FPRINT_STR(SSID12);
-		FPRINT_STR(SSID13);
-		FPRINT_STR(SSID14);
-		FPRINT_STR(SSID15);
-		FPRINT_STR(SSID16);
-#endif
 #endif
 		FPRINT_NUM(AutoConnect);
 		FPRINT_NUM(FastConnect);
@@ -429,35 +418,6 @@ static int gen_wifi_config(int getmode)
     		FPRINT_STR(RekeyMethod);
 		FPRINT_NUM(RekeyInterval);
 		FPRINT_STR(PMKCachePeriod);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
-#if defined(CONFIG_RT2860V2_STA_WAPI) || defined(CONFIG_RT2860V2_AP_WAPI)
-		/*kurtis: WAPI*/
-		FPRINT_STR(WapiPsk1);
-		FPRINT_STR(WapiPsk2);
-		FPRINT_STR(WapiPsk3);
-		FPRINT_STR(WapiPsk4);
-		FPRINT_STR(WapiPsk5);
-		FPRINT_STR(WapiPsk6);
-		FPRINT_STR(WapiPsk7);
-		FPRINT_STR(WapiPsk8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(WapiPsk9);
-		FPRINT_STR(WapiPsk10);
-		FPRINT_STR(WapiPsk11);
-		FPRINT_STR(WapiPsk12);
-		FPRINT_STR(WapiPsk13);
-		FPRINT_STR(WapiPsk14);
-		FPRINT_STR(WapiPsk15);
-		FPRINT_STR(WapiPsk16);
-#endif
-#endif
-		FPRINT_STR(WapiPskType);
-		FPRINT_STR(Wapiifname);
-		FPRINT_STR(WapiAsCertPath);
-		FPRINT_STR(WapiUserCertPath);
-		FPRINT_STR(WapiAsIpAddr);
-		FPRINT_STR(WapiAsPort);
-#endif
 #if defined(CONFIG_RT2860V2_STA_MESH) || defined(CONFIG_RT2860V2_AP_MESH)
 		FPRINT_NUM(MeshAutoLink);
 		FPRINT_STR(MeshAuthMode);
@@ -467,9 +427,9 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(MeshWPAKEY);
 		FPRINT_STR(MeshId);
 #endif
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		//WPAPSK
 		FPRINT_STR(WPAPSK1);
+#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(WPAPSK2);
 		FPRINT_STR(WPAPSK3);
 		FPRINT_STR(WPAPSK4);
@@ -477,21 +437,11 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(WPAPSK6);
 		FPRINT_STR(WPAPSK7);
 		FPRINT_STR(WPAPSK8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(WPAPSK9);
-		FPRINT_STR(WPAPSK10);
-		FPRINT_STR(WPAPSK11);
-		FPRINT_STR(WPAPSK12);
-		FPRINT_STR(WPAPSK13);
-		FPRINT_STR(WPAPSK14);
-		FPRINT_STR(WPAPSK15);
-		FPRINT_STR(WPAPSK16);
-#endif
 #endif
 		FPRINT_STR(DefaultKeyID);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(Key1Type);
 		FPRINT_STR(Key1Str1);
+#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(Key1Str2);
 		FPRINT_STR(Key1Str3);
 		FPRINT_STR(Key1Str4);
@@ -499,17 +449,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Key1Str6);
 		FPRINT_STR(Key1Str7);
 		FPRINT_STR(Key1Str8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(Key1Str9);
-		FPRINT_STR(Key1Str10);
-		FPRINT_STR(Key1Str11);
-		FPRINT_STR(Key1Str12);
-		FPRINT_STR(Key1Str13);
-		FPRINT_STR(Key1Str14);
-		FPRINT_STR(Key1Str15);
-		FPRINT_STR(Key1Str16);
-#endif
-
 		FPRINT_STR(Key2Type);
 		FPRINT_STR(Key2Str1);
 		FPRINT_STR(Key2Str2);
@@ -519,16 +458,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Key2Str6);
 		FPRINT_STR(Key2Str7);
 		FPRINT_STR(Key2Str8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(Key2Str9);
-		FPRINT_STR(Key2Str10);
-		FPRINT_STR(Key2Str11);
-		FPRINT_STR(Key2Str12);
-		FPRINT_STR(Key2Str13);
-		FPRINT_STR(Key2Str14);
-		FPRINT_STR(Key2Str15);
-		FPRINT_STR(Key2Str16);
-#endif
 		FPRINT_STR(Key3Type);
 		FPRINT_STR(Key3Str1);
 		FPRINT_STR(Key3Str2);
@@ -538,16 +467,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Key3Str6);
 		FPRINT_STR(Key3Str7);
 		FPRINT_STR(Key3Str8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(Key3Str9);
-		FPRINT_STR(Key3Str10);
-		FPRINT_STR(Key3Str11);
-		FPRINT_STR(Key3Str12);
-		FPRINT_STR(Key3Str13);
-		FPRINT_STR(Key3Str14);
-		FPRINT_STR(Key3Str15);
-		FPRINT_STR(Key3Str16);
-#endif
 		FPRINT_STR(Key4Type);
 		FPRINT_STR(Key4Str1);
 		FPRINT_STR(Key4Str2);
@@ -557,16 +476,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Key4Str6);
 		FPRINT_STR(Key4Str7);
 		FPRINT_STR(Key4Str8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(Key4Str9);
-		FPRINT_STR(Key4Str10);
-		FPRINT_STR(Key4Str11);
-		FPRINT_STR(Key4Str12);
-		FPRINT_STR(Key4Str13);
-		FPRINT_STR(Key4Str14);
-		FPRINT_STR(Key4Str15);
-		FPRINT_STR(Key4Str16);
-#endif
 #endif
 		//MIMO
 		FPRINT_NUM(HT_HTC);
@@ -582,8 +491,13 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_GI);
 		FPRINT_NUM(HT_STBC);
 		FPRINT_STR(HT_MCS);
-		FPRINT_NUM(HT_TxStream);
-		FPRINT_NUM(HT_RxStream);
+		if (!inic) {
+		    FPRINT_NUM(HT_TxStream);
+		    FPRINT_NUM(HT_RxStream);
+		} else {
+		    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_bufget(mode, "HT_TxStreamINIC")));
+		    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_bufget(mode, "HT_RxStreamINIC")));
+		}
 		FPRINT_NUM(HT_PROTECT);
 		FPRINT_NUM(HT_DisallowTKIP);
 		FPRINT_NUM(HT_40MHZ_INTOLERANT);
@@ -596,9 +510,9 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_BSSCoexistence);
 		FPRINT_NUM(HT_BSSCoexApCntThr);
 #endif
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_NUM(AccessPolicy0);
 		FPRINT_STR(AccessControlList0);
+#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_NUM(AccessPolicy1);
 		FPRINT_STR(AccessControlList1);
 		FPRINT_NUM(AccessPolicy2);
@@ -613,26 +527,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(AccessControlList6);
 		FPRINT_NUM(AccessPolicy7);
 		FPRINT_STR(AccessControlList7);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_NUM(AccessPolicy8);
-		FPRINT_STR(AccessControlList8);
-		FPRINT_NUM(AccessPolicy9);
-		FPRINT_STR(AccessControlList9);
-		FPRINT_NUM(AccessPolicy10);
-		FPRINT_STR(AccessControlList10);
-		FPRINT_NUM(AccessPolicy11);
-		FPRINT_STR(AccessControlList11);
-		FPRINT_NUM(AccessPolicy12);
-		FPRINT_STR(AccessControlList12);
-		FPRINT_NUM(AccessPolicy13);
-		FPRINT_STR(AccessControlList13);
-		FPRINT_NUM(AccessPolicy14);
-		FPRINT_STR(AccessControlList14);
-		FPRINT_NUM(AccessPolicy15);
-		FPRINT_STR(AccessControlList15);
 #endif
-#endif
-
 		FPRINT_NUM(WdsEnable);
 		FPRINT_STR(WdsPhyMode);
 		FPRINT_STR(WdsTxMcs);
@@ -644,8 +539,8 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Wds3Key);
 		FPRINT_STR(RADIUS_Server);
 		FPRINT_STR(RADIUS_Port);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(RADIUS_Key1);
+#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(RADIUS_Key2);
 		FPRINT_STR(RADIUS_Key3);
 		FPRINT_STR(RADIUS_Key4);
@@ -653,18 +548,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(RADIUS_Key6);
 		FPRINT_STR(RADIUS_Key7);
 		FPRINT_STR(RADIUS_Key8);
-#if (defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT3883) || defined (CONFIG_RALINK_RT6855)) && defined (CONFIG_16MBSSID_MODE)
-		FPRINT_STR(RADIUS_Key9);
-		FPRINT_STR(RADIUS_Key10);
-		FPRINT_STR(RADIUS_Key11);
-		FPRINT_STR(RADIUS_Key12);
-		FPRINT_STR(RADIUS_Key13);
-		FPRINT_STR(RADIUS_Key14);
-		FPRINT_STR(RADIUS_Key15);
-		FPRINT_STR(RADIUS_Key16);
 #endif
-#endif
-
 		FPRINT_STR(own_ip_addr);
 		FPRINT_STR(EAPifname);
 		FPRINT_STR(PreAuthifname);
@@ -672,7 +556,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(session_timeout_interval);
 		FPRINT_NUM(quiet_interval);
 		FPRINT_NUM(TGnWifiTest);
-
 #ifdef CONFIG_RT2860V2_AP_APCLI
 		//AP Client parameters
 		FPRINT_NUM(ApCliEnable);
@@ -706,7 +589,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(NintendoCapable);
 		FPRINT_NUM(UseNewRateAdapt);
 		FPRINT_NUM(IdleTimeout);
-
 #ifdef CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE
 		FPRINT_NUM(MO_FalseCCATh);
 		FPRINT_NUM(MO_LowFalseCCATh);
