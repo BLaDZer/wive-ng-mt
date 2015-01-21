@@ -473,6 +473,7 @@
 42) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
 43) kernel: mm: fix swapoff hang after page migration and fork.<br>
 44) kernel: tun: fixed unsigned/signed comparison.<br>
+45) kernel: ipv6: stop sending PTB packets for MTU < 1280.<br>
 <br>
 <br>
 <b>TODO:</b><br>
