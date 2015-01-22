@@ -36,49 +36,8 @@
 
 #include <linux/config.h>
 
-#if defined(RT3883_ASIC_BOARD)
-#define LED_POWER	0
-#define BTN_RESET	14
-#elif defined (RT3052_ASIC_BOARD) || defined (RT3352_ASIC_BOARD) || defined (RT5350_ASIC_BOARD)
-#define LED_POWER	9
-#define BTN_RESET	10
-#elif defined (MT7620_ASIC_BOARD)
-/* system led indicastor recovery mode */
-#define LED_POWER	38
-#define BTN_RESET	1
-#endif
-
-#define NAME			"ralink_gpio" 	//driver name
-#define RALINK_GPIO_DEVNAME	"gpio"		//nodename
-#define GPIO_DEV		"/dev/gpio"	//userlevel devname
-
-#if 0 /* BASE SDK CONFIG */
-#define GPIO_LED_WAN_GREEN      12
-#define GPIO_LED_WAN_ORANGE     14
-#define GPIO_LED_SEC_GREEN      13
-#define GPIO_WPS_LED_ORANGE  	13
-#define GPIO_WPS_LED_GREEN   	13
-//power led
-#define GPIO_POWER_LED		9
-#else  /* FOR ACORP PRODUCT SECTION */
-#define GPIO_LED_WAN_GREEN      12
-#define GPIO_LED_WAN_ORANGE     12
-#define GPIO_LED_SEC_GREEN      13
-//only one LED in WR-150N/300N for WPS
-#define GPIO_WPS_LED_ORANGE  	14
-#define GPIO_WPS_LED_GREEN   	14
-//power led
-#define GPIO_POWER_LED		9
-#endif
-
-/* Firmware update indicators */
-#define GPIO_MTD_LED1	GPIO_LED_SEC_GREEN
-#define GPIO_MTD_LED2	GPIO_WPS_LED_GREEN
-
-/* VPN tx/rx led */
-#ifdef CONFIG_RALINK_GPIO_LED
-#define GPIO_VPN_LED1	GPIO_WPS_LED_GREEN
-#endif
+#define LED_POWER	CONFIG_GPIO_LED
+#define BTN_RESET	CONFIG_GPIO_RESET
 
 #define RALINK_GPIO_HAS_5124	1
 //#define RALINK_GPIO_HAS_9524	1
@@ -265,7 +224,11 @@
 
 // if you would like to enable GPIO mode for other pins, please modify this value
 // !! Warning: changing this value may make other features(MDIO, PCI, etc) lose efficacy
+#if defined (MT7620_ASIC_BOARD)
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C)
+#else
 #define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UARTF)
+#endif
 
 /*
  * bit is the unit of length

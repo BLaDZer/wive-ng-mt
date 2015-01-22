@@ -1535,3 +1535,5 @@ fi
 
 bool "USB support enable" RALINK_USB_SUPPORT
 bool "ERASE command support enable" RALINK_ERASE_SUPPORT
+string 'Reset button GPIO NUMBER' CONFIG_GPIO_RESET	1
+string 'System led GPIO NUMBER' CONFIG_GPIO_LED		38
