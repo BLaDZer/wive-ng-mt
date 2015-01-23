@@ -141,6 +141,7 @@ IPPortFilterEnable=0
 IPPortFilterRules=
 IPv6OpMode=0
 IPv6Dhcpc=0
+IPv6AllowForward=0
 IPv6SrvAddr=192.88.99.1
 IPv6IPAddr=2a02:2560
 IPv6PrefixLen=32

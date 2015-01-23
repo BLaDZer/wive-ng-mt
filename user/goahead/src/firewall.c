@@ -1419,7 +1419,7 @@ void firewall_rebuild_etc(void)
 	iptablesWebsFilterRun();
 }
 
-static void firewall_rebuild(void)
+void firewall_rebuild(void)
 {
 	//rebuild firewall scripts in etc
 	firewall_rebuild_etc();

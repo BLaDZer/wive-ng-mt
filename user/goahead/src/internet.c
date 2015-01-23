@@ -2352,15 +2352,20 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*opmode, *submitUrl;
-	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *dhcp6c_enable;
+	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *dhcp6c_enable, *ipv6_allow_forward;
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
 
 	opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
+
 	dhcp6c_enable = websGetVar(wp, T("IPv6Dhcpc"), T("off"));
 	dhcp6c_enable = (strcmp(dhcp6c_enable, "on") == 0) ? "1" : "0";
 
+	ipv6_allow_forward = websGetVar(wp, T("IPv6AllowForward"), T("off"));
+	ipv6_allow_forward = (strcmp(ipv6_allow_forward, "on") == 0) ? "1" : "0";
+
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "IPv6Dhcpc", dhcp6c_enable);
+	nvram_bufset(RT2860_NVRAM, "IPv6AllowForward", ipv6_allow_forward);
 
 	if (!strcmp(opmode, "1")) {
 		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
@@ -2397,6 +2402,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
 	websWrite(wp, T("ipv6_opmode: %s<br>\n"), opmode);
 	websWrite(wp, T("dhcp6c_enable: %s<br>\n"), dhcp6c_enable);
+	websWrite(wp, T("ipv6_allow_forward: %s<br>\n"), ipv6_allow_forward);
 	if (!strcmp(opmode, "1")) {
 		websWrite(wp, T("ipv6_lan_ipaddr: %s<br>\n"), ipaddr);
 		websWrite(wp, T("ipv6_lan_prefix_len: %s<br>\n"), prefix_len);

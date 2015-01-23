@@ -423,6 +423,11 @@ startv6() {
         ip6tables -A INPUT -i $lan_if -j ACCEPT
         ip6tables -A FORWARD -i $lan_if -j ACCEPT
 
+	# allow access to LAN from internet over IPv6
+	if [ "$IPv6AllowForward" = "1" ]; then
+    	    ip6tables -A FORWARD -o $lan_if -j ACCEPT
+	fi
+
 	# allow dhcpv6 servers packets client/server
 	ip6tables -A INPUT -i $lan_if -p udp -m udp --dport 547 -j ACCEPT
 	ip6tables -A INPUT -i $real_wan_if -p udp -m udp --dport 546 -j ACCEPT
@@ -472,7 +477,7 @@ get_param() {
     eval `nvram_buf_get 2860 natEnabled use_snat PortForwardEnable DMZEnable DMZIPAddress DMZNATLoopback DefaultFirewallPolicy \
 	    IPPortFilterEnable WANPingFilter RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
-	    parproutedEnabled PrinterSrvEnabled chilli_net vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu`
+	    parproutedEnabled PrinterSrvEnabled chilli_net vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward`
 
     # use for route mode detect
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then

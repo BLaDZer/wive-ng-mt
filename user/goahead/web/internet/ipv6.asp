@@ -72,6 +72,7 @@ function initValue()
 {
 	var opmode = "<% getCfgZero(1, "IPv6OpMode"); %>";
 	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
+	var ipv6_allow_forward = "<% getCfgZero(1, "IPv6AllowForward"); %>";
 	var opmode_len = document.ipv6_cfg.ipv6_opmode.options.length;
 
 	if (ipv66rdb == "1") {
@@ -110,6 +111,8 @@ function initValue()
 	if (dhcp6c == "1") {
 	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 	}
+
+	document.ipv6_cfg.IPv6AllowForward.checked = (ipv6_allow_forward == "1");
 }
 
 function atoi(str, num)
@@ -308,6 +311,10 @@ function CheckValue()
 <tr id="dhp6cRowDisplay">
   <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp</td>
   <td><input name="IPv6Dhcpc" type="checkbox"></td>
+</tr>
+<tr id="IPv6AllowForwardRowDisplay">
+  <td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
+  <td><input name="IPv6AllowForward" type="checkbox"></td>
 </tr>
 </table>
 <!-- STATIC IP --!>

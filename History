@@ -481,6 +481,8 @@
 <br>
 <b>2.2.x</b><br>
 1) build_system: add some variants for 7620 based dual band.<br>
+2) goahead: webui: add allow to lan from internet by ipv6 option.<br>
+3) goahead: fix apply netfilter rules in some situations.<br>
 <br>
 <br>
 <b>TODO:</b><br>

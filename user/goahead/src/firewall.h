@@ -42,4 +42,5 @@
 "<img src=\"/graphics/warning.gif\"><font color=#ff0000>&nbsp; &nbsp;Warning: The current operation mode is \"Bridge mode\" and these settings may not be functional.</font>"
 
 void formDefineFirewall(void);
+void firewall_rebuild(void);
 void firewall_rebuild_etc(void);

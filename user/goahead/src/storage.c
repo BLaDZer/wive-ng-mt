@@ -170,8 +170,8 @@ static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 
 	nvram_close(RT2860_NVRAM);
 
+	firewall_rebuild();
 	doSystem("service inetd restart");
-	doSystem("service iptables restart");
 
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));
 	if (submitUrl != NULL)
@@ -212,7 +212,7 @@ static void transmission(webs_t wp, char_t *path, char_t *query)
 			setupParameters(wp, transmission_args, 0);
 
 		nvram_close(RT2860_NVRAM);
-		doSystem("service iptables restart");
+		firewall_rebuild();
 		doSystem("service transmission restart");
 	} else if (0 == strcmp(submit, "start")) {
 		doSystem("service transmission start");
