@@ -462,20 +462,21 @@
 31) kernel: raeth: add 802.3az EEE control for MT7620 ESW, disable EEE by default for all PHY.<br>
 32) kernel: ralink ehci: add workaround for embedded synopsys host controller.<br>
 33) kernel: ralink arch: add MT7621 xHCI platform device, add MT7621/MT7628 UPHY calibration.<br>
-34) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
-35) kernel: netfilter: conntrack: avoid zeroing timer.<br>
-36) kernel: net: rearrange loop in net_rx_action.<br>
-37) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
-38) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
-39) kernel: net: gro: dev_gro_receive() cleanup.<br>
-40) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
-41) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
-42) kernel: net_dma: simple removal (broken and not used).<br>
-43) kernel: net_dma: revert copied_early.<br>
-44) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
-45) kernel: mm: fix swapoff hang after page migration and fork.<br>
-46) kernel: tun: fixed unsigned/signed comparison.<br>
-47) kernel: ipv6: stop sending PTB packets for MTU < 1280.<br>
+34) kernel: ralink arch: usb: xhci: add support MT7621 xHCI HC.<br>
+35) kernel: netfilter: nf_conntrack: allow server to become a client in TW handling.<br>
+36) kernel: netfilter: conntrack: avoid zeroing timer.<br>
+37) kernel: net: rearrange loop in net_rx_action.<br>
+38) kernel: net: gro: GRO_MERGED_FREE consumes packets.<br>
+39) kernel: net: gro: fix a potential crash in skb_gro_reset_offset.<br>
+40) kernel: net: gro: dev_gro_receive() cleanup.<br>
+41) kernel: net: gro: avoid double copy in skb_gro_receive().<br>
+42) kernel: net: skbuff: don't zero tc members when freeing skb.<br>
+43) kernel: net_dma: simple removal (broken and not used).<br>
+44) kernel: net_dma: revert copied_early.<br>
+45) kernel: ipv4: dst_entry leak in ip_send_unicast_reply().<br>
+46) kernel: mm: fix swapoff hang after page migration and fork.<br>
+47) kernel: tun: fixed unsigned/signed comparison.<br>
+48) kernel: ipv6: stop sending PTB packets for MTU < 1280.<br>
 <br>
 <br>
 <b>2.2.x</b><br>
