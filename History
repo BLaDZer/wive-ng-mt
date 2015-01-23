@@ -450,7 +450,7 @@
 19) init.d: ipv6: only tunnel mode need full deconfig in some situations.<br>
 20) init.d/goahead: add support native ipv6 with dhcp client mode.<br>
 21) dhcp6c: fix duid generate for WAN (temp hack, add read from commandline in future).<br>  
-22) radvd: update to 2.19 version.<br>
+22) radvd: update to 2.10 version.<br>
 23) kernel: ralink: prepare 7621 support.<br>
 24) kernel: ralink_spi: add N25Q256A and MT25QL512AB support.<br>
 25) kernel: ralink spi: fix write after unprotect bits clear, fix Winbond quad mode.<br>
