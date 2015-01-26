@@ -88,11 +88,12 @@ start() {
     fi
     
     #
-    #	correct apcli/wds interfaces names for dual band use
+    #	correct apcli/wds/mbssid interfaces names for dual band use
     #
-    if [ "$ApCliIfName" = "" ] || [ "$WdsIfName" = "" ]; then
+    if [ "$ApCliIfName" = "" ] || [ "$WdsIfName" = "" ] || [ "$BssidIfName" = "" ]; then
 	nvram_set 2860 ApCliIfName "apcli0"
 	nvram_set 2860 WdsIfName "wds"
+	nvram_set 2860 BssidIfName "ra"
     fi
 
     #

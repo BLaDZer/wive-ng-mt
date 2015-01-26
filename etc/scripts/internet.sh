@@ -53,10 +53,9 @@ bridge_config() {
 	    $LOG "Readd $second_wlan_root_if in br0"
 	    readdif_to_br $second_wlan_root_if
 	fi
-	if [ "$first_wlan_mbss" != "" ]; then
+	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
-	fi
-	if [ "$second_wlan_mbss" != "" ]; then
+	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
@@ -78,10 +77,9 @@ gate_config() {
 	    $LOG "Readd $second_wlan_root_if in br0"
 	    readdif_to_br $second_wlan_root_if
 	fi
-	if [ "$first_wlan_mbss" != "" ]; then
+	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
-	fi
-	if [ "$second_wlan_mbss" != "" ]; then
+	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
@@ -116,10 +114,9 @@ apcli_config() {
 		readdif_to_br $second_wlan_apcli
 	    fi
 	fi
-	if [ "$first_wlan_mbss" != "" ]; then
+	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
-	fi
-	if [ "$second_wlan_mbss" != "" ]; then
+	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
 	fi
 	# delete ra0 from bridge and down if only apcli-bridge
@@ -147,10 +144,9 @@ spot_config() {
 	    $LOG "Readd $second_wlan_root_if in br0"
 	    readdif_to_br $second_wlan_root_if
 	fi
-	if [ "$first_wlan_mbss" != "" ]; then
+	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
-	fi
-	if [ "$second_wlan_mbss" != "" ]; then
+	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then

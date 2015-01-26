@@ -46,6 +46,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	IPv6OpMode IPv6Dhcpc \
 	ApCliBridgeOnly ApCliIfName \
 	WdsIfName \
+	BssidIfName \
 	MODEMENABLED \
 	QoSEnable`
 

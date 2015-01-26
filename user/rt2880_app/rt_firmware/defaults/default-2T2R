@@ -52,6 +52,7 @@ BSSAifsn=3;7;2;2
 BSSCwmax=10;10;4;3
 BSSCwmin=4;4;3;2
 BssidNum=1
+BssidIfName=ra
 BSSTxop=0;0;94;47
 CarrierDetect=0
 Channel=5
