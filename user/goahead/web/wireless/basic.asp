@@ -31,7 +31,7 @@ var apcli_include = '<% getWlanApcliBuilt(); %>';
 var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
 var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
 var is3t3r = '<% is3t3r(); %>';
-var mssidb      = "<% getMBSSIDBuilt(); %>";
+var mssidb = "<% getMBSSIDBuilt(); %>";
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var mbss_params =

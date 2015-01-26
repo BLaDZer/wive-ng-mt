@@ -48,6 +48,7 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_only(int eid, webs_t wp, int argc, char_t **argv);
+static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);		/* for Access Policy list deletion*/
 static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
@@ -193,6 +194,7 @@ void formDefineWireless(void)
 	websAspDefine(T("listCountryCodes"), listCountryCodes);
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_only"), is5gh_only);
+	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("isWPSConfiguredASP"), isWPSConfiguredASP);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
@@ -1046,7 +1048,7 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessAdvanced */
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *tx_power, *short_preamble,
+	char_t	*mbssid_mode, *apcli_mode, *wds_mode, *bg_protection, *beacon, *dtim, *fragment, *rts, *tx_power, *short_preamble,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid_num, wlan_mode;
 	char *submitUrl;
@@ -1064,6 +1066,10 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t *ht_bss_coex, *ap2040_rescan, *ht_noise_thresh;
 #endif
 	//fetch from web input
+	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
+	apcli_mode = websGetVar(wp, T("apcli_mode"), T("apcli0"));
+	wds_mode = websGetVar(wp, T("wds_mode"), T("wds"));
+	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	beacon = websGetVar(wp, T("beacon"), T("100"));
 	dtim = websGetVar(wp, T("dtim"), T("1"));
@@ -1077,12 +1083,12 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	rd_region = websGetVar(wp, T("rd_region"), T("CE"));
 	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
 	country_region = websGetVar(wp, T("country_region"), T("0"));
+	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 #ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
 	ht_noise_thresh = websGetVar(wp, T("HT_BSSCoexApCntThr"), T("0"));
 	ht_bss_coex = websGetVar(wp, T("HT_BSSCoexistence"), T("0"));
 	ap2040_rescan = websGetVar(wp, T("AP2040Rescan"), T("0"));
 #endif
-	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 #ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
@@ -1107,6 +1113,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	//set to nvram
 	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "BssidIfName", mbssid_mode);
+	nvram_bufset(RT2860_NVRAM, "ApCliIfName", apcli_mode);
+	nvram_bufset(RT2860_NVRAM, "WdsIfName", wds_mode);
 	nvram_bufset(RT2860_NVRAM, "BGProtection", bg_protection);
 	nvram_bufset(RT2860_NVRAM, "BeaconPeriod", beacon);
 	nvram_bufset(RT2860_NVRAM, "DtimPeriod", dtim);
@@ -1808,6 +1817,16 @@ static int is3t3r(int eid, webs_t wp, int argc, char_t **argv)
 static int is5gh_only(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_RALINK_RT3662_2T2R) || defined(CONFIG_RALINK_RT3883_3T3R)
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int is5gh_support(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_RALINK_RT3662_2T2R) || defined(CONFIG_RALINK_RT3883_3T3R) || defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE) 
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));

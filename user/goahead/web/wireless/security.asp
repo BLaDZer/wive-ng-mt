@@ -12,7 +12,7 @@
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
 
-var MBSSID_MAX 				= 8;
+var MBSSID_MAX 			= 8;
 var ACCESSPOLICYLIST_MAX	= 64;
 
 var changed = 0;
