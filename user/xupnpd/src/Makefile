@@ -39,22 +39,42 @@ x86_bsd:
 
 
 # D-Link DIR-320/DD-WRT (mipsel)
-bcm947xx_ddwrt:
-	$(MAKE) embedded TARGET=bcm947xx-ddwrt SDK=$(SDK_8_09)/toolchain-mipsel_gcc3.4.6/mipsel-linux/bin UTILS=$(SDK_8_09)/toolchain-mipsel_gcc3.4.6/libexec/gcc/mipsel-linux-uclibc/3.4.6 STAGING_DIR=$(SDK_8_09)
+bcm947x_ddwrt:
+	$(MAKE) embedded TARGET=bcm947x-ddwrt SDK=$(SDK_8_09)/toolchain-mipsel_gcc3.4.6/mipsel-linux/bin UTILS=$(SDK_8_09)/toolchain-mipsel_gcc3.4.6/libexec/gcc/mipsel-linux-uclibc/3.4.6 STAGING_DIR=$(SDK_8_09)
 
 # OpenWrt Backfire
-bcm947xx:
-	$(MAKE) embedded TARGET=bcm947xx SDK=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/mipsel-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/libexec/gcc/mipsel-openwrt-linux-uclibc/3.4.6 STAGING_DIR=$(SDK_BACKFIRE)
+bcm947x_backfire:
+	$(MAKE) embedded TARGET=bcm947x-bf SDK=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/mipsel-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/libexec/gcc/mipsel-openwrt-linux-uclibc/3.4.6 STAGING_DIR=$(SDK_BACKFIRE)
 
-ar71xx:
-	$(MAKE) embedded TARGET=ar71xx SDK=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
+ar71xx_backfire:
+	$(MAKE) embedded TARGET=ar71xx-bf SDK=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
 
-ar231x:
-	$(MAKE) embedded TARGET=ar231x SDK=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
+ar231x_backfire:
+	$(MAKE) embedded TARGET=ar231x-bf SDK=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
+
 
 # OpenWrt Barrier Breaker
+
+# Broadcom BCM2708/BCM2835
+bcm2708:
+	$(MAKE) embedded TARGET=bcm2708 SDK=$(SDK_BBREAKER)/toolchain-arm_arm1176jzf-s+vfp_gcc-4.8-linaro-bcm2708/arm-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-arm_arm1176jzf-s+vfp_gcc-4.8-linaro-bcm2708/libexec/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3 STAGING_DIR=$(SDK_BBREAKER)
+
+# Broadcom BCM47xx/BCM53xx (MIPS)
 bcm47xx:
-	$(MAKE) embedded TARGET=bcm947xx SDK=$(SDK_BBREAKER)/toolchain-mipsel_mips32_gcc-4.8-linaro-bcm47xx/mipsel-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-mipsel_mips32_gcc-4.8-linaro-bcm47xx/libexec/gcc/mipsel-openwrt-linux-uclibc/4.8.3  STAGING_DIR=$(SDK_BBREAKER)
+	$(MAKE) embedded TARGET=bcm47xx SDK=$(SDK_BBREAKER)/toolchain-mipsel_mips32_gcc-4.8-linaro-bcm47xx/mipsel-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-mipsel_mips32_gcc-4.8-linaro-bcm47xx/libexec/gcc/mipsel-openwrt-linux-uclibc/4.8.3 STAGING_DIR=$(SDK_BBREAKER)
+
+# Broadcom BCM63xx
+bcm63xx:
+	$(MAKE) embedded TARGET=bcm63xx SDK=$(SDK_BBREAKER)/toolchain-mips_mips32_gcc-4.8-linaro-bcm63xx/mips-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-mips_mips32_gcc-4.8-linaro-bcm63xx/libexec/gcc/mips-openwrt-linux-uclibc/4.8.3 STAGING_DIR=$(SDK_BBREAKER)
+
+# Atheros AR231x/AR5312
+ar231x:
+	$(MAKE) embedded TARGET=ar231x SDK=$(SDK_BBREAKER)/toolchain-mips_mips32_gcc-4.8-linaro-ar231x/mips-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-mips_mips32_gcc-4.8-linaro-ar231x/libexec/gcc/mips-openwrt-linux-uclibc/4.8.3 STAGING_DIR=$(SDK_BBREAKER)
+
+# Atheros AR7xxx/AR9xxx
+ar7xxx:
+	$(MAKE) embedded TARGET=ar7xxx SDK=$(SDK_BBREAKER)/toolchain-mips_34kc_gcc-4.8-linaro-ar7xxx/mips-openwrt-linux/bin UTILS=$(SDK_BBREAKER)/toolchain-mips_34kc_gcc-4.8-linaro-ar7xxx/libexec/gcc/mips-openwrt-linux-uclibc/4.8.3 STAGING_DIR=$(SDK_BBREAKER)
+
 
 # Other
 samsung_d:
