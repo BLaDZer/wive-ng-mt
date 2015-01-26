@@ -45,6 +45,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
 	ApCliBridgeOnly ApCliIfName \
+	WdsIfName \
 	MODEMENABLED \
 	QoSEnable`
 
