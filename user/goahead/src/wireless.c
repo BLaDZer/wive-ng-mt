@@ -979,7 +979,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		//debug print
 		websHeader(wp);
@@ -1170,7 +1170,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0]) {
+	if (!submitUrl || !submitUrl[0]) {
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
@@ -1233,7 +1233,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		//debug print
 		websHeader(wp);
@@ -1277,12 +1277,13 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	//debug print
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl[0])
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 
 	//network configure
 	doSystem("internet.sh");
@@ -1739,7 +1740,7 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		//debug print
 		websHeader(wp);
@@ -1926,8 +1927,10 @@ void disconnectSta(webs_t wp, char_t *path, char_t *query)
 	}
 
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl[0])
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }

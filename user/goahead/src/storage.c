@@ -174,10 +174,12 @@ static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 	doSystem("service inetd restart");
 
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));
-	if (submitUrl != NULL)
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }
 #endif
 
@@ -223,10 +225,12 @@ static void transmission(webs_t wp, char_t *path, char_t *query)
 	}
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl != NULL)
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }
 #endif
 

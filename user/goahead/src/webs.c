@@ -1443,6 +1443,11 @@ void websRedirect(webs_t wp, char_t *url)
 
 	websStats.redirects++;
 	msgbuf = urlbuf = NULL;
+	
+	if (!url || !url[0]) {
+	    printf("goahead: not set redirect url - PLS fix it.");
+	    return;
+	}
 
 /*
  *	Some browsers require a http://host qualified URL for redirection

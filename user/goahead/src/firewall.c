@@ -1458,7 +1458,7 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 
 	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("portForwardEnabled: %s<br>\n"), pfe);
@@ -1497,7 +1497,7 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 
 	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("portFilteringEnabled: %s<br>\n"), firewall_enable);
@@ -1541,7 +1541,7 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 
 	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("DMZEnabled: %s<br>\n"), dmzE);
@@ -1596,10 +1596,12 @@ static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
 	firewall_rebuild();
 
 	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if ((submitUrl != NULL) && (submitUrl[0]))
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 
 }
 
@@ -1624,10 +1626,12 @@ static void setFirewallAlg(webs_t wp, char_t *path, char_t *query)
 	firewall_rebuild();
 
 	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if ((submitUrl != NULL) && (submitUrl[0]))
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 
 }
 

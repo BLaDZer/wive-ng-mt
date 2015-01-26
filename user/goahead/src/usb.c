@@ -52,17 +52,17 @@ static void printersrv(webs_t wp, char_t *path, char_t *query)
 	nvram_set(RT2860_NVRAM, "PrinterSrvBidir", bidirect);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (! submitUrl[0])
-	{
 #ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
+	{
 	    // debug print
 	    websHeader(wp);
 	    websWrite(wp, T("<h2>Printer Server Settings</h2><br>\n"));
 	    websWrite(wp, T("enabled: %s<br>\n"), enable);
 	    websFooter(wp);
-#endif
 	    websDone(wp, 200);
 	} else
+#endif
 		websRedirect(wp, submitUrl);
 }
 #endif
@@ -117,11 +117,13 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 			doSystem("service modemhelper stop");
 		}
 
-submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl != NULL)
-		websRedirect(wp, submitUrl);
-	else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }
 
 /*** USB modem statuses ***/

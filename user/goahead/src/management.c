@@ -108,7 +108,7 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("<h2>Adminstrator Settings</h2><br>\n"));
@@ -134,7 +134,7 @@ static void setSysLang(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("<h2>Language Selection</h2><br>\n"));
@@ -179,7 +179,7 @@ static void NTP(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("<h2>NTP Settings</h2><br>\n"));
@@ -256,7 +256,7 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (! submitUrl[0])
+	if (!submitUrl || !submitUrl[0])
 	{
 		websHeader(wp);
 		websWrite(wp, T("<h2>DDNS Settings</h2><br>\n"));
@@ -765,10 +765,12 @@ static void setuplog(webs_t wp, char_t *path, char_t *query)
 
 	// Redirect if possible
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl != NULL)
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }
 
 #define LOG_MAX 32768

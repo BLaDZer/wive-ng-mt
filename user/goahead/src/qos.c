@@ -39,10 +39,12 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 	doSystem("service shaper restart && service iptables restart && service kext restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (submitUrl != NULL)
-		websRedirect(wp, submitUrl);
-	else
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
 		websDone(wp, 200);
+	else
+#endif
+		websRedirect(wp, submitUrl);
 }
 
 void formDefineQoS(void) {
