@@ -94,13 +94,14 @@
  * External declarations for global variables and functions.
  */
 #define RECV_BUF_SIZE 8192
+
 extern char     *recv_buf;
 extern char     *send_buf;
 
-extern char     s1[];
-extern char     s2[];
-extern char		s3[];
-extern char		s4[];
+extern char	s1[];
+extern char	s2[];
+extern char	s3[];
+extern char	s4[];
 
 //#################################################################################
 //  Lib function prototypes.
@@ -115,28 +116,26 @@ void my_log( int Serverity, int Errno, const char *FmtSt, ... );
 
 /* ifvc.c
  */
-#define MAX_IF         40     // max. number of interfaces recognized 
+#define MAX_IF					40     // max. number of interfaces recognized 
 
 // Interface states
-#define IF_STATE_DISABLED      0   // Interface should be ignored.
-#define IF_STATE_UPSTREAM      1   // Interface is the upstream interface
-#define IF_STATE_DOWNSTREAM    2   // Interface is a downstream interface
+#define IF_STATE_DISABLED			0   // Interface should be ignored.
+#define IF_STATE_UPSTREAM			1   // Interface is the upstream interface
+#define IF_STATE_DOWNSTREAM			2   // Interface is a downstream interface
 
 // Multicast default values...
-#define DEFAULT_ROBUSTNESS     2
-#define DEFAULT_THRESHOLD      1
-#define DEFAULT_RATELIMIT      0
+#define DEFAULT_ROBUSTNESS			2
+#define DEFAULT_THRESHOLD			1
+#define DEFAULT_RATELIMIT			0
 
 // Define timer constants (in seconds...)
-#define INTERVAL_QUERY          125
-#define INTERVAL_QUERY_RESPONSE  10
-//#define INTERVAL_QUERY_RESPONSE  10
+#define INTERVAL_QUERY				125
+#define INTERVAL_GENERAL_QUERY_RESPONSE		10
+#define INTERVAL_SPECIFIC_QUERY_RESPONSE 	5
 
-#define ROUTESTATE_NOTJOINED            0   // The group corresponding to route is not joined
-#define ROUTESTATE_JOINED               1   // The group corresponding to route is joined
-#define ROUTESTATE_CHECK_LAST_MEMBER    2   // The router is checking for hosts
-
-
+#define ROUTESTATE_NOTJOINED			0   // The group corresponding to route is not joined
+#define ROUTESTATE_JOINED			1   // The group corresponding to route is joined
+#define ROUTESTATE_CHECK_LAST_MEMBER		2   // The router is checking for hosts
 
 // Linked list of networks... 
 struct SubnetList {

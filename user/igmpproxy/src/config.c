@@ -71,14 +71,14 @@ struct SubnetList *parseSubnetAddress(char *addrstr);
 void initCommonConfig() {
     commonConfig.robustnessValue = DEFAULT_ROBUSTNESS;
     commonConfig.queryInterval = INTERVAL_QUERY;
-    commonConfig.queryResponseInterval = INTERVAL_QUERY_RESPONSE;
+    commonConfig.queryResponseInterval = INTERVAL_GENERAL_QUERY_RESPONSE;
 
     // The defaults are calculated from other settings.
     commonConfig.startupQueryInterval = (unsigned int)(INTERVAL_QUERY / 4);
     commonConfig.startupQueryCount = DEFAULT_ROBUSTNESS;
 
     // Default values for leave intervals...
-    commonConfig.lastMemberQueryInterval = INTERVAL_QUERY_RESPONSE;
+    commonConfig.lastMemberQueryInterval = INTERVAL_SPECIFIC_QUERY_RESPONSE;
     commonConfig.lastMemberQueryCount    = DEFAULT_ROBUSTNESS;
 
     // If 1, a leave message is sent upstream on leave messages from downstream.

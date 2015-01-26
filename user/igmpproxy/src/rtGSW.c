@@ -14,8 +14,7 @@
 #include <sys/socket.h>
 
 #include "linux/autoconf.h"
-#include "defs.h"
-#include "ralink.h"
+#include "igmpproxy.h"
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
 

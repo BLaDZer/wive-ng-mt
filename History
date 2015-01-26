@@ -484,8 +484,9 @@
 2) goahead: webui: add allow to lan from internet by ipv6 option.<br>
 3) goahead: fix apply netfilter rules in some situations.<br>
 4) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
-5) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
-6) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+5) igmpproxy: optimize retry timeouts.<br>
+6) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+7) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
 <br>
 <br>
 <b>TODO:</b><br>
