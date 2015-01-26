@@ -33,6 +33,7 @@ static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlan11bChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanChannel(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
@@ -183,6 +184,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlan11bChannels"), getWlan11bChannels);
 	websAspDefine(T("getWlan11gChannels"), getWlan11gChannels);
 	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
+	websAspDefine(T("getWlanWdsBuilt"), getWlanApcliBuilt);
 	websAspDefine(T("getWlanChannel"), getWlanChannel);
 	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
@@ -411,6 +413,15 @@ static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
 static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_RT2860V2_AP_APCLI
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_RT2860V2_AP_WDS
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

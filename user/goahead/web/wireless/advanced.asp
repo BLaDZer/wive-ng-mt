@@ -93,9 +93,13 @@ function initTranslation()
 function initValue()
 {
 	var datarateArray;
+	var form = document.wireless_advanced;
+	var is5gh_support = '<% is5gh_support(); %>';
+	var mssid = "<% getMBSSIDBuilt(); %>";
+	var apcli = "<% getWlanApcliBuilt(); %>";
+	var wds = "<% getWlanWdsBuilt(); %>";
 
 	initTranslation();
-	var form = document.wireless_advanced;
 	form.bg_protection.options.selectedIndex = 1*bgProtection;
 
 	if (shortPreamble == '1')
@@ -166,33 +170,38 @@ function initValue()
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
 	
-	var is5gh_support = '<% is5gh_support(); %>';
-	if (is5gh_support != '1') {
-		form.wds_mode.options.selectedIndex = 0;
-		form.apcli_mode.options.selectedIndex = 0;
-		form.mbssid_mode.options.selectedIndex = 0;
-		document.getElementById("advMbssidModeT").style.visibility = "hidden";
-		document.getElementById("advWdsModeT").style.visibility = "hidden";
-		document.getElementById("advApcliModeT").style.visibility = "hidden";
-		hideElement(advMbssidModeT);
-		hideElement(advWdsModeT);
-		hideElement(advApcliModeT);
-	} else {
-	    if (wds_mode == 'wdsi')
-		form.wds_mode.options.selectedIndex = 1;
-	    else
-		form.wds_mode.options.selectedIndex = 0;
-
-	    if (apcli_mode == 'apclii0')
-		form.apcli_mode.options.selectedIndex = 1;
-	    else
-		form.apcli_mode.options.selectedIndex = 0;
-
-	    if (mbssid_mode == 'rai')
-		form.mbssid_mode.options.selectedIndex = 1;
-	    else
-		form.mbssid_mode.options.selectedIndex = 0;
+        if (is5gh_support != '1' || mbssid != '1') {
+	    form.mbssid_mode.options.selectedIndex = 0;
+	    document.getElementById("advMbssidModeT").style.visibility = "hidden";
+	    hideElement(advMbssidModeT);
 	}
+
+        if (is5gh_support != '1' || apcli != '1') {
+	    form.wds_mode.options.selectedIndex = 0;
+	    document.getElementById("advWdsModeT").style.visibility = "hidden";
+	    hideElement(advWdsModeT);
+	}
+
+        if (is5gh_support != '1' || wds != '1') {
+	    form.apcli_mode.options.selectedIndex = 0;
+	    document.getElementById("advApcliModeT").style.visibility = "hidden";
+	    hideElement(advApcliModeT);
+	}
+
+        if (wds_mode == 'wdsi')
+	    form.wds_mode.options.selectedIndex = 1;
+	else
+	    form.wds_mode.options.selectedIndex = 0;
+
+        if (apcli_mode == 'apclii0')
+	    form.apcli_mode.options.selectedIndex = 1;
+	else
+	    form.apcli_mode.options.selectedIndex = 0;
+
+	if (mbssid_mode == 'rai')
+	    form.mbssid_mode.options.selectedIndex = 1;
+	else
+	    form.mbssid_mode.options.selectedIndex = 0;
 
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
