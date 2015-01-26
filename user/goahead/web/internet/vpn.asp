@@ -12,9 +12,9 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script language="javascript">
-var pptpType     = '<% getCfgGeneral(1, "vpnType"); %>';
-var pptpServerIP = (pptpType != '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
-var pptpACName   = (pptpType == '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
+var vpnType     = '<% getCfgGeneral(1, "vpnType"); %>';
+var vpnServerIP = (vpnType != '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
+var vpnACName   = (vpnType == '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
 
 var table_vpn_params= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
 
@@ -224,9 +224,9 @@ function selectType(form)
 		vpn_server = '<acronym title="Access Point Name">APN</acronym> name'; // GSM/CDMA
 
 	if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2') || (form.vpn_type.value == '3'))
-		form.vpn_server.value = pptpServerIP;
+		form.vpn_server.value = vpnServerIP;
 	else
-		form.vpn_server.value = pptpACName;
+		form.vpn_server.value = vpnACName;
 
 	vpn_server_col.innerHTML = '<b>' + vpn_server + ':</b>';
 }
@@ -270,7 +270,7 @@ function submitClick(form)
 function initializeForm(form)
 {
 	var vpnEnabled = '<% getCfgGeneral(1, "vpnEnabled"); %>';
-	var pptpType   = '<% getCfgGeneral(1, "vpnType"); %>';
+	var vpnType   = '<% getCfgGeneral(1, "vpnType"); %>';
 	var mppe       = '<% getCfgGeneral(1, "vpnMPPE"); %>';
 	var peerdns    = '<% getCfgGeneral(1, "vpnPeerDNS"); %>';
 	var debug      = '<% getCfgGeneral(1, "vpnDebug"); %>';
@@ -299,7 +299,7 @@ function initializeForm(form)
 	form.vpn_peerdns.checked = (peerdns == 'on');
 	form.vpn_debug.checked   = (debug == 'on');
 	form.vpn_nat.checked     = (nat == 'on');
-	form.vpn_type.value      = pptpType;
+	form.vpn_type.value      = vpnType;
 	form.vpn_dgw.value       = dgw;
 	form.vpn_lcp.checked     = (lcp == 'on');
 	form.vpn_pure_pppoe.checked = (pure_pppoe == '1');
