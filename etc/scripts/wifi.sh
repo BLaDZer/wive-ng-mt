@@ -3,6 +3,12 @@
 # include kernel config
 . /etc/scripts/config.sh
 
+is_up=`ip link show $1 up`
+if [ "$is_up" != "" ]; then
+    echo ">>>>> Wifi interface $1 not up - skip tune <<<<<<<<<<"
+    exit 0
+fi
+
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 #################################################################################################

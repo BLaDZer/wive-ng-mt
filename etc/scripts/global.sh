@@ -44,7 +44,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
-	ApCliBridgeOnly \
+	ApCliBridgeOnly ApCliIfName \
 	MODEMENABLED \
 	QoSEnable`
 
@@ -149,11 +149,7 @@ getWanIfName() {
 	    wan_if="br0"
 	else
     	    # apclient gw
-	    if [ "$first_wlan_apcli" != "" ]; then
-		wan_if="$first_wlan_apcli"
-	    elif [ "$second_wlan_apcli" != "" ]; then
-		wan_if="$second_wlan_apcli"
-	    fi
+	    wan_if="$ApCliIfName"
 	fi
     fi
     # services wan name
@@ -239,9 +235,9 @@ wifi_reconnect() {
 	fi
     elif [ "$OperationMode" = "3" ]; then
 	# Reenable apcli for reconnect
-	iwpriv $first_wlan_apcli set ApCliEnable=0
+	iwpriv $ApCliIfName set ApCliEnable=0
         usleep 100000
-	iwpriv $first_wlan_apcli set ApCliEnable=1
+	iwpriv $ApCliIfName set ApCliEnable=1
 	usleep 500000
     fi
 }
@@ -250,13 +246,13 @@ wifi_reconnect() {
 wait_connect() {
     if [ "$OperationMode" = "2" ]; then
 	# Get connection status
-	connected=`iwpriv $first_wlan_root_if connStatus | grep "Connected" -c`
+	connected=`iwpriv $ApCliIfName connStatus | grep "Connected" -c`
 	if [ "$connected" = "0" ]; then
 	    exit 1
 	fi
     elif [ "$OperationMode" = "3" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	# Get connection status
-	notconnected=`iwconfig $first_wlan_apcli | grep -c "Not-Associated"`
+	notconnected=`iwconfig $ApCliIfName | grep -c "Not-Associated"`
 	if [ "$noconnected" = "1" ]; then
 	    exit 1
 	fi

@@ -69,12 +69,14 @@ start() {
     if [ "$IPv6OpMode" = "" ]; then
 	nvram_set IPv6OpMode 0
     fi
+
     #
     #	set default offload mode to complex if not set
     #
     if [ "$offloadMode" = "" ]; then
 	nvram_set offloadMode 3
     fi
+
     #
     #	drop apcli specific flags in not apcli enabled modes
     #
@@ -84,12 +86,20 @@ start() {
 	    nvram_set ApCliClientOnly 0
 	fi
     fi
+    
+    #
+    #	correct apcli/wds interfaces names for dual band use
+    #
+    if [ "$ApCliIfName" = "" ] || [ "$WdsIfName" = "" ]; then
+	nvram_set 2860 ApCliIfName "apcli0"
+	nvram_set 2860 WdsIfName "wds"
+    fi
 
     #
     # timezone
     #
     if [ "$TZ" = "" ]; then
-        nvram_set 2860 "OMST-7"
+        nvram_set 2860 TZ "OMST-7"
     fi
 
     #
@@ -161,7 +171,7 @@ get_param() {
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
 	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
-	    ApCliBridgeOnly ApCliClientOnly`
+	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"

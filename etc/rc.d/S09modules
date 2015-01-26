@@ -59,11 +59,10 @@ start() {
 	if [ "$OperationMode" = "3" ]; then
 	    $LOG "WiFi APCLI interface up."
 	    # apcli mode sta interface
-	    if [ "$first_wlan_apcli" != "" ]; then
+	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
 		ifconfig $first_wlan_apcli txqueuelen	"$txqueuelen"
 		ip link set $first_wlan_apcli up
-	    fi
-	    if [ "$second_wlan_apcli" != "" ]; then
+	    elif [ "$second_wlan_apcli" != "" ] && [ "$second_wlan_apcli" = "$ApCliIfName" ]; then
 		ifconfig $second_wlan_apcli txqueuelen	"$txqueuelen"
 		ip link set $second_wlan_apcli up
 	    fi

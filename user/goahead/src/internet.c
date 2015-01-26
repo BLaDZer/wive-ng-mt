@@ -360,9 +360,10 @@ char* getWanIfName(void)
 {
 	char *mode = nvram_get(RT2860_NVRAM, "OperationMode");
 	char *apc_cli_mode = nvram_get(RT2860_NVRAM, "ApCliBridgeOnly");
-	static char *if_name = WAN_DEF;
-	FILE *fp;
+	char *apc_cli_wanif = nvram_get(RT2860_NVRAM, "ApCliIfName");
+	char *if_name = WAN_DEF;
 	char wan_if[16]; /* max 16 char in wan if name */
+	FILE *fp;
 
 	/* try read fron file exported from init.d */
 	fp = fopen("/tmp/wan_if_name", "r");
@@ -391,7 +392,7 @@ char* getWanIfName(void)
 		    if (!strncmp(apc_cli_mode, "1", 2)) {
 			if_name = "br0";				/* Client-AP-Bridge */
 		    } else {
-			if_name = "apcli0";				/* Client-AP-Gateway */
+			if_name = apc_cli_wanif;			/* Client-AP-Gateway 2.4Ghz/5GHz */
 		    }
 		}
 
