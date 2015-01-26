@@ -95,7 +95,7 @@ function initValue()
 	var datarateArray;
 	var form = document.wireless_advanced;
 	var is5gh_support = '<% is5gh_support(); %>';
-	var mssid = "<% getMBSSIDBuilt(); %>";
+	var mbssid = "<% getMBSSIDBuilt(); %>";
 	var apcli = "<% getWlanApcliBuilt(); %>";
 	var wds = "<% getWlanWdsBuilt(); %>";
 
