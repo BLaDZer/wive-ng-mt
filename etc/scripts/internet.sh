@@ -128,10 +128,9 @@ apcli_config() {
 	eval `nvram_buf_get 2860 ApCliClientOnly`
 	if  [ "$ApCliClientOnly" = "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "3" ]; then
     	    echo "APCLI Only client mode enable, shutdown AP interface."
-	    if [ "$first_wlan_apcli" != "" ]; then
+	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
     		delif_from_br $first_wlan_root_if
-    	    fi
-	    if [ "$second_wlan_apcli" != "" ]; then
+    	    elif [ "$second_wlan_apcli" != "" ] && [ "$second_wlan_apcli" = "$ApCliIfName" ]; then
     		delif_from_br $second_wlan_root_if
     	    fi
 	fi
