@@ -184,7 +184,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlan11bChannels"), getWlan11bChannels);
 	websAspDefine(T("getWlan11gChannels"), getWlan11gChannels);
 	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
-	websAspDefine(T("getWlanWdsBuilt"), getWlanApcliBuilt);
+	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
 	websAspDefine(T("getWlanChannel"), getWlanChannel);
 	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
@@ -486,7 +486,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
 
 	    // MAC Address
-	    websWrite(wp, T("<tr><td>%02X:%02X:%02X:%02X:%02X:%02X</td>"),
+	    websWrite(wp, T("<tr><td bgcolor=\"#c4d7ff\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 
 	    // Connection Time
@@ -496,16 +496,28 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("<td>%d</td><td>%s</td><td>%d</td>"), pe->Aid, (pe->Psm == 0)? "NO " : "YES", pe->MimoPs);
 
 	    // TX Rate
-	    websWrite(wp, T("<td>%d</td><td>%s</td><td>%s</td><td>%s</td>"),
-			pe->TxRate.field.MCS, (pe->TxRate.field.BW == 0)? "20M":"40M",
-			(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
-			(pe->TxRate.field.STBC == 0)? "NO " : "YES");
+	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
 
+	    // Bandwith
+	    switch (pe->TxRate.field.BW) {
+		case 0: websWrite(wp, T("<td>%s</td>"), "20MHz"); break;
+		case 1: websWrite(wp, T("<td>%s</td>"), "40MHz"); break;
+		//case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
+		//case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
+		//case 4: websWrite(wp, T("<td>%s</td>"), "10MHz"); break;
+		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
+	    }
+
+	    // SGI/STBC
+	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES");
+
+	    // HT/VHT Modes
 	    switch (pe->TxRate.field.MODE) {
 		case 0: websWrite(wp, T("<td>%s</td>"), "CCK"); break;
 		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
 		case 2: websWrite(wp, T("<td>%s</td>"), "HTMIX"); break;
 		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
+		//case 4: websWrite(wp, T("<td>%s</td>"), "MODE_VHT"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "");
 	    }
 
@@ -544,7 +556,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    RT_802_11_MAC_ENTRY2 *pe = &(table2.Entry[i]);
 
 	    // MAC Address
-	    websWrite(wp, T("<tr><td>%02X:%02X:%02X:%02X:%02X:%02X</td>"),
+	    websWrite(wp, T("<tr><td bgcolor=\"#c4ffc4\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 
 	    // Connection Time
@@ -554,16 +566,28 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("<td>%d</td><td>%s</td><td>%d</td>"), pe->Aid, (pe->Psm == 0)? "NO " : "YES", pe->MimoPs);
 
 	    // TX Rate
-	    websWrite(wp, T("<td>%d</td><td>%s</td><td>%s</td><td>%s</td>"),
-			pe->TxRate.field.MCS, (pe->TxRate.field.BW == 0)? "20M":"40M",
-			(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
-			(pe->TxRate.field.STBC == 0)? "NO " : "YES");
+	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
 
+	    // Bandwith
+	    switch (pe->TxRate.field.BW) {
+		case 0: websWrite(wp, T("<td>%s</td>"), "20MHz"); break;
+		case 1: websWrite(wp, T("<td>%s</td>"), "40MHz"); break;
+		case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
+		case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
+		//case 4: websWrite(wp, T("<td>%s</td>"), "10MHz"); break;
+		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
+	    }
+
+	    // SGI/STBC
+	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES");
+
+	    // HT/VHT Modes
 	    switch (pe->TxRate.field.MODE) {
 		case 0: websWrite(wp, T("<td>%s</td>"), "CCK"); break;
 		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
 		case 2: websWrite(wp, T("<td>%s</td>"), "HTMIX"); break;
 		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
+		case 4: websWrite(wp, T("<td>%s</td>"), "MODE_VHT"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "");
 	    }
 
