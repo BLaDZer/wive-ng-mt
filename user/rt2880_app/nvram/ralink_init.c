@@ -482,7 +482,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_RDG);
 		FPRINT_NUM(HT_OpMode);
 		FPRINT_NUM(HT_MpduDensity);
-		FPRINT_NUM(HT_EXTCHA);
 		FPRINT_NUM(HT_BW);
 		FPRINT_NUM(HT_AutoBA);
 		FPRINT_NUM(HT_BADecline);
@@ -494,7 +493,9 @@ static int gen_wifi_config(int getmode)
 		if (!inic) {
 		    FPRINT_NUM(HT_TxStream);
 		    FPRINT_NUM(HT_RxStream);
+		    FPRINT_NUM(HT_EXTCHA);
 		} else {
+		    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_bufget(mode, "HT_EXTCHAINIC")));
 		    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_bufget(mode, "HT_TxStreamINIC")));
 		    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_bufget(mode, "HT_RxStreamINIC")));
 		}
@@ -503,6 +504,11 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_40MHZ_INTOLERANT);
 		FPRINT_NUM(HT_MIMOPSMode);
 		FPRINT_NUM(HT_MIMOPS);
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+		FPRINT_NUM(VHT_BW);
+		FPRINT_NUM(VHT_SGI);
+		FPRINT_NUM(VHT_DisallowNonVHT);
+#endif
 		FPRINT_NUM(HSCounter);
 		FPRINT_NUM(WscConfMode);
 		FPRINT_NUM(WCNTest);
