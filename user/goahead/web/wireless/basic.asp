@@ -1321,20 +1321,6 @@ function CheckValue(form)
             <td><select name="abg_rate" class="half">
               </select></td>
           </tr>
-          <tr id="div_ht_tx_stream">
-            <td class="head" id="basicHTTxStream">HT TxStream</td>
-            <td><select name="tx_stream" class="half">
-                <option value="1">1</option>
-                <option value="2" id="div_HtTx2Stream">2</option>
-              </select></td>
-          </tr>
-          <tr id="div_ht_rx_stream">
-            <td class="head" id="basicHTRxStream">HT RxStream</td>
-            <td><select name="rx_stream" class="half">
-                <option value="1">1</option>
-                <option value="2" id="div_HtRx2Stream">2</option>
-              </select></td>
-          </tr>
         </table>
         <table id="div_11n" name="div_11n" class="form" style="display:none;">
           <tr>
@@ -1355,6 +1341,26 @@ function CheckValue(form)
               20</span> <span class="radio">
               <input type="radio" name="n_bandwidth" value="1" onClick="Channel_BandWidth_onClick()">
               20/40</span></td>
+          </tr>
+          <tr name="extension_channel" id="extension_channel">
+            <td class="head" id="basicHTExtChannel">Extension Channel</td>
+            <td><select id="n_extcha" name="n_extcha" class="mid">
+                <option value="1" selected>2412MHz (Channel 1)</option>
+              </select></td>
+          </tr>
+          <tr id="div_ht_tx_stream">
+            <td class="head" id="basicHTTxStream">HT TxStream</td>
+            <td><select name="tx_stream" class="half">
+                <option value="1">1</option>
+                <option value="2" id="div_HtTx2Stream">2</option>
+              </select></td>
+          </tr>
+          <tr id="div_ht_rx_stream">
+            <td class="head" id="basicHTRxStream">HT RxStream</td>
+            <td><select name="rx_stream" class="half">
+                <option value="1">1</option>
+                <option value="2" id="div_HtRx2Stream">2</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTGI">Guard Interval</td>
@@ -1394,12 +1400,6 @@ function CheckValue(form)
               <font id="basicHTRDGDisable">Disable&nbsp;</font></span> <span class="radio">
               <input type="radio" name="n_rdg" value="1">
               <font id="basicHTRDGEnable">Enable</font></span></td>
-          </tr>
-          <tr name="extension_channel" id="extension_channel">
-            <td class="head" id="basicHTExtChannel">Extension Channel</td>
-            <td><select id="n_extcha" name="n_extcha" class="mid">
-                <option value="1" selected>2412MHz (Channel 1)</option>
-              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTAMSDU">Aggregation MSDU (A-MSDU)</td>

@@ -487,10 +487,12 @@
 5) goahead: add support AC modes in connected client list.<br>
 6) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
 7) goahead: fix selected STA disconnect for dual band in connected client list.<br>
-8) nvram: add VHT parametrs for AC module.<br>
-9) igmpproxy: optimize retry timeouts.<br>
-10) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
-11) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+8) goahead: fix green ap mode in WebUI.<br>
+9) goahead: rearrange some parametrs in WebUI(more consistent).<br>
+10) nvram: add VHT parametrs for AC module.<br>
+11) igmpproxy: optimize retry timeouts.<br>
+12) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+13) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
 <br>
 <br>
 <b>TODO:</b><br>
