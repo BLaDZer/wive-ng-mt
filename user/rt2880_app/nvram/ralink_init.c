@@ -489,6 +489,8 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_BAWinSize);
 		FPRINT_NUM(HT_GI);
 		FPRINT_NUM(HT_STBC);
+		FPRINT_NUM(HT_LDPC);
+		FPRINT_NUM(HT_LinkAdapt);
 		FPRINT_STR(HT_MCS);
 		if (!inic) {
 		    FPRINT_NUM(HT_TxStream);
@@ -506,8 +508,10 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_MIMOPS);
 #if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 		FPRINT_NUM(VHT_BW);
-		FPRINT_NUM(VHT_SGI);
+		FPRINT_NUM(VHT_BW_SIGNAL);
 		FPRINT_NUM(VHT_DisallowNonVHT);
+		FPRINT_NUM(VHT_SGI);
+		FPRINT_NUM(VHT_STBC);
 #endif
 		FPRINT_NUM(HSCounter);
 		FPRINT_NUM(WscConfMode);
