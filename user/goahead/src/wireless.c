@@ -1970,13 +1970,20 @@ void disconnectSta(webs_t wp, char_t *path, char_t *query)
 
 	if ((mac != NULL) && (strlen(mac) > 0))
 	{
-		if (strcmp(mac, "*") == 0)
+		if (strcmp(mac, "*") == 0) {
 			doSystem("iwpriv ra0 set DisConnectAllSta=1");
-		else if (strlen(mac) == 17)
-		{
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+			doSystem("iwpriv rai0 set DisConnectAllSta=1");
+#endif
+		} else if (strlen(mac) == 17) {
 			char cmd[80];
+
 			sprintf(cmd, "iwpriv ra0 set DisConnectSta=%s", mac);
 			doSystem(cmd);
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+			sprintf(cmd, "iwpriv rai0 set DisConnectSta=%s", mac);
+			doSystem(cmd);
+#endif
 		}
 	}
 
