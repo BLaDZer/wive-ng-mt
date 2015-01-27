@@ -1377,14 +1377,6 @@ function CheckValue(form)
                 <option value = "33" selected id="basicHTAutoMCS">Auto</option>
               </select></td>
           </tr>
-          <tr id="htOpModeRow" style="display: none;">
-            <td class="head" id="basicHTOPMode">Operating Mode</td>
-            <td><span class="radio">
-              <input type="radio" name="n_mode" value="0" checked>
-              <font id="basicHTMixed">Mixed Mode</font></span> <span class="radio">
-              <input type="radio" name="n_mode" value="1">
-              Green Field</span></td>
-          </tr>
           <tr>
             <td class="head" id="basicHTGI">Guard Interval</td>
             <td><span class="radio">
@@ -1394,15 +1386,7 @@ function CheckValue(form)
               <font id="basicHTAutoGI">Auto</font></span></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTRDG">Reverse Direction Grant(RDG)</td>
-            <td><span class="radio">
-              <input type="radio" name="n_rdg" value="0" checked>
-              <font id="basicHTRDGDisable">Disable&nbsp;</font></span> <span class="radio">
-              <input type="radio" name="n_rdg" value="1">
-              <font id="basicHTRDGEnable">Enable</font></span></td>
-          </tr>
-          <tr>
-            <td class="head" id="basicHTAMSDU">Aggregation MSDU (A-MSDU)</td>
+            <td class="head" id="basicHTAMSDU">Aggregation MSDU</td>
             <td><span class="radio">
               <input type="radio" name="n_amsdu" value="0" checked>
               <font id="basicHTAMSDUDisable">Disable</font></span> <span class="radio">
@@ -1417,6 +1401,21 @@ function CheckValue(form)
               <input type="radio" name="n_autoba" value="1">
               <font id="basicHTAddBAEnable">Enable</font></span></td>
           </tr>
+          <tr id="htOpModeRow" style="display: none;">
+            <td class="head" id="basicHTOPMode">Green Filed Mode</td>
+            <td><span class="radio">
+              <input type="radio" name="n_mode" value="0" checked>
+              <font id="basicHTMixed">Disable</font></span> <span class="radio">
+              <input type="radio" name="n_mode" value="1">Enable</span></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicHTRDG">Reverse Direction Grant</td>
+            <td><span class="radio">
+              <input type="radio" name="n_rdg" value="0" checked>
+              <font id="basicHTRDGDisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="n_rdg" value="1">
+              <font id="basicHTRDGEnable">Enable</font></span></td>
+          </tr>
           <tr>
             <td class="head" id="basicHTDelBA">Decline BA Request</td>
             <td><span class="radio">
@@ -1430,8 +1429,7 @@ function CheckValue(form)
         <table class="buttons">
           <tr align="center">
             <td><input type="hidden" name="AutoChannelSelect" value="1">
-              <input type="submit" class="normal" value="Apply" id="basicApply">
-              &nbsp;&nbsp;
+              <input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;
               <input type="button" class="normal" value="Cancel" id="basicCancel" onClick="window.location.reload();">
               <input type="hidden" name="submit-url" value="/wireless/basic.asp"></td>
           </tr>

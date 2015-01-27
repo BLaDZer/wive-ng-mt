@@ -48,13 +48,13 @@
   <message msgid="basic wds encryp key" msgstr="Ключ шифрования" />
   <message msgid="basic wds ap macaddr" msgstr="AP MAC адрес" />
   <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
-  <message msgid="basic ht op mode" msgstr="Operating Mode" />
-  <message msgid="basic ht op mixed" msgstr="Mixed Mode" />
+  <message msgid="basic ht op mode" msgstr="Сбережение энергии" />
+  <message msgid="basic ht op mixed" msgstr="Disabled" />
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
   <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
-  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant(RDG)" />
+  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />
   <message msgid="basic ht extension channel" msgstr="Дополнительный канал" />
-  <message msgid="basic ht amsdu" msgstr="Агрегация MSDU(A-MSDU)" />
+  <message msgid="basic ht amsdu" msgstr="Агрегация MSDU" />
   <message msgid="basic ht addba" msgstr="Auto Block ACK" />
   <message msgid="basic ht delba" msgstr="Отклонять запрос BA" />
   <message msgid="basic other" msgstr="Прочее" />
@@ -70,7 +70,7 @@
   <message msgid="adv basic data rate all" msgstr="Все(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Интервал маяка" />
   <message msgid="adv beacon interval range" msgstr="(20 - 999, по умолчанию 100)" />
-  <message msgid="adv dtim" msgstr="Интервал DTIM" />
+  <message msgid="adv dtim" msgstr="Интервал оповещения" />
   <message msgid="adv dtim range" msgstr="(диапазон 1 - 255, по умолчанию 1)" />
   <message msgid="adv fragment threshold" msgstr="Макс. размер фрагмента" />
   <message msgid="adv fragment threshold range" msgstr="(256 - 2346, по умолчанию 2346)" />

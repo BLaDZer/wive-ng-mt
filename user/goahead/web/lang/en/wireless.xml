@@ -48,13 +48,13 @@
   <message msgid="basic wds encryp key" msgstr="Encryp Key" />
   <message msgid="basic wds ap macaddr" msgstr="AP MAC Address" />
   <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
-  <message msgid="basic ht op mode" msgstr="Operating Mode" />
-  <message msgid="basic ht op mixed" msgstr="Mixed Mode" />
+  <message msgid="basic ht op mode" msgstr="Green Filed Mode" />
+  <message msgid="basic ht op mixed" msgstr="Disable" />
   <message msgid="basic ht channel bandwidth" msgstr="Channel BandWidth" />
   <message msgid="basic ht guard interval" msgstr="Guard Interval" />
-  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant (RDG)" />
+  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />
   <message msgid="basic ht extension channel" msgstr="Extension Channel" />
-  <message msgid="basic ht amsdu" msgstr="Aggregation MSDU (A-MSDU)" />
+  <message msgid="basic ht amsdu" msgstr="Aggregation MSDU" />
   <message msgid="basic ht addba" msgstr="Auto Block ACK" />
   <message msgid="basic ht delba" msgstr="Decline BA Request" />
   <message msgid="basic other" msgstr="Other" />
@@ -70,7 +70,7 @@
   <message msgid="adv basic data rate all" msgstr="All(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Beacon Interval" />
   <message msgid="adv beacon interval range" msgstr="(range 20 - 999)" />
-  <message msgid="adv dtim" msgstr="Data Beacon Rate (DTIM)" />
+  <message msgid="adv dtim" msgstr="Data Beacon Rate" />
   <message msgid="adv dtim range" msgstr="(range 1 - 255)" />
   <message msgid="adv fragment threshold" msgstr="Fragment Threshold" />
   <message msgid="adv fragment threshold range" msgstr="(range 256 - 2346)" />

@@ -347,7 +347,7 @@ function CheckValue(form)
               ms <font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
           </tr>
           <tr>
-            <td class="head" id="advDTIM">Data Beacon Rate (DTIM) </td>
+            <td class="head" id="advDTIM">Data Beacon Rate</td>
             <td><input type="text" name="dtim" class="half" maxlength="3" value="<% getCfgZero(1, "DtimPeriod"); %>">
               ms <font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
           </tr>
