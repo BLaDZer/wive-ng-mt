@@ -1326,14 +1326,6 @@ function CheckValue(form)
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">HT Physical Mode</td>
           </tr>
-          <tr id="htOpModeRow" style="display: none;">
-            <td class="head" id="basicHTOPMode">Operating Mode</td>
-            <td><span class="radio">
-              <input type="radio" name="n_mode" value="0" checked>
-              <font id="basicHTMixed">Mixed Mode</font></span> <span class="radio">
-              <input type="radio" name="n_mode" value="1">
-              Green Field</span></td>
-          </tr>
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
             <td><span class="radio">
@@ -1363,14 +1355,6 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTGI">Guard Interval</td>
-            <td><span class="radio">
-              <input type="radio" name="n_gi" value="0" checked>
-              <font id="basicHTLongGI">Long</font></span> <span class="radio">
-              <input type="radio" name="n_gi" value="1">
-              <font id="basicHTAutoGI">Auto</font></span></td>
-          </tr>
-          <tr>
             <td class="head">MCS</td>
             <td><select name="n_mcs" class="half">
                 <option value = "0">0</option>
@@ -1392,6 +1376,22 @@ function CheckValue(form)
                 <option value = "32">32</option>
                 <option value = "33" selected id="basicHTAutoMCS">Auto</option>
               </select></td>
+          </tr>
+          <tr id="htOpModeRow" style="display: none;">
+            <td class="head" id="basicHTOPMode">Operating Mode</td>
+            <td><span class="radio">
+              <input type="radio" name="n_mode" value="0" checked>
+              <font id="basicHTMixed">Mixed Mode</font></span> <span class="radio">
+              <input type="radio" name="n_mode" value="1">
+              Green Field</span></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicHTGI">Guard Interval</td>
+            <td><span class="radio">
+              <input type="radio" name="n_gi" value="0" checked>
+              <font id="basicHTLongGI">Long</font></span> <span class="radio">
+              <input type="radio" name="n_gi" value="1">
+              <font id="basicHTAutoGI">Auto</font></span></td>
           </tr>
           <tr>
             <td class="head" id="basicHTRDG">Reverse Direction Grant(RDG)</td>
