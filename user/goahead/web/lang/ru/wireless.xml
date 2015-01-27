@@ -50,6 +50,7 @@
   <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
   <message msgid="basic ht op mode" msgstr="Сбережение энергии" />
   <message msgid="basic ht op mixed" msgstr="Disabled" />
+  <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
   <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
   <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />

@@ -512,7 +512,8 @@ function initTranslation()
 
 	_TR("basicHTPhyMode", "basic ht phy mode");
 	_TR("basicHTOPMode", "basic ht op mode");
-	_TR("basicHTMixed", "basic ht op mixed");
+	_TR("basicHTMixedDisable", "basic ht op mixed");
+	_TR("basicHTMixedEnable", "basic ht op green");
 	_TR("basicHTChannelBW", "basic ht channel bandwidth");
 	_TR("basicHTGI", "basic ht guard interval");
 	_TR("basicHTLongGI", "wireless long");
@@ -1405,8 +1406,9 @@ function CheckValue(form)
             <td class="head" id="basicHTOPMode">Green Filed Mode</td>
             <td><span class="radio">
               <input type="radio" name="n_mode" value="0" checked>
-              <font id="basicHTMixed">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_mode" value="1">Enable</span></td>
+              <font id="basicHTMixedDisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="n_mode" value="1">
+              <font id="basicHTMixedEnable">Enable</font></span></td>
           </tr>
           <tr>
             <td class="head" id="basicHTRDG">Reverse Direction Grant</td>
