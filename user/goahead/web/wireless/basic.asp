@@ -1330,10 +1330,8 @@ function CheckValue(form)
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
             <td><span class="radio">
-              <input type="radio" name="n_bandwidth" value="0" onClick="Channel_BandWidth_onClick()" checked>
-              20</span> <span class="radio">
-              <input type="radio" name="n_bandwidth" value="1" onClick="Channel_BandWidth_onClick()">
-              20/40</span></td>
+              <input type="radio" name="n_bandwidth" value="0" onClick="Channel_BandWidth_onClick()" checked>20MHz</span> <span class="radio">
+              <input type="radio" name="n_bandwidth" value="1" onClick="Channel_BandWidth_onClick()">20/40MHz</span></td>
           </tr>
           <tr name="extension_channel" id="extension_channel">
             <td class="head" id="basicHTExtChannel">Extension Channel</td>
