@@ -510,6 +510,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(VHT_BW);
 		FPRINT_NUM(VHT_BW_SIGNAL);
 		FPRINT_NUM(VHT_DisallowNonVHT);
+		FPRINT_NUM(VHT_LDPC);
 		FPRINT_NUM(VHT_SGI);
 		FPRINT_NUM(VHT_STBC);
 #endif
