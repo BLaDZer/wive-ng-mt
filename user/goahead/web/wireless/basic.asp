@@ -16,6 +16,10 @@ var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var channel_index  = '<% getWlanChannel(); %>';
 var fxtxmode = '<% getCfgGeneral(1, "FixedTxMode"); %>';
 var countrycode = '<% getCfgGeneral(1, "CountryCode"); %>';
+
+var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
+var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
+
 var ht_mode = '<% getCfgZero(1, "HT_OpMode"); %>';
 var ht_gi = '<% getCfgZero(1, "HT_GI"); %>';
 var ht_stbc = '<% getCfgZero(1, "HT_STBC"); %>';
@@ -26,18 +30,16 @@ var ht_extcha = '<% getCfgZero(1, "HT_EXTCHA"); %>';
 var ht_amsdu = '<% getCfgZero(1, "HT_AMSDU"); %>';
 var ht_autoba = '<% getCfgZero(1, "HT_AutoBA"); %>';
 var ht_badecline = '<% getCfgZero(1, "HT_BADecline"); %>';
-var ht_f_40mhz = '<% getCfgZero(1, "HT_40MHZ_INTOLERANT"); %>';
-var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
-var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
-var is3t3r = '<% is3t3r(); %>';
-var mssidb = "<% getMBSSIDBuilt(); %>";
-var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var vht_gi = '<% getCfgZero(1, "VHT_SGI"); %>';
 var vht_stbc = '<% getCfgZero(1, "VHT_STBC"); %>';
 var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
 var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
 var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
+
+var is3t3r = '<% is3t3r(); %>';
+var mssidb = '<% getMBSSIDBuilt(); %>';
+var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var mbss_params =
 [
