@@ -489,11 +489,12 @@
 7) goahead: fix selected STA disconnect for dual band in connected client list.<br>
 8) goahead: fix green ap mode in WebUI.<br>
 9) goahead: rearrange some parametrs in WebUI(more consistent).<br>
-10) nvram: add VHT parametrs for AC module.<br>
-11) igmpproxy: optimize retry timeouts.<br>
-12) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
-13) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
-14) kernel: net: skb_share_check() should use consume_skb().<br>
+10) goahead: add VHT mode parametrs for AC module in WebUI.<br>
+11) nvram: add VHT parametrs for AC module.<br>
+12) igmpproxy: optimize retry timeouts.<br>
+13) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+14) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+15) kernel: net: skb_share_check() should use consume_skb().<br>
 <br>
 <br>
 <b>TODO:</b><br>

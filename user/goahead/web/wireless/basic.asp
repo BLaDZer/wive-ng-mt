@@ -38,6 +38,7 @@ var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
 var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
 var is3t3r = '<% is3t3r(); %>';
+var is5gh_support = '<% is5gh_support(); %>';
 var mssidb = '<% getMBSSIDBuilt(); %>';
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
@@ -703,8 +704,10 @@ function initValue()
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
-		showElement("div_ac");
 		displayElement('htOpModeRow', green_on);
+		showElementEx("div_ht_tx_stream", style_display_on());
+		showElementEx("div_ht_rx_stream", style_display_on());
+		show14channel(false);
 
 		form.n_mode.disabled = false;
 		form.n_bandwidth.disabled = false;
@@ -712,9 +715,13 @@ function initValue()
 		form.n_gi.disabled = false;
 		form.n_stbc.disabled = false;
 		form.n_mcs.disabled = false;
-		showElementEx("div_ht_tx_stream", style_display_on());
-		showElementEx("div_ht_rx_stream", style_display_on());
-		show14channel(false);
+
+	}
+
+        // Display VHT modes
+	if (is5gh_support == 1)
+	{
+		showElement("div_ac");
 
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
@@ -1142,11 +1149,10 @@ function wirelessModeChange(form)
 	// Hide & disable elements
 	var wmode = form.wirelessmode.value;
 
-	// Wireless mode
+        // Display HT modes
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
-		showElement("div_ac");
 		displayElement('htOpModeRow', green_on);
 
 		form.n_mode.disabled = false;
@@ -1155,6 +1161,12 @@ function wirelessModeChange(form)
 		form.n_gi.disabled = false;
 		form.n_stbc.disabled = false;
 		form.n_mcs.disabled = false;
+	}
+
+        // Display VHT modes
+	if (is5gh_support == 1)
+	{
+		showElement("div_ac");
 
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
