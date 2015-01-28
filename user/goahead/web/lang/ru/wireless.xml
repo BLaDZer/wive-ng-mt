@@ -53,10 +53,11 @@
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
   <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
+  <message msgid="basic ldpc" msgstr="Контроль чётности" />
   <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />
   <message msgid="basic ht extension channel" msgstr="Дополнительный канал" />
   <message msgid="basic ht amsdu" msgstr="Агрегация MSDU" />
-  <message msgid="basic ht addba" msgstr="Auto Block ACK" />
+  <message msgid="basic ht addba" msgstr="Агрегация ACK" />
   <message msgid="basic ht delba" msgstr="Отклонять запрос BA" />
   <message msgid="basic other" msgstr="Прочее" />
   <message msgid="basic ht txstream" msgstr="HT TxStream" />

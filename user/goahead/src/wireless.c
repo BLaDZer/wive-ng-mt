@@ -830,10 +830,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode;
 	char_t  *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11aChannel, *sz11bChannel, *sz11gChannel, *abg_rate;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
 	char_t	*n_autoba, *n_badecline;
 	char_t	*tx_stream, *rx_stream;
-	int     is_n = 0, i = 1, ssid = 0, new_bssid_num;
+	char_t	*ac_gi, *ac_stbc, *ac_ldpc;
+
+	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "";
 	char	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
@@ -855,6 +857,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	n_mode = websGetVar(wp, T("n_mode"), T("0"));
 	n_bandwidth = websGetVar(wp, T("n_bandwidth"), T("0"));
 	n_gi = websGetVar(wp, T("n_gi"), T("0"));
+	n_stbc = websGetVar(wp, T("n_stbc"), T("0"));
 	n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
 	n_rdg = websGetVar(wp, T("n_rdg"), T("0"));
 	n_extcha = websGetVar(wp, T("n_extcha"), T("0"));
@@ -864,6 +867,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	tx_stream = websGetVar(wp, T("tx_stream"), T("0"));
 	rx_stream = websGetVar(wp, T("rx_stream"), T("0"));
 	auto_select = websGetVar(wp, T("AutoChannelSelect"), T("0"));
+
+	ac_gi = websGetVar(wp, T("ac_gi"), T("0"));
+	ac_stbc = websGetVar(wp, T("ac_stbc"), T("0"));
+	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("0"));
+
 	new_bssid_num = atoi(bssid_num);
 
 	if (new_bssid_num < 1 || new_bssid_num > 8) {
@@ -879,7 +887,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	}
 
 	if (atoi(wirelessmode) >= 5)
-		is_n = 1;
+		is_ht = 1;
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "WirelessMode", wirelessmode);
@@ -988,12 +996,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	else
 		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "HT");
 
-	//HT_OpMode, HT_BW, HT_GI, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
-	if (is_n)
+	//HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
+	if (is_ht)
 	{
 		nvram_bufset(RT2860_NVRAM, "HT_OpMode", n_mode);
 		nvram_bufset(RT2860_NVRAM, "HT_BW", n_bandwidth);
 		nvram_bufset(RT2860_NVRAM, "HT_GI", n_gi);
+		nvram_bufset(RT2860_NVRAM, "HT_STBC", n_stbc);
 		nvram_bufset(RT2860_NVRAM, "HT_MCS", n_mcs);
 		nvram_bufset(RT2860_NVRAM, "HT_EXTCHA", n_extcha);
 		nvram_bufset(RT2860_NVRAM, "HT_AMSDU", n_amsdu);
@@ -1004,6 +1013,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		/* HT_RGD depend at HT_HTC+ frame support */
 		nvram_bufset(RT2860_NVRAM, "HT_HTC", n_rdg);
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
+
+		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
+		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
+		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
 	}
 
 	nvram_bufset(RT2860_NVRAM, "RadioOff", (web_radio_on) ? "0" : "1");
@@ -1031,16 +1044,22 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		if (strncmp(abg_rate, "", 1)) {
 			websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
 		}
-		if (is_n) {
+		if (is_ht) {
 			websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
 			websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
 			websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
+			websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
 			websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);
 			websWrite(wp, T("n_rdg: %s<br>\n"), n_rdg);
 			websWrite(wp, T("n_extcha: %s<br>\n"), n_extcha);
 			websWrite(wp, T("n_amsdu: %s<br>\n"), n_amsdu);
 			websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
 			websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
+
+			websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
+			websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
+			websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
+
 		}
 		websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
 		websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);

@@ -53,6 +53,8 @@
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Channel BandWidth" />
   <message msgid="basic ht guard interval" msgstr="Guard Interval" />
+  <message msgid="basic stbc" msgstr="Space-Time Block Coding" />
+  <message msgid="basic ldpc" msgstr="Low Disenty Parity Check" />
   <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />
   <message msgid="basic ht extension channel" msgstr="Extension Channel" />
   <message msgid="basic ht amsdu" msgstr="Aggregation MSDU" />

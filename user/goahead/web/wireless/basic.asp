@@ -34,6 +34,10 @@ var is3t3r = '<% is3t3r(); %>';
 var mssidb = "<% getMBSSIDBuilt(); %>";
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
+var vht_gi = '<% getCfgZero(1, "VHT_SGI"); %>';
+var vht_stbc = '<% getCfgZero(1, "VHT_STBC"); %>';
+var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
+
 var mbss_params =
 [
 	<% dumpBSSKeys(); %>
@@ -515,6 +519,9 @@ function initTranslation()
 	_TR("basicHTMixedDisable", "basic ht op mixed");
 	_TR("basicHTMixedEnable", "basic ht op green");
 	_TR("basicHTChannelBW", "basic ht channel bandwidth");
+	_TR("basicHTSTBC", "basic stbc");
+	_TR("basicHTSTBCDisable", "wireless disable");
+	_TR("basicHTSTBCEnable", "wireless enable");
 	_TR("basicHTGI", "basic ht guard interval");
 	_TR("basicHTLongGI", "wireless long");
 	_TR("basicHTAutoGI", "wireless auto");
@@ -536,6 +543,16 @@ function initTranslation()
 	_TR("basicOther", "basic other");
 	_TR("basicHTTxStream", "basic ht txstream");
 	_TR("basicHTRxStream", "basic ht rxstream");
+
+	_TR("basicVHTGI", "basic ht guard interval");
+	_TR("basicVHTLongGI", "wireless long");
+	_TR("basicVHTAutoGI", "wireless auto");
+	_TR("basicSTBC", "basic stbc");
+	_TR("basicSTBCDisable", "wireless disable");
+	_TR("basicSTBCEnable", "wireless enable");
+	_TR("basicLDPC", "basic ldpc");
+	_TR("basicLDPCEnable", "wireless enable");
+	_TR("basicLDPCEnable", "wireless enable");
 
 	_TRV("basicApply", "wireless apply");
 	_TRV("basicCancel", "wireless cancel");
@@ -617,6 +634,7 @@ function initValue()
 	hideElement("div_ht_rx_stream");
 	hideElement("div_abg_rate");
 	hideElement("div_11n");
+	hideElement("div_ac");
 
 	form.sz11aChannel.disabled = true;
 	form.sz11bChannel.disabled = true;
@@ -626,7 +644,12 @@ function initValue()
 	form.n_bandwidth.disabled = true;
 	form.n_rdg.disabled = true;
 	form.n_gi.disabled = true;
+	form.n_stbc.disabled = true;
 	form.n_mcs.disabled = true;
+
+	form.ac_gi.disabled = true;
+	form.ac_stbc.disabled = true;
+	form.ac_ldpc.disabled = true;
 
 	hideElement("div_mbssidapisolated");
 	form.mbssidapisolated.disabled = true;
@@ -677,16 +700,22 @@ function initValue()
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
+		showElement("div_ac");
 		displayElement('htOpModeRow', green_on);
 
 		form.n_mode.disabled = false;
 		form.n_bandwidth.disabled = false;
 		form.n_rdg.disabled = false;
 		form.n_gi.disabled = false;
+		form.n_stbc.disabled = false;
 		form.n_mcs.disabled = false;
 		showElementEx("div_ht_tx_stream", style_display_on());
 		showElementEx("div_ht_rx_stream", style_display_on());
 		show14channel(false);
+
+		form.ac_gi.disabled = false;
+		form.ac_stbc.disabled = false;
+		form.ac_ldpc.disabled = false;
 	}
 
 	ssidDisplay(form);
@@ -874,6 +903,11 @@ function initValue()
 	else
 		form.n_gi[1].checked = true;
 
+	if (ht_stbc == "0")
+		form.n_stbc[0].checked = true;
+	else
+		form.n_stbc[1].checked = true;
+
 	if (is3t3r == "1")
 	{
 		for (i = 16; i < 24; i++)
@@ -962,6 +996,22 @@ function initValue()
 	}
 	form.rx_stream.options.selectedIndex = rx_stream_idx - 1;
 	form.tx_stream.options.selectedIndex = tx_stream_idx - 1;
+
+	if (vht_gi == "0")
+		form.ac_gi[0].checked = true;
+	else
+		form.ac_gi[1].checked = true;
+
+	if (vht_stbc == "0")
+		form.ac_stbc[0].checked = true;
+	else
+		form.ac_stbc[1].checked = true;
+
+	if (vht_ldpc == "0")
+		form.ac_ldpc[0].checked = true;
+	else
+		form.ac_ldpc[1].checked = true;
+
 }
 
 function show_abg_rate(form)
@@ -1066,6 +1116,7 @@ function wirelessModeChange(form)
 	hideElement("div_ht_rx_stream");
 	hideElement("div_abg_rate");
 	hideElement("div_11n");
+	hideElement("div_ac");
 	show14channel(true);
 
 	form.sz11aChannel.disabled = true;
@@ -1076,7 +1127,12 @@ function wirelessModeChange(form)
 	form.n_bandwidth.disabled = true;
 	form.n_rdg.disabled = true;
 	form.n_gi.disabled = true;
+	form.n_stbc.disabled = true;
 	form.n_mcs.disabled = true;
+
+	form.ac_gi.disabled = true;
+	form.ac_stbc.disabled = true;
+	form.ac_ldpc.disabled = true;
 
 	// Hide & disable elements
 	var wmode = form.wirelessmode.value;
@@ -1085,13 +1141,19 @@ function wirelessModeChange(form)
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
+		showElement("div_ac");
 		displayElement('htOpModeRow', green_on);
 
 		form.n_mode.disabled = false;
 		form.n_bandwidth.disabled = false;
 		form.n_rdg.disabled = false;
 		form.n_gi.disabled = false;
+		form.n_stbc.disabled = false;
 		form.n_mcs.disabled = false;
+
+		form.ac_gi.disabled = false;
+		form.ac_stbc.disabled = false;
+		form.ac_ldpc.disabled = false;
 	}
 
 	if ((wmode == "0") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode == "7"))
@@ -1385,6 +1447,14 @@ function CheckValue(form)
               <font id="basicHTAutoGI">Auto</font></span></td>
           </tr>
           <tr>
+            <td class="head" id="basicHSTBC">Space-Time Block Coding</td>
+            <td><span class="radio">
+              <input type="radio" name="n_stbc" value="0" checked>
+              <font id="basicHTSTBCDisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="n_stbc" value="1">
+              <font id="basicHTSTBCEnable">Enable</font></span></td>
+          </tr>
+          <tr>
             <td class="head" id="basicHTAMSDU">Aggregation MSDU</td>
             <td><span class="radio">
               <input type="radio" name="n_amsdu" value="0" checked>
@@ -1423,6 +1493,35 @@ function CheckValue(form)
               <font id="basicHTDelBADisable">Disable</font></span> <span class="radio">
               <input type="radio" name="n_badecline" value="1">
               <font id="basicHTDelBAEnable">Enable</font></span></td>
+          </tr>
+        </table>
+        <table id="div_ac" name="div_ac" class="form" style="display:none;">
+          <tr>
+            <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
+          </tr>
+          <tr>
+            <td class="head" id="basicVHTGI">Guard Interval</td>
+            <td><span class="radio">
+              <input type="radio" name="ac_gi" value="0" checked>
+              <font id="basicVHTLongGI">Long</font></span> <span class="radio">
+              <input type="radio" name="ac_gi" value="1">
+              <font id="basicVHTAutoGI">Auto</font></span></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicVHTSTBC">Space-Time Block Coding</td>
+            <td><span class="radio">
+              <input type="radio" name="ac_stbc" value="0" checked>
+              <font id="basicVHTSTBCDisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="ac_stbc" value="1">
+              <font id="basicVHTSTBC">Enable</font></span></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicLDPC">Low Disenty parity check</td>
+            <td><span class="radio">
+              <input type="radio" name="ac_ldpc" value="0" checked>
+              <font id="basicLDPCDisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="ac_ldpc" value="1">
+              <font id="basicLDPCEnable">Enable</font></span></td>
           </tr>
         </table>
         <br>
