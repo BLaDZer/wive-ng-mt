@@ -833,7 +833,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
 	char_t	*n_autoba, *n_badecline;
 	char_t	*tx_stream, *rx_stream;
-	char_t	*ac_gi, *ac_stbc, *ac_ldpc;
+	char_t	*ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "";
@@ -871,6 +871,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ac_gi = websGetVar(wp, T("ac_gi"), T("0"));
 	ac_stbc = websGetVar(wp, T("ac_stbc"), T("0"));
 	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("0"));
+	ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
+	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
 
 	new_bssid_num = atoi(bssid_num);
 
@@ -1017,6 +1019,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
+		nvram_bufset(RT2860_NVRAM, "VHT_BW", ac_bw);
+		nvram_bufset(RT2860_NVRAM, "VHT_BW_SIGNAL", ac_bwsig);
 	}
 
 	nvram_bufset(RT2860_NVRAM, "RadioOff", (web_radio_on) ? "0" : "1");
@@ -1059,7 +1063,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
 			websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
 			websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
-
+			websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
+			websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
 		}
 		websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
 		websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);

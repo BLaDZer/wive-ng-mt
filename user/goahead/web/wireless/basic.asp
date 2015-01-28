@@ -27,7 +27,6 @@ var ht_amsdu = '<% getCfgZero(1, "HT_AMSDU"); %>';
 var ht_autoba = '<% getCfgZero(1, "HT_AutoBA"); %>';
 var ht_badecline = '<% getCfgZero(1, "HT_BADecline"); %>';
 var ht_f_40mhz = '<% getCfgZero(1, "HT_40MHZ_INTOLERANT"); %>';
-var apcli_include = '<% getWlanApcliBuilt(); %>';
 var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
 var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
 var is3t3r = '<% is3t3r(); %>';
@@ -37,6 +36,8 @@ var green_on = '<% getGreenAPBuilt(); %>' == '1';
 var vht_gi = '<% getCfgZero(1, "VHT_SGI"); %>';
 var vht_stbc = '<% getCfgZero(1, "VHT_STBC"); %>';
 var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
+var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
+var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
 var mbss_params =
 [
@@ -1012,6 +1013,8 @@ function initValue()
 	else
 		form.ac_ldpc[1].checked = true;
 
+	form.ac_bw.options.selectedIndex = vht_bw;
+	form.ac_bwsig.options.selectedIndex = vht_bwsig;
 }
 
 function show_abg_rate(form)
@@ -1498,6 +1501,21 @@ function CheckValue(form)
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
+          </tr>
+          <tr id="basicVHTBW">
+            <td class="head">Channel BandWidth</td>
+            <td><select name="ac_bw" size="1" class="half">
+                <option value="0" selected id="1">20/40MHz</option>
+                <option value="1" id="2">20/40/80MHz</option>
+		</select></td>
+          </tr>
+          <tr id="basicVHTBWSIGNAL">
+            <td class="head">BandWidth Signaling Mode</td>
+            <td><select name="ac_bwsig" size="1" class="half">
+                <option value="0" selected id="1">Disable</option>
+                <option value="1" id="2">Static</option>
+                <option value="2" id="3">Dynamic</option>
+		</select></td>
           </tr>
           <tr>
             <td class="head" id="basicVHTGI">Guard Interval</td>
