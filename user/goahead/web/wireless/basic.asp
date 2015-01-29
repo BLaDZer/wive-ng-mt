@@ -635,7 +635,6 @@ function initValue()
 
 	// Hide & disable elements
 	hideElement("div_11a_channel");
-	hideElement("div_11b_channel");
 	hideElement("div_11g_channel");
 	hideElement("div_ht_tx_stream");
 	hideElement("div_ht_rx_stream");
@@ -1110,7 +1109,6 @@ function show_abg_rate(form)
 function wirelessModeChange(form)
 {
 	hideElement("div_11a_channel");
-	hideElement("div_11b_channel");
 	hideElement("div_11g_channel");
 	hideElement("div_ht_tx_stream");
 	hideElement("div_ht_rx_stream");
