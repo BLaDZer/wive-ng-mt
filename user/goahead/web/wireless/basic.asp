@@ -567,7 +567,7 @@ function initTranslation()
 	_TRV("basicCancel", "wireless cancel");
 }
 
-var channel_list = [ 'sz11aChannel', 'sz11gChannel'];
+var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
 var channels = [];
 
 function saveRadioChannels()
