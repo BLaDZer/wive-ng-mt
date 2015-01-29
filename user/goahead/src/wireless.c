@@ -30,7 +30,6 @@ extern int g_wsc_configured;
 #endif
 
 static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlan11bChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -181,7 +180,6 @@ void formDefineWireless(void)
 	websAspDefine(T("getVideoTurbineBuilt"), getVideoTurbineBuilt);
 	websAspDefine(T("getIdsEnableBuilt"), getIdsEnableBuilt);
 	websAspDefine(T("getWlan11aChannels"), getWlan11aChannels);
-	websAspDefine(T("getWlan11bChannels"), getWlan11bChannels);
 	websAspDefine(T("getWlan11gChannels"), getWlan11gChannels);
 	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
 	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
@@ -237,7 +235,6 @@ static int listCountryCodes(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RALINK_RT3883
 	int  idx = 0, channel;
 	const char *value = nvram_bufget(RT2860_NVRAM,"CountryRegionABand");
 	const char *channel_s = nvram_bufget(RT2860_NVRAM, "Channel");
@@ -373,28 +370,11 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
 	}
 
-#endif
 	return 0;
 }
 
 /*
- * description: write 802.11b channels in <select> tag
- */
-static int getWlan11bChannels(int eid, webs_t wp, int argc, char_t **argv)
-{
-    int idx = 0, channel;
-    char *channel_s = nvram_get(RT2860_NVRAM, "Channel");
-
-    channel = (channel_s == NULL)? 0 : atoi(channel_s);
-    for (idx = 0; idx < 13; idx++)
-	websWrite(wp, T("%s%d %s>%d%s%d%s"),
-		 "<option value=", idx+1, (idx+1 == channel)? "selected" : "", 2412+5*idx, "MHz (Channel ", idx+1, ")</option>");
-
- return websWrite(wp, T("<option value=14 %s>2484MHz (Channel 14)</option>\n"),(14 == channel)? "selected" : "");
-}
-
-/*
- * description: write 802.11g channels in <select> tag
+ * description: write 802.11b/g/n channels in <select> tag
  */
 static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -829,7 +809,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode;
 	char_t  *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated;
-	char_t	*sz11aChannel, *sz11bChannel, *sz11gChannel, *abg_rate;
+	char_t	*sz11aChannel, *sz11gChannel, *abg_rate;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
 	char_t	*n_autoba, *n_badecline;
 	char_t	*tx_stream, *rx_stream;
@@ -851,7 +831,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
-	sz11bChannel = websGetVar(wp, T("sz11bChannel"), T("")); 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
 	n_mode = websGetVar(wp, T("n_mode"), T("0"));
@@ -882,7 +861,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	}
 
 	//11abg Channel or AutoSelect
-	if ((0 == strlen(sz11aChannel)) && (0 == strlen(sz11bChannel)) && (0 == strlen(sz11gChannel)))
+	if ((0 == strlen(sz11aChannel)) && (0 == strlen(sz11gChannel)))
 	{
 		websError(wp, 403, T("'Channel' should not be empty!"));
 		return;
@@ -939,8 +918,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", auto_select);
 	if (CHK_IF_SET(sz11aChannel))
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11aChannel);
-	if (CHK_IF_SET(sz11bChannel))
-		nvram_bufset(RT2860_NVRAM, "Channel", sz11bChannel);
 	if (CHK_IF_SET(sz11gChannel))
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
 
@@ -1043,7 +1020,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
 		websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
 		websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
-		websWrite(wp, T("sz11bChannel: %s<br>\n"), sz11bChannel);
 		websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
 		if (strncmp(abg_rate, "", 1)) {
 			websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
