@@ -12,8 +12,8 @@
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
 
-var radio_off   = "<% getCfgZero(1, "RadioOff"); %>";
-var wmode	= "<% getCfgZero(1, "WirelessMode"); %>";
+var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
+var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
 
 var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var channel_index  = '<% getWlanChannel(); %>';
@@ -672,14 +672,14 @@ function initValue()
 	    form.wirelessmode.options[index++] = new Option("11b/g/n mixed mode", "9");
 	}
 
-	if (is5gh_support == 1)
-	{
-		form.wirelessmode.options[index++] = new Option("5GHz 11a only", "2");
-		form.wirelessmode.options[index++] = new Option("5GHz 11a/an mixed mode", "8");
-		form.wirelessmode.options[index++] = new Option("5GHz 11an only", "11");
-		form.wirelessmode.options[index++] = new Option("5GHz 11a/an/ac", "14");
-		form.wirelessmode.options[index++] = new Option("5GHz 11an/ac", "15");
-	}
+	//if (is5gh_support == 1)
+	//{
+	//	form.wirelessmode.options[index++] = new Option("5GHz 11a only", "2");
+	//	form.wirelessmode.options[index++] = new Option("5GHz 11a/an mixed mode", "8");
+	//	form.wirelessmode.options[index++] = new Option("5GHz 11an only", "11");
+	//	form.wirelessmode.options[index++] = new Option("5GHz 11a/an/ac", "14");
+	//	form.wirelessmode.options[index++] = new Option("5GHz 11an/ac", "15");
+	//}
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "6") || (wmode == "7") || (wmode == "9"))
 	{
@@ -721,9 +721,6 @@ function initValue()
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
 		form.ac_ldpc.disabled = false;
-
-		form.sz11aChannel.disabled = false;
-		showElementEx("div_11a_channel", style_display_on());
 	}
 
 	ssidDisplay(form);
@@ -1158,9 +1155,6 @@ function wirelessModeChange(form)
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
 		form.ac_ldpc.disabled = false;
-
-		form.sz11aChannel.disabled = false;
-		showElementEx("div_11a_channel", style_display_on());
 	}
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode == "7"))
