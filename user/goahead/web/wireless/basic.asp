@@ -675,8 +675,10 @@ function initValue()
 	if (is5gh_support == 1)
 	{
 		form.wirelessmode.options[index++] = new Option("5GHz 11a only", "2");
-		form.wirelessmode.options[index++] = new Option("5GHz 11a/n mixed mode", "8");
-		form.wirelessmode.options[index++] = new Option("5GHz 11n only", "11");
+		form.wirelessmode.options[index++] = new Option("5GHz 11a/an mixed mode", "8");
+		form.wirelessmode.options[index++] = new Option("5GHz 11an only", "11");
+		form.wirelessmode.options[index++] = new Option("5GHz 11a/an/ac", "14");
+		form.wirelessmode.options[index++] = new Option("5GHz 11an/ac", "15");
 	}
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "6") || (wmode == "7") || (wmode == "9"))
@@ -684,7 +686,7 @@ function initValue()
 		form.sz11gChannel.disabled = false;
 		showElementEx("div_11g_channel", style_display_on());
 	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11"))
+	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
 	{
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
@@ -764,7 +766,7 @@ function initValue()
 		if ((channel_index + 1) > current_channel_length)
 			form.sz11gChannel.options.selectedIndex = 0;
 	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11"))
+	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
 	{
 		if (countrycode == 'NONE')
 		{
@@ -945,7 +947,7 @@ function initValue()
 		form.n_extcha.options.selectedIndex = 0;
 	}
 
-	if ((wmode == "8") || (wmode == "11"))
+	if ((wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
 	{
 		if (form.sz11aChannel.options.selectedIndex == 0)
 		{
@@ -1170,7 +1172,7 @@ function wirelessModeChange(form)
 
 		insertExtChannelOption();
 	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11"))
+	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
 	{
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
@@ -1214,7 +1216,7 @@ function CheckValue(form)
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode=="7"))
 		auto_select = form.sz11gChannel.value == '0';
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11"))
+	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
 		auto_select = form.sz11aChannel.value == '0';
 
 	form.AutoChannelSelect.value = (auto_select) ? '1' : '0';
