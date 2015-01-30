@@ -19,12 +19,12 @@ umount_all() {
 
     # disable swaps
     if [ -f /proc/swaps ] && [ -f /bin/swapoff ]; then
-	is_on=`grep -c "$MDEV" < /proc/swaps`
-	if [ "$is_on" != "0" ]; then
-	    $LOG "swap off dev $MDEV_PATH"
-	    swapoff "$MDEV_PATH"
-    	    sleep 3
-	fi
+	swapparts=`cat /proc/swaps | grep dev | awk {' print $1 '}`
+	for disk in $swapparts; do
+	    $LOG "swap off dev $disk"
+	    swapoff "$disk"
+    	    sleep 2
+	done
     fi
 }
 
