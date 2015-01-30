@@ -25,6 +25,7 @@ umount_all() {
 	    swapoff "$disk"
     	    sleep 2
 	done
+	swapoff -a
     fi
 }
 
