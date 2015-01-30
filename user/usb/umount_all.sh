@@ -18,11 +18,14 @@ umount_all() {
     fi
 
     # disable swaps
-    if [ -f /bin/swapoff ]; then
-	echo "Disable swaps."
-	swapoff -a
+    if [ -f /proc/swaps ] && [ -f /bin/swapoff ]; then
+	is_on=`grep -c "$MDEV" < /proc/swaps`
+	if [ "$is_on" != "0" ]; then
+	    $LOG "swap off dev $MDEV_PATH"
+	    swapoff "$MDEV_PATH"
+    	    sleep 3
+	fi
     fi
-
 }
 
 umount_all
