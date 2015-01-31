@@ -90,9 +90,9 @@ typedef struct websRec {
 	sym_fd_t		cgiVars;			/* CGI standard variables */
 	sym_fd_t		cgiQuery;			/* CGI decoded query string */
 	time_t			timestamp;			/* Last transaction with browser */
-	int				timeout;			/* Timeout handle */
-	char_t			ipaddr[32];			/* Connecting ipaddress */
-	char_t			ifaddr[32];			/* Local interface ipaddress */
+	int			timeout;			/* Timeout handle */
+	char_t			ipaddr[64];			/* Connecting ipaddress */
+	char_t			ifaddr[64];			/* Local interface ipaddress */
 	char_t			type[64];			/* Mime type */
 	char_t			*dir;				/* Directory containing the page */
 	char_t			*path;				/* Path name without query */
