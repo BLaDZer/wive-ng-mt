@@ -481,19 +481,19 @@
 <br>
 <b>2.2.x</b><br>
 1) build_system: add some variants for 7620 based dual band.<br>
-2) goahead: webui: add allow to lan from internet by ipv6 option.<br>
-3) goahead: fix apply netfilter rules in some situations.<br>
-4) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
-5) goahead: add support AC modes in connected client list.<br>
-6) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
-7) goahead: fix selected STA disconnect for dual band in connected client list.<br>
-8) goahead: fix green ap mode in WebUI.<br>
-9) goahead: rearrange some parametrs in WebUI(more consistent).<br>
-10) goahead: add VHT mode parametrs for AC module in WebUI.<br>
-11) goahead: boost ipaddress buffer size.<br>
-12) nvram: add VHT parametrs for AC module.<br>
-13) igmpproxy: optimize retry timeouts.<br>
-14) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+2) nvram: add VHT parametrs for AC module.<br>
+3) igmpproxy: optimize retry timeouts.<br>
+4) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+5) goahead: boost ipaddress buffer size.<br>
+6) goahead: webui: add allow acess to lan from internet by ipv6 option.<br>
+7) goahead: webui: rearrange some parametrs (more consistent).<br>
+8) goahead: fix apply netfilter rules in some situations.<br>
+9) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
+10) goahead: fix selected STA disconnect for dual band in connected client list.<br>
+11) goahead: fix green ap mode in WebUI.<br>
+12) goahead: add support AC modes in connected client list.<br>
+13) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
+14) goahead: add VHT mode parametrs for AC module in WebUI.<br>
 15) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
 16) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
 17) kernel: mips: fix restart of indirect syscalls.<br>
