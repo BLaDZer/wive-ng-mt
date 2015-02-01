@@ -79,7 +79,7 @@
   
   <message msgid="opmode title" msgstr="Режим работы" />
   <message msgid="opmode introduction" msgstr="Вы можете настроить режим работы устройства исходя из ваших требований." />
-  <message msgid="opmode mode b" msgstr="Мост::" />
+  <message msgid="opmode mode b" msgstr="Мост:" />
   <message msgid="opmode mode b intro" msgstr="Все ethernet и беспроводные интерфейсы объединены в один мост." />
   <message msgid="opmode mode g" msgstr="Шлюз:" />
   <message msgid="opmode mode g intro" msgstr="Первый порт используется как WAN интерфейс, остальные - объединены в мост и используются как LAN интерфейсы." />
