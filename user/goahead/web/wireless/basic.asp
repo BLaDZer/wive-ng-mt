@@ -484,6 +484,7 @@ function initTranslation()
 	_TR("basicAcNetMode", "basic ac network mode");
 	_TR("basicNetMode", "basic network mode");
 	_TR("basicSSID", "basic ssid");
+	_TR("basicAcSSID", "basic ac ssid");
 	_TR("basicHSSID0", "basic hssid");
 	_TR("basicHSSID1", "basic hssid");
 	_TR("basicHSSID2", "basic hssid");
@@ -516,7 +517,9 @@ function initTranslation()
 	_TR("basicMBSSIDApIsolatedEnable", "wireless enable");
 	_TR("basicMBSSIDApIsolatedDisable", "wireless disable");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
+
 	_TR("basicBSSID", "basic bssid");
+	_TR("basicAcBSSID", "basic ac bssid");
 
 	_TR("basicFreqA", "basic frequency ac");
 	_TR("basicFreqAAuto", "basic frequency auto");
@@ -637,6 +640,8 @@ function initValue()
 
 	// Hide & disable elements
 	hideElement("div_11a_basic");
+	hideElement("div_11a_name");
+	hideElement("div_11a_mac");
 	hideElement("div_11a_channel");
 	hideElement("div_11g_channel");
 	hideElement("div_ht_tx_stream");
@@ -677,13 +682,15 @@ function initValue()
 	{
 		indexac = form.wirelessmodeac.options.length;
 
-		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a only", "2");
-		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a/an mixed mode", "8");
-		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11an only", "11");
-		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a/an/ac", "14");
-		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11an/ac", "15");
+		form.wirelessmodeac.options[indexac++] = new Option("11a only", "2");
+		form.wirelessmodeac.options[indexac++] = new Option("11a/an mixed mode", "8");
+		form.wirelessmodeac.options[indexac++] = new Option("11an only", "11");
+		form.wirelessmodeac.options[indexac++] = new Option("11a/an/ac", "14");
+		form.wirelessmodeac.options[indexac++] = new Option("11an/ac", "15");
 
 		showElementEx("div_11a_basic", style_display_on());
+		showElementEx("div_11a_name", style_display_on());
+		showElementEx("div_11a_mac", style_display_on());
 	}
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "6") || (wmode == "7") || (wmode == "9"))
@@ -1238,7 +1245,7 @@ function CheckValue(form)
 <body onLoad="initValue()">
 <table class="body">
   <tr>
-    <td><h1 id="basicTitle">Basic Wireless Settings </h1>
+    <td><h1 id="basicTitle">SSID Settings </h1>
       <p id="basicIntroduction"> Here you can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point. </p>
       <hr>
       <form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
@@ -1248,11 +1255,16 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head">Wireless enable</td>
-            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp;enabled </td>
+            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp;enabled</td>
           </tr>
           <tr id="div_11a_basic" name="div_11a_basic">
             <td class="head" id="basicAcNetMode">Network Mode (5GHz)</td>
             <td><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
+              </select></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicNetMode">Network Mode (2.4GHz)</td>
+            <td><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
               </select></td>
           </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
@@ -1262,17 +1274,16 @@ function CheckValue(form)
                 <% getWlan11aChannels(); %>
               </select></td>
           </tr>
-          <tr>
-            <td class="head" id="basicNetMode">Network Mode (2.4GHz)</td>
-            <td><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
-              </select></td>
-          </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
             <td class="head"><font id="basicFreqG">Channel (2.4GHz)</font></td>
             <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange()">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
               </select></td>
+          </tr>
+          <tr id="div_11a_name" name="div_11a_name">
+            <td class="head" id="basicAcSSID">Network Name (5GHz)</td>
+            <td><input class="mid" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="basicSSID">Network Name (2.4GHz)</td>
@@ -1360,6 +1371,14 @@ function CheckValue(form)
           <tr>
             <td class="title" colspan="2" id="basicWirelessSettings">Basic Settings</td>
           </tr>
+          <tr id="div_11a_mac" name="div_11a_mac">
+            <td class="head" id="basicAcBSSID">BSSID (5GHz)</td>
+            <td><% getWlanCurrentMacAC(); %></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicBSSID">BSSID (2.4GHz)</td>
+            <td><% getWlanCurrentMac(); %></td>
+          </tr>
           <tr>
             <td class="head" id="basicBroadcastSSID">Broadcast Network Name</td>
             <td><span class="radio">
@@ -1393,11 +1412,6 @@ function CheckValue(form)
         <table id="div_11n" name="div_11n" class="form" style="display:none;">
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">HT Physical Mode</td>
-          </tr>
-          <tr>
-            <td class="head" id="basicBSSID">BSSID</td>
-            <td>&nbsp;&nbsp;
-              <% getWlanCurrentMac(); %></td>
           </tr>
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
@@ -1508,11 +1522,6 @@ function CheckValue(form)
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
-          </tr>
-          <tr>
-            <td class="head" id="basicBSSID">BSSID</td>
-            <td>&nbsp;&nbsp;
-              <% getWlanCurrentMacAC(); %></td>
           </tr>
           <tr id="basicVHTBW">
             <td class="head">Channel BandWidth</td>

@@ -822,7 +822,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
 	char_t	*n_autoba, *n_badecline;
 	char_t	*tx_stream, *rx_stream;
-	char_t	*wirelessmodeac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
+	char_t	*wirelessmodeac,  *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "";
@@ -857,6 +857,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	rx_stream = websGetVar(wp, T("rx_stream"), T("0"));
 	auto_select = websGetVar(wp, T("AutoChannelSelect"), T("0"));
 
+	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 	ac_gi = websGetVar(wp, T("ac_gi"), T("0"));
 	ac_stbc = websGetVar(wp, T("ac_stbc"), T("0"));
 	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("0"));
@@ -920,6 +921,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 
+	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
 	nvram_bufset(RT2860_NVRAM, "HideSSID", hidden_ssid);
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
@@ -1027,7 +1029,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
-		websWrite(wp, T("<h2>mode ac: %s</h2><br>\n"), wirelessmodeac);
 		websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
 		websWrite(wp, T("hssid: %s<br>\n"), hssid);
 		websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
@@ -1049,6 +1050,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
 			websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
 
+			websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
+			websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
 			websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
 			websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
 			websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);

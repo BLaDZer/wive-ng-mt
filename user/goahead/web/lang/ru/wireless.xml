@@ -28,23 +28,25 @@
   <message msgid="basic title" msgstr="Основные настройки Wi-Fi " />
   <message msgid="basic introduction" msgstr="Вы можете настроить минимум параметров Wi-Fi для связи, таких как название сети (SSID) и номер канала. Точка доступа может быть легко настроена минимумом опций. " />
   <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
-  <message msgid="basic wireless settings" msgstr="Базовые настройки" />
+  <message msgid="basic wireless settings" msgstr="Настройки SSID" />
   <message msgid="basic radio button" msgstr="Wi-Fi вкл./выкл." />
   <message msgid="basic ac network mode" msgstr="Режим работы (5GHz)" />
-  <message msgid="basic network mode" msgstr="Режим работы (2.4GHz)" />
-  <message msgid="basic ssid" msgstr="Имя сети (2.4GHz)" />
+  <message msgid="basic network mode" msgstr="Режим работы (2,4ГГц)" />
+  <message msgid="basic ssid" msgstr="Имя сети (2,4ГГц)" />
+  <message msgid="basic ac ssid" msgstr="Имя сети (5ГГц)" />
   <message msgid="basic multiple ssid" msgstr="Множественный SSID" />
   <message msgid="basic hssid" msgstr="Скрытый" />
   <message msgid="basic isolated" msgstr="Изолированный" />
   <message msgid="basic broadcast ssid" msgstr="Широковещательная рассылка SSID" />
   <message msgid="basic apisolated" msgstr="Изолированная AP" />
   <message msgid="basic mbssidapisolated" msgstr="MBSSID изоляция AP" />
-  <message msgid="basic bssid" msgstr="BSSID" />
-  <message msgid="basic frequency" msgstr="Канал (2.4GHz)" />
-  <message msgid="basic frequency ac" msgstr="Канал (5GHz)" />
+  <message msgid="basic bssid" msgstr="BSSID (2,4ГГц)" />
+  <message msgid="basic ac bssid" msgstr="BSSID (5.GHz)" />
+  <message msgid="basic frequency" msgstr="Канал (2,4ГГц)" />
+  <message msgid="basic frequency ac" msgstr="Канал (5ГГц)" />
   <message msgid="basic frequency auto" msgstr="Автовыбор" />
   <message msgid="basic rate" msgstr="Скорость" />
-  <message msgid="basic wds title" msgstr="Wireless Distribution System(WDS)" />
+  <message msgid="basic wds title" msgstr="Wireless Distribution System" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
   <message msgid="basic wds phy mode" msgstr="Физический режим" />
   <message msgid="basic wds encryp type" msgstr="Тип шифрования" />

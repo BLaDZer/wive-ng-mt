@@ -317,13 +317,13 @@ function CheckValue()
 <body onLoad="initValue()">
 <table class="body">
   <tr>
-    <td><h1>Wireless Distribution System (WDS)</h1>
+    <td><h1>Wireless Distribution System</h1>
       <p>Wireless Distribution System Settings</p>
       <hr />
       <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue()">
         <table class="form">
           <tr>
-            <td class="title" id="basicWDSTitle" colspan="2">Wireless Distribution System (WDS)</td>
+            <td class="title" id="basicWDSTitle" colspan="2">Wireless Distribution System</td>
           </tr>
           <tr>
             <td class="head" id="basicWDSMode">WDS Mode</td>
