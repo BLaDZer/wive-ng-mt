@@ -28,17 +28,20 @@
   <message msgid="basic title" msgstr="Basic Wireless Settings " />
   <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point. " />
   <message msgid="basic wireless network" msgstr="Wireless Network" />
+  <message msgid="basic wireless settings" msgstr="Basic Wireless Settings" />
   <message msgid="basic radio button" msgstr="Radio On/Off" />
-  <message msgid="basic network mode" msgstr="Network Mode" />
-  <message msgid="basic ssid" msgstr="Network Name(SSID)" />
+  <message msgid="basic ac network mode" msgstr="Network Mode (5GHz)" />
+  <message msgid="basic network mode" msgstr="Network Mode (2.4GHz)" />
+  <message msgid="basic ssid" msgstr="Network Name (2.4GHz)" />
   <message msgid="basic multiple ssid" msgstr="Multiple SSID" />
   <message msgid="basic hssid" msgstr="Hidden" />
   <message msgid="basic isolated" msgstr="Isolated" />
-  <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name (SSID)" />
+  <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name" />
   <message msgid="basic apisolated" msgstr="AP Isolation" />
   <message msgid="basic mbssidapisolated" msgstr="MBSSID AP Isolation" />
   <message msgid="basic bssid" msgstr="BSSID" />
-  <message msgid="basic frequency" msgstr="Frequency (Channel)" />
+  <message msgid="basic frequency" msgstr="Channel (2.4GHz)" />
+  <message msgid="basic frequency ac" msgstr="Channel (5GHz)" />
   <message msgid="basic frequency auto" msgstr="AutoSelect" />
   <message msgid="basic rate" msgstr="Rate" />
   <message msgid="basic wds title" msgstr="Wireless Distribution System (WDS)" />

@@ -48,7 +48,6 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query);
 static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
-static int  is5gh_only(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);		/* for Access Policy list deletion*/
@@ -195,7 +194,6 @@ void formDefineWireless(void)
 	websAspDefine(T("getGreenAPBuilt"), getGreenAPBuilt);
 	websAspDefine(T("listCountryCodes"), listCountryCodes);
 	websAspDefine(T("is3t3r"), is3t3r);
-	websAspDefine(T("is5gh_only"), is5gh_only);
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("isWPSConfiguredASP"), isWPSConfiguredASP);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
@@ -824,7 +822,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select;
 	char_t	*n_autoba, *n_badecline;
 	char_t	*tx_stream, *rx_stream;
-	char_t	*ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
+	char_t	*wirelessmodeac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "";
@@ -837,6 +835,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
+	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("9")); //9: bgn mode
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
@@ -883,6 +882,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "WirelessMode", wirelessmode);
+	nvram_bufset(RT2860_NVRAM, "WirelessModeINIC", wirelessmodeac);
 	//BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
@@ -1026,6 +1026,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		//debug print
 		websHeader(wp);
 		websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
+		websWrite(wp, T("<h2>mode ac: %s</h2><br>\n"), wirelessmodeac);
 		websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
 		websWrite(wp, T("hssid: %s<br>\n"), hssid);
 		websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
@@ -1853,16 +1854,6 @@ static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query)
 static int is3t3r(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_RALINK_RT3883_3T3R)
-	websWrite(wp, T("1"));
-#else
-	websWrite(wp, T("0"));
-#endif
-	return 0;
-}
-
-static int is5gh_only(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RALINK_RT3662_2T2R) || defined(CONFIG_RALINK_RT3883_3T3R)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));

@@ -14,6 +14,7 @@ Butterlate.setTextDomain("wireless");
 
 var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
 var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
+var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
 
 var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var channel_index  = '<% getWlanChannel(); %>';
@@ -42,7 +43,6 @@ var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
 var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
 var is3t3r = '<% is3t3r(); %>';
-var is5gh_only = '<% is5gh_only(); %>';
 var is5gh_support = '<% is5gh_support(); %>';
 var mssidb = '<% getMBSSIDBuilt(); %>';
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
@@ -479,7 +479,9 @@ function initTranslation()
 	_TR("basicIntroduction", "basic introduction");
 
 	_TR("basicWirelessNet", "basic wireless network");
+	_TR("basicWirelessSettings", "basic wireless settings");
 	_TR("basicRadioButton", "basic radio button");
+	_TR("basicAcNetMode", "basic ac network mode");
 	_TR("basicNetMode", "basic network mode");
 	_TR("basicSSID", "basic ssid");
 	_TR("basicHSSID0", "basic hssid");
@@ -515,10 +517,9 @@ function initTranslation()
 	_TR("basicMBSSIDApIsolatedDisable", "wireless disable");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
 	_TR("basicBSSID", "basic bssid");
-	_TR("basicFreqA", "basic frequency");
+
+	_TR("basicFreqA", "basic frequency ac");
 	_TR("basicFreqAAuto", "basic frequency auto");
-	_TR("basicFreqB", "basic frequency");
-	_TR("basicFreqBAuto", "basic frequency auto");
 	_TR("basicFreqG", "basic frequency");
 	_TR("basicFreqGAuto", "basic frequency auto");
 	_TR("basicRate", "basic rate");
@@ -626,19 +627,22 @@ function initValue()
 
 	saveRadioChannels();
 	initTranslation();
+
 	if (countrycode == '')
 		countrycode = 'NONE';
 
-	var form                  = document.wireless_basic;
+	var form = document.wireless_basic;
 
 	form.radioWirelessEnabled.checked = (radio_off == "0");
 
 	// Hide & disable elements
+	hideElement("div_11a_basic");
 	hideElement("div_11a_channel");
 	hideElement("div_11g_channel");
 	hideElement("div_ht_tx_stream");
 	hideElement("div_ht_rx_stream");
 	hideElement("div_abg_rate");
+	hideElement("div_all");
 	hideElement("div_11n");
 	hideElement("div_ac");
 
@@ -662,24 +666,25 @@ function initValue()
 
 	index = form.wirelessmode.options.length;
 
-	if (is5gh_only == 0)
+	form.wirelessmode.options[index++] = new Option("11b/g mixed mode", "0");
+	form.wirelessmode.options[index++] = new Option("11b only", "1");
+	form.wirelessmode.options[index++] = new Option("11g only", "4");
+	form.wirelessmode.options[index++] = new Option("11n only", "6");
+	form.wirelessmode.options[index++] = new Option("11g/n mixed mode", "7");
+	form.wirelessmode.options[index++] = new Option("11b/g/n mixed mode", "9");
+	
+	if (is5gh_support == 1)
 	{
-	    form.wirelessmode.options[index++] = new Option("11b/g mixed mode", "0");
-	    form.wirelessmode.options[index++] = new Option("11b only", "1");
-	    form.wirelessmode.options[index++] = new Option("11g only", "4");
-	    form.wirelessmode.options[index++] = new Option("11n only", "6");
-	    form.wirelessmode.options[index++] = new Option("11g/n mixed mode", "7");
-	    form.wirelessmode.options[index++] = new Option("11b/g/n mixed mode", "9");
-	}
+		indexac = form.wirelessmodeac.options.length;
 
-	//if (is5gh_support == 1)
-	//{
-	//	form.wirelessmode.options[index++] = new Option("5GHz 11a only", "2");
-	//	form.wirelessmode.options[index++] = new Option("5GHz 11a/an mixed mode", "8");
-	//	form.wirelessmode.options[index++] = new Option("5GHz 11an only", "11");
-	//	form.wirelessmode.options[index++] = new Option("5GHz 11a/an/ac", "14");
-	//	form.wirelessmode.options[index++] = new Option("5GHz 11an/ac", "15");
-	//}
+		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a only", "2");
+		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a/an mixed mode", "8");
+		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11an only", "11");
+		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11a/an/ac", "14");
+		form.wirelessmodeac.options[indexac++] = new Option("5GHz 11an/ac", "15");
+
+		showElementEx("div_11a_basic", style_display_on());
+	}
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "6") || (wmode == "7") || (wmode == "9"))
 	{
@@ -695,6 +700,10 @@ function initValue()
 
 	// Set wmode after add all options
 	form.wirelessmode.value   = wmode
+	form.wirelessmodeac.value   = wmodeac
+
+	// Display basic
+	showElement("div_all");
 
         // Display HT modes
 	if ((wmode*1) >= 5)
@@ -714,7 +723,7 @@ function initValue()
 	}
 
         // Display VHT modes
-	if (is5gh_support == 1)
+	if ((is5gh_support == 1) && ((wmodeac*1) >= 14))
 	{
 		showElement("div_ac");
 
@@ -1112,6 +1121,7 @@ function wirelessModeChange(form)
 	hideElement("div_ht_tx_stream");
 	hideElement("div_ht_rx_stream");
 	hideElement("div_abg_rate");
+	hideElement("div_all");
 	hideElement("div_11n");
 	hideElement("div_ac");
 	show14channel(true);
@@ -1132,6 +1142,10 @@ function wirelessModeChange(form)
 
 	// Hide & disable elements
 	var wmode = form.wirelessmode.value;
+	var wmodeac = form.wirelessmodeac.value;
+
+	// Display basic
+	showElement("div_all");
 
         // Display HT modes
 	if ((wmode*1) >= 5)
@@ -1148,7 +1162,7 @@ function wirelessModeChange(form)
 	}
 
         // Display VHT modes
-	if (is5gh_support == 1)
+        if ((is5gh_support == 1) && ((wmodeac*1) >= 14))
 	{
 		showElement("div_ac");
 
@@ -1234,16 +1248,34 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head">Wireless enable</td>
-            <td><input type="checkbox" name="radioWirelessEnabled">
-              &nbsp;enabled </td>
+            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp;enabled </td>
           </tr>
-          <tr>
-            <td class="head" id="basicNetMode">Network Mode</td>
-            <td><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
+          <tr id="div_11a_basic" name="div_11a_basic">
+            <td class="head" id="basicAcNetMode">Network Mode (5GHz)</td>
+            <td><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
+              </select></td>
+          </tr>
+          <tr id="div_11a_channel" name="div_11a_channel">
+            <td class="head"><font id="basicFreqA">Channel (5GHz)</font></td>
+            <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange()">
+                <option value="0" id="basicFreqAAuto">AutoSelect</option>
+                <% getWlan11aChannels(); %>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicSSID">Network Name (SSID)</td>
+            <td class="head" id="basicNetMode">Network Mode (2.4GHz)</td>
+            <td><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
+              </select></td>
+          </tr>
+          <tr id="div_11g_channel" name="div_11g_channel">
+            <td class="head"><font id="basicFreqG">Channel (2.4GHz)</font></td>
+            <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange()">
+                <option value="0" id="basicFreqGAuto">AutoSelect</option>
+                <% getWlan11gChannels(); %>
+              </select></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicSSID">Network Name (2.4GHz)</td>
             <td><input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
               <input class="mid" type="text" name="mssid_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1"); %>">
               <font id="basicHSSID0">Hidden</font>
@@ -1323,8 +1355,13 @@ function CheckValue(form)
               <input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove">
               <% dumpBSS(7); %></td>
           </tr>
+        </table>
+        <table id="div_all" name="div_all" class="form" style="display:none;">
           <tr>
-            <td class="head" id="basicBroadcastSSID">Broadcast Network Name (SSID)</td>
+            <td class="title" colspan="2" id="basicWirelessSettings">Basic Settings</td>
+          </tr>
+          <tr>
+            <td class="head" id="basicBroadcastSSID">Broadcast Network Name</td>
             <td><span class="radio">
               <input type="radio" name="broadcastssid" value="0" onClick="switch_hidden_ssid()">
               <font id="basicBroadcastSSIDDisable">Disable</font></span> <span class="radio">
@@ -1346,20 +1383,6 @@ function CheckValue(form)
               <font id="basicMBSSIDApIsolatedDisable">Disable</font></span> <span class="radio">
               <input type="radio" name="mbssidapisolated" value="1">
               <font id="basicMBSSIDApIsolatedEnable">Enable</font></span></td>
-          </tr>
-          <tr id="div_11a_channel" name="div_11a_channel">
-            <td class="head"><font id="basicFreqA">Frequency (Channel) 5GHz</font></td>
-            <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange()">
-                <option value="0" id="basicFreqAAuto">AutoSelect</option>
-                <% getWlan11aChannels(); %>
-              </select></td>
-          </tr>
-          <tr id="div_11g_channel" name="div_11g_channel">
-            <td class="head"><font id="basicFreqG">Frequency (Channel) 2.4GHz</font></td>
-            <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange()">
-                <option value="0" id="basicFreqGAuto">AutoSelect</option>
-                <% getWlan11gChannels(); %>
-              </select></td>
           </tr>
           <tr id="div_abg_rate">
             <td class="head"><font id="basicRate">Rate</font></td>
