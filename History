@@ -482,27 +482,28 @@
 <b>2.2.x</b><br>
 1) build_system: add some variants for 7620 based dual band.<br>
 2) libevent: up to 2.0.22 version.<br>
-3) nvram: add VHT parametrs for AC module.<br>
-4) igmpproxy: optimize retry timeouts.<br>
-5) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
-6) goahead: boost ipaddress buffer size.<br>
-7) goahead: tune default parametrs (increase preallocated bufferss and others).<br>
-8) goahead: webui: add allow acess to lan from internet by ipv6 option.<br>
-9) goahead: webui: rearrange some parametrs (more consistent).<br>
-10) goahead: fix apply netfilter rules in some situations.<br>
-11) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
-12) goahead: fix selected STA disconnect for dual band in connected client list.<br>
-13) goahead: fix green ap mode in WebUI.<br>
-14) goahead: add support AC modes in connected client list.<br>
-15) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
-16) goahead: add 5GHz band network mode/name parametrs.<br>
-17) goahead: add VHT mode parametrs for AC module in WebUI.<br>
-18) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
-19) kernel: net: skb_share_check() should use consume_skb().<br>
-20) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
-21) kernel: mips: fix restart of indirect syscalls.<br>
-22) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
-23) kernel: mips: remove race window in page fault handling.<br>
+3) openssl up to 0.9.8ze version.
+4) nvram: add VHT parametrs for AC module.<br>
+5) igmpproxy: optimize retry timeouts.<br>
+6) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>
+7) goahead: boost ipaddress buffer size.<br>
+8) goahead: tune default parametrs (increase preallocated bufferss and others).<br>
+9) goahead: webui: add allow acess to lan from internet by ipv6 option.<br>
+10) goahead: webui: rearrange some parametrs (more consistent).<br>
+11) goahead: fix apply netfilter rules in some situations.<br>
+12) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
+13) goahead: fix selected STA disconnect for dual band in connected client list.<br>
+14) goahead: fix green ap mode in WebUI.<br>
+15) goahead: add support AC modes in connected client list.<br>
+16) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
+17) goahead: add 5GHz band network mode/name parametrs.<br>
+18) goahead: add VHT mode parametrs for AC module in WebUI.<br>
+19) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+20) kernel: net: skb_share_check() should use consume_skb().<br>
+21) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
+22) kernel: mips: fix restart of indirect syscalls.<br>
+23) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
+24) kernel: mips: remove race window in page fault handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>

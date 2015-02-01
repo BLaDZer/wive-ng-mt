@@ -64,7 +64,6 @@
 #ifndef OPENSSL_NO_ENGINE
 #include <openssl/engine.h>
 #endif
-#include "../constant_time_locl.h"
 #include "evp_locl.h"
 
 #ifdef OPENSSL_FIPS
@@ -302,11 +301,11 @@ int EVP_DecryptFinal(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 
 int EVP_DecryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 	{
-	unsigned int i, b;
-	unsigned char pad, padding_good;
+	int i,n;
+	unsigned int b;
 
 	*outl=0;
-	b=(unsigned int)(ctx->cipher->block_size);
+	b=ctx->cipher->block_size;
 	if (ctx->flags & EVP_CIPH_NO_PADDING)
 		{
 		if(ctx->buf_len)
