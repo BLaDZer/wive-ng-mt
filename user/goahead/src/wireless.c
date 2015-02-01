@@ -453,7 +453,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	int i, s;
 	struct iwreq iwr;
 	RT_802_11_MAC_TABLE table = {0};
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	RT_802_11_MAC_TABLE2 table2 = {0};
 #endif
 	s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -524,7 +524,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("</tr>"));
 	}
 	close(s);
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	strncpy(iwr.ifr_name, "rai0", IFNAMSIZ);
@@ -581,7 +581,11 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    }
 
 	    // RSSI
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
+#else
 	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
+#emdif
 	    websWrite(wp, T("<td><input type=\"button\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
@@ -1867,7 +1871,7 @@ static int is3t3r(int eid, webs_t wp, int argc, char_t **argv)
 
 static int is5gh_support(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RALINK_RT3662_2T2R) || defined(CONFIG_RALINK_RT3883_3T3R) || defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE) 
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
@@ -1978,7 +1982,7 @@ void disconnectSta(webs_t wp, char_t *path, char_t *query)
 	{
 		if (strcmp(mac, "*") == 0) {
 			doSystem("iwpriv ra0 set DisConnectAllSta=1");
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#ifndef CONFIG_RT_SECOND_IF_NONE
 			doSystem("iwpriv rai0 set DisConnectAllSta=1");
 #endif
 		} else if (strlen(mac) == 17) {
@@ -1986,7 +1990,7 @@ void disconnectSta(webs_t wp, char_t *path, char_t *query)
 
 			sprintf(cmd, "iwpriv ra0 set DisConnectSta=%s", mac);
 			doSystem(cmd);
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#ifndef CONFIG_RT_SECOND_IF_NONE
 			sprintf(cmd, "iwpriv rai0 set DisConnectSta=%s", mac);
 			doSystem(cmd);
 #endif
