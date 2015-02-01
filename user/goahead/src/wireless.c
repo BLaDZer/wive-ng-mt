@@ -35,6 +35,7 @@ static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanChannel(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -185,6 +186,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
 	websAspDefine(T("getWlanChannel"), getWlanChannel);
 	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
+	websAspDefine(T("getWlanCurrentMacAC"), getWlanCurrentMacAC);
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
 	websAspDefine(T("dumpBSS"), dumpBSS);
 	websAspDefine(T("get802_1XBuilt"), get802_1XBuilt);
@@ -435,7 +437,16 @@ static int getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv)
 	char if_hw[18] = {0};
 
 	if (getIfMac("ra0", if_hw) == -1)
-		return websWrite(wp, T(" "));
+		return websWrite(wp, T("00:00:00:00:00:00"));
+	return websWrite(wp, T("%s"), if_hw);
+}
+
+static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
+{
+	char if_hw[18] = {0};
+
+	if (getIfMac("rai0", if_hw) == -1)
+		return websWrite(wp, T("00:00:00:00:00:00"));
 	return websWrite(wp, T("%s"), if_hw);
 }
 

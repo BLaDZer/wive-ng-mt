@@ -1347,11 +1347,6 @@ function CheckValue(form)
               <input type="radio" name="mbssidapisolated" value="1">
               <font id="basicMBSSIDApIsolatedEnable">Enable</font></span></td>
           </tr>
-          <tr>
-            <td class="head" id="basicBSSID">BSSID</td>
-            <td>&nbsp;&nbsp;
-              <% getWlanCurrentMac(); %></td>
-          </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
             <td class="head"><font id="basicFreqA">Frequency (Channel) 5GHz</font></td>
             <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange()">
@@ -1375,6 +1370,11 @@ function CheckValue(form)
         <table id="div_11n" name="div_11n" class="form" style="display:none;">
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">HT Physical Mode</td>
+          </tr>
+          <tr>
+            <td class="head" id="basicBSSID">BSSID</td>
+            <td>&nbsp;&nbsp;
+              <% getWlanCurrentMac(); %></td>
           </tr>
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
@@ -1485,6 +1485,11 @@ function CheckValue(form)
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
+          </tr>
+          <tr>
+            <td class="head" id="basicBSSID">BSSID</td>
+            <td>&nbsp;&nbsp;
+              <% getWlanCurrentMacAC(); %></td>
           </tr>
           <tr id="basicVHTBW">
             <td class="head">Channel BandWidth</td>
