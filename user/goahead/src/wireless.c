@@ -997,11 +997,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// Rate for a, an, ac
 	if (!strncmp(wirelessmodeac, "14", 3) || !strncmp(wirelessmodeac, "15", 3)) {
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM");
+		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
 	} else if (!strncmp(wirelessmodeac, "8", 2) || !strncmp(wirelessmodeac, "11", 3)) {
 		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "HT");
 	} else if (!strncmp(wirelessmodeac, "2", 2)) {
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
+		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM");
 	} else
 		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
 
