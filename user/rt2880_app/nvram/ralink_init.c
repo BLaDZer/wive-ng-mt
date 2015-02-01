@@ -253,11 +253,13 @@ static int gen_wifi_config(int getmode)
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(staWirelessMode);
 		    FPRINT_NUM(Channel);
+		    FPRINT_NUM(BasicRate);
 		    FPRINT_STR(SSID1);
 		} else {
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
 		    fprintf(fp, "staWirelessMode=%d\n", atoi(nvram_bufget(mode, "staWirelessModeINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
+		    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
 		    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
 		}
 
@@ -316,7 +318,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HiPower);
 		FPRINT_NUM(AutoRoaming);
 		FPRINT_STR(FixedTxMode);
-		FPRINT_NUM(BasicRate);
 		FPRINT_NUM(BeaconPeriod);
 		FPRINT_NUM(DtimPeriod);
 		FPRINT_NUM(TxPower);

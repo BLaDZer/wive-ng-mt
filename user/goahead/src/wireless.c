@@ -883,6 +883,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "WirelessMode", wirelessmode);
 	nvram_bufset(RT2860_NVRAM, "WirelessModeINIC", wirelessmodeac);
+
 	//BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");

@@ -382,6 +382,7 @@ lltdEnabled=1
 lldpdEnabled=0
 cdpEnabled=0
 WirelessModeINIC=14
+BasicRateINIC=15
 staWirelessModeINIC=14
 ChannelINIC=36
 HT_TxStreamINIC=1
