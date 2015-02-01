@@ -5856,7 +5856,7 @@ func_mode_link ()
       # -O*, -flto*, -fwhopr*, -fuse-linker-plugin GCC link-time optimization
       -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*| \
       -t[45]*|-txscale*|-p|-pg|--coverage|-fprofile-*|-F*|@*|-tp=*|--sysroot=*| \
-      -O*|-flto*|-fwhopr*|-fuse-linker-plugin|-fuse-ld=*)
+      -O*|-flto*|-fwhopr*|-fuse-linker-plugin)
         func_quote_for_eval "$arg"
 	arg="$func_quote_for_eval_result"
         func_append compile_command " $arg"
@@ -6001,9 +6001,9 @@ func_mode_link ()
     done # argument parsing loop
 
     if test "$module" = yes ; then
-      # [Mandriva] override ld option "--no-undefined" which is wrong for plugins
-      linker_flags="$linker_flags --warn-unresolved-symbols"
-      compiler_flags="$compiler_flags -Wl,--warn-unresolved-symbols"
+      # [Mandriva] dropping ld option "--no-undefined" which is wrong for plugins
+      linker_flags=`$ECHO "X $linker_flags" | $Xsed -e 's/ --no-undefined//'`
+      compiler_flags=`$ECHO "X $compiler_flags" | $Xsed -e 's/ -Wl,--no-undefined//'`
     fi
 
     test -n "$prev" && \

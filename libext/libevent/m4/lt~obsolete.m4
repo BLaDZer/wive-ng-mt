@@ -11,8 +11,8 @@
 
 # These exist entirely to fool aclocal when bootstrapping libtool.
 #
-# In the past libtool.m4 has provided macros via AC_DEFUN ([or AU_DEFUN)
-]# which have later been changed to m4_define as they aren't part of the
+# In the past libtool.m4 has provided macros via AC_DEFUN (or AU_DEFUN)
+# which have later been changed to m4_define as they aren't part of the
 # exported API, or moved to Autoconf or Automake where they belong.
 #
 # The trouble is, aclocal is a bit thick.  It'll see the old AC_DEFUN

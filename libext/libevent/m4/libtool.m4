@@ -2669,14 +2669,28 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
   # before this can be enabled.
   hardcode_into_libs=yes
 
-  # Add ABI-specific directories to the system library path.
-  sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib"
+  # find out which ABI we are using
+  libsuff=
+  case "$host_cpu" in
+  x86_64*|s390x*|powerpc64*)
+    echo '[#]line __oline__ "configure"' > conftest.$ac_ext
+    if AC_TRY_EVAL(ac_compile); then
+      case `/usr/bin/file conftest.$ac_objext` in
+      *64-bit*)
+        libsuff=64
+        ;;
+      esac
+    fi
+    rm -rf conftest*
+    ;;
+  esac
+
+  sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
 
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \[$]2)); skip = 1; } { if (!skip) print \[$]0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
     sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec $lt_ld_extra"
-
   fi
 
   # We used to test for /lib/ld.so.1 and disable shared libraries on
