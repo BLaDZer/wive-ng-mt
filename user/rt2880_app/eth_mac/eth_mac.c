@@ -113,6 +113,7 @@ static int mtd_write(char *side, char **value)
 		exit(1);
 	}
 
+	printf("Read factory part in memory.\n");
 	size = mtdInfo.erasesize;
 	if(read(fd, buf, size) != size) {
 		fprintf(stderr, "Could not read Factory part\n");
@@ -124,7 +125,7 @@ static int mtd_write(char *side, char **value)
 	else
 	    ptr = buf + LAN_OFFSET;
 
-	/* replace mac in buffer */
+	printf("Replace mac adress.\n");
 	for (i = 0; i < MACADDR_LEN; i++, ptr++) {
 	    if (value[i] == NULL) {
 		fprintf(stderr, "Incorrect command line format. Use eth_mac w <lan|wan> <MACADDR[0]> <MACADDR[1]> (space separator of octets).\n");
@@ -151,7 +152,7 @@ static int mtd_write(char *side, char **value)
 	    fprintf(stderr, "write() Factory part failed\n");
 	    goto write_fail;
 	}
-	printf("Write new Factory OK\n");
+	printf("Write new Factory OK.\n");
 
 	close(fd);
 	return 0;

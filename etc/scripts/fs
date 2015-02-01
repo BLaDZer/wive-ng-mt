@@ -14,9 +14,16 @@ TGZfs_size=`echo $(($RWFSSIZEHEX))`
 # mtd dev for rfs
 MTDRWFS=/dev/mtdblock5
 
-# constants
+# backup nvram
 BACKUPCGF=/etc/backup/nvram_backup.dat
-RWCONFIGS=/etc/Wireless/rf.bin
+
+# rf calibs
+if [ -f /etc/Wireless/rfbackup.bin ]; then
+    RFCONFIGS=/etc/Wireless/rfbackup.bin
+else
+    RFCONFIGS=/etc/Wireless/rf.bin
+fi
+
 
 get_size() {
   ls -sk "$1" | sed -e "s/ \+/ /g" | cut -d" " -f2
@@ -106,7 +113,7 @@ burnrf() {
 	done
     fi
     mtd_write erase Factory
-    mtd_write write $RWCONFIGS Factory
+    mtd_write write $RFCONFIGS Factory
 }
 
 fullreset() {
