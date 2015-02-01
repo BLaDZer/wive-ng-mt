@@ -285,6 +285,7 @@ err:
 		ASN1_OBJECT_free(ret);
 	return(NULL);
 }
+
 ASN1_OBJECT *c2i_ASN1_OBJECT(ASN1_OBJECT **a, const unsigned char **pp,
 	     long len)
 	{

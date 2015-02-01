@@ -708,8 +708,8 @@ int test_sqr(BIO *bp, BN_CTX *ctx)
 		BN_div(d,e,c,a,ctx);
 		BN_sub(d,d,a);
 		if(!BN_is_zero(d) || !BN_is_zero(e))
-		    {
-		    fprintf(stderr,"Square test failed!\n");
+			{
+			fprintf(stderr,"Square test failed!\n");
 			goto err;
 			}
 		}
@@ -729,7 +729,7 @@ int test_sqr(BIO *bp, BN_CTX *ctx)
 			}
 		BN_print(bp,c);
 		BIO_puts(bp,"\n");
-		    }
+		}
 	BN_mul(d, a, a, ctx);
 	if (BN_cmp(c, d))
 		{

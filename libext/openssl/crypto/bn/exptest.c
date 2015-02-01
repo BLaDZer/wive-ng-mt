@@ -233,11 +233,11 @@ int main(int argc, char *argv[])
 	CRYPTO_mem_leaks(out);
 	BIO_free(out);
 	printf("\n");
-
+#ifndef OPENSSL_FIPS
 	if (test_exp_mod_zero() != 0)
 		goto err;
-
-	printf(" done\n");
+#endif
+	printf("done\n");
 
 	EXIT(0);
 err:

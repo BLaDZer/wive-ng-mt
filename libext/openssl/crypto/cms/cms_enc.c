@@ -160,7 +160,7 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
 		ec->keylen = tkeylen;
 		tkey = NULL;
 		if (enc)
-		keep_key = 1;
+			keep_key = 1;
 		else
 			ERR_clear_error();
 		
@@ -176,10 +176,10 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
 			 */
 			if (enc || ec->debug)
 				{
-			CMSerr(CMS_F_CMS_ENCRYPTEDCONTENT_INIT_BIO,
-				CMS_R_INVALID_KEY_LENGTH);
-			goto err;
-			}
+				CMSerr(CMS_F_CMS_ENCRYPTEDCONTENT_INIT_BIO,
+						CMS_R_INVALID_KEY_LENGTH);
+				goto err;
+				}
 			else
 				{
 				/* Use random key */

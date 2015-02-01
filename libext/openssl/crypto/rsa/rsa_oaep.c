@@ -148,7 +148,7 @@ int RSA_padding_check_PKCS1_OAEP(unsigned char *to, int tlen,
 	MGF1(seed, SHA_DIGEST_LENGTH, maskeddb, dblen);
 	for (i = 0; i < SHA_DIGEST_LENGTH; i++)
 		seed[i] ^= maskedseed[i];
-  
+
 	MGF1(db, dblen, seed, SHA_DIGEST_LENGTH);
 	for (i = 0; i < dblen; i++)
 		db[i] ^= maskeddb[i];
@@ -158,8 +158,8 @@ int RSA_padding_check_PKCS1_OAEP(unsigned char *to, int tlen,
 	good &= constant_time_is_zero(CRYPTO_memcmp(db, phash, SHA_DIGEST_LENGTH));
 
 	found_one_byte = 0;
-		for (i = SHA_DIGEST_LENGTH; i < dblen; i++)
-			{
+	for (i = SHA_DIGEST_LENGTH; i < dblen; i++)
+		{
 		/* Padding consists of a number of 0-bytes, followed by a 1. */
 		unsigned int equals1 = constant_time_eq(db[i], 1);
 		unsigned int equals0 = constant_time_is_zero(db[i]);
@@ -182,12 +182,12 @@ int RSA_padding_check_PKCS1_OAEP(unsigned char *to, int tlen,
 	msg_index = one_index + 1;
 	mlen = dblen - msg_index;
 
-			if (tlen < mlen)
-				{
-				RSAerr(RSA_F_RSA_PADDING_CHECK_PKCS1_OAEP, RSA_R_DATA_TOO_LARGE);
-				mlen = -1;
-				}
-			else
+	if (tlen < mlen)
+		{
+		RSAerr(RSA_F_RSA_PADDING_CHECK_PKCS1_OAEP, RSA_R_DATA_TOO_LARGE);
+		mlen = -1;
+		}
+	else
 		{
 		memcpy(to, db + msg_index, mlen);
 		goto cleanup;

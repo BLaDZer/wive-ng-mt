@@ -1,1 +1,1 @@
-../crypto/jpake/jpaketest.c
+dummytest.c

@@ -93,8 +93,8 @@ int OCSP_basic_verify(OCSP_BASICRESP *bs, STACK_OF(X509) *certs,
 		skey = X509_get_pubkey(signer);
 		if (skey)
 			{
-		ret = OCSP_BASICRESP_verify(bs, skey, 0);
-		EVP_PKEY_free(skey);
+			ret = OCSP_BASICRESP_verify(bs, skey, 0);
+			EVP_PKEY_free(skey);
 			}
 		if(!skey || ret <= 0)
 			{

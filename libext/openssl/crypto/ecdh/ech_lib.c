@@ -206,7 +206,7 @@ ECDH_DATA *ecdh_check(EC_KEY *key)
 		if (ecdh_data == NULL)
 			return NULL;
 		data = EC_KEY_insert_key_method_data(key, (void *)ecdh_data,
-			ecdh_data_dup, ecdh_data_free, ecdh_data_free);
+			   ecdh_data_dup, ecdh_data_free, ecdh_data_free);
 		if (data != NULL)
 			{
 			/* Another thread raced us to install the key_method

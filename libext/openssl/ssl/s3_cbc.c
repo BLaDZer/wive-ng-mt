@@ -97,7 +97,7 @@ int ssl3_cbc_remove_padding(const SSL* s,
 	rec->length -= padding_length;
 	rec->type |= padding_length<<8;	/* kludge: pass padding length */
 	return constant_time_select_int(good, 1, -1);
-}
+	}
 
 /* tls1_cbc_remove_padding removes the CBC padding from the decrypted, TLS, CBC
  * record in |rec| in constant time and returns 1 if the padding is valid and

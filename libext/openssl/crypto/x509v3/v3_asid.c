@@ -495,7 +495,7 @@ static int ASIdentifierChoice_canonize(ASIdentifierChoice *choice)
 	break;
       }
       ASIdOrRange_free(b);
-      (void)sk_ASIdOrRange_delete(choice->u.asIdsOrRanges, i + 1);
+      (void) sk_ASIdOrRange_delete(choice->u.asIdsOrRanges, i + 1);
       i--;
       continue;
     }

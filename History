@@ -482,7 +482,7 @@
 <b>2.2.x</b><br>
 1) build_system: add some variants for 7620 based dual band.<br>
 2) libevent: up to 2.0.22 version.<br>
-3) openssl up to 0.9.8ze version.
+3) openssl up to 0.9.8ze version.<br>
 4) nvram: add VHT parametrs for AC module.<br>
 5) igmpproxy: optimize retry timeouts.<br>
 6) init.d/goahead: add select mode 2.4GHz/5GHz for mbssid/apcli/wds extensions.<br>

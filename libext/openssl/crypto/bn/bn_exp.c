@@ -774,7 +774,7 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
 			BN_zero(rr);
 			}
 		else
-		ret = BN_one(rr);
+			ret = BN_one(rr);
 		return ret;
 		}
 	if (a == 0)

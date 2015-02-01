@@ -863,4 +863,3 @@ int tls1_alert_code(int code)
 	default:			return(-1);
 		}
 	}
-

@@ -484,7 +484,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
 					M_ASN1_STRING_length(ri->enc_key),
 						pkey);
 				if (tret > 0)
-				{
+					{
 					memcpy(tmp, tmp2, tret);
 					OPENSSL_cleanse(tmp2, tret);
 					jj = tret;

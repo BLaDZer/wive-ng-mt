@@ -151,7 +151,6 @@ const char *LP_find_file(LP_DIR_CTX **ctx, const char *directory)
 	  return 0;
 	}
     }
-
   if (sizeof(TCHAR) != sizeof(char))
     {
       TCHAR *wdir = (*ctx)->ctx.cFileName;

@@ -1240,5 +1240,3 @@ int dtls1_send_client_certificate(SSL *s)
 	/* SSL3_ST_CW_CERT_D */
 	return(dtls1_do_write(s,SSL3_RT_HANDSHAKE));
 	}
-
-

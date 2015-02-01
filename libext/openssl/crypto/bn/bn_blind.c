@@ -264,7 +264,7 @@ int BN_BLINDING_invert_ex(BIGNUM *n, const BIGNUM *r, BN_BLINDING *b, BN_CTX *ct
 			{
 			BNerr(BN_F_BN_BLINDING_INVERT_EX,BN_R_NOT_INITIALIZED);
 			return(0);
-		}
+			}
 		ret = BN_mod_mul(n, n, b->Ai, b->mod, ctx);
 		}
 

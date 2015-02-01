@@ -768,4 +768,3 @@ int ssl3_alert_code(int code)
 	default:			return(-1);
 		}
 	}
-

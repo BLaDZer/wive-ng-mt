@@ -371,7 +371,7 @@ int dtls1_accept(SSL *s)
 
 			/* clear this, it may get reset by
 			 * send_server_key_exchange */
-				s->s3->tmp.use_rsa_tmp=0;
+			s->s3->tmp.use_rsa_tmp=0;
 
 			/* only send if a DH key exchange, fortezza or
 			 * RSA but we have a sign only certificate */
@@ -470,8 +470,8 @@ int dtls1_accept(SSL *s)
 			else {
 				if (s->s3->tmp.cert_request)
 					{
-				ret=ssl3_get_client_certificate(s);
-				if (ret <= 0) goto end;
+					ret=ssl3_get_client_certificate(s);
+					if (ret <= 0) goto end;
 					}
 				s->init_num=0;
 				s->state=SSL3_ST_SR_KEY_EXCH_A;

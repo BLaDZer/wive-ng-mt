@@ -427,6 +427,3 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
 }
 #endif
 #endif
-
-
-

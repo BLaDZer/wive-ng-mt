@@ -1315,17 +1315,17 @@ int ssl_cipher_list_to_bytes(SSL *s,STACK_OF(SSL_CIPHER) *sk,unsigned char *p,
 	if (p != q)
 		{
 		if (!s->new_session)
-		{
-		static SSL_CIPHER scsv =
 			{
-			0, NULL, SSL3_CK_SCSV, 0, 0, 0, 0, 0, 0, 0,
-			};
+			static SSL_CIPHER scsv =
+				{
+				0, NULL, SSL3_CK_SCSV, 0, 0, 0, 0, 0, 0, 0,
+				};
 			j = put_cb(&scsv,p);
-		p+=j;
+			p+=j;
 #ifdef OPENSSL_RI_DEBUG
 			fprintf(stderr, "TLS_EMPTY_RENEGOTIATION_INFO_SCSV sent by client\n");
 #endif
-		}
+			}
 
 		if (s->mode & SSL_MODE_SEND_FALLBACK_SCSV)
 			{
@@ -1347,6 +1347,7 @@ STACK_OF(SSL_CIPHER) *ssl_bytes_to_cipher_list(SSL *s,unsigned char *p,int num,
 	SSL_CIPHER *c;
 	STACK_OF(SSL_CIPHER) *sk;
 	int i,n;
+
 	if (s->s3)
 		s->s3->send_connection_binding = 0;
 

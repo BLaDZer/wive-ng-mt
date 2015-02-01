@@ -189,7 +189,7 @@ ECDSA_DATA *ecdsa_check(EC_KEY *key)
 		if (ecdsa_data == NULL)
 			return NULL;
 		data = EC_KEY_insert_key_method_data(key, (void *)ecdsa_data,
-			ecdsa_data_dup, ecdsa_data_free, ecdsa_data_free);
+			   ecdsa_data_dup, ecdsa_data_free, ecdsa_data_free);
 		if (data != NULL)
 			{
 			/* Another thread raced us to install the key_method

@@ -335,7 +335,7 @@ BN_ULONG bn_sub_words(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n)
 	asm ("addq %3,%0; adcq %4,%1; adcq %5,%2"	\
 		: "+r"(c0),"+r"(c1),"+r"(c2)		\
 		: "r"(t1),"r"(t2),"g"(0)		\
-		: "cc");		\
+		: "cc");				\
 	} while (0)
 #endif
 

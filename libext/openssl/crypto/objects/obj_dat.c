@@ -446,7 +446,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
 
 	/* Ensure that, at every state, |buf| is NUL-terminated. */
 	if (buf && buf_len > 0)
-		buf[0]='\0';
+		buf[0] = '\0';
 
 	if ((a == NULL) || (a->data == NULL))
 		return(0);
@@ -789,4 +789,3 @@ err:
 	OPENSSL_free(buf);
 	return(ok);
 	}
-

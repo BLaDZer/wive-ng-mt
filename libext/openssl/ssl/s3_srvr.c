@@ -355,7 +355,7 @@ int ssl3_accept(SSL *s)
 
 			/* clear this, it may get reset by
 			 * send_server_key_exchange */
-				s->s3->tmp.use_rsa_tmp=0;
+			s->s3->tmp.use_rsa_tmp=0;
 
 
 			/* only send if a DH key exchange, fortezza or
@@ -1890,7 +1890,7 @@ int ssl3_get_client_key_exchange(SSL *s)
 		/* If the version in the decrypted pre-master secret is correct
 		 * then version_good will be 0xff, otherwise it'll be zero.
 		 * The Klima-Pokorny-Rosa extension of Bleichenbacher's attack
-				 * (http://eprint.iacr.org/2003/052/) exploits the version
+		 * (http://eprint.iacr.org/2003/052/) exploits the version
 		 * number check as a "bad version oracle". Thus version checks
 		 * are done in constant time and are treated like any other
 		 * decryption error. */
@@ -1923,7 +1923,7 @@ int ssl3_get_client_key_exchange(SSL *s)
 			p[i] = constant_time_select_8(decrypt_good, p[i],
 						      rand_premaster_secret[i]);
 			}
-	
+
 		s->session->master_key_length=
 			s->method->ssl3_enc->generate_master_secret(s,
 				s->session->master_key,

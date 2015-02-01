@@ -314,7 +314,7 @@ static BN_BLINDING *rsa_get_blinding(RSA *rsa, int *local, BN_CTX *ctx)
 
 static int rsa_blinding_convert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
 	BN_CTX *ctx)
-{
+	{
 	if (unblind == NULL)
 		/* Local blinding: store the unblinding factor
 		 * in BN_BLINDING. */
@@ -329,11 +329,11 @@ static int rsa_blinding_convert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
 		CRYPTO_w_unlock(CRYPTO_LOCK_RSA_BLINDING);
 		return ret;
 		}
-}
+	}
 
 static int rsa_blinding_invert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
 	BN_CTX *ctx)
-		{
+	{
 	/* For local blinding, unblind is set to NULL, and BN_BLINDING_invert_ex
 	 * will use the unblinding factor stored in BN_BLINDING.
 	 * If BN_BLINDING is shared between threads, unblind must be non-null:
@@ -342,7 +342,7 @@ static int rsa_blinding_invert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
 	 * In both cases it's safe to access the blinding without a lock.
 	 */
 	return BN_BLINDING_invert_ex(f, unblind, b, ctx);
-}
+	}
 
 /* signing */
 static int RSA_eay_private_encrypt(int flen, const unsigned char *from,

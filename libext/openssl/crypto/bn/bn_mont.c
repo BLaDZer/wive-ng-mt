@@ -705,7 +705,7 @@ BN_MONT_CTX *BN_MONT_CTX_set_locked(BN_MONT_CTX **pmont, int lock,
 
 	CRYPTO_r_lock(lock);
 	ret = *pmont;
-		CRYPTO_r_unlock(lock);
+	CRYPTO_r_unlock(lock);
 	if (ret)
 		return ret;
 
@@ -715,21 +715,21 @@ BN_MONT_CTX *BN_MONT_CTX_set_locked(BN_MONT_CTX **pmont, int lock,
 	 * lazy-init the same 'pmont', by having each do the lazy-init math work
 	 * independently and only use the one from the thread that wins the race
 	 * (the losers throw away the work they've done). */
-			ret = BN_MONT_CTX_new();
+	ret = BN_MONT_CTX_new();
 	if (!ret)
 		return NULL;
 	if (!BN_MONT_CTX_set(ret, mod, ctx))
 		{
-				BN_MONT_CTX_free(ret);
+		BN_MONT_CTX_free(ret);
 		return NULL;
 		}
-	
+
 	/* The locked compare-and-set, after the local work is done. */
 	CRYPTO_w_lock(lock);
 	if (*pmont)
 		{
 		BN_MONT_CTX_free(ret);
-	ret = *pmont;
+		ret = *pmont;
 		}
 	else
 		*pmont = ret;

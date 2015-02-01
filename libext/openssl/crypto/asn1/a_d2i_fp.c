@@ -183,7 +183,7 @@ static int asn1_d2i_read_bio(BIO *in, BUF_MEM **pb)
 					goto err;
 					}
 				len+=i;
-			}
+				}
 			}
 		/* else data already loaded */
 
@@ -254,7 +254,7 @@ static int asn1_d2i_read_bio(BIO *in, BUF_MEM **pb)
 					/* This can't overflow because
 					 * |len+want| didn't overflow. */
 					len+=i;
-					want -= i;
+					want-=i;
 					}
 				}
 			if (off + c.slen < off)

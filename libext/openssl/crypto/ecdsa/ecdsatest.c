@@ -170,7 +170,7 @@ int fbytes(unsigned char *buf, int num)
 	fbytes_counter ++;
 	if (num != BN_num_bytes(tmp) || !BN_bn2bin(tmp, buf))
 		ret = 0;
-	else
+	else 
 		ret = 1;
 	if (tmp)
 		BN_free(tmp);
@@ -288,7 +288,7 @@ int test_builtin(BIO *out)
 	EC_GROUP	*group;
 	ECDSA_SIG	*ecdsa_sig = NULL;
 	unsigned char	digest[20], wrong_digest[20];
-	unsigned char	*signature = NULL; 
+	unsigned char	*signature = NULL;
 	const unsigned char	*sig_ptr;
 	unsigned char	*sig_ptr2;
 	unsigned char	*raw_buf = NULL;

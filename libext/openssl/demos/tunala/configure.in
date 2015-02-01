@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(tunala.c)
-AС_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(tunala, 0.0.1-dev)
 
 dnl Checks for programs. (Though skip libtool)

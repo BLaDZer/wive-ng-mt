@@ -460,8 +460,8 @@ static int asn1_set_seq_out(STACK_OF(ASN1_VALUE) *sk, unsigned char **out,
 				{
 				OPENSSL_free(derlst);
 				return 0;
+				}
 			}
-		}
 		}
 	/* If not sorting just output each item */
 	if (!do_sort)

@@ -1392,7 +1392,7 @@ int ssl3_get_key_exchange(SSL *s)
 			}
 
 		if ((*p != NAMED_CURVE_TYPE) || 
-		    ((curve_nid = curve_id2nid(*(p + 2))) == 0)) 
+		    ((curve_nid = curve_id2nid(*(p + 2))) == 0))
 			{
 			al=SSL_AD_INTERNAL_ERROR;
 			SSLerr(SSL_F_SSL3_GET_KEY_EXCHANGE,SSL_R_UNABLE_TO_FIND_ECDH_PARAMETERS);

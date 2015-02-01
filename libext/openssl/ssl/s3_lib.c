@@ -2297,6 +2297,7 @@ long ssl3_ctx_callback_ctrl(SSL_CTX *ctx, int cmd, void (*fp)(void))
 		break;
 
 #endif
+
 	default:
 		return(0);
 		}
