@@ -322,6 +322,7 @@ clean:
 	##############REMOVE UNUSED FOLDERS###########################
 	find $(ROOTDIR) -type d -name 'filesystem' | xargs rm -rf
 	find $(ROOTDIR) -type d -name 'autom4te.cache' | xargs rm -rf
+	find $(ROOTDIR) -type d -name '.libs' | xargs rm -rf
 	find $(ROOTDIR) -type d -name 'cvs' | xargs rm -rf
 	find $(ROOTDIR) -type d -name 'CVS' | xargs rm -rf
 	find $(ROOTDIR) -type d -name '.dep' | xargs rm -rf
