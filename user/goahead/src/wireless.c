@@ -585,7 +585,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
 #else
 	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-#emdif
+#endif
 	    websWrite(wp, T("<td><input type=\"button\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
