@@ -213,6 +213,24 @@ void formDefineWireless(void)
 	websFormDefine(T("APDeleteAccessPolicyList"), APDeleteAccessPolicyList);
 }
 
+static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_RT2860V2_AP_APCLI
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_RT2860V2_AP_WDS
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
 static int listCountryCodes(int eid, webs_t wp, int argc, char_t **argv)
 {
 	const country_code_t *codes = country_codes;
@@ -392,24 +410,6 @@ static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
  return websWrite(wp, T("<option value=14 %s>2484MHz (Channel 14)</option>\n"),(14 == channel)? "selected" : "");
 }
 
-static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef CONFIG_RT2860V2_AP_APCLI
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
-static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef CONFIG_RT2860V2_AP_WDS
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
 /*
  * description: write channel number or 0 if auto-select
  */
@@ -431,6 +431,7 @@ static int getWlanChannel(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 {
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	char *value = nvram_get(RT2860_NVRAM, "AutoChannelSelectINIC");
 
 	if (NULL == value)
@@ -443,6 +444,9 @@ static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp, T("36"));
 	else
 		return websWrite(wp, T("%s"), value);
+#else
+	return websWrite(wp, T("0"));
+#endif
 }
 
 /*
@@ -459,11 +463,15 @@ static int getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 {
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	char if_hw[18] = {0};
 
 	if (getIfMac("rai0", if_hw) == -1)
 		return websWrite(wp, T("00:00:00:00:00:00"));
 	return websWrite(wp, T("%s"), if_hw);
+#else
+	return websWrite(wp, T("00:00:00:00:00:00"));
+#endif
 }
 
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
@@ -780,7 +788,6 @@ static void revise_mbss_updated_values(webs_t wp, int bssnum)
 				else
 				    sprintf(tmpvalue, "%s%s", tmpvalue, v); /* separator ; not need if only one ssid enabled */
 			}
-			printf("%s = %s\n", parm->name, tmpvalue);
 			nvram_bufset(RT2860_NVRAM, parm->name, tmpvalue);
 		}
 		else
@@ -791,7 +798,6 @@ static void revise_mbss_updated_values(webs_t wp, int bssnum)
 				char *v = websGetVar(wp, tempbuf, T(""));
 				if (v == NULL)
 					v = "";
-				printf("%s = %s\n", tempbuf, v);
 				nvram_bufset(RT2860_NVRAM, tempbuf, v);
 			}
 		}
@@ -840,9 +846,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_stream, *rx_stream;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select, *n_autoba, *n_badecline;
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
-
-	int     is_ht = 0, is_vht = 0, i = 1, ssid = 0, new_bssid_num;
+	int     is_vht = 0;
+#endif
+	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
 
@@ -852,14 +860,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
-	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
-
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
-	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 	auto_select = websGetVar(wp, T("AutoChannelSelect"), T("0"));
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
@@ -878,13 +883,16 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	n_autoba = websGetVar(wp, T("n_autoba"), T("1"));
 	n_badecline = websGetVar(wp, T("n_badecline"), T("0"));
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
+	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 	ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
 	ac_stbc = websGetVar(wp, T("ac_stbc"), T("1"));
 	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("1"));
 	ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
 	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
-
+#endif
 	new_bssid_num = atoi(bssid_num);
 
 	if (new_bssid_num < 1 || new_bssid_num > 8) {
@@ -892,8 +900,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		return;
 	}
 
-	// 11abg Channel or AutoSelect
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	// 11abgnac Channel or AutoSelect
 	if ((0 == strlen(sz11aChannel)) && (0 == strlen(sz11gChannel)))
+#else
+	// bgn Channel or AutoSelect
+	if (0 == strlen(sz11gChannel))
+#endif
 	{
 		websError(wp, 403, T("'Channel' should not be empty!"));
 		return;
@@ -906,8 +919,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// Wireless mode
 	nvram_bufset(RT2860_NVRAM, "WirelessMode", wirelessmode);
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	nvram_bufset(RT2860_NVRAM, "WirelessModeINIC", wirelessmodeac);
-
+#endif
 	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
@@ -925,12 +939,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		ssid_nvram_var[4] = i  + '0';
 
 		char_t *mssid = websGetVar(wp, ssid_web_var, T(""));
-		printf("web: %s = %s\n", ssid_web_var, mssid);
 		if (CHK_IF_SET(mssid))
 		{
 			nvram_bufset(RT2860_NVRAM, ssid_nvram_var, mssid);
-			printf("nvram: %s = %s\n", ssid_nvram_var, mssid);
-
 			if (strchr(hssid, ssid + '0') != NULL)
 				sprintf(hidden_ssid, "%s%s", hidden_ssid, "1;");
 			else
@@ -945,7 +956,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	}
 
 	// SSID settings
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
+#endif
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
 	nvram_bufset(RT2860_NVRAM, "HideSSID", hidden_ssid);
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
@@ -954,8 +967,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// Channel & automatic channel select
 	if (CHK_IF_SET(auto_select))
 		nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", auto_select);
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	if (CHK_IF_SET(sz11aChannel))
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
+#endif
 	if (CHK_IF_SET(sz11gChannel))
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
 
@@ -1013,6 +1028,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	} else
 		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "HT");
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	// Rate for a, an, ac
 	if (!strncmp(wirelessmodeac, "14", 3) || !strncmp(wirelessmodeac, "15", 3)) {
 		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
@@ -1025,7 +1041,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		is_vht = 0;
 	} else
 		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
-
+#endif
 	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
 	if (is_ht)
 	{
@@ -1045,6 +1061,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
 	}
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
 	// VHT_Modes
 	if (is_vht)
 	{
@@ -1054,7 +1071,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "VHT_BW", ac_bw);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW_SIGNAL", ac_bwsig);
 	}
-	
+#endif	
 	nvram_bufset(RT2860_NVRAM, "RadioOff", (web_radio_on) ? "0" : "1");
 
 	nvram_commit(RT2860_NVRAM);
@@ -1091,6 +1108,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
 
 		}
+#ifndef CONFIG_RT_SECOND_IF_NONE
 		websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
 		websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
 		if (is_vht)
@@ -1101,6 +1119,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
 			websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
 		}
+#endif
 		websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
 		websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
 		websFooter(wp);

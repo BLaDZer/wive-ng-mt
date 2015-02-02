@@ -980,10 +980,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 		snprintf(w_name, sizeof(w_name), "port%d_swmode", i);
 		w_port = websGetVar(wp, w_name, T("auto"));
 		if ((w_port != NULL) && (strlen(w_port)>0))
-		{
-			printf("%s = %s\n", w_name, w_port);
 			nvram_bufset(RT2860_NVRAM, w_name, w_port);
-		}
 	}
 
 	nvram_bufset(RT2860_NVRAM, "tv_port", (strcmp(tv_port, "on")==0) ? "1" : "0");
