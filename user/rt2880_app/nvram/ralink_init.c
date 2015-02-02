@@ -252,6 +252,7 @@ static int gen_wifi_config(int getmode)
 		if (!inic) {
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(staWirelessMode);
+		    FPRINT_NUM(AutoChannelSelect);
 		    FPRINT_NUM(Channel);
 		    FPRINT_NUM(BasicRate);
 		    FPRINT_STR(SSID1);
@@ -259,6 +260,7 @@ static int gen_wifi_config(int getmode)
 		} else {
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
 		    fprintf(fp, "staWirelessMode=%d\n", atoi(nvram_bufget(mode, "staWirelessModeINIC")));
+		    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
 		    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
 		    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
@@ -304,7 +306,6 @@ static int gen_wifi_config(int getmode)
 #ifdef CONFIG_RT2860V2_EXT_CHANNEL_LIST
 		FPRINT_NUM(ChannelGeography);
 #endif
-		FPRINT_NUM(AutoChannelSelect);
 		FPRINT_NUM(BssidNum);
 #if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(SSID2);
