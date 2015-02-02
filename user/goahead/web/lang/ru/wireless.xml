@@ -114,7 +114,7 @@
 
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />
-  <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных." />
+  <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных (рекомендуется использовать WPA2-PSK+AES)." />
   <message msgid="secure ssid choice" msgstr="Выбор SSID" />
   <message msgid="secure security policy" msgstr="Политики безопасности -- " />
   <message msgid="secure security mode" msgstr="Режим безопасности" />

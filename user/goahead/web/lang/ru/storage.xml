@@ -4,9 +4,9 @@
   <message msgid="storage add" msgstr="Add" />
   <message msgid="storage edit" msgstr="Edit" />
   <message msgid="storage del" msgstr="Delete" />
-  <message msgid="storage apply" msgstr="Apply" />
-  <message msgid="storage cancel" msgstr="Cancel" />
-  <message msgid="storage reset" msgstr="Reset" />
+  <message msgid="storage apply" msgstr="Применить" />
+  <message msgid="storage cancel" msgstr="Отмена" />
+  <message msgid="storage reset" msgstr="Сброс" />
 
   <message msgid="storage adm title" msgstr="Administration" />
   <message msgid="storage adm introduction" msgstr="" />

@@ -113,12 +113,10 @@ function msg()
 <table class="body">
   <tr>
     <td><h1 id="oTitle"></h1>
+      <p>Current Firmware Version: <% getSdkVersion(); %></p>
+      <hr>
       <p id="oIntroduction"></p>
       <hr>
-      <p>Current Firmware Version:
-        <% getSdkVersion(); %>
-      </p>
-      <p>Select device operation mode:</p>
       <form method="POST" name="opmode" action="/goform/setOpMode">
         <dl>
           <dt>

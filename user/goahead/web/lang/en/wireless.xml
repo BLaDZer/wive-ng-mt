@@ -106,7 +106,7 @@
 
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />
-  <message msgid="secure ssid introduction" msgstr="You can configure wireless security and encryption to prevent unauthorized access to the router." />
+  <message msgid="secure ssid introduction" msgstr="You can configure wireless security and encryption to prevent unauthorized access to the router (WPA2-PSK+AES recomended)." />
   <message msgid="secure ssid choice" msgstr="SSID choice" />
   <message msgid="secure security policy" msgstr="Security Policy -- " />
   <message msgid="secure security mode" msgstr="Security Mode" />

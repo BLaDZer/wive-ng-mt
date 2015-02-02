@@ -4,9 +4,9 @@
   <message msgid="usb add" msgstr="Add" />
   <message msgid="usb edit" msgstr="Edit" />
   <message msgid="usb del" msgstr="Delete" />
-  <message msgid="usb apply" msgstr="Apply" />
-  <message msgid="usb cancel" msgstr="Cancel" />
-  <message msgid="usb reset" msgstr="Reset" />
+  <message msgid="usb apply" msgstr="Применить" />
+  <message msgid="usb cancel" msgstr="Отмена" />
+  <message msgid="usb reset" msgstr="Сброс" />
 
   <message msgid="storage adm title" msgstr="Administration" />
   <message msgid="storage adm introduction" msgstr="" />
