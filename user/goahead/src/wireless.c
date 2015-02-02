@@ -435,13 +435,13 @@ static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 	char *value = nvram_get(RT2860_NVRAM, "AutoChannelSelectINIC");
 
 	if (NULL == value)
-		return websWrite(wp, T("149"));
+		return websWrite(wp, T("48"));
 	if (!strncmp(value, "1", 2))
 		return websWrite(wp, T("0"));
 
 	value = nvram_get(RT2860_NVRAM, "ChannelINIC");
 	if (NULL == value)
-		return websWrite(wp, T("149"));
+		return websWrite(wp, T("48"));
 	else
 		return websWrite(wp, T("%s"), value);
 #else
