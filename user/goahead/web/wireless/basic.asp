@@ -16,8 +16,10 @@ var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
 var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
 var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
 
-var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var channel_index  = '<% getWlanChannel(); %>';
+var channel_indexac  = '<% getWlanChannelAC(); %>';
+
+var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var fxtxmode = '<% getCfgGeneral(1, "FixedTxMode"); %>';
 var countrycode = '<% getCfgGeneral(1, "CountryCode"); %>';
 
@@ -69,91 +71,6 @@ var ChannelList_24G =
 	"2472MHz (Channel 13)",
 	"2484MHz (Channel 14)"
 ];
-
-var ChannelList_5G =
-[
-	"5180MHz (Channel 36)",
-	"5200MHz (Channel 40)",
-	"5220MHz (Channel 44)",
-	"5240MHz (Channel 48)",
-	"5260MHz (Channel 52)",
-	"5280MHz (Channel 56)",
-	"5300MHz (Channel 60)",
-	"5320MHz (Channel 64)",
-	"5500MHz (Channel 100)",
-	"5520MHz (Channel 104)",
-	"5540MHz (Channel 108)",
-	"5560MHz (Channel 112)",
-	"5580MHz (Channel 116)",
-	"5600MHz (Channel 120)",
-	"5620MHz (Channel 124)",
-	"5640MHz (Channel 128)",
-	"5660MHz (Channel 132)",
-	"5680MHz (Channel 136)",
-	"5700MHz (Channel 140)",
-	"5745MHz (Channel 149)",
-	"5765MHz (Channel 153)",
-	"5785MHz (Channel 157)",
-	"5805MHz (Channel 161)",
-	"5825MHz (Channel 165)"
-];
-
-var HT5GExtCh = new Array(22);
-HT5GExtCh[0] = new Array(1, "5200MHz (Channel 40)"); // channel 36's extension channel
-HT5GExtCh[1] = new Array(0, "5180MHz (Channel 36)"); // channel 40's extension channel
-HT5GExtCh[2] = new Array(1, "5240MHz (Channel 48)"); // channel 44's extension channel
-HT5GExtCh[3] = new Array(0, "5220MHz (Channel 44)"); // channel 48's extension channel
-HT5GExtCh[4] = new Array(1, "5280MHz (Channel 56)"); // channel 52's extension channel
-HT5GExtCh[5] = new Array(0, "5260MHz (Channel 52)"); // channel 56's extension channel
-HT5GExtCh[6] = new Array(1, "5320MHz (Channel 64)"); // channel 60's extension channel
-HT5GExtCh[7] = new Array(0, "5300MHz (Channel 60)"); // channel 64's extension channel
-HT5GExtCh[8] = new Array(1, "5520MHz (Channel 104)"); // channel 100's extension channel
-HT5GExtCh[9] = new Array(0, "5500MHz (Channel 100)"); // channel 104's extension channel
-HT5GExtCh[10] = new Array(1, "5560MHz (Channel 112)"); // channel 108's extension channel
-HT5GExtCh[11] = new Array(0, "5540MHz (Channel 108)"); // channel 112's extension channel
-HT5GExtCh[12] = new Array(1, "5600MHz (Channel 120)"); // channel 116's extension channel
-HT5GExtCh[13] = new Array(0, "5580MHz (Channel 116)"); // channel 120's extension channel
-HT5GExtCh[14] = new Array(1, "5640MHz (Channel 128)"); // channel 124's extension channel
-HT5GExtCh[15] = new Array(0, "5620MHz (Channel 124)"); // channel 128's extension channel
-HT5GExtCh[16] = new Array(1, "5680MHz (Channel 136)"); // channel 132's extension channel
-HT5GExtCh[17] = new Array(0, "5660MHz (Channel 132)"); // channel 136's extension channel
-HT5GExtCh[18] = new Array(1, "5765MHz (Channel 153)"); // channel 149's extension channel
-HT5GExtCh[19] = new Array(0, "5745MHz (Channel 149)"); // channel 153's extension channel
-HT5GExtCh[20] = new Array(1, "5805MHz (Channel 161)"); // channel 157's extension channel
-HT5GExtCh[21] = new Array(0, "5785MHz (Channel 157)"); // channel 161's extension channel
-
-function insertChannelOption(vChannel, band)
-{
-	var y = document.createElement('option');
-
-	if (1*band == 24)
-	{
-		y.text = ChannelList_24G[1*vChannel - 1];
-		y.value = 1*vChannel;
-	}
-	else if (1*band == 5)
-	{
-		y.value = 1*vChannel;
-		if (1*vChannel <= 140)
-			y.text = ChannelList_5G[((1*vChannel) - 36) / 4];
-		else
-			y.text = ChannelList_5G[((1*vChannel) - 36 - 1) / 4];
-	}
-
-	if (1*band == 24)
-		var x=document.getElementById("sz11gChannel");
-	else if (1*band == 5)
-		var x=document.getElementById("sz11aChannel");
-
-	try
-	{
-		x.add(y,null); // standards compliant
-	}
-	catch(ex)
-	{
-		x.add(y); // IE only
-	}
-}
 
 function addOption(list, text, value)
 {
@@ -230,6 +147,7 @@ function ChannelOnChange()
 		}
 	}
 
+	// add subchannel
 	insertExtChannelOption();
 }
 
@@ -242,171 +160,9 @@ function Channel_BandWidth_onClick()
 	{
 		hideElement("extension_channel");
 		form_basic.n_extcha.disabled = true;
-		if ((1*w_mode == 6) || (1*w_mode == 7))
-			Check5GBandChannelException();
-	}
-	else
-	{
+	} else {
 		showElementEx("extension_channel", style_display_on());
 		form_basic.n_extcha.disabled = false;
-
-		if ((1*w_mode == 6) || (1*w_mode == 7))
-		{
-			Check5GBandChannelException();
-
-			if (form_basic.sz11aChannel.options.selectedIndex == 0)
-			{
-				hideElement("extension_channel");
-				form_basic.n_extcha.disabled = true;
-			}
-		}
-	}
-}
-
-function Check5GBandChannelException()
-{
-	var form_basic = document.wireless_basic;
-	var w_mode = form_basic.wirelessmode.value;
-
-	if ((1*w_mode == 6) || (1*w_mode == 7))
-	{
-		var x                   = document.getElementById("sz11aChannel")
-		var current_length      = form_basic.sz11aChannel.options.length;
-		var current_index       = form_basic.sz11aChannel.options.selectedIndex;
-		var current_channel     = form_basic.sz11aChannel.value;
-
-		if (1*current_index == 0)
-		{
-			if (1*channel_index != 0)
-				current_index = 1;
-		}
-
-		for (ch_idx = current_length - 1; ch_idx > 0; ch_idx--)
-		{
-			x.remove(ch_idx);
-		}
-
-		if (document.wireless_basic.n_bandwidth[1].checked == true)
-		{
-			if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-				(countrycode == 'IE') || (countrycode == 'JP') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-				for(ch = 36; ch <= 48; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-				(countrycode == 'IE') || (countrycode == 'TW') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-				for(ch = 52; ch <= 64; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if (countrycode == 'NONE')
-			{
-				for(ch = 100; ch <= 136; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((countrycode == 'NONE') || (countrycode == 'US') || (countrycode == 'TW') ||
-				(countrycode == 'CN') || (countrycode == 'HK')  || (countrycode == 'RU'))
-			{
-				for(ch = 149; ch <= 161; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((1*current_channel == 140) || (1*current_channel == 165))
-			{
-				form_basic.sz11aChannel.options.selectedIndex = (1*current_index) -1;
-			}
-			else
-			{
-				form_basic.sz11aChannel.options.selectedIndex = (1*current_index);
-			}
-		}
-		else
-		{
-			if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-				(countrycode == 'IE') || (countrycode == 'JP') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-				for(ch = 36; ch <= 48; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-				(countrycode == 'IE') || (countrycode == 'TW') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-				for(ch = 52; ch <= 64; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if (countrycode == 'NONE')
-			{
-				for(ch = 100; ch <= 140; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((countrycode == 'NONE') || (countrycode == 'US') || (countrycode == 'TW') ||
-				(countrycode == 'CN') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-				for(ch = 149; ch <= 161; ch+=4)
-					insertChannelOption(ch, 5);
-			}
-
-			if ((countrycode == 'NONE') || (countrycode == 'US') ||
-				(countrycode == 'CN') || (countrycode == 'HK') || (countrycode == 'RU'))
-			{
-					insertChannelOption(165, 5);
-			}
-
-			form_basic.sz11aChannel.options.selectedIndex = (1*current_index);
-		}
-	}
-	else if (1*w_mode == 5)
-	{
-		var x = document.getElementById("sz11aChannel")
-		var current_length = form_basic.sz11aChannel.options.length;
-		var current_index = form_basic.sz11aChannel.options.selectedIndex;
-
-		for (ch_idx = current_length - 1; ch_idx > 0; ch_idx--)
-		{
-			x.remove(ch_idx);
-		}
-
-		if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-			(countrycode == 'IE') || (countrycode == 'JP') || (countrycode == 'HK'))
-		{
-			for(ch = 36; ch <= 48; ch+=4)
-				insertChannelOption(ch, 5);
-		}
-
-		if ((countrycode == 'NONE') || (countrycode == 'FR') || (countrycode == 'US') ||
-			(countrycode == 'IE') || (countrycode == 'TW') || (countrycode == 'HK'))
-		{
-			for(ch = 52; ch <= 64; ch+=4)
-				insertChannelOption(ch, 5);
-		}
-
-		if (countrycode == 'NONE')
-		{
-			for(ch = 100; ch <= 140; ch+=4)
-				insertChannelOption(ch, 5);
-		}
-
-		if ((countrycode == 'NONE') || (countrycode == 'US') || (countrycode == 'TW') ||
-			(countrycode == 'CN') || (countrycode == 'HK'))
-		{
-			for(ch = 149; ch <= 161; ch+=4)
-				insertChannelOption(ch, 5);
-		}
-
-		if ((countrycode == 'NONE') || (countrycode == 'US') ||
-			(countrycode == 'CN') || (countrycode == 'HK'))
-		{
-				insertChannelOption(165, 5);
-		}
-
-		form_basic.sz11aChannel.options.selectedIndex = (1*current_index);
 	}
 }
 
@@ -414,8 +170,10 @@ function ssidDisplay(form)
 {
 	var no_mssidb = mssidb != '1';
 	var count = form.bssid_num.value * 1;
+
 	for (var i=1; i < count; i++)
 		showElement('div_hssid' + i);
+
 	// Allow only 8 BSSID's
 	showElement(form.addBSSIDbtn, no_mssidb);
 	form.addBSSIDbtn.disabled = ((count >= 8) || (no_mssidb));
@@ -625,7 +383,6 @@ function initValue()
 {
 	var ssidArray;
 	var HiddenSSIDArray;
-	var channel_11a_index;
 	var current_channel_length;
 
 	saveRadioChannels();
@@ -669,6 +426,7 @@ function initValue()
 	form.mbssidapisolated.disabled = true;
 	show14channel(true);
 
+	// Init 2.4GHz
 	index = form.wirelessmode.options.length;
 
 	form.wirelessmode.options[index++] = new Option("11b/g mixed mode", "0");
@@ -677,7 +435,8 @@ function initValue()
 	form.wirelessmode.options[index++] = new Option("11n only", "6");
 	form.wirelessmode.options[index++] = new Option("11g/n mixed mode", "7");
 	form.wirelessmode.options[index++] = new Option("11b/g/n mixed mode", "9");
-	
+
+	// Init 5GHz
 	if (is5gh_support == 1)
 	{
 		indexac = form.wirelessmodeac.options.length;
@@ -688,29 +447,27 @@ function initValue()
 		form.wirelessmodeac.options[indexac++] = new Option("11a/an/ac", "14");
 		form.wirelessmodeac.options[indexac++] = new Option("11an/ac", "15");
 
-		showElementEx("div_11a_basic", style_display_on());
-		showElementEx("div_11a_name", style_display_on());
-		showElementEx("div_11a_mac", style_display_on());
-	}
-
-	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "6") || (wmode == "7") || (wmode == "9"))
-	{
-		form.sz11gChannel.disabled = false;
-		showElementEx("div_11g_channel", style_display_on());
-	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
-	{
-		form.sz11aChannel.disabled = false;
-		showElementEx("div_11a_channel", style_display_on());
-
 	}
 
 	// Set wmode after add all options
-	form.wirelessmode.value   = wmode
-	form.wirelessmodeac.value   = wmodeac
+	form.wirelessmode.value     = wmode;
+	form.wirelessmodeac.value   = wmodeac;
 
 	// Display basic
+	form.sz11gChannel.disabled = false;
+	showElementEx("div_11g_channel", style_display_on());
 	showElement("div_all");
+
+	// Display AC
+	if (is5gh_support == 1)
+	{
+		showElementEx("div_11a_basic", style_display_on());
+		showElementEx("div_11a_name", style_display_on());
+		showElementEx("div_11a_mac", style_display_on());
+
+		form.sz11aChannel.disabled = false;
+		showElementEx("div_11a_channel", style_display_on());
+	}
 
         // Display HT modes
 	if ((wmode*1) >= 5)
@@ -770,124 +527,121 @@ function initValue()
 	}
 
 	channel_index = 1*channel_index;
+	form.sz11gChannel.options.selectedIndex = channel_index;
+	current_channel_length = form.sz11gChannel.options.length;
+	if ((channel_index + 1) > current_channel_length)
+	    form.sz11gChannel.options.selectedIndex = 0;
 
-	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6"))
+	if (is5gh_support == 1)
 	{
-		form.sz11gChannel.options.selectedIndex = channel_index;
-		current_channel_length = form.sz11gChannel.options.length;
-
-		if ((channel_index + 1) > current_channel_length)
-			form.sz11gChannel.options.selectedIndex = 0;
-	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
-	{
+		// Calculate current channel
+		var channel_indexacnew;
 		if (countrycode == 'NONE')
 		{
-			if (channel_index <= 64)
+			if (channel_indexac <= 64)
 			{
-				channel_11a_index = channel_index;
-				channel_11a_index = channel_11a_index / 4;
-				if (channel_11a_index != 0)
-					channel_11a_index = channel_11a_index - 8;
+				channel_indexacnew = channel_indexac;
+				channel_indexacnew = channel_indexacnew / 4;
+				if (channel_indexac != 0)
+					channel_indexacnew = channel_indexacnew - 8;
 			}
-			else if ((channel_index >= 100) && (channel_index <= 140))
+			else if ((channel_indexac >= 100) && (channel_indexac <= 140))
 			{
-				channel_11a_index = channel_index;
-				channel_11a_index = channel_11a_index / 4;
-				channel_11a_index = channel_11a_index - 16;
+				channel_indexacnew = channel_indexac;
+				channel_indexacnew = channel_indexacnew / 4;
+				channel_indexacnew = channel_indexacnew - 16;
 			}
-			else if (channel_index >= 149)
+			else if (channel_indexac >= 149)
 			{
-				channel_11a_index = channel_index - 1;
-				channel_11a_index = channel_11a_index / 4;
-				channel_11a_index = channel_11a_index - 17;
+				channel_indexacnew = channel_indexac - 1;
+				channel_indexacnew = channel_indexacnew / 4;
+				channel_indexacnew = channel_indexacnew - 17;
 			}
 			else
 			{
-				channel_11a_index = 0;
+				channel_indexacnew = 0;
 			}
 		}
-		else if ((countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE'))
+		else if ((countrycode == 'RU') || (countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE'))
 		{
-			if (channel_index <= 64)
+			if (channel_indexac <= 64)
 			{
-				channel_11a_index = channel_index;
-				channel_11a_index = channel_11a_index / 4;
-				if (channel_11a_index != 0)
-					channel_11a_index = channel_11a_index - 8;
+				channel_indexacnew = channel_indexac;
+				channel_indexacnew = channel_indexacnew / 4;
+				if (channel_indexacnew != 0)
+					channel_indexacnew = channel_indexacnew - 8;
 			}
-			else if (channel_index >= 149)
+			else if (channel_indexac >= 149)
 			{
-				channel_11a_index = channel_index - 1;
-				channel_11a_index = channel_11a_index / 4;
-				channel_11a_index = channel_11a_index - 28;
+				channel_indexacnew = channel_indexac - 1;
+				channel_indexacnew = channel_indexacnew / 4;
+				channel_indexacnew = channel_indexacnew - 28;
 			}
 			else
 			{
-				channel_11a_index = 0;
+				channel_indexacnew = 0;
 			}
 		}
 		else if (countrycode == 'JP')
 		{
-			if (channel_index <= 48)
+			if (channel_indexac <= 48)
 			{
-				channel_11a_index = channel_index;
-				channel_11a_index = channel_11a_index / 4;
-				if (channel_11a_index != 0)
-					channel_11a_index = channel_11a_index - 8;
+				channel_indexacnew = channel_indexac;
+				channel_indexacnew = channel_indexacnew / 4;
+				if (channel_indexacnew != 0)
+					channel_indexacnew = channel_indexacnew - 8;
 			}
 			else
 			{
-				channel_11a_index = 0;
+				channel_indexacnew = 0;
 			}
 		}
 		else if (countrycode == 'TW')
 		{
-			if (channel_index <= 64)
+			if (channel_indexac <= 64)
 			{
-				channel_11a_index = channel_index;
-				channel_11a_index = channel_11a_index / 4;
-				if (channel_11a_index != 0)
-					channel_11a_index = channel_11a_index - 12;
+				channel_indexacnew = channel_indexac;
+				channel_indexacnew = channel_indexacnew / 4;
+				if (channel_indexacnew != 0)
+					channel_indexacnew = channel_indexacnew - 12;
 			}
-			else if (channel_index >= 149)
+			else if (channel_indexac >= 149)
 			{
-				channel_11a_index = channel_index - 1;
-				channel_11a_index = channel_11a_index / 4;
-				channel_11a_index = channel_11a_index - 32;
+				channel_indexacnew = channel_indexac - 1;
+				channel_indexacnew = channel_indexacnew / 4;
+				channel_indexacnew = channel_indexacnew - 32;
 			}
 			else
 			{
-				channel_11a_index = 0;
+				channel_indexacnew = 0;
 			}
 		}
 		else if (countrycode == 'CN')
 		{
-			if (channel_index >= 149)
+			if (channel_indexac >= 149)
 			{
-				channel_11a_index = channel_index - 1;
-				channel_11a_index = channel_11a_index / 4;
-				channel_11a_index = channel_11a_index - 36;
+				channel_indexacnew = channel_indexac - 1;
+				channel_indexacnew = channel_indexacnew / 4;
+				channel_indexacnew = channel_indexacnew - 36;
 			}
 			else
 			{
-				channel_11a_index = 0;
+				channel_indexacnew = 0;
 			}
 		}
 		else
 		{
-			channel_11a_index = 0;
+			channel_indexacnew = 0;
 		}
 
-		Check5GBandChannelException();
-
-		if (channel_index > 0)
-			form.sz11aChannel.options.selectedIndex = channel_11a_index;
+		if (channel_indexac > 0)
+			form.sz11aChannel.options.selectedIndex = channel_indexacnew;
 		else
-			form.sz11aChannel.options.selectedIndex = channel_index;
+			form.sz11aChannel.options.selectedIndex = channel_indexac;
 	}
 
-	show_abg_rate(form);
+	// add subchannel
+	insertExtChannelOption();
 
 	if (mssidb == "1")
 	{
@@ -896,7 +650,7 @@ function initValue()
 		form.mbssidapisolated[ (mbssidapisolated == "1") ? 1 : 0 ].checked = true;
 	}
 
-	insertExtChannelOption();
+	show_abg_rate(form);
 
 	if (green_on)
 	{
@@ -906,8 +660,7 @@ function initValue()
 			form.n_mode[2].checked = true;
 		else
 			form.n_mode[0].checked = true;
-	}
-	else
+	} else
 		form.n_mode[0].checked = true;
 
 	if (ht_gi == "0")
@@ -945,30 +698,17 @@ function initValue()
 
 	var option_length = form.n_extcha.options.length;
 
-	if (1*ht_extcha == 0)
-	{
+	if (1*ht_extcha == 0) {
 		if (option_length > 1)
 			form.n_extcha.options.selectedIndex = 0;
-	}
-	else if (1*ht_extcha == 1)
-	{
+	} else if (1*ht_extcha == 1) {
 		if (option_length > 1)
 			form.n_extcha.options.selectedIndex = 1;
-	}
-	else
-	{
+	} else {
 		form.n_extcha.options.selectedIndex = 0;
 	}
-
-	if ((wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
-	{
-		if (form.sz11aChannel.options.selectedIndex == 0)
-		{
-			hideElement("extension_channel");
-			form.n_extcha.disabled = true;
-		}
-	}
-	else if ((wmode == "9") || (wmode == "6"))
+	
+	if ((wmode == "9") || (wmode == "6"))
 	{
 		if (form.sz11gChannel.options.selectedIndex == 0)
 		{
@@ -993,19 +733,17 @@ function initValue()
 	{
 		hideElement("div_HtTx2Stream");
 		tx_stream_idx = 1;
-	}
-	else
+	} else
 		showElementEx("div_HtTx2Stream", style_display_on());
 
 	if (rxpath == "1")
 	{
 		hideElement("div_HtRx2Stream");
 		rx_stream_idx = 1;
-	}
-	else
-	{
+	} else {
 		showElementEx("div_HtRx2Stream", style_display_on());
 	}
+
 	form.rx_stream.options.selectedIndex = rx_stream_idx - 1;
 	form.tx_stream.options.selectedIndex = tx_stream_idx - 1;
 
@@ -1153,6 +891,11 @@ function wirelessModeChange(form)
 
 	// Display basic
 	showElement("div_all");
+	form.sz11gChannel.disabled = false;
+	showElementEx("div_11g_channel", style_display_on());
+
+	insertExtChannelOption();
+	displayElement("extension_channel", form.sz11gChannel.options.selectedIndex != 0);
 
         // Display HT modes
 	if ((wmode*1) >= 5)
@@ -1166,47 +909,26 @@ function wirelessModeChange(form)
 		form.n_gi.disabled = false;
 		form.n_stbc.disabled = false;
 		form.n_mcs.disabled = false;
+
+		showElementEx("div_ht_tx_stream", style_display_on());
+		showElementEx("div_ht_rx_stream", style_display_on());
+		show14channel(false);
 	}
 
-        // Display VHT modes
-        if ((is5gh_support == 1) && ((wmodeac*1) >= 14))
-	{
-		showElement("div_ac");
-
-		form.ac_gi.disabled = false;
-		form.ac_stbc.disabled = false;
-		form.ac_ldpc.disabled = false;
-	}
-
-	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode == "7"))
-	{
-		form.sz11gChannel.disabled = false;
-		showElementEx("div_11g_channel", style_display_on());
-
-		displayElement("extension_channel", form.sz11gChannel.options.selectedIndex != 0);
-
-		insertExtChannelOption();
-	}
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
+	if (is5gh_support == 1)
 	{
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
 
-		Check5GBandChannelException();
-		if (form.sz11aChannel.options.selectedIndex == 0)
-		{
-			hideElement("extension_channel");
-			form.n_extcha.disabled = true;
+    		// Display VHT modes
+    		if ((1*wmodeac) >= 14)
+    		{
+		    showElement("div_ac");
+
+		    form.ac_gi.disabled = false;
+		    form.ac_stbc.disabled = false;
+		    form.ac_ldpc.disabled = false;
 		}
-
-		insertExtChannelOption();
-	}
-
-	if ((1*wmode) >= 5)
-	{
-		showElementEx("div_ht_tx_stream", style_display_on());
-		showElementEx("div_ht_rx_stream", style_display_on());
-		show14channel(false);
 	}
 
 	show_abg_rate(form);
@@ -1231,8 +953,6 @@ function CheckValue(form)
 
 	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode=="7"))
 		auto_select = form.sz11gChannel.value == '0';
-	else if ((wmode == "2") || (wmode == "8") || (wmode == "11") || (wmode == "14") || (wmode == "15"))
-		auto_select = form.sz11aChannel.value == '0';
 
 	form.AutoChannelSelect.value = (auto_select) ? '1' : '0';
 

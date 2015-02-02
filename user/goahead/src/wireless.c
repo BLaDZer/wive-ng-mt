@@ -34,6 +34,7 @@ static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanChannel(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
@@ -184,6 +185,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
 	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
 	websAspDefine(T("getWlanChannel"), getWlanChannel);
+	websAspDefine(T("getWlanChannelAC"), getWlanChannelAC);
 	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
 	websAspDefine(T("getWlanCurrentMacAC"), getWlanCurrentMacAC);
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
@@ -423,6 +425,22 @@ static int getWlanChannel(int eid, webs_t wp, int argc, char_t **argv)
 	value = nvram_get(RT2860_NVRAM, "Channel");
 	if (NULL == value)
 		return websWrite(wp, T("9"));
+	else
+		return websWrite(wp, T("%s"), value);
+}
+
+static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
+{
+	char *value = nvram_get(RT2860_NVRAM, "AutoChannelSelectINIC");
+
+	if (NULL == value)
+		return websWrite(wp, T("36"));
+	if (!strncmp(value, "1", 2))
+		return websWrite(wp, T("0"));
+
+	value = nvram_get(RT2860_NVRAM, "ChannelINIC");
+	if (NULL == value)
+		return websWrite(wp, T("36"));
 	else
 		return websWrite(wp, T("%s"), value);
 }
@@ -820,9 +838,9 @@ static void setupSecurityLed(void)
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11aChannel, *sz11gChannel, *abg_rate, *tx_stream, *rx_stream;
+	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_stream, *rx_stream;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select, *n_autoba, *n_badecline;
-	char_t	*wirelessmodeac, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
+	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 
 	int     is_ht = 0, is_vht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
@@ -1820,7 +1838,7 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	setupSecurityLed();
 
-	//# Access Policy
+	// Access Policy
 	if(AccessPolicyHandle(nvram, wp, mbssid) == -1)
 		trace(0, "** error in AccessPolicyHandle()\n");
 

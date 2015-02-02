@@ -497,13 +497,14 @@
 15) goahead: add support AC modes in connected client list.<br>
 16) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
 17) goahead: add 5GHz band network mode/name parametrs.<br>
-18) goahead: add VHT mode parametrs for AC module in WebUI.<br>
-19) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
-20) kernel: net: skb_share_check() should use consume_skb().<br>
-21) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
-22) kernel: mips: fix restart of indirect syscalls.<br>
-23) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
-24) kernel: mips: remove race window in page fault handling.<br>
+18) goahead: add 5GHz band network central channel parametr.<br>
+19) goahead: add VHT mode parametrs for AC module in WebUI.<br>
+20) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+21) kernel: net: skb_share_check() should use consume_skb().<br>
+22) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
+23) kernel: mips: fix restart of indirect syscalls.<br>
+24) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
+25) kernel: mips: remove race window in page fault handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
