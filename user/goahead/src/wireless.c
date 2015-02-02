@@ -845,7 +845,7 @@ static void setupSecurityLed(void)
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_stream, *rx_stream;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *auto_select, *n_autoba, *n_badecline;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
@@ -866,7 +866,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
-	auto_select = websGetVar(wp, T("AutoChannelSelect"), T("0"));
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
 
 	tx_stream = websGetVar(wp, T("tx_stream"), T("1"));
@@ -954,25 +953,34 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			i++;
 		}
 	}
-
-	// SSID settings
 #ifndef CONFIG_RT_SECOND_IF_NONE
+	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
 #endif
+	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
 	nvram_bufset(RT2860_NVRAM, "HideSSID", hidden_ssid);
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 
 	// Channel & automatic channel select
-	if (CHK_IF_SET(auto_select))
-		nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", auto_select);
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	if (CHK_IF_SET(sz11aChannel))
+	if (CHK_IF_SET(sz11aChannel)) {
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
+		if (!strncmp(sz11aChannel, "0", 2))
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "1");
+		else
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
+		    
+	}
 #endif
-	if (CHK_IF_SET(sz11gChannel))
+	if (CHK_IF_SET(sz11gChannel)) {
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
+		if (!strncmp(sz11gChannel, "0", 2))
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "1");
+		else
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
+	}
 
 	// Rate for a, b, g
 	if (strncmp(abg_rate, "", 1))

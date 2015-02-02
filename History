@@ -494,17 +494,18 @@
 12) goahead: fix redirect submit-url issue (may be crash or not correct redirects).<br>
 13) goahead: fix selected STA disconnect for dual band in connected client list.<br>
 14) goahead: fix green ap mode in WebUI.<br>
-15) goahead: add support AC modes in connected client list.<br>
-16) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
-17) goahead: add 5GHz band network mode/name parametrs.<br>
-18) goahead: add 5GHz band network central channel parametr.<br>
-19) goahead: add VHT mode parametrs for AC module in WebUI.<br>
-20) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
-21) kernel: net: skb_share_check() should use consume_skb().<br>
-22) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
-23) kernel: mips: fix restart of indirect syscalls.<br>
-24) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
-25) kernel: mips: remove race window in page fault handling.<br>
+15) goahead: fix channel autoselect for 5GHz.<br>
+16) goahead: add support AC modes in connected client list.<br>
+17) goahead: add band 2.4/5GHz highlighting in connected client list.<br>
+18) goahead: add 5GHz band network mode/name parametrs.<br>
+19) goahead: add 5GHz band network central channel parametr.<br>
+20) goahead: add VHT mode parametrs for AC module in WebUI.<br>
+21) kernel: ralink arch: add support SD/MMC driver for MT7620/MT7621/MT7628.<br>
+22) kernel: net: skb_share_check() should use consume_skb().<br>
+23) kernel: mips: irq: fix disable_irq on CPU IRQs.<br>
+24) kernel: mips: fix restart of indirect syscalls.<br>
+25) kernel: mips: fix kernel lockup or crash after CPU offline/online.<br>
+26) kernel: mips: remove race window in page fault handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>

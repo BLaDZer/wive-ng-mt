@@ -12,7 +12,8 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 #################################################################################################
-eval `nvram_buf_get 2860 OperationMode AutoConnect AutoChannelSelect RadioOff GreenAP HT_OpMode \
+eval `nvram_buf_get 2860 OperationMode AutoConnect AutoChannelSelect AutoChannelSelectINIC \
+	RadioOff GreenAP HT_OpMode \
 	DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh \
 	AP2040Rescan HT_BSSCoexistence \
 	McastPhyMode McastMcs M2UEnabled igmpEnabled ApCliBridgeOnly`
@@ -81,7 +82,8 @@ if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; th
     fi
 fi
 ########################################Channel select###########################################
-if [ "$AutoChannelSelect" = "1" ]; then
+if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
+    [ "$AutoChannelSelectINIC" = "1" -a "$2" = "5GHZ" ]; then
     # rescan and select optimal channel
     # first need scan
     iwpriv "$1" set SiteSurvey=1

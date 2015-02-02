@@ -948,14 +948,6 @@ function switch_isolated_ssid()
 
 function CheckValue(form)
 {
-	var auto_select = false;
-	var wmode = form.wirelessmode.value;
-
-	if ((wmode == "0") || (wmode == "1") || (wmode == "4") || (wmode == "9") || (wmode == "6") || (wmode=="7"))
-		auto_select = form.sz11gChannel.value == '0';
-
-	form.AutoChannelSelect.value = (auto_select) ? '1' : '0';
-
 	return true;
 }
 
@@ -966,7 +958,8 @@ function CheckValue(form)
 <table class="body">
   <tr>
     <td><h1 id="basicTitle">SSID Settings </h1>
-      <p id="basicIntroduction"> Here you can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point. </p>
+      <p id="basicIntroduction"> Here you can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel.
+				These settings are sufficient to have a working Access Point. </p>
       <hr>
       <form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
         <table class="form">
@@ -1286,8 +1279,7 @@ function CheckValue(form)
         <br>
         <table class="buttons">
           <tr align="center">
-            <td><input type="hidden" name="AutoChannelSelect" value="1">
-              <input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;
+            <td><input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;
               <input type="button" class="normal" value="Cancel" id="basicCancel" onClick="window.location.reload();">
               <input type="hidden" name="submit-url" value="/wireless/basic.asp"></td>
           </tr>
