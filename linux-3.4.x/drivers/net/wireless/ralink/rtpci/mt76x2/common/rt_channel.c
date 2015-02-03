@@ -162,6 +162,7 @@ UINT16 const Country_Region_GroupNum_2GHZ = sizeof(Country_Region_ChDesc_2GHZ) /
 CH_DESC Country_Region0_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
+	{52, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
@@ -189,6 +190,7 @@ CH_DESC Country_Region3_ChDesc_5GHZ[] =
 CH_DESC Country_Region0_ChDesc_5GHZ[] =
 {
 	{36, 4, CHANNEL_DEFAULT_PROP},
+	{52, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
