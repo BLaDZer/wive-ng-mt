@@ -55,8 +55,8 @@ void recv_msg_kexdh_init() {
 
 	switch (ses.newkeys->algo_kex->mode) {
 		case DROPBEAR_KEX_NORMAL_DH:
-	m_mp_init(&dh_e);
-	if (buf_getmpint(ses.payload, &dh_e) != DROPBEAR_SUCCESS) {
+			m_mp_init(&dh_e);
+			if (buf_getmpint(ses.payload, &dh_e) != DROPBEAR_SUCCESS) {
 				dropbear_exit("Bad kex value");
 			}
 			break;
@@ -83,8 +83,29 @@ void recv_msg_kexdh_init() {
 	ses.requirenext = SSH_MSG_NEWKEYS;
 	TRACE(("leave recv_msg_kexdh_init"))
 }
-	
+
+
 #ifdef DROPBEAR_DELAY_HOSTKEY
+
+static void fsync_parent_dir(const char* fn) {
+#ifdef HAVE_LIBGEN_H
+	char *fn_dir = m_strdup(fn);
+	char *dir = dirname(fn_dir);
+	int dirfd = open(dir, O_RDONLY);
+
+	if (dirfd != -1) {
+		if (fsync(dirfd) != 0) {
+			TRACE(("fsync of directory %s failed: %s", dir, strerror(errno)))
+		}
+		m_close(dirfd);
+	} else {
+		TRACE(("error opening directory %s for fsync: %s", dir, strerror(errno)))
+	}
+
+	free(fn_dir);
+#endif
+}
+
 static void svr_ensure_hostkey() {
 
 	const char* fn = NULL;
@@ -141,6 +162,10 @@ static void svr_ensure_hostkey() {
 			goto out;
 		}
 	}
+
+	/* ensure directory update is flushed to disk, otherwise we can end up
+	with zero-byte hostkey files if the power goes off */
+	fsync_parent_dir(fn);
 
 	ret = readhostkey(fn, svr_opts.hostkey, &type);
 
@@ -201,7 +226,7 @@ static void send_msg_kexdh_reply(mp_int *dh_e, buffer *ecdh_qs) {
 			struct kex_dh_param * dh_param = gen_kexdh_param();
 			kexdh_comb_key(dh_param, dh_e, svr_opts.hostkey);
 
-	/* put f */
+			/* put f */
 			buf_putmpint(ses.writepayload, &dh_param->pub);
 			free_kexdh_param(dh_param);
 			}
