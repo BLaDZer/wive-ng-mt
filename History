@@ -513,7 +513,8 @@
 2) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
 3) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
 5) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
-4) dropbear: up to 2015.67 version.<br>
+6) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
+7) dropbear: up to 2015.67 version.<br>
 <br>
 <br>
 <b>TODO:</b><br>
