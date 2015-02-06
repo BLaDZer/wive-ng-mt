@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.105.8 Kernel Configuration
+# Linux/mips 3.4.106.9 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1421,7 +1421,7 @@ CONFIG_MT7610_AP_APCLI=y
 # CONFIG_MT7610_AP_NETIF_BLOCK is not set
 # CONFIG_MT7610_AP_DFS is not set
 # CONFIG_MT7610_AP_CARRIER is not set
-# CONFIG_MT7610_AP_ED_MONITOR is not set
+# CONFIG_MT7610_ED_MONITOR is not set
 CONFIG_MT7610_AP_GREENAP=y
 # CONFIG_MT7610_AP_DLS is not set
 # CONFIG_MT7610_AP_IDS is not set
@@ -1433,6 +1433,7 @@ CONFIG_MT7610_AP_TEMPERATURE_COMPENSATION=y
 # CONFIG_MT7610_AP_SINGLE_SKU is not set
 # CONFIG_MT7610_AP_READ_MAC_FROM_MTD is not set
 # CONFIG_MT7610_AP_MC_SUPPORT is not set
+# CONFIG_BAND_STEERING is not set
 # CONFIG_MT7610_AP_ATE is not set
 # CONFIG_MT7610_AP_DBG is not set
 
