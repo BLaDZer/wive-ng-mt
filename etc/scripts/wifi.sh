@@ -16,13 +16,15 @@ eval `nvram_buf_get 2860 OperationMode AutoConnect AutoChannelSelect AutoChannel
 	RadioOff GreenAP HT_OpMode \
 	DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh \
 	AP2040Rescan HT_BSSCoexistence \
-	McastPhyMode McastMcs M2UEnabled igmpEnabled ApCliBridgeOnly`
+	McastPhyMode McastMcs M2UEnabled`
 #####################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS#################################
-# allow fallback to MCS0
-iwpriv $1 set AutoFallBack=1
-# decrease tx retry for decrease tx buffer free time
-iwpriv $1 set LongRetry=3
-iwpriv $1 set ShortRetry=3
+if [ "$2" != "5GHZ" ]; then
+    # allow fallback to MCS0
+    iwpriv $1 set AutoFallBack=1
+    # decrease tx retry for decrease tx buffer free time
+    iwpriv $1 set LongRetry=3
+    iwpriv $1 set ShortRetry=3
+fi
 ########################################STAMODE param############################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
