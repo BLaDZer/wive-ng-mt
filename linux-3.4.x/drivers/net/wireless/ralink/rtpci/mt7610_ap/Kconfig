@@ -76,7 +76,7 @@ config  MT7610_AP_CARRIER
 	depends on MT7610_AP
 	default n
 
-config  MT7610_AP_ED_MONITOR
+config  MT7610_ED_MONITOR
 	bool "ED CCA Monitor Support"
 	depends on MT7610_AP
 	default n
@@ -157,6 +157,11 @@ config  MT7610_AP_MC_SUPPORT
 	bool "Multiple Card Support"
 	default n
 	depends on MT7610_AP
+
+config BAND_STEERING
+	bool "Band Steering"
+	depends on MT7610_AP
+	default n
 
 config  MT7610_AP_ATE
 	bool "Provide ATE testmode commands support"

@@ -510,8 +510,9 @@
 <br>
 <b>2.3.x</b><br>
 1) kernel: up to 3.4.106 version.<br>
-2) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
-3) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
+2) kernel: ralink_wifi: up 7610 driver to 3.0.0.8 version.<br>
+3) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
+4) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
 5) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
 6) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
 7) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>

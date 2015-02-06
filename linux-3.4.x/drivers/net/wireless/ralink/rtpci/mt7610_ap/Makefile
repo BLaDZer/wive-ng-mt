@@ -164,7 +164,6 @@ ifeq ($(CONFIG_MT7610_AP_CARRIER),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_cs.o
 endif
 
-
 ifeq ($(CONFIG_MT7610_AP_CSO),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/naf/net_acc.o
 endif
@@ -175,6 +174,10 @@ endif
 
 ifeq ($(CONFIG_MT7610_AP_VIDEO_TURBINE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_video.o
+endif
+
+ifeq ($(CONFIG_BAND_STEERING),y)
+$(RT_DRV_NAME)-objs +=  ap/ap_band_steering.o
 endif
 
 ###################
@@ -358,6 +361,10 @@ ifeq ($(CONFIG_MT7610_AP_CSO),y)
 EXTRA_CFLAGS += -DCONFIG_CSO_SUPPORT -DCONFIG_TSO_SUPPORT
 endif
 
+ifeq ($(CONFIG_BAND_STEERING),y)
+EXTRA_CFLAGS += -DBAND_STEERING
+endif
+
 ifeq ($(CONFIG_MT7610_AP_EXT_CHANNEL_LIST),y)
 EXTRA_CFLAGS += -DEXT_BUILD_CHANNEL_LIST
 endif
@@ -370,7 +377,7 @@ ifeq ($(CONFIG_MT7610_AP_TEMPERATURE_COMPENSATION),y)
 EXTRA_CFLAGS += -DRTMP_TEMPERATURE_COMPENSATION
 endif
 
-ifeq ($(CONFIG_MT7610_AP_ED_MONITOR),y)
+ifeq ($(CONFIG_MT7610_ED_MONITOR),y)
 EXTRA_CFLAGS += -DED_MONITOR
 endif
 
