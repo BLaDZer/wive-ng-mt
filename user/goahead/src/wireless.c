@@ -914,6 +914,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	if (atoi(wirelessmode) >= 5)
 		is_ht = 1;
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	if (atoi(wirelessmodeac) >= 14)
+		is_vht = 1;
+#endif
+
 	nvram_init(RT2860_NVRAM);
 
 	// Wireless mode
@@ -1031,25 +1036,20 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			    else if (rate == 11)
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
 		}
-		else // shall not happen
-			error(E_L, E_LOG, T("wrong configurations from web UI"));
-	} else
-		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "HT");
-
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	// Rate for a, an, ac
-	if (!strncmp(wirelessmodeac, "14", 3) || !strncmp(wirelessmodeac, "15", 3)) {
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
-		is_vht = 1;
-	} else if (!strncmp(wirelessmodeac, "8", 2) || !strncmp(wirelessmodeac, "11", 3)) {
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "HT");
-		is_vht = 0;
-	} else if (!strncmp(wirelessmodeac, "2", 2)) {
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM");
-		is_vht = 0;
-	} else
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
+		// Rate for a, an, ac
+		if (!strncmp(wirelessmodeac, "14", 3) || !strncmp(wirelessmodeac, "15", 3)) {
+			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT");
+		} else if (!strncmp(wirelessmodeac, "8", 2) || !strncmp(wirelessmodeac, "11", 3)) {
+			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "HT");
+		} else if (!strncmp(wirelessmodeac, "2", 2)) {
+			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM");
 #endif
+	} else {
+		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "");
+		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "");
+	}
+
 	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
 	if (is_ht)
 	{

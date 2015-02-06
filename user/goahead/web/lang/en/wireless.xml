@@ -64,7 +64,7 @@
   <message msgid="basic ht extension channel" msgstr="Extension Channel" />
   <message msgid="basic ht amsdu" msgstr="Aggregation MSDU" />
   <message msgid="basic ht addba" msgstr="Auto Block ACK" />
-  <message msgid="basic ht delba" msgstr="Decline BA Request" />
+  <message msgid="basic ht delba" msgstr="Decline Block ACK Request" />
   <message msgid="basic other" msgstr="Other" />
   <message msgid="basic ht txstream" msgstr="HT TxStream" />
   <message msgid="basic ht rxstream" msgstr="HT RxStream" />

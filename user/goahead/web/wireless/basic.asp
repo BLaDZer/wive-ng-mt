@@ -1207,6 +1207,14 @@ function CheckValue(form)
               <input type="radio" name="n_autoba" value="1">
               <font id="basicHTAddBAEnable">Enable</font></span></td>
           </tr>
+          <tr>
+            <td class="head" id="basicHTDelBA">Decline Block ACK Request</td>
+            <td><span class="radio">
+              <input type="radio" name="n_badecline" value="0" checked>
+              <font id="basicHTDelBADisable">Disable</font></span> <span class="radio">
+              <input type="radio" name="n_badecline" value="1">
+              <font id="basicHTDelBAEnable">Enable</font></span></td>
+          </tr>
           <tr id="htOpModeRow" style="display: none;">
             <td class="head" id="basicHTOPMode">Green Filed Mode</td>
             <td><span class="radio">
@@ -1222,14 +1230,6 @@ function CheckValue(form)
               <font id="basicHTRDGDisable">Disable</font></span> <span class="radio">
               <input type="radio" name="n_rdg" value="1">
               <font id="basicHTRDGEnable">Enable</font></span></td>
-          </tr>
-          <tr>
-            <td class="head" id="basicHTDelBA">Decline BA Request</td>
-            <td><span class="radio">
-              <input type="radio" name="n_badecline" value="0" checked>
-              <font id="basicHTDelBADisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_badecline" value="1">
-              <font id="basicHTDelBAEnable">Enable</font></span></td>
           </tr>
         </table>
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
