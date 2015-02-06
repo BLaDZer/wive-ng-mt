@@ -532,7 +532,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
 		case 2: websWrite(wp, T("<td>%s</td>"), "HTMIX"); break;
 		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
-		//case 4: websWrite(wp, T("<td>%s</td>"), "MODE_VHT"); break;
+		//case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "");
 	    }
 
@@ -602,7 +602,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
 		case 2: websWrite(wp, T("<td>%s</td>"), "HTMIX"); break;
 		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
-		case 4: websWrite(wp, T("<td>%s</td>"), "MODE_VHT"); break;
+		case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "");
 	    }
 
