@@ -1044,6 +1044,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "HT");
 		} else if (!strncmp(wirelessmodeac, "2", 2)) {
 			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM");
+		}
 #endif
 	} else {
 		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "");
