@@ -251,6 +251,7 @@ static int gen_wifi_config(int getmode)
 	if (RT2860_NVRAM == mode) {
 		if (!inic) {
 		    FPRINT_NUM(WirelessMode);
+		    FPRINT_NUM(TxPower);
 		    FPRINT_NUM(staWirelessMode);
 		    FPRINT_NUM(AutoChannelSelect);
 		    FPRINT_NUM(Channel);
@@ -259,6 +260,7 @@ static int gen_wifi_config(int getmode)
 		    FPRINT_STR(FixedTxMode);
 		} else {
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
+		    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
 		    fprintf(fp, "staWirelessMode=%d\n", atoi(nvram_bufget(mode, "staWirelessModeINIC")));
 		    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
@@ -307,7 +309,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(ChannelGeography);
 #endif
 		FPRINT_NUM(BssidNum);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(SSID2);
 		FPRINT_STR(SSID3);
 		FPRINT_STR(SSID4);
@@ -315,26 +316,25 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(SSID6);
 		FPRINT_STR(SSID7);
 		FPRINT_STR(SSID8);
-#endif
+
 		FPRINT_NUM(AutoConnect);
 		FPRINT_NUM(FastConnect);
-		FPRINT_NUM(HiPower);
 		FPRINT_NUM(AutoRoaming);
 		FPRINT_NUM(BeaconPeriod);
 		FPRINT_NUM(DtimPeriod);
-		FPRINT_NUM(TxPower);
 		FPRINT_NUM(DisableOLBC);
 		FPRINT_NUM(BGProtection);
-		fprintf(fp, "TxAntenna=\n");
-		fprintf(fp, "RxAntenna=\n");
-		FPRINT_NUM(TxPreamble);
 		FPRINT_NUM(RTSThreshold);
-		FPRINT_NUM(FragThreshold);
+		FPRINT_NUM(TxPreamble);
+		FPRINT_NUM(TxPower);
 		FPRINT_NUM(TxBurst);
 		FPRINT_NUM(BurstMode);
-		FPRINT_NUM(PktAggregate);
-		FPRINT_NUM(FreqDelta);
+		fprintf(fp, "TxAntenna=\n");
+		fprintf(fp, "RxAntenna=\n");
 		fprintf(fp, "TurboRate=0\n");
+		FPRINT_NUM(PktAggregate);
+		FPRINT_NUM(FragThreshold);
+		FPRINT_NUM(FreqDelta);
 #if defined (CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined (CONFIG_RT2860V2_STA_VIDEO_TURBINE)
 		FPRINT_NUM(VideoTurbine);
 		FPRINT_NUM(VideoClassifierEnable);
@@ -432,7 +432,6 @@ static int gen_wifi_config(int getmode)
 #endif
 		//WPAPSK
 		FPRINT_STR(WPAPSK1);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(WPAPSK2);
 		FPRINT_STR(WPAPSK3);
 		FPRINT_STR(WPAPSK4);
@@ -440,11 +439,10 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(WPAPSK6);
 		FPRINT_STR(WPAPSK7);
 		FPRINT_STR(WPAPSK8);
-#endif
+
 		FPRINT_STR(DefaultKeyID);
 		FPRINT_STR(Key1Type);
 		FPRINT_STR(Key1Str1);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(Key1Str2);
 		FPRINT_STR(Key1Str3);
 		FPRINT_STR(Key1Str4);
@@ -479,7 +477,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Key4Str6);
 		FPRINT_STR(Key4Str7);
 		FPRINT_STR(Key4Str8);
-#endif
+
 		//MIMO
 		FPRINT_NUM(HT_HTC);
 		FPRINT_NUM(HT_RDG);
@@ -495,6 +493,11 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_LDPC);
 		FPRINT_NUM(HT_LinkAdapt);
 		FPRINT_STR(HT_MCS);
+		FPRINT_NUM(HT_PROTECT);
+		FPRINT_NUM(HT_DisallowTKIP);
+		FPRINT_NUM(HT_40MHZ_INTOLERANT);
+		FPRINT_NUM(HT_MIMOPSMode);
+		FPRINT_NUM(HT_MIMOPS);
 		if (!inic) {
 		    FPRINT_NUM(HT_TxStream);
 		    FPRINT_NUM(HT_RxStream);
@@ -503,20 +506,16 @@ static int gen_wifi_config(int getmode)
 		    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_bufget(mode, "HT_EXTCHAINIC")));
 		    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_bufget(mode, "HT_TxStreamINIC")));
 		    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_bufget(mode, "HT_RxStreamINIC")));
-		}
-		FPRINT_NUM(HT_PROTECT);
-		FPRINT_NUM(HT_DisallowTKIP);
-		FPRINT_NUM(HT_40MHZ_INTOLERANT);
-		FPRINT_NUM(HT_MIMOPSMode);
-		FPRINT_NUM(HT_MIMOPS);
 #ifndef CONFIG_RT_SECOND_IF_NONE
-		FPRINT_NUM(VHT_BW);
-		FPRINT_NUM(VHT_BW_SIGNAL);
-		FPRINT_NUM(VHT_DisallowNonVHT);
-		FPRINT_NUM(VHT_LDPC);
-		FPRINT_NUM(VHT_SGI);
-		FPRINT_NUM(VHT_STBC);
+		    // VHT
+		    FPRINT_NUM(VHT_BW);
+		    FPRINT_NUM(VHT_BW_SIGNAL);
+		    FPRINT_NUM(VHT_DisallowNonVHT);
+		    FPRINT_NUM(VHT_LDPC);
+		    FPRINT_NUM(VHT_SGI);
+		    FPRINT_NUM(VHT_STBC);
 #endif
+		}
 		FPRINT_NUM(HSCounter);
 		FPRINT_NUM(WscConfMode);
 		FPRINT_NUM(WCNTest);
@@ -526,7 +525,6 @@ static int gen_wifi_config(int getmode)
 #endif
 		FPRINT_NUM(AccessPolicy0);
 		FPRINT_STR(AccessControlList0);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_NUM(AccessPolicy1);
 		FPRINT_STR(AccessControlList1);
 		FPRINT_NUM(AccessPolicy2);
@@ -541,7 +539,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(AccessControlList6);
 		FPRINT_NUM(AccessPolicy7);
 		FPRINT_STR(AccessControlList7);
-#endif
+
 		FPRINT_NUM(WdsEnable);
 		FPRINT_STR(WdsPhyMode);
 		FPRINT_STR(WdsTxMcs);
@@ -554,7 +552,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(RADIUS_Server);
 		FPRINT_STR(RADIUS_Port);
 		FPRINT_STR(RADIUS_Key1);
-#if defined (CONFIG_RT2860V2_AP_MBSS) || defined (CONFIG_RT2860V2_STA_MBSS)
 		FPRINT_STR(RADIUS_Key2);
 		FPRINT_STR(RADIUS_Key3);
 		FPRINT_STR(RADIUS_Key4);
@@ -562,7 +559,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(RADIUS_Key6);
 		FPRINT_STR(RADIUS_Key7);
 		FPRINT_STR(RADIUS_Key8);
-#endif
+
 		FPRINT_STR(own_ip_addr);
 		FPRINT_STR(EAPifname);
 		FPRINT_STR(PreAuthifname);
@@ -570,6 +567,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(session_timeout_interval);
 		FPRINT_NUM(quiet_interval);
 		FPRINT_NUM(TGnWifiTest);
+
 #ifdef CONFIG_RT2860V2_AP_APCLI
 		//AP Client parameters
 		FPRINT_NUM(ApCliEnable);

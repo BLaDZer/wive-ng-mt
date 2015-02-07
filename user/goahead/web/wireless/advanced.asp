@@ -20,7 +20,6 @@ var txBurst = '<% getCfgZero(1, "TxBurst"); %>';
 var pktAggregate = '<% getCfgZero(1, "PktAggregate"); %>';
 var m2uBuilt = '<% getWlanM2UBuilt(); %>';
 var m2uEnabled = '<% getCfgZero(1, "M2UEnabled"); %>';
-var txPower = '<% getCfgZero(1, "TxPower"); %>';
 var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
 var video_turbine_built='<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
@@ -56,8 +55,6 @@ function initTranslation()
 	_TR("advFragRange", "adv fragment threshold range");
 	_TR("advRTS", "adv rts threshold");
 	_TR("advRTSRange", "adv rts threshold range");
-	_TR("advTxPW", "adv tx power");
-	_TR("advTxPWRange", "adv tx power range");
 	_TR("advShortPre", "adv short preamble");
 	_TR("advShortPreEnable", "wireless enable");
 	_TR("advShortPreDisable", "wireless disable");
@@ -158,14 +155,6 @@ function initValue()
 		form.ids_enable[(ids_enable == '1') ? 0 : 1].checked = true;
 	else
 		displayElement('ids_enable_row', false);
-
-	// Set-up TX power combo
-	for (var i=0; i<form.tx_power.options.length; i++)
-	{
-		if (form.tx_power.options[i].value > (txPower*1))
-			break;
-		form.tx_power.options.selectedIndex = i;
-	}
 
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
@@ -375,17 +364,6 @@ function CheckValue(form)
               <span style="color: #808080">&nbsp;(range 0 - 255, 0 = auto)</span></td>
           </tr>
 -->
-          <tr>
-            <td class="head" id="advTxPW">TX Power</td>
-            <td><select name="tx_power" class="half">
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="20">20%</option>
-                <option value="40">40%</option>
-                <option value="70">70%</option>
-                <option value="100">100%</option>
-              </select></td>
-          </tr>
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
             <td><input type="radio" name="short_preamble" value="1">

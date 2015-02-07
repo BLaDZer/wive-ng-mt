@@ -25,6 +25,8 @@
   <message msgid="station auth" msgstr="Аутентификация" />
   <message msgid="station network type" msgstr="Тип сети" />
 
+  <message msgid="basic tx power" msgstr="Мощность передатчика (2.4GHz)" />
+  <message msgid="basic tx power ac" msgstr="Мощность передатчика  (5GHz)" />
   <message msgid="basic title" msgstr="Основные настройки Wi-Fi " />
   <message msgid="basic introduction" msgstr="Вы можете настроить минимум параметров Wi-Fi для связи, таких как название сети (SSID) и номер канала. Точка доступа может быть легко настроена минимумом опций. " />
   <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
@@ -83,8 +85,6 @@
   <message msgid="adv fragment threshold range" msgstr="(256 - 2346, по умолчанию 2346)" />
   <message msgid="adv rts threshold" msgstr="Пороговое значение RTS" />
   <message msgid="adv rts threshold range" msgstr="(1 - 2347, по умолчанию 2347)" />
-  <message msgid="adv tx power" msgstr="Мощность передатчика" />
-  <message msgid="adv tx power range" msgstr="(1 - 100, по умолчанию 100)" />
   <message msgid="adv short preamble" msgstr="Короткая преамбула" />
   <message msgid="adv short slot" msgstr="Короткий слот" />
   <message msgid="adv tx burst" msgstr="Пакетная отправка" />

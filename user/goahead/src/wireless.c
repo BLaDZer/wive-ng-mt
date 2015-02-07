@@ -846,10 +846,10 @@ static void setupSecurityLed(void)
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_stream, *rx_stream;
+	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
+	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
 #endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
@@ -865,6 +865,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
+	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
@@ -889,6 +890,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
+	tx_power_ac = websGetVar(wp, T("tx_power"), T("100"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 	ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
@@ -928,8 +930,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// Wireless mode
 	nvram_bufset(RT2860_NVRAM, "WirelessMode", wirelessmode);
+	nvram_bufset(RT2860_NVRAM, "TxPower", tx_power);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	nvram_bufset(RT2860_NVRAM, "WirelessModeINIC", wirelessmodeac);
+	nvram_bufset(RT2860_NVRAM, "TxPowerINIC", tx_power_ac);
 #endif
 	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
@@ -1114,6 +1118,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
 		websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
 		websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
+		websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
 		if (strncmp(abg_rate, "", 1)) {
 			websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
 		}
@@ -1133,6 +1138,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 		websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
 		websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
+		websWrite(wp, T("tx_power_ac: %s<br>\n"), tx_power_ac);
 		if (is_vht)
 		{
 			websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
@@ -1184,7 +1190,7 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessAdvanced */
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*mbssid_mode, *apcli_mode, *wds_mode, *bg_protection, *beacon, *dtim, *fragment, *rts, *tx_power, *short_preamble,
+	char_t	*mbssid_mode, *apcli_mode, *wds_mode, *bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid_num, wlan_mode;
 	char *submitUrl;
@@ -1211,7 +1217,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	dtim = websGetVar(wp, T("dtim"), T("1"));
 	fragment = websGetVar(wp, T("fragment"), T("2346"));
 	rts = websGetVar(wp, T("rts"), T("2347"));
-	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	short_preamble = websGetVar(wp, T("short_preamble"), T("0"));
 	short_slot = websGetVar(wp, T("short_slot"), T("0"));
 	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
@@ -1257,7 +1262,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "DtimPeriod", dtim);
 	nvram_bufset(RT2860_NVRAM, "FragThreshold", fragment);
 	nvram_bufset(RT2860_NVRAM, "RTSThreshold", rts);
-	nvram_bufset(RT2860_NVRAM, "TxPower", tx_power);
 	nvram_bufset(RT2860_NVRAM, "TxPreamble", short_preamble);
 	nvram_bufset(RT2860_NVRAM, "ShortSlot", short_slot);
 	nvram_bufset(RT2860_NVRAM, "PktAggregate", pkt_aggregate);
@@ -1323,7 +1327,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("dtim: %s<br>\n"), dtim);
 		websWrite(wp, T("fragment: %s<br>\n"), fragment);
 		websWrite(wp, T("rts: %s<br>\n"), rts);
-		websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
 		websWrite(wp, T("short_preamble: %s<br>\n"), short_preamble);
 		websWrite(wp, T("short_slot: %s<br>\n"), short_slot);
 		websWrite(wp, T("tx_burst: %s<br>\n"), tx_burst);

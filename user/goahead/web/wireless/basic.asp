@@ -21,6 +21,9 @@ var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
 var channel_index  = '<% getWlanChannel(); %>';
 var channel_indexac  = '<% getWlanChannelAC(); %>';
 
+var txPower = '<% getCfgZero(1, "TxPower"); %>';
+var txPowerAC = '<% getCfgZero(1, "TxPowerINIC"); %>';
+
 var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
 var fxtxmode = '<% getCfgGeneral(1, "FixedTxMode"); %>';
 var countrycode = '<% getCfgGeneral(1, "CountryCode"); %>';
@@ -288,6 +291,9 @@ function initTranslation()
 	_TR("basicFreqGAuto", "basic frequency auto");
 	_TR("basicRate", "basic rate");
 
+	_TR("basicTxPW", "basic tx power");
+	_TR("basicTxPWAc", "basic tx power ac");
+
 	_TR("basicHTPhyMode", "basic ht phy mode");
 	_TR("basicHTOPMode", "basic ht op mode");
 	_TR("basicHTMixedDisable", "basic ht op mixed");
@@ -403,6 +409,7 @@ function initValue()
 	hideElement("div_11a_basic");
 	hideElement("div_11a_name");
 	hideElement("div_11a_mac");
+	hideElement("div_txpw_ac");
 	hideElement("div_11a_channel");
 	hideElement("div_11g_channel");
 	hideElement("div_ht_tx_stream");
@@ -458,6 +465,14 @@ function initValue()
 	form.wirelessmode.value     = wmode;
 	form.wirelessmodeac.value   = wmodeac;
 
+	// Set-up TX power combo
+	for (var i=0; i<form.tx_power.options.length; i++)
+	{
+		if (form.tx_power.options[i].value > (txPower*1))
+			break;
+		form.tx_power.options.selectedIndex = i;
+	}
+
 	// Display basic
 	form.sz11gChannel.disabled = false;
 	showElementEx("div_11g_channel", style_display_on());
@@ -466,11 +481,20 @@ function initValue()
 	// Display AC
 	if (is5gh_support == 1)
 	{
+		// Set-up TX power AC combo
+		for (var i=0; i<form.tx_powerac.options.length; i++)
+		{
+			if (form.tx_powerac.options[i].value > (txPowerAC*1))
+				break;
+			form.tx_powerac.options.selectedIndex = i;
+		}
+
 		showElementEx("basicWirelessEnabledAc", style_display_on());
 
 		showElementEx("div_11a_basic", style_display_on());
 		showElementEx("div_11a_name", style_display_on());
 		showElementEx("div_11a_mac", style_display_on());
+		showElementEx("div_txpw_ac", style_display_on());
 
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
@@ -1015,6 +1039,28 @@ function CheckValue(form)
             <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange()">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
+              </select></td>
+          </tr>
+          <tr id="div_txpw_ac" name="div_txpw_ac">
+            <td class="head" id="basicTxPWAc">TX Power (5GHz)</td>
+            <td><select name="tx_powerac" class="half">
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="40">40%</option>
+                <option value="70">70%</option>
+                <option value="100">100%</option>
+              </select></td>
+          </tr>
+          <tr id="div_txpw" name="div_txpw">
+            <td class="head" id="basicTxPW">TX Power (2.4GHz)</td>
+            <td><select name="tx_power" class="half">
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="40">40%</option>
+                <option value="70">70%</option>
+                <option value="100">100%</option>
               </select></td>
           </tr>
           <tr id="div_11a_name" name="div_11a_name">

@@ -25,6 +25,8 @@
   <message msgid="station auth" msgstr="Authentication" />
   <message msgid="station network type" msgstr="Network Type" />
 
+  <message msgid="basic tx power" msgstr="TX Power (2.4GHz)" />
+  <message msgid="basic tx power ac" msgstr="TX Power (5GHz)" />
   <message msgid="basic title" msgstr="Basic Wireless Settings " />
   <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point. " />
   <message msgid="basic wireless network" msgstr="Wireless Network" />
@@ -84,8 +86,6 @@
   <message msgid="adv fragment threshold range" msgstr="(range 256 - 2346)" />
   <message msgid="adv rts threshold" msgstr="RTS Threshold" />
   <message msgid="adv rts threshold range" msgstr="(range 1 - 2347)" />
-  <message msgid="adv tx power" msgstr="TX Power" />
-  <message msgid="adv tx power range" msgstr="(range 1 - 100)" />
   <message msgid="adv short preamble" msgstr="Short Preamble" />
   <message msgid="adv short slot" msgstr="Short Slot" />
   <message msgid="adv tx burst" msgstr="Tx Burst" />
