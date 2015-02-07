@@ -46,6 +46,7 @@ var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
 var is3t3r = '<% is3t3r(); %>';
 var is5gh_support = '<% is5gh_support(); %>';
+var is5gh_1t1r = '<% is5gh_1t1r(); %>';
 var mssidb = '<% getMBSSIDBuilt(); %>';
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
@@ -491,6 +492,12 @@ function initValue()
 	{
 		showElement("div_ac");
 
+		if (is5gh_1t1r == 1)
+		{
+		    hideElement("div_11a_stbc");
+		    hideElement("div_11a_ldpc");
+		}
+		
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
 		form.ac_ldpc.disabled = false;
@@ -925,6 +932,12 @@ function wirelessModeChange(form)
     		{
 		    showElement("div_ac");
 
+		    if (is5gh_1t1r == 1)
+		    {
+			hideElement("div_11a_stbc");
+			hideElement("div_11a_ldpc");
+		    }
+
 		    form.ac_gi.disabled = false;
 		    form.ac_stbc.disabled = false;
 		    form.ac_ldpc.disabled = false;
@@ -1236,7 +1249,7 @@ function CheckValue(form)
           <tr>
             <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
           </tr>
-          <tr id="basicVHTBW">
+          <tr id="basicVHTBW" >
             <td class="head">Channel BandWidth</td>
             <td><select name="ac_bw" size="1" class="half">
                 <option value="0" selected id="1">20/40MHz</option>
@@ -1259,7 +1272,7 @@ function CheckValue(form)
               <input type="radio" name="ac_gi" value="1">
               <font id="basicVHTAutoGI">Auto</font></span></td>
           </tr>
-          <tr>
+          <tr id="div_11a_stbc" name="div_11a_stbc">
             <td class="head" id="basicVHTSTBC">Space-Time Block Coding</td>
             <td><span class="radio">
               <input type="radio" name="ac_stbc" value="0" checked>
@@ -1267,7 +1280,7 @@ function CheckValue(form)
               <input type="radio" name="ac_stbc" value="1">
               <font id="basicVHTSTBC">Enable</font></span></td>
           </tr>
-          <tr>
+          <tr id="div_11a_ldpc" name="div_11a_ldpc">
             <td class="head" id="basicLDPC">Low Disenty parity check</td>
             <td><span class="radio">
               <input type="radio" name="ac_ldpc" value="0" checked>

@@ -50,6 +50,7 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
+static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
 static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);		/* for Access Policy list deletion*/
 static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
@@ -197,6 +198,7 @@ void formDefineWireless(void)
 	websAspDefine(T("listCountryCodes"), listCountryCodes);
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
+	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
 	websAspDefine(T("isWPSConfiguredASP"), isWPSConfiguredASP);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
@@ -1065,7 +1067,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "HT_BADecline", n_badecline);
 		nvram_bufset(RT2860_NVRAM, "HT_TxStream", tx_stream);
 		nvram_bufset(RT2860_NVRAM, "HT_RxStream", rx_stream);
-		/* HT_RGD depend at HT_HTC+ frame support */
+		// HT_RGD depend at HT_HTC+ frame support
 		nvram_bufset(RT2860_NVRAM, "HT_HTC", n_rdg);
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
 	}
@@ -1074,9 +1076,15 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// VHT_Modes
 	if (is_vht)
 	{
-		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+		// for 1T1R module always disable (support only in STA mode for 1T1R)
+		nvram_bufset(RT2860_NVRAM, "VHT_STBC", "0");
+		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
+#else
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
+#endif
+		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW", ac_bw);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW_SIGNAL", ac_bwsig);
 	}
@@ -1940,6 +1948,16 @@ static int is3t3r(int eid, webs_t wp, int argc, char_t **argv)
 static int is5gh_support(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifndef CONFIG_RT_SECOND_IF_NONE
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));

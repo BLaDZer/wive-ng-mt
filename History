@@ -518,6 +518,7 @@
 7) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
 8) dropbear: up to 2015.67 version.<br>
 9) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+10) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
 <br>
 <br>
 <b>TODO:</b><br>
