@@ -274,7 +274,6 @@ clean:
 	#################CLEAN ALL SUBDIRS#############################
 	-$(MAKE) clean -C config
 	-$(MAKE) clean -C Uboot
-	-$(MAKE) clean -C fulldump
 	-$(MAKE) clean -C tools
 	-$(MAKE) clean -C libnvram
 	-$(MAKE) clean -C libext
