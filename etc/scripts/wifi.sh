@@ -11,21 +11,11 @@ fi
 
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
-#################################################################################################
-eval `nvram_buf_get 2860 OperationMode AutoConnect AutoChannelSelect AutoChannelSelectINIC \
-	RadioOff GreenAP HT_OpMode \
-	DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh \
-	AP2040Rescan HT_BSSCoexistence \
-	McastPhyMode McastMcs M2UEnabled`
-#####################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS#################################
-if [ "$2" != "5GHZ" ]; then
-    # allow fallback to MCS0
-    iwpriv $1 set AutoFallBack=1
-    # decrease tx retry for decrease tx buffer free time
-    iwpriv $1 set LongRetry=3
-    iwpriv $1 set ShortRetry=3
-fi
-########################################STAMODE param############################################
+######################################################################################################
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoChannelSelect AutoChannelSelectINIC \
+	AutoConnect GreenAP HT_OpMode DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh \
+	AP2040Rescan HT_BSSCoexistence McastPhyMode McastMcs M2UEnabled`
+########################################STAMODE param#################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
 	iwpriv "$1" set AutoReconnect="$AutoConnect"
@@ -33,16 +23,24 @@ if [ "$OperationMode" = "2" ]; then
   # in sta mode exit
   exit 0
 fi
-########################################APMODE param#############################################
-#########################################ON/OFF param############################################
-if [ "$RadioOff" = "1" ]; then
+########################################APMODE param#################################################
+#########################################ON/OFF param################################################
+if [ "$RadioOff" = "1" -a "$2" != "5GHZ" ] || [ "$RadioOffINIC" = "1" -a "$2" = "5GHZ" ]; then
     iwpriv "$1" set RadioOn=0
-    echo ">>>> WIFI DISABLED <<<<"
+    echo ">>>> WIFI $1 DISABLED <<<<"
     exit 0
 else
     iwpriv "$1" set RadioOn=1
 fi
-########################################MULTICAST param##########################################
+################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)############################
+if [ "$2" != "5GHZ" ]; then
+    # allow fallback to MCS0
+    iwpriv $1 set AutoFallBack=1
+    # decrease tx retry for decrease tx buffer free time
+    iwpriv $1 set LongRetry=3
+    iwpriv $1 set ShortRetry=3
+fi
+########################################MULTICAST param##############################################
 if [ "$CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC" != "" ]; then
     # always set mcast mode if enabled
     if [ "$McastPhyMode" != "" ]; then
@@ -63,7 +61,7 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
 	fi
     fi
 fi
-########################################GREEN mode###############################################
+########################################GREEN mode####################################################
 if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ] && [ "$2" != "5GHZ" ]; then
     if [ "$HT_OpMode" = "1" ] || [ "$GreenAP" = "1" ]; then
 	iwpriv "$1" set GreenAP=1
@@ -71,7 +69,7 @@ if [ "$CONFIG_RT2860V2_AP_GREENAP" != "" ] && [ "$2" != "5GHZ" ]; then
 	iwpriv "$1" set GreenAP=0
     fi
 fi
-#####################################Reduce interference#########################################
+#####################################Reduce interference##############################################
 if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; then
     if [ "$DyncVgaEnable" = "1" ]; then
 	iwpriv "$1" set DyncVgaEnable=1
@@ -83,7 +81,7 @@ if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; th
 	iwpriv "$1" set MO_LowFalseCCATh="$MO_LowFalseCCATh"
     fi
 fi
-########################################Channel select###########################################
+########################################Channel select################################################
 if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     [ "$AutoChannelSelectINIC" = "1" -a "$2" = "5GHZ" ]; then
     # rescan and select optimal channel
@@ -92,7 +90,7 @@ if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     # second select channel
     iwpriv "$1" set AutoChannelSel=1
 fi
-###########################################ALWAYS END############################################
+###########################################ALWAYS END#################################################
 # rescan coexist mode
 if [ "$CONFIG_RT2860V2_AP_80211N_DRAFT3" != "" ]; then
     if [ "$AP2040Rescan" = "1" ] && [ "$HT_BSSCoexistence" = "1" ]; then

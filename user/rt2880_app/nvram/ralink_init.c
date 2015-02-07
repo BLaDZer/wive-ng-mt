@@ -610,10 +610,17 @@ static int gen_wifi_config(int getmode)
 #endif
 
 		//Radio On/Off
-		if (atoi(nvram_bufget(mode, "RadioOff")) == 1)
+		if (!inic) {
+		    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)
 			fprintf(fp, "RadioOn=0\n");
-		else
+		    else
 			fprintf(fp, "RadioOn=1\n");
+		} else {
+		    if (atoi(nvram_bufget(mode, "RadioOffINIC")) == 1)
+			fprintf(fp, "RadioOn=0\n");
+		    else
+			fprintf(fp, "RadioOn=1\n");
+		}
 
 		/*
 		 * There are no SSID/WPAPSK/Key1Str/Key2Str/Key3Str/Key4Str anymore since driver1.5 , but 

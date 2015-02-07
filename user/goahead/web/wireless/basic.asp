@@ -13,6 +13,8 @@
 Butterlate.setTextDomain("wireless");
 
 var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
+var radio_off_ac = "<% getCfgZero(1, "RadioOffINIC"); %>";
+
 var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
 var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
 
@@ -395,6 +397,7 @@ function initValue()
 	var form = document.wireless_basic;
 
 	form.radioWirelessEnabled.checked = (radio_off == "0");
+	form.radioWirelessEnabledAc.checked = (radio_off_ac == "0");
 
 	// Hide & disable elements
 	hideElement("div_11a_basic");
@@ -408,6 +411,7 @@ function initValue()
 	hideElement("div_all");
 	hideElement("div_11n");
 	hideElement("div_ac");
+	hideElement("basicWirelessEnabledAc");
 
 	form.sz11aChannel.disabled = true;
 	form.sz11gChannel.disabled = true;
@@ -462,6 +466,8 @@ function initValue()
 	// Display AC
 	if (is5gh_support == 1)
 	{
+		showElementEx("basicWirelessEnabledAc", style_display_on());
+
 		showElementEx("div_11a_basic", style_display_on());
 		showElementEx("div_11a_name", style_display_on());
 		showElementEx("div_11a_mac", style_display_on());
@@ -876,6 +882,7 @@ function wirelessModeChange(form)
 	hideElement("div_all");
 	hideElement("div_11n");
 	hideElement("div_ac");
+	hideElement("basicWirelessEnabledAc");
 	show14channel(true);
 
 	form.sz11aChannel.disabled = true;
@@ -979,10 +986,13 @@ function CheckValue(form)
           <tr>
             <td class="title" colspan="2" id="basicWirelessNet">Wireless Network</td>
           </tr>
-          <tr>
-            <td class="head">Wireless enable</td>
-            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp;enabled</td>
+          <tr id="basicWirelessEnabledAc">
+            <td class="head">Wireless (5GHz)</td>
+	    <td><input type="checkbox" name="radioWirelessEnabledAc">&nbsp; Enabled</td>
           </tr>
+          <tr id="basicWirelessEnabled">
+            <td class="head">Wireless (2.4GHz)</td>
+            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp; Enabled</td>
           <tr id="div_11a_basic" name="div_11a_basic">
             <td class="head" id="basicAcNetMode">Network Mode (5GHz)</td>
             <td><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
