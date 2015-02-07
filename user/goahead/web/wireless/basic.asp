@@ -448,12 +448,12 @@ function initValue()
 	// Init 2.4GHz
 	index = form.wirelessmode.options.length;
 
-	form.wirelessmode.options[index++] = new Option("11b/g mixed mode", "0");
+	form.wirelessmode.options[index++] = new Option("11b/g mixed", "0");
 	form.wirelessmode.options[index++] = new Option("11b only", "1");
 	form.wirelessmode.options[index++] = new Option("11g only", "4");
 	form.wirelessmode.options[index++] = new Option("11n only", "6");
-	form.wirelessmode.options[index++] = new Option("11g/n mixed mode", "7");
-	form.wirelessmode.options[index++] = new Option("11b/g/n mixed mode", "9");
+	form.wirelessmode.options[index++] = new Option("11g/n mixed", "7");
+	form.wirelessmode.options[index++] = new Option("11b/g/n mixed", "9");
 
 	// Init 5GHz
 	if (is5gh_support == 1)
@@ -461,10 +461,10 @@ function initValue()
 		indexac = form.wirelessmodeac.options.length;
 
 		form.wirelessmodeac.options[indexac++] = new Option("11a only", "2");
-		form.wirelessmodeac.options[indexac++] = new Option("11a/an mixed mode", "8");
+		form.wirelessmodeac.options[indexac++] = new Option("11a/an mixed", "8");
 		form.wirelessmodeac.options[indexac++] = new Option("11an only", "11");
-		form.wirelessmodeac.options[indexac++] = new Option("11a/an/ac", "14");
-		form.wirelessmodeac.options[indexac++] = new Option("11an/ac", "15");
+		form.wirelessmodeac.options[indexac++] = new Option("11a/an/ac mixed", "14");
+		form.wirelessmodeac.options[indexac++] = new Option("11an/ac mixed", "15");
 
 	}
 
