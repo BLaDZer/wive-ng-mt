@@ -890,7 +890,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
-	tx_power_ac = websGetVar(wp, T("tx_power"), T("100"));
+	tx_power_ac = websGetVar(wp, T("tx_power_ac"), T("100"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 	ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
