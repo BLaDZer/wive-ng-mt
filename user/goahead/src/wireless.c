@@ -846,7 +846,8 @@ static void setupSecurityLed(void)
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated, *sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream;
+	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated;
+	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
@@ -866,6 +867,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
 	tx_power = websGetVar(wp, T("tx_power"), T("100"));
+	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
+	apcli_mode = websGetVar(wp, T("apcli_mode"), T("apcli0"));
+	wds_mode = websGetVar(wp, T("wds_mode"), T("wds"));
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
@@ -935,6 +939,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "WirelessModeINIC", wirelessmodeac);
 	nvram_bufset(RT2860_NVRAM, "TxPowerINIC", tx_power_ac);
 #endif
+	// Virtual iface modes
+	nvram_bufset(RT2860_NVRAM, "BssidIfName", mbssid_mode);
+	nvram_bufset(RT2860_NVRAM, "ApCliIfName", apcli_mode);
+	nvram_bufset(RT2860_NVRAM, "WdsIfName", wds_mode);
+
 	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
@@ -1190,7 +1199,7 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessAdvanced */
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*mbssid_mode, *apcli_mode, *wds_mode, *bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble,
+	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid_num, wlan_mode;
 	char *submitUrl;
@@ -1208,9 +1217,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t *ht_bss_coex, *ap2040_rescan, *ht_noise_thresh;
 #endif
 	//fetch from web input
-	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
-	apcli_mode = websGetVar(wp, T("apcli_mode"), T("apcli0"));
-	wds_mode = websGetVar(wp, T("wds_mode"), T("wds"));
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	beacon = websGetVar(wp, T("beacon"), T("100"));
@@ -1254,9 +1260,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	//set to nvram
 	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "BssidIfName", mbssid_mode);
-	nvram_bufset(RT2860_NVRAM, "ApCliIfName", apcli_mode);
-	nvram_bufset(RT2860_NVRAM, "WdsIfName", wds_mode);
 	nvram_bufset(RT2860_NVRAM, "BGProtection", bg_protection);
 	nvram_bufset(RT2860_NVRAM, "BeaconPeriod", beacon);
 	nvram_bufset(RT2860_NVRAM, "DtimPeriod", dtim);

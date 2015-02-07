@@ -32,10 +32,6 @@ var ids_enable = '<% getCfgZero(1, "IdsEnable"); %>';
 
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
 
-var mbssid_mode = '<% getCfgGeneral(1, "BssidIfName"); %>';
-var apcli_mode = '<% getCfgGeneral(1, "ApCliIfName"); %>';
-var wds_mode = '<% getCfgGeneral(1, "WdsIfName"); %>';
-
 function initTranslation()
 {
 	_TR("advTitle", "adv title");
@@ -91,10 +87,6 @@ function initValue()
 {
 	var datarateArray;
 	var form = document.wireless_advanced;
-	var is5gh_support = '<% is5gh_support(); %>';
-	var mbssid = "<% getMBSSIDBuilt(); %>";
-	var apcli = "<% getWlanApcliBuilt(); %>";
-	var wds = "<% getWlanWdsBuilt(); %>";
 
 	initTranslation();
 	form.bg_protection.options.selectedIndex = 1*bgProtection;
@@ -158,39 +150,6 @@ function initValue()
 
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
-	
-        if (is5gh_support != '1' || mbssid != '1') {
-	    form.mbssid_mode.options.selectedIndex = 0;
-	    document.getElementById("advMbssidModeT").style.visibility = "hidden";
-	    hideElement(advMbssidModeT);
-	}
-
-        if (is5gh_support != '1' || apcli != '1') {
-	    form.wds_mode.options.selectedIndex = 0;
-	    document.getElementById("advWdsModeT").style.visibility = "hidden";
-	    hideElement(advWdsModeT);
-	}
-
-        if (is5gh_support != '1' || wds != '1') {
-	    form.apcli_mode.options.selectedIndex = 0;
-	    document.getElementById("advApcliModeT").style.visibility = "hidden";
-	    hideElement(advApcliModeT);
-	}
-
-        if (wds_mode == 'wdsi')
-	    form.wds_mode.options.selectedIndex = 1;
-	else
-	    form.wds_mode.options.selectedIndex = 0;
-
-        if (apcli_mode == 'apclii0')
-	    form.apcli_mode.options.selectedIndex = 1;
-	else
-	    form.apcli_mode.options.selectedIndex = 0;
-
-	if (mbssid_mode == 'rai')
-	    form.mbssid_mode.options.selectedIndex = 1;
-	else
-	    form.mbssid_mode.options.selectedIndex = 0;
 
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
@@ -300,27 +259,6 @@ function CheckValue(form)
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="advWireless">Advanced Wireless</td>
-          </tr>
-          <tr id="advMbssidModeT">
-            <td class="head">MBSSID Mode</td>
-            <td><select name="mbssid_mode" size="1" class="half">
-                <option value="ra" selected id="1">2.4GHz</option>
-                <option value="rai" id="2">5GHz</option>
-		</select></td>
-          </tr>
-          <tr id="advWdsModeT">
-            <td class="head">WDS Mode</td>
-            <td><select name="wds_mode" size="1" class="half">
-                <option value="wds" selected id="1">2.4GHz</option>
-                <option value="wdsi" id="2">5GHz</option>
-		</select></td>
-          </tr>
-          <tr id="advApcliModeT">
-            <td class="head">APCLI Mode</td>
-            <td><select name="apcli_mode" size="1" class="half">
-                <option value="apcli0" selected id="1">2.4GHz</option>
-                <option value="apclii0" id="2">5GHz</option>
-		</select></td>
           </tr>
           <tr>
             <td class="head" id="advBGProtect">BG Protection Mode</td>

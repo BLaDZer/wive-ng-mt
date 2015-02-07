@@ -520,6 +520,7 @@
 9) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
 10) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
 11) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+12) goahead: move select band for ViF modes from advanced to basic.<br>
 <br>
 <br>
 <b>TODO:</b><br>

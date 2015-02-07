@@ -49,10 +49,17 @@ var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
 var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
 var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
+var mbssid = "<% getMBSSIDBuilt(); %>";
+var apcli = "<% getWlanApcliBuilt(); %>";
+var wds = "<% getWlanWdsBuilt(); %>";
+var mbssid_mode = '<% getCfgGeneral(1, "BssidIfName"); %>';
+var apcli_mode = '<% getCfgGeneral(1, "ApCliIfName"); %>';
+var wds_mode = '<% getCfgGeneral(1, "WdsIfName"); %>';
+
 var is3t3r = '<% is3t3r(); %>';
 var is5gh_support = '<% is5gh_support(); %>';
 var is5gh_1t1r = '<% is5gh_1t1r(); %>';
-var mssidb = '<% getMBSSIDBuilt(); %>';
+
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var mbss_params =
@@ -174,15 +181,15 @@ function Channel_BandWidth_onClick()
 
 function ssidDisplay(form)
 {
-	var no_mssidb = mssidb != '1';
+	var no_mbssid = mbssid != '1';
 	var count = form.bssid_num.value * 1;
 
 	for (var i=1; i < count; i++)
 		showElement('div_hssid' + i);
 
 	// Allow only 8 BSSID's
-	showElement(form.addBSSIDbtn, no_mssidb);
-	form.addBSSIDbtn.disabled = ((count >= 8) || (no_mssidb));
+	showElement(form.addBSSIDbtn, no_mbssid);
+	form.addBSSIDbtn.disabled = ((count >= 8) || (no_mbssid));
 }
 
 function ssidAdd(form)
@@ -461,6 +468,39 @@ function initValue()
 
 	}
 
+        if (is5gh_support != '1' || mbssid != '1') {
+	    form.mbssid_mode.options.selectedIndex = 0;
+	    document.getElementById("basicMbssidModeT").style.visibility = "hidden";
+	    hideElement(basicMbssidModeT);
+	}
+
+        if (is5gh_support != '1' || apcli != '1') {
+	    form.wds_mode.options.selectedIndex = 0;
+	    document.getElementById("basicWdsModeT").style.visibility = "hidden";
+	    hideElement(basicWdsModeT);
+	}
+
+        if (is5gh_support != '1' || wds != '1') {
+	    form.apcli_mode.options.selectedIndex = 0;
+	    document.getElementById("basicApcliModeT").style.visibility = "hidden";
+	    hideElement(basicApcliModeT);
+	}
+
+        if (wds_mode == 'wdsi')
+	    form.wds_mode.options.selectedIndex = 1;
+	else
+	    form.wds_mode.options.selectedIndex = 0;
+
+        if (apcli_mode == 'apclii0')
+	    form.apcli_mode.options.selectedIndex = 1;
+	else
+	    form.apcli_mode.options.selectedIndex = 0;
+
+	if (mbssid_mode == 'rai')
+	    form.mbssid_mode.options.selectedIndex = 1;
+	else
+	    form.mbssid_mode.options.selectedIndex = 0;
+
 	// Set wmode after add all options
 	form.wirelessmode.value     = wmode;
 	form.wirelessmodeac.value   = wmodeac;
@@ -680,7 +720,7 @@ function initValue()
 	// add subchannel
 	insertExtChannelOption();
 
-	if (mssidb == "1")
+	if (mbssid == "1")
 	{
 		showElementEx("div_mbssidapisolated", style_display_on());
 		form.mbssidapisolated.disabled = false;
@@ -1062,6 +1102,27 @@ function CheckValue(form)
                 <option value="70">70%</option>
                 <option value="100">100%</option>
               </select></td>
+          </tr>
+          <tr id="basicMbssidModeT">
+            <td class="head">MBSSID Mode</td>
+            <td><select name="mbssid_mode" size="1" class="half">
+                <option value="ra" selected id="1">2.4GHz</option>
+                <option value="rai" id="2">5GHz</option>
+		</select></td>
+          </tr>
+          <tr id="basicWdsModeT">
+            <td class="head">WDS Mode</td>
+            <td><select name="wds_mode" size="1" class="half">
+                <option value="wds" selected id="1">2.4GHz</option>
+                <option value="wdsi" id="2">5GHz</option>
+		</select></td>
+          </tr>
+          <tr id="basicApcliModeT">
+            <td class="head">APCLI Mode</td>
+            <td><select name="apcli_mode" size="1" class="half">
+                <option value="apcli0" selected id="1">2.4GHz</option>
+                <option value="apclii0" id="2">5GHz</option>
+		</select></td>
           </tr>
           <tr id="div_11a_name" name="div_11a_name">
             <td class="head" id="basicAcSSID">Network Name (5GHz)</td>
