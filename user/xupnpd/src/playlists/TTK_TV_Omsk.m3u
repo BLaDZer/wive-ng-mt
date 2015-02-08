@@ -75,7 +75,7 @@ udp://@239.54.7.53:1224
 udp://@239.54.7.56:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Наука 2.0" tvg-name="Наука_2_0" crop=688x556+16+8,Наука 2.0
 udp://@239.54.7.51:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Комеди ТВ" tvg-name="Комеди_ТВ" crop=688x556+16+8,Комеди ТВ
+#EXTINF:-1 tvg-shift=3 tvg-logo="Комеди ТВ" tvg-name="ТНТ-Comedy" crop=688x556+16+8,ТНТ Comedy
 udp://@239.54.7.36:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Nickelodeon" tvg-name="Nickelodeon" crop=688x556+16+8,Nickelodeon
 udp://@239.54.7.69:1224
@@ -91,7 +91,7 @@ udp://@239.54.5.20:1224
 udp://@239.54.5.67:1224
 #EXTINF:-1 tvg-shift=-1 tvg-logo="ТНТ" tvg-name="ТНТ" crop=688x556+16+8,ТНТ
 udp://@239.54.5.132:1224
-#EXTINF:-1 tvg-shift=0 tvg-logo="Ю" tvg-name="Ю-ТВ" crop=688x556+16+8,Ю ТВ
+#EXTINF:-1 tvg-shift=0 tvg-logo="Ю" tvg-name="Ю" crop=688x556+16+8,Ю ТВ
 udp://@239.54.5.68:1224
 #EXTINF:-1 tvg-shift=-1 tvg-logo="Пятница" tvg-name="Пятница" crop=688x556+16+8,Пятница
 udp://@239.54.5.65:1224
@@ -127,8 +127,6 @@ udp://@239.54.5.75:1224
 udp://@239.54.5.63:1224
 #EXTINF:-1 tvg-shift=1 tvg-logo="Русский роман" tvg-name="Русский роман" crop=688x556+16+8,Русский роман
 udp://@239.54.5.87:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="ТТК" tvg-name="К-24" crop=688x556+16+8,К-24
-udp://@239.54.5.147:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Юмор ТВ" tvg-name="Юмор_ТВ" crop=688x556+16+8,Юмор ТВ
 udp://@239.54.5.5:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Улыбка Ребенка" tvg-name="Улыбка_ребенка" crop=688x556+16+8,Улыбка ребёнка
@@ -183,6 +181,8 @@ udp://@239.54.5.79:1224
 udp://@239.54.5.19:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Lifenews" crop=688x556+16+8 aspect-ratio=16:9,Lifenews
 udp://@239.54.5.160:1224
+#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" crop=688x556+16+8,К-24
+udp://@239.54.5.147:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Дождь" tvg-name="Дождь" crop=688x556+16+8 aspect-ratio=16:9,Дождь
 udp://@239.54.7.96:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Комсомольская_правда" crop=688x556+16+8,Комсомольская правда
