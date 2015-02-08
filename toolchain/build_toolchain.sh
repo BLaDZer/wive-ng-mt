@@ -5,7 +5,8 @@ CURDIR=`pwd`
 KERNELHDRS=kernel-headers
 BINUTILVER=binutils-2.24
 UCLIBCVER=uClibc-0.9.33.2
-GCCVER=gcc-4.8.4
+GCCVER=gcc-4.8.5
+HOSTGCCVER=`gcc -dumpversion | cut -f -2 -d .`
 
 INSTALL_DEP=NO
 UNPACK=YES
@@ -107,28 +108,27 @@ mkdir -p $WCURDIR
 cd $WCURDIR
 mkdir -p ${TARGET}-toolchain  && cd ${TARGET}-toolchain
 
-##################################TUNE FOR CURRENT VERSION GCC BUILD####################################
-HOSTGCCVER=`gcc -dumpversion | cut -f -2 -d .`
-if [ "$HOSTGCCVER" = "4.5" ] || [ "$HOSTGCCVER" = "4.6" ] || [ "$HOSTGCCVER" = "4.7" ] || [ "$HOSTGCCVER" = "4.8" ] || [ "$HOSTGCCVER" = "4.9" ]; then
-    WARN_OPTS="-Wno-pointer-sign -Wno-unused-but-set-variable -Wno-trigraphs -Wno-format-security -Wno-long-long -Wno-sizeof-pointer-memaccess -fno-strict-overflow -fno-delete-null-pointer-checks"
-fi
+#################################################TUNE FOR CURRENT VERSION GCC BUILD##########################################################
+# supress some warnings
+WARN_OPTS="-Wno-pointer-sign -Wno-unused-but-set-variable -Wno-trigraphs -Wno-format-security -Wno-long-long -Wno-sizeof-pointer-memaccess"
+# disable some optimizations
+GCC_OPTS="-fno-strict-overflow -fno-delete-null-pointer-checks -fno-var-tracking-assignments"
 if [ "$HOSTGCCVER" = "4.8" ] ||  [ "$HOSTGCCVER" = "4.9" ]; then
-    WARN_OPTS="$WARN_OPTS -fno-aggressive-loop-optimizations -fno-tree-slsr -fno-var-tracking-assignments"
+    GCC_OPTS="$GCC_OPTS -fno-aggressive-loop-optimizations -fno-tree-slsr -fno-var-tracking-assignments"
 fi
-export CFLAGS="-O2 $WARN_OPTS"
-
-EXT_OPT="$EXT_OPT --disable-lto --enable-ld=yes --enable-gold=no --disable-sanity-checks --disable-werror"
-if [ "$GCCVER" = "gcc-4.6.4" ] || [ "$GCCVER" = "gcc-4.7.4" ] || [ "$GCCVER" = "gcc-4.8.4" ] || [ "$GCCVER" = "gcc-4.9.2" ]; then
-    EXT_OPT="$EXT_OPT --disable-biendian --disable-softfloat --disable-libquadmath --disable-libquadmath-support"
-fi
-if [ "$GCCVER" = "gcc-4.8.4" ] || [ "$GCCVER" = "gcc-4.9.2" ]; then
+export CFLAGS="-O2 $GCC_OPTS $WARN_OPTS"
+# configure toolchain
+EXT_OPT="--disable-lto --disable-gold --enable-ld=yes --enable-gold=no --disable-sanity-checks --disable-werror"
+EXT_OPT="$EXT_OPT --disable-biendian --disable-softfloat --disable-libquadmath --disable-libquadmath-support"
+if [ "$GCCVER" = "gcc-4.8.5" ] || [ "$GCCVER" = "gcc-4.9.2" ]; then
     EXT_OPT="$EXT_OPT --disable-libatomic --with-pic"
 fi
-# for old gcc need tls disable
+# for gcc < 4.9.2 need tls disable
 if [ "$GCCVER" != "gcc-4.9.2" ]; then
     EXT_OPT="$EXT_OPT --disable-tls"
 fi
-#########################################################################################################
+export EXT_OPT="$EXT_OPT"
+##############################################################################################################################################
 
 if [ "$UNPACK" = "YES" ]; then
     echo "=================REMOVE-OLD-BUILD-TREE=================="
@@ -167,8 +167,7 @@ if [ "$BINUTILS" = "YES" ]; then
     echo "=====================BUILD-BINUTILS====================="
     mkdir -p build-binutils && cd build-binutils
     (../$BINUTILVER/configure --target=$TARGET --prefix=$PREFIX --includedir=$KERNEL_HEADERS \
-	--with-sysroot=$PREFIX --with-build-sysroot=$PREFIX \
-	--disable-gold --disable-libquadmath --disable-libquadmath-support --disable-lto --disable-werror && \
+	--with-sysroot=$PREFIX --with-build-sysroot=$PREFIX $EXT_OPT && \
     make -j8 KERNEL_HEADERS=$KERNEL_HEADERS && \
     make install) || exit 1
     cd ..

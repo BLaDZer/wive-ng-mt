@@ -2,6 +2,6 @@
 /toolchain/tmp/mipsel-linux-uclibc-toolchain/build-binutils/*
 /toolchain/tmp/mipsel-linux-uclibc-toolchain/build-gcc-bootstrap/*
 /toolchain/tmp/mipsel-linux-uclibc-toolchain/build-gcc-bootstrap-cpp/*
-/toolchain/tmp/mipsel-linux-uclibc-toolchain/gcc-4.8.4/*
+/toolchain/tmp/mipsel-linux-uclibc-toolchain/gcc-4.8.5/*
 /toolchain/tmp/mipsel-linux-uclibc-toolchain/include/*
 /toolchain/tmp/mipsel-linux-uclibc-toolchain/uClibc-0.9.33.2/*
