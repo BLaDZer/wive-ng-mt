@@ -114,12 +114,14 @@ offload() {
 	        hw_nat_udp="udp_offload=0"
 	        $LOG "hw_nat: udp offload support disabled."
 	    fi
-	    if [ "$hw_nat_six" = "1" ] && [ "$IPv6OpMode" != "0" ]; then
-	        hw_nat_ipv6="ipv6_offload=1"
-	        $LOG "hw_nat: ipv6 offload support enabled."
-	    else
-	        hw_nat_ipv6="ipv6_offload=0"
-	        $LOG "hw_nat: ipv6 offload support disabled."
+	    if [ "$CONFIG_RA_HW_NAT_IPV6" != "" ]; then
+		if [ "$hw_nat_six" = "1" ] && [ "$IPv6OpMode" != "0" ]; then
+	    	    hw_nat_ipv6="ipv6_offload=1"
+	    	    $LOG "hw_nat: ipv6 offload support enabled."
+		else
+	    	    hw_nat_ipv6="ipv6_offload=0"
+	    	    $LOG "hw_nat: ipv6 offload support disabled."
+	    	fi
 	    fi
 	    modprobe -q hw_nat "$hw_nat_wifi" "$hw_nat_udp" "$hw_nat_ipv6"
 	    if [ "$hw_nat_bind" != "" ]; then
