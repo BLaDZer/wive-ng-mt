@@ -525,10 +525,11 @@
 14) kernel: mips: gic: fix gic_set_affinity() return value.<br>
 15) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
 16) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
-17) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
-18) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
-19) goahead: split disable wifi modules, TxPower parametrs by band.<br>
-20) goahead: move select band for ViF modes from advanced to basic.<br>
+17) kernel: ipv4: remove output route check in ipv4_mtu.<br>
+18) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+19) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
+20) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+21) goahead: move select band for ViF modes from advanced to basic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
