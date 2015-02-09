@@ -318,6 +318,6 @@ case "$1" in
 	    ;;
 
 	*)
-	    echo $"Usage: $0 {start|stop|restart|dhcpradvdreconf}"
+	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|restart}"
 	    exit 1
 esac

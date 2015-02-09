@@ -310,6 +310,6 @@ case "$1" in
 	    start
 	    ;;
 	*)
-	    echo $"Usage: $0 {start|stop|restart}"
+	    echo $"Usage: $0 {start|genmac|stop|restart}"
 	    exit 1
 esac
