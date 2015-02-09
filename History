@@ -530,6 +530,8 @@
 19) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
 20) goahead: split disable wifi modules, TxPower parametrs by band.<br>
 21) goahead: move select band for ViF modes from advanced to basic.<br>
+22) eth_mac: add support wlan/wlan2 mac managment.<br>
+23) init.d: add change wlan/wlan2 macs in factory.<br>
 <br>
 <br>
 <b>TODO:</b><br>

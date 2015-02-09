@@ -265,13 +265,23 @@ genmac() {
     $LOG "Set WLAN1 MAC - $WMAC"
     $LOG "Set WLAN2 MAC - $WMAC2"
 
+    # write config to factory
     if [ -f /bin/eth_mac ] && [ "$DONTTOUCHFACTORY" != "YES" ]; then
 	FWMAC=`echo $MAC | sed "s/:/ /g"`
-	FLMAC=`echo $LANMAC | sed "s/:/ /g"`
 	eth_mac w wan $FWMAC
+	FLMAC=`echo $LANMAC | sed "s/:/ /g"`
 	eth_mac w lan $FLMAC
+	if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
+	    FWLMAC=`echo $WMAC | sed "s/:/ /g"`
+	    eth_mac w wlan $FWLMAC
+	fi
+	if [ "$CONFIG_RT_SECOND_IF_NONE" = "" ]; then
+	    FWLMAC2=`echo $WMAC2 | sed "s/:/ /g"`
+	    eth_mac w wlan2 $FWLMAC2
+	fi
     fi
 
+    # write config to nvram
     nvram_set 2860 WAN_MAC_ADDR   "$MAC"
     nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
     nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"

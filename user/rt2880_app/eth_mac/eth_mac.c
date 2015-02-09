@@ -12,14 +12,16 @@
 #include "mtd-abi.h"
 
 #if defined (CONFIG_RALINK_RT6855A) || defined (CONFIG_RALINK_MT7621)
-#define LAN_OFFSET    0xE000
-#define WAN_OFFSET    0xE006
-#elif defined (CONFIG_RALINK_RT3883)
-#define LAN_OFFSET    0x04
-#define WAN_OFFSET    0x0A
+#define LAN_OFFSET	0xE000
+#define WAN_OFFSET	0xE006
 #else
-#define LAN_OFFSET    0x28
-#define WAN_OFFSET    0x2E
+#define LAN_OFFSET	0x28
+#define WAN_OFFSET	0x2E
+#define WLAN_OFFSET	0x04
+#endif
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+#define WLAN2_OFFSET	0x8004
 #endif
 
 #define MACADDR_LEN 	6
@@ -60,10 +62,22 @@ static int mtd_read(char *side)
 	    return -1;
 	}
 
-	if (!strcmp(side, "wan"))
+	if (!strcmp(side, "wan")) {
 	    lseek(fd, WAN_OFFSET, SEEK_SET);
-	else
+	} else if (!strcmp(side, "lan")) {
 	    lseek(fd, LAN_OFFSET, SEEK_SET);
+#ifdef WLAN_OFFSET
+	} else if (!strcmp(side, "wlan")) {
+	    lseek(fd, WLAN_OFFSET, SEEK_SET);
+#endif
+#ifdef WLAN2_OFFSET
+	} else if (!strcmp(side, "wlan2")) {
+	    lseek(fd, WLAN2_OFFSET, SEEK_SET);
+#endif
+	} else {
+	    fprintf(stderr, "Could not seek to need offset. Name not set.\n");
+	    return -1;
+	}
 
 	ret = read(fd, mac_addr, MACADDR_LEN);
 	if (ret == -1) {
@@ -120,10 +134,22 @@ static int mtd_write(char *side, char **value)
 		goto write_fail;
 	}
 
-	if (!strcmp(side, "wan"))
+	if (!strcmp(side, "wan")) {
 	    ptr = buf + WAN_OFFSET;
-	else
+	} else if (!strcmp(side, "lan")) {
 	    ptr = buf + LAN_OFFSET;
+#ifdef WLAN_OFFSET
+	} else if (!strcmp(side, "wlan")) {
+	    ptr = buf + WLAN_OFFSET;
+#endif
+#ifdef WLAN2_OFFSET
+	} else if (!strcmp(side, "wlan2")) {
+	    ptr = buf + WLAN2_OFFSET;
+#endif
+	} else {
+	    fprintf(stderr, "Could not seek to need offset. Name not set.\n");
+	    goto write_fail;
+	}
 
 	printf("Replace mac adress.\n");
 	for (i = 0; i < MACADDR_LEN; i++, ptr++) {
@@ -165,8 +191,8 @@ write_fail:
 static void usage(char **str)
 {
 	printf("How to use:\n");
-	printf("\tread:   %s r <lan|wan>\n", str[0]);
-	printf("\twrite:  %s w <lan|wan> <MACADDR[0]> <MACADDR[1]> (space separator of octets)...\n", str[0]);
+	printf("\tread:   %s r <lan|wan|wlan|wlan2>\n", str[0]);
+	printf("\twrite:  %s w <lan|wan|wlan|wlan2> <MACADDR[0]> <MACADDR[1]> (space separator of octets)...\n", str[0]);
 }
 
 int main(int argc,char **argv)
