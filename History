@@ -519,13 +519,14 @@
 8) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
 9) kernel: mips: remove gic_{enable,disable}_interrupt().<br>
 10) kernel: mips: gic: remove platform irq_ack/irq_eoi callbacks.<br>
-11) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
-12) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
-13) dropbear: up to 2015.67 version.<br>
-14) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
-15) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
-16) goahead: split disable wifi modules, TxPower parametrs by band.<br>
-17) goahead: move select band for ViF modes from advanced to basic.<br>
+11) kernel: mips: gic: implement commit MIPS: IRQ: Fix disable_irq on CPU IRQs.<br>
+12) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
+13) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
+14) dropbear: up to 2015.67 version.<br>
+15) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+16) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
+17) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+18) goahead: move select band for ViF modes from advanced to basic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
