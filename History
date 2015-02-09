@@ -510,24 +510,25 @@
 <br>
 <b>2.3.x</b><br>
 1) toolchain: gcc up to 4.8.5-20150129 (after 4.8.4 only backport fixes).<br>
-2) kernel: up to 3.4.106 version.<br>
-3) kernel: ralink_wifi: up 7610 driver to 3.0.0.8 version.<br>
-4) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
-5) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
-6) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
-7) kernel: mips: synchronize MIPS count one CPU at a time.<br>
-8) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
-9) kernel: mips: remove gic_{enable,disable}_interrupt().<br>
-10) kernel: mips: gic: remove gic_{pending,itrmask}_regs.<br>
-11) kernel: mips: gic: remove platform irq_ack/irq_eoi callbacks.<br>
-12) kernel: mips: gic: implement commit MIPS: IRQ: Fix disable_irq on CPU IRQs.<br>
-13) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
-14) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
-15) dropbear: up to 2015.67 version.<br>
-16) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
-17) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
-18) goahead: split disable wifi modules, TxPower parametrs by band.<br>
-19) goahead: move select band for ViF modes from advanced to basic.<br>
+2) dropbear: up to 2015.67 version.<br>
+3) kernel: up to 3.4.106 version.<br>
+4) kernel: ralink_wifi: up 7610 driver to 3.0.0.8 version.<br>
+5) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
+6) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
+7) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
+8) kernel: mips: synchronize MIPS count one CPU at a time.<br>
+9) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
+10) kernel: mips: remove gic_{enable,disable}_interrupt().<br>
+11) kernel: mips: gic: remove gic_{pending,itrmask}_regs.<br>
+12) kernel: mips: gic: remove platform irq_ack/irq_eoi callbacks.<br>
+13) kernel: mips: gic: implement commit MIPS: IRQ: Fix disable_irq on CPU IRQs.<br>
+14) kernel: mips: gic: fix gic_set_affinity() return value.<br>
+15) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
+16) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
+17) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+18) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
+19) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+20) goahead: move select band for ViF modes from advanced to basic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
