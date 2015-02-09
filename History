@@ -516,13 +516,14 @@
 5) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
 6) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
 7) kernel: mips: synchronize MIPS count one CPU at a time.<br>
-8) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
-9) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
-10) dropbear: up to 2015.67 version.<br>
-11) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
-12) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
-13) goahead: split disable wifi modules, TxPower parametrs by band.<br>
-14) goahead: move select band for ViF modes from advanced to basic.<br>
+8) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
+9) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
+10) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
+11) dropbear: up to 2015.67 version.<br>
+12) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+13) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
+14) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+15) goahead: move select band for ViF modes from advanced to basic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
