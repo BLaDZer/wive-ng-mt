@@ -511,31 +511,32 @@
 <b>2.3.x</b><br>
 1) toolchain: gcc up to 4.8.5-20150129 (after 4.8.4 only backport fixes).<br>
 2) dropbear: up to 2015.67 version.<br>
-3) kernel: up to 3.4.106 version.<br>
-4) kernel: ralink_wifi: up 7610 driver to 3.0.0.8 version.<br>
-5) kernel: ralink_wifi: fix ate work in extpa/extlna mode.<br>
-6) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
-7) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
-8) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
-9) kernel: mips: synchronize MIPS count one CPU at a time.<br>
-10) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
-11) kernel: mips: remove gic_{enable,disable}_interrupt().<br>
-12) kernel: mips: gic: remove gic_{pending,itrmask}_regs.<br>
-13) kernel: mips: gic: remove platform irq_ack/irq_eoi callbacks.<br>
-14) kernel: mips: gic: implement commit MIPS: IRQ: Fix disable_irq on CPU IRQs.<br>
-15) kernel: mips: gic: fix gic_set_affinity() return value.<br>
-16) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
-17) kernel: pci/portdrv: Remove warning about invalid IRQ for hot-added PCIe ports.<br>
-18) kernel: ipv4: remove output route check in ipv4_mtu.<br>
-19) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
-20) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
-21) goahead: split disable wifi modules, TxPower parametrs by band.<br>
-22) goahead: move select band for ViF modes from advanced to basic.<br>
-23) goahead: fix infinitive loop with high cpu usage in websGetInput.<br>
-24) goahead: fix potentional security issue (extend path check in url req handler).<br>
-25) goahead: fix info leak in socket reuse code.<br>
-27) goahead: limit request ring length.<br>
-28) eth_mac: add support wlan/wlan2 mac managment.<br>
+3) eth_mac: add support wlan/wlan2 mac managment.<br>
+4) kernel: up to 3.4.106 version.<br>
+5) kernel: ralink_wifi: up 7610 driver to 3.0.0.8 version.<br>
+6) kernel: ralink_wifi: fix ate work in extpa/extlna mode.<br>
+7) kernel: sched/completion: add lock-free checking of the blocking case.<br>
+8) kernel: mips: allow MIPS_CPU_SCACHE to be used with different line sizes.<br>
+9) kernel: mips: smp-mt,smp-cmp: Enable all HW IRQs on secondary CPUs.<br>
+10) kernel: mips: mt: proc: Add support for printing VPE and TC ids.<br>
+11) kernel: mips: synchronize MIPS count one CPU at a time.<br>
+12) kernel: mips: vpe.c: Fix null pointer dereference in print arguments.<br>
+13) kernel: mips: remove gic_{enable,disable}_interrupt().<br>
+14) kernel: mips: gic: remove gic_{pending,itrmask}_regs.<br>
+15) kernel: mips: gic: remove platform irq_ack/irq_eoi callbacks.<br>
+16) kernel: mips: gic: implement commit MIPS: IRQ: Fix disable_irq on CPU IRQs.<br>
+17) kernel: mips: gic: fix gic_set_affinity() return value.<br>
+18) kernel: pci: fix P2P bridge I/O port window sign extension.<br>
+19) kernel: pci/portdrv: remove warning about invalid IRQ for hot-added PCIe ports.<br>
+20) kernel: ipv4: remove output route check in ipv4_mtu.<br>
+21) goahead: do not set FixedTxMode if MCS not limited/auto.<br>
+22) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
+23) goahead: split disable wifi modules, TxPower parametrs by band.<br>
+24) goahead: move select band for ViF modes from advanced to basic.<br>
+25) goahead: fix infinitive loop with high cpu usage in websGetInput.<br>
+26) goahead: fix potentional security issue (extend path check in url req handler).<br>
+27) goahead: fix info leak in socket reuse code.<br>
+28) goahead: limit request ring length.<br>
 29) init.d: add change wlan/wlan2 macs in factory.<br>
 <br>
 <br>
