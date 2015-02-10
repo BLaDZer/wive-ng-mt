@@ -32,14 +32,14 @@
  *	code must not be modified.
  */
 #define WEBS_NAME			T("WebServer")
-#define WEBS_VERSION			T("2.1.8")
+#define WEBS_VERSION			T("2.1.9")
 
 #define WEBS_HEADER_BUFINC 		512			/* Header buffer size */
 #define WEBS_ASP_BUFINC			512			/* Asp expansion increment */
 #define WEBS_MAX_PASS			32			/* Size of password */
-#define WEBS_BUFSIZE			8192		/* websWrite max output string */
-#define WEBS_MAX_HEADER			(8 * 1024)	/* Sanity check header */
-#define WEBS_MAX_URL			8192		/* Maximum URL size for sanity */
+#define WEBS_BUFSIZE			8192			/* websWrite max output string */
+#define WEBS_MAX_HEADER			(8 * 1024)		/* Sanity check header */
+#define WEBS_MAX_URL			8192			/* Maximum URL size for sanity */
 #define WEBS_SOCKET_BUFSIZ		256			/* Bytes read from socket */
 
 #define WEBS_HTTP_PORT			T("httpPort")

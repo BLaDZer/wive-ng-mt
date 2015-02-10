@@ -604,6 +604,15 @@ static int websGetInput(webs_t wp, char_t **ptext, int *pnbytes)
 			return -1;
 
 		}  else if (nbytes == 0) {				/* EOF or No data available */
+		/*
+		 * Infinite CPU usage if not all post data is sent.
+		 * This is a side-effect of socketRead whose return value does not
+		 * distinguish between EOF and no-data and we have to explicitly use
+		 * the socketEof() to test for it.
+		 */
+			if (socketEof(wp->sid)) {
+				websDone(wp, 0);
+			}
 			return -1;
 
 		} else {								/* Valid data */

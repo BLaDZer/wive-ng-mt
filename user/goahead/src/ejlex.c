@@ -676,7 +676,9 @@ static void inputPutback(ej_t* ep, int c)
 
 	ip = ep->input;
 	ringqInsertc(&ip->script, (char_t) c);
-	ip->lineColumn--;
+	if (ip->lineColumn > 0) {
+	    ip->lineColumn-- ;
+	}
 	ip->line[ip->lineColumn] = '\0';
 }
 

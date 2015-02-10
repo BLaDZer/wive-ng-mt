@@ -449,7 +449,7 @@ char_t *bstrdup(B_ARGS_DEC, char_t *s)
 	}
 	len = gstrlen(s) + 1;
 	if ((cp = balloc(B_ARGS, len * sizeof(char_t))) != NULL) {
-		gstrcpy(cp, s);
+		gstrncpy(cp, s, len * sizeof(char_t));
 	}
 	return cp;
 }

@@ -263,6 +263,11 @@ int websUrlHandlerRequest(webs_t wp)
  	websCondenseMultipleChars(wp->path, '/');
 	websCondenseMultipleChars(wp->url, '/');
 
+	if ((wp->path[0] != '/') || strchr(wp->path, '\\')) {
+		websError(wp, 400, T("Bad request"));
+		return 0;
+	}
+
 /*
  *	We loop over each handler in order till one accepts the request. 
  *	The security handler will handle the request if access is NOT allowed.

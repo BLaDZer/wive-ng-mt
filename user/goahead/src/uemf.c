@@ -22,14 +22,14 @@
 
 /********************************** Local Data ********************************/
 
-int emfInst;							/* Application instance handle */
+int emfInst; /* Application instance handle */
 
 /****************************** Forward Declarations **************************/
 
 extern void defaultErrorHandler(int etype, char_t *buf);
 static void (*errorHandler)(int etype, char_t *msg) = defaultErrorHandler;
 
-extern void	defaultTraceHandler(int level, char_t *buf);
+extern void defaultTraceHandler(int level, char_t *buf);
 static void (*traceHandler)(int level, char_t *buf) = defaultTraceHandler;
 
 /************************************* Code ***********************************/
@@ -48,14 +48,12 @@ void error(E_ARGS_DEC, int etype, char_t *fmt, ...)
 
 	if (etype == E_LOG) {
 		fmtAlloc(&buf, E_MAX_ERROR, T("%s\n"), fmtBuf);
-/*#ifdef DEV*/
 	} else if (etype == E_ASSERT) {
 		fmtAlloc(&buf, E_MAX_ERROR, 
 			T("Assertion %s, failed at %s %d\n"), fmtBuf, E_ARGS); 
-/*#endif*/
 	} else if (etype == E_USER) {
 		fmtAlloc(&buf, E_MAX_ERROR, T("%s\n"), fmtBuf);
-	}
+	} else {
    /*
     * bugfix -- if etype is not E_LOG, E_ASSERT, or E_USER, the call to
     * bfreeSafe(B_L, buf) below will fail, because 'buf' is randomly
@@ -63,7 +61,6 @@ void error(E_ARGS_DEC, int etype, char_t *fmt, ...)
     * unknown message type, and in doing so give buf a valid value. Thanks 
     * to Simon Byholm.
     */
-	else {
 		fmtAlloc(&buf, E_MAX_ERROR, T("Unknown error"));
 	}
 	va_end(args);

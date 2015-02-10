@@ -550,6 +550,7 @@ typedef struct stat gstat_t;
 #endif /* FNAMESIZE */
 
 #define E_MAX_ERROR			4096
+#define E_MAX_REQUEST			4096			/* Request safeguard max */
 #define URL_MAX				4096
 
 /*
@@ -559,7 +560,7 @@ typedef struct stat gstat_t;
 #define	E_LOG				0x2			/* Log error to log file */
 #define	E_USER				0x3			/* Error that must be displayed */
 
-#define E_L					T(__FILE__), __LINE__
+#define E_L				T(__FILE__), __LINE__
 #define E_ARGS_DEC			char_t *file, int line
 #define E_ARGS				file, line
 
@@ -581,10 +582,10 @@ typedef enum {
 	byteint		= 1,
 	shortint	= 2,
 	integer		= 3,
-	hex			= 4,
+	hex		= 4,
 	percent 	= 5,
 	octal		= 6,
-	big			= 7,
+	big		= 7,
 	flag		= 8,
 	floating	= 9,
 	string 		= 10,
@@ -804,6 +805,7 @@ extern int		cronFree(cron_t *cp);
 #define SOCKET_LISTENING		0x100	/* Socket is server listener */
 #define SOCKET_CLOSING			0x200	/* Socket is closing */
 #define SOCKET_CONNRESET		0x400	/* Socket connection was reset */
+#define SOCKET_MYOWNBUFFERS		0x800	/* Not using inBuf/outBuf ringq */
 
 #define SOCKET_PORT_MAX			0xffff	/* Max Port size */
 

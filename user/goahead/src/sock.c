@@ -242,6 +242,12 @@ int	socketGets(int sid, char_t **buf)
 				return -1;
 			}
 		}
+/* 
+ * 		Validate length of request.  Ignore long strings without newlines to
+ * 		safeguard against long URL attacks.
+ */
+		if (ringqLen(lq) > E_MAX_REQUEST)
+			c = '\n';
 /*
  *		If a newline is seen, return the data excluding the new line to the
  *		caller. If carriage return is seen, just eat it.
@@ -362,7 +368,7 @@ int socketInputBuffered(int sid)
 	if (socketEof(sid)) {
 		return -1;
 	}
-	return ringqLen(&sp->lineBuf) + ringqLen(&sp->inBuf);
+	return ringqLen(&sp->inBuf);
 }
 
 /******************************************************************************/
@@ -596,16 +602,19 @@ int socketAlloc(char *host, int port, socketAccept_t accept, int flags)
 /*
  *	Preserve only specified flags from the callers open
  */
-	a_assert((flags & ~(SOCKET_BROADCAST|SOCKET_DATAGRAM|SOCKET_BLOCK|
-						SOCKET_LISTENING)) == 0);
-	sp->flags = flags & (SOCKET_BROADCAST | SOCKET_DATAGRAM | SOCKET_BLOCK|
-						SOCKET_LISTENING);
+	a_assert((flags & ~(SOCKET_BROADCAST | SOCKET_DATAGRAM | SOCKET_BLOCK | SOCKET_LISTENING)) == 0);
+	sp->flags = flags & (SOCKET_BROADCAST | SOCKET_DATAGRAM | SOCKET_BLOCK | SOCKET_LISTENING | SOCKET_MYOWNBUFFERS);
 
+	if (!(flags & SOCKET_MYOWNBUFFERS)) { 
 /*
- *	Add one to allow the user to write exactly SOCKET_BUFSIZ
+ *		Add one to allow the user to write exactly SOCKET_BUFSIZ
  */
-	ringqOpen(&sp->inBuf, SOCKET_BUFSIZ, SOCKET_BUFSIZ);
-	ringqOpen(&sp->outBuf, SOCKET_BUFSIZ + 1, SOCKET_BUFSIZ + 1);
+		ringqOpen(&sp->inBuf, SOCKET_BUFSIZ, SOCKET_BUFSIZ);
+		ringqOpen(&sp->outBuf, SOCKET_BUFSIZ + 1, SOCKET_BUFSIZ + 1);
+	} else {
+		memset(&sp->inBuf, 0x0, sizeof(ringq_t));
+		memset(&sp->outBuf, 0x0, sizeof(ringq_t));
+	}
 	ringqOpen(&sp->lineBuf, SOCKET_BUFSIZ, -1);
 
 	return sid;
@@ -647,8 +656,10 @@ void socketFree(int sid)
 #endif
 	}
 
-	ringqClose(&sp->inBuf);
-	ringqClose(&sp->outBuf);
+	if (!(sp->flags & SOCKET_MYOWNBUFFERS)) { 
+		ringqClose(&sp->inBuf);
+		ringqClose(&sp->outBuf);
+	}
 	ringqClose(&sp->lineBuf);
 
 	bfree(B_L, sp);

@@ -531,8 +531,12 @@
 20) goahead: hide some VHT options for parametrs fixed at 1T1R.<br>
 21) goahead: split disable wifi modules, TxPower parametrs by band.<br>
 22) goahead: move select band for ViF modes from advanced to basic.<br>
-23) eth_mac: add support wlan/wlan2 mac managment.<br>
-24) init.d: add change wlan/wlan2 macs in factory.<br>
+23) goahead: fix infinitive loop with high cpu usage in websGetInput.<br>
+24) goahead: fix potentional security issue (extend path check in url req handler).<br>
+25) goahead: fix info leak in socket reuse code.<br>
+27) goahead: limit request ring length.<br>
+28) eth_mac: add support wlan/wlan2 mac managment.<br>
+29) init.d: add change wlan/wlan2 macs in factory.<br>
 <br>
 <br>
 <b>TODO:</b><br>

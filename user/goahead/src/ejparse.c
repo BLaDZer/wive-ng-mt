@@ -1346,14 +1346,13 @@ void ejError(ej_t* ep, char_t* fmt, ...)
 {
 	va_list		args;
 	ejinput_t	*ip;
-	char_t		*errbuf, *msgbuf;
+	char_t		*errbuf = NULL, *msgbuf = NULL;
 
 	a_assert(ep);
 	a_assert(fmt);
 	ip = ep->input;
 
 	va_start(args, fmt);
-	msgbuf = NULL;
 	fmtValloc(&msgbuf, E_MAX_ERROR, fmt, args);
 	va_end(args);
 
