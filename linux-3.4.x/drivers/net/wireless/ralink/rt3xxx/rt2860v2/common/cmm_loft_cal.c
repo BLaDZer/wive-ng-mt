@@ -304,8 +304,6 @@ UINT32 Read_FFT_Accumulation(IN RTMP_ADAPTER *pAd, UCHAR tone_idx)
 	UINT32 MacValue = 0;
 	int fftout_i = 0, fftout_q = 0;
 	UINT32 power_tmp=0, power_int = 0;
-	UCHAR BBPValue = 0;
-	UCHAR tone_idx_int;
 
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R158, 0xba);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R159, tone_idx);
@@ -656,11 +654,11 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	UCHAR BBPValue = 0, chain_idx = 0, rf_alc_idx = 0, idx = 0;
 	UCHAR BBPR30Value = 0, RFB0_R39 = 0, RFB0_R42 = 0;
 #ifdef RT6352_EP_SUPPORT
-	UCHAR BBP_R1_Value;
-	UCHAR BBP_R4_Value;
-	UCHAR BBPR241, BBPR242;
+	UCHAR BBP_R1_Value = 0;
+	UCHAR BBP_R4_Value = 0;
+	UCHAR BBPR241 = 0, BBPR242 = 0;
 #endif /* RT6352_EP_SUPPORT */
-	UCHAR count_step;
+	UCHAR count_step = 0;
 
 	//RF self Tx DC calibration
 	//RF_SELF_TXDC_CAL(pAd); 
