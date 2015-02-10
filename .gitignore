@@ -20,6 +20,7 @@ autom4te.cache
 autom4te.cache/*
 config.h.in~
 config.log
+configure.log
 config.status
 filesystem
 fulldump
@@ -166,7 +167,6 @@ fulldump
 /libext/libnet/Makefile
 /libext/libnet/Makefile.in
 /libext/libnet/configure
-/libext/libnet/config.log
 /libext/libnet/doc/Makefile
 /libext/libnet/doc/html/Makefile
 /libext/libnet/doc/man/Makefile
@@ -300,7 +300,6 @@ fulldump
 /user/dhcp6/wide-dhcpv6/autom4te.cache
 /user/dhcp6/wide-dhcpv6/autom4te.cache/*
 /user/dhcp6/wide-dhcpv6/configure
-/user/dhcp6/wide-dhcpv6/configure.log
 /user/dhcp6/wide-dhcpv6/Makefile
 /linux/*
 /linux-3.4.x/include/linux/autoconf.h
@@ -313,3 +312,5 @@ fulldump
 # prevent upload ATE in git
 /user/rt2880_app/ated/*
 /linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
+/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
+/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
