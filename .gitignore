@@ -313,8 +313,12 @@ fulldump
 /linux-3.4.x/include/linux/compile.h
 /tools/xz/libext/Makefile.in
 /tools/xz/lib/Makefile.in
+
 # prevent upload ATE in git
 /user/rt2880_app/ated/*
 /linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
 /linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
 /linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
+
+# exclude toolchain
+!/toolchain
