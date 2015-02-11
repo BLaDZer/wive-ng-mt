@@ -84,7 +84,7 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	{
 		gstat_t		sbuf;
 		if (gstat(cgiPath, &sbuf) != 0 || (sbuf.st_mode & S_IFREG) == 0) {
-			websError(wp, 200, T("CGI process file does not exist"));
+			websError(wp, 404, T("CGI process file does not exist"));
 			bfree(B_L, cgiPath);
 			return 1;
 		}

@@ -63,7 +63,7 @@ int websFormHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  */
 	sp = symLookup(formSymtab, formName);
 	if (sp == NULL) {
-		websError(wp, 200, T("Form %s is not defined"), formName);
+		websError(wp, 404, T("Form %s is not defined"), formName);
 	} else {
 		fn = (int (*)(void *, char_t *, char_t *)) sp->content.value.integer;
 		a_assert(fn);

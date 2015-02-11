@@ -536,8 +536,9 @@
 25) goahead: fix infinitive loop with high cpu usage in websGetInput.<br>
 26) goahead: fix potentional security issue (extend path check in url req handler).<br>
 27) goahead: fix info leak in socket reuse code.<br>
-28) goahead: limit request ring length.<br>
-29) init.d: add change wlan/wlan2 macs in factory.<br>
+28) goahead: fix return web error code in some case.<br>
+29) goahead: limit request ring length.<br>
+30) init.d: add change wlan/wlan2 macs in factory.<br>
 <br>
 <br>
 <b>TODO:</b><br>

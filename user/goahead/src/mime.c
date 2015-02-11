@@ -24,7 +24,7 @@
  *	Addd entries to the MimeList as required for your content
  */
 
-
+//#define MORE_MIME_TYPES	1
 websMimeType websMimeList[] = {
 	{ T("application/java"), T(".class") },
 	{ T("application/java"), T(".jar") },
@@ -34,16 +34,18 @@ websMimeType websMimeList[] = {
 	{ T("text/xml"), T(".xml") },
 	{ T("image/gif"), T(".gif") },
 	{ T("image/jpeg"), T(".jpg") },
+	{ T("image/png"), T(".png") },
+	{ T("image/vnd.microsoft.icon"), T(".ico") },
 	{ T("text/css"), T(".css") },
 	{ T("text/plain"), T(".txt") },
-   { T("application/x-javascript"), T(".js") },
-   { T("application/x-shockwave-flash"), T(".swf") },
+	{ T("application/x-javascript"), T(".js") },
+	{ T("application/x-shockwave-flash"), T(".swf") },
 
 #ifdef MORE_MIME_TYPES
-	{ T("application/binary"), T(".exe") },
-	{ T("application/compress"), T(".z") },
-	{ T("application/gzip"), T(".gz") },
 	{ T("application/octet-stream"), T(".bin") },
+	{ T("application/binary"), T(".exe") },
+	{ T("application/gzip"), T(".gz") },
+	{ T("application/compress"), T(".z") },
 	{ T("application/oda"), T(".oda") },
 	{ T("application/pdf"), T(".pdf") },
 	{ T("application/postscript"), T(".ai") },
@@ -67,6 +69,7 @@ websMimeType websMimeList[] = {
 	{ T("application/x-sv4cpio"), T(".sv4cpio") },
 	{ T("application/x-sv4crc"), T(".sv4crc") },
 	{ T("application/x-tar"), T(".tar") },
+	{ T("application/x-tgz"), T(".tgz") },
 	{ T("application/x-tcl"), T(".tcl") },
 	{ T("application/x-tex"), T(".tex") },
 	{ T("application/x-texinfo"), T(".texinfo") },
