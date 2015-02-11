@@ -77,6 +77,7 @@ dir_$(CONFIG_LIB_USB1)            += libusb-1.0
 dir_$(CONFIG_LIB_ICONV)           += libiconv
 dir_$(CONFIG_LIB_NATPMP)          += libnatpmp
 dir_$(CONFIG_LIB_NFNETLINK)       += libnfnetlink
+dir_$(CONFIG_LIB_NL)		  += libnl
 dir_$(CONFIG_LIB_CURL)            += libcurl
 
 all:

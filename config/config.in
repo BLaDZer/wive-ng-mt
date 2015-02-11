@@ -11,6 +11,7 @@ bool 'Build libcurl'		CONFIG_LIB_CURL
 bool 'Build libpcap'		CONFIG_LIB_PCAP
 bool 'Build libnatpmp'          CONFIG_LIB_NATPMP
 bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
+bool 'Build libnl'		CONFIG_LIB_NL
 bool 'Build libupnp'		CONFIG_LIB_UPNP
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
@@ -69,10 +70,16 @@ bool 'Link Layer Topology Discovery Protocol'	CONFIG_USER_LLTD
 bool 'Link Layer Discovery Protocol'		CONFIG_USER_LLDPD
 bool 'wpa-supplicant'				CONFIG_USER_WPA_SUPPLICANT
 bool 'wireless_tools support'			CONFIG_USER_WIRELESS_TOOLS
+bool 'iw wireless_tool support'			CONFIG_USER_WIRELESS_IW_TOOL
+
+if [ "$CONFIG_USER_WIRELESS_IW_TOOL" = "y" ]; then
+	define_bool CONFIG_LIB_NL y
+fi
 
 if [ "$CONFIG_USER_LLDPD" = "y" ]; then
 	define_bool CONFIG_LIB_EVENT y
 fi
+
 if [ "$CONFIG_USER_WPA_SUPPLICANT" = "y" ]; then
 	define_bool CONFIG_LIB_OPENSSL y
 fi
