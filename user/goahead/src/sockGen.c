@@ -32,16 +32,16 @@
 
 /************************************ Locals **********************************/
 
-extern socket_t		**socketList;			/* List of open sockets */
-extern int			socketMax;				/* Maximum size of socket */
-extern int			socketHighestFd;		/* Highest socket fd opened */
-static int			socketOpenCount = 0;	/* Number of task using sockets */
+extern socket_t	**socketList;		/* List of open sockets */
+extern int socketMax;			/* Maximum size of socket */
+extern int socketHighestFd;		/* Highest socket fd opened */
+static int socketOpenCount = 0;		/* Number of task using sockets */
 
 /***************************** Forward Declarations ***************************/
 
 static void socketAccept(socket_t *sp);
-static int 	socketDoEvent(socket_t *sp);
-static int	tryAlternateConnect(int sock, struct sockaddr *sockaddr);
+static int  socketDoEvent(socket_t *sp);
+static int  tryAlternateConnect(int sock, struct sockaddr *sockaddr);
 
 /*********************************** Code *************************************/
 /*
