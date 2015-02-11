@@ -18,8 +18,7 @@ ROOTDIR	:= $(shell pwd)
 
 all: tools linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
 
-CONFIG_VENDOR=Ralink
-CONFIG_PRODUCT=RTxxxx
+CONFIG_VENDOR=Mediatek
 CONFIG_LINUXDIR=linux
 CONFIG_LIBCDIR=lib
 CONFIG_LANGUAGE="en_EN.UTF-8:en"
@@ -96,7 +95,7 @@ DIRS    :=  $(ROOTDIR)/vendors $(ROOTDIR)/user $(ROOTDIR)/lib
 
 export LANG LC_COLLATE LC_MESSAGES LC_ALL
 export ROOTDIR FIRMROOT
-export CONFIG_VENDOR CONFIG_PRODUCT CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
+export CONFIG_VENDOR CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
 export CONFIG_CROSS_COMPILER_PATH CROSS_COMPILE KERNEL_CROSS_COMPILE CROSS_COMPILER_PREFIX
 export CONFIG_CONFIG LINUX_CONFIG ARCH_CONFIG
 export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST IMAGEDIR RELFILES TFTPDIR
@@ -304,23 +303,11 @@ clean:
 	find $(ROOTDIR) -type f -name '.sgbuilt_user' | xargs rm -f
 	find $(ROOTDIR) -type f -name '.config.cmd' | xargs rm -f
 	##############REMOVE UNUSED FILES 3###########################
-	find $(ROOTDIR)/lib -type f -name '*.o' | xargs rm -f
-	find $(ROOTDIR)/lib -type f -name '*.a' | xargs rm -f
-	find $(ROOTDIR)/lib -type f -name '*.so' | xargs rm -f
-	find $(ROOTDIR)/lib -type f -name '*.lo' | xargs rm -f
-	find $(ROOTDIR)/lib -type f -name '*.la' | xargs rm -f
-	##############REMOVE UNUSED FILES 4###########################
-	find $(ROOTDIR)/libext -type f -name '*.o' | xargs rm -f
-	find $(ROOTDIR)/libext -type f -name '*.a' | xargs rm -f
-	find $(ROOTDIR)/libext -type f -name '*.so' | xargs rm -f
-	find $(ROOTDIR)/libext -type f -name '*.lo' | xargs rm -f
-	find $(ROOTDIR)/libext -type f -name '*.la' | xargs rm -f
-	##############REMOVE UNUSED FILES 5###########################
-	find $(ROOTDIR)/user -type f -name '*.o' | xargs rm -f
-	find $(ROOTDIR)/user -type f -name '*.a' | xargs rm -f
-	find $(ROOTDIR)/user -type f -name '*.so' | xargs rm -f
-	find $(ROOTDIR)/user -type f -name '*.lo' | xargs rm -f
-	find $(ROOTDIR)/user -type f -name '*.la' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.o' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.a' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.so' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.lo' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.la' | xargs rm -f
 	##############REMOVE UNUSED FOLDERS###########################
 	find $(ROOTDIR) -type d -name 'filesystem' | xargs rm -rf
 	find $(ROOTDIR) -type d -name 'autom4te.cache' | xargs rm -rf

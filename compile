@@ -79,7 +79,7 @@ ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################ALL-CONFIGS################################################################
-ln -fs $ROOTDIR/vendors/Ralink/RTxxxx/config.arch config.arch
+ln -fs $ROOTDIR/vendors/Mediatek/config.arch config.arch
 ln -fs $ROOTDIR/config/autoconf.h		$ROOTDIR/autoconf.h
 #####################################################PER-DEVICES################################################################
 if [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M" ] ; then

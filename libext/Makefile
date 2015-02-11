@@ -62,7 +62,7 @@ SUBDIRS_LIBS = $(shell LC_ALL=C; ls)
 #
 
 VEND=$(ROOTDIR)/vendors
-dir_v = $(VEND)/$(CONFIG_VENDOR)/$(CONFIG_PRODUCT)/.
+dir_v = $(VEND)/$(CONFIG_VENDOR)/.
 
 dir_y =
 dir_n =

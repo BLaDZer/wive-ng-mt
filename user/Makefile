@@ -61,7 +61,7 @@ SUBDIRS_APP = $(shell LC_ALL=C; ls)
 # must run the vendor build first
 #
 VEND=$(ROOTDIR)/vendors
-dir_v = $(VEND)/$(CONFIG_VENDOR)/$(CONFIG_PRODUCT)/.
+dir_v = $(VEND)/$(CONFIG_VENDOR)/.
 
 dir_y =
 dir_n =
