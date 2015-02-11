@@ -37,7 +37,7 @@
 #define MEM_HALF        	512
 #define MIN_FIRMWARE_SIZE       2097152 		/* minium firmware size(2MB) */
 
-void *memmem(const void *buf, size_t buf_len, const void *byte_line, size_t byte_line_len)
+static void *memmem(const void *buf, size_t buf_len, const void *byte_line, size_t byte_line_len)
 {
 	unsigned char *bl = (unsigned char *)byte_line;
 	unsigned char *bf = (unsigned char *)buf;
@@ -126,7 +126,7 @@ void *getMemInFile(char *filename, int offset, int len)
 	return result;
 }
 
-void html_header()
+static void html_header()
 {
 	printf
 	(
@@ -172,7 +172,7 @@ void html_header()
 	);
 }
 
-void html_success(int timeout)
+static void html_success(int timeout)
 {
 	printf
 	(
@@ -188,7 +188,7 @@ void html_success(int timeout)
 	fclose(stdout);
 }
 
-void html_error(const char *s)
+static void html_error(const char *s)
 {
 	printf
 	(
@@ -271,7 +271,7 @@ int get_content_separator(char *separator, int limit, long *length)
 #define BUF_SIZE 4096
 #define MAX_SEPARATOR_LEN 128
 
-int search_data(FILE *fd, long start, long *found_offset, const void *buffer, int len)
+static int search_data(FILE *fd, long start, long *found_offset, const void *buffer, int len)
 {
 	char buf[BUF_SIZE];
 	const char *data = (const char *)buffer;
@@ -327,7 +327,7 @@ int search_data(FILE *fd, long start, long *found_offset, const void *buffer, in
 	return 0;
 }
 
-int search_text(FILE *fd, long start, long *found_offset, const char *data)
+static int search_text(FILE *fd, long start, long *found_offset, const char *data)
 {
 	return search_data(fd, start, found_offset, data, strlen(data));
 }
@@ -345,13 +345,13 @@ typedef struct buffer_t
 	size_t size;
 } buffer_t;
 
-void init_buffer(buffer_t *buf, size_t initial)
+static void init_buffer(buffer_t *buf, size_t initial)
 {
 	buf->size = initial;
 	buf->data = (char *)malloc(initial);
 }
 
-int read_buffer(FILE *fd, long start, size_t count, buffer_t *buf)
+static int read_buffer(FILE *fd, long start, size_t count, buffer_t *buf)
 {
 	// Check size
 	if (buf->size < (count+1))
@@ -378,12 +378,12 @@ int read_buffer(FILE *fd, long start, size_t count, buffer_t *buf)
 	return read;
 }
 
-void release_buffer(buffer_t *buf)
+static void release_buffer(buffer_t *buf)
 {
 	free(buf->data);
 }
 
-void reset_parameter(parameter_t *param)
+static void reset_parameter(parameter_t *param)
 {
 	param->content_type = NULL;
 	param->field_name = NULL;
@@ -393,7 +393,7 @@ void reset_parameter(parameter_t *param)
 	param->next = NULL;
 }
 
-void release_parameters(parameter_t *list)
+static void release_parameters(parameter_t *list)
 {
 	while (list != NULL)
 	{
