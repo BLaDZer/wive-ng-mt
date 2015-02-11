@@ -20,8 +20,21 @@
 #include	"helpers.h"
 #include	"procps.h"
 
-/*** Busybox leases.h ***/
+static int  getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDhcpStaticList(int eid, webs_t wp, int argc, char_t **argv);
+static int  iptStatList(int eid, webs_t wp, int argc, char_t **argv);
+static int  getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv);
+static int  getProcessList(int eid, webs_t wp, int argc, char_t **argv);
+static void setDhcp(webs_t wp, char_t *path, char_t *query);
+static void setSamba(webs_t wp, char_t *path, char_t *query);
+static void setMiscServices(webs_t wp, char_t *path, char_t *query);
+static void formIptAccounting(webs_t wp, char_t *path, char_t *query);
+static void l2tpConfig(webs_t wp, char_t *path, char_t *query);
 
+/*** Busybox leases.h ***/
 static uint64_t hton64(uint64_t v)
 {
         return (((uint64_t)htonl(v)) << 32) | htonl(v >> 32);
@@ -48,22 +61,6 @@ struct dyn_lease {
 	uint8_t pad[2];
 	/* total size is a multiply of 4 */
 } __attribute__((__packed__));
-
-static void setDhcp(webs_t wp, char_t *path, char_t *query);
-static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv);
-
-static void setSamba(webs_t wp, char_t *path, char_t *query);
-static void setMiscServices(webs_t wp, char_t *path, char_t *query);
-static void formIptAccounting(webs_t wp, char_t *path, char_t *query);
-static int getDhcpStaticList(int eid, webs_t wp, int argc, char_t **argv);
-static int iptStatList(int eid, webs_t wp, int argc, char_t **argv);
-
-static void l2tpConfig(webs_t wp, char_t *path, char_t *query);
-static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv);
-static int getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getProcessList(int eid, webs_t wp, int argc, char_t **argv);
 
 void formDefineServices(void)
 {

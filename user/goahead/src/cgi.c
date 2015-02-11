@@ -19,15 +19,12 @@
  */
 
 /*********************************** Includes *********************************/
-#include	"wsIntrn.h"
-#include	"utils.h"
 #include	<sys/types.h>
 #include	<sys/wait.h>
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	"basic/basicInternal.h"
-#endif
+
+#include	"wsIntrn.h"
+#include	"utils.h"
+#include	"uemf.h"
 
 /************************************ Locals **********************************/
 typedef struct {				/* Struct for CGI tasks which have completed */

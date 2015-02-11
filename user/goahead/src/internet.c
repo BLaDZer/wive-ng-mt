@@ -26,66 +26,59 @@
 #include	"wireless.h"
 #include	"helpers.h"
 
-/*** VPN statuses ***/
-typedef struct vpn_status_t
-{
-	const char_t *status;
-	long          color;
-} vpn_status_t;
-
-static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getWSCBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSTABuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getUSBBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getStorageBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getFtpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSmbBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSmb3Built(int eid, webs_t wp, int argc, char_t **argv);
-static int getPrinterSrvBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getUSBModemBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getTransmissionBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getIgmpProxyBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDnsmasqBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getGWBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getCdpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getLltdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getLldpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getUpnpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getXupnpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDynamicRoutingBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSWQoSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDATEBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDDNSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSpotBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getSysLogBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getETHTOOLBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getLANAUTHBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDns(int eid, webs_t wp, int argc, char_t **argv);
-static int getHostSupp(int eid, webs_t wp, int argc, char_t **argv);
-static int getIfLiveWeb(int eid, webs_t wp, int argc, char_t **argv);
-static int getIfIsUpWeb(int eid, webs_t wp, int argc, char_t **argv);
-static int getLanIp(int eid, webs_t wp, int argc, char_t **argv);
-static int getLanMac(int eid, webs_t wp, int argc, char_t **argv);
-static int getLanIfNameWeb(int eid, webs_t wp, int argc, char_t **argv);
-static int getLanNetmask(int eid, webs_t wp, int argc, char_t **argv);
-static int getIntIp(int eid, webs_t wp, int argc, char_t **argv);
-static int getWanIp(int eid, webs_t wp, int argc, char_t **argv);
-static int getWanMac(int eid, webs_t wp, int argc, char_t **argv);
-static int getWanNetmask(int eid, webs_t wp, int argc, char_t **argv);
-static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv);
-static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv);
-static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWSCBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSTABuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getUSBBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getStorageBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getFtpBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSmbBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSmb3Built(int eid, webs_t wp, int argc, char_t **argv);
+static int  getPrinterSrvBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getUSBModemBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getTransmissionBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIgmpProxyBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDnsmasqBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getGWBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getCdpBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLltdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLldpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getUpnpBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getXupnpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDynamicRoutingBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSWQoSBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDATEBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDDNSBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSpotBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSysLogBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getETHTOOLBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLANAUTHBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getRadvdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDhcpv6Built(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIPv6Built(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIPv66rdBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIP6to4Built(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDns(int eid, webs_t wp, int argc, char_t **argv);
+static int  getHostSupp(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIfLiveWeb(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIfIsUpWeb(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLanIp(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLanMac(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLanIfNameWeb(int eid, webs_t wp, int argc, char_t **argv);
+static int  getLanNetmask(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIntIp(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWanIp(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWanMac(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWanNetmask(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWanGateway(int eid, webs_t wp, int argc, char_t **argv);
+static int  getRoutingTable(int eid, webs_t wp, int argc, char_t **argv);
+static int  vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv);
+static int  vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv);
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query);
 static void setLan(webs_t wp, char_t *path, char_t *query);
 static void setWan(webs_t wp, char_t *path, char_t *query);
-static int getRadvdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getDhcpv6Built(int eid, webs_t wp, int argc, char_t **argv);
-static int getIPv6Built(int eid, webs_t wp, int argc, char_t **argv);
-static int getIPv66rdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getIP6to4Built(int eid, webs_t wp, int argc, char_t **argv);
 static void setIPv6(webs_t wp, char_t *path, char_t *query);
 static void getMyMAC(webs_t wp, char_t *path, char_t *query);
 static void editRouting(webs_t wp, char_t *path, char_t *query);
@@ -97,6 +90,13 @@ static int getSpotIp(int eid, webs_t wp, int argc, char_t **argv);
 static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv);
 static void setHotspot(webs_t wp, char_t *path, char_t *query);
 #endif
+
+/*** VPN statuses ***/
+typedef struct vpn_status_t
+{
+	const char_t *status;
+	long          color;
+} vpn_status_t;
 
 void formDefineInternet(void) {
 	websAspDefine(T("getDns"), getDns);

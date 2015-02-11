@@ -24,12 +24,6 @@
 #include	<stdarg.h>
 #include	<stdlib.h>
 
-#ifdef CE
-#ifndef UEMF
-	#include	<io.h>
-#endif
-#endif
-
 #ifdef LYNX
 	#include	<unistd.h>
 #endif
@@ -38,16 +32,8 @@
 	#include	<dirent.h>
 #endif
 
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	<param.h>
-	#include	<stat.h>
-	#include	"basic/basicInternal.h"
-	#include	"emf/emfInternal.h"
-#endif
-
-#include		"ej.h"
+#include	"uemf.h"
+#include	"ej.h"
 
 /********************************** Defines ***********************************/
 /*

@@ -38,13 +38,7 @@
 #include <sslc.h>
 #endif /* RSA_SSL */
 
-#ifndef UEMF
-	#include	"basic/basic.h"
-	#include	"emf/emf.h"
-#else
-	#include	"uemf.h"
-#endif
-
+#include "uemf.h"
 #include "webs.h"
 
 /********************************** Defines ***********************************/

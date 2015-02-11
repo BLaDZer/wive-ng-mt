@@ -18,16 +18,9 @@
 #ifndef _h_EMFDB
 #define _h_EMFDB 1
 
-#ifndef UEMF
-	#include	"basic/basic.h"
-	#include	"emf/emf.h"
-#else
-	#include	"uemf.h"
-#endif
-
+#include	"uemf.h"
 
 /********************************* Defines ************************************/
-
 #define		T_INT					0
 #define		T_STRING				1
 

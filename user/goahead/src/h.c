@@ -16,13 +16,7 @@
  */
 
 /********************************* Includes ***********************************/
-
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	"basic/basicInternal.h"
-#endif
-
+#include	"uemf.h"
 /********************************** Defines ***********************************/
 /*
  *	The handle list stores the length of the list and the number of used

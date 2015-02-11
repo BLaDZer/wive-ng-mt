@@ -61,12 +61,6 @@
 	#include	<io.h>
 #endif
 
-#ifdef CE
-#ifndef UEMF
-	#include	<io.h>
-#endif
-#endif
-
 #ifdef NW
 	#include	<fcntl.h>
 	#include	<sys/stat.h>
@@ -118,14 +112,8 @@
 	#include	<sys/stat.h>
 #endif
 
-#ifdef UEMF
-	#include	"uemf.h"
-	#include	"ejIntrn.h"
-#else
-	#include	"emf/emfInternal.h"
-	#include	"ej/ejIntrn.h"
-#endif
-
+#include	"uemf.h"
+#include	"ejIntrn.h"
 #include	"webs.h"
 
 /********************************** Defines ***********************************/

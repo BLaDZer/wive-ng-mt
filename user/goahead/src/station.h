@@ -13,3 +13,6 @@ void formDefineStation(void);
 void initStaProfile(void);
 void initStaConnection(void);
 void freeHeaderProfileSettings(void);
+
+int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
+int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);

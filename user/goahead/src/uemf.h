@@ -927,7 +927,7 @@ extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 extern char_t	*basename(char_t *name);
 #endif /* !LINUX */
 
-#if (defined (UEMF) && defined (WEBS))
+#if defined (WEBS)
 /*
  *	The open source webserver uses a different callback/timer mechanism
  *	than other emf derivative products such as FieldUpgrader agents
@@ -937,7 +937,7 @@ extern char_t	*basename(char_t *name);
 #define emfSchedCallback	websSchedCallBack
 #define emfUnschedCallback	websUnschedCallBack
 #define emfReschedCallback	websReschedCallBack
-#endif /* UEMF && WEBS */
+#endif /* WEBS */
 
 typedef void	(emfSchedProc)(void *data, int id);
 extern int		emfSchedCallback(int delay, emfSchedProc *proc, void *arg);

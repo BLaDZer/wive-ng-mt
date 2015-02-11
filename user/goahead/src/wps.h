@@ -141,6 +141,7 @@ void restart8021XDaemon(int nvram);
 void updateFlash8021x(int nvram);
 #endif
 
+int g_wsc_configured;
 void resetTimerAll(void);
 void WPSRestart(void);
 void formDefineWPS(void);

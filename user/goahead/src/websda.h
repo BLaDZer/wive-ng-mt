@@ -20,16 +20,8 @@
  */
 
 /********************************* Includes ***********************************/
-
-#ifndef UEMF
-	#include	"basic/basic.h"
-	#include	"emf/emf.h"
-#else
-	#include	"uemf.h"
-#endif
-
-#include		"webs.h"
-
+#include "uemf.h"
+#include "webs.h"
 /****************************** Definitions ***********************************/
 
 extern char_t 	*websCalcNonce(webs_t wp);

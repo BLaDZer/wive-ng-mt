@@ -808,11 +808,6 @@ error:
 }
 #endif
 
-static int getGAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-	return websWrite(wp, T("0"));
-}
-
 void formDefineManagement(void)
 {
 	websFormDefine(T("setSysAdm"), setSysAdm);
@@ -821,15 +816,12 @@ void formDefineManagement(void)
 #ifdef CONFIG_DATE
 	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost);
 #endif
-	websAspDefine(T("getGAPBuilt"), getGAPBuilt);
 #ifdef CONFIG_USER_INADYN
 	websFormDefine(T("DDNS"), DDNS);
 #endif
-
 	websAspDefine(T("getMemLeftASP"), getMemLeftASP);
 	websAspDefine(T("getMemTotalASP"), getMemTotalASP);
 	websAspDefine(T("getCpuUsageASP"), getCpuUsageASP);
-
 	websAspDefine(T("getWANRxByteASP"), getWANRxByteASP);
 	websAspDefine(T("getWANTxByteASP"), getWANTxByteASP);
 	websAspDefine(T("getLANRxByteASP"), getLANRxByteASP);
@@ -838,11 +830,8 @@ void formDefineManagement(void)
 	websAspDefine(T("getWANTxPacketASP"), getWANTxPacketASP);
 	websAspDefine(T("getLANRxPacketASP"), getLANRxPacketASP);
 	websAspDefine(T("getLANTxPacketASP"), getLANTxPacketASP);
-
 	websAspDefine(T("getAllNICStatisticASP"), getAllNICStatisticASP);
-
 	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
-
 #ifdef CONFIG_SYSLOGD
 	websFormDefine(T("syslog"), syslog);
 	websFormDefine(T("clearlog"), clearlog);

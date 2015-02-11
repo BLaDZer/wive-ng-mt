@@ -20,27 +20,28 @@
 #include	"oid.h"
 #include 	"helpers.h"
 
-/*
- * RT2860
- */
-static int default_shown_mbssid[3]  = {0,0,0};
-
-#ifdef CONFIG_USER_WSC
-extern int g_wsc_configured;
-#endif
-
-static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanChannel(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
+static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
+static int  isAntennaDiversityBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
+static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
+static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
+static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
+static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
+static int  dumpBSS(int eid, webs_t wp, int argc, char_t **argv);
+static int  dumpBSSKeys(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -48,23 +49,14 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query);
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query);
 static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
-static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
-static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
-static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
-static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
-int deleteNthValueMulti(int index[], int count, char *value, char delimit);		/* for Access Policy list deletion*/
 static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
-void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query);
-static int  isAntennaDiversityBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int dumpBSS(int eid, webs_t wp, int argc, char_t **argv);
-static int get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int dumpBSSKeys(int eid, webs_t wp, int argc, char_t **argv);
+static void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
 static void AntennaDiversity(webs_t wp, char_t *path, char_t *query);
 static void getAntenna(webs_t wp, char_t *path, char_t *query);
 #endif
-static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv);
+
+static int default_shown_mbssid[3]  = {0,0,0};
 
 typedef struct country_code_t
 {
@@ -1918,7 +1910,7 @@ static void APSecurity(webs_t wp, char_t *path, char_t *query)
 }
 
 
-void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query)
+static void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	int mbssid, aplist_num;
 	char str[32], apl[64*20], *tmp;

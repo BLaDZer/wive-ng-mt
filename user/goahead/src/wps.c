@@ -25,8 +25,6 @@ static int g_isEnrollee = 0;						// for AP only
 
 #ifdef CONFIG_RT2860V2_STA_WSC						// if support Wifi - STA
 unsigned int ConvertRssiToSignalQuality(long RSSI);
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
-int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
 void WPSSTAPBCStartEnr(void);
 static int getStaWPSBSSIDListASP(int eid, webs_t wp, int argc, char_t **argv);
 static void updateWPSStaStatus(webs_t wp, char_t *path, char_t *query);

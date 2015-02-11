@@ -24,18 +24,11 @@
 #include	<stdlib.h>
 #endif
 
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	<socket.h>
-	#include	<types.h>
-	#include	<unistd.h>
-	#include	"emfInternal.h"
+#ifdef VXWORKS
+#include	<hostLib.h>
 #endif
 
-#ifdef VXWORKS
-	#include	<hostLib.h>
-#endif
+#include	"uemf.h"
 
 /************************************ Locals **********************************/
 
@@ -330,12 +323,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 				socketFree(sid);
 				return -1;
 			}
-#ifndef UEMF
-			sp->fileHandle = emfCreateFileHandler(sp->sock, SOCKET_READABLE,
-				(emfFileProc *) socketAccept, (void *) sp);
-#else
 			sp->flags |= SOCKET_LISTENING;
-#endif
 		}
 		sp->handlerMask |= SOCKET_READABLE;
 	}
@@ -524,56 +512,6 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 
 /******************************************************************************/
 /*
- *	Process an event on the event queue
- */
-
-#ifndef UEMF
-
-static int socketEventProc(void *data, int mask)
-{
-	socket_t		*sp;
-	ringq_t			*rq;
-	int 			sid;
-
-	sid = (int) data;
-
-	a_assert(sid >= 0 && sid < socketMax);
-	a_assert(socketList[sid]);
-
-	if ((sp = socketPtr(sid)) == NULL) {
-		return 1;
-	}
-
-/*
- *	If now writable and flushing in the background, continue flushing
- */
-	if (mask & SOCKET_WRITABLE) {
-		if (sp->flags & SOCKET_FLUSHING) {
-			rq = &sp->outBuf;
-			if (ringqLen(rq) > 0) {
-				socketFlush(sp->sid);
-			} else {
-				sp->flags &= ~SOCKET_FLUSHING;
-			}
-		}
-	}
-
-/*
- *	Now invoke the users socket handler. NOTE: the handler may delete the
- *	socket, so we must be very careful after calling the handler.
- */
-	if (sp->handler && (sp->handlerMask & mask)) {
-		(sp->handler)(sid, mask & sp->handlerMask, sp->handler_data);
-	}
-	if (socketList && sid < socketMax && socketList[sid] == sp) {
-		socketRegisterInterest(sp, sp->handlerMask);
-	}
-	return 1;
-}
-#endif /* ! UEMF */
-
-/******************************************************************************/
-/*
  *	Define the events of interest
  */
 
@@ -582,21 +520,12 @@ void socketRegisterInterest(socket_t *sp, int handlerMask)
 	a_assert(sp);
 
 	sp->handlerMask = handlerMask;
-#ifndef UEMF
-	if (handlerMask) {
-		sp->fileHandle = emfCreateFileHandler(sp->sock, handlerMask,
-			(emfFileProc *) socketEventProc, (void *) sp->sid);
-	} else {
-		emfDeleteFileHandler(sp->fileHandle);
-		sp->fileHandle = -1;
-	}
-#endif /* ! UEMF */
 }
 
 /******************************************************************************/
 /*
  *	Wait until an event occurs on a socket. Return 1 on success, 0 on failure.
- *	or -1 on exception (UEMF only)
+ *	or -1 on exception
  */
 
 int socketWaitForEvent(socket_t *sp, int handlerMask, int *errCode)

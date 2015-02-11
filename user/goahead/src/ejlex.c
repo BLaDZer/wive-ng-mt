@@ -16,18 +16,11 @@
  */
 
 /********************************** Includes **********************************/
-
-#include	"ejIntrn.h"
-
-#ifdef UEMF
-	#include "uemf.h"
-#else
-	#include "basic/basicInternal.h"
-#endif
-
+#include "ejIntrn.h"
+#include "uemf.h"
 /********************************** Defines ***********************************/
 #define		OCTAL	8
-#define		HEX		16
+#define		HEX	16
 /****************************** Forward Declarations **************************/
 
 static int 		getLexicalToken(ej_t* ep, int state);

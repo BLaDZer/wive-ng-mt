@@ -68,7 +68,7 @@ ifeq ("$(CONFIG_USER_STORAGE)", "y")
 DEPEND_FILES += storage.o
 endif
 
-CFLAGS	+= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
+CFLAGS	+= -DWEBS -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
 CFLAGS	+= -I$(ROOTDIR)/libnvram -I$(ROOTDIR)/lib/shared/include
 
 LDFLAGS	+= $(SSLLIB) $(IFMODLIB)

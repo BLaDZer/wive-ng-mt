@@ -20,14 +20,14 @@
 #include	"internet.h"
 #include	"wireless.h"
 
+static int  getLangBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getStationBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgNthGeneral(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgZero(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgNthZero(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLangBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getPlatform(int eid, webs_t wp, int argc, char_t **argv);
-static int  getStationBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSdkVersion(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMemAmount(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSysUptime(int eid, webs_t wp, int argc, char_t **argv);
@@ -35,10 +35,9 @@ static int  getSysDateTime(int eid, webs_t wp, int argc, char_t **argv);
 static int  getPortStatus(int eid, webs_t wp, int argc, char_t **argv);
 static int  getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv);
 static int  getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv);
+static int  gigaphy(int eid, webs_t wp, int argc, char_t **argv);
 static void setOpMode(webs_t wp, char_t *path, char_t *query);
 static void setWanPort(webs_t wp, char_t *path, char_t *query);
-static int  gigaphy(int eid, webs_t wp, int argc, char_t **argv);
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
 
 /*********************************************************************
  * System Utilities
@@ -708,7 +707,7 @@ static int getStationBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int gigaphy(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RTL8367M) || defined(CONFIG_CONFIG_GE1_RGMII_AN) || defined(CONFIG_CONFIG_GE1_RGMII_AN)
+#if defined(CONFIG_RALINK_MT7621)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

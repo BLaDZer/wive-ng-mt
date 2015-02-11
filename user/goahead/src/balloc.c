@@ -25,17 +25,11 @@
  */  
 
 /********************************* Includes ***********************************/
-
 #define IN_BALLOC
-
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	"basic/basicInternal.h"
-#endif
 
 #include	<stdarg.h>
 #include	<stdlib.h>
+#include	"uemf.h"
 
 #ifndef NO_BALLOC
 /********************************* Defines ************************************/

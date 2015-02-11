@@ -60,7 +60,7 @@
  */
 extern bool_t dmfCanAccess(const char_t* usergroup, const char_t* group);
 #endif
-#ifdef UEMF
+
 /*
  *	User table definition
  */
@@ -126,7 +126,6 @@ dbTable_t accessTable = {
 	0,
 	NULL
 };
-#endif	/* #ifdef UEMF */
 
 /* 
  *	Database Identifier returned from dbOpen()
@@ -159,11 +158,9 @@ int umOpen()
  */
 	if (didUM == -1) {
 		didUM = dbOpen(UM_USER_TABLENAME, UM_DB_FILENAME, NULL, 0);
-#ifdef UEMF
 		dbRegisterDBSchema(&userTable);
 		dbRegisterDBSchema(&groupTable);
 		dbRegisterDBSchema(&accessTable);
-#endif
 	}
 
 	if (saveFilename == NULL) {

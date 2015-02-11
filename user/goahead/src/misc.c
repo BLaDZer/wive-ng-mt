@@ -9,18 +9,7 @@
  */
 
 /********************************* Includes ***********************************/
-
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	"basic/basicInternal.h"
-#endif
-
-/*
- * 16 Sep 03 -- added option to use memcpy() instead of strncpy() in the
- * ascToUni and uniToAsc functions. 
- */
-#define kUseMemcopy
+#include	"uemf.h"
 
 
 /********************************* Defines ************************************/
@@ -29,6 +18,7 @@
  *	a balloc can use a 64 byte block.
  */
 
+#define kUseMemcopy
 #define STR_REALLOC		0x1				/* Reallocate the buffer as required */
 #define STR_INC			64				/* Growth increment */
 

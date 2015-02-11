@@ -14,19 +14,9 @@
  */
 
 /********************************** Includes **********************************/
-
 #include	<string.h>
 #include	<stdlib.h>
-
-#ifdef UEMF
-	#include	"uemf.h"
-#else
-	#include	<socket.h>
-	#include	<types.h>
-	#include	<unistd.h>
-	#include	"emfInternal.h"
-#endif
-
+#include	"uemf.h"
 /************************************ Locals **********************************/
 
 socket_t	**socketList;			/* List of open sockets */
@@ -498,11 +488,7 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
  */
 	if (sp->flags & SOCKET_BROADCAST) {
 		server.sin_family = AF_INET;
-#if (defined (UEMF) || defined (LITTLEFOOT))
 		server.sin_addr.s_addr = INADDR_BROADCAST;
-#else
-		server.sin_addr.s_addr = inet_addr(basicGetBroadcastAddress());
-#endif
 		server.sin_port = htons((short)(sp->port & 0xFFFF));
 		if ((bytes = sendto(sp->sock, buf, toWrite, 0,
 			(struct sockaddr *) &server, sizeof(server))) < 0) {
@@ -536,18 +522,6 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 		return -1;
 	}
 
-/*
- *	Ensure we get to write some more data real soon if the socket can absorb
- *	more data
- */
-#ifndef UEMF
-#ifdef WIN 
-	if (sp->interestEvents & FD_WRITE) {
-		emfTime_t blockTime = { 0, 0 };
-		emfSetMaxBlockTime(&blockTime);
-	}
-#endif /* WIN */
-#endif
 	return bytes;
 }
 

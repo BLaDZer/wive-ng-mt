@@ -19,25 +19,15 @@
  */
 
 /********************************* Includes ***********************************/
-
-#ifndef UEMF
-	#include	"basic/basic.h"
-	#include	"emf/emf.h"
-#else
-	#include	"uemf.h"
-#endif
-
-/********************************** Defines ***********************************/
-
+#include	"uemf.h"
 /******************************** Prototypes **********************************/
 
-extern int 		ejArgs(int argc, char_t **argv, char_t *fmt, ...);
-extern void		ejSetResult(int eid, char_t *s);
-extern int		ejOpenEngine(sym_fd_t variables, sym_fd_t functions);
-extern void		ejCloseEngine(int eid);
-extern int 		ejSetGlobalFunction(int eid, char_t *name, 
-					int (*fn)(int eid, void *handle, int argc, char_t **argv));
-extern void		ejSetVar(int eid, char_t *var, char_t *value);
-extern int		ejGetVar(int eid, char_t *var, char_t **value);
-extern char_t	*ejEval(int eid, char_t *script, char_t **emsg);
+extern int  ejArgs(int argc, char_t **argv, char_t *fmt, ...);
+extern int  ejOpenEngine(sym_fd_t variables, sym_fd_t functions);
+extern int  ejSetGlobalFunction(int eid, char_t *name, int (*fn)(int eid, void *handle, int argc, char_t **argv));
+extern int  ejGetVar(int eid, char_t *var, char_t **value);
+extern void ejSetResult(int eid, char_t *s);
+extern void ejCloseEngine(int eid);
+extern void ejSetVar(int eid, char_t *var, char_t *value);
+extern char_t *ejEval(int eid, char_t *script, char_t **emsg);
 #endif /* _h_EJ */
