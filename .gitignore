@@ -1,4 +1,6 @@
 *.o
+*.a
+*.a.*
 *.o.*
 *.la
 *.la.*
@@ -192,6 +194,8 @@ fulldump
 /libext/libpcap/configure
 /libext/libpcap/autom4te.cache
 /libext/libpcap/autom4te.cache/*
+/libext/libnl/configure
+/libext/libnl/lib/libnl.a
 /user/busybox/*/Config.in
 /user/busybox/docs/busybox.net/BusyBox.html
 /user/busybox/include/bbconfigopts_bz2.h

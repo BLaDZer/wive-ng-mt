@@ -305,16 +305,19 @@ clean:
 	find $(ROOTDIR) -type f -name '.config.cmd' | xargs rm -f
 	##############REMOVE UNUSED FILES 3###########################
 	find $(ROOTDIR)/lib -type f -name '*.o' | xargs rm -f
+	find $(ROOTDIR)/lib -type f -name '*.a' | xargs rm -f
 	find $(ROOTDIR)/lib -type f -name '*.so' | xargs rm -f
 	find $(ROOTDIR)/lib -type f -name '*.lo' | xargs rm -f
 	find $(ROOTDIR)/lib -type f -name '*.la' | xargs rm -f
 	##############REMOVE UNUSED FILES 4###########################
 	find $(ROOTDIR)/libext -type f -name '*.o' | xargs rm -f
+	find $(ROOTDIR)/libext -type f -name '*.a' | xargs rm -f
 	find $(ROOTDIR)/libext -type f -name '*.so' | xargs rm -f
 	find $(ROOTDIR)/libext -type f -name '*.lo' | xargs rm -f
 	find $(ROOTDIR)/libext -type f -name '*.la' | xargs rm -f
 	##############REMOVE UNUSED FILES 5###########################
 	find $(ROOTDIR)/user -type f -name '*.o' | xargs rm -f
+	find $(ROOTDIR)/user -type f -name '*.a' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.so' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.lo' | xargs rm -f
 	find $(ROOTDIR)/user -type f -name '*.la' | xargs rm -f
