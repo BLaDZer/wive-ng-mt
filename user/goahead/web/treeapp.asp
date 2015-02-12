@@ -186,7 +186,7 @@ if (usbb == "1")
 		if (ftpb == "1")
 			a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
 		if (transb == "1")
-			a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/Transmission.asp');");
+			a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/transmission.asp');");
 		if (smb3b == "1")
 			a.add(855, 850, _("treeapp sambasrv"),		"javascript:go('services/samba.asp');");
 	}

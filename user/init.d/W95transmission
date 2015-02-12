@@ -55,12 +55,7 @@ start() {
 
 	$LOG "Start transmission daemon."
 	mkdir -p $TRANSMISSION_HOME
-	if [ "$TransAuthor" = "1" ]; then
-		authory="-t -u $TransLogin -v $TransPass"
-	else
-		authory="-T"
-	fi
-	nice -n 15 /bin/transmission-daemon -p $TransRPCPort -P $TransInPort $authory -w $TRANSMISSION_DOWNLOADS -x /var/run/transmission-daemon.pid
+	nice -n 15 /bin/transmission-daemon -p $TransRPCPort -P $TransInPort $authory $whitelist -w $TRANSMISSION_DOWNLOADS -x /var/run/transmission-daemon.pid
       ) & # send to background
     fi
 }
@@ -75,6 +70,19 @@ get_param() {
 
     #include profile variables
     . /etc/profile
+
+    # autorisation mode    
+    if [ "$TransAuthor" = "1" ]; then
+	authory="-t -u $TransLogin -v $TransPass"
+    else
+	authory="-T"
+    fi
+
+    # add local network to whitelist
+    WhiteListNet=`echo "$lan_ipaddr" | cut -d "." -f -3 | awk {' print $1".*" '}`
+    if [ "$WhiteListNet" != "" ]; then
+	whitelist="-a $WhiteListNet"
+    fi
 
     #export variables for transmissions
     export TRANSMISSION_WEB_HOME=/share/transmission/web
