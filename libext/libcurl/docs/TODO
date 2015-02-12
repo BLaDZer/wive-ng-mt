@@ -19,10 +19,12 @@
  1.6 Modified buffer size approach
  1.7 Detect when called from within callbacks
  1.8 Allow SSL (HTTPS) to proxy
+ 1.9 Cache negative name resolves
 
  2. libcurl - multi interface
  2.1 More non-blocking
  2.2 Fix HTTP Pipelining for PUT
+ 2.3 Better support for same name resolves
 
  3. Documentation
  3.1 Update date and version in man pages
@@ -33,6 +35,8 @@
  4.3 Earlier bad letter detection
  4.4 REST for large files
  4.5 ASCII support
+ 4.6 GSSAPI via Windows SSPI
+ 4.7 STAT for LIST without data connection
 
  5. HTTP
  5.1 Better persistency for HTTP 1.0
@@ -80,6 +84,7 @@
 
  14. SASL
  14.1 Other authentication mechanisms
+ 14.2 Add QOP support to GSSAPI authentication
  
  15. Client
  15.1 sync
@@ -130,7 +135,7 @@
 
  Use 'struct lifreq' and SIOCGLIFADDR instead of 'struct ifreq' and
  SIOCGIFADDR on newer Solaris versions as they claim the latter is obsolete.
- To support ipv6 interface addresses for network interfaces properly.
+ To support IPv6 interface addresses for network interfaces properly.
 
 1.4 signal-based resolver timeouts
 
@@ -189,6 +194,12 @@
  ...and by Firefox soon:
  https://bugzilla.mozilla.org/show_bug.cgi?id=378637
 
+1.9 Cache negative name resolves
+
+ A name resolve that has failed is likely to fail when made again within a
+ short period of time. Currently we only cache positive responses.
+
+
 2. libcurl - multi interface
 
 2.1 More non-blocking
@@ -210,6 +221,15 @@
  HTTP Pipelining can be a way to greatly enhance performance for multiple
  serial requests and currently libcurl only supports that for HEAD and GET
  requests but it should also be possible for PUT.
+
+2.3 Better support for same name resolves
+
+ If a name resolve has been initiated for name NN and a second easy handle
+ wants to resolve that name as well, make it wait for the first resolve to end
+ up in the cache instead of doing a second separate resolve. This is
+ especially needed when adding many simultaneous handles using the same host
+ name when the DNS resolver can get flooded.
+
 
 3. Documentation
 
@@ -250,6 +270,20 @@
 
  FTP ASCII transfers do not follow RFC959. They don't convert the data
  accordingly.
+
+4.6 GSSAPI via Windows SSPI
+
+In addition to currently supporting the SASL GSSAPI mechanism (Kerberos V5)
+via third-party GSS-API libraries, such as Heimdal or MIT Kerberos, also add
+support for GSSAPI authentication via Windows SSPI.
+
+4.7 STAT for LIST without data connection
+
+Some FTP servers allow STAT for listing directories instead of using LIST, and
+the response is then sent over the control connection instead of as the
+otherwise usedw data connection: http://www.nsftools.com/tips/RawFTP.htm#STAT
+
+This is not detailed in any FTP specification.
 
 5. HTTP
 
@@ -440,7 +474,15 @@ to provide the data to send.
 
 14.1 Other authentication mechanisms
 
- Add support for GSSAPI to SMTP, POP3 and IMAP.
+ Add support for other authentication mechanisms such as EXTERNAL, OLP,
+ GSS-SPNEGO and others.
+ 
+14.2 Add QOP support to GSSAPI authentication
+
+ Currently the GSSAPI authentication only supports the default QOP of auth
+ (Authentication), whilst Kerberos V5 supports both auth-int (Authentication
+ with integrity protection) and auth-conf (Authentication with integrity and
+ privacy protection).
 
 15. Client
 

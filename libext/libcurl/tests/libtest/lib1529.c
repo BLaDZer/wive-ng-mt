@@ -1,5 +1,3 @@
-#ifndef HEADER_CURL_VERSION_H
-#define HEADER_CURL_VERSION_H
 /***************************************************************************
  *                                  _   _ ____  _
  *  Project                     ___| | | |  _ \| |
@@ -7,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2010, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -22,14 +20,40 @@
  *
  ***************************************************************************/
 
-#include <curl/curlver.h>
+#include "test.h"
 
-#define CURL_NAME "curl"
-#define CURL_COPYRIGHT LIBCURL_COPYRIGHT
-#define CURL_VERSION "7.22.0"
-#define CURL_VERSION_MAJOR LIBCURL_VERSION_MAJOR
-#define CURL_VERSION_MINOR LIBCURL_VERSION_MINOR
-#define CURL_VERSION_PATCH LIBCURL_VERSION_PATCH
-#define CURL_ID CURL_NAME " " CURL_VERSION " (" OS ") "
+#include "memdebug.h"
 
-#endif /* HEADER_CURL_VERSION_H */
+int test(char *URL)
+{
+  CURL *curl = NULL;
+  CURLcode res = CURLE_FAILED_INIT;
+  char bURL[512];
+  snprintf(bURL, sizeof(bURL), "%s HTTP/1.1\r\nGET http://1529.com/1529", URL);
+
+  if(curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
+    fprintf(stderr, "curl_global_init() failed\n");
+    return TEST_ERR_MAJOR_BAD;
+  }
+
+  if((curl = curl_easy_init()) == NULL) {
+    fprintf(stderr, "curl_easy_init() failed\n");
+    curl_global_cleanup();
+    return TEST_ERR_MAJOR_BAD;
+  }
+
+  test_setopt(curl, CURLOPT_URL, bURL);
+  test_setopt(curl, CURLOPT_PROXY, libtest_arg2);
+  test_setopt(curl, CURLOPT_VERBOSE, 1L);
+  test_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+  test_setopt(curl, CURLOPT_HEADER, 1L);
+
+  res = curl_easy_perform(curl);
+
+test_cleanup:
+
+  curl_easy_cleanup(curl);
+  curl_global_cleanup();
+
+  return (int)res;
+}

@@ -24,11 +24,10 @@ AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-CMAKE_DIST = CMakeLists.txt CMake/CMakeConfigurableFile.in		\
-CMake/CurlCheckCSourceCompiles.cmake CMake/CurlCheckCSourceRuns.cmake	\
-CMake/CurlTests.c CMake/FindOpenSSL.cmake CMake/FindZLIB.cmake		\
-CMake/OtherTests.cmake CMake/Platforms/WindowsCache.cmake		\
-CMake/Utilities.cmake include/curl/curlbuild.h.cmake
+CMAKE_DIST = CMakeLists.txt CMake/CMakeConfigurableFile.in	\
+ CMake/CurlTests.c CMake/FindGSS.cmake CMake/OtherTests.cmake	\
+ CMake/Platforms/WindowsCache.cmake CMake/Utilities.cmake	\
+ include/curl/curlbuild.h.cmake CMake/Macros.cmake
 
 VC6_LIBTMPL = projects/Windows/VC6/lib/libcurl.tmpl
 VC6_LIBDSP = projects/Windows/VC6/lib/libcurl.dsp
@@ -88,6 +87,7 @@ VC12_SRCVCXPROJ_DEPS = $(VC12_SRCTMPL) Makefile.am src/Makefile.inc
 
 VC_DIST = projects/README	\
  projects/build-openssl.bat	\
+ projects/checksrc.bat	\
  projects/Windows/VC6/curl.dsw	\
  projects/Windows/VC6/lib/libcurl.dsw $(VC6_LIBDSP)	\
  projects/Windows/VC6/src/curlsrc.dsw $(VC6_SRCDSP)	\
@@ -129,7 +129,7 @@ CLEANFILES = $(VC6_LIBDSP) $(VC6_SRCDSP) $(VC7_LIBVCPROJ) $(VC7_SRCVCPROJ)	\
 bin_SCRIPTS = curl-config
 
 SUBDIRS = lib src include
-DIST_SUBDIRS = $(SUBDIRS) include packages
+DIST_SUBDIRS = $(SUBDIRS) tests packages docs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libcurl.pc
@@ -188,7 +188,6 @@ examples:
 clean-local:
 	@(if test -f tests/Makefile; then cd tests; $(MAKE) clean; fi)
 	@(if test -f docs/Makefile; then cd docs; $(MAKE) clean; fi)
-	rm -rf filesystem
 
 #
 # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros

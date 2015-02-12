@@ -42,7 +42,7 @@
 CURLcode Curl_initinfo(struct SessionHandle *data)
 {
   struct Progress *pro = &data->progress;
-  struct PureInfo *info =&data->info;
+  struct PureInfo *info = &data->info;
 
   pro->t_nslookup = 0;
   pro->t_connect = 0;
@@ -116,6 +116,7 @@ static CURLcode getinfo_char(struct SessionHandle *data, CURLINFO info,
   default:
     return CURLE_BAD_FUNCTION_ARGUMENT;
   }
+
   return CURLE_OK;
 }
 
@@ -202,6 +203,7 @@ static CURLcode getinfo_long(struct SessionHandle *data, CURLINFO info,
   default:
     return CURLE_BAD_FUNCTION_ARGUMENT;
   }
+
   return CURLE_OK;
 }
 
@@ -254,6 +256,7 @@ static CURLcode getinfo_double(struct SessionHandle *data, CURLINFO info,
   default:
     return CURLE_BAD_FUNCTION_ARGUMENT;
   }
+
   return CURLE_OK;
 }
 
@@ -261,8 +264,8 @@ static CURLcode getinfo_slist(struct SessionHandle *data, CURLINFO info,
                               struct curl_slist **param_slistp)
 {
   union {
-    struct curl_certinfo * to_certinfo;
-    struct curl_slist    * to_slist;
+    struct curl_certinfo *to_certinfo;
+    struct curl_slist    *to_slist;
   } ptr;
 
   switch(info) {
@@ -285,6 +288,7 @@ static CURLcode getinfo_slist(struct SessionHandle *data, CURLINFO info,
       struct curl_tlssessioninfo *tsi = &data->tsi;
       struct connectdata *conn = data->easy_conn;
       unsigned int sockindex = 0;
+      void *internals = NULL;
 
       *tsip = tsi;
       tsi->backend = CURLSSLBACKEND_NONE;
@@ -303,25 +307,21 @@ static CURLcode getinfo_slist(struct SessionHandle *data, CURLINFO info,
 
       /* Return the TLS session information from the relevant backend */
 #ifdef USE_SSLEAY
-      tsi->backend = CURLSSLBACKEND_OPENSSL;
-      tsi->internals = conn->ssl[sockindex].ctx;
+      internals = conn->ssl[sockindex].ctx;
 #endif
 #ifdef USE_GNUTLS
-      tsi->backend = CURLSSLBACKEND_GNUTLS;
-      tsi->internals = conn->ssl[sockindex].session;
+      internals = conn->ssl[sockindex].session;
 #endif
 #ifdef USE_NSS
-      tsi->backend = CURLSSLBACKEND_NSS;
-      tsi->internals = conn->ssl[sockindex].handle;
-#endif
-#ifdef USE_QSOSSL
-      tsi->backend = CURLSSLBACKEND_QSOSSL;
-      tsi->internals = conn->ssl[sockindex].handle;
+      internals = conn->ssl[sockindex].handle;
 #endif
 #ifdef USE_GSKIT
-      tsi->backend = CURLSSLBACKEND_GSKIT;
-      tsi->internals = conn->ssl[sockindex].handle;
+      internals = conn->ssl[sockindex].handle;
 #endif
+      if(internals) {
+        tsi->backend = Curl_ssl_backend();
+        tsi->internals = internals;
+      }
       /* NOTE: For other SSL backends, it is not immediately clear what data
          to return from 'struct ssl_connect_data'; thus, for now we keep the
          backend as CURLSSLBACKEND_NONE in those cases, which should be
@@ -331,22 +331,23 @@ static CURLcode getinfo_slist(struct SessionHandle *data, CURLINFO info,
   default:
     return CURLE_BAD_FUNCTION_ARGUMENT;
   }
+
   return CURLE_OK;
 }
 
 CURLcode Curl_getinfo(struct SessionHandle *data, CURLINFO info, ...)
 {
   va_list arg;
-  long *param_longp=NULL;
-  double *param_doublep=NULL;
-  char **param_charp=NULL;
-  struct curl_slist **param_slistp=NULL;
+  long *param_longp = NULL;
+  double *param_doublep = NULL;
+  char **param_charp = NULL;
+  struct curl_slist **param_slistp = NULL;
   int type;
   /* default return code is to error out! */
-  CURLcode ret = CURLE_BAD_FUNCTION_ARGUMENT;
+  CURLcode result = CURLE_BAD_FUNCTION_ARGUMENT;
 
   if(!data)
-    return ret;
+    return result;
 
   va_start(arg, info);
 
@@ -354,28 +355,29 @@ CURLcode Curl_getinfo(struct SessionHandle *data, CURLINFO info, ...)
   switch(type) {
   case CURLINFO_STRING:
     param_charp = va_arg(arg, char **);
-    if(NULL != param_charp)
-      ret = getinfo_char(data, info, param_charp);
+    if(param_charp)
+      result = getinfo_char(data, info, param_charp);
     break;
   case CURLINFO_LONG:
     param_longp = va_arg(arg, long *);
-    if(NULL != param_longp)
-      ret = getinfo_long(data, info, param_longp);
+    if(param_longp)
+      result = getinfo_long(data, info, param_longp);
     break;
   case CURLINFO_DOUBLE:
     param_doublep = va_arg(arg, double *);
-    if(NULL != param_doublep)
-      ret = getinfo_double(data, info, param_doublep);
+    if(param_doublep)
+      result = getinfo_double(data, info, param_doublep);
     break;
   case CURLINFO_SLIST:
     param_slistp = va_arg(arg, struct curl_slist **);
-    if(NULL != param_slistp)
-      ret = getinfo_slist(data, info, param_slistp);
+    if(param_slistp)
+      result = getinfo_slist(data, info, param_slistp);
     break;
   default:
     break;
   }
 
   va_end(arg);
-  return ret;
+
+  return result;
 }

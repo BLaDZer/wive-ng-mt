@@ -36,8 +36,9 @@ void config_init(struct OperationConfig* config)
   config->maxredirs = DEFAULT_MAXREDIRS;
   config->proto = CURLPROTO_ALL; /* FIXME: better to read from library */
   config->proto_present = FALSE;
-  config->proto_redir =
-    CURLPROTO_ALL & ~(CURLPROTO_FILE|CURLPROTO_SCP); /* not FILE or SCP */
+  config->proto_redir = CURLPROTO_ALL & /* All except FILE, SCP and SMB */
+                        ~(CURLPROTO_FILE | CURLPROTO_SCP | CURLPROTO_SMB |
+                          CURLPROTO_SMBS);
   config->proto_redir_present = FALSE;
 }
 
@@ -101,6 +102,7 @@ static void free_config_fields(struct OperationConfig *config)
   Curl_safefree(config->cacert);
   Curl_safefree(config->capath);
   Curl_safefree(config->crlfile);
+  Curl_safefree(config->pinnedpubkey);
   Curl_safefree(config->key);
   Curl_safefree(config->key_type);
   Curl_safefree(config->key_passwd);
@@ -113,6 +115,7 @@ static void free_config_fields(struct OperationConfig *config)
 
   Curl_safefree(config->xoauth2_bearer);
 
+  Curl_safefree(config->unix_socket_path);
   Curl_safefree(config->writeout);
 
   curl_slist_free_all(config->quote);

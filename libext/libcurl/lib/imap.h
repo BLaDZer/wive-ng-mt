@@ -43,6 +43,9 @@ typedef enum {
   IMAP_AUTHENTICATE_DIGESTMD5_RESP,
   IMAP_AUTHENTICATE_NTLM,
   IMAP_AUTHENTICATE_NTLM_TYPE2MSG,
+  IMAP_AUTHENTICATE_GSSAPI,
+  IMAP_AUTHENTICATE_GSSAPI_TOKEN,
+  IMAP_AUTHENTICATE_GSSAPI_NO_DATA,
   IMAP_AUTHENTICATE_XOAUTH2,
   IMAP_AUTHENTICATE_CANCEL,
   IMAP_AUTHENTICATE_FINAL,
@@ -89,6 +92,7 @@ struct imap_conn {
   bool tls_supported;         /* StartTLS capability supported by server */
   bool login_disabled;        /* LOGIN command disabled by server */
   bool ir_supported;          /* Initial response supported by server */
+  bool mutual_auth;           /* Mutual authentication enabled (GSSAPI only) */
   char *mailbox;              /* The last selected mailbox */
   char *mailbox_uidvalidity;  /* UIDVALIDITY parsed from select response */
 };

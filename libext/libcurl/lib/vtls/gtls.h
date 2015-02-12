@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -45,19 +45,13 @@ void Curl_gtls_close(struct connectdata *conn, int sockindex);
 void Curl_gtls_session_free(void *ptr);
 size_t Curl_gtls_version(char *buffer, size_t size);
 int Curl_gtls_shutdown(struct connectdata *conn, int sockindex);
-int Curl_gtls_seed(struct SessionHandle *data);
-
-void Curl_gtls_random(struct SessionHandle *data,
-                      unsigned char *entropy,
-                      size_t length);
+int Curl_gtls_random(struct SessionHandle *data,
+                     unsigned char *entropy,
+                     size_t length);
 void Curl_gtls_md5sum(unsigned char *tmp, /* input */
                       size_t tmplen,
                       unsigned char *md5sum, /* output */
                       size_t md5len);
-
-/* this backend provides these functions: */
-#define have_curlssl_random 1
-#define have_curlssl_md5sum 1
 
 /* API setup for GnuTLS */
 #define curlssl_init Curl_gtls_init
@@ -68,14 +62,15 @@ void Curl_gtls_md5sum(unsigned char *tmp, /* input */
 #define curlssl_close_all Curl_gtls_close_all
 #define curlssl_close Curl_gtls_close
 #define curlssl_shutdown(x,y) Curl_gtls_shutdown(x,y)
-#define curlssl_set_engine(x,y) (x=x, y=y, CURLE_NOT_BUILT_IN)
-#define curlssl_set_engine_default(x) (x=x, CURLE_NOT_BUILT_IN)
-#define curlssl_engines_list(x) (x=x, (struct curl_slist *)NULL)
+#define curlssl_set_engine(x,y) ((void)x, (void)y, CURLE_NOT_BUILT_IN)
+#define curlssl_set_engine_default(x) ((void)x, CURLE_NOT_BUILT_IN)
+#define curlssl_engines_list(x) ((void)x, (struct curl_slist *)NULL)
 #define curlssl_version Curl_gtls_version
-#define curlssl_check_cxn(x) (x=x, -1)
-#define curlssl_data_pending(x,y) (x=x, y=y, 0)
+#define curlssl_check_cxn(x) ((void)x, -1)
+#define curlssl_data_pending(x,y) ((void)x, (void)y, 0)
 #define curlssl_random(x,y,z) Curl_gtls_random(x,y,z)
 #define curlssl_md5sum(a,b,c,d) Curl_gtls_md5sum(a,b,c,d)
+#define CURL_SSL_BACKEND CURLSSLBACKEND_GNUTLS
 
 #endif /* USE_GNUTLS */
 #endif /* HEADER_CURL_GTLS_H */

@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -36,11 +36,14 @@ CURLcode Curl_gskit_connect(struct connectdata * conn, int sockindex);
 CURLcode Curl_gskit_connect_nonblocking(struct connectdata * conn,
                                         int sockindex, bool * done);
 void Curl_gskit_close(struct connectdata *conn, int sockindex);
-int Curl_gskit_close_all(struct SessionHandle * data);
+void Curl_gskit_close_all(struct SessionHandle * data);
 int Curl_gskit_shutdown(struct connectdata * conn, int sockindex);
 
 size_t Curl_gskit_version(char * buffer, size_t size);
 int Curl_gskit_check_cxn(struct connectdata * cxn);
+
+/* this backend supports CURLOPT_CERTINFO */
+#define have_curlssl_certinfo 1
 
 /* API setup for GSKit */
 #define curlssl_init Curl_gskit_init
@@ -59,6 +62,8 @@ int Curl_gskit_check_cxn(struct connectdata * cxn);
 #define curlssl_version Curl_gskit_version
 #define curlssl_check_cxn(x) Curl_gskit_check_cxn(x)
 #define curlssl_data_pending(x,y) 0
+#define curlssl_random(x,y,z) -1
+#define CURL_SSL_BACKEND CURLSSLBACKEND_GSKIT
 #endif /* USE_GSKIT */
 
 #endif /* HEADER_CURL_GSKIT_H */

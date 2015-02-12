@@ -105,6 +105,9 @@ curl_easy_strerror(CURLcode error)
   case CURLE_FTP_CANT_GET_HOST:
     return "FTP: can't figure out the host in the PASV response";
 
+  case CURLE_HTTP2:
+    return "Error in the HTTP2 framing layer";
+
   case CURLE_FTP_COULDNT_SET_TYPE:
     return "FTP: couldn't set file type";
 
@@ -295,8 +298,10 @@ curl_easy_strerror(CURLcode error)
   case CURLE_NO_CONNECTION_AVAILABLE:
     return "The max connection limit is reached";
 
+  case CURLE_SSL_PINNEDPUBKEYNOTMATCH:
+    return "SSL public key does not match pinned public key";
+
     /* error codes not used by current libcurl */
-  case CURLE_OBSOLETE16:
   case CURLE_OBSOLETE20:
   case CURLE_OBSOLETE24:
   case CURLE_OBSOLETE29:
@@ -325,7 +330,7 @@ curl_easy_strerror(CURLcode error)
    */
   return "Unknown error";
 #else
-  if(error == CURLE_OK)
+  if(!error)
     return "No error";
   else
     return "Error";
@@ -592,7 +597,7 @@ get_winsock_error (int err, char *buf, size_t len)
     return NULL;
   }
 #else
-  if(err == CURLE_OK)
+  if(!err)
     return NULL;
   else
     p = "error";

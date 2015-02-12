@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -54,6 +54,7 @@
 #else
 #include <cyassl/error.h>
 #endif
+#include <cyassl/ctaocrypt/random.h>
 
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -98,10 +99,8 @@ cyassl_connect_step1(struct connectdata *conn,
 
   /* check to see if we've been told to use an explicit SSL/TLS version */
   switch(data->set.ssl.version) {
+  default:
   case CURL_SSLVERSION_DEFAULT:
-    /* we try to figure out version */
-    req_method = SSLv23_client_method();
-    break;
   case CURL_SSLVERSION_TLSv1:
     infof(data, "CyaSSL cannot be configured to use TLS 1.0-1.2, "
           "TLS 1.0 is used exclusively\n");
@@ -119,8 +118,6 @@ cyassl_connect_step1(struct connectdata *conn,
   case CURL_SSLVERSION_SSLv3:
     req_method = SSLv3_client_method();
     break;
-  default:
-    req_method = TLSv1_client_method();
   }
 
   if(!req_method) {
@@ -144,7 +141,7 @@ cyassl_connect_step1(struct connectdata *conn,
                                       data->set.str[STRING_SSL_CAFILE],
                                       data->set.str[STRING_SSL_CAPATH])) {
       if(data->set.ssl.verifypeer) {
-        /* Fail if we insiste on successfully verifying the server. */
+        /* Fail if we insist on successfully verifying the server. */
         failf(data,"error setting certificate verify locations:\n"
               "  CAfile: %s\n  CApath: %s",
               data->set.str[STRING_SSL_CAFILE]?
@@ -154,7 +151,7 @@ cyassl_connect_step1(struct connectdata *conn,
         return CURLE_SSL_CACERT_BADFILE;
       }
       else {
-        /* Just continue with a warning if no strict  certificate
+        /* Just continue with a warning if no strict certificate
            verification is required. */
         infof(data, "error setting certificate verify locations,"
               " continuing anyway:\n");
@@ -299,6 +296,20 @@ cyassl_connect_step2(struct connectdata *conn,
       }
 #endif
     }
+#if LIBCYASSL_VERSION_HEX >= 0x02007000 /* 2.7.0 */
+    else if(ASN_NO_SIGNER_E == detail) {
+      if(data->set.ssl.verifypeer) {
+        failf(data, "\tCA signer not available for verification\n");
+        return CURLE_SSL_CACERT_BADFILE;
+      }
+      else {
+        /* Just continue with a warning if no strict certificate
+           verification is required. */
+        infof(data, "CA signer not available for verification, "
+                    "continuing anyway\n");
+      }
+    }
+#endif
     else {
       failf(data, "SSL_connect failed with error %d: %s", detail,
           ERR_error_string(detail, error_buffer));
@@ -317,11 +328,11 @@ static CURLcode
 cyassl_connect_step3(struct connectdata *conn,
                      int sockindex)
 {
-  CURLcode retcode = CURLE_OK;
+  CURLcode result = CURLE_OK;
   void *old_ssl_sessionid=NULL;
   struct SessionHandle *data = conn->data;
   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
-  int incache;
+  bool incache;
   SSL_SESSION *our_ssl_sessionid;
 
   DEBUGASSERT(ssl_connect_3 == connssl->connecting_state);
@@ -336,18 +347,19 @@ cyassl_connect_step3(struct connectdata *conn,
       incache = FALSE;
     }
   }
+
   if(!incache) {
-    retcode = Curl_ssl_addsessionid(conn, our_ssl_sessionid,
-                                    0 /* unknown size */);
-    if(retcode) {
+    result = Curl_ssl_addsessionid(conn, our_ssl_sessionid,
+                                   0 /* unknown size */);
+    if(result) {
       failf(data, "failed to store ssl session");
-      return retcode;
+      return result;
     }
   }
 
   connssl->connecting_state = ssl_connect_done;
 
-  return retcode;
+  return result;
 }
 
 
@@ -492,7 +504,7 @@ cyassl_connect_common(struct connectdata *conn,
                       bool nonblocking,
                       bool *done)
 {
-  CURLcode retcode;
+  CURLcode result;
   struct SessionHandle *data = conn->data;
   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
   curl_socket_t sockfd = conn->sock[sockindex];
@@ -514,9 +526,10 @@ cyassl_connect_common(struct connectdata *conn,
       failf(data, "SSL connection timeout");
       return CURLE_OPERATION_TIMEDOUT;
     }
-    retcode = cyassl_connect_step1(conn, sockindex);
-    if(retcode)
-      return retcode;
+
+    result = cyassl_connect_step1(conn, sockindex);
+    if(result)
+      return result;
   }
 
   while(ssl_connect_2 == connssl->connecting_state ||
@@ -568,22 +581,21 @@ cyassl_connect_common(struct connectdata *conn,
      * ensuring that a client using select() or epoll() will always
      * have a valid fdset to wait on.
      */
-    retcode = cyassl_connect_step2(conn, sockindex);
-    if(retcode || (nonblocking &&
-                   (ssl_connect_2 == connssl->connecting_state ||
-                    ssl_connect_2_reading == connssl->connecting_state ||
-                    ssl_connect_2_writing == connssl->connecting_state)))
-      return retcode;
-
+    result = cyassl_connect_step2(conn, sockindex);
+    if(result || (nonblocking &&
+                  (ssl_connect_2 == connssl->connecting_state ||
+                   ssl_connect_2_reading == connssl->connecting_state ||
+                   ssl_connect_2_writing == connssl->connecting_state)))
+      return result;
   } /* repeat step2 until all transactions are done. */
 
-  if(ssl_connect_3==connssl->connecting_state) {
-    retcode = cyassl_connect_step3(conn, sockindex);
-    if(retcode)
-      return retcode;
+  if(ssl_connect_3 == connssl->connecting_state) {
+    result = cyassl_connect_step3(conn, sockindex);
+    if(result)
+      return result;
   }
 
-  if(ssl_connect_done==connssl->connecting_state) {
+  if(ssl_connect_done == connssl->connecting_state) {
     connssl->state = ssl_connection_complete;
     conn->recv[sockindex] = cyassl_recv;
     conn->send[sockindex] = cyassl_send;
@@ -612,16 +624,29 @@ CURLcode
 Curl_cyassl_connect(struct connectdata *conn,
                     int sockindex)
 {
-  CURLcode retcode;
+  CURLcode result;
   bool done = FALSE;
 
-  retcode = cyassl_connect_common(conn, sockindex, FALSE, &done);
-  if(retcode)
-    return retcode;
+  result = cyassl_connect_common(conn, sockindex, FALSE, &done);
+  if(result)
+    return result;
 
   DEBUGASSERT(done);
 
   return CURLE_OK;
+}
+
+int Curl_cyassl_random(struct SessionHandle *data,
+                       unsigned char *entropy,
+                       size_t length)
+{
+  RNG rng;
+  (void)data;
+  if(InitRng(&rng))
+    return 1;
+  if(RNG_GenerateBlock(&rng, entropy, length))
+    return 1;
+  return 0;
 }
 
 #endif

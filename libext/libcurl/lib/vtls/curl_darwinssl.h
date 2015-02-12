@@ -7,7 +7,8 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 2012 - 2013, Nick Zitzmann, <nickzman@gmail.com>.
+ * Copyright (C) 2012 - 2014, Nick Zitzmann, <nickzman@gmail.com>.
+ * Copyright (C) 2012 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -44,17 +45,12 @@ int Curl_darwinssl_check_cxn(struct connectdata *conn);
 bool Curl_darwinssl_data_pending(const struct connectdata *conn,
                                  int connindex);
 
-void Curl_darwinssl_random(struct SessionHandle *data,
-                           unsigned char *entropy,
-                           size_t length);
+int Curl_darwinssl_random(unsigned char *entropy,
+                          size_t length);
 void Curl_darwinssl_md5sum(unsigned char *tmp, /* input */
                            size_t tmplen,
                            unsigned char *md5sum, /* output */
                            size_t md5len);
-
-/* this backend provides these functions: */
-#define have_curlssl_random 1
-#define have_curlssl_md5sum 1
 
 /* API setup for SecureTransport */
 #define curlssl_init() (1)
@@ -65,14 +61,15 @@ void Curl_darwinssl_md5sum(unsigned char *tmp, /* input */
 #define curlssl_close_all Curl_darwinssl_close_all
 #define curlssl_close Curl_darwinssl_close
 #define curlssl_shutdown(x,y) 0
-#define curlssl_set_engine(x,y) (x=x, y=y, CURLE_NOT_BUILT_IN)
-#define curlssl_set_engine_default(x) (x=x, CURLE_NOT_BUILT_IN)
-#define curlssl_engines_list(x) (x=x, (struct curl_slist *)NULL)
+#define curlssl_set_engine(x,y) ((void)x, (void)y, CURLE_NOT_BUILT_IN)
+#define curlssl_set_engine_default(x) ((void)x, CURLE_NOT_BUILT_IN)
+#define curlssl_engines_list(x) ((void)x, (struct curl_slist *)NULL)
 #define curlssl_version Curl_darwinssl_version
 #define curlssl_check_cxn Curl_darwinssl_check_cxn
 #define curlssl_data_pending(x,y) Curl_darwinssl_data_pending(x, y)
-#define curlssl_random(x,y,z) Curl_darwinssl_random(x,y,z)
+#define curlssl_random(x,y,z) ((void)x, Curl_darwinssl_random(y,z))
 #define curlssl_md5sum(a,b,c,d) Curl_darwinssl_md5sum(a,b,c,d)
+#define CURL_SSL_BACKEND CURLSSLBACKEND_DARWINSSL
 
 #endif /* USE_DARWINSSL */
 #endif /* HEADER_CURL_DARWINSSL_H */

@@ -26,7 +26,18 @@
 
 struct SessionHandle;
 struct connectdata;
+
+#if !defined(CURL_DISABLE_CRYPTO_AUTH)
+struct digestdata;
+#endif
+
+#if defined(USE_NTLM)
 struct ntlmdata;
+#endif
+
+#if defined(USE_KERBEROS5)
+struct kerberos5data;
+#endif
 
 /* Authentication mechanism values */
 #define SASL_AUTH_NONE          0
@@ -52,10 +63,22 @@ struct ntlmdata;
 #define SASL_MECH_STRING_NTLM       "NTLM"
 #define SASL_MECH_STRING_XOAUTH2    "XOAUTH2"
 
+enum {
+  CURLDIGESTALGO_MD5,
+  CURLDIGESTALGO_MD5SESS
+};
+
 /* This is used to test whether the line starts with the given mechanism */
 #define sasl_mech_equal(line, wordlen, mech) \
   (wordlen == (sizeof(mech) - 1) / sizeof(char) && \
    !memcmp(line, mech, wordlen))
+
+/* This is used to build a SPN string */
+#if !defined(USE_WINDOWS_SSPI)
+char *Curl_sasl_build_spn(const char *service, const char *instance);
+#else
+TCHAR *Curl_sasl_build_spn(const char *service, const char *instance);
+#endif
 
 /* This is used to generate a base64 encoded PLAIN authentication message */
 CURLcode Curl_sasl_create_plain_message(struct SessionHandle *data,
@@ -88,6 +111,22 @@ CURLcode Curl_sasl_create_digest_md5_message(struct SessionHandle *data,
                                              const char *passwdp,
                                              const char *service,
                                              char **outptr, size_t *outlen);
+
+/* This is used to decode a HTTP DIGEST challenge message */
+CURLcode Curl_sasl_decode_digest_http_message(const char *chlg,
+                                              struct digestdata *digest);
+
+/* This is used to generate a HTTP DIGEST response message */
+CURLcode Curl_sasl_create_digest_http_message(struct SessionHandle *data,
+                                              const char *userp,
+                                              const char *passwdp,
+                                              const unsigned char *request,
+                                              const unsigned char *uri,
+                                              struct digestdata *digest,
+                                              char **outptr, size_t *outlen);
+
+/* This is used to clean up the digest specific data */
+void Curl_sasl_digest_cleanup(struct digestdata *digest);
 #endif
 
 #ifdef USE_NTLM
@@ -110,7 +149,34 @@ CURLcode Curl_sasl_create_ntlm_type3_message(struct SessionHandle *data,
                                              struct ntlmdata *ntlm,
                                              char **outptr, size_t *outlen);
 
+/* This is used to clean up the ntlm specific data */
+void Curl_sasl_ntlm_cleanup(struct ntlmdata *ntlm);
+
 #endif /* USE_NTLM */
+
+#if defined(USE_KERBEROS5)
+/* This is used to generate a base64 encoded GSSAPI (Kerberos V5) user token
+   message */
+CURLcode Curl_sasl_create_gssapi_user_message(struct SessionHandle *data,
+                                              const char *userp,
+                                              const char *passwdp,
+                                              const char *service,
+                                              const bool mutual,
+                                              const char *chlg64,
+                                              struct kerberos5data *krb5,
+                                              char **outptr, size_t *outlen);
+
+/* This is used to generate a base64 encoded GSSAPI (Kerberos V5) security
+   token message */
+CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
+                                                  const char *input,
+                                                  struct kerberos5data *krb5,
+                                                  char **outptr,
+                                                  size_t *outlen);
+
+/* This is used to clean up the gssapi specific data */
+void Curl_sasl_gssapi_cleanup(struct kerberos5data *krb5);
+#endif /* USE_KERBEROS5 */
 
 /* This is used to generate a base64 encoded XOAUTH2 authentication message
    containing the user name and bearer token */

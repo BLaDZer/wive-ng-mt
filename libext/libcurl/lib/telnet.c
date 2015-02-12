@@ -710,7 +710,6 @@ static void printsub(struct SessionHandle *data,
                      size_t length)             /* length of suboption data */
 {
   unsigned int i = 0;
-  unsigned short *pval;
 
   if(data->set.verbose) {
     if(direction) {
@@ -763,9 +762,9 @@ static void printsub(struct SessionHandle *data,
 
     switch(pointer[0]) {
     case CURL_TELOPT_NAWS:
-      pval = (unsigned short*)(pointer+1);
-      infof(data, "Width: %hu ; Height: %hu",
-            ntohs(pval[0]), ntohs(pval[1]));
+      if(length > 4)
+        infof(data, "Width: %hu ; Height: %hu", (pointer[1]<<8) | pointer[2],
+              (pointer[3]<<8) | pointer[4]);
       break;
     default:
       switch(pointer[1]) {
@@ -1076,7 +1075,7 @@ CURLcode telrcv(struct connectdata *conn,
                                CLIENTWRITE_BODY,              \
                                (char *)&inbuf[startwrite],    \
                                in-startwrite);                \
-    if(result != CURLE_OK)                                    \
+    if(result)                                                \
       return result;                                          \
   }                                                           \
   startwrite = -1
@@ -1230,9 +1229,9 @@ static CURLcode send_telnet_data(struct connectdata *conn,
   unsigned char outbuf[2];
   ssize_t bytes_written, total_written;
   int out_count;
-  CURLcode rc = CURLE_OK;
+  CURLcode result = CURLE_OK;
 
-  while(rc == CURLE_OK && nread--) {
+  while(!result && nread--) {
     outbuf[0] = *buffer++;
     out_count = 1;
     if(outbuf[0] == CURL_IAC)
@@ -1247,19 +1246,20 @@ static CURLcode send_telnet_data(struct connectdata *conn,
       switch (Curl_poll(pfd, 1, -1)) {
         case -1:                    /* error, abort writing */
         case 0:                     /* timeout (will never happen) */
-          rc = CURLE_SEND_ERROR;
+          result = CURLE_SEND_ERROR;
           break;
         default:                    /* write! */
           bytes_written = 0;
-          rc = Curl_write(conn, conn->sock[FIRSTSOCKET], outbuf+total_written,
-                          out_count-total_written, &bytes_written);
+          result = Curl_write(conn, conn->sock[FIRSTSOCKET],
+                              outbuf+total_written, out_count-total_written,
+                              &bytes_written);
           total_written += bytes_written;
           break;
       }
-    /* handle partial write */
-    } while(rc == CURLE_OK && total_written < out_count);
+      /* handle partial write */
+    } while(!result && total_written < out_count);
   }
-  return rc;
+  return result;
 }
 
 static CURLcode telnet_done(struct connectdata *conn,
