@@ -269,17 +269,23 @@ static int gen_wifi_config(int getmode)
 		    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 		}
 
-		//TxRate(FixedRate)
+		//Get Bssid number
 		ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
-		if (ssid_num > 16)
-			ssid_num = 16;
+		if (ssid_num > 8)
+			ssid_num = 8;
 		else if (ssid_num < 0)
 			ssid_num = 0;
+
+		//TxRate
 		bzero(tx_rate, sizeof(tx_rate));
 		for (i = 0; i < ssid_num; i++)
 		{
+		    if (!inic)
 			snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRate")));
-			snprintf(tx_rate+strlen(tx_rate), 1, "%c", ';');
+		    else
+			snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRateINIC")));
+
+		    snprintf(tx_rate+strlen(tx_rate), 1, "%c", ';');
 		}
 		fprintf(fp, "TxRate=%s\n", tx_rate);
 
@@ -292,7 +298,9 @@ static int gen_wifi_config(int getmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
+#ifdef CONFIG_RT2860V2_AP_WSC
 		//WscConfStatus
+		FPRINT_NUM(WscConfMode);
 		if (atoi(nvram_bufget(mode, "WscConfigured")) == 0)
 			fprintf(fp, "WscConfStatus=%d\n", 1);
 		else
@@ -300,6 +308,7 @@ static int gen_wifi_config(int getmode)
 
 		if (strcmp(nvram_bufget(mode, "WscVendorPinCode"), "") != 0)
 			FPRINT_STR(WscVendorPinCode);
+#endif
 
 		FPRINT_NUM(WirelessEvent);
 		FPRINT_NUM(CountryRegion);
@@ -517,7 +526,6 @@ static int gen_wifi_config(int getmode)
 #endif
 		}
 		FPRINT_NUM(HSCounter);
-		FPRINT_NUM(WscConfMode);
 		FPRINT_NUM(WCNTest);
 #ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
 		FPRINT_NUM(HT_BSSCoexistence);

@@ -669,7 +669,7 @@ int main(int argc, char **argv)
 			strncpy(ifr.ifr_name, ifnames[i], IFNAMSIZ);
 			if (ioctl(udp_sock, SIOCGIFINDEX, &ifr)) {
 				perror("ioctl(SIOCGIFINDEX)");
-				exit(-1);;
+				exit(-1);
 			}
 			ifvec[i] = ifr.ifr_ifindex;
 		}

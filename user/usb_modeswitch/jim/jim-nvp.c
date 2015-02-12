@@ -100,7 +100,7 @@ Jim_Nvp_name2value_nocase(Jim_Interp *interp, const Jim_Nvp * _p, const char *na
 
 int Jim_Nvp_value2name_obj(Jim_Interp *interp, const Jim_Nvp * p, Jim_Obj *o, Jim_Nvp ** result)
 {
-    int e;;
+    int e;
     jim_wide w;
 
     e = Jim_GetWide(interp, o, &w);

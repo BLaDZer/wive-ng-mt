@@ -1164,7 +1164,7 @@ int ltc_ecc_fp_mul2add(ecc_point *A, void *kA,
                  
          /* build the LUT */
          if ((err = build_lut(idx1, modulus, mp, mu)) != CRYPT_OK) {
-             goto LBL_ERR;;
+             goto LBL_ERR;
          }  
       }
 
@@ -1185,7 +1185,7 @@ int ltc_ecc_fp_mul2add(ecc_point *A, void *kA,
                  
          /* build the LUT */
          if ((err = build_lut(idx2, modulus, mp, mu)) != CRYPT_OK) {
-             goto LBL_ERR;;
+             goto LBL_ERR;
          }  
       }
 
@@ -1258,7 +1258,7 @@ int ltc_ecc_fp_mulmod(void *k, ecc_point *G, ecc_point *R, void *modulus, int ma
                  
          /* build the LUT */
          if ((err = build_lut(idx, modulus, mp, mu)) != CRYPT_OK) {
-             goto LBL_ERR;;
+             goto LBL_ERR;
          }  
       }
 

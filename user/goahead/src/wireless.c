@@ -228,7 +228,7 @@ static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static int listCountryCodes(int eid, webs_t wp, int argc, char_t **argv)
 {
 	const country_code_t *codes = country_codes;
-	char *c_code = nvram_get(RT2860_NVRAM, "CountryCode");;
+	char *c_code = nvram_get(RT2860_NVRAM, "CountryCode");
 
 	websWrite(wp, T("\t<option value=\"NONE\">NONE</option>\n"));
 

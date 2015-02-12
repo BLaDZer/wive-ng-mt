@@ -6805,7 +6805,7 @@ int Jim_GetIndex(Jim_Interp *interp, Jim_Obj *objPtr, int *indexPtr)
         jim_wide val = JimWideValue(objPtr);
 
         if (!(val < LONG_MIN) && !(val > LONG_MAX)) {
-            *indexPtr = (val < 0) ? -INT_MAX : (long)val;;
+            *indexPtr = (val < 0) ? -INT_MAX : (long)val;
             return JIM_OK;
         }
     }

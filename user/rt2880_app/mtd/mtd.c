@@ -225,7 +225,7 @@ mtd_erase(const char *mtd)
 int
 mtd_write(int imagefd, int offset, int len, const char *mtd)
 {
-	int fd, result, statistic = 0;;
+	int fd, result, statistic = 0;
 	size_t r, w, e;
 	struct mtd_info_user mtdInfo;
 	struct erase_info_user mtdEraseInfo;

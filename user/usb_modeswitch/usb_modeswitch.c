@@ -365,7 +365,7 @@ int readArguments(int argc, char **argv)
 			case 'H': ModeMap = ModeMap + HUAWEI_MODE; break;
 			case 'J': ModeMap = ModeMap + HUAWEINEW_MODE; break;
 			case 'S': ModeMap = ModeMap + SIERRA_MODE; break;
-			case 'O': ModeMap = ModeMap + SONY_MODE; break;; break;
+			case 'O': ModeMap = ModeMap + SONY_MODE; break;
 			case 'B': ModeMap = ModeMap + QISDA_MODE; break;
 			case 'E': ModeMap = ModeMap + QUANTA_MODE; break;
 			case 'G': ModeMap = ModeMap + GCT_MODE; break;

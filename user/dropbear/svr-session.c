@@ -98,7 +98,7 @@ void svr_session(int sock, int childpipe) {
 
 	common_session_init(sock, sock);
 
-	svr_ses.connect_time = monotonic_now();;
+	svr_ses.connect_time = monotonic_now();
 
 	/* Initialise server specific parts of the session */
 	svr_ses.childpipe = childpipe;

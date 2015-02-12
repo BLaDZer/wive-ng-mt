@@ -657,7 +657,7 @@ ssize_t pwrite64(int fd,  const void *buf, size_t size, off64_t ofs)
 int chdir(const char *name)
 {
         check_init("chdir");
-        return smbw_chdir((char *) name);;
+        return smbw_chdir((char *) name);
 }
 
 int __chdir(char *name)

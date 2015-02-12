@@ -794,7 +794,7 @@ BOOL cli_session_setup(struct cli_state *cli,
 			ntpasslen = 24;
 			fstrcpy(pword, pass);
 			unix_to_dos(pword,True);
-			fstrcpy(ntpword, ntpass);;
+			fstrcpy(ntpword, ntpass);
 			unix_to_dos(ntpword,True);
 			SMBencrypt((uchar *)pword,(uchar *)cli->cryptkey,(uchar *)pword);
 			SMBNTencrypt((uchar *)ntpword,(uchar *)cli->cryptkey,(uchar *)ntpword);

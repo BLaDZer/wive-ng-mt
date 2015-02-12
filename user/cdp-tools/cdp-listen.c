@@ -201,7 +201,7 @@ doit(char *interface, struct pcap_pkthdr *pcap_h, register u_char *pcap_p)
 	h = (CDP_HDR *) (((unsigned char *)pcap_p) + 22);
 
 	d = (CDP_DATA *)((((unsigned char *)pcap_p) + 22) + sizeof(CDP_HDR));
-	len = (pcap_h->len - 22) - sizeof(CDP_HDR);;
+	len = (pcap_h->len - 22) - sizeof(CDP_HDR);
 
 	printf("# Interface:\t%s\n# Hostname:", interface);
 	if (!yankdo(TYPE_DEVICE_ID, d, len, 0, n_device_id))

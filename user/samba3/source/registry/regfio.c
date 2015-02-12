@@ -1410,7 +1410,7 @@ static REGF_HBIN* regf_hbin_allocate( REGF_FILE *file, uint32 block_size )
 	hbin->file_off       = sbuf.st_size;
 
 	hbin->free_off       = HBIN_HEADER_REC_SIZE;
-	hbin->free_size      = block_size - hbin->free_off + sizeof(uint32);;
+	hbin->free_size      = block_size - hbin->free_off + sizeof(uint32);
 
 	hbin->block_size     = block_size;
 	hbin->first_hbin_off = hbin->file_off - REGF_BLOCKSIZE;

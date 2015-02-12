@@ -511,7 +511,7 @@ struct crec *cache_insert(char *name, struct all_addr *addr,
 		
 	if (freed_all)
 	  {
-	    struct all_addr free_addr = new->addr.addr;;
+	    struct all_addr free_addr = new->addr.addr;
 
 #ifdef HAVE_DNSSEC
 	    /* For DNSSEC records, addr holds class and type_covered for RRSIG */

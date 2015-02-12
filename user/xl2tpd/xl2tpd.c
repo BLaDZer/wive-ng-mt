@@ -66,7 +66,7 @@ static void open_controlfd(void);
 volatile sig_atomic_t sigterm_received;
 volatile sig_atomic_t sigint_received;
 volatile sig_atomic_t sigchld_received;
-volatile sig_atomic_t sigusr1_received;;
+volatile sig_atomic_t sigusr1_received;
 volatile sig_atomic_t sighup_received;
 
 struct control_requests_handler {

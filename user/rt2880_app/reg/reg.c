@@ -60,7 +60,7 @@ void ra_reg_mod_bits(int offset, int data, int  start_bit, int len)
 
     Value = ra_reg_read(offset);
     Value &= ~Mask;
-    Value |= (data << start_bit) & Mask;;
+    Value |= (data << start_bit) & Mask;
 
     ra_reg_write(offset, Value);
 }

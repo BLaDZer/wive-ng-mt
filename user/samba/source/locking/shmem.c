@@ -581,7 +581,7 @@ static BOOL smb_shm_close( void )
 
    DEBUG(5,("smb_shm_close\n"));
    if(smb_shm_times_locked > 0)
-      DEBUG(0,("WARNING smb_shm_close : shmem was still locked %d times\n",smb_shm_times_locked));;
+      DEBUG(0,("WARNING smb_shm_close : shmem was still locked %d times\n",smb_shm_times_locked));
    if ((smb_shm_header_p != NULL) && 
               (munmap((caddr_t)smb_shm_header_p, smb_shm_header_p->total_size) < 0))
    {

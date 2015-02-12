@@ -238,7 +238,7 @@ handle_upload (struct evhttp_request * req,
           int code = 409;
           const char * codetext = tr_webGetResponseStr (code);
           struct evbuffer * body = evbuffer_new ();
-          evbuffer_add_printf (body, "%s", "{ \"success\": false, \"msg\": \"Bad Session-Id\" }");;
+          evbuffer_add_printf (body, "%s", "{ \"success\": false, \"msg\": \"Bad Session-Id\" }");
           evhttp_send_reply (req, code, codetext, body);
           evbuffer_free (body);
         }
@@ -292,7 +292,7 @@ handle_upload (struct evhttp_request * req,
         int code = HTTP_OK;
         const char * codetext = tr_webGetResponseStr (code);
         struct evbuffer * body = evbuffer_new ();
-        evbuffer_add_printf (body, "%s", "{ \"success\": true, \"msg\": \"Torrent Added\" }");;
+        evbuffer_add_printf (body, "%s", "{ \"success\": true, \"msg\": \"Torrent Added\" }");
         evhttp_send_reply (req, code, codetext, body);
         evbuffer_free (body);
       }

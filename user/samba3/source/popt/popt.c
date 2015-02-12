@@ -576,7 +576,7 @@ expandNextArg(/*@special@*/ poptContext con, const char * s)
     size_t tn = strlen(s) + 1;
     char c;
 
-    te = t = (char *)malloc(tn);;
+    te = t = (char *)malloc(tn);
     if (t == NULL) return NULL;		/* XXX can't happen */
     while ((c = *s++) != '\0') {
 	switch (c) {

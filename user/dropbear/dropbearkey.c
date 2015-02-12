@@ -237,7 +237,7 @@ int main(int argc, char ** argv) {
 			exit(EXIT_FAILURE);
 		}
 		
-		check_signkey_bits(keytype, bits);;
+		check_signkey_bits(keytype, bits);
 	}
 
 	fprintf(stderr, "Generating key, this may take a while...\n");

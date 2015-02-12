@@ -333,7 +333,7 @@ print_ipt(struct action_util *au,FILE * f, struct rtattr *arg)
 		}
 
 		if (tb[TCA_IPT_CNT]) {
-			struct tc_cnt *c  = RTA_DATA(tb[TCA_IPT_CNT]);;
+			struct tc_cnt *c  = RTA_DATA(tb[TCA_IPT_CNT]);
 			fprintf(f, " ref %d bind %d", c->refcnt, c->bindcnt);
 		}
 		if (show_stats) {

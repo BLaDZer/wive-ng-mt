@@ -180,7 +180,7 @@ static int tdb_traverse_internal(struct tdb_context *tdb,
 			/* They want us to terminate traversal */
 			ret = count;
 			if (tdb_unlock_record(tdb, tl->off) != 0) {
-				TDB_LOG((tdb, TDB_DEBUG_FATAL, "tdb_traverse: unlock_record failed!\n"));;
+				TDB_LOG((tdb, TDB_DEBUG_FATAL, "tdb_traverse: unlock_record failed!\n"));
 				ret = -1;
 			}
 			SAFE_FREE(key.dptr);
