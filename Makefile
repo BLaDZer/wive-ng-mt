@@ -281,44 +281,14 @@ clean:
 	-$(MAKE) mrproper -C linux
 	-$(MAKE) mrproper -C Uboot
 	##############REMOVE UNUSED FILES 1###########################
-	rm -rf $(LIBCDIRSHARED)/*
-	rm -rf $(ROOTDIR)/dev
-	rm -rf $(IMAGEDIR)
-	rm -rf $(ROMFSDIR)
-	rm -f $(ROOTDIR)/etc/compile-date
-	rm -f $(ROOTDIR)/etc/scripts/config.sh
-	rm -f $(ROOTDIR)/config.tk
-	rm -f $(ROOTDIR)/.tmp*
-	rm -f $(ROOTDIR)/sdk_version.h
-	rm -f $(ROOTDIR)/version
-	rm -f $(LINUXDIR)/linux
-	rm -f $(LINUXDIR)/arch/mips/ramdisk/*.gz
+	rm -f $(ROOTDIR)/etc/compile-date $(ROOTDIR)/etc/scripts/config.sh $(ROOTDIR)/config.tk $(ROOTDIR)/.tmp* $(ROOTDIR)/sdk_version.h $(ROOTDIR)/version $(LINUXDIR)/linux $(LINUXDIR)/arch/mips/ramdisk/*.gz
 	##############REMOVE UNUSED FILES 2###########################
-	find $(ROOTDIR) -type f -name '*.*~' | xargs rm -f
-	find $(ROOTDIR) -type f -name '*.ko' | xargs rm -f
-	find $(ROOTDIR) -type f -name '*.old' | xargs rm -f
-	find $(ROOTDIR) -type f -name '*.log' | xargs rm -f
-	find $(ROOTDIR) -type f -name 'config.log' | xargs rm -f
-	find $(ROOTDIR) -type f -name 'aclocal.m4' | xargs rm -f
-	find $(ROOTDIR) -type f -name '.sgbuilt_user' | xargs rm -f
-	find $(ROOTDIR) -type f -name '.config.cmd' | xargs rm -f
+	find $(ROOTDIR) -type f -a \( -name '*.*~' -o -name '*.ko' -o -name '*.log' -o -name '*.old' -o -name 'config.log' -o -name 'aclocal.m4' -o -name '.sgbuilt_user' -o -name '.config.cmd' \) | xargs rm -f
 	##############REMOVE UNUSED FILES 3###########################
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.o' | xargs rm -f
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.a' | xargs rm -f
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.so' | xargs rm -f
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.lo' | xargs rm -f
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -name '*.la' | xargs rm -f
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f 
 	##############REMOVE UNUSED FOLDERS###########################
-	find $(ROOTDIR) -type d -name 'filesystem' | xargs rm -rf
-	find $(ROOTDIR) -type d -name 'autom4te.cache' | xargs rm -rf
-	find $(ROOTDIR) -type d -name '.libs' | xargs rm -rf
-	find $(ROOTDIR) -type d -name 'cvs' | xargs rm -rf
-	find $(ROOTDIR) -type d -name 'CVS' | xargs rm -rf
-	find $(ROOTDIR) -type d -name '.dep' | xargs rm -rf
-	find $(ROOTDIR) -type d -name '.deps' | xargs rm -rf
-	rm -rf romfs config.in config.arch config.tk images
-	rm -f modules/config.tk
-	rm -rf .config .config.old .oldconfig autoconf.h
+	find $(ROOTDIR) -type d -a \( -name 'filesystem' -o -name 'autom4te.cache' -o -name '.libs' -o -name 'cvs' -o -name 'CVS' -o -name '.dep' -o -name '.deps' \) | xargs rm -rf
+	rm -rf $(LIBCDIRSHARED)/* $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs config.in config.arch config.tk images modules/config.tk .config .config.old .oldconfig autoconf.h
 
 %_only:
 	@case "$(@)" in \

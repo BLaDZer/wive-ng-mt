@@ -17,7 +17,6 @@ CONFIG_LIB_EVENT=y
 # CONFIG_LIB_NATPMP is not set
 CONFIG_LIB_NFNETLINK=y
 # CONFIG_LIB_NL is not set
-# CONFIG_LIB_UPNP is not set
 # CONFIG_LIB_OPENSSL is not set
 # CONFIG_LIB_ICONV is not set
 

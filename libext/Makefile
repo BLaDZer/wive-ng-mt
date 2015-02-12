@@ -72,7 +72,6 @@ dir_  =
 dir_$(CONFIG_LIB_ZLIB)            += zlib
 dir_$(CONFIG_LIB_EVENT)           += libevent
 dir_$(CONFIG_LIB_PCAP)            += libpcap
-dir_$(CONFIG_LIB_UPNP)            += libupnp
 dir_$(CONFIG_LIB_USB1)            += libusb-1.0
 dir_$(CONFIG_LIB_ICONV)           += libiconv
 dir_$(CONFIG_LIB_NATPMP)          += libnatpmp

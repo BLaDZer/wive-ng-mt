@@ -92,7 +92,7 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 	doSystem("rm -f /etc/newpw");
 	doSystem("service pass start");
 	doSystem("service inetd restart");
-#if defined(CONFIG_USER_SAMBA) || defined(CONFIG_USER_SAMBA3)
+#if defined(CONFIG_USER_SAMBA) || defined(CONFIG_USER_SAMBA3) || defined(CONFIG_USER_SAMBA3_WINS)
 	doSystem("service samba restart");
 #endif
 

@@ -12,7 +12,6 @@ bool 'Build libpcap'		CONFIG_LIB_PCAP
 bool 'Build libnatpmp'          CONFIG_LIB_NATPMP
 bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
 bool 'Build libnl'		CONFIG_LIB_NL
-bool 'Build libupnp'		CONFIG_LIB_UPNP
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
 

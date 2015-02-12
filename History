@@ -542,6 +542,10 @@
 31) init.d: add change wlan/wlan2 macs in factory.<br>
 <br>
 <br>
+<b>2.4.x</b><br>
+1) build_system: add test targets for usb devices.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
