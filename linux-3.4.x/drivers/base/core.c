@@ -357,10 +357,9 @@ static ssize_t store_uevent(struct device *dev, struct device_attribute *attr,
 
 	if (kobject_action_type(buf, count, &action) == 0)
 		kobject_uevent(&dev->kobj, action);
-#ifdef DEBUG
 	else
 		dev_err(dev, "uevent: unknown action-string\n");
-#endif
+
 	return count;
 }
 
