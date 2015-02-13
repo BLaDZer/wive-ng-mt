@@ -278,7 +278,7 @@ client6_init()
 	    /* get first wan_if in file */
 	    while (fgets(wan_if, sizeof(wan_if), fp) != NULL) {
 		/* wan may be only eth*,acpli* */
-		if ((strstr(wan_if, "eth") != NULL) || (strstr(wan_if, "apcli") != NULL)) {
+		if ((strstr(wan_if, "eth") != NULL) || (strstr(wan_if, "apcli") != NULL) || (strstr(wan_if, "ra") != NULL)) {
 		    /* get our DUID */
 		    if (get_duid(DUID_FILE, &client_duid, wan_if)) {
 			debug_printf(LOG_ERR, FNAME, "failed to get a DUID for REALWAN, try default");
