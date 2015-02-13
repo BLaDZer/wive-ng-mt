@@ -339,6 +339,31 @@ fulldump
 # tools
 /tools/xz/libext/Makefile.in
 /tools/xz/lib/Makefile.in
+/tools/xz/Doxyfile
+/tools/xz/Makefile
+/tools/xz/config.h
+/tools/xz/debug/Makefile
+/tools/xz/lib/Makefile
+/tools/xz/po/Makefile
+/tools/xz/po/Makefile.in
+/tools/xz/po/POTFILES
+/tools/xz/src/Makefile
+/tools/xz/src/liblzma/Makefile
+/tools/xz/src/liblzma/api/Makefile
+/tools/xz/src/lzmainfo/Makefile
+/tools/xz/src/lzmainfo/lzmainfo
+/tools/xz/src/scripts/Makefile
+/tools/xz/src/scripts/xzdiff
+/tools/xz/src/scripts/xzgrep
+/tools/xz/src/scripts/xzless
+/tools/xz/src/scripts/xzmore
+/tools/xz/src/xz/Makefile
+/tools/xz/src/xz/xz
+/tools/xz/src/xzdec/Makefile
+/tools/xz/src/xzdec/lzmadec
+/tools/xz/src/xzdec/xzdec
+/tools/xz/stamp-h1
+/tools/xz/tests/Makefile
 
 # prevent upload ATE in git
 /user/rt2880_app/ated/*
