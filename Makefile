@@ -270,13 +270,17 @@ clean:
 	touch $(ROOTDIR)/config/autoconf.h
 	touch $(ROOTDIR)/config.arch
 	touch $(ROOTDIR)/.config
-	#################CLEAN ALL SUBDIRS#############################
+	################CLEAN ALL SUBDIRS 1############################
+	-for dir in $(DIRS) $(LINUXDIR); do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
+	-for dir in $(DIRS) $(LINUXDIR); do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir distclean ; done
+	################CLEAN ALL SUBDIRS 2############################
 	-$(MAKE) clean -C config
 	-$(MAKE) clean -C Uboot
 	-$(MAKE) clean -C tools
 	-$(MAKE) clean -C libnvram
 	-$(MAKE) clean -C libext
-	-for dir in $(DIRS) $(LINUXDIR); do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
+	-$(MAKE) clean -C lib
+	-$(MAKE) distclean -C lib
 	-$(MAKE) distclean -C linux
 	-$(MAKE) mrproper -C linux
 	-$(MAKE) mrproper -C Uboot

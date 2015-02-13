@@ -262,7 +262,7 @@ am__relativize = \
 ACLOCAL = ${SHELL} /opt/Wive-MT/user/transmission/missing aclocal-1.14
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
-AR = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ar
+AR = ar
 AUTOCONF = ${SHELL} /opt/Wive-MT/user/transmission/missing autoconf
 AUTOHEADER = ${SHELL} /opt/Wive-MT/user/transmission/missing autoheader
 AUTOMAKE = ${SHELL} /opt/Wive-MT/user/transmission/missing automake-1.14
@@ -281,7 +281,7 @@ CXXDEPMODE = depmode=none
 CXXFLAGS =  -Os -pipe -mips32r2 -march=mips32r2 -mtune=mips32r2 -D__MIPSEL__ -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack -fno-strict-overflow -fno-aggressive-loop-optimizations -fno-var-tracking-assignments -fno-tree-slsr -fno-delete-null-pointer-checks -pipe  -Dlinux -D__linux__ -Dunix -DEMBED -I/opt/Wive-MT -I/opt/Wive-MT/lib/shared/include -I/opt/Wive-MT/lib/shared/include/libiconv -I/opt/Wive-MT/lib/shared/include/event2 -I/opt/Wive-MT/lib/shared/include/curl -I/opt/Wive-MT/lib/shared/include/pcap -I/opt/Wive-MT/lib/shared/include/openssl -I/opt/Wive-MT/lib/shared/include/libusb-1.0 -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620 
 CYGPATH_W = echo
 DATADIRNAME = 
-DEFS = -DPACKAGE_NAME=\"transmission\" -DPACKAGE_TARNAME=\"transmission\" -DPACKAGE_VERSION=\"2.84\" -DPACKAGE_STRING=\"transmission\ 2.84\" -DPACKAGE_BUGREPORT=\"http://trac.transmissionbt.com/newticket\" -DPACKAGE_URL=\"\" -DPACKAGE=\"transmission\" -DVERSION=\"2.84\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DSTDC_HEADERS=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_STDBOOL_H=1 -DHAVE_PREAD=1 -DHAVE_PWRITE=1 -DHAVE_STRLCPY=1 -DHAVE_DAEMON=1 -DHAVE_DIRNAME=1 -DHAVE_BASENAME=1 -DHAVE_STRCASECMP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_POSIX_FALLOCATE=1 -DHAVE_MEMMEM=1 -DHAVE_STRSEP=1 -DHAVE_STRTOLD=1 -DHAVE_SYSLOG=1 -DHAVE_VALLOC=1 -DHAVE_GETPAGESIZE=1 -DHAVE_POSIX_MEMALIGN=1 -DHAVE_STATVFS=1 -DHAVE_MKDTEMP=1 -DHAVE_PTHREAD=1 -DHAVE__TMP_DUMMY1_ZLIB_H=1 -DHAVE_ZLIB=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LSEEK64=1 -DHAVE_GETMNTENT=1 -DHAVE_DECL_POSIX_FADVISE=1 -DHAVE_POSIX_FADVISE=1 -DWITH_INOTIFY=1 -DHAVE_SYS_STATVFS_H=1
+DEFS = -DPACKAGE_NAME=\"transmission\" -DPACKAGE_TARNAME=\"transmission\" -DPACKAGE_VERSION=\"2.84\" -DPACKAGE_STRING=\"transmission\ 2.84\" -DPACKAGE_BUGREPORT=\"http://trac.transmissionbt.com/newticket\" -DPACKAGE_URL=\"\" -DPACKAGE=\"transmission\" -DVERSION=\"2.84\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DSTDC_HEADERS=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_STDBOOL_H=1 -DHAVE_PREAD=1 -DHAVE_PWRITE=1 -DHAVE_STRLCPY=1 -DHAVE_DAEMON=1 -DHAVE_DIRNAME=1 -DHAVE_BASENAME=1 -DHAVE_STRCASECMP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_MEMMEM=1 -DHAVE_STRSEP=1 -DHAVE_STRTOLD=1 -DHAVE_SYSLOG=1 -DHAVE_VALLOC=1 -DHAVE_GETPAGESIZE=1 -DHAVE_POSIX_MEMALIGN=1 -DHAVE_STATVFS=1 -DHAVE_MKDTEMP=1 -DHAVE_PTHREAD=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LSEEK64=1 -DHAVE_GETMNTENT=1 -DHAVE_DECL_POSIX_FADVISE=1 -DHAVE_POSIX_FADVISE=1 -DWITH_INOTIFY=1 -DHAVE_SYS_STATVFS_H=1
 DEPDIR = .deps
 DHT_CFLAGS = -I$(top_srcdir)/third-party/dht
 DHT_LIBS = $(top_builddir)/third-party/dht/libdht.a
@@ -310,7 +310,7 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 INSTOBJEXT = 
 INTLLIBS = 
-LD = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ld
+LD = /opt/Wive-MT/toolchain/mipsel-linux-uclibc/bin/ld
 LDFLAGS = -Wl,--fatal-warnings -L/opt/Wive-MT/lib/shared/lib
 LIBAPPINDICATOR_CFLAGS = 
 LIBAPPINDICATOR_LIBS = 
@@ -366,11 +366,11 @@ PO_IN_DATADIR_TRUE =
 PTHREAD_CC = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc
 PTHREAD_CFLAGS = -pthread
 PTHREAD_LIBS = 
-RANLIB = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ranlib
+RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
-STRIP = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip
+STRIP = strip
 SYSTEMD_DAEMON_CFLAGS = 
 SYSTEMD_DAEMON_LIBS = 
 USERAGENT_PREFIX = 2.84
@@ -378,14 +378,14 @@ USE_NLS =
 VERSION = 2.84
 WINDRES = 
 XGETTEXT = 
-ZLIB_CFLAGS =  -I/opt/Wive-MT/lib/shared/include
+ZLIB_CFLAGS = 
 ZLIB_LDFLAGS = 
-ZLIB_LIBS = -lz -lm 
+ZLIB_LIBS = -lm 
 abs_builddir = /opt/Wive-MT/user/transmission/gtk
 abs_srcdir = /opt/Wive-MT/user/transmission/gtk
 abs_top_builddir = /opt/Wive-MT/user/transmission
 abs_top_srcdir = /opt/Wive-MT/user/transmission
-ac_ct_AR = 
+ac_ct_AR = ar
 ac_ct_CC = 
 ac_ct_CXX = 
 ac_ct_DUMPBIN = link -dump
@@ -459,7 +459,7 @@ AM_CFLAGS = \
      \
     -I/opt/Wive-MT/lib/shared/include \
     -I/opt/Wive-MT/lib/shared/include \
-     -I/opt/Wive-MT/lib/shared/include \
+     \
     -pthread
 
 AM_LDFLAGS = \
@@ -525,7 +525,7 @@ transmission_gtk_LDADD =  \
 	$(top_builddir)/libtransmission/libtransmission.a \
 	$(top_builddir)/third-party/miniupnp/libminiupnp.a -lnatpmp $(top_builddir)/third-party/dht/libdht.a  \
 	  -L/opt/Wive-MT/lib/shared/lib -levent \
-	-L/opt/Wive-MT/lib/shared/lib -lcurl -L/opt/Wive-MT/lib/shared/lib -lcrypto -lssl -lz -lm   \
+	-L/opt/Wive-MT/lib/shared/lib -lcurl -L/opt/Wive-MT/lib/shared/lib -lcrypto -lssl -lm   \
 	$(am__append_3)
 DESKTOP_IN_FILES = transmission-gtk.desktop.in
 DESKTOP_FILES = $(DESKTOP_IN_FILES:.desktop.in=.desktop)

@@ -141,7 +141,7 @@ DLLTOOL="false"
 sharedlib_from_linklib_cmd="printf %s\\n"
 
 # The archiver.
-AR="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ar"
+AR="ar"
 
 # Flags to create an archive.
 AR_FLAGS="cru"
@@ -150,10 +150,10 @@ AR_FLAGS="cru"
 archiver_list_spec="@"
 
 # A symbol stripping program.
-STRIP="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip"
+STRIP="strip"
 
 # Commands used to install an old-style archive.
-RANLIB="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ranlib"
+RANLIB="ranlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$tool_oldlib"
 old_postuninstall_cmds=""
 
@@ -287,12 +287,12 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Commands to strip libraries.
-old_striplib="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip --strip-debug"
-striplib="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip --strip-unneeded"
+old_striplib="strip --strip-debug"
+striplib="strip --strip-unneeded"
 
 
 # The linker used to build libraries.
-LD="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ld"
+LD="/opt/Wive-MT/toolchain/mipsel-linux-uclibc/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10113,7 +10113,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
 # The linker used to build libraries.
-LD="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ld"
+LD="/opt/Wive-MT/toolchain/mipsel-linux-uclibc/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
