@@ -1,0 +1,103 @@
+libc/string/wcscasecmp.os: libc/string/wcscasecmp.c \
+ include/libc-symbols.h include/bits/uClibc_arch_features.h \
+ libc/string/strcasecmp.c libc/string/_string.h include/features.h \
+ include/bits/uClibc_config.h include/sys/cdefs.h include/libc-internal.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h \
+ include/string.h include/limits.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed/limits.h \
+ include/bits/posix1_lim.h include/bits/local_lim.h \
+ ../linux/include/linux/limits.h include/bits/uClibc_local_lim.h \
+ include/bits/posix2_lim.h include/bits/xopen_lim.h \
+ include/bits/stdio_lim.h include/stdint.h include/bits/wchar.h \
+ include/bits/wordsize.h include/wchar.h include/stdio.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdarg.h \
+ include/wctype.h include/bits/types.h include/bits/kernel_types.h \
+ include/bits/typesizes.h include/bits/pthreadtypes.h include/endian.h \
+ include/bits/endian.h include/byteswap.h include/bits/byteswap.h \
+ include/bits/byteswap-common.h include/sgidefs.h \
+ include/bits/uClibc_uwchar.h include/ctype.h \
+ include/bits/uClibc_touplow.h include/locale.h \
+ include/bits/uClibc_locale.h
+
+include/libc-symbols.h:
+
+include/bits/uClibc_arch_features.h:
+
+libc/string/strcasecmp.c:
+
+libc/string/_string.h:
+
+include/features.h:
+
+include/bits/uClibc_config.h:
+
+include/sys/cdefs.h:
+
+include/libc-internal.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h:
+
+include/string.h:
+
+include/limits.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed/limits.h:
+
+include/bits/posix1_lim.h:
+
+include/bits/local_lim.h:
+
+../linux/include/linux/limits.h:
+
+include/bits/uClibc_local_lim.h:
+
+include/bits/posix2_lim.h:
+
+include/bits/xopen_lim.h:
+
+include/bits/stdio_lim.h:
+
+include/stdint.h:
+
+include/bits/wchar.h:
+
+include/bits/wordsize.h:
+
+include/wchar.h:
+
+include/stdio.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdarg.h:
+
+include/wctype.h:
+
+include/bits/types.h:
+
+include/bits/kernel_types.h:
+
+include/bits/typesizes.h:
+
+include/bits/pthreadtypes.h:
+
+include/endian.h:
+
+include/bits/endian.h:
+
+include/byteswap.h:
+
+include/bits/byteswap.h:
+
+include/bits/byteswap-common.h:
+
+include/sgidefs.h:
+
+include/bits/uClibc_uwchar.h:
+
+include/ctype.h:
+
+include/bits/uClibc_touplow.h:
+
+include/locale.h:
+
+include/bits/uClibc_locale.h:
+cmd_libc_string_wcscasecmp.os := /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc -c libc/string/wcscasecmp.c -o libc/string/wcscasecmp.os -include include/libc-symbols.h -Wall -Wstrict-prototypes -Wstrict-aliasing -Wno-unused-but-set-variable -funsigned-char -fno-builtin -fno-asm -std=gnu99 -march=mips32r2 -mtune=mips32r2 -mabi=32 -fno-stack-protector -nostdinc -Iinclude -Iinclude -I. -Ilibc/sysdeps/linux -Ilibc/sysdeps/linux/mips -Os -funit-at-a-time -fmerge-all-constants -fstrict-aliasing -fno-tree-loop-optimize -fno-tree-dominator-opts -fno-strength-reduce -fno-tree-slsr -mno-split-addresses -O2 -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking -Ilibpthread/nptl -Ilibpthread/nptl -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips/ -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/pthread -Ilibpthread/nptl/sysdeps/pthread/bits -Ilibpthread/nptl/sysdeps/generic -Ildso/ldso/mips -Ildso/include -Ilibc/sysdeps/linux/common -I.linux/include/ -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include -DNDEBUG -D__USE_STDIO_FUTEXES__ -fPIC -MT libc/string/wcscasecmp.os -MD -MP -MF libc/string/.wcscasecmp.os.dep

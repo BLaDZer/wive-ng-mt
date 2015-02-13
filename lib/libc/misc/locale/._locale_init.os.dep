@@ -1,0 +1,283 @@
+libc/misc/locale/_locale_init.os: libc/misc/locale/_locale_init.c \
+ include/libc-symbols.h include/bits/uClibc_arch_features.h \
+ libc/misc/locale/locale.c include/string.h include/features.h \
+ include/bits/uClibc_config.h include/sys/cdefs.h include/libc-internal.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h \
+ include/stdlib.h include/bits/waitflags.h include/bits/waitstatus.h \
+ include/endian.h include/bits/endian.h include/byteswap.h \
+ include/bits/byteswap.h include/bits/byteswap-common.h \
+ include/sys/types.h include/bits/types.h include/bits/wordsize.h \
+ include/bits/kernel_types.h include/bits/typesizes.h \
+ include/bits/pthreadtypes.h include/sgidefs.h include/time.h \
+ include/sys/select.h include/bits/select.h include/bits/sigset.h \
+ include/bits/time.h include/sys/sysmacros.h include/alloca.h \
+ include/bits/stackinfo.h include/limits.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed/limits.h \
+ include/bits/posix1_lim.h include/bits/local_lim.h \
+ ../linux/include/linux/limits.h include/bits/uClibc_local_lim.h \
+ include/bits/posix2_lim.h include/bits/xopen_lim.h \
+ include/bits/stdio_lim.h include/stdint.h include/bits/wchar.h \
+ include/assert.h include/errno.h include/bits/errno.h \
+ ../linux/include/linux/errno.h ../linux/include/asm/errno.h \
+ ../linux/include/asm-generic/errno-base.h include/ctype.h \
+ include/bits/uClibc_touplow.h include/stdio.h \
+ include/bits/uClibc_stdio.h include/wchar.h include/bits/uClibc_mutex.h \
+ include/pthread.h include/sched.h include/bits/sched.h \
+ include/bits/uClibc_clk_tck.h include/signal.h include/bits/setjmp.h \
+ include/bits/uClibc_pthread.h include/bits/stdio-lock.h \
+ include/bits/libc-lock.h include/bits/initspin.h \
+ libpthread/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h \
+ include/sys/param.h ../linux/include/linux/param.h \
+ ../linux/include/asm/param.h ../linux/include/asm-generic/param.h \
+ include/atomic.h include/bits/atomic.h include/inttypes.h \
+ libc/sysdeps/linux/mips/sysdep.h libc/sysdeps/linux/common/sysdep.h \
+ include/sys/syscall.h include/bits/sysnum.h include/bits/syscalls.h \
+ include/bits/syscalls-common.h include/bits/kernel-features.h \
+ ../linux/include/linux/version.h include/tls.h \
+ libpthread/nptl/sysdeps/mips/tls.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdbool.h \
+ libpthread/nptl/sysdeps/mips/../../descr.h include/setjmp.h \
+ include/hp-timing.h libpthread/nptl/sysdeps/pthread/list.h \
+ libpthread/nptl/sysdeps/mips/pthreaddef.h \
+ libpthread/nptl/sysdeps/mips/../../../nptl_db/thread_db.h \
+ include/sys/procfs.h include/sys/time.h include/sys/user.h \
+ include/bits/uClibc_page.h include/resolv.h include/netinet/in.h \
+ include/sys/socket.h include/sys/uio.h include/bits/uio.h \
+ include/bits/socket.h include/bits/sockaddr.h \
+ ../linux/include/asm/socket.h ../linux/include/asm/sockios.h \
+ ../linux/include/asm/ioctl.h ../linux/include/asm-generic/ioctl.h \
+ include/bits/in.h libpthread/nptl/sysdeps/pthread/uClibc-glue.h \
+ libpthread/nptl/sysdeps/pthread/pthread-functions.h \
+ libpthread/nptl/sysdeps/unix/sysv/linux/internaltypes.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdarg.h \
+ include/locale.h include/bits/uClibc_locale.h include/langinfo.h \
+ include/nl_types.h
+
+include/libc-symbols.h:
+
+include/bits/uClibc_arch_features.h:
+
+libc/misc/locale/locale.c:
+
+include/string.h:
+
+include/features.h:
+
+include/bits/uClibc_config.h:
+
+include/sys/cdefs.h:
+
+include/libc-internal.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h:
+
+include/stdlib.h:
+
+include/bits/waitflags.h:
+
+include/bits/waitstatus.h:
+
+include/endian.h:
+
+include/bits/endian.h:
+
+include/byteswap.h:
+
+include/bits/byteswap.h:
+
+include/bits/byteswap-common.h:
+
+include/sys/types.h:
+
+include/bits/types.h:
+
+include/bits/wordsize.h:
+
+include/bits/kernel_types.h:
+
+include/bits/typesizes.h:
+
+include/bits/pthreadtypes.h:
+
+include/sgidefs.h:
+
+include/time.h:
+
+include/sys/select.h:
+
+include/bits/select.h:
+
+include/bits/sigset.h:
+
+include/bits/time.h:
+
+include/sys/sysmacros.h:
+
+include/alloca.h:
+
+include/bits/stackinfo.h:
+
+include/limits.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed/limits.h:
+
+include/bits/posix1_lim.h:
+
+include/bits/local_lim.h:
+
+../linux/include/linux/limits.h:
+
+include/bits/uClibc_local_lim.h:
+
+include/bits/posix2_lim.h:
+
+include/bits/xopen_lim.h:
+
+include/bits/stdio_lim.h:
+
+include/stdint.h:
+
+include/bits/wchar.h:
+
+include/assert.h:
+
+include/errno.h:
+
+include/bits/errno.h:
+
+../linux/include/linux/errno.h:
+
+../linux/include/asm/errno.h:
+
+../linux/include/asm-generic/errno-base.h:
+
+include/ctype.h:
+
+include/bits/uClibc_touplow.h:
+
+include/stdio.h:
+
+include/bits/uClibc_stdio.h:
+
+include/wchar.h:
+
+include/bits/uClibc_mutex.h:
+
+include/pthread.h:
+
+include/sched.h:
+
+include/bits/sched.h:
+
+include/bits/uClibc_clk_tck.h:
+
+include/signal.h:
+
+include/bits/setjmp.h:
+
+include/bits/uClibc_pthread.h:
+
+include/bits/stdio-lock.h:
+
+include/bits/libc-lock.h:
+
+include/bits/initspin.h:
+
+libpthread/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h:
+
+include/sys/param.h:
+
+../linux/include/linux/param.h:
+
+../linux/include/asm/param.h:
+
+../linux/include/asm-generic/param.h:
+
+include/atomic.h:
+
+include/bits/atomic.h:
+
+include/inttypes.h:
+
+libc/sysdeps/linux/mips/sysdep.h:
+
+libc/sysdeps/linux/common/sysdep.h:
+
+include/sys/syscall.h:
+
+include/bits/sysnum.h:
+
+include/bits/syscalls.h:
+
+include/bits/syscalls-common.h:
+
+include/bits/kernel-features.h:
+
+../linux/include/linux/version.h:
+
+include/tls.h:
+
+libpthread/nptl/sysdeps/mips/tls.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdbool.h:
+
+libpthread/nptl/sysdeps/mips/../../descr.h:
+
+include/setjmp.h:
+
+include/hp-timing.h:
+
+libpthread/nptl/sysdeps/pthread/list.h:
+
+libpthread/nptl/sysdeps/mips/pthreaddef.h:
+
+libpthread/nptl/sysdeps/mips/../../../nptl_db/thread_db.h:
+
+include/sys/procfs.h:
+
+include/sys/time.h:
+
+include/sys/user.h:
+
+include/bits/uClibc_page.h:
+
+include/resolv.h:
+
+include/netinet/in.h:
+
+include/sys/socket.h:
+
+include/sys/uio.h:
+
+include/bits/uio.h:
+
+include/bits/socket.h:
+
+include/bits/sockaddr.h:
+
+../linux/include/asm/socket.h:
+
+../linux/include/asm/sockios.h:
+
+../linux/include/asm/ioctl.h:
+
+../linux/include/asm-generic/ioctl.h:
+
+include/bits/in.h:
+
+libpthread/nptl/sysdeps/pthread/uClibc-glue.h:
+
+libpthread/nptl/sysdeps/pthread/pthread-functions.h:
+
+libpthread/nptl/sysdeps/unix/sysv/linux/internaltypes.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stdarg.h:
+
+include/locale.h:
+
+include/bits/uClibc_locale.h:
+
+include/langinfo.h:
+
+include/nl_types.h:
+cmd_libc_misc_locale__locale_init.os := /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc -c libc/misc/locale/_locale_init.c -o libc/misc/locale/_locale_init.os -include include/libc-symbols.h -Wall -Wstrict-prototypes -Wstrict-aliasing -Wno-unused-but-set-variable -funsigned-char -fno-builtin -fno-asm -std=gnu99 -march=mips32r2 -mtune=mips32r2 -mabi=32 -fno-stack-protector -nostdinc -Iinclude -Iinclude -I. -Ilibc/sysdeps/linux -Ilibc/sysdeps/linux/mips -Os -funit-at-a-time -fmerge-all-constants -fstrict-aliasing -fno-tree-loop-optimize -fno-tree-dominator-opts -fno-strength-reduce -fno-tree-slsr -mno-split-addresses -O2 -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking -Ilibpthread/nptl -Ilibpthread/nptl -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips/ -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/pthread -Ilibpthread/nptl/sysdeps/pthread/bits -Ilibpthread/nptl/sysdeps/generic -Ildso/ldso/mips -Ildso/include -Ilibc/sysdeps/linux/common -I.linux/include/ -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include -DNDEBUG -D__USE_STDIO_FUTEXES__ -fPIC -MT libc/misc/locale/_locale_init.os -MD -MP -MF libc/misc/locale/._locale_init.os.dep

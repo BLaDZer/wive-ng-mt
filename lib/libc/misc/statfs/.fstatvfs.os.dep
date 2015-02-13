@@ -1,0 +1,106 @@
+libc/misc/statfs/fstatvfs.os: libc/misc/statfs/fstatvfs.c \
+ include/libc-symbols.h include/bits/uClibc_arch_features.h \
+ include/features.h include/bits/uClibc_config.h include/sys/cdefs.h \
+ include/libc-internal.h \
+ /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h \
+ include/errno.h include/bits/errno.h ../linux/include/linux/errno.h \
+ ../linux/include/asm/errno.h ../linux/include/asm-generic/errno-base.h \
+ include/mntent.h include/stdio.h include/paths.h include/string.h \
+ include/sys/mount.h include/sys/ioctl.h include/bits/ioctls.h \
+ ../linux/include/asm/ioctls.h ../linux/include/asm/ioctl.h \
+ ../linux/include/asm-generic/ioctl.h include/bits/ioctl-types.h \
+ include/sys/ttydefaults.h include/sys/stat.h include/bits/types.h \
+ include/bits/wordsize.h include/bits/kernel_types.h \
+ include/bits/typesizes.h include/bits/pthreadtypes.h include/endian.h \
+ include/bits/endian.h include/byteswap.h include/bits/byteswap.h \
+ include/bits/byteswap-common.h include/sgidefs.h include/time.h \
+ include/bits/stat.h include/sys/statfs.h include/bits/statfs.h \
+ include/sys/statvfs.h include/bits/statvfs.h \
+ libc/misc/statfs/internal_statvfs.c
+
+include/libc-symbols.h:
+
+include/bits/uClibc_arch_features.h:
+
+include/features.h:
+
+include/bits/uClibc_config.h:
+
+include/sys/cdefs.h:
+
+include/libc-internal.h:
+
+/opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include/stddef.h:
+
+include/errno.h:
+
+include/bits/errno.h:
+
+../linux/include/linux/errno.h:
+
+../linux/include/asm/errno.h:
+
+../linux/include/asm-generic/errno-base.h:
+
+include/mntent.h:
+
+include/stdio.h:
+
+include/paths.h:
+
+include/string.h:
+
+include/sys/mount.h:
+
+include/sys/ioctl.h:
+
+include/bits/ioctls.h:
+
+../linux/include/asm/ioctls.h:
+
+../linux/include/asm/ioctl.h:
+
+../linux/include/asm-generic/ioctl.h:
+
+include/bits/ioctl-types.h:
+
+include/sys/ttydefaults.h:
+
+include/sys/stat.h:
+
+include/bits/types.h:
+
+include/bits/wordsize.h:
+
+include/bits/kernel_types.h:
+
+include/bits/typesizes.h:
+
+include/bits/pthreadtypes.h:
+
+include/endian.h:
+
+include/bits/endian.h:
+
+include/byteswap.h:
+
+include/bits/byteswap.h:
+
+include/bits/byteswap-common.h:
+
+include/sgidefs.h:
+
+include/time.h:
+
+include/bits/stat.h:
+
+include/sys/statfs.h:
+
+include/bits/statfs.h:
+
+include/sys/statvfs.h:
+
+include/bits/statvfs.h:
+
+libc/misc/statfs/internal_statvfs.c:
+cmd_libc_misc_statfs_fstatvfs.os := /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc -c libc/misc/statfs/fstatvfs.c -o libc/misc/statfs/fstatvfs.os -include include/libc-symbols.h -Wall -Wstrict-prototypes -Wstrict-aliasing -Wno-unused-but-set-variable -funsigned-char -fno-builtin -fno-asm -std=gnu99 -march=mips32r2 -mtune=mips32r2 -mabi=32 -fno-stack-protector -nostdinc -Iinclude -Iinclude -I. -Ilibc/sysdeps/linux -Ilibc/sysdeps/linux/mips -Os -funit-at-a-time -fmerge-all-constants -fstrict-aliasing -fno-tree-loop-optimize -fno-tree-dominator-opts -fno-strength-reduce -fno-tree-slsr -mno-split-addresses -O2 -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking -Ilibpthread/nptl -Ilibpthread/nptl -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips/ -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/pthread -Ilibpthread/nptl/sysdeps/pthread/bits -Ilibpthread/nptl/sysdeps/generic -Ildso/ldso/mips -Ildso/include -Ilibc/sysdeps/linux/common -I.linux/include/ -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include -DNDEBUG -D__USE_STDIO_FUTEXES__ -fPIC -MT libc/misc/statfs/fstatvfs.os -MD -MP -MF libc/misc/statfs/.fstatvfs.os.dep

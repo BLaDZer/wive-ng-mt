@@ -1,0 +1,42 @@
+libm/significandf.os: libm/float_wrappers.c include/libc-symbols.h \
+ include/bits/uClibc_arch_features.h include/features.h \
+ include/bits/uClibc_config.h include/sys/cdefs.h include/libc-internal.h \
+ include/math.h include/bits/huge_val.h include/bits/huge_valf.h \
+ include/bits/huge_vall.h include/bits/inf.h include/bits/nan.h \
+ include/bits/mathdef.h include/sgidefs.h include/bits/mathcalls.h \
+ include/complex.h include/bits/cmathcalls.h
+
+include/libc-symbols.h:
+
+include/bits/uClibc_arch_features.h:
+
+include/features.h:
+
+include/bits/uClibc_config.h:
+
+include/sys/cdefs.h:
+
+include/libc-internal.h:
+
+include/math.h:
+
+include/bits/huge_val.h:
+
+include/bits/huge_valf.h:
+
+include/bits/huge_vall.h:
+
+include/bits/inf.h:
+
+include/bits/nan.h:
+
+include/bits/mathdef.h:
+
+include/sgidefs.h:
+
+include/bits/mathcalls.h:
+
+include/complex.h:
+
+include/bits/cmathcalls.h:
+cmd_libm_significandf.os := /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc -c libm/float_wrappers.c -o libm/significandf.os -include include/libc-symbols.h -Wall -Wstrict-prototypes -Wstrict-aliasing -Wno-unused-but-set-variable -funsigned-char -fno-builtin -fno-asm -std=gnu99 -march=mips32r2 -mtune=mips32r2 -mabi=32 -fno-stack-protector -nostdinc -Iinclude -Iinclude -I. -Ilibc/sysdeps/linux -Ilibc/sysdeps/linux/mips -Os -funit-at-a-time -fmerge-all-constants -fstrict-aliasing -fno-tree-loop-optimize -fno-tree-dominator-opts -fno-strength-reduce -fno-tree-slsr -mno-split-addresses -O2 -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking -Ilibpthread/nptl -Ilibpthread/nptl -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips/ -Ilibpthread/nptl/sysdeps/unix/sysv/linux/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/mips -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/unix/sysv/linux -Ilibpthread/nptl/sysdeps/pthread -Ilibpthread/nptl/sysdeps/pthread/bits -Ilibpthread/nptl/sysdeps/generic -Ildso/ldso/mips -Ildso/include -Ilibc/sysdeps/linux/common -I.linux/include/ -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include-fixed -isystem /opt/Wive-MT/toolchain/lib/gcc/mipsel-linux-uclibc/4.8.5/include -DNDEBUG -D__USE_STDIO_FUTEXES__ -fPIC -DNOT_IN_libc -DIS_IN_libm -D_IEEE_LIBM -MT libm/significandf.os -MD -MP -MF libm/.significandf.os.dep -DL_significandf

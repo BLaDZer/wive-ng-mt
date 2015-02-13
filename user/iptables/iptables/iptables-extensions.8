@@ -1,0 +1,1283 @@
+.TH iptables-extensions 8 "" "iptables 1.4.16.3" "iptables 1.4.16.3"
+.SH NAME
+iptables-extensions \(em list of extensions in the standard iptables distribution
+.SH SYNOPSIS
+\fBip6tables\fP [\fB\-m\fP \fIname\fP [\fImodule-options\fP...]]
+[\fB\-j\fP \fItarget-name\fP [\fItarget-options\fP...]
+.PP
+\fBiptables\fP [\fB\-m\fP \fIname\fP [\fImodule-options\fP...]]
+[\fB\-j\fP \fItarget-name\fP [\fItarget-options\fP...]
+.SH MATCH EXTENSIONS
+iptables can use extended packet matching modules
+with the \fB\-m\fP or \fB\-\-match\fP
+options, followed by the matching module name; after these, various
+extra command line options become available, depending on the specific
+module.  You can specify multiple extended match modules in one line,
+and you can use the \fB\-h\fP or \fB\-\-help\fP
+options after the module has been specified to receive help specific
+to that module.
+.PP
+If the \fB\-p\fP or \fB\-\-protocol\fP was specified and if and only if an
+unknown option is encountered, iptables will try load a match module of the
+same name as the protocol, to try making the option available.
+.\" @MATCH@
+.SS connbytes
+Match by how many bytes or packets a connection (or one of the two
+flows constituting the connection) has transferred so far, or by
+average bytes per packet.
+.PP
+The counters are 64-bit and are thus not expected to overflow ;)
+.PP
+The primary use is to detect long-lived downloads and mark them to be
+scheduled using a lower priority band in traffic control.
+.PP
+The transferred bytes per connection can also be viewed through
+`conntrack \-L` and accessed via ctnetlink.
+.PP
+NOTE that for connections which have no accounting information, the match will
+always return false. The "net.netfilter.nf_conntrack_acct" sysctl flag controls
+whether \fBnew\fP connections will be byte/packet counted. Existing connection
+flows will not be gaining/losing a/the accounting structure when be sysctl flag
+is flipped.
+.TP
+[\fB!\fP] \fB\-\-connbytes\fP \fIfrom\fP[\fB:\fP\fIto\fP]
+match packets from a connection whose packets/bytes/average packet
+size is more than FROM and less than TO bytes/packets. if TO is
+omitted only FROM check is done. "!" is used to match packets not
+falling in the range.
+.TP
+\fB\-\-connbytes\-dir\fP {\fBoriginal\fP|\fBreply\fP|\fBboth\fP}
+which packets to consider
+.TP
+\fB\-\-connbytes\-mode\fP {\fBpackets\fP|\fBbytes\fP|\fBavgpkt\fP}
+whether to check the amount of packets, number of bytes transferred or
+the average size (in bytes) of all packets received so far. Note that
+when "both" is used together with "avgpkt", and data is going (mainly)
+only in one direction (for example HTTP), the average packet size will
+be about half of the actual data packets.
+.TP
+Example:
+iptables .. \-m connbytes \-\-connbytes 10000:100000 \-\-connbytes\-dir both \-\-connbytes\-mode bytes ...
+.SS connlimit
+Allows you to restrict the number of parallel connections to a server per
+client IP address (or client address block).
+.TP
+\fB\-\-connlimit\-upto\fP \fIn\fP
+Match if the number of existing connections is below or equal \fIn\fP.
+.TP
+\fB\-\-connlimit\-above\fP \fIn\fP
+Match if the number of existing connections is above \fIn\fP.
+.TP
+\fB\-\-connlimit\-mask\fP \fIprefix_length\fP
+Group hosts using the prefix length. For IPv4, this must be a number between
+(including) 0 and 32. For IPv6, between 0 and 128. If not specified, the
+maximum prefix length for the applicable protocol is used.
+.TP
+\fB\-\-connlimit\-saddr\fP
+Apply the limit onto the source group. This is the default if
+\-\-connlimit\-daddr is not specified.
+.TP
+\fB\-\-connlimit\-daddr\fP
+Apply the limit onto the destination group.
+.PP
+Examples:
+.TP
+# allow 2 telnet connections per client host
+iptables \-A INPUT \-p tcp \-\-syn \-\-dport 23 \-m connlimit \-\-connlimit\-above 2 \-j REJECT
+.TP
+# you can also match the other way around:
+iptables \-A INPUT \-p tcp \-\-syn \-\-dport 23 \-m connlimit \-\-connlimit\-upto 2 \-j ACCEPT
+.TP
+# limit the number of parallel HTTP requests to 16 per class C sized \
+source network (24 bit netmask)
+iptables \-p tcp \-\-syn \-\-dport 80 \-m connlimit \-\-connlimit\-above 16
+\-\-connlimit\-mask 24 \-j REJECT
+.TP
+# limit the number of parallel HTTP requests to 16 for the link local network
+(ipv6)
+ip6tables \-p tcp \-\-syn \-\-dport 80 \-s fe80::/64 \-m connlimit \-\-connlimit\-above
+16 \-\-connlimit\-mask 64 \-j REJECT
+.TP
+# Limit the number of connections to a particular host:
+ip6tables \-p tcp \-\-syn \-\-dport 49152:65535 \-d 2001:db8::1 \-m connlimit
+\-\-connlimit-above 100 \-j REJECT
+.SS connmark
+This module matches the netfilter mark field associated with a connection
+(which can be set using the \fBCONNMARK\fP target below).
+.TP
+[\fB!\fP] \fB\-\-mark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Matches packets in connections with the given mark value (if a mask is
+specified, this is logically ANDed with the mark before the comparison).
+.SS conntrack
+This module, when combined with connection tracking, allows access to the
+connection tracking state for this packet/connection.
+.TP
+[\fB!\fP] \fB\-\-ctstate\fP \fIstatelist\fP
+\fIstatelist\fP is a comma separated list of the connection states to match.
+Possible states are listed below.
+.TP
+[\fB!\fP] \fB\-\-ctproto\fP \fIl4proto\fP
+Layer-4 protocol to match (by number or name)
+.TP
+[\fB!\fP] \fB\-\-ctorigsrc\fP \fIaddress\fP[\fB/\fP\fImask\fP]
+.TP
+[\fB!\fP] \fB\-\-ctorigdst\fP \fIaddress\fP[\fB/\fP\fImask\fP]
+.TP
+[\fB!\fP] \fB\-\-ctreplsrc\fP \fIaddress\fP[\fB/\fP\fImask\fP]
+.TP
+[\fB!\fP] \fB\-\-ctrepldst\fP \fIaddress\fP[\fB/\fP\fImask\fP]
+Match against original/reply source/destination address
+.TP
+[\fB!\fP] \fB\-\-ctorigsrcport\fP \fIport\fP[\fB:\fP\fIport\fP]
+.TP
+[\fB!\fP] \fB\-\-ctorigdstport\fP \fIport\fP[\fB:\fP\fIport\fP]
+.TP
+[\fB!\fP] \fB\-\-ctreplsrcport\fP \fIport\fP[\fB:\fP\fIport\fP]
+.TP
+[\fB!\fP] \fB\-\-ctrepldstport\fP \fIport\fP[\fB:\fP\fIport\fP]
+Match against original/reply source/destination port (TCP/UDP/etc.) or GRE key.
+Matching against port ranges is only supported in kernel versions above 2.6.38.
+.TP
+[\fB!\fP] \fB\-\-ctstatus\fP \fIstatelist\fP
+\fIstatuslist\fP is a comma separated list of the connection statuses to match.
+Possible statuses are listed below.
+.TP
+[\fB!\fP] \fB\-\-ctexpire\fP \fItime\fP[\fB:\fP\fItime\fP]
+Match remaining lifetime in seconds against given value or range of values
+(inclusive)
+.TP
+\fB\-\-ctdir\fP {\fBORIGINAL\fP|\fBREPLY\fP}
+Match packets that are flowing in the specified direction. If this flag is not
+specified at all, matches packets in both directions.
+.PP
+States for \fB\-\-ctstate\fP:
+.TP
+\fBINVALID\fP
+The packet is associated with no known connection.
+.TP
+\fBNEW\fP
+The packet has started a new connection, or otherwise associated
+with a connection which has not seen packets in both directions.
+.TP
+\fBESTABLISHED\fP
+The packet is associated with a connection which has seen packets
+in both directions.
+.TP
+\fBRELATED\fP
+The packet is starting a new connection, but is associated with an
+existing connection, such as an FTP data transfer, or an ICMP error.
+.TP
+\fBUNTRACKED\fP
+The packet is not tracked at all, which happens if you explicitly untrack it
+by using \-j CT \-\-notrack in the raw table.
+.TP
+\fBSNAT\fP
+A virtual state, matching if the original source address differs from the reply
+destination.
+.TP
+\fBDNAT\fP
+A virtual state, matching if the original destination differs from the reply
+source.
+.PP
+Statuses for \fB\-\-ctstatus\fP:
+.TP
+\fBNONE\fP
+None of the below.
+.TP
+\fBEXPECTED\fP
+This is an expected connection (i.e. a conntrack helper set it up).
+.TP
+\fBSEEN_REPLY\fP
+Conntrack has seen packets in both directions.
+.TP
+\fBASSURED\fP
+Conntrack entry should never be early-expired.
+.TP
+\fBCONFIRMED\fP
+Connection is confirmed: originating packet has left box.
+.SS dscp
+This module matches the 6 bit DSCP field within the TOS field in the
+IP header.  DSCP has superseded TOS within the IETF.
+.TP
+[\fB!\fP] \fB\-\-dscp\fP \fIvalue\fP
+Match against a numeric (decimal or hex) value [0-63].
+.TP
+[\fB!\fP] \fB\-\-dscp\-class\fP \fIclass\fP
+Match the DiffServ class. This value may be any of the
+BE, EF, AFxx or CSx classes.  It will then be converted
+into its according numeric value.
+.SS icmp (IPv4-specific)
+This extension can be used if `\-\-protocol icmp' is specified. It
+provides the following option:
+.TP
+[\fB!\fP] \fB\-\-icmp\-type\fP {\fItype\fP[\fB/\fP\fIcode\fP]|\fItypename\fP}
+This allows specification of the ICMP type, which can be a numeric
+ICMP type, type/code pair, or one of the ICMP type names shown by the command
+.nf
+ iptables \-p icmp \-h
+.fi
+.SS icmp6 (IPv6-specific)
+This extension can be used if `\-\-protocol ipv6\-icmp' or `\-\-protocol icmpv6' is
+specified. It provides the following option:
+.TP
+[\fB!\fP] \fB\-\-icmpv6\-type\fP \fItype\fP[\fB/\fP\fIcode\fP]|\fItypename\fP
+This allows specification of the ICMPv6 type, which can be a numeric
+ICMPv6
+.IR type ,
+.IR type
+and
+.IR code ,
+or one of the ICMPv6 type names shown by the command
+.nf
+ ip6tables \-p ipv6\-icmp \-h
+.fi
+.SS iprange
+This matches on a given arbitrary range of IP addresses.
+.TP
+[\fB!\fP] \fB\-\-src\-range\fP \fIfrom\fP[\fB\-\fP\fIto\fP]
+Match source IP in the specified range.
+.TP
+[\fB!\fP] \fB\-\-dst\-range\fP \fIfrom\fP[\fB\-\fP\fIto\fP]
+Match destination IP in the specified range.
+.SS length
+This module matches the length of the layer-3 payload (e.g. layer-4 packet)
+of a packet against a specific value
+or range of values.
+.TP
+[\fB!\fP] \fB\-\-length\fP \fIlength\fP[\fB:\fP\fIlength\fP]
+.SS limit
+This module matches at a limited rate using a token bucket filter.
+A rule using this extension will match until this limit is reached.
+It can be used in combination with the
+.B LOG
+target to give limited logging, for example.
+.PP
+xt_limit has no negation support - you will have to use \-m hashlimit !
+\-\-hashlimit \fIrate\fP in this case whilst omitting \-\-hashlimit\-mode.
+.TP
+\fB\-\-limit\fP \fIrate\fP[\fB/second\fP|\fB/minute\fP|\fB/hour\fP|\fB/day\fP]
+Maximum average matching rate: specified as a number, with an optional
+`/second', `/minute', `/hour', or `/day' suffix; the default is
+3/hour.
+.TP
+\fB\-\-limit\-burst\fP \fInumber\fP
+Maximum initial number of packets to match: this number gets
+recharged by one every time the limit specified above is not reached,
+up to this number; the default is 5.
+.SS mac
+.TP
+[\fB!\fP] \fB\-\-mac\-source\fP \fIaddress\fP
+Match source MAC address.  It must be of the form XX:XX:XX:XX:XX:XX.
+Note that this only makes sense for packets coming from an Ethernet device
+and entering the
+.BR PREROUTING ,
+.B FORWARD
+or
+.B INPUT
+chains.
+.SS mark
+This module matches the netfilter mark field associated with a packet
+(which can be set using the
+.B MARK
+target below).
+.TP
+[\fB!\fP] \fB\-\-mark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Matches packets with the given unsigned mark value (if a \fImask\fP is
+specified, this is logically ANDed with the \fImask\fP before the
+comparison).
+.SS multiport
+This module matches a set of source or destination ports.  Up to 15
+ports can be specified.  A port range (port:port) counts as two
+ports.  It can only be used in conjunction with
+\fB\-p tcp\fP
+or
+\fB\-p udp\fP.
+.TP
+[\fB!\fP] \fB\-\-source\-ports\fP,\fB\-\-sports\fP \fIport\fP[\fB,\fP\fIport\fP|\fB,\fP\fIport\fP\fB:\fP\fIport\fP]...
+Match if the source port is one of the given ports.  The flag
+\fB\-\-sports\fP
+is a convenient alias for this option. Multiple ports or port ranges are
+separated using a comma, and a port range is specified using a colon.
+\fB53,1024:65535\fP would therefore match ports 53 and all from 1024 through
+65535.
+.TP
+[\fB!\fP] \fB\-\-destination\-ports\fP,\fB\-\-dports\fP \fIport\fP[\fB,\fP\fIport\fP|\fB,\fP\fIport\fP\fB:\fP\fIport\fP]...
+Match if the destination port is one of the given ports.  The flag
+\fB\-\-dports\fP
+is a convenient alias for this option.
+.TP
+[\fB!\fP] \fB\-\-ports\fP \fIport\fP[\fB,\fP\fIport\fP|\fB,\fP\fIport\fP\fB:\fP\fIport\fP]...
+Match if either the source or destination ports are equal to one of
+the given ports.
+.SS recent
+Allows you to dynamically create a list of IP addresses and then match against
+that list in a few different ways.
+.PP
+For example, you can create a "badguy" list out of people attempting to connect
+to port 139 on your firewall and then DROP all future packets from them without
+considering them.
+.PP
+\fB\-\-set\fP, \fB\-\-rcheck\fP, \fB\-\-update\fP and \fB\-\-remove\fP are
+mutually exclusive.
+.TP
+\fB\-\-name\fP \fIname\fP
+Specify the list to use for the commands. If no name is given then
+\fBDEFAULT\fP will be used.
+.TP
+[\fB!\fP] \fB\-\-set\fP
+This will add the source address of the packet to the list. If the source
+address is already in the list, this will update the existing entry. This will
+always return success (or failure if \fB!\fP is passed in).
+.TP
+\fB\-\-rsource\fP
+Match/save the source address of each packet in the recent list table. This
+is the default.
+.TP
+\fB\-\-rdest\fP
+Match/save the destination address of each packet in the recent list table.
+.TP
+\fB\-\-mask\fPnetmask
+Netmask that will be applied to this recent list.
+.TP
+[\fB!\fP] \fB\-\-rcheck\fP
+Check if the source address of the packet is currently in the list.
+.TP
+[\fB!\fP] \fB\-\-update\fP
+Like \fB\-\-rcheck\fP, except it will update the "last seen" timestamp if it
+matches.
+.TP
+[\fB!\fP] \fB\-\-remove\fP
+Check if the source address of the packet is currently in the list and if so
+that address will be removed from the list and the rule will return true. If
+the address is not found, false is returned.
+.TP
+\fB\-\-seconds\fP \fIseconds\fP
+This option must be used in conjunction with one of \fB\-\-rcheck\fP or
+\fB\-\-update\fP. When used, this will narrow the match to only happen when the
+address is in the list and was seen within the last given number of seconds.
+.TP
+\fB\-\-reap\fP
+This option can only be used in conjunction with \fB\-\-seconds\fP.
+When used, this will cause entries older than the last given number of seconds
+to be purged.
+.TP
+\fB\-\-hitcount\fP \fIhits\fP
+This option must be used in conjunction with one of \fB\-\-rcheck\fP or
+\fB\-\-update\fP. When used, this will narrow the match to only happen when the
+address is in the list and packets had been received greater than or equal to
+the given value. This option may be used along with \fB\-\-seconds\fP to create
+an even narrower match requiring a certain number of hits within a specific
+time frame. The maximum value for the hitcount parameter is given by the
+"ip_pkt_list_tot" parameter of the xt_recent kernel module. Exceeding this
+value on the command line will cause the rule to be rejected.
+.TP
+\fB\-\-rttl\fP
+This option may only be used in conjunction with one of \fB\-\-rcheck\fP or
+\fB\-\-update\fP. When used, this will narrow the match to only happen when the
+address is in the list and the TTL of the current packet matches that of the
+packet which hit the \fB\-\-set\fP rule. This may be useful if you have problems
+with people faking their source address in order to DoS you via this module by
+disallowing others access to your site by sending bogus packets to you.
+.PP
+Examples:
+.IP
+iptables \-A FORWARD \-m recent \-\-name badguy \-\-rcheck \-\-seconds 60 \-j DROP
+.IP
+iptables \-A FORWARD \-p tcp \-i eth0 \-\-dport 139 \-m recent \-\-name badguy \-\-set \-j DROP
+.PP
+Steve's ipt_recent website (http://snowman.net/projects/ipt_recent/) also has
+some examples of usage.
+.PP
+\fB/proc/net/xt_recent/*\fP are the current lists of addresses and information
+about each entry of each list.
+.PP
+Each file in \fB/proc/net/xt_recent/\fP can be read from to see the current
+list or written two using the following commands to modify the list:
+.TP
+\fBecho +\fP\fIaddr\fP\fB >/proc/net/xt_recent/DEFAULT\fP
+to add \fIaddr\fP to the DEFAULT list
+.TP
+\fBecho \-\fP\fIaddr\fP\fB >/proc/net/xt_recent/DEFAULT\fP
+to remove \fIaddr\fP from the DEFAULT list
+.TP
+\fBecho / >/proc/net/xt_recent/DEFAULT\fP
+to flush the DEFAULT list (remove all entries).
+.PP
+The module itself accepts parameters, defaults shown:
+.TP
+\fBip_list_tot\fP=\fI100\fP
+Number of addresses remembered per table.
+.TP
+\fBip_pkt_list_tot\fP=\fI20\fP
+Number of packets per address remembered.
+.TP
+\fBip_list_hash_size\fP=\fI0\fP
+Hash table size. 0 means to calculate it based on ip_list_tot, default: 512.
+.TP
+\fBip_list_perms\fP=\fI0644\fP
+Permissions for /proc/net/xt_recent/* files.
+.TP
+\fBip_list_uid\fP=\fI0\fP
+Numerical UID for ownership of /proc/net/xt_recent/* files.
+.TP
+\fBip_list_gid\fP=\fI0\fP
+Numerical GID for ownership of /proc/net/xt_recent/* files.
+.SS rt (IPv6-specific)
+Match on IPv6 routing header
+.TP
+[\fB!\fP] \fB\-\-rt\-type\fP \fItype\fP
+Match the type (numeric).
+.TP
+[\fB!\fP] \fB\-\-rt\-segsleft\fP \fInum\fP[\fB:\fP\fInum\fP]
+Match the `segments left' field (range).
+.TP
+[\fB!\fP] \fB\-\-rt\-len\fP \fIlength\fP
+Match the length of this header.
+.TP
+\fB\-\-rt\-0\-res\fP
+Match the reserved field, too (type=0)
+.TP
+\fB\-\-rt\-0\-addrs\fP \fIaddr\fP[\fB,\fP\fIaddr\fP...]
+Match type=0 addresses (list).
+.TP
+\fB\-\-rt\-0\-not\-strict\fP
+List of type=0 addresses is not a strict list.
+.SS state
+The "state" module is an obsolete version of "conntrack".
+"state" allows access to the connection tracking state for this packet.
+.TP
+[\fB!\fP] \fB\-\-state\fP \fIstate\fP
+Where state is a comma separated list of the connection states to match. Only a
+subset of the states unterstood by "conntrack" are recognized: \fBINVALID\fP,
+\fBESTABLISHED\fP, \fBNEW\fP, \fBRELATED\fP or \fBUNTRACKED\fP. For their
+description, see the "conntrack" heading in this manpage.
+.SS tcp
+These extensions can be used if `\-\-protocol tcp' is specified. It
+provides the following options:
+.TP
+[\fB!\fP] \fB\-\-source\-port\fP,\fB\-\-sport\fP \fIport\fP[\fB:\fP\fIport\fP]
+Source port or port range specification. This can either be a service
+name or a port number. An inclusive range can also be specified,
+using the format \fIfirst\fP\fB:\fP\fIlast\fP.
+If the first port is omitted, "0" is assumed; if the last is omitted,
+"65535" is assumed.
+If the first port is greater than the second one they will be swapped.
+The flag
+\fB\-\-sport\fP
+is a convenient alias for this option.
+.TP
+[\fB!\fP] \fB\-\-destination\-port\fP,\fB\-\-dport\fP \fIport\fP[\fB:\fP\fIport\fP]
+Destination port or port range specification.  The flag
+\fB\-\-dport\fP
+is a convenient alias for this option.
+.TP
+[\fB!\fP] \fB\-\-tcp\-flags\fP \fImask\fP \fIcomp\fP
+Match when the TCP flags are as specified.  The first argument \fImask\fP is the
+flags which we should examine, written as a comma-separated list, and
+the second argument \fIcomp\fP is a comma-separated list of flags which must be
+set.  Flags are:
+.BR "SYN ACK FIN RST URG PSH ALL NONE" .
+Hence the command
+.nf
+ iptables \-A FORWARD \-p tcp \-\-tcp\-flags SYN,ACK,FIN,RST SYN
+.fi
+will only match packets with the SYN flag set, and the ACK, FIN and
+RST flags unset.
+.TP
+[\fB!\fP] \fB\-\-syn\fP
+Only match TCP packets with the SYN bit set and the ACK,RST and FIN bits
+cleared.  Such packets are used to request TCP connection initiation;
+for example, blocking such packets coming in an interface will prevent
+incoming TCP connections, but outgoing TCP connections will be
+unaffected.
+It is equivalent to \fB\-\-tcp\-flags SYN,RST,ACK,FIN SYN\fP.
+If the "!" flag precedes the "\-\-syn", the sense of the
+option is inverted.
+.TP
+[\fB!\fP] \fB\-\-tcp\-option\fP \fInumber\fP
+Match if TCP option set.
+.SS tcpmss
+This matches the TCP MSS (maximum segment size) field of the TCP header.  You can only use this on TCP SYN or SYN/ACK packets, since the MSS is only negotiated during the TCP handshake at connection startup time.
+.TP
+[\fB!\fP] \fB\-\-mss\fP \fIvalue\fP[\fB:\fP\fIvalue\fP]
+Match a given TCP MSS value or range.
+.SS time
+This matches if the packet arrival time/date is within a given range. All
+options are optional, but are ANDed when specified. All times are interpreted
+as UTC by default.
+.TP
+\fB\-\-datestart\fP \fIYYYY\fP[\fB\-\fP\fIMM\fP[\fB\-\fP\fIDD\fP[\fBT\fP\fIhh\fP[\fB:\fP\fImm\fP[\fB:\fP\fIss\fP]]]]]
+.TP
+\fB\-\-datestop\fP \fIYYYY\fP[\fB\-\fP\fIMM\fP[\fB\-\fP\fIDD\fP[\fBT\fP\fIhh\fP[\fB:\fP\fImm\fP[\fB:\fP\fIss\fP]]]]]
+Only match during the given time, which must be in ISO 8601 "T" notation.
+The possible time range is 1970-01-01T00:00:00 to 2038-01-19T04:17:07.
+.IP
+If \-\-datestart or \-\-datestop are not specified, it will default to 1970-01-01
+and 2038-01-19, respectively.
+.TP
+\fB\-\-timestart\fP \fIhh\fP\fB:\fP\fImm\fP[\fB:\fP\fIss\fP]
+.TP
+\fB\-\-timestop\fP \fIhh\fP\fB:\fP\fImm\fP[\fB:\fP\fIss\fP]
+Only match during the given daytime. The possible time range is 00:00:00 to
+23:59:59. Leading zeroes are allowed (e.g. "06:03") and correctly interpreted
+as base-10.
+.TP
+[\fB!\fP] \fB\-\-monthdays\fP \fIday\fP[\fB,\fP\fIday\fP...]
+Only match on the given days of the month. Possible values are \fB1\fP
+to \fB31\fP. Note that specifying \fB31\fP will of course not match
+on months which do not have a 31st day; the same goes for 28- or 29-day
+February.
+.TP
+[\fB!\fP] \fB\-\-weekdays\fP \fIday\fP[\fB,\fP\fIday\fP...]
+Only match on the given weekdays. Possible values are \fBMon\fP, \fBTue\fP,
+\fBWed\fP, \fBThu\fP, \fBFri\fP, \fBSat\fP, \fBSun\fP, or values from \fB1\fP
+to \fB7\fP, respectively. You may also use two-character variants (\fBMo\fP,
+\fBTu\fP, etc.).
+.TP
+\fB\-\-kerneltz\fP
+Use the kernel timezone instead of UTC to determine whether a packet meets the
+time regulations.
+.PP
+About kernel timezones: Linux keeps the system time in UTC, and always does so.
+On boot, system time is initialized from a referential time source. Where this
+time source has no timezone information, such as the x86 CMOS RTC, UTC will be
+assumed. If the time source is however not in UTC, userspace should provide the
+correct system time and timezone to the kernel once it has the information.
+.PP
+Local time is a feature on top of the (timezone independent) system time. Each
+process has its own idea of local time, specified via the TZ environment
+variable. The kernel also has its own timezone offset variable. The TZ
+userspace environment variable specifies how the UTC-based system time is
+displayed, e.g. when you run date(1), or what you see on your desktop clock.
+The TZ string may resolve to different offsets at different dates, which is
+what enables the automatic time-jumping in userspace. when DST changes. The
+kernel's timezone offset variable is used when it has to convert between
+non-UTC sources, such as FAT filesystems, to UTC (since the latter is what the
+rest of the system uses).
+.PP
+The caveat with the kernel timezone is that Linux distributions may ignore to
+set the kernel timezone, and instead only set the system time. Even if a
+particular distribution does set the timezone at boot, it is usually does not
+keep the kernel timezone offset - which is what changes on DST - up to date.
+ntpd will not touch the kernel timezone, so running it will not resolve the
+issue. As such, one may encounter a timezone that is always +0000, or one that
+is wrong half of the time of the year. As such, \fBusing \-\-kerneltz is highly
+discouraged.\fP
+.PP
+EXAMPLES. To match on weekends, use:
+.IP
+\-m time \-\-weekdays Sa,Su
+.PP
+Or, to match (once) on a national holiday block:
+.IP
+\-m time \-\-datestart 2007\-12\-24 \-\-datestop 2007\-12\-27
+.PP
+Since the stop time is actually inclusive, you would need the following stop
+time to not match the first second of the new day:
+.IP
+\-m time \-\-datestart 2007\-01\-01T17:00 \-\-datestop 2007\-01\-01T23:59:59
+.PP
+During lunch hour:
+.IP
+\-m time \-\-timestart 12:30 \-\-timestop 13:30
+.PP
+The fourth Friday in the month:
+.IP
+\-m time \-\-weekdays Fr \-\-monthdays 22,23,24,25,26,27,28
+.PP
+(Note that this exploits a certain mathematical property. It is not possible to
+say "fourth Thursday OR fourth Friday" in one rule. It is possible with
+multiple rules, though.)
+.SS tos
+This module matches the 8-bit Type of Service field in the IPv4 header (i.e.
+including the "Precedence" bits) or the (also 8-bit) Priority field in the IPv6
+header.
+.TP
+[\fB!\fP] \fB\-\-tos\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Matches packets with the given TOS mark value. If a mask is specified, it is
+logically ANDed with the TOS mark before the comparison.
+.TP
+[\fB!\fP] \fB\-\-tos\fP \fIsymbol\fP
+You can specify a symbolic name when using the tos match for IPv4. The list of
+recognized TOS names can be obtained by calling iptables with \fB\-m tos \-h\fP.
+Note that this implies a mask of 0x3F, i.e. all but the ECN bits.
+.SS ttl (IPv4-specific)
+This module matches the time to live field in the IP header.
+.TP
+[\fB!\fP] \fB\-\-ttl\-eq\fP \fIttl\fP
+Matches the given TTL value.
+.TP
+\fB\-\-ttl\-gt\fP \fIttl\fP
+Matches if TTL is greater than the given TTL value.
+.TP
+\fB\-\-ttl\-lt\fP \fIttl\fP
+Matches if TTL is less than the given TTL value.
+.SS u32
+U32 tests whether quantities of up to 4 bytes extracted from a packet have
+specified values. The specification of what to extract is general enough to
+find data at given offsets from tcp headers or payloads.
+.TP
+[\fB!\fP] \fB\-\-u32\fP \fItests\fP
+The argument amounts to a program in a small language described below.
+.IP
+tests := location "=" value | tests "&&" location "=" value
+.IP
+value := range | value "," range
+.IP
+range := number | number ":" number
+.PP
+a single number, \fIn\fP, is interpreted the same as \fIn:n\fP. \fIn:m\fP is
+interpreted as the range of numbers \fB>=n\fP and \fB<=m\fP.
+.IP "" 4
+location := number | location operator number
+.IP "" 4
+operator := "&" | "<<" | ">>" | "@"
+.PP
+The operators \fB&\fP, \fB<<\fP, \fB>>\fP and \fB&&\fP mean the same as in C.
+The \fB=\fP is really a set membership operator and the value syntax describes
+a set. The \fB@\fP operator is what allows moving to the next header and is
+described further below.
+.PP
+There are currently some artificial implementation limits on the size of the
+tests:
+.IP "    *"
+no more than 10 of "\fB=\fP" (and 9 "\fB&&\fP"s) in the u32 argument
+.IP "    *"
+no more than 10 ranges (and 9 commas) per value
+.IP "    *"
+no more than 10 numbers (and 9 operators) per location
+.PP
+To describe the meaning of location, imagine the following machine that
+interprets it. There are three registers:
+.IP
+A is of type \fBchar *\fP, initially the address of the IP header
+.IP
+B and C are unsigned 32 bit integers, initially zero
+.PP
+The instructions are:
+.IP
+number B = number;
+.IP
+C = (*(A+B)<<24) + (*(A+B+1)<<16) + (*(A+B+2)<<8) + *(A+B+3)
+.IP
+&number C = C & number
+.IP
+<< number C = C << number
+.IP
+>> number C = C >> number
+.IP
+@number A = A + C; then do the instruction number
+.PP
+Any access of memory outside [skb\->data,skb\->end] causes the match to fail.
+Otherwise the result of the computation is the final value of C.
+.PP
+Whitespace is allowed but not required in the tests. However, the characters
+that do occur there are likely to require shell quoting, so it is a good idea
+to enclose the arguments in quotes.
+.PP
+Example:
+.IP
+match IP packets with total length >= 256
+.IP
+The IP header contains a total length field in bytes 2-3.
+.IP
+\-\-u32 "\fB0 & 0xFFFF = 0x100:0xFFFF\fP"
+.IP
+read bytes 0-3
+.IP
+AND that with 0xFFFF (giving bytes 2-3), and test whether that is in the range
+[0x100:0xFFFF]
+.PP
+Example: (more realistic, hence more complicated)
+.IP
+match ICMP packets with icmp type 0
+.IP
+First test that it is an ICMP packet, true iff byte 9 (protocol) = 1
+.IP
+\-\-u32 "\fB6 & 0xFF = 1 &&\fP ...
+.IP
+read bytes 6-9, use \fB&\fP to throw away bytes 6-8 and compare the result to
+1. Next test that it is not a fragment. (If so, it might be part of such a
+packet but we cannot always tell.) N.B.: This test is generally needed if you
+want to match anything beyond the IP header. The last 6 bits of byte 6 and all
+of byte 7 are 0 iff this is a complete packet (not a fragment). Alternatively,
+you can allow first fragments by only testing the last 5 bits of byte 6.
+.IP
+ ... \fB4 & 0x3FFF = 0 &&\fP ...
+.IP
+Last test: the first byte past the IP header (the type) is 0. This is where we
+have to use the @syntax. The length of the IP header (IHL) in 32 bit words is
+stored in the right half of byte 0 of the IP header itself.
+.IP
+ ... \fB0 >> 22 & 0x3C @ 0 >> 24 = 0\fP"
+.IP
+The first 0 means read bytes 0-3, \fB>>22\fP means shift that 22 bits to the
+right. Shifting 24 bits would give the first byte, so only 22 bits is four
+times that plus a few more bits. \fB&3C\fP then eliminates the two extra bits
+on the right and the first four bits of the first byte. For instance, if IHL=5,
+then the IP header is 20 (4 x 5) bytes long. In this case, bytes 0-1 are (in
+binary) xxxx0101 yyzzzzzz, \fB>>22\fP gives the 10 bit value xxxx0101yy and
+\fB&3C\fP gives 010100. \fB@\fP means to use this number as a new offset into
+the packet, and read four bytes starting from there. This is the first 4 bytes
+of the ICMP payload, of which byte 0 is the ICMP type. Therefore, we simply
+shift the value 24 to the right to throw out all but the first byte and compare
+the result with 0.
+.PP
+Example:
+.IP
+TCP payload bytes 8-12 is any of 1, 2, 5 or 8
+.IP
+First we test that the packet is a tcp packet (similar to ICMP).
+.IP
+\-\-u32 "\fB6 & 0xFF = 6 &&\fP ...
+.IP
+Next, test that it is not a fragment (same as above).
+.IP
+ ... \fB0 >> 22 & 0x3C @ 12 >> 26 & 0x3C @ 8 = 1,2,5,8\fP"
+.IP
+\fB0>>22&3C\fP as above computes the number of bytes in the IP header. \fB@\fP
+makes this the new offset into the packet, which is the start of the TCP
+header. The length of the TCP header (again in 32 bit words) is the left half
+of byte 12 of the TCP header. The \fB12>>26&3C\fP computes this length in bytes
+(similar to the IP header before). "@" makes this the new offset, which is the
+start of the TCP payload. Finally, 8 reads bytes 8-12 of the payload and
+\fB=\fP checks whether the result is any of 1, 2, 5 or 8.
+.SS udp
+These extensions can be used if `\-\-protocol udp' is specified. It
+provides the following options:
+.TP
+[\fB!\fP] \fB\-\-source\-port\fP,\fB\-\-sport\fP \fIport\fP[\fB:\fP\fIport\fP]
+Source port or port range specification.
+See the description of the
+\fB\-\-source\-port\fP
+option of the TCP extension for details.
+.TP
+[\fB!\fP] \fB\-\-destination\-port\fP,\fB\-\-dport\fP \fIport\fP[\fB:\fP\fIport\fP]
+Destination port or port range specification.
+See the description of the
+\fB\-\-destination\-port\fP
+option of the TCP extension for details.
+.SH TARGET EXTENSIONS
+iptables can use extended target modules: the following are included
+in the standard distribution.
+.\" @TARGET@
+.SS CONNMARK
+This module sets the netfilter mark value associated with a connection. The
+mark is 32 bits wide.
+.TP
+\fB\-\-set\-xmark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Zero out the bits given by \fImask\fP and XOR \fIvalue\fP into the ctmark.
+.TP
+\fB\-\-save\-mark\fP [\fB\-\-nfmask\fP \fInfmask\fP] [\fB\-\-ctmask\fP \fIctmask\fP]
+Copy the packet mark (nfmark) to the connection mark (ctmark) using the given
+masks. The new nfmark value is determined as follows:
+.IP
+ctmark = (ctmark & ~ctmask) ^ (nfmark & nfmask)
+.IP
+i.e. \fIctmask\fP defines what bits to clear and \fInfmask\fP what bits of the
+nfmark to XOR into the ctmark. \fIctmask\fP and \fInfmask\fP default to
+0xFFFFFFFF.
+.TP
+\fB\-\-restore\-mark\fP [\fB\-\-nfmask\fP \fInfmask\fP] [\fB\-\-ctmask\fP \fIctmask\fP]
+Copy the connection mark (ctmark) to the packet mark (nfmark) using the given
+masks. The new ctmark value is determined as follows:
+.IP
+nfmark = (nfmark & ~\fInfmask\fP) ^ (ctmark & \fIctmask\fP);
+.IP
+i.e. \fInfmask\fP defines what bits to clear and \fIctmask\fP what bits of the
+ctmark to XOR into the nfmark. \fIctmask\fP and \fInfmask\fP default to
+0xFFFFFFFF.
+.IP
+\fB\-\-restore\-mark\fP is only valid in the \fBmangle\fP table.
+.PP
+The following mnemonics are available for \fB\-\-set\-xmark\fP:
+.TP
+\fB\-\-and\-mark\fP \fIbits\fP
+Binary AND the ctmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark
+0/\fP\fIinvbits\fP, where \fIinvbits\fP is the binary negation of \fIbits\fP.)
+.TP
+\fB\-\-or\-mark\fP \fIbits\fP
+Binary OR the ctmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark\fP
+\fIbits\fP\fB/\fP\fIbits\fP.)
+.TP
+\fB\-\-xor\-mark\fP \fIbits\fP
+Binary XOR the ctmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark\fP
+\fIbits\fP\fB/0\fP.)
+.TP
+\fB\-\-set\-mark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Set the connection mark. If a mask is specified then only those bits set in the
+mask are modified.
+.TP
+\fB\-\-save\-mark\fP [\fB\-\-mask\fP \fImask\fP]
+Copy the nfmark to the ctmark. If a mask is specified, only those bits are
+copied.
+.TP
+\fB\-\-restore\-mark\fP [\fB\-\-mask\fP \fImask\fP]
+Copy the ctmark to the nfmark. If a mask is specified, only those bits are
+copied. This is only valid in the \fBmangle\fP table.
+.SS CT
+The CT target allows to set parameters for a packet or its associated
+connection. The target attaches a "template" connection tracking entry to
+the packet, which is then used by the conntrack core when initializing
+a new ct entry. This target is thus only valid in the "raw" table.
+.TP
+\fB\-\-notrack\fP
+Disables connection tracking for this packet.
+.TP
+\fB\-\-helper\fP \fIname\fP
+Use the helper identified by \fIname\fP for the connection. This is more
+flexible than loading the conntrack helper modules with preset ports.
+.TP
+\fB\-\-ctevents\fP \fIevent\fP[\fB,\fP...]
+Only generate the specified conntrack events for this connection. Possible
+event types are: \fBnew\fP, \fBrelated\fP, \fBdestroy\fP, \fBreply\fP,
+\fBassured\fP, \fBprotoinfo\fP, \fBhelper\fP, \fBmark\fP (this refers to
+the ctmark, not nfmark), \fBnatseqinfo\fP, \fBsecmark\fP (ctsecmark).
+.TP
+\fB\-\-expevents\fP \fIevent\fP[\fB,\fP...]
+Only generate the specified expectation events for this connection.
+Possible event types are: \fBnew\fP.
+.TP
+\fB\-\-zone\fP \fIid\fP
+Assign this packet to zone \fIid\fP and only have lookups done in that zone.
+By default, packets have zone 0.
+.TP
+\fB\-\-timeout\fP \fIname\fP
+Use the timeout policy identified by \fIname\fP for the connection. This is
+provides more flexible timeout policy definition than global timeout values
+available at /proc/sys/net/netfilter/nf_conntrack_*_timeout_*.
+.SS DNAT (IPv4-specific)
+This target is only valid in the
+.B nat
+table, in the
+.B PREROUTING
+and
+.B OUTPUT
+chains, and user-defined chains which are only called from those
+chains.  It specifies that the destination address of the packet
+should be modified (and all future packets in this connection will
+also be mangled), and rules should cease being examined.  It takes one
+type of option:
+.TP
+\fB\-\-to\-destination\fP [\fIipaddr\fP[\fB\-\fP\fIipaddr\fP]][\fB:\fP\fIport\fP[\fB\-\fP\fIport\fP]]
+which can specify a single new destination IP address, an inclusive
+range of IP addresses, and optionally, a port range (which is only
+valid if the rule also specifies
+\fB\-p tcp\fP
+or
+\fB\-p udp\fP).
+If no port range is specified, then the destination port will never be
+modified. If no IP address is specified then only the destination port
+will be modified.
+
+In Kernels up to 2.6.10 you can add several \-\-to\-destination options. For
+those kernels, if you specify more than one destination address, either via an
+address range or multiple \-\-to\-destination options, a simple round-robin (one
+after another in cycle) load balancing takes place between these addresses.
+Later Kernels (>= 2.6.11-rc1) don't have the ability to NAT to multiple ranges
+anymore.
+.TP
+\fB\-\-random\fP
+If option
+\fB\-\-random\fP
+is used then port mapping will be randomized (kernel >= 2.6.22).
+.TP
+\fB\-\-persistent\fP
+Gives a client the same source-/destination-address for each connection.
+This supersedes the SAME target. Support for persistent mappings is available
+from 2.6.29-rc2.
+.SS DSCP
+This target allows to alter the value of the DSCP bits within the TOS
+header of the IPv4 packet.  As this manipulates a packet, it can only
+be used in the mangle table.
+.TP
+\fB\-\-set\-dscp\fP \fIvalue\fP
+Set the DSCP field to a numerical value (can be decimal or hex)
+.TP
+\fB\-\-set\-dscp\-class\fP \fIclass\fP
+Set the DSCP field to a DiffServ class.
+.SS HL (IPv6-specific)
+This is used to modify the Hop Limit field in IPv6 header. The Hop Limit field
+is similar to what is known as TTL value in IPv4.  Setting or incrementing the
+Hop Limit field can potentially be very dangerous, so it should be avoided at
+any cost. This target is only valid in
+.B mangle
+table.
+.PP
+.B Don't ever set or increment the value on packets that leave your local network!
+.TP
+\fB\-\-hl\-set\fP \fIvalue\fP
+Set the Hop Limit to `value'.
+.TP
+\fB\-\-hl\-dec\fP \fIvalue\fP
+Decrement the Hop Limit `value' times.
+.TP
+\fB\-\-hl\-inc\fP \fIvalue\fP
+Increment the Hop Limit `value' times.
+.SS LOG (IPv6-specific)
+Turn on kernel logging of matching packets.  When this option is set
+for a rule, the Linux kernel will print some information on all
+matching packets (like most IPv6 IPv6-header fields) via the kernel log
+(where it can be read with
+.I dmesg
+or 
+.IR syslogd (8)).
+This is a "non-terminating target", i.e. rule traversal continues at
+the next rule.  So if you want to LOG the packets you refuse, use two
+separate rules with the same matching criteria, first using target LOG
+then DROP (or REJECT).
+.TP
+\fB\-\-log\-level\fP \fIlevel\fP
+Level of logging (numeric or see \fIsyslog.conf\fP(5)).
+.TP
+\fB\-\-log\-prefix\fP \fIprefix\fP
+Prefix log messages with the specified prefix; up to 29 letters long,
+and useful for distinguishing messages in the logs.
+.TP
+\fB\-\-log\-tcp\-sequence\fP
+Log TCP sequence numbers. This is a security risk if the log is
+readable by users.
+.TP
+\fB\-\-log\-tcp\-options\fP
+Log options from the TCP packet header.
+.TP
+\fB\-\-log\-ip\-options\fP
+Log options from the IPv6 packet header.
+.TP
+\fB\-\-log\-uid\fP
+Log the userid of the process which generated the packet.
+.SS LOG (IPv4-specific)
+Turn on kernel logging of matching packets.  When this option is set
+for a rule, the Linux kernel will print some information on all
+matching packets (like most IP header fields) via the kernel log
+(where it can be read with
+.I dmesg
+or 
+.IR syslogd (8)).
+This is a "non-terminating target", i.e. rule traversal continues at
+the next rule.  So if you want to LOG the packets you refuse, use two
+separate rules with the same matching criteria, first using target LOG
+then DROP (or REJECT).
+.TP
+\fB\-\-log\-level\fP \fIlevel\fP
+Level of logging (numeric or see \fIsyslog.conf\fP(5)).
+.TP
+\fB\-\-log\-prefix\fP \fIprefix\fP
+Prefix log messages with the specified prefix; up to 29 letters long,
+and useful for distinguishing messages in the logs.
+.TP
+\fB\-\-log\-tcp\-sequence\fP
+Log TCP sequence numbers. This is a security risk if the log is
+readable by users.
+.TP
+\fB\-\-log\-tcp\-options\fP
+Log options from the TCP packet header.
+.TP
+\fB\-\-log\-ip\-options\fP
+Log options from the IP packet header.
+.TP
+\fB\-\-log\-uid\fP
+Log the userid of the process which generated the packet.
+.SS MARK
+This target is used to set the Netfilter mark value associated with the packet.
+It can, for example, be used in conjunction with routing based on fwmark (needs
+iproute2). If you plan on doing so, note that the mark needs to be set in the
+PREROUTING chain of the mangle table to affect routing.
+The mark field is 32 bits wide.
+.TP
+\fB\-\-set\-xmark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Zeroes out the bits given by \fImask\fP and XORs \fIvalue\fP into the packet
+mark ("nfmark"). If \fImask\fP is omitted, 0xFFFFFFFF is assumed.
+.TP
+\fB\-\-set\-mark\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Zeroes out the bits given by \fImask\fP and ORs \fIvalue\fP into the packet
+mark. If \fImask\fP is omitted, 0xFFFFFFFF is assumed.
+.PP
+The following mnemonics are available:
+.TP
+\fB\-\-and\-mark\fP \fIbits\fP
+Binary AND the nfmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark
+0/\fP\fIinvbits\fP, where \fIinvbits\fP is the binary negation of \fIbits\fP.)
+.TP
+\fB\-\-or\-mark\fP \fIbits\fP
+Binary OR the nfmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark\fP
+\fIbits\fP\fB/\fP\fIbits\fP.)
+.TP
+\fB\-\-xor\-mark\fP \fIbits\fP
+Binary XOR the nfmark with \fIbits\fP. (Mnemonic for \fB\-\-set\-xmark\fP
+\fIbits\fP\fB/0\fP.)
+.SS MASQUERADE (IPv4-specific)
+This target is only valid in the
+.B nat
+table, in the
+.B POSTROUTING
+chain.  It should only be used with dynamically assigned IP (dialup)
+connections: if you have a static IP address, you should use the SNAT
+target.  Masquerading is equivalent to specifying a mapping to the IP
+address of the interface the packet is going out, but also has the
+effect that connections are
+.I forgotten
+when the interface goes down.  This is the correct behavior when the
+next dialup is unlikely to have the same interface address (and hence
+any established connections are lost anyway).
+.TP
+\fB\-\-to\-ports\fP \fIport\fP[\fB\-\fP\fIport\fP]
+This specifies a range of source ports to use, overriding the default
+.B SNAT
+source port-selection heuristics (see above).  This is only valid
+if the rule also specifies
+\fB\-p tcp\fP
+or
+\fB\-p udp\fP.
+.TP
+\fB\-\-random\fP
+Randomize source port mapping
+If option
+\fB\-\-random\fP
+is used then port mapping will be randomized (kernel >= 2.6.21).
+.RS
+.PP
+.SS NETMAP (IPv4-specific)
+This target allows you to statically map a whole network of addresses onto
+another network of addresses.  It can only be used from rules in the
+.B nat
+table.
+.TP
+\fB\-\-to\fP \fIaddress\fP[\fB/\fP\fImask\fP]
+Network address to map to.  The resulting address will be constructed in the
+following way: All 'one' bits in the mask are filled in from the new `address'.
+All bits that are zero in the mask are filled in from the original address.
+.SS NOTRACK
+This target disables connection tracking for all packets matching that rule.
+It is obsoleted by \-j CT \-\-notrack. Like CT, NOTRACK can only be used in
+the \fBraw\fP table.
+.SS REDIRECT (IPv4-specific)
+This target is only valid in the
+.B nat
+table, in the
+.B PREROUTING
+and
+.B OUTPUT
+chains, and user-defined chains which are only called from those
+chains.  It redirects the packet to the machine itself by changing the
+destination IP to the primary address of the incoming interface
+(locally-generated packets are mapped to the 127.0.0.1 address).
+.TP
+\fB\-\-to\-ports\fP \fIport\fP[\fB\-\fP\fIport\fP]
+This specifies a destination port or range of ports to use: without
+this, the destination port is never altered.  This is only valid
+if the rule also specifies
+\fB\-p tcp\fP
+or
+\fB\-p udp\fP.
+.TP
+\fB\-\-random\fP
+If option
+\fB\-\-random\fP
+is used then port mapping will be randomized (kernel >= 2.6.22).
+.RS
+.PP
+.SS REJECT (IPv6-specific)
+This is used to send back an error packet in response to the matched
+packet: otherwise it is equivalent to 
+.B DROP
+so it is a terminating TARGET, ending rule traversal.
+This target is only valid in the
+.BR INPUT ,
+.B FORWARD
+and
+.B OUTPUT
+chains, and user-defined chains which are only called from those
+chains.  The following option controls the nature of the error packet
+returned:
+.TP
+\fB\-\-reject\-with\fP \fItype\fP
+The type given can be
+\fBicmp6\-no\-route\fP,
+\fBno\-route\fP,
+\fBicmp6\-adm\-prohibited\fP,
+\fBadm\-prohibited\fP,
+\fBicmp6\-addr\-unreachable\fP,
+\fBaddr\-unreach\fP,
+\fBicmp6\-port\-unreachable\fP or
+\fBport\-unreach\fP
+which return the appropriate ICMPv6 error message (\fBport\-unreach\fP is
+the default). Finally, the option
+\fBtcp\-reset\fP
+can be used on rules which only match the TCP protocol: this causes a
+TCP RST packet to be sent back.  This is mainly useful for blocking 
+.I ident
+(113/tcp) probes which frequently occur when sending mail to broken mail
+hosts (which won't accept your mail otherwise).
+\fBtcp\-reset\fP
+can only be used with kernel versions 2.6.14 or later.
+.SS REJECT (IPv4-specific)
+This is used to send back an error packet in response to the matched
+packet: otherwise it is equivalent to
+.B DROP
+so it is a terminating TARGET, ending rule traversal.
+This target is only valid in the
+.BR INPUT ,
+.B FORWARD
+and
+.B OUTPUT
+chains, and user-defined chains which are only called from those
+chains.  The following option controls the nature of the error packet
+returned:
+.TP
+\fB\-\-reject\-with\fP \fItype\fP
+The type given can be
+\fBicmp\-net\-unreachable\fP,
+\fBicmp\-host\-unreachable\fP,
+\fBicmp\-port\-unreachable\fP,
+\fBicmp\-proto\-unreachable\fP,
+\fBicmp\-net\-prohibited\fP,
+\fBicmp\-host\-prohibited\fP or
+\fBicmp\-admin\-prohibited\fP (*)
+which return the appropriate ICMP error message (\fBport\-unreachable\fP is
+the default).  The option
+\fBtcp\-reset\fP
+can be used on rules which only match the TCP protocol: this causes a
+TCP RST packet to be sent back.  This is mainly useful for blocking 
+.I ident
+(113/tcp) probes which frequently occur when sending mail to broken mail
+hosts (which won't accept your mail otherwise).
+.PP
+(*) Using icmp\-admin\-prohibited with kernels that do not support it will result in a plain DROP instead of REJECT
+.SS SNAT (IPv4-specific)
+This target is only valid in the
+.B nat
+table, in the
+.B POSTROUTING
+chain.  It specifies that the source address of the packet should be
+modified (and all future packets in this connection will also be
+mangled), and rules should cease being examined.  It takes one type
+of option:
+.TP
+\fB\-\-to\-source\fP [\fIipaddr\fP[\fB\-\fP\fIipaddr\fP]][\fB:\fP\fIport\fP[\fB\-\fP\fIport\fP]]
+which can specify a single new source IP address, an inclusive range
+of IP addresses, and optionally, a port range (which is only valid if
+the rule also specifies
+\fB\-p tcp\fP
+or
+\fB\-p udp\fP).
+If no port range is specified, then source ports below 512 will be
+mapped to other ports below 512: those between 512 and 1023 inclusive
+will be mapped to ports below 1024, and other ports will be mapped to
+1024 or above. Where possible, no port alteration will occur.
+
+In Kernels up to 2.6.10, you can add several \-\-to\-source options. For those
+kernels, if you specify more than one source address, either via an address
+range or multiple \-\-to\-source options, a simple round-robin (one after another
+in cycle) takes place between these addresses.
+Later Kernels (>= 2.6.11-rc1) don't have the ability to NAT to multiple ranges
+anymore.
+.TP
+\fB\-\-random\fP
+If option
+\fB\-\-random\fP
+is used then port mapping will be randomized (kernel >= 2.6.21).
+.TP
+\fB\-\-persistent\fP
+Gives a client the same source-/destination-address for each connection.
+This supersedes the SAME target. Support for persistent mappings is available
+from 2.6.29-rc2.
+.SS TCPMSS
+This target allows to alter the MSS value of TCP SYN packets, to control
+the maximum size for that connection (usually limiting it to your
+outgoing interface's MTU minus 40 for IPv4 or 60 for IPv6, respectively).
+Of course, it can only be used
+in conjunction with
+\fB\-p tcp\fP.
+.PP
+This target is used to overcome criminally braindead ISPs or servers
+which block "ICMP Fragmentation Needed" or "ICMPv6 Packet Too Big"
+packets.  The symptoms of this
+problem are that everything works fine from your Linux
+firewall/router, but machines behind it can never exchange large
+packets:
+.IP 1. 4
+Web browsers connect, then hang with no data received.
+.IP 2. 4
+Small mail works fine, but large emails hang.
+.IP 3. 4
+ssh works fine, but scp hangs after initial handshaking.
+.PP
+Workaround: activate this option and add a rule to your firewall
+configuration like:
+.IP
+ iptables \-t mangle \-A FORWARD \-p tcp \-\-tcp\-flags SYN,RST SYN
+             \-j TCPMSS \-\-clamp\-mss\-to\-pmtu
+.TP
+\fB\-\-set\-mss\fP \fIvalue\fP
+Explicitly sets MSS option to specified value. If the MSS of the packet is
+already lower than \fIvalue\fP, it will \fBnot\fP be increased (from Linux
+2.6.25 onwards) to avoid more problems with hosts relying on a proper MSS.
+.TP
+\fB\-\-clamp\-mss\-to\-pmtu\fP
+Automatically clamp MSS value to (path_MTU \- 40 for IPv4; \-60 for IPv6).
+This may not function as desired where asymmetric routes with differing
+path MTU exist \(em the kernel uses the path MTU which it would use to send
+packets from itself to the source and destination IP addresses. Prior to
+Linux 2.6.25, only the path MTU to the destination IP address was
+considered by this option; subsequent kernels also consider the path MTU
+to the source IP address.
+.PP
+These options are mutually exclusive.
+.SS TOS
+This module sets the Type of Service field in the IPv4 header (including the
+"precedence" bits) or the Priority field in the IPv6 header. Note that TOS
+shares the same bits as DSCP and ECN. The TOS target is only valid in the
+\fBmangle\fP table.
+.TP
+\fB\-\-set\-tos\fP \fIvalue\fP[\fB/\fP\fImask\fP]
+Zeroes out the bits given by \fImask\fP (see NOTE below) and XORs \fIvalue\fP
+into the TOS/Priority field. If \fImask\fP is omitted, 0xFF is assumed.
+.TP
+\fB\-\-set\-tos\fP \fIsymbol\fP
+You can specify a symbolic name when using the TOS target for IPv4. It implies
+a mask of 0xFF (see NOTE below). The list of recognized TOS names can be
+obtained by calling iptables with \fB\-j TOS \-h\fP.
+.PP
+The following mnemonics are available:
+.TP
+\fB\-\-and\-tos\fP \fIbits\fP
+Binary AND the TOS value with \fIbits\fP. (Mnemonic for \fB\-\-set\-tos
+0/\fP\fIinvbits\fP, where \fIinvbits\fP is the binary negation of \fIbits\fP.
+See NOTE below.)
+.TP
+\fB\-\-or\-tos\fP \fIbits\fP
+Binary OR the TOS value with \fIbits\fP. (Mnemonic for \fB\-\-set\-tos\fP
+\fIbits\fP\fB/\fP\fIbits\fP. See NOTE below.)
+.TP
+\fB\-\-xor\-tos\fP \fIbits\fP
+Binary XOR the TOS value with \fIbits\fP. (Mnemonic for \fB\-\-set\-tos\fP
+\fIbits\fP\fB/0\fP. See NOTE below.)
+.PP
+NOTE: In Linux kernels up to and including 2.6.38, with the exception of
+longterm releases 2.6.32 (>=.42), 2.6.33 (>=.15), and 2.6.35 (>=.14), there is
+a bug whereby IPv6 TOS mangling does not behave as documented and differs from
+the IPv4 version. The TOS mask indicates the bits one wants to zero out, so it
+needs to be inverted before applying it to the original TOS field. However, the
+aformentioned kernels forgo the inversion which breaks --set-tos and its
+mnemonics.
+.SS TTL (IPv4-specific)
+This is used to modify the IPv4 TTL header field.  The TTL field determines
+how many hops (routers) a packet can traverse until it's time to live is
+exceeded.
+.PP
+Setting or incrementing the TTL field can potentially be very dangerous,
+so it should be avoided at any cost. This target is only valid in
+.B mangle
+table.
+.PP
+.B Don't ever set or increment the value on packets that leave your local network!
+.TP
+\fB\-\-ttl\-set\fP \fIvalue\fP
+Set the TTL value to `value'.
+.TP
+\fB\-\-ttl\-dec\fP \fIvalue\fP
+Decrement the TTL value `value' times.
+.TP
+\fB\-\-ttl\-inc\fP \fIvalue\fP
+Increment the TTL value `value' times.
