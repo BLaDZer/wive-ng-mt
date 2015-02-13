@@ -140,7 +140,7 @@ am__regress_SOURCES_DIST = regress.c regress_buffer.c regress_http.c \
 	regress_zlib.c regress_iocp.c regress_ssl.c
 am__objects_1 = regress-regress_thread.$(OBJEXT)
 #am__objects_1 = regress-regress_thread.$(OBJEXT)
-#am__objects_2 = regress-regress_zlib.$(OBJEXT)
+am__objects_2 = regress-regress_zlib.$(OBJEXT)
 #am__objects_3 = regress-regress_iocp.$(OBJEXT)
 #am__objects_4 = regress-regress_ssl.$(OBJEXT)
 am_regress_OBJECTS = regress-regress.$(OBJEXT) \
@@ -531,7 +531,7 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip
 VERSION = 2.0.22-stable
-ZLIB_LIBS = 
+ZLIB_LIBS = -lz 
 abs_builddir = /opt/Wive-MT/libext/libevent/test
 abs_srcdir = /opt/Wive-MT/libext/libevent/test
 abs_top_builddir = /opt/Wive-MT/libext/libevent
@@ -616,7 +616,7 @@ regress_SOURCES = regress.c regress_buffer.c regress_http.c \
 	$(am__append_3) $(am__append_4)
 #regress_thread_SOURCES = regress_thread.c
 regress_thread_SOURCES = regress_thread.c
-#regress_zlib_SOURCES = regress_zlib.c
+regress_zlib_SOURCES = regress_zlib.c
 regress_LDADD = $(LIBEVENT_GC_SECTIONS) ../libevent.la $(PTHREAD_LIBS) \
 	$(ZLIB_LIBS) $(am__append_5)
 regress_CPPFLAGS = $(AM_CPPFLAGS) $(PTHREAD_CFLAGS) $(ZLIB_CFLAGS)
