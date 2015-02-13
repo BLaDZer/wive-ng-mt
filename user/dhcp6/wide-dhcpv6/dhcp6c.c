@@ -259,6 +259,7 @@ usage()
 }
 
 /*------------------------------------------------------------*/
+#define RALINK_SOC
 
 void
 client6_init()
@@ -267,15 +268,48 @@ client6_init()
 	static struct sockaddr_in6 sa6_allagent_storage;
 	int error, on = 1;
 
+#ifdef RALINK_SOC
+	char wan_if[16];
+	FILE *fp;
+
+	/* try read fron file exported from init.d */
+	fp = fopen("/tmp/wan_if_name", "r");
+	if (fp) {
+	    /* get first wan_if in file */
+	    while (fgets(wan_if, sizeof(wan_if), fp) != NULL) {
+		/* wan may be only eth*,acpli* */
+		if ((strstr(wan_if, "eth") != NULL) || (strstr(wan_if, "apcli") != NULL)) {
+		    /* get our DUID */
+		    if (get_duid(DUID_FILE, &client_duid, wan_if)) {
+			debug_printf(LOG_ERR, FNAME, "failed to get a DUID for REALWAN, try default");
+			if (get_duid(DUID_FILE, &client_duid, WAN_DEF)) {
+			    debug_printf(LOG_ERR, FNAME, "failed to get a DUID for default if");
+			    fclose(fp);
+			    exit(1);
+			}
+		    }
+		    goto duid_ok;
+		}
+	    }
+	    fclose(fp);
+	}
+
+	/* get our DUID if not read */
+	if (get_duid(DUID_FILE, &client_duid, WAN_DEF)) {
+	    debug_printf(LOG_ERR, FNAME, "failed to get a DUID for default WAN if (eth2.2)");
+	    exit(1);
+	}
+
+duid_ok:
+#else
 	/* get our DUID */
 	if (get_duid(DUID_FILE, &client_duid, WAN_DEF)) {
 		debug_printf(LOG_ERR, FNAME, "failed to get a DUID");
 		exit(1);
 	}
-
+#endif
 	if (dhcp6_ctl_authinit(ctlkeyfile, &ctlkey, &ctldigestlen) != 0) {
-		debug_printf(LOG_NOTICE, FNAME,
-		    "failed initialize control message authentication");
+		debug_printf(LOG_NOTICE, FNAME, "failed initialize control message authentication");
 		/* run the server anyway */
 	}
 
@@ -776,7 +810,7 @@ client6_ifctl(ifname, command)
 		 * lease.
 		 */
 		if (ifreset(ifp)) {
-			dprintf(LOG_NOTICE, FNAME, "failed to reset %s",
+			debug_printf(LOG_NOTICE, FNAME, "failed to reset %s",
 			    ifname);
 			return (-1);
 		}

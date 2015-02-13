@@ -52,6 +52,7 @@
 #include "y.tab.h"
 
 #define YY_NO_UNPUT 1
+#define NOCONFIG_DEBUG
 
 char *configfilename;
 int lineno = 1;
