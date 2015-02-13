@@ -187,13 +187,15 @@ SUBARCH := mips
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-export KBUILD_BUILDHOST ?= $(SUBARCH)
+
 ARCH		?= $(SUBARCH)
-CROSS_COMPILE   ?= ../toolchain/bin/mipsel-linux-uclibc-
+CROSS_COMPILE	?= ../toolchain/bin/mipsel-linux-uclibc-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
 SRCARCH 	:= $(ARCH)
+
+export KBUILD_BUILDHOST ?= $(ARCH)
 
 # Additional ARCH settings for x86
 ifeq ($(ARCH),i386)
@@ -568,7 +570,7 @@ endif # $(dot-config)
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
 
-include $(srctree)/arch/$(SRCARCH)/Makefile
+include $(srctree)/arch/mips/Makefile
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks $(call cc-disable-warning,maybe-uninitialized,)

@@ -272,15 +272,14 @@ clean:
 	touch $(ROOTDIR)/config/autoconf.h
 	touch $(ROOTDIR)/config.arch
 	################CLEAN ALL SUBDIRS 1############################
-	-for dir in $(DIRS) $(LINUXDIR) lib; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
-	-for dir in $(DIRS) $(LINUXDIR) lib; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir distclean ; done
+	-for dir in $(DIRS) $(LINUXDIR) Uboot ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
+	-for dir in $(DIRS) $(LINUXDIR) Uboot ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir distclean ; done
 	################CLEAN ALL SUBDIRS 2############################
-	-$(MAKE) clean -C Uboot
-	-$(MAKE) mrproper -C Uboot
 	-$(MAKE) clean -C config
 	-$(MAKE) clean -C tools
 	-$(MAKE) clean -C libnvram
 	-$(MAKE) clean -C libext
+	-$(MAKE) mrproper -C Uboot
 	-$(MAKE) mrproper -C linux
 	##############REMOVE UNUSED FILES 1###########################
 	rm -f $(ROOTDIR)/etc/compile-date $(ROOTDIR)/etc/scripts/config.sh $(ROOTDIR)/config.tk $(ROOTDIR)/.tmp* $(ROOTDIR)/sdk_version.h $(ROOTDIR)/version $(LINUXDIR)/linux $(LINUXDIR)/arch/mips/ramdisk/*.gz
