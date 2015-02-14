@@ -9,8 +9,8 @@
 #
 # Force build (Normally built when required)
 #
-# CONFIG_LIB_ZLIB is not set
-# CONFIG_LIB_USB1 is not set
+CONFIG_LIB_ZLIB=y
+CONFIG_LIB_USB1=y
 CONFIG_LIB_EVENT=y
 CONFIG_LIB_CURL=y
 CONFIG_LIB_PCAP=y
