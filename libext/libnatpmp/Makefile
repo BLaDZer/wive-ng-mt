@@ -23,7 +23,7 @@ endif
 # APIVERSION is used in soname
 APIVERSION = 1
 #LDFLAGS = -Wl,--no-undefined
-CFLAGS += -I../include
+CFLAGS += -I$(LIBCDIRSHARED)/include
 #CFLAGS = -g -O0
 CFLAGS += -fPIC
 CFLAGS += -Wall
