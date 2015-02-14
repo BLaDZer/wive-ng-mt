@@ -44,7 +44,7 @@ pre_mount() {
 try_mount() {
   modprobe -q "$MDEV_TYPE"
   # mount with default nls configured in kernel
-  if ! mount -o noatime -t "$MDEV_TYPE" "$MDEV_PATH" "$MOUNT_DST"; then
+  if ! mount -o noatime,umask=0,iocharset=utf8 -t "$MDEV_TYPE" "$MDEV_PATH" "$MOUNT_DST"; then
     $LOG "can not mount $MDEV_TYPE $MDEV_PATH $MOUNT_DST"
     exit 1
   fi
@@ -55,7 +55,7 @@ try_mount() {
 }
 
 try_ntfs() {
-  if ! ntfs-3g "$MDEV_PATH" "$MOUNT_DST" -o force,noatime; then
+  if ! ntfs-3g "$MDEV_PATH" "$MOUNT_DST" -o force,noatime,umask=0,iocharset=utf8; then
     $LOG "can not mount NTFS $MDEV_PATH $MOUNT_DST"
     exit 1
   fi
