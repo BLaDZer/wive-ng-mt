@@ -210,6 +210,17 @@ fulldump
 /user/ethtool/autom4te.cache
 /user/ethtool/autom4te.cache/*
 /user/ntfs-3g/stamp-h1
+/user/ntfs-3g/autom4te.cache
+/user/ntfs-3g/autom4te.cache/*
+/user/ntfs-3g/Makefile
+/user/ntfs-3g/configure
+/user/ntfs-3g/src/Makefile
+/user/ntfs-3g/ntfsprogs/Makefile
+/user/ntfs-3g/libntfs-3g/Makefile
+/user/ntfs-3g/libfuse-lite/Makefile
+/user/ntfs-3g/include/Makefile
+/user/ntfs-3g/include/ntfs-3g/Makefile
+/user/ntfs-3g/include/fuse-lite/Makefile
 /user/openssl/apps/CA.pl
 /user/openssl/apps/CA.pl.bak
 /user/openssl/Makefile

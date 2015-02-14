@@ -546,12 +546,13 @@
 1) build_system: add test targets for usb devices.<br>
 2) libcurl: up to 7.40.0 version.<br>
 3) transmission: up to 2.84.<br>
+4) apps: add fuse ntfs-3g (2014.2.15).<br>
+5) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
-3) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
 <br>
 <br>
 <br>
