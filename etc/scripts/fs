@@ -2,20 +2,16 @@
 
 # Modified by N.Leiten and adopted for Wive-firmware, renamed in "fs"
 # "flash" is a part of midge - mini distribuition for adm5120 based routers.
-# Full rewrite for Wive-NG (RT3050/RT3052/RT3662/RT3883/MT7620) by Evgeniy Manachkin.
+# Full rewrite for Wive-NG (RT3050/RT3052/RT3662/RT3883/MT762x) by Evgeniy Manachkin.
 # Copyright (C) 2004-2005 by Vladislav Moskovets <midge at vlad.org.ua>
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU GPL v2 or later.
 
-# Maximum rwfs to write
+# mtd dev for rfs
+MTDRWFS=`cat /proc/mtd | grep "RW-FS" | awk {' print "/dev/"$1 '} | cut -f -1 -d:`
+# maximum size rwfs to write
 RWFSSIZEHEX="0x`cat /proc/mtd | grep "RW-FS" | awk {' print $2 '}`"
 TGZfs_size=`echo $(($RWFSSIZEHEX))`
-
-# mtd dev for rfs
-MTDRWFS=/dev/mtdblock5
-
-# backup nvram
-BACKUPCGF=/etc/backup/nvram_backup.dat
 
 # rf calibs
 if [ -f /etc/Wireless/rfbackup.bin ]; then
@@ -24,19 +20,17 @@ else
     RFCONFIGS=/etc/Wireless/rf.bin
 fi
 
-
 get_size() {
   ls -sk "$1" | sed -e "s/ \+/ /g" | cut -d" " -f2
 }
 
 usage() {
-  echo "Usage: $0 | save | load | restore | backup_nvram | nvramreset | burnrf | change_mac | fullreset |" >&2
+  echo "Usage: $0 | save | load | restore | nvramreset | burnrf | change_mac | fullreset |" >&2
   echo "____________________________________________________________________________" >&2
   echo " " >&2
   echo "save - Save rwfs to mtd." >&2
   echo "load - Load rwfs from mtd." >&2
   echo "restore - Crash RW-FS and reboot for restore clean rwfs." >&2
-  echo "backup_nvram - Save nvram snapshot to rwfs in $BACKUPCGF" >&2
   echo "nvramreset - Nvarm clean and load default config." >&2
   echo "burnrf - Burn RF config template to Factory." >&2
   echo "change_mac - Change/clone wan mac adree." >&2
@@ -51,9 +45,14 @@ usage() {
 }
 
 load() {
-    local dst=/
-    echo "Loading TGZfs"
-    bzcat $MTDRWFS | tar xf - -C $dst>>/dev/null
+    if [ "$MTDRWFS" = "" ]; then
+	echo "RWFS Not Found!"
+	exit 1
+    else
+	echo "Loading RWFS"
+	local dst=/
+	bzcat $MTDRWFS | tar xf - -C $dst>>/dev/null
+    fi
 }
 
 save() {
@@ -91,8 +90,6 @@ nvramreset() {
     # cleanup with skip clean macs and is_wive and checkmacs flags
     ###############################################################
     echo "Load user defaults."
-    # remove backuped config
-    rm -f /etc/backup/nvram_backup.dat
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
@@ -143,26 +140,6 @@ fullreset() {
     reboot
 }
 
-backup_nvram() {
-    echo "Save settings to backup file...."
-    mkdir -p /etc/backup
-    echo "#The following line must not be removed." > "$BACKUPCGF"
-    echo "Default" >> "$BACKUPCGF"
-    ralink_init show 2860 >> "$BACKUPCGF"
-}
-
-load_nvram() {
-    echo "Load settings from backup file...."
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
-	done
-    fi
-    ralink_init renew 2860 "$BACKUPCGF"
-}
-
 change_mac() {
     echo "Set WAN MAC = $1"
     # blink wps/sec led at boot time before goahead start
@@ -203,12 +180,6 @@ main() {
       ;;
     fullreset)
       fullreset $@
-      ;;
-    backup_nvram)
-      backup_nvram $@
-      ;;
-    load_nvram)
-      load_nvram $@
       ;;
     change_mac)
       change_mac $@

@@ -9,5 +9,4 @@ if [ -f /etc/scripts/userrwfs.sh ]; then
     sh /etc/scripts/userrwfs.sh				> /dev/console
 fi
 
-fs backup_nvram						> /dev/console
 fs save                                                 > /dev/console

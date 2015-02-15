@@ -36,7 +36,6 @@ void import(char *filename, int offset, int len)
 	system("ralink_init clear 2860");
 	snprintf(cmd, 4096, "ralink_init renew 2860 %s", pname);
 	system(cmd);
-	system("fs backup_nvram");
 	system("fs save");
 }
 

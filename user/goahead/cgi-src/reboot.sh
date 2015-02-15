@@ -7,8 +7,7 @@ echo '<head><script type="text/javascript" src="/js/ajax.js"></script></head>'
 echo '<body><script lang=\"JavaScript\">ajaxReloadDelayedPage(60000);</script></body>'
 echo '</html>'
 
-fs backup_nvram 		> /dev/console
 fs save				> /dev/console
-
 /etc/scripts/wifi_unload.sh     > /dev/console
+
 reboot &

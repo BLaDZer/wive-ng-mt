@@ -14,39 +14,44 @@ start() {
     # include kernel config
     . /etc/scripts/config.sh
 
-    $LOG "Check firmware update or clean boot."
-    FORCE_REBUILD_MAC="NO"
-
-    if [ "$IS_WIVE" = "YES" ]; then
-	$LOG ">>>> NORMAL BOOT <<<<"
-    else
-	$LOG ">>>> First boot, firmware trunclated or before burn not wive installed <<<<"
+    if [ "$IS_WIVE" != "YES" ]; then
+	$LOG ">>>> FIRST BOOT OR NVRAM TRUNCLATED <<<<"
 	$LOG "Burn RF template to flash"
 	fs burnrf
-	$LOG ">>>> RESTORE NVRAM <<<<"
-	if [ -f /etc/backup/nvram_backup.dat ]; then
-	    $LOG "Load backuped setting to nvram."
-    	    fs load_nvram
-	else
-	    $LOG "Clear and load defaults to nvram."
-    	    fs nvramreset
-	    ########################################
-	    # force rebuild mac if reset to defaults
-	    ########################################
-	    FORCE_REBUILD_MAC="YES"
-	fi
-	$LOG "Reset OK. Continue boot..."
-	########################################
-	# renew variables after load
-	# always check mac if reset or restored
-	########################################
+	$LOG "Clear and load defaults to nvram."
+    	fs nvramreset
+	###############################################
+	# reread parametrs and set needed falgs
+	###############################################
 	get_param
+	FORCE_REBUILD_MAC="YES"
 	CHECKMAC="YES"
+    else
+	$LOG ">>>>>>>>>>>> NORMAL BOOT <<<<<<<<<<<<<<<"
     fi
 
+    # check minimal config options andcorrect if need
+    checkminimalconfig
+
+    # check macs correct and consystent
     checkmacandfactory
 
-######################################## MINIMAL CONFIG FOR NORMAL START #########################################
+    # set checked flag
+    touch /tmp/nvram_checked
+}
+
+get_param() {
+    # get parametrs
+    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
+	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
+	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName`
+
+    # default mac vendor mask for generate new macs if need
+    VENDMASK="F8:F0:82"
+}
+
+checkminimalconfig()
+{
     #
     # OperationMode adjustment:
     #   if AP client was not compiled and operation mode was set "3" -> set $OperationMode "1"
@@ -86,7 +91,7 @@ start() {
 	    nvram_set ApCliClientOnly 0
 	fi
     fi
-    
+
     #
     #	correct apcli/wds/mbssid interfaces names for dual band use
     #
@@ -163,19 +168,6 @@ start() {
     if [ "$RemoteSSHPort" = "" ]; then
 	nvram_set 2860 RemoteSSHPort 22
     fi
-
-    # set checked flag
-    touch /tmp/nvram_checked
-}
-
-get_param() {
-    # get parametrs
-    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
-	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
-	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName`
-
-    # default mac vendor mask for generate new macs if need
-    VENDMASK="F8:F0:82"
 }
 
 checkmacandfactory() {

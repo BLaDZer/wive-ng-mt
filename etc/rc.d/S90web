@@ -35,8 +35,9 @@ start() {
     fi
 
     #backup nvram setting and save rwfs
-    if [ ! -f /etc/backup/nvram_backup.dat ]; then
-	sh `(sleep 60 && fs backup_nvram > /dev/console && fs save > /dev/console)` &
+    if [ -f /tmp/needrwfssave ]; then
+	sh `(sleep 50 && fs save > /dev/console)` &
+	rm -f /tmp/needrwfssave
     fi
 }
 

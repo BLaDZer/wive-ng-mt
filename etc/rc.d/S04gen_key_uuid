@@ -7,6 +7,7 @@ start() {
 	$LOG "No DSS key found. Generate new host key."
 	mkdir -p /etc/dropbear
     	dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key &
+	needrwfssave=1
     fi
 
     if [ ! -f /etc/miniupnpd.conf.uuid ] && [ -f /bin/miniupnpd ]; then
@@ -23,12 +24,18 @@ start() {
         serial=`echo "$outid" | cut -f1 -d-`
         $LOG "UPNP UUID is $outid , serial is $serial"
 	printf "uuid=$outid\nserial=$serial\n" > /etc/miniupnpd.conf.uuid
+	needrwfssave=1
     fi
 
     if [ -f /bin/dhcp6s ] && [ ! -e /etc/dhcp6cctlkey -o ! -e /etc/dhcp6sctlkey ]; then
 	$LOG "Gen dhcp6 ctl keys"
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6cctlkey
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6sctlkey
+	needrwfssave=1
+    fi
+
+    if [ "$needrwfssave" = "1" ]; then
+	touch /tmp/needrwfssave
     fi
 }
 
