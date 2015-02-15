@@ -286,10 +286,10 @@ clean:
 	##############REMOVE UNUSED FILES 2###########################
 	find $(ROOTDIR) -type f -a \( -name '*.*~' -o -name '*.ko' -o -name '*.log' -o -name '*.old' -o -name 'config.log' -o -name 'aclocal.m4' -o -name '.sgbuilt_user' -o -name '.config.cmd' \) | xargs rm -f
 	##############REMOVE UNUSED FILES 3###########################
-	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f 
+	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f
 	##############REMOVE UNUSED FOLDERS###########################
 	find $(ROOTDIR) -type d -a \( -name 'filesystem' -o -name 'autom4te.cache' -o -name '.libs' -o -name 'cvs' -o -name 'CVS' -o -name '.dep' -o -name '.deps' \) | xargs rm -rf
-	rm -rf $(LIBCDIRSHARED)/* $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs config.in config.arch config.tk images modules/config.tk .config .config.old .oldconfig autoconf.h
+	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs config.in config.arch config.tk images modules/config.tk .config .config.old .oldconfig autoconf.h
 
 %_only:
 	@case "$(@)" in \
