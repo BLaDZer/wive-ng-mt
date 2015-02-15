@@ -923,10 +923,10 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-@ENABLE_MOUNT_HELPER_FALSE@install-exec-local:
-@ENABLE_NTFS_3G_FALSE@install-exec-local:
 @ENABLE_NTFS_3G_FALSE@uninstall-local:
 @ENABLE_NTFS_3G_FALSE@install-data-local:
+@ENABLE_MOUNT_HELPER_FALSE@install-exec-local:
+@ENABLE_NTFS_3G_FALSE@install-exec-local:
 @ENABLE_NTFS_3G_FALSE@install-exec-hook:
 @RUN_LDCONFIG_FALSE@install-exec-hook:
 clean: clean-am

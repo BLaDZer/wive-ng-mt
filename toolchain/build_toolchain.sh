@@ -69,6 +69,7 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto flex --download-all
 	urpmi --auto make --download-all
 	urpmi --auto gcc --download-all
+	urpmi --auto libmpc3 --download-all
 	urpmi --auto glibc-devel --download-all
 	urpmi --auto binutils-devel --download-all
 	urpmi --auto bison --download-all
