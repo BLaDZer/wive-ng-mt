@@ -508,8 +508,8 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    switch (pe->TxRate.field.BW) {
 		case 0: websWrite(wp, T("<td>%s</td>"), "20MHz"); break;
 		case 1: websWrite(wp, T("<td>%s</td>"), "40MHz"); break;
-		//case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
-		//case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
+		case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
+		case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
 		//case 4: websWrite(wp, T("<td>%s</td>"), "10MHz"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
 	    }
@@ -523,7 +523,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
 		case 2: websWrite(wp, T("<td>%s</td>"), "HTMIX"); break;
 		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
-		//case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
+		case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
 		default : websWrite(wp, T("<td>%s</td>"), "");
 	    }
 
