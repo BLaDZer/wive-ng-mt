@@ -980,25 +980,25 @@ typedef struct _NDIS_802_11_CAPABILITY {
 typedef union _HTTRANSMIT_SETTING {
 #ifdef RT_BIG_ENDIAN
 	struct {
-		USHORT MODE:2;	/* Use definition MODE_xxx. */
+		USHORT MODE:3;	/* Use definition MODE_xxx. */
 		USHORT iTxBF:1;
-		USHORT rsv:1;
 		USHORT eTxBF:1;
-		USHORT STBC:2;	/* SPACE */
+		USHORT STBC:1;	/* only support in HT/VHT mode with MCS0~7 */
 		USHORT ShortGI:1;
-		USHORT BW:1;	/* channel bandwidth 20MHz or 40 MHz */
-		USHORT MCS:7;	/* MCS */
+		USHORT BW:2;	/* channel bandwidth 20MHz/40/80 MHz */
+		USHORT ldpc:1;
+		USHORT MCS:6;	/* MCS */
 	} field;
 #else
 	struct {
-		USHORT MCS:7;	/* MCS */
-		USHORT BW:1;	/* channel bandwidth 20MHz or 40 MHz */
+		USHORT MCS:6;
+		USHORT ldpc:1;
+		USHORT BW:2;
 		USHORT ShortGI:1;
-		USHORT STBC:2;	/* SPACE */
+		USHORT STBC:1;
 		USHORT eTxBF:1;
-		USHORT rsv:1;
 		USHORT iTxBF:1;
-		USHORT MODE:2;	/* Use definition MODE_xxx. */
+		USHORT MODE:3;
 	} field;
 #endif
 	USHORT word;
@@ -1089,13 +1089,6 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	CHAR AvgRssi2;
 	UINT32 ConnectedTime;
 	MACHTTRANSMIT_SETTING TxRate;
-#ifdef RTMP_RBUS_SUPPORT
-#if defined (RT2883) || defined (RT3883)
-	UINT32		LastRxRate;
-	SHORT		StreamSnr[3];				/* BF SNR from RXWI. Units=0.25 dB. 22 dB offset removed */
-	SHORT		SoundingRespSnr[3];			/* SNR from Sounding Response. Units=0.25 dB. 22 dB offset removed */
-#endif
-#endif /* RTMP_RBUS_SUPPORT */
 } RT_802_11_MAC_ENTRY, *PRT_802_11_MAC_ENTRY;
 
 typedef struct _RT_802_11_MAC_TABLE {

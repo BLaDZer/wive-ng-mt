@@ -30,6 +30,7 @@
 #include 	"utils.h"
 #include	"usb.h"
 #include 	"internet.h"
+#include        "firewall.h"
 #include	"helpers.h"
 
 static void storageDiskAdm(webs_t wp, char_t *path, char_t *query);

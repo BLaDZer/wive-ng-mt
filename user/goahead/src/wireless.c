@@ -473,9 +473,6 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	int i, s;
 	struct iwreq iwr;
 	RT_802_11_MAC_TABLE table = {0};
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	RT_802_11_MAC_TABLE2 table2 = {0};
-#endif
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	strncpy(iwr.ifr_name, "ra0", IFNAMSIZ);
 	iwr.u.data.pointer = (caddr_t) &table;
@@ -548,7 +545,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	strncpy(iwr.ifr_name, "rai0", IFNAMSIZ);
-	iwr.u.data.pointer = (caddr_t) &table2;
+	iwr.u.data.pointer = (caddr_t) &table;
 
 	if (s < 0) {
 		websError(wp, 500, "ioctl sock failed!");
@@ -561,8 +558,8 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	for (i = 0; i < table2.Num; i++) {
-	    RT_802_11_MAC_ENTRY2 *pe = &(table2.Entry[i]);
+	for (i = 0; i < table.Num; i++) {
+	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
 
 	    // MAC Address
 	    websWrite(wp, T("<tr><td bgcolor=\"#c4ffc4\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),

@@ -917,9 +917,6 @@ typedef struct _NDIS_802_11_CAPABILITY {
 #define RT_OID_WSC_SET_CON_WPS_STOP                 0x0764
 #endif /* CON_WPS */
 
-
-
-
 /* New for MeetingHouse Api support */
 #define OID_MH_802_1X_SUPPORTED               0xFFEDC100
 
@@ -933,11 +930,13 @@ typedef union _HTTRANSMIT_SETTING {
 		USHORT STBC:1;	/* only support in HT/VHT mode with MCS0~7 */
 		USHORT ShortGI:1;
 		USHORT BW:2;	/* channel bandwidth 20MHz/40/80 MHz */
-		USHORT MCS:7;	/* MCS */
+		USHORT ldpc:1;
+		USHORT MCS:6;	/* MCS */
 	} field;
 #else
 	struct {
-		USHORT MCS:7;
+		USHORT MCS:6;
+		USHORT ldpc:1;
 		USHORT BW:2;
 		USHORT ShortGI:1;
 		USHORT STBC:1;
@@ -1054,8 +1053,6 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	MACHTTRANSMIT_SETTING TxRate;
 	/* below not used for MT7610E, need for structure align */
 	UINT32 LastRxRate;
-	SHORT StreamSnr[3];
-	SHORT SoundingRespSnr[3];
 } RT_802_11_MAC_ENTRY, *PRT_802_11_MAC_ENTRY;
 
 typedef struct _RT_802_11_MAC_TABLE {
