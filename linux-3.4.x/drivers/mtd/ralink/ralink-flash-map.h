@@ -2,42 +2,6 @@
 #include "ralink-flash.h"
 
 /* this is mapping flash definition */
-#if defined (CONFIG_RT2880_FLASH_32M)
-static struct mtd_partition rt2880_partitions[] __maybe_unused = {
-        {
-                name:           "Bootloader",  /* mtdblock0 */
-                size:           MTD_BOOT_PART_SIZE,  /* 192K */
-                offset:         0,
-#ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
-        }, {
-                name:           "Kernel",
-                size:           CONFIG_MTD_KERNEL_PART_SIZ,
-                offset:         MTDPART_OFS_APPEND,
-        }, {
-                name:           "RootFS",
-                size:           MTD_ROOTFS_PART_SIZE,
-                offset:         MTDPART_OFS_APPEND,
-#else
-        }, {
-                name:           "Kernel",
-                size:           MTD_KERN_PART_SIZE,
-                offset:         MTDPART_OFS_APPEND,
-#endif
-        }, {
-                name:           "Config",
-                size:           0x20000,  /* 128K */
-                offset:         MTDPART_OFS_APPEND
-        }, {
-                name:           "Factory",
-                size:           0x20000,  /* 128K */
-                offset:         MTDPART_OFS_APPEND
-	}, {
-                name:           "RW-FS", /* mtdblock4 */
-                size:           MTD_RWFS_PART_SIZE, /* 192K */
-                offset:         MTD_RWFS_PART_OFFSET,
-	}
-};
-#else /* not 32M flash */
 static struct mtd_partition rt2880_partitions[] __maybe_unused = {
         {
                 name:           "Bootloader",	/* mtdblock0 */
@@ -84,4 +48,3 @@ static struct mtd_partition rt2880_partitions[] __maybe_unused = {
 #endif
 	}
 };
-#endif
