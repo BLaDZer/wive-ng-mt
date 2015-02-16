@@ -554,6 +554,8 @@
 9) kernel: exfat: add module alias for fix automount.<br>
 10) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
 11) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+12) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
+13) kernel: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
 <br>
 <br>
 <b>TODO:</b><br>
