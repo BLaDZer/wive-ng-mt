@@ -551,6 +551,7 @@
 6) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
 7) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
 8) kernel: exfat: add module alias for fix automount.<br>
+9) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
 <br>
 <br>
 <b>TODO:</b><br>
