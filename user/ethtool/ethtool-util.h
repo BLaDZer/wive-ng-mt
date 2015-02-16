@@ -10,6 +10,7 @@ typedef __uint16_t u16;         /* ditto */
 typedef __uint8_t u8;           /* ditto */
 #include "ethtool-copy.h"
 
+#ifdef VENDORS_EXTENSIOS
 /* National Semiconductor DP83815, DP83816 */
 int natsemi_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 int natsemi_dump_eeprom(struct ethtool_drvinfo *info,
@@ -38,5 +39,5 @@ int pcnet32_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 
 /* Motorola 8xx FEC Ethernet controller */
 int fec_8xx_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
-
+#endif
 #endif

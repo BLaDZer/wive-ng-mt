@@ -547,11 +547,12 @@
 2) libcurl: up to 7.40.0 version.<br>
 3) libnvram: fix small memleak, full code review and cleanup.<br>
 4) transmission: up to 2.84.<br>
-5) apps: add fuse ntfs-3g (2014.2.15).<br>
-6) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
-7) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
-8) kernel: exfat: add module alias for fix automount.<br>
-9) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+5) ethtool: disable build vendors extensions (decrease size).<br>
+6) apps: add fuse ntfs-3g (2014.2.15).<br>
+7) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
+8) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
+9) kernel: exfat: add module alias for fix automount.<br>
+10) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
 <br>
 <br>
 <b>TODO:</b><br>

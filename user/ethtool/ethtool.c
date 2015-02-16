@@ -994,6 +994,7 @@ static struct {
 	int (*func)(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 
 } driver_list[] = {
+#ifdef VENDORS_EXTENSIOS
 	{ "8139cp", realtek_dump_regs },
 	{ "8139too", realtek_dump_regs },
 	{ "de2104x", de2104x_dump_regs },
@@ -1003,6 +1004,7 @@ static struct {
 	{ "amd8111e", amd8111e_dump_regs },
 	{ "pcnet32", pcnet32_dump_regs },
 	{ "fec_8xx", fec_8xx_dump_regs },
+#endif
 };
 
 static int dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
@@ -1035,13 +1037,13 @@ static int dump_eeprom(struct ethtool_drvinfo *info, struct ethtool_eeprom *ee)
 		fwrite(ee->data, 1, ee->len, stdout);
 		return 0;
 	}
-
+#ifdef VENDORS_EXTENSIOS
 	if (!strncmp("natsemi", info->driver, ETHTOOL_BUSINFO_LEN)) {
 		return natsemi_dump_eeprom(info, ee);
 	} else if (!strncmp("tg3", info->driver, ETHTOOL_BUSINFO_LEN)) {
 		return tg3_dump_eeprom(info, ee);
 	}
-
+#endif
 	fprintf(stdout, "Offset\t\tValues\n");
 	fprintf(stdout, "------\t\t------");
 	for (i = 0; i < ee->len; i++) {
