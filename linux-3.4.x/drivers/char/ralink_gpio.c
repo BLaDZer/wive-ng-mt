@@ -339,10 +339,10 @@ static long ralink_gpio_ioctl(struct file *file, unsigned int req, unsigned long
 		*(volatile u32 *)(RALINK_REG_PIORESET) = cpu_to_le32(arg);
 		break;
 	case RALINK_GPIO_ENABLE_INTP:
-		*(volatile u32 *)(RALINK_REG_INTENA) = cpu_to_le32(RALINK_INTCTL_PIO);
+		*(volatile u32 *)(RALINK_INTENA) = cpu_to_le32(RALINK_INTCTL_PIO);
 		break;
 	case RALINK_GPIO_DISABLE_INTP:
-		*(volatile u32 *)(RALINK_REG_INTDIS) = cpu_to_le32(RALINK_INTCTL_PIO);
+		*(volatile u32 *)(RALINK_INTDIS) = cpu_to_le32(RALINK_INTCTL_PIO);
 		break;
 	case RALINK_GPIO_REG_IRQ:
 		copy_from_user(&info, (ralink_gpio_reg_info *)arg, sizeof(info));
@@ -2474,7 +2474,7 @@ int __init ralink_gpio_init(void)
 	*(volatile u32 *)(RALINK_REG_GPIOMODE) = cpu_to_le32(gpiomode);
 
 	//enable gpio interrupt
-	*(volatile u32 *)(RALINK_REG_INTENA) = cpu_to_le32(RALINK_INTCTL_PIO);
+	*(volatile u32 *)(RALINK_INTENA) = cpu_to_le32(RALINK_INTCTL_PIO);
 	for (i = 0; i < RALINK_GPIO_NUMBER; i++) {
 		ralink_gpio_info[i].irq = i;
 		ralink_gpio_info[i].pid = 0;
@@ -2499,7 +2499,7 @@ void __exit ralink_gpio_exit(void)
 	//config these pins to normal mode
 	*(volatile u32 *)(RALINK_REG_GPIOMODE) &= ~RALINK_GPIOMODE_DFT;
 	//disable gpio interrupt
-	*(volatile u32 *)(RALINK_REG_INTDIS) = cpu_to_le32(RALINK_INTCTL_PIO);
+	*(volatile u32 *)(RALINK_INTDIS) = cpu_to_le32(RALINK_INTCTL_PIO);
 #ifdef CONFIG_RALINK_GPIO_LED
 	del_timer(&ralink_gpio_led_timer);
 #endif
