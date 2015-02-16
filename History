@@ -561,6 +561,7 @@
 16) kernel: hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
 17) kernel: raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
 18) kernel: ralink mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
+19) kernel: ralink mtd: fix SPI clock for MT7621.<br>
 <br>
 <br>
 <b>TODO:</b><br>

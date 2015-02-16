@@ -149,25 +149,39 @@ static int bbu_spic_busy_wait(void)
 
 void spic_init(void)
 {
-	u32 clk_div, reg_div;
+	u32 clk_sys, clk_div, reg;
 
+	clk_sys = get_surfboard_sysclk() / 1000000;
+#if defined(CONFIG_RALINK_MT7621)
+	if (clk_sys > 230) {
+		/* OCP 1:3 */
 #if defined (CONFIG_MTD_SPI_FAST_CLOCK)
-	clk_div = 6; /* hclk/6 -> 36.6 MHz */
-	reg_div = 0x04;
+		clk_div = 6;	/* hclk/6 -> 50 MHz */
 #else
-	clk_div = 8; /* hclk/8 -> 27.5 MHz */
-	reg_div = 0x06;
+		clk_div = 8;	/* hclk/8 -> 36 MHz */
 #endif
+	} else
+#endif
+	{
+		/* OCP 1:4 or MT7628 */
+#if defined (CONFIG_MTD_SPI_FAST_CLOCK)
+		clk_div = 4;	/* hclk/4 -> 50 MHz */
+#else
+		clk_div = 6;	/* hclk/6 -> 33 MHz */
+#endif
+	}
 
-	ra_and(SPI_REG_MASTER, ~(0xfff << 16));
-	ra_or(SPI_REG_MASTER, (reg_div << 16));
+	reg = ra_inl(SPI_REG_MASTER);
+	reg &= ~(0xfff << 16);
+	reg |= ((clk_div-2) << 16);
+	ra_outl(SPI_REG_MASTER, reg);
 
 #ifdef TEST_CS1_FLASH
 	ra_and(RALINK_SYSCTL_BASE + 0x60, ~(1 << 12));
 	ra_or(SPI_REG_MASTER, (1 << 29));
 #endif
 
-	printk("Ralink SPI flash driver, SPI clock: %dMHz\n", (get_surfboard_sysclk() / 1000000) / clk_div);
+	printk("Ralink SPI flash driver, SPI clock: %dMHz\n", clk_sys / clk_div);
 }
 
 struct chip_info {
