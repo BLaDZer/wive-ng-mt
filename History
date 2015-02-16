@@ -554,11 +554,12 @@
 9) kernel: exfat: add module alias for fix automount.<br>
 10) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
 11) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-12) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
-13) kernel: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
-14) kernel: ralink arch: update MT7621 code.<br>
-15) kernel: hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
-16) kernel: raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
+12) kernel: huge update NAND framework from upstream.<br>
+13) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
+14) kernel: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
+15) kernel: ralink arch: update MT7621 code.<br>
+16) kernel: hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
+17) kernel: raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
 <br>
 <br>
 <b>TODO:</b><br>
