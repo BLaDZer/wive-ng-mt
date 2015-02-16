@@ -11,7 +11,7 @@
 #include <linux/autoconf.h>  //kernel config
 #include "mtd-abi.h"
 
-#if defined (CONFIG_RALINK_RT6855A) || defined (CONFIG_RALINK_MT7621)
+#ifdef CONFIG_RALINK_MT7621
 #define LAN_OFFSET	0xE000
 #define WAN_OFFSET	0xE006
 #else

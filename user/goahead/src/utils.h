@@ -44,10 +44,6 @@
 #define PROCREG_GMAC	"/proc/rt5350/gmac"
 #elif defined(CONFIG_RALINK_RT3883)
 #define PROCREG_GMAC	"/proc/rt3883/gmac"
-#elif defined (CONFIG_RALINK_RT6855)
-#define PROCREG_GMAC	"/proc/rt6855/gmac"
-#elif defined (CONFIG_RALINK_RT63365)
-#define PROCREG_GMAC	"/proc/rt63365/gmac"
 #elif defined (CONFIG_RALINK_MT7620)
 #define PROCREG_GMAC	"/proc/mt7620/gmac"
 #elif defined (CONFIG_RALINK_MT7621)

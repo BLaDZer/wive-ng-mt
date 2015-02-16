@@ -29,9 +29,6 @@ enum {
 #elif defined (CONFIG_RALINK_RT5350)
 	gpio2100,
 	gpio2722,
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio1500,
-	gpio3116,
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio2300,
 	gpio3924,
@@ -84,10 +81,6 @@ int gpio_set_dir(int r, int dir)
 		if (r == gpio2722)
 			req = RALINK_GPIO2722_SET_DIR_IN;
 		else
-#elif defined (CONFIG_RALINK_RT6855A)
-		if (r == gpio3116)
-			req = RALINK_GPIO3116_SET_DIR_IN;
-		else
 #elif defined (CONFIG_RALINK_MT7620)
 		if (r == gpio72)
 			req = RALINK_GPIO72_SET_DIR_IN;
@@ -135,10 +128,6 @@ int gpio_set_dir(int r, int dir)
 #elif defined (CONFIG_RALINK_RT5350)
 		if (r == gpio2722)
 			req = RALINK_GPIO2722_SET_DIR_OUT;
-		else
-#elif defined (CONFIG_RALINK_RT6855A)
-		if (r == gpio3116)
-			req = RALINK_GPIO3116_SET_DIR_OUT;
 		else
 #elif defined (CONFIG_RALINK_MT7620)
 		if (r == gpio72)
@@ -206,10 +195,6 @@ int gpio_set_dir_g(int r, int dir, int gpio_num)
 		if (r == gpio2722)
 			req = RALINK_GPIO2722_SET_DIR_IN;
 		else
-#elif defined (CONFIG_RALINK_RT6855A)
-		if (r == gpio3116)
-			req = RALINK_GPIO3116_SET_DIR_IN;
-		else
 #elif defined (CONFIG_RALINK_MT7620)
 		if (r == gpio72)
 			req = RALINK_GPIO72_SET_DIR_IN;
@@ -257,10 +242,6 @@ int gpio_set_dir_g(int r, int dir, int gpio_num)
 #elif defined (CONFIG_RALINK_RT5350)
 		if (r == gpio2722)
 			req = RALINK_GPIO2722_SET_DIR_OUT;
-		else
-#elif defined (CONFIG_RALINK_RT6855A)
-		if (r == gpio3116)
-			req = RALINK_GPIO3116_SET_DIR_OUT;
 		else
 #elif defined (CONFIG_RALINK_MT7620)
 		if (r == gpio72)
@@ -523,9 +504,6 @@ void gpio_test_write(void)
 #elif defined (CONFIG_RALINK_RT5350)
 	gpio_set_dir(gpio2722, gpio_out);
 	gpio_set_dir(gpio2100, gpio_out);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_set_dir(gpio3116, gpio_out);
-	gpio_set_dir(gpio1500, gpio_out);
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio_set_dir(gpio72, gpio_out);
 	gpio_set_dir(gpio7140, gpio_out);
@@ -560,9 +538,6 @@ void gpio_test_write(void)
 #elif defined (CONFIG_RALINK_RT5350)
 	gpio_write_int(gpio2722, 0xffffffff);
 	gpio_write_int(gpio2100, 0xffffffff);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_write_int(gpio3116, 0x0000ffff);
-	gpio_write_int(gpio1500, 0xffff0000);
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio_write_int(gpio72, 0xffffffff);
 	gpio_write_int(gpio7140, 0xffffffff);
@@ -598,9 +573,6 @@ void gpio_test_write(void)
 #elif defined (CONFIG_RALINK_RT5350)
 	gpio_write_int(gpio2722, 0);
 	gpio_write_int(gpio2100, 0);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_write_int(gpio3116, 0);
-	gpio_write_int(gpio1500, 0);
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio_write_int(gpio72, 0);
 	gpio_write_int(gpio7140, 0);
@@ -671,14 +643,6 @@ void gpio_test_read_g(int gpio_number)
 	gpio_set_dir(gpio2100, gpio_in);
 	gpio_read_int(gpio2100, &d);
 	printf("gpio 21~00 = 0x%x\n", d);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_set_dir(gpio3116, gpio_in);
-	gpio_read_int(gpio3116, &d);
-	printf("gpio 31~16 = 0x%x\n", d);
-
-	gpio_set_dir(gpio1500, gpio_in);
-	gpio_read_int(gpio1500, &d);
-	printf("gpio 15~00 = 0x%x\n", d);
 #elif defined (CONFIG_RALINK_MT7620)
   if(gpio_number == 72){
 		gpio_set_dir_g(gpio72, gpio_in, gpio_number);
@@ -845,14 +809,6 @@ void gpio_test_read(void)
 	gpio_set_dir(gpio2100, gpio_in);
 	gpio_read_int(gpio2100, &d);
 	printf("gpio 21~00 = 0x%x\n", d);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_set_dir(gpio3116, gpio_in);
-	gpio_read_int(gpio3116, &d);
-	printf("gpio 31~16 = 0x%x\n", d);
-
-	gpio_set_dir(gpio1500, gpio_in);
-	gpio_read_int(gpio1500, &d);
-	printf("gpio 15~00 = 0x%x\n", d);
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio_set_dir(gpio72, gpio_in);
 	gpio_read_int(gpio72, &d);
@@ -931,9 +887,6 @@ void gpio_test_intr(int gpio_num)
 #elif defined (CONFIG_RALINK_RT5350)
 	gpio_set_dir(gpio2722, gpio_in);
 	gpio_set_dir(gpio2100, gpio_in);
-#elif defined (CONFIG_RALINK_RT6855A)
-	gpio_set_dir(gpio3116, gpio_in);
-	gpio_set_dir(gpio1500, gpio_in);
 #elif defined (CONFIG_RALINK_MT7620)
 	gpio_set_dir(gpio72, gpio_in);
 	gpio_set_dir(gpio7140, gpio_in);

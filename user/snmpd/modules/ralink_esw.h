@@ -16,10 +16,6 @@
 #define PROCREG_SNMP	"/proc/rt5350/snmp"
 #elif defined(CONFIG_RALINK_RT3883)
 #define PROCREG_SNMP	"/proc/rt3883/snmp"
-#elif defined (CONFIG_RALINK_RT6855)
-#define PROCREG_SNMP	"/proc/rt6855/snmp"
-#elif defined (CONFIG_RALINK_RT63365)
-#define PROCREG_SNMP	"/proc/rt63365/snmp"
 #elif defined (CONFIG_RALINK_MT7620)
 #define PROCREG_SNMP	"/proc/mt7620/snmp"
 #elif defined (CONFIG_RALINK_MT7621)

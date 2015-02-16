@@ -7,7 +7,21 @@ CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
 CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 ifdef CONFIG_RALINK_MT7620
+ifdef CONFIG_RAETH_ESW
 CFLAGS += -DCONFIG_RALINK_MT7620
+endif
+endif
+
+ifdef CONFIG_RALINK_MT7621
+ifdef CONFIG_RAETH_ESW
+CFLAGS += -DCONFIG_RALINK_MT7621
+endif
+endif
+
+ifdef CONFIG_RALINK_MT7628
+ifdef CONFIG_RAETH_ESW
+CFLAGS += -DCONFIG_RALINK_MT7628
+endif
 endif
 
 SRC=switch.c

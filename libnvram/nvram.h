@@ -74,6 +74,9 @@ typedef struct nvram_ioctl_s {
 	int size;
 } nvram_ioctl_t;
 
+int getNvramNum(void);
+char *getNvramName(int index);
+unsigned int getNvramIndex(char *name);
 
 int nvram_init(int index);
 void nvram_close(int index);
@@ -85,13 +88,6 @@ char *nvram_bufget(int index, char *name);
 
 int nvram_commit(int index);
 int nvram_clear(int index);
-
-int getNvramNum(void);
-unsigned int getNvramOffset(int index);
-unsigned int getNvramBlockSize(int index);
-char *getNvramName(int index);
-unsigned int getNvramIndex(char *name);
-void toggleNvramDebug(void);
 int renew_nvram(int mode, char *fname);
 int nvram_show(int mode);
 #endif

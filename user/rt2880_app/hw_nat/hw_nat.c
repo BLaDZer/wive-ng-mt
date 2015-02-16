@@ -77,7 +77,7 @@ void show_usage(void)
     printf("NOTE: Total 511 rules, PreAC+PostAC<=64, PreMeter+PostMeter<=64\n\n");
 
     printf("Set HNAT QOS Mode\n");
-#if defined (CONFIG_RALINK_RT3352) || defined (CONFIG_RALINK_RT6855)
+#if defined (CONFIG_RALINK_RT3352)
     printf("Ex: hw_nat -L [0:WRR, 1:SPQ, 2:Q3>WRR(Q2,Q1,Q0), 3:Q3>Q2>WRR(Q1,Q0)]\n\n");
 #else
     printf("Ex: hw_nat -L [0:WRR, 1:SPQ, 2:Q3>WRR(Q2,Q1,Q0)]\n\n");

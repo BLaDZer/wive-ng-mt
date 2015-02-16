@@ -65,6 +65,28 @@ char* sstrdup(char* str)
 }
 #endif
 
+int getNvramNum(void)
+{
+	return FLASH_BLOCK_NUM;
+}
+
+char *getNvramName(int index)
+{
+	LIBNV_CHECK_INDEX(NULL);
+	return fb[index].name;
+}
+
+unsigned int getNvramIndex(char *name)
+{
+	int i;
+	for (i = 0; i < FLASH_BLOCK_NUM; i++) {
+		if (!strcmp(fb[i].name, name)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 /*
  * 1. read env from flash
  * 2. parse entries
@@ -418,55 +440,6 @@ int nvram_clear(int index)
 
 	fb[index].dirty = 0;
 	return 0;
-}
-
-int getNvramNum(void)
-{
-	return FLASH_BLOCK_NUM;
-}
-
-unsigned int getNvramOffset(int index)
-{
-	LIBNV_CHECK_INDEX(0);
-	return fb[index].flash_offset;
-}
-
-char *getNvramName(int index)
-{
-	LIBNV_CHECK_INDEX(NULL);
-	return fb[index].name;
-}
-
-unsigned int getNvramBlockSize(int index)
-{
-	LIBNV_CHECK_INDEX(0);
-	return fb[index].flash_max_len;
-}
-
-unsigned int getNvramIndex(char *name)
-{
-	int i;
-	for (i = 0; i < FLASH_BLOCK_NUM; i++) {
-		if (!strcmp(fb[i].name, name)) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-void toggleNvramDebug()
-{
-#ifndef DEBUG
-	if (libnvram_debug) {
-		libnvram_debug = 0;
-		printf("%s: turn off debugging\n", __FILE__);
-	} else {
-		libnvram_debug = 1;
-		printf("%s: turn ON debugging\n", __FILE__);
-	}
-#else
-		libnvram_debug = 1;
-#endif
 }
 
 int renew_nvram(int mode, char *fname)

@@ -5,12 +5,6 @@
 #define WPS_AP_PBC_LED_GPIO     13   // 0 ~ 24( or disable this feature by undefine it)
 #elif defined (CONFIG_RALINK_RT3883)
 #define WPS_AP_PBC_LED_GPIO     0   // 0 ~ 24( or disable this feature by undefine it)
-#elif defined (CONFIG_RALINK_RT6855A)
-#if defined (CONFIG_RT6855A_PCIE_PORT0_ENABLE)
-#define WPS_AP_PBC_LED_GPIO     32	// rt6855 WPS LED
-#else
-#define WPS_AP_PBC_LED_GPIO     21	// rt6856 WPS LED
-#endif
 #elif defined (CONFIG_RALINK_MT7620)
 #define WPS_AP_PBC_LED_GPIO     39	// MT7620 WPS LED
 #else
