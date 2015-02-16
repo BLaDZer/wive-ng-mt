@@ -132,9 +132,6 @@ static int pcie_link_status = 0;
 #if defined (CONFIG_RALINK_RT3883)
 #define RALINK_PCIE_CLK_GEN		*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0x7c)
 #define RALINK_PCIE_CLK_GEN1		*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0x80)
-//RALINK_SYSCFG1 bit
-#define RALINK_PCI_HOST_MODE_EN		(1<<7)
-#define RALINK_PCIE_RC_MODE_EN		(1<<8)
 //RALINK_GPIOMODE bit
 #define PCI_SLOTx2			(1<<11)
 #define PCI_SLOTx1			(2<<11)
@@ -147,6 +144,9 @@ static int pcie_link_status = 0;
 #define LC_CKDRVOHZ			(1<<18)
 #define LC_CKDRVHZ			(1<<17)
 #endif
+//RALINK_SYSCFG1 bit
+#define RALINK_PCI_HOST_MODE_EN		(1<<7)
+#define RALINK_PCIE_RC_MODE_EN		(1<<8)
 
 #define PCI_ACCESS_READ_1		0
 #define PCI_ACCESS_READ_2		1
