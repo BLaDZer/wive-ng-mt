@@ -7,23 +7,25 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
 #define NV_DEV "/dev/nvram"
 
-#ifdef CONFIG_LIB_LIBNVRAM_SSTRDUP
+/* use safe mode strdup */
 #define NVRAM_LIB_LIBNVRAM_SSTRDUP
-#endif
+
+ /* split 2860 and RTDEV configs by offset */
+//#define FLASH_BLOCK_SPLIT
+
+#define RT2860_NVRAM    		0
+#define RTINIC_NVRAM    		1
 
 #define BUFSZ				1024
 #define MAX_NV_VALUE_LEN		64
 #define NV_BUFFERS_COUNT		128
 #define ENV_BLK_SIZE			0x1000
-
-#define FLASH_BLOCK_NUM			4
-#define RT2860_NVRAM    		0
-#define RTINIC_NVRAM    		1
 
 #define RALINK_NVRAM_IOCTL_GET		0x01
 #define RALINK_NVRAM_IOCTL_GETALL	0x02
@@ -32,6 +34,12 @@
 #define RALINK_NVRAM_IOCTL_CLEAR	0x05
 
 #define FREE(x) do { if (x != NULL) {free(x); x=NULL;} } while(0)
+
+#ifdef FLASH_BLOCK_SPLIT
+#define FLASH_BLOCK_NUM 2
+#else
+#define FLASH_BLOCK_NUM 1
+#endif
 
 typedef struct environment_s {
 	unsigned long crc;		//CRC32 over data bytes

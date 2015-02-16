@@ -1,6 +1,4 @@
 #include "nvram.h"
-#include "flash_api.h"
-#include <errno.h>
 
 //#define DEBUG
 
@@ -20,28 +18,17 @@ static block_t fb[FLASH_BLOCK_NUM] =
 		.flash_max_len = ENV_BLK_SIZE*4,
 		.valid = 0
 	},
+#ifdef FLASH_BLOCK_SPLIT
 	{
 		.name = "rtdev",
 		.flash_offset = 0x6000,
 		.flash_max_len = ENV_BLK_SIZE*2,
 		.valid = 0
 	},
-	{
-		.name = "cert",
-		.flash_offset = 0x8000,
-		.flash_max_len = ENV_BLK_SIZE*2,
-		.valid = 0
-	},
-	{
-		.name = "wapi",
-		.flash_offset = 0xa000,
-		.flash_max_len = ENV_BLK_SIZE*5,
-		.valid = 0
-	}
+#endif
 };
 
-
-//x is the value returned if the check failed
+/* x is the value returned if the check failed */
 #define LIBNV_CHECK_INDEX(x) do { \
 	if (index < 0 || index >= FLASH_BLOCK_NUM) { \
 		LIBNV_PRINT("index(%d) is out of range\n", index); \

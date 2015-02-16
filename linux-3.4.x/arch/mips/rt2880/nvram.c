@@ -11,12 +11,27 @@ extern int ra_mtd_write_nm(char *name, loff_t to, size_t len, const u_char *buf)
 extern int ra_mtd_read_nm(char *name, loff_t from, size_t len, u_char *buf);
 
 /* Config part in nvram */
-static block_t fb[FLASH_BLOCK_NUM] = {
+#ifdef FLASH_BLOCK_SPLIT
+#define FLASH_BLOCK_NUM 2
+#else
+#define FLASH_BLOCK_NUM 1
+#endif
+static block_t fb[FLASH_BLOCK_NUM] =
+{
 	{
+		.name = "2860",
 		.flash_offset =  0x2000,
-		.flash_max_len = ENV_BLK_SIZE * 4,
+		.flash_max_len = ENV_BLK_SIZE*4,
 		.valid = 0
-	}
+	},
+#ifdef FLASH_BLOCK_SPLIT
+	{
+		.name = "rtdev",
+		.flash_offset = 0x6000,
+		.flash_max_len = ENV_BLK_SIZE*2,
+		.valid = 0
+	},
+#endif
 };
 
 /* Prototypes */

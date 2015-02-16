@@ -699,7 +699,7 @@ int main(int argc, char *argv[])
 		if (!strncasecmp(argv[1], "gen", 4) ||
 		    !strncasecmp(argv[1], "make_wireless_config", 21)) {
 			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7)) { //b-compatible
+			    !strncasecmp(argv[2], "rt2860", 7)) {
 				gen_wifi_config(RT2860_NVRAM);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 				gen_wifi_config(RTINIC_NVRAM);
@@ -708,7 +708,7 @@ int main(int argc, char *argv[])
 				usage(argv[0]);
 		} else if (!strncasecmp(argv[1], "show", 5)) {
 			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7)) //b-compatible
+			    !strncasecmp(argv[2], "rt2860", 7))
 				nvram_show(RT2860_NVRAM);
 			else {
 				if ((index = getNvramIndex(argv[2])) == -1) {
@@ -719,8 +719,8 @@ int main(int argc, char *argv[])
 			}
 
 		} else if(!strncasecmp(argv[1], "clear", 6)) {
-			if (!strncmp(argv[2], "2860", 5) || 
-			    !strncasecmp(argv[2], "rt2860", 7)) //b-compatible
+			if (!strncmp(argv[2], "2860", 5) ||
+			    !strncasecmp(argv[2], "rt2860", 7))
 				nvram_clear(RT2860_NVRAM);
 			else
 				usage(argv[0]);
@@ -729,7 +729,7 @@ int main(int argc, char *argv[])
 	} else if (argc == 4) {
 		if (!strncasecmp(argv[1], "renew", 6)) {
 			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7)) //b-compatible
+			    !strncasecmp(argv[2], "rt2860", 7))
 				renew_nvram(RT2860_NVRAM, argv[3]);
 		} else
 			usage(argv[0]);

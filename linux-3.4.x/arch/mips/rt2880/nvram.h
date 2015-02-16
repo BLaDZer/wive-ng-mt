@@ -5,7 +5,7 @@
 #define NEED_REINIT 0xFDEAD
 
 /* nvram parse blocks */
-#define FLASH_BLOCK_NUM	1
+//#define FLASH_BLOCK_SPLIT /* split 2860 and RTDEV configs by offset */
 #define ENV_BLK_SIZE 0x1000
 #define RALINK_NVRAM_DEVNAME "nvram"
 #define RALINK_NVRAM_MTDNAME "Config"

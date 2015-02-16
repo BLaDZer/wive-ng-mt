@@ -69,17 +69,35 @@
 #endif
 #define MAX_ARGS 3
 
-//libnvram
-extern int mtd_open(const char *name, int flags);
-
+int buflen, quiet, verbose;
+int write_check = 1, led_blink = 0;
 char *buf;
-int buflen;
-int quiet;
-int verbose;
-int write_check=1;
-int led_blink=0;
 
-int mtd_check(char *mtd)
+static int mtd_open(const char *name, int flags)
+{
+	FILE *fp;
+	char dev[80];
+	int i, ret;
+
+	if ((fp = fopen("/proc/mtd", "r"))) {
+		while (fgets(dev, sizeof(dev), fp)) {
+			if (sscanf(dev, "mtd%d:", &i) && strstr(dev, name)) {
+				snprintf(dev, sizeof(dev), "/dev/mtd/%d", i);
+				ret = open(dev, flags);
+				if (ret < 0) {
+					snprintf(dev, sizeof(dev), "/dev/mtd%d", i);
+					ret = open(dev, flags);
+				}
+				fclose(fp);
+				return ret;
+			}
+		}
+		fclose(fp);
+	}
+	return -1;
+}
+
+static int mtd_check(char *mtd)
 {
 	struct mtd_info_user mtdInfo;
 	int fd;
@@ -100,8 +118,7 @@ int mtd_check(char *mtd)
 	return 1;
 }
 
-int
-mtd_unlock(const char *mtd)
+static int mtd_unlock(const char *mtd)
 {
 	int fd;
 	struct mtd_info_user mtdInfo;
@@ -130,33 +147,7 @@ mtd_unlock(const char *mtd)
 	return 0;
 }
 
-int
-mtd_open(const char *name, int flags)
-{
-	FILE *fp;
-	char dev[80];
-	int i, ret;
-
-	if ((fp = fopen("/proc/mtd", "r"))) {
-		while (fgets(dev, sizeof(dev), fp)) {
-			if (sscanf(dev, "mtd%d:", &i) && strstr(dev, name)) {
-				snprintf(dev, sizeof(dev), "/dev/mtd/%d", i);
-				ret = open(dev, flags);
-				if (ret < 0) {
-					snprintf(dev, sizeof(dev), "/dev/mtd%d", i);
-					ret = open(dev, flags);
-				}
-				fclose(fp);
-				return ret;
-			}
-		}
-		fclose(fp);
-	}
-	return -1;
-}
-
-int
-mtd_erase(const char *mtd)
+static int mtd_erase(const char *mtd)
 {
 	int fd, i;
 	struct mtd_info_user mtdInfo;
@@ -222,8 +213,7 @@ mtd_erase(const char *mtd)
 	return 0;
 }
 
-int
-mtd_write(int imagefd, int offset, int len, const char *mtd)
+static int mtd_write(int imagefd, int offset, int len, const char *mtd)
 {
 	int fd, result, statistic = 0;
 	size_t r, w, e;
@@ -408,7 +398,7 @@ void usage(void)
 	exit(1);
 }
 
-int getFileSize(char *filename)
+static int getFileSize(char *filename)
 {
 	int fd;
 	struct stat StatBuf;

@@ -28,12 +28,8 @@ LIBNVRAM=libnvram.a
 LIBNVRAM_SHARED=libnvram.so
 LIBNVRAM_SHARED_FULLNAME=libnvram.so
 
-OBJS	:= nvram_env.o flash_api.o
-HEADERS := nvram.h flash_api.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-
-ifneq ("$(CONFIG_RALINK_RT6855A)", "")
-CFLAGS += -DNO_WIFI_SOC
-endif
+OBJS	:= nvram_env.o
+HEADERS := nvram.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: $(LIBNVRAM)
 	make shared
