@@ -553,6 +553,7 @@
 8) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
 9) kernel: exfat: add module alias for fix automount.<br>
 10) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+11) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
 <br>
 <br>
 <b>TODO:</b><br>
