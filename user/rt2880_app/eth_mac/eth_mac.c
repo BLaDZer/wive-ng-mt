@@ -16,7 +16,10 @@
 #define LAN_OFFSET	0xE000
 #define WAN_OFFSET	0xE006
 #ifndef CONFIG_RT_SECOND_IF_NONE
-#define WLAN2_OFFSET	0x04
+#define WLAN_OFFSET	0x04
+#ifndef CONFIG_RT_SECOND_IF_NONE
+#define WLAN2_OFFSET	0x8004
+#endif
 #endif
 #else
 #define LAN_OFFSET	0x28
