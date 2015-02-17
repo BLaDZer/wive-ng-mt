@@ -18,6 +18,8 @@ LC_ALL		:= C
 
 export LANG LC_COLLATE LC_MESSAGES LC_ALL
 #########################################################################################################################
+# Dir and build system config
+#
 ROMFS_DIR	:= $(ROOTDIR)/romfs
 IMAGEDIR	:= $(ROOTDIR)/images
 MKIMAGE_DIR	:= $(ROOTDIR)/tools/mkimage
@@ -30,6 +32,15 @@ COMP		:= lzma
 ROMFS_DIRS 	:= dev dev/pts sys proc tmp bin home mnt var etc web usr lib xml lib/modules usr/codepages media share
 
 export ROMFS_DIR IMAGEDIR MKIMAGE_DIR KERNELZ RAMDISK IMAGE RAMDISK_SIZE CUR_DIR COMP ROMFS_DIRS
+#########################################################################################################################
+# Dir per system options
+#
+ifdef CONFIG_RALINK_MT7621
+ENTRYPOINT	:= 80001000
+else
+ENTRYPOINT	:= 80000000
+endif
+export ENTRYPOINT
 #########################################################################################################################
 
 romfs:
@@ -94,7 +105,7 @@ endif
 	# Pack final image and write headers
 ifeq    ($(CONFIG_ROOTFS_IN_FLASH_NO_PADDING),)
 	@cd $(IMAGEDIR) ; \
-	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a 80000000 \
+	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a $(ENTRYPOINT) \
 	-e $(shell readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
 	-n $(PRODUCTID) -d $(KERNELZ).$(COMP) $(IMAGE)
 else
@@ -104,7 +115,7 @@ else
 	ISIZE=`wc -c $(KERNELZ).$(COMP) | awk '{print $$1}'` ; \
 	RSIZE=`wc -c $(RAMDISK) | awk '{print $$1}'` ; \
 	KRN_SIZE=`expr $$ISIZE - $$RSIZE + 64` ; \
-	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a 80000000 \
+	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a $(ENTRYPOINT) \
 	-e $(shell readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
 	-k $$KRN_SIZE -n $(PRODUCTID) -d $(KERNELZ).$(COMP) $(IMAGE)
 endif
