@@ -57,7 +57,7 @@ checkminimalconfig()
     #   if AP client was not compiled and operation mode was set "3" -> set $OperationMode "1"
     #   if Station was not compiled and operation mode was set "2" -> set $OperationMode "1"
     #   if OperationMode = "4" and chilli spot daemon not exist -> set $OperationMode "1"
-    if   [ "$OperationMode" = "3" ] && [ "$CONFIG_RT2860V2_AP_APCLI" = "" -a "$CONFIG_MT76X2_AP_MBSS" = "" -a "$CONFIG_MT7610_AP_APCLI" = "" ]; then
+    if   [ "$OperationMode" = "3" ] && [ "$CONFIG_RT2860V2_AP_APCLI" = "" -a "$CONFIG_MT7610_AP_APCLI" = "" -a "$CONFIG_MT76X2_AP_APCLI" = "" ]; then
 	nvram_set 2860 OperationMode 1
 	OperationMode="1"
     elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" = "" ]; then
