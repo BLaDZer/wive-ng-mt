@@ -14,14 +14,16 @@
 #ifdef CONFIG_RALINK_MT7621
 #define LAN_OFFSET	0xE000
 #define WAN_OFFSET	0xE006
+#ifndef CONFIG_RT_SECOND_IF_NONE
+#define WLAN2_OFFSET	0x04
+#endif
 #else
 #define LAN_OFFSET	0x28
 #define WAN_OFFSET	0x2E
 #define WLAN_OFFSET	0x04
-#endif
-
 #ifndef CONFIG_RT_SECOND_IF_NONE
 #define WLAN2_OFFSET	0x8004
+#endif
 #endif
 
 #define MACADDR_LEN 	6

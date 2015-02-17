@@ -568,6 +568,8 @@
 23) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
 24) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
 25) kernel: sg: fix read() error reporting.<br>
+26) eth_mac: add 7621 dualwan support.<br>
+27) firmware: add factory backup to 7621 dualwan.<br>
 <br>
 <br>
 <b>TODO:</b><br>
