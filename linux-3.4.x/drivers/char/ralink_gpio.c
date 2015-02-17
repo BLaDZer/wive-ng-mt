@@ -2754,7 +2754,7 @@ irqreturn_t ralink_gpio_irq_handler(int irq, void *irqaction)
 			else {
 				record[i].rising = now;
 				if (time_before(now, record[i].falling + 200L)) {
-					printk("i=%d, one click\n", i)
+					printk("i=%d, one click\n", i);
 					schedule_work(&gpio_event_click);
 				}
 				else {
