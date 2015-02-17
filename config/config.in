@@ -36,7 +36,7 @@ if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_EVENT y
     define_bool CONFIG_LIB_CURL y
     define_bool CONFIG_LIB_ZLIB y
-    define_bool CONFIG_USER_OPENSSL y
+    define_bool CONFIG_LIB_OPENSSL y
 fi
 if [ "$CONFIG_USER_SAMBA" = "y" ] || [ "$CONFIG_USER_SAMBA3" = "y" ] || [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     bool 'storage apps, scripts and goahead conf' CONFIG_USER_STORAGE
