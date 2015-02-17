@@ -45,12 +45,14 @@ endif
 endif
 ifdef CONFIG_MT76X2_AP
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
-	$(ROMFSINST) -S MT7612E_EEPROM.bin						/etc/Wireless/iNIC/MT7612E_EEPROM.bin
+	$(ROMFSINST) -S MT7602E_EEPROM.bin						/etc/Wireless/MT7602E_EEPROM.bin
+	$(ROMFSINST) -S MT7612E_EEPROM.bin						/etc/Wireless/MT7612E_EEPROM.bin
+	$(ROMFSINST) -s	/etc/Wireless/MT7602E_EEPROM.bin				/etc/Wireless/iNIC/MT7602E_EEPROM.bin
+	$(ROMFSINST) -s	/etc/Wireless/MT7612E_EEPROM.bin				/etc/Wireless/iNIC/MT7612E_EEPROM.bin
 ifdef CONFIG_RALINK_MT7621
 	$(ROMFSINST) -S MT7621_MT7602_MT7612_BACKUP.BIN					/etc/Wireless/rfbackup.bin
 endif
 endif
-#install fabric calibrations backup
 
 #install profiles symlinks for all chips
 	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860AP
