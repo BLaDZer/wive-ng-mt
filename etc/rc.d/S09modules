@@ -37,12 +37,17 @@ start() {
     	    modprobe -q rt2860v2_sta "$mac"
 	else
 	    $LOG "Load wifi AP module."
-    	    modprobe -q rt2860v2_ap  "$mac"
-	    if [ "$second_wlan_root_if" != "" ]; then
-		# second mac adress
-		mac="mac=$WLAN2_MAC_ADDR"
-		$LOG "Load external wifi AP module."
-		modprobe -q mt7610_ap "$mac"
+	    if [ "$CONFIG_RALINK_MT7621" != "" ] && [ "$CONFIG_MT76X2_AP" != "" ]; then
+		# single driver - dual module
+    		modprobe -q mt76x2_ap "$mac"
+	    else
+    		modprobe -q rt2860v2_ap "$mac"
+		if [ "$second_wlan_root_if" != "" ]; then
+		    # second mac adress
+		    mac="mac=$WLAN2_MAC_ADDR"
+		    $LOG "Load external wifi AP module."
+		    modprobe -q mt7610_ap "$mac"
+		fi
 	    fi
 	fi
 
@@ -86,13 +91,13 @@ retune_wifi() {
     get_param
     # preconfigure wifi
     (sleep 5 && /etc/scripts/wifi.sh $first_wlan_root_if) &
-    if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ] && [ "$ApCliEnable" = "1" ]; then
+    if [ "$first_wlan_apcli" != "" ] && [ "$ApCliEnable" = "1" ]; then
 	(sleep 5 && /etc/scripts/wifi.sh $first_wlan_apcli) &
     fi
     if [ "$second_wlan_root_if" != "" ]; then
 	# preconfigure second wlan root interface to
 	(sleep 5 && /etc/scripts/wifi.sh $second_wlan_root_if "5GHZ") &
-	if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ]; then
+	if [ "$second_wlan_apcli" != "" ]; then
 	    (sleep 5 && /etc/scripts/wifi.sh $second_wlan_apcli "5GHZ") &
 	fi
     fi
@@ -181,10 +186,10 @@ stop() {
     wlan_down_all
     if [ -d /sys/module/hw_nat ]; then
         $LOG "Unload hw_nat and wireless modules."
-        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap"
+        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap"
     else
         $LOG "Unload wireless modules."
-        mod="rt2860v2_ap rt2860v2_sta mt7610_ap"
+        mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap"
     fi
     for module in $mod
     do
