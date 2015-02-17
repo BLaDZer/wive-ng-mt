@@ -544,28 +544,30 @@
 <br>
 <b>2.4.x</b><br>
 1) build_system: add test targets for usb devices.<br>
-2) libcurl: up to 7.40.0 version.<br>
-3) libnvram: fix small memleak, full code review and cleanup.<br>
-4) transmission: up to 2.84.<br>
-5) ethtool: disable build vendors extensions (decrease size).<br>
-6) apps: add fuse ntfs-3g (2014.2.15).<br>
-7) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
-8) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
-9) kernel: ralink_arch: update MT7621 code.<br>
-10) kernel: ralink_wifi drivers: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
-11) kernel: ralink_hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
-12) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
-13) kernel: ralink_mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
-14) kernel: ralink_mtd: fix SPI clock for MT7621.<br>
-15) kernel: ralink mtd: add MT7621 NAND driver (based on kernel NAND framework).<br>
-16) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
-17) kernel: ralink arch: increase PCIe N_FTS for MT7620 too.<br>
-18) kernel: exfat: add module alias for fix automount.<br>
-19) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-20) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+2) build_system: correct entry point for 7621 at make image.<br>
+3) libcurl: up to 7.40.0 version.<br>
+4) libnvram: fix small memleak, full code review and cleanup.<br>
+5) transmission: up to 2.84.<br>
+6) ethtool: disable build vendors extensions (decrease size).<br>
+7) apps: add fuse ntfs-3g (2014.2.15).<br>
+8) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
+9) dhcpv6: add read ifname for duid generatr from /tmp/wan_if_name exported from init.d.<br>
+10) kernel: ralink_arch: update MT7621 code.<br>
+11) kernel: ralink_arch: increase PCIe N_FTS for MT7620 too.<br>
+12) kernel: ralink_arch: fix MT7621 performance impact on activate sleep mode (use divider 2 instead of 10).<br>
+13) kernel: ralink_wifi drivers: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
+14) kernel: ralink_hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
+15) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
+16) kernel: ralink_mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
+17) kernel: ralink_mtd: fix SPI clock for MT7621.<br>
+18) kernel: ralink mtd: add MT7621 NAND driver (based on kernel NAND framework).<br>
+19) kernel: ralink_usb: fix broken MT7621 USB PHY calibration (SDK bug).<br>
+20) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
 21) kernel: huge update NAND framework from upstream.<br>
-22) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
-23) kernel: sg: fix read() error reporting.<br>
+22) kernel: exfat: add module alias for fix automount.<br>
+23) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+24) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+25) kernel: sg: fix read() error reporting.<br>
 <br>
 <br>
 <b>TODO:</b><br>
