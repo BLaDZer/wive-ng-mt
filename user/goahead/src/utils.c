@@ -690,6 +690,8 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 #else
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, 100FDX"));
 #endif
+#elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_ESW)
+    return websWrite(wp, T("MT7621 1000FDX"));
 #else
     return websWrite(wp, T("Unknown switch mode"));
 #endif
