@@ -32,9 +32,10 @@ INT rlt_get_rxwi_phymode(RXWI_STRUC *rxwi)
 	return rxwi->RXWI_N.phy_mode;
 }
 
+
 INT rlt_get_rxwi_rssi(RXWI_STRUC *rxwi, INT size, CHAR *rssi)
 {
-	if (size < sizeof(rxwi->RXWI_N.rssi)/ sizeof(UINT8))
+	if (size < (sizeof(rxwi->RXWI_N.rssi) / sizeof(UINT8)))
 		NdisMoveMemory(rssi, &rxwi->RXWI_N.rssi[0], size);
 
 	return 0;
