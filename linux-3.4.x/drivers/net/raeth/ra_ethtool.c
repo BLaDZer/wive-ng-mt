@@ -306,7 +306,10 @@ static void et_virt_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *
 
 static void et_virt_get_pauseparam(struct net_device *dev, struct ethtool_pauseparam *epause)
 {
-	u32 mii_an_reg = 0, mdio_cfg_reg;
+	u32 mii_an_reg = 0;
+#if !defined (CONFIG_RALINK_MT7621)
+	u32 mdio_cfg_reg;
+#endif
 	PSEUDO_ADAPTER *pseudo = netdev_priv(dev);
 
 	// get mii auto-negotiation register
@@ -324,7 +327,10 @@ static void et_virt_get_pauseparam(struct net_device *dev, struct ethtool_pausep
 
 static int et_virt_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam *epause)
 {
-	u32 mii_an_reg = 0, mdio_cfg_reg;
+	u32 mii_an_reg = 0;
+#if !defined (CONFIG_RALINK_MT7621)
+	u32 mdio_cfg_reg;
+#endif
 	PSEUDO_ADAPTER *pseudo = netdev_priv(dev);
 
 	// auto-neg pause

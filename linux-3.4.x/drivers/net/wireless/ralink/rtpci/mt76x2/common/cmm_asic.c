@@ -994,7 +994,7 @@ VOID AsicCtrlBcnMask(PRTMP_ADAPTER pAd, INT mask)
 
 static INT AsicSetIntTimerEn(RTMP_ADAPTER *pAd, BOOLEAN enable, UINT32 type, UINT32 timeout)
 {
-	UINT32 val, mask, time_mask;
+	UINT32 val = 0, mask = 0, time_mask = 0;
 
 	if (type == INT_TIMER_EN_PRE_TBTT) {
 		mask = 0x1;
@@ -1008,7 +1008,7 @@ static INT AsicSetIntTimerEn(RTMP_ADAPTER *pAd, BOOLEAN enable, UINT32 type, UIN
 	}
 	else
 		mask = 0x3;
-	
+
 	RTMP_IO_READ32(pAd, INT_TIMER_EN, &val);
 	if (enable == FALSE)
 		val &= (~mask);
