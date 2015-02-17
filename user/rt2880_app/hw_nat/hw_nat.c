@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <strings.h>
+#include <linux/autoconf.h>
 
 #include "hwnat_ioctl.h"
 #include "hwnat_api.h"

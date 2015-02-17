@@ -5,6 +5,7 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <linux/if.h>
+#include <linux/autoconf.h>
 
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
@@ -96,7 +97,6 @@ void usage(char *cmd)
 int reg_read(int offset, int *value)
 {
 	struct ifreq ifr;
-	esw_reg reg;
 
 	ra_mii_ioctl_data mii;
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -118,7 +118,6 @@ int reg_read(int offset, int *value)
 int reg_write(int offset, int value)
 {
 	struct ifreq ifr;
-	esw_reg reg;
 	ra_mii_ioctl_data mii;
 
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -135,8 +134,6 @@ int reg_write(int offset, int value)
 	}
 	return 0;
 }
-
-
 #else
 int reg_read(int offset, int *value)
 {
@@ -2009,7 +2006,7 @@ void set_mirror_from(int argc, char *argv[])
 #if defined (CONFIG_RALINK_MT7621)
 void vlan_dump(void)
 {
-	int i, j, vid, value, value2;
+	int i, j, value, value2;
 
 	printf("  vid  fid  portmap    s-tag\n");
 	for (i = 1; i < 4095; i++) {
@@ -2056,47 +2053,8 @@ void vlan_dump(void)
 			printf(" invalid\n");
 		    }
 		}
-#if 0
-		value = (0x80000000 + 2*i +1);  //r_vid_cmd
-		reg_write(REG_ESW_VLAN_VTCR, value);
-		for (j = 0; j < 20; j++) {
-			reg_read(REG_ESW_VLAN_VTCR, &value);
-			if ((value & 0x80000000) == 0 ){ //mac address busy
-				break;
-			}
-			usleep(1000);
-		}
-		if (j == 20)
-			printf("timeout.\n");
-
-
-		reg_read(REG_ESW_VLAN_VAWD1, &value);
-		reg_read(REG_ESW_VLAN_VAWD2, &value2);
-
-		//printf("\n\rREG_ESW_VLAN_VAWD1 value%d is 0x%x\n\r", i, value);
-		//printf("REG_ESW_VLAN_VAWD2 value%d is 0x%x\n\r", i, value2);
-
-		printf(" %2d  %4d  ", 2*i+1, ((vid & 0xfff000) >> 12));
-		printf(" %2d ",((value & 0xe)>>1));
-
-		if((value & 0x01) != 0){
-			printf(" %c", (value & 0x00010000)? '1':'-');
-			printf("%c", (value & 0x00020000)? '1':'-');
-			printf("%c", (value & 0x00040000)? '1':'-');
-			printf("%c", (value & 0x00080000)? '1':'-');
-			printf("%c", (value & 0x00100000)? '1':'-');
-			printf("%c", (value & 0x00200000)? '1':'-');
-			printf("%c", (value & 0x00400000)? '1':'-');
-			printf("%c", (value & 0x00800000)? '1':'-');
-			printf("    %4d\n", ((value & 0xfff0)>>4)) ;
-		}
-		else{
-			printf(" invalid\n");
-		}
-#endif
 	}
 }
-
 #else
 void vlan_dump(void)
 {
@@ -2188,7 +2146,7 @@ void vlan_dump(void)
 void vlan_set(int argc, char *argv[])
 {
 	unsigned int i, j, value, value2;
-	int idx, vid;
+	int vid;
         int stag = 0;
         unsigned char eg_con = 0;
         unsigned char eg_tag = 0;
@@ -2214,19 +2172,6 @@ void vlan_set(int argc, char *argv[])
 		}
 		j += (argv[5][i] - '0') * (1 << i);
 	}
-	//set vlan identifier
-	/*
-	reg_read(REG_ESW_VLAN_ID_BASE + 4*(idx/2), &value);
-	if (idx % 2 == 0) {
-		value &= 0xfff000;
-		value |= vid;
-	}
-	else {
-		value &= 0xfff;
-		value |= (vid << 12);
-	}
-	reg_write(REG_ESW_VLAN_ID_BASE + 4*(idx/2), value);
-	*/
 
 	/*port stag*/
 	if (argc > 6) {
@@ -2317,49 +2262,16 @@ void vlan_set(int argc, char *argv[])
 	}
 	reg_write(REG_ESW_VLAN_ID_BASE + 4*(idx/2), value);
 
-#if 0 /* for testing */
-	if (argc > 6) {
-		stag = strtoul(argv[6], NULL, 0);
-		if (stag < 0 || 4095 < stag) {
-			printf("wrong STAG range, should be within 0~4095\n");
-			return;
-		}
-	}
-	if (argc > 7) {
-		eg_con = strtoul(argv[7], NULL, 0);
-		if (1 < eg_con) {
-			printf("wrong eg_con range, should be within 0~1\n");
-			return;
-		}
-	}
-	if (argc > 8) {
-		eg_tag = strtoul(argv[8], NULL, 0);
-		if (3 < eg_tag) {
-			printf("wrong eg_tag range, should be within 0~3\n");
-			return;
-		}
-	}
-#else
 	/*test port stag*/
 	if (argc > 6) {
 		stag = strtoul(argv[6], NULL, 16);
 		printf("STAG index is 0x%x\n", stag);
 	}
-#endif
 
 	//set vlan member
 	value = (j << 16);
-#if 0
-	/*port based stag*/
-	value |= ((stag & 0xfff) << 4);//stag
-	value |= (1 << 31);//port based stag=1
-#else
-	//value |= (idx << 1);//fid
-
 	value |= (1 << 30);//IVL=1
 	value |= ((stag & 0xfff) << 4);//stag
-
-#endif
 	value |= 1;//valid
 
 	if(argc > 7) {
@@ -2374,15 +2286,7 @@ void vlan_set(int argc, char *argv[])
         value2 |= eg_tag << 4; //port 2
 	reg_write(REG_ESW_VLAN_VAWD2, value2);
 	}
-#if 0
-/*port based stag*/
-	value2 = 0;
-	value2 |= ((stag & 0x3f) << 2);//stag
-	reg_write(REG_ESW_VLAN_VAWD2, value2);
 
-	printf("REG_ESW_VLAN_VAWD1 is 0x%x\n\r", value);
-	printf("REG_ESW_VLAN_VAWD2 is 0x%x\n\r", value2);
-#endif
 	reg_write(REG_ESW_VLAN_VAWD1, value);
 
 	value = (0x80001000 + idx);  //w_vid_cmd

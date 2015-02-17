@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
+
 #include "linux/ralink_gpio.h"
 
 enum {
@@ -593,8 +594,10 @@ void gpio_test_write(void)
 
 void gpio_test_read_g(int gpio_number)
 {
-	int d, value0, value1, value2, value3;
-
+	int d, value0, value1, value2;
+#if defined (CONFIG_RALINK_MT7620)
+	int value3;
+#endif
 #if defined (CONFIG_RALINK_RT3052)
 	gpio_set_dir(gpio5140, gpio_in);
 	gpio_read_int(gpio5140, &d);

@@ -9,6 +9,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <linux/autoconf.h>  //kernel config
+
 #include "mtd-abi.h"
 
 #ifdef CONFIG_RALINK_MT7621

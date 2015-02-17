@@ -59,6 +59,7 @@
 #include <sys/reboot.h>
 #include <linux/reboot.h>
 #include <linux/autoconf.h>
+
 #include "mtd-abi.h"
 #include "led.h"
 

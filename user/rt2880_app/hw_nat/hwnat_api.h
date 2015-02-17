@@ -1,6 +1,8 @@
 #ifndef __HW_NAT_API
 #define __HW_NAT_API
 
+#include <linux/autoconf.h>
+
 #define NIPQUAD(addr) \
 	((unsigned char *)&addr)[3], \
         ((unsigned char *)&addr)[2], \
