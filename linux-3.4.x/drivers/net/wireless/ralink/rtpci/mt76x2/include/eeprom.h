@@ -80,7 +80,7 @@
 #endif /* BB_SOC */
 
 #define EEPROM_FILE_DIR			"/etc/Wireless/"
-#define EEPROM_1ST_FILE_DIR		"/etc/Wireless/iNIC/"
+#define EEPROM_1ST_FILE_DIR		"/etc/Wireless/"
 #define EEPROM_2ND_FILE_DIR		"/etc/Wireless/iNIC/"
 
 #ifdef RT_BIG_ENDIAN
