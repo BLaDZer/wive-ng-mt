@@ -132,21 +132,23 @@ static int pcie_link_status = 0;
 #if defined (CONFIG_RALINK_RT3883)
 #define RALINK_PCIE_CLK_GEN		*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0x7c)
 #define RALINK_PCIE_CLK_GEN1		*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0x80)
+//RALINK_SYSCFG1 bit
+#define RALINK_PCI_HOST_MODE_EN		(1<<7)
+#define RALINK_PCIE_RC_MODE_EN		(1<<8)
 //RALINK_GPIOMODE bit
 #define PCI_SLOTx2			(1<<11)
 #define PCI_SLOTx1			(2<<11)
 #elif defined (CONFIG_RALINK_MT7620)
 #define PPLL_CFG1			*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0x9c)
 #define PPLL_DRV			*(volatile u32 *)(RALINK_SYSTEM_CONTROL_BASE + 0xa0)
+//RALINK_SYSCFG1 bit
+#define RALINK_PCIE_RC_MODE_EN		(1<<8)
 //MTK PCIE PLL bit
 #define PDRV_SW_SET			(1<<31)
 #define LC_CKDRVPD			(1<<19)
 #define LC_CKDRVOHZ			(1<<18)
 #define LC_CKDRVHZ			(1<<17)
 #endif
-//RALINK_SYSCFG1 bit
-#define RALINK_PCI_HOST_MODE_EN		(1<<7)
-#define RALINK_PCIE_RC_MODE_EN		(1<<8)
 
 #define PCI_ACCESS_READ_1		0
 #define PCI_ACCESS_READ_2		1
@@ -287,8 +289,9 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 
 	/* P2P bridge */
 	if (dev->bus->number == 0) {
-#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
-		/* set N_FTS */
+#if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621) || \
+    defined (CONFIG_RALINK_MT7628)
+		/* set N_FTS 0x28 -> 0x50 */
 		val = 0;
 		pci_read_config_dword(dev, 0x70c, &val);
 		val &= ~(0xff<<8);

@@ -557,12 +557,13 @@
 12) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
 13) kernel: ralink_mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
 14) kernel: ralink_mtd: fix SPI clock for MT7621.<br>
-15) kernel: exfat: add module alias for fix automount.<br>
-16) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-17) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-18) kernel: huge update NAND framework from upstream.<br>
-19) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
-20) kernel: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
+15) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
+16) kernel: ralink arch: increase PCIe N_FTS for MT7620 too.<br>
+17) kernel: exfat: add module alias for fix automount.<br>
+18) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+19) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+20) kernel: huge update NAND framework from upstream.<br>
+21) kernel: fix broken MT7621 USB PHY calibration (SDK bug).<br>
 <br>
 <br>
 <b>TODO:</b><br>
