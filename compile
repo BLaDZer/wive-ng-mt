@@ -88,7 +88,7 @@ echo --------------------------------COPY-CONFIG-----------------------------
 ln -fs $ROOTDIR/vendors/Mediatek/config.arch config.arch
 ln -fs $ROOTDIR/config/autoconf.h		$ROOTDIR/autoconf.h
 #####################################################PER-DEVICES################################################################
-if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-8M" ] ; then
+if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-8M-USB" ] ; then
     cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7621-MT7602-MT7612-2T2R-8M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-8M-USB							$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-8M-USB							$ROOTDIR/config/.config
