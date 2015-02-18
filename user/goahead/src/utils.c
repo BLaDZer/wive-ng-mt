@@ -690,7 +690,7 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 #else
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, 100FDX"));
 #endif
-#elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_ESW)
+#elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
     return websWrite(wp, T("MT7621 1000FDX"));
 #else
     return websWrite(wp, T("Unknown switch mode"));
@@ -789,7 +789,8 @@ static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RAETH_ESW) && defined(CONFIG_USER_ETHTOOL)
+#if defined(CONFIG_USER_ETHTOOL)
+#if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port, rc;
 	FILE *fp;
 	char buf[1024];
@@ -845,6 +846,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 			first = 0;
 		}
 	}
+#endif
 #endif
 	return 0;
 }
