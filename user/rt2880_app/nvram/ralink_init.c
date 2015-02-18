@@ -298,7 +298,7 @@ static int gen_wifi_config(int getmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
-#ifdef CONFIG_RT2860V2_AP_WSC
+#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
 		//WscConfStatus
 		FPRINT_NUM(WscConfMode);
 		if (atoi(nvram_bufget(mode, "WscConfigured")) == 0)
@@ -344,7 +344,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(PktAggregate);
 		FPRINT_NUM(FragThreshold);
 		FPRINT_NUM(FreqDelta);
-#if defined (CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined (CONFIG_RT2860V2_STA_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 		FPRINT_NUM(VideoTurbine);
 		FPRINT_NUM(VideoClassifierEnable);
 		FPRINT_NUM(VideoHighTxMode);
@@ -373,9 +373,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(ShortSlot);
 		FPRINT_STR(IEEE8021X);
 		FPRINT_NUM(IEEE80211H);
-#if defined (CONFIG_RT2860V2_AP_CARRIER) || defined (CONFIG_RT2860V2_STA_CARRIER)
 		FPRINT_NUM(CarrierDetect);
-#endif
 		FPRINT_STR(PreAntSwitch);
 		FPRINT_NUM(PhyRateLimit);
 		FPRINT_NUM(DebugFlags);
@@ -421,7 +419,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(DFS_R66);
 		FPRINT_STR(blockch);
 #endif
-#ifdef CONFIG_RT2860V2_AP_GREENAP
+#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT7610_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
 		FPRINT_NUM(GreenAP);
 #endif
 		FPRINT_STR(PreAuth);
@@ -430,15 +428,7 @@ static int gen_wifi_config(int getmode)
     		FPRINT_STR(RekeyMethod);
 		FPRINT_NUM(RekeyInterval);
 		FPRINT_STR(PMKCachePeriod);
-#if defined(CONFIG_RT2860V2_STA_MESH) || defined(CONFIG_RT2860V2_AP_MESH)
-		FPRINT_NUM(MeshAutoLink);
-		FPRINT_STR(MeshAuthMode);
-		FPRINT_STR(MeshEncrypType);
-		FPRINT_NUM(MeshDefaultkey);
-		FPRINT_STR(MeshWEPKEY);
-		FPRINT_STR(MeshWPAKEY);
-		FPRINT_STR(MeshId);
-#endif
+
 		//WPAPSK
 		FPRINT_STR(WPAPSK1);
 		FPRINT_STR(WPAPSK2);
@@ -527,7 +517,7 @@ static int gen_wifi_config(int getmode)
 		}
 		FPRINT_NUM(HSCounter);
 		FPRINT_NUM(WCNTest);
-#ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
+#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 		FPRINT_NUM(HT_BSSCoexistence);
 		FPRINT_NUM(HT_BSSCoexApCntThr);
 #endif
@@ -576,7 +566,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(quiet_interval);
 		FPRINT_NUM(TGnWifiTest);
 
-#ifdef CONFIG_RT2860V2_AP_APCLI
+#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
 		//AP Client parameters
 		FPRINT_NUM(ApCliEnable);
 		FPRINT_STR(ApCliSsid);
@@ -596,7 +586,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(ApCliTxMode);
 		FPRINT_NUM(ApCliTxMcs);
 #endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 		FPRINT_NUM(IdsEnable);
 		FPRINT_NUM(AuthFloodThreshold);
 		FPRINT_NUM(AssocReqFloodThreshold);
@@ -644,7 +634,6 @@ static int gen_wifi_config(int getmode)
 
 void usage(char *cmd)
 {
-#ifndef CONFIG_RT2860V2_USER_MEMORY_OPTIMIZATION
 	printf("Usage:\n");
 	printf("  %s <command> [<platform>] [<file>]\n\n", cmd);
 	printf("command:\n");
@@ -658,7 +647,6 @@ void usage(char *cmd)
 	printf("  2860    - rt2860\n");
 	printf("file:\n");
 	printf("          - file name for renew command\n");
-#endif
 	exit(0);
 }
 
