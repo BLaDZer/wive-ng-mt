@@ -362,10 +362,9 @@ int websLaunchCgiProc(char_t *cgiPath, char_t **argp, char_t **envp,
 	    /*
 	    * if pid == 0, then we are in the child process
 	    */
-	    if (execve(cgiPath, argp, envp) == -1) {
-		printf("content-type: text/html\n\n"
-				"Execution of cgi process failed\n");
-	    }
+	    if (execve(cgiPath, argp, envp) == -1)
+		printf("content-type: text/html\n\n Execution of cgi process failed\n");
+
 	    exit (0);
 	}
 

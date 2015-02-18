@@ -473,7 +473,7 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	value = nvram_get(RT2860_NVRAM, field);
 
 	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    printf("Unknown lang %s. Set lang to en.\n", value);
+	    printf("goahead: Unknown lang %s. Set lang to en.\n", value);
 	    value = "en";
 	}
 
@@ -511,7 +511,7 @@ static int getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((!value) && (strcmp(field, "Language") == 0))
 	{
-		printf("Unknown lang %s. Set lang to en.\n", value);
+		printf("goahead: Unknown lang %s. Set lang to en.\n", value);
 		value = "en";
 	}
 

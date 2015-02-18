@@ -478,12 +478,12 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	iwr.u.data.pointer = (caddr_t) &table;
 
 	if (s < 0) {
-		websError(wp, 500, "ioctl sock failed!");
+		printf("goahead: ioctl sock failed!");
 		return -1;
 	}
 
 	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
-		websError(wp, 500, "ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
+		printf("goahead: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
 		close(s);
 		return -1;
 	}
@@ -548,12 +548,12 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	iwr.u.data.pointer = (caddr_t) &table;
 
 	if (s < 0) {
-		websError(wp, 500, "ioctl sock failed!");
+		printf("goahead: ioctl sock failed!");
 		return -1;
 	}
 
 	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
-		websError(wp, 500, "ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
+		printf("goahead: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
 		close(s);
 		return -1;
 	}
@@ -1604,7 +1604,7 @@ void updateFlash8021x(int nvram)
 			nvram_bufset(nvram, "PreAuthifname", getLanIfName());
 		}
 	}else{
-		printf("not op mode\n");
+		printf("goahead: not op mode\n");
 		goto out;
 	}
 out:
@@ -1626,7 +1626,7 @@ int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 	sprintf(str, "apselect_%d", mbssid);	// UI on web page
 	apselect = websGetVar(wp, str, T(""));
 	if(!apselect){
-		printf("cant find %s\n", apselect);
+		printf("goahead: cant find %s\n", apselect);
 		return -1;
 	}
 

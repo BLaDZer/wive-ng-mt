@@ -244,7 +244,7 @@ void dhcpStoreAliases(const char *dhcp_config)
 		system("fs save");
 	}
 	else
-		printf("Failed to open file %s\n", _PATH_DHCP_ALIAS_FILE);
+		printf("goahead: Failed to open file %s\n", _PATH_DHCP_ALIAS_FILE);
 }
 
 const parameter_fetch_t dhcp_args[] =

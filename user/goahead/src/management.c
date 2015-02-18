@@ -304,7 +304,7 @@ static long long getIfStatistic(char *interface, int type)
 
 	if(!fp)
 	{
-		printf("no proc?\n");
+		printf("goahead: no proc?\n");
 		return -1;
 	}
 
@@ -520,13 +520,13 @@ int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp = fopen(PROC_IF_STATISTIC, "r");
 	if (fp == NULL)
 	{
-		printf("no proc?\n");
+		printf("goahead: no proc?\n");
 		return -1;
 	}
 
 	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("open socket failed\n");
+		printf("goahead: open socket failed\n");
 		fclose(fp);
 		return -1;
 	}
@@ -554,7 +554,7 @@ int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		strcpy(ifr.ifr_name, ifname);
 		if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0)
 		{
-			printf("ioctl() error\n");
+			printf("goahead: ioctl() error\n");
 			continue;
 		}
 
@@ -747,7 +747,7 @@ const parameter_fetch_t service_syslog_flags[] =
 
 static void clearlog(webs_t wp, char_t *path, char_t *query)
 {
-	printf("Clear system log\n");
+	printf("goahead: clear system log\n");
 	doSystem("service syslog stop");
 	truncate("/var/log/messages", 0);
 	doSystem("service syslog start");

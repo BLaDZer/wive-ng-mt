@@ -41,7 +41,7 @@ static int isIpValid(char *str)
 		return 1;
 
 	if(! (inet_aton(str, &addr))){
-		printf("isIpValid(): %s is not a valid IP address.\n", str);
+		printf("goahead: isIpValid(): %s is not a valid IP address.\n", str);
 		return 0;
 	}
 	return 1;
@@ -120,7 +120,7 @@ static int isIpNetmaskValid(char *s)
 
 	if (! (inet_aton(str, &addr)))
 	{
-		printf("isIpNetmaskValid(): %s is not a valid IP address.\n", str);
+		printf("goahead: isIpNetmaskValid(): %s is not a valid IP address.\n", str);
 		return 0;
 	}
 	return 1;
@@ -576,7 +576,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
 	if (firewall_enable == NULL)
 	{
-		printf("Warning: can't find \"IPPortFilterEnable\" in flash.\n");
+		printf("goahead: Warning: can't find \"IPPortFilterEnable\" in flash.\n");
 		return;
 	}
 	mode = atoi(firewall_enable);
@@ -586,7 +586,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	rule = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
 	if (rule == NULL)
 	{
-		printf("Warning: can't find \"IPPortFilterRules\" in flash.\n");
+		printf("goahead: Warning: can't find \"IPPortFilterRules\" in flash.\n");
 		return;
 	}
 
@@ -767,7 +767,7 @@ static void iptablesPortForwardBuildScript(void)
 	firewall_enable = nvram_get(RT2860_NVRAM, "PortForwardEnable");
 	if (!firewall_enable)
 	{
-		printf("Warning: can't find \"PortForwardEnable\" in flash\n");
+		printf("goahead: Warning: can't find \"PortForwardEnable\" in flash\n");
 		return;
 	}
 
@@ -776,7 +776,7 @@ static void iptablesPortForwardBuildScript(void)
 		rule = nvram_get(RT2860_NVRAM, "PortForwardRules");
 		if(!rule)
 		{
-			printf("Warning: can't find \"PortForwardRules\" in flash\n");
+			printf("goahead: Warning: can't find \"PortForwardRules\" in flash\n");
 			return;
 		}
 	}
@@ -1389,7 +1389,7 @@ static void iptablesWebsFilterRun(void)
 		}
 	}
 	else
-		printf("Content filter disabled.\n");
+		printf("goahead: Content filter disabled.\n");
 }
 
 void firewall_rebuild_etc(void)

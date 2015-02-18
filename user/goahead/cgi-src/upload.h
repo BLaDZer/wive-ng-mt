@@ -470,10 +470,7 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 	parameter_t *list = NULL;
 
 	if (strlen(separator) > MAX_SEPARATOR_LEN)
-	{
-//		printf("srlen(separator) > MAX_SEPARATOR_LEN\n");
 		return -1;
-	}
 
 	strcpy(start, "--");
 	strcat(start, separator);
@@ -484,19 +481,15 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 	strcpy(end, "\r\n--");
 	strcat(end, separator);
 	strcat(end, "--"); // \r\n-- + separator + --
-	//printf("start = %s\n, middle=%s\n, end=%s\n", start, middle, end);
 
 	init_buffer(&buf, 0x100);
 
 	while (1)
 	{
-		//printf("state = %d\n", state);
-
 		if (state == INIT) // Find start
 		{
 			long start_pos = 0;
 			int result = search_text(fd, position, &start_pos, start);
-			//printf("search_text pos=%ld, start_pos=%ld, result = %d\n", position, start_pos, result);
 			if (result < 0)
 			{
 				release_parameters(list);
@@ -512,7 +505,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 		{
 			long start_pos = 0;
 			int result = search_text(fd, position, &start_pos, "\r\n");
-			//printf("search_text pos=%ld, start_pos=%ld, result = %d\n", position, start_pos, result);
 			if (result < 0)
 			{
 				release_parameters(list);
@@ -525,7 +517,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 			{
 				if ((start_pos - position) > 0x10000)
 				{
-					//printf("too long difference\n");
 					release_parameters(list);
 					release_buffer(&buf);
 					return -1;
@@ -534,7 +525,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 				result = read_buffer(fd, position, start_pos-position, &buf);
 				if (result < 0)
 				{
-					//printf("read_buffer failed\n");
 					release_parameters(list);
 					release_buffer(&buf);
 					return result;
@@ -546,7 +536,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 					// Check that it's correct
 					if (strstr(buf.data, "form-data;") == NULL)
 					{
-						//printf("form-data expected\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -3;
@@ -555,7 +544,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 					const char *ptr = strstr(buf.data, " name=");
 					if (ptr == NULL)
 					{
-						//printf("name= not found\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -4;
@@ -566,7 +554,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 						++ptr;
 					if (*ptr == '\0')
 					{
-						//printf("name parsing error\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -5;
@@ -576,7 +563,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 						++ptre;
 					if (*ptre == '\0')
 					{
-						//printf("name parsing error II\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -6;
@@ -586,7 +572,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 					param.field_name = (char *)malloc(len+1);
 					if (param.field_name == NULL)
 					{
-						//printf("Allocation for name failed\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -7;
@@ -602,7 +587,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 					param.content_type = (char *)malloc(strlen(ptr)+1);
 					if (param.content_type == NULL)
 					{
-						//printf("allocation for content_type failed\n");
 						release_parameters(list);
 						release_buffer(&buf);
 						return -7;
@@ -626,14 +610,11 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 
 			// Search separator or tail
 			int result = search_text(fd, position, &start_pos, middle);
-			//printf("search_text pos=%ld, start_pos=%ld, result = %d\n", position, start_pos, result);
 			if (result < 0)
 			{
 				result = search_text(fd, position, &start_pos, end);
-				//printf("search_text pos=%ld, start_pos=%ld, result = %d\n", position, start_pos, result);
 				if (result < 0)
 				{
-					//printf("search_text failed\n");
 					release_parameters(list);
 					release_buffer(&buf);
 					return result;
@@ -647,7 +628,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 				result = read_buffer(fd, position, start_pos-position, &buf);
 				if (result < 0)
 				{
-					//printf("read_buffer failed\n");
 					release_parameters(list);
 					release_buffer(&buf);
 					return result;
@@ -656,7 +636,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 				param.value = (char *)malloc(strlen(buf.data)+1);
 				if (param.value == NULL)
 				{
-					//printf("malloc for parameter failed\n");
 					release_parameters(list);
 					release_buffer(&buf);
 					return -7;
@@ -674,7 +653,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 			parameter_t *p_result = (parameter_t *)malloc(sizeof(parameter_t));
 			if (p_result == NULL)
 			{
-				//printf("malloc for parameter record failed\n");
 				release_parameters(list);
 				release_buffer(&buf);
 				return -1;
@@ -687,7 +665,6 @@ int read_parameters(FILE *fd, const char *separator, parameter_t **result_params
 
 			if (final)
 			{
-				//printf("final: returning result\n");
 				release_buffer(&buf);
 				*result_params = p_result;
 				return 0;

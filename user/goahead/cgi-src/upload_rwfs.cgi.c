@@ -20,7 +20,7 @@ void import(char *filename, int offset, int len)
 	}
 
 	if (fseek(src, offset, SEEK_SET) == -1)
-		printf("fseek error\n");
+		printf("goahead: fseek error\n");
 
 	while (len > 0)
 	{

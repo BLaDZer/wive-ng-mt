@@ -1287,7 +1287,6 @@ void initStaProfile(void)
 		}
 		bzero(p, sizeof(RT_PROFILE_SETTING));
 		strcpy(p->Profile, split.items[i]); // TODO: profile name length check
-		//printf("staProfile[%d]=%s\n", i, p->Profile);
 
 		// Add to list
 		p->Next = NULL;
@@ -1352,10 +1351,7 @@ void initStaProfile(void)
 
 	// Make some magix
 	for (i=0, p=headerProfileSetting; p != NULL; i++, p=p->Next)
-	{
 		p->SsidLen = strlen(p->SSID);
-		//printf("staSsidLen[%d]=%d\n", i, p->SsidLen);
-	}
 
 	// Release splitter
 	freeSplitter(&split);
@@ -1656,7 +1652,7 @@ void initStaConnection(void)
 			return;
 	}
 
-	printf("Activate profile: %s\n", p->Profile);
+	printf("goahead: Activate profile: %s\n", p->Profile);
 
 	// Set-up current SSID
 	nvram_set(RT2860_NVRAM, "staCur_SSID", p->SSID);
@@ -1692,7 +1688,7 @@ void initStaConnection(void)
 	// Network type
 	if (p->NetworkType == Ndis802_11Infrastructure)
 	{
-		printf("NetworkType is INFRASTRUCTURE\n");
+		printf("goahead: NetworkType is INFRASTRUCTURE\n");
 		OidSetInformation(OID_802_11_POWER_MODE, s, "ra0", &p->PSmode, sizeof(NDIS_802_11_POWER_MODE));
 		OidSetInformation(RT_OID_802_11_PREAMBLE, s, "ra0", &p->PreamType, sizeof(RT_802_11_PREAMBLE));
 	}
@@ -1745,8 +1741,6 @@ void initStaConnection(void)
 			// For each WEP key
 			for (i=0; i<4; i++)
 			{
-				//printf("WEP key[%d]=%s\n", i, wep_keys[i]);
-
 				int nKeyLen = strlen(wep_keys[i]);
 				if (nKeyLen == 0)
 				{
@@ -1788,9 +1782,6 @@ void initStaConnection(void)
 					else if (nKeyLen == 26)
 						AtoH(wep_keys[i], pWepKey->KeyMaterial, 13);
 
-					//printf("Setup key[%d]: key_len=%d, wep_len=%d, value=%s, index=%x, length=%d \n",
-					//	i, nKeyLen, wep_key_len, pWepKey->KeyMaterial, pWepKey->KeyIndex, pWepKey->Length);
-
 					OidSetInformation(OID_802_11_ADD_WEP, s, "ra0", pWepKey, pWepKey->Length);
 					free(pWepKey);
 				}
@@ -1801,7 +1792,7 @@ void initStaConnection(void)
 		(p->Authentication == Ndis802_11AuthModeWPA2PSK) ||
 		(p->Authentication == Ndis802_11AuthModeWPANone))
 	{
-		printf("Authentication is WPA\n");
+		printf("goahead: Authentication is WPA\n");
 		int nKeyLen = 32;
 		int lBufLen = (sizeof(NDIS_802_11_KEY) + nKeyLen - 1);
 		unsigned char keyMaterial[40];
@@ -2670,7 +2661,7 @@ static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query)
 		{
 			Bssid[i] = (unsigned char)strtoul(tok, (char **)NULL, 16);
 		}
-		printf("bssid %02X:%02X:%02X:%02X:%02X:%02X\n", Bssid[0], Bssid[1], Bssid[2], Bssid[3], Bssid[4], Bssid[5]);
+		printf("goahead: bssid %02X:%02X:%02X:%02X:%02X:%02X\n", Bssid[0], Bssid[1], Bssid[2], Bssid[3], Bssid[4], Bssid[5]);
 	}
 
 	//FIXME: selectedbssid, mac might be different

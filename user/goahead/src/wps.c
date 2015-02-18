@@ -63,7 +63,7 @@ unsigned int getAPPIN(char *interface)
 	wrq.u.data.pointer = (caddr_t) &data;
 	wrq.u.data.flags = RT_OID_WSC_PIN_CODE;
 	if( ioctl(socket_id, RT_PRIV_IOCTL, &wrq) == -1)
-		printf("ioctl error\n");
+		printf("goahead: ioctl error\n");
 	close(socket_id);
 	return data;
 }
@@ -79,7 +79,7 @@ int getWscStatus(char *interface)
 	wrq.u.data.pointer = (caddr_t) &data;
 	wrq.u.data.flags = RT_OID_WSC_QUERY_STATUS;
 	if( ioctl(socket_id, RT_PRIV_IOCTL, &wrq) == -1)
-		printf("ioctl error\n");
+		printf("goahead: ioctl error\n");
 	close(socket_id);
 	return data;
 }
@@ -343,7 +343,7 @@ void WPSRestart(void)
 		// WPS Enable
 		char lan_if_addr[16];
 		if ((getIfIp(getLanIfName(), lan_if_addr)) == -1) {
-			printf("WPSRestart error, can't get lan ip.\n");
+			printf("goahead: WPSRestart error, can't get lan ip.\n");
 			return;
 		}
 		doSystem("iwpriv ra0 set WscConfMode=7");
@@ -418,13 +418,13 @@ static void WPSSetup(webs_t wp, char_t *path, char_t *query)
 		char lan_if_addr[16];
 		if ((getIfIp(getLanIfName(), lan_if_addr)) == -1)
 		{
-			printf("WPSRestart error, can't get lan ip.\n");
+			printf("goahead: WPSRestart error, can't get lan ip.\n");
 			return;
 		}
 
 		doSystem("service wscd restart");
 		doSystem("iwpriv ra0 set WscConfMode=7");
-		printf("wsc_enable:%d\n",  7);
+		printf("goahead: wsc_enable:%d\n",  7);
 	}
 
 	websRedirect(wp, "wps/wps.asp");
@@ -490,10 +490,10 @@ static void WPSAPTimerHandler(int signo)
 	struct _WSC_CONFIGURED_VALUE wsc_value;
 
 	WscStatus = getWscStatus("ra0");
-	// printf("WscStatus == %d\n", WscStatus);
+	// printf("goahead: WscStatus == %d\n", WscStatus);
 
 	if( WscStatus == 3 && g_wps_timer_state == 0){	// 3 == "Start WSC Process"
-		printf("goahead: Start to monitor WSC Status...\n");
+		printf("goahead: goahead: Start to monitor WSC Status...\n");
 		g_wps_timer_state = 1;
 		wsc_timeout_counter = 0;
 		LedInProgress();
@@ -693,7 +693,7 @@ void WPSAPPBCStartAll(void)
 	// It is possible user press PBC button when WPS is disabled.
 	if(!strcmp(wsc_enable, "0"))
 	{
-		printf("The PBC button is pressed but WPS is disabled now.\n");
+		printf("goahead: The PBC button is pressed but WPS is disabled now.\n");
 		return;
 	}
 
@@ -738,7 +738,7 @@ static void WPS(webs_t wp, char_t *path, char_t *query)
 		g_isEnrollee = 1;
 		WPSAPPBCStartAll();
 	}else{
-		printf("ignore unknown WSC method: %s\n", wsc_config_option);
+		printf("goahead: ignore unknown WSC method: %s\n", wsc_config_option);
 	}
 
 	websRedirect(wp, "wps/wps.asp"); 
@@ -904,7 +904,7 @@ static int getStaWPSBSSIDListASP(int eid, webs_t wp, int argc, char_t **argv)
 	 * dont free(g_pAPListData) during goahead life time because we want it persistant
 	 */
 	if(g_pAPListData == NULL){
-		printf("wps site survey cache created.\n");
+		printf("goahead: wps site survey cache created.\n");
 		if((g_pAPListData = (char *)malloc(SITE_SURVEY_APS_MAX)) == NULL)
 			return -1;
 		memset(g_pAPListData, 0, SITE_SURVEY_APS_MAX);
@@ -1075,12 +1075,12 @@ static int getStaWPSBSSIDListASP(int eid, webs_t wp, int argc, char_t **argv)
 						len_in_hdr = ntohs(*(unsigned short *)(pos+2));
 
 						if(tot_len - (pos - data_head) < len_in_hdr){
-							printf("Error: crafted WSC packet? tot_len = %d, len_in_hdr = %d\n", tot_len, len_in_hdr);
+							printf("goahead: Error: crafted WSC packet? tot_len = %d, len_in_hdr = %d\n", tot_len, len_in_hdr);
 							break;
 						}
 									
 #define CASE(x)	case x:\
-				if(len_in_hdr != x##_LEN){ printf("Error: crafted WSC packet? %s.\n", #x); goto WSC_FAILED;}  \
+				if(len_in_hdr != x##_LEN){ printf("goahead: Error: crafted WSC packet? %s.\n", #x); goto WSC_FAILED;}  \
 				IEFlags |= x##_BEACON;
 #define TESTBIT(x)	(x##_BEACON & IEFlags)
 
@@ -1121,7 +1121,7 @@ static int getStaWPSBSSIDListASP(int eid, webs_t wp, int argc, char_t **argv)
 								primary_device_type_category =  *(unsigned short *)(pos + 2 + 2);
 								primary_device_type_subcategory =  *(unsigned short *)(pos + 2 + 2 + 2 + 2);
 							default:
-								//printf("unknown tlv:%04x\n", ntohs(*(unsigned short *)pos));
+								//printf("goahead: unknown tlv:%04x\n", ntohs(*(unsigned short *)pos));
 								break;
 
 						}
@@ -1129,7 +1129,7 @@ static int getStaWPSBSSIDListASP(int eid, webs_t wp, int argc, char_t **argv)
 					}
 
 					if( ! TESTBIT(WSC_ID_VERSION) || ! TESTBIT( WSC_ID_SC_STATE)){
-						printf("No Version and WPS setup state\n.");
+						printf("goahead: No Version and WPS setup state\n.");
 						break;
 					}
 					
@@ -1623,7 +1623,7 @@ void WPSSTAEnrolleeTimerHandler(int signo)
 					if( getStaWscProfile("ra0", &wsc_profile) != -1){
 						if(wsc_profile.ProfileCnt != 1){
 							int i;
-							printf("Multi Credentials!!!\n");
+							printf("goahead: Multi Credentials!!!\n");
 							for(i=0; i< wsc_profile.ProfileCnt; i++)
 								addWPSSTAProfile2(&wsc_profile.Profile[i]);
 						}else
@@ -1704,7 +1704,7 @@ static void WPSSTAPINEnr(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 	websWrite(wp, T("\n"));
 
-	printf("Query = %s\n", query);
+	printf("goahead: Query = %s\n", query);
 	WPSSTAPINStartEnr(query);
 	websWrite(wp, T("Enrollee PIN..."));
 	websDone(wp, 200);
@@ -1720,7 +1720,7 @@ static void WPSSTAPBCEnr(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 	websWrite(wp, T("\n"));
 
-	printf("Query = %s\n", query);
+	printf("goahead: Query = %s\n", query);
 	WPSSTAPBCStartEnr();
 	websWrite(wp, T("Enrollee PBC..."));
 	websDone(wp, 200);
@@ -1748,11 +1748,11 @@ static void WPSSTAPINReg(webs_t wp, char_t *path, char_t *query)
 	}
 	snprintf(pin, 15, "%d", pin_int);
 	strncpy(ssid, sp+1, 32);
-	printf("Query pin = %s\n", pin);
-	printf("Query ssid = %s\n", ssid);
+	printf("goahead: Query pin = %s\n", pin);
+	printf("goahead: Query ssid = %s\n", ssid);
 	WPSSTAPINStartReg(ssid, pin);
 	websWrite(wp, T("Registrar PIN..."));
-    websDone(wp, 200);	
+	websDone(wp, 200);
 }
 
 /*
@@ -1799,9 +1799,9 @@ static void WPSSTARegistrarSetupKey(webs_t wp, char_t *path, char_t *query)
 static void WPSSTARegistrarSetupRest(webs_t wp, char_t *path, char_t *query)
 {
 	char_t auth[32], encrypt[32], keytype[2], keyindex[2];
-	printf("query = %s\n", query);
+	printf("goahead: query = %s\n", query);
 	sscanf(query, "%32s %32s %2s %2s", auth, encrypt, keytype, keyindex);
-	printf("auth = %s\n", auth);
+	printf("goahead: goahead: auth = %s\n", auth);
 	
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "staRegAuth", auth);
@@ -2087,7 +2087,7 @@ static int getStaWscProfile(char *interface, WSC_PROFILE *wsc_profile)
 	wrq.u.data.pointer = (caddr_t) wsc_profile;
 	wrq.u.data.flags = RT_OID_802_11_WSC_QUERY_PROFILE;
 	if( ioctl(socket_id, RT_PRIV_IOCTL, &wrq) == -1){
-		printf("ioctl error, getStaWscProfile:%s\n", strerror(errno));
+		printf("goahead: ioctl error, getStaWscProfile:%s\n", strerror(errno));
 		close(socket_id);
 		return -1;
 	}
@@ -2113,7 +2113,7 @@ static char_t *addWPSSTAProfile2(WSC_CREDENTIAL *wsc_cre)
 	tmpProfileSetting.Next = NULL;
 
 	strncpy(tmpProfileSetting.SSID, wsc_cre->SSID.Ssid, 32);
-	printf("SSID1=%s\n", tmpProfileSetting.SSID);
+	printf("goahead: SSID1=%s\n", tmpProfileSetting.SSID);
 	SaveToFlashStr("staSSID", tmpProfileSetting.SSID);
 
 	//profile name, gen a uniq name
@@ -2281,7 +2281,7 @@ static char_t *addWPSSTAProfile2(WSC_CREDENTIAL *wsc_cre)
         break;
     case 0x8:	/* WPA */
     case 0x10:	/* WPA2 */
-    	printf("Warning,WPS WPA/WPA\n");
+    	printf("goahead: Warning,WPS WPA/WPA\n");
         break;
     default:
         return NULL;
@@ -2326,7 +2326,7 @@ static char_t *addWPSSTAProfile(char_t *result)
 	//SSID, get SSID from Dat
 	if(!getValueFromDat("SSID1", tmpProfileSetting.SSID, NDIS_802_11_LENGTH_SSID+1))			// get SSID from .DAT
 		return NULL;
-	printf("SSID1=%s\n", tmpProfileSetting.SSID);
+	printf("goahead: SSID1=%s\n", tmpProfileSetting.SSID);
 	SaveToFlashStr("staSSID", tmpProfileSetting.SSID);
 
 	//profile name, gen a uniq name

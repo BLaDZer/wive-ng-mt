@@ -696,7 +696,7 @@ void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 
 	if (nvram_set(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
 	{
-		printf("Set vpnEnabled error!\n");
+		printf("goahead: Set vpnEnabled error!\n");
 		return;
 	}
 
@@ -713,7 +713,7 @@ void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 		if (strcmp(vpn_type, "6") == 0)
 			fetch = lanauth_args;
 #endif
-		printf("vpn_enabled value : %s\n", vpn_enabled);
+		printf("goahead: vpn_enabled value : %s\n", vpn_enabled);
 
 		setupParameters(wp, fetch, 0);
 
@@ -727,12 +727,12 @@ void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	//kill helpers firt sigterm second sigkill
-	printf("Kill helpers\n");
+	printf("goahead: Kill vpn helpers\n");
 	system("killall -q W60vpnhelper");
 	system("killall -q vpnhelper");
 	system("killall -q -SIGKILL W60vpnhelper");
 	system("killall -q -SIGKILL vpnhelper");
-	printf("Calling vpn helper...\n");
+	printf("goahead: Calling vpn helper...\n");
 	system("service vpnhelper restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
@@ -1507,7 +1507,7 @@ static void rebuildVPNRoutes(char *src_rrs)
 	FILE *fd = fopen(PATH_PPP_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("open %s failed\n", PATH_PPP_ROUTES);
+		printf("goahead: open %s failed\n", PATH_PPP_ROUTES);
 		return;
 	}
 
@@ -1563,7 +1563,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 	FILE *fd = fopen(PATH_LANWAN_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("open %s failed\n", PATH_LANWAN_ROUTES);
+		printf("goahead: open %s failed\n", PATH_LANWAN_ROUTES);
 		return;
 	}
 
@@ -1578,7 +1578,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 			continue;
 		else if ((strcmp(iface, "WAN")==0) && isBridgeMode)
 		{
-			printf("Skip WAN routing rule in the non-Gateway mode: %s\n", one_rule);
+			printf("goahead: Skip WAN routing rule in the non-Gateway mode: %s\n", one_rule);
 			continue;
 		}
 
@@ -1631,7 +1631,7 @@ void staticRoutingInit(void)
 	// Get routing rules
 	char *rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
 	if (rrs == NULL)
-		printf("RoutingRules are empty\n");
+		printf("goahead: RoutingRules are empty\n");
 
 	// And rebuild VPN routes
 	rebuildLANWANRoutes(rrs);
@@ -1701,7 +1701,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 		{
 			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
 			{
-				printf("format error\n");
+				printf("goahead: format error\n");
 				free(running_rules);
 				fclose(fp);
 				return 0;
@@ -1728,7 +1728,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 				if (index < rule_count)
 					running_rules[index] = 1;
 				else
-					printf("fatal error in %s\n", __FUNCTION__);
+					printf("goahead: fatal error in %s\n", __FUNCTION__);
 
 				websWrite(wp, T(", %d, "), index); // 8
 				if (getNthValueSafe(3, one_rule, ',', interface, sizeof(interface)) != -1)
@@ -1917,9 +1917,9 @@ static void ripdRestart(void)
 			doSystem("echo \"network %s/%d\" >> /etc/ripd.conf", wan_ip, netmask_aton(wan_mask));
 			doSystem("echo \"network %s\" >> /etc/ripd.conf", getWanIfName());
 		}else
-			printf("ripdRestart(): The WAN IP is still undeterminated...\n");
+			printf("goahead: ripdRestart(): The WAN IP is still undeterminated...\n");
 	}else
-		printf("ripdRestart(): The WAN IP is still undeterminated...\n");
+		printf("goahead: ripdRestart(): The WAN IP is still undeterminated...\n");
 
 	// deal with LAN
 	if(getIfIp(getLanIfName(), lan_ip) != -1){
@@ -2247,15 +2247,15 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "wanConnectionMode", ctype);
 		nvram_bufset(RT2860_NVRAM, "dhcpRequestIP", req_ip);
-		printf("dhcpRequestIP = %s\n", req_ip);
-		printf("wanConnectionMode = %s\n", ctype);
+		printf("goahead: dhcpRequestIP = %s\n", req_ip);
+		printf("goahead: wanConnectionMode = %s\n", ctype);
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
 	else if (strncmp(ctype, "ZERO", 5) == 0)
 	{
 		nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
-		printf("wanConnectionMode = %s\n", ctype);
+		printf("goahead: wanConnectionMode = %s\n", ctype);
 	}
 	else
 	{
@@ -2533,7 +2533,7 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 		char_t subnet[20];
 		sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
 		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-			printf("Set chilli_net nvram error!");
+			printf("goahead: Set chilli_net nvram error!");
 
 		setupParameters(wp, chilli_vars, 0);
 
