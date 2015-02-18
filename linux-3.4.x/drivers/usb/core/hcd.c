@@ -44,6 +44,11 @@
 
 #include "usb.h"
 
+#ifdef CONFIG_RALINK_GPIO_LED_USB
+#include <linux/ralink_gpio.h>
+extern ralink_gpio_led_info usb_led;
+extern int ralink_gpio_led_set(ralink_gpio_led_info usb_led);
+#endif
 
 /*-------------------------------------------------------------------------*/
 
@@ -1482,7 +1487,10 @@ int usb_hcd_submit_urb (struct urb *urb, gfp_t mem_flags)
 				unmap_urb_for_dma(hcd, urb);
 		}
 	}
-
+#ifdef CONFIG_RALINK_GPIO_LED_USB
+	/* blink led */
+	ralink_gpio_led_set(usb_led);
+#endif
 	if (unlikely(status)) {
 		usbmon_urb_submit_error(&hcd->self, urb, status);
 		urb->hcpriv = NULL;

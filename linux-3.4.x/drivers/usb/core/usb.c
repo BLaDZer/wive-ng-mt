@@ -44,6 +44,11 @@
 
 #include "usb.h"
 
+#ifdef CONFIG_RALINK_GPIO_LED_USB
+#include <linux/ralink_gpio.h>
+ralink_gpio_led_info usb_led;
+extern int ralink_gpio_led_set(ralink_gpio_led_info usb_led);
+#endif
 
 const char *usbcore_name = "usbcore";
 
@@ -1010,6 +1015,16 @@ static int __init usb_init(void)
 		pr_info("%s: USB support disabled\n", usbcore_name);
 		return 0;
 	}
+
+#ifdef CONFIG_RALINK_GPIO_LED_USB
+	printk(KERN_INFO "USB led has gpio %d\n", GPIO_USB_LED_GREEN);
+	usb_led.gpio = GPIO_USB_LED_GREEN;
+	usb_led.on = 1;
+	usb_led.off = 1;
+	usb_led.blinks = 1;
+	usb_led.rests = 1;
+	usb_led.times = 1;
+#endif
 
 	retval = usb_debugfs_init();
 	if (retval)

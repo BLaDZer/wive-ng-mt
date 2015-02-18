@@ -565,12 +565,13 @@
 20) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
 21) kernel: ralink_usb: fix broken MT7621 USB PHY calibration (SDK bug).<br>
 22) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
-23) kernel: huge update NAND framework from upstream.<br>
-24) kernel: exfat: add module alias for fix automount.<br>
-25) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-26) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-27) kernel: sg: fix read() error reporting.<br>
-28) eth_mac: add 7621 dualwan support.<br>
+23) kernel: ralink_gpio: add usb lid blink at usb transfer.<br>
+24) kernel: huge update NAND framework from upstream.<br>
+25) kernel: exfat: add module alias for fix automount.<br>
+26) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+27) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+28) kernel: sg: fix read() error reporting.<br>
+29) eth_mac: add 7621 dualwan support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
