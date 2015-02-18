@@ -209,7 +209,7 @@ void formDefineWireless(void)
 
 static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RT2860V2_AP_APCLI
+#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -218,7 +218,7 @@ static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RT2860V2_AP_WDS
+#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -614,7 +614,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -623,7 +623,7 @@ static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RT2860V2_AP_GREENAP
+#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT7610_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1155,7 +1155,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		websRedirect(wp, submitUrl);
 
 	setupSecurityLed();
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_RT2860V2_STA_WSC)
+#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
 	WPSRestart();
 #endif
 	doSystem("internet.sh wifionly");
@@ -1163,8 +1163,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
-	#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_RT2860V2_STA_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
+	#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 		websWrite(wp, T("1"));
 	#else
 		websWrite(wp, T("0"));
@@ -1177,7 +1177,7 @@ static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
@@ -1193,16 +1193,16 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	int ssid_num, wlan_mode;
 	char *submitUrl;
 
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	char_t	*m2u_enable, *mcast_mcs;
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_RT2860V2_STA_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	char_t *video_turbine;
 #endif
 #endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
 	char_t *ids_enable;
 #endif
-#ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
+#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 	char_t *ht_bss_coex, *ap2040_rescan, *ht_noise_thresh;
 #endif
 	//fetch from web input
@@ -1220,19 +1220,19 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
-#ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
+#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 	ht_noise_thresh = websGetVar(wp, T("HT_BSSCoexApCntThr"), T("0"));
 	ht_bss_coex = websGetVar(wp, T("HT_BSSCoexistence"), T("0"));
 	ap2040_rescan = websGetVar(wp, T("AP2040Rescan"), T("0"));
 #endif
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_RT2860V2_STA_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
 #endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	ids_enable = websGetVar(wp, T("ids_enable"), T("0"));
 #endif
 
@@ -1261,22 +1261,22 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	//txburst and burst mode set in one place
 	nvram_bufset(RT2860_NVRAM, "TxBurst", tx_burst);
 	nvram_bufset(RT2860_NVRAM, "BurstMode", tx_burst);
-#ifdef CONFIG_RT2860V2_AP_80211N_DRAFT3
+#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 	nvram_bufset(RT2860_NVRAM, "HT_BSSCoexistence", ht_bss_coex);
 	if (strcmp(ht_bss_coex, "1") == 0)
 		nvram_bufset(RT2860_NVRAM, "HT_BSSCoexApCntThr", ht_noise_thresh);
 	nvram_bufset(RT2860_NVRAM, "AP2040Rescan", ap2040_rescan);
 #endif
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	nvram_bufset(RT2860_NVRAM, "M2UEnabled", m2u_enable);
 	nvram_bufset(RT2860_NVRAM, "IgmpSnEnable", m2u_enable);
 	nvram_bufset(RT2860_NVRAM, "McastMcs", mcast_mcs);
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_RT2860V2_STA_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
 #endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	nvram_bufset(RT2860_NVRAM, "IdsEnable", ids_enable);
 #endif
 	nvram_bufset(RT2860_NVRAM, "CountryCode", countrycode);
@@ -1325,7 +1325,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		websWrite(wp, T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
 		websWrite(wp, T("rd_region: %s<br>\n"), rd_region);
 		websWrite(wp, T("countrycode: %s<br>\n"), countrycode);
-#ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 		websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
 		websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
@@ -1893,7 +1893,7 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	doSystem("internet.sh wifionly");
 
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_RT2860V2_STA_WSC)
+#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
 	WPSRestart();
 #endif
 #ifdef CONFIG_USER_802_1X
