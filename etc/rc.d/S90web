@@ -12,7 +12,7 @@ start() {
 	#blink wps/sys led at boot time before goahead start
 	if [ -f /bin/gpio ]; then
 	    for i in $boot_leds_blink; do
-	    gpio l $i 0 4000 0 0 0
+		gpio l $i 0 4000 0 0 0
 	    done
 	fi
 	$LOG "Copy web pages to tmpfs."
@@ -28,7 +28,7 @@ start() {
 	# if goahead not found
 	if [ -f /bin/gpio ]; then
 	    for i in $boot_leds_blink; do
-	    gpio l $i 1 10 0 0 4000
+		gpio l $i 1 10 0 0 4000
 	    done
 	fi
 	echo "GOAHEAD NOT FOUND!!! FIX THIS AND REBUILD FIRMWARE."
