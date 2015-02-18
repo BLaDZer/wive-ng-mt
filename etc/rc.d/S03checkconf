@@ -44,7 +44,7 @@ get_param() {
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
 	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
-	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName`
+	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName wan_port`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -66,6 +66,15 @@ checkminimalconfig()
     elif [ "$OperationMode" = "4" ] && [ ! -f /bin/chilli ]; then
 	nvram_set 2860 OperationMode 1
 	OperationMode="1"
+    fi
+
+    #
+    #	correct static switch configuration modes if use it
+    #
+    if [ "$wan_port" = "4" ] && [ "$CONFIG_GE2_INTERNAL_GPHY_P0" != "" ]; then
+	nvram_set 2860 wan_port 0
+    elif [ "$wan_port" = "0" ] && [ "$CONFIG_GE2_INTERNAL_GPHY_P4" != "" ]; then
+	nvram_set 2860 wan_port 4
     fi
 
     #

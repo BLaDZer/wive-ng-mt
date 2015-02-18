@@ -216,7 +216,9 @@ set_dhcptouch_portnum() {
 ##########################################################################
 get_switch_type
 ##########################################################################
-set_vlan_portmap
+if [ $CONFIG_RAETH_ESW != "" ] && [ "$CONFIG_RAETH_GMAC2" = "" ]; then
+    set_vlan_portmap
+fi
 set_mac_wan_lan
 set_perport_physmode
 set_dhcptouch_portnum
