@@ -43,21 +43,25 @@
 #define RALINK_GPIO_DEVNAME	"gpio"		//nodename
 #define GPIO_DEV		"/dev/gpio"	//userlevel devname
 
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+/* BUTTONS GPIO */
+#define GPIO_BTN_RESET		6
+#define GPIO_BTN_WPS		18
+/* LEDS GPIO */
+#define GPIO_POWER_LED		0 /* stub */
+#define GPIO_LED_SEC_GREEN      0 /* stub */
+#define GPIO_LED_WAN_GREEN      0 /* stub */
+#define GPIO_LED_WAN_ORANGE     0 /* stub */
+#define GPIO_WPS_LED_ORANGE  	46
+#define GPIO_WPS_LED_GREEN   	46
+#define GPIO_USB_LED_GREEN   	48
+#define GPIO_VPN_LED1		46 /* VPN tx/rx led */
+#elif defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 /* BUTTONS GPIO */
 #define GPIO_BTN_RESET		13
 #define GPIO_BTN_WPS		13
 /* LEDS GPIO */
 #define GPIO_POWER_LED		0 /* stub */
-#else
-/* BUTTONS GPIO */
-#define GPIO_BTN_RESET		1
-#define GPIO_BTN_WPS		2
-/* LEDS GPIO */
-#define GPIO_POWER_LED		38
-#endif
-
-/* LEDS GPIO */
 #define GPIO_LED_SEC_GREEN      0 /* stub */
 #define GPIO_LED_WAN_GREEN      40
 #define GPIO_LED_WAN_ORANGE     40
@@ -65,6 +69,20 @@
 #define GPIO_WPS_LED_GREEN   	39
 #define GPIO_USB_LED_GREEN   	0
 #define GPIO_VPN_LED1		39 /* VPN tx/rx led */
+#else
+/* BUTTONS GPIO */
+#define GPIO_BTN_RESET		1
+#define GPIO_BTN_WPS		2
+/* LEDS GPIO */
+#define GPIO_POWER_LED		38
+#define GPIO_LED_SEC_GREEN      0 /* stub */
+#define GPIO_LED_WAN_GREEN      40
+#define GPIO_LED_WAN_ORANGE     40
+#define GPIO_WPS_LED_ORANGE  	39
+#define GPIO_WPS_LED_GREEN   	39
+#define GPIO_USB_LED_GREEN   	0
+#define GPIO_VPN_LED1		39 /* VPN tx/rx led */
+#endif
 
 /* Firmware update indicators */
 #define GPIO_MTD_LED1	GPIO_POWER_LED
