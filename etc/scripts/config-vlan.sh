@@ -12,21 +12,21 @@ LOG="logger -t ESW"
 
 usage() {
 	echo "Usage:"
-	echo "  $0 3 0 - restore Ralink RT6855/MT7620/MT7621 ESW to no VLAN partition"
-	echo "  $0 3 EEEEE - config RT3052 Enable all ports 100FD"
-	echo "  $0 3 DDDDD - config RT3052 Disable all ports"
-	echo "  $0 3 RRRRR - config RT3052 Reset all ports"
-	echo "  $0 3 WWWWW - config RT3052 Reinit WAN port at switch"
-	echo "  $0 3 FFFFF - config RT3052 Full reinit switch"
-	echo "  $0 3 LLLLW - config Ralink RT6855/MT7620/MT7621 ESW with VLAN and WAN at port 4"
-	echo "  $0 3 WLLLL - config Ralink RT6855/MT7620/MT7621 ESW with VLAN and WAN at port 0"
-	echo "  $0 3 LLLWW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0-1 and WAN at port 2-4"
-	echo "  $0 3 WWLLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 2-4 and WAN at port 0-1"
-	echo "  $0 3 LLWWW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0-2 and WAN at port 3-4"
-	echo "  $0 3 WWWLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 3-4 and WAN at port 0-2"
-	echo "  $0 3 LLWLW - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
-	echo "  $0 3 WLWLL - config Ralink RT6855/MT7620/MT7621 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
-	echo "  $0 3 12345 - config Ralink RT6855/MT7620/MT7621 ESW with VLAN 1~5 at port 0~4"
+	echo "  $0 3 0 - restore Ralink MT7620/MT7621/MT7628 ESW to no VLAN partition"
+	echo "  $0 3 EEEEE - config Ralink MT7620/MT7621/MT7628 ESW enable all ports 100FD"
+	echo "  $0 3 DDDDD - config Ralink MT7620/MT7621/MT7628 ESW disable all ports"
+	echo "  $0 3 RRRRR - config Ralink MT7620/MT7621/MT7628 ESW reset all ports"
+	echo "  $0 3 WWWWW - config Ralink MT7620/MT7621/MT7628 ESW reinit WAN port at switch"
+	echo "  $0 3 FFFFF - config Ralink MT7620/MT7621/MT7628 ESW full reinit switch"
+	echo "  $0 3 LLLLW - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 4"
+	echo "  $0 3 WLLLL - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 0"
+	echo "  $0 3 LLLWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-1 and WAN at port 2-4"
+	echo "  $0 3 WWLLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 2-4 and WAN at port 0-1"
+	echo "  $0 3 LLWWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-2 and WAN at port 3-4"
+	echo "  $0 3 WWWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 3-4 and WAN at port 0-2"
+	echo "  $0 3 LLWLW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
+	echo "  $0 3 WLWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
+	echo "  $0 3 12345 - config Ralink MT7620/MT7621/MT7628 ESW with VLAN 1~5 at port 0~4"
 	exit 0
 }
 
@@ -147,7 +147,7 @@ reinit_all_phys() {
 	reset_all_phys
 }
 
-config6855Esw()
+config762xEsw()
 {
 	# now config support only internal 100FDX ESW
 	for i in `seq 6 7`; do
@@ -408,21 +408,21 @@ if [ "$1" = "3" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "LLLLW" ]; then
-		config6855Esw LLLLW
+		config762xEsw LLLLW
 	elif [ "$2" = "LLLWW" ]; then
-		config6855Esw LLLWW
+		config762xEsw LLLWW
 	elif [ "$2" = "LLWWW" ]; then
-		config6855Esw LLWWW
+		config762xEsw LLWWW
 	elif [ "$2" = "WLLLL" ]; then
-		config6855Esw WLLLL
+		config762xEsw WLLLL
 	elif [ "$2" = "WWLLL" ]; then
-		config6855Esw WWLLL
+		config762xEsw WWLLL
 	elif [ "$2" = "WWWLL" ]; then
-		config6855Esw WWWLL
+		config762xEsw WWWLL
 	elif [ "$2" = "12345" ]; then
-		config6855Esw 12345
+		config762xEsw 12345
 	elif [ "$2" = "VLANS" ]; then
-		config6855Esw VLANS
+		config762xEsw VLANS
 	else
 		echo "unknown vlan type $2"
 		echo ""

@@ -18,14 +18,11 @@ eval `nvram_buf_get 2860 wan_port tv_port sip_port vlan_double_tag ForceRenewDHC
 # Get switch type from proc
 ##############################################################################
 get_switch_type() {
-    if [ -f /proc/rt6855/gmac ]; then
-	PROC="/proc/rt6855/gmac"
-	SWITCH_MODE=3
-    elif [ -f /proc/rt63365/gmac ]; then
-	PROC="/proc/rt63365/gmac"
-	SWITCH_MODE=3
-    elif [ -f /proc/mt7620/gmac ]; then
+    if [ -f /proc/mt7620/gmac ]; then
 	PROC="/proc/mt7620/gmac"
+	SWITCH_MODE=3
+    elif [ -f /proc/mt7621/gmac ]; then
+	PROC="/proc/mt7621/gmac"
 	SWITCH_MODE=3
     else
 	$LOG "No switch in system!!!"
