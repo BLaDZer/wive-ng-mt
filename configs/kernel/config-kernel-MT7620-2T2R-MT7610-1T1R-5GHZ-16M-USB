@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.106.10 Kernel Configuration
+# Linux/mips 3.4.106.12 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -685,7 +685,7 @@ CONFIG_WEXT_PRIV=y
 #
 # Generic Driver Options
 #
-CONFIG_UEVENT_HELPER_PATH="/dev/mdev"
+CONFIG_UEVENT_HELPER_PATH="/bin/mdev"
 # CONFIG_DEVTMPFS is not set
 CONFIG_STANDALONE=y
 # CONFIG_PREVENT_FIRMWARE_BUILD is not set
@@ -1092,6 +1092,7 @@ CONFIG_USB_DYNAMIC_MINORS=y
 # USB Host Controller Drivers
 #
 # CONFIG_USB_C67X00_HCD is not set
+# CONFIG_USB_XHCI_HCD is not set
 CONFIG_USB_EHCI_HCD=y
 # CONFIG_USB_EHCI_ROOT_HUB_TT is not set
 CONFIG_USB_EHCI_TT_NEWSCHED=y
