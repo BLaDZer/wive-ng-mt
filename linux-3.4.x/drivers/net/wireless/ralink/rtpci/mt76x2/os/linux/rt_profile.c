@@ -48,7 +48,7 @@ struct dev_type_name_map{
 #define xdef_to_str(s)			def_to_str(s)
 #define def_to_str(s)			#s
 
-#define FIRST_AP_PROFILE_PATH		"/etc/Wireless/RT2860/RT2860AP.dat"
+#define FIRST_AP_PROFILE_PATH		"/etc/Wireless/RT2860/RT2860.dat"
 #define FIRST_CHIP_ID			xdef_to_str(CONFIG_RT_FIRST_CARD)
 
 #define SECOND_AP_PROFILE_PATH		"/etc/Wireless/iNIC/iNIC_ap.dat"
