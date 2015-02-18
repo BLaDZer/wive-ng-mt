@@ -997,6 +997,7 @@ function wirelessModeChange(form)
 	{
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
+		showElementEx("basicWirelessEnabledAc", style_display_on());
 
     		// Display VHT modes
     		if ((1*wmodeac) >= 14)
