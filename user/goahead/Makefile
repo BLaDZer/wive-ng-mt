@@ -46,9 +46,6 @@ all:
 
 romfs:
 	$(ROMFSINST) $(ROOT_DIRECTORY)
-ifeq ("$(CONFIG_RT2860V2_AP_WDS)", "")
-	rm -f $(ROMFSDIR)$(ROOT_DIRECTORY)/wireless/wds.asp
-endif
 ifeq ("$(CONFIG_RT2860V2_STA)", "")
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/station
 	rm -f $(ROMFSDIR)$(ROOT_DIRECTORY)/wps/wps_sta.asp
