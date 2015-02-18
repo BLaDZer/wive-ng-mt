@@ -168,7 +168,13 @@ set_perport_physmode() {
 		$LOG ">>> Port $phys_portN set mode $port_swmode <<<"
 		# first disable autoneg
 		ethtool -s eth2 autoneg off > /dev/null 2>&1
-		if [ "$port_swmode" = "100f" ]; then
+		if [ "$port_swmode" = "1000f" ]; then
+		    #set 100Mbit full duplex and start negotinate
+		    ethtool -s eth2 autoneg on speed 1000 duplex full	> /dev/null 2>&1
+		elif [ "$port_swmode" = "1000h" ]; then
+		    #set 100Mbit half duplex and start negotinate
+		    ethtool -s eth2 autoneg on speed 1000 duplex half	> /dev/null 2>&1
+		elif [ "$port_swmode" = "100f" ]; then
 		    #set 100Mbit full duplex and start negotinate
 		    ethtool -s eth2 autoneg on speed 100 duplex full	> /dev/null 2>&1
 		elif [ "$port_swmode" = "100h" ]; then
