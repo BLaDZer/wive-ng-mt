@@ -199,9 +199,8 @@ static VOID APPeerDeauthReqAction(
 		pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
         }
 
-		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
-
-        ("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
+	MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+        printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
