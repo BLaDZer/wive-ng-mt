@@ -25,6 +25,7 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    --disable-cli --disable-mac --disable-nls --disable-utp \
 	    --without-gtk \
 	    --enable-external-natpmp \
+	    --enable-lightweight \
 	    --with-zlib=$FIRMROOT/lib/shared/lib \
 	    --with-zlib-includes=$FIRMROOT/lib/shared/include \
 	    OPENSSL_CFLAGS="-I$FIRMROOT/lib/shared/include" \
