@@ -164,7 +164,9 @@ static VOID IGMPTableDisplay(
 			pMemberEntry = (PMEMBER_ENTRY)pEntry->MemberList.pHead;
 			while (pMemberEntry)
 			{
-				printk("  member MAC=(%02x:%02x:%02x:%02x:%02x:%02x)\n", PRINT_MAC(pMemberEntry->Addr));
+				printk("member mac=(%02x:%02x:%02x:%02x:%02x:%02x)\n",
+										PRINT_MAC(pMemberEntry->Addr));
+
 				pMemberEntry = pMemberEntry->pNext;
 			}
 		}
@@ -393,7 +395,7 @@ BOOLEAN MulticastFilterTableDeleteEntry(
 		}
 		else
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("%s: the Group doesn't exist.\n", __FUNCTION__));
+			DBGPRINT(RT_DEBUG_ERROR, ("%s: the Group doesn't exist.\n", __FUNCTION__));
 		}
 	} while(FALSE);
 

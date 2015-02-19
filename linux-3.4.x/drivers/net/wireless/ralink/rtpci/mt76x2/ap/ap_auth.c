@@ -133,10 +133,8 @@ static VOID APMlmeDeauthReqAction(
         if (NStatus != NDIS_STATUS_SUCCESS) 
             return;
 
-        DBGPRINT(RT_DEBUG_TRACE,
-				("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n",
-				PRINT_MAC(pInfo->Addr)));
-           		
+	printk("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(pInfo->Addr));
+
         MgtMacHeaderInit(pAd, &Hdr, SUBTYPE_DEAUTH, 0, pInfo->Addr,
 						pAd->ApCfg.MBSSID[apidx].wdev.if_addr,
 						pAd->ApCfg.MBSSID[apidx].wdev.bssid);
@@ -203,10 +201,7 @@ static VOID APPeerDeauthReqAction(
 
 		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
 
-        DBGPRINT(RT_DEBUG_TRACE,
-				("AUTH - receive DE-AUTH(seq-%d) from "
-				 "%02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
-				 SeqNum, PRINT_MAC(Addr2), Reason));
+        ("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)

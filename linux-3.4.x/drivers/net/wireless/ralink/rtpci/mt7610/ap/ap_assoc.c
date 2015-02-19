@@ -34,27 +34,24 @@ static void ap_assoc_info_debugshow(
 	IN MAC_TABLE_ENTRY *pEntry,
 	IN IE_LISTS *ie_list)
 {
-#ifdef DBG
 	PUCHAR	sAssoc = isReassoc ? (PUCHAR)"ReASSOC" : (PUCHAR)"ASSOC";
-#endif /* DBG */
 	MULTISSID_STRUCT *wdev;
 
 
 	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
-	DBGPRINT(RT_DEBUG_TRACE, ("%s - \n\tAssign AID=%d to STA %02x:%02x:%02x:%02x:%02x:%02x\n",
-		sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr)));
+	printk("%s - \n\tAssign AID=%d to STA %02x:%02x:%02x:%02x:%02x:%02x\n", sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
 
 #ifdef DOT11_N_SUPPORT
 	if (ie_list->ht_cap_len && WMODE_CAP_N(pAd->CommonCfg.PhyMode))
 	{
 		assoc_ht_info_debugshow(pAd, pEntry, ie_list->ht_cap_len, &ie_list->HTCapability);
 
-		DBGPRINT(RT_DEBUG_TRACE, ("\n%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n\n",
+		printk("\n%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n\n",
 					sAssoc, 
-					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, 
+					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode,
 					pAd->MacTab.fAnyStationIsLegacy,
-					pAd->MacTab.fAnyStation20Only, 
-					pAd->MacTab.fAnyStationNonGF));
+					pAd->MacTab.fAnyStation20Only,
+					pAd->MacTab.fAnyStationNonGF);
 
 #ifdef DOT11N_DRAFT3
 		DBGPRINT(RT_DEBUG_TRACE, ("\tExt Cap Info: \n"));
@@ -72,9 +69,7 @@ static void ap_assoc_info_debugshow(
 	else
 #endif /* DOT11_N_SUPPORT */
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("%s - legacy STA\n", sAssoc));
-		DBGPRINT(RT_DEBUG_TRACE, ("\n%s - MODE=%d, MCS=%d\n", sAssoc,
-								pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS));
+		printk("%s - legacy STA - MODE=%d, MCS=%d\n", sAssoc, pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS);
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("\tAuthMode=%d, WepStatus=%d, WpaState=%d, GroupKeyWepStatus=%d\n",

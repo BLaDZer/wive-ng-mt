@@ -571,12 +571,13 @@
 26) kernel: ralink_gpio: add usb lid blink at usb transfer.<br>
 27) kernel: ralink_wifi drivers: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
 28) kernel: ralink_wifi drivers: update firmware for 76x2 module.<br>
-29) kernel: huge update NAND framework from upstream.<br>
-30) kernel: exfat: add module alias for fix automount.<br>
-31) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-32) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-33) kernel: sg: fix read() error reporting.<br>
-34) eth_mac: add 7621 dualwan support.<br>
+29) kernel: ralink_wifi drivers: add log connect/disconnect events.<br>
+30) kernel: huge update NAND framework from upstream.<br>
+31) kernel: exfat: add module alias for fix automount.<br>
+32) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+33) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+34) kernel: sg: fix read() error reporting.<br>
+35) eth_mac: add 7621 dualwan support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
