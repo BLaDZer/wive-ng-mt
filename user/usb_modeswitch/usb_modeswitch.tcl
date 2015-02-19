@@ -9,8 +9,8 @@
 # the mode switching program with the matching parameter
 # file from /usr/share/usb_modeswitch
 #
-# Part of usb-modeswitch-2.2.0 package
-# (C) Josua Dietze 2009-2014
+# Part of usb-modeswitch-2.2.1 package
+# (C) Josua Dietze 2009-2015
 
 set arg0 [lindex $argv 0]
 if [regexp {\.tcl$} $arg0] {
