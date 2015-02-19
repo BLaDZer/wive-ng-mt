@@ -577,11 +577,12 @@
 32) kernel: ralink_wifi drivers: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
 33) kernel: ralink_wifi drivers: update firmware for 76x2 module.<br>
 34) kernel: ralink_wifi drivers: add log connect/disconnect events.<br>
-35) kernel: huge update NAND framework from upstream.<br>
-36) kernel: exfat: add module alias for fix automount.<br>
-37) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-38) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-39) kernel: sg: fix read() error reporting.<br>
+35) kernel: ralink_wifi fix build correct without DBG defined.<br>
+36) kernel: huge update NAND framework from upstream.<br>
+37) kernel: exfat: add module alias for fix automount.<br>
+38) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+39) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+40) kernel: sg: fix read() error reporting.<br>
 <br>
 <br>
 <b>TODO:</b><br>
