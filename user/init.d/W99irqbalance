@@ -105,11 +105,6 @@ case "$1" in
             stop
             start
             ;;
-
-	reload)
-            killall -HUP transmission-daemon
-            ;;
-
         *)
             echo $"Usage: $0 {start|stop|reload|restart}"
             exit 1
