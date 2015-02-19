@@ -1388,8 +1388,6 @@ static void iptablesWebsFilterRun(void)
 			chmod(_PATH_WEBS_FILE, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
 		}
 	}
-	else
-		printf("goahead: Content filter disabled.\n");
 }
 
 void firewall_rebuild_etc(void)
@@ -1423,7 +1421,6 @@ void firewall_rebuild(void)
 {
 	//rebuild firewall scripts in etc
 	firewall_rebuild_etc();
-	//no backgroudn it!!!!
 	doSystem("service iptables restart");
 }
 
