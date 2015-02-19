@@ -338,6 +338,9 @@ fulldump
 /user/dhcp6/wide-dhcpv6/configure
 /user/dhcp6/wide-dhcpv6/Makefile
 /user/udpxy/udpxy.dep
+/user/irqbalance/configure
+/user/irqbalance/Makefile
+/user/irqbalance/Makefile.in
 
 # kernel
 /linux/*

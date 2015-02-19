@@ -94,6 +94,11 @@ dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
+# multicore tools
+ifdef CONFIG_RALINK_MT7621
+dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
+endif
+
 all:
 	CC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
 	GCC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \

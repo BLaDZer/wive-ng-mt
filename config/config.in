@@ -26,6 +26,7 @@ dep_bool '  enable SSL support'				CONFIG_USER_GOAHEAD_SSL $CONFIG_USER_GOAHEAD_
 dep_bool '  enable hostname support'			CONFIG_USER_GOAHEAD_HOSTNAME $CONFIG_USER_GOAHEAD_HTTPD
 dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_GOAHEAD_HTTPD
 
+bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
 bool 'samba server'				CONFIG_USER_SAMBA

@@ -118,3 +118,10 @@ fi
 if [ -f /bin/lldpd ]; then
 	service lldpd restart
 fi
+
+##########################################################
+# Always rebalance irq by cpus				 #
+##########################################################
+if [ -f /bin/irqbalance ]; then
+    service irqbalance restart
+fi
