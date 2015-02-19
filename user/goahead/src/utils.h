@@ -36,22 +36,14 @@
 #define WPS_LED_SESSION_OVERLAP		4
 #define WPS_LED_SUCCESS			5
 
-#if defined(CONFIG_RALINK_RT3052)
-#define PROCREG_GMAC	"/proc/rt3052/gmac"
-#elif defined(CONFIG_RALINK_RT3352)
-#define PROCREG_GMAC	"/proc/rt3352/gmac"
-#elif defined (CONFIG_RALINK_RT5350)
-#define PROCREG_GMAC	"/proc/rt5350/gmac"
-#elif defined(CONFIG_RALINK_RT3883)
-#define PROCREG_GMAC	"/proc/rt3883/gmac"
-#elif defined (CONFIG_RALINK_MT7620)
+#if defined (CONFIG_RALINK_MT7620)
 #define PROCREG_GMAC	"/proc/mt7620/gmac"
 #elif defined (CONFIG_RALINK_MT7621)
 #define PROCREG_GMAC	"/proc/mt7621/gmac"
 #elif defined (CONFIG_RALINK_MT7628)
 #define PROCREG_GMAC	"/proc/mt7628/gmac"
 #else
-#define PROCREG_GMAC	"/proc/rt3052/gmac"
+#define PROCREG_GMAC	"/proc/mt7620/gmac"
 #endif
 
 void reboot_now(void);
