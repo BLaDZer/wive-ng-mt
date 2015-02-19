@@ -832,9 +832,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 					duplex = 'H';
 			}
 
-			websWrite(wp, T("%s%c,%d,%c"),
-				(first) ? "" : ";",
-				link, speed, duplex);
+			websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
 			first = 0;
 		}
 	}

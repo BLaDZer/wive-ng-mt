@@ -81,6 +81,8 @@ function showPortStatus()
 				image = '10';
 			else if (port[1] == '100')
 				image = '100';
+			else if (port[1] == '1000')
+				image = '1000';
 			else
 				image = '100';
 
@@ -96,7 +98,7 @@ function showPortStatus()
 		else if (i == sip_port)
 			text = '<span style="color: #ffd200;">SIP</span>';
 
-		content = content + '<td class="port_status" style="background-color: #ffffff; border: 0px; background-image: url(\'/graphics/' + image + '.gif\'); "><b>' + text + '</b></td>';
+		content = content + '<td class="port_status" style="background-color: #ffffff; color: #00ffff; border: 0px; background-image: url(\'/graphics/' + image + '.gif\'); "><b>' + text + '</b></td>';
 	}
 
 	ajaxModifyElementHTML('portStatusRow', '<table class="small" style="border: 0px;">' + content + '</table>');
