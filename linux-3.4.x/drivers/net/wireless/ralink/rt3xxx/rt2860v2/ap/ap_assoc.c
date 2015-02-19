@@ -1791,8 +1791,7 @@ static void ap_assoc_info_debugshow(
 {
 	PUCHAR	sAssoc = isReassoc ? (PUCHAR)"ReASSOC" : (PUCHAR)"ASSOC";
 
-	printk(HTCapability_Len ? "%s Assign 11n HT STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n" :
-		"%s Assign Legacy STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n",
+	printk(HTCapability_Len ? "%s Assign 11n HT STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n" : "%s Assign Legacy STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n",
 		sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
 
 #ifdef DOT11_N_SUPPORT
@@ -1800,7 +1799,7 @@ static void ap_assoc_info_debugshow(
 	{
 		assoc_ht_info_debugshow(pAd, pEntry, HTCapability_Len, pHTCapability);
 
-		DBGPRINT(RT_DEBUG_TRACE, ("\n%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n\n",
+		DBGPRINT(RT_DEBUG_TRACE, ("%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n",
 					sAssoc,
 					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, 
 					pAd->MacTab.fAnyStationIsLegacy,
