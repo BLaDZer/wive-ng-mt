@@ -1,6 +1,6 @@
 /* Copyright (c) 2002 Intel Corporation */
 #include <stdio.h>
-#include "ethtool-util.h"
+#include "internal.h"
 
 /* Register Bit Masks */
 /* Device Control */
@@ -110,37 +110,122 @@
 #define E1000_TCTL_RTLC   0x01000000    /* Re-transmit on late collision */
 #define E1000_TCTL_NRTU   0x02000000    /* No Re-transmit on underrun */
 
+/* M88E1000 PHY Specific Status Register */
+#define M88_PSSR_JABBER             0x0001 /* 1=Jabber */
+#define M88_PSSR_REV_POLARITY       0x0002 /* 1=Polarity reversed */
+#define M88_PSSR_DOWNSHIFT          0x0020 /* 1=Downshifted */
+#define M88_PSSR_MDIX               0x0040 /* 1=MDIX; 0=MDI */
+#define M88_PSSR_CABLE_LENGTH       0x0380 /* 0=<50M;1=50-80M;2=80-110M;
+                                            * 3=110-140M;4=>140M */
+#define M88_PSSR_LINK               0x0400 /* 1=Link up, 0=Link down */
+#define M88_PSSR_SPD_DPLX_RESOLVED  0x0800 /* 1=Speed & Duplex resolved */
+#define M88_PSSR_PAGE_RCVD          0x1000 /* 1=Page received */
+#define M88_PSSR_DPLX               0x2000 /* 1=Duplex 0=Half Duplex */
+#define M88_PSSR_SPEED              0xC000 /* Speed, bits 14:15 */
+#define M88_PSSR_10MBS              0x0000 /* 00=10Mbs */
+#define M88_PSSR_100MBS             0x4000 /* 01=100Mbs */
+#define M88_PSSR_1000MBS            0x8000 /* 10=1000Mbs */
+
+#define M88_PSSR_CL_0_50     (0<<7)
+#define M88_PSSR_CL_50_80    (1<<7)
+#define M88_PSSR_CL_80_110   (2<<7)
+#define M88_PSSR_CL_110_140  (3<<7)
+#define M88_PSSR_CL_140_PLUS (4<<7)
+
+/* M88E1000 PHY Specific Control Register */
+#define M88_PSCR_JABBER_DISABLE    0x0001  /* 1=Jabber Function disabled */
+#define M88_PSCR_POLARITY_REVERSAL 0x0002  /* 1=Polarity Reversal enabled */
+#define M88_PSCR_SQE_TEST          0x0004  /* 1=SQE Test enabled */
+#define M88_PSCR_CLK125_DISABLE    0x0010  /* 1=CLK125 low,
+                                            * 0=CLK125 toggling
+                                            */
+#define M88_PSCR_MDI_MASK         0x0060
+#define M88_PSCR_MDI_MANUAL_MODE  0x0000   /* MDI Crossover Mode bits 6:5 */
+                                          /* Manual MDI configuration */
+#define M88_PSCR_MDIX_MANUAL_MODE 0x0020   /* Manual MDIX configuration */
+#define M88_PSCR_AUTO_X_1000T     0x0040   /* 1000BASE-T: Auto crossover,
+                                            *  100BASE-TX/10BASE-T:
+                                            *  MDI Mode
+                                            */
+#define M88_PSCR_AUTO_X_MODE      0x0060   /* Auto crossover enabled
+                                            * all speeds.
+                                            */
+#define M88_PSCR_10BT_EXT_DIST_ENABLE 0x0080
+                                   /* 1=Enable Extended 10BASE-T distance
+                                    * (Lower 10BASE-T RX Threshold)
+                                    * 0=Normal 10BASE-T RX Threshold */
+#define M88_PSCR_MII_5BIT_ENABLE      0x0100
+                                   /* 1=5-Bit interface in 100BASE-TX
+                                    * 0=MII interface in 100BASE-TX */
+#define M88_PSCR_SCRAMBLER_DISABLE    0x0200       /* 1=Scrambler disable */
+#define M88_PSCR_FORCE_LINK_GOOD      0x0400       /* 1=Force link good */
+#define M88_PSCR_ASSERT_CRS_ON_TX     0x0800       /* 1=Assert CRS on Transmit */
+
+#define M88_PSCR_POLARITY_REVERSAL_SHIFT    1
+#define M88_PSCR_AUTO_X_MODE_SHIFT          5
+#define M88_PSCR_10BT_EXT_DIST_ENABLE_SHIFT 7
+
 /* PCI Device IDs */
-#define E1000_DEV_ID_82542               0x1000
-#define E1000_DEV_ID_82543GC_FIBER       0x1001
-#define E1000_DEV_ID_82543GC_COPPER      0x1004
-#define E1000_DEV_ID_82544EI_COPPER      0x1008
-#define E1000_DEV_ID_82544EI_FIBER       0x1009
-#define E1000_DEV_ID_82544GC_COPPER      0x100C
-#define E1000_DEV_ID_82544GC_LOM         0x100D
-#define E1000_DEV_ID_82540EM             0x100E
-#define E1000_DEV_ID_82540EM_LOM         0x1015
-#define E1000_DEV_ID_82540EP_LOM         0x1016
-#define E1000_DEV_ID_82540EP             0x1017
-#define E1000_DEV_ID_82540EP_LP          0x101E
-#define E1000_DEV_ID_82545EM_COPPER      0x100F
-#define E1000_DEV_ID_82545EM_FIBER       0x1011
-#define E1000_DEV_ID_82545GM_COPPER      0x1026
-#define E1000_DEV_ID_82545GM_FIBER       0x1027
-#define E1000_DEV_ID_82545GM_SERDES      0x1028
-#define E1000_DEV_ID_82546EB_COPPER      0x1010
-#define E1000_DEV_ID_82546EB_FIBER       0x1012
-#define E1000_DEV_ID_82546EB_QUAD_COPPER 0x101D
-#define E1000_DEV_ID_82541EI             0x1013
-#define E1000_DEV_ID_82541EI_MOBILE      0x1018
-#define E1000_DEV_ID_82541ER             0x1078
-#define E1000_DEV_ID_82547GI             0x1075
-#define E1000_DEV_ID_82541GI             0x1076
-#define E1000_DEV_ID_82541GI_MOBILE      0x1077
-#define E1000_DEV_ID_82546GB_COPPER      0x1079
-#define E1000_DEV_ID_82546GB_FIBER       0x107A
-#define E1000_DEV_ID_82546GB_SERDES      0x107B
-#define E1000_DEV_ID_82547EI             0x1019
+#define E1000_DEV_ID_82542                    0x1000
+#define E1000_DEV_ID_82543GC_FIBER            0x1001
+#define E1000_DEV_ID_82543GC_COPPER           0x1004
+#define E1000_DEV_ID_82544EI_COPPER           0x1008
+#define E1000_DEV_ID_82544EI_FIBER            0x1009
+#define E1000_DEV_ID_82544GC_COPPER           0x100C
+#define E1000_DEV_ID_82544GC_LOM              0x100D
+#define E1000_DEV_ID_82540EM                  0x100E
+#define E1000_DEV_ID_82540EM_LOM              0x1015
+#define E1000_DEV_ID_82540EP_LOM              0x1016
+#define E1000_DEV_ID_82540EP                  0x1017
+#define E1000_DEV_ID_82540EP_LP               0x101E
+#define E1000_DEV_ID_82545EM_COPPER           0x100F
+#define E1000_DEV_ID_82545EM_FIBER            0x1011
+#define E1000_DEV_ID_82545GM_COPPER           0x1026
+#define E1000_DEV_ID_82545GM_FIBER            0x1027
+#define E1000_DEV_ID_82545GM_SERDES           0x1028
+#define E1000_DEV_ID_82546EB_COPPER           0x1010
+#define E1000_DEV_ID_82546EB_FIBER            0x1012
+#define E1000_DEV_ID_82546EB_QUAD_COPPER      0x101D
+#define E1000_DEV_ID_82546GB_COPPER           0x1079
+#define E1000_DEV_ID_82546GB_FIBER            0x107A
+#define E1000_DEV_ID_82546GB_SERDES           0x107B
+#define E1000_DEV_ID_82546GB_PCIE             0x108A
+#define E1000_DEV_ID_82546GB_QUAD_COPPER      0x1099
+#define E1000_DEV_ID_82546GB_QUAD_COPPER_KSP3 0x10B5
+#define E1000_DEV_ID_82541EI                  0x1013
+#define E1000_DEV_ID_82541EI_MOBILE           0x1018
+#define E1000_DEV_ID_82541ER_LOM              0x1014
+#define E1000_DEV_ID_82541ER                  0x1078
+#define E1000_DEV_ID_82541GI                  0x1076
+#define E1000_DEV_ID_82541GI_LF               0x107C
+#define E1000_DEV_ID_82541GI_MOBILE           0x1077
+#define E1000_DEV_ID_82547EI                  0x1019
+#define E1000_DEV_ID_82547EI_MOBILE           0x101A
+#define E1000_DEV_ID_82547GI                  0x1075
+#define E1000_DEV_ID_82571EB_COPPER           0x105E
+#define E1000_DEV_ID_82571EB_FIBER            0x105F
+#define E1000_DEV_ID_82571EB_SERDES           0x1060
+#define E1000_DEV_ID_82571EB_QUAD_COPPER      0x10A4
+#define E1000_DEV_ID_82571EB_QUAD_FIBER       0x10A5
+#define E1000_DEV_ID_82571EB_QUAD_COPPER_LP   0x10BC
+#define E1000_DEV_ID_82572EI_COPPER           0x107D
+#define E1000_DEV_ID_82572EI_FIBER            0x107E
+#define E1000_DEV_ID_82572EI_SERDES           0x107F
+#define E1000_DEV_ID_82572EI                  0x10B9
+#define E1000_DEV_ID_82573E                   0x108B
+#define E1000_DEV_ID_82573E_IAMT              0x108C
+#define E1000_DEV_ID_82573L                   0x109A
+#define E1000_DEV_ID_80003ES2LAN_COPPER_DPT   0x1096
+#define E1000_DEV_ID_80003ES2LAN_SERDES_DPT   0x1098
+#define E1000_DEV_ID_80003ES2LAN_COPPER_SPT   0x10BA
+#define E1000_DEV_ID_80003ES2LAN_SERDES_SPT   0x10BB
+#define E1000_DEV_ID_ICH8_IGP_M_AMT           0x1049
+#define E1000_DEV_ID_ICH8_IGP_AMT             0x104A
+#define E1000_DEV_ID_ICH8_IGP_C               0x104B
+#define E1000_DEV_ID_ICH8_IFE                 0x104C
+#define E1000_DEV_ID_ICH8_IFE_GT              0x10C4
+#define E1000_DEV_ID_ICH8_IFE_G               0x10C5
+#define E1000_DEV_ID_ICH8_IGP_M               0x104D
 
 #define E1000_82542_2_0_REV_ID 2
 #define E1000_82542_2_1_REV_ID 3
@@ -149,8 +234,7 @@
 /* Media Access Controlers */
 enum e1000_mac_type {
 	e1000_undefined = 0,
-	e1000_82542_rev2_0,
-	e1000_82542_rev2_1,
+	e1000_82542,
 	e1000_82543,
 	e1000_82544,
 	e1000_82540,
@@ -162,6 +246,11 @@ enum e1000_mac_type {
 	e1000_82541_rev_2,
 	e1000_82547,
 	e1000_82547_rev_2,
+	e1000_82571,
+	e1000_82572,
+	e1000_82573,
+	e1000_80003es2lan,
+	e1000_ich8lan,
 	e1000_num_macs
 };
 
@@ -172,16 +261,7 @@ e1000_get_mac_type(u16 device_id, u8 revision_id)
 
 	switch (device_id) {
 	case E1000_DEV_ID_82542:
-		switch (revision_id) {
-		case E1000_82542_2_0_REV_ID:
-			mac_type = e1000_82542_rev2_0;
-			break;
-		case E1000_82542_2_1_REV_ID:
-			mac_type = e1000_82542_rev2_1;
-			break;
-		default:
-			mac_type = e1000_82542_rev2_0;
-		}
+		mac_type = e1000_82542;
 		break;
 	case E1000_DEV_ID_82543GC_FIBER:
 	case E1000_DEV_ID_82543GC_COPPER:
@@ -217,25 +297,66 @@ e1000_get_mac_type(u16 device_id, u8 revision_id)
 	case E1000_DEV_ID_82546GB_COPPER:
 	case E1000_DEV_ID_82546GB_FIBER:
 	case E1000_DEV_ID_82546GB_SERDES:
+	case E1000_DEV_ID_82546GB_PCIE:
+	case E1000_DEV_ID_82546GB_QUAD_COPPER:
+	case E1000_DEV_ID_82546GB_QUAD_COPPER_KSP3:
 		mac_type = e1000_82546_rev_3;
 		break;
 	case E1000_DEV_ID_82541EI:
 	case E1000_DEV_ID_82541EI_MOBILE:
+	case E1000_DEV_ID_82541ER_LOM:
 		mac_type = e1000_82541;
 		break;
 	case E1000_DEV_ID_82541ER:
 	case E1000_DEV_ID_82541GI:
+	case E1000_DEV_ID_82541GI_LF:
 	case E1000_DEV_ID_82541GI_MOBILE:
 		mac_type = e1000_82541_rev_2;
 		break;
 	case E1000_DEV_ID_82547EI:
+	case E1000_DEV_ID_82547EI_MOBILE:
 		mac_type = e1000_82547;
 		break;
 	case E1000_DEV_ID_82547GI:
 		mac_type = e1000_82547_rev_2;
 		break;
+	case E1000_DEV_ID_82571EB_COPPER:
+	case E1000_DEV_ID_82571EB_FIBER:
+	case E1000_DEV_ID_82571EB_SERDES:
+	case E1000_DEV_ID_82571EB_QUAD_COPPER:
+	case E1000_DEV_ID_82571EB_QUAD_FIBER:
+	case E1000_DEV_ID_82571EB_QUAD_COPPER_LP:
+		mac_type = e1000_82571;
+		break;
+	case E1000_DEV_ID_82572EI:
+	case E1000_DEV_ID_82572EI_COPPER:
+	case E1000_DEV_ID_82572EI_FIBER:
+	case E1000_DEV_ID_82572EI_SERDES:
+		mac_type = e1000_82572;
+		break;
+	case E1000_DEV_ID_82573E:
+	case E1000_DEV_ID_82573E_IAMT:
+	case E1000_DEV_ID_82573L:
+		mac_type = e1000_82573;
+		break;
+	case E1000_DEV_ID_80003ES2LAN_COPPER_DPT:
+	case E1000_DEV_ID_80003ES2LAN_SERDES_DPT:
+	case E1000_DEV_ID_80003ES2LAN_COPPER_SPT:
+	case E1000_DEV_ID_80003ES2LAN_SERDES_SPT:
+		mac_type = e1000_80003es2lan;
+		break;
+	case E1000_DEV_ID_ICH8_IFE:
+	case E1000_DEV_ID_ICH8_IFE_GT:
+	case E1000_DEV_ID_ICH8_IFE_G:
+	case E1000_DEV_ID_ICH8_IGP_M:
+	case E1000_DEV_ID_ICH8_IGP_M_AMT:
+	case E1000_DEV_ID_ICH8_IGP_AMT:
+	case E1000_DEV_ID_ICH8_IGP_C:
+		mac_type = e1000_ich8lan;
+		break;
 	default:
-		/* list of supported devices probably needs updating */
+		/* assume old nic and attempt so user can get limited
+		 * functionality */
 		mac_type = e1000_82543;
 		break;
 	}
@@ -253,7 +374,7 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 	enum e1000_mac_type mac_type;
 	u32 reg;
 
-	if(version != 1)
+	if (version != 1)
 		return -1;
 
 	mac_type = e1000_get_mac_type(hw_device_id, hw_revision_id);
@@ -268,7 +389,6 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 	reg = regs_buff[0];
 	fprintf(stdout,
 		"0x00000: CTRL (Device control register)  0x%08X\n"
-		"      Duplex:                            %s\n"
 		"      Endian mode (buffers):             %s\n"
 		"      Link reset:                        %s\n"
 		"      Set link up:                       %s\n"
@@ -277,7 +397,6 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 		"      Transmit flow control:             %s\n"
 		"      VLAN mode:                         %s\n",
 		reg,
-		reg & E1000_CTRL_FD     ? "full"     : "half",
 		reg & E1000_CTRL_BEM    ? "big"      : "little",
 		reg & E1000_CTRL_LRST   ? "reset"    : "normal",
 		reg & E1000_CTRL_SLU    ? "1"        : "0",
@@ -309,7 +428,23 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 		reg,
 		reg & E1000_STATUS_FD      ? "full"        : "half",
 		reg & E1000_STATUS_LU      ? "link config" : "no link config");
-	if(mac_type >= e1000_82543) {
+	if (mac_type >= e1000_82571) {
+	fprintf(stdout,
+		"      TBI mode:                          %s\n"
+		"      Link speed:                        %s\n"
+		"      Bus type:                          %s\n"
+		"      Port number:                       %s\n",
+		reg & E1000_STATUS_TBIMODE ? "enabled"     : "disabled",
+		(reg & E1000_STATUS_SPEED_MASK) == E1000_STATUS_SPEED_10   ?
+		"10Mb/s" :
+		(reg & E1000_STATUS_SPEED_MASK) == E1000_STATUS_SPEED_100  ?
+		"100Mb/s" :
+		(reg & E1000_STATUS_SPEED_MASK) == E1000_STATUS_SPEED_1000 ?
+		"1000Mb/s" : "not used",
+		"PCI Express",
+		(reg & E1000_STATUS_FUNC_MASK) == 0 ? "0" : "1");
+	}
+	else if (mac_type >= e1000_82543) {
 	fprintf(stdout,
 		"      TBI mode:                          %s\n"
 		"      Link speed:                        %s\n"
@@ -344,7 +479,7 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 		"      Descriptor minimum threshold size: %s\n"
 		"      Broadcast accept mode:             %s\n"
 		"      VLAN filter:                       %s\n"
-		"      Cononical form indicator:          %s\n"
+		"      Canonical form indicator:          %s\n"
 		"      Discard pause frames:              %s\n"
 		"      Pass MAC control frames:           %s\n",
 		reg,
@@ -431,7 +566,75 @@ e1000_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
 	/* PHY type */
 	fprintf(stdout,
 		"PHY type:                                %s\n",
-		regs_buff[12] == 0 ? "M88" : "IGP");
+		regs_buff[12] == 0 ? "M88" :
+		regs_buff[12] == 1 ? "IGP" :
+		regs_buff[12] == 2 ? "IGP2" : "unknown" );
+
+	if (0 == regs_buff[12]) {
+		reg = regs_buff[13];
+		fprintf(stdout,
+			"M88 PHY STATUS REGISTER:                 0x%08X\n"
+			"      Jabber:                            %s\n"
+			"      Polarity:                          %s\n"
+			"      Downshifted:                       %s\n"
+			"      MDI/MDIX:                          %s\n"
+			"      Cable Length Estimate:             %s meters\n"
+			"      Link State:                        %s\n"
+			"      Speed & Duplex Resolved:           %s\n"
+			"      Page Received:                     %s\n"
+			"      Duplex:                            %s\n"
+			"      Speed:                             %s mbps\n",
+			reg,
+			reg & M88_PSSR_JABBER       ? "yes"     : "no",
+			reg & M88_PSSR_REV_POLARITY ? "reverse" : "normal",
+			reg & M88_PSSR_DOWNSHIFT    ? "yes"     : "no",
+			reg & M88_PSSR_MDIX         ? "MDIX"    : "MDI",
+			((reg & M88_PSSR_CABLE_LENGTH)==M88_PSSR_CL_0_50 ? "0-50"
+				: (reg & M88_PSSR_CABLE_LENGTH)==M88_PSSR_CL_50_80 ? "50-80"
+				: (reg & M88_PSSR_CABLE_LENGTH)==M88_PSSR_CL_80_110 ? "80-110"
+				: (reg & M88_PSSR_CABLE_LENGTH)==M88_PSSR_CL_110_140? "110-140"
+				: (reg & M88_PSSR_CABLE_LENGTH)==M88_PSSR_CL_140_PLUS ? "140+"
+				: "unknown"),
+			reg & M88_PSSR_LINK              ? "Up"      : "Down",
+			reg & M88_PSSR_SPD_DPLX_RESOLVED ? "Yes"     : "No",
+			reg & M88_PSSR_PAGE_RCVD         ? "Yes"     : "No",
+			reg & M88_PSSR_DPLX              ? "Full"    : "Half",
+			((reg & M88_PSSR_SPEED)==M88_PSSR_10MBS        ? "10"
+				: (reg & M88_PSSR_SPEED)==M88_PSSR_100MBS  ? "100"
+				: (reg & M88_PSSR_SPEED)==M88_PSSR_1000MBS ? "1000"
+				: "unknown")
+		);
+
+		reg = regs_buff[17];
+		fprintf(stdout,
+			"M88 PHY CONTROL REGISTER:                0x%08X\n"
+			"      Jabber function:                   %s\n"
+			"      Auto-polarity:                     %s\n"
+			"      SQE Test:                          %s\n"
+			"      CLK125:                            %s\n"
+			"      Auto-MDIX:                         %s\n"
+			"      Extended 10Base-T Distance:        %s\n"
+			"      100Base-TX Interface:              %s\n"
+			"      Scrambler:                         %s\n"
+			"      Force Link Good:                   %s\n"
+			"      Assert CRS on Transmit:            %s\n",
+			reg,
+			reg & M88_PSCR_JABBER_DISABLE    ? "disabled" : "enabled",
+			reg & M88_PSCR_POLARITY_REVERSAL ? "enabled"  : "disabled",
+			reg & M88_PSCR_SQE_TEST          ? "enabled"  : "disabled",
+			reg & M88_PSCR_CLK125_DISABLE    ? "disabled" : "enabled",
+			((reg & M88_PSCR_MDI_MASK)==M88_PSCR_MDI_MANUAL_MODE ? "force MDI"
+				: (reg & M88_PSCR_MDI_MASK)==M88_PSCR_MDIX_MANUAL_MODE ? "force MDIX"
+				: (reg & M88_PSCR_MDI_MASK)==M88_PSCR_AUTO_X_1000T ? "1000 auto, 10/100 MDI"
+				: (reg & M88_PSCR_MDI_MASK)==M88_PSCR_AUTO_X_MODE ? "auto"
+				: "wtf"),
+			reg & M88_PSCR_10BT_EXT_DIST_ENABLE ? "enabled" : "disabled",
+			reg & M88_PSCR_MII_5BIT_ENABLE ? "5-bit" : "MII",
+			reg & M88_PSCR_SCRAMBLER_DISABLE ? "disabled" : "enabled",
+			reg & M88_PSCR_FORCE_LINK_GOOD ? "forced" : "disabled",
+			reg & M88_PSCR_ASSERT_CRS_ON_TX ? "enabled" : "disabled"
+		);
+	}
 
 	return 0;
 }

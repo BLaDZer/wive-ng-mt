@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2004 Intracom S.A.
  * Pantelis Antoniou <panto@intracom.gr>
  */
@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "ethtool-util.h"
+#include "internal.h"
 
 struct fec {
 	uint32_t	addr_low;	/* lower 32 bits of station address	*/
@@ -43,8 +43,8 @@ struct fec {
 };
 
 #define DUMP_REG(f, x)	fprintf(stdout, \
-			"0x%04x: %-16s 0x%08x\n", \
-				offsetof(struct fec, x), \
+			"0x%04lx: %-16s 0x%08x\n", \
+				(unsigned long)(offsetof(struct fec, x)), \
 				#x, f->x)
 
 int fec_8xx_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs)
