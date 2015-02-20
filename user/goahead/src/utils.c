@@ -372,28 +372,6 @@ int ledAlways(int gpio, int on)
 		return gpioLedSet(gpio, 0, RALINK_GPIO_LED_INFINITY, 1, 1, RALINK_GPIO_LED_INFINITY);
 }
 
-int ledWps(int gpio, int mode)
-{
-	switch (mode) {
-		case WPS_LED_RESET:
-			return gpioLedSet(gpio, 0, RALINK_GPIO_LED_INFINITY, 1, 1, RALINK_GPIO_LED_INFINITY);
-			break;
-		case WPS_LED_PROGRESS:
-			return gpioLedSet(gpio, 2, 1, RALINK_GPIO_LED_INFINITY, 1, RALINK_GPIO_LED_INFINITY);
-			break;
-		case WPS_LED_ERROR:
-			return gpioLedSet(gpio, 1, 1, RALINK_GPIO_LED_INFINITY, 1, RALINK_GPIO_LED_INFINITY);
-			break;
-		case WPS_LED_SESSION_OVERLAP:
-			return gpioLedSet(gpio, 1, 1, 10, 5, RALINK_GPIO_LED_INFINITY);
-			break;
-		case WPS_LED_SUCCESS:
-			gpioLedSet(gpio, 3000, 1, 1, 1, 1);
-			break;
-	}
-	return 0;
-}
-
 /*
  * concatenate a string with an integer
  * ex: racat("SSID", 1) will return "SSID1"

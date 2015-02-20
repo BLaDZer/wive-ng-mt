@@ -298,18 +298,6 @@ static int gen_wifi_config(int getmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
-		//WscConfStatus
-		FPRINT_NUM(WscConfMode);
-		if (atoi(nvram_bufget(mode, "WscConfigured")) == 0)
-			fprintf(fp, "WscConfStatus=%d\n", 1);
-		else
-			fprintf(fp, "WscConfStatus=%d\n", 2);
-
-		if (strcmp(nvram_bufget(mode, "WscVendorPinCode"), "") != 0)
-			FPRINT_STR(WscVendorPinCode);
-#endif
-
 		FPRINT_NUM(WirelessEvent);
 		FPRINT_NUM(CountryRegion);
 		FPRINT_NUM(CountryRegionABand);
@@ -617,19 +605,12 @@ static int gen_wifi_config(int getmode)
 		    else
 			fprintf(fp, "RadioOn=1\n");
 		}
-
-		/*
-		 * There are no SSID/WPAPSK/Key1Str/Key2Str/Key3Str/Key4Str anymore since driver1.5 , but 
-		 * STA WPS still need these entries to show the WPS result(That is the only way i know to get WPAPSK key) and
-		 * so we create empty entries here.   --YY
-		 */
-		fprintf(fp, "SSID=\nWPAPSK=\nKey1Str=\nKey2Str=\nKey3Str=\nKey4Str=\n");
 	}
 
-    fclose(fp);
-    nvram_close(mode);
-    sync();
-    return 0;
+	fclose(fp);
+	nvram_close(mode);
+	sync();
+	return 0;
 }
 
 void usage(char *cmd)

@@ -141,26 +141,6 @@
   <message msgid="secure access policy new" msgstr="Add a station Mac:" />
   <message msgid="secure access policy del" msgstr="Del" />
 
-  <message msgid="wps title" msgstr="Wi-Fi Protected Setup" />
-  <message msgid="wps introduction" msgstr="You can set up security easily by choosing PIN or PBC method to have Wi-Fi Protected Setup." />
-  <message msgid="wps config" msgstr="WPS Config" />
-  <message msgid="wps wps" msgstr="WPS: " />
-  <message msgid="wps summary" msgstr="WPS Summary" />
-  <message msgid="wps current status" msgstr="WPS Current Status: " />
-  <message msgid="wps configured" msgstr="WPS Configured: " />
-  <message msgid="wps ssid" msgstr="WPS SSID: " />
-  <message msgid="wps auth mode" msgstr="WPS Auth. Mode: " />
-  <message msgid="wps encryp type" msgstr="WPS Encryp. Type: " />
-  <message msgid="wps default key index" msgstr="WPS Default Key Index: " />
-  <message msgid="wps ap pin" msgstr="AP PIN: " />
-  <message msgid="wps reset oob" msgstr="Reset OOB" />
-  <message msgid="wps progress" msgstr="WPS Progress" />
-  <message msgid="wps mode" msgstr="WPS mode" />
-  <message msgid="wps pin mode" msgstr="PIN " />
-  <message msgid="wps pbc mode" msgstr="PBC " />
-  <message msgid="wps pin num" msgstr="PIN" />
-  <message msgid="wps status" msgstr="WPS Status" />
-
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
   <message msgid="stalist wireless network" msgstr="Wireless Network" />
@@ -244,19 +224,4 @@
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />
 
-  <message msgid="stawps title" msgstr="Wi-Fi Protected Setup (STA)" />
-  <message msgid="stawps introduction" msgstr=" You can set up security easily by choosing PIN or PBC method to have Wi-Fi Protected Setup." />
-  <message msgid="stawps scan" msgstr=" WPS AP site survey " />
-  <message msgid="stawps refresh" msgstr="Refresh" />
-  <message msgid="stawps mode" msgstr="Mode" />
-  <message msgid="stawps enrollee" msgstr="Enrollee" />
-  <message msgid="stawps registrar" msgstr="Registrar" />
-  <message msgid="stawps pin start" msgstr="PIN Start" />
-  <message msgid="stawps pbc start" msgstr="PBC Start" />
-  <message msgid="stawps renew pin" msgstr="Renew PIN" />
-  <message msgid="stawps registrar set" msgstr=" Registrar Settings" />
-  <message msgid="stawps wep key type" msgstr="WEP Key Type" />
-  <message msgid="stawps wep key index" msgstr="WEP Key Index" />
-  <message msgid="stawps key" msgstr="Key" />
-  <message msgid="stawps submit" msgstr=" Submit " />
 </po>

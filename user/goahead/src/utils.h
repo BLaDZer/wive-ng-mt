@@ -19,22 +19,12 @@
 #include        "nvram.h"
 #include        "stapriv.h"
 
-#ifdef CONFIG_USER_WSC
-#include	"wps.h"
-#endif
-
 #ifdef CONFIG_RALINKAPP_SWQOS
 #include	"qos.h"
 #endif
 
 #define LED_ON				1
 #define LED_OFF				0
-
-#define WPS_LED_RESET			1
-#define WPS_LED_PROGRESS		2
-#define WPS_LED_ERROR			3
-#define WPS_LED_SESSION_OVERLAP		4
-#define WPS_LED_SUCCESS			5
 
 #if defined (CONFIG_RALINK_MT7620)
 #define PROCREG_GMAC	"/proc/mt7620/gmac"
@@ -57,7 +47,6 @@ int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
 int setTimer(int mili, void ((*sigroutine)(int)));
 void stopTimer(void);
 int ledAlways(int gpio, int on);
-int ledWps(int gpio, int mode);
 unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);

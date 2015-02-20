@@ -149,26 +149,6 @@
   <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />
   <message msgid="secure access policy del" msgstr="Удалить" />
 
-  <message msgid="wps title" msgstr="Настройки Wi-Fi Protected" />
-  <message msgid="wps introduction" msgstr="Вы можете легко изменить настройки, выбрав PIN или PBC метод настройки WPS." />
-  <message msgid="wps config" msgstr="Конфигурация WPS" />
-  <message msgid="wps wps" msgstr="WPS: " />
-  <message msgid="wps summary" msgstr="Сводка WPS" />
-  <message msgid="wps current status" msgstr="Статус WPS: " />
-  <message msgid="wps configured" msgstr="WPS настроено: " />
-  <message msgid="wps ssid" msgstr="WPS SSID: " />
-  <message msgid="wps auth mode" msgstr="Аутентификация WPS: " />
-  <message msgid="wps encryp type" msgstr="Шифрование WPS: " />
-  <message msgid="wps default key index" msgstr="Номер WPS ключа по умолчаинию: " />
-  <message msgid="wps ap pin" msgstr="AP PIN: " />
-  <message msgid="wps reset oob" msgstr="Сброс OOB" />
-  <message msgid="wps progress" msgstr="Настройки WPS" />
-  <message msgid="wps mode" msgstr="Режим WPS" />
-  <message msgid="wps pin mode" msgstr="PIN " />
-  <message msgid="wps pbc mode" msgstr="PBC " />
-  <message msgid="wps pin num" msgstr="PIN" />
-  <message msgid="wps status" msgstr="Статус WPS" />
-
   <message msgid="stalist title" msgstr="Список станций" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
   <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
@@ -265,19 +245,4 @@
   <message msgid="about about" msgstr="О станции" />
   <message msgid="about driver version" msgstr="Версия драйвера" />
 
-  <message msgid="stawps title" msgstr="Wi-Fi Protected Setup (STA)" />
-  <message msgid="stawps introduction" msgstr=" Вы можете легко изменить настройки, выбрав PIN или PBC метод настройки WPS." />
-  <message msgid="stawps scan" msgstr=" Поиск WPS AP " />
-  <message msgid="stawps refresh" msgstr="Обновить" />
-  <message msgid="stawps mode" msgstr="Режим" />
-  <message msgid="stawps enrollee" msgstr="Enrollee" />
-  <message msgid="stawps registrar" msgstr="Registrar" />
-  <message msgid="stawps pin start" msgstr="PIN Start" />
-  <message msgid="stawps pbc start" msgstr="PBC Start" />
-  <message msgid="stawps renew pin" msgstr="Обновить PIN" />
-  <message msgid="stawps registrar set" msgstr=" Настрйоки Registrar" />
-  <message msgid="stawps wep key type" msgstr="Тип WEP ключа" />
-  <message msgid="stawps wep key index" msgstr="Номер WEP ключа" />
-  <message msgid="stawps key" msgstr="Ключ" />
-  <message msgid="stawps submit" msgstr=" Отправить " />
 </po>

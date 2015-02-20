@@ -30,13 +30,6 @@ romfs:
 	$(ROMFSINST) $(ROOT_DIRECTORY)
 ifeq ("$(CONFIG_RT2860V2_STA)", "")
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/station
-	rm -f $(ROMFSDIR)$(ROOT_DIRECTORY)/wps/wps_sta.asp
-endif
-ifeq ("$(CONFIG_RT2860V2_AP_WSC)", "")
-ifeq ("$(CONFIG_RT2860V2_STA_WSC)", "")
-	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/adm/wps*
-	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/wps
-endif
 endif
 ifeq ("$(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY)", "")
 ifeq ("$(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)", "")

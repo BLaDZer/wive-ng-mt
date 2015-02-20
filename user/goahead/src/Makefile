@@ -55,9 +55,6 @@ endif
 ifneq ("$(CONFIG_RT2860V2_STA)", "")
 DEPEND_FILES += station.o
 endif
-ifeq ("$(CONFIG_USER_WSC)", "y")
-DEPEND_FILES += wps.o
-endif
 ifeq ("$(CONFIG_RALINKAPP_SWQOS)", "y")
 DEPEND_FILES += qos.o
 endif
@@ -189,7 +186,5 @@ websuemf.o:  websuemf.c webs.h wsIntrn.h ej.h ejIntrn.h uemf.h
 websSSL.o:  websSSL.c websSSL.h wsIntrn.h ej.h ejIntrn.h uemf.h
 
 wireless.o: wireless.c wireless.h internet.h utils.h webs.h $(CONF_H) $(UCONF_H)
-
-wps.o: wps.c wps.h utils.h webs.h internet.h wireless.h station.h oid.h $(CONF_H)
 
 qos.o: qos.h utils.h $(CONF_H)

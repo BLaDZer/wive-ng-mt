@@ -39,7 +39,6 @@ static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
-static int  isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv);
 static int  dumpBSS(int eid, webs_t wp, int argc, char_t **argv);
 static int  dumpBSSKeys(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
@@ -191,7 +190,6 @@ void formDefineWireless(void)
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
-	websAspDefine(T("isWPSConfiguredASP"), isWPSConfiguredASP);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
 	websFormDefine(T("AntennaDiversity"), AntennaDiversity);
@@ -1156,9 +1154,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		websRedirect(wp, submitUrl);
 
 	setupSecurityLed();
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
-	WPSRestart();
-#endif
 	doSystem("internet.sh wifionly");
 }
 
@@ -1893,10 +1888,6 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 		websRedirect(wp, submitUrl);
 
 	doSystem("internet.sh wifionly");
-
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
-	WPSRestart();
-#endif
 #ifdef CONFIG_USER_802_1X
 	restart8021XDaemon(nvram);
 #endif
@@ -1963,17 +1954,6 @@ static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 #else
 	websWrite(wp, T("0"));
 #endif
-	return 0;
-}
-
-static int isWPSConfiguredASP(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef CONFIG_USER_WSC
-	if(g_wsc_configured)
-		websWrite(wp, T("1"));
-	else
-#endif
-		websWrite(wp, T("0"));
 	return 0;
 }
 

@@ -27,8 +27,6 @@
 #include	"helpers.h"
 
 static int  getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWSCBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSTABuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getUSBBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getStorageBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -123,8 +121,6 @@ void formDefineInternet(void) {
 	websAspDefine(T("getWanGateway"), getWanGateway);
 	websAspDefine(T("getRoutingTable"), getRoutingTable);
 	websAspDefine(T("getWDSBuilt"), getWDSBuilt);
-	websAspDefine(T("getWSCBuilt"), getWSCBuilt);
-	websAspDefine(T("getSTABuilt"), getSTABuilt);
 	websAspDefine(T("getMBSSIDBuilt"), getMBSSIDBuilt);
 	websAspDefine(T("getUSBBuilt"), getUSBBuilt);
 	websAspDefine(T("getStorageBuilt"), getStorageBuilt);
@@ -856,24 +852,6 @@ static int getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
-static int getWSCBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_MT7610_AP_WSC) || defined(CONFIG_MT76X2_AP_WSC)
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
-static int getSTABuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef CONFIG_RT2860V2_STA_WSC
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -2037,9 +2015,6 @@ void initInternet(void)
 #endif
 #ifdef CONFIG_USER_802_1X
 	restart8021XDaemon(RT2860_NVRAM);	// in wireless.c
-#endif
-#if defined(CONFIG_RT2860V2_AP_WSC) || defined(CONFIG_RT2860V2_STA_WSC)
-	WPSRestart();
 #endif
 }
 

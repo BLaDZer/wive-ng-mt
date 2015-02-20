@@ -837,7 +837,4 @@ void formDefineManagement(void)
 	websFormDefine(T("clearlog"), clearlog);
 	websFormDefine(T("setuplog"), setuplog);
 #endif
-#ifdef CONFIG_USER_WSC
-	formDefineWPS();
-#endif
 }

@@ -81,8 +81,6 @@ var opmode = '<% getCfgZero(1, "OperationMode"); %>';
 var vpnen = '<% getVPNBuilt(); %>';
 var ipv6b = '<% getIPv6Built(); %>';
 var wdsb = '<% getWDSBuilt(); %>';
-var wscb = '<% getWSCBuilt(); %>';
-var stab = '<% getSTABuilt(); %>';
 var usbb = '<% getUSBBuilt(); %>';
 var storageb = '<% getStorageBuilt(); %>';
 var ftpb = '<% getFtpBuilt(); %>';
@@ -133,8 +131,6 @@ if (opmode == '2')
 	a.add(402, 400, _("treeapp link status"),		"javascript:go('station/link_status.asp');");
 	a.add(403, 400, _("treeapp statistics"),		"javascript:go('station/statistics.asp');");
 	a.add(404, 400, _("treeapp advance"),			"javascript:go('station/advance.asp');");
-	if (stab == "1")
-		a.add(406, 400, _("treeapp wps"),		"javascript:go('wps/wps_sta.asp');");
 }
 else
 {
@@ -143,11 +139,7 @@ else
 	a.add(402, 400, _("treeapp advanced"),			"javascript:go('wireless/advanced.asp');");
 	a.add(403, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
 	if (wdsb == "1")
-	{
 		a.add(404, 400, _("treeapp wds"),                   "javascript:go('wireless/wds.asp');");
-	}
-	if (wscb == "1")
-		a.add(405, 400, _("treeapp wps"),                   "javascript:go('wps/wps.asp');");
 	if (opmode == '3')
 		a.add(406, 400, _("treeapp ap client"),     "javascript:go('wireless/apcli.asp');");
 	a.add(407, 400, _("treeapp station list"),          "javascript:go('wireless/stainfo.asp');");
