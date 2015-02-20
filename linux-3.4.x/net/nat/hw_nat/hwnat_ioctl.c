@@ -37,7 +37,12 @@ int pre_mtr_start_addr;
 int post_mtr_start_addr;
 #endif
 
-static long HwNatIoctl(struct file *file, unsigned int cmd, unsigned long arg)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
+long HwNatIoctl(struct file *file, unsigned int cmd, unsigned long arg)
+#else
+int HwNatIoctl(struct inode *inode, struct file *filp,
+	   unsigned int cmd, unsigned long arg)
+#endif
 {
 	struct hwnat_args *opt = (struct hwnat_args *)arg;
 #if defined (CONFIG_HNAT_V2)
@@ -162,7 +167,11 @@ static long HwNatIoctl(struct file *file, unsigned int cmd, unsigned long arg)
 }
 
 struct file_operations hw_nat_fops = {
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
 	unlocked_ioctl: HwNatIoctl,
+#else
+	ioctl: HwNatIoctl,
+#endif
 };
 
 int PpeRegIoctlHandler(void)

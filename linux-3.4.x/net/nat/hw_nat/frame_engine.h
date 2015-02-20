@@ -216,7 +216,7 @@
  *  2: dirty
  *  3: lock
  *
- * CAH_RDATA[15:0]: entry num 
+ * CAH_RDATA[15:0]: entry num
  */
 #define CAH_RDATA	    RALINK_PPE_BASE + 0x330
 
@@ -275,15 +275,15 @@
 
 #else /* !CONFIG_HNAT_V2 */
 
-#define FE_GLO_BASE         RALINK_FRAME_ENGINE_BASE
+#define FE_GLO_BASE	    RALINK_FRAME_ENGINE_BASE
 #define PPE_BASE	    RALINK_FRAME_ENGINE_BASE + 0x200
 #define AC_BASE		    RALINK_FRAME_ENGINE_BASE + 0x400
 #define METER_BASE	    RALINK_FRAME_ENGINE_BASE + 0x600
 
 #define FOE_TS		    FE_GLO_BASE+0x1C
-#define GDMA1_BASE          FE_GLO_BASE+0x20
+#define GDMA1_BASE	    FE_GLO_BASE+0x20
 #define FE_GDMA1_SCH_CFG    GDMA1_BASE+0x04
-#define GDMA2_BASE          FE_GLO_BASE+0x60
+#define GDMA2_BASE	    FE_GLO_BASE+0x60
 #define FE_GDMA2_SCH_CFG    GDMA2_BASE+0x04
 
 #define PPE_GLO_CFG	    PPE_BASE + 0x00
