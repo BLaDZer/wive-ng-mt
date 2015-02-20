@@ -575,11 +575,12 @@
 30) kernel: ralink_usb: fix broken MT7621 USB PHY calibration (SDK bug).<br>
 31) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
 32) kernel: ralink_gpio: add usb lid blink at usb transfer.<br>
-33) kernel: ralink_wifi drivers: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
-34) kernel: ralink_wifi drivers: update firmware for 76x2 module.<br>
-35) kernel: ralink_wifi drivers: add log connect/disconnect events.<br>
-36) kernel: ralink_wifi fix build correct without DBG defined.<br>
-37) kernel: ralink_wifi desintegrate AP_QLOAD and chanbusytime in ap_autoChSel.<br>
+33) kernel: ralink_wifi: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
+34) kernel: ralink_wifi: update firmware for 76x2 module.<br>
+35) kernel: ralink_wifi: add log connect/disconnect events.<br>
+36) kernel: ralink_wifi: fix build correct without DBG defined.<br>
+37) kernel: ralink_wifi: desintegrate AP_QLOAD and chanbusytime in ap_autoChSel.<br>
+38) kernel: ralink_wifi: MT7612E/MT7602E: disable eFuse by default.<br>
 38) kernel: huge update NAND framework from upstream.<br>
 39) kernel: exfat: add module alias for fix automount.<br>
 40) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
