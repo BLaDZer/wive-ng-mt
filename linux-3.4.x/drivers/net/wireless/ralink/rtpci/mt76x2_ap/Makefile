@@ -203,7 +203,7 @@ endif
 #  CFLAGS
 ##################
 # disable some warnings
-EXTRA_CFLAGS := -Wall -Wstrict-prototypes -Wno-trigraphs -Wno-unused -Wno-declaration-after-statement
+EXTRA_CFLAGS := -Wall -Wstrict-prototypes -Wno-trigraphs
 # disable some not safe flags
 EXTRA_CFLAGS += -fno-fast-math -fno-force-addr
 EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/include

@@ -2950,7 +2950,6 @@ INT RTMPAPSetInformation(
 				INT retval;
 				NDIS80211PSK tmpPSK;
 				pObj = (POS_COOKIE) pAd->OS_Cookie;
-				UINT apidx = pObj->ioctl_if;
 				NdisZeroMemory(&tmpPSK, sizeof(tmpPSK));
 				Status = copy_from_user(&tmpPSK, wrq->u.data.pointer, wrq->u.data.length);
 				hex_dump("Set::OID_802_11_PASSPHRASE ==>", &tmpPSK.WPAKey[0], tmpPSK.WPAKeyLen);
@@ -3503,17 +3502,19 @@ INT RTMPAPQueryInformation(
 
 #ifdef APCLI_SUPPORT
 	UCHAR ifIndex;
-	BOOLEAN apcliEn=FALSE;
-	INT 								i,Padding = 0;
-	ULONG 						BssBufSize;
-	PUCHAR                              pBuf = NULL, pPtr=NULL;
-	NDIS_802_11_BSSID_LIST_EX           *pBssidList = NULL;
-	 USHORT                              BssLen = 0;
-	  PNDIS_WLAN_BSSID_EX                 pBss;
-	  MAC_TABLE_ENTRY				*pMacEntry=(MAC_TABLE_ENTRY *)NULL;
-	  PAPCLI_STRUCT pApCliEntry=NULL;
-	  	NDIS_802_11_SSID                    Ssid;
-	UINT                                we_version_compiled;
+	BOOLEAN apcliEn = FALSE;
+	PAPCLI_STRUCT pApCliEntry = NULL;
+#ifdef APCLI_WPA_SUPPLICANT_SUPPORT
+	INT i,Padding = 0;
+	ULON GBssBufSize;
+	PUCHAR pBuf = NULL, pPtr=NULL;
+	NDIS_802_11_BSSID_LIST_EX *pBssidList = NULL;
+	USHORT BssLen = 0;
+	PNDIS_WLAN_BSSID_EX pBss;
+	MAC_TABLE_ENTRY	*pMacEntry=(MAC_TABLE_ENTRY *)NULL;
+	NDIS_802_11_SSID Ssid;
+	UINT we_version_compiled;
+#endif
 #endif/*APCLI_SUPPORT*/
 
 
@@ -8905,7 +8906,6 @@ VOID RTMPAPIoctlRF_mt(
 	IN	PRTMP_ADAPTER	pAd,
 	IN	RTMP_IOCTL_INPUT_STRUCT	*wrq)
 {
-	CHAR				*value;
 	UINT				regRF = 0;
 	CHAR				*mpool, *msg; /*msg[2048]; */
 	BOOLEAN				bIsPrintAllRF = TRUE;
@@ -14090,10 +14090,10 @@ static INT Set_AP_VENDOR_SPECIFIC_IE(
 	IN PSTRING IE,
 	IN UINT32 IELen)
 {
+#ifdef CONFIG_HOTSPOT
 	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
 	UCHAR apidx = pObj->ioctl_if;
 
-#ifdef CONFIG_HOTSPOT
 	PHOTSPOT_CTRL pHSCtrl =  &pAd->ApCfg.MBSSID[apidx].HotSpotCtrl;
 #endif
 

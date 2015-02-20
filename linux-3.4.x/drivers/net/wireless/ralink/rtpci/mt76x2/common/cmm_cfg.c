@@ -182,8 +182,9 @@ static UCHAR CFG_WMODE_MAP[]={
 	PHY_MODE_MAX, WMODE_INVALID /* default phy mode if not match */
 };
 
-
+#ifdef DBG
 static PSTRING BAND_STR[] = {"Invalid", "2.4G", "5G", "2.4G/5G"};
+#endif
 static PSTRING WMODE_STR[]= {"", "A", "B", "G", "gN", "aN", "AC"};
 
 UCHAR *wmode_2_str(UCHAR wmode)
@@ -699,7 +700,6 @@ INT	RT_CfgSetAutoFallBack(
 	IN 	PRTMP_ADAPTER 	pAd,
 	IN	PSTRING			arg)
 {
-	TX_RTY_CFG_STRUC tx_rty_cfg;
 	UCHAR AutoFallBack = (UCHAR)simple_strtol(arg, 0, 10);
 
 	if (AutoFallBack)
@@ -1287,7 +1287,7 @@ INT RTMP_COM_IoctlHandle(
 		{
 			RT_CMD_IOCTL_RATE *pRate = (RT_CMD_IOCTL_RATE *)pData;
 			HTTRANSMIT_SETTING HtPhyMode;
-			UINT8 BW = 0, GI = 0, MCS = 0;
+			UINT8 BW = 0, GI = 0;
 
 #ifdef APCLI_SUPPORT
 			if (pRate->priv_flags == INT_APCLI)

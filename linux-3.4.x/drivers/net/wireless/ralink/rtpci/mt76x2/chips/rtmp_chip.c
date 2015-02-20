@@ -395,7 +395,9 @@ Note:
 int RtmpChipOpsHook(VOID *pCB)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)pCB;
+#ifdef DBG
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
+#endif
 	UINT32 MacValue;
 	int ret = 0;
 	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;

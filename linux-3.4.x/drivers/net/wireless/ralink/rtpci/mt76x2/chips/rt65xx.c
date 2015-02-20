@@ -368,7 +368,6 @@ void MT76xx_PciMlmeRadioOFF(RTMP_ADAPTER *pAd)
 	
 	UINT32 pwr_level = 5, mac_val = 0, bbp_val = 0, loop = 0;
 	POS_COOKIE 	pObj;
-	USHORT	Configuration = 0, reg16 = 0, offset = 0;
 #ifdef CONFIG_AP_SUPPORT
 	INT32 IdBss, MaxNumBss = pAd->ApCfg.BssidNum;
 #endif /* CONFIG_AP_SUPPORT */

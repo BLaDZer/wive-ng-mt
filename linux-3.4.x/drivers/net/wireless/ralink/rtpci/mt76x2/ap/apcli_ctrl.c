@@ -1497,7 +1497,7 @@ VOID ApCliWpaMicFailureReportFrame(
 	PEAPOL_PACKET       pPacket;
 	UCHAR               Mic[16];
 	BOOLEAN             bUnicast;
-	UCHAR			Wcid, i;
+	UCHAR			Wcid;
 	PMAC_TABLE_ENTRY pMacEntry = NULL;
 	USHORT ifIndex = (USHORT)(Elem->Priv);
 	APCLI_STRUCT *apcli_entry;

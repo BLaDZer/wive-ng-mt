@@ -984,41 +984,6 @@ UCHAR MlmeSelectTxRateAdapt(
 }
 
 /*
-	MlmeRAEstimateThroughput - estimate Throughput based on PER and PHY rate
-		pEntry - the MAC table entry for this STA
-		pCurrTxRate - pointer to Rate table entry for rate
-		TxErrorRatio - the PER
-*/
-static ULONG MlmeRAEstimateThroughput(
-	IN RTMP_ADAPTER *pAd,
-	IN MAC_TABLE_ENTRY *pEntry,
-	IN RTMP_RA_GRP_TB *pCurrTxRate,
-	IN ULONG TxErrorRatio)
-{
-	ULONG estTP = (100-TxErrorRatio)*pCurrTxRate->dataRate;
-
-	/*  Adjust rates for MCS32-40MHz mapped to MCS0-20MHz and for non-CCK 40MHz */
-	if (pCurrTxRate->CurrMCS == MCS_32)
-	{
-#ifdef DBG_CTRL_SUPPORT
-		if ((pAd->CommonCfg.DebugFlags & DBF_DISABLE_20MHZ_MCS0)==0)
-			estTP /= 2;
-#endif /* DBG_CTRL_SUPPORT */
-	}
-	else if ((pCurrTxRate->Mode==MODE_HTMIX) || (pCurrTxRate->Mode==MODE_HTGREENFIELD))
-	{
-		if (pEntry->MaxHTPhyMode.field.BW==BW_40 
-#ifdef DBG_CTRL_SUPPORT
-			|| (pAd->CommonCfg.DebugFlags & DBF_FORCE_40MHZ)
-#endif /* DBG_CTRL_SUPPORT */
-		)
-			estTP *= 2;
-	}
-
-	return estTP;
-}
-
-/*
 	MlmeRAHybridRule - decide whether to keep the new rate or use old rate
 		pEntry - the MAC table entry for this STA
 		pCurrTxRate - pointer to Rate table entry for new up rate
@@ -1034,11 +999,8 @@ BOOLEAN MlmeRAHybridRule(
 	IN ULONG			NewTxOkCount,
 	IN ULONG			TxErrorRatio)
 {
-	ULONG newTP, oldTP;
 
-
-
-    DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %ld %ld\n", NewTxOkCount , pEntry->LastTxOkCount));
+	DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %ld %ld\n", NewTxOkCount , pEntry->LastTxOkCount));
 
 	if (100*NewTxOkCount > pAd->CommonCfg.TrainUpHighThrd*pEntry->LastTxOkCount)
 		return FALSE;

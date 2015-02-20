@@ -615,8 +615,9 @@ static VOID ApCliEnqueueProbeRequest(
 	UCHAR ssidLen;
 	CHAR ssid[MAX_LEN_OF_SSID];
 	APCLI_STRUCT *pApCliEntry = NULL;
+#ifdef WSC_AP_SUPPORT
 	BOOLEAN bHasWscIe = FALSE;
-
+#endif
 	DBGPRINT(RT_DEBUG_TRACE, ("force out a ProbeRequest ...\n"));
 
 	if (ifIndex >= MAX_APCLI_NUM)

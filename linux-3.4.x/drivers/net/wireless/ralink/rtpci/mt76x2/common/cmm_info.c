@@ -7951,7 +7951,7 @@ INT set_cpu_int_analysis(RTMP_ADAPTER *pAd, PSTRING arg)
 	} else if (pAd->int_cpu_analysis == 2) {
 		unsigned long irqFlags;
 		ULONG time1, time2, diff;
-		UINT32 idx = 0, mac_val = 0;
+		UINT32 idx = 0;
 		OS_IRQ_LOCK(&pAd->irq_lock, irqFlags);
 		time1 = jiffies;	
 

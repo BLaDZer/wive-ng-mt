@@ -900,7 +900,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #if defined(PRE_ANT_SWITCH) || defined(CFO_TRACK)
 	int lastClient=0;
 #endif /* defined(PRE_ANT_SWITCH) || defined(CFO_TRACK) */
-	CHAR avgRssi;
 	MULTISSID_STRUCT *pMbss;
 #ifdef WFA_VHT_PF
 	RSSI_SAMPLE *worst_rssi = NULL;

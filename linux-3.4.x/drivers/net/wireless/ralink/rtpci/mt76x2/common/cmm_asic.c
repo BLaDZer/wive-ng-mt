@@ -568,8 +568,9 @@ VOID AsicBBPAdjust(RTMP_ADAPTER *pAd)
 VOID AsicSwitchChannel(RTMP_ADAPTER *pAd, UCHAR Channel, BOOLEAN bScan)
 {
 	UCHAR bw;
+#ifdef TXBF_SUPPORT
 	UINT32 value32;
-
+#endif
 	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF))
 		return; 
 
@@ -1949,12 +1950,9 @@ VOID AsicAddPairwiseKeyEntry(
 	UCHAR *pKey = pCipherKey->Key;
 	UCHAR *pTxMic = pCipherKey->TxMic;
 	UCHAR *pRxMic = pCipherKey->RxMic;
+#ifdef DBG
 	UCHAR CipherAlg = pCipherKey->CipherAlg;
-#ifdef RTMP_MAC
-#ifdef RTMP_MAC_PCI
-#endif /* RTMP_MAC_PCI */
-#endif /* RTMP_MAC */
-
+#endif
 #ifdef RLT_MAC
 	if (pAd->chipCap.hif_type == HIF_RLT) {
 		pairwise_key_base = RLT_PAIRWISE_KEY_TABLE_BASE;
@@ -2006,10 +2004,6 @@ VOID AsicAddPairwiseKeyEntry(
 		}
 #endif /* RTMP_MAC_PCI */
 	}
-#ifdef RTMP_MAC
-#ifdef RTMP_MAC_PCI
-#endif /* RTMP_MAC_PCI */
-#endif /* RTMP_MAC */
 	DBGPRINT(RT_DEBUG_TRACE,("AsicAddPairwiseKeyEntry: WCID #%d Alg=%s\n",WCID, CipherName[CipherAlg]));
 	DBGPRINT(RT_DEBUG_TRACE,("	Key = %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
 		pKey[0],pKey[1],pKey[2],pKey[3],pKey[4],pKey[5],pKey[6],pKey[7],pKey[8],pKey[9],pKey[10],pKey[11],pKey[12],pKey[13],pKey[14],pKey[15]));

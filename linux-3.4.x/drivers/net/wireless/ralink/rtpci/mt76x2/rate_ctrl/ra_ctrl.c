@@ -2177,7 +2177,10 @@ VOID MlmeRALog(
 #endif /* DBG_CTRL_SUPPORT */
 	)
 	{
-		BOOLEAN stbc, csd=FALSE;
+		BOOLEAN stbc;
+#ifdef STREAM_MODE_SUPPORT
+		BOOLEAN csd=FALSE;
+#endif
 		ULONG tp;
 
 		/*  Get STBC and StreamMode state */
@@ -2265,7 +2268,6 @@ VOID MlmeRALog(
 				pEntry->HTPhyMode.field.MODE==MODE_CCK? 'C': (pEntry->HTPhyMode.field.ShortGI? 'S': 'L'),
 				pEntry->HTPhyMode.field.BW? '4': '2',
 				stbc? 'S': 's',
-				csd? 'C': 'c',
 				TxErrorRatio, tp) );
 		}
 	}

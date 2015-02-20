@@ -1561,7 +1561,6 @@ VOID ApCliWpaDisassocApAndBlockAssoc(
 	MLME_DISASSOC_REQ_STRUCT    DisassocReq;
 	
 	PAPCLI_STRUCT pApCliEntry;
-	PULONG pCurrState = &pAd->ApCfg.ApCliTab[0].CtrlCurrState;
 
 	pAd->ApCfg.ApCliTab[0].bBlockAssoc = TRUE;
 	DBGPRINT(RT_DEBUG_TRACE, ("(%s) disassociate with current AP after sending second continuous EAPOL frame.\n", __FUNCTION__));

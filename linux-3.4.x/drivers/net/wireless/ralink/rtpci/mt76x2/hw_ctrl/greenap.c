@@ -54,16 +54,12 @@ VOID EnableAPMIMOPSv1(
 	IN RTMP_ADAPTER *pAd,
 	IN BOOLEAN ReduceCorePower)
 {
-	UCHAR	BBPR3 = 0,BBPR1 = 0;
 	ULONG	TxPinCfg = 0x00050F0A;/*Gary 2007/08/09 0x050A0A*/
-	UCHAR	BBPR4=0;
 	UCHAR	CentralChannel;
-
-
 
 	if(pAd->CommonCfg.Channel>14)
 		TxPinCfg=0x00050F05;
-		
+
 	TxPinCfg &= 0xFFFFFFF3;
 	TxPinCfg &= 0xFFFFF3FF;
 	pAd->ApCfg.bGreenAPActive=TRUE;
@@ -82,8 +78,8 @@ VOID EnableAPMIMOPSv1(
 		/*Tx/Rx Stream*/
 		bbp_set_txdac(pAd, 0);
 		bbp_set_rxpath(pAd, 1);
-		
-	RTMP_IO_WRITE32(pAd, TX_PIN_CFG, TxPinCfg);
+
+		RTMP_IO_WRITE32(pAd, TX_PIN_CFG, TxPinCfg);
 
 	}
 	AsicSwitchChannel(pAd, CentralChannel, FALSE);
@@ -95,12 +91,8 @@ VOID EnableAPMIMOPSv1(
 VOID DisableAPMIMOPSv1(
 	IN PRTMP_ADAPTER		pAd)
 {
-	UCHAR	BBPR3=0,BBPR1=0;
 	ULONG	TxPinCfg = 0x00050F0A; /* Gary 2007/08/09 0x050A0A */
 	UCHAR	CentralChannel;
-	UINT32	Value=0;
-
-
 
 	if(pAd->CommonCfg.Channel>14)
 		TxPinCfg=0x00050F05;

@@ -186,21 +186,9 @@ VOID ral_write_txd(
 	OPSTATUS_CLEAR_FLAG(pAd, fOP_STATUS_SHORT_PREAMBLE_INUSED);
 
 	ral_write_txinfo(pAd, pTxInfo, bWIV, QueueSEL);
-	
+
 	pTxD->DMADONE = 0;
 }
-
-#ifdef RLT_MAC
-static VOID rlt_update_txinfo(
-	IN RTMP_ADAPTER *pAd,
-	IN TXINFO_STRUC *pTxInfo,
-	IN TX_BLK *pTxBlk)
-{
-}
-#endif /* RLT_MAC */
-
-
-
 
 /* IRQL = DISPATCH_LEVEL */
 VOID ComposeNullFrame(
@@ -905,10 +893,7 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 	IN RTMP_ADAPTER *pAd,
 	IN RTMP_TX_DONE_MASK tx_mask)
 {
-	unsigned long	IrqFlags;
 	BOOLEAN bReschedule = FALSE;
-
-
 
 	/* Dequeue outgoing frames from TxSwQueue[] and process it*/
 	RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, MAX_TX_PROCESS);
@@ -2067,17 +2052,14 @@ VOID RTMPHandleTxRing8DmaDoneInterrupt(RTMP_ADAPTER *pAd)
 {
 	PTXD_STRUC	 pTxD;
 #ifdef RT_BIG_ENDIAN
-    PTXD_STRUC      pDestTxD;
+	PTXD_STRUC      pDestTxD;
 	UCHAR hw_hdr_info[TXD_SIZE];
 #endif
 	PNDIS_PACKET pPacket;
-/*	int 		 i;*/
 	UCHAR	FREE = 0;
 	RTMP_CTRL_RING *pCtrlRing = &pAd->CtrlRing;
-	UINT8 TXWISize = pAd->chipCap.TXWISize;
-	unsigned long flags;
 
-	NdisAcquireSpinLock(&pAd->CtrlRingLock);	
+	NdisAcquireSpinLock(&pAd->CtrlRingLock);
 
 	RTMP_IO_READ32(pAd, pCtrlRing->hw_didx_addr, &pCtrlRing->TxDmaIdx);
 	while (pCtrlRing->TxSwFreeIdx!= pCtrlRing->TxDmaIdx)

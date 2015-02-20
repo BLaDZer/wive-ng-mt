@@ -1449,8 +1449,9 @@ VOID SendSMPSAction(RTMP_ADAPTER *pAd, UCHAR Wcid, UCHAR smps)
 #ifdef APCLI_SUPPORT
 	if (IS_ENTRY_APCLI(pEntry))
 	{
-		UINT apidx = pEntry->wdev_idx;
 #ifdef MAC_REPEATER_SUPPORT
+		UINT apidx = pEntry->wdev_idx;
+
 		if (pEntry->bReptCli)
 			ActHeaderInit(pAd, &Frame.Hdr, pEntry->Addr, pAd->ApCfg.ApCliTab[apidx].RepeaterCli[pEntry->MatchReptCliIdx].CurrentAddress, wdev->bssid);
 		else

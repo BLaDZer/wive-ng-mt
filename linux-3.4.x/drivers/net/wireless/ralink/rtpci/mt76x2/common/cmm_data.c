@@ -92,8 +92,10 @@ VOID dump_txinfo(RTMP_ADAPTER *pAd, TXINFO_STRUC *pTxInfo)
 	DBGPRINT(RT_DEBUG_OFF, ("TxInfo Fields:\n"));
 
 #ifdef RLT_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RLT)
 		dump_rlt_txinfo(pAd, pTxInfo);
+#endif
 #endif /* RLT_MAC */
 
 #ifdef RTMP_MAC
@@ -109,13 +111,17 @@ VOID dump_txwi(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI)
 
 	DBGPRINT(RT_DEBUG_OFF, ("TxWI Fields:\n"));
 #ifdef RLT_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RLT)
 		dump_rlt_txwi(pAd, pTxWI);
+#endif
 #endif /* RLT_MAC */
 
 #ifdef RTMP_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RTMP)
 		dump_rtmp_txwi(pAd, pTxWI);
+#endif
 #endif /* RTMP_MAC */
 }
 
@@ -126,13 +132,17 @@ VOID dump_rxwi(RTMP_ADAPTER *pAd, RXWI_STRUC *pRxWI)
 
 	DBGPRINT(RT_DEBUG_OFF, ("RxWI Fields:\n"));
 #ifdef RLT_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RLT)
 		dump_rlt_rxwi(pAd, pRxWI);	
+#endif
 #endif /* RLT_MAC */
 
 #ifdef RTMP_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RTMP)
 		dump_rtmp_rxwi(pAd, pRxWI);
+#endif
 #endif /* RTMP_MAC */
 }
 
@@ -192,10 +202,12 @@ VOID dump_rxblk(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	DBGPRINT(RT_DEBUG_TRACE,("\t\tpRxInfo=0x%p\n", pRxBlk->pRxInfo));
 	dump_rxinfo(pAd, pRxBlk->pRxInfo);
 #ifdef RLT_MAC
+#ifdef DBG
 	if (pAd->chipCap.hif_type == HIF_RLT) {
 		DBGPRINT(RT_DEBUG_TRACE,("\t\tpRxFceInfo=0x%p\n", pRxBlk->pRxFceInfo));
 		dumpRxFCEInfo(pAd, pRxBlk->pRxFceInfo);
 	}
+#endif
 #endif /* RLT_MAC */
 	DBGPRINT(RT_DEBUG_TRACE,("\t\tpRxWI=0x%p\n", pRxBlk->pRxWI));
 	dump_rxwi(pAd, pRxBlk->pRxWI);
@@ -3499,7 +3511,6 @@ VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	PNDIS_PACKET pRxPacket = pRxBlk->pRxPacket;
 	INT op_mode = pRxBlk->OpMode;
 	BOOLEAN 	bPassTheBcastPkt = FALSE;
-	INT			i;
 #ifdef APCLI_SUPPORT
 #ifdef APCLI_CERT_SUPPORT	
 	PAPCLI_STRUCT pApCliEntry = NULL;
@@ -3546,6 +3557,7 @@ VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #ifdef APCLI_CERT_SUPPORT
 					if  (pAd->bApCliCertTest == TRUE)
 					{
+						INT i;
 						for (i = 0; i < MAX_APCLI_NUM; i++)
 						{
 							pApCliEntry = &pAd->ApCfg.ApCliTab[i];

@@ -729,9 +729,9 @@ VOID RTMPDrvClose(VOID *pAdSrc, VOID *net_dev)
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
+#ifdef DOT11N_DRAFT3
 		BOOLEAN Cancelled = FALSE;
 
-#ifdef DOT11N_DRAFT3
 		if (pAd->CommonCfg.Bss2040CoexistFlag & BSS_2040_COEXIST_TIMER_FIRED)
 		{
 			RTMPCancelTimer(&pAd->CommonCfg.Bss2040CoexistTimer, &Cancelled);

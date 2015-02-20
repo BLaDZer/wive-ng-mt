@@ -209,7 +209,10 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 	int ret = NDIS_STATUS_SUCCESS;
 	u32 ilm_len, dlm_len;
 	u16 fw_ver, build_ver;
-	u32 loop = 0, idx = 0, val = 0;
+#ifdef DBG
+	u32 loop = 0;
+#endif
+	u32 idx = 0, val = 0;
 	u32 mac_value;
 	u32 start_offset, end_offset;
 	RTMP_CHIP_CAP *cap = &ad->chipCap;
@@ -788,21 +791,6 @@ static u32 andes_queue_len(struct MCU_CTRL *ctl, DL_LIST *list)
 	RTMP_SPIN_UNLOCK_IRQRESTORE(lock, &flags);
 
 	return qlen;
-}
-
-static int andes_queue_empty(struct MCU_CTRL *ctl, DL_LIST *list)
-{
-	unsigned long flags;
-	int is_empty;
-	NDIS_SPIN_LOCK *lock;
-	
-	lock = andes_get_spin_lock(ctl, list);
-
-	RTMP_SPIN_LOCK_IRQSAVE(lock, &flags);
-	is_empty = DlListEmpty(list);
-	RTMP_SPIN_UNLOCK_IRQRESTORE(lock, &flags);
-
-	return is_empty;
 }
 
 static void andes_queue_init(struct MCU_CTRL *ctl, DL_LIST *list)

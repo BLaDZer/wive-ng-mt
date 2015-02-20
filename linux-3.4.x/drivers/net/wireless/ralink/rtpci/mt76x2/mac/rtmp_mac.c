@@ -75,9 +75,11 @@ VOID RTMPWriteTxWI(
 	TXWI_STRUC TxWI, *pTxWI;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
 	UINT TxEAPId_Cal = 0;
-	UCHAR eTxBf, iTxBf, sounding, ndp_rate, stbc, bw, mcs, sgi, phy_mode, mpdu_density = 0, mimops = 0, ldpc = 0;
+	UCHAR stbc, bw, mcs, sgi, phy_mode, mpdu_density = 0, mimops = 0, ldpc = 0;
 	UCHAR tx_stream_mode = 0;
-	
+#ifdef TXBF_SUPPORT
+	UCHAR eTxBf, iTxBf, sounding, ndp_rate;
+#endif
 	if (WCID < MAX_LEN_OF_MAC_TABLE)
 		pMac = &pAd->MacTab.Content[WCID];
 
@@ -585,7 +587,9 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 VOID RTMPWriteTxWI_Cache(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 {
 	HTTRANSMIT_SETTING *pTransmit = pTxBlk->pTransmit;
+#ifdef CONFIG_FPGA_MODE
 	HTTRANSMIT_SETTING tmpTransmit;
+#endif
 	MAC_TABLE_ENTRY *pMacEntry = pTxBlk->pMacEntry;
 	UCHAR pkt_id;
 	UCHAR bw, mcs, stbc, phy_mode, sgi, ldpc;

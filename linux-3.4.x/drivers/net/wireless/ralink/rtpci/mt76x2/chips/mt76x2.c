@@ -574,7 +574,9 @@ void dump_calibration_info(RTMP_ADAPTER *pAd, u32 cal_id)
 
 static VOID mt76x2_bbp_adjust(RTMP_ADAPTER *pAd)
 {
+#ifdef DBG
 	static char *ext_str[]={"extNone", "extAbove", "", "extBelow"};
+#endif
 	UCHAR rf_bw, ext_ch;
 
 #ifdef DOT11_N_SUPPORT
@@ -906,9 +908,8 @@ static void mt76x2_tx_pwr_gain(RTMP_ADAPTER *ad, u8 channel, u8 bw)
 
 static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 {
-	RTMP_CHIP_CAP *cap = &ad->chipCap;
 	unsigned int latch_band, band, bw, tx_rx_setting;
-	UINT32 ret, i, value, value1, restore_value, loop = 0;
+	UINT32 i, value, value1, restore_value, loop = 0;
 	UINT16 e2p_value;
 	UCHAR bbp_ch_idx;
 	BOOLEAN band_change = FALSE;
@@ -1301,37 +1302,28 @@ void mt76x2_tssi_compensation(RTMP_ADAPTER *ad, u8 channel)
 	RTMP_CHIP_CAP *cap = &ad->chipCap;
 	ANDES_CALIBRATION_PARAM param;
 	UINT32 pa_mode = 0, tssi_slope_offset = 0, value = 0;
-	UINT32 ret = 0;
-	
-
-#ifdef RTMP_PCI_SUPPORT
-//	if (IS_PCI_INF(ad)) {
-//		NdisAcquireSpinLock(&ad->tssi_lock);
-//	}
-#endif
 
 	if (ad->chipCap.tssi_stage <= TSSI_CAL_STAGE)
-		goto done;
-	
+		return;
+
 	if (cap->tssi_stage == TSSI_TRIGGER_STAGE) {
 		DBGPRINT(RT_DEBUG_INFO, ("%s:TSS_TRIGGER(channel = %d)\n", __FUNCTION__, channel));
 		param.mt76x2_tssi_comp_param.pa_mode = (1 << 8);
 		param.mt76x2_tssi_comp_param.tssi_slope_offset = 0;
-		
+
 		/* TSSI Trigger */
 		if(ad->chipOps.Calibration != NULL)
 			ad->chipOps.Calibration(ad, TSSI_COMPENSATION_7662, &param);
-		else 
-			goto done;
+		else
+			return;
 
 		cap->tssi_stage = TSSI_COMP_STAGE;
-
-		goto done;
+		return;
 	}
 
 	/* Check 0x2088[4] = 0 */
 	RTMP_BBP_IO_READ32(ad, CORE_R34, &value);
-	
+
 	if ((value & (1 << 4)) == 0) {
 
 		DBGPRINT(RT_DEBUG_INFO, ("%s:TSSI_COMP(channel = %d)\n", __FUNCTION__, channel));
@@ -1399,15 +1391,6 @@ void mt76x2_tssi_compensation(RTMP_ADAPTER *ad, u8 channel)
 				ad->MCUCtrl.dpd_on = TRUE;
 		}
 	}
-	
-done:
-;
-#ifdef RTMP_PCI_SUPPORT
-	//if (IS_PCI_INF(ad)) {
-	//	NdisReleaseSpinLock(&ad->tssi_lock);
-	//}
-#endif
-
 }
 
 void mt76x2_calibration(RTMP_ADAPTER *ad, u8 channel)
@@ -1762,8 +1745,6 @@ static void mt76x2_init_mac_cr(RTMP_ADAPTER *ad)
 
 static void mt76x2_init_rf_cr(RTMP_ADAPTER *ad)
 {
-	UINT16 value;
-
 	andes_load_cr(ad, RF_BBP_CR, 0, 0);
 }
 
@@ -3208,7 +3189,9 @@ void mt76x2_get_tx_pwr_per_rate(RTMP_ADAPTER *ad)
 
 static void mt76x2_show_pwr_info(RTMP_ADAPTER *ad)
 {
+#ifdef DBG
 	RTMP_CHIP_CAP *cap = &ad->chipCap;
+#endif
 	UINT32 value;
 
 	DBGPRINT(RT_DEBUG_OFF, ("\n===================================\n"));

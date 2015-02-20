@@ -312,7 +312,10 @@ BOOLEAN RTMPCheckPhyMode(RTMP_ADAPTER *pAd, UINT8 band_cap, UCHAR *pPhyMode)
 */
 VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 {
-	USHORT i, value, value2;
+	USHORT i, value;
+#if !defined(EEPROM_COUNTRY_UNLOCK)
+		USHORT 	value2;
+#endif
 	EEPROM_TX_PWR_STRUC Power;
 	EEPROM_VERSION_STRUC Version;
 	EEPROM_ANTENNA_STRUC Antenna;
@@ -743,11 +746,9 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 
 #if !defined(EEPROM_COUNTRY_UNLOCK)
 	/*CountryRegion byte offset (38h)*/
-	{
-		value = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] >> 8;		/* 2.4G band*/
-		value2 = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] & 0x00FF;	/* 5G band*/
-	}
-	
+	value = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] >> 8;		/* 2.4G band*/
+	value2 = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] & 0x00FF;	/* 5G band*/
+
 	if ((value <= REGION_MAXIMUM_BG_BAND) || (value == REGION_31_BG_BAND) || (value == REGION_32_BG_BAND) || (value == REGION_33_BG_BAND) )
 		pAd->CommonCfg.CountryRegion = ((UCHAR) value) | EEPROM_IS_PROGRAMMED;
 
@@ -1234,7 +1235,6 @@ retry:
 */
 NDIS_STATUS	NICInitializeAsic(RTMP_ADAPTER *pAd, BOOLEAN bHardReset)
 {
-	ULONG Index = 0;
 	UINT32 mac_val = 0;
 	USHORT KeyIdx;
 
@@ -3529,13 +3529,6 @@ VOID RTMPEnableRxTx(RTMP_ADAPTER *pAd)
 	
 	{
 		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0xc);
-//+++Add by shiang for debug for pbf_loopback
-//			RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x2c);
-//---Add by shiang for debug
-//+++Add by shiang for debug invalid RxWI->WCID 
-#ifdef RT8592
-#endif /* RT8592 */
-//---Add by shiang for  debug invalid RxWI->WCID 
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<== RTMPEnableRxTx\n"));	
@@ -3574,13 +3567,12 @@ static INT RtmpChipOpsRegister(RTMP_ADAPTER *pAd, INT infType)
 	return ret;
 }
 
-
-
-
+#ifdef MULTIPLE_CARD_SUPPORT
+extern BOOLEAN RTMP_CardInfoRead(PRTMP_ADAPTER pAd);
+#endif
 INT RtmpRaDevCtrlInit(VOID *pAdSrc, RTMP_INF_TYPE infType)
 {
 	RTMP_ADAPTER *pAd = (PRTMP_ADAPTER)pAdSrc;
-	UINT32 ret;
 
 	/* Assign the interface type. We need use it when do register/EEPROM access.*/
 	pAd->infType = infType;
@@ -3598,21 +3590,16 @@ INT RtmpRaDevCtrlInit(VOID *pAdSrc, RTMP_INF_TYPE infType)
 
 #ifdef MULTIPLE_CARD_SUPPORT
 #ifdef RTMP_FLASH_SUPPORT
-/*	if ((IS_PCIE_INF(pAd))) */
-	{
-		/* specific for RT6855/RT6856 */
-		pAd->E2P_OFFSET_IN_FLASH[0] = 0x40000;
-		pAd->E2P_OFFSET_IN_FLASH[1] = 0x48000;
-	}
+	/* specific for RT6855/RT6856 */
+	pAd->E2P_OFFSET_IN_FLASH[0] = 0x40000;
+	pAd->E2P_OFFSET_IN_FLASH[1] = 0x48000;
 #endif /* RTMP_FLASH_SUPPORT */
 #endif /* MULTIPLE_CARD_SUPPORT */
 
 	if (RtmpChipOpsRegister(pAd, infType))
 		return FALSE;
 
-
 #ifdef MULTIPLE_CARD_SUPPORT
-{
 	extern BOOLEAN RTMP_CardInfoRead(PRTMP_ADAPTER pAd);
 
 	/* find its profile path*/
@@ -3625,7 +3612,6 @@ INT RtmpRaDevCtrlInit(VOID *pAdSrc, RTMP_INF_TYPE infType)
 #endif /* CONFIG_AP_SUPPORT */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("MC> ROW = %d, PATH = %s\n", pAd->MC_RowID, pAd->MC_FileName));
-}
 #endif /* MULTIPLE_CARD_SUPPORT */
 
 

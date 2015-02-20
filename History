@@ -581,12 +581,13 @@
 36) kernel: ralink_wifi: add log connect/disconnect events.<br>
 37) kernel: ralink_wifi: fix build correct without DBG defined.<br>
 38) kernel: ralink_wifi: desintegrate AP_QLOAD and chanbusytime in ap_autoChSel.<br>
-39) kernel: ralink_wifi: MT7612E/MT7602E: disable eFuse by default.<br>
-40) kernel: ralink_wifi: remove bogus flag VCORECAL_SUPPORT from MT7612E profile.<br>
-41) kernel: huge update NAND framework from upstream.<br>
-42) kernel: exfat: add module alias for fix automount.<br>
-43) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-44) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+39) kernel: ralink_wifi: remove bogus flag VCORECAL_SUPPORT from MT7612E profile.<br>
+40) kernel: ralink_wifi: MT7612E/MT7602E: disable eFuse by default.<br>
+41) kernel: ralink_wifi: MT7612E/MT7602E: code cleanup and fix warnings.<br>
+42) kernel: huge update NAND framework from upstream.<br>
+43) kernel: exfat: add module alias for fix automount.<br>
+44) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+45) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
 45) kernel: sg: fix read() error reporting.<br>
 <br>
 <br>
