@@ -439,7 +439,7 @@ static void GenPIN(webs_t wp, char_t *path, char_t *query)
 	sprintf(new_pin, "%08d", getAPPIN("ra0"));
 
 	nvram_set(RT2860_NVRAM, "WscVendorPinCode", new_pin);
-	system("service modules gen_wifi_config");
+	system("service modules gen_wifi_config > /dev/console 2>&1");
 	websRedirect(wp, "wps/wps.asp");
 }
 

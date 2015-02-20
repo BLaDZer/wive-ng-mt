@@ -2553,7 +2553,7 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	initStaProfile();
 
 	//push wifi config to config mtd part and config generate
-	system("service modules gen_wifi_config");
+	system("service modules gen_wifi_config > /dev/console 2>&1");
 
 	// reconnect to AP and renew dhcp, pppoe etc
 	initInternet();

@@ -30,8 +30,8 @@ void import(char *filename, int offset, int len)
 		len--;
 	}
 
-	fclose(fp);
 	fclose(src);
+	fclose(fp);
 
 	snprintf(cmd, 4096, "unpackrwfs.sh %s", pname);
 	system(cmd);
@@ -64,8 +64,7 @@ int main (int argc, char *argv[])
 
 	// sth like this..
 	// Content-Disposition: form-data; name="filename"; filename="\\192.168.3.171\tftpboot\a.out"
-	//
-	char *line, *semicolon, *user_filename;
+       	char *line, *semicolon, *user_filename;
 	line_begin = line_end + 2;
 	if ((line_end = findStrInFile(filename, line_begin, "\r\n", 2)) == -1)
 	{

@@ -733,7 +733,7 @@ void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 	system("killall -q -SIGKILL W60vpnhelper");
 	system("killall -q -SIGKILL vpnhelper");
 	printf("goahead: Calling vpn helper...\n");
-	system("service vpnhelper restart");
+	system("service vpnhelper restart > /dev/console 2>&1");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG

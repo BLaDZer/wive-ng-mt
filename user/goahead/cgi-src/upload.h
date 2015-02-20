@@ -220,8 +220,6 @@ typedef struct parameter_t
 	struct parameter_t *next;
 } parameter_t;
 
-extern char** environ;
-
 int get_content_separator(char *separator, int limit, long *length)
 {
 	// Get content type

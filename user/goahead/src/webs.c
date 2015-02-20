@@ -424,7 +424,7 @@ void websReadEvent(webs_t wp)
 			if (wp->flags & WEBS_CGI_REQUEST) {
 					if (fd == -1) {
 						if(wp->flags & WEBS_CGI_FIRMWARE_UPLOAD && wp->has_firmware_upload_clean==0){
-							system("wifi_unload.sh");
+							system("wifi_unload.sh > /dev/console 2>&1");
 							wp->has_firmware_upload_clean = 1;
 						}
 						fd = gopen(wp->cgiStdin, O_CREAT | O_WRONLY | O_BINARY | O_APPEND, 0666);
