@@ -134,8 +134,8 @@ fullreset() {
     echo "Erase RW-FS partitions"
     mtd_write erase RW-FS
     echo "Set boot flag to regenerate all."
-    nvram_set CHECKMAC "YES"
-    nvram_set IS_WIVE "NO"
+    nvram_set 2860 CHECKMAC "YES"
+    nvram_set 2860 IS_WIVE "NO"
     echo "Now reboot..."
     reboot
 }

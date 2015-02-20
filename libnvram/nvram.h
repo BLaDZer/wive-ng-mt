@@ -16,9 +16,6 @@
 /* use safe mode strdup */
 #define NVRAM_LIB_LIBNVRAM_SSTRDUP
 
- /* split 2860 and RTDEV configs by offset */
-//#define FLASH_BLOCK_SPLIT
-
 #define RT2860_NVRAM    		0
 #define RTINIC_NVRAM    		1
 
@@ -35,7 +32,8 @@
 
 #define FREE(x) do { if (x != NULL) {free(x); x=NULL;} } while(0)
 
-#ifdef FLASH_BLOCK_SPLIT
+/* split 2860 and RTDEV configs by offset */
+#ifdef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 #define FLASH_BLOCK_NUM 2
 #else
 #define FLASH_BLOCK_NUM 1
@@ -88,6 +86,6 @@ char *nvram_bufget(int index, char *name);
 
 int nvram_commit(int index);
 int nvram_clear(int index);
-int renew_nvram(int mode, char *fname);
+int nvram_renew(int mode, char *fname);
 int nvram_show(int mode);
 #endif

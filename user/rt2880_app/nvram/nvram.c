@@ -9,7 +9,7 @@
 
 #define DEFAULT_FLASH_ZONE_NAME "2860"
 
-int set_usage(char *aout)
+static int set_usage(char *aout)
 {
 	int i;
 
@@ -21,7 +21,7 @@ int set_usage(char *aout)
 	return -1;
 }
 
-int get_usage(char *aout)
+static int get_usage(char *aout)
 {
 	int i;
 
@@ -33,7 +33,7 @@ int get_usage(char *aout)
 	return -1;
 }
 
-int buf_get_usage(char *aout)
+static int buf_get_usage(char *aout)
 {
 	int i;
 
@@ -45,7 +45,7 @@ int buf_get_usage(char *aout)
 	return -1;
 }
 
-int ra_nv_set(int argc,char **argv)
+static int ra_nv_set(int argc,char **argv)
 {
 	int index, rc;
 	char *fz = "", *key = "", *value = "";
@@ -76,7 +76,7 @@ int ra_nv_set(int argc,char **argv)
     return rc;
 }
 
-int ra_nv_get(int argc, char *argv[])
+static int ra_nv_get(int argc, char *argv[])
 {
 	char *fz;
 	char *key;
@@ -112,7 +112,7 @@ int ra_nv_get(int argc, char *argv[])
     return (ret);
 }
 
-int ra_nv_buf_get(int argc, char *argv[])
+static int ra_nv_buf_get(int argc, char *argv[])
 {
 	char *fz, *key, *rc;
 	int i, index, ret=0;
@@ -162,6 +162,7 @@ static int nvram_load_default(void)
 	int mac_ok=1;
 
 	printf("Store MACS...\n");
+	char *WLAN2_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN2_MAC_ADDR");
 	char *WLAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN_MAC_ADDR");
         char *WAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
         char *LAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
@@ -170,13 +171,17 @@ static int nvram_load_default(void)
 	printf("Clear nvram...\n");
 	nvram_clear(RT2860_NVRAM);
 	printf("Load defaults nvram...\n");
-	renew_nvram(RT2860_NVRAM, "/etc/default/nvram_default");
+	nvram_renew(RT2860_NVRAM, "/etc/default/nvram_default");
 
 	/* reinit nvram before commit */
-	if ( nvram_init(RT2860_NVRAM) == -1 )
+	if (nvram_init(RT2860_NVRAM) == -1)
 		return -1;
 
 	printf("Restore old macs...\n");
+	if ((strlen(WLAN2_MAC_ADDR) > 0) && isMacValid(WLAN2_MAC_ADDR))
+	    nvram_bufset(RT2860_NVRAM, "WLAN2_MAC_ADDR", WLAN2_MAC_ADDR);
+	else
+	    mac_ok=0;
 	if ((strlen(WLAN_MAC_ADDR) > 0) && isMacValid(WLAN_MAC_ADDR))
 	    nvram_bufset(RT2860_NVRAM, "WLAN_MAC_ADDR", WLAN_MAC_ADDR);
 	else
@@ -191,7 +196,7 @@ static int nvram_load_default(void)
 	    mac_ok=0;
 
 	/* all restore ok ? */
-	if ( mac_ok == 1 ) {
+	if (mac_ok == 1) {
 	    printf("Restore checkmac atribute.\n");
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", CHECKMAC);
 	} else {
@@ -203,8 +208,8 @@ static int nvram_load_default(void)
         nvram_bufset(RT2860_NVRAM, "IS_WIVE", "YES");
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
-	sync();
-    return 0;
+
+        return 0;
 }
 
 static int gen_wifi_config(int getmode)
@@ -223,7 +228,10 @@ static int gen_wifi_config(int getmode)
 		fp = fopen("/etc/Wireless/iNIC/iNIC_ap.dat", "w+");
 		/* after select file for write back to native 2860 mode */
 		inic = 1;
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+		/* use one source offset */
 		mode = RT2860_NVRAM;
+#endif
 		printf("Build config for second WiFi module.\n");
 #endif
 	} else {
@@ -616,16 +624,21 @@ static int gen_wifi_config(int getmode)
 void usage(char *cmd)
 {
 	printf("Usage:\n");
-	printf("  %s <command> [<platform>] [<file>]\n\n", cmd);
+	printf("nvram_<command> [<platform>] [<file>]\n\n");
 	printf("command:\n");
-	printf("  rt2860_nvram_show - display rt2860 values in nvram\n");
-	printf("  show    - display values in nvram for <platform>\n");
-	printf("  gen     - generate config file from nvram for <platform>\n");
-	printf("  renew   - replace nvram values for <platform> with <file>\n");
-	printf("  clear	  - clear all entries in nvram for <platform>\n");
-	printf("  default - load default for <platform>\n");
+	printf("  get		- get value from nvram for <platform>\n");
+	printf("  buf_get	- buffered get value from nvram for <platform>\n");
+	printf("  set		- set value to nvram for <platform>\n");
+	printf("  show		- display values in nvram for <platform>\n");
+	printf("  renew		- replace nvram values for <platform> with <file>\n");
+	printf("  clear		- clear all entries in nvram for <platform>\n");
+	printf("  default	- load default for <platform>\n");
+	printf("  genwlconfig	- generate config file from nvram for <platform>\n");
 	printf("platform:\n");
-	printf("  2860    - rt2860\n");
+	printf("  2860    - first module\n");
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	printf("  rtdev    - second module\n");
+#endif
 	printf("file:\n");
 	printf("          - file name for renew command\n");
 	exit(0);
@@ -634,7 +647,7 @@ void usage(char *cmd)
 int main(int argc, char *argv[])
 {
 	char *cmd = "";
-	int index;
+	int mode = RT2860_NVRAM;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -645,64 +658,30 @@ int main(int argc, char *argv[])
 	else
 		cmd = argv[0];
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	if (!strncmp(argv[1], "rtdev", 5))
+	    mode = RTINIC_NVRAM;
+#endif
+
 	if (!strncmp(cmd, "nvram_get", 10))
 		return ra_nv_get(argc, argv);
-	if (!strncmp(cmd, "nvram_buf_get", 14))
+	else if (!strncmp(cmd, "nvram_buf_get", 14))
 		return ra_nv_buf_get(argc, argv);
 	else if (!strncmp(cmd, "nvram_set", 10))
 		return ra_nv_set(argc, argv);
 	else if (!strncmp(cmd, "nvram_show", 11))
-		return nvram_show(RT2860_NVRAM);
-	else if (!strncmp(cmd, "nvram_default", 14))
-		return nvram_load_default();
+		return nvram_show(mode);
 	else if (!strncmp(cmd, "nvram_clear", 12))
-		return nvram_clear(RT2860_NVRAM);
+		return nvram_clear(mode);
+	else if (!strncmp(cmd, "nvram_genwlconfig", 18))
+		return gen_wifi_config(mode);
+	else if (!strncmp(cmd, "nvram_renew", 12)) {
+		if (argc >= 3)
+		    return nvram_renew(mode, argv[2]);
+	} else if (!strncmp(cmd, "nvram_default", 14))
+		return nvram_load_default();
+	else
+	    usage(argv[0]);
 
-	if (argc == 2) {
-		if (!strncmp(argv[1], "rt2860_nvram_show", 18))
-			nvram_show(RT2860_NVRAM);
-		else
-			usage(argv[0]);
-	} else if (argc == 3) {
-		/* TODO: <cmd> gen 2860ap */
-		if (!strncasecmp(argv[1], "gen", 4) ||
-		    !strncasecmp(argv[1], "make_wireless_config", 21)) {
-			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7)) {
-				gen_wifi_config(RT2860_NVRAM);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-				gen_wifi_config(RTINIC_NVRAM);
-#endif
-			} else
-				usage(argv[0]);
-		} else if (!strncasecmp(argv[1], "show", 5)) {
-			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7))
-				nvram_show(RT2860_NVRAM);
-			else {
-				if ((index = getNvramIndex(argv[2])) == -1) {
-					fprintf(stderr,"%s: Error: \"%s\" flash zone not existed\n", argv[0], argv[2]);
-					usage(argv[0]);
-				} else
-					nvram_show(index);
-			}
-
-		} else if(!strncasecmp(argv[1], "clear", 6)) {
-			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7))
-				nvram_clear(RT2860_NVRAM);
-			else
-				usage(argv[0]);
-		} else
-			usage(argv[0]);
-	} else if (argc == 4) {
-		if (!strncasecmp(argv[1], "renew", 6)) {
-			if (!strncmp(argv[2], "2860", 5) ||
-			    !strncasecmp(argv[2], "rt2860", 7))
-				renew_nvram(RT2860_NVRAM, argv[3]);
-		} else
-			usage(argv[0]);
-	} else
-		usage(argv[0]);
 	return 0;
 }

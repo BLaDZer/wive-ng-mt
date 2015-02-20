@@ -1,0 +1,9 @@
+config  KERNEL_NVRAM
+	bool 'Kernel NVRAM'
+	depends on MTD_RALINK
+	default y
+
+config  KERNEL_NVRAM_SPLIT_INIC
+	bool 'Different offsets for 2860 and iNIC parametrs database'
+	depends on KERNEL_NVRAM && !RT_SECOND_IF_NONE
+	default n

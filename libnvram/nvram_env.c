@@ -10,6 +10,7 @@ static char libnvram_debug = 0;
 #define LIBNV_PRINT(x, ...) do { if (libnvram_debug) printf("%s %d: " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
 #define LIBNV_ERROR(x, ...) do { fprintf(stderr,"%s %d: ERROR! " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
 
+/* Config part in nvram */
 static block_t fb[FLASH_BLOCK_NUM] =
 {
 	{
@@ -442,7 +443,7 @@ int nvram_clear(int index)
 	return 0;
 }
 
-int renew_nvram(int mode, char *fname)
+int nvram_renew(int mode, char *fname)
 {
 	FILE *fp;
 	char buf[BUFSZ], *p;

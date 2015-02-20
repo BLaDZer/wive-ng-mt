@@ -7,15 +7,7 @@
 #include <linux/slab.h>
 #include "nvram.h"
 
-extern int ra_mtd_write_nm(char *name, loff_t to, size_t len, const u_char *buf);
-extern int ra_mtd_read_nm(char *name, loff_t from, size_t len, u_char *buf);
-
 /* Config part in nvram */
-#ifdef FLASH_BLOCK_SPLIT
-#define FLASH_BLOCK_NUM 2
-#else
-#define FLASH_BLOCK_NUM 1
-#endif
 static block_t fb[FLASH_BLOCK_NUM] =
 {
 	{
@@ -599,3 +591,4 @@ static int const nvram_getall(int index, char *buf)
 
 late_initcall(ra_nvram_init);
 module_exit(ra_nvram_exit);
+MODULE_DESCRIPTION("NVRAM module for Ralink/Mediatek SOC`s");

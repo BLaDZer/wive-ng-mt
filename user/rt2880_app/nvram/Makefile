@@ -4,19 +4,21 @@ CFLAGS	+= -I$(NVDIR)
 CFLAGS	+= -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 LDFLAGS	+= -lnvram
 
-all: ralink_init
+all: nvram
 
-ralink_init: ralink_init.o
+nvram: nvram.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 clean:
-	rm -f *.o ralink_init
+	rm -f *.o nvram
 
 romfs:
-	$(ROMFSINST) -S /bin/ralink_init
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_get
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_buf_get
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_set
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_show
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_default
-	$(ROMFSINST) -s /bin/ralink_init /bin/nvram_clear
+	$(ROMFSINST) -S /bin/nvram
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_get
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_buf_get
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_set
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_show
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_default
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_clear
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_renew
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_genwlconfig

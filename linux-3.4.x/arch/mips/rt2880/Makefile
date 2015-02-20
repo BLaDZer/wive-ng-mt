@@ -36,4 +36,3 @@ obj-$(CONFIG_RALINK_DMA) += dev-dma.o
 obj-$(CONFIG_RALINK_TIMER_DFS) += rt_timer_dfs.o
 obj-$(CONFIG_RALINK_TIMER_WDG) += rt_timer_wdg.o
 obj-$(CONFIG_DWC_OTG) += lm.o
-obj-$(CONFIG_KERNEL_NVRAM) += nvram.o

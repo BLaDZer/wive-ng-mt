@@ -10,4 +10,4 @@ echo ""
 
 echo "#The following line must not be removed."
 echo "Default"
-ralink_init show 2860 2>/dev/null
+nvram_show 2860 2>/dev/null

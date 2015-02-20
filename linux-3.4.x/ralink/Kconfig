@@ -1,6 +1,11 @@
 menu "Ralink Module"
 
 ###########
+# Nvram
+###########
+source "drivers/char/ranvram/Kconfig"
+
+###########
 # Debuging
 ###########
 source "drivers/net/rt_rdm/Kconfig"

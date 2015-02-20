@@ -83,8 +83,11 @@ start() {
 
 gen_wifi_config() {
     rm -f /etc/Wireless/RT2860/RT2860.dat
-    rm -f /etc/Wireless/iNIC/RT2860AP.dat
-    ralink_init make_wireless_config rt2860
+    nvram_genwlconfig 2860
+    if [ "$second_wlan_root_if" != "" ]; then
+	rm -f /etc/Wireless/iNIC/RT2860AP.dat
+	nvram_genwlconfig rtdev
+    fi
 }
 
 retune_wifi() {

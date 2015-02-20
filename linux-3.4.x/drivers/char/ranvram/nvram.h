@@ -5,10 +5,16 @@
 #define NEED_REINIT 0xFDEAD
 
 /* nvram parse blocks */
-//#define FLASH_BLOCK_SPLIT /* split 2860 and RTDEV configs by offset */
 #define ENV_BLK_SIZE 0x1000
 #define RALINK_NVRAM_DEVNAME "nvram"
 #define RALINK_NVRAM_MTDNAME "Config"
+
+/* split 2860 and RTDEV configs by offset */
+#ifdef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+#define FLASH_BLOCK_NUM 2
+#else
+#define FLASH_BLOCK_NUM 1
+#endif
 
 #define RANV_PRINT(x, ...) do { if (ra_nvram_debug) printk("\n%s %d: " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
 #define RANV_ERROR(x, ...) do { printk("%s %d: ERROR! " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
@@ -83,4 +89,7 @@ typedef struct nvram_ioctl_s {
 #define RALINK_NVRAM_IOCTL_SET		0x03
 #define RALINK_NVRAM_IOCTL_COMMIT	0x04
 #define RALINK_NVRAM_IOCTL_CLEAR	0x05
+
+extern int ra_mtd_write_nm(char *name, loff_t to, size_t len, const u_char *buf);
+extern int ra_mtd_read_nm(char *name, loff_t from, size_t len, u_char *buf);
 #endif
