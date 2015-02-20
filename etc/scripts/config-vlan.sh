@@ -147,7 +147,7 @@ reinit_all_phys() {
 	reset_all_phys
 }
 
-config762xEsw()
+config7620Esw()
 {
 	# now config support only internal 100FDX ESW
 	for i in `seq 6 7`; do
@@ -374,7 +374,7 @@ config762xEsw()
 	switch clear
 }
 
-restore6855Esw()
+restore7620Esw()
 {
 	# now config support only internal 100FDX ESW
 	$LOG "restore GSW to dump switch mode"
@@ -396,7 +396,7 @@ eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port green_ethernet`
 if [ "$1" = "3" ]; then
 	SWITCH_MODE=3
 	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
-		restore6855Esw
+		restore7620Esw
 	elif [ "$2" = "EEEEE" ]; then
 		enableEsw
 	elif [ "$2" = "DDDDD" ]; then
@@ -408,21 +408,21 @@ if [ "$1" = "3" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "LLLLW" ]; then
-		config762xEsw LLLLW
+		config7620Esw LLLLW
 	elif [ "$2" = "LLLWW" ]; then
-		config762xEsw LLLWW
+		config7620Esw LLLWW
 	elif [ "$2" = "LLWWW" ]; then
-		config762xEsw LLWWW
+		config7620Esw LLWWW
 	elif [ "$2" = "WLLLL" ]; then
-		config762xEsw WLLLL
+		config7620Esw WLLLL
 	elif [ "$2" = "WWLLL" ]; then
-		config762xEsw WWLLL
+		config7620Esw WWLLL
 	elif [ "$2" = "WWWLL" ]; then
-		config762xEsw WWWLL
+		config7620Esw WWWLL
 	elif [ "$2" = "12345" ]; then
-		config762xEsw 12345
+		config7620Esw 12345
 	elif [ "$2" = "VLANS" ]; then
-		config762xEsw VLANS
+		config7620Esw VLANS
 	else
 		echo "unknown vlan type $2"
 		echo ""
