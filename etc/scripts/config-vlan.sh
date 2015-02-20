@@ -12,21 +12,21 @@ LOG="logger -t ESW"
 
 usage() {
 	echo "Usage:"
-	echo "  $0 3 0 - restore Ralink MT7620/MT7621/MT7628 ESW to no VLAN partition"
-	echo "  $0 3 EEEEE - config Ralink MT7620/MT7621/MT7628 ESW enable all ports 100FD"
-	echo "  $0 3 DDDDD - config Ralink MT7620/MT7621/MT7628 ESW disable all ports"
-	echo "  $0 3 RRRRR - config Ralink MT7620/MT7621/MT7628 ESW reset all ports"
-	echo "  $0 3 WWWWW - config Ralink MT7620/MT7621/MT7628 ESW reinit WAN port at switch"
-	echo "  $0 3 FFFFF - config Ralink MT7620/MT7621/MT7628 ESW full reinit switch"
-	echo "  $0 3 LLLLW - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 4"
-	echo "  $0 3 WLLLL - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 0"
-	echo "  $0 3 LLLWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-1 and WAN at port 2-4"
-	echo "  $0 3 WWLLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 2-4 and WAN at port 0-1"
-	echo "  $0 3 LLWWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-2 and WAN at port 3-4"
-	echo "  $0 3 WWWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 3-4 and WAN at port 0-2"
-	echo "  $0 3 LLWLW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
-	echo "  $0 3 WLWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
-	echo "  $0 3 12345 - config Ralink MT7620/MT7621/MT7628 ESW with VLAN 1~5 at port 0~4"
+	echo "  $0 3/4 0 - restore Ralink MT7620/MT7621/MT7628 ESW to no VLAN partition"
+	echo "  $0 3/4 EEEEE - config Ralink MT7620/MT7621/MT7628 ESW enable all ports 100FD"
+	echo "  $0 3/4 DDDDD - config Ralink MT7620/MT7621/MT7628 ESW disable all ports"
+	echo "  $0 3/4 RRRRR - config Ralink MT7620/MT7621/MT7628 ESW reset all ports"
+	echo "  $0 3/4 WWWWW - config Ralink MT7620/MT7621/MT7628 ESW reinit WAN port at switch"
+	echo "  $0 3/4 FFFFF - config Ralink MT7620/MT7621/MT7628 ESW full reinit switch"
+	echo "  $0 3/4 LLLLW - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 4"
+	echo "  $0 3/4 WLLLL - config Ralink MT7620/MT7621/MT7628 ESW with VLAN and WAN at port 0"
+	echo "  $0 3/4 LLLWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-1 and WAN at port 2-4"
+	echo "  $0 3/4 WWLLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 2-4 and WAN at port 0-1"
+	echo "  $0 3/4 LLWWW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0-2 and WAN at port 3-4"
+	echo "  $0 3/4 WWWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 3-4 and WAN at port 0-2"
+	echo "  $0 3/4 LLWLW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
+	echo "  $0 3/4 WLWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
+	echo "  $0 3/4 12345 - config Ralink MT7620/MT7621/MT7628 ESW with VLAN 1~5 at port 0~4"
 	exit 0
 }
 
@@ -380,12 +380,149 @@ restore7620Esw()
 	$LOG "restore GSW to dump switch mode"
 	for i in `seq 0 7`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-7 matrix mode
-	    switch reg w 2${i}10 810000c0 	#ports 0-7 as transparen mode
+	    switch reg w 2${i}10 810000c0 	#ports 0-7 as transparent mode
 	done
 
 	switch reg w 3500 00008000		#port 5 link down
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
+
+	#clear mac table if vlan configuration changed
+	switch clear
+}
+
+config7530Esw()
+{
+	# now config support only internal 1000FDX 7530 ESW
+	if [ "$1" = "LLLLW" ]; then
+		#set external ports PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10001 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10002 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 11110011
+		switch vlan set 1 2 00001100
+	elif [ "$1" = "LLLWW" ]; then
+		#set external ports PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10001 #port2
+		switch reg w 2314 10002 #port3
+		switch reg w 2414 10002 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 11100011
+		switch vlan set 1 2 00011100
+	elif [ "$1" = "LLWWW" ]; then
+		#set external ports PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10002 #port3
+		switch reg w 2414 10002 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 11000011
+		switch vlan set 1 2 00111100
+	elif [ "$1" = "LLWLW" ]; then
+		#set external ports PVID
+		switch reg w 2014 10001 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10002 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 11010011
+		switch vlan set 1 2 00101100
+	elif [ "$1" = "WLLLL" ]; then
+		#set external ports PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10001 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 01111111
+		switch vlan set 1 2 10000101
+	elif [ "$1" = "WWLLL" ]; then
+		#set external ports PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10002 #port1
+		switch reg w 2214 10001 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 00111111
+		switch vlan set 1 2 11000101
+	elif [ "$1" = "WWWLL" ]; then
+		#set external ports PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10002 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 00011111
+		switch vlan set 1 2 11100101
+	elif [ "$1" = "WLWLL" ]; then
+		#set external ports PVID
+		switch reg w 2014 10002 #port0
+		switch reg w 2114 10001 #port1
+		switch reg w 2214 10002 #port2
+		switch reg w 2314 10001 #port3
+		switch reg w 2414 10001 #port4
+		#set to cpu ports PVID
+		switch reg w 2514 10002 #port5
+		switch reg w 2614 10001 #port6
+		#VLAN member port
+		switch vlan set 0 1 01011111
+		switch vlan set 1 2 10100101
+	fi
+
+	for i in `seq 0 4`; do
+	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
+	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
+	done
+
+	# (de)tag to cpu
+	switch pvid 5 2
+	switch pvid 6 1
+
+	#clear mac table if vlan configuration changed
+	$LOG "Switch configured for $1 mode."
+
+	#clear mac table if vlan configuration changed
+	switch clear
+}
+
+restore7530Esw()
+{
+	echo "restore MT7530 GSW to dump switch mode"
+	for i in `seq 0 6`; do
+	    switch reg w 2${i}04 ff0000		#ports 0-6 matrix mode
+	    switch reg w 2${i}10 810000c0 	#ports 0-6 as transparent mode
+	done
 
 	#clear mac table if vlan configuration changed
 	switch clear
@@ -423,6 +560,40 @@ if [ "$1" = "3" ]; then
 		config7620Esw 12345
 	elif [ "$2" = "VLANS" ]; then
 		config7620Esw VLANS
+	else
+		echo "unknown vlan type $2"
+		echo ""
+		usage $0
+	fi
+elif [ "$1" = "4" ]; then
+	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
+		restore7530Esw
+	elif [ "$2" = "EEEEE" ]; then
+		enableEsw
+	elif [ "$2" = "DDDDD" ]; then
+		disableEsw
+	elif [ "$2" = "RRRRR" ]; then
+		reset_all_phys
+	elif [ "$2" = "WWWWW" ]; then
+		reset_wan_phys
+	elif [ "$2" = "FFFFF" ]; then
+		reinit_all_phys
+	elif [ "$2" = "LLLLW" ]; then
+		config7530Esw LLLLW
+	elif [ "$2" = "LLLWW" ]; then
+		config7530Esw LLLWW
+	elif [ "$2" = "LLWWW" ]; then
+		config7530Esw LLWWW
+	elif [ "$2" = "LLWLW" ]; then
+		config7530Esw LLWWW
+	elif [ "$2" = "WLLLL" ]; then
+		config7530Esw WLLLL
+	elif [ "$2" = "WWLLL" ]; then
+		config7530Esw WWLLL
+	elif [ "$2" = "WWWLL" ]; then
+		config7530Esw WWWLL
+	elif [ "$2" = "WLWLL" ]; then
+		config7530Esw WWWLL
 	else
 		echo "unknown vlan type $2"
 		echo ""

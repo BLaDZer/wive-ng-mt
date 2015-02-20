@@ -23,7 +23,7 @@ get_switch_type() {
 	SWITCH_MODE=3
     elif [ -f /proc/mt7621/gmac ]; then
 	PROC="/proc/mt7621/gmac"
-	SWITCH_MODE=3
+	SWITCH_MODE=4
     else
 	$LOG "No switch in system!!!"
 	PROC=
@@ -81,12 +81,14 @@ set_vlan_portmap() {
 ##############################################################################
 # Internal ESW
 ##############################################################################
-if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
+if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
     $LOG '######### Clear switch partition  ###########'
     /etc/scripts/config-vlan.sh $SWITCH_MODE "LLLLL" > /dev/null 2>&1
     ##########################################################################
-    configs_system_vlans
+    if [ "$CONFIG_RAETH_GMAC2" = "" ]; then
+	configs_system_vlans
+    fi
     ##########################################################################
     # In gate mode and hotspot mode configure vlans
     ##########################################################################
@@ -219,9 +221,7 @@ set_dhcptouch_portnum() {
 ##########################################################################
 get_switch_type
 ##########################################################################
-if [ $CONFIG_RAETH_ESW != "" ] && [ "$CONFIG_RAETH_GMAC2" = "" ]; then
-    set_vlan_portmap
-fi
+set_vlan_portmap
 set_mac_wan_lan
 set_perport_physmode
 set_dhcptouch_portnum
