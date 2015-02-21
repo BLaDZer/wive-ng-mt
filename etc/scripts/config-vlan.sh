@@ -394,13 +394,6 @@ restore7620Esw()
 config7530Esw()
 {
 	# now config support only internal 1000FDX 7530 ESW
-
-	# restore 5-6 ports config
-	switch reg w 2504 300003	#ports 5 as security mode
-        switch reg w 2510 10002		#ports 5 as transparent port
-	switch reg w 2604 4f0003	#ports 6 as security mode
-        switch reg w 2610 810000c0	#ports 6 as transparent port
-
 	if [ "$1" = "LLLLW" ]; then
 		#set external ports PVID
 		switch reg w 2014 10001 #port0
@@ -412,7 +405,7 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 11110011
+		switch vlan set 0 1 11110010
 		switch vlan set 1 2 00001100
 	elif [ "$1" = "LLLWW" ]; then
 		#set external ports PVID
@@ -425,7 +418,7 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 11100011
+		switch vlan set 0 1 11100010
 		switch vlan set 1 2 00011100
 	elif [ "$1" = "LLWWW" ]; then
 		#set external ports PVID
@@ -438,7 +431,7 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 11000011
+		switch vlan set 0 1 11000010
 		switch vlan set 1 2 00111100
 	elif [ "$1" = "LLWLW" ]; then
 		#set external ports PVID
@@ -451,7 +444,7 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 11010011
+		switch vlan set 0 1 11010010
 		switch vlan set 1 2 00101100
 	elif [ "$1" = "WLLLL" ]; then
 		#set external ports PVID
@@ -464,8 +457,8 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 01111111
-		switch vlan set 1 2 10000101
+		switch vlan set 0 1 01111010
+		switch vlan set 1 2 10000100
 	elif [ "$1" = "WWLLL" ]; then
 		#set external ports PVID
 		switch reg w 2014 10002 #port0
@@ -477,8 +470,8 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 00111111
-		switch vlan set 1 2 11000101
+		switch vlan set 0 1 00111010
+		switch vlan set 1 2 11000100
 	elif [ "$1" = "WWWLL" ]; then
 		#set external ports PVID
 		switch reg w 2014 10002 #port0
@@ -490,8 +483,8 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 00011111
-		switch vlan set 1 2 11100101
+		switch vlan set 0 1 00011010
+		switch vlan set 1 2 11100100
 	elif [ "$1" = "WLWLL" ]; then
 		#set external ports PVID
 		switch reg w 2014 10002 #port0
@@ -503,9 +496,14 @@ config7530Esw()
 		switch reg w 2514 10002 #port5
 		switch reg w 2614 10001 #port6
 		#VLAN member port
-		switch vlan set 0 1 01011111
-		switch vlan set 1 2 10100101
+		switch vlan set 0 1 01011010
+		switch vlan set 1 2 10100100
 	fi
+
+	for i in `seq 0 4`; do
+	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
+	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
+	done
 
 	# (de)tag to cpu
 	switch pvid 5 2
