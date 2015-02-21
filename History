@@ -566,35 +566,36 @@
 21) init.d: cheanup and refactor checkconf, remove unneded backup nvram and others.<br>
 22) init.d: rework for support dual phy mode.<br>
 23) init.d: add 7530 switch portmap configure support.<br>
-24) kernel: add mtune options for ralink/mediatek cpus.<br>
-25) kernel: ralink_mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
-26) kernel: ralink_mtd: fix SPI clock for MT7621.<br>
-27) kernel: ralink mtd: add MT7621 NAND driver (based on kernel NAND framework).<br>
-28) kernel: ralink_arch: update MT7621 code.<br>
-29) kernel: ralink_arch: increase PCIe N_FTS for MT7620 too.<br>
-30) kernel: ralink_arch: fix MT7621 performance impact on activate sleep mode (use divider 2 instead of 10).<br>
-31) kernel: ralink arch: fix MT7621 GIC init on MIPS_MT disabled.<br>
-32) kernel: ralink arch: fix detect RAM/OCP on MT7621.<br>
-33) kernel: ralink_wifi: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
-34) kernel: ralink_wifi: update firmware for 76x2 module.<br>
-35) kernel: ralink_wifi: add log connect/disconnect events.<br>
-36) kernel: ralink_wifi: fix build correct without DBG defined.<br>
-37) kernel: ralink_wifi: desintegrate AP_QLOAD and chanbusytime in ap_autoChSel.<br>
-38) kernel: ralink_wifi: remove bogus flag VCORECAL_SUPPORT from MT7612E profile.<br>
-39) kernel: ralink_wifi: MT7612E/MT7602E: disable eFuse by default.<br>
-40) kernel: ralink_wifi: MT7612E/MT7602E: code cleanup and fix warnings.<br>
-41) kernel: ralink_hw_nat: fix offload from MT7612/MT7602/MT7603 apcli/wds, add interfaces hash table.<br>
-42) kernel: ralink_hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
-43) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
-44) kernel: ralink_usb: fix broken MT7621 USB PHY calibration (SDK bug).<br>
-45) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
-46) kernel: ralink_gpio: add usb lid blink at usb transfer.<br>
-47) kernel: ralink_nvram: add options for config dualband mode nvram(one or different offsets).<br>
-48) kernel: huge update NAND framework from upstream.<br>
-49) kernel: exfat: add module alias for fix automount.<br>
-50) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-51) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-52) kernel: sg: fix read() error reporting.<br>
+24) init.d: rework switch part config logic.<br>
+25) kernel: add mtune options for ralink/mediatek cpus.<br>
+26) kernel: ralink_mtd: fix overflow bug in 'ra_mtd_write_nm', add support write to NAND flash, add support write to any partition offset.<br>
+27) kernel: ralink_mtd: fix SPI clock for MT7621.<br>
+28) kernel: ralink mtd: add MT7621 NAND driver (based on kernel NAND framework).<br>
+29) kernel: ralink_arch: update MT7621 code.<br>
+30) kernel: ralink_arch: increase PCIe N_FTS for MT7620 too.<br>
+31) kernel: ralink_arch: fix MT7621 performance impact on activate sleep mode (use divider 2 instead of 10).<br>
+32) kernel: ralink arch: fix MT7621 GIC init on MIPS_MT disabled.<br>
+33) kernel: ralink arch: fix detect RAM/OCP on MT7621.<br>
+34) kernel: ralink_wifi: align and merge OID structure RT_802_11_MAC_TABLE to userspace applications.<br>
+35) kernel: ralink_wifi: update firmware for 76x2 module.<br>
+36) kernel: ralink_wifi: add log connect/disconnect events.<br>
+37) kernel: ralink_wifi: fix build correct without DBG defined.<br>
+38) kernel: ralink_wifi: desintegrate AP_QLOAD and chanbusytime in ap_autoChSel.<br>
+39) kernel: ralink_wifi: remove bogus flag VCORECAL_SUPPORT from MT7612E profile.<br>
+40) kernel: ralink_wifi: MT7612E/MT7602E: disable eFuse by default.<br>
+41) kernel: ralink_wifi: MT7612E/MT7602E: code cleanup and fix warnings.<br>
+42) kernel: ralink_hw_nat: fix offload from MT7612/MT7602/MT7603 apcli/wds, add interfaces hash table.<br>
+43) kernel: ralink_hw_nat: fix broken code with MT7621 HW_VLAN_RX raeth offload, fix PPPoE offload on MT7621/RT3883 with 2xGMAC + VLAN incapsulated.<br>
+44) kernel: ralink_raeth: update MT7621 code & switch control, do not hard-coded disabling EEE by default.<br>
+45) kernel: ralink_usb: fix broken MT7621 USB PHY calibration (SDK bug).<br>
+46) kernel: ralink_sd: MT7620/MT7621/MT7628 SD/MMC driver cleanup, fix unload module with debug enabled.<br>
+47) kernel: ralink_gpio: add usb lid blink at usb transfer.<br>
+48) kernel: ralink_nvram: add options for config dualband mode nvram(one or different offsets).<br>
+49) kernel: huge update NAND framework from upstream.<br>
+50) kernel: exfat: add module alias for fix automount.<br>
+51) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
+52) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+53) kernel: sg: fix read() error reporting.<br>
 <br>
 <br>
 <b>TODO:</b><br>

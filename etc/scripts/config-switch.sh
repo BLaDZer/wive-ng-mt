@@ -35,10 +35,6 @@ doublevlantag() {
 ##########################################################################
 configs_system_vlans() {
     if [ ! -f /tmp/bootgood ]; then
-	$LOG "ROOT_MACADDR $LAN_MAC_ADDR"
-	doublevlantag
-	ifconfig eth2 hw ether "$LAN_MAC_ADDR"
-	ip link set eth2 up
 	# not need wan/lan vlans in modes with all lan ports in one bridge
 	if [ "$OperationMode" != "0" ] && [ "$OperationMode" != "2" ]  && [ "$OperationMode" != "3" ]; then
 	    $LOG "Add vlans interfaces"
@@ -59,18 +55,48 @@ configs_system_vlans() {
     fi
 }
 
-set_vlan_portmap() {
+##########################################################################
+# Call this function for set HW_ADDR to interfaces
+##########################################################################
+set_mac_wan_lan() {
+    # set MAC adresses LAN for phys iface (always set for physycal external switch one or dual phy mode)
+    # set MAC adresses LAN/WAN if not bridge and not ethernet converter modes
+    # in gw/hotspot modes set mac to wan (always set for physycal external dual phy mode swicth)
+    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+	# LAN mac config
+	$LOG "$phys_lan_if MACADDR $LAN_MAC_ADDR"
+	ifconfig "$phys_lan_if" down
+	ifconfig "$phys_lan_if" hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelen" up
+	# WAN mac config
+	$LOG "$phys_wan_if MACADDR $WAN_MAC_ADDR"
+	ifconfig "$phys_wan_if" down
+	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelen" up
+    fi
+}
+
+set_portmap() {
 ##############################################################################
 # Internal ESW
 ##############################################################################
 if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
-    $LOG '######### Clear switch partition  ###########'
-    /etc/scripts/config-vlan.sh $SWITCH_MODE "LLLLL" > /dev/null 2>&1
+    doublevlantag
+    ##########################################################################
+    # add mac to root interface if vlan part used
     ##########################################################################
     if [ "$CONFIG_RAETH_GMAC2" = "" ]; then
+	$LOG "ROOT_MACADDR $LAN_MAC_ADDR"
+	ifconfig eth2 hw ether "$LAN_MAC_ADDR"
+	ip link set eth2 up
 	configs_system_vlans
     fi
+    ##########################################################################
+    # after add vlans set hwaddr per new ifaces
+    ##########################################################################
+    set_mac_wan_lan
+    ##########################################################################
+    $LOG '######### Clear switch partition  ###########'
+    /etc/scripts/config-vlan.sh $SWITCH_MODE "LLLLL" > /dev/null 2>&1
     ##########################################################################
     # In gate mode and hotspot mode configure vlans
     ##########################################################################
@@ -115,24 +141,6 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
 fi
 }
 
-##########################################################################
-# Call this function for set HW_ADDR to interfaces
-##########################################################################
-set_mac_wan_lan() {
-    # set MAC adresses LAN for phys iface (always set for physycal external switch one or dual phy mode)
-    # set MAC adresses LAN/WAN if not bridge and not ethernet converter modes
-    # in gw/hotspot modes set mac to wan (always set for physycal external dual phy mode swicth)
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
-	# LAN mac config
-	$LOG "$phys_lan_if MACADDR $LAN_MAC_ADDR"
-	ifconfig "$phys_lan_if" down
-	ifconfig "$phys_lan_if" hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelen" up
-	# WAN mac config
-	$LOG "$phys_wan_if MACADDR $WAN_MAC_ADDR"
-	ifconfig "$phys_wan_if" down
-	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelen" up
-    fi
-}
 
 ##########################################################################
 # Set speed and duplex modes per port
@@ -203,8 +211,7 @@ set_dhcptouch_portnum() {
 ##########################################################################
 get_switch_type
 ##########################################################################
-set_vlan_portmap
-set_mac_wan_lan
+set_portmap
 set_perport_physmode
 set_dhcptouch_portnum
 ##########################################################################
