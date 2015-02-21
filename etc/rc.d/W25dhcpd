@@ -112,7 +112,7 @@ start() {
     if [ "$dnsPEnabled" = "0" -a "$wan_static_dns" != "on" ] || [ "$dhcpEnabled" = "2" ]; then
 	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
 		$LOG "Reinit LAN ports."
-		config-vlan.sh $SWITCH_MODE RRRRR > /dev/null 2>&1
+		config-vlan.sh $SWITCH_MODE RRRRR
 	    fi
     fi
 

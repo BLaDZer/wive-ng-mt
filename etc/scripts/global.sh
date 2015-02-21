@@ -296,6 +296,9 @@ get_switch_type() {
     if [ -f /proc/mt7620/gmac ]; then
 	PROC="/proc/mt7620/gmac"
 	SWITCH_MODE=3
+    elif [ -f /proc/mt7628/gmac ]; then
+	PROC="/proc/mt7628/gmac"
+	SWITCH_MODE=3
     elif [ -f /proc/mt7621/gmac ]; then
 	PROC="/proc/mt7621/gmac"
 	SWITCH_MODE=4

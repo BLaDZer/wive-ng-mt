@@ -82,7 +82,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
     ##########################################################################
     if [ "$CMODE" != "LLLLL" ]; then
 	$LOG '######### Clear switch partition  ###########'
-	config-vlan.sh $SWITCH_MODE LLLLL > /dev/null 2>&1
+	config-vlan.sh $SWITCH_MODE LLLLL
     fi
     ##########################################################################
     doublevlantag
@@ -103,7 +103,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
     # configure switch parts depended by operation mode
     ##########################################################################
     $LOG "##### Config switch partition $SWITCH_MODE $CMODE #####"
-    config-vlan.sh $SWITCH_MODE $CMODE > /dev/null 2>&1
+    config-vlan.sh $SWITCH_MODE $CMODE
 fi
 }
 

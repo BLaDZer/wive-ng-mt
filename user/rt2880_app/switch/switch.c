@@ -10,16 +10,36 @@
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
 
+//#define DEBUG
+
 #define RT_SWITCH_HELP		1
 #define RT_TABLE_MANIPULATE	1
 
-#if defined (CONFIG_RALINK_MT7620)
+#if defined (CONFIG_RALINK_MT7620) && !defined (CONFIG_MT7530_GSW)
 #define MAX_PORT		7
 #else
 #define MAX_PORT		6
 #endif
 
-int esw_fd;
+#define REG_ESW_WT_MAC_MFC	0x10
+#define REG_ESW_WT_MAC_ATA1	0x74
+#define REG_ESW_WT_MAC_ATA2	0x78
+#define REG_ESW_WT_MAC_ATWD	0x7C
+#define REG_ESW_WT_MAC_ATC	0x80
+
+#define REG_ESW_TABLE_TSRA1	0x84
+#define REG_ESW_TABLE_TSRA2	0x88
+#define REG_ESW_TABLE_ATRD	0x8C
+
+#define REG_ESW_VLAN_VTCR	0x90
+#define REG_ESW_VLAN_VAWD1	0x94
+#define REG_ESW_VLAN_VAWD2	0x98
+
+#if !defined (CONFIG_MT7530_GSW)
+#define REG_ESW_VLAN_ID_BASE	0x100
+#endif
+
+int esw_fd = -1;
 
 void switch_init(void)
 {
@@ -56,8 +76,8 @@ void usage(char *cmd)
 	printf(" %s dip dump                                 - dump switch dip table\n", cmd);
 	printf(" %s dip clear                                - clear switch dip table\n", cmd);
 	printf(" %s dump		- dump switch table\n", cmd);
-	printf(" %s ingress-rate on [port] [Kbps]        - set ingress rate limit on port 0~4 \n", cmd);
-	printf(" %s egress-rate on [port] [Kbps]         - set egress rate limit on port 0~4 \n", cmd);
+	printf(" %s ingress-rate on [port] [Mbps]        - set ingress rate limit on port 0~4 \n", cmd);
+	printf(" %s egress-rate on [port] [Mbps]         - set egress rate limit on port 0~4 \n", cmd);
 	printf(" %s ingress-rate off [port]              - del ingress rate limit on port 0~4 \n", cmd);
 	printf(" %s egress-rate off [port]               - del egress rate limit on port 0~4\n", cmd);
 	printf(" %s filt [mac]                           - add a SA filtering entry (with portmap 1111111) to switch table\n", cmd);
@@ -83,7 +103,7 @@ void usage(char *cmd)
 	printf(" %s tag on [port]                        - keep vlan tag for egress packet on prot 0~4\n", cmd); 
 	printf(" %s tag off [port]                       - remove vlan tag for egress packet on port 0~4\n", cmd);
 	printf(" %s vlan dump                            - dump switch table\n", cmd);
-#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 	printf(" %s vlan set [vlan idx (NULL)][vid] [portmap]  - set vlan id and associated member\n", cmd);
 #else
 	printf(" %s vlan set [vlan idx] [vid] [portmap]  - set vlan id and associated member\n", cmd);
@@ -93,7 +113,7 @@ void usage(char *cmd)
 	exit(0);
 }
 
-#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 int reg_read(int offset, int *value)
 {
 	struct ifreq ifr;
@@ -225,7 +245,37 @@ int egress_rate_set(int on_off, int port, int bw)
 	return 0;
 }
 
+static void wait_vtcr(void)
+{
+	unsigned int i, value = 0;
+
+	for (i = 0; i < 20; i++) {
+		reg_read(REG_ESW_VLAN_VTCR, &value);
+		if ((value & 0x80000000) == 0) //table busy
+			return;
+		usleep(1000);
+	}
+#ifdef DEBUG
+	printf("timeout.\n");
+#endif
+}
+
 #if RT_TABLE_MANIPULATE
+static void wait_mac_atc(void)
+{
+	unsigned int i, value = 0;
+
+	for (i = 0; i < 20; i++) {
+		reg_read(REG_ESW_WT_MAC_ATC, &value);
+		if ((value & 0x8000) == 0) //mac address busy
+			return;
+		usleep(1000);
+	}
+#ifdef DEBUG
+	printf("timeout.\n");
+#endif
+}
+
 int
 getnext (
 	char *	src,
@@ -305,8 +355,9 @@ void acl_dip_meter(int argc, char *argv[])
 
 	if (!argv[5] || strlen(argv[5]) != 8) {
 		printf("portmap format error, should be of length 7\n");
-			return;
+		return;
 	}
+
 	j = 0;
 	for (i = 0; i < 7; i++) {
 		if (argv[5][i] != '0' && argv[5][i] != '1') {
@@ -316,98 +367,64 @@ void acl_dip_meter(int argc, char *argv[])
 		j += (argv[5][i] - '0') * (1 << i);
 	}
 
-
 	str_to_ip(&ip_value, argv[4]);
 	//set pattern
 	value = (ip_value >> 16);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x8 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = (ip_value &0xffff);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x9 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 1);  //w_acl entry 1
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x3; //bit0,1
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control mask  0
 	//value = (0x80009000 + 1);  //w_acl control mask  1
 
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set action
         meter = strtoul(argv[6], NULL, 0);
@@ -415,28 +432,19 @@ void acl_dip_meter(int argc, char *argv[])
 	value |= 0x1 << 15; //enable rate control
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //reserved
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
-
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000d000 + 0);  //w_acl rate control 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 }
+
 
 void acl_dip_trtcm(int argc, char *argv[])
 {
@@ -468,62 +476,40 @@ void acl_dip_trtcm(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x8 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = (ip_value &0xffff);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x9 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 1);  //w_acl entry 1
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set CBS PBS
         CIR = strtoul(argv[6], NULL, 0);
@@ -535,7 +521,7 @@ void acl_dip_trtcm(int argc, char *argv[])
 	value |= PBS; //bit0~15
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	CIR = CIR >> 6;
 	PIR = PIR >> 6;
@@ -543,79 +529,48 @@ void acl_dip_trtcm(int argc, char *argv[])
 	value = CIR << 16; //bit16~31
 	value |= PIR; //bit0~15
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80007000 + 0);  //w_acl trtcm  #0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x3; //bit0,1
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control mask  0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set action
 	value = 0x0; //No drop
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0x1 << (11+1); //TrTCM green  meter#0 Low drop
 	value |= 0x2 << (8+1); //TrTCM yellow  meter#0 Med drop
 	value |= 0x3 << (5+1); //TrTCM red  meter#0    Hig drop
 	value |= 0x1 << 0; //TrTCM drop pcd select
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
-
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule control 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 }
 
 void acl_ethertype(int argc, char *argv[])
@@ -647,42 +602,30 @@ void acl_ethertype(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x0 << 16; //mac header
 	value |= 0x6 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x1; //bit0
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control rule  0
 	//value = (0x80009000 + 7);  //w_acl control rule 7
@@ -690,18 +633,9 @@ void acl_ethertype(int argc, char *argv[])
 	//value = (0x80009000 + 16);  //w_acl control rule 16
 	//value = (0x80009000 + 31);  //w_acl control rule 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set action
 	value = 0x0; //default. Nodrop
@@ -710,11 +644,11 @@ void acl_ethertype(int argc, char *argv[])
 	value |= 6 << 4;//acl UP
 	value |= 6 << 16;//eg-tag tagged
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule action control 0
 	//value = (0x8000b000 + 7);  //w_acl rule action control 7
@@ -722,18 +656,9 @@ void acl_ethertype(int argc, char *argv[])
 	//value = (0x8000b000 + 16);  //w_acl rule action control 16
 	//value = (0x8000b000 + 31);  //w_acl rule action control 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 }
 
 void acl_dip_modify(int argc, char *argv[])
@@ -764,73 +689,50 @@ void acl_dip_modify(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x8 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = (ip_value &0xffff);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x9 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 1);  //w_acl entry 1
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x3; //bit0,1
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control rule  0
 	//value = (0x80009000 + 7);  //w_acl control rule 7
@@ -838,19 +740,9 @@ void acl_dip_modify(int argc, char *argv[])
 	//value = (0x80009000 + 16);  //w_acl control rule 16
 	//value = (0x80009000 + 31);  //w_acl control rule 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set action
 	value = 0x0; //default. Nodrop
@@ -859,11 +751,11 @@ void acl_dip_modify(int argc, char *argv[])
 	value |= 6 << 4;//acl UP
 	value |= 6 << 16;//eg-tag tagged
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule action control 0
 	//value = (0x8000b000 + 7);  //w_acl rule action control 7
@@ -871,18 +763,9 @@ void acl_dip_modify(int argc, char *argv[])
 	//value = (0x8000b000 + 16);  //w_acl rule action control 16
 	//value = (0x8000b000 + 31);  //w_acl rule action control 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 }
 
 void acl_dip_pppoe(int argc, char *argv[])
@@ -914,73 +797,50 @@ void acl_dip_pppoe(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x8 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = (ip_value &0xffff);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x9 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 1);  //w_acl entry 1
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x3; //bit0,1
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	//value = (0x80009000 + 0);  //w_acl control rule  0
 	value = (0x80009000 + 7);  //w_acl control rule 7
@@ -988,18 +848,9 @@ void acl_dip_pppoe(int argc, char *argv[])
 	//value = (0x80009000 + 16);  //w_acl control rule 16
 	//value = (0x80009000 + 31);  //w_acl control rule 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set action
 	value = 0x0; //default. Nodrop
@@ -1010,11 +861,11 @@ void acl_dip_pppoe(int argc, char *argv[])
 	value |= 1 << 22;//DA MAC SWAP
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	//value = (0x8000b000 + 0);  //w_acl rule action control 0
 	value = (0x8000b000 + 7);  //w_acl rule action control 7
@@ -1022,19 +873,9 @@ void acl_dip_pppoe(int argc, char *argv[])
 	//value = (0x8000b000 + 16);  //w_acl rule action control 16
 	//value = (0x8000b000 + 31);  //w_acl rule action control 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 }
 
 void acl_dip_add(int argc, char *argv[])
@@ -1066,73 +907,50 @@ void acl_dip_add(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x8 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = (ip_value &0xffff);
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x2 << 16; //ip header
 	value |= 0x9 << 1; //word offset
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 1);  //w_acl entry 1
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set pattern
 	value = 0x3; //bit0,1
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control rule  0
 	//value = (0x80009000 + 2);  //w_acl control rule 2
@@ -1140,19 +958,9 @@ void acl_dip_add(int argc, char *argv[])
 	//value = (0x80009000 + 16);  //w_acl control rule 16
 	//value = (0x80009000 + 31);  //w_acl control rule 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set action
 	//value = 0x0; //default
@@ -1161,12 +969,11 @@ void acl_dip_add(int argc, char *argv[])
 	value |= 1 << 27;//acl hit count
 	value |= 2 << 24;//acl hit count group index (0~3)
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
-
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule action control 0
 	//value = (0x8000b000 + 2);  //w_acl rule action control 2
@@ -1174,18 +981,9 @@ void acl_dip_add(int argc, char *argv[])
 	//value = (0x8000b000 + 16);  //w_acl rule action control 16
 	//value = (0x8000b000 + 31);  //w_acl rule action control 31
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 }
 
@@ -1216,85 +1014,54 @@ void acl_l4_add(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x5 << 16; //L4 payload
 	value |= 0x0 << 1; //word offset 0 = tcp src port
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set rue mask
 	value = 0x1; //bit0
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control mask  0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set action
 	value = 0x7; //drop
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
-
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule control 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 }
+
 
 void acl_sp_add(int argc, char *argv[])
 {
@@ -1323,96 +1090,59 @@ void acl_sp_add(int argc, char *argv[])
 	value |= 0xffff0000;//compare mask
 
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = j << 8; //w_port_map
 	value |= 0x1 << 19; //enable
 	value |= 0x4 << 16; //L4 header
 	value |= 0x0 << 1; //word offset 0 = tcp src port
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80005000 + 0);  //w_acl entry 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_vtcr();
 
 	//set rue mask
 	value = 0x1; //bit0
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x80009000 + 0);  //w_acl control mask  0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
-
+	wait_vtcr();
 
 	//set action
 	value = 0x7; //drop
 	//value |= 1;//valid
 	reg_write(REG_ESW_VLAN_VAWD1, value);
-	printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD1 value is 0x%x\n\r", value);
 
 	value = 0; //bit32~63
 	reg_write(REG_ESW_VLAN_VAWD2, value);
-	printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
+	//printf("REG_ESW_VLAN_VAWD2 value is 0x%x\n\r", value);
 
 	value = (0x8000b000 + 0);  //w_acl rule control 0
 	reg_write(REG_ESW_VLAN_VTCR, value);
+	//printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
 
-	printf("REG_ESW_VLAN_VTCR value is 0x%x\n\r\n\r", value);
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-		usleep(1000);
+	wait_vtcr();
 	}
-	if (i == 20)
-		printf("timeout.\n");
 
-}
 
 void dip_dump(void)
 {
     int i, j, value, mac, mac2, value2;
-    int vid[16];
     char tmpstr[16];
-	for (i = 0; i < 8; i++) {
-		reg_read(REG_ESW_VLAN_ID_BASE + 4*i, &value);
-		vid[2 * i] = value & 0xfff;
-		vid[2 * i + 1] = (value & 0xfff000) >> 12;
-	}
 
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8104);//dip search command
 	printf("hash   port(0:6)   rsp_cnt  flag  timer    dip-address       ATRD\n");
@@ -1468,13 +1198,9 @@ void dip_add(int argc, char *argv[])
 	str_to_ip(&value, argv[3]);
 
 	reg_write(REG_ESW_WT_MAC_ATA1, value);
-	printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
 
 	value = 0;
-#if 0
-	reg_write(REG_ESW_WT_MAC_ATA2, value);
-	printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
-#endif
 	if (!argv[4] || strlen(argv[4]) != 8) {
 			printf("portmap format error, should be of length 7\n");
 			return;
@@ -1495,28 +1221,20 @@ void dip_add(int argc, char *argv[])
 
 	usleep(5000);
 	reg_read(REG_ESW_WT_MAC_ATWD, &value);
-	printf("REG_ESW_WT_MAC_ATWD is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATWD is 0x%x\n\r",value);
 
         value = 0x8011;  //single w_dip_cmd
 	reg_write(REG_ESW_WT_MAC_ATC, value);
 
 	usleep(1000);
 
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
+
 
 void dip_del(int argc, char *argv[])
 {
-	unsigned int i, value;
+	unsigned int value;
 
 	str_to_ip(&value, argv[3]);
 
@@ -1531,24 +1249,14 @@ void dip_del(int argc, char *argv[])
         value = 0x8011;  //w_dip_cmd
 	reg_write(REG_ESW_WT_MAC_ATC, value);
 
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			if (argv[1] != NULL)
-				printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
+
 
 void dip_clear(void)
 {
-
 	int value;
+
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8102);//clear all dip
 	usleep(5000);
 	reg_read(REG_ESW_WT_MAC_ATC, &value);
@@ -1559,13 +1267,7 @@ void dip_clear(void)
 void sip_dump(void)
 {
     int i, j, value, mac, mac2, value2;
-    int vid[16];
     char tmpstr[16];
-	for (i = 0; i < 8; i++) {
-		reg_read(REG_ESW_VLAN_ID_BASE + 4*i, &value);
-		vid[2 * i] = value & 0xfff;
-		vid[2 * i + 1] = (value & 0xfff000) >> 12;
-	}
 
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8204);//sip search command
 	printf("hash  port(0:6)   dip-address    sip-address      ATRD\n");
@@ -1620,13 +1322,13 @@ void sip_add(int argc, char *argv[])
 	str_to_ip(&value, argv[3]);//SIP
 
 	reg_write(REG_ESW_WT_MAC_ATA2, value);
-	printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
 
 	value = 0;
 
 	str_to_ip(&value, argv[4]);//DIP
 	reg_write(REG_ESW_WT_MAC_ATA1, value);
-	printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
 
 	if (!argv[5] || strlen(argv[5]) != 8) {
 			printf("portmap format error, should be of length 7\n");
@@ -1655,21 +1357,12 @@ void sip_add(int argc, char *argv[])
 
 	usleep(1000);
 
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
 
 void sip_del(int argc, char *argv[])
 {
-	unsigned int i, value;
+	unsigned int value;
 
 	str_to_ip(&value, argv[3]);
 
@@ -1684,17 +1377,7 @@ void sip_del(int argc, char *argv[])
         value = 0x8021;  //w_sip_cmd
 	reg_write(REG_ESW_WT_MAC_ATC, value);
 
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			if (argv[1] != NULL)
-				printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
 
 void sip_clear(void)
@@ -1711,13 +1394,6 @@ void sip_clear(void)
 void table_dump(void)
 {
 	int i, j, value, mac, mac2, value2;
-	int vid[16];
-
-	for (i = 0; i < 8; i++) {
-		reg_read(REG_ESW_VLAN_ID_BASE + 4*i, &value);
-		vid[2 * i] = value & 0xfff;
-		vid[2 * i + 1] = (value & 0xfff000) >> 12;
-	}
 
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8004);
 #if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621)
@@ -1788,7 +1464,7 @@ void table_add(int argc, char *argv[])
 	tmpstr[8] = '\0';
 	value = strtoul(tmpstr, NULL, 16);
 	reg_write(REG_ESW_WT_MAC_ATA1, value);
-	printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
 
 	strncpy(tmpstr, argv[2]+8, 4);
 	tmpstr[4] = '\0';
@@ -1799,7 +1475,7 @@ void table_add(int argc, char *argv[])
 
 	if (argc > 4) {
 		j = strtoul(argv[4], NULL, 0);
-		if ( 4095 < j) {
+		if (j < 0 || 4095 < j) {
 			printf("wrong vid range, should be within 0~4095\n");
 			return;
 		}
@@ -1807,7 +1483,7 @@ void table_add(int argc, char *argv[])
 	}
 
 	reg_write(REG_ESW_WT_MAC_ATA2, value);
-	printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
 
 	if (!argv[3] || strlen(argv[3]) != 8) {
 		if (is_filter)
@@ -1846,7 +1522,7 @@ void table_add(int argc, char *argv[])
 
 	if (argc > 6) {
 		j = strtoul(argv[6], NULL, 0);
-		if ( 7 < j) {
+		if (j < 0 || 7 < j) {
 			printf("wrong eg-tag range, should be within 0~7\n");
 			return;
 		}
@@ -1873,21 +1549,12 @@ void table_add(int argc, char *argv[])
 
 	usleep(1000);
 
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
 
 void table_del(int argc, char *argv[])
 {
-	int i, j, value;
+	int j, value;
 	char tmpstr[9];
 
 	if (!argv[2] || strlen(argv[2]) != 12) {
@@ -1924,20 +1591,9 @@ void table_del(int argc, char *argv[])
         value = 0x8001;  //w_mac_cmd
 	reg_write(REG_ESW_WT_MAC_ATC, value);
 
-
-
-	for (i = 0; i < 20; i++) {
-		reg_read(REG_ESW_WT_MAC_ATC, &value);
-		if ((value & 0x8000) == 0 ){ //mac address busy
-			if (argv[1] != NULL)
-				printf("done.\n");
-			return;
-		}
-		usleep(1000);
-	}
-	if (i == 20)
-		printf("timeout.\n");
+	wait_mac_atc();
 }
+
 
 void table_clear(void)
 {
@@ -1963,12 +1619,12 @@ void set_mirror_to(int argc, char *argv[])
 		return;
 	}
 
-	reg_read(REG_ESW_MFC, &value);
+	reg_read(REG_ESW_WT_MAC_MFC, &value);
 	value |= 0x1 << 3;
 	value &= 0xfffffff8;
 	value |= idx << 0;
 
-	reg_write(REG_ESW_MFC, value);
+	reg_write(REG_ESW_WT_MAC_MFC, value);
 }
 
 void set_mirror_from(int argc, char *argv[])
@@ -2003,10 +1659,10 @@ void set_mirror_from(int argc, char *argv[])
 
 }
 
-#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 void vlan_dump(void)
 {
-	int i, j, value, value2;
+	int i, value, value2;
 
 	printf("  vid  fid  portmap    s-tag\n");
 	for (i = 1; i < 4095; i++) {
@@ -2016,16 +1672,7 @@ void vlan_dump(void)
 		value = (0x80000000 + i);  //r_vid_cmd
 		reg_write(REG_ESW_VLAN_VTCR, value);
 
-		for (j = 0; j < 20; j++) {
-			reg_read(REG_ESW_VLAN_VTCR, &value);
-			if ((value & 0x80000000) == 0 ){ //mac address busy
-				break;
-			}
-			usleep(1000);
-		}
-		if (j == 20)
-			printf("timeout.\n");
-
+		wait_vtcr();
 
 		reg_read(REG_ESW_VLAN_VAWD1, &value);
 		reg_read(REG_ESW_VLAN_VAWD2, &value2);
@@ -2068,16 +1715,7 @@ void vlan_dump(void)
 		value = (0x80000000 + 2*i);  //r_vid_cmd
 		reg_write(REG_ESW_VLAN_VTCR, value);
 
-	for (j = 0; j < 20; j++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //mac address busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (j == 20)
-		printf("timeout.\n");
-
+		wait_vtcr();
 
 		reg_read(REG_ESW_VLAN_VAWD1, &value);
 		reg_read(REG_ESW_VLAN_VAWD2, &value2);
@@ -2103,16 +1741,8 @@ void vlan_dump(void)
 
 		value = (0x80000000 + 2*i +1);  //r_vid_cmd
 		reg_write(REG_ESW_VLAN_VTCR, value);
-	for (j = 0; j < 20; j++) {
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //mac address busy
-			break;
-		}
-		usleep(1000);
-	}
-	if (j == 20)
-		printf("timeout.\n");
 
+		wait_vtcr();
 
 		reg_read(REG_ESW_VLAN_VAWD1, &value);
 		reg_read(REG_ESW_VLAN_VAWD2, &value2);
@@ -2142,7 +1772,7 @@ void vlan_dump(void)
 #endif
 #endif
 
-#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 void vlan_set(int argc, char *argv[])
 {
 	unsigned int i, j, value, value2;
@@ -2200,20 +1830,10 @@ void vlan_set(int argc, char *argv[])
 	}
 	reg_write(REG_ESW_VLAN_VAWD1, value);
 
-	//value = (0x80001000 + idx);  //w_vid_cmd
 	value = (0x80001000 + vid);  //w_vid_cmd
 	reg_write(REG_ESW_VLAN_VTCR, value);
 
-	for (j = 0; j < 300; j++) {
-		usleep(1000);
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-	}
-
-	if (j == 300)
-		printf("config vlan timeout.\n");
+	wait_vtcr();
 }
 #else
 void vlan_set(int argc, char *argv[])
@@ -2239,7 +1859,7 @@ void vlan_set(int argc, char *argv[])
 		return;
 	}
 	if (strlen(argv[5]) != 8) {
-		printf("portmap format error, should be of length 7\n");
+		printf("portmap format error, should be of length 8\n");
 		return;
 	}
 	j = 0;
@@ -2292,17 +1912,7 @@ void vlan_set(int argc, char *argv[])
 	value = (0x80001000 + idx);  //w_vid_cmd
 	reg_write(REG_ESW_VLAN_VTCR, value);
 
-
-	for (j = 0; j < 300; j++) {
-		usleep(1000);
-		reg_read(REG_ESW_VLAN_VTCR, &value);
-		if ((value & 0x80000000) == 0 ){ //table busy
-			break;
-		}
-	}
-
-	if (j == 300)
-		printf("config vlan timeout.\n");
+	wait_vtcr();
 }
 #endif
 
@@ -2520,7 +2130,7 @@ int main(int argc, char *argv[])
 #if RT_TABLE_MANIPULATE
 		if (!strncmp(argv[2], "dump", 5))
 			vlan_dump();
-		else 
+		else
 #endif
 		    if (!strncmp(argv[2], "set", 4))
 			vlan_set(argc, argv);
@@ -2541,7 +2151,9 @@ int main(int argc, char *argv[])
 				usage(argv[0]);
 			off = strtoul(argv[3], NULL, 16);
 			val = strtoul(argv[4], NULL, 16);
+#ifdef DEBUG
 			printf("switch reg write offset=%x, value=%x\n", off, val);
+#endif
 			reg_write(off, val);
 		}
 		else
@@ -2554,14 +2166,18 @@ int main(int argc, char *argv[])
 			port = strtoul(argv[3], NULL, 0);
 			bw = strtoul(argv[4], NULL, 0);
 			ingress_rate_set(1, port, bw);
+#ifdef DEBUG
 			printf("switch port=%d, bw=%d\n", port, bw);
+#endif
 		}
 		else if (argv[2][1] == 'f') {
 			if (argc != 4)
 				usage(argv[0]);
 			port = strtoul(argv[3], NULL, 0);
 			ingress_rate_set(0, port, bw);
+#ifdef DEBUG
 			printf("switch port=%d ingress rate limit off\n", port);
+#endif
 		}
 		else
 			usage(argv[0]);
@@ -2573,14 +2189,18 @@ int main(int argc, char *argv[])
 			port = strtoul(argv[3], NULL, 0);
 			bw = strtoul(argv[4], NULL, 0);
 			egress_rate_set(1, port, bw);
+#ifdef DEBUG
 			printf("switch port=%d, bw=%d\n", port, bw);
+#endif
 		}
 		else if (argv[2][1] == 'f') {
 			if (argc != 4)
 				usage(argv[0]);
 			port = strtoul(argv[3], NULL, 0);
 			egress_rate_set(0, port, bw);
+#ifdef DEBUG
 			printf("switch port=%d egress rate limit off\n", port);
+#endif
 		}
 		else
 			usage(argv[0]);
@@ -2594,12 +2214,16 @@ int main(int argc, char *argv[])
 		if (argv[2][1] == 'n') {
 			value |= 0x20000000;
 			reg_write(offset, value);
+#ifdef DEBUG
 			printf("tag vid at port %d\n", port);
+#endif
 		}
 		else if (argv[2][1] == 'f') {
 			value &= 0xc0ffffff;
 			reg_write(offset, value);
+#ifdef DEBUG
 			printf("untag vid at port %d\n", port);
+#endif
 		}
 		else
 			usage(argv[0]);
@@ -2614,7 +2238,9 @@ int main(int argc, char *argv[])
                 value &= 0xfffff000;
 		value |= pvid;
 		reg_write(offset, value);
+#ifdef DEBUG
 		printf("Set port %d pvid %d.\n", port, pvid);
+#endif
 	}
 	else if (!strncmp(argv[1], "igmpsnoop", 10)) {
 		if (argc < 3)
