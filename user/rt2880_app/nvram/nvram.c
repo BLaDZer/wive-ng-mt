@@ -159,25 +159,27 @@ static int isMacValid(char *str)
 static int nvram_load_default(void)
 {
 	/* default macs is OK */
-	int mac_ok=1;
+	int mac_ok = 1;
+        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC;
 
-	printf("Store MACS...\n");
-	char *WLAN2_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN2_MAC_ADDR");
-	char *WLAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN_MAC_ADDR");
-        char *WAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
-        char *LAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
-        char *CHECKMAC		= nvram_get(RT2860_NVRAM, "CHECKMAC");
+	printf("Store MAC adresses\n");
+	WLAN2_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN2_MAC_ADDR");
+	WLAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN_MAC_ADDR");
+        WAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
+        LAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
+        CHECKMAC	= nvram_get(RT2860_NVRAM, "CHECKMAC");
 
-	printf("Clear nvram...\n");
+	printf("Clear nvram.\n");
 	nvram_clear(RT2860_NVRAM);
-	printf("Load defaults nvram...\n");
+	printf("Load defaults nvram.\n");
 	nvram_renew(RT2860_NVRAM, "/etc/default/nvram_default");
 
 	/* reinit nvram before commit */
-	if (nvram_init(RT2860_NVRAM) == -1)
+	if (nvram_init(RT2860_NVRAM) == -1) {
+		printf("nvram_load_default: init error!.\n");
 		return -1;
+	}
 
-	printf("Restore old macs...\n");
 	if ((strlen(WLAN2_MAC_ADDR) > 0) && isMacValid(WLAN2_MAC_ADDR))
 	    nvram_bufset(RT2860_NVRAM, "WLAN2_MAC_ADDR", WLAN2_MAC_ADDR);
 	else
@@ -197,10 +199,10 @@ static int nvram_load_default(void)
 
 	/* all restore ok ? */
 	if (mac_ok == 1) {
-	    printf("Restore checkmac atribute.\n");
+	    printf("MAC adresses restored OK, restore checkmac flag.\n");
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", CHECKMAC);
 	} else {
-	    printf("Set checkmac atribute.\n");
+	    printf("MAC adresses not correct, set checkmac flag to yes and generate new.\n");
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", "YES");
 	}
 
@@ -227,9 +229,9 @@ static int gen_wifi_config(int getmode)
 		system("mkdir -p /etc/Wireless/iNIC");
 		fp = fopen("/etc/Wireless/iNIC/iNIC_ap.dat", "w+");
 		/* after select file for write back to native 2860 mode */
-		inic = 1;
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		/* use one source offset */
+		inic = 1;
 		mode = RT2860_NVRAM;
 #endif
 		printf("Build config for second WiFi module.\n");

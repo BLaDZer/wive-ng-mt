@@ -89,7 +89,7 @@ nvramreset() {
     ###############################################################
     # cleanup with skip clean macs and is_wive and checkmacs flags
     ###############################################################
-    echo "Load user defaults."
+    echo "Clear nvram and load user defaults."
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
@@ -115,6 +115,8 @@ burnrf() {
 
 fullreset() {
     echo "Stop services and unload modules..."
+    killall -q goahead
+    killall -q -SIGKILL goahead
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
@@ -122,20 +124,14 @@ fullreset() {
 	    gpio l $i 1 1 0 0 1000
 	done
     fi
-    killall -q goahead
-    killall -q -SIGKILL goahead
     wifi_unload.sh
-    rm -f /tmp/nvram_checked
-    rm -f /tmp/bootgood
-    burnrf
-    nvramreset
-    echo "Generate new MACS."
-    service checkconf genmac
-    echo "Erase RW-FS partitions"
-    mtd_write erase RW-FS
-    echo "Set boot flag to regenerate all."
-    nvram_set 2860 CHECKMAC "YES"
-    nvram_set 2860 IS_WIVE "NO"
+    echo "Set boot flag to regenerate all at next boot."
+    nvram_set 2860 WLAN2_MAC_ADDR	"DEAD"
+    nvram_set 2860 WLAN_MAC_ADDR	"DEAD"
+    nvram_set 2860 WAN_MAC_ADDR		"DEAD"
+    nvram_set 2860 LAN_MAC_ADDR		"DEAD"
+    nvram_set 2860 CHECKMAC		"YES"
+    nvram_set 2860 IS_WIVE		"NO"
     echo "Now reboot..."
     reboot
 }
@@ -153,7 +149,6 @@ change_mac() {
     FWMAC=`echo $1 | sed "s/:/ /g"`
     eth_mac w wan $FWMAC
     nvram_set 2860 WAN_MAC_ADDR "$1"
-    sync
     echo "Now reboot"
     reboot
 }

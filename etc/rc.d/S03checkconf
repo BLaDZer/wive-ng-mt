@@ -16,9 +16,10 @@ start() {
 
     if [ "$IS_WIVE" != "YES" ]; then
 	$LOG ">>>> FIRST BOOT OR NVRAM TRUNCLATED <<<<"
-	$LOG "Burn RF template to flash"
+	###############################################
+	# write RF calib, clear and load nvram defaults
+	###############################################
 	fs burnrf
-	$LOG "Clear and load defaults to nvram."
     	fs nvramreset
 	###############################################
 	# reread parametrs and set needed falgs

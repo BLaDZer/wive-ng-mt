@@ -189,7 +189,6 @@ static int mtd_erase(const char *mtd)
 		/*
 		 * Post-Erase Check
 		 */
-		sync();
 		if(read(fd, test_buf, mtdEraseInfo.length) != mtdEraseInfo.length){
 				fprintf(stderr, "Failed to erase block, read() failed\n");
 				close(fd);
@@ -211,6 +210,7 @@ static int mtd_erase(const char *mtd)
 
 	free(test_buf);
 	close(fd);
+	sync();
 	return 0;
 }
 
