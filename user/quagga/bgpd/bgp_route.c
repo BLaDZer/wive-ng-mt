@@ -480,7 +480,20 @@ bgp_info_cmp (struct bgp *bgp, struct bgp_info *new, struct bgp_info *exist,
   /* 9. Maximum path check. */
   if (newm == existm)
     {
-      if (new->peer->sort == BGP_PEER_IBGP)
+      if (bgp_flag_check(bgp, BGP_FLAG_ASPATH_MULTIPATH_RELAX))
+        {
+
+	  /*
+	   * For the two paths, all comparison steps till IGP metric
+	   * have succeeded - including AS_PATH hop count. Since 'bgp
+	   * bestpath as-path multipath-relax' knob is on, we don't need
+	   * an exact match of AS_PATH. Thus, mark the paths are equal.
+	   * That will trigger both these paths to get into the multipath
+	   * array.
+	   */
+	  *paths_eq = 1;
+        }
+      else if (new->peer->sort == BGP_PEER_IBGP)
 	{
 	  if (aspath_cmp (new->attr->aspath, exist->attr->aspath))
 	    *paths_eq = 1;
@@ -700,12 +713,9 @@ bgp_input_modifier (struct peer *peer, struct prefix *p, struct attr *attr,
       peer->rmap_type = 0;
 
       if (ret == RMAP_DENYMATCH)
-	{
-	  /* Free newly generated AS path and community by route-map. */
-	  bgp_attr_flush (attr);
+	/* caller has multiple error paths with bgp_attr_flush() */
 	  return RMAP_DENY;
 	}
-    }
   return RMAP_PERMIT;
 }
 
@@ -809,16 +819,6 @@ bgp_announce_check (struct bgp_info *ri, struct peer *peer, struct prefix *p,
   /* Do not send back route to sender. */
   if (from == peer)
     return 0;
-
-  /* If peer's id and route's nexthop are same. draft-ietf-idr-bgp4-23 5.1.3 */
-  if (p->family == AF_INET
-      && IPV4_ADDR_SAME(&peer->remote_id, &riattr->nexthop))
-    return 0;
-#ifdef HAVE_IPV6
-  if (p->family == AF_INET6
-     && IPV6_ADDR_SAME(&peer->remote_id, &riattr->nexthop))
-    return 0;
-#endif
 
   /* Aggregate-address suppress check. */
   if (ri->extra && ri->extra->suppress)
@@ -950,6 +950,17 @@ bgp_announce_check (struct bgp_info *ri, struct peer *peer, struct prefix *p,
     {
       attr->flag |= ATTR_FLAG_BIT (BGP_ATTR_LOCAL_PREF);
       attr->local_pref = bgp->default_local_pref;
+    }
+
+  /* If originator-id is not set and the route is to be reflected,
+     set the originator id */
+  if (peer && from && peer->sort == BGP_PEER_IBGP &&
+      from->sort == BGP_PEER_IBGP &&
+      (! (attr->flag & ATTR_FLAG_BIT(BGP_ATTR_ORIGINATOR_ID))))
+    {
+      attr->extra = bgp_attr_extra_get(attr);
+      IPV4_ADDR_COPY(&(attr->extra->originator_id), &(from->remote_id));
+      SET_FLAG(attr->flag, BGP_ATTR_ORIGINATOR_ID);
     }
 
   /* Remove MED if its an EBGP peer - will get overwritten by route-maps */
@@ -1857,7 +1868,7 @@ bgp_update_rsclient (struct peer *rsclient, afi_t afi, safi_t safi,
       break;
 
   /* AS path loop check. */
-  if (aspath_loop_check (attr->aspath, rsclient->as) > peer->allowas_in[afi][safi])
+  if (aspath_loop_check (attr->aspath, rsclient->as) > rsclient->allowas_in[afi][safi])
     {
       reason = "as-path contains our own AS;";
       goto filtered;
@@ -2129,10 +2140,14 @@ bgp_update_main (struct peer *peer, struct prefix *p, struct attr *attr,
   new_attr.extra = &new_extra;
   bgp_attr_dup (&new_attr, attr);
 
-  /* Apply incoming route-map. */
+  /* Apply incoming route-map.
+   * NB: new_attr may now contain newly allocated values from route-map "set"
+   * commands, so we need bgp_attr_flush in the error paths, until we intern
+   * the attr (which takes over the memory references) */
   if (bgp_input_modifier (peer, p, &new_attr, afi, safi) == RMAP_DENY)
     {
       reason = "route-map;";
+      bgp_attr_flush (&new_attr);
       goto filtered;
     }
 
@@ -2146,6 +2161,7 @@ bgp_update_main (struct peer *peer, struct prefix *p, struct attr *attr,
 	  && ! CHECK_FLAG (peer->flags, PEER_FLAG_DISABLE_CONNECTED_CHECK))
 	{
 	  reason = "non-connected next-hop;";
+	  bgp_attr_flush (&new_attr);
 	  goto filtered;
 	}
 
@@ -2156,6 +2172,7 @@ bgp_update_main (struct peer *peer, struct prefix *p, struct attr *attr,
 	  || bgp_nexthop_self (&new_attr))
 	{
 	  reason = "martian next-hop;";
+	  bgp_attr_flush (&new_attr);
 	  goto filtered;
 	}
     }
@@ -4375,7 +4392,7 @@ ALIAS_DEPRECATED (bgp_network_mask_natural,
        "AS-Pathlimit TTL, in number of AS-Path hops\n")
 ALIAS_DEPRECATED (bgp_network_mask_natural_backdoor,
        bgp_network_mask_natural_backdoor_ttl_cmd,
-       "network A.B.C.D backdoor pathlimit (1-255>",
+       "network A.B.C.D backdoor pathlimit <1-255>",
        "Specify a network to announce via BGP\n"
        "Network number\n"
        "Specify a BGP backdoor route\n"
@@ -5627,6 +5644,8 @@ route_vty_short_status_out (struct vty *vty, struct bgp_info *binfo)
     vty_out (vty, "d");
   else if (CHECK_FLAG (binfo->flags, BGP_INFO_SELECTED))
     vty_out (vty, ">");
+  else if (CHECK_FLAG (binfo->flags, BGP_INFO_MULTIPATH))
+    vty_out (vty, "=");
   else
     vty_out (vty, " ");
 
@@ -6112,7 +6131,9 @@ route_vty_out_detail (struct vty *vty, struct bgp *bgp, struct prefix *p,
   vty_out (vty, "%s", VTY_NEWLINE);
 }  
 
-#define BGP_SHOW_SCODE_HEADER "Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,%s              r RIB-failure, S Stale, R Removed%s"
+#define BGP_SHOW_SCODE_HEADER "Status codes: s suppressed, d damped, "\
+			      "h history, * valid, > best, = multipath,%s"\
+		"              i internal, r RIB-failure, S Stale, R Removed%s"
 #define BGP_SHOW_OCODE_HEADER "Origin codes: i - IGP, e - EGP, ? - incomplete%s%s"
 #define BGP_SHOW_HEADER "   Network          Next Hop            Metric LocPrf Weight Path%s"
 #define BGP_SHOW_DAMP_HEADER "   Network          From             Reuse    Path%s"
@@ -6796,7 +6817,7 @@ DEFUN (show_ip_bgp_view,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n")
+       "View name\n")
 {
   struct bgp *bgp;
 
@@ -6818,7 +6839,7 @@ DEFUN (show_ip_bgp_view_route,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Network in the BGP routing table to display\n")
 {
   return bgp_show_route (vty, argv[0], argv[1], AFI_IP, SAFI_UNICAST, NULL, 0);
@@ -6831,7 +6852,7 @@ DEFUN (show_ip_bgp_view_prefix,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "IP prefix <network>/<length>, e.g., 35.0.0.0/8\n")
 {
   return bgp_show_route (vty, argv[0], argv[1], AFI_IP, SAFI_UNICAST, NULL, 1);
@@ -7904,14 +7925,14 @@ DEFUN (show_bgp_view_afi_safi_community_all,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
 #endif
        "Address Family modifier\n"
        "Address Family modifier\n"
-       "Display routes containing communities\n")
+       "Display routes matching the communities\n")
 {
   int afi;
   int safi;
@@ -7945,7 +7966,7 @@ DEFUN (show_bgp_view_afi_safi_community,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
@@ -7982,7 +8003,7 @@ ALIAS (show_bgp_view_afi_safi_community,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
@@ -8009,7 +8030,7 @@ ALIAS (show_bgp_view_afi_safi_community,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
@@ -8040,7 +8061,7 @@ ALIAS (show_bgp_view_afi_safi_community,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
@@ -10198,7 +10219,7 @@ DEFUN (show_bgp_view_afi_safi_neighbor_adv_recd_routes,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
 #ifdef HAVE_IPV6
        "Address family\n"
@@ -10613,7 +10634,7 @@ DEFUN (show_ip_bgp_view_rsclient,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR)
 {
@@ -10663,7 +10684,7 @@ DEFUN (show_bgp_view_ipv4_safi_rsclient,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"
@@ -10723,7 +10744,7 @@ DEFUN (show_ip_bgp_view_rsclient_route,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR
        "Network in the BGP routing table to display\n")
@@ -10795,7 +10816,7 @@ DEFUN (show_bgp_view_ipv4_safi_rsclient_route,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"
@@ -10877,7 +10898,7 @@ DEFUN (show_ip_bgp_view_rsclient_prefix,
        IP_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR
        "IP prefix <network>/<length>, e.g., 35.0.0.0/8\n")
@@ -10949,7 +10970,7 @@ DEFUN (show_bgp_view_ipv4_safi_rsclient_prefix,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"
@@ -11031,7 +11052,7 @@ DEFUN (show_bgp_view_neighbor_routes,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
        "Neighbor to display information about\n"
@@ -11057,7 +11078,7 @@ ALIAS (show_bgp_view_neighbor_routes,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
@@ -11070,7 +11091,7 @@ DEFUN (show_bgp_view_neighbor_damp,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
        "Neighbor to display information about\n"
@@ -11096,7 +11117,7 @@ ALIAS (show_bgp_view_neighbor_damp,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
@@ -11109,7 +11130,7 @@ DEFUN (show_bgp_view_neighbor_flap,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
        "Neighbor to display information about\n"
@@ -11135,7 +11156,7 @@ ALIAS (show_bgp_view_neighbor_flap,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Detailed information on TCP and BGP neighbor connections\n"
        "Neighbor to display information about\n"
@@ -11246,7 +11267,7 @@ DEFUN (show_bgp_view_rsclient,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR)
 {
@@ -11295,7 +11316,7 @@ DEFUN (show_bgp_view_ipv6_safi_rsclient,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"
@@ -11354,7 +11375,7 @@ DEFUN (show_bgp_view_rsclient_route,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR
        "Network in the BGP routing table to display\n")
@@ -11425,7 +11446,7 @@ DEFUN (show_bgp_view_ipv6_safi_rsclient_route,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"
@@ -11506,7 +11527,7 @@ DEFUN (show_bgp_view_rsclient_prefix,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Information about Route Server Client\n"
        NEIGHBOR_ADDR_STR
        "IPv6 prefix <network>/<length>, e.g., 3ffe::/16\n")
@@ -11577,7 +11598,7 @@ DEFUN (show_bgp_view_ipv6_safi_rsclient_prefix,
        SHOW_STR
        BGP_STR
        "BGP view\n"
-       "BGP view name\n"
+       "View name\n"
        "Address family\n"
        "Address Family modifier\n"
        "Address Family modifier\n"

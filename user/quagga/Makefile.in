@@ -205,7 +205,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BABELD = @BABELD@
 BGPD = @BGPD@
-BUILD_TESTS = @BUILD_TESTS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -215,6 +214,7 @@ CPPFLAGS = @CPPFLAGS@
 CURSES = @CURSES@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
+DEJAGNU = @DEJAGNU@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DOC = @DOC@
@@ -292,6 +292,7 @@ RIPD = @RIPD@
 RIPNGD = @RIPNGD@
 RTREAD_METHOD = @RTREAD_METHOD@
 RT_METHOD = @RT_METHOD@
+RUNTESTDEFAULTFLAGS = @RUNTESTDEFAULTFLAGS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -367,8 +368,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ @BABELD@ \
-         @ISISD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@ m4 @pkgsrcdir@ \
-         redhat
+         @ISISD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@ m4 @pkgsrcdir@
 
 DIST_SUBDIRS = lib zebra bgpd ripd ripngd ospfd ospf6d babeld \
 	  isisd watchquagga vtysh ospfclient m4 pkgsrc redhat

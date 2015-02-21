@@ -18,7 +18,7 @@ BUILT_SOURCES = memtypes.h route_types.h gitversion.h
 
 libzebra_la_DEPENDENCIES = @LIB_REGEX@
 
-libzebra_la_LIBADD = @LIB_REGEX@
+libzebra_la_LIBADD = @LIB_REGEX@ @LIBCAP@
 
 pkginclude_HEADERS = \
 	buffer.h checksum.h command.h filter.h getopt.h hash.h \
@@ -27,7 +27,7 @@ pkginclude_HEADERS = \
 	str.h stream.h table.h thread.h vector.h version.h vty.h zebra.h \
 	plist.h zclient.h sockopt.h smux.h md5.h if_rmap.h keychain.h \
 	privs.h sigevent.h pqueue.h jhash.h zassert.h memtypes.h \
-	workqueue.h route_types.h
+	workqueue.h route_types.h libospf.h
 
 EXTRA_DIST = \
 	regex.c regex-gnu.h \

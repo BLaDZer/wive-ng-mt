@@ -568,6 +568,9 @@ lsa_link_broadcast_set (struct stream *s, struct ospf_interface *oi)
   /* Describe Type 3 Link. */
   if (oi->state == ISM_Waiting)
     {
+      if (IS_DEBUG_OSPF (lsa, LSA_GENERATE))
+        zlog_debug ("LSA[Type1]: Interface %s is in state Waiting. "
+                    "Adding stub interface", oi->ifp->name);
       masklen2ip (oi->address->prefixlen, &mask);
       id.s_addr = oi->address->u.prefix4.s_addr & mask.s_addr;
       return link_info_set (s, id, mask, LSA_LINK_TYPE_STUB, 0,
@@ -580,12 +583,18 @@ lsa_link_broadcast_set (struct stream *s, struct ospf_interface *oi)
 	     IPV4_ADDR_SAME (&oi->address->u.prefix4, &DR (oi))) &&
       ospf_nbr_count (oi, NSM_Full) > 0)
     {
+      if (IS_DEBUG_OSPF (lsa, LSA_GENERATE))
+        zlog_debug ("LSA[Type1]: Interface %s has a DR. "
+                    "Adding transit interface", oi->ifp->name);
       return link_info_set (s, DR (oi), oi->address->u.prefix4,
                             LSA_LINK_TYPE_TRANSIT, 0, cost);
     }
   /* Describe type 3 link. */
   else
     {
+      if (IS_DEBUG_OSPF (lsa, LSA_GENERATE))
+        zlog_debug ("LSA[Type1]: Interface %s has no DR. "
+                    "Adding stub interface", oi->ifp->name);
       masklen2ip (oi->address->prefixlen, &mask);
       id.s_addr = oi->address->u.prefix4.s_addr & mask.s_addr;
       return link_info_set (s, id, mask, LSA_LINK_TYPE_STUB, 0,
@@ -2794,7 +2803,7 @@ ospf_lsa_install (struct ospf *ospf, struct ospf_interface *oi,
 }
 
 
-static int
+int
 ospf_check_nbr_status (struct ospf *ospf)
 {
   struct listnode *node, *nnode;
@@ -2843,6 +2852,9 @@ ospf_maxage_lsa_remover (struct thread *thread)
 	    continue;
 	  }
 
+        /* There is at least one neighbor from which we still await an ack
+         * for that LSA, so we are not allowed to remove it from our lsdb yet
+         * as per RFC 2328 section 14 para 4 a) */
         if (lsa->retransmit_counter > 0)
           {
             reschedule = 1;
@@ -2851,7 +2863,11 @@ ospf_maxage_lsa_remover (struct thread *thread)
         
         /* TODO: maybe convert this function to a work-queue */
         if (thread_should_yield (thread))
+          {
           OSPF_TIMER_ON (ospf->t_maxage, ospf_maxage_lsa_remover, 0);
+            route_unlock_node(rn); /* route_top/route_next */
+            return 0;
+          }
           
         /* Remove LSA from the LSDB */
         if (IS_LSA_SELF (lsa))
@@ -2896,9 +2912,11 @@ void
 ospf_lsa_maxage_delete (struct ospf *ospf, struct ospf_lsa *lsa)
 {
   struct route_node *rn;
-  struct prefix_ls lsa_prefix;
+  struct prefix_ptr lsa_prefix;
 
-  ls_prefix_set (&lsa_prefix, lsa);
+  lsa_prefix.family = 0;
+  lsa_prefix.prefixlen = sizeof(lsa_prefix.prefix) * CHAR_BIT;
+  lsa_prefix.prefix = (uintptr_t) lsa;
 
   if ((rn = route_node_lookup(ospf->maxage_lsa,
 			      (struct prefix *)&lsa_prefix)))
@@ -2908,7 +2926,7 @@ ospf_lsa_maxage_delete (struct ospf *ospf, struct ospf_lsa *lsa)
 	  UNSET_FLAG(lsa->flags, OSPF_LSA_IN_MAXAGE);
 	  ospf_lsa_unlock (&lsa); /* maxage_lsa */
 	  rn->info = NULL;
-	  route_unlock_node (rn); /* route_node_lookup */
+	  route_unlock_node (rn); /* unlock node because lsa is deleted */
 	}
 	  route_unlock_node (rn); /* route_node_lookup */
     }
@@ -2922,7 +2940,7 @@ ospf_lsa_maxage_delete (struct ospf *ospf, struct ospf_lsa *lsa)
 void
 ospf_lsa_maxage (struct ospf *ospf, struct ospf_lsa *lsa)
 {
-  struct prefix_ls lsa_prefix;
+  struct prefix_ptr lsa_prefix;
   struct route_node *rn;
 
   /* When we saw a MaxAge LSA flooded to us, we put it on the list
@@ -2935,12 +2953,18 @@ ospf_lsa_maxage (struct ospf *ospf, struct ospf_lsa *lsa)
       return;
     }
 
-  ls_prefix_set (&lsa_prefix, lsa);
+  lsa_prefix.family = 0;
+  lsa_prefix.prefixlen = sizeof(lsa_prefix.prefix) * CHAR_BIT;
+  lsa_prefix.prefix = (uintptr_t) lsa;
+
   if ((rn = route_node_get (ospf->maxage_lsa,
 			    (struct prefix *)&lsa_prefix)) != NULL)
     {
       if (rn->info != NULL)
 	{
+	  if (IS_DEBUG_OSPF (lsa, LSA_FLOODING))
+	    zlog_debug ("LSA[%s]: found LSA (%p) in table for LSA %p %d",
+			dump_lsa_key (lsa), rn->info, lsa, lsa_prefix.prefixlen);
 	  route_unlock_node (rn);
 	}
       else

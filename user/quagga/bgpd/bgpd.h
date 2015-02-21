@@ -120,6 +120,7 @@ struct bgp
 #define BGP_FLAG_LOG_NEIGHBOR_CHANGES     (1 << 11)
 #define BGP_FLAG_GRACEFUL_RESTART         (1 << 12)
 #define BGP_FLAG_ASPATH_CONFED            (1 << 13)
+#define BGP_FLAG_ASPATH_MULTIPATH_RELAX   (1 << 14)
 
   /* BGP Per AF flags */
   u_int16_t af_flags[AFI_MAX][SAFI_MAX];
@@ -311,6 +312,12 @@ struct peer
   struct stream *ibuf;
   struct stream_fifo *obuf;
   struct stream *work;
+
+  /* We use a separate stream to encode MP_REACH_NLRI for efficient
+   * NLRI packing. peer->work stores all the other attributes. The
+   * actual packet is then constructed by concatenating the two.
+   */
+  struct stream *scratch;
 
   /* Status of the peer. */
   int status;
@@ -777,6 +784,8 @@ enum bgp_clear_type
 /* Macros. */
 #define BGP_INPUT(P)         ((P)->ibuf)
 #define BGP_INPUT_PNT(P)     (STREAM_PNT(BGP_INPUT(P)))
+#define BGP_IS_VALID_STATE_FOR_NOTIF(S)\
+        (((S) == OpenSent) || ((S) == OpenConfirm) || ((S) == Established))
 
 /* Count prefix size from mask length */
 #define PSIZE(a) (((a) + 7) / (8))

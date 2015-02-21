@@ -211,7 +211,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BABELD = @BABELD@
 BGPD = @BGPD@
-BUILD_TESTS = @BUILD_TESTS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -221,6 +220,7 @@ CPPFLAGS = @CPPFLAGS@
 CURSES = @CURSES@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)/\"
+DEJAGNU = @DEJAGNU@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DOC = @DOC@
@@ -298,6 +298,7 @@ RIPD = @RIPD@
 RIPNGD = @RIPNGD@
 RTREAD_METHOD = @RTREAD_METHOD@
 RT_METHOD = @RT_METHOD@
+RUNTESTDEFAULTFLAGS = @RUNTESTDEFAULTFLAGS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -384,7 +385,7 @@ libzebra_la_SOURCES = \
 
 BUILT_SOURCES = memtypes.h route_types.h gitversion.h
 libzebra_la_DEPENDENCIES = @LIB_REGEX@
-libzebra_la_LIBADD = @LIB_REGEX@
+libzebra_la_LIBADD = @LIB_REGEX@ @LIBCAP@
 pkginclude_HEADERS = \
 	buffer.h checksum.h command.h filter.h getopt.h hash.h \
 	if.h linklist.h log.h \
@@ -392,7 +393,7 @@ pkginclude_HEADERS = \
 	str.h stream.h table.h thread.h vector.h version.h vty.h zebra.h \
 	plist.h zclient.h sockopt.h smux.h md5.h if_rmap.h keychain.h \
 	privs.h sigevent.h pqueue.h jhash.h zassert.h memtypes.h \
-	workqueue.h route_types.h
+	workqueue.h route_types.h libospf.h
 
 EXTRA_DIST = \
 	regex.c regex-gnu.h \
