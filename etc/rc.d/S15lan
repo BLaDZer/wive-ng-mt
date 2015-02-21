@@ -29,7 +29,7 @@ start() {
 	ip link set br0 up
     fi
 
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
+    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
 	# always up lan iface
 	ip link set "$phys_lan_if" up
     fi
@@ -44,12 +44,10 @@ start() {
         ifconfig "$lan2_if" "$lan2_ipaddr" netmask "$lan2_netmask" up
     fi
 
-    # enable forward for LAN interfaces
-    # only not bridge mode enable forward
+    # enable forward for LAN interfaces only not bridge mode enable forward
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	sysctl -wq net.ipv4.conf.$lan_if.forwarding=1
     fi
-
 }
 
 addr_flush() {

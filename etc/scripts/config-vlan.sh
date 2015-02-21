@@ -4,8 +4,6 @@
 # config-vlan.sh - configure vlan switch particion helper  #
 #                                                          #
 # usage: config-vlan.sh <switch_type> <vlan_type>          #
-#   switch_type: 0=IC+, 1=vtss, 2=esw3050x                 #
-#   vlan_type: 0=no_vlan, 1=vlan, LLLLW=wan_4, WLLLL=wan_0 #
 ############################################################
 
 LOG="logger -t ESW"

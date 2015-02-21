@@ -84,8 +84,7 @@ case "$1" in
 	if [ "$OperationMode" != "2" ] && [ "$dhcpSwReset" = "1" ]; then
 	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
 		$LOG "Restart WAN switch port."
-		get_switch_type
-		/etc/scripts/config-vlan.sh $SWITCH_MODE WWWWW
+		config-vlan.sh $SWITCH_MODE WWWWW
 	    fi
 	elif [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 	    # Try reconnect at lease failed

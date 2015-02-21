@@ -214,18 +214,6 @@ getWanReady() {
     realwan_is_not_null=`ip -o -4 addr show $real_wan_if scope global | wc -l` > /dev/null 2>&1
 }
 
-getVlanConfig() {
-    if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
-	VlanEnabled="1"
-	vlantvif="vlantv"
-	vlansipif="vlansip"
-    else
-	VlanEnabled="0"
-	vlantvif=""
-	vlansipif=""
-    fi
-}
-
 # reconnect to AP
 wifi_reconnect() {
     if [ "$OperationMode" = "2" ]; then
@@ -279,6 +267,18 @@ readdif_to_br() {
     ip link set $1 up
 }
 
+get_vlan_config() {
+    if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+	VlanEnabled="1"
+	vlantvif="vlantv"
+	vlansipif="vlansip"
+    else
+	VlanEnabled="0"
+	vlantvif=""
+	vlansipif=""
+    fi
+}
+
 set_vlan_map()
 {
     for i in `seq 0 7`; do
@@ -303,6 +303,45 @@ get_switch_type() {
     fi
 }
 
+get_switch_part() {
+    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
+	# manual vlan configured
+	if [ "$VlanEnabled" = "1" ]; then
+		CMODE="VLANS"
+	# tv and sip
+	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WWWLL"
+            else
+		CMODE="LLWWW"
+	    fi
+	# only tv
+	elif [ "$tv_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WWLLL"
+            else
+		CMODE="LLLWW"
+	    fi
+	# only sip
+	elif [ "$sip_port" = "1" ]; then
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WLWLL"
+            else
+		CMODE="LLWLW"
+	    fi
+	# without bridget ports
+	else
+	    if [ "$wan_port" = "4" ]; then
+		CMODE="WLLLL"
+            else
+		CMODE="LLLLW"
+	    fi
+	fi
+    elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
+		CMODE="LLLLL"
+    fi
+}
+
 # get params
 getFirstWlanIfName
 getSecWlanIfName
@@ -312,4 +351,7 @@ getWanIfName
 getTunIfName
 getWanIpaddr
 getWanReady
-getVlanConfig
+
+get_vlan_config
+get_switch_type
+get_switch_part

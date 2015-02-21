@@ -1,9 +1,9 @@
 #!/bin/sh
 
-#########################################################
+##########################################################################
 # configure LAN/WAN switch particion and mode per port
 # This is high level switch configure helper for Wive-NG
-#########################################################
+##########################################################################
 
 # include global
 . /etc/scripts/global.sh
@@ -80,6 +80,11 @@ set_portmap() {
 ##############################################################################
 if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
+    if [ "$CMODE" != "LLLLL" ]; then
+	$LOG '######### Clear switch partition  ###########'
+	config-vlan.sh $SWITCH_MODE LLLLL > /dev/null 2>&1
+    fi
+    ##########################################################################
     doublevlantag
     ##########################################################################
     # add mac to root interface if vlan part used
@@ -95,52 +100,12 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
     ##########################################################################
     set_mac_wan_lan
     ##########################################################################
-    $LOG '######### Clear switch partition  ###########'
-    /etc/scripts/config-vlan.sh $SWITCH_MODE "LLLLL" > /dev/null 2>&1
+    # configure switch parts depended by operation mode
     ##########################################################################
-    # In gate mode and hotspot mode configure vlans
-    ##########################################################################
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
-	# manual vlan configured
-	if [ "$VlanEnabled" = "1" ]; then
-		CMODE="VLANS"
-	# tv and sip
-	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-	    if [ "$wan_port" = "4" ]; then
-		CMODE="WWWLL"
-            else
-		CMODE="LLWWW"
-	    fi
-	# only tv
-	elif [ "$tv_port" = "1" ]; then
-	    if [ "$wan_port" = "4" ]; then
-		CMODE="WWLLL"
-            else
-		CMODE="LLLWW"
-	    fi
-	# only sip
-	elif [ "$sip_port" = "1" ]; then
-	    if [ "$wan_port" = "4" ]; then
-		CMODE="WLWLL"
-            else
-		CMODE="LLWLW"
-	    fi
-	# without bridget ports
-	else
-	    if [ "$wan_port" = "4" ]; then
-		CMODE="WLLLL"
-            else
-		CMODE="LLLLW"
-	    fi
-	fi
-	$LOG "##### Config switch partition $CMODE #####"
-	/etc/scripts/config-vlan.sh $SWITCH_MODE "$CMODE" > /dev/null 2>&1
-    elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
-		CMODE="LLLLL"
-    fi
+    $LOG "##### Config switch partition $SWITCH_MODE $CMODE #####"
+    config-vlan.sh $SWITCH_MODE $CMODE > /dev/null 2>&1
 fi
 }
-
 
 ##########################################################################
 # Set speed and duplex modes per port
@@ -207,9 +172,6 @@ set_dhcptouch_portnum() {
 	fi
     fi
 }
-
-##########################################################################
-get_switch_type
 ##########################################################################
 set_portmap
 set_perport_physmode
