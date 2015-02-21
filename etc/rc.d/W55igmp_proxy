@@ -56,7 +56,7 @@ phyint $vpn_if disabled
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpM2UConvMode wan_port tv_port`
+    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpM2UConvMode`
     ####################################
     # remap wan if to vlan bridge
     ####################################

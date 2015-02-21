@@ -367,7 +367,7 @@ config7620Esw()
 restore7620Esw()
 {
 	# now config support only internal 100FDX ESW
-	$LOG "restore GSW to dump switch mode"
+	$LOG "restore ESW to dump switch mode"
 	for i in `seq 0 7`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-7 matrix mode
 	    switch reg w 2${i}10 810000c0 	#ports 0-7 as transparent mode

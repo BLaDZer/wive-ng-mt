@@ -1,17 +1,20 @@
 #!/bin/sh
 
-############################################################
-# global.sh - correct enviroment helper for automatization #
-############################################################
+#############################################################
+# global.sh - correct enviroment helper for automatization  #
+#############################################################
+# This script calculate values and export for usb in others #
+# scripts 						    #
+#############################################################
 
-############################################################
+#############################################################
 # OperationMode:
 # 0 - AP Bridge Mode (all ports and wifi in one bridge)
 # 1 - AP Gateway (classic router mode)
 # 2 - ETH Converter (WAN - ra0 in STA mode, others LAN)
 # 3 - AP-Client/Bridge mode
 # 4 - Chillispot (classic router mode + chillispot)
-############################################################
+#############################################################
 
 # include kernel config
 . /etc/scripts/config.sh
@@ -39,7 +42,7 @@ txqueuelen="1000"
 eval `nvram_buf_get 2860 HostName OperationMode \
 	wanConnectionMode wan_ipaddr wan_netmask wan_gateway wan_static_dns wan_manual_mtu \
 	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
-	tv_port sip_port tv_portVLAN sip_portVLAN tv_port_mcast sip_port_mcast \
+	wan_port tv_port sip_port tv_portVLAN sip_portVLAN tv_port_mcast sip_port_mcast \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \

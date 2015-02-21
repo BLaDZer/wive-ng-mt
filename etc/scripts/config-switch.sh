@@ -11,7 +11,7 @@
 LOG="logger -t ESW"
 
 # get need variables
-eval `nvram_buf_get 2860 wan_port tv_port sip_port vlan_double_tag ForceRenewDHCP`
+eval `nvram_buf_get 2860 vlan_double_tag ForceRenewDHCP`
 
 ##########################################################################
 # Call this functions only if VLAN as WAN need
