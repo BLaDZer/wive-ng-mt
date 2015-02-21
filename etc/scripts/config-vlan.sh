@@ -473,10 +473,6 @@ config7530Esw()
 		switch pvid 4 1
 	fi
 
-	# detag packets before send to cpu
-	switch tag off 6
-	switch tag off 5
-
 	for i in `seq 0 6`; do
 	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
 	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
@@ -485,6 +481,10 @@ config7530Esw()
 	#set cpu ports PVID
 	switch pvid 5 2
 	switch pvid 6 1
+
+	# detag packets before send to cpu
+	switch tag off 6
+	switch tag off 5
 
 	# clear mac table if vlan configuration changed
 	switch clear

@@ -289,6 +289,20 @@ set_vlan_map()
     done
 }
 
+get_switch_type() {
+    if [ -f /proc/mt7620/gmac ]; then
+	PROC="/proc/mt7620/gmac"
+	SWITCH_MODE=3
+    elif [ -f /proc/mt7621/gmac ]; then
+	PROC="/proc/mt7621/gmac"
+	SWITCH_MODE=4
+    else
+	$LOG "No switch in system!!!"
+	PROC=
+	SWITCH_MODE=
+    fi
+}
+
 # get params
 getFirstWlanIfName
 getSecWlanIfName

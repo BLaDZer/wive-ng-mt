@@ -13,24 +13,6 @@ LOG="logger -t ESW"
 # get need variables
 eval `nvram_buf_get 2860 wan_port tv_port sip_port vlan_double_tag ForceRenewDHCP`
 
-##############################################################################
-# BASE FOR ALL ESW
-# Get switch type from proc
-##############################################################################
-get_switch_type() {
-    if [ -f /proc/mt7620/gmac ]; then
-	PROC="/proc/mt7620/gmac"
-	SWITCH_MODE=3
-    elif [ -f /proc/mt7621/gmac ]; then
-	PROC="/proc/mt7621/gmac"
-	SWITCH_MODE=4
-    else
-	$LOG "No switch in system!!!"
-	PROC=
-	SWITCH_MODE=
-    fi
-}
-
 ##########################################################################
 # Call this functions only if VLAN as WAN need
 ##########################################################################
@@ -125,7 +107,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
 		CMODE="LLLLW"
 	    fi
 	fi
-	$LOG "##### ESW config vlan partition $CMODE #####"
+	$LOG "##### Config switch partition $CMODE #####"
 	/etc/scripts/config-vlan.sh $SWITCH_MODE "$CMODE" > /dev/null 2>&1
     elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 		CMODE="LLLLL"

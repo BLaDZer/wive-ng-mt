@@ -82,9 +82,10 @@ case "$1" in
 	sysctl -wq net.ipv4.conf.all.forwarding=0
 	# Workaround for infinite OFFER wait
 	if [ "$OperationMode" != "2" ] && [ "$dhcpSwReset" = "1" ]; then
-	    if [ "$CONFIG_RAETH_ESW" != "" ] && [ "$RALINK_MT7620" != "" ]; then
+	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
 		$LOG "Restart WAN switch port."
-		/etc/scripts/config-vlan.sh 3 WWWWW
+		get_switch_type
+		/etc/scripts/config-vlan.sh $SWITCH_MODE WWWWW
 	    fi
 	elif [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 	    # Try reconnect at lease failed

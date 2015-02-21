@@ -231,7 +231,7 @@ bridge_stp() {
 switchworkaround() {
     # this is workaround for internal ESW in some RT7620 chips in config all lan ports in one bridge
     # for restore normal swich work after reconfigure PPE and reinit eth2 in internet.sh
-    if [ "$CONFIG_RAETH_ESW" != "" ] && [ -f /proc/mt7620/gmac ] && [ "$OperationMode" = "0" -o "$OperationMode" = "2" -o "$OperationMode" = "3" ]; then
+    if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "2" -o "$OperationMode" = "3" ]; then
         $LOG "Reconfigure switch after eth2 reinit..."
         /etc/scripts/config-switch.sh
     fi
