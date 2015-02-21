@@ -356,17 +356,9 @@ config7620Esw()
 	    fi
 	fi
 
-	if [ "$green_ethernet" = "1" ]; then
-	    for i in `seq 0 6`; do
-		switch reg w 2${i}04 ff0003		#ports 0-6 enable green ethernet mode
-	    done
-	fi
-
 	switch reg w 3500 00008000		#port 5 link down
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
-
-	#switch reg w 701c 0800000c		#enlarge FE2SW_IPG
 
 	$LOG "Switch configured for $1 mode."
 
@@ -394,126 +386,110 @@ restore7620Esw()
 config7530Esw()
 {
 	# now config support only internal 1000FDX 7530 ESW
+
+	# set port as user port (disable special tag)
+	switch reg w 2510 81000000
+	switch reg w 2610 81000000
+
 	if [ "$1" = "LLLLW" ]; then
-		#set external ports PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10002 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
 		#VLAN member port
 		switch vlan set 0 1 11110010
 		switch vlan set 1 2 00001100
-	elif [ "$1" = "LLLWW" ]; then
 		#set external ports PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10002 #port3
-		switch reg w 2414 10002 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 2
+	elif [ "$1" = "LLLWW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11100010
 		switch vlan set 1 2 00011100
-	elif [ "$1" = "LLWWW" ]; then
 		#set external ports PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10002 #port3
-		switch reg w 2414 10002 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 2
+		switch pvid 4 2
+	elif [ "$1" = "LLWWW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11000010
 		switch vlan set 1 2 00111100
-	elif [ "$1" = "LLWLW" ]; then
 		#set external ports PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10002 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 2
+		switch pvid 4 2
+	elif [ "$1" = "LLWLW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11010010
 		switch vlan set 1 2 00101100
-	elif [ "$1" = "WLLLL" ]; then
 		#set external ports PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 2
+	elif [ "$1" = "WLLLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 01111010
 		switch vlan set 1 2 10000100
-	elif [ "$1" = "WWLLL" ]; then
 		#set external ports PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10002 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 2
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 1
+	elif [ "$1" = "WWLLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 00111010
 		switch vlan set 1 2 11000100
-	elif [ "$1" = "WWWLL" ]; then
 		#set external ports PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10002 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 2
+		switch pvid 1 2
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 1
+	elif [ "$1" = "WWWLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 00011010
 		switch vlan set 1 2 11100100
-	elif [ "$1" = "WLWLL" ]; then
 		#set external ports PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		#set to cpu ports PVID
-		switch reg w 2514 10002 #port5
-		switch reg w 2614 10001 #port6
+		switch pvid 0 2
+		switch pvid 1 2
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 1
+	elif [ "$1" = "WLWLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 01011010
 		switch vlan set 1 2 10100100
+		#set external ports PVID
+		switch pvid 0 2
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 1
 	fi
 
-	for i in `seq 0 4`; do
+	# detag packets before send to cpu
+	switch tag off 6
+	switch tag off 5
+
+	for i in `seq 0 6`; do
 	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
 	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
 	done
 
-	# (de)tag to cpu
+	#set cpu ports PVID
 	switch pvid 5 2
 	switch pvid 6 1
 
-	#clear mac table if vlan configuration changed
-	$LOG "Switch configured for $1 mode."
-
-	#clear mac table if vlan configuration changed
+	# clear mac table if vlan configuration changed
 	switch clear
+
+	$LOG "Switch configured for $1 mode."
 }
 
 restore7530Esw()
@@ -528,7 +504,7 @@ restore7530Esw()
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port green_ethernet`
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
 
 if [ "$1" = "3" ]; then
 	SWITCH_MODE=3

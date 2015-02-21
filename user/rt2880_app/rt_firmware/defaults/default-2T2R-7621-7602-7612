@@ -322,7 +322,6 @@ wan_ipaddr=
 wan_manual_mtu=0
 wan_netmask=
 WANPingFilter=1
-green_ethernet=0
 wan_port=0
 wan_primary_dns=8.8.8.8
 wan_secondary_dns=8.8.4.4
