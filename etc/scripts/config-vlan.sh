@@ -394,6 +394,13 @@ restore7620Esw()
 config7530Esw()
 {
 	# now config support only internal 1000FDX 7530 ESW
+
+	# restore 5-6 ports config
+	switch reg w 2504 300003	#ports 5 as security mode
+        switch reg w 2510 10002		#ports 5 as transparent port
+	switch reg w 2604 4f0003	#ports 6 as security mode
+        switch reg w 2610 810000c0	#ports 6 as transparent port
+
 	if [ "$1" = "LLLLW" ]; then
 		#set external ports PVID
 		switch reg w 2014 10001 #port0
@@ -499,11 +506,6 @@ config7530Esw()
 		switch vlan set 0 1 01011111
 		switch vlan set 1 2 10100101
 	fi
-
-	for i in `seq 0 4`; do
-	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
-	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
-	done
 
 	# (de)tag to cpu
 	switch pvid 5 2
