@@ -24,7 +24,6 @@ usage() {
 	echo "  $0 3/4 WWWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 3-4 and WAN at port 0-2"
 	echo "  $0 3/4 LLWLW - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 0,1,3 and WAN at port 2,4"
 	echo "  $0 3/4 WLWLL - config Ralink MT7620/MT7621/MT7628 ESW with LAN at ports 1,3,4 and WAN at port 0,2"
-	echo "  $0 3/4 12345 - config Ralink MT7620/MT7621/MT7628 ESW with VLAN 1~5 at port 0~4"
 	exit 0
 }
 
@@ -159,195 +158,180 @@ config7620Esw()
 	done
 
 	if [ "$1" = "LLLLW" ]; then
-		#set PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10002 #port4
-		switch reg w 2514 10001 #port5
 		#VLAN member port
 		switch vlan set 0 1 11110111
 		switch vlan set 1 2 00001011
-	elif [ "$1" = "LLLWW" ]; then
 		#set PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10002 #port3
-		switch reg w 2414 10002 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 2
+		switch pvid 5 1
+	elif [ "$1" = "LLLWW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11100111
 		switch vlan set 1 2 00011011
-	elif [ "$1" = "LLWWW" ]; then
 		#set PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10002 #port3
-		switch reg w 2414 10002 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 2
+		switch pvid 4 2
+		switch pvid 5 1
+	elif [ "$1" = "LLWWW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11000111
 		switch vlan set 1 2 00111011
-	elif [ "$1" = "LLWLW" ]; then
 		#set PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10002 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 2
+		switch pvid 4 2
+		switch pvid 5 1
+	elif [ "$1" = "LLWLW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11010111
 		switch vlan set 1 2 00101011
-	elif [ "$1" = "WLLLL" ]; then
 		#set PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 1
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 2
+		switch pvid 5 1
+	elif [ "$1" = "WLLLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 01111111
 		switch vlan set 1 2 10000011
-	elif [ "$1" = "WWLLL" ]; then
 		#set PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10002 #port1
-		switch reg w 2214 10001 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 2
+		switch pvid 1 1
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 1
+		switch pvid 5 1
+	elif [ "$1" = "WWLLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 00111111
 		switch vlan set 1 2 11000011
-	elif [ "$1" = "WWWLL" ]; then
 		#set PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10002 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 2
+		switch pvid 1 2
+		switch pvid 2 1
+		switch pvid 3 1
+		switch pvid 4 1
+		switch pvid 5 1
+	elif [ "$1" = "WWWLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 00011111
 		switch vlan set 1 2 11100011
-	elif [ "$1" = "WLWLL" ]; then
 		#set PVID
-		switch reg w 2014 10002 #port0
-		switch reg w 2114 10001 #port1
-		switch reg w 2214 10002 #port2
-		switch reg w 2314 10001 #port3
-		switch reg w 2414 10001 #port4
-		switch reg w 2514 10001 #port5
+		switch pvid 0 2
+		switch pvid 1 2
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 1
+		switch pvid 5 1
+	elif [ "$1" = "WLWLL" ]; then
 		#VLAN member port
 		switch vlan set 0 1 01011111
 		switch vlan set 1 2 10100011
-	elif [ "$1" = "12345" ]; then
 		#set PVID
-		switch reg w 2014 10001 #port0
-		switch reg w 2114 10002 #port1
-		switch reg w 2214 10003 #port2
-		switch reg w 2314 10004 #port3
-		switch reg w 2414 10005 #port4
-		switch reg w 2514 10006 #port5
-		#VLAN member port
-		switch vlan set 0 1 10000011
-		switch vlan set 1 2 01000011
-		switch vlan set 2 3 00100011
-		switch vlan set 3 4 00010011
-		switch vlan set 4 5 00001011
-		switch vlan set 5 6 00000111
+		switch pvid 0 2
+		switch pvid 1 1
+		switch pvid 2 2
+		switch pvid 3 1
+		switch pvid 4 1
+		switch pvid 5 1
 	elif [ "$1" = "VLANS" ]; then
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
 	    if [ "$wan_port" = "4" ]; then
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #set PVID
-		    switch reg w 2014 10002 #port0
-		    switch reg w 2114 10003 #port1
-		    switch reg w 2214 10004 #port2
-		    switch reg w 2314 10001 #port3
-		    switch reg w 2414 10001 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 00011111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
 		    switch vlan set 3 4 00100011
+		    #set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		    switch pvid 5 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    #set PVID
-		    switch reg w 2014 10002 #port0
-		    switch reg w 2114 10003 #port1
-		    switch reg w 2214 10001 #port2
-		    switch reg w 2314 10001 #port3
-		    switch reg w 2414 10001 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 00111111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
+		    #set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 1
+		    switch pvid 3 1
+		    switch pvid 4 1
+		    switch pvid 5 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
 		# without bridget ports
-		    #set PVID
-		    switch reg w 2014 10002 #port0
-		    switch reg w 2114 10001 #port1
-		    switch reg w 2214 10004 #port2
-		    switch reg w 2314 10001 #port3
-		    switch reg w 2414 10001 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 01011111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 4 00100011
+		    #set PVID
+		    switch pvid 0 2
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		    switch pvid 5 1
 		fi
 	    else
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #set PVID
-		    switch reg w 2014 10001 #port0
-		    switch reg w 2114 10001 #port1
-		    switch reg w 2214 10004 #port2
-		    switch reg w 2314 10003 #port3
-		    switch reg w 2414 10002 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 11000111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
 		    switch vlan set 3 4 00100011
+		    #set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 3
+		    switch pvid 4 2
+		    switch pvid 5 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    #set PVID
-		    switch reg w 2014 10001 #port0
-		    switch reg w 2114 10001 #port1
-		    switch reg w 2214 10001 #port2
-		    switch reg w 2314 10003 #port3
-		    switch reg w 2414 10002 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 11100111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
+		    #set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 3
+		    switch pvid 4 2
+		    switch pvid 5 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
-		    #set PVID
-		    switch reg w 2014 10001 #port0
-		    switch reg w 2114 10001 #port1
-		    switch reg w 2214 10001 #port2
-		    switch reg w 2314 10003 #port3
-		    switch reg w 2414 10002 #port4
-		    switch reg w 2514 10001 #port5
 		    #VLAN member port
 		    switch vlan set 0 1 11010111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 4 00100011
+		    #set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 4
+		    switch pvid 4 2
+		    switch pvid 5 1
 		else
 		    $LOG "Error vlan config..."
 		fi
@@ -530,8 +514,6 @@ if [ "$1" = "3" ]; then
 		config7620Esw WWLLL
 	elif [ "$2" = "WWWLL" ]; then
 		config7620Esw WWWLL
-	elif [ "$2" = "12345" ]; then
-		config7620Esw 12345
 	elif [ "$2" = "VLANS" ]; then
 		config7620Esw VLANS
 	else
