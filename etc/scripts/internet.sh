@@ -43,10 +43,6 @@ bridge_config() {
 	# in bridge mode add only eth2 NOT ADD "$phys_lan_if" or "$phys_wan_if"
 	$LOG "Readd eth2 in br0"
 	readdif_to_br eth2
-	if [ "$CONFIG_RAETH_GMAC2" != "" ]; then
-	    $LOG "Readd eth3 in br0"
-	    readdif_to_br eth3
-	fi
 	$LOG "Readd $first_wlan_root_if in br0"
 	readdif_to_br $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
@@ -95,10 +91,6 @@ apcli_config() {
 	# in bridge mode add only eth2 NOT ADD "$phys_lan_if" or "$phys_wan_if"
 	$LOG "Readd eth2 in br0"
 	readdif_to_br eth2
-	if [ "$CONFIG_RAETH_GMAC2" != "" ]; then
-	    $LOG "Readd eth3 in br0"
-	    readdif_to_br eth3
-	fi
 	$LOG "Readd $first_wlan_root_if in br0"
 	readdif_to_br $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
