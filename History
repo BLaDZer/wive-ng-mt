@@ -559,7 +559,7 @@
 14) apps: add irqbalance for auto balancing irq by cpu cores (19.02.2015 git).<br>
 15) nvram_tool: remove all old ralink_init call, use nvram_* commands instead(code cleanup).<br>
 16) switch_tool: fix wait timeouts and code cleanup.<br>
-17) busybox: apply busybox-1.23.1-wget.patch.<br>
+17) busybox: apply busybox-1.23.1-wget.patch, busybox-1.23.1-modinfo.patch.<br>
 18) igmpproxy: fix snooping work at 7621 with GMAC2 config.<br>
 19) goahead: fix hide enable 5GHz module issue.<br>
 20) goahead: annotate console error message.<br>
