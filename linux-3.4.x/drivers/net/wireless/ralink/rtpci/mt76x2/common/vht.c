@@ -579,15 +579,13 @@ INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 #endif /* RT_BIG_ENDIAN */
 
 #ifdef VHT_TXBF_SUPPORT
-
-	if ((pAd->chipCap.FlgHwTxBfCap) && (pAd->BeaconSndDimensionFlag ==0))
+	if (pAd->chipCap.FlgHwTxBfCap) 
 	{
 		vht_cap_ie.vht_cap.num_snd_dimension = pAd->CommonCfg.vht_cap_ie.vht_cap.num_snd_dimension;
    		vht_cap_ie.vht_cap.cmp_st_num_bfer= pAd->CommonCfg.vht_cap_ie.vht_cap.cmp_st_num_bfer;
 		vht_cap_ie.vht_cap.bfee_cap_su=pAd->CommonCfg.vht_cap_ie.vht_cap.bfee_cap_su;
 		vht_cap_ie.vht_cap.bfer_cap_su=pAd->CommonCfg.vht_cap_ie.vht_cap.bfer_cap_su;
 	} 
-        pAd->BeaconSndDimensionFlag =0; 
 #endif
 
 	NdisMoveMemory(buf, (UCHAR *)&vht_cap_ie, sizeof(VHT_CAP_IE));

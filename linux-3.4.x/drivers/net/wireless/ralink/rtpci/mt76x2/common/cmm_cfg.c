@@ -262,8 +262,12 @@ static BOOLEAN wmode_valid(RTMP_ADAPTER *pAd, enum WIFI_MODE wmode)
 static BOOLEAN wmode_valid_and_correct(RTMP_ADAPTER *pAd, UCHAR* wmode)
 {
 	BOOLEAN ret = TRUE;
-	UCHAR mode = *wmode;
 
+	if (*wmode == WMODE_INVALID)
+		*wmode = (WMODE_B | WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC);
+
+	while(1)
+	{
 	if (WMODE_CAP_5G(*wmode) && (!PHY_CAP_5G(pAd->chipCap.phy_caps)))
 	{
 		*wmode = *wmode & ~(WMODE_A | WMODE_AN | WMODE_AC);
@@ -272,13 +276,23 @@ static BOOLEAN wmode_valid_and_correct(RTMP_ADAPTER *pAd, UCHAR* wmode)
 	{
 		*wmode = *wmode & ~(WMODE_B | WMODE_G | WMODE_GN);
 	}
-	else if (WMODE_CAP_N(*wmode) && RTMP_TEST_MORE_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DOT_11N))
+		else if (WMODE_CAP_N(*wmode) && ((!PHY_CAP_N(pAd->chipCap.phy_caps)) || RTMP_TEST_MORE_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DOT_11N)))
 	{
 		*wmode = *wmode & ~(WMODE_GN | WMODE_AN);
 	}
+		else if (WMODE_CAP_AC(*wmode) && (!PHY_CAP_AC(pAd->chipCap.phy_caps)))
+		{
+			*wmode = *wmode & ~(WMODE_AC);
+		}
 
 	if ( *wmode == 0 )
-		ret = FALSE;
+		{
+			*wmode = (WMODE_B | WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC);
+			break;
+		}
+		else
+			break;
+	}
 
 	return ret;
 }

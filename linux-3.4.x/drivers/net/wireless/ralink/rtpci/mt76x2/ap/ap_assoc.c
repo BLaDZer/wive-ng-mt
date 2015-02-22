@@ -464,11 +464,11 @@ static USHORT update_associated_mac_entry(
 	if (wdev->bAutoTxRateSwitch == TRUE)
 	{
 		UCHAR TableSize = 0;
-		
-		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
-		MlmeNewTxRate(pAd, pEntry);
 
 		pEntry->bAutoTxRateSwitch = TRUE;
+
+		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
+		MlmeNewTxRate(pAd, pEntry);
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 		if (! ADAPT_RATE_TABLE(pEntry->pTable))
@@ -488,6 +488,14 @@ static USHORT update_associated_mac_entry(
 
 		/* If the legacy mode is set, overwrite the transmit setting of this entry. */
 		RTMPUpdateLegacyTxSetting((UCHAR)wdev->DesiredTransmitSetting.field.FixedTxMode, pEntry);
+
+#ifdef MCS_LUT_SUPPORT
+		if ( pAd->chipCap.hif_type == HIF_MT) 
+		{
+			asic_mcs_lut_update(pAd, pEntry);
+			pEntry->LastTxRate = (USHORT) (pEntry->HTPhyMode.word);
+		}
+#endif /* MCS_LUT_SUPPORT */
 
 		DBGPRINT(RT_DEBUG_TRACE, ("%s(SS=%d): pMbss(FixedTxMode=%d, MCS=%d), pEntry(Mode=%d, MCS=%d)\n",
 					__FUNCTION__, pAd->CommonCfg.TxStream,
@@ -936,7 +944,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	*/
 	pEntry->RateLen = ie_list->SupportedRatesLen;
 
+#ifdef DOT11_VHT_AC
 #ifdef RT_BIG_ENDIAN
+	// TODO: shiang-usw, change this endian swap mechanism!
 	NdisCopyMemory(&tmp_1,&ie_list->vht_cap.vht_cap, 4);
 	tmp_1=SWAP32(tmp_1);
 	NdisCopyMemory(&ie_list->vht_cap.vht_cap,&tmp_1, 4);
@@ -947,6 +957,7 @@ VOID ap_cmm_peer_assoc_req_action(
 	//SWAP32((UINT32)vht_cap_ie.vht_cap);
 	//SWAP32((UINT32)vht_cap_ie.mcs_set);
 #endif /* RT_BIG_ENDIAN */
+#endif
 
 	RTMPSetSupportMCS(pAd,
 					OPMODE_AP,
