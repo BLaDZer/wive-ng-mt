@@ -168,10 +168,9 @@ static void sync_internal_mac_table(void *argu)
 
 void rt_switch_fini(void)
 {
-	unsigned int value;
 #if !defined (CONFIG_RALINK_MT7621) && !defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
-	/*IGMP forward to cpu*/
-	/* 10110014 */
+	unsigned int value;
+	/* IGMP forward to cpu */
 	value = rareg(READMODE, 0x1011001c, 0);
 	value = value & 0xffff9ff9;
 	rareg(WRITEMODE, 0x1011001c, value);
@@ -183,15 +182,9 @@ void rt_switch_fini(void)
 
 void rt_switch_init(void)
 {
-	/*
-	 *  handle rtGSW registers
-	 */
-	unsigned int value;
-
-	/* to check default IGMP flooding rule*/
 #if !defined (CONFIG_RALINK_MT7621) && !defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
-	/*IGMP report forward to cpu/query: default policy*/
-	/* 10110014 */
+	unsigned int value;
+	/* to check default IGMP flooding rule IGMP report forward to cpu/query: default policy */
 	value = rareg(READMODE, 0x1011001c, 0);
 	value = value | 0x00006000;
 	rareg(WRITEMODE, 0x1011001c, value);
@@ -204,7 +197,7 @@ void rt_switch_init(void)
 	}
 
 	strncpy(ifr.ifr_name, "eth2", 5);
-	ifr.ifr_data = (char *)&reg;
+	ifr.ifr_data = (caddr_t)&reg;
 
 	sync_internal_mac_table(NULL);
 }
@@ -213,7 +206,7 @@ void rt_switch_init(void)
 int reg_read(int offset, int *value)
 {
 	strncpy(ifr.ifr_name, "eth2", 5);
-	ifr.ifr_data = &mii;
+	ifr.ifr_data = (caddr_t)&mii;
 
 	mii.phy_id = 0x1f;
 	mii.reg_num = offset;
@@ -230,7 +223,7 @@ int reg_read(int offset, int *value)
 int reg_write(int offset, int value)
 {
 	strncpy(ifr.ifr_name, "eth2", 5);
-	ifr.ifr_data = &mii;
+	ifr.ifr_data = (caddr_t)&mii;
 
 	mii.phy_id = 0x1f;
 	mii.reg_num = offset;
