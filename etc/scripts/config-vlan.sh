@@ -30,13 +30,13 @@ usage() {
 	exit 0
 }
 
-disableEsw() {
+disable_all_ports() {
         for i in `seq 0 4`; do
 	    mii_mgr -s -p $i -r 0 -v 0x0800
 	done
 }
 
-enableEsw() {
+enable_all_ports() {
 	for i in `seq 0 4`; do
 	    mii_mgr -s -p $i -r 0 -v 0x9000
 	done
@@ -142,8 +142,8 @@ reset_wan_phys() {
 }
 
 reinit_all_phys() {
-	disableEsw
-	enableEsw
+	disable_all_ports
+	enable_all_ports
 	reset_all_phys
 }
 
@@ -353,7 +353,6 @@ config7620Esw()
 
 restore7620Esw()
 {
-	# now config support only internal 100FDX ESW
 	$LOG "restore ESW to dump switch mode"
 	for i in `seq 0 7`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-7 matrix mode
@@ -370,12 +369,7 @@ restore7620Esw()
 
 config7530Esw()
 {
-	# now config support only internal 1000FDX 7530 ESW
-
-	# set port as user port (disable special tag)
-	switch reg w 2510 81000000
-	switch reg w 2610 81000000
-
+	# internal 1000FDX 7530 GSW
 	if [ "$1" = "LLLLW" ]; then
 		#VLAN member port
 		switch vlan set 0 1 11110010
@@ -459,11 +453,11 @@ config7530Esw()
 	fi
 
 	for i in `seq 0 6`; do
-	    switch reg w 2${i}04 ff0003		#ports 0-4 as security mode
-	    switch reg w 2${i}10 810000c0	#ports 0-4 as transparent port
+	    switch reg w 2${i}04 ff0003		#ports 0-6 as security mode
+	    switch reg w 2${i}10 810000c0	#ports 0-6 as transparent port, admit all frames and disable special tag
 	done
 
-	#set cpu ports PVID
+	# set cpu ports PVID
 	switch pvid 5 2
 	switch pvid 6 1
 
@@ -479,7 +473,7 @@ config7530Esw()
 
 restore7530Esw()
 {
-	echo "restore MT7530 GSW to dump switch mode"
+	$LOG "restore GSW to dump switch mode"
 	for i in `seq 0 6`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-6 matrix mode
 	    switch reg w 2${i}10 810000c0 	#ports 0-6 as transparent mode
@@ -496,9 +490,9 @@ if [ "$1" = "3" ]; then
 	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
 		restore7620Esw
 	elif [ "$2" = "EEEEE" ]; then
-		enableEsw
+		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
-		disableEsw
+		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
 		reset_all_phys
 	elif [ "$2" = "WWWWW" ]; then
@@ -528,9 +522,9 @@ elif [ "$1" = "4" ]; then
 	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
 		restore7530Esw
 	elif [ "$2" = "EEEEE" ]; then
-		enableEsw
+		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
-		disableEsw
+		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
 		reset_all_phys
 	elif [ "$2" = "WWWWW" ]; then
