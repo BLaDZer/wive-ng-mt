@@ -564,12 +564,6 @@ VOID BAOriSessionAdd(
 		MaxPeerBufSize = (UCHAR)pFrame->BaParm.BufSize;
 	
 		{
-			if (pAd->chipCap.hif_type == HIF_MT)
-			{
-				pBAEntry->BAWinSize = min(pBAEntry->BAWinSize, MaxPeerBufSize);
-			}
-			else
-			{
 			if (MaxPeerBufSize > 0)
 				MaxPeerBufSize -= 1;
 			else
@@ -577,7 +571,6 @@ VOID BAOriSessionAdd(
 			
 			pBAEntry->BAWinSize = min(pBAEntry->BAWinSize, MaxPeerBufSize);
 			BA_MaxWinSizeReasign(pAd, pEntry, &pBAEntry->BAWinSize);
-		}
 		}
 
 		pBAEntry->TimeOutValue = pFrame->TimeOutValue;

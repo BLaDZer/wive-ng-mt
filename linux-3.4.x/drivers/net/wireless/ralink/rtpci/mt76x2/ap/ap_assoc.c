@@ -489,14 +489,6 @@ static USHORT update_associated_mac_entry(
 		/* If the legacy mode is set, overwrite the transmit setting of this entry. */
 		RTMPUpdateLegacyTxSetting((UCHAR)wdev->DesiredTransmitSetting.field.FixedTxMode, pEntry);
 
-#ifdef MCS_LUT_SUPPORT
-		if ( pAd->chipCap.hif_type == HIF_MT) 
-		{
-			asic_mcs_lut_update(pAd, pEntry);
-			pEntry->LastTxRate = (USHORT) (pEntry->HTPhyMode.word);
-		}
-#endif /* MCS_LUT_SUPPORT */
-
 		DBGPRINT(RT_DEBUG_TRACE, ("%s(SS=%d): pMbss(FixedTxMode=%d, MCS=%d), pEntry(Mode=%d, MCS=%d)\n",
 					__FUNCTION__, pAd->CommonCfg.TxStream,
 					wdev->DesiredTransmitSetting.field.FixedTxMode,
