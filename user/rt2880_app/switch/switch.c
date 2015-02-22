@@ -1387,7 +1387,7 @@ void sip_clear(void)
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8202);//clear all sip
 	usleep(5000);
 	reg_read(REG_ESW_WT_MAC_ATC, &value);
-	printf("REG_ESW_WT_MAC_ATC is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATC is 0x%x\n\r",value);
 
 }
 
@@ -1604,7 +1604,7 @@ void table_clear(void)
 	usleep(5000);
 	reg_read(REG_ESW_WT_MAC_ATC, &value);
 
-	printf("REG_ESW_WT_MAC_ATC is 0x%x\n\r",value);
+	//printf("REG_ESW_WT_MAC_ATC is 0x%x\n\r",value);
 
 }
 
