@@ -346,8 +346,11 @@ void updateMacTable(struct group *entry, int delay_delete)
 		if(WanPort){
 		        value = value1;
 			value = (value & 0xffffff00);
+#if defined (CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#elif defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#else
 			value |= ((WAN_VLAN_ID) << 0); //WAN ID ==2
-
+#endif
 			reg_write(REG_ESW_WT_MAC_ATA2, value);
 			my_log(LOG_INFO, 0, "WAN REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 
