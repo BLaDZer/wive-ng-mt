@@ -603,8 +603,9 @@
 58) kernel: exfat: add module alias for fix automount.<br>
 59) kernel: ipv4: ip_check_defrag should correctly check return value of skb_copy_bits.<br>
 60) kernel: ipv6: fix ipv6_cow_metrics for non DST_HOST case.<br>
-61) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
-62) kernel: sg: fix read() error reporting.<br>
+61) kernel: igmp: add __ip_mc_{join|leave}_group().<br>
+62) kernel: pci: leave MEM and IO decoding disabled during 64-bit BAR sizing, too.<br>
+63) kernel: sg: fix read() error reporting.<br>
 <br>
 <br>
 <b>TODO:</b><br>
