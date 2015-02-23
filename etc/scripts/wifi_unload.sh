@@ -14,7 +14,7 @@ stop_serv="watchdog radvd vpnhelper shaper crontab transmission pppoe-relay ddns
 kill_apps="transmission-daemon smbd nmbd pppd xl2tpd udhcpd udhcpc dhcp6c dhcp6s crond lld2d igmpproxy inetd syslogd klogd \
 	    ntpclient ntpd zebra ripd inadyn ftpd scp miniupnpd iwevent telnetd wscd rt2860apd rt61apd dnsmasq cdp-send snmpd xupnpd"
 
-rmmod_mod="hw_nat ppp_mppe pppol2tp pptp pppoe pppox ppp_generic imq ipt_account ipt_TTL ipt_IMQ ipt_tos \
+rmmod_mod="ppp_mppe pppol2tp pptp pppoe pppox ppp_generic imq ipt_account ipt_TTL ipt_IMQ ipt_tos \
 	    ipt_REDIRECT ipt_ttl ipt_TOS xt_string xt_webstr xt_connmark xt_CONNMARK xt_conntrack \
 	    act_gact act_police cls_tcindex em_cmp em_u32 sch_gred sch_red act_ipt cls_fw cls_u32 \
 	    nf_nat_ftp nf_nat_h323 nf_nat_pptp nf_nat_proto_gre nf_nat_sip nf_nat_rtsp \
@@ -51,7 +51,7 @@ unload_modules() {
     rmmod_mod=`lsmod | awk {' print $1'}`
     for mod in $rmmod_mod
     do
-	if [ "$mod" = "rt2860v2_ap" -o "$mod" = "rt2860v2_sta" -o "$mod" = "mt7610_ap" -o "$mod" = "mt76x2_ap" ]; then
+	if [ "$mod" = "rt2860v2_ap" -o "$mod" = "rt2860v2_sta" -o "$mod" = "mt7610_ap" -o "$mod" = "mt76x2_ap" -o "$mod" = "hw_nat" ]; then
 	    # skip wifi modules
 	    mod=
 	fi

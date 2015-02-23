@@ -230,9 +230,9 @@ bridge_stp() {
 
 switchworkaround() {
     # this is workaround for internal ESW in some RT7620 chips in config all lan ports in one bridge
-    # for restore normal swich work after reconfigure PPE and reinit eth2 in internet.sh
+    # for restore normal swich work after reload PPE driver
     if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchpart" = "LLLLL" ]; then
-        $LOG "Reconfigure switch after eth2 reinit..."
+        $LOG "Reconfigure switch after hw_nat load/remove reinit..."
 	config-vlan.sh $switchmode $switchpart
     fi
 }
