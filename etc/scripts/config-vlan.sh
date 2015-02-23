@@ -419,8 +419,6 @@ config7530Esw()
 
 	# clear mac table if vlan configuration changed
 	switch clear
-
-	$LOG "Switch configured for $1 mode."
 }
 
 restore7530Esw()
