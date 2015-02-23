@@ -21,7 +21,7 @@ start() {
 		brctl addif "$vlantvif" "$phys_wan_if.$i"
 		ip link set "$phys_wan_if.$i" up
 	    done
-	    if [ "$tv_port_mcast" ]; then
+	    if [ "$tv_port_mcast" = "1" ]; then
 		# generate random ip from zeroconfig range end set need for igmpproxy work
 		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
 		ip -4 addr flush dev "$vlantvif"
@@ -42,7 +42,7 @@ start() {
 		brctl addif "$vlansipif" "$phys_wan_if.$i"
 		ip link set "$phys_wan_if.$i" up
 	    done
-	    if [ "$sip_port_mcast" ]; then
+	    if [ "$sip_port_mcast" = "1" ]; then
 		# generate random ip from zeroconfig range end set need for igmpproxy work
 		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
 		ip -4 addr flush dev "$vlansipif"
