@@ -153,17 +153,17 @@ config7620Esw()
 	done
 
 	for port in `seq 0 5`; do
-	    switch reg w 2${port}04 ff0003		#ports 0-5 as security mode
+	    switch reg w 2${port}04 ff0003	#ports 0-5 as security mode
 	    switch reg w 2${port}10 810000c0	#ports 0-5 as transparent port
 	done
 
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7620 switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
-	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
+	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
+	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
 	    # replace W/L to 2/1 and add space after symbols for set pvids mask
-	    pvids=`echo "$1" | sed 's/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
 
 	    # VLAN member ports index 0 vlan 1 mask1
 	    switch vlan set 0 1 $mask1
@@ -279,7 +279,7 @@ restore7620Esw()
 {
         $LOG "Restore internal MT7620 switch mode to dump"
 	for port in `seq 0 7`; do
-	    switch reg w 2${port}04 ff0000		#ports 0-7 matrix mode
+	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
 	done
 
@@ -296,112 +296,32 @@ config7530Esw()
 	#####################################################################
 	# internal 1000FDX 7530 GSW
 	#####################################################################
-	if [ "$1" != "VLANS" ]; then
-	    $LOG "Config internal MT7621 switch mode $1"
-	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
-	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
-	    # replace W/L to 2/1 and add space after symbols for set pvids mask
-	    pvids=`echo "$1" | sed 's/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+	$LOG "Config internal MT7621 switch mode $1"
+	# replace W/L to 0/1 for create masks and add static mask suffix
+	mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
+	mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
+	# replace W/L to 2/1 and add space after symbols for set pvids mask
+	pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
 
-	    # VLAN member ports index 0 vlan 1 mask1
-	    switch vlan set 0 1 $mask1
-	    # VLAN member ports index 1 vlan 2 $mask2
-	    switch vlan set 1 2 $mask2
+        # VLAN member ports index 0 vlan 1 mask1
+	switch vlan set 0 1 $mask1
+	# VLAN member ports index 1 vlan 2 $mask2
+	switch vlan set 1 2 $mask2
 
-	    index=0
-	    # set user ports pvid
-	    for pvid in $pvids ; do
-		switch pvid $index $pvid
-		let index=index+1
-	    done
+	index=0
+	# set user ports pvid
+	for pvid in $pvids ; do
+	    switch pvid $index $pvid
+	    let index=index+1
+	done
+	$LOG "GSW config: mask1:$mask1,mask2:$mask2,pvids:$pvids"
 
-	else
-	    $LOG "TV/STB/SIP with VLANs mode enabled."
-	    # internal VLAN for TV = 3, for SIP = 4
-	    if [ "$wan_port" = "4" ]; then
-		# tv and sip
-		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #V LAN member port
-		    switch vlan set 0 1 00011010
-		    switch vlan set 1 2 10000100
-		    switch vlan set 2 3 01000000
-		    switch vlan set 3 4 00100000
-		    # set PVID
-		    switch pvid 0 2
-		    switch pvid 1 3
-		    switch pvid 2 4
-		    switch pvid 3 1
-		    switch pvid 4 1
-		# only tv
-		elif [ "$tv_port" = "1" ]; then
-		    # VLAN member port
-		    switch vlan set 0 1 00111010
-		    switch vlan set 1 2 10000100
-		    switch vlan set 2 3 01000000
-		    # set PVID
-		    switch pvid 0 2
-		    switch pvid 1 3
-		    switch pvid 2 1
-		    switch pvid 3 1
-		    switch pvid 4 1
-		# only sip
-		elif [ "$sip_port" = "1" ]; then
-		# without bridget ports
-		    # VLAN member port
-		    switch vlan set 0 1 01011010
-		    switch vlan set 1 2 10000100
-		    switch vlan set 2 4 00100000
-		    # set PVID
-		    switch pvid 0 2
-		    switch pvid 1 1
-		    switch pvid 2 4
-		    switch pvid 3 1
-		    switch pvid 4 1
-		fi
-	    else
-		# tv and sip
-		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    # VLAN member port
-		    switch vlan set 0 1 11000010
-		    switch vlan set 1 2 00001100
-		    switch vlan set 2 3 00010000
-		    switch vlan set 3 4 00100000
-		    # set PVID
-		    switch pvid 0 1
-		    switch pvid 1 1
-		    switch pvid 2 4
-		    switch pvid 3 3
-		    switch pvid 4 2
-		# only tv
-		elif [ "$tv_port" = "1" ]; then
-		    # VLAN member port
-		    switch vlan set 0 1 11100010
-		    switch vlan set 1 2 00001100
-		    switch vlan set 2 3 00010000
-		    # set PVID
-		    switch pvid 0 1
-		    switch pvid 1 1
-		    switch pvid 2 1
-		    switch pvid 3 3
-		    switch pvid 4 2
-		# only sip
-		elif [ "$sip_port" = "1" ]; then
-		    # VLAN member port
-		    switch vlan set 0 1 11010010
-		    switch vlan set 1 2 00001100
-		    switch vlan set 2 4 00100000
-		    # set PVID
-		    switch pvid 0 1
-		    switch pvid 1 1
-		    switch pvid 2 1
-		    switch pvid 3 4
-		    switch pvid 4 2
-		else
-		    $LOG "Error vlan config!"
-		fi
-	    fi
-	fi
+	if [ "$VlanEnabled" = "1" ] && [ "$tv_portVLAN" != "" || "$sip_portVLAN" != "" ]; then
+	    ######################################################################
+	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
+	    ######################################################################
+	    $LOG "External vlan portmap not supportes NOW."
+        fi
 
 	# post config
 	for port in `seq 0 6`; do
@@ -419,6 +339,7 @@ config7530Esw()
 
 	# clear mac table if vlan configuration changed
 	switch clear
+
 }
 
 restore7530Esw()

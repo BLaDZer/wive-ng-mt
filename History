@@ -613,7 +613,6 @@
 <br>
 <b>2.5.x</b><br>
 1) init.d: unify swicth portmap logic.<br>
-2) init.d: add sip/tv vlan detagged ports for 7621.<br>
 <br>
 <br>
 <b>TODO:</b><br>
