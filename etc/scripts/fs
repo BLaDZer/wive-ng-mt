@@ -132,6 +132,7 @@ fullreset() {
     nvram_set 2860 LAN_MAC_ADDR		"DEAD"
     nvram_set 2860 CHECKMAC		"YES"
     nvram_set 2860 IS_WIVE		"NO"
+    mtd_write erase RW-FS
     echo "Now reboot..."
     reboot
 }
