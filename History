@@ -613,6 +613,7 @@
 <br>
 <b>2.5.x</b><br>
 1) init.d: unify swicth portmap logic.<br>
+2) init.d: fix vlan enabled check.<br>
 <br>
 <br>
 <b>TODO:</b><br>

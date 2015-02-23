@@ -271,7 +271,7 @@ readdif_to_br() {
 }
 
 get_vlan_config() {
-    if [ "$tv_port" = "1" -o "$sip_port" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+    if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [  "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
 	VlanEnabled="1"
 	vlantvif="vlantv"
 	vlansipif="vlansip"
