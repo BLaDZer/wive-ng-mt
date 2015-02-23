@@ -34,7 +34,7 @@ flush_net_caches
 
 # disable hotplug
 if [ -f /proc/sys/kernel/hotplug ]; then
-    echo > /proc/sys/kernel/hotplug
+    echo "" > /proc/sys/kernel/hotplug
 fi
 
 unload_modules() {
@@ -51,11 +51,7 @@ unload_modules() {
     rmmod_mod=`lsmod | awk {' print $1'}`
     for mod in $rmmod_mod
     do
-	if [ "$mod" = "rt2860v2_ap" -o "$mod" = "rt2860v2_sta" -o "$mod" = "mt7610_ap" -o "$mod" = "mt76x2_ap" -o "$mod" = "hw_nat" ]; then
-	    # skip wifi modules
-	    mod=
-	fi
-	if [ "$mod" != "" ]; then
+	if [ "$mod" != "rt2860v2_ap" -a "$mod" != "rt2860v2_sta" -a "$mod" != "mt7610_ap" -a "$mod" != "mt76x2_ap" -a "$mod" = "hw_nat" ]; then
     	    rmmod $mod > /dev/null 2>&1
 	fi
     done
