@@ -16,14 +16,7 @@ usage() {
 	echo "  $0 3/4 RRRRR - ESW reset all ports"
 	echo "  $0 3/4 WWWWW - ESW reinit WAN port at switch"
 	echo "  $0 3/4 FFFFF - ESW full reinit switch"
-	echo "  $0 3/4 LLLLW - ESW with VLAN and WAN at port 4"
-	echo "  $0 3/4 WLLLL - ESW with VLAN and WAN at port 0"
-	echo "  $0 3/4 LLLWW - ESW with LAN at ports 0-1 and WAN at port 2-4"
-	echo "  $0 3/4 WWLLL - ESW with LAN at ports 2-4 and WAN at port 0-1"
-	echo "  $0 3/4 LLWWW - ESW with LAN at ports 0-2 and WAN at port 3-4"
-	echo "  $0 3/4 WWWLL - ESW with LAN at ports 3-4 and WAN at port 0-2"
-	echo "  $0 3/4 LLWLW - ESW with LAN at ports 0,1,3 and WAN at port 2,4"
-	echo "  $0 3/4 WLWLL - ESW with LAN at ports 1,3,4 and WAN at port 0,2"
+	echo "  $0 3/4 xxxxx - ESW config free parts (x = W or x = L, W - WAN group, L - LAN group)"
 	echo "_________"
 	echo " 	devnum: 3 for MT7620/MT7628, 4 for MT7621"
 	echo "_________"
@@ -149,205 +142,136 @@ reinit_all_phys() {
 
 config7620Esw()
 {
+	#####################################################################
 	# now config support only internal 100FDX ESW
+	#####################################################################
+	# prepare switch
 	for i in `seq 6 7`; do
 	    switch reg w 2${i}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
 	    switch reg w 2${i}10 8100000	#ports 6-7 special tag disable
 	    switch reg w 2${i}10 81000000	#ports 6-7 is user port, admit all frames
 	done
+
 	for i in `seq 0 5`; do
 	    switch reg w 2${i}04 ff0003		#ports 0-5 as security mode
 	    switch reg w 2${i}10 810000c0	#ports 0-5 as transparent port
 	done
 
-	if [ "$1" = "LLLLW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11110111
-		switch vlan set 1 2 00001011
-		#set PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 2
-		switch pvid 5 1
-	elif [ "$1" = "LLLWW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11100111
-		switch vlan set 1 2 00011011
-		#set PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 2
-		switch pvid 4 2
-		switch pvid 5 1
-	elif [ "$1" = "LLWWW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11000111
-		switch vlan set 1 2 00111011
-		#set PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 2
-		switch pvid 4 2
-		switch pvid 5 1
-	elif [ "$1" = "LLWLW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11010111
-		switch vlan set 1 2 00101011
-		#set PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 2
-		switch pvid 5 1
-	elif [ "$1" = "WLLLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 01111111
-		switch vlan set 1 2 10000011
-		#set PVID
-		switch pvid 0 2
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 1
-		switch pvid 5 1
-	elif [ "$1" = "WWLLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 00111111
-		switch vlan set 1 2 11000011
-		#set PVID
-		switch pvid 0 2
-		switch pvid 1 2
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 1
-		switch pvid 5 1
-	elif [ "$1" = "WWWLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 00011111
-		switch vlan set 1 2 11100011
-		#set PVID
-		switch pvid 0 2
-		switch pvid 1 2
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 1
-		switch pvid 5 1
-	elif [ "$1" = "WLWLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 01011111
-		switch vlan set 1 2 10100011
-		#set PVID
-		switch pvid 0 2
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 1
-		switch pvid 5 1
-	elif [ "$1" = "VLANS" ]; then
+	if [ "$1" != "VLANS" ]; then
+	    $LOG "Config internal MT7620 swicth mode $1"
+	    # replace W/L to 0/1 for create masks and add static mask suffix
+	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
+	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
+	    # replace W/L to 2/1 and add space after symbols for set pvids mask
+	    pvids=`echo "$1" | sed 's/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+
+	    # VLAN member ports index 0 vlan 1 mask1
+	    switch vlan set 0 1 $mask1
+	    # VLAN member ports index 1 vlan 2 $mask2
+	    switch vlan set 1 2 $mask2
+
+	    index=0
+	    # set user ports pvid
+	    for pvid in $pvids ; do
+		switch pvid $index $pvid
+		let index=index+1
+	    done
+	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
 	    if [ "$wan_port" = "4" ]; then
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #VLAN member port
+		    #V LAN member port
 		    switch vlan set 0 1 00011111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
 		    switch vlan set 3 4 00100011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 2
 		    switch pvid 1 3
 		    switch pvid 2 4
 		    switch pvid 3 1
 		    switch pvid 4 1
-		    switch pvid 5 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    #VLAN member port
+		    # VLAN member port
 		    switch vlan set 0 1 00111111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 2
 		    switch pvid 1 3
 		    switch pvid 2 1
 		    switch pvid 3 1
 		    switch pvid 4 1
-		    switch pvid 5 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
 		# without bridget ports
-		    #VLAN member port
+		    # VLAN member port
 		    switch vlan set 0 1 01011111
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 4 00100011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 2
 		    switch pvid 1 1
 		    switch pvid 2 4
 		    switch pvid 3 1
 		    switch pvid 4 1
-		    switch pvid 5 1
 		fi
 	    else
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #VLAN member port
+		    # VLAN member port
 		    switch vlan set 0 1 11000111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
 		    switch vlan set 3 4 00100011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 1
 		    switch pvid 1 1
 		    switch pvid 2 4
 		    switch pvid 3 3
 		    switch pvid 4 2
-		    switch pvid 5 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    #VLAN member port
+		    # VLAN member port
 		    switch vlan set 0 1 11100111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 1
 		    switch pvid 1 1
 		    switch pvid 2 1
 		    switch pvid 3 3
 		    switch pvid 4 2
-		    switch pvid 5 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
-		    #VLAN member port
+		    # VLAN member port
 		    switch vlan set 0 1 11010111
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 4 00100011
-		    #set PVID
+		    # set PVID
 		    switch pvid 0 1
 		    switch pvid 1 1
 		    switch pvid 2 1
 		    switch pvid 3 4
 		    switch pvid 4 2
-		    switch pvid 5 1
 		else
 		    $LOG "Error vlan config..."
 		fi
 	    fi
 	fi
 
+	# set cpu port pvid
+	switch pvid 5 1
+
+	# post config
 	switch reg w 3500 00008000		#port 5 link down
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 
-	$LOG "Switch configured for $1 mode."
-
-	#clear mac table if vlan configuration changed
+	# clear mac table if vlan configuration changed
 	switch clear
 }
 
@@ -363,101 +287,46 @@ restore7620Esw()
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 
-	#clear mac table if vlan configuration changed
+	# clear mac table if vlan configuration changed
 	switch clear
 }
 
 config7530Esw()
 {
+	#####################################################################
 	# internal 1000FDX 7530 GSW
-	if [ "$1" = "LLLLW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11110010
-		switch vlan set 1 2 00001100
-		#set external ports PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 2
-	elif [ "$1" = "LLLWW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11100010
-		switch vlan set 1 2 00011100
-		#set external ports PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 2
-		switch pvid 4 2
-	elif [ "$1" = "LLWWW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11000010
-		switch vlan set 1 2 00111100
-		#set external ports PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 2
-		switch pvid 4 2
-	elif [ "$1" = "LLWLW" ]; then
-		#VLAN member port
-		switch vlan set 0 1 11010010
-		switch vlan set 1 2 00101100
-		#set external ports PVID
-		switch pvid 0 1
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 2
-	elif [ "$1" = "WLLLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 01111010
-		switch vlan set 1 2 10000100
-		#set external ports PVID
-		switch pvid 0 2
-		switch pvid 1 1
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 1
-	elif [ "$1" = "WWLLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 00111010
-		switch vlan set 1 2 11000100
-		#set external ports PVID
-		switch pvid 0 2
-		switch pvid 1 2
-		switch pvid 2 1
-		switch pvid 3 1
-		switch pvid 4 1
-	elif [ "$1" = "WWWLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 00011010
-		switch vlan set 1 2 11100100
-		#set external ports PVID
-		switch pvid 0 2
-		switch pvid 1 2
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 1
-	elif [ "$1" = "WLWLL" ]; then
-		#VLAN member port
-		switch vlan set 0 1 01011010
-		switch vlan set 1 2 10100100
-		#set external ports PVID
-		switch pvid 0 2
-		switch pvid 1 1
-		switch pvid 2 2
-		switch pvid 3 1
-		switch pvid 4 1
+	#####################################################################
+	if [ "$1" != "VLANS" ]; then
+	    $LOG "Config internal MT7621 swicth mode $1"
+	    # replace W/L to 0/1 for create masks and add static mask suffix
+	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
+	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
+	    # replace W/L to 2/1 and add space after symbols for set pvids mask
+	    pvids=`echo "$1" | sed 's/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+
+	    # VLAN member ports index 0 vlan 1 mask1
+	    switch vlan set 0 1 $mask1
+	    # VLAN member ports index 1 vlan 2 $mask2
+	    switch vlan set 1 2 $mask2
+
+	    index=0
+	    # set user ports pvid
+	    for pvid in $pvids ; do
+		switch pvid $index $pvid
+		let index=index+1
+	    done
+
+	else
+	    echo "EXTERNAL VLANS NOW NOT SUPPORT - NEED FIX IT."
 	fi
 
+	# post config
 	for i in `seq 0 6`; do
-	    switch reg w 2${i}04 ff0003		#ports 0-6 as security mode
+	    switch reg w 2${i}04 ff0003	#ports 0-6 as security mode
 	    switch reg w 2${i}10 810000c0	#ports 0-6 as transparent port, admit all frames and disable special tag
 	done
 
-	# set cpu ports PVID
+	# set cpu ports pvids
 	switch pvid 5 2
 	switch pvid 6 1
 
@@ -486,8 +355,7 @@ restore7530Esw()
 eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
 
 if [ "$1" = "3" ]; then
-	SWITCH_MODE=3
-	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
+	if [ "$2" = "LLLLL" ]; then
 		restore7620Esw
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
@@ -499,27 +367,13 @@ if [ "$1" = "3" ]; then
 		reset_wan_phys
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
-	elif [ "$2" = "LLLLW" ]; then
-		config7620Esw LLLLW
-	elif [ "$2" = "LLLWW" ]; then
-		config7620Esw LLLWW
-	elif [ "$2" = "LLWWW" ]; then
-		config7620Esw LLWWW
-	elif [ "$2" = "WLLLL" ]; then
-		config7620Esw WLLLL
-	elif [ "$2" = "WWLLL" ]; then
-		config7620Esw WWLLL
-	elif [ "$2" = "WWWLL" ]; then
-		config7620Esw WWWLL
 	elif [ "$2" = "VLANS" ]; then
 		config7620Esw VLANS
 	else
-		echo "unknown vlan type $2"
-		echo ""
-		usage $0
+		config7620Esw $2
 	fi
 elif [ "$1" = "4" ]; then
-	if [ "$2" = "0" ] || [ "$2" = "LLLLL" ]; then
+	if [ "$2" = "LLLLL" ]; then
 		restore7530Esw
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
@@ -531,26 +385,10 @@ elif [ "$1" = "4" ]; then
 		reset_wan_phys
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
-	elif [ "$2" = "LLLLW" ]; then
-		config7530Esw LLLLW
-	elif [ "$2" = "LLLWW" ]; then
-		config7530Esw LLLWW
-	elif [ "$2" = "LLWWW" ]; then
-		config7530Esw LLWWW
-	elif [ "$2" = "LLWLW" ]; then
-		config7530Esw LLWWW
-	elif [ "$2" = "WLLLL" ]; then
-		config7530Esw WLLLL
-	elif [ "$2" = "WWLLL" ]; then
-		config7530Esw WWLLL
-	elif [ "$2" = "WWWLL" ]; then
-		config7530Esw WWWLL
-	elif [ "$2" = "WLWLL" ]; then
-		config7530Esw WWWLL
+	elif [ "$2" = "VLANS" ]; then
+		config7620Esw VLANS
 	else
-		echo "unknown vlan type $2"
-		echo ""
-		usage $0
+		config7530Esw $2
 	fi
 else
 	echo "unknown swith type $1"

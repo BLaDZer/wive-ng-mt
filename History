@@ -612,6 +612,7 @@
 <br>
 <br>
 <b>2.5.x</b><br>
+1) init.d: unify swicth portmap logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
