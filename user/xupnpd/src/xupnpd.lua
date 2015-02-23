@@ -28,9 +28,8 @@ cfg.embedded=false
 -- 0-off, 1-basic, 2-messages
 cfg.debug=0
 
--- WDTV and other (all Realtek) intel DLNA microstack based players compatible mode
--- Limit http content length to 64k
--- cfg.wdtv=true
+-- WDTV and other (example all Realtek) based in intel DLNA microstack based players compatible mode (limit http content length to 64k)
+cfg.wdtv=true
 
 -- external 'udpxy' url for multicast playlists (udp://@...)
 -- cfg.udpxy_url='http://gateway.lo:81'
