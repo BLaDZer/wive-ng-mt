@@ -373,6 +373,7 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("krnlPppoePass"), "pppoe_pass", 0, T("0") },
 	{ T("krnlIpv6Pass"), "ipv6_pass", 0, T("0") },
 	{ T("dhcpSwReset"), "dhcpSwReset", 0, T("0") },
+	{ T("vlanDoubleTag"), "vlanDoubleTag", 0, T("0") },
 	{ T("offloadMode"), "offloadMode", 0, T("0") },
 	{ T("hw_nat_wifiPT"), "hw_nat_wifi", 0, T("0") },
 	{ T("hw_nat_udpPT"), "hw_nat_udp", 0, T("0") },

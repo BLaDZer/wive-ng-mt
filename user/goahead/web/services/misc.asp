@@ -181,7 +181,8 @@ function initValue()
 	form.udpxyMode.value = defaultNumber("<% getCfgGeneral(1, "UDPXYMode"); %>", "0");
 	form.udpxyPort.value = defaultNumber("<% getCfgGeneral(1, "UDPXYPort"); %>", "81");
 	form.watchdogEnable.value = defaultNumber("<% getCfgGeneral(1, "WatchdogEnabled"); %>", "0");
-	form.dhcpSwReset.value = defaultNumber("<% getCfgGeneral(1, "dhcpSwReset"); %>", "0");
+	form.dhcpSwReset.value = defaultNumber("<% getCfgGeneral(1, "vlanDoubleTag"); %>", "0");
+	form.vlanDoubleTag.value = defaultNumber("<% getCfgGeneral(1, "dhcpSwReset"); %>", "0");
 
 	form.natFastpath.value = defaultNumber("<% getCfgGeneral(1, "natFastpath"); %>", "1");
 	form.routeFastpath.value = defaultNumber("<% getCfgGeneral(1, "routeFastpath"); %>", "1");
@@ -715,6 +716,13 @@ function displayServiceStatus()
           <!-- Others -->
           <tr>
             <td class="title" colspan="5">Others</td>
+          </tr>
+          <tr>
+            <td class="head">Vlan double tag QinQ support</td>
+            <td colspan="4"><select name="vlanDoubleTag" class="half">
+                <option value="0">Disable</option>
+                <option value="1">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head">Reinit WAN if DHCP lease fail</td>
