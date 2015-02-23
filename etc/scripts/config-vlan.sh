@@ -320,6 +320,8 @@ config7530Esw()
          else
 	    ######################################################################
 	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
+	    # ToDo: config switch with black holes for vlan bridgets porst by	 #
+	    # 		config 7530 W0LLL command and add needed calls for bridge#
 	    ######################################################################
 	    $LOG "External vlan portmap not supported NOW!!!"
 	    config7530Esw LLLLW
