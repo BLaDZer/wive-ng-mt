@@ -89,8 +89,8 @@ start() {
 
     if [ "$CONFIG_RAETH_GMAC2" = "y" ] && [ "$CONFIG_GE2_INTERNAL_GMAC_P5_P6_PRECONFIG" = "y" ]; then
 	# need reinit switch part (switch config always dropped at ifup/down root interface)
-	$LOG "##### Reconfigure switch partition $CMODE #####"
-	config-vlan.sh $SWITCH_MODE $CMODE
+	$LOG "##### Reconfigure switch partition $switchpart #####"
+	config-vlan.sh $switchmode $switchpart
     fi
 
     if [ "$wanConnectionMode" = "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then

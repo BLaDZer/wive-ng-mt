@@ -78,7 +78,7 @@ set_portmap() {
 ##############################################################################
 # Internal ESW
 ##############################################################################
-if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
+if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode" != "" ]; then
     ##########################################################################
     # enable/disable QinQ support
     ##########################################################################
@@ -99,7 +99,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
     ##########################################################################
     # configure switch parts depended by operation mode
     ##########################################################################
-    config-vlan.sh $SWITCH_MODE $CMODE
+    config-vlan.sh $switchmode $switchpart
     ##########################################################################
 fi
 }
@@ -108,14 +108,14 @@ fi
 # Set speed and duplex modes per port
 ##########################################################################
 set_perport_physmode() {
-    if [ -f /bin/ethtool ] && [ "$PROC" != "" ]; then
+    if [ -f /bin/ethtool ] && [ "$procdir" != "" ]; then
 	##################################
 	# start configure by ethtool
 	##################################
 	phys_portN=4
 	for num in `seq 1 5`; do
 	    # select switch port for tune
-	    echo "$phys_portN" > $PROC
+	    echo "$phys_portN" > $procdir
 	    # get mode for current port
 	    port_swmode=`nvram_get 2860 port"$num"_swmode`
 	    if [ "$port_swmode" != "auto" ] && [ "$port_swmode" != "" ]; then

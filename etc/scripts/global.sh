@@ -294,18 +294,18 @@ set_vlan_map()
 
 get_switch_type() {
     if [ -f /proc/mt7620/gmac ]; then
-	PROC="/proc/mt7620/gmac"
-	SWITCH_MODE=3
+	procdir="/proc/mt7620/gmac"
+	switchmode=3
     elif [ -f /proc/mt7628/gmac ]; then
-	PROC="/proc/mt7628/gmac"
-	SWITCH_MODE=3
+	procdir="/proc/mt7628/gmac"
+	switchmode=3
     elif [ -f /proc/mt7621/gmac ]; then
-	PROC="/proc/mt7621/gmac"
-	SWITCH_MODE=4
+	procdir="/proc/mt7621/gmac"
+	switchmode=4
     else
 	$LOG "No switch in system!!!"
-	PROC=
-	SWITCH_MODE=
+	procdir=
+	switchmode=
     fi
 }
 
@@ -313,38 +313,38 @@ get_switch_part() {
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
 	# manual vlan configured
 	if [ "$VlanEnabled" = "1" ]; then
-		CMODE="VLANS"
+		switchpart="VLANS"
 	# tv and sip
 	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
-		CMODE="WWWLL"
+		switchpart="WWWLL"
             else
-		CMODE="LLWWW"
+		switchpart="LLWWW"
 	    fi
 	# only tv
 	elif [ "$tv_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
-		CMODE="WWLLL"
+		switchpart="WWLLL"
             else
-		CMODE="LLLWW"
+		switchpart="LLLWW"
 	    fi
 	# only sip
 	elif [ "$sip_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
-		CMODE="WLWLL"
+		switchpart="WLWLL"
             else
-		CMODE="LLWLW"
+		switchpart="LLWLW"
 	    fi
 	# without bridget ports
 	else
 	    if [ "$wan_port" = "4" ]; then
-		CMODE="WLLLL"
+		switchpart="WLLLL"
             else
-		CMODE="LLLLW"
+		switchpart="LLLLW"
 	    fi
 	fi
     elif [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
-		CMODE="LLLLL"
+		switchpart="LLLLL"
     fi
 }
 
