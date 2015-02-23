@@ -317,7 +317,7 @@ config7530Esw()
 	done
 	$LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
 
-	if [ "$VlanEnabled" = "1" ] && [ "$tv_portVLAN" != "" || "$sip_portVLAN" != "" ]; then
+	if [ "$VlanEnabled" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
 	    ######################################################################
 	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
 	    ######################################################################
@@ -355,7 +355,7 @@ restore7530Esw()
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port VlanEnabled tv_portVLAN sip_portVLAN`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
