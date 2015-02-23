@@ -142,7 +142,7 @@ reinit_all_phys() {
 
 restore7620Esw()
 {
-        $LOG "Restore internal MT7620 switch mode to dump"
+        $LOG "Restore internal MT7620 switch mode to dumb mode"
 	for port in `seq 0 7`; do
 	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
@@ -298,7 +298,7 @@ config7620Esw()
 
 restore7530Esw()
 {
-        $LOG "Restore internal MT7621 switch mode to dump"
+        $LOG "Restore internal MT7621 switch mode to dumb mode"
 	for port in `seq 0 6`; do
 	    switch reg w 2${port}04 ff0000		#ports 0-6 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
