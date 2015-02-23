@@ -614,6 +614,7 @@
 <b>2.5.x</b><br>
 1) init.d: unify swicth portmap logic.<br>
 2) init.d: fix vlan enabled check.<br>
+3) init.d: optimize switch reinit procesure.<br>
 <br>
 <br>
 <b>TODO:</b><br>

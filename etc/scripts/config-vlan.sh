@@ -140,11 +140,31 @@ reinit_all_phys() {
 	reset_all_phys
 }
 
+restore7620Esw()
+{
+        $LOG "Restore internal MT7620 switch mode to dump"
+	for port in `seq 0 7`; do
+	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
+	done
+
+	switch reg w 3500 00008000		#port 5 link down
+	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
+	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
+
+	# clear mac table if vlan configuration changed
+	switch clear
+}
+
 config7620Esw()
 {
 	#####################################################################
 	# now config support only internal 100FDX ESW
 	#####################################################################
+
+	# cleanup switch
+	restore7620Esw
+
 	# prepare switch
 	for port in `seq 6 7`; do
 	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
@@ -276,19 +296,15 @@ config7620Esw()
 	switch clear
 }
 
-restore7620Esw()
+restore7530Esw()
 {
-        $LOG "Restore internal MT7620 switch mode to dump"
-	for port in `seq 0 7`; do
-	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
-	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
+        $LOG "Restore internal MT7621 switch mode to dump"
+	for port in `seq 0 6`; do
+	    switch reg w 2${port}04 ff0000		#ports 0-6 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
 	done
 
-	switch reg w 3500 00008000		#port 5 link down
-	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
-	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
-
-	# clear mac table if vlan configuration changed
+	#clear mac table if vlan configuration changed
 	switch clear
 }
 
@@ -297,6 +313,10 @@ config7530Esw()
 	#####################################################################
 	# internal 1000FDX 7530 GSW
 	#####################################################################
+
+	# cleanup swicth
+	restore7530Esw
+
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7621 switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
@@ -344,18 +364,6 @@ config7530Esw()
 	# clear mac table if vlan configuration changed
 	switch clear
 
-}
-
-restore7530Esw()
-{
-        $LOG "Restore internal MT7621 switch mode to dump"
-	for port in `seq 0 6`; do
-	    switch reg w 2${port}04 ff0000		#ports 0-6 matrix mode
-	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
-	done
-
-	#clear mac table if vlan configuration changed
-	switch clear
 }
 
 eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
