@@ -233,7 +233,7 @@ switchworkaround() {
     # for restore normal swich work after reconfigure PPE and reinit eth2 in internet.sh
     if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchpart" = "LLLLL" ]; then
         $LOG "Reconfigure switch after eth2 reinit..."
-        /etc/scripts/config-switch.sh
+	config-vlan.sh $switchmode $switchpart
     fi
 }
 

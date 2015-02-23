@@ -12,7 +12,7 @@ start() {
 
     # lan/wan particions and hardware adresses preconfigure
     if [ ! -f /tmp/bootgood ]; then
-	/etc/scripts/config-switch.sh
+	config-switch.sh
     fi
 
     # bridge preconfigure if not ethernet converter mode
