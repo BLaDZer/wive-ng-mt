@@ -26,7 +26,7 @@ doublevlantag() {
 	    $LOG "Double vlan tag disabled."
 	    DOUBLE_TAG=0
 	fi
-	sysctl -wq net.core.vlanDoubleTag="$DOUBLE_TAG"
+	sysctl -wq net.core.vlan_double_tag="$DOUBLE_TAG"
     fi
 }
 
