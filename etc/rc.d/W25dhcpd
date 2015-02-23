@@ -110,10 +110,10 @@ start() {
 
     # if dnsmasq disabled need reset LAN ports for clients renew params
     if [ "$dnsPEnabled" = "0" -a "$wan_static_dns" != "on" ] || [ "$dhcpEnabled" = "2" ]; then
-	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
-		$LOG "Reinit LAN ports."
-		config-vlan.sh $switchmode RRRRR
-	    fi
+	if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchpart" != "LLLLL" ]; then
+	    $LOG "Reinit LAN ports."
+	    config-vlan.sh $switchmode RRRRR
+	fi
     fi
 
 }

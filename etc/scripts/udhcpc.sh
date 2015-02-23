@@ -81,7 +81,7 @@ case "$1" in
 	# disable forward for paranoid users
 	sysctl -wq net.ipv4.conf.all.forwarding=0
 	# Workaround for infinite OFFER wait
-	if [ "$OperationMode" != "2" ] && [ "$dhcpSwReset" = "1" ]; then
+	if [ "$switchpart" != "LLLLL" ] && [ "$dhcpSwReset" = "1" ]; then
 	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
 		$LOG "Restart WAN switch port."
 		config-vlan.sh $switchmode WWWWW

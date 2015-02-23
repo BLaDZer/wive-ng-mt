@@ -36,7 +36,7 @@ doublevlantag() {
 configs_system_vlans() {
     if [ ! -f /tmp/bootgood ]; then
 	# not need wan/lan vlans in modes with all lan ports in one bridge
-	if [ "$OperationMode" != "0" ] && [ "$OperationMode" != "2" ]  && [ "$OperationMode" != "3" ]; then
+	if [ "$switchpart" != "LLLLL" ]; then
 	    $LOG "Add vlans interfaces"
 	    if [ ! -d /proc/sys/net/ipv4/conf/eth2.1 ]; then
 		vconfig add eth2 1
@@ -155,7 +155,7 @@ set_perport_physmode() {
 ##########################################################################
 set_dhcptouch_portnum() {
     if [ "$CONFIG_RAETH_DHCP_TOUCH" != "" ]; then
-        if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ] ; then
+        if [ "$switchpart" = "LLLLL" ]; then
 	    # disable dhcp renew from driver
 	    sysctl -wq net.ipv4.send_sigusr_dhcpc=9
 	else
