@@ -4,7 +4,7 @@
 # executing them in numerical order.
 for exname in /etc/rc.d/S??* ;do
      # Ignore dangling symlinks (if any).
-     [ ! -f "$exnmae" ] && continue
+     [ ! -f "$exname" ] && continue
      [ ! -x "$exname" ] && continue
      case "$exname" in
 	*.sh)
