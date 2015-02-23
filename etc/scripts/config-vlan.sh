@@ -317,7 +317,90 @@ config7530Esw()
 	    done
 
 	else
-	    echo "EXTERNAL VLANS NOW NOT SUPPORT - NEED FIX IT."
+	    $LOG "TV/STB/SIP with VLANs mode enabled."
+	    # internal VLAN for TV = 3, for SIP = 4
+	    if [ "$wan_port" = "4" ]; then
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    #V LAN member port
+		    switch vlan set 0 1 00011010
+		    switch vlan set 1 2 10000100
+		    switch vlan set 2 3 01000000
+		    switch vlan set 3 4 00100000
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 00111010
+		    switch vlan set 1 2 10000100
+		    switch vlan set 2 3 01000000
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 1
+		    switch pvid 3 1
+		    switch pvid 4 1
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		# without bridget ports
+		    # VLAN member port
+		    switch vlan set 0 1 01011010
+		    switch vlan set 1 2 10000100
+		    switch vlan set 2 4 00100000
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		fi
+	    else
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11000010
+		    switch vlan set 1 2 00001100
+		    switch vlan set 2 3 00010000
+		    switch vlan set 3 4 00100000
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 3
+		    switch pvid 4 2
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11100010
+		    switch vlan set 1 2 00001100
+		    switch vlan set 2 3 00010000
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 3
+		    switch pvid 4 2
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11010010
+		    switch vlan set 1 2 00001100
+		    switch vlan set 2 4 00100000
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 4
+		    switch pvid 4 2
+		else
+		    $LOG "Error vlan config!"
+		fi
+	    fi
 	fi
 
 	# post config
