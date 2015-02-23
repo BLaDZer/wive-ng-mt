@@ -297,32 +297,33 @@ config7530Esw()
 	#####################################################################
 	# internal 1000FDX 7530 GSW
 	#####################################################################
-	$LOG "Config internal MT7621 switch mode $1"
-	# replace W/L to 0/1 for create masks and add static mask suffix
-	mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
-	mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
-	# replace W/L to 2/1 and add space after symbols for set pvids mask
-	pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+	if [ "$1" != "VLANS" ]; then
+	    $LOG "Config internal MT7621 switch mode $1"
+	    # replace W/L to 0/1 for create masks and add static mask suffix
+	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
+	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
+	    # replace W/L to 2/1 and add space after symbols for set pvids mask
+	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
 
-        # VLAN member ports index 0 vlan 1 mask1
-	switch vlan set 0 1 $mask1
-	# VLAN member ports index 1 vlan 2 $mask2
-	switch vlan set 1 2 $mask2
+	    # VLAN member ports index 0 vlan 1 mask1
+	    switch vlan set 0 1 $mask1
+	    # VLAN member ports index 1 vlan 2 $mask2
+	    switch vlan set 1 2 $mask2
 
-	index=0
-	# set user ports pvid
-	for pvid in $pvids ; do
-	    switch pvid $index $pvid
-	    let index=index+1
-	done
-	$LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
-
-	if [ "$VlanEnabled" = "1" ] && [ "$tv_portVLAN" != "" -o "$sip_portVLAN" != "" ]; then
+	    index=0
+	    # set user ports pvid
+	    for pvid in $pvids ; do
+		switch pvid $index $pvid
+		let index=index+1
+	    done
+	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
+         else
 	    ######################################################################
 	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
 	    ######################################################################
-	    $LOG "External vlan portmap not supportes NOW."
-        fi
+	    $LOG "External vlan portmap not supported NOW!!!"
+	    config7530Esw LLLLW
+	fi
 
 	# post config
 	for port in `seq 0 6`; do
@@ -355,7 +356,7 @@ restore7530Esw()
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port VlanEnabled tv_portVLAN sip_portVLAN`
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
