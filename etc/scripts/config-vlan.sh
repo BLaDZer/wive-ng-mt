@@ -176,6 +176,7 @@ config7620Esw()
 		switch pvid $index $pvid
 		let index=index+1
 	    done
+	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
 	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -314,7 +315,7 @@ config7530Esw()
 	    switch pvid $index $pvid
 	    let index=index+1
 	done
-	$LOG "GSW config: mask1:$mask1,mask2:$mask2,pvids:$pvids"
+	$LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
 
 	if [ "$VlanEnabled" = "1" ] && [ "$tv_portVLAN" != "" || "$sip_portVLAN" != "" ]; then
 	    ######################################################################
@@ -388,7 +389,7 @@ elif [ "$1" = "4" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "VLANS" ]; then
-		config7620Esw VLANS
+		config7530Esw VLANS
 	else
 		config7530Esw $2
 	fi
