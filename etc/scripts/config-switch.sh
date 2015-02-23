@@ -81,7 +81,6 @@ set_portmap() {
 if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MODE" != "" ]; then
     ##########################################################################
     if [ "$CMODE" != "LLLLL" ]; then
-	$LOG '######### Clear switch partition  ###########'
 	config-vlan.sh $SWITCH_MODE LLLLL
     fi
     ##########################################################################
@@ -102,7 +101,6 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$SWITCH_MOD
     ##########################################################################
     # configure switch parts depended by operation mode
     ##########################################################################
-    $LOG "##### Config switch partition $SWITCH_MODE $CMODE #####"
     config-vlan.sh $SWITCH_MODE $CMODE
 fi
 }

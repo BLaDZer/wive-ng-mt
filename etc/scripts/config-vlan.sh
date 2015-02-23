@@ -158,7 +158,7 @@ config7620Esw()
 	done
 
 	if [ "$1" != "VLANS" ]; then
-	    $LOG "Config internal MT7620 swicth mode $1"
+	    $LOG "Config internal MT7620 switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
 	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
 	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
@@ -258,7 +258,7 @@ config7620Esw()
 		    switch pvid 3 4
 		    switch pvid 4 2
 		else
-		    $LOG "Error vlan config..."
+		    $LOG "Error vlan config!"
 		fi
 	    fi
 	fi
@@ -277,7 +277,7 @@ config7620Esw()
 
 restore7620Esw()
 {
-	$LOG "restore ESW to dump switch mode"
+        $LOG "Restore internal MT7620 switch mode to dump"
 	for i in `seq 0 7`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-7 matrix mode
 	    switch reg w 2${i}10 810000c0 	#ports 0-7 as transparent mode
@@ -297,7 +297,7 @@ config7530Esw()
 	# internal 1000FDX 7530 GSW
 	#####################################################################
 	if [ "$1" != "VLANS" ]; then
-	    $LOG "Config internal MT7621 swicth mode $1"
+	    $LOG "Config internal MT7621 switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
 	    mask1=`echo "$1" | sed 's/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
 	    mask2=`echo "$1" | sed 's/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
@@ -342,7 +342,7 @@ config7530Esw()
 
 restore7530Esw()
 {
-	$LOG "restore GSW to dump switch mode"
+        $LOG "Restore internal MT7621 switch mode to dump"
 	for i in `seq 0 6`; do
 	    switch reg w 2${i}04 ff0000		#ports 0-6 matrix mode
 	    switch reg w 2${i}10 810000c0 	#ports 0-6 as transparent mode
