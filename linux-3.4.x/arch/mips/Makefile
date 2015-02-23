@@ -171,15 +171,6 @@ endif
 endif
 
 #
-# Tune for Ralink CPUs (only replace tune, default allready 24kc)
-#
-#cflags-$(CONFIG_RALINK_RT3052)	+= -mtune=24kc
-cflags-$(CONFIG_RALINK_RT3883)	+= -mtune=74kc
-#cflags-$(CONFIG_RALINK_RT5350)	+= -mtune=24kc
-#cflags-$(CONFIG_RALINK_MT7620)	+= -mtune=24kc
-cflags-$(CONFIG_RALINK_MT7621)	+= -mtune=1004kc
-
-#
 # Firmware support
 #
 libs-$(CONFIG_ARC)		+= arch/mips/fw/arc/
