@@ -24,14 +24,14 @@ usage() {
 }
 
 disable_all_ports() {
-        for i in `seq 0 4`; do
-	    mii_mgr -s -p $i -r 0 -v 0x0800
+        for port in `seq 0 4`; do
+	    mii_mgr -s -p $port -r 0 -v 0x0800
 	done
 }
 
 enable_all_ports() {
-	for i in `seq 0 4`; do
-	    mii_mgr -s -p $i -r 0 -v 0x9000
+	for port in `seq 0 4`; do
+	    mii_mgr -s -p $port -r 0 -v 0x9000
 	done
 }
 
@@ -108,16 +108,16 @@ reset_all_phys() {
 	fi
 
 	# disable ports
-	for i in `seq $start $end`; do
-    	    link_down $i
+	for port in `seq $start $end`; do
+    	    link_down $port
 	done
 
 	# force Windows clients to renew IP and update DNS server
 	sleep 1
 
 	# enable ports
-	for i in `seq $start $end`; do
-    	    link_up $i
+	for port in `seq $start $end`; do
+    	    link_up $port
 	done
 }
 
@@ -146,15 +146,15 @@ config7620Esw()
 	# now config support only internal 100FDX ESW
 	#####################################################################
 	# prepare switch
-	for i in `seq 6 7`; do
-	    switch reg w 2${i}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
-	    switch reg w 2${i}10 8100000	#ports 6-7 special tag disable
-	    switch reg w 2${i}10 81000000	#ports 6-7 is user port, admit all frames
+	for port in `seq 6 7`; do
+	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
+	    switch reg w 2${port}10 8100000	#ports 6-7 special tag disable
+	    switch reg w 2${port}10 81000000	#ports 6-7 is user port, admit all frames
 	done
 
-	for i in `seq 0 5`; do
-	    switch reg w 2${i}04 ff0003		#ports 0-5 as security mode
-	    switch reg w 2${i}10 810000c0	#ports 0-5 as transparent port
+	for port in `seq 0 5`; do
+	    switch reg w 2${port}04 ff0003		#ports 0-5 as security mode
+	    switch reg w 2${port}10 810000c0	#ports 0-5 as transparent port
 	done
 
 	if [ "$1" != "VLANS" ]; then
@@ -278,9 +278,9 @@ config7620Esw()
 restore7620Esw()
 {
         $LOG "Restore internal MT7620 switch mode to dump"
-	for i in `seq 0 7`; do
-	    switch reg w 2${i}04 ff0000		#ports 0-7 matrix mode
-	    switch reg w 2${i}10 810000c0 	#ports 0-7 as transparent mode
+	for port in `seq 0 7`; do
+	    switch reg w 2${port}04 ff0000		#ports 0-7 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
 	done
 
 	switch reg w 3500 00008000		#port 5 link down
@@ -404,9 +404,9 @@ config7530Esw()
 	fi
 
 	# post config
-	for i in `seq 0 6`; do
-	    switch reg w 2${i}04 ff0003	#ports 0-6 as security mode
-	    switch reg w 2${i}10 810000c0	#ports 0-6 as transparent port, admit all frames and disable special tag
+	for port in `seq 0 6`; do
+	    switch reg w 2${port}04 ff0003	#ports 0-6 as security mode
+	    switch reg w 2${port}10 810000c0	#ports 0-6 as transparent port, admit all frames and disable special tag
 	done
 
 	# set cpu ports pvids
@@ -424,9 +424,9 @@ config7530Esw()
 restore7530Esw()
 {
         $LOG "Restore internal MT7621 switch mode to dump"
-	for i in `seq 0 6`; do
-	    switch reg w 2${i}04 ff0000		#ports 0-6 matrix mode
-	    switch reg w 2${i}10 810000c0 	#ports 0-6 as transparent mode
+	for port in `seq 0 6`; do
+	    switch reg w 2${port}04 ff0000		#ports 0-6 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
 	done
 
 	#clear mac table if vlan configuration changed

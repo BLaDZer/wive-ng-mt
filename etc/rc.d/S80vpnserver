@@ -46,9 +46,9 @@ gen_configs() {
 # Generate passord files. Support 10 users
 configured=0
 echo > $ppp/chap-secrets
-for i in `seq 0 9`; do
-    l2tp_srv_user=`nvram_get 2860 l2tp_srv_user"$i"`
-    l2tp_srv_pass=`nvram_get 2860 l2tp_srv_pass"$i"`
+for usernum in `seq 0 9`; do
+    l2tp_srv_user=`nvram_get 2860 l2tp_srv_user"$usernum"`
+    l2tp_srv_pass=`nvram_get 2860 l2tp_srv_pass"$usernum"`
     if [ "$l2tp_srv_user" != "" ] && [ "$l2tp_srv_pass" != "" ]; then
 	printf "$l2tp_srv_user * $l2tp_srv_pass *\n" >> $ppp/chap-secrets
 	configured=1

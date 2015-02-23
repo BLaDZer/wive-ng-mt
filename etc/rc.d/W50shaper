@@ -53,9 +53,9 @@ fi
 
 set_def() {
     INTERFACES=`ls /proc/sys/net/ipv4/conf/ | grep -vE "lo|all|default"`
-    for i in $INTERFACES; do
-	tc qdisc del dev $i root > /dev/null 2>&1
-	tc qdisc del dev $i ingress > /dev/null 2>&1
+    for ifname in $INTERFACES; do
+	tc qdisc del dev $ifname root > /dev/null 2>&1
+	tc qdisc del dev $ifname ingress > /dev/null 2>&1
     done
 }
 

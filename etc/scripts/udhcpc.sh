@@ -161,16 +161,16 @@ case "$1" in
 		fi
 		# always parse router variable
 		metric=0
-		for i in $router ; do
-		    # add route $i/32:0.0.0.0 dev $interface metric $metric to route list
-		    ROUTELIST_FGW="$ROUTELIST_FGW $i/32:0.0.0.0:$interface:"
+		for raddr in $router ; do
+		    # add route $raddr/32:0.0.0.0 dev $interface metric $metric to route list
+		    ROUTELIST_FGW="$ROUTELIST_FGW $raddr/32:0.0.0.0:$interface:"
 		    if [ "$REPLACE_DGW" = "1" ]; then
-		        # add default $i dev $interface metric $metric to route dgw list
-		        ROUTELIST_DGW="$ROUTELIST_DGW default:$i:$interface:$metric"
+		        # add default $raddr dev $interface metric $metric to route dgw list
+		        ROUTELIST_DGW="$ROUTELIST_DGW default:$raddr:$interface:$metric"
 		        # save first dgw with metric=0 to use in corbina hack
 		        if [ "$metric" = "0" ]; then
-			    echo $i > /tmp/default.gw
-			    first_dgw="$i"
+			    echo $raddr > /tmp/default.gw
+			    first_dgw="$raddr"
 			fi
 			# increase metric only for dgw
 			: $(( metric += 1 ))
@@ -179,9 +179,9 @@ case "$1" in
 	    fi
 	    # classful routes
 	    if [ "$routes" != "" ]; then
-		for i in $routes; do
-		    NW=`echo $i | sed 's,/.*,,'`
-		    GW=`echo $i | sed 's,.*/,,'`
+		for raddr in $routes; do
+		    NW=`echo $raddr | sed 's,/.*,,'`
+		    GW=`echo $raddr | sed 's,.*/,,'`
 		    shift 1
 		    MASK=`echo $NW | awk '{w=32; split($0,a,"."); \
 			for (i=4; i>0; i--) {if (a[i]==0) w-=8; else {\
@@ -220,8 +220,8 @@ case "$1" in
 		$LOG "Apply route list without modify DGW."
 	    fi
 	    # aplly parsed route
-	    for i in `echo $ROUTELIST | sed 's/ /\n/g'`; do
-		IPCMD=`echo $i|awk '{split($0,a,":"); \
+	    for raddr in `echo $ROUTELIST | sed 's/ /\n/g'`; do
+		IPCMD=`echo $raddr | awk '{split($0,a,":"); \
 		    printf " %s via %s dev %s", a[1], a[2], a[3]; \
 		    if (a[4]!="") printf " metric %s", a[4]}'`
 		ip -4 route replace $IPCMD
@@ -266,10 +266,10 @@ case "$1" in
 		    if [ "$dns" != "" ]; then
 			$LOG "Renew DNS from dhcp $dns $domain"
 			# parce dnsservers
-			for i in $dns ; do
-	    		    echo nameserver $i >> $RESOLV_CONF
-			    ROUTE_NS=`ip -4 -o route get "$i" | cut -f -3 -d " "`
-			    if [ "$ROUTE_NS" != "" ] && [ "$i" != "$first_dgw" ]; then
+			for daddr in $dns ; do
+	    		    echo nameserver $daddr >> $RESOLV_CONF
+			    ROUTE_NS=`ip -4 -o route get "$daddr" | cut -f -3 -d " "`
+			    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
 				$LOG "Add static route to DNS $ROUTE_NS dev $interface"
 				REPLACE="ip route replace $ROUTE_NS dev $interface"
 				$REPLACE

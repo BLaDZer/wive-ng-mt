@@ -284,11 +284,11 @@ get_vlan_config() {
 
 set_vlan_map()
 {
-    for i in `seq 0 7`; do
+    for vlannum in `seq 0 7`; do
 	# vlan priority tag => skb->priority mapping
-        vconfig set_ingress_map $1 $i $i
+        vconfig set_ingress_map $1 $vlannum $vlannum
 	# skb->priority => vlan priority tag mapping
-        vconfig set_egress_map $1  $i $i
+        vconfig set_egress_map $1  $vlannum $vlannum
     done
 }
 

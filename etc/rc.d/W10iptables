@@ -320,9 +320,9 @@ start() {
 	if [ "$PPP_CONNECT" = "on" ]; then
 	    $LOG "Call to add VPN netfilter rules."
 	    PPPIFLIST=`ip addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
-	    for i in $PPPIFLIST; do
+	    for pppnum in $PPPIFLIST; do
 		if [ -e /tmp/ppp_firewall_$i ]; then
-		    eval "/tmp/ppp_firewall_$i"
+		    eval "/tmp/ppp_firewall_$pppnum"
 		fi
 	    done
 	fi

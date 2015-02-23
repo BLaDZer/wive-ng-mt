@@ -114,11 +114,11 @@ set_perport_physmode() {
 	# start configure by ethtool
 	##################################
 	phys_portN=4
-	for i in `seq 1 5`; do
+	for num in `seq 1 5`; do
 	    # select switch port for tune
 	    echo "$phys_portN" > $PROC
 	    # get mode for current port
-	    port_swmode=`nvram_get 2860 port"$i"_swmode`
+	    port_swmode=`nvram_get 2860 port"$num"_swmode`
 	    if [ "$port_swmode" != "auto" ] && [ "$port_swmode" != "" ]; then
 		$LOG ">>> Port $phys_portN set mode $port_swmode <<<"
 		# first disable autoneg

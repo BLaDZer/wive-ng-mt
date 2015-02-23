@@ -157,25 +157,25 @@ wlan_down_all() {
     fi
     # second down multiple vifs
     if [ "$first_wlan_wds" != "" ]; then
-	for i in `seq 0 3`; do
-	    delif_from_br ${first_wlan_wds}${i}
+	for ifnum in `seq 0 3`; do
+	    delif_from_br ${first_wlan_wds}${ifnum}
 	done
     fi
     if [ "$second_wlan_wds" != "" ]; then
-	for i in `seq 0 3`; do
-	    delif_from_br ${second_wlan_wds}${i}
+	for ifnum in `seq 0 3`; do
+	    delif_from_br ${second_wlan_wds}${ifnum}
 	done
     fi
     # next down second radio module to
     if [ "$second_wlan" != "" ]; then
-	for i in `seq 7 -1 0`; do
-	    delif_from_br ${second_wlan}${i}
+	for ifnum in `seq 7 -1 0`; do
+	    delif_from_br ${second_wlan}${ifnum}
 	done
     fi
     # root and mbssid interfaces must down end
     if [ "$first_wlan" != "" ]; then
-	for i in `seq 7 -1 0`; do
-	    delif_from_br ${first_wlan}${i}
+	for ifnum in `seq 7 -1 0`; do
+	    delif_from_br ${first_wlan}${ifnum}
 	done
     fi
 }

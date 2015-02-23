@@ -14,12 +14,12 @@ start() {
 	    set_vlan_map eth2.3
 	    ip link set eth2.3 up
 	    brctl addif "$vlantvif" eth2.3
-	    for i in $tv_portVLAN; do
-		$LOG "Add vlan $i for TV/STB port input (WAN) $tv_portVLAN"
-		vconfig add "$phys_wan_if" "$i"
-		set_vlan_map "$phys_wan_if.$i"
-		brctl addif "$vlantvif" "$phys_wan_if.$i"
-		ip link set "$phys_wan_if.$i" up
+	    for vlannum in $tv_portVLAN; do
+		$LOG "Add vlan $vlannum for TV/STB port input (WAN) $tv_portVLAN"
+		vconfig add "$phys_wan_if" "$vlannum"
+		set_vlan_map "$phys_wan_if.$vlannum"
+		brctl addif "$vlantvif" "$phys_wan_if.$vlannum"
+		ip link set "$phys_wan_if.$vlannum" up
 	    done
 	    if [ "$tv_port_mcast" = "1" ]; then
 		# generate random ip from zeroconfig range end set need for igmpproxy work
@@ -35,12 +35,12 @@ start() {
 	    vconfig add eth2 4
 	    ip link set eth2.4 up
 	    brctl addif "$vlansipif" eth2.4
-	    for i in $sip_portVLAN; do
-		$LOG "Add vlan $i for TV/STB port input (WAN) $sip_portVLAN"
-		vconfig add "$phys_wan_if" "$i"
-		set_vlan_map "$phys_wan_if.$i"
-		brctl addif "$vlansipif" "$phys_wan_if.$i"
-		ip link set "$phys_wan_if.$i" up
+	    for vlannum in $sip_portVLAN; do
+		$LOG "Add vlan $vlannum for TV/STB port input (WAN) $sip_portVLAN"
+		vconfig add "$phys_wan_if" "$vlannum"
+		set_vlan_map "$phys_wan_if.$vlannum"
+		brctl addif "$vlansipif" "$phys_wan_if.$vlannum"
+		ip link set "$phys_wan_if.$vlannum" up
 	    done
 	    if [ "$sip_port_mcast" = "1" ]; then
 		# generate random ip from zeroconfig range end set need for igmpproxy work

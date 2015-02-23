@@ -195,17 +195,17 @@ multicast() {
 	    fi
 	    if [ "$INTERFACES" != "" ]; then
 		$LOG "Enable bridge fast leave and multicast to unicast conversion for $INTERFACES"
-		for i in $INTERFACES; do
-		    echo 1 > /sys/devices/virtual/net/$i/brport/multicast_fast_leave
-		    echo 1 > /sys/devices/virtual/net/$i/brport/multicast_to_unicast
+		for ifname in $INTERFACES; do
+		    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
 		done
 	    fi
 	else
 	    INTERFACES="$phys_lan_if $first_wlan_root_if $second_wlan_root_if"
 	    $LOG "Disable bridge fast leave and multicast to unicast conversion for $INTERFACES"
-	    for i in $INTERFACES; do
-		echo 0 > /sys/devices/virtual/net/$i/brport/multicast_fast_leave
-		echo 0 > /sys/devices/virtual/net/$i/brport/multicast_to_unicast
+	    for ifname in $INTERFACES; do
+		echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
 	    done
 	fi
     fi

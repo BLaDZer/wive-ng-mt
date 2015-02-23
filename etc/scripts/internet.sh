@@ -17,9 +17,9 @@ addWds() {
     wds_en=`nvram_get 2860 WdsEnable`
     wdsif="$1"
     if [ "$wds_en" != "0" ]; then
-        for i in `seq 0 3`; do
-	$LOG "Readd ${wdsif}${i} in br0"
-	readdif_to_br ${wdsif}${i}
+        for ifnum in `seq 0 3`; do
+	$LOG "Readd ${wdsif}${ifnum} in br0"
+	readdif_to_br ${wdsif}${ifnum}
         done
     fi
 }
@@ -30,9 +30,9 @@ addMBSSID() {
     mbssidif="$1"
     if [ "$bssidnum" != "0" ] && [ "$bssidnum" != "1" ]; then
 	let "bssrealnum=$bssidnum-1"
-	for i in `seq 1 $bssrealnum`; do
-	    $LOG "Readd ${mbssidif}${i} in br0"
-	    readdif_to_br ${mbssidif}${i}
+	for ifnum in `seq 1 $bssrealnum`; do
+	    $LOG "Readd ${mbssidif}${ifnum} in br0"
+	    readdif_to_br ${mbssidif}${ifnum}
 	done
     fi
 }
