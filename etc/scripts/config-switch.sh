@@ -46,11 +46,6 @@ configs_system_vlans() {
 		vconfig add eth2 2
 		set_vlan_map eth2.2
 	    fi
-	    if [ -f /etc/scripts/switchadv.sh ]; then
-		#this hook for advanced SWITCH/VLAN map configure
-		$LOG "Call user /etc/scripts/switchadv.sh script VLANADD mode."
-		/etc/scripts/switchadv.sh "VLANADD"
-	    fi
 	fi
     fi
 }

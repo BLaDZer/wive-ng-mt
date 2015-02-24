@@ -196,6 +196,11 @@ fi
 # reconfigure wan port
 service wan restart
 
+# rebuild switch part
+if [ "$switchpart" = "LLLLL" ]
+    config-vlan.sh $switchmode $switchpart
+fi
+
 # some daemons need restart
 services_restart.sh all
 
