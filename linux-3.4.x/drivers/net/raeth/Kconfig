@@ -178,11 +178,6 @@ choice
 		select MT7530_GSW
 endchoice
 
-	config GE2_INTERNAL_GMAC_P5_P6_PRECONFIG
-		bool "Base preconfig P6/P5 at ifup"
-		default no
-		depends on GE2_INTERNAL_GMAC_P5
-
 config RAETH_HAS_PORT4
 	bool "Port 4 Support"
 	depends on RAETH && RALINK_MT7620
