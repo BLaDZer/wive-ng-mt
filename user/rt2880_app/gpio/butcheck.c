@@ -4,6 +4,8 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/reboot.h>
+#include <linux/reboot.h>
 #include <linux/autoconf.h>
 #include "linux/ralink_gpio.h"
 
