@@ -618,9 +618,10 @@
 4) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
 5) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
 6) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-7) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-8) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-9) kernel: mips: fix branch emulation of branch likely instructions.<br>
+7) init.d: fix check vlan and set correct part sitch mode.<br>
+8) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+9) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+10) kernel: mips: fix branch emulation of branch likely instructions.<br>
 10) kernel: mips: add option to disable software I/O  coherency.<br>
 11) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
 12) kernel: net: fix stacked vlan offload features computation.<br>

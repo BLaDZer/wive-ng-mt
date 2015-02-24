@@ -270,18 +270,6 @@ readdif_to_br() {
     ip link set $1 up
 }
 
-get_vlan_config() {
-    if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [  "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
-	VlanEnabled="1"
-	vlantvif="vlantv"
-	vlansipif="vlansip"
-    else
-	VlanEnabled="0"
-	vlantvif=""
-	vlansipif=""
-    fi
-}
-
 set_vlan_map()
 {
     for vlannum in `seq 0 7`; do
@@ -312,8 +300,11 @@ get_switch_type() {
 get_switch_part() {
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
 	# manual vlan configured
-	if [ "$VlanEnabled" = "1" ]; then
-		switchpart="VLANS"
+	if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [  "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
+	    VlanEnabled="1"
+	    vlantvif="vlantv"
+	    vlansipif="vlansip"
+	    switchpart="VLANS"
 	# tv and sip
 	elif [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
 	    if [ "$wan_port" = "4" ]; then
@@ -358,6 +349,5 @@ getTunIfName
 getWanIpaddr
 getWanReady
 
-get_vlan_config
 get_switch_type
 get_switch_part
