@@ -134,8 +134,7 @@ getWanIfName() {
 	# external dual phy switch support
 	phys_wan_if="eth3"
     else
-	# this is stub
-	# support only switched devices
+	# this is stub, support only switched devices
 	phys_lan_if="eth2.2"
     fi
     # real wan name
@@ -177,7 +176,7 @@ getWanIfName() {
     if [ "$vpn_if" = "" ]; then
 	vpn_if="$vpn_def_if"
     fi
-    # export for goahead
+    # export for goahead/dhcpv6c
     echo -n "$wan_if" > /tmp/wan_if_name
 }
 
@@ -192,11 +191,12 @@ getTunIfName() {
 }
 
 getWanIpaddr() {
-    # in non static mode always get parametrs direct from if
-    if [ "$wanConnectionMode" != "STATIC" ]; then
+    # in WAN non static mode and in full bridget modes always get parametrs direct from if
+    if [ "$wanConnectionMode" != "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
 	wan_ipaddr=""
 	wan_netmask=""
 	wan_gateway=""
+	wan_manual_mtu=""
     fi
 
     # get from if and return physical wan ip
@@ -209,10 +209,10 @@ getWanIpaddr() {
     if [ "$real_wan_ipaddr" = "" ]; then
 	real_wan_ipaddr="$wan_ipaddr"
     fi
-
 }
 
 getWanReady() {
+    # check interfaces configured
     wan_is_not_null=`ip -o -4 addr show $wan_if scope global | wc -l` > /dev/null 2>&1
     realwan_is_not_null=`ip -o -4 addr show $real_wan_if scope global | wc -l` > /dev/null 2>&1
 }
@@ -252,7 +252,6 @@ wait_connect() {
     fi
 }
 
-# conntrack and route table/caches flush
 flush_net_caches() {
     ip route flush cache > /dev/null 2>&1
     echo f > /proc/net/nf_conntrack
