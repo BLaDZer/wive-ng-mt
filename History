@@ -625,8 +625,10 @@
 11) kernel: mips: fix branch emulation of branch likely instructions.<br>
 12) kernel: mips: add option to disable software I/O  coherency.<br>
 13) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-14) kernel: net: fix stacked vlan offload features computation.<br>
-15) kernel: net: reject creation of netdev names with colons.<br>
+14) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+15) kernel: mips: dsp: simplify the DSP macros.<br>
+16) kernel: net: fix stacked vlan offload features computation.<br>
+17) kernel: net: reject creation of netdev names with colons.<br>
 <br>
 <br>
 <b>TODO:</b><br>

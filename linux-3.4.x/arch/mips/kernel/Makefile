@@ -99,4 +99,28 @@ obj-$(CONFIG_HW_PERF_EVENTS)	+= perf_event_mipsxx.o
 
 obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
 
+ifeq ($(CONFIG_CPU_MIPS32), y)
+#
+# Check if assembler supports DSP ASE
+#
+ifeq ($(call cc-option-yn,-mdsp), y)
+CFLAGS_signal.o			= -mdsp -DHAVE_AS_DSP
+CFLAGS_signal32.o		= -mdsp -DHAVE_AS_DSP
+CFLAGS_process.o		= -mdsp -DHAVE_AS_DSP
+CFLAGS_branch.o			= -mdsp -DHAVE_AS_DSP
+CFLAGS_ptrace.o			= -mdsp -DHAVE_AS_DSP
+endif
+
+#
+# Check if assembler supports DSP ASE Rev2
+#
+ifeq ($(call cc-option-yn,-mdsp2), y)
+CFLAGS_signal.o			= -mdsp2 -DHAVE_AS_DSP
+CFLAGS_signal32.o		= -mdsp2 -DHAVE_AS_DSP
+CFLAGS_process.o		= -mdsp2 -DHAVE_AS_DSP
+CFLAGS_branch.o			= -mdsp2 -DHAVE_AS_DSP
+CFLAGS_ptrace.o			= -mdsp2 -DHAVE_AS_DSP
+endif
+endif
+
 CPPFLAGS_vmlinux.lds		:= $(KBUILD_CFLAGS)
