@@ -620,6 +620,7 @@
 6) init.d: switch workaround in kext use config-vlan.sh instead off config-switch.sh.<br>
 7) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
 8) kernel: mips: fix branch emulation of branch likely instructions.<br>
+9) kernel: net: fix stacked vlan offload features computation.<br>
 <br>
 <br>
 <b>TODO:</b><br>
