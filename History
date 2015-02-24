@@ -621,16 +621,17 @@
 7) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
 8) init.d: fix check vlan and set correct part sitch mode.<br>
 9) init.d: fix drop some variables in full bridge modes.<br>
-10) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-11) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-12) kernel: mips: fix branch emulation of branch likely instructions.<br>
-13) kernel: mips: add option to disable software I/O  coherency.<br>
-14) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-15) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-16) kernel: mips: dsp: simplify the DSP macros.<br>
-17) kernel: net: fix stacked vlan offload features computation.<br>
-18) kernel: net: reject creation of netdev names with colons.<br>
-19) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+10) init.d: send hotplug rescan to background (speedup boot).<br>
+11) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+12) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+13) kernel: mips: fix branch emulation of branch likely instructions.<br>
+14) kernel: mips: add option to disable software I/O  coherency.<br>
+15) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+16) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+17) kernel: mips: dsp: simplify the DSP macros.<br>
+18) kernel: net: fix stacked vlan offload features computation.<br>
+19) kernel: net: reject creation of netdev names with colons.<br>
+20) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
 <br>
 <br>
 <b>TODO:</b><br>
