@@ -197,9 +197,7 @@ fi
 service wan restart
 
 # rebuild switch part
-if [ "$switchpart" = "LLLLL" ]
-    config-vlan.sh $switchmode $switchpart
-fi
+config-vlan.sh $switchmode $switchpart
 
 # some daemons need restart
 services_restart.sh all
