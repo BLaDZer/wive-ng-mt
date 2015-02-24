@@ -624,6 +624,7 @@
 10) kernel: mips: add option to disable software I/O  coherency.<br>
 11) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
 12) kernel: net: fix stacked vlan offload features computation.<br>
+13) kernel: net: reject creation of netdev names with colons.<br>
 <br>
 <br>
 <b>TODO:</b><br>
