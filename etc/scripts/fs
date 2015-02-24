@@ -81,8 +81,6 @@ restore() {
 	done
     fi
     mtd_write erase RW-FS
-    echo "Now reboot..."
-    reboot
 }
 
 nvramreset() {

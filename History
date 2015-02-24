@@ -612,23 +612,24 @@
 <br>
 <br>
 <b>2.5.x</b><br>
-1) init.d: unify swicth portmap logic.<br>
-2) init.d: fix vlan enabled check.<br>
-3) init.d: optimize switch reinit procesure.<br>
-4) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
-5) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
-6) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-7) init.d: fix check vlan and set correct part sitch mode.<br>
-8) init.d: fix drop some variables in full bridge modes.<br>
-9) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-10) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-11) kernel: mips: fix branch emulation of branch likely instructions.<br>
-12) kernel: mips: add option to disable software I/O  coherency.<br>
-13) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-14) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-15) kernel: mips: dsp: simplify the DSP macros.<br>
-16) kernel: net: fix stacked vlan offload features computation.<br>
-17) kernel: net: reject creation of netdev names with colons.<br>
+1) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
+2) init.d: unify swicth portmap logic.<br>
+3) init.d: fix vlan enabled check.<br>
+4) init.d: optimize switch reinit procesure.<br>
+5) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
+6) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
+7) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
+8) init.d: fix check vlan and set correct part sitch mode.<br>
+9) init.d: fix drop some variables in full bridge modes.<br>
+10) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+11) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+12) kernel: mips: fix branch emulation of branch likely instructions.<br>
+13) kernel: mips: add option to disable software I/O  coherency.<br>
+14) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+15) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+16) kernel: mips: dsp: simplify the DSP macros.<br>
+17) kernel: net: fix stacked vlan offload features computation.<br>
+18) kernel: net: reject creation of netdev names with colons.<br>
 <br>
 <br>
 <b>TODO:</b><br>
