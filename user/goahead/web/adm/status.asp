@@ -229,7 +229,7 @@ function setWanPort(form)
       <form name="setWanForm" method="POST" action="/goform/setWanPort">
         <table class="form">
           <tr>
-            <td class="title" colspan="2">Port Management</td>
+            <td class="title" colspan="3">Port Management</td>
           </tr>
           <tr>
             <td class="head">WAN port</td>
