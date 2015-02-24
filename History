@@ -630,6 +630,7 @@
 16) kernel: mips: dsp: simplify the DSP macros.<br>
 17) kernel: net: fix stacked vlan offload features computation.<br>
 18) kernel: net: reject creation of netdev names with colons.<br>
+19) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
 <br>
 <br>
 <b>TODO:</b><br>

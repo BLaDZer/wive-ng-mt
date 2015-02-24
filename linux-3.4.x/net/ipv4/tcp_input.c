@@ -4897,7 +4897,7 @@ static int tcp_should_expand_sndbuf(const struct sock *sk)
 		return 0;
 
 	/* If we filled the congestion window, do not expand.  */
-	if (tp->packets_out >= tp->snd_cwnd)
+	if (tcp_packets_in_flight(tp) >= tp->snd_cwnd)
 		return 0;
 
 	return 1;
