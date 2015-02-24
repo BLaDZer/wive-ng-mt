@@ -23,15 +23,20 @@
 . /etc/profile
 
 # set default variables
-wan_if="eth2.2"
-real_wan_if="eth2.2"
+if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    # external switch support
+    phys_lan_if="eth2"
+    phys_wan_if="eth3"
+else
+    # internal switch or not switchible device
+    # support vlan parted
+    phys_lan_if="eth2.1"
+    phys_wan_if="eth2.2"
+fi
+
 lan_if="br0"
 lan2_if="br0:9"
 vpn_def_if="ppp0"
-
-# phys names
-phys_lan_if="eth2.1"
-phys_wan_if="eth2.2"
 
 # set some constatns
 mcast_net="224.0.0.0/4"
@@ -90,18 +95,6 @@ getSecWlanIfName() {
 
 # LAN interface name -> $lan_if
 getLanIfName() {
-    # phys port names
-    if [ "$CONFIG_RAETH_ESW" = "y" ]; then
-	# internal switch support
-	phys_lan_if="eth2.1"
-    elif [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
-	# external switch support
-	phys_lan_if="eth2"
-    else
-	# this is stub
-	# support only switched devices
-	phys_lan_if="eth2.1"
-    fi
     # logical names
     if [ "$OperationMode" = "2" ]; then
 	lan_if="eth2"
@@ -126,17 +119,6 @@ getVpnIfName() {
 
 # WAN interface name -> $wan_if
 getWanIfName() {
-    # phys wan name
-    if [ "$CONFIG_RAETH_ESW" = "y" ]; then
-	# internal switch support
-	phys_wan_if="eth2.2"
-    elif [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
-	# external dual phy switch support
-	phys_wan_if="eth3"
-    else
-	# this is stub, support only switched devices
-	phys_lan_if="eth2.2"
-    fi
     # real wan name
     if [ "$OperationMode" = "0" ]; then
 	# bridge
