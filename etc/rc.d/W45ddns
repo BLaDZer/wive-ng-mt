@@ -22,7 +22,6 @@ start() {
 	    inadyn -a $DDNS,$DDNSAccount --dyndns_system default@$DDNSProvider --background --syslog
 	else
 	    $LOG "Unknown DDNS provider: $DDNSProvider"
-	    exit 1
 	fi
     fi
 }

@@ -188,9 +188,7 @@ elif [ "$OperationMode" = "3" ] && [ "$first_wlan_apcli" != "" -o  "$second_wlan
 elif [ "$OperationMode" = "4" ] && [ -f /bin/chilli ]; then
     spot_config
 else
-    $LOG "unknown OperationMode use gate_config: $OperationMode"
-    OperationMode=1
-    gate_config
+    $LOG "Unknown mode. Please reset device."
 fi
 
 # reconfigure wan port
