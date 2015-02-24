@@ -238,19 +238,21 @@ function setWanPort(form)
                 <option value="4">5</option>
               </select>
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
+              <td></td>
           </tr>
           <tr>
             <td class="head" id="tv_stb">TV/STB/VLAN1</td>
-            <td>Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
-		McastProxy:<input name="tv_stbMcast" type="checkbox" onChange="showPortStatus();">&nbsp;<br>
-            VlanID(s):<input name="tv_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
+            <td>Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">
+                McastProxy:<input name="tv_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
+            <td>VlanID(s):<input name="tv_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
           </tr>
           <tr>
             <td class="head" id="sip_stb">SIP/STB/VLAN2</td>
-            <td>Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">&nbsp;
-		McastProxy:<input name="sip_stbMcast" type="checkbox" onChange="showPortStatus();">&nbsp;<br>
-            VlanID(s):<input name="sip_stbVLAN" class="superwide" size="60" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
+            <td>Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">
+                McastProxy:<input name="sip_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
+            <td>VlanID(s):<input name="sip_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
           </tr>
+          <tr>
           <tr>
             <td class="head">Port 1 mode</td>
             <td><select name="port1_swmode" class="mid">
@@ -260,6 +262,7 @@ function setWanPort(form)
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
+              <td></td>
           </tr>
           <tr>
             <td class="head">Port 2 mode</td>
@@ -270,6 +273,7 @@ function setWanPort(form)
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
+              <td></td>
           </tr>
           <tr>
             <td class="head">Port 3 mode</td>
@@ -280,6 +284,7 @@ function setWanPort(form)
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
+              <td></td>
           </tr>
           <tr>
             <td class="head">Port 4 mode</td>
@@ -290,6 +295,7 @@ function setWanPort(form)
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
+              <td></td>
           </tr>
           <tr>
             <td class="head">Port 5 mode</td>
@@ -300,6 +306,7 @@ function setWanPort(form)
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
+              <td></td>
           </tr>
         </table>
         <input type="button" class="mid" value="Change port configuration" onClick="setWanPort(this.form);" />
