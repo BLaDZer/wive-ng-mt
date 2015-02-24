@@ -87,12 +87,6 @@ start() {
     # enable wan interface
     ip link set "$wan_if" up
 
-    if [ "$CONFIG_RAETH_GMAC2" = "y" ] && [ "$CONFIG_GE2_INTERNAL_GMAC_P5_P6_PRECONFIG" = "y" ]; then
-	# need reinit switch part (switch config always dropped at ifup/down root interface)
-	$LOG "##### Reconfigure switch partition $switchpart #####"
-	config-vlan.sh $switchmode $switchpart
-    fi
-
     if [ "$wanConnectionMode" = "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
 	if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	    # lan and wan ip should not be the same except in bridge mode
