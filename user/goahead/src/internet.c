@@ -1772,7 +1772,7 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 	char_t *trans = websGetVar(wp, T("routingTableDiff"), T(""));
 	char rec[256];
 	char true_iface[32], destination[32], gateway[32], netmask[32], iface[32], c_iface[32], comment[64], action[4];
-	int i=0, rebuild_vpn=0, iaction;
+	int i = 0, rebuild_vpn = 0, iaction;
 
 	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 
@@ -1781,10 +1781,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 
 	while (getNthValueSafe(i++, trans, ';', rec, sizeof(rec)) != -1)
 	{
-		// Check length
-		if (strlen(rec)<=0)
-			break;
-
 		// Get true interface
 		if ((getNthValueSafe(0, rec, ',', c_iface, sizeof(c_iface)) == -1))
 			continue;

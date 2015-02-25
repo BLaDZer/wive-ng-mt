@@ -549,16 +549,15 @@ static void makePortForwardRuleVPN(char *buf, int len, char *wan_name, char *ip_
 
 static void iptablesIPPortFilterBuildScript(void)
 {
-	int i=0;
-	int mode, sprf_int, sprt_int, proto, action, dprf_int, dprt_int;
+	int i = 0, mode, sprf_int, sprt_int, proto, action, dprf_int, dprt_int;
 	char rec[256];
 	char cmd[1024];
 	char sprf[8], sprt[8], protocol[8], iface[8];
 	char dprf[8], dprt[8], wan_name[16];
 	char mac_address[32], action_str[4];
 	char sip[32], dip[32], sim[32], dim[32];
-	char *rule, *c_if;
-	char *firewall_enable, *default_policy;
+	char *c_if, *firewall_enable, *default_policy;
+	char_t *rule;
 
 	// Check that IP/port filter is enabled
 	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
@@ -594,7 +593,7 @@ static void iptablesIPPortFilterBuildScript(void)
 		fprintf(fd, "iptables -t filter -N %s\n", IPPORT_FILTER_CHAIN);
 		fprintf(fd, "iptables -t filter -I FORWARD -j %s\n\n", IPPORT_FILTER_CHAIN);
 
-		while ( (getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1) )
+		while ((getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1))
 		{
 			// Get interface
 			if ((getNthValueSafe(0, rec, ',', iface, sizeof(iface)) == -1))
@@ -729,8 +728,8 @@ static void iptablesPortForwardBuildScript(void)
 	char cmd[1024];
 	char wan_name[16];
 	char ip_address[32], prf[8], prt[8], rprf[9], rprt[8], protocol[8], interface[8], nat_loopback[8];
-	char *rule, *c_if;
-	char *firewall_enable;
+	char *c_if, *firewall_enable;
+	char_t *rule;
 	int i=0, prf_int, prt_int, rprf_int, rprt_int, proto, inat_loopback;
 
 	//Remove portforward script
@@ -804,7 +803,7 @@ static void iptablesPortForwardBuildScript(void)
 	chmod(_PATH_PFW_FILE_VPN, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
 
 	// Now write all rules
-	while( (getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1) )
+	while((getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1))
 	{
 		// get interface
 		if ((getNthValueSafe(0, rec, ',', interface, sizeof(interface)) == -1))
@@ -967,7 +966,7 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 	int prf_int, prt_int, rprf_int, rprt_int, proto, inat_loopback;
 	char ip_address[32], prf[8], prt[8], rprf[8], rprt[8], comment[64], protocol[8], interface[8], nat_loopback[8];
 	char rec[128];
-	char *rules = nvram_get(RT2860_NVRAM, "PortForwardRules");
+	char_t *rules = nvram_get(RT2860_NVRAM, "PortForwardRules");
 
 	if (rules == NULL)
 		return 0;
@@ -977,7 +976,7 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 	/* format is :
 	 * [interface],[protocol],[src_port],[dst_port],[ip_address],[redirect_src_port],[redirect_dst_port],[nat_loopback],[comment];
 	 */
-	while (getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1 )
+	while(getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1)
 	{
 		// get interface
 		if ((getNthValueSafe(0, rec, ',', interface, sizeof(interface)) == -1))
@@ -1153,12 +1152,12 @@ static int getPortFilteringRules(int eid, webs_t wp, int argc, char_t **argv)
 	char sip[32], sprf[8], sprt[8], comment[16], protocol[8], action[4];
 	char dip[32], dprf[8], dprt[8], iface[8], sim[32], dim[32];
 	char rec[256];
-	char *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
+	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
 
 	if (rules == NULL)
 		return 0;
 
-	while (getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1 && strlen(rec))
+	while (getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1)
 	{
 		// Get interface
 		if ((getNthValueSafe(0, rec, ',', iface, sizeof(iface)) == -1))

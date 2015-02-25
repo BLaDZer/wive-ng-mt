@@ -185,7 +185,7 @@ int checkSemicolon(char *str)
  */
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
 {
-    int i=0, result_len=0;
+    int i = 0, result_len = 0;
     char *begin, *end;
 
     if(!value || !result || !len)
@@ -195,23 +195,23 @@ int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
     end = strchr(begin, delimit);
 
     while(i<index && end){
-        begin = end+1;
+        begin = end + 1;
         end = strchr(begin, delimit);
         i++;
     }
 
     /* no delimit */
     if(!end){
-		if(i == index){
-			end = begin + strlen(begin);
-			result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
-		}else
-			return -1;
-	}else
-		result_len = (len-1) < (end-begin)? (len-1) : (end-begin);
+	if(i == index){
+	    end = begin + strlen(begin);
+	    result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
+	} else
+		return -1;
+    } else
+	result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
 
-	memcpy(result, begin, result_len );
-	*(result+ result_len ) = '\0';
+    memcpy(result, begin, result_len);
+    *(result + result_len ) = '\0';
 
 	return 0;
 }
