@@ -633,10 +633,11 @@
 19) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
 20) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
 21) kernel: mips: dsp: simplify the DSP macros.<br>
-22) kernel: net: fix stacked vlan offload features computation.<br>
-23) kernel: net: reject creation of netdev names with colons.<br>
-24) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-25) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+22) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+23) kernel: net: fix stacked vlan offload features computation.<br>
+24) kernel: net: reject creation of netdev names with colons.<br>
+25) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+26) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
