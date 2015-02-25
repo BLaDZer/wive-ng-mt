@@ -7,6 +7,28 @@
 # $Id: Makefile,v 1.57.2.1 2009-04-08 08:52:59 chhung Exp $
 #
 
+-include $(LINUX_CONFIG)
+
+CFLAGS  += -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
+
+ifdef CONFIG_RALINK_MT7620
+ifdef CONFIG_RAETH_ESW
+CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
+endif
+endif
+
+ifdef CONFIG_RALINK_MT7621
+ifdef CONFIG_MT7530_GSW
+CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
+endif
+endif
+
+ifdef CONFIG_RALINK_MT7628
+ifdef CONFIG_RAETH_ESW
+CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7628
+endif
+endif
+
 NAME	= goahead
 
 # User Management switch

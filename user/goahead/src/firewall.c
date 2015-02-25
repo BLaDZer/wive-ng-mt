@@ -547,19 +547,6 @@ static void makePortForwardRuleVPN(char *buf, int len, char *wan_name, char *ip_
 	rc = snprintf(pos, len, "\n");
 }
 
-
-static int checkNatEnabled()
-{
-	// NAT check
-	char *wan_nat_ena = nvram_get(RT2860_NVRAM, "natEnabled");
-	if (wan_nat_ena == NULL)
-		wan_nat_ena = "0";
-	char *vpn_nat_ena = nvram_get(RT2860_NVRAM, "");
-	if (vpn_nat_ena == NULL)
-		vpn_nat_ena = "0";
-	return ((strcmp(wan_nat_ena, "1") == 0) || (strcasecmp(vpn_nat_ena, "on") == 0)) ? 1 : 0;
-}
-
 static void iptablesIPPortFilterBuildScript(void)
 {
 	int i=0;
