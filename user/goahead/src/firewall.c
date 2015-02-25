@@ -577,7 +577,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
 	if (firewall_enable == NULL)
 	{
-		printf("goahead: Warning: can't find \"IPPortFilterEnable\" in flash.\n");
+		printf("goahead: Warning: can't find \"IPPortFilterEnable\" in nvram.\n");
 		return;
 	}
 	mode = atoi(firewall_enable);
@@ -587,7 +587,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	rule = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
 	if (rule == NULL)
 	{
-		printf("goahead: Warning: can't find \"IPPortFilterRules\" in flash.\n");
+		printf("goahead: Warning: can't find \"IPPortFilterRules\" in nvram.\n");
 		return;
 	}
 
