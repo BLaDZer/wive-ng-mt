@@ -52,9 +52,12 @@ fulldump
 /libext/libiconv/po/Makefile
 /libext/libiconv/po/Makefile.in
 /libext/libcurl/curl-config
+/libext/libcurl/Makefile.in
+/libext/libcurl/configure
 /libext/libcurl/aclocal.m4
 /libext/libcurl/docs/examples/Makefile
 /libext/libcurl/docs/libcurl/Makefile
+/libext/libcurl/docs/libcurl/libcurl-symbols.3
 /libext/libcurl/docs/Makefile
 /libext/libcurl/include/curl/Makefile
 /libext/libcurl/include/Makefile
