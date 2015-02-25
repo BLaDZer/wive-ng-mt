@@ -123,6 +123,7 @@ static int isIpNetmaskValid(char *s)
 		printf("goahead: isIpNetmaskValid(): %s is not a valid IP address.\n", str);
 		return 0;
 	}
+
 	return 1;
 }
 
@@ -590,11 +591,8 @@ static void iptablesIPPortFilterBuildScript(void)
 		return;
 	}
 
-	// NAT check
-	int nat_ena = checkNatEnabled();
-
-	default_policy = nvram_get(RT2860_NVRAM, "DefaultFirewallPolicy");
 	// add the default policy to the end of FORWARD chain
+	default_policy = nvram_get(RT2860_NVRAM, "DefaultFirewallPolicy");
 	if (default_policy == NULL)
 		default_policy = "0";
 
@@ -608,12 +606,6 @@ static void iptablesIPPortFilterBuildScript(void)
 		fputs("#!/bin/sh\n\n", fd);
 		fprintf(fd, "iptables -t filter -N %s\n", IPPORT_FILTER_CHAIN);
 		fprintf(fd, "iptables -t filter -I FORWARD -j %s\n\n", IPPORT_FILTER_CHAIN);
-
-		if (nat_ena)
-		{
-			fprintf(fd, "iptables -t nat -N %s\n", IPPORT_NAT_FILTER_CHAIN);
-			fprintf(fd, "iptables -t nat -I PREROUTING -j %s\n\n", IPPORT_NAT_FILTER_CHAIN);
-		}
 
 		while ( (getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1) )
 		{
@@ -712,15 +704,6 @@ static void iptablesIPPortFilterBuildScript(void)
 				cmd, sizeof(cmd), c_if, mac_address, sip, sim, sprf_int,
 				sprt_int, dip, dim, dprf_int, dprt_int, proto, action, IPPORT_FILTER_CHAIN);
 			fputs(cmd, fd);
-
-			// Output additional rule
-			if (nat_ena)
-			{
-				makeIPPortFilterRule(
-					cmd, sizeof(cmd), c_if, mac_address, sip, sim, sprf_int,
-					sprt_int, dip, dim, dprf_int, dprt_int, proto, action, IPPORT_NAT_FILTER_CHAIN);
-				fputs(cmd, fd);
-			}
 		}
 
 		//close file
@@ -1298,7 +1281,7 @@ static int getPortFilteringRules(int eid, webs_t wp, int argc, char_t **argv)
 static void iptablesWebsFilterRun(void)
 {
 	int i, content_filter = 0;
-	char entry[256]; //need long buffer for utf domain name encoding support 
+	char entry[256]; //need long buffer for utf domain name encoding support
 	char *proxy		= nvram_get(RT2860_NVRAM, "websFilterProxy");
 	char *java		= nvram_get(RT2860_NVRAM, "websFilterJava");
 	char *activex		= nvram_get(RT2860_NVRAM, "websFilterActivex");
@@ -1310,9 +1293,6 @@ static void iptablesWebsFilterRun(void)
 		(host_filter && strlen(host_filter) && getRuleNums(host_filter)) ||
 			atoi(proxy) || atoi(java) || atoi(activex) || atoi(cookies))
 	{
-		// NAT check
-		int nat_ena = checkNatEnabled();
-
 		// Content filter
 		if(atoi(java))
 			content_filter += BLK_JAVA;
@@ -1332,12 +1312,6 @@ static void iptablesWebsFilterRun(void)
 			fprintf(fd, "iptables -t filter -N %s\n", WEB_FILTER_CHAIN);
 			fprintf(fd, "iptables -t filter -A FORWARD -j %s\n", WEB_FILTER_CHAIN);
 
-			if (nat_ena)
-			{
-				fprintf(fd, "iptables -t nat -N %s\n", WEB_FILTER_PRE_CHAIN);
-				fprintf(fd, "iptables -t nat -A PREROUTING -j %s\n", WEB_FILTER_PRE_CHAIN);
-			}
-
 			if (content_filter)
 			{
 				// Why only 3 ports are inspected?(This idea is from CyberTAN source code)
@@ -1345,13 +1319,6 @@ static void iptablesWebsFilterRun(void)
 				fprintf(fd, "iptables -A %s -p tcp -m tcp --dport 80   -m webstr --content %d -j REJECT --reject-with tcp-reset\n", WEB_FILTER_CHAIN, content_filter);
 				fprintf(fd, "iptables -A %s -p tcp -m tcp --dport 3128 -m webstr --content %d -j REJECT --reject-with tcp-reset\n", WEB_FILTER_CHAIN, content_filter);
 				fprintf(fd, "iptables -A %s -p tcp -m tcp --dport 8080 -m webstr --content %d -j REJECT --reject-with tcp-reset\n", WEB_FILTER_CHAIN, content_filter);
-
-				if (nat_ena)
-				{
-					fprintf(fd, "iptables -t nat -A %s -p tcp -m tcp --dport 80   -m webstr --content %d -j DROP\n", WEB_FILTER_PRE_CHAIN, content_filter);
-					fprintf(fd, "iptables -t nat -A %s -p tcp -m tcp --dport 3128 -m webstr --content %d -j DROP\n", WEB_FILTER_PRE_CHAIN, content_filter);
-					fprintf(fd, "iptables -t nat -A %s -p tcp -m tcp --dport 8080 -m webstr --content %d -j DROP\n", WEB_FILTER_PRE_CHAIN, content_filter);
-				}
 			}
 
 			// URL filter
@@ -1364,8 +1331,6 @@ static void iptablesWebsFilterRun(void)
 						strcpy(entry, entry + strlen("http://"));
 
 					fprintf(fd, "iptables -A %s -p tcp -m tcp -m webstr --url  %s -j REJECT --reject-with tcp-reset\n", WEB_FILTER_CHAIN, entry);
-					if (nat_ena)
-						fprintf(fd, "iptables -t nat -A %s -p tcp -m tcp -m webstr --url  %s -j DROP\n", WEB_FILTER_PRE_CHAIN, entry);
 				}
 				i++;
 			}
@@ -1377,8 +1342,6 @@ static void iptablesWebsFilterRun(void)
 				if (strlen(entry))
 				{
 					fprintf(fd, "iptables -A %s -p tcp -m tcp -m webstr --host %s -j REJECT --reject-with tcp-reset\n", WEB_FILTER_CHAIN, entry);
-					if (nat_ena)
-						fprintf(fd, "iptables -t nat -A %s -p tcp -m tcp -m webstr --host %s -j DROP\n", WEB_FILTER_PRE_CHAIN, entry);
 				}
 				i++;
 			}
