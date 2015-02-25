@@ -635,6 +635,7 @@
 21) kernel: net: fix stacked vlan offload features computation.<br>
 22) kernel: net: reject creation of netdev names with colons.<br>
 23) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+24) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
