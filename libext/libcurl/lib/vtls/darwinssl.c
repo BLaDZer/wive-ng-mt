@@ -102,7 +102,7 @@
 #include "connect.h"
 #include "select.h"
 #include "vtls.h"
-#include "curl_darwinssl.h"
+#include "darwinssl.h"
 
 #define _MPRINTF_REPLACE /* use our functions only */
 #include <curl/mprintf.h>
@@ -2227,12 +2227,6 @@ void Curl_darwinssl_close(struct connectdata *conn, int sockindex)
     connssl->ssl_ctx = NULL;
   }
   connssl->ssl_sockfd = 0;
-}
-
-void Curl_darwinssl_close_all(struct SessionHandle *data)
-{
-  /* SecureTransport doesn't separate sessions from contexts, so... */
-  (void)data;
 }
 
 int Curl_darwinssl_shutdown(struct connectdata *conn, int sockindex)

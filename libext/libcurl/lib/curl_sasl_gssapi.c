@@ -5,7 +5,8 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 2014, Steve Holme, <steve_holme@hotmail.com>.
+ * Copyright (C) 2014 - 2015, Steve Holme, <steve_holme@hotmail.com>.
+ * Copyright (C) 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -25,15 +26,6 @@
 #include "curl_setup.h"
 
 #if defined(HAVE_GSSAPI) && defined(USE_KERBEROS5)
-
-#ifdef HAVE_OLD_GSSMIT
-#define GSS_C_NT_HOSTBASED_SERVICE gss_nt_service_name
-#define NCOMPAT 1
-#endif
-
-#define GSSAUTH_P_NONE      1
-#define GSSAUTH_P_INTEGRITY 2
-#define GSSAUTH_P_PRIVACY   4
 
 #include <curl/curl.h>
 
@@ -62,7 +54,7 @@
 *
 * Returns a pointer to the newly allocated SPN.
 */
-static char *Curl_sasl_build_gssapi_spn(const char *service, const char *host)
+char *Curl_sasl_build_gssapi_spn(const char *service, const char *host)
 {
   /* Generate and return our SPN */
   return aprintf("%s@%s", service, host);
@@ -126,12 +118,16 @@ CURLcode Curl_sasl_create_gssapi_user_message(struct SessionHandle *data,
 
     /* Import the SPN */
     gss_major_status = gss_import_name(&gss_minor_status, &spn_token,
-                                       gss_nt_service_name, &krb5->spn);
+                                       GSS_C_NT_HOSTBASED_SERVICE, &krb5->spn);
     if(GSS_ERROR(gss_major_status)) {
       Curl_gss_log_error(data, gss_minor_status, "gss_import_name() failed: ");
 
+      Curl_safefree(spn);
+
       return CURLE_OUT_OF_MEMORY;
     }
+
+    Curl_safefree(spn);
   }
   else {
     /* Decode the base-64 encoded challenge message */

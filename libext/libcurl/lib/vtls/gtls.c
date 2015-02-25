@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -98,6 +98,14 @@ static bool gtls_inited = FALSE;
 #      define HAS_ALPN
 #    endif
 #  endif
+
+#  if (GNUTLS_VERSION_NUMBER >= 0x03020d)
+#    define HAS_OCSP
+#  endif
+#endif
+
+#ifdef HAS_OCSP
+# include <gnutls/ocsp.h>
 #endif
 
 /*
@@ -618,7 +626,7 @@ gtls_connect_step1(struct connectdata *conn,
       gnutls_alpn_set_protocols(session, protocols, protocols_size, 0);
       infof(data, "ALPN, offering %s, %s\n", NGHTTP2_PROTO_VERSION_ID,
             ALPN_HTTP_1_1);
-      connssl->asked_for_h2 = TRUE;
+      conn->ssl[sockindex].asked_for_h2 = TRUE;
     }
     else {
       infof(data, "SSL, can't negotiate HTTP/2.0 without ALPN\n");
@@ -662,6 +670,16 @@ gtls_connect_step1(struct connectdata *conn,
 
   /* lowat must be set to zero when using custom push and pull functions. */
   gnutls_transport_set_lowat(session, 0);
+
+#ifdef HAS_OCSP
+  if(data->set.ssl.verifystatus) {
+    rc = gnutls_ocsp_status_request_enable_client(session, NULL, 0, NULL);
+    if(rc != GNUTLS_E_SUCCESS) {
+      failf(data, "gnutls_ocsp_status_request_enable_client() failed: %d", rc);
+      return CURLE_SSL_CONNECT_ERROR;
+    }
+  }
+#endif
 
   /* This might be a reconnect, so we check for a session ID in the cache
      to speed up things */
@@ -821,6 +839,23 @@ gtls_connect_step3(struct connectdata *conn,
   }
   else
     infof(data, "\t server certificate verification SKIPPED\n");
+
+#ifdef HAS_OCSP
+  if(data->set.ssl.verifystatus) {
+    if(gnutls_ocsp_status_request_is_checked(session, 0) == 0) {
+      if(verify_status & GNUTLS_CERT_REVOKED)
+        failf(data, "SSL server certificate was REVOKED\n");
+      else
+        failf(data, "SSL server certificate status verification FAILED");
+
+      return CURLE_SSL_INVALIDCERTSTATUS;
+    }
+    else
+      infof(data, "SSL server certificate status verification OK\n");
+  }
+  else
+    infof(data, "SSL server certificate status verification SKIPPED\n");
+#endif
 
   /* initialize an X.509 certificate structure. */
   gnutls_x509_crt_init(&x509_cert);
@@ -1048,7 +1083,7 @@ gtls_connect_step3(struct connectdata *conn,
         conn->negnpn = NPN_HTTP1_1;
       }
     }
-    else if(connssl->asked_for_h2) {
+    else if(conn->ssl[sockindex].asked_for_h2) {
       infof(data, "ALPN, server did not agree to a protocol\n");
     }
   }
@@ -1180,12 +1215,6 @@ static ssize_t gtls_send(struct connectdata *conn,
   }
 
   return rc;
-}
-
-void Curl_gtls_close_all(struct SessionHandle *data)
-{
-  /* FIX: make the OpenSSL code more generic and use parts of it here */
-  (void)data;
 }
 
 static void close_one(struct connectdata *conn,
@@ -1389,6 +1418,15 @@ void Curl_gtls_md5sum(unsigned char *tmp, /* input */
   gcry_md_write(MD5pw, tmp, tmplen);
   memcpy(md5sum, gcry_md_read (MD5pw, 0), md5len);
   gcry_md_close(MD5pw);
+#endif
+}
+
+bool Curl_gtls_cert_status_request(void)
+{
+#ifdef HAS_OCSP
+  return TRUE;
+#else
+  return FALSE;
 #endif
 }
 

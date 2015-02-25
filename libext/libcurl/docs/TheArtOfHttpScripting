@@ -1,4 +1,3 @@
-Updated: Dec 24, 2013 (http://curl.haxx.se/docs/httpscripting.html)
                                   _   _ ____  _
                               ___| | | |  _ \| |
                              / __| | | | |_) | |
@@ -557,8 +556,10 @@ The Art Of Scripting HTTP Requests Using Curl
  truckload of advanced features to allow all those encryptions and key
  infrastructure mechanisms encrypted HTTP requires.
 
- Curl supports encrypted fetches thanks to the freely available OpenSSL
- libraries. To get a page from a HTTPS server, simply run curl like:
+ Curl supports encrypted fetches when built to use a TLS library and it can be
+ built to use one out of a fairly large set of libraries - "curl -V" will show
+ which one your curl was built to use (if any!). To get a page from a HTTPS
+ server, simply run curl like:
 
         curl https://secure.example.com
 

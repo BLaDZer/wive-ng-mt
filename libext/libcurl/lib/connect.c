@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -542,6 +542,7 @@ static CURLcode trynextip(struct connectdata *conn,
                           int sockindex,
                           int tempindex)
 {
+  const int other = tempindex ^ 1;
   CURLcode result = CURLE_COULDNT_CONNECT;
 
   /* First clean up after the failed socket.
@@ -572,8 +573,11 @@ static CURLcode trynextip(struct connectdata *conn,
     }
 
     while(ai) {
+      if(conn->tempaddr[other]) {
+        /* we can safely skip addresses of the other protocol family */
       while(ai && ai->ai_family != family)
         ai = ai->ai_next;
+      }
 
       if(ai) {
         result = singleipconnect(conn, ai, &conn->tempsock[tempindex]);
@@ -749,6 +753,7 @@ CURLcode Curl_is_connected(struct connectdata *conn,
   }
 
   for(i=0; i<2; i++) {
+    const int other = i ^ 1;
     if(conn->tempsock[i] == CURL_SOCKET_BAD)
       continue;
 
@@ -778,7 +783,6 @@ CURLcode Curl_is_connected(struct connectdata *conn,
     else if(rc == CURL_CSELECT_OUT) {
       if(verifyconnect(conn->tempsock[i], &error)) {
         /* we are connected with TCP, awesome! */
-        int other = i ^ 1;
 
         /* use this socket from now on */
         conn->sock[sockindex] = conn->tempsock[i];
@@ -820,6 +824,7 @@ CURLcode Curl_is_connected(struct connectdata *conn,
       data->state.os_errno = error;
       SET_SOCKERRNO(error);
       if(conn->tempaddr[i]) {
+        CURLcode status;
         char ipaddress[MAX_IPADR_LEN];
         Curl_printable_address(conn->tempaddr[i], ipaddress, MAX_IPADR_LEN);
         infof(data, "connect to %s port %ld failed: %s\n",
@@ -828,7 +833,11 @@ CURLcode Curl_is_connected(struct connectdata *conn,
         conn->timeoutms_per_addr = conn->tempaddr[i]->ai_next == NULL ?
                                    allow : allow / 2;
 
-        result = trynextip(conn, sockindex, i);
+        status = trynextip(conn, sockindex, i);
+        if(status != CURLE_COULDNT_CONNECT
+            || conn->tempsock[other] == CURL_SOCKET_BAD)
+          /* the last attempt failed and no other sockets remain open */
+          result = status;
       }
     }
   }
@@ -1016,8 +1025,12 @@ static CURLcode singleipconnect(struct connectdata *conn,
   }
   infof(data, "  Trying %s...\n", ipaddress);
 
+#ifdef ENABLE_IPV6
   is_tcp = (addr.family == AF_INET || addr.family == AF_INET6) &&
            addr.socktype == SOCK_STREAM;
+#else
+  is_tcp = (addr.family == AF_INET) && addr.socktype == SOCK_STREAM;
+#endif
   if(is_tcp && data->set.tcp_nodelay)
     tcpnodelay(conn, sockfd);
 
@@ -1043,7 +1056,11 @@ static CURLcode singleipconnect(struct connectdata *conn,
   }
 
   /* possibly bind the local end to an IP, interface or port */
-  if(addr.family == AF_INET || addr.family == AF_INET6) {
+  if(addr.family == AF_INET
+#ifdef ENABLE_IPV6
+     || addr.family == AF_INET6
+#endif
+    ) {
     result = bindlocal(conn, sockfd, addr.family,
                        Curl_ipv6_scope((struct sockaddr*)&addr.sa_addr));
     if(result) {

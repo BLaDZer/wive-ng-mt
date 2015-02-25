@@ -613,29 +613,30 @@
 <br>
 <b>2.5.x</b><br>
 1) libnvram: fix uncorrect value size limit.<br>
-2) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
-3) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
-4) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
-5) init.d: unify swicth portmap logic.<br>
-6) init.d: fix vlan enabled check.<br>
-7) init.d: optimize switch reinit procesure.<br>
-8) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
-9) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
-10) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-11) init.d: fix check vlan and set correct part sitch mode.<br>
-12) init.d: fix drop some variables in full bridge modes.<br>
-13) init.d: send hotplug rescan to background (speedup boot).<br>
-14) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-15) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-16) kernel: mips: fix branch emulation of branch likely instructions.<br>
-17) kernel: mips: add option to disable software I/O  coherency.<br>
-18) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-19) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-20) kernel: mips: dsp: simplify the DSP macros.<br>
-21) kernel: net: fix stacked vlan offload features computation.<br>
-22) kernel: net: reject creation of netdev names with colons.<br>
-23) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-24) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+2) libcurl: up to 7.41.0 version.<br>
+3) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
+4) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
+5) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
+6) init.d: unify swicth portmap logic.<br>
+7) init.d: fix vlan enabled check.<br>
+8) init.d: optimize switch reinit procesure.<br>
+9) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
+10) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
+11) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
+12) init.d: fix check vlan and set correct part sitch mode.<br>
+13) init.d: fix drop some variables in full bridge modes.<br>
+14) init.d: send hotplug rescan to background (speedup boot).<br>
+15) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+16) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+17) kernel: mips: fix branch emulation of branch likely instructions.<br>
+18) kernel: mips: add option to disable software I/O  coherency.<br>
+19) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+20) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+21) kernel: mips: dsp: simplify the DSP macros.<br>
+22) kernel: net: fix stacked vlan offload features computation.<br>
+23) kernel: net: reject creation of netdev names with colons.<br>
+24) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+25) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 <br>
 <br>
 <b>TODO:</b><br>

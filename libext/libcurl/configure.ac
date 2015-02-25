@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -1046,7 +1046,7 @@ if test x$CURL_DISABLE_LDAP != x1 ; then
 
   if test "$LDAPLIBNAME" = "wldap32"; then
     curl_ldap_msg="enabled (winldap)"
-    AC_DEFINE(CURL_LDAP_WIN, 1, [Use Windows LDAP implementation])
+    AC_DEFINE(USE_WIN32_LDAP, 1, [Use Windows LDAP implementation])
   else
     curl_ldap_msg="enabled (OpenLDAP)"
     if test "x$ac_cv_func_ldap_init_fd" = "xyes"; then
@@ -1579,7 +1579,8 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
               ])
 
     dnl these can only exist if openssl exists
-    dnl yassl doesn't have SSL_get_shutdown
+    dnl Cyassl doesn't have SSL_get_shutdown
+    dnl BoringSSL doesn't have DES_set_odd_parity
 
     AC_CHECK_FUNCS( RAND_status \
                     RAND_screen \
@@ -1587,28 +1588,30 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
                     ENGINE_cleanup \
                     CRYPTO_cleanup_all_ex_data \
                     SSL_get_shutdown \
-                    SSLv2_client_method )
+                    SSLv2_client_method \
+                    DES_set_odd_parity )
 
-    dnl Make an attempt to detect if this is actually yassl's headers and
-    dnl OpenSSL emulation layer. We still leave everything else believing
-    dnl and acting like OpenSSL.
-
-    AC_MSG_CHECKING([for yaSSL using OpenSSL compatibility mode])
+    AC_MSG_CHECKING([for BoringSSL])
+    if test "x$ac_cv_func_DES_set_odd_parity" != "xyes"; then
+      curl_ssl_msg="enabled (BoringSSL)"
+      AC_DEFINE_UNQUOTED(HAVE_BORINGSSL, 1,
+        [Define to 1 if using BoringSSL.])
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_RESULT([no])
+    fi
+    AC_MSG_CHECKING([for libressl])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-#include <openssl/ssl.h>
+#include <openssl/opensslv.h>
       ]],[[
-#if defined(YASSL_VERSION) && defined(OPENSSL_VERSION_NUMBER)
-        int dummy = SSL_ERROR_NONE;
-#else
-        Not the yaSSL OpenSSL compatibility header.
-#endif
+        int dummy = LIBRESSL_VERSION_NUMBER;
       ]])
     ],[
       AC_MSG_RESULT([yes])
-      AC_DEFINE_UNQUOTED(USE_YASSLEMUL, 1,
-        [Define to 1 if using yaSSL in OpenSSL compatibility mode.])
-      curl_ssl_msg="enabled (OpenSSL emulation by yaSSL)"
+      AC_DEFINE_UNQUOTED(HAVE_LIBRESSL, 1,
+        [Define to 1 if using libressl.])
+      curl_ssl_msg="enabled (libressl)"
     ],[
       AC_MSG_RESULT([no])
     ])

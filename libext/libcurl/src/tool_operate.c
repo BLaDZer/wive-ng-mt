@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -1038,6 +1038,9 @@ static CURLcode operate_do(struct GlobalConfig *global,
             /* libcurl default is strict verifyhost -> 2L   */
             /* my_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L); */
           }
+
+          if(config->verifystatus)
+            my_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, 1L);
         }
 
         if(built_in_protos & (CURLPROTO_SCP|CURLPROTO_SFTP)) {

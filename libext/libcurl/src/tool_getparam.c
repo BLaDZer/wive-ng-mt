@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -217,6 +217,7 @@ static const struct LongShort aliases[]= {
   {"En", "ssl-allow-beast",          FALSE},
   {"Eo", "login-options",            TRUE},
   {"Ep", "pinnedpubkey",             TRUE},
+  {"Eq", "cert-status",              FALSE},
   {"f",  "fail",                     FALSE},
   {"F",  "form",                     TRUE},
   {"Fs", "form-string",              TRUE},
@@ -1361,6 +1362,10 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       case 'p': /* Pinned public key DER file */
         /* Pinned public key DER file */
         GetStr(&config->pinnedpubkey, nextarg);
+        break;
+
+      case 'q': /* --cert-status */
+        config->verifystatus = TRUE;
         break;
 
       default: /* certificate file */

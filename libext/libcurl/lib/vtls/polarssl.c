@@ -6,7 +6,7 @@
  *                             \___|\___/|_| \_\_____|
  *
  * Copyright (C) 2010 - 2011, Hoi-Ho Chan, <hoiho.chan@gmail.com>
- * Copyright (C) 2012 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2012 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -289,26 +289,35 @@ polarssl_connect_step1(struct connectdata *conn,
   switch(data->set.ssl.version) {
   default:
   case CURL_SSLVERSION_DEFAULT:
+  case CURL_SSLVERSION_TLSv1:
     ssl_set_min_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
                         SSL_MINOR_VERSION_1);
     break;
   case CURL_SSLVERSION_SSLv3:
     ssl_set_min_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
                         SSL_MINOR_VERSION_0);
+    ssl_set_max_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
+                        SSL_MINOR_VERSION_0);
     infof(data, "PolarSSL: Forced min. SSL Version to be SSLv3\n");
     break;
   case CURL_SSLVERSION_TLSv1_0:
     ssl_set_min_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
+                        SSL_MINOR_VERSION_1);
+    ssl_set_max_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
                         SSL_MINOR_VERSION_1);
     infof(data, "PolarSSL: Forced min. SSL Version to be TLS 1.0\n");
     break;
   case CURL_SSLVERSION_TLSv1_1:
     ssl_set_min_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
                         SSL_MINOR_VERSION_2);
+    ssl_set_max_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
+                        SSL_MINOR_VERSION_2);
     infof(data, "PolarSSL: Forced min. SSL Version to be TLS 1.1\n");
     break;
   case CURL_SSLVERSION_TLSv1_2:
     ssl_set_min_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
+                        SSL_MINOR_VERSION_3);
+    ssl_set_max_version(&connssl->ssl, SSL_MAJOR_VERSION_3,
                         SSL_MINOR_VERSION_3);
     infof(data, "PolarSSL: Forced min. SSL Version to be TLS 1.2\n");
     break;
@@ -459,11 +468,11 @@ polarssl_connect_step2(struct connectdata *conn,
     if(next_protocol != NULL) {
       infof(data, "ALPN, server accepted to use %s\n", next_protocol);
 
-      if(strncmp(next_protocol, NGHTTP2_PROTO_VERSION_ID,
+      if(!strncmp(next_protocol, NGHTTP2_PROTO_VERSION_ID,
                   NGHTTP2_PROTO_VERSION_ID_LEN)) {
         conn->negnpn = NPN_HTTP2;
       }
-      else if(strncmp(next_protocol, ALPN_HTTP_1_1, ALPN_HTTP_1_1_LENGTH)) {
+      else if(!strncmp(next_protocol, ALPN_HTTP_1_1, ALPN_HTTP_1_1_LENGTH)) {
         conn->negnpn = NPN_HTTP1_1;
       }
     }
@@ -542,11 +551,6 @@ static ssize_t polarssl_send(struct connectdata *conn,
   }
 
   return ret;
-}
-
-void Curl_polarssl_close_all(struct SessionHandle *data)
-{
-  (void)data;
 }
 
 void Curl_polarssl_close(struct connectdata *conn, int sockindex)
