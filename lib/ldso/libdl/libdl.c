@@ -42,6 +42,7 @@
 
 #if defined(USE_TLS) && USE_TLS
 #include <ldsodefs.h>
+#include <dl-tls.h>
 extern void _dl_add_to_slotinfo(struct link_map  *l);
 #endif
 
@@ -51,7 +52,6 @@ __UCLIBC_MUTEX_STATIC(_dl_mutex, PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP);
 
 #ifdef SHARED
 # if defined(USE_TLS) && USE_TLS
-# include <dl-tls.h>
 extern struct link_map *_dl_update_slotinfo(unsigned long int req_modid);
 # endif
 
@@ -296,11 +296,10 @@ static ptrdiff_t _dl_build_local_scope (struct elf_resolve **list,
 	return p - list;
 }
 
-static void *do_dlopen(const char *libname, int flag)
+static void *do_dlopen(const char *libname, int flag, ElfW(Addr) from)
 {
 	struct elf_resolve *tpnt, *tfrom;
 	struct dyn_elf *dyn_chain, *rpnt = NULL, *dyn_ptr, *relro_ptr, *handle;
-	ElfW(Addr) from;
 	struct elf_resolve *tpnt1;
 	void (*dl_brk) (void);
 	int now_flag;
@@ -319,8 +318,6 @@ static void *do_dlopen(const char *libname, int flag)
 		_dl_error_number = LD_BAD_HANDLE;
 		return NULL;
 	}
-
-	from = (ElfW(Addr)) __builtin_return_address(0);
 
 	if (!_dl_init) {
 		_dl_init = true;
@@ -377,7 +374,7 @@ static void *do_dlopen(const char *libname, int flag)
 	if (getenv("LD_BIND_NOW"))
 		now_flag = RTLD_NOW;
 
-#if !defined SHARED && defined __LDSO_LIBRARY_PATH__
+#if !defined SHARED && defined __LDSO_LD_LIBRARY_PATH__
 	/* When statically linked, the _dl_library_path is not yet initialized */
 	_dl_library_path = getenv("LD_LIBRARY_PATH");
 #endif
@@ -544,11 +541,18 @@ static void *do_dlopen(const char *libname, int flag)
 	 * to the GOT tables.  We need to do this in reverse order so that COPY
 	 * directives work correctly */
 
-	/* Get the tail of the list */
+#ifdef SHARED
+	/*
+	 * Get the tail of the list.
+	 * In the static case doesn't need to extend the global scope, it is
+	 * ready to be used as it is, because _dl_loaded_modules already points
+	 * to the dlopened library.
+	 */
 	for (ls = &_dl_loaded_modules->symbol_scope; ls && ls->next; ls = ls->next);
 
 	/* Extend the global scope by adding the local scope of the dlopened DSO. */
 	ls->next = &dyn_chain->dyn->symbol_scope;
+#endif
 #ifdef __mips__
 	/*
 	 * Relocation of the GOT entries for MIPS have to be done
@@ -661,7 +665,8 @@ void *dlopen(const char *libname, int flag)
 	void *ret;
 
 	__UCLIBC_MUTEX_CONDITIONAL_LOCK(_dl_mutex, 1);
-	ret = do_dlopen(libname, flag);
+	ret = do_dlopen(libname, flag,
+			(ElfW(Addr)) __builtin_return_address(0));
 	__UCLIBC_MUTEX_CONDITIONAL_UNLOCK(_dl_mutex, 1);
 
 	return ret;
@@ -671,7 +676,7 @@ static void *do_dlsym(void *vhandle, const char *name, void *caller_address)
 {
 	struct elf_resolve *tpnt, *tfrom;
 	struct dyn_elf *handle;
-	ElfW(Addr) from;
+	ElfW(Addr) from = 0;
 	struct dyn_elf *rpnt;
 	void *ret;
 	struct symbol_ref sym_ref = { NULL, NULL };
@@ -729,7 +734,13 @@ static void *do_dlsym(void *vhandle, const char *name, void *caller_address)
 	tpnt = NULL;
 	if (handle == _dl_symbol_tables)
 		tpnt = handle->dyn; /* Only search RTLD_GLOBAL objs if global object */
-	ret = _dl_find_hash(name2, &handle->dyn->symbol_scope, tpnt, ELF_RTYPE_CLASS_DLSYM, &sym_ref);
+
+	do {
+		ret = _dl_find_hash(name2, &handle->dyn->symbol_scope, tpnt, ELF_RTYPE_CLASS_DLSYM, &sym_ref);
+		if (ret != NULL)
+			break;
+		handle = handle->next;
+	} while (from && handle);
 
 #if defined(USE_TLS) && USE_TLS && defined SHARED
 	if (sym_ref.sym && (ELF_ST_TYPE(sym_ref.sym->st_info) == STT_TLS) && (sym_ref.tpnt)) {

@@ -513,6 +513,10 @@ extern int dup (int __fd) __THROW __wur;
 extern int dup2 (int __fd, int __fd2) __THROW;
 libc_hidden_proto(dup2)
 
+/* Duplicate FD to FD2, closing FD2 and making it open on the same file.  */
+extern int dup3 (int __fd, int __fd2, int __flags) __THROW;
+libc_hidden_proto(dup3)
+
 /* NULL-terminated array of "NAME=VALUE" environment variables.  */
 extern char **__environ;
 #ifdef __USE_GNU
@@ -563,6 +567,14 @@ libc_hidden_proto(execvp)
 extern int execlp (__const char *__file, __const char *__arg, ...)
      __THROW __nonnull ((1));
 libc_hidden_proto(execlp)
+
+#ifdef __USE_GNU
+/* Execute FILE, searching in the `PATH' environment variable if it contains
+   no slashes, with arguments ARGV and environment from a pointer */
+extern int execvpe (__const char *__file, char *__const __argv[], char *__const __envp[])
+     __THROW __nonnull ((1));
+libc_hidden_proto(execvpe)
+#endif
 
 
 #if defined __USE_MISC || defined __USE_XOPEN

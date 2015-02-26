@@ -24,6 +24,14 @@
 #ifndef _BITS_BYTESWAP_H
 #define _BITS_BYTESWAP_H 1
 
+#if __GNUC_PREREQ(4,2)
+# undef __bswap_non_constant_32
+# define __bswap_non_constant_32 __builtin_bswap32
+
+# undef __bswap_non_constant_64
+# define __bswap_non_constant_64 __builtin_bswap64
+#endif
+
 /* Swap bytes in 16 bit value.  */
 #define __bswap_constant_16(x) \
      ((((x) >> 8) & 0xffu) | (((x) & 0xffu) << 8))

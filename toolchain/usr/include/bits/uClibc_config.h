@@ -7,7 +7,7 @@
 #define __UCLIBC_SUBLEVEL__ 33
 /* Automatically generated make config: don't edit */
 /* Version: 0.9.33.2 */
-/* Sun Feb  8 18:04:50 2015 */
+/* Thu Feb 26 21:56:29 2015 */
 #undef __TARGET_alpha__
 #undef __TARGET_arm__
 #undef __TARGET_avr32__
@@ -171,7 +171,6 @@
 #define __UCLIBC_HAS_HEXADECIMAL_FLOATS__ 1
 #define __UCLIBC_HAS_GLIBC_CUSTOM_PRINTF__ 1
 #define __UCLIBC_PRINTF_SCANF_POSITIONAL_ARGS__ 9
-#undef __UCLIBC_HAS_SCANF_GLIBC_A_FLAG__
 #undef __UCLIBC_HAS_STDIO_BUFSIZ_NONE__
 #undef __UCLIBC_HAS_STDIO_BUFSIZ_256__
 #undef __UCLIBC_HAS_STDIO_BUFSIZ_512__
