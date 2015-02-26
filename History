@@ -626,18 +626,19 @@
 12) init.d: fix check vlan and set correct part sitch mode.<br>
 13) init.d: fix drop some variables in full bridge modes.<br>
 14) init.d: send hotplug rescan to background (speedup boot).<br>
-15) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-16) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-17) kernel: mips: fix branch emulation of branch likely instructions.<br>
-18) kernel: mips: add option to disable software I/O  coherency.<br>
-19) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-20) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-21) kernel: mips: dsp: simplify the DSP macros.<br>
-22) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-23) kernel: net: fix stacked vlan offload features computation.<br>
-24) kernel: net: reject creation of netdev names with colons.<br>
-25) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-26) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+15) kernel: ralink arch: update cpu-feature-overrides.h.<br>
+16) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+17) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+18) kernel: mips: fix branch emulation of branch likely instructions.<br>
+19) kernel: mips: add option to disable software I/O  coherency.<br>
+20) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+21) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+22) kernel: mips: dsp: simplify the DSP macros.<br>
+23) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+24) kernel: net: fix stacked vlan offload features computation.<br>
+25) kernel: net: reject creation of netdev names with colons.<br>
+26) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+27) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
