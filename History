@@ -612,8 +612,8 @@
 <br>
 <br>
 <b>2.5.x</b><br>
-1) uclibc: apply build root patchset (fix some bugs, build issues, more compath with new glibcs and need use sime propriretary apps).<br>
-2) toolcain: sync uclibc patches, update gcc to 19.02.2015 4.8.5 version form git, update headers.<br>
+1) toolchain: apply build root patchset binutils/uclibc.<br><br>
+2) toolchain: sync uclibc patches, update gcc to 19.02.2015 4.8.5 version form git, update headers.<br>
 3) libnvram: fix uncorrect value size limit.<br>
 4) libcurl: up to 7.41.0 version.<br>
 5) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
