@@ -76,7 +76,7 @@ all:
 ifeq ($(CONFIG_LIB_OPENSSL),y)
 	# ">>>>>>>>>>>>>>>> CONFIGURE AND BUILD SSL <<<<<<<<<<<<<<<<<<<<<<<"
 	if [ ! -e openssl/libssl.so ]; then  cd openssl ; ./Configure RT2880 no-ripemd; $(MAKE) -j1 || exit 1 ; cd .. ; fi
-	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; cp -fapv openssl/*.a $(LIBCDIRSHARED)/lib ; fi
+	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; fi
 	if [ -e openssl/libssl.so ]; then  $(RM) -rf $(ROOTDIR)/lib/shared/include/openssl ; cp -faprL openssl/include/* $(ROOTDIR)/lib/shared/include ; fi
 endif
 	# ">>>>>>>>>>>>>>>> CONFIGURE ALL USERLIBS  <<<<<<<<<<<<<<<<<<<<<<"
