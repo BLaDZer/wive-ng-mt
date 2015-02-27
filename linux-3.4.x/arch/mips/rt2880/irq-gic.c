@@ -137,7 +137,7 @@ static unsigned int ipi_map[NR_CPUS];
 #define GIC_CALL_INT(cpu)	(gic_call_int_base+(cpu))
 #define GIC_RESCHED_INT(cpu)	(gic_resched_int_base+(cpu))
 
-static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+static inline irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
 {
 	scheduler_ipi();
 
@@ -171,7 +171,7 @@ static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 #else
-static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
+static inline irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
 {
 	smp_call_function_interrupt();
 
@@ -303,7 +303,7 @@ void __init arch_init_irq(void)
 	}
 }
 
-asmlinkage void plat_irq_dispatch(void)
+asmlinkage __fastpathsys void plat_irq_dispatch(void)
 {
 	unsigned int pending;
 

@@ -77,7 +77,7 @@ static unsigned int mips_mt_cpu_irq_startup(struct irq_data *d)
  * While we ack the interrupt interrupts are disabled and thus we don't need
  * to deal with concurrency issues.  Same for mips_cpu_irq_end.
  */
-static void mips_mt_cpu_irq_ack(struct irq_data *d)
+static inline void mips_mt_cpu_irq_ack(struct irq_data *d)
 {
 	unsigned int vpflags = dvpe();
 	clear_c0_cause(0x100 << (d->irq - MIPS_CPU_IRQ_BASE));

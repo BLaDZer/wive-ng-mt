@@ -65,7 +65,7 @@ static void __init vpe_local_setup(unsigned int numvpes)
 	}
 }
 
-void gic_irq_dispatch(void)
+void __fastpathsys gic_irq_dispatch(void)
 {
 	unsigned int i, intr;
 	unsigned long *pcpu_mask;
@@ -101,17 +101,17 @@ void gic_irq_dispatch(void)
 	}
 }
 
-static void gic_mask_irq(struct irq_data *d)
+static inline void gic_mask_irq(struct irq_data *d)
 {
 	GIC_CLR_INTR_MASK(d->irq - gic_irq_base);
 }
 
-static void gic_unmask_irq(struct irq_data *d)
+static inline void gic_unmask_irq(struct irq_data *d)
 {
 	GIC_SET_INTR_MASK(d->irq - gic_irq_base);
 }
 
-static void gic_ack_irq(struct irq_data *d)
+static inline void gic_ack_irq(struct irq_data *d)
 {
 	int irq = (d->irq - gic_irq_base);
 

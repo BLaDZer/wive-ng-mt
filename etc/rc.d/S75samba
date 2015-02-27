@@ -41,11 +41,7 @@ if [ "$SmbEnabled" = "1" ]; then
 	echo "wins support			= yes"				>> $CONFIG
 	echo "name resolve order		= lmhosts host bcast"		>> $CONFIG
     fi
-
-    # check samba version
-    if [ "$is_smb_v3" != "0" ]; then
-	echo "    hosts allow = $lan_ipaddr/$lan_netmask" >> $CONFIG
-    fi
+    echo "    hosts allow = $lan_ipaddr/$lan_netmask" >> $CONFIG
 
     # add template to config
     cat $TEMPLATE >> $CONFIG
@@ -104,8 +100,6 @@ get_param() {
     else
 	interfaces="lo 127.0.0.1/255.0.0.0 $lan_if $lan_ipaddr/$lan_netmask"
     fi
-
-    is_smb_v3=`grep -c "NTFS" < $TEMPLATE`
 }
 
 stop() {
