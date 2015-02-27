@@ -1109,6 +1109,7 @@ parse_config(dav_args *args)
             error(EXIT_FAILURE, 0, _("can't read client certificate %s"),
                   args->clicert);
         seteuid(getuid());
+#if 0
         if (st.st_uid != getuid() && st.st_uid != 0)
             error(EXIT_FAILURE, 0,
                   _("client certificate file %s has wrong owner"),
@@ -1119,6 +1120,7 @@ parse_config(dav_args *args)
             error(EXIT_FAILURE, 0,
                   _("client certificate file %s has wrong permissions"),
                   args->clicert);
+#endif
     }
 
     if (getuid() == 0 && !args->p_host) {
@@ -2368,12 +2370,13 @@ read_secrets(dav_args *args, const char *filename)
                _("opening %s failed"), filename);
         return;
     }
+#if 0
     if (st.st_uid != geteuid())
         error(EXIT_FAILURE, 0, _("file %s has wrong owner"), filename);
     if ((st.st_mode &
           (S_IXUSR | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID | S_ISVTX)) != 0)
         error(EXIT_FAILURE, 0, _("file %s has wrong permissions"), filename);
-
+#endif
     FILE *file = fopen(filename, "r");
     if (!file) {
         syslog(LOG_MAKEPRI(LOG_DAEMON, LOG_ERR),

@@ -24,6 +24,7 @@ fi
 if [ "$CONFIG_LIB_NEON" = "y" ]; then
     define_bool CONFIG_LIB_ZLIB y
     define_bool CONFIG_LIB_LIBXML2 y
+    define_bool CONFIG_LIB_OPENSSL y
 fi
 
 #############################################################################

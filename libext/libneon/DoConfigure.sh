@@ -20,8 +20,8 @@ HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug --enable-webdav --enable-shared --disable-static --with-xml2"
-
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug --enable-webdav --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --with-xml2 --without-pakchois --without-ca-bundle --without-gssapi --without-libproxy"
 CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
