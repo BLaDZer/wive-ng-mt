@@ -60,7 +60,7 @@
    davfs2 will do the same. */
 
 /* The subdirectory of DAV_LOCALSTATE_DIR where the utab-file is placed. */
-#define DAV_UTAB_DIR "mount"
+#define DAV_UTAB_DIR "/tmp"
 
 /* The name of the utab-file. */
 #define DAV_UTAB "utab"
@@ -75,7 +75,7 @@
 /* The directory where the cache files will be stored, when mounted by
    a non root users; relative to DAV_USER_DIR.
    May be overridden by user config file. */
-#define DAV_CACHE "cache"
+#define DAV_CACHE "/tmp"
 
 /* The name of index files. */
 #define DAV_INDEX "index"
@@ -95,7 +95,7 @@
 /* Cache size in MiByte.
    May be overridden by system config file and user config file.
    (1 MiByte = 1,048,576 Byte; Mi = Mebi = Mega Binary according to IEC) */
-#define DAV_CACHE_SIZE 50
+#define DAV_CACHE_SIZE 1
 
 /* Size of the hash table to store nodes. Should be a power of 2.
    May be overridden by system config file and user config file. */
@@ -124,7 +124,7 @@
 #define DAV_GUI_OPTIMIZE 0
 
 /* Remove nodes that are currently not needed to minimize memory usage. */
-#define DAV_MINIMIZE_MEM 0
+#define DAV_MINIMIZE_MEM 1
 
 
 /* HTTP */
@@ -137,7 +137,7 @@
 
 /* Whether to use a proxy if one is specified.
    May be overridden by command line or fstab. */
-#define DAV_USE_PROXY 1
+#define DAV_USE_PROXY 0
 
 /* Whether to ask user for credentials if not given.
    May be overridden by command line, fstab or system config file. */
