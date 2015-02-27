@@ -23,7 +23,7 @@
 #             config/COPYING.davfs2 config/INSTALL.davfs2
 SUBDIRS = src
 ACLOCAL_AMFLAGS = -I config
-ACLOCAL_LDFLAGS = -lz -lxml2 -lneon
+ACLOCAL_LDFLAGS = -lz -lxml2 -lneon -liconv -lssl -lcrypto
 
 #doc_DATA = AUTHORS BUGS ChangeLog COPYING FAQ INSTALL NEWS README \
 #           README.translators THANKS TODO

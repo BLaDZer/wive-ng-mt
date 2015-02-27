@@ -47,7 +47,7 @@ DEFS = -DPROGRAM_NAME=\"mount.davfs\" \
        -DDAV_USER=\"$(dav_user)\" \
        -DDAV_GROUP=\"$(dav_group)\" \
        -D_FORTIFY_SOURCE=2 @DEFS@
-LIBS = $(NEON_LIBS) @LIBS@-lxml2 -lneon -liconv -lz
+LIBS = $(NEON_LIBS) @LIBS@ -lz -lxml2 -lneon -liconv -lssl -lcrypto
 
 install-exec-hook:
 	chmod u+s $(DESTDIR)$(sbindir)/mount.davfs; \
