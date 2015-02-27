@@ -614,35 +614,34 @@
 <b>2.5.x</b><br>
 1) toolchain: apply build root patchset binutils/uclibc.<br><br>
 2) toolchain: sync uclibc patches, update gcc to 19.02.2015 4.8.5 version form git, update headers.<br>
-3) libnvram: fix uncorrect value size limit.<br>
-4) libcurl: up to 7.41.0 version.<br>
-5) samba: remove old 2.0 version of samba, always use 3.0.37.<br>
-6) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
-7) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
-8) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
-9) init.d: unify swicth portmap logic.<br>
-10) init.d: fix vlan enabled check.<br>
-11) init.d: optimize switch reinit procesure.<br>
-12) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
-13) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
-14) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-15) init.d: fix check vlan and set correct part sitch mode.<br>
-16) init.d: fix drop some variables in full bridge modes.<br>
-17) init.d: send hotplug rescan to background (speedup boot).<br>
-18) kernel: ralink arch: update cpu-feature-overrides.h.<br>
-19) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
-20) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-21) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-22) kernel: mips: fix branch emulation of branch likely instructions.<br>
-23) kernel: mips: add option to disable software I/O  coherency.<br>
-24) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-25) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-26) kernel: mips: dsp: simplify the DSP macros.<br>
-27) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-28) kernel: net: fix stacked vlan offload features computation.<br>
-29) kernel: net: reject creation of netdev names with colons.<br>
-30) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-31) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+3) libcurl: up to 7.41.0 version.<br>
+4) samba: remove old 2.0 version of samba, always use 3.0.37.<br>
+5) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
+6) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
+7) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
+8) init.d: unify swicth portmap logic.<br>
+9) init.d: fix vlan enabled check.<br>
+10) init.d: optimize switch reinit procesure.<br>
+11) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
+12) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
+13) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
+14) init.d: fix check vlan and set correct part sitch mode.<br>
+15) init.d: fix drop some variables in full bridge modes.<br>
+16) init.d: send hotplug rescan to background (speedup boot).<br>
+17) kernel: ralink arch: update cpu-feature-overrides.h.<br>
+18) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
+19) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+20) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+21) kernel: mips: fix branch emulation of branch likely instructions.<br>
+22) kernel: mips: add option to disable software I/O  coherency.<br>
+23) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+24) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+25) kernel: mips: dsp: simplify the DSP macros.<br>
+26) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+27) kernel: net: fix stacked vlan offload features computation.<br>
+28) kernel: net: reject creation of netdev names with colons.<br>
+29) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+30) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
