@@ -48,24 +48,6 @@ static block_t fb[FLASH_BLOCK_NUM] =
 	} \
 } while (0)
 
-#ifdef NVRAM_LIB_LIBNVRAM_SSTRDUP
-static int bufitem = 0;
-static char buf[NV_BUFFERS_COUNT][MAX_NV_VALUE_LEN];
-
-char* sstrdup(char* str)
-{
-	char* res;
-	//lock till we'll have pointer to potentially free buffer
-	bufitem++;
-	if (bufitem >= NV_BUFFERS_COUNT)
-	    bufitem = 0;
-	res = buf[bufitem];
-	//work with that buffer
-	strlcpy(res, str, MAX_NV_VALUE_LEN);
-	return res;
-}
-#endif
-
 int getNvramNum(void)
 {
 	return FLASH_BLOCK_NUM;
@@ -311,15 +293,8 @@ char *nvram_bufget(int index, char *name)
 			FREE(fb[index].cache[idx].value);
 			fb[index].cache[idx].value = strdup(nvr.value);
 			FREE(nvr.value);
-			//Tom.Hung 2010-5-7, strdup() will cause memory leakage
-			//but if we return value directly, it will cause many other crash or delete value to nvram error.
-#ifdef NVRAM_LIB_LIBNVRAM_SSTRDUP
-			ret = sstrdup(fb[index].cache[idx].value);
-#else
-			ret = strdup(fb[index].cache[idx].value);
-#endif
+			ret = fb[index].cache[idx].value;
 			LIBNV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
-
 			//btw, we don't return NULL anymore!
 			if (!ret)
 			    ret = "";
