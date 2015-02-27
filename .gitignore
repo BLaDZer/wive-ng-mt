@@ -116,6 +116,13 @@ fulldump
 /libext/libxml2t/autom4te.cache/*
 /libext/libxml2/configure
 /libext/libxml2/Makefile
+/libext/libxml2/doc/Makefile
+/libext/libxml2/doc/devhelp/Makefile
+/libext/libxml2/doc/examples/Makefile
+/libext/libxml2/example/Makefile
+/libext/libxml2/python/Makefile
+/libext/libxml2/python/tests/Makefile
+/libext/libxml2/xstc/Makefile
 /libext/libneon/config.h
 /libext/libneon/config.h.in~
 /libext/libneon/configure

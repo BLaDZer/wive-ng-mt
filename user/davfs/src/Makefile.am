@@ -19,10 +19,10 @@
 
 ## Process this file with automake to produce Makefile.in
 
-localedir = $(datadir)/locale
-pkgsysconfdir = $(sysconfdir)/@PACKAGE@
-pkglocalstatedir = $(dav_localstatedir)/mount.davfs
-pkgsyscachedir = $(dav_syscachedir)/@PACKAGE@
+localedir = /tmp
+pkgsysconfdir = /etc
+pkglocalstatedir = /tmp
+pkgsyscachedir = /tmp
 ssbindir = @ssbindir@
 
 sbin_PROGRAMS = mount.davfs umount.davfs
