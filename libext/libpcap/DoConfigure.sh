@@ -21,7 +21,7 @@ HTARGET=mipsel-linux
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --enable-shared --enable-ipv6 --with-pcap=linux"
-CONFOPTS="$CONFOPTS --disable-bluetooth --disable-canusb --disable-can --without-flex --without-bison --without-libnl"
+CONFOPTS="$CONFOPTS --disable-bluetooth --disable-canusb --disable-can --without-flex --without-bison --without-libnl --disable-static"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 
 CFLAGS="$BACKUPCFLAGS -I$INCLUDES"

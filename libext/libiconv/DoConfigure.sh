@@ -21,7 +21,7 @@ HTARGET=mipsel-linux
 
 #arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking --disable-static"
 
 #this small workaround
 cp -f $APROOTDIR/inc/*.h $APROOTDIR/lib/

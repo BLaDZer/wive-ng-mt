@@ -14,6 +14,17 @@ bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
 bool 'Build libnl'		CONFIG_LIB_NL
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
+bool 'Build libxml2'		CONFIG_LIB_XML2
+bool 'Build libneon'		CONFIG_LIB_NEON
+
+if [ "$CONFIG_LIB_XML2" = "y" ]; then
+    define_bool CONFIG_LIB_ICONV y
+fi
+
+if [ "$CONFIG_LIB_NEON" = "y" ]; then
+    define_bool CONFIG_LIB_ZLIB y
+    define_bool CONFIG_LIB_LIBXML2 y
+fi
 
 #############################################################################
 
@@ -29,8 +40,15 @@ dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
+bool 'davfs'					CONFIG_USER_DAVFS
 bool 'samba server (storage/wins)'		CONFIG_USER_SAMBA
 bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
+if [ "$CONFIG_USER_DAVFS" = "y" ]; then
+    define_bool CONFIG_LIB_NEON y
+    define_bool CONFIG_LIB_ZLIB y
+    define_bool CONFIG_LIB_LIBXML2 y
+    define_bool CONFIG_LIB_ICONV y
+fi
 if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_EVENT y
     define_bool CONFIG_LIB_CURL y
@@ -103,7 +121,6 @@ if [ "$CONFIG_RT2880_APP" = "y" ]; then
 bool 'RT2880 Register R/W'		CONFIG_RT2880_REG_RW
 bool 'RT2880 MiiMgr '			CONFIG_RT2880_MII_MGR
 bool 'RT2880 NVRAM'			CONFIG_RT2880_NVRAM
-bool 'RT2880 RALINK INIT'		CONFIG_RT2880_RAINIT
 bool 'RT2880 MTD Application'		CONFIG_RT2880_MTD
 bool 'RT2880 eth_mac Tool'		CONFIG_ETHMAC_TOOL
 bool 'RT2880 GPIO Test'			CONFIG_RT2880_GPIO_TEST

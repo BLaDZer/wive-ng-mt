@@ -20,7 +20,7 @@ HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking --disable-openssl"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking --disable-openssl --disable-static"
 
 CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"

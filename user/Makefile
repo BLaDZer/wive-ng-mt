@@ -82,6 +82,7 @@ dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
 dir_$(CONFIG_USB_MODESWITCH)                += usb_modeswitch
 dir_$(CONFIG_USER_P910ND)		    += p910nd
 dir_$(CONFIG_USER_NTFS3G)                   += ntfs-3g
+dir_$(CONFIG_USER_DAVFS)		    += davfs
 dir_$(CONFIG_USER_SAMBA)		    += samba
 dir_$(CONFIG_USER_TRANSMISSION)		    += transmission
 dir_$(CONFIG_USER_STORAGE)		    += usb

@@ -207,6 +207,12 @@ endif
 ifdef CONFIG_LIB_USB1
 	CFLAGS += -I$(LIBCDIRSHARED)/include/libusb-1.0
 endif
+ifdef CONFIG_LIB_XML2
+	CFLAGS += -I$(LIBCDIRSHARED)/include/libxml2
+endif
+ifdef CONFIG_LIB_NEON
+	CFLAGS += -I$(LIBCDIRSHARED)/include/neon
+endif
 ifdef CONFIG_USER_IPTABLES
 	CFLAGS += -I$(ROOTDIR)/user/iptables/include
 endif

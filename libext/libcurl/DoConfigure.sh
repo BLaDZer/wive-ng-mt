@@ -22,7 +22,7 @@ HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --with-ssl --disable-debug --disable-curldebug --disable-manual --without-random"
+CONFOPTS="$CONFOPTS --with-ssl --disable-debug --disable-curldebug --disable-manual --without-random --disable-static"
 CONFOPTS="$CONFOPTS --disable-dependency-tracking --disable-verbose --disable-rtsp"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 

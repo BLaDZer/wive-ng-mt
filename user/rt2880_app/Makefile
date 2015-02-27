@@ -34,7 +34,6 @@ endif
 ra_dir_$(CONFIG_RT2880_REG_RW)      += reg
 ra_dir_$(CONFIG_RT2880_MII_MGR)     += mii_mgr
 ra_dir_$(CONFIG_RT2880_NVRAM)       += nvram
-ra_dir_$(CONFIG_RT2880_RAINIT)      += nvram
 ra_dir_$(CONFIG_RT2880_MTD)         += mtd
 ra_dir_$(CONFIG_RT2880_MTD_VERF)    += mtd_verifier
 ra_dir_$(CONFIG_RT2880_GPIO_TEST)   += gpio

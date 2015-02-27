@@ -112,6 +112,14 @@ fulldump
 /libext/libcurl/packages/Win32/cygwin/Makefile
 /libext/libcurl/packages/vms/Makefile
 /libext/libcurl/src/Makefile
+/libext/libxml2/autom4te.cache
+/libext/libxml2t/autom4te.cache/*
+/libext/libxml2/configure
+/libext/libxml2/Makefile
+/libext/libneon/config.h
+/libext/libneon/config.h.in~
+/libext/libneon/configure
+/libext/libneon/Makefile
 /libext/libevent/autom4te.cache
 /libext/libevent/autom4te.cache/*
 /libext/libevent/config.h
@@ -254,6 +262,10 @@ fulldump
 /user/radvd/stamp-h1
 /user/radvd/Makefile
 /user/radvd/redhat/radvd.spec
+/user/davfs/autom4te.cache/*
+/user/davfs/Makefile
+/user/davfs/Makefile.in
+/user/davfs/configure
 /user/transmission/autom4te.cache/*
 /user/transmission/libtool
 /user/transmission/web/Makefile
