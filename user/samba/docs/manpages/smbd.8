@@ -1,430 +1,535 @@
-.TH SMBD 8 "23 Jun 2001" "smbd 2.0.10"
-.PP 
-.SH "NAME" 
+.\"     Title: smbd
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.74.0 <http://docbook.sf.net/>
+.\"      Date: 09/30/2009
+.\"    Manual: System Administration tools
+.\"    Source: Samba 3.0
+.\"  Language: English
+.\"
+.TH "SMBD" "8" "09/30/2009" "Samba 3\&.0" "System Administration tools"
+.\" -----------------------------------------------------------------
+.\" * (re)Define some macros
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" toupper - uppercase a string (locale-aware)
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de toupper
+.tr aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+\\$*
+.tr aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SH-xref - format a cross-reference to an SH section
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de SH-xref
+.ie n \{\
+.\}
+.toupper \\$*
+.el \{\
+\\$*
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SH - level-one heading that works better for non-TTY output
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de1 SH
+.\" put an extra blank line of space above the head in non-TTY output
+.if t \{\
+.sp 1
+.\}
+.sp \\n[PD]u
+.nr an-level 1
+.set-an-margin
+.nr an-prevailing-indent \\n[IN]
+.fi
+.in \\n[an-margin]u
+.ti 0
+.HTML-TAG ".NH \\n[an-level]"
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+\." make the size of the head bigger
+.ps +3
+.ft B
+.ne (2v + 1u)
+.ie n \{\
+.\" if n (TTY output), use uppercase
+.toupper \\$*
+.\}
+.el \{\
+.nr an-break-flag 0
+.\" if not n (not TTY), use normal case (not uppercase)
+\\$1
+.in \\n[an-margin]u
+.ti 0
+.\" if not n (not TTY), put a border/line under subheading
+.sp -.6
+\l'\n(.lu'
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SS - level-two heading that works better for non-TTY output
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de1 SS
+.sp \\n[PD]u
+.nr an-level 1
+.set-an-margin
+.nr an-prevailing-indent \\n[IN]
+.fi
+.in \\n[IN]u
+.ti \\n[SN]u
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.ps \\n[PS-SS]u
+\." make the size of the head bigger
+.ps +2
+.ft B
+.ne (2v + 1u)
+.if \\n[.$] \&\\$*
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" BB/BE - put background/screen (filled box) around block of text
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de BB
+.if t \{\
+.sp -.5
+.br
+.in +2n
+.ll -2n
+.gcolor red
+.di BX
+.\}
+..
+.de EB
+.if t \{\
+.if "\\$2"adjust-for-leading-newline" \{\
+.sp -1
+.\}
+.br
+.di
+.in
+.ll
+.gcolor
+.nr BW \\n(.lu-\\n(.i
+.nr BH \\n(dn+.5v
+.ne \\n(BHu+.5v
+.ie "\\$2"adjust-for-leading-newline" \{\
+\M[\\$1]\h'1n'\v'+.5v'\D'P \\n(BWu 0 0 \\n(BHu -\\n(BWu 0 0 -\\n(BHu'\M[]
+.\}
+.el \{\
+\M[\\$1]\h'1n'\v'-.5v'\D'P \\n(BWu 0 0 \\n(BHu -\\n(BWu 0 0 -\\n(BHu'\M[]
+.\}
+.in 0
+.sp -.5v
+.nf
+.BX
+.in
+.sp .5v
+.fi
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" BM/EM - put colored marker in margin next to block of text
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de BM
+.if t \{\
+.br
+.ll -2n
+.gcolor red
+.di BX
+.\}
+..
+.de EM
+.if t \{\
+.br
+.di
+.ll
+.gcolor
+.nr BH \\n(dn
+.ne \\n(BHu
+\M[\\$1]\D'P -.75n 0 0 \\n(BHu -(\\n[.i]u - \\n(INu - .75n) 0 0 -\\n(BHu'\M[]
+.in 0
+.nf
+.BX
+.in
+.fi
+.\}
+..
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "Name"
 smbd \- server to provide SMB/CIFS services to clients
-.PP 
-.SH "SYNOPSIS" 
-.PP 
-\fBsmbd\fP [-D] [-a] [-o] [-P] [-h] [-V] [-d debuglevel] [-l log file] [-p port number] [-O socket options] [-s configuration file]
-.PP 
-.SH "DESCRIPTION" 
-.PP 
-This program is part of the \fBSamba\fP suite\&.
-.PP 
-\fBsmbd\fP is the server daemon that provides filesharing and printing
-services to
-Windows clients\&. The server provides filespace and printer services to
-clients using the SMB (or CIFS) protocol\&. This is compatible with the
-LanManager protocol, and can service LanManager clients\&.  These
-include MSCLIENT 3\&.0 for DOS, Windows for Workgroups, Windows 95,
-Windows NT, OS/2, DAVE for Macintosh, and smbfs for Linux\&.
-.PP 
-An extensive description of the services that the server can provide
-is given in the man page for the configuration file controlling the
-attributes of those services (see 
-\fBsmb\&.conf (5)\fP\&.  This man page
-will not describe the services, but will concentrate on the
-administrative aspects of running the server\&.
-.PP 
-Please note that there are significant security implications to
-running this server, and the 
-\fBsmb\&.conf (5)\fP manpage should be
-regarded as mandatory reading before proceeding with installation\&.
-.PP 
-A session is created whenever a client requests one\&. Each client gets
-a copy of the server for each session\&. This copy then services all
-connections made by the client during that session\&. When all
-connections from its client are closed, the copy of the server for
-that client terminates\&.
-.PP 
-The configuration file, and any files that it includes, are
-automatically reloaded every minute, if they change\&.  You can force a
-reload by sending a SIGHUP to the server\&.  Reloading the configuration
-file will not affect connections to any service that is already
-established\&.  Either the user will have to disconnect from the
-service, or smbd killed and restarted\&.
-.PP 
-.SH "OPTIONS" 
-.PP 
-.IP 
-.IP "\fB-D\fP" 
-If specified, this parameter causes the server to operate as a
-daemon\&. That is, it detaches itself and runs in the background,
-fielding requests on the appropriate port\&. Operating the server as a
-daemon is the recommended way of running smbd for servers that provide
-more than casual use file and print services\&.
-.IP 
-By default, the server will NOT operate as a daemon\&. 
-.IP 
-.IP "\fB-a\fP" 
-If this parameter is specified, each new connection will
-append log messages to the log file\&.  This is the default\&.
-.IP 
-.IP "\fB-o\fP" 
-If this parameter is specified, the log files will be
-overwritten when opened\&.  By default, the log files will be appended
-to\&.
-.IP 
-.IP "\fB-P\fP" 
-Passive option\&. Causes smbd not to send any network traffic
-out\&. Used for debugging by the developers only\&.
-.IP 
-.IP "\fB-h\fP" 
-Prints the help information (usage) for \fBsmbd\fP\&.
-.IP 
-.IP "\fB-V\fP" 
-Prints the version number for \fBsmbd\fP\&.
-.IP 
-.IP "\fB-d debuglevel\fP" 
-debuglevel is an integer from 0 to 10\&.
-.IP 
-The default value if this parameter is not specified is zero\&.
-.IP 
-The higher this value, the more detail will be logged to the log files
-about the activities of the server\&. At level 0, only critical errors
-and serious warnings will be logged\&. Level 1 is a reasonable level for
-day to day running - it generates a small amount of information about
-operations carried out\&.
-.IP 
-Levels above 1 will generate considerable amounts of log data, and
-should only be used when investigating a problem\&. Levels above 3 are
-designed for use only by developers and generate HUGE amounts of log
-data, most of which is extremely cryptic\&.
-.IP 
-Note that specifying this parameter here will override the \fBlog
-level\fP parameter in the \fBsmb\&.conf
-(5)\fP file\&.
-.IP 
-.IP "\fB-l log file\fP" 
-If specified, \fIlog file\fP specifies
-a log filename into which informational and debug messages from the
-running server will be logged\&. The log file generated is never removed
-by the server although its size may be controlled by the \fBmax
-log size\fP option in the \fBsmb\&.conf
-(5)\fP file\&.  The default log file name is specified
-at compile time\&.
-.IP 
-.IP "\fB-O socket options\fP" 
-See the \fBsocket
-options\fP parameter in the
-\fBsmb\&.conf (5)\fP file for details\&.
-.IP 
-.IP "\fB-p port number\fP" 
-port number is a positive integer value\&.  The
-default value if this parameter is not specified is 139\&.
-.IP 
-This number is the port number that will be used when making
-connections to the server from client software\&. The standard
-(well-known) port number for the SMB over TCP is 139, hence the
-default\&. If you wish to run the server as an ordinary user rather than
-as root, most systems will require you to use a port number greater
-than 1024 - ask your system administrator for help if you are in this
-situation\&.
-.IP 
-In order for the server to be useful by most clients, should you
-configure it on a port other than 139, you will require port
-redirection services on port 139, details of which are outlined in
-rfc1002\&.txt section 4\&.3\&.5\&.
-.IP 
-This parameter is not normally specified except in the above
-situation\&.
-.IP 
-.IP "\fB-s configuration file\fP" 
-The file specified contains the configuration details required by the
-server\&.  The information in this file includes server-specific
-information such as what printcap file to use, as well as descriptions
-of all the services that the server is to provide\&. See \fBsmb\&.conf
-(5)\fP for more information\&.
-The default configuration file name is determined at compile time\&.
-.IP 
-.PP 
-.SH "FILES" 
-.PP 
-\fB/etc/inetd\&.conf\fP
-.PP 
-If the server is to be run by the inetd meta-daemon, this file must
-contain suitable startup information for the meta-daemon\&. See the
-section INSTALLATION below\&.
-.PP 
-\fB/etc/rc\fP
-.PP 
-(or whatever initialization script your system uses)\&.
-.PP 
-If running the server as a daemon at startup, this file will need to
-contain an appropriate startup sequence for the server\&. See the
-section INSTALLATION below\&.
-.PP 
-\fB/etc/services\fP
-.PP 
-If running the server via the meta-daemon inetd, this file must
-contain a mapping of service name (e\&.g\&., netbios-ssn) to service port
-(e\&.g\&., 139) and protocol type (e\&.g\&., tcp)\&. See the section
-INSTALLATION below\&.
-.PP 
-\fB/usr/local/samba/lib/smb\&.conf\fP
-.PP 
-This is the default location of the \fIsmb\&.conf\fP server configuration
-file\&. Other common places that systems install this file are
-\fI/usr/samba/lib/smb\&.conf\fP and \fI/etc/smb\&.conf\fP\&.
-.PP 
-This file describes all the services the server is to make available
-to clients\&. See \fBsmb\&.conf (5)\fP for more information\&.
-.PP 
-.SH "LIMITATIONS" 
-.PP 
-On some systems \fBsmbd\fP cannot change uid back to root after a
-setuid() call\&.  Such systems are called "trapdoor" uid systems\&. If you
-have such a system, you will be unable to connect from a client (such
-as a PC) as two different users at once\&. Attempts to connect the
-second user will result in "access denied" or similar\&.
-.PP 
-.SH "ENVIRONMENT VARIABLES" 
-.PP 
-\fBPRINTER\fP
-.PP 
-If no printer name is specified to printable services, most systems
-will use the value of this variable (or "lp" if this variable is not
-defined) as the name of the printer to use\&. This is not specific to
-the server, however\&.
-.PP 
-.SH "INSTALLATION" 
-.PP 
-The location of the server and its support files is a matter for
-individual system administrators\&. The following are thus suggestions
-only\&.
-.PP 
-It is recommended that the server software be installed under the
-/usr/local/samba hierarchy, in a directory readable by all, writeable
-only by root\&. The server program itself should be executable by all,
-as users may wish to run the server themselves (in which case it will
-of course run with their privileges)\&.  The server should NOT be
-setuid\&. On some systems it may be worthwhile to make smbd setgid to an
-empty group\&. This is because some systems may have a security hole
-where daemon processes that become a user can be attached to with a
-debugger\&. Making the smbd file setgid to an empty group may prevent
-this hole from being exploited\&. This security hole and the suggested
-fix has only been confirmed on old versions (pre-kernel 2\&.0) of Linux
-at the time this was written\&. It is possible that this hole only
-exists in Linux, as testing on other systems has thus far shown them
-to be immune\&.
-.PP 
-The server log files should be put in a directory readable and
-writeable only by root, as the log files may contain sensitive
-information\&.
-.PP 
-The configuration file should be placed in a directory readable and
-writeable only by root, as the configuration file controls security for
-the services offered by the server\&. The configuration file can be made
-readable by all if desired, but this is not necessary for correct
-operation of the server and is not recommended\&. A sample configuration
-file "smb\&.conf\&.sample" is supplied with the source to the server -
-this may be renamed to "smb\&.conf" and modified to suit your needs\&.
-.PP 
-The remaining notes will assume the following:
-.PP 
-.IP 
-.IP o 
-\fBsmbd\fP (the server program) installed in /usr/local/samba/bin
-.IP 
-.IP o 
-\fBsmb\&.conf\fP (the configuration file) installed in /usr/local/samba/lib
-.IP 
-.IP o 
-log files stored in /var/adm/smblogs
-.IP 
-.PP 
-The server may be run either as a daemon by users or at startup, or it
-may be run from a meta-daemon such as inetd upon request\&. If run as a
-daemon, the server will always be ready, so starting sessions will be
-faster\&. If run from a meta-daemon some memory will be saved and
-utilities such as the tcpd TCP-wrapper may be used for extra security\&.
-For serious use as file server it is recommended that \fBsmbd\fP be run
-as a daemon\&.
-.PP 
-When you\'ve decided, continue with either 
-RUNNING THE SERVER AS A DAEMON or 
-RUNNING THE SERVER ON REQUEST\&.
-.PP 
-.SH "RUNNING THE SERVER AS A DAEMON" 
-.PP 
-To run the server as a daemon from the command line, simply put the
-\fB-D\fP option on the command line\&. There is no need to place an
-ampersand at the end of the command line - the \fB-D\fP option causes
-the server to detach itself from the tty anyway\&.
-.PP 
-Any user can run the server as a daemon (execute permissions
-permitting, of course)\&. This is useful for testing purposes, and may
-even be useful as a temporary substitute for something like ftp\&. When
-run this way, however, the server will only have the privileges of the
-user who ran it\&.
-.PP 
-To ensure that the server is run as a daemon whenever the machine is
-started, and to ensure that it runs as root so that it can serve
-multiple clients, you will need to modify the system startup
-files\&. Wherever appropriate (for example, in /etc/rc), insert the
-following line, substituting port number, log file location,
-configuration file location and debug level as desired:
-.PP 
-\f(CW/usr/local/samba/bin/smbd -D -l /var/adm/smblogs/log -s /usr/local/samba/lib/smb\&.conf\fP
-.PP 
-(The above should appear in your initialization script as a single line\&. 
-Depending on your terminal characteristics, it may not appear that way in
-this man page\&. If the above appears as more than one line, please treat any 
-newlines or indentation as a single space or TAB character\&.)
-.PP 
-If the options used at compile time are appropriate for your system,
-all parameters except \fB-D\fP may be
-omitted\&. See the section OPTIONS above\&.
-.PP 
-.SH "RUNNING THE SERVER ON REQUEST" 
-.PP 
-If your system uses a meta-daemon such as \fBinetd\fP, you can arrange to
-have the smbd server started whenever a process attempts to connect to
-it\&. This requires several changes to the startup files on the host
-machine\&. If you are experimenting as an ordinary user rather than as
-root, you will need the assistance of your system administrator to
-modify the system files\&.
-.PP 
-You will probably want to set up the NetBIOS name server \fBnmbd\fP at
-the same time as \fBsmbd\fP\&. To do this refer to the man page for
-\fBnmbd (8)\fP\&.
-.PP 
-First, ensure that a port is configured in the file \f(CW/etc/services\fP\&. The
-well-known port 139 should be used if possible, though any port may be
-used\&.
-.PP 
-Ensure that a line similar to the following is in \f(CW/etc/services\fP:
-.PP 
-\f(CWnetbios-ssn	139/tcp\fP
-.PP 
-Note for NIS/YP users - you may need to rebuild the NIS service maps
-rather than alter your local \f(CW/etc/services file\fP\&.
-.PP 
-Next, put a suitable line in the file \f(CW/etc/inetd\&.conf\fP (in the unlikely
-event that you are using a meta-daemon other than inetd, you are on
-your own)\&. Note that the first item in this line matches the service
-name in \f(CW/etc/services\fP\&.  Substitute appropriate values for your system
-in this line (see \fBinetd (8)\fP):
-.PP 
-\f(CWnetbios-ssn stream tcp nowait root /usr/local/samba/bin/smbd -d1 -l/var/adm/smblogs/log -s/usr/local/samba/lib/smb\&.conf\fP
-.PP 
-(The above should appear in \f(CW/etc/inetd\&.conf\fP as a single
-line\&. Depending on your terminal characteristics, it may not appear
-that way in this man page\&.  If the above appears as more than one
-line, please treat any newlines or indentation as a single space or
-TAB character\&.)
-.PP 
-Note that there is no need to specify a port number here, even if you
-are using a non-standard port number\&.
-.PP 
-Lastly, edit the configuration file to provide suitable services\&. To
-start with, the following two services should be all you need:
-.PP 
-
-.DS 
- 
-
-
-[homes]
-  writeable = yes
-
-[printers]
- writeable = no
- printable = yes
- path = /tmp
- public = yes
-
-
-.DE 
- 
-
-.PP 
-This will allow you to connect to your home directory and print to any
-printer supported by the host (user privileges permitting)\&.
-.PP 
-.SH "TESTING THE INSTALLATION" 
-.PP 
-If running the server as a daemon, execute it before proceeding\&. If
-using a meta-daemon, either restart the system or kill and restart the
-meta-daemon\&. Some versions of inetd will reread their configuration
-tables if they receive a HUP signal\&.
-.PP 
-If your machine\'s name is "fred" and your name is "mary", you should
-now be able to connect to the service \f(CW\e\efred\emary\fP\&.
-.PP 
-To properly test and experiment with the server, we recommend using
-the smbclient program (see 
-\fBsmbclient (1)\fP) and also going through
-the steps outlined in the file \fIDIAGNOSIS\&.txt\fP in the \fIdocs/\fP
-directory of your Samba installation\&.
-.PP 
-.SH "VERSION" 
-.PP 
-This man page is correct for version 2\&.0 of the Samba suite\&.
-.PP 
-.SH "DIAGNOSTICS" 
-.PP 
-Most diagnostics issued by the server are logged in a specified log
-file\&. The log file name is specified at compile time, but may be
-overridden on the command line\&.
-.PP 
-The number and nature of diagnostics available depends on the debug
-level used by the server\&. If you have problems, set the debug level to
-3 and peruse the log files\&.
-.PP 
-Most messages are reasonably self-explanatory\&. Unfortunately, at the time
-this man page was created, there are too many diagnostics available
-in the source code to warrant describing each and every diagnostic\&. At
-this stage your best bet is still to grep the source code and inspect
-the conditions that gave rise to the diagnostics you are seeing\&.
-.PP 
-.SH "SIGNALS" 
-.PP 
-Sending the smbd a SIGHUP will cause it to re-load its smb\&.conf
+.SH "Synopsis"
+.fam C
+.HP \w'\ 'u
+\FCsmbd\F[] [\-D] [\-F] [\-S] [\-i] [\-h] [\-V] [\-b] [\-d\ <debug\ level>] [\-l\ <log\ directory>] [\-p\ <port\ number(s)>] [\-P\ <profiling\ level>] [\-O\ <socket\ option>] [\-s\ <configuration\ file>]
+.fam
+.SH "DESCRIPTION"
+.PP
+This program is part of the
+\fBsamba\fR(7)
+suite\&.
+.PP
+\FCsmbd\F[]
+is the server daemon that provides filesharing and printing services to Windows clients\&. The server provides filespace and printer services to clients using the SMB (or CIFS) protocol\&. This is compatible with the LanManager protocol, and can service LanManager clients\&. These include MSCLIENT 3\&.0 for DOS, Windows for Workgroups, Windows 95/98/ME, Windows NT, Windows 2000, OS/2, DAVE for Macintosh, and smbfs for Linux\&.
+.PP
+An extensive description of the services that the server can provide is given in the man page for the configuration file controlling the attributes of those services (see
+\fBsmb.conf\fR(5)\&. This man page will not describe the services, but will concentrate on the administrative aspects of running the server\&.
+.PP
+Please note that there are significant security implications to running this server, and the
+\fBsmb.conf\fR(5)
+manual page should be regarded as mandatory reading before proceeding with installation\&.
+.PP
+A session is created whenever a client requests one\&. Each client gets a copy of the server for each session\&. This copy then services all connections made by the client during that session\&. When all connections from its client are closed, the copy of the server for that client terminates\&.
+.PP
+The configuration file, and any files that it includes, are automatically reloaded every minute, if they change\&. You can force a reload by sending a SIGHUP to the server\&. Reloading the configuration file will not affect connections to any service that is already established\&. Either the user will have to disconnect from the service, or
+\FCsmbd\F[]
+killed and restarted\&.
+.SH "OPTIONS"
+.PP
+\-D
+.RS 4
+If specified, this parameter causes the server to operate as a daemon\&. That is, it detaches itself and runs in the background, fielding requests on the appropriate port\&. Operating the server as a daemon is the recommended way of running
+\FCsmbd\F[]
+for servers that provide more than casual use file and print services\&. This switch is assumed if
+\FCsmbd \F[]
+is executed on the command line of a shell\&.
+.RE
+.PP
+\-F
+.RS 4
+If specified, this parameter causes the main
+\FCsmbd\F[]
+process to not daemonize, i\&.e\&. double\-fork and disassociate with the terminal\&. Child processes are still created as normal to service each connection request, but the main process does not exit\&. This operation mode is suitable for running
+\FCsmbd\F[]
+under process supervisors such as
+\FCsupervise\F[]
+and
+\FCsvscan\F[]
+from Daniel J\&. Bernstein\'s
+\FCdaemontools\F[]
+package, or the AIX process monitor\&.
+.RE
+.PP
+\-S
+.RS 4
+If specified, this parameter causes
+\FCsmbd\F[]
+to log to standard output rather than a file\&.
+.RE
+.PP
+\-i
+.RS 4
+If this parameter is specified it causes the server to run "interactively", not as a daemon, even if the server is executed on the command line of a shell\&. Setting this parameter negates the implicit deamon mode when run from the command line\&.
+\FCsmbd\F[]
+also logs to standard output, as if the
+\FC\-S\F[]
+parameter had been given\&.
+.RE
+.PP
+\-d|\-\-debuglevel=level
+.RS 4
+\fIlevel\fR
+is an integer from 0 to 10\&. The default value if this parameter is not specified is 0\&.
+.sp
+The higher this value, the more detail will be logged to the log files about the activities of the server\&. At level 0, only critical errors and serious warnings will be logged\&. Level 1 is a reasonable level for day\-to\-day running \- it generates a small amount of information about operations carried out\&.
+.sp
+Levels above 1 will generate considerable amounts of log data, and should only be used when investigating a problem\&. Levels above 3 are designed for use only by developers and generate HUGE amounts of log data, most of which is extremely cryptic\&.
+.sp
+Note that specifying this parameter here will override the
+\m[blue]\fBlog level\fR\m[]
+parameter in the
+\FCsmb\&.conf\F[]
+file\&.
+.RE
+.PP
+\-V
+.RS 4
+Prints the program version number\&.
+.RE
+.PP
+\-s <configuration file>
+.RS 4
+The file specified contains the configuration details required by the server\&. The information in this file includes server\-specific information such as what printcap file to use, as well as descriptions of all the services that the server is to provide\&. See
+\FCsmb\&.conf\F[]
+for more information\&. The default configuration file name is determined at compile time\&.
+.RE
+.PP
+\-l|\-\-log\-basename=logdirectory
+.RS 4
+Base directory name for log/debug files\&. The extension
+\fB"\&.progname"\fR
+will be appended (e\&.g\&. log\&.smbclient, log\&.smbd, etc\&.\&.\&.)\&. The log file is never removed by the client\&.
+.RE
+.PP
+\-h|\-\-help
+.RS 4
+Print a summary of command line options\&.
+.RE
+.PP
+\-b
+.RS 4
+Prints information about how Samba was built\&.
+.RE
+.PP
+\-p|\-\-port<port number(s)>
+.RS 4
+\fIport number(s)\fR
+is a space or comma\-separated list of TCP ports smbd should listen on\&. The default value is taken from the
+\m[blue]\fBports\fR\m[]
+parameter in
+\FCsmb\&.conf\F[]
+.sp
+The default ports are 139 (used for SMB over NetBIOS over TCP) and port 445 (used for plain SMB over TCP)\&.
+.RE
+.PP
+\-P|\-\-profiling\-level<profiling level>
+.RS 4
+\fIprofiling level\fR
+is a number specifying the level of profiling data to be collected\&. 0 turns off profiling, 1 turns on counter profiling only, 2 turns on complete profiling, and 3 resets all profiling data\&.
+.RE
+.SH "FILES"
+.PP
+\FC/etc/inetd\&.conf\F[]
+.RS 4
+If the server is to be run by the
+\FCinetd\F[]
+meta\-daemon, this file must contain suitable startup information for the meta\-daemon\&.
+.RE
+.PP
+\FC/etc/rc\F[]
+.RS 4
+or whatever initialization script your system uses)\&.
+.sp
+If running the server as a daemon at startup, this file will need to contain an appropriate startup sequence for the server\&.
+.RE
+.PP
+\FC/etc/services\F[]
+.RS 4
+If running the server via the meta\-daemon
+\FCinetd\F[], this file must contain a mapping of service name (e\&.g\&., netbios\-ssn) to service port (e\&.g\&., 139) and protocol type (e\&.g\&., tcp)\&.
+.RE
+.PP
+\FC/usr/local/samba/lib/smb\&.conf\F[]
+.RS 4
+This is the default location of the
+\fBsmb.conf\fR(5)
+server configuration file\&. Other common places that systems install this file are
+\FC/usr/samba/lib/smb\&.conf\F[]
+and
+\FC/etc/samba/smb\&.conf\F[]\&.
+.sp
+This file describes all the services the server is to make available to clients\&. See
+\fBsmb.conf\fR(5)
+for more information\&.
+.RE
+.SH "LIMITATIONS"
+.PP
+On some systems
+\FCsmbd\F[]
+cannot change uid back to root after a setuid() call\&. Such systems are called trapdoor uid systems\&. If you have such a system, you will be unable to connect from a client (such as a PC) as two different users at once\&. Attempts to connect the second user will result in access denied or similar\&.
+.SH "ENVIRONMENT VARIABLES"
+.PP
+\fBPRINTER\fR
+.RS 4
+If no printer name is specified to printable services, most systems will use the value of this variable (or
+\fBlp\fR
+if this variable is not defined) as the name of the printer to use\&. This is not specific to the server, however\&.
+.RE
+.SH "PAM INTERACTION"
+.PP
+Samba uses PAM for authentication (when presented with a plaintext password), for account checking (is this account disabled?) and for session management\&. The degree too which samba supports PAM is restricted by the limitations of the SMB protocol and the
+\m[blue]\fBobey pam restrictions\fR\m[]
+\fBsmb.conf\fR(5)
+paramater\&. When this is set, the following restrictions apply:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIAccount Validation\fR: All accesses to a samba server are checked against PAM to see if the account is vaild, not disabled and is permitted to login at this time\&. This also applies to encrypted logins\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fISession Management\fR: When not using share level secuirty, users must pass PAM\'s session checks before access is granted\&. Note however, that this is bypassed in share level secuirty\&. Note also that some older pam configuration files may need a line added for session support\&.
+.SH "VERSION"
+.PP
+This man page is correct for version 3\&.0 of the Samba suite\&.
+.SH "DIAGNOSTICS"
+.PP
+Most diagnostics issued by the server are logged in a specified log file\&. The log file name is specified at compile time, but may be overridden on the command line\&.
+.PP
+The number and nature of diagnostics available depends on the debug level used by the server\&. If you have problems, set the debug level to 3 and peruse the log files\&.
+.PP
+Most messages are reasonably self\-explanatory\&. Unfortunately, at the time this man page was created, there are too many diagnostics available in the source code to warrant describing each and every diagnostic\&. At this stage your best bet is still to grep the source code and inspect the conditions that gave rise to the diagnostics you are seeing\&.
+.SH "TDB FILES"
+.PP
+Samba stores it\'s data in several TDB (Trivial Database) files, usually located in
+\FC/var/lib/samba\F[]\&.
+.PP
+(*) information persistent across restarts (but not necessarily important to backup)\&.
+.PP
+account_policy\&.tdb*
+.RS 4
+NT account policy settings such as pw expiration, etc\&.\&.\&.
+.RE
+.PP
+brlock\&.tdb
+.RS 4
+byte range locks
+.RE
+.PP
+browse\&.dat
+.RS 4
+browse lists
+.RE
+.PP
+connections\&.tdb
+.RS 4
+share connections (used to enforce max connections, etc\&.\&.\&.)
+.RE
+.PP
+gencache\&.tdb
+.RS 4
+generic caching db
+.RE
+.PP
+group_mapping\&.tdb*
+.RS 4
+group mapping information
+.RE
+.PP
+locking\&.tdb
+.RS 4
+share modes & oplocks
+.RE
+.PP
+login_cache\&.tdb*
+.RS 4
+bad pw attempts
+.RE
+.PP
+messages\&.tdb
+.RS 4
+Samba messaging system
+.RE
+.PP
+netsamlogon_cache\&.tdb*
+.RS 4
+cache of user net_info_3 struct from net_samlogon() request (as a domain member)
+.RE
+.PP
+ntdrivers\&.tdb*
+.RS 4
+installed printer drivers
+.RE
+.PP
+ntforms\&.tdb*
+.RS 4
+installed printer forms
+.RE
+.PP
+ntprinters\&.tdb*
+.RS 4
+installed printer information
+.RE
+.PP
+printing/
+.RS 4
+directory containing tdb per print queue of cached lpq output
+.RE
+.PP
+registry\&.tdb
+.RS 4
+Windows registry skeleton (connect via regedit\&.exe)
+.RE
+.PP
+sessionid\&.tdb
+.RS 4
+session information (e\&.g\&. support for \'utmp = yes\')
+.RE
+.PP
+share_info\&.tdb*
+.RS 4
+share acls
+.RE
+.PP
+winbindd_cache\&.tdb
+.RS 4
+winbindd\'s cache of user lists, etc\&.\&.\&.
+.RE
+.PP
+winbindd_idmap\&.tdb*
+.RS 4
+winbindd\'s local idmap db
+.RE
+.PP
+wins\&.dat*
+.RS 4
+wins database when \'wins support = yes\'
+.RE
+.SH "SIGNALS"
+.PP
+Sending the
+\FCsmbd\F[]
+a SIGHUP will cause it to reload its
+\FCsmb\&.conf\F[]
 configuration file within a short period of time\&.
-.PP 
-To shut down a users smbd process it is recommended that SIGKILL (-9)
-\fINOT\fP be used, except as a last resort, as this may leave the shared
-memory area in an inconsistent state\&. The safe way to terminate an
-smbd is to send it a SIGTERM (-15) signal and wait for it to die on
-its own\&.
-.PP 
-The debug log level of smbd may be raised
-by sending it a SIGUSR1 \f(CW(kill -USR1 <smbd-pid>)\fP and lowered by
-sending it a SIGUSR2 \f(CW(kill -USR2 <smbd-pid>)\fP\&. This is to allow
-transient problems to be diagnosed, whilst still running at a normally
-low log level\&.
-.PP 
-Note that as the signal handlers send a debug write, they are not
-re-entrant in smbd\&. This you should wait until smbd is in a state of
-waiting for an incoming smb before issuing them\&. It is possible to
-make the signal handlers safe by un-blocking the signals before the
-select call and re-blocking them after, however this would affect
-performance\&.
-.PP 
-.SH "SEE ALSO" 
-.PP 
-\fBhosts_access (5)\fP, \fBinetd (8)\fP, \fBnmbd (8)\fP,
-\fBsmb\&.conf (5)\fP, \fBsmbclient
-(1)\fP, \fBtestparm (1)\fP,
-\fBtestprns (1)\fP, and the Internet RFC\'s
-\fBrfc1001\&.txt\fP, \fBrfc1002\&.txt\fP\&. In addition the CIFS (formerly SMB)
-specification is available as a link from the Web page :
+.PP
+To shut down a user\'s
+\FCsmbd\F[]
+process it is recommended that
+\FCSIGKILL (\-9)\F[]
+\fINOT\fR
+be used, except as a last resort, as this may leave the shared memory area in an inconsistent state\&. The safe way to terminate an
+\FCsmbd\F[]
+is to send it a SIGTERM (\-15) signal and wait for it to die on its own\&.
+.PP
+The debug log level of
+\FCsmbd\F[]
+may be raised or lowered using
+\fBsmbcontrol\fR(1)
+program (SIGUSR[1|2] signals are no longer used since Samba 2\&.2)\&. This is to allow transient problems to be diagnosed, whilst still running at a normally low log level\&.
+.PP
+Note that as the signal handlers send a debug write, they are not re\-entrant in
+\FCsmbd\F[]\&. This you should wait until
+\FCsmbd\F[]
+is in a state of waiting for an incoming SMB before issuing them\&. It is possible to make the signal handlers safe by un\-blocking the signals before the select call and re\-blocking them after, however this would affect performance\&.
+.SH "SEE ALSO"
+.PP
+\fBhosts_access\fR(5),
+\fBinetd\fR(8),
+\fBnmbd\fR(8),
+\fBsmb.conf\fR(5),
+\fBsmbclient\fR(1),
+\fBtestparm\fR(1),
+\fBtestprns\fR(1), and the Internet RFC\'s
+\FCrfc1001\&.txt\F[],
+\FCrfc1002\&.txt\F[]\&. In addition the CIFS (formerly SMB) specification is available as a link from the Web page
 http://samba\&.org/cifs/\&.
-.PP 
-.SH "AUTHOR" 
-.PP 
-The original Samba software and related utilities were created by
-Andrew Tridgell samba@samba\&.org\&. Samba is now developed
-by the Samba Team as an Open Source project similar to the way the
-Linux kernel is developed\&.
-.PP 
-The original Samba man pages were written by Karl Auer\&. The man page
-sources were converted to YODL format (another excellent piece of Open
-Source software, available at
-\fBftp://ftp\&.icce\&.rug\&.nl/pub/unix/\fP)
-and updated for the Samba2\&.0 release by Jeremy Allison\&.
-samba@samba\&.org\&.
-.PP 
-See \fBsamba (7)\fP to find out how to get a full list of contributors
-and details on how to submit bug reports, comments etc\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.
+.PP
+The original Samba man pages were written by Karl Auer\&. The man page sources were converted to YODL format (another excellent piece of Open Source software, available at
+ftp://ftp\&.icce\&.rug\&.nl/pub/unix/) and updated for the Samba 2\&.0 release by Jeremy Allison\&. The conversion to DocBook for Samba 2\&.2 was done by Gerald Carter\&. The conversion to DocBook XML 4\&.2 for Samba 3\&.0 was done by Alexander Bokovoy\&.

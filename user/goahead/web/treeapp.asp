@@ -85,7 +85,6 @@ var usbb = '<% getUSBBuilt(); %>';
 var storageb = '<% getStorageBuilt(); %>';
 var ftpb = '<% getFtpBuilt(); %>';
 var smbb = '<% getSmbBuilt(); %>';
-var smb3b = '<% getSmb3Built(); %>';
 var printersrvb = '<% getPrinterSrvBuilt(); %>';
 var usbmodemb = '<% getUSBModemBuilt(); %>';
 var syslogb = '<% getSysLogBuilt(); %>';
@@ -179,7 +178,7 @@ if (usbb == "1")
 			a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
 		if (transb == "1")
 			a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/transmission.asp');");
-		if (smb3b == "1")
+		if (smbb == "1")
 			a.add(855, 850, _("treeapp sambasrv"),		"javascript:go('services/samba.asp');");
 	}
 }

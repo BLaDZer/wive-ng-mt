@@ -1,6 +1,5 @@
 /* 
-   Unix SMB/Netbios implementation.
-   Version 2.0
+   Unix SMB/CIFS implementation.
    return a list of network interfaces
    Copyright (C) Andrew Tridgell 1998
    
@@ -31,33 +30,30 @@
 
 */
 
+#ifndef AUTOCONF_TEST
+#include "config.h"
+#endif
+
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <netdb.h>
+#include <sys/ioctl.h>
+#include <netdb.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/ioctl.h>
+
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 
-#include <net/if.h>
-
 #ifndef SIOCGIFCONF
+#ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
-
-#ifdef AUTOCONF_TEST
-struct iface_struct {
-	char name[16];
-	struct in_addr ip;
-	struct in_addr netmask;
-};
-#else
-#include "config.h"
-#include "interfaces.h"
 #endif
 
 #ifdef HAVE_STDLIB_H
@@ -79,6 +75,12 @@ struct iface_struct {
 #ifndef QSORT_CAST
 #define QSORT_CAST (int (*)(const void *, const void *))
 #endif
+
+#ifdef HAVE_NET_IF_H
+#include <net/if.h>
+#endif
+
+#include "interfaces.h"
 
 #if HAVE_IFACE_IFCONF
 
@@ -152,7 +154,9 @@ static int _get_interfaces(struct iface_struct *ifaces, int max_interfaces)
 	return total;
 }  
 
-#elif HAVE_IFACE_IFREQ
+#define _FOUND_IFACE_ANY
+#endif /* HAVE_IFACE_IFCONF */
+#ifdef HAVE_IFACE_IFREQ
 
 #ifndef I_STR
 #include <sys/stropts.h>
@@ -247,7 +251,9 @@ static int _get_interfaces(struct iface_struct *ifaces, int max_interfaces)
 	return total;
 }
 
-#elif HAVE_IFACE_AIX
+#define _FOUND_IFACE_ANY
+#endif /* HAVE_IFACE_IFREQ */
+#ifdef HAVE_IFACE_AIX
 
 /****************************************************************************
 this one is for AIX (tested on 4.2)
@@ -335,7 +341,9 @@ static int _get_interfaces(struct iface_struct *ifaces, int max_interfaces)
 	return total;
 }
 
-#else /* a dummy version */
+#define _FOUND_IFACE_ANY
+#endif /* HAVE_IFACE_AIX */
+#ifndef _FOUND_IFACE_ANY
 static int _get_interfaces(struct iface_struct *ifaces, int max_interfaces)
 {
 	return -1;
@@ -354,6 +362,7 @@ static int iface_comp(struct iface_struct *i1, struct iface_struct *i2)
 	return r;
 }
 
+int get_interfaces(struct iface_struct *ifaces, int max_interfaces);
 /* this wrapper is used to remove duplicates from the interface list generated
    above */
 int get_interfaces(struct iface_struct *ifaces, int max_interfaces)
@@ -383,8 +392,6 @@ int get_interfaces(struct iface_struct *ifaces, int max_interfaces)
 
 #ifdef AUTOCONF_TEST
 /* this is the autoconf driver to test get_interfaces() */
-
-#define MAX_INTERFACES 128
 
  int main()
 {

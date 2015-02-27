@@ -29,9 +29,7 @@ dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
-bool 'samba server'				CONFIG_USER_SAMBA
-bool 'samba server v3'                          CONFIG_USER_SAMBA3
-dep_bool 'samba server wins only'               CONFIG_USER_SAMBA3_WINS $CONFIG_USER_SAMBA3
+bool 'samba server (storage/wins)'		CONFIG_USER_SAMBA
 bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
 if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_EVENT y
@@ -39,7 +37,7 @@ if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_ZLIB y
     define_bool CONFIG_LIB_OPENSSL y
 fi
-if [ "$CONFIG_USER_SAMBA" = "y" ] || [ "$CONFIG_USER_SAMBA3" = "y" ] || [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
+if [ "$CONFIG_USER_SAMBA" = "y" ] || [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     bool 'storage apps, scripts and goahead conf' CONFIG_USER_STORAGE
 fi
 bool 'igmp proxy (RFC4605)'			CONFIG_USER_IGMP_PROXY

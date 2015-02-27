@@ -1,6 +1,5 @@
 /* 
-   Unix SMB/Netbios implementation.
-   Version 1.9.
+   Unix SMB/CIFS implementation.
    diagnosis tools for web admin
    Copyright (C) Andrew Tridgell 1998
    
@@ -20,23 +19,33 @@
 */
 
 #include "includes.h"
-#include "smb.h"
+#include "web/swat_proto.h"
 
+extern struct in_addr loopback_ip;
+
+#ifdef WITH_WINBIND
+
+/* check to see if winbind is running by pinging it */
+
+BOOL winbindd_running(void)
+{
+	return winbind_ping();
+}	
+#endif
 
 /* check to see if nmbd is running on localhost by looking for a __SAMBA__
    response */
 BOOL nmbd_running(void)
 {
-	extern struct in_addr loopback_ip;
-	int fd, count;
+	int fd, count, flags;
 	struct in_addr *ip_list;
 
 	if ((fd = open_socket_in(SOCK_DGRAM, 0, 3,
 				 interpret_addr("127.0.0.1"), True)) != -1) {
 		if ((ip_list = name_query(fd, "__SAMBA__", 0, 
 					  True, True, loopback_ip,
-					  &count,0)) != NULL) {
-			free(ip_list);
+					  &count, &flags, NULL)) != NULL) {
+			SAFE_FREE(ip_list);
 			close(fd);
 			return True;
 		}
@@ -51,17 +60,18 @@ BOOL nmbd_running(void)
    then closing it */
 BOOL smbd_running(void)
 {
-	static struct cli_state cli;
-	extern struct in_addr loopback_ip;
+	NTSTATUS status;
+	struct cli_state *cli;
 
-	if (!cli_initialise(&cli))
+	if ((cli = cli_initialise()) == NULL)
 		return False;
 
-	if (!cli_connect(&cli, "localhost", &loopback_ip)) {
-		cli_shutdown(&cli);
+	status = cli_connect(cli, global_myname(), &loopback_ip);
+	if (!NT_STATUS_IS_OK(status)) {
+		cli_shutdown(cli);
 		return False;
 	}
 
-	cli_shutdown(&cli);
+	cli_shutdown(cli);
 	return True;
 }

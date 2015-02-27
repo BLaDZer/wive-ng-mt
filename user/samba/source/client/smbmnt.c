@@ -4,7 +4,23 @@
  *  Copyright (C) 1995-1998 by Paal-Kr. Engstad and Volker Lendecke
  *  extensively modified by Tridge
  *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *  
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
  */
+
+#define SMBMOUNT_MALLOC 1
 
 #include "includes.h"
 
@@ -16,11 +32,6 @@
 #include <linux/smb.h>
 #include <linux/smb_mount.h>
 #include <asm/unistd.h>
-
-#ifdef EMBED
-#undef NR_FILE
-#endif
-
 
 #ifndef	MS_MGC_VAL
 /* This may look strange but MS_MGC_VAL is what we are looking for and
@@ -43,7 +54,7 @@ help(void)
 {
         printf("\n");
         printf("Usage: smbmnt mount-point [options]\n");
-	printf("Version %s\n\n",VERSION);
+	printf("Version %s\n\n",SAMBA_VERSION_STRING);
         printf("-s share       share name on server\n"
                "-r             mount read-only\n"
                "-u uid         mount as uid\n"
@@ -99,14 +110,15 @@ parse_args(int argc, char *argv[], struct smb_mount_data *data, char **share)
 static char *
 fullpath(const char *p)
 {
-        char path[MAXPATHLEN];
+        char path[PATH_MAX+1];
 
-	if (strlen(p) > MAXPATHLEN-1) {
+	if (strlen(p) > PATH_MAX) {
 		return NULL;
 	}
 
         if (realpath(p, path) == NULL) {
-		fprintf(stderr,"Failed to find real path for mount point\n");
+		fprintf(stderr,"Failed to find real path for mount point %s: %s\n",
+			p, strerror(errno));
 		exit(1);
 	}
 	return strdup(path);
@@ -116,13 +128,13 @@ fullpath(const char *p)
    OK then we change into that directory - this prevents race conditions */
 static int mount_ok(char *mount_point)
 {
-	SMB_STRUCT_STAT st;
+	struct stat st;
 
 	if (chdir(mount_point) != 0) {
 		return -1;
 	}
 
-        if (sys_stat(".", &st) != 0) {
+        if (stat(".", &st) != 0) {
 		return -1;
         }
 
@@ -153,8 +165,8 @@ do_mount(char *share_name, unsigned int flags, struct smb_mount_data *data)
 
 	uname(&uts);
 	release = uts.release;
-	major = strsep(&release, ".");
-	minor = strsep(&release, ".");
+	major = strtok(release, ".");
+	minor = strtok(NULL, ".");
 	if (major && minor && atoi(major) == 2 && atoi(minor) < 4) {
 		/* < 2.4, assume struct */
 		data1 = (char *) data;
@@ -167,7 +179,7 @@ do_mount(char *share_name, unsigned int flags, struct smb_mount_data *data)
 
 	slprintf(opts, sizeof(opts)-1,
 		 "version=7,uid=%d,gid=%d,file_mode=0%o,dir_mode=0%o,%s",
-		 data->uid, data->gid, data->file_mode, data->dir_mode,options);
+		 mount_uid, mount_gid, data->file_mode, data->dir_mode,options);
 	if (mount(share_name, ".", "smbfs", flags, data1) == 0)
 		return 0;
 	return mount(share_name, ".", "smbfs", flags, data2);
@@ -230,7 +242,7 @@ do_mount(char *share_name, unsigned int flags, struct smb_mount_data *data)
                 return -1;
         }
 
-        data.uid = mount_uid;
+        data.uid = mount_uid;    // truncates to 16-bits here!!!
         data.gid = mount_gid;
         data.file_mode = (S_IRWXU|S_IRWXG|S_IRWXO) & mount_fmask;
         data.dir_mode  = (S_IRWXU|S_IRWXG|S_IRWXO) & mount_dmask;
@@ -245,7 +257,7 @@ do_mount(char *share_name, unsigned int flags, struct smb_mount_data *data)
                         data.dir_mode |= S_IXOTH;
         }
 
-	flags = MS_MGC_VAL;
+	flags = MS_MGC_VAL | MS_NOSUID | MS_NODEV;
 
 	if (mount_ro) flags |= MS_RDONLY;
 

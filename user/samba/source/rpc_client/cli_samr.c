@@ -1,10 +1,10 @@
 /* 
-   Unix SMB/Netbios implementation.
-   Version 1.9.
-   NT Domain Authentication SMB / MSRPC client
-   Copyright (C) Andrew Tridgell 1994-1997
-   Copyright (C) Luke Kenneth Casson Leighton 1996-1997
-   Copyright (C) Jeremy Allison 1999.
+   Unix SMB/CIFS implementation.
+   RPC pipe client
+   Copyright (C) Tim Potter                        2000-2001,
+   Copyright (C) Andrew Tridgell              1992-1997,2000,
+   Copyright (C) Rafal Szczesniak                       2002.
+   Copyright (C) Jeremy Allison                         2005.
    
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,804 +21,2084 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-
-#ifdef SYSLOG
-#undef SYSLOG
-#endif
-
 #include "includes.h"
-#include "nterr.h"
 
-extern int DEBUGLEVEL;
+/* Connect to SAMR database */
 
-/****************************************************************************
-do a SAMR query user groups
-****************************************************************************/
-BOOL get_samr_query_usergroups(struct cli_state *cli, 
-				POLICY_HND *pol_open_domain, uint32 user_rid,
-				uint32 *num_groups, DOM_GID *gid)
+NTSTATUS rpccli_samr_connect(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+			     uint32 access_mask, POLICY_HND *connect_pol)
 {
-	POLICY_HND pol_open_user;
-	if (pol_open_domain == NULL || num_groups == NULL || gid == NULL)
-		return False;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CONNECT q;
+	SAMR_R_CONNECT r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	/* send open domain (on user sid) */
-	if (!do_samr_open_user(cli,
-				pol_open_domain,
-				0x02011b, user_rid,
-				&pol_open_user))
-	{
-		return False;
+	DEBUG(10,("cli_samr_connect to %s\n", cli->cli->desthost));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_connect(&q, cli->cli->desthost, access_mask);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CONNECT,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_connect,
+		samr_io_r_connect,
+		NT_STATUS_UNSUCCESSFUL); 
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*connect_pol = r.connect_pol;
+#ifdef __INSURE__
+		connect_pol->marker = malloc(1);
+#endif
 	}
 
-	/* send user groups query */
-	if (!do_samr_query_usergroups(cli,
-				&pol_open_user,
-				num_groups, gid))
-	{
-		DEBUG(5,("do_samr_query_usergroups: error in query user groups\n"));
-	}
-
-	return do_samr_close(cli, &pol_open_user);
+	return result;
 }
 
-/****************************************************************************
-do a SAMR query user info
-****************************************************************************/
-BOOL get_samr_query_userinfo(struct cli_state *cli, 
-				POLICY_HND *pol_open_domain,
-				uint32 info_level,
-				uint32 user_rid, SAM_USER_INFO_21 *usr)
+/* Connect to SAMR database */
+
+NTSTATUS rpccli_samr_connect4(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+			   uint32 access_mask, POLICY_HND *connect_pol)
 {
-	POLICY_HND pol_open_user;
-	if (pol_open_domain == NULL || usr == NULL)
-		return False;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CONNECT4 q;
+	SAMR_R_CONNECT4 r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	memset((char *)usr, '\0', sizeof(*usr));
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
 
-	/* send open domain (on user sid) */
-	if (!do_samr_open_user(cli,
-				pol_open_domain,
-				0x02011b, user_rid,
-				&pol_open_user))
-	{
-		return False;
+	/* Marshall data and send request */
+
+	init_samr_q_connect4(&q, cli->cli->desthost, access_mask);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CONNECT4,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_connect4,
+		samr_io_r_connect4,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*connect_pol = r.connect_pol;
+#ifdef __INSURE__
+		connect_pol->marker = malloc(1);
+#endif
 	}
 
-	/* send user info query */
-	if (!do_samr_query_userinfo(cli,
-				&pol_open_user,
-				info_level, (void*)usr))
-	{
-		DEBUG(5,("do_samr_query_userinfo: error in query user info, level 0x%x\n",
-		          info_level));
-	}
-
-	return do_samr_close(cli, &pol_open_user);
+	return result;
 }
 
-/****************************************************************************
-do a SAMR change user password command
-****************************************************************************/
-BOOL do_samr_chgpasswd_user(struct cli_state *cli,
-		char *srv_name, char *user_name,
-		char nt_newpass[516], uchar nt_oldhash[16],
-		char lm_newpass[516], uchar lm_oldhash[16])
+/* Close SAMR handle */
+
+NTSTATUS rpccli_samr_close(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+			   POLICY_HND *connect_pol)
 {
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_CHGPASSWD_USER q_e;
-	SAMR_R_CHGPASSWD_USER r_e;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CLOSE_HND q;
+	SAMR_R_CLOSE_HND r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	/* create and send a MSRPC command with api SAMR_CHGPASSWD_USER */
+	DEBUG(10,("cli_samr_close\n"));
 
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
 
-	DEBUG(4,("SAMR Change User Password. server:%s username:%s\n",
-	        srv_name, user_name));
+	/* Marshall data and send request */
 
-	init_samr_q_chgpasswd_user(&q_e, srv_name, user_name,
-	                           nt_newpass, nt_oldhash,
-	                           lm_newpass, lm_oldhash);
+	init_samr_q_close_hnd(&q, connect_pol);
 
-	/* turn parameters into data stream */
-	if(!samr_io_q_chgpasswd_user("", &q_e, &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CLOSE_HND,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_close_hnd,
+		samr_io_r_close_hnd,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+#ifdef __INSURE__
+		SAFE_FREE(connect_pol->marker);
+#endif
+		*connect_pol = r.pol;
 	}
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_CHGPASSWD_USER, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_chgpasswd_user("", &r_e, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_e.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_CHGPASSWD_USER: %s\n", get_nt_error_msg(r_e.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&rdata);
-
-	return True;
+	return result;
 }
 
-/****************************************************************************
-do a SAMR unknown 0x38 command
-****************************************************************************/
-BOOL do_samr_unknown_38(struct cli_state *cli, char *srv_name)
+/* Open handle on a domain */
+
+NTSTATUS rpccli_samr_open_domain(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				 POLICY_HND *connect_pol, uint32 access_mask, 
+				 const DOM_SID *domain_sid,
+				 POLICY_HND *domain_pol)
 {
-	prs_struct data;
-	prs_struct rdata;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_OPEN_DOMAIN q;
+	SAMR_R_OPEN_DOMAIN r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	SAMR_Q_UNKNOWN_38 q_e;
-	SAMR_R_UNKNOWN_38 r_e;
+	DEBUG(10,("cli_samr_open_domain with sid %s\n", sid_string_static(domain_sid) ));
 
-	/* create and send a MSRPC command with api SAMR_ENUM_DOM_USERS */
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
 
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
+	/* Marshall data and send request */
 
-	DEBUG(4,("SAMR Unknown 38 server:%s\n", srv_name));
+	init_samr_q_open_domain(&q, connect_pol, access_mask, domain_sid);
 
-	init_samr_q_unknown_38(&q_e, srv_name);
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_OPEN_DOMAIN,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_open_domain,
+		samr_io_r_open_domain,
+		NT_STATUS_UNSUCCESSFUL); 
 
-	/* turn parameters into data stream */
-	if(!samr_io_q_unknown_38("", &q_e, &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*domain_pol = r.domain_pol;
+#ifdef __INSURE__
+		domain_pol->marker = malloc(1);
+#endif
 	}
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_UNKNOWN_38, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_unknown_38("", &r_e, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_e.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_UNKNOWN_38: %s\n", get_nt_error_msg(r_e.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&rdata);
-
-	return True;
+	return result;
 }
 
-/****************************************************************************
-do a SAMR unknown 0x8 command
-****************************************************************************/
-BOOL do_samr_query_dom_info(struct cli_state *cli, 
-				POLICY_HND *domain_pol, uint16 switch_value)
+NTSTATUS rpccli_samr_open_user(struct rpc_pipe_client *cli,
+			       TALLOC_CTX *mem_ctx,
+			       POLICY_HND *domain_pol, uint32 access_mask, 
+			       uint32 user_rid, POLICY_HND *user_pol)
 {
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_QUERY_DOMAIN_INFO q_e;
-	SAMR_R_QUERY_DOMAIN_INFO r_e;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_OPEN_USER q;
+	SAMR_R_OPEN_USER r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	if (domain_pol == NULL)
-		return False;
+	DEBUG(10,("cli_samr_open_user with rid 0x%x\n", user_rid ));
 
-	/* create and send a MSRPC command with api SAMR_ENUM_DOM_USERS */
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
 
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
+	/* Marshall data and send request */
 
-	DEBUG(4,("SAMR Unknown 8 switch:%d\n", switch_value));
+	init_samr_q_open_user(&q, domain_pol, access_mask, user_rid);
 
-	/* store the parameters */
-	init_samr_q_query_dom_info(&q_e, domain_pol, switch_value);
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_OPEN_USER,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_open_user,
+		samr_io_r_open_user,
+		NT_STATUS_UNSUCCESSFUL); 
 
-	/* turn parameters into data stream */
-	if(!samr_io_q_query_dom_info("", &q_e, &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*user_pol = r.user_pol;
+#ifdef __INSURE__
+		user_pol->marker = malloc(1);
+#endif
 	}
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_QUERY_DOMAIN_INFO, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_query_dom_info("", &r_e, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_e.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_QUERY_DOMAIN_INFO: %s\n", get_nt_error_msg(r_e.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&rdata);
-
-	return True;
+	return result;
 }
 
-/****************************************************************************
-do a SAMR enumerate users
-****************************************************************************/
-BOOL do_samr_enum_dom_users(struct cli_state *cli, 
-				POLICY_HND *pol, uint16 num_entries, uint16 unk_0,
-				uint16 acb_mask, uint16 unk_1, uint32 size,
-				struct acct_info **sam,
-				int *num_sam_users)
+/* Open handle on a group */
+
+NTSTATUS rpccli_samr_open_group(struct rpc_pipe_client *cli,
+				TALLOC_CTX *mem_ctx, 
+				POLICY_HND *domain_pol, uint32 access_mask, 
+				uint32 group_rid, POLICY_HND *group_pol)
 {
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_ENUM_DOM_USERS q_e;
-	SAMR_R_ENUM_DOM_USERS r_e;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_OPEN_GROUP q;
+	SAMR_R_OPEN_GROUP r;
+	NTSTATUS result =  NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_open_group with rid 0x%x\n", group_rid ));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_open_group(&q, domain_pol, access_mask, group_rid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_OPEN_GROUP,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_open_group,
+		samr_io_r_open_group,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*group_pol = r.pol;
+#ifdef __INSURE__
+		group_pol->marker = malloc(1);
+#endif
+	}
+
+	return result;
+}
+
+/* Create domain group */
+
+NTSTATUS rpccli_samr_create_dom_group(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				   POLICY_HND *domain_pol,
+				   const char *group_name,
+				   uint32 access_mask, POLICY_HND *group_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CREATE_DOM_GROUP q;
+	SAMR_R_CREATE_DOM_GROUP r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_create_dom_group\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_create_dom_group(&q, domain_pol, group_name, access_mask);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CREATE_DOM_GROUP,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_create_dom_group,
+		samr_io_r_create_dom_group,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (NT_STATUS_IS_OK(result))
+		*group_pol = r.pol;
+
+	return result;
+}
+
+/* Add a domain group member */
+
+NTSTATUS rpccli_samr_add_groupmem(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+			       POLICY_HND *group_pol, uint32 rid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_ADD_GROUPMEM q;
+	SAMR_R_ADD_GROUPMEM r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_add_groupmem\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_add_groupmem(&q, group_pol, rid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_ADD_GROUPMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_add_groupmem,
+		samr_io_r_add_groupmem,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Delete a domain group member */
+
+NTSTATUS rpccli_samr_del_groupmem(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+			       POLICY_HND *group_pol, uint32 rid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_DEL_GROUPMEM q;
+	SAMR_R_DEL_GROUPMEM r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_del_groupmem\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_del_groupmem(&q, group_pol, rid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_DEL_GROUPMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_del_groupmem,
+		samr_io_r_del_groupmem,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query user info */
+
+NTSTATUS rpccli_samr_query_userinfo(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx,
+				    const POLICY_HND *user_pol,
+				    uint16 switch_value, 
+				    SAM_USERINFO_CTR **ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_USERINFO q;
+	SAMR_R_QUERY_USERINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_userinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_userinfo(&q, user_pol, switch_value);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_USERINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_userinfo,
+		samr_io_r_query_userinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+	*ctr = r.ctr;
+
+	return result;
+}
+
+/* Set group info */
+
+NTSTATUS rpccli_samr_set_groupinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				POLICY_HND *group_pol, GROUP_INFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_GROUPINFO q;
+	SAMR_R_SET_GROUPINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_groupinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_set_groupinfo(&q, group_pol, ctr);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_GROUPINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_groupinfo,
+		samr_io_r_set_groupinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query group info */
+
+NTSTATUS rpccli_samr_query_groupinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                                  POLICY_HND *group_pol, uint32 info_level, 
+                                  GROUP_INFO_CTR **ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_GROUPINFO q;
+	SAMR_R_QUERY_GROUPINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_groupinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_groupinfo(&q, group_pol, info_level);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_GROUPINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_groupinfo,
+		samr_io_r_query_groupinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	*ctr = r.ctr;
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query user groups */
+
+NTSTATUS rpccli_samr_query_usergroups(struct rpc_pipe_client *cli,
+				      TALLOC_CTX *mem_ctx, 
+				      POLICY_HND *user_pol,
+				      uint32 *num_groups, 
+				      DOM_GID **gid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_USERGROUPS q;
+	SAMR_R_QUERY_USERGROUPS r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_usergroups\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_usergroups(&q, user_pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_USERGROUPS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_usergroups,
+		samr_io_r_query_usergroups,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*num_groups = r.num_entries;
+		*gid = r.gid;
+	}
+
+	return result;
+}
+
+/* Set alias info */
+
+NTSTATUS rpccli_samr_set_aliasinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				POLICY_HND *alias_pol, ALIAS_INFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_ALIASINFO q;
+	SAMR_R_SET_ALIASINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_aliasinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_set_aliasinfo(&q, alias_pol, ctr);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_ALIASINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_aliasinfo,
+		samr_io_r_set_aliasinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query user aliases */
+
+NTSTATUS rpccli_samr_query_useraliases(struct rpc_pipe_client *cli,
+				       TALLOC_CTX *mem_ctx, 
+				       POLICY_HND *dom_pol, uint32 num_sids,
+				       DOM_SID2 *sid,
+				       uint32 *num_aliases, uint32 **als_rids)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_USERALIASES q;
+	SAMR_R_QUERY_USERALIASES r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 	int i;
-	int name_idx = 0;
-
-	if (pol == NULL || num_sam_users == NULL)
-		return False;
-
-	/* create and send a MSRPC command with api SAMR_ENUM_DOM_USERS */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	DEBUG(4,("SAMR Enum SAM DB max size:%x\n", size));
-
-	/* store the parameters */
-	init_samr_q_enum_dom_users(&q_e, pol,
-	                           num_entries, unk_0,
-	                           acb_mask, unk_1, size);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_enum_dom_users("", &q_e, &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_ENUM_DOM_USERS, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_enum_dom_users("", &r_e, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_e.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_ENUM_DOM_USERS: %s\n", get_nt_error_msg(r_e.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	*num_sam_users = r_e.num_entries2;
-	if (*num_sam_users > MAX_SAM_ENTRIES) {
-		*num_sam_users = MAX_SAM_ENTRIES;
-		DEBUG(2,("do_samr_enum_dom_users: sam user entries limited to %d\n",
-		          *num_sam_users));
-	}
-
-	*sam = (struct acct_info*) malloc(sizeof(struct acct_info) * (*num_sam_users));
-				    
-	if ((*sam) == NULL)
-		*num_sam_users = 0;
-
-	for (i = 0; i < *num_sam_users; i++) {
-		(*sam)[i].smb_userid = r_e.sam[i].rid;
-		if (r_e.sam[i].hdr_name.buffer) {
-			char *acct_name = dos_unistrn2(r_e.uni_acct_name[name_idx].buffer,
-			                           r_e.uni_acct_name[name_idx].uni_str_len);
-			fstrcpy((*sam)[i].acct_name, acct_name);
-			name_idx++;
-		} else {
-			memset((char *)(*sam)[i].acct_name, '\0', sizeof((*sam)[i].acct_name));
-		}
-
-		DEBUG(5,("do_samr_enum_dom_users: idx: %4d rid: %8x acct: %s\n",
-		          i, (*sam)[i].smb_userid, (*sam)[i].acct_name));
-	}
-
-	prs_mem_free(&rdata  );
-
-	return True;
-}
-
-/****************************************************************************
-do a SAMR Connect
-****************************************************************************/
-BOOL do_samr_connect(struct cli_state *cli, 
-				char *srv_name, uint32 unknown_0,
-				POLICY_HND *connect_pol)
-{
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_CONNECT q_o;
-	SAMR_R_CONNECT r_o;
-
-	if (srv_name == NULL || connect_pol == NULL)
-		return False;
-
-	/* create and send a MSRPC command with api SAMR_CONNECT */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	DEBUG(4,("SAMR Open Policy server:%s undoc value:%x\n",
-				srv_name, unknown_0));
-
-	/* store the parameters */
-	init_samr_q_connect(&q_o, srv_name, unknown_0);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_connect("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_CONNECT, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_connect("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-		
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_CONNECT: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	memcpy(connect_pol, &r_o.connect_pol, sizeof(r_o.connect_pol));
-
-	prs_mem_free(&rdata);
-
-	return True;
-}
-
-/****************************************************************************
-do a SAMR Open User
-****************************************************************************/
-BOOL do_samr_open_user(struct cli_state *cli, 
-				POLICY_HND *pol, uint32 unk_0, uint32 rid, 
-				POLICY_HND *user_pol)
-{
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_OPEN_USER q_o;
-	SAMR_R_OPEN_USER r_o;
-
-	if (pol == NULL || user_pol == NULL)
-		return False;
-
-	/* create and send a MSRPC command with api SAMR_OPEN_USER */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	DEBUG(4,("SAMR Open User.  unk_0: %08x RID:%x\n",
-	          unk_0, rid));
-
-	/* store the parameters */
-	init_samr_q_open_user(&q_o, pol, unk_0, rid);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_open_user("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_OPEN_USER, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_open_user("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-		
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_OPEN_USER: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	memcpy(user_pol, &r_o.user_pol, sizeof(r_o.user_pol));
-
-	prs_mem_free(&rdata);
-
-	return True;
-}
-
-/****************************************************************************
-do a SAMR Open Domain
-****************************************************************************/
-BOOL do_samr_open_domain(struct cli_state *cli, 
-				POLICY_HND *connect_pol, uint32 rid, DOM_SID *sid,
-				POLICY_HND *domain_pol)
-{
-	prs_struct data;
-	prs_struct rdata;
-	pstring sid_str;
-	SAMR_Q_OPEN_DOMAIN q_o;
-	SAMR_R_OPEN_DOMAIN r_o;
-
-	if (connect_pol == NULL || sid == NULL || domain_pol == NULL)
-		return False;
-
-	/* create and send a MSRPC command with api SAMR_OPEN_DOMAIN */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	sid_to_string(sid_str, sid);
-	DEBUG(4,("SAMR Open Domain.  SID:%s RID:%x\n", sid_str, rid));
-
-	/* store the parameters */
-	init_samr_q_open_domain(&q_o, connect_pol, rid, sid);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_open_domain("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_OPEN_DOMAIN, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_open_domain("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_OPEN_DOMAIN: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	memcpy(domain_pol, &r_o.domain_pol, sizeof(r_o.domain_pol));
-
-	prs_mem_free(&rdata);
-
-	return True;
-}
-
-/****************************************************************************
-do a SAMR Query Unknown 12
-****************************************************************************/
-BOOL do_samr_query_unknown_12(struct cli_state *cli, 
-				POLICY_HND *pol, uint32 rid, uint32 num_gids, uint32 *gids,
-				uint32 *num_aliases,
-				fstring als_names    [MAX_LOOKUP_SIDS],
-				uint32  num_als_users[MAX_LOOKUP_SIDS])
-{
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_UNKNOWN_12 q_o;
-	SAMR_R_UNKNOWN_12 r_o;
-
-	if (pol == NULL || rid == 0 || num_gids == 0 || gids == NULL ||
-	    num_aliases == NULL || als_names == NULL || num_als_users == NULL )
-			return False;
-
-	/* create and send a MSRPC command with api SAMR_UNKNOWN_12 */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	DEBUG(4,("SAMR Query Unknown 12.\n"));
-
-	/* store the parameters */
-	init_samr_q_unknown_12(&q_o, pol, rid, num_gids, gids);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_unknown_12("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_UNKNOWN_12, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_unknown_12("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-		
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_UNKNOWN_12: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_o.ptr_aliases != 0 && r_o.ptr_als_usrs != 0 &&
-	    r_o.num_als_usrs1 == r_o.num_aliases1) {
-		int i;
-
-		*num_aliases = r_o.num_aliases1;
-
-		for (i = 0; i < r_o.num_aliases1; i++) {
-			fstrcpy(als_names[i], dos_unistrn2(r_o.uni_als_name[i].buffer,
-						r_o.uni_als_name[i].uni_str_len));
-		}
-		for (i = 0; i < r_o.num_als_usrs1; i++) {
-			num_als_users[i] = r_o.num_als_usrs[i];
-		}
-	} else if (r_o.ptr_aliases == 0 && r_o.ptr_als_usrs == 0) {
-		*num_aliases = 0;
+	uint32 *sid_ptrs;
+	
+	DEBUG(10,("cli_samr_query_useraliases\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	if (num_sids) {
+		sid_ptrs = TALLOC_ARRAY(mem_ctx, uint32, num_sids);
+		if (sid_ptrs == NULL)
+			return NT_STATUS_NO_MEMORY;
 	} else {
-		prs_mem_free(&rdata);
-		return False;
+		sid_ptrs = NULL;
+	}
+	
+	for (i=0; i<num_sids; i++)
+		sid_ptrs[i] = 1;
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_useraliases(&q, dom_pol, num_sids, sid_ptrs, sid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_USERALIASES,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_useraliases,
+		samr_io_r_query_useraliases,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*num_aliases = r.num_entries;
+		*als_rids = r.rid;
 	}
 
-	prs_mem_free(&rdata);
-
-	return True;
+	return result;
 }
 
-/****************************************************************************
-do a SAMR Query User Groups
-****************************************************************************/
-BOOL do_samr_query_usergroups(struct cli_state *cli, 
-				POLICY_HND *pol, uint32 *num_groups, DOM_GID *gid)
+/* Query user groups */
+
+NTSTATUS rpccli_samr_query_groupmem(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx,
+				    POLICY_HND *group_pol, uint32 *num_mem, 
+				    uint32 **rid, uint32 **attr)
 {
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_QUERY_USERGROUPS q_o;
-	SAMR_R_QUERY_USERGROUPS r_o;
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_GROUPMEM q;
+	SAMR_R_QUERY_GROUPMEM r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 
-	if (pol == NULL || gid == NULL || num_groups == 0)
-		return False;
+	DEBUG(10,("cli_samr_query_groupmem\n"));
 
-	/* create and send a MSRPC command with api SAMR_QUERY_USERGROUPS */
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
 
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
+	/* Marshall data and send request */
 
-	DEBUG(4,("SAMR Query User Groups.\n"));
+	init_samr_q_query_groupmem(&q, group_pol);
 
-	/* store the parameters */
-	init_samr_q_query_usergroups(&q_o, pol);
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_GROUPMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_groupmem,
+		samr_io_r_query_groupmem,
+		NT_STATUS_UNSUCCESSFUL); 
 
-	/* turn parameters into data stream */
-	if(!samr_io_q_query_usergroups("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*num_mem = r.num_entries;
+		*rid = r.rid;
+		*attr = r.attr;
 	}
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_QUERY_USERGROUPS, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	/* get user info */
-	r_o.gid = gid;
-
-	if(!samr_io_r_query_usergroups("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-		
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_QUERY_USERGROUPS: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	*num_groups = r_o.num_entries;
-
-	prs_mem_free(&rdata);
-
-	return True;
+	return result;
 }
 
-/****************************************************************************
-do a SAMR Query User Info
-****************************************************************************/
-BOOL do_samr_query_userinfo(struct cli_state *cli, 
-				POLICY_HND *pol, uint16 switch_value, void* usr)
+/**
+ * Enumerate domain users
+ *
+ * @param cli client state structure
+ * @param mem_ctx talloc context
+ * @param pol opened domain policy handle
+ * @param start_idx starting index of enumeration, returns context for
+                    next enumeration
+ * @param acb_mask account control bit mask (to enumerate some particular
+ *                 kind of accounts)
+ * @param size max acceptable size of response
+ * @param dom_users returned array of domain user names
+ * @param rids returned array of domain user RIDs
+ * @param num_dom_users numer returned entries
+ * 
+ * @return NTSTATUS returned in rpc response
+ **/
+
+NTSTATUS rpccli_samr_enum_dom_users(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                                 POLICY_HND *pol, uint32 *start_idx, uint32 acb_mask,
+                                 uint32 size, char ***dom_users, uint32 **rids,
+                                 uint32 *num_dom_users)
 {
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_QUERY_USERINFO q_o;
-	SAMR_R_QUERY_USERINFO r_o;
-
-	if (pol == NULL || usr == NULL || switch_value == 0)
-		return False;
-
-	/* create and send a MSRPC command with api SAMR_QUERY_USERINFO */
-
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
-
-	DEBUG(4,("SAMR Query User Info.  level: %d\n", switch_value));
-
-	/* store the parameters */
-	init_samr_q_query_userinfo(&q_o, pol, switch_value);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_query_userinfo("", &q_o,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_QUERY_USERINFO, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	/* get user info */
-	r_o.info.id = usr;
-
-	if(!samr_io_r_query_userinfo("", &r_o, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-		
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_R_QUERY_USERINFO: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_o.switch_value != switch_value) {
-		DEBUG(0,("SAMR_R_QUERY_USERINFO: received incorrect level %d\n",
-		          r_o.switch_value));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_o.ptr == 0) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&rdata);
-
-	return True;
-}
-
-/****************************************************************************
-do a SAMR Close
-****************************************************************************/
-BOOL do_samr_close(struct cli_state *cli, POLICY_HND *hnd)
-{
-	prs_struct data;
-	prs_struct rdata;
-	SAMR_Q_CLOSE_HND q_c;
-	SAMR_R_CLOSE_HND r_c;
+	prs_struct qbuf;
+	prs_struct rbuf;
+	SAMR_Q_ENUM_DOM_USERS q;
+	SAMR_R_ENUM_DOM_USERS r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
 	int i;
+	
+	DEBUG(10,("cli_samr_enum_dom_users starting at index %u\n", (unsigned int)*start_idx));
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+	
+	/* always init this */
+	*num_dom_users = 0;
+	
+	/* Fill query structure with parameters */
 
-	prs_init(&data , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rdata, 0, 4, UNMARSHALL);
+	init_samr_q_enum_dom_users(&q, pol, *start_idx, acb_mask, size);
+	
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_ENUM_DOM_USERS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_enum_dom_users,
+		samr_io_r_enum_dom_users,
+		NT_STATUS_UNSUCCESSFUL); 
 
-	/* create and send a MSRPC command with api SAMR_CLOSE_HND */
+	result = r.status;
 
-	DEBUG(4,("SAMR Close\n"));
+	if (!NT_STATUS_IS_OK(result) &&
+	    NT_STATUS_V(result) != NT_STATUS_V(STATUS_MORE_ENTRIES))
+		goto done;
+	
+	*start_idx = r.next_idx;
+	*num_dom_users = r.num_entries2;
 
-	/* store the parameters */
-	init_samr_q_close_hnd(&q_c, hnd);
-
-	/* turn parameters into data stream */
-	if(!samr_io_q_close_hnd("", &q_c,  &data, 0)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, SAMR_CLOSE_HND, &data, &rdata)) {
-		prs_mem_free(&data);
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	prs_mem_free(&data);
-
-	if(!samr_io_r_close_hnd("", &r_c, &rdata, 0)) {
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	if (r_c.status != 0) {
-		/* report error code */
-		DEBUG(0,("SAMR_CLOSE_HND: %s\n", get_nt_error_msg(r_c.status)));
-		prs_mem_free(&rdata);
-		return False;
-	}
-
-	/* check that the returned policy handle is all zeros */
-
-	for (i = 0; i < sizeof(r_c.pol.data); i++) {
-		if (r_c.pol.data[i] != 0) {
-			DEBUG(0,("SAMR_CLOSE_HND: non-zero handle returned\n"));
-			prs_mem_free(&rdata);
-			return False;
+	if (r.num_entries2) {
+		/* allocate memory needed to return received data */	
+		*rids = TALLOC_ARRAY(mem_ctx, uint32, r.num_entries2);
+		if (!*rids) {
+			DEBUG(0, ("Error in cli_samr_enum_dom_users(): out of memory\n"));
+			return NT_STATUS_NO_MEMORY;
 		}
-	}	
+		
+		*dom_users = TALLOC_ARRAY(mem_ctx, char*, r.num_entries2);
+		if (!*dom_users) {
+			DEBUG(0, ("Error in cli_samr_enum_dom_users(): out of memory\n"));
+			return NT_STATUS_NO_MEMORY;
+		}
+		
+		/* fill output buffers with rpc response */
+		for (i = 0; i < r.num_entries2; i++) {
+			fstring conv_buf;
+			
+			(*rids)[i] = r.sam[i].rid;
+			unistr2_to_ascii(conv_buf, &(r.uni_acct_name[i]), sizeof(conv_buf) - 1);
+			(*dom_users)[i] = talloc_strdup(mem_ctx, conv_buf);
+		}
+	}
+	
+done:
+	return result;
+}
 
-	prs_mem_free(&rdata);
+/* Enumerate domain groups */
 
-	return True;
+NTSTATUS rpccli_samr_enum_dom_groups(struct rpc_pipe_client *cli,
+				     TALLOC_CTX *mem_ctx, 
+				     POLICY_HND *pol, uint32 *start_idx, 
+				     uint32 size, struct acct_info **dom_groups,
+				     uint32 *num_dom_groups)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_ENUM_DOM_GROUPS q;
+	SAMR_R_ENUM_DOM_GROUPS r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+	uint32 name_idx, i;
+
+	DEBUG(10,("cli_samr_enum_dom_groups starting at index %u\n", (unsigned int)*start_idx));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_enum_dom_groups(&q, pol, *start_idx, size);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_ENUM_DOM_GROUPS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_enum_dom_groups,
+		samr_io_r_enum_dom_groups,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (!NT_STATUS_IS_OK(result) &&
+	    NT_STATUS_V(result) != NT_STATUS_V(STATUS_MORE_ENTRIES))
+		goto done;
+
+	*num_dom_groups = r.num_entries2;
+
+	if (*num_dom_groups == 0)
+		goto done;
+
+	if (!((*dom_groups) = TALLOC_ARRAY(mem_ctx, struct acct_info, *num_dom_groups))) {
+		result = NT_STATUS_NO_MEMORY;
+		goto done;
+	}
+
+	memset(*dom_groups, 0, sizeof(struct acct_info) * (*num_dom_groups));
+
+	name_idx = 0;
+
+	for (i = 0; i < *num_dom_groups; i++) {
+
+		(*dom_groups)[i].rid = r.sam[i].rid;
+
+		if (r.sam[i].hdr_name.buffer) {
+			unistr2_to_ascii((*dom_groups)[i].acct_name,
+					 &r.uni_grp_name[name_idx],
+					 sizeof(fstring) - 1);
+			name_idx++;
+		}
+
+		*start_idx = r.next_idx;
+	}
+
+ done:
+	return result;
+}
+
+/* Enumerate domain groups */
+
+NTSTATUS rpccli_samr_enum_als_groups(struct rpc_pipe_client *cli,
+				     TALLOC_CTX *mem_ctx, 
+				     POLICY_HND *pol, uint32 *start_idx, 
+				     uint32 size, struct acct_info **dom_aliases,
+				     uint32 *num_dom_aliases)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_ENUM_DOM_ALIASES q;
+	SAMR_R_ENUM_DOM_ALIASES r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+	uint32 name_idx, i;
+
+	DEBUG(10,("cli_samr_enum_als_groups starting at index %u\n", (unsigned int)*start_idx));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_enum_dom_aliases(&q, pol, *start_idx, size);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_ENUM_DOM_ALIASES,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_enum_dom_aliases,
+		samr_io_r_enum_dom_aliases,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (!NT_STATUS_IS_OK(result) &&
+	    NT_STATUS_V(result) != NT_STATUS_V(STATUS_MORE_ENTRIES)) {
+		goto done;
+	}
+
+	*num_dom_aliases = r.num_entries2;
+
+	if (*num_dom_aliases == 0)
+		goto done;
+
+	if (!((*dom_aliases) = TALLOC_ARRAY(mem_ctx, struct acct_info, *num_dom_aliases))) {
+		result = NT_STATUS_NO_MEMORY;
+		goto done;
+	}
+
+	memset(*dom_aliases, 0, sizeof(struct acct_info) * *num_dom_aliases);
+
+	name_idx = 0;
+
+	for (i = 0; i < *num_dom_aliases; i++) {
+
+		(*dom_aliases)[i].rid = r.sam[i].rid;
+
+		if (r.sam[i].hdr_name.buffer) {
+			unistr2_to_ascii((*dom_aliases)[i].acct_name,
+					 &r.uni_grp_name[name_idx],
+					 sizeof(fstring) - 1);
+			name_idx++;
+		}
+
+		*start_idx = r.next_idx;
+	}
+
+ done:
+	return result;
+}
+
+/* Query alias members */
+
+NTSTATUS rpccli_samr_query_aliasmem(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx,
+				    POLICY_HND *alias_pol, uint32 *num_mem, 
+				    DOM_SID **sids)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_ALIASMEM q;
+	SAMR_R_QUERY_ALIASMEM r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+	uint32 i;
+
+	DEBUG(10,("cli_samr_query_aliasmem\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_aliasmem(&q, alias_pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_ALIASMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_aliasmem,
+		samr_io_r_query_aliasmem,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+	*num_mem = r.num_sids;
+
+	if (*num_mem == 0) {
+		*sids = NULL;
+		result = NT_STATUS_OK;
+		goto done;
+	}
+
+	if (!(*sids = TALLOC_ARRAY(mem_ctx, DOM_SID, *num_mem))) {
+		result = NT_STATUS_UNSUCCESSFUL;
+		goto done;
+	}
+
+	for (i = 0; i < *num_mem; i++) {
+		(*sids)[i] = r.sid[i].sid;
+	}
+
+ done:
+	return result;
+}
+
+/* Open handle on an alias */
+
+NTSTATUS rpccli_samr_open_alias(struct rpc_pipe_client *cli,
+				TALLOC_CTX *mem_ctx, 
+				POLICY_HND *domain_pol, uint32 access_mask, 
+				uint32 alias_rid, POLICY_HND *alias_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_OPEN_ALIAS q;
+	SAMR_R_OPEN_ALIAS r;
+	NTSTATUS result;
+
+	DEBUG(10,("cli_samr_open_alias with rid 0x%x\n", alias_rid));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_open_alias(&q, domain_pol, access_mask, alias_rid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_OPEN_ALIAS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_open_alias,
+		samr_io_r_open_alias,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*alias_pol = r.pol;
+#ifdef __INSURE__
+		alias_pol->marker = malloc(1);
+#endif
+	}
+
+	return result;
+}
+
+/* Create an alias */
+
+NTSTATUS rpccli_samr_create_dom_alias(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+				   POLICY_HND *domain_pol, const char *name,
+				   POLICY_HND *alias_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CREATE_DOM_ALIAS q;
+	SAMR_R_CREATE_DOM_ALIAS r;
+	NTSTATUS result;
+
+	DEBUG(10,("cli_samr_create_dom_alias named %s\n", name));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_create_dom_alias(&q, domain_pol, name);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CREATE_DOM_ALIAS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_create_dom_alias,
+		samr_io_r_create_dom_alias,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (NT_STATUS_IS_OK(result = r.status)) {
+		*alias_pol = r.alias_pol;
+	}
+
+	return result;
+}
+
+/* Add an alias member */
+
+NTSTATUS rpccli_samr_add_aliasmem(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+			       POLICY_HND *alias_pol, DOM_SID *member)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_ADD_ALIASMEM q;
+	SAMR_R_ADD_ALIASMEM r;
+	NTSTATUS result;
+
+	DEBUG(10,("cli_samr_add_aliasmem"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_add_aliasmem(&q, alias_pol, member);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_ADD_ALIASMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_add_aliasmem,
+		samr_io_r_add_aliasmem,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	result = r.status;
+
+	return result;
+}
+
+/* Delete an alias member */
+
+NTSTATUS rpccli_samr_del_aliasmem(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+			       POLICY_HND *alias_pol, DOM_SID *member)
+{
+	prs_struct qbuf, rbuf;
+ 	SAMR_Q_DEL_ALIASMEM q;
+ 	SAMR_R_DEL_ALIASMEM r;
+ 	NTSTATUS result;
+
+ 	DEBUG(10,("cli_samr_del_aliasmem"));
+
+ 	ZERO_STRUCT(q);
+ 	ZERO_STRUCT(r);
+
+ 	/* Marshall data and send request */
+
+ 	init_samr_q_del_aliasmem(&q, alias_pol, member);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_DEL_ALIASMEM,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_del_aliasmem,
+		samr_io_r_del_aliasmem,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query alias info */
+
+NTSTATUS rpccli_samr_query_alias_info(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				   POLICY_HND *alias_pol, uint16 switch_value,
+				   ALIAS_INFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_ALIASINFO q;
+	SAMR_R_QUERY_ALIASINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_alias_info\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_aliasinfo(&q, alias_pol, switch_value);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_ALIASINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_aliasinfo,
+		samr_io_r_query_aliasinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+	*ctr = *r.ctr;
+
+  done:
+
+	return result;
+}
+
+/* Query domain info */
+
+NTSTATUS rpccli_samr_query_dom_info(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx, 
+				    POLICY_HND *domain_pol,
+				    uint16 switch_value,
+				    SAM_UNK_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_DOMAIN_INFO q;
+	SAMR_R_QUERY_DOMAIN_INFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_dom_info\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_domain_info(&q, domain_pol, switch_value);
+
+	r.ctr = ctr;
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_DOMAIN_INFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_domain_info,
+		samr_io_r_query_domain_info,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* Query domain info2 */
+
+NTSTATUS rpccli_samr_query_dom_info2(struct rpc_pipe_client *cli,
+				     TALLOC_CTX *mem_ctx, 
+				     POLICY_HND *domain_pol,
+				     uint16 switch_value,
+				     SAM_UNK_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_DOMAIN_INFO2 q;
+	SAMR_R_QUERY_DOMAIN_INFO2 r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_dom_info2\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_domain_info2(&q, domain_pol, switch_value);
+
+	r.ctr = ctr;
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_DOMAIN_INFO2,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_domain_info2,
+		samr_io_r_query_domain_info2,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* Set domain info */
+
+NTSTATUS rpccli_samr_set_domain_info(struct rpc_pipe_client *cli,
+				     TALLOC_CTX *mem_ctx, 
+				     POLICY_HND *domain_pol,
+				     uint16 switch_value,
+				     SAM_UNK_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_DOMAIN_INFO q;
+	SAMR_R_SET_DOMAIN_INFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_domain_info\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_set_domain_info(&q, domain_pol, switch_value, ctr);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_DOMAIN_INFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_domain_info,
+		samr_io_r_set_domain_info,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* User change password */
+
+NTSTATUS rpccli_samr_chgpasswd_user(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx, 
+				    const char *username, 
+				    const char *newpassword, 
+				    const char *oldpassword )
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CHGPASSWD_USER q;
+	SAMR_R_CHGPASSWD_USER r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	uchar new_nt_password[516];
+	uchar new_lm_password[516];
+	uchar old_nt_hash[16];
+	uchar old_lanman_hash[16];
+	uchar old_nt_hash_enc[16];
+	uchar old_lanman_hash_enc[16];
+
+	uchar new_nt_hash[16];
+	uchar new_lanman_hash[16];
+
+	char *srv_name_slash = talloc_asprintf(mem_ctx, "\\\\%s", cli->cli->desthost);
+
+	DEBUG(10,("rpccli_samr_chgpasswd_user\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Calculate the MD4 hash (NT compatible) of the password */
+	E_md4hash(oldpassword, old_nt_hash);
+	E_md4hash(newpassword, new_nt_hash);
+
+	if (lp_client_lanman_auth() 
+	    && E_deshash(newpassword, new_lanman_hash) 
+	    && E_deshash(oldpassword, old_lanman_hash)) {
+		/* E_deshash returns false for 'long' passwords (> 14
+		   DOS chars).  This allows us to match Win2k, which
+		   does not store a LM hash for these passwords (which
+		   would reduce the effective password length to 14) */
+
+		encode_pw_buffer(new_lm_password, newpassword, STR_UNICODE);
+
+		SamOEMhash( new_lm_password, old_nt_hash, 516);
+		E_old_pw_hash( new_nt_hash, old_lanman_hash, old_lanman_hash_enc);
+	} else {
+		ZERO_STRUCT(new_lm_password);
+		ZERO_STRUCT(old_lanman_hash_enc);
+	}
+
+	encode_pw_buffer(new_nt_password, newpassword, STR_UNICODE);
+	
+	SamOEMhash( new_nt_password, old_nt_hash, 516);
+	E_old_pw_hash( new_nt_hash, old_nt_hash, old_nt_hash_enc);
+
+	/* Marshall data and send request */
+
+	init_samr_q_chgpasswd_user(&q, srv_name_slash, username, 
+				   new_nt_password, 
+				   old_nt_hash_enc, 
+				   new_lm_password,
+				   old_lanman_hash_enc);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CHGPASSWD_USER,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_chgpasswd_user,
+		samr_io_r_chgpasswd_user,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* User change password given blobs */
+
+NTSTATUS rpccli_samr_chng_pswd_auth_crap(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx, 
+				    const char *username, 
+				    DATA_BLOB new_nt_password,
+				    DATA_BLOB old_nt_hash_enc,
+				    DATA_BLOB new_lm_password,
+				    DATA_BLOB old_lm_hash_enc)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CHGPASSWD_USER q;
+	SAMR_R_CHGPASSWD_USER r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	char *srv_name_slash = talloc_asprintf(mem_ctx, "\\\\%s", cli->cli->desthost);
+
+	DEBUG(10,("rpccli_samr_chng_pswd_auth_crap\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_chgpasswd_user(&q, srv_name_slash, username, 
+				   new_nt_password.data, 
+				   old_nt_hash_enc.data, 
+				   new_lm_password.data,
+				   old_lm_hash_enc.data);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CHGPASSWD_USER,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_chgpasswd_user,
+		samr_io_r_chgpasswd_user,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+
+/* change password 3 */
+
+NTSTATUS rpccli_samr_chgpasswd3(struct rpc_pipe_client *cli,
+				TALLOC_CTX *mem_ctx, 
+				const char *username, 
+				const char *newpassword, 
+				const char *oldpassword,
+				SAM_UNK_INFO_1 *info,
+				SAMR_CHANGE_REJECT *reject)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CHGPASSWD_USER3 q;
+	SAMR_R_CHGPASSWD_USER3 r;
+
+	uchar new_nt_password[516];
+	uchar new_lm_password[516];
+	uchar old_nt_hash[16];
+	uchar old_lanman_hash[16];
+	uchar old_nt_hash_enc[16];
+	uchar old_lanman_hash_enc[16];
+
+	uchar new_nt_hash[16];
+	uchar new_lanman_hash[16];
+
+	char *srv_name_slash = talloc_asprintf(mem_ctx, "\\\\%s", cli->cli->desthost);
+
+	DEBUG(10,("rpccli_samr_chgpasswd_user3\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Calculate the MD4 hash (NT compatible) of the password */
+	E_md4hash(oldpassword, old_nt_hash);
+	E_md4hash(newpassword, new_nt_hash);
+
+	if (lp_client_lanman_auth() 
+	    && E_deshash(newpassword, new_lanman_hash) 
+	    && E_deshash(oldpassword, old_lanman_hash)) {
+		/* E_deshash returns false for 'long' passwords (> 14
+		   DOS chars).  This allows us to match Win2k, which
+		   does not store a LM hash for these passwords (which
+		   would reduce the effective password length to 14) */
+
+		encode_pw_buffer(new_lm_password, newpassword, STR_UNICODE);
+
+		SamOEMhash( new_lm_password, old_nt_hash, 516);
+		E_old_pw_hash( new_nt_hash, old_lanman_hash, old_lanman_hash_enc);
+	} else {
+		ZERO_STRUCT(new_lm_password);
+		ZERO_STRUCT(old_lanman_hash_enc);
+	}
+
+	encode_pw_buffer(new_nt_password, newpassword, STR_UNICODE);
+	
+	SamOEMhash( new_nt_password, old_nt_hash, 516);
+	E_old_pw_hash( new_nt_hash, old_nt_hash, old_nt_hash_enc);
+
+	/* Marshall data and send request */
+
+	init_samr_q_chgpasswd_user3(&q, srv_name_slash, username, 
+				    new_nt_password, 
+				    old_nt_hash_enc, 
+				    new_lm_password,
+				    old_lanman_hash_enc);
+	r.info = info;
+	r.reject = reject;
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CHGPASSWD_USER3,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_chgpasswd_user3,
+		samr_io_r_chgpasswd_user3,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	return r.status;
+}
+
+/* This function returns the bizzare set of (max_entries, max_size) required
+   for the QueryDisplayInfo RPC to actually work against a domain controller
+   with large (10k and higher) numbers of users.  These values were 
+   obtained by inspection using ethereal and NT4 running User Manager. */
+
+void get_query_dispinfo_params(int loop_count, uint32 *max_entries,
+			       uint32 *max_size)
+{
+	switch(loop_count) {
+	case 0:
+		*max_entries = 512;
+		*max_size = 16383;
+		break;
+	case 1:
+		*max_entries = 1024;
+		*max_size = 32766;
+		break;
+	case 2:
+		*max_entries = 2048;
+		*max_size = 65532;
+		break;
+	case 3:
+		*max_entries = 4096;
+		*max_size = 131064;
+		break;
+	default:              /* loop_count >= 4 */
+		*max_entries = 4096;
+		*max_size = 131071;
+		break;
+	}
+}		     
+
+/* Query display info */
+
+NTSTATUS rpccli_samr_query_dispinfo(struct rpc_pipe_client *cli,
+				    TALLOC_CTX *mem_ctx, 
+				    POLICY_HND *domain_pol, uint32 *start_idx,
+				    uint16 switch_value, uint32 *num_entries,
+				    uint32 max_entries, uint32 max_size,
+				    SAM_DISPINFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_DISPINFO q;
+	SAMR_R_QUERY_DISPINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_dispinfo for start_idx = %u\n", *start_idx));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	*num_entries = 0;
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_dispinfo(&q, domain_pol, switch_value,
+				   *start_idx, max_entries, max_size);
+
+	r.ctr = ctr;
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_DISPINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_dispinfo,
+		samr_io_r_query_dispinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+        result = r.status;
+
+	if (!NT_STATUS_IS_OK(result) &&
+	    NT_STATUS_V(result) != NT_STATUS_V(STATUS_MORE_ENTRIES)) {
+		goto done;
+	}
+
+	*num_entries = r.num_entries;
+	*start_idx += r.num_entries;  /* No next_idx in this structure! */
+
+ done:
+	return result;
+}
+
+/* Lookup rids.  Note that NT4 seems to crash if more than ~1000 rids are
+   looked up in one packet. */
+
+NTSTATUS rpccli_samr_lookup_rids(struct rpc_pipe_client *cli,
+				 TALLOC_CTX *mem_ctx, 
+				 POLICY_HND *domain_pol,
+				 uint32 num_rids, uint32 *rids, 
+				 uint32 *num_names, char ***names,
+				 uint32 **name_types)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_LOOKUP_RIDS q;
+	SAMR_R_LOOKUP_RIDS r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+	uint32 i;
+
+	DEBUG(10,("cli_samr_lookup_rids\n"));
+
+        if (num_rids > 1000) {
+                DEBUG(2, ("cli_samr_lookup_rids: warning: NT4 can crash if "
+                          "more than ~1000 rids are looked up at once.\n"));
+        }
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_lookup_rids(mem_ctx, &q, domain_pol, 1000, num_rids, rids);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_LOOKUP_RIDS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_lookup_rids,
+		samr_io_r_lookup_rids,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (!NT_STATUS_IS_OK(result) &&
+	    !NT_STATUS_EQUAL(result, STATUS_SOME_UNMAPPED))
+		goto done;
+
+	if (r.num_names1 == 0) {
+		*num_names = 0;
+		*names = NULL;
+		goto done;
+	}
+
+	*num_names = r.num_names1;
+	*names = TALLOC_ARRAY(mem_ctx, char *, r.num_names1);
+	*name_types = TALLOC_ARRAY(mem_ctx, uint32, r.num_names1);
+
+	if ((*names == NULL) || (*name_types == NULL)) {
+		TALLOC_FREE(*names);
+		TALLOC_FREE(*name_types);
+		return NT_STATUS_NO_MEMORY;
+	}
+
+	for (i = 0; i < r.num_names1; i++) {
+		fstring tmp;
+
+		unistr2_to_ascii(tmp, &r.uni_name[i], sizeof(tmp) - 1);
+		(*names)[i] = talloc_strdup(mem_ctx, tmp);
+		(*name_types)[i] = r.type[i];
+	}
+
+ done:
+
+	return result;
+}
+
+/* Lookup names */
+
+NTSTATUS rpccli_samr_lookup_names(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                               POLICY_HND *domain_pol, uint32 flags,
+                               uint32 num_names, const char **names,
+                               uint32 *num_rids, uint32 **rids,
+                               uint32 **rid_types)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_LOOKUP_NAMES q;
+	SAMR_R_LOOKUP_NAMES r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+	uint32 i;
+
+	DEBUG(10,("cli_samr_lookup_names\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_lookup_names(mem_ctx, &q, domain_pol, flags,
+				 num_names, names);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_LOOKUP_NAMES,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_lookup_names,
+		samr_io_r_lookup_names,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+	if (r.num_rids1 == 0) {
+		*num_rids = 0;
+		goto done;
+	}
+
+	*num_rids = r.num_rids1;
+	*rids = TALLOC_ARRAY(mem_ctx, uint32, r.num_rids1);
+	*rid_types = TALLOC_ARRAY(mem_ctx, uint32, r.num_rids1);
+
+	if ((*rids == NULL) || (*rid_types == NULL)) {
+		TALLOC_FREE(*rids);
+		TALLOC_FREE(*rid_types);
+		return NT_STATUS_NO_MEMORY;
+	}
+
+	for (i = 0; i < r.num_rids1; i++) {
+		(*rids)[i] = r.rids[i];
+		(*rid_types)[i] = r.types[i];
+	}
+
+ done:
+
+	return result;
+}
+
+/* Create a domain user */
+
+NTSTATUS rpccli_samr_create_dom_user(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                                  POLICY_HND *domain_pol, const char *acct_name,
+                                  uint32 acb_info, uint32 unknown, 
+                                  POLICY_HND *user_pol, uint32 *rid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_CREATE_USER q;
+	SAMR_R_CREATE_USER r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_create_dom_user %s\n", acct_name));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_create_user(&q, domain_pol, acct_name, acb_info, unknown);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_CREATE_USER,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_create_user,
+		samr_io_r_create_user,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+	if (user_pol)
+		*user_pol = r.user_pol;
+
+	if (rid)
+		*rid = r.user_rid;
+
+ done:
+
+	return result;
+}
+
+/* Set userinfo */
+
+NTSTATUS rpccli_samr_set_userinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                               const POLICY_HND *user_pol, uint16 switch_value,
+                               DATA_BLOB *sess_key, SAM_USERINFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_USERINFO q;
+	SAMR_R_SET_USERINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_userinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	if (!sess_key->length) {
+		DEBUG(1, ("No user session key\n"));
+		return NT_STATUS_NO_USER_SESSION_KEY;
+	}
+
+	/* Initialise parse structures */
+
+	prs_init(&qbuf, RPC_MAX_PDU_FRAG_LEN, mem_ctx, MARSHALL);
+	prs_init(&rbuf, 0, mem_ctx, UNMARSHALL);
+
+	/* Marshall data and send request */
+
+	q.ctr = ctr;
+
+	init_samr_q_set_userinfo(&q, user_pol, sess_key, switch_value, 
+				 ctr->info.id);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_USERINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_userinfo,
+		samr_io_r_set_userinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* Set userinfo2 */
+
+NTSTATUS rpccli_samr_set_userinfo2(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+				   const POLICY_HND *user_pol, uint16 switch_value,
+                                DATA_BLOB *sess_key, SAM_USERINFO_CTR *ctr)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_USERINFO2 q;
+	SAMR_R_SET_USERINFO2 r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_userinfo2\n"));
+
+	if (!sess_key->length) {
+		DEBUG(1, ("No user session key\n"));
+		return NT_STATUS_NO_USER_SESSION_KEY;
+	}
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_set_userinfo2(&q, user_pol, sess_key, switch_value, ctr);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_USERINFO2,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_userinfo2,
+		samr_io_r_set_userinfo2,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	if (!NT_STATUS_IS_OK(result = r.status)) {
+		goto done;
+	}
+
+ done:
+
+	return result;
+}
+
+/* Delete domain group */
+
+NTSTATUS rpccli_samr_delete_dom_group(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                                  POLICY_HND *group_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_DELETE_DOM_GROUP q;
+	SAMR_R_DELETE_DOM_GROUP r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_delete_dom_group\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_delete_dom_group(&q, group_pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_DELETE_DOM_GROUP,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_delete_dom_group,
+		samr_io_r_delete_dom_group,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Delete domain alias */
+
+NTSTATUS rpccli_samr_delete_dom_alias(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                                  POLICY_HND *alias_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_DELETE_DOM_ALIAS q;
+	SAMR_R_DELETE_DOM_ALIAS r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_delete_dom_alias\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_delete_dom_alias(&q, alias_pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_DELETE_DOM_ALIAS,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_delete_dom_alias,
+		samr_io_r_delete_dom_alias,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Delete domain user */
+
+NTSTATUS rpccli_samr_delete_dom_user(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx, 
+                                  POLICY_HND *user_pol)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_DELETE_DOM_USER q;
+	SAMR_R_DELETE_DOM_USER r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_delete_dom_user\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_delete_dom_user(&q, user_pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_DELETE_DOM_USER,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_delete_dom_user,
+		samr_io_r_delete_dom_user,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Remove foreign SID */
+
+NTSTATUS rpccli_samr_remove_sid_foreign_domain(struct rpc_pipe_client *cli, 
+					    TALLOC_CTX *mem_ctx, 
+					    POLICY_HND *user_pol,
+					    DOM_SID *sid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_REMOVE_SID_FOREIGN_DOMAIN q;
+	SAMR_R_REMOVE_SID_FOREIGN_DOMAIN r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_remove_sid_foreign_domain\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_remove_sid_foreign_domain(&q, user_pol, sid);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_REMOVE_SID_FOREIGN_DOMAIN,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_remove_sid_foreign_domain,
+		samr_io_r_remove_sid_foreign_domain,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+/* Query user security object */
+
+NTSTATUS rpccli_samr_query_sec_obj(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                                 POLICY_HND *user_pol, uint32 sec_info, 
+                                 TALLOC_CTX *ctx, SEC_DESC_BUF **sec_desc_buf)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_QUERY_SEC_OBJ q;
+	SAMR_R_QUERY_SEC_OBJ r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_query_sec_obj\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_query_sec_obj(&q, user_pol, sec_info);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_QUERY_SEC_OBJECT,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_query_sec_obj,
+		samr_io_r_query_sec_obj,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+	*sec_desc_buf=dup_sec_desc_buf(ctx, r.buf);
+
+	return result;
+}
+
+/* Set user security object */
+
+NTSTATUS rpccli_samr_set_sec_obj(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                                 POLICY_HND *user_pol, uint32 sec_info, 
+                                 SEC_DESC_BUF *sec_desc_buf)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_SET_SEC_OBJ q;
+	SAMR_R_SET_SEC_OBJ r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_set_sec_obj\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_set_sec_obj(&q, user_pol, sec_info, sec_desc_buf);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_SET_SEC_OBJECT,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_set_sec_obj,
+		samr_io_r_set_sec_obj,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	return result;
+}
+
+
+/* Get domain password info */
+
+NTSTATUS rpccli_samr_get_dom_pwinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				 uint16 *min_pwd_length, uint32 *password_properties)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_GET_DOM_PWINFO q;
+	SAMR_R_GET_DOM_PWINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_get_dom_pwinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_get_dom_pwinfo(&q, cli->cli->desthost);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_GET_DOM_PWINFO,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_get_dom_pwinfo,
+		samr_io_r_get_dom_pwinfo,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (NT_STATUS_IS_OK(result)) {
+		if (min_pwd_length)
+			*min_pwd_length = r.min_pwd_length;
+		if (password_properties)
+			*password_properties = r.password_properties;
+	}
+
+	return result;
+}
+
+/* Get domain password info */
+
+NTSTATUS rpccli_samr_get_usrdom_pwinfo(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				       POLICY_HND *pol, uint16 *min_pwd_length, 
+				       uint32 *password_properties, uint32 *unknown1)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_GET_USRDOM_PWINFO q;
+	SAMR_R_GET_USRDOM_PWINFO r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_get_usrdom_pwinfo\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_get_usrdom_pwinfo(&q, pol);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_GET_USRDOM_PWINFO,
+		   q, r,
+		   qbuf, rbuf,
+		   samr_io_q_get_usrdom_pwinfo,
+		   samr_io_r_get_usrdom_pwinfo,
+		   NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (NT_STATUS_IS_OK(result)) {
+		if (min_pwd_length)
+			*min_pwd_length = r.min_pwd_length;
+		if (password_properties)
+			*password_properties = r.password_properties;
+		if (unknown1)
+			*unknown1 = r.unknown_1;
+	}
+
+	return result;
+}
+
+
+/* Lookup Domain Name */
+
+NTSTATUS rpccli_samr_lookup_domain(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+				POLICY_HND *user_pol, char *domain_name, 
+				DOM_SID *sid)
+{
+	prs_struct qbuf, rbuf;
+	SAMR_Q_LOOKUP_DOMAIN q;
+	SAMR_R_LOOKUP_DOMAIN r;
+	NTSTATUS result = NT_STATUS_UNSUCCESSFUL;
+
+	DEBUG(10,("cli_samr_lookup_domain\n"));
+
+	ZERO_STRUCT(q);
+	ZERO_STRUCT(r);
+
+	/* Marshall data and send request */
+
+	init_samr_q_lookup_domain(&q, user_pol, domain_name);
+
+	CLI_DO_RPC(cli, mem_ctx, PI_SAMR, SAMR_LOOKUP_DOMAIN,
+		q, r,
+		qbuf, rbuf,
+		samr_io_q_lookup_domain,
+		samr_io_r_lookup_domain,
+		NT_STATUS_UNSUCCESSFUL); 
+
+	/* Return output parameters */
+
+	result = r.status;
+
+	if (NT_STATUS_IS_OK(result))
+		sid_copy(sid, &r.dom_sid.sid);
+
+	return result;
 }

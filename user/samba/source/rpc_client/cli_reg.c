@@ -1,1086 +1,731 @@
-
 /* 
- *  Unix SMB/Netbios implementation.
- *  Version 1.9.
- *  RPC Pipe client / server routines
- *  Copyright (C) Andrew Tridgell              1992-1998,
- *  Copyright (C) Luke Kenneth Casson Leighton 1996-1998,
- *  Copyright (C) Paul Ashton                  1997-1998.
- *  Copyright (C) Jeremy Allison                    1999.
- *  
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-
-#ifdef SYSLOG
-#undef SYSLOG
-#endif
+   Unix SMB/CIFS implementation.
+   RPC Pipe client
+ 
+   Copyright (C) Andrew Tridgell              1992-2000,
+   Copyright (C) Jeremy Allison                    1999 - 2005
+   Copyright (C) Simo Sorce                        2001
+   Copyright (C) Jeremy Cooper                     2004
+   Copyright (C) Gerald (Jerry) Carter             2005
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #include "includes.h"
+#include "rpc_client.h"
 
-extern int DEBUGLEVEL;
+/* Shutdown a server */
 
-/****************************************************************************
-do a REG Open Policy
-****************************************************************************/
-BOOL do_reg_connect(struct cli_state *cli, char *full_keyname, char *key_name,
-				POLICY_HND *reg_hnd)
+/*******************************************************************
+ internal connect to a registry hive root (open a registry policy)
+*******************************************************************/
+
+static WERROR rpccli_reg_open_hive_int(struct rpc_pipe_client *cli,
+                                      TALLOC_CTX *mem_ctx, uint16 op_code,
+                                      const char *op_name,
+                                      uint32 access_mask, POLICY_HND *hnd)
 {
-	BOOL res = True;
-	uint32 reg_type = 0;
+	REG_Q_OPEN_HIVE in;
+	REG_R_OPEN_HIVE out;
+	prs_struct qbuf, rbuf;
 
-	if (full_keyname == NULL)
-		return False;
+	ZERO_STRUCT(in);
+	ZERO_STRUCT(out);
+
+	init_reg_q_open_hive(&in, access_mask);
+
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, op_code, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_open_hive,
+	            reg_io_r_open_hive, 
+	            WERR_GENERAL_FAILURE );
+
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
+
+	memcpy( hnd, &out.pol, sizeof(POLICY_HND) );
+
+	return out.status;
+}
+
+/*******************************************************************
+ connect to a registry hive root (open a registry policy)
+*******************************************************************/
+
+WERROR rpccli_reg_connect(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                         uint32 reg_type, uint32 access_mask,
+                         POLICY_HND *reg_hnd)
+{	uint16 op_code;
+	const char *op_name;
 
 	ZERO_STRUCTP(reg_hnd);
 
-	/*
-	 * open registry receive a policy handle
-	 */
-
-	if (!reg_split_key(full_keyname, &reg_type, key_name)) {
-		DEBUG(0,("do_reg_connect: unrecognised key name %s\n", full_keyname));	
-		return False;
-	}
-
-	switch (reg_type) {
+	switch (reg_type)
+	{
+	case HKEY_CLASSES_ROOT:
+		op_code = REG_OPEN_HKCR;
+		op_name = "REG_OPEN_HKCR";
+		break;
 	case HKEY_LOCAL_MACHINE:
-		res = res ? do_reg_open_hklm(cli, 0x84E0, 0x02000000, reg_hnd) : False;
+		op_code = REG_OPEN_HKLM;
+		op_name = "REG_OPEN_HKLM";
 		break;
-	
 	case HKEY_USERS:
-		res = res ? do_reg_open_hku(cli, 0x84E0, 0x02000000, reg_hnd) : False;
+		op_code = REG_OPEN_HKU;
+		op_name = "REG_OPEN_HKU";
 		break;
-
+	case HKEY_PERFORMANCE_DATA:
+		op_code = REG_OPEN_HKPD;
+		op_name = "REG_OPEN_HKPD";
+		break;
 	default:
-		DEBUG(0,("do_reg_connect: unrecognised hive key\n"));	
-		return False;
+		return WERR_INVALID_PARAM;
 	}
 
-	return res;
+	return rpccli_reg_open_hive_int(cli, mem_ctx, op_code, op_name,
+                                     access_mask, reg_hnd);
 }
 
-/****************************************************************************
-do a REG Open Policy
-****************************************************************************/
-BOOL do_reg_open_hklm(struct cli_state *cli, uint16 unknown_0, uint32 level,
-				POLICY_HND *hnd)
+
+/*******************************************************************
+*******************************************************************/
+
+WERROR rpccli_reg_shutdown(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                          const char *msg, uint32 timeout, BOOL do_reboot,
+			  BOOL force)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_OPEN_HKLM q_o;
-	REG_R_OPEN_HKLM r_o;
+	REG_Q_SHUTDOWN in;
+	REG_R_SHUTDOWN out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	if (msg == NULL) 
+		return WERR_INVALID_PARAM;
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
 
-	/* create and send a MSRPC command with api REG_OPEN_HKLM */
+	/* Marshall data and send request */
 
-	DEBUG(4,("REG Open HKLM\n"));
+	init_reg_q_shutdown(&in, msg, timeout, do_reboot, force);
 
-	init_reg_q_open_hklm(&q_o, unknown_0, level);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_SHUTDOWN, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_shutdown,
+	            reg_io_r_shutdown, 
+	            WERR_GENERAL_FAILURE );
 
-	/* turn parameters into data stream */
-	if(!reg_io_q_open_hklm("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_OPEN_HKLM, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_open_hklm("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_OPEN_HKLM: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* ok, at last: we're happy. return the policy handle */
-	memcpy(hnd, r_o.pol.data, sizeof(hnd->data));
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
-/****************************************************************************
-do a REG Open HKU
-****************************************************************************/
-BOOL do_reg_open_hku(struct cli_state *cli, uint16 unknown_0, uint32 level,
-				POLICY_HND *hnd)
+/*******************************************************************
+*******************************************************************/
+
+WERROR rpccli_reg_abort_shutdown(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_OPEN_HKU q_o;
-	REG_R_OPEN_HKU r_o;
+	REG_Q_ABORT_SHUTDOWN in;
+	REG_R_ABORT_SHUTDOWN out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_ABORT_SHUTDOWN, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_abort_shutdown,
+	            reg_io_r_abort_shutdown, 
+	            WERR_GENERAL_FAILURE );
 
-	/* create and send a MSRPC command with api REG_OPEN_HKU */
-
-	DEBUG(4,("REG Open HKU\n"));
-
-	init_reg_q_open_hku(&q_o, unknown_0, level);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_open_hku("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (rpc_api_pipe_req(cli, REG_OPEN_HKU, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_open_hku("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_OPEN_HKU: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* ok, at last: we're happy. return the policy handle */
-	memcpy(hnd, r_o.pol.data, sizeof(hnd->data));
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;	
 }
+
 
 /****************************************************************************
 do a REG Unknown 0xB command.  sent after a create key or create value.
 this might be some sort of "sync" or "refresh" command, sent after
 modification of the registry...
 ****************************************************************************/
-BOOL do_reg_flush_key(struct cli_state *cli, POLICY_HND *hnd)
+
+WERROR rpccli_reg_flush_key(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                           POLICY_HND *hnd)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_FLUSH_KEY q_o;
-	REG_R_FLUSH_KEY r_o;
+	REG_Q_FLUSH_KEY in;
+	REG_R_FLUSH_KEY out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_flush_key(&in, hnd);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
-
-	/* create and send a MSRPC command with api REG_FLUSH_KEY */
-
-	DEBUG(4,("REG Unknown 0xB\n"));
-
-	init_reg_q_flush_key(&q_o, hnd);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_flush_key("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_FLUSH_KEY, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_flush_key("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_FLUSH_KEY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_FLUSH_KEY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_flush_key,
+	            reg_io_r_flush_key, 
+	            WERR_GENERAL_FAILURE );
+		    
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Query Key
 ****************************************************************************/
-BOOL do_reg_query_key(struct cli_state *cli, POLICY_HND *hnd,
-				char *class, uint32 *class_len,
-				uint32 *num_subkeys, uint32 *max_subkeylen,
-				uint32 *max_subkeysize, uint32 *num_values,
-				uint32 *max_valnamelen, uint32 *max_valbufsize,
-				uint32 *sec_desc, NTTIME *mod_time)
+
+WERROR rpccli_reg_query_key(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                           POLICY_HND *hnd,
+                           char *key_class, uint32 *class_len,
+                           uint32 *num_subkeys, uint32 *max_subkeylen,
+                           uint32 *max_classlen, uint32 *num_values,
+                           uint32 *max_valnamelen, uint32 *max_valbufsize,
+                           uint32 *sec_desc, NTTIME *mod_time)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_QUERY_KEY q_o;
-	REG_R_QUERY_KEY r_o;
+	REG_Q_QUERY_KEY in;
+	REG_R_QUERY_KEY out;
+	prs_struct qbuf, rbuf;
+	uint32 saved_class_len = *class_len;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	init_reg_q_query_key( &in, hnd, key_class );
 
-	/* create and send a MSRPC command with api REG_QUERY_KEY */
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_QUERY_KEY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_query_key,
+	            reg_io_r_query_key, 
+	            WERR_GENERAL_FAILURE );
 
-	DEBUG(4,("REG Query Key\n"));
+	if ( W_ERROR_EQUAL( out.status, WERR_MORE_DATA ) ) {
+		ZERO_STRUCT (in);
 
-	init_reg_q_query_key(&q_o, hnd, *class_len);
+		*class_len = out.key_class.string->uni_max_len;
+		if ( *class_len > saved_class_len )
+			return out.status;
+			
+		/* set a string of spaces and NULL terminate */
 
-	/* turn parameters into data stream */
-	if(!reg_io_q_query_key("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
+		memset( key_class, (int)' ', *class_len );
+		key_class[*class_len] = '\0';
+		
+		init_reg_q_query_key( &in, hnd, key_class );
+
+		ZERO_STRUCT (out);
+
+		CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_QUERY_KEY, 
+		            in, out, 
+		            qbuf, rbuf,
+		            reg_io_q_query_key,
+		            reg_io_r_query_key, 
+		            WERR_GENERAL_FAILURE );
 	}
+	
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_QUERY_KEY, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
+	*class_len      = out.key_class.string->uni_max_len;
+	unistr2_to_ascii(key_class, out.key_class.string, saved_class_len-1);
+	*num_subkeys    = out.num_subkeys   ;
+	*max_subkeylen  = out.max_subkeylen ;
+	*num_values     = out.num_values    ;
+	*max_valnamelen = out.max_valnamelen;
+	*max_valbufsize = out.max_valbufsize;
+	*sec_desc       = out.sec_desc      ;
+	*mod_time       = out.mod_time      ;
+	/* Maybe: *max_classlen = out.reserved; */
 
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_query_key("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_QUERY_KEY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	*class_len      = r_o.hdr_class.uni_max_len;
-	fstrcpy(class, dos_unistr2_to_str(&r_o.uni_class));
-	*num_subkeys    = r_o.num_subkeys   ;
-	*max_subkeylen  = r_o.max_subkeylen ;
-	*max_subkeysize = r_o.max_subkeysize;
-	*num_values     = r_o.num_values    ;
-	*max_valnamelen = r_o.max_valnamelen;
-	*max_valbufsize = r_o.max_valbufsize;
-	*sec_desc       = r_o.sec_desc      ;
-	*mod_time       = r_o.mod_time      ;
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
 /****************************************************************************
-do a REG Unknown 1A
 ****************************************************************************/
-BOOL do_reg_unknown_1a(struct cli_state *cli, POLICY_HND *hnd, uint32 *unk)
+
+WERROR rpccli_reg_getversion(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, uint32 *version)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_UNK_1A q_o;
-	REG_R_UNK_1A r_o;
+	REG_Q_GETVERSION in;
+	REG_R_GETVERSION out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_getversion(&in, hnd);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_GETVERSION, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_getversion,
+	            reg_io_r_getversion, 
+	            WERR_GENERAL_FAILURE );
+		    
 
-	/* create and send a MSRPC command with api REG_UNKNOWN_1A */
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
+		
+	*version = out.win_version;
 
-	DEBUG(4,("REG Unknown 1a\n"));
-
-	init_reg_q_unk_1a(&q_o, hnd);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_unk_1a("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (rpc_api_pipe_req(cli, REG_UNK_1A, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_unk_1a("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_UNK_1A: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	(*unk) = r_o.unknown;
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Query Info
 ****************************************************************************/
-BOOL do_reg_query_info(struct cli_state *cli, POLICY_HND *hnd,
-				char *type, uint32 *unk_0, uint32 *unk_1)
+
+WERROR rpccli_reg_query_value(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                           POLICY_HND *hnd, const char *val_name,
+                           uint32 *type, REGVAL_BUFFER *buffer)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_INFO q_o;
-	REG_R_INFO r_o;
+	REG_Q_QUERY_VALUE in;
+	REG_R_QUERY_VALUE out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_query_value(&in, hnd, val_name, buffer);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_QUERY_VALUE, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_query_value,
+	            reg_io_r_query_value, 
+	            WERR_GENERAL_FAILURE );
+		    
 
-	/* create and send a MSRPC command with api REG_INFO */
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
+		
+	*type   = *out.type;
+	*buffer = *out.value;
 
-	DEBUG(4,("REG Query Info\n"));
-
-	init_reg_q_info(&q_o, hnd, "ProductType", time(NULL), 4, 1);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_info("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_INFO, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_info("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if ( r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_INFO: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	fstrcpy(type, dos_buffer2_to_str(&r_o.uni_type));
-	(*unk_0) = r_o.unknown_0;
-	(*unk_1) = r_o.unknown_1;
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Set Key Security 
 ****************************************************************************/
-BOOL do_reg_set_key_sec(struct cli_state *cli, POLICY_HND *hnd, SEC_DESC_BUF *sec_desc_buf)
+
+WERROR rpccli_reg_set_key_sec(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                             POLICY_HND *hnd, uint32 sec_info,
+                             size_t secdesc_size, SEC_DESC *sec_desc)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_SET_KEY_SEC q_o;
-	REG_R_SET_KEY_SEC r_o;
+	REG_Q_SET_KEY_SEC in;
+	REG_R_SET_KEY_SEC out;
+	prs_struct qbuf, rbuf;
+	SEC_DESC_BUF *sec_desc_buf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	/* Flatten the security descriptor */
+	
+	if ( !(sec_desc_buf = make_sec_desc_buf(mem_ctx, secdesc_size, sec_desc)) )
+		return WERR_GENERAL_FAILURE;
+		
+	init_reg_q_set_key_sec(&in, hnd, sec_info, sec_desc_buf);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_SET_KEY_SEC, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_set_key_sec,
+	            reg_io_r_set_key_sec, 
+	            WERR_GENERAL_FAILURE );
+		    
 
-	/* create and send a MSRPC command with api REG_SET_KEY_SEC */
-
-	DEBUG(4,("REG Set Key security.\n"));
-
-	init_reg_q_set_key_sec(&q_o, hnd, sec_desc_buf);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_set_key_sec("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_SET_KEY_SEC, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_set_key_sec("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
+
 
 /****************************************************************************
 do a REG Query Key Security 
 ****************************************************************************/
 
-BOOL do_reg_get_key_sec(struct cli_state *cli, POLICY_HND *hnd, uint32 *sec_buf_size, SEC_DESC_BUF **ppsec_desc_buf)
+WERROR rpccli_reg_get_key_sec(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                             POLICY_HND *hnd, uint32 sec_info,
+                             uint32 *sec_buf_size, SEC_DESC_BUF *sec_buf)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_GET_KEY_SEC q_o;
-	REG_R_GET_KEY_SEC r_o;
+	REG_Q_GET_KEY_SEC in;
+	REG_R_GET_KEY_SEC out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_get_key_sec(&in, hnd, sec_info, *sec_buf_size, sec_buf);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_GET_KEY_SEC, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_get_key_sec,
+	            reg_io_r_get_key_sec, 
+	            WERR_GENERAL_FAILURE );
+		    
 
-	/* create and send a MSRPC command with api REG_GET_KEY_SEC */
-
-	DEBUG(4,("REG query key security.  buf_size: %d\n", *sec_buf_size));
-
-	init_reg_q_get_key_sec(&q_o, hnd, *sec_buf_size, NULL);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_get_key_sec("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_GET_KEY_SEC, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_get_key_sec("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status == 0x0000007a) {
-		/*
-		 * get the maximum buffer size: it was too small
-		 */
-		(*sec_buf_size) = r_o.hdr_sec.buf_max_len;
-		DEBUG(5,("sec_buf_size too small.  use %d\n", *sec_buf_size));
-	} else if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_GET_KEY_SEC: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	} else {
-		(*sec_buf_size) = r_o.data->len;
-		*ppsec_desc_buf = r_o.data;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	/* this might be able to return WERR_MORE_DATA, I'm not sure */
+	
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
+	
+	sec_buf       = out.data;
+	*sec_buf_size = out.data->len;
+		
+	return out.status;	
 }
 
 /****************************************************************************
 do a REG Delete Value
 ****************************************************************************/
-BOOL do_reg_delete_val(struct cli_state *cli, POLICY_HND *hnd, char *val_name)
+
+WERROR rpccli_reg_delete_val(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, char *val_name)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_DELETE_VALUE q_o;
-	REG_R_DELETE_VALUE r_o;
+	REG_Q_DELETE_VALUE in;
+	REG_R_DELETE_VALUE out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_delete_val(&in, hnd, val_name);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
-
-	/* create and send a MSRPC command with api REG_DELETE_VALUE */
-
-	DEBUG(4,("REG Delete Value: %s\n", val_name));
-
-	init_reg_q_delete_val(&q_o, hnd, val_name);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_delete_val("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (rpc_api_pipe_req(cli, REG_DELETE_VALUE, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_delete_val("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_DELETE_VALUE: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_DELETE_VALUE, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_delete_value,
+	            reg_io_r_delete_value, 
+	            WERR_GENERAL_FAILURE );
+	
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Delete Key
 ****************************************************************************/
-BOOL do_reg_delete_key(struct cli_state *cli, POLICY_HND *hnd, char *key_name)
+
+WERROR rpccli_reg_delete_key(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, char *key_name)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_DELETE_KEY q_o;
-	REG_R_DELETE_KEY r_o;
+	REG_Q_DELETE_KEY in;
+	REG_R_DELETE_KEY out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_delete_key(&in, hnd, key_name);
 
-	prs_init(&buf , MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
-
-	/* create and send a MSRPC command with api REG_DELETE_KEY */
-
-	DEBUG(4,("REG Delete Key: %s\n", key_name));
-
-	init_reg_q_delete_key(&q_o, hnd, key_name);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_delete_key("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_DELETE_KEY, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_delete_key("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_DELETE_KEY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_DELETE_KEY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_delete_key,
+	            reg_io_r_delete_key, 
+	            WERR_GENERAL_FAILURE );
+	
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Create Key
 ****************************************************************************/
-BOOL do_reg_create_key(struct cli_state *cli, POLICY_HND *hnd,
-				char *key_name, char *key_class,
-				SEC_ACCESS *sam_access,
-				POLICY_HND *key)
+
+WERROR rpccli_reg_create_key_ex(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, char *key_name, char *key_class,
+                            uint32 access_desired, POLICY_HND *key)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_CREATE_KEY q_o;
-	REG_R_CREATE_KEY r_o;
-	SEC_DESC *sec = NULL;
-	SEC_DESC_BUF *sec_buf = NULL;
+	REG_Q_CREATE_KEY_EX in;
+	REG_R_CREATE_KEY_EX out;
+	prs_struct qbuf, rbuf;
+	SEC_DESC *sec;
+	SEC_DESC_BUF *sec_buf;
 	size_t sec_len;
 
-	ZERO_STRUCT(q_o);
-
-	if (hnd == NULL)
-		return False;
-
-	/* create and send a MSRPC command with api REG_CREATE_KEY */
-
-	DEBUG(4,("REG Create Key: %s %s 0x%08x\n", key_name, key_class,
-		sam_access != NULL ? sam_access->mask : 0));
-
-	if((sec = make_sec_desc( 1, SEC_DESC_SELF_RELATIVE, NULL, NULL, NULL, NULL, &sec_len)) == NULL) {
-		DEBUG(0,("make_sec_desc : malloc fail.\n"));
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	if ( !(sec = make_sec_desc(mem_ctx, 1, SEC_DESC_SELF_RELATIVE,
+		NULL, NULL, NULL, NULL, &sec_len)) ) {
+		return WERR_GENERAL_FAILURE;
 	}
+				 
+	if ( !(sec_buf = make_sec_desc_buf(mem_ctx, sec_len, sec)) )
+		return WERR_GENERAL_FAILURE;
 
-	DEBUG(10,("make_sec_desc: len = %d\n", (int)sec_len));
+	init_reg_q_create_key_ex(&in, hnd, key_name, key_class, access_desired, sec_buf);
 
-	if((sec_buf = make_sec_desc_buf( (int)sec_len, sec)) == NULL) {
-		DEBUG(0,("make_sec_desc : malloc fail (1)\n"));
-		free_sec_desc(&sec);
-		return False;
-	}
-	free_sec_desc(&sec);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_CREATE_KEY_EX, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_create_key_ex,
+	            reg_io_r_create_key_ex, 
+	            WERR_GENERAL_FAILURE );
+		    
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
-
-	init_reg_q_create_key(&q_o, hnd, key_name, key_class, sam_access, sec_buf);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_create_key("", &q_o, &buf, 0)) {
-		free_sec_desc_buf(&sec_buf);
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (rpc_api_pipe_req(cli, REG_CREATE_KEY, &buf, &rbuf)) {
-		free_sec_desc_buf(&sec_buf);
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	free_sec_desc_buf(&sec_buf);
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_create_key("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_CREATE_KEY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	memcpy(key, r_o.key_pol.data, sizeof(key->data));
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
+	
+	memcpy( key, &out.handle, sizeof(POLICY_HND) );
+	
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Enum Key
 ****************************************************************************/
-BOOL do_reg_enum_key(struct cli_state *cli, POLICY_HND *hnd,
-				int key_index, char *key_name,
-				uint32 *unk_1, uint32 *unk_2,
-				time_t *mod_time)
+
+WERROR rpccli_reg_enum_key(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                          POLICY_HND *hnd, int key_index, fstring key_name,
+                          fstring class_name, time_t *mod_time)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_ENUM_KEY q_o;
-	REG_R_ENUM_KEY r_o;
+	REG_Q_ENUM_KEY in;
+	REG_R_ENUM_KEY out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_enum_key(&in, hnd, key_index);
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_ENUM_KEY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_enum_key,
+	            reg_io_r_enum_key, 
+	            WERR_GENERAL_FAILURE );
 
-	/* create and send a MSRPC command with api REG_ENUM_KEY */
+	if ( !W_ERROR_IS_OK(out.status) )
+		return out.status;
 
-	DEBUG(4,("REG Enum Key\n"));
+	if ( out.keyname.string )
+		rpcstr_pull( key_name, out.keyname.string->buffer, sizeof(fstring), -1, STR_TERMINATE );
+	else
+		fstrcpy( key_name, "(Default)" );
 
-	init_reg_q_enum_key(&q_o, hnd, key_index);
+	if ( out.classname && out.classname->string )
+		rpcstr_pull( class_name, out.classname->string->buffer, sizeof(fstring), -1, STR_TERMINATE );
+	else
+		fstrcpy( class_name, "" );
 
-	/* turn parameters into data stream */
-	if(!reg_io_q_enum_key("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
+	*mod_time   = nt_time_to_unix(*out.time);
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_ENUM_KEY, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_enum_key("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_ENUM_KEY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	(*unk_1) = r_o.unknown_1;
-	(*unk_2) = r_o.unknown_2;
-	fstrcpy(key_name, dos_unistr2(r_o.key_name.str.buffer));
-	(*mod_time) = nt_time_to_unix(&r_o.time);
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Create Value
 ****************************************************************************/
-BOOL do_reg_create_val(struct cli_state *cli, POLICY_HND *hnd,
-				char *val_name, uint32 type, BUFFER3 *data)
+
+WERROR rpccli_reg_set_val(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, char *val_name, uint32 type,
+                            RPC_DATA_BLOB *data)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_CREATE_VALUE q_o;
-	REG_R_CREATE_VALUE r_o;
+	REG_Q_SET_VALUE in;
+	REG_R_SET_VALUE out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_set_val(&in, hnd, val_name, type, data);
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_SET_VALUE, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_set_value,
+	            reg_io_r_set_value, 
+	            WERR_GENERAL_FAILURE );
 
-	/* create and send a MSRPC command with api REG_CREATE_VALUE */
-
-	DEBUG(4,("REG Create Value: %s\n", val_name));
-
-	init_reg_q_create_val(&q_o, hnd, val_name, type, data);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_create_val("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_CREATE_VALUE, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_create_val("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_CREATE_VALUE: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	return out.status;
 }
 
 /****************************************************************************
 do a REG Enum Value
 ****************************************************************************/
-BOOL do_reg_enum_val(struct cli_state *cli, POLICY_HND *hnd,
-				int val_index, int max_valnamelen, int max_valbufsize,
-				fstring val_name,
-				uint32 *val_type, BUFFER2 *value)
+
+WERROR rpccli_reg_enum_val(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                          POLICY_HND *hnd, int idx,
+                          fstring val_name, uint32 *type, REGVAL_BUFFER *value)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_ENUM_VALUE q_o;
-	REG_R_ENUM_VALUE r_o;
+	REG_Q_ENUM_VALUE in;
+	REG_R_ENUM_VALUE out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_enum_val(&in, hnd, idx, 0x0100, 0x1000);
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_ENUM_VALUE, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_enum_val,
+	            reg_io_r_enum_val, 
+	            WERR_GENERAL_FAILURE );
 
-	/* create and send a MSRPC command with api REG_ENUM_VALUE */
+	if ( W_ERROR_EQUAL(out.status, WERR_MORE_DATA) ) {
 
-	DEBUG(4,("REG Enum Value\n"));
+		ZERO_STRUCT (in);
 
-	init_reg_q_enum_val(&q_o, hnd, val_index, max_valnamelen, max_valbufsize);
+		init_reg_q_enum_val(&in, hnd, idx, 0x0100, *out.buffer_len1);
 
-	/* turn parameters into data stream */
-	if(!reg_io_q_enum_val("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
+		ZERO_STRUCT (out);
+
+		CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_ENUM_VALUE, 
+		            in, out, 
+		            qbuf, rbuf,
+		            reg_io_q_enum_val,
+		            reg_io_r_enum_val, 
+		            WERR_GENERAL_FAILURE );
 	}
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_ENUM_VALUE, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
+	if ( !W_ERROR_IS_OK(out.status) )
+		return out.status;
 
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-	r_o.buf_value = value;
-
-	if(!reg_io_r_enum_val("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_ENUM_VALUE: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	(*val_type) = r_o.type;
-	fstrcpy(val_name, dos_unistr2_to_str(&r_o.uni_name));
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	unistr2_to_ascii(val_name, out.name.string, sizeof(fstring)-1);
+	*type      = *out.type;
+	*value     = *out.value;
+	
+	return out.status;
 }
 
 /****************************************************************************
-do a REG Open Key
 ****************************************************************************/
-BOOL do_reg_open_entry(struct cli_state *cli, POLICY_HND *hnd,
-				char *key_name, uint32 unk_0,
-				POLICY_HND *key_hnd)
+
+WERROR rpccli_reg_open_entry(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                            POLICY_HND *hnd, char *key_name,
+                            uint32 access_desired, POLICY_HND *key_hnd)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_OPEN_ENTRY q_o;
-	REG_R_OPEN_ENTRY r_o;
+	REG_Q_OPEN_ENTRY in;
+	REG_R_OPEN_ENTRY out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
-		return False;
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_open_entry(&in, hnd, key_name, access_desired);
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_OPEN_ENTRY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_open_entry,
+	            reg_io_r_open_entry, 
+	            WERR_GENERAL_FAILURE );
 
-	/* create and send a MSRPC command with api REG_OPEN_ENTRY */
+	if ( !W_ERROR_IS_OK( out.status ) )
+		return out.status;
 
-	DEBUG(4,("REG Open Entry\n"));
-
-	init_reg_q_open_entry(&q_o, hnd, key_name, unk_0);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_open_entry("", &q_o, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_OPEN_ENTRY, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_o);
-
-	if(!reg_io_r_open_entry("", &r_o, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_o.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_OPEN_ENTRY: %s\n", get_nt_error_msg(r_o.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	memcpy(key_hnd, r_o.pol.data, sizeof(key_hnd->data));
-
-	prs_mem_free(&rbuf);
-
-	return True;
+	memcpy( key_hnd, &out.handle, sizeof(POLICY_HND) );
+	
+	return out.status;
 }
 
 /****************************************************************************
-do a REG Close
 ****************************************************************************/
-BOOL do_reg_close(struct cli_state *cli, POLICY_HND *hnd)
+
+WERROR rpccli_reg_close(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                       POLICY_HND *hnd)
 {
-	prs_struct rbuf;
-	prs_struct buf; 
-	REG_Q_CLOSE q_c;
-	REG_R_CLOSE r_c;
-	int i;
+	REG_Q_CLOSE in;
+	REG_R_CLOSE out;
+	prs_struct qbuf, rbuf;
 
-	if (hnd == NULL)
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_reg_q_close(&in, hnd);
+
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_CLOSE, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_close,
+	            reg_io_r_close, 
+	            WERR_GENERAL_FAILURE );
+	
+	return out.status;
+}
+
+/****************************************************************************
+do a REG Query Info
+****************************************************************************/
+
+WERROR rpccli_reg_save_key(struct rpc_pipe_client *cli, TALLOC_CTX *mem_ctx,
+                         POLICY_HND *hnd, const char *filename )
+{
+	REG_Q_SAVE_KEY in;
+	REG_R_SAVE_KEY out;
+	prs_struct qbuf, rbuf;
+
+	ZERO_STRUCT (in);
+	ZERO_STRUCT (out);
+	
+	init_q_reg_save_key( &in, hnd, filename );
+
+	CLI_DO_RPC_WERR( cli, mem_ctx, PI_WINREG, REG_SAVE_KEY, 
+	            in, out, 
+	            qbuf, rbuf,
+	            reg_io_q_save_key,
+	            reg_io_r_save_key,
+	            WERR_GENERAL_FAILURE );
+
+	return out.status;
+}
+
+
+/* 
+ #################################################################
+  Utility functions
+ #################################################################
+ */
+
+/*****************************************************************
+ Splits out the start of the key (HKLM or HKU) and the rest of the key.
+*****************************************************************/  
+
+BOOL reg_split_hive(const char *full_keyname, uint32 *reg_type, pstring key_name)
+{
+	pstring tmp;
+
+	if (!next_token(&full_keyname, tmp, "\\", sizeof(tmp)))
 		return False;
 
-	/* create and send a MSRPC command with api REG_CLOSE */
+	(*reg_type) = 0;
 
-	prs_init(&buf, MAX_PDU_FRAG_LEN, 4, MARSHALL);
-	prs_init(&rbuf, 0, 4, UNMARSHALL);
+	DEBUG(10, ("reg_split_key: hive %s\n", tmp));
 
-	DEBUG(4,("REG Close\n"));
-
-	/* store the parameters */
-	init_reg_q_close(&q_c, hnd);
-
-	/* turn parameters into data stream */
-	if(!reg_io_q_close("", &q_c, &buf, 0)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
+	if (strequal(tmp, "HKLM") || strequal(tmp, "HKEY_LOCAL_MACHINE"))
+		(*reg_type) = HKEY_LOCAL_MACHINE;
+	else if (strequal(tmp, "HKCR") || strequal(tmp, "HKEY_CLASSES_ROOT"))
+		(*reg_type) = HKEY_CLASSES_ROOT;
+	else if (strequal(tmp, "HKU") || strequal(tmp, "HKEY_USERS"))
+		(*reg_type) = HKEY_USERS;
+	else if (strequal(tmp, "HKPD")||strequal(tmp, "HKEY_PERFORMANCE_DATA"))
+		(*reg_type) = HKEY_PERFORMANCE_DATA;
+	else {
+		DEBUG(10,("reg_split_key: unrecognised hive key %s\n", tmp));
 		return False;
 	}
+	
+	if (next_token(&full_keyname, tmp, "\n\r", sizeof(tmp)))
+		pstrcpy(key_name, tmp);
+	else
+		key_name[0] = 0;
 
-	/* send the data on \PIPE\ */
-	if (!rpc_api_pipe_req(cli, REG_CLOSE, &buf, &rbuf)) {
-		prs_mem_free(&buf);
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	prs_mem_free(&buf);
-
-	ZERO_STRUCT(r_c);
-
-	if(!reg_io_r_close("", &r_c, &rbuf, 0)) {
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	if (r_c.status != 0) {
-		/* report error code */
-		DEBUG(0,("REG_CLOSE: %s\n", get_nt_error_msg(r_c.status)));
-		prs_mem_free(&rbuf);
-		return False;
-	}
-
-	/* check that the returned policy handle is all zeros */
-
-	for (i = 0; i < sizeof(r_c.pol.data); i++) {
-		if (r_c.pol.data[i] != 0) {
-			prs_mem_free(&rbuf);
-			DEBUG(0,("REG_CLOSE: non-zero handle returned\n"));
-			return False;
-		}
-	}	
-
-	prs_mem_free(&rbuf);
+	DEBUG(10, ("reg_split_key: name %s\n", key_name));
 
 	return True;
 }

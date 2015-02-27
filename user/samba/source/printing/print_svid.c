@@ -33,99 +33,92 @@
 
 
 #include "includes.h"
-#include "smb.h"
 
-#ifdef SYSV
-
-extern int DEBUGLEVEL;
-
-typedef struct printer {
-	char *name;
-	struct printer *next;
-} printer_t;
-static printer_t *printers = NULL;
-
-static void populate_printers(void)
+#if defined(SYSV) || defined(HPUX)
+BOOL sysv_cache_reload(void)
 {
-	FILE *fp;
+	char **lines;
+	int i;
 
-	if ((fp = sys_popen("/usr/bin/lpstat -v", "r", False)) != NULL) {
-		char buf[BUFSIZ];
+#if defined(HPUX)
+	DEBUG(5, ("reloading hpux printcap cache\n"));
+#else
+	DEBUG(5, ("reloading sysv printcap cache\n"));
+#endif
 
-		while (fgets(buf, sizeof (buf), fp) != NULL) {
-			printer_t *ptmp;
-			char *name, *tmp;
+	if ((lines = file_lines_pload("/usr/bin/lpstat -v", NULL)) == NULL)
+	{
+#if defined(HPUX)
+      
+       	       /*
+		* if "lpstat -v" is NULL then we check if schedular is running if it is
+		* that means no printers are added on the HP-UX system, if schedular is not
+		* running we display reload error.
+		*/
 
-			/* eat "system/device for " */
-			if (((tmp = strchr(buf, ' ')) == NULL) ||
-			    ((tmp = strchr(++tmp, ' ')) == NULL))
-				continue;
-
-			/*
-			 * In case we're only at the "for ".
-			 */
-
-            if(!strncmp("for ",++tmp,4))
-            {
-				tmp=strchr(tmp, ' ');
-				tmp++;
-			}
-			name = tmp;
-
-			/* truncate the ": ..." */
-			if ((tmp = strchr(name, ':')) != NULL)
-				*tmp = '\0';
-
-			/* add it to the cache */
-			if ((ptmp = malloc(sizeof (*ptmp))) != NULL) {
-				ZERO_STRUCTP(ptmp);
-				if((ptmp->name = strdup(name)) == NULL)
-					DEBUG(0,("populate_printers: malloc fail in strdup !\n"));
-				ptmp->next = printers;
-				printers = ptmp;
-			} else {
-				DEBUG(0,("populate_printers: malloc fail for ptmp\n"));
-			}
+		char **scheduler;
+                scheduler = file_lines_pload("/usr/bin/lpstat -r", NULL);
+                if(!strcmp(*scheduler,"scheduler is running")){
+                        DEBUG(3,("No Printers found!!!\n"));
+			file_lines_free(scheduler);
+                        return True;
+                }
+                else{
+                        DEBUG(3,("Scheduler is not running!!!\n"));
+			file_lines_free(scheduler);
+			return False;
 		}
-		sys_pclose(fp);
-	} else {
-		DEBUG(0,( "Unable to run lpstat!\n"));
+#else
+		DEBUG(3,("No Printers found!!!\n"));
+		return False;
+#endif
 	}
-}
 
+	for (i = 0; lines[i]; i++) {
+		char *name, *tmp;
+		char *buf = lines[i];
 
-/*
- * provide the equivalent of pcap_printer_fn() for SVID/XPG4 conforming
- * systems.  It was unclear why pcap_printer_fn() was tossing names longer
- * than 8 characters.  I suspect that its a protocol limit, but amazingly
- * names longer than 8 characters appear to work with my test
- * clients (Win95/NT).
- */
-void sysv_printer_fn(void (*fn)(char *, char *))
-{
-	printer_t *tmp;
+		/* eat "system/device for " */
+		if (((tmp = strchr_m(buf, ' ')) == NULL) ||
+		    ((tmp = strchr_m(++tmp, ' ')) == NULL))
+			continue;
 
-	if (printers == NULL)
-		populate_printers();
-	for (tmp = printers; tmp != NULL; tmp = tmp->next)
-		(fn)(tmp->name, "");
-}
+		/*
+		 * In case we're only at the "for ".
+		 */
 
+		if(!strncmp("for ", ++tmp, 4)) {
+			tmp=strchr_m(tmp, ' ');
+			tmp++;
+		}
 
-/*
- * provide the equivalent of pcap_printername_ok() for SVID/XPG4 conforming
- * systems.
- */
-int sysv_printername_ok(char *name)
-{
-	printer_t *tmp;
+		/* Eat whitespace. */
 
-	if (printers == NULL)
-		populate_printers();
-	for (tmp = printers; tmp != NULL; tmp = tmp->next)
-		if (strcmp(tmp->name, name) == 0)
-			return (True);
-	return (False);
+		while(*tmp == ' ')
+			++tmp;
+
+		/*
+		 * On HPUX there is an extra line that can be ignored.
+		 * d.thibadeau 2001/08/09
+		 */
+		if(!strncmp("remote to", tmp, 9))
+			continue;
+
+		name = tmp;
+
+		/* truncate the ": ..." */
+		if ((tmp = strchr_m(name, ':')) != NULL)
+			*tmp = '\0';
+		
+		/* add it to the cache */
+		if (!pcap_cache_add(name, NULL)) {
+			file_lines_free(lines);
+			return False;
+		}
+	}
+
+	file_lines_free(lines);
+	return True;
 }
 
 #else
