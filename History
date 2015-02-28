@@ -650,6 +650,7 @@
 36) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
 37) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
 38) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+39) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
 <br>
 <br>
 <b>TODO:</b><br>
