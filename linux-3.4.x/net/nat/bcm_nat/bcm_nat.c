@@ -129,6 +129,10 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
 	return NF_ACCEPT;
 }
 
+/*
+ * NAT
+ * Stolen from nf_nat_packet.
+ */
 int __fastpathnet bcm_do_fastnat(struct nf_conn *ct,
 		enum ip_conntrack_info ctinfo,
 		struct sk_buff *skb,
