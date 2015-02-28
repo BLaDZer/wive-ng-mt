@@ -17,7 +17,6 @@ start() {
 	irqbalance
     elif [ "$IRQBalance" = "router" ]; then
 	$LOG "Start irqbalance routing/wifi optimize mode"
-	irqbalance --oneshot --foreground
 	if [ $cpunum == "4" ]; then
 	    echo 2 > /proc/irq/3/smp_affinity  #GMAC
 	    echo 4 > /proc/irq/4/smp_affinity  #PCIe0
