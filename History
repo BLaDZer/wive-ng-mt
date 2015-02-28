@@ -648,6 +648,7 @@
 34) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 35) kernel: net: allow enable/disable XPS/RPS configure.<br>
 36) kernel: genirq: Introduce irq_do_set_affinity() to reduce duplicated code.<br>
+37) kernel: genirq: Allow forcing cpu affinity of interrupts.<br>
 <br>
 <br>
 <b>TODO:</b><br>
