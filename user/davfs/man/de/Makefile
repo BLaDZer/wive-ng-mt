@@ -82,7 +82,14 @@ subdir = man/de
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/config/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/config/gettext.m4 \
+	$(top_srcdir)/config/iconv.m4 \
+	$(top_srcdir)/config/intlmacosx.m4 \
+	$(top_srcdir)/config/lib-ld.m4 \
+	$(top_srcdir)/config/lib-link.m4 \
+	$(top_srcdir)/config/lib-prefix.m4 $(top_srcdir)/config/nls.m4 \
+	$(top_srcdir)/config/po.m4 $(top_srcdir)/config/progtest.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -194,7 +201,6 @@ PACKAGE_URL =
 PACKAGE_VERSION = 1.5.2
 PATH_SEPARATOR = :
 POSUB = 
-SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip
@@ -239,7 +245,7 @@ libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
 mandir = ${datarootdir}/man
-mkdir_p = $(MKDIR_P)
+mkdir_p = /usr/bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
 prefix = /opt/Wive-MT/user/davfs/filesystem
