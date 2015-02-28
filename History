@@ -632,25 +632,26 @@
 18) init.d: fix check vlan and set correct part sitch mode.<br>
 19) init.d: fix drop some variables in full bridge modes.<br>
 20) init.d: send hotplug rescan to background (speedup boot).<br>
-21) kernel: ralink arch: update cpu-feature-overrides.h.<br>
-22) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
-23) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-24) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-25) kernel: mips: fix branch emulation of branch likely instructions.<br>
-26) kernel: mips: add option to disable software I/O  coherency.<br>
-27) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-28) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-29) kernel: mips: dsp: simplify the DSP macros.<br>
-30) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-31) kernel: net: fix stacked vlan offload features computation.<br>
-32) kernel: net: reject creation of netdev names with colons.<br>
-33) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-34) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-35) kernel: net: allow enable/disable XPS/RPS configure.<br>
-36) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-37) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
-38) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-39) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+21) init.d: tune irqbalance script for optimum performance.<br>
+22) kernel: ralink arch: update cpu-feature-overrides.h.<br>
+23) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
+24) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+25) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+26) kernel: mips: fix branch emulation of branch likely instructions.<br>
+27) kernel: mips: add option to disable software I/O  coherency.<br>
+28) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+29) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+30) kernel: mips: dsp: simplify the DSP macros.<br>
+31) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+32) kernel: net: fix stacked vlan offload features computation.<br>
+33) kernel: net: reject creation of netdev names with colons.<br>
+34) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+35) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+36) kernel: net: allow enable/disable XPS/RPS configure.<br>
+37) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+38) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+39) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+40) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
 <br>
 <br>
 <b>TODO:</b><br>
