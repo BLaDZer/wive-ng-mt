@@ -226,18 +226,18 @@ source "net/batman-adv/Kconfig"
 source "net/openvswitch/Kconfig"
 
 config RPS
-	boolean
+	boolean "Enable RPS"
 	depends on SMP && SYSFS && USE_GENERIC_SMP_HELPERS
 	default y
 
 config RFS_ACCEL
-	boolean
+	boolean "Enable RFS Accel"
 	depends on RPS && GENERIC_HARDIRQS
 	select CPU_RMAP
 	default y
 
 config XPS
-	boolean
+	boolean "Enable XPS"
 	depends on SMP && SYSFS && USE_GENERIC_SMP_HELPERS
 	default y
 
