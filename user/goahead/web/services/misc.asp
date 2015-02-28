@@ -122,7 +122,7 @@ function initValue()
 	var wpf = "<% getCfgGeneral(1, "WANPingFilter"); %>";
 	var arp_pt = "<% getCfgZero(1, "parproutedEnabled"); %>";
 	var arpptb = "<% getARPptBuilt(); %>";
-	var fatspathb = "<% getFastPathBuilt(); %>";
+	var fastpathb = "<% getFastPathBuilt(); %>";
 	var cdpb = "<% getCdpBuilt(); %>";
 	var lltdb = "<% getLltdBuilt(); %>";
 	var lldpdb = "<% getLldpdBuilt(); %>";
@@ -279,7 +279,7 @@ function offloadModeSelect(form)
 	displayElement('udphw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('sixhw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'))
-	if (fastpathb == "1" ) {
+	if (fastpathb == "1") {
 	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
 	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
 	}
