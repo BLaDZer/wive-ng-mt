@@ -122,7 +122,6 @@ function initValue()
 	var wpf = "<% getCfgGeneral(1, "WANPingFilter"); %>";
 	var arp_pt = "<% getCfgZero(1, "parproutedEnabled"); %>";
 	var arpptb = "<% getARPptBuilt(); %>";
-	var fastpathb = "<% getFastPathBuilt(); %>";
 	var cdpb = "<% getCdpBuilt(); %>";
 	var lltdb = "<% getLltdBuilt(); %>";
 	var lldpdb = "<% getLldpdBuilt(); %>";
@@ -206,7 +205,7 @@ function initValue()
 	displayElement('dhcpv6', dhcpv6b == '1');
 	displayElement('dnsproxy', dnsp == '1');
 
-	// Set-up NAT fastpath
+	// Set-up fastpaths
 	if (opmode == "4")
 	{
 		form.offloadMode.value = defaultNumber("0", "1");
@@ -214,8 +213,8 @@ function initValue()
 	}
 	else
 		form.offloadMode.value = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
-
 	offloadModeSelect(form);
+
 	igmpSelect(form);
 	httpRmtSelect(form);
 	sshRmtSelect(form);
@@ -274,16 +273,21 @@ function CheckValue(form)
 function offloadModeSelect(form)
 {
 	var thresh = form.offloadMode.value;
+	var fastpathb = "<% getFastPathBuilt(); %>";
+
+	// Mode
 	displayElement('hwnat_threshold_row', (thresh == '2') || (thresh == '3'))
+	// HW extensions
 	displayElement('wifihw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('udphw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('sixhw_row', (thresh == '2') || (thresh == '3'))
+	// SW extensions
 	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'))
+	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'))
 	if (fastpathb == "1") {
 	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
 	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
 	}
-	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'))
 }
 
 function pingerSelect(form)

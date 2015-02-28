@@ -7,7 +7,9 @@ if [ ! -f $APROOTDIR/configure ]; then
     aclocal
     autoconf
 fi
-if [ ! -f $APROOTDIR/Makefile ]; then
+
+if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/Makefile ]; then
+    autoreconf -fi
     automake -c --add-missing
     automake
 fi
