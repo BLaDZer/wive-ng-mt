@@ -88,10 +88,8 @@ offload() {
 	    # configure software netfilter offload
 	    if [ "$filterFastpath" != "0" ] && [ "$sw_nat" = "1" ]; then
 		$LOG "Netfilter fastpath enabled."
-		sysctl -wq net.netfilter.nf_conntrack_tcp_no_window_check=1
 		sysctl -wq net.netfilter.nf_conntrack_skip_filter=1
 	    else
-		sysctl -wq net.netfilter.nf_conntrack_tcp_no_window_check=0
 		sysctl -wq net.netfilter.nf_conntrack_skip_filter=0
 	    fi
 	fi

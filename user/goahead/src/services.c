@@ -20,6 +20,7 @@
 #include	"helpers.h"
 #include	"procps.h"
 
+static int  getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -77,6 +78,7 @@ void formDefineServices(void)
 	websAspDefine(T("getDhcpStaticList"), getDhcpStaticList);
 	websAspDefine(T("iptStatList"), iptStatList);
 	websAspDefine(T("getARPptBuilt"), getARPptBuilt);
+	websAspDefine(T("getFastPathBuilt"), getFastPathBuilt);
 	websAspDefine(T("getTelnetdBuilt"), getTelnetdBuilt);
 	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
 	websAspDefine(T("getProcessList"), getProcessList);
@@ -316,6 +318,16 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 static int getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_USER_SNMPD
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_BCM_NAT
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));

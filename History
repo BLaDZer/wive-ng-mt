@@ -622,29 +622,31 @@
 8) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
 9) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
 10) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
-11) init.d: unify swicth portmap logic.<br>
-12) init.d: fix vlan enabled check.<br>
-13) init.d: optimize switch reinit procesure.<br>
-14) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
-15) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
-16) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-17) init.d: fix check vlan and set correct part sitch mode.<br>
-18) init.d: fix drop some variables in full bridge modes.<br>
-19) init.d: send hotplug rescan to background (speedup boot).<br>
-20) kernel: ralink arch: update cpu-feature-overrides.h.<br>
-21) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
-22) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-23) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-24) kernel: mips: fix branch emulation of branch likely instructions.<br>
-25) kernel: mips: add option to disable software I/O  coherency.<br>
-26) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-27) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-28) kernel: mips: dsp: simplify the DSP macros.<br>
-29) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-30) kernel: net: fix stacked vlan offload features computation.<br>
-31) kernel: net: reject creation of netdev names with colons.<br>
-32) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-33) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+11) goahead: hide software fastpath elements if not build in kernel.<br>
+12) init.d: unify swicth portmap logic.<br>
+13) init.d: fix vlan enabled check.<br>
+14) init.d: optimize switch reinit procesure.<br>
+15) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
+16) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
+17) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
+18) init.d: fix check vlan and set correct part sitch mode.<br>
+19) init.d: fix drop some variables in full bridge modes.<br>
+20) init.d: send hotplug rescan to background (speedup boot).<br>
+21) kernel: ralink arch: update cpu-feature-overrides.h.<br>
+22) kernel: ralink arch: MT7621 move irq function to fastpathsys.<br>
+23) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+24) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+25) kernel: mips: fix branch emulation of branch likely instructions.<br>
+26) kernel: mips: add option to disable software I/O  coherency.<br>
+27) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+28) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+29) kernel: mips: dsp: simplify the DSP macros.<br>
+30) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+31) kernel: net: fix stacked vlan offload features computation.<br>
+32) kernel: net: reject creation of netdev names with colons.<br>
+33) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+34) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+35) kernel: net: allow enable/disable XPS/RPS configure.<br>
 <br>
 <br>
 <b>TODO:</b><br>

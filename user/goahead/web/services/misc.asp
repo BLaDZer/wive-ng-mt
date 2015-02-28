@@ -122,6 +122,7 @@ function initValue()
 	var wpf = "<% getCfgGeneral(1, "WANPingFilter"); %>";
 	var arp_pt = "<% getCfgZero(1, "parproutedEnabled"); %>";
 	var arpptb = "<% getARPptBuilt(); %>";
+	var fatspathb = "<% getFastPathBuilt(); %>";
 	var cdpb = "<% getCdpBuilt(); %>";
 	var lltdb = "<% getLltdBuilt(); %>";
 	var lldpdb = "<% getLldpdBuilt(); %>";
@@ -278,8 +279,10 @@ function offloadModeSelect(form)
 	displayElement('udphw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('sixhw_row', (thresh == '2') || (thresh == '3'))
 	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'))
-	displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
-	displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
+	if (fastpathb == "1" ) {
+	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
+	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
+	}
 	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'))
 }
 
@@ -438,21 +441,21 @@ function displayServiceStatus()
           <tr id="fastpath_row">
             <td class="title" colspan="5">Software fastpaths</td>
           </tr>
-          <tr id="nat_fastpath_row">
+          <tr id="nat_fastpath_row" style="display: none;">
             <td class="head">NAT fastpath</td>
             <td colspan="4"><select name="natFastpath" class="half">
                 <option value="0">Disable</option>
                 <option value="1">Enable</option>
               </select></td>
           </tr>
-          <tr id="route_fastpath_row">
+          <tr id="route_fastpath_row" style="display: none;">
             <td class="head">Route fastpath</td>
             <td colspan="4"><select name="routeFastpath" class="half">
                 <option value="0">Disable</option>
                 <option value="1">Enable</option>
               </select></td>
           </tr>
-          <tr id="filter_fastpath_row">
+          <tr id="filter_fastpath_row" style="display: none;">
             <td class="head">Netfilter fastpath</td>
             <td colspan="4"><select name="filterFastpath" class="half">
                 <option value="0">Disable</option>
