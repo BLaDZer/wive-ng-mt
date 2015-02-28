@@ -14,13 +14,6 @@
 #define FASTNAT_ESTABLISHED(ctinfo)	(ctinfo == IP_CT_ESTABLISHED || ctinfo == IP_CT_ESTABLISHED_REPLY)
 
 /*
- * used in skip lists in conntrack
- */
-#define SKIP_NO			0
-#define SKIP_ALL		1
-#define SKIP_SWO		2
-
-/*
  * cb fastforward flag
  * offcet do not be replaced in any code (as hw_nat, strongly check this, now find max cb offset in wifi drivers = 41)
  */

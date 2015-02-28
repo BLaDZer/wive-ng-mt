@@ -1279,10 +1279,14 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	    }
 	}
 #endif
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
 	/* this code section may be used for skip some types traffic,
 	    only if hardware nat support enabled or software fastnat support enabled */
+#ifdef CONFIG_BCM_NAT
 	if (!pure_route && (ra_sw_nat_hook_tx != NULL || nf_conntrack_fastnat)) {
+#else
+	if (ra_sw_nat_hook_tx != NULL) {
+#endif
 #if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	    /* skip xt_webstr HTTP headers */
 	    if (web_str_loaded && pf == PF_INET && protonum == IPPROTO_TCP && CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) {

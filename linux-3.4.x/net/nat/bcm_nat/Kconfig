@@ -1,6 +1,6 @@
 config BCM_NAT
         bool "Broadcom fast NAT support"
-        depends on NF_CONNTRACK && NF_NAT
+        depends on NF_CONNTRACK && NF_NAT && !RPS
         default y
         help
                 This helps packets pass through netfilter faster when a packet
