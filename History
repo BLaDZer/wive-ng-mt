@@ -647,8 +647,9 @@
 33) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
 34) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 35) kernel: net: allow enable/disable XPS/RPS configure.<br>
-36) kernel: genirq: Introduce irq_do_set_affinity() to reduce duplicated code.<br>
-37) kernel: genirq: Allow forcing cpu affinity of interrupts.<br>
+36) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+37) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+38) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
 <br>
 <br>
 <b>TODO:</b><br>
