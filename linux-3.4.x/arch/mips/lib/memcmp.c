@@ -8,7 +8,7 @@
 #include <linux/string.h>
 
 #undef memcmp
-int memcmp(const void *cs, const void *ct, size_t count)
+int __fastpathsys memcmp(const void *cs, const void *ct, size_t count)
 {
 	const unsigned char *su1, *su2;
 	int res = 0;
