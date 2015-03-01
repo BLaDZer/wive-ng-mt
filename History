@@ -652,6 +652,7 @@
 38) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
 39) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
 40) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+41) kernel: revert mips: Remove race window in page fault handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
