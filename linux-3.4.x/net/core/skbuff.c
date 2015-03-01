@@ -1893,7 +1893,7 @@ EXPORT_SYMBOL(skb_store_bits);
 
 /* Checksum skb data. */
 
-__wsum skb_checksum(const struct sk_buff *skb, int offset,
+__wsum __fastpathnet skb_checksum(const struct sk_buff *skb, int offset,
 			  int len, __wsum csum)
 {
 	int start = skb_headlen(skb);

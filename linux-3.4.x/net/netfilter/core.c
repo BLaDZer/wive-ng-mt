@@ -125,7 +125,7 @@ void nf_unregister_hooks(struct nf_hook_ops *reg, unsigned int n)
 }
 EXPORT_SYMBOL(nf_unregister_hooks);
 
-unsigned int nf_iterate(struct list_head *head,
+unsigned int __fastpathnet nf_iterate(struct list_head *head,
 			struct sk_buff *skb,
 			unsigned int hook,
 			const struct net_device *indev,

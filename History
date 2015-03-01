@@ -656,6 +656,7 @@
 42) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
 43) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
 44) kernel: revert mips: Remove race window in page fault handling.<br>
+45) kernel: review fastpath section use (save more cpu ~4% up).<br>
 <br>
 <br>
 <b>TODO:</b><br>
