@@ -94,6 +94,9 @@
 #define sum v0
 
 	.text
+#ifdef CONFIG_SPEEDHACK
+	.section .text.fastpath, "a"
+#endif
 	.set	noreorder
 	.align	5
 LEAF(csum_partial)
