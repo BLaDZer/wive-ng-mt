@@ -685,9 +685,10 @@ static int br_multicast_add_group(struct net_bridge *br,
 	setup_timer(&p->timer, br_multicast_port_group_expired,
 		    (unsigned long)p);
 
-	if ((port->flags & BR_MULTICAST_TO_UCAST) && src) {
+	if (src) {
 		memcpy(p->src_addr, src, ETH_ALEN);
-		p->m2u = true;
+		if (port->flags & BR_MULTICAST_TO_UCAST)
+			p->m2u = true;
 	}
 
 	rcu_assign_pointer(*pp, p);
@@ -708,12 +709,10 @@ static int br_ip4_multicast_add_group(struct net_bridge *br,
 				      __be32 group)
 {
 	struct br_ip br_group;
-	const unsigned char *src;
+	const unsigned char *src = eth_hdr(skb)->h_source;
 
 	if (ipv4_is_flooded_multicast(group))
 		return 0;
-
-	src = eth_hdr(skb)->h_source;
 
 	br_group.u.ip4 = group;
 	br_group.proto = htons(ETH_P_IP);
@@ -728,12 +727,10 @@ static int br_ip6_multicast_add_group(struct net_bridge *br,
 				      const struct in6_addr *group)
 {
 	struct br_ip br_group;
-	const unsigned char *src;
+	const unsigned char *src = eth_hdr(skb)->h_source;
 
 	if (!ipv6_is_transient_multicast(group))
 		return 0;
-
-	src = eth_hdr(skb)->h_source;
 
 	br_group.u.ip6 = *group;
 	br_group.proto = htons(ETH_P_IPV6);
@@ -1231,12 +1228,10 @@ static void br_ip4_multicast_leave_group(struct net_bridge *br,
 					 __be32 group)
 {
 	struct br_ip br_group;
-	const unsigned char *src;
+	const unsigned char *src = eth_hdr(skb)->h_source;
 
 	if (ipv4_is_flooded_multicast(group))
 		return;
-
-	src = eth_hdr(skb)->h_source;
 
 	br_group.u.ip4 = group;
 	br_group.proto = htons(ETH_P_IP);
@@ -1311,12 +1306,10 @@ static void br_ip6_multicast_leave_group(struct net_bridge *br,
 					 const struct in6_addr *group)
 {
 	struct br_ip br_group;
-	const unsigned char *src;
+	const unsigned char *src = eth_hdr(skb)->h_source;
 
 	if (!ipv6_is_transient_multicast(group))
 		return;
-
-	src = eth_hdr(skb)->h_source;
 
 	br_group.u.ip6 = *group;
 	br_group.proto = htons(ETH_P_IPV6);
