@@ -17,6 +17,8 @@
 /* 32Mb ram for recive image buffer */
 #define PTR_SIZE	0x1EBFFFC
 #else
+/* default 8Mb */
+#define PTR_SIZE	0x7AFFFF
 #endif
 
 #define PORT_TFTP	69		/* Well known TFTP port #		*/
