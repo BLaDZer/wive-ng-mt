@@ -1407,11 +1407,9 @@ static int tso_fragment(struct sock *sk, struct sk_buff *skb, unsigned int len,
  */
 static int tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 {
-	const struct inet_connection_sock *icsk = inet_csk(sk);
-	u32 age, send_win, cong_win, limit, in_flight;
 	struct tcp_sock *tp = tcp_sk(sk);
-	struct skb_mstamp now;
-	struct sk_buff *head;
+	const struct inet_connection_sock *icsk = inet_csk(sk);
+	u32 send_win, cong_win, limit, in_flight;
 	int win_divisor;
 
 	if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
@@ -1465,13 +1463,6 @@ static int tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 		if (limit > tcp_max_tso_deferred_mss(tp) * tp->mss_cache)
 			goto send_now;
 	}
-
-	head = tcp_write_queue_head(sk);
-	skb_mstamp_get(&now);
-	age = skb_mstamp_us_delta(&now, &head->skb_mstamp);
-	/* If next ACK is likely to come too late (half srtt), do not defer */
-	if (age < (tp->srtt_us >> 4))
-		goto send_now;
 
 	/* Ok, it looks like it is advisable to defer. */
 

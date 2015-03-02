@@ -651,16 +651,15 @@
 37) kernel: net: reject creation of netdev names with colons.<br>
 38) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
 39) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
-40) kernel: net: tcp: tso: restore IW10 after TSO autosizing.<br>
-41) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
-42) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-43) kernel: net: allow enable/disable XPS/RPS configure.<br>
-44) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-45) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
-46) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-47) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
-48) kernel: revert mips: Remove race window in page fault handling.<br>
-49) kernel: review fastpath section use (save more cpu ~4% up).<br>
+40) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
+41) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+42) kernel: net: allow enable/disable XPS/RPS configure.<br>
+43) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+44) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+45) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+46) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+47) kernel: revert mips: Remove race window in page fault handling.<br>
+48) kernel: review fastpath section use (save more cpu ~4% up).<br>
 <br>
 <br>
 <b>TODO:</b><br>
