@@ -13,7 +13,7 @@
 /* 8Mb ram for recive image buffer */
 #define PTR_SIZE	0x7AFFFF
 #elif defined (ON_BOARD_512M_DRAM_COMPONENT) || defined (ON_BOARD_1024M_DRAM_COMPONENT) || \
-	defined (ON_BOARD_2048M_DRAM_COMPONENT) || if defined (ON_BOARD_4096M_DRAM_COMPONENT)
+	defined (ON_BOARD_2048M_DRAM_COMPONENT) || defined (ON_BOARD_4096M_DRAM_COMPONENT)
 /* 32Mb ram for recive image buffer */
 #define PTR_SIZE	0x1EBFFFC
 #else
