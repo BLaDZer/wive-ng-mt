@@ -7,6 +7,17 @@
 #include <image.h>
 #include <gpio.h>
 #include <replace.h>
+#include "../autoconf.h"
+
+#if defined (ON_BOARD_128M_DRAM_COMPONENT) ||  defined (ON_BOARD_256M_DRAM_COMPONENT)
+/* 8Mb ram for recive image buffer */
+#define PTR_SIZE	0x7AFFFF
+#elif defined (ON_BOARD_512M_DRAM_COMPONENT) || defined (ON_BOARD_1024M_DRAM_COMPONENT) || \
+	defined (ON_BOARD_2048M_DRAM_COMPONENT) || if defined (ON_BOARD_4096M_DRAM_COMPONENT)
+/* 32Mb ram for recive image buffer */
+#define PTR_SIZE	0x1EBFFFC
+#else
+#endif
 
 #define PORT_TFTP	69		/* Well known TFTP port #		*/
 #define TIMEOUT		2		/* Seconds to timeout for a lost pkt	*/

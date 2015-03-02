@@ -19,9 +19,6 @@ static ulong	TftpLastBlock;		/* last packet sequence number received */
 static ulong	TftpBlockWrapOffset;	/* memory offset due to wrapping	*/
 static int	TftpState;
 
-#define PTR_SIZE	0x1EBFFFC
-#define BOOTBUF_SIZE	0x30000
-
 uint8_t ptr[PTR_SIZE];
 uint16_t RescueAckFlag = 0;
 uint32_t copysize = 0;
