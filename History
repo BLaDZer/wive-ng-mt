@@ -650,14 +650,15 @@
 36) kernel: net: fix stacked vlan offload features computation.<br>
 37) kernel: net: reject creation of netdev names with colons.<br>
 38) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-39) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-40) kernel: net: allow enable/disable XPS/RPS configure.<br>
-41) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-42) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
-43) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-44) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
-45) kernel: revert mips: Remove race window in page fault handling.<br>
-46) kernel: review fastpath section use (save more cpu ~4% up).<br>
+39) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
+40) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+41) kernel: net: allow enable/disable XPS/RPS configure.<br>
+42) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+43) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+44) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+45) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+46) kernel: revert mips: Remove race window in page fault handling.<br>
+47) kernel: review fastpath section use (save more cpu ~4% up).<br>
 <br>
 <br>
 <b>TODO:</b><br>
