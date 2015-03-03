@@ -635,34 +635,35 @@
 21) init.d: fix drop some variables in full bridge modes.<br>
 22) init.d: send hotplug rescan to background (speedup boot).<br>
 23) init.d: tune irqbalance script for optimum performance.<br>
-24) kernel: ralink_arch: update cpu-feature-overrides.h.<br>
-25) kernel: ralink_arch: MT7621 move irq function to fastpathsys.<br>
-26) kernel: ralink_arch: add prototype to enable I/O coherency.<br>
-27) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-28) kernel: ralink_raeth: skip redundant dma_cache_sync to coherence region of rx_desc.<br>
-29) kernel: ralink_raeth: switch control: fix VLAN filtering on MT7621 ESW with GE2->P5 case.<br>
-30) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-31) kernel: mips: fix branch emulation of branch likely instructions.<br>
-32) kernel: mips: add option to disable software I/O  coherency.<br>
-33) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-34) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-35) kernel: mips: dsp: simplify the DSP macros.<br>
-36) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-37) kernel: net: fix stacked vlan offload features computation.<br>
-38) kernel: net: reject creation of netdev names with colons.<br>
-39) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-40) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
-41) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
-42) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-43) kernel: net: allow enable/disable XPS/RPS configure.<br>
-44) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-45) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
-46) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-47) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
-48) kernel: revert mips: Remove race window in page fault handling.<br>
-49) kernel: review fastpath section use (save more cpu ~4% up).<br>
-50) kernel/uboot: add 25Q*BSIG flash chips support.<br>
-52) kernel: pppoe: use workqueue to die properly when a PADT is received.<br>
+24) kernel/uboot: add 25Q*BSIG flash chips support.<br>
+25) kernel: review fastpath section use (save more cpu ~4% up).<br>
+26) kernel: pppoe: use workqueue to die properly when a PADT is received.<br>
+27) kernel: ralink_arch: update cpu-feature-overrides.h.<br>
+28) kernel: ralink_arch: MT7621 move irq function to fastpathsys.<br>
+29) kernel: ralink_arch: add prototype to enable I/O coherency.<br>
+30) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+31) kernel: ralink_raeth: skip redundant dma_cache_sync to coherence region of rx_desc.<br>
+32) kernel: ralink_raeth: switch control: fix VLAN filtering on MT7621 ESW with GE2->P5 case.<br>
+33) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+34) kernel: mips: fix branch emulation of branch likely instructions.<br>
+35) kernel: mips: add option to disable software I/O  coherency.<br>
+36) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+37) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+38) kernel: mips: dsp: simplify the DSP macros.<br>
+39) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+40) kernel: mips: revert remove race window in page fault handling.<br>
+41) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+42) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+44) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+43) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+44) kernel: net: fix stacked vlan offload features computation.<br>
+45) kernel: net: reject creation of netdev names with colons.<br>
+46) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+47) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
+48) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
+49) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+50) kernel: net: allow enable/disable XPS/RPS configure.<br>
+51) kernel: net: neigh: don't require dst in neigh_hh_init.<br>
 <br>
 <br>
 <b>TODO:</b><br>
