@@ -22,6 +22,8 @@
 #EXTRA_DIST = bootstrap BUGS FAQ README.translators \
 #             config/COPYING.davfs2 config/INSTALL.davfs2
 SUBDIRS = src
+CFLAGS  += -ffunction-sections -fdata-sections
+LDFLAGS += -Wl,--gc-sections
 ACLOCAL_AMFLAGS = -I config
 ACLOCAL_LDFLAGS = -lz -lxml2 -lneon -liconv -lssl -lcrypto
 

@@ -616,50 +616,51 @@
 2) toolchain: sync uclibc patches, update gcc to 19.02.2015 4.8.5 version form git, update headers.<br>
 3) build_system: libs: try build more libs only as shared (do not install static libs to romfs if not need).<br>
 4) build_system: libs: add libxml2, libneon.<br>
-5) build_system: apps: add davfs2.<br>
-6) uboot: fix recovery work at more then 8Mb flash devices.<br>
-7) libcurl: up to 7.41.0 version.<br>
-8) samba: remove old 2.0 version of samba, always use 3.0.37.<br>
-9) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
-10) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
-11) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
-12) goahead: hide software fastpath elements if not build in kernel.<br>
-13) init.d: unify swicth portmap logic.<br>
-14) init.d: fix vlan enabled check.<br>
-15) init.d: optimize switch reinit procesure.<br>
-16) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
-17) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
-18) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
-19) init.d: fix check vlan and set correct part sitch mode.<br>
-20) init.d: fix drop some variables in full bridge modes.<br>
-21) init.d: send hotplug rescan to background (speedup boot).<br>
-22) init.d: tune irqbalance script for optimum performance.<br>
-23) kernel: ralink_arch: update cpu-feature-overrides.h.<br>
-24) kernel: ralink_arch: MT7621 move irq function to fastpathsys.<br>
-25) kernel: ralink_arch: add prototype to enable I/O coherency.<br>
-26) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
-27) kernel: ralink_raeth: skip redundant dma_cache_sync to coherence region of rx_desc.<br>
-28) kernel: ralink_raeth: switch control: fix VLAN filtering on MT7621 ESW with GE2->P5 case.<br>
-29) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-30) kernel: mips: fix branch emulation of branch likely instructions.<br>
-31) kernel: mips: add option to disable software I/O  coherency.<br>
-32) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-33) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-34) kernel: mips: dsp: simplify the DSP macros.<br>
-35) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-36) kernel: net: fix stacked vlan offload features computation.<br>
-37) kernel: net: reject creation of netdev names with colons.<br>
-38) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-39) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
-40) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
-41) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-42) kernel: net: allow enable/disable XPS/RPS configure.<br>
-43) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-44) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
-45) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-46) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
-47) kernel: revert mips: Remove race window in page fault handling.<br>
-48) kernel: review fastpath section use (save more cpu ~4% up).<br>
+5) build_system: libs: use gc section for external libs.<br>
+6) build_system: apps: add davfs2.<br>
+7) uboot: fix recovery work at more then 8Mb flash devices.<br>
+8) libcurl: up to 7.41.0 version.<br>
+9) samba: remove old 2.0 version of samba, always use 3.0.37.<br>
+10) goahead: use fs restore instead of direct call mtd_write erase RW-FS.<br>
+11) goahead: remove drop targets in nat table (new kernel not support this, only filter table use).<br>
+12) goahead: fix ipportfilter,portforward not correct save in some cases.<br>
+13) goahead: hide software fastpath elements if not build in kernel.<br>
+14) init.d: unify swicth portmap logic.<br>
+15) init.d: fix vlan enabled check.<br>
+16) init.d: optimize switch reinit procesure.<br>
+17) init.d: more human readable variable name and prevent overwrites in dependen logic.<br>
+18) init.d: touch switch in some cases make depend at switch parth instead of direct mode check.<br>
+19) init.d: remove switch reinit workarounds after reath and hw_nat pathcs.<br>
+20) init.d: fix check vlan and set correct part sitch mode.<br>
+21) init.d: fix drop some variables in full bridge modes.<br>
+22) init.d: send hotplug rescan to background (speedup boot).<br>
+23) init.d: tune irqbalance script for optimum performance.<br>
+24) kernel: ralink_arch: update cpu-feature-overrides.h.<br>
+25) kernel: ralink_arch: MT7621 move irq function to fastpathsys.<br>
+26) kernel: ralink_arch: add prototype to enable I/O coherency.<br>
+27) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
+28) kernel: ralink_raeth: skip redundant dma_cache_sync to coherence region of rx_desc.<br>
+29) kernel: ralink_raeth: switch control: fix VLAN filtering on MT7621 ESW with GE2->P5 case.<br>
+30) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+31) kernel: mips: fix branch emulation of branch likely instructions.<br>
+32) kernel: mips: add option to disable software I/O  coherency.<br>
+33) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+34) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+35) kernel: mips: dsp: simplify the DSP macros.<br>
+36) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+37) kernel: net: fix stacked vlan offload features computation.<br>
+38) kernel: net: reject creation of netdev names with colons.<br>
+39) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+40) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
+41) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
+42) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+43) kernel: net: allow enable/disable XPS/RPS configure.<br>
+44) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+45) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+46) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
+47) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+48) kernel: revert mips: Remove race window in page fault handling.<br>
+49) kernel: review fastpath section use (save more cpu ~4% up).<br>
 <br>
 <br>
 <b>TODO:</b><br>

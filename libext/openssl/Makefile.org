@@ -62,7 +62,8 @@ OPENSSLDIR=/usr/local/ssl
 -include ../../config.arch
 
 CC= cc
-CFLAG= -O
+CFLAG+= -Os -ffunction-sections -fdata-sections
+LDFLAG+= -Wl,--gc-sections
 CFLAG+=-fPIC
 DEPFLAG= 
 PEX_LIBS= 

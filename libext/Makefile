@@ -18,6 +18,9 @@ UCLINUX_BUILD_USER=1
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
+CFLAGS += -ffunction-sections -fdata-sections
+LDFLAGS += -Wl,--gc-sections
+
 ifdef CONFIG_RALINK_MT7620
 ifdef CONFIG_RAETH_ESW
 CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
