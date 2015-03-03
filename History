@@ -661,6 +661,7 @@
 47) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
 48) kernel: revert mips: Remove race window in page fault handling.<br>
 49) kernel: review fastpath section use (save more cpu ~4% up).<br>
+50) kernel/uboot: add 25Q*BSIG flash chips support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
