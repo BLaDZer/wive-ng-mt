@@ -664,6 +664,7 @@
 49) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
 50) kernel: net: allow enable/disable XPS/RPS configure.<br>
 51) kernel: net: neigh: don't require dst in neigh_hh_init.<br>
+52) kernel: net: neigh: don't require a dst in neigh_resolve_output.<br>
 <br>
 <br>
 <b>TODO:</b><br>
