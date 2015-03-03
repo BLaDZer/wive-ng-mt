@@ -662,6 +662,7 @@
 48) kernel: revert mips: Remove race window in page fault handling.<br>
 49) kernel: review fastpath section use (save more cpu ~4% up).<br>
 50) kernel/uboot: add 25Q*BSIG flash chips support.<br>
+52) kernel: pppoe: use workqueue to die properly when a PADT is received.<br>
 <br>
 <br>
 <b>TODO:</b><br>
