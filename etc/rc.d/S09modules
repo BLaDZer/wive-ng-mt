@@ -46,7 +46,11 @@ start() {
 		    # second mac adress
 		    mac="mac=$WLAN2_MAC_ADDR"
 		    $LOG "Load external wifi AP module."
-		    modprobe -q mt7610_ap "$mac"
+		    if [ "$CONFIG_MT76X2_AP" != "" ]; then
+    			modprobe -q mt76x2_ap "$mac"
+		    else
+			modprobe -q mt7610_ap "$mac"
+		    fi
 		fi
 	    fi
 	fi
