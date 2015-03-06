@@ -8,20 +8,15 @@ romfs:
 	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860
 # internal WiFi module
 ifdef CONFIG_RALINK_MT7620
-	# Install defaults
 	$(ROMFSINST) -S	defaults/default-2T2R						/etc/default/nvram_default
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 ifeq ($(CONFIG_INTERNAL_PA_INTERNAL_LNA),y)
-	# Handle several power design for MT7620 - iPA + iLNA
 	cp -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
 else ifeq ($(CONFIG_INTERNAL_PA_EXTERNAL_LNA),y)
-	# Handle several power design for MT7620 - iPA + eLNA
 	cp -f MT7620_AP_2T2R-4L_external_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
 else ifeq ($(CONFIG_EXTERNAL_PA_EXTERNAL_LNA),y)
-	# Handle several power design for MT7620 - ePA + eLNA
 	cp -f MT7620_AP_2T2R-4L_external_LNA_external_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
 else
-	# Handle several power design for MT7620 - iLAN+iPA as default.
 	cp -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
 endif
 	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN					/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN
@@ -29,13 +24,12 @@ endif
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 	rm -f MT7620_AP_2T2R-4L_BACKUP.BIN
 endif
-# external PCI-E WiFi module
+# external PCI-E 7610 WiFi module
 ifdef CONFIG_MT7610_AP
-	# Install defaults
 	$(ROMFSINST) -S	defaults/default-2T2R-7620-7610					/etc/default/nvram_default
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
 	$(ROMFSINST) -S MT7610E-V10-FEM.bin						/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
-	#install fabric calibrations backup
+ifdef CONFIG_RALINK_MT7620
 ifeq ($(CONFIG_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S MT7620_7610_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 else ifeq ($(CONFIG_INTERNAL_PA_EXTERNAL_LNA),y)
@@ -44,6 +38,8 @@ else ifeq ($(CONFIG_EXTERNAL_PA_EXTERNAL_LNA),y)
 	$(ROMFSINST) -S MT7620_7610_AP_2T2R-4L_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 endif
 endif
+endif
+# external PCI-E 76x2 WiFi module
 ifdef CONFIG_MT76X2_AP
 	$(ROMFSINST) -S	defaults/default-2T2R-7621-7602-7612				/etc/default/nvram_default
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
