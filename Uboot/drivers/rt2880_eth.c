@@ -2206,7 +2206,7 @@ void setup_internal_gsw(void)
 	udelay(1000);
 	regValue = regValue & ~(1<<2);
 	RALINK_REG(RT2880_RSTCTRL_REG) = regValue;
-	udelay(50);
+	udelay(10000);
 
 
 
@@ -2229,7 +2229,7 @@ void setup_internal_gsw(void)
 
 	mii_mgr_write(31, 0x7000, 0x3);//reset MT7530
 	printf("#Reset_MT7530\n");
-	udelay(5);
+	udelay(100);
 	
 
 #ifdef MT7621_USE_GE1
