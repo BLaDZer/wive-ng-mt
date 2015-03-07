@@ -66,9 +66,8 @@ UCHAR RtmpEepromGetDefault(
 			e2p_default = E2P_FLASH_MODE;
 		goto out;
 	}
-#endif
-
 out:
+#endif
 	DBGPRINT(RT_DEBUG_OFF, ("%s::e2p_default=%d\n", __FUNCTION__, e2p_default));
 	return e2p_default;
 }
