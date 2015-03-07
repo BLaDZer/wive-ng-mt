@@ -672,6 +672,7 @@
 <br>
 <br>
 <b>2.6.x</b><br>
+1) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
 <br>
 <br>
 <b>TODO:</b><br>

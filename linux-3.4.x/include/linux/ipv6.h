@@ -147,6 +147,8 @@ struct ipv6_devconf {
 	__s32		rtr_solicit_interval;
 	__s32		rtr_solicit_delay;
 	__s32		force_mld_version;
+	__s32		mldv1_unsolicited_report_interval;
+	__s32		mldv2_unsolicited_report_interval;
 #ifdef CONFIG_IPV6_PRIVACY
 	__s32		use_tempaddr;
 	__s32		temp_valid_lft;
@@ -216,6 +218,8 @@ enum {
 	DEVCONF_DISABLE_IPV6,
 	DEVCONF_ACCEPT_DAD,
 	DEVCONF_FORCE_TLLAO,
+	DEVCONF_MLDV1_UNSOLICITED_REPORT_INTERVAL,
+	DEVCONF_MLDV2_UNSOLICITED_REPORT_INTERVAL,
 	DEVCONF_MAX
 };
 
