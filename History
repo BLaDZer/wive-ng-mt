@@ -644,30 +644,31 @@
 30) kernel: ralink_hw_nat: do not touch MT7620 ESW P6/P7 PCR for case dumb switch.<br>
 31) kernel: ralink_raeth: skip redundant dma_cache_sync to coherence region of rx_desc.<br>
 32) kernel: ralink_raeth: switch control: fix VLAN filtering on MT7621 ESW with GE2->P5 case.<br>
-33) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
-34) kernel: mips: fix branch emulation of branch likely instructions.<br>
-35) kernel: mips: add option to disable software I/O  coherency.<br>
-36) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
-37) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
-38) kernel: mips: dsp: simplify the DSP macros.<br>
-39) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
-40) kernel: mips: revert remove race window in page fault handling.<br>
-41) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
-42) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
+33) kernel: ralink_wifi: MT7612E/MT7602E: fix rate_pwr_table initialization bug.<br>
+34) kernel: mips: avoid mcheck by flushing page range in huge_ptep_set_access_flags().<br>
+35) kernel: mips: fix branch emulation of branch likely instructions.<br>
+36) kernel: mips: add option to disable software I/O  coherency.<br>
+37) kernel: mips: reduce code size for MIPS32R2 platforms.<br>
+38) kernel: mips: dsp: add assembler support for DSP ASEs.<br>
+39) kernel: mips: dsp: simplify the DSP macros.<br>
+40) kernel: mips: dsp: fix code generation for non-DSP capable CPUs.<br>
+41) kernel: mips: revert remove race window in page fault handling.<br>
+42) kernel: genirq: introduce irq_do_set_affinity() to reduce duplicated code.<br>
+43) kernel: genirq: allow forcing cpu affinity of interrupts.<br>
 44) kernel: genirq: provide irq_force_affinity fallback for non-SMP.<br>
-43) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
-44) kernel: net: fix stacked vlan offload features computation.<br>
-45) kernel: net: reject creation of netdev names with colons.<br>
-46) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
-47) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
-48) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
-49) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
-50) kernel: net: allow enable/disable XPS/RPS configure.<br>
-51) kernel: net: neigh: don't require dst in neigh_hh_init.<br>
-52) kernel: net: neigh: don't require a dst in neigh_resolve_output.<br>
-53) kernel: net: udp: only allow UFO for packets from SOCK_DGRAM sockets.<br>
-54) kernel: netfilter: FCONE/RCONE optimization (do not compare ifname), allow eth3.x as WAN/MAN.<br>
-55) kernel: make READ_ONCE() valid on const arguments.<br>
+45) kernel: genirq: set initial affinity in irq_set_affinity_hint().<br>
+46) kernel: net: fix stacked vlan offload features computation.<br>
+47) kernel: net: reject creation of netdev names with colons.<br>
+48) kernel: net: tcp: fix tcp_should_expand_sndbuf() to use tcp_packets_in_flight().<br>
+49) kernel: net: tcp: tso: remove tp->tso_deferred.<br>
+50) kernel: net: tcp: tso: allow CA_CWR state in tcp_tso_should_defer().<br>
+51) kernel: net: ipv6: addrconf: validate new MTU before applying it.<br>
+52) kernel: net: allow enable/disable XPS/RPS configure.<br>
+53) kernel: net: neigh: don't require dst in neigh_hh_init.<br>
+54) kernel: net: neigh: don't require a dst in neigh_resolve_output.<br>
+55) kernel: net: udp: only allow UFO for packets from SOCK_DGRAM sockets.<br>
+56) kernel: netfilter: FCONE/RCONE optimization (do not compare ifname), allow eth3.x as WAN/MAN.<br>
+57) kernel: make READ_ONCE() valid on const arguments.<br>
 <br>
 <br>
 <b>TODO:</b><br>
