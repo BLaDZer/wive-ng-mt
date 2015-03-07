@@ -673,6 +673,7 @@
 <br>
 <b>2.6.x</b><br>
 1) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+2) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
 <br>
 <br>
 <b>TODO:</b><br>
