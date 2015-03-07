@@ -666,6 +666,7 @@
 51) kernel: net: neigh: don't require dst in neigh_hh_init.<br>
 52) kernel: net: neigh: don't require a dst in neigh_resolve_output.<br>
 53) kernel: net: udp: only allow UFO for packets from SOCK_DGRAM sockets.<br>
+54) kernel: netfilter: FCONE/RCONE optimization (do not compare ifname), allow eth3.x as WAN/MAN.<br>
 <br>
 <br>
 <b>TODO:</b><br>
