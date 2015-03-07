@@ -671,6 +671,9 @@
 57) kernel: make READ_ONCE() valid on const arguments.<br>
 <br>
 <br>
+<b>2.6.x</b><br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
