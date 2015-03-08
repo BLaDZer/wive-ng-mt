@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.88 2014/10/21 14:04:15 nanard Exp $
+# $Id: Makefile.linux,v 1.89 2014/12/15 11:01:18 nanard Exp $
 # MiniUPnP project
 # (c) 2006-2014 Thomas Bernard
 # http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
@@ -164,6 +164,7 @@ clean:
 	$(RM) testupnpdescgen.o testgetifstats.o
 	$(RM) testupnppermissions.o testgetifaddr.o
 	$(RM) testasyncsendto.o
+	$(RM) testportinuse.o
 	$(RM) miniupnpdctl.o
 	$(RM) -r filesystem
 
