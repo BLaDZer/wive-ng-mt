@@ -164,7 +164,7 @@ if_subnet_delete (struct interface *ifp, struct connected *ifc)
     {
       zlog_warn("Trying to remove an address from an unknown subnet."
                 " (please report this bug)");
-    return -1;
+      return -1;
     }
   route_unlock_node (rn);
   
@@ -307,15 +307,15 @@ if_addr_wakeup (struct interface *ifp)
 		   *
 		   * As soon as zebra becomes first aware that gre0 exists in the
 		   * kernel, it will set gre0 up and configure its addresses.
-                   *
+		   *
 		   * (This may happen at startup when the interface already exists
 		   * or during runtime when the interface is added to the kernel)
 		   *
 		   * XXX: IRDP code is calling here via if_add_update - this seems
 		   * somewhat weird.
 		   * XXX: RUNNING is not a settable flag on any system
-                   * I (paulj) am aware of.
-                   */
+		   * I (paulj) am aware of.
+		  */
 		  if_set_flags (ifp, IFF_UP | IFF_RUNNING);
 		  if_refresh (ifp);
 		}
@@ -1105,13 +1105,13 @@ DEFUN (shutdown_if,
   ifp = (struct interface *) vty->index;
   if (ifp->ifindex != IFINDEX_INTERNAL)
     {
-  ret = if_unset_flags (ifp, IFF_UP);
-  if (ret < 0)
-    {
-      vty_out (vty, "Can't shutdown interface%s", VTY_NEWLINE);
-      return CMD_WARNING;
-    }
-  if_refresh (ifp);
+        ret = if_unset_flags (ifp, IFF_UP);
+        if (ret < 0)
+          {
+            vty_out (vty, "Can't shutdown interface%s", VTY_NEWLINE);
+            return CMD_WARNING;
+          }
+        if_refresh (ifp);
     }
   if_data = ifp->info;
   if_data->shutdown = IF_ZEBRA_SHUTDOWN_ON;
@@ -1133,13 +1133,13 @@ DEFUN (no_shutdown_if,
 
   if (ifp->ifindex != IFINDEX_INTERNAL)
     {
-  ret = if_set_flags (ifp, IFF_UP | IFF_RUNNING);
-  if (ret < 0)
-    {
-      vty_out (vty, "Can't up interface%s", VTY_NEWLINE);
-      return CMD_WARNING;
-    }
-  if_refresh (ifp);
+      ret = if_set_flags (ifp, IFF_UP | IFF_RUNNING);
+      if (ret < 0)
+	{
+	  vty_out (vty, "Can't up interface%s", VTY_NEWLINE);
+	  return CMD_WARNING;
+	}
+      if_refresh (ifp);
 
       /* Some addresses (in particular, IPv6 addresses on Linux) get
        * removed when the interface goes down. They need to be readded.
@@ -1206,7 +1206,7 @@ ALIAS (no_bandwidth_if,
        NO_STR
        "Set bandwidth informational parameter\n"
        "Bandwidth in kilobits\n")
-
+
 static int
 ip_address_install (struct vty *vty, struct interface *ifp,
 		    const char *addr_str, const char *peer_str,
@@ -1579,6 +1579,8 @@ if_config_write (struct vty *vty)
 
       if (CHECK_FLAG(ifp->status, ZEBRA_INTERFACE_LINKDETECTION))
 	vty_out(vty, " link-detect%s", VTY_NEWLINE);
+      else
+	vty_out(vty, " no link-detect%s", VTY_NEWLINE);
 
       for (ALL_LIST_ELEMENTS_RO (ifp->connected, addrnode, ifc))
 	  {

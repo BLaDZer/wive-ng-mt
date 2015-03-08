@@ -116,23 +116,23 @@ kernel_rtm_ipv4 (int cmd, struct prefix *p, struct rib *rib, int family)
 	      && CHECK_FLAG (nexthop->flags, NEXTHOP_FLAG_FIB)
 	      ))
 	{
-	      if (nexthop->type == NEXTHOP_TYPE_IPV4 ||
-		  nexthop->type == NEXTHOP_TYPE_IPV4_IFINDEX)
-		{
-		  sin_gate.sin_addr = nexthop->gate.ipv4;
-		  gate = 1;
-		}
-	      if (nexthop->type == NEXTHOP_TYPE_IFINDEX
-		  || nexthop->type == NEXTHOP_TYPE_IFNAME
-		  || nexthop->type == NEXTHOP_TYPE_IPV4_IFINDEX)
-		ifindex = nexthop->ifindex;
-	      if (nexthop->type == NEXTHOP_TYPE_BLACKHOLE)
-		{
-		  struct in_addr loopback;
-		  loopback.s_addr = htonl (INADDR_LOOPBACK);
-		  sin_gate.sin_addr = loopback;
-		  gate = 1;
-		}
+	  if (nexthop->type == NEXTHOP_TYPE_IPV4 ||
+	      nexthop->type == NEXTHOP_TYPE_IPV4_IFINDEX)
+	    {
+	      sin_gate.sin_addr = nexthop->gate.ipv4;
+	      gate = 1;
+	    }
+	  if (nexthop->type == NEXTHOP_TYPE_IFINDEX
+	      || nexthop->type == NEXTHOP_TYPE_IFNAME
+	      || nexthop->type == NEXTHOP_TYPE_IPV4_IFINDEX)
+	    ifindex = nexthop->ifindex;
+	  if (nexthop->type == NEXTHOP_TYPE_BLACKHOLE)
+	    {
+	      struct in_addr loopback;
+	      loopback.s_addr = htonl (INADDR_LOOPBACK);
+	      sin_gate.sin_addr = loopback;
+	      gate = 1;
+	    }
 
 	  if (gate && p->prefixlen == 32)
 	    mask = NULL;
@@ -254,13 +254,8 @@ sin6_masklen (struct in6_addr mask)
   char *p, *lim;
   int len;
 
-#if defined (INRIA)
-  if (IN_ANYADDR6 (mask)) 
-    return sizeof (long);
-#else /* ! INRIA */
   if (IN6_IS_ADDR_UNSPECIFIED (&mask)) 
     return sizeof (long);
-#endif /* ! INRIA */
 
   sin6.sin6_addr = mask;
   len = sizeof (struct sockaddr_in6);
@@ -380,18 +375,18 @@ kernel_rtm_ipv6_multipath (int cmd, struct prefix *p, struct rib *rib,
 #endif
 	      ))
 	{
-	      if (nexthop->type == NEXTHOP_TYPE_IPV6
-		  || nexthop->type == NEXTHOP_TYPE_IPV6_IFNAME
-		  || nexthop->type == NEXTHOP_TYPE_IPV6_IFINDEX)
-		{
-		  sin_gate.sin6_addr = nexthop->gate.ipv6;
-		  gate = 1;
-		}
-	      if (nexthop->type == NEXTHOP_TYPE_IFINDEX
-		  || nexthop->type == NEXTHOP_TYPE_IFNAME
-		  || nexthop->type == NEXTHOP_TYPE_IPV6_IFNAME
-		  || nexthop->type == NEXTHOP_TYPE_IPV6_IFINDEX)
-		ifindex = nexthop->ifindex;
+	  if (nexthop->type == NEXTHOP_TYPE_IPV6
+	      || nexthop->type == NEXTHOP_TYPE_IPV6_IFNAME
+	      || nexthop->type == NEXTHOP_TYPE_IPV6_IFINDEX)
+	    {
+	      sin_gate.sin6_addr = nexthop->gate.ipv6;
+	      gate = 1;
+	    }
+	  if (nexthop->type == NEXTHOP_TYPE_IFINDEX
+	      || nexthop->type == NEXTHOP_TYPE_IFNAME
+	      || nexthop->type == NEXTHOP_TYPE_IPV6_IFNAME
+	      || nexthop->type == NEXTHOP_TYPE_IPV6_IFINDEX)
+	    ifindex = nexthop->ifindex;
 
 	  if (cmd == RTM_ADD)
 	    SET_FLAG (nexthop->flags, NEXTHOP_FLAG_FIB);
@@ -474,22 +469,6 @@ kernel_delete_ipv6 (struct prefix *p, struct rib *rib)
   if (zserv_privs.change(ZPRIVS_RAISE))
     zlog (NULL, LOG_ERR, "Can't raise privileges");
   route =  kernel_rtm_ipv6_multipath (RTM_DELETE, p, rib, AF_INET6);
-  if (zserv_privs.change(ZPRIVS_LOWER))
-    zlog (NULL, LOG_ERR, "Can't lower privileges");
-
-  return route;
-}
-
-/* Delete IPv6 route from the kernel. */
-int
-kernel_delete_ipv6_old (struct prefix_ipv6 *dest, struct in6_addr *gate,
- 		        unsigned int index, int flags, int table)
-{
-  int route;
-
-  if (zserv_privs.change(ZPRIVS_RAISE))
-    zlog (NULL, LOG_ERR, "Can't raise privileges");
-  route = kernel_rtm_ipv6 (RTM_DELETE, dest, gate, index, flags);
   if (zserv_privs.change(ZPRIVS_LOWER))
     zlog (NULL, LOG_ERR, "Can't lower privileges");
 

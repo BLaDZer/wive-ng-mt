@@ -173,8 +173,8 @@ ospf6_area_create (u_int32_t area_id, struct ospf6 *o)
     }
   else
     {
-  OSPF6_OPT_SET (oa->options, OSPF6_OPT_V6);
-  OSPF6_OPT_SET (oa->options, OSPF6_OPT_R);
+      OSPF6_OPT_SET (oa->options, OSPF6_OPT_V6);
+      OSPF6_OPT_SET (oa->options, OSPF6_OPT_R);
     }
 
   OSPF6_OPT_SET (oa->options, OSPF6_OPT_E);
@@ -288,7 +288,7 @@ ospf6_area_disable (struct ospf6_area *oa)
   THREAD_OFF (oa->thread_intra_prefix_lsa);
 }
 
-
+
 void
 ospf6_area_show (struct vty *vty, struct ospf6_area *oa)
 {
@@ -429,6 +429,7 @@ DEFUN (no_area_range,
     }
 
   ospf6_route_remove (range, oa->range_table);
+
   return CMD_SUCCESS;
 }
 
@@ -517,13 +518,11 @@ DEFUN (no_area_filter_list,
        "Filter networks sent from this area\n")
 {
   struct ospf6_area *area;
-  struct prefix_list *plist;
 
   OSPF6_CMD_AREA_GET (argv[0], area);
   argc--;
   argv++;
 
-  plist = prefix_list_lookup (AFI_IP6, argv[0]);
   if (strncmp (argv[1], "in", 2) == 0)
     {
       if (PREFIX_NAME_IN (area))

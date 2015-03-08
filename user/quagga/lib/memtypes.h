@@ -197,6 +197,16 @@ enum
   MTYPE_ISIS_NEXTHOP6,
   MTYPE_ISIS_DICT,
   MTYPE_ISIS_DICT_NODE,
+  MTYPE_PIM_CHANNEL_OIL,
+  MTYPE_PIM_INTERFACE,
+  MTYPE_PIM_IGMP_JOIN,
+  MTYPE_PIM_IGMP_SOCKET,
+  MTYPE_PIM_IGMP_GROUP,
+  MTYPE_PIM_IGMP_GROUP_SOURCE,
+  MTYPE_PIM_NEIGHBOR,
+  MTYPE_PIM_IFCHANNEL,
+  MTYPE_PIM_UPSTREAM,
+  MTYPE_PIM_SSMPINGD,
   MTYPE_VTYSH_CONFIG,
   MTYPE_VTYSH_CONFIG_LINE,
   MTYPE_MAX,
@@ -211,6 +221,7 @@ extern struct memory_list memory_list_babel[];
 extern struct memory_list memory_list_ospf[];
 extern struct memory_list memory_list_ospf6[];
 extern struct memory_list memory_list_isis[];
+extern struct memory_list memory_list_pim[];
 extern struct memory_list memory_list_vtysh[];
 
 #endif /* _QUAGGA_MEMTYPES_H */

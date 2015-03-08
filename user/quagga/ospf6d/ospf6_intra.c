@@ -331,26 +331,26 @@ ospf6_router_lsa_originate (struct thread *thread)
         /* xxx */
     }
 
-      /* Fill LSA Header */
-      lsa_header->age = 0;
-      lsa_header->type = htons (OSPF6_LSTYPE_ROUTER);
-      lsa_header->id = htonl (link_state_id);
-      lsa_header->adv_router = oa->ospf6->router_id;
-      lsa_header->seqnum =
-        ospf6_new_ls_seqnum (lsa_header->type, lsa_header->id,
-                             lsa_header->adv_router, oa->lsdb);
-      lsa_header->length = htons ((caddr_t) lsdesc - (caddr_t) buffer);
+  /* Fill LSA Header */
+  lsa_header->age = 0;
+  lsa_header->type = htons (OSPF6_LSTYPE_ROUTER);
+  lsa_header->id = htonl (link_state_id);
+  lsa_header->adv_router = oa->ospf6->router_id;
+  lsa_header->seqnum =
+    ospf6_new_ls_seqnum (lsa_header->type, lsa_header->id,
+                         lsa_header->adv_router, oa->lsdb);
+  lsa_header->length = htons ((caddr_t) lsdesc - (caddr_t) buffer);
 
-      /* LSA checksum */
-      ospf6_lsa_checksum (lsa_header);
+  /* LSA checksum */
+  ospf6_lsa_checksum (lsa_header);
 
-      /* create LSA */
-      lsa = ospf6_lsa_create (lsa_header);
+  /* create LSA */
+  lsa = ospf6_lsa_create (lsa_header);
 
-      /* Originate */
-      ospf6_lsa_originate_area (lsa, oa);
+  /* Originate */
+  ospf6_lsa_originate_area (lsa, oa);
 
-      link_state_id ++;
+  link_state_id ++;
 
   /* Do premature-aging of rest, undesired Router-LSAs */
   type = ntohs (OSPF6_LSTYPE_ROUTER);
@@ -1314,9 +1314,9 @@ ospf6_intra_prefix_lsa_add (struct ospf6_lsa *lsa)
         }
       else
         {
-      for (i = 0; ospf6_nexthop_is_set (&ls_entry->nexthop[i]) &&
-           i < OSPF6_MULTI_PATH_LIMIT; i++)
-        ospf6_nexthop_copy (&route->nexthop[i], &ls_entry->nexthop[i]);
+          for (i = 0; ospf6_nexthop_is_set (&ls_entry->nexthop[i]) &&
+               i < OSPF6_MULTI_PATH_LIMIT; i++)
+            ospf6_nexthop_copy (&route->nexthop[i], &ls_entry->nexthop[i]);
         }
 
       if (IS_OSPF6_DEBUG_EXAMIN (INTRA_PREFIX))

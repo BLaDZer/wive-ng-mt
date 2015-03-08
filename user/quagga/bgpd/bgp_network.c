@@ -47,7 +47,7 @@ struct bgp_listener
   union sockunion su;
   struct thread *thread;
 };
-
+
 /*
  * Set MD5 key for the socket, for the given IPv4 peer address.
  * If the password is NULL or zero-length, the option will be disabled.
@@ -122,7 +122,7 @@ bgp_md5_set (struct peer *peer)
   
   return ret;
 }
-
+
 /* Update BGP socket send buffer size */
 static void
 bgp_update_sock_send_buffer_size (int fd)
@@ -488,7 +488,7 @@ bgp_listener (int sock, struct sockaddr *sa, socklen_t salen)
 }
 
 /* IPv6 supported version of BGP server socket setup.  */
-#if defined (HAVE_IPV6) && ! defined (NRL)
+#ifdef HAVE_IPV6
 int
 bgp_socket (unsigned short port, const char *address)
 {
@@ -588,7 +588,7 @@ bgp_socket (unsigned short port, const char *address)
     }
   return sock;
 }
-#endif /* HAVE_IPV6 && !NRL */
+#endif /* HAVE_IPV6 */
 
 void
 bgp_close (void)

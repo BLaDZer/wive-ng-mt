@@ -306,7 +306,7 @@ ospf6_lsa_premature_aging (struct ospf6_lsa *lsa)
 int
 ospf6_lsa_compare (struct ospf6_lsa *a, struct ospf6_lsa *b)
 {
-  int seqnuma, seqnumb;
+  int32_t seqnuma, seqnumb;
   u_int16_t cksuma, cksumb;
   u_int16_t agea, ageb;
 
@@ -314,8 +314,8 @@ ospf6_lsa_compare (struct ospf6_lsa *a, struct ospf6_lsa *b)
   assert (b && b->header);
   assert (OSPF6_LSA_IS_SAME (a, b));
 
-  seqnuma = (int) ntohl (a->header->seqnum);
-  seqnumb = (int) ntohl (b->header->seqnum);
+  seqnuma = (int32_t) ntohl (a->header->seqnum);
+  seqnumb = (int32_t) ntohl (b->header->seqnum);
 
   /* compare by sequence number */
   if (seqnuma > seqnumb)
@@ -416,8 +416,8 @@ ospf6_lsa_show_summary (struct vty *vty, struct ospf6_lsa *lsa)
     {
       vty_out (vty, "%-4s %-15s%-15s%4hu %8lx %30s%s",
 	       ospf6_lstype_short_name (lsa->header->type),
-           id, adv_router, ospf6_lsa_age_current (lsa),
-           (u_long) ntohl (lsa->header->seqnum),
+	       id, adv_router, ospf6_lsa_age_current (lsa),
+	       (u_long) ntohl (lsa->header->seqnum),
 	       handler->get_prefix_str(lsa, buf, sizeof(buf), 0), VNL);
     }
   else if (type != OSPF6_LSTYPE_UNKNOWN)
@@ -493,7 +493,7 @@ ospf6_lsa_show_internal (struct vty *vty, struct ospf6_lsa *lsa)
   vty_out (vty, "Flag: %x %s", lsa->flag, VNL);
   vty_out (vty, "Lock: %d %s", lsa->lock, VNL);
   vty_out (vty, "ReTx Count: %d%s", lsa->retrans_count, VNL);
-  vty_out (vty, "Threads: Expire: %x, Refresh: %x %s",
+  vty_out (vty, "Threads: Expire: 0x%p, Refresh: 0x%p %s",
 	   lsa->expire, lsa->refresh, VNL);
   vty_out (vty, "%s", VNL);
   return;
@@ -658,7 +658,7 @@ ospf6_lsa_unlock (struct ospf6_lsa *lsa)
   ospf6_lsa_delete (lsa);
 }
 
-
+
 /* ospf6 lsa expiry */
 int
 ospf6_lsa_expire (struct thread *thread)
@@ -744,7 +744,7 @@ ospf6_lsa_refresh (struct thread *thread)
   return 0;
 }
 
-
+
 
 /* Fletcher Checksum -- Refer to RFC1008. */
 
@@ -790,7 +790,7 @@ ospf6_lsa_terminate (void)
 {
   vector_free (ospf6_lsa_handler_vector);
 }
-
+
 static char *
 ospf6_lsa_handler_name (struct ospf6_lsa_handler *h)
 {

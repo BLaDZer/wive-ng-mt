@@ -787,7 +787,7 @@ ospf6_abr_reimport (struct ospf6_area *oa)
 }
 
 
-
+
 /* Display functions */
 static char *
 ospf6_inter_area_prefix_lsa_get_prefix_str (struct ospf6_lsa *lsa, char *buf,
@@ -867,6 +867,7 @@ ospf6_inter_area_router_lsa_show (struct vty *vty, struct ospf6_lsa *lsa)
   vty_out (vty, "     Options: %s%s", buf, VNL);
   vty_out (vty, "     Metric: %lu%s",
            (u_long) OSPF6_ABR_SUMMARY_METRIC (router_lsa), VNL);
+
   inet_ntop (AF_INET, &router_lsa->router_id, buf, sizeof (buf));
   vty_out (vty, "     Destination Router ID: %s%s", buf, VNL);
 

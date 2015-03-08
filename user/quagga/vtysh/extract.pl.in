@@ -91,38 +91,38 @@ foreach (@ARGV) {
 
         # $protocol is VTYSH_PROTO format for redirection of user input
         if ($file =~ /lib\/keychain\.c$/) {
-              $protocol = "VTYSH_RIPD";
-           }
+            $protocol = "VTYSH_RIPD";
+        }
         elsif ($file =~ /lib\/routemap\.c$/) {
-              $protocol = "VTYSH_RIPD|VTYSH_RIPNGD|VTYSH_OSPFD|VTYSH_OSPF6D|VTYSH_BGPD|VTYSH_ZEBRA";
-           }
+            $protocol = "VTYSH_RIPD|VTYSH_RIPNGD|VTYSH_OSPFD|VTYSH_OSPF6D|VTYSH_BGPD|VTYSH_ZEBRA";
+        }
         elsif ($file =~ /lib\/filter\.c$/) {
-              $protocol = "VTYSH_ALL";
-           }
+            $protocol = "VTYSH_ALL";
+        }
         elsif ($file =~ /lib\/plist\.c$/) {
-	      if ($defun_array[1] =~ m/ipv6/) {
-                 $protocol = "VTYSH_RIPNGD|VTYSH_OSPF6D|VTYSH_BGPD|VTYSH_ZEBRA";
-              } else {
-                 $protocol = "VTYSH_RIPD|VTYSH_OSPFD|VTYSH_BGPD|VTYSH_ZEBRA";
-              }
-           }
+            if ($defun_array[1] =~ m/ipv6/) {
+                $protocol = "VTYSH_RIPNGD|VTYSH_OSPF6D|VTYSH_BGPD|VTYSH_ZEBRA";
+            } else {
+                $protocol = "VTYSH_RIPD|VTYSH_OSPFD|VTYSH_BGPD|VTYSH_ZEBRA";
+            }
+        }
         elsif ($file =~ /lib\/distribute\.c$/) {
-              if ($defun_array[1] =~ m/ipv6/) {
-                 $protocol = "VTYSH_RIPNGD";
-              } else {
-                 $protocol = "VTYSH_RIPD";
-              }
-           }
+            if ($defun_array[1] =~ m/ipv6/) {
+                $protocol = "VTYSH_RIPNGD";
+            } else {
+                $protocol = "VTYSH_RIPD";
+            }
+        }
         elsif ($file =~ /lib\/if_rmap\.c$/) {
-              if ($defun_array[1] =~ m/ipv6/) {
-                 $protocol = "VTYSH_RIPNGD";
-              } else {
-                 $protocol = "VTYSH_RIPD";
-              }
-           }
+            if ($defun_array[1] =~ m/ipv6/) {
+                $protocol = "VTYSH_RIPNGD";
+            } else {
+                $protocol = "VTYSH_RIPD";
+            }
+        }
         elsif ($file =~ /lib\/vty\.c$/) {
-	      $protocol = "VTYSH_ALL";
-	   }
+           $protocol = "VTYSH_ALL";
+        }
 	else {
            ($protocol) = ($file =~ /^.*\/([a-z0-9]+)\/[a-zA-Z0-9_\-]+\.c$/);
            $protocol = "VTYSH_" . uc $protocol;

@@ -482,6 +482,7 @@ ospf6_interface_state_change (u_char next_state, struct ospf6_interface *oi)
       (next_state != OSPF6_INTERFACE_DR &&
        next_state != OSPF6_INTERFACE_BDR))
     ospf6_sso (oi->interface->ifindex, &alldrouters6, IPV6_LEAVE_GROUP);
+
   if ((prev_state != OSPF6_INTERFACE_DR &&
        prev_state != OSPF6_INTERFACE_BDR) &&
       (next_state == OSPF6_INTERFACE_DR ||
@@ -515,7 +516,7 @@ ospf6_interface_state_change (u_char next_state, struct ospf6_interface *oi)
 
 }
 
-
+
 /* DR Election, RFC2328 section 9.4 */
 
 #define IS_ELIGIBLE(n) \
@@ -672,7 +673,7 @@ dr_election (struct ospf6_interface *oi)
   return next_state;
 }
 
-
+
 /* Interface State Machine */
 int
 interface_up (struct thread *thread)
@@ -842,7 +843,7 @@ interface_down (struct thread *thread)
   return 0;
 }
 
-
+
 /* show specified interface structure */
 static int
 ospf6_interface_show (struct vty *vty, struct interface *ifp)
@@ -1265,7 +1266,7 @@ DEFUN (ipv6_ospf6_cost,
   
   oi->cost = lcost;
   SET_FLAG (oi->flag, OSPF6_INTERFACE_NOAUTOCOST);
-  
+
   ospf6_interface_recalculate_cost(oi);
 
   return CMD_SUCCESS;
@@ -1279,10 +1280,9 @@ DEFUN (no_ipv6_ospf6_cost,
        OSPF6_STR
        "Calculate interface cost from bandwidth\n"
        )
-    {
+{
   struct ospf6_interface *oi;
   struct interface *ifp;
-  unsigned long int lcost;
 
   ifp = (struct interface *) vty->index;
   assert (ifp);
@@ -1329,7 +1329,7 @@ DEFUN (auto_cost_reference_bandwidth,
           ospf6_interface_recalculate_cost (oi);
 
   return CMD_SUCCESS;
-    }
+}
 
 DEFUN (no_auto_cost_reference_bandwidth,
        no_auto_cost_reference_bandwidth_cmd,

@@ -318,8 +318,8 @@ ospf6_flood_interface (struct ospf6_neighbor *from,
                  examin next neighbor */
               if (ospf6_lsa_compare (lsa, req) == 0)
                 {
-                  if (is_debug)
-                    zlog_debug ("Requesting the same, remove it, next neighbor");
+		  if (is_debug)
+		    zlog_debug ("Requesting the same, remove it, next neighbor");
 		  if (req == on->last_ls_req)
 		    {
 		      ospf6_lsa_unlock (req);
@@ -333,8 +333,8 @@ ospf6_flood_interface (struct ospf6_neighbor *from,
               /* If the new LSA is more recent, delete from request-list */
               if (ospf6_lsa_compare (lsa, req) < 0)
                 {
-                  if (is_debug)
-                    zlog_debug ("Received is newer, remove requesting");
+		  if (is_debug)
+		    zlog_debug ("Received is newer, remove requesting");
 		  if (req == on->last_ls_req)
 		    {
 		      ospf6_lsa_unlock (req);
@@ -391,11 +391,11 @@ ospf6_flood_interface (struct ospf6_neighbor *from,
   if (from && from->ospf6_if == oi)
     {
       if (oi->state == OSPF6_INTERFACE_BDR)
-    {
-      if (is_debug)
-        zlog_debug ("Received is from the I/F, itself BDR, next interface");
-      return;
-    }
+	{
+	  if (is_debug)
+	    zlog_debug ("Received is from the I/F, itself BDR, next interface");
+	  return;
+	}
       SET_FLAG(lsa->flag, OSPF6_LSA_FLOODBACK);
     }
 
@@ -823,7 +823,7 @@ ospf6_receive_lsa (struct ospf6_neighbor *from,
     {
       /* log */
       if (is_debug)
-        zlog_debug ("Drop MaxAge LSA with direct acknowledgement.");
+	zlog_debug ("Drop MaxAge LSA with direct acknowledgement.");
 
       /* a) Acknowledge back to neighbor (Direct acknowledgement, 13.5) */
       ospf6_lsdb_add (ospf6_lsa_copy (new), from->lsack_list);
@@ -977,8 +977,8 @@ ospf6_receive_lsa (struct ospf6_neighbor *from,
               zlog_debug ("The LSA is in Seqnumber Wrapping");
               zlog_debug ("MaxAge & MaxSeqNum, discard");
             }
-          ospf6_lsa_delete (new);
-          return;
+	  ospf6_lsa_delete (new);
+	  return;
         }
 
       /* Otherwise, Send database copy of this LSA to this neighbor */
@@ -995,8 +995,8 @@ ospf6_receive_lsa (struct ospf6_neighbor *from,
           if (from->thread_send_lsupdate == NULL)
             from->thread_send_lsupdate =
               thread_add_event (master, ospf6_lsupdate_send_neighbor, from, 0);
-          ospf6_lsa_delete (new);
-          return;
+	  ospf6_lsa_delete (new);
+	  return;
         }
       return;
     }

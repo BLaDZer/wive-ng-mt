@@ -167,7 +167,7 @@ ospf6_zebra_if_address_update_add (int command, struct zclient *zclient,
   if (c->address->family == AF_INET6)
     {
       ospf6_interface_state_update (c->ifp);
-    ospf6_interface_connected_route_update (c->ifp);
+      ospf6_interface_connected_route_update (c->ifp);
     }
   return 0;
 }
@@ -191,7 +191,7 @@ ospf6_zebra_if_address_update_delete (int command, struct zclient *zclient,
 
   if (c->address->family == AF_INET6)
     {
-    ospf6_interface_connected_route_update (c->ifp);
+      ospf6_interface_connected_route_update (c->ifp);
       ospf6_interface_state_update (c->ifp);
     }
 
@@ -274,7 +274,7 @@ ospf6_zebra_read_ipv6 (int command, struct zclient *zclient,
 
 
 
-
+
 DEFUN (show_zebra,
        show_zebra_cmd,
        "show zebra",
@@ -602,7 +602,7 @@ ospf6_zebra_init (void)
 }
 
 /* Debug */
-
+
 DEFUN (debug_ospf6_zebra_sendrecv,
        debug_ospf6_zebra_sendrecv_cmd,
        "debug ospf6 zebra (send|recv)",

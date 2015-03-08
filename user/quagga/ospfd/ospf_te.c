@@ -1037,7 +1037,7 @@ ospf_mpls_te_lsa_refresh (struct ospf_lsa *lsa)
   if (IS_LSA_MAXAGE (lsa))
     {
       if (lp)
-      lp->flags &= ~LPFLG_LSA_ENGAGED;
+        lp->flags &= ~LPFLG_LSA_ENGAGED;
       ospf_opaque_lsa_flush_schedule (lsa);
       goto out;
     }

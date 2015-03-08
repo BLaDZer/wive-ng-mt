@@ -196,7 +196,7 @@ stream_resize (struct stream *s, size_t newsize)
   
   return s->size;
 }
-
+
 size_t
 stream_get_getp (struct stream *s)
 {
@@ -285,7 +285,7 @@ stream_forward_endp (struct stream *s, size_t size)
   
   s->endp += size;
 }
-
+
 /* Copy from stream to destination. */
 void
 stream_get (void *dst, struct stream *s, size_t size)
@@ -492,7 +492,7 @@ stream_get_ipv4 (struct stream *s)
 
   return l;
 }
-
+
 /* Copy to source to stream.
  *
  * XXX: This uses CHECK_SIZE and hence has funny semantics -> Size will wrap
@@ -731,7 +731,7 @@ stream_put_prefix (struct stream *s, struct prefix *p)
   
   return psize;
 }
-
+
 /* Read size from fd. */
 int
 stream_read (struct stream *s, int fd, size_t size)
@@ -747,32 +747,6 @@ stream_read (struct stream *s, int fd, size_t size)
     }
   
   nbytes = readn (fd, s->data + s->endp, size);
-
-  if (nbytes > 0)
-    s->endp += nbytes;
-  
-  return nbytes;
-}
-
-/* Read size from fd. */
-int
-stream_read_unblock (struct stream *s, int fd, size_t size)
-{
-  int nbytes;
-  int val;
-  
-  STREAM_VERIFY_SANE(s);
-  
-  if (STREAM_WRITEABLE (s) < size)
-    {
-      STREAM_BOUND_WARN (s, "put");
-      return 0;
-    }
-  
-  val = fcntl (fd, F_GETFL, 0);
-  fcntl (fd, F_SETFL, val|O_NONBLOCK);
-  nbytes = read (fd, s->data + s->endp, size);
-  fcntl (fd, F_SETFL, val);
 
   if (nbytes > 0)
     s->endp += nbytes;
@@ -937,7 +911,7 @@ stream_flush (struct stream *s, int fd)
   
   return nbytes;
 }
-
+
 /* Stream first in first out queue. */
 
 struct stream_fifo *

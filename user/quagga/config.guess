@@ -2,7 +2,7 @@
 # Attempt to guess a canonical system name.
 #   Copyright 1992-2014 Free Software Foundation, Inc.
 
-timestamp='2014-02-12'
+timestamp='2014-03-23'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -145,9 +145,9 @@ Linux|GNU|GNU/*)
 	LIBC=uclibc
 	#elif defined(__dietlibc__)
 	LIBC=dietlibc
-	# else
+	#else
 	LIBC=gnu
-	# endif
+	#endif
 	EOF
 	eval `$CC_FOR_BUILD -E $dummy.c 2>/dev/null | grep '^LIBC' | sed 's, ,,g'`
 	;;
@@ -826,7 +826,7 @@ EOF
     *:MINGW*:*)
 	echo ${UNAME_MACHINE}-pc-mingw32
 	exit ;;
-    i*:MSYS*:*)
+    *:MSYS*:*)
 	echo ${UNAME_MACHINE}-pc-msys
 	exit ;;
     i*:windows32*:*)
@@ -969,10 +969,10 @@ EOF
 	eval `$CC_FOR_BUILD -E $dummy.c 2>/dev/null | grep '^CPU'`
 	test x"${CPU}" != x && { echo "${CPU}-unknown-linux-${LIBC}"; exit; }
 	;;
-    or1k:Linux:*:*)
-	echo ${UNAME_MACHINE}-unknown-linux-${LIBC}
+    openrisc*:Linux:*:*)
+	echo or1k-unknown-linux-${LIBC}
 	exit ;;
-    or32:Linux:*:*)
+    or32:Linux:*:* | or1k*:Linux:*:*)
 	echo ${UNAME_MACHINE}-unknown-linux-${LIBC}
 	exit ;;
     padre:Linux:*:*)
@@ -1267,20 +1267,20 @@ EOF
 	exit ;;
     *:Darwin:*:*)
 	UNAME_PROCESSOR=`uname -p` || UNAME_PROCESSOR=unknown
-		eval $set_cc_for_build
+	eval $set_cc_for_build
 	if test "$UNAME_PROCESSOR" = unknown ; then
 	    UNAME_PROCESSOR=powerpc
 	fi
 	if test `echo "$UNAME_RELEASE" | sed -e 's/\..*//'` -le 10 ; then
-		if [ "$CC_FOR_BUILD" != 'no_compiler_found' ]; then
-		  if (echo '#ifdef __LP64__'; echo IS_64BIT_ARCH; echo '#endif') | \
-		      (CCOPTS= $CC_FOR_BUILD -E - 2>/dev/null) | \
-		      grep IS_64BIT_ARCH >/dev/null
-		  then
+	    if [ "$CC_FOR_BUILD" != 'no_compiler_found' ]; then
+		if (echo '#ifdef __LP64__'; echo IS_64BIT_ARCH; echo '#endif') | \
+		    (CCOPTS= $CC_FOR_BUILD -E - 2>/dev/null) | \
+		    grep IS_64BIT_ARCH >/dev/null
+		then
 		    case $UNAME_PROCESSOR in
 			i386) UNAME_PROCESSOR=x86_64 ;;
 			powerpc) UNAME_PROCESSOR=powerpc64 ;;
-	esac
+		    esac
 		fi
 	    fi
 	elif test "$UNAME_PROCESSOR" = i386 ; then

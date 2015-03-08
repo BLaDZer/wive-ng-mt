@@ -279,7 +279,7 @@ void
 zebra_redistribute_default_delete (int command, struct zserv *client,
 				   int length)
 {
-  client->redist_default = 0;
+  client->redist_default = 0;;
 }     
 
 /* Interface up information. */

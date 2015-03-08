@@ -163,6 +163,8 @@ ospf6_delete (struct ospf6 *o)
 
   for (ALL_LIST_ELEMENTS (o->area_list, node, nnode, oa))
     ospf6_area_delete (oa);
+
+
   list_delete (o->area_list);
 
   ospf6_lsdb_delete (o->lsdb);
@@ -178,6 +180,7 @@ ospf6_delete (struct ospf6 *o)
 }
 
 static void
+__attribute__((unused))
 ospf6_enable (struct ospf6 *o)
 {
   struct listnode *node, *nnode;
@@ -217,7 +220,7 @@ ospf6_disable (struct ospf6 *o)
     }
 }
 
-int
+static int
 ospf6_maxage_remover (struct thread *thread)
 {
   struct ospf6 *o = (struct ospf6 *) THREAD_ARG (thread);
@@ -237,7 +240,7 @@ ospf6_maxage_remover (struct thread *thread)
             {
               if (on->state != OSPF6_NEIGHBOR_EXCHANGE &&
                   on->state != OSPF6_NEIGHBOR_LOADING)
-                continue;
+		  continue;
 
 	      ospf6_maxage_remove (o);
               return 0;
@@ -260,7 +263,7 @@ ospf6_maxage_remover (struct thread *thread)
 	    reschedule = 1;
 	}
     }
-      
+
   if (ospf6_lsdb_maxage_remover (o->lsdb))
     {
       reschedule = 1;
@@ -469,13 +472,10 @@ DEFUN (no_ospf6_interface_area,
        "OSPF6 area ID in IPv4 address notation\n"
        )
 {
-  struct ospf6 *o;
   struct ospf6_interface *oi;
   struct ospf6_area *oa;
   struct interface *ifp;
   u_int32_t area_id;
-
-  o = (struct ospf6 *) vty->index;
 
   ifp = if_lookup_by_name (argv[0]);
   if (ifp == NULL)

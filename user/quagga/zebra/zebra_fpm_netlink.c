@@ -286,18 +286,18 @@ netlink_route_info_fill (netlink_route_info_t *ri, int cmd,
     }
 
   for (ALL_NEXTHOPS_RO(rib->nexthop, nexthop, tnexthop, recursing))
-            {
+    {
       if (MULTIPATH_NUM != 0 && ri->num_nhs >= MULTIPATH_NUM)
-              break;
+        break;
 
       if (CHECK_FLAG(nexthop->flags, NEXTHOP_FLAG_RECURSIVE))
         continue;
 
-          if ((cmd == RTM_NEWROUTE
-               && CHECK_FLAG (nexthop->flags, NEXTHOP_FLAG_ACTIVE))
-              || (cmd == RTM_DELROUTE
-                  && CHECK_FLAG (nexthop->flags, NEXTHOP_FLAG_FIB)))
-            {
+      if ((cmd == RTM_NEWROUTE
+           && CHECK_FLAG (nexthop->flags, NEXTHOP_FLAG_ACTIVE))
+          || (cmd == RTM_DELROUTE
+              && CHECK_FLAG (nexthop->flags, NEXTHOP_FLAG_FIB)))
+        {
           netlink_route_info_add_nh (ri, nexthop, recursing);
         }
     }

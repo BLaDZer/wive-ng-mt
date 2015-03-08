@@ -15,14 +15,15 @@
 #define ZEBRA_ROUTE_OSPF6                7
 #define ZEBRA_ROUTE_ISIS                 8
 #define ZEBRA_ROUTE_BGP                  9
-#define ZEBRA_ROUTE_HSLS                 10
-#define ZEBRA_ROUTE_OLSR                 11
-#define ZEBRA_ROUTE_BABEL                12
-#define ZEBRA_ROUTE_MAX                  13
+#define ZEBRA_ROUTE_PIM                  10
+#define ZEBRA_ROUTE_HSLS                 11
+#define ZEBRA_ROUTE_OLSR                 12
+#define ZEBRA_ROUTE_BABEL                13
+#define ZEBRA_ROUTE_MAX                  14
 
 #define SHOW_ROUTE_V4_HEADER \
   "Codes: K - kernel route, C - connected, S - static, R - RIP,%s" \
-  "       O - OSPF, I - IS-IS, B - BGP, A - Babel,%s" \
+  "       O - OSPF, I - IS-IS, B - BGP, P - PIM, A - Babel,%s" \
   "       > - selected route, * - FIB route%s%s", \
   VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE
 #define SHOW_ROUTE_V6_HEADER \
@@ -33,7 +34,7 @@
 
 /* babeld */
 #define QUAGGA_REDIST_STR_BABELD \
-  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|bgp)"
+  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|bgp|pim)"
 #define QUAGGA_REDIST_HELP_STR_BABELD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -43,9 +44,10 @@
   "Open Shortest Path First (OSPFv2)\n" \
   "Open Shortest Path First (IPv6) (OSPFv3)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
-  "Border Gateway Protocol (BGP)\n"
+  "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n"
 #define QUAGGA_IP_REDIST_STR_BABELD \
-  "(kernel|connected|static|rip|ospf|isis|bgp)"
+  "(kernel|connected|static|rip|ospf|isis|bgp|pim)"
 #define QUAGGA_IP_REDIST_HELP_STR_BABELD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -53,7 +55,8 @@
   "Routing Information Protocol (RIP)\n" \
   "Open Shortest Path First (OSPFv2)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
-  "Border Gateway Protocol (BGP)\n"
+  "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n"
 #define QUAGGA_IP6_REDIST_STR_BABELD \
   "(kernel|connected|static|ripng|ospf6|isis|bgp)"
 #define QUAGGA_IP6_REDIST_HELP_STR_BABELD \
@@ -67,7 +70,7 @@
 
 /* bgpd */
 #define QUAGGA_REDIST_STR_BGPD \
-  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|babel)"
+  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|pim|babel)"
 #define QUAGGA_REDIST_HELP_STR_BGPD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -77,9 +80,10 @@
   "Open Shortest Path First (OSPFv2)\n" \
   "Open Shortest Path First (IPv6) (OSPFv3)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP_REDIST_STR_BGPD \
-  "(kernel|connected|static|rip|ospf|isis|babel)"
+  "(kernel|connected|static|rip|ospf|isis|pim|babel)"
 #define QUAGGA_IP_REDIST_HELP_STR_BGPD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -87,6 +91,7 @@
   "Routing Information Protocol (RIP)\n" \
   "Open Shortest Path First (OSPFv2)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP6_REDIST_STR_BGPD \
   "(kernel|connected|static|ripng|ospf6|isis|babel)"
@@ -101,7 +106,7 @@
 
 /* isisd */
 #define QUAGGA_REDIST_STR_ISISD \
-  "(kernel|connected|static|rip|ripng|ospf|ospf6|bgp|babel)"
+  "(kernel|connected|static|rip|ripng|ospf|ospf6|bgp|pim|babel)"
 #define QUAGGA_REDIST_HELP_STR_ISISD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -111,9 +116,10 @@
   "Open Shortest Path First (OSPFv2)\n" \
   "Open Shortest Path First (IPv6) (OSPFv3)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP_REDIST_STR_ISISD \
-  "(kernel|connected|static|rip|ospf|bgp|babel)"
+  "(kernel|connected|static|rip|ospf|bgp|pim|babel)"
 #define QUAGGA_IP_REDIST_HELP_STR_ISISD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -121,6 +127,7 @@
   "Routing Information Protocol (RIP)\n" \
   "Open Shortest Path First (OSPFv2)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP6_REDIST_STR_ISISD \
   "(kernel|connected|static|ripng|ospf6|bgp|babel)"
@@ -147,7 +154,7 @@
 
 /* ospfd */
 #define QUAGGA_REDIST_STR_OSPFD \
-  "(kernel|connected|static|rip|isis|bgp|babel)"
+  "(kernel|connected|static|rip|isis|bgp|pim|babel)"
 #define QUAGGA_REDIST_HELP_STR_OSPFD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -155,11 +162,25 @@
   "Routing Information Protocol (RIP)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
+  "Babel routing protocol (Babel)\n"
+
+/* pimd */
+#define QUAGGA_REDIST_STR_PIMD \
+  "(kernel|connected|static|rip|ospf|isis|bgp|babel)"
+#define QUAGGA_REDIST_HELP_STR_PIMD \
+  "Kernel routes (not installed via the zebra RIB)\n" \
+  "Connected routes (directly attached subnet or host)\n" \
+  "Statically configured routes\n" \
+  "Routing Information Protocol (RIP)\n" \
+  "Open Shortest Path First (OSPFv2)\n" \
+  "Intermediate System to Intermediate System (IS-IS)\n" \
+  "Border Gateway Protocol (BGP)\n" \
   "Babel routing protocol (Babel)\n"
 
 /* ripd */
 #define QUAGGA_REDIST_STR_RIPD \
-  "(kernel|connected|static|ospf|isis|bgp|babel)"
+  "(kernel|connected|static|ospf|isis|bgp|pim|babel)"
 #define QUAGGA_REDIST_HELP_STR_RIPD \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -167,6 +188,7 @@
   "Open Shortest Path First (OSPFv2)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 
 /* ripngd */
@@ -183,7 +205,7 @@
 
 /* zebra */
 #define QUAGGA_REDIST_STR_ZEBRA \
-  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|bgp|babel)"
+  "(kernel|connected|static|rip|ripng|ospf|ospf6|isis|bgp|pim|babel)"
 #define QUAGGA_REDIST_HELP_STR_ZEBRA \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -194,9 +216,10 @@
   "Open Shortest Path First (IPv6) (OSPFv3)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP_REDIST_STR_ZEBRA \
-  "(kernel|connected|static|rip|ospf|isis|bgp|babel)"
+  "(kernel|connected|static|rip|ospf|isis|bgp|pim|babel)"
 #define QUAGGA_IP_REDIST_HELP_STR_ZEBRA \
   "Kernel routes (not installed via the zebra RIB)\n" \
   "Connected routes (directly attached subnet or host)\n" \
@@ -205,6 +228,7 @@
   "Open Shortest Path First (OSPFv2)\n" \
   "Intermediate System to Intermediate System (IS-IS)\n" \
   "Border Gateway Protocol (BGP)\n" \
+  "Protocol Independent Multicast (PIM)\n" \
   "Babel routing protocol (Babel)\n"
 #define QUAGGA_IP6_REDIST_STR_ZEBRA \
   "(kernel|connected|static|ripng|ospf6|isis|bgp|babel)"
@@ -240,6 +264,7 @@ static const struct zebra_desc_table route_types[] = {
   DESC_ENTRY	(ZEBRA_ROUTE_OSPF6,	 "ospf6",	'O' ),
   DESC_ENTRY	(ZEBRA_ROUTE_ISIS,	 "isis",	'I' ),
   DESC_ENTRY	(ZEBRA_ROUTE_BGP,	 "bgp",	'B' ),
+  DESC_ENTRY	(ZEBRA_ROUTE_PIM,	 "pim",	'P' ),
   DESC_ENTRY	(ZEBRA_ROUTE_HSLS,	 "hsls",	'H' ),
   DESC_ENTRY	(ZEBRA_ROUTE_OLSR,	 "olsr",	'o' ),
   DESC_ENTRY	(ZEBRA_ROUTE_BABEL,	 "babel",	'A' ),

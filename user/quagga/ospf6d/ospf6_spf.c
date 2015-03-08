@@ -40,6 +40,7 @@
 #include "ospf6_intra.h"
 #include "ospf6_interface.h"
 #include "ospf6d.h"
+#include "ospf6_abr.h"
 
 unsigned char conf_debug_ospf6_spf = 0;
 
@@ -391,7 +392,7 @@ static const char *ospf6_spf_reason_str[] =
 
 void ospf6_spf_reason_string (unsigned int reason, char *buf, int size)
 {
-  int bit;
+  size_t bit;
   int len = 0;
 
   if (!buf)
@@ -560,10 +561,10 @@ ospf6_spf_calculation_thread (struct thread *t)
       if (oa == ospf6->backbone)
 	continue;
 
-  if (IS_OSPF6_DEBUG_SPF (PROCESS))
-    zlog_debug ("SPF calculation for Area %s", oa->name);
-  if (IS_OSPF6_DEBUG_SPF (DATABASE))
-    ospf6_spf_log_database (oa);
+      if (IS_OSPF6_DEBUG_SPF (PROCESS))
+	zlog_debug ("SPF calculation for Area %s", oa->name);
+      if (IS_OSPF6_DEBUG_SPF (DATABASE))
+	ospf6_spf_log_database (oa);
 
       ospf6_spf_calculation (ospf6->router_id, oa->spf_table, oa);
       ospf6_intra_route_calculation (oa);
@@ -622,7 +623,7 @@ ospf6_spf_schedule (struct ospf6 *ospf6, unsigned int reason)
   ospf6_set_spf_reason(ospf6, reason);
 
   if (IS_OSPF6_DEBUG_SPF(PROCESS) || IS_OSPF6_DEBUG_SPF (TIME))
-{
+    {
       char rbuf[32];
       ospf6_spf_reason_string(reason, rbuf, sizeof(rbuf));
       zlog_debug ("SPF: calculation timer scheduled (reason %s)", rbuf);

@@ -91,7 +91,7 @@ babel_ipv4_route_delete (struct zapi_ipv4 *api, struct prefix_ipv4 *prefix,
 /* Add redistributed route to Babel table. */
 int
 babel_ipv6_route_add (struct zapi_ipv6 *api, struct prefix_ipv6 *prefix,
-                          unsigned int ifindex, struct in6_addr *nexthop)
+                      unsigned int ifindex, struct in6_addr *nexthop)
 {
     unsigned char uchar_prefix[16];
 

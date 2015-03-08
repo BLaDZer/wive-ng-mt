@@ -36,7 +36,7 @@
 #include "zebra/interface.h"
 #include "zebra/connected.h"
 extern struct zebra_t zebrad;
-
+
 /* communicate the withdrawal of a connected address */
 static void
 connected_withdraw (struct connected *ifc)
@@ -50,8 +50,8 @@ connected_withdraw (struct connected *ifc)
       zebra_interface_address_delete_update (ifc->ifp, ifc);
 
       if (ifc->address->family == AF_INET)
-      if_subnet_delete (ifc->ifp, ifc);
-      
+        if_subnet_delete (ifc->ifp, ifc);
+
       if (ifc->address->family == AF_INET)
         connected_down_ipv4 (ifc->ifp, ifc);
 #ifdef HAVE_IPV6
@@ -81,22 +81,22 @@ connected_announce (struct interface *ifp, struct connected *ifc)
   listnode_add (ifp->connected, ifc);
 
   /* Update interface address information to protocol daemon. */
+  if (ifc->address->family == AF_INET)
+    if_subnet_add (ifp, ifc);
+
+  zebra_interface_address_add_update (ifp, ifc);
+
+  if (if_is_operative(ifp))
+    {
       if (ifc->address->family == AF_INET)
-        if_subnet_add (ifp, ifc);
-
-      zebra_interface_address_add_update (ifp, ifc);
-
-      if (if_is_operative(ifp))
-        {
-          if (ifc->address->family == AF_INET)
-	    connected_up_ipv4 (ifp, ifc);
+        connected_up_ipv4 (ifp, ifc);
 #ifdef HAVE_IPV6
-          else
-            connected_up_ipv6 (ifp, ifc);
+      else
+        connected_up_ipv6 (ifp, ifc);
 #endif
-        }
     }
-
+}
+
 /* If same interface address is already exist... */
 struct connected *
 connected_check (struct interface *ifp, struct prefix *p)
@@ -131,7 +131,7 @@ connected_same (struct connected *ifc1, struct connected *ifc2)
 
   if (ifc1->flags != ifc2->flags)
     return 0;
-  
+
   if (ifc1->conf != ifc2->conf)
     return 0;
   
@@ -160,7 +160,7 @@ connected_update(struct interface *ifp, struct connected *ifc)
           connected_free (ifc);
           return;
         }
-      
+
       /* Clear the configured flag on the old ifc, so it will be freed by
        * connected withdraw. */
       UNSET_FLAG(current->conf, ZEBRA_IFC_CONFIGURED);
@@ -281,7 +281,7 @@ connected_add_ipv4 (struct interface *ifp, int flags, struct in_addr *addr,
   /* For all that I know an IPv4 address is always ready when we receive
    * the notification. So it should be safe to set the REAL flag here. */
   SET_FLAG(ifc->conf, ZEBRA_IFC_REAL);
-  
+
   connected_update(ifp, ifc);
 }
 
@@ -347,7 +347,7 @@ connected_up_ipv6 (struct interface *ifp, struct connected *ifc)
   /* Apply mask to the network. */
   apply_mask_ipv6 (&p);
 
-#if ! defined (MUSICA) && ! defined (LINUX)
+#ifndef LINUX
   /* XXX: It is already done by rib_bogus_ipv6 within rib_add_ipv6 */
   if (IN6_IS_ADDR_UNSPECIFIED (&p.prefix))
     return;
@@ -409,7 +409,7 @@ connected_add_ipv6 (struct interface *ifp, int flags, struct in6_addr *addr,
   /* Label of this address. */
   if (label)
     ifc->label = XSTRDUP (MTYPE_CONNECTED_LABEL, label);
-  
+
   /* On Linux, we only get here when DAD is complete, therefore we can set
    * ZEBRA_IFC_REAL.
    *
