@@ -674,10 +674,11 @@
 <b>2.6.x</b><br>
 1) miniupnpd: up to 1.9.20150307 version.<br>
 2) quagga: up to 0.99.24.1 version.<br>
-3) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-4) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-5) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-6) kernel: inet: sanitize inet{,6} protocol demux.<br>
+3) kernel: inet: sanitize inet{,6} protocol demux.<br>
+4) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+5) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+6) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+7) kernel: net: make skb->skb_iif always track skb->dev.<br>
 <br>
 <br>
 <b>TODO:</b><br>
