@@ -20,7 +20,7 @@
  *		Alan Cox	:	Cleaned up, and sorted types.
  *		Pedro Roque	:	inet6 protocols
  */
- 
+
 #ifndef _PROTOCOL_H
 #define _PROTOCOL_H
 
@@ -29,7 +29,11 @@
 #include <linux/ipv6.h>
 #endif
 
-#define MAX_INET_PROTOS	64		/* Must be a power of 2		*/
+/* This is one larger than the largest protocol value that can be
+ * found in an ipv4 or ipv6 header.  Since in both cases the protocol
+ * value is presented in a __u8, this is defined to be 256.
+ */
+#define MAX_INET_PROTOS		256
 
 
 /* This is used to register protocols. */

@@ -677,6 +677,7 @@
 3) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
 4) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
 5) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+6) kernel: inet: sanitize inet{,6} protocol demux.<br>
 <br>
 <br>
 <b>TODO:</b><br>
