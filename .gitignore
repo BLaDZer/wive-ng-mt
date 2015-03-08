@@ -310,6 +310,7 @@ fulldump
 /user/quagga/doc/Makefile.in
 /user/quagga/solaris/Makefile
 /user/quagga/tests/Makefile
+/user/quagga/tests/test-commands-defun.c
 /user/quagga/tests/bgpd.tests/Makefile
 /user/quagga/tests/libzebra.tests/Makefile
 /user/quagga/autom4te.cache
