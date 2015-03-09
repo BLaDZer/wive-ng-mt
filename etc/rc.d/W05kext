@@ -136,7 +136,9 @@ offload() {
     else
 	$LOG "NAT Offload mode not supported in this device mode (bridge/apclibridge/etc), hw_nat and all fastpaths disabled."
 	if [ "$CONFIG_BCM_NAT" = "y" ]; then
-	    sysctl -wq net.netfilter.nf_conntrack_fastnat=0
+	    if [ "$CONFIG_BCM_NAT_FASTPATH" = "y" ]; then
+		sysctl -wq net.netfilter.nf_conntrack_fastnat=0
+	    fi
 	    sysctl -wq net.netfilter.nf_conntrack_fastroute=0
 	fi
 	if [ "$CONFIG_IP_NF_IPTABLES_SPEEDUP" = "y" ]; then
