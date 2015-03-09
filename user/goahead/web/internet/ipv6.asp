@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("internet");
+
 var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
 
@@ -108,9 +109,8 @@ function initValue()
 	}
 
 	document.ipv6_cfg.IPv6Dhcpc.checked = (dhcp6c == "1");
-	if (dhcp6c == "1") {
+	if (dhcp6c == "1")
 	    document.getElementById("v6StaticTable").style.visibility = "hidden";
-	}
 
 	document.ipv6_cfg.IPv6AllowForward.checked = (ipv6_allow_forward == "1");
 }
@@ -211,8 +211,8 @@ function CheckValue()
 				document.ipv6_cfg.ipv6_lan_ipaddr.select();
 				return false;
 			}
-			if (document.ipv6_cfg.ipv6_lan_prefix_len.value == "" || 
-			    document.ipv6_cfg.ipv6_lan_prefix_len.value > 128 || 
+			if (document.ipv6_cfg.ipv6_lan_prefix_len.value == "" ||
+			    document.ipv6_cfg.ipv6_lan_prefix_len.value > 128 ||
 			    document.ipv6_cfg.ipv6_lan_prefix_len.value < 0) {
 				alert("invalid prefix length!");
 				document.ipv6_cfg.ipv6_lan_prefix_len.focus();
@@ -228,7 +228,7 @@ function CheckValue()
 				return false;
 			}
 			if (document.ipv6_cfg.ipv6_wan_prefix_len.value == "" ||
-			    document.ipv6_cfg.ipv6_wan_prefix_len.value > 128 || 
+			    document.ipv6_cfg.ipv6_wan_prefix_len.value > 128 ||
 			    document.ipv6_cfg.ipv6_wan_prefix_len.value < 0) {
 				alert("invalid prefix length!");
 				document.ipv6_cfg.ipv6_wan_prefix_len.focus();
@@ -256,7 +256,7 @@ function CheckValue()
 			document.ipv6_cfg.ipv6_6rd_prefix.select();
 			return false;
 		}
-		if (document.ipv6_cfg.ipv6_6rd_prefix_len.value > 32 || 
+		if (document.ipv6_cfg.ipv6_6rd_prefix_len.value > 32 ||
 		    document.ipv6_cfg.ipv6_6rd_prefix_len.value < 0) {
 			alert("invalid prefix length!");
 			document.ipv6_cfg.ipv6_6rd_prefix_len.focus();
@@ -309,7 +309,7 @@ function CheckValue()
   </td>
 </tr>
 <tr id="dhp6cRowDisplay">
-  <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp</td>
+  <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
   <td><input name="IPv6Dhcpc" type="checkbox"></td>
 </tr>
 <tr id="IPv6AllowForwardRowDisplay">
@@ -317,7 +317,7 @@ function CheckValue()
   <td><input name="IPv6AllowForward" type="checkbox"></td>
 </tr>
 </table>
-<!-- STATIC IP --!>
+<!-- STATIC/DynaMIC IP --!>
 <table width="95%" id="v6StaticTable" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
 <tr>
   <td class="title" colspan="2" id="v6StaticIPSetup">IPv6 Static IP Setup</td>
@@ -371,4 +371,3 @@ function CheckValue()
 </td></tr></table>
 </body>
 </html>
-

@@ -158,18 +158,21 @@ getWanIfName() {
     if [ "$vpn_if" = "" ]; then
 	vpn_if="$vpn_def_if"
     fi
-    # export for goahead/dhcpv6c
-    echo -n "$wan_if" > /tmp/wan_if_name
 }
 
-getTunIfName() {
+getSixWanIfName() {
     if [ "$IPv6OpMode" = "1" ]; then
-	six_wan_if="$real_wan_if"
+	# now support dhcp6c only over IPOE
+	six_wan_if="$wan_if"
     elif [ "$IPv6OpMode" = "2" ]; then
+	# 6rd tunif name
 	six_wan_if="6rd"
     elif [ "$IPv6OpMode" = "3" ]; then
+	# 6to4 tunif name
 	six_wan_if="sit0"
     fi
+    # export for dhcp6c
+    echo -n "$six_wan_if" > /tmp/six_wan_if_name
 }
 
 getWanIpaddr() {
@@ -329,7 +332,7 @@ getSecWlanIfName
 getLanIfName
 getVpnIfName
 getWanIfName
-getTunIfName
+getSixWanIfName
 getWanIpaddr
 getWanReady
 

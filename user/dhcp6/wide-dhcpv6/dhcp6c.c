@@ -273,7 +273,7 @@ client6_init()
 	FILE *fp;
 
 	/* try read fron file exported from init.d */
-	fp = fopen("/tmp/wan_if_name", "r");
+	fp = fopen("/tmp/six_wan_if_name", "r");
 	if (fp) {
 	    /* get first wan_if in file */
 	    while (fgets(wan_if, sizeof(wan_if), fp) != NULL) {

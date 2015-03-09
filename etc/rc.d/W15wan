@@ -53,11 +53,11 @@ dhcp6c_opts() {
 
     # remove pregenerated duid
     rm -f /etc/dhcp6c_duid
-    
-    ID=`ip -o link show dev $real_wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
+
+    ID=`ip -o link show dev $six_wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
     ID=`printf "%d" "$ID"`
     printf "
-    interface $real_wan_if {
+    interface $six_wan_if {
 	send ia-pd $ID;
 	send ia-na $ID;
 	send rapid-commit;
@@ -131,15 +131,9 @@ start() {
 	$LOG "Start DHCP client."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
-	    $LOG "Enable ipv6 and autoconfigure on $real_wan_if"
-	    sysctl -wq net.ipv6.conf.$real_wan_if.disable_ipv6=0
-	    sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=1
-	    sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra=1
-	    sysctl -wq net.ipv6.conf.$real_wan_if.accept_ra_pinfo=1
-	    sysctl -wq net.ipv6.conf.$real_wan_if.autoconf=1
-	    $LOG "Wait v4 configure (15sec) and start DHCPv6 client."
+	    $LOG "Wait v4 configure (10sec) and start DHCPv6 client."
 	    dhcp6c_opts
-	    (sleep 15 && dhcp6c $real_wan_if > /dev/null 2>&1) &
+	    (sleep 10 && dhcp6c $six_wan_if > /dev/null 2>&1) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."
@@ -168,6 +162,17 @@ wan_if_preconf() {
 	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=0
 	else
 	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
+	fi
+	# ipv6 mode preconfig for wan
+	if [ "$IPv6OpMode" = "1" ]; then
+	    sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
+	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
+	    # allow autoconfigure by RA
+	    if [ "$IPv6Dhcpc" = "1" ]; then
+		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=2
+		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra_pinfo=1
+		sysctl -wq net.ipv6.conf.$six_wan_if.autoconf=1
+	    fi
 	fi
     fi
 }
