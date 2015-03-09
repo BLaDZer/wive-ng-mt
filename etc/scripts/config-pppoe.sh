@@ -35,10 +35,11 @@ load_modules() {
     fi
 }
 
-echo "==================START-PPPOE-CLIENT======================="
 get_param
 check_param
 load_modules
+
+$LOG "==================START-PPPOE-CLIENT======================="
 
 if [ "$vpnInterface" = "WAN" ]; then
     vpnInterface="$wan_if"

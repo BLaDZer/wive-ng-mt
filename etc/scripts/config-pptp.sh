@@ -101,7 +101,6 @@ load_modules() {
     fi
 }
 
-echo "==================START-PPTP-CLIENT======================="
     get_param
     check_param
     get_vpn_ip
@@ -126,6 +125,8 @@ echo "==================START-PPTP-CLIENT======================="
 
     # load ppp* modules
     load_modules
+
+    $LOG "==================START-PPTP-CLIENT======================="
 
     if [ "$vpnPeerDNS" = "on" ]; then
 	vpnPeerDNS=usepeerdns

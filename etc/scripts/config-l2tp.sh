@@ -104,7 +104,6 @@ load_modules() {
     fi
 }
 
-echo "==================START-L2TP-CLIENT======================="
     get_param
     check_param
     get_vpn_ip
@@ -129,6 +128,8 @@ echo "==================START-L2TP-CLIENT======================="
 
     # load ppp* modules
     load_modules
+
+    $LOG "==================START-L2TP-CLIENT======================="
 
     if [ "$vpnPeerDNS" = "on" ]; then
 	vpnPeerDNS=usepeerdns
