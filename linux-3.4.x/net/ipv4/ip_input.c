@@ -455,7 +455,12 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 	}
 
 #if defined(CONFIG_BCM_NAT)
-	if (!nf_conntrack_fastnat && !nf_conntrack_fastroute)
+	if (
+#if defined(CONFIG_BCM_NAT_FASTPATH)
+	    !nf_conntrack_fastnat &&
+#endif
+	    (!skb->cb[NF_FAST_ROUTE])
+	)
 #endif
 	/* Remove any debris in the socket control block */
 	memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));

@@ -676,11 +676,12 @@
 2) quagga: up to 0.99.24.1 version.<br>
 3) init.d: ipv6: fix IPOE v6 mode with tunneled WAN for v4.<br>
 4) init.d: irqbalance: tune modes and enable auto by defaults.<br>
-5) kernel: inet: sanitize inet{,6} protocol demux.<br>
-6) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-7) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-8) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-9) kernel: net: make skb->skb_iif always track skb->dev.<br>
+5) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
+6) kernel: inet: sanitize inet{,6} protocol demux.<br>
+7) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+8) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+9) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+10) kernel: net: make skb->skb_iif always track skb->dev.<br>
 <br>
 <br>
 <b>TODO:</b><br>

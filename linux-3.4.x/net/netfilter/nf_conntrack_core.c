@@ -85,7 +85,9 @@ int cone_ppp_ifindex __read_mostly = -1;
 #endif
 
 #if defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 unsigned int nf_conntrack_fastnat __read_mostly;
+#endif
 unsigned int nf_conntrack_fastroute __read_mostly;
 #endif
 
@@ -1153,8 +1155,10 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 #if defined(CONFIG_BCM_NAT)
 	int pure_route = 0;
 	extern int bcm_do_fastroute(struct nf_conn *ct,	struct sk_buff *skb, unsigned int hooknum, int set_reply);
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 	extern int bcm_do_fastnat(struct nf_conn *ct, enum ip_conntrack_info ctinfo, struct sk_buff *skb,
 				    struct nf_conntrack_l3proto *l3proto, struct nf_conntrack_l4proto *l4proto);
+#endif
 #endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	struct nf_conn_help *help;
@@ -1184,7 +1188,12 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	}
 
 #if defined(CONFIG_BCM_NAT)
-	if ((nf_conntrack_fastnat || nf_conntrack_fastroute) && pf == PF_INET)
+	if ((nf_conntrack_fastroute
+#if defined(CONFIG_BCM_NAT_FASTPATH)
+		|| nf_conntrack_fastnat
+#endif
+	    ) && pf == PF_INET)
+
 	    /* gather fragments before fastpath/fastnat, ipv4 only. */
 	    if (ip_is_fragment(ip_hdr(skb)))
 		    if(nf_ct_ipv4_gather_frags(skb, hooknum == NF_INET_PRE_ROUTING ? IP_DEFRAG_CONNTRACK_IN : IP_DEFRAG_CONNTRACK_OUT))
@@ -1279,10 +1288,10 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	    }
 	}
 #endif
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT_FASTPATH)
 	/* this code section may be used for skip some types traffic,
 	    only if hardware nat support enabled or software fastnat support enabled */
-#ifdef CONFIG_BCM_NAT
+#ifdef CONFIG_BCM_NAT_FASTPATH
 	if (!pure_route && (ra_sw_nat_hook_tx != NULL || nf_conntrack_fastnat)) {
 #else
 	if (ra_sw_nat_hook_tx != NULL) {
@@ -1322,7 +1331,7 @@ skip_alg_of:
 		    FOE_ALG_MARK(skb);
 	}
 #endif
-#if defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 	/* skip several proto only from sw_nat */
 	if (nf_conntrack_fastnat) {
 	    if (skip_offload == SKIP_ALL || skip_offload == SKIP_SWO) {											/* skip SW */
@@ -1339,7 +1348,7 @@ skip_alg_of:
 
 #endif
 	if (set_reply && !test_and_set_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
-#if defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 	    if (nf_conntrack_fastnat && pf == PF_INET && hooknum == NF_INET_LOCAL_OUT)
 		ct->fastnat |= NF_FAST_NAT_DENY;
 #endif
@@ -1789,7 +1798,9 @@ static int nf_conntrack_init_init_net(void)
 	int ret, cpu;
 
 #if defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 	nf_conntrack_fastnat = 0;
+#endif
 	nf_conntrack_fastroute = 0;
 #endif
 #if defined(CONFIG_NAT_CONE)

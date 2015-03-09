@@ -334,7 +334,7 @@ nf_nat_setup_info(struct nf_conn *ct,
 EXPORT_SYMBOL(nf_nat_setup_info);
 
 /* Returns true if succeeded. */
-#if defined(CONFIG_BCM_NAT)
+#if defined(CONFIG_BCM_NAT_FASTPATH)
 inline
 #else
 static

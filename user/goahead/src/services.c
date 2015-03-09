@@ -327,7 +327,7 @@ static int getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_BCM_NAT
+#ifdef CONFIG_BCM_NAT_FASTPATH
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
