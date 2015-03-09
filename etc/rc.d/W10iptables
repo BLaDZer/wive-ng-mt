@@ -430,7 +430,7 @@ startv6() {
 
 	# allow dhcpv6 servers packets client/server
 	ip6tables -A INPUT -i $lan_if -p udp -m udp --dport 547 -j ACCEPT
-	ip6tables -A INPUT -i $real_wan_if -p udp -m udp --dport 546 -j ACCEPT
+	ip6tables -A INPUT -i $six_wan_if -p udp -m udp --dport 546 -j ACCEPT
 
 	# allow multicast for all
 	ip6tables -A INPUT -d ff00::/8 -j ACCEPT
