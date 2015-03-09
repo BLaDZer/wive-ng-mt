@@ -12,10 +12,7 @@ LOG="logger -t irqbalance"
 
 start() {
     get_param
-    if [ "$IRQBalance" = "auto" ]; then
-	$LOG "Start irqbalance auto mode"
-	irqbalance
-    elif [ "$IRQBalance" = "router" ]; then
+    if [ "$IRQBalance" = "auto" ] || [ "$IRQBalance" = "router" ]; then
 	$LOG "Start irqbalance routing/wifi optimize mode"
 	if [ $cpunum == "4" ]; then
 	    echo 2 > /proc/irq/3/smp_affinity  #GMAC
@@ -117,6 +114,10 @@ start() {
 		echo 2 > $dev_ppp/queues/tx-0/xps_cpus
 	    done
 	fi
+    fi
+    if [ "$IRQBalance" = "auto" ]; then
+	$LOG "Start irqbalance auto mode"
+	irqbalance
     fi
 }
 
