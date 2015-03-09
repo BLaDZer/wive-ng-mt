@@ -33,7 +33,7 @@
  * found in an ipv4 or ipv6 header.  Since in both cases the protocol
  * value is presented in a __u8, this is defined to be 256.
  */
-#define MAX_INET_PROTOS		256
+#define MAX_INET_PROTOS		64
 
 
 /* This is used to register protocols. */
