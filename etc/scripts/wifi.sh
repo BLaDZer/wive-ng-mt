@@ -12,7 +12,8 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ######################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoChannelSelect AutoChannelSelectINIC \
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC \
+	Channel ChannelINIC AutoChannelSelect AutoChannelSelectINIC \
 	AutoConnect GreenAP HT_OpMode DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh \
 	AP2040Rescan HT_BSSCoexistence McastPhyMode McastMcs M2UEnabled`
 ########################################STAMODE param#################################################
@@ -89,6 +90,12 @@ if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     iwpriv "$1" set SiteSurvey=1
     # second select channel
     iwpriv "$1" set AutoChannelSel=1
+else
+    if [ "$2" = "5GHZ" ]
+	iwpriv "$1" set Channel="$ChannelINIC"
+    else
+	iwpriv "$1" set Channel="$Channel"
+    fi
 fi
 ###########################################ALWAYS END#################################################
 # rescan coexist mode
