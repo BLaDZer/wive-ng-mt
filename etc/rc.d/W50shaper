@@ -107,6 +107,6 @@ case "$1" in
             ;;
 
         *)
-            echo $"Usage: $0 {start|stop|restart}"
+            echo $"Usage: $0 {start|stop|restart|show}"
             exit 1
 esac
