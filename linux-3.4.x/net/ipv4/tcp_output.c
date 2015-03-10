@@ -57,6 +57,7 @@ int sysctl_tcp_tso_win_divisor __read_mostly = 3;
 int sysctl_tcp_mtu_probing __read_mostly = 0;
 int sysctl_tcp_base_mss __read_mostly = TCP_BASE_MSS;
 int sysctl_tcp_probe_threshold __read_mostly = TCP_PROBE_THRESHOLD;
+int sysctl_tcp_probe_interval __read_mostly = TCP_PROBE_INTERVAL;
 
 /* By default, RFC2861 behavior.  */
 int sysctl_tcp_slow_start_after_idle __read_mostly = 1;
@@ -1054,6 +1055,8 @@ void tcp_mtup_init(struct sock *sk)
 			       icsk->icsk_af_ops->net_header_len;
 	icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, sysctl_tcp_base_mss);
 	icsk->icsk_mtup.probe_size = 0;
+	if (icsk->icsk_mtup.enabled)
+		icsk->icsk_mtup.probe_timestamp = tcp_time_stamp;
 }
 EXPORT_SYMBOL(tcp_mtup_init);
 
@@ -1473,6 +1476,30 @@ send_now:
 	return 0;
 }
 
+static inline void tcp_mtu_check_reprobe(struct sock *sk)
+{
+	struct inet_connection_sock *icsk = inet_csk(sk);
+	struct tcp_sock *tp = tcp_sk(sk);
+	u32 interval;
+	s32 delta;
+
+	interval = sysctl_tcp_probe_interval;
+	delta = tcp_time_stamp - icsk->icsk_mtup.probe_timestamp;
+	if (unlikely(delta >= interval * HZ)) {
+		int mss = tcp_current_mss(sk);
+
+		/* Update current search range */
+		icsk->icsk_mtup.probe_size = 0;
+		icsk->icsk_mtup.search_high = tp->rx_opt.mss_clamp +
+			sizeof(struct tcphdr) +
+			icsk->icsk_af_ops->net_header_len;
+		icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, mss);
+
+		/* Update probe time stamp */
+		icsk->icsk_mtup.probe_timestamp = tcp_time_stamp;
+	}
+}
+
 /* Create a new MTU probe if we are ready.
  * MTU probe is regularly attempting to increase the path MTU by
  * deliberately sending larger packets.  This discovers routing
@@ -1487,7 +1514,6 @@ static int tcp_mtu_probe(struct sock *sk)
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	struct sk_buff *skb, *nskb, *next;
-	struct net *net = sock_net(sk);
 	int len;
 	int probe_size;
 	int size_needed;
@@ -1515,9 +1541,16 @@ static int tcp_mtu_probe(struct sock *sk)
 				    icsk->icsk_mtup.search_low) >> 1);
 	size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
 	interval = icsk->icsk_mtup.search_high - icsk->icsk_mtup.search_low;
+	/* When misfortune happens, we are reprobing actively,
+	 * and then reprobe timer has expired. We stick with current
+	 * probing process by not resetting search range to its orignal.
+	 */
 	if (probe_size > tcp_mtu_to_mss(sk, icsk->icsk_mtup.search_high) ||
-	    interval < max(1, sysctl_tcp_probe_threshold)) {
-		/* TODO: set timer for probe_converge_event */
+		interval < sysctl_tcp_probe_threshold) {
+		/* Check whether enough time has elaplased for
+		 * another round of probing.
+		 */
+		tcp_mtu_check_reprobe(sk);
 		return -1;
 	}
 

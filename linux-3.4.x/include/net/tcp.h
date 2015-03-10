@@ -69,6 +69,9 @@ extern void tcp_time_wait(struct sock *sk, int state, int timeo);
 /* The least MTU to use for probing */
 #define TCP_BASE_MSS		1024
 
+/* probing interval, default to 10 minutes as per RFC4821 */
+#define TCP_PROBE_INTERVAL	600
+
 /* Specify interval when tcp mtu probing will stop */
 #define TCP_PROBE_THRESHOLD	8
 
@@ -254,6 +257,7 @@ extern int sysctl_tcp_tso_win_divisor;
 extern int sysctl_tcp_mtu_probing;
 extern int sysctl_tcp_base_mss;
 extern int sysctl_tcp_probe_threshold;
+extern int sysctl_tcp_probe_interval;
 extern int sysctl_tcp_workaround_signed_windows;
 extern int sysctl_tcp_slow_start_after_idle;
 extern int sysctl_tcp_max_ssthresh;
