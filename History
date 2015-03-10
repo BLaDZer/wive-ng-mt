@@ -682,6 +682,7 @@
 8) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
 9) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
 10) kernel: net: make skb->skb_iif always track skb->dev.<br>
+11) kernel: net: remove protocol from struct dst_ops.<br>
 <br>
 <br>
 <b>TODO:</b><br>
