@@ -683,8 +683,9 @@
 9) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
 10) kerne: net: ipv4: raise tcp PMTU probe mss base size.<br>
 11) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-12) kernel: net: make skb->skb_iif always track skb->dev.<br>
-13) kernel: net: remove protocol from struct dst_ops.<br>
+12) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+13) kernel: net: make skb->skb_iif always track skb->dev.<br>
+14) kernel: net: remove protocol from struct dst_ops.<br>
 <br>
 <br>
 <b>TODO:</b><br>
