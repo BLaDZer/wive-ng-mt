@@ -91,7 +91,7 @@ if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     # second select channel
     iwpriv "$1" set AutoChannelSel=1
 else
-    if [ "$2" = "5GHZ" ]
+    if [ "$2" = "5GHZ" ]; then
 	iwpriv "$1" set Channel="$ChannelINIC"
     else
 	iwpriv "$1" set Channel="$Channel"
