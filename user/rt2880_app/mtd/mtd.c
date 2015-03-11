@@ -394,8 +394,8 @@ void usage(void)
 	"        -o <num>                file offset \n"
 	"        -l <num>                length in file\n"
 	"        -w                      read after write action to check\n"
-	"Example: To write linux.trx to mtd4 labeled as linux and reboot afterwards\n"
-	"         mtd -r write linux.trx linux\n\n");
+	"Example: To write image.bin to mtd6 labeled as Kernel_RootFS and reboot afterwards\n"
+	"         mtd_write -r write image.bin Kernel_RootFS\n\n");
 	exit(1);
 }
 
