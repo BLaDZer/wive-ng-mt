@@ -10,9 +10,19 @@ config RALINK_GPIO
 	bool "Ralink GPIO Support"
 	default y
 
+config RALINK_GPIO_BTN_RESET
+	int "GPIO for reset button."
+	depends on RALINK_GPIO
+	default 1
+
 config RALINK_GPIO_LED
 	bool "Ralink GPIO LED Support"
 	depends on RALINK_GPIO
+	default y
+
+config RALINK_GPIO_LED_SYS
+	bool "Ralink GPIO SYSTEM LED Support"
+	depends on RALINK_GPIO_LED
 	default y
 
 config RALINK_GPIO_LED_USB
@@ -24,6 +34,21 @@ config RALINK_GPIO_LED_VPN
 	bool "Ralink GPIO VPN LED Support"
 	depends on RALINK_GPIO_LED && PPP
 	default y
+
+config RALINK_GPIO_SYS_LED
+	int "GPIO for power led."
+	depends on RALINK_GPIO_LED && RALINK_GPIO_LED_SYS
+	default 38
+
+config RALINK_GPIO_USB_LED
+	int "GPIO for usb led."
+	depends on RALINK_GPIO_LED && USB && RALINK_GPIO_LED_USB
+	default 46
+
+config RALINK_GPIO_VPN_LED
+	int "GPIO for vpn led."
+	depends on RALINK_GPIO_LED && PPP && RALINK_GPIO_LED_VPN
+	default 39
 
 config RALINK_HSDMA
 	tristate "Ralink SoC HSDMA Support"

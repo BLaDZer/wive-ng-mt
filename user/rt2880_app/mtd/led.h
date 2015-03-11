@@ -17,7 +17,7 @@
 #include <fcntl.h>
 
 #include <linux/autoconf.h>
-#include "linux/ralink_gpio.h"			//gpio config
+#include "linux/ralink_gpio.h"
 
 #define LED_ON				1
 #define LED_OFF				0

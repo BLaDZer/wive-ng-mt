@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.106.13 Kernel Configuration
+# Linux/mips 3.4.106.18 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -900,8 +900,11 @@ CONFIG_LEGACY_PTY_COUNT=64
 # CONFIG_SERIAL_NONSTANDARD is not set
 # CONFIG_TRACE_SINK is not set
 CONFIG_RALINK_GPIO=y
+CONFIG_RALINK_GPIO_BTN_RESET=13
 CONFIG_RALINK_GPIO_LED=y
+# CONFIG_RALINK_GPIO_LED_SYS is not set
 CONFIG_RALINK_GPIO_LED_VPN=y
+CONFIG_RALINK_GPIO_VPN_LED=39
 # CONFIG_RALINK_GDMA is not set
 # CONFIG_RALINK_SPI is not set
 # CONFIG_RALINK_I2C is not set

@@ -823,8 +823,6 @@ static void setupSecurityLed(void)
 					break;
 				}
 			}
-
-			ledAlways(GPIO_LED_SEC_GREEN, led_on); /* turn on/off security LED */
 		}
 	}
 

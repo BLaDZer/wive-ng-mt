@@ -258,7 +258,7 @@ int main(int argc, char** argv)
 	    /* Rescan usb devices after start */
 	    doSystem("service hotplug rescan");
 #endif
-	    ledAlways(GPIO_POWER_LED, LED_ON);		//Turn on power LED
+	    ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);		//Turn on power LED
 	}
 
 	/*
@@ -288,7 +288,7 @@ int main(int argc, char** argv)
 #ifdef B_STATS
 	memLeaks();
 #endif
-	ledAlways(GPIO_POWER_LED, LED_OFF);			//Turn off power LED
+	ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_OFF);			//Turn off power LED
 
 	bclose();
 

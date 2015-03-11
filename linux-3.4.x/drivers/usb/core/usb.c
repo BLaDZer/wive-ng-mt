@@ -1017,8 +1017,8 @@ static int __init usb_init(void)
 	}
 
 #ifdef CONFIG_RALINK_GPIO_LED_USB
-	printk(KERN_INFO "USB led has gpio %d\n", GPIO_USB_LED_GREEN);
-	usb_led.gpio = GPIO_USB_LED_GREEN;
+	printk(KERN_INFO "USB led has gpio %d\n", CONFIG_RALINK_GPIO_USB_LED);
+	usb_led.gpio = CONFIG_RALINK_GPIO_USB_LED;
 	usb_led.on = 1;
 	usb_led.off = 1;
 	usb_led.blinks = 1;

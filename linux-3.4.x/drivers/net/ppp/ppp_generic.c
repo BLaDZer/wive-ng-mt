@@ -975,8 +975,8 @@ static int __init ppp_init(void)
 	device_create(ppp_class, NULL, MKDEV(PPP_MAJOR, 0), NULL, "ppp");
 
 #ifdef CONFIG_RALINK_GPIO_LED_VPN
-	printk(KERN_INFO "PPP vpn led has gpio %d\n", GPIO_VPN_LED1);
-	ppp_led.gpio = GPIO_VPN_LED1;
+	printk(KERN_INFO "PPP vpn led has gpio %d\n", CONFIG_RALINK_GPIO_VPN_LED);
+	ppp_led.gpio = CONFIG_RALINK_GPIO_VPN_LED;
 	ppp_led.on = 1;
 	ppp_led.off = 1;
 	ppp_led.blinks = 1;

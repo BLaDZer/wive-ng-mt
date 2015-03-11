@@ -76,8 +76,8 @@ restore() {
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
 	done
     fi
     mtd_write erase RW-FS
@@ -91,8 +91,8 @@ nvramreset() {
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
 	done
     fi
     nvram_default 2860
@@ -103,8 +103,8 @@ burnrf() {
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
 	done
     fi
     mtd_write erase Factory
@@ -118,8 +118,8 @@ fullreset() {
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
 	done
     fi
     wifi_unload.sh
@@ -140,8 +140,8 @@ change_mac() {
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
 	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for i in $boot_leds_blink; do
-	    gpio l $i 1 1 0 0 1000
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
 	done
     fi
     nvram_set 2860 CHECKMAC NO

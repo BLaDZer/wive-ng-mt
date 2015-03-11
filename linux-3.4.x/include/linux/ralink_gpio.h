@@ -43,56 +43,24 @@
 #define RALINK_GPIO_DEVNAME	"gpio"		//nodename
 #define GPIO_DEV		"/dev/gpio"	//userlevel devname
 
-#if defined(CONFIG_RALINK_MT7621)
-/* BUTTONS GPIO */
-#define GPIO_BTN_RESET		1
-#define GPIO_BTN_WPS		2
-/* LEDS GPIO */
-#define GPIO_POWER_LED		0 /* stub */
-#define GPIO_LED_SEC_GREEN      0 /* stub */
-#define GPIO_LED_WAN_GREEN      0 /* stub */
-#define GPIO_LED_WAN_ORANGE     0 /* stub */
-#define GPIO_WPS_LED_ORANGE  	46
-#define GPIO_WPS_LED_GREEN   	46
-#define GPIO_USB_LED_GREEN   	48
-#define GPIO_VPN_LED1		46 /* VPN tx/rx led */
-/* Firmware update indicators */
-#define GPIO_MTD_LED1		GPIO_USB_LED_GREEN
-#define GPIO_MTD_LED2		GPIO_WPS_LED_GREEN
-#elif defined(CONFIG_RALINK_MT7620)
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE) ||  defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
-/* BUTTONS GPIO */
-#define GPIO_BTN_RESET		13
-#define GPIO_BTN_WPS		13
-/* LEDS GPIO */
-#define GPIO_POWER_LED		0 /* stub */
-#define GPIO_LED_SEC_GREEN      0 /* stub */
-#define GPIO_LED_WAN_GREEN      40
-#define GPIO_LED_WAN_ORANGE     40
-#define GPIO_WPS_LED_ORANGE  	39
-#define GPIO_WPS_LED_GREEN   	39
-#define GPIO_USB_LED_GREEN   	0
-#define GPIO_VPN_LED1		39 /* VPN tx/rx led */
-/* Firmware update indicators */
-#define GPIO_MTD_LED1		GPIO_POWER_LED
-#define GPIO_MTD_LED2		GPIO_WPS_LED_GREEN
-#else
-/* BUTTONS GPIO */
-#define GPIO_BTN_RESET		1
-#define GPIO_BTN_WPS		2
-/* LEDS GPIO */
-#define GPIO_POWER_LED		38
-#define GPIO_LED_SEC_GREEN      0 /* stub */
-#define GPIO_LED_WAN_GREEN      40
-#define GPIO_LED_WAN_ORANGE     40
-#define GPIO_WPS_LED_ORANGE  	39
-#define GPIO_WPS_LED_GREEN   	39
-#define GPIO_USB_LED_GREEN   	0
-#define GPIO_VPN_LED1		39 /* VPN tx/rx led */
-/* Firmware update indicators */
-#define GPIO_MTD_LED1		GPIO_POWER_LED
-#define GPIO_MTD_LED2		GPIO_WPS_LED_GREEN
+/* stubs if leds on installed */
+#ifndef CONFIG_RALINK_GPIO_LED_USB
+#define CONFIG_RALINK_GPIO_USB_LED	0
 #endif
+#ifndef CONFIG_RALINK_GPIO_LED_VPN
+#define CONFIG_RALINK_GPIO_VPN_LED	0
+#endif
+#ifndef CONFIG_RALINK_GPIO_LED_SYS
+#define CONFIG_RALINK_GPIO_SYS_LED	0
+#endif
+
+/* Firmware update indicators */
+#if defined(CONFIG_RALINK_MT7621)
+#define GPIO_MTD_LED1			CONFIG_RALINK_GPIO_USB_LED
+#define GPIO_MTD_LED2			CONFIG_RALINK_GPIO_VPN_LED
+#else
+#define GPIO_MTD_LED1			CONFIG_RALINK_GPIO_SYS_LED
+#define GPIO_MTD_LED2			CONFIG_RALINK_GPIO_VPN_LED
 #endif
 
 #if defined (CONFIG_RALINK_RT3052)

@@ -9,12 +9,6 @@ start() {
 
     boot_leds_blink=`nvram_get 2860 boot_leds_blink`
     if [ -f /bin/goahead ]; then
-	#blink wps/sys led at boot time before goahead start
-	if [ -f /bin/gpio ]; then
-	    for i in $boot_leds_blink; do
-		gpio l $i 0 4000 0 0 0
-	    done
-	fi
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
 	cp -rpf /web/* /tmp/web
@@ -22,23 +16,23 @@ start() {
 	    $LOG "Copy user web pages to tmpfs."
     	    cp -rpf /etc/web/* /tmp/web
 	fi
+	#wait and backup nvram setting and save rwfs
+	if [ -f /tmp/needrwfssave ]; then
+	    sh `(sleep 40 && fs save > /dev/console)` &
+	    rm -f /tmp/needrwfssave
+	fi
+        #blink wps/sys led limit blink time 10 sec after goahead start
+	if [ -f /bin/gpio ]; then
+	    for led in $boot_leds_blink; do
+		gpio l $led 1 1 0 0 10
+	    done
+	fi
 	$LOG "Start WEB Managment Server."
 	goahead &
     else
-	# if goahead not found
-	if [ -f /bin/gpio ]; then
-	    for i in $boot_leds_blink; do
-		gpio l $i 1 10 0 0 4000
-	    done
-	fi
 	echo "GOAHEAD NOT FOUND!!! FIX THIS AND REBUILD FIRMWARE."
     fi
 
-    #backup nvram setting and save rwfs
-    if [ -f /tmp/needrwfssave ]; then
-	sh `(sleep 50 && fs save > /dev/console)` &
-	rm -f /tmp/needrwfssave
-    fi
 }
 
 stop() {
