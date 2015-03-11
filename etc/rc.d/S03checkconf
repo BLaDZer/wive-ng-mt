@@ -70,15 +70,6 @@ checkminimalconfig()
     fi
 
     #
-    #	correct static switch configuration modes if use it (need invert)
-    #
-    if [ "$wan_port" = "4" ] && [ "$CONFIG_GE2_INTERNAL_GPHY_P4" != "" ]; then
-	nvram_set 2860 wan_port 0
-    elif [ "$wan_port" = "0" ] && [ "$CONFIG_GE2_INTERNAL_GPHY_P0" != "" ]; then
-	nvram_set 2860 wan_port 4
-    fi
-
-    #
     #	set default ipv6 mode to disabled if not set
     #
     if [ "$IPv6OpMode" = "" ]; then
