@@ -682,16 +682,17 @@
 9) init.d: wifi.sh: touch Channel by iwpriv (aplci connect after apply workaround).<br>
 10) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
 11) kernel: ralink_raeth: add support GRO offload (disabled yet, need more workload tests).<br>
-12) kernel: inet: sanitize inet{,6} protocol demux.<br>
-13) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-14) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-15) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-16) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
-17) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-18) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
-19) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
-20) kernel: net: make skb->skb_iif always track skb->dev.<br>
-21) kernel: net: remove protocol from struct dst_ops.<br>
+12) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
+13) kernel: inet: sanitize inet{,6} protocol demux.<br>
+14) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+15) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+16) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+17) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
+18) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
+19) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+20) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
+21) kernel: net: make skb->skb_iif always track skb->dev.<br>
+22) kernel: net: remove protocol from struct dst_ops.<br>
 <br>
 <br>
 <b>TODO:</b><br>
