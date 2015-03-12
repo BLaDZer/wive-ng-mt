@@ -682,7 +682,7 @@
 9) init.d: wifi.sh: touch Channel by iwpriv (aplci connect after apply workaround).<br>
 10) kernel: mips: allow optimized inliming.<br>
 11) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
-12) kernel: ralink_raeth: add support GRO offload (disabled yet, need more workload tests).<br>
+12) kernel: ralink_raeth: add support GRO offload.<br>
 13) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
 14) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
 15) kernel: inet: sanitize inet{,6} protocol demux.<br>
