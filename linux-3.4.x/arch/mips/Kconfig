@@ -1073,6 +1073,9 @@ config CFE
 config ARCH_DMA_ADDR_T_64BIT
 	def_bool (HIGHMEM && 64BIT_PHYS_ADDR) || 64BIT
 
+config ARCH_SUPPORTS_OPTIMIZED_INLINING
+	def_bool y
+
 config DMA_MAYBE_COHERENT
 	select DMA_NONCOHERENT
 	bool
