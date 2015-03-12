@@ -696,6 +696,7 @@
 22) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
 23) kernel: net: make skb->skb_iif always track skb->dev.<br>
 24) kernel: net: remove protocol from struct dst_ops.<br>
+25) kernel: net: neigh: Keep neighbour cache entries if number of them is small enough.<br>
 <br>
 <br>
 <b>TODO:</b><br>
