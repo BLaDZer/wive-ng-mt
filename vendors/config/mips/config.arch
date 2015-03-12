@@ -84,6 +84,7 @@ include $(ROOTDIR)/vendors/config/common/config.arch
 
 ############################ PLATFORM FLAGS ##############################
 POPT	:= -mips32r2 -march=mips32r2 -mtune=mips32r2 -D__MIPSEL__
+POPT	:= -mno-branch-likely -mno-long-calls
 
 ############################ WARN/ERROR FLAGS ##############################
 # base flags for warnings
@@ -131,15 +132,12 @@ endif
 	# more safe codegeneration
 	CFLAGS += -fno-delete-null-pointer-checks
 
-	CFLAGS += -pipe
+	CFLAGS += -pipe -fno-builtin -nostdinc
+	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
 	CFLAGS += $(VENDOR_CFLAGS)
-	CFLAGS += -fno-builtin
-	CFLAGS += -DEMBED
-	CFLAGS += -nostdinc
 
 	# don't want all the CFLAGS for uClibc/Config
 	ARCH_CFLAGS = $(CFLAGS)
-	CFLAGS += -Dlinux -D__linux__ -Dunix
 	LDFLAGS = $(CFLAGS) $(CRT0)
 	UCLINUX_BUILD_SET=1
 endif
@@ -181,9 +179,6 @@ endif
 	# more safe codegeneration
 	CFLAGS += -fno-delete-null-pointer-checks
 
-	CFLAGS += -pipe
-	CFLAGS += $(VENDOR_CFLAGS)
-	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
 	CFLAGS += -I$(ROOTDIR)
 	CFLAGS += -I$(LIBCDIRSHARED)/include
 ifdef CONFIG_LIB_ICONV
@@ -218,32 +213,35 @@ ifdef CONFIG_USER_IPTABLES
 endif
 	LDFLAGS += -L$(LIBCDIRSHARED)/lib
 
-	CXXFLAGS = $(CFLAGS) $(INCCXX)
+	CFLAGS += -pipe -fno-builtin
+	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
+	CFLAGS += $(VENDOR_CFLAGS)
 
-  ifeq ($(findstring glibc,$(LIBCDIR)),glibc)
-	CRTI     = -nostartfiles $(ROOTDIR)/lib/crt1.o \
+	ifeq ($(findstring glibc,$(LIBCDIR)),glibc)
+	    CRTI     = -nostartfiles $(ROOTDIR)/lib/crt1.o \
 			$(ROOTDIR)/lib/crti.o \
 			$(GCC_DIR)/$(MACH_DIR)/crtbegin.o
-	SH_CRTI  = -nostartfiles $(ROOTDIR)/lib/crti.o \
+	    SH_CRTI  = -nostartfiles $(ROOTDIR)/lib/crti.o \
 			$(GCC_DIR)/$(MACH_DIR)/crtbeginS.o
-	CRAP = 		$(ROOTDIR)/lib/ld.so.1
-	CRTN     = \
+	    CRAP = 		$(ROOTDIR)/lib/ld.so.1
+	    CRTN     = \
 			$(GCC_DIR)/$(MACH_DIR)/crtend.o \
 			$(ROOTDIR)/lib/crtn.o \
 			-lc_nonshared
-	SH_CRTN  = $(GCC_DIR)/$(MACH_DIR)/crtendS.o $(ROOTDIR)/lib/crtn.o
-  else
-	CRTI     = -nostartfiles $(ROOTDIR)/lib/crt0.o
-	CRTN     =
-  endif
+	    SH_CRTN  = $(GCC_DIR)/$(MACH_DIR)/crtendS.o $(ROOTDIR)/lib/crtn.o
+	else
+	    CRTI     = -nostartfiles $(ROOTDIR)/lib/crt0.o
+	    CRTN     =
+	endif
+
 	SH_LDFLAGS := $(LDFLAGS) $(SH_CRTI) -nodefaultlibs
 	SH_LDLIBS  := $(LIBC) $(LIBGCC) $(SH_CRTN)
-	#LDFLAGS += $(CRTI) -nodefaultlibs
 	LDLIBS   = $(LIBC) $(LIBGCC) $(CRTN)
+
+	CXXFLAGS = $(CFLAGS)
 	CXXLIBS  = -Wl,-Bstatic $(LIBSTDCPP) -Wl,-Bdynamic $(LIBC) $(LIBGCC) $(CRTN)
 
 	FLTFLAGS :=
-	export FLTFLAGS
 
 	# for anyone still using it
 	CONVERT = /bin/true

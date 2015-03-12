@@ -7,7 +7,10 @@
 
 # CC contains the current compiler.  This one MUST be defined
 CC=cc
-CFLAGS+=$(CFLAG) -ffunction-sections -fdata-sections
+CFLAGS+=$(CFLAG) -fPIC
+CFLAGS+=-ffunction-sections -fdata-sections -fno-tree-slsr -fno-delete-null-pointer-checks -fno-var-tracking-assignments -fno-strict-overflow
+CFLAGS+=-funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
+CFLAGS+=-fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 # LDFLAGS contains flags to be used when temporary object files (when building
 # shared libraries) are created, or when an application is linked.
 # SHARED_LDFLAGS contains flags to be used when the shared library is created.

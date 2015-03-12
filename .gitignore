@@ -45,6 +45,7 @@ fulldump
 /lib/lib/*
 /lib/shared
 /lib/shared/*
+/libext/openssl/Makefile
 /libext/libiconv/libcharset/libext/Makefile
 /libext/libiconv/libcharset/config.h
 /libext/libiconv/preload/Makefile

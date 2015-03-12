@@ -62,9 +62,12 @@ OPENSSLDIR=/usr/local/ssl
 -include ../../config.arch
 
 CC= cc
-CFLAG+= -Os -ffunction-sections -fdata-sections
+CFLAG=-Os -ffunction-sections -fdata-sections
+CFLAG+= -fPIC
+CFLAG+=-ffunction-sections -fdata-sections -fno-tree-slsr -fno-delete-null-pointer-checks -fno-var-tracking-assignments -fno-strict-overflow
+CFLAG+=-funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
+CFLAG+=-fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAG+= -Wl,--gc-sections
-CFLAG+=-fPIC
 DEPFLAG= 
 PEX_LIBS= 
 EX_LIBS= 

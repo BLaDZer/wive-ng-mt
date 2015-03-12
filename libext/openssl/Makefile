@@ -64,9 +64,12 @@ OPENSSLDIR=/usr/local/ssl
 -include ../../config.arch
 
 CC= /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc
-CFLAG+= -Os -ffunction-sections -fdata-sections
+CFLAG= -DOPENSSL_THREADS  -Os -DL_ENDIAN -mips32r2 -mno-branch-likely -G 0 -fno-builtin -DCPU=MIPS32 -DMIPSEL -DNO_STRINGS_H
+CFLAG+= -fPIC
+CFLAG+=-ffunction-sections -fdata-sections -fno-tree-slsr -fno-delete-null-pointer-checks -fno-var-tracking-assignments -fno-strict-overflow
+CFLAG+=-funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
+CFLAG+=-fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAG+= -Wl,--gc-sections
-CFLAG+=-fPIC
 DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_SEED
 PEX_LIBS= 
 EX_LIBS= 
