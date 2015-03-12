@@ -697,7 +697,8 @@
 23) kernel: net: make skb->skb_iif always track skb->dev.<br>
 24) kernel: net: remove protocol from struct dst_ops.<br>
 25) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
-26) kernel: ner: neigh: optimize neighbor entry size calculation.<br>
+26) kernel: net: neigh: optimize neighbor entry size calculation.<br>
+27) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
 <br>
 <br>
 <b>TODO:</b><br>
