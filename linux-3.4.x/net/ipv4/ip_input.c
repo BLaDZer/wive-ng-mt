@@ -459,7 +459,7 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 #if defined(CONFIG_BCM_NAT_FASTPATH)
 	    !nf_conntrack_fastnat &&
 #endif
-	    (!skb->cb[NF_FAST_ROUTE])
+	    !nf_conntrack_fastroute)
 	)
 #endif
 	/* Remove any debris in the socket control block */
