@@ -699,6 +699,7 @@
 25) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
 26) kernel: net: neigh: optimize neighbor entry size calculation.<br>
 27) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
+28) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
 <br>
 <br>
 <b>TODO:</b><br>
