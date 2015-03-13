@@ -25,7 +25,7 @@
 
 /*
  * Direct send packets to output.
- * Stolen from ip_finish_output2.
+ * Stolen from ip_finish_output2 and neigh_output (need direct coding for allow gcc max optimize this)
  */
 static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 {
