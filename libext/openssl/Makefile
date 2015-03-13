@@ -13,8 +13,8 @@ SHLIB_MAJOR=0
 SHLIB_MINOR=9.8
 SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
 PLATFORM=RT2880
-OPTIONS= no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no-mdc2 no-montasm no-rc5 no-rfc3779 no-ripemd no-seed no-shared no-zlib no-zlib-dynamic
-CONFIGURE_ARGS=RT2880 no-ripemd
+OPTIONS= no-ans1 no-camellia no-capieng no-cast no-cms no-dso no-ec no-ec2m no-ecdh no-ecdsa no-err no-gmp no-hw no-idea no-jpake no-krb5 no-md2 no-mdc2 no-montasm no-rc2 no-rc5 no-rfc3779 no-ripemd no-rmd160 no-sctp no-seed no-sha0 no-shared no-smime no-speed no-srp no-sse2 no-ssl2 no-ssl3 no-threads no-ts no-whirlpool no-zlib no-zlib-dynamic
+CONFIGURE_ARGS=RT2880 no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no-mdc2 no-rfc3779 no-seed no-ec no-ecdh no-ec2m no-ecdsa no-err no-threads no-idea no-rc2 no-rc5 no-hw no-md2 no-sse2 no-dso no-ts no-ripemd no-rmd160 no-sha0 no-smime no-ans1 no-cast no-whirlpool no-sctp no-srp no-jpake no-ssl2 no-ssl3 no-speed
 SHLIB_TARGET=linux-shared
 
 
@@ -64,13 +64,13 @@ OPENSSLDIR=/usr/local/ssl
 -include ../../config.arch
 
 CC= /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc
-CFLAG= -DOPENSSL_THREADS  -Os -DL_ENDIAN -mips32r2 -mno-branch-likely -G 0 -fno-builtin -DCPU=MIPS32 -DMIPSEL -DNO_STRINGS_H
+CFLAG= -DOPENSSL_NO_ERR -Os -DL_ENDIAN -mips32r2 -mno-branch-likely -G 0 -fno-builtin -DCPU=MIPS32 -DMIPSEL -DNO_STRINGS_H
 CFLAG+= -fPIC
 CFLAG+=-ffunction-sections -fdata-sections -fno-tree-slsr -fno-delete-null-pointer-checks -fno-var-tracking-assignments -fno-strict-overflow
 CFLAG+=-funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
 CFLAG+=-fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAG+= -Wl,--gc-sections
-DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_SEED
+DEPFLAG= -DOPENSSL_NO_ANS1 -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CAST -DOPENSSL_NO_CMS -DOPENSSL_NO_EC -DOPENSSL_NO_EC2M -DOPENSSL_NO_ECDH -DOPENSSL_NO_ECDSA -DOPENSSL_NO_GMP -DOPENSSL_NO_IDEA -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_RMD160 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SEED -DOPENSSL_NO_SHA0 -DOPENSSL_NO_SMIME -DOPENSSL_NO_SPEED -DOPENSSL_NO_SRP -DOPENSSL_NO_SSL2 -DOPENSSL_NO_SSL3 -DOPENSSL_NO_TS -DOPENSSL_NO_WHIRLPOOL
 PEX_LIBS= 
 EX_LIBS= 
 EXE_EXT= 
@@ -150,9 +150,9 @@ SHLIBDIRS= crypto ssl
 # dirs in crypto to build
 SDIRS=  \
 	objects \
-	md2 md4 md5 sha hmac \
-	des aes rc2 rc4 idea bf cast \
-	bn ec rsa dsa ecdsa dh ecdh dso engine \
+	md4 md5 sha hmac \
+	des aes rc4 bf \
+	bn rsa dsa dh dso engine \
 	buffer bio stack lhash rand err \
 	evp asn1 pem x509 x509v3 conf txt_db pkcs7 pkcs12 comp ocsp ui krb5 \
 	store pqueue

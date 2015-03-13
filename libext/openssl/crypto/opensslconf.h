@@ -5,17 +5,38 @@
 #ifndef OPENSSL_DOING_MAKEDEPEND
 
 
+#ifndef OPENSSL_NO_ANS1
+# define OPENSSL_NO_ANS1
+#endif
 #ifndef OPENSSL_NO_CAMELLIA
 # define OPENSSL_NO_CAMELLIA
 #endif
 #ifndef OPENSSL_NO_CAPIENG
 # define OPENSSL_NO_CAPIENG
 #endif
+#ifndef OPENSSL_NO_CAST
+# define OPENSSL_NO_CAST
+#endif
 #ifndef OPENSSL_NO_CMS
 # define OPENSSL_NO_CMS
 #endif
+#ifndef OPENSSL_NO_EC
+# define OPENSSL_NO_EC
+#endif
+#ifndef OPENSSL_NO_EC2M
+# define OPENSSL_NO_EC2M
+#endif
+#ifndef OPENSSL_NO_ECDH
+# define OPENSSL_NO_ECDH
+#endif
+#ifndef OPENSSL_NO_ECDSA
+# define OPENSSL_NO_ECDSA
+#endif
 #ifndef OPENSSL_NO_GMP
 # define OPENSSL_NO_GMP
+#endif
+#ifndef OPENSSL_NO_IDEA
+# define OPENSSL_NO_IDEA
 #endif
 #ifndef OPENSSL_NO_JPAKE
 # define OPENSSL_NO_JPAKE
@@ -23,8 +44,14 @@
 #ifndef OPENSSL_NO_KRB5
 # define OPENSSL_NO_KRB5
 #endif
+#ifndef OPENSSL_NO_MD2
+# define OPENSSL_NO_MD2
+#endif
 #ifndef OPENSSL_NO_MDC2
 # define OPENSSL_NO_MDC2
+#endif
+#ifndef OPENSSL_NO_RC2
+# define OPENSSL_NO_RC2
 #endif
 #ifndef OPENSSL_NO_RC5
 # define OPENSSL_NO_RC5
@@ -35,14 +62,47 @@
 #ifndef OPENSSL_NO_RIPEMD
 # define OPENSSL_NO_RIPEMD
 #endif
+#ifndef OPENSSL_NO_RMD160
+# define OPENSSL_NO_RMD160
+#endif
+#ifndef OPENSSL_NO_SCTP
+# define OPENSSL_NO_SCTP
+#endif
 #ifndef OPENSSL_NO_SEED
 # define OPENSSL_NO_SEED
+#endif
+#ifndef OPENSSL_NO_SHA0
+# define OPENSSL_NO_SHA0
+#endif
+#ifndef OPENSSL_NO_SMIME
+# define OPENSSL_NO_SMIME
+#endif
+#ifndef OPENSSL_NO_SPEED
+# define OPENSSL_NO_SPEED
+#endif
+#ifndef OPENSSL_NO_SRP
+# define OPENSSL_NO_SRP
+#endif
+#ifndef OPENSSL_NO_SSL2
+# define OPENSSL_NO_SSL2
+#endif
+#ifndef OPENSSL_NO_SSL3
+# define OPENSSL_NO_SSL3
+#endif
+#ifndef OPENSSL_NO_TS
+# define OPENSSL_NO_TS
+#endif
+#ifndef OPENSSL_NO_WHIRLPOOL
+# define OPENSSL_NO_WHIRLPOOL
 #endif
 
 #endif /* OPENSSL_DOING_MAKEDEPEND */
 
-#ifndef OPENSSL_THREADS
-# define OPENSSL_THREADS
+#ifndef OPENSSL_NO_ERR
+# define OPENSSL_NO_ERR
+#endif
+#ifndef OPENSSL_NO_HW
+# define OPENSSL_NO_HW
 #endif
 #ifndef OPENSSL_NO_DYNAMIC_ENGINE
 # define OPENSSL_NO_DYNAMIC_ENGINE
@@ -53,17 +113,38 @@
    who haven't had the time to do the appropriate changes in their
    applications.  */
 #ifdef OPENSSL_ALGORITHM_DEFINES
+# if defined(OPENSSL_NO_ANS1) && !defined(NO_ANS1)
+#  define NO_ANS1
+# endif
 # if defined(OPENSSL_NO_CAMELLIA) && !defined(NO_CAMELLIA)
 #  define NO_CAMELLIA
 # endif
 # if defined(OPENSSL_NO_CAPIENG) && !defined(NO_CAPIENG)
 #  define NO_CAPIENG
 # endif
+# if defined(OPENSSL_NO_CAST) && !defined(NO_CAST)
+#  define NO_CAST
+# endif
 # if defined(OPENSSL_NO_CMS) && !defined(NO_CMS)
 #  define NO_CMS
 # endif
+# if defined(OPENSSL_NO_EC) && !defined(NO_EC)
+#  define NO_EC
+# endif
+# if defined(OPENSSL_NO_EC2M) && !defined(NO_EC2M)
+#  define NO_EC2M
+# endif
+# if defined(OPENSSL_NO_ECDH) && !defined(NO_ECDH)
+#  define NO_ECDH
+# endif
+# if defined(OPENSSL_NO_ECDSA) && !defined(NO_ECDSA)
+#  define NO_ECDSA
+# endif
 # if defined(OPENSSL_NO_GMP) && !defined(NO_GMP)
 #  define NO_GMP
+# endif
+# if defined(OPENSSL_NO_IDEA) && !defined(NO_IDEA)
+#  define NO_IDEA
 # endif
 # if defined(OPENSSL_NO_JPAKE) && !defined(NO_JPAKE)
 #  define NO_JPAKE
@@ -71,8 +152,14 @@
 # if defined(OPENSSL_NO_KRB5) && !defined(NO_KRB5)
 #  define NO_KRB5
 # endif
+# if defined(OPENSSL_NO_MD2) && !defined(NO_MD2)
+#  define NO_MD2
+# endif
 # if defined(OPENSSL_NO_MDC2) && !defined(NO_MDC2)
 #  define NO_MDC2
+# endif
+# if defined(OPENSSL_NO_RC2) && !defined(NO_RC2)
+#  define NO_RC2
 # endif
 # if defined(OPENSSL_NO_RC5) && !defined(NO_RC5)
 #  define NO_RC5
@@ -83,8 +170,38 @@
 # if defined(OPENSSL_NO_RIPEMD) && !defined(NO_RIPEMD)
 #  define NO_RIPEMD
 # endif
+# if defined(OPENSSL_NO_RMD160) && !defined(NO_RMD160)
+#  define NO_RMD160
+# endif
+# if defined(OPENSSL_NO_SCTP) && !defined(NO_SCTP)
+#  define NO_SCTP
+# endif
 # if defined(OPENSSL_NO_SEED) && !defined(NO_SEED)
 #  define NO_SEED
+# endif
+# if defined(OPENSSL_NO_SHA0) && !defined(NO_SHA0)
+#  define NO_SHA0
+# endif
+# if defined(OPENSSL_NO_SMIME) && !defined(NO_SMIME)
+#  define NO_SMIME
+# endif
+# if defined(OPENSSL_NO_SPEED) && !defined(NO_SPEED)
+#  define NO_SPEED
+# endif
+# if defined(OPENSSL_NO_SRP) && !defined(NO_SRP)
+#  define NO_SRP
+# endif
+# if defined(OPENSSL_NO_SSL2) && !defined(NO_SSL2)
+#  define NO_SSL2
+# endif
+# if defined(OPENSSL_NO_SSL3) && !defined(NO_SSL3)
+#  define NO_SSL3
+# endif
+# if defined(OPENSSL_NO_TS) && !defined(NO_TS)
+#  define NO_TS
+# endif
+# if defined(OPENSSL_NO_WHIRLPOOL) && !defined(NO_WHIRLPOOL)
+#  define NO_WHIRLPOOL
 # endif
 #endif
 

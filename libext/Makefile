@@ -66,6 +66,11 @@ dir_$(CONFIG_LIB_XML2)            += libxml2
 dir_$(CONFIG_LIB_NEON)            += libneon
 dir_$(CONFIG_LIB_CURL)            += libcurl
 
+OPENSSL_CONFIG = RT2880 no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no-mdc2 no-rfc3779 no-seed \
+                  no-ec no-ecdh no-ec2m no-ecdsa no-err no-threads no-idea no-rc2 no-rc5 \
+                  no-hw no-md2 no-sse2 no-dso no-ts no-ripemd no-rmd160 no-sha0 \
+                  no-smime no-ans1 no-cast no-whirlpool no-sctp no-srp no-jpake no-ssl2 no-ssl3 no-speed
+
 all:
 	CC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
 	GCC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
@@ -78,7 +83,7 @@ all:
 	STRIP=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-strip ;
 ifeq ($(CONFIG_LIB_OPENSSL),y)
 	# ">>>>>>>>>>>>>>>> CONFIGURE AND BUILD SSL <<<<<<<<<<<<<<<<<<<<<<<"
-	if [ ! -e openssl/libssl.so ]; then  cd openssl ; ./Configure RT2880 no-ripemd; $(MAKE) -j1 || exit 1 ; cd .. ; fi
+	if [ ! -e openssl/libssl.so ]; then  cd openssl ; ./Configure $(OPENSSL_CONFIG) ; $(MAKE) -j1 || exit 1 ; cd .. ; fi
 	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; fi
 	if [ -e openssl/libssl.so ]; then  $(RM) -rf $(ROOTDIR)/lib/shared/include/openssl ; cp -faprL openssl/include/* $(ROOTDIR)/lib/shared/include ; fi
 endif
