@@ -113,7 +113,7 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
 	    if (ip_rcv_finish(skb) == NF_FAST_NAT) {
 	        /* Change skb owner to output device */
 	        skb->dev = skb_dst(skb)->dev;
-	        skb->protocol = htons(ETH_P_IP);
+	        skb->protocol = __constant_htons(ETH_P_IP);
 	        return NF_FAST_NAT;
 	    }
 	    /* this tell system no need to handle this packet. we will handle this. */
@@ -122,7 +122,7 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
 	    if(hooknum == NF_INET_LOCAL_OUT) {
 		/* Change skb owner to output device */
 		skb->dev = skb_dst(skb)->dev;
-		skb->protocol = htons(ETH_P_IP);
+		skb->protocol = __constant_htons(ETH_P_IP);
 		return NF_FAST_NAT;
 	    }
 	}
