@@ -277,8 +277,8 @@ int ip_local_deliver(struct sk_buff *skb)
 	FOE_ALG_MARK(skb);
 #endif
 #if defined(CONFIG_BCM_NAT)
-	if(skb->cb[NF_FAST_ROUTE]) {
-	    skb->cb[NF_FAST_ROUTE]=0;
+	if(fastroute(skb)) {
+	    fastroute(skb) = 0;
 	    return ip_local_deliver_finish(skb);
 	}
 #endif

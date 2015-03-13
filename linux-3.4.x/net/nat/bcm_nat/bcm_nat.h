@@ -17,7 +17,8 @@
  * cb fastforward flag
  * offcet do not be replaced in any code (as hw_nat, strongly check this, now find max cb offset in wifi drivers = 41)
  */
-#define NF_FAST_ROUTE		42
+#define CB_FAST_ROUTE		42
+#define fastroute(skb)		(skb->cb[CB_FAST_ROUTE])
 
 /*
  * conntrack fastforward flags

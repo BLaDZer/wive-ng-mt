@@ -114,8 +114,8 @@ int ip_forward(struct sk_buff *skb)
 	skb->priority = rt_tos2priority(iph->tos);
 
 #if defined(CONFIG_BCM_NAT)
-	if(skb->cb[NF_FAST_ROUTE]) {
-	    skb->cb[NF_FAST_ROUTE]=0;
+	if(fastroute(skb)) {
+	    fastroute(skb) = 0;
 	    return NF_FAST_NAT;
 	}
 #endif
