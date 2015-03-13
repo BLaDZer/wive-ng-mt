@@ -52,13 +52,17 @@ static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 
 	rcu_read_lock();
 	neigh = dst_get_neighbour_noref(dst);
-	if (neigh) {
+	if (likely(neigh)) {
+	    int res;
 	    struct hh_cache *hh = &neigh->hh;
 
 	    if ((neigh->nud_state & NUD_CONNECTED) && hh->hh_len)
-		return neigh_hh_output(hh, skb);
+		res = neigh_hh_output(hh, skb);
 	    else
-		return neigh->output(neigh, skb);
+		res = neigh->output(neigh, skb);
+
+	    rcu_read_unlock();
+	    return res;
 	} else {
 #ifdef DEBUG
 	    if (net_ratelimit())
