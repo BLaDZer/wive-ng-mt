@@ -1333,16 +1333,15 @@ skip_alg_of:
 #endif
 #if defined(CONFIG_BCM_NAT_FASTPATH)
 	/* skip several proto only from sw_nat */
-	if (nf_conntrack_fastnat) {
-	    if (skip_offload == SKIP_ALL || skip_offload == SKIP_SWO) {											/* skip SW */
-		ct->fastnat |= NF_FAST_NAT_DENY;
-	    } else {
-		/*
-		* software nat offload path send pkts to fastnat if adress changed (nat)
-		*/
-		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP)
-		    && !(ct->fastnat & NF_FAST_NAT_DENY) && !pure_route)
+	if (nf_conntrack_fastnat && !pure_route) {
+	    /*
+	    * software nat offload path send pkts to fastnat if adress changed (nat)
+	    */
+	    if (skip_offload == SKIP_NO) {
+		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP) && !(ct->fastnat & NF_FAST_NAT_DENY))
 		    ret = bcm_do_fastnat(ct, ctinfo, skb, l3proto, l4proto);
+	    } else {																	/* skip SW */
+		ct->fastnat |= NF_FAST_NAT_DENY;
 	    }
 	}
 
