@@ -983,9 +983,6 @@ init_conntrack(struct net *net, struct nf_conn *tmpl,
 #ifdef CONFIG_NF_CONNTRACK_SECMARK
 		ct->secmark = exp->master->secmark;
 #endif
-#if defined(CONFIG_BCM_NAT)
-		ct->fastnat = NF_FAST_NAT_DENY;
-#endif
 		nf_conntrack_get(&ct->master->ct_general);
 		NF_CT_STAT_INC(net, expect_new);
 	} else {
@@ -1338,10 +1335,10 @@ skip_alg_of:
 	    * software nat offload path send pkts to fastnat if adress changed (nat)
 	    */
 	    if (skip_offload == SKIP_NO) {
-		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP) && !(ct->fastnat & NF_FAST_NAT_DENY))
+		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP) && !FASTNAT_DENY(skb))
 		    ret = bcm_do_fastnat(ct, ctinfo, skb, l3proto, l4proto);
 	    } else {																	/* skip SW */
-		ct->fastnat |= NF_FAST_NAT_DENY;
+		FASTNAT_DENY(skb) = 1;
 	    }
 	}
 
@@ -1349,7 +1346,7 @@ skip_alg_of:
 	if (set_reply && !test_and_set_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
 #if defined(CONFIG_BCM_NAT_FASTPATH)
 	    if (nf_conntrack_fastnat && pf == PF_INET && hooknum == NF_INET_LOCAL_OUT)
-		ct->fastnat |= NF_FAST_NAT_DENY;
+		FASTNAT_DENY(skb) = 1;
 #endif
 		nf_conntrack_event_cache(IPCT_REPLY, ct);
 	}

@@ -108,7 +108,7 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
 	    nf_conntrack_event_cache(IPCT_ASSURED, ct);
 
 	if(hooknum == NF_INET_PRE_ROUTING) {
-	    fastroute(skb) = 1;
+	    FASTROUTE(skb) = 1;
 	    /* this function will handle routing decision. the next hoook will be input or forward chain */
 	    if (ip_rcv_finish(skb) == NF_FAST_NAT) {
 	        /* Change skb owner to output device */

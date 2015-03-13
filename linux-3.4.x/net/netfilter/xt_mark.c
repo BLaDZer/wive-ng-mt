@@ -40,10 +40,7 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 
 	skb->mark = (skb->mark & ~info->mask) ^ info->mark;
 #if defined(CONFIG_BCM_NAT)
-	enum ip_conntrack_info ctinfo;
-	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
-
-	ct->fastnat |= NF_FAST_NAT_DENY;
+	FASTNAT_DENY(skb) = 1;
 #endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_ALG_MARK(skb);

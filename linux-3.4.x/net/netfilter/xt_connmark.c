@@ -58,7 +58,7 @@ connmark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 		newmark = (ct->mark & ~info->ctmask) ^ info->ctmark;
 		if (ct->mark != newmark) {
 #if defined(CONFIG_BCM_NAT)
-			ct->fastnat |= NF_FAST_NAT_DENY;
+			FASTNAT_DENY(skb) = 1;
 #endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 			FOE_ALG_MARK(skb);

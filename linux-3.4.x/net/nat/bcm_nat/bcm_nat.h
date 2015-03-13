@@ -18,13 +18,14 @@
  * offcet do not be replaced in any code (as hw_nat, strongly check this, now find max cb offset in wifi drivers = 41)
  */
 #define CB_FAST_ROUTE		42
-#define fastroute(skb)		(skb->cb[CB_FAST_ROUTE])
+#define FASTROUTE(skb)		(skb->cb[CB_FAST_ROUTE])
+
+#define CB_FAST_NAT		43
+#define FASTNAT_DENY(skb)	(skb->cb[CB_FAST_NAT])
 
 /*
  * conntrack fastforward flags
  */
-#define	NF_FAST_NAT_DENY	1
-
 extern unsigned int nf_conntrack_fastnat;
 extern unsigned int nf_conntrack_fastroute;
 extern int bcm_fast_path(struct sk_buff *skb);

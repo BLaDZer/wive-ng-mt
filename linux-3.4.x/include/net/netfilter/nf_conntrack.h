@@ -126,10 +126,6 @@ struct nf_conn {
 	/* If we were expected by an expectation, this will be it */
 	struct nf_conn *master;
 
-#if defined(CONFIG_BCM_NAT)
-	u_int32_t fastnat;
-#endif
-
 #if defined(CONFIG_NF_CONNTRACK_MARK)
 	u_int32_t mark;
 #endif
