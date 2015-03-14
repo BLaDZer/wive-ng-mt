@@ -33,7 +33,6 @@ static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 	struct net_device *dev = dst->dev;
 	int hh_len = LL_RESERVED_SPACE(dev);
 	struct neighbour *neigh;
-	int ret = 0;
 
 	/* Be paranoid, rather than too clever. */
 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
