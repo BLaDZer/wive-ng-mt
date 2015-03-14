@@ -179,7 +179,7 @@ sockGen.o:  sockGen.c uemf.h $(CONF_H)
 
 sslSocket.o: sslSocket.c sslSocket.h
 
-station.o: station.c station.h oid.h stapriv.h webs.h
+station.o: station.c station.h oid.h webs.h
 
 usb.o: usb.c usb.h webs.h $(UCONF_H)
 
