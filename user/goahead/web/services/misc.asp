@@ -284,9 +284,10 @@ function offloadModeSelect(form)
 	// SW extensions
 	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'))
 	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'))
-	displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
-	if (fastpathb == "1")
+	if (fastpathb == "1") {
 	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
+	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
+	}
 }
 
 function pingerSelect(form)

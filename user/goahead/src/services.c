@@ -91,7 +91,7 @@ static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
 
 	cmdline_t *proc_list = procps_list();
 	cmdline_t *curr = proc_list;
-	
+
 	while (curr != NULL)
 	{
 		int i=0;
@@ -105,14 +105,13 @@ static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
 			}
 			i++;
 		}
-		
 		// Move pointer
 		curr = curr->next;
 	}
 
 	// Free structure, NULL is properly handled
 	procps_free(proc_list);
-	
+
 	return 0;
 }
 
@@ -327,7 +326,7 @@ static int getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_BCM_NAT_FASTPATH
+#ifdef CONFIG_BCM_NAT
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
