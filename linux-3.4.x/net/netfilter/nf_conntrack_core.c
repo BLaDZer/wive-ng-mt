@@ -54,7 +54,6 @@ extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
 
 #if defined(CONFIG_BCM_NAT)
 #include <net/ip.h>
-#include "../nat/bcm_nat/bcm_nat.h"
 #endif
 
 #if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)

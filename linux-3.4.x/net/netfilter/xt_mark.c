@@ -16,10 +16,6 @@
 #include <linux/netfilter/xt_mark.h>
 #include <linux/netfilter/x_tables.h>
 
-#if defined(CONFIG_BCM_NAT)
-#include <net/netfilter/nf_conntrack.h>
-#endif
-
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
 #include "../nat/hw_nat/frame_engine.h"
@@ -39,11 +35,11 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	const struct xt_mark_tginfo2 *info = par->targinfo;
 
 	skb->mark = (skb->mark & ~info->mask) ^ info->mark;
-#if defined(CONFIG_BCM_NAT)
-	FASTNAT_DENY(skb) = 1;
-#endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	FOE_ALG_MARK(skb);
+#endif
+#if defined(CONFIG_BCM_NAT)
+	FASTNAT_DENY(skb) = 1;
 #endif
 	return XT_CONTINUE;
 }

@@ -25,10 +25,6 @@
 
 #include "nf_internals.h"
 
-#if defined(CONFIG_BCM_NAT)
-#include "../nat/bcm_nat/bcm_nat.h"
-#endif
-
 static DEFINE_MUTEX(afinfo_mutex);
 
 const struct nf_afinfo __rcu *nf_afinfo[NFPROTO_NUMPROTO] __read_mostly;

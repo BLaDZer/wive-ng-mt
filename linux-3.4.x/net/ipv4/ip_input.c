@@ -150,9 +150,6 @@
 #include "../nat/hw_nat/ra_nat.h"
 #endif
 
-#if defined(CONFIG_BCM_NAT)
-#include "../nat/bcm_nat/bcm_nat.h"
-#endif
 /*
  *	Process Router Attention IP option (RFC 2113)
  */

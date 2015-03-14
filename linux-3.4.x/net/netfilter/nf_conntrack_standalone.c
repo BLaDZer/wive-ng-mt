@@ -18,9 +18,6 @@
 #include <linux/security.h>
 #include <linux/inet.h>
 #include <net/net_namespace.h>
-#if defined(CONFIG_BCM_NAT)
-#include "../nat/bcm_nat/bcm_nat.h"
-#endif
 #ifdef CONFIG_SYSCTL
 #include <linux/sysctl.h>
 #endif
