@@ -53,29 +53,25 @@ static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 	rcu_read_lock();
 	neigh = dst_get_neighbour_noref(dst);
 	if (likely(neigh)) {
-	    int res;
+	    int ret;
 	    struct hh_cache *hh = &neigh->hh;
 
 	    if ((neigh->nud_state & NUD_CONNECTED) && hh->hh_len)
-		res = neigh_hh_output(hh, skb);
+		ret = neigh_hh_output(hh, skb);
 	    else
-		res = neigh->output(neigh, skb);
+		ret = neigh->output(neigh, skb);
 
 	    rcu_read_unlock();
-	    return res;
-	} else {
-#ifdef DEBUG
-	    if (net_ratelimit())
-		printk(KERN_DEBUG "bcm_fast_path_output: No header cache and no neighbour!\n");
-#endif
-	    rcu_read_unlock();
-	    kfree_skb(skb);
-	    return -EINVAL;
+	    return (ret == 1) ? 0 : ret; /* Don't return 1 */
 	}
 	rcu_read_unlock();
 
-	/* Don't return 1 */
-	return (ret == 1) ? 0 : ret;
+#ifdef DEBUG
+	if (net_ratelimit())
+	    printk(KERN_DEBUG "bcm_fast_path_output: No header cache and no neighbour!\n");
+#endif
+	kfree_skb(skb);
+	return -EINVAL;
 }
 
 int __fastpathnet bcm_fast_path(struct sk_buff *skb)
