@@ -15,11 +15,9 @@
 #include	<netinet/in.h>
 #include	<arpa/inet.h>
 
-#include	"oid.h"
 #include	"utils.h"
 #include	"internet.h"
 #include	"station.h"
-#include	"wireless.h"
 
 static int  getLangBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getStationBuilt(int eid, webs_t wp, int argc, char_t **argv);

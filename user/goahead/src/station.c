@@ -13,8 +13,6 @@
 #include	<dirent.h>
 
 #include	"utils.h"
-#include	"wireless.h"
-#include	"oid.h"
 #include	"internet.h"
 #include	"helpers.h"
 #include	"station.h"

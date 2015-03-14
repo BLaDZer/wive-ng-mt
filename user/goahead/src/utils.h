@@ -17,7 +17,7 @@
 #include	"uemf.h"
 
 #include        "nvram.h"
-#include        "stapriv.h"
+#include        "oid.h"
 
 #ifdef CONFIG_RALINKAPP_SWQOS
 #include	"qos.h"

@@ -364,9 +364,6 @@ typedef struct  _PACKET_INFO    {
 
 #define MAC_ADDR_LEN                    6
 
-
-
-
 #define RLT_MAC_BASE 0x01
 
 /* rate table params */

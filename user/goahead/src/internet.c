@@ -23,7 +23,6 @@
 #include 	"firewall.h"
 #include	"management.h"
 #include	"station.h"
-#include	"wireless.h"
 #include	"helpers.h"
 
 static int  getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv);

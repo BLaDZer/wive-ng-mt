@@ -15,9 +15,7 @@
 #include	<linux/if.h>
 
 #include	"utils.h"
-#include	"wireless.h"
 #include	"internet.h"
-#include	"oid.h"
 #include 	"helpers.h"
 
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
