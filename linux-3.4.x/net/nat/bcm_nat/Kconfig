@@ -5,11 +5,3 @@ config BCM_NAT
         help
                 This helps packets pass through netfilter faster when a packet
                 is an established or reply traffic by NAT/ROUTE/INCOMING.
-
-config BCM_NAT_FASTPATH
-        bool "NAT Fastpath"
-        depends on BCM_NAT && !RPS
-        default y
-        help
-                This helps packets pass through netfilter faster when a packet
-                is an established or reply traffic over NAT.

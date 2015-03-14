@@ -709,9 +709,7 @@ static const struct bin_table bin_net_netfilter_table[] = {
 	{ CTL_INT,	NET_NF_CONNTRACK_NAT_MODE,		"nf_conntrack_nat_mode" },
 #endif
 #if defined(CONFIG_BCM_NAT)
-#if defined(CONFIG_BCM_NAT_FASTPATH)
 	{ CTL_INT,	NET_NF_CONNTRACK_FASTNAT,		"nf_conntrack_fastnat" },
-#endif
 	{ CTL_INT,	NET_NF_CONNTRACK_FASTROUTE,		"nf_conntrack_fastroute" },
 #endif
 	{}

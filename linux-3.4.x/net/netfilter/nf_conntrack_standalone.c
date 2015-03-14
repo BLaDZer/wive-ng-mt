@@ -528,7 +528,6 @@ static struct ctl_table nf_ct_sysctl_table[] = {
 	},
 #endif
 #if defined(CONFIG_BCM_NAT)
-#if defined(CONFIG_BCM_NAT_FASTPATH)
 	{
 		.procname	= "nf_conntrack_fastnat",
 		.data		= &nf_conntrack_fastnat,
@@ -536,7 +535,6 @@ static struct ctl_table nf_ct_sysctl_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
-#endif
 	{
 		.procname	= "nf_conntrack_fastroute",
 		.data		= &nf_conntrack_fastroute,

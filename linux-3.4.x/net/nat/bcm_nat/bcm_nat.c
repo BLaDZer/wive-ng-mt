@@ -130,7 +130,6 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
  * NAT
  * Stolen from nf_nat_packet.
  */
-#if defined(CONFIG_BCM_NAT_FASTPATH)
 extern bool manip_pkt(u_int16_t proto, struct sk_buff *skb, unsigned int iphdroff, const struct nf_conntrack_tuple *target, enum nf_nat_manip_type maniptype);
 
 int __fastpathnet bcm_do_fastnat(struct nf_conn *ct,
@@ -179,7 +178,6 @@ int __fastpathnet bcm_do_fastnat(struct nf_conn *ct,
 
 	return NF_FAST_NAT;
 }
-#endif
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Broadcom Corporation");
