@@ -703,6 +703,7 @@
 29) kernel: net: neigh: optimize neighbor entry size calculation.<br>
 30) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
 31) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
+32) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
 <br>
 <br>
 <b>TODO:</b><br>
