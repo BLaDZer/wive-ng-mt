@@ -672,39 +672,41 @@
 <br>
 <br>
 <b>2.6.x</b><br>
-1) build system: move gpio config to kernel config.<br>
-2) build system: split defaults for 762x with 7612NE module.<br>
-3) miniupnpd: up to 1.9.20150307 version.<br>
-4) quagga: up to 0.99.24.1 version.<br>
-5) pppd: fix disconnect socket regression after kernel pppoe sockets cleanup fix.<br>
-6) init.d: enchange boot indications.<br>
-7) init.d: ipv6: fix IPOE v6 mode with tunneled WAN for v4.<br>
-8) init.d: irqbalance: tune modes and enable auto by defaults.<br>
-9) init.d: wifi.sh: touch Channel by iwpriv (aplci connect after apply workaround).<br>
-10) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
-11) kernel: fastpaths: fix locks imbalance issue (lost unlock in output).<br>
-12) kernel: fastpaths: fastnat switch use cb[43] for deny flag (more fast and safe).<br>
-13) kernel: fastpaths: optimize skip nat offload logic.<br>
-14) kernel: ralink_raeth: add support GRO offload.<br>
-15) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
-16) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
-17) kernel: mips: allow optimized inliming.<br>
-18) kernel: inet: sanitize inet{,6} protocol demux.<br>
-19) kernel: net: make skb->skb_iif always track skb->dev.<br>
-20) kernel: net: remove protocol from struct dst_ops.<br>
-21) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-22) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-23) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-24) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
-25) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-26) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
-27) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
-28) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
-29) kernel: net: neigh: optimize neighbor entry size calculation.<br>
-30) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
-31) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
-32) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
-33) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
+1) toolchain: sync uclibc patches, update gcc to 12.03.2015 4.8.5 version form git, update headers.<br>
+2) build system: move gpio config to kernel config.<br>
+3) build system: split defaults for 762x with 7612NE module.<br>
+4) miniupnpd: up to 1.9.20150307 version.<br>
+5) quagga: up to 0.99.24.1 version.<br>
+6) pppd: fix disconnect socket regression after kernel pppoe sockets cleanup fix.<br>
+7) init.d: enchange boot indications.<br>
+8) init.d: ipv6: fix IPOE v6 mode with tunneled WAN for v4.<br>
+9) init.d: irqbalance: tune modes and enable auto by defaults.<br>
+10) init.d: wifi.sh: touch Channel by iwpriv (aplci connect after apply workaround).<br>
+11) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
+12) kernel: fastpaths: fix locks imbalance issue (lost unlock in output).<br>
+13) kernel: fastpaths: fastnat switch use cb[43] for deny flag (more fast and safe).<br>
+14) kernel: fastpaths: optimize skip nat offload logic.<br>
+15) kernel: fastpaths: clear in ip_input CB only for loopback packets.<br>
+16) kernel: ralink_raeth: add support GRO offload.<br>
+17) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
+18) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
+19) kernel: mips: allow optimized inliming.<br>
+20) kernel: inet: sanitize inet{,6} protocol demux.<br>
+21) kernel: net: make skb->skb_iif always track skb->dev.<br>
+22) kernel: net: remove protocol from struct dst_ops.<br>
+23) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+24) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+25) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+26) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
+27) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
+28) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+29) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
+30) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
+31) kernel: net: neigh: optimize neighbor entry size calculation.<br>
+32) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
+33) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
+34) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
+35) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
 <br>
 <br>
 <b>TODO:</b><br>
