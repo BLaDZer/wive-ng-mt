@@ -486,7 +486,7 @@ nf_ct_cone_tuple_equal(const struct nf_conntrack_tuple *t1,
 		return false;
 }
 
-static struct nf_conntrack_tuple_hash __fastpathnet *
+static inline struct nf_conntrack_tuple_hash *
 __nf_cone_conntrack_find(struct net *net,
 			 const struct nf_conntrack_tuple *tuple, u32 hash)
 {
