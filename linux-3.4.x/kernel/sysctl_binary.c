@@ -16,10 +16,6 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 
-#if defined(CONFIG_BCM_NAT)
-#include "../net/nat/bcm_nat/bcm_nat.h"
-#endif
-
 #ifdef CONFIG_SYSCTL_SYSCALL
 
 struct bin_table;
