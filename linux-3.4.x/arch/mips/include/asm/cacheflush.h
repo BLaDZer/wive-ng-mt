@@ -61,6 +61,9 @@ static inline void flush_anon_page(struct vm_area_struct *vma,
 static inline void flush_icache_page(struct vm_area_struct *vma,
 	struct page *page)
 {
+	if (cpu_has_dc_aliases ||
+	    ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc))
+		__flush_dcache_page(page);
 }
 
 extern void (*flush_icache_range)(unsigned long start, unsigned long end);
