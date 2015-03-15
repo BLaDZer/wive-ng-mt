@@ -45,6 +45,8 @@ fulldump
 /lib/lib/*
 /lib/shared
 /lib/shared/*
+
+# ext libs
 /libext/openssl/Makefile
 /libext/libiconv/libcharset/libext/Makefile
 /libext/libiconv/libcharset/config.h
@@ -187,25 +189,6 @@ fulldump
 /libext/libnfnetlink/utils/Makefile
 /libext/libnfnetlink/include/Makefile
 /libext/libnfnetlink/include/libnfnetlink/Makefile
-/libext/libgmp/stamp-h1
-/libext/libnet/Makefile
-/libext/libnet/Makefile.in
-/libext/libnet/configure
-/libext/libnet/doc/Makefile
-/libext/libnet/doc/html/Makefile
-/libext/libnet/doc/man/Makefile
-/libext/libnet/doc/man/man3/Makefile
-/libext/libnet/include/Makefile
-/libext/libnet/include/config.h
-/libext/libnet/include/libnet.h
-/libext/libnet/include/libnet/Makefile
-/libext/libnet/include/stamp-h1
-/libext/libnet/include/win32/Makefile
-/libext/libnet/libnet-config
-/libext/libnet/sample/Makefile
-/libext/libnet/src/Makefile
-/libext/libnet/version.h
-/libext/libnet/win32/Makefile
 /libext/libusb-1.0/Makefile
 /libext/libusb-1.0/doc/Makefile
 /libext/libusb-1.0/examples/Makefile
@@ -218,6 +201,8 @@ fulldump
 /libext/libpcap/autom4te.cache/*
 /libext/libnl/configure
 /libext/libnl/lib/libnl.a
+
+# user apps
 /user/busybox/*/Config.in
 /user/busybox/docs/busybox.net/BusyBox.html
 /user/busybox/include/bbconfigopts_bz2.h
@@ -240,12 +225,6 @@ fulldump
 /user/ntfs-3g/include/Makefile
 /user/ntfs-3g/include/ntfs-3g/Makefile
 /user/ntfs-3g/include/fuse-lite/Makefile
-/user/openssl/apps/CA.pl
-/user/openssl/apps/CA.pl.bak
-/user/openssl/Makefile
-/user/openssl/Makefile.bak
-/user/openssl/tools/c_rehash
-/user/openssl/tools/c_rehash.bak
 /user/ppp/chat/Makefile
 /user/ppp/Makefile
 /user/ppp/*/Makefile
