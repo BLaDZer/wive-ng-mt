@@ -691,22 +691,23 @@
 17) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
 18) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
 19) kernel: mips: allow optimized inliming.<br>
-20) kernel: inet: sanitize inet{,6} protocol demux.<br>
-21) kernel: net: make skb->skb_iif always track skb->dev.<br>
-22) kernel: net: remove protocol from struct dst_ops.<br>
-23) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-24) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-25) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-26) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
-27) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-28) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
-29) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
-30) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
-31) kernel: net: neigh: optimize neighbor entry size calculation.<br>
-32) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
-33) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
-34) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
-35) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
+20) kernel: mips: revert fixrange_init() limiting to the FIXMAP region.<br>
+21) kernel: inet: sanitize inet{,6} protocol demux.<br>
+22) kernel: net: make skb->skb_iif always track skb->dev.<br>
+23) kernel: net: remove protocol from struct dst_ops.<br>
+24) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+25) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+26) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+27) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
+28) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
+29) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+30) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
+31) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
+32) kernel: net: neigh: optimize neighbor entry size calculation.<br>
+33) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
+34) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
+35) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
+36) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
 <br>
 <br>
 <b>TODO:</b><br>
