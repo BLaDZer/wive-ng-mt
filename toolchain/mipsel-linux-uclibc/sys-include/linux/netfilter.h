@@ -12,6 +12,11 @@
 #define NAT_MODE_RCONE		2
 #endif
 
+/* used in skip lists in conntrack */
+#define SKIP_NO			0
+#define SKIP_ALL		1
+#define SKIP_SWO		2
+
 /* Responses from hook functions. */
 #define NF_DROP 0
 #define NF_ACCEPT 1
