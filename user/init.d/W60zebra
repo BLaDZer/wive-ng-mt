@@ -15,8 +15,12 @@ fi
 LOG="logger -t zebra"
 
 start() {
-    eval `nvram_buf_get 2860 RIPEnable Login`
-    if [ "$RIPEnable" = "1" ] && [ -f /etc/zebra.conf ]; then
+    eval `nvram_buf_get 2860 RIPEnable Password Login HostName`
+    if [ "$RIPEnable" = "1" ]; then
+	printf "hostname $HostName
+    		password $Password
+    		enable password Admin
+    		log syslog" > /etc/zebra.conf
 	$LOG "Starting ZEBRA"
 	zebra -u $Login -g $Login -d -f /etc/zebra.conf
     fi

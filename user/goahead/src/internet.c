@@ -1849,79 +1849,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_USER_ZEBRA
-static void ripdRestart(void)
-{
-	char lan_ip[16], wan_ip[16], lan_mask[16], wan_mask[16];
-
-	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char *password = nvram_get(RT2860_NVRAM, "Password");
-	char *RIPEnable = nvram_get(RT2860_NVRAM, "RIPEnable");
-
-	if (!opmode || !strlen(opmode)) // unknown
-		goto out;
-
-	if (!strcmp(opmode, "0"))	// bridge
-		goto out;
-
-	if (!RIPEnable || !strlen(RIPEnable) || !strcmp(RIPEnable,"0")) //ripd disable
-		goto out;
-
-	if(!password || !strlen(password)) //if password not set
-		password = "Admin";
-
-	doSystem("echo \"hostname linux.router1\" > /etc/ripd.conf ");
-	doSystem("echo \"password %s\" >> /etc/ripd.conf ", password);
-	doSystem("echo \"router rip\" >> /etc/ripd.conf ");
-
-	// deal with WAN
-	if(getIfIp(getWanIfName(), wan_ip) != -1){
-		if(getIfNetmask(getWanIfName(), wan_mask) != -1){
-			doSystem("echo \"network %s/%d\" >> /etc/ripd.conf", wan_ip, netmask_aton(wan_mask));
-			doSystem("echo \"network %s\" >> /etc/ripd.conf", getWanIfName());
-		}else
-			printf("goahead: ripdRestart(): The WAN IP is still undeterminated...\n");
-	}else
-		printf("goahead: ripdRestart(): The WAN IP is still undeterminated...\n");
-
-	// deal with LAN
-	if(getIfIp(getLanIfName(), lan_ip) != -1){
-		if(getIfNetmask(getLanIfName(), lan_mask) != -1){
-			doSystem("echo \"network %s/%d\" >> /etc/ripd.conf", lan_ip, netmask_aton(lan_mask));
-			doSystem("echo \"network %s\" >> /etc/ripd.conf", getLanIfName());
-		}
-	}
-	doSystem("echo \"version 2\" >> /etc/ripd.conf");
-	doSystem("echo \"log syslog\" >> /etc/ripd.conf");
-out:
-	doSystem("service ripd restart");
-}
-
-static void zebraRestart(void)
-{
-	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char *password = nvram_get(RT2860_NVRAM, "Password");
-	char *RIPEnable = nvram_get(RT2860_NVRAM, "RIPEnable");
-
-	if(!opmode||!strlen(opmode))   //unknown
-		goto out;
-
-	if(!strcmp(opmode, "0"))	// bridge
-		goto out;
-
-	if(!RIPEnable || !strlen(RIPEnable) || !strcmp(RIPEnable,"0")) // zebra disabled
-		goto out;
-
-	if(!password || !strlen(password))
-		password = "Admin";
-
-	doSystem("echo \"hostname linux.router1\" > /etc/zebra.conf ");
-	doSystem("echo \"password %s\" >> /etc/zebra.conf ", password);
-	doSystem("echo \"enable password Admin\" >> /etc/zebra.conf ");
-	doSystem("echo \"log syslog\" >> /etc/zebra.conf ");
-out:
-	doSystem("service zebra restart");
-}
-
 static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *rip;
@@ -1936,30 +1863,13 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 	if(!RIPEnable || !strlen(RIPEnable))
 		RIPEnable = "0";
 
-	if(!gstrcmp(rip, "0") && !strcmp(RIPEnable, "0"))
-	{
-		// nothing changed
-	}
-	else if(!gstrcmp(rip, "1") && !strcmp(RIPEnable, "1"))
-	{
-		// nothing changed
-	}
-	else if(!gstrcmp(rip, "0") && !strcmp(RIPEnable, "1"))
-	{
+	if(!gstrcmp(rip, "0") && !strcmp(RIPEnable, "1"))
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
-
-		doSystem("service ripd stop");
-		doSystem("service zebra stop");
-	}
 	else if(!gstrcmp(rip, "1") && !strcmp(RIPEnable, "0"))
-	{
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
 
-		zebraRestart();
-		ripdRestart();
-	}
-	else
-		return;
+	doSystem("service ripd restart");
+	doSystem("service zebra restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG

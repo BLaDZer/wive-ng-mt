@@ -15,8 +15,14 @@ fi
 LOG="logger -t ripd"
 
 start() {
-    eval `nvram_buf_get 2860 RIPEnable Login`
-    if [ "$RIPEnable" = "1" ] && [ -f /etc/ripd.conf ]; then
+    eval `nvram_buf_get 2860 RIPEnable Password Login HostName`
+    if [ "$RIPEnable" = "1" ]; then
+	printf "hostname $HostName
+    		password $Password
+    		enable password Admin
+    		log syslog
+    		router rip
+    		version 2" > /etc/ripd.conf
 	$LOG "Starting RIPD"
 	ripd -u $Login -g $Login -f /etc/ripd.conf -d
     fi
