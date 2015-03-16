@@ -711,6 +711,7 @@
 37) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
 38) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
 39) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
+40) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
 <br>
 <br>
 <b>TODO:</b><br>
