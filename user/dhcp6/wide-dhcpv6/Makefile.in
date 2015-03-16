@@ -36,9 +36,8 @@ localdbdir= @localdbdir@
 user= @user@
 group= @group@
 
-CFLAGS=	@CFLAGS@ @DEFS@ -DSYSCONFDIR=\"${sysconfdir}\" \
-	-DLOCALDBDIR=\"${localdbdir}\"
-LDFLAGS=@LDFLAGS@
+CFLAGS=	@CFLAGS@ @DEFS@ -DSYSCONFDIR=\"${sysconfdir}\" 	-DLOCALDBDIR=\"${localdbdir}\" -ffunction-sections -fdata-sections
+LDFLAGS=@LDFLAGS@ -ffunction-sections -fdata-sections -Wl,--gc-sections
 LIBOBJS=@LIBOBJS@
 LIBS=	@LIBS@ @LEXLIB@
 CC=	@CC@
@@ -80,7 +79,7 @@ cfparse.c y.tab.h: cfparse.y
 
 cftoken.c: cftoken.l y.tab.h
 	@LEX@ cftoken.l
-	mv lex.yy.c $@	
+	mv lex.yy.c $@
 
 getaddrinfo.o:	$(srcdir)/missing/getaddrinfo.c
 	$(CC) $(CFLAGS) -c $(srcdir)/missing/$*.c

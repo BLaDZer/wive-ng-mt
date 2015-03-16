@@ -1925,7 +1925,9 @@ out:
 static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *rip;
+	char_t *submitUrl;
 	char *RIPEnable;
+
 	rip = websGetVar(wp, T("RIPSelect"), T(""));
 	if(!rip || !strlen(rip))
 		return;
@@ -1959,12 +1961,19 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 	else
 		return;
 
-	//debug print
-	websHeader(wp);
-	websWrite(wp, T("<h3>Dynamic Routing:</h3><br>\n"));
-	websWrite(wp, T("RIPEnable %s<br>\n"), rip);
-	websFooter(wp);
-	websDone(wp, 200);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0])
+	{
+		//debug print
+		websHeader(wp);
+		websWrite(wp, T("<h3>Dynamic Routing:</h3><br>\n"));
+		websWrite(wp, T("RIPEnable %s<br>\n"), rip);
+		websFooter(wp);
+		websDone(wp, 200);
+	} else
+#endif
+		websRedirect(wp, submitUrl);
 }
 #endif
 

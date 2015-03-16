@@ -1,17 +1,7 @@
-# Comment out line bellow if you don't want to use 
-# libwrap (hosts.{allow,deny} access control)
-#LIBWRAP = -lwrap
-
-# If you don't have it in /var/log/subsys, uncomment and define
-#CFLAGS += -DLOCKFILE_DIR=\"/var/log\"
-
-# GNU target string
-#CROSS = 
-
-#CC = $(CROSS)gcc
 STRIP = $(CROSS)strip
 
-CFLAGS += -Os -Wall
+CFLAGS += -Os -Wall -ffunction-sections -fdata-sections -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
+LDFLAGS	+= -Wl,--gc-sections
 
 ifneq ("$(LIBWRAP)", "")
 LIBWRAP += -DUSE_LIBWRAP

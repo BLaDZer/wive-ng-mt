@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in.
 
+CFLAGS	+= -ffunction-sections -fdata-sections
+LDFLAGS	+= -Wl,--gc-sections
+
 SUBDIRS = lib @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ @BABELD@ \
          @ISISD@ @PIMD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@ @DOC@ m4 @pkgsrcdir@ \
          redhat @SOLARIS@ tests

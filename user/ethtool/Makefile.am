@@ -1,4 +1,5 @@
-AM_CFLAGS = -Wall
+AM_CFLAGS = -Wall -ffunction-sections -fdata-sections
+AM_LDLAGS = -ffunction-sections -fdata-sections -Wl,--gc-sections
 LDADD = -lm
 
 man_MANS = ethtool.8

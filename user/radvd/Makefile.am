@@ -20,6 +20,9 @@ AUTOMAKE_OPTIONS = 1.2 foreign subdir-objects
 
 ###  Compiler flags and such ###
 
+CFLAGS	+= -ffunction-sections -fdata-sections
+LDFLAGS	+= -Wl,--gc-sections
+
 DEFS = \
 	-DINET6=1 \
 	-DLOG_FACILITY=$(LOG_FACILITY) \

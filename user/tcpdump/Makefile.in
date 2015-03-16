@@ -48,6 +48,8 @@ DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
 
 # Standard CFLAGS
 CFLAGS = @CFLAGS@
+CFLAGS	+= -ffunction-sections -fdata-sections
+LDFLAGS	+= -Wl,--gc-sections
 FULL_CFLAGS = $(CCOPT) $(DEFS) $(INCLS) $(CFLAGS)
 
 # Standard LDFLAGS
