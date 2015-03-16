@@ -1,4 +1,6 @@
-# all
+#
+# exclude enerated files from all
+#
 *.o
 *.a
 *.a.*
@@ -15,8 +17,14 @@
 *.rej
 *.lo
 *.gdb
+*.tab.c
+*.tab.h
+*.moc
 .sgbuilt_user
 .libs
+lex.*.c
+zconf.hash.c
+lkc_defs.h
 libtool
 aclocal.m4
 autom4te.cache
@@ -46,7 +54,9 @@ fulldump
 /lib/shared
 /lib/shared/*
 
-# ext libs
+#
+# exclude enerated files from libs
+#
 /libext/openssl/Makefile
 /libext/libiconv/libcharset/libext/Makefile
 /libext/libiconv/libcharset/config.h
@@ -202,7 +212,9 @@ fulldump
 /libext/libnl/configure
 /libext/libnl/lib/libnl.a
 
-# user apps
+#
+# exclude enerated files from user apps
+#
 /user/busybox/*/Config.in
 /user/busybox/docs/busybox.net/BusyBox.html
 /user/busybox/include/bbconfigopts_bz2.h
@@ -360,7 +372,9 @@ fulldump
 /user/irqbalance/Makefile
 /user/irqbalance/Makefile.in
 
-# kernel
+#
+# exclude enerated files from kernel
+#
 /linux/*
 /linux-3.4.x/include/linux/autoconf.h
 /linux-3.4.x/include/linux/utsrelease.h
@@ -368,7 +382,9 @@ fulldump
 /linux-3.4.x/include/asm-mips/asm-offsets.h
 /linux-3.4.x/include/linux/compile.h
 
-# tools
+#
+# exclude enerated files from tools
+#
 /tools/xz/libext/Makefile.in
 /tools/xz/lib/Makefile.in
 /tools/xz/Doxyfile
@@ -397,11 +413,15 @@ fulldump
 /tools/xz/stamp-h1
 /tools/xz/tests/Makefile
 
+#
 # prevent upload ATE in git
+#
 /user/rt2880_app/ated/*
 /linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
 /linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
 /linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
 
+#
 # exclude toolchain
+#
 !/toolchain
