@@ -15,10 +15,10 @@ fi
 LOG="logger -t ripd"
 
 start() {
-    RIPEnable=`nvram_get 2860 RIPEnable`
+    eval `nvram_buf_get 2860 RIPEnable Login`
     if [ "$RIPEnable" = "1" ] && [ -f /etc/ripd.conf ]; then
 	$LOG "Starting RIPD"
-	ripd -f /etc/ripd.conf -d
+	ripd -u $Login -g $Login -f /etc/ripd.conf -d
     fi
 }
 

@@ -15,10 +15,10 @@ fi
 LOG="logger -t zebra"
 
 start() {
-    RIPEnable=`nvram_get 2860 RIPEnable`
+    eval `nvram_buf_get 2860 RIPEnable Login`
     if [ "$RIPEnable" = "1" ] && [ -f /etc/zebra.conf ]; then
 	$LOG "Starting ZEBRA"
-	zebra -d -f /etc/zebra.conf
+	zebra -u $Login -g $Login -d -f /etc/zebra.conf
     fi
 }
 
