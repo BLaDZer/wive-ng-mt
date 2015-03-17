@@ -6,10 +6,10 @@ APROOTDIR=`pwd`
 $APROOTDIR/update-version-h.sh
 
 if [ ! -f $APROOTDIR/configure ]; then
+    autoreconf -fi
     sh ./autogen.sh
 fi
 if [ ! -f $APROOTDIR/Makefile.in ]; then
-    autoreconf -fi
     automake -c --add-missing
     automake
 fi

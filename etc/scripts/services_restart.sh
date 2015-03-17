@@ -34,20 +34,19 @@ fi
 ##########################################################
 # Always reload some services				 #
 ##########################################################
-    service dnsserver reload
-    if [ -e /etc/init.d/zebra ]; then
-	service ripd restart
-        service zebra restart
+    if [ -e /etc/init.d/parprouted ]; then
+	service parprouted restart
+    fi
+    if [ -e /etc/init.d/dynroute ]; then
+	service dynroute restart
     fi
     if [ -d /proc/sys/net/ipv6 ]; then
 	service six restart
     fi
+    service dnsserver reload
     service ddns restart
     service ntp restart
     service miniupnpd restart
-    if [ -e /etc/init.d/parprouted ]; then
-	service parprouted restart
-    fi
 
 ##########################################################
 # Need restart this:					 #

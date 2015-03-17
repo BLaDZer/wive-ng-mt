@@ -5,11 +5,11 @@ APROOTDIR=`pwd`
 
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
+    autoreconf -fi
     autoconf
 fi
 
 if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/Makefile ]; then
-    autoreconf -fi
     automake -c --add-missing
     automake
 fi

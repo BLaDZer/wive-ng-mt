@@ -9,11 +9,8 @@ LIBS=$LIBDIR/lib
 INCLUDES=$LIBDIR/include
 
 if [ ! -f $APROOTDIR/configure ]; then
+    autoreconf -fi
     sh ./autogen.sh
-fi
-if [ ! -f $APROOTDIR/Makefile.in ]; then
-    automake -c --add-missing
-    automake
 fi
 
 HBUILD=`uname -m`-pc-linux-gnu

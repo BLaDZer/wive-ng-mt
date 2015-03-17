@@ -80,15 +80,15 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = .
-DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
+DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog COPYING \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(srcdir)/libxml.spec.in \
 	$(srcdir)/libxml-2.0.pc.in \
 	$(srcdir)/libxml-2.0-uninstalled.pc.in \
 	$(srcdir)/libxml2-config.cmake.in $(srcdir)/xml2-config.in \
-	depcomp COPYING TODO compile config.guess config.sub \
-	install-sh missing ltmain.sh
+	depcomp TODO compile config.guess config.sub install-sh \
+	missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \

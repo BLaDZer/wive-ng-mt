@@ -1868,8 +1868,7 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 	else if(!gstrcmp(rip, "1") && !strcmp(RIPEnable, "0"))
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
 
-	doSystem("service ripd restart");
-	doSystem("service zebra restart");
+	doSystem("service dynroute restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG

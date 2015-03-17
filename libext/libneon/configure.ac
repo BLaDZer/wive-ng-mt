@@ -192,7 +192,7 @@ AC_OUTPUT
 # for VPATH builds:
 test -d test/common || mkdir test/common
 
-AC_MSG_NOTICE([Configured to build AC_PACKAGE_STRING:
+AC_MSG_NOTICE([Configured to build libneon:
 
   Install prefix:  ${prefix}
   Compiler:        ${CC}

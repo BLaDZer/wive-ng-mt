@@ -870,10 +870,8 @@ uninstall-am:
 @HAVE_LATEX_TRUE@	-$(LATEXMK) -C HACKING.tex
 
 romfs: install
-	$(ROMFSINST) -S init.d/W65ripd /etc/rc.d/W65ripd
-	$(ROMFSINST) -s /etc/rc.d/W65ripd /etc/init.d/ripd
-	$(ROMFSINST) -S init.d/W60zebra /etc/rc.d/W60zebra
-	$(ROMFSINST) -s /etc/rc.d/W60zebra /etc/init.d/zebra
+	$(ROMFSINST) -S init.d/W60dynroute /etc/rc.d/W60dynroute
+	$(ROMFSINST) -s /etc/rc.d/W60dynroute /etc/init.d/dynroute
 	$(ROMFSINST) -S filesystem/sbin/zebra /bin/zebra
 	$(ROMFSINST) -S filesystem/sbin/ripd /bin/ripd
 	cp -rfva filesystem/lib/*.so* $(ROMFSDIR)/lib/

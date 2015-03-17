@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/ripd ]; then
+if [ ! -f /bin/zebra ] || [ ! -f /bin/ripd ]; then
     exit 0
 fi
 
@@ -12,11 +12,21 @@ if [ "$OperationMode" = "0" ]; then
     exit 0
 fi
 
-LOG="logger -t ripd"
+LOG="logger -t dynroute"
 
 start() {
     eval `nvram_buf_get 2860 RIPEnable Password Login HostName`
-    if [ "$RIPEnable" = "1" ]; then
+    if [ "$RIPEnable" = "1" ] && [ -f /bin/zebra ]; then
+	# confog and start zebra
+	printf "hostname $HostName
+    		password $Password
+    		enable password Admin
+    		log syslog" > /etc/zebra.conf
+	$LOG "Starting ZEBRA"
+	zebra -u $Login -g $Login -d -f /etc/zebra.conf
+    fi
+    if [ "$RIPEnable" = "1" ] && [ -f /bin/ripd ]; then
+	# confog and start ripd
 	printf "hostname $HostName
     		password $Password
     		enable password Admin
@@ -29,6 +39,12 @@ start() {
 }
 
 stop() {
+    pid=`pidof zebra`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping ZEBRA"
+	killall -q zebra
+	killall -q -SIGKILL zebra
+    fi
     pid=`pidof ripd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping RIPD"

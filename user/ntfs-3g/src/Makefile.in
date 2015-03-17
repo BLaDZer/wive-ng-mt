@@ -273,6 +273,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -305,6 +306,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MKNTFS_CPPFLAGS = @MKNTFS_CPPFLAGS@
 MKNTFS_LIBS = @MKNTFS_LIBS@
@@ -339,6 +341,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 all_includes = @all_includes@
@@ -373,7 +376,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 ntfs3gincludedir = @ntfs3gincludedir@
@@ -924,9 +926,9 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 @ENABLE_NTFS_3G_FALSE@install-data-local:
-@ENABLE_NTFS_3G_FALSE@uninstall-local:
 @ENABLE_MOUNT_HELPER_FALSE@install-exec-local:
 @ENABLE_NTFS_3G_FALSE@install-exec-local:
+@ENABLE_NTFS_3G_FALSE@uninstall-local:
 @ENABLE_NTFS_3G_FALSE@install-exec-hook:
 @RUN_LDCONFIG_FALSE@install-exec-hook:
 clean: clean-am

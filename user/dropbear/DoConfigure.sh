@@ -5,6 +5,7 @@ APROOTDIR=`pwd`
 
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
+    autoreconf -fi
     autoconf
 fi
 if [ ! -f $APROOTDIR/Makefile ]; then

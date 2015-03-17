@@ -6,6 +6,7 @@ APROOTDIR=`pwd`
 if [ ! -f $APROOTDIR/configure ]; then
     libtoolize -c --force
     aclocal
+    autoreconf -fi
     autoconf
 fi
 
