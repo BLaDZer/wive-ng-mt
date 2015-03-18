@@ -719,8 +719,9 @@
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
-3) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-4) need add dsvfs2 webui for managment online disk drives (as yandex disk and others).<br>
+3) need add get/reset fabric wan mac in webui (need help community or employ the web developer).<br>
+4) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+5) need add dsvfs2 webui for managment online disk drives (as yandex disk and others).<br>
 <br>
 <br>
 <br>
