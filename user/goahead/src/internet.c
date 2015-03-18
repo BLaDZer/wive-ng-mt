@@ -2166,8 +2166,10 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		}
 	} else if (strlen(mac) == 0)
 		mac = oldmac;
+
 	if (!flag) {
-		websError(wp, 200, "Invalid MAC Address");
+		websError(wp, 200, "Invalid MAC Address, restore from factory!");
+		system("fs factory_mac > /dev/console 2>&1");
 		return;
 	}
 
