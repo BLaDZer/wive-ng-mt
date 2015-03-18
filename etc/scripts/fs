@@ -88,9 +88,7 @@ restore() {
 }
 
 nvramreset() {
-    ###############################################################
     # cleanup with skip clean macs and is_wive and checkmacs flags
-    ###############################################################
     echo "Clear nvram and load user defaults."
     # blink wps/sec led at boot time before goahead start
     if [ -f /bin/gpio ]; then
