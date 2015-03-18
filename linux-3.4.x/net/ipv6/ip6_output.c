@@ -617,7 +617,7 @@ int ip6_find_1stfragopt(struct sk_buff *skb, u8 **nexthdr)
 	return offset;
 }
 
-void ipv6_select_ident(struct frag_hdr *fhdr, struct rt6_info *rt)
+static void ipv6_select_ident(struct frag_hdr *fhdr, struct rt6_info *rt)
 {
 	static u32 ip6_idents_hashrnd __read_mostly;
 	static bool hashrnd_initialized = false;
