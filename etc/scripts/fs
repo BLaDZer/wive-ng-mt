@@ -7,6 +7,9 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU GPL v2 or later.
 
+# include kernel config
+. /etc/scripts/config.sh
+
 # mtd dev for rfs
 MTDRWFS=`cat /proc/mtd | grep "RW-FS" | awk {' print "/dev/"$1 '} | cut -f -1 -d:`
 # maximum size rwfs to write
@@ -34,6 +37,7 @@ usage() {
   echo "nvramreset - Nvarm clean and load default config." >&2
   echo "burnrf - Burn RF config template to Factory." >&2
   echo "change_mac - Change/clone wan mac adree." >&2
+  echo "factory_mac - Set mac in nvram from factory." >&2
   echo "fullreset - 1. Full zero write in config,factory and rwfs particions." >&2
   echo "	    2. Reboot device." >&2
   echo "	    3. Write temlate for RF config (Factory) to flash." >&2
@@ -152,6 +156,28 @@ change_mac() {
     reboot
 }
 
+factory_mac() {
+    if [ -f /bin/eth_mac ]; then
+	echo "Set nvram mac adresses from factory"
+	MACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	echo "Set WAN   MAC - $MACWAN"
+	nvram_set 2860 WAN_MAC_ADDR   "$MACWAN"
+	MACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	echo "Set LAN   MAC - $MACLAN"
+	nvram_set 2860 LAN_MAC_ADDR   "$MACLAN"
+	if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
+	    MACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    echo "Set WLAN1 MAC - $MACWLAN"
+	    nvram_set 2860 WLAN_MAC_ADDR  "$MACWLAN"
+	fi
+	if [ "$CONFIG_RT_SECOND_IF_NONE" = "" ]; then
+	    MACWLAN2=`eth_mac r wlan2 | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    echo "Set WLAN2 MAC - $MACWLAN2"
+	    nvram_set 2860 WLAN2_MAC_ADDR "$MACWLAN2"
+	fi
+    fi
+}
+
 main() {
   local cmd="$1"
   [ -z "$cmd" ] && usage
@@ -177,6 +203,9 @@ main() {
       ;;
     change_mac)
       change_mac $@
+      ;;
+    factory_mac)
+      factory_mac $@
       ;;
     *)
       usage $@

@@ -683,37 +683,38 @@
 9) init.d: irqbalance: tune modes and enable auto by defaults.<br>
 10) init.d: move ripd/zebra config from goahead to init.<br>
 11) init.d: wifi.sh: touch Channel by iwpriv (aplci connect after apply workaround).<br>
-12) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
-13) kernel: fastpaths: fix locks imbalance issue (lost unlock in output).<br>
-14) kernel: fastpaths: fastnat switch use cb[43] for deny flag (more fast and safe).<br>
-15) kernel: fastpaths: optimize skip nat offload logic.<br>
-16) kernel: fastpaths: clear in ip_input CB only for loopback packets.<br>
-17) kernel: ralink_raeth: add support GRO offload.<br>
-18) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
-19) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
-20) kernel: ralink_raeth: use memory barrier instead of double cache sync on coherent region.<br>
-21) kernel: mips: allow optimized inliming.<br>
-22) kernel: mips: revert fixrange_init() limiting to the FIXMAP region.<br>
-23) kernel: mips: highmem fixes for cache aliasing and non-DMA I/O.<br>
-24) kernel: mips: fix of reading I-pages from non-DMA FS devices for ID cache separation.<br>
-25) kernel: mips: bugfix: missed cache flush of TLB refill handler.<br>
-26) kernel: inet: sanitize inet{,6} protocol demux.<br>
-27) kernel: net: make skb->skb_iif always track skb->dev.<br>
-28) kernel: net: remove protocol from struct dst_ops.<br>
-29) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-30) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-31) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-32) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
-33) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-34) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
-35) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
-36) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
-37) kernel: net: neigh: optimize neighbor entry size calculation.<br>
-38) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
-39) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
-40) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
-41) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
-42) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
+12) init.d: fs: add factory_mac command for restore macs in nvram by factory.<br>
+13) kernel: fastpaths: add disable nat fastpath option, small optimize.<br>
+14) kernel: fastpaths: fix locks imbalance issue (lost unlock in output).<br>
+15) kernel: fastpaths: fastnat switch use cb[43] for deny flag (more fast and safe).<br>
+16) kernel: fastpaths: optimize skip nat offload logic.<br>
+17) kernel: fastpaths: clear in ip_input CB only for loopback packets.<br>
+18) kernel: ralink_raeth: add support GRO offload.<br>
+19) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
+20) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
+21) kernel: ralink_raeth: use memory barrier instead of double cache sync on coherent region.<br>
+22) kernel: mips: allow optimized inliming.<br>
+23) kernel: mips: revert fixrange_init() limiting to the FIXMAP region.<br>
+24) kernel: mips: highmem fixes for cache aliasing and non-DMA I/O.<br>
+25) kernel: mips: fix of reading I-pages from non-DMA FS devices for ID cache separation.<br>
+26) kernel: mips: bugfix: missed cache flush of TLB refill handler.<br>
+27) kernel: inet: sanitize inet{,6} protocol demux.<br>
+28) kernel: net: make skb->skb_iif always track skb->dev.<br>
+29) kernel: net: remove protocol from struct dst_ops.<br>
+30) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+31) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+32) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+33) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
+34) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
+35) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+36) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
+37) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
+38) kernel: net: neigh: optimize neighbor entry size calculation.<br>
+39) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
+40) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
+41) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
+42) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
+43) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
 <br>
 <br>
 <b>TODO:</b><br>
