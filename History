@@ -695,28 +695,30 @@
 21) kernel: ralink_raeth: fix potential deadlock on unregister second interface.<br>
 22) kernel: ralink_raeth: fix reuse dirty TX descriptor.<br>
 23) kernel: ralink_raeth: use memory barrier instead of double cache sync on coherent region.<br>
-24) kernel: mips: allow optimized inliming.<br>
-25) kernel: mips: revert fixrange_init() limiting to the FIXMAP region.<br>
-26) kernel: mips: highmem fixes for cache aliasing and non-DMA I/O.<br>
-27) kernel: mips: fix of reading I-pages from non-DMA FS devices for ID cache separation.<br>
-28) kernel: mips: bugfix: missed cache flush of TLB refill handler.<br>
-29) kernel: inet: sanitize inet{,6} protocol demux.<br>
-30) kernel: net: make skb->skb_iif always track skb->dev.<br>
-31) kernel: net: remove protocol from struct dst_ops.<br>
-32) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
-33) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-34) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
-35) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
-36) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
-37) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
-38) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
-39) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
-40) kernel: net: neigh: optimize neighbor entry size calculation.<br>
-41) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
-42) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
-43) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
-44) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
-45) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
+24) kernel: ralink_hw_nat: use memory barrier instead of double flush to coherent region.<br>
+25) kernel: ralink_hw_nat: change BIND state after update FoE entry.<br>
+26) kernel: mips: allow optimized inliming.<br>
+27) kernel: mips: revert fixrange_init() limiting to the FIXMAP region.<br>
+28) kernel: mips: highmem fixes for cache aliasing and non-DMA I/O.<br>
+29) kernel: mips: fix of reading I-pages from non-DMA FS devices for ID cache separation.<br>
+30) kernel: mips: bugfix: missed cache flush of TLB refill handler.<br>
+31) kernel: inet: sanitize inet{,6} protocol demux.<br>
+32) kernel: net: make skb->skb_iif always track skb->dev.<br>
+33) kernel: net: remove protocol from struct dst_ops.<br>
+34) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
+35) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
+36) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+37) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
+38) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
+39) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
+40) kernel: net: ipv4: create probe timer for tcp PMTU as per RFC4821.<br>
+41) kernel: net: neigh: keep neighbour cache entries if number of them is small enough.<br>
+42) kernel: net: neigh: optimize neighbor entry size calculation.<br>
+43) kernel: net: neigh: no need to call lookup_neigh_parms in neigh_parms_alloc.<br>
+44) kernel: net: neigh: disallow un-init_net to change thresh of neigh.<br>
+45) kernel: net: netfilter: nf_conntrack: use RCU safe kfree for conntrack extensions.<br>
+46) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
+47) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
 <br>
 <br>
 <b>TODO:</b><br>
