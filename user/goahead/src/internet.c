@@ -78,6 +78,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query);
 static void setIPv6(webs_t wp, char_t *path, char_t *query);
 static void getMyMAC(webs_t wp, char_t *path, char_t *query);
 static void editRouting(webs_t wp, char_t *path, char_t *query);
+static void restoremac(webs_t wp, char_t *path, char_t *query);
 #ifdef CONFIG_USER_ZEBRA
 static void dynamicRouting(webs_t wp, char_t *path, char_t *query);
 #endif
@@ -155,6 +156,8 @@ void formDefineInternet(void) {
 	websAspDefine(T("vpnShowVPNStatus"), vpnShowVPNStatus);
 	websAspDefine(T("vpnIfaceList"), vpnIfaceList);
 	websFormDefine(T("formVPNSetup"), formVPNSetup);
+
+	websFormDefine(T("restoremac"), restoremac);
 
 #ifdef CONFIG_USER_CHILLISPOT
 	websAspDefine(T("getSpotIp"), getSpotIp);
@@ -2032,6 +2035,14 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_USER_SAMBA)
 	doSystem("service samba restart");
 #endif
+}
+
+static void restoremac(webs_t wp, char_t *path, char_t *query)
+{
+	printf("goahead: mac restore from factory\n");
+	system("fs factory_mac > /dev/console 2>&1");
+	websWrite(wp, T("<h2>Please save and reboot from left menu for apply new mac.</h2><br>\n"));
+	websDone(wp, 200);
 }
 
 /* goform/setWan */

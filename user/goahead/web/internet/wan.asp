@@ -11,9 +11,16 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/share.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 var http_request = false;
 Butterlate.setTextDomain("internet");
+
+function restoremacclick()
+{
+	ajaxPostRequest("/goform/restoremac", 'stub=value', true, null);
+}
 
 function connectionTypeSwitch(form)
 {
@@ -266,7 +273,10 @@ function wanMtuChange(form)
           </tr>
           <tr id="MACrow">
             <td class="head" id="wMacAddr">WAN MAC address</td>
-            <td><input name="wanMac" id="wanMac" class="mid" value="<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>"></td>
+            <td>
+		<input name="wanMac" id="wanMac" class="mid" value="<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>">
+		<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="restoremacclick();">
+	    </td>
           </tr>
         </table>
         <br>

@@ -84,7 +84,7 @@ function ajaxPostRequest(uri, content, refresh, handler)
 	var xmlHttp = createXMLHttp();
 	if (xmlHttp == null)
 		return;
-	
+
 	xmlHttp.onreadystatechange = function()
 	{
 		if (xmlHttp.readyState == 4)
@@ -95,16 +95,16 @@ function ajaxPostRequest(uri, content, refresh, handler)
 				handler(xmlHttp.responseText);
 				handler = null;
 			}
-			
+
 			if (refresh)
 				window.location.reload();
-			
+
 			// Free resources
 			xmlHttp.onreadystatechange = null;
 			xmlHttp = null;
 		}
 	}
-	
+
 	xmlHttp.open("POST", genRandomParam(uri), true);
 	xmlHttp.send(content);
 }

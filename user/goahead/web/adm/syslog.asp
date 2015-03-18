@@ -94,9 +94,7 @@ function syslogdSelect(form)
     <td><h1 id="syslogTitle">System Log</h1>
       <p>Here you can configure system logging</p>
       <hr>
-      
       <!-- ================= System log setup ================= -->
-      
       <form method="post" name="LogdSetup" action="/goform/setuplog" onSubmit="checkSetupForm(this);">
         <table class="form">
           <tr>
