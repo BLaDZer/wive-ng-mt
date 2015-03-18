@@ -173,6 +173,7 @@ factory_mac() {
 	    echo "Set WLAN2 MAC - $MACWLAN2"
 	    nvram_set 2860 WLAN2_MAC_ADDR "$MACWLAN2"
 	fi
+	nvram_set 2860 CHECKMAC YES
     fi
 }
 
