@@ -566,6 +566,8 @@ u64 timekeeping_max_deferment(void)
 
 	} while (read_seqretry(&timekeeper.lock, seq));
 
+	ntp_notify_cmos_timer();
+
 	return ret;
 }
 
