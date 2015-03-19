@@ -710,7 +710,7 @@
 36) kernel: net: remove protocol from struct dst_ops.<br>
 37) kernel: net: ipv6: make unsolicited report intervals configurable for mld.<br>
 38) kernel: net: ipv6: mld: fix v1/v2 switchback timeout to rfc3810, 9.12.<br>
-39) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>.
+39) kernel: net: ipv4: disallow non-namespace aware protocols to register only if namespaces enabled.<br>
 40) kernel: net: ipv4: raise tcp PMTU probe mss base size.<br>
 41) kernel: net: ipv4: ip_check_defrag should not assume that skb_network_offset is zero.<br>
 42) kernel: net: ipv4: use binary search to choose tcp PMTU probe_size.<br>
