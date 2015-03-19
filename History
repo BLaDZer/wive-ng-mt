@@ -729,6 +729,11 @@
 55) kernel: sched: fix HRTICK.<br>
 <br>
 <br>
+<b>2.6.x</b><br>
+1) kernel: add config WPS button gpio number.<br>
+2) butcheck: add polling WPS press and call umount all script if pressed(if support storage configured).<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>

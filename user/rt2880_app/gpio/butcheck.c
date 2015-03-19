@@ -19,7 +19,11 @@ int gpio_read_int(int *value) {
 		return -1;
 	}
 
+#if (CONFIG_RALINK_GPIO_BTN_RESET >= 32)
+	req = RALINK_GPIO6332_READ;
+#else
 	req = RALINK_GPIO_READ;
+#endif
 
 	if (ioctl(fd, req, value) < 0) {
 		perror("ioctl");
@@ -39,8 +43,11 @@ int gpio_set_dir(void) {
 		return -1;
 	}
 
+#if (CONFIG_RALINK_GPIO_BTN_RESET >= 32)
+	req = RALINK_GPIO6332_SET_DIR_IN;
+#else
 	req = RALINK_GPIO_SET_DIR_IN;
-
+#endif
 	if (ioctl(fd, req, 0xffffffff) < 0) {
 		perror("ioctl");
 		close(fd);
@@ -52,13 +59,20 @@ int gpio_set_dir(void) {
 
 //#define DEBUG
 
+#if (CONFIG_RALINK_GPIO_BTN_RESET >= 32)
+#define TEST_BIT(x, n)		(((x) & (1 << (n-32))) != 0)
+#else
 #define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
+#endif
 
 #define LOADDEFAULTS		5
 #define FULLRESETTIME		60
 
 void gpio_wait(void) {
-	int d, presstime=0;
+	int d, presstime_reset=0;
+#if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
+	int presstime_wps=0;
+#endif
 	while (1) {
 	    gpio_set_dir();
 	    gpio_read_int(&d);
@@ -66,30 +80,49 @@ void gpio_wait(void) {
 	     * gpio number = bit for test (if 0 - pressed, if 1 - open)
 	     * if pressed wait and up count after one minit stop wait and call fullreset
 	     */
+	    if ((!TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_RESET)) && presstime_reset < FULLRESETTIME) {
 #ifdef DEBUG
-	    printf("butcheck: pressed 0x%x, test %d, selected %d\n", d, !TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_RESET), CONFIG_RALINK_GPIO_BTN_RESET);
+		printf("butcheck_reset: pressed 0x%x, test %d, selected %d\n", d, !TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_RESET), CONFIG_RALINK_GPIO_BTN_RESET);
 #endif
-	    if ((!TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_RESET)) && presstime < FULLRESETTIME) {
-		presstime++;
+		presstime_reset++;
 	    } else {
-		if (presstime > 0) {
-		    if (presstime > LOADDEFAULTS) {
-			if (presstime < FULLRESETTIME) {
-			    printf("butcheck: fs_nvram_reset - load nvram default and restore original rwfs...");
+		if (presstime_reset > 0) {
+		    if (presstime_reset > LOADDEFAULTS) {
+			if (presstime_reset < FULLRESETTIME) {
+			    printf("butcheck_reset: fs_nvram_reset - load nvram default and restore original rwfs...");
     			    system("fs nvramreset && fs restore");
 	    		    sleep(2);
 			    reboot(RB_AUTOBOOT);
 	    		} else {
-			    printf("butcheck: fs_nvram_fullreset - load nvram default and restore original rwfs...");
+			    printf("butcheck_reset: fs_nvram_fullreset - load nvram default and restore original rwfs...");
     			    system("fs fullreset");
 	    		    sleep(2);
 			    reboot(RB_AUTOBOOT);
 	    		}
 		    }
-		    printf("butcheck: short press - skip...\n");
-		    presstime=0;
+		    printf("butcheck_reset: short press - skip...\n");
+		    presstime_reset=0;
 	    	}
 	    }
+#if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
+	    if ((!TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_WPS)) && presstime_wps < FULLRESETTIME) {
+#ifdef DEBUG
+		printf("butcheck_wps: pressed 0x%x, test %d, selected %d\n", d, !TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_WPS), CONFIG_RALINK_GPIO_BTN_WPS);
+#endif
+		presstime_wps++;
+	    } else {
+		if (presstime_wps > 0) {
+		    if (presstime_wps > LOADDEFAULTS) {
+			    printf("butcheck_wps: umount all external devices.");
+    			    system("umount_all.sh");
+	    		    sleep(2);
+		    } else {
+			printf("butcheck_wps: short press - skip...\n");
+			presstime_wps=0;
+		    }
+	    	}
+	    }
+#endif
 	    sleep(1);
 	}
 }
