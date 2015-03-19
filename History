@@ -725,6 +725,7 @@
 51) kernel: net: packet: make packet_snd fail on len smaller than l2 header.<br>
 52) kernel: net: neighbour: fix ndm_type type error issue.<br>
 53) kernel: timekeeping: Fix HRTICK related deadlock from ntp lock changes.<br>
+54) kernel: sched/__wake_up_sync_key(): Fix nr_exclusive tasks which lead to WF_SYNC clearing.<br>
 <br>
 <br>
 <b>TODO:</b><br>
