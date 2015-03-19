@@ -723,6 +723,7 @@
 49) kernel: net: netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get.<br>
 50) kernel: net: bridge: reset bridge mtu after deleting an interface.<br>
 51) kernel: net: packet: make packet_snd fail on len smaller than l2 header.<br>
+52) kernel: net: neighbour: fix ndm_type type error issue.<br>
 <br>
 <br>
 <b>TODO:</b><br>
