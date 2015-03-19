@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.106.18 Kernel Configuration
+# Linux/mips 3.4.106.21 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1650,13 +1650,12 @@ CONFIG_KERNEL_NVRAM=y
 #
 CONFIG_RAETH=y
 CONFIG_RAETH_NAPI=y
-# CONFIG_RAETH_NAPI_GRO is not set
-# CONFIG_RAETH_32B_DESC is not set
 # CONFIG_RAETH_JUMBOFRAME is not set
 CONFIG_RAETH_BQL=y
 CONFIG_RAETH_HW_VLAN_TX=y
 CONFIG_RAETH_CHECKSUM_OFFLOAD=y
 CONFIG_RAETH_SG_DMA_TX=y
+# CONFIG_RAETH_NAPI_GRO is not set
 # CONFIG_RAETH_TSO is not set
 CONFIG_GE1_MAC_ESW=y
 # CONFIG_RAETH_HAS_PORT5 is not set
