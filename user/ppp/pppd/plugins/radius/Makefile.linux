@@ -37,8 +37,6 @@ ifdef LONGCOUNTER
 CFLAGS += -DLONGCOUNTER=1
 endif
 
-
-
 all: $(PLUGIN)
 
 install: all
@@ -68,5 +66,3 @@ clean:
 
 distclean:
 	rm -f *.o *.so *.a
-
-dist-clean: distclean

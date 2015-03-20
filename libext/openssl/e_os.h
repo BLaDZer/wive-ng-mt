@@ -62,9 +62,10 @@
 #include <openssl/opensslconf.h>
 
 #include <openssl/e_os2.h>
-/* <openssl/e_os2.h> contains what we can justify to make visible
- * to the outside; this file e_os.h is not part of the exported
- * interface. */
+/*
+ * <openssl/e_os2.h> contains what we can justify to make visible to the
+ * outside; this file e_os.h is not part of the exported interface.
+ */
 
 #ifdef  __cplusplus
 extern "C" {
@@ -77,14 +78,18 @@ extern "C" {
 #endif
 
 #ifndef DEVRANDOM
-/* set this to a comma-separated list of 'random' device files to try out.
- * My default, we will try to read at least one of these files */
+/*
+ * set this to a comma-separated list of 'random' device files to try out. My
+ * default, we will try to read at least one of these files
+ */
 #define DEVRANDOM "/dev/urandom","/dev/random","/dev/srandom"
 #endif
 #ifndef DEVRANDOM_EGD
-/* set this to a comma-seperated list of 'egd' sockets to try out. These
- * sockets will be tried in the order listed in case accessing the device files
- * listed in DEVRANDOM did not return enough entropy. */
+/*
+ * set this to a comma-seperated list of 'egd' sockets to try out. These
+ * sockets will be tried in the order listed in case accessing the device
+ * files listed in DEVRANDOM did not return enough entropy.
+ */
 #define DEVRANDOM_EGD "/var/run/egd-pool","/dev/egd-pool","/etc/egd-pool","/etc/entropy"
 #endif
 
@@ -112,8 +117,10 @@ extern "C" {
 /********************************************************************
  The Microsoft section
  ********************************************************************/
-/* The following is used becaue of the small stack in some
- * Microsoft operating systems */
+/*
+ * The following is used becaue of the small stack in some Microsoft
+ * operating systems
+ */
 #if defined(OPENSSL_SYS_MSDOS) && !defined(OPENSSL_SYSNAME_WIN32)
 #  define MS_STATIC	static
 #else
@@ -278,7 +285,8 @@ extern "C" {
 static __inline unsigned int _strlen31(const char *str)
 	{
 	unsigned int len=0;
-	while (*str && len<0x80000000U) str++, len++;
+    while (*str && len < 0x80000000U)
+        str++, len++;
 	return len&0x7FFFFFFF;
 	}
 #    endif
@@ -304,11 +312,12 @@ static __inline unsigned int _strlen31(const char *str)
 #        undef stdin
 #        undef stdout
 #        undef stderr
-         /* pre-1300 has __p__iob(), but it's available only in msvcrt.lib,
-          * or in other words with /MD. Declaring implicit import, i.e.
-          * with _imp_ prefix, works correctly with all compiler options,
-          * but without /MD results in LINK warning LNK4049:
-          * 'locally defined symbol "__iob" imported'.
+         /*
+          * pre-1300 has __p__iob(), but it's available only in msvcrt.lib,
+          * or in other words with /MD. Declaring implicit import, i.e. with
+          * _imp_ prefix, works correctly with all compiler options, but
+          * without /MD results in LINK warning LNK4049: 'locally defined
+          * symbol "__iob" imported'.
           */
          extern FILE *_imp___iob;
 #        define stdin  (&_imp___iob[0])
@@ -373,8 +382,10 @@ static __inline unsigned int _strlen31(const char *str)
 
 #  ifdef OPENSSL_SYS_VMS
 #    define VMS 1
-  /* some programs don't include stdlib, so exit() and others give implicit 
-     function warnings */
+  /*
+   * some programs don't include stdlib, so exit() and others give implicit
+   * function warnings
+   */
 #    include <stdlib.h>
 #    if defined(__DECC)
 #      include <unistd.h>
@@ -388,7 +399,8 @@ static __inline unsigned int _strlen31(const char *str)
 #    define NUL_DEV		"NLA0:"
   /* We don't have any well-defined random devices on VMS, yet... */
 #    undef DEVRANDOM
-  /* We need to do this since VMS has the following coding on status codes:
+  /*-
+     We need to do this since VMS has the following coding on status codes:
 
      Bits 0-2: status type: 0 = warning, 1 = success, 2 = error, 3 = info ...
                The important thing to know is that odd numbers are considered
@@ -452,8 +464,9 @@ static __inline unsigned int _strlen31(const char *str)
 #    endif
 #    if defined(NeXT) || defined(OPENSSL_SYS_NEWS4)
 #      define pid_t int /* pid_t is missing on NEXTSTEP/OPENSTEP
-                         * (unless when compiling with -D_POSIX_SOURCE,
-                         * which doesn't work for us) */
+                                 * (unless when compiling with
+                                 * -D_POSIX_SOURCE, which doesn't work for
+                                 * us) */
 #    endif
 #    if defined(NeXT) || defined(OPENSSL_SYS_NEWS4) || defined(OPENSSL_SYS_SUNOS)
 #      define ssize_t int /* ditto */
@@ -519,7 +532,9 @@ extern HINSTANCE _hInstance;
 #    define SHUTDOWN2(fd)		MacSocket_close(fd)
 
 #  elif defined(OPENSSL_SYS_NETWARE)
-         /* NetWare uses the WinSock2 interfaces by default, but can be configured for BSD
+         /*
+          * NetWare uses the WinSock2 interfaces by default, but can be
+          * configured for BSD
          */
 #      if defined(NETWARE_BSDSOCK)
 #        include <sys/socket.h>
@@ -620,7 +635,8 @@ extern HINSTANCE _hInstance;
   /* bcopy can handle overlapping moves according to SunOS 4.1.4 manpage */
 # define memmove(s1,s2,n) bcopy((s2),(s1),(n))
 # define strtoul(s,e,b) ((unsigned long int)strtol((s),(e),(b)))
-extern char *sys_errlist[]; extern int sys_nerr;
+extern char *sys_errlist[];
+extern int sys_nerr;
 # define strerror(errnum) \
 	(((errnum)<0 || (errnum)>=sys_nerr) ? NULL : sys_errlist[errnum])
   /* Being signed SunOS 4.x memcpy breaks ASN1_OBJECT table lookup */
@@ -638,13 +654,15 @@ extern char *sys_errlist[]; extern int sys_nerr;
 
 /***********************************************/
 
-/* do we need to do this for getenv.
- * Just define getenv for use under windows */
+/*
+ * do we need to do this for getenv. Just define getenv for use under windows
+ */
 
 #ifdef WIN16
 /* How to do this needs to be thought out a bit more.... */
-/*char *GETENV(char *);
-#define Getenv	GETENV*/
+/*
+ * char *GETENV(char *); #define Getenv GETENV
+ */
 #define Getenv	getenv
 #else
 #define Getenv getenv
@@ -656,7 +674,8 @@ extern char *sys_errlist[]; extern int sys_nerr;
 #define IRIX_CC_BUG	/* all version of IRIX I've tested (4.* 5.*) */
 #endif
 #ifdef OPENSSL_SYS_SNI
-#define IRIX_CC_BUG	/* CDS++ up to V2.0Bsomething suffered from the same bug.*/
+#  define IRIX_CC_BUG           /* CDS++ up to V2.0Bsomething suffered from
+                                 * the same bug. */
 #endif
 
 #if defined(OPENSSL_SYS_WINDOWS)
@@ -701,9 +720,10 @@ extern char *sys_errlist[]; extern int sys_nerr;
 
 #define getpid taskIdSelf
 
-/* NOTE: these are implemented by helpers in database app!
- * if the database is not linked, we need to implement them
- * elswhere */
+/*
+ * NOTE: these are implemented by helpers in database app! if the database is
+ * not linked, we need to implement them elswhere
+ */
 struct hostent *gethostbyname(const char *name);
 struct hostent *gethostbyaddr(const char *addr, int length, int type);
 struct servent *getservbyname(const char *name, const char *proto);

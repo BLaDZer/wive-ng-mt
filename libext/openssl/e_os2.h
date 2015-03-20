@@ -70,29 +70,33 @@ extern "C" {
 
 #define OPENSSL_SYS_UNIX
 
-/* ----------------------- Macintosh, before MacOS X ----------------------- */
+/* ---------------------- Macintosh, before MacOS X ----------------------- */
 #if defined(__MWERKS__) && defined(macintosh) || defined(OPENSSL_SYSNAME_MAC)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_MACINTOSH_CLASSIC
 #endif
 
-/* ----------------------- NetWare ----------------------------------------- */
+/* ---------------------- NetWare ----------------------------------------- */
 #if defined(NETWARE) || defined(OPENSSL_SYSNAME_NETWARE)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_NETWARE
 #endif
 
-/* ---------------------- Microsoft operating systems ---------------------- */
+/* --------------------- Microsoft operating systems ---------------------- */
 
-/* Note that MSDOS actually denotes 32-bit environments running on top of
-   MS-DOS, such as DJGPP one. */
+/*
+ * Note that MSDOS actually denotes 32-bit environments running on top of
+ * MS-DOS, such as DJGPP one.
+ */
 #if defined(OPENSSL_SYSNAME_MSDOS)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_MSDOS
 #endif
 
-/* For 32 bit environment, there seems to be the CygWin environment and then
-   all the others that try to do the same thing Microsoft does... */
+/*
+ * For 32 bit environment, there seems to be the CygWin environment and then
+ * all the others that try to do the same thing Microsoft does...
+ */
 #if defined(OPENSSL_SYSNAME_UWIN)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_WIN32_UWIN
@@ -125,19 +129,21 @@ extern "C" {
 # endif
 #endif
 
-/* DLL settings.  This part is a bit tough, because it's up to the application
-   implementor how he or she will link the application, so it requires some
-   macro to be used. */
+/*
+ * DLL settings.  This part is a bit tough, because it's up to the
+ * application implementor how he or she will link the application, so it
+ * requires some macro to be used.
+ */
 #ifdef OPENSSL_SYS_WINDOWS
 # ifndef OPENSSL_OPT_WINDLL
-#  if defined(_WINDLL) /* This is used when building OpenSSL to indicate that
-                          DLL linkage should be used */
+#   if defined(_WINDLL)         /* This is used when building OpenSSL to
+                                 * indicate that DLL linkage should be used */
 #   define OPENSSL_OPT_WINDLL
 #  endif
 # endif
 #endif
 
-/* -------------------------------- OpenVMS -------------------------------- */
+/* ------------------------------- OpenVMS -------------------------------- */
 #if defined(__VMS) || defined(VMS) || defined(OPENSSL_SYSNAME_VMS)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_VMS
@@ -151,13 +157,13 @@ extern "C" {
 # endif
 #endif
 
-/* --------------------------------- OS/2 ---------------------------------- */
+/* -------------------------------- OS/2 ---------------------------------- */
 #if defined(__EMX__) || defined(__OS2__)
 # undef OPENSSL_SYS_UNIX
 # define OPENSSL_SYS_OS2
 #endif
 
-/* --------------------------------- Unix ---------------------------------- */
+/* -------------------------------- Unix ---------------------------------- */
 #ifdef OPENSSL_SYS_UNIX
 # if defined(linux) || defined(__linux__) || defined(OPENSSL_SYSNAME_LINUX)
 #  define OPENSSL_SYS_LINUX
@@ -192,12 +198,12 @@ extern "C" {
 # endif
 #endif
 
-/* --------------------------------- VOS ----------------------------------- */
+/* -------------------------------- VOS ----------------------------------- */
 #ifdef OPENSSL_SYSNAME_VOS
 # define OPENSSL_SYS_VOS
 #endif
 
-/* ------------------------------- VxWorks --------------------------------- */
+/* ------------------------------ VxWorks --------------------------------- */
 #ifdef OPENSSL_SYSNAME_VXWORKS
 # define OPENSSL_SYS_VXWORKS
 #endif
@@ -216,23 +222,24 @@ extern "C" {
 # define OPENSSL_DECLARE_EXIT /* declared in unistd.h */
 #endif
 
-/* Definitions of OPENSSL_GLOBAL and OPENSSL_EXTERN, to define and declare
-   certain global symbols that, with some compilers under VMS, have to be
-   defined and declared explicitely with globaldef and globalref.
-   Definitions of OPENSSL_EXPORT and OPENSSL_IMPORT, to define and declare
-   DLL exports and imports for compilers under Win32.  These are a little
-   more complicated to use.  Basically, for any library that exports some
-   global variables, the following code must be present in the header file
-   that declares them, before OPENSSL_EXTERN is used:
-
-   #ifdef SOME_BUILD_FLAG_MACRO
-   # undef OPENSSL_EXTERN
-   # define OPENSSL_EXTERN OPENSSL_EXPORT
-   #endif
-
-   The default is to have OPENSSL_EXPORT, OPENSSL_IMPORT and OPENSSL_GLOBAL
-   have some generally sensible values, and for OPENSSL_EXTERN to have the
-   value OPENSSL_IMPORT.
+/*-
+ * Definitions of OPENSSL_GLOBAL and OPENSSL_EXTERN, to define and declare
+ * certain global symbols that, with some compilers under VMS, have to be
+ * defined and declared explicitely with globaldef and globalref.
+ * Definitions of OPENSSL_EXPORT and OPENSSL_IMPORT, to define and declare
+ * DLL exports and imports for compilers under Win32.  These are a little
+ * more complicated to use.  Basically, for any library that exports some
+ * global variables, the following code must be present in the header file
+ * that declares them, before OPENSSL_EXTERN is used:
+ *
+ * #ifdef SOME_BUILD_FLAG_MACRO
+ * # undef OPENSSL_EXTERN
+ * # define OPENSSL_EXTERN OPENSSL_EXPORT
+ * #endif
+ *
+ * The default is to have OPENSSL_EXPORT, OPENSSL_IMPORT and OPENSSL_GLOBAL
+ * have some generally sensible values, and for OPENSSL_EXTERN to have the
+ * value OPENSSL_IMPORT.
 */
 
 #if defined(OPENSSL_SYS_VMS_NODECC)
@@ -250,15 +257,16 @@ extern "C" {
 #endif
 #define OPENSSL_EXTERN OPENSSL_IMPORT
 
-/* Macros to allow global variables to be reached through function calls when
-   required (if a shared library version requvres it, for example.
-   The way it's done allows definitions like this:
-
-	// in foobar.c
-	OPENSSL_IMPLEMENT_GLOBAL(int,foobar) = 0;
-	// in foobar.h
-	OPENSSL_DECLARE_GLOBAL(int,foobar);
-	#define foobar OPENSSL_GLOBAL_REF(foobar)
+/*-
+ * Macros to allow global variables to be reached through function calls when
+ * required (if a shared library version requires it, for example.
+ * The way it's done allows definitions like this:
+ *
+ *      // in foobar.c
+ *      OPENSSL_IMPLEMENT_GLOBAL(int,foobar,0)
+ *      // in foobar.h
+ *      OPENSSL_DECLARE_GLOBAL(int,foobar);
+ *      #define foobar OPENSSL_GLOBAL_REF(foobar)
 */
 #ifdef OPENSSL_EXPORT_VAR_AS_FUNCTION
 # define OPENSSL_IMPLEMENT_GLOBAL(type,name)			     \

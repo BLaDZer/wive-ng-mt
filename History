@@ -732,6 +732,7 @@
 <b>2.6.x</b><br>
 1) kernel: add config WPS button gpio number.<br>
 2) butcheck: add polling WPS press and call umount all script if pressed(if support storage configured).<br>
+3) openssl up to 0.9.8zf version.<br>
 <br>
 <br>
 <b>TODO:</b><br>

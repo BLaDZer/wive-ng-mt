@@ -126,7 +126,6 @@ romfs:
 clean:
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i dist-clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i mrproper; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 
 web:

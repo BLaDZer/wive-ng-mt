@@ -72,7 +72,7 @@ clean:
 #	cd pppstats; $(MAKE) clean
 #	cd pppdump; $(MAKE) clean
 
-dist-clean:	clean
+distclean:	clean
 	rm -f Makefile `find . -name Makefile -print`
 
 # no tests yet, one day...
