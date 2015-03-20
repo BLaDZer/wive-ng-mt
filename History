@@ -731,7 +731,7 @@
 <br>
 <b>2.6.x</b><br>
 1) butcheck: add polling WPS press and call umount all script if pressed(if support storage configured).<br>
-2) openssl up to 0.9.8zf version.<br>
+2) openssl: up to 0.9.8zf version.<br>
 3) kernel: add config WPS button gpio number.<br>
 4) kernel: allow GRO only for local recived packets.<br>
 5) kernel: enable NAPI_GRO for all devices.<br>
