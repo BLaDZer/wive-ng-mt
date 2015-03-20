@@ -313,6 +313,18 @@ config NET_DROP_MONITOR
 	just checking the various proc files and other utilities for
 	drop statistics, say N here.
 
+config NET_GRO_LOCAL
+	boolean "Allow GRO processiong only for local traffic."
+	depends on INET
+	---help---
+	For network drivers using napi_gro_receive, packets are run through GRO,
+	even when the destination MAC address does not match, and they're supposed
+	to be delivered to another host behind a different bridge port.
+	This can be very expensive, because for drivers without TSO or scatter-
+	gather, this can only be undone by copying the skb and checksumming it
+	again.
+	Fix this by leaving skbs with PACKET_OTHERHOST untouched.
+
 endmenu
 
 endmenu
