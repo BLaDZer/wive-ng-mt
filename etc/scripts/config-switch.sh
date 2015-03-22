@@ -92,9 +92,11 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
     ##########################################################################
     set_mac_wan_lan
     ##########################################################################
-    # full reinit switch ports and disable EEEE
+    # full reinit switch ports and disable EEEE (workaround for old boots)
     ##########################################################################
-    config-vlan.sh $switchmode FFFFF > /dev/null 2>&1
+    if [ ! -f /tmp/bootgood ]; then
+	config-vlan.sh $switchmode FFFFF > /dev/null 2>&1
+    fi
     ##########################################################################
     # configure switch parts depended by operation mode
     ##########################################################################
