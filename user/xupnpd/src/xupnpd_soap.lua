@@ -263,6 +263,15 @@ end
 function services.cms.GetProtocolInfo()
     local protocols={}
 
+    if cfg.dlna_extras==true then
+        for i,mtype in pairs(mime) do
+            if mtype[5]~='*' then
+                local dlna_pn=string.gsub(mtype[5],';.*','')
+                table.insert(protocols,mtype[4]..dlna_pn)
+            end
+        end
+    end
+
     for i,j in pairs(upnp_proto) do table.insert(protocols,j..'*') end
 
     return {{'Sink',''}, {'Source',table.concat(protocols,',')}}
