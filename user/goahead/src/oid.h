@@ -652,9 +652,7 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	char		AvgRssi2;
 	unsigned int	ConnectedTime;
 	MACHTTRANSMIT_SETTING	TxRate;
-#ifndef CONFIG_RT_SECOND_IF_NONE
 	unsigned int	LastRxRate;
-#endif
 } RT_802_11_MAC_ENTRY, *PRT_802_11_MAC_ENTRY;
 
 typedef struct _RT_802_11_MAC_TABLE {
