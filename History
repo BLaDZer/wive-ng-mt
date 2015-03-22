@@ -737,9 +737,10 @@
 5) kernel: ralink_raeth: enable NAPI_GRO for all devices.<br>
 6) kernel: ralink_wifi: unify exported struct.<br>
 7) kernel: ralink_gpio: add config WPS button gpio number.<br>
-8) kernel: net: allow GRO only for local recived packets.<br>
-9) kernel: net: add skb_dst_set_noref_force.<br>
-10) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
+8) kernel: ralink_arch: fix reset MT7621 PCIe peripherals.<br>
+9) kernel: net: allow GRO only for local recived packets.<br>
+10) kernel: net: add skb_dst_set_noref_force.<br>
+11) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
 <br>
 <br>
 <b>TODO:</b><br>
