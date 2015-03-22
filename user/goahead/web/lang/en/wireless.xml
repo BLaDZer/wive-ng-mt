@@ -144,7 +144,6 @@
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
   <message msgid="stalist wireless network" msgstr="Wireless Network" />
-  <message msgid="stalist macaddr" msgstr="MAC Address" />
 
   <message msgid="prof title" msgstr="Station Profile" />
   <message msgid="prof introduction" msgstr="The Status page shows settings and current operation status of the Station." />

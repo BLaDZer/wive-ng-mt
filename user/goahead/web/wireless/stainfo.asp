@@ -16,7 +16,6 @@ function initTranslation()
 	_TR("stalistTitle", "stalist title");
 	_TR("stalistIntroduction", "stalist introduction");
 	_TR("stalistWirelessNet", "stalist wireless network");
-	_TR("stalistMacAddr", "stalist macaddr");
 }
 
 function doDisconnectSta(form, mac)
@@ -41,21 +40,22 @@ function PageInit()
       <form name="sta" action="/goform/disconnectSta" method="POST">
         <table class="form">
           <tr>
-            <td class="title" colspan="12" id="stalistWirelessNet">Wireless Network</td>
+            <td class="title" colspan="13" id="stalistWirelessNet">Wireless Network</td>
           </tr>
           <tr>
-            <th id="stalistMacAddr">MAC Address</th>
-            <th>Conn Time</th>
-            <th>Aid</th>
+            <th id="stalistMacAddr">MAC ADDRESS</th>
+            <th>CONN TIME</th>
+            <th>AID</th>
             <th>PSM</th>
-            <th>MimoPS</th>
+            <th>MIMO PS</th>
             <th>MCS</th>
             <th>BW</th>
             <th>SGI</th>
             <th>STBC</th>
+            <th>LDPC</th>
             <th>MODE</th>
             <th>RSSI</th>
-            <th>Actions</th>
+            <th>ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>
         </table>

@@ -510,8 +510,11 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
 	    }
 
-	    // SGI/STBC
-	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES");
+	    // SGI/STBC/LDPC
+	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
+		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
+		(pe->TxRate.field.STBC == 0)? "NO " : "YES",
+		(pe->TxRate.field.ldpc == 0)? "NO " : "YES");
 
 	    // HT/VHT Modes
 	    switch (pe->TxRate.field.MODE) {
@@ -531,6 +534,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 #else
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
 #endif
+	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
@@ -579,8 +583,11 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
 	    }
 
-	    // SGI/STBC
-	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES");
+	    // SGI/STBC/LDPC
+	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
+		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
+		(pe->TxRate.field.STBC == 0)? "NO " : "YES",
+		(pe->TxRate.field.ldpc == 0)? "NO " : "YES");
 
 	    // HT/VHT Modes
 	    switch (pe->TxRate.field.MODE) {
@@ -600,6 +607,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 #else
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
 #endif
+	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));

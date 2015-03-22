@@ -152,7 +152,6 @@
   <message msgid="stalist title" msgstr="Список станций" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
   <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
-  <message msgid="stalist macaddr" msgstr="MAC адрес" />
 
   <message msgid="prof title" msgstr="Профиль станции" />
   <message msgid="prof introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />

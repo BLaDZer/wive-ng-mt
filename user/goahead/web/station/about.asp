@@ -15,13 +15,10 @@ function initTranslation()
 	e.innerHTML = _("about title");
 	e = document.getElementById("aboutIntroduction");
 	e.innerHTML = _("about introduction");
-
 	e = document.getElementById("aboutAbout");
 	e.innerHTML = _("about about");
 	e = document.getElementById("aboutDriverVersion");
 	e.innerHTML = _("about driver version");
-	e = document.getElementById("aboutMacAddr");
-	e.innerHTML = _("stalist macaddr");
 }
 
 function PageInit()
@@ -31,7 +28,6 @@ function PageInit()
 </script>
 <title>Wireless Station About</title>
 </head>
-
 <body onLoad="PageInit()">
 <table class="body">
   <tr>
