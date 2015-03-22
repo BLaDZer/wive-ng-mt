@@ -31,10 +31,10 @@ profiles['Skeleton']=
         ['upnp_albumart']=0,                                    -- 0: <upnp:albumArtURI>direct url</upnp:albumArtURI>, 1: <res>direct url<res>, 2: <upnp:albumArtURI>local url</upnp:
         ['dlna_headers']=true,                                  -- send TransferMode.DLNA.ORG and ContentFeatures.DLNA.ORG in HTTP response
         ['dlna_extras']=true,                                   -- DLNA extras in headers and SOAP
-        ['cfg.content_disp']=false,                             -- send Content-Disposition when streaming
+        ['content_disp']=false,                             -- send Content-Disposition when streaming
         ['soap_length']=true,                                   -- send Content-Length in SOAP response
-        ['cfg.wdtv']=false,                                     -- WDTV Live compatible mode
-        ['cfg.sec_extras']=false                                -- Samsung extras
+        ['wdtv']=false,                                     -- WDTV Live compatible mode
+        ['sec_extras']=false                                -- Samsung extras
 --      ...
     },
 

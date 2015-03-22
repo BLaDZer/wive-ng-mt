@@ -16,7 +16,8 @@ profiles['LG']=
 
     ['options']=
     {
-        ['content_disp']=true
+	['content_disp']=true,
+	['default_mime_type']='mpeg'
     },
 
     ['replace_mime_types']=true,
