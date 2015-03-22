@@ -736,6 +736,7 @@
 4) kernel: ralink_gpio: add config WPS button gpio number.<br>
 5) kernel: net: allow GRO only for local recived packets.<br>
 6) kernel: net: add skb_dst_set_noref_force.<br>
+7) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
 <br>
 <br>
 <b>TODO:</b><br>
