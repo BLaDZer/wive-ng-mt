@@ -733,7 +733,7 @@
 1) butcheck: add polling WPS press and call umount all script if pressed(if support storage configured).<br>
 2) openssl: up to 0.9.8zf version.<br>
 3) kernel: ralink_raeth: enable NAPI_GRO for all devices.<br>
-4 kernel: ralink_gpio: add config WPS button gpio number.<br>
+4) kernel: ralink_gpio: add config WPS button gpio number.<br>
 5) kernel: net: allow GRO only for local recived packets.<br>
 6) kernel: net: add skb_dst_set_noref_force.<br>
 <br>
