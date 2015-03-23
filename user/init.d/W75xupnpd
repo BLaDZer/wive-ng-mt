@@ -10,6 +10,9 @@ LOG="logger -t xupnpd "
 start() {
     get_param
     if [ "$xupnpd" = "1" ]; then
+	# make config dirs if not exist
+	mkdir -p /etc/xupnpd/config
+	mkdir -p /etc/xupnpd/config/postinit
 	# store feeds only in ram - not real rwfs
 	if [ ! -d /tmp/xupnpd-feeds ]; then
 	    rm -rf /etc/xupnpd/xupnpd-feeds
