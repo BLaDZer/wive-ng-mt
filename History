@@ -748,6 +748,7 @@
 16) kernel: net: add skb_dst_set_noref_force.<br>
 17) kernel: net: tcp: fix tcp fin memory accounting.<br>
 18) kernel: net: increase sk_[max_]ack_backlog.<br>
+19) kernel: net: validate the range we feed to iov_iter_init() in sys_sendto/sys_recvfrom.<br>
 <br>
 <br>
 <b>TODO:</b><br>
