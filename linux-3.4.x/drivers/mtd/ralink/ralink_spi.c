@@ -362,6 +362,8 @@ static struct chip_info chips_data [] = {
 	{ "STUB",		0x00, 0xffffffff, 64 * 1024, 128, 0 },
 #elif defined(CONFIG_RT2880_FLASH_16M)
 	{ "STUB",		0x00, 0xffffffff, 64 * 1024, 256, 0 },
+#elif defined(CONFIG_RT2880_FLASH_32M)
+	{ "STUB",		0x00, 0xffffffff, 64 * 1024, 512, 0 },
 #else
 	// if not set - use 4Mb as default
 	{ "STUB",		0x00, 0xffffffff, 64 * 1024, 64,  0 },
