@@ -750,6 +750,7 @@
 18) kernel: net: increase sk_[max_]ack_backlog.<br>
 19) kernel: net: validate the range we feed to iov_iter_init() in sys_sendto/sys_recvfrom.<br>
 20) kernel: net: separate the close_list and the unreg_list.<br>
+21) kernel: net: fix high overhead of vlan sub-device teardown.<br>
 <br>
 <br>
 <b>TODO:</b><br>
