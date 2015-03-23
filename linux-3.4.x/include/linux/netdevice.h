@@ -1049,6 +1049,7 @@ struct net_device {
 	struct list_head	dev_list;
 	struct list_head	napi_list;
 	struct list_head	unreg_list;
+	struct list_head	close_list;
 
 	/* currently active device features */
 	netdev_features_t	features;
