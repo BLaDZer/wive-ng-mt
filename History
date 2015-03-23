@@ -747,6 +747,7 @@
 15) kernel: net: allow GRO only for local recived packets.<br>
 16) kernel: net: add skb_dst_set_noref_force.<br>
 17) kernel: net: tcp: fix tcp fin memory accounting.<br>
+18) kernel: net: increase sk_[max_]ack_backlog.<br>
 <br>
 <br>
 <b>TODO:</b><br>

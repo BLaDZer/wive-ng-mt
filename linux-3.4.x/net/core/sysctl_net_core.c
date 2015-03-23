@@ -29,8 +29,6 @@ EXPORT_SYMBOL(vlan_double_tag);
 #endif
 
 static int zero = 0;
-static int ushort_max = USHRT_MAX;
-
 static int one = 1;
 
 #ifdef CONFIG_RPS
@@ -225,7 +223,6 @@ static struct ctl_table netns_core_table[] = {
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
 		.extra1		= &zero,
-		.extra2		= &ushort_max,
 		.proc_handler	= proc_dointvec_minmax
 	},
 	{ }
