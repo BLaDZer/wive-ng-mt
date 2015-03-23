@@ -403,7 +403,6 @@ static int vlan_device_event(struct notifier_block *unused, unsigned long event,
 
 		break;
 
-	case NETDEV_DOWN:
 	case NETDEV_DOWN: {
 		struct net_device *tmp;
 		LIST_HEAD(close_list);
