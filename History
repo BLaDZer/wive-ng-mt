@@ -742,10 +742,11 @@
 10) kernel: ralink_gpio: add config WPS button gpio number.<br>
 11) kernel: ralink_arch: fix reset MT7621 PCIe peripherals.<br>
 12) kernel: ralink_spi: fix SPI clock for MT7621 (bclk is 50MHz).<br>
-13) kernel: net: allow GRO only for local recived packets.<br>
-14) kernel: net: add skb_dst_set_noref_force.<br>
-15) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
-16) kernel: nf_conntrack_core: show conntrack limit value on table full.<br>
+13) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
+14) kernel: nf_conntrack_core: show conntrack limit value on table full.<br>
+15) kernel: net: allow GRO only for local recived packets.<br>
+16) kernel: net: add skb_dst_set_noref_force.<br>
+17) kernel: net: tcp: fix tcp fin memory accounting.<br>
 <br>
 <br>
 <b>TODO:</b><br>
