@@ -21,5 +21,3 @@ for exname in /etc/rc.d/S??* ;do
 	    ;;
     esac
 done
-
-CURRDATE=`date`
