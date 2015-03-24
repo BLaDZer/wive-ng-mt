@@ -3,6 +3,9 @@
 echo "==================CONFIGURE-DAVFS2==========================="
 APROOTDIR=`pwd`
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
     autoreconf -fi
@@ -14,12 +17,7 @@ if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/Makefile ]; then
     automake
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
-#arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-
 CONFOPTS="$CONFOPTS"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 

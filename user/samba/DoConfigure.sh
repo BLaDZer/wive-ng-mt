@@ -4,17 +4,15 @@ echo "==================CONFIGURE-SAMBA3=============================="
 APROOTDIR=`pwd`
 
 cd $APROOTDIR/source
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
 
 if [ ! -f configure ]; then
     sh ./autogen.sh
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
 #arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-
 #some function direct enable
 CONFOPTS="$CONFOPTS --with-syslog --enable-largefile"
 #disable some function
@@ -29,7 +27,6 @@ CONFOPTS="$CONFOPTS --without-libaddns"
 CONFOPTS="$CONFOPTS --without-libsmbclient --without-winbind --without-libsmbsharemodes --with-included-popt=no"
 #path options
 CONFOPTS="$CONFOPTS --with-logfilebase=/var/log --with-piddir=/var/lock --with-lockdir=/var/lock --sysconfdir=/etc --prefix=/"
-
 
 SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
 ac_cv_type_long_long=yes \

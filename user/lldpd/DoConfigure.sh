@@ -3,6 +3,9 @@
 echo "==================CONFIGURE-LLDPD==============================="
 APROOTDIR=`pwd`
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
 if [ ! -f $APROOTDIR/Makefile.in ]; then
     ./autogen.sh
 fi
@@ -11,10 +14,6 @@ if [ ! -f $APROOTDIR/configure ]; then
     autoconf
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
-#arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD --with-readline=no --with-embedded-libevent=no"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-privsep"
 CONFOPTS="$CONFOPTS --disable-cdp --enable-fdp --enable-edp --enable-lldpmed --enable-dot1 --enable-dot3"

@@ -8,6 +8,15 @@ LIBDIR=$FIRMROOT/lib/shared
 LIBS=$LIBDIR/lib
 INCLUDES=$LIBDIR/include
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
+CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
+CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
+LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
+
+export CFLAGS LDFLAGS CPPFLAGS
+
 if [ ! -f $APROOTDIR/configure ]; then
     autoreconf -fi
     sh ./autogen.sh
@@ -17,16 +26,7 @@ if [ ! -f $APROOTDIR/Makefile.in ]; then
     automake
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking --disable-openssl --disable-static"
-
-CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
-CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
-LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
-
-export CFLAGS LDFLAGS CPPFLAGS
 
 ./configure $CONFOPTS

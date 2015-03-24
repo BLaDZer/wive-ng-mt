@@ -5,6 +5,9 @@ APROOTDIR=`pwd`
 
 $APROOTDIR/update-version-h.sh
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
 if [ ! -f $APROOTDIR/configure ]; then
     autoreconf -fi
     sh ./autogen.sh
@@ -14,10 +17,6 @@ if [ ! -f $APROOTDIR/Makefile.in ]; then
     automake
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
-#arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 
 ./configure $CONFOPTS \

@@ -3,6 +3,9 @@
 echo "==================CONFIGURE-QUAGGA=============================="
 APROOTDIR=`pwd`
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
     autoreconf -fi
@@ -13,12 +16,7 @@ if [ ! -f $APROOTDIR/Makefile.in ]; then
     automake
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
-#arch options
 CONFOPTS="--host=$HTARGET --build=$HBUILD"
-
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 CONFOPTS="$CONFOPTS --disable-bgpd --disable-babeld --disable-ripngd"
 CONFOPTS="$CONFOPTS --disable-ospfapi --disable-ospfclient --disable-ospfd --disable-ospf6d"

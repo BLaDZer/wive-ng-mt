@@ -3,6 +3,9 @@
 echo "==================CONFIGURE-DROPBEAR==========================="
 APROOTDIR=`pwd`
 
+HBUILD=`uname -m`-pc-linux-gnu
+HTARGET=mipsel-linux
+
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
     autoreconf -fi
@@ -13,12 +16,7 @@ if [ ! -f $APROOTDIR/Makefile ]; then
     automake
 fi
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
-
-#arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-
 CONFOPTS="$CONFOPTS --disable-zlib --disable-openpty"
 CONFOPTS="$CONFOPTS --disable-shadow --disable-pam"
 CONFOPTS="$CONFOPTS --disable-lastlog --disable-utmp --disable-utmpx"
