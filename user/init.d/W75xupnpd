@@ -5,6 +5,9 @@ if [ ! -f /bin/xupnpd ]; then
     exit 0
 fi
 
+# get params
+. /etc/scripts/global.sh
+
 LOG="logger -t xupnpd "
 
 start() {
@@ -34,7 +37,22 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 xupnpd`
+eval `nvram_buf_get 2860 xupnpd`
+if [ "$UDPXYMode" != "0" ] && [ "$UDPXYPort" != "" ]; then
+printf "
+-- external 'udpxy' url for multicast playlists (udp://@...)
+cfg.udpxy_url='http://gateway.lo:$UDPXYPort'
+" > /etc/xupnpd/xupnpd_conf.lua
+else
+printf "
+-- downstream interface for builtin multicast proxy (comment 'cfg.udpxy_url' for processing 'udp://@...' playlists)
+cfg.mcast_interface='$wan_if'
+" > /etc/xupnpd/xupnpd_conf.lua
+fi
+printf "
+-- Device name
+cfg.name='$HostName'
+" >> /etc/xupnpd/xupnpd_conf.lua
 }
 
 stop() {

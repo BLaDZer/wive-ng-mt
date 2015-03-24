@@ -28,12 +28,6 @@ cfg.embedded=false
 -- 0-off, 1-basic, 2-messages
 cfg.debug=0
 
--- external 'udpxy' url for multicast playlists (udp://@...)
--- cfg.udpxy_url='http://gateway.lo:81'
-
--- downstream interface for builtin multicast proxy (comment 'cfg.udpxy_url' for processing 'udp://@...' playlists)
-cfg.mcast_interface='eth2.2'
-
 -- 'cfg.proxy' enables proxy for injection DLNA headers to stream
 -- 0-off, 1-radio, 2-radio/TV
 cfg.proxy=2
@@ -56,11 +50,8 @@ cfg.group=true
 -- sort files
 cfg.sort_files=true
 
--- Device name
-cfg.name='Wive-NG'
-
 -- static device UUID, '60bd2fb3-dabe-cb14-c766-0e319b54c29a' for example or nil
-cfg.uuid='60bd2fb3-dabe-cb24-c766-0e114b52c22a'
+-- cfg.uuid='60bd2fb3-dabe-cb24-c766-0e114b52c22a'
 
 -- max url cache size
 cfg.cache_size=4
@@ -108,7 +99,8 @@ cfg.playlists_path='/etc/xupnpd/playlists/'
 cfg.feeds_path='/tmp/xupnpd-feeds/'
 cfg.www_root='/usr/share/xupnpd/www/'
 cfg.ui_path='/usr/share/xupnpd/ui/'
-cfg.drive=''                    -- reload playlists only if drive state=active/idle, example: cfg.drive='/dev/sda'
+cfg.drive=''                    		-- reload playlists only if drive state=active/idle, example: cfg.drive='/dev/sda'
 cfg.profiles='/usr/share/xupnpd/profiles/'      -- device profiles feature
 
+dofile('xupnpd_conf.lua')
 dofile('xupnpd_main.lua')

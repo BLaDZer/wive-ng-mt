@@ -11,7 +11,6 @@ fi
 LOG="logger -t udpxy"
 
 start() {
-    get_param
     if [ "$UDPXYMode" != "0" ] && [ "$UDPXYPort" != "" ]; then
       ( # send to background
 
@@ -41,10 +40,6 @@ start() {
 	udpxy -m $wan_if -n -20 -c 16 -B 2Mb -H 3 -p "$UDPXYPort" -l /var/log/udpxy.log
        ) & # send to background
     fi
-}
-
-get_param() {
-    eval `nvram_buf_get 2860 UDPXYPort`
 }
 
 stop() {
