@@ -49,7 +49,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
 	wan_port tv_port sip_port tv_port_mcast sip_port_mcast \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
-	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled \
+	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
 	ApCliBridgeOnly ApCliIfName \
