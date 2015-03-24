@@ -37,7 +37,14 @@ start() {
 }
 
 get_param() {
+
 eval `nvram_buf_get 2860 xupnpd`
+if [ "$SysLogd" != "0" ] && [ "$SysLogd" != "" ]; then
+    logto="syslog"
+else
+    logto="local0"
+fi
+
 if [ "$UDPXYMode" != "0" ] && [ "$UDPXYPort" != "" ]; then
 printf "
 -- external 'udpxy' url for multicast playlists (udp://@...)
@@ -50,6 +57,12 @@ cfg.mcast_interface='$wan_if'
 " > /etc/xupnpd/xupnpd_conf.lua
 fi
 printf "
+-- multicast interface for SSDP exchange, 'eth0', 'br0', 'br-lan' for example
+cfg.ssdp_interface='$lan_if'
+
+-- syslog facility (syslog,local0-local7)
+cfg.log_facility='$logto'
+
 -- Device name
 cfg.name='$HostName'
 " >> /etc/xupnpd/xupnpd_conf.lua

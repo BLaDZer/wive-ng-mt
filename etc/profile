@@ -41,5 +41,11 @@ export LC_MEASUREMENT=ru_RU.UTF-8
 export LC_IDENTIFICATION=ru_RU.UTF-8
 export LC_ALL=
 
+#log to syslog
+pid=`pidof syslogd`
+if [ "$pid" != "" ]; then
+    export LOGGING=syslog
+fi
+
 #last particion mounted to /media set as public for samba and torrent home dir
 export public=`df -h | grep "/dev/sd" | grep "media" | awk {' print $6 '} | tail -q -n1`

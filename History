@@ -733,25 +733,26 @@
 1) butcheck: add polling WPS press and call umount all script if pressed(if support storage configured).<br>
 2) openssl: up to 0.9.8zf version.<br>
 3) init.d: disable EEE by defaults (compat with old boots).<br>
-4) xupnpd: switch to 5.1.x lua use (fix compat with last portable upnpd sdk with bug utf locale parse).<br>
-5) xupnpd: use mpeg as default mime type (more devices compat whith this type).<br>
-6) xupnpd: impliment base profile for Panasonic Viera(need manual default mime set to mpeg_ts now).<br>
-7) xupnpd: auto use udpxy if enabled.<br>
-8) goahead: add ldpc to station list.<br>
-9) kernel: ralink_raeth: enable NAPI_GRO for all devices.<br>
-10) kernel: ralink_wifi: unify exported struct.<br>
-11) kernel: ralink_gpio: add config WPS button gpio number.<br>
-12) kernel: ralink_arch: fix reset MT7621 PCIe peripherals.<br>
-13) kernel: ralink_spi: fix SPI clock for MT7621 (bclk is 50MHz).<br>
-14) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
-15) kernel: nf_conntrack_core: show conntrack limit value on table full.<br>
-16) kernel: net: allow GRO only for local recived packets.<br>
-17) kernel: net: add skb_dst_set_noref_force.<br>
-18) kernel: net: tcp: fix tcp fin memory accounting.<br>
-19) kernel: net: increase sk_[max_]ack_backlog.<br>
-20) kernel: net: validate the range we feed to iov_iter_init() in sys_sendto/sys_recvfrom.<br>
-21) kernel: net: separate the close_list and the unreg_list.<br>
-22) kernel: net: fix high overhead of vlan sub-device teardown.<br>
+4) init.d: fix logging if syslog disabled.<br>
+5) xupnpd: switch to 5.1.x lua use (fix compat with last portable upnpd sdk with bug utf locale parse).<br>
+6) xupnpd: use mpeg as default mime type (more devices compat whith this type).<br>
+7) xupnpd: impliment base profile for Panasonic Viera(need manual default mime set to mpeg_ts now).<br>
+8) xupnpd: auto use udpxy if enabled.<br>
+9) goahead: add ldpc to station list.<br>
+10) kernel: ralink_raeth: enable NAPI_GRO for all devices.<br>
+11) kernel: ralink_wifi: unify exported struct.<br>
+12) kernel: ralink_gpio: add config WPS button gpio number.<br>
+13) kernel: ralink_arch: fix reset MT7621 PCIe peripherals.<br>
+14) kernel: ralink_spi: fix SPI clock for MT7621 (bclk is 50MHz).<br>
+15) kernel: netfilter: nf_nat: change sequence number adjustments to 32 bits.<br>
+16) kernel: nf_conntrack_core: show conntrack limit value on table full.<br>
+17) kernel: net: allow GRO only for local recived packets.<br>
+18) kernel: net: add skb_dst_set_noref_force.<br>
+19) kernel: net: tcp: fix tcp fin memory accounting.<br>
+20) kernel: net: increase sk_[max_]ack_backlog.<br>
+21) kernel: net: validate the range we feed to iov_iter_init() in sys_sendto/sys_recvfrom.<br>
+22) kernel: net: separate the close_list and the unreg_list.<br>
+23) kernel: net: fix high overhead of vlan sub-device teardown.<br>
 <br>
 <br>
 <b>TODO:</b><br>

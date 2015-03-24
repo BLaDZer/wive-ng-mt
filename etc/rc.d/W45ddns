@@ -15,11 +15,11 @@ start() {
     if  [ "$DDNS" != "" ] && [ "$DDNSProvider" != "" ] && [ "$DDNSProvider" != "none" ] && [ "$DDNSAccount" != "" ] && [ "$DDNSPassword" != "" ]; then
 	$LOG "Starting DynDNS"
 	if [ "$DDNSProvider" = "dyndns.org" ]; then
-	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background --syslog
+	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background $logto
 	elif [ "$DDNSProvider" = "zoneedit.com" ] || [ "$DDNSProvider" = "no-ip.com" ]; then
-	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background --syslog
+	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background $logto
 	elif [ "$DDNSProvider" = "freedns.afraid.org" ]; then
-	    inadyn -a $DDNS,$DDNSAccount --dyndns_system default@$DDNSProvider --background --syslog
+	    inadyn -a $DDNS,$DDNSAccount --dyndns_system default@$DDNSProvider --background $logto
 	else
 	    $LOG "Unknown DDNS provider: $DDNSProvider"
 	fi
@@ -28,6 +28,9 @@ start() {
 
 get_param() {
     eval `nvram_buf_get 2860 DDNS DDNSProvider DDNSAccount DDNSPassword`
+    if [ "$SysLogd" != "0" ] && [ "$SysLogd" != "" ]; then
+	logto="--syslog"
+    fi
 }
 
 stop() {

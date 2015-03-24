@@ -16,12 +16,15 @@ LOG="logger -t dynroute"
 
 start() {
     eval `nvram_buf_get 2860 RIPEnable Password Login HostName`
+    if [ "$SysLogd" != "0" ] && [ "$SysLogd" != "" ]; then
+	logto="log syslog"
+    fi
     if [ "$RIPEnable" = "1" ] && [ -f /bin/zebra ]; then
 	# confog and start zebra
 	printf "hostname $HostName
     		password $Password
     		enable password Admin
-    		log syslog" > /etc/zebra.conf
+    		$logto" > /etc/zebra.conf
 	$LOG "Starting ZEBRA"
 	zebra -u $Login -g $Login -d -f /etc/zebra.conf
     fi
@@ -30,9 +33,9 @@ start() {
 	printf "hostname $HostName
     		password $Password
     		enable password Admin
-    		log syslog
     		router rip
-    		version 2" > /etc/ripd.conf
+    		version 2
+    		$logto" > /etc/ripd.conf
 	$LOG "Starting RIPD"
 	ripd -u $Login -g $Login -f /etc/ripd.conf -d
     fi

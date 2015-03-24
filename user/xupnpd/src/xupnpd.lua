@@ -1,8 +1,5 @@
 cfg={}
 
--- multicast interface for SSDP exchange, 'eth0', 'br0', 'br-lan' for example
-cfg.ssdp_interface='br0'
-
 -- 'cfg.ssdp_loop' enables multicast loop (if player and server in one host)
 cfg.ssdp_loop=0
 
@@ -14,9 +11,6 @@ cfg.ssdp_max_age=300
 
 -- HTTP port for incoming connections
 cfg.http_port=4044
-
--- syslog facility (syslog,local0-local7)
-cfg.log_facility='syslog'
 
 -- 'cfg.daemon' detach server from terminal
 cfg.daemon=true
