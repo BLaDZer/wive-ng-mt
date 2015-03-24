@@ -21,7 +21,7 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 KLogd RemoteSysLogIP`
+    eval `nvram_buf_get 2860 SysLogd KLogd RemoteSysLogIP`
 }
 
 stop() {
