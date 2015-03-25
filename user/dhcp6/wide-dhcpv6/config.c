@@ -478,7 +478,7 @@ add_pd_pif(iapdc, cfl0, if_count)
 {
 	struct cf_list *cfl;
 	struct prefix_ifconf *pif;
-	int i;
+	int i, use_default_ifid = 1;
 
 	/* duplication check */
 	for (pif = TAILQ_FIRST(&iapdc->iapd_pif_list); pif;
@@ -513,11 +513,6 @@ add_pd_pif(iapdc, cfl0, if_count)
 	pif->sla_id = if_count;
 	pif->ifid_len = IFID_LEN_DEFAULT;
 	pif->sla_len = SLA_LEN_DEFAULT;
-	if (get_default_ifid(pif)) {
-		debug_printf(LOG_NOTICE, FNAME,
-		    "failed to get default IF ID for %s", pif->ifname);
-		goto bad;
-	}
 
 	for (cfl = cfl0->list; cfl; cfl = cfl->next) {
 		switch(cfl->type) {
@@ -536,11 +531,20 @@ add_pd_pif(iapdc, cfl0, if_count)
 		case IFPARAM_IFID:
 			for (i = sizeof(pif->ifid) -1; i >= 0; i--)
 				pif->ifid[i] = (cfl->num >> 8*(sizeof(pif->ifid) - 1 - i)) & 0xff;
+			use_default_ifid = 0;
 			break;
 		default:
 			debug_printf(LOG_ERR, FNAME, "%s:%d internal error: "
 			    "invalid configuration",
 			    configfilename, cfl->line);
+			goto bad;
+		}
+	}
+
+	if (use_default_ifid) {
+		if (get_default_ifid(pif)) {
+			debug_printf(LOG_NOTICE, FNAME,
+			    "failed to get default IF ID for %s", pif->ifname);
 			goto bad;
 		}
 	}
