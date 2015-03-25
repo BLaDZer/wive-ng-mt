@@ -758,8 +758,8 @@
 <b>2.7.x</b><br>
 1) build_system: small rework DoConfigure.sh scripts.<br>
 2) dhcpv6: fix renewal of IA NA.<br>
-2) dhcpv6: close file descriptors on exec.<br>
-2) dhcpv6: try and generate a default IFID only if an IFID is not configured.<br>
+3) dhcpv6: close file descriptors on exec.<br>
+4) dhcpv6: try and generate a default IFID only if an IFID is not configured.<br>
 <br>
 <br>
 <b>TODO:</b><br>
