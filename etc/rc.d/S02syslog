@@ -4,12 +4,12 @@ LOG="echo SYSLOG"
 
 start() {
     get_param
-    if [ "$KLogd" != "0" ] && [ "$KLogd" != "" ]; then
+    if [ "$KLogd" = "1" ]; then
 	$LOG "Start klogd"
 	klogd &
     fi
 
-    if [ "$SysLogd" != "0" ] && [ "$SysLogd" != "" ]; then
+    if [ "$SysLogd" = "1" ]; then
 	if [ "$RemoteSysLogIP" != "0.0.0.0" ] && [ "$RemoteSysLogIP" != "" ]; then
 	    $LOG "Start syslogd remote mode. Host $RemoteSysLogIP"
 	    syslogd -b0 -s40 -l7 -R $RemoteSysLogIP -D &

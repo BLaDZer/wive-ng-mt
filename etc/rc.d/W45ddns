@@ -28,7 +28,7 @@ start() {
 
 get_param() {
     eval `nvram_buf_get 2860 DDNS DDNSProvider DDNSAccount DDNSPassword`
-    if [ "$SysLogd" != "0" ] && [ "$SysLogd" != "" ]; then
+    if [ "$SysLogd" = "1" ]; then
 	logto="--syslog"
     fi
 }
