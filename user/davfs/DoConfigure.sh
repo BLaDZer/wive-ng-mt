@@ -13,8 +13,7 @@ if [ ! -f $APROOTDIR/configure ]; then
 fi
 
 if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/Makefile ]; then
-    automake -c --add-missing
-    automake
+    automake --add-missing --force-missing --copy
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"

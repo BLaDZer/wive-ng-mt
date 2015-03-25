@@ -64,6 +64,7 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -ay texinfo --download-all --allow-force
 	urpmi --auto -ay intltool --download-all --allow-force
 	urpmi --auto -ay fakeroot --download-all --allow-force
+	urpmi --auto -ay gperf --download-all --allow-force
     elif [ "$ISMAGEIA" = "1" ]; then
 	urpmi --auto bc --download-all
 	urpmi --auto flex --download-all
@@ -87,6 +88,7 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto gettext --download-all
 	urpmi --auto intltool --download-all
 	urpmi --auto fakeroot --download-all
+	urpmi --auto gperf --download-all
     else
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
@@ -101,6 +103,7 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -a texinfo- --download-all --allow-force
 	urpmi --auto -a intltool- --download-all --allow-force
 	urpmi --auto -a fakeroot- --download-all --allow-force
+	urpmi --auto -a gperf- --download-all --allow-force
     fi
 fi
 
