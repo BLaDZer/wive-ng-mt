@@ -169,6 +169,9 @@ main(argc, argv)
 
 	s = -1;
 	for (res = res0; res != NULL; res = res->ai_next) {
+#ifdef __linux__
+		res->ai_socktype |= SOCK_CLOEXEC;
+#endif
 		s = socket(res->ai_family, res->ai_socktype,
 		    res->ai_protocol);
 		if (s < 0) {

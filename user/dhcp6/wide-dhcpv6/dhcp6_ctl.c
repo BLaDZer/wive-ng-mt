@@ -97,6 +97,9 @@ dhcp6_ctl_init(addr, port, max, sockp)
 		    gai_strerror(error));
 		return (-1);
 	}
+#ifdef __linux__
+	res->ai_socktype |= SOCK_CLOEXEC;
+#endif
 	ctlsock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (ctlsock < 0) {
 		debug_printf(LOG_ERR, FNAME, "socket(control sock): %s",

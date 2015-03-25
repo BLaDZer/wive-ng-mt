@@ -167,9 +167,14 @@ getifaddrs(struct ifaddrs **ifap)
 	struct ifaddrs *ifa = NULL;
 	char *buf;
 
-	if ((fd4 = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+#ifdef __linux__
+#define SOCKTYPE (SOCK_DGRAM | SOCK_CLOEXEC)
+#else
+#define SOCKTYPE SOCK_DGRAM
+#endif
+	if ((fd4 = socket(AF_INET, SOCKTYPE, 0)) == -1)
 		return (-1);
-	if ((fd6 = socket(AF_INET6, SOCK_DGRAM, 0)) == -1 &&
+	if ((fd6 = socket(AF_INET6, SOCKTYPE, 0)) == -1 &&
 	    errno != EAFNOSUPPORT) {
 		(void) close(fd4);
 		return (-1);

@@ -324,6 +324,10 @@ duid_ok:
 		    gai_strerror(error));
 		exit(1);
 	}
+#ifdef __linux__
+	/* Force socket to be closed on execve */
+	res->ai_socktype |= SOCK_CLOEXEC;
+#endif
 	sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (sock < 0) {
 		debug_printf(LOG_ERR, FNAME, "socket");
@@ -380,7 +384,12 @@ duid_ok:
 	freeaddrinfo(res);
 
 	/* open a routing socket to watch the routing table */
-	if ((rtsock = socket(PF_ROUTE, SOCK_RAW, 0)) < 0) {
+#ifdef __linux__
+#define SOCKTYPE (SOCK_RAW | SOCK_CLOEXEC)
+#else
+#define SOCKTYPE SOCK_RAW
+#endif
+	if ((rtsock = socket(PF_ROUTE, SOCKTYPE, 0)) < 0) {
 		debug_printf(LOG_ERR, FNAME, "open a routing socket: %s",
 		    strerror(errno));
 		exit(1);

@@ -359,6 +359,9 @@ relay6_init(int ifnum, char *iflist[])
 		    gai_strerror(error));
 		goto failexit;
 	}
+#ifdef __linux__
+	res->ai_socktype |= SOCK_CLOEXEC;
+#endif
 	csock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (csock < 0) {
 		debug_printf(LOG_ERR, FNAME, "socket(csock): %s", strerror(errno));
@@ -465,6 +468,9 @@ relay6_init(int ifnum, char *iflist[])
 		goto failexit;
 	}
 	memcpy(&sa6_client, res->ai_addr, sizeof (sa6_client));
+#ifdef __linux__
+	res->ai_socktype |= SOCK_CLOEXEC;
+#endif
 	ssock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (ssock < 0) {
 		debug_printf(LOG_ERR, FNAME, "socket(outsock): %s",
