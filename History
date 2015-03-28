@@ -761,7 +761,8 @@
 3) dhcpv6: close file descriptors on exec.<br>
 4) dhcpv6: try and generate a default IFID only if an IFID is not configured.<br>
 5) kernel: ralink_wifi: disable 40MHz intolerant support if DRAFT3 undefined.<br>
-6) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
+6) kernel: ralink_hw_nat: exclude UDP bug check for MT7621.<br>
+7) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
 <br>
 <br>
 <b>TODO:</b><br>
