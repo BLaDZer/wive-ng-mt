@@ -757,17 +757,18 @@
 <br>
 <b>2.7.x</b><br>
 1) build_system: small rework DoConfigure.sh scripts.<br>
-2) dhcpv6: fix renewal of IA NA.<br>
-3) dhcpv6: close file descriptors on exec.<br>
-4) dhcpv6: try and generate a default IFID only if an IFID is not configured.<br>
-5) dhcpv6: ignore advertise messages with none of requested data and missed status codes.<br>
-6) kernel: ralink_wifi: disable 40MHz intolerant support if DRAFT3 undefined.<br>
-7) kernel: ralink_hw_nat: exclude UDP bug check for MT7621.<br>
-8) kernel: ralink_raeth: fix SG regression.<br>
-9) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
-10) kernel: net: ipmr,ip6mr: call ip6mr_free_table() on failure path.<br>
-11) kernel: net: netfilter: bridge: kill nf_bridge_pad.<br>
-12) kernel: net: ipv6: Don't reduce hop limit for an interface.<br>
+2) init.d: six: fix logic dhcpv6/radvd configure if not prefix recived (experimental).<br>
+3) dhcpv6: fix renewal of IA NA.<br>
+4) dhcpv6: close file descriptors on exec.<br>
+5) dhcpv6: try and generate a default IFID only if an IFID is not configured.<br>
+6) dhcpv6: ignore advertise messages with none of requested data and missed status codes.<br>
+7) kernel: ralink_wifi: disable 40MHz intolerant support if DRAFT3 undefined.<br>
+8) kernel: ralink_hw_nat: exclude UDP bug check for MT7621.<br>
+9) kernel: ralink_raeth: fix SG regression.<br>
+10) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
+11) kernel: net: ipmr,ip6mr: call ip6mr_free_table() on failure path.<br>
+12) kernel: net: netfilter: bridge: kill nf_bridge_pad.<br>
+13) kernel: net: ipv6: Don't reduce hop limit for an interface.<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -56,6 +56,7 @@ start() {
 
 		$LOG "Replace Ipv6 DGW to $six_wan_if via $IPv6GWAddr"
 		ip -6 route replace default dev "$six_wan_if" via "$IPv6WANIPAddr" metric 0
+		flush_net_caches
 		dhcpradvdreconf
 	    fi
         elif [ "$IPv6OpMode" = "2" ]; then
@@ -107,9 +108,9 @@ start() {
 	    $LOG "Set ${PREFIX} to $lan_if"
 	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
 	    ip -6 addr add ${PREFIX} dev $lan_if
+	    flush_net_caches
 	    dhcpradvdreconf
 	fi
-	flush_net_caches
     fi
 }
 
@@ -128,12 +129,10 @@ dhcpradvdreconf() {
 	# get prefix direct from lan iface if not set
 	if [ "$PREFIX" = "" ]; then
 	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
-	    $LOG "Get prefix from local interface $PREFIX"
-	fi
-
-	if [ "$PREFIX" = "" ]; then
-	    $LOG "Prefix not configured... Exit."
-	    exit 0
+	    $LOG "Try get prefix from local interface $lan_if $PREFIX"
+	    if [ "$PREFIX" = "" ]; then
+		$LOG "Prefix empty..."
+	    fi
 	fi
 
 	# read dnsservers reciverd from dhcp
@@ -157,21 +156,27 @@ dhcpradvdreconf() {
                 MaxRtrAdvInterval 10;
                 AdvDefaultPreference high;
 		AdvOtherConfigFlag on;
-                prefix ${PREFIX}
-                {
-                        AdvOnLink off;
-                        AdvAutonomous on;
-                        AdvRouterAddr on;
-    	    " > /etc/radvd.conf
-	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
-    	    printf "
-                        Base6to4Interface $real_wan_if;
-    	    " >> /etc/radvd.conf
-	    fi
-    	    printf "
+    		" > /etc/radvd.conf
+		if [ "$PREFIX" != "" ]; then
+    		    printf "
+            	    prefix ${PREFIX}
+            	    {
+                    	AdvOnLink off;
+                    	AdvAutonomous on;
+                    	AdvRouterAddr on;
                         AdvPreferredLifetime 20;
                         AdvValidLifetime 30;
-                };
+    		    " >> /etc/radvd.conf
+		    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
+    			printf "
+                    	    Base6to4Interface $real_wan_if;
+    			" >> /etc/radvd.conf
+		    fi
+    		    printf "
+            	    };
+    		    " >> /etc/radvd.conf
+		fi
+    		printf "
                 RDNSS $DNSADRESSES
                 {
                         AdvRDNSSLifetime 10;
