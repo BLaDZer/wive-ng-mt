@@ -765,6 +765,7 @@
 7) kernel: ralink_hw_nat: exclude UDP bug check for MT7621.<br>
 8) kernel: ralink_raeth: fix SG regression.<br>
 9) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
+10) kernel: net: ipmr,ip6mr: call ip6mr_free_table() on failure path.<br>
 <br>
 <br>
 <b>TODO:</b><br>
