@@ -33,7 +33,7 @@
 void
 err(int retv, const char *str)
 {
-	(void) fprintf(stderr, "%s\n", str);
+	fprintf(stderr, "%s\n", str);
 	exit(retv);
 }
 
@@ -43,7 +43,7 @@ errx(int retv, const char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
-	(void) vfprintf(stderr, fmt, args);
+	vfprintf(stderr, fmt, args);
 	va_end(args);
 	exit(retv);
 }
@@ -54,6 +54,6 @@ warnx(const char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
-	(void) vfprintf(stderr, fmt, args);
+	vfprintf(stderr, fmt, args);
 	va_end(args);
 }

@@ -420,7 +420,7 @@ release_all_ia(ifp)
 		for (ia = TAILQ_FIRST(&iac->iadata); ia; ia = ia_next) {
 			ia_next = TAILQ_NEXT(ia, link);
 
-			(void)release_ia(ia);
+			release_ia(ia);
 
 			/*
 			 * The client MUST stop using all of the addresses
@@ -539,7 +539,7 @@ remove_ia(ia)
 
 	free(ia);
 
-	(void)client6_start(ifp);
+	client6_start(ifp);
 }
 
 static struct dhcp6_timer *

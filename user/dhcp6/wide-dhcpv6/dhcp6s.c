@@ -620,7 +620,7 @@ server6_mainloop()
 		if (ctlsock >= 0) {
 			FD_SET(ctlsock, &r);
 			maxsock = (insock > ctlsock) ? insock : ctlsock;
-			(void)dhcp6_ctl_setreadfds(&r, &maxsock);
+			dhcp6_ctl_setreadfds(&r, &maxsock);
 		}
 
 		ret = select(maxsock + 1, &r, NULL, NULL, w);
@@ -642,10 +642,9 @@ server6_mainloop()
 			server6_recv(insock);
 		if (ctlsock >= 0) {
 			if (FD_ISSET(ctlsock, &r)) {
-				(void)dhcp6_ctl_acceptcommand(ctlsock,
-				    server6_do_ctlcommand);
+				dhcp6_ctl_acceptcommand(ctlsock, server6_do_ctlcommand);
 			}
-			(void)dhcp6_ctl_readcommand(&r);
+			dhcp6_ctl_readcommand(&r);
 		}
 	}
 }
@@ -975,35 +974,35 @@ server6_recv(s)
 
 	switch (dh6->dh6_msgtype) {
 	case DH6_SOLICIT:
-		(void)react_solicit(ifp, dh6, len, &optinfo,
+		react_solicit(ifp, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_REQUEST:
-		(void)react_request(ifp, pi, dh6, len, &optinfo,
+		react_request(ifp, pi, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_RENEW:
-		(void)react_renew(ifp, pi, dh6, len, &optinfo,
+		react_renew(ifp, pi, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_REBIND:
-		(void)react_rebind(ifp, dh6, len, &optinfo,
+		react_rebind(ifp, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_RELEASE:
-		(void)react_release(ifp, pi, dh6, len, &optinfo,
+		react_release(ifp, pi, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_DECLINE:
-		(void)react_decline(ifp, pi, dh6, len, &optinfo,
+		react_decline(ifp, pi, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_CONFIRM:
-		(void)react_confirm(ifp, pi, dh6, len, &optinfo,
+		react_confirm(ifp, pi, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	case DH6_INFORM_REQ:
-		(void)react_informreq(ifp, dh6, len, &optinfo,
+		react_informreq(ifp, dh6, len, &optinfo,
 		    (struct sockaddr *)&from, fromlen, &relayinfohead);
 		break;
 	default:
@@ -1646,7 +1645,7 @@ react_request(ifp, pi, dh6, len, optinfo, from, fromlen, relayinfohead)
 	}
 
 	/* send a reply message. */
-	(void)server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
+	server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
 	    &roptinfo, relayinfohead, client_conf);
 
   end:
@@ -1769,7 +1768,7 @@ react_renew(ifp, pi, dh6, len, optinfo, from, fromlen, relayinfohead)
 		goto fail;
 	}
 
-	(void)server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
+	server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
 	    &roptinfo, relayinfohead, client_conf);
 
   end:
@@ -1877,7 +1876,7 @@ react_rebind(ifp, dh6, len, optinfo, from, fromlen, relayinfohead)
 		goto fail;
 	}
 
-	(void)server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
+	server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
 	    &roptinfo, relayinfohead, client_conf);
 
 	dhcp6_clear_options(&roptinfo);
@@ -2005,7 +2004,7 @@ react_release(ifp, pi, dh6, len, optinfo, from, fromlen, relayinfohead)
 		goto fail;
 	}
 
-	(void)server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
+	server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
 	    &roptinfo, relayinfohead, client_conf);
 
   end:
@@ -2130,7 +2129,7 @@ react_decline(ifp, pi, dh6, len, optinfo, from, fromlen, relayinfohead)
 		goto fail;
 	}
 
-	(void)server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
+	server6_send(DH6_REPLY, ifp, dh6, optinfo, from, fromlen,
 	    &roptinfo, relayinfohead, client_conf);
 
   end:

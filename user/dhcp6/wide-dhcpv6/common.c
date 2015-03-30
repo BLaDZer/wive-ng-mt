@@ -658,8 +658,8 @@ dhcp6_auth_replaycheck(method, prev, current)
 		return (-1);
 	}
 
-	(void)sprint_uint64(bufprev, sizeof(bufprev), prev);
-	(void)sprint_uint64(bufcurrent, sizeof(bufcurrent), current);
+	sprint_uint64(bufprev, sizeof(bufprev), prev);
+	sprint_uint64(bufcurrent, sizeof(bufcurrent), current);
 	debug_printf(LOG_DEBUG, FNAME, "previous: %s, current: %s",
 	    bufprev, bufcurrent);
 
@@ -1114,10 +1114,9 @@ getifhwaddr(const char *ifname, char *buf, u_int16_t *hwtypep, int ppa)
 	if (ifname[0] == '\0')
 		return (-1);
 	if (ppa >= 0 && !isdigit(ifname[strlen(ifname) - 1]))
-		(void) snprintf(fname, sizeof (fname), "/dev/%s%d", ifname,
-		    ppa);
+		snprintf(fname, sizeof (fname), "/dev/%s%d", ifname, ppa);
 	else
-		(void) snprintf(fname, sizeof (fname), "/dev/%s", ifname);
+		snprintf(fname, sizeof (fname), "/dev/%s", ifname);
 	getctl.maxlen = sizeof (getbuf);
 	getctl.buf = (char *)getbuf;
 #ifdef __linux__
@@ -1150,16 +1149,16 @@ getifhwaddr(const char *ifname, char *buf, u_int16_t *hwtypep, int ppa)
 		putctl.len = sizeof (dlar);
 		putctl.buf = (char *)&dlar;
 		if (putmsg(fd, &putctl, NULL, 0) == -1) {
-			(void) close(fd);
+			close(fd);
 			return (-1);
 		}
 		flags = 0;
 		if (getmsg(fd, &getctl, NULL, &flags) == -1) {
-			(void) close(fd);
+			close(fd);
 			return (-1);
 		}
 		if (getbuf[0] != DL_OK_ACK) {
-			(void) close(fd);
+			close(fd);
 			return (-1);
 		}
 	}
@@ -1167,16 +1166,16 @@ getifhwaddr(const char *ifname, char *buf, u_int16_t *hwtypep, int ppa)
 	putctl.len = sizeof (dlir);
 	putctl.buf = (char *)&dlir;
 	if (putmsg(fd, &putctl, NULL, 0) == -1) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	flags = 0;
 	if (getmsg(fd, &getctl, NULL, &flags) == -1) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	if (getbuf[0] != DL_INFO_ACK) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	switch (((dl_info_ack_t *)getbuf)->dl_mac_type) {
@@ -1188,7 +1187,7 @@ getifhwaddr(const char *ifname, char *buf, u_int16_t *hwtypep, int ppa)
 		*hwtypep = ARPHRD_ETHER;
 		break;
 	default:
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	dlpar.dl_primitive = DL_PHYS_ADDR_REQ;
@@ -1196,25 +1195,24 @@ getifhwaddr(const char *ifname, char *buf, u_int16_t *hwtypep, int ppa)
 	putctl.len = sizeof (dlpar);
 	putctl.buf = (char *)&dlpar;
 	if (putmsg(fd, &putctl, NULL, 0) == -1) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	flags = 0;
 	if (getmsg(fd, &getctl, NULL, &flags) == -1) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	if (getbuf[0] != DL_PHYS_ADDR_ACK) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
 	dlpaa = (dl_phys_addr_ack_t *)getbuf;
 	if (dlpaa->dl_addr_length != 6) {
-		(void) close(fd);
+		close(fd);
 		return (-1);
 	}
-	(void) memcpy(buf, (char *)getbuf + dlpaa->dl_addr_offset,
-	    dlpaa->dl_addr_length);
+	memcpy(buf, (char *)getbuf + dlpaa->dl_addr_offset, dlpaa->dl_addr_length);
 	return (dlpaa->dl_addr_length);
 }
 
@@ -1258,8 +1256,7 @@ gethwid(buf, len, ifname, hwtypep)
 		parms.buf = buf;
 		parms.hwtypep = hwtypep;
 		parms.retval = -1;
-		(void) di_walk_minor(root, DDI_NT_NET, DI_CHECK_ALIAS, &parms,
-		    devfs_handler);
+		di_walk_minor(root, DDI_NT_NET, DI_CHECK_ALIAS, &parms, devfs_handler);
 		di_fini(root);
 		return (parms.retval);
 	} else {
@@ -2217,7 +2214,7 @@ sprint_auth(optinfo)
 		rdm = rdm0;
 	}
 
-	(void)sprint_uint64(rd, sizeof(rd), optinfo->authrd);
+	sprint_uint64(rd, sizeof(rd), optinfo->authrd);
 
 	snprintf(ret, sizeof(ret), "proto: %s, alg: %s, RDM: %s, RD: %s",
 	    proto, alg, rdm, rd);
@@ -3321,7 +3318,7 @@ ifaddrconf(cmd, ifname, addr, plen, pltime, vltime)
 #ifdef __KAME__
 	req.ifra_addr = *addr;
 	memcpy(req.ifra_name, ifname, sizeof(req.ifra_name));
-	(void)sa6_plen2mask(&req.ifra_prefixmask, plen);
+	sa6_plen2mask(&req.ifra_prefixmask, plen);
 	/* XXX: should lifetimes be calculated based on the lease duration? */
 	req.ifra_lifetime.ia6t_vltime = vltime;
 	req.ifra_lifetime.ia6t_pltime = pltime;

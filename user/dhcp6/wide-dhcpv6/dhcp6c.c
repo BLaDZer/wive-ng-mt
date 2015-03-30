@@ -577,7 +577,7 @@ client6_mainloop()
 		if (ctlsock >= 0) {
 			FD_SET(ctlsock, &r);
 			maxsock = (sock > ctlsock) ? sock : ctlsock;
-			(void)dhcp6_ctl_setreadfds(&r, &maxsock);
+			dhcp6_ctl_setreadfds(&r, &maxsock);
 		}
 
 		ret = select(maxsock + 1, &r, NULL, NULL, w);
@@ -599,10 +599,9 @@ client6_mainloop()
 			client6_recv();
 		if (ctlsock >= 0) {
 			if (FD_ISSET(ctlsock, &r)) {
-				(void)dhcp6_ctl_acceptcommand(ctlsock,
-				    client6_do_ctlcommand);
+				dhcp6_ctl_acceptcommand(ctlsock, client6_do_ctlcommand);
 			}
-			(void)dhcp6_ctl_readcommand(&r);
+			dhcp6_ctl_readcommand(&r);
 		}
 	}
 }

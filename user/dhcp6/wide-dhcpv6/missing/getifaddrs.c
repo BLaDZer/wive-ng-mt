@@ -65,7 +65,7 @@ get_lifreq(int fd, struct lifreq **ifr_ret)
 				lifn.lifn_count <<= 1;
 				continue;
 			}
-			(void) close(fd);
+			close(fd);
 			return (-1);
 		}
 		if (lifc.lifc_len < (lifn.lifn_count - 1) * sizeof (*lifrp))
@@ -73,7 +73,7 @@ get_lifreq(int fd, struct lifreq **ifr_ret)
 		free(lifrp);
 		lifn.lifn_count <<= 1;
 	}
-	(void) close(fd);
+	close(fd);
 
 	*ifr_ret = lifrp;
 
@@ -102,9 +102,8 @@ addrcpy(struct sockaddr_storage *addr, char **bufp)
 	char *buf = *bufp;
 	size_t len;
 
-	len = addr->ss_family == AF_INET ? sizeof (struct sockaddr_in) :
-	    sizeof (struct sockaddr_in6);
-	(void) memcpy(buf, addr, len);
+	len = addr->ss_family == AF_INET ? sizeof (struct sockaddr_in) : sizeof (struct sockaddr_in6);
+	memcpy(buf, addr, len);
 	*bufp = buf + len;
 	return ((struct sockaddr *)buf);
 }
@@ -118,7 +117,7 @@ populate(struct ifaddrs *ifa, int fd, struct lifreq *lifrp, int nlif, int af,
 
 	while (nlif > 0) {
 		ifa->ifa_next = (nlif > 1) ? ifa + 1 : NULL;
-		(void) strcpy(ifa->ifa_name = buf, lifrp->lifr_name);
+		strcpy(ifa->ifa_name = buf, lifrp->lifr_name);
 		slen = strlen(lifrp->lifr_name) + 1;
 		buf += (slen + 3) & ~3;
 		if (ioctl(fd, SIOCGLIFFLAGS, lifrp) == -1)
@@ -176,7 +175,7 @@ getifaddrs(struct ifaddrs **ifap)
 		return (-1);
 	if ((fd6 = socket(AF_INET6, SOCKTYPE, 0)) == -1 &&
 	    errno != EAFNOSUPPORT) {
-		(void) close(fd4);
+		close(fd4);
 		return (-1);
 	}
 
@@ -207,9 +206,9 @@ getifaddrs(struct ifaddrs **ifap)
 
 failure:
 	free(ifa);
-	(void) close(fd4);
+	close(fd4);
 	if (fd6 != -1)
-		(void) close(fd6);
+		close(fd6);
 	free(ifr4);
 	free(ifr6);
 	return (-1);

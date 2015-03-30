@@ -36,14 +36,14 @@ daemon(int nochdir, int noclose)
 	if (fork() != 0)
 		_exit(0);
 	if (nochdir == 0)
-		(void) chdir("/");
+		chdir("/");
 	if (noclose == 0) {
-		(void) close(0);
-		(void) open("/dev/null", O_RDWR);
-		(void) dup2(0, 1);
-		(void) dup2(0, 2);
+		close(0);
+		open("/dev/null", O_RDWR);
+		dup2(0, 1);
+		dup2(0, 2);
 	}
-	(void) setsid();
+	setsid();
 	if (fork() != 0)
 		_exit(0);
 	return (0);
