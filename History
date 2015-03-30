@@ -766,6 +766,7 @@
 8) kernel: ralink_raeth: fix SG regression.<br>
 9) kernel: net: af_packet: make tpacket_rcv to not set status value before run_filter.<br>
 10) kernel: net: ipmr,ip6mr: call ip6mr_free_table() on failure path.<br>
+11) kernel: net: netfilter: bridge: kill nf_bridge_pad.<br>
 <br>
 <br>
 <b>TODO:</b><br>
