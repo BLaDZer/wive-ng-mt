@@ -308,6 +308,9 @@ stop() {
 	ip link set dev sit0 down					> /dev/null 2>&1
 	ip tunnel del 6rd						> /dev/null 2>&1
 
+	# always remove sit module if auto loaded after call ip tool
+	rmmod sit > /dev/null 2>&1
+
 	flush_net_caches
     fi
 }
