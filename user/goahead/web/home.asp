@@ -10,26 +10,42 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+function getCookie(name) {
+  var cookie = " " + document.cookie;
+  var search = " " + name + "=";
+  var setStr = null;
+  var offset = 0;
+  var end = 0;
+
+  if (cookie.length > 0) {
+	offset = cookie.indexOf(search);
+	if (offset != -1) {
+    	    offset += search.length;
+    	    end = cookie.indexOf(";", offset)
+    	    if (end == -1)
+    		end = cookie.length;
+    	    setStr = unescape(cookie.substring(offset, end));
+	}
+  }
+  return(setStr);
+}
+
 function initLanguage()
 {
-
-	var lang = "<% getCfgGeneral(1, "Language"); %>";
-	if (lang=="")
-		lang = "en";
-	var cook = "en";
 	var lang_en = "<% getLangBuilt("en"); %>";
 	var lang_ru = "<% getLangBuilt("ru"); %>";
+	var lang = "<% getCfgGeneral(1, "Language"); %>";
+	var cook = "<% getCfgGeneral(1, "Language"); %>";
 
-	if (document.cookie.length > 0) {
-		var s = document.cookie.indexOf("language=");
-		var e = document.cookie.indexOf(";", s);
-		if (s != -1) {
-			if (e == -1)
-				cook = document.cookie.substring(s+9);
-			else
-				cook = document.cookie.substring(s+9, e);
-		}
-	}
+	if (lang == "")
+		lang = "en";
+
+	if (cook == "")
+		cook = "en";
+
+	if (document.cookie.length > 0)
+		cook = getCookie("language");
 
 	if (lang == "en") {
 		document.cookie="language=en; path=/";
@@ -41,8 +57,7 @@ function initLanguage()
 				window.location.reload();
 			}
 		}
-	}
-	else if (lang == "ru") {
+	} else if (lang == "ru") {
 		document.cookie="language=ru; path=/";
 		if (cook != lang)
 			window.location.reload();
@@ -52,10 +67,12 @@ function initLanguage()
 				window.location.reload();
 			}
 		}
-	}
-	else {
+	} else {
 		document.cookie="language=en; path=/";
-		lang_en == "1";
+		cook = "en";
+		lang = "en"
+		lang_en = "1";
+		lang_ru = "0";
 		window.location.reload();
 	}
 }
