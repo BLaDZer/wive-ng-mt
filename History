@@ -774,6 +774,7 @@
 <br>
 <b>2.8.x</b><br>
 1) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
+2) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
 <br>
 <br>
 <b>TODO:</b><br>
