@@ -772,6 +772,10 @@
 14) kernel: net: ipv6: Don't reduce hop limit for an interface.<br>
 <br>
 <br>
+<b>2.8.x</b><br>
+1) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
