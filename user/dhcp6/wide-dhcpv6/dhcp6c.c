@@ -1619,7 +1619,7 @@ client6_recvadvert(ifp, dh6, len, optinfo)
 		/* parse list of IA_PD */
 		if (evd->type == DHCP6_EVDATA_IAPD) {
 		    TAILQ_FOREACH(lv, (struct dhcp6_list *)evd->data, link) {
-			slv = dhcp6_find_listval(&optinfo->iapd_list, evd->type, &lv->val_ia, 0);
+			slv = dhcp6_find_listval(&optinfo->iapd_list, DHCP6_LISTVAL_IAPD, &lv->val_ia, 0);
 			if (slv == NULL)
 				continue;
 			TAILQ_FOREACH(slv, &slv->sublist, link) {
@@ -1633,7 +1633,7 @@ client6_recvadvert(ifp, dh6, len, optinfo)
 		/* parse list of IA_NA */
 		if (evd->type == DHCP6_EVDATA_IANA) {
 		    TAILQ_FOREACH(lv, (struct dhcp6_list *)evd->data, link) {
-			slv = dhcp6_find_listval(&optinfo->iana_list, evd->type, &lv->val_ia, 0);
+			slv = dhcp6_find_listval(&optinfo->iana_list, DHCP6_LISTVAL_IANA, &lv->val_ia, 0);
 			if (slv == NULL)
 				continue;
 			TAILQ_FOREACH(slv, &slv->sublist, link) {
