@@ -18,7 +18,7 @@
   <message msgid="treeapp hotspot" msgstr="Hotspot setup" />
   <message msgid="treeapp lan" msgstr="LAN setup" />
   <message msgid="treeapp vpn" msgstr="VPN setup" />
-  <message msgid="treeapp ipv6" msgstr="IPv6 config" />
+  <message msgid="treeapp ipv6" msgstr="IPv6 setup" />
   <message msgid="treeapp routing" msgstr="Routing" />
   <message msgid="treeapp dhcp clients" msgstr="DHCP Clients" />
   <message msgid="treeapp samba" msgstr="Samba/WINS" />
