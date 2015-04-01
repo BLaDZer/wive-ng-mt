@@ -10,4 +10,4 @@ echo '</html>'
 fs save				> /dev/console 2>&1
 /etc/scripts/wifi_unload.sh     > /dev/console 2>&1
 
-reboot &
+reboot

@@ -75,7 +75,7 @@
   <message msgid="treeapp usbmodem" msgstr="USB модем" />
   <message msgid="treeapp transmission" msgstr="BitTorrent" />
   <message msgid="treeapp usbinic" msgstr="USB iNIC" />
-  
+
   <message msgid="opmode title" msgstr="Режим работы" />
   <message msgid="opmode introduction" msgstr="Вы можете настроить режим работы устройства исходя из ваших требований." />
   <message msgid="opmode mode b" msgstr="Мост:" />
@@ -91,4 +91,3 @@
   <message msgid="opmode nat" msgstr="NAT включен" />
   <message msgid="opmode eth conv" msgstr="Ethernet конвертер включен" />
 </po>
-

@@ -33,14 +33,14 @@ function rebootRouter(form, reloader)
 		if (obj != null)
 			obj.cols = "250,0"; // Hide menu
 	}
-	
+
 	var submitForm = function()
 	{
 		form.submit();
 	};
-	
+
 	form.target = reloader;
-	
+
 	ajaxPopupWindow('ajxReboot', '/messages/rebooting.asp', submitForm);
 }
 

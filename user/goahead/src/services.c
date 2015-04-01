@@ -483,8 +483,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 		}
 		websFooter(wp);
 		websDone(wp, 200);
-
-		doSystem("sleep 3 && reboot");
+		reboot_now();
 	}
 	else
 	{

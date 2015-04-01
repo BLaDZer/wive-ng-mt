@@ -46,9 +46,9 @@ void reboot_now(void)
 	sync();
 	Sleep(2);
 #ifdef CONFIG_USER_STORAGE
-	doSystem("/etc/scripts/wifi_unload.sh && reboot &");
+	doSystem("/etc/scripts/wifi_unload.sh && reboot > /dev/console 2>&1");
 #else
-	doSystem("reboot &");
+	doSystem("reboot");
 #endif
 }
 
