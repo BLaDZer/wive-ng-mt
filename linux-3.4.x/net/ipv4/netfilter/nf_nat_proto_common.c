@@ -62,6 +62,10 @@ void nf_nat_proto_unique_tuple(struct nf_conntrack_tuple *tuple,
 			if (ntohs(*portptr) < 512) {
 				min = 1;
 				range_size = 511 - min + 1;
+			} else if (ntohs(*portptr) == 5060) {
+			/* fix issue of some SIP Providers use only port 5060 for send/listen calls */
+				min = 5061;
+				range_size = 65535 - 5061 + 1;
 			} else {
 				min = 600;
 				range_size = 1023 - min + 1;

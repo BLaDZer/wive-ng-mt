@@ -778,6 +778,8 @@
 3) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
 4) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
 5) kernel: mips: fix race condition in lazy cache flushing.<br>
+6) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
+7) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
 <br>
 <br>
 <b>TODO:</b><br>

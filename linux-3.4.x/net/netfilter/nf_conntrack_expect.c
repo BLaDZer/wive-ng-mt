@@ -266,7 +266,11 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
 			/* address needs to be cleared for nf_ct_tuple_equal */
 			memset((void *)&exp->tuple.src.u3 + len, 0x00,
 			       sizeof(exp->tuple.src.u3) - len);
+#ifdef CONFIG_NF_CONNTRACK_SIP
+		memset(&exp->mask.src.u3, 0x00, len);
+#else
 		memset(&exp->mask.src.u3, 0xFF, len);
+#endif
 		if (sizeof(exp->mask.src.u3) > len)
 			memset((void *)&exp->mask.src.u3 + len, 0x00,
 			       sizeof(exp->mask.src.u3) - len);
