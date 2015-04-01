@@ -109,10 +109,6 @@ static int mtd_write_firmware(char *filename, int offset, int len)
 
 /* check image size before erase flash and write image */
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
-    if(len > MAX_IMG_SIZE || len < MIN_FIRMWARE_SIZE){
-	fprintf(stderr, "Image size is not correct!!!%d", len);
-        return -1;
-    }
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
     status = system(cmd);
@@ -140,13 +136,14 @@ static int mtd_write_firmware(char *filename, int offset, int len)
     if (err == 0)
         return 0;
 
+    fprintf(stderr, "mtd_write return error - image oversized or uncorrect!!!%d", len);
     return -1;
 }
 
 /*
  *  taken from "mkimage -l" with few modified....
  */
-static int check(char *imagefile, int offset, int len, char *err_msg)
+static int checkimage(char *imagefile, int offset, int len)
 {
 	struct stat sbuf;
 
@@ -161,26 +158,26 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	int ifd;
 
 	if ((unsigned)len < sizeof(image_header_t)) {
-		sprintf (err_msg, "Bad size: \"%s\" is no valid image\n", imagefile);
+		fprintf(stderr,"Bad size: \"%s\" is no valid image\n", imagefile);
 		return 0;
 	}
 
 	ifd = open(imagefile, O_RDONLY);
 	if(!ifd){
-		sprintf (err_msg, "Can't open %s: %s\n", imagefile, strerror(errno));
+		fprintf(stderr,"Can't open %s: %s\n", imagefile, strerror(errno));
 		return 0;
 	}
 
 	if (fstat(ifd, &sbuf) < 0) {
 		close(ifd);
-		sprintf (err_msg, "Can't stat %s: %s\n", imagefile, strerror(errno));
+		fprintf(stderr,"Can't stat %s: %s\n", imagefile, strerror(errno));
 		return 0;
 	}
 
 	ptr = (unsigned char *) mmap(0, sbuf.st_size, PROT_READ, MAP_SHARED, ifd, 0);
 	if ((caddr_t)ptr == (caddr_t)-1) {
 		close(ifd);
-		sprintf (err_msg, "Can't mmap %s: %s\n", imagefile, strerror(errno));
+		fprintf(stderr,"Can't mmap %s: %s\n", imagefile, strerror(errno));
 		return 0;
 	}
 	ptr += offset;
@@ -194,7 +191,7 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	{
 		munmap(ptr, len);
 		close(ifd);
-		sprintf (err_msg, "Bad Magic Number: \"%s\" is no valid image\n", imagefile);
+		fprintf(stderr,"Bad Magic Number: \"%s\" is no valid image\n", imagefile);
 		return 0;
 	}
 
@@ -207,7 +204,7 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	{
 		munmap(ptr, len);
 		close(ifd);
-		sprintf (err_msg, "*** ERROR: \"%s\" has bad header checksum!\n", imagefile);
+		fprintf(stderr,"*** ERROR: \"%s\" has bad header checksum!\n", imagefile);
 		return 0;
 	}
 
@@ -221,7 +218,7 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	{
 		munmap(ptr, len);
 		close(ifd);
-		sprintf (err_msg, "*** ERROR: \"%s\" has corrupted data!\n", imagefile);
+		fprintf(stderr,"*** ERROR: \"%s\" has corrupted data!\n", imagefile);
 		return 0;
 	}
 
@@ -233,21 +230,21 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel_RootFS\"")){
 		munmap(ptr, len);
 		close(ifd);
-		sprintf(err_msg, "*** ERROR: the image file(0x%x) is bigger than Kernel_RootFS MTD partition.\n", len);
+		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel_RootFS MTD partition.\n", len);
 		return 0;
 	}
 #else
 	if(len > MAX_IMG_SIZE || len < CONFIG_MTD_KERNEL_PART_SIZ){
 		munmap(ptr, len);
 		close(ifd);
-		sprintf(err_msg, "*** ERROR: the image file(0x%x) size doesn't make sense.\n", len);
+		fprintf(stderr,"*** ERROR: the image file(0x%x) size doesn't make sense.\n", len);
 		return 0;
 	}
 
 	if((len - CONFIG_MTD_KERNEL_PART_SIZ) > getMTDPartSize("\"RootFS\"")){
 		munmap(ptr, len);
 		close(ifd);
-		sprintf(err_msg, "*** ERROR: the image file(0x%x) is bigger than RootFS MTD partition.\n", len - CONFIG_MTD_KERNEL_PART_SIZ);
+		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than RootFS MTD partition.\n", len - CONFIG_MTD_KERNEL_PART_SIZ);
 		return 0;
 	}
 #endif
@@ -255,7 +252,7 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel\"")){
 		munmap(ptr, len);
 		close(ifd);
-		sprintf(err_msg, "*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition.\n", len);
+		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition.\n", len);
 		return 0;
 	}
 #else
@@ -267,11 +264,12 @@ static int check(char *imagefile, int offset, int len, char *err_msg)
 	return 1;
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	char err_msg[256];
-	long file_size = 0;
-	long file_begin = 0, file_end = 0;
+	char err_msg[512];
+	char *filename;
+	long file_size = 0, file_begin = 0, file_end = 0;
+	int tries = 0, reset_rwfs = 0;
 
 	// Get multipart file data separator
 	char separator[MAX_SEPARATOR_LEN];
@@ -285,7 +283,7 @@ int main (int argc, char *argv[])
 	}
 
 	// Get multipart file name
-	char *filename = getenv("UPLOAD_FILENAME");
+	filename = getenv("UPLOAD_FILENAME");
 	if (filename == NULL)
 	{
 		html_error(RFC_ERROR);
@@ -293,7 +291,6 @@ int main (int argc, char *argv[])
 	}
 
 	// Wait until file is completely uploaded
-	int tries = 0;
 	while (tries>5)
 	{
 		struct stat filestat;
@@ -328,7 +325,6 @@ int main (int argc, char *argv[])
 
 	// Find parameter containing NVRAM reset flag
 	parameter_t *find = find_parameter(params, "reset_rwfs");
-	int reset_rwfs = 0;
 	if (find != NULL)
 	{
 		if (find->value != NULL)
@@ -345,6 +341,7 @@ int main (int argc, char *argv[])
 			html_error(RFC_ERROR);
 			return -1;
 		}
+
 		if (!check_binary_content_type(find->content_type))
 		{
 			sprintf(err_msg, "Unsupported content-type for binary data: %s", find->content_type);
@@ -354,18 +351,26 @@ int main (int argc, char *argv[])
 
 		file_begin = find->start_pos;
 		file_end   = find->end_pos;
-	}
-	else
-	{
+		file_size  = file_end - file_begin;
+	} else {
 		html_error("No firmware binary file");
 		return -1;
 	}
 
 	release_parameters(params);
 
-	// check image size
-	if (!check(filename, (int)file_begin, (int)(file_end - file_begin), err_msg))
+#if defined(CONFIG_RT2880_ROOTFS_IN_FLASH)
+	if(file_size > MAX_IMG_SIZE || file_size < MIN_FIRMWARE_SIZE){
+		sprintf(err_msg, "Check image error: oversized uncompatable image. Size: %d", (int)file_size);
+		html_error(err_msg);
+    		return -1;
+	}
+#endif
+
+	// check image
+	if (!checkimage(filename, (int)file_begin, (int)file_size))
 	{
+		sprintf(err_msg, "Check image error: corrupted or uncompatable image. Size: %d", (int)file_size);
 		html_error(err_msg);
 		return -1;
 	}
@@ -375,14 +380,16 @@ int main (int argc, char *argv[])
 	// start web timer and crash rwfs BEFORE flash destroy
 	if (reset_rwfs)
 	{
-		system("fs restore > /dev/console 2>&1");
+		system("fs restore > /dev/null 2>&1");
 		html_success(18*(IMAGE1_SIZE/0x100000) + 35);
 	} else
 		html_success(18*(IMAGE1_SIZE/0x100000) + 25);
 
 	// flash write
-	if (mtd_write_firmware(filename, (int)file_begin, (file_end - file_begin)) == -1)
+	if (mtd_write_firmware(filename, (int)file_begin, (int)file_size) == -1) {
+		html_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
 		return -1;
+	}
 
 	sleep (3);
 	reboot(RB_AUTOBOOT);

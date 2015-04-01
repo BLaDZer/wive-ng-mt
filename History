@@ -774,9 +774,10 @@
 <br>
 <b>2.8.x</b><br>
 1) goahead: fix lang select race in some situations.<br>
-2) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
-3) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
-4) kernel: mips: fix race condition in lazy cache flushing.<br>
+2) goahead: fix upload firmware error handling.<br>
+3) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
+4) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
+5) kernel: mips: fix race condition in lazy cache flushing.<br>
 <br>
 <br>
 <b>TODO:</b><br>

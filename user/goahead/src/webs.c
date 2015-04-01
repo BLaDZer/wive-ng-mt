@@ -424,7 +424,7 @@ void websReadEvent(webs_t wp)
 			if (wp->flags & WEBS_CGI_REQUEST) {
 					if (fd == -1) {
 						if(wp->flags & WEBS_CGI_FIRMWARE_UPLOAD && wp->has_firmware_upload_clean==0){
-							system("wifi_unload.sh > /dev/console 2>&1");
+							system("wifi_unload.sh > /dev/null 2>&1"); /* always to dev null */
 							wp->has_firmware_upload_clean = 1;
 						}
 						fd = gopen(wp->cgiStdin, O_CREAT | O_WRONLY | O_BINARY | O_APPEND, 0666);
@@ -443,7 +443,7 @@ void websReadEvent(webs_t wp)
 				nbytes += 1;
  */
 
-			} else 
+			} else
 #endif
 			if (wp->query) {
 				if (wp->query[0] && !(wp->flags & WEBS_POST_DATA)) {

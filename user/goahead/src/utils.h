@@ -11,7 +11,9 @@
 #include        <linux/autoconf.h>			//kernel config
 
 #include        "linux/ralink_gpio.h"			//gpio config
-#include 	"linux/reboot.h"			//reboot function
+
+#include	<linux/reboot.h>
+#include	<sys/reboot.h>
 
 #include 	"webs.h"
 #include	"uemf.h"
