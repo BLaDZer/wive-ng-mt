@@ -159,50 +159,55 @@ static int isMacValid(char *str)
 static int nvram_load_default(void)
 {
 	/* default macs is OK */
-	int mac_ok = 1;
+	int mac_err = 0;
         char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC;
 
-	printf("Store MAC adresses\n");
 	WLAN2_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN2_MAC_ADDR");
 	WLAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN_MAC_ADDR");
         WAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
         LAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
         CHECKMAC	= nvram_get(RT2860_NVRAM, "CHECKMAC");
 
+	printf("Store current MAC adresses in mem: %s, %s, %s, %s. CHECKMAC: %s\n",
+		WAN_MAC_ADDR, LAN_MAC_ADDR, WLAN_MAC_ADDR, WLAN2_MAC_ADDR, CHECKMAC);
+
 	printf("Clear nvram.\n");
 	nvram_clear(RT2860_NVRAM);
 	printf("Load defaults nvram.\n");
 	nvram_renew(RT2860_NVRAM, "/etc/default/nvram_default");
 
-	/* reinit nvram before commit */
+	printf("Reinit nvram before commit.\n");
 	if (nvram_init(RT2860_NVRAM) == -1) {
 		printf("nvram_load_default: init error!.\n");
 		return -1;
 	}
 
+	printf("Restore saved in mem MAC adresses : %s, %s, %s, %s. CHECKMAC: %s\n",
+		WAN_MAC_ADDR, LAN_MAC_ADDR, WLAN_MAC_ADDR, WLAN2_MAC_ADDR, CHECKMAC);
+
 	if ((strlen(WLAN2_MAC_ADDR) > 0) && isMacValid(WLAN2_MAC_ADDR))
 	    nvram_bufset(RT2860_NVRAM, "WLAN2_MAC_ADDR", WLAN2_MAC_ADDR);
 	else
-	    mac_ok=0;
+	    mac_err++;
 	if ((strlen(WLAN_MAC_ADDR) > 0) && isMacValid(WLAN_MAC_ADDR))
 	    nvram_bufset(RT2860_NVRAM, "WLAN_MAC_ADDR", WLAN_MAC_ADDR);
 	else
-	    mac_ok=0;
+	    mac_err++;
 	if ((strlen(WAN_MAC_ADDR) > 0) && isMacValid(WAN_MAC_ADDR))
     	    nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR",  WAN_MAC_ADDR);
 	else
-	    mac_ok=0;
+	    mac_err++;
 	if ((strlen(LAN_MAC_ADDR) > 0) && isMacValid(LAN_MAC_ADDR))
     	    nvram_bufset(RT2860_NVRAM, "LAN_MAC_ADDR",  LAN_MAC_ADDR);
 	else
-	    mac_ok=0;
+	    mac_err++;
 
 	/* all restore ok ? */
-	if (mac_ok == 1) {
+	if (mac_err == 0) {
 	    printf("MAC adresses restored OK, restore checkmac flag.\n");
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", CHECKMAC);
 	} else {
-	    printf("MAC adresses not correct, set checkmac flag to yes and generate new.\n");
+	    printf("MAC adresses not correct, set checkmac flag to yes and generate new. err_count=%d.\n", mac_err);
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", "YES");
 	}
 

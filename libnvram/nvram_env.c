@@ -293,7 +293,8 @@ char *nvram_bufget(int index, char *name)
 			FREE(fb[index].cache[idx].value);
 			fb[index].cache[idx].value = strdup(nvr.value);
 			FREE(nvr.value);
-			ret = fb[index].cache[idx].value;
+			//ret = fb[index].cache[idx].value;
+			ret = strdup(fb[index].cache[idx].value); /* this is not good case, small memleak and memdupe, fix in future */
 			LIBNV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
 			//btw, we don't return NULL anymore!
 			if (!ret)
