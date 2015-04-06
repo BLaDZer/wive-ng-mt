@@ -784,6 +784,7 @@
 9) kernel: net: less interrupt masking in NAPI.<br>
 10) kernel: net: move napi polling code out of net_rx_action.<br>
 11) kernel: net: always poll at least one device in net_rx_action.<br>
+13) kernel: ralink_raeth: force up MAC for each ESW PHY.<br>
 <br>
 <br>
 <b>TODO:</b><br>
