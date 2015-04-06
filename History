@@ -787,6 +787,7 @@
 12) kernel: net: move napi polling code out of net_rx_action.<br>
 13) kernel: net: always poll at least one device in net_rx_action.<br>
 14) kernel: net: remove k{un}map_skb_frag().<br>
+15) kernel: net: simple_strtoul cleanup.<br>
 <br>
 <br>
 <b>TODO:</b><br>
