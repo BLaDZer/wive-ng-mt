@@ -42,22 +42,17 @@ pre_mount() {
 }
 
 try_mount() {
-  modprobe -q "$MDEV_TYPE"
+  if [ "$MDEV_TYPE" != "ntfs" ]; then
+    modprobe -q "$MDEV_TYPE"
+  fi
   # mount with default nls configured in kernel
-  if ! mount -o noatime,umask=0,iocharset=utf8 -t "$MDEV_TYPE" "$MDEV_PATH" "$MOUNT_DST"; then
+  if ! $MOUNT_CMD -o "$MOUNT_OPT" "$MDEV_PATH" "$MOUNT_DST"; then
     $LOG "can not mount $MDEV_TYPE $MDEV_PATH $MOUNT_DST"
     exit 1
   fi
   if [ "$MDEV_LABEL" == "optware" ]; then
     #re read profile variables
     . /etc/profile
-  fi
-}
-
-try_ntfs() {
-  if ! ntfs-3g "$MDEV_PATH" "$MOUNT_DST" -o force,noatime,umask=0,iocharset=utf8; then
-    $LOG "can not mount NTFS $MDEV_PATH $MOUNT_DST"
-    exit 1
   fi
 }
 
@@ -115,40 +110,52 @@ if [ "$ACTION" = "add" ]; then
     sleep 1
     i=$((i + 1))
     if [ $i = "1" ]; then
-	$LOG "Wait $MDEV for disc appear, max 15 sec"
+       $LOG "Wait $MDEV for disc appear, max 15 sec"
     fi
     if [ $i -gt 15 ]; then
-	break
+       break
     fi
   done
 
   # start prepare and mounts procedure
   eval "$(blkid $MDEV_PATH | sed 's/^[^ ]* //;s/\([^ ]*=\)/MDEV_\1/g')"
+  if [ -z "$MDEV_TYPE" ]; then
+    $LOG "unknow fs type on $MDEV_PATH"
+    exit 1
+  fi
   $LOG "add $MDEV_PATH with $MDEV_TYPE"
+  MOUNT_CMD="mount -t $MDEV_TYPE"
+  MOUNT_OPT="noatime"
   case "$MDEV_TYPE" in
-    ntfs)
-      pre_mount
-      try_ntfs
-      ;;
     swap)
       swap_on
+      ;;
+    *fat)
+      MOUNT_OPT="noatime,umask=0"
+      pre_mount
+      try_mount
+      ;;
+    ntfs)
+      MOUNT_CMD="ntfs-3g"
+      MOUNT_OPT="force,noatime,umask=0"
+      pre_mount
+      try_mount
       ;;
     *)
       pre_mount
       try_mount
       ;;
   esac
+
 elif [ "$ACTION" = "mount" ]; then
   $LOG "device $MDEV_PATH mount OK"
   touchservices
-  exit 0
 
 elif [ "$ACTION" = "umount" ]; then
   if [ -d "/media/$MDEV" ]; then
     touchservices
     rmdir "/media/$MDEV"
   fi
-  exit 0
 
 else
   $LOG "remove $MDEV_PATH"

@@ -773,32 +773,33 @@
 <br>
 <br>
 <b>2.8.x</b><br>
-1) goahead: fix lang select race in some situations.<br>
-2) goahead: fix upload firmware error handling.<br>
-3) nvram: fix store old macs.<br>
-4) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
-5) kernel: ralink_raeth: force up MAC for each ESW PHY.<br>
-6) kernel: ralink_raeth: fix wireless/external offload concurrent with BQL (recycle TX to PPE stuck issue).<br>
-7) kernel: ralink_raeth: do not ack INT status on NAPI poll active (MT7621 GIC pending INT issue).<br>
-8) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
-9) kernel: ralink_hw_nat: add support MT7621 multicast offload.<br>
-10) kernel: ralink_hw_nat: optimize mark/test DPORT_PPE.<br>
-11) kernel: mips: fix race condition in lazy cache flushing.<br>
-12) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
-13) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
-14) kernel: net: less interrupt masking in NAPI.<br>
-15) kernel: net: move napi polling code out of net_rx_action.<br>
-16) kernel: net: always poll at least one device in net_rx_action.<br>
-17) kernel: net: remove k{un}map_skb_frag().<br>
-18) kernel: net: simple_strtoul cleanup.<br>
-19) kernel: net: dont drop packet but consume it.<br>
+1) init.d: fix usb hotplug/automount.<br>
+2) goahead: fix lang select race in some situations.<br>
+3) goahead: fix upload firmware error handling.<br>
+4) nvram: fix store old macs.<br>
+5) kernel: ralink_raeth: add support MT7621 QDMA, split PDMA/QDMA code, code refactoring.<br>
+6) kernel: ralink_raeth: force up MAC for each ESW PHY.<br>
+7) kernel: ralink_raeth: fix wireless/external offload concurrent with BQL (recycle TX to PPE stuck issue).<br>
+8) kernel: ralink_raeth: do not ack INT status on NAPI poll active (MT7621 GIC pending INT issue).<br>
+9) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
+10) kernel: ralink_hw_nat: add support MT7621 multicast offload.<br>
+11) kernel: ralink_hw_nat: optimize mark/test DPORT_PPE.<br>
+12) kernel: mips: fix race condition in lazy cache flushing.<br>
+13) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
+14) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
+15) kernel: net: less interrupt masking in NAPI.<br>
+16) kernel: net: move napi polling code out of net_rx_action.<br>
+17) kernel: net: always poll at least one device in net_rx_action.<br>
+18) kernel: net: remove k{un}map_skb_frag().<br>
+19) kernel: net: simple_strtoul cleanup.<br>
+20) kernel: net: dont drop packet but consume it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>
 3) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-4) need add dsvfs2 webui for managment online disk drives (as yandex disk and others).<br>
+4) need add davfs2 webui for managment online disk drives (as yandex disk and others).<br>
 <br>
 <br>
 <br>
