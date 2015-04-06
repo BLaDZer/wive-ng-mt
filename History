@@ -784,15 +784,16 @@
 9) kernel: ralink_hw_nat: add support MT7621 QDMA, write FoE descriptors by DWORD chunk.<br>
 10) kernel: ralink_hw_nat: add support MT7621 multicast offload.<br>
 11) kernel: ralink_hw_nat: optimize mark/test DPORT_PPE.<br>
-12) kernel: mips: fix race condition in lazy cache flushing.<br>
-13) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
-14) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
-15) kernel: net: less interrupt masking in NAPI.<br>
-16) kernel: net: move napi polling code out of net_rx_action.<br>
-17) kernel: net: always poll at least one device in net_rx_action.<br>
-18) kernel: net: remove k{un}map_skb_frag().<br>
-19) kernel: net: simple_strtoul cleanup.<br>
-20) kernel: net: dont drop packet but consume it.<br>
+12) kernel: ralink_arch: fix typo in MT7621 PCIe interrupts map.<br>
+13) kernel: mips: fix race condition in lazy cache flushing.<br>
+14) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
+15) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
+16) kernel: net: less interrupt masking in NAPI.<br>
+17) kernel: net: move napi polling code out of net_rx_action.<br>
+18) kernel: net: always poll at least one device in net_rx_action.<br>
+19) kernel: net: remove k{un}map_skb_frag().<br>
+20) kernel: net: simple_strtoul cleanup.<br>
+21) kernel: net: dont drop packet but consume it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
