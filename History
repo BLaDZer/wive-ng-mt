@@ -781,6 +781,9 @@
 6) kernel: mips: fix race condition in lazy cache flushing.<br>
 7) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
 8) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
+9) kernel: net: less interrupt masking in NAPI.<br>
+10) kernel: net: move napi polling code out of net_rx_action.<br>
+11) kernel: net: always poll at least one device in net_rx_action.<br>
 <br>
 <br>
 <b>TODO:</b><br>
