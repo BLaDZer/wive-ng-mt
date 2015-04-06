@@ -13,6 +13,11 @@ CFLAGS += -I$(LINUXDIR)/net/nat/hw_nat
 
 ifdef CONFIG_HNAT_V2
 CFLAGS += -DCONFIG_HNAT_V2
+ifdef CONFIG_RA_HW_NAT_MCAST
+ifdef CONFIG_RALINK_MT7621
+CFLAGS += -DCONFIG_PPE_MCAST
+endif
+endif
 endif
 
 all: $(EXEC)
