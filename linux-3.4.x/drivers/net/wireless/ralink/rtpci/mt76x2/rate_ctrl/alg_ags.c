@@ -189,7 +189,7 @@ INT Show_AGS_Proc(
     IN  PRTMP_ADAPTER	pAd, 
     IN  PSTRING arg)
 {
-	MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[1];
+	MAC_TABLE_ENTRY __maybe_unused *pEntry = &pAd->MacTab.Content[1];
 	UINT32 IdQuality;
 
 
