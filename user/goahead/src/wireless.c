@@ -1088,9 +1088,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		// for 1T1R module always disable (support only in STA mode for 1T1R)
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", "0");
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
+		nvram_bufset(RT2860_NVRAM, "HT_LDPC", "0");
 #else
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
+		nvram_bufset(RT2860_NVRAM, "HT_LDPC", ac_ldpc);
 #endif
 		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW", ac_bw);
