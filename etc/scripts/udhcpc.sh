@@ -68,6 +68,9 @@ case "$1" in
 	ip -4 addr add $rndip/32 dev $interface
 	# never need down iface
 	ip link set $interface up
+	# remove routes updated flags
+	rm -f /tmp/routes_applied
+	# remove wins exported adresses
 	rm -f $WINS_CONF
     ;;
 
@@ -91,6 +94,9 @@ case "$1" in
 	    $LOG "Reconnect to AP if need."
 	    wifi_reconnect
 	fi
+	# remove routes updated flags
+	rm -f /tmp/routes_applied
+	# remove wins exported adresses
 	rm -f $WINS_CONF
     ;;
 
