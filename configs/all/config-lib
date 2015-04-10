@@ -243,7 +243,7 @@ MULTILIB_DIR="lib"
 # Development/debugging options
 #
 CROSS_COMPILER_PREFIX="/opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-"
-UCLIBC_EXTRA_CFLAGS="-O2 -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking"
+UCLIBC_EXTRA_CFLAGS="-Os -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking"
 # DODEBUG is not set
 DOSTRIP=y
 # DOASSERTS is not set
