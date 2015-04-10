@@ -35,47 +35,41 @@ udp://@239.0.23.2:1224
 udp://@239.0.23.17:1224
 #EXTINF:-1 tvg-shift=7 tvg-logo="Звезда" tvg-name="Звезда" crop=688x556+16+8,Звезда
 udp://@239.0.23.24:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный
-udp://@239.0.23.23:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный
-udp://@239.0.23.18:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный
+#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный 1
 udp://@239.0.23.123:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="МузТВ" tvg-name="МУЗ-ТВ" crop=688x556+16+8 group-title="Музыкальное ТВ",МУЗ ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="МузТВ" tvg-name="МУЗ-ТВ" crop=688x556+16+8 group-title="Музыкальное ТВ",МУЗ ТВ
 udp://@239.54.5.142:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Music Box RU" tvg-name="Music_Box_RU" crop=688x556+16+8,Music Box RU
+#EXTINF:-1 tvg-shift=4 tvg-logo="Music Box RU" tvg-name="Music_Box_RU" crop=688x556+16+8,Music Box RU
 udp://@239.54.5.6:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Music Box TV" tvg-name="MUSIC_Box_TV" crop=688x556+16+8,Music Box
+#EXTINF:-1 tvg-shift=4 tvg-logo="Music Box TV" tvg-name="MUSIC_Box_TV" crop=688x556+16+8,Music Box
 udp://@239.54.5.7:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Bridge TV" tvg-name="Bridge_TV" crop=688x556+16+8,Bridge TV
+#EXTINF:-1 tvg-shift=4 tvg-logo="Bridge TV" tvg-name="Bridge_TV" crop=688x556+16+8,Bridge TV
 udp://@239.54.5.9:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ru.tv" tvg-name="RU_TV" crop=688x556+16+8,Ru.tv
+#EXTINF:-1 tvg-shift=4 tvg-logo="ru.tv" tvg-name="RU_TV" crop=688x556+16+8,Ru.tv
 udp://@239.54.5.15:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Европа Плюс ТВ" tvg-name="Европа Плюс ТВ" crop=688x556+16+8,Европа Плюс ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Европа Плюс ТВ" tvg-name="Европа Плюс ТВ" crop=688x556+16+8,Европа Плюс ТВ
 udp://@239.54.5.88:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="A-One" tvg-name="A-ONE" crop=688x556+16+8,A-One
+#EXTINF:-1 tvg-shift=4 tvg-logo="A-One" tvg-name="A-ONE" crop=688x556+16+8,A-One
 udp://@239.54.5.39:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="О2ТВ" tvg-name="О2ТВ" crop=688x556+16+8,О2ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="О2ТВ" tvg-name="О2ТВ" crop=688x556+16+8,О2ТВ
 udp://@239.54.5.18:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Музыка Первого" tvg-name="Музыка_Первого" crop=688x556+16+8,Музыка Первого
+#EXTINF:-1 tvg-shift=4 tvg-logo="Музыка Первого" tvg-name="Музыка_Первого" crop=688x556+16+8,Музыка Первого
 udp://@239.54.7.34:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Discovery Channel" tvg-name="Discovery" crop=688x556+16+8 group-title="Спутниковые каналы",Discovery Channel
-udp://@239.54.7.27:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Discovery Channel" tvg-name="Discovery_HD" crop=688x556+16+8 aspect-ratio=16:9,Discovery HD
-udp://@239.54.7.80:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Discovery Science" tvg-name="Discovery_Science" crop=688x556+16+8,Discovery Science
-udp://@239.54.7.38:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Animal Planet" tvg-name="Animal_Planet" crop=688x556+16+8,Animal Planet
-udp://@239.54.7.28:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Animal Planet HD" tvg-name="Animal_Planet_HD" crop=688x556+16+8 aspect-ratio=16:9,Animal Planet HD
-udp://@239.54.7.81:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Моя планета" tvg-name="Моя_Планета" crop=688x556+16+8,Моя планета
+#EXTINF:-1 tvg-shift=4 tvg-logo="MTV Rocks" tvg-name="MTV_Rocks" crop=688x556+16+8,MTV Rocks
+udp://@239.54.5.85:1224
+#EXTINF:-1 tvg-shift=2 tvg-logo="2х2" tvg-name="Канал_2x2" crop=688x556+16+8 group-title="Спутниковые каналы",2х2
+udp://@239.54.5.20:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="Моя планета" tvg-name="Моя_Планета" crop=688x556+16+8,Моя планета
 udp://@239.54.7.53:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="24 Техно" tvg-name="24_Техно" crop=688x556+16+8,24 Техно
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Живая_планета" crop=688x556+16+8,Живая планета
+udp://@239.54.5.166:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="24 Техно" tvg-name="24_Техно" crop=688x556+16+8,24 Техно
 udp://@239.54.7.56:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Наука 2.0" tvg-name="Наука_2_0" crop=688x556+16+8,Наука 2.0
+#EXTINF:-1 tvg-shift=4 tvg-logo="24 DOC" tvg-name="24_ДОК" crop=688x556+16+8,24 ДОК
+udp://@239.54.7.104:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="Наука 2.0" tvg-name="Наука_2_0" crop=688x556+16+8,Наука 2.0
 udp://@239.54.7.51:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Комеди ТВ" tvg-name="ТНТ-Comedy" crop=688x556+16+8,ТНТ Comedy
+#EXTINF:-1 tvg-shift=4 tvg-logo="Комеди ТВ" tvg-name="ТНТ-Comedy" crop=688x556+16+8,ТНТ Comedy
 udp://@239.54.7.36:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="Nickelodeon" tvg-name="Nickelodeon" crop=688x556+16+8,Nickelodeon
 udp://@239.54.7.69:1224
@@ -83,193 +77,199 @@ udp://@239.54.7.69:1224
 udp://@239.54.7.47:1224
 #EXTINF:-1 tvg-shift=3 tvg-logo="SET HD" tvg-name="SONY_ТВ" crop=688x556+16+8 aspect-ratio=16:9,SONY HD
 udp://@239.54.7.128:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="AXN Sci-Fi" tvg-name="AXN_Sci-fi" crop=688x556+16+8,SONY Sci-Fi
+#EXTINF:-1 tvg-shift=4 tvg-logo="AXN Sci-Fi" tvg-name="AXN_Sci-fi" crop=688x556+16+8,SONY Sci-Fi
 udp://@239.54.7.50:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="2х2" tvg-name="Канал_2x2" crop=688x556+16+8,2х2
-udp://@239.54.5.20:1224
-#EXTINF:-1 tvg-shift=0 tvg-logo="Disney Channel" tvg-name="Disney_Channel" crop=688x556+16+8,Дисней
+#EXTINF:-1 tvg-shift=1 tvg-logo="Disney Channel" tvg-name="Disney_Channel" crop=688x556+16+8,Дисней
 udp://@239.54.5.67:1224
-#EXTINF:-1 tvg-shift=-1 tvg-logo="ТНТ" tvg-name="ТНТ" crop=688x556+16+8,ТНТ
+#EXTINF:-1 tvg-shift=0 tvg-logo="ТНТ" tvg-name="ТНТ" crop=688x556+16+8,ТНТ
 udp://@239.54.5.132:1224
 #EXTINF:-1 tvg-shift=0 tvg-logo="Ю" tvg-name="Ю" crop=688x556+16+8,Ю ТВ
 udp://@239.54.5.68:1224
 #EXTINF:-1 tvg-shift=-1 tvg-logo="Пятница" tvg-name="Пятница" crop=688x556+16+8,Пятница
 udp://@239.54.5.65:1224
-#EXTINF:-1 tvg-shift=+1 tvg-logo="ТВ3" tvg-name="ТВ-3" crop=688x556+16+8,ТВ-3
+#EXTINF:-1 tvg-shift=+2 tvg-logo="ТВ3" tvg-name="ТВ-3" crop=688x556+16+8,ТВ-3
 udp://@239.54.5.86:1224
-#EXTINF:-1 tvg-shift=0 tvg-logo="ТВ3" tvg-name="ТВ-3" crop=688x556+16+8,ТВ-3
+#EXTINF:-1 tvg-shift=+1 tvg-logo="ТВ3" tvg-name="ТВ-3" crop=688x556+16+8,ТВ-3
 udp://@239.54.5.121:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="TLC" tvg-name="TLC" crop=688x556+16+8,TLC
-udp://@239.54.5.85:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Viasat Nature" tvg-name="Viasat_Nature_CEE" crop=688x556+16+8,Viasat Nature
+#EXTINF:-1 tvg-shift=4 tvg-logo="Viasat Nature" tvg-name="Viasat_Nature_CEE" crop=688x556+16+8,Viasat Nature
 udp://@239.54.5.90:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="TV 1000" tvg-name="TV1000" crop=688x556+16+8,TV 1000
+#EXTINF:-1 tvg-shift=4 tvg-logo="TV 1000" tvg-name="TV1000" crop=688x556+16+8,TV 1000
 udp://@239.54.5.91:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="Viasat Explorer" tvg-name="Viasat_Explorer" crop=688x556+16+8,Viasat Explorer
+#EXTINF:-1 tvg-shift=4 tvg-logo="Viasat Explorer" tvg-name="Viasat_Explorer" crop=688x556+16+8,Viasat Explorer
 udp://@239.54.5.92:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="Viasat History" tvg-name="Viasat_History" crop=688x556+16+8,Viasat History
+#EXTINF:-1 tvg-shift=4 tvg-logo="Viasat History" tvg-name="Viasat_History" crop=688x556+16+8,Viasat History
 udp://@239.54.5.93:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="Viasat Sport" tvg-name="Viasat_Sport" crop=688x556+16+8,Viasat Sport
+#EXTINF:-1 tvg-shift=4 tvg-logo="Viasat Sport" tvg-name="Viasat_Sport" crop=688x556+16+8,Viasat Sport
 udp://@239.54.5.94:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="Da Vinci" tvg-name="Da_Vinci" crop=688x556+16+8,Da Vinci
+#EXTINF:-1 tvg-shift=4 tvg-logo="Da Vinci" tvg-name="Da_Vinci" crop=688x556+16+8,Da Vinci
 udp://@239.54.5.95:1234
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Кино_ТВ" crop=688x556+16+8,КиноТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Кино_ТВ" crop=688x556+16+8,КиноТВ
 udp://@239.54.7.102:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="НСТВ" tvg-name="Настоящее_Страшное_ТВ" crop=688x556+16+8,НСТ
+#EXTINF:-1 tvg-shift=4 tvg-logo="НСТВ" tvg-name="Настоящее_Страшное_ТВ" crop=688x556+16+8,НСТ
 udp://@239.54.7.58:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РазТВ" tvg-name="РазТВ" crop=688x556+16+8,РазТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="РазТВ" tvg-name="РазТВ" crop=688x556+16+8,РазТВ
 udp://@239.54.5.43:1224
-#EXTINF:-1 tvg-shift=-1 tvg-logo="Перец" tvg-name="Перец" crop=688x556+16+8,Перец
+#EXTINF:-1 tvg-shift=-2 tvg-logo="Перец" tvg-name="Перец" crop=688x556+16+8,Перец
 udp://@239.54.5.4:1224
 #EXTINF:-1 tvg-shift=0 tvg-logo="Россия Культура" tvg-name="Россия_Культура" crop=688x556+16+8,Россия К
 udp://@239.54.5.75:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="ТВЦ" tvg-name="ТВЦ" crop=688x556+16+8,ТВЦ
+#EXTINF:-1 tvg-shift=2 tvg-logo="ТВЦ" tvg-name="ТВЦ" crop=688x556+16+8,ТВЦ
 udp://@239.54.5.63:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="Русский роман" tvg-name="Русский роман" crop=688x556+16+8,Русский роман
+#EXTINF:-1 tvg-shift=2 tvg-logo="Русский роман" tvg-name="Русский роман" crop=688x556+16+8,Русский роман
 udp://@239.54.5.87:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Юмор ТВ" tvg-name="Юмор_ТВ" crop=688x556+16+8,Юмор ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Юмор ТВ" tvg-name="Юмор_ТВ" crop=688x556+16+8,Юмор ТВ
 udp://@239.54.5.5:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Улыбка Ребенка" tvg-name="Улыбка_ребенка" crop=688x556+16+8,Улыбка ребёнка
+#EXTINF:-1 tvg-shift=4 tvg-logo="Улыбка Ребенка" tvg-name="Улыбка_ребенка" crop=688x556+16+8,Улыбка ребёнка
 udp://@239.54.5.10:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Мать и Дитя" tvg-name="Мать и Дитя" crop=688x556+16+8,Мать и дитя
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Мама" crop=688x556+16+8,Мама
 udp://@239.54.5.44:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Радость моя" tvg-name="Радость_Моя" crop=688x556+16+8,Радость моя
+#EXTINF:-1 tvg-shift=4 tvg-logo="Радость моя" tvg-name="Радость_Моя" crop=688x556+16+8,Радость моя
 udp://@239.54.5.66:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Детский Мир" tvg-name="Детский_Мир" crop=688x556+16+8,Детский Мир
+#EXTINF:-1 tvg-shift=4 tvg-logo="Детский Мир" tvg-name="Детский_Мир" crop=688x556+16+8,Детский Мир
 udp://@239.54.5.97:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Детский" tvg-name="Детский_канал" crop=688x556+16+8,Детский
+#EXTINF:-1 tvg-shift=4 tvg-logo="Детский" tvg-name="Детский_канал" crop=688x556+16+8,Детский
 udp://@239.54.5.127:1224
 #EXTINF:-1 tvg-shift=0 tvg-logo="Карусель" tvg-name="Карусель" crop=688x556+16+8,Карусель
 udp://@239.54.5.35:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Футбол" tvg-name="Футбол" crop=688x556+16+8,Футбол
+#EXTINF:-1 tvg-shift=0 tvg-logo="Мультимания" tvg-name="Мультимания" crop=688x556+16+8,Мультимания
+udp://@239.54.5.158:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="Футбол" tvg-name="Футбол" crop=688x556+16+8,Футбол
 udp://@239.54.7.72:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Eurosport" tvg-name="Eurosport" crop=688x556+16+8,Eurosport
+#EXTINF:-1 tvg-shift=4 tvg-logo="Eurosport" tvg-name="Eurosport" crop=688x556+16+8,Eurosport
 udp://@239.54.5.45:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Eurosport 2" tvg-name="Eurosport_2" crop=688x556+16+8 aspect-ratio=16:9,Eurosport 2
+#EXTINF:-1 tvg-shift=4 tvg-logo="Eurosport 2" tvg-name="Eurosport_2" crop=688x556+16+8 aspect-ratio=16:9,Eurosport 2
 udp://@239.54.7.141:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Спорт" tvg-name="Спорт_2" crop=688x556+16+8,Спорт
+#EXTINF:-1 tvg-shift=4 tvg-logo="Спорт" tvg-name="Спорт_2" crop=688x556+16+8,Спорт
 udp://239.54.5.54:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Спорт 1" tvg-name="Спорт_1" crop=688x556+16+8,Спорт 1
+#EXTINF:-1 tvg-shift=4 tvg-logo="Спорт 1" tvg-name="Спорт_1" crop=688x556+16+8,Спорт 1
 udp://@239.54.7.98:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Спорт 1 HD" tvg-name="Спорт_1_(HD)" crop=688x556+16+8 aspect-ratio=16:9,Спорт 1 HD
+#EXTINF:-1 tvg-shift=4 tvg-logo="Спорт 1 HD" tvg-name="Спорт_1_(HD)" crop=688x556+16+8 aspect-ratio=16:9,Спорт 1 HD
 udp://@239.54.7.135:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="КХЛ ТВ" tvg-name="КХЛ-ТВ" crop=688x556+16+8,КХЛ ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="КХЛ ТВ" tvg-name="КХЛ-ТВ" crop=688x556+16+8,КХЛ ТВ
 udp://@239.54.7.42:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="КХЛ ТВ" tvg-name="КХЛ_HD" crop=688x556+16+8 aspect-ratio=16:9,КХЛ HD
+#EXTINF:-1 tvg-shift=4 tvg-logo="КХЛ ТВ" tvg-name="КХЛ_HD" crop=688x556+16+8 aspect-ratio=16:9,КХЛ HD
 udp://@239.54.7.125:1224
-#EXTINF:-1 tvg-shift=+3 tvg-logo="Первый Канал" tvg-name="Первый_канал" crop=688x556+16+8,Первый
+#EXTINF:-1 tvg-shift=0 tvg-logo="Первый Канал" tvg-name="Первый_канал" crop=688x556+16+8,Первый
 udp://@239.54.5.150:1224
-#EXTINF:-1 tvg-shift=+3 tvg-logo="Первый Канал HD" tvg-name="Первый_канал" crop=688x556+16+8 aspect-ratio=16:9,Первый HD
+#EXTINF:-1 tvg-shift=4 tvg-logo="Первый Канал HD" tvg-name="Первый_канал" crop=688x556+16+8 aspect-ratio=16:9,Первый HD
 udp://@239.54.5.61:1224
-#EXTINF:-1 tvg-shift=-1 tvg-logo="Россия HD" tvg-name="Россия_HD" crop=688x556+16+8 aspect-ratio=16:9,Россия HD
+#EXTINF:-1 tvg-shift=1 tvg-logo="Россия HD" tvg-name="Россия_HD" crop=688x556+16+8 aspect-ratio=16:9,Россия HD
 udp://@239.54.7.119:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Россия 2" tvg-name="Россия_2_(Спорт)" crop=688x556+16+8,Россия 2
+#EXTINF:-1 tvg-shift=4 tvg-logo="Россия 2" tvg-name="Россия_2_(Спорт)" crop=688x556+16+8,Россия 2
 udp://@239.54.5.77:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Россия 2" tvg-name="Россия_2_(Спорт)" crop=688x556+16+8,Россия 2
+#EXTINF:-1 tvg-shift=4 tvg-logo="Россия 2" tvg-name="Россия_2_(Спорт)" crop=688x556+16+8,Россия 2
 udp://@239.54.5.148:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Россия 24" tvg-name="Россия_24" crop=688x556+16+8,Россия 24
+#EXTINF:-1 tvg-shift=4 tvg-logo="Россия 24" tvg-name="Россия_24" crop=688x556+16+8,Россия 24
 udp://@239.54.5.12:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="Россия К" tvg-name="Россия_Культура" crop=688x556+16+8,Россия К
+#EXTINF:-1 tvg-shift=2 tvg-logo="Россия К" tvg-name="Россия_Культура" crop=688x556+16+8,Россия К
+udp://@239.54.5.75:1224
+#EXTINF:-1 tvg-shift=2 tvg-logo="Россия К" tvg-name="Россия_Культура" crop=688x556+16+8,Россия К
 udp://@239.54.5.83:1224
-#EXTINF:-1 tvg-shift=0 tvg-logo="НТВ" tvg-name="НТВ" crop=688x556+16+8,НТВ
+#EXTINF:-1 tvg-shift=1 tvg-logo="НТВ" tvg-name="НТВ" crop=688x556+16+8,НТВ
 udp://@239.54.5.124:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Russia Today" tvg-name="Russia_Today" crop=688x556+16+8,Russia Today
+#EXTINF:-1 tvg-shift=4 tvg-logo="8 Канал" tvg-name="8_Канал" crop=688x556+16+8,8 Канал
+udp://@239.54.5.182:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="8 Канал" tvg-name="8_Канал" crop=688x556+16+8,8 Канал
+udp://@239.54.5.188:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="Russia Today" tvg-name="Russia_Today" crop=688x556+16+8,Russia Today
 udp://@239.54.7.99:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный
+#EXTINF:-1 tvg-shift=4 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК эфирный 2
 udp://@239.54.5.79:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК
+#EXTINF:-1 tvg-shift=4 tvg-logo="РБК" tvg-name="РБК" crop=688x556+16+8,РБК
 udp://@239.54.5.19:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Lifenews" crop=688x556+16+8 aspect-ratio=16:9,Lifenews
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Lifenews" crop=688x556+16+8 aspect-ratio=16:9,Lifenews
 udp://@239.54.5.160:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" crop=688x556+16+8,К-24
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" crop=688x556+16+8,К-24
 udp://@239.54.5.147:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Дождь" tvg-name="Дождь" crop=688x556+16+8 aspect-ratio=16:9,Дождь
+#EXTINF:-1 tvg-shift=4 tvg-logo="Дождь" tvg-name="Дождь" crop=688x556+16+8 aspect-ratio=16:9,Дождь
 udp://@239.54.7.96:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="Комсомольская_правда" crop=688x556+16+8,Комсомольская правда
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Комсомольская_правда" crop=688x556+16+8,Комсомольская правда
 udp://@239.54.5.122:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Время" tvg-name="ВРЕМЯ__далекое_и_близкое" crop=688x556+16+8,Время: далекое и близкое
+#EXTINF:-1 tvg-shift=4 tvg-logo="Время" tvg-name="ВРЕМЯ__далекое_и_близкое" crop=688x556+16+8,Время: далекое и близкое
 udp://@239.54.7.33:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Дом Кино" tvg-name="Дом_кино" crop=688x556+16+8,Дом Кино
+#EXTINF:-1 tvg-shift=4 tvg-logo="Дом Кино" tvg-name="Дом_кино" crop=688x556+16+8,Дом Кино
 udp://@239.54.7.32:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Ретро ТВ" tvg-name="Ретро_ТВ" crop=688x556+16+8,Ретро ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Ретро ТВ" tvg-name="Ретро_ТВ" crop=688x556+16+8,Ретро ТВ
 udp://@239.54.7.29:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ОТР" tvg-name="ОТР" crop=688x556+16+8 aspect-ratio=16:9,ОТР
+#EXTINF:-1 tvg-shift=4 tvg-logo="ОТР" tvg-name="ОТР" crop=688x556+16+8 aspect-ratio=16:9,ОТР
 udp://@239.54.5.146:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="49 канал" tvg-name="49 канал" crop=688x556+16+8,49 канал
+#EXTINF:-1 tvg-shift=4 tvg-logo="49 канал" tvg-name="49 канал" crop=688x556+16+8,49 канал
 udp://@239.54.7.136:1224
-#EXTINF:-1 tvg-shift=4 tvg-logo="Домашний" tvg-name="Домашний" crop=688x556+16+8,Домашний
+#EXTINF:-1 tvg-shift=5 tvg-logo="Домашний" tvg-name="Домашний" crop=688x556+16+8,Домашний
 udp://@239.54.5.100:1224
-#EXTINF:-1 tvg-shift=-1 tvg-logo="РЕН ТВ" tvg-name="РЕН_ТВ" crop=688x556+16+8,РЕН ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="РЕН ТВ" tvg-name="РЕН_ТВ" crop=688x556+16+8,РЕН ТВ
 udp://@239.54.5.62:1224
-#EXTINF:-1 tvg-shift=1 tvg-logo="5 канал" tvg-name="Пятый_Канал" crop=688x556+16+8,5 канал
+#EXTINF:-1 tvg-shift=2 tvg-logo="5 канал" tvg-name="Пятый_Канал" crop=688x556+16+8,5 канал
 udp://@239.54.5.82:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Телекафе" tvg-name="Телекафе" crop=688x556+16+8,Телекафе
+#EXTINF:-1 tvg-shift=4 tvg-logo="Телекафе" tvg-name="Телекафе" crop=688x556+16+8,Телекафе
 udp://@239.54.5.31:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Усадьба ТВ" tvg-name="Усадьба" crop=688x556+16+8,Усадьба
+#EXTINF:-1 tvg-shift=4 tvg-logo="Усадьба ТВ" tvg-name="Усадьба" crop=688x556+16+8,Усадьба
 udp://@239.54.5.113:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Russian Travel Guide" tvg-name="Russian_Travel_Guide_(RTG_TV)" crop=688x556+16+8,Russian Travel Guide
+#EXTINF:-1 tvg-shift=4 tvg-logo="Russian Travel Guide" tvg-name="Russian_Travel_Guide_(RTG_TV)" crop=688x556+16+8,Russian Travel Guide
 udp://@239.54.7.8:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Amazing Life" tvg-name="Amazing_Life_(Удивительная_жизнь)" crop=688x556+16+8,Amazing Life
+#EXTINF:-1 tvg-shift=4 tvg-logo="Amazing Life" tvg-name="Amazing_Life_(Удивительная_жизнь)" crop=688x556+16+8,Amazing Life
 udp://@239.54.5.14:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="HD Life" tvg-name="HD_Life" crop=688x556+16+8 aspect-ratio=16:9,HD Life
+#EXTINF:-1 tvg-shift=4 tvg-logo="HD Life" tvg-name="HD_Life" crop=688x556+16+8 aspect-ratio=16:9,HD Life
 udp://@239.54.7.140:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Телепутешествия HD" tvg-name="Телепутешествия_HD" crop=688x556+16+8 aspect-ratio=16:9,Телепутешествия HD
+#EXTINF:-1 tvg-shift=4 tvg-logo="Телепутешествия HD" tvg-name="Телепутешествия_HD" crop=688x556+16+8 aspect-ratio=16:9,Телепутешествия HD
 udp://@239.54.7.103:1224
-#EXTINF:-1 tvg-shift=7 tvg-logo="Звезда" tvg-name="Звезда" crop=688x556+16+8,Звезда
+#EXTINF:-1 tvg-shift=8 tvg-logo="Звезда" tvg-name="Звезда" crop=688x556+16+8,Звезда
 udp://@239.54.5.17:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Успех" tvg-name="Успех" crop=688x556+16+8,Успех ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Успех" tvg-name="Успех" crop=688x556+16+8,Успех ТВ
 udp://@239.54.5.128:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="РЖД ТВ" tvg-name="РЖД ТВ" crop=688x556+16+8,РЖД ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="РЖД ТВ" tvg-name="РЖД ТВ" crop=688x556+16+8,РЖД ТВ
 udp://@239.54.5.30:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="МИР" tvg-name="МИР" crop=688x556+16+8,МИР
+#EXTINF:-1 tvg-shift=4 tvg-logo="МИР" tvg-name="МИР" crop=688x556+16+8,МИР
 udp://@239.54.5.22:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТРО Союз" tvg-name="ТРО" crop=688x556+16+8,ТРО
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТРО Союз" tvg-name="ТРО" crop=688x556+16+8,ТРО
 udp://@239.54.5.24:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Сарафан" tvg-name="Сарафан_ТВ" crop=688x556+16+8,Сарафан
+#EXTINF:-1 tvg-shift=4 tvg-logo="Сарафан" tvg-name="Сарафан_ТВ" crop=688x556+16+8,Сарафан
 udp://@239.54.7.129:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Inter Az" tvg-name="Inter Az" crop=688x556+16+8,Интер Аз
+#EXTINF:-1 tvg-shift=4 tvg-logo="Inter Az" tvg-name="Inter Az" crop=688x556+16+8,Интер Аз
 udp://@239.54.5.25:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Живи" tvg-name="Живи" crop=688x556+16+8,Живи
+#EXTINF:-1 tvg-shift=4 tvg-logo="Живи" tvg-name="Живи" crop=688x556+16+8,Живи
 udp://@239.54.5.49:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Интересное ТВ" tvg-name="Интересное_ТВ" crop=688x556+16+8,Интересное ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Интересное ТВ" tvg-name="Интересное_ТВ" crop=688x556+16+8,Интересное ТВ
 udp://@239.54.7.1:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Авто ПЛЮС" tvg-name="Авто_Плюс" crop=688x556+16+8,Авто ПЛЮС
+#EXTINF:-1 tvg-shift=4 tvg-logo="Авто ПЛЮС" tvg-name="Авто_Плюс" crop=688x556+16+8,Авто ПЛЮС
 udp://@239.54.7.37:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Охота и Рыбалка" tvg-name="Охота_и_рыбалка" crop=688x556+16+8,Охота и Рыбалка
+#EXTINF:-1 tvg-shift=4 tvg-logo="Охота и Рыбалка" tvg-name="Охота_и_рыбалка" crop=688x556+16+8,Охота и Рыбалка
 udp://@239.54.7.26:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="СОЮЗ" tvg-name="СОЮЗ" crop=688x556+16+8,СОЮЗ
+#EXTINF:-1 tvg-shift=4 tvg-logo="СОЮЗ" tvg-name="СОЮЗ" crop=688x556+16+8,СОЮЗ
 udp://@239.54.5.52:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="CNL" tvg-name="CNL" crop=688x556+16+8,CNL
+#EXTINF:-1 tvg-shift=4 tvg-logo="CNL" tvg-name="CNL" crop=688x556+16+8,CNL
 udp://@239.54.5.140:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="СГУ ТВ" tvg-name="СГУ_ТВ" crop=688x556+16+8,СГУ ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="СГУ ТВ" tvg-name="СГУ_ТВ" crop=688x556+16+8,СГУ ТВ
 udp://@239.54.5.64:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Знание" tvg-name="Знание" crop=688x556+16+8,Знание ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Знание" tvg-name="Знание" crop=688x556+16+8,Знание ТВ
 udp://@239.54.5.115:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Синергия" tvg-name="Синергия_ТВ" crop=688x556+16+8,Синергия ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo="Синергия" tvg-name="Синергия_ТВ" crop=688x556+16+8,Синергия ТВ
 udp://@239.54.5.55:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Боец" tvg-name="Боец" crop=688x556+16+8,Боец
+#EXTINF:-1 tvg-shift=4 tvg-logo="Боец" tvg-name="Боец" crop=688x556+16+8,Боец
 udp://@239.54.7.21:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Бойцовский клуб" tvg-name="Бойцовский_клуб" crop=688x556+16+8,Бойцовский клуб
+#EXTINF:-1 tvg-shift=4 tvg-logo="Бойцовский клуб" tvg-name="Бойцовский_клуб" crop=688x556+16+8,Бойцовский клуб
 udp://@239.54.7.130:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТНВ Татарстан" tvg-name="Татарстан_-_Новый_Век" crop=688x556+16+8,ТНВ Татарстан
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТНВ Татарстан" tvg-name="Татарстан_-_Новый_Век" crop=688x556+16+8,ТНВ Татарстан
 udp://@239.54.5.23:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo=Шансон ТВ" tvg-name="Шансон_ТВ" crop=688x556+16+8,Шансон ТВ
+#EXTINF:-1 tvg-shift=4 tvg-logo=Шансон ТВ" tvg-name="Шансон_ТВ" crop=688x556+16+8,Шансон ТВ
 udp://@239.54.7.11:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Fashion TV" tvg-name="Fashion_TV" aspect-ratio=16:9 crop=688x556+16+8 group-title="Стиль ТВ",Fashion TV
+#EXTINF:-1 tvg-shift=4 tvg-logo="Fashion TV" tvg-name="Fashion_TV" aspect-ratio=16:9 crop=688x556+16+8 group-title="Стиль ТВ",Fashion TV
 udp://@239.54.5.3:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Fashion TV" tvg-name="Fashion_TV" crop=688x556+16+8 aspect-ratio=16:9,Fashion HD
+#EXTINF:-1 tvg-shift=4 tvg-logo="Fashion TV" tvg-name="Fashion_TV" crop=688x556+16+8 aspect-ratio=16:9,Fashion HD
 udp://@239.54.7.101:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="STV" tvg-name="STV" crop=688x556+16+8,STV
+#EXTINF:-1 tvg-shift=4 tvg-logo="STV" tvg-name="STV" crop=688x556+16+8,STV
 udp://@239.54.7.2:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Style TV" tvg-name="Стиль_и_мода" crop=688x556+16+8,Стиль и мода
+#EXTINF:-1 tvg-shift=4 tvg-logo="Style TV" tvg-name="Стиль_и_мода" crop=688x556+16+8,Стиль и мода
 udp://@239.54.7.16:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Домашний магазин" tvg-name="Домашний магазин" crop=688x556+16+8 group-title="Телемагазин",Домашний магазин
+#EXTINF:-1 tvg-shift=4 tvg-logo="Домашний магазин" tvg-name="Домашний магазин" crop=688x556+16+8 group-title="Телемагазин",Домашний магазин
 udp://@239.54.5.40:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="Домашний магазин" tvg-name="Домашний магазин" crop=688x556+16+8,Домашний магазин
+#EXTINF:-1 tvg-shift=4 tvg-logo="Домашний магазин" tvg-name="Домашний магазин" crop=688x556+16+8,Домашний магазин
 udp://@239.54.5.59:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="TV Sale" tvg-name="TV Sale" crop=688x556+16+8,TV Sale
+#EXTINF:-1 tvg-shift=4 tvg-logo="TV Sale" tvg-name="TV Sale" crop=688x556+16+8,TV Sale
 udp://@239.54.5.41:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="ТТК" tvg-name="SL24" crop=688x556+16+8,SL24
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="SL24" crop=688x556+16+8,SL24
 udp://@239.54.5.130:1224
-#EXTINF:-1 tvg-shift=3 tvg-logo="TV club" tvg-name="TV club" crop=688x556+16+8,TV club
+#EXTINF:-1 tvg-shift=4 tvg-logo="TV club" tvg-name="TV club" crop=688x556+16+8,TV club
 udp://@239.54.5.131:1224
+#EXTINF:-1 tvg-shift=4 tvg-logo="ТТК" tvg-name="Shop24" crop=688x556+16+8,Shop24
+udp://@239.54.5.165:1224
