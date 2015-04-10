@@ -793,14 +793,15 @@
 18) kernel: mips: fix race condition in lazy cache flushing.<br>
 19) kernel: jump_label: split jumplabel ratelimit.<br>
 20) kernel: jump_label: allow asm/jump_label.h to be included in assembly.<br>
-21) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
-22) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
-23) kernel: net: less interrupt masking in NAPI.<br>
-24) kernel: net: move napi polling code out of net_rx_action.<br>
-25) kernel: net: always poll at least one device in net_rx_action.<br>
-26) kernel: net: remove k{un}map_skb_frag().<br>
-27) kernel: net: simple_strtoul cleanup.<br>
-28) kernel: net: dont drop packet but consume it.<br>
+21) kernel: jump_label: allow jump labels to be used in assembly.<br>
+22) kernel: conntrack: fix one way voice issue if SIP ALG enabled.<br>
+23) kernel: netfilter: fix issue of some SIP Providers use only port 5060 for send/listen calls.<br>
+24) kernel: net: less interrupt masking in NAPI.<br>
+25) kernel: net: move napi polling code out of net_rx_action.<br>
+26) kernel: net: always poll at least one device in net_rx_action.<br>
+27) kernel: net: remove k{un}map_skb_frag().<br>
+28) kernel: net: simple_strtoul cleanup.<br>
+29) kernel: net: dont drop packet but consume it.<br>
 <br>
 <br>
 <b>TODO:</b><br>
