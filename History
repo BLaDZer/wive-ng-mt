@@ -804,6 +804,10 @@
 29) kernel: net: dont drop packet but consume it.<br>
 <br>
 <br>
+<b>2.9.x</b><br>
+1) init.d: global.sh small cleanup.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
 2) full russian ui (need help community or employ the web developer).<br>

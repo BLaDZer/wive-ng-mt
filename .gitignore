@@ -300,6 +300,9 @@ fulldump
 /user/transmission/config.status
 /user/quagga/doc/Makefile
 /user/quagga/doc/Makefile.in
+/user/quagga/doc/quagga.info
+/user/quagga/doc/quagga.info-1
+/user/quagga/doc/quagga.info-2
 /user/quagga/solaris/Makefile
 /user/quagga/tests/Makefile
 /user/quagga/tests/test-commands-defun.c

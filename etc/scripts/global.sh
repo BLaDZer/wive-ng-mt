@@ -22,26 +22,11 @@
 # include profile variables
 . /etc/profile
 
-# set default variables
-if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
-    # external switch support
-    phys_lan_if="eth2"
-    phys_wan_if="eth3"
-else
-    # internal switch or not switchible device
-    # support vlan parted
-    phys_lan_if="eth2.1"
-    phys_wan_if="eth2.2"
-fi
-
-lan_if="br0"
-lan2_if="br0:9"
-vpn_def_if="ppp0"
-
 # set some constatns
-mcast_net="224.0.0.0/4"
-upmpm_net="239.0.0.0/8"
+vpn_def_if="ppp0"
 txqueuelen="1000"
+mcast_net="224.0.0.0/4"
+upnmp_net="239.0.0.0/8"
 
 # first get operation mode and wan mode  dns mode and relay mode vpn mode and type
 eval `nvram_buf_get 2860 HostName OperationMode \
@@ -49,12 +34,10 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
 	wan_port tv_port sip_port tv_port_mcast sip_port_mcast \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
+	ApCliBridgeOnly ApCliIfName WdsIfName BssidIfName \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
-	ApCliBridgeOnly ApCliIfName \
-	WdsIfName \
-	BssidIfName \
 	MODEMENABLED \
 	QoSEnable`
 
@@ -90,6 +73,21 @@ getSecWlanIfName() {
 	if [ "$CONFIG_MT7610_AP_WDS" != "" ] || [ "$CONFIG_MT76X2_AP_WDS" != "" ]; then
 	    second_wlan_wds="wdsi"			# this is mask name vifs for second wds wlan module
 	fi
+    fi
+}
+
+# DEF pysical interface name -> $phys_*_if
+getPhysIfName() {
+    # physical names
+    if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+	# external switch support
+	phys_lan_if="eth2"
+	phys_wan_if="eth3"
+    else
+	# internal switch or not switchible device
+	# support vlan parted
+	phys_lan_if="eth2.1"
+	phys_wan_if="eth2.2"
     fi
 }
 
@@ -329,6 +327,7 @@ get_switch_part() {
 # get params
 getFirstWlanIfName
 getSecWlanIfName
+getPhysIfName
 getLanIfName
 getVpnIfName
 getWanIfName
