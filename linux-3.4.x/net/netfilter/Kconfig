@@ -162,6 +162,7 @@ config NF_CT_PROTO_SCTP
 
 config NF_CT_PROTO_UDPLITE
 	tristate 'UDP-Lite protocol connection tracking support'
+	depends on INET_UDPLITE
 	depends on NETFILTER_ADVANCED
 	help
 	  With this option enabled, the layer 3 independent connection
