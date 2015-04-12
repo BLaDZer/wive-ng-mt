@@ -1,5 +1,11 @@
+.EXPORT_ALL_VARIABLES:
+
+############################################################################
+#
 # Common definitions for all architectures
 # Included from the various <arch>/config.arch files
+#
+############################################################################
 
 HOST_BUILD = $(shell (uname -m) 2>/dev/null || echo unknown)-pc-linux-gnu
 
