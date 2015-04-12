@@ -807,6 +807,7 @@
 <b>2.9.x</b><br>
 1) init.d: global.sh small cleanup.<br>
 2) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+3) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
 <br>
 <br>
 <b>TODO:</b><br>
