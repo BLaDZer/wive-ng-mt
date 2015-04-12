@@ -236,37 +236,31 @@ linux:
 		ln -f $(LINUXDIR)/vmlinux $(LINUXDIR)/linux ; \
 	fi
 
-.PHONY: sparse
-sparse:
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) C=1 $(LINUXTARGET) || exit 1
-
-.PHONY: sparseall
-sparseall:
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) C=2 $(LINUXTARGET) || exit 1
-
 .PHONY: subdirs
 subdirs: lib linux
 	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir || exit 1 ; done
 
+.PHONY: dep
 dep:
-	@if [ ! -f $(LINUXDIR)/.config ] ; then \
+	if [ ! -f $(LINUXDIR)/.config ] ; then \
 		echo "ERROR: you need to do a 'make config' first" ; \
 		exit 1 ; \
 	fi
-	@if [ $(LINUXDIR) = linux ] ; then \
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) prepare ; \
-	fi
+	$(MAKEARCH_KERNEL) -C $(LINUXDIR) prepare
 	$(MAKEARCH_KERNEL) -C $(LINUXDIR) dep
 
 .PHONY: tools
 tools:
 	$(MAKE) -C tools
 
-# This one removes all executables from the tree and forces their relinking
-.PHONY: relink
-relink:
-	find user prop vendors -type f -name '*.gdb' | sed 's/^\(.*\)\.gdb/\1 \1.gdb/' | xargs rm -f
+.PHONY: web_make
+web_make:
+	$(MAKE) -C user web
 
+.PHONY: web
+web: web_make romfs image
+
+.PHONY: clean
 clean:
 	################PREPARE FOR CLEANUP############################
 	touch $(ROOTDIR)/lib/.config
@@ -295,7 +289,7 @@ clean:
 	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs config.in config.arch config.tk images modules/config.tk .config .config.old .oldconfig autoconf.h
 
 %_only:
-	@case "$(@)" in \
+	case "$(@)" in \
 	*/*) d=`expr $(@) : '\([^/]*\)/.*'`; \
 	     t=`expr $(@) : '[^/]*/\(.*\)'`; \
 	     $(MAKEARCH) -j$(HOST_NCPU) -C $$d $$t;; \
@@ -303,7 +297,7 @@ clean:
 	esac
 
 %_clean:
-	@case "$(@)" in \
+	case "$(@)" in \
 	*/*) d=`expr $(@) : '\([^/]*\)/.*'`; \
 	     t=`expr $(@) : '[^/]*/\(.*\)'`; \
 	     $(MAKEARCH) -C $$d $$t;; \
@@ -311,21 +305,11 @@ clean:
 	esac
 
 %_default:
-	@if [ ! -f "vendors/$(@:_default=)/config.device" ]; then \
-		echo "vendors/$(@:_default=)/config.device must exist first"; \
-		exit 1; \
-	 fi
+	if [ ! -f "vendors/$(@:_default=)/config.device" ]; then \
+	    echo "vendors/$(@:_default=)/config.device must exist first"; \
+	    exit 1; \
+	fi
 	-$(MAKE) clean > /dev/null 2>&1
 	cp vendors/$(@:_default=)/config.device .config
 	$(MAKE) dep
-	$(MAKE)
-
-dist-prep:
-	-find $(ROOTDIR) -name 'Makefile*.bin' | while read t; do \
-		$(MAKEARCH) -C `dirname $$t` -f `basename $$t` $@; \
-	 done
-
-web: web_make romfs image
-
-web_make:
-	$(MAKE) -C user web
+	$(MAKE) -j$(HOST_NCPU)

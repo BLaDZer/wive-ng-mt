@@ -1,0 +1,1 @@
+/opt/Wive-MT/config/autoconf.h
