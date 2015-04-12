@@ -68,7 +68,7 @@ static int wins_lookup_open_socket_in(void)
 		return -1;
 
 	setsockopt(res,SOL_SOCKET,SO_REUSEADDR,(char *)&val,sizeof(val));
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
 	setsockopt(res,SOL_SOCKET,SO_REUSEPORT,(char *)&val,sizeof(val));
 #endif /* SO_REUSEPORT */
 

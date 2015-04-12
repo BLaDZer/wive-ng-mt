@@ -422,7 +422,7 @@ sockopt_reuseaddr (int sock)
   return 0;
 }
 
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
 int
 sockopt_reuseport (int sock)
 {

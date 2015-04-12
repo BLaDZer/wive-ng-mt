@@ -67,7 +67,7 @@ void dhcp6_init(void)
     {
       int rc = 0;
 
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
       if ((rc = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &oneopt, sizeof(oneopt))) == -1 &&
 	  errno == ENOPROTOOPT)
 	rc = 0;

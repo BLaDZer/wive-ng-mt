@@ -132,7 +132,7 @@ ospf_apiclient_connect (char *host, int syncport)
       return NULL;
     }
 
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
   ret = setsockopt (async_server_sock, SOL_SOCKET, SO_REUSEPORT,
 		    (void *) &on, sizeof (on));
   if (ret < 0)

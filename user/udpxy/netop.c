@@ -204,8 +204,7 @@ setup_mcast_listener( struct sockaddr_in*   sa,
             break;
         }
 
-#ifndef __linux__
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
         /*  On some systems (such as FreeBSD) SO_REUSEADDR
             just isn't enough to subscribe to N same channels for different clients.
         */
@@ -217,7 +216,7 @@ setup_mcast_listener( struct sockaddr_in*   sa,
             break;
         }
 #endif /* SO_REUSEPORT */
-#endif
+
         rc = bind( sockfd, (struct sockaddr*)sa, sizeof(*sa) );
         if( 0 != rc ) {
             mperror(g_flog, errno, "%s: bind", __func__);

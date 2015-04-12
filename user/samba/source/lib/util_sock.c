@@ -160,7 +160,7 @@ static const smb_socket_option socket_options[] = {
 #ifdef IPTOS_THROUGHPUT
   {"IPTOS_THROUGHPUT",  IPPROTO_IP,    IP_TOS,          IPTOS_THROUGHPUT,  OPT_ON},
 #endif
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
   {"SO_REUSEPORT",      SOL_SOCKET,    SO_REUSEPORT,    0,                 OPT_BOOL},
 #endif
 #ifdef SO_SNDBUF
@@ -805,7 +805,7 @@ int open_socket_in( int type, int port, int dlevel, uint32 socket_addr, BOOL reb
 				dbgtext( "with error = %s\n", strerror(errno) );
 			}
 		}
-#ifdef SO_REUSEPORT
+#if defined(SO_REUSEPORT) && !defined(__linux__)
 		if( setsockopt(res,SOL_SOCKET,SO_REUSEPORT,(char *)&val,sizeof(val)) == -1 ) {
 			if( DEBUGLVL( 1 ) ) {
 				dbgtext( "open_socket_in(): setsockopt: ");
