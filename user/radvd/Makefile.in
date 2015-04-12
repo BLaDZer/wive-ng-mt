@@ -465,6 +465,8 @@ CCDEPMODE = @CCDEPMODE@
 
 ###  Compiler flags and such ###
 CFLAGS = @CFLAGS@ -ffunction-sections -fdata-sections
+CHECK_CFLAGS = @CHECK_CFLAGS@
+CHECK_LIBS = @CHECK_LIBS@
 CONDITIONAL_SOURCES = @CONDITIONAL_SOURCES@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -513,6 +515,9 @@ PATH_RADVD_CONF = @PATH_RADVD_CONF@
 PATH_RADVD_LOG = @PATH_RADVD_LOG@
 PATH_RADVD_PID = @PATH_RADVD_PID@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 RM = @RM@
 SED = @SED@
@@ -681,7 +686,7 @@ EXTRA_DIST = \
 	test/util.c
 
 EXTENSIONS = gz bz2 lz lzma xz tarZ shar zip
-HASHES = md5 sha1 sha256
+HASHES = sha1 sha256 sha512
 CLEANFILES = \
 	radvd.8 \
 	radvd.conf.5 \
@@ -1796,9 +1801,8 @@ packages:
 	$(MAKE) dist-gzip
 	rm -rf radvd-$(VERSION)
 	tar zfx radvd-$(VERSION).tar.gz
-	cd radvd-$(VERSION) && ./configure && $(MAKE) check
+	cd radvd-$(VERSION) && ./configure --with-check && $(MAKE) check
 	rm -rf radvd-$(VERSION)
-	$(MAKE) dist-bzip2
 	$(MAKE) dist-xz
 	$(MAKE) sign
 	$(MAKE) verify
