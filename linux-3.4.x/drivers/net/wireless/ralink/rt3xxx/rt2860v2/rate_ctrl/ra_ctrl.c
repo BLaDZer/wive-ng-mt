@@ -1578,7 +1578,7 @@ VOID MlmeRAInit(
 #ifdef NEW_RATE_ADAPT_SUPPORT
 	MlmeSetMcsGroup(pAd, pEntry);
 
-	pEntry->lastRateIdx = 1;
+	pEntry->lastRateIdx = 0xFF;
 	pEntry->lowTrafficCount = 0;
 	pEntry->perThrdAdj = PER_THRD_ADJ;
 #endif /*  NEW_RATE_ADAPT_SUPPORT */

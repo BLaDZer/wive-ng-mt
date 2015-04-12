@@ -809,7 +809,8 @@
 2) radvd: up to 2.11 version.<br>
 3) udpxy: fix work at 3.5.x and more new linux kernels.<br>
 4) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-5) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+5) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+6) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
 <br>
 <br>
 <b>TODO:</b><br>
