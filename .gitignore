@@ -37,12 +37,26 @@ filesystem
 fulldump
 
 # others
+/autoconf.h
+/config.arch
+/config/.config
+/config/autoconf.h
+/sdk_version.h
+/version
+/linux
 /romfs
 /romfs/*
 /images
 /images/*
 /dev
 /dev/*
+/tools/bin/*
+/tools/mkimage/mkimage
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/unsquashfs
+/tools/sstrip/sstrip
 /etc/compile-date
 /etc/default/RT2860_default_novlan
 /etc/scripts/config.sh
