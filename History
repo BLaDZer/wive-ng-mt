@@ -811,6 +811,7 @@
 4) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
 5) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
 6) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+7) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
 <br>
 <br>
 <b>TODO:</b><br>
