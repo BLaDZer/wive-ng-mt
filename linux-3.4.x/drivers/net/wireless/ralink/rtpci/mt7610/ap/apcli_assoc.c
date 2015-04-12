@@ -259,6 +259,7 @@ static VOID ApCliMlmeAssocReqAction(
 	USHORT ifIndex = (USHORT)(Elem->Priv);
 	PULONG pCurrState = NULL;
 	PAPCLI_STRUCT pApCliEntry = NULL;
+	struct wifi_dev *wdev;
 #ifdef APCLI_WPA_SUPPLICANT_SUPPORT
 	USHORT			VarIesOffset = 0;
 #endif /* APCLI_WPA_SUPPLICANT_SUPPORT */
@@ -286,6 +287,7 @@ static VOID ApCliMlmeAssocReqAction(
 	pCurrState = &pAd->ApCfg.ApCliTab[ifIndex].AssocCurrState;
 
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
+	wdev = &pApCliEntry->wdev;
 
 	/* Block all authentication request durning WPA block period */
 	if (pApCliEntry->bBlockAssoc == TRUE)
@@ -388,9 +390,9 @@ static VOID ApCliMlmeAssocReqAction(
 			IS_INVALID_HT_SECURITY(wdev->WepStatus))
 		{
 			/* Force to None-HT mode due to WiFi 11n policy */
-			apcli_entry->MlmeAux.HtCapabilityLen = 0;
+			pApCliEntry->ApCliMlmeAux.HtCapabilityLen = 0;
 #ifdef DOT11_VHT_AC
-			apcli_entry->MlmeAux.vht_cap_len = 0;
+			pApCliEntry->ApCliMlmeAux.vht_cap_len = 0;
 #endif /* DOT11_VHT_AC */
 			DBGPRINT(RT_DEBUG_TRACE, ("%s : Force AP-client as Non-HT mode\n", __FUNCTION__));
 		}
