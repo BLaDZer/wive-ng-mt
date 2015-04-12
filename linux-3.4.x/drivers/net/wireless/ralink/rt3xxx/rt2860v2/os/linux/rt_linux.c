@@ -1742,6 +1742,7 @@ int RtmpOSNetDevAttach(
 /*		GET_PAD_FROM_NET_DEV(pAd, pNetDev); */
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
+		pNetDevOps->ndo_set_mac_address = eth_mac_addr;
 		pNetDevOps->ndo_open = pDevOpHook->open;
 		pNetDevOps->ndo_stop = pDevOpHook->stop;
 		pNetDevOps->ndo_start_xmit =
