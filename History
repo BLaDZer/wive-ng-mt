@@ -806,6 +806,7 @@
 <br>
 <b>2.9.x</b><br>
 1) init.d: global.sh small cleanup.<br>
+2) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
 <br>
 <br>
 <b>TODO:</b><br>

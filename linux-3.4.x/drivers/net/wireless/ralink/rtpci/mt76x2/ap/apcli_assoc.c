@@ -353,6 +353,21 @@ static VOID ApCliMlmeAssocReqAction(
 		}
 
 #ifdef DOT11_N_SUPPORT
+		/*	
+			WFA recommend to restrict the encryption type in 11n-HT mode.
+			So, the WEP and TKIP are not allowed in HT rate.
+		*/
+		if (pAd->CommonCfg.HT_DisallowTKIP &&
+			IS_INVALID_HT_SECURITY(wdev->WepStatus))
+		{
+			/* Force to None-HT mode due to WiFi 11n policy */
+			apcli_entry->MlmeAux.HtCapabilityLen = 0;
+#ifdef DOT11_VHT_AC
+			apcli_entry->MlmeAux.vht_cap_len = 0;
+#endif /* DOT11_VHT_AC */
+			DBGPRINT(RT_DEBUG_TRACE, ("%s : Force AP-client as Non-HT mode\n", __FUNCTION__));
+		}
+
 		/* HT */
 		if ((apcli_entry->MlmeAux.HtCapabilityLen > 0) && 
 			WMODE_CAP_N(pAd->CommonCfg.PhyMode))
