@@ -1,15 +1,15 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; version 2 dated June, 1991, or
    (at your option) version 3 dated 29 June, 2007.
-
+ 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+     
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -17,6 +17,7 @@
 #define FTABSIZ 50 /* max number of outstanding requests (default) */
 #define MAX_PROCS 10 /* max no children for TCP requests */
 #define CHILD_LIFETIME 150 /* secs 'till terminated (RFC1035 suggests > 120s) */
+#define TCP_MAX_QUERIES 100 /* Maximum number of queries per incoming TCP connection */
 #define EDNS_PKTSZ 4096 /* default max EDNS.0 UDP packet from RFC5625 */
 #define KEYBLOCK_LEN 40 /* choose to mininise fragmentation when storing DNSSEC keys */
 #define DNSSEC_WORK 50 /* Max number of queries to validate one question */
@@ -25,7 +26,8 @@
 #define FORWARD_TIME 60 /* or 60 seconds */
 #define RANDOM_SOCKS 64 /* max simultaneous random ports */
 #define LEASE_RETRY 60 /* on error, retry writing leasefile after LEASE_RETRY seconds */
-#define CACHESIZ 100 /* default cache size */
+#define CACHESIZ 150 /* default cache size */
+#define TTL_FLOOR_LIMIT 3600 /* don't allow --min-cache-ttl to raise TTL above this under any circumstances */
 #define MAXLEASES 100 /* maximum number of DHCP leases */
 #define PING_WAIT 3 /* wait for ping address-in-use test */
 #define PING_CACHE_TIME 30 /* Ping test assumed to be valid this long. */
@@ -51,7 +53,6 @@
 #define TFTP_MAX_CONNECTIONS 50 /* max simultaneous connections */
 #define LOG_MAX 5 /* log-queue length */
 #define RANDFILE "/dev/urandom"
-
 #define DNSMASQ_SERVICE "uk.org.thekelleys.dnsmasq" /* Default - may be overridden by config */
 #define DNSMASQ_PATH "/uk/org/thekelleys/dnsmasq"
 #define AUTH_TTL 600 /* default TTL for auth DNS */
@@ -60,7 +61,7 @@
 #define SOA_EXPIRY 1209600 /* SOA expiry default */
 #define LOOP_TEST_DOMAIN "test" /* domain for loop testing, "test" is reserved by RFC 2606 and won't therefore clash */
 #define LOOP_TEST_TYPE T_TXT
-
+ 
 /* Follows system specific switches. If you run on a
    new system, you may want to edit these.
    May replace this with Autoconf one day.
@@ -88,17 +89,17 @@ HAVE_SCRIPT
    define this to get the ability to call scripts on lease-change.
 
 HAVE_LUASCRIPT
-   define this to get the ability to call Lua script on lease-change. (implies HAVE_SCRIPT)
+   define this to get the ability to call Lua script on lease-change. (implies HAVE_SCRIPT) 
 
 HAVE_DBUS
    define this if you want to link against libdbus, and have dnsmasq
-   support some methods to allow (re)configuration of the upstream DNS
+   support some methods to allow (re)configuration of the upstream DNS 
    servers via DBus.
 
 HAVE_IDN
    define this if you want international domain name support.
-   NOTE: for backwards compatibility, IDN support is automatically
-         included when internationalisation support is built, using the
+   NOTE: for backwards compatibility, IDN support is automatically 
+         included when internationalisation support is built, using the 
 	 *-i18n makefile targets, even if HAVE_IDN is not explicitly set.
 
 HAVE_CONNTRACK
@@ -121,6 +122,9 @@ HAVE_DNSSEC
 HAVE_LOOP
    include functionality to probe for and remove DNS forwarding loops.
 
+HAVE_INOTIFY
+   use the Linux inotify facility to efficiently re-read configuration files.
+
 NOTES:
    For Linux you should define
       HAVE_LINUX_NETWORK
@@ -139,14 +143,13 @@ NOTES:
 */
 
 /* Build options which require external libraries.
-
+   
    Defining HAVE_<opt>_STATIC as _well_ as HAVE_<opt> will link the library statically.
 
    You can use "make COPTS=-DHAVE_<opt>" instead of editing these.
 */
 
 /* #define HAVE_LUASCRIPT */
-/* #define NO_HAVE_DBUS */
 /* #define HAVE_DBUS */
 /* #define HAVE_IDN */
 /* #define HAVE_CONNTRACK */
@@ -183,7 +186,7 @@ NOTES:
 #define HAVE_GETOPT_LONG
 #undef HAVE_SOCKADDR_SA_LEN
 /* Never use fork() on uClinux. Note that this is subtly different from the
-   --keep-in-foreground option, since it also  suppresses forking new
+   --keep-in-foreground option, since it also  suppresses forking new 
    processes for TCP connections and disables the call-a-script on leasechange
    system. It's intended for use on MMU-less kernels. */
 #define NO_FORK
@@ -227,9 +230,9 @@ NOTES:
 #define HAVE_SOCKADDR_SA_LEN
 /* Define before sys/socket.h is included so we get socklen_t */
 #define _BSD_SOCKLEN_T_
-/* Select the RFC_3542 version of the IPv6 socket API.
+/* Select the RFC_3542 version of the IPv6 socket API. 
    Define before netinet6/in6.h is included. */
-#define __APPLE_USE_RFC_3542
+#define __APPLE_USE_RFC_3542 
 
 #elif defined(__NetBSD__)
 #define HAVE_BSD_NETWORK
@@ -240,8 +243,8 @@ NOTES:
 #define HAVE_SOLARIS_NETWORK
 #define HAVE_GETOPT_LONG
 #undef HAVE_SOCKADDR_SA_LEN
-#define ETHER_ADDR_LEN 6
-
+#define ETHER_ADDR_LEN 6 
+ 
 #endif
 
 /* Decide if we're going to support IPv6 */
@@ -272,7 +275,7 @@ NOTES:
 
 /* #define HAVE_BROKEN_RTC */
 
-/* rules to implement compile-time option dependencies and
+/* rules to implement compile-time option dependencies and 
    the NO_XXX flags */
 
 #ifdef NO_IPV6
@@ -302,7 +305,7 @@ NOTES:
 #endif
 
 #if defined(NO_SCRIPT) || !defined(HAVE_DHCP) || defined(NO_FORK)
-#  undef HAVE_SCRIPT
+#undef HAVE_SCRIPT
 #undef HAVE_LUASCRIPT
 #endif
 
@@ -323,12 +326,16 @@ NOTES:
 #undef HAVE_LOOP
 #endif
 
+#if defined (HAVE_LINUX_NETWORK) && !defined(NO_INOTIFY)
+#define HAVE_INOTIFY
+#endif
+
 /* Define a string indicating which options are in use.
    DNSMASQP_COMPILE_OPTS is only defined in dnsmasq.c */
 
 #ifdef DNSMASQ_COMPILE_OPTS
 
-static char *compile_opts =
+static char *compile_opts = 
 #ifndef HAVE_IPV6
 "no-"
 #endif
@@ -353,7 +360,7 @@ static char *compile_opts =
 "i18n "
 #if !defined(LOCALEDIR) && !defined(HAVE_IDN)
 "no-"
-#endif
+#endif 
 "IDN "
 #ifndef HAVE_DHCP
 "no-"
@@ -362,7 +369,7 @@ static char *compile_opts =
 #if defined(HAVE_DHCP)
 #  if !defined (HAVE_DHCP6)
      "no-"
-#  endif
+#  endif  
      "DHCPv6 "
 #  if !defined(HAVE_SCRIPT)
      "no-scripts "
@@ -396,6 +403,14 @@ static char *compile_opts =
 #ifndef HAVE_LOOP
 "no-"
 #endif
-"loop-detect";
+"loop-detect "
+#ifndef HAVE_INOTIFY
+"no-"
+#endif
+"inotify";
+
 
 #endif
+
+
+

@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,10 +15,6 @@
 */
 
 #include "dnsmasq.h"
-
-#ifndef IN6_IS_ADDR_ULA
-#define IN6_IS_ADDR_ULA(a) ((((__const uint32_t *) (a))[0] & htonl (0xfe00000)) == htonl (0xfc000000))
-#endif
 
 #ifdef HAVE_LINUX_NETWORK
 
@@ -240,7 +236,7 @@ struct iface_param {
 };
 
 static int iface_allowed(struct iface_param *param, int if_index, char *label,
-			 union mysockaddr *addr, struct in_addr netmask, int prefixlen, int dad) 
+			 union mysockaddr *addr, struct in_addr netmask, int prefixlen, int iface_flags) 
 {
   struct irec *iface;
   int mtu = 0, loopback;
@@ -268,7 +264,7 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
   
   if (!label)
     label = ifr.ifr_name;
-
+ 
   /* maintain a list of all addresses on all interfaces for --local-service option */
   if (option_bool(OPT_LOCAL_SERVICE))
     {
@@ -359,7 +355,7 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
 		    }
 		} 
 #endif
-
+	      
 	    }
 #endif
        
@@ -392,6 +388,10 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
 		 {
 		    al->addr.addr.addr6 = addr->in6.sin6_addr;
 		    al->flags = ADDRLIST_IPV6;
+		    /* Privacy addresses and addresses still undergoing DAD and deprecated addresses
+		       don't appear in forward queries, but will in reverse ones. */
+		    if (!(iface_flags & IFACE_PERMANENT) || (iface_flags & (IFACE_DEPRECATED | IFACE_TENTATIVE)))
+		      al->flags |= ADDRLIST_REVONLY;
 		 } 
 #endif
 	      }
@@ -403,7 +403,7 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
   for (iface = daemon->interfaces; iface; iface = iface->next) 
     if (sockaddr_isequal(&iface->addr, addr))
       {
-	iface->dad = dad;
+	iface->dad = !!(iface_flags & IFACE_TENTATIVE);
 	iface->found = 1; /* for garbage collection */
 	return 1;
       }
@@ -478,7 +478,7 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
       iface->dhcp_ok = dhcp_ok;
       iface->dns_auth = auth_dns;
       iface->mtu = mtu;
-      iface->dad = dad;
+      iface->dad = !!(iface_flags & IFACE_TENTATIVE);
       iface->found = 1;
       iface->done = iface->multicast_done = iface->warned = 0;
       iface->index = if_index;
@@ -519,11 +519,11 @@ static int iface_allowed_v6(struct in6_addr *local, int prefix,
   addr.in6.sin6_port = htons(daemon->port);
   /* FreeBSD insists this is zero for non-linklocal addresses */
   if (IN6_IS_ADDR_LINKLOCAL(local))
-  addr.in6.sin6_scope_id = if_index;
+    addr.in6.sin6_scope_id = if_index;
   else
     addr.in6.sin6_scope_id = 0;
   
-  return iface_allowed((struct iface_param *)vparam, if_index, NULL, &addr, netmask, prefix, !!(flags & IFACE_TENTATIVE));
+  return iface_allowed((struct iface_param *)vparam, if_index, NULL, &addr, netmask, prefix, flags);
 }
 #endif
 
@@ -560,7 +560,7 @@ int enumerate_interfaces(int reset)
 #ifdef HAVE_AUTH
   struct auth_zone *zone;
 #endif
-  
+
   /* Do this max once per select cycle  - also inhibits netlink socket use
    in TCP child processes. */
 
@@ -612,20 +612,20 @@ int enumerate_interfaces(int reset)
       {
 	struct addrlist **up;
 	for (up = &zone->subnet, addr = zone->subnet; addr; addr = tmp)
-	{
-	  tmp = addr->next;
+	  {
+	    tmp = addr->next;
 	    if (addr->flags & ADDRLIST_LITERAL)
 	      up = &addr->next;
 	    else
 	      {
 		*up = addr->next;
-	  addr->next = spare;
-	  spare = addr;
-	} 
-    }
+		addr->next = spare;
+		spare = addr;
+	      }
+	  }
       }
 #endif
-  
+
   param.spare = spare;
   
 #ifdef HAVE_IPV6
@@ -674,9 +674,8 @@ int enumerate_interfaces(int reset)
     }
   
   errno = errsave;
-
   spare = param.spare;
-
+    
   return ret;
 }
 
@@ -717,9 +716,9 @@ static int make_sock(union mysockaddr *addr, int type, int dienow)
       
       if (fd != -1)
 	close (fd);
-      
+	
       errno = errsav;
-      
+
       if (dienow)
 	{
 	  /* failure to bind addresses given by --listen-address at this point
@@ -764,8 +763,8 @@ static int make_sock(union mysockaddr *addr, int type, int dienow)
 	}
     }
 #ifdef HAVE_IPV6
-      else if (!set_ipv6pktinfo(fd))
-	goto err;
+  else if (!set_ipv6pktinfo(fd))
+    goto err;
 #endif
   
   return fd;
@@ -914,7 +913,7 @@ static struct listener *create_listeners(union mysockaddr *addr, int do_tftp, in
       l->family = addr->sa.sa_family;
       l->fd = fd;
       l->tcpfd = tcpfd;
-      l->tftpfd = tftpfd;
+      l->tftpfd = tftpfd;	
       l->iface = NULL;
     }
 
@@ -1017,12 +1016,12 @@ void warn_bound_listeners(void)
 	    if (!private_net(iface->addr.in.sin_addr, 1))
 	      {
 		inet_ntop(AF_INET, &iface->addr.in.sin_addr, daemon->addrbuff, ADDRSTRLEN);
-	    iface->warned = advice = 1;
-	    my_syslog(LOG_WARNING, 
+		iface->warned = advice = 1;
+		my_syslog(LOG_WARNING, 
 			  _("LOUD WARNING: listening on %s may accept requests via interfaces other than %s"),
-		      daemon->addrbuff, iface->name);
+			  daemon->addrbuff, iface->name);
+	      }
 	  }
-      }
       }
   
   if (advice)
@@ -1037,7 +1036,7 @@ void warn_int_names(void)
     if (!intname->addr)
       my_syslog(LOG_WARNING, _("warning: no addresses found for interface %s"), intname->intr);
 }
-
+ 
 int is_dad_listeners(void)
 {
   struct irec *iface;
@@ -1299,8 +1298,8 @@ void mark_servers(int flag)
   /* mark everything with argument flag */
   for (serv = daemon->servers; serv; serv = serv->next)
     {
-    if (serv->flags & flag)
-      serv->flags |= SERV_MARK;
+      if (serv->flags & flag)
+	serv->flags |= SERV_MARK;
 #ifdef HAVE_LOOP
       /* Give looped servers another chance */
       serv->flags &= ~SERV_LOOP;
@@ -1400,7 +1399,7 @@ void add_update_server(int flags,
 #ifdef HAVE_LOOP
       serv->uid = rand32();
 #endif      
-      
+
       if (domain)
 	serv->flags |= SERV_HAS_DOMAIN;
       
@@ -1460,7 +1459,7 @@ void check_servers(void)
 	    }
 	}
       
-      if (!(serv->flags & SERV_NO_REBIND))
+      if (!(serv->flags & SERV_NO_REBIND) && !(serv->flags & SERV_LITERAL_ADDRESS))
 	{
 	  if (serv->flags & (SERV_HAS_DOMAIN | SERV_FOR_NODOTS | SERV_USE_RESOLV))
 	    {
@@ -1476,7 +1475,7 @@ void check_servers(void)
 		my_syslog(LOG_INFO, _("using local addresses only for %s %s"), s1, s2);
 	      else if (serv->flags & SERV_USE_RESOLV)
 		my_syslog(LOG_INFO, _("using standard nameservers for %s %s"), s1, s2);
-	      else if (!(serv->flags & SERV_LITERAL_ADDRESS))
+	      else 
 		my_syslog(LOG_INFO, _("using nameserver %s#%d for %s %s"), daemon->namebuff, port, s1, s2);
 	    }
 #ifdef HAVE_LOOP
@@ -1489,7 +1488,7 @@ void check_servers(void)
 	    my_syslog(LOG_INFO, _("using nameserver %s#%d"), daemon->namebuff, port); 
 	}
     }
-  
+
   cleanup_servers();
 }
 
@@ -1507,9 +1506,9 @@ int reload_servers(char *fname)
       my_syslog(LOG_ERR, _("failed to read %s: %s"), fname, strerror(errno));
       return 0;
     }
-  
+   
   mark_servers(SERV_FROM_RESOLV);
-  
+    
   while ((line = fgets(daemon->namebuff, MAXDNAME, f)))
     {
       union mysockaddr addr, source_addr;
@@ -1596,7 +1595,7 @@ void newaddress(time_t now)
   
   if (daemon->doing_dhcp6 || daemon->doing_ra)
     dhcp_construct_contexts(now);
-
+  
   if (daemon->doing_dhcp6)
     lease_find_interfaces(now);
 #endif

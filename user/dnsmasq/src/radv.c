@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -210,7 +210,7 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 #ifdef HAVE_LINUX_NETWORK
   FILE *f;
 #endif
- 
+  
   parm.ind = iface;
   parm.managed = 0;
   parm.other = 0;
@@ -233,7 +233,7 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
   ra->lifetime = htons(calc_lifetime(ra_param));
   ra->reachable_time = 0;
   ra->retrans_time = 0;
-  
+
   /* set tag with name == interface */
   iface_id.net = iface_name;
   iface_id.next = NULL;
@@ -290,7 +290,7 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 	      
 	      if (context->flags & CONTEXT_RA)
 		{
-		do_slaac = 1;
+		  do_slaac = 1;
 		  if (context->flags & CONTEXT_DHCP)
 		    {
 		      parm.other = 1; 
@@ -307,7 +307,7 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 		      parm.other = 1;
 		    }
 		}
-	      
+
 	      if ((opt = expand(sizeof(struct prefix_opt))))
 		{
 		  opt->type = ICMP6_OPT_PREFIX;
@@ -338,8 +338,8 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 
   /* No prefixes to advertise. */
   if (!old_prefix && !parm.found_context)
-    return;
-    
+    return; 
+  
   /* If we're sending router address instead of prefix in at least on prefix,
      include the advertisement interval option. */
   if (parm.adv_router)
@@ -385,7 +385,7 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
         {
 	  struct in6_addr *a;
 	  int len;
-	  
+
 	  done_dns = 1;
 
           if (opt_cfg->len == 0)
@@ -401,16 +401,16 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 
 	  if (len != 0)
 	    {
-	  put_opt6_char(ICMP6_OPT_RDNSS);
+	      put_opt6_char(ICMP6_OPT_RDNSS);
 	      put_opt6_char((len/8) + 1);
-	  put_opt6_short(0);
+	      put_opt6_short(0);
 	      put_opt6_long(min_pref_time);
 	 
 	      for (a = (struct in6_addr *)opt_cfg->val, i = 0; i <  opt_cfg->len; i += IN6ADDRSZ, a++)
-	    if (IN6_IS_ADDR_UNSPECIFIED(a))
+		if (IN6_IS_ADDR_UNSPECIFIED(a))
 		  {
 		    if (parm.glob_pref_time != 0)
-	      put_opt6(&parm.link_global, IN6ADDRSZ);
+		      put_opt6(&parm.link_global, IN6ADDRSZ);
 		  }
 		else if (IN6_IS_ADDR_ULA_ZERO(a))
 		  {
@@ -422,9 +422,9 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
 		    if (parm.link_pref_time != 0)
 		      put_opt6(&parm.link_local, IN6ADDRSZ);
 		  }
-	    else
-	      put_opt6(a, IN6ADDRSZ);
-	}
+		else
+		  put_opt6(a, IN6ADDRSZ);
+	    }
 	}
       
       if (opt_cfg->opt == OPTION6_DOMAIN_SEARCH && opt_cfg->len != 0)
@@ -479,8 +479,9 @@ static void send_ra(time_t now, int iface, char *iface_name, struct in6_addr *de
       setsockopt(daemon->icmp6fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, &iface, sizeof(iface));
     }
   
-  while (sendto(daemon->icmp6fd, daemon->outpacket.iov_base, save_counter(0), 0, 
-		(struct sockaddr *)&addr, sizeof(addr)) == -1 && retry_send());
+  while (retry_send(sendto(daemon->icmp6fd, daemon->outpacket.iov_base, 
+			   save_counter(0), 0, (struct sockaddr *)&addr, 
+			   sizeof(addr))));
   
 }
 
@@ -502,7 +503,7 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 	  if (preferred > param->link_pref_time)
 	    {
 	      param->link_pref_time = preferred;
-	param->link_local = *local;
+	      param->link_local = *local;
 	    }
 	}
       else if (!IN6_IS_ADDR_LOOPBACK(local) &&
@@ -542,7 +543,7 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 		    param->managed = 1;
 		    param->other = 1;
 		  }
-		
+
 		/* Configured to advertise router address, not prefix. See RFC 3775 7.2 
 		 In this case we do all addresses associated with a context, 
 		 hence the real_prefix setting here. */
@@ -604,7 +605,7 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 	  /* configured time is ceiling */
 	  if (!constructed || preferred > time)
 	    preferred = time;
-	    	  
+	  
 	  if (IN6_IS_ADDR_ULA(local))
 	    {
 	      if (preferred > param->ula_pref_time)
@@ -616,10 +617,10 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 	  else 
 	    {
 	      if (preferred > param->glob_pref_time)
-	    {
+		{
 		  param->glob_pref_time = preferred;
-	      param->link_global = *local;
-	    }
+		  param->link_global = *local;
+		}
 	    }
 	  
 	  if (real_prefix != 0)
@@ -630,7 +631,7 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 		{
 		  /* zero net part of address */
 		  if (!adv_router)
-		  setaddr6part(local, addr6part(local) & ~((real_prefix == 64) ? (u64)-1LL : (1LLU << (128 - real_prefix)) - 1LLU));
+		    setaddr6part(local, addr6part(local) & ~((real_prefix == 64) ? (u64)-1LL : (1LLU << (128 - real_prefix)) - 1LLU));
 		  
 		  opt->type = ICMP6_OPT_PREFIX;
 		  opt->len = 4;
@@ -650,7 +651,6 @@ static int add_prefixes(struct in6_addr *local,  int prefix,
 		  if (!option_bool(OPT_QUIET_RA))
 		    my_syslog(MS_DHCP | LOG_INFO, "RTR-ADVERT(%s) %s", param->if_name, daemon->addrbuff); 		    
 		}
-
 	    }
 	}
     }          

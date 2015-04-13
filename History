@@ -807,14 +807,16 @@
 <b>2.9.x</b><br>
 1) init.d: global.sh small cleanup.<br>
 2) radvd: up to 2.11 version.<br>
-3) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-4) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-5) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-6) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-7) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-8) kernel: ralink_wifi: allow mac address changes.<br>
-9) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-10) kernel: mips: hibernate: flush TLB entries earlier.<br>
+3) dnsmasq: up to 2.73rc4.<br>
+4) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+5) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+6) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+7) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+8) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+9) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+10) kernel: ralink_wifi: allow mac address changes.<br>
+11) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+12) kernel: mips: hibernate: flush TLB entries earlier.<br>
 <br>
 <br>
 <b>TODO:</b><br>

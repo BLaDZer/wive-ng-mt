@@ -1,4 +1,4 @@
-# dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+# dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,10 +28,14 @@ DESTDIR       =
 RPM_OPT_FLAGS =
 
 COPTS := -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT
+
 ifndef CONFIG_IPV6
-COPTS += -DHAVE_BROKEN_RTC -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT -DNO_IPV6
-else
-COPTS += -DHAVE_BROKEN_RTC -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT
+COPTS += -DNO_IPV6
+endif
+
+ifndef CONFIG_INOTIFY_USER
+COPTS += -DNO_INOTIFY
 endif
 
 LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
@@ -59,23 +63,27 @@ top?=$(CURDIR)
 
 #dbus_cflags = `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DBUS $(PKG_CONFIG) --cflags dbus-1`
 #dbus_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DBUS $(PKG_CONFIG) --libs dbus-1`
-idn_cflags =  `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_IDN $(PKG_CONFIG) --cflags libidn`
-idn_libs =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_IDN $(PKG_CONFIG) --libs libidn`
-ct_cflags =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_CONNTRACK $(PKG_CONFIG) --cflags libnetfilter_conntrack`
-ct_libs =     `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_CONNTRACK $(PKG_CONFIG) --libs libnetfilter_conntrack`
-lua_cflags =  `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_LUASCRIPT $(PKG_CONFIG) --cflags lua5.1`
-lua_libs =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_LUASCRIPT $(PKG_CONFIG) --libs lua5.1`
-nettle_cflags = `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --cflags nettle hogweed`
-nettle_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --libs nettle hogweed`
-gmp_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC NO_GMP --copy -lgmp`
-sunos_libs =  `if uname | grep SunOS >/dev/null 2>&1; then echo -lsocket -lnsl -lposix4; fi`
+#idn_cflags =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_IDN $(PKG_CONFIG) --cflags libidn` 
+#idn_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_IDN $(PKG_CONFIG) --libs libidn` 
+#ct_cflags =     `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_CONNTRACK $(PKG_CONFIG) --cflags libnetfilter_conntrack`
+#ct_libs =       `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_CONNTRACK $(PKG_CONFIG) --libs libnetfilter_conntrack`
+#lua_cflags =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_LUASCRIPT $(PKG_CONFIG) --cflags lua5.1` 
+#lua_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_LUASCRIPT $(PKG_CONFIG) --libs lua5.1` 
+#nettle_cflags = `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --cflags nettle hogweed`
+#nettle_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --libs nettle hogweed`
+#gmp_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC NO_GMP --copy -lgmp`
+#sunos_libs =    `if uname | grep SunOS >/dev/null 2>&1; then echo -lsocket -lnsl -lposix4; fi`
 version =     -DVERSION='\"`$(top)/bld/get-version $(top)`\"'
+
+sum?=$(shell $(CC) -DDNSMASQ_COMPILE_OPTS $(COPTS) -E $(top)/$(SRC)/dnsmasq.h | ( md5sum 2>/dev/null || md5 ) | cut -f 1 -d ' ')
+sum!=$(CC) -DDNSMASQ_COMPILE_OPTS $(COPTS) -E $(top)/$(SRC)/dnsmasq.h | ( md5sum 2>/dev/null || md5 ) | cut -f 1 -d ' '
+copts_conf = .copts_$(sum)
 
 objs = cache.o rfc1035.o util.o option.o forward.o network.o \
        dnsmasq.o dhcp.o lease.o rfc2131.o netlink.o dbus.o bpf.o \
        helper.o tftp.o log.o conntrack.o dhcp6.o rfc3315.o \
        dhcp-common.o outpacket.o radv.o slaac.o auth.o ipset.o \
-       domain.o dnssec.o blockdata.o tables.o loop.o
+       domain.o dnssec.o blockdata.o tables.o loop.o inotify.o
 
 hdrs = dnsmasq.h config.h dhcp-protocol.h dhcp6-protocol.h \
        dns-protocol.h radv-protocol.h ip6addr.h
@@ -85,11 +93,11 @@ all : $(BUILDDIR)
  top="$(top)" \
  build_cflags="$(version) $(dbus_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags)" \
  build_libs="$(dbus_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs)" \
- -f $(top)/Makefile dnsmasq
+ -f $(top)/Makefile dnsmasq 
 
 mostly_clean :
-	rm -f $(BUILDDIR)/*.mo $(BUILDDIR)/*.pot
-	rm -f $(BUILDDIR)/.configured $(BUILDDIR)/*.o $(BUILDDIR)/dnsmasq.a $(BUILDDIR)/dnsmasq
+	rm -f $(BUILDDIR)/*.mo $(BUILDDIR)/*.pot 
+	rm -f $(BUILDDIR)/.copts_* $(BUILDDIR)/*.o $(BUILDDIR)/dnsmasq.a $(BUILDDIR)/dnsmasq
 
 clean : mostly_clean
 	rm -f $(BUILDDIR)/dnsmasq_baseline
@@ -101,7 +109,7 @@ install : all install-common
 
 install-common :
 	$(INSTALL) -d $(DESTDIR)$(BINDIR) -d $(DESTDIR)$(MANDIR)/man8
-	$(INSTALL) -m 644 $(MAN)/dnsmasq.8 $(DESTDIR)$(MANDIR)/man8
+	$(INSTALL) -m 644 $(MAN)/dnsmasq.8 $(DESTDIR)$(MANDIR)/man8 
 	$(INSTALL) -m 755 $(BUILDDIR)/dnsmasq $(DESTDIR)$(BINDIR)
 
 romfs :
@@ -123,16 +131,16 @@ install-i18n : all-i18n install-common
 	cd $(BUILDDIR); $(top)/bld/install-mo $(DESTDIR)$(LOCALEDIR) $(INSTALL)
 	cd $(MAN); ../bld/install-man $(DESTDIR)$(MANDIR) $(INSTALL)
 
-merge :
+merge : 
 	@cd $(BUILDDIR) && $(MAKE) -f $(top)/Makefile dnsmasq.pot
 	for f in `cd $(PO); echo *.po`; do \
 		echo -n msgmerge $(PO)/$$f && $(MSGMERGE) --no-wrap -U $(PO)/$$f $(BUILDDIR)/dnsmasq.pot; \
 	done
 
 # Cannonicalise .po file.
-%.po :
+%.po : 
 	@cd $(BUILDDIR) && $(MAKE) -f $(top)/Makefile dnsmasq.pot
-	mv $(PO)/$*.po $(PO)/$*.po.orig && $(MSGMERGE) --no-wrap $(PO)/$*.po.orig $(BUILDDIR)/dnsmasq.pot >$(PO)/$*.po;
+	mv $(PO)/$*.po $(PO)/$*.po.orig && $(MSGMERGE) --no-wrap $(PO)/$*.po.orig $(BUILDDIR)/dnsmasq.pot >$(PO)/$*.po; 
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
@@ -150,17 +158,19 @@ bloatcheck : $(BUILDDIR)/dnsmasq_baseline mostly_clean all
 
 # rules below are targets in recusive makes with cwd=$(BUILDDIR)
 
-.configured: $(hdrs)
-	@rm -f *.o
+$(copts_conf): $(hdrs)
+	@rm -f *.o .copts_*
 	@touch $@
 
 $(objs:.o=.c) $(hdrs):
 	ln -s $(top)/$(SRC)/$@ .
 
+$(objs): $(copts_conf) $(hdrs)
+
 .c.o:
 	$(CC) $(CFLAGS) $(COPTS) $(i18n) $(build_cflags) $(RPM_OPT_FLAGS) -c $<
 
-dnsmasq : .configured $(hdrs) $(objs)
+dnsmasq : $(objs)
 	$(CC) $(LDFLAGS) -o $@ $(objs) $(build_libs) $(LIBS)
 
 dnsmasq.pot : $(objs:.o=.c) $(hdrs)

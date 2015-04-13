@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -225,9 +225,9 @@ void dhcp6_packet(time_t now)
   if (port != 0)
     {
       from.sin6_port = htons(port);
-      while (sendto(daemon->dhcp6fd, daemon->outpacket.iov_base, save_counter(0), 
-		    0, (struct sockaddr *)&from, sizeof(from)) == -1 &&
-	   retry_send());
+      while (retry_send(sendto(daemon->dhcp6fd, daemon->outpacket.iov_base, 
+			       save_counter(0), 0, (struct sockaddr *)&from, 
+			       sizeof(from))));
     }
 }
 
@@ -246,7 +246,9 @@ void get_client_mac(struct in6_addr *client, int iface, unsigned char *mac, unsi
   neigh.code = 0;
   neigh.reserved = 0;
   neigh.target = *client;
-  
+  /* RFC4443 section-2.3: checksum has to be zero to be calculated */
+  neigh.checksum = 0;
+   
   memset(&addr, 0, sizeof(addr));
 #ifdef HAVE_SOCKADDR_SA_LEN
   addr.sin6_len = sizeof(struct sockaddr_in6);
@@ -423,8 +425,8 @@ struct dhcp_context *address6_allocate(struct dhcp_context *context,  unsigned c
   if (temp_addr)
     j = rand64();
   else
-  for (j = iaid, i = 0; i < clid_len; i++)
-    j += clid[i] + (j << 6) + (j << 16) - j;
+    for (j = iaid, i = 0; i < clid_len; i++)
+      j += clid[i] + (j << 6) + (j << 16) - j;
   
   for (pass = 0; pass <= plain_range ? 1 : 0; pass++)
     for (c = context; c; c = c->current)
@@ -575,26 +577,26 @@ static int make_duid1(int index, unsigned int type, char *mac, size_t maclen, vo
   (void)index;
   (void)parm;
   time_t newnow = *((time_t *)parm);
-
+  
   if (type >= 256)
     return 1;
 
   if (newnow == 0)
     {
-  daemon->duid = p = safe_malloc(maclen + 4);
-  daemon->duid_len = maclen + 4;
-  PUTSHORT(3, p); /* DUID_LL */
-  PUTSHORT(type, p); /* address type */
+      daemon->duid = p = safe_malloc(maclen + 4);
+      daemon->duid_len = maclen + 4;
+      PUTSHORT(3, p); /* DUID_LL */
+      PUTSHORT(type, p); /* address type */
     }
   else
     {
-  daemon->duid = p = safe_malloc(maclen + 8);
-  daemon->duid_len = maclen + 8;
-  PUTSHORT(1, p); /* DUID_LLT */
-  PUTSHORT(type, p); /* address type */
-  PUTLONG(*((time_t *)parm), p); /* time */
+      daemon->duid = p = safe_malloc(maclen + 8);
+      daemon->duid_len = maclen + 8;
+      PUTSHORT(1, p); /* DUID_LLT */
+      PUTSHORT(type, p); /* address type */
+      PUTLONG(*((time_t *)parm), p); /* time */
     }
-
+  
   memcpy(p, mac, maclen);
 
   return 0;
@@ -727,7 +729,6 @@ void dhcp_construct_contexts(time_t now)
      
       if (context->flags & CONTEXT_GC && !(context->flags & CONTEXT_OLD))
 	{
-	  
 	  if ((context->flags & CONTEXT_RA) || option_bool(OPT_RA))
 	    {
 	      /* previously constructed context has gone. advertise it's demise */

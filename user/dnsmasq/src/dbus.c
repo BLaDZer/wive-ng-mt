@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ static void dbus_read_servers(DBusMessage *message)
   dbus_message_iter_init(message, &iter);
 
   mark_servers(SERV_FROM_DBUS);
-
+  
   while (1)
     {
       int skip = 0;
@@ -163,8 +163,8 @@ static void dbus_read_servers(DBusMessage *message)
 	      if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_BYTE)
 		{
 		  i++;
-		break;
-	    }
+		  break;
+		}
 	    }
 
 #ifndef HAVE_IPV6
@@ -353,13 +353,13 @@ static DBusMessage* dbus_read_servers_ex(DBusMessage *message, int strings)
 
       /* parse the IP address */
       if ((addr_err = parse_server(str_addr, &addr, &source_addr, (char *) &interface, &flags)))
-        {
+	{
           error = dbus_message_new_error_printf(message, DBUS_ERROR_INVALID_ARGS,
                                                 "Invalid IP address '%s': %s",
                                                 str, addr_err);
           break;
         }
-
+      
       /* 0.0.0.0 for server address == NULL, for Dbus */
       if (addr.in.sin_family == AF_INET &&
           addr.in.sin_addr.s_addr == 0)
@@ -426,7 +426,7 @@ static DBusMessage *dbus_set_bool(DBusMessage *message, int flag, char *name)
     }
   else
     {
-      my_syslog(LOG_INFO, "Disabling --$s option from D-Bus", name);
+      my_syslog(LOG_INFO, "Disabling --%s option from D-Bus", name);
       reset_option_bool(flag);
     }
 

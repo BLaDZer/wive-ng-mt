@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -169,10 +169,10 @@ int iface_enumerate(int family, void *parm, int (*callback)())
   req.g.rtgen_family = family; 
 
   /* Don't block in recvfrom if send fails */
-  while((len = sendto(daemon->netlinkfd, (void *)&req, sizeof(req), 0, 
-		      (struct sockaddr *)&addr, sizeof(addr))) == -1 && retry_send());
-  
-  if (len == -1)
+  while(retry_send(sendto(daemon->netlinkfd, (void *)&req, sizeof(req), 0, 
+			  (struct sockaddr *)&addr, sizeof(addr))));
+
+  if (errno != 0)
     return 0;
     
   while (1)
@@ -194,7 +194,7 @@ int iface_enumerate(int family, void *parm, int (*callback)())
 	    nl_async(h);
 	  }
 	else if (h->nlmsg_type == NLMSG_DONE)
-	    return callback_ok;
+	  return callback_ok;
 	else if (h->nlmsg_type == RTM_NEWADDR && family != AF_UNSPEC && family != AF_LOCAL)
 	  {
 	    struct ifaddrmsg *ifa = NLMSG_DATA(h);  
@@ -254,10 +254,10 @@ int iface_enumerate(int family, void *parm, int (*callback)())
 		    
 		    if (ifa->ifa_flags & IFA_F_DEPRECATED)
 		      flags |= IFACE_DEPRECATED;
-
+		    
 		    if (!(ifa->ifa_flags & IFA_F_TEMPORARY))
 		      flags |= IFACE_PERMANENT;
-		    
+    		    
 		    if (addrp && callback_ok)
 		      if (!((*callback)(addrp, (int)(ifa->ifa_prefixlen), (int)(ifa->ifa_scope), 
 					(int)(ifa->ifa_index), flags, 

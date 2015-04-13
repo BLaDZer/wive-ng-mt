@@ -17,14 +17,14 @@ if grep "^\#[[:space:]]*define[[:space:]]*$search" config.h >/dev/null 2>&1 || \
             echo $in | grep $pkg >/dev/null 2>&1; then
 	    pkg=""
 	else 
-	pkg="$*"
+	    pkg="$*"
 	fi
     elif grep "^\#[[:space:]]*define[[:space:]]*${search}_STATIC" config.h >/dev/null 2>&1 || \
 	      echo $in | grep ${search}_STATIC >/dev/null 2>&1; then
 	pkg=`$pkg  --static $op $*`
     else
 	pkg=`$pkg $op $*`
-fi
+    fi
 
     if grep "^\#[[:space:]]*define[[:space:]]*${search}_STATIC" config.h >/dev/null 2>&1 || \
 	echo $in | grep ${search}_STATIC >/dev/null 2>&1; then

@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -353,7 +353,7 @@ static int find_interface_v4(struct in_addr local, int if_index, char *label,
 {
   struct dhcp_lease *lease;
   int prefix = netmask_length(netmask);
-  
+
   (void) label;
   (void) broadcast;
   (void) vparam;
@@ -366,7 +366,7 @@ static int find_interface_v4(struct in_addr local, int if_index, char *label,
 	lease->new_interface = if_index;
         lease->new_prefixlen = prefix;
       }
-  
+
   return 1;
 }
 
@@ -376,7 +376,7 @@ static int find_interface_v6(struct in6_addr *local,  int prefix,
 			     int preferred, int valid, void *vparam)
 {
   struct dhcp_lease *lease;
-  
+
   (void)scope;
   (void)flags;
   (void)preferred;
@@ -392,7 +392,7 @@ static int find_interface_v6(struct in6_addr *local,  int prefix,
         lease->new_interface = if_index;
         lease->new_prefixlen = prefix;
       }
-  
+
   return 1;
 }
 
@@ -766,7 +766,7 @@ struct dhcp_lease *lease6_allocate(struct in6_addr *addrp, int lease_type)
 void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now)
 {
   time_t exp;
-  
+
   if (len == 0xffffffff)
     {
       exp = 0;
@@ -781,7 +781,7 @@ void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now)
       if (difftime(exp, now) <= 0.0)
 	exp = 0;
     }
-  
+
   if (exp != lease->expires)
     {
       dns_dirty = 1;

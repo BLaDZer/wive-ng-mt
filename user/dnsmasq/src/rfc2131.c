@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2014 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 		  oui = option_find1(x, y, 1, 1);
 		  serial = option_find1(x, y, 2, 1);
 #ifdef HAVE_SCRIPT
-		  class = option_find1(x, y, 3, 1);
+		  class = option_find1(x, y, 3, 1);		  
 #endif
 		  /* If TR069-id is present set the tag "cpewan-id" to facilitate echoing 
 		     the gateway id back. Note that the device class is optional */
