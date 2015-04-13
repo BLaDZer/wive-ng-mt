@@ -23,6 +23,7 @@
 .sgbuilt_user
 .libs
 lex.*.c
+.copts_*
 zconf.hash.c
 lkc_defs.h
 libtool
