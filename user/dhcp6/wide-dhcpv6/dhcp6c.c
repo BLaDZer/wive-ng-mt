@@ -88,7 +88,6 @@ static sig_atomic_t sig_flags = 0;
 const dhcp6_mode_t dhcp6_mode = DHCP6_MODE_CLIENT;
 
 int sock;	/* inbound/outbound udp port */
-int rtsock;	/* routing socket */
 int ctlsock = -1;		/* control TCP port */
 char *ctladdr = DEFAULT_CLIENT_CONTROL_ADDR;
 char *ctlport = DEFAULT_CLIENT_CONTROL_PORT;
@@ -382,18 +381,6 @@ duid_ok:
 		exit(1);
 	}
 	freeaddrinfo(res);
-
-	/* open a routing socket to watch the routing table */
-#ifdef __linux__
-#define SOCKTYPE (SOCK_RAW | SOCK_CLOEXEC)
-#else
-#define SOCKTYPE SOCK_RAW
-#endif
-	if ((rtsock = socket(PF_ROUTE, SOCKTYPE, 0)) < 0) {
-		debug_printf(LOG_ERR, FNAME, "open a routing socket: %s",
-		    strerror(errno));
-		exit(1);
-	}
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = PF_INET6;
