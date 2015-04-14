@@ -817,6 +817,7 @@
 10) kernel: ralink_wifi: allow mac address changes.<br>
 11) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
 12) kernel: mips: hibernate: flush TLB entries earlier.<br>
+13) kernel: net: GRO should be ECN friendly.<br>
 <br>
 <br>
 <b>TODO:</b><br>
