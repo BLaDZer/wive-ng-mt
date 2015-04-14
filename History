@@ -810,16 +810,17 @@
 3) dnsmasq: up to 2.73rc4.<br>
 4) udpxy: fix work at 3.5.x and more new linux kernels.<br>
 5) dhcp6c: do not open a routing socket that's never used.<br>
-6) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-7) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-8) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-9) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-10) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-11) kernel: ralink_wifi: allow mac address changes.<br>
-12) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-13) kernel: mips: hibernate: flush TLB entries earlier.<br>
-14) kernel: net: gro: should be ECN friendly.<br>
-15) kernel: net: gro: should aggregate frames without DF.<br>
+6) dhcp6c: more compath with new uclibc/glibc.<br>
+7) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+8) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+9) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+10) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+11) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+12) kernel: ralink_wifi: allow mac address changes.<br>
+13) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+14) kernel: mips: hibernate: flush TLB entries earlier.<br>
+15) kernel: net: gro: should be ECN friendly.<br>
+16) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>

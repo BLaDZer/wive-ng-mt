@@ -108,11 +108,13 @@ typedef uint64_t u_int64_t;
 #define DHCP6_IRT_DEFAULT 86400	/* 1 day */
 #define DHCP6_IRT_MINIMUM 600
 
+#ifndef _GNU_SOURCE
 #ifndef HAVE_IN6_PKTINFO
 struct in6_pktinfo {
 	struct in6_addr ipi6_addr;  /* src/dst IPv6 address */
 	unsigned int ipi6_ifindex;  /* send/recv interface index */
 };
+#endif
 #endif
 
 /* DUID: DHCP unique Identifier */

@@ -36,11 +36,12 @@ localdbdir= @localdbdir@
 user= @user@
 group= @group@
 
-CFLAGS=	@CFLAGS@ @DEFS@ -DSYSCONFDIR=\"${sysconfdir}\" 	-DLOCALDBDIR=\"${localdbdir}\" -ffunction-sections -fdata-sections
+CFLAGS=	@CFLAGS@ @DEFS@ -DSYSCONFDIR=\"${sysconfdir}\" 	-DLOCALDBDIR=\"${localdbdir}\" -D_GNU_SOURCE -ffunction-sections -fdata-sections
 LDFLAGS=@LDFLAGS@ -ffunction-sections -fdata-sections -Wl,--gc-sections
 LIBOBJS=@LIBOBJS@
 LIBS=	@LIBS@ @LEXLIB@
 CC=	@CC@
+
 TARGET=	dhcp6c dhcp6s
 # dhcp6relay dhcp6ctl
 

@@ -49,7 +49,9 @@
 #include <ifaddrs.h>
 #include <errno.h>
 #ifdef __linux__
+#ifndef __USE_XOPEN
 #define __USE_XOPEN
+#endif
 #include <time.h>
 extern char *strptime (__const char *__restrict __s, __const char *__restrict __fmt, struct tm *__tp);
 #endif
