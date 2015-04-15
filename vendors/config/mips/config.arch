@@ -180,8 +180,13 @@ endif
 	# more safe codegeneration
 	CFLAGS += -fno-delete-null-pointer-checks
 
+	# defaults flags
+	CFLAGS += -pipe -fno-builtin
+	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
+	CFLAGS += $(VENDOR_CFLAGS)
+
+	# include extlibs headers
 	CFLAGS += -I$(ROOTDIR)
-	CFLAGS += -I$(LIBCDIRSHARED)/include
 ifdef CONFIG_LIB_ICONV
 	CFLAGS += -I$(LIBCDIRSHARED)/include/libiconv
 endif
@@ -212,12 +217,11 @@ endif
 ifdef CONFIG_USER_IPTABLES
 	CFLAGS += -I$(ROOTDIR)/user/iptables/include
 endif
+	# inlude system headers
+	CFLAGS += -isystem $(LIBCDIRSHARED)/include
+
+	# link options
 	LDFLAGS += -L$(LIBCDIRSHARED)/lib
-
-	CFLAGS += -pipe -fno-builtin
-	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
-	CFLAGS += $(VENDOR_CFLAGS)
-
 	ifeq ($(findstring glibc,$(LIBCDIR)),glibc)
 	    CRTI     = -nostartfiles $(ROOTDIR)/lib/crt1.o \
 			$(ROOTDIR)/lib/crti.o \
