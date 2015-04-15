@@ -4,6 +4,9 @@ echo "=====================CONFIGURE-LIBNEON===================="
 APROOTDIR=`pwd`
 BACKUPCFLAGS=$CFLAGS
 BACKUPLDFLAGS=$LDFLAGS
+# fix for find xml2-config
+BACKUPPATH=$PATH
+PATH=$PATH:$APROOTDIR/../libxml2
 LIBDIR=$FIRMROOT/lib/shared
 LIBS=$LIBDIR/lib
 INCLUDES=$LIBDIR/include
@@ -24,6 +27,8 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug --enable-webdav --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --without-pakchois --without-ca-bundle --without-gssapi --without-libproxy --with-ssl --with-libs=$LIBS"
+CONFOPTS="$CONFOPTS --without-pakchois --without-ca-bundle --without-gssapi --without-libproxy --with-ssl --with-libs=$LIBDIR"
 
 ./configure $CONFOPTS
+
+PATH=$BACKUPPATH

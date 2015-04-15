@@ -46,10 +46,11 @@ export PATH="${PATH}:${PREFIX}/bin:${PREFIX}/lib"
 export CC=gcc
 
 #install need lib`s and headers
-if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
-    ISOPENMANDRIVA=`grep OpenMandriva -i -c < /etc/release`
-    ISROSA=`grep ROSA -i -c < /etc/release`
-    ISMAGEIA=`grep Mageia -i -c < /etc/release`
+if [ "$INSTALL_DEP" = "YES" ]; then
+    ISOPENMANDRIVA=`grep OpenMandriva -i -c < /etc/issue`
+    ISROSA=`grep ROSA -i -c < /etc/issue`
+    ISMAGEIA=`grep Mageia -i -c < /etc/issue`
+    ISUBUNTU=`grep Ubuntu -i -c < /etc/issue`
     if [ "$ISOPENMANDRIVA" = "1" ] || [ "$ISROSA" = "1" ]; then
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
@@ -89,6 +90,25 @@ if [ -e /etc/release ] && [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto intltool --download-all
 	urpmi --auto fakeroot --download-all
 	urpmi --auto gperf --download-all
+    elif [ "$ISUBUNTU" = "1" ]; then
+	sudo apt-get update
+	sudo apt-get -y install build-essential
+	sudo apt-get -y install flex
+	sudo apt-get -y install gcc
+	sudo apt-get -y install libc6
+	sudo apt-get -y install bison
+	sudo apt-get -y install libtool
+	sudo apt-get -y install libgmp-dev
+	sudo apt-get -y install libmpc-dev
+	sudo apt-get -y install libmpfr-dev
+	sudo apt-get -y install texinfo
+	sudo apt-get -y install intltool
+	sudo apt-get -y install fakeroot
+	sudo apt-get -y install gperf
+	sudo apt-get -y install zlib1g-dev	# for build tools
+	sudo apt-get -y install gcc-multilib	# for build tools
+	sudo apt-get -y install gawk	# for build tools
+	sudo apt-get -y install autopoint	# for build davfs
     else
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force

@@ -87,12 +87,9 @@ ifeq ($(CONFIG_LIB_OPENSSL),y)
 	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; fi
 	if [ -e openssl/libssl.so ]; then  $(RM) -rf $(ROOTDIR)/lib/shared/include/openssl ; cp -faprL openssl/include/* $(ROOTDIR)/lib/shared/include ; fi
 endif
-	# ">>>>>>>>>>>>>>>> CONFIGURE ALL USERLIBS  <<<<<<<<<<<<<<<<<<<<<<"
+	# ">>>>>>>>>>>>>>>> CONFIGURE, MAKE AND INSTALL ALL USERLIBS  <<<<<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \
-	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi \
-	done
-	# ">>>>>>>>>>>>>>>> MAKE AND INSTALL USERLIBS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	for i in $(dir_y) ; do \
+	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
 	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) ; $(MAKE) shared || exit 1 ; cd .. ) || exit 1 ; fi \
 	done
 
