@@ -2,7 +2,6 @@ EXEC = switch
 
 -include $(LINUX_CONFIG)
 
-CFLAGS += -I$(LINUXDIR) -I$(LINUXDIR)/include -I$(ROOTDIR)/lib/shared/include
 CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
 CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 

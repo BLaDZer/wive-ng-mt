@@ -1705,7 +1705,7 @@ void vlan_dump(void)
 #else
 void vlan_dump(void)
 {
-	int i, j, vid, value, value2;
+	int i, vid, value, value2;
 
 	printf("idx   vid  fid  portmap    s-tag\n");
 	for (i = 0; i < 8; i++) {

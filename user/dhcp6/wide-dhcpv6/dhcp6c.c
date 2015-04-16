@@ -32,7 +32,6 @@
 #include <sys/socket.h>
 #include <sys/uio.h>
 #include <sys/queue.h>
-#include <errno.h>
 #include <limits.h>
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -65,6 +64,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 #include <err.h>
 #include <ifaddrs.h>
 

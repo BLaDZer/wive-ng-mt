@@ -44,6 +44,7 @@
 # endif
 #endif
 #include <errno.h>
+#include <err.h>
 
 #include <net/if.h>
 #ifdef __FreeBSD__
