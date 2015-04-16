@@ -821,10 +821,11 @@
 14) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
 15) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
 16) kernel: ralink_wifi: allow mac address changes.<br>
-17) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-18) kernel: mips: hibernate: flush TLB entries earlier.<br>
-19) kernel: net: gro: should be ECN friendly.<br>
-20) kernel: net: gro: should aggregate frames without DF.<br>
+17) kernel: drop bogus check in file_open_root().<br>
+18) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+19) kernel: mips: hibernate: flush TLB entries earlier.<br>
+20) kernel: net: gro: should be ECN friendly.<br>
+21) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>
