@@ -218,7 +218,7 @@ ifdef CONFIG_USER_IPTABLES
 	CFLAGS += -I$(ROOTDIR)/user/iptables/include
 endif
 	# include mtd headers
-	CFLAGS += -I$(ROOTDIR)/lib/shared/include/mtd
+	CFLAGS += -I$(LIBCDIRSHARED)/include/mtd
 
 	# include nvram headers
 	CFLAGS  += -I$(ROOTDIR)/libnvram
