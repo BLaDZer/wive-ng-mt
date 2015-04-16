@@ -153,7 +153,7 @@ internet.o: internet.c internet.h utils.h webs.h  $(CONF_H) $(UCONF_H) $(BUSYBOX
 
 services.o: services.c services.h utils.h webs.h  $(CONF_H) $(UCONF_H) $(BUSYBOXCONF_H)
 
-management.o: management.c management.h webs.h $(CONF_H) $(UCONF_H) 
+management.o: management.c management.h webs.h $(CONF_H) $(UCONF_H)
 
 matrix_ssl.o: matrix_ssl.c wsIntrn.h webs.h websSSL.h sslSocket.h
 

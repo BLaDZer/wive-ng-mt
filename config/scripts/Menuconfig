@@ -73,7 +73,7 @@
 # - Support for multiple conditions in dep_tristate().
 # - Implemented new functions: define_tristate(), define_int(), define_hex(),
 #   define_string(), dep_bool().
-# 
+#
 
 
 #
@@ -183,15 +183,15 @@ function tristate () {
 		bool "$1" "$2"
 	else
 		set_x_info "$2" "n"
-	
+
 		case $x in
 		y) flag="*" ;;
 		m) flag="M" ;;
 		*) flag=" " ;;
 		esac
-	
+
 		echo -ne "'$2' '<$flag> $1$info' " >>MCmenu
-	
+
 		echo -e "
 		function $2 () { l_tristate '$2' \"\$1\" ;}" >>MCradiolists
 	fi
@@ -229,7 +229,7 @@ function dep_tristate () {
 	    tristate "$ques" "$var"
 	elif [ "$dep" = m ]; then
 	    mod_bool "$ques" "$var"
-	else 
+	else
 	    define_tristate "$var" n
 	fi
 }
@@ -280,7 +280,7 @@ function dep_mbool () {
 
 #
 # Add a menu item which will call our local int function.
-# 
+#
 function int () {
 	set_x_info "$2" "$3"
 
@@ -291,7 +291,7 @@ function int () {
 
 #
 # Add a menu item which will call our local hex function.
-# 
+#
 function hex () {
 	set_x_info "$2" "$3"
 	x=${x##*[x,X]}
@@ -303,7 +303,7 @@ function hex () {
 
 #
 # Add a menu item which will call our local string function.
-# 
+#
 function string () {
 	set_x_info "$2" "$3"
 
@@ -464,14 +464,14 @@ function mod_bool () {
 	    define_bool "$2" "n"
 	else
 	    set_x_info "$2" "n"
- 
+
 	    case $x in
 	    y|m) flag='M' ;;
 	    *)   flag=' ' ;;
 	    esac
- 
+
 	    echo -ne "'$2' '<$flag> $1$info' " >>MCmenu
- 
+
 	    echo -e "function $2 () { l_mod_bool '$2' \"\$1\" ;}" >>MCradiolists
 	fi
 }
@@ -653,7 +653,7 @@ function l_choice () {
 				fi  ;;
 		*)		list="$list $2 $1 OFF " ;;
 		esac
-			
+
 		shift ; shift
 	done
 
@@ -684,7 +684,7 @@ function l_choice () {
 		else
 			eval $2="n"
 		fi
-		
+
 		shift ; shift
 	done
 }
@@ -734,7 +734,7 @@ function parser(ifile,menu) {
 		else if ($1 ~ "endmenu") {
 			printf("}\n") >>menu
 			return
-		} 
+		}
 		else if ($1 == "source") {
 			parser($2,menu)
 		}
@@ -762,7 +762,7 @@ function parser(ifile,menu) {
 		}
 		else if ($1 ~ /mainmenu_option|endmenu/) {
 			printf("") >>menu
-		} 
+		}
 		else if ($1 == "source") {
 			parser($2,menu)
 		}
@@ -870,7 +870,7 @@ EOM
 			esac
 			default="${defaults%%*}" defaults="${defaults#*}"
 			;;
-		2)	
+		2)
 			default="${selection%%\ *}"
 
 			case "$selection" in
@@ -890,20 +890,20 @@ EOM
 
 There seems to be a problem with the lxdialog companion utility which is
 built prior to running Menuconfig.  Usually this is an indicator that you
-have upgraded/downgraded your ncurses libraries and did not remove the 
+have upgraded/downgraded your ncurses libraries and did not remove the
 old ncurses header file(s) in /usr/include or /usr/include/ncurses.
 
 It is VERY important that you have only one set of ncurses header files
-and that those files are properly version matched to the ncurses libraries 
+and that those files are properly version matched to the ncurses libraries
 installed on your machine.
 
 You may also need to rebuild lxdialog.  This can be done by moving to
-the /usr/src/linux/scripts/lxdialog directory and issuing the 
+the /usr/src/linux/scripts/lxdialog directory and issuing the
 "make clean all" command.
 
 If you have verified that your ncurses install is correct, you may email
 the maintainer <mec@shout.net> or post a message to
-<linux-kernel@vger.kernel.org> for additional assistance. 
+<linux-kernel@vger.kernel.org> for additional assistance.
 
 EOM
 			cleanup
@@ -922,7 +922,7 @@ g_alt_config () {
 }
 
 #
-# Get alternate config file name and load the 
+# Get alternate config file name and load the
 # configuration from it.
 #
 get_alt_config () {
@@ -959,13 +959,13 @@ last retrieved.  Leave blank to abort."\
 			cat <<EOM >help.out
 
 For various reasons, one may wish to keep several different kernel
-configurations available on a single machine.  
+configurations available on a single machine.
 
 If you have saved a previous configuration in a file other than the
 kernel's default, entering the name of the file here will allow you
 to modify that configuration.
 
-If you are uncertain, then you have probably never used alternate 
+If you are uncertain, then you have probably never used alternate
 configuration files.  You should therefor leave this blank to abort.
 
 EOM
@@ -993,7 +993,7 @@ s_alt_config () {
 #
 save_alt_config () {
 	set -f  ## Switch file expansion OFF
-			
+
 	while true
 	do
 		$DIALOG --backtitle "$backtitle" \
@@ -1023,10 +1023,10 @@ as an alternate.  Leave blank to abort."\
 			cat <<EOM >help.out
 
 For various reasons, one may wish to keep different kernel
-configurations available on a single machine.  
+configurations available on a single machine.
 
 Entering a file name here will allow you to later retrieve, modify
-and use the current configuration as an alternate to whatever 
+and use the current configuration as an alternate to whatever
 configuration options you have selected at that time.
 
 If you are uncertain what all this means then you should probably
@@ -1128,7 +1128,7 @@ save_configuration () {
 		while [ $# -gt 0 ]; do
 			if   [ "$1" = y -o "$1" = m ]; then
 				shift
-			else 
+			else
 				x=n; shift $#
 			fi
 		done
@@ -1278,7 +1278,6 @@ save_configuration () {
 	echo -n "."
 
 	DEF_CONFIG="${1:-.config}"
-	#DEF_CONFIG_H="include/linux/autoconf.h"
 	DEF_CONFIG_H="autoconf.h"
 
 	CONFIG=.tmpconfig
@@ -1308,7 +1307,7 @@ save_configuration () {
 		fi
 
 		mv $CONFIG $DEF_CONFIG
-			
+
 		return 0
 	else
 		return 1
@@ -1348,7 +1347,7 @@ set_geometry () {
 		echo -e "\n\007Your display is too small to run Menuconfig!"
 		echo "It must be at least 19 lines by 80 columns."
 		exit 0
-	fi 
+	fi
 
 	ROWS=$((ROWS-4))  COLS=$((COLS-5))
 }
@@ -1390,10 +1389,10 @@ kernel_version="${VERSIONPKG}"
 SDK_VER_FILE="sdk_version.h"
 if [ -f $SDK_VER_FILE ]
 then
-	echo "Load SDK Ver in" $SDK_VER_FILE 
+	echo "Load SDK Ver in" $SDK_VER_FILE
 	load_sdk_ver_file $SDK_VER_FILE
 else
-	echo "No $SDK_VER_FILE found" 
+	echo "No $SDK_VER_FILE found"
 fi
 
 backtitle="Ralink Linux SDK ${RT288X_SDK_VERSION} Configuration"
@@ -1431,7 +1430,7 @@ fi
 >.menuconfig.log
 
 # Load the functions used by the config.in files.
-echo -n "Preparing scripts: functions" 
+echo -n "Preparing scripts: functions"
 load_functions
 
 if [ ! -e $CONFIG_IN ]

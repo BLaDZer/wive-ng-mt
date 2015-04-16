@@ -1,8 +1,3 @@
--include $(LINUX_CONFIG)
-CONF_H = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-
-VPATH = src
-
 CFLAGS += -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
 CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 CFLAGS += -ffunction-sections -fdata-sections
@@ -13,7 +8,7 @@ ifdef CONFIG_IPV6
 CFLAGS += -DUSE_IPV6
 endif
 
-LD= $(CC)
+VPATH = src
 
 OS_LAYER = osl-linux.c
 

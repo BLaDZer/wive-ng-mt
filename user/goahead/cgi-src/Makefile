@@ -7,12 +7,6 @@
 # $Id: Makefile,v 1.21.2.2 2009-04-17 03:40:21 chhung Exp $
 #
 
--include $(LINUX_CONFIG)
--include $(CONFIG_CONFIG)
-
-CONF_H	= $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-UCONF_H	= $(ROOTDIR)/config/autoconf.h
-
 # system cgi scripts must be static
 LDFLAGS += -static
 

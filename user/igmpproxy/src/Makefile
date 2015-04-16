@@ -1,9 +1,8 @@
+-include $(LINUX_CONFIG)
+
 EXEC=igmpproxy
 IGMP_PROXY_OBJ= igmpproxy.o config.o confread.o request.o mcgroup.o rttable.o \
 		igmp.o ifvc.o callout.o kern.o syslog.o lib.o mroute-api.o
-
--include $(LINUX_CONFIG)
-CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 CFLAGS += -Wno-unused-value
 
