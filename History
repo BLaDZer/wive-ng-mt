@@ -824,8 +824,9 @@
 17) kernel: drop bogus check in file_open_root().<br>
 18) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
 19) kernel: mips: hibernate: flush TLB entries earlier.<br>
-20) kernel: net: gro: should be ECN friendly.<br>
-21) kernel: net: gro: should aggregate frames without DF.<br>
+20) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+21) kernel: net: gro: should be ECN friendly.<br>
+22) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>
