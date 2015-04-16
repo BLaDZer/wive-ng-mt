@@ -79,7 +79,6 @@ auth
 lcp-echo-interval 3
 lcp-echo-failure 8
 nodeflate
-noipx
 nomp
 $l2tp_srv_proxyarp
 refuse-pap

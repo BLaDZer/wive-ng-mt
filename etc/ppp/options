@@ -12,7 +12,6 @@ holdoff 5
 
 # Disable ARP proxy and IPX protocol
 noproxyarp
-noipx
 
 # Turn off compression protocols we know won't be used
 nomp
