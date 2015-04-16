@@ -5,7 +5,6 @@ IGMP_PROXY_OBJ= igmpproxy.o config.o confread.o request.o mcgroup.o rttable.o \
 -include $(LINUX_CONFIG)
 
 CFLAGS += -Wno-unused-value
-CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
 CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
