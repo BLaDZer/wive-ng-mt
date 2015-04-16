@@ -813,20 +813,21 @@
 6) radvd: up to 2.11 version.<br>
 7) dnsmasq: up to 2.73rc4.<br>
 8) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-9) dhcp6c: do not open a routing socket that's never used.<br>
-10) dhcp6c: more compath with new uclibc/glibc.<br>
-11) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-12) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-13) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-14) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-15) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-16) kernel: ralink_wifi: allow mac address changes.<br>
-17) kernel: drop bogus check in file_open_root().<br>
-18) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-19) kernel: mips: hibernate: flush TLB entries earlier.<br>
-20) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-21) kernel: net: gro: should be ECN friendly.<br>
-22) kernel: net: gro: should aggregate frames without DF.<br>
+9) pppd: do not build ipx support if not enabled in kernel.<br>
+10) dhcp6c: do not open a routing socket that's never used.<br>
+11) dhcp6c: more compath with new uclibc/glibc.<br>
+12) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+13) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+14) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+15) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+16) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+17) kernel: ralink_wifi: allow mac address changes.<br>
+18) kernel: drop bogus check in file_open_root().<br>
+19) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+20) kernel: mips: hibernate: flush TLB entries earlier.<br>
+21) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+22) kernel: net: gro: should be ECN friendly.<br>
+23) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>
