@@ -1,7 +1,7 @@
 EXEC = gpio butcheck
 
 -include $(LINUX_CONFIG)
-CONF_H  = -I$(ROOTDIR)/lib/shared/include/linux/autoconf.h
+CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: $(EXEC)
 

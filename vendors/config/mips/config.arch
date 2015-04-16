@@ -220,6 +220,9 @@ endif
 	# include mtd headers
 	CFLAGS += -I$(ROOTDIR)/lib/shared/include/mtd
 
+	# include nvram headers
+	CFLAGS  += -I$(ROOTDIR)/libnvram
+
 	# include system headers
 	CFLAGS += -isystem $(LIBCDIRSHARED)/include
 

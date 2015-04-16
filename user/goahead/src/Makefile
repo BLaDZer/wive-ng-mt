@@ -92,7 +92,6 @@ DEPEND_FILES += storage.o
 endif
 
 CFLAGS	+= -DWEBS -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
-CFLAGS	+= -I$(ROOTDIR)/libnvram
 
 LDFLAGS	+= $(SSLLIB) $(IFMODLIB)
 LDLIBS	+= -lnvram

@@ -1,6 +1,3 @@
-NVDIR	 = $(ROOTDIR)/libnvram
-
-CFLAGS	+= -I$(NVDIR)
 LDFLAGS	+= -lnvram
 
 all: nvram
