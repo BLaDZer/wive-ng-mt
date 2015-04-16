@@ -1,7 +1,6 @@
 NVDIR	 = $(ROOTDIR)/libnvram
 
 CFLAGS	+= -I$(NVDIR)
-CFLAGS	+= -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 LDFLAGS	+= -lnvram
 
 all: nvram

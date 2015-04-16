@@ -1,9 +1,9 @@
 EXEC = switch
 
 -include $(LINUX_CONFIG)
+CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 CFLAGS += -I$(LINUXDIR)/drivers/net/raeth
-CONF_H  = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 ifdef CONFIG_RALINK_MT7620
 ifdef CONFIG_RAETH_ESW

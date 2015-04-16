@@ -217,7 +217,10 @@ endif
 ifdef CONFIG_USER_IPTABLES
 	CFLAGS += -I$(ROOTDIR)/user/iptables/include
 endif
-	# inlude system headers
+	# include mtd headers
+	CFLAGS += -I$(ROOTDIR)/lib/shared/include/mtd
+
+	# include system headers
 	CFLAGS += -isystem $(LIBCDIRSHARED)/include
 
 	# link options

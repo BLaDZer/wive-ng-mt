@@ -18,7 +18,7 @@ LDFLAGS += -static
 
 # system cgi scripts always optimize for size
 CFLAGS  += -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
-CFLAGS  += -I$(ROOTDIR)/lib/shared/include -DUPLOAD_FIRMWARE_SUPPORT
+CFLAGS  += -DUPLOAD_FIRMWARE_SUPPORT
 
 UPLOAD_CGI 		= upload.cgi
 UPLOAD_RWFS		= upload_rwfs.cgi

@@ -808,22 +808,23 @@
 1) build_system: toolchain: add support auto install needed pkgs in ubuntu.<br>
 2) build_system: fix build libext dependency.<br>
 3) build_system: fix build libc headers (use -isystem instead of -I for correct dependency).<br>
-4) init.d: global.sh small cleanup.<br>
-5) radvd: up to 2.11 version.<br>
-6) dnsmasq: up to 2.73rc4.<br>
-7) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-8) dhcp6c: do not open a routing socket that's never used.<br>
-9) dhcp6c: more compath with new uclibc/glibc.<br>
-10) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-11) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-12) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-13) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-14) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-15) kernel: ralink_wifi: allow mac address changes.<br>
-16) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-17) kernel: mips: hibernate: flush TLB entries earlier.<br>
-18) kernel: net: gro: should be ECN friendly.<br>
-19) kernel: net: gro: should aggregate frames without DF.<br>
+4) build_system: move mtd headers include from different make failes to common.arch.<br>
+5) init.d: global.sh small cleanup.<br>
+6) radvd: up to 2.11 version.<br>
+7) dnsmasq: up to 2.73rc4.<br>
+8) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+9) dhcp6c: do not open a routing socket that's never used.<br>
+10) dhcp6c: more compath with new uclibc/glibc.<br>
+11) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+12) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+13) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+14) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+15) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+16) kernel: ralink_wifi: allow mac address changes.<br>
+17) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+18) kernel: mips: hibernate: flush TLB entries earlier.<br>
+19) kernel: net: gro: should be ECN friendly.<br>
+20) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>

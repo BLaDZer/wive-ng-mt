@@ -3,8 +3,6 @@ ifndef CONFIG_HNAT_V2
 EXEC += acl ac mtr
 endif
 
-CFLAGS += -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
-
 HWNAT_OBJS = hw_nat.o hwnat_api.o util.o
 AC_OBJS = ac.o ac_api.o util.o
 ACL_OBJS = acl.o acl_api.o util.o

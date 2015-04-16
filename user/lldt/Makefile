@@ -1,11 +1,11 @@
 -include $(LINUX_CONFIG)
+CONF_H = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 VPATH = src
 
 CFLAGS += -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
 CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 CFLAGS += -ffunction-sections -fdata-sections
-CFLAGS += -I$(LINUXDIR) -I$(ROOTDIR)/lib/shared/include
 
 LDFLAGS += -Wl,--gc-sections
 
@@ -15,7 +15,6 @@ endif
 
 LD= $(CC)
 
-CONF_H = $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 OS_LAYER = osl-linux.c
 
 all: lld2d lld2test
