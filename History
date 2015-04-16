@@ -808,7 +808,7 @@
 1) build_system: toolchain: add support auto install needed pkgs in ubuntu.<br>
 2) build_system: fix build libext dependency.<br>
 3) build_system: fix build libc headers (use -isystem instead of -I for correct dependency).<br>
-4) build_system: move nvram/mtd headers include from different make failes to config.arch.<br>
+4) build_system: move nvram/mtd headers include from different make files to config.arch.<br>
 5) init.d: global.sh small cleanup.<br>
 6) radvd: up to 2.11 version.<br>
 7) dnsmasq: up to 2.73rc4.<br>
