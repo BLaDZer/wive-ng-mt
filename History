@@ -809,27 +809,28 @@
 2) build_system: fix build libext dependency.<br>
 3) build_system: fix build libc headers (use -isystem instead of -I for correct dependency).<br>
 4) build_system: move nvram/mtd headers include from different make files to config.arch.<br>
-5) init.d: global.sh small cleanup.<br>
-6) radvd: up to 2.11 version.<br>
-7) dnsmasq: up to 2.73rc4.<br>
-8) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-9) pppd: do not build ipx support if not enabled in kernel.<br>
-10) dhcp6c: do not open a routing socket that's never used.<br>
-11) dhcp6c: more compath with new uclibc/glibc.<br>
-12) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
-13) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-14) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-15) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-16) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-17) kernel: ralink_wifi: allow mac address changes.<br>
-18) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-19) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
-20) kernel: drop bogus check in file_open_root().<br>
-21) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-22) kernel: mips: hibernate: flush TLB entries earlier.<br>
-23) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-24) kernel: net: gro: should be ECN friendly.<br>
-25) kernel: net: gro: should aggregate frames without DF.<br>
+5) defaults: allow use VHT_STBC/LDPC for MT7612 modules.<br>
+6) init.d: global.sh small cleanup.<br>
+7) radvd: up to 2.11 version.<br>
+8) dnsmasq: up to 2.73rc4.<br>
+9) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+10) pppd: do not build ipx support if not enabled in kernel.<br>
+11) dhcp6c: do not open a routing socket that's never used.<br>
+12) dhcp6c: more compath with new uclibc/glibc.<br>
+13) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
+14) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+15) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+16) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+17) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+18) kernel: ralink_wifi: allow mac address changes.<br>
+19) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+20) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
+21) kernel: drop bogus check in file_open_root().<br>
+22) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+23) kernel: mips: hibernate: flush TLB entries earlier.<br>
+24) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+25) kernel: net: gro: should be ECN friendly.<br>
+26) kernel: net: gro: should aggregate frames without DF.<br>
 <br>
 <br>
 <b>TODO:</b><br>
