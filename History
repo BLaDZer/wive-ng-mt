@@ -816,7 +816,7 @@
 9) pppd: do not build ipx support if not enabled in kernel.<br>
 10) dhcp6c: do not open a routing socket that's never used.<br>
 11) dhcp6c: more compath with new uclibc/glibc.<br>
-12) goahead: do not touch HT_LDPC (not support in clients at readl world).<br>
+12) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
 13) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
 14) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
 15) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
