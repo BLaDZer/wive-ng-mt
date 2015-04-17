@@ -44,7 +44,7 @@ INT ht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, HT_CAPABILITY_IE 
 		pAd->MacTab.fAnyStationNonGF = TRUE;
 	}
 
-	if ((peer->HtCapInfo.ChannelWidth) && (my->ChannelWidth))
+	if ((peer->HtCapInfo.ChannelWidth) && (my->ChannelWidth) && (pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth))
 	{
 		pEntry->MaxHTPhyMode.field.BW= BW_40;
 		pEntry->MaxHTPhyMode.field.ShortGI = ((my->ShortGIfor40) & (peer->HtCapInfo.ShortGIfor40));
@@ -383,9 +383,17 @@ VOID RTMPSetHT(
 	if(pHTPhyMode->SHORTGI == GI_400)
 	{
 		ht_cap->HtCapInfo.ShortGIfor20 = 1;
-		ht_cap->HtCapInfo.ShortGIfor40 = 1;
 		rt_ht_cap->ShortGIfor20 = 1;
-		rt_ht_cap->ShortGIfor40 = 1;
+		if(pHTPhyMode->BW == BW_40)
+		{
+			ht_cap->HtCapInfo.ShortGIfor40 = 1;
+			rt_ht_cap->ShortGIfor40 = 1;
+		}
+		else
+		{
+			ht_cap->HtCapInfo.ShortGIfor40 = 0;
+			rt_ht_cap->ShortGIfor40 = 0;
+		}
 	}
 	else
 	{
