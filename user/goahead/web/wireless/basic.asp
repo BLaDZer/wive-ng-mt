@@ -564,10 +564,9 @@ function initValue()
 
 		if (is5gh_1t1r == 1)
 		{
-		    hideElement("div_11a_stbc");
 		    hideElement("div_11a_ldpc");
 		}
-		
+
 		form.ac_gi.disabled = false;
 		form.ac_stbc.disabled = false;
 		form.ac_ldpc.disabled = false;
@@ -1006,7 +1005,6 @@ function wirelessModeChange(form)
 
 		    if (is5gh_1t1r == 1)
 		    {
-			hideElement("div_11a_stbc");
 			hideElement("div_11a_ldpc");
 		    }
 
