@@ -102,6 +102,11 @@ WOPT	+= -Wno-unused-but-set-variable
 LOPT	+=  -Os -pipe $(POPT) $(WOPT)
 UOPT	+=  -Os -pipe $(POPT) $(WOPT)
 
+############################################################################
+#
+# Settings for building uclibc
+#
+
 ifdef UCLINUX_BUILD_LIB
 ifdef CONFIG_LIB_DEBUG
 	CFLAGS  :=  $(if $(LOPT),$(LOPT),-O1) -g
