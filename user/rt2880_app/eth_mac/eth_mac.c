@@ -12,6 +12,8 @@
 
 #include "mtd-abi.h"
 
+//#define DEBUG
+
 #ifdef CONFIG_RALINK_MT7621
 #define LAN_OFFSET	0xE000
 #define WAN_OFFSET	0xE006
@@ -133,7 +135,9 @@ static int mtd_write(char *side, char **value)
 		exit(1);
 	}
 
-	printf("Read factory part in memory.\n");
+#ifdef DEBUG
+	printf("Read factory to RAM.\n");
+#endif
 	size = mtdInfo.erasesize;
 	if(read(fd, buf, size) != size) {
 		fprintf(stderr, "Could not read Factory part\n");
@@ -157,7 +161,9 @@ static int mtd_write(char *side, char **value)
 	    goto write_fail;
 	}
 
+#ifdef DEBUG
 	printf("Replace mac adress.\n");
+#endif
 	for (i = 0; i < MACADDR_LEN; i++, ptr++) {
 	    if (value[i] == NULL) {
 		fprintf(stderr, "Incorrect command line format. Use eth_mac w <lan|wan> <MACADDR[0]> <MACADDR[1]> (space separator of octets).\n");
@@ -166,7 +172,9 @@ static int mtd_write(char *side, char **value)
 	    *ptr = strtoul(value[i], NULL, 16);
 	}
 
+#ifdef DEBUG
 	printf("Erase part, recrate and write new factory.\n");
+#endif
 	for (mtdEraseInfo.start = 0; mtdEraseInfo.start < mtdInfo.size; mtdEraseInfo.start += mtdInfo.erasesize) {
 		if(ioctl(fd, MEMUNLOCK, &mtdEraseInfo)) {
 			fprintf(stderr, "Failed to unlock Factory part at 0x%x\n", mtdEraseInfo.start);
@@ -184,8 +192,9 @@ static int mtd_write(char *side, char **value)
 	    fprintf(stderr, "write() Factory part failed\n");
 	    goto write_fail;
 	}
+#ifdef DEBUG
 	printf("Write new Factory OK.\n");
-
+#endif
 	close(fd);
 	return 0;
 write_fail:
