@@ -241,7 +241,7 @@ CFLAGS += -fno-tree-slsr
 # more safe codegeneration
 CFLAGS += -fno-delete-null-pointer-checks
 
-CFLAGS += -pipe -fno-builtin -nostdinc
+CFLAGS += -pipe -fno-builtin
 CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
 CFLAGS += $(VENDOR_CFLAGS)
 
