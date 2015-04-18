@@ -3,10 +3,13 @@
 # ipv6-up
 # Called by pppd after IPV6CP/up was finished
 
+LOG="logger -t pppd"
 
 #include global config
 . /etc/scripts/global.sh
 
 if [ "$vpnDGWSIX" = "on" ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
+    $LOG "Replace IPV6 dgw to $PPP_IFACE"
+    ip -6 route replace default dev $PPP_IFACE
     service six dhcpcreconf
 fi
