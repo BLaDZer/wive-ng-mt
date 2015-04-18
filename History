@@ -841,6 +841,7 @@
 34) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
 35) kernel: netlink: validate addr_len on bind.<br>
 36) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
+37) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
 <br>
 <br>
 <b>TODO:</b><br>
