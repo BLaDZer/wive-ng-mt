@@ -120,28 +120,6 @@ endif
 ifdef CONFIG_LIB_SAVERAM
 	CFLAGS += -membedded-data -muninit-const-in-rodata
 endif
-	# This is improve performance ~10% before pure -Os and ~5% bigest unpacked rootfs size
-	CFLAGS += -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
-
-	# disable invalid "can't wrap" optimizations for signed / pointers
-	CFLAGS += -fno-strict-overflow
-
-	# disable new loop optimization mode in 4.8.0 and later - fix regressions
-	CFLAGS += -fno-aggressive-loop-optimizations
-
-	# fix gcc-4.9.x miscompilation of some code
-	CFLAGS += -fno-var-tracking-assignments
-
-	# fix ~10% performance regression at 4.8.x and 4.7.x gcc
-	CFLAGS += -fno-tree-slsr
-
-	# more safe codegeneration
-	CFLAGS += -fno-delete-null-pointer-checks
-
-	CFLAGS += -pipe -fno-builtin -nostdinc
-	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
-	CFLAGS += $(VENDOR_CFLAGS)
-
 	# don't want all the CFLAGS for uClibc/Config
 	ARCH_CFLAGS = $(CFLAGS)
 	LDFLAGS = $(CFLAGS) $(CRT0)
@@ -167,29 +145,6 @@ endif
 ifdef CONFIG_USER_SAVERAM
 	CFLAGS += -membedded-data -muninit-const-in-rodata
 endif
-	# This is improve performance ~10% before pure -Os and ~5% bigest unpacked rootfs size
-	CFLAGS += -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
-
-	# disable invalid "can't wrap" optimizations for signed / pointers
-	CFLAGS += -fno-strict-overflow
-
-	# disable new loop optimization mode in 4.8.0 and later - fix regressions
-	CFLAGS += -fno-aggressive-loop-optimizations
-
-	# fix gcc-4.9.x miscompilation of some code
-	CFLAGS += -fno-var-tracking-assignments
-
-	# fix ~10% performance regression at 4.8.x and 4.7.x gcc
-	CFLAGS += -fno-tree-slsr
-
-	# more safe codegeneration
-	CFLAGS += -fno-delete-null-pointer-checks
-
-	# defaults flags
-	CFLAGS += -pipe -fno-builtin
-	CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
-	CFLAGS += $(VENDOR_CFLAGS)
-
 	# include extlibs headers
 	CFLAGS += -I$(ROOTDIR)
 ifdef CONFIG_LIB_ICONV
@@ -254,7 +209,6 @@ endif
 	SH_LDLIBS  := $(LIBC) $(LIBGCC) $(SH_CRTN)
 	LDLIBS   = $(LIBC) $(LIBGCC) $(CRTN)
 
-	CXXFLAGS = $(CFLAGS)
 	CXXLIBS  = -Wl,-Bstatic $(LIBSTDCPP) -Wl,-Bdynamic $(LIBC) $(LIBGCC) $(CRTN)
 
 	FLTFLAGS :=
@@ -264,6 +218,35 @@ endif
 
 	UCLINUX_BUILD_SET=1
 endif
+
+############################################################################
+#
+# Building flags applyed for all
+#
+# This is improve performance ~10% before pure -Os and ~5% bigest unpacked rootfs size
+CFLAGS += -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
+
+# disable invalid "can't wrap" optimizations for signed / pointers
+CFLAGS += -fno-strict-overflow
+
+# disable new loop optimization mode in 4.8.0 and later - fix regressions
+CFLAGS += -fno-aggressive-loop-optimizations
+
+# fix gcc-4.9.x miscompilation of some code
+CFLAGS += -fno-var-tracking-assignments
+
+# fix ~10% performance regression at 4.8.x and 4.7.x gcc
+CFLAGS += -fno-tree-slsr
+
+# more safe codegeneration
+CFLAGS += -fno-delete-null-pointer-checks
+
+CFLAGS += -pipe -fno-builtin -nostdinc
+CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
+CFLAGS += $(VENDOR_CFLAGS)
+
+# set cxx flags as cflags
+CXXFLAGS = $(CFLAGS)
 
 ############################################################################
 #
