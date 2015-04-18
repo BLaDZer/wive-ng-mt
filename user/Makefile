@@ -100,30 +100,20 @@ dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
 
 all:
-	CC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
-	GCC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
-	CXX=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-g++ ; \
-	AR=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ar ; \
-	AS=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-as ; \
-	LD=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ld ; \
-	NM=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-nm ; \
-	RANLIB=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ranlib ; \
-	STRIP=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-strip ;
-	# ">>>>>>>>>>>>>>>> CONFIGURE ALL USERSPASE  <<<<<<<<<<<<<<<<<<<<<<"
+	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \
-	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi \
-	done
-	# ">>>>>>>>>>>>>>>> MAKE USERSPACE  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	for i in $(dir_y) ; do \
-	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) || exit 1 ; cd .. ) || exit 1 ; fi \
+	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
+	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) || exit 1 ; cd .. ) || exit 1 ; fi  \
 	done
 
 romfs:
+	# ">>>>>>>>>>>>>>>>>>>>> INSTALL USERAPPS  <<<<<<<<<<<<<<<<<<<<<<<<"
 	for i in $(sort $(dir_y)) ; do \
 		[ ! -d $$i ] || $(MAKE) -C $$i romfs || exit $$? ; \
 	done
 
 clean:
+	# ">>>>>>>>>>>>>>>>>>>>>>> CLEAN USERAPPS  <<<<<<<<<<<<<<<<<<<<<<<<"
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i mrproper; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done

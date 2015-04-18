@@ -72,29 +72,20 @@ OPENSSL_CONFIG = RT2880 no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no
                   no-smime no-ans1 no-cast no-whirlpool no-sctp no-srp no-jpake no-ssl2 no-ssl3 no-speed
 
 all:
-	CC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
-	GCC=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-gcc ; \
-	CXX=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-g++ ; \
-	AR=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ar ; \
-	AS=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-as ; \
-	LD=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ld ; \
-	NM=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-nm ; \
-	RANLIB=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-ranlib ; \
-	STRIP=$(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-strip ;
 ifeq ($(CONFIG_LIB_OPENSSL),y)
 	# ">>>>>>>>>>>>>>>> CONFIGURE AND BUILD SSL <<<<<<<<<<<<<<<<<<<<<<<"
 	if [ ! -e openssl/libssl.so ]; then  cd openssl ; ./Configure $(OPENSSL_CONFIG) ; $(MAKE) -j1 || exit 1 ; cd .. ; fi
 	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; fi
 	if [ -e openssl/libssl.so ]; then  $(RM) -rf $(ROOTDIR)/lib/shared/include/openssl ; cp -faprL openssl/include/* $(ROOTDIR)/lib/shared/include ; fi
 endif
-	# ">>>>>>>>>>>>>>>> CONFIGURE, MAKE AND INSTALL ALL USERLIBS  <<<<<<<<<<<<<<<<<<<<<<"
+	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERLIBS  <<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \
 	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
 	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) ; $(MAKE) shared || exit 1 ; cd .. ) || exit 1 ; fi \
 	done
 
 clean:
-	# ">>>>>>>>>>>>>>>> START FULL CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
+	# ">>>>>>>>>>>>>>>>> START FULL LIB CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
 	-cd openssl ; $(MAKE) clean ; $(MAKE) dclean ; cd ..
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
