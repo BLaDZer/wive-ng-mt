@@ -132,10 +132,10 @@ am__DEPENDENCIES_1 =
 libntfs_3g_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libntfs_3g_la_SOURCES_DIST = acls.c attrib.c attrlist.c bitmap.c \
 	bootsect.c cache.c collate.c compat.c compress.c debug.c \
-	device.c dir.c efs.c index.c inode.c lcnalloc.c logfile.c \
-	logging.c mft.c misc.c mst.c object_id.c realpath.c reparse.c \
-	runlist.c security.c unistr.c volume.c xattrs.c win32_io.c \
-	unix_io.c
+	device.c dir.c ea.c efs.c index.c inode.c ioctl.c lcnalloc.c \
+	logfile.c logging.c mft.c misc.c mst.c object_id.c realpath.c \
+	reparse.c runlist.c security.c unistr.c volume.c xattrs.c \
+	win32_io.c unix_io.c
 @NTFS_DEVICE_DEFAULT_IO_OPS_TRUE@@WINDOWS_TRUE@am__objects_1 = libntfs_3g_la-win32_io.lo
 @NTFS_DEVICE_DEFAULT_IO_OPS_TRUE@@WINDOWS_FALSE@am__objects_2 = libntfs_3g_la-unix_io.lo
 am_libntfs_3g_la_OBJECTS = libntfs_3g_la-acls.lo \
@@ -144,16 +144,16 @@ am_libntfs_3g_la_OBJECTS = libntfs_3g_la-acls.lo \
 	libntfs_3g_la-cache.lo libntfs_3g_la-collate.lo \
 	libntfs_3g_la-compat.lo libntfs_3g_la-compress.lo \
 	libntfs_3g_la-debug.lo libntfs_3g_la-device.lo \
-	libntfs_3g_la-dir.lo libntfs_3g_la-efs.lo \
+	libntfs_3g_la-dir.lo libntfs_3g_la-ea.lo libntfs_3g_la-efs.lo \
 	libntfs_3g_la-index.lo libntfs_3g_la-inode.lo \
-	libntfs_3g_la-lcnalloc.lo libntfs_3g_la-logfile.lo \
-	libntfs_3g_la-logging.lo libntfs_3g_la-mft.lo \
-	libntfs_3g_la-misc.lo libntfs_3g_la-mst.lo \
-	libntfs_3g_la-object_id.lo libntfs_3g_la-realpath.lo \
-	libntfs_3g_la-reparse.lo libntfs_3g_la-runlist.lo \
-	libntfs_3g_la-security.lo libntfs_3g_la-unistr.lo \
-	libntfs_3g_la-volume.lo libntfs_3g_la-xattrs.lo \
-	$(am__objects_1) $(am__objects_2)
+	libntfs_3g_la-ioctl.lo libntfs_3g_la-lcnalloc.lo \
+	libntfs_3g_la-logfile.lo libntfs_3g_la-logging.lo \
+	libntfs_3g_la-mft.lo libntfs_3g_la-misc.lo \
+	libntfs_3g_la-mst.lo libntfs_3g_la-object_id.lo \
+	libntfs_3g_la-realpath.lo libntfs_3g_la-reparse.lo \
+	libntfs_3g_la-runlist.lo libntfs_3g_la-security.lo \
+	libntfs_3g_la-unistr.lo libntfs_3g_la-volume.lo \
+	libntfs_3g_la-xattrs.lo $(am__objects_1) $(am__objects_2)
 libntfs_3g_la_OBJECTS = $(am_libntfs_3g_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -380,10 +380,10 @@ libntfs_3g_la_LIBADD = $(LIBNTFS_LIBS)
 libntfs_3g_la_LDFLAGS = -version-info $(LIBNTFS_3G_VERSION) -no-undefined
 libntfs_3g_la_SOURCES = acls.c attrib.c attrlist.c bitmap.c bootsect.c \
 	cache.c collate.c compat.c compress.c debug.c device.c dir.c \
-	efs.c index.c inode.c lcnalloc.c logfile.c logging.c mft.c \
-	misc.c mst.c object_id.c realpath.c reparse.c runlist.c \
-	security.c unistr.c volume.c xattrs.c $(am__append_1) \
-	$(am__append_2)
+	ea.c efs.c index.c inode.c ioctl.c lcnalloc.c logfile.c \
+	logging.c mft.c misc.c mst.c object_id.c realpath.c reparse.c \
+	runlist.c security.c unistr.c volume.c xattrs.c \
+	$(am__append_1) $(am__append_2)
 all: all-am
 
 .SUFFIXES:
@@ -525,9 +525,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-device.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-dir.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-ea.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-efs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-index.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-inode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-ioctl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-lcnalloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-logfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntfs_3g_la-logging.Plo@am__quote@
@@ -650,6 +652,13 @@ libntfs_3g_la-dir.lo: dir.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -c -o libntfs_3g_la-dir.lo `test -f 'dir.c' || echo '$(srcdir)/'`dir.c
 
+libntfs_3g_la-ea.lo: ea.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -MT libntfs_3g_la-ea.lo -MD -MP -MF $(DEPDIR)/libntfs_3g_la-ea.Tpo -c -o libntfs_3g_la-ea.lo `test -f 'ea.c' || echo '$(srcdir)/'`ea.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libntfs_3g_la-ea.Tpo $(DEPDIR)/libntfs_3g_la-ea.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ea.c' object='libntfs_3g_la-ea.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -c -o libntfs_3g_la-ea.lo `test -f 'ea.c' || echo '$(srcdir)/'`ea.c
+
 libntfs_3g_la-efs.lo: efs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -MT libntfs_3g_la-efs.lo -MD -MP -MF $(DEPDIR)/libntfs_3g_la-efs.Tpo -c -o libntfs_3g_la-efs.lo `test -f 'efs.c' || echo '$(srcdir)/'`efs.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libntfs_3g_la-efs.Tpo $(DEPDIR)/libntfs_3g_la-efs.Plo
@@ -670,6 +679,13 @@ libntfs_3g_la-inode.lo: inode.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='inode.c' object='libntfs_3g_la-inode.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -c -o libntfs_3g_la-inode.lo `test -f 'inode.c' || echo '$(srcdir)/'`inode.c
+
+libntfs_3g_la-ioctl.lo: ioctl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -MT libntfs_3g_la-ioctl.lo -MD -MP -MF $(DEPDIR)/libntfs_3g_la-ioctl.Tpo -c -o libntfs_3g_la-ioctl.lo `test -f 'ioctl.c' || echo '$(srcdir)/'`ioctl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libntfs_3g_la-ioctl.Tpo $(DEPDIR)/libntfs_3g_la-ioctl.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ioctl.c' object='libntfs_3g_la-ioctl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -c -o libntfs_3g_la-ioctl.lo `test -f 'ioctl.c' || echo '$(srcdir)/'`ioctl.c
 
 libntfs_3g_la-lcnalloc.lo: lcnalloc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libntfs_3g_la_CPPFLAGS) $(CPPFLAGS) $(libntfs_3g_la_CFLAGS) $(CFLAGS) -MT libntfs_3g_la-lcnalloc.lo -MD -MP -MF $(DEPDIR)/libntfs_3g_la-lcnalloc.Tpo -c -o libntfs_3g_la-lcnalloc.lo `test -f 'lcnalloc.c' || echo '$(srcdir)/'`lcnalloc.c

@@ -2,7 +2,7 @@
 .\" Copyright (c) 2005 Richard Russon.
 .\" This file may be copied under the terms of the GNU Public License.
 .\"
-.TH NTFSCP 8 "September 2007" "ntfs-3g 2014.2.15"
+.TH NTFSCP 8 "September 2007" "ntfs-3g 2015.3.14"
 .SH NAME
 ntfscp \- copy file to an NTFS volume.
 .SH SYNOPSIS
@@ -37,6 +37,10 @@ Write to this attribute.
 Treat
 .I destination
 as inode number.
+.TP
+\fB\-m\fR, \fB\-\-min-fragments\fR
+Minimize fragmentation when allocating space to the attribute. This is
+mostly useful when creating big files.
 .TP
 \fB\-N\fR, \fB\-\-attr\-name\fR NAME
 Write to attribute with this name.
