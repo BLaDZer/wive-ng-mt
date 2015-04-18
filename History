@@ -833,9 +833,10 @@
 26) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
 27) kernel: net: gro: should be ECN friendly.<br>
 28) kernel: net: gro: should aggregate frames without DF.<br>
-29) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
-30) kernel: ethtool: consolidate work with ethtool_ops.<br>
-31) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
+29) kernel: net: add address assign type "SET".<br>
+30) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
+31) kernel: ethtool: consolidate work with ethtool_ops.<br>
+32) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
 <br>
 <br>
 <b>TODO:</b><br>
