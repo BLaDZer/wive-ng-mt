@@ -99,10 +99,9 @@ start() {
     elif [ "$wanConnectionMode" = "DHCP" ] && [ "$vpnPurePPPOE" != "1" ]; then
 	# get udhcp param
 	udhcpc_opts
-	$LOG "Start DHCP client."
+	$LOG "Start DHCP client at $wan_if."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" != "on" ]; then
-	    $LOG "Start DHCPv6 client."
 	    (sleep 2 && service six dhcpcreconf) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then

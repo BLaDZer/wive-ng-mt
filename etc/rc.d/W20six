@@ -218,6 +218,49 @@ dhcpradvdreconf() {
     fi
 }
 
+dhcpcreconf() {
+    # prevent double start
+    killall -q dhcp6c
+    killall -q -SIGKILL dhcp6c
+
+    if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
+	# ipv6 mode preconfig for wan
+	sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
+	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
+
+	# allow autoconfigure by RA
+	sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=2
+	sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra_pinfo=1
+	sysctl -wq net.ipv6.conf.$six_wan_if.autoconf=1
+
+	# remove pregenerated duid
+	rm -f /etc/dhcp6c_duid
+
+	# generate dhcpv6 client config (use mac from WAN)
+	ID=`ip -o link show dev $wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
+	ID=`printf "%d" "$ID"`
+	printf "
+	interface $six_wan_if {
+	    send ia-pd $ID;
+	    send ia-na $ID;
+	    send rapid-commit;
+	    request domain-name-servers;
+	    script \"/etc/scripts/dhcp6c-script\";
+	};
+	id-assoc pd $ID {
+	    prefix-interface $lan_if {
+		sla-id 0;
+		sla-len 8;
+	    };
+	};
+	id-assoc na $ID { };
+	" > /etc/dhcp6c.conf
+
+	$LOG "Start DHCPv6 client at $six_wan_if."
+	dhcp6c $six_wan_if > /dev/null 2>&1
+    fi
+}
+
 get_param() {
     eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr`
 
@@ -266,48 +309,6 @@ get_param() {
 	    SUBNET="${ipv6prefix}:${ipv6subnet}"
 	    PREFIX="${SUBNET}::1/${IPv6PrefixLen}"
         fi
-    fi
-}
-
-dhcpcreconf() {
-    # prevent double start
-    killall -q dhcp6c
-    killall -q -SIGKILL dhcp6c
-
-    if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
-	# ipv6 mode preconfig for wan
-	sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
-	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
-
-	# allow autoconfigure by RA
-	sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=2
-	sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra_pinfo=1
-	sysctl -wq net.ipv6.conf.$six_wan_if.autoconf=1
-
-	# remove pregenerated duid
-	rm -f /etc/dhcp6c_duid
-
-	# generate dhcpv6 client config (use mac from WAN)
-	ID=`ip -o link show dev $wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
-	ID=`printf "%d" "$ID"`
-	printf "
-	interface $six_wan_if {
-	    send ia-pd $ID;
-	    send ia-na $ID;
-	    send rapid-commit;
-	    request domain-name-servers;
-	    script \"/etc/scripts/dhcp6c-script\";
-	};
-	id-assoc pd $ID {
-	    prefix-interface $lan_if {
-		sla-id 0;
-		sla-len 8;
-	    };
-	};
-	id-assoc na $ID { };
-	" > /etc/dhcp6c.conf
-
-	dhcp6c $six_wan_if > /dev/null 2>&1
     fi
 }
 
