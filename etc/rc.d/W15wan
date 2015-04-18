@@ -45,34 +45,6 @@ udhcpc_opts() {
     rm -f /tmp/routes_applied
 }
 
-# configure dhcp client
-dhcp6c_opts() {
-    # reload global
-    . /etc/scripts/global.sh
-
-    # remove pregenerated duid
-    rm -f /etc/dhcp6c_duid
-
-    ID=`ip -o link show dev $six_wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
-    ID=`printf "%d" "$ID"`
-    printf "
-    interface $six_wan_if {
-	send ia-pd $ID;
-	send ia-na $ID;
-	send rapid-commit;
-	request domain-name-servers;
-	script \"/etc/scripts/dhcp6c-script\";
-    };
-    id-assoc pd $ID {
-	prefix-interface $lan_if {
-	    sla-id 0;
-	    sla-len 8;
-	};
-    };
-    id-assoc na $ID { };
-    " > /etc/dhcp6c.conf
-}
-
 start() {
  $LOG "Start WAN config"
 
@@ -129,10 +101,9 @@ start() {
 	udhcpc_opts
 	$LOG "Start DHCP client."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
-	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
-	    $LOG "Wait v4 configure (10sec) and start DHCPv6 client."
-	    dhcp6c_opts
-	    (sleep 10 && dhcp6c $six_wan_if > /dev/null 2>&1) &
+	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" != "on" ]; then
+	    $LOG "Start DHCPv6 client."
+	    (sleep 2 && service six dhcpcreconf) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."
@@ -162,29 +133,19 @@ wan_if_preconf() {
 	else
 	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
 	fi
-	# ipv6 mode preconfig for wan
-	if [ "$IPv6OpMode" = "1" ]; then
-	    sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
-	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
-	    # allow autoconfigure by RA
-	    if [ "$IPv6Dhcpc" = "1" ]; then
-		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=2
-		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra_pinfo=1
-		sysctl -wq net.ipv6.conf.$six_wan_if.autoconf=1
-	    fi
-	fi
     fi
 }
 
 stop() {
     # stop all vpn services
     service vpnhelper stop
-    # stop dhcp and zeroconf client
-    killall -q udhcpc
+
+    # stop dhcp and zeroconf clients
     killall -q dhcp6c
+    killall -q udhcpc
     killall -q zcip
-    killall -q -SIGKILL udhcpc
     killall -q -SIGKILL dhcp6c
+    killall -q -SIGKILL udhcpc
     killall -q -SIGKILL zcip
 
     # in gw/hotspot modes down wlan if not bridge and not ethconvert

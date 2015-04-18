@@ -297,6 +297,7 @@ vlanDoubleTag=0
 vpnAuthProtocol=0
 vpnDebug=off
 vpnDGW=1
+vpnDGWSIX=off
 vpnEnabled=off
 vpnEnableLCP=on
 vpnInterface=WAN

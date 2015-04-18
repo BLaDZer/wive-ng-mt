@@ -2,3 +2,11 @@
 
 # ipv6-up
 # Called by pppd after IPV6CP/up was finished
+
+
+#include global config
+. /etc/scripts/global.sh
+
+if [ "$vpnDGWSIX" = "on" ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
+    service six dhcpcreconf
+fi

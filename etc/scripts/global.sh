@@ -38,6 +38,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
+	vpnDGWSIX \
 	MODEMENABLED \
 	QoSEnable`
 
@@ -160,8 +161,17 @@ getWanIfName() {
 
 getSixWanIfName() {
     if [ "$IPv6OpMode" = "1" ]; then
-	# now support dhcp6c only over IPOE
-	six_wan_if="$wan_if"
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnDGWSIX" = "on" ]; then
+	    # first ppp iface is client
+	    get_ppp_wan_if=`ip -4 -o link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
+	    if [ "$get_ppp_wan_if" != "" ]; then
+    		six_wan_if="$get_ppp_wan_if"
+	    else
+		six_wan_if="$vpn_def_if"
+	    fi
+	else
+	    six_wan_if="$wan_if"
+	fi
     elif [ "$IPv6OpMode" = "2" ]; then
 	# 6rd tunif name
 	six_wan_if="6rd"
