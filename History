@@ -848,6 +848,7 @@
 41) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
 42) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
 43) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
+44) kernel: inetpeer: fix token initialization.<br>
 <br>
 <br>
 <b>TODO:</b><br>
