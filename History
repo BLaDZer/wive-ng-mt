@@ -833,6 +833,7 @@
 26) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
 27) kernel: net: gro: should be ECN friendly.<br>
 28) kernel: net: gro: should aggregate frames without DF.<br>
+29) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
 <br>
 <br>
 <b>TODO:</b><br>
