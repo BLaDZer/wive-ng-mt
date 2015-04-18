@@ -843,6 +843,7 @@
 36) kernel: netlink: validate addr_len on bind.<br>
 37) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
 38) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
+39) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
 <br>
 <br>
 <b>TODO:</b><br>
