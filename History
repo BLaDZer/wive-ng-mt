@@ -812,7 +812,7 @@
 5) build_system: move nvram/mtd headers include from different make files to config.arch.<br>
 6) init.d: global.sh small cleanup.<br>
 7) init.d: move dhcpv6 client config and start to /etc/init.d/six.<br>
-8) init.d: optimize refresh device nodes and preinit scripts.<br>
+8) init.d: optimize refresh device nodes, hotplug rescan and preinit scripts.<br>
 9) init.d: initial support ipv6 dual stack native mode over PPPOE/PPTP/L2TP.<br>
 10) defaults: allow use VHT_STBC/LDPC for MT7612 module.<br>
 11) defaults: allow use VHT_STBC for MT7610 module.<br>

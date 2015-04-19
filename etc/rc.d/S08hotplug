@@ -53,7 +53,7 @@ rescan() {
 	fi
 
 	# touch uevent for cold start usb and other hotplug devices allready connected to SOC at boot
-	( find /sys -type f -name 'uevent' | while read dev_event; do
+	( find /sys -type f -name 'uevent' | grep usb | while read dev_event; do
     	    echo "add" > $dev_event
 	done ) &
     fi
