@@ -15,7 +15,10 @@ start() {
     if [ "$lldpdEnabled" = "1" ]; then
 	$LOG "Starting LLDPD"
 	mkdir -p /etc/lldpd.d
-        lldpd -s -e -f -M2 -L/sbin/lldpcli
+	DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	HOSTNAME=`hostname`
+        lldpd -s -e -f -M2 -S "$DEVNAME $VERSIONPKG $HOSTNAME" -L/sbin/lldpcli
     fi
 }
 

@@ -16,9 +16,9 @@ start() {
     if [ "$cdpEnabled" = "1" ]; then
 	DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
 	VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
-	r_hostname=`hostname`
+	HOSTNAME=`hostname`
 	$LOG "Send CDP request options $r_version $r_hostname $wan_if"
-	cdp-send -t 120 -m $DEVNAME -s $VERSIONPKG -n $r_hostname "$wan_if" > /dev/null 2>&1
+	cdp-send -t 120 -m "$DEVNAME" -s "$VERSIONPKG" -n "$HOSTNAME" "$wan_if" > /dev/null 2>&1
     fi
 }
 
