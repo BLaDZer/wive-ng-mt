@@ -40,6 +40,8 @@ start() {
 
     $LOG "Set mdev as kernel hotplug helper and enable device autoprobe."
     echo "/bin/mdev" > /proc/sys/kernel/hotplug
+    $LOG "Refresh dev nodes."
+    mdev -s
 }
 
 rescan() {

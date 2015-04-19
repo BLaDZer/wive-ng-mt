@@ -4,8 +4,8 @@
 # refresh device table and nodes
 ##########################################################
 
-ROOTDEVICE=/dev/mtdblock4
-TMPROOTFSD="/tmp/rootfs"
+ROOTDEVICE="$1"
+TMPROOTFSD="$2"
 
 # create some folders in devfs
 ndirs="pty tts cua misc usb block disk serial bus bus/usb net"
@@ -19,12 +19,12 @@ if [ -d $TMPROOTFSD ]; then
 fi
 
 # make symlink for kcore
-if [ -f /proc/kcore ]; then
+if [ -e /proc/kcore ]; then
     ln -sf /proc/kcore /dev/core
 fi
 
 # make symlink for rootdev
-if [ -f $ROOTDEVICE ]; then
+if [ -e $ROOTDEVICE ]; then
     ln -sf $ROOTDEVICE /dev/root
 fi
 
@@ -64,9 +64,3 @@ mknod /dev/mrt0		c	250	0
 mknod /dev/nvram	c	251	0
 mknod /dev/gpio		c	252	0
 mknod /dev/rdm0		c	254	0
-
-# for realtek external gigaphy
-mknod /dev/rtl8367m	c	206	0
-
-# autocreate/refresh some dev nodes
-mdev -s
