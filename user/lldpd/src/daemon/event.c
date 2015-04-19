@@ -383,6 +383,42 @@ accept_failed:
 }
 
 static void
+levent_priv(evutil_socket_t fd, short what, void *arg)
+{
+	struct event_base *base = arg;
+	ssize_t n;
+	int err;
+	char one;
+	(void)what;
+	/* Check if we have some data available. We need to pass the socket in
+	 * non-blocking mode to be able to run the check without disruption. */
+	levent_make_socket_nonblocking(fd);
+	n = read(fd, &one, 0); err = errno;
+	levent_make_socket_blocking(fd);
+
+	switch (n) {
+	case -1:
+		if (err == EAGAIN || err == EWOULDBLOCK)
+			/* No data, all good */
+			return;
+		log_warnx("event", "unable to poll monitor process, exit");
+		break;
+	case 0:
+		log_warnx("event", "monitor process has terminated, exit");
+		break;
+	default:
+		/* Unfortunately, dead code, if we have data, we have requested
+		 * 0 byte, so we will fall in the previous case. It seems safer
+		 * to ask for 0 byte than asking for 1 byte. In the later case,
+		 * if we have to speak with the monitor again before exiting, we
+		 * would be out of sync. */
+		log_warnx("event", "received unexpected data from monitor process, exit");
+		break;
+	}
+	event_base_loopbreak(base);
+}
+
+static void
 levent_dump(evutil_socket_t fd, short what, void *arg)
 {
 	struct event_base *base = arg;
@@ -432,7 +468,7 @@ levent_init(struct lldpd *cfg)
 	log_debug("event", "initialize libevent");
 	event_set_log_callback(levent_log_cb);
 	if (!(cfg->g_base = event_base_new()))
-		fatalx("unable to create a new libevent base");
+		fatalx("event", "unable to create a new libevent base");
 	log_debug("event", "libevent %s initialized with %s method",
 		  event_get_version(),
 		  event_base_get_method(cfg->g_base));
@@ -445,10 +481,10 @@ levent_init(struct lldpd *cfg)
 		    levent_snmp_timeout,
 		    cfg);
 		if (!cfg->g_snmp_timeout)
-			fatalx("unable to setup timeout function for SNMP");
+			fatalx("event", "unable to setup timeout function for SNMP");
 		if ((cfg->g_snmp_fds =
 			malloc(sizeof(struct ev_l))) == NULL)
-			fatalx("unable to allocate memory for SNMP events");
+			fatalx("event", "unable to allocate memory for SNMP events");
 		TAILQ_INIT(levent_snmp_fds(cfg));
 	}
 #endif
@@ -458,21 +494,29 @@ levent_init(struct lldpd *cfg)
 	if (!(cfg->g_main_loop = event_new(cfg->g_base, -1, 0,
 					   levent_update_and_send,
 					   cfg)))
-		fatalx("unable to setup main timer");
+		fatalx("event", "unable to setup main timer");
 	event_active(cfg->g_main_loop, EV_TIMEOUT, 1);
 
 	/* Setup unix socket */
+	struct event *ctl_event;
 	log_debug("event", "register Unix socket");
 	TAILQ_INIT(&lldpd_clients);
 	levent_make_socket_nonblocking(cfg->g_ctl);
-	if ((cfg->g_ctl_event = event_new(cfg->g_base, cfg->g_ctl,
+	if ((ctl_event = event_new(cfg->g_base, cfg->g_ctl,
 		    EV_READ|EV_PERSIST, levent_ctl_accept, cfg)) == NULL)
-		fatalx("unable to setup control socket event");
-	event_add(cfg->g_ctl_event, NULL);
+		fatalx("event", "unable to setup control socket event");
+	event_add(ctl_event, NULL);
+
+	/* Somehow monitor the monitor process */
+	struct event *monitor_event;
+	log_debug("event", "monitor the monitor process");
+	if ((monitor_event = event_new(cfg->g_base, priv_fd(PRIV_UNPRIVILEGED),
+		    EV_READ|EV_PERSIST, levent_priv, cfg->g_base)) == NULL)
+		fatalx("event", "unable to monitor monitor process");
+	event_add(monitor_event, NULL);
 
 	/* Signals */
 	log_debug("event", "register signals");
-	signal(SIGHUP, SIG_IGN);
 	evsignal_add(evsignal_new(cfg->g_base, SIGUSR1,
 		levent_dump, cfg->g_base),
 	    NULL);
@@ -783,6 +827,22 @@ levent_make_socket_nonblocking(int fd)
 	}
 	if (flags & O_NONBLOCK) return 0;
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
+		log_warn("event", "fcntl(%d, F_SETFL)", fd);
+		return -1;
+	}
+	return 0;
+}
+
+int
+levent_make_socket_blocking(int fd)
+{
+	int flags;
+	if ((flags = fcntl(fd, F_GETFL, NULL)) < 0) {
+		log_warn("event", "fcntl(%d, F_GETFL)", fd);
+		return -1;
+	}
+	if (!(flags & O_NONBLOCK)) return 0;
+	if (fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) == -1) {
 		log_warn("event", "fcntl(%d, F_SETFL)", fd);
 		return -1;
 	}

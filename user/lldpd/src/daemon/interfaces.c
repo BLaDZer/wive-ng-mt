@@ -340,56 +340,36 @@ interfaces_helper_chassis(struct lldpd *cfg,
 	}
 }
 
-#ifndef IN_IS_ADDR_LOOPBACK
+#undef IN_IS_ADDR_LOOPBACK
 #define IN_IS_ADDR_LOOPBACK(a) ((a)->s_addr == htonl(INADDR_LOOPBACK))
-#endif
-#ifndef IN_IS_ADDR_ANY
+#undef IN_IS_ADDR_ANY
 #define IN_IS_ADDR_ANY(a) ((a)->s_addr == htonl(INADDR_ANY))
-#endif
-#ifndef IN_IS_ADDR_GLOBAL
-#define IN_IS_ADDR_GLOBAL(a) (!IN_IS_ADDR_LOOPBACK(a) && !IN_IS_ADDR_ANY(a))
-#endif
-#ifndef IN6_IS_ADDR_GLOBAL
+#undef IN_IS_ADDR_LINKLOCAL
+#define IN_IS_ADDR_LINKLOCAL(a) (((a)->s_addr & htonl(0xffff0000)) == htonl(0xa9fe0000))
+#undef IN_IS_ADDR_GLOBAL
+#define IN_IS_ADDR_GLOBAL(a) (!IN_IS_ADDR_LOOPBACK(a) && !IN_IS_ADDR_ANY(a) && !IN_IS_ADDR_LINKLOCAL(a))
+#undef IN6_IS_ADDR_GLOBAL
 #define IN6_IS_ADDR_GLOBAL(a) \
 	(!IN6_IS_ADDR_LOOPBACK(a) && !IN6_IS_ADDR_LINKLOCAL(a))
-#endif
 
-/* Find a management address in all available interfaces, even those that were
-   already handled. This is a special interface handler because it does not
-   really handle interface related information (management address is attached
-   to the local chassis). */
-void
-interfaces_helper_mgmt(struct lldpd *cfg,
-    struct interfaces_address_list *addrs)
+/* Add management addresses for the given family. We only take one of each
+   address family, unless a pattern is provided and is not all negative. For
+   example !*:*,!10.* will only blacklist addresses. We will pick the first IPv4
+   address not matching 10.*.
+*/
+static int
+interfaces_helper_mgmt_for_af(struct lldpd *cfg,
+    int af,
+    struct interfaces_address_list *addrs,
+    int global, int allnegative)
 {
 	struct interfaces_address *addr;
-	char addrstrbuf[INET6_ADDRSTRLEN];
 	struct lldpd_mgmt *mgmt;
+	char addrstrbuf[INET6_ADDRSTRLEN];
+	int found = 0;
 	void *sin_addr_ptr;
 	size_t sin_addr_size;
-	int af;
-	int allnegative = 0;
 
-	lldpd_chassis_mgmt_cleanup(LOCAL_CHASSIS(cfg));
-
-	/* Is the pattern provided all negative? */
-	if (cfg->g_config.c_mgmt_pattern == NULL) allnegative = 1;
-	else if (cfg->g_config.c_mgmt_pattern[0] == '!') {
-		/* If each comma is followed by '!', its an all
-		   negative pattern */
-		char *sep = cfg->g_config.c_mgmt_pattern;
-		while ((sep = strchr(sep, ',')) &&
-		       (*(++sep) == '!'));
-		if (sep == NULL) allnegative = 1;
-	}
-
-	/* Find management addresses */
-	for (af = LLDPD_AF_UNSPEC + 1; af != LLDPD_AF_LAST; af++) {
-		/* We only take one of each address family, unless a
-		   pattern is provided and is not all negative. For
-		   example !*:*,!10.* will only blacklist
-		   addresses. We will pick the first IPv4 address not
-		   matching 10.*. */
 		TAILQ_FOREACH(addr, addrs, next) {
 			if (addr->address.ss_family != lldpd_af(af))
 				continue;
@@ -398,14 +378,24 @@ interfaces_helper_mgmt(struct lldpd *cfg,
 			case LLDPD_AF_IPV4:
 				sin_addr_ptr = &((struct sockaddr_in *)&addr->address)->sin_addr;
 				sin_addr_size = sizeof(struct in_addr);
+			if (global) {
 				if (!IN_IS_ADDR_GLOBAL((struct in_addr *)sin_addr_ptr))
 					continue;
+			} else {
+				if (!IN_IS_ADDR_LINKLOCAL((struct in_addr *)sin_addr_ptr))
+					continue;
+			}
 				break;
 			case LLDPD_AF_IPV6:
 				sin_addr_ptr = &((struct sockaddr_in6 *)&addr->address)->sin6_addr;
 				sin_addr_size = sizeof(struct in6_addr);
+			if (global) {
 				if (!IN6_IS_ADDR_GLOBAL((struct in6_addr *)sin_addr_ptr))
 					continue;
+			} else {
+				if (!IN6_IS_ADDR_LINKLOCAL((struct in6_addr *)sin_addr_ptr))
+					continue;
+			}
 				break;
 			default:
 				assert(0);
@@ -423,15 +413,79 @@ interfaces_helper_mgmt(struct lldpd *cfg,
 				if (mgmt == NULL) {
 					assert(errno == ENOMEM); /* anything else is a bug */
 					log_warn("interfaces", "out of memory error");
-					return;
+				return found;
 				}
 				log_debug("interfaces", "add management address %s", addrstrbuf);
 				TAILQ_INSERT_TAIL(&LOCAL_CHASSIS(cfg)->c_mgmt, mgmt, m_entries);
+			found = 1;
 
 				/* Don't take additional address if the pattern is all negative. */
 				if (allnegative) break;
 			}
 		}
+	return found;
+}
+
+/* Find a management address in all available interfaces, even those that were
+   already handled. This is a special interface handler because it does not
+   really handle interface related information (management address is attached
+   to the local chassis). */
+void
+interfaces_helper_mgmt(struct lldpd *cfg,
+    struct interfaces_address_list *addrs)
+{
+	int allnegative = 0;
+	int af;
+	const char *pattern = cfg->g_config.c_mgmt_pattern;
+
+	lldpd_chassis_mgmt_cleanup(LOCAL_CHASSIS(cfg));
+
+	/* Is the pattern provided an actual IP address? */
+	if (pattern && strpbrk(pattern, "!,*?") == NULL) {
+		struct in6_addr addr;
+		size_t addr_size;
+		for (af = LLDPD_AF_UNSPEC + 1;
+		     af != LLDPD_AF_LAST; af++) {
+			switch (af) {
+			case LLDPD_AF_IPV4: addr_size = sizeof(struct in_addr); break;
+			case LLDPD_AF_IPV6: addr_size = sizeof(struct in6_addr); break;
+			default: assert(0);
+			}
+			if (inet_pton(lldpd_af(af), pattern, &addr) == 1)
+				break;
+		}
+		if (af == LLDPD_AF_LAST) {
+			log_debug("interfaces",
+			    "interface management pattern is an incorrect IP");
+		} else {
+			struct lldpd_mgmt *mgmt;
+			mgmt = lldpd_alloc_mgmt(af, &addr, addr_size, 0);
+			if (mgmt == NULL) {
+				log_warn("interfaces", "out of memory error");
+				return;
+			}
+			log_debug("interfaces", "add exact management address %s",
+				pattern);
+			TAILQ_INSERT_TAIL(&LOCAL_CHASSIS(cfg)->c_mgmt, mgmt, m_entries);
+		}
+		return;
+	}
+
+	/* Is the pattern provided all negative? */
+	if (pattern == NULL) allnegative = 1;
+	else if (pattern[0] == '!') {
+		/* If each comma is followed by '!', its an all
+		   negative pattern */
+		const char *sep = pattern;
+		while ((sep = strchr(sep, ',')) &&
+		       (*(++sep) == '!'));
+		if (sep == NULL) allnegative = 1;
+	}
+
+	/* Find management addresses */
+	for (af = LLDPD_AF_UNSPEC + 1; af != LLDPD_AF_LAST; af++) {
+		(void)(interfaces_helper_mgmt_for_af(cfg, af, addrs, 1, allnegative) ||
+		    interfaces_helper_mgmt_for_af(cfg, af, addrs, 0, allnegative));
 	}
 }
 
@@ -443,6 +497,9 @@ interfaces_helper_port_name_desc(struct lldpd *cfg,
 {
 	struct lldpd_port *port = &hardware->h_lport;
 
+	if (port->p_id_subtype == LLDP_PORTID_SUBTYPE_LOCAL)
+		return;
+
 	/* We need to set the portid to what the client configured.
 	   This can be done from the CLI.
 	*/
@@ -452,9 +509,7 @@ interfaces_helper_port_name_desc(struct lldpd *cfg,
 			  hardware->h_ifname);
 		port->p_id_subtype = LLDP_PORTID_SUBTYPE_IFNAME;
 		port->p_id_len = strlen(hardware->h_ifname);
-		if (port->p_id != NULL) {
 			free(port->p_id);
-		}
 		if ((port->p_id = calloc(1, port->p_id_len)) == NULL)
 			fatal("interfaces", NULL);
 		memcpy(port->p_id, hardware->h_ifname, port->p_id_len);
@@ -465,9 +520,7 @@ interfaces_helper_port_name_desc(struct lldpd *cfg,
 		log_debug("interfaces", "use MAC address for %s",
 			  hardware->h_ifname);
 		port->p_id_subtype = LLDP_PORTID_SUBTYPE_LLADDR;
-		if (port->p_id != NULL) {
 			free(port->p_id);
-		}
 		if ((port->p_id = calloc(1, ETHER_ADDR_LEN)) == NULL)
 			fatal("interfaces", NULL);
 		memcpy(port->p_id, hardware->h_lladdr, ETHER_ADDR_LEN);
@@ -478,17 +531,13 @@ interfaces_helper_port_name_desc(struct lldpd *cfg,
 		/* use the actual alias in the port description */
 		log_debug("interfaces", "using alias in description for %s",
 			  hardware->h_ifname);
-		if (port->p_descr != NULL) {
 			free(port->p_descr);
-		}
 		port->p_descr = strdup(iface->alias);
 	} else {
 		/* use the ifname in the port description until alias is set */
 		log_debug("interfaces", "using ifname in description for %s",
 			  hardware->h_ifname);
-		if (port->p_descr != NULL) {
 			free(port->p_descr);
-		}
 		port->p_descr = strdup(hardware->h_ifname);
 	}
 }

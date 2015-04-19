@@ -149,7 +149,9 @@ static lldpctl_map_t port_dot3_power_pd_source_map[] = {
 	{ LLDP_DOT3_POWER_SOURCE_PRIMARY, "Primary power source" },
 	{ 0, NULL }
 };
+#endif
 
+#if defined ENABLE_DOT3 || defined ENABLE_LLDPMED
 static lldpctl_map_t port_dot3_power_priority_map[] = {
 	{ 0,                          "unknown" },
 	{ LLDP_MED_POW_PRIO_CRITICAL, "critical" },
@@ -271,6 +273,7 @@ static lldpctl_map_t bond_slave_src_mac_map[] = {
 static lldpctl_map_t lldp_portid_map[] = {
 	{ LLDP_PORTID_SUBTYPE_IFNAME,   "ifname"},
 	{ LLDP_PORTID_SUBTYPE_LLADDR,   "macaddress"},
+	{ LLDP_PORTID_SUBTYPE_LOCAL,    "local"},
 	{ LLDP_PORTID_SUBTYPE_UNKNOWN,  NULL},
 };
 
@@ -842,6 +845,12 @@ _lldpctl_atom_set_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key, lldpctl_ato
 	}
 
 	switch (key) {
+	case lldpctl_k_port_id:
+		set.local_id = p->port->p_id;
+		break;
+	case lldpctl_k_port_descr:
+		set.local_descr = p->port->p_descr;
+		break;
 #ifdef ENABLE_DOT3
 	case lldpctl_k_port_dot3_power:
 		if (value->type != atom_dot3_power) {
@@ -1021,6 +1030,35 @@ _lldpctl_atom_get_str_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 		return NULL;
 	}
+}
+
+static lldpctl_atom_t*
+_lldpctl_atom_set_str_port(lldpctl_atom_t *atom, lldpctl_key_t key,
+    const char *value)
+{
+	struct _lldpctl_atom_port_t *p =
+	    (struct _lldpctl_atom_port_t *)atom;
+	struct lldpd_port     *port     = p->port;
+
+	if (!value || !strlen(value))
+		return NULL;
+
+	switch (key) {
+	case lldpctl_k_port_id:
+		free(port->p_id);
+		port->p_id = strdup(value);
+		port->p_id_len = strlen(value);
+		break;
+	case lldpctl_k_port_descr:
+		free(port->p_descr);
+		port->p_descr = strdup(value);
+		break;
+	default:
+		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
+		return NULL;
+	}
+
+	return _lldpctl_atom_set_atom_port(atom, key, NULL);
 }
 
 static long int
@@ -1903,7 +1941,7 @@ _lldpctl_atom_set_int_med_location(lldpctl_atom_t *atom, lldpctl_key_t key,
 		case 0:		/* Disabling */
 		case LLDP_MED_LOCFORMAT_COORD:
 			mloc->location->format = value;
-			if (mloc->location->data) free(mloc->location->data);
+			free(mloc->location->data);
 			mloc->location->data = calloc(1, 16);
 			if (mloc->location->data == NULL) {
 				mloc->location->data_len = 0;
@@ -1914,7 +1952,7 @@ _lldpctl_atom_set_int_med_location(lldpctl_atom_t *atom, lldpctl_key_t key,
 			return atom;
 		case LLDP_MED_LOCFORMAT_CIVIC:
 			mloc->location->format = value;
-			if (mloc->location->data) free(mloc->location->data);
+			free(mloc->location->data);
 			mloc->location->data = calloc(1, 4);
 			if (mloc->location->data == NULL) {
 				mloc->location->data_len = 0;
@@ -1929,7 +1967,7 @@ _lldpctl_atom_set_int_med_location(lldpctl_atom_t *atom, lldpctl_key_t key,
 			return atom;
 		case LLDP_MED_LOCFORMAT_ELIN:
 			mloc->location->format = value;
-			if (mloc->location->data) free(mloc->location->data);
+			free(mloc->location->data);
 			mloc->location->data = NULL;
 			mloc->location->data_len = 0;
 			return atom;
@@ -2122,7 +2160,7 @@ _lldpctl_atom_set_str_med_location(lldpctl_atom_t *atom, lldpctl_key_t key,
 	case lldpctl_k_med_location_elin:
 		if (!value) goto bad;
 		if (mloc->location->format != LLDP_MED_LOCFORMAT_ELIN) goto bad;
-		if (mloc->location->data) free(mloc->location->data);
+		free(mloc->location->data);
 		mloc->location->data = calloc(1, strlen(value));
 		if (mloc->location->data == NULL) {
 			mloc->location->data_len = 0;
@@ -2591,6 +2629,7 @@ struct atom_builder builders[] = {
 	  .get  = _lldpctl_atom_get_atom_port,
 	  .set  = _lldpctl_atom_set_atom_port,
 	  .get_str = _lldpctl_atom_get_str_port,
+	  .set_str = _lldpctl_atom_set_str_port,
 	  .get_int = _lldpctl_atom_get_int_port,
 	  .get_buffer = _lldpctl_atom_get_buf_port },
 	{ atom_mgmts_list, sizeof(struct _lldpctl_atom_mgmts_list_t),

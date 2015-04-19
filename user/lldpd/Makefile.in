@@ -275,8 +275,9 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@ -Os -pipe -fpack-struct -Wall -Wno-unused \
-	-fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations \
-	-ffunction-sections -fdata-sections
+	-fno-caller-saves -fno-reorder-blocks \
+	-fno-aggressive-loop-optimizations -ffunction-sections \
+	-fdata-sections
 CHECK_CFLAGS = @CHECK_CFLAGS@
 CHECK_LIBS = @CHECK_LIBS@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
@@ -345,6 +346,9 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LLDPD_CTL_SOCKET = @LLDPD_CTL_SOCKET@
 LLDPD_PID_FILE = @LLDPD_PID_FILE@
+LLDP_CFLAGS = @LLDP_CFLAGS@
+LLDP_CPPFLAGS = @LLDP_CPPFLAGS@
+LLDP_LDFLAGS = @LLDP_LDFLAGS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
@@ -431,6 +435,7 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgconfigdir = @pkgconfigdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -1069,7 +1074,7 @@ __force-changelog-generation:
 ChangeLog: __force-changelog-generation
 	$(AM_V_GEN)if test -d $(top_srcdir)/.git; then \
 		prev=$$(git describe --tags --always --match '[0-9]*' 2> /dev/null) ; \
-		for tag in $$(git tag | $(EGREP) '^[0-9]+(\.[0-9]+){1,}$$' | sort -rn); do \
+		for tag in $$(git tag | $(EGREP) '^[0-9]+(\.[0-9]+){1,}$$' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr); do \
 			if [ x"$$prev" = x ]; then prev=$$tag ; fi ; \
 			if [ x"$$prev" = x"$$tag" ]; then continue; fi ; \
 			echo "$$prev [$$(git log $$prev -1 --pretty=format:'%ai')]:" ; \

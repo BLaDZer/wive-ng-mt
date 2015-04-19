@@ -52,9 +52,15 @@ lldpd_af_from_lldp_proto(int proto)
 	}
 }
 
-int
-lldp_send(struct lldpd *global,
-	  struct lldpd_hardware *hardware)
+static int _lldp_send(struct lldpd *global,
+    struct lldpd_hardware *hardware,
+    u_int8_t c_id_subtype,
+    char *c_id,
+    int c_id_len,
+    u_int8_t p_id_subtype,
+    char *p_id,
+    int p_id_len,
+    int shutdown)
 {
 	struct lldpd_port *port;
 	struct lldpd_chassis *chassis;
@@ -78,10 +84,6 @@ lldp_send(struct lldpd *global,
 	int i;
 	const u_int8_t med[] = LLDP_TLV_ORG_MED;
 #endif
-
-	log_debug("lldp", "send LLDP PDU to %s",
-	    hardware->h_ifname);
-
 	port = &hardware->h_lport;
 	chassis = port->p_chassis;
 	length = hardware->h_mtu;
@@ -102,25 +104,28 @@ lldp_send(struct lldpd *global,
 	/* Chassis ID */
 	if (!(
 	      POKE_START_LLDP_TLV(LLDP_TLV_CHASSIS_ID) &&
-	      POKE_UINT8(chassis->c_id_subtype) &&
-	      POKE_BYTES(chassis->c_id, chassis->c_id_len) &&
+	      POKE_UINT8(c_id_subtype) &&
+	      POKE_BYTES(c_id, c_id_len) &&
 	      POKE_END_LLDP_TLV))
 		goto toobig;
 
 	/* Port ID */
 	if (!(
 	      POKE_START_LLDP_TLV(LLDP_TLV_PORT_ID) &&
-	      POKE_UINT8(port->p_id_subtype) &&
-	      POKE_BYTES(port->p_id, port->p_id_len) &&
+	      POKE_UINT8(p_id_subtype) &&
+	      POKE_BYTES(p_id, p_id_len) &&
 	      POKE_END_LLDP_TLV))
 		goto toobig;
 
 	/* Time to live */
 	if (!(
 	      POKE_START_LLDP_TLV(LLDP_TLV_TTL) &&
-	      POKE_UINT16(chassis->c_ttl) &&
+	      POKE_UINT16(shutdown?0:chassis->c_ttl) &&
 	      POKE_END_LLDP_TLV))
 		goto toobig;
+
+	if (shutdown)
+		goto end;
 
 	/* System name */
 	if (chassis->c_name && *chassis->c_name != '\0') {
@@ -424,6 +429,7 @@ lldp_send(struct lldpd *global,
 	}
 #endif
 
+end:
 	/* END */
 	if (!(
 	      POKE_START_LLDP_TLV(LLDP_TLV_END) &&
@@ -441,7 +447,7 @@ lldp_send(struct lldpd *global,
 	hardware->h_tx_cnt++;
 
 	/* We assume that LLDP frame is the reference */
-	if ((frame = (struct lldpd_frame*)malloc(
+	if (!shutdown && (frame = (struct lldpd_frame*)malloc(
 			sizeof(int) + pos - packet)) != NULL) {
 		frame->size = pos - packet;
 		memcpy(&frame->frame, packet, frame->size);
@@ -452,8 +458,7 @@ lldp_send(struct lldpd *global,
 			free(hardware->h_lport.p_lastframe);
 		hardware->h_lport.p_lastframe = frame;
 		hardware->h_lport.p_lastchange = time(NULL);
-		} else
-			free(frame);
+		} else free(frame);
 	}
 
 	free(packet);
@@ -462,6 +467,79 @@ lldp_send(struct lldpd *global,
 toobig:
 	free(packet);
 	return E2BIG;
+}
+
+/* Send a shutdown LLDPDU. */
+int
+lldp_send_shutdown(struct lldpd *global,
+    struct lldpd_hardware *hardware)
+{
+	if (hardware->h_lchassis_previous_id == NULL ||
+	    hardware->h_lport_previous_id == NULL)
+		return 0;
+	return _lldp_send(global, hardware,
+	    hardware->h_lchassis_previous_id_subtype,
+	    hardware->h_lchassis_previous_id,
+	    hardware->h_lchassis_previous_id_len,
+	    hardware->h_lport_previous_id_subtype,
+	    hardware->h_lport_previous_id,
+	    hardware->h_lport_previous_id_len,
+	    1);
+}
+
+int
+lldp_send(struct lldpd *global,
+	  struct lldpd_hardware *hardware)
+{
+	struct lldpd_port *port = &hardware->h_lport;
+	struct lldpd_chassis *chassis = port->p_chassis;
+	int ret;
+
+	/* Check if we have a change. */
+	if (hardware->h_lchassis_previous_id != NULL &&
+	    hardware->h_lport_previous_id != NULL &&
+	    (hardware->h_lchassis_previous_id_subtype != chassis->c_id_subtype ||
+		hardware->h_lchassis_previous_id_len != chassis->c_id_len ||
+		hardware->h_lport_previous_id_subtype != port->p_id_subtype ||
+		hardware->h_lport_previous_id_len != port->p_id_len ||
+		memcmp(hardware->h_lchassis_previous_id,
+		    chassis->c_id, chassis->c_id_len) ||
+		memcmp(hardware->h_lport_previous_id,
+		    port->p_id, port->p_id_len))) {
+		log_info("lldp", "MSAP has changed for port %s, sending a shutdown LLDPDU",
+		    hardware->h_ifname);
+		if ((ret = lldp_send_shutdown(global, hardware)) != 0)
+			return ret;
+	}
+
+	log_debug("lldp", "send LLDP PDU to %s",
+	    hardware->h_ifname);
+
+	if ((ret = _lldp_send(global, hardware,
+		    chassis->c_id_subtype,
+		    chassis->c_id,
+		    chassis->c_id_len,
+		    port->p_id_subtype,
+		    port->p_id,
+		    port->p_id_len,
+		    0)) != 0)
+		return ret;
+
+	/* Record current chassis and port ID */
+	free(hardware->h_lchassis_previous_id);
+	hardware->h_lchassis_previous_id_subtype = chassis->c_id_subtype;
+	hardware->h_lchassis_previous_id_len = chassis->c_id_len;
+	if ((hardware->h_lchassis_previous_id = malloc(chassis->c_id_len)) != NULL)
+		memcpy(hardware->h_lchassis_previous_id, chassis->c_id,
+		    chassis->c_id_len);
+	free(hardware->h_lport_previous_id);
+	hardware->h_lport_previous_id_subtype = port->p_id_subtype;
+	hardware->h_lport_previous_id_len = port->p_id_len;
+	if ((hardware->h_lport_previous_id = malloc(port->p_id_len)) != NULL)
+		memcpy(hardware->h_lport_previous_id, port->p_id,
+		    port->p_id_len);
+
+	return 0;
 }
 
 #define CHECK_TLV_SIZE(x, name)				   \
@@ -483,7 +561,7 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 	const char dot3[] = LLDP_TLV_ORG_DOT3;
 	const char med[] = LLDP_TLV_ORG_MED;
 	const char dcbx[] = LLDP_TLV_ORG_DCBX;
-	char orgid[3];
+	unsigned char orgid[3];
 	int length, gotend = 0, ttl_received = 0;
 	int tlv_size, tlv_type, tlv_subtype;
 	u_int8_t *pos, *tlv;
@@ -625,12 +703,12 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 		case LLDP_TLV_MGMT_ADDR:
 			CHECK_TLV_SIZE(1, "Management address");
 			addr_str_length = PEEK_UINT8;
-			CHECK_TLV_SIZE(addr_str_length, "Management address");
+			CHECK_TLV_SIZE(1 + addr_str_length, "Management address");
 			PEEK_BYTES(addr_str_buffer, addr_str_length);
 			addr_length = addr_str_length - 1;
 			addr_family = addr_str_buffer[0];
 			addr_ptr = &addr_str_buffer[1];
-			CHECK_TLV_SIZE(5, "Management address");
+			CHECK_TLV_SIZE(1 + addr_str_length + 5, "Management address");
 			iface_subtype = PEEK_UINT8;
 			iface_number = PEEK_UINT32;
 			
@@ -727,7 +805,7 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 						goto malformed;
 					}
 					pi->p_pi_len = PEEK_UINT8;
-					CHECK_TLV_SIZE(1 + pi->p_pi_len, "PI");
+					CHECK_TLV_SIZE(5 + pi->p_pi_len, "PI");
 					if ((pi->p_pi =
 						(char *)calloc(1, pi->p_pi_len)) == NULL) {
 						log_warn("lldp", "unable to alloc pid name for "

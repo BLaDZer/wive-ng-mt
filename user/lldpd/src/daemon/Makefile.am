@@ -1,4 +1,6 @@
-AM_CFLAGS = -I $(top_srcdir)/include
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS)
+AM_CPPFLAGS = $(LLDP_CPPFLAGS)
+AM_LDFLAGS = $(LLDP_LDFLAGS)
 BUILT_SOURCES =
 CLEANFILES =
 
@@ -22,7 +24,7 @@ liblldpd_la_SOURCES  = \
 	pattern.c \
 	probes.d trace.h
 liblldpd_la_CFLAGS   = $(AM_CFLAGS) @LIBEVENT_CFLAGS@
-liblldpd_la_CPPFLAGS = -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
+liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
 liblldpd_la_LIBADD   = \
 	$(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la @LIBEVENT_LIBS@
@@ -74,7 +76,8 @@ liblldpd_la_SOURCES += \
 	interfaces-bsd.c \
 	dmi-osx.c \
 	priv-bsd.c
-liblldpd_la_LDFLAGS  = -framework Foundation
+liblldpd_la_LDFLAGS  = $(AM_LDFLAGS)
+liblldpd_la_LDFLAGS += -framework Foundation
 liblldpd_la_LDFLAGS += -framework CoreFoundation -framework IOKit
 liblldpd_la_LDFLAGS += -framework IOKit
 endif

@@ -211,9 +211,10 @@ option undoes the previous one.
 .Cd configure
 .Cd system interface pattern Ar pattern
 .Bd -ragged -offset XXXXXX
-Specify which interface to listen to. Without this option,
+Specify which interface to listen and send LLDPDU to. Without this
+option,
 .Nm lldpd
-will listen on all available physical interfaces. This option can use
+will use all available physical interfaces. This option can use
 wildcards. Several interfaces can be specified separated by commas.
 It is also possible to blacklist an interface by suffixing it with an
 exclamation mark. It is possible to whitelist an interface by
@@ -222,7 +223,7 @@ a blacklisted interfaces which beats a simple matched interface. For
 example, with
 .Em eth*,!eth1,!eth2
 .Nm lldpd
-will only listen to interfaces starting by
+will only use interfaces starting by
 .Em eth
 with the exception of
 .Em eth1
@@ -231,7 +232,7 @@ and
 While with
 .Em *,!eth*,!!eth1
 .Nm
-will listen to all interfaces, except interfaces starting by
+will use all interfaces, except interfaces starting by
 .Em eth
 with the exception of
 .Em eth1 .
@@ -243,7 +244,7 @@ is specified, it will be accepted even if this is a VLAN interface.
 .Cd unconfigure
 .Cd system interface pattern
 .Bd -ragged -offset XXXXXX
-Remove any previously configured interface pattern and listen to all
+Remove any previously configured interface pattern and use all
 physical interafces. This option undoes the previous one.
 .Ed
 
@@ -300,10 +301,11 @@ not disable promiscuous mode on interfaces already using this mode.
 .Bd -ragged -offset XXXXXX
 Specify the management addresses of this system. As for interfaces
 (described above), this option can use wildcards and inversions.
-Without this option, the first IPv4 and the first IPv6 are used. If
-only negative patterns are provided, only one IPv4 and one IPv6
-addresses are chosen. Otherwise, many of them can be selected. If you
-want to blacklist IPv6 addresses, you can use
+Without this option, the first IPv4 and the first IPv6 are used. If an
+exact IP address is provided, it is used as a management address
+without any check. If only negative patterns are provided, only one
+IPv4 and one IPv6 addresses are chosen. Otherwise, many of them can be
+selected. If you want to blacklist IPv6 addresses, you can use
 .Em !*:* .
 .Ed
 
@@ -315,8 +317,8 @@ option undoes the previous one.
 .Ed
 
 .Cd configure
-.Cd portidsubtype ifname
-.Cd ifname | macaddress
+.Cd portidsubtype
+.Cd ifname | macaddress | local Ar value Op Cd description Ar description
 .Bd -ragged -offset XXXXXX
 Force port ID subtype. By default,
 .Nm
@@ -325,9 +327,14 @@ port description, unless the interface has an alias. In this case, the
 interface name will be used as port identifier and the description
 will be the interface alias. With this command, you can force the port
 identifier to be the interface name (with
-.Cd ifname )
-or the MAC address (with
-.Cd macaddress ) .
+.Cd ifname ) ,
+the MAC address (with
+.Cd macaddress )
+or a local value (with
+.Cd value ) .
+In the latest case, the local value should be provided.
+Optionally, a port description can also be provided after the local
+value.
 .Ed
 
 .Cd configure
@@ -523,6 +530,7 @@ padded with 0. Here is an example of use:
 .Cd med policy
 .Cd application Ar application
 .Op Cd unknown
+.Op Cd tagged
 .Op Cd vlan Ar vlan
 .Op Cd priority Ar priority
 .Op Cd dscp Ar dscp
@@ -564,10 +572,13 @@ When a VLAN is specified with
 .Cd vlan
 tells which 802.1q VLAN ID has to be advertised for the network
 policy. A valid value is between 1 and 4094.
+.Cd tagged
+tells the VLAN should be tagged for the specified application type.
 .Cd priority
 allows one to specify IEEE 802.1d / IEEE 802.1p Layer 2 Priority, also
 known as Class of Service (CoS), to be used for the specified
-application type. It should be one of those values:
+application type. This field is usually ignored if no VLAN is
+specified. It should be one of those values:
 .Bl -bullet -compact -offset XXXXXXXX
 .It
 background

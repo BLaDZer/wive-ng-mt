@@ -116,7 +116,8 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_CHECK_TRUE@	check_edp$(EXEEXT) check_fixedpoint$(EXEEXT) \
 @HAVE_CHECK_TRUE@	$(am__EXEEXT_1)
 am__check_cdp_SOURCES_DIST = check_cdp.c \
-	$(top_srcdir)/src/daemon/lldpd.h common.h common.c
+	$(top_srcdir)/src/daemon/lldpd.h common.h common.c \
+	check-compat.h
 @HAVE_CHECK_TRUE@am_check_cdp_OBJECTS = check_cdp.$(OBJEXT) \
 @HAVE_CHECK_TRUE@	common.$(OBJEXT)
 check_cdp_OBJECTS = $(am_check_cdp_OBJECTS)
@@ -130,7 +131,8 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 am__check_edp_SOURCES_DIST = check_edp.c \
-	$(top_srcdir)/src/daemon/lldpd.h common.h common.c
+	$(top_srcdir)/src/daemon/lldpd.h common.h common.c \
+	check-compat.h
 @HAVE_CHECK_TRUE@am_check_edp_OBJECTS = check_edp.$(OBJEXT) \
 @HAVE_CHECK_TRUE@	common.$(OBJEXT)
 check_edp_OBJECTS = $(am_check_edp_OBJECTS)
@@ -149,7 +151,8 @@ check_fixedpoint_OBJECTS = $(am_check_fixedpoint_OBJECTS)
 @HAVE_CHECK_TRUE@	$(top_builddir)/src/lib/libfixedpoint.la \
 @HAVE_CHECK_TRUE@	$(am__DEPENDENCIES_2)
 am__check_lldp_SOURCES_DIST = check_lldp.c \
-	$(top_srcdir)/src/daemon/lldpd.h common.h common.c
+	$(top_srcdir)/src/daemon/lldpd.h common.h common.c \
+	check-compat.h
 @HAVE_CHECK_TRUE@am_check_lldp_OBJECTS = check_lldp.$(OBJEXT) \
 @HAVE_CHECK_TRUE@	common.$(OBJEXT)
 check_lldp_OBJECTS = $(am_check_lldp_OBJECTS)
@@ -158,7 +161,7 @@ check_lldp_LDADD = $(LDADD)
 @HAVE_CHECK_TRUE@	$(top_builddir)/src/daemon/liblldpd.la \
 @HAVE_CHECK_TRUE@	$(am__DEPENDENCIES_1)
 am__check_marshal_SOURCES_DIST = check_marshal.c \
-	$(top_srcdir)/src/marshal.h
+	$(top_srcdir)/src/marshal.h check-compat.h
 @HAVE_CHECK_TRUE@am_check_marshal_OBJECTS = check_marshal.$(OBJEXT)
 check_marshal_OBJECTS = $(am_check_marshal_OBJECTS)
 check_marshal_LDADD = $(LDADD)
@@ -184,7 +187,8 @@ check_snmp_LDADD = $(LDADD)
 @HAVE_CHECK_TRUE@	$(top_builddir)/src/daemon/liblldpd.la \
 @HAVE_CHECK_TRUE@	$(am__DEPENDENCIES_1)
 am__check_sonmp_SOURCES_DIST = check_sonmp.c \
-	$(top_srcdir)/src/daemon/lldpd.h common.h common.c
+	$(top_srcdir)/src/daemon/lldpd.h common.h common.c \
+	check-compat.h
 @HAVE_CHECK_TRUE@am_check_sonmp_OBJECTS = check_sonmp.$(OBJEXT) \
 @HAVE_CHECK_TRUE@	common.$(OBJEXT)
 check_sonmp_OBJECTS = $(am_check_sonmp_OBJECTS)
@@ -545,6 +549,9 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LLDPD_CTL_SOCKET = @LLDPD_CTL_SOCKET@
 LLDPD_PID_FILE = @LLDPD_PID_FILE@
+LLDP_CFLAGS = @LLDP_CFLAGS@
+LLDP_CPPFLAGS = @LLDP_CPPFLAGS@
+LLDP_LDFLAGS = @LLDP_LDFLAGS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
@@ -631,6 +638,7 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgconfigdir = @pkgconfigdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -646,31 +654,34 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -I $(top_srcdir)/include $(am__append_1)
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(am__append_1)
+AM_CPPFLAGS = $(LLDP_CPPFLAGS)
+AM_LDFLAGS = $(LLDP_LDFLAGS)
 @HAVE_CHECK_TRUE@LDADD = $(top_builddir)/src/daemon/liblldpd.la \
 @HAVE_CHECK_TRUE@	@CHECK_LIBS@ @LIBEVENT_LDFLAGS@ \
 @HAVE_CHECK_TRUE@	$(am__append_3)
 @HAVE_CHECK_TRUE@check_marshal_SOURCES = check_marshal.c \
-@HAVE_CHECK_TRUE@	$(top_srcdir)/src/marshal.h
+@HAVE_CHECK_TRUE@	$(top_srcdir)/src/marshal.h \
+@HAVE_CHECK_TRUE@	check-compat.h
 
 @HAVE_CHECK_TRUE@check_pattern_SOURCES = check_pattern.c \
 @HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h
 
 @HAVE_CHECK_TRUE@check_lldp_SOURCES = check_lldp.c \
 @HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
-@HAVE_CHECK_TRUE@	common.h common.c
+@HAVE_CHECK_TRUE@	common.h common.c check-compat.h
 
 @HAVE_CHECK_TRUE@check_cdp_SOURCES = check_cdp.c \
 @HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
-@HAVE_CHECK_TRUE@	common.h common.c
+@HAVE_CHECK_TRUE@	common.h common.c check-compat.h
 
 @HAVE_CHECK_TRUE@check_sonmp_SOURCES = check_sonmp.c \
 @HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
-@HAVE_CHECK_TRUE@	common.h common.c
+@HAVE_CHECK_TRUE@	common.h common.c check-compat.h
 
 @HAVE_CHECK_TRUE@check_edp_SOURCES = check_edp.c \
 @HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
-@HAVE_CHECK_TRUE@	common.h common.c
+@HAVE_CHECK_TRUE@	common.h common.c check-compat.h
 
 @HAVE_CHECK_TRUE@check_fixedpoint_SOURCES = check_fixedpoint.c
 @HAVE_CHECK_TRUE@check_fixedpoint_LDADD = $(top_builddir)/src/lib/libfixedpoint.la $(LDADD)

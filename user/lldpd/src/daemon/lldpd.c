@@ -207,6 +207,9 @@ lldpd_hardware_cleanup(struct lldpd *cfg, struct lldpd_hardware *hardware)
 {
 	log_debug("alloc", "cleanup hardware port %s", hardware->h_ifname);
 
+	free(hardware->h_lport_previous);
+	free(hardware->h_lchassis_previous_id);
+	free(hardware->h_lport_previous_id);
 	lldpd_port_cleanup(&hardware->h_lport, 1);
 	if (hardware->h_ops && hardware->h_ops->cleanup)
 		hardware->h_ops->cleanup(cfg, hardware);
@@ -292,14 +295,13 @@ lldpd_reset_timer(struct lldpd *cfg)
 	/* Reset timer for ports that have been changed. */
 	struct lldpd_hardware *hardware;
 	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries) {
-		/* We need to compute a checksum of the local port. To do this,
-		 * we zero out fields that are not significant, marshal the
-		 * port, compute the checksum, then restore. */
+		/* We keep a flat copy of the local port to see if there is any
+		 * change. To do this, we zero out fields that are not
+		 * significant, marshal the port, then restore. */
 		struct lldpd_port *port = &hardware->h_lport;
-		u_int16_t cksum;
 		u_int8_t *output = NULL;
-		size_t output_len;
-		char save[offsetof(struct lldpd_port, p_id_subtype)];
+		ssize_t output_len;
+		char save[LLDPD_PORT_START_MARKER];
 		memcpy(save, port, sizeof(save));
 		/* coverity[suspicious_sizeof]
 		   We intentionally partially memset port */
@@ -312,19 +314,25 @@ lldpd_reset_timer(struct lldpd *cfg)
 			    hardware->h_ifname);
 			continue;
 		}
-		cksum = frame_checksum(output, output_len, 0);
-		free(output);
-		if (cksum != hardware->h_lport_cksum) {
-			log_debug("localchassis",
-			    "change detected for port %s, resetting its timer",
-			    hardware->h_ifname);
-			hardware->h_lport_cksum = cksum;
-			levent_schedule_pdu(hardware);
-		} else {
+
+		/* Compare with the previous value */
+		if (hardware->h_lport_previous &&
+		    output_len == hardware->h_lport_previous_len &&
+		    !memcmp(output, hardware->h_lport_previous, output_len)) {
 			log_debug("localchassis",
 			    "no change detected for port %s",
 			    hardware->h_ifname);
+		} else {
+			log_debug("localchassis",
+			    "change detected for port %s, resetting its timer",
+			    hardware->h_ifname);
+			levent_schedule_pdu(hardware);
 		}
+
+		/* Update the value */
+		free(hardware->h_lport_previous);
+		hardware->h_lport_previous = output;
+		hardware->h_lport_previous_len = output_len;
 	}
 }
 
@@ -898,6 +906,21 @@ lldpd_recv(struct lldpd *cfg, struct lldpd_hardware *hardware, int fd)
 	free(buffer);
 }
 
+static void
+lldpd_send_shutdown(struct lldpd_hardware *hardware)
+{
+	struct lldpd *cfg = hardware->h_cfg;
+	if (cfg->g_config.c_receiveonly || cfg->g_config.c_paused) return;
+	if ((hardware->h_flags & IFF_RUNNING) == 0)
+		return;
+
+	/* It's safe to call `lldp_send_shutdown()` because shutdown LLDPU will
+	 * only be emitted if LLDP was sent on that port. */
+	if (lldp_send_shutdown(hardware->h_cfg, hardware) != 0)
+		log_warnx("send", "unable to send shutdown LLDPDU on %s",
+		    hardware->h_ifname);
+}
+
 void
 lldpd_send(struct lldpd_hardware *hardware)
 {
@@ -1007,7 +1030,7 @@ lldpd_update_localchassis(struct lldpd *cfg)
 		log_debug("localchassis", "use overridden system name `%s`", cfg->g_config.c_hostname);
 		hp = cfg->g_config.c_hostname;
 	} else {
-		if ((hp = priv_gethostbyname()) == NULL)
+		if ((hp = priv_gethostname()) == NULL)
 			fatal("localchassis", "failed to get system name");
 	}
 	free(LOCAL_CHASSIS(cfg)->c_name);
@@ -1112,6 +1135,10 @@ lldpd_exit(struct lldpd *cfg)
 {
 	struct lldpd_hardware *hardware, *hardware_next;
 	log_debug("main", "exit lldpd");
+
+	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries)
+		lldpd_send_shutdown(hardware);
+
 	close(cfg->g_ctl);
 	priv_ctl_cleanup(cfg->g_ctlname);
 	log_debug("main", "cleanup hardware information");
@@ -1286,7 +1313,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	int snmp = 0;
 	const char *agentx = NULL;	/* AgentX socket */
 #endif
-	const char *ctlname = LLDPD_CTL_SOCKET;
+	const char *ctlname = NULL;
 	char *mgmtp = NULL;
 	char *cidp = NULL;
 	char *interfaces = NULL;
@@ -1308,11 +1335,13 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	int receiveonly = 0;
 	int ctl;
 
+#ifdef ENABLE_PRIVSEP
 	/* Non privileged user */
 	struct passwd *user;
 	struct group *group;
 	uid_t uid;
 	gid_t gid;
+#endif
 
 	saved_argv = argv;
 
@@ -1450,6 +1479,8 @@ lldpd_main(int argc, char *argv[], char *envp[])
 		}
 	}
 
+	if (ctlname == NULL) ctlname = LLDPD_CTL_SOCKET;
+
 	/* Set correct smart mode */
 	for (i=0; (filters[i].a != -1) && (filters[i].a != smart); i++);
 	if (filters[i].a == -1) {
@@ -1462,7 +1493,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	tzset();		/* Get timezone info before chroot */
 
 	log_debug("main", "lldpd starting...");
-#if 0
+#ifdef ENABLE_PRIVSEP
 	/* Grab uid and gid to use for priv sep */
 	if ((user = getpwnam(PRIVSEP_USER)) == NULL)
 		fatal("main", "no " PRIVSEP_USER " user for privilege separation");
@@ -1470,9 +1501,6 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	if ((group = getgrnam(PRIVSEP_GROUP)) == NULL)
 		fatal("main", "no " PRIVSEP_GROUP " group for privilege separation");
 	gid = group->gr_gid;
-#else
-	gid = 0;
-	uid = 0;
 #endif
 	/* Create and setup socket */
 	int retry = 1;
@@ -1487,7 +1515,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 				/* Another instance is running */
 				close(tfd);
 				log_warnx("main", "another instance is running, please stop it");
-				fatalx("giving up");
+				fatalx("main", "giving up");
 			} else if (errno == ECONNREFUSED) {
 				/* Nobody is listening */
 				log_info("main", "old control socket is present, clean it");
@@ -1495,18 +1523,19 @@ lldpd_main(int argc, char *argv[], char *envp[])
 				continue;
 			}
 			log_warn("main", "cannot determine if another daemon is already running");
-			fatalx("giving up");
+			fatalx("main", "giving up");
 		}
 		log_warn("main", "unable to create control socket");
-		fatalx("giving up");
+		fatalx("main", "giving up");
 	}
-
+#ifdef ENABLE_PRIVSEP
 	if (chown(ctlname, uid, gid) == -1)
 		log_warn("main", "unable to chown control socket");
 	if (chmod(ctlname,
 		S_IRUSR | S_IWUSR | S_IXUSR |
 		S_IRGRP | S_IWGRP | S_IXGRP) == -1)
 		log_warn("main", "unable to chmod control socket");
+#endif
 
 	/* Disable SIGPIPE */
 	signal(SIGPIPE, SIG_IGN);
@@ -1551,7 +1580,11 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	}
 
 	log_debug("main", "initialize privilege separation");
+#ifdef ENABLE_PRIVSEP
 	priv_init(PRIVSEP_CHROOT, ctl, uid, gid);
+#else
+	priv_init(PRIVSEP_CHROOT, ctl, 0, 0);
+#endif
 
 	/* Initialization of global configuration */
 	if ((cfg = (struct lldpd *)

@@ -35,7 +35,6 @@
 #include <grp.h>
 #include <sys/utsname.h>
 #include <sys/ioctl.h>
-#include <netdb.h>
 #include <netinet/if_ether.h>
 
 #if defined HOST_OS_FREEBSD || HOST_OS_OSX || HOST_OS_DRAGONFLY
@@ -96,9 +95,9 @@ priv_ctl_cleanup(const char *ctlname)
 	must_read(PRIV_UNPRIVILEGED, &rc, sizeof(int));
 }
 
-/* Proxy for gethostbyname */
+/* Proxy for gethostname */
 char *
-priv_gethostbyname()
+priv_gethostname()
 {
 	static char *buf = NULL;
 	int rc;
@@ -108,7 +107,8 @@ priv_gethostbyname()
 	must_read(PRIV_UNPRIVILEGED, &rc, sizeof(int));
 	if ((buf = (char*)realloc(buf, rc+1)) == NULL)
 		fatal("privsep", NULL);
-	must_read(PRIV_UNPRIVILEGED, buf, rc+1);
+	must_read(PRIV_UNPRIVILEGED, buf, rc);
+	buf[rc] = '\0';
 	return buf;
 }
 
@@ -213,25 +213,29 @@ asroot_ctl_cleanup()
 }
 
 static void
-asroot_gethostbyname()
+asroot_gethostname()
 {
 	struct utsname un;
-	struct hostent *hp;
+	struct addrinfo hints = {
+		.ai_flags = AI_CANONNAME
+	};
+	struct addrinfo *res;
 	int len;
 	if (uname(&un) < 0)
 		fatal("privsep", "failed to get system information");
-	if ((hp = gethostbyname(un.nodename)) == NULL) {
+	if (getaddrinfo(un.nodename, NULL, &hints, &res) != 0) {
 		log_debug("privsep", "unable to get system name");
 #ifdef HAVE_RES_INIT
 		res_init();
 #endif
                 len = strlen(un.nodename);
                 must_write(PRIV_PRIVILEGED, &len, sizeof(int));
-                must_write(PRIV_PRIVILEGED, un.nodename, len + 1);
+                must_write(PRIV_PRIVILEGED, un.nodename, len);
         } else {
-                len = strlen(hp->h_name);
+                len = strlen(res->ai_canonname);
                 must_write(PRIV_PRIVILEGED, &len, sizeof(int));
-                must_write(PRIV_PRIVILEGED, hp->h_name, len + 1);
+                must_write(PRIV_PRIVILEGED, res->ai_canonname, len);
+		freeaddrinfo(res);
         }
 }
 
@@ -380,7 +384,7 @@ struct dispatch_actions {
 static struct dispatch_actions actions[] = {
 	{PRIV_PING, asroot_ping},
 	{PRIV_DELETE_CTL_SOCKET, asroot_ctl_cleanup},
-	{PRIV_GET_HOSTNAME, asroot_gethostbyname},
+	{PRIV_GET_HOSTNAME, asroot_gethostname},
 #ifdef HOST_OS_LINUX
 	{PRIV_OPEN, asroot_open},
 	{PRIV_ETHTOOL, asroot_ethtool},
@@ -408,6 +412,7 @@ priv_loop(int privileged, int once)
 #endif
 #endif
 	while (!may_read(PRIV_PRIVILEGED, &cmd, sizeof(enum priv_cmd))) {
+		log_debug("privsep", "received command %d", cmd);
 		for (a = actions; a->function != NULL; a++) {
 			if (cmd == a->msg) {
 				a->function();
@@ -415,7 +420,7 @@ priv_loop(int privileged, int once)
 			}
 		}
 		if (a->function == NULL)
-			fatal("privsep", "bogus message received");
+			fatalx("privsep", "bogus message received");
 		if (once) break;
 	}
 }
@@ -437,25 +442,24 @@ static void
 priv_exit_rc_status(int rc, int status) {
 	switch (rc) {
 	case 0:
-		log_debug("privsep", "killing child");
+		/* kill child */
 		kill(monitored, SIGTERM);
-		log_debug("privsep", "waiting for child %d to terminate", monitored);
+		/* we will receive a sigchld in the future */
 		return;
 	case -1:
-		log_debug("privsep", "child does not exist anymore");
-		_exit(1);	/* We consider this is an error to be here */
+		/* child doesn't exist anymore, we consider this is an error to
+		 * be here */
+		_exit(1);
 		break;
 	default:
-		log_debug("privsep", "monitored child has terminated");
+		/* Monitored child has terminated */
 		/* Mimic the exit state of the child */
 		if (WIFEXITED(status)) {
-			log_debug("privsep", "monitored child has terminated with status %d",
-			    WEXITSTATUS(status));
+			/* Normal exit */
 			_exit(WEXITSTATUS(status));
 		}
 		if (WIFSIGNALED(status)) {
-			log_debug("privsep", "monitored child has terminated with signal %d",
-			    WTERMSIG(status));
+			/* Terminated with signal */
 			signal(WTERMSIG(status), SIG_DFL);
 			raise(WTERMSIG(status));
 			_exit(1); /* We consider that not being killed is an error. */
@@ -494,8 +498,6 @@ sig_chld(int sig)
 	if (rc == 0) {
 		while ((rc = waitpid(-1, &status, WNOHANG)) > 0) {
 			if (rc == monitored) priv_exit_rc_status(rc, status);
-			else log_debug("privsep", "unrelated process %d has died",
-				rc);
 		}
 		return;
 	}
@@ -588,8 +590,10 @@ priv_init(const char *chrootdir, int ctl, uid_t uid, gid_t gid)
 	int pair[2];
 
 	/* Create socket pair */
-	if (socketpair(AF_UNIX, SOCK_DGRAM, PF_UNSPEC, pair) < 0)
-		fatal("privsep", "unable to create socket pair for privilege separation");
+	if (socketpair(AF_UNIX, SOCK_STREAM, PF_UNSPEC, pair) < 0) {
+		fatal("privsep",
+		    "unable to create socket pair for privilege separation");
+	}
 
 	priv_unprivileged_fd(pair[0]);
 	priv_privileged_fd(pair[1]);

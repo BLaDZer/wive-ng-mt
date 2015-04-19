@@ -123,7 +123,6 @@ struct lldpd {
 	/* Unix socket handling */
 	const char		*g_ctlname;
 	int			 g_ctl;
-	struct event		*g_ctl_event;
 	struct event		*g_iface_event; /* Triggered when there is an interface change */
 	struct event		*g_iface_timer_event; /* Triggered one second after last interface change */
 
@@ -162,8 +161,10 @@ int	 levent_iface_subscribe(struct lldpd *, int);
 void	 levent_schedule_pdu(struct lldpd_hardware *);
 void	 levent_schedule_cleanup(struct lldpd *);
 int	 levent_make_socket_nonblocking(int);
+int	 levent_make_socket_blocking(int);
 
 /* lldp.c */
+int	 lldp_send_shutdown(PROTO_SEND_SIG);
 int	 lldp_send(PROTO_SEND_SIG);
 int	 lldp_decode(PROTO_DECODE_SIG);
 
@@ -206,7 +207,7 @@ char	*dmi_asset(void);
 #ifdef USE_SNMP
 /* agent.c */
 void		 agent_shutdown(void);
-void		 agent_init(struct lldpd *, char *);
+void		 agent_init(struct lldpd *, const char *);
 void		 agent_notify(struct lldpd_hardware *, int, struct lldpd_port *);
 #endif
 
@@ -227,7 +228,7 @@ client_handle_client(struct lldpd *cfg,
 void	 priv_init(const char*, int, uid_t, gid_t);
 void	 priv_wait(void);
 void	 priv_ctl_cleanup(const char *ctlname);
-char   	*priv_gethostbyname(void);
+char   	*priv_gethostname(void);
 #ifdef HOST_OS_LINUX
 int    	 priv_open(char*);
 void	 asroot_open(void);
@@ -271,6 +272,7 @@ void	 must_read(enum priv_context, void *, size_t);
 void	 must_write(enum priv_context, const void *, size_t);
 void	 priv_privileged_fd(int);
 void	 priv_unprivileged_fd(int);
+int	 priv_fd(enum priv_context);
 int	 receive_fd(enum priv_context);
 void	 send_fd(enum priv_context, int);
 

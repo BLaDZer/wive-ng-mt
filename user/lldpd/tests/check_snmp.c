@@ -1,3 +1,20 @@
+/* -*- mode: c; c-file-style: "openbsd" -*- */
+/*
+ * Copyright (c) 2015 Vincent Bernat <bernat@luffy.cx>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 #include <check.h>
 
 #include "../src/daemon/lldpd.h"
@@ -328,17 +345,18 @@ snmp_oidrepr(oid *name, size_t namelen)
 	int i;
 
 	current = (current + 1)%4;
-	if (buffer[current]) free(buffer[current]); buffer[current] = NULL;
+	free(buffer[current]); buffer[current] = NULL;
 
 	for (i = 0; i < namelen; i++) {
 		/* Not very efficient... */
 		char *newbuffer = NULL;
-		if (asprintf(&newbuffer, "%s.%lu", buffer[current]?buffer[current]:"", name[i]) == -1) {
+		if (asprintf(&newbuffer, "%s.%lu", buffer[current]?buffer[current]:"",
+			(unsigned long)name[i]) == -1) {
 			free(buffer[current]);
 			buffer[current] = NULL;
 			return NULL;
 		}
-		if (buffer[current]) free(buffer[current]);
+		free(buffer[current]);
 		buffer[current] = newbuffer;
 	}
 	return buffer[current++];
@@ -833,7 +851,7 @@ tohex(char *str, size_t len)
 {
 	static char *hex[] = { NULL, NULL };
 	static int which = 0;
-	if (hex[which]) free(hex[which]); hex[which] = NULL;
+	free(hex[which]); hex[which] = NULL;
 	hex[which] = malloc(len * 3 + 1);
 	fail_unless(hex[which] != NULL, "Not enough memory?");
 	for (int i = 0; i < len; i++)
@@ -881,6 +899,7 @@ snmp_compare(struct tree_node *n,
 	     u_char *result, size_t varlen,
 	     oid *target, size_t targetlen, char *repr)
 {
+	unsigned long int value;
 	fail_unless((targetlen == sizeof(lldp_oid)/sizeof(oid) + n->namelen) &&
 		    !memcmp(target, lldp_oid, sizeof(lldp_oid)) &&
 		    !memcmp(target + sizeof(lldp_oid)/sizeof(oid),
@@ -896,12 +915,12 @@ snmp_compare(struct tree_node *n,
 		fail_unless(varlen == sizeof(unsigned long int),
 			    "Inappropriate length for integer type for OID %s",
 			    repr);
-		fail_unless(n->value.integer ==
-			    *(unsigned long int *)result,
+		memcpy(&value, result, sizeof(value));
+		fail_unless(n->value.integer == value,
 			    "For OID %s, expected value %u but got %u instead",
 			    repr,
 			    n->value.integer,
-			    *(unsigned long int *)result);
+			    value);
 		break;
 	default:
 		fail_unless(((n->value.string.len == varlen) &&

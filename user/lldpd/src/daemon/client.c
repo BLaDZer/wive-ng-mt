@@ -18,7 +18,7 @@
 #include "lldpd.h"
 #include "trace.h"
 
-static int
+static ssize_t
 client_handle_none(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -28,7 +28,7 @@ client_handle_none(struct lldpd *cfg, enum hmsg_type *type,
 }
 
 /* Return the global configuration */
-static int
+static ssize_t
 client_handle_get_configuration(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -50,7 +50,7 @@ xstrdup(const char *str)
 }
 
 /* Change the global configuration */
-static int
+static ssize_t
 client_handle_set_configuration(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -187,13 +187,13 @@ client_handle_set_configuration(struct lldpd *cfg, enum hmsg_type *type,
    Input:  nothing.
    Output: list of interface names (lldpd_interface_list)
 */
-static int
+static ssize_t
 client_handle_get_interfaces(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
 	struct lldpd_interface *iff, *iff_next;
 	struct lldpd_hardware *hardware;
-	int output_len;
+	ssize_t output_len;
 
 	/* Build the list of interfaces */
 	struct lldpd_interface_list ifs;
@@ -230,7 +230,7 @@ client_handle_get_interfaces(struct lldpd *cfg, enum hmsg_type *type,
    Input:  name of the interface (serialized)
    Output: Information about the interface (lldpd_hardware)
 */
-static int
+static ssize_t
 client_handle_get_interface(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -249,7 +249,7 @@ client_handle_get_interface(struct lldpd *cfg, enum hmsg_type *type,
 	log_debug("rpc", "client request interface %s", name);
 	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries)
 		if (!strcmp(hardware->h_ifname, name)) {
-			int output_len = lldpd_hardware_serialize(hardware, output);
+			ssize_t output_len = lldpd_hardware_serialize(hardware, output);
 			free(name);
 			if (output_len <= 0) {
 				*type = NONE;
@@ -268,7 +268,7 @@ client_handle_get_interface(struct lldpd *cfg, enum hmsg_type *type,
    Input: name of the interface, policy/location/power setting to be modified
    Output: nothing
 */
-static int
+static ssize_t
 client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -293,7 +293,18 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries)
 	    if (!strcmp(hardware->h_ifname, set->ifname)) {
 		    struct lldpd_port *port = &hardware->h_lport;
-		    (void)port;
+		    if (set->local_id) {
+			    log_debug("rpc", "requested change to Port ID");
+			    free(port->p_id);
+			    port->p_id = strdup(set->local_id);
+			    port->p_id_len = strlen(set->local_id);
+			    port->p_id_subtype = LLDP_PORTID_SUBTYPE_LOCAL;
+		    }
+		    if (set->local_descr) {
+			    log_debug("rpc", "requested change to Port Description");
+			    free(port->p_descr);
+			    port->p_descr = strdup(set->local_descr);
+		    }
 #ifdef ENABLE_LLDPMED
 		    if (set->med_policy && set->med_policy->type > 0) {
 			    log_debug("rpc", "requested change to MED policy");
@@ -352,10 +363,14 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 
 	if (ret == 0)
 		log_warn("rpc", "no interface %s found", set->ifname);
+	else
+	    levent_update_now(cfg);
 
 set_port_finished:
 	if (!ret) *type = NONE;
 	free(set->ifname);
+	free(set->local_id);
+	free(set->local_descr);
 #ifdef ENABLE_LLDPMED
 	free(set->med_policy);
 	if (set->med_location) free(set->med_location->data);
@@ -369,7 +384,7 @@ set_port_finished:
 }
 
 /* Register subscribtion to neighbor changes */
-static int
+static ssize_t
 client_handle_subscribe(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
@@ -381,7 +396,7 @@ client_handle_subscribe(struct lldpd *cfg, enum hmsg_type *type,
 struct client_handle {
 	enum hmsg_type type;
 	const char *name;
-	int (*handle)(struct lldpd*, enum hmsg_type *,
+	ssize_t (*handle)(struct lldpd*, enum hmsg_type *,
 	    void *, int, void **, int *);
 };
 
@@ -403,7 +418,7 @@ client_handle_client(struct lldpd *cfg,
     int *subscribed)
 {
 	struct client_handle *ch;
-	void *answer; size_t len, sent;
+	void *answer; ssize_t len, sent;
 
 	log_debug("rpc", "handle client request");
 	for (ch = client_handles; ch->handle != NULL; ch++) {

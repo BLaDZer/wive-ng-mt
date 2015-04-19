@@ -44,6 +44,9 @@ LT_INIT
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_C99
+if test x"$ac_cv_prog_cc_c99" = x"no"; then
+  AC_MSG_FAILURE([*** C99 support is mandatory])
+fi
 AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
@@ -76,7 +79,7 @@ AX_CFLAGS_GCC_OPTION([-Wfatal-errors])
 AX_CFLAGS_GCC_OPTION([-Wcast-align])
 AX_CFLAGS_GCC_OPTION([-Winline])
 AX_CFLAGS_GCC_OPTION([-fno-omit-frame-pointer])
-AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2])
+AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2], [CPPFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-unused-parameter])
 AX_CFLAGS_GCC_OPTION([-Wno-missing-field-initializers])
 AX_CFLAGS_GCC_OPTION([-Wno-sign-compare]) dnl Should be fixed later
@@ -143,6 +146,14 @@ PKG_CHECK_MODULES([CHECK], [check >= 0.9.4], [have_check=yes], [have_check=no])
 
 # Libevent
 lldp_CHECK_LIBEVENT
+
+# Compatibility with pkg.m4 < 0.27
+m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR],
+         [AC_ARG_WITH([pkgconfigdir],
+                      [AS_HELP_STRING([--with-pkgconfigdir],
+                      [install directory for *.pc pkg-config file])],
+                      [],[with_pkgconfigdir='$(libdir)/pkgconfig'])
+          AC_SUBST([pkgconfigdir], [${with_pkgconfigdir}])])
 
 #######################
 ### Options
@@ -263,6 +274,12 @@ lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.18], [
 
 #######################
 # Output results
+AC_SUBST([LLDP_CFLAGS], [$CFLAGS])
+AC_SUBST([LLDP_CPPFLAGS], [$CPPFLAGS])
+AC_SUBST([LLDP_LDFLAGS], [$LDFLAGS])
+CFLAGS=
+CPPFLAGS=
+LDFLAGS=
 AM_CONDITIONAL([HAVE_CHECK], [test x"$have_check" = x"yes"])
 AM_CONDITIONAL([USE_SNMP], [test x"$with_snmp" = x"yes"])
 AM_CONDITIONAL([USE_XML], [test x"$with_xml" = x"yes"])
@@ -280,8 +297,8 @@ cat <<EOF
  $PACKAGE_NAME version $PACKAGE_VERSION
   OS.............: $os
   Prefix.........: $prefix
-  C Compiler.....: $CC $CFLAGS $CPPFLAGS
-  Linker.........: $LD $LDFLAGS $LIBS
+  C Compiler.....: $CC $LLDP_CFLAGS $LLDP_CPPFLAGS
+  Linker.........: $LD $LLDP_LDFLAGS $LIBS
   Libevent.......: $libevent
   Readline.......: ${ax_cv_lib_readline}
  Optional features:

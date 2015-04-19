@@ -14,9 +14,9 @@ if [ ! -f $APROOTDIR/configure ]; then
     autoconf
 fi
 
-CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD --with-readline=no --with-embedded-libevent=no"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-privsep"
-CONFOPTS="$CONFOPTS --disable-cdp --enable-fdp --enable-edp --enable-lldpmed --enable-dot1 --enable-dot3"
+CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD --prefix=$APROOTDIR/filesystem"
+CONFOPTS="$CONFOPTS --with-readline=no --with-embedded-libevent=no --with-privsep=no"
+CONFOPTS="$CONFOPTS --disable-privsep --disable-cdp --enable-fdp --enable-edp --enable-lldpmed --enable-dot1 --enable-dot3"
 CONFOPTS="$CONFOPTS --with-lldpd-pid-file=/var/run/lldpd.pid --with-lldpd-ctl-socket=/var/run/lldpd.socket"
 
 ac_cv_lib_nl_nl_connect=no

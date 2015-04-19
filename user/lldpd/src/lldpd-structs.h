@@ -225,8 +225,8 @@ struct lldpd_port {
 	u_int8_t		 p_hidden_in:1; /* Considered as hidden for reception */
 	u_int8_t		 p_hidden_out:2; /* Considered as hidden for emission */
 	/* Important: all fields that should be ignored to check if a port has
-	 * been changed should be before p_id_subtype. Check
-	 * `lldpd_reset_timer()`. */
+	 * been changed should be before this mark. */
+#define LLDPD_PORT_START_MARKER (offsetof(struct lldpd_port, p_id_subtype))
 	u_int8_t		 p_id_subtype;
 	char			*p_id;
 	int			 p_id_len;
@@ -275,6 +275,8 @@ MARSHAL_END(lldpd_port);
 /* Used to modify some port related settings */
 struct lldpd_port_set {
 	char *ifname;
+	char *local_id;
+	char *local_descr;
 #ifdef ENABLE_LLDPMED
 	struct lldpd_med_policy *med_policy;
 	struct lldpd_med_loc    *med_location;
@@ -286,6 +288,8 @@ struct lldpd_port_set {
 };
 MARSHAL_BEGIN(lldpd_port_set)
 MARSHAL_STR(lldpd_port_set, ifname)
+MARSHAL_STR(lldpd_port_set, local_id)
+MARSHAL_STR(lldpd_port_set, local_descr)
 #ifdef ENABLE_LLDPMED
 MARSHAL_POINTER(lldpd_port_set, lldpd_med_policy, med_policy)
 MARSHAL_POINTER(lldpd_port_set, lldpd_med_loc,    med_location)
@@ -398,7 +402,23 @@ struct lldpd_hardware {
 	u_int64_t		 h_delete_cnt;
 	u_int64_t		 h_drop_cnt;
 
-	u_int16_t		 h_lport_cksum; /* Checksum on local port to see if there is a change */
+	/* Previous values of different stuff. */
+	/* Backup of the previous local port. Used to check if there was a
+	 * change to send an immediate update. All those are not marshalled to
+	 * the client. */
+	void			*h_lport_previous;
+	ssize_t			 h_lport_previous_len;
+	/* Backup of the previous chassis ID. Used to check if there was a
+	 * change and send an LLDP shutdown. */
+	u_int8_t	 	 h_lchassis_previous_id_subtype;
+	char			*h_lchassis_previous_id;
+	int			 h_lchassis_previous_id_len;
+	/* Backup of the previous port ID. Used to check if there was a change
+	 * and send an LLDP shutdown. */
+	u_int8_t		 h_lport_previous_id_subtype;
+	char			*h_lport_previous_id;
+	int			 h_lport_previous_id_len;
+
 	struct lldpd_port	 h_lport;  /* Port attached to this hardware port */
 	TAILQ_HEAD(, lldpd_port) h_rports; /* Remote ports */
 
@@ -412,6 +432,14 @@ MARSHAL_IGNORE(lldpd_hardware, h_entries.tqe_prev)
 MARSHAL_IGNORE(lldpd_hardware, h_ops)
 MARSHAL_IGNORE(lldpd_hardware, h_data)
 MARSHAL_IGNORE(lldpd_hardware, h_cfg)
+MARSHAL_IGNORE(lldpd_hardware, h_lport_previous)
+MARSHAL_IGNORE(lldpd_hardware, h_lport_previous_len)
+MARSHAL_IGNORE(lldpd_hardware, h_lchassis_previous_id_subtype)
+MARSHAL_IGNORE(lldpd_hardware, h_lchassis_previous_id)
+MARSHAL_IGNORE(lldpd_hardware, h_lchassis_previous_id_len)
+MARSHAL_IGNORE(lldpd_hardware, h_lport_previous_id_subtype)
+MARSHAL_IGNORE(lldpd_hardware, h_lport_previous_id)
+MARSHAL_IGNORE(lldpd_hardware, h_lport_previous_id_len)
 MARSHAL_SUBSTRUCT(lldpd_hardware, lldpd_port, h_lport)
 MARSHAL_SUBTQ(lldpd_hardware, lldpd_port, h_rports)
 MARSHAL_END(lldpd_hardware);

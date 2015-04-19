@@ -1,25 +1,33 @@
+/* -*- mode: c; c-file-style: "openbsd" -*- */
+/*
+ * Copyright (c) 2015 Vincent Bernat <bernat@luffy.cx>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <check.h>
 #include <sys/queue.h>
 
 #define MARSHAL_EXPORT
+#include "check-compat.h"
 #include "../src/marshal.h"
 #include "../src/log.h"
 
 /* This suite can be run in valgrind for memory leaks:
    CK_FORK=no valgrind -v --leak-check=yes ./tests/check_marshal
 */
-
-#if (CHECK_MAJOR_VERSION == 0 && (CHECK_MINOR_VERSION < 9 || (CHECK_MINOR_VERSION == 9 && CHECK_MICRO_VERSION < 10)))
-# define ck_assert_ptr_eq(X,Y) do {					\
-		void* _ck_x = (X);					\
-		void* _ck_y = (Y);					\
-		ck_assert_msg(_ck_x == _ck_y,				\
-			      "Assertion '"#X"=="#Y"' failed: "#X"==%p, "#Y"==%p", \
-			      _ck_x, _ck_y);				\
-	} while (0)
-#endif
 
 /* Use this callback to avoid some logs */
 void donothing(int pri, const char *msg) {};
@@ -498,18 +506,18 @@ START_TEST(test_simple_list) {
 	e2 = TAILQ_NEXT(e1, s_entries);
 	free(e1);
 	ck_assert_int_eq(e2->g1, 49);
-	ck_assert_int_eq(e2->g2, s);
+	ck_assert_ptr_eq(e2->g2, s);
 	e1 = TAILQ_NEXT(e2, s_entries);
 	free(e2);
 	ck_assert_int_eq(e1->g1, 4700);
-	ck_assert_int_eq(e1->g2, NULL);
+	ck_assert_ptr_eq(e1->g2, NULL);
 	e2 = TAILQ_NEXT(e1, s_entries);
 	free(e1);
 	ck_assert_int_eq(e2->g1, -47);
-	ck_assert_int_eq(e2->g2, s);
+	ck_assert_ptr_eq(e2->g2, s);
 	e1 = TAILQ_NEXT(e2, s_entries);
 	free(e2);
-	ck_assert_int_eq(e1, NULL);
+	ck_assert_ptr_eq(e1, NULL);
 	free(s);
 	free(destination);
 }
@@ -584,18 +592,18 @@ START_TEST(test_embedded_list) {
 	e2 = TAILQ_NEXT(e1, s_entries);
 	free(e1);
 	ck_assert_int_eq(e2->g1, 49);
-	ck_assert_int_eq(e2->g2, s);
+	ck_assert_ptr_eq(e2->g2, s);
 	e1 = TAILQ_NEXT(e2, s_entries);
 	free(e2);
 	ck_assert_int_eq(e1->g1, 4700);
-	ck_assert_int_eq(e1->g2, NULL);
+	ck_assert_ptr_eq(e1->g2, NULL);
 	e2 = TAILQ_NEXT(e1, s_entries);
 	free(e1);
 	ck_assert_int_eq(e2->g1, -47);
-	ck_assert_int_eq(e2->g2, s);
+	ck_assert_ptr_eq(e2->g2, s);
 	e1 = TAILQ_NEXT(e2, s_entries);
 	free(e2);
-	ck_assert_int_eq(e1, NULL);
+	ck_assert_ptr_eq(e1, NULL);
 	free(s);
 	free(destination);
 }
@@ -707,7 +715,7 @@ START_TEST(test_ignore) {
 	free(buffer);
 	ck_assert_int_eq(len, len2);
 	ck_assert_int_eq(destination->t1, 4544);
-	ck_assert_int_eq(destination->t2, NULL);
+	ck_assert_ptr_eq(destination->t2, NULL);
 	ck_assert_int_eq(destination->t3, 11111);
 	free(destination);
 }

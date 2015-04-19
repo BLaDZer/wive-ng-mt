@@ -422,6 +422,9 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LLDPD_CTL_SOCKET = @LLDPD_CTL_SOCKET@
 LLDPD_PID_FILE = @LLDPD_PID_FILE@
+LLDP_CFLAGS = @LLDP_CFLAGS@
+LLDP_CPPFLAGS = @LLDP_CPPFLAGS@
+LLDP_LDFLAGS = @LLDP_LDFLAGS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
@@ -508,6 +511,7 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgconfigdir = @pkgconfigdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -523,7 +527,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -I $(top_srcdir)/include
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS)
+AM_CPPFLAGS = $(LLDP_CPPFLAGS)
+AM_LDFLAGS = $(LLDP_LDFLAGS)
 BUILT_SOURCES = $(am__append_11) $(am__append_17)
 CLEANFILES = $(am__append_12) $(am__append_18) $(TEMPLATES)
 man_MANS = lldpd.8
@@ -537,13 +543,13 @@ liblldpd_la_SOURCES = frame.h frame.c lldp.c lldp-tlv.h cdp.c cdp.h \
 	$(am__append_7) $(am__append_8) $(am__append_14)
 liblldpd_la_CFLAGS = $(AM_CFLAGS) @LIBEVENT_CFLAGS@ $(am__append_9) \
 	$(am__append_15)
-liblldpd_la_CPPFLAGS = -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
+liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
 liblldpd_la_LIBADD = $(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la @LIBEVENT_LIBS@ \
 	$(am__append_16)
-@HOST_OS_OSX_TRUE@liblldpd_la_LDFLAGS = -framework Foundation \
-@HOST_OS_OSX_TRUE@	-framework CoreFoundation -framework IOKit \
-@HOST_OS_OSX_TRUE@	-framework IOKit
+@HOST_OS_OSX_TRUE@liblldpd_la_LDFLAGS = $(AM_LDFLAGS) -framework \
+@HOST_OS_OSX_TRUE@	Foundation -framework CoreFoundation \
+@HOST_OS_OSX_TRUE@	-framework IOKit -framework IOKit
 lldpd_SOURCES = main.c
 lldpd_LDADD = liblldpd.la @LIBEVENT_LDFLAGS@ $(am__append_10) \
 	$(am__append_19)
