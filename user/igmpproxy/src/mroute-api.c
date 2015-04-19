@@ -171,8 +171,7 @@ int addMRoute( struct MRouteDesc *Dp )
         my_log( LOG_NOTICE, 0, "Adding MFC: %s -> %s, InpVIf: %d", 
              fmtInAdr( FmtBuO, CtlReq.mfcc_origin ), 
              fmtInAdr( FmtBuM, CtlReq.mfcc_mcastgrp ),
-             (int)CtlReq.mfcc_parent
-           );
+             CtlReq.mfcc_parent);
     }
 
     rc = setsockopt( MRouterFD, IPPROTO_IP, MRT_ADD_MFC,
@@ -205,11 +204,10 @@ int delMRoute( struct MRouteDesc *Dp )
     {
         char FmtBuO[ 32 ], FmtBuM[ 32 ];
 
-        my_log( LOG_NOTICE, 0, "Removing MFC: %s -> %s, InpVIf: %d", 
-             fmtInAdr( FmtBuO, CtlReq.mfcc_origin ), 
+        my_log( LOG_NOTICE, 0, "Removing MFC: %s -> %s, InpVIf: %d",
+             fmtInAdr( FmtBuO, CtlReq.mfcc_origin ),
              fmtInAdr( FmtBuM, CtlReq.mfcc_mcastgrp ),
-             (int)CtlReq.mfcc_parent
-           );
+             CtlReq.mfcc_parent);
     }
 
     rc = setsockopt( MRouterFD, IPPROTO_IP, MRT_DEL_MFC,

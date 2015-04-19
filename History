@@ -818,38 +818,39 @@
 11) radvd: up to 2.11 version.<br>
 12) dnsmasq: up to 2.73rc4 version.<br>
 13) ntfs-3g: up to 2015.3.14 version.<br>
-14) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-15) pppd: do not build ipx support if not enabled in kernel.<br>
-16) dhcp6c: do not open a routing socket that's never used.<br>
-17) dhcp6c: more compath with new uclibc/glibc.<br>
-18) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
-19) goahead: allow select VHT_STBC mode for 7610 module.<br>
-20) kernel: up to 3.4.107 version.<br>
-21) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-22) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-23) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-24) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-25) kernel: ralink_wifi: allow mac address changes.<br>
-26) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-27) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
-28) kernel: drop bogus check in file_open_root().<br>
-29) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-30) kernel: mips: hibernate: flush TLB entries earlier.<br>
-31) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-32) kernel: net: gro: should be ECN friendly.<br>
-33) kernel: net: gro: should aggregate frames without DF.<br>
-34) kernel: net: add address assign type "SET".<br>
-35) kernel: net: init perm_addr in register_netdevice().<br>
-36) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
-37) kernel: ethtool: consolidate work with ethtool_ops.<br>
-38) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
-39) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
-40) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
-41) kernel: netlink: validate addr_len on bind.<br>
-42) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
-43) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
-44) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
-45) kernel: inetpeer: fix token initialization.<br>
+14) igmpproxy: use daemon function instead of direct coding.<br>
+15) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+16) pppd: do not build ipx support if not enabled in kernel.<br>
+17) dhcp6c: do not open a routing socket that's never used.<br>
+18) dhcp6c: more compath with new uclibc/glibc.<br>
+19) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
+20) goahead: allow select VHT_STBC mode for 7610 module.<br>
+21) kernel: up to 3.4.107 version.<br>
+22) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+23) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+24) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+25) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+26) kernel: ralink_wifi: allow mac address changes.<br>
+27) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+28) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
+29) kernel: drop bogus check in file_open_root().<br>
+30) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+31) kernel: mips: hibernate: flush TLB entries earlier.<br>
+32) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+33) kernel: net: gro: should be ECN friendly.<br>
+34) kernel: net: gro: should aggregate frames without DF.<br>
+35) kernel: net: add address assign type "SET".<br>
+36) kernel: net: init perm_addr in register_netdevice().<br>
+37) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
+38) kernel: ethtool: consolidate work with ethtool_ops.<br>
+39) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
+40) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
+41) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
+42) kernel: netlink: validate addr_len on bind.<br>
+43) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
+44) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
+45) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
+46) kernel: inetpeer: fix token initialization.<br>
 <br>
 <br>
 <b>TODO:</b><br>
