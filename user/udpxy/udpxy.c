@@ -18,8 +18,7 @@
  *  along with udpxy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define _XOPEN_SOURCE 600
-#define _BSD_SOURCE
+#define _GNU_SOURCE
 
 #include "osdef.h"  /* os-specific definitions */
 
@@ -501,7 +500,7 @@ sync_dsockbuf_len( int ssockfd, int dsockfd )
 /* #define DEBUG_TS_FILTER */
 
 struct filter_ctx {
-	uint8_t strmHdr[TS_SIZE*2];
+	char strmHdr[TS_SIZE*2];
 
 	#define F_PAT 1
 	#define F_PMT 2
@@ -589,7 +588,7 @@ consume_ts_packet(uint8_t* pkt, struct filter_ctx* f)
 }
 
 static void
-apply_ts_filter(struct dstream_ctx* ds, uint8_t* data, ssize_t nrcv, struct filter_ctx* f)
+apply_ts_filter(struct dstream_ctx* ds, char* data, ssize_t nrcv, struct filter_ctx* f)
 {
 	ssize_t i, imax;
 
@@ -631,7 +630,7 @@ relay_traffic( int ssockfd, int dsockfd, struct server_ctx* ctx,
     ssize_t nmsgs = -1;
     ssize_t nrcv = 0, nsent = 0,
 #ifdef UDPXY_FILEIO
-            nwr = 0,
+	    nwr = 0,
 #endif /* UDPXY_FILEIO */
             lrcv = 0, lsent = 0;
     char*  data = NULL;
@@ -651,8 +650,7 @@ relay_traffic( int ssockfd, int dsockfd, struct server_ctx* ctx,
 
     static const int SET_PID = 1;
     struct tps_data tps;
-
-	struct filter_ctx ts_filter;
+    struct filter_ctx ts_filter;
 
     assert( ctx && mreq && MAX_PAUSE_MSEC > 0 );
 

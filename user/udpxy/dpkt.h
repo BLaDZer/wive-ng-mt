@@ -119,7 +119,7 @@ read_data( struct dstream_ctx* spc, int fd, char* data,
  */
 ssize_t
 write_data( const struct dstream_ctx* spc,
-            const char* data,
+            char* data,
             const ssize_t len,
             int fd );
 
