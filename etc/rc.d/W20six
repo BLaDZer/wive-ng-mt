@@ -328,6 +328,9 @@ stop() {
 	# disable ipv6
 	sysctl -wq net.ipv6.conf.all.disable_ipv6=1
 
+	killall -q dhcp6c
+	killall -q -SIGKILL dhcp6c
+
 	killall -q radvd
 	killall -q -SIGKILL radvd
 
