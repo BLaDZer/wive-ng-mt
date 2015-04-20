@@ -44,7 +44,6 @@ fi
 ##########################################################
 # Always reload some services				 #
 ##########################################################
-    service six restart
     if [ -e /etc/init.d/parprouted ]; then
 	service parprouted restart
     fi
