@@ -53,7 +53,7 @@ fi
 case "$1" in
     deconfig)
 	$LOG "All deconfig."
-	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
+	if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
 	    $LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
 	    service six stop
 	fi
@@ -76,7 +76,7 @@ case "$1" in
 
     leasefail)
 	$LOG "Lease fail."
-	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
+	if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
 	    $LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
 	    service six stop
 	fi
