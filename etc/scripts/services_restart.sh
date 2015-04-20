@@ -43,9 +43,12 @@ fi
 
 ##########################################################
 # reconfigure ipv6 tunnels after wan/vpn adress renew
+# and reconfigure and start radvd/dhcp6s at apply in misc
 ##########################################################
 if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]  && [ "$MODE" = "dhcp" -o "$MODE" = "ppp" ]; then
     service six restart
+elif [ "$MODE" = "misc" ]; then
+    service six dhcpradvdreconf
 fi
 
 ##########################################################
