@@ -32,6 +32,13 @@ if [ "$wan_static_dns" = "on" ]; then
 fi
 
 ##########################################################
+# Regenerate resolv only if wan_static_dns on
+##########################################################
+if [ -d /proc/sys/net/ipv6 ] && [ "$MODE" != "pppd" ]; then
+    service six restart
+fi
+
+##########################################################
 # Always reload some services				 #
 ##########################################################
     if [ -e /etc/init.d/parprouted ]; then
@@ -39,9 +46,6 @@ fi
     fi
     if [ -e /etc/init.d/dynroute ]; then
 	service dynroute restart
-    fi
-    if [ -d /proc/sys/net/ipv6 ]; then
-	service six restart
     fi
     service dnsserver reload
     service ddns restart

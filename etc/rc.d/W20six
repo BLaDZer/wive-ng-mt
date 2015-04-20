@@ -39,10 +39,7 @@ start() {
 	# addr del->add change need for notify kernel and regenerage arp table
         if [ "$IPv6OpMode" = "1" ]; then
 	    # this section for native/dualstack mode
-	    if [ "$IPv6Dhcpc" = "1" ]; then
-    		$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if."
-		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=2
-	    else
+	    if [ "$IPv6Dhcpc" != "1" ]; then
     		$LOG "Native IPv6 support static configured. Disable router advertisements for wan $six_wan_if"
 		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=0
 
@@ -224,6 +221,7 @@ dhcpcreconf() {
     killall -q -SIGKILL dhcp6c
 
     if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
+	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if."
 	# ipv6 mode preconfig for wan
 	sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
 	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
