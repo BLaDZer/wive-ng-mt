@@ -1,6 +1,16 @@
 #!/bin/sh
 
+##########################################################
 # This scipt restart needed services
+##########################################################
+
+# prevent double start configure in one time
+while [ -e /tmp/servicerestart_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+CRETURN=0
+touch /tmp/servicerestart_runing
 
 # include global config
 . /etc/scripts/global.sh
@@ -33,7 +43,8 @@ fi
 
 ##########################################################
 # Full reconfigure ipv6 in dynamic mode only by all call
-# In tunneled or static modes always reconfigure
+# And only server daemons reconfigure always
+# In tunneled or static modes always reconfigure all
 ##########################################################
 if [ "$MODE" = "all" ] || [ "$IPv6OpMode" = "1" -o "$IPv6Dhcpc" != "1" ] || [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
     service six restart
@@ -129,3 +140,7 @@ fi
 if [ -f /bin/irqbalance ]; then
     service irqbalance restart
 fi
+
+# remove running flag
+rm -f /tmp/servicerestart_runing
+exit $CRETURN

@@ -1,9 +1,17 @@
 #!/bin/sh
 
-# if app not exist
+# if ipv6 not support in kernel
 if [ ! -d /proc/sys/net/ipv6 ]; then
     exit 0
 fi
+
+# prevent double start configure in one time
+while [ -e /tmp/servicesix_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+CRETURN=0
+touch /tmp/servicesix_runing
 
 #get params
 . /etc/scripts/global.sh
@@ -382,3 +390,7 @@ case "$1" in
 	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|dhcpcreconf|restart}"
 	    exit 1
 esac
+
+# remove running flag
+rm -f /tmp/servicesix_runing
+exit $CRETURN
