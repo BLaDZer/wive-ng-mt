@@ -8,6 +8,7 @@ LOG="logger -t pppd"
 #include global config
 . /etc/scripts/global.sh
 
+#prevent race
 if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" = "on" ]; then
     killall -q dhcp6c
     killall -q -SIGKILL dhcp6c
