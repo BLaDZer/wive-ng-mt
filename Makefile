@@ -280,7 +280,7 @@ clean:
 	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f
 	##############REMOVE UNUSED FOLDERS###########################
 	find $(ROOTDIR) -type d -a \( -name 'filesystem' -o -name 'autom4te.cache' -o -name '.libs' -o -name 'cvs' -o -name 'CVS' -o -name '.dep' -o -name '.deps' \) | xargs rm -rf
-	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs images
+	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs images .config
 
 %_only:
 	case "$(@)" in \
