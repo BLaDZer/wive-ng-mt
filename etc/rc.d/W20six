@@ -244,8 +244,8 @@ dhcpcreconf() {
 	ID=`printf "%d" "$ID"`
 
 	# tune some parametrs between modes
-	# IPOE dualstack - reqest IA-NA/PD, sla-id=0,sla-len=8
-	# PPTP/L2TP/PPPOE dualstack - do not reqest IA-NA, only PD, sla-id=1,sla-len=0
+	# IPOE dualstack - reqest IA-NA/PD
+	# PPTP/L2TP/PPPOE dualstack - do not reqest IA-NA, only PD
 	if [ "$vpnEnabled" != "on" ] || [ "$vpnDGWSIX" != "on" ]; then
 	    REQIANA="send ia-na $ID;"
 	fi
