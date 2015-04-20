@@ -8,8 +8,11 @@ LOG="logger -t pppd"
 #include global config
 . /etc/scripts/global.sh
 
-if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" = "on" ]; then
+if [ "$vpnDGWSIX" = "on" ]; then
     $LOG "Replace IPV6 dgw to $PPP_IFACE"
     ip -6 route replace default dev $PPP_IFACE
-    service six dhcpcreconf
+    if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
+	# call restart dhcp v6 client
+	service six dhcpcreconf
+    fi
 fi
