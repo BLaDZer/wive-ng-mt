@@ -122,7 +122,7 @@ ifdef CONFIG_LIB_SAVERAM
 endif
 	# don't want all the CFLAGS for uClibc/Config
 	ARCH_CFLAGS = $(CFLAGS)
-	LDFLAGS = $(CFLAGS) $(CRT0)
+	LDFLAGS = $(CFLAGS) $(CRT0) -Bsymbolic-functions
 	UCLINUX_BUILD_SET=1
 endif
 

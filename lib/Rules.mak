@@ -708,7 +708,7 @@ else
 DOMULTI:=n
 endif
 
-LDFLAGS += -lgcc_s
+LDFLAGS += -lgcc_s -Bsymbolic-functions
 
 ifneq ($(strip $(UCLIBC_EXTRA_LDFLAGS)),"")
 LDFLAGS += $(call qstrip,$(UCLIBC_EXTRA_LDFLAGS))

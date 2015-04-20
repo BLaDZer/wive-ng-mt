@@ -810,50 +810,51 @@
 3) build_system: fix build libc headers (use -isystem instead of -I for correct dependency).<br>
 4) build_system: fix build flags change for uclibc.<br>
 5) build_system: move nvram/mtd headers include from different make files to config.arch.<br>
-6) init.d: global.sh small cleanup.<br>
-7) init.d: move dhcpv6 client config and start to /etc/init.d/six.<br>
-8) init.d: optimize refresh device nodes, hotplug rescan and preinit scripts.<br>
-9) init.d: initial support ipv6 dual stack native mode over PPPOE/PPTP/L2TP.<br>
-10) init.d: more readable system info export from lldp.<br>
-11) defaults: allow use VHT_STBC/LDPC for MT7612 module.<br>
-12) defaults: allow use VHT_STBC for MT7610 module.<br>
-13) radvd: up to 2.11 version.<br>
-14) dnsmasq: up to 2.73rc4 version.<br>
-15) ntfs-3g: up to 2015.3.14 version.<br>
-16) igmpproxy: use daemon function instead of direct coding.<br>
-17) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-18) pppd: do not build ipx support if not enabled in kernel.<br>
-19) lldpd: up to 0.7.14 version.<br>
-20) dhcp6c: do not open a routing socket that's never used.<br>
-21) dhcp6c: more compath with new uclibc/glibc.<br>
-22) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
-23) goahead: allow select VHT_STBC mode for 7610 module.<br>
-24) kernel: up to 3.4.107 version.<br>
-25) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-26) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-27) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-28) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-29) kernel: ralink_wifi: allow mac address changes.<br>
-30) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-31) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
-32) kernel: drop bogus check in file_open_root().<br>
-33) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-34) kernel: mips: hibernate: flush TLB entries earlier.<br>
-35) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-36) kernel: net: gro: should be ECN friendly.<br>
-37) kernel: net: gro: should aggregate frames without DF.<br>
-38) kernel: net: add address assign type "SET".<br>
-39) kernel: net: init perm_addr in register_netdevice().<br>
-40) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
-41) kernel: ethtool: consolidate work with ethtool_ops.<br>
-42) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
-43) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
-44) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
-45) kernel: netlink: validate addr_len on bind.<br>
-46) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
-47) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
-48) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
-49) kernel: inetpeer: fix token initialization.<br>
+6) build_system: enable -Bsymbolic-functions by default for linking shared libs.<br>
+7) init.d: global.sh small cleanup.<br>
+8) init.d: move dhcpv6 client config and start to /etc/init.d/six.<br>
+9) init.d: optimize refresh device nodes, hotplug rescan and preinit scripts.<br>
+10) init.d: initial support ipv6 dual stack native mode over PPPOE/PPTP/L2TP.<br>
+11) init.d: more readable system info export from lldp.<br>
+12) defaults: allow use VHT_STBC/LDPC for MT7612 module.<br>
+13) defaults: allow use VHT_STBC for MT7610 module.<br>
+14) radvd: up to 2.11 version.<br>
+15) dnsmasq: up to 2.73rc4 version.<br>
+16) ntfs-3g: up to 2015.3.14 version.<br>
+17) igmpproxy: use daemon function instead of direct coding.<br>
+18) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+19) pppd: do not build ipx support if not enabled in kernel.<br>
+20) lldpd: up to 0.7.14 version.<br>
+21) dhcp6c: do not open a routing socket that's never used.<br>
+22) dhcp6c: more compath with new uclibc/glibc.<br>
+23) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
+24) goahead: allow select VHT_STBC mode for 7610 module.<br>
+25) kernel: up to 3.4.107 version.<br>
+26) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+27) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+28) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+29) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+30) kernel: ralink_wifi: allow mac address changes.<br>
+31) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+32) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
+33) kernel: drop bogus check in file_open_root().<br>
+34) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+35) kernel: mips: hibernate: flush TLB entries earlier.<br>
+36) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+37) kernel: net: gro: should be ECN friendly.<br>
+38) kernel: net: gro: should aggregate frames without DF.<br>
+39) kernel: net: add address assign type "SET".<br>
+40) kernel: net: init perm_addr in register_netdevice().<br>
+41) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
+42) kernel: ethtool: consolidate work with ethtool_ops.<br>
+43) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
+44) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
+45) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
+46) kernel: netlink: validate addr_len on bind.<br>
+47) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
+48) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
+49) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
+50) kernel: inetpeer: fix token initialization.<br>
 <br>
 <br>
 <b>TODO:</b><br>
