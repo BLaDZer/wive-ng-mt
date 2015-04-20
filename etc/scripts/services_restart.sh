@@ -32,9 +32,9 @@ if [ "$wan_static_dns" = "on" ]; then
 fi
 
 ##########################################################
-# Regenerate resolv only if wan_static_dns on
+# Full reconfigure ipv6 only by all call
 ##########################################################
-if [ -d /proc/sys/net/ipv6 ] && [ "$MODE" != "pppd" ]; then
+if [ -d /proc/sys/net/ipv6 ] && [ "$MODE" = "all" ]; then
     service six restart
 fi
 
