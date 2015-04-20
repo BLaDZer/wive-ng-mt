@@ -84,10 +84,7 @@ rm -rfv $ROOTDIR/images/*
 ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
 
 echo --------------------------------COPY-CONFIG-----------------------------
-#####################################################ALL-CONFIGS################################################################
-ln -fs $ROOTDIR/vendors/Mediatek/config.arch config.arch
-ln -fs $ROOTDIR/config/autoconf.h		$ROOTDIR/autoconf.h
-#####################################################PER-DEVICES################################################################
+#####################################################PER-DEVICES-CONFIGS################################################################
 if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-8M-USB" ]; then
     cp -fv $ROOTDIR/configs/kernel/config-kernel-MT7621-MT7602-MT7612-2T2R-8M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-8M-USB							$ROOTDIR/user/busybox/.config
@@ -127,7 +124,7 @@ else
     echo "Config files not found."
     exit 1
 fi
-#####################################################DIFF-MODES#################################################################
+#####################################################DIFF-MODES###########################################################################
 # enable ATE and others support for fabric
 if [ "$FMODE" = "YES" ]; then
     echo "BUILD FABRIC MODE"

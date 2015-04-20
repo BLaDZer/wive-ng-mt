@@ -2,11 +2,11 @@
 #
 .EXPORT_ALL_VARIABLES:
 #########################################################################################################################
--include config.arch
--include ../../../linux/.config
--include ../../../linux/drivers/mtd/ralink/ralink-flash.h
--include ../../../sdk_version.h
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
 -include ../../../version
+-include ../../../linux/drivers/mtd/ralink/ralink-flash.h
 
 #########################################################################################################################
 # Tune locale to eng

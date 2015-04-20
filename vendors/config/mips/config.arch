@@ -15,9 +15,14 @@
 #
 ############################################################################
 
-ifndef CONSOLE_BAUD_RATE
-  CONSOLE_BAUD_RATE = 57600
-endif
+############################ BASE FLAGS ###################################
+PRODUCTID		?= "WN-MT"
+ROOTDIR			?= /opt/Wive-MT
+CONSOLE_BAUD_RATE	= 57600
+########################## LIB/USER FLAGS #################################
+
+LOPT  =
+UOPT  =
 
 ifndef VERSIONPKG
   VERSIONPKG  := 1.0.0

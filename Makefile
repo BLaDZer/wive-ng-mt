@@ -14,7 +14,6 @@
 .EXPORT_ALL_VARIABLES:
 
 ROOTDIR	:= $(shell pwd)
--include version
 
 all: tools linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
 
@@ -57,6 +56,7 @@ IMAGEDIR	:= $(ROOTDIR)/images
 ROMFSDIR	:= $(ROOTDIR)/romfs
 SCRIPTSDIR	:= $(ROOTDIR)/config/scripts
 LINUX_CONFIG	:= $(LINUXDIR)/.config
+ARCH_CONFIG	:= $(ROOTDIR)/vendors/config/mips/config.arch
 CONFIG_CONFIG	:= $(ROOTDIR)/config/.config
 PATH		:= $(PATH):$(ROOTDIR):$(ROOTDIR)/tools:$(ROOTDIR)/toolchain/bin:$(ROOTDIR)/lib/lib:$(ROOTDIR)/lib/include:$(LINUXDIR):$(LIBCDIR)
 
@@ -66,21 +66,15 @@ CROSS_COMPILE			:= $(CONFIG_CROSS_COMPILER_PATH)mipsel-linux-uclibc-
 KERNEL_CROSS_COMPILE		:= $(CROSS_COMPILE)
 CROSS_COMPILER_PREFIX		:= $(CROSS_COMPILE)
 
-#NUM MAKE PROCESS = CPU NUMBER IN THE SYSTEM * CPU_OVERLOAD
-CPU_OVERLOAD	:= 4
+# NUM MAKE PROCESS = CPU NUMBER IN THE SYSTEM * CPU_OVERLOAD
+CPU_OVERLOAD		:= 4
+HOST_NCPU		:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/cpuinfo`; if [ $$n -gt 1 ];then expr $$n \* ${CPU_OVERLOAD}; else echo $$n; fi; else echo 1; fi)
+BUILD_START_STRING	:= $(shell date "+%a, %d %b %Y %T %z")
+CONFIG_SHELL		:= $(shell if [ -x "$$BASH" ]; then echo $$BASH; else if [ -x /bin/bash ]; then echo /bin/bash; else echo sh; fi ; fi)
 
-HOST_NCPU	:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/cpuinfo`; if [ $$n -gt 1 ];then expr $$n \* ${CPU_OVERLOAD}; else echo $$n; fi; else echo 1; fi)
-BUILD_START_STRING := $(shell date "+%a, %d %b %Y %T %z")
-
-CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; else if [ -x /bin/bash ]; then echo /bin/bash; else echo sh; fi ; fi)
-
-ifeq (config.arch,$(wildcard config.arch))
-ifeq ($(filter %_default, $(MAKECMDGOALS)),)
-ARCH_CONFIG := $(ROOTDIR)/config.arch
-include $(ARCH_CONFIG)
-export ARCH_CONFIG
-endif
-endif
+# Include configs
+-include version
+-include $(ARCH_CONFIG)
 
 ifneq ($(SUBARCH),)
 # Using UML, so make the kernel and non-kernel with different ARCHs
@@ -91,9 +85,9 @@ MAKEARCH := $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
 MAKEARCH_KERNEL := $(MAKEARCH)  ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE)
 endif
 
-KCONFIG_NOTIMESTAMP=1
+KCONFIG_NOTIMESTAMP := 1
 
-DIRS    :=  $(ROOTDIR)/vendors $(ROOTDIR)/user $(ROOTDIR)/lib
+DIRS :=  $(ROOTDIR)/vendors $(ROOTDIR)/user $(ROOTDIR)/lib
 
 export LANG LC_COLLATE LC_MESSAGES LC_ALL
 export ROOTDIR FIRMROOT
@@ -101,8 +95,9 @@ export KCONFIG_NOTIMESTAMP
 export CONFIG_VENDOR CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
 export CONFIG_CROSS_COMPILER_PATH CROSS_COMPILE KERNEL_CROSS_COMPILE CROSS_COMPILER_PREFIX
 export CONFIG_CONFIG LINUX_CONFIG ARCH_CONFIG
+export RT288X_SDK_VERSION DEVNAME REALNAME VERSIONPKG VERSIONSTR
 export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST IMAGEDIR RELFILES TFTPDIR
-export RT288X_SDK_VERSION VERSIONPKG VERSIONSTR IMAGEDIR RELFILES TFTPDIR
+export IMAGEDIR RELFILES TFTPDIR
 export BUILD_START_STRING
 export HOST_NCPU DIRS
 export HOSTCC PATH
@@ -267,7 +262,6 @@ clean:
 	touch $(ROOTDIR)/linux/.config
 	touch $(ROOTDIR)/.config
 	touch $(ROOTDIR)/config/autoconf.h
-	touch $(ROOTDIR)/config.arch
 	################CLEAN ALL SUBDIRS 1############################
 	-for dir in $(DIRS) $(LINUXDIR) Uboot ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
 	-for dir in $(DIRS) $(LINUXDIR) Uboot ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir distclean ; done
@@ -286,7 +280,7 @@ clean:
 	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f
 	##############REMOVE UNUSED FOLDERS###########################
 	find $(ROOTDIR) -type d -a \( -name 'filesystem' -o -name 'autom4te.cache' -o -name '.libs' -o -name 'cvs' -o -name 'CVS' -o -name '.dep' -o -name '.deps' \) | xargs rm -rf
-	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs config.in config.arch config.tk images modules/config.tk .config .config.old .oldconfig autoconf.h
+	rm -rf $(LIBCDIRSHARED) $(ROOTDIR)/dev $(IMAGEDIR) $(ROMFSDIR) romfs images
 
 %_only:
 	case "$(@)" in \
