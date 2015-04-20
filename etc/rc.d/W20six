@@ -16,7 +16,7 @@ LOG="logger -t ipv6"
 
 calculate_and_set_mtu() {
     # get mtu from wan
-    wanmtu=`ip -4 -o link show dev $real_wan_if | awk {' print $5 '}`
+    wanmtu=`ip -4 -o link show dev $tun_wan_if | awk {' print $5 '}`
     if [ "$wanmtu" = "" ]; then
 	#min of max for tun at wan
 	$LOG "Use default MTU 1460"
@@ -66,9 +66,9 @@ start() {
     	    $LOG "Tunel ipv6 in ipv4 configure and up"
     	    calculate_and_set_mtu
 	    $LOG "Tune and up $six_wan_if interface"
-	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/128 dev $real_wan_if			> /dev/null 2>&1
-	    ip -6 addr add ${ipv6prefix}:${ipv6subnet}::abca/128 dev $real_wan_if
-	    ip tunnel add $six_wan_if mode sit local $real_wan_ipaddr ttl 64
+	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/128 dev $tun_wan_if			> /dev/null 2>&1
+	    ip -6 addr add ${ipv6prefix}:${ipv6subnet}::abca/128 dev $tun_wan_if
+	    ip tunnel add $six_wan_if mode sit local $tun_wan_ipaddr ttl 64
 	    ip tunnel 6rd dev $six_wan_if 6rd-prefix ${ipv6prefix}::/${IPv6PrefixLen}
 	    ip -6 addr del ${ipv6prefix}:${ipv6subnet}::abca/${IPv6PrefixLen} dev $six_wan_if		> /dev/null 2>&1
 	    ip -6 addr add ${ipv6prefix}:${ipv6subnet}::abca/${IPv6PrefixLen} dev $six_wan_if
@@ -97,15 +97,15 @@ start() {
 	if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
 	    # tune after tunnels configured
 	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces(security need)."
-    	    sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0
+    	    sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
 	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
 		$LOG "Tunneled ipv6 acess mode not need ipv6 adress and route at wan ifaces - drop it."
 		ip -6 route flush dev $wan_if					> /dev/null 2>&1
-		ip -6 route flush dev $real_wan_if				> /dev/null 2>&1
+		ip -6 route flush dev $tun_wan_if				> /dev/null 2>&1
 		ip -6 addr flush dev $wan_if					> /dev/null 2>&1
-		ip -6 addr flush dev $real_wan_if				> /dev/null 2>&1
+		ip -6 addr flush dev $tun_wan_if				> /dev/null 2>&1
 	    fi
 	    $LOG "Set ${PREFIX} to $lan_if"
 	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
@@ -171,7 +171,7 @@ dhcpradvdreconf() {
     		    " >> /etc/radvd.conf
 		    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
     			printf "
-                    	    Base6to4Interface $real_wan_if;
+                    	    Base6to4Interface $tun_wan_if;
     			" >> /etc/radvd.conf
 		    fi
     		    printf "
@@ -274,13 +274,23 @@ get_param() {
     fi
 
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
+
+	# switch tun over wan/vpn
+	if [ "$vpnDGWSIX" = "on" ]; then
+	    tun_wan_if="$real_wan_if"
+	    tun_wan_ipaddr="$real_wan_ipaddr"
+	else
+	    tun_wan_if="$wan_if"
+	    tun_wan_ipaddr="$wan_ipaddr"
+	fi
+
 	# check wan ip set, need v4 adress at wan for tunnels config
-	if [ "$IPv6OpMode" != "1" ] && [ "$real_wan_ipaddr" = "" ]; then
+	if [ "$IPv6OpMode" != "1" ] && [ "$tun_wan_ipaddr" = "" ]; then
     	    $LOG "No ipv4 adress on wan (need for tunnel mode), exit..."
     	    exit 1
 	fi
 
-        $LOG "Enable ipv6 and forwarding"
+        # enable ipv6 and forwarding
         sysctl -wq net.ipv6.conf.all.disable_ipv6=0
         sysctl -wq net.ipv6.conf.all.forwarding=1
         sysctl -wq net.ipv6.conf.all.accept_ra=1
@@ -290,7 +300,7 @@ get_param() {
         # 6RD mode
         if [ "$IPv6OpMode" = "2" ]; then
 	    relay6to4="$IPv6SrvAddr"										# The 6rd IPv4-gateway
-	    ipv6subnet="$(echo -n `printf '%02X:' ${real_wan_ipaddr//./ } | awk -F: '{print($1$2":"$3$4)}'`)"	# Calculate subnet from real ipv4 adress
+	    ipv6subnet="$(echo -n `printf '%02X:' ${tun_wan_ipaddr//./ } | awk -F: '{print($1$2":"$3$4)}'`)"	# Calculate subnet from real ipv4 adress
 	    if [ "$IPv6IPAddr" != "" ] && [ "$IPv6PrefixLen" != "" ]; then
 		ipv6prefix="$IPv6IPAddr"
 	    else
@@ -303,7 +313,7 @@ get_param() {
         elif [ "$IPv6OpMode" = "3" ]; then
 	    IPv6PrefixLen="64"                                                                                  # Default 6to4 prefix length
 	    ipv6subnet="2000"											# Default 6to4 subnet
-    	    ipv6prefix=`echo $real_wan_ipaddr | awk -F. '{ printf "2002:%02x%02x:%02x%02x", $1, $2, $3, $4 }'`	# Calculate prefix
+    	    ipv6prefix=`echo $tun_wan_ipaddr | awk -F. '{ printf "2002:%02x%02x:%02x%02x", $1, $2, $3, $4 }'`	# Calculate prefix
 	    if [ "$IPv6SrvAddr" = "" ]; then
 		relay6to4="192.88.99.1"										# Default 6to4 IPv4-gateway
 	    else
@@ -325,7 +335,7 @@ stop() {
     	sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
     	sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
     	sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.$real_wan_if.forwarding=0	> /dev/null 2>&1
+    	sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
     	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
 
 	# disable ipv6
@@ -350,7 +360,7 @@ stop() {
 
 	ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
 	ip -6 route flush scope all dev sit0				> /dev/null 2>&1
-	ip -6 route flush scope all dev $real_wan_if			> /dev/null 2>&1
+	ip -6 route flush scope all dev $tun_wan_if			> /dev/null 2>&1
 	ip -6 route flush scope all dev $six_wan_if			> /dev/null 2>&1
 
 	ip link set dev 6rd down					> /dev/null 2>&1
