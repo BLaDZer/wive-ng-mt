@@ -855,6 +855,7 @@
 48) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
 49) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
 50) kernel: inetpeer: fix token initialization.<br>
+51) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
 <br>
 <br>
 <b>TODO:</b><br>
