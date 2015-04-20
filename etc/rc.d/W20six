@@ -242,18 +242,28 @@ dhcpcreconf() {
 	# generate dhcpv6 client config (use mac from WAN)
 	ID=`ip -o link show dev $wan_if | awk {' print $15 '}  | awk -F":" ' { print  "0x"$4$5$6 } '`
 	ID=`printf "%d" "$ID"`
+
+	# tune some parametrs between modes
+	# IPOE dualstack - reqest IA-NA/PD, sla-id=0,sla-len=8
+	# PPTP/L2TP/PPPOE dualstack - do not reqest IA-NA, only PD, sla-id=1,sla-len=0
+	if [ "$vpnEnabled" != "on" ] || [ "$vpnDGWSIX" != "on" ]; then
+	    REQIANA="send ia-na $ID;"
+	fi
+	SLAID="sla-id 0;"
+	SLALEN="sla-len 8;"
+
 	printf "
 	interface $six_wan_if {
 	    send ia-pd $ID;
-	    send ia-na $ID;
+	    $REQIANA
 	    send rapid-commit;
 	    request domain-name-servers;
 	    script \"/etc/scripts/dhcp6c-script\";
 	};
 	id-assoc pd $ID {
 	    prefix-interface $lan_if {
-		sla-id 0;
-		sla-len 8;
+		$SLAID
+		$SLALEN
 	    };
 	};
 	id-assoc na $ID { };
