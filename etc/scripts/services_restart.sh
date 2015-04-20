@@ -46,7 +46,7 @@ fi
 # And only server daemons reconfigure always
 # In tunneled or static modes always reconfigure all
 ##########################################################
-if [ "$MODE" = "all" ] || [ "$IPv6OpMode" = "1" -o "$IPv6Dhcpc" != "1" ] || [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
+if [ "$MODE" = "all" ] || [ "$MODE" = "misc" ] || [ "$IPv6OpMode" = "1" -o "$IPv6Dhcpc" != "1" ] || [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
     service six restart
 fi
 

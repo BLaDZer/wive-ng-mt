@@ -102,7 +102,7 @@ start() {
 	$LOG "Start DHCP client at $wan_if."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" != "on" ]; then
-	    (sleep 2 && service six dhcpcreconf) &
+	    (sleep 10 && service six dhcpcreconf) &
 	fi
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."

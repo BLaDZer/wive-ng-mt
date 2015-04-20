@@ -117,7 +117,6 @@ romfs:
 		$(ROMFSINST) /sbin/$$i ; \
 		$(ROMFSINST) $$i.conf /etc/$$i.conf ; \
 	done
-	$(ROMFSINST) -S dhcp6c-script /etc/scripts/dhcp6c-script
 
 includes::
 
