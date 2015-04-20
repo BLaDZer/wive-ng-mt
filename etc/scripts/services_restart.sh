@@ -42,6 +42,13 @@ if [ "$wan_static_dns" = "on" ]; then
 fi
 
 ##########################################################
+# reconfigure ipv6 tunnels after wan/vpn adress renew
+##########################################################
+if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]  && [ "$MODE" = "dhcp" -o "$MODE" = "ppp" ]; then
+    service six restart
+fi
+
+##########################################################
 # Always reload some services				 #
 ##########################################################
     if [ -e /etc/init.d/parprouted ]; then
