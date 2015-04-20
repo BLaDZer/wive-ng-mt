@@ -32,9 +32,9 @@ if [ "$wan_static_dns" = "on" ]; then
 fi
 
 ##########################################################
-# Full reconfigure ipv6 only by all call
+# Full reconfigure ipv6 in dynamic mode only by all call
 ##########################################################
-if [ -d /proc/sys/net/ipv6 ] && [ "$MODE" = "all" ]; then
+if [ -d /proc/sys/net/ipv6 ] && [ "$MODE" = "all" -o "$IPv6Dhcpc" != "1" ]; then
     service six restart
 fi
 
