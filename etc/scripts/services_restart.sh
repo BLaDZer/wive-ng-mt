@@ -42,17 +42,9 @@ if [ "$wan_static_dns" = "on" ]; then
 fi
 
 ##########################################################
-# Full reconfigure ipv6 in dynamic mode only by all call
-# And only server daemons reconfigure always
-# In tunneled or static modes always reconfigure all
-##########################################################
-if [ "$MODE" = "all" ] || [ "$MODE" = "misc" ] || [ "$IPv6OpMode" = "1" -o "$IPv6Dhcpc" != "1" ] || [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
-    service six restart
-fi
-
-##########################################################
 # Always reload some services				 #
 ##########################################################
+    service six restart
     if [ -e /etc/init.d/parprouted ]; then
 	service parprouted restart
     fi

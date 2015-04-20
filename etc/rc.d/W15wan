@@ -140,10 +140,8 @@ stop() {
     service vpnhelper stop
 
     # stop dhcp and zeroconf clients
-    killall -q dhcp6c
     killall -q udhcpc
     killall -q zcip
-    killall -q -SIGKILL dhcp6c
     killall -q -SIGKILL udhcpc
     killall -q -SIGKILL zcip
 
