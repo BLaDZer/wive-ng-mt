@@ -856,6 +856,7 @@
 49) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
 50) kernel: inetpeer: fix token initialization.<br>
 51) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
+52) kernel: mips: fix start of free memory when using initrd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
