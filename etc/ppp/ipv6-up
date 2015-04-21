@@ -1,12 +1,15 @@
 #!/bin/sh
 
-# ipv6-up
-# Called by pppd after IPV6CP/up was finished
-
-LOG="logger -t pppd_v6"
-
 #include global config
 . /etc/scripts/global.sh
+
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+LOG="logger -t pppd_v6"
 
 if [ "$vpnDGWSIX" = "on" ]; then
     $LOG "Replace IPv6 dgw to $PPP_IFACE"
