@@ -49,11 +49,11 @@ start() {
 		sysctl -wq net.ipv6.conf.$six_wan_if.accept_ra=0
 
                 $LOG "Set ${IPv6WANIPAddr}/${IPv6WANPrefixLen} to $six_wan_if"
-		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $six_wan_if	> /dev/null 2>&1
+		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $six_wan_if			> /dev/null 2>&1
 		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $six_wan_if
 
                 $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
-		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if		> /dev/null 2>&1
+		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if				> /dev/null 2>&1
 		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
 
 		$LOG "Replace Ipv6 DGW to $six_wan_if via $IPv6GWAddr"
@@ -81,14 +81,14 @@ start() {
         elif [ "$IPv6OpMode" = "3" ]; then
 	    # this section for 6to4 tunnel mode
     	    $LOG "Tunel ipv6 in ipv4 configure and up"
-    	    calculate_and_set_mtu										# Calculate and set mtu
+    	    calculate_and_set_mtu									# Calculate and set mtu
 	    $LOG "Up $six_wan_if interface"
 	    ip -6 link set $six_wan_if up
 	    $LOG "Set mtu $sitmtu to $six_wan_if"
 	    sysctl -wq net.ipv6.conf.$six_wan_if.mtu="$sitmtu"
 	    ip link set mtu $sitmtu dev $six_wan_if
 	    $LOG "Add adress ${ipv6prefix}::1/16 to $six_wan_if"
-	    ip -6 addr del ${ipv6prefix}::1/16 dev $six_wan_if				> /dev/null 2>&1
+	    ip -6 addr del ${ipv6prefix}::1/16 dev $six_wan_if						> /dev/null 2>&1
 	    ip -6 addr add ${ipv6prefix}::1/16 dev $six_wan_if
 	    $LOG "Add route to ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if"
 	    ip -6 route replace ${ipv6subnet}::/3 via ::${relay6to4} dev $six_wan_if metric 1
@@ -102,13 +102,13 @@ start() {
     	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
 	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
 		$LOG "Tunneled ipv6 acess mode not need ipv6 adress and route at wan ifaces - drop it."
-		ip -6 route flush dev $wan_if					> /dev/null 2>&1
-		ip -6 route flush dev $tun_wan_if				> /dev/null 2>&1
-		ip -6 addr flush dev $wan_if					> /dev/null 2>&1
-		ip -6 addr flush dev $tun_wan_if				> /dev/null 2>&1
+		ip -6 route flush dev $wan_if								> /dev/null 2>&1
+		ip -6 route flush dev $tun_wan_if							> /dev/null 2>&1
+		ip -6 addr flush dev $wan_if								> /dev/null 2>&1
+		ip -6 addr flush dev $tun_wan_if							> /dev/null 2>&1
 	    fi
 	    $LOG "Set ${PREFIX} to $lan_if"
-	    ip -6 addr del ${PREFIX} dev $lan_if	> /dev/null 2>&1
+	    ip -6 addr del ${PREFIX} dev $lan_if							> /dev/null 2>&1
 	    ip -6 addr add ${PREFIX} dev $lan_if
 	    flush_net_caches
 	    dhcpradvdreconf
@@ -120,13 +120,6 @@ dhcpradvdreconf() {
     get_param
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	$LOG "Reconfigure radvd and dhcpv6 server"
-
-	# prevent double start
-	killall -q radvd
-	killall -q -SIGKILL radvd
-
-	killall -q dhcp6s
-	killall -q -SIGKILL dhcp6s
 
 	# get prefix direct from lan iface if not set
 	if [ "$PREFIX" = "" ]; then
@@ -220,11 +213,22 @@ dhcpradvdreconf() {
     fi
 }
 
-dhcpcreconf() {
-    # prevent double start
-    killall -q dhcp6c
-    killall -q -SIGKILL dhcp6c
+dhcpradvdstop() {
+    pid=`pidof radvd`
+    if [ "$pid" != "" ]; then
+	$LOG  "Stop radvd."
+	killall -q radvd
+	killall -q -SIGKILL radvd
+    fi
+    pid=`pidof dhcp6s`
+    if [ "$pid" != "" ]; then
+	$LOG  "Stop dhcp6s."
+	killall -q dhcp6s
+	killall -q -SIGKILL dhcp6s
+    fi
+}
 
+dhcpcreconf() {
     if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
 	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if."
 	# ipv6 mode preconfig for wan
@@ -271,6 +275,15 @@ dhcpcreconf() {
 
 	$LOG "Start DHCPv6 client at $six_wan_if."
 	dhcp6c $six_wan_if > /dev/null 2>&1
+    fi
+}
+
+dhcpcstop() {
+    pid=`pidof dhcp6c`
+    if [ "$pid" != "" ]; then
+	$LOG  "Stop dhcp6c."
+	killall -q dhcp6c
+	killall -q -SIGKILL dhcp6c
     fi
 }
 
@@ -337,8 +350,7 @@ get_param() {
 
 stop() {
     if [ -f /var/run/radvd.pid ] || [ -f /var/run/dhcp6s.pid ]; then
-	$LOG  "Stop radvd and dhcpv6 daemons."
-
+	$LOG  "Deconfigure ipv6 interfaces/route."
         # disable ra for all ifaces
 	sysctl -wq net.ipv6.conf.all.accept_ra=0		> /dev/null 2>&1
         sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
@@ -350,15 +362,6 @@ stop() {
 
 	# disable ipv6
 	sysctl -wq net.ipv6.conf.all.disable_ipv6=1
-
-	killall -q dhcp6c
-	killall -q -SIGKILL dhcp6c
-
-	killall -q radvd
-	killall -q -SIGKILL radvd
-
-	killall -q dhcp6s
-	killall -q -SIGKILL dhcp6s
 
 	# cleanup global adresses
 	echo "#!/bin/sh" > /tmp/ip6addrdel
@@ -390,15 +393,27 @@ case "$1" in
 	    ;;
 
 	stop)
+	    dhcpradvdstop
+	    dhcpcstop
 	    stop
 	    ;;
 
 	dhcpradvdreconf)
+	    dhcpradvdstop
 	    dhcpradvdreconf
 	    ;;
 
+	dhcpradvdstop)
+	    dhcpradvdstop
+	    ;;
+
 	dhcpcreconf)
+	    dhcpcstop
 	    dhcpcreconf
+	    ;;
+
+	dhcpcstop)
+	    dhcpcstop
 	    ;;
 
 	restart)
@@ -407,6 +422,6 @@ case "$1" in
 	    ;;
 
 	*)
-	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|dhcpcreconf|restart}"
+	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|dhcpradvdstop|dhcpcreconf|dhcpcstop|restart}"
 	    exit 1
 esac

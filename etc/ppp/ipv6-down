@@ -1,15 +1,18 @@
 #!/bin/sh
 
-# ipv6-down
-# Called by pppd after IPV6CP/up was finished
-
-LOG="logger -t pppd"
-
 #include global config
 . /etc/scripts/global.sh
 
+PPP_IFACE="$1"
+PPP_TTY="$2"
+PPP_SPEED="$3"
+PPP_LOCAL="$4"
+PPP_REMOTE="$5"
+PPP_IPPARAM="$6"
+LOG="logger -t pppd_v6"
+
 #prevent race
 if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" = "on" ]; then
-    killall -q dhcp6c
-    killall -q -SIGKILL dhcp6c
+    # call stop dhcp v6 client
+    service six dhcpcstop
 fi
