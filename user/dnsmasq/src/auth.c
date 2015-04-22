@@ -131,12 +131,9 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 	  continue;
 	}
 
-      if (qtype == T_PTR)
-	{
-	  if (!(flag = in_arpa_name_2_addr(name, &addr)))
-	    continue;
-
-	  if (!local_query)
+      if ((qtype == T_PTR || qtype == T_SOA || qtype == T_NS) &&
+	  (flag = in_arpa_name_2_addr(name, &addr)) &&
+	  !local_query)
 	    {
 	      for (zone = daemon->auth_zones; zone; zone = zone->next)
 		if ((subnet = find_subnet(zone, flag, &addr)))
@@ -147,8 +144,14 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 		  auth = 0;
 		  continue;
 		}
+	  else if (qtype == T_SOA)
+	    soa = 1, found = 1;
+	  else if (qtype == T_NS)
+	    ns = 1, found = 1;
 	    }
 
+      if (qtype == T_PTR && flag)
+	{
 	  intr = NULL;
 
 	  if (flag == F_IPV4)
@@ -186,7 +189,7 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 	  
 	  if (intr)
 	    {
-	      if (in_zone(zone, intr->name, NULL))
+	      if (local_query || in_zone(zone, intr->name, NULL))
 		{	
 		  found = 1;
 		  log_query(flag | F_REVERSE | F_CONFIG, intr->name, &addr, NULL);
@@ -208,8 +211,11 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 		    *p = 0; /* must be bare name */
 		  
 		  /* add  external domain */
+		  if (zone)
+		    {
 		  strcat(name, ".");
 		  strcat(name, zone->domain);
+		    }
 		  log_query(flag | F_DHCP | F_REVERSE, name, &addr, record_source(crecp->uid));
 		  found = 1;
 		  if (add_resource_record(header, limit, &trunc, nameoffset, &ansp, 
@@ -217,7 +223,7 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 					  T_PTR, C_IN, "d", name))
 		    anscount++;
 		}
-	      else if (crecp->flags & (F_DHCP | F_HOSTS) && in_zone(zone, name, NULL))
+	      else if (crecp->flags & (F_DHCP | F_HOSTS) && (local_query || in_zone(zone, name, NULL)))
 		{
 		  log_query(crecp->flags & ~F_FORWARD, name, &addr, record_source(crecp->uid));
 		  found = 1;
@@ -240,6 +246,11 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 	}
       
     cname_restart:
+      if (found)
+	/* NS and SOA .arpa requests have set found above. */
+	cut = NULL;
+      else
+	{
       for (zone = daemon->auth_zones; zone; zone = zone->next)
 	if (in_zone(zone, name, &cut))
 	  break;
@@ -248,6 +259,7 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 	{
 	  auth = 0;
 	  continue;
+	}
 	}
 
       for (rec = daemon->mxnames; rec; rec = rec->next)

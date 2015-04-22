@@ -819,7 +819,7 @@
 12) defaults: allow use VHT_STBC/LDPC for MT7612 module.<br>
 13) defaults: allow use VHT_STBC for MT7610 module.<br>
 14) radvd: up to 2.11 version.<br>
-15) dnsmasq: up to 2.73rc4 version.<br>
+15) dnsmasq: up to 2.73rc5 version.<br>
 16) ntfs-3g: up to 2015.3.14 version.<br>
 17) igmpproxy: use daemon function instead of direct coding.<br>
 18) udpxy: fix work at 3.5.x and more new linux kernels.<br>
