@@ -239,7 +239,6 @@ function formRoutingTable(form)
         <p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>
         <hr>
         <form action="/goform/editRouting" method="post" name="editRouting" onSubmit="return formRoutingTable(this);">
-          
           <!-- Rule adding -->
           <table class="form">
             <tr>
@@ -278,13 +277,11 @@ function formRoutingTable(form)
               <td><input name="comment" class="mid" type="text"></td>
             </tr>
             <tr>
-              <td class="head" id="addRule">Add rule</td>
+              <td class="head" id="addRule"> </td>
               <td><input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button"></td>
             <tr> </tr>
           </table>
-          
           <!--  delete rules -->
-          
           <div id="ajxCtxRoutingTable"></div>
           <table class="buttons">
             <tr>

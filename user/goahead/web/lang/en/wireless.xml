@@ -89,7 +89,7 @@
   <message msgid="adv short preamble" msgstr="Short Preamble" />
   <message msgid="adv short slot" msgstr="Short Slot" />
   <message msgid="adv tx burst" msgstr="Tx Burst" />
-  <message msgid="adv pkt aggregate" msgstr="Pkt_Aggregate" />
+  <message msgid="adv pkt aggregate" msgstr="Pkt Aggregate" />
   <message msgid="adv 80211h" msgstr="IEEE 802.11H Support" />
   <message msgid="adv 80211h disable describe" msgstr="(only in A band)" />
   <message msgid="adv country code" msgstr="Country Code" />

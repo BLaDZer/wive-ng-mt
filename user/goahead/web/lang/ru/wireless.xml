@@ -88,7 +88,7 @@
   <message msgid="adv short preamble" msgstr="Короткая преамбула" />
   <message msgid="adv short slot" msgstr="Короткий слот" />
   <message msgid="adv tx burst" msgstr="Пакетная отправка" />
-  <message msgid="adv pkt aggregate" msgstr="Pkt_Aggregate" />
+  <message msgid="adv pkt aggregate" msgstr="Пакетная агрегация" />
   <message msgid="adv 80211h" msgstr="Поддержка IEEE 802.11H" />
   <message msgid="adv 80211h disable describe" msgstr="(только в диапазоне A)" />
   <message msgid="adv rdregion" msgstr="DFS RDRegion" />
