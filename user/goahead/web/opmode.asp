@@ -11,7 +11,8 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("main");
+Butterlate.setTextDomain("mode");
+Butterlate.setTextDomain("buttons");
 
 var opmode;
 var old_mode;
@@ -31,12 +32,13 @@ function changeMode()
 function initTranslation()
 {
 	_TR("oTitle", "opmode title");
+	_TR("oFirmVer", "opmode firmware version");
 	_TR("oIntroduction", "opmode introduction");
 
-	_TR("oModeB", "opmode mode b");
-	_TR("oModeBIntro", "opmode mode b intro");
-	_TR("oModeG", "opmode mode g");
-	_TR("oModeGIntro", "opmode mode g intro");
+	_TR("oModeB", "opmode mode bridge");
+	_TR("oModeBIntro", "opmode mode bridge intro");
+	_TR("oModeG", "opmode mode gateway");
+	_TR("oModeGIntro", "opmode mode gateway intro");
 	_TR("oModeE", "opmode mode e");
 	_TR("stadd", "opmode mode e intro");
 	_TR("oModeA", "opmode mode a");
@@ -44,12 +46,8 @@ function initTranslation()
 	_TR("oModeS", "opmode mode s");
 	_TR("spotdd", "opmode mode s intro");
 
-	_TR("oEthConv", "opmode eth conv");
-	_TR("oEthConvD", "main disable");
-	_TR("oEthConvE", "main enable");
-
-	_TRV("oApply", "main apply");
-	_TRV("oCancel", "main cancel");
+	_TRV("oApply", "button apply");
+	_TRV("oCancel", "button cancel");
 }
 
 function initValue()
@@ -112,10 +110,10 @@ function msg()
 <body onLoad="initValue()">
 <table class="body">
   <tr>
-    <td><h1 id="oTitle"></h1>
-      <p>Current Firmware Version: <% getSdkVersion(); %></p>
+    <td><h1 id="oTitle">Operation Mode Configuration</h1>
+      <p><div id="oFirmVer">Current Firmware Version:</div> <% getSdkVersion(); %></p>
       <hr>
-      <p id="oIntroduction"></p>
+      <p id="oIntroduction">You can configure the operation mode suitable for your environment.</p>
       <hr>
       <form method="POST" name="opmode" action="/goform/setOpMode">
         <dl>
@@ -142,7 +140,7 @@ function msg()
         </dl>
         <p></p>
         <center>
-          <input type="button" style="{width:120px;}" value="Apply" id="oApply" onClick="msg(); ajaxPostForm('Changing operation mode needs to reboot you router. Do you want to proceed?', this.form, 'setmodeReloader', '/messages/rebooting.asp', ajaxShowProgress);">
+          <input type="button" style="{width:120px;}" value="Apply" id="oApply" onClick="msg(); ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', '/messages/rebooting.asp', ajaxShowProgress);">
           &nbsp;&nbsp;
           <input type="reset" style="{width:120px;}" value="Reset" id="oCancel" onClick="window.location.reload()">
           <iframe id="setmodeReloader" name="setmodeReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>

@@ -8,16 +8,17 @@
 <link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript">
-Butterlate.setTextDomain("main");
+Butterlate.setTextDomain("view");
+Butterlate.setTextDomain("buttons");
 
 function initTranslation()
 {
 	_TR("ovSelectLang", "overview select language");
-	_TRV("ovLangApply", "main apply");
+	_TRV("ovLangApply", "button apply");
 
-	_TR("ovStatus", "overview status link");
-	_TR("ovStatistic", "overview statistic link");
-	_TR("ovManagement", "overview management link");
+	_TR("ovStatus", "overview status");
+	_TR("ovStatistic", "overview statistics");
+	_TR("ovManagement", "overview management");
 }
 
 function initValue()
@@ -89,14 +90,14 @@ function setLanguage()
           <p> <a href="/adm/status.asp" id="ovStatus">Status</a><br />
             <a href="/adm/statistic.asp" id="ovStatistic">Statistic</a><br />
             <a href="/adm/management.asp" id="ovManagement">Management</a><br />
-            <hr /><br />
+            <div id="ovAbout"><hr /><br />
             WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
             <br />
             Conditions of commercial use are discussed individually.
             <br /><br />
             News and changes in Russian:
             <a href="http://wive-ng.sf.net">wive-ng.sf.net - development opensource routers firmware</a><br />
-            <br />Bug report please send support[at]nag.ru or sfstudio[at]mail.ru<br />
+            <br />Bug report please send support[at]nag.ru or sfstudio[at]mail.ru<br /></div>
           </p>
         </fieldset>
       </blockquote></td>

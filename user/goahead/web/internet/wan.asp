@@ -15,7 +15,8 @@
 <script language="JavaScript" type="text/javascript">
 
 var http_request = false;
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("buttons");
 
 function restoremacclick()
 {
@@ -86,7 +87,7 @@ function CheckValue(form)
 	// Validate MTU
 	if (!validateNum(form.wan_mtu.value))
 	{
-		alert("Invalid MTU value");
+		alert(_("inet invalid mtu"));
 		form.wan_mtu_type.focus();
 		return false;
 	}
@@ -100,7 +101,7 @@ function CheckValue(form)
 	var wan_mtu = form.wan_mtu.value * 1;
 	if ((wan_mtu < 80) && (wan_mtu != 0))
 	{
-		alert("Invalid MTU value");
+		alert(_("inet invalid mtu"));
 		return false;
 	}
 
@@ -113,6 +114,7 @@ function initTranslation()
 	_TR("wIntroduction", "wan introduction");
 
 	_TR("wConnectionType", "wan connection type");
+	_TR("wConnection", "wan connection");
 	_TR("wConnTypeStatic", "wan connection type static");
 	_TR("wConnTypeDhcp", "wan connection type dhcp");
 
@@ -120,13 +122,21 @@ function initTranslation()
 	_TR("wStaticIp", "inet ip");
 	_TR("wStaticNetmask", "inet netmask");
 	_TR("wStaticGateway", "inet gateway");
+	_TR("wStaticDns", "wan static dns");
 	_TR("wStaticPriDns", "inet pri dns");
 	_TR("wStaticSecDns", "inet sec dns");
 
 	_TR("wDhcpMode", "wan dhcp mode");
+	_TR("wAdditionalOptions", "wan additional options");
+	_TR("wReqFromDHCP", "wan request from dhcp");
+	_TR("wMTU", "wan mtu");
+	_TR("wNatEnabled", "wan nat enabled");
+	_TR("wMacAddress", "inet mac");
+	_TR("wMacAddr", "wan mac");
 
-	_TRV("wApply", "inet apply");
-	_TRV("wCancel", "inet cancel");
+	_TRV("wApply", "button apply");
+	_TRV("wCancel", "button cancel");
+	_TRV("WanMacRestore", "button restore factory");
 }
 
 function initValue()
@@ -196,7 +206,7 @@ function wanMtuChange(form)
       <form method="POST" name="wanCfg" action="/goform/setWan" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="2">WAN connection type</td>
+            <td class="title" colspan="2" id="wConnection">WAN connection type</td>
           </tr>
           <tr>
             <td class="head"><b id="wConnectionType">Connection type</b></td>
@@ -227,14 +237,14 @@ function wanMtuChange(form)
         </table>
         <table class="form">
           <tr>
-            <td class="title" colspan="2">Additional Options</td>
+            <td class="title" colspan="2" id="wAdditionalOptions">Additional Options</td>
           </tr>
           <tr id="dhcpReqIPRow">
-            <td class="head">Request IP from DHCP (optional)</td>
+            <td class="head" id="wReqFromDHCP">Request IP from DHCP (optional)</td>
             <td><input name="dhcpReqIP" class="mid" value="<% getCfgGeneral(1, "dhcpRequestIP"); %>"></td>
           </tr>
           <tr>
-            <td class="head">WAN MTU</td>
+            <td class="head" id="wMTU">WAN MTU</td>
             <td><input name="wan_mtu" type="text" class="half" style="display:none;">
               <select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="half">
                 <option value="0">AUTO</option>
@@ -269,7 +279,7 @@ function wanMtuChange(form)
         <br>
         <table class="form">
           <tr>
-            <td class="title" colspan="2">MAC address</td>
+            <td class="title" colspan="2" id="wMacAddress">MAC address</td>
           </tr>
           <tr id="MACrow">
             <td class="head" id="wMacAddr">WAN MAC address</td>

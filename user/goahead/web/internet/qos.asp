@@ -11,7 +11,36 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+Butterlate.setTextDomain("buttons");
+Butterlate.setTextDomain("network");
+
+function initTranslation()
+{
+  _TR("QoSTitleStr", "qos title");
+  _TR("QoSIntroStr", "qos introduction");
+  _TR("QoSSetupStr", "qos setup");
+  _TR("QoSStr", "qos type");
+  _TR("QoSSetupBW", "qos bandwidth settings");
+  _TR("QoSUpBWStr", "qos upload rate");
+  _TR("QoSUpBWLStr", "qos upload limit");
+  _TR("QoSDownBWStr", "qos download rate");
+  _TR("QoSDownBWLStr", "qos download limit");
+  _TR("QoSUPVPNBWStr", "qos upload vpn rate");
+  _TR("QoSUPVPNBWLStr", "qos upload vpn limit");
+  _TR("QoSSetupPPort", "qos priority port");
+  _TR("QoSHPP", "qos high priority ports");
+  _TR("QoSLPP", "qos low priority ports");
+  _TR("QoSDisable", "button disable");
+  _TR("QoSSimple", "qos simple");
+  _TR("QoSShaper", "qos shaper");
+  _TR("QoSCODEL", "qos codel");
+
+  _TRV("QoSApply", "button apply");
+  _TRV("QoSReset", "button reset");
+}
 
 function QoSSelectChange(form)
 {
@@ -39,6 +68,7 @@ function bodyOnLoad(form)
 {
 	initializeForm (form);
 	QoSSelectChange(form);
+  initTranslation();
 }
 
 </script>
@@ -60,10 +90,10 @@ function bodyOnLoad(form)
           <tr>
             <td class="head" id="QoSStr">Type of QoS</td>
             <td><select name="QoSSelect" onChange="QoSSelectChange(this.form);" class="wide">
-                <option value="0">Disable</option>
-                <option value="1">Simple priority based QoS</option>
-                <option value="2">Complex with shaper (ports based mark + HTB limit)</option>
-                <option value="3">Automatic Fair Queue Controlled Delay AQM (CODEL)</option>
+                <option value="0" id="QoSDisable">Disable</option>
+                <option value="1" id="QoSSimple">Simple priority based QoS</option>
+                <option value="2" id="QoSShaper">Complex with shaper (ports based mark + HTB limit)</option>
+                <option value="3" id="QoSCODEL">Automatic Fair Queue Controlled Delay AQM (CODEL)</option>
               </select></td>
           </tr>
           <tr id="BWSettings">
@@ -103,11 +133,11 @@ function bodyOnLoad(form)
             <td class="title" colspan="2" id="QoSSetupPPort">Priority port settings</td>
           </tr>
           <tr id="user_Qos_HPP">
-            <td class="head">User High Priority Ports</td>
+            <td class="head" id="QoSHPP">User High Priority Ports</td>
             <td><input name="QoS_HPP" class="superwide" size="60" maxlength="60" type="text"></td>
           </tr>
           <tr id="user_Qos_LPP">
-            <td class="head">User Low Priority Ports</td>
+            <td class="head" id="QoSLPP">User Low Priority Ports</td>
             <td><input name="QoS_LPP" class="superwide" size="60" maxlength="60" type="text"></td>
           </tr>
         </table>

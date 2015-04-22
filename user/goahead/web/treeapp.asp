@@ -45,16 +45,17 @@ function rebootRouter(form, reloader)
 }
 
 var isFimwareUpload = 0;
-Butterlate.setTextDomain("main");
+Butterlate.setTextDomain("menu");
+Butterlate.setTextDomain("buttons");
 
 function initValue()
 {
 	var e = document.getElementById("openall");
 	if (e!=null)
-		e.innerHTML = _("treeapp openall");
+		e.innerHTML = _("button openall");
 	e = document.getElementById("closeall");
 	if (e!=null)
-		e.innerHTML = _("treeapp closeall");
+		e.innerHTML = _("button closeall");
 }
 
 function setUnderFirmwareUpload(flag){

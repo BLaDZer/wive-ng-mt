@@ -1,0 +1,123 @@
+<po>
+    <message msgid="lan title" msgstr="Local Area Network (LAN) Settings" />
+    <message msgid="lan introduction" msgstr="You can configure different network services here." />
+    <message msgid="lan setup" msgstr="LAN Setup" />
+    <message msgid="inet hostname" msgstr="Hostname" />
+    <message msgid="inet mac" msgstr="MAC Address" />
+    <message msgid="inet ip" msgstr="IP Address" />
+    <message msgid="inet netmask" msgstr="Subnet Mask" />
+    <message msgid="inet gateway" msgstr="Default Gateway" />
+    <message msgid="inet pri dns" msgstr="Primary DNS Server" />
+    <message msgid="inet sec dns" msgstr="Secondary DNS Server" />
+    <message msgid="inet lan2" msgstr="LAN 2" />
+    <message msgid="inet lan2 ip" msgstr="LAN2 IP Address" />
+    <message msgid="inet lan2 netmask" msgstr="LAN2 Subnet Mask" />
+    <message msgid="inet invalid mtu" msgstr="Invalid MTU value" />
+
+    <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
+    <message msgid="wan introduction" msgstr="You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type." />
+    <message msgid="wan connection" msgstr="WAN Connection" />
+    <message msgid="wan connection type" msgstr="WAN Connection Type:" />
+    <message msgid="wan connection type static" msgstr="STATIC (Fixed IP)" />
+    <message msgid="wan connection type dhcp" msgstr="DHCP (Auto Config)" />
+    <message msgid="wan static mode" msgstr="Static Mode" />
+    <message msgid="wan dhcp mode" msgstr="DHCP Mode" />
+    <message msgid="wan additional options" msgstr="Additional Options" />
+    <message msgid="wan request from dhcp" msgstr="Request IP from DHCP (optional)" />
+    <message msgid="wan mtu" msgstr="WAN MTU" />
+    <message msgid="wan static dns" msgstr="Assign static DNS Servers" />
+    <message msgid="wan nat enabled" msgstr="Enable NAT" />
+    <message msgid="wan mac" msgstr="WAN MAC address" />
+
+    <message msgid="vpn title" msgstr="Virtual Private Network setup" />
+    <message msgid="vpn introduction" msgstr="This page is used to configure the VPN(Virtual Private Network) tunnel on your Router. " />
+    <message msgid="vpn config" msgstr="VPN configuration" />
+    <message msgid="vpn enable" msgstr="Enable VPN" />
+    <message msgid="vpn mode" msgstr="VPN Mode:" />
+    <message msgid="vpn pppoe" msgstr="PPPoE client" />
+    <message msgid="vpn pptp" msgstr="PPTP client" />
+    <message msgid="vpn l2tp" msgstr="L2TP client" />
+    <message msgid="vpn pppoe iface" msgstr="PPPoE interface:" />
+    <message msgid="vpn server col" msgstr="Host, IP, AC or APN name:" />
+    <message msgid="vpn service name" msgstr="Service name:" />
+    <message msgid="vpn auth type" msgstr="Authentication method:" />
+    <message msgid="vpn lanauth lvl" msgstr="KABINET access level:" />
+    <message msgid="vpn kabinet offline" msgstr="offline" />
+    <message msgid="vpn kabinet" msgstr="kabinet" />
+    <message msgid="vpn kabinet full" msgstr="full" />
+    <message msgid="vpn username" msgstr="Username:" />
+    <message msgid="vpn password" msgstr="Password:" />
+    <message msgid="vpn mtu mru" msgstr="MTU/MRU" />
+    <message msgid="vpn enabled" msgstr="Enabled" />
+    <message msgid="vpn disabled" msgstr="Disabled" />
+    <message msgid="vpn lcp interval" msgstr="LCP echo interval:" />
+    <message msgid="vpn lcp failure" msgstr="LCP echo failure:" />
+    <message msgid="vpn allow mppe" msgstr="Allow MPPE" />
+    <message msgid="vpn peer dns" msgstr="Peer DNS" />
+    <message msgid="vpn allow debug" msgstr="Allow debug" />
+    <message msgid="vpn enable nat" msgstr="Enable NAT" />
+    <message msgid="vpn adaptive lcp" msgstr="Adaptive LCP" />
+    <message msgid="vpn pure pppoe" msgstr="Pure PPPoE" />
+    <message msgid="vpn test server" msgstr="Test server reachable" />
+    <message msgid="vpn alert password" msgstr="Password can not contain spaces or dollar sign!" />
+    <message msgid="vpn alert username" msgstr="User name can not contain spaces or dollar sign!" />
+    <message msgid="vpn alert invalid ip" msgstr="Invalid IP address or domain name!" />
+
+    <message msgid="ipv6 title" msgstr="IPv6 Setup" />
+    <message msgid="ipv6 introduction" msgstr="" />
+    <message msgid="ipv6 connection type" msgstr="IPv6 Connection Type" />
+    <message msgid="ipv6 operation mode" msgstr="IPv6 Operation Mode" />
+    <message msgid="ipv6 static" msgstr="Native dynamic/static IP Connection" />
+    <message msgid="ipv6 dhcp" msgstr="IPv6 autoconfigure by dhcp/ra" />
+    <message msgid="ipv6 6rd" msgstr="Tunneling Connection (6RD)" />
+    <message msgid="ipv6 6to4" msgstr="Tunneling Connection (6TO4)" />
+    <message msgid="ipv6 allow forward" msgstr="Allow access to LAN from internet" />
+    <message msgid="ipv6 static ip" msgstr="IPv6 Static IP Setup" />
+    <message msgid="ipv6 static lan address" msgstr="LAN IPv6 Address / Subnet Prefix Length" />
+    <message msgid="ipv6 static wan address" msgstr="WAN IPv6 Address / Subnet Prefix Length" />
+    <message msgid="ipv6 6rd enabled" msgstr="Tunneling Connection (6RD) Setup" />
+    <message msgid="ipv6 6rd prefix" msgstr="ISP 6rd Prefix / Prefix Length" />
+    <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />
+    <message msgid="ipv6 6to4 enabled" msgstr="Tunneling Connection (6to4) Setup" />
+    <message msgid="ipv6 6to4 server address" msgstr="IPv4 to IPv6 server address" />
+
+    <message msgid="qos title" msgstr="Quality of Service Settings" />
+    <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
+    <message msgid="qos setup" msgstr="QoS Setup" />
+    <message msgid="qos type" msgstr="Type of QoS" />
+    <message msgid="qos bandwidth settings" msgstr="Bandwidth settings" />
+    <message msgid="qos upload rate" msgstr="Upload rate:" />
+    <message msgid="qos upload limit" msgstr="Upload rate limit:" />
+    <message msgid="qos download rate" msgstr="Download rate:" />
+    <message msgid="qos download limit" msgstr="Download rate limit:" />
+    <message msgid="qos upload vpn rate" msgstr="Upload VPN rate:" />
+    <message msgid="qos upload vpn limit" msgstr="Upload VPN rate limit:" />
+    <message msgid="qos priority port" msgstr="Priority port settings" />
+    <message msgid="qos high priority ports" msgstr="User High Priority Ports" />
+    <message msgid="qos low priority ports" msgstr="User Low Priority Ports" />
+    <message msgid="qos simple" msgstr="Simple priority based QoS" />
+    <message msgid="qos shaper" msgstr="Complex with shaper (ports based mark + HTB limit)" />
+    <message msgid="qos codel" msgstr="Automatic Fair Queue Controlled Delay AQM (CODEL)" />
+
+    <message msgid="routing title" msgstr="Static Routing Settings" />
+    <message msgid="routing introduction" msgstr="You can add and remove custom Internet routing rules and/or enable dynamic routing exchange protocol here." />
+    <message msgid="routing add rule" msgstr="Add a routing rule" />
+    <message msgid="routing dest" msgstr="Destination" />
+    <message msgid="routing range" msgstr="Range" />
+    <message msgid="routing host" msgstr="Host" />
+    <message msgid="routing net" msgstr="Net" />
+    <message msgid="routing netmask" msgstr="Netmask" />
+    <message msgid="routing gateway" msgstr="Gateway" />
+    <message msgid="routing interface" msgstr="Interface" />
+    <message msgid="routing interface name" msgstr="Interface Name" />
+    <message msgid="routing comment" msgstr="Comment" />
+    <message msgid="routing dynamic Title" msgstr="Dynamic Routing Protocol" />
+    <message msgid="routing rip" msgstr="RIP" />
+    <message msgid="routing del title" msgstr="Current Routing table:" />
+    <message msgid="routing number" msgstr="No." />
+    <message msgid="routing del flags" msgstr="Flags" />
+    <message msgid="routing del metric" msgstr="Metric" />
+    <message msgid="routing del ref" msgstr="Ref" />
+    <message msgid="routing del use" msgstr="Use" />
+    <message msgid="routing action" msgstr="Action" />
+</po>

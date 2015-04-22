@@ -1,0 +1,12 @@
+<po>
+    <message msgid="button enable" msgstr="Enable" />
+    <message msgid="button disable" msgstr="Disable" />
+    <message msgid="button apply" msgstr="Apply" />
+    <message msgid="button cancel" msgstr="Cancel" />
+    <message msgid="button add" msgstr="Add" />
+    <message msgid="button openall" msgstr="Open All" />
+    <message msgid="button closeall" msgstr="Close All" />
+    <message msgid="button reset" msgstr="Reset" />
+    <message msgid="button restore factory" msgstr="Restore Factory" />
+    <message msgid="button apply connect" msgstr="Apply and connect" />
+</po>

@@ -1,0 +1,58 @@
+<po>
+    <message msgid="treeapp router" msgstr="Router" />
+    <message msgid="treeapp operation mode" msgstr="Operation Mode" />
+    <message msgid="treeapp network settings" msgstr="Network Settings" />
+    <message msgid="treeapp wireless settings" msgstr="Wireless Settings" />
+    <message msgid="treeapp firewall" msgstr="Firewall" />
+    <message msgid="treeapp services" msgstr="Services" />
+    <message msgid="treeapp usb" msgstr="USB services" />
+    <message msgid="treeapp storage" msgstr="Storage services" />
+    <message msgid="treeapp administration" msgstr="Administration" />
+
+    <message msgid="treeapp lan" msgstr="LAN setup" />
+    <message msgid="treeapp wan" msgstr="WAN setup" />
+    <message msgid="treeapp ipv6" msgstr="IPv6 setup" />
+    <message msgid="treeapp vpn" msgstr="VPN setup" />
+    <message msgid="treeapp routing" msgstr="Routing" />
+    <message msgid="treeapp hotspot" msgstr="Hotspot setup" />
+    <message msgid="treeapp qos" msgstr="QoS" />
+
+    <message msgid="treeapp profile" msgstr="Profile" />
+    <message msgid="treeapp link status" msgstr="Link Status" />
+    <message msgid="treeapp statistics" msgstr="Statistics" />
+    <message msgid="treeapp advance" msgstr="Advance" />
+    <message msgid="treeapp basic" msgstr="Basic" />
+    <message msgid="treeapp advanced" msgstr="Advanced" />
+    <message msgid="treeapp security" msgstr="Security" />
+    <message msgid="treeapp wds" msgstr="WDS" />
+    <message msgid="treeapp ap client" msgstr="AP Client" />
+    <message msgid="treeapp station list" msgstr="Station List" />
+    <message msgid="treeapp antenna diversity" msgstr="Antenna Diversity" />
+
+    <message msgid="treeapp firewall" msgstr="Firewall" />
+    <message msgid="treeapp alg" msgstr="ALG" />
+    <message msgid="treeapp dmz" msgstr="DMZ" />
+    <message msgid="treeapp content filtering" msgstr="Content Filtering" />
+
+    <message msgid="treeapp dhcp server" msgstr="DHCP Server" />
+    <message msgid="treeapp l2tp server" msgstr="L2TP Server" />
+    <message msgid="treeapp ntp settings" msgstr="Network Time" />
+    <message msgid="treeapp ddns settings" msgstr="Dynamic DNS" />
+    <message msgid="treeapp samba" msgstr="Samba/WINS" />
+    <message msgid="treeapp miscellaneous" msgstr="Miscellaneous" />
+
+    <message msgid="treeapp printersrv" msgstr="Printer Server" />
+    <message msgid="treeapp usbmodem" msgstr="USB Modem" />
+
+    <message msgid="treeapp disk" msgstr="Disk Management" />
+    <message msgid="treeapp ftpsrv" msgstr="FTP Server" />
+    <message msgid="treeapp transmission" msgstr="BitTorrent" />
+    <message msgid="treeapp sambasrv" msgstr="SAMBA Server" />
+
+    <message msgid="treeapp management" msgstr="Management" />
+    <message msgid="treeapp status" msgstr="Status" />
+    <message msgid="treeapp system log" msgstr="System Log" />
+    <message msgid="treeapp sdk history" msgstr="Version History" />
+    <message msgid="treeapp reboot" msgstr="Save and reboot" />
+    <message msgid="treeapp reboot confirm" msgstr="Do you really want to reboot your router?" />
+</po>

@@ -12,7 +12,8 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
@@ -62,17 +63,17 @@ function initTranslation()
 	_TR("lIp", "inet ip");
 	_TR("lNetmask", "inet netmask");
 	_TR("lLan2", "inet lan2");
-	_TR("lLan2Enable", "inet enable");
-	_TR("lLan2Disable", "inet disable");
 	_TR("lLan2Ip", "inet lan2 ip");
 	_TR("lLan2Netmask", "inet lan2 netmask");
 	_TR("lGateway", "inet gateway");
 	_TR("lPriDns", "inet pri dns");
 	_TR("lSecDns", "inet sec dns");
 	_TR("lMac", "inet mac");
+	_TR("lEnable", "button enable");
+	_TR("lDisable", "button disable");
 
-	_TRV("lApply", "inet apply");
-	_TRV("lCancel", "inet cancel");
+	_TRV("lApply", "button apply");
+	_TRV("lCancel", "button cancel");
 }
 
 function initValue()
@@ -166,8 +167,8 @@ function lan2_enable_switch(form)
           <tr>
             <td class="head" id="lLan2">LAN2</td>
             <td><select name="lan2enabled" onChange="lan2_enable_switch(this.form);" class="half">
-                <option value="1">Enabled</option>
-                <option value="0">Disabled</option>
+                <option value="1" id="lEnable">Enabled</option>
+                <option value="0" id="lDisable">Disabled</option>
               </select></td>
           </tr>
           <tr>

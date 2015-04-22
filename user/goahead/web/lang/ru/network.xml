@@ -1,0 +1,121 @@
+<po>
+    <message msgid="lan title" msgstr="Настрйоки локальной сети (LAN)" />
+    <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
+    <message msgid="lan setup" msgstr="Настройки LAN" />
+    <message msgid="inet hostname" msgstr="Имя хоста" />
+    <message msgid="inet mac" msgstr="MAC адрес" />
+    <message msgid="inet ip" msgstr="IP адрес" />
+    <message msgid="inet netmask" msgstr="Маска подсети" />
+    <message msgid="inet gateway" msgstr="Шлюз по умолчанию" />
+    <message msgid="inet pri dns" msgstr="Основной DNS" />
+    <message msgid="inet sec dns" msgstr="Вторичный DNS" />
+    <message msgid="inet lan2" msgstr="LAN 2" />
+    <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
+    <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
+    <message msgid="inet invalid mtu" msgstr="Неверное значение MTU" />
+
+    <message msgid="wan title" msgstr="Настройик Wide Area Network (WAN)" />
+    <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
+    <message msgid="wan connection" msgstr="Подключение WAN" />
+    <message msgid="wan connection type" msgstr="Тип подключения WAN:" />
+    <message msgid="wan connection type static" msgstr="STATIC (фиксированный IP)" />
+    <message msgid="wan connection type dhcp" msgstr="DHCP (автоматическая настройка)" />
+    <message msgid="wan static mode" msgstr="Фиксированные настройки" />
+    <message msgid="wan dhcp mode" msgstr="Настройки DHCP" />
+    <message msgid="wan additional options" msgstr="Дополнительные настройки" />
+    <message msgid="wan request from dhcp" msgstr="Запрос IP от DHCP" />
+    <message msgid="wan mtu" msgstr="WAN MTU" />
+    <message msgid="wan static dns" msgstr="Назначить статические сервера DNS" />
+    <message msgid="wan nat enabled" msgstr="Включить NAT" />
+    <message msgid="wan mac" msgstr="MAC адрес WAN" />
+
+    <message msgid="vpn title" msgstr="Настройка VPN(Virtual Private Network)" />
+    <message msgid="vpn introduction" msgstr="Эта страница используется для настройки VPN(Virtual Private Network) туннеля на маршрутизаторе." />
+    <message msgid="vpn config" msgstr="Настройки VPN" />
+    <message msgid="vpn enable" msgstr="Включить VPN" />
+    <message msgid="vpn mode" msgstr="Режим VPN:" />
+    <message msgid="vpn pppoe" msgstr="Клиент PPPoE" />
+    <message msgid="vpn pptp" msgstr="Клиент PPTP" />
+    <message msgid="vpn l2tp" msgstr="Клиент L2TP" />
+    <message msgid="vpn pppoe iface" msgstr="Интерфейс для PPPoE:" />
+    <message msgid="vpn server col" msgstr="Имя сервера, IP, AC, или APN:" />
+    <message msgid="vpn service name" msgstr="Имя сервиса:" />
+    <message msgid="vpn auth type" msgstr="Метод авторизации:" />
+    <message msgid="vpn lanauth lvl" msgstr="Уровень доступа KABINET:" />
+    <message msgid="vpn kabinet offline" msgstr="offline" />
+    <message msgid="vpn kabinet" msgstr="kabinet" />
+    <message msgid="vpn kabinet full" msgstr="full" />
+    <message msgid="vpn username" msgstr="Имя пользователя:" />
+    <message msgid="vpn password" msgstr="Пароль:" />
+    <message msgid="vpn mtu mru" msgstr="MTU/MRU" />
+    <message msgid="vpn lcp interval" msgstr="Интервал LCP echo:" />
+    <message msgid="vpn lcp failure" msgstr="Ошибка LCP echo:" />
+    <message msgid="vpn allow mppe" msgstr="Разрешить MPPE" />
+    <message msgid="vpn peer dns" msgstr="DNS провайдера" />
+    <message msgid="vpn allow debug" msgstr="Включить отладку" />
+    <message msgid="vpn enable nat" msgstr="Включить NAT" />
+    <message msgid="vpn adaptive lcp" msgstr="Адаптивная LCP" />
+    <message msgid="vpn pure pppoe" msgstr="Чистый PPPoE" />
+    <message msgid="vpn test server" msgstr="Test server reachable" />
+    <message msgid="vpn alert password" msgstr="Пароль не может содержать пробелы или знак доллара!" />
+    <message msgid="vpn alert username" msgstr="Имя пользователя не может содержать пробелы или знак доллара!" />
+    <message msgid="vpn alert invalid ip" msgstr="Неверное доменное имя или IP адрес!" />
+
+    <message msgid="ipv6 title" msgstr="Настройки IPv6" />
+    <message msgid="ipv6 introduction" msgstr="" />
+    <message msgid="ipv6 connection type" msgstr="Тип подключения IPv6" />
+    <message msgid="ipv6 operation mode" msgstr="Режим работы IPv6" />
+    <message msgid="ipv6 static" msgstr="Прямое динамическое или статическое подключение" />
+    <message msgid="ipv6 dhcp" msgstr="Автоматическая настройка IPv6 через dhcp/ra" />
+    <message msgid="ipv6 6rd" msgstr="Туннель 6RD" />
+    <message msgid="ipv6 6to4" msgstr="Туннель 6TO4" />
+    <message msgid="ipv6 allow forward" msgstr="Разрешить доступ ко внутренней сети из интернета" />
+    <message msgid="ipv6 static ip" msgstr="Настройка статического IP" />
+    <message msgid="ipv6 static lan address" msgstr="LAN IPv6 адрес / Префикс подсети" />
+    <message msgid="ipv6 static wan address" msgstr="WAN IPv6 адрес / Префикс подсети" />
+    <message msgid="ipv6 6rd enabled" msgstr="Настройка туннеля 6RD" />
+    <message msgid="ipv6 6rd prefix" msgstr="ISP 6rd Prefix / Prefix Length" />
+    <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />
+    <message msgid="ipv6 6to4 enabled" msgstr="Настройка туннеля 6to4" />
+    <message msgid="ipv6 6to4 server address" msgstr="Адрес сервера" />
+
+    <message msgid="qos title" msgstr="Настройки QoS" />
+    <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
+    <message msgid="qos setup" msgstr="Настройки QoS" />
+    <message msgid="qos type" msgstr="Тип QoS" />
+    <message msgid="qos bandwidth settings" msgstr="Параметры полосы" />
+    <message msgid="qos upload rate" msgstr="Скорость отдачи:" />
+    <message msgid="qos upload limit" msgstr="Лимит отдачи:" />
+    <message msgid="qos download rate" msgstr="Скорость загрузки:" />
+    <message msgid="qos download limit" msgstr="Лимит загрузки:" />
+    <message msgid="qos upload vpn rate" msgstr="Скорость отдачи по VPN:" />
+    <message msgid="qos upload vpn limit" msgstr="Лимит отдачи по VPN:" />
+    <message msgid="qos priority port" msgstr="Настройка приоритета портов" />
+    <message msgid="qos high priority ports" msgstr="Порты с высоким приоритетом" />
+    <message msgid="qos low priority ports" msgstr="Порты с низким приоритетом" />
+    <message msgid="qos simple" msgstr="Основные приоритеты QoS" />
+    <message msgid="qos shaper" msgstr="Лимиты на основе маркировки портов и HTB" />
+    <message msgid="qos codel" msgstr="Автоматическая честная очередь управляемой задержки (CODEL)" />
+
+    <message msgid="routing title" msgstr="Настройки маршрутизации" />
+    <message msgid="routing introduction" msgstr="Здесь вы можете добавлять и удалять пользовательские правила маршрутизации траффика и/или включить протокол динамической маршрутизации." />
+    <message msgid="routing add rule" msgstr="Добавить правило" />
+    <message msgid="routing dest" msgstr="Адрес назначения" />
+    <message msgid="routing range" msgstr="Диапозон" />
+    <message msgid="routing host" msgstr="Хост" />
+    <message msgid="routing net" msgstr="Сеть" />
+    <message msgid="routing netmask" msgstr="Маска сети" />
+    <message msgid="routing gateway" msgstr="Шлюз" />
+    <message msgid="routing interface" msgstr="Интерфейс" />
+    <message msgid="routing interface name" msgstr="Имя интерфейса" />
+    <message msgid="routing comment" msgstr="Комментарий" />
+    <message msgid="routing dynamic Title" msgstr="Протокол динамической маршрутизации" />
+    <message msgid="routing rip" msgstr="RIP" />
+    <message msgid="routing del title" msgstr="Таблица текущей маршрутизации:" />
+    <message msgid="routing number" msgstr="No." />
+    <message msgid="routing del flags" msgstr="Flags" />
+    <message msgid="routing del metric" msgstr="Metric" />
+    <message msgid="routing del ref" msgstr="Ref" />
+    <message msgid="routing del use" msgstr="Use" />
+    <message msgid="routing action" msgstr="Action" />
+</po>

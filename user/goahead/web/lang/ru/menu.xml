@@ -1,0 +1,57 @@
+<po>
+    <message msgid="treeapp router" msgstr="Маршрутизатор" />
+    <message msgid="treeapp operation mode" msgstr="Режим работы" />
+    <message msgid="treeapp network settings" msgstr="Сетевые настройки" />
+    <message msgid="treeapp wireless settings" msgstr="Беспроводные настройки" />
+    <message msgid="treeapp firewall" msgstr="Сетевой экран" />
+    <message msgid="treeapp services" msgstr="Сервисы" />
+    <message msgid="treeapp usb" msgstr="Настройки USB" />
+    <message msgid="treeapp storage" msgstr="Настройки хранилища" />
+    <message msgid="treeapp administration" msgstr="Администрирование" />
+
+    <message msgid="treeapp lan" msgstr="Настройки LAN" />
+    <message msgid="treeapp wan" msgstr="Настройки WAN" />
+    <message msgid="treeapp ipv6" msgstr="Настройки IPv6" />
+    <message msgid="treeapp vpn" msgstr="Настройки VPN" />
+    <message msgid="treeapp routing" msgstr="Маршрутизация" />
+    <message msgid="treeapp hotspot" msgstr="Настройки Hotspot" />
+    <message msgid="treeapp qos" msgstr="QoS" />
+
+    <message msgid="treeapp profile" msgstr="Профиль" />
+    <message msgid="treeapp link status" msgstr="Состояние соединения" />
+    <message msgid="treeapp statistics" msgstr="Статистика" />
+    <message msgid="treeapp advance" msgstr="Расширеные" />
+    <message msgid="treeapp basic" msgstr="Основные" />
+    <message msgid="treeapp advanced" msgstr="Расширеные" />
+    <message msgid="treeapp security" msgstr="Безопастность" />
+    <message msgid="treeapp wds" msgstr="WDS" />
+    <message msgid="treeapp ap client" msgstr="Клиент AP" />
+    <message msgid="treeapp station list" msgstr="Списоок станций" />
+    <message msgid="treeapp antenna diversity" msgstr="Antenna Diversity" />
+
+    <message msgid="treeapp alg" msgstr="ALG" />
+    <message msgid="treeapp dmz" msgstr="DMZ" />
+    <message msgid="treeapp content filtering" msgstr="Фильтрация содержимого" />
+
+    <message msgid="treeapp dhcp server" msgstr="Сервер DHCP" />
+    <message msgid="treeapp l2tp server" msgstr="Сервер L2TP" />
+    <message msgid="treeapp ntp settings" msgstr="Синхронизация времени" />
+    <message msgid="treeapp ddns settings" msgstr="Настройки DynDNS" />
+    <message msgid="treeapp samba" msgstr="Samba/WINS" />
+    <message msgid="treeapp miscellaneous" msgstr="Разное" />
+
+    <message msgid="treeapp printersrv" msgstr="Настройки принтера" />
+    <message msgid="treeapp usbmodem" msgstr="USB модем" />
+
+    <message msgid="treeapp disk" msgstr="Управление дисками" />
+    <message msgid="treeapp ftpsrv" msgstr="Сервер FTP" />
+    <message msgid="treeapp transmission" msgstr="BitTorrent" />
+    <message msgid="treeapp sambasrv" msgstr="Сервер SAMBA" />
+
+    <message msgid="treeapp management" msgstr="Управление" />
+    <message msgid="treeapp status" msgstr="Статус" />
+    <message msgid="treeapp system log" msgstr="Системный журнал" />
+    <message msgid="treeapp sdk history" msgstr="История версий" />
+    <message msgid="treeapp reboot" msgstr="Сохранить и перезагрузить" />
+    <message msgid="treeapp reboot confirm" msgstr="Вы действительно хотите перезагрузить маршрутизатор?" />
+</po>

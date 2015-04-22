@@ -1,0 +1,12 @@
+<po>
+    <message msgid="button enable" msgstr="Включить" />
+    <message msgid="button disable" msgstr="Отключить" />
+    <message msgid="button apply" msgstr="Применить" />
+    <message msgid="button cancel" msgstr="Отменить" />
+    <message msgid="button add" msgstr="Добавить" />
+    <message msgid="button openall" msgstr="Развернуть все" />
+    <message msgid="button closeall" msgstr="Свернуть все" />
+    <message msgid="button reset" msgstr="Сброс" />
+    <message msgid="button restore factory" msgstr="Восстановить заводской" />
+    <message msgid="button apply connect" msgstr="Применить и подключить" />
+</po>

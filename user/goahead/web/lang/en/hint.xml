@@ -1,0 +1,7 @@
+<po>
+    <message msgid="vpn_enabled" msgstr="Enable Virtual Private Network support." />
+    <message msgid="vpn_vpn_status" msgstr="This indicator shows current state of VPN connection." />
+    <message msgid="" msgstr="Statistics" />
+    <message msgid="" msgstr="Management" />
+    <message msgid="" msgstr="About" />
+</po>

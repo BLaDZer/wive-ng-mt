@@ -12,7 +12,8 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("buttons");
 
 var opmode = "<% getCfgZero(1, "OperationMode"); %>";
 var routingRules = [ <% getRoutingTable(); %> ];
@@ -20,42 +21,32 @@ var routingRules = [ <% getRoutingTable(); %> ];
 function initTranslation()
 {
 	_TR("routingTitle", "routing title");
-	_TR("routingIntroduction", "routing Introduction");
+	_TR("routingIntroduction", "routing introduction");
 	_TR("routingAddRule", "routing add rule");
-	_TR("routingDest", "routing routing dest");
+	_TR("routingDest", "routing dest");
 	_TR("routingRange", "routing range");
 	_TR("routingNetmask", "routing netmask");
 	_TR("routingGateway", "routing gateway");
 	_TR("routingInterface", "routing interface");
-	_TR("routingCustom", "routing custom");
+	_TR("routingIfaceName", "routing interface name");
 	_TR("routingComment", "routing comment");
-	_TRV("routingSubmit", "routing submit");
-	_TRV("routingReset", "routing reset");
-
+	_TR("routingHost", "routing host");
+	_TR("routingNet", "routing net");
+	_TR("dynamicRoutingTitle", "routing dynamic Title");
+	_TR("RIP", "routing rip")
+	_TR("RIPDisable", "button disable");
+	_TR("RIPEnable", "button enable");
 	_TR("routingCurrentRoutingTableRules", "routing del title");
-	_TR("routingNo", "routing Number");
-	_TR("routingDelDest", "routing del dest");
-	_TR("routingDelNetmask", "routing del netmask");
-	_TR("routingDelGateway", "routing del gateway");
+	_TR("routingNo", "routing number");
 	_TR("routingDelFlags", "routing del flags");
 	_TR("routingDelMetric", "routing del metric");
 	_TR("routingDelRef", "routing del ref");
 	_TR("routingDelUse", "routing del use");
-	_TR("routingDelInterface", "routing del interface");
-	_TR("routingDelComment", "routing del comment");
-	_TRV("routingDel", "routing del");
-	_TRV("routingDelReset", "routing del reset");
+	_TR("routingAction", "routing action");
 
-	_TR("routing host", "routing host");
-	_TR("routing net", "routing net");
-	_TR("routing LAN", "routing LAN");
-	_TR("routing WAN", "routing WAN");
-	_TR("dynamicRoutingTitle", "routing dynamic Title");
-	_TR("dynamicRoutingTitle2", "routing dynamic Title2");
-	_TR("RIPDisable", "routing dynamic rip disable");
-	_TR("RIPEnable", "routing dynamic rip enable");
-	_TR("dynamicRoutingApply", "routing dynamic rip apply");
-	_TR("dynamicRoutingReset", "routing dynamic rip reset");
+	_TRV("buttonAdd", "button add");
+	_TRV("routingApply", "button apply");
+	_TRV("routingReset", "button reset");
 }
 
 function onInit()
@@ -106,16 +97,16 @@ function genRoutingTable()
 	
 	html += '<tr><td class="title" colspan="11" id="routingCurrentRoutingTableRules">Current Routing table in the system:</td></tr>'; // Header
 	html += '<tr><th id="routingNo">ID</th>' +
-		'<th id="routingDelDest" align="center">Destination</th>' + 
-		'<th id="routingDelNetmask" align="center">Netmask</th>' +
-		'<th id="routingDelGateway" align="center">Gateway</th>' +
+		'<th id="routingDest" align="center">Destination</th>' + 
+		'<th id="routingNetmask" align="center">Netmask</th>' +
+		'<th id="routingGateway" align="center">Gateway</th>' +
 		'<th id="routingDelFlags" align="center">Flags</th>' +
 		'<th id="routingDelMetric" align="center">Metric</th>' +
 		'<th id="routingDelRef" align="center">Ref</th>' +
 		'<th id="routingDelUse" align="center">Use</th>' +
-		'<th id="routingDelInterface" align="center">Interface</th>'+
-		'<th id="routingDelComment" align="center">Comment</th>'+
-		'<th>Actions</th></tr>';
+		'<th id="routingInterface" align="center">Interface</th>'+
+		'<th id="routingComment" align="center">Comment</th>'+
+		'<th id="routingAction">Actions</th></tr>';
 	
 	for (var i=0; i<routingRules.length; i++)
 	{
@@ -244,7 +235,7 @@ function formRoutingTable(form)
 <table class="body">
   <tbody>
     <tr>
-      <td><h1 id="routingTitle">Static Routing  Settings </h1>
+      <td><h1 id="routingTitle">Static Routing Settings</h1>
         <p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>
         <hr>
         <form action="/goform/editRouting" method="post" name="editRouting" onSubmit="return formRoutingTable(this);">
@@ -261,8 +252,8 @@ function formRoutingTable(form)
             <tr>
               <td class="head" id="routingRange">Host/Net</td>
               <td><select class="mid" name="hostnet" onChange="hostnetChange(this.form);">
-                  <option selected="selected" value="host" id="routing host">Host</option>
-                  <option value="net" id="routing net">Net</option>
+                  <option selected="selected" value="host" id="routingHost">Host</option>
+                  <option value="net" id="routingNet">Net</option>
                 </select></td>
             </tr>
             <tr id="routingNetmaskRow">
@@ -279,7 +270,7 @@ function formRoutingTable(form)
                 </select></td>
             </tr>
             <tr id="customInterfaceRow" style="display: none;">
-              <td class="head">Interface Name</td>
+              <td class="head" id="routingIfaceName">Interface Name</td>
               <td><input alias="right" class="mid" name="custom_interface" type="text"></td>
             </tr>
             <tr>
@@ -288,7 +279,7 @@ function formRoutingTable(form)
             </tr>
             <tr>
               <td class="head" id="addRule">Add rule</td>
-              <td><input value="Add" class="normal" onClick="addRoutingRule(this.form);" type="button"></td>
+              <td><input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button"></td>
             <tr> </tr>
           </table>
           
@@ -298,7 +289,7 @@ function formRoutingTable(form)
           <table class="buttons">
             <tr>
               <td><input type="hidden" name="routingTableDiff" >
-                <input value="Apply" class="normal" type="submit"></td>
+                <input value="Apply" id="routingApply" class="normal" type="submit"></td>
             </tr>
           </table>
         </form>
@@ -306,7 +297,7 @@ function formRoutingTable(form)
           <form method="POST" name="dynamicRouting" action="/goform/dynamicRouting">
             <table class="form">
               <tr>
-                <td class="title" colspan="2" id="dynamicRoutingTitle2">Dynamic routing</td>
+                <td class="title" colspan="2" id="dynamicRoutingTitle">Dynamic routing</td>
               </tr>
               <tr>
                 <td class="head" id="RIP">RIP</td>
@@ -318,8 +309,8 @@ function formRoutingTable(form)
             </table>
             <table class="buttons">
               <tr>
-                <td><input type="submit" class="normal" value="Apply" id="dynamicRoutingApply" name="dynamicRoutingApply">
-                  <input type="reset" class="normal" value="Reset" id="dynamicRoutingReset" name="dynamicRoutingReset">
+                <td><input type="submit" class="normal" value="Apply" id="routingApply" name="dynamicRoutingApply">
+                  <input type="reset" class="normal" value="Reset" id="routingReset" name="dynamicRoutingReset">
                   <input type="hidden" value="/internet/routing.asp" name="submit-url"></td>
               </tr>
             </table>

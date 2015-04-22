@@ -11,7 +11,8 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("buttons");
+Butterlate.setTextDomain("network");
 
 var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
@@ -24,10 +25,6 @@ function display_on()
 	else if (window.XMLHttpRequest) { // Mozilla, Firefox, Safari,...
 		return "table-row";
 	}
-}
-
-function initTranslation()
-{
 }
 
 function SwitchOpMode()
@@ -77,11 +74,11 @@ function initValue()
 	var opmode_len = document.ipv6_cfg.ipv6_opmode.options.length;
 
 	if (ipv66rdb == "1") {
-		document.ipv6_cfg.ipv6_opmode.options[2] = new Option("Tunneling Connection (6RD)", "2");
+		document.ipv6_cfg.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
 		opmode_len++;
 	}
 	if (ip6to4b == "1") {
-		document.ipv6_cfg.ipv6_opmode.options[opmode_len] = new Option("Tunneling Connection (6TO4)", "3");
+		document.ipv6_cfg.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
 		opmode_len++;
 	}
 
@@ -113,6 +110,7 @@ function initValue()
 	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 
 	document.ipv6_cfg.IPv6AllowForward.checked = (ipv6_allow_forward == "1");
+	initTranslation();
 }
 
 function atoi(str, num)
@@ -283,15 +281,38 @@ function CheckValue()
 	}
 	return true;
 }
+
+function initTranslation()
+{
+	_TR("v6Title", "ipv6 title");
+	_TR("v6Introduction", "ipv6 introduction");
+	_TR("v6ConnType", "ipv6 connection type");
+	_TR("v6OpMode", "ipv6 operation mode");
+	_TR("v6Disable", "button disable");
+	_TR("v6Static", "ipv6 static");
+	_TR("IPv6Dhcpc", "ipv6 dhcp");
+	_TR("IPv6AllowForward", "ipv6 allow forward");
+	_TR("v6StaticIPSetup", "ipv6 static ip");
+	_TR("v6StaticIPAddrLan", "ipv6 static lan address");
+	_TR("v6StaticIPAddrWan", "ipv6 static wan address");
+	_TR("v6StaticGW", "inet gateway");
+	_TR("v66rdSetup", "ipv6 6rd enabled");
+	_TR("v66rdPrefix", "ipv6 6rd prefix");
+	_TR("v66rdBorderIPAddr", "ipv6 6rd relay address");
+	_TR("6to4Setup", "ipv6 6to4 enabled");
+	_TR("v66to4SrvIpaddr", "ipv6 6to4 server address");
+
+	_TRV("v6Apply", "button apply");
+	_TRV("v6Cancel", "button cancel");
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <table class="body"><tr><td>
 
-<h1 id="lTitle">
-<p id="lIntroduction">IPv6 Setup</p>
-</h1>
+<h1 id="v6Title">IPv6 Setup</h1>
+<p id="v6Introduction"></p>
 <hr />
 
 <form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue()">
@@ -317,17 +338,17 @@ function CheckValue()
   <td><input name="IPv6AllowForward" type="checkbox"></td>
 </tr>
 </table>
-<!-- STATIC/DynaMIC IP --!>
+<!-- STATIC/DynaMIC IP -->
 <table width="95%" id="v6StaticTable" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
 <tr>
   <td class="title" colspan="2" id="v6StaticIPSetup">IPv6 Static IP Setup</td>
 </tr>
 <tr>
-  <td class="head" id="v6StaticIPAddr">LAN IPv6 Address / Subnet Prefix Length</td>
+  <td class="head" id="v6StaticIPAddrLan">LAN IPv6 Address / Subnet Prefix Length</td>
   <td><input name="ipv6_lan_ipaddr" maxlength=39 size=27> / <input name="ipv6_lan_prefix_len" maxlength=3 size=2></td>
 </tr>
 <tr>
-  <td class="head" id="v6StaticIPAddr">WAN IPv6 Address / Subnet Prefix Length</td>
+  <td class="head" id="v6StaticIPAddrWan">WAN IPv6 Address / Subnet Prefix Length</td>
   <td><input name="ipv6_wan_ipaddr" maxlength=39 size=27> / <input name="ipv6_wan_prefix_len" maxlength=3 size=2></td>
 </tr>
 <tr>
@@ -335,7 +356,7 @@ function CheckValue()
   <td><input name="ipv6_static_gw" maxlength=39 size=27></td>
 </tr>
 </table>
-<!-- 6RD --!>
+<!-- 6RD -->
 <table width="95%" id="v66rdTable" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
 <tr>
   <td class="title" colspan="2" id="v66rdSetup">Tunneling Connection (6RD) Setup</td>
@@ -349,7 +370,7 @@ function CheckValue()
   <td><input name="ipv6_6rd_border_ipaddr" maxlength=15 size=13></td>
 </tr>
 </table>
-<!-- 6to4 --!>
+<!-- 6to4 -->
 <table width="95%" id="6to4Table" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
 <tr>
   <td class="title" colspan="2" id="6to4Setup">Tunneling Connection (6to4) Setup</td>
