@@ -860,6 +860,7 @@
 53) kernel: mips: fix start of free memory when using initrd.<br>
 54) kernel: pppoe: lacks DST MAC address check.<br>
 55) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
+56) kernel: ip_forward: Drop frames with attached skb->sk.<br>
 <br>
 <br>
 <b>TODO:</b><br>
