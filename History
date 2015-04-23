@@ -861,6 +861,7 @@
 54) kernel: pppoe: lacks DST MAC address check.<br>
 55) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
 56) kernel: ip_forward: Drop frames with attached skb->sk.<br>
+57) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
 <br>
 <br>
 <b>TODO:</b><br>
