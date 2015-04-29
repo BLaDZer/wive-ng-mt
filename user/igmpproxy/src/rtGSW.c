@@ -303,7 +303,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value = (value << 16);
 	value |= (1 << 15);//IVL=1
 
-#if defined (CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#if defined (CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2) && !defined (CONFIG_RAETH_8023AZ_EEE)
 #elif defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
 	value |= ((LAN_VLAN_ID) << 0); //LAN ID ==1
@@ -348,8 +348,12 @@ void updateMacTable(struct group *entry, int delay_delete)
 			my_log(LOG_INFO, 0, "WAN REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 
 			value1 = (WanPort << 4);
+#if defined (CONFIG_RAETH_8023AZ_EEE)
+			value1 |= (0x1 << 9);//port 5 cpu port
+#else
 			value1 |= (0x1 << 10);//port 6 cpu port
 
+#endif
 			value1 |= (0xff << 24); //w_age_field
 			value1 |= (0x3<< 2); //static
 
