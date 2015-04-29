@@ -1,19 +1,67 @@
 <po>
+    <message msgid="management title" msgstr="System Management" />
+    <message msgid="management introduction" msgstr="You can select language and set administrator login and password here. You can also upgrade the Wive-NG-MT firmware to obtain new functionality. It takes about 2 minute to upload firmware &amp; upgrade flash. Please be patient. Caution! A corrupted image will hang up the system." />
+    <message msgid="management uploading firmware" msgstr="Uploading firmware" />
+    <message msgid="management dont remove usb" msgstr="Please be patient and don't remove USB device if present..." />
+    <message msgid="management language settings" msgstr="Language Settings" />
+    <message msgid="management language select" msgstr="Select Language" />
+    <message msgid="management administrator settings" msgstr="Administrator Settings" />
+    <message msgid="management administrator login" msgstr="Login" />
+    <message msgid="management administrator password" msgstr="Password" />
+    <message msgid="management apply login" msgstr="Apply new login/password" />
+    <message msgid="management firmware" msgstr="Firmware update" />
+    <message msgid="management filename" msgstr="Filename:" />
+    <message msgid="management reset rwfs" msgstr="Reset RWFS on update" />
+    <message msgid="management upload rwfs" msgstr="RW-FS Upload" />
+    <message msgid="management settings" msgstr="Router Settings Management" />
+    <message msgid="management backup file" msgstr="Backup Settings to file" />
+    <message msgid="management upload file" msgstr="Load settings from file" />
+    <message msgid="management reset factory" msgstr="Reset to factory defaults" />
+    <message msgid="management uncorrect login" msgstr="Please specify correct administrator login (a-z, A-Z, 0-9, _)." />
+    <message msgid="management uncorrect password" msgstr="Please specify correct administrator password (spaces and dollar symbol are disallowed)." />
+    <message msgid="management dont power off" msgstr="Do not power off the device while upgrading firmware! Doing so can result in permanent damage to the device. Do you really want to proceed?" />
+    <message msgid="management ask upload settings" msgstr="Proceed uploading settings?" />
+    <message msgid="management ask upload rwfs" msgstr="Proceed uploading RWFS?" />
+    <message msgid="management export settings" msgstr="Do you want to export settings to file?" />
+    <message msgid="management ask reset factory" msgstr="All settings will be reset to factory defaults. Really proceed?" />
+
+    <message msgid="status title" msgstr="Access Point Status" />
+    <message msgid="status introduction" msgstr="Let's take a look at the status of Wive-NG-MT." />
+    <message msgid="status system information" msgstr="System Info" />
+    <message msgid="status sdk version" msgstr="Firmware Version" />
+    <message msgid="status system date time" msgstr="System Time" />
+    <message msgid="status system up time" msgstr="System Uptime" />
+    <message msgid="status system platform" msgstr="System Platform" />
+    <message msgid="status internet config" msgstr="Internet Configurations" />
+    <message msgid="status connect type" msgstr="WAN connection type" />
+    <message msgid="status int ipaddr" msgstr="VPN/Internet IP Address" />
+    <message msgid="status wan ipaddr" msgstr="Physical WAN IP Address" />
+    <message msgid="status subnet mask" msgstr="Subnet Mask" />
+    <message msgid="status default gateway" msgstr="Default Gateway" />
+    <message msgid="status primary dns" msgstr="Primary Domain Name Server" />
+    <message msgid="status secondary dns" msgstr="Secondary Domain Name Server" />
+    <message msgid="status mac" msgstr="MAC Address" />
+    <message msgid="status local network" msgstr="Local Network" />
+    <message msgid="status lan ipaddr" msgstr="Local IP Address" />
+    <message msgid="status local netmask" msgstr="Local Netmask" />
+    <message msgid="status mac" msgstr="MAC Address" />
+    <message msgid="status ethernet port status" msgstr="Ethernet Port Status" />
+    <message msgid="status port management" msgstr="Port Management" />
+    <message msgid="status wan port" msgstr="WAN port" />
+    <message msgid="status first lan port" msgstr="First LAN port" />
+    <message msgid="status near" msgstr="Near to the WAN port" />
+    <message msgid="status distant" msgstr="Distant from the WAN port" />
+    <message msgid="status ask reboot" msgstr="The device must be restarted to apply port configuration changes. Do you want to proceed?" />
+
+
+
+
   <message msgid="admin disable" msgstr="Disable" />
   <message msgid="admin enable" msgstr="Enable" />
   <message msgid="admin apply" msgstr="Apply" />
   <message msgid="admin cancel" msgstr="Cancel" />
   <message msgid="admin reset" msgstr="Reset" />
   <message msgid="admin scan" msgstr="Scan" />
-
-  <message msgid="man title" msgstr="System Management" />
-  <message msgid="man introduction" msgstr="Here you can configure your administrator login and password." />
-
-  <message msgid="man language setting" msgstr="Language Settings" />
-  <message msgid="man select language" msgstr="Select Language" />
-  <message msgid="man admin setting" msgstr="Administrator Settings" />
-  <message msgid="man admin account" msgstr="Login" />
-  <message msgid="man admin passwd" msgstr="Password" />
 
   <message msgid="man ntp setting" msgstr="NTP Settings" />
   <message msgid="man ntp timezone" msgstr="Time Zone:" />
@@ -71,51 +119,6 @@
   <message msgid="man ddns account" msgstr="Login" />
   <message msgid="man ddns passwd" msgstr="Password" />
   <message msgid="man ddns" msgstr="Dynamic DNS" />
-
-  <message msgid="upload title" msgstr="Upgrade Firmware" />
-  <message msgid="upload introduction1" msgstr="Upgrade Wive-NG-MT firmware to obtain new functionality. " />
-  <message msgid="upload introduction2" msgstr="It takes about 2 minute to upload firmware &amp; upgrade flash.Please be patient. Caution! A corrupted image will hang up the system." />
-  <message msgid="upload firmware" msgstr="Update Firmware" />
-  <message msgid="upload firmware location" msgstr="Location:" />
-  <message msgid="upload bootloader" msgstr="Update Bootloader" />
-  <message msgid="upload bootloader location" msgstr="Location:" />
-  <message msgid="upload firmware from usb" msgstr="Upgrade firmware from USB" />
-  <message msgid="upload firmware force upgrade via mem" msgstr="Force upgrade firmware via mem " />
-  <message msgid="upload firmware force" msgstr="Force:" />
-
-  <message msgid="setman title" msgstr="Settings Management" />
-  <message msgid="setman introduction" msgstr="You can save system settings by exporting them to a configuration file, restore them by importing the file, or reset them to factory default." />
-  <message msgid="setman export setting" msgstr="Export Settings" />
-  <message msgid="setman export setting button" msgstr="Export Button" />
-  <message msgid="setman export setting export" msgstr="Export" />
-  <message msgid="setman import setting" msgstr="Import Settings" />
-  <message msgid="setman import setting file location" msgstr="Settings file location" />
-  <message msgid="setman import setting import" msgstr="Import" />
-  <message msgid="setman load factory default" msgstr="Load Factory Defaults" />
-  <message msgid="setman load factory default button" msgstr="Load Default Button" />
-  <message msgid="setman load default" msgstr="Load Default" />
-
-  <message msgid="status title" msgstr="Access Point Status" />
-  <message msgid="status introduction" msgstr="Let's take a look at the status of Wive-NG-MT." />
-  <message msgid="status system information" msgstr="System Info" />
-  <message msgid="status sdk version" msgstr="Firmware Version" />
-  <message msgid="status system date time" msgstr="System Time" />
-  <message msgid="status system up time" msgstr="System Uptime" />
-  <message msgid="status system platform" msgstr="System Platform" />
-  <message msgid="status operate mode" msgstr="Operation Mode" />
-  <message msgid="status internet config" msgstr="Internet Configurations" />
-  <message msgid="status connect type" msgstr="WAN connection type" />
-  <message msgid="status int ipaddr" msgstr="VPN/Internet IP Address" />
-  <message msgid="status wan ipaddr" msgstr="Physical WAN IP Address" />
-  <message msgid="status subnet mask" msgstr="Subnet Mask" />
-  <message msgid="status default gateway" msgstr="Default Gateway" />
-  <message msgid="status primary dns" msgstr="Primary Domain Name Server" />
-  <message msgid="status secondary dns" msgstr="Secondary Domain Name Server" />
-  <message msgid="status local network" msgstr="Local Network" />
-  <message msgid="status lan ipaddr" msgstr="Local IP Address" />
-  <message msgid="status local netmask" msgstr="Local Netmask" />
-  <message msgid="status mac" msgstr="MAC Address" />
-  <message msgid="status ethernet port status" msgstr="Ethernet Port Status" />
 
   <message msgid="statistic title" msgstr="Statistic" />
   <message msgid="statistic introduction" msgstr=" Take a look at the Wive-NG-MT statistics " />

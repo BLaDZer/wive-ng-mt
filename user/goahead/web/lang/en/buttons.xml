@@ -9,4 +9,7 @@
     <message msgid="button reset" msgstr="Reset" />
     <message msgid="button restore factory" msgstr="Restore Factory" />
     <message msgid="button apply connect" msgstr="Apply and connect" />
+    <message msgid="button update" msgstr="Update" />
+    <message msgid="button load" msgstr="Load" />
+    <message msgid="button backup" msgstr="Backup" />
 </po>

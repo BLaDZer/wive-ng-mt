@@ -11,6 +11,7 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("admin");
 
 function uploadLogField(str)

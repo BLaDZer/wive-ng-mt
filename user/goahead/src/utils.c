@@ -931,6 +931,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	int i;
 	char w_name[20];
 	char* w_port = websGetVar(wp, T("wan_port"), T("0"));
+	char* l_port = websGetVar(wp, T("lan_port"), T("near"));
 	char* tv_port = websGetVar(wp, T("tv_stbEnabled"), T("off"));
 	char* sip_port = websGetVar(wp, T("sip_stbEnabled"), T("off"));
 	char* tv_port_mcast = websGetVar(wp, T("tv_stbMcast"), T("off"));
@@ -947,6 +948,10 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "wan_port", w_port);
 	}
 
+	/* Set-up first LAN port */
+	if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
+		nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
+	
 	/* Now test values */
 	for (i=1; i<=5; i++)
 	{

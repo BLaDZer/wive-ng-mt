@@ -80,7 +80,7 @@
     <message msgid="ipv6 6to4 server address" msgstr="Адрес сервера" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
-    <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
+    <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений. Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
     <message msgid="qos setup" msgstr="Настройки QoS" />
     <message msgid="qos type" msgstr="Тип QoS" />
     <message msgid="qos bandwidth settings" msgstr="Параметры полосы" />
@@ -93,7 +93,7 @@
     <message msgid="qos priority port" msgstr="Настройка приоритета портов" />
     <message msgid="qos high priority ports" msgstr="Порты с высоким приоритетом" />
     <message msgid="qos low priority ports" msgstr="Порты с низким приоритетом" />
-    <message msgid="qos simple" msgstr="Основные приоритеты QoS" />
+    <message msgid="qos simple" msgstr="На основе приоритетов" />
     <message msgid="qos shaper" msgstr="Лимиты на основе маркировки портов и HTB" />
     <message msgid="qos codel" msgstr="Автоматическая честная очередь управляемой задержки (CODEL)" />
 
@@ -118,4 +118,26 @@
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Action" />
+
+    <message msgid="hotspot title" msgstr="" />
+    <message msgid="hotspot introduction" msgstr="" />
+    <message msgid="hotspot setup" msgstr="Настройка точки" />
+    <message msgid="hotspot domain" msgstr="Имя доменна" />
+    <message msgid="hotspot lease" msgstr="Время аренды (сек)" />
+    <message msgid="hotspot radius auth" msgstr="Адрес RADIUS сервера аутентификации" />
+    <message msgid="hotspot radius acct" msgstr="Адрес RADIUS сервера учёта" />
+    <message msgid="hotspot radius secret" msgstr="Секретное слово RADIUS сервера" />
+    <message msgid="hotspot radius nas" msgstr="Radius NAS ID" />
+    <message msgid="hotspot radius location id" msgstr="Radius Location ID" />
+    <message msgid="hotspot radius location name" msgstr="Radius Location Name" />
+    <message msgid="hotspot radius coa port" msgstr="Radius CoA/DM порт" />
+    <message msgid="hotspot radius no check ip" msgstr="Не проверять IP в CoA/DM запросах" />
+    <message msgid="hotspot uam server" msgstr="URL для UAM сервера" />
+    <message msgid="hotspot uam homepage" msgstr="Страница UAM" />
+    <message msgid="hotspot uam secret" msgstr="Секретное слово UAM" />
+    <message msgid="hotspot uam allowed" msgstr="UAM allowed hosts" />
+    <message msgid="hotspot uam any dns" msgstr="Разрешить любые DNS запросы" />
+    <message msgid="hotspot uam mac" msgstr="Разрешённые MAC" />
+    <message msgid="hotspot dont space" msgstr="Пробелы в поле запрещены!" />
+    <message msgid="hotspot expects number" msgstr="В этом поле должны быть цыфры!" />
 </po>

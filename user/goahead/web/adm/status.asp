@@ -23,9 +23,12 @@ td.port_status {
 }
 </style>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("admin");
+Butterlate.setTextDomain("buttons");
 
 var wan_port = '<% getCfgZero(1, "wan_port"); %>';
+var lan_port = '<% getCfgZero(1, "lan_port"); %>';
 var timer = null;
 
 function showOpMode()
@@ -69,6 +72,7 @@ function showPortStatus()
 	var sip_port = (!form.sip_stbEnabled.checked) ? -1 :
 			(wan == 0) ? 2 : wan - 2;
 	var content = '';
+	var lan = form.lan_port.value;
 
 	for (i=0; i<pstatus.length; i++)
 	{
@@ -90,7 +94,19 @@ function showPortStatus()
 				image += '_h';
 		}
 
-		var text = i+1;
+		if (lan == 'distant') {
+			if (wan == 0) {
+				var text = 5-i;
+			} else if (wan == 4) {
+				var text = i+1;
+			}
+		} else if (lan == 'near') {
+			if (wan == 0) {
+				var text = i;
+			} else if (wan == 4){
+				var text = 4-i;
+			}
+		}
 		if (i == wan)
 			text = '<span style="color: #027fff;">WAN</span>';
 		else if (i == stb_port)
@@ -131,6 +147,13 @@ function initTranslation()
 	_TR("statusLANMAC", "status mac");
 
 	_TR("statusEthPortStatus", "status ethernet port status");
+	_TR("statusPortManagement", "status port management");
+	_TR("statusWANport", "status wan port");
+	_TR("statusFirstLANport", "status first lan port");
+	_TR("statusNearToWAN", "status near");
+	_TR("statusDistantFromWAN", "status distant");
+
+	_TRV("statusApply", "button apply");
 }
 
 function PageInit()
@@ -151,9 +174,13 @@ function PageInit()
 	if ((wan_port != '0') && (wan_port != '4'))
 		wan_port = '4';
 
+	if (((lan_port != 'near') && (lan_port != 'distant')))
+		lan_port = 'near';
+
 	var form = document.setWanForm;
 
 	form.wan_port.value = wan_port;
+	form.lan_port.value = lan_port;
 	form.tv_stbEnabled.checked = (tv_stb == '1');
 	form.sip_stbEnabled.checked = (sip_stb == '1');
 	form.tv_stbMcast.checked = (tv_stb_mcast == '1');
@@ -206,7 +233,7 @@ function reloadPage()
 
 function setWanPort(form)
 {
-	if (confirm('The device must be restarted to apply port configuration changes. Do you want to proceed?'))
+	if (confirm(_("status ask reboot")))
 	{
 		clearTimeout(timer);
 		ajaxPostForm(null, form, 'setwanReloader', '/messages/rebooting.asp');
@@ -229,15 +256,24 @@ function setWanPort(form)
       <form name="setWanForm" method="POST" action="/goform/setWanPort">
         <table class="form">
           <tr>
-            <td class="title" colspan="3">Port Management</td>
+            <td class="title" colspan="3" id="statusPortManagement">Port Management</td>
           </tr>
           <tr>
-            <td class="head">WAN port</td>
+            <td class="head" id="statusWANport">WAN port</td>
             <td><select name="wan_port" onChange="showPortStatus();" class="short">
                 <option value="0">1</option>
                 <option value="4">5</option>
               </select>
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
+              <td></td>
+          </tr>
+          <tr>
+            <td class="head" id="statusFirstLANport">First LAN port</td>
+            <td><select name="lan_port" onChange="showPortStatus();" class="mid">
+                <option value="near" id="statusNearToWAN">Near to the WAN port</option>
+                <option value="distant" id="statusDistantFromWAN">Distant from the WAN port</option>
+              </select>
+              </td>
               <td></td>
           </tr>
           <tr>
@@ -309,7 +345,7 @@ function setWanPort(form)
               <td></td>
           </tr>
         </table>
-        <input type="button" class="mid" value="Change port configuration" onClick="setWanPort(this.form);" />
+        <input type="button" class="mid" id="statusApply" value="Apply" onClick="setWanPort(this.form);" />
       </form>
       <div class="whitespace">&nbsp;</div></td>
   </tr>

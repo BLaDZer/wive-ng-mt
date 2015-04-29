@@ -78,9 +78,7 @@ function bodyOnLoad(form)
 <table class="body">
   <tr>
     <td><h1 id="QoSTitleStr">Quality of Service Settings </h1>
-      <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>
-      <p>For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>.
-        Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</p>
+      <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications. For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>. Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</p>
       <hr>
       <form method="post" name="QoSSetup" action="/goform/QoSSetup">
         <table class="form">

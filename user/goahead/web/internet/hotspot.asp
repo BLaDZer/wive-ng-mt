@@ -11,7 +11,8 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
@@ -53,25 +54,32 @@ function display_on()
 
 function initTranslation()
 {
-	_TR("lTitle", "lan title");
-	_TR("lIntroduction", "lan introduction");
-	_TR("lSetup", "lan setup");
-
-	_TR("lHostname", "inet hostname");
-	_TR("lIp", "inet ip");
-	_TR("lNetmask", "inet netmask");
-	_TR("lLan2", "inet lan2");
-	_TR("lLan2Enable", "inet enable");
-	_TR("lLan2Disable", "inet disable");
-	_TR("lLan2Ip", "inet lan2 ip");
-	_TR("lLan2Netmask", "inet lan2 netmask");
-	_TR("lGateway", "inet gateway");
-	_TR("lPriDns", "inet pri dns");
-	_TR("lSecDns", "inet sec dns");
-	_TR("lMac", "inet mac");
-
-	_TRV("lApply", "inet apply");
-	_TRV("lCancel", "inet cancel");
+	_TR("sTitle", "hotspot title");
+	_TR("sIntroduction", "hotspot introduction");
+	_TR("spotSetup", "hotspot setup");
+	_TR("sIp", "inet ip");
+	_TR("sNetwork", "inet netmask");
+	_TR("sPriDns", "inet pri dns");
+	_TR("sSecDns", "inet sec dns");
+	_TR("sDomain", "hotspot domain");
+	_TR("sLease", "hotspot lease");
+	_TR("sRadServer1", "hotspot radius auth");
+	_TR("sRadServer2", "hotspot radius acct");
+	_TR("sRadSecret", "hotspot radius secret");
+	_TR("sNasId", "hotspot radius nas");
+	_TR("sRadLocId", "hotspot radius location id");
+  _TR("sRadLocName", "hotspot radius location name");
+  _TR("sRadCoaPort", "hotspot radius coa port");
+  _TR("sRadCoaNoIpCheck", "hotspot radius no check ip");
+  _TR("sUamServer", "hotspot uam server");
+  _TR("sUamHomepage", "hotspot uam homepage");
+  _TR("sUamSecret", "hotspot uam secret");
+  _TR("sUamAllowed", "hotspot uam allowed");
+  _TR("sUamAnyDNS", "hotspot uam any dns");
+  _TR("sMacAllowed", "hotspot uam mac");
+  
+	_TRV("sApply", "button apply");
+	_TRV("sCancel", "button cancel");
 }
 
 function initValue()
@@ -110,7 +118,7 @@ function CheckValue()
 		obj = chkIp[i];
 		if (obj.value.indexOf(" ") >= 0)
 		{
-			alert('Space in field is not allowed!');
+			alert(_("hotspot dont space"));
 			obj.focus();
 			obj.select();
 			return false;
@@ -120,7 +128,7 @@ function CheckValue()
 		obj = chkIp[i];
 		if (!/^\d+$/.test(obj.value))
 		{
-			alert('This field expects number!');
+			alert(_("hotspot expects number"));
 			obj.focus();
 			obj.select();
 			return false;
@@ -134,8 +142,8 @@ function CheckValue()
 <body onLoad="initValue()">
 <table class="body">
   <tr>
-    <td><h1 id="lTitle"></h1>
-      <p id="lIntroduction"></p>
+    <td><h1 id="sTitle"></h1>
+      <p id="sIntroduction"></p>
       <hr />
       <form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue();">
         <table width="95%" border="1" cellpadding="2" cellspacing="1">
@@ -226,9 +234,9 @@ function CheckValue()
         </table>
         <table width="95%" cellpadding="2" cellspacing="1">
           <tr align="center">
-            <td><input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">
+            <td><input type="submit" class="normal" value="Apply" id="sApply" onClick="TimeoutReload(20);">
               &nbsp;&nbsp;
-              <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();"></td>
+              <input type="reset"  class="normal" value="Cancel" id="sCancel" onClick="window.location.reload();"></td>
           </tr>
         </table>
       </form></td>

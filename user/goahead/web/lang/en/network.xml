@@ -120,4 +120,26 @@
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Action" />
+
+    <message msgid="hotspot title" msgstr="" />
+    <message msgid="hotspot introduction" msgstr="" />
+    <message msgid="hotspot setup" msgstr="Hotspot Setup" />
+    <message msgid="hotspot domain" msgstr="Domain name" />
+    <message msgid="hotspot lease" msgstr="Lease time (sec)" />
+    <message msgid="hotspot radius auth" msgstr="Radius server auth address" />
+    <message msgid="hotspot radius acct" msgstr="Radius server acct address" />
+    <message msgid="hotspot radius secret" msgstr="Radius server secret" />
+    <message msgid="hotspot radius nas" msgstr="Radius NAS ID" />
+    <message msgid="hotspot radius location id" msgstr="Radius Location ID" />
+    <message msgid="hotspot radius location name" msgstr="Radius Location Name" />
+    <message msgid="hotspot radius coa port" msgstr="Radius CoA/DM port" />
+    <message msgid="hotspot radius no check ip" msgstr="No IP check for CoA/DM request" />
+    <message msgid="hotspot uam server" msgstr="UAM server URL" />
+    <message msgid="hotspot uam homepage" msgstr="UAM homepage URL" />
+    <message msgid="hotspot uam secret" msgstr="UAM secret" />
+    <message msgid="hotspot uam allowed" msgstr="UAM allowed hosts" />
+    <message msgid="hotspot uam any dns" msgstr="Allow all DNS requests" />
+    <message msgid="hotspot uam mac" msgstr="Allowed MAC" />
+    <message msgid="hotspot dont space" msgstr="Space in field is not allowed!" />
+    <message msgid="hotspot expects number" msgstr="This field expects number!" />
 </po>

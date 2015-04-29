@@ -14,6 +14,38 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
+Butterlate.setTextDomain("buttons");
+
+function initTranslation()
+{
+  _TR("manTitle", "management title");
+  _TR("manIntroduction", "management introduction");
+  _TR("loading", "management uploading firmware");
+  _TR("manDontRemoveUSB", "management dont remove usb");
+  _TR("manLangSet", "management language settings");
+  _TR("manSelectLang", "management language select");
+  _TR("manAdmSet", "management administrator settings");
+  _TR("manAdmLodin", "management administrator login");
+  _TR("manAdmPasswd", "management administrator password");
+  _TR("manApplyLogin", "management apply login");
+  _TR("manAdmFirmware", "management firmware");
+  _TR("uploadFWLocation", "management filename");
+  _TR("manResetRWFS", "management reset rwfs");
+  _TR("manRWFSUpload", "management upload rwfs");
+  _TR("uploadRWFSLocation", "management filename");
+  _TR("manSettingsManag", "management settings");
+  _TR("setmanExpSetButton", "management backup file");
+  _TR("setmanImpSetFileLocation", "management upload file");
+  _TR("manResetToFactory", "management reset factory");
+
+  _TRV("manLangApply", "button apply");
+  _TRV("manAdmApply", "button apply");
+  _TRV("uploadFWApply", "button update");
+  _TRV("uploadRWFSApply", "button load");
+  _TRV("setmanExpSetExport", "button backup");
+  _TRV("setmanImpSetImport", "button load");
+  _TRV("setmanLoadDefault", "button reset");
+}
 
 function SubmitForm(message, form)
 {
@@ -26,7 +58,7 @@ function AdmFormCheck(form)
 	var re_login = /^[a-zA-Z0-9_]+$/;
 	if (!re_login.test(form.admuser.value))
 	{
-		alert("Please specify correct administrator login (a-z, A-Z, 0-9, _).");
+		alert(_("management uncorrect login"));
 		form.admuser.focus();
 		return false;
 	}
@@ -34,7 +66,7 @@ function AdmFormCheck(form)
 	var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 	if (!re_pass.test(form.admpass.value))
 	{
-		alert("Please specify correct administrator password (spaces and dollar symbol are disallowed).");
+		alert(_("management uncorrect password"));
 		form.admpass.focus();
 		return false;
 	}
@@ -74,7 +106,7 @@ function initValue()
 			}
 		}
 	}
-
+  initTranslation();
 	// Firmware
 	document.getElementById("loading").style.display="none";
 }
@@ -90,9 +122,7 @@ function onUploadFirmwareSubmit(form)
 {
 	if (checkFilePresent(form.filename))
 		ajaxPostForm(
-			'Do not power off the device while upgrading firmware! ' + 
-			'Doing so can result in permanent damage to the device. ' + 
-			'Do you really want to proceed?',
+			_("management dont power off"),
 			form,
 			'firmwareReloader',
 			'/messages/wait_firmware.asp',
@@ -103,7 +133,7 @@ function onImportSettings(form)
 {
 	if (checkFilePresent(form.filename))
 		ajaxPostForm(
-			'Proceed uploading settings?',
+			_("management ask upload settings"),
 			form,
 			'setmanReloader',
 			'/messages/wait_config.asp',
@@ -114,7 +144,7 @@ function onUploadRWFSSubmit(form)
 {
 	if (checkFilePresent(form.filename))
 		ajaxPostForm(
-			'Proceed uploading RWFS?',
+			_("management ask upload rwfs"),
 			form,
 			'RWFSReloader',
 			'/messages/wait_rwfs.asp',
@@ -126,8 +156,8 @@ function onUploadRWFSSubmit(form)
 <body onLoad="initValue();">
 <table class="body" style="width:600px;">
   <tr>
-    <td><h1>System Management</h1>
-      <div id="staticText">
+    <td><h1 id="manTitle">System Management</h1>
+      <div id="manIntroduction">
         <p>You can select language and set administrator login and password here.</p>
         <p>You can also upgrade the Wive-NG-MT firmware to obtain new functionality.
           It takes about 2 minute to upload firmware &amp; upgrade flash. Please be patient.</p>
@@ -135,8 +165,7 @@ function onUploadRWFSSubmit(form)
       </div>
       <hr>
       <p id="loading" style="display: none; color: #ff0000; font-size: 16px;"> Uploading firmware <br>
-        <br>
-        Please be patient and don't remove USB device if present... </p>
+        <br id="manDontRemoveUSB">Please be patient and don't remove USB device if present... </p>
       <div id="staticControls">
         <!-- ================= Langauge Settings ================= -->
         <table class="form">
@@ -162,7 +191,7 @@ function onUploadRWFSSubmit(form)
               <td class="title" colspan="2" id="manAdmSet">Administrator Settings</td>
             </tr>
             <tr>
-              <td class="head">Login</td>
+              <td class="head" id="manAdmLodin">Login</td>
               <td><input type="text" name="admuser" size="16" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
             </tr>
             <tr>
@@ -170,7 +199,7 @@ function onUploadRWFSSubmit(form)
               <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
             </tr>
             <tr>
-              <td class="head">Apply new login/password</td>
+              <td class="head" id="manApplyLogin">Apply new login/password</td>
               <td><input type="hidden" name="submit-url" value="/adm/management.asp" >
                 <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
             </tr>
@@ -179,12 +208,12 @@ function onUploadRWFSSubmit(form)
         <!-- ================= Firmware ================= -->
         <table class="form">
           <tr>
-            <td colspan="2" class="title">Firmware update</td>
+            <td colspan="2" class="title" id="manAdmFirmware">Firmware update</td>
           </tr>
           <tr>
             <td class="head" id="uploadFWLocation">Filename:</td>
             <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data" onSubmit="return uploadFirmwareCheck();" >
-                <input type="checkbox" name="reset_rwfs" checked="checked">
+                <input type="checkbox" name="reset_rwfs" checked="checked" id="manResetRWFS">
                 Reset RWFS on update <br>
                 <input name="filename" size="20" maxlength="256" type="file">
                 <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
@@ -196,7 +225,7 @@ function onUploadRWFSSubmit(form)
         <!-- ================= RwFs ================= -->
         <table class="form">
           <tr>
-            <td colspan="2" class="title">RW-FS Upload</td>
+            <td colspan="2" class="title" id="manRWFSUpload">RW-FS Upload</td>
           </tr>
           <tr>
             <td class="head" id="uploadRWFSLocation">Filename:</td>
@@ -210,12 +239,12 @@ function onUploadRWFSSubmit(form)
         <!-- ================= Settings management ================= -->
         <table class="form">
           <tr>
-            <td class="title" colspan="2">Router Settings Management</td>
+            <td class="title" colspan="2" id="manSettingsManag">Router Settings Management</td>
           </tr>
           <tr>
             <td class="head" id="setmanExpSetButton">Backup Settings to file</td>
             <td><form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh"
-			onsubmit="return confirm('Do you want to export settings to file?');" >
+			onsubmit="return confirm(_('management export settings'));" >
                 <input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="half">
               </form></td>
           </tr>
@@ -228,9 +257,9 @@ function onUploadRWFSSubmit(form)
               </form></td>
           </tr>
           <tr>
-            <td class="head">Reset to factory defaults</td>
+            <td class="head" id="manResetToFactory">Reset to factory defaults</td>
             <td><form method="POST" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings"
-			onsubmit="return confirm('All settings will be reset to factory defaults. Really proceed?');">
+			onsubmit="return confirm(_('management ask reset factory'));">
                 <input type="submit" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half">
                 <input type="hidden" value="stub" >
               </form></td>

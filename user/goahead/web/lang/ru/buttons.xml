@@ -9,4 +9,7 @@
     <message msgid="button reset" msgstr="Сброс" />
     <message msgid="button restore factory" msgstr="Восстановить заводской" />
     <message msgid="button apply connect" msgstr="Применить и подключить" />
+    <message msgid="button update" msgstr="Обновить" />
+    <message msgid="button load" msgstr="Загрузить" />
+    <message msgid="button backup" msgstr="Сохранить" />
 </po>

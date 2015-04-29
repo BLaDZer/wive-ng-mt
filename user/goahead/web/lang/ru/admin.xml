@@ -1,19 +1,67 @@
 <po>
+    <message msgid="management title" msgstr="Настройки системы" />
+    <message msgid="management introduction" msgstr="Здесь вы можете выбрать язык и установить логин и пароль администратора. Также вы можете обновить прошивку, чтобы улучшить функциональность устройства. Обновление прошивки занимает около 5 минут, пожалуйста будьте терпеливы. Внимание!!! Повреждение прошивки может привести к неработоспособности устройства." />
+    <message msgid="management uploading firmware" msgstr="Загрузка прошивки" />
+    <message msgid="management dont remove usb" msgstr="Пожалуйста, будьте терпеливы. Не извлекайте USB устройство, если оно вставленно..." />
+    <message msgid="management language settings" msgstr="Настройки языка" />
+    <message msgid="management language select" msgstr="Выберите язык" />
+    <message msgid="management administrator settings" msgstr="Настройки администратора" />
+    <message msgid="management administrator login" msgstr="Имя пользователя" />
+    <message msgid="management administrator password" msgstr="Пароль" />
+    <message msgid="management apply login" msgstr="Применить имя пользователя и пароль" />
+    <message msgid="management firmware" msgstr="Обновление прошивки" />
+    <message msgid="management filename" msgstr="Имя файла:" />
+    <message msgid="management reset rwfs" msgstr="Сброс RWFS при обновлении" />
+    <message msgid="management upload rwfs" msgstr="Загрузка RW-FS" />
+    <message msgid="management settings" msgstr="Управление настройками" />
+    <message msgid="management backup file" msgstr="Сохранить настройки в файл" />
+    <message msgid="management upload file" msgstr="Загрузить настройки из файла" />
+    <message msgid="management reset factory" msgstr="Сброс на заводские настройки" />
+    <message msgid="management uncorrect login" msgstr="Пожалуйста, укажите правльное имя администратора (a-z, A-Z, 0-9, _)." />
+    <message msgid="management uncorrect password" msgstr="Пароль не может содержать пробелы или знак доллара!" />
+    <message msgid="management dont power off" msgstr="Не выключайте устройство во время обновления прошивки! Это может привести к необратимому повреждению устройства. Вы действительно хотите продолжить?" />
+    <message msgid="management ask upload settings" msgstr="Начать загрузку настроек?" />
+    <message msgid="management ask upload rwfs" msgstr="Начать загрузку файловой системы?" />
+    <message msgid="management export settings" msgstr="Вы хотите загрузить настройки в файл?" />
+    <message msgid="management ask reset factory" msgstr="Все настройки буду сброшены на заводские. Хотите продолжить?" />
+
+    <message msgid="status title" msgstr="Статус роутера" />
+    <message msgid="status introduction" msgstr="Сводная информация о статусе оборудования" />
+    <message msgid="status system information" msgstr="Информация о системе" />
+    <message msgid="status sdk version" msgstr="Версия ПО" />
+    <message msgid="status system date time" msgstr="Системное время" />
+    <message msgid="status system up time" msgstr="Продолжительность работы" />
+    <message msgid="status system platform" msgstr="Платформа" />
+    <message msgid="status internet config" msgstr="Настройки интернета" />
+    <message msgid="status connect type" msgstr="Тип WAN соединения" />
+    <message msgid="status int ipaddr" msgstr="IP адрес в VPN сети или интернете" />
+    <message msgid="status wan ipaddr" msgstr="IP адрес физического WAN интерфейса" />
+    <message msgid="status subnet mask" msgstr="Маска подсети WAN" />
+    <message msgid="status default gateway" msgstr="Шлюз" />
+    <message msgid="status primary dns" msgstr="Основной DNS" />
+    <message msgid="status secondary dns" msgstr="Вторичный DNS" />
+    <message msgid="status mac" msgstr="MAC адрес" />
+    <message msgid="status local network" msgstr="Локальная сеть" />
+    <message msgid="status lan ipaddr" msgstr="LAN IP адрес" />
+    <message msgid="status local netmask" msgstr="Маска подсети LAN" />
+    <message msgid="status ethernet port status" msgstr="Статус Ethernet-портов" />
+    <message msgid="status port management" msgstr="Настройка портов" />
+    <message msgid="status wan port" msgstr="WAN порт" />
+    <message msgid="status first lan port" msgstr="Первый LAN порт" />
+    <message msgid="status near" msgstr="Ближе к порту WAN" />
+    <message msgid="status distant" msgstr="Дальше от порта WAN" />
+    <message msgid="status ask reboot" msgstr="Для применения изменений требуется перезагрузка устройства. Вы хотите продолжить?" />
+
+
+
+
+
   <message msgid="admin disable" msgstr="Выкл." />
   <message msgid="admin enable" msgstr="Вкл." />
   <message msgid="admin apply" msgstr="Применить" />
   <message msgid="admin cancel" msgstr="Отмена" />
   <message msgid="admin reset" msgstr="Сброс" />
   <message msgid="admin scan" msgstr="Скан" />
-
-  <message msgid="man title" msgstr="Настройки системы" />
-  <message msgid="man introduction" msgstr="Здесь вы можете сменить имя пользователя и пароль." />
-
-  <message msgid="man language setting" msgstr="Настройки локализации" />
-  <message msgid="man select language" msgstr="Выбрать язык" />
-  <message msgid="man admin setting" msgstr="Настройки администрирования" />
-  <message msgid="man admin account" msgstr="Логин" />
-  <message msgid="man admin passwd" msgstr="Пароль" />
 
   <message msgid="man ntp setting" msgstr="Настройки NTP" />
   <message msgid="man ntp timezone" msgstr="Часовой пояс:" />
@@ -71,51 +119,6 @@
   <message msgid="man ddns account" msgstr="Логин" />
   <message msgid="man ddns passwd" msgstr="Пароль" />
   <message msgid="man ddns" msgstr="DDNS" />
-
-  <message msgid="upload title" msgstr="Обновить прошивку" />
-  <message msgid="upload introduction1" msgstr="Обновить ПО устройства" />
-  <message msgid="upload introduction2" msgstr="Загрузка и запись во флэш ПО займет примерно 1 минуту. Внимание! Испорченый образ может испортить устройство!" />
-  <message msgid="upload firmware" msgstr="Обновить прошивку" />
-  <message msgid="upload firmware location" msgstr="Файл:" />
-  <message msgid="upload bootloader" msgstr="Обновить загрузчик (опасно!)" />
-  <message msgid="upload bootloader location" msgstr="Файл:" />
-  <message msgid="upload firmware from usb" msgstr="Обновить прошивку с USB" />
-  <message msgid="upload firmware force upgrade via mem" msgstr="Force upgrade firmware via mem " />
-  <message msgid="upload firmware force" msgstr="Force:" />
-
-  <message msgid="setman title" msgstr="Управление настройками" />
-  <message msgid="setman introduction" msgstr="Вы можете сохранить настройки, экспортировав их в файл, восстановить настройки из файла либо сбросить настройки на стандартные." />
-  <message msgid="setman export setting" msgstr="Сохранить настройки" />
-  <message msgid="setman export setting button" msgstr="Сохранить" />
-  <message msgid="setman export setting export" msgstr="Сохранить" />
-  <message msgid="setman import setting" msgstr="Загрузить настройки" />
-  <message msgid="setman import setting file location" msgstr="Файл конфигурации" />
-  <message msgid="setman import setting import" msgstr="Загрузить" />
-  <message msgid="setman load factory default" msgstr="Сброс настроек на заводские" />
-  <message msgid="setman load factory default button" msgstr="Сбросить настройки" />
-  <message msgid="setman load default" msgstr="Сбросить настройки" />
-
-  <message msgid="status title" msgstr="Статус роутера" />
-  <message msgid="status introduction" msgstr="Сводная информация о статусе" />
-  <message msgid="status system information" msgstr="Информация о системе" />
-  <message msgid="status sdk version" msgstr="Версия ПО" />
-  <message msgid="status system date time" msgstr="Системное время" />
-  <message msgid="status system up time" msgstr="Продолжительность работы" />
-  <message msgid="status system platform" msgstr="Платформа" />
-  <message msgid="status operate mode" msgstr="Режим работы" />
-  <message msgid="status internet config" msgstr="Настройки интернета" />
-  <message msgid="status connect type" msgstr="Тип WAN соединения" />
-  <message msgid="status int ipaddr" msgstr="IP адрес в VPN сети или интернете" />
-  <message msgid="status wan ipaddr" msgstr="IP адрес физического WAN интерфейса" />
-  <message msgid="status subnet mask" msgstr="Маска подсети WAN" />
-  <message msgid="status default gateway" msgstr="Шлюз" />
-  <message msgid="status primary dns" msgstr="Основной DNS" />
-  <message msgid="status secondary dns" msgstr="Вторичный DNS" />
-  <message msgid="status local network" msgstr="Локальная сеть" />
-  <message msgid="status lan ipaddr" msgstr="LAN IP адрес" />
-  <message msgid="status local netmask" msgstr="Маска подсети LAN" />
-  <message msgid="status mac" msgstr="MAC адрес" />
-  <message msgid="status ethernet port status" msgstr="Статус Ethernet-портов" />
 
   <message msgid="statistic title" msgstr="Статистика" />
   <message msgid="statistic introduction" msgstr=" Статистика устройства " />
