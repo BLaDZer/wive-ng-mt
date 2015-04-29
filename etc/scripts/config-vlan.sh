@@ -163,6 +163,8 @@ restore7620Esw()
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 
+	# clear configured vlan parts
+	switch vlan clear
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -315,6 +317,8 @@ restore7530Esw()
 	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
 	done
 
+	# clear configured vlan parts
+	switch vlan clear
 	#clear mac table if vlan configuration changed
 	switch clear
 }

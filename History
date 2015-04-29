@@ -875,7 +875,9 @@
 <b>3.0.x</b><br>
 1) uboot: update to 4.3.2.0 version.<br>
 2) igmpproxy: fix switch managment if EEE enabled.<br>
-2) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
+3) switchtools: add vlan clear command.<br>
+4) init.d: full cleanup vlan parts in restore dumb mode function.<br>
+5) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
 <br>
 <br>
 <b>TODO:</b><br>

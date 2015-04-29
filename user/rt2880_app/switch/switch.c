@@ -1772,6 +1772,23 @@ void vlan_dump(void)
 #endif
 #endif
 
+void vlan_clear(int argc, char *argv[])
+{
+	unsigned int value;
+	int vid;
+
+	for (vid = 0; vid < 16; vid++) {
+
+	    value = 0;//invalid
+	    reg_write(REG_ESW_VLAN_VAWD1, value);
+
+	    value = (0x80001000 + vid);  //w_vid_cmd
+	    reg_write(REG_ESW_VLAN_VTCR, value);
+	}
+
+	wait_vtcr();
+}
+
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 void vlan_set(int argc, char *argv[])
 {
@@ -2131,8 +2148,10 @@ int main(int argc, char *argv[])
 			vlan_dump();
 		else
 #endif
-		    if (!strncmp(argv[2], "set", 4))
+		if (!strncmp(argv[2], "set", 4))
 			vlan_set(argc, argv);
+		else if (!strncmp(argv[2], "clear", 4))
+			vlan_clear(argc, argv);
 		else
 			usage(argv[0]);
 	}
