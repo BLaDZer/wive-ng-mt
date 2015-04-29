@@ -879,9 +879,10 @@
 4) init.d: full cleanup vlan parts in restore dumb mode function.<br>
 5) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
 6) kernel: ralink arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
-7) kernel: ralink_nvram: fix check part size in commit.<br>
-8) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
-9) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
+7) kernel: ralink arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
+8) kernel: ralink_nvram: fix check part size in commit.<br>
+9) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
+10) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
 <br>
 <br>
 <b>TODO:</b><br>
