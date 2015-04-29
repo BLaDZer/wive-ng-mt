@@ -1808,6 +1808,11 @@ void mt7628_ephy_init(void)
 	mii_mgr_write(0, 28, 0x0233);
 	mii_mgr_write(0, 29, 0x000a);
 	mii_mgr_write(0, 30, 0x0000);
+	/* Fix EPHY idle state abnormal behavior */
+	mii_mgr_write(0, 31, 0x4000); //change G4 page
+	mii_mgr_write(0, 29, 0x000d);
+	mii_mgr_write(0, 30, 0x0500);
+
 
 }
 
@@ -1960,6 +1965,7 @@ void rt305x_esw_init(void)
 
 #define RSTCTRL_EPHY_RST	(1<<24)
 #define MT7628_EPHY_EN	        (0x1f<<16)
+#define MT7628_P0_EPHY_AIO_EN   (1<<16)	
 	/* We shall prevent modifying PHY registers if it is FPGA mode */
 #if defined (RT3052_ASIC_BOARD) || defined (RT3352_ASIC_BOARD) || defined (RT5350_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
 #if defined (RT3052_ASIC_BOARD)
@@ -2133,7 +2139,12 @@ void rt305x_esw_init(void)
 #elif defined (MT7628_ASIC_BOARD)
 /*TODO: Init MT7628 ASIC PHY HERE*/
 	i = RALINK_REG(RT2880_AGPIOCFG_REG);
+#if defined (CONFIG_ETH_ONE_PORT_ONLY)
+        i |= MT7628_EPHY_EN;
+        i = i & ~(MT7628_P0_EPHY_AIO_EN);
+#else
 	i = i & ~(MT7628_EPHY_EN);
+#endif
 	RALINK_REG(RT2880_AGPIOCFG_REG) = i;
 
 	printf("RESET MT7628 PHY!!!!!!");
@@ -2144,8 +2155,14 @@ void rt305x_esw_init(void)
 	i = i & ~(RSTCTRL_EPHY_RST);
 	RALINK_REG(RT2880_RSTCTRL_REG) = i;
 	i = RALINK_REG(RALINK_SYSCTL_BASE + 0x64);
+#if defined (CONFIG_ETH_ONE_PORT_ONLY)
+        i &= 0xf003f003;
+        i |= 0x05540554;
+        RALINK_REG(RALINK_SYSCTL_BASE + 0x64) = i; // set P0 EPHY LED mode
+#else	
 	i &= 0xf003f003;
 	RALINK_REG(RALINK_SYSCTL_BASE + 0x64) = i;
+#endif
       
 	udelay(5000);
 	mt7628_ephy_init();

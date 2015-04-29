@@ -95,7 +95,7 @@ extern struct eth_device* 	rt2880_pdev;
 extern ulong uboot_end_data;
 extern ulong uboot_end;
 
-#ifdef RALINK_USB
+#if defined (RALINK_USB ) || defined (MTK_USB)
 extern int usb_stor_curr_dev;
 #endif
 
@@ -129,6 +129,9 @@ static char  file_name_space[ARGV_LEN];
         : "=r" (__res));                                        \
         __res;})
 
+#if defined (CONFIG_DDR_CAL)
+__attribute__((nomips16)) void dram_cali(void);
+#endif
 
 static void Init_System_Mode(void)
 {
@@ -599,7 +602,7 @@ init_fnc_t *init_sequence[] = {
 #endif
 
 //  
-void board_init_f(ulong bootflag)
+__attribute__((nomips16)) void board_init_f(ulong bootflag)
 {
 	gd_t gd_data, *id;
 	bd_t *bd;  
@@ -607,6 +610,7 @@ void board_init_f(ulong bootflag)
 	ulong addr, addr_sp, len = (ulong)&uboot_end - CFG_MONITOR_BASE;
 	ulong *s;
 	u32 value;
+	void (*ptr)(void);
 	u32 fdiv = 0, step = 0, frac = 0, i;
 
 #if defined RT6855_FPGA_BOARD || defined RT6855_ASIC_BOARD || \
@@ -720,6 +724,13 @@ void board_init_f(ulong bootflag)
 	init_baudrate();		/* initialze baudrate settings */
 	serial_init();		/* serial communications setup */
 	console_init_f();
+#if (TEXT_BASE == 0xBFC00000) || (TEXT_BASE == 0xBF000000) || (TEXT_BASE == 0xBC000000)
+#if defined (CONFIG_DDR_CAL)	
+	ptr = dram_cali;
+	ptr = (void*)((u32)ptr & ~(1<<29));
+	(*ptr)();
+#endif	
+#endif
 	display_banner();		/* say that we are here */
 	checkboard();
 
@@ -1295,7 +1306,7 @@ gd_t gd_data;
 extern int rtl8367m_switch_init_pre();
 #endif
  
-void board_init_r (gd_t *id, ulong dest_addr)
+__attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 {
 	cmd_tbl_t *cmdtp;
 	ulong size;
@@ -1405,9 +1416,11 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #endif
 #endif
 
+#if defined (MT7620_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
 #ifdef RALINK_PCIE0_RST
 	void disable_pcie();
 	disable_pcie();
+#endif
 #endif
 
 	u32 reg = RALINK_REG(RT2880_RSTSTAT_REG);
@@ -1517,9 +1530,10 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #if defined(MT7628_ASIC_BOARD)
 	/* Enable ePA/eLNA share pin */
 	{
-		char ee35;
+		char ee35, ee36;
 		raspi_read((char *)&ee35, CFG_FACTORY_ADDR-CFG_FLASH_BASE+0x35, 1);
-		if (ee35 & 0x2)
+		raspi_read((char *)&ee36, CFG_FACTORY_ADDR-CFG_FLASH_BASE+0x36, 1);
+		if ((ee35 & 0x2) || ((ee36 & 0xc) == 0xc))
 		{
 			RALINK_REG(RALINK_SYSCTL_BASE+0x60)|= ((0x3<<24)|(0x3 << 6));
 		}
@@ -2076,6 +2090,12 @@ void board_init_r (gd_t *id, ulong dest_addr)
 				break;
 			}
 
+#ifdef DUAL_IMAGE_SUPPORT
+			/* Don't do anything to the firmware upgraded in Uboot, since it may be used for testing */
+			setenv("Image1Stable", "1");
+			saveenv();
+#endif
+
 			//cp.linux
 			argc = 4;
 			argv[0]= "cp.linux";
@@ -2083,9 +2103,8 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #endif //CFG_ENV_IS_IN_FLASH
 
 #ifdef DUAL_IMAGE_SUPPORT
-			/* Don't do anything to the firmware upgraded in Uboot, since it may be used for testing */
-			setenv("Image1Stable", "1");
-			saveenv();
+			//reset
+			do_reset(cmdtp, 0, argc, argv);
 #endif
 
 			//bootm bc050000
@@ -2237,7 +2256,7 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #endif // RALINK_UPGRADE_BY_SERIAL //
 
 
-#ifdef RALINK_USB
+#if defined (RALINK_USB) || defined (MTK_USB)
 #if defined (CFG_ENV_IS_IN_NAND) || defined (CFG_ENV_IS_IN_SPI)
 		case '5':
 			printf("\n%d: System Load Linux then write to Flash via USB Storage. \n", 5);
@@ -2831,11 +2850,12 @@ static int watchdog_reset()
 }
 #endif
 
+#if defined (MT7620_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
 #ifdef RALINK_PCIE0_RST
 void disable_pcie(void)
 {
 	u32 val;
-	
+
 	val = RALINK_REG(RT2880_RSTCTRL_REG);    // assert RC RST
 	val |= RALINK_PCIE0_RST;
 	RALINK_REG(RT2880_RSTCTRL_REG) = val;
@@ -2847,3 +2867,433 @@ void disable_pcie(void)
 #endif
 }
 #endif
+#endif
+
+#if defined (CONFIG_DDR_CAL)
+#include <asm-mips/mipsregs.h>
+#include <asm-mips/cacheops.h>
+#include <asm/mipsregs.h>
+#include <asm/cache.h>
+
+static inline void cal_memcpy(void* src, void* dst, unsigned int size)
+{
+	int i;
+	unsigned char* psrc = (unsigned char*)src, *pdst=(unsigned char*)dst;
+	for (i = 0; i < size; i++, psrc++, pdst++)
+		(*pdst) = (*psrc);
+	return;
+}
+static inline void cal_memset(void* src, unsigned char pat, unsigned int size)
+{
+	int i;
+	unsigned char* psrc = (unsigned char*)src;
+	for (i = 0; i < size; i++, psrc++)
+		(*psrc) = pat;
+	return;
+}
+
+#define pref_op(hint,addr)						\
+	 __asm__ __volatile__(						\
+	"       .set    push                                    \n"	\
+	"       .set    noreorder                               \n"	\
+	"       pref   %0, %1                                  \n"	\
+	"       .set    pop                                     \n"	\
+	:								\
+	: "i" (hint), "R" (*(unsigned char *)(addr)))	
+		
+#define cache_op(op,addr)						\
+	 __asm__ __volatile__(						\
+	"       .set    push                                    \n"	\
+	"       .set    noreorder                               \n"	\
+	"       .set    mips3\n\t                               \n"	\
+	"       cache   %0, %1                                  \n"	\
+	"       .set    pop                                     \n"	\
+	:								\
+	: "i" (op), "R" (*(unsigned char *)(addr)))	
+	
+__attribute__((nomips16)) static void inline cal_invalidate_dcache_range(ulong start_addr, ulong stop)
+{
+	unsigned long lsize = CONFIG_SYS_CACHELINE_SIZE;
+	unsigned long addr = start_addr & ~(lsize - 1);
+	unsigned long aend = (stop - 1) & ~(lsize - 1);
+
+	while (1) {
+		cache_op(HIT_INVALIDATE_D, addr);
+		if (addr == aend)
+			break;
+		addr += lsize;
+	}
+}	
+
+static void inline cal_patgen(unsigned long* start_addr, unsigned int size, unsigned bias)
+{
+	int i = 0;
+	for (i = 0; i < size; i++)
+		start_addr[i] = ((ulong)start_addr+i+bias);
+		
+	return;	
+}	
+
+#define NUM_OF_CACHELINE	128
+#define MIN_START	6
+#define MIN_FINE_START	0xF
+#define MAX_START 7
+#define MAX_FINE_START	0x0
+#define cal_debug debug
+								
+__attribute__((nomips16)) void dram_cali(void)
+{
+#if defined(ON_BOARD_64M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x800000	
+#endif
+#if defined(ON_BOARD_128M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x1000000	
+#endif	
+#if defined(ON_BOARD_256M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x2000000	
+#endif
+#if defined(ON_BOARD_512M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x4000000	
+#endif
+#if defined(ON_BOARD_1024M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x8000000	
+#endif
+#if defined(ON_BOARD_2048M_DRAM_COMPONENT)
+	#define DRAM_BUTTOM 0x10000000
+#endif
+
+	unsigned int * nc_addr = 0xA0000000+DRAM_BUTTOM-0x0400;
+	unsigned int * c_addr = 0x80000000+DRAM_BUTTOM-0x0400;
+	unsigned int min_coarse_dqs[2];
+	unsigned int max_coarse_dqs[2];
+	unsigned int min_fine_dqs[2];
+	unsigned int max_fine_dqs[2];
+	unsigned int coarse_dqs[2];
+	unsigned int fine_dqs[2];
+	unsigned int min_dqs[2];
+	unsigned int max_dqs[2];
+	int reg = 0, ddr_cfg2_reg = 0;
+	int ret = 0;
+	int flag = 0, min_failed_pos[2], max_failed_pos[2], min_fine_failed_pos[2], max_fine_failed_pos[2];
+	int i,j, k;
+	int dqs = 0;
+	unsigned int min_coarse_dqs_bnd, min_fine_dqs_bnd, coarse_dqs_dll, fine_dqs_dll;
+#if (NUM_OF_CACHELINE > 40)
+#else	
+	unsigned int cache_pat[8*40];
+#endif	
+	u32 value, test_count = 0;;
+	u32 fdiv = 0, step = 0, frac = 0;
+
+	value = RALINK_REG(RALINK_DYN_CFG0_REG);
+	fdiv = (unsigned long)((value>>8)&0x0F);
+	if ((CPU_FRAC_DIV < 1) || (CPU_FRAC_DIV > 10))
+	frac = (unsigned long)(value&0x0F);
+	else
+		frac = CPU_FRAC_DIV;
+	i = 0;
+	
+	while(frac < fdiv) {
+		value = RALINK_REG(RALINK_DYN_CFG0_REG);
+		fdiv = ((value>>8)&0x0F);
+		fdiv--;
+		value &= ~(0x0F<<8);
+		value |= (fdiv<<8);
+		RALINK_REG(RALINK_DYN_CFG0_REG) = value;
+		udelay(500);
+		i++;
+		value = RALINK_REG(RALINK_DYN_CFG0_REG);
+		fdiv = ((value>>8)&0x0F);
+	}	
+#if (NUM_OF_CACHELINE > 40)
+#else
+	cal_memcpy(cache_pat, dram_patterns, 32*6);
+	cal_memcpy(cache_pat+32*6, line_toggle_pattern, 32);
+	cal_memcpy(cache_pat+32*6+32, pattern_ken, 32*13);
+#endif
+
+#if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)	
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x10) &= ~(0x1<<4);
+#else
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x18) = &= ~(0x1<<4);
+#endif
+	ddr_cfg2_reg = RALINK_REG(RALINK_MEMCTRL_BASE+0x48);
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x48)&=(~((0x3<<28)|(0x3<<26)));
+
+TEST_LOOP:
+	min_coarse_dqs[0] = MIN_START;
+	min_coarse_dqs[1] = MIN_START;
+	min_fine_dqs[0] = MIN_FINE_START;
+	min_fine_dqs[1] = MIN_FINE_START;
+	max_coarse_dqs[0] = MAX_START;
+	max_coarse_dqs[1] = MAX_START;
+	max_fine_dqs[0] = MAX_FINE_START;
+	max_fine_dqs[1] = MAX_FINE_START;
+	min_failed_pos[0] = 0xFF;
+	min_fine_failed_pos[0] = 0;
+	min_failed_pos[1] = 0xFF;
+	min_fine_failed_pos[1] = 0;
+	max_failed_pos[0] = 0xFF;
+	max_fine_failed_pos[0] = 0;
+	max_failed_pos[1] = 0xFF;
+	max_fine_failed_pos[1] = 0;
+	dqs = 0;
+
+	// Add by KP, DQS MIN boundary
+	reg = RALINK_REG(RALINK_MEMCTRL_BASE+0x20);
+	coarse_dqs_dll = (reg & 0xF00) >> 8;
+	fine_dqs_dll = (reg & 0xF0) >> 4;
+	if (coarse_dqs_dll<=8)
+		min_coarse_dqs_bnd = 8 - coarse_dqs_dll;
+	else
+		min_coarse_dqs_bnd = 0;
+	
+	if (fine_dqs_dll<=8)
+		min_fine_dqs_bnd = 8 - fine_dqs_dll;
+	else
+		min_fine_dqs_bnd = 0;
+	// DQS MIN boundary
+ 
+DQS_CAL:
+	flag = 0;
+	j = 0;
+
+	for (k = 0; k < 2; k ++)
+	{
+		unsigned int test_dqs, failed_pos = 0;
+		if (k == 0)
+			test_dqs = MAX_START;
+		else
+			test_dqs = MAX_FINE_START;	
+		flag = 0;
+		do 
+		{	
+			flag = 0;
+			for (nc_addr = 0xA0000000; nc_addr < (0xA0000000+DRAM_BUTTOM-NUM_OF_CACHELINE*32); nc_addr+=((DRAM_BUTTOM>>6)+1*0x400))
+			{
+				RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00007474;
+				wmb();
+				c_addr = (unsigned int*)((ulong)nc_addr & 0xDFFFFFFF);
+				cal_memset(((unsigned char*)c_addr), 0x1F, NUM_OF_CACHELINE*32);
+#if (NUM_OF_CACHELINE > 40)
+				cal_patgen(nc_addr, NUM_OF_CACHELINE*8, 3);
+#else			
+				cal_memcpy(((unsigned char*)nc_addr), ((unsigned char*)cache_pat), NUM_OF_CACHELINE*32);
+#endif			
+				
+				if (dqs > 0)
+					RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00000074|(((k==1) ? max_coarse_dqs[dqs] : test_dqs)<<12)|(((k==0) ? 0xF : test_dqs)<<8);
+				else
+					RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00007400|(((k==1) ? max_coarse_dqs[dqs] : test_dqs)<<4)|(((k==0) ? 0xF : test_dqs)<<0);
+				wmb();
+				
+				cal_invalidate_dcache_range(((unsigned char*)c_addr), ((unsigned char*)c_addr)+NUM_OF_CACHELINE*32);
+				wmb();
+				for (i = 0; i < NUM_OF_CACHELINE*8; i ++)
+				{
+					if (i % 8 ==0)
+						pref_op(0, &c_addr[i]);
+				}		
+				for (i = 0; i < NUM_OF_CACHELINE*8; i ++)
+				{
+#if (NUM_OF_CACHELINE > 40)
+					if (c_addr[i] != (ulong)nc_addr+i+3)
+#else				
+					if (c_addr[i] != cache_pat[i])
+#endif				
+					{	
+						flag = -1;
+						failed_pos = i;
+						goto MAX_FAILED;
+					}
+				}
+			}
+MAX_FAILED:
+			if (flag==-1)		
+			{
+				break;
+			}
+			else
+				test_dqs++;
+		}while(test_dqs<=0xF);
+		
+		if (k==0)
+		{	
+			max_coarse_dqs[dqs] = test_dqs;
+			max_failed_pos[dqs] = failed_pos;
+		}
+		else
+		{	
+			test_dqs--;
+	
+			if (test_dqs==MAX_FINE_START-1)
+			{
+				max_coarse_dqs[dqs]--;
+				max_fine_dqs[dqs] = 0xF;	
+			}
+			else
+			{	
+				max_fine_dqs[dqs] = test_dqs;
+			}
+			max_fine_failed_pos[dqs] = failed_pos;
+		}	
+	}	
+
+	for (k = 0; k < 2; k ++)
+	{
+		unsigned int test_dqs, failed_pos = 0;
+		if (k == 0)
+			test_dqs = MIN_START;
+		else
+			test_dqs = MIN_FINE_START;	
+		flag = 0;
+		do 
+		{
+			for (nc_addr = 0xA0000000; nc_addr < (0xA0000000+DRAM_BUTTOM-NUM_OF_CACHELINE*32); (nc_addr+=(DRAM_BUTTOM>>6)+1*0x480))
+			{
+				RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00007474;
+				wmb();
+				c_addr = (unsigned int*)((ulong)nc_addr & 0xDFFFFFFF);
+				RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00007474;
+				wmb();
+				cal_memset(((unsigned char*)c_addr), 0x1F, NUM_OF_CACHELINE*32);
+#if (NUM_OF_CACHELINE > 40)
+				cal_patgen(nc_addr, NUM_OF_CACHELINE*8, 1);
+#else			
+				cal_memcpy(((unsigned char*)nc_addr), ((unsigned char*)cache_pat), NUM_OF_CACHELINE*32);
+#endif				
+				if (dqs > 0)
+					RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00000074|(((k==1) ? min_coarse_dqs[dqs] : test_dqs)<<12)|(((k==0) ? 0x0 : test_dqs)<<8);
+				else
+					RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = 0x00007400|(((k==1) ? min_coarse_dqs[dqs] : test_dqs)<<4)|(((k==0) ? 0x0 : test_dqs)<<0);			
+				wmb();
+				cal_invalidate_dcache_range(((unsigned char*)c_addr), ((unsigned char*)c_addr)+NUM_OF_CACHELINE*32);
+				wmb();
+				for (i = 0; i < NUM_OF_CACHELINE*8; i ++)
+				{
+					if (i % 8 ==0)
+						pref_op(0, &c_addr[i]);
+				}	
+				for (i = 0; i < NUM_OF_CACHELINE*8; i ++)
+				{
+#if (NUM_OF_CACHELINE > 40)
+					if (c_addr[i] != (ulong)nc_addr+i+1)	
+#else				
+					if (c_addr[i] != cache_pat[i])
+#endif
+					{
+						flag = -1;
+						failed_pos = i;
+						goto MIN_FAILED;
+					}
+				}
+			}
+	
+MIN_FAILED:
+	
+			if (k==0)
+			{	
+				if ((flag==-1)||(test_dqs==min_coarse_dqs_bnd))
+				{
+					break;
+				}
+				else
+					test_dqs--;
+					
+				if (test_dqs < min_coarse_dqs_bnd)
+					break;	
+			}
+			else
+			{
+			if (flag==-1)
+			{
+					test_dqs++;
+					break;
+				}
+				else if (test_dqs==min_fine_dqs_bnd)
+				{
+				break;
+			}
+			else
+				{	
+				test_dqs--;		
+				}
+				
+				if (test_dqs < min_fine_dqs_bnd)
+					break;
+				
+			}
+		}while(test_dqs>=0);
+		
+		if (k==0)
+		{	
+			min_coarse_dqs[dqs] = test_dqs;
+			min_failed_pos[dqs] = failed_pos;
+		}
+		else
+		{	
+			if (test_dqs==MIN_FINE_START+1)
+			{
+				min_coarse_dqs[dqs]++;
+				min_fine_dqs[dqs] = 0x0;	
+			}
+			else
+			{	
+				min_fine_dqs[dqs] = test_dqs;
+			}
+			min_fine_failed_pos[dqs] = failed_pos;
+		}
+	}
+
+	if (dqs==0)
+	{
+		dqs = 1;	
+		goto DQS_CAL;
+	}
+
+	for (i=0 ; i < 2; i++)
+	{
+		unsigned int temp;
+		coarse_dqs[i] = (max_coarse_dqs[i] + min_coarse_dqs[i])>>1; 
+		temp = (((max_coarse_dqs[i] + min_coarse_dqs[i])%2)*4)  +  ((max_fine_dqs[i] + min_fine_dqs[i])>>1);
+		if (temp >= 0x10)
+		{
+		   coarse_dqs[i] ++;
+		   fine_dqs[i] = (temp-0x10) +0x8;
+		}
+		else
+		{
+			fine_dqs[i] = temp;
+		}
+#if (MAX_TEST_LOOP > 1)
+		min_statistic[i][min_coarse_dqs[i]][min_fine_dqs[i]]++;
+		max_statistic[i][max_coarse_dqs[i]][max_fine_dqs[i]]++;
+		center_statistic[i][coarse_dqs[i]][fine_dqs[i]]++;
+#endif
+	}
+	reg = (coarse_dqs[1]<<12)|(fine_dqs[1]<<8)|(coarse_dqs[0]<<4)|fine_dqs[0];
+
+#if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x10) &= ~(0x1<<4);
+#else
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x18) = &= ~(0x1<<4);
+#endif
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = reg;
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x48) = ddr_cfg2_reg;
+#if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x10) |= (0x1<<4);
+#else
+	RALINK_REG(RALINK_MEMCTRL_BASE+0x18) |= (0x1<<4);
+#endif
+
+	test_count++;
+
+
+FINAL:
+		for (j = 0; j < 2; j++)
+			cal_debug("[%02X%02X%02X%02X]",min_coarse_dqs[j],min_fine_dqs[j], max_coarse_dqs[j],max_fine_dqs[j]);
+		cal_debug("\nDDR Calibration DQS reg = %08X\n",reg);
+
+	return ;
+}
+#endif /* #defined (CONFIG_DDR_CAL) */

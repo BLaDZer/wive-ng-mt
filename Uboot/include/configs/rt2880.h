@@ -239,6 +239,7 @@ extern unsigned int  CFG_BLOCKSIZE;
       defined (RT5350_FPGA_BOARD) || defined (RT5350_ASIC_BOARD) || \
       defined (RT6855_FPGA_BOARD) || defined (RT6855_ASIC_BOARD) || \
       defined (MT7620_FPGA_BOARD) || defined (MT7620_ASIC_BOARD) || \
+      defined (MT7621_FPGA_BOARD) || defined (MT7621_ASIC_BOARD) || \
       defined (MT7628_FPGA_BOARD) || defined (MT7628_ASIC_BOARD)
 #define PHYS_FLASH_START	0xBC000000 /* Flash Bank #2 */
 #define PHYS_FLASH_1		0xBC000000 /* Flash Bank #1 */
@@ -493,6 +494,12 @@ extern unsigned int  CFG_BLOCKSIZE;
 
 #if defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
 //#define USE_PIO_DBG		1
+#endif
+
+#if defined(MT7628_ASIC_BOARD)
+#define PHY_BASE                0xB0120000
+#define SIFSLV_FM_FEG_BASE      (PHY_BASE+0xf00)
+#define U2_PHY_BASE             (PHY_BASE+0x800)
 #endif
 
 #endif	/* __CONFIG_H */

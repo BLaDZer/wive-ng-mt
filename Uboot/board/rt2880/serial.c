@@ -32,6 +32,9 @@
 #include "serial.h"
 #include <rt_mmap.h>
 
+#ifdef CONFIG_MIPS16
+#define cpu_to_le32(x) (x)
+#endif
 
 #if defined(RT6855A_ASIC_BOARD) || defined(RT6855A_FPGA_BOARD)
 static unsigned long uclk_20M[13]={ // 65000*(b*16*1)/2000000

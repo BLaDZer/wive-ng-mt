@@ -72,7 +72,7 @@ static inline unsigned long dcache_line_size(void)
 
 #else /* !CONFIG_SYS_CACHELINE_SIZE */
 
-static inline unsigned long icache_line_size(void)
+__attribute__((nomips16)) static inline unsigned long icache_line_size(void)
 {
 	unsigned long conf1, il;
 	conf1 = read_c0_config1();
@@ -82,7 +82,7 @@ static inline unsigned long icache_line_size(void)
 	return 2 << il;
 }
 
-static inline unsigned long dcache_line_size(void)
+__attribute__((nomips16)) static inline unsigned long dcache_line_size(void)
 {
 	unsigned long conf1, dl;
 	conf1 = read_c0_config1();
@@ -94,7 +94,7 @@ static inline unsigned long dcache_line_size(void)
 
 #endif /* !CONFIG_SYS_CACHELINE_SIZE */
 
-void flush_cache (ulong start_addr, ulong size)
+__attribute__((nomips16)) void flush_cache (ulong start_addr, ulong size)
 {
 	unsigned long ilsize = icache_line_size();
 	unsigned long dlsize = dcache_line_size();
@@ -139,7 +139,7 @@ void flush_cache (ulong start_addr, ulong size)
 }
 #ifdef RT2880_U_BOOT_CMD_OPEN
 
-void write_one_tlb( int index, u32 pagemask, u32 hi, u32 low0, u32 low1 ){
+__attribute__((nomips16)) void write_one_tlb( int index, u32 pagemask, u32 hi, u32 low0, u32 low1 ){
 	write_32bit_cp0_register(CP0_ENTRYLO0, low0);
 	write_32bit_cp0_register(CP0_PAGEMASK, pagemask);
 	write_32bit_cp0_register(CP0_ENTRYLO1, low1);
@@ -149,7 +149,7 @@ void write_one_tlb( int index, u32 pagemask, u32 hi, u32 low0, u32 low1 ){
 }
 #endif
 
-void flush_dcache_range(ulong start_addr, ulong stop)
+__attribute__((nomips16)) void flush_dcache_range(ulong start_addr, ulong stop)
 {
 	unsigned long lsize = dcache_line_size();
 	unsigned long addr = start_addr & ~(lsize - 1);
@@ -163,7 +163,7 @@ void flush_dcache_range(ulong start_addr, ulong stop)
 	}
 }
 
-void invalidate_dcache_range(ulong start_addr, ulong stop)
+__attribute__((nomips16)) void invalidate_dcache_range(ulong start_addr, ulong stop)
 {
 	unsigned long lsize = dcache_line_size();
 	unsigned long addr = start_addr & ~(lsize - 1);

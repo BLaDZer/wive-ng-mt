@@ -932,6 +932,7 @@ comment ""
 define_bool PDMA_NEW y
 define_bool RX_SCATTER_GATTER_DMA y
 
+#bool "Tiny Uboot" CONFIG_TINY_UBOOT
 
 if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
@@ -1316,8 +1317,7 @@ if [ "$MT7621_DDR_400MHZ" = "y" ]; then
     define_hex  MT7621_DDR_SPEED    41
 fi
 
-choice 'CPU Frequency' "900Mhz MT7621_CPU_900MHZ \
-						880Mhz MT7621_CPU_880MHZ \
+choice 'CPU Frequency' " 880Mhz MT7621_CPU_880MHZ \
 						875Mhz MT7621_CPU_875MHZ \
 		   				800Mhz MT7621_CPU_800MHZ \
 						500Mhz MT7621_CPU_500MHZ \
@@ -1349,6 +1349,8 @@ comment ""
 
 define_bool PDMA_NEW y
 define_bool RX_SCATTER_GATTER_DMA y
+
+#bool "Tiny Uboot" CONFIG_TINY_UBOOT
 
 if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
@@ -1486,6 +1488,7 @@ comment ""
 #define_bool PDMA_NEW y
 #define_bool RX_SCATTER_GATTER_DMA y
 
+bool "Tiny Uboot" CONFIG_TINY_UBOOT
 
 #if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
@@ -1516,12 +1519,15 @@ else
 fi
 
 bool "Dual Image" DUAL_IMAGE_SUPPORT
+bool "ETH One Port Only" ETH_ONE_PORT_ONLY
 
+if [ "$ETH_ONE_PORT_ONLY" = "n" ]; then
 bool "Partition LAN/WAN" LAN_WAN_PARTITION
 if [ "$LAN_WAN_PARTITION" = "y" ]; then
  choice 'LAN/WAN Board Layout' "W/LLLL RALINK_DEMO_BOARD_PVLAN \
                                 LLLL/W RALINK_EV_BOARD_PVLAN
                                "
+fi
 fi
 
 if [ "$UBOOT_RAM" = "y" ]; then
