@@ -55,11 +55,11 @@ static struct mac_table 	internal_mac_table[2048];
 static int 			esw_fd = -1;
 static struct ifreq		ifr;
 static esw_reg			reg;
-#if defined(CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 ra_mii_ioctl_data mii;
 #endif
 
-#if !defined (CONFIG_RALINK_MT7621) && !defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 static unsigned int rareg(int mode, unsigned int addr, long long int new_value)
 {
 	int fd;
@@ -168,7 +168,7 @@ static void sync_internal_mac_table(void *argu)
 
 void rt_switch_fini(void)
 {
-#if !defined (CONFIG_RALINK_MT7621) && !defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 	unsigned int value;
 	/* IGMP forward to cpu */
 	value = rareg(READMODE, 0x1011001c, 0);
@@ -182,7 +182,7 @@ void rt_switch_fini(void)
 
 void rt_switch_init(void)
 {
-#if !defined (CONFIG_RALINK_MT7621) && !defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 	unsigned int value;
 	/* to check default IGMP flooding rule IGMP report forward to cpu/query: default policy */
 	value = rareg(READMODE, 0x1011001c, 0);
@@ -202,7 +202,7 @@ void rt_switch_init(void)
 	sync_internal_mac_table(NULL);
 }
 
-#if defined(CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 int reg_read(int offset, int *value)
 {
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -303,7 +303,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value = (value << 16);
 	value |= (1 << 15);//IVL=1
 
-#if defined(CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_GMAC2)
 #elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 #elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
@@ -340,7 +340,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 		if(WanPort){
 		        value = value1;
 			value = (value & 0xffffff00);
-#if defined(CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_GMAC2)
 #elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 #elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
