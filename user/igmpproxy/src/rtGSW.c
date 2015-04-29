@@ -55,7 +55,7 @@ static struct mac_table 	internal_mac_table[2048];
 static int 			esw_fd = -1;
 static struct ifreq		ifr;
 static esw_reg			reg;
-#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
 ra_mii_ioctl_data mii;
 #endif
 
@@ -202,7 +202,7 @@ void rt_switch_init(void)
 	sync_internal_mac_table(NULL);
 }
 
-#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) || defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
 int reg_read(int offset, int *value)
 {
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -303,8 +303,9 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value = (value << 16);
 	value |= (1 << 15);//IVL=1
 
-#if defined (CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2) && !defined (CONFIG_RAETH_8023AZ_EEE)
-#elif defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
+#elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
 	value |= ((LAN_VLAN_ID) << 0); //LAN ID ==1
 #endif
@@ -339,8 +340,9 @@ void updateMacTable(struct group *entry, int delay_delete)
 		if(WanPort){
 		        value = value1;
 			value = (value & 0xffffff00);
-#if defined (CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
-#elif defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
+#if defined(CONFIG_RALINK_MT7621) && defined (CONFIG_RAETH_GMAC2)
+#elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
+#elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
 			value |= ((WAN_VLAN_ID) << 0); //WAN ID ==2
 #endif
@@ -348,11 +350,10 @@ void updateMacTable(struct group *entry, int delay_delete)
 			my_log(LOG_INFO, 0, "WAN REG_ESW_WT_MAC_ATA2 is 0x%x",value);
 
 			value1 = (WanPort << 4);
-#if defined (CONFIG_RAETH_8023AZ_EEE)
+#if defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 			value1 |= (0x1 << 9);//port 5 cpu port
 #else
 			value1 |= (0x1 << 10);//port 6 cpu port
-
 #endif
 			value1 |= (0xff << 24); //w_age_field
 			value1 |= (0x3<< 2); //static

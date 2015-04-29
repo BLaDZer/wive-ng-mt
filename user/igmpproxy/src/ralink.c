@@ -64,11 +64,11 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
 #endif
 
-#if defined (CONFIG_PPE_MCAST)
-#if defined (CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_PPE_MCAST)
+#if defined(CONFIG_RAETH_GMAC2)
 #define HNAT_VID	0
 #else
-#define HNAT_VID	2 
+#define HNAT_VID	2
 #endif
 #endif
 
@@ -212,7 +212,7 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	struct group *entry;
 	struct group_member *pos;
 	struct group_member *del=NULL;
-#if defined (CONFIG_PPE_MCAST)
+#if defined(CONFIG_PPE_MCAST)
 	char cmd[128];
 	unsigned char *a;
 #endif
@@ -260,7 +260,7 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	}
 	update_group_port_map(entry);
 
-#if defined (CONFIG_PPE_MCAST)
+#if defined(CONFIG_PPE_MCAST)
 // multicast port0 map to PDMA
 // multicast port1 map to GMAC1
 // multicast port2 map to GMAC2
@@ -269,7 +269,7 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	//printf("remove: group portmap is 0x%2x\n!!!!!!!!!!!",entry->port_map);
 	a = (u_char *)&m_ip_addr;
 	if((entry->port_map & 0x7f) == 0 ){
-#if defined (CONFIG_RAETH_QDMA)
+#if defined(CONFIG_RAETH_QDMA)
 		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 2 2 0",HNAT_VID,a[2],a[1],a[0]);
 #else
 		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 2 0 0",HNAT_VID,a[2],a[1],a[0]);
@@ -279,7 +279,7 @@ void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 	}
 
 	if((entry->port_map & 0x80) == 0){
-#if defined (CONFIG_RAETH_QDMA)
+#if defined(CONFIG_RAETH_QDMA)
 		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 8 8 0",HNAT_VID,a[2],a[1],a[0]);
 #else
 		sprintf(cmd, "hw_nat -C %2d 01:00:5e:%02x:%02x:%02x 1 0 0",HNAT_VID,a[2],a[1],a[0]);
@@ -527,12 +527,12 @@ static void update_group_port_map(struct group *entry)
 
 void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 {
-#if defined (CONFIG_PPE_MCAST)
+#if defined(CONFIG_PPE_MCAST)
 	char cmd[128];
 #endif
 	struct group_member *new_member;
 	struct group *entry = find_entry(m_ip_addr);
-#if defined (CONFIG_PPE_MCAST)
+#if defined(CONFIG_PPE_MCAST)
 	unsigned char *a;
 #endif
 	if(!auto_lan_snooping)
@@ -556,7 +556,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 		rtwifi_insert_member(m_ip_addr, u_ip_addr);
 #endif
 	update_group_port_map(entry);
-#if defined (CONFIG_PPE_MCAST)
+#if defined(CONFIG_PPE_MCAST)
 // multicast port0 map to PDMA
 // multicast port1 map to GMAC1
 // multicast port2 map to GMAC2
@@ -569,7 +569,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 	if((a[2] == 0x00) && (a[1] == 0x00))
 	    return;
 	if(entry->port_map & 0x7f){
-#if defined (CONFIG_RAETH_QDMA)
+#if defined(CONFIG_RAETH_QDMA)
 		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 2 2 0",HNAT_VID,a[2],a[1],a[0]);
 #else
 		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 2 0 0",HNAT_VID,a[2],a[1],a[0]);
@@ -580,7 +580,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 	if(entry->port_map & 0x80){
-#if defined (CONFIG_RAETH_QDMA)
+#if defined(CONFIG_RAETH_QDMA)
 		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 8 8 0",HNAT_VID,a[2],a[1],a[0]);
 #else
 		sprintf(cmd, "hw_nat -B %2d 01:00:5e:%02x:%02x:%02x 1 0 0",HNAT_VID,a[2],a[1],a[0]);
