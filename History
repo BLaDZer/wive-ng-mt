@@ -840,30 +840,31 @@
 33) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
 34) kernel: ralink_wifi: MT76x2 improve parse 7602/7612 pair as first/second card.<br>
 35) kernel: ralink_wifi: MT76x2 exclude debug in release mode.<br>
-36) kernel: drop bogus check in file_open_root().<br>
-37) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-38) kernel: mips: hibernate: flush TLB entries earlier.<br>
-39) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-40) kernel: net: gro: should be ECN friendly.<br>
-41) kernel: net: gro: should aggregate frames without DF.<br>
-42) kernel: net: add address assign type "SET".<br>
-43) kernel: net: init perm_addr in register_netdevice().<br>
-44) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
-45) kernel: ethtool: consolidate work with ethtool_ops.<br>
-46) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
-47) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
-48) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
-49) kernel: netlink: validate addr_len on bind.<br>
-50) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
-51) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
-52) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
-53) kernel: inetpeer: fix token initialization.<br>
-54) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
-55) kernel: mips: fix start of free memory when using initrd.<br>
-56) kernel: pppoe: lacks DST MAC address check.<br>
-57) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
-58) kernel: ip_forward: Drop frames with attached skb->sk.<br>
-59) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
+36) kernel: ralink_wifi: convert wmode to cfgmode on RT_OID_GET_PHY_MODE for MT7610/76x2, fix wmode_2_cfgmode.<br>
+37) kernel: drop bogus check in file_open_root().<br>
+38) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+39) kernel: mips: hibernate: flush TLB entries earlier.<br>
+40) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+41) kernel: net: gro: should be ECN friendly.<br>
+42) kernel: net: gro: should aggregate frames without DF.<br>
+43) kernel: net: add address assign type "SET".<br>
+44) kernel: net: init perm_addr in register_netdevice().<br>
+45) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
+46) kernel: ethtool: consolidate work with ethtool_ops.<br>
+47) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
+48) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
+49) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
+50) kernel: netlink: validate addr_len on bind.<br>
+51) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
+52) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
+53) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
+54) kernel: inetpeer: fix token initialization.<br>
+55) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
+56) kernel: mips: fix start of free memory when using initrd.<br>
+57) kernel: pppoe: lacks DST MAC address check.<br>
+58) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
+59) kernel: ip_forward: Drop frames with attached skb->sk.<br>
+60) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
 <br>
 <br>
 <b>TODO:</b><br>
