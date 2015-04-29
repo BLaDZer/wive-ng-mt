@@ -872,6 +872,9 @@
 65) kernel: dql: dql_queued() should write first to reduce bus transactions.<br>
 <br>
 <br>
+<b>3.0.x</b><br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) add Default ipv6 gateway in VPN UI (vpnDGWSIX variable).<br>
 2) full russian ui (need help community or employ the web developer).<br>
