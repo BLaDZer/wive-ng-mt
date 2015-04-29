@@ -489,7 +489,6 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
 	struct blkcipher_desc desc = { .tfm = state->arc4 };
 	unsigned ccount;
 	int flushed = MPPE_BITS(ibuf) & MPPE_BIT_FLUSHED;
-	int sanity = 0;
 	struct scatterlist sg_in[1], sg_out[1];
 
 	if (isize <= PPP_HDRLEN + MPPE_OVHD) {
@@ -525,31 +524,19 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
 		       "mppe_decompress[%d]: ENCRYPTED bit not set!\n",
 		       state->unit);
 		state->sanity_errors += 100;
-		sanity = 1;
+		goto sanity_error;
 	}
 	if (!state->stateful && !flushed) {
 		printk(KERN_DEBUG "mppe_decompress[%d]: FLUSHED bit not set in "
 		       "stateless mode!\n", state->unit);
 		state->sanity_errors += 100;
-		sanity = 1;
+		goto sanity_error;
 	}
 	if (state->stateful && ((ccount & 0xff) == 0xff) && !flushed) {
 		printk(KERN_DEBUG "mppe_decompress[%d]: FLUSHED bit not set on "
 		       "flag packet!\n", state->unit);
 		state->sanity_errors += 100;
-		sanity = 1;
-	}
-
-	if (sanity) {
-		if (state->sanity_errors < SANITY_MAX)
-			return DECOMP_ERROR;
-		else
-			/*
-			 * Take LCP down if the peer is sending too many bogons.
-			 * We don't want to do this for a single or just a few
-			 * instances since it could just be due to packet corruption.
-			 */
-			return DECOMP_FATALERROR;
+		goto sanity_error;
 	}
 
 	/*
@@ -562,6 +549,13 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
 				pr_warn("%s[%d]: Dropping out-of-order packet with ccount %u, expecting %u!\n",
 					     __func__, state->unit, ccount, state->ccount);
 			return DECOMP_DROPERROR;
+		}
+
+		/* Discard late packet */
+		if ((ccount - state->ccount) % MPPE_CCOUNT_SPACE
+						> MPPE_CCOUNT_SPACE / 2) {
+			state->sanity_errors++;
+			goto sanity_error;
 		}
 
 		/* RFC 3078, sec 8.1.  Rekey for every packet. */
@@ -667,6 +661,16 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
 	state->sanity_errors >>= 1;
 
 	return osize;
+
+sanity_error:
+	if (state->sanity_errors < SANITY_MAX)
+		return DECOMP_ERROR;
+	else
+		/* Take LCP down if the peer is sending too many bogons.
+		 * We don't want to do this for a single or just a few
+		 * instances since it could just be due to packet corruption.
+		 */
+		return DECOMP_FATALERROR;
 }
 
 /*
