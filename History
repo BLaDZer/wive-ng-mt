@@ -821,51 +821,52 @@
 14) radvd: up to 2.11 version.<br>
 15) dnsmasq: up to 2.73rc7 version.<br>
 16) ntfs-3g: up to 2015.3.14 version.<br>
-17) igmpproxy: use daemon function instead of direct coding.<br>
-18) udpxy: fix work at 3.5.x and more new linux kernels.<br>
-19) pppd: do not build ipx support if not enabled in kernel.<br>
-20) lldpd: up to 0.7.14 version.<br>
-21) dhcp6c: do not open a routing socket that's never used.<br>
-22) dhcp6c: more compath with new uclibc/glibc.<br>
-23) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
-24) goahead: allow select VHT_STBC mode for 7610 module.<br>
-25) goahead: more localization fixes.<br>
-26) kernel: up to 3.4.107 version.<br>
-27) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
-28) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
-29) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
-30) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
-31) kernel: ralink_wifi: allow mac address changes.<br>
-32) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
-33) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
-34) kernel: ralink_wifi: MT76x2 improve parse 7602/7612 pair as first/second card.<br>
-35) kernel: ralink_wifi: MT76x2 exclude debug in release mode.<br>
-36) kernel: ralink_wifi: convert wmode to cfgmode on RT_OID_GET_PHY_MODE for MT7610/76x2, fix wmode_2_cfgmode.<br>
-37) kernel: drop bogus check in file_open_root().<br>
-38) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
-39) kernel: mips: hibernate: flush TLB entries earlier.<br>
-40) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
-41) kernel: net: gro: should be ECN friendly.<br>
-42) kernel: net: gro: should aggregate frames without DF.<br>
-43) kernel: net: add address assign type "SET".<br>
-44) kernel: net: init perm_addr in register_netdevice().<br>
-45) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
-46) kernel: ethtool: consolidate work with ethtool_ops.<br>
-47) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
-48) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
-49) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
-50) kernel: netlink: validate addr_len on bind.<br>
-51) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
-52) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
-53) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
-54) kernel: inetpeer: fix token initialization.<br>
-55) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
-56) kernel: mips: fix start of free memory when using initrd.<br>
-57) kernel: pppoe: lacks DST MAC address check.<br>
-58) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
-59) kernel: ip_forward: Drop frames with attached skb->sk.<br>
-60) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
-61) kernel: dql: dql_queued() should write first to reduce bus transactions.<br>
+17) miniupnpd: up to 1.9.20150427 version.<br>
+18) igmpproxy: use daemon function instead of direct coding.<br>
+19) udpxy: fix work at 3.5.x and more new linux kernels.<br>
+20) pppd: do not build ipx support if not enabled in kernel.<br>
+21) lldpd: up to 0.7.14 version.<br>
+22) dhcp6c: do not open a routing socket that's never used.<br>
+23) dhcp6c: more compath with new uclibc/glibc.<br>
+24) goahead: do not touch HT_LDPC (not support in clients at real world).<br>
+25) goahead: allow select VHT_STBC mode for 7610 module.<br>
+26) goahead: more localization fixes.<br>
+27) kernel: up to 3.4.107 version.<br>
+28) kernel: configs: enable inotify support(now used for dnsmasq for detect hosts/resolv files changed).<br>
+29) kernel: ralink_wifi: fix support VHT in apcli mode for MT7612.<br>
+30) kernel: ralink_wifi: disable VHT in WEP encryption mode for apcli(more compat with wifi aliance recomendtions).<br>
+31) kernel: ralink_wifi: fix kernel api mismatch u(g)id types to u(g)id_t.<br>
+32) kernel: ralink_wifi: allow mac address changes.<br>
+33) kernel: ralink_wifi: MT7612 fix LastTxRate update.<br>
+34) kernel: ralink_wifi: MT76xx anonse 40MHz SGI only if 40MHz BW enabled.<br>
+35) kernel: ralink_wifi: MT76x2 improve parse 7602/7612 pair as first/second card.<br>
+36) kernel: ralink_wifi: MT76x2 exclude debug in release mode.<br>
+37) kernel: ralink_wifi: convert wmode to cfgmode on RT_OID_GET_PHY_MODE for MT7610/76x2, fix wmode_2_cfgmode.<br>
+38) kernel: drop bogus check in file_open_root().<br>
+39) kernel: mips: dma-default: fix 32-bit fall back to GFP_DMA.<br>
+40) kernel: mips: hibernate: flush TLB entries earlier.<br>
+41) kernel: mips: bitops.h: Avoid inline asm for constant FLS.<br>
+42) kernel: net: gro: should be ECN friendly.<br>
+43) kernel: net: gro: should aggregate frames without DF.<br>
+44) kernel: net: add address assign type "SET".<br>
+45) kernel: net: init perm_addr in register_netdevice().<br>
+46) kernel: ethtool: set addr_assign_type to NET_ADDR_SET when addr is passed on create.<br>
+47) kernel: ethtool: consolidate work with ethtool_ops.<br>
+48) kernel: ethtool: make .get_dump_data() harder to misuse by drivers.<br>
+49) kernel: netfilter: ctnetlink: fix leak in error path of ctnetlink_create_expect.<br>
+50) kernel: netfilter: ctnetlink: don't permit ct creation with random tuple.<br>
+51) kernel: netlink: validate addr_len on bind.<br>
+52) kernel: netlink: change presentation of portid in procfs to unsigned.<br>
+53) kernel: rtnetlink: fix error return code in rtnl_link_fill().<br>
+54) kernel: bridge: use dev->addr_assign_type to see if user change mac.<br>
+55) kernel: inetpeer: fix token initialization.<br>
+56) kernel: ipv4: use standard iovec primitive in raw_probe_proto_opt.<br>
+57) kernel: mips: fix start of free memory when using initrd.<br>
+58) kernel: pppoe: lacks DST MAC address check.<br>
+59) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
+60) kernel: ip_forward: Drop frames with attached skb->sk.<br>
+61) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
+62) kernel: dql: dql_queued() should write first to reduce bus transactions.<br>
 <br>
 <br>
 <b>TODO:</b><br>
