@@ -452,7 +452,7 @@ static int nvram_commit(int index)
 		if (!fb[index].cache[i].name || !fb[index].cache[i].value)
 			break;
 		l = strlen(fb[index].cache[i].name) + strlen(fb[index].cache[i].value) + 2;
-		if (p - fb[index].env.data + 2 >= fb[index].flash_max_len) {
+		if (p - fb[index].env.data + 2 >= len) {
 			RANV_ERROR("ENV_BLK_SIZE 0x%x is not enough!", ENV_BLK_SIZE);
 			up(&nvram_sem);
 			return -1;
