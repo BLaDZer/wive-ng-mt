@@ -865,6 +865,7 @@
 58) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
 59) kernel: ip_forward: Drop frames with attached skb->sk.<br>
 60) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
+61) kernel: dql: dql_queued() should write first to reduce bus transactions.<br>
 <br>
 <br>
 <b>TODO:</b><br>
