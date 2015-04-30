@@ -2297,40 +2297,41 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	if (!submitUrl || !submitUrl[0]) {
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0]){
-	//debug print
-	websHeader(wp);
-	websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
-	websWrite(wp, T("ipv6_opmode: %s<br>\n"), opmode);
-	websWrite(wp, T("dhcp6c_enable: %s<br>\n"), dhcp6c_enable);
-	websWrite(wp, T("ipv6_allow_forward: %s<br>\n"), ipv6_allow_forward);
-	if (!strcmp(opmode, "1")) {
+	    //debug print
+	    websHeader(wp);
+	    websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
+	    websWrite(wp, T("ipv6_opmode: %s<br>\n"), opmode);
+	    websWrite(wp, T("dhcp6c_enable: %s<br>\n"), dhcp6c_enable);
+	    websWrite(wp, T("ipv6_allow_forward: %s<br>\n"), ipv6_allow_forward);
+	    if (!strcmp(opmode, "1")) {
 		websWrite(wp, T("ipv6_lan_ipaddr: %s<br>\n"), ipaddr);
 		websWrite(wp, T("ipv6_lan_prefix_len: %s<br>\n"), prefix_len);
 		websWrite(wp, T("ipv6_wan_ipaddr: %s<br>\n"), wan_ipaddr);
 		websWrite(wp, T("ipv6_wan_prefix_len: %s<br>\n"), wan_prefix_len);
 		websWrite(wp, T("ipv6_static_gw: %s<br>\n"), srv_ipaddr);
 #if defined (CONFIG_IPV6_SIT_6RD)
-	} else if (!strcmp(opmode, "2")) {
+	    } else if (!strcmp(opmode, "2")) {
 		websWrite(wp, T("ipv6_6rd_prefix: %s<br>\n"), ipaddr);
 		websWrite(wp, T("ipv6_6rd_prefix_len: %s<br>\n"), prefix_len);
 		websWrite(wp, T("ipv6_6rd_border_ipaddr: %s<br>\n"), srv_ipaddr);
 #endif
 #if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
-	} else if (!strcmp(opmode, "3")) {
+	    } else if (!strcmp(opmode, "3")) {
 		websWrite(wp, T("IPv6SrvAddr: %s<br>\n"), ipaddr);
 #endif
+	    }
+
+	    // Write OK
+	    websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/ipv6.asp', true);</script>\n"));
+	    websFooter(wp);
+	    websDone(wp, 200);
+#endif
+	    websRedirect(wp, submitUrl);
 	}
 
-	// Write OK
-	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/ipv6.asp', true);</script>\n"));
-	websFooter(wp);
-	websDone(wp, 200);
-	} else
-#endif
-		websRedirect(wp, submitUrl);
-		doSystem("internet.sh");
+	doSystem("internet.sh");
 }
 
 #ifdef CONFIG_USER_CHILLISPOT
