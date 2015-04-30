@@ -41,7 +41,7 @@ start() {
 	    # this section for native/dualstack mode
 	    if [ "$IPv6Dhcpc" = "1" ]; then
 		# call dhcpv6 client over real wan only if gw v6 not in vpn or vpn disabled
-		if [ "$vpnEnabled" != "on" ] || [ "$vpnDGWSIX" != "on" ]; then
+		if [ "$vpnEnabled" != "on" ] || [ "$Ipv6InVPN" != "1" ]; then
 	    	    dhcpcreconf
 		fi
 	    else
@@ -250,7 +250,7 @@ dhcpcreconf() {
 	# tune some parametrs between modes
 	# IPOE dualstack - reqest IA-NA/PD
 	# PPTP/L2TP/PPPOE dualstack - do not reqest IA-NA, only PD
-	if [ "$vpnEnabled" != "on" ] || [ "$vpnDGWSIX" != "on" ]; then
+	if [ "$vpnEnabled" != "on" ] || [ "$Ipv6InVPN" != "1" ]; then
 	    REQIANA="send ia-na $ID;"
 	fi
 	SLAID="sla-id 0;"
@@ -299,7 +299,7 @@ get_param() {
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 
 	# switch tun over wan/vpn
-	if [ "$vpnDGWSIX" = "on" ]; then
+	if [ "$Ipv6InVPN" = "1" ]; then
 	    tun_wan_if="$real_wan_if"
 	    tun_wan_ipaddr="$real_wan_ipaddr"
 	else

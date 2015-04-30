@@ -12,7 +12,7 @@ PPP_IPPARAM="$6"
 LOG="logger -t pppd_v6"
 
 #prevent race
-if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$vpnDGWSIX" = "on" ]; then
+if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ] && [ "$Ipv6InVPN" = "1" ]; then
     # call stop dhcp v6 client
     service six dhcpcstop
 fi

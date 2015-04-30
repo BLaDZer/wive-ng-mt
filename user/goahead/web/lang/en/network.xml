@@ -80,6 +80,7 @@
     <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />
     <message msgid="ipv6 6to4 enabled" msgstr="Tunneling Connection (6to4) Setup" />
     <message msgid="ipv6 6to4 server address" msgstr="IPv4 to IPv6 server address" />
+    <message msgid="ipv6 Ipv6InVPN" msgstr="IpV6 uplink over VPN" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />

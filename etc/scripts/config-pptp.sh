@@ -184,7 +184,7 @@ load_modules() {
 	vpnLCPInterval=30
     fi
 
-    if [ "$IPv6OpMode" = "1" ] && [ "$vpnDGWSIX" = "on" ]; then
+    if [ "$IPv6OpMode" = "1" ] && [ "$Ipv6InVPN" = "1" ]; then
 	SIXEN="+ipv6 ipv6cp-use-ipaddr"
     else
 	SIXEN=""

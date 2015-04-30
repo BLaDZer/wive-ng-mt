@@ -38,7 +38,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
-	vpnDGWSIX \
+	Ipv6InVPN \
 	MODEMENABLED \
 	QoSEnable`
 
@@ -161,7 +161,7 @@ getWanIfName() {
 
 getSixWanIfName() {
     if [ "$IPv6OpMode" = "1" ]; then
-	if [ "$vpnEnabled" = "on" ] && [ "$vpnDGWSIX" = "on" ]; then
+	if [ "$vpnEnabled" = "on" ] && [ "$Ipv6InVPN" = "1" ]; then
 	    # first ppp iface is client
 	    get_ppp_wan_if=`ip -4 -o link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
 	    if [ "$get_ppp_wan_if" != "" ]; then

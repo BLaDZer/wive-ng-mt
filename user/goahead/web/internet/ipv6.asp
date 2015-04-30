@@ -16,6 +16,8 @@ Butterlate.setTextDomain("network");
 
 var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
+var vpn = "<% getCfgZero(1, "vpnEnabled"); %>";
+var vpnv6 = "<% getCfgZero(1, "Ipv6InVPN"); %>";
 
 function display_on()
 {
@@ -29,6 +31,15 @@ function display_on()
 
 function SwitchOpMode()
 {
+	document.getElementById("dhp6cRowDisplay").style.visibility = "hidden";
+	document.getElementById("dhp6cRowDisplay").style.display = "none";
+	document.ipv6_cfg.dhcp6c_enable.disabled = true;
+	document.getElementById("IPv6AllowForwardRowDisplay").style.visibility = "hidden";
+	document.getElementById("IPv6AllowForwardRowDisplay").style.display = "none";
+	document.ipv6_cfg.ipv6_allow_forward.disabled = true;
+	document.getElementById("v6invpn").style.visibility = "hidden";
+	document.getElementById("v6invpn").style.display = "none";
+	document.ipv6_cfg.ipv6_Ipv6InVPN.disabled = true;
 	document.getElementById("v6StaticTable").style.visibility = "hidden";
 	document.getElementById("v6StaticTable").style.display = "none";
 	document.ipv6_cfg.ipv6_lan_ipaddr.disabled = true;
@@ -45,14 +56,30 @@ function SwitchOpMode()
 	document.getElementById("6to4Table").style.display = "none";
 	document.ipv6_cfg.IPv6SrvAddr.disabled = true;
 
+	if (document.ipv6_cfg.ipv6_opmode.options.selectedIndex != 0) {
+		document.getElementById("IPv6AllowForwardRowDisplay").style.visibility = "visible";
+		document.getElementById("IPv6AllowForwardRowDisplay").style.display = display_on();
+		document.ipv6_cfg.ipv6_allow_forward.disabled = false;
+		if (vpn == "on") {
+			document.getElementById("v6invpn").style.visibility = "visible";
+			document.getElementById("v6invpn").style.display = display_on();
+			document.ipv6_cfg.ipv6_Ipv6InVPN.disabled = false;
+		}
+	}
+
 	if (document.ipv6_cfg.ipv6_opmode.options.selectedIndex == 1) {
-		document.getElementById("v6StaticTable").style.visibility = "visible";
-		document.getElementById("v6StaticTable").style.display = display_on();
-		document.ipv6_cfg.ipv6_lan_ipaddr.disabled = false;
-		document.ipv6_cfg.ipv6_lan_prefix_len.disabled = false;
-		document.ipv6_cfg.ipv6_wan_ipaddr.disabled = false;
-		document.ipv6_cfg.ipv6_wan_prefix_len.disabled = false;
-		document.ipv6_cfg.ipv6_static_gw.disabled = false;
+		document.getElementById("dhp6cRowDisplay").style.visibility = "visible";
+		document.getElementById("dhp6cRowDisplay").style.display = display_on();
+		document.ipv6_cfg.dhcp6c_enable.disabled = false;
+		if (!document.ipv6_cfg.dhcp6c_enable.checked) {
+			document.getElementById("v6StaticTable").style.visibility = "visible";
+			document.getElementById("v6StaticTable").style.display = display_on();
+			document.ipv6_cfg.ipv6_lan_ipaddr.disabled = false;
+			document.ipv6_cfg.ipv6_lan_prefix_len.disabled = false;
+			document.ipv6_cfg.ipv6_wan_ipaddr.disabled = false;
+			document.ipv6_cfg.ipv6_wan_prefix_len.disabled = false;
+			document.ipv6_cfg.ipv6_static_gw.disabled = false;
+		}
 	} else if (ipv66rdb == "1" && document.ipv6_cfg.ipv6_opmode.options.selectedIndex == 2) {
 		document.getElementById("v66rdTable").style.visibility = "visible";
 		document.getElementById("v66rdTable").style.display = display_on();
@@ -105,11 +132,12 @@ function initValue()
 		document.ipv6_cfg.IPv6SrvAddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
 	}
 
-	document.ipv6_cfg.IPv6Dhcpc.checked = (dhcp6c == "1");
+	document.ipv6_cfg.dhcp6c_enable.checked = (dhcp6c == "1");
 	if (dhcp6c == "1")
 	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 
-	document.ipv6_cfg.IPv6AllowForward.checked = (ipv6_allow_forward == "1");
+	document.ipv6_cfg.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
+	document.ipv6_cfg.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
 	initTranslation();
 }
 
@@ -301,6 +329,7 @@ function initTranslation()
 	_TR("v66rdBorderIPAddr", "ipv6 6rd relay address");
 	_TR("6to4Setup", "ipv6 6to4 enabled");
 	_TR("v66to4SrvIpaddr", "ipv6 6to4 server address");
+	_TR("Ipv6InVPN", "ipv6 Ipv6InVPN");
 
 	_TRV("v6Apply", "button apply");
 	_TRV("v6Cancel", "button cancel");
@@ -331,11 +360,15 @@ function initTranslation()
 </tr>
 <tr id="dhp6cRowDisplay">
   <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
-  <td><input name="IPv6Dhcpc" type="checkbox"></td>
+  <td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode()"></td>
 </tr>
 <tr id="IPv6AllowForwardRowDisplay">
   <td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
-  <td><input name="IPv6AllowForward" type="checkbox"></td>
+  <td><input name="ipv6_allow_forward" type="checkbox"></td>
+</tr>
+<tr id="v6invpn">
+  <td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
+  <td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
 </tr>
 </table>
 <!-- STATIC/DynaMIC IP -->
@@ -385,6 +418,7 @@ function initTranslation()
   <td>
     <input type=submit style="{width:120px;}" value="Apply" id="v6Apply">&nbsp;&nbsp;
     <input type=reset  style="{width:120px;}" value="Cancel" id="v6Cancel">
+    <input type="hidden" value="/internet/ipv6.asp" name="submit-url">
   </td>
 </tr>
 </table>

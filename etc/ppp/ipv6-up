@@ -11,7 +11,7 @@ PPP_REMOTE="$5"
 PPP_IPPARAM="$6"
 LOG="logger -t pppd_v6"
 
-if [ "$vpnDGWSIX" = "on" ]; then
+if [ "$Ipv6InVPN" = "1" ]; then
     $LOG "Replace IPv6 dgw to $PPP_IFACE"
     ip -6 route replace default dev $PPP_IFACE
     if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then

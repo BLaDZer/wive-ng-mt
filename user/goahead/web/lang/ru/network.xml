@@ -78,6 +78,7 @@
     <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />
     <message msgid="ipv6 6to4 enabled" msgstr="Настройка туннеля 6to4" />
     <message msgid="ipv6 6to4 server address" msgstr="Адрес сервера" />
+    <message msgid="ipv6 Ipv6InVPN" msgstr="IPv6 аплинк в VPN" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
     <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений. Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />

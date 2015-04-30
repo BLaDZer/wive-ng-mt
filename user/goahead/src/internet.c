@@ -2247,20 +2247,24 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*opmode, *submitUrl;
-	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *dhcp6c_enable, *ipv6_allow_forward;
+	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *dhcp6c_enable, *ipv6_allow_forward, *Ipv6InVPN;
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
 
 	opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
 
-	dhcp6c_enable = websGetVar(wp, T("IPv6Dhcpc"), T("off"));
+	dhcp6c_enable = websGetVar(wp, T("dhcp6c_enable"), T("off"));
 	dhcp6c_enable = (strcmp(dhcp6c_enable, "on") == 0) ? "1" : "0";
 
-	ipv6_allow_forward = websGetVar(wp, T("IPv6AllowForward"), T("off"));
+	ipv6_allow_forward = websGetVar(wp, T("ipv6_allow_forward"), T("off"));
 	ipv6_allow_forward = (strcmp(ipv6_allow_forward, "on") == 0) ? "1" : "0";
+
+	Ipv6InVPN = websGetVar(wp, T("ipv6_Ipv6InVPN"), T("off"));
+	Ipv6InVPN = (strcmp(Ipv6InVPN, "on") == 0) ? "1" : "0";
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "IPv6Dhcpc", dhcp6c_enable);
 	nvram_bufset(RT2860_NVRAM, "IPv6AllowForward", ipv6_allow_forward);
+	nvram_bufset(RT2860_NVRAM, "Ipv6InVPN", Ipv6InVPN);
 
 	if (!strcmp(opmode, "1")) {
 		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
@@ -2292,6 +2296,9 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+#ifdef PRINT_DEBUG
+	if (!submitUrl || !submitUrl[0]){
 	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
@@ -2316,19 +2323,14 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 #endif
 	}
 
-	doSystem("internet.sh");
-
 	// Write OK
 	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/ipv6.asp', true);</script>\n"));
 	websFooter(wp);
-
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
+	websDone(wp, 200);
+	} else
 #endif
 		websRedirect(wp, submitUrl);
+		doSystem("internet.sh");
 }
 
 #ifdef CONFIG_USER_CHILLISPOT
