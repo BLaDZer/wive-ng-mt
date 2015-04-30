@@ -2328,9 +2328,9 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	    websFooter(wp);
 	    websDone(wp, 200);
 #endif
-	    websRedirect(wp, submitUrl);
 	}
 
+	websRedirect(wp, submitUrl);
 	doSystem("internet.sh");
 }
 
