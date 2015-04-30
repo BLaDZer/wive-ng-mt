@@ -96,17 +96,15 @@ start() {
 
 	if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
 	    # tune after tunnels configured
-	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces(security need)."
+	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces (security reason)."
     	    sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
-	    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
-		$LOG "Tunneled ipv6 acess mode not need ipv6 adress and route at wan ifaces - drop it."
-		ip -6 route flush dev $wan_if								> /dev/null 2>&1
-		ip -6 route flush dev $tun_wan_if							> /dev/null 2>&1
-		ip -6 addr flush dev $wan_if								> /dev/null 2>&1
-		ip -6 addr flush dev $tun_wan_if							> /dev/null 2>&1
-	    fi
+	    $LOG "Used tunneled ipv6 mode, not need ipv6 adress and route at wan ifaces - drop it (security reason)."
+	    ip -6 route flush dev $wan_if								> /dev/null 2>&1
+	    ip -6 route flush dev $tun_wan_if								> /dev/null 2>&1
+	    ip -6 addr flush dev $wan_if								> /dev/null 2>&1
+	    ip -6 addr flush dev $tun_wan_if								> /dev/null 2>&1
 	    $LOG "Set ${PREFIX} to $lan_if"
 	    ip -6 addr del ${PREFIX} dev $lan_if							> /dev/null 2>&1
 	    ip -6 addr add ${PREFIX} dev $lan_if
