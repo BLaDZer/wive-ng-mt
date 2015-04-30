@@ -358,6 +358,10 @@ function initTranslation()
     </select>
   </td>
 </tr>
+<tr id="v6invpn">
+  <td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
+  <td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
+</tr>
 <tr id="dhp6cRowDisplay">
   <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
   <td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode()"></td>
@@ -365,10 +369,6 @@ function initTranslation()
 <tr id="IPv6AllowForwardRowDisplay">
   <td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
   <td><input name="ipv6_allow_forward" type="checkbox"></td>
-</tr>
-<tr id="v6invpn">
-  <td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
-  <td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
 </tr>
 </table>
 <!-- STATIC/DynaMIC IP -->
