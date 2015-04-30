@@ -65,7 +65,7 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *admuser, *admpass;
 	char *old_user;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	old_user = nvram_get(RT2860_NVRAM, "Login");
 	admuser = websGetVar(wp, T("admuser"), T(""));
@@ -106,19 +106,17 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 	umAddUser(admuser, admpass, T("adm"), FALSE, FALSE);
 #endif
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("<h2>Adminstrator Settings</h2><br>\n"));
-		websWrite(wp, T("adm user: %s<br>\n"), admuser);
-		websWrite(wp, T("adm pass: %s<br>\n"), admpass);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("<h2>Adminstrator Settings</h2><br>\n"));
+	websWrite(wp, T("adm user: %s<br>\n"), admuser);
+	websWrite(wp, T("adm pass: %s<br>\n"), admpass);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 }
 
 /*
@@ -127,23 +125,21 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 static void setSysLang(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *lang;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	lang = websGetVar(wp, T("langSelection"), T(""));
 	nvram_set(RT2860_NVRAM, "Language", lang);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("<h2>Language Selection</h2><br>\n"));
-		websWrite(wp, T("language: %s<br>\n"), lang);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("<h2>Language Selection</h2><br>\n"));
+	websWrite(wp, T("language: %s<br>\n"), lang);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 }
 
 /*
@@ -152,7 +148,7 @@ static void setSysLang(webs_t wp, char_t *path, char_t *query)
 static void NTP(webs_t wp, char_t *path, char_t *query)
 {
 	char *tz, *ntpServer, *ntpEnabled;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	tz = websGetVar(wp, T("time_zone"), T(""));
 	ntpServer = websGetVar(wp, T("NTPServerIP"), T(""));
@@ -177,20 +173,18 @@ static void NTP(webs_t wp, char_t *path, char_t *query)
 	else
 		doSystem("service ntp stop");
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("<h2>NTP Settings</h2><br>\n"));
-		websWrite(wp, T("NTPEnabled: %s<br>\n"), ntpEnabled);
-		websWrite(wp, T("NTPserver: %s<br>\n"), ntpServer);
-		websWrite(wp, T("TZ: %s<br>\n"), tz);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("<h2>NTP Settings</h2><br>\n"));
+	websWrite(wp, T("NTPEnabled: %s<br>\n"), ntpEnabled);
+	websWrite(wp, T("NTPserver: %s<br>\n"), ntpServer);
+	websWrite(wp, T("TZ: %s<br>\n"), tz);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 }
 
 #ifdef CONFIG_DATE
@@ -223,7 +217,7 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 {
 	char *ddns_provider, *ddns, *ddns_acc, *ddns_pass;
 	char empty_char = '\0';
-	char *submitUrl;
+	char_t *submitUrl;
 
 	ddns_provider = websGetVar(wp, T("DDNSProvider"), T("none"));
 	ddns = websGetVar(wp, T("DDNS"), T(""));
@@ -254,21 +248,19 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 
 	doSystem("service ddns restart");
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("<h2>DDNS Settings</h2><br>\n"));
-		websWrite(wp, T("DDNSProvider: %s<br>\n"), ddns_provider);
-		websWrite(wp, T("DDNS: %s<br>\n"), ddns);
-		websWrite(wp, T("DDNSAccount: %s<br>\n"), ddns_acc);
-		websWrite(wp, T("DDNSPassword: %s<br>\n"), ddns_pass);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("<h2>DDNS Settings</h2><br>\n"));
+	websWrite(wp, T("DDNSProvider: %s<br>\n"), ddns_provider);
+	websWrite(wp, T("DDNS: %s<br>\n"), ddns);
+	websWrite(wp, T("DDNSAccount: %s<br>\n"), ddns_acc);
+	websWrite(wp, T("DDNSPassword: %s<br>\n"), ddns_pass);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 }
 #endif
 
@@ -757,6 +749,8 @@ static void clearlog(webs_t wp, char_t *path, char_t *query)
 
 static void setuplog(webs_t wp, char_t *path, char_t *query)
 {
+	char_t *submitUrl;
+
 	// Set-up parameters
 	setupParameters(wp, service_syslog_flags, 1);
 
@@ -764,13 +758,8 @@ static void setuplog(webs_t wp, char_t *path, char_t *query)
 	doSystem("service syslog restart");
 
 	// Redirect if possible
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
 
 #define LOG_MAX 32768

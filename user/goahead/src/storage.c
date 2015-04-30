@@ -160,6 +160,7 @@ const parameter_fetch_t ftp_server_args[] =
 static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *ftp_enable = websGetVar(wp, T("ftp_enabled"), T("0"));
+	char_t *submitUrl;
 	if (ftp_enable == NULL)
 		ftp_enable = "0";
 
@@ -174,13 +175,8 @@ static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 	firewall_rebuild();
 	doSystem("service inetd restart");
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));
+	websRedirect(wp, submitUrl);
 }
 #endif
 
@@ -198,7 +194,7 @@ const parameter_fetch_t transmission_args[] =
 
 static void transmission(webs_t wp, char_t *path, char_t *query)
 {
-	char *submitUrl;
+	char_t *submitUrl;
 	char_t *submit;
 
 	submit = websGetVar(wp, T("hiddenButton"), T(""));
@@ -226,12 +222,7 @@ static void transmission(webs_t wp, char_t *path, char_t *query)
 	}
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	websRedirect(wp, submitUrl);
 }
 #endif
 

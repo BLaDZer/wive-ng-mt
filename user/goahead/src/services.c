@@ -269,7 +269,7 @@ const parameter_fetch_t dhcp_args_dns[] =
 /* goform/setDhcp */
 static void setDhcp(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*dhcp_tp, *static_leases;
+	char_t	*dhcp_tp, *static_leases, *submitUrl;
 
 	dhcp_tp = websGetVar(wp, T("lanDhcpType"), T("DISABLE"));
 	static_leases = websGetVar(wp, T("dhcpAssignIP"), T(""));
@@ -303,13 +303,8 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 	// Restart DHCP service
 	doSystem("service dhcpd restart");
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
 
 
@@ -491,12 +486,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 		doSystem("services_restart.sh misc");
 
 		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-		if (!submitUrl || !submitUrl[0])
-			websDone(wp, 200);
-		else
-#endif
-			websRedirect(wp, submitUrl);
+		websRedirect(wp, submitUrl);
 	}
 }
 
@@ -515,6 +505,8 @@ const parameter_fetch_t service_samba_flags[] =
 static void setSamba(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *smb_enabled = websGetVar(wp, T("SmbEnabled"), T("0"));
+	char_t *submitUrl;
+
 	if (smb_enabled == NULL)
 		smb_enabled = "0";
 
@@ -531,13 +523,8 @@ static void setSamba(webs_t wp, char_t *path, char_t *query)
 	doSystem("service dhcpd restart");
 	doSystem("service samba restart");
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
 
 //------------------------------------------------------------------------------
@@ -545,6 +532,7 @@ static void setSamba(webs_t wp, char_t *path, char_t *query)
 void formIptAccounting(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *strValue;
+	char_t *submitUrl;
 	int reset_ipt = 0;
 
 	strValue = websGetVar(wp, T("iptEnable"), T("0"));	//reset stats
@@ -572,13 +560,8 @@ void formIptAccounting(webs_t wp, char_t *path, char_t *query)
 
 	firewall_rebuild();
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
 
 #ifndef IPT_SHORT_ACCOUNT
@@ -755,6 +738,7 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 {
 	char user_var[16] = "l2tp_srv_user0";
 	char pass_var[16] = "l2tp_srv_pass0";
+	char_t *submitUrl;
 	int i=0;
 
 	nvram_init(RT2860_NVRAM);
@@ -795,13 +779,8 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 	doSystem("service vpnserver restart");
 
 	// Redirect if possible
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
 
 static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)

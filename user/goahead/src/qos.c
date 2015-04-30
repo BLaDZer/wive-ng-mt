@@ -23,7 +23,7 @@ const parameter_fetch_t QoS_args[] =
 
 static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 {
-	char *submitUrl;
+	char_t *submitUrl;
 
 	char_t *QoS_type = websGetVar(wp, T("QoSSelect"), T("0"));
 	if (QoS_type == NULL)
@@ -39,12 +39,7 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 	doSystem("service shaper restart && service iptables restart && service kext restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	websRedirect(wp, submitUrl);
 }
 
 void formDefineQoS(void) {

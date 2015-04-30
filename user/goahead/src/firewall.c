@@ -1390,6 +1390,7 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 {
 	char *pfe               = websGetVar(wp, T("portForwardEnabled"), T(""));
 	char *PortForwardRules  = websGetVar(wp, T("portForwardRules"), T(""));
+	char_t *submitUrl;
 
 	if ((pfe==NULL) || (strcmp(pfe, "1")!=0))
 		pfe = "0";
@@ -1402,17 +1403,15 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("portForwardEnabled: %s<br>\n"), pfe);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("portForwardEnabled: %s<br>\n"), pfe);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
 	// call iptables
 	firewall_rebuild();
@@ -1423,6 +1422,7 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 	char *firewall_enable   = websGetVar(wp, T("portFilterEnabled"), T(""));
 	char *default_policy    = websGetVar(wp, T("defaultFirewallPolicy"), T("0"));
 	char *firewall_rules    = websGetVar(wp, T("portFilteringRules"), T(""));
+	char_t *submitUrl;
 
 	if ((firewall_enable == NULL) || (strcmp(firewall_enable, "1") != 0))
 		firewall_enable = "0";
@@ -1441,18 +1441,16 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("portFilteringEnabled: %s<br>\n"), firewall_enable);
-		websWrite(wp, T("default_policy: %s<br>\n"), default_policy);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("portFilteringEnabled: %s<br>\n"), firewall_enable);
+	websWrite(wp, T("default_policy: %s<br>\n"), default_policy);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
 	// Call iptables
 	firewall_rebuild();
@@ -1465,6 +1463,7 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 	dmzE = websGetVar(wp, T("DMZEnabled"), T(""));
 	ip_address = websGetVar(wp, T("DMZIPAddress"), T(""));
 	dmzLoopback = websGetVar(wp, T("dmzLoopback"), T("off"));
+	char_t *submitUrl;
 
 	if (CHK_IF_DIGIT(dmzE, 0)) // disable
 	{
@@ -1485,18 +1484,16 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 	else
 		return;
 
-	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		websHeader(wp);
-		websWrite(wp, T("DMZEnabled: %s<br>\n"), dmzE);
-		websWrite(wp, T("ip_address: %s<br>\n"), ip_address);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websHeader(wp);
+	websWrite(wp, T("DMZEnabled: %s<br>\n"), dmzE);
+	websWrite(wp, T("ip_address: %s<br>\n"), ip_address);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
 	// Call iptables
 	firewall_rebuild();
@@ -1535,19 +1532,16 @@ const parameter_fetch_t content_filtering_args[] =
 
 static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
 {
+	char_t *submitUrl;
+
 	// Store firewall parameters
 	setupParameters(wp, content_filtering_args, 1);
 
 	//call iptables
 	firewall_rebuild();
 
-	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 
 }
 
@@ -1565,19 +1559,16 @@ const parameter_fetch_t alg_params[] =
 
 static void setFirewallAlg(webs_t wp, char_t *path, char_t *query)
 {
+	char_t *submitUrl;
+
 	// Store firewall parameters
 	setupParameters(wp, alg_params, 1);
 
 	//call iptables
 	firewall_rebuild();
 
-	char *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 
 }
 

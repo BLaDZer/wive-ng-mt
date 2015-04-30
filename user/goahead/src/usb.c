@@ -42,7 +42,7 @@ static void printersrv(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *enable;
 	char_t *bidirect;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	// fetch from web input
 	enable = websGetVar(wp, T("enabled"), T(""));
@@ -51,19 +51,17 @@ static void printersrv(webs_t wp, char_t *path, char_t *query)
 	nvram_set(RT2860_NVRAM, "PrinterSrvEnabled", enable);
 	nvram_set(RT2860_NVRAM, "PrinterSrvBidir", bidirect);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-	    // debug print
-	    websHeader(wp);
-	    websWrite(wp, T("<h2>Printer Server Settings</h2><br>\n"));
-	    websWrite(wp, T("enabled: %s<br>\n"), enable);
-	    websFooter(wp);
-	    websDone(wp, 200);
-	} else
+	// debug print
+	websHeader(wp);
+	websWrite(wp, T("<h2>Printer Server Settings</h2><br>\n"));
+	websWrite(wp, T("enabled: %s<br>\n"), enable);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 }
 #endif
 
@@ -89,17 +87,17 @@ const parameter_fetch_t usb_modem_args[] =
 
 static void usbmodem(webs_t wp, char_t *path, char_t *query)
 {
-	char *submitUrl;
+	char_t *submitUrl;
 	char_t *submit;
 
 	submit = websGetVar(wp, T("hiddenButton"), T(""));
-	
+
 	if (0 == strcmp(submit, "apply"))
 		{
 			char_t *modem_enabled = websGetVar(wp, T("modem_enabled"), T("0"));
 			if (modem_enabled == NULL)
 				modem_enabled = "0";
-		
+
 			nvram_init(RT2860_NVRAM);
 			nvram_bufset(RT2860_NVRAM, "MODEMENABLED", modem_enabled);
 
@@ -118,12 +116,7 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 		}
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	websRedirect(wp, submitUrl);
 }
 
 /*** USB modem statuses ***/

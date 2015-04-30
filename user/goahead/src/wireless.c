@@ -1105,56 +1105,54 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	revise_mbss_updated_values(wp, new_bssid_num);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		// debug print
-		websHeader(wp);
-		websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
-		websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
-		websWrite(wp, T("hssid: %s<br>\n"), hssid);
-		websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
-		websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
-		websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
-		websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
-		websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
-		if (strncmp(abg_rate, "", 1)) {
-			websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
-		}
-		if (is_ht) {
-			websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
-			websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
-			websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
-			websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
-			websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);
-			websWrite(wp, T("n_rdg: %s<br>\n"), n_rdg);
-			websWrite(wp, T("n_extcha: %s<br>\n"), n_extcha);
-			websWrite(wp, T("n_amsdu: %s<br>\n"), n_amsdu);
-			websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
-			websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
+	// debug print
+	websHeader(wp);
+	websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
+	websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
+	websWrite(wp, T("hssid: %s<br>\n"), hssid);
+	websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
+	websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
+	websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
+	websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
+	websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
+	if (strncmp(abg_rate, "", 1)) {
+		websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
+	}
+	if (is_ht) {
+		websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
+		websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
+		websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
+		websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
+		websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);
+		websWrite(wp, T("n_rdg: %s<br>\n"), n_rdg);
+		websWrite(wp, T("n_extcha: %s<br>\n"), n_extcha);
+		websWrite(wp, T("n_amsdu: %s<br>\n"), n_amsdu);
+		websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
+		websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
 
-		}
+	}
 #ifndef CONFIG_RT_SECOND_IF_NONE
-		websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
-		websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
-		websWrite(wp, T("tx_power_ac: %s<br>\n"), tx_power_ac);
-		if (is_vht)
-		{
-			websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
-			websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
-			websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
-			websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
-			websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
-		}
+	websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
+	websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
+	websWrite(wp, T("tx_power_ac: %s<br>\n"), tx_power_ac);
+	if (is_vht)
+	{
+		websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
+		websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
+		websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
+		websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
+		websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
+	}
 #endif
-		websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
-		websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
+	websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
 	setupSecurityLed();
 	doSystem("internet.sh wifionly");
@@ -1190,7 +1188,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid_num, wlan_mode;
-	char *submitUrl;
+	char_t *submitUrl;
 
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	char_t	*m2u_enable, *mcast_mcs;
@@ -1308,31 +1306,30 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0]) {
-		//debug print
-		websHeader(wp);
-		websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
-		websWrite(wp, T("beacon: %s<br>\n"), beacon);
-		websWrite(wp, T("dtim: %s<br>\n"), dtim);
-		websWrite(wp, T("fragment: %s<br>\n"), fragment);
-		websWrite(wp, T("rts: %s<br>\n"), rts);
-		websWrite(wp, T("short_preamble: %s<br>\n"), short_preamble);
-		websWrite(wp, T("short_slot: %s<br>\n"), short_slot);
-		websWrite(wp, T("tx_burst: %s<br>\n"), tx_burst);
-		websWrite(wp, T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
-		websWrite(wp, T("rd_region: %s<br>\n"), rd_region);
-		websWrite(wp, T("countrycode: %s<br>\n"), countrycode);
+	//debug print
+	websHeader(wp);
+	websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
+	websWrite(wp, T("beacon: %s<br>\n"), beacon);
+	websWrite(wp, T("dtim: %s<br>\n"), dtim);
+	websWrite(wp, T("fragment: %s<br>\n"), fragment);
+	websWrite(wp, T("rts: %s<br>\n"), rts);
+	websWrite(wp, T("short_preamble: %s<br>\n"), short_preamble);
+	websWrite(wp, T("short_slot: %s<br>\n"), short_slot);
+	websWrite(wp, T("tx_burst: %s<br>\n"), tx_burst);
+	websWrite(wp, T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
+	websWrite(wp, T("rd_region: %s<br>\n"), rd_region);
+	websWrite(wp, T("countrycode: %s<br>\n"), countrycode);
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
-		websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
-		websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
+	websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
+	websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
     // restart wireless network
     doSystem("internet.sh wifionly");
@@ -1342,7 +1339,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wds_mode, *wds_phy_mode, *wds_encryp_type, *wds_encryp_key0, *wds_encryp_key1,*wds_encryp_key2, *wds_encryp_key3, *wds_list;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	wds_mode = websGetVar(wp, T("wds_mode"), T("0"));
 	wds_phy_mode = websGetVar(wp, T("wds_phy_mode"), T(""));
@@ -1370,25 +1367,23 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		//debug print
-		websHeader(wp);
-		websWrite(wp, T("wds_mode: %s<br>\n"), wds_mode);
-		websWrite(wp, T("wds_phy_mode: %s<br>\n"), wds_phy_mode);
-		websWrite(wp, T("wds_encryp_type: %s<br>\n"), wds_encryp_type);
-		websWrite(wp, T("wds_encryp_key0: %s<br>\n"), wds_encryp_key0);
-		websWrite(wp, T("wds_encryp_key1: %s<br>\n"), wds_encryp_key1);
-		websWrite(wp, T("wds_encryp_key2: %s<br>\n"), wds_encryp_key2);
-		websWrite(wp, T("wds_encryp_key3: %s<br>\n"), wds_encryp_key3);
-		websWrite(wp, T("wds_list: %s<br>\n"), wds_list);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	//debug print
+	websHeader(wp);
+	websWrite(wp, T("wds_mode: %s<br>\n"), wds_mode);
+	websWrite(wp, T("wds_phy_mode: %s<br>\n"), wds_phy_mode);
+	websWrite(wp, T("wds_encryp_type: %s<br>\n"), wds_encryp_type);
+	websWrite(wp, T("wds_encryp_key0: %s<br>\n"), wds_encryp_key0);
+	websWrite(wp, T("wds_encryp_key1: %s<br>\n"), wds_encryp_key1);
+	websWrite(wp, T("wds_encryp_key2: %s<br>\n"), wds_encryp_key2);
+	websWrite(wp, T("wds_encryp_key3: %s<br>\n"), wds_encryp_key3);
+	websWrite(wp, T("wds_list: %s<br>\n"), wds_list);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
 
 	// restart wireless network
 	doSystem("internet.sh wifionly");
@@ -1409,6 +1404,8 @@ const parameter_fetch_t apcli_args[] =
 /* goform/wirelessApcli */
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 {
+	char_t *submitUrl;
+
 	//fetch from web input
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "ApCliEnable", "1");
@@ -1416,13 +1413,8 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 
 	//network configure
 	doSystem("internet.sh");
@@ -1761,7 +1753,7 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 	char_t *SSID;
 	int mbssid;
 	char_t *security_mode;
-	char *submitUrl;
+	char_t *submitUrl;
 
 	LFW(SSID, ssidIndex);
 	if (!CHK_IF_SET(SSID))
@@ -1877,19 +1869,16 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 	if(AccessPolicyHandle(nvram, wp, mbssid) == -1)
 		trace(0, "** error in AccessPolicyHandle()\n");
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 #ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-	{
-		//debug print
-		websHeader(wp);
-		websWrite(wp, T("<h2>MBSSID index: %d, Security Mode: %s Done</h2><br>\n"), mbssid, security_mode);
-		websFooter(wp);
-		websDone(wp, 200);
-	} else
+	//debug print
+	websHeader(wp);
+	websWrite(wp, T("<h2>MBSSID index: %d, Security Mode: %s Done</h2><br>\n"), mbssid, security_mode);
+	websFooter(wp);
+	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 #endif
-		websRedirect(wp, submitUrl);
-
 	doSystem("internet.sh wifionly");
 #ifdef CONFIG_USER_802_1X
 	restart8021XDaemon(nvram);
@@ -2047,6 +2036,7 @@ static int get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv)
 void disconnectSta(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *mac = websGetVar(wp, T("disconnectSta"), "");
+	char_t *submitUrl;
 
 	if ((mac != NULL) && (strlen(mac) > 0))
 	{
@@ -2067,11 +2057,6 @@ void disconnectSta(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if (!submitUrl || !submitUrl[0])
-		websDone(wp, 200);
-	else
-#endif
-		websRedirect(wp, submitUrl);
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
 }
