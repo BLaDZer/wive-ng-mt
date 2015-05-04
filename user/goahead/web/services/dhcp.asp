@@ -15,15 +15,13 @@
 
 Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("services");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
 var timerRunning = false;
 
-var dhcpList=
-[
-	<% getDhcpStaticList(); %>
-];
+var dhcpList= [];
 
 function genTable(disabled)
 {
@@ -52,8 +50,12 @@ function genTable(disabled)
 function genIPTableData(form)
 {
 	var values = "";
-	for (var i=0; i<dhcpList.length; i++)
-		values += dhcpList[i][0] + ' ' + dhcpList[i][1] + "\n";
+	for (var i=0; i<dhcpList.length; i++) {
+		values += dhcpList[i][0] + ' ' + dhcpList[i][1];
+		if (dhcpList.length > (i+1)) {
+			values += ";";
+		}
+	}
 	form.dhcpAssignIP.value = values;
 }
 
@@ -140,8 +142,14 @@ function dhcpTypeSwitch()
 	var form = document.dhcpCfg;
 	var dnsproxy = <% getCfgZero(1, "dnsPEnabled"); %> * 1;
 	var dhcp_on = form.lanDhcpType.options.selectedIndex == 1;
-	
+	var radvdb = <% getRadvdBuilt(); %> * 1;
+	var dhcpv6b = <% getDhcpv6Built(); %> * 1;
+	var ipv6 = "<% getCfgZero(1, "IPv6OpMode"); %>" != "0" ;
+
 	enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease ], dhcp_on);
+	displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList' ], dhcp_on);
+	displayElement( [ form.radvd ], radvdb && ipv6);
+	displayElement( [ form.dhcpv6 ], dhcpv6b && ipv6);
 	enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && (!dnsproxy) );
 	displayElement( [ 'pridns', 'secdns' ], !dnsproxy);
 	
@@ -154,9 +162,7 @@ function initTranslation()
 	_TR("lIntroduction", "services dhcp introduction");
 	_TR("lSetup", "services dhcp setup");
 
-	_TR("lDhcpType", "lan dhcp type");
-	_TR("lDhcpTypeD", "inet disable");
-	_TR("lDhcpTypeS", "lan dhcp type server");
+	_TR("lDhcpType", "services dhcp server");
 	_TR("lDhcpStart", "lan dhcp start");
 	_TR("lDhcpEnd", "lan dhcp end");
 	_TR("lDhcpNetmask", "inet netmask");
@@ -164,19 +170,41 @@ function initTranslation()
 	_TR("lDhcpSecDns", "inet sec dns");
 	_TR("lDhcpGateway", "inet gateway");
 	_TR("lDhcpLease", "lan dhcp lease");
-	
-	_TRV("lApply", "inet apply");
-	_TRV("lCancel", "inet cancel");
+	_TR("lDhcpEnable", "button enable");
+	_TR("lDhcpDisable", "button disable");
+	_TR("lDhcp6Enable", "button enable");
+	_TR("lDhcp6Disable", "button disable");
+	_TR("lradvdEnable", "button enable");
+	_TR("lradvdDisable", "button disable");
+	_TR("lRadvd", "services radvd");
+	_TR("lDhcpv6", "services dhcpv6");
+
+	_TRV("lApply", "button apply");
+	_TRV("lCancel", "button cancel");
 }
 
 function initValue()
 {
 	var form = document.dhcpCfg;
 	var dhcp = <% getCfgZero(1, "dhcpEnabled"); %>;
+	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
+	var dhcpv6 = <% getCfgZero(1, "dhcpv6Enabled"); %>;
+	var dhcp_static = "<% getCfgZero(1, "dhcpStatic"); %>";
+	
+	if (dhcp_static.length > 1 ) {
+		dhcp_static = dhcp_static.split(";");
+		for (var i=0; i<dhcp_static.length; i++) {
+			var row = dhcp_static[i].split(" ");
+			addEntry(row[0], row[1]);
+		}
+	}
 
 	initTranslation();
 
 	form.lanDhcpType.options.selectedIndex = 1*dhcp;
+	form.radvdEnbl.options.selectedIndex = 1*radvd;
+	form.dhcpv6Enbl.options.selectedIndex = 1*dhcpv6;
+
 	dhcpTypeSwitch();
 	
 	loadDhcpClientsList();
@@ -285,7 +313,6 @@ function findEntry(mac, ip)
 		if (row[0] == mac)
 			return i;
 	}
-	
 	return -1;
 }
 
@@ -345,14 +372,30 @@ function toggleDhcpTable(check)
           <tr>
             <td class="title" colspan="2" id="lSetup">DHCP Server Setup</td>
           </tr>
-          <tr>
-            <td class="head" id="lDhcpType">DHCP Server</td>
-            <td><select name="lanDhcpType" class="mid" onChange="dhcpTypeSwitch();">
-                <option value="DISABLE" id="lDhcpTypeD">Disabled</option>
-                <option value="SERVER" id="lDhcpTypeS">Enabled</option>
+		<!-- IPv6 -->
+          <tr id="radvd">
+            <td class="head" id="lRadvd">Router Advertisement</td>
+            <td><select name="radvdEnbl" class="mid">
+                <option value="0" id="lradvdDisable">Disable</option>
+                <option value="1" id="lradvdEnable">Enable</option>
               </select></td>
           </tr>
-          <tr>
+          <tr id="dhcpv6">
+            <td class="head" id="lDhcpv6">Dynamic IPv6 configuration</td>
+            <td><select name="dhcpv6Enbl" class="mid">
+                <option value="0" id="lDhcp6Disable">Disable</option>
+                <option value="1" id="lDhcp6Enable">Enable</option>
+              </select></td>
+          </tr>
+		<!-- IPv4 -->
+          <tr id="dhcp">
+            <td class="head" id="lDhcpType">DHCP Server</td>
+            <td><select name="lanDhcpType" class="mid" onChange="dhcpTypeSwitch();">
+                <option value="DISABLE" id="lDhcpDisable">Disabled</option>
+                <option value="SERVER" id="lDhcpEnable">Enabled</option>
+              </select></td>
+          </tr>
+          <tr id="domain">
             <td class="head">DHCP Domain</td>
             <td><input name="dhcpDomain" class="mid" value="<% getCfgGeneral(1, "dhcpDomain"); %>"></td>
           </tr>
