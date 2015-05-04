@@ -157,7 +157,7 @@ function initTranslation()
 	_TR("lIntroduction", "services dhcp introduction");
 	_TR("lSetup", "services dhcp setup");
 
-	_TR("lDhcpType", "service dhcp title");
+	_TR("lDhcpType", "services dhcp title");
 	_TR("lDhcpTypeD", "button disable");
 	_TR("lDhcpTypeS", "button enable");
 	_TR("lDhcpStart", "lan dhcp start");
@@ -364,7 +364,7 @@ function toggleDhcpTable(check)
                 <option value="SERVER" id="lDhcpTypeS">Enabled</option>
               </select></td>
           </tr>
-          <tr>
+          <tr id="domain">
             <td class="head">DHCP Domain</td>
             <td><input name="dhcpDomain" class="mid" value="<% getCfgGeneral(1, "dhcpDomain"); %>"></td>
           </tr>
