@@ -93,21 +93,11 @@ start() {
 	else
 		config-udhcpd.sh -D "$HostName"
 	fi
-	# Transfer the old settings
-	if [ -e /etc/dhcpd_static.conf ]; then
-        cat /etc/dhcpd_static.conf | while read line; do
-        	static="$static;$line";
-        done;
-    nvram_set 2860 dhcpStatic "$static"
-    fi
 	# Write static DHCP leases
-	if [ "$dhcpStatic" != "" ]; then
-		tmp=${dhcpStatic// /-}
-		array=${tmp//;/ }
-		for i in $array; do
-			line=${i//-/ }
-			config-udhcpd.sh -S $line
-		done
+	if [ -e /etc/dhcpd_static.conf ]; then
+		cat /etc/dhcpd_static.conf | while read line; do
+			config-udhcpd.sh -S $line;
+		done;
 	fi
 	$LOG "Start dhcpserver"
 	config-udhcpd.sh -r
@@ -139,7 +129,7 @@ set_dns()
 
 get_param() {
     # dhcpd params
-    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpLease SmbEnabled dnsPEnabled dhcpStatic`
+    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpLease SmbEnabled dnsPEnabled `
 }
 
 stop() {

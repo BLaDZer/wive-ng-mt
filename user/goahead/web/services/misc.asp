@@ -88,6 +88,13 @@ function initTranslation()
 	_TR("lUpnpD", "inet disable");
 	_TR("lUpnpE", "inet enable");
 
+	_TR("lRadvd", "lan radvd");
+	_TR("lDhcpv6", "lan dhcpv6");
+	_TR("lRadvdD", "inet disable");
+	_TR("lDhcpv6D", "inet disable");
+	_TR("lRadvdE", "inet enable");
+	_TR("lDhcpv6E", "inet enable");
+
 	_TR("lDnsp", "lan dnsp");
 	_TR("lDnspD", "inet disable");
 	_TR("lDnspE", "inet enable");
@@ -105,6 +112,8 @@ function initValue()
 	var igmpM2UConv = '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';
 	var upnp = <% getCfgZero(1, "upnpEnabled"); %>;
 	var xupnpd = <% getCfgZero(1, "xupnpd"); %>;
+	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
+	var dhcpv6 = <% getCfgZero(1, "dhcpv6Enabled"); %>;
 	var dns = <% getCfgZero(1, "dnsPEnabled"); %>;
 	var wan = "<% getCfgZero(1, "wanConnectionMode"); %>";
 	var cdp = "<% getCfgZero(1, "cdpEnabled"); %>";
@@ -119,6 +128,8 @@ function initValue()
 	var igmpb = "<% getIgmpProxyBuilt(); %>";
 	var upnpb = "<% getUpnpBuilt(); %>";
 	var xupnpdb = "<% getXupnpdBuilt(); %>";
+	var radvdb = "<% getRadvdBuilt(); %>";
+	var dhcpv6b = "<% getDhcpv6Built(); %>";
 	var dnsp = "<% getDnsmasqBuilt(); %>";
 	var snmpdb = "<% getSNMPDBuilt(); %>";
 	var krnl_pppoe = "<% getCfgZero(1, "pppoe_pass"); %>";
@@ -142,6 +153,8 @@ function initValue()
 	form.igmpM2UConv.value = igmpM2UConv;
 	form.upnpEnbl.options.selectedIndex = 1*upnp;
 	form.xupnpdEnbl.options.selectedIndex = 1*xupnpd;
+	form.radvdEnbl.options.selectedIndex = 1*radvd;
+	form.dhcpv6Enbl.options.selectedIndex = 1*dhcpv6;
 	form.dnspEnbl.options.selectedIndex = 1*dns;
 	form.cdpEnbl.options.selectedIndex = 1*cdp;
 	form.lltdEnbl.options.selectedIndex = 1*lltd;
@@ -188,6 +201,8 @@ function initValue()
 	displayElement('igmpProxy', igmpb == '1');
 	displayElement('upnp', upnpb == '1');
 	displayElement('xupnpd', xupnpdb == '1');
+	displayElement('radvd', radvdb == '1');
+	displayElement('dhcpv6', dhcpv6b == '1');
 	displayElement('dnsproxy', dnsp == '1');
 
 	// Set-up fastpaths
@@ -318,6 +333,8 @@ function displayServiceHandler(response)
 		[ '<% getCfgGeneral(1, "cdpEnabled"); %>', 'cdp', 'cdp-send', null, 'freecode.com/projects/cdp-tools' ],
 		[ '<% getCfgGeneral(1, "dnsPEnabled"); %>', 'dnsproxy', 'dnsmasq', null, 'thekelleys.org.uk/dnsmasq/doc.html' ],
 		[ '<% getCfgGeneral(1, "parproutedEnabled"); %>', 'parprouted', 'parprouted', null, 'freecode.com/projects/parprouted' ],
+		[ '<% getCfgGeneral(1, "radvdEnabled"); %>', 'radvd', 'radvd', null, 'www.litech.org/radvd' ],
+		[ '<% getCfgGeneral(1, "dhcpv6Enabled"); %>', 'dhcpv6', 'dhcp6s', null, 'wide-dhcpv6.sourceforge.net' ]
 	];
 
 	// Create associative array
@@ -567,6 +584,34 @@ function displayServiceStatus()
             <td><select name="cdpEnbl" class="half">
                 <option value="0" id="lCdpD">Disable</option>
                 <option value="1" id="lCdpE">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <!-- IPv6 -->
+          <tr>
+            <td class="title">Services IPv6</td>
+            <td class="title">Value</td>
+            <td class="title" style="width: 88px;">Details</td>
+            <td class="title" style="width: 56px;">Status</td>
+            <td class="title" style="width: 80px;">Configure</td>
+          </tr>
+          <tr id="radvd">
+            <td class="head" id="lRadvd">Router Advertisement</td>
+            <td><select name="radvdEnbl" class="half">
+                <option value="0" id="lRadvdD">Disable</option>
+                <option value="1" id="lRadvdE">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr id="dhcpv6">
+            <td class="head" id="lDhcpv6">Dynamic IPv6 configuration</td>
+            <td><select name="dhcpv6Enbl" class="half">
+                <option value="0" id="lDhcpv6D">Disable</option>
+                <option value="1" id="lDhcpv6E">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>

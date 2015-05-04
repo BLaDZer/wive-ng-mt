@@ -2,7 +2,6 @@
   <message msgid="services dhcp title" msgstr="DHCP Server" />
   <message msgid="services dhcp introduction" msgstr="On this page you can configure DHCP server parameters." />
   <message msgid="services dhcp setup" msgstr="DHCP Server Setup" />
-  <message msgid="services dhcp server" msgstr="DHCP Server" />
 
   <message msgid="services misc title" msgstr="Miscellaneous services" />
   <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
@@ -15,7 +14,4 @@
   <message msgid="services ddns title" msgstr="Dynamic DNS Settings" />
   <message msgid="services ddns introduction" msgstr="Here you can configure Dynamic DNS settings." />
   <message msgid="services ddns setup" msgstr="Dynamic DNS setup" />
-
-  <message msgid="services radvd" msgstr="Router Advertisement(radvd)" />
-  <message msgid="services dhcpv6" msgstr="Dynamic IPv6 configuration" />
 </po>
