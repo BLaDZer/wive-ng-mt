@@ -15,15 +15,13 @@
 
 Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("services");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
 var timerRunning = false;
 
-var dhcpList=
-[
-	<% getDhcpStaticList(); %>
-];
+var dhcpList = [];
 
 function genTable(disabled)
 {
@@ -52,8 +50,12 @@ function genTable(disabled)
 function genIPTableData(form)
 {
 	var values = "";
-	for (var i=0; i<dhcpList.length; i++)
-		values += dhcpList[i][0] + ' ' + dhcpList[i][1] + "\n";
+	for (var i=0; i<dhcpList.length; i++) {
+		values += dhcpList[i][0] + ' ' + dhcpList[i][1];
+		if (dhcpList.length > (i+1)) {
+			values += ";";
+		}
+	}
 	form.dhcpAssignIP.value = values;
 }
 
@@ -142,6 +144,7 @@ function dhcpTypeSwitch()
 	var dhcp_on = form.lanDhcpType.options.selectedIndex == 1;
 	
 	enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease ], dhcp_on);
+	displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList' ], dhcp_on );
 	enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && (!dnsproxy) );
 	displayElement( [ 'pridns', 'secdns' ], !dnsproxy);
 	
@@ -154,9 +157,9 @@ function initTranslation()
 	_TR("lIntroduction", "services dhcp introduction");
 	_TR("lSetup", "services dhcp setup");
 
-	_TR("lDhcpType", "lan dhcp type");
-	_TR("lDhcpTypeD", "inet disable");
-	_TR("lDhcpTypeS", "lan dhcp type server");
+	_TR("lDhcpType", "service dhcp title");
+	_TR("lDhcpTypeD", "button disable");
+	_TR("lDhcpTypeS", "button enable");
 	_TR("lDhcpStart", "lan dhcp start");
 	_TR("lDhcpEnd", "lan dhcp end");
 	_TR("lDhcpNetmask", "inet netmask");
@@ -165,14 +168,23 @@ function initTranslation()
 	_TR("lDhcpGateway", "inet gateway");
 	_TR("lDhcpLease", "lan dhcp lease");
 	
-	_TRV("lApply", "inet apply");
-	_TRV("lCancel", "inet cancel");
+	_TRV("lApply", "button apply");
+	_TRV("lCancel", "button cancel");
 }
 
 function initValue()
 {
 	var form = document.dhcpCfg;
 	var dhcp = <% getCfgZero(1, "dhcpEnabled"); %>;
+	var dhcp_static = "<% getCfgZero(1, "dhcpStatic"); %>";
+
+	if (dhcp_static.length > 1) {
+		dhcp_static = dhcp_static.split(";");
+		for (var i=0; i<dhcp_static.length; i++) {
+			var row = dhcp_static[i].split(" ");
+			addEntry(row[0], row[1]);
+		}
+	}
 
 	initTranslation();
 

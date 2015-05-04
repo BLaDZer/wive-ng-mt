@@ -25,7 +25,6 @@ static int  getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDhcpStaticList(int eid, webs_t wp, int argc, char_t **argv);
 static int  iptStatList(int eid, webs_t wp, int argc, char_t **argv);
 static int  getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv);
 static int  getProcessList(int eid, webs_t wp, int argc, char_t **argv);
@@ -75,7 +74,6 @@ void formDefineServices(void)
 	// Define functions
 	websAspDefine(T("getL2TPUserList"), getL2TPUserList);
 	websAspDefine(T("getDhcpCliList"), getDhcpCliList);
-	websAspDefine(T("getDhcpStaticList"), getDhcpStaticList);
 	websAspDefine(T("iptStatList"), iptStatList);
 	websAspDefine(T("getARPptBuilt"), getARPptBuilt);
 	websAspDefine(T("getFastPathBuilt"), getFastPathBuilt);
@@ -194,60 +192,6 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-static int getDhcpStaticList(int eid, webs_t wp, int argc, char_t **argv)
-{
-	// Get values
-	FILE *fd = fopen(_PATH_DHCP_ALIAS_FILE, "r");
-
-	if (fd != NULL)
-	{
-		char line[256];
-		char ip[64], mac[64];
-		int args, first = 1;
-
-		while (fgets(line, 255, fd) != NULL)
-		{
-			// Read routing line
-			args = sscanf(line, "%s %s", ip, mac);
-
-			if (args >= 2)
-			{
-				if (!first)
-					websWrite(wp, T(",\n"));
-				else
-					first = 0;
-
-				websWrite(wp, T("\t[ '%s', '%s' ]"), ip, mac );
-			}
-		}
-
-		//close file
-		fclose(fd);
-	}
-
-	websWrite(wp, T("\n"));
-
-	return 0;
-}
-
-void dhcpStoreAliases(const char *dhcp_config)
-{
-	// Open file
-	FILE *fd = fopen(_PATH_DHCP_ALIAS_FILE, "w+");
-
-	if (fd != NULL)
-	{
-		// Output routing table to file
-		fwrite(dhcp_config, strlen(dhcp_config), 1, fd);
-		fclose(fd);
-
-		// Call rwfs to store data
-		system("fs save > /dev/console 2>&1");
-	}
-	else
-		printf("goahead: Failed to open file %s\n", _PATH_DHCP_ALIAS_FILE);
-}
-
 const parameter_fetch_t dhcp_args[] =
 {
 	{ T("dhcpStart"),               "dhcpStart",            0,       T("") },
@@ -274,10 +218,11 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 	dhcp_tp = websGetVar(wp, T("lanDhcpType"), T("DISABLE"));
 	static_leases = websGetVar(wp, T("dhcpAssignIP"), T(""));
 
+	nvram_init(RT2860_NVRAM);
+
 	// configure gateway and dns (WAN) at bridge mode
 	if (strncmp(dhcp_tp, "SERVER", 7)==0)
 	{
-		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "1");
 		setupParameters(wp, dhcp_args, 0);
 
@@ -290,15 +235,14 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 		else
 			setupParameters(wp, dhcp_args_dns, 0);
 
-		nvram_commit(RT2860_NVRAM);
-		nvram_close(RT2860_NVRAM);
+		// Store leases to nvram
+		nvram_bufset(RT2860_NVRAM, "dhcpStatic", static_leases);
 	}
 	else if (strncmp(dhcp_tp, "DISABLE", 8)==0)
 		nvram_set(RT2860_NVRAM, "dhcpEnabled", "0");
 
-	// Store leases to rwfs
-	if (strncmp(dhcp_tp, "SERVER", 7)==0)
-		dhcpStoreAliases(static_leases);
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
 
 	// Restart DHCP service
 	doSystem("service dhcpd restart");
