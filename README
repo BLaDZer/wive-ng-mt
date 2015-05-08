@@ -1,14 +1,16 @@
 #############################################################################################################
+# EULA:
+#
 # WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
 #
-# Conditions of commercial use are discussed individually.
+# Conditions of commercial use non GPL (or other viral license) components are discussed individually.
+# For a more detailed discussion please mail me.
 # News and changes in Russian: http://wive-ng.sf.net
 # Bug report please send to support[at]nag.ru or sfstudio[at]mail.ru
 #############################################################################################################
 
 WARNINGS:
-1) Do not enable HW_NAT IPv6 support for SDRAM/DDR3 devices (BUGGY!!!)
-2) Do not enable TSO for SDRAM/DDR1 diveces (BUGGY!!!)
+1) Do not enable TSO for SDRAM/DDR1 diveces (BUGGY!!!)
 
 RECOMENDATIONS:
 1) If cpu have L2 cache try disable optimize inlining (allow force inline) and enable GRO - may be fastest
