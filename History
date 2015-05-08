@@ -894,7 +894,8 @@
 19) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
 20) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
 21) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
-22) kernel: tcp: update reordering first before detecting loss.<br>
+22) kernel: ralink_raeth: move early ESW init to global unit.<br>
+23) kernel: tcp: update reordering first before detecting loss.<br>
 <br>
 <br>
 <b>TODO:</b><br>
