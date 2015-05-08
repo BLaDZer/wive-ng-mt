@@ -45,14 +45,6 @@ function TimeoutReload(timeout)
 	StartTheTimer();
 }
 
-function display_on()
-{
-	if (window.ActiveXObject) // IE
-		return "block";
-	else if (window.XMLHttpRequest) // Mozilla, Firefox, Safari,...
-		return "table-row";
-}
-
 function initTranslation()
 {
 	_TR("lTitle", "lan title");
@@ -131,10 +123,8 @@ function CheckValue()
 
 function lan2_enable_switch(form)
 {
-	var lan2_dis = (form.lan2enabled.value != "1");
-	
-	form.lan2Ip.disabled = lan2_dis;
-	form.lan2Netmask.disabled = lan2_dis;
+	enableElements( [ form.lan2Ip, form.lan2Netmask ], (form.lan2enabled.value == "1"));
+	displayElement( [ 'lan2ip', 'lan2mask' ], (form.lan2enabled.value == "1"));
 }
 
 </script>
@@ -171,11 +161,11 @@ function lan2_enable_switch(form)
                 <option value="0" id="lDisable">Disabled</option>
               </select></td>
           </tr>
-          <tr>
+          <tr id="lan2ip">
             <td class="head" id="lLan2Ip">LAN2 IP Address</td>
             <td><input name="lan2Ip" class="mid" value=""></td>
           </tr>
-          <tr>
+          <tr id="lan2mask">
             <td class="head" id="lLan2Netmask">LAN2 Subnet Mask</td>
             <td><input name="lan2Netmask" class="mid" value=""></td>
           </tr>

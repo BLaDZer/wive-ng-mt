@@ -148,6 +148,8 @@ function vpnSwitchClick(form)
 		form.vpn_pppoe_service, form.vpn_test_reachable,
 		form.vpn_lcp_errors, form.vpn_lcp_interval
 		], form.vpn_enabled.checked );
+	displayElement( [ 'vpn_type' ], form.vpn_enabled.checked );
+	selectType(form);
 }
 
 function mtuChange(form)
@@ -200,12 +202,12 @@ function selectType(form)
 	var kabinet_on = form.vpn_type.value == '6';
 
 	// Display mode-dependent elements
-	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on);
-	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], !kabinet_on);
-	displayElement('vpn_test_reachable', pptp_on || l2tp_on);
-	displayElement('vpn_lanauth_lvl_row', kabinet_on);
-	displayElement('vpn_mppe_row', !l2tp_server_on);
-	displayElement('vpn_l2tp_range', l2tp_server_on);
+	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
+	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
+	displayElement('vpn_test_reachable', (pptp_on || l2tp_on) && form.vpn_enabled.checked);
+	displayElement('vpn_lanauth_lvl_row', kabinet_on && form.vpn_enabled.checked);
+	displayElement('vpn_mppe_row', (!l2tp_server_on) && form.vpn_enabled.checked);
+	displayElement('vpn_l2tp_range', l2tp_server_on && form.vpn_enabled.checked);
 
 	var vpn_server = 'Host, <acronym title="Internet Protocol">IP</acronym>, <acronym title="Access Concentrator">AC</acronym> or <acronym title="Access Point Name">APN</acronym> name';
 	if (form.vpn_type.value == '0') // PPPoE
@@ -337,7 +339,7 @@ function initTranslation()
 	_TR("vServiceName", "vpn service name");
 	_TR("vAuthType", "vpn auth type");
 	_TR("vLanAuthLvl", "vpn lanauth lvl");
-	_TR("vKabOffline", "vpn kabinet offile");
+	_TR("vKabOffline", "vpn kabinet offline");
 	_TR("vKabinet", "vpn kabinet");
 	_TR("vKabFull", "vpn kabinet full");
 	_TR("vUsername", "vpn username");
@@ -380,7 +382,7 @@ function initTranslation()
               <b id="vEnabled">Enable <acronym title="Virtual Private Network">VPN</acronym></b></td>
             <td onMouseOver="showHint('vpn_vpn_status')" onMouseOut="hideHint('vpn_vpn_status')" id="vpn_status_col">&nbsp;</td>
           </tr>
-          <tr onMouseOver="showHint('vpn_type')" onMouseOut="hideHint('vpn_type')" >
+          <tr onMouseOver="showHint('vpn_type')" onMouseOut="hideHint('vpn_type')" id="vpn_type">
             <td class="head"><b id="vMode"><acronym title="Virtual Private Network">VPN</acronym> Mode:</b></td>
             <td><select disabled="disabled" name="vpn_type" onChange="selectType(this.form);" class="mid" >
                 <option value="0" selected="selected" id="vPPPoE">PPPoE client</option>
@@ -427,7 +429,7 @@ function initTranslation()
             <td class="head"><b id="vUsername">User name:</b></td>
             <td><input name="vpn_user" class="mid" size="25" maxlength="60" value="<% getCfgGeneral(1, "vpnUser"); %>" disabled="disabled" type="text"></td>
           </tr>
-          <tr onMouseOver="showHint('vpn_password')" onMouseOut="hideHint('vpn_password')" >
+          <tr id="vpn_password_row" onMouseOver="showHint('vpn_password')" onMouseOut="hideHint('vpn_password')" >
             <td class="head"><b id="vPassword">Password:</b></td>
             <td><input name="vpn_pass" class="mid" size="25" maxlength="60" value="<% getCfgGeneral(1, "vpnPassword"); %>" disabled="disabled" type="password"></td>
           </tr>

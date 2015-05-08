@@ -29,115 +29,69 @@ function display_on()
 	}
 }
 
-function SwitchOpMode()
+function SwitchOpMode(form)
 {
-	document.getElementById("dhp6cRowDisplay").style.visibility = "hidden";
-	document.getElementById("dhp6cRowDisplay").style.display = "none";
-	document.ipv6_cfg.dhcp6c_enable.disabled = true;
-	document.getElementById("IPv6AllowForwardRowDisplay").style.visibility = "hidden";
-	document.getElementById("IPv6AllowForwardRowDisplay").style.display = "none";
-	document.ipv6_cfg.ipv6_allow_forward.disabled = true;
-	document.getElementById("v6invpn").style.visibility = "hidden";
-	document.getElementById("v6invpn").style.display = "none";
-	document.ipv6_cfg.ipv6_Ipv6InVPN.disabled = true;
-	document.getElementById("v6StaticTable").style.visibility = "hidden";
-	document.getElementById("v6StaticTable").style.display = "none";
-	document.ipv6_cfg.ipv6_lan_ipaddr.disabled = true;
-	document.ipv6_cfg.ipv6_lan_prefix_len.disabled = true;
-	document.ipv6_cfg.ipv6_wan_ipaddr.disabled = true;
-	document.ipv6_cfg.ipv6_wan_prefix_len.disabled = true;
-	document.ipv6_cfg.ipv6_static_gw.disabled = true;
-	document.getElementById("v66rdTable").style.visibility = "hidden";
-	document.getElementById("v66rdTable").style.display = "none";
-	document.ipv6_cfg.ipv6_6rd_prefix.disabled = true;
-	document.ipv6_cfg.ipv6_6rd_prefix_len.disabled = true;
-	document.ipv6_cfg.ipv6_6rd_border_ipaddr.disabled = true;
-	document.getElementById("6to4Table").style.visibility = "hidden";
-	document.getElementById("6to4Table").style.display = "none";
-	document.ipv6_cfg.IPv6SrvAddr.disabled = true;
+	enableElements( [ form.ipv6_allow_forward ], (form.ipv6_opmode.options.selectedIndex != 0));
+	enableElements( [ form.ipv6_Ipv6InVPN ], (form.ipv6_opmode.options.selectedIndex != 0) && (vpn == "on"));
+	enableElements( [ form.dhcp6c_enable ], (form.ipv6_opmode.options.selectedIndex == 1));
+	enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], (form.ipv6_opmode.options.selectedIndex == 1) && (!form.dhcp6c_enable.checked));
+	enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], (ipv66rdb == "1") && (form.ipv6_opmode.options.selectedIndex == 2));
+	enableElements( [ form.IPv6SrvAddr ], (form.ipv6_opmode.options.selectedIndex == form.ipv6_opmode.options.length-1));
 
-	if (document.ipv6_cfg.ipv6_opmode.options.selectedIndex != 0) {
-		document.getElementById("IPv6AllowForwardRowDisplay").style.visibility = "visible";
-		document.getElementById("IPv6AllowForwardRowDisplay").style.display = display_on();
-		document.ipv6_cfg.ipv6_allow_forward.disabled = false;
-		if (vpn == "on") {
-			document.getElementById("v6invpn").style.visibility = "visible";
-			document.getElementById("v6invpn").style.display = display_on();
-			document.ipv6_cfg.ipv6_Ipv6InVPN.disabled = false;
-		}
-	}
-
-	if (document.ipv6_cfg.ipv6_opmode.options.selectedIndex == 1) {
-		document.getElementById("dhp6cRowDisplay").style.visibility = "visible";
-		document.getElementById("dhp6cRowDisplay").style.display = display_on();
-		document.ipv6_cfg.dhcp6c_enable.disabled = false;
-		if (!document.ipv6_cfg.dhcp6c_enable.checked) {
-			document.getElementById("v6StaticTable").style.visibility = "visible";
-			document.getElementById("v6StaticTable").style.display = display_on();
-			document.ipv6_cfg.ipv6_lan_ipaddr.disabled = false;
-			document.ipv6_cfg.ipv6_lan_prefix_len.disabled = false;
-			document.ipv6_cfg.ipv6_wan_ipaddr.disabled = false;
-			document.ipv6_cfg.ipv6_wan_prefix_len.disabled = false;
-			document.ipv6_cfg.ipv6_static_gw.disabled = false;
-		}
-	} else if (ipv66rdb == "1" && document.ipv6_cfg.ipv6_opmode.options.selectedIndex == 2) {
-		document.getElementById("v66rdTable").style.visibility = "visible";
-		document.getElementById("v66rdTable").style.display = display_on();
-		document.ipv6_cfg.ipv6_6rd_prefix.disabled = false;
-		document.ipv6_cfg.ipv6_6rd_prefix_len.disabled = false;
-		document.ipv6_cfg.ipv6_6rd_border_ipaddr.disabled = false;
-	} else if (document.ipv6_cfg.ipv6_opmode.options.selectedIndex == document.ipv6_cfg.ipv6_opmode.options.length-1) {
-		document.getElementById("6to4Table").style.visibility = "visible";
-		document.getElementById("6to4Table").style.display = display_on();
-		document.ipv6_cfg.IPv6SrvAddr.disabled = false;
-	}
+	displayElement( [ 'IPv6AllowForwardRowDisplay' ], (form.ipv6_opmode.options.selectedIndex != 0));
+	displayElement( [ 'v6invpn' ], (form.ipv6_opmode.options.selectedIndex != 0) && (vpn == "on"));
+	displayElement( [ 'dhcp6cRowDisplay' ], (form.ipv6_opmode.options.selectedIndex == 1));
+	displayElement( [ 'v6StaticTable' ], (form.ipv6_opmode.options.selectedIndex == 1) && (!form.dhcp6c_enable.checked));
+	displayElement( [ 'v66rdTable' ], (ipv66rdb == "1") && (form.ipv6_opmode.options.selectedIndex == 2));
+	displayElement( [ '6to4Table' ], (form.ipv6_opmode.options.selectedIndex == form.ipv6_opmode.options.length-1));
 }
 
 function initValue()
 {
+	var form = document.ipv6_cfg;
 	var opmode = "<% getCfgZero(1, "IPv6OpMode"); %>";
 	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
 	var ipv6_allow_forward = "<% getCfgZero(1, "IPv6AllowForward"); %>";
-	var opmode_len = document.ipv6_cfg.ipv6_opmode.options.length;
+	var opmode_len = form.ipv6_opmode.options.length;
 
 	if (ipv66rdb == "1") {
-		document.ipv6_cfg.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
+		form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
 		opmode_len++;
 	}
 	if (ip6to4b == "1") {
-		document.ipv6_cfg.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
+		form.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
 		opmode_len++;
 	}
 
 	if (opmode == "1")
-		document.ipv6_cfg.ipv6_opmode.options.selectedIndex = 1;
+		form.ipv6_opmode.options.selectedIndex = 1;
 	else if (opmode == "2")
-		document.ipv6_cfg.ipv6_opmode.options.selectedIndex = 2;
+		form.ipv6_opmode.options.selectedIndex = 2;
 	else if (opmode == "3")
-		document.ipv6_cfg.ipv6_opmode.options.selectedIndex = opmode_len-1;
+		form.ipv6_opmode.options.selectedIndex = opmode_len-1;
 
-	SwitchOpMode();
+	SwitchOpMode(form);
 
 	if (opmode == "1") {
-		document.ipv6_cfg.ipv6_lan_ipaddr.value = "<% getCfgGeneral(1, "IPv6IPAddr"); %>";
-		document.ipv6_cfg.ipv6_lan_prefix_len.value = "<% getCfgGeneral(1, "IPv6PrefixLen"); %>";
-		document.ipv6_cfg.ipv6_wan_ipaddr.value = "<% getCfgGeneral(1, "IPv6WANIPAddr"); %>";
-		document.ipv6_cfg.ipv6_wan_prefix_len.value = "<% getCfgGeneral(1, "IPv6WANPrefixLen"); %>";
-		document.ipv6_cfg.ipv6_static_gw.value = "<% getCfgGeneral(1, "IPv6GWAddr"); %>";
+		form.ipv6_lan_ipaddr.value = "<% getCfgGeneral(1, "IPv6IPAddr"); %>";
+		form.ipv6_lan_prefix_len.value = "<% getCfgGeneral(1, "IPv6PrefixLen"); %>";
+		form.ipv6_wan_ipaddr.value = "<% getCfgGeneral(1, "IPv6WANIPAddr"); %>";
+		form.ipv6_wan_prefix_len.value = "<% getCfgGeneral(1, "IPv6WANPrefixLen"); %>";
+		form.ipv6_static_gw.value = "<% getCfgGeneral(1, "IPv6GWAddr"); %>";
 	} else if (opmode == "2") {
-		document.ipv6_cfg.ipv6_6rd_prefix.value = "<% getCfgGeneral(1, "IPv6IPAddr"); %>";
-		document.ipv6_cfg.ipv6_6rd_prefix_len.value = "<% getCfgGeneral(1, "IPv6PrefixLen"); %>";
-		document.ipv6_cfg.ipv6_6rd_border_ipaddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
+		form.ipv6_6rd_prefix.value = "<% getCfgGeneral(1, "IPv6IPAddr"); %>";
+		form.ipv6_6rd_prefix_len.value = "<% getCfgGeneral(1, "IPv6PrefixLen"); %>";
+		form.ipv6_6rd_border_ipaddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
 	} else if (opmode == "3") {
-		document.ipv6_cfg.IPv6SrvAddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
+		form.IPv6SrvAddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
 	}
 
-	document.ipv6_cfg.dhcp6c_enable.checked = (dhcp6c == "1");
+	form.dhcp6c_enable.checked = (dhcp6c == "1");
 	if (dhcp6c == "1")
 	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 
-	document.ipv6_cfg.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
-	document.ipv6_cfg.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
+	form.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
+	form.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
 	initTranslation();
 }
 
@@ -227,83 +181,83 @@ function checkIpv6Addr(ip_addr, len)
 	return true;
 }
 
-function CheckValue()
+function CheckValue(form)
 {
-	if (document.ipv6_cfg.ipv6_opmode.value == "1") {
-		if (document.ipv6_cfg.ipv6_lan_ipaddr.value != "") {
-			if (!checkIpv6Addr(document.ipv6_cfg.ipv6_lan_ipaddr.value, 128)) {
+	if (form.ipv6_opmode.value == "1") {
+		if (form.ipv6_lan_ipaddr.value != "") {
+			if (!checkIpv6Addr(form.ipv6_lan_ipaddr.value, 128)) {
 				alert("invalid IPv6 IP address!");
-				document.ipv6_cfg.ipv6_lan_ipaddr.focus();
-				document.ipv6_cfg.ipv6_lan_ipaddr.select();
+				form.ipv6_lan_ipaddr.focus();
+				form.ipv6_lan_ipaddr.select();
 				return false;
 			}
-			if (document.ipv6_cfg.ipv6_lan_prefix_len.value == "" ||
-			    document.ipv6_cfg.ipv6_lan_prefix_len.value > 128 ||
-			    document.ipv6_cfg.ipv6_lan_prefix_len.value < 0) {
+			if (form.ipv6_lan_prefix_len.value == "" ||
+			    form.ipv6_lan_prefix_len.value > 128 ||
+			    form.ipv6_lan_prefix_len.value < 0) {
 				alert("invalid prefix length!");
-				document.ipv6_cfg.ipv6_lan_prefix_len.focus();
-				document.ipv6_cfg.ipv6_lan_prefix_len.select();
+				form.ipv6_lan_prefix_len.focus();
+				form.ipv6_lan_prefix_len.select();
 				return false;
 			}
 		}
-		if (document.ipv6_cfg.ipv6_wan_ipaddr.value != "") {
-			if (!checkIpv6Addr(document.ipv6_cfg.ipv6_wan_ipaddr.value, 128)) {
+		if (form.ipv6_wan_ipaddr.value != "") {
+			if (!checkIpv6Addr(form.ipv6_wan_ipaddr.value, 128)) {
 				alert("invalid IPv6 IP address!");
-				document.ipv6_cfg.ipv6_wan_ipaddr.focus();
-				document.ipv6_cfg.ipv6_wan_ipaddr.select();
+				form.ipv6_wan_ipaddr.focus();
+				form.ipv6_wan_ipaddr.select();
 				return false;
 			}
-			if (document.ipv6_cfg.ipv6_wan_prefix_len.value == "" ||
-			    document.ipv6_cfg.ipv6_wan_prefix_len.value > 128 ||
-			    document.ipv6_cfg.ipv6_wan_prefix_len.value < 0) {
+			if (form.ipv6_wan_prefix_len.value == "" ||
+			    form.ipv6_wan_prefix_len.value > 128 ||
+			    form.ipv6_wan_prefix_len.value < 0) {
 				alert("invalid prefix length!");
-				document.ipv6_cfg.ipv6_wan_prefix_len.focus();
-				document.ipv6_cfg.ipv6_wan_prefix_len.select();
+				form.ipv6_wan_prefix_len.focus();
+				form.ipv6_wan_prefix_len.select();
 				return false;
 			}
 		}
-		if (document.ipv6_cfg.ipv6_static_gw.value != "" &&
-		    (!checkIpv6Addr(document.ipv6_cfg.ipv6_static_gw.value, 128))) {
+		if (form.ipv6_static_gw.value != "" &&
+		    (!checkIpv6Addr(form.ipv6_static_gw.value, 128))) {
 			alert("invalid IPv6 IP address!");
-			document.ipv6_cfg.ipv6_static_gw.focus();
-			document.ipv6_cfg.ipv6_static_gw.select();
+			form.ipv6_static_gw.focus();
+			form.ipv6_static_gw.select();
 			return false;
 		}
-	} else if (document.ipv6_cfg.ipv6_opmode.value == "2") {
-		if (document.ipv6_cfg.ipv6_6rd_prefix.value == "" ||
-		    document.ipv6_cfg.ipv6_6rd_prefix_len.value == "" ||
-		    document.ipv6_cfg.ipv6_6rd_border_ipaddr.value == "") {
+	} else if (form.ipv6_opmode.value == "2") {
+		if (form.ipv6_6rd_prefix.value == "" ||
+		    form.ipv6_6rd_prefix_len.value == "" ||
+		    form.ipv6_6rd_border_ipaddr.value == "") {
 			alert("please fill all fields!");
 			return false;
 		}
-		if (!checkIpv6Addr(document.ipv6_cfg.ipv6_6rd_prefix.value, 32)) {
+		if (!checkIpv6Addr(form.ipv6_6rd_prefix.value, 32)) {
 			alert("invalid IPv6 IP address!");
-			document.ipv6_cfg.ipv6_6rd_prefix.focus();
-			document.ipv6_cfg.ipv6_6rd_prefix.select();
+			form.ipv6_6rd_prefix.focus();
+			form.ipv6_6rd_prefix.select();
 			return false;
 		}
-		if (document.ipv6_cfg.ipv6_6rd_prefix_len.value > 32 ||
-		    document.ipv6_cfg.ipv6_6rd_prefix_len.value < 0) {
+		if (form.ipv6_6rd_prefix_len.value > 32 ||
+		    form.ipv6_6rd_prefix_len.value < 0) {
 			alert("invalid prefix length!");
-			document.ipv6_cfg.ipv6_6rd_prefix_len.focus();
-			document.ipv6_cfg.ipv6_6rd_prefix_len.select();
+			form.ipv6_6rd_prefix_len.focus();
+			form.ipv6_6rd_prefix_len.select();
 			return false;
 		}
-		if (!checkIpv4Addr(document.ipv6_cfg.ipv6_6rd_border_ipaddr.value)) {
+		if (!checkIpv4Addr(form.ipv6_6rd_border_ipaddr.value)) {
 			alert("invalid IPv4 ip address!");
-			document.ipv6_cfg.ipv6_6rd_border_ipaddr.focus();
-			document.ipv6_cfg.ipv6_6rd_border_ipaddr.select();
+			form.ipv6_6rd_border_ipaddr.focus();
+			form.ipv6_6rd_border_ipaddr.select();
 			return false;
 		}
-	} else if (document.ipv6_cfg.ipv6_opmode.value == "3") {
-		if (document.ipv6_cfg.IPv6SrvAddr.value == "" ) {
+	} else if (form.ipv6_opmode.value == "3") {
+		if (form.IPv6SrvAddr.value == "" ) {
 			alert("Please fill all fields!");
 			return false;
 		}
-		if (!checkIpv4Addr(document.ipv6_cfg.IPv6SrvAddr.value)) {
+		if (!checkIpv4Addr(form.IPv6SrvAddr.value)) {
 			alert("invalid IPv4 ip address!");
-			document.ipv6_cfg.IPv6SrvAddr.focus();
-			document.ipv6_cfg.IPv6SrvAddr.select();
+			form.IPv6SrvAddr.focus();
+			form.IPv6SrvAddr.select();
 			return false;
 		}
 	}
@@ -344,7 +298,7 @@ function initTranslation()
 <p id="v6Introduction"></p>
 <hr />
 
-<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue()">
+<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this.form);">
 <table width="95%" border="1" cellpadding="2" cellspacing="1">
 <tr>
   <td class="title" colspan="2" id="v6ConnType">IPv6 Connection Type</td>
@@ -352,7 +306,7 @@ function initTranslation()
 <tr>
   <td class="head" id="v6OpMode">IPv6 Operation Mode</td>
   <td>
-    <select name="ipv6_opmode" size="1" onChange="SwitchOpMode()">
+    <select name="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
       <option value="0" id="v6Disable">Disable</option>
       <option value="1" id="v6Static">Native dynamic/static IP Connection</option>
     </select>
@@ -362,9 +316,9 @@ function initTranslation()
   <td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
   <td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
 </tr>
-<tr id="dhp6cRowDisplay">
+<tr id="dhcp6cRowDisplay">
   <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
-  <td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode()"></td>
+  <td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode(this.form);"></td>
 </tr>
 <tr id="IPv6AllowForwardRowDisplay">
   <td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
