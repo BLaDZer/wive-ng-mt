@@ -900,6 +900,7 @@
 25) kernel: ralink_raeth: add support to disable any EPHY.<br>
 26) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
 27) kernel: tcp: update reordering first before detecting loss.<br>
+28) kernel: exfat driver: upstream updates.<br>
 <br>
 <br>
 <b>TODO:</b><br>
