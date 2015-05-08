@@ -897,7 +897,8 @@
 22) kernel: ralink_raeth: move early ESW init to global unit.<br>
 23) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
 24) kernel: ralink_raeth: add support to disable any EPHY.<br>
-25) kernel: tcp: update reordering first before detecting loss.<br>
+25) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
+26) kernel: tcp: update reordering first before detecting loss.<br>
 <br>
 <br>
 <b>TODO:</b><br>
