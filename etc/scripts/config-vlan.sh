@@ -29,16 +29,6 @@ disable_all_ports() {
 	done
 }
 
-disable_all_ports_eee() {
-	# disable green ethernet support by default (for compath with old boots)
-	if [ "$CONFIG_RALINK_MT7620" = "y" ] &&  [ "$CONFIG_RAETH_ESW" = "y" ]; then
-	    mii_mgr -s -p 1 -r 31 -v 0xb000
-	    for port in `seq 0 4`; do
-		mii_mgr -s -p $port -r 17 -v 0x0
-	    done
-	fi
-}
-
 enable_all_ports() {
 	for port in `seq 0 4`; do
 	    mii_mgr -s -p $port -r 0 -v 0x9000
@@ -146,7 +136,6 @@ reset_wan_phys() {
 
 reinit_all_phys() {
 	disable_all_ports
-	disable_all_ports_eee
 	enable_all_ports
 	reset_all_phys
 }
