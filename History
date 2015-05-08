@@ -892,7 +892,9 @@
 17) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
 18) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
 19) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
-20) kernel: tcp: update reordering first before detecting loss.<br>
+20) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
+21) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
+22) kernel: tcp: update reordering first before detecting loss.<br>
 <br>
 <br>
 <b>TODO:</b><br>
