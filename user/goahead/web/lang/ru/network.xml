@@ -79,6 +79,12 @@
     <message msgid="ipv6 6to4 enabled" msgstr="Настройка туннеля 6to4" />
     <message msgid="ipv6 6to4 server address" msgstr="Адрес сервера" />
     <message msgid="ipv6 Ipv6InVPN" msgstr="IPv6 аплинк в VPN" />
+    <message msgid="ipv6 services" msgstr="Сервисы IPv6 для локальной сети" />
+    <message msgid="ipv6 service name" msgstr="Название сервиса" />
+    <message msgid="ipv6 service value" msgstr="Значение" />
+    <message msgid="ipv6 service status" msgstr="Статус" />
+    <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
+    <message msgid="ipv6 dhcp6s" msgstr="Динамическая конфигурация IPv6(dhcp6s)" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
     <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений. Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />

@@ -68,7 +68,7 @@
     <message msgid="ipv6 connection type" msgstr="IPv6 Connection Type" />
     <message msgid="ipv6 operation mode" msgstr="IPv6 Operation Mode" />
     <message msgid="ipv6 static" msgstr="Native dynamic/static IP Connection" />
-    <message msgid="ipv6 dhcp" msgstr="IPv6 autoconfigure by dhcp/ra" />
+    <message msgid="ipv6 dhcp6c" msgstr="IPv6 autoconfigure by dhcp/ra" />
     <message msgid="ipv6 6rd" msgstr="Tunneling Connection (6RD)" />
     <message msgid="ipv6 6to4" msgstr="Tunneling Connection (6TO4)" />
     <message msgid="ipv6 allow forward" msgstr="Allow access to LAN from internet" />
@@ -81,6 +81,12 @@
     <message msgid="ipv6 6to4 enabled" msgstr="Tunneling Connection (6to4) Setup" />
     <message msgid="ipv6 6to4 server address" msgstr="IPv4 to IPv6 server address" />
     <message msgid="ipv6 Ipv6InVPN" msgstr="IPv6 uplink over VPN" />
+    <message msgid="ipv6 services" msgstr="Services IPv6" />
+    <message msgid="ipv6 service name" msgstr="Service name" />
+    <message msgid="ipv6 service value" msgstr="Value" />
+    <message msgid="ipv6 service status" msgstr="Status" />
+    <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
+    <message msgid="ipv6 dhcp6s" msgstr="Dynamic IPv6 configuration(dhcp6s)" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />

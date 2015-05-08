@@ -10,6 +10,7 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("buttons");
 Butterlate.setTextDomain("network");
@@ -44,6 +45,7 @@ function SwitchOpMode(form)
 	displayElement( [ 'v6StaticTable' ], (form.ipv6_opmode.options.selectedIndex == 1) && (!form.dhcp6c_enable.checked));
 	displayElement( [ 'v66rdTable' ], (ipv66rdb == "1") && (form.ipv6_opmode.options.selectedIndex == 2));
 	displayElement( [ '6to4Table' ], (form.ipv6_opmode.options.selectedIndex == form.ipv6_opmode.options.length-1));
+	displayElement( [ 'daemons' ], (form.ipv6_opmode.options.selectedIndex != 0));
 }
 
 function initValue()
@@ -53,6 +55,11 @@ function initValue()
 	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
 	var ipv6_allow_forward = "<% getCfgZero(1, "IPv6AllowForward"); %>";
 	var opmode_len = form.ipv6_opmode.options.length;
+	var radvdb = "<% getRadvdBuilt(); %>";
+	var dhcpv6b = "<% getDhcpv6Built(); %>";
+	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
+	var dhcpv6 = <% getCfgZero(1, "dhcpv6Enabled"); %>;
+
 
 	if (ipv66rdb == "1") {
 		form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
@@ -92,7 +99,16 @@ function initValue()
 
 	form.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
 	form.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
+
+	form.radvdEnbl.options.selectedIndex = 1*radvd;
+	form.dhcpv6Enbl.options.selectedIndex = 1*dhcpv6;
+
+	displayElement('radvd', radvdb == '1');
+	displayElement('dhcpv6', dhcpv6b == '1');
+
 	initTranslation();
+
+	displayServiceStatus();
 }
 
 function atoi(str, num)
@@ -272,7 +288,7 @@ function initTranslation()
 	_TR("v6OpMode", "ipv6 operation mode");
 	_TR("v6Disable", "button disable");
 	_TR("v6Static", "ipv6 static");
-	_TR("IPv6Dhcpc", "ipv6 dhcp");
+	_TR("IPv6Dhcpc", "ipv6 dhcp6c");
 	_TR("IPv6AllowForward", "ipv6 allow forward");
 	_TR("v6StaticIPSetup", "ipv6 static ip");
 	_TR("v6StaticIPAddrLan", "ipv6 static lan address");
@@ -285,9 +301,68 @@ function initTranslation()
 	_TR("v66to4SrvIpaddr", "ipv6 6to4 server address");
 	_TR("Ipv6InVPN", "ipv6 Ipv6InVPN");
 
+	_TR("v6services", "ipv6 services");
+	_TR("v6servicename", "ipv6 service name");
+	_TR("v6value", "ipv6 service value");
+	_TR("v6status", "ipv6 service status");
+	_TR("v6Radvd", "ipv6 radvd");
+	_TR("v6RadvdD", "button disable");
+	_TR("v6RadvdE", "button enable");
+	_TR("v6Dhcpv6", "ipv6 dhcp6s");
+	_TR("v6Dhcpv6D", "button disable");
+	_TR("v6Dhcpv6E", "button enable");
+
+
 	_TRV("v6Apply", "button apply");
 	_TRV("v6Cancel", "button cancel");
 }
+
+function displayServiceHandler(response)
+{
+	var form = document.miscServiceCfg;
+
+	var services = [
+		// turned_on, row_id, daemon_id
+		[ '<% getCfgGeneral(1, "radvdEnabled"); %>', 'radvd', 'radvd' ],
+		[ '<% getCfgGeneral(1, "dhcpv6Enabled"); %>', 'dhcpv6', 'dhcp6s' ]
+	];
+
+	// Create associative array
+	var tmp = response.split(',');
+	var daemons = [];
+	for (var i=0; i<tmp.length; i++)
+		daemons[tmp[i]] = 1;
+
+	// Now display all services
+	for (var i=0; i<services.length; i++)
+	{
+		var service = services[i];
+		var row = document.getElementById(service[1]);
+		var tds = [];
+		for (var j=0; j<row.childNodes.length; j++)
+			if (row.childNodes[j].nodeName == 'TD')
+				tds.push(row.childNodes[j]);
+
+		if (row != null)
+		{
+			// Fill-up status
+			if (service[0]*1 == '0')
+				tds[2].innerHTML = '<span style="color: #808080"><b>off</b></span>';
+			else
+				tds[2].innerHTML = (daemons[service[2]] == 1) ?
+					'<span style="color: #3da42c"><b>work</b></span>' :
+					'<span style="color: #808000"><b>starting</b></span>';
+		}
+	}
+
+	serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
+}
+
+function displayServiceStatus()
+{
+	ajaxPerformRequest('/internet/services-stat.asp', displayServiceHandler);
+}
+
 </script>
 </head>
 
@@ -365,6 +440,33 @@ function initTranslation()
 <tr>
   <td class="head" id="v66to4SrvIpaddr"> IPv4 to IPv6 server address </td>
   <td><input name="IPv6SrvAddr" maxlength=39 size=27></td>
+</tr>
+</table>
+<!-- Settings daemons for lan -->
+<table width="95%" id="daemons" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
+<tr>
+  <td class="title" colspan="3" id="v6services">Services IPv6</td>
+</tr>
+<tr>
+    <td class="title" id="v6servicename">Service name</td>
+    <td class="title" id="v6value">Value</td>
+    <td class="title" style="width: 56px;" id="v6status">Status</td>
+</tr>
+<tr id="radvd">
+	<td class="head" id="v6Radvd">Router Advertisement</td>
+    <td><select name="radvdEnbl" class="half">
+        <option value="0" id="v6RadvdD">Disable</option>
+        <option value="1" id="v6RadvdE">Enable</option>
+    </select></td>
+    <td>&nbsp;</td>
+</tr>
+<tr id="dhcpv6">
+    <td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
+    <td><select name="dhcpv6Enbl" class="half">
+        <option value="0" id="v6Dhcpv6D">Disable</option>
+        <option value="1" id="v6Dhcpv6E">Enable</option>
+    </select></td>
+    <td>&nbsp;</td>
 </tr>
 </table>
 <table width="95%" cellpadding="2" cellspacing="1">

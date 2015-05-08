@@ -2228,6 +2228,18 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 }
 
+#ifdef CONFIG_IPV6
+const parameter_fetch_t service_ipv6_flags[] = 
+{
+#ifdef CONFIG_USER_RADVD
+	{ T("radvdEnbl"), "radvdEnabled", 0, T("0") },
+#endif
+#ifdef CONFIG_USER_DHCP6_SERVER
+	{ T("dhcpv6Enbl"), "dhcpv6Enabled", 0, T("0") },
+#endif
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+
 /* goform/setIPv6 */
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
@@ -2278,6 +2290,9 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 #endif
 	}
 	nvram_bufset(RT2860_NVRAM, "IPv6OpMode", opmode);
+	if (strcmp(opmode, "0")){
+		setupParameters(wp, service_ipv6_flags, 0);
+	}
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -2315,6 +2330,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 #endif
 	doSystem("internet.sh");
 }
+#endif
 
 #ifdef CONFIG_USER_CHILLISPOT
 // ChilliSpot variables
