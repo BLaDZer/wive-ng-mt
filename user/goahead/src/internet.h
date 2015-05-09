@@ -19,7 +19,7 @@
 #define VPN_SIG	"ppp"
 #define VPN_DEF "ppp0"
 
-#define IPT_SHORT_ACCOUNT
+//#define IPT_SHORT_ACCOUNT
 
 #define _PATH_PROCNET_DEV		"/proc/net/dev"
 #define _PATH_IPT_ACCOUNTING_FILE	"/proc/net/ipt_account/mynetwork"

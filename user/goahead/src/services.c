@@ -498,8 +498,6 @@ void formIptAccounting(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 
-	doSystem("modprobe -q ipt_account");
-
 	firewall_rebuild();
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
