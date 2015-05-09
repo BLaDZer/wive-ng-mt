@@ -13,16 +13,7 @@ touch /tmp/iptables_runing
 
 LOG="logger -t iptables"
 
-start() {
-  $LOG "Starting IPTABLES"
-    get_param
-    stop
-#########################################DEFAULTRULES###################################
-	# default filters
-	$LOG "Set default filters"
-	iptables -I INPUT -i lo -j ACCEPT
-	iptables -A INPUT $STATE_EST -j ACCEPT
-###########################################SERVICES#######################################
+servicelimit() {
 	$LOG "Service limit set"
         # add limit connection rules for local services
 	iptables -N servicelimit > /dev/null 2>&1
@@ -195,7 +186,9 @@ start() {
 	iptables -A servicelimit -p icmp --icmp-type echo-request -j DROP
 	# allow all others icmp messages (mtu probing and others)
         iptables -A servicelimit  -p icmp ! --icmp-type echo-request -j ACCEPT
-###########################################FORWARD#######################################
+}
+
+forwardlimit() {
 	if [ "$ROUTE_MODE" = "on" ]; then
 	    $LOG "Set forward rules"
 	    # ipt_account need first rules in FORWARD
@@ -267,12 +260,16 @@ start() {
 		fi
 	    fi
 	fi
-###########################################QOS-SIMPLE######################################
+}
+
+simpleqos() {
 	if [ -f /etc/qos_firewall ] && [ "$QoSEnable" != "0" ] && [ "$ROUTE_MODE" = "on" ]; then
 	    $LOG "Add QoS rules"
 	    /etc/qos_firewall
 	fi
-###########################################NAT-NAPTM#######################################
+}
+
+natrules() {
 	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
 	    $LOG "Add NAT rules"
 	    ####################PORTFORWARD#############################
@@ -316,7 +313,9 @@ start() {
 	    fi
 	    ###########################################################
 	fi
-############################################VPNRULES#######################################
+}
+
+vpnrules() {
 	if [ "$PPP_CONNECT" = "on" ]; then
 	    $LOG "Call to add VPN netfilter rules."
 	    PPPIFLIST=`ip addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
@@ -326,9 +325,10 @@ start() {
 		fi
 	    done
 	fi
-############################################OTHERS########################################
+}
+
+upnprules() {
 	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
-	    ################################UPNPRULES######################################
 	    if [ "$upnpEnabled" = "1" ] && [ "$ROUTE_MODE" = "on" ]; then
 		$LOG "Add base upnp rules"
 		# nat rules
@@ -356,7 +356,9 @@ start() {
     		iptables -t filter -I FORWARD -j MINIUPNPD
     	    fi
 	fi
-############################################DMZ#########################################
+}
+
+dmzrules() {
 	if [ "$DMZEnable" = "1" ] && [ "$DMZIPAddress" != "" ]; then
     	    $LOG "DMZ enabled for $DMZIPAddress"
     	    iptables -t nat -N DMZ
@@ -402,9 +404,28 @@ start() {
 	    # allow forward to dmz host
 	    iptables -A FORWARD ! -i $lan_if -d $DMZIPAddress -j ACCEPT
 	fi
-#########################################ACCEPT_ESTABLISHED################################
+}
+
+start() {
+    get_param
+    stop
+    $LOG "Add netfiler rules for ipv4"
+    #########################################DEFAULTRULES###################################
+    iptables -I INPUT -i lo -j ACCEPT
+    $LOG "Allow established/related in input"
+    iptables -A INPUT $STATE_EST -j ACCEPT
+    #########################################DYNAMICRULES###################################
+    servicelimit
+    forwardlimit
+    simpleqos
+    natrules
+    vpnrules
+    upnprules
+    dmzrules
+    #########################################ACCEPT_ESTABLISHED################################
+    $LOG "Allow established/related in forward"
     iptables -A FORWARD $STATE_EST -j ACCEPT
-############################################ENDRULES#######################################
+    ############################################ENDRULES#######################################
 }
 
 startv6() {
@@ -471,9 +492,8 @@ startv6() {
 	# allow all others icmp messages (mtu probing and others) to router and clients
 	ip6tables -A INPUT -p ipv6-icmp ! --icmpv6-type echo-request -j ACCEPT
 	ip6tables -A FORWARD -p ipv6-icmp ! --icmpv6-type echo-request -j ACCEPT
-#########################################ACCEPT_ESTABLISHED################################
+	# accept established
 	ip6tables -A FORWARD $STATE_EST -j ACCEPT
-############################################ENDRULES#######################################
     fi
 }
 
