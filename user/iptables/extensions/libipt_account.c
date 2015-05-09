@@ -12,6 +12,7 @@
 #include <string.h>
 #include <getopt.h>
 
+#include <xtables.h>
 #include <linux/netfilter_ipv4/ipt_account.h>
 
 #ifndef HIPQUAD
@@ -240,7 +241,7 @@ static void save(const void *ip, const struct xt_entry_match *match) {
 }
 
 static struct xtables_match account = {
-  .family = PF_INET,
+  .family = NFPROTO_IPV4,
   .name = "account",
   .version = XTABLES_VERSION,
   .size = XT_ALIGN(sizeof(struct t_ipt_account_info)),
