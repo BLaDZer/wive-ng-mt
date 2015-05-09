@@ -114,6 +114,15 @@ config IP_NF_MATCH_IPP2P
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/modules.txt>.  If unsure, say `N'.
 
+config IP_NF_MATCH_ACCOUNT
+	tristate "account match support"
+	depends on IP_NF_IPTABLES
+	help
+	  This match is used for gathering traffic statistics for particular
+	  netblock.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
 # `filter', generic and specific targets
 config IP_NF_FILTER
 	tristate "Packet filtering"

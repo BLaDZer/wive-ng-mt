@@ -21,6 +21,7 @@ SUBDIRS         += iptables
 romfs: install
 	cp -aprfv ./filesystem/bin/* $(ROMFSDIR)/bin
 	cp -aprfv ./filesystem/sbin/* $(ROMFSDIR)/sbin
+	rm -rf ./filesystem
 
 .PHONY: tarball
 tarball:

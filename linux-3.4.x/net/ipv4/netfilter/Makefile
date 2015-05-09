@@ -52,6 +52,7 @@ obj-$(CONFIG_IP_NF_SECURITY) += iptable_security.o
 obj-$(CONFIG_IP_NF_MATCH_AH) += ipt_ah.o
 obj-$(CONFIG_IP_NF_MATCH_RPFILTER) += ipt_rpfilter.o
 obj-$(CONFIG_IP_NF_MATCH_IPP2P) += ipt_ipp2p.o
+obj-$(CONFIG_IP_NF_MATCH_ACCOUNT) += ipt_account.o
 
 # targets
 obj-$(CONFIG_IP_NF_TARGET_CLUSTERIP) += ipt_CLUSTERIP.o

@@ -875,42 +875,45 @@
 <b>3.0.x</b><br>
 1) toolchain: update gcc to 09.05.2015 4.8.5 version form git, update headers.<br>
 2) uboot: update to 4.3.2.0 version.<br>
-3) igmpproxy: fix switch managment.<br>
-4) switchtools: add vlan clear command.<br>
-5) goahead: in webui add VPN/WAN ipv6 uplink switch.<br>
-6) goahead: cleaning and fixing network web forms.<br>
-7) goahead: move radvd and dhcp6s services to ipv6 page.<br>
-8) goahead/init.d: store dhcp static lease to nvram.<br>
-9) miniupnpd: up to 1.9.20150430 version.<br>
-10) init.d: full cleanup vlan parts in restore dumb mode function.<br>
-11) init.d: remove disable_all_ports_eee (already disabled in raeth).<br>
-12) init.d: iptables: split v4 rules generate code for more readable and more easy edit.<br>
-13) configs: enable hw_nat ipv6 support for all devices.<br>
-14) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
-15) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
-16) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
-17) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
-18) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
-19) kernel: ralink_nvram: fix check part size in commit.<br>
-20) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
-21) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
-22) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
-23) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
-24) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
-25) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
-26) kernel: ralink_raeth: move early ESW init to global unit.<br>
-27) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
-28) kernel: ralink_raeth: add support to disable any EPHY.<br>
-29) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
-30) kernel: tcp: update reordering first before detecting loss.<br>
-31) kernel: exfat driver: upstream updates.<br>
+3) configs: enable hw_nat ipv6 support for all devices.<br>
+4) configs: enable ipt_accounting support for all devices with flash > 4Mb.<br>
+5) igmpproxy: fix switch managment.<br>
+6) switchtools: add vlan clear command.<br>
+7) goahead: in webui add VPN/WAN ipv6 uplink switch.<br>
+8) goahead: cleaning and fixing network web forms.<br>
+9) goahead: move radvd and dhcp6s services to ipv6 page.<br>
+10) goahead/init.d: store dhcp static lease to nvram.<br>
+11) miniupnpd: up to 1.9.20150430 version.<br>
+12) init.d: full cleanup vlan parts in restore dumb mode function.<br>
+13) init.d: remove disable_all_ports_eee (already disabled in raeth).<br>
+14) init.d: iptables: split v4 rules generate code for more readable and more easy edit.<br>
+15) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
+16) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
+17) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
+18) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
+19) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
+20) kernel: ralink_nvram: fix check part size in commit.<br>
+22) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
+23) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
+24) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
+25) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
+26) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
+27) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
+28) kernel: ralink_raeth: move early ESW init to global unit.<br>
+29) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
+30) kernel: ralink_raeth: add support to disable any EPHY.<br>
+31) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
+32) kernel: tcp: update reordering first before detecting loss.<br>
+33) kernel: exfat driver: upstream updates.<br>
+34) kernel: initial port ipt_accounting to 3.4 kernel.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (need help community or employ the web developer).<br>
-2) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-3) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
-4) need add davfs2 webui for managment online disk drives (as yandex disk and others).<br>
+2) need hide ipt_accounting in webui if not build in kernel.<br>
+3) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+4) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
+5) need add davfs2 webui for managment online disk drives (as yandex disk and others).<br>
 <br>
 <br>
 <br>
