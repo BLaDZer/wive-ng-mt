@@ -583,7 +583,7 @@ clamp_mss() {
 }
 
 stop() {
-    # drop all rules
+    $LOG "Clear iptables rules for ipv4 and set default actions."
     iptables -F > /dev/null 2>&1
     iptables -t nat -F > /dev/null 2>&1
     iptables -t filter -F > /dev/null 2>&1
@@ -612,7 +612,7 @@ stop() {
 
 stopv6() {
     if [ -d /proc/sys/net/ipv6 ]; then
-	$LOG "Clear iptables rules fo ipv6 and set default actions."
+	$LOG "Clear iptables rules for ipv6 and set default actions."
         ip6tables -F > /dev/null 2>&1
         ip6tables -t filter -F > /dev/null 2>&1
         ip6tables -t mangle -F > /dev/null 2>&1
