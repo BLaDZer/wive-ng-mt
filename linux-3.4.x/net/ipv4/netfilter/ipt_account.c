@@ -219,6 +219,10 @@ static struct t_ipt_account_table *ipt_account_table_init(struct t_ipt_account_i
   list_add(&table->list, &ipt_account_tables);
   write_unlock_bh(&ipt_account_lock);
 
+#ifdef DEBUG_IPT_ACCOUNT
+  if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_init]: return new table\n");
+#endif
+
   return table;
 
   /*
@@ -605,32 +609,32 @@ checkentry(
   table = ipt_account_table_find_get(info->name);
   if (table) {
     if (info->table != NULL) {
-      if (info->table != table) {
-        printk(KERN_ERR "ipt_account[checkentry]: reloaded rule has invalid table pointer.\n");
+	if (info->table != table) {
+    	    printk(KERN_ERR "ipt_account[checkentry]: reloaded rule has invalid table pointer.\n");
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
-        mutex_unlock(&ipt_account_mutex);
+    	    mutex_unlock(&ipt_account_mutex);
 #else
-        up(&ipt_account_mutex);
+    	    up(&ipt_account_mutex);
 #endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-        return -EINVAL;
+    	    return -EINVAL;
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-        return false;
+    	    return false;
 #else
-        return 0;
+    	    return 0;
 #endif
-      }
+	}
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
-      mutex_unlock(&ipt_account_mutex);
+	mutex_unlock(&ipt_account_mutex);
 #else
-      up(&ipt_account_mutex);
+	up(&ipt_account_mutex);
 #endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-      return -EINVAL;
+	return -EINVAL;
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-      return true;
+	return true;
 #else
-      return 1;
+	return 1;
 #endif
     } else {
 #ifdef DEBUG_IPT_ACCOUNT
@@ -676,17 +680,20 @@ checkentry(
      */
     info->table = table = ipt_account_table_init(info);
     if (!table) {
+#ifdef DEBUG_IPT_ACCOUNT
+	if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: info->table = table = ipt_account_table_init(info) failed.\n");
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
-      mutex_unlock(&ipt_account_mutex);
+        mutex_unlock(&ipt_account_mutex);
 #else
-      up(&ipt_account_mutex);
+        up(&ipt_account_mutex);
 #endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-      return -EINVAL;
+        return -EINVAL;
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-      return false;
+        return false;
 #else
-      return 0;
+        return 0;
 #endif
     }
   }
@@ -1043,9 +1050,12 @@ static int ipt_account_proc_release(struct inode *inode, struct file *file)
   int ret;
 
   ret = seq_release(inode, file);
-
-  if (!ret)
-    ipt_account_table_put(table);
+  if (!ret) {
+#ifdef DEBUG_IPT_ACCOUNT
+	if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_proc_write]: ret = seq_release(inode, file) failed\n");
+#endif
+	ipt_account_table_put(table);
+    }
 
   return ret;
 }
