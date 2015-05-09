@@ -39,6 +39,7 @@
     <message msgid="treeapp ntp settings" msgstr="Network Time" />
     <message msgid="treeapp ddns settings" msgstr="Dynamic DNS" />
     <message msgid="treeapp samba" msgstr="Samba/WINS" />
+    <message msgid="treeapp accounting" msgstr="IP Accounting" />
     <message msgid="treeapp miscellaneous" msgstr="Miscellaneous" />
 
     <message msgid="treeapp printersrv" msgstr="Printer Server" />

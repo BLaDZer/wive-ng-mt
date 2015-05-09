@@ -22,7 +22,6 @@
   <message msgid="treeapp routing" msgstr="Routing" />
   <message msgid="treeapp dhcp clients" msgstr="DHCP Clients" />
   <message msgid="treeapp samba" msgstr="Samba/WINS" />
-  <message msgid="treeapp accounting" msgstr="IP Accounting" />
   <message msgid="treeapp wireless settings" msgstr="Wireless Settings" />
   <message msgid="treeapp inic settings" msgstr="I-NIC Settings" />
   <message msgid="treeapp legacy settings" msgstr="Legacy Settings" />
@@ -33,7 +32,6 @@
   <message msgid="treeapp advance" msgstr="Advance" />
   <message msgid="treeapp services" msgstr="Services" />
   <message msgid="treeapp qos" msgstr="QoS" />
-  <message msgid="treeapp 11n configurations" msgstr="11n Configurations" />
   <message msgid="treeapp about" msgstr="About" />
   <message msgid="treeapp wds" msgstr="WDS" />
   <message msgid="treeapp basic" msgstr="Basic" />
