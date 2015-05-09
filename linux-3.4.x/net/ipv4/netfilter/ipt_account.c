@@ -1045,8 +1045,7 @@ static int ipt_account_proc_open(struct inode *inode, struct file *file)
 
 static int ipt_account_proc_release(struct inode *inode, struct file *file)
 {
-  struct proc_dir_entry *pde = PDE(inode);
-  struct t_ipt_account_table *table = pde->data;
+  struct t_ipt_account_table *table = PDE(inode)->data;;
   int ret;
 
   ret = seq_release(inode, file);
