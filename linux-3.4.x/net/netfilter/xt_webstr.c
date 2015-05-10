@@ -1,7 +1,7 @@
 /* Kernel module to match a string into a packet.
  *
  * Copyright (C) 2000 Emmanuel Roger  <winfield@freegates.be>
- * 
+ *
  * ChangeLog
  *	19.02.2002: Gianni Tedesco <gianni@ecsc.co.uk>
  *		Fixed SMP re-entrancy problem using per-cpu data areas
@@ -23,15 +23,15 @@
  * All Rights Reserved.
  *
  * Description:
- *   This is kernel module for web content inspection. It was derived from 
+ *   This is kernel module for web content inspection. It was derived from
  *   'string' match module, declared as above.
  *
- *   The module follows the Netfilter framework, called extended packet 
- *   matching modules. 
+ *   The module follows the Netfilter framework, called extended packet
+ *   matching modules.
  */
 
 /* Linux Kernel 2.6 Port ( 2.4 ipt-> 2.6 xt)
- * Copyright (C) 2008, Ralink Technology Corporation. 
+ * Copyright (C) 2008, Ralink Technology Corporation.
  * All Rights Reserved.
  */
 
@@ -464,5 +464,8 @@ static void __exit webstr_fini(void)
 
 module_init(webstr_init);
 module_exit(webstr_fini);
-
+MODULE_AUTHOR("Emmanuel Roger  <winfield@freegates.be>");
+MODULE_DESCRIPTION("Xtables: match a http header string into a packet");
+MODULE_ALIAS("ipt_webstr");
+MODULE_ALIAS("ip6t_webstr");
 MODULE_LICENSE("GPL");
