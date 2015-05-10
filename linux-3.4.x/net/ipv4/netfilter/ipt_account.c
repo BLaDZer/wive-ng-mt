@@ -1,4 +1,5 @@
 /* Copyright (c) 2004-2012 Piotr 'QuakeR' Gasidlo <quaker@barbara.eu.org>
+ * Refactoring, cleanup and fix for work in 3.4 (and later kernels) Wive-NG project <sfstudio@mail.ru>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -18,9 +19,9 @@
 #include <linux/netfilter/x_tables.h>
 #include <linux/netfilter_ipv4/ipt_account.h>
 
-#define IPT_ACCOUNT_VERSION "0.1.21"
+#define IPT_ACCOUNT_VERSION "0.1.22"
 
-#define DEBUG_IPT_ACCOUNT
+//#define DEBUG_IPT_ACCOUNT
 
 MODULE_AUTHOR("Piotr Gasidlo <quaker@barbara.eu.org>");
 MODULE_DESCRIPTION("Traffic accounting module");
