@@ -24,6 +24,7 @@ static int  getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIPTAccountBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv);
 static int  iptStatList(int eid, webs_t wp, int argc, char_t **argv);
 static int  getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv);
@@ -79,6 +80,7 @@ void formDefineServices(void)
 	websAspDefine(T("getFastPathBuilt"), getFastPathBuilt);
 	websAspDefine(T("getTelnetdBuilt"), getTelnetdBuilt);
 	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
+	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
 	websAspDefine(T("getProcessList"), getProcessList);
 }
 
@@ -286,6 +288,16 @@ static int getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static int getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_TELNETD
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int getIPTAccountBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_IP_NF_MATCH_ACCOUNT) || defined(CONFIG_IP_NF_MATCH_ACCOUNT_MODULE)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
