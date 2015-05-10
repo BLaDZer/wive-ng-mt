@@ -548,8 +548,8 @@ get_param() {
 	modprobe -q xt_webstr
     fi
     if [ "$store_ttl" = "1" ] || [ "$store_ttl_mcast" = "1" ]; then
-	modprobe ipt_ttl
-	modprobe ipt_TTL
+	modprobe -q ipt_ttl
+	modprobe -q ipt_TTL
     fi
     # macros
     STATE_NEW="-m state --state NEW"
