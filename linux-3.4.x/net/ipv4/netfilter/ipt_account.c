@@ -467,10 +467,16 @@ static int checkentry(const struct xt_mtchk_param *par)
   table = ipt_account_table_find_get(info->name);
   if (table) {
     if (info->table != NULL) {
-	if (info->table != table)
+	if (info->table != table) {
     	    printk(KERN_ERR "ipt_account[checkentry]: reloaded rule has invalid table pointer.\n");
+	    mutex_unlock(&ipt_account_mutex);
+	    return -EINVAL;
+	}
+#ifdef DEBUG_IPT_ACCOUNT
+        if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: table allready found.\n");
+#endif
 	mutex_unlock(&ipt_account_mutex);
-	return -EINVAL;
+	return 0;
     } else {
 #ifdef DEBUG_IPT_ACCOUNT
       if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: table found, checking.\n");
@@ -496,6 +502,8 @@ static int checkentry(const struct xt_mtchk_param *par)
        * Link rule with table.
        */
       info->table = table;
+      mutex_unlock(&ipt_account_mutex);
+      return 0;
     }
   } else {
 #ifdef DEBUG_IPT_ACCOUNT
