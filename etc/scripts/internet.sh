@@ -197,14 +197,8 @@ service wan restart
 # reconfigure ipv6
 service six restart
 
-# rebuild switch part
+# rebuild switch part for full renew
 config-vlan.sh $switchmode $switchpart
 
 # some daemons need restart
 services_restart.sh all
-
-# in dhcp client mode restart from dhcp script
-# in static/zeroconf or pure pppoe mode need restart anyway
-if [ "$vpnEnabled" = "on" -a "$vpnType" = "0" -a "$vpnPurePPPOE" = "1" ] || [ "$wanConnectionMode" != "DHCP" ]; then
-    service vpnhelper restart
-fi
