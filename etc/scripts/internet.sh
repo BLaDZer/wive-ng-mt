@@ -208,11 +208,3 @@ services_restart.sh all
 if [ "$vpnEnabled" = "on" -a "$vpnType" = "0" -a "$vpnPurePPPOE" = "1" ] || [ "$wanConnectionMode" != "DHCP" ]; then
     service vpnhelper restart
 fi
-
-# this is hook for exec user script after physycal connection configured
-# may be used for add scripts needed by some provides
-# example: http://wive-ng.sf.net/downloads/wan_up.sh - load external routes for www.kvidex.ru ISP
-if [ -f /etc/scripts/wan_up.sh ]; then
-    $LOG "Call user /etc/scripts/wan_up.sh script."
-    sh /etc/scripts/wan_up.sh
-fi
