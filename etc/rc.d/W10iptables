@@ -13,6 +13,21 @@ touch /tmp/iptables_runing
 
 LOG="logger -t iptables"
 
+iptaccounting() {
+	# ipt_account must be first rules in FORWARD
+	if [ "$ROUTE_MODE" = "on" ] && [ "$ipt_account" = "1" ]; then
+	    $LOG "Start ipt_accounting for $lan_ip_acc/$lan_ip_prf"
+	    iptables -N ipaccount
+	    iptables -A FORWARD -j ipaccount
+	    iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan_ip_acc"/"$lan_ip_prf" --ashort
+	    if [ "$Lan2Enabled" = "1" ]; then
+	        iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan2_ip_acc"/"$lan2_ip_prf" --ashort
+	    fi
+	    echo "show=src" > /proc/net/ipt_account/mynetwork
+	    echo "reset-on-read=no" > /proc/net/ipt_account/mynetwork
+	fi
+}
+
 servicelimit() {
 	$LOG "Service limit set"
         # add limit connection rules for local services
@@ -191,18 +206,6 @@ servicelimit() {
 forwardlimit() {
 	if [ "$ROUTE_MODE" = "on" ]; then
 	    $LOG "Set forward rules"
-	    # ipt_account need first rules in FORWARD
-	    if [ "$ipt_account" = "1" ]; then
-		$LOG "Start ipt_accounting"
-		iptables -N ipaccount
-		iptables -A FORWARD -j ipaccount
-		iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan_ip_acc"/"$lan_ip_prf" --ashort
-		if [ "$Lan2Enabled" = "1" ]; then
-		    iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan2_ip_acc"/"$lan2_ip_prf" --ashort
-		fi
-		echo "show=src" > /proc/net/ipt_account/mynetwork
-		echo "reset-on-read=no" > /proc/net/ipt_account/mynetwork
-	    fi
 	    if [ "$igmpEnabled" != "0" ]; then
 		$LOG "Set igmp forward rules"
 		iptables -A FORWARD -d $mcast_net -o $lan_if -j ACCEPT
@@ -415,6 +418,7 @@ start() {
     $LOG "Allow established/related in input"
     iptables -A INPUT $STATE_EST -j ACCEPT
     #########################################DYNAMICRULES###################################
+    iptaccounting
     servicelimit
     forwardlimit
     simpleqos
