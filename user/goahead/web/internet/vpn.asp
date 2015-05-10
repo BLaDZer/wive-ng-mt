@@ -149,6 +149,12 @@ function vpnSwitchClick(form)
 		form.vpn_lcp_errors, form.vpn_lcp_interval
 		], form.vpn_enabled.checked );
 	displayElement( [ 'vpn_type' ], form.vpn_enabled.checked );
+	if (form.vpn_enabled.checked)
+	{
+		_TRV("vApplyConn", "button apply connect");
+	} else {
+		_TRV("vApplyConn", "button apply");
+	}
 	selectType(form);
 }
 
@@ -203,7 +209,7 @@ function selectType(form)
 
 	// Display mode-dependent elements
 	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
-	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
+	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_password_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
 	displayElement('vpn_test_reachable', (pptp_on || l2tp_on) && form.vpn_enabled.checked);
 	displayElement('vpn_lanauth_lvl_row', kabinet_on && form.vpn_enabled.checked);
 	displayElement('vpn_mppe_row', (!l2tp_server_on) && form.vpn_enabled.checked);

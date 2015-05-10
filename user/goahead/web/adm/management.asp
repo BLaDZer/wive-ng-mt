@@ -213,8 +213,7 @@ function onUploadRWFSSubmit(form)
           <tr>
             <td class="head" id="uploadFWLocation">Filename:</td>
             <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data" onSubmit="return uploadFirmwareCheck();" >
-                <input type="checkbox" name="reset_rwfs" checked="checked" id="manResetRWFS">
-                Reset RWFS on update <br>
+                <input type="checkbox" name="reset_rwfs" checked="checked" id="manResetRWFS">Reset RWFS on update <br>
                 <input name="filename" size="20" maxlength="256" type="file">
                 <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
                 <br>
