@@ -543,14 +543,6 @@ get_param() {
 	    lan2_ip_prf=`ipcalc "$lan2_ipaddr" "$lan2_netmask" -ps | cut -f 2- -d =`
 	fi
     fi
-    # load needed modules
-    if [ -f /etc/websfilter ]; then
-	modprobe -q xt_webstr
-    fi
-    if [ "$store_ttl" = "1" ] || [ "$store_ttl_mcast" = "1" ]; then
-	modprobe -q ipt_ttl
-	modprobe -q ipt_TTL
-    fi
     # macros
     STATE_NEW="-m state --state NEW"
     STATE_EST="-m state --state ESTABLISHED,RELATED"
