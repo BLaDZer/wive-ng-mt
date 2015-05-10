@@ -260,6 +260,9 @@ ipt_account_table_put(struct t_ipt_account_table *table)
   if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_put]: name = %s\n", table->name);
 #endif
   if (atomic_dec_and_test(&table->use)) {
+#ifdef DEBUG_IPT_ACCOUNT
+    if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_put]: name = %s, in use.\n", table->name);
+#endif
     write_lock_bh(&ipt_account_lock);
     list_del(&table->list);
     write_unlock_bh(&ipt_account_lock);
@@ -464,11 +467,8 @@ static int checkentry(const struct xt_mtchk_param *par)
   table = ipt_account_table_find_get(info->name);
   if (table) {
     if (info->table != NULL) {
-	if (info->table != table) {
+	if (info->table != table)
     	    printk(KERN_ERR "ipt_account[checkentry]: reloaded rule has invalid table pointer.\n");
-    	    mutex_unlock(&ipt_account_mutex);
-    	    return -EINVAL;
-	}
 	mutex_unlock(&ipt_account_mutex);
 	return -EINVAL;
     } else {
