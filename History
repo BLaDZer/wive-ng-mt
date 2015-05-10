@@ -893,19 +893,19 @@
 18) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
 19) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
 20) kernel: ralink_nvram: fix check part size in commit.<br>
-22) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
-23) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
-24) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
-25) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
-26) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
-27) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
-28) kernel: ralink_raeth: move early ESW init to global unit.<br>
-29) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
-30) kernel: ralink_raeth: add support to disable any EPHY.<br>
-31) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
-32) kernel: tcp: update reordering first before detecting loss.<br>
-33) kernel: exfat driver: upstream updates.<br>
-34) kernel: initial port ipt_accounting to 3.4 kernel.<br>
+21) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
+22) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
+23) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
+24) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
+25) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
+26) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
+27) kernel: ralink_raeth: move early ESW init to global unit.<br>
+28) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
+29) kernel: ralink_raeth: add support to disable any EPHY.<br>
+30) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
+31) kernel: tcp: update reordering first before detecting loss.<br>
+32) kernel: exfat driver: upstream updates.<br>
+33) kernel: initial port ipt_accounting to 3.4 kernel.<br>
 <br>
 <br>
 <b>TODO:</b><br>

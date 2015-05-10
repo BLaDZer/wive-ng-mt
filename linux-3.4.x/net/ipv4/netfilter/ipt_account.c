@@ -15,6 +15,9 @@
 #include <linux/ip.h>
 #include <linux/in.h>
 
+#include <linux/netfilter/x_tables.h>
+#include <linux/netfilter_ipv4/ipt_account.h>
+
 #define IPT_ACCOUNT_VERSION "0.1.21"
 
 //#define DEBUG_IPT_ACCOUNT
@@ -23,21 +26,12 @@ MODULE_AUTHOR("Piotr Gasidlo <quaker@barbara.eu.org>");
 MODULE_DESCRIPTION("Traffic accounting module");
 MODULE_LICENSE("GPL");
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
-#include <linux/netfilter/x_tables.h>
-#else
-#include <linux/netfilter_ipv4/ip_tables.h>
-#endif
-#include <linux/netfilter_ipv4/ipt_account.h>
-
 /* Compatibility, should replace all HIPQUAD with %pI4 and use network byte order not host byte order */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30)
 #define HIPQUAD(addr) \
        ((unsigned char *)&addr)[3], \
        ((unsigned char *)&addr)[2], \
        ((unsigned char *)&addr)[1], \
        ((unsigned char *)&addr)[0]
-#endif
 
 /* defaults, can be overriden */
 static unsigned int netmask = 16; /* Safe netmask, if you try to create table
@@ -50,10 +44,10 @@ static int debug = 1;
 #endif
 module_param(netmask, uint, 0400);
 
-MODULE_PARM_DESC(netmask,"maximum *save* netmask");
+MODULE_PARM_DESC(netmask, "maximum *save* netmask");
 #ifdef DEBUG_IPT_ACCOUNT
-module_param(debug, bool, 0600);
-MODULE_PARM_DESC(debug,"enable debugging output");
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "enable debugging output");
 #endif
 
 /* structure with statistics counter, used when table is created without --ashort switch */
@@ -114,17 +108,8 @@ struct t_ipt_account_table {
 };
 
 static LIST_HEAD(ipt_account_tables);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
 static rwlock_t ipt_account_lock = __RW_LOCK_UNLOCKED(ipt_account_lock); /* lock, to assure that table list can be safely modified */
-#else
-static rwlock_t ipt_account_lock = RW_LOCK_UNLOCKED; /* lock, to assure that table list can be safely modified */
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
 static DEFINE_MUTEX(ipt_account_mutex); /* additional checkentry protection */
-#else
-static DECLARE_MUTEX(ipt_account_mutex); /* additional checkentry protection */
-#endif
-
 static struct file_operations ipt_account_proc_fops;
 static struct proc_dir_entry *ipt_account_procdir;
 
@@ -152,7 +137,7 @@ static struct t_ipt_account_table *ipt_account_table_init(struct t_ipt_account_i
   /*
    * Table attributes.
    */
-  strncpy(table->name, info->name, IPT_ACCOUNT_NAME_LEN); 
+  strncpy(table->name, info->name, IPT_ACCOUNT_NAME_LEN);
   table->name[IPT_ACCOUNT_NAME_LEN] = '\0';
 
   table->network = info->network;
@@ -195,11 +180,7 @@ static struct t_ipt_account_table *ipt_account_table_init(struct t_ipt_account_i
   /*
    * Reset locks.
    */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
   table->stats_lock = __RW_LOCK_UNLOCKED(table->stats_lock);
-#else
-  table->stats_lock = RW_LOCK_UNLOCKED;
-#endif
 
   /*
    * Create /proc/net/ipt_account/name entry.
@@ -233,7 +214,6 @@ cleanup_stats:
     vfree(table->stats.s);
   else
     vfree(table->stats.l);
-
 cleanup_table:
   vfree(table);
 cleanup_none:
@@ -274,10 +254,10 @@ ipt_account_table_get(struct t_ipt_account_table *table)
  * table is removed from linked list and destroyed.
  */
 static inline void
-ipt_account_table_put(struct t_ipt_account_table *table) 
+ipt_account_table_put(struct t_ipt_account_table *table)
 {
 #ifdef DEBUG_IPT_ACCOUNT
-  if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_put]: name = %s\n", table->name);  
+  if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_put]: name = %s\n", table->name);
 #endif
   if (atomic_dec_and_test(&table->use)) {
     write_lock_bh(&ipt_account_lock);
@@ -338,11 +318,7 @@ __account_long(struct t_ipt_account_stat_long *stat, const struct sk_buff *skb)
   stat->b_all += skb->len;
   stat->p_all++;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
   switch (ip_hdr(skb)->protocol) {
-#else
-  switch (skb->nh.iph->protocol) {
-#endif
     case IPPROTO_TCP:
       stat->b_tcp += skb->len;
       stat->p_tcp++;
@@ -374,68 +350,28 @@ __account_short(struct t_ipt_account_stat_short *stat, const struct sk_buff *skb
 /*
  * Match function. Here we do accounting stuff.
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-static bool
-#else
-static int
-#endif
-match(const struct sk_buff *skb,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-    struct xt_action_param *par
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
-    const struct xt_match_param *par
-#else
-    const struct net_device *in,
-    const struct net_device *out,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
-    const struct xt_match *match,
-#endif
-    const void *matchinfo,
-    int offset,
-    unsigned int protoff,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    bool *hotdrop
-#else
-    int *hotdrop
-#endif
-#endif
-)
+static bool match(const struct sk_buff *skb, struct xt_action_param *par)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
   struct t_ipt_account_info *info = (struct t_ipt_account_info *)(par->matchinfo);
-#else
-  struct t_ipt_account_info *info = (struct t_ipt_account_info *)matchinfo;
-#endif
   struct t_ipt_account_table *table = info->table;
   u_int32_t address;
   /* Get current time. */
   struct timespec now = CURRENT_TIME_SEC;
   /* Default we assume no match. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
   bool ret = false;
-#else
-  int ret = 0;
-#endif
-    
+
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [match]: name = %s\n", table->name);
 #endif
   /* Check whether traffic from source ip address ... */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
   address = ntohl(ip_hdr(skb)->saddr);
-#else
-  address = ntohl(skb->nh.iph->saddr);
-#endif
+
   /* ... is being accounted by this table. */
   if (address && ((u_int32_t)(address & table->netmask) == (u_int32_t)table->network)) {
     write_lock_bh(&table->stats_lock);
     /* Yes, account this packet. */
 #ifdef DEBUG_IPT_ACCOUNT
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
     if (debug) printk(KERN_DEBUG "ipt_account: [match]: accounting packet src = %u.%u.%u.%u, proto = %u.\n", HIPQUAD(address), ip_hdr(skb)->protocol);
-#else
-    if (debug) printk(KERN_DEBUG "ipt_account: [match]: accounting packet src = %u.%u.%u.%u, proto = %u.\n", HIPQUAD(address), skb->nh.iph->protocol);
-#endif
 #endif
     /* Update counters this host. */
     if (!table->shortlisting) {
@@ -458,28 +394,15 @@ match(const struct sk_buff *skb,
     }
     write_unlock_bh(&table->stats_lock);
     /* Yes, it's a match. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
     ret = true;
-#else
-    ret = 1;
-#endif
-
   }
 
   /* Do the same thing with destination ip address. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
   address = ntohl(ip_hdr(skb)->daddr);
-#else
-  address = ntohl(skb->nh.iph->daddr);
-#endif
   if (address && ((u_int32_t)(address & table->netmask) == (u_int32_t)table->network)) {
     write_lock_bh(&table->stats_lock);
 #ifdef DEBUG_IPT_ACCOUNT
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
     if (debug) printk(KERN_DEBUG "ipt_account: [match]: accounting packet dst = %u.%u.%u.%u, proto = %u.\n", HIPQUAD(address), ip_hdr(skb)->protocol);
-#else
-    if (debug) printk(KERN_DEBUG "ipt_account: [match]: accounting packet dst = %u.%u.%u.%u, proto = %u.\n", HIPQUAD(address), skb->nh.iph->protocol);
-#endif
 #endif
     if (!table->shortlisting) {
       __account_long(&table->stats.l[address - table->network].dst, skb);
@@ -497,11 +420,7 @@ match(const struct sk_buff *skb,
       }
     }
     write_unlock_bh(&table->stats_lock);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
     ret = true;
-#else
-    ret = 1;
-#endif
   }
 
   return ret;
@@ -510,57 +429,13 @@ match(const struct sk_buff *skb,
 /*
  * Checkentry function.
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-static int
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-static bool
-#else
-static int
-#endif
-checkentry(
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
-    const struct xt_mtchk_param *par
-#else
-    const char *tablename,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
-     const void *ip,
-#else
-     const struct ipt_entry *ip,
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
-     const struct xt_match *match,
-#endif
-     void *matchinfo,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
-     unsigned int matchsize,
-#endif
-     unsigned int hook_mask
-#endif
-)
+static int checkentry(const struct xt_mtchk_param *par)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
   struct t_ipt_account_info *info = (struct t_ipt_account_info*)(par->matchinfo);
-#else
-  struct t_ipt_account_info *info = matchinfo;
-#endif
   struct t_ipt_account_table *table;
 
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: name = %s\n", info->name);
-#endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,17)
-  if (matchsize != IPT_ALIGN(sizeof(struct t_ipt_account_info))) {
-#ifdef DEBUG_IPT_ACCOUNT
-    if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: matchsize %u != %u\n", matchsize, IPT_ALIGN(sizeof(struct t_ipt_account_info)));
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-    return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    return false;
-#else
-    return 0;
-#endif
-  }
 #endif
 
   /*
@@ -568,74 +443,34 @@ checkentry(
    */
   if (info->netmask < ((~0L << (32 - netmask)) & 0xffffffff)) {
     printk(KERN_ERR "ipt_account[checkentry]: too big netmask (increase module 'netmask' parameter).\n");
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
     return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    return false;
-#else
-    return 0;
-#endif
   }
+
   if ((info->network & info->netmask) != info->network) {
     printk(KERN_ERR "ipt_account[checkentry]: wrong network/netmask.\n");
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
     return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    return false;
-#else
-    return 0;
-#endif
   }
+
   if (info->name[0] == '\0') {
     printk(KERN_ERR "ipt_account[checkentry]: wrong table name.\n");
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
     return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    return false;
-#else
-    return 0;
-#endif
   }
 
   /*
    * We got new rule. Try to find table with the same name as given in info structure.
    * Mutex magic based on xt_hashlimit.c.
    */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
   mutex_lock(&ipt_account_mutex);
-#else
-  down(&ipt_account_mutex);
-#endif
   table = ipt_account_table_find_get(info->name);
   if (table) {
     if (info->table != NULL) {
 	if (info->table != table) {
     	    printk(KERN_ERR "ipt_account[checkentry]: reloaded rule has invalid table pointer.\n");
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
     	    mutex_unlock(&ipt_account_mutex);
-#else
-    	    up(&ipt_account_mutex);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
     	    return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-    	    return false;
-#else
-    	    return 0;
-#endif
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
 	mutex_unlock(&ipt_account_mutex);
-#else
-	up(&ipt_account_mutex);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
 	return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-	return true;
-#else
-	return 1;
-#endif
     } else {
 #ifdef DEBUG_IPT_ACCOUNT
       if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: table found, checking.\n");
@@ -650,19 +485,10 @@ checkentry(
          * Remember to release table usage counter.
          */
         ipt_account_table_put(table);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
         mutex_unlock(&ipt_account_mutex);
-#else
-        up(&ipt_account_mutex);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
         return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-        return false;
-#else
-        return 0;
-#endif
       }
+
 #ifdef DEBUG_IPT_ACCOUNT
       if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: table found, reusing.\n");
 #endif
@@ -683,67 +509,26 @@ checkentry(
 #ifdef DEBUG_IPT_ACCOUNT
 	if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: info->table = table = ipt_account_table_init(info) failed.\n");
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
         mutex_unlock(&ipt_account_mutex);
-#else
-        up(&ipt_account_mutex);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
         return -EINVAL;
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-        return false;
-#else
-        return 0;
-#endif
     }
   }
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
+#ifdef DEBUG_IPT_ACCOUNT
+  if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: creating new one ok.\n");
+#endif
   mutex_unlock(&ipt_account_mutex);
-#else
-  up(&ipt_account_mutex);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
-  return true;
-#else
-  return 1;
-#endif
+  return 0;
 }
 
 /*
  * Destroy function.
  */
-static void
-destroy(
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
-    const struct xt_mtdtor_param *par
-#else
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
-    const struct xt_match *match,
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
-    void *matchinfo
-#else
-    void *matchinfo,
-    unsigned int matchsize
-#endif
-#endif
-)
+static void destroy(const struct xt_mtdtor_param *par)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
   struct t_ipt_account_info *info = (struct t_ipt_account_info*)(par->matchinfo);
-#else
-  struct t_ipt_account_info *info = matchinfo;
-#endif
+
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [destroy]: name = %s\n", info->name);
-#endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,17)
-  if (matchsize != IPT_ALIGN(sizeof(struct t_ipt_account_info))) {
-#ifdef DEBUG_IPT_ACCOUNT
-    if (debug) printk(KERN_DEBUG "ipt_account [checkentry]: matchsize %u != %u\n", matchsize, IPT_ALIGN(sizeof(struct t_ipt_account_info)));
-#endif
-    return;
-  }
 #endif
 
   /*
@@ -755,29 +540,19 @@ destroy(
   return;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
 static struct xt_match account_match = {
-#else
-static struct ipt_match account_match = {
-#endif
-  .name = "account",
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28)
-  .family = NFPROTO_IPV4,
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
-  .family = AF_INET,
-#endif
-  .match = &match,
-  .checkentry = &checkentry,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
-  .matchsize = sizeof(struct t_ipt_account_info),
-#endif
-  .destroy = &destroy,
-  .me = THIS_MODULE
+    .name	= "account",
+    .family	= NFPROTO_IPV4,
+    .match	= &match,
+    .checkentry = &checkentry,
+    .matchsize	= sizeof(struct t_ipt_account_info),
+    .destroy	= &destroy,
+    .me		= THIS_MODULE
 };
 
 /*
- * Below functions (ipt_account_seq_start, ipt_account_seq_next, 
- * ipt_account_seq_stop, ipt_account_seq_show, ipt_account_proc_write) 
+ * Below functions (ipt_account_seq_start, ipt_account_seq_next,
+ * ipt_account_seq_stop, ipt_account_seq_show, ipt_account_proc_write)
  * are used to implement proc stuff.
  */
 static void *ipt_account_seq_start(struct seq_file *sf, loff_t *pos)
@@ -1022,9 +797,11 @@ static ssize_t ipt_account_proc_write(struct file *file, const char __user *inpu
     /*
      * We don't understand what user have just wrote.
      */
+#ifdef DEBUG_IPT_ACCOUNT
+    if (debug) printk(KERN_DEBUG "ipt_account[ipt_account_proc_write]: we do not understand what user have just wrote.\n");
+#endif
     return -EIO;
   }
-
   return size;
 }
 
@@ -1054,18 +831,18 @@ static int ipt_account_proc_release(struct inode *inode, struct file *file)
 	if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_proc_write]: ret = seq_release(inode, file) failed\n");
 #endif
 	ipt_account_table_put(table);
-    }
+  }
 
   return ret;
 }
 
 static struct file_operations ipt_account_proc_fops = {
-  .owner = THIS_MODULE,
-  .open = ipt_account_proc_open,
-  .read = seq_read,
-  .write = ipt_account_proc_write,
-  .llseek = seq_lseek,
-  .release = ipt_account_proc_release
+    .open	= ipt_account_proc_open,
+    .read	= seq_read,
+    .write 	= ipt_account_proc_write,
+    .llseek	= seq_lseek,
+    .release	= ipt_account_proc_release,
+    .owner	= THIS_MODULE
 };
 
 /*
@@ -1085,27 +862,15 @@ static int __init init(void)
   }
 
   /* Register match. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
   if (xt_register_match(&account_match)) {
-#else
-  if (ipt_register_match(&account_match)) {
-#endif
     ret = -EINVAL;
     goto cleanup_none;
   }
 
   /* Create /proc/net/ipt_account/ entry. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
   ipt_account_procdir = proc_mkdir("ipt_account", init_net.proc_net);
-#else
-  ipt_account_procdir = proc_mkdir("ipt_account", proc_net);
-#endif
   if (!ipt_account_procdir) {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
     printk(KERN_ERR "ipt_account [__init]: ipt_account_procdir = proc_mkdir(\"ipt_account\", init_proc.proc_net) failed.\n");
-#else
-    printk(KERN_ERR "ipt_account [__init]: ipt_account_procdir = proc_mkdir(\"ipt_account\", proc_net) failed.\n");
-#endif
     ret = -ENOMEM;
     goto cleanup_match;
   }
@@ -1114,11 +879,7 @@ static int __init init(void)
 
   /* If something goes wrong we end here. */
 cleanup_match:
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
   xt_unregister_match(&account_match);
-#else
-  ipt_unregister_match(&account_match);
-#endif
 cleanup_none:
   return ret;
 }
@@ -1130,11 +891,7 @@ static void __exit fini(void)
 {
   /* Remove /proc/net/ipt_account/ */
   remove_proc_entry(ipt_account_procdir->name, ipt_account_procdir->parent);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
   xt_unregister_match(&account_match);
-#else
-  ipt_unregister_match(&account_match);
-#endif
 }
 
 module_init(init);
