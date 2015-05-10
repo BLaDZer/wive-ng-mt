@@ -20,7 +20,7 @@
 
 #define IPT_ACCOUNT_VERSION "0.1.21"
 
-//#define DEBUG_IPT_ACCOUNT
+#define DEBUG_IPT_ACCOUNT
 
 MODULE_AUTHOR("Piotr Gasidlo <quaker@barbara.eu.org>");
 MODULE_DESCRIPTION("Traffic accounting module");
@@ -223,8 +223,7 @@ cleanup_none:
 /*
  * Function destroys table. Table *must* be already unlinked.
  */
-static void
-ipt_account_table_destroy(struct t_ipt_account_table *table)
+static void ipt_account_table_destroy(struct t_ipt_account_table *table)
 {
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_destory]: name = %s\n", table->name);
@@ -240,8 +239,7 @@ ipt_account_table_destroy(struct t_ipt_account_table *table)
 /*
  * Function increments use counter for table.
  */
-static inline void
-ipt_account_table_get(struct t_ipt_account_table *table) 
+static inline void ipt_account_table_get(struct t_ipt_account_table *table) 
 {
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_get]: name = %s\n", table->name);
@@ -253,8 +251,7 @@ ipt_account_table_get(struct t_ipt_account_table *table)
  * Function decrements use counter for table. If use counter drops to zero,
  * table is removed from linked list and destroyed.
  */
-static inline void
-ipt_account_table_put(struct t_ipt_account_table *table)
+static inline void ipt_account_table_put(struct t_ipt_account_table *table)
 {
 #ifdef DEBUG_IPT_ACCOUNT
   if (debug) printk(KERN_DEBUG "ipt_account [ipt_account_table_put]: name = %s\n", table->name);
@@ -274,8 +271,7 @@ ipt_account_table_put(struct t_ipt_account_table *table)
  * Helper function, which returns a structure pointer to a table with
  * specified name.
  */
-static struct t_ipt_account_table *
-__ipt_account_table_find(char *name) 
+static struct t_ipt_account_table *__ipt_account_table_find(char *name)
 {
   struct list_head *pos;
   list_for_each(pos, &ipt_account_tables) {
@@ -292,8 +288,7 @@ __ipt_account_table_find(char *name)
  * specified name. When such table is found its use coutner
  * is incremented.
  */
-static inline struct t_ipt_account_table *
-ipt_account_table_find_get(char *name)
+static inline struct t_ipt_account_table *ipt_account_table_find_get(char *name)
 {
   struct t_ipt_account_table *table;
 
@@ -315,8 +310,7 @@ ipt_account_table_find_get(char *name)
  * Helper function, with updates statistics for specified IP. It's only
  * used for tables created without --ashort switch.
  */
-static inline void
-__account_long(struct t_ipt_account_stat_long *stat, const struct sk_buff *skb) 
+static inline void __account_long(struct t_ipt_account_stat_long *stat, const struct sk_buff *skb) 
 {
   stat->b_all += skb->len;
   stat->p_all++;
@@ -343,8 +337,7 @@ __account_long(struct t_ipt_account_stat_long *stat, const struct sk_buff *skb)
 /*
  * Same as above, but used for tables created with --ashort switch.
  */
-static inline void
-__account_short(struct t_ipt_account_stat_short *stat, const struct sk_buff *skb)
+static inline void __account_short(struct t_ipt_account_stat_short *stat, const struct sk_buff *skb)
 {
   stat->b_all += skb->len;
   stat->p_all++;
