@@ -531,7 +531,7 @@ get_param() {
 	use_snat=0
     fi
     # in pppoe pure mode no need add MASQ rules to uplink localnet
-    if [ "$vpnPurePPPOE" = "1" ]; then
+    if [ "$purepppoemode" = "1" ]; then
 	natEnabled=0
     fi
     # calculate ip ranges for accounting

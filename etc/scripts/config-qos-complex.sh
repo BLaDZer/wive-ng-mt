@@ -10,7 +10,7 @@
 LOG="logger -t Complex QoS"
 
 # get config
-eval `nvram_buf_get 2860 vpnPurePPPOE igmpEnabled \
+eval `nvram_buf_get 2860 igmpEnabled \
     QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up \
     QoS_rate_vpn_up QoS_rate_vpn_limit_up`
 
@@ -158,14 +158,14 @@ qos_nf
 # add netsched rules
 qos_tc_lan
 
-if [ "$vpnPurePPPOE" != "1" ]; then
+if [ "$purepppoemode" != "1" ]; then
     # add rules for target
     qos_nf_if
     gos_tc_wan
 fi
 
-# add rules for vpn wan to
-if [ "$vpnEnabled" = "on" ] && [ "$vpnPurePPPOE" != "1" ] && [ "$wan_if" != "$real_wan_if" ]; then
+if [ "$purepppoemode" != "1" ] && [ "$wan_if" != "$real_wan_if" ]; then
+    # add rules for vpn wan to
     wan_if="$real_wan_if"
     QoS_rate_up="$QoS_rate_vpn_up"
     QoS_rate_limit_up="$QoS_rate_vpn_limit_up"

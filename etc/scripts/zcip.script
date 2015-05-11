@@ -11,7 +11,7 @@ LOG="logger -t zcip"
 . /etc/scripts/global.sh
 
 # in pure pppoe mode no need routing to from lan 2 wan
-if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
+if [ "$purepppoemode" = "1" ]; then
     netmask=32
 else
     netmask=16

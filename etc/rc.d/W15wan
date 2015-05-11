@@ -96,12 +96,12 @@ start() {
     		ip -4 route replace default dev br0
 	    fi
         fi
-    elif [ "$wanConnectionMode" = "DHCP" ] && [ "$vpnPurePPPOE" != "1" ]; then
+    elif [ "$wanConnectionMode" = "DHCP" ] && [ "$purepppoemode" != "1" ]; then
 	# get udhcp param
 	udhcpc_opts
 	$LOG "Start DHCP client at $wan_if."
 	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
-    elif [ "$wanConnectionMode" = "ZERO" ] || [ "$vpnPurePPPOE" = "1" ]; then
+    elif [ "$wanConnectionMode" = "ZERO" ] || [ "$purepppoemode" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."
 	zero_conf
     else

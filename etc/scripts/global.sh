@@ -334,6 +334,15 @@ get_switch_part() {
     fi
 }
 
+# check pppoe vpn type
+getPPPOEMode() {
+    if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
+	purepppoemode="1"
+    else
+	purepppoemode="0"
+    fi
+}
+
 # get params
 getFirstWlanIfName
 getSecWlanIfName
@@ -347,3 +356,5 @@ getWanReady
 
 get_switch_type
 get_switch_part
+
+getPPPOEMode

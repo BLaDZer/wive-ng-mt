@@ -890,38 +890,39 @@
 15) init.d: full cleanup vlan parts in restore dumb mode function.<br>
 16) init.d: remove disable_all_ports_eee (already disabled in raeth).<br>
 17) init.d: iptables: split v4 rules generate code for more readable and more easy edit.<br>
-18) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
-19) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
-20) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
-21) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
-22) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
-23) kernel: ralink_nvram: fix check part size in commit.<br>
-24) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
-25) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
-26) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
-27) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
-28) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
-29) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
-30) kernel: ralink_raeth: move early ESW init to global unit.<br>
-31) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
-32) kernel: ralink_raeth: add support to disable any EPHY.<br>
-33) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
-34) kernel: exfat driver: upstream updates.<br>
-35) kernel: driver core: fix race with userland in device_add().<br>
-36) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
-37) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
-38) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
-39) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
-40) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
-41) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
-42) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
-43) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
-44) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
-45) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
-46) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
-47) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
-48) kernel: net: tcp: update reordering first before detecting loss.<br>
-49) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
+18) init.d: fix wan config if pure pppoe enabled and vpn full disabled mode.<br>
+19) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
+20) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
+21) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
+22) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
+23) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
+24) kernel: ralink_nvram: fix check part size in commit.<br>
+25) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
+26) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
+27) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
+28) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
+29) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
+30) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
+31) kernel: ralink_raeth: move early ESW init to global unit.<br>
+32) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
+33) kernel: ralink_raeth: add support to disable any EPHY.<br>
+34) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
+35) kernel: exfat driver: upstream updates.<br>
+36) kernel: driver core: fix race with userland in device_add().<br>
+37) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
+38) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
+39) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
+40) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
+41) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
+42) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
+43) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
+44) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
+45) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
+46) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+47) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
+48) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+49) kernel: net: tcp: update reordering first before detecting loss.<br>
+50) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
 <br>
 <br>
 <b>TODO:</b><br>
