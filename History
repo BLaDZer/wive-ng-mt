@@ -913,6 +913,7 @@
 38) kernel: driver core: fix race with userland in device_add().<br>
 39) kernel: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
 40) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
+41) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
 <br>
 <br>
 <b>TODO:</b><br>
