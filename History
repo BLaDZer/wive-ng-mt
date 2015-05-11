@@ -916,11 +916,12 @@
 41) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
 42) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
 43) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
-44) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
-45) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
-46) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
-47) kernel: net: tcp: update reordering first before detecting loss.<br>
-48) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
+44) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
+45) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+46) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
+47) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+48) kernel: net: tcp: update reordering first before detecting loss.<br>
+49) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
 <br>
 <br>
 <b>TODO:</b><br>
