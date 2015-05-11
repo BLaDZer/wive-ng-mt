@@ -909,6 +909,7 @@
 34) kernel: tcp: update reordering first before detecting loss.<br>
 35) kernel: exfat driver: upstream updates.<br>
 36) kernel: initial port ipt_accounting to 3.4 kernel.<br>
+37) kernel: driver core: fix race with userland in device_add().<br>
 <br>
 <br>
 <b>TODO:</b><br>
