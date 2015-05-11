@@ -919,6 +919,7 @@
 44) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
 45) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
 46) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
+47) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
 <br>
 <br>
 <b>TODO:</b><br>
