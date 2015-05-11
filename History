@@ -912,6 +912,7 @@
 37) kernel: initial port ipt_accounting to 3.4 kernel.<br>
 38) kernel: driver core: fix race with userland in device_add().<br>
 39) kernel: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+40) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
 <br>
 <br>
 <b>TODO:</b><br>
