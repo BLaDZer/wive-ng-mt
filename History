@@ -917,6 +917,7 @@
 42) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
 43) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
 44) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
+45) kernel: serial: fix potential use-after-free after failed probe.<br>
 <br>
 <br>
 <b>TODO:</b><br>
