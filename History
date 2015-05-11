@@ -906,28 +906,28 @@
 31) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
 32) kernel: ralink_raeth: add support to disable any EPHY.<br>
 33) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
-34) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
-35) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
-36) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
-37) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
-38) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
-39) kernel: tcp: update reordering first before detecting loss.<br>
-40) kernel: tcp: set SOCK_NOSPACE under memory pressure.<br>
-41) kernel: exfat driver: upstream updates.<br>
-42) kernel: initial port ipt_accounting to 3.4 kernel.<br>
-43) kernel: driver core: fix race with userland in device_add().<br>
-44) kernel: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
-45) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
-46) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
-47) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
-48) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+34) kernel: exfat driver: upstream updates.<br>
+35) kernel: driver core: fix race with userland in device_add().<br>
+36) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
+37) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
+38) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
+39) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
+40) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
+41) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
+42) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
+43) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
+44) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+45) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
+46) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+47) kernel: net: tcp: update reordering first before detecting loss.<br>
+48) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
 <br>
 <br>
 <b>TODO:</b><br>
-1) full russian ui (need help community or employ the web developer).<br>
-2) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-3) port support l2tp/pptp hardware NAT offload (really needed??? in sdk very ugly code).<br>
-4) need add davfs2 webui for managment online disk drives (as yandex disk and others).<br>
+1) full russian ui (work end ~80%).<br>
+2) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+3) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+4) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>
