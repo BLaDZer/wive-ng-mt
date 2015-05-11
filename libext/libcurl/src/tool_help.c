@@ -83,6 +83,7 @@ static const char *const helptext[] = {
   "     --environment   Write results to environment variables (RISC OS)",
 #endif
   " -f, --fail          Fail silently (no output at all) on HTTP errors (H)",
+  "     --false-start   Enable TLS False Start.",
   " -F, --form CONTENT  Specify HTTP multipart POST data (H)",
   "     --form-string STRING  Specify HTTP multipart POST data (H)",
   "     --ftp-account DATA  Account data string (F)",
@@ -153,6 +154,7 @@ static const char *const helptext[] = {
   "     --oauth2-bearer TOKEN  OAuth 2 Bearer Token (IMAP, POP3, SMTP)",
   " -o, --output FILE   Write to FILE instead of stdout",
   "     --pass PASS     Pass phrase for the private key (SSL/SSH)",
+  "     --path-as-is    Do not squash .. sequences in URL path",
   "     --pinnedpubkey FILE  Public key (PEM/DER) to verify peer against "
   "(OpenSSL/GnuTLS/GSKit only)",
   "     --post301       "

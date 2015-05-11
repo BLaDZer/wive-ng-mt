@@ -62,5 +62,9 @@ Upgrade: %H2CVER
 HTTP2-Settings: AAMAAABkAAQAAP__
 
 </protocol>
+# CURLE_HTTP2: Send failure: Broken pipe
+<errorcode>
+16
+</errorcode>
 </verify>
 </testcase>

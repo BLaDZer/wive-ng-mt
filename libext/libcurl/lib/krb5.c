@@ -1,6 +1,6 @@
 /* GSSAPI/krb5 support for FTP - loosely based on old krb4.c
  *
- * Copyright (c) 1995, 1996, 1997, 1998, 1999, 2013 Kungliga Tekniska Högskolan
+ * Copyright (c) 1995, 1996, 1997, 1998, 1999 Kungliga Tekniska Högskolan
  * (Royal Institute of Technology, Stockholm, Sweden).
  * Copyright (c) 2004 - 2015 Daniel Stenberg
  * All rights reserved.
@@ -46,13 +46,11 @@
 #include "curl_gssapi.h"
 #include "sendf.h"
 #include "curl_sec.h"
-#include "curl_memory.h"
 #include "warnless.h"
+#include "curl_printf.h"
 
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
-/* The last #include file should be: */
+/* The last #include files should be: */
+#include "curl_memory.h"
 #include "memdebug.h"
 
 #define LOCAL_ADDR (&conn->local_addr)
@@ -248,7 +246,8 @@ krb5_auth(void *app_data, struct connectdata *conn)
         result = Curl_base64_encode(data, (char *)output_buffer.value,
                                     output_buffer.length, &p, &base64_sz);
         if(result) {
-          Curl_infof(data,"base64-encoding: %s\n", curl_easy_strerror(result));
+          Curl_infof(data, "base64-encoding: %s\n",
+                     curl_easy_strerror(result));
           ret = AUTH_CONTINUE;
           break;
         }
@@ -280,7 +279,8 @@ krb5_auth(void *app_data, struct connectdata *conn)
                                       (unsigned char **)&_gssresp.value,
                                       &_gssresp.length);
           if(result) {
-            Curl_failf(data,"base64-decoding: %s", curl_easy_strerror(result));
+            Curl_failf(data, "base64-decoding: %s",
+                       curl_easy_strerror(result));
             ret = AUTH_CONTINUE;
             break;
           }

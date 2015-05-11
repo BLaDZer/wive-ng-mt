@@ -32,14 +32,14 @@
 #ifdef USE_GSKIT
 int Curl_gskit_init(void);
 void Curl_gskit_cleanup(void);
-CURLcode Curl_gskit_connect(struct connectdata * conn, int sockindex);
-CURLcode Curl_gskit_connect_nonblocking(struct connectdata * conn,
-                                        int sockindex, bool * done);
+CURLcode Curl_gskit_connect(struct connectdata *conn, int sockindex);
+CURLcode Curl_gskit_connect_nonblocking(struct connectdata *conn,
+                                        int sockindex, bool *done);
 void Curl_gskit_close(struct connectdata *conn, int sockindex);
-int Curl_gskit_shutdown(struct connectdata * conn, int sockindex);
+int Curl_gskit_shutdown(struct connectdata *conn, int sockindex);
 
-size_t Curl_gskit_version(char * buffer, size_t size);
-int Curl_gskit_check_cxn(struct connectdata * cxn);
+size_t Curl_gskit_version(char *buffer, size_t size);
+int Curl_gskit_check_cxn(struct connectdata *cxn);
 
 /* Set the API backend definition to GSKit */
 #define CURL_SSL_BACKEND CURLSSLBACKEND_GSKIT

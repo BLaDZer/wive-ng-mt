@@ -40,10 +40,7 @@
 #endif
 
 #include "strerror.h"
-
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
+#include "curl_printf.h"
 #include "curl_memory.h"
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -644,7 +641,7 @@ const char *Curl_strerror(struct connectdata *conn, int err)
 
     FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, err,
                   LANG_NEUTRAL, wbuf, sizeof(wbuf)/sizeof(wchar_t), NULL);
-    wcstombs(buf,wbuf,max);
+    wcstombs(buf, wbuf, max);
   }
 #else
   /* 'sys_nerr' is the maximum errno number, it is not widely portable */
@@ -711,9 +708,9 @@ const char *Curl_strerror(struct connectdata *conn, int err)
   buf[max] = '\0'; /* make sure the string is zero terminated */
 
   /* strip trailing '\r\n' or '\n'. */
-  if((p = strrchr(buf,'\n')) != NULL && (p - buf) >= 2)
+  if((p = strrchr(buf, '\n')) != NULL && (p - buf) >= 2)
      *p = '\0';
-  if((p = strrchr(buf,'\r')) != NULL && (p - buf) >= 1)
+  if((p = strrchr(buf, '\r')) != NULL && (p - buf) >= 1)
      *p = '\0';
 
   if(old_errno != ERRNO)
@@ -1085,7 +1082,7 @@ const char *Curl_sspi_strerror (struct connectdata *conn, int err)
                        FORMAT_MESSAGE_IGNORE_INSERTS,
                        NULL, err, LANG_NEUTRAL,
                        wbuf, sizeof(wbuf)/sizeof(wchar_t), NULL)) {
-        wcstombs(msgbuf,wbuf,sizeof(msgbuf)-1);
+        wcstombs(msgbuf, wbuf, sizeof(msgbuf)-1);
         msg_formatted = TRUE;
       }
     }
@@ -1100,9 +1097,9 @@ const char *Curl_sspi_strerror (struct connectdata *conn, int err)
     if(msg_formatted) {
       msgbuf[sizeof(msgbuf)-1] = '\0';
       /* strip trailing '\r\n' or '\n' */
-      if((p = strrchr(msgbuf,'\n')) != NULL && (p - msgbuf) >= 2)
+      if((p = strrchr(msgbuf, '\n')) != NULL && (p - msgbuf) >= 2)
          *p = '\0';
-      if((p = strrchr(msgbuf,'\r')) != NULL && (p - msgbuf) >= 1)
+      if((p = strrchr(msgbuf, '\r')) != NULL && (p - msgbuf) >= 1)
          *p = '\0';
       msg = msgbuf;
     }

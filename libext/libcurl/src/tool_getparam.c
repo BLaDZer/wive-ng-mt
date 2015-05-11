@@ -177,6 +177,7 @@ static const struct LongShort aliases[]= {
   {"$K", "sasl-ir",                  FALSE},
   {"$L", "test-event",               FALSE},
   {"$M", "unix-socket",              TRUE},
+  {"$N", "path-as-is",               FALSE},
   {"0",   "http1.0",                 FALSE},
   {"01",  "http1.1",                 FALSE},
   {"02",  "http2",                   FALSE},
@@ -218,6 +219,7 @@ static const struct LongShort aliases[]= {
   {"Eo", "login-options",            TRUE},
   {"Ep", "pinnedpubkey",             TRUE},
   {"Eq", "cert-status",              FALSE},
+  {"Er", "false-start",              FALSE},
   {"f",  "fail",                     FALSE},
   {"F",  "form",                     TRUE},
   {"Fs", "form-string",              TRUE},
@@ -523,7 +525,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       case 'g': /* --trace */
         GetStr(&global->trace_dump, nextarg);
         if(global->tracetype && (global->tracetype != TRACE_BIN))
-          warnf(config, "--trace overrides an earlier trace/verbose option\n");
+          warnf(global, "--trace overrides an earlier trace/verbose option\n");
         global->tracetype = TRACE_BIN;
         break;
       case 'G': /* --npn */
@@ -532,7 +534,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       case 'h': /* --trace-ascii */
         GetStr(&global->trace_dump, nextarg);
         if(global->tracetype && (global->tracetype != TRACE_ASCII))
-          warnf(config,
+          warnf(global,
                 "--trace-ascii overrides an earlier trace/verbose option\n");
         global->tracetype = TRACE_ASCII;
         break;
@@ -568,7 +570,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
           /* for plain bytes, leave as-is */
           break;
         default:
-          warnf(config, "unsupported rate unit. Use G, M, K or B!\n");
+          warnf(global, "unsupported rate unit. Use G, M, K or B!\n");
           return PARAM_BAD_USE;
         }
         config->recvpersecond = value;
@@ -678,7 +680,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         if(strcmp(nextarg, "-")) {
           FILE *newfile = fopen(nextarg, "wt");
           if(!newfile)
-            warnf(config, "Failed to open %s!\n", nextarg);
+            warnf(global, "Failed to open %s!\n", nextarg);
           else {
             if(global->errors_fopened)
               fclose(global->errors);
@@ -830,7 +832,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         else {
           config->localportrange -= config->localport;
           if(config->localportrange < 1) {
-            warnf(config, "bad range input\n");
+            warnf(global, "bad range input\n");
             return PARAM_BAD_USE;
           }
         }
@@ -862,7 +864,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         break;
       case 'z': /* --libcurl */
 #ifdef CURL_DISABLE_LIBCURL_OPTION
-        warnf(config,
+        warnf(global,
               "--libcurl option was disabled at build-time!\n");
         return PARAM_OPTION_UNKNOWN;
 #else
@@ -950,7 +952,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
           int mlmaj, mlmin, mlpatch;
           metalink_get_version(&mlmaj, &mlmin, &mlpatch);
           if((mlmaj*10000)+(mlmin*100)+mlpatch < CURL_REQ_LIBMETALINK_VERS) {
-            warnf(config,
+            warnf(global,
                   "--metalink option cannot be used because the version of "
                   "the linked libmetalink library is too old. "
                   "Required: %d.%d.%d, found %d.%d.%d\n",
@@ -963,7 +965,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
           else
             config->use_metalink = toggle;
 #else
-          warnf(config, "--metalink option is ignored because the binary is "
+          warnf(global, "--metalink option is ignored because the binary is "
                 "built without the Metalink support.\n");
 #endif
           break;
@@ -975,11 +977,14 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
 #ifdef CURLDEBUG
         config->test_event_based = toggle;
 #else
-        warnf(config, "--test-event is ignored unless a debug build!\n");
+        warnf(global, "--test-event is ignored unless a debug build!\n");
 #endif
         break;
       case 'M': /* --unix-socket */
         GetStr(&config->unix_socket_path, nextarg);
+        break;
+      case 'N': /* --path-as-is */
+        config->path_as_is = toggle;
         break;
       }
       break;
@@ -1127,7 +1132,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
           else {
             file = fopen(p, "rb");
             if(!file)
-              warnf(config,
+              warnf(global,
                     "Couldn't read data from file \"%s\", this makes "
                     "an empty POST.\n", nextarg);
           }
@@ -1193,7 +1198,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         else {
           file = fopen(nextarg, "rb");
           if(!file)
-            warnf(config, "Couldn't read data from file \"%s\", this makes "
+            warnf(global, "Couldn't read data from file \"%s\", this makes "
                   "an empty POST.\n", nextarg);
         }
 
@@ -1368,6 +1373,10 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         config->verifystatus = TRUE;
         break;
 
+      case 'r': /* --false-start */
+        config->falsestart = TRUE;
+        break;
+
       default: /* certificate file */
       {
         char *certname, *passphrase;
@@ -1441,7 +1450,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       break;
     case 'J': /* --remote-header-name */
       if(config->include_headers) {
-        warnf(config,
+        warnf(global,
               "--include and --remote-header-name cannot be combined.\n");
         return PARAM_BAD_USE;
       }
@@ -1452,7 +1461,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       break;
     case 'K': /* parse config file */
       if(parseconfig(nextarg, global))
-        warnf(config, "error trying read config from the '%s' file\n",
+        warnf(global, "error trying read config from the '%s' file\n",
               nextarg);
       break;
     case 'l':
@@ -1479,7 +1488,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
 #ifdef USE_MANUAL
         return PARAM_MANUAL_REQUESTED;
 #else
-        warnf(config,
+        warnf(global,
               "built-in manual was disabled at build-time!\n");
         return PARAM_OPTION_UNKNOWN;
 #endif
@@ -1598,7 +1607,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
       if(ISDIGIT(*nextarg) && !strchr(nextarg, '-')) {
         char buffer[32];
         curl_off_t off;
-        warnf(config,
+        warnf(global,
               "A specified range MUST include at least one dash (-). "
               "Appending one for you!\n");
         off = curlx_strtoofft(nextarg, NULL, 10);
@@ -1614,7 +1623,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         tmp_range = nextarg;
         while(*tmp_range != '\0') {
           if(!ISDIGIT(*tmp_range) && *tmp_range != '-' && *tmp_range != ',') {
-            warnf(config,"Invalid character is found in given range. "
+            warnf(global, "Invalid character is found in given range. "
                   "A specified range MUST have only digits in "
                   "\'start\'-\'stop\'. The server's response to this "
                   "request is uncertain.\n");
@@ -1703,7 +1712,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         if(!global->trace_dump)
           return PARAM_NO_MEM;
         if(global->tracetype && (global->tracetype != TRACE_PLAIN))
-          warnf(config,
+          warnf(global,
                 "-v, --verbose overrides an earlier trace/verbose option\n");
         global->tracetype = TRACE_PLAIN;
       }
@@ -1738,7 +1747,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         if(err)
           return err;
         if(!config->writeout)
-          warnf(config, "Failed to read %s", fname);
+          warnf(global, "Failed to read %s", fname);
       }
       else
         GetStr(&config->writeout, nextarg);
@@ -1796,7 +1805,7 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         if(-1 == stat(nextarg, &statbuf)) {
           /* failed, remove time condition */
           config->timecond = CURL_TIMECOND_NONE;
-          warnf(config,
+          warnf(global,
                 "Illegal date format for -z, --timecond (and not "
                 "a file name). Disabling time condition. "
                 "See curl_getdate(3) for valid date syntax.\n");

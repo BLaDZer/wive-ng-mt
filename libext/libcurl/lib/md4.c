@@ -74,7 +74,7 @@ static void MD4_Final(unsigned char *result, MD4_CTX *ctx);
 
 /*
  * The MD4 transformation for all three rounds.
-   */
+ */
 #define STEP(f, a, b, c, d, x, s) \
         (a) += f((b), (c), (d)) + (x); \
         (a) = (((a) << (s)) | (((a) & 0xffffffff) >> (32 - (s))));
@@ -194,7 +194,7 @@ static const void *body(MD4_CTX *ctx, const void *data, unsigned long size)
   ctx->d = d;
 
   return ptr;
-  }
+}
 
 static void MD4_Init(MD4_CTX *ctx)
 {
@@ -225,7 +225,7 @@ static void MD4_Update(MD4_CTX *ctx, const void *data, unsigned long size)
     if(size < available) {
       memcpy(&ctx->buffer[used], data, size);
       return;
-}
+    }
 
     memcpy(&ctx->buffer[used], data, available);
     data = (const unsigned char *)data + available;

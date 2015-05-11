@@ -876,7 +876,6 @@ int main(int argc, char **argv)
       memset(&test, 0, sizeof(test));
       if (do_tftp(&test, tp, n) < 0)
         break;
-      if(test.buffer)
         free(test.buffer);
     }
     sclose(peer);
@@ -1089,7 +1088,6 @@ static int parse_servercmd(struct testcase *req)
       else
         break;
     }
-    if(orgcmd)
       free(orgcmd);
   }
 

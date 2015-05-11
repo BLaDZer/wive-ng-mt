@@ -80,9 +80,7 @@
 #include "rawstr.h"
 #include "curl_sasl.h"
 #include "warnless.h"
-
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
+#include "curl_printf.h"
 
 #include "curl_memory.h"
 /* The last #include file should be: */
@@ -464,7 +462,7 @@ static CURLcode imap_perform_capability(struct connectdata *conn)
 
   imapc->sasl.authmechs = SASL_AUTH_NONE; /* No known auth. mechanisms yet */
   imapc->sasl.authused = SASL_AUTH_NONE;  /* Clear the auth. mechanism used */
-  imapc->tls_supported = FALSE; /* Clear the TLS capability */
+  imapc->tls_supported = FALSE;           /* Clear the TLS capability */
 
   /* Send the CAPABILITY command */
   result = imap_sendf(conn, "CAPABILITY");
@@ -549,8 +547,8 @@ static CURLcode imap_perform_login(struct connectdata *conn)
   result = imap_sendf(conn, "LOGIN %s %s", user ? user : "",
                       passwd ? passwd : "");
 
-  Curl_safefree(user);
-  Curl_safefree(passwd);
+  free(user);
+  free(passwd);
 
   if(!result)
     state(conn, IMAP_LOGIN);
@@ -663,7 +661,7 @@ static CURLcode imap_perform_list(struct connectdata *conn)
     /* Send the LIST command */
     result = imap_sendf(conn, "LIST \"%s\" *", mailbox);
 
-    Curl_safefree(mailbox);
+    free(mailbox);
   }
 
   if(!result)
@@ -704,7 +702,7 @@ static CURLcode imap_perform_select(struct connectdata *conn)
   /* Send the SELECT command */
   result = imap_sendf(conn, "SELECT %s", mailbox);
 
-  Curl_safefree(mailbox);
+  free(mailbox);
 
   if(!result)
     state(conn, IMAP_SELECT);
@@ -779,7 +777,7 @@ static CURLcode imap_perform_append(struct connectdata *conn)
   result = imap_sendf(conn, "APPEND %s (\\Seen) {%" CURL_FORMAT_CURL_OFF_T "}",
                       mailbox, conn->data->state.infilesize);
 
-  Curl_safefree(mailbox);
+  free(mailbox);
 
   if(!result)
     state(conn, IMAP_APPEND);
@@ -965,8 +963,8 @@ static CURLcode imap_state_starttls_resp(struct connectdata *conn,
 
 /* For SASL authentication responses */
 static CURLcode imap_state_auth_resp(struct connectdata *conn,
-                                                  int imapcode,
-                                                  imapstate instate)
+                                     int imapcode,
+                                     imapstate instate)
 {
   CURLcode result = CURLE_OK;
   struct SessionHandle *data = conn->data;
@@ -976,23 +974,23 @@ static CURLcode imap_state_auth_resp(struct connectdata *conn,
   (void)instate; /* no use for this yet */
 
   result = Curl_sasl_continue(&imapc->sasl, conn, imapcode, &progress);
-      if(!result)
+  if(!result)
     switch(progress) {
     case SASL_DONE:
       state(conn, IMAP_STOP);  /* Authenticated */
       break;
     case SASL_IDLE:            /* No mechanism left after cancellation */
       if((!imapc->login_disabled) && (imapc->preftype & IMAP_TYPE_CLEARTEXT))
-      /* Perform clear text authentication */
-      result = imap_perform_login(conn);
-    else {
-      failf(data, "Authentication cancelled");
-      result = CURLE_LOGIN_DENIED;
-    }
+        /* Perform clear text authentication */
+        result = imap_perform_login(conn);
+      else {
+        failf(data, "Authentication cancelled");
+        result = CURLE_LOGIN_DENIED;
+      }
       break;
     default:
       break;
-  }
+    }
 
   return result;
 }
@@ -1802,7 +1800,7 @@ static CURLcode imap_sendf(struct connectdata *conn, const char *fmt, ...)
   result = Curl_pp_vsendf(&imapc->pp, taggedfmt, ap);
   va_end(ap);
 
-  Curl_safefree(taggedfmt);
+  free(taggedfmt);
 
   return result;
 }
@@ -1945,7 +1943,7 @@ static CURLcode imap_parse_url_options(struct connectdata *conn)
     value = ptr + 1;
 
     while(*ptr && *ptr != ';')
-        ptr++;
+      ptr++;
 
     if(strnequal(key, "AUTH=", 5))
       result = Curl_sasl_parse_url_auth_option(&imapc->sasl,
@@ -1953,9 +1951,9 @@ static CURLcode imap_parse_url_options(struct connectdata *conn)
     else
       result = CURLE_URL_MALFORMAT;
 
-      if(*ptr == ';')
-        ptr++;
-    }
+    if(*ptr == ';')
+      ptr++;
+  }
 
   switch(imapc->sasl.prefmech) {
   case SASL_AUTH_NONE:
@@ -2033,7 +2031,7 @@ static CURLcode imap_parse_url_path(struct connectdata *conn)
     /* Decode the value parameter */
     result = Curl_urldecode(data, begin, ptr - begin, &value, &valuelen, TRUE);
     if(result) {
-      Curl_safefree(name);
+      free(name);
       return result;
     }
 
@@ -2072,14 +2070,14 @@ static CURLcode imap_parse_url_path(struct connectdata *conn)
       value = NULL;
     }
     else {
-      Curl_safefree(name);
-      Curl_safefree(value);
+      free(name);
+      free(value);
 
       return CURLE_URL_MALFORMAT;
     }
 
-    Curl_safefree(name);
-    Curl_safefree(value);
+    free(name);
+    free(value);
   }
 
   /* Does the URL contain a query parameter? Only valid when we have a mailbox

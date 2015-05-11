@@ -56,15 +56,12 @@
 #include <inet.h>
 #endif
 
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
+#include "curl_printf.h"
 #include "urldata.h"
 #include "sendf.h"
 #include "if2ip.h"
 #include "strerror.h"
 #include "connect.h"
-#include "curl_memory.h"
 #include "select.h"
 #include "url.h" /* for Curl_safefree() */
 #include "multiif.h"
@@ -77,7 +74,8 @@
 #include "conncache.h"
 #include "multihandle.h"
 
-/* The last #include file should be: */
+/* The last #include files should be: */
+#include "curl_memory.h"
 #include "memdebug.h"
 
 #ifdef __SYMBIAN32__
@@ -561,22 +559,20 @@ static CURLcode trynextip(struct connectdata *conn,
       family = conn->tempaddr[tempindex]->ai_family;
       ai = conn->tempaddr[tempindex]->ai_next;
     }
+#ifdef ENABLE_IPV6
     else if(conn->tempaddr[0]) {
       /* happy eyeballs - try the other protocol family */
       int firstfamily = conn->tempaddr[0]->ai_family;
-#ifdef ENABLE_IPV6
       family = (firstfamily == AF_INET) ? AF_INET6 : AF_INET;
-#else
-      family = firstfamily;
-#endif
       ai = conn->tempaddr[0]->ai_next;
     }
+#endif
 
     while(ai) {
       if(conn->tempaddr[other]) {
         /* we can safely skip addresses of the other protocol family */
-      while(ai && ai->ai_family != family)
-        ai = ai->ai_next;
+        while(ai && ai->ai_family != family)
+          ai = ai->ai_next;
       }
 
       if(ai) {
@@ -887,7 +883,7 @@ static void tcpnodelay(struct connectdata *conn,
     infof(data, "Could not set TCP_NODELAY: %s\n",
           Curl_strerror(conn, SOCKERRNO));
   else
-    infof(data,"TCP_NODELAY set\n");
+    infof(data, "TCP_NODELAY set\n");
 #else
   (void)conn;
   (void)sockfd;
@@ -1027,7 +1023,7 @@ static CURLcode singleipconnect(struct connectdata *conn,
 
 #ifdef ENABLE_IPV6
   is_tcp = (addr.family == AF_INET || addr.family == AF_INET6) &&
-           addr.socktype == SOCK_STREAM;
+    addr.socktype == SOCK_STREAM;
 #else
   is_tcp = (addr.family == AF_INET) && addr.socktype == SOCK_STREAM;
 #endif
@@ -1115,7 +1111,7 @@ static CURLcode singleipconnect(struct connectdata *conn,
     default:
       /* unknown error, fallthrough and try another address! */
       infof(data, "Immediate connect fail for %s: %s\n",
-            ipaddress, Curl_strerror(conn,error));
+            ipaddress, Curl_strerror(conn, error));
       data->state.os_errno = error;
 
       /* connect failed */
@@ -1206,15 +1202,20 @@ curl_socket_t Curl_getconnectinfo(struct SessionHandle *data,
 
   DEBUGASSERT(data);
 
-  /* this only works for an easy handle that has been used for
-     curl_easy_perform()! */
-  if(data->state.lastconnect && data->multi_easy) {
+  /* this works for an easy handle:
+   * - that has been used for curl_easy_perform()
+   * - that is associated with a multi handle, and whose connection
+   *   was detached with CURLOPT_CONNECT_ONLY
+   */
+  if(data->state.lastconnect && (data->multi_easy || data->multi)) {
     struct connectdata *c = data->state.lastconnect;
     struct connfind find;
     find.tofind = data->state.lastconnect;
     find.found = FALSE;
 
-    Curl_conncache_foreach(data->multi_easy->conn_cache, &find, conn_is_conn);
+    Curl_conncache_foreach(data->multi_easy?
+                           data->multi_easy->conn_cache:
+                           data->multi->conn_cache, &find, conn_is_conn);
 
     if(!find.found) {
       data->state.lastconnect = NULL;
@@ -1265,8 +1266,10 @@ int Curl_closesocket(struct connectdata *conn,
          accept, then we MUST NOT call the callback but clear the accepted
          status */
       conn->sock_accepted[SECONDARYSOCKET] = FALSE;
-    else
+    else {
+      Curl_multi_closed(conn, sock);
       return conn->fclosesocket(conn->closesocket_client, sock);
+    }
   }
 
   if(conn)
@@ -1361,11 +1364,12 @@ void Curl_conncontrol(struct connectdata *conn, bool closeit,
 #if defined(CURL_DISABLE_VERBOSE_STRINGS)
   (void) reason;
 #endif
+  if(closeit != conn->bits.close) {
+    infof(conn->data, "Marked for [%s]: %s\n", closeit?"closure":"keep alive",
+          reason);
 
-  infof(conn->data, "Marked for [%s]: %s\n", closeit?"closure":"keep alive",
-        reason);
-
-  conn->bits.close = closeit; /* the only place in the source code that should
-                                 assign this bit */
+    conn->bits.close = closeit; /* the only place in the source code that
+                                   should assign this bit */
+  }
 }
 #endif

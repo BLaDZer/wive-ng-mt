@@ -72,15 +72,14 @@
 #include "strequal.h"
 #include "strtok.h"
 #include "curl_ldap.h"
-#include "curl_memory.h"
 #include "curl_multibyte.h"
 #include "curl_base64.h"
 #include "rawstr.h"
 #include "connect.h"
+#include "curl_printf.h"
 
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
+/* The last #include files should be: */
+#include "curl_memory.h"
 #include "memdebug.h"
 
 #ifndef HAVE_LDAP_URL_PARSE
@@ -201,7 +200,7 @@ static CURLcode Curl_ldap(struct connectdata *conn, bool *done)
   size_t val_b64_sz = 0;
   curl_off_t dlsize = 0;
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
-  struct timeval ldap_timeout = {10,0}; /* 10 sec connection/search timeout */
+  struct timeval ldap_timeout = {10, 0}; /* 10 sec connection/search timeout */
 #endif
 #if defined(USE_WIN32_LDAP)
   TCHAR *host = NULL;
@@ -855,7 +854,7 @@ static int _ldap_url_parse2 (const struct connectdata *conn, LDAPURLDesc *ludp)
     ludp->lud_attrs = calloc(count + 1, sizeof(char *));
 #endif
     if(!ludp->lud_attrs) {
-      Curl_safefree(attributes);
+      free(attributes);
 
       rc = LDAP_NO_MEMORY;
 
@@ -870,7 +869,7 @@ static int _ldap_url_parse2 (const struct connectdata *conn, LDAPURLDesc *ludp)
       /* Unescape the attribute */
       unescaped = curl_easy_unescape(conn->data, attributes[i], 0, NULL);
       if(!unescaped) {
-        Curl_safefree(attributes);
+        free(attributes);
 
         rc = LDAP_NO_MEMORY;
 
@@ -885,7 +884,7 @@ static int _ldap_url_parse2 (const struct connectdata *conn, LDAPURLDesc *ludp)
       Curl_unicodefree(unescaped);
 
       if(!ludp->lud_attrs[i]) {
-        Curl_safefree(attributes);
+        free(attributes);
 
         rc = LDAP_NO_MEMORY;
 
@@ -898,7 +897,7 @@ static int _ldap_url_parse2 (const struct connectdata *conn, LDAPURLDesc *ludp)
       ludp->lud_attrs_dups++;
     }
 
-    Curl_safefree(attributes);
+    free(attributes);
   }
 
   p = q;
@@ -968,7 +967,7 @@ static int _ldap_url_parse2 (const struct connectdata *conn, LDAPURLDesc *ludp)
   }
 
 quit:
-  Curl_safefree(path);
+  free(path);
 
   return rc;
 }
@@ -999,11 +998,8 @@ static void _ldap_free_urldesc (LDAPURLDesc *ludp)
   if(!ludp)
     return;
 
-  if(ludp->lud_dn)
-    free(ludp->lud_dn);
-
-  if(ludp->lud_filter)
-    free(ludp->lud_filter);
+  free(ludp->lud_dn);
+  free(ludp->lud_filter);
 
   if(ludp->lud_attrs) {
     for(i = 0; i < ludp->lud_attrs_dups; i++)

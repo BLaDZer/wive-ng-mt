@@ -82,10 +82,7 @@
 #include "curl_gethostname.h"
 #include "curl_sasl.h"
 #include "warnless.h"
-
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
+#include "curl_printf.h"
 #include "curl_memory.h"
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -353,8 +350,8 @@ static CURLcode smtp_perform_ehlo(struct connectdata *conn)
   smtpc->sasl.authmechs = SASL_AUTH_NONE; /* No known auth. mechanism yet */
   smtpc->sasl.authused = SASL_AUTH_NONE;  /* Clear the authentication mechanism
                                              used for esmtp connections */
-  smtpc->tls_supported = FALSE;   /* Clear the TLS capability */
-  smtpc->auth_supported = FALSE;  /* Clear the AUTH capability */
+  smtpc->tls_supported = FALSE;           /* Clear the TLS capability */
+  smtpc->auth_supported = FALSE;          /* Clear the AUTH capability */
 
   /* Send the EHLO command */
   result = Curl_pp_sendf(&smtpc->pp, "EHLO %s", smtpc->domain);
@@ -574,7 +571,7 @@ static CURLcode smtp_perform_mail(struct connectdata *conn)
       auth = strdup("<>");
 
     if(!auth) {
-      Curl_safefree(from);
+      free(from);
 
       return CURLE_OUT_OF_MEMORY;
     }
@@ -585,8 +582,8 @@ static CURLcode smtp_perform_mail(struct connectdata *conn)
     size = aprintf("%" CURL_FORMAT_CURL_OFF_T, data->state.infilesize);
 
     if(!size) {
-      Curl_safefree(from);
-      Curl_safefree(auth);
+      free(from);
+      free(auth);
 
       return CURLE_OUT_OF_MEMORY;
     }
@@ -606,9 +603,9 @@ static CURLcode smtp_perform_mail(struct connectdata *conn)
     result = Curl_pp_sendf(&conn->proto.smtpc.pp,
                            "MAIL FROM:%s SIZE=%s", from, size);
 
-  Curl_safefree(from);
-  Curl_safefree(auth);
-  Curl_safefree(size);
+  free(from);
+  free(auth);
+  free(size);
 
   if(!result)
     state(conn, SMTP_MAIL);
@@ -822,8 +819,8 @@ static CURLcode smtp_state_helo_resp(struct connectdata *conn, int smtpcode,
 
 /* For SASL authentication responses */
 static CURLcode smtp_state_auth_resp(struct connectdata *conn,
-                                                  int smtpcode,
-                                                  smtpstate instate)
+                                     int smtpcode,
+                                     smtpstate instate)
 {
   CURLcode result = CURLE_OK;
   struct SessionHandle *data = conn->data;
@@ -833,18 +830,18 @@ static CURLcode smtp_state_auth_resp(struct connectdata *conn,
   (void)instate; /* no use for this yet */
 
   result = Curl_sasl_continue(&smtpc->sasl, conn, smtpcode, &progress);
-      if(!result)
+  if(!result)
     switch(progress) {
     case SASL_DONE:
       state(conn, SMTP_STOP);  /* Authenticated */
       break;
     case SASL_IDLE:            /* No mechanism left after cancellation */
       failf(data, "Authentication cancelled");
-    result = CURLE_LOGIN_DENIED;
+      result = CURLE_LOGIN_DENIED;
       break;
     default:
       break;
-  }
+    }
 
   return result;
 }
@@ -1510,7 +1507,7 @@ static CURLcode smtp_parse_url_options(struct connectdata *conn)
     value = ptr + 1;
 
     while(*ptr && *ptr != ';')
-        ptr++;
+      ptr++;
 
     if(strnequal(key, "AUTH=", 5))
       result = Curl_sasl_parse_url_auth_option(&smtpc->sasl,
@@ -1518,9 +1515,9 @@ static CURLcode smtp_parse_url_options(struct connectdata *conn)
     else
       result = CURLE_URL_MALFORMAT;
 
-      if(*ptr == ';')
-        ptr++;
-    }
+    if(*ptr == ';')
+      ptr++;
+  }
 
   return result;
 }
@@ -1660,13 +1657,13 @@ CURLcode Curl_smtp_escape_eob(struct connectdata *conn, const ssize_t nread)
     data->state.scratch = scratch;
 
     /* Free the old scratch buffer */
-    Curl_safefree(oldscratch);
+    free(oldscratch);
 
     /* Set the new amount too */
     data->req.upload_present = si;
   }
   else
-    Curl_safefree(newscratch);
+    free(newscratch);
 
   return CURLE_OK;
 }

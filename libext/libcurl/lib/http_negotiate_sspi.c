@@ -33,17 +33,15 @@
 #include "curl_base64.h"
 #include "curl_sasl.h"
 #include "http_negotiate.h"
-#include "curl_memory.h"
 #include "curl_multibyte.h"
+#include "curl_printf.h"
 
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
-/* The last #include file should be: */
+/* The last #include files should be: */
+#include "curl_memory.h"
 #include "memdebug.h"
 
 CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
-                         const char *header)
+                              const char *header)
 {
   BYTE              *input_token = NULL;
   SecBufferDesc     out_buff_desc;
@@ -106,7 +104,7 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
     PSecPkgInfo SecurityPackage;
     status = s_pSecFn->QuerySecurityPackageInfo((TCHAR *)
                                                 TEXT(SP_NAME_NEGOTIATE),
-                                             &SecurityPackage);
+                                                &SecurityPackage);
     if(status != SEC_E_OK)
       return CURLE_NOT_BUILT_IN;
 
@@ -163,8 +161,8 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
   }
   else {
     result = Curl_base64_decode(header,
-                               (unsigned char **)&input_token,
-                               &input_token_len);
+                                (unsigned char **)&input_token,
+                                &input_token_len);
     if(result)
       return result;
 
@@ -209,7 +207,7 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
     &attrs,
     &expiry);
 
-  Curl_safefree(input_token);
+  free(input_token);
 
   if(GSS_ERROR(neg_ctx->status))
     return CURLE_OUT_OF_MEMORY;

@@ -144,6 +144,9 @@
 /* Define to 1 if you have the <cyassl/error-ssl.h> header file. */
 #undef HAVE_CYASSL_ERROR_SSL_H
 
+/* Define to 1 if you have the <cyassl/options.h> header file. */
+#undef HAVE_CYASSL_OPTIONS_H
+
 /* Define to 1 if you have the `DES_set_odd_parity' function. */
 #undef HAVE_DES_SET_ODD_PARITY
 
@@ -476,6 +479,9 @@
 /* Define to 1 if you have the <openssl/rsa.h> header file. */
 #undef HAVE_OPENSSL_RSA_H
 
+/* if you have the function SRP_Calc_client_key */
+#undef HAVE_OPENSSL_SRP
+
 /* Define to 1 if you have the <openssl/ssl.h> header file. */
 #undef HAVE_OPENSSL_SSL_H
 
@@ -583,9 +589,6 @@
 
 /* Define to 1 if you have the <socket.h> header file. */
 #undef HAVE_SOCKET_H
-
-/* if you have the function SRP_Calc_client_key */
-#undef HAVE_SSLEAY_SRP
 
 /* Define to 1 if you have the `SSLv2_client_method' function. */
 #undef HAVE_SSLV2_CLIENT_METHOD
@@ -950,9 +953,6 @@
 
 /* to enable Windows native SSL/TLS support */
 #undef USE_SCHANNEL
-
-/* if SSL is enabled */
-#undef USE_SSLEAY
 
 /* if you want POSIX threaded DNS lookup */
 #undef USE_THREADS_POSIX

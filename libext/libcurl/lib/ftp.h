@@ -150,7 +150,7 @@ struct ftp_conn {
   /* newhost is the (allocated) IP addr or host name to connect the data
      connection to */
   char *newhost;          /* this is the pair to connect the DATA... */
-  unsigned short newport;        /* connection to */
+  unsigned short newport; /* connection to */
 
 };
 

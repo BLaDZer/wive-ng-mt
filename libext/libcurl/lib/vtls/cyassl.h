@@ -26,7 +26,7 @@
 #ifdef USE_CYASSL
 
 CURLcode Curl_cyassl_connect(struct connectdata *conn, int sockindex);
-bool Curl_cyassl_data_pending(const struct connectdata* conn,int connindex);
+bool Curl_cyassl_data_pending(const struct connectdata* conn, int connindex);
 int Curl_cyassl_shutdown(struct connectdata* conn, int sockindex);
 
  /* close a SSL connection */
@@ -45,6 +45,9 @@ int Curl_cyassl_random(struct SessionHandle *data,
 
 /* Set the API backend definition to Schannel */
 #define CURL_SSL_BACKEND CURLSSLBACKEND_CYASSL
+
+/* this backend supports CURLOPT_SSL_CTX_* */
+#define have_curlssl_ssl_ctx 1
 
 /* API setup for CyaSSL */
 #define curlssl_init Curl_cyassl_init

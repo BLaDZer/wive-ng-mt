@@ -33,13 +33,11 @@
 #include "urldata.h"
 #include "curl_base64.h"
 #include "curl_gssapi.h"
-#include "curl_memory.h"
 #include "sendf.h"
+#include "curl_printf.h"
 
-#define _MPRINTF_REPLACE /* use our functions only */
-#include <curl/mprintf.h>
-
-/* The last #include file should be: */
+/* The last #include files should be: */
+#include "curl_memory.h"
 #include "memdebug.h"
 
 /*
@@ -122,12 +120,12 @@ CURLcode Curl_sasl_create_gssapi_user_message(struct SessionHandle *data,
     if(GSS_ERROR(gss_major_status)) {
       Curl_gss_log_error(data, gss_minor_status, "gss_import_name() failed: ");
 
-      Curl_safefree(spn);
+      free(spn);
 
       return CURLE_OUT_OF_MEMORY;
     }
 
-    Curl_safefree(spn);
+    free(spn);
   }
   else {
     /* Decode the base-64 encoded challenge message */
@@ -160,7 +158,7 @@ CURLcode Curl_sasl_create_gssapi_user_message(struct SessionHandle *data,
                                                mutual_auth,
                                                NULL);
 
-  Curl_safefree(input_token.value);
+  free(input_token.value);
 
   if(GSS_ERROR(gss_major_status)) {
     if(output_token.value)
@@ -246,7 +244,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
     Curl_gss_log_error(data, gss_minor_status,
                        "gss_inquire_context() failed: ");
 
-    Curl_safefree(chlg);
+    free(chlg);
 
     return CURLE_OUT_OF_MEMORY;
   }
@@ -257,7 +255,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
   if(GSS_ERROR(gss_major_status)) {
     Curl_gss_log_error(data, gss_minor_status, "gss_display_name() failed: ");
 
-    Curl_safefree(chlg);
+    free(chlg);
 
     return CURLE_OUT_OF_MEMORY;
   }
@@ -273,7 +271,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
     Curl_gss_log_error(data, gss_minor_status, "gss_unwrap() failed: ");
 
     gss_release_buffer(&gss_status, &username_token);
-    Curl_safefree(chlg);
+    free(chlg);
 
     return CURLE_BAD_CONTENT_ENCODING;
   }
@@ -283,7 +281,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
     infof(data, "GSSAPI handshake failure (invalid security data)\n");
 
     gss_release_buffer(&gss_status, &username_token);
-    Curl_safefree(chlg);
+    free(chlg);
 
     return CURLE_BAD_CONTENT_ENCODING;
   }
@@ -291,7 +289,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
   /* Copy the data out and free the challenge as it is not required anymore */
   memcpy(&indata, output_token.value, 4);
   gss_release_buffer(&gss_status, &output_token);
-  Curl_safefree(chlg);
+  free(chlg);
 
   /* Extract the security layer */
   sec_layer = indata & 0x000000FF;
@@ -346,7 +344,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
   if(GSS_ERROR(gss_major_status)) {
     Curl_gss_log_error(data, gss_minor_status, "gss_wrap() failed: ");
 
-    Curl_safefree(message);
+    free(message);
 
     return CURLE_OUT_OF_MEMORY;
   }
@@ -359,7 +357,7 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
   gss_release_buffer(&gss_status, &output_token);
 
   /* Free the message buffer */
-  Curl_safefree(message);
+  free(message);
 
   return result;
 }
