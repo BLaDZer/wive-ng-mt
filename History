@@ -907,10 +907,11 @@
 32) kernel: ralink_raeth: add support to disable any EPHY.<br>
 33) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
 34) kernel: tcp: update reordering first before detecting loss.<br>
-35) kernel: exfat driver: upstream updates.<br>
-36) kernel: initial port ipt_accounting to 3.4 kernel.<br>
-37) kernel: driver core: fix race with userland in device_add().<br>
-38) kernel: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+35) kernel: tcp: set SOCK_NOSPACE under memory pressure.<br>
+36) kernel: exfat driver: upstream updates.<br>
+37) kernel: initial port ipt_accounting to 3.4 kernel.<br>
+38) kernel: driver core: fix race with userland in device_add().<br>
+39) kernel: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
 <br>
 <br>
 <b>TODO:</b><br>
