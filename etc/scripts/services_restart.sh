@@ -143,22 +143,24 @@ if [ -f /bin/irqbalance ]; then
 fi
 
 ##########################################################
-# This is hook for exec user script after connection     #
-# configured. May be used for add scripts needed by some #
-# provides.                                              #
-# Example: http://wive-ng.sf.net/downloads/wan_up.sh     #
-# This script load external routes for www.kvidex.ru ISP #
-##########################################################
-if [ -f /etc/scripts/wan_up.sh ]; then
-    $LOG "Call user /etc/scripts/wan_up.sh script."
-    sh /etc/scripts/wan_up.sh
-fi
-
-##########################################################
-# in dhcp client mode restart from dhcp script           #
-# in static/zeroconf/pure pppoe mode need restart anyway #
+# After physical reinit 				 #
 ##########################################################
 if [ "$MODE" = "all" ]; then
+    ##########################################################
+    # This is hook for exec user script after connection     #
+    # configured. May be used for add scripts needed by some #
+    # provides.                                              #
+    # Example: http://wive-ng.sf.net/downloads/wan_up.sh     #
+    # This script load external routes for www.kvidex.ru ISP #
+    ##########################################################
+    if [ -f /etc/scripts/wan_up.sh ]; then
+	$LOG "Call user /etc/scripts/wan_up.sh script."
+	sh /etc/scripts/wan_up.sh
+    fi
+    ##########################################################
+    # in dhcp client mode restart from dhcp script           #
+    # in static/zeroconf/pure pppoe mode need restart anyway #
+    ##########################################################
     if [ "$vpnEnabled" = "on" -a "$vpnType" = "0" -a "$vpnPurePPPOE" = "1" ] || [ "$wanConnectionMode" != "DHCP" ]; then
 	service vpnhelper restart
     fi
