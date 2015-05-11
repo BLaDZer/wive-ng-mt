@@ -18,9 +18,6 @@ start() {
 
     # if goahead started
     if [  -f /tmp/bootgood ]; then
-	# clear conntrack and routes tables/caches
-	flush_net_caches
-
 	# wifi reconfigure only after goahead start
 	$LOG "Prepare wifi config."
 	gen_wifi_config
@@ -145,6 +142,7 @@ load_nat_helpers() {
 wlan_down_all() {
     get_param
     $LOG "Shutdown all wireless interfaces."
+
     # always clear conntrack and routes tables/caches
     flush_net_caches
 
@@ -179,6 +177,9 @@ wlan_down_all() {
 	    delif_from_br ${first_wlan}${ifnum}
 	done
     fi
+
+    # always clear conntrack and routes tables/caches
+    flush_net_caches
 }
 
 get_param() {

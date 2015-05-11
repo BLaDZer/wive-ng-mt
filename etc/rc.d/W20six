@@ -349,14 +349,18 @@ get_param() {
 stop() {
     if [ -f /var/run/radvd.pid ] || [ -f /var/run/dhcp6s.pid ]; then
 	$LOG  "Deconfigure ipv6 interfaces/route."
+
+	# always clear conntrack and routes tables/caches
+	flush_net_caches
+
         # disable ra for all ifaces
 	sysctl -wq net.ipv6.conf.all.accept_ra=0		> /dev/null 2>&1
-        sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
-    	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
+	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
 
 	# disable ipv6
 	sysctl -wq net.ipv6.conf.all.disable_ipv6=1
@@ -367,7 +371,6 @@ stop() {
 	chmod 777 /tmp/ip6addrdel
 	sh /tmp/ip6addrdel
 	rm -f /tmp/ip6addrdel
-	flush_net_caches
 
 	ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
 	ip -6 route flush scope all dev sit0				> /dev/null 2>&1
@@ -381,6 +384,7 @@ stop() {
 	# always remove sit module if auto loaded after call ip tool
 	rmmod sit > /dev/null 2>&1
 
+	# always clear conntrack and routes tables/caches
 	flush_net_caches
     fi
 }
