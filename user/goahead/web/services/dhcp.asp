@@ -28,17 +28,19 @@ function genTable(disabled)
 	disabled = (disabled) ? ' disabled="disabled"' : '';
 
 	var table = '<table class="form" style="width: 100%">';
-	table += '<tr><td class="title" colspan="3">Static IP address assignment table:</td></tr>';
-	table += '<tr><th style="text-align: left;">MAC address</th><th style="text-align: left;">IP address</th><th>Action</th></tr>';
+	table += '<tr><td class="title" colspan="4">Static IP address assignment table:</td></tr>';
+	table += '<tr><th style="text-align: left;">MAC address</th><th style="text-align: left;">IP address</th><th style="text-align: left;">Description</th><th>Action</th></tr>';
 	for (var i=0; i<dhcpList.length; i++)
 	{
 		var row = dhcpList[i];
 		table += '<tr><td>' + row[0] + '</td>';
 		table += '<td>' + row[1] + '</td>';
-		table += '<td style="text-align: center;"><a style="color: #ff0000;" title="Delete record" href="javascript:deleteIPItem(' + i + ');"' + disabled + '><b>[x]</b></a></td></tr>';
+		table += '<td>' + row[2] + '</td>';
+		table += '<td style="text-align: center;"><a style="color: #ff0000;" title="Edit record" href="javascript:editIPItem(' + i + ');"' + disabled + '><img src="/graphics/edit.png" alt="[+]"></a><a style="color: #ff0000;" title="Delete record" href="javascript:deleteIPItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
 	}
 	table += '<tr><td><input class="mid" value="" name="dhcpStaticMAC"' + disabled + '></td>';
 	table += '<td><input class="mid" value="" name="dhcpStaticIP"' + disabled + '></td>';
+	table += '<td><input class="half" value="" name="dhcpStaticDesc"' + disabled + '></td>';
 	table += '<td style="text-align: center;"><input type="button" class="normal" title="Add record" value="Add" onclick="addIPItem(this.form);"' + disabled + '></td></tr>';
 	table += '</table>';
 	
@@ -51,7 +53,7 @@ function genIPTableData(form)
 {
 	var values = "";
 	for (var i=0; i<dhcpList.length; i++) {
-		values += dhcpList[i][0] + ' ' + dhcpList[i][1];
+		values += dhcpList[i][0] + ' ' + dhcpList[i][1] + ' ' + dhcpList[i][2];
 		if (dhcpList.length > (i+1)) {
 			values += ";";
 		}
@@ -70,27 +72,47 @@ function addIPItem(form)
 	if (!validateIP(form.dhcpStaticIP, true))
 	{
 		Alert('You have entered invalid IP address');
-		form.dhcpStaticMAC.focus();
+		form.dhcpStaticIP.focus();
+		return;
+	}
+
+	var re_desc = /^[a-zA-Z0-9_]+$/;
+	if (!re_desc.test(form.dhcpStaticDesc.value))
+	{
+		alert(_("services dhcp invalid desc"));
+		form.dhcpStaticDesc.focus();
 		return;
 	}
 	
-	addEntry(form.dhcpStaticMAC.value, form.dhcpStaticIP.value);
+	addEntry(form.dhcpStaticMAC.value, form.dhcpStaticIP.value, form.dhcpStaticDesc.value);
 }
 
-function addEntry(mac, ip)
+function addEntry(mac, ip, desc)
 {
-	var index = findEntry(mac, null);
+	var index = findEntry(mac, ip);
 	if (index < 0)
 	{
-		dhcpList.push( [ mac, ip ] );
+		dhcpList.push( [ mac, ip, desc ] );
 		genTable();
 	}
 	else
 	{
-		if (confirm('Do you want to overwrite existing record in static table for MAC address ' + mac + '?'))
+		if (dhcpList[index][0] == mac){
+			if (confirm('Do you want to overwrite existing record in static table for MAC address ' + mac + '?'))
+			{
+				dhcpList[index][1] = ip;
+				dhcpList[index][2] = desc;
+				genTable();
+			}
+		}
+		else if (dhcpList[index][1] == ip)
 		{
-			dhcpList[index][1] = ip;
-			genTable();
+			if (confirm('Do you want to overwrite existing record in static table for IP address ' + ip + '?'))
+			{
+				dhcpList[index][0] = mac;
+				dhcpList[index][2] = desc;
+				genTable();
+			}
 		}
 	}
 }
@@ -108,6 +130,19 @@ function deleteIPItem(index)
 			updateDhcpClientsList(tbl);
 		
 		genTable();
+	}
+}
+
+function editIPItem(index)
+{
+	var form = document.dhcpCfg;
+	if ((index>=0) && (index < dhcpList.length))
+	{
+		var row = dhcpList[index];
+		form.dhcpStaticMAC.value = row[0];
+		form.dhcpStaticIP.value = row[1];
+		form.dhcpStaticDesc.value = row[2];
+		form.dhcpStaticDesc.focus();
 	}
 }
 
@@ -182,7 +217,9 @@ function initValue()
 		dhcp_static = dhcp_static.split(";");
 		for (var i=0; i<dhcp_static.length; i++) {
 			var row = dhcp_static[i].split(" ");
-			addEntry(row[0], row[1]);
+			if (row.length < 3)
+				row[2] = "";
+			addEntry(row[0], row[1], row[2]);
 		}
 	}
 
@@ -262,7 +299,7 @@ function updateDhcpClientsList(element)
 		mac = mac.innerHTML;
 		
 		// Set-up checked value
-		var index = findEntry(mac);
+		var index = findEntry(mac, null);
 		rows[i].checked = (index >= 0);
 		
 		var status = document.getElementById(id + '_status');
@@ -296,6 +333,8 @@ function findEntry(mac, ip)
 		var row = dhcpList[i];
 		if (row[0] == mac)
 			return i;
+		if (row[1] == ip)
+			return i;
 	}
 	
 	return -1;
@@ -325,7 +364,7 @@ function toggleDhcpTable(check)
 		if (!validateIP(ip, true))
 			return;
 
-		addEntry(mac, ip);
+		addEntry(mac, ip, "");
 	}
 	else // Remove item from list
 	{
