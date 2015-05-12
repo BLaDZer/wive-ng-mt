@@ -44,7 +44,6 @@
     <message msgid="status local network" msgstr="Local Network" />
     <message msgid="status lan ipaddr" msgstr="Local IP Address" />
     <message msgid="status local netmask" msgstr="Local Netmask" />
-    <message msgid="status mac" msgstr="MAC Address" />
     <message msgid="status ethernet port status" msgstr="Ethernet Port Status" />
     <message msgid="status port management" msgstr="Port Management" />
     <message msgid="status wan port" msgstr="WAN port" />

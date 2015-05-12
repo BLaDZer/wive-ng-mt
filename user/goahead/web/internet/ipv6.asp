@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("buttons");
 Butterlate.setTextDomain("network");
 
@@ -19,16 +20,6 @@ var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
 var vpn = "<% getCfgZero(1, "vpnEnabled"); %>";
 var vpnv6 = "<% getCfgZero(1, "Ipv6InVPN"); %>";
-
-function display_on()
-{
-	if (window.ActiveXObject) { // IE
-		return "block";
-	}
-	else if (window.XMLHttpRequest) { // Mozilla, Firefox, Safari,...
-		return "table-row";
-	}
-}
 
 function SwitchOpMode(form)
 {

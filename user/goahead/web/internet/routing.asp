@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("buttons");
 

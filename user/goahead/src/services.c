@@ -129,7 +129,7 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 
 	//if DHCP is disabled - just exit
 	char* dhcpEnabled = nvram_get(RT2860_NVRAM, "dhcpEnabled");
-	if (!strncmp(dhcpEnabled, "0", 2))
+	if (CHK_IF_DIGIT(dhcpEnabled, 0))
 		return 0;
 
 	doSystem("killall -q -USR1 udhcpd");
@@ -215,15 +215,18 @@ const parameter_fetch_t dhcp_args_dns[] =
 /* goform/setDhcp */
 static void setDhcp(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*dhcp_tp, *static_leases, *submitUrl;
+	char_t	*dhcpEnabled, *static_leases, *submitUrl;
 
-	dhcp_tp = websGetVar(wp, T("lanDhcpType"), T("DISABLE"));
+	dhcpEnabled = websGetVar(wp, T("dhcpEnabled"), T("0"));
 	static_leases = websGetVar(wp, T("dhcpAssignIP"), T(""));
+
+	if (dhcpEnabled == NULL)
+		dhcpEnabled = "0";
 
 	nvram_init(RT2860_NVRAM);
 
 	// configure gateway and dns (WAN) at bridge mode
-	if (strncmp(dhcp_tp, "SERVER", 7)==0)
+	if (CHK_IF_DIGIT(dhcpEnabled, 1))
 	{
 		nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "1");
 		setupParameters(wp, dhcp_args, 0);
@@ -240,7 +243,7 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 		// Store leases to nvram
 		nvram_bufset(RT2860_NVRAM, "dhcpStatic", static_leases);
 	}
-	else if (strncmp(dhcp_tp, "DISABLE", 8)==0)
+	else if (CHK_IF_DIGIT(dhcpEnabled, 0))
 		nvram_set(RT2860_NVRAM, "dhcpEnabled", "0");
 
 	nvram_commit(RT2860_NVRAM);

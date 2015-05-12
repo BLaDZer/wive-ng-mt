@@ -44,14 +44,6 @@ function TimeoutReload(timeout)
 	StartTheTimer();
 }
 
-function display_on()
-{
-	if (window.ActiveXObject) // IE
-		return "block";
-	else if (window.XMLHttpRequest) // Mozilla, Firefox, Safari,...
-		return "table-row";
-}
-
 function initTranslation()
 {
 	_TR("sTitle", "hotspot title");

@@ -2,6 +2,23 @@
   <message msgid="services dhcp title" msgstr="DHCP сервер" />
   <message msgid="services dhcp introduction" msgstr="Здесь вы моженте настроить параметры DHCP сервера." />
   <message msgid="services dhcp setup" msgstr="Настройки DHCP сервера" />
+  <message msgid="services dhcp static title" msgstr="Таблица назначений статических IP адресов:" />
+  <message msgid="services dhcp table desc" msgstr="Описание" />
+  <message msgid="services dhcp add record" msgstr="Добавить запись" />
+  <message msgid="services dhcp edit record" msgstr="Редактировать запись" />
+  <message msgid="services dhcp delete record" msgstr="Удалить запись" />
+  <message msgid="services dhcp invalid mac" msgstr="Вы ввели неправильный MAC адрес" />
+  <message msgid="services dhcp invalid ip" msgstr="Вы ввели неправильный IP адрес" />
+  <message msgid="services dhcp invalid desc" msgstr="Пожалуйста, укажите правльное описание (a-z, A-Z, 0-9, _)." />
+  <message msgid="services dhcp ask overwrite mac" msgstr="Желаете изменить запись для MAC адреса " />
+  <message msgid="services dhcp ask overwrite ip" msgstr="Желаете изменить запись для IP адреса " />
+  <message msgid="services dhcp start" msgstr="Начальный IP адрес" />
+  <message msgid="services dhcp end" msgstr="Конечный IP адрес" />
+  <message msgid="services dhcp lease" msgstr="Срок аренды" />
+  <message msgid="services dhcp clients" msgstr="DHCP клиенты" />
+  <message msgid="services dhcp expires" msgstr="Истекает через" />
+  <message msgid="services dhcp static" msgstr="Выделеный" />
+  <message msgid="services dhcp domain" msgstr="Домен DHCP" />
 
   <message msgid="services misc title" msgstr="Прочие настройки" />
   <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />

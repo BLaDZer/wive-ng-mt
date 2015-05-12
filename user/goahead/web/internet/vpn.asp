@@ -13,9 +13,11 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="javascript">
+
 Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("hint");
 Butterlate.setTextDomain("buttons");
+
 var vpnType     = '<% getCfgGeneral(1, "vpnType"); %>';
 var vpnServerIP = (vpnType != '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
 var vpnACName   = (vpnType == '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';

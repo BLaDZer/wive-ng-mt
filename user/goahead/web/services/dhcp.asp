@@ -13,7 +13,7 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("services");
 Butterlate.setTextDomain("buttons");
 
@@ -28,20 +28,35 @@ function genTable(disabled)
 	disabled = (disabled) ? ' disabled="disabled"' : '';
 
 	var table = '<table class="form" style="width: 100%">';
-	table += '<tr><td class="title" colspan="4">Static IP address assignment table:</td></tr>';
-	table += '<tr><th style="text-align: left;">MAC address</th><th style="text-align: left;">IP address</th><th style="text-align: left;">Description</th><th>Action</th></tr>';
+	table += '<tr><td class="title" colspan="4">' + _("services dhcp static title") + '</td></tr>';
+	table += '<tr><th style="text-align: left;">' + _("inet mac") + '</th>';
+	table += '<th style="text-align: left;">' + _("inet ip") + '</th>';
+	table += '<th style="text-align: left;">' + _("services dhcp table desc") + '</th>';
+	table += '<th>' + _("routing action") + '</th></tr>';
 	for (var i=0; i<dhcpList.length; i++)
 	{
 		var row = dhcpList[i];
 		table += '<tr><td>' + row[0] + '</td>';
 		table += '<td>' + row[1] + '</td>';
 		table += '<td>' + row[2] + '</td>';
-		table += '<td style="text-align: center;"><a style="color: #ff0000;" title="Edit record" href="javascript:editIPItem(' + i + ');"' + disabled + '><img src="/graphics/edit.png" alt="[+]"></a><a style="color: #ff0000;" title="Delete record" href="javascript:deleteIPItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
+		table += '<td style="text-align: center;">';
+		table += '<a style="color: #ff0000;" title="';
+		table += _("services dhcp edit record");
+		table += '" href="javascript:editIPItem(' + i + ');"' + disabled + '>';
+		table += '<img src="/graphics/edit.png" alt="[+]"></a>';
+		table += '<a style="color: #ff0000;" title="';
+		table += _("services dhcp delete record");
+		table += '" href="javascript:deleteIPItem(' + i + ');"' + disabled + '>';
+		table += '<img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
 	}
 	table += '<tr><td><input class="mid" value="" name="dhcpStaticMAC"' + disabled + '></td>';
 	table += '<td><input class="mid" value="" name="dhcpStaticIP"' + disabled + '></td>';
 	table += '<td><input class="half" value="" name="dhcpStaticDesc"' + disabled + '></td>';
-	table += '<td style="text-align: center;"><input type="button" class="normal" title="Add record" value="Add" onclick="addIPItem(this.form);"' + disabled + '></td></tr>';
+	table += '<td style="text-align: center;"><input type="button" class="normal" title="';
+	table += _("services dhcp add record");
+	table += '" value="';
+	table += _("button add");
+	table += '" onclick="addIPItem(this.form);"' + disabled + '></td></tr>';
 	table += '</table>';
 	
 	var elem = document.getElementById("dhcpStaticIPList");
@@ -65,13 +80,13 @@ function addIPItem(form)
 {
 	if (!validateMAC(form.dhcpStaticMAC.value, true))
 	{
-		Alert('You have entered invalid MAC address');
+		alert(_("services dhcp invalid desc"));
 		form.dhcpStaticMAC.focus();
 		return;
 	}
 	if (!validateIP(form.dhcpStaticIP, true))
 	{
-		Alert('You have entered invalid IP address');
+		alert(_("services dhcp invalid desc"));
 		form.dhcpStaticIP.focus();
 		return;
 	}
@@ -98,7 +113,7 @@ function addEntry(mac, ip, desc)
 	else
 	{
 		if (dhcpList[index][0] == mac){
-			if (confirm('Do you want to overwrite existing record in static table for MAC address ' + mac + '?'))
+			if (confirm(_("services dhcp ask overwrite mac") + mac + '?'))
 			{
 				dhcpList[index][1] = ip;
 				dhcpList[index][2] = desc;
@@ -107,7 +122,7 @@ function addEntry(mac, ip, desc)
 		}
 		else if (dhcpList[index][1] == ip)
 		{
-			if (confirm('Do you want to overwrite existing record in static table for IP address ' + ip + '?'))
+			if (confirm(_("services dhcp ask overwrite ip") + ip + '?'))
 			{
 				dhcpList[index][0] = mac;
 				dhcpList[index][2] = desc;
@@ -176,7 +191,7 @@ function dhcpTypeSwitch()
 {
 	var form = document.dhcpCfg;
 	var dnsproxy = <% getCfgZero(1, "dnsPEnabled"); %> * 1;
-	var dhcp_on = form.lanDhcpType.options.selectedIndex == 1;
+	var dhcp_on = form.dhcpEnabled.options.selectedIndex == 1;
 	
 	enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease ], dhcp_on);
 	displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList' ], dhcp_on );
@@ -195,13 +210,20 @@ function initTranslation()
 	_TR("lDhcpType", "services dhcp title");
 	_TR("lDhcpTypeD", "button disable");
 	_TR("lDhcpTypeS", "button enable");
-	_TR("lDhcpStart", "lan dhcp start");
-	_TR("lDhcpEnd", "lan dhcp end");
+	_TR("dhcpDomain", "services dhcp domain");
+	_TR("lDhcpStart", "services dhcp start");
+	_TR("lDhcpEnd", "services dhcp end");
 	_TR("lDhcpNetmask", "inet netmask");
 	_TR("lDhcpPriDns", "inet pri dns");
 	_TR("lDhcpSecDns", "inet sec dns");
 	_TR("lDhcpGateway", "inet gateway");
-	_TR("lDhcpLease", "lan dhcp lease");
+	_TR("lDhcpLease", "services dhcp lease");
+	_TR("dClients", "services dhcp clients");
+	_TR("dHostname", "inet hostname");
+	_TR("dMAC", "inet mac");
+	_TR("dIP", "inet ip");
+	_TR("dExpires", "services dhcp expires");
+	_TR("dStatic", "services dhcp static");
 	
 	_TRV("lApply", "button apply");
 	_TRV("lCancel", "button cancel");
@@ -225,7 +247,7 @@ function initValue()
 
 	initTranslation();
 
-	form.lanDhcpType.options.selectedIndex = 1*dhcp;
+	form.dhcpEnabled.options.selectedIndex = 1*dhcp;
 	dhcpTypeSwitch();
 	
 	loadDhcpClientsList();
@@ -233,7 +255,7 @@ function initValue()
 
 function CheckValue(form)
 {
-	if (form.lanDhcpType.options.selectedIndex == 1)
+	if (form.dhcpEnabled.options.selectedIndex == 1)
 	{
 		if (!validateIP(form.dhcpStart, true))
 		{
@@ -390,7 +412,6 @@ function toggleDhcpTable(check)
     <td><h1 id="lTitle"></h1>
       <p id="lIntroduction"></p>
       <hr>
-      <div id="dhcpClientsTable"> </div>
       <form method="POST" name="dhcpCfg" action="/goform/setDhcp" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
@@ -398,13 +419,13 @@ function toggleDhcpTable(check)
           </tr>
           <tr>
             <td class="head" id="lDhcpType">DHCP Server</td>
-            <td><select name="lanDhcpType" class="mid" onChange="dhcpTypeSwitch();">
-                <option value="DISABLE" id="lDhcpTypeD">Disabled</option>
-                <option value="SERVER" id="lDhcpTypeS">Enabled</option>
+            <td><select name="dhcpEnabled" class="mid" onChange="dhcpTypeSwitch();">
+                <option value="0" id="lDhcpTypeD">Disabled</option>
+                <option value="1" id="lDhcpTypeS">Enabled</option>
               </select></td>
           </tr>
           <tr id="domain">
-            <td class="head">DHCP Domain</td>
+            <td class="head" id="dhcpDomain">DHCP Domain</td>
             <td><input name="dhcpDomain" class="mid" value="<% getCfgGeneral(1, "dhcpDomain"); %>"></td>
           </tr>
           <tr id="start">
@@ -436,6 +457,7 @@ function toggleDhcpTable(check)
             <td><input name="dhcpLease" class="mid" value="<% getCfgGeneral(1, "dhcpLease"); %>"></td>
           </tr>
         </table>
+        <div id="dhcpClientsTable"> </div>
         <div id="dhcpStaticIPList"> </div>
         <table class="buttons">
           <tr>

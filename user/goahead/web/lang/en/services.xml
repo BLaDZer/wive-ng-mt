@@ -2,6 +2,23 @@
   <message msgid="services dhcp title" msgstr="DHCP Server" />
   <message msgid="services dhcp introduction" msgstr="On this page you can configure DHCP server parameters." />
   <message msgid="services dhcp setup" msgstr="DHCP Server Setup" />
+  <message msgid="services dhcp static title" msgstr="Static IP address assignment table:" />
+  <message msgid="services dhcp table desc" msgstr="Description" />
+  <message msgid="services dhcp add record" msgstr="Add record" />
+  <message msgid="services dhcp edit record" msgstr="Edit record" />
+  <message msgid="services dhcp delete record" msgstr="Delete record" />
+  <message msgid="services dhcp invalid mac" msgstr="You have entered invalid MAC address" />
+  <message msgid="services dhcp invalid ip" msgstr="You have entered invalid IP address" />
+  <message msgid="services dhcp invalid desc" msgstr="Please specify correct descripton (a-z, A-Z, 0-9, _)." />
+  <message msgid="services dhcp ask overwrite mac" msgstr="Do you want to overwrite existing record in static table for MAC address " />
+  <message msgid="services dhcp ask overwrite ip" msgstr="Do you want to overwrite existing record in static table for IP address " />
+  <message msgid="services dhcp start" msgstr="Start IP Address" />
+  <message msgid="services dhcp end" msgstr="End IP Address" />
+  <message msgid="services dhcp lease" msgstr="Lease Time" />
+  <message msgid="services dhcp clients" msgstr="DHCP Clients" />
+  <message msgid="services dhcp expires" msgstr="Expires in" />
+  <message msgid="services dhcp static" msgstr="Static" />
+  <message msgid="services dhcp domain" msgstr="DHCP Domain" />
 
   <message msgid="services misc title" msgstr="Miscellaneous services" />
   <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
