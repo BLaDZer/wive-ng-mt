@@ -924,8 +924,8 @@
 49) kernel: net: tcp: update reordering first before detecting loss.<br>
 50) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
 51) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
-52) kernel: net: ipv4: handle PMTU in all ICMP error handlers.<br>
-53) kernel: net: ipv4: icmp: Fix pMTU handling for rare case.<br>
+52) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
+53) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
 <br>
 <br>
 <b>TODO:</b><br>
