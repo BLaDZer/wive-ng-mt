@@ -925,6 +925,7 @@
 50) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
 51) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
 52) kernel: net: ipv4: handle PMTU in all ICMP error handlers.<br>
+53) kernel: net: ipv4: icmp: Fix pMTU handling for rare case.<br>
 <br>
 <br>
 <b>TODO:</b><br>
