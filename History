@@ -927,7 +927,9 @@
 52) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
 53) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
 54) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
-55) kernel: net: sit: always notify change when params are updated.<br>
+55) kernel: net: ipv6: introduce ip6_rt_put().<br>
+56) kernel: net: sit: always notify change when params are updated.<br>
+57) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
 <br>
 <br>
 <b>TODO:</b><br>
