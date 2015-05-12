@@ -684,19 +684,24 @@ static int vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv)
 
 void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 {
-	char_t  *vpn_enabled, *submitUrl;
+	char_t  *vpn_enabled, *submitUrl, *vpn_type;
 
 	vpn_enabled = websGetVar(wp, T("vpn_enabled"), T(""));
+	vpn_type = websGetVar(wp, T("vpn_type"), T("0"));
+
 	if (vpn_enabled[0] == '\0')
 		vpn_enabled="off";
 
-	if (nvram_set(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
+	nvram_init(RT2860_NVRAM);
+
+	if (nvram_bufset(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
 	{
 		printf("goahead: Set vpnEnabled error!\n");
 		return;
 	}
 
-	nvram_init(RT2860_NVRAM);
+	if ((strcmp(vpn_enabled, "on")) || strcmp(vpn_type, "0"))
+		nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
 
 	// Now store VPN_ENABLED flag
 	// Do not set other params if VPN is turned off
@@ -705,7 +710,6 @@ void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 		const parameter_fetch_t *fetch = vpn_args;
 
 #ifdef CONFIG_USER_KABINET
-		char_t *vpn_type = websGetVar(wp, T("vpn_type"), T("0"));
 		if (strcmp(vpn_type, "6") == 0)
 			fetch = lanauth_args;
 #endif
