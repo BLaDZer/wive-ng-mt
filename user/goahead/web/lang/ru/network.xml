@@ -87,7 +87,8 @@
     <message msgid="ipv6 dhcp6s" msgstr="Динамическая конфигурация IPv6(dhcp6s)" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
-    <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений. Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
+    <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений." />
+    <message msgid="qos warning" msgstr="Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
     <message msgid="qos setup" msgstr="Настройки QoS" />
     <message msgid="qos type" msgstr="Тип QoS" />
     <message msgid="qos bandwidth settings" msgstr="Параметры полосы" />

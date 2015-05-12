@@ -89,7 +89,8 @@
     <message msgid="ipv6 dhcp6s" msgstr="Dynamic IPv6 configuration(dhcp6s)" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
-    <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications.For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
+    <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications." />
+    <message msgid="qos warning" msgstr="For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
     <message msgid="qos setup" msgstr="QoS Setup" />
     <message msgid="qos type" msgstr="Type of QoS" />
     <message msgid="qos bandwidth settings" msgstr="Bandwidth settings" />

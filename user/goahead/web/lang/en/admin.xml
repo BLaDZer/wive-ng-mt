@@ -52,6 +52,30 @@
     <message msgid="status distant" msgstr="Distant from the WAN port" />
     <message msgid="status ask reboot" msgstr="The device must be restarted to apply port configuration changes. Do you want to proceed?" />
 
+    <message msgid="statistic title" msgstr="Statistic" />
+    <message msgid="statistic introduction" msgstr=" Take a look at the Wive-NG-MT statistics " />
+    <message msgid="statistic warning" msgstr="CAUTION! Hardware NAT enabled. Traffic counters on interfaces not present real traffic. For some technical and software reasons there is no guarantee that gathered statistics for interfaces in 'Hardware NAT offload mode' mode is correct now. To get correct statistics you need to shut down 'Hardware NAT offload mode' option on MISC Services configuration page." />
+    <message msgid="statistic wireless about" msgstr="Wireless About" />
+    <message msgid="statistic wireless version" msgstr="Driver Version" />
+    <message msgid="statistic memory and cpu" msgstr="Memory and CPU" />
+    <message msgid="statistic memory total" msgstr="Memory total:" />
+    <message msgid="statistic memory left" msgstr="Memory left:" />
+    <message msgid="statistic cpu usage" msgstr="CPU usage:" />
+    <message msgid="statistic wanlan" msgstr="WAN/LAN" />
+    <message msgid="statistic wan rx pkt" msgstr="WAN Rx packets:" />
+    <message msgid="statistic wan rx bytes" msgstr="WAN Rx bytes:" />
+    <message msgid="statistic wan tx pkt" msgstr="WAN Tx packets:" />
+    <message msgid="statistic wan tx bytes" msgstr="WAN Tx bytes:" />
+    <message msgid="statistic lan rx pkt" msgstr="LAN Rx packets:" />
+    <message msgid="statistic lan rx bytes" msgstr="LAN Rx bytes:" />
+    <message msgid="statistic lan tx pkt" msgstr="LAN Tx packets:" />
+    <message msgid="statistic lan tx bytes" msgstr="LAN Tx bytes:" />
+    <message msgid="statistic all interface" msgstr="All interfaces" />
+    <message msgid="statistic interface name" msgstr="Interface name" />
+    <message msgid="statistic rx pkt" msgstr="Rx packets" />
+    <message msgid="statistic rx bytes" msgstr="Rx bytes" />
+    <message msgid="statistic tx pkt" msgstr="Tx packets" />
+    <message msgid="statistic tx bytes" msgstr="Tx bytes" />
 
 
 
@@ -118,24 +142,6 @@
   <message msgid="man ddns account" msgstr="Login" />
   <message msgid="man ddns passwd" msgstr="Password" />
   <message msgid="man ddns" msgstr="Dynamic DNS" />
-
-  <message msgid="statistic title" msgstr="Statistic" />
-  <message msgid="statistic introduction" msgstr=" Take a look at the Wive-NG-MT statistics " />
-  <message msgid="statistic memory and cpu" msgstr="Memory and CPU" />
-  <message msgid="statistic memory total" msgstr="Memory total: " />
-  <message msgid="statistic memory left" msgstr="Memory left: " />
-  <message msgid="statistic cpu usage" msgstr="CPU usage: " />
-
-  <message msgid="statistic wanlan" msgstr="WAN/LAN" />
-  <message msgid="statistic wan rx pkt" msgstr="WAN Rx packets: " />
-  <message msgid="statistic wan rx bytes" msgstr="WAN Rx bytes: " />
-  <message msgid="statistic wan tx pkt" msgstr="WAN Tx packets: " />
-  <message msgid="statistic wan tx bytes" msgstr="WAN Tx bytes: " />
-  <message msgid="statistic lan rx pkt" msgstr="LAN Rx packets: " />
-  <message msgid="statistic lan rx bytes" msgstr="LAN Rx bytes: " />
-  <message msgid="statistic lan tx pkt" msgstr="LAN Tx packets: " />
-  <message msgid="statistic lan tx bytes" msgstr="LAN Tx bytes: " />
-  <message msgid="statistic all interface" msgstr="All interfaces" />
 
   <message msgid="syslog title" msgstr="System Log" />
   <message msgid="syslog introduction" msgstr=" Syslog: " />

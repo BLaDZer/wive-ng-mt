@@ -37,6 +37,7 @@ function initTranslation()
   _TR("QoSSimple", "qos simple");
   _TR("QoSShaper", "qos shaper");
   _TR("QoSCODEL", "qos codel");
+  _TR("fastpath_warning", "qos warning");
 
   _TRV("QoSApply", "button apply");
   _TRV("QoSReset", "button reset");
@@ -45,10 +46,11 @@ function initTranslation()
 function QoSSelectChange(form)
 {
 	var complex_on = form.QoSSelect.value == '2';
+  var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 
 	// Display mode-dependent elements
-	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW',
-	'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP' ], complex_on );
+	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP' ], complex_on );
+  displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
 }
 
 function initializeForm(form)
@@ -66,7 +68,7 @@ function initializeForm(form)
 
 function bodyOnLoad(form)
 {
-	initializeForm (form);
+	initializeForm(form);
 	QoSSelectChange(form);
   initTranslation();
 }
@@ -78,7 +80,8 @@ function bodyOnLoad(form)
 <table class="body">
   <tr>
     <td><h1 id="QoSTitleStr">Quality of Service Settings </h1>
-      <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications. For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>. Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</p>
+      <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>
+      <div style="display:none;" id="fastpath_warning">For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>. Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</div>
       <hr>
       <form method="post" name="QoSSetup" action="/goform/QoSSetup">
         <table class="form">

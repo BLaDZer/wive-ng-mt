@@ -18,6 +18,11 @@ function initTranslation()
 {
 	_TR("statisticTitle", "statistic title");
 	_TR("statisticIntroduction", "statistic introduction");
+	_TR("fastpath_warning", "statistic warning");
+
+	_TR("statWiFiAbout", "statistic wireless about");
+	_TR("statWiFiVer", "statistic wireless version");
+	_TR("statWiFiMAC", "status mac");
 
 	_TR("statisticMMCPU", "statistic memory and cpu");
 	_TR("statisticMMTotal", "statistic memory total");
@@ -35,6 +40,11 @@ function initTranslation()
 	_TR("statisticLANTxBytes", "statistic lan tx bytes");
 
 	_TR("statisticAllIF", "statistic all interface");
+	_TR("statisticIfName", "statistic interface name");
+	_TR("statisticRxPkt", "statistic rx pkt");
+	_TR("statisticRxBytes", "statistic rx bytes");
+	_TR("statisticTxPkt", "statistic tx pkt");
+	_TR("statisticTxBytes", "statistic tx bytes");
 }
 
 function PageInit()

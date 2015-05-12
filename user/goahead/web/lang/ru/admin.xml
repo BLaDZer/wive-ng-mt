@@ -52,6 +52,30 @@
     <message msgid="status distant" msgstr="Дальше от порта WAN" />
     <message msgid="status ask reboot" msgstr="Для применения изменений требуется перезагрузка устройства. Вы хотите продолжить?" />
 
+    <message msgid="statistic title" msgstr="Статистика" />
+    <message msgid="statistic introduction" msgstr=" Статистика устройства " />
+    <message msgid="statistic warning" msgstr="Для корректнектного сбора статистики нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
+    <message msgid="statistic wireless about" msgstr="О драйвере беспроводной сети" />
+    <message msgid="statistic wireless version" msgstr="Версия драйвера" />
+    <message msgid="statistic memory and cpu" msgstr="Память и CPU" />
+    <message msgid="statistic memory total" msgstr="Памяти всего:" />
+    <message msgid="statistic memory left" msgstr="Памяти свободно:" />
+    <message msgid="statistic cpu usage" msgstr="Использование CPU:" />
+    <message msgid="statistic wanlan" msgstr="WAN/LAN" />
+    <message msgid="statistic wan rx pkt" msgstr="WAN Rx пакетов:" />
+    <message msgid="statistic wan rx bytes" msgstr="WAN Rx байт:" />
+    <message msgid="statistic wan tx pkt" msgstr="WAN Tx пакетов:" />
+    <message msgid="statistic wan tx bytes" msgstr="WAN Tx байт:" />
+    <message msgid="statistic lan rx pkt" msgstr="LAN Rx пакетов:" />
+    <message msgid="statistic lan rx bytes" msgstr="LAN Rx байт:" />
+    <message msgid="statistic lan tx pkt" msgstr="LAN Tx пакетов:" />
+    <message msgid="statistic lan tx bytes" msgstr="LAN Tx байт:" />
+    <message msgid="statistic all interface" msgstr="Все интерфейсы" />
+    <message msgid="statistic interface name" msgstr="Имя интерфейса" />
+    <message msgid="statistic rx pkt" msgstr="Принято пакетов" />
+    <message msgid="statistic rx bytes" msgstr="Принято байт" />
+    <message msgid="statistic tx pkt" msgstr="Отправленно пакетов" />
+    <message msgid="statistic tx bytes" msgstr="Отправленно байт" />
 
 
 
@@ -119,23 +143,6 @@
   <message msgid="man ddns account" msgstr="Логин" />
   <message msgid="man ddns passwd" msgstr="Пароль" />
   <message msgid="man ddns" msgstr="DDNS" />
-
-  <message msgid="statistic title" msgstr="Статистика" />
-  <message msgid="statistic introduction" msgstr=" Статистика устройства " />
-  <message msgid="statistic memory and cpu" msgstr="Память и CPU" />
-  <message msgid="statistic memory total" msgstr="Всего: " />
-  <message msgid="statistic memory left" msgstr="Свободно: " />
-  <message msgid="statistic cpu usage" msgstr="Использование CPU: " />
-  <message msgid="statistic wanlan" msgstr="WAN/LAN" />
-  <message msgid="statistic wan rx pkt" msgstr="WAN Rx пакетов: " />
-  <message msgid="statistic wan rx bytes" msgstr="WAN Rx байт: " />
-  <message msgid="statistic wan tx pkt" msgstr="WAN Tx пакетов: " />
-  <message msgid="statistic wan tx bytes" msgstr="WAN Tx байт: " />
-  <message msgid="statistic lan rx pkt" msgstr="LAN Rx пакетов: " />
-  <message msgid="statistic lan rx bytes" msgstr="LAN Rx байт: " />
-  <message msgid="statistic lan tx pkt" msgstr="LAN Tx пакетов: " />
-  <message msgid="statistic lan tx bytes" msgstr="LAN Tx байт: " />
-  <message msgid="statistic all interface" msgstr="Все интерфейсы" />
 
   <message msgid="syslog title" msgstr="Журнал" />
   <message msgid="syslog introduction" msgstr=" Syslog: " />
