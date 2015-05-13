@@ -937,6 +937,7 @@
 62) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
 63) kernel: net: sit: always notify change when params are updated.<br>
 64) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
+65) kernel: net: move away from NLMSG_PUT().<br>
 <br>
 <br>
 <b>TODO:</b><br>
