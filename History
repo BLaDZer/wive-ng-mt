@@ -938,6 +938,7 @@
 63) kernel: net: sit: always notify change when params are updated.<br>
 64) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
 65) kernel: net: move away from NLMSG_PUT().<br>
+66) kernel: net: do not use RTA_PUT() macros.<br>
 <br>
 <br>
 <b>TODO:</b><br>
