@@ -338,11 +338,11 @@ function displayServiceHandler(response)
 		{
 			// Fill-up status
 			if (service[0]*1 == '0')
-				tds[2].innerHTML = '<span style="color: #808080"><b>off</b></span>';
+				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("ipv6 service status off") + '</b></span>';
 			else
 				tds[2].innerHTML = (daemons[service[2]] == 1) ?
-					'<span style="color: #3da42c"><b>work</b></span>' :
-					'<span style="color: #808000"><b>starting</b></span>';
+					'<span style="color: #3da42c"><b>' + _("ipv6 service status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("ipv6 service status starting") + '</b></span>';
 		}
 	}
 
@@ -358,118 +358,118 @@ function displayServiceStatus()
 </head>
 
 <body onLoad="initValue()">
-<table class="body"><tr><td>
-
-<h1 id="v6Title">IPv6 Setup</h1>
-<p id="v6Introduction"></p>
-<hr />
-
-<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this.form);">
-<table width="95%" border="1" cellpadding="2" cellspacing="1">
-<tr>
-  <td class="title" colspan="2" id="v6ConnType">IPv6 Connection Type</td>
-</tr>
-<tr>
-  <td class="head" id="v6OpMode">IPv6 Operation Mode</td>
-  <td>
-    <select name="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
-      <option value="0" id="v6Disable">Disable</option>
-      <option value="1" id="v6Static">Native dynamic/static IP Connection</option>
-    </select>
-  </td>
-</tr>
-<tr id="v6invpn">
-  <td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
-  <td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
-</tr>
-<tr id="dhcp6cRowDisplay">
-  <td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
-  <td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode(this.form);"></td>
-</tr>
-<tr id="IPv6AllowForwardRowDisplay">
-  <td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
-  <td><input name="ipv6_allow_forward" type="checkbox"></td>
-</tr>
-</table>
+<table class="body">
+	<tr>
+		<td>
+			<h1 id="v6Title">IPv6 Setup</h1>
+			<p id="v6Introduction"></p>
+			<hr />
+			<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this.form);">
+				<table class="form">
+					<tr>
+						<td class="title" colspan="2" id="v6ConnType">IPv6 Connection Type</td>
+					</tr>
+					<tr>
+						<td class="head" id="v6OpMode">IPv6 Operation Mode</td>
+						<td><select name="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
+							<option value="0" id="v6Disable">Disable</option>
+							<option value="1" id="v6Static">Native dynamic/static IP Connection</option>
+						</select></td>
+					</tr>
+					<tr id="v6invpn">
+  						<td class="head" id="Ipv6InVPN">IPv6 over VPN</td>
+  						<td><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
+					</tr>
+					<tr id="dhcp6cRowDisplay">
+						<td class="head" id="IPv6Dhcpc">IPv6 autoconfigure by dhcp/ra</td>
+						<td><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode(this.form);"></td>
+					</tr>
+					<tr id="IPv6AllowForwardRowDisplay">
+						<td class="head" id="IPv6AllowForward">Allow access to LAN from internet</td>
+  						<td><input name="ipv6_allow_forward" type="checkbox"></td>
+					</tr>
+				</table>
 <!-- STATIC/DynaMIC IP -->
-<table width="95%" id="v6StaticTable" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
-<tr>
-  <td class="title" colspan="2" id="v6StaticIPSetup">IPv6 Static IP Setup</td>
-</tr>
-<tr>
-  <td class="head" id="v6StaticIPAddrLan">LAN IPv6 Address / Subnet Prefix Length</td>
-  <td><input name="ipv6_lan_ipaddr" maxlength=39 size=27> / <input name="ipv6_lan_prefix_len" maxlength=3 size=2></td>
-</tr>
-<tr>
-  <td class="head" id="v6StaticIPAddrWan">WAN IPv6 Address / Subnet Prefix Length</td>
-  <td><input name="ipv6_wan_ipaddr" maxlength=39 size=27> / <input name="ipv6_wan_prefix_len" maxlength=3 size=2></td>
-</tr>
-<tr>
-  <td class="head" id="v6StaticGW">Default Gateway</td>
-  <td><input name="ipv6_static_gw" maxlength=39 size=27></td>
-</tr>
-</table>
+				<table class="form" id="v6StaticTable" style="visibility: hidden;">
+					<tr>
+						<td class="title" colspan="2" id="v6StaticIPSetup">IPv6 Static IP Setup</td>
+					</tr>
+					<tr>
+						<td class="head" id="v6StaticIPAddrLan">LAN IPv6 Address / Subnet Prefix Length</td>
+						<td><input name="ipv6_lan_ipaddr" maxlength=39 size=27> / <input name="ipv6_lan_prefix_len" maxlength=3 size=2></td>
+					</tr>
+					<tr>
+						<td class="head" id="v6StaticIPAddrWan">WAN IPv6 Address / Subnet Prefix Length</td>
+						<td><input name="ipv6_wan_ipaddr" maxlength=39 size=27> / <input name="ipv6_wan_prefix_len" maxlength=3 size=2></td>
+					</tr>
+					<tr>
+						<td class="head" id="v6StaticGW">Default Gateway</td>
+						<td><input name="ipv6_static_gw" maxlength=39 size=27></td>
+					</tr>
+				</table>
 <!-- 6RD -->
-<table width="95%" id="v66rdTable" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
-<tr>
-  <td class="title" colspan="2" id="v66rdSetup">Tunneling Connection (6RD) Setup</td>
-</tr>
-<tr>
-  <td class="head" id="v66rdPrefix">ISP 6rd Prefix / Prefix Length</td>
-  <td><input name="ipv6_6rd_prefix" maxlength=9 size=7> / <input name="ipv6_6rd_prefix_len" maxlength=3 size=2></td>
-</tr>
-<tr>
-  <td class="head" id="v66rdBorderIPAddr">ISP Border Relay IPv4 Address</td>
-  <td><input name="ipv6_6rd_border_ipaddr" maxlength=15 size=13></td>
-</tr>
-</table>
+				<table class="form" id="v66rdTable" style="visibility: hidden;">
+					<tr>
+						<td class="title" colspan="2" id="v66rdSetup">Tunneling Connection (6RD) Setup</td>
+					</tr>
+					<tr>
+						<td class="head" id="v66rdPrefix">ISP 6rd Prefix / Prefix Length</td>
+						<td><input name="ipv6_6rd_prefix" maxlength=9 size=7> / <input name="ipv6_6rd_prefix_len" maxlength=3 size=2></td>
+					</tr>
+					<tr>
+						<td class="head" id="v66rdBorderIPAddr">ISP Border Relay IPv4 Address</td>
+						<td><input name="ipv6_6rd_border_ipaddr" maxlength=15 size=13></td>
+					</tr>
+				</table>
 <!-- 6to4 -->
-<table width="95%" id="6to4Table" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
-<tr>
-  <td class="title" colspan="2" id="6to4Setup">Tunneling Connection (6to4) Setup</td>
-</tr>
-<tr>
-  <td class="head" id="v66to4SrvIpaddr"> IPv4 to IPv6 server address </td>
-  <td><input name="IPv6SrvAddr" maxlength=39 size=27></td>
-</tr>
-</table>
+				<table class="form" id="6to4Table" style="visibility: hidden;">
+					<tr>
+						<td class="title" colspan="2" id="6to4Setup">Tunneling Connection (6to4) Setup</td>
+					</tr>
+					<tr>
+						<td class="head" id="v66to4SrvIpaddr"> IPv4 to IPv6 server address </td>
+						<td><input name="IPv6SrvAddr" maxlength=39 size=27></td>
+					</tr>
+				</table>
 <!-- Settings daemons for lan -->
-<table width="95%" id="daemons" border="1" bordercolor="#9babbd" cellpadding="3" cellspacing="1" hspace="2" vspace="2" width="540" style="visibility: hidden;">
-<tr>
-  <td class="title" colspan="3" id="v6services">Services IPv6</td>
-</tr>
-<tr>
-    <td class="title" id="v6servicename">Service name</td>
-    <td class="title" id="v6value">Value</td>
-    <td class="title" style="width: 56px;" id="v6status">Status</td>
-</tr>
-<tr id="radvd">
-	<td class="head" id="v6Radvd">Router Advertisement</td>
-    <td><select name="radvdEnbl" class="half">
-        <option value="0" id="v6RadvdD">Disable</option>
-        <option value="1" id="v6RadvdE">Enable</option>
-    </select></td>
-    <td>&nbsp;</td>
-</tr>
-<tr id="dhcpv6">
-    <td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
-    <td><select name="dhcpv6Enbl" class="half">
-        <option value="0" id="v6Dhcpv6D">Disable</option>
-        <option value="1" id="v6Dhcpv6E">Enable</option>
-    </select></td>
-    <td>&nbsp;</td>
-</tr>
+				<table class="form" id="daemons" style="visibility: hidden;">
+					<tr>
+						<td class="title" colspan="3" id="v6services">Services IPv6</td>
+					</tr>
+					<tr>
+						<td class="title" id="v6servicename">Service name</td>
+						<td class="title" id="v6value">Value</td>
+    					<td class="title" style="width: 56px;" id="v6status">Status</td>
+					</tr>
+					<tr id="radvd">
+						<td class="head" id="v6Radvd">Router Advertisement</td>
+    					<td><select name="radvdEnbl" class="half">
+        					<option value="0" id="v6RadvdD">Disable</option>
+        					<option value="1" id="v6RadvdE">Enable</option>
+    					</select></td>
+    					<td>&nbsp;</td>
+					</tr>
+					<tr id="dhcpv6">
+    					<td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
+    					<td><select name="dhcpv6Enbl" class="half">
+        					<option value="0" id="v6Dhcpv6D">Disable</option>
+        					<option value="1" id="v6Dhcpv6E">Enable</option>
+    					</select></td>
+    					<td>&nbsp;</td>
+					</tr>
+				</table>
+				<table class="buttons">
+					<tr align="center">
+  						<td>
+    						<input type=submit class="normal" value="Apply" id="v6Apply">
+    						<input type=reset  class="normal" value="Cancel" id="v6Cancel">
+    						<input type="hidden" value="/internet/ipv6.asp" name="submit-url">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</td>
+	</tr>
 </table>
-<table width="95%" cellpadding="2" cellspacing="1">
-<tr align="center">
-  <td>
-    <input type=submit style="{width:120px;}" value="Apply" id="v6Apply">&nbsp;&nbsp;
-    <input type=reset  style="{width:120px;}" value="Cancel" id="v6Cancel">
-    <input type="hidden" value="/internet/ipv6.asp" name="submit-url">
-  </td>
-</tr>
-</table>
-</form>
-</td></tr></table>
 </body>
 </html>

@@ -146,7 +146,6 @@ function bodyOnLoad(form)
           <tr>
             <td><input value="/internet/qos.asp" name="submit-url" type="hidden">
               <input type=submit class="normal" value="Apply" id="QoSApply">
-              &nbsp; &nbsp;
               <input type=reset  class="normal" value="Reset" id="QoSReset" onClick="window.location.reload()"></td>
           </tr>
         </table>
