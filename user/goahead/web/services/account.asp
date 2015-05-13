@@ -12,10 +12,28 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="Javascript" type="text/javascript">
+
+Butterlate.setTextDomain("services");
+Butterlate.setTextDomain("buttons");
+
 function resetClick(form)
 {
 	form.reset.value = 1;
 	form.submit();
+}
+
+function initTranslation()
+{
+  _TR("accountTitle", "services account title");
+  _TR("accountIntroduction", "services account introduction");
+  _TR("fastpath_warning", "services account warning");
+  _TR("accountSettings", "services account settings");
+  _TR("accountIPT", "services account ipt");
+  _TR("accountDisable", "button disable");
+  _TR("accountEnable", "button enable");
+
+  _TRV("accountApply", "button refresh");
+  _TRV("accountCancel", "button reset statistics");
 }
 
 function initValue()
@@ -27,6 +45,7 @@ function initValue()
 	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 	displayElement('fastpath_warning', (nat_fp == '1') || (nat_fp == '2') || (nat_fp == '3'));
 	displayElement('fastpath_form', (nat_fp == '0'));
+  initTranslation();
 }
 </script>
 </head>
@@ -34,11 +53,10 @@ function initValue()
 <body onLoad="initValue()">
 <table class="body">
   <tr>
-    <td><h1>Accounting</h1>
-      <p>Here you can configure Accounting Control.</p>
+    <td><h1 id="accountTitle">IP Accounting</h1>
+      <p id="accountIntroduction">Here you can configure Accounting Control.</p>
       <hr>
       <!-- IP Accounting -->
-      <h2>IP Accounting</h2>
       <div style="display:none;" id="fastpath_warning">
         <p><span style="color: #ff0000;"><b>CAUTION!&nbsp;</b></span> <b>NAT offload mode</b> option is turned on.</p>
         <p>Due to some technical reasons it's not possible to gather correct statistics for NAT offload mode mode now.</p>
@@ -49,13 +67,13 @@ function initValue()
       <form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form">
         <table class="form">
           <tr>
-            <td class="title" colspan="2">IP Accounting Settings</td>
+            <td class="title" colspan="2" id="accountSettings">IP Accounting Settings</td>
           </tr>
           <tr>
-            <td class="head">IPT accounting</td>
+            <td class="head" id="accountIPT">IPT accounting</td>
             <td><select name="iptEnable" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="accountDisable">Disable</option>
+                <option value="1" id="accountEnable">Enable</option>
               </select></td>
           </tr>
           <tr>

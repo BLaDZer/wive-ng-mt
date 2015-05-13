@@ -9,7 +9,12 @@
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+Butterlate.setTextDomain("firewall");
+Butterlate.setTextDomain("buttons");
+
 var MAX_RULES = 32;
 
 var portForwardingRules =
@@ -63,34 +68,33 @@ function genRulesTable()
 {
 	var disabled = (portForwardingRules.length >= MAX_RULES) ? ' disabled="disabled"' : '';
 
-	var table = '<table class="small" style="width: 100%"><tr>' +
-		'<th>Interface</th>' +
-		'<th>Protocol</th>' +
-		'<th>Src Ports</th>' +
-		'<th>Dst IP</th>' +
-		'<th>Dst Ports</th>' +
-		'<th>Nat loopback</th>' +
-		'<th>Comment</th>' +
-		'<th>Action</th></tr>';
+	var table = '<table class="small" style="width: 100%"><tr>';
+	table += '<th>' + _("forward interface") + '</th>';
+	table += '<th>' + _("forward protocol") + '</th>';
+	table += '<th>' + _("forward src ports") + '</th>';
+	table += '<th>' + _("forward dst ip") + '</th>';
+	table += '<th>' + _("forward dst ports") + '</th>';
+	table += '<th>' + _("forward nat") + '</th>';
+	table += '<th>' + _("forward comment") + '</th>';
+	table += '<th>' + _("forward action") + '</th></tr>';
 
 	for (var i=0; i<portForwardingRules.length; i++)
 	{
 		var row = portForwardingRules[i];
-		table +=
-			'<tr>' +
-			'<td>' + row[0] + '</td>' + // Interface
+		table += '<tr>' + '<td>' + row[0] + '</td>' + // Interface
 			'<td>' + showProtocol(row[1]) + '</td>' + // Protocol
 			'<td>' + showPortRange(row[2], row[3]) + '</td>' + // Source port range
 			'<td>' + row[4] + '</td>' + // Destination IP
 			'<td>' + showPortRange(row[5], row[6]) + '</td>' + // Destination port range
 			'<td><input type="checkbox"' + ((row[7] != 0) ? ' checked="true">' : '>') + // NAT Loopback
 			'<td>' + row[8] + '&nbsp;</td>' + // Comment
-			'<td style="text-align: center;"><a style="color: #ff0000;" title="Delete record" href="javascript:deleteRuleItem(' + i + ');"' + disabled + '><b>[x]</b></a></td>' +
+			'<td style="text-align: center;">' +
+			'<a style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteRuleItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 			'</tr>';
 	}
 	
 	if (portForwardingRules.length <= 0)
-		table += '<tr><td colspan="8" style="text-align: left;">No port forwarding rules yet</td></tr>';
+		table += '<tr><td colspan="8" style="text-align: left;">' + _("forward no rules") + '</td></tr>';
 	
 	// Controls
 	table +=
@@ -102,7 +106,7 @@ function genRulesTable()
 		'<td><input type="text" class="short" name="redirectFromPort" tabindex="6"></td>' + 
 		'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="7"></td>' + 
 		'<td rowspan="2"><input type="text" class="normal" name="comment" tabindex="8"></td>' +
-		'<td rowspan="2" style="text-align: center;"><input type="button" class="short" title="Add record" value="Add" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
+		'<td rowspan="2" style="text-align: center;"><input type="button" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
 		'</tr>' +
 		'<tr>' +
 		'<td><input type="text" class="short" name="toPort" tabindex="4"></td>' + 
@@ -121,21 +125,21 @@ function genFilteringTable()
 {
 	var disabled = (portFilteringRules.length >= MAX_RULES) ? ' disabled="disabled"' : '';
 
-	var table = '<table class="small" style="width: 100%"><tr>' +
-		'<th rowspan="2">Interface</th>' +
-		'<th rowspan="2">Protocol</th>' +
-		'<th rowspan="2">MAC</th>' +
-		'<th>Src IP</th>' +
-		'<th rowspan="2">Src Ports</th>' +
-		'<th>Dst IP</th>' +
-		'<th rowspan="2">Dst Ports</th>' +
-		'<th rowspan="2">Policy</th>' +
-		'<th rowspan="2">Comment</th>' +
-		'<th rowspan="2">Action</th>' +
-		'</tr><tr>' +
-		'<th>Mask</th>' +
-		'<th>Mask</th>' +
-		'</tr>';
+	var table = '<table class="small" style="width: 100%"><tr>';
+	table += '<th rowspan="2">' + _("forward interface") + '</th>';
+	table += '<th rowspan="2">' + _("forward protocol") + '</th>';
+	table += '<th rowspan="2">' + _("forward mac") + '</th>';
+	table += '<th>' + _("forward src ip") + '</th>';
+	table += '<th rowspan="2">' + _("forward src ports") + '</th>';
+	table += '<th>' + _("forward dst ip") + '</th>';
+	table += '<th rowspan="2">' + _("forward dst ports") + '</th>';
+	table += '<th rowspan="2">' + _("forward policy") + '</th>';
+	table += '<th rowspan="2">' + _("forward comment") + '</th>';
+	table += '<th rowspan="2">' + _("forward action") + '</th>';
+	table += '</tr><tr>';
+	table += '<th>' + _("forward mask") + '</th>';
+	table += '<th>' + _("forward mask") + '</th>';
+	table += '</tr>';
 
 	for (var i=0; i<portFilteringRules.length; i++)
 	{
@@ -152,7 +156,7 @@ function genFilteringTable()
 			'<td rowspan="2">' + showPortRange(row[9], row[10]) + '</td>' + // Destination port range
 			showPolicy(row[11]) + // Policy
 			'<td rowspan="2">' + row[12] + '&nbsp;</td>' + // Comment
-			'<td rowspan="2" style="text-align: center;"><a style="color: #ff0000;" title="Delete record" href="javascript:deleteForwardingItem(' + i + ');"' + disabled + '><b>[x]</b></a></td>' +
+			'<td rowspan="2" style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteForwardingItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 			'</tr><tr>' +
 			'<td>' + showValue(row[4]) + '</td>' + // Source IP Mask
 			'<td>' + showValue(row[8]) + '</td>' + // Destination IP Mask
@@ -160,13 +164,13 @@ function genFilteringTable()
 	}
 	
 	if (portFilteringRules.length <= 0)
-		table += '<tr><td colspan="10" style="text-align: left;">No IP / MAC / port filtering rules yet</td></tr>';
+		table += '<tr><td colspan="10" style="text-align: left;">' + _("forward no filter rules") + '</td></tr>';
 	
 	var accept_sel = (defaultFilterPolicy == '0') ? ' selected="selected"' : '';
 	var drop_sel = (defaultFilterPolicy != '0') ? ' selected="selected"' : '';
 	table +=
-		'<tr><td colspan="8" style="text-align:left;">All other packets will be: </td>' +
-		'<td colspan="2" style="text-align: right;"><select name="defaultFilteringPolicy" onchange="javascript:changedefaultFilterPolicy(this.form);"><option value="0"' + accept_sel +'>accepted</option><option value="1"' + drop_sel +'>dropped</option></select></td></tr>';
+		'<tr><td colspan="8" style="text-align:left;">' + _("port basic default policy") + '</td>' +
+		'<td colspan="2" style="text-align: right;"><select name="defaultFilteringPolicy" onchange="javascript:changedefaultFilterPolicy(this.form);"><option value="0"' + accept_sel +'>' + _("port basic default policy accepted") + '</option><option value="1"' + drop_sel +'>' + _("port basic default policy dropped") + '</option></select></td></tr>';
 	
 	// Controls
 	table +=
@@ -178,9 +182,9 @@ function genFilteringTable()
 		'<td><input type="text" tabindex="15" class="short" name="sFromPort" disabled="disabled"></td>' +
 		'<td><input type="text" tabindex="17" class="normal" name="dip_address"></td>' +
 		'<td><input type="text" tabindex="19" class="short" name="dFromPort" disabled="disabled"></td>' +
-		'<td rowspan="2"><select tabindex="21" name="policy"><option value="0"' + accept_sel + '>drop</option><option value="1"' + drop_sel + '>accept</option></select></td>' +
+		'<td rowspan="2"><select tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
 		'<td rowspan="2"><input tabindex="22" type="text" class="normal" name="comment"></td>' +
-		'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="short" title="Add record" value="Add" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
+		'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
 		'</tr>' +
 		'<tr>' +
 		'<td><input type="text" tabindex="14" class="normal" name="sip_mask"></td>' +
@@ -250,7 +254,7 @@ function getPortDistance(fromPort, toPort)
 			
 			if (result < 0)
 			{
-				alert("Start port in range is greater than end port");
+				alert(_("forward alert port"));
 				fromPort.focus();
 				return null;
 			}
@@ -258,7 +262,7 @@ function getPortDistance(fromPort, toPort)
 	}
 	else if (toPort.value != '')
 	{
-		alert("Start port in range has to be specified");
+		alert(_("forward port specified"));
 		fromPort.focus();
 		return null;
 	}
@@ -271,7 +275,7 @@ function checkComment(com)
 	var comment = com.value;
 	if (comment.length > 32)
 	{
-		alert("Comment too long: " + comment);
+		alert(_("forward comment too long") + comment);
 		com.focus();
 		return null;
 	}
@@ -301,15 +305,14 @@ function addRuleItem(form)
 		{
 			if (srcDistance != dstDistance)
 			{
-				alert("Port ranges do not match: Source port range number is " + srcDistance +
-					", destination port range number is " + dstDistance);
+				alert(_("forward port not match src") + srcDistance + _("forward port not match dst") + dstDistance);
 				return;
 			}
 		}
 	}
 	else if (dstDistance >= 0)
 	{
-		alert("Source port range is not defined");
+		alert(_("forward src port not def"));
 		form.fromPort.focus();
 		return;
 	}
@@ -355,7 +358,7 @@ function checkIPMask(ip, mask)
 	}
 	else if (mask.value != '')
 	{
-		alert('IP address is not specified for mask: ' + mask.value);
+		alert(_("forward ip not mask") + mask.value);
 		ip.focus();
 		return false;
 	}
@@ -452,6 +455,7 @@ function initState()
 
 	updateForwardingState(document.portForward);
 	updateFilteringState(document.portFiltering);
+	initTranslation();
 }
 
 function updateForwardingState(form)
@@ -489,6 +493,25 @@ function genTableData(rules, form)
 	return values;
 }
 
+function initTranslation()
+{
+  _TR("forwardTitle", "forward title");
+  _TR("forwardIntroduction", "forward introduction");
+  _TR("forwardVirtualSrv", "forward virtual server");
+  _TR("forwardVirtualSrvSet", "forward virtual server setting");
+  _TR("forwardVirtualSrvDisable", "button disable");
+  _TR("forwardVirtualSrvEnable", "button enable");
+  _TR("portTitle", "port title");
+  _TR("portIntroduction", "port introduction");
+  _TR("portBasicSet", "port basic setting");
+  _TR("portBasicFilter", "port basic filter");
+  _TR("portDisable", "button disable");
+  _TR("portEnable", "button enable");
+
+  _TRV("forwardApply", "button apply");
+  _TRV("portApply", "button apply");
+}
+
 </script>
 </head>
 
@@ -497,9 +520,9 @@ function genTableData(rules, form)
   <tr>
     <td><!-- Port forwarding -->
       
-      <h1>Port Forwarding Settings</h1>
+      <h1 id="forwardTitle">Port Forwarding Settings</h1>
       <% checkIfUnderBridgeModeASP(); %>
-      <p>Here you can setup port forwarding to provide services to the Internet.</p>
+      <p id="forwardIntroduction">Here you can setup port forwarding to provide services to the Internet.</p>
       <hr>
       <form method="POST" name="portForward" action="/goform/portForward" onSubmit="return submitForwardForm(this);">
         <table class="form">
@@ -522,7 +545,7 @@ function genTableData(rules, form)
         <table class="buttons">
           <tr>
             <td><input type="hidden" name="portForwardRules" value="">
-              <input type="submit" class="half" value="Apply">
+              <input type="submit" class="half" id="forwardApply" value="Apply">
               <input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
           </tr>
         </table>
@@ -530,9 +553,9 @@ function genTableData(rules, form)
       
       <!-- MAC / IP / Port Filtering -->
       
-      <h1>MAC/IP/Port Filtering Settings</h1>
+      <h1 id="portTitle">MAC/IP/Port Filtering Settings</h1>
       <% checkIfUnderBridgeModeASP(); %>
-      <p>Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
+      <p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
       <hr>
       <form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
         <table class="form">
@@ -542,8 +565,8 @@ function genTableData(rules, form)
           <tr>
             <td class="head" id="portBasicFilter"> MAC/IP/Port Filtering </td>
             <td><select name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
-                <option value="0" selected="selected">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="portDisable" selected="selected">Disable</option>
+                <option value="1" id="portEnable">Enable</option>
               </select></td>
           </tr>
           <tr id="portFilteringRow">
@@ -556,7 +579,7 @@ function genTableData(rules, form)
           <tr>
             <td><input type="hidden" name="portFilteringRules" value="">
               <input type="hidden" name="defaultFirewallPolicy" value="">
-              <input type="submit" class="normal" value="Apply">
+              <input type="submit" class="normal" id="portApply" value="Apply">
               <input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
           </tr>
         </table>

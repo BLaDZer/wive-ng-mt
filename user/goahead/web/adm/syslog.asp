@@ -40,6 +40,8 @@ function initTranslation()
 	_TR("syslogSysLog", "syslog system log");
 	_TRV("syslogSysLogClear", "syslog clear");
 	_TRV("syslogSysLogRefresh", "syslog refresh");
+  _TRV("syslogSysLogClear2", "syslog clear");
+  _TRV("syslogSysLogRefresh2", "syslog refresh");
 }
 
 function pageInit()
@@ -144,8 +146,8 @@ function syslogdSelect(form)
         </tr>
         <tr>
           <td colspan="2"><form method="post" name="SubmitClearLog2" action="/goform/clearlog">
-              <input type="button" value="Refresh" id="syslogSysLogRefresh" name="refreshlog" onClick="refreshlogclick();">
-              <input type="button" value="Clear" id="syslogSysLogClear" name="clearlog" onClick="clearlogclick();">
+              <input type="button" value="Refresh" id="syslogSysLogRefresh2" name="refreshlog" onClick="refreshlogclick();">
+              <input type="button" value="Clear" id="syslogSysLogClear2" name="clearlog" onClick="clearlogclick();">
             </form></td>
         </tr>
       </table>

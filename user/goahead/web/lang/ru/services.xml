@@ -31,4 +31,10 @@
   <message msgid="services ddns title" msgstr="Настройки Dynamic DNS" />
   <message msgid="services ddns introduction" msgstr="Здесь вы можете настроить параметры Dynamic DNS." />
   <message msgid="services ddns setup" msgstr="Настройки DDNS" />
+
+  <message msgid="services account title" msgstr="IP Accounting" />
+  <message msgid="services account introduction" msgstr="Здесь вы можете настроить контроль учёта." />
+  <message msgid="services account warning" msgstr="ВНИМАНИЕ! Включен режим NAT offload. По техническим причинам не возможно гарантировать коректный сбор статистики при включеном режиме NAT offload. Поэтому страница настройки IP Accounting была отключена. Для коректного сбора статистики вам нужно отключить режим NAT offload на странице Сервисы-Разное. Пожалуйста, обратите внимание, что отключение режима NAT offload увеличит загрузку процессора." />
+  <message msgid="services account settings" msgstr="Настройки IP Accounting" />
+  <message msgid="services account ipt" msgstr="IPT Accounting" />
 </po>

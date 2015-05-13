@@ -10,7 +10,9 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("firewall");
+Butterlate.setTextDomain("buttons");
 
 function deleteClick()
 {
@@ -98,16 +100,6 @@ function formCheck()
 	return true;
 }
 
-
-function display_on()
-{
-  if(window.XMLHttpRequest){ // Mozilla, Firefox, Safari,...
-    return "table-row";
-  } else if(window.ActiveXObject){ // IE
-    return "block";
-  }
-}
-
 function disableTextField (field)
 {
   if(document.all || document.getElementById)
@@ -133,11 +125,14 @@ function initTranslation()
 	_TR("dmzIntroduction", "dmz introduction");
 	_TR("dmzSetting", "dmz setting");
 	_TR("dmzSet", "dmz setting");
-	_TR("dmzDisable", "firewall disable");
-	_TR("dmzEnable", "firewall enable");
+  _TR("dmzDisable", "button disable");
+  _TR("dmzEnable", "button enable");
+  _TR("dmzDisable2", "button disable");
+  _TR("dmzEnable2", "button enable");
 	_TR("dmzIPAddr", "dmz ipaddr");
-	_TRV("dmzApply", "firewall apply");
-	_TRV("dmzReset", "firewall reset");
+
+	_TRV("dmzApply", "button apply");
+	_TRV("dmzReset", "button reset");
 }
 
 function pageInit()
@@ -154,13 +149,14 @@ function pageInit()
 function dmzEnableSwitch(form)
 {
 	enableElements([form.DMZIPAddress, form.dmzLoopback], form.DMZEnabled.value == '1');
+  displayElement([ 'dmzAdress', 'dmzLoopback' ], form.DMZEnabled.value == '1');
 }
 
 function dmzLoopbackWarning(element)
 {
 	if (element.value == '1')
 	{
-		if (!confirm("You have switched option 'DMZ NAT Loopback' on. After applying this configuration you will never enter this configuration web interface or connect to router by SSH protocol. Do you really want to proceed to set this option?"))
+		if (!confirm(_("dmz confirm")))
 			element.value='0';
 	}
 }
@@ -188,22 +184,21 @@ function dmzLoopbackWarning(element)
                 <option value="1" <% getDMZEnableASP(1); %> id="dmzEnable">Enable</option>
               </select></td>
           </tr>
-          <tr>
+          <tr id="dmzAdress">
             <td class="head" id="dmzIPAddr"> DMZ IP Address </td>
             <td><input type="text" class="mid" name="DMZIPAddress" value='<% showDMZIPAddressASP(); %>' ></td>
           </tr>
           <tr id="dmzLoopback">
             <td class="head" id="ldmzLoopback">DMZ NAT loopback</td>
             <td><select name="dmzLoopback" class="mid" onChange="dmzLoopbackWarning(this);">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="dmzDisable2">Disable</option>
+                <option value="1" id="dmzEnable2">Enable</option>
               </select></td>
           </tr>
         </table>
         <table class="buttons">
           <tr>
             <td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ" onClick="return formCheck()">
-              &nbsp;&nbsp;
               <input type="reset" class="normal" value="Reset" id="dmzReset" name="reset">
               <input type="hidden" name="submit-url" value="/firewall/DMZ.asp" ></td>
           </tr>

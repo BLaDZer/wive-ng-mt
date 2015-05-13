@@ -12,4 +12,6 @@
     <message msgid="button update" msgstr="Update" />
     <message msgid="button load" msgstr="Load" />
     <message msgid="button backup" msgstr="Backup" />
+    <message msgid="button refresh" msgstr="Refresh" />
+    <message msgid="button reset statistics" msgstr="Reset Statistics" />
 </po>

@@ -1,52 +1,86 @@
 <po>
-  <message msgid="firewall disable" msgstr="Disable" />
-  <message msgid="firewall enable" msgstr="Enable" />
-  <message msgid="firewall apply" msgstr="Apply" />
-  <message msgid="firewall reset" msgstr="Reset" />
-  <message msgid="firewall del select" msgstr="Delete Selected" />
-  <message msgid="firewall no" msgstr=" No." />
-  <message msgid="firewall protocol" msgstr="Protocol" />
-  <message msgid="firewall comment" msgstr="Comment" />
-  <message msgid="firewall default drop" msgstr="Others will be dropped" />
-  <message msgid="firewall default accept" msgstr="Others will be accepted" />
+  <message msgid="dmz title" msgstr=" DMZ Settings " />
+  <message msgid="dmz introduction" msgstr="You can set up a De-Militarized Zone (DMZ) to separate your external services from the rest of LAN." />
+  <message msgid="dmz setting" msgstr="DMZ Settings" />
+  <message msgid="dmz ipaddr" msgstr="DMZ IP Address" />
+  <message msgid="dmz confirm" msgstr="You have switched option 'DMZ NAT Loopback' on. After applying this configuration you will never enter this configuration web interface or connect to router by SSH protocol. Do you really want to proceed to set this option?" />
+
+  <message msgid="alg title" msgstr="ALG Settings" />
+  <message msgid="alg introduction" msgstr="On this page you can enable/disable ALG services." />
+  <message msgid="alg setting" msgstr="ALG Settings" />
 
   <message msgid="port title" msgstr="MAC/IP/Port Filtering Settings " />
-  <message msgid="port introduction" msgstr=" You can set up firewall rules to protect your network from viruses, worms and other malicious activity on the Internet." />
+  <message msgid="port introduction" msgstr="You can set up firewall rules to protect your network from viruses, worms and other malicious activity on the Internet." />
   <message msgid="port basic setting" msgstr="Basic Settings" />
   <message msgid="port basic filter" msgstr="MAC/IP/Port Filtering" />
   <message msgid="port basic default policy" msgstr="Default Policy -- Packets that don't match any rules will be:" />
-  <message msgid="port basic default policy accepted" msgstr="Accepted." />
-  <message msgid="port basic default policy dropped" msgstr="Dropped." />
+  <message msgid="port basic default policy accepted" msgstr="Accepted" />
+  <message msgid="port basic default policy dropped" msgstr="Dropped" />
+  <message msgid="port filter action drop" msgstr="Drop" />
+  <message msgid="port filter action accept" msgstr="Accept" />
+
+  <message msgid="forward title" msgstr="Port Forwarding  Settings" />
+  <message msgid="forward introduction" msgstr="You can set up port forwarding to provide services to the Internet." />
+  <message msgid="forward virtual server" msgstr="Port Forwarding Settings" />
+  <message msgid="forward virtual server setting" msgstr="Port Forwarding Settings" />
+  <message msgid="forward interface" msgstr="Interface" />
+  <message msgid="forward protocol" msgstr="Protocol" />
+  <message msgid="forward src ports" msgstr="Src Ports" />
+  <message msgid="forward dst ip" msgstr="Dst IP" />
+  <message msgid="forward dst ports" msgstr="Dst Ports" />
+  <message msgid="forward nat" msgstr="Nat loopback" />
+  <message msgid="forward comment" msgstr="Comment" />
+  <message msgid="forward action" msgstr="Action" />
+  <message msgid="forward delete record" msgstr="Delete record" />
+  <message msgid="forward no rules" msgstr="No port forwarding rules yet" />
+  <message msgid="forward add record" msgstr="Add record" />
+  <message msgid="forward mac" msgstr="MAC" />
+  <message msgid="forward src ip" msgstr="Src IP" />
+  <message msgid="forward policy" msgstr="Policy" />
+  <message msgid="forward mask" msgstr="Mask" />
+  <message msgid="forward no filter rules" msgstr="No IP / MAC / port filtering rules yet" />
+  <message msgid="forward alert port" msgstr="Start port in range is greater than end port" />
+  <message msgid="forward port specified" msgstr="Start port in range has to be specified" />
+  <message msgid="forward comment too long" msgstr="Comment too long: " />
+  <message msgid="forward src port not def" msgstr="Source port range is not defined" />
+  <message msgid="forward ip not mask" msgstr="IP address is not specified for mask: " />
+  <message msgid="forward port not match src" msgstr="Port ranges do not match: Source port range number is " />
+  <message msgid="forward port not match dst" msgstr=", destination port range number is " />
+
+  <message msgid="content filter title" msgstr="Content Filter Settings" />
+  <message msgid="content filter introduction" msgstr="You can set up Content Filter to restrict access to unwanted content." />
+  <message msgid="content filter webs content filter" msgstr="Web Content Filter" />
+  <message msgid="content filter webs content filter filter" msgstr="Filters:" />
+  <message msgid="content filter webs content filter proxy" msgstr="Proxy" />
+  <message msgid="content filter webs content filter java" msgstr="Java" />
+  <message msgid="content filter webs content filter activex" msgstr="ActiveX" />
+  <message msgid="content filter webs blocking rules" msgstr="Web URL / Host blocking rules" />
+  <message msgid="content filter table type" msgstr="Type" />
+  <message msgid="content filter table value" msgstr="Value" />
+  <message msgid="content filter table action" msgstr="Action" />
+  <message msgid="content filter unknown" msgstr="Unknown" />
+  <message msgid="content filter block url" msgstr="Block URL" />
+  <message msgid="content filter block host" msgstr="Block host" />
+  <message msgid="content filter no rules" msgstr="No content filtering rules yet" />
+  <message msgid="content filter not def" msgstr="Filtering value not specified" />
+
+
+
   <message msgid="port filter setting" msgstr="MAC/IP/Port Filter Settings" />
   <message msgid="port filter macaddr" msgstr="MAC address" />
   <message msgid="port filter source ipaddr" msgstr="Source IP Address" />
   <message msgid="port filter port range" msgstr="Port Range" />
   <message msgid="port filter dest ipaddr" msgstr="Dest IP Address" />
   <message msgid="port filter action" msgstr="Action" />
-  <message msgid="port filter action drop" msgstr="Drop" />
-  <message msgid="port filter action accept" msgstr="Accept" />
   <message msgid="port current filter" msgstr="Current MAC/IP/Port filtering rules in the system: " />
   <message msgid="port filter source port range" msgstr="Source Port Range" />
   <message msgid="port filter dest port range" msgstr="Dest. Port Range" />
   <message msgid="port filter packetcount" msgstr="Packet Count" />
 
-  <message msgid="forward title" msgstr="Port Forwarding  Settings " />
-  <message msgid="forward introduction" msgstr=" You can set up port forwarding to provide services to the Internet." />
-  <message msgid="forward virtual server" msgstr="Port Forwarding Settings" />
-  <message msgid="forward virtual server setting" msgstr="Port Forwarding Settings" />
   <message msgid="forward virtual server ipaddr" msgstr="IP Address" />
   <message msgid="forward virtual server port range" msgstr="Port Range" />
   <message msgid="forward current virtual server" msgstr="Current port forwarding setup: " />
 
-  <message msgid="dmz title" msgstr=" DMZ Settings " />
-  <message msgid="dmz introduction" msgstr=" You can set up a De-Militarized Zone (DMZ) to separate your external services from the rest of LAN." />
-  <message msgid="dmz setting" msgstr="DMZ Settings" />
-  <message msgid="dmz ipaddr" msgstr="DMZ IP Address" />
-
-  <message msgid="content filter title" msgstr="Content Filter Settings" />
-  <message msgid="content filter introduction" msgstr="You can set up Content Filter to restrict access to unwanted content." />
-  <message msgid="content filter webs content filter" msgstr="Web Content Filter" />
-  <message msgid="content filter webs content filter filter" msgstr="Filters:" />
   <message msgid="content filter webs content filter apply" msgstr="Apply" />
   <message msgid="content filter webs content filter reset" msgstr="Reset" />
   <message msgid="content filter webs URL filter title" msgstr="Web URL Filter Settings" />
@@ -81,5 +115,4 @@
   <message msgid="sysfw spi head" msgstr="SPI Firewall" />
   <message msgid="sysfw apply" msgstr="Apply" />
   <message msgid="sysfw reset" msgstr="Reset" />
-
 </po>

@@ -8,7 +8,12 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+Butterlate.setTextDomain("firewall");
+Butterlate.setTextDomain("buttons");
+
 function updateState()
 {
 	var st = {
@@ -22,22 +27,34 @@ function updateState()
 		'rtsp': '<% getCfgZero(1, "fwAlgRTSP"); %>'
 	};
 
+  initTranslation();
+
 	for (var field in st)
 		setElementChecked('alg_' + field, st[field] == '1');
 }
+
+function initTranslation()
+{
+  _TR("algTitle", "alg title");
+  _TR("algIntroduction", "alg introduction");
+  _TR("algSetting", "alg setting");
+
+  _TRV("algApply", "button apply");
+}
+
 </script>
 </head>
 <!--     body      -->
 <body onLoad="updateState();">
 <table class="body">
   <tr>
-    <td><h1 id="dmzTitle">ALG Settings</h1>
-      <p>On this page you can enable/disable ALG services.</p>
+    <td><h1 id="algTitle">ALG Settings</h1>
+      <p id="algIntroduction">On this page you can enable/disable ALG services.</p>
       <hr>
       <form method="post" name="alg" action="/goform/setFirewallAlg">
         <table class="form">
           <tr>
-            <td class="title" colspan="2">ALG Settings</td>
+            <td class="title" colspan="2" id="algSetting">ALG Settings</td>
           </tr>
           <tr>
             <td class="head">FTP</td>
@@ -67,8 +84,8 @@ function updateState()
         <table class="buttons">
           <tr>
             <td><input type="hidden" name="submit-url" value="/firewall/alg.asp">
-              <input type="submit" class="normal" value="Apply">
-              &nbsp;&nbsp; </td>
+              <input type="submit" class="normal" id="algApply" value="Apply">
+            </td>
           </tr>
         </table>
       </form>

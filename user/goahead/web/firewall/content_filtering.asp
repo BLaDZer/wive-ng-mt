@@ -10,44 +10,46 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("firewall");
+Butterlate.setTextDomain("buttons");
 
 var filteringRules = [];
 
 function genFilteringTable()
 {
 	var table = '<table class="small" style="width: 100%"><tr>' +
-		'<th>Type</th>' +
-		'<th>Value</th>' +
-		'<th>Action</th></tr>';
+		'<th>' + _("content filter table type") + '</th>' +
+		'<th>' + _("content filter table value") + '</th>' +
+		'<th>' + _("content filter table action") + '</th></tr>';
 
 	for (var i=0; i<filteringRules.length; i++)
 	{
 		var row = filteringRules[i];
-		var type = 'Unknown';
+		var type = _("content filter unknown");
 
 		if (row[0] == 'url')
-			type = 'Block URL';
+			type = _("content filter block url");
 		else if (row[0] == 'host')
-			type = 'Block Host';
+			type = _("content filter block host");
 
 		table +=
 			'<tr>' +
 			'<td style="text-align: left;">' + type + '</td>' + // Type
 			'<td style="text-align: left;">' + row[1] + '</td>' + // Protocol
-			'<td style="text-align: center;"><a style="color: #ff0000;" title="Delete record" onclick="deleteRule(' + i + ');"><b>[x]</b></a></td>' +
+			'<td style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" onclick="deleteRule(' + i + ');"><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 			'</tr>';
 	}
 
 	if (filteringRules.length <= 0)
-		table += '<tr><td colspan="3" style="text-align: left;">No content filtering rules yet</td></tr>';
+		table += '<tr><td colspan="3" style="text-align: left;">' + _("content filter no rules") + '</td></tr>';
 
 	// Controls
 	table +=
 		'<tr>'+
-		'<td style="text-align: left;"><select name="filterType" tabindex="1"><option value="url">Block URL</option><option value="host">Block Host</option></select></td>' +
+		'<td style="text-align: left;"><select name="filterType" tabindex="1"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
 		'<td style="text-align: left;"><input type="text" class="normal" name="filterValue" tabindex="2"></td>' +
-		'<td style="text-align: center;"><input type="button" class="short" title="Add record" value="Add" tabindex="3" onclick="addRule(this.form);"></td>' +
+		'<td style="text-align: center;"><input type="button" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
 		'</tr>';
 
 	// Close manager
@@ -62,7 +64,7 @@ function addRule(form)
 {
 	if (form.filterValue.value.match(/^\s*$/))
 	{
-		alert('Filtering value not specified');
+		alert(_("content filter not def"));
 		form.filterValue.focus();
 		return;
 	}
@@ -104,6 +106,7 @@ function initValues()
 		setElementChecked('websFilter_' + field, st[field] == '1');
 	
 	genFilteringTable();
+	initTranslation();
 }
 
 function addAllRules(list, type)
@@ -131,6 +134,20 @@ function submitForm(form)
 	form.hostFiltering.value = ents['host'].join(';');
 	
 	return true;
+}
+
+function initTranslation()
+{
+	_TR("ContentFilterTitle", "content filter title");
+	_TR("ContentFilterIntrodution", "content filter introduction");
+	_TR("WebsContentFilter", "content filter webs content filter");
+	_TR("WebsContentFilterFilter", "content filter webs content filter filter");
+  	_TR("websFilter_proxy", "content filter webs content filter proxy");
+  	_TR("websFilter_java", "content filter webs content filter java");
+  	_TR("websFilter_activex", "content filter webs content filter activex");
+  	_TR("WebsBlockingRules", "content filter webs blocking rules");
+
+	_TRV("ContentFilterApply", "button apply");
 }
 
 </script>
@@ -161,7 +178,7 @@ function submitForm(form)
               &nbsp;ActiveX </td>
           </tr>
           <tr>
-            <td class="title" colspan="2" id="WebsContentFilter">Web URL / Host blocking rules</td>
+            <td class="title" colspan="2" id="WebsBlockingRules">Web URL / Host blocking rules</td>
           </tr>
           <tr>
             <td colspan="2" id="filteringRules"></td>
@@ -172,7 +189,7 @@ function submitForm(form)
             <td><input type="hidden" name="urlFiltering" />
               <input type="hidden" name="hostFiltering" />
               <input type="hidden" name="submit-url" value="/firewall/content_filtering.asp" />
-              <input type="submit" value="Apply"></td>
+              <input type="submit" value="Apply" id="ContentFilterApply"></td>
           </tr>
         </table>
       </form>
