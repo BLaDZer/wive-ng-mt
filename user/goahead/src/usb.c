@@ -48,8 +48,11 @@ static void printersrv(webs_t wp, char_t *path, char_t *query)
 	enable = websGetVar(wp, T("enabled"), T(""));
 	bidirect = websGetVar(wp, T("bdenabled"), T(""));
 	// set to nvram
-	nvram_set(RT2860_NVRAM, "PrinterSrvEnabled", enable);
-	nvram_set(RT2860_NVRAM, "PrinterSrvBidir", bidirect);
+	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "PrinterSrvEnabled", enable);
+	nvram_bufset(RT2860_NVRAM, "PrinterSrvBidir", bidirect);
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
 	// debug print
@@ -104,6 +107,7 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 			if (CHK_IF_DIGIT(modem_enabled, 1))
 				setupParameters(wp, usb_modem_args, 0);
 
+			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
 		}
 	else if (0 == strcmp(submit, "connect"))

@@ -170,6 +170,7 @@ static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(ftp_enable, 1) || CHK_IF_DIGIT(ftp_enable, 2))
 		setupParameters(wp, ftp_server_args, 0);
 
+	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 	firewall_rebuild();
@@ -210,6 +211,7 @@ static void transmission(webs_t wp, char_t *path, char_t *query)
 		if (CHK_IF_DIGIT(trans_enabled, 1))
 			setupParameters(wp, transmission_args, 0);
 
+		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 		firewall_rebuild();
 		doSystem("service transmission restart");

@@ -35,6 +35,7 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(QoS_type, 2))
 		setupParameters(wp, QoS_args, 0);
 
+	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 	doSystem("service shaper restart && service iptables restart && service kext restart");
 

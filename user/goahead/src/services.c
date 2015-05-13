@@ -244,7 +244,7 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "dhcpStatic", static_leases);
 	}
 	else if (CHK_IF_DIGIT(dhcpEnabled, 0))
-		nvram_set(RT2860_NVRAM, "dhcpEnabled", "0");
+		nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "0");
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
@@ -386,6 +386,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 	char_t *http_port = nvram_bufget(RT2860_NVRAM, "RemoteManagementPort");
 
+	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 	char_t *port_changed = websGetVar(wp, T("rmt_http_port_changed"), T("0"));
@@ -473,6 +474,7 @@ static void setSamba(webs_t wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(smb_enabled, 1))
 		setupParameters(wp, service_samba_flags, 0);
 
+	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 	//restart some services instead full reload
