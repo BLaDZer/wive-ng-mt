@@ -124,11 +124,11 @@
     <message msgid="routing rip" msgstr="RIP" />
     <message msgid="routing del title" msgstr="Таблица текущей маршрутизации:" />
     <message msgid="routing number" msgstr="No." />
-    <message msgid="routing del flags" msgstr="Flags" />
+    <message msgid="routing del flags" msgstr="Флаги" />
     <message msgid="routing del metric" msgstr="Metric" />
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
-    <message msgid="routing action" msgstr="Action" />
+    <message msgid="routing action" msgstr="Действие" />
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />

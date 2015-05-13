@@ -25,12 +25,17 @@ function initTranslation()
 	_TR("routingIntroduction", "routing introduction");
 	_TR("routingAddRule", "routing add rule");
 	_TR("routingDest", "routing dest");
+	_TR("routingTableDest", "routing dest");
 	_TR("routingRange", "routing range");
 	_TR("routingNetmask", "routing netmask");
+	_TR("routingTableNetmask", "routing netmask");
 	_TR("routingGateway", "routing gateway");
+	_TR("routingTableGateway", "routing gateway");
 	_TR("routingInterface", "routing interface");
+	_TR("routingTableInterface", "routing interface");
 	_TR("routingIfaceName", "routing interface name");
 	_TR("routingComment", "routing comment");
+	_TR("routingTableComment", "routing comment");
 	_TR("routingHost", "routing host");
 	_TR("routingNet", "routing net");
 	_TR("dynamicRoutingTitle", "routing dynamic Title");
@@ -38,7 +43,7 @@ function initTranslation()
 	_TR("RIPDisable", "button disable");
 	_TR("RIPEnable", "button enable");
 	_TR("routingCurrentRoutingTableRules", "routing del title");
-	_TR("routingNo", "routing number");
+	_TR("routingTableNo", "routing number");
 	_TR("routingDelFlags", "routing del flags");
 	_TR("routingDelMetric", "routing del metric");
 	_TR("routingDelRef", "routing del ref");
@@ -47,6 +52,7 @@ function initTranslation()
 
 	_TRV("buttonAdd", "button add");
 	_TRV("routingApply", "button apply");
+	_TRV("routingApply2", "button apply");
 	_TRV("routingReset", "button reset");
 }
 
@@ -97,16 +103,16 @@ function genRoutingTable()
 	var html = '<table class="form">';
 	
 	html += '<tr><td class="title" colspan="11" id="routingCurrentRoutingTableRules">Current Routing table in the system:</td></tr>'; // Header
-	html += '<tr><th id="routingNo">ID</th>' +
-		'<th id="routingDest" align="center">Destination</th>' + 
-		'<th id="routingNetmask" align="center">Netmask</th>' +
-		'<th id="routingGateway" align="center">Gateway</th>' +
+	html += '<tr><th id="routingTableNo">ID</th>' +
+		'<th id="routingTableDest" align="center">Destination</th>' + 
+		'<th id="routingTableNetmask" align="center">Netmask</th>' +
+		'<th id="routingTableGateway" align="center">Gateway</th>' +
 		'<th id="routingDelFlags" align="center">Flags</th>' +
 		'<th id="routingDelMetric" align="center">Metric</th>' +
 		'<th id="routingDelRef" align="center">Ref</th>' +
 		'<th id="routingDelUse" align="center">Use</th>' +
-		'<th id="routingInterface" align="center">Interface</th>'+
-		'<th id="routingComment" align="center">Comment</th>'+
+		'<th id="routingTableInterface" align="center">Interface</th>'+
+		'<th id="routingTableComment" align="center">Comment</th>'+
 		'<th id="routingAction">Actions</th></tr>';
 	
 	for (var i=0; i<routingRules.length; i++)
@@ -132,7 +138,7 @@ function genRoutingTable()
 			'<td>' + wrapDel(row[11], d) + '&nbsp;</td>'; // comment
 		
 		html += (row[8] > -1) ?
-			'<td style="text-align: center;"><a style="color: #ff0000; cursor: pointer;" href="javascript:removeRoutingItem(' + i + ');"><b>[x]</b></a></td>' : '<td>&nbsp;</td>';
+			'<td style="text-align: center;"><a style="color: #ff0000; cursor: pointer;" href="javascript:removeRoutingItem(' + i + ');"><img src="/graphics/cross.png" alt="[x]"></a></td>' : '<td>&nbsp;</td>';
 	}
 	
 	html += '</table>';
@@ -307,7 +313,7 @@ function formRoutingTable(form)
             </table>
             <table class="buttons">
               <tr>
-                <td><input type="submit" class="normal" value="Apply" id="routingApply" name="dynamicRoutingApply">
+                <td><input type="submit" class="normal" value="Apply" id="routingApply2" name="dynamicRoutingApply">
                   <input type="reset" class="normal" value="Reset" id="routingReset" name="dynamicRoutingReset">
                   <input type="hidden" value="/internet/routing.asp" name="submit-url"></td>
               </tr>
