@@ -13,8 +13,10 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-Butterlate.setTextDomain("internet");
+Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("hint");
 Butterlate.setTextDomain("services");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
@@ -39,25 +41,25 @@ function showHint(key)
 	var show = true;
 	
 	if (key=='l2tp_enable')
-		text += 'Enable L2TP server.';
+		text += _("hint l2tp server");
 	else if (key=='l2tp_ip')
-		text += 'Use the following IP as VPN server own IP address in your VPN network.';
+		text += _("hint l2tp ip");
 	else if (key=='l2tp_ip_list')
-		text += 'Specify range of IP addresses given to clients by VPN server in L2TP server.'
+		text += _("hint vpn range");
 	else if (key=='l2tp_mtu')
-		text += 'Specify Maximum Transfer Unit size in octets.';
+		text += _("hint vpn mtu");
 	else if (key=='l2tp_mru')
-		text += 'Specify Maximum Recieve Unit size in octets.';
+		text += _("hint vpn mtu");
 	else if (key=='l2tp_nat')
-		text += 'Allow Network Address Translation to L2TP server.';
+		text += _("hint vpn nat");
 	else if (key=='l2tp_mppe')
-		text += 'Enable Microsoft Point-to-Point Encryption (MPPE) mode for L2TP server connections.';
+		text += _("hint vpn mppe");
 	else if (key=='l2tp_debug')
-		text += 'Allow debug mode for L2TP server connections.';
+		text += _("hint vpn debug");
 	else if (key=='l2tp_lcp')
-		text += 'Enable adaptive LCP echo interval.';
+		text += _("hint vpn lcp");
         else if (key=='l2tp_proxyarp')
-                text += 'Enable proxyarp for VPN server.';
+                text += _("hint l2tp proxyarp");
 	else
 		show = false;
 	
@@ -70,32 +72,33 @@ function showHint(key)
 
 function genTable(form)
 {
-	var dis = (form.l2tp_srv_enabled.checked) ? '' : ' disabled="disabled"';
+	var dis = (form.l2tp_srv_enabled.options.selectedIndex != 0) ? '' : ' disabled="disabled"';
 
 	var table = '<table class="form" style="width: 100%">';
-	table += '<tr><td class="title" colspan="3">L2TP users:</td></tr>';
-	table += '<tr><th>Login</th><th>Password</th><th>Action</th></tr>';
+	table += '<tr><td class="title" colspan="3">' + _("services l2tp users") + '</td></tr>';
+	table += '<tr><th>' + _("services l2tp login") + '</th><th>' + _("services l2tp password") + '</th><th>' + _("routing action") + '</th></tr>';
 	for (var i=0; i<userList.length; i++)
 	{
 		var row = userList[i];
 		table += '<tr><td>' + row[0] + '<input name="l2tp_srv_user' + i + '" type="hidden" value="' + row[0] + '"></td>';
 		table += '<td>' + row[1] + '<input name="l2tp_srv_pass' + i + '" type="hidden" value="' + row[1] + '"></td>';
-		var js = (form.l2tp_srv_enabled.checked) ? 'javascript:deleteUser(document.l2tpConfig, ' + i + ');' : 'javascript:void()';
-		var color = (form.l2tp_srv_enabled.checked) ? 'ff0000' : '808080';
-		table += '<td style="text-align: center;"><a style="color: #' + color + ';" title="Delete record" href="' + js + '"><b>[x]</b></a></td></tr>';
+		var js = (form.l2tp_srv_enabled.options.selectedIndex != 0) ? 'javascript:deleteUser(document.l2tpConfig, ' + i + ');' : 'javascript:void()';
+		var color = (form.l2tp_srv_enabled.options.selectedIndex != 0) ? 'ff0000' : '808080';
+		table += '<td style="text-align: center;"><a style="color: #' + color + ';" title="' + _("services dhcp delete record") + '" href="' + js + '"><img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
 	}
 	
 	if (userList.length < 10)
 	{
 		table += '<tr><td><input class="mid" value="" name="l2tpLogin"' + dis + '></td>';
 		table += '<td><input class="mid" value="" name="l2tpPassword"' + dis + '></td>';
-		table += '<td style="text-align: center;"><input type="button" class="normal" title="Add record" value="Add" onclick="addUser(this.form);"' + dis + '></td></tr>';
+		table += '<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add") + '" onclick="addUser(this.form);"' + dis + '></td></tr>';
 	}
 	table += '</table>';
 	
 	var elem = document.getElementById("l2tpUserList");
 	if (elem!=null)
 		elem.innerHTML = table;
+	initTranslation();
 }
 
 function addUser(form)
@@ -128,8 +131,14 @@ function l2tpEnableSwitch(form)
 			form.l2tp_srv_nat_enabled, form.l2tp_srv_proxyarp,
 			form.l2tp_srv_mppe_enabled
 		],
-		form.l2tp_srv_enabled.checked);
+		(form.l2tp_srv_enabled.options.selectedIndex != 0));
 	genTable(form);
+	displayElement(
+		[
+			"l2tp_ip", "l2tp_ip_list", "l2tp_mtu",
+			"l2tp_mru", "l2tp_additional", "l2tpUserList"
+		],
+		(form.l2tp_srv_enabled.options.selectedIndex != 0));
 }
 
 function initValue()
@@ -143,7 +152,7 @@ function initValue()
 	var proxyarp_on = '<% getCfgZero(1, "l2tp_srv_proxyarp"); %>';
 	var mtu_size = '';
 
-	form.l2tp_srv_enabled.checked = l2tp_on == '1';
+	form.l2tp_srv_enabled.options.selectedIndex = 1*l2tp_on;
 	form.l2tp_srv_lcp_adapt.checked = adaptive_lcp == '1';
 	form.l2tp_srv_debug.checked = debug_on == '1';
 	form.l2tp_srv_nat_enabled.checked = nat_on == '1';
@@ -169,11 +178,12 @@ function initValue()
 	l2tpEnableSwitch(form);
 	mtuChange(form);
 	mruChange(form);
+	displayServiceStatus();
 }
 
 function CheckValue(form)
 {
-	if (form.l2tp_srv_enabled.checked)
+	if (form.l2tp_srv_enabled.options.selectedIndex != 0)
 	{
 		if (!validateIP(form.l2tp_srv_ip_local, true))
 		{
@@ -218,37 +228,106 @@ function mruChange(form)
 	}
 }
 
+function initTranslation()
+{
+	_TR("l2tpServerTitle", "services l2tp title");
+	_TR("l2tpServerIntroduction", "services l2tp introduction");
+	_TR("l2tpServerSetup", "services l2tp config");
+	_TR("l2tpEnabled", "services l2tp enable");
+	_TR("l2tpDisable", "button disable");
+	_TR("l2tpEnable", "button enable");
+	_TR("l2tpLocalIP", "services l2tp ip");
+	_TR("l2tpListIP", "services l2tp range ip");
+	_TR("l2tpMTU", "services l2tp mtu");
+	_TR("l2tpMRU", "services l2tp mru");
+	_TR("l2tpAdditional", "wan additional options");
+	_TR("l2tpLCP", "vpn adaptive lcp");
+	_TR("l2tpDebug", "vpn allow debug");
+	_TR("l2tpNAT", "vpn enable nat");
+	_TR("l2tpProxyARP", "services l2tp proxy arp");
+	_TR("l2tpMPPE", "vpn allow mppe");
+	
+	_TRV("l2tpApply", "button apply");
+}
+
+function displayServiceHandler(response)
+{
+	var form = document.l2tpConfig;
+
+	var services = [
+		// turned_on, row_id, daemon_id
+		[ '<% getCfgGeneral(1, "l2tp_srv_enabled"); %>', 'xl2tpd', 'xl2tpd-srv' ]
+	];
+
+	// Create associative array
+	var tmp = response.split(',');
+	var daemons = [];
+	for (var i=0; i<tmp.length; i++)
+		daemons[tmp[i]] = 1;
+
+	// Now display all services
+	for (var i=0; i<services.length; i++)
+	{
+		var service = services[i];
+		var row = document.getElementById(service[1]);
+		var tds = [];
+		for (var j=0; j<row.childNodes.length; j++)
+			if (row.childNodes[j].nodeName == 'TD')
+				tds.push(row.childNodes[j]);
+
+		if (row != null)
+		{
+			// Fill-up status
+			if (service[0]*1 == '0')
+				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+			else
+				tds[2].innerHTML = (daemons[service[2]] == 1) ?
+					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+		}
+	}
+
+	serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
+}
+
+function displayServiceStatus()
+{
+	ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
+}
+
 </script>
 </head>
 
 <body onLoad="initValue();">
 <table class="body">
   <tr>
-    <td><h1>L2TP Server Setup</h1>
-      <p>Here you can configure L2TP server settings.</p>
+    <td><h1 id="l2tpServerTitle">L2TP Server Setup</h1>
+      <p id="l2tpServerIntroduction">Here you can configure L2TP server settings.</p>
       <hr>
-      <div id="dhcpClientsTable"> </div>
       <form method="POST" name="l2tpConfig" action="/goform/l2tpConfig" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="2">L2TP Server Setup</td>
+            <td class="title" colspan="3" id="l2tpServerSetup">L2TP Server Setup</td>
           </tr>
-          <tr>
-            <td class="head" onMouseOver="showHint('l2tp_enable')" onMouseOut="hideHint('l2tp_enable')"><input type="checkbox" name="l2tp_srv_enabled" onChange="l2tpEnableSwitch(this.form);">
-              &nbsp;Enable L2TP server </td>
-            <td>&nbsp;</td>
+          <tr id="xl2tpd" onMouseOver="showHint('l2tp_enable')" onMouseOut="hideHint('l2tp_enable')">
+          	<td class="head" id="l2tpEnabled">L2TP server</td>
+          	<td><select name="l2tp_srv_enabled" class="half" onChange="l2tpEnableSwitch(this.form);">
+          		<option value="0" id="l2tpDisable">Disable</option>
+          		<option value="1" id="l2tpEnable">Enable</option>
+          	</select></td>
+          	<td style="width: 56px;">&nbsp;</td>
           </tr>
-          <tr onMouseOver="showHint('l2tp_ip')" onMouseOut="hideHint('l2tp_ip')">
-            <td class="head">Our local IP to use</td>
-            <td><input name="l2tp_srv_ip_local" class="mid" value="<% getCfgGeneral(1, "l2tp_srv_ip_local"); %>"></td>
+          <tr onMouseOver="showHint('l2tp_ip')" onMouseOut="hideHint('l2tp_ip')" id="l2tp_ip">
+            <td class="head" id="l2tpLocalIP">Our local IP to use</td>
+            <td colspan="2"><input name="l2tp_srv_ip_local" class="mid" value="<% getCfgGeneral(1, "l2tp_srv_ip_local"); %>"></td>
           </tr>
-          <tr onMouseOver="showHint('l2tp_ip_list')" onMouseOut="hideHint('l2tp_ip_list')">
-            <td class="head">Allocate from this IP range</td>
-            <td><input name="l2tp_srv_ip_range" class="mid" value="<% getCfgGeneral(1, "l2tp_srv_ip_range"); %>"></td>
+          <tr onMouseOver="showHint('l2tp_ip_list')" onMouseOut="hideHint('l2tp_ip_list')" id="l2tp_ip_list">
+            <td class="head" id="l2tpListIP">Allocate from this IP range</td>
+            <td colspan="2"><input name="l2tp_srv_ip_range" class="mid" value="<% getCfgGeneral(1, "l2tp_srv_ip_range"); %>"></td>
           </tr>
-          <tr onMouseOver="showHint('l2tp_mtu')" onMouseOut="hideHint('l2tp_mtu')">
-            <td class="head"><acronym title="Maximum Transfer Unit">Tunnel MTU</acronym>:</td>
-            <td><input name="l2tp_srv_mtu_size" type="text" class="half" style="display:none;" value="<% getCfgGeneral(1, "l2tp_srv_mtu_size"); %>" >
+          <tr onMouseOver="showHint('l2tp_mtu')" onMouseOut="hideHint('l2tp_mtu')" id="l2tp_mtu">
+            <td class="head" id="l2tpMTU">Tunnel <acronym title="Maximum Transfer Unit">MTU</acronym>:</td>
+            <td colspan="2"><input name="l2tp_srv_mtu_size" type="text" class="half" style="display:none;" value="<% getCfgGeneral(1, "l2tp_srv_mtu_size"); %>" >
               <select name="l2tp_srv_mtu_sel" onChange="mtuChange(this.form);" class="mid" >
                 <option value="AUTO">AUTO</option>
                 <option value="1" selected="selected">Custom</option>
@@ -261,9 +340,9 @@ function mruChange(form)
                 <option value="1000">1000</option>
               </select></td>
           </tr>
-          <tr onMouseOver="showHint('l2tp_mru')" onMouseOut="hideHint('l2tp_mru')">
-            <td class="head"><acronym title="Maximum Receive Unit">Tunnel MRU</acronym>:</td>
-            <td><input name="l2tp_srv_mru_size" type="text" class="half" style="display:none;" value="<% getCfgGeneral(1, "l2tp_srv_mru_size"); %>" >
+          <tr onMouseOver="showHint('l2tp_mru')" onMouseOut="hideHint('l2tp_mru')" id="l2tp_mru">
+            <td class="head" id="l2tpMRU">Tunnel <acronym title="Maximum Receive Unit">MRU</acronym>:</td>
+            <td colspan="2"><input name="l2tp_srv_mru_size" type="text" class="half" style="display:none;" value="<% getCfgGeneral(1, "l2tp_srv_mru_size"); %>" >
               <select name="l2tp_srv_mru_sel" onChange="mruChange(this.form);" class="mid" >
                 <option value="AUTO">AUTO</option>
                 <option value="1" selected="selected">Custom</option>
@@ -277,32 +356,31 @@ function mruChange(form)
               </select></td>
           </tr>
         </table>
-        <table class="form">
+        <table class="form" id="l2tp_additional">
           <tr>
-            <td class="title" colspan="2">Additional options</td>
+            <td class="title" colspan="2" id="l2tpAdditional">Additional options</td>
           </tr>
           <tr>
             <td style="width: 50%;" onMouseOver="showHint('l2tp_lcp')" onMouseOut="hideHint('l2tp_lcp')"><input name="l2tp_srv_lcp_adapt" type="checkbox">
-              &nbsp;<b>Adaptive LCP</b></td>
+              &nbsp;<b id="l2tpLCP">Adaptive LCP</b></td>
             <td style="width: 50%;" onMouseOver="showHint('l2tp_debug')" onMouseOut="hideHint('l2tp_debug')"><input name="l2tp_srv_debug" type="checkbox">
-              &nbsp;<b>L2TP debugging</b></td>
+              &nbsp;<b id="l2tpDebug">L2TP debugging</b></td>
           </tr>
           <tr>
             <td style="width: 50%;" onMouseOver="showHint('l2tp_nat')" onMouseOut="hideHint('l2tp_nat')"><input name="l2tp_srv_nat_enabled" type="checkbox">
-              &nbsp;<b>Enable NAT</b></td>
+              &nbsp;<b id="l2tpNAT">Enable NAT</b></td>
             <td style="width: 50%;" onMouseOver="showHint('l2tp_proxyarp')" onMouseOut="hideHint('l2tp_proxyarp')"><input name="l2tp_srv_proxyarp" type="checkbox">
-              &nbsp;<b>L2TP proxyarp</b></td>
+              &nbsp;<b id="l2tpProxyARP">L2TP proxyarp</b></td>
           </tr>
           <tr>
             <td style="width: 50%;" onmouseover="showHint('l2tp_mppe')" onmouseout="hideHint('l2tp_mppe')"><input name="l2tp_srv_mppe_enabled" type="checkbox">
-              &nbsp;<b>Require MPPE</b></td>
+              &nbsp;<b id="l2tpMPPE">Require MPPE</b></td>
           </tr>
         </table>
         <div id="l2tpUserList"> </div>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply">
-              &nbsp;&nbsp;
+            <td><input type="submit" class="normal" id="l2tpApply" value="Apply">
               <input type="hidden" value="/services/l2tp.asp" name="submit-url"></td>
           </tr>
         </table>

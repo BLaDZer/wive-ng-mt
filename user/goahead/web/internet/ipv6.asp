@@ -15,6 +15,7 @@
 
 Butterlate.setTextDomain("buttons");
 Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("services");
 
 var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
@@ -338,11 +339,11 @@ function displayServiceHandler(response)
 		{
 			// Fill-up status
 			if (service[0]*1 == '0')
-				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("ipv6 service status off") + '</b></span>';
+				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 			else
 				tds[2].innerHTML = (daemons[service[2]] == 1) ?
-					'<span style="color: #3da42c"><b>' + _("ipv6 service status work") + '</b></span>' :
-					'<span style="color: #808000"><b>' + _("ipv6 service status starting") + '</b></span>';
+					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
 		}
 	}
 

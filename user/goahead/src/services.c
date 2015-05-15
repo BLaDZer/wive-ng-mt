@@ -698,10 +698,14 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 	char_t *submitUrl;
 	int i=0;
 
+	char_t *l2tp_enabled = websGetVar(wp, T("l2tp_srv_enabled"), T("0"));
+
+	if (l2tp_enabled == NULL)
+		l2tp_enabled = "0";
+
 	nvram_init(RT2860_NVRAM);
 
-	char_t *l2tp_enabled = websGetVar(wp, T("l2tp_srv_enabled"), T("off"));
-	if (CHK_IF_CHECKED(l2tp_enabled))
+	if (CHK_IF_DIGIT(l2tp_enabled, 1))
 	{
 		nvram_bufset(RT2860_NVRAM, "l2tp_srv_enabled", "1");
 		setupParameters(wp, service_l2tp_flags, 0);

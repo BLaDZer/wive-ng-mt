@@ -87,9 +87,6 @@
     <message msgid="ipv6 service status" msgstr="Status" />
     <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
     <message msgid="ipv6 dhcp6s" msgstr="Dynamic IPv6 configuration(dhcp6s)" />
-    <message msgid="ipv6 service status off" msgstr="off" />
-    <message msgid="ipv6 service status work" msgstr="work" />
-    <message msgid="ipv6 service status starting" msgstr="starting" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications." />

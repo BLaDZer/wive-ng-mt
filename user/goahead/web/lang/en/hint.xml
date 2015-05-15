@@ -35,4 +35,8 @@
     <message msgid="hint vpn type cdma" msgstr="Modem CDMA means connection to Internet via UMTS in CDMA mobile networks." />
     <message msgid="hint vpn type kabinet" msgstr="Kabinet Authorization means connection to KABINET provider network." />
     <message msgid="hint vpn lanauth" msgstr="Specify access mode to KABINET provider network." />
+
+    <message msgid="hint l2tp server" msgstr="Enable L2TP server." />
+    <message msgid="hint l2tp ip" msgstr="Use the following IP as VPN server own IP address in your VPN network." />
+    <message msgid="hint l2tp proxyarp" msgstr="Enable proxyarp for VPN server." />
 </po>

@@ -37,4 +37,21 @@
   <message msgid="services account warning" msgstr="CAUTION! NAT offload mode option is turned on. Due to some technical reasons it's not possible to gather correct statistics for NAT offload mode mode now. That's why IPT accounting configuration ability is now locked. To get correct statistics you need to shut down NAT offload mode option on the MISC Services configuration page. Please note that turning off NAT offload mode will increase CPU usage up to 50%." />
   <message msgid="services account settings" msgstr="IP Accounting Settings" />
   <message msgid="services account ipt" msgstr="IPT Accounting" />
+
+  <message msgid="services status off" msgstr="off" />
+  <message msgid="services status work" msgstr="work" />
+  <message msgid="services status starting" msgstr="starting" />
+
+  <message msgid="services l2tp title" msgstr="L2TP Server Setup" />
+  <message msgid="services l2tp introduction" msgstr="Here you can configure L2TP server settings." />
+  <message msgid="services l2tp config" msgstr="L2TP Server Setup" />
+  <message msgid="services l2tp enable" msgstr="L2TP server" />
+  <message msgid="services l2tp ip" msgstr="Our local IP to use" />
+  <message msgid="services l2tp range ip" msgstr="Allocate from this IP range" />
+  <message msgid="services l2tp mtu" msgstr="Tunnel MTU:" />
+  <message msgid="services l2tp mru" msgstr="Tunnel MRU:" />
+  <message msgid="services l2tp proxy arp" msgstr="L2TP proxyarp" />
+  <message msgid="services l2tp users" msgstr="L2TP users" />
+  <message msgid="services l2tp login" msgstr="Login" />
+  <message msgid="services l2tp password" msgstr="Password" />
 </po>
