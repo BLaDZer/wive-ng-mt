@@ -931,14 +931,15 @@
 56) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
 57) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
 58) kernel: net: ipv4: route: fix sending IGMP messages with link address.<br>
-59) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
+59) kernel: net: ipv4: avoid a test in ip_rt_put().<br>
 60) kernel: net: ipv6: introduce ip6_rt_put().<br>
 61) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
 62) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
-63) kernel: net: sit: always notify change when params are updated.<br>
-64) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
-65) kernel: net: move away from NLMSG_PUT().<br>
-66) kernel: net: do not use RTA_PUT() macros.<br>
+63) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
+64) kernel: net: sit: always notify change when params are updated.<br>
+65) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
+66) kernel: net: move away from NLMSG_PUT().<br>
+67) kernel: net: do not use RTA_PUT() macros.<br>
 <br>
 <br>
 <b>TODO:</b><br>
