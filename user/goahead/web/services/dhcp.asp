@@ -410,7 +410,7 @@ function displayServiceHandler(response)
 
   var services = [
     // turned_on, row_id, daemon_id
-    [ '<% getCfgGeneral(1, "dhcpEnabled"); %>', 'ntp_enabled_row', 'ntpd' ],
+    [ '<% getCfgGeneral(1, "dhcpEnabled"); %>', 'udhcpd', 'udhcpd' ],
   ];
 
   // Create associative array
