@@ -315,8 +315,8 @@ function displayServiceHandler(response)
 
 	var services = [
 		// turned_on, row_id, daemon_id
-		[ '<% getCfgGeneral(1, "radvdEnabled"); %>', 'radvd', 'radvd' ],
-		[ '<% getCfgGeneral(1, "dhcpv6Enabled"); %>', 'dhcpv6', 'dhcp6s' ]
+		[ '<% getCfgGeneral(1, "radvdEnabled"); %>', 'radvd', 'radvd', 'www.litech.org/radvd' ],
+		[ '<% getCfgGeneral(1, "dhcpv6Enabled"); %>', 'dhcpv6', 'dhcp6s', 'wide-dhcpv6.sourceforge.net' ]
 	];
 
 	// Create associative array
@@ -337,11 +337,13 @@ function displayServiceHandler(response)
 
 		if (row != null)
 		{
+			// Fill-up about
+			tds[2].innerHTML = (service[3] != null) ? '<a href="http://' + service[3] + '" target="_blank">Learn more...</a>' : "&nbsp;";
 			// Fill-up status
 			if (service[0]*1 == '0')
-				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+				tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 			else
-				tds[2].innerHTML = (daemons[service[2]] == 1) ?
+				tds[3].innerHTML = (daemons[service[2]] == 1) ?
 					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
 					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
 		}
@@ -435,11 +437,12 @@ function displayServiceStatus()
 <!-- Settings daemons for lan -->
 				<table class="form" id="daemons" style="visibility: hidden;">
 					<tr>
-						<td class="title" colspan="3" id="v6services">Services IPv6</td>
+						<td class="title" colspan="4" id="v6services">Services IPv6</td>
 					</tr>
 					<tr>
 						<td class="title" id="v6servicename">Service name</td>
 						<td class="title" id="v6value">Value</td>
+						<td class="title" id="v6value">Details</td>
     					<td class="title" style="width: 56px;" id="v6status">Status</td>
 					</tr>
 					<tr id="radvd">
@@ -449,6 +452,7 @@ function displayServiceStatus()
         					<option value="1" id="v6RadvdE">Enable</option>
     					</select></td>
     					<td>&nbsp;</td>
+    					<td>&nbsp;</td>
 					</tr>
 					<tr id="dhcpv6">
     					<td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
@@ -456,6 +460,7 @@ function displayServiceStatus()
         					<option value="0" id="v6Dhcpv6D">Disable</option>
         					<option value="1" id="v6Dhcpv6E">Enable</option>
     					</select></td>
+    					<td>&nbsp;</td>
     					<td>&nbsp;</td>
 					</tr>
 				</table>
