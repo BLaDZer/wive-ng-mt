@@ -147,28 +147,30 @@ static void setSysLang(webs_t wp, char_t *path, char_t *query)
  */
 static void NTP(webs_t wp, char_t *path, char_t *query)
 {
-	char *tz, *ntpServer, *ntpEnabled;
 	char_t *submitUrl;
 
-	tz = websGetVar(wp, T("time_zone"), T(""));
-	ntpServer = websGetVar(wp, T("NTPServerIP"), T(""));
-	ntpEnabled = websGetVar(wp, T("ntp_enabled"), T("off"));
+	char_t *ntpEnabled = websGetVar(wp, T("ntp_enabled"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
-	if (strcmp(ntpEnabled, "on")==0)
+	if (CHK_IF_DIGIT(ntpEnabled, 1))
 	{
+		char_t *tz = websGetVar(wp, T("time_zone"), T(""));
+		char_t *ntpServer = websGetVar(wp, T("NTPServerIP"), T(""));
+
 		if ((strlen(tz)>0) && (!checkSemicolon(tz)))
 		{
+			nvram_bufset(RT2860_NVRAM, "NTPEnabled", "on");
 			nvram_bufset(RT2860_NVRAM, "NTPServerIP", ntpServer);
 			nvram_bufset(RT2860_NVRAM, "TZ", tz);
 		}
+	} else {
+		nvram_bufset(RT2860_NVRAM, "NTPEnabled", "off");
 	}
 
-	nvram_bufset(RT2860_NVRAM, "NTPEnabled", ntpEnabled);
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	if (strcmp(ntpEnabled, "on")==0)
+	if (CHK_IF_DIGIT(ntpEnabled, 1))
 		doSystem("service ntp restart");
 	else
 		doSystem("service ntp stop");

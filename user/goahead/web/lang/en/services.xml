@@ -24,9 +24,14 @@
   <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
   <message msgid="services misc setup" msgstr="Miscellaneous services setup" />
 
-  <message msgid="services ntp title" msgstr="Network Time Settings" />
-  <message msgid="services ntp introduction" msgstr="Here you can configure Network Time Protocol settings." />
-  <message msgid="services ntp setup" msgstr="NTP settings setup" />
+  <message msgid="services ntp title" msgstr="NTP Management" />
+  <message msgid="services ntp introduction" msgstr="Here you can configure time synchronization." />
+  <message msgid="services ntp setup" msgstr="NTP Settings" />
+  <message msgid="services ntp enabled" msgstr="NTP synchronization" />
+  <message msgid="services ntp current time" msgstr="Current Host Time" />
+  <message msgid="services ntp timezone" msgstr="Time Zone:" />
+  <message msgid="services ntp server" msgstr="NTP Server" />
+  <message msgid="services ntp sync" msgstr="Sync with host" />
 
   <message msgid="services ddns title" msgstr="Dynamic DNS Settings" />
   <message msgid="services ddns introduction" msgstr="Here you can configure Dynamic DNS settings." />

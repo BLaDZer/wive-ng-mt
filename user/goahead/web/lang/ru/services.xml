@@ -24,9 +24,14 @@
   <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
   <message msgid="services misc setup" msgstr="Настройки прочих сервисов" />
 
-  <message msgid="services ntp title" msgstr="Настройки NTP" />
-  <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить параметры Network Time Protocol." />
+  <message msgid="services ntp title" msgstr="Управление NTP" />
+  <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить синхронизацию времени" />
   <message msgid="services ntp setup" msgstr="Настройки NTP" />
+  <message msgid="services ntp enabled" msgstr="Синхронизация NTP" />
+  <message msgid="services ntp current time" msgstr="Время на компьютере" />
+  <message msgid="services ntp timezone" msgstr="Часовой пояс:" />
+  <message msgid="services ntp server" msgstr="Сервер NTP" />
+  <message msgid="services ntp sync" msgstr="Синхронизировать" />
 
   <message msgid="services ddns title" msgstr="Настройки Dynamic DNS" />
   <message msgid="services ddns introduction" msgstr="Здесь вы можете настроить параметры Dynamic DNS." />
