@@ -49,7 +49,7 @@ function genFilteringTable()
 		'<tr>'+
 		'<td style="text-align: left;"><select name="filterType" tabindex="1"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
 		'<td style="text-align: left;"><input type="text" class="normal" name="filterValue" tabindex="2"></td>' +
-		'<td style="text-align: center;"><input type="button" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
+		'<td style="text-align: center;"><input type="button" class="mid" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
 		'</tr>';
 
 	// Close manager
