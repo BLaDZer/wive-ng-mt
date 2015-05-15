@@ -59,4 +59,14 @@
   <message msgid="services l2tp users" msgstr="L2TP users" />
   <message msgid="services l2tp login" msgstr="Login" />
   <message msgid="services l2tp password" msgstr="Password" />
+
+  <message msgid="services samba title" msgstr="Samba/CIFS Setup" />
+  <message msgid="services samba introduction" msgstr="Here you can configure Samba/CIFS service." />
+  <message msgid="services samba settings" msgstr="Samba/CIFS Settings" />
+  <message msgid="services samba enabled" msgstr="Enable Samba" />
+  <message msgid="services samba workgroup" msgstr="Workgroup" />
+  <message msgid="services samba netbios name" msgstr="Netbios name" />
+  <message msgid="services samba server string" msgstr="Server string" />
+  <message msgid="services samba os level" msgstr="OS level" />
+  <message msgid="services samba time server" msgstr="Enable time server" />
 </po>
