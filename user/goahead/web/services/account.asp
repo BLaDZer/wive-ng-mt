@@ -32,8 +32,8 @@ function initTranslation()
   _TR("accountDisable", "button disable");
   _TR("accountEnable", "button enable");
 
-  _TRV("accountApply", "button refresh");
-  _TRV("accountCancel", "button reset statistics");
+  _TRV("accountRefresh", "button refresh");
+  _TRV("accountReset", "button reset statistics");
 }
 
 function initValue()
@@ -50,7 +50,7 @@ function initValue()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="accountTitle">IP Accounting</h1>
@@ -85,9 +85,9 @@ function initValue()
         </table>
         <br>
         <input type="hidden" value="/services/account.asp" name="submit-url">
-        <input type="button" class="normal" value="Refresh" onClick="window.location.reload();">
+        <input type="button" class="normal" value="Refresh" onClick="window.location.reload();" id="accountRefresh">
         <input type="hidden" value="0" name="reset">
-        <input type="button" class="normal" onClick="resetClick(this.form);" value="Reset Statistics">
+        <input type="button" class="normal" onClick="resetClick(this.form);" value="Reset Statistics" id="accountReset">
       </form>
       <div class="whitespace">&nbsp;</div></td>
   </tr>

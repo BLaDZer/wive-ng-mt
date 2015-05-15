@@ -83,8 +83,53 @@ function ntpChange(form)
   displayElement(
     [ "div_date", "div_tz", "div_server" ],
     (form.ntp_enabled.options.selectedIndex != 0));
+  displayServiceStatus();
 }
 
+function displayServiceHandler(response)
+{
+  var form = document.l2tpConfig;
+
+  var services = [
+    // turned_on, row_id, daemon_id
+    [ '<% getCfgGeneral(1, "NTPEnabled"); %>', 'ntp_enabled_row', 'ntpd' ],
+  ];
+
+  // Create associative array
+  var tmp = response.split(',');
+  var daemons = [];
+  for (var i=0; i<tmp.length; i++)
+    daemons[tmp[i]] = 1;
+
+  // Now display all services
+  for (var i=0; i<services.length; i++)
+  {
+    var service = services[i];
+    var row = document.getElementById(service[1]);
+    var tds = [];
+    for (var j=0; j<row.childNodes.length; j++)
+      if (row.childNodes[j].nodeName == 'TD')
+        tds.push(row.childNodes[j]);
+
+    if (row != null)
+    {
+      // Fill-up status
+      if (service[0]*1 == '0')
+        tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+      else
+        tds[2].innerHTML = (daemons[service[2]] == 1) ?
+          '<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+          '<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+    }
+  }
+
+  serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
+}
+
+function displayServiceStatus()
+{
+  ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
+}
 </script>
 </head>
 <body onLoad="initValue();">
@@ -100,7 +145,7 @@ function ntpChange(form)
         <table class="form">
           <tbody>
             <tr>
-              <td class="title" colspan="2" id="ntpSetup">NTP Settings</td>
+              <td class="title" colspan="3" id="ntpSetup">NTP Settings</td>
             </tr>
             <tr id="ntp_enabled_row">
               <td class="head" id="ntpEnabled">NTP synchronization</td>
@@ -108,15 +153,16 @@ function ntpChange(form)
                 <option value="0" id="ntpDisable">Disable</option>
                 <option value="1" id="ntpEnable">Enable</option>
               </select></td>
+              <td style="width: 56px;">&nbsp;</td>
             </tr>
             <tr id="div_date">
               <td class="head" id="ntpCurrentTime">Current Host Time</td>
-              <td><input class="wide" name="ntpcurrenttime" type="text" readonly="1">
+              <td colspan="2"><input class="wide" name="ntpcurrenttime" type="text" readonly="1">
                 <input type="button" class="normal" value="Sync with host" id="ntpSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()"></td>
             </tr>
             <tr id="div_tz">
               <td class="head" id="ntpTimeZone">Time Zone:</td>
-              <td><select name="time_zone" class="wide">
+              <td colspan="2"><select name="time_zone" class="wide">
                   <option value="UCT_-11" id="ntpMidIsland">(UTC-11:00) Midway Island, Samoa</option>
                   <option value="UCT_-10" id="ntpHawaii">(UTC-10:00) Hawaii</option>
                   <option value="NAS_-09" id="ntpAlaska">(UTC-09:00) Alaska</option>
@@ -181,7 +227,7 @@ function ntpChange(form)
             </tr>
             <tr id="div_server">
               <td class="head" id="ntpServer">NTP Server</td>
-              <td><input class="wide" name="NTPServerIP" value="<% getCfgGeneral(1, "NTPServerIP"); %>" type="text">
+              <td colspan="2"><input class="wide" name="NTPServerIP" value="<% getCfgGeneral(1, "NTPServerIP"); %>" type="text">
                 <br>
                 &nbsp;&nbsp;<font color="#808080">ex:&nbsp;time.nist.gov</font> <br>
                 &nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;ru.pool.ntp.org</font> <br>

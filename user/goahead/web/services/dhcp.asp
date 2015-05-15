@@ -199,6 +199,7 @@ function dhcpTypeSwitch()
 	displayElement( [ 'pridns', 'secdns' ], !dnsproxy);
 	
 	genTable(!dhcp_on);
+	displayServiceStatus();
 }
 
 function initTranslation()
@@ -403,6 +404,51 @@ function toggleDhcpTable(check)
 	}
 }
 
+function displayServiceHandler(response)
+{
+  var form = document.l2tpConfig;
+
+  var services = [
+    // turned_on, row_id, daemon_id
+    [ '<% getCfgGeneral(1, "dhcpEnabled"); %>', 'ntp_enabled_row', 'ntpd' ],
+  ];
+
+  // Create associative array
+  var tmp = response.split(',');
+  var daemons = [];
+  for (var i=0; i<tmp.length; i++)
+    daemons[tmp[i]] = 1;
+
+  // Now display all services
+  for (var i=0; i<services.length; i++)
+  {
+    var service = services[i];
+    var row = document.getElementById(service[1]);
+    var tds = [];
+    for (var j=0; j<row.childNodes.length; j++)
+      if (row.childNodes[j].nodeName == 'TD')
+        tds.push(row.childNodes[j]);
+
+    if (row != null)
+    {
+      // Fill-up status
+      if (service[0]*1 == '0')
+        tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+      else
+        tds[2].innerHTML = (daemons[service[2]] == 1) ?
+          '<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+          '<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+    }
+  }
+
+  serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
+}
+
+function displayServiceStatus()
+{
+  ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
+}
+
 </script>
 </head>
 
@@ -415,46 +461,47 @@ function toggleDhcpTable(check)
       <form method="POST" name="dhcpCfg" action="/goform/setDhcp" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="2" id="lSetup">DHCP Server Setup</td>
+            <td class="title" colspan="3" id="lSetup">DHCP Server Setup</td>
           </tr>
-          <tr>
+          <tr id="udhcpd">
             <td class="head" id="lDhcpType">DHCP Server</td>
             <td><select name="dhcpEnabled" class="mid" onChange="dhcpTypeSwitch();">
                 <option value="0" id="lDhcpTypeD">Disabled</option>
                 <option value="1" id="lDhcpTypeS">Enabled</option>
               </select></td>
+            <td style="width: 56px;">&nbsp;</td>
           </tr>
           <tr id="domain">
             <td class="head" id="dhcpDomain">DHCP Domain</td>
-            <td><input name="dhcpDomain" class="mid" value="<% getCfgGeneral(1, "dhcpDomain"); %>"></td>
+            <td colspan="2"><input name="dhcpDomain" class="mid" value="<% getCfgGeneral(1, "dhcpDomain"); %>"></td>
           </tr>
           <tr id="start">
             <td class="head" id="lDhcpStart">DHCP Pool Start IP</td>
-            <td><input name="dhcpStart" class="mid" value="<% getCfgGeneral(1, "dhcpStart"); %>"></td>
+            <td colspan="2"><input name="dhcpStart" class="mid" value="<% getCfgGeneral(1, "dhcpStart"); %>"></td>
           </tr>
           <tr id="end">
             <td class="head" id="lDhcpEnd">DHCP Pool End IP</td>
-            <td><input name="dhcpEnd" class="mid" value="<% getCfgGeneral(1, "dhcpEnd"); %>"></td>
+            <td colspan="2"><input name="dhcpEnd" class="mid" value="<% getCfgGeneral(1, "dhcpEnd"); %>"></td>
           </tr>
           <tr id="mask">
             <td class="head" id="lDhcpNetmask">DHCP Subnet Mask</td>
-            <td><input name="dhcpMask" class="mid" value="<% getCfgGeneral(1, "dhcpMask"); %>"></td>
+            <td colspan="2"><input name="dhcpMask" class="mid" value="<% getCfgGeneral(1, "dhcpMask"); %>"></td>
           </tr>
           <tr id="pridns">
             <td class="head" id="lDhcpPriDns">DHCP Primary DNS</td>
-            <td><input name="dhcpPriDns" class="mid" value="<% getCfgGeneral(1, "dhcpPriDns"); %>"></td>
+            <td colspan="2"><input name="dhcpPriDns" class="mid" value="<% getCfgGeneral(1, "dhcpPriDns"); %>"></td>
           </tr>
           <tr id="secdns">
             <td class="head" id="lDhcpSecDns">DHCP Secondary DNS</td>
-            <td><input name="dhcpSecDns" class="mid" value="<% getCfgGeneral(1, "dhcpSecDns"); %>"></td>
+            <td colspan="2"><input name="dhcpSecDns" class="mid" value="<% getCfgGeneral(1, "dhcpSecDns"); %>"></td>
           </tr>
           <tr id="gateway">
             <td class="head" id="lDhcpGateway">DHCP Default Gateway</td>
-            <td><input name="dhcpGateway" class="mid" value="<% getCfgGeneral(1, "dhcpGateway"); %>"></td>
+            <td colspan="2"><input name="dhcpGateway" class="mid" value="<% getCfgGeneral(1, "dhcpGateway"); %>"></td>
           </tr>
           <tr id="lease">
             <td class="head" id="lDhcpLease">DHCP Lease Time (in seconds)</td>
-            <td><input name="dhcpLease" class="mid" value="<% getCfgGeneral(1, "dhcpLease"); %>"></td>
+            <td colspan="2"><input name="dhcpLease" class="mid" value="<% getCfgGeneral(1, "dhcpLease"); %>"></td>
           </tr>
         </table>
         <div id="dhcpClientsTable"> </div>

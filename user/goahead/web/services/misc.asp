@@ -16,6 +16,7 @@
 
 Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("services");
+Butterlate.setTextDomain("buttons");
 
 var secs;
 var timerID = null;
