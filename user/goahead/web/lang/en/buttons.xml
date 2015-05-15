@@ -14,4 +14,6 @@
     <message msgid="button backup" msgstr="Backup" />
     <message msgid="button refresh" msgstr="Refresh" />
     <message msgid="button reset statistics" msgstr="Reset Statistics" />
+    <message msgid="button disconnect" msgstr="Disconnect" />
+    <message msgid="button disconnect all" msgstr="Disconnect All" />
 </po>

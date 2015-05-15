@@ -9,13 +9,18 @@
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <title>Station List</title>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 function initTranslation()
 {
 	_TR("stalistTitle", "stalist title");
 	_TR("stalistIntroduction", "stalist introduction");
 	_TR("stalistWirelessNet", "stalist wireless network");
+  _TR("stalistMacAddr", "stalist mac address");
+
+  _TRV("disconnectAll", "button disconnect all");
 }
 
 function doDisconnectSta(form, mac)
@@ -27,11 +32,15 @@ function doDisconnectSta(form, mac)
 function PageInit()
 {
 	initTranslation();
+  var elements = document.getElementsByTagName('input');
+  for (var i = 0; i < elements.length; i++)
+    if(elements[i].id == "disconnect")
+      elements[i].value = _("button disconnect");
 }
 </script>
 </head>
 
-<body onLoad="PageInit()">
+<body onLoad="PageInit();">
 <table class="body">
   <tr>
     <td><h1 id="stalistTitle">Station List</h1>
@@ -62,7 +71,7 @@ function PageInit()
         <table class="button">
           <tr>
             <td><input type="hidden" name="disconnectSta" value="*" />
-              <input type="submit" value="Disconnect all" class="normal">
+              <input type="submit" id="disconnectAll" value="Disconnect all" class="normal">
               <input type="hidden" name="submit-url" value="/wireless/stainfo.asp" ></td>
           </tr>
         </table>

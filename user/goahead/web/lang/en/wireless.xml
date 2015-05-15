@@ -24,6 +24,7 @@
   <message msgid="station encryp" msgstr="Encryption" />
   <message msgid="station auth" msgstr="Authentication" />
   <message msgid="station network type" msgstr="Network Type" />
+  <message msgid="stalist mac address" msgstr="MAC Address" />
 
   <message msgid="basic tx power" msgstr="TX Power (2.4GHz)" />
   <message msgid="basic tx power ac" msgstr="TX Power (5GHz)" />
