@@ -1,5 +1,5 @@
 <po>
-    <message msgid="lan title" msgstr="Настрйоки локальной сети (LAN)" />
+    <message msgid="lan title" msgstr="Настройки локальной сети (LAN)" />
     <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
     <message msgid="lan setup" msgstr="Настройки LAN" />
     <message msgid="inet hostname" msgstr="Имя хоста" />

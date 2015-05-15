@@ -235,7 +235,7 @@
 
   <message msgid="11n title" msgstr="Конфигурация 11n станции" />
   <message msgid="11n introduction" msgstr="." />
-  <message msgid="11n config" msgstr="Настрйоки 11n" />
+  <message msgid="11n config" msgstr="Настройки 11n" />
   <message msgid="11n ampdu" msgstr="Агрегация MPDU" />
   <message msgid="11n ampdu manual" msgstr="Вручную" />
   <message msgid="11n mpdu density" msgstr="Плотность MPDU" />

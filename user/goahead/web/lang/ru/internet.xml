@@ -42,7 +42,7 @@
   <message msgid="wan address mode" msgstr="Тип адреса" />
   <message msgid="wan address mode static" msgstr="Статический" />
   <message msgid="wan address mode dynamic" msgstr="Динамический" />
-  <message msgid="lan title" msgstr="Настрйоки локальной сети (LAN)" />
+  <message msgid="lan title" msgstr="Настройки локальной сети (LAN)" />
   <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
   <message msgid="lan setup" msgstr="Настройки LAN" />
   <message msgid="lan dhcp type" msgstr="Тип DHCP" />
