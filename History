@@ -891,57 +891,58 @@
 16) goahead: review, cleanup and fix dhcp server page.<br>
 17) goahead: fix nvram_init/commit unconsistent.<br>
 18) goahead: more translation fixes.<br>
-19) goahead/init.d: store dhcp static lease to nvram.<br>
-20) init.d: full cleanup vlan parts in restore dumb mode function.<br>
-21) init.d: remove disable_all_ports_eee (already disabled in raeth).<br>
-22) init.d: iptables: split v4 rules generate code for more readable and more easy edit.<br>
-23) init.d: fix wan config if pure pppoe enabled and vpn full disabled mode.<br>
-24) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
-25) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
-26) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
-27) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
-28) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
-29) kernel: ralink_nvram: fix check part size in commit.<br>
-30) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
-31) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
-32) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
-33) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
-34) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
-35) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
-36) kernel: ralink_raeth: move early ESW init to global unit.<br>
-37) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
-38) kernel: ralink_raeth: add support to disable any EPHY.<br>
-39) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
-40) kernel: exfat driver: upstream updates.<br>
-41) kernel: driver core: fix race with userland in device_add().<br>
-42) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
-43) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
-44) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
-45) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
-46) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
-47) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
-48) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
-49) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
-50) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
-51) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
-52) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
-53) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
-54) kernel: net: tcp: update reordering first before detecting loss.<br>
-55) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
-56) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
-57) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
-58) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
-59) kernel: net: ipv4: route: fix sending IGMP messages with link address.<br>
-60) kernel: net: ipv4: avoid a test in ip_rt_put().<br>
-61) kernel: net: ipv4: speedup ip_idents_reserve().<br>
-62) kernel: net: ipv6: introduce ip6_rt_put().<br>
-63) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
-64) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
-65) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
-66) kernel: net: sit: always notify change when params are updated.<br>
-67) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
-68) kernel: net: move away from NLMSG_PUT().<br>
-69) kernel: net: do not use RTA_PUT() macros.<br>
+19) goahead: webui some fixes wireless basic.<br>
+20) goahead/init.d: store dhcp static lease to nvram.<br>
+21) init.d: full cleanup vlan parts in restore dumb mode function.<br>
+22) init.d: remove disable_all_ports_eee (already disabled in raeth).<br>
+23) init.d: iptables: split v4 rules generate code for more readable and more easy edit.<br>
+24) init.d: fix wan config if pure pppoe enabled and vpn full disabled mode.<br>
+25) kernel: add MX25L51245G, MT25QL512AB, N25Q256A spi flashs support.<br>
+26) kernel: ralink_arch: disable MT7621 PCIe Spread Spectrum to avoid Ch14 Rx De-sense.<br>
+27) kernel: ralink_arch: set MT7628 PCIe PHY to 1.3mA for power saving when PCIe port not used.<br>
+28) kernel: ralink_arch: fix MT7628 SDXC clock interferences.<br>
+29) kernel: ralink_arch: fix reset MT7621 PCIe peripherals on disable GPIO_PERST def.<br>
+30) kernel: ralink_nvram: fix check part size in commit.<br>
+31) kernel: ralink_hw_nat: add FoE 80b entries workaround on IPv6 offload enabled.<br>
+32) kernel: ralink_hw_nat: disable multicast offload on QDMA enabled (CPU reason is stripped after FQ).<br>
+33) kernel: ralink_raeth: fix MT7628 EPHY initialization.<br>
+34) kernel: ralink_raeth: always use TX ring size 512 to prevent ring full on PPE loopback traffic.<br>
+35) kernel: ralink_raeth: add support MT7621 'clause 45' MDIO control.<br>
+36) kernel: ralink_raeth: fix dump MT7621/MT7530 EPHY registers.<br>
+37) kernel: ralink_raeth: move early ESW init to global unit.<br>
+38) kernel: ralink_raeth: add EEE-related functions, disable EEE by default, fix disable EEE on MT7620 ESW, improve EEE support on MT7621/MT7530.<br>
+39) kernel: ralink_raeth: add support to disable any EPHY.<br>
+40) kernel: ralink_raeth: improve MT7621 performance on TX path.<br>
+41) kernel: exfat driver: upstream updates.<br>
+42) kernel: driver core: fix race with userland in device_add().<br>
+43) kernel: usb: fix use-after-free bug in usb_hcd_unlink_urb().<br>
+44) kernel: usb: serial: fix potential use-after-free after failed probe.<br>
+45) kernel: usb: xhci: allocate correct amount of scratchpad buffers.<br>
+46) kernel: usb: xhci: fix reporting of 0-sized URBs in control endpoint.<br>
+47) kernel: usb: xhci: handle Config Error Change (CEC) in xhci driver.<br>
+48) kernel: netfilter: nf_nat_h323: fix crash in nf_ct_unlink_expect_report().<br>
+49) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
+50) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
+51) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
+52) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+53) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
+54) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+55) kernel: net: tcp: update reordering first before detecting loss.<br>
+56) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
+57) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
+58) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
+59) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
+60) kernel: net: ipv4: route: fix sending IGMP messages with link address.<br>
+61) kernel: net: ipv4: avoid a test in ip_rt_put().<br>
+62) kernel: net: ipv4: speedup ip_idents_reserve().<br>
+63) kernel: net: ipv6: introduce ip6_rt_put().<br>
+64) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
+65) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
+66) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
+67) kernel: net: sit: always notify change when params are updated.<br>
+68) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
+69) kernel: net: move away from NLMSG_PUT().<br>
+70) kernel: net: do not use RTA_PUT() macros.<br>
 <br>
 <br>
 <b>TODO:</b><br>

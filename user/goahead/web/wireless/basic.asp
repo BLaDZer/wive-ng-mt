@@ -101,9 +101,9 @@ function addOption(list, text, value)
 	}
 }
 
-function insertExtChannelOption()
+function insertExtChannelOption(form)
 {
-	var wmode = document.wireless_basic.wirelessmode.value * 1;
+	var wmode = form.wirelessmode.value * 1;
 	var option_length;
 
 	if (wmode >= 5)
@@ -112,8 +112,8 @@ function insertExtChannelOption()
 		var tmp_value = x.value; // Store value
 		x.options.length = 0;
 
-		var CurrentCh = document.wireless_basic.sz11gChannel.value * 1;
-		var option_length = document.wireless_basic.sz11gChannel.options.length;
+		var CurrentCh = form.sz11gChannel.value * 1;
+		var option_length = form.sz11gChannel.options.length;
 
 		if ((CurrentCh >= 1) && (CurrentCh <= 4))
 			addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
@@ -145,25 +145,12 @@ function insertExtChannelOption()
 	}
 }
 
-function ChannelOnChange()
+function ChannelOnChange(form)
 {
-	if (document.wireless_basic.n_bandwidth[1].checked)
-	{
-		var w_mode = document.wireless_basic.wirelessmode.value;
-
-		if ((1*w_mode == 6) || (1*w_mode == 7))
-			displayElement('extension_channel', document.wireless_basic.n_bandwidth[1].checked);
-		else if ((1*w_mode == 3) || (1*w_mode == 4))
-		{
-			displayElement('extension_channel', document.wireless_basic.n_bandwidth[1].checked);
-
-			if (document.wireless_basic.sz11gChannel.options.selectedIndex == 0)
-				hideElement('extension_channel');
-		}
-	}
-
+	var w_mode = form.wirelessmode.value;
+	displayElement('extension_channel', (form.n_bandwidth.options.selectedIndex == 1) && (((1*w_mode == 6) || (1*w_mode == 7)) || ((1*w_mode == 3) || (1*w_mode == 4))));
 	// add subchannel
-	insertExtChannelOption();
+	insertExtChannelOption(form);
 }
 
 function Channel_BandWidth_onClick()
@@ -171,7 +158,7 @@ function Channel_BandWidth_onClick()
 	var form_basic = document.wireless_basic;
 	var w_mode = form_basic.wirelessmode.value;
 
-	if (form_basic.n_bandwidth[0].checked)
+	if (form_basic.n_bandwidth.options.selectedIndex == 0)
 	{
 		hideElement("extension_channel");
 		form_basic.n_extcha.disabled = true;
@@ -595,26 +582,26 @@ function initValue()
 	var HiddenSSID  = '<% getCfgZero(1, "HideSSID"); %>';
 	var HiddenSSIDArray = HiddenSSID.split(";");
 
-	form.broadcastssid[ (HiddenSSID.indexOf("0") >= 0) ? 1 : 0 ].checked = true;
+	form.broadcastssid.options.selectedIndex = (HiddenSSID.indexOf("0") >= 0) ? 1 : 0;
 	for (i=0; i<8; i++)
 		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
 
 	var APIsolated = '<% getCfgZero(1, "NoForwarding"); %>';
 	var APIsolatedArray = APIsolated.split(";");
 
-	form.apisolated[ (APIsolated.indexOf("1") >= 0) ? 1 : 0 ].checked = true;
+	form.apisolated.options.selectedIndex = (APIsolated.indexOf("1") >= 0) ? 1 : 0;
 	for (i=0; i<8; i++)
 		form.isolated_ssid[i].checked = (APIsolatedArray[i] == "1");
 
 	if (1*ht_bw == 0)
 	{
-		form.n_bandwidth[0].checked = true;
+		form.n_bandwidth.options.selectedIndex = 0;
 		form.n_extcha.disabled      = true;
 		hideElement("extension_channel");
 	}
 	else
 	{
-		form.n_bandwidth[1].checked = true;
+		form.n_bandwidth.options.selectedIndex = 1;
 		form.n_extcha.disabled      = false;
 		showElementEx("extension_channel", style_display_on());
 	}
@@ -734,13 +721,13 @@ function initValue()
 	}
 
 	// add subchannel
-	insertExtChannelOption();
+	insertExtChannelOption(form);
 
 	if (mbssid == "1")
 	{
 		showElementEx("div_mbssidapisolated", style_display_on());
 		form.mbssidapisolated.disabled = false;
-		form.mbssidapisolated[ (mbssidapisolated == "1") ? 1 : 0 ].checked = true;
+		form.mbssidapisolated.options.selectedIndex = (mbssidapisolated == "1") ? 1 : 0;
 	}
 
 	show_abg_rate(form);
@@ -748,23 +735,18 @@ function initValue()
 	if (green_on)
 	{
 		if (ht_mode == "1")
-			form.n_mode[1].checked = true;
-		else if (ht_mode == "2")
-			form.n_mode[2].checked = true;
+			form.n_mode.options.selectedIndex = 1;
+// WTF??? How to choose the third of the two states?
+//		else if (ht_mode == "2")
+//			form.n_mode[2].checked = true;
 		else
-			form.n_mode[0].checked = true;
+			form.n_mode.options.selectedIndex = 0;
 	} else
-		form.n_mode[0].checked = true;
+		form.n_mode.options.selectedIndex = 0;
 
-	if (ht_gi == "0")
-		form.n_gi[0].checked = true;
-	else
-		form.n_gi[1].checked = true;
+	form.n_gi.options.selectedIndex = (ht_gi == "1") ? 1 : 0;
 
-	if (ht_stbc == "0")
-		form.n_stbc[0].checked = true;
-	else
-		form.n_stbc[1].checked = true;
+	form.n_stbc.options.selectedIndex = (ht_stbc == "1") ? 1 : 0;
 
 	if (is3t3r == "1")
 	{
@@ -787,7 +769,7 @@ function initValue()
 	else if (1*ht_mcs == 33)
 		form.n_mcs.options.selectedIndex = mcs_length-1;
 
-	form.n_rdg[(ht_rdg == "0") ? 0 : 1].checked = true;
+	form.n_rdg.options.selectedIndex = (ht_rdg == "0") ? 0 : 1;
 
 	var option_length = form.n_extcha.options.length;
 
@@ -810,9 +792,9 @@ function initValue()
 		}
 	}
 
-	form.n_amsdu [ (ht_amsdu ==  "0") ? 0 : 1 ].checked = true;
-	form.n_autoba[ (ht_autoba == "0") ? 0 : 1 ].checked = true;
-	form.n_badecline[ (ht_badecline == "0") ? 0 : 1].checked = true;
+	form.n_amsdu.options.selectedIndex = (ht_amsdu ==  "0") ? 0 : 1;
+	form.n_autoba.options.selectedIndex = (ht_autoba == "0") ? 0 : 1;
+	form.n_badecline.options.selectedIndex = (ht_badecline == "0") ? 0 : 1;
 
 	if (is3t3r == "1")
 	{
@@ -840,20 +822,11 @@ function initValue()
 	form.rx_stream.options.selectedIndex = rx_stream_idx - 1;
 	form.tx_stream.options.selectedIndex = tx_stream_idx - 1;
 
-	if (vht_gi == "0")
-		form.ac_gi[0].checked = true;
-	else
-		form.ac_gi[1].checked = true;
+	form.ac_gi.options.selectedIndex = (vht_gi ==  "0") ? 0 : 1;
 
-	if (vht_stbc == "0")
-		form.ac_stbc[0].checked = true;
-	else
-		form.ac_stbc[1].checked = true;
+	form.ac_stbc.options.selectedIndex = (vht_stbc ==  "0") ? 0 : 1;
 
-	if (vht_ldpc == "0")
-		form.ac_ldpc[0].checked = true;
-	else
-		form.ac_ldpc[1].checked = true;
+	form.ac_ldpc.options.selectedIndex = (vht_ldpc ==  "0") ? 0 : 1;
 
 	form.ac_bw.options.selectedIndex = vht_bw;
 	form.ac_bwsig.options.selectedIndex = vht_bwsig;
@@ -988,7 +961,7 @@ function wirelessModeChange(form)
 	form.sz11gChannel.disabled = false;
 	showElementEx("div_11g_channel", style_display_on());
 
-	insertExtChannelOption();
+	insertExtChannelOption(form);
 	displayElement("extension_channel", form.sz11gChannel.options.selectedIndex != 0);
 
         // Display HT modes
@@ -1034,16 +1007,16 @@ function wirelessModeChange(form)
 	show_abg_rate(form);
 }
 
-function switch_hidden_ssid()
+function switch_hidden_ssid(form)
 {
 	for (i=0; i<8; i++)
-		document.wireless_basic.hssid[i].checked = document.wireless_basic.broadcastssid[0].checked;
+		form.hssid[i].checked = form.broadcastssid.options.selectedIndex == 1;
 }
 
-function switch_isolated_ssid()
+function switch_isolated_ssid(form)
 {
 	for (i=0; i<8; i++)
-		document.wireless_basic.isolated_ssid[i].checked = document.wireless_basic.apisolated[1].checked;
+		form.isolated_ssid[i].checked = form.apisolated.options.selectedIndex == 1;
 }
 
 function CheckValue(form)
@@ -1068,14 +1041,14 @@ function CheckValue(form)
           </tr>
           <tr id="basicWirelessEnabledAc">
             <td class="head">Wireless (5GHz)</td>
-	    	<td><select name="radioWirelessEnabledAc" class="mid">
+	    	<td><select name="radioWirelessEnabledAc" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
           </tr>
           <tr id="basicWirelessEnabled">
             <td class="head">Wireless (2.4GHz)</td>
-            <td><select name="radioWirelessEnabled" class="mid">
+            <td><select name="radioWirelessEnabled" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
@@ -1091,14 +1064,14 @@ function CheckValue(form)
           </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
             <td class="head"><font id="basicFreqA">Channel (5GHz)</font></td>
-            <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange()">
+            <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqAAuto">AutoSelect</option>
                 <% getWlan11aChannels(); %>
               </select></td>
           </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
             <td class="head"><font id="basicFreqG">Channel (2.4GHz)</font></td>
-            <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange()">
+            <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
               </select></td>
@@ -1246,27 +1219,24 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="basicBroadcastSSID">Broadcast Network Name</td>
-            <td><span class="radio">
-              <input type="radio" name="broadcastssid" value="0" onClick="switch_hidden_ssid()">
-              <font id="basicBroadcastSSIDDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="broadcastssid" value="1" checked onClick="switch_hidden_ssid()">
-              <font id="basicBroadcastSSIDEnable">Enable</font></span></td>
+            <td><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicApIsolated">AP Isolation</td>
-            <td><span class="radio">
-              <input type="radio" name="apisolated" value="0" checked onClick="switch_isolated_ssid()">
-              <font id="basicApIsolatedDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="apisolated" value="1" onClick="switch_isolated_ssid()">
-              <font id="basicApIsolatedEnable">Enable</font></span></td>
+            <td><select name="apisolated" class="half" onChange="switch_isolated_ssid(this.form);">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="div_mbssidapisolated">
             <td class="head" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
-            <td><span class="radio">
-              <input type="radio" name="mbssidapisolated" value="0" checked>
-              <font id="basicMBSSIDApIsolatedDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="mbssidapisolated" value="1">
-              <font id="basicMBSSIDApIsolatedEnable">Enable</font></span></td>
+            <td><select name="mbssidapisolated" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="div_abg_rate">
             <td class="head"><font id="basicRate">Rate</font></td>
@@ -1280,9 +1250,10 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
-            <td><span class="radio">
-              <input type="radio" name="n_bandwidth" value="0" onClick="Channel_BandWidth_onClick()" checked>20MHz</span> <span class="radio">
-              <input type="radio" name="n_bandwidth" value="1" onClick="Channel_BandWidth_onClick()">20/40MHz</span></td>
+            <td><select name="n_bandwidth" class="half" onClick="Channel_BandWidth_onClick();">
+                <option value="0">20MHz</option>
+                <option value="1">20/40MHz</option>
+              </select></td>
           </tr>
           <tr name="extension_channel" id="extension_channel">
             <td class="head" id="basicHTExtChannel">Extension Channel</td>
@@ -1329,59 +1300,52 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="basicHTGI">Guard Interval</td>
-            <td><span class="radio">
-              <input type="radio" name="n_gi" value="0" checked>
-              <font id="basicHTLongGI">Long</font></span> <span class="radio">
-              <input type="radio" name="n_gi" value="1">
-              <font id="basicHTAutoGI">Auto</font></span></td>
+            <td><select name="n_gi" class="half">
+                <option value="0" id="basicHTLongGI">Long</option>
+                <option value="1" id="basicHTAutoGI">Auto</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHSTBC">Space-Time Block Coding</td>
-            <td><span class="radio">
-              <input type="radio" name="n_stbc" value="0" checked>
-              <font id="basicHTSTBCDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_stbc" value="1">
-              <font id="basicHTSTBCEnable">Enable</font></span></td>
+            <td><select name="n_stbc" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTAMSDU">Aggregation MSDU</td>
-            <td><span class="radio">
-              <input type="radio" name="n_amsdu" value="0" checked>
-              <font id="basicHTAMSDUDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_amsdu" value="1">
-              <font id="basicHTAMSDUEnable">Enable</font></span></td>
+            <td><select name="n_amsdu" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTAddBA">Auto Block ACK</td>
-            <td><span class="radio">
-              <input type="radio" name="n_autoba" value="0" checked>
-              <font id="basicHTAddBADisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_autoba" value="1">
-              <font id="basicHTAddBAEnable">Enable</font></span></td>
+            <td><select name="n_autoba" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTDelBA">Decline Block ACK Request</td>
-            <td><span class="radio">
-              <input type="radio" name="n_badecline" value="0" checked>
-              <font id="basicHTDelBADisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_badecline" value="1">
-              <font id="basicHTDelBAEnable">Enable</font></span></td>
+            <td><select name="n_badecline" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="htOpModeRow" style="display: none;">
             <td class="head" id="basicHTOPMode">Green Filed Mode</td>
-            <td><span class="radio">
-              <input type="radio" name="n_mode" value="0" checked>
-              <font id="basicHTMixedDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_mode" value="1">
-              <font id="basicHTMixedEnable">Enable</font></span></td>
+            <td><select name="n_mode" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="basicHTRDG">Reverse Direction Grant</td>
-            <td><span class="radio">
-              <input type="radio" name="n_rdg" value="0" checked>
-              <font id="basicHTRDGDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="n_rdg" value="1">
-              <font id="basicHTRDGEnable">Enable</font></span></td>
+            <td><select name="n_rdg" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
         </table>
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
@@ -1389,43 +1353,40 @@ function CheckValue(form)
             <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
           </tr>
           <tr id="basicVHTBW" >
-            <td class="head">Channel BandWidth</td>
+            <td class="head" id="basicVHTBandWidth">Channel BandWidth</td>
             <td><select name="ac_bw" size="1" class="half">
                 <option value="0" selected id="1">20/40MHz</option>
                 <option value="1" id="2">20/40/80MHz</option>
 		</select></td>
           </tr>
           <tr id="basicVHTBWSIGNAL">
-            <td class="head">BandWidth Signaling Mode</td>
+            <td class="head" id="basicVHTSignalMode">BandWidth Signaling Mode</td>
             <td><select name="ac_bwsig" size="1" class="half">
-                <option value="0" selected id="1">Disable</option>
+                <option value="0" selected id="disable">Disable</option>
                 <option value="1" id="2">Static</option>
                 <option value="2" id="3">Dynamic</option>
 		</select></td>
           </tr>
           <tr>
             <td class="head" id="basicVHTGI">Guard Interval</td>
-            <td><span class="radio">
-              <input type="radio" name="ac_gi" value="0" checked>
-              <font id="basicVHTLongGI">Long</font></span> <span class="radio">
-              <input type="radio" name="ac_gi" value="1">
-              <font id="basicVHTAutoGI">Auto</font></span></td>
+            <td><select name="ac_gi" class="half">
+                <option value="0" id="basicVHTLongGI">Long</option>
+                <option value="1" id="basicVHTAutoGI">Auto</option>
+              </select></td>
           </tr>
           <tr id="div_11a_stbc" name="div_11a_stbc">
             <td class="head" id="basicVHTSTBC">Space-Time Block Coding</td>
-            <td><span class="radio">
-              <input type="radio" name="ac_stbc" value="0" checked>
-              <font id="basicVHTSTBCDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="ac_stbc" value="1">
-              <font id="basicVHTSTBC">Enable</font></span></td>
+            <td><select name="ac_stbc" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="div_11a_ldpc" name="div_11a_ldpc">
             <td class="head" id="basicLDPC">Low Disenty parity check</td>
-            <td><span class="radio">
-              <input type="radio" name="ac_ldpc" value="0" checked>
-              <font id="basicLDPCDisable">Disable</font></span> <span class="radio">
-              <input type="radio" name="ac_ldpc" value="1">
-              <font id="basicLDPCEnable">Enable</font></span></td>
+            <td><select name="ac_ldpc" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
         </table>
         <br>
