@@ -20,10 +20,6 @@
   <message msgid="services dhcp static" msgstr="Выделеный" />
   <message msgid="services dhcp domain" msgstr="Домен DHCP" />
 
-  <message msgid="services misc title" msgstr="Прочие настройки" />
-  <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
-  <message msgid="services misc setup" msgstr="Настройки прочих сервисов" />
-
   <message msgid="services ntp title" msgstr="Управление NTP" />
   <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить синхронизацию времени" />
   <message msgid="services ntp setup" msgstr="Настройки NTP" />
@@ -39,7 +35,7 @@
   <message msgid="services ddns setup" msgstr="Настройки DDNS" />
   <message msgid="services ddns provider" msgstr="Провайдер Dynamic DNS" />
   <message msgid="services ddns none" msgstr="Отсутствует" />
-  <message msgid="services ddns" msgstr="Имя доменна" />
+  <message msgid="services ddns" msgstr="Имя домена" />
 
   <message msgid="services account title" msgstr="IP Accounting" />
   <message msgid="services account introduction" msgstr="Здесь вы можете настроить контроль учёта." />
@@ -50,6 +46,9 @@
   <message msgid="services status off" msgstr="отключено" />
   <message msgid="services status work" msgstr="работает" />
   <message msgid="services status starting" msgstr="запускается" />
+  <message msgid="services status details" msgstr="Информация" />
+  <message msgid="services status about" msgstr="О сервисе..." />
+  <message msgid="services status configure" msgstr="Настройка..." />
 
   <message msgid="services l2tp title" msgstr="Настройки сервера L2TP" />
   <message msgid="services l2tp introduction" msgstr="Здесть вы можете настроить сервер L2TP." />
@@ -57,8 +56,8 @@
   <message msgid="services l2tp enable" msgstr="Сервер L2TP" />
   <message msgid="services l2tp ip" msgstr="Внутренний IP адрес" />
   <message msgid="services l2tp range ip" msgstr="Диапозон клиентских IP адресов" />
-  <message msgid="services l2tp mtu" msgstr="MTU тунеля" />
-  <message msgid="services l2tp mru" msgstr="MRU тунеля" />
+  <message msgid="services l2tp mtu" msgstr="MTU туннеля" />
+  <message msgid="services l2tp mru" msgstr="MRU туннеля" />
   <message msgid="services l2tp proxy arp" msgstr="L2TP proxyarp" />
   <message msgid="services l2tp users" msgstr="Пользователи L2TP" />
   <message msgid="services l2tp login" msgstr="Имя пользователя" />
@@ -73,4 +72,66 @@
   <message msgid="services samba server string" msgstr="Описание" />
   <message msgid="services samba os level" msgstr="Уровень(OS level)" />
   <message msgid="services samba time server" msgstr="Сервер времени" />
+
+  <message msgid="services misc title" msgstr="Прочие настройки" />
+  <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
+  <message msgid="services misc setup" msgstr="Настройки прочих сервисов" />
+  <message msgid="services misc offload note" msgstr="В секции 'Механизм обработки' вы можете выбрать режим обработки(для IPoE/PPPoE рекомендуется использовать аппаратную обработку, а для L2TP/PPTP - комбинированный)." />
+  <message msgid="services misc software note" msgstr="В секции 'Программная обработка'(если выбран программный или комплексный режим обработки) вы можете выборочно отключить механизмы программной обработки(не рекомендуется отключать для PPTP/L2TP)." />
+  <message msgid="services misc important" msgstr="ВАЖНО: Если у вас возникают проблемы при работе с SIP или другими программами использующими UDP, то попробуйте отключить обработку UDP пакетов(некоторые обработки не правильно работают с UDP)." />
+  <message msgid="services misc offload setup" msgstr="Механизм обработки" />
+  <message msgid="services misc nat offload" msgstr="Режим обработки NAT" />
+  <message msgid="services misc software" msgstr="Програмный" />
+  <message msgid="services misc hardware" msgstr="Аппаратный" />
+  <message msgid="services misc complex" msgstr="Комбинированный" />
+  <message msgid="services misc wifi offload" msgstr="Аппаратная обработка WiFi" />
+  <message msgid="services misc udp offload" msgstr="Аппаратная обработка UDP" />
+  <message msgid="services misc ipv6 offload" msgstr="Аппаратное маршрутизирование IPV6" />
+  <message msgid="services misc hw_nat" msgstr="HW_NAT binding threshold" />
+  <message msgid="services misc nat implementation" msgstr="NAT implementation" />
+  <message msgid="services misc software title" msgstr="Програмная обработка" />
+  <message msgid="services misc nat fastpath" msgstr="NAT fastpath" />
+  <message msgid="services misc route fastpath" msgstr="Route fastpath" />
+  <message msgid="services misc netfilter fastpath" msgstr="Netfilter fastpath" />
+  <message msgid="services misc remote setup" msgstr="Удалённое управление" />
+  <message msgid="services misc web remote" msgstr="Управление через HTTP" />
+  <message msgid="services misc web port" msgstr="Порт HTTP" />
+  <message msgid="services misc ssh remote" msgstr="Управление через SSH" />
+  <message msgid="services misc ssh port" msgstr="Порт SSH" />
+  <message msgid="services misc telnet remote" msgstr="Управление через Telnet" />
+  <message msgid="services misc services" msgstr="Сервис" />
+  <message msgid="services misc value" msgstr="Значение" />
+  <message msgid="services misc status" msgstr="Статус" />
+  <message msgid="services misc dnsproxy" msgstr="DNS cached proxy" />
+  <message msgid="services misc upnp" msgstr="UPNP support" />
+  <message msgid="services misc snmp" msgstr="SNMP daemon" />
+  <message msgid="services misc arppt" msgstr="ARP Proxy" />
+  <message msgid="services misc cron" msgstr="Cron daemon" />
+  <message msgid="services misc lltd" msgstr="LLTD daemon" />
+  <message msgid="services misc lldpd" msgstr="LLDP daemon" />
+  <message msgid="services misc cdp" msgstr="CDP daemon" />
+  <message msgid="services misc iptv" msgstr="Сервисы IPTV" />
+  <message msgid="services misc igmp" msgstr="IGMP proxy" />
+  <message msgid="services misc igmp multicast" msgstr="Multicast IGMP snooping" />
+  <message msgid="services misc igmp unicast" msgstr="Multicast to Unicast conversion" />
+  <message msgid="services misc udpxy" msgstr="Multicast to http proxy (udpxy)" />
+  <message msgid="services misc udpxy port" msgstr="Порт UDPXY" />
+  <message msgid="services misc xupnpd" msgstr="UPNP media server (xupnpd)" />
+  <message msgid="services misc pass through" msgstr="Pass Through" />
+  <message msgid="services misc pass through pppoe" msgstr="PPPOE pass through" />
+  <message msgid="services misc pass through ipv6" msgstr="IPv6 pass through" />
+  <message msgid="services misc watchers" msgstr="Watchers" />
+  <message msgid="services misc watchdog" msgstr="Watchdog service" />
+  <message msgid="services misc pinger" msgstr="Pinger service" />
+  <message msgid="services misc ping time" msgstr="Ping check time" />
+  <message msgid="services misc ping interval" msgstr="Ping check interval" />
+  <message msgid="services misc others" msgstr="Остальные" />
+  <message msgid="services misc vlan double tag" msgstr="Vlan double tag QinQ support" />
+  <message msgid="services misc reinit wan" msgstr="Reinit WAN if DHCP lease fail" />
+  <message msgid="services misc dhcp renew" msgstr="DHCP renew lease at WAN UP" />
+  <message msgid="services misc ping from wan" msgstr="Принимать ping по WAN" />
+  <message msgid="services misc stp" msgstr="802.1d Spanning Tree" />
+  <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
+  <message msgid="services misc multicast ttl" msgstr="Не изменять multicast TTL" />
+  <message msgid="services misc use pmtu" msgstr="Use PMTU discovery" />
 </po>

@@ -850,11 +850,15 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char	*submitUrl;
 
 	// Get current mode & new mode
-	char *radio = websGetVar(wp, T("radioWirelessEnabled"), T("off"));
-	int web_radio_on = CHK_IF_CHECKED(radio);
+	char *radio = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
+	if (radio == NULL)
+		radio = "0";
+	int web_radio_on = CHK_IF_DIGIT(radio, 1);
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	char *radioac = websGetVar(wp, T("radioWirelessEnabledAc"), T("off"));
-	int web_radio_ac_on = CHK_IF_CHECKED(radioac);
+	char *radioac = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
+	if (radioac == NULL)
+		radioac = "0";
+	int web_radio_ac_on = CHK_IF_DIGIT(radioac, 1);
 #endif
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode

@@ -25,6 +25,7 @@ td.port_status {
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
+Butterlate.setTextDomain("mode");
 Butterlate.setTextDomain("buttons");
 
 var wan_port = '<% getCfgZero(1, "wan_port"); %>';
@@ -40,13 +41,13 @@ function showOpMode()
 	var opmode = el.value;
 	var s_opmode = 'Unknown';
 	if (opmode == '0')
-		s_opmode = 'Bridge Mode';
+		s_opmode = _("opmode mode bridge");
 	else if (opmode == '1')
-		s_opmode = 'Gateway Mode';
+		s_opmode = _("opmode mode gateway");
 	else if (opmode == '2')
-		s_opmode = 'Ethernet Converter Mode';
+		s_opmode = _("opmode mode e");
 	else if (opmode == '3')
-		s_opmode = 'AP Client Mode';
+		s_opmode = _("opmode mode a");
 
 	ajaxModifyElementHTML('tdOperationMode', s_opmode);
 }
@@ -130,6 +131,7 @@ function initTranslation()
 	_TR("statusSysDateTime", "status system date time");
 	_TR("statusSysUpTime", "status system up time");
 	_TR("statusSysPlatform", "status system platform");
+	_TR("statusOPMode", "status op mode");
 
 	_TR("statusInternetConfig", "status internet config");
 	_TR("statusConnectedType", "status connect type");
@@ -152,6 +154,11 @@ function initTranslation()
 	_TR("statusFirstLANport", "status first lan port");
 	_TR("statusNearToWAN", "status near");
 	_TR("statusDistantFromWAN", "status distant");
+	_TR("statusPortMode1", "status port mode 1");
+	_TR("statusPortMode2", "status port mode 2");
+	_TR("statusPortMode3", "status port mode 3");
+	_TR("statusPortMode4", "status port mode 4");
+	_TR("statusPortMode5", "status port mode 5");
 
 	_TRV("statusApply", "button apply");
 }
@@ -260,21 +267,19 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusWANport">WAN port</td>
-            <td><select name="wan_port" onChange="showPortStatus();" class="short">
+            <td colspan="2"><select name="wan_port" onChange="showPortStatus();" class="short">
                 <option value="0">1</option>
                 <option value="4">5</option>
               </select>
               <iframe id="setwanReloader" name="setwanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
-              <td></td>
           </tr>
           <tr>
             <td class="head" id="statusFirstLANport">First LAN port</td>
-            <td><select name="lan_port" onChange="showPortStatus();" class="mid">
+            <td colspan="2"><select name="lan_port" onChange="showPortStatus();" class="mid">
                 <option value="near" id="statusNearToWAN">Near to the WAN port</option>
                 <option value="distant" id="statusDistantFromWAN">Distant from the WAN port</option>
               </select>
               </td>
-              <td></td>
           </tr>
           <tr>
             <td class="head" id="tv_stb">TV/STB/VLAN1</td>
@@ -290,59 +295,54 @@ function setWanPort(form)
           </tr>
           <tr>
           <tr>
-            <td class="head">Port 1 mode</td>
-            <td><select name="port1_swmode" class="mid">
+            <td class="head" id="statusPortMode1">Port 1 mode</td>
+            <td colspan="2"><select name="port1_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
-              <td></td>
           </tr>
           <tr>
-            <td class="head">Port 2 mode</td>
-            <td><select name="port2_swmode" class="mid">
+            <td class="head" id="statusPortMode2">Port 2 mode</td>
+            <td colspan="2"><select name="port2_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
-              <td></td>
           </tr>
           <tr>
-            <td class="head">Port 3 mode</td>
-            <td><select name="port3_swmode" class="mid">
+            <td class="head" id="statusPortMode3">Port 3 mode</td>
+            <td colspan="2"><select name="port3_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
-              <td></td>
           </tr>
           <tr>
-            <td class="head">Port 4 mode</td>
-            <td><select name="port4_swmode" class="mid">
+            <td class="head" id="statusPortMode4">Port 4 mode</td>
+            <td colspan="2"><select name="port4_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
-              <td></td>
           </tr>
           <tr>
-            <td class="head">Port 5 mode</td>
-            <td><select name="port5_swmode" class="mid">
+            <td class="head" id="statusPortMode5">Port 5 mode</td>
+            <td colspan="2"><select name="port5_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
                 <option value="100h">100 mbit/s half duplex</option>
                 <option value="100f">100 mbit/s full duplex</option>
               </select></td>
-              <td></td>
           </tr>
         </table>
         <input type="button" class="mid" id="statusApply" value="Apply" onClick="setWanPort(this.form);" />

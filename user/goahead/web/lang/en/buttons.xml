@@ -16,4 +16,6 @@
     <message msgid="button reset statistics" msgstr="Reset Statistics" />
     <message msgid="button disconnect" msgstr="Disconnect" />
     <message msgid="button disconnect all" msgstr="Disconnect All" />
+    <message msgid="button clear" msgstr="Clear" />
+    <message msgid="button remove" msgstr="Remove" />
 </po>

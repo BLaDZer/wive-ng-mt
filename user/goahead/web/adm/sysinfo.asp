@@ -20,8 +20,7 @@
     <td><% getPlatform(); %></td>
   </tr>
   <tr>
-    <td class="head" id="statusOPMode"><input type="hidden" id="inpOperationMode" value='<% getCfgZero(1, "OperationMode"); %>'>
-      Operation Mode </td>
+    <td class="head"><input type="hidden" id="inpOperationMode" value='<% getCfgZero(1, "OperationMode"); %>'><span id="statusOPMode">Operation Mode</span></td>
     <td id="tdOperationMode">&nbsp;</td>
   </tr>
   <!-- ================= Internet Configurations ================= -->

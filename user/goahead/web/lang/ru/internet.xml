@@ -19,7 +19,7 @@
   <message msgid="inet pass2" msgstr="Подтверждение пароля" />
   <message msgid="inet hostname" msgstr="Имя хоста" />
 
-  <message msgid="wan title" msgstr="Настройик Wide Area Network (WAN)" />
+  <message msgid="wan title" msgstr="Настройки Wide Area Network (WAN)" />
   <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
   <message msgid="wan connection type" msgstr="Тип подключения WAN:" />
   <message msgid="wan connection type static" msgstr="STATIC (фиксированный IP)" />

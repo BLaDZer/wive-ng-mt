@@ -10,7 +10,9 @@
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <title>Basic Wireless Settings</title>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
 var radio_off_ac = "<% getCfgZero(1, "RadioOffINIC"); %>";
@@ -341,8 +343,20 @@ function initTranslation()
 	_TR("basicLDPCEnable", "wireless enable");
 	_TR("basicLDPCEnable", "wireless enable");
 
-	_TRV("basicApply", "wireless apply");
-	_TRV("basicCancel", "wireless cancel");
+	_TRV("basicApply", "button apply");
+	_TRV("basicCancel", "button cancel");
+	_TRV("basicAddBSSID", "button add")
+
+	var elements = document.getElementsByTagName('option');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "disable")
+			elements[i].innerHTML = _("button disable");
+		else if (elements[i].id == "enable")
+			elements[i].innerHTML = _("button enable");
+	var elements = document.getElementsByTagName('input');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "basicRemove")
+			elements[i].innerHTML = _("button remove");
 }
 
 var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
@@ -409,8 +423,11 @@ function initValue()
 
 	var form = document.wireless_basic;
 
-	form.radioWirelessEnabled.checked = (radio_off == "0");
-	form.radioWirelessEnabledAc.checked = (radio_off_ac == "0");
+	radio = (radio_off == "0") ? 1 : 0;
+	radioac = (radio_off_ac == "0") ? 1 : 0;
+
+	form.radioWirelessEnabled.options.selectedIndex = radio;
+	form.radioWirelessEnabledAc.options.selectedIndex = radioac;
 
 	// Hide & disable elements
 	hideElement("div_11a_basic");
@@ -1051,11 +1068,17 @@ function CheckValue(form)
           </tr>
           <tr id="basicWirelessEnabledAc">
             <td class="head">Wireless (5GHz)</td>
-	    <td><input type="checkbox" name="radioWirelessEnabledAc">&nbsp; Enabled</td>
+	    	<td><select name="radioWirelessEnabledAc" class="mid">
+                <option value="0" id="disable">Disabled</option>
+                <option value="1" id="enable">Enabled</option>
+              </select></td>
           </tr>
           <tr id="basicWirelessEnabled">
             <td class="head">Wireless (2.4GHz)</td>
-            <td><input type="checkbox" name="radioWirelessEnabled">&nbsp; Enabled</td>
+            <td><select name="radioWirelessEnabled" class="mid">
+                <option value="0" id="disable">Disabled</option>
+                <option value="1" id="enable">Enabled</option>
+              </select></td>
           <tr id="div_11a_basic" name="div_11a_basic">
             <td class="head" id="basicAcNetMode">Network Mode (5GHz)</td>
             <td><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
@@ -1135,7 +1158,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="0">
               &nbsp; <font id="basicIsolatedSSID0">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="0">
-              <input type="button" onClick="ssidAdd(this.form);" class="normal" name="addBSSIDbtn" value="Add BSSID">
+              <input type="button" onClick="ssidAdd(this.form);" class="normal" name="addBSSIDbtn" value="Add BSSID" id="basicAddBSSID">
               <% dumpBSS(0); %></td>
           </tr>
           <tr id="div_hssid1" style="display:none;">
@@ -1145,7 +1168,7 @@ function CheckValue(form)
               <input type=checkbox name=hssid value="1">
               &nbsp; <font id="basicIsolatedSSID1">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="1">
-              <input type="button" onClick="ssidRemove(this.form, 1);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 1);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(1); %></td>
           </tr>
           <tr id="div_hssid2" style="display:none;">
@@ -1155,7 +1178,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="2">
               &nbsp; <font id="basicIsolatedSSID2">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="2">
-              <input type="button" onClick="ssidRemove(this.form, 2);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 2);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(2); %></td>
           </tr>
           <tr id="div_hssid3" style="display:none;">
@@ -1165,7 +1188,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="3">
               &nbsp; <font id="basicIsolatedSSID3">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="3">
-              <input type="button" onClick="ssidRemove(this.form, 3);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 3);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(3); %></td>
           </tr>
           <tr id="div_hssid4" style="display:none;">
@@ -1175,7 +1198,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="4">
               &nbsp; <font id="basicIsolatedSSID4">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="4">
-              <input type="button" onClick="ssidRemove(this.form, 4);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 4);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(4); %></td>
           </tr>
           <tr id="div_hssid5" style="display:none;">
@@ -1185,7 +1208,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="5">
               &nbsp; <font id="basicIsolatedSSID5">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="5">
-              <input type="button" onClick="ssidRemove(this.form, 5);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 5);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(5); %></td>
           </tr>
           <tr id="div_hssid6" style="display:none;">
@@ -1195,7 +1218,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="6">
               &nbsp; <font id="basicIsolatedSSID6">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="6">
-              <input type="button" onClick="ssidRemove(this.form, 6);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 6);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(6); %></td>
           </tr>
           <tr id="div_hssid7" style="display:none;">
@@ -1205,7 +1228,7 @@ function CheckValue(form)
               <input type="checkbox" name="hssid" value="7">
               &nbsp; <font id="basicIsolatedSSID7">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="7">
-              <input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove">
+              <input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove">
               <% dumpBSS(7); %></td>
           </tr>
         </table>

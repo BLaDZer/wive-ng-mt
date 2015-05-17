@@ -20,10 +20,6 @@
   <message msgid="services dhcp static" msgstr="Static" />
   <message msgid="services dhcp domain" msgstr="DHCP Domain" />
 
-  <message msgid="services misc title" msgstr="Miscellaneous services" />
-  <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
-  <message msgid="services misc setup" msgstr="Miscellaneous services setup" />
-
   <message msgid="services ntp title" msgstr="NTP Management" />
   <message msgid="services ntp introduction" msgstr="Here you can configure time synchronization." />
   <message msgid="services ntp setup" msgstr="NTP Settings" />
@@ -50,6 +46,9 @@
   <message msgid="services status off" msgstr="off" />
   <message msgid="services status work" msgstr="work" />
   <message msgid="services status starting" msgstr="starting" />
+  <message msgid="services status details" msgstr="Details" />
+  <message msgid="services status about" msgstr="Learn more..." />
+  <message msgid="services status configure" msgstr="Configure..." />
 
   <message msgid="services l2tp title" msgstr="L2TP Server Setup" />
   <message msgid="services l2tp introduction" msgstr="Here you can configure L2TP server settings." />
@@ -73,4 +72,65 @@
   <message msgid="services samba server string" msgstr="Server string" />
   <message msgid="services samba os level" msgstr="OS level" />
   <message msgid="services samba time server" msgstr="Enable time server" />
+
+  <message msgid="services misc title" msgstr="Miscellaneous services" />
+  <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
+  <message msgid="services misc offload note" msgstr="In section 'Offload engine' you will select the offload mode (for IPOE/PPPOE recommended HARDWARE mode, for L2TP/PPTP - COMPLEX)." />
+  <message msgid="services misc software note" msgstr="In the section 'Software fastpaths' (work only if offload mode complex or software) it is possible to disable selectively one of mechanisms of program offload (not recommended disable for PPTP/L2TP)." />
+  <message msgid="services misc important" msgstr="IMPORTANT: If you have problems with SIP or other applications by using UDP, try to disable UDP offload(some ppe revisions not correct work with udp)." />
+  <message msgid="services misc offload setup" msgstr="Offload engine" />
+  <message msgid="services misc nat offload" msgstr="NAT offload mode" />
+  <message msgid="services misc software" msgstr="Software" />
+  <message msgid="services misc hardware" msgstr="Hardware" />
+  <message msgid="services misc complex" msgstr="Complex" />
+  <message msgid="services misc wifi offload" msgstr="WiFi hardware nat offload" />
+  <message msgid="services misc udp offload" msgstr="UDP hardware nat offload" />
+  <message msgid="services misc ipv6 offload" msgstr="IPV6 hardware route offload" />
+  <message msgid="services misc hw_nat" msgstr="HW_NAT binding threshold" />
+  <message msgid="services misc nat implementation" msgstr="NAT implementation" />
+  <message msgid="services misc software title" msgstr="Software fastpaths" />
+  <message msgid="services misc nat fastpath" msgstr="NAT fastpath" />
+  <message msgid="services misc route fastpath" msgstr="Route fastpath" />
+  <message msgid="services misc netfilter fastpath" msgstr="Netfilter fastpath" />
+  <message msgid="services misc remote setup" msgstr="Remote management" />
+  <message msgid="services misc web remote" msgstr="HTTP Remote Management" />
+  <message msgid="services misc web port" msgstr="Remote HTTP port" />
+  <message msgid="services misc ssh remote" msgstr="SSH Remote Management" />
+  <message msgid="services misc ssh port" msgstr="Remote SSH port" />
+  <message msgid="services misc telnet remote" msgstr="Remote Telnet" />
+  <message msgid="services misc services" msgstr="Services" />
+  <message msgid="services misc value" msgstr="Value" />
+  <message msgid="services misc status" msgstr="Status" />
+  <message msgid="services misc dnsproxy" msgstr="DNS cached proxy" />
+  <message msgid="services misc upnp" msgstr="UPNP support" />
+  <message msgid="services misc snmp" msgstr="SNMP daemon" />
+  <message msgid="services misc arppt" msgstr="ARP Proxy" />
+  <message msgid="services misc cron" msgstr="Cron daemon" />
+  <message msgid="services misc lltd" msgstr="LLTD daemon" />
+  <message msgid="services misc lldpd" msgstr="LLDP daemon" />
+  <message msgid="services misc cdp" msgstr="CDP daemon" />
+  <message msgid="services misc iptv" msgstr="Services IPTV" />
+  <message msgid="services misc igmp" msgstr="IGMP proxy" />
+  <message msgid="services misc igmp multicast" msgstr="Multicast IGMP snooping" />
+  <message msgid="services misc igmp unicast" msgstr="Multicast to Unicast conversion" />
+  <message msgid="services misc udpxy" msgstr="Multicast to http proxy (udpxy)" />
+  <message msgid="services misc udpxy port" msgstr="UDPXY port" />
+  <message msgid="services misc xupnpd" msgstr="UPNP media server (xupnpd)" />
+  <message msgid="services misc pass through" msgstr="Pass Through" />
+  <message msgid="services misc pass through pppoe" msgstr="PPPOE pass through" />
+  <message msgid="services misc pass through ipv6" msgstr="IPv6 pass through" />
+  <message msgid="services misc watchers" msgstr="Watchers" />
+  <message msgid="services misc watchdog" msgstr="Watchdog service" />
+  <message msgid="services misc pinger" msgstr="Pinger service" />
+  <message msgid="services misc ping time" msgstr="Ping check time" />
+  <message msgid="services misc ping interval" msgstr="Ping check interval" />
+  <message msgid="services misc others" msgstr="Others" />
+  <message msgid="services misc vlan double tag" msgstr="Vlan double tag QinQ support" />
+  <message msgid="services misc reinit wan" msgstr="Reinit WAN if DHCP lease fail" />
+  <message msgid="services misc dhcp renew" msgstr="DHCP renew lease at WAN UP" />
+  <message msgid="services misc ping from wan" msgstr="Accept ping from WAN" />
+  <message msgid="services misc stp" msgstr="802.1d Spanning Tree" />
+  <message msgid="services misc dont modify ttl" msgstr="Do not modify TTL" />
+  <message msgid="services misc multicast ttl" msgstr="Do not modify multicast TTL" />
+  <message msgid="services misc use pmtu" msgstr="Use PMTU discovery" />
 </po>

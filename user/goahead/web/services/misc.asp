@@ -14,7 +14,6 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("services");
 Butterlate.setTextDomain("buttons");
 
@@ -56,45 +55,80 @@ function initTranslation()
 {
 	_TR("lTitle", "services misc title");
 	_TR("lIntroduction", "services misc introduction");
+	_TR("miscOffloadEngine", "services misc offload note");
+	_TR("miscSoftwareFastpath", "services misc software note");
+	_TR("miscImportant", "services misc important");
+	_TR("miscOffloadSetup", "services misc offload setup");
+	_TR("miscNATOffload", "services misc nat offload");
+	_TR("miscSoftware", "services misc software");
+	_TR("miscHardware", "services misc hardware");
+	_TR("miscComplex", "services misc complex");
+	_TR("miscWiFiOffload", "services misc wifi offload");
+	_TR("miscUDPOffload", "services misc udp offload");
+	_TR("miscIPV6offload", "services misc ipv6 offload");
+	_TR("miscHW_NAT", "services misc hw_nat");
+	_TR("miscNATimpl", "services misc nat implementation");
+	_TR("miscSoftwareTitle", "services misc software title");
+	_TR("miscNATFastpath", "services misc nat fastpath");
+	_TR("miscRouteFastpath", "services misc route fastpath");
+	_TR("miscNFFastpath", "services misc netfilter fastpath");
+	_TR("miscRemoteSetup", "services misc remote setup");
+	_TR("miscWebRemote", "services misc web remote");
+	_TR("miscWebPort", "services misc web port");
+	_TR("miscSSHRemote", "services misc ssh remote");
+	_TR("miscSSHPort", "services misc ssh port");
+	_TR("miscTelnetRemote", "services misc telnet remote");
+	_TR("miscServices", "services misc services");
+	_TR("miscValue", "services misc value");
+	_TR("miscDetails", "services status details");
+	_TR("miscStatus", "services misc status");
+	_TR("miscConfigure", "services status configure");
+	_TR("lDnsp", "services misc dnsproxy");
+	_TR("lUpnp", "services misc upnp");
+	_TR("lSnmp", "services misc snmp");
+	_TR("lArppt", "services misc arppt");
+	_TR("lCron", "services misc cron");
+	_TR("lLltd", "services misc lltd");
+	_TR("lLldpd", "services misc lldpd");
+	_TR("lCdp", "services misc cdp");
+	_TR("miscIPTV", "services misc iptv");
+	_TR("miscIPTVValue", "services misc value");
+	_TR("miscIPTVDetails", "services status details");
+	_TR("miscIPTVStatus", "services misc status");
+	_TR("miscIPTVConfig", "services status configure");
+	_TR("lIgmpp", "services misc igmp");
+	_TR("lIgmppMC", "services misc igmp multicast");
+	_TR("lIgmppMC2UC", "services misc igmp unicast");
+	_TR("ludpxy", "services misc udpxy");
+	_TR("miscUDPXYPort", "services misc udpxy port");
+	_TR("lxupnpd", "services misc xupnpd");
+	_TR("miscPassThrough", "services misc pass through");
+	_TR("miscPTPPPoE", "services misc pass through pppoe");
+	_TR("miscPTIPv6", "services misc pass through ipv6");
+	_TR("miscWatchers", "services misc watchers");
+	_TR("miscWatchdog", "services misc watchdog");
+	_TR("miscPinger", "services misc pinger");
+	_TR("miscPingTime", "services misc ping time");
+	_TR("miscPingInterval", "services misc ping interval");
+	_TR("miscOthers", "services misc others");
+	_TR("miscVLANDoubleTag", "services misc vlan double tag");
+	_TR("miscReinitWAN", "services misc reinit wan");
+	_TR("miscDHCPRenew", "services misc dhcp renew");
+	_TR("sysfwPingFrmWANFilterHead", "services misc ping from wan");
+	_TR("lStp", "services misc stp");
+	_TR("miscDontModifyTTL", "services misc dont modify ttl");
+	_TR("miscDontModifyMCTTL", "services misc multicast ttl");
+	_TR("miscUsePMTU", "services misc use pmtu");
 
-	_TR("lStp", "lan stp");
-	_TR("lStpD", "inet disable");
-	_TR("lStpE", "inet enable");
+	_TRV("lApply", "button apply");
+	_TRV("lCancel", "button cancel");
 
-	_TR("lArppt", "lan arpp");
-	_TR("lArpptD", "inet disable");
-	_TR("lArpptE", "inet enable");
-
-	_TR("lCdp", "lan cdp");
-	_TR("lCdpD", "inet disable");
-	_TR("lCdpE", "inet enable");
-
-	_TR("lLldpd", "lan lldpd");
-	_TR("lLldpdD", "inet disable");
-	_TR("lLldpdE", "inet enable");
-
-	_TR("lLltd", "lan lltd");
-	_TR("lLltdD", "inet disable");
-	_TR("lLltdE", "inet enable");
-
-	_TR("lSnmp", "lan snmp");
-	_TR("lSnmpD", "inet disable");
-	_TR("lSnmpE", "inet enable");
-
-	_TR("lIgmpp", "lan igmpp");
-	_TR("lIgmppD", "inet disable");
-	_TR("lIgmppE", "inet enable");
-
-	_TR("lUpnp", "lan upnp");
-	_TR("lUpnpD", "inet disable");
-	_TR("lUpnpE", "inet enable");
-
-	_TR("lDnsp", "lan dnsp");
-	_TR("lDnspD", "inet disable");
-	_TR("lDnspE", "inet enable");
-
-	_TRV("lApply", "inet apply");
-	_TRV("lCancel", "inet cancel");
+	var elements = document.getElementsByTagName('option');
+  		for (var i = 0; i < elements.length; i++)
+    		if (elements[i].id == "disable")
+				elements[i].innerHTML = _("button disable");
+			else if (elements[i].id == "enable")
+				elements[i].innerHTML = _("button enable");
 }
 
 function initValue()
@@ -262,17 +296,18 @@ function offloadModeSelect(form)
 	var fastpathb = "<% getFastPathBuilt(); %>";
 
 	// Mode
-	displayElement('hwnat_threshold_row', (thresh == '2') || (thresh == '3'))
+	displayElement('hwnat_threshold_row', (thresh == '2') || (thresh == '3'));
 	// HW extensions
-	displayElement('wifihw_row', (thresh == '2') || (thresh == '3'))
-	displayElement('udphw_row', (thresh == '2') || (thresh == '3'))
-	displayElement('sixhw_row', (thresh == '2') || (thresh == '3'))
+	displayElement('wifihw_row', (thresh == '2') || (thresh == '3'));
+	displayElement('udphw_row', (thresh == '2') || (thresh == '3'));
+	displayElement('sixhw_row', (thresh == '2') || (thresh == '3'));
 	// SW extensions
-	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'))
-	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'))
+	displayElement('fastpath_row', (thresh == '1') || (thresh == '3'));
+	displayElement('miscSoftwareFastpath', (thresh == '1') || (thresh == '3'))
+	displayElement('filter_fastpath_row', (thresh == '1') || (thresh == '3'));
 	if (fastpathb == "1") {
-	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'))
-	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'))
+	    displayElement('nat_fastpath_row', (thresh == '1') || (thresh == '3'));
+	    displayElement('route_fastpath_row', (thresh == '1') || (thresh == '3'));
 	}
 }
 
@@ -344,15 +379,15 @@ function displayServiceHandler(response)
 
 			// Fill-up status
 			if (service[0]*1 == '0')
-				tds[3].innerHTML = '<span style="color: #808080"><b>off</b></span>';
+				tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 			else
 				tds[3].innerHTML = (daemons[service[2]] == 1) ?
-					'<span style="color: #3da42c"><b>work</b></span>' :
-					'<span style="color: #808000"><b>starting</b></span>';
+					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
 
 			// Fill-up configure
 			tds[4].innerHTML = ((service[0]*1 > '0') && (daemons[service[2]] == 1) && (service[3] != null)) ?
-				'<a href="http://<% getLanIp(); %>:' + service[3] + '">Configure...</a>' : '&nbsp;';
+				'<a href="http://<% getLanIp(); %>:' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
 		}
 	}
 
@@ -372,53 +407,53 @@ function displayServiceStatus()
   <tr>
     <td><h1 id="lTitle">Miscellaneous Services Setup</h1>
       <p id="lIntroduction"></p>
-      <p>In section "Offload engine" you will select the offload mode (for IPOE/PPPOE recommended HARDWARE mode, for L2TP/PPTP - COMPLEX).</p>
-      <p>In the section "Software fastpaths" (work only if offload mode complex or software) it is possible to disable selectively one of mechanisms of program offload (not recommended disable for PPTP/L2TP).</p>
-      <p>IMPORTANT: If you have problems with SIP or other applications by using UDP, try to disable UDP offload(some ppe revisions not correct work with udp).</p>
+      <p id="miscOffloadEngine">In section "Offload engine" you will select the offload mode (for IPOE/PPPOE recommended HARDWARE mode, for L2TP/PPTP - COMPLEX).</p>
+      <p id="miscSoftwareFastpath">In the section "Software fastpaths" (work only if offload mode complex or software) it is possible to disable selectively one of mechanisms of program offload (not recommended disable for PPTP/L2TP).</p>
+      <p id="miscImportant">IMPORTANT: If you have problems with SIP or other applications by using UDP, try to disable UDP offload(some ppe revisions not correct work with udp).</p>
       <hr>
       <form method="POST" name="miscServiceCfg" action="/goform/setMiscServices" onSubmit="return CheckValue(this);">
         <table class="form">
           <!-- Offload engine -->
           <tr>
-            <td class="title" colspan="5">Offload engine</td>
+            <td class="title" colspan="5" id="miscOffloadSetup">Offload engine</td>
           </tr>
           <tr>
-            <td class="head"><a name="nat_fastpath_ref"></a>NAT offload mode</td>
+            <td class="head" id="miscNATOffload">NAT offload mode</td>
             <td colspan="4"><select name="offloadMode" class="half" onChange="offloadModeSelect(this.form);">
-                <option value="0">Disable</option>
-                <option value="1">Software</option>
-                <option value="2">Hardware</option>
-                <option value="3">Complex</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="miscSoftware">Software</option>
+                <option value="2" id="miscHardware">Hardware</option>
+                <option value="3" id="miscComplex">Complex</option>
               </select></td>
           </tr>
           <tr id="wifihw_row">
-            <td class="head">WiFi hardware nat offload</td>
+            <td class="head" id="miscWiFiOffload">WiFi hardware nat offload</td>
             <td colspan="4"><select name="hw_nat_wifiPT" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="udphw_row">
-            <td class="head">UDP hardware nat offload</td>
+            <td class="head" id="miscUDPOffload">UDP hardware nat offload</td>
             <td colspan="4"><select name="hw_nat_udpPT" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="sixhw_row">
-            <td class="head">IPV6 hardware route offload</td>
+            <td class="head" id="miscIPV6offload">IPV6 hardware route offload</td>
             <td colspan="4"><select name="hw_nat_sixPT" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="hwnat_threshold_row" style="display: none;">
-            <td class="head">HW_NAT binding threshold</td>
+            <td class="head" id="miscHW_NAT">HW_NAT binding threshold</td>
             <td colspan="4"><input name="hwnatThreshold" value="<% getCfgZero(1, "hw_nat_bind"); %>" class="half">
               &nbsp; <span style="color: #c0c0c0;">(0-500)</span></td>
           </tr>
           <tr>
-            <td class="head">NAT implementation</td>
+            <td class="head" id="miscNATimpl">NAT implementation</td>
             <td colspan="4"><select name="natMode" class="half">
                 <option value="0">Linux</option>
                 <option value="1" selected>Fcone</option>
@@ -427,77 +462,77 @@ function displayServiceStatus()
           </tr>
           <!-- Software fastpaths -->
           <tr id="fastpath_row">
-            <td class="title" colspan="5">Software fastpaths</td>
+            <td class="title" colspan="5" id="miscSoftwareTitle">Software fastpaths</td>
           </tr>
           <tr id="nat_fastpath_row" style="display: none;">
-            <td class="head">NAT fastpath</td>
+            <td class="head" id="miscNATFastpath">NAT fastpath</td>
             <td colspan="4"><select name="natFastpath" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="route_fastpath_row" style="display: none;">
-            <td class="head">Route fastpath</td>
+            <td class="head" id="miscRouteFastpath">Route fastpath</td>
             <td colspan="4"><select name="routeFastpath" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="filter_fastpath_row" style="display: none;">
-            <td class="head">Netfilter fastpath</td>
+            <td class="head" id="miscNFFastpath">Netfilter fastpath</td>
             <td colspan="4"><select name="filterFastpath" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <!-- Remote management -->
           <tr>
-            <td class="title" colspan="5">Remote management</td>
+            <td class="title" colspan="5" id="miscRemoteSetup">Remote management</td>
           </tr>
           <tr>
-            <td class="head">HTTP Remote Management</td>
+            <td class="head" id="miscWebRemote">HTTP Remote Management</td>
             <td colspan="4"><select name="rmtHTTP" class="half" onChange="httpRmtSelect(this.form);">
-                <option value="0">Disable</option>
+                <option value="0" id="disable">Disable</option>
                 <option value="1">LAN</option>
                 <option value="2">LAN &amp; WAN</option>
               </select></td>
           </tr>
           <tr id="http_rmt_port" style="display: none;">
-            <td class="head">Remote HTTP port</td>
+            <td class="head" id="miscWebPort">Remote HTTP port</td>
             <td colspan="4"><input class="half" name="RemoteManagementPort" value="<% getCfgZero(1, "RemoteManagementPort"); %>"></td>
           </tr>
           <tr>
-            <td class="head">SSH Remote Management</td>
+            <td class="head" id="miscSSHRemote">SSH Remote Management</td>
             <td colspan="4"><select name="rmtSSH" class="half" onchange="sshRmtSelect(this.form);">
-                <option value="0">Disable</option>
+                <option value="0" id="disable">Disable</option>
                 <option value="1">LAN</option>
                 <option value="2">LAN &amp; WAN</option>
               </select></td>
           </tr>
           <tr id="ssh_rmt_port" style="display: none;">
-            <td class="head">Remote SSH port</td>
+            <td class="head" id="miscSSHPort">Remote SSH port</td>
             <td colspan="4"><input class="half" name="RemoteSSHPort" value="<% getCfgZero(1, "RemoteSSHPort"); %>"></td>
           </tr>
           <tr id="rmt_telnetd">
-            <td class="head">Remote Telnet</td>
+            <td class="head" id="miscTelnetRemote">Remote Telnet</td>
             <td colspan="4"><select name="rmtTelnet" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <!-- Services -->
           <tr>
-            <td class="title">Services</td>
-            <td class="title">Value</td>
-            <td class="title" style="width: 88px;">Details</td>
-            <td class="title" style="width: 56px;">Status</td>
-            <td class="title" style="width: 80px;">Configure</td>
+            <td class="title" id="miscServices">Services</td>
+            <td class="title" id="miscValue">Value</td>
+            <td class="title" id="miscDetails" style="width: 88px;">Details</td>
+            <td class="title" id="miscStatus" style="width: 56px;">Status</td>
+            <td class="title" id="miscConfigure" style="width: 80px;">Configure</td>
           </tr>
           <tr id="dnsproxy">
             <td class="head" id="lDnsp">DNS cached proxy</td>
             <td><select name="dnspEnbl" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -506,8 +541,8 @@ function displayServiceStatus()
           <tr id="upnp">
             <td class="head" id="lUpnp">UPNP support</td>
             <td><select name="upnpEnbl" class="half">
-                <option value="0" id="lUpnpD">Disable</option>
-                <option value="1" id="lUpnpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -516,8 +551,8 @@ function displayServiceStatus()
           <tr id="snmpd">
             <td class="head" id="lSnmp">SNMP daemon</td>
             <td><select name="SnmpdEnabled" class="half">
-                <option value="0" id="lSnmpD">Disable</option>
-                <option value="1" id="lSnmpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -526,18 +561,18 @@ function displayServiceStatus()
           <tr id="parprouted">
             <td class="head" id="lArppt">ARP Proxy</td>
             <td><select name="arpPT" class="half">
-                <option value="0" id="lArpptD">Disable</option>
-                <option value="1" id="lArpptE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
           <tr id="crond">
-            <td class="head">Cron daemon</td>
+            <td class="head" id="lCron">Cron daemon</td>
             <td><select name="CrondEnable" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -546,8 +581,8 @@ function displayServiceStatus()
           <tr id="lltd">
             <td class="head" id="lLltd">LLTD daemon</td>
             <td><select name="lltdEnbl" class="half">
-                <option value="0" id="lLltdD">Disable</option>
-                <option value="1" id="lLltdE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -556,8 +591,8 @@ function displayServiceStatus()
           <tr id="lldpd">
             <td class="head" id="lLldpd">LLDP daemon</td>
             <td><select name="lldpdEnbl" class="half">
-                <option value="0" id="lLldpdD">Disable</option>
-                <option value="1" id="lLldpdE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -566,8 +601,8 @@ function displayServiceStatus()
           <tr id="cdp">
             <td class="head" id="lCdp">CDP daemon</td>
             <td><select name="cdpEnbl" class="half">
-                <option value="0" id="lCdpD">Disable</option>
-                <option value="1" id="lCdpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -575,42 +610,42 @@ function displayServiceStatus()
           </tr>
           <!-- IPTV -->
           <tr>
-            <td class="title">Services IPTV</td>
-            <td class="title">Value</td>
-            <td class="title" style="width: 88px;">Details</td>
-            <td class="title" style="width: 56px;">Status</td>
-            <td class="title" style="width: 80px;">Configure</td>
+            <td class="title" id="miscIPTV">Services IPTV</td>
+            <td class="title" id="miscIPTVValue">Value</td>
+            <td class="title" id="miscIPTVDetails" style="width: 88px;">Details</td>
+            <td class="title" id="miscIPTVStatus" style="width: 56px;">Status</td>
+            <td class="title" id="miscIPTVConfig" style="width: 80px;">Configure</td>
           </tr>
           <tr id="igmpProxy">
             <td class="head" id="lIgmpp">IGMP proxy</td>
             <td><select name="igmpEnbl" class="half" onChange="igmpSelect(this.form);">
-                <option value="0" id="lIgmppD">Disable</option>
-                <option value="1" id="lIgmppE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
           <tr id="igmpSnoop">
-            <td class="head" id="lIgmpp">Multicast IGMP snooping</td>
+            <td class="head" id="lIgmppMC">Multicast IGMP snooping</td>
             <td colspan="4"><select name="igmpSnoop" class="half">
                 <option value="">Auto</option>
-                <option value="n">Disable</option>
+                <option value="n" id="disable">Disable</option>
               </select></td>
           </tr>
           <tr id="igmpM2UConv">
-            <td class="head" id="ligmpp">Multicast to Unicast conversion</td>
+            <td class="head" id="lIgmppMC2UC">Multicast to Unicast conversion</td>
             <td colspan="4"><select name="igmpM2UConv" class="half">
                 <option value="wlan">Wlan</option>
                 <option value="lan">Lan</option>
                 <option value="all">All</option>
-                <option value="">Disable</option>
+                <option value="" id="disable">Disable</option>
               </select></td>
           </tr>
           <tr id="udpxy">
-            <td class="head">Multicast to http proxy (udpxy)</td>
+            <td class="head" id="ludpxy">Multicast to http proxy (udpxy)</td>
             <td><select name="udpxyMode" class="half" onChange="udpxySelect(this.form);">
-                <option value="0">Disable</option>
+                <option value="0" id="disable">Disable</option>
                 <option value="1">LAN</option>
                 <option value="2">LAN &amp; WAN</option>
               </select></td>
@@ -619,14 +654,14 @@ function displayServiceStatus()
             <td>&nbsp;</td>
           </tr>
           <tr id="udpxy_port_row" style="display:none;">
-            <td class="head">UDPXY port</td>
+            <td class="head" id="miscUDPXYPort">UDPXY port</td>
             <td colspan="4"><input name="udpxyPort" class="half"></td>
           </tr>
           <tr id="xupnpd">
-            <td class="head">UPNP media server (xupnpd)</td>
+            <td class="head" id="lxupnpd">UPNP media server (xupnpd)</td>
             <td><select name="xupnpdEnbl" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -634,106 +669,106 @@ function displayServiceStatus()
           </tr>
           <!-- Pass Through -->
           <tr>
-            <td class="title" colspan="5">Pass Through</td>
+            <td class="title" colspan="5" id="miscPassThrough">Pass Through</td>
           </tr>
           <tr>
-            <td class="head">PPPOE pass through</td>
+            <td class="head" id="miscPTPPPoE">PPPOE pass through</td>
             <td colspan="4"><select name="krnlPppoePass" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">IPv6 pass through</td>
+            <td class="head" id="miscPTIPv6">IPv6 pass through</td>
             <td colspan="4"><select name="krnlIpv6Pass" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <!-- Watchers -->
           <tr>
-            <td class="title" colspan="5">Watchers</td>
+            <td class="title" colspan="5" id="miscWatchers">Watchers</td>
           </tr>
           <tr>
-            <td class="head">Watchdog service</td>
+            <td class="head" id="miscWatchdog">Watchdog service</td>
             <td colspan="4"><select name="watchdogEnable" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">Pinger service</td>
+            <td class="head" id="miscPinger">Pinger service</td>
             <td colspan="4"><select name="pingerEnable" class="half" onChange="pingerSelect(this.form);">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="pinger_row1">
-            <td class="head">Ping check time</td>
+            <td class="head" id="miscPingTime">Ping check time</td>
             <td colspan="4"><input name="ping_check_time" class="half" value="<% getCfgGeneral(1, "ping_check_time"); %>"></td>
           </tr>
           <tr id="pinger_row2">
-            <td class="head">Ping check interval</td>
+            <td class="head" id="miscPingInterval">Ping check interval</td>
             <td colspan="4"><input name="ping_check_interval" class="half" value="<% getCfgGeneral(1, "ping_check_interval"); %>"></td>
           </tr>
           <!-- Others -->
           <tr>
-            <td class="title" colspan="5">Others</td>
+            <td class="title" colspan="5" id="miscOthers">Others</td>
           </tr>
           <tr>
-            <td class="head">Vlan double tag QinQ support</td>
+            <td class="head" id="miscVLANDoubleTag">Vlan double tag QinQ support</td>
             <td colspan="4"><select name="vlanDoubleTag" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">Reinit WAN if DHCP lease fail</td>
+            <td class="head" id="miscReinitWAN">Reinit WAN if DHCP lease fail</td>
             <td colspan="4"><select name="dhcpSwReset" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">DHCP renew lease at WAN UP</td>
+            <td class="head" id="miscDHCPRenew">DHCP renew lease at WAN UP</td>
             <td colspan="4"><select name="ForceRenewDHCP" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
             <td class="head" id="sysfwPingFrmWANFilterHead">Accept ping from WAN</td>
             <td colspan="4"><select name="pingWANEnbl" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
             <td class="head" id="lStp">802.1d Spanning Tree</td>
             <td colspan="4"><select name="stpEnbl" class="half">
-                <option value="0" id="lStpD">Disable</option>
-                <option value="1" id="lStpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">Do not modify TTL</td>
+            <td class="head" id="miscDontModifyTTL">Do not modify TTL</td>
             <td colspan="4"><select name="ttlStore" class="half">
-                <option value="0" id="lStpD">Disable</option>
-                <option value="1" id="lStpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="mcast_store_ttl_row">
-            <td class="head">Do not modify multicast TTL</td>
+            <td class="head" id="miscDontModifyMCTTL">Do not modify multicast TTL</td>
             <td colspan="4"><select name="ttlMcastStore" class="half">
-                <option value="0" id="lStpD">Disable</option>
-                <option value="1" id="lStpE">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">Use PMTU discovery</td>
+            <td class="head" id="miscUsePMTU">Use PMTU discovery</td>
             <td colspan="4"><select name="mssPmtu" class="half">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>

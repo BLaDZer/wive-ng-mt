@@ -29,7 +29,7 @@
   <message msgid="basic tx power" msgstr="Мощность передатчика (2.4GHz)" />
   <message msgid="basic tx power ac" msgstr="Мощность передатчика  (5GHz)" />
   <message msgid="basic title" msgstr="Основные настройки Wi-Fi " />
-  <message msgid="basic introduction" msgstr="Вы можете настроить минимум параметров Wi-Fi для связи, таких как название сети (SSID) и номер канала. Точка доступа может быть легко настроена минимумом опций. " />
+  <message msgid="basic introduction" msgstr="Для настройки точки доступа достаточно задать название сети (SSID) и выбрать канал." />
   <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
   <message msgid="basic wireless settings" msgstr="Настройки SSID" />
   <message msgid="basic radio button" msgstr="Wi-Fi вкл./выкл." />

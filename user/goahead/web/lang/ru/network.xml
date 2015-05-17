@@ -8,7 +8,7 @@
     <message msgid="inet netmask" msgstr="Маска подсети" />
     <message msgid="inet gateway" msgstr="Шлюз по умолчанию" />
     <message msgid="inet pri dns" msgstr="Основной DNS" />
-    <message msgid="inet sec dns" msgstr="Вторичный DNS" />
+    <message msgid="inet sec dns" msgstr="Альтернативный DNS" />
     <message msgid="inet lan2" msgstr="LAN 2" />
     <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
     <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
@@ -39,6 +39,9 @@
     <message msgid="vpn l2tp" msgstr="Клиент L2TP" />
     <message msgid="vpn pppoe iface" msgstr="Интерфейс для PPPoE:" />
     <message msgid="vpn server col" msgstr="Имя сервера, IP, AC, или APN:" />
+    <message msgid="vpn server col ac" msgstr="Имя сервера:" />
+    <message msgid="vpn server col host" msgstr="Имя сервера или IP:" />
+    <message msgid="vpn server col apn" msgstr="APN:" />
     <message msgid="vpn service name" msgstr="Имя сервиса:" />
     <message msgid="vpn auth type" msgstr="Метод авторизации:" />
     <message msgid="vpn lanauth lvl" msgstr="Уровень доступа KABINET:" />
@@ -69,7 +72,7 @@
     <message msgid="ipv6 dhcp" msgstr="Автоматическая настройка IPv6 через dhcp/ra" />
     <message msgid="ipv6 6rd" msgstr="Туннель 6RD" />
     <message msgid="ipv6 6to4" msgstr="Туннель 6TO4" />
-    <message msgid="ipv6 allow forward" msgstr="Разрешить доступ ко внутренней сети из интернета" />
+    <message msgid="ipv6 allow forward" msgstr="Разрешить доступ в локальную сеть из интернета" />
     <message msgid="ipv6 static ip" msgstr="Настройка статического IP" />
     <message msgid="ipv6 static lan address" msgstr="LAN IPv6 адрес / Префикс подсети" />
     <message msgid="ipv6 static wan address" msgstr="WAN IPv6 адрес / Префикс подсети" />

@@ -46,9 +46,10 @@
   <message msgid="forward ip not mask" msgstr="IP адрес не соответствует маске: " />
   <message msgid="forward port not match src" msgstr="Диапазоны портов не совпадают: портов источника " />
   <message msgid="forward port not match dst" msgstr=", а портов приёмника " />
+
   <message msgid="content filter title" msgstr="Настройки фильтрации контента" />
   <message msgid="content filter introduction" msgstr="Вы можете включить фильтр контента для ограничения доступа к нежелательному контенту." />
-  <message msgid="content filter webs content filter" msgstr="Webs фильтр контента" />
+  <message msgid="content filter webs content filter" msgstr="Фильтр Web контента" />
   <message msgid="content filter webs content filter filter" msgstr="Фильтры:" />
   <message msgid="content filter webs content filter proxy" msgstr="Proxy" />
   <message msgid="content filter webs content filter java" msgstr="Java" />
@@ -62,57 +63,4 @@
   <message msgid="content filter block host" msgstr="Блокирование хоста" />
   <message msgid="content filter no rules" msgstr="Нет правил фильтрации контента" />
   <message msgid="content filter not def" msgstr="Значение фильтрации не указано" />
-
-
-
-  <message msgid="port filter setting" msgstr="Настройки фильтра MAC/IP/портов" />
-  <message msgid="port filter macaddr" msgstr="MAC адрес" />
-  <message msgid="port filter source ipaddr" msgstr="IP адрес источника" />
-  <message msgid="port filter port range" msgstr="Диапазон портов" />
-  <message msgid="port filter dest ipaddr" msgstr="IP адрес получателя" />
-  <message msgid="port filter action" msgstr="Действие" />
-  <message msgid="port current filter" msgstr="Текущие правила фильтрации MAC/IP/портов в системе: " />
-  <message msgid="port filter source port range" msgstr="Диапазон портов источника" />
-  <message msgid="port filter dest port range" msgstr="Диапазон портов клиента" />
-  <message msgid="port filter packetcount" msgstr="Кол-во пакетов" />
-
-  <message msgid="forward virtual server ipaddr" msgstr="IP адрес" />
-  <message msgid="forward virtual server port range" msgstr="Диапазон портов" />
-  <message msgid="forward current virtual server" msgstr="Текущие настройки проброски портов: " />
-
-  <message msgid="content filter webs content filter apply" msgstr="Применнить" />
-  <message msgid="content filter webs content filter reset" msgstr="Сброс" />
-  <message msgid="content filter webs URL filter title" msgstr="Настройки URL фильтра" />
-  <message msgid="content filter webs url filter current" msgstr="Текущие фильтры URL:" />
-  <message msgid="content filter webs url fitler No" msgstr="№" />
-  <message msgid="content filter webs url fitler url" msgstr="URL" />
-  <message msgid="content filter webs url fitler del" msgstr="Удалить" />
-  <message msgid="content filter webs url fitler reset" msgstr="Сброс" />
-  <message msgid="content filter webs url fitler add title" msgstr="Добавить фильтр URL:" />
-  <message msgid="content filter webs url fitler add" msgstr="Добавить" />
-  <message msgid="content filter webs url fitler reset" msgstr="Сброс" />
-  <message msgid="content filter webs host fitler title" msgstr="Настройки фильтра хостов веб-сайтов" />
-  <message msgid="content filter webs host fitler current" msgstr="Текущие фильтры хостов веб-сайтов:" />
-  <message msgid="content filter webs host fitler no" msgstr="№" />
-  <message msgid="content filter webs host fitler host" msgstr="Хост (ключевое слово)" />
-  <message msgid="content filter webs host fitler del" msgstr="Удалить" />
-  <message msgid="content filter webs host fitler reset" msgstr="Сброс" />
-  <message msgid="content filter webs host fitler add title" msgstr="Добавить фильтр по хосту/ключевому слову:" />
-  <message msgid="content filter webs host fitler keyword" msgstr="Ключевое слово" />
-  <message msgid="content filter webs host fitler add" msgstr="Добавить" />
-  <message msgid="content filter webs host fitler reset" msgstr="Сброс" />
-
-  <message msgid="sysfw title" msgstr="Настройки безопасности" />
-  <message msgid="sysfw introduction" msgstr="Вы можете настроить сетевой экран для защиты роутера от атак извне." />
-  <message msgid="sysfw remote management title" msgstr="Удаленное управление" />
-  <message msgid="sysfw remote management head" msgstr="Удаленное управление (через WAN)" />
-  <message msgid="sysfw allow" msgstr="Разрешить" />
-  <message msgid="sysfw deny" msgstr="Запретить" />
-  <message msgid="sysfw wanping title" msgstr="Пинг на WAN интерфейс" />
-  <message msgid="sysfw wanping head" msgstr="Пинг на WAN интерфейс" />
-  <message msgid="sysfw spi title" msgstr="Stateful Packet Inspection (SPI)" />
-  <message msgid="sysfw spi head" msgstr="SPI Firewall" />
-  <message msgid="sysfw apply" msgstr="Применить" />
-  <message msgid="sysfw reset" msgstr="Сброс" />
-
 </po>

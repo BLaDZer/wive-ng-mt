@@ -296,6 +296,8 @@ function initTranslation()
 	_TR("v6services", "ipv6 services");
 	_TR("v6servicename", "ipv6 service name");
 	_TR("v6value", "ipv6 service value");
+	_TR("v6details", "services status details");
+	_TR("v6about", "services status about");
 	_TR("v6status", "ipv6 service status");
 	_TR("v6Radvd", "ipv6 radvd");
 	_TR("v6RadvdD", "button disable");
@@ -338,7 +340,7 @@ function displayServiceHandler(response)
 		if (row != null)
 		{
 			// Fill-up about
-			tds[2].innerHTML = (service[3] != null) ? '<a href="http://' + service[3] + '" target="_blank">Learn more...</a>' : "&nbsp;";
+			tds[2].innerHTML = (service[3] != null) ? '<a href="http://' + service[3] + '" target="_blank">' + _("services status about") + '</a>' : "&nbsp;";
 			// Fill-up status
 			if (service[0]*1 == '0')
 				tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
@@ -442,7 +444,7 @@ function displayServiceStatus()
 					<tr>
 						<td class="title" id="v6servicename">Service name</td>
 						<td class="title" id="v6value">Value</td>
-						<td class="title" id="v6value">Details</td>
+						<td class="title" id="v6details">Details</td>
     					<td class="title" style="width: 56px;" id="v6status">Status</td>
 					</tr>
 					<tr id="radvd">

@@ -217,22 +217,22 @@ function selectType(form)
 	displayElement('vpn_mppe_row', (!l2tp_server_on) && form.vpn_enabled.checked);
 	displayElement('vpn_l2tp_range', l2tp_server_on && form.vpn_enabled.checked);
 
-	var vpn_server = 'Host, <acronym title="Internet Protocol">IP</acronym>, <acronym title="Access Concentrator">AC</acronym> or <acronym title="Access Point Name">APN</acronym> name';
+	var vpn_server = _("vpn server col");
 	if (form.vpn_type.value == '0') // PPPoE
-		vpn_server = '<acronym title="Access Concentrator">AC</acronym> name';
+		vpn_server = _("vpn server col ac");
 	else if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2')) // PPTP client, L2TP client
-		vpn_server = 'Host, <acronym title="Internet Protocol">IP</acronym> or <acronym title="Domain Name System">DNS</acronym> name';
+		vpn_server = _("vpn server col host");
 	else if (form.vpn_type.value == '3') // L2TP server
 		vpn_server = 'VPN Local <acronym title="Internet Protocol">IP</acronym>';
 	else if ((form.vpn_type.value == '4') || (form.vpn_type.value == '5'))
-		vpn_server = '<acronym title="Access Point Name">APN</acronym> name'; // GSM/CDMA
+		vpn_server = _("vpn server col apn"); // GSM/CDMA
 
 	if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2') || (form.vpn_type.value == '3'))
 		form.vpn_server.value = vpnServerIP;
 	else
 		form.vpn_server.value = vpnACName;
 
-	vpn_server_col.innerHTML = '<b>' + vpn_server + ':</b>';
+	vpn_server_col.innerHTML = '<b>' + vpn_server + '</b>';
 }
 
 function resetClick(form)
@@ -545,7 +545,7 @@ function initTranslation()
           <tr>
             <td><input name="lanauth_pass_changed" type="hidden">
               <input value="/internet/vpn.asp" name="submit-url" type="hidden">
-              <input class="normal" id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return submitClick(this.form);" >
+              <input class="mid" id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return submitClick(this.form);" >
               &nbsp;&nbsp;
               <input class="normal" id="vReset" value="Reset" name="reset_button" onClick="resetClick(this.form);" type="button"></td>
           </tr>

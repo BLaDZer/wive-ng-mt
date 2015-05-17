@@ -11,6 +11,7 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("mode");
 Butterlate.setTextDomain("buttons");
 
@@ -119,23 +120,23 @@ function msg()
         <dl>
           <dt>
             <input type="radio" name="opMode" id="opMode" value="0" onClick="changeMode()">
-            <b id="oModeB">Bridge:</b> </dt>
+            <b id="oModeB">Bridge</b>: </dt>
           <dd id="oModeBIntro"></dd>
           <dt id="gwdt">
             <input type="radio" name="opMode" id="opMode" value="1" onClick="changeMode()">
-            <b id="oModeG">Gateway:</b> </dt>
+            <b id="oModeG">Gateway</b>: </dt>
           <dd id="oModeGIntro"></dd>
           <dt id="stadt">
             <input type="radio" name="opMode" id="opMode" value="2" onClick="changeMode()">
-            <b id="oModeE">Ethernet Converter:</b> </dt>
+            <b id="oModeE">Ethernet Converter</b>: </dt>
           <dd id="stadd"></dd>
           <dt id="apclidt">
             <input type="radio" name="opMode" id="opMode" value="3" onClick="changeMode()">
-            <b id="oModeA">AP Client:</b> </dt>
+            <b id="oModeA">AP Client</b>: </dt>
           <dd id="apclidd"></dd>
           <dt id="spotdt">
             <input type="radio" name="opMode" id="opMode" value="4" onClick="changeMode()">
-            <b id="oModeS">Hotspot:</b> </dt>
+            <b id="oModeS">Hotspot</b>: </dt>
           <dd id="spotdd"></dd>
         </dl>
         <p></p>

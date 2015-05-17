@@ -13,6 +13,7 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
+Butterlate.setTextDomain("buttons");
 
 function uploadLogField(str)
 {
@@ -36,12 +37,25 @@ function updateLog()
 function initTranslation()
 {
 	_TR("syslogTitle", "syslog title");
-
+  _TR("syslogIntroduction", "syslog introduction");
+  _TR("syslogSetup", "syslog setup");
+  _TR("syslogEnabled", "syslog enabled");
+  _TR("syslogKernel", "syslog kernel");
+  _TR("syslogRemoteIP", "syslog remote ip");
 	_TR("syslogSysLog", "syslog system log");
-	_TRV("syslogSysLogClear", "syslog clear");
-	_TRV("syslogSysLogRefresh", "syslog refresh");
-  _TRV("syslogSysLogClear2", "syslog clear");
-  _TRV("syslogSysLogRefresh2", "syslog refresh");
+
+  _TRV("syslogApply", "button apply");
+	_TRV("syslogClear", "button clear");
+	_TRV("syslogRefresh", "button refresh");
+  _TRV("syslogClear2", "button clear");
+  _TRV("syslogRefresh2", "button refresh");
+
+  var elements = document.getElementsByTagName('option');
+    for (var i = 0; i < elements.length; i++)
+      if (elements[i].id == "disable")
+        elements[i].innerHTML = _("button disable");
+      else if (elements[i].id == "enable")
+        elements[i].innerHTML = _("button enable");
 }
 
 function pageInit()
@@ -95,36 +109,36 @@ function syslogdSelect(form)
 <table class="body">
   <tr>
     <td><h1 id="syslogTitle">System Log</h1>
-      <p>Here you can configure system logging</p>
+      <p id="syslogIntroduction">Here you can configure system logging</p>
       <hr>
       <!-- ================= System log setup ================= -->
       <form method="post" name="LogdSetup" action="/goform/setuplog" onSubmit="checkSetupForm(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="2" id="syslogSysLog">System Log Setup:</td>
+            <td class="title" colspan="2" id="syslogSetup">System Log Setup:</td>
           </tr>
           <tr>
-            <td class="head">System logging daemon:</td>
+            <td class="head" id="syslogEnabled">System logging daemon:</td>
             <td><select name="SysLogd" onChange="syslogdSelect(this.form);">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="klogdRow">
-            <td class="head">Kernel logging daemon:</td>
+            <td class="head" id="syslogKernel">Kernel logging daemon:</td>
             <td><select name="KLogd">
-                <option value="0">Disable</option>
-                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="rmtSysLogIP" style="display: none;">
-            <td class="head">Remote system log IP:</td>
+            <td class="head" id="syslogRemoteIP">Remote system log IP:</td>
             <td><input name="RemoteSysLogIP" value='<% getCfgGeneral(1, "RemoteSysLogIP"); %>'></td>
           </tr>
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" value="Apply">
+            <td><input type="submit" value="Apply" id="syslogApply">
               <input type="hidden" name="submit-url" value="/adm/syslog.asp" ></td>
           </tr>
         </table>
@@ -136,8 +150,8 @@ function syslogdSelect(form)
         </tr>
         <tr>
           <td colspan="2"><form method="post" name="SubmitClearLog1" action="/goform/clearlog">
-              <input type="button" value="Refresh" id="syslogSysLogRefresh" name="refreshlog" onClick="refreshlogclick();">
-              <input type="button" value="Clear" id="syslogSysLogClear" name="clearlog" onClick="clearlogclick();">
+              <input type="button" value="Refresh" id="syslogRefresh" name="refreshlog" onClick="refreshlogclick();">
+              <input type="button" value="Clear" id="syslogClear" name="clearlog" onClick="clearlogclick();">
             </form></td>
         </tr>
         <tr>
@@ -146,8 +160,8 @@ function syslogdSelect(form)
         </tr>
         <tr>
           <td colspan="2"><form method="post" name="SubmitClearLog2" action="/goform/clearlog">
-              <input type="button" value="Refresh" id="syslogSysLogRefresh2" name="refreshlog" onClick="refreshlogclick();">
-              <input type="button" value="Clear" id="syslogSysLogClear2" name="clearlog" onClick="clearlogclick();">
+              <input type="button" value="Refresh" id="syslogRefresh2" name="refreshlog" onClick="refreshlogclick();">
+              <input type="button" value="Clear" id="syslogClear2" name="clearlog" onClick="clearlogclick();">
             </form></td>
         </tr>
       </table>

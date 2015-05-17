@@ -39,6 +39,9 @@
     <message msgid="vpn l2tp" msgstr="L2TP client" />
     <message msgid="vpn pppoe iface" msgstr="PPPoE interface:" />
     <message msgid="vpn server col" msgstr="Host, IP, AC or APN name:" />
+    <message msgid="vpn server col ac" msgstr="AC name:" />
+    <message msgid="vpn server col host" msgstr="Host, IP or DNS name:" />
+    <message msgid="vpn server col apn" msgstr="APN:" />
     <message msgid="vpn service name" msgstr="Service name:" />
     <message msgid="vpn auth type" msgstr="Authentication method:" />
     <message msgid="vpn lanauth lvl" msgstr="KABINET access level:" />
