@@ -48,7 +48,7 @@
   <message msgid="services status starting" msgstr="запускается" />
   <message msgid="services status details" msgstr="Информация" />
   <message msgid="services status about" msgstr="О сервисе..." />
-  <message msgid="services status configure" msgstr="Настройка..." />
+  <message msgid="services status configure" msgstr="Настройка" />
 
   <message msgid="services l2tp title" msgstr="Настройки сервера L2TP" />
   <message msgid="services l2tp introduction" msgstr="Здесть вы можете настроить сервер L2TP." />

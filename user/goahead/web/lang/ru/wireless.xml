@@ -55,7 +55,7 @@
   <message msgid="basic wds encryp type" msgstr="Тип шифрования" />
   <message msgid="basic wds encryp key" msgstr="Ключ шифрования" />
   <message msgid="basic wds ap macaddr" msgstr="AP MAC адрес" />
-  <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
+  <message msgid="basic ht phy mode" msgstr="Физический режим HT" />
   <message msgid="basic ht op mode" msgstr="Сбережение энергии" />
   <message msgid="basic ht op mixed" msgstr="Disabled" />
   <message msgid="basic ht op green" msgstr="Enable" />
@@ -70,6 +70,12 @@
   <message msgid="basic other" msgstr="Прочее" />
   <message msgid="basic ht txstream" msgstr="HT TxStream" />
   <message msgid="basic ht rxstream" msgstr="HT RxStream" />
+  <message msgid="basic mbssid mode" msgstr="Режим MBSSID" />
+  <message msgid="basic wds mode" msgstr="Режим WDS" />
+  <message msgid="basic apcli mode" msgstr="Режим APCLI" />
+  <message msgid="basic block coding" msgstr="Блочное пространственно-временное кодирование" />
+  <message msgid="basic signal mode" msgstr="Сигнальный режим полосы" />
+  <message msgid="basic vht phy mode" msgstr="Физический режим VHT" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />

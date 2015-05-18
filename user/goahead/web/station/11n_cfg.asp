@@ -72,7 +72,7 @@ function initValue()
 
 function open_org_add_page()
 {
-	window.open("ampdu_org_add.asp","ampdu_org_add","toolbar=no, location=yes, scrollbars=yes, resizable=no, width=660, height=600");
+	window.open("station/ampdu_org_add.asp","ampdu_org_add","toolbar=no, location=yes, scrollbars=yes, resizable=no, width=660, height=600");
 }
 
 function open_org_del_page()

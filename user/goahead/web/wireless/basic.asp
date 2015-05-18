@@ -260,11 +260,7 @@ function initTranslation()
 	_TR("basicMSSID5", "basic multiple ssid");
 	_TR("basicMSSID6", "basic multiple ssid");
 	_TR("basicMSSID7", "basic multiple ssid");
-	_TR("basicBroadcastSSIDEnable", "wireless enable");
-	_TR("basicBroadcastSSIDDisable", "wireless disable");
 	_TR("basicBroadcastSSID", "basic broadcast ssid");
-	_TR("basicApIsolatedEnable", "wireless enable");
-	_TR("basicApIsolatedDisable", "wireless disable");
 	_TR("basicApIsolated", "basic apisolated");
 	_TR("basicIsolatedSSID0", "basic isolated");
 	_TR("basicIsolatedSSID1", "basic isolated");
@@ -274,9 +270,10 @@ function initTranslation()
 	_TR("basicIsolatedSSID5", "basic isolated");
 	_TR("basicIsolatedSSID6", "basic isolated");
 	_TR("basicIsolatedSSID7", "basic isolated");
-	_TR("basicMBSSIDApIsolatedEnable", "wireless enable");
-	_TR("basicMBSSIDApIsolatedDisable", "wireless disable");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
+	_TR("basicMBSSIDMode", "basic mbssid mode");
+	_TR("basicWDSMode", "basic wds mode");
+	_TR("basicAPCLIMode", "basic apcli mode");
 
 	_TR("basicBSSID", "basic bssid");
 	_TR("basicAcBSSID", "basic ac bssid");
@@ -296,39 +293,30 @@ function initTranslation()
 	_TR("basicHTMixedEnable", "basic ht op green");
 	_TR("basicHTChannelBW", "basic ht channel bandwidth");
 	_TR("basicHTSTBC", "basic stbc");
-	_TR("basicHTSTBCDisable", "wireless disable");
-	_TR("basicHTSTBCEnable", "wireless enable");
 	_TR("basicHTGI", "basic ht guard interval");
 	_TR("basicHTLongGI", "wireless long");
 	_TR("basicHTAutoGI", "wireless auto");
 	_TR("basicHTAutoMCS", "wireless auto");
 	_TR("basicHTRDG", "basic ht rdg");
-	_TR("basicHTRDGDisable", "wireless disable");
-	_TR("basicHTRDGEnable", "wireless enable");
 	_TR("basicHTExtChannel", "basic ht extension channel");
 	_TR("basicHTAMSDU", "basic ht amsdu");
-	_TR("basicHTAMSDUDisable", "wireless disable");
-	_TR("basicHTAMSDUEnable", "wireless enable");
 	_TR("basicHTAddBA", "basic ht addba");
-	_TR("basicHTAddBADisable", "wireless disable");
-	_TR("basicHTAddBAEnable", "wireless enable");
 	_TR("basicHTDelBA", "basic ht delba");
-	_TR("basicHTDelBADisable", "wireless disable");
-	_TR("basicHTDelBAEnable", "wireless enable");
+	_TR("basicHSTBC", "basic block coding");
 
 	_TR("basicOther", "basic other");
 	_TR("basicHTTxStream", "basic ht txstream");
 	_TR("basicHTRxStream", "basic ht rxstream");
 
+	_TR("basicVHTPhyMode", "basic vht phy mode");
 	_TR("basicVHTGI", "basic ht guard interval");
 	_TR("basicVHTLongGI", "wireless long");
 	_TR("basicVHTAutoGI", "wireless auto");
+	_TR("basicVHTBandWidth", "basic ht channel bandwidth");
+	_TR("basicVHTSTBC", "basic block coding");
+	_TR("basicVHTSignalMode", "basic signal mode");
 	_TR("basicSTBC", "basic stbc");
-	_TR("basicSTBCDisable", "wireless disable");
-	_TR("basicSTBCEnable", "wireless enable");
 	_TR("basicLDPC", "basic ldpc");
-	_TR("basicLDPCEnable", "wireless enable");
-	_TR("basicLDPCEnable", "wireless enable");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
@@ -1099,21 +1087,21 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="basicMbssidModeT">
-            <td class="head">MBSSID Mode</td>
+            <td class="head" id="basicMBSSIDMode">MBSSID Mode</td>
             <td><select name="mbssid_mode" size="1" class="half">
                 <option value="ra" selected id="1">2.4GHz</option>
                 <option value="rai" id="2">5GHz</option>
 		</select></td>
           </tr>
           <tr id="basicWdsModeT">
-            <td class="head">WDS Mode</td>
+            <td class="head" id="basicWDSMode">WDS Mode</td>
             <td><select name="wds_mode" size="1" class="half">
                 <option value="wds" selected id="1">2.4GHz</option>
                 <option value="wdsi" id="2">5GHz</option>
 		</select></td>
           </tr>
           <tr id="basicApcliModeT">
-            <td class="head">APCLI Mode</td>
+            <td class="head" id="basicAPCLIMode">APCLI Mode</td>
             <td><select name="apcli_mode" size="1" class="half">
                 <option value="apcli0" selected id="1">2.4GHz</option>
                 <option value="apclii0" id="2">5GHz</option>
@@ -1350,7 +1338,7 @@ function CheckValue(form)
         </table>
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
           <tr>
-            <td class="title" colspan="2" id="basicHTPhyMode">VHT Physical Mode</td>
+            <td class="title" colspan="2" id="basicVHTPhyMode">VHT Physical Mode</td>
           </tr>
           <tr id="basicVHTBW" >
             <td class="head" id="basicVHTBandWidth">Channel BandWidth</td>

@@ -375,7 +375,7 @@ function displayServiceHandler(response)
 		if (row != null)
 		{
 			// Fill-up about
-			tds[2].innerHTML = (service[4] != null) ? '<a href="http://' + service[4] + '" target="_blank">Learn more...</a>' : "&nbsp;";
+			tds[2].innerHTML = (service[4] != null) ? '<a href="http://' + service[4] + '" target="_blank">' + _("services status about") + '</a>' : "&nbsp;";
 
 			// Fill-up status
 			if (service[0]*1 == '0')
