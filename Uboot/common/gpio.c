@@ -167,16 +167,6 @@ unsigned long DETECT(void)
 	    return 0;
 }
 
-void LEDON(void)
-{
-	ralink_gpio_write_bit2(LED_POWER, 0);
-}
-
-void LEDOFF(void)
-{
-	ralink_gpio_write_bit2(LED_POWER, 1);
-}
-
 void gpio_init(void)
 {
 	unsigned long gpiomode;
@@ -188,6 +178,5 @@ void gpio_init(void)
         gpiomode |= RALINK_GPIOMODE_DFT;
 	*(volatile u32 *)(RALINK_REG_GPIOMODE) = cpu_to_le32(gpiomode);
 
-	ralink_initGpioPin2(LED_POWER, RALINK_GPIO_DIR_OUT);
 	ralink_initGpioPin2(BTN_RESET, RALINK_GPIO_DIR_IN);
 }

@@ -60,8 +60,4 @@ int check_trx(int mode);
 void TftpdStart(void);
 
 /**********************************************************************/
-
-extern void LEDON(void);
-extern void LEDOFF(void);
-
 #endif

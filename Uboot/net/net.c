@@ -202,8 +202,6 @@ extern BUFFER_ELEM *rt2880_free_buf_entry_dequeue(VALID_BUFFER_STRUCT *hdr);
 extern void TftpSend (void);
 
 extern void TftpdStart(void);
-extern void LEDON(void);
-extern void LEDOFF(void);
 extern IPaddr_t TempServerIP=0;
 
 #ifdef CONFIG_NET_VLAN
@@ -552,12 +550,6 @@ restart:
 		if (timeHandler && ((get_timer(0) - timeStart) > timeDelta)) {
 			thand_f *x;
 
-
-                        if (i%2 == 0){
-                                LEDON();
-                        } else{
-                                LEDOFF();
-                        }
                         ++i;
                         if (i==0xffffff)
                                 i = 0;

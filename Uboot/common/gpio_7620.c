@@ -354,13 +354,3 @@ unsigned long DETECT(void)
 	else
 	    return 0;
 }
-
-void LEDON(void)
-{
-	mtk7620_set_gpio_pin(LED_POWER, 0);
-}
-
-void LEDOFF(void)
-{
-	mtk7620_set_gpio_pin(LED_POWER, 1);
-}

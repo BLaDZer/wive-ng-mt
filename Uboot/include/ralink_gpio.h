@@ -36,7 +36,6 @@
 
 #include <linux/config.h>
 
-#define LED_POWER	CONFIG_GPIO_LED
 #define BTN_RESET	CONFIG_GPIO_RESET
 
 #define RALINK_GPIO_HAS_5124	1
