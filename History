@@ -943,6 +943,7 @@
 68) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
 69) kernel: net: move away from NLMSG_PUT().<br>
 70) kernel: net: do not use RTA_PUT() macros.<br>
+71) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
 <br>
 <br>
 <b>TODO:</b><br>

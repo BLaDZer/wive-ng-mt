@@ -26,8 +26,11 @@ static bool nf_generic_should_process(u8 proto)
 		return false;
 #endif
 #ifdef CONFIG_NF_CT_PROTO_GRE_MODULE
+/* if builtin PPTP support need GRE tracking always */
+#if !defined(CONFIG_PPTP) && !defined(CONFIG_PPTP_MODULE)
 	case IPPROTO_GRE:
 		return false;
+#endif
 #endif
 #ifdef CONFIG_NF_CT_PROTO_UDPLITE_MODULE
 	case IPPROTO_UDPLITE:
