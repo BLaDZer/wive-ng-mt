@@ -36,7 +36,7 @@ clean:
 	make -C mkimage clean
 	make -C mksquash_lzma-3.2 clean
 	make -C mksquash_xz-4.0 clean
-	if [ ! -f xz/Makefile ]; then \
+	if [ -f xz/Makefile ]; then \
 	    if [ -f xz/configure ]; then cd xz && ./configure && cd .. ; fi ; \
 	    make -C xz distclean ; \
 	fi ;
