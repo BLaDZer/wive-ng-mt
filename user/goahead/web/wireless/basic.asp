@@ -630,7 +630,7 @@ function initValue()
 				channel_indexacnew = 0;
 			}
 		}
-		else if ((countrycode == 'RU') || (countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE'))
+		else if ((countrycode == 'RU') || (countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE') || (countrycode == 'NO'))
 		{
 			if (channel_indexac <= 64)
 			{
