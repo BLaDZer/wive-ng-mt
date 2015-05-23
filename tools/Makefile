@@ -27,6 +27,7 @@ install:
 	make -j$(HOST_NCPU) -C mkimage
 	make -j$(HOST_NCPU) -C sstrip
 	make -j$(HOST_NCPU) -C mksquash_lzma-3.2 install
+	if [ -f "xz/DoConfigure.sh" ]; then ( cd xz; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ;
 	make -j1 -C mksquash_xz-4.0 install
 
 clean:
@@ -37,7 +38,6 @@ clean:
 	make -C mksquash_lzma-3.2 clean
 	make -C mksquash_xz-4.0 clean
 	if [ -f xz/Makefile ]; then \
-	    if [ -f xz/configure ]; then cd xz && ./configure && cd .. ; fi ; \
 	    make -C xz distclean ; \
 	fi ;
 
