@@ -267,7 +267,6 @@ static int gen_wifi_config(int getmode)
 		if (!inic) {
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(TxPower);
-		    FPRINT_NUM(staWirelessMode);
 		    FPRINT_NUM(AutoChannelSelect);
 		    FPRINT_NUM(Channel);
 		    FPRINT_NUM(BasicRate);
@@ -276,7 +275,6 @@ static int gen_wifi_config(int getmode)
 		} else {
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
 		    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
-		    fprintf(fp, "staWirelessMode=%d\n", atoi(nvram_bufget(mode, "staWirelessModeINIC")));
 		    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
 		    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
