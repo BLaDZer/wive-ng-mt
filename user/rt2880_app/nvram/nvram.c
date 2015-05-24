@@ -313,12 +313,15 @@ static int gen_wifi_config(int getmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
-		FPRINT_NUM(WirelessEvent);
 		FPRINT_NUM(CountryRegion);
 		FPRINT_NUM(CountryRegionABand);
 		FPRINT_STR(CountryCode);
-#ifdef CONFIG_RT2860V2_EXT_CHANNEL_LIST
+		FPRINT_STR(RDRegion);
+#if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) ||  defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST)
 		FPRINT_NUM(ChannelGeography);
+#endif
+#if defined(CONFIG_RT2860V2_STA_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG)
+		FPRINT_NUM(WirelessEvent);
 #endif
 		FPRINT_NUM(BssidNum);
 		FPRINT_STR(SSID2);
@@ -329,9 +332,11 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(SSID7);
 		FPRINT_STR(SSID8);
 
+#ifdef CONFIG_RT2860V2_STA
 		FPRINT_NUM(AutoConnect);
 		FPRINT_NUM(FastConnect);
 		FPRINT_NUM(AutoRoaming);
+#endif
 		FPRINT_NUM(BeaconPeriod);
 		FPRINT_NUM(DtimPeriod);
 		FPRINT_NUM(DisableOLBC);
@@ -341,22 +346,18 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(TxPower);
 		FPRINT_NUM(TxBurst);
 		FPRINT_NUM(BurstMode);
-		fprintf(fp, "TxAntenna=\n");
-		fprintf(fp, "RxAntenna=\n");
-		fprintf(fp, "TurboRate=0\n");
 		FPRINT_NUM(PktAggregate);
 		FPRINT_NUM(FragThreshold);
-		FPRINT_NUM(FreqDelta);
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
-		FPRINT_NUM(VideoTurbine);
-		FPRINT_NUM(VideoClassifierEnable);
-		FPRINT_NUM(VideoHighTxMode);
-		FPRINT_NUM(VideoTxLifeTimeMode);
-#endif
-		FPRINT_NUM(M2UEnabled);
-		FPRINT_NUM(IgmpSnEnable);
-		FPRINT_NUM(McastPhyMode);
-		FPRINT_NUM(McastMcs);
+		FPRINT_STR(AckPolicy);
+		FPRINT_STR(APSDCapable);
+		FPRINT_STR(DLSCapable);
+		FPRINT_STR(NoForwarding);
+		FPRINT_NUM(NoForwardingBTNBSSID);
+		FPRINT_STR(StationKeepAlive);
+		FPRINT_STR(HideSSID);
+		FPRINT_NUM(ShortSlot);
+		FPRINT_STR(IEEE8021X);
+		FPRINT_NUM(IEEE80211H);
 		FPRINT_STR(APAifsn);
 		FPRINT_STR(APCwmin);
 		FPRINT_STR(APCwmax);
@@ -367,29 +368,25 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(BSSCwmax);
 		FPRINT_STR(BSSTxop);
 		FPRINT_STR(BSSACM);
-		FPRINT_STR(AckPolicy);
-		FPRINT_STR(APSDCapable);
-		FPRINT_STR(DLSCapable);
-		FPRINT_STR(NoForwarding);
-		FPRINT_NUM(NoForwardingBTNBSSID);
-		FPRINT_STR(HideSSID);
-		FPRINT_NUM(ShortSlot);
-		FPRINT_STR(IEEE8021X);
-		FPRINT_NUM(IEEE80211H);
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
+		FPRINT_NUM(VideoTurbine);
+		FPRINT_NUM(VideoClassifierEnable);
+		FPRINT_NUM(VideoHighTxMode);
+		FPRINT_NUM(VideoTxLifeTimeMode);
+#endif
+#if deined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
+		FPRINT_NUM(M2UEnabled);
+		FPRINT_NUM(IgmpSnEnable);
+#endif
+#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
+		FPRINT_NUM(McastPhyMode);
+		FPRINT_NUM(McastMcs);
+#endif
+#if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER)
 		FPRINT_NUM(CarrierDetect);
-		FPRINT_STR(PreAntSwitch);
-		FPRINT_NUM(PhyRateLimit);
-		FPRINT_NUM(DebugFlags);
-		FPRINT_NUM(FineAGC);
-		FPRINT_NUM(StreamMode);
-		FPRINT_STR(StreamModeMac0);
-		FPRINT_STR(StreamModeMac1);
-		FPRINT_STR(StreamModeMac2);
-		FPRINT_STR(StreamModeMac3);
+#endif
+#if defined (CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 		FPRINT_NUM(CSPeriod);
-		FPRINT_STR(RDRegion);
-		FPRINT_STR(StationKeepAlive);
-#if defined (CONFIG_RT2860V2_AP_DFS) || defined (CONFIG_RT2860V2_STA_DFS)
 		FPRINT_NUM(ITxBfEn);
 		FPRINT_NUM(ETxBfEnCond);
 		FPRINT_NUM(ITxBfTimeout);
@@ -493,7 +490,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(HT_GI);
 		FPRINT_NUM(HT_STBC);
 		FPRINT_NUM(HT_LDPC);
-		FPRINT_NUM(HT_LinkAdapt);
 		FPRINT_STR(HT_MCS);
 		FPRINT_NUM(HT_PROTECT);
 		FPRINT_NUM(HT_DisallowTKIP);
@@ -518,8 +514,6 @@ static int gen_wifi_config(int getmode)
 		    FPRINT_NUM(VHT_STBC);
 #endif
 		}
-		FPRINT_NUM(HSCounter);
-		FPRINT_NUM(WCNTest);
 #if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 		FPRINT_NUM(HT_BSSCoexistence);
 		FPRINT_NUM(HT_BSSCoexApCntThr);
@@ -540,7 +534,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(AccessControlList6);
 		FPRINT_NUM(AccessPolicy7);
 		FPRINT_STR(AccessControlList7);
-
+#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
 		FPRINT_NUM(WdsEnable);
 		FPRINT_STR(WdsPhyMode);
 		FPRINT_STR(WdsTxMcs);
@@ -550,6 +544,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(Wds1Key);
 		FPRINT_STR(Wds2Key);
 		FPRINT_STR(Wds3Key);
+#endif
 		FPRINT_STR(RADIUS_Server);
 		FPRINT_STR(RADIUS_Port);
 		FPRINT_STR(RADIUS_Key1);
@@ -599,7 +594,6 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(DeauthFloodThreshold);
 		FPRINT_NUM(EapReqFooldThreshold);
 #endif
-		FPRINT_NUM(NintendoCapable);
 		FPRINT_NUM(UseNewRateAdapt);
 		FPRINT_NUM(IdleTimeout);
 #ifdef CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE
