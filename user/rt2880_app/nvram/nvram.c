@@ -374,7 +374,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(VideoHighTxMode);
 		FPRINT_NUM(VideoTxLifeTimeMode);
 #endif
-#if deined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 		FPRINT_NUM(M2UEnabled);
 		FPRINT_NUM(IgmpSnEnable);
 #endif
@@ -385,7 +385,7 @@ static int gen_wifi_config(int getmode)
 #if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER)
 		FPRINT_NUM(CarrierDetect);
 #endif
-#if defined (CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 		FPRINT_NUM(CSPeriod);
 		FPRINT_NUM(ITxBfEn);
 		FPRINT_NUM(ETxBfEnCond);
