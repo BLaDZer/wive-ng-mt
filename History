@@ -873,7 +873,7 @@
 <br>
 <br>
 <b>3.0.x</b><br>
-1) toolchain: update gcc to 09.05.2015 4.8.5 version form git, update headers.<br>
+1) toolchain: update gcc to 26.05.2015 4.8.5 version form git, update headers.<br>
 2) uboot: update to 4.3.2.0 version.<br>
 3) configs: enable hw_nat ipv6 support for all devices.<br>
 4) configs: enable ipt_accounting support for all devices with flash > 4Mb.<br>
