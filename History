@@ -941,15 +941,16 @@
 66) kernel: net: ipv6: introduce ip6_rt_put().<br>
 67) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
 68) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
-69) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
-70) kernel: net: sit: always notify change when params are updated.<br>
-71) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
-72) kernel: net: move away from NLMSG_PUT().<br>
-73) kernel: net: do not use RTA_PUT() macros.<br>
-74) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
-75) kernel: bridge: allow setting hash_max + multicast_router if interface is down.<br>
-76) kernel: complete remove Token Ring.<br>
-77) kernel: ppp: deflate: never return len larger than output buffer.<br>
+69) kenrel: net: ipv6: stop using NLA_PUT*().<br>
+70) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
+71) kernel: net: sit: always notify change when params are updated.<br>
+72) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
+73) kernel: net: move away from NLMSG_PUT().<br>
+74) kernel: net: do not use RTA_PUT() macros.<br>
+75) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
+76) kernel: bridge: allow setting hash_max + multicast_router if interface is down.<br>
+77) kernel: complete remove Token Ring.<br>
+78) kernel: ppp: deflate: never return len larger than output buffer.<br>
 <br>
 <br>
 <b>TODO:</b><br>
