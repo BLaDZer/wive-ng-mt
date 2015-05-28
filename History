@@ -947,6 +947,7 @@
 72) kernel: net: do not use RTA_PUT() macros.<br>
 73) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
 74) kernel: bridge: allow setting hash_max + multicast_router if interface is down.<br>
+75) kernel: complete remove Token Ring.<br>
 <br>
 <br>
 <b>TODO:</b><br>
