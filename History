@@ -925,26 +925,27 @@
 50) kernel: netfilter: nf_ct_sip: extend RCU read lock in set_expected_rtp_rtcp().<br>
 51) kernel: netfilter: xt_socket: fix a stack corruption bug.<br>
 52) kernel: netfilter: nf_ct_sip: support Cisco 7941/7945 IP phones.<br>
-53) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
-54) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
-55) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
-56) kernel: net: tcp: update reordering first before detecting loss.<br>
-57) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
-58) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
-59) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
-60) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
-61) kernel: net: ipv4: route: fix sending IGMP messages with link address.<br>
-62) kernel: net: ipv4: avoid a test in ip_rt_put().<br>
-63) kernel: net: ipv4: speedup ip_idents_reserve().<br>
-64) kernel: net: ipv6: introduce ip6_rt_put().<br>
-65) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
-66) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
-67) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
-68) kernel: net: sit: always notify change when params are updated.<br>
-69) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
-70) kernel: net: move away from NLMSG_PUT().<br>
-71) kernel: net: do not use RTA_PUT() macros.<br>
-72) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
+53) kernel: netfilter: xt_time: add support to ignore day transition.<br>
+54) kernel: net: pppoe: drop pppoe device in pppoe_unbind_sock_work.<br>
+55) kernel: net: ipt_accounting portted to 3.4 kernel.<br>
+56) kernel: net: sysctl_net_core: check SNDBUF and RCVBUF for min length.<br>
+57) kernel: net: tcp: update reordering first before detecting loss.<br>
+58) kernel: net: tcp: set SOCK_NOSPACE under memory pressure.<br>
+59) kernel: net: ipv4: kill ip_rt_frag_needed().<br>
+60) kernel: net: ipv4: icmp: fix PMTU handling for rare case.<br>
+61) kernel: net: ipv4: remove unnecessary code from rt_check_expire().<br>
+62) kernel: net: ipv4: route: fix sending IGMP messages with link address.<br>
+63) kernel: net: ipv4: avoid a test in ip_rt_put().<br>
+64) kernel: net: ipv4: speedup ip_idents_reserve().<br>
+65) kernel: net: ipv6: introduce ip6_rt_put().<br>
+66) kernel: net: ipv6: stop /128 route from disappearing after pmtu update.<br>
+67) kernel: net: ipv6: check RTF_LOCAL on rt->rt6i_flags instead of rt->dst.flags.<br>
+68) kernel: net: ipv4/6: handle PMTU in all ICMP error handlers.<br>
+69) kernel: net: sit: always notify change when params are updated.<br>
+70) kernel: net: sit: generate icmpv6 error when receiving icmpv4 error.<br>
+71) kernel: net: move away from NLMSG_PUT().<br>
+72) kernel: net: do not use RTA_PUT() macros.<br>
+73) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
 <br>
 <br>
 <b>TODO:</b><br>
