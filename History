@@ -949,6 +949,7 @@
 74) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
 75) kernel: bridge: allow setting hash_max + multicast_router if interface is down.<br>
 76) kernel: complete remove Token Ring.<br>
+77) kernel: ppp: deflate: never return len larger than output buffer.<br>
 <br>
 <br>
 <b>TODO:</b><br>
