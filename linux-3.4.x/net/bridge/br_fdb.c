@@ -605,6 +605,12 @@ static int fdb_add_entry(struct net_bridge_port *source, const __u8 *addr,
 	struct hlist_head *head = &br->hash[br_mac_hash(addr)];
 	struct net_bridge_fdb_entry *fdb;
 
+	/* If the port cannot learn allow only local and static entries */
+	if (!(state & NUD_PERMANENT) && !(state & NUD_NOARP) &&
+	    !(source->state == BR_STATE_LEARNING ||
+	      source->state == BR_STATE_FORWARDING))
+		return -EPERM;
+
 	fdb = fdb_find(head, addr);
 	if (fdb == NULL) {
 		if (!(flags & NLM_F_CREATE))

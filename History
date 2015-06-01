@@ -953,9 +953,10 @@
 78) kernel: net: fix pptp regession, use generic tracking for GRE if ALG not loaded and PPTP support builtin.<br>
 79) kernel: net: bridge: allow setting hash_max + multicast_router if interface is down.<br>
 80) kernel: net: bridge: fix parsing of MLDv2 reports.<br>
-81) kernel: net: complete remove Token Ring.<br>
-82) kernel: net: ppp: deflate: never return len larger than output buffer.<br>
-83) kernel: net: inet: properly align icsk_ca_priv.<br>
+81) kernel: net: bridge: skip fdb add if the port shouldn't learn.<br>
+82) kernel: net: complete remove Token Ring.<br>
+83) kernel: net: ppp: deflate: never return len larger than output buffer.<br>
+84) kernel: net: inet: properly align icsk_ca_priv.<br>
 <br>
 <br>
 <b>TODO:</b><br>
