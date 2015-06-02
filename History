@@ -961,6 +961,7 @@
 <br>
 <b>3.1.x</b><br>
 1) kernel: mips: irq: Use DECLARE_BITMAP.<br>
+2) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
 <br>
 <br>
 <b>TODO:</b><br>
