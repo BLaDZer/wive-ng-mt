@@ -24,9 +24,15 @@ endif
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 	rm -f MT7620_AP_2T2R-4L_BACKUP.BIN
 endif
-# external PCI-E 7610 WiFi module
+# external PCI-E 7610 WiFi module (ALWAYS EXTPA/LNA CONFIG FOR THIS MODULE)
 ifdef CONFIG_MT7610_AP
+ifeq ($(CONFIG_EXTERNAL_PA_EXTERNAL_LNA),y)
+	# black sample
+	$(ROMFSINST) -S	defaults/default-2T2R-7620-7610-EXTPA-EXTLNA			/etc/default/nvram_default
+else
+	# white/final sample
 	$(ROMFSINST) -S	defaults/default-2T2R-7620-7610					/etc/default/nvram_default
+endif
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
 	$(ROMFSINST) -S MT7610E-V10-FEM.bin						/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
 ifdef CONFIG_RALINK_MT7620
