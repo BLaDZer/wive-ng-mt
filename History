@@ -971,6 +971,7 @@
 9) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
 10) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
 11) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+12) kernel: mm: remove free_page_mlock.<br>
 <br>
 <br>
 <b>TODO:</b><br>
