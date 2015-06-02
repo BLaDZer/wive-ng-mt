@@ -959,6 +959,10 @@
 84) kernel: net: inet: properly align icsk_ca_priv.<br>
 <br>
 <br>
+<b>3.1.x</b><br>
+1) kernel: mips: irq: Use DECLARE_BITMAP.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~90%).<br>
 2) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
