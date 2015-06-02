@@ -7,7 +7,6 @@ start() {
     #set bootcomplite flag
     touch /tmp/bootgood
 
-    boot_leds_blink=`nvram_get 2860 boot_leds_blink`
     if [ -f /bin/goahead ]; then
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
@@ -21,11 +20,14 @@ start() {
 	    sh `(sleep 40 && fs save > /dev/console)` &
 	    rm -f /tmp/needrwfssave
 	fi
-        #blink wps/sys led limit blink time 10 sec after goahead start
+	#blink only sys led limit blink time 10 sec after goahead start
 	if [ -f /bin/gpio ]; then
-	    for led in $boot_leds_blink; do
-		gpio l $led 1 1 0 0 10
-	    done
+	    # include kernel config
+	    . /etc/scripts/config.sh
+
+	    if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
+		gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 10
+	    fi
 	fi
 	$LOG "Start WEB Managment Server."
 	goahead &

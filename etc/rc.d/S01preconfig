@@ -10,16 +10,15 @@ LOG="echo PRECONFIG"
 start() {
     $LOG "Preconfigure..."
 
-    # blink wps/sec led at boot time before goahead start
+    # blink sys/vpn leds
     if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
+	# include kernel config
+	. /etc/scripts/config.sh
 
-    # start reset button check
-    butcheck &
+	if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
+	    gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 1000
+	fi
+    fi
 
     # create fstab if not exist
     touch /etc/fstab

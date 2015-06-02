@@ -43,7 +43,6 @@ AutoRoaming=0
 BasicRate=351
 BeaconPeriod=50
 BGProtection=2
-boot_leds_blink=
 natFastpath=1
 routeFastpath=1
 filterFastpath=1

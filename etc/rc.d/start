@@ -58,5 +58,8 @@ $LOG "Umount $TMPROOTFSD"
 umount -fl $TMPROOTFSD
 rm -rf $TMPROOTFSD
 
+$LOG "Start reset button check"
+butcheck &
+
 $LOG "Start init now."
 /bin/sh /etc/rc.d/rcS &
