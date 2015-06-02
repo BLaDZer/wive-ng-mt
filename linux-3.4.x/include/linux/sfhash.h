@@ -15,7 +15,7 @@
  * of bytes.  No alignment or length assumptions are made about
  * the input key.
  */
-static inline u32 sfhash(const void * key, u32 len, u32 initval)
+static inline u32 __sfhash_nwords(const void *key, u32 len, u32 initval)
 {
 	const char * data = key;
 	u32 hash = len + initval, tmp;
@@ -63,13 +63,20 @@ static inline u32 sfhash(const void * key, u32 len, u32 initval)
 	return hash;
 }
 
+/* The generic version
+ */
+static inline u32 sfhash(const void *key, u32 length, u32 initval)
+{
+	return __sfhash_nwords(key, length, initval);
+}
+
 /* Special versions for hashing exactly 3 words.
  */
 static inline u32 sfhash_3words(u32 a, u32 b, u32 c, u32 initval)
 {
 	u32 data[3] = {a,b,c};
 
-	return sfhash(data, 12, initval);
+	return __sfhash_nwords(data, 12, initval);
 }
 
 /* Special versions for hashing exactly 2 words.
