@@ -48,6 +48,16 @@ usage() {
  exit 1
 }
 
+sys_led_blink() {
+    # blink sys leds
+    if [ -f /bin/gpio ]; then
+	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
+	for led in $boot_leds_blink; do
+	    gpio l $led 1 1 0 0 1000
+	done
+    fi
+}
+
 load() {
     if [ "$MTDRWFS" = "" ]; then
 	echo "RWFS Not Found!"
@@ -77,38 +87,18 @@ save() {
 
 restore() {
     echo "Clear rwfs."
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
     mtd_write erase RW-FS
 }
 
 nvramreset() {
     # cleanup with skip clean macs and is_wive and checkmacs flags
     echo "Clear nvram and load user defaults."
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
+    sys_led_blink
     nvram_default 2860
 }
 
 burnrf() {
     echo "Erase wifi Factory part and write defaults"
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
     mtd_write erase Factory
     mtd_write write $RFCONFIGS Factory
 }
@@ -117,13 +107,7 @@ fullreset() {
     echo "Stop services and unload modules..."
     killall -q goahead
     killall -q -SIGKILL goahead
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
+    sys_led_blink
     wifi_unload.sh
     echo "Set boot flag to regenerate all at next boot."
     nvram_set 2860 WLAN2_MAC_ADDR	"DEAD"
@@ -139,13 +123,7 @@ fullreset() {
 
 change_mac() {
     echo "Set WAN MAC = $1"
-    # blink wps/sec led at boot time before goahead start
-    if [ -f /bin/gpio ]; then
-	boot_leds_blink=`nvram_get 2860 boot_leds_blink`
-	for led in $boot_leds_blink; do
-	    gpio l $led 1 1 0 0 1000
-	done
-    fi
+    sys_led_blink
     nvram_set 2860 CHECKMAC NO
     FWMAC=`echo $1 | sed "s/:/ /g"`
     eth_mac w wan $FWMAC

@@ -71,7 +71,7 @@
 #define MAX_ARGS 3
 
 int buflen, quiet, verbose;
-int write_check = 1, led_blink = 0;
+int write_check = 1;
 char *buf;
 
 static int mtd_open(const char *name, int flags)
@@ -176,8 +176,11 @@ static int mtd_erase(const char *mtd)
 	}
 
 	for (mtdEraseInfo.start = 0;
-		 mtdEraseInfo.start < mtdInfo.size;
-		 mtdEraseInfo.start += mtdInfo.erasesize) {
+		mtdEraseInfo.start < mtdInfo.size;
+		mtdEraseInfo.start += mtdInfo.erasesize) {
+
+	    	ledAlways(GPIO_MTD_LED1, LED_ON);
+		ledAlways(GPIO_MTD_LED2, LED_OFF);
 
 		ioctl(fd, MEMUNLOCK, &mtdEraseInfo);
 		if(ioctl(fd, MEMERASE, &mtdEraseInfo)){
@@ -206,6 +209,8 @@ static int mtd_erase(const char *mtd)
 			}
 		}
 
+		ledAlways(GPIO_MTD_LED1, LED_OFF);
+		ledAlways(GPIO_MTD_LED2, LED_ON);
 	}
 
 	free(test_buf);
@@ -288,10 +293,9 @@ not_nand:
 
 		/* need to erase the next block before writing data to it */
 		while (w > e) {
-			if (led_blink) {
-		    	    ledAlways(GPIO_MTD_LED1, LED_ON);
-			    ledAlways(GPIO_MTD_LED2, LED_OFF);
-			}
+		    	ledAlways(GPIO_MTD_LED1, LED_ON);
+			ledAlways(GPIO_MTD_LED2, LED_OFF);
+
 			mtdEraseInfo.start = e;
 			mtdEraseInfo.length = mtdInfo.erasesize;
 
@@ -306,10 +310,9 @@ not_nand:
 			e += mtdInfo.erasesize;
 		}
 
-		if (led_blink) {
-	    	    ledAlways(GPIO_MTD_LED1, LED_OFF);
-		    ledAlways(GPIO_MTD_LED2, LED_ON);
-		}
+		ledAlways(GPIO_MTD_LED1, LED_OFF);
+		ledAlways(GPIO_MTD_LED2, LED_ON);
+
 		if (!quiet)
 			fprintf(stderr, "\b\b\b[w]");
 
@@ -480,13 +483,6 @@ int main (int argc, char **argv)
 	} else if ((strcmp(argv[0], "write") == 0) && (argc == 3)) {
 		cmd = CMD_WRITE;
 		device = argv[2];
-		/* only if update need blink */
-		if ((!strncmp(device, "Kernel_RootFS", 13)) || (!strncmp(device, "Kernel", 6)) ||
-		     (!strncmp(device, "RootFS", 6)) || (!strncmp(device, "Bootloader", 6)))
-		    led_blink=1;
-		else
-		    led_blink=0;
-
 		if (strcmp(argv[1], "-") == 0) {
 			imagefile = "<stdin>";
 			imagefd = 0;
