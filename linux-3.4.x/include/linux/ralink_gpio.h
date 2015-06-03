@@ -54,15 +54,6 @@
 #define CONFIG_RALINK_GPIO_SYS_LED	0
 #endif
 
-/* Firmware update indicators */
-#if defined(CONFIG_RALINK_MT7621)
-#define GPIO_MTD_LED1			CONFIG_RALINK_GPIO_USB_LED
-#define GPIO_MTD_LED2			CONFIG_RALINK_GPIO_VPN_LED
-#else
-#define GPIO_MTD_LED1			CONFIG_RALINK_GPIO_SYS_LED
-#define GPIO_MTD_LED2			CONFIG_RALINK_GPIO_VPN_LED
-#endif
-
 #if defined (CONFIG_RALINK_RT3052)
 #define RALINK_GPIO_HAS_5124            1
 #elif defined (CONFIG_RALINK_RT3883)

@@ -179,8 +179,7 @@ static int mtd_erase(const char *mtd)
 		mtdEraseInfo.start < mtdInfo.size;
 		mtdEraseInfo.start += mtdInfo.erasesize) {
 
-	    	ledAlways(GPIO_MTD_LED1, LED_ON);
-		ledAlways(GPIO_MTD_LED2, LED_OFF);
+	    	ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_OFF);
 
 		ioctl(fd, MEMUNLOCK, &mtdEraseInfo);
 		if(ioctl(fd, MEMERASE, &mtdEraseInfo)){
@@ -209,8 +208,7 @@ static int mtd_erase(const char *mtd)
 			}
 		}
 
-		ledAlways(GPIO_MTD_LED1, LED_OFF);
-		ledAlways(GPIO_MTD_LED2, LED_ON);
+		ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);
 	}
 
 	free(test_buf);
@@ -293,8 +291,7 @@ not_nand:
 
 		/* need to erase the next block before writing data to it */
 		while (w > e) {
-		    	ledAlways(GPIO_MTD_LED1, LED_ON);
-			ledAlways(GPIO_MTD_LED2, LED_OFF);
+		    	ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_OFF);
 
 			mtdEraseInfo.start = e;
 			mtdEraseInfo.length = mtdInfo.erasesize;
@@ -310,8 +307,7 @@ not_nand:
 			e += mtdInfo.erasesize;
 		}
 
-		ledAlways(GPIO_MTD_LED1, LED_OFF);
-		ledAlways(GPIO_MTD_LED2, LED_ON);
+		ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);
 
 		if (!quiet)
 			fprintf(stderr, "\b\b\b[w]");
