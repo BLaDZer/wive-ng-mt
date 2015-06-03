@@ -36,21 +36,6 @@
         } \
 } while (0)
 
-//x is the value returned if the check failed
-#define RANV_CHECK_INDEX_ALL(x) do { \
-        if (index < 0 || index >= FLASH_BLOCK_NUM) { \
-                RANV_PRINT("index(%d) is out of range\n", index); \
-            	    return 1; \
-        } \
-} while (0)
-
-#define RANV_CHECK_VALID_ALL(x) do { \
-        if (!fb[index].valid) { \
-                RANV_PRINT("fb[%d] invalid\n", index); \
-                return 1; \
-        } \
-} while (0)
-
 typedef struct environment_s {
 	unsigned long crc;		//CRC32 over data bytes
 	char *data;

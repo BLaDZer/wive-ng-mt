@@ -324,7 +324,7 @@ static void ra_nvram_exit(void)
 
 		ra_nvram_close(index);
 		fb[index].valid = 0;
-		kfree(fb[index].env.data);
+		KFREE(fb[index].env.data);
 	}
 
 	unregister_chrdev(ralink_nvram_major, RALINK_NVRAM_DEVNAME);
@@ -343,11 +343,11 @@ static int ra_nvram_close(int index)
 
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
 		if (fb[index].cache[i].name) {
-			kfree(fb[index].cache[i].name);
+			KFREE(fb[index].cache[i].name);
 			fb[index].cache[i].name = NULL;
 		}
 		if (fb[index].cache[i].value) {
-			kfree(fb[index].cache[i].value);
+			KFREE(fb[index].cache[i].value);
 			fb[index].cache[i].value = NULL;
 		}
 	}
