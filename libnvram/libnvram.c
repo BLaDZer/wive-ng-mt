@@ -1,4 +1,4 @@
-#include "nvram.h"
+#include "libnvram.h"
 
 //#define DEBUG
 
@@ -7,8 +7,6 @@ static char libnvram_debug = 1;
 #else
 static char libnvram_debug = 0;
 #endif
-#define LIBNV_PRINT(x, ...) do { if (libnvram_debug) printf("%s %d: " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
-#define LIBNV_ERROR(x, ...) do { fprintf(stderr,"%s %d: ERROR! " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
 
 /* Config part in nvram */
 static block_t fb[FLASH_BLOCK_NUM] =
@@ -29,20 +27,23 @@ static block_t fb[FLASH_BLOCK_NUM] =
 #endif
 };
 
+#define RANV_PRINT(x, ...) do { if (libnvram_debug) printf("%s %d: " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
+#define RANV_ERROR(x, ...) do { fprintf(stderr,"%s %d: ERROR! " x, __FILE__, __LINE__, ## __VA_ARGS__); } while(0)
+
 /* x is the value returned if the check failed */
-#define LIBNV_CHECK_INDEX(x) do { \
+#define RANV_CHECK_INDEX(x) do { \
 	if (index < 0 || index >= FLASH_BLOCK_NUM) { \
-		LIBNV_PRINT("index(%d) is out of range\n", index); \
+		RANV_PRINT("index(%d) is out of range\n", index); \
 		return x; \
 	} \
 } while (0)
 
-#define LIBNV_CHECK_VALID(x) do { \
+#define RANV_CHECK_VALID(x) do { \
 	if (!fb[index].valid) { \
-		LIBNV_PRINT("fb[%d] invalid, init again\n", index); \
+		RANV_PRINT("fb[%d] invalid, init again\n", index); \
 		nvram_init(index); \
 		if (!fb[index].valid) { \
-		    LIBNV_PRINT("fb[%d] invalid, reinit not correct. return.\n", index); \
+		    RANV_PRINT("fb[%d] invalid, reinit not correct. return.\n", index); \
 		    return x; \
 		} \
 	} \
@@ -55,7 +56,7 @@ int getNvramNum(void)
 
 char *getNvramName(int index)
 {
-	LIBNV_CHECK_INDEX(NULL);
+	RANV_CHECK_INDEX(NULL);
 	return fb[index].name;
 }
 
@@ -124,7 +125,7 @@ int nvram_init(int index)
 		/* Store var name */
 		if (NULL == (q = strchr(p, '=')))
 		{
-			LIBNV_PRINT("parsed failed - cannot find '='\n");
+			RANV_PRINT("parsed failed - cannot find '='\n");
 			break;
 		}
 		*q = '\0'; //strip '='
@@ -135,7 +136,7 @@ int nvram_init(int index)
 		p = q + 1; //value
 		if (NULL == (q = strchr(p, '\0')))
 		{
-			LIBNV_PRINT("parsed failed - cannot find '\\0'\n");
+			RANV_PRINT("parsed failed - cannot find '\\0'\n");
 			FREE(fb[index].cache[i].name);
 			break;
 		}
@@ -150,7 +151,7 @@ int nvram_init(int index)
 	}
 
 	if (i == MAX_CACHE_ENTRY)
-		LIBNV_PRINT("run out of env cache, please increase MAX_CACHE_ENTRY\n");
+		RANV_PRINT("run out of env cache, please increase MAX_CACHE_ENTRY\n");
 
 	fb[index].valid = 1;
 	fb[index].dirty = 0;
@@ -162,7 +163,7 @@ void nvram_close(int index)
 {
 	int i;
 
-	LIBNV_CHECK_INDEX();
+	RANV_CHECK_INDEX();
 
 	if (!fb[index].valid)
 		return;
@@ -234,8 +235,8 @@ char *nvram_bufget(int index, char *name)
 	int fd;
 	nvram_ioctl_t nvr;
 
-	LIBNV_CHECK_INDEX("");
-	LIBNV_CHECK_VALID("");
+	RANV_CHECK_INDEX("");
+	RANV_CHECK_VALID("");
 
 	nvr.size  = MAX_VALUE_LEN;
 	nvr.index = index;
@@ -295,7 +296,7 @@ char *nvram_bufget(int index, char *name)
 			FREE(nvr.value);
 			//ret = fb[index].cache[idx].value;
 			ret = strdup(fb[index].cache[idx].value); /* this is not good case, small memleak and memdupe, fix in future */
-			LIBNV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
+			RANV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
 			//btw, we don't return NULL anymore!
 			if (!ret)
 			    ret = "";
@@ -306,7 +307,7 @@ char *nvram_bufget(int index, char *name)
 
 	//no default value set?
 	//btw, we don't return NULL anymore!
-	LIBNV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
+	RANV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
 	FREE(nvr.value);
 	return "";
 }
@@ -317,8 +318,8 @@ int nvram_bufset(int index, char *name, char *value)
 	int fd;
 	nvram_ioctl_t nvr;
 
-	LIBNV_CHECK_INDEX(-1);
-	LIBNV_CHECK_VALID(-1);
+	RANV_CHECK_INDEX(-1);
+	RANV_CHECK_VALID(-1);
 
 	nvr.index = index;
 	nvr.name  = name;
@@ -352,7 +353,7 @@ int nvram_bufset(int index, char *name, char *value)
 		}
 		//no any empty room
 		if (idx == MAX_CACHE_ENTRY) {
-			LIBNV_ERROR("run out of env cache, please increase MAX_CACHE_ENTRY\n");
+			RANV_ERROR("run out of env cache, please increase MAX_CACHE_ENTRY\n");
 			return -1;
 		}
 		fb[index].cache[idx].name = strdup(name);
@@ -363,7 +364,7 @@ int nvram_bufset(int index, char *name, char *value)
 		fb[index].cache[idx].value = strdup(value);
 	}
 
-	LIBNV_PRINT("bufset %d '%s'->'%s'\n", index, name, value);
+	RANV_PRINT("bufset %d '%s'->'%s'\n", index, name, value);
 	fb[index].dirty = 1;
 	return 0;
 }
@@ -376,7 +377,7 @@ int nvram_commit(int index)
 	int fd;
 	nvram_ioctl_t nvr;
 
-	LIBNV_PRINT("--> nvram_commit %d\n", index);
+	RANV_PRINT("--> nvram_commit %d\n", index);
 
 	nvr.index = index;
 	fd = open(NV_DEV, O_RDONLY);
@@ -488,8 +489,8 @@ void nvram_buflist(int index)
 {
 	int i;
 
-	LIBNV_CHECK_INDEX();
-	LIBNV_CHECK_VALID();
+	RANV_CHECK_INDEX();
+	RANV_CHECK_VALID();
 
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
 		if (!fb[index].cache[i].name)

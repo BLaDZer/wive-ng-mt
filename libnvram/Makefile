@@ -31,8 +31,8 @@ CFLAGS+=$(SSP_ALL_CFLAGS) -DUSE_HOSTCC -fPIC -D_LARGEFILE64_SOURCE=1
 LIBNVRAM=libnvram.a
 LIBNVRAM_SHARED=libnvram.so
 
-OBJS	:= nvram_env.o
-HEADERS := nvram.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
+OBJS	:= libnvram.o
+HEADERS := libnvram.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: shared
 
@@ -45,8 +45,7 @@ $(LIBNVRAM) ar-target: $(OBJS)
 
 shared: $(LIBNVRAM)
 	$(LD) -shared -soname=$(LIBNVRAM_SHARED) -o $(LIBNVRAM_SHARED) --whole-archive $(LIBNVRAM) --no-whole-archive -lc;
-	cp -frv libnvram.so ../lib/lib
-	cp -frv libnvram.so $(LIBCDIRSHARED)/lib
+	cp -frv $(LIBNVRAM_SHARED) $(LIBCDIRSHARED)/lib
 
 $(OBJS): $(HEADERS) Makefile
 

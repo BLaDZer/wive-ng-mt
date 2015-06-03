@@ -18,7 +18,7 @@
 #include 	"webs.h"
 #include	"uemf.h"
 
-#include        "nvram.h"
+#include        "libnvram.h"
 #include        "oid.h"
 
 #ifdef CONFIG_RALINKAPP_SWQOS

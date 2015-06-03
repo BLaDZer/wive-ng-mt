@@ -13,9 +13,6 @@
 
 #define NV_DEV "/dev/nvram"
 
-/* use safe mode strdup */
-#define NVRAM_LIB_LIBNVRAM_SSTRDUP
-
 #define RT2860_NVRAM    		0
 #define RTINIC_NVRAM    		1
 
