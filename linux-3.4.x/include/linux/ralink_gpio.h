@@ -521,7 +521,7 @@
 #else
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C)
 #endif
-#else                                         /* if use external phy - switch lines to gpio mode */
+#else                                         /* if use external phy - switch lines to gpio mode else phy mode */
 #if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_EPHY | RALINK_GPIOMODE_PA_G)
 #else
