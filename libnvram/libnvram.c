@@ -201,33 +201,7 @@ static int cache_idx(int index, char *name)
 	return -1;
 }
 
-char *nvram_get(int index, char *name)
-{
-	/* Initial value should be NULL */
-	char *recv = NULL;
-
-	recv = nvram_bufget(index, name);
-
-	//btw, we don't return NULL anymore!
-	if (!recv)
-	    recv = "";
-
-	return recv;
-}
-
-int nvram_set(int index, char *name, char *value)
-{
-	int rc;
-
-	if (nvram_bufset(index, name, value) == -1 ) 
-		rc = -1;
-	else
-	rc = nvram_commit(index);
-
-	return rc;
-}
-
-char *nvram_bufget(int index, char *name)
+static char *__nvram_bufget(int index, char *name, int copy)
 {
 	int idx;
 	/* Initial value should be NULL */
@@ -294,8 +268,10 @@ char *nvram_bufget(int index, char *name)
 			FREE(fb[index].cache[idx].value);
 			fb[index].cache[idx].value = strdup(nvr.value);
 			FREE(nvr.value);
-			//ret = fb[index].cache[idx].value;
-			ret = strdup(fb[index].cache[idx].value); /* this is not good case, small memleak and memdupe, fix in future */
+			if (!copy)
+			    ret = fb[index].cache[idx].value;
+			else
+			    ret = strdup(fb[index].cache[idx].value);
 			RANV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
 			//btw, we don't return NULL anymore!
 			if (!ret)
@@ -310,6 +286,42 @@ char *nvram_bufget(int index, char *name)
 	RANV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
 	FREE(nvr.value);
 	return "";
+}
+
+/* buffered get variable without copy to new memory block */
+char *nvram_bufget(int index, char *name)
+{
+	__nvram_bufget(index, name, 0);
+}
+
+/* get variable with copy to new memory block */
+char *nvram_get_copy(int index, char *name)
+{
+	/* Initial value should be NULL */
+	char *recv = NULL;
+
+	recv = __nvram_bufget(index, name, 1);
+
+	//btw, we don't return NULL anymore!
+	if (!recv)
+	    recv = "";
+
+	return recv;
+}
+
+/* get variable without copy to new memory block */
+char *nvram_get(int index, char *name)
+{
+	/* Initial value should be NULL */
+	char *recv = NULL;
+
+	recv = __nvram_bufget(index, name, 0);
+
+	//btw, we don't return NULL anymore!
+	if (!recv)
+	    recv = "";
+
+	return recv;
 }
 
 int nvram_bufset(int index, char *name, char *value)
@@ -367,6 +379,18 @@ int nvram_bufset(int index, char *name, char *value)
 	RANV_PRINT("bufset %d '%s'->'%s'\n", index, name, value);
 	fb[index].dirty = 1;
 	return 0;
+}
+
+int nvram_set(int index, char *name, char *value)
+{
+	int rc;
+
+	if (nvram_bufset(index, name, value) == -1 ) 
+		rc = -1;
+	else
+	rc = nvram_commit(index);
+
+	return rc;
 }
 
 /*

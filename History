@@ -961,19 +961,21 @@
 <br>
 <b>3.1.x</b><br>
 1) mtd_write: blink system led at every erase/write flash access.<br>
-2) init.d: clanup led blink direct calls.<br>
-3) init.d: read sysled gpio from kernel config.<br>
-4) init.d: more early btn reset check start.<br>
-5) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-6) kernel: mips: irq: use DECLARE_BITMAP.<br>
-7) kernel: mips: bmips: fix bmips_wr_vec().<br>
-8) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-9) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-10) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-11) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-12) kernel: mm: remove free_page_mlock.<br>
-13) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-14) kernel: net: udp: fix behavior of wrong checksums.<br>
+2) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
+3) nvram: use not copy mode get by default (fix small memleak).<br>
+4) init.d: clanup led blink direct calls.<br>
+5) init.d: read sysled gpio from kernel config.<br>
+6) init.d: more early btn reset check start.<br>
+7) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+8) kernel: mips: irq: use DECLARE_BITMAP.<br>
+9) kernel: mips: bmips: fix bmips_wr_vec().<br>
+10) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+11) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+12) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+13) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+14) kernel: mm: remove free_page_mlock.<br>
+15) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+16) kernel: net: udp: fix behavior of wrong checksums.<br>
 <br>
 <br>
 <b>TODO:</b><br>

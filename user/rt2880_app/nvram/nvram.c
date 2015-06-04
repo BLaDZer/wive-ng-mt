@@ -162,11 +162,12 @@ static int nvram_load_default(void)
 	int mac_err = 0;
         char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC;
 
-	WLAN2_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN2_MAC_ADDR");
-	WLAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WLAN_MAC_ADDR");
-        WAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
-        LAN_MAC_ADDR	= nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
-        CHECKMAC	= nvram_get(RT2860_NVRAM, "CHECKMAC");
+	/* copy old values to new memory block */
+	WLAN2_MAC_ADDR	= nvram_get_copy(RT2860_NVRAM, "WLAN2_MAC_ADDR");
+	WLAN_MAC_ADDR	= nvram_get_copy(RT2860_NVRAM, "WLAN_MAC_ADDR");
+	WAN_MAC_ADDR	= nvram_get_copy(RT2860_NVRAM, "WAN_MAC_ADDR");
+	LAN_MAC_ADDR	= nvram_get_copy(RT2860_NVRAM, "LAN_MAC_ADDR");
+	CHECKMAC	= nvram_get_copy(RT2860_NVRAM, "CHECKMAC");
 
 	printf("Store current MAC adresses in mem: %s, %s, %s, %s. CHECKMAC: %s\n",
 		WAN_MAC_ADDR, LAN_MAC_ADDR, WLAN_MAC_ADDR, WLAN2_MAC_ADDR, CHECKMAC);

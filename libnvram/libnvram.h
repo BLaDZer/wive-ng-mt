@@ -76,6 +76,7 @@ void nvram_close(int index);
 int nvram_set(int index, char *name, char *value);
 int nvram_bufset(int index, char *name, char *value);
 char *nvram_get(int index, char *name);
+char *nvram_get_copy(int index, char *name);
 char *nvram_bufget(int index, char *name);
 
 int nvram_commit(int index);
