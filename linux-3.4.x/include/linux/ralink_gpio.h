@@ -515,7 +515,7 @@
 // if you would like to enable GPIO mode for other pins, please modify this value
 // !! Warning: changing this value may make other features(MDIO, PCI, etc) lose efficacy
 #if defined (CONFIG_RALINK_MT7620)
-#if defined (CONFIG_RAETH_ESW)                /* if use internal phy - switch lines to phy mode */
+#if defined (CONFIG_RAETH_ESW)                /* if use internal phy - switch lines to phy mode else gpio mode */
 #if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_PA_G)
 #else
