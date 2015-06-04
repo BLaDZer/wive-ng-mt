@@ -453,7 +453,7 @@
 //#define RALINK_GPIOMODE_SPI_CS1		0xC00000
 //#define RALINK_GPIOMODE_SUTIF_SHARE	0x10000000
 
-#elif defined (CONFIG_RALINK_MT7620) 
+#elif defined (CONFIG_RALINK_MT7620)
 
 #define RALINK_GPIOMODE_I2C		0x01
 #define RALINK_GPIOMODE_UARTF		0x1C
@@ -515,7 +515,19 @@
 // if you would like to enable GPIO mode for other pins, please modify this value
 // !! Warning: changing this value may make other features(MDIO, PCI, etc) lose efficacy
 #if defined (CONFIG_RALINK_MT7620)
+#if defined(CONFIG_RAETH_ESW) && defined(CONFIG_GE1_MAC_ESW) /* if use internal switch switch ext phy to gpio */
+#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if not use external PA/LNA switch pins to GPIO */
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_EPHY | RALINK_GPIOMODE_PA_G)
+#else
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_EPHY)
+#endif
+#else
+#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if not use external PA/LNA switch pins to GPIO */
+#define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_PA_G)
+#else
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C)
+#endif
+#endif
 #elif defined (CONFIG_RALINK_MT7621)
 #define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3 | RALINK_GPIOMODE_WDT)
 #elif defined (CONFIG_RALINK_MT7628)
