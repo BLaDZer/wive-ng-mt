@@ -32,18 +32,18 @@
 
 #include <linux/autoconf.h> /* kernel config */
 
-#if defined(CONFIG_RALINK_RT3050_1T1R) || defined(CONFIG_RALINK_RT3051_1T2R) || defined(CONFIG_RALINK_RT5350)
-#define WIFISPEED 1500000	// 150Mbit wireless...
-#define MAXWIFISPEED 300	// 300 / 2 = 150
-#elif defined(CONFIG_RALINK_RT3052_2T2R) || defined(CONFIG_RALINK_RT3352_2T2R) || defined(CONFIG_RALINK_RT3662_2T2R)
+#if defined(CONFIG_RT_SECOND_IF_MT7612E)
+#define WIFISPEED 8660000	// 866Mbit wireless...
+#define MAXWIFISPEED 1732	// 1732 / 2 = 866
+#elif defined(CONFIG_RT_SECOND_IF_MT7610E)
+#define WIFISPEED 4330000	// 433Mbit wireless...
+#define MAXWIFISPEED 866	// 866 / 2 = 433
+#elif defined(CONFIG_RALINK_MT7620)
 #define WIFISPEED 3000000	// 300Mbit wireless...
 #define MAXWIFISPEED 600	// 600 / 2 = 300
-#elif defined(CONFIG_RALINK_RT3883_3T3R)
-#define WIFISPEED 4500000	// 450Mbit wireless...
-#define MAXWIFISPEED 900	// 900 / 2 = 450
 #else
-#define WIFISPEED 540000	// 54Mbit wireless
-#define MAXWIFISPEED 108	// 108 / 2 = 54
+#define WIFISPEED 3000000	// 54Mbit wireless
+#define MAXWIFISPEED 600	// 108 / 2 = 54
 #endif
 
 #define TRUE 1
