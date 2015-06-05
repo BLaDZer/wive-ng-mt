@@ -42,8 +42,8 @@
 #define WIFISPEED 3000000	// 300Mbit wireless...
 #define MAXWIFISPEED 600	// 600 / 2 = 300
 #else
-#define WIFISPEED 3000000	// 54Mbit wireless
-#define MAXWIFISPEED 600	// 108 / 2 = 54
+#define WIFISPEED 3000000	// 300Mbit wireless
+#define MAXWIFISPEED 600	// 600 / 2 = 300
 #endif
 
 #define TRUE 1
