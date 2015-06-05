@@ -100,13 +100,13 @@ static int append_html_buffer(html_buffer_t *buf, char ch)
 	// Check if we need to exend buffer
 	if (buf->c_pos >= buf->size)
 	{
-		buf->size      += HTML_BUFFER_QUANTITY; // Increase buffer size
+		buf->size += HTML_BUFFER_QUANTITY; // Increase buffer size
 		char *new_buf = realloc(buf->data, buf->size);
 		if (new_buf==NULL)
 			return -errno;
-		buf->data       = new_buf;
+		buf->data = new_buf;
 	}
-	
+
 	// Now append character
 	buf->data[buf->c_pos++] = ch;
 	return 0;
@@ -120,7 +120,7 @@ int encodeHTMLContent(const char *data, html_buffer_t *buf)
 	while ((*data)!='\0')
 	{
 		const char *rep = html_find_match(*data);
-		
+
 		if (rep == NULL) //Append character to buffer
 		{
 			int ret = append_html_buffer(buf, *data);
@@ -136,11 +136,9 @@ int encodeHTMLContent(const char *data, html_buffer_t *buf)
 					return ret;
 			}
 		}
-		
 		// Increment position
 		data++;
 	}
-	
 	// Append buffer with null-terminating character
 	return append_html_buffer(buf, '\0');
 }
@@ -166,7 +164,7 @@ void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 {
 	if (transaction)
 		nvram_init(RT2860_NVRAM);
-	
+
 	while (fetch->web_param != NULL)
 	{
 		// Get variable
@@ -178,15 +176,15 @@ void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 			if (fetch->is_switch == 2)
 				str = (strcmp(str, "on") == 0) ? "1" : "0";
 		}
-		
+
 		if (nvram_bufset(RT2860_NVRAM, (char_t *)fetch->nvram_param, (void *)str)!=0) //!!!
 			printf("goahead: Set %s nvram error!", fetch->nvram_param);
-#ifdef PRINT_DEBUG		
+#ifdef PRINT_DEBUG
 		printf("%s value : %s\n", fetch->nvram_param, str);
 #endif
 		fetch++;
 	}
-	
+
 	if (transaction)
 	{
 		nvram_commit(RT2860_NVRAM);
@@ -201,7 +199,7 @@ char *catIndex(char *buf, const char *ptr, int index)
 		*(p++) = *(ptr++);
 	*(p++) = (char)(index + '0');
 	*p = '\0';
-	
+
 	return buf;
 }
 
@@ -210,7 +208,7 @@ void fetchIndexedParam(const char *buf, int index, char *retbuf)
 	const char *p = buf;
 	const char *start = p;
 	int i;
-	
+
 	// Search start
 	for (i=0; i<index; i++)
 	{
@@ -224,11 +222,11 @@ void fetchIndexedParam(const char *buf, int index, char *retbuf)
 		else
 			start = ++p;
 	}
-	
+
 	// Search end
 	while (((*p) != '\0') && ((*p) != ';'))
 		p++;
-	
+
 	// Copy data
 	while (start < p)
 		*(retbuf++) = *(start++);
@@ -248,11 +246,11 @@ int initSplitter(string_split_t *buf)
 		buf->buf = NULL;
 		return errno;
 	}
-	
+
 	buf->buf_size = SPLITTER_BUFFER_QUANTITY;
 	buf->pointers = SPLITTER_TOKEN_QUANTITY;
 	buf->found    = 0;
-	
+
 	return 0;
 }
 
@@ -262,10 +260,10 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 	buf->found = 0;
 	if (string == NULL)
 		return 0;
-	
+
 	// Calculate character buffer size
 	size_t size = strlen(string) + 1;
-	
+
 	// Check if need to realloc buffer
 	if (buf->buf_size < size)
 	{
@@ -276,10 +274,10 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 			return errno;
 		buf->buf_size = amount;
 	}
-	
+
 	// copy string
 	memcpy(buf->buf, string, size);
-	
+
 	// calculate splitters
 	buf->found = 1;
 	char *p = buf->buf;
@@ -288,7 +286,7 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 		if (*(p++) == splitter)
 			buf->found++;
 	}
-	
+
 	// Check if need to realloc pointers
 	if (buf->pointers < buf->found)
 	{
@@ -299,12 +297,12 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 			return errno;
 		buf->pointers = amount;
 	}
-	
+
 	// Make split
 	p = buf->buf;
 	char **it = buf->items;
 	*(it++) = p; // Assign first token
-	
+
 	while (*p != '\0')
 	{
 		if (*p == splitter)
@@ -315,7 +313,7 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 		else
 			p++;
 	}
-	
+
 	return 0;
 }
 

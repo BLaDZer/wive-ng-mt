@@ -766,8 +766,6 @@ static void revise_mbss_updated_values(webs_t wp, int bssnum)
 	char tempbuf[32], tmpvalue[128];
 	int i;
 
-	nvram_init(RT2860_NVRAM);
-
 	while (parm->name != NULL)
 	{
 		if (parm->is_comp)
@@ -799,40 +797,6 @@ static void revise_mbss_updated_values(webs_t wp, int bssnum)
 		}
 		parm++;
 	}
-
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-}
-
-static void setupSecurityLed(void)
-{
-	int i, bss_num, led_on;
-	char buf[32];
-
-	nvram_init(RT2860_NVRAM);
-
-	char *BssNum = nvram_bufget(RT2860_NVRAM, "BssidNum");
-	char *AuthMode = nvram_bufget(RT2860_NVRAM, "AuthMode");
-
-	if (CHK_IF_SET(BssNum))
-	{
-		bss_num = CHK_GET_DIGIT(BssNum);
-		if ((bss_num >= 1) && (bss_num <= 8) && (CHK_IF_SET(AuthMode)))
-		{
-			led_on = LED_OFF;
-			for (i=0; i<bss_num; i++)
-			{
-				fetchIndexedParam(AuthMode, i, buf);
-				if ((buf[0] != '\0') && (strcmp(buf, "OPEN") != 0))
-				{
-					led_on = LED_ON;
-					break;
-				}
-			}
-		}
-	}
-
-	nvram_close(RT2860_NVRAM);
 }
 
 /* goform/wirelessBasic */
@@ -1104,10 +1068,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	nvram_bufset(RT2860_NVRAM, "RadioOffINIC", (web_radio_ac_on) ? "0" : "1");
 #endif
+	// update mbss parametrs
+	revise_mbss_updated_values(wp, new_bssid_num);
+
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
-
-	revise_mbss_updated_values(wp, new_bssid_num);
 
 #ifdef PRINT_DEBUG
 	// debug print
@@ -1158,7 +1123,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 
-	setupSecurityLed();
 	doSystem("internet.sh wifionly");
 }
 
@@ -1335,8 +1299,8 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 
-    // restart wireless network
-    doSystem("internet.sh wifionly");
+	// restart wireless network
+	doSystem("internet.sh wifionly");
 }
 
 /* goform/wirelessWds */
@@ -1862,16 +1826,16 @@ void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 		else
 			STFs(nvram, mbssid, "EncrypType", "WEP");
 	}else{
-		return;
+		goto out;
 	}
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-	setupSecurityLed();
 
 	// Access Policy
 	if(AccessPolicyHandle(nvram, wp, mbssid) == -1)
 		trace(0, "** error in AccessPolicyHandle()\n");
+
+out:
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
 	//debug print

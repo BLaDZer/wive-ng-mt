@@ -951,7 +951,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	/* Set-up first LAN port */
 	if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
 		nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
-	
+
 	/* Now test values */
 	for (i=1; i<=5; i++)
 	{
