@@ -68,12 +68,6 @@ extern const char *replaceWords(const char *key, const replacement_t *table);
 extern const char *normalizeSize(long long *size);
 extern long readUnsigned(const char *str);
 
-// HTML content encoding routines
-extern int initHTMLBuffer(html_buffer_t *buf);
-extern void resetHTMLBuffer(html_buffer_t *buf);
-extern int encodeHTMLContent(const char *data, html_buffer_t *buf);
-extern int freeHTMLBuffer(html_buffer_t *buf);
-
 extern int checkFileExists(const char *argv);
 
 // Set-up parameters in NVRAM

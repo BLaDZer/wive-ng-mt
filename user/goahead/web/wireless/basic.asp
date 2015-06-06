@@ -64,11 +64,6 @@ var is5gh_1t1r = '<% is5gh_1t1r(); %>';
 
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
-var mbss_params =
-[
-	<% dumpBSSKeys(); %>
-];
-
 var ChannelList_24G =
 [
 	"2412MHz (Channel 1)",
@@ -192,10 +187,6 @@ function ssidAdd(form)
 		form.elements['mssid_' + count].value = '';
 		form.hssid[count-1].checked = false;
 		form.isolated_ssid[count-1].checked = false;
-
-		// Clear values
-		for (var p=0; p<mbss_params.length; p++)
-			form.elements[mbss_params[p] + count].value = '';
 	}
 }
 
@@ -212,10 +203,6 @@ function ssidRemove(form, index)
 			form.elements['mssid_' + (i+1)].value = form.elements['mssid_' + (i+2)].value;
 			form.hssid[i].checked = form.hssid[i+1].checked;
 			form.isolated_ssid[i].checked = form.isolated_ssid[i+1].checked;
-
-			for (var p=0; p<mbss_params.length; p++)
-				form.elements[mbss_params[p] + (i + 1)].value = 
-					form.elements[mbss_params[p] + (i + 2)].value;
 		}
 	}
 
@@ -223,8 +210,6 @@ function ssidRemove(form, index)
 	form.elements['mssid_' + (count+1)].value = '';
 	form.hssid[count].checked = false;
 	form.isolated_ssid[count].checked = false;
-	for (var p=0; p<mbss_params.length; p++)
-		form.elements[mbss_params[p] + (count + 1)].value = '';
 
 	hideElement('div_hssid' + count);
 	form.bssid_num.value = count;
@@ -1120,7 +1105,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID0">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="0">
               <input type="button" onClick="ssidAdd(this.form);" class="normal" name="addBSSIDbtn" value="Add BSSID" id="basicAddBSSID">
-              <% dumpBSS(0); %></td>
           </tr>
           <tr id="div_hssid1" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID1">Multiple SSID</font>1</td>
@@ -1130,7 +1114,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID1">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="1">
               <input type="button" onClick="ssidRemove(this.form, 1);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(1); %></td>
           </tr>
           <tr id="div_hssid2" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID2">Multiple SSID</font>2</td>
@@ -1140,7 +1123,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID2">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="2">
               <input type="button" onClick="ssidRemove(this.form, 2);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(2); %></td>
           </tr>
           <tr id="div_hssid3" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID3">Multiple SSID</font>3</td>
@@ -1150,7 +1132,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID3">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="3">
               <input type="button" onClick="ssidRemove(this.form, 3);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(3); %></td>
           </tr>
           <tr id="div_hssid4" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID4">Multiple SSID</font>4</td>
@@ -1160,7 +1141,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID4">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="4">
               <input type="button" onClick="ssidRemove(this.form, 4);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(4); %></td>
           </tr>
           <tr id="div_hssid5" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID5">Multiple SSID</font>5</td>
@@ -1170,7 +1150,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID5">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="5">
               <input type="button" onClick="ssidRemove(this.form, 5);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(5); %></td>
           </tr>
           <tr id="div_hssid6" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID6">Multiple SSID</font>6</td>
@@ -1180,7 +1159,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID6">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="6">
               <input type="button" onClick="ssidRemove(this.form, 6);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(6); %></td>
           </tr>
           <tr id="div_hssid7" style="display:none;">
             <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID7">Multiple SSID</font>7</td>
@@ -1190,7 +1168,6 @@ function CheckValue(form)
               &nbsp; <font id="basicIsolatedSSID7">Isolated</font>
               <input type="checkbox" name="isolated_ssid" value="7">
               <input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove">
-              <% dumpBSS(7); %></td>
           </tr>
         </table>
         <table id="div_all" name="div_all" class="form" style="display:none;">
