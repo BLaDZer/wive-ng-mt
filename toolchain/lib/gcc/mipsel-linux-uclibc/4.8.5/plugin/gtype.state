@@ -4,7 +4,7 @@
 ;;; Don't parse this file wihout knowing GCC gengtype internals.
 ;;; This file should be parsed by the same gengtype which wrote it.
 
-(!version  "4.8.5 20150521 (prerelease)")
+(!version  "4.8.5 20150604 (prerelease)")
 
 (!srcdir  "../../gcc-4.8.5/gcc")
 
@@ -21571,11 +21571,11 @@ nil ))
 (!fields 0 )
 nil 0 nil )
 
-(!type struct 1043 nil  gc_unused "anonymous:../../gcc-4.8.5/gcc/varasm.c:4706"nil 
+(!type struct 1043 nil  gc_unused "anonymous:../../gcc-4.8.5/gcc/varasm.c:4710"nil 
 (!fields 0 )
 nil 0 nil )
 
-(!type struct 1044 nil  gc_unused "anonymous:../../gcc-4.8.5/gcc/varasm.c:4458"nil 
+(!type struct 1044 nil  gc_unused "anonymous:../../gcc-4.8.5/gcc/varasm.c:4462"nil 
 (!fields 0 )
 nil 0 nil )
 
@@ -26794,17 +26794,17 @@ nil )
 (!pair  "tm_alias_pair"
 (!type already_seen 1042)
 
-(!srcfileloc  "varasm.c" 5658)
+(!srcfileloc  "varasm.c" 5662)
 nil )
 (!pair  "oc_local_state"
 (!type already_seen 1043)
 
-(!srcfileloc  "varasm.c" 4730)
+(!srcfileloc  "varasm.c" 4734)
 nil )
 (!pair  "oc_outer_state"
 (!type already_seen 1044)
 
-(!srcfileloc  "varasm.c" 4461)
+(!srcfileloc  "varasm.c" 4465)
 nil )
 (!pair  "block_info"
 (!type already_seen 1055)
@@ -30576,7 +30576,7 @@ nil )
 (!pair  "critical_name_mutexes"
 (!type already_seen 1384)
 
-(!srcfileloc  "omp-low.c" 6399)
+(!srcfileloc  "omp-low.c" 6426)
 
 (!options 
 (!option param2_is type 
@@ -30808,17 +30808,17 @@ nil )
 (!pair  "elf_fini_array_section"
 (!type already_seen 245)
 
-(!srcfileloc  "varasm.c" 7429)
+(!srcfileloc  "varasm.c" 7435)
 nil )
 (!pair  "elf_init_array_section"
 (!type already_seen 245)
 
-(!srcfileloc  "varasm.c" 7428)
+(!srcfileloc  "varasm.c" 7434)
 nil )
 (!pair  "tm_clone_hash"
 (!type already_seen 1390)
 
-(!srcfileloc  "varasm.c" 5616)
+(!srcfileloc  "varasm.c" 5620)
 
 (!options 
 (!option param_is type 
@@ -30831,7 +30831,7 @@ nil )
 (!pair  "weakref_targets"
 (!type already_seen 5)
 
-(!srcfileloc  "varasm.c" 5306)
+(!srcfileloc  "varasm.c" 5310)
 nil )
 (!pair  "const_desc_htab"
 (!type already_seen 1392)

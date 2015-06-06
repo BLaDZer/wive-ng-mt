@@ -960,24 +960,25 @@
 <br>
 <br>
 <b>3.1.x</b><br>
-1) mtd_write: blink system led at every erase/write flash access.<br>
-2) lldtd: fix wifi speeds for new devices.<br>
-3) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
-4) nvram: use not copy mode get by default (fix small memleak).<br>
-5) goahead: fix memory leak at wireless->basic page parse.<br>
-6) init.d: clanup led blink direct calls.<br>
-7) init.d: read sysled gpio from kernel config.<br>
-8) init.d: more early btn reset check start.<br>
-9) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-10) kernel: mips: irq: use DECLARE_BITMAP.<br>
-11) kernel: mips: bmips: fix bmips_wr_vec().<br>
-12) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-13) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-14) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-15) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-16) kernel: mm: remove free_page_mlock.<br>
-17) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-18) kernel: net: udp: fix behavior of wrong checksums.<br>
+1) toolchain: update gcc to 04.06.2015 4.8.5 version form git, update headers.<br>
+2) mtd_write: blink system led at every erase/write flash access.<br>
+3) lldtd: fix wifi speeds for new devices.<br>
+4) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
+5) nvram: use not copy mode get by default (fix small memleak).<br>
+6) goahead: fix memory leak at wireless->basic page parse.<br>
+7) init.d: clanup led blink direct calls.<br>
+8) init.d: read sysled gpio from kernel config.<br>
+9) init.d: more early btn reset check start.<br>
+10) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+11) kernel: mips: irq: use DECLARE_BITMAP.<br>
+12) kernel: mips: bmips: fix bmips_wr_vec().<br>
+13) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+14) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+15) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+16) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+17) kernel: mm: remove free_page_mlock.<br>
+18) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+19) kernel: net: udp: fix behavior of wrong checksums.<br>
 <br>
 <br>
 <b>TODO:</b><br>
