@@ -1,3 +1,5 @@
+-include $(LINUX_CONFIG)
+
 ifndef CC
 CC=gcc
 endif
