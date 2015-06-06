@@ -28,7 +28,7 @@ void procps_free(cmdline_t *src)
 	while (src != NULL)
 	{
 		cmdline_t *next = src->next;
-		
+
 		if (src->argv!=NULL)
 			free(src->argv);
 		if (src->buffer!=NULL)
@@ -51,27 +51,27 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 	{
 		// First read fully file
 		size_t buf_pos = 0;
-		
+
 		while (!feof(fd))
 		{
 			size_t can_read = pcmdline->cap - buf_pos;
 			if (can_read==0) // Need to exend buffer ?
 			{
 				size_t newcap   = pcmdline->cap + CMDLINE_EXT;
-				
+
 				char *newbuf    = (char *)realloc(pcmdline->buffer, newcap);
 				if (newbuf == NULL) // cmdline_free has to free resouce
 				{
 					fclose(fd); // close file
 					return -errno;
 				}
-				
+
 				// Remember new buffer state
 				pcmdline->buffer= newbuf;
 				pcmdline->cap   = newcap;
 				can_read        = CMDLINE_EXT;
 			}
-			
+
 			// Now read data to buffer
 			size_t read = fread(&pcmdline->buffer[buf_pos], 1, can_read, fd);
 			if (read>0)
@@ -79,31 +79,31 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 			if (read<can_read) // File was read fully ?
 				break;
 		}
-		
+
 		pcmdline->size = buf_pos; // Store last success buffer position in cmd line state
-		
+
 		// Now we know size of read buffer, have to calculate number of arguments
 		size_t argc = 0;
 		for (i=0; i<buf_pos; i++)
 			if (pcmdline->buffer[i] == '\0')
 				argc++;
-		
+
 		// Number of arguments was calculated, check if need to resize
 		if (argc >= pcmdline->acap)
 		{
 			size_t newcap = argc + CMDLINE_AEXT - (argc % CMDLINE_AEXT); // Calculate new capacity
-			
+
 			char **new_argv = (char **)realloc(pcmdline->argv, (newcap*sizeof(char *))); // resize
 			if (new_argv == NULL) // cmdline_free has to free resouce
 			{
 				fclose(fd);
 				return -errno;
 			}
-			
+
 			pcmdline->argv  = new_argv;
 			pcmdline->acap  = newcap;
 		}
-		
+
 		// Now split arguments into separate pointers
 		char *cptr = pcmdline->buffer;
 		for (i=0; i<argc; )
@@ -121,11 +121,11 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 		// Store new number of arguments
 		pcmdline->argc = argc;
 		pcmdline->pid  = procnum;
-		
+
 		fclose(fd);
 		return 0;
 	}
-	
+
 	return -errno;
 }
 
@@ -143,7 +143,7 @@ int procps_find(const char *procname, size_t elems, pid_t *pids)
 	{
 		// Initialize process command line buffer
 		procps_init(&cmd_line);
-		
+
 		while ((dent=readdir(proc))!=NULL)
 		{
 			long procnum = readUnsigned(dent->d_name);
@@ -155,9 +155,9 @@ int procps_find(const char *procname, size_t elems, pid_t *pids)
 					closedir(proc);
 					return code;
 				}
-				
+
 				size_t plen = strlen(procname);
-				
+
 				// Now search all arguments
 				for (code=0; code<cmd_line.argc; code++)
 				{
@@ -181,9 +181,9 @@ int procps_find(const char *procname, size_t elems, pid_t *pids)
 				}
 			}
 		}
-		
+
 		procps_free(&cmd_line);
-		
+
 		closedir(proc);
 	}
 	return result;
@@ -201,7 +201,7 @@ cmdline_t *procps_list()
 	if (proc != NULL)
 	{
 		cmdline_t *cmdline = NULL;
-		
+
 		// Initialize process command line buffer
 		while ((dent = readdir(proc)) != NULL)
 		{
@@ -222,7 +222,7 @@ cmdline_t *procps_list()
 					cmdline->dynamic = 1;
 				}
 			}
-			
+
 			// Read process number
 			long procnum = readUnsigned(dent->d_name);
 			if (procnum >= 0) // Valid unsigned ?
@@ -237,11 +237,11 @@ cmdline_t *procps_list()
 				}
 			}
 		}
-		
+
 		// Free allocated cmdline if exists
 		if (cmdline != NULL)
 			procps_free(cmdline);
-		
+
 		closedir(proc);
 	}
 

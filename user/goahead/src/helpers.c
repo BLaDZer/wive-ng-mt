@@ -71,15 +71,6 @@ long readUnsigned(const char *str)
 	return result;
 }
 
-int checkFileExists(const char *fname)
-{
-	struct stat buf;
-	int stat_res = stat(fname, &buf);
-
-	// Return success if stat OK
-	return (stat_res == 0) ? 1 : 0;
-}
-
 void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 {
 	if (transaction)
@@ -121,36 +112,6 @@ char *catIndex(char *buf, const char *ptr, int index)
 	*p = '\0';
 
 	return buf;
-}
-
-void fetchIndexedParam(const char *buf, int index, char *retbuf)
-{
-	const char *p = buf;
-	const char *start = p;
-	int i;
-
-	// Search start
-	for (i=0; i<index; i++)
-	{
-		while (((*p) != '\0') && ((*p) != ';'))
-			p++;
-		if ((*p) == 0)
-		{
-			*retbuf = '\0';
-			return;
-		}
-		else
-			start = ++p;
-	}
-
-	// Search end
-	while (((*p) != '\0') && ((*p) != ';'))
-		p++;
-
-	// Copy data
-	while (start < p)
-		*(retbuf++) = *(start++);
-	*retbuf = '\0';
 }
 
 // String splitting tools

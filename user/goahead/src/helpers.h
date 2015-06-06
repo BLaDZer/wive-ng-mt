@@ -68,14 +68,9 @@ extern const char *replaceWords(const char *key, const replacement_t *table);
 extern const char *normalizeSize(long long *size);
 extern long readUnsigned(const char *str);
 
-extern int checkFileExists(const char *argv);
-
 // Set-up parameters in NVRAM
 extern void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction);
 extern char *catIndex(char *buf, const char *ptr, int index);
-
-// Get parameter index
-extern void fetchIndexedParam(const char *buf, int index, char *retbuf);
 
 // String splitting tools
 extern int initSplitter(string_split_t *buf);
