@@ -970,16 +970,17 @@
 8) init.d: clanup led blink direct calls.<br>
 9) init.d: read sysled gpio from kernel config.<br>
 10) init.d: more early btn reset check start.<br>
-11) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-12) kernel: mips: irq: use DECLARE_BITMAP.<br>
-13) kernel: mips: bmips: fix bmips_wr_vec().<br>
-14) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-15) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-16) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-17) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-18) kernel: mm: remove free_page_mlock.<br>
-19) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-20) kernel: net: udp: fix behavior of wrong checksums.<br>
+11) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
+12) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+13) kernel: mips: irq: use DECLARE_BITMAP.<br>
+14) kernel: mips: bmips: fix bmips_wr_vec().<br>
+15) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+16) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+17) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+18) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+19) kernel: mm: remove free_page_mlock.<br>
+20) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+21) kernel: net: udp: fix behavior of wrong checksums.<br>
 <br>
 <br>
 <b>TODO:</b><br>

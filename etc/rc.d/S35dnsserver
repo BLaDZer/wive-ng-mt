@@ -16,7 +16,7 @@ start() {
     if [ "$dnsPEnabled" = "1" ] && [ -f $cname ]; then
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
-	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" -f &
+	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
     fi
 }
 
