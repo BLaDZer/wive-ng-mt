@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include "webs.h"
 
-#define HTML_BUFFER_QUANTITY            1024
 #define SPLITTER_BUFFER_QUANTITY        1024
 #define SPLITTER_TOKEN_QUANTITY         32
 
@@ -34,19 +33,6 @@ typedef struct replacement_t
 	const char *value;
 } replacement_t;
 
-typedef struct html_buffer_t
-{
-	size_t  size;   // Buffer capacity
-	size_t  c_pos;  // Current buffer position
-	char   *data;   // Buffer data
-} html_buffer_t;
-
-typedef struct html_replacement_t
-{
-	char            token;
-	const char     *replacement;
-} html_replacement_t;
-
 typedef struct parameter_fetch_t
 {
 	const char *web_param;
@@ -64,7 +50,6 @@ typedef struct string_split_t
 	char  **items;
 } string_split_t;
 
-extern const char *replaceWords(const char *key, const replacement_t *table);
 extern const char *normalizeSize(long long *size);
 extern long readUnsigned(const char *str);
 

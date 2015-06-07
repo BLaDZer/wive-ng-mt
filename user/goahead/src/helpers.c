@@ -22,28 +22,6 @@ const char *normalSizes[] =
 	"ZB"
 };
 
-const html_replacement_t html_replacement[] =
-{
-	{ '<',          "&lt;"          },
-	{ '>',          "&gt;"          },
-	{ '"',          "&quot;"        },
-	{ '&',          "&amp;"         },
-	{ '\0',         NULL            }
-};
-
-// Make replacement by table, return NULL if no match
-const char *replaceWords(const char *key, const replacement_t *table)
-{
-	// Make replacement by table
-	for (; table->key != NULL; table++)
-	{
-		// Check if key matches
-		if (strcmp(key, table->key)==0)
-			return table->value;
-	}
-	return NULL;
-}
-
 // Normalize size
 const char *normalizeSize(long long *size)
 {
