@@ -3,6 +3,9 @@
 /* Cisco Discovery Protocol */
 #undef ENABLE_CDP
 
+/* Custom TLV support */
+#undef ENABLE_CUSTOM
+
 /* Dot1 extension (VLAN stuff) */
 #undef ENABLE_DOT1
 

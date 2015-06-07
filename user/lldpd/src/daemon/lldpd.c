@@ -169,6 +169,9 @@ lldpd_alloc_hardware(struct lldpd *cfg, char *name, int index)
 	TAILQ_INIT(&hardware->h_lport.p_ppvids);
 	TAILQ_INIT(&hardware->h_lport.p_pids);
 #endif
+#ifdef ENABLE_CUSTOM
+	TAILQ_INIT(&hardware->h_lport.p_custom_list);
+#endif
 
 	levent_hardware_init(hardware);
 	return hardware;
@@ -1636,8 +1639,10 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	if ((lchassis = (struct lldpd_chassis*)
 		calloc(1, sizeof(struct lldpd_chassis))) == NULL)
 		fatal("localchassis", NULL);
+	cfg->g_config.c_cap_advertise = 1;
 	lchassis->c_cap_available = LLDP_CAP_BRIDGE | LLDP_CAP_WLAN |
 	    LLDP_CAP_ROUTER | LLDP_CAP_STATION;
+	cfg->g_config.c_mgmt_advertise = 1;
 	TAILQ_INIT(&lchassis->c_mgmt);
 #ifdef ENABLE_LLDPMED
 	if (lldpmed > 0) {
@@ -1698,6 +1703,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	log_debug("main", "start main loop");
 	levent_loop(cfg);
 	lldpd_exit(cfg);
+	free(cfg);
 
 	return (0);
 }

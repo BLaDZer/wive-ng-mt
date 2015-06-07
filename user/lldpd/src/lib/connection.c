@@ -22,11 +22,10 @@
 #include <sys/un.h>
 
 #include "lldpctl.h"
-#include "private.h"
+#include "atom.h"
 #include "../compat/compat.h"
 #include "../ctl.h"
 #include "../log.h"
-#include "../lldpd-structs.h"
 
 const char*
 lldpctl_get_default_transport(void)
@@ -47,7 +46,7 @@ sync_send(lldpctl_conn_t *lldpctl,
     const uint8_t *data, size_t length, void *user_data)
 {
 	struct lldpctl_conn_sync_t *conn = user_data;
-	size_t nb;
+	ssize_t nb;
 
 	if (conn->fd == -1 &&
 	    ((conn->fd = sync_connect(lldpctl)) == -1)) {

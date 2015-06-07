@@ -27,7 +27,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_SUBST([CONFIGURE_ARGS], [$ac_configure_args])
 
 # Configure automake
-AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
 
@@ -67,24 +67,41 @@ DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN([lldpd], [doxygen.cfg], [doxygen])
 
 # Check some compiler flags
-AX_CFLAGS_GCC_OPTION([-fdiagnostics-show-option])
-AX_CFLAGS_GCC_OPTION([-fdiagnostics-color=auto])
-AX_CFLAGS_GCC_OPTION([-pipe])
-AX_CFLAGS_GCC_OPTION([-Wall])
-AX_CFLAGS_GCC_OPTION([-W])
-AX_CFLAGS_GCC_OPTION([-Wextra])
-AX_CFLAGS_GCC_OPTION([-Wformat])
-AX_CFLAGS_GCC_OPTION([-Wformat-security])
-AX_CFLAGS_GCC_OPTION([-Wfatal-errors])
-AX_CFLAGS_GCC_OPTION([-Wcast-align])
-AX_CFLAGS_GCC_OPTION([-Winline])
-AX_CFLAGS_GCC_OPTION([-fno-omit-frame-pointer])
-AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2], [CPPFLAGS])
-AX_CFLAGS_GCC_OPTION([-Wno-unused-parameter])
-AX_CFLAGS_GCC_OPTION([-Wno-missing-field-initializers])
-AX_CFLAGS_GCC_OPTION([-Wno-sign-compare]) dnl Should be fixed later
-AX_LDFLAGS_OPTION([-Wl,-z,relro])
-AX_LDFLAGS_OPTION([-Wl,-z,now])
+AX_CFLAGS_GCC_OPTION([-Wunknown-warning-option], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-fdiagnostics-show-option], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-fdiagnostics-color=auto], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-pipe], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wall], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-W], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wextra], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wformat], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wformat-security], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wfatal-errors], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wcast-align], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Winline], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-fno-omit-frame-pointer], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wno-unused-parameter], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wno-missing-field-initializers], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wno-sign-compare], [LLDP_CFLAGS]) dnl Should be fixed later
+AX_LDFLAGS_OPTION([-Wl,-z,relro], [LLDP_LDFLAGS])
+AX_LDFLAGS_OPTION([-Wl,-z,now], [LLDP_LDFLAGS])
+
+# Hardening
+AC_ARG_ENABLE([hardening],
+  [AS_HELP_STRING([--enable-hardening],
+    [Enable compiler and linker options to frustrate memory corruption exploits @<:@yes@:>@])],
+  [hardening="$enableval"],
+  [hardening="yes"])
+
+if test x"$hardening" != x"no"; then
+#  AX_CFLAGS_GCC_OPTION([-fstack-protector], [LLDP_CFLAGS])
+#  AX_CFLAGS_GCC_OPTION([-fstack-protector-all], [LLDP_CFLAGS])
+#  AX_CFLAGS_GCC_OPTION([-fstack-protector-strong], [LLDP_CFLAGS])
+  AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2], [LLDP_CPPFLAGS])
+  AX_CFLAGS_GCC_OPTION([-fPIE], [LLDP_CFLAGS])
+  AX_LDFLAGS_OPTION([-fPIE -pie], [LLDP_BIN_LDFLAGS],
+    [AX_LDFLAGS_OPTION([-fPIE -Wl,-pie], [LLDP_BIN_LDFLAGS])])
+fi
 
 # OS
 lldp_CHECK_OS
@@ -162,12 +179,12 @@ m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR],
 AC_ARG_WITH([readline],
   AS_HELP_STRING(
     [--with-readline],
-    [Enable the use of readline-like library @<:@default=check@:>@]),
+    [Enable the use of readline-like library @<:@default=auto@:>@]),
   [],
-  [with_readline=check])
+  [with_readline=auto])
 if test x"$with_readline" != x"no"; then
    AX_LIB_READLINE
-   if test x"$with_readline" != x"check"; then
+   if test x"$with_readline" != x"check" -a x"$with_readline" != x"auto"; then
      if test x"$ax_cv_lib_readline" = x"no"; then
        AC_MSG_FAILURE([*** no readline support found])
      fi
@@ -180,34 +197,40 @@ fi
 AC_ARG_WITH([snmp],
   AS_HELP_STRING(
     [--with-snmp],
-    [Enable the use of SNMP @<:@default=no@:>@]
-  ))
-if test x"$with_snmp" = x"yes"; then
+    [Enable the use of SNMP @<:@default=no@:>@]),
+  [],
+  [with_snmp=no])
    lldp_CHECK_SNMP
-fi
 
 # XML
 AC_ARG_WITH([xml],
   AS_HELP_STRING(
     [--with-xml],
-    [Enable XML output via libxml2 @<:@default=no@:>@]
-  ))
-if test x"$with_xml" = x"yes"; then
+    [Enable XML output via libxml2 @<:@default=auto@:>@]),
+  [],
+  [with_xml=auto])
    lldp_CHECK_XML2
-fi
 
 # JSON
 AC_ARG_WITH([json],
   AS_HELP_STRING(
     [--with-json],
-    [Enable JSON output via janson,json-c,no @<:@default=no@:>@]
-  ))
-if test x"$with_json" = x"yes"; then
-   with_json=jansson
-fi
-if test x"$with_json" = x"jansson"; then
+    [Enable JSON output via janson or json-c @<:@default=auto@:>@]),
+  [],
+  [with_json=auto])
+if test x"$with_json" = x"yes" -o x"$with_json" = x"auto"; then
+   _with_json="$with_json"
+   with_json=auto
    lldp_CHECK_JANSSON
-elif test x"$with_json" = x"json-c"; then
+   if test x"$with_json" = x"no"; then
+     with_json=auto
+     lldp_CHECK_JSONC
+fi
+   if test x"$with_json" = x"no" -a x"$_with_json" = x"yes"; then
+     AC_MSG_FAILURE([*** no JSON support found])
+   fi
+else
+   lldp_CHECK_JANSSON
    lldp_CHECK_JSONC
 fi
 
@@ -268,18 +291,17 @@ lldp_ARG_ENABLE([sonmp], [SynOptics Network Management Protocol], [yes])
 lldp_ARG_ENABLE([lldpmed], [LLDP-MED extension], [yes])
 lldp_ARG_ENABLE([dot1], [Dot1 extension (VLAN stuff)], [yes])
 lldp_ARG_ENABLE([dot3], [Dot3 extension (PHY stuff)], [yes])
+lldp_ARG_ENABLE([custom], [Custom TLV support], [yes])
 
 # Oldies
 lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.18], [no])
 
 #######################
 # Output results
-AC_SUBST([LLDP_CFLAGS], [$CFLAGS])
-AC_SUBST([LLDP_CPPFLAGS], [$CPPFLAGS])
-AC_SUBST([LLDP_LDFLAGS], [$LDFLAGS])
-CFLAGS=
-CPPFLAGS=
-LDFLAGS=
+AC_SUBST([LLDP_CFLAGS])
+AC_SUBST([LLDP_CPPFLAGS])
+AC_SUBST([LLDP_LDFLAGS])
+AC_SUBST([LLDP_BIN_LDFLAGS])
 AM_CONDITIONAL([HAVE_CHECK], [test x"$have_check" = x"yes"])
 AM_CONDITIONAL([USE_SNMP], [test x"$with_snmp" = x"yes"])
 AM_CONDITIONAL([USE_XML], [test x"$with_xml" = x"yes"])
@@ -297,8 +319,8 @@ cat <<EOF
  $PACKAGE_NAME version $PACKAGE_VERSION
   OS.............: $os
   Prefix.........: $prefix
-  C Compiler.....: $CC $LLDP_CFLAGS $LLDP_CPPFLAGS
-  Linker.........: $LD $LLDP_LDFLAGS $LIBS
+  C Compiler.....: $CC $LLDP_CFLAGS $LLDP_CPPFLAGS $CFLAGS $CPPFLAGS
+  Linker.........: $LD $LLDP_LDFLAGS $LLDP_BIN_LDFLAGS $LDFLAGS $LIBS
   Libevent.......: $libevent
   Readline.......: ${ax_cv_lib_readline}
  Optional features:
@@ -310,6 +332,7 @@ cat <<EOF
   LLDPMED........: $enable_lldpmed
   DOT1...........: $enable_dot1
   DOT3...........: $enable_dot3
+  CUSTOM.........: $enable_custom
   XML output.....: ${with_xml-no}
   JSON output....: ${with_json-no}
   Oldies support.: $enable_oldies

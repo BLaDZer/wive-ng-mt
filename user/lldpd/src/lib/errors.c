@@ -16,7 +16,7 @@
  */
 
 #include "lldpctl.h"
-#include "private.h"
+#include "atom.h"
 #include "../log.h"
 
 const char*
@@ -52,4 +52,10 @@ void
 lldpctl_log_callback(void (*cb)(int severity, const char *msg))
 {
 	log_register(cb);
+}
+
+void
+lldpctl_log_level(int level)
+{
+	log_level(level);
 }

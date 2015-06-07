@@ -176,14 +176,17 @@ liblldpd_la_DEPENDENCIES =  \
 	$(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la \
 	$(am__DEPENDENCIES_1)
-am__liblldpd_la_SOURCES_DIST = frame.h frame.c lldp.c lldp-tlv.h cdp.c \
-	cdp.h sonmp.c sonmp.h edp.c edp.h client.c priv.c privsep_io.c \
-	interfaces.c event.c lldpd.c pattern.c probes.d trace.h \
-	forward-linux.c interfaces-linux.c netlink.c dmi-linux.c \
-	priv-linux.c forward-bsd.c interfaces-bpf.c interfaces-bsd.c \
-	dmi-dummy.c priv-bsd.c dmi-freebsd.c dmi-openbsd.c dmi-osx.c \
+am__liblldpd_la_SOURCES_DIST = frame.h frame.c lldp-tlv.h client.c \
+	priv.c privsep_io.c interfaces.c event.c lldpd.c pattern.c \
+	probes.d trace.h protocols/lldp.c protocols/cdp.c \
+	protocols/cdp.h protocols/sonmp.c protocols/sonmp.h \
+	protocols/edp.c protocols/edp.h forward-linux.c \
+	interfaces-linux.c netlink.c dmi-linux.c priv-linux.c \
+	forward-bsd.c interfaces-bpf.c interfaces-bsd.c dmi-dummy.c \
+	priv-bsd.c dmi-freebsd.c dmi-openbsd.c dmi-osx.c \
 	forward-solaris.c interfaces-solaris.c agent.c agent_priv.c \
 	agent.h priv-seccomp.c
+am__dirstamp = $(am__leading_dot)dirstamp
 @HOST_OS_LINUX_TRUE@am__objects_1 = liblldpd_la-forward-linux.lo \
 @HOST_OS_LINUX_TRUE@	liblldpd_la-interfaces-linux.lo \
 @HOST_OS_LINUX_TRUE@	liblldpd_la-netlink.lo \
@@ -222,15 +225,15 @@ am__liblldpd_la_SOURCES_DIST = frame.h frame.c lldp.c lldp-tlv.h cdp.c \
 @USE_SNMP_TRUE@am__objects_8 = liblldpd_la-agent.lo \
 @USE_SNMP_TRUE@	liblldpd_la-agent_priv.lo
 @USE_SECCOMP_TRUE@am__objects_9 = liblldpd_la-priv-seccomp.lo
-am_liblldpd_la_OBJECTS = liblldpd_la-frame.lo liblldpd_la-lldp.lo \
-	liblldpd_la-cdp.lo liblldpd_la-sonmp.lo liblldpd_la-edp.lo \
-	liblldpd_la-client.lo liblldpd_la-priv.lo \
-	liblldpd_la-privsep_io.lo liblldpd_la-interfaces.lo \
-	liblldpd_la-event.lo liblldpd_la-lldpd.lo \
-	liblldpd_la-pattern.lo $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9)
+am_liblldpd_la_OBJECTS = liblldpd_la-frame.lo liblldpd_la-client.lo \
+	liblldpd_la-priv.lo liblldpd_la-privsep_io.lo \
+	liblldpd_la-interfaces.lo liblldpd_la-event.lo \
+	liblldpd_la-lldpd.lo liblldpd_la-pattern.lo \
+	protocols/liblldpd_la-lldp.lo protocols/liblldpd_la-cdp.lo \
+	protocols/liblldpd_la-sonmp.lo protocols/liblldpd_la-edp.lo \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9)
 am__objects_10 =
 nodist_liblldpd_la_OBJECTS = $(am__objects_10)
 liblldpd_la_OBJECTS = $(am_liblldpd_la_OBJECTS) \
@@ -250,6 +253,9 @@ am_lldpd_OBJECTS = main.$(OBJEXT)
 lldpd_OBJECTS = $(am_lldpd_OBJECTS)
 lldpd_DEPENDENCIES = liblldpd.la $(am__DEPENDENCIES_1) \
 	$(am__append_19)
+lldpd_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(lldpd_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -422,6 +428,7 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LLDPD_CTL_SOCKET = @LLDPD_CTL_SOCKET@
 LLDPD_PID_FILE = @LLDPD_PID_FILE@
+LLDP_BIN_LDFLAGS = @LLDP_BIN_LDFLAGS@
 LLDP_CFLAGS = @LLDP_CFLAGS@
 LLDP_CPPFLAGS = @LLDP_CPPFLAGS@
 LLDP_LDFLAGS = @LLDP_LDFLAGS@
@@ -535,12 +542,14 @@ CLEANFILES = $(am__append_12) $(am__append_18) $(TEMPLATES)
 man_MANS = lldpd.8
 noinst_LTLIBRARIES = liblldpd.la
 nodist_liblldpd_la_SOURCES = $(am__append_13)
-liblldpd_la_SOURCES = frame.h frame.c lldp.c lldp-tlv.h cdp.c cdp.h \
-	sonmp.c sonmp.h edp.c edp.h client.c priv.c privsep_io.c \
-	interfaces.c event.c lldpd.c pattern.c probes.d trace.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_14)
+liblldpd_la_SOURCES = frame.h frame.c lldp-tlv.h client.c priv.c \
+	privsep_io.c interfaces.c event.c lldpd.c pattern.c probes.d \
+	trace.h protocols/lldp.c protocols/cdp.c protocols/cdp.h \
+	protocols/sonmp.c protocols/sonmp.h protocols/edp.c \
+	protocols/edp.h $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_14)
 liblldpd_la_CFLAGS = $(AM_CFLAGS) @LIBEVENT_CFLAGS@ $(am__append_9) \
 	$(am__append_15)
 liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
@@ -551,6 +560,7 @@ liblldpd_la_LIBADD = $(top_builddir)/src/libcommon-daemon-client.la \
 @HOST_OS_OSX_TRUE@	Foundation -framework CoreFoundation \
 @HOST_OS_OSX_TRUE@	-framework IOKit -framework IOKit
 lldpd_SOURCES = main.c
+lldpd_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 lldpd_LDADD = liblldpd.la @LIBEVENT_LDFLAGS@ $(am__append_10) \
 	$(am__append_19)
 EXTRA_DIST = dtrace2systemtap.awk lldpd.8.in lldpd.service.in \
@@ -624,6 +634,20 @@ clean-noinstLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+protocols/$(am__dirstamp):
+	@$(MKDIR_P) protocols
+	@: > protocols/$(am__dirstamp)
+protocols/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) protocols/$(DEPDIR)
+	@: > protocols/$(DEPDIR)/$(am__dirstamp)
+protocols/liblldpd_la-lldp.lo: protocols/$(am__dirstamp) \
+	protocols/$(DEPDIR)/$(am__dirstamp)
+protocols/liblldpd_la-cdp.lo: protocols/$(am__dirstamp) \
+	protocols/$(DEPDIR)/$(am__dirstamp)
+protocols/liblldpd_la-sonmp.lo: protocols/$(am__dirstamp) \
+	protocols/$(DEPDIR)/$(am__dirstamp)
+protocols/liblldpd_la-edp.lo: protocols/$(am__dirstamp) \
+	protocols/$(DEPDIR)/$(am__dirstamp)
 
 liblldpd.la: $(liblldpd_la_OBJECTS) $(liblldpd_la_DEPENDENCIES) $(EXTRA_liblldpd_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(liblldpd_la_LINK)  $(liblldpd_la_OBJECTS) $(liblldpd_la_LIBADD) $(LIBS)
@@ -679,24 +703,24 @@ clean-sbinPROGRAMS:
 
 lldpd$(EXEEXT): $(lldpd_OBJECTS) $(lldpd_DEPENDENCIES) $(EXTRA_lldpd_DEPENDENCIES) 
 	@rm -f lldpd$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(lldpd_OBJECTS) $(lldpd_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(lldpd_LINK) $(lldpd_OBJECTS) $(lldpd_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f protocols/*.$(OBJEXT)
+	-rm -f protocols/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-agent.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-agent_priv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-cdp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-dmi-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-dmi-freebsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-dmi-linux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-dmi-openbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-dmi-osx.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-edp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-event.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-forward-bsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-forward-linux.Plo@am__quote@
@@ -707,7 +731,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-interfaces-linux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-interfaces-solaris.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-interfaces.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-lldp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-lldpd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-netlink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-pattern.Plo@am__quote@
@@ -716,26 +739,32 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-priv-seccomp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-priv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-privsep_io.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-sonmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@protocols/$(DEPDIR)/liblldpd_la-cdp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@protocols/$(DEPDIR)/liblldpd_la-edp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@protocols/$(DEPDIR)/liblldpd_la-lldp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@protocols/$(DEPDIR)/liblldpd_la-sonmp.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -746,34 +775,6 @@ liblldpd_la-frame.lo: frame.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='frame.c' object='liblldpd_la-frame.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-frame.lo `test -f 'frame.c' || echo '$(srcdir)/'`frame.c
-
-liblldpd_la-lldp.lo: lldp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-lldp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-lldp.Tpo -c -o liblldpd_la-lldp.lo `test -f 'lldp.c' || echo '$(srcdir)/'`lldp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-lldp.Tpo $(DEPDIR)/liblldpd_la-lldp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldp.c' object='liblldpd_la-lldp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-lldp.lo `test -f 'lldp.c' || echo '$(srcdir)/'`lldp.c
-
-liblldpd_la-cdp.lo: cdp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-cdp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-cdp.Tpo -c -o liblldpd_la-cdp.lo `test -f 'cdp.c' || echo '$(srcdir)/'`cdp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-cdp.Tpo $(DEPDIR)/liblldpd_la-cdp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cdp.c' object='liblldpd_la-cdp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-cdp.lo `test -f 'cdp.c' || echo '$(srcdir)/'`cdp.c
-
-liblldpd_la-sonmp.lo: sonmp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-sonmp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-sonmp.Tpo -c -o liblldpd_la-sonmp.lo `test -f 'sonmp.c' || echo '$(srcdir)/'`sonmp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-sonmp.Tpo $(DEPDIR)/liblldpd_la-sonmp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sonmp.c' object='liblldpd_la-sonmp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-sonmp.lo `test -f 'sonmp.c' || echo '$(srcdir)/'`sonmp.c
-
-liblldpd_la-edp.lo: edp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-edp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-edp.Tpo -c -o liblldpd_la-edp.lo `test -f 'edp.c' || echo '$(srcdir)/'`edp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-edp.Tpo $(DEPDIR)/liblldpd_la-edp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='edp.c' object='liblldpd_la-edp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-edp.lo `test -f 'edp.c' || echo '$(srcdir)/'`edp.c
 
 liblldpd_la-client.lo: client.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-client.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-client.Tpo -c -o liblldpd_la-client.lo `test -f 'client.c' || echo '$(srcdir)/'`client.c
@@ -823,6 +824,34 @@ liblldpd_la-pattern.lo: pattern.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pattern.c' object='liblldpd_la-pattern.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-pattern.lo `test -f 'pattern.c' || echo '$(srcdir)/'`pattern.c
+
+protocols/liblldpd_la-lldp.lo: protocols/lldp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT protocols/liblldpd_la-lldp.lo -MD -MP -MF protocols/$(DEPDIR)/liblldpd_la-lldp.Tpo -c -o protocols/liblldpd_la-lldp.lo `test -f 'protocols/lldp.c' || echo '$(srcdir)/'`protocols/lldp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) protocols/$(DEPDIR)/liblldpd_la-lldp.Tpo protocols/$(DEPDIR)/liblldpd_la-lldp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='protocols/lldp.c' object='protocols/liblldpd_la-lldp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o protocols/liblldpd_la-lldp.lo `test -f 'protocols/lldp.c' || echo '$(srcdir)/'`protocols/lldp.c
+
+protocols/liblldpd_la-cdp.lo: protocols/cdp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT protocols/liblldpd_la-cdp.lo -MD -MP -MF protocols/$(DEPDIR)/liblldpd_la-cdp.Tpo -c -o protocols/liblldpd_la-cdp.lo `test -f 'protocols/cdp.c' || echo '$(srcdir)/'`protocols/cdp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) protocols/$(DEPDIR)/liblldpd_la-cdp.Tpo protocols/$(DEPDIR)/liblldpd_la-cdp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='protocols/cdp.c' object='protocols/liblldpd_la-cdp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o protocols/liblldpd_la-cdp.lo `test -f 'protocols/cdp.c' || echo '$(srcdir)/'`protocols/cdp.c
+
+protocols/liblldpd_la-sonmp.lo: protocols/sonmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT protocols/liblldpd_la-sonmp.lo -MD -MP -MF protocols/$(DEPDIR)/liblldpd_la-sonmp.Tpo -c -o protocols/liblldpd_la-sonmp.lo `test -f 'protocols/sonmp.c' || echo '$(srcdir)/'`protocols/sonmp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) protocols/$(DEPDIR)/liblldpd_la-sonmp.Tpo protocols/$(DEPDIR)/liblldpd_la-sonmp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='protocols/sonmp.c' object='protocols/liblldpd_la-sonmp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o protocols/liblldpd_la-sonmp.lo `test -f 'protocols/sonmp.c' || echo '$(srcdir)/'`protocols/sonmp.c
+
+protocols/liblldpd_la-edp.lo: protocols/edp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT protocols/liblldpd_la-edp.lo -MD -MP -MF protocols/$(DEPDIR)/liblldpd_la-edp.Tpo -c -o protocols/liblldpd_la-edp.lo `test -f 'protocols/edp.c' || echo '$(srcdir)/'`protocols/edp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) protocols/$(DEPDIR)/liblldpd_la-edp.Tpo protocols/$(DEPDIR)/liblldpd_la-edp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='protocols/edp.c' object='protocols/liblldpd_la-edp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o protocols/liblldpd_la-edp.lo `test -f 'protocols/edp.c' || echo '$(srcdir)/'`protocols/edp.c
 
 liblldpd_la-forward-linux.lo: forward-linux.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-forward-linux.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-forward-linux.Tpo -c -o liblldpd_la-forward-linux.lo `test -f 'forward-linux.c' || echo '$(srcdir)/'`forward-linux.c
@@ -955,6 +984,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf protocols/.libs protocols/_libs
 install-man8: $(man_MANS)
 	@$(NORMAL_INSTALL)
 	@list1=''; \
@@ -1180,6 +1210,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f protocols/$(DEPDIR)/$(am__dirstamp)
+	-rm -f protocols/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1191,7 +1223,7 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	clean-sbinPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) protocols/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1238,7 +1270,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) protocols/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

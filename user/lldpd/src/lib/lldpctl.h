@@ -257,6 +257,17 @@ int lldpctl_release(lldpctl_conn_t *conn);
 void lldpctl_log_callback(void (*cb)(int severity, const char *msg));
 
 /**
+ * Setup log level.
+ *
+ * By default, liblldpctl will only log warnings. The following function allows
+ * to increase verbosity. This function has no effect if callbacks are
+ * registered with the previous function.
+ *
+ * @param level    Level of verbosity (1 = warnings, 2 = info, 3 = debug).
+ */
+void lldpctl_log_level(int level);
+
+/**
  * Possible error codes for functions that return negative integers on
  * this purpose or for @c lldpctl_last_error().
  */
@@ -612,6 +623,8 @@ typedef enum {
 	lldpctl_k_config_fast_start_interval, /**< `(I,WO)` Start fast transmit interval */
 	lldpctl_k_config_ifdescr_update, /**< `(I,WO)` Enable or disable setting interface description */
 	lldpctl_k_config_iface_promisc,  /**< `(I,WO)` Enable or disable promiscuous mode on interfaces */
+	lldpctl_k_config_chassis_cap_advertise, /**< `(I,WO)` Enable or disable chassis capabilities advertisement */
+	lldpctl_k_config_chassis_mgmt_advertise, /**< `(I,WO)` Enable or disable management addresses advertisement */
 
 	lldpctl_k_interface_name = 1000, /**< `(S)` The interface name. */
 
@@ -727,6 +740,14 @@ typedef enum {
 	lldpctl_k_config_tx_hold, /**< `(I,WO)` Transmit hold interval. */
 	lldpctl_k_config_bond_slave_src_mac_type, /**< `(I,WO)` bond slave src mac type. */
 	lldpctl_k_config_lldp_portid_type, /**< `(I,WO)` LLDP PortID TLV Subtype */
+
+	lldpctl_k_custom_tlvs = 5000,		/**< `(AL)` custom TLVs */
+	lldpctl_k_custom_tlvs_clear,		/** `(I,WO)` clear list of custom TLVs */
+	lldpctl_k_custom_tlv,			/** `(AL,WO)` custom TLV **/
+	lldpctl_k_custom_tlv_oui,		/**< `(I,WO)` custom TLV Organizationally Unique Identifier. Default is 0 (3 bytes) */
+	lldpctl_k_custom_tlv_oui_subtype,	/**< `(I,WO)` custom TLV subtype. Default is 0 (1 byte) */
+	lldpctl_k_custom_tlv_oui_info_string,	/**< `(I,WO)` custom TLV Organizationally Unique Identifier Information String (up to 507 bytes) */
+
 } lldpctl_key_t;
 
 /**

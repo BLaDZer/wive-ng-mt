@@ -41,7 +41,7 @@ struct timeval test_starttime = { .tv_sec = 100, .tv_usec = 0 };
 /* First chassis */
 struct lldpd_mgmt mgmt1 = {
 		.m_family = LLDPD_AF_IPV4,
-		.m_addr = { .inet = { 251789504 } }, /* 192.0.2.15 */
+		.m_addr = { .octets = { 0xc0, 0, 0x2, 0xf } }, /* 192.0.2.15 */
 		.m_addrsize = sizeof(struct in_addr),
 		.m_iface = 3
 };
@@ -73,7 +73,7 @@ struct lldpd_chassis chassis1 = {
 /* Second chassis */
 struct lldpd_mgmt mgmt2 = {
 		.m_family = LLDPD_AF_IPV4,
-		.m_addr = { .inet = { 285343936 } }, /* 192.0.2.17 */
+		.m_addr = { .octets = { 0xc0, 0, 0x2, 0x11 } }, /* 192.0.2.17 */
 		.m_addrsize = sizeof(struct in_addr),
 		.m_iface = 5
 };
@@ -277,7 +277,7 @@ struct lldpd_pi pi88cc = {
 	.p_pi_len = 2,
 };
 struct lldpd_pi pi888e01 = {
-	.p_pi = "\x88\x8e\e01",
+	.p_pi = "\x88\x8e\x01",
 	.p_pi_len = 3,
 };
 #endif
@@ -342,7 +342,7 @@ snmp_oidrepr(oid *name, size_t namelen)
 {
 	static char *buffer[4] = {NULL, NULL, NULL, NULL};
 	static int current = 0;
-	int i;
+	size_t i;
 
 	current = (current + 1)%4;
 	free(buffer[current]); buffer[current] = NULL;
@@ -816,10 +816,10 @@ struct tree_node snmp_tree[] = {
 	{ { 1, 5, 32962, 1, 2, 3, 1, 2, 3, 1449}, 10, ASN_OCTET_STR,
 	  { .string = { .octet = "VLAN #1449", .len = 10 }} },
 	/* lldpXdot1LocProtocolId */
-	{ { 1, 5, 32962, 1, 2, 4, 1, 2, 3, 13175}, 10, ASN_OCTET_STR,
+	{ { 1, 5, 32962, 1, 2, 4, 1, 2, 3, 30321}, 10, ASN_OCTET_STR,
+	  { .string = { .octet = "\x88\x8e\x01", .len = 3 } }},
+	{ { 1, 5, 32962, 1, 2, 4, 1, 2, 3, 30515}, 10, ASN_OCTET_STR,
 	  { .string = { .octet = "\x88\xcc", .len = 2 } }},
-	{ { 1, 5, 32962, 1, 2, 4, 1, 2, 3, 29020}, 10, ASN_OCTET_STR,
-	  { .string = { .octet = "\x88\x8e\e01", .len = 3 } }},
 
 	/* lldpXdot1RemPortVlanId */
 	{ { 1, 5, 32962, 1, 3, 1, 1, 1, 0, 3, 1}, 11, ASN_INTEGER, { .integer = 0 }},
@@ -839,10 +839,10 @@ struct tree_node snmp_tree[] = {
 	{ { 1, 5, 32962, 1, 3, 3, 1, 2, 10000, 4, 1, 1449}, 12, ASN_OCTET_STR,
 	  { .string = { .octet = "VLAN #1449", .len = 10 }} },
 	/* lldpXdot1RemProtocolId */
-	{ { 1, 5, 32962, 1, 3, 4, 1, 2, 10000, 4, 1, 13175}, 12, ASN_OCTET_STR,
-	  { .string = { .octet = "\x88\xcc", .len = 2 } }},
-	{ { 1, 5, 32962, 1, 3, 4, 1, 2, 10000, 4, 1, 29020}, 12, ASN_OCTET_STR,
-	  { .string = { .octet = "\x88\x8e\e01", .len = 3 } }},
+	{ { 1, 5, 32962, 1, 3, 4, 1, 2, 10000, 4, 1, 30321}, 12, ASN_OCTET_STR,
+	  { .string = { .octet = "\x88\x8e\x01", .len = 3 } }},
+	{ { 1, 5, 32962, 1, 3, 4, 1, 2, 10000, 4, 1, 30515}, 12, ASN_OCTET_STR,
+	  { .string = { .octet = "\x88\xcc", .len = 2 } }}
 #endif
 };
 
@@ -854,7 +854,7 @@ tohex(char *str, size_t len)
 	free(hex[which]); hex[which] = NULL;
 	hex[which] = malloc(len * 3 + 1);
 	fail_unless(hex[which] != NULL, "Not enough memory?");
-	for (int i = 0; i < len; i++)
+	for (size_t i = 0; i < len; i++)
 		snprintf(hex[which] + 3*i, 4, "%02X ", (unsigned char)str[i]);
 	which = 1 - which;
 	return hex[1 - which];
@@ -935,7 +935,7 @@ snmp_compare(struct tree_node *n,
 
 START_TEST (test_variable_order)
 {
-	int i;
+	size_t i;
 	for (i = 0; i < agent_lldp_vars_size() - 1; i++) {
 		fail_unless(snmp_oid_compare(agent_lldp_vars[i].name,
 					     agent_lldp_vars[i].namelen,
@@ -950,11 +950,11 @@ END_TEST
 
 START_TEST (test_get)
 {
-	int j;
+	size_t j;
 	for (j = 0;
 	     j < sizeof(snmp_tree)/sizeof(struct tree_node);
 	     j++) {
-		int             i;
+		size_t          i;
 		int             found = 0;
 		struct variable vp;
 		oid             target[MAX_OID_LEN];
@@ -994,12 +994,12 @@ END_TEST
 
 START_TEST (test_getnext)
 {
-	int j;
-	int end = sizeof(snmp_tree)/sizeof(struct tree_node);
+	size_t j;
+	size_t end = sizeof(snmp_tree)/sizeof(struct tree_node);
 	for (j = 0;
 	     j < end;
 	     j++) {
-		int             i;
+		size_t          i;
 		struct variable vp;
 		oid             target[MAX_OID_LEN];
 		size_t          targetlen;

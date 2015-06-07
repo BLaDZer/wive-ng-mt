@@ -317,7 +317,7 @@ option undoes the previous one.
 .Ed
 
 .Cd configure
-.Cd portidsubtype
+.Cd lldp portidsubtype
 .Cd ifname | macaddress | local Ar value Op Cd description Ar description
 .Bd -ragged -offset XXXXXX
 Force port ID subtype. By default,
@@ -352,6 +352,32 @@ Change transmit hold value to the specified value. This value is used
 to compute the TTL of transmitted packets which is the product of this
 value and of the transmit delay. The default value is 4 and therefore
 the default TTL is 120 seconds.
+.Ed
+
+.Cd configure
+.Cd lldp custom-tlv oui Ar oui
+.Cd subtype Ar subtype
+.Op Cd oui-info Ar content
+.Bd -ragged -offset XXXXXX
+Emit a custom TLV for OUI
+.Ar oui ,
+with subtype
+.Ar subtype
+and optionnaly with the bytes specified in
+.Ar content .
+Both
+.Ar oui
+and
+.Ar content
+should be a comma-separated list of bytes.
+.Ar oui
+must be exactly 3-byte long.
+.Ed
+
+.Cd unconfigure
+.Cd lldp custom-tlv
+.Bd -ragged -offset XXXXXX
+Remove any previously configured custom TLV.
 .Ed
 
 .Cd configure
@@ -511,7 +537,7 @@ script
 .El
 .Pp
 A valid use of this command is:
-.D1 configure ports eth1 med location address US street Qo Commercial Road Qc city Qo Roseville Qc
+.D1 configure ports eth1 med location address country US street Qo Commercial Road Qc city Qo Roseville Qc
 .Ed
 
 .Cd configure
@@ -739,8 +765,8 @@ and
 are expressed in milliwats.
 .Pp
 Here are two valid uses of this command:
-.D1 configure ports eth3 dot3 power pse supported enabled paircontrol powerpairs spare class 3
-.D1 configure dot3 power pd supported enabled powerpairs spare class 3 type 1 source pse priority low requested 10000 allocated 15000
+.D1 configure ports eth3 dot3 power pse supported enabled paircontrol powerpairs spare class class-3
+.D1 configure dot3 power pd supported enabled powerpairs spare class class-3 type 1 source pse priority low requested 10000 allocated 15000
 .Ed
 
 .Cd pause

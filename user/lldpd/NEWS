@@ -1,3 +1,14 @@
+lldpd (0.7.15)
+  * Features:
+    + Optional features can be configured with "auto" to autodetect if
+      they are usable. This is the default value for JSON and XML support.
+    + Ability to send and decode custom/unknown TLV. Thanks to Alexandru
+      Ardelean.
+  * Change:
+    + Modify checksum function. While this should be strictly
+      equivalent, if you notice CDP packets not accepted anymore, this
+      change is the first culprit.
+
 lldpd (0.7.14)
   * Features:
     + Shutdown LLPDU are sent on MSAP change and when lldpd exits.

@@ -143,8 +143,10 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 liblldpctl_la_DEPENDENCIES =  \
 	$(top_builddir)/src/libcommon-daemon-lib.la libfixedpoint.la
-am_liblldpctl_la_OBJECTS = errors.lo connection.lo atom.lo \
-	atom-private.lo
+am__dirstamp = $(am__leading_dot)dirstamp
+am_liblldpctl_la_OBJECTS = errors.lo connection.lo atom.lo helpers.lo \
+	atoms/config.lo atoms/dot1.lo atoms/dot3.lo atoms/interface.lo \
+	atoms/med.lo atoms/mgmt.lo atoms/port.lo atoms/custom.lo
 liblldpctl_la_OBJECTS = $(am_liblldpctl_la_OBJECTS)
 liblldpctl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -291,6 +293,7 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LLDPD_CTL_SOCKET = @LLDPD_CTL_SOCKET@
 LLDPD_PID_FILE = @LLDPD_PID_FILE@
+LLDP_BIN_LDFLAGS = @LLDP_BIN_LDFLAGS@
 LLDP_CFLAGS = @LLDP_CFLAGS@
 LLDP_CPPFLAGS = @LLDP_CPPFLAGS@
 LLDP_LDFLAGS = @LLDP_LDFLAGS@
@@ -403,9 +406,14 @@ lib_LTLIBRARIES = liblldpctl.la
 include_HEADERS = lldpctl.h
 noinst_LTLIBRARIES = libfixedpoint.la
 libfixedpoint_la_SOURCES = fixedpoint.h fixedpoint.c
-liblldpctl_la_SOURCES = lldpctl.h private.h errors.c connection.c atom.c atom-private.c
+liblldpctl_la_SOURCES = \
+	lldpctl.h atom.h errors.c connection.c atom.c helpers.c helpers.h \
+	atoms/config.c atoms/dot1.c atoms/dot3.c \
+	atoms/interface.c atoms/med.c atoms/mgmt.c atoms/port.c \
+	atoms/custom.c
+
 liblldpctl_la_LIBADD = $(top_builddir)/src/libcommon-daemon-lib.la libfixedpoint.la
-liblldpctl_la_LDFLAGS = $(AM_LDFLAGS) -export-symbols-regex '^lldpctl_' -version-info 9:0:5
+liblldpctl_la_LDFLAGS = $(AM_LDFLAGS) -export-symbols-regex '^lldpctl_' -version-info 10:0:6
 
 # -version-info format is `current`:`revision`:`age`. For more details, see:
 #   http://sources.redhat.com/autobook/autobook/autobook_91.html#SEC91
@@ -514,39 +522,67 @@ clean-noinstLTLIBRARIES:
 
 libfixedpoint.la: $(libfixedpoint_la_OBJECTS) $(libfixedpoint_la_DEPENDENCIES) $(EXTRA_libfixedpoint_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libfixedpoint_la_OBJECTS) $(libfixedpoint_la_LIBADD) $(LIBS)
+atoms/$(am__dirstamp):
+	@$(MKDIR_P) atoms
+	@: > atoms/$(am__dirstamp)
+atoms/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) atoms/$(DEPDIR)
+	@: > atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/config.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/dot1.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/dot3.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/interface.lo: atoms/$(am__dirstamp) \
+	atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/med.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/mgmt.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/port.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
+atoms/custom.lo: atoms/$(am__dirstamp) atoms/$(DEPDIR)/$(am__dirstamp)
 
 liblldpctl.la: $(liblldpctl_la_OBJECTS) $(liblldpctl_la_DEPENDENCIES) $(EXTRA_liblldpctl_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(liblldpctl_la_LINK) -rpath $(libdir) $(liblldpctl_la_OBJECTS) $(liblldpctl_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f atoms/*.$(OBJEXT)
+	-rm -f atoms/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/atom-private.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/atom.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/errors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fixedpoint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/config.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/custom.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/dot1.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/dot3.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/interface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/med.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/mgmt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@atoms/$(DEPDIR)/port.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -556,6 +592,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf atoms/.libs atoms/_libs
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgconfig_DATA)'; test -n "$(pkgconfigdir)" || list=; \
@@ -715,6 +752,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f atoms/$(DEPDIR)/$(am__dirstamp)
+	-rm -f atoms/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -725,7 +764,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) atoms/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -771,7 +810,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) atoms/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

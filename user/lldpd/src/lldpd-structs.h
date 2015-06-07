@@ -154,7 +154,7 @@ struct lldpd_mgmt {
 	union {
 		struct in_addr		inet;
 		struct in6_addr		inet6;
-		u_int8_t 			octets[LLDPD_MGMT_MAXADDRSIZE];
+		u_int8_t		octets[LLDPD_MGMT_MAXADDRSIZE]; /* network byte order! */
 	} m_addr;
 	size_t 			m_addrsize;
 	u_int32_t		m_iface;
@@ -214,6 +214,25 @@ MARSHAL_STR(lldpd_chassis, c_med_asset)
 #endif
 MARSHAL_END(lldpd_chassis);
 
+#ifdef ENABLE_CUSTOM
+/* Custom TLV struct as defined on page 35 of IEEE 802.1AB-2005 */
+struct lldpd_custom {
+	TAILQ_ENTRY(lldpd_custom)	next;	/* Pointer to next custom TLV */
+
+	/* Organizationally Unique Identifier */
+	u_int8_t		oui[LLDP_TLV_ORG_OUI_LEN];
+	/* Organizationally Defined Subtype */
+	u_int8_t		subtype;
+	/* Organizationally Defined Information String; for now/simplicity static array */
+	u_int8_t		*oui_info;
+	/* Organizationally Defined Information String length */
+	int			oui_info_len;
+};
+MARSHAL_BEGIN(lldpd_custom)
+MARSHAL_TQE(lldpd_custom, next)
+MARSHAL_FSTR(lldpd_custom, oui_info, oui_info_len)
+MARSHAL_END(lldpd_custom);
+#endif
 
 struct lldpd_port {
 	TAILQ_ENTRY(lldpd_port)	 p_entries;
@@ -253,6 +272,9 @@ struct lldpd_port {
 	TAILQ_HEAD(, lldpd_ppvid) p_ppvids;
 	TAILQ_HEAD(, lldpd_pi)	  p_pids;
 #endif
+#ifdef ENABLE_CUSTOM
+	TAILQ_HEAD(, lldpd_custom) p_custom_list;
+#endif
 };
 MARSHAL_BEGIN(lldpd_port)
 MARSHAL_TQE(lldpd_port, p_entries)
@@ -270,6 +292,9 @@ MARSHAL_SUBTQ(lldpd_port, lldpd_vlan, p_vlans)
 MARSHAL_SUBTQ(lldpd_port, lldpd_ppvid, p_ppvids)
 MARSHAL_SUBTQ(lldpd_port, lldpd_pi, p_pids)
 #endif
+#ifdef ENABLE_CUSTOM
+MARSHAL_SUBTQ(lldpd_port, lldpd_custom, p_custom_list)
+#endif
 MARSHAL_END(lldpd_port);
 
 /* Used to modify some port related settings */
@@ -285,6 +310,10 @@ struct lldpd_port_set {
 #ifdef ENABLE_DOT3
 	struct lldpd_dot3_power *dot3_power;
 #endif
+#ifdef ENABLE_CUSTOM
+	struct lldpd_custom     *custom;
+	int custom_list_clear;
+#endif
 };
 MARSHAL_BEGIN(lldpd_port_set)
 MARSHAL_STR(lldpd_port_set, ifname)
@@ -297,6 +326,9 @@ MARSHAL_POINTER(lldpd_port_set, lldpd_med_power,  med_power)
 #endif
 #ifdef ENABLE_DOT3
 MARSHAL_POINTER(lldpd_port_set, lldpd_dot3_power, dot3_power)
+#endif
+#ifdef ENABLE_CUSTOM
+MARSHAL_POINTER(lldpd_port_set, lldpd_custom,     custom)
 #endif
 MARSHAL_END(lldpd_port_set);
 
@@ -331,6 +363,8 @@ struct lldpd_config {
 	int c_advertise_version; /* Should the precise version be advertised? */
 	int c_set_ifdescr;	 /* Set interface description */
 	int c_promisc;		 /* Interfaces should be in promiscuous mode */
+	int c_cap_advertise;	 /* Chassis capabilities advertisement */
+	int c_mgmt_advertise;	 /* Management addresses advertisement */
 
 #ifdef ENABLE_LLDPMED
 	int c_noinventory;	/* Don't send inventory with LLDP-MED */
@@ -480,6 +514,9 @@ void	 lldpd_config_cleanup(struct lldpd_config *);
 void	 lldpd_ppvid_cleanup(struct lldpd_port *);
 void	 lldpd_vlan_cleanup(struct lldpd_port *);
 void	 lldpd_pi_cleanup(struct lldpd_port *);
+#endif
+#ifdef ENABLE_CUSTOM
+void     lldpd_custom_list_cleanup(struct lldpd_port *);
 #endif
 
 #endif

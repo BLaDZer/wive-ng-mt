@@ -1,6 +1,6 @@
 AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS)
 AM_CPPFLAGS = $(LLDP_CPPFLAGS)
-AM_LDFLAGS = $(LLDP_LDFLAGS)
+AM_LDFLAGS = $(LLDP_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 
 if HAVE_CHECK
 
@@ -46,5 +46,4 @@ check_PROGRAMS = $(TESTS)
 
 endif
 
-MOSTLYCLEANFILES = lldp_send_*.pcap cdp_send_*.pcap sonmp_send_*.pcap edp_send_*.pcap \
-	ifdump.txt
+MOSTLYCLEANFILES = lldp_send_*.pcap cdp_send_*.pcap sonmp_send_*.pcap edp_send_*.pcap
