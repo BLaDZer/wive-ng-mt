@@ -975,13 +975,14 @@
 13) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
 14) kernel: mips: irq: use DECLARE_BITMAP.<br>
 15) kernel: mips: bmips: fix bmips_wr_vec().<br>
-16) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-17) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-18) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-19) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-20) kernel: mm: remove free_page_mlock.<br>
-21) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-22) kernel: net: udp: fix behavior of wrong checksums.<br>
+16) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+17) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+18) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+19) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+20) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+21) kernel: mm: remove free_page_mlock.<br>
+22) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+23) kernel: net: udp: fix behavior of wrong checksums.<br>
 <br>
 <br>
 <b>TODO:</b><br>
