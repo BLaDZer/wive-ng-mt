@@ -983,6 +983,7 @@
 21) kernel: mm: remove free_page_mlock.<br>
 22) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
 23) kernel: net: udp: fix behavior of wrong checksums.<br>
+24) kernel: net: ipv6: fix protocol resubmission.<br>
 <br>
 <br>
 <b>TODO:</b><br>
