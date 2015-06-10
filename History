@@ -969,26 +969,27 @@
 7) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
 8) nvram: use not copy mode get by default (fix small memleak).<br>
 9) goahead: fix memory leak at wireless->basic page parse.<br>
-10) init.d: cleanup led blink direct calls.<br>
-11) init.d: read sysled gpio from kernel config.<br>
-12) init.d: more early btn reset check start.<br>
-13) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
-14) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
-15) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
-16) kernel: ralink wifi: 7610: add region 22 in a band.<br>
-17) kernel: ralink wifi: 7610: add check payload length in WEP/TKIP.<br>
-17) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
-18) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-19) kernel: mips: irq: use DECLARE_BITMAP.<br>
-20) kernel: mips: bmips: fix bmips_wr_vec().<br>
-21) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-22) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-23) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-24) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-25) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-26) kernel: mm: remove free_page_mlock.<br>
-27) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-28) kernel: net: udp: fix behavior of wrong checksums.<br>
+10) goahead: fix drop security settings after mode change.<br>
+11) init.d: cleanup led blink direct calls.<br>
+12) init.d: read sysled gpio from kernel config.<br>
+13) init.d: more early btn reset check start.<br>
+14) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
+15) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
+16) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
+17) kernel: ralink wifi: 7610: add region 22 in a band.<br>
+18) kernel: ralink wifi: 7610: add check payload length in WEP/TKIP.<br>
+19) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
+20) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+21) kernel: mips: irq: use DECLARE_BITMAP.<br>
+22) kernel: mips: bmips: fix bmips_wr_vec().<br>
+22) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+23) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+24) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+25) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+26) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+27) kernel: mm: remove free_page_mlock.<br>
+28) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+29) kernel: net: udp: fix behavior of wrong checksums.<br>
 <br>
 <br>
 <b>TODO:</b><br>
