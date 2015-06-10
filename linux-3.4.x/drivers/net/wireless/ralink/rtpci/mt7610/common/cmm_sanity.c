@@ -1724,13 +1724,16 @@ NDIS_802_11_NETWORK_TYPE NetworkTypeInUseSanity(
 		NetWorkType = Ndis802_11OFDM5;
 	}
 
-    if (pBss->HtCapabilityLen != 0)
-    {
-        if (NetWorkType == Ndis802_11OFDM5)
-            NetWorkType = Ndis802_11OFDM5_N;
-        else
-            NetWorkType = Ndis802_11OFDM24_N;
-    }
+	if (pBss->HtCapabilityLen != 0)
+	{
+		if (NetWorkType == Ndis802_11OFDM5) {
+			if (pBss->vht_cap_len != 0)
+				NetWorkType = Ndis802_11OFDM5_AC;
+			else
+				NetWorkType = Ndis802_11OFDM5_N;
+		} else
+			NetWorkType = Ndis802_11OFDM24_N;
+	}
 
 	return NetWorkType;
 }	

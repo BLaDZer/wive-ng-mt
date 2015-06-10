@@ -358,7 +358,7 @@ VOID ScanNextChannel(
 	UCHAR ScanType = pAd->MlmeAux.ScanType;
 	UINT ScanTimeIn5gChannel = SHORT_CHANNEL_TIME;
 	BOOLEAN ScanPending = FALSE;
-	RALINK_TIMER_STRUCT *sc_timer;
+	RALINK_TIMER_STRUCT *sc_timer = NULL;
 	UINT stay_time = 0;
 			
 
