@@ -1,6 +1,6 @@
-/* $Id: natpmp.c,v 1.18 2013/11/26 08:47:36 nanard Exp $ */
+/* $Id: natpmp.c,v 1.20 2015/05/27 12:43:15 nanard Exp $ */
 /* libnatpmp
-Copyright (c) 2007-2013, Thomas BERNARD
+Copyright (c) 2007-2015, Thomas BERNARD
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ LIBSPEC int initnatpmp(natpmp_t * p, int forcegw, in_addr_t forcedgw)
 #ifdef WIN32
 	u_long ioctlArg = 1;
 #else
-	int flags; 
+	int flags;
 #endif
 	struct sockaddr_in addr;
 	if(!p)
@@ -85,7 +85,7 @@ LIBSPEC int initnatpmp(natpmp_t * p, int forcegw, in_addr_t forcedgw)
 		if(getdefaultgateway(&(p->gateway)) < 0)
 			return NATPMP_ERR_CANNOTGETGATEWAY;
 	}
-	
+
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(NATPMP_PORT);
@@ -116,7 +116,7 @@ int sendpendingrequest(natpmp_t * p)
 	addr.sin_addr.s_addr = p->gateway;
 	r = (int)sendto(p->s, p->pending_request, p->pending_request_len, 0,
 	                   (struct sockaddr *)&addr, sizeof(addr));*/
-	r = (int)send(p->s, p->pending_request, p->pending_request_len, 0);
+	r = (int)send(p->s, (const char *)p->pending_request, p->pending_request_len, 0);
 	return (r<0) ? NATPMP_ERR_SENDERR : r;
 }
 
@@ -125,7 +125,7 @@ int sendnatpmprequest(natpmp_t * p)
 	int n;
 	if(!p)
 		return NATPMP_ERR_INVALIDARGS;
-	/* TODO : check if no request is allready pending */
+	/* TODO : check if no request is already pending */
 	p->has_pending_request = 1;
 	p->try_number = 1;
 	n = sendpendingrequest(p);
@@ -204,7 +204,7 @@ LIBSPEC int readnatpmpresponse(natpmp_t * p, natpmpresp_t * response)
 	int n;
 	if(!p)
 		return NATPMP_ERR_INVALIDARGS;
-	n = recvfrom(p->s, buf, sizeof(buf), 0,
+	n = recvfrom(p->s, (char *)buf, sizeof(buf), 0,
 	             (struct sockaddr *)&addr, &addrlen);
 	if(n<0)
 #ifdef WIN32

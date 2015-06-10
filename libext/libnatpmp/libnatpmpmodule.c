@@ -1,7 +1,7 @@
 /* $Id: libnatpmpmodule.c,v 1.7 2012/03/05 19:38:37 nanard Exp $ */
 /* libnatpmp
  * http://miniupnp.free.fr/libnatpmp.html
-Copyright (c) 2007-2011, Thomas BERNARD 
+Copyright (c) 2007-2011, Thomas BERNARD
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ typedef struct {
 
   /* Type-specific fields go here. */
   unsigned int discoverdelay;
-  
+
   natpmp_t natpmp;
 } NATPMPObject;
 
@@ -72,7 +72,7 @@ static PyObject *
 NATPMPObject_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
   NATPMPObject *self;
-  
+
   self = (NATPMPObject *)type->tp_alloc(type, 0);
   if (self) {
     initnatpmp(&self->natpmp, 0, 0);
@@ -95,16 +95,16 @@ NATPMP_externalipaddress(NATPMPObject *self)
   struct timeval timeout;
   fd_set fds;
   natpmpresp_t response;
-  
+
   r = sendpublicaddressrequest(&self->natpmp);
-  
+
   if (r < 0) {
 #ifdef ENABLE_STRNATPMPERR
     PyErr_SetString(PyExc_Exception, strnatpmperr(r));
 #endif
     return NULL;
   }
-    
+
   do {
     FD_ZERO(&fds);
     FD_SET(self->natpmp.s, &fds);
@@ -123,7 +123,7 @@ NATPMP_externalipaddress(NATPMPObject *self)
 }
 
 static PyObject *
-NATPMP_domapping(natpmp_t *n, unsigned short eport, unsigned short iport, 
+NATPMP_domapping(natpmp_t *n, unsigned short eport, unsigned short iport,
 		 const char *protocol, unsigned int lifetime)
 {
   int proto;
@@ -141,7 +141,7 @@ NATPMP_domapping(natpmp_t *n, unsigned short eport, unsigned short iport,
     return NULL;
   }
 
-  r = sendnewportmappingrequest(n, proto, iport, eport, 
+  r = sendnewportmappingrequest(n, proto, iport, eport,
 				lifetime);
 
   if (r < 0) {
@@ -150,7 +150,7 @@ NATPMP_domapping(natpmp_t *n, unsigned short eport, unsigned short iport,
 #endif
     return NULL;
   }
-  
+
   do {
     FD_ZERO(&fds);
     FD_SET(n->s, &fds);
@@ -181,7 +181,7 @@ NATPMP_addportmapping(NATPMPObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "HsHI", &eport, &protocol, &iport, &lifetime))
     return NULL;
-  
+
   return NATPMP_domapping(&self->natpmp, eport, iport, protocol, lifetime);
 }
 
@@ -196,7 +196,7 @@ NATPMP_deleteportmapping(NATPMPObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "HsH", &eport, &protocol, &iport))
     return NULL;
-  
+
   return NATPMP_domapping(&self->natpmp, eport, iport, protocol, 0);
 }
 
@@ -265,13 +265,13 @@ static PyMethodDef libnatpmp_methods[] = {
 #define PyMODINIT_FUNC void
 #endif
 PyMODINIT_FUNC
-initlibnatpmp(void) 
+initlibnatpmp(void)
 {
   PyObject* m;
-  
+
   if (PyType_Ready(&NATPMPType) < 0)
     return;
-  
+
   m = Py_InitModule3("libnatpmp", libnatpmp_methods,
 		     "libnatpmp module.");
 

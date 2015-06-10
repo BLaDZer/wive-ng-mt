@@ -963,27 +963,28 @@
 1) toolchain: update gcc to 04.06.2015 4.8.5 version form git, update headers.<br>
 2) lldpd: up to 0.7.15 version.<br>
 3) dnsmasq: up to 2.73rc9 version.<br>
-4) lldtd: fix wifi speeds for new devices.<br>
-5) mtd_write: blink system led at every erase/write flash access.<br>
-6) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
-7) nvram: use not copy mode get by default (fix small memleak).<br>
-8) goahead: fix memory leak at wireless->basic page parse.<br>
-9) init.d: clanup led blink direct calls.<br>
-10) init.d: read sysled gpio from kernel config.<br>
-11) init.d: more early btn reset check start.<br>
-12) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
-13) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-14) kernel: mips: irq: use DECLARE_BITMAP.<br>
-15) kernel: mips: bmips: fix bmips_wr_vec().<br>
-16) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-17) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-18) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-19) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-20) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-21) kernel: mm: remove free_page_mlock.<br>
-22) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-23) kernel: net: udp: fix behavior of wrong checksums.<br>
-24) kernel: net: ipv6: fix protocol resubmission.<br>
+4) libnatpmp: up to 20150609 version.<br>
+5) lldtd: fix wifi speeds for new devices.<br>
+6) mtd_write: blink system led at every erase/write flash access.<br>
+7) nvram: implement nvram_get_copy to copy get variable mode for use in nvram_renew.<br>
+8) nvram: use not copy mode get by default (fix small memleak).<br>
+9) goahead: fix memory leak at wireless->basic page parse.<br>
+10) init.d: clanup led blink direct calls.<br>
+11) init.d: read sysled gpio from kernel config.<br>
+12) init.d: more early btn reset check start.<br>
+13) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
+14) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+15) kernel: mips: irq: use DECLARE_BITMAP.<br>
+16) kernel: mips: bmips: fix bmips_wr_vec().<br>
+17) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+18) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+19) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+20) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+21) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+22) kernel: mm: remove free_page_mlock.<br>
+23) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+24) kernel: net: udp: fix behavior of wrong checksums.<br>
+25) kernel: net: ipv6: fix protocol resubmission.<br>
 <br>
 <br>
 <b>TODO:</b><br>

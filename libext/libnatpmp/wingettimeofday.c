@@ -42,7 +42,7 @@ typedef struct _FILETIME {
 } FILETIME;
 
 void __stdcall GetSystemTimeAsFileTime(FILETIME*);
-  
+
 int natpmp_gettimeofday(struct timeval* p, void* tz /* IGNORED */) {
   union {
    long long ns100; /*time since 1 Jan 1601 in 100ns units */

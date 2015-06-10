@@ -13,8 +13,8 @@
 		/* fix dynlib for OS X 10.9.2 and Apple LLVM version 5.0 */
 		#define LIBSPEC __attribute__ ((visibility ("default")))
 	#else
-	#define LIBSPEC
-#endif
+		#define LIBSPEC
+	#endif
 #endif
 
 #endif

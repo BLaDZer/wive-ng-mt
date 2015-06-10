@@ -1,6 +1,6 @@
 /* $Id: testgetgateway.c,v 1.7 2012/08/21 17:13:31 nanard Exp $ */
 /* libnatpmp
-Copyright (c) 2007-2011, Thomas BERNARD 
+Copyright (c) 2007-2011, Thomas BERNARD
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

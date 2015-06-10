@@ -1,6 +1,6 @@
 /* $Id: natpmpc.c,v 1.13 2012/08/21 17:23:38 nanard Exp $ */
 /* libnatpmp
-Copyright (c) 2007-2011, Thomas BERNARD 
+Copyright (c) 2007-2011, Thomas BERNARD
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -185,7 +185,7 @@ int main(int argc, char * * argv)
 			fprintf(stderr, "readnatpmpresponseorretry() failed : %s\n",
 			        strnatpmperr(r));
 #endif
-			fprintf(stderr, "  errno=%d '%s'\n", 
+			fprintf(stderr, "  errno=%d '%s'\n",
 			        sav_errno, strerror(sav_errno));
 		}
 	} while(r==NATPMP_TRYAGAIN);
@@ -222,7 +222,7 @@ int main(int argc, char * * argv)
 #endif
 			return 1;
 		}
-	
+
 		printf("Mapped public port %hu protocol %s to local port %hu "
 		       "liftime %u\n",
 	    	   response.pnu.newportmapping.mappedpublicport,
