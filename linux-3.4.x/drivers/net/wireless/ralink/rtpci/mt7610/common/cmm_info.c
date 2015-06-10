@@ -1590,15 +1590,15 @@ VOID RTMPSetPhyMode(
 			Or some 11n stations will not connect to us if we do not put
 			supported/extended rate element in beacon.
 		*/
+		case (WMODE_G):
 		case (WMODE_B | WMODE_G):
 		case (WMODE_A | WMODE_B | WMODE_G):
 #ifdef DOT11_N_SUPPORT
+		case (WMODE_GN):
 		case (WMODE_A | WMODE_B | WMODE_G | WMODE_GN | WMODE_AN):
 		case (WMODE_B | WMODE_G | WMODE_GN):
+		case (WMODE_G | WMODE_GN):
 #endif /* DOT11_N_SUPPORT */
-#ifdef DOT11_VHT_AC
-		case  (WMODE_B | WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC):
-#endif /* DOT11_VHT_AC */
 			pAd->CommonCfg.SupRate[0]  = 0x82;	  /* 1 mbps, in units of 0.5 Mbps, basic rate*/
 			pAd->CommonCfg.SupRate[1]  = 0x84;	  /* 2 mbps, in units of 0.5 Mbps, basic rate*/
 			pAd->CommonCfg.SupRate[2]  = 0x8B;	  /* 5.5 mbps, in units of 0.5 Mbps, basic rate*/
@@ -1628,18 +1628,14 @@ VOID RTMPSetPhyMode(
 			break;
 
 		case (WMODE_A):
-		case (WMODE_G):
 #ifdef DOT11_N_SUPPORT
 		case (WMODE_A | WMODE_AN):
 		case (WMODE_A | WMODE_G | WMODE_GN | WMODE_AN):
-		case (WMODE_G | WMODE_GN):
-		case (WMODE_GN):
 		case (WMODE_AN):
 #endif /* DOT11_N_SUPPORT */
 #ifdef DOT11_VHT_AC
 		case (WMODE_A | WMODE_AN | WMODE_AC):
 		case (WMODE_AN | WMODE_AC):
-		case (WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC):
 #endif /* DOT11_VHT_AC */
 			pAd->CommonCfg.SupRate[0]  = 0x8C;	  /* 6 mbps, in units of 0.5 Mbps, basic rate*/
 			pAd->CommonCfg.SupRate[1]  = 0x12;	  /* 9 mbps, in units of 0.5 Mbps*/
