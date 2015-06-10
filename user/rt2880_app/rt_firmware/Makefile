@@ -34,7 +34,7 @@ else
 	$(ROMFSINST) -S	defaults/default-2T2R-7620-7610					/etc/default/nvram_default
 endif
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
-	$(ROMFSINST) -S MT7610E-V10-FEM.bin						/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
+	$(ROMFSINST) -S MT7610E-V10-FEM-EXTPALNA.bin					/etc/Wireless/iNIC/MT7610E-V10-FEM.bin
 ifdef CONFIG_RALINK_MT7620
 ifeq ($(CONFIG_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S MT7620_7610_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
