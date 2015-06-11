@@ -19,43 +19,31 @@
 
 static unsigned long int prevTotal = 0, prevBusy = 0;
 
-void scale(char_t * strBuf, long long data)
+static void scale(char_t * strBuf, long long data)
 {
-double p1;
- 
-if (data > (unsigned long long)1099511627775)
-{
-  p1=(double)data / (double)1099511627776;
-  snprintf(strBuf, 32, "%.2f T", p1);
-}
-else
-{
-  if (data > (unsigned long long)1073741823)
-  {
-    p1=(double)data / (double)1073741824;
-    snprintf(strBuf, 32, "%.2f G", p1);
-  }
-  else
-  {
-    if (data > (unsigned long long)1048575)
-    {
-      p1=(double)data / (double)1048576;
-      snprintf(strBuf, 32, "%.2f M", p1);
+    double p1;
+
+    if (data > (unsigned long long)1099511627775) {
+	p1=(double)data / (double)1099511627776;
+	snprintf(strBuf, 32, "%.2f T", p1);
+    } else {
+	if (data > (unsigned long long)1073741823) {
+	    p1=(double)data / (double)1073741824;
+	    snprintf(strBuf, 32, "%.2f G", p1);
+	} else {
+	    if (data > (unsigned long long)1048575) {
+		p1=(double)data / (double)1048576;
+		snprintf(strBuf, 32, "%.2f M", p1);
+	    } else {
+		if (data > 1023) {
+		    p1=(double)data / (double)1024;
+		    snprintf(strBuf, 32, "%.2f k", p1);
+		} else {
+		    snprintf(strBuf, 32, "%lld", data);
+		}
+	    }
+	}
     }
-    else
-    {
-      if (data > 1023)
-      {
-        p1=(double)data / (double)1024;
-        snprintf(strBuf, 32, "%.2f k", p1);
-      }
-      else
-      {
-        snprintf(strBuf, 32, "%lld", data);
-      }
-    }
-  }
-}
 }
 
 /*
@@ -266,7 +254,7 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 }
 #endif
 
-char* getField(char *a_line, char *delim, int count)
+static char* getField(char *a_line, char *delim, int count)
 {
 	int i=0;
 	char *tok;
@@ -351,85 +339,7 @@ static long long getIfStatistic(char *interface, int type)
 	return -1;
 }
 
-/*
- *     getIfStatistic()   ASP version
- */
-int getIfStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
-{
-	int found_flag = 0;
-	int skip_line = 2;
-	char *interface, *type, *field, *semiColon = NULL;
-	char buf[1024], result[32];
-
-	FILE *fp = fopen(PROC_IF_STATISTIC, "r");
-	if(!fp)
-	{
-		websWrite(wp, T("no proc?\n"));
-		return -1;
-	}
-
-	if (ejArgs(argc, argv, T("%s %s"), &interface, &type) != 2)
-	{
-		websWrite(wp, T("Wrong argument.\n"));
-		fclose(fp);
-		return -1;
-	}
-
-	while (fgets(buf, 1024, fp))
-	{
-		char *ifname;
-		if (skip_line != 0)
-		{
-			skip_line--;
-			continue;
-		}
-		if (!(semiColon = strchr(buf, ':')))
-			continue;
-		*semiColon = '\0';
-		ifname = buf;
-		ifname = strip_space(ifname);
-
-		if(!strcmp(ifname, interface)){
-			found_flag = 1;
-			break;
-		}
-	}
-	fclose(fp);
-
-	semiColon++;
-
-	if(!strcmp(type, T("TXBYTE")  )){
-		if(  (field = getField(semiColon, " ", 8))  )
-        {
-			scale(result, strtoll(field, NULL, 10));
-			ejSetResult(eid, result);
-		}
-	}else if(!strcmp(type, T("TXPACKET")  )){
-		if(  (field = getField(semiColon, " ", 9))  )
-        {
-			snprintf(result, 32,"%lld",   strtoll(field, NULL, 10));
-			ejSetResult(eid, result);
-		}
-    }else if(!strcmp(type, T("RXBYTE")  )){
-		if(  (field = getField(semiColon, " ", 0))  )
-        {
-			scale(result, strtoll(field, NULL, 10));
-			ejSetResult(eid, result);
-		}
-    }else if(!strcmp(type, T("RXPACKET")  )){
-		if(  (field = getField(semiColon, " ", 1))  )
-        {
-			snprintf(result, 32,"%lld",   strtoll(field, NULL, 10));
-			ejSetResult(eid, result);
-		}
-    }else{
-		websWrite(wp, T("unknown type.") );
-		return -1;
-	}
-	return -1;
-}
-
-int getWANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getWANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getWanIfName(), RXBYTE);
@@ -438,7 +348,7 @@ int getWANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getWANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getWANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getWanIfName(), RXPACKET);
@@ -447,7 +357,7 @@ int getWANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getWANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getWANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getWanIfName(), TXBYTE);
@@ -456,7 +366,7 @@ int getWANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getWANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getWANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getWanIfName(), TXPACKET);
@@ -465,7 +375,7 @@ int getWANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getLANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getLANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getLanIfName(), RXBYTE);
@@ -474,7 +384,7 @@ int getLANRxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getLANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getLANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getLanIfName(), RXPACKET);
@@ -483,7 +393,7 @@ int getLANRxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getLANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getLANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getLanIfName(), TXBYTE);
@@ -492,7 +402,7 @@ int getLANTxByteASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getLANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getLANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t buf[32];
 	long long data = getIfStatistic(getLanIfName(), TXPACKET);
@@ -501,7 +411,7 @@ int getLANTxPacketASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024];
 	char tmp[1024];
@@ -603,7 +513,7 @@ int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 
-int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024], *semiColon, *key, *value;
 	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
@@ -632,7 +542,7 @@ int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024], *semiColon, *key, *value;
 	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
@@ -659,7 +569,7 @@ int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
+static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024], *value;
 	unsigned int i;

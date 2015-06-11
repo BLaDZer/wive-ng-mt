@@ -45,7 +45,6 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query);
 static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
 static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
-static void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
 static void AntennaDiversity(webs_t wp, char_t *path, char_t *query);
 static void getAntenna(webs_t wp, char_t *path, char_t *query);
@@ -393,7 +392,7 @@ static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
 	websWrite(wp, T("%s%d %s>%d%s%d%s"), 
 		"<option value=", idx+1, (idx+1 == channel)? "selected" : "", 2412+5*idx, "MHz (Channel ", idx+1, ")</option>");
 
- return websWrite(wp, T("<option value=14 %s>2484MHz (Channel 14)</option>\n"),(14 == channel)? "selected" : "");
+    return websWrite(wp, T("<option value=14 %s>2484MHz (Channel 14)</option>\n"),(14 == channel)? "selected" : "");
 }
 
 /*
@@ -630,63 +629,6 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 	return websWrite(wp, T("0"));
 #endif
 }
-
-typedef struct mbss_param_t
-{
-	char *name;
-	int is_comp;
-} mbss_param_t;
-
-//------------------------------------------------------------------------------
-	/* {{{ The parameters that support multiple BSSID is listed as followed,
-	   1.) SSID,                 char SSID[33];
-	   2.) AuthMode,             char AuthMode[14];
-	   3.) EncrypType,           char EncrypType[8];
-	   4.) WPAPSK,               char WPAPSK[65];
-	   5.) DefaultKeyID,         int  DefaultKeyID;
-	   6.) Key1Type,             int  Key1Type;
-	   7.) Key1Str,              char Key1Str[27];
-	   8.) Key2Type,             int  Key2Type;
-	   9.) Key2Str,              char Key2Str[27];
-	   10.) Key3Type,            int  Key3Type;
-	   11.) Key3Str,             char Key3Str[27];
-	   12.) Key4Type,            int  Key4Type;
-	   13.) Key4Str,             char Key4Str[27];
-	   14.) AccessPolicy,
-	   15.) AccessControlList,
-	   16.) NoForwarding,
-	   17.) IEEE8021X,           int  IEEE8021X;
-	   18.) TxRate,              int  TxRate;
-	   19.) HideSSID,            int  HideSSID;
-	   20.) PreAuth,             int  PreAuth;
-	                             int  SecurityMode;
-                             	 char VlanName[20];
-	                             int  VlanId;
-	                             int  VlanPriority;
-	}}} */
-//------------------------------------------------------------------------------
-
-const mbss_param_t mbss_params[] =
-{
-	{ "AuthMode", 1 },
-	{ "EncrypType", 1 },
-	{ "WPAPSK", 0 },
-	{ "DefaultKeyID", 1 },
-	{ "Key1Type", 1 },
-	{ "Key1Str", 0 },
-	{ "Key2Type", 1 },
-	{ "Key2Str", 0 },
-	{ "Key3Type", 1 },
-	{ "Key3Str", 0 },
-	{ "Key4Type", 1 },
-	{ "Key4Str", 0 },
-	{ "IEEE8021X", 1 },
-	{ "TxRate", 1 },
-	{ "PreAuth", 1 },
-	{ "RekeyInterval", 1 },
-	{ "RekeyMethod", 1 },
-	{ NULL, 0 }
-};
 
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
@@ -1333,7 +1275,7 @@ void restart8021XDaemon(int nvram)
 /* Load from Web */
 #define LFW(x, y) do{ if(! ( x = websGetVar(wp, T(#y), T("")))) return;	}while(0)
 
-void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
+static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	int num_ssid, i;
 	char *num_s = nvram_get(nvram, "BssidNum");
@@ -1409,7 +1351,7 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_USER_802_1X
-void updateFlash8021x(int nvram)
+static void updateFlash8021x(int nvram)
 {
 	char lan_if_addr[16];
 	char *RADIUS_Server;
@@ -1460,7 +1402,7 @@ out:
 }
 #endif
 
-int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
+static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 {
 	char_t *apselect, *newap_list;
 	char str[32];
@@ -1500,7 +1442,7 @@ int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 }
 
 #ifdef CONFIG_USER_802_1X
-void conf8021x(int nvram, webs_t wp, int mbssid)
+static void conf8021x(int nvram, webs_t wp, int mbssid)
 {
 	char_t *RadiusServerIP, *RadiusServerPort, *RadiusServerSecret, *RadiusServerSessionTimeout;//, *RadiusServerIdleTimeout;
 
@@ -1524,7 +1466,7 @@ void conf8021x(int nvram, webs_t wp, int mbssid)
 }
 #endif
 
-void confWEP(int nvram, webs_t wp, int mbssid)
+static void confWEP(int nvram, webs_t wp, int mbssid)
 {
 	char_t *DefaultKeyID, *Key1Type, *Key1Str, *Key2Type, *Key2Str, *Key3Type, *Key3Str, *Key4Type, *Key4Str;
 
@@ -1553,7 +1495,7 @@ void confWEP(int nvram, webs_t wp, int mbssid)
 	nvram_close(RT2860_NVRAM);
 }
 
-void confWPAGeneral(int nvram, webs_t wp, int mbssid)
+static void confWPAGeneral(int nvram, webs_t wp, int mbssid)
 {
 	char *cipher_str;
 	char *key_renewal_interval;
@@ -1584,7 +1526,7 @@ out:
 	return;
 }
 
-void clearRadiusSetting(int nvram, int mbssid)
+static void clearRadiusSetting(int nvram, int mbssid)
 {
 	char *RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
 
@@ -1603,7 +1545,7 @@ void clearRadiusSetting(int nvram, int mbssid)
 }
 
 
-void Security(int nvram, webs_t wp, char_t *path, char_t *query)
+static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	char_t *SSID;
 	int mbssid;
@@ -1744,7 +1686,6 @@ static void APSecurity(webs_t wp, char_t *path, char_t *query)
 {
 	Security(RT2860_NVRAM, wp, path, query);
 }
-
 
 static void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query)
 {
@@ -1888,7 +1829,7 @@ static int get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv)
     return 0;
 }
 
-void disconnectSta(webs_t wp, char_t *path, char_t *query)
+static void disconnectSta(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *mac = websGetVar(wp, T("disconnectSta"), "");
 	char_t *submitUrl;

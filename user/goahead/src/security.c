@@ -79,7 +79,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	if (accessLimit == NULL) {
 		return 0;
 	}
-		 
+
 /*
  *	Check to see if URL must be encrypted
  */

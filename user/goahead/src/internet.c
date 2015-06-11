@@ -171,7 +171,7 @@ void formDefineInternet(void) {
  * description: test the existence of interface through /proc/net/dev
  * return: -1 = fopen error, 1 = not found, 0 = found
  */
-int getIfLive(char *ifname)
+static int getIfLive(char *ifname)
 {
 	FILE *fp;
 	char buf[256], *p;
@@ -682,7 +682,7 @@ static int vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-void formVPNSetup(webs_t wp, char_t *path, char_t *query)
+static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 {
 	char_t  *vpn_enabled, *submitUrl, *vpn_type;
 
@@ -1286,7 +1286,7 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
  *
  */
 
-int findRoutingRule(char *rrs, char *buf, const char *dest, const char *netmask, const char* gw, const char *iface)
+static int findRoutingRule(char *rrs, char *buf, const char *dest, const char *netmask, const char* gw, const char *iface)
 {
 	char c_dest[32], c_netmask[32], c_iface[32], c_gw[32];
 	int index = 0;

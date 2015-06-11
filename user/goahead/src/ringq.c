@@ -427,7 +427,7 @@ int ringqPutBlkMax(ringq_t *rq)
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	
+
 	space = rq->buflen - RINGQ_LEN(rq) - 1;
 	in_a_line = rq->endbuf - rq->endp;
 
