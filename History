@@ -962,7 +962,7 @@
 <b>3.1.x</b><br>
 1) toolchain: update gcc to 04.06.2015 4.8.5 version form git, update headers.<br>
 2) lldpd: up to 0.7.15 version.<br>
-3) dnsmasq: up to 2.73rc9 version.<br>
+3) dnsmasq: up to 2.73rc10 version.<br>
 4) libnatpmp: up to 20150609 version.<br>
 5) lldtd: fix wifi speeds for new devices.<br>
 6) mtd_write: blink system led at every erase/write flash access.<br>
