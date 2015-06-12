@@ -987,14 +987,15 @@
 25) kernel: mips: bmips: fix bmips_wr_vec().<br>
 26) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
 27) kernel: mips: c-r4k: fix typo in probe_scache().<br>
-28) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-29) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-30) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-31) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-32) kernel: mm: remove free_page_mlock.<br>
-33) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-34) kernel: net: udp: fix behavior of wrong checksums.<br>
-35) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+28) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
+29) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+30) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+31) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+32) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+33) kernel: mm: remove free_page_mlock.<br>
+34) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+35) kernel: net: udp: fix behavior of wrong checksums.<br>
+36) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>
