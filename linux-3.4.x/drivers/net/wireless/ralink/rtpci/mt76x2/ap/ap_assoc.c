@@ -58,20 +58,19 @@ static void ap_assoc_info_debugshow(
 			WMODE_CAP_N(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14))
 		{
-			printk("%s - VHT STA", sAssoc);
+			printk("%s - VHT STA\n", sAssoc);
 			assoc_vht_info_debugshow(pAd, pEntry, &ie_list->vht_cap, NULL);
 		}
 #endif /* DOT11_VHT_AC */
 
 
-		DBGPRINT(RT_DEBUG_TRACE, ("\tExt Cap Info: \n"));
+		printk("\tExt Cap Info: \n");
 #ifdef DOT11N_DRAFT3
 		DBGPRINT(RT_DEBUG_TRACE, ("\t\tBss2040CoexistMgmt=%d\n",
 				pEntry->BSS2040CoexistenceMgmtSupport));
 #endif /* DOT11N_DRAFT3 */
 #ifdef DOT11_VHT_AC
-		DBGPRINT(RT_DEBUG_TRACE, ("\t\tOperatinModeNotification(%d)\n",
-				pEntry->ext_cap.operating_mode_notification));
+		printk("\t\tOperatinModeNotification(%d)\n", pEntry->ext_cap.operating_mode_notification);
 		if (pEntry->ext_cap.operating_mode_notification) {
 			printk("\t\t\tChannelWidth(%d), RxNss(%d), RxNssType(%d), ForceOpMode(%d)\n",
 					pEntry->operating_mode.ch_width,

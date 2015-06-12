@@ -1799,12 +1799,12 @@ static void ap_assoc_info_debugshow(
 	{
 		assoc_ht_info_debugshow(pAd, pEntry, HTCapability_Len, pHTCapability);
 
-		DBGPRINT(RT_DEBUG_TRACE, ("%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n",
+		printk("%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n",
 					sAssoc,
 					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, 
 					pAd->MacTab.fAnyStationIsLegacy,
 					pAd->MacTab.fAnyStation20Only, 
-					pAd->MacTab.fAnyStationNonGF));
+					pAd->MacTab.fAnyStationNonGF);
 
 #ifdef DOT11N_DRAFT3
 		DBGPRINT(RT_DEBUG_TRACE, ("\tExt Cap Info: \n"));
@@ -1814,9 +1814,8 @@ static void ap_assoc_info_debugshow(
 	else
 #endif /* DOT11_N_SUPPORT */
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("%s - legacy STA\n", sAssoc));
-		DBGPRINT(RT_DEBUG_TRACE, ("\n%s - MODE=%d, MCS=%d\n", sAssoc,
-								pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS));
+		printk("%s - legacy STA\n", sAssoc);
+		printk("\n%s - MODE=%d, MCS=%d\n", sAssoc, pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS);
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("\tAuthMode=%d, WepStatus=%d, WpaState=%d, GroupKeyWepStatus=%d\n",

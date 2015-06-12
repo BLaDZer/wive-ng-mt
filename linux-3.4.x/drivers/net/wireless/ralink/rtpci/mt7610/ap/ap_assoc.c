@@ -59,7 +59,7 @@ static void ap_assoc_info_debugshow(
 			WMODE_CAP_N(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14))
 		{
-			printk("%s - VHT STA", sAssoc);
+			printk("%s - VHT STA\n", sAssoc);
 			assoc_vht_info_debugshow(pAd, pEntry, &ie_list->vht_cap, NULL);
 		}
 #endif /* DOT11_VHT_AC */
