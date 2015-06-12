@@ -975,9 +975,9 @@ VOID MlmeSelectTxRateTable(
 			{
 				if (pEntry->SupportVHTMCS[mcs_idx])
 				{
-					if (mcs_idx <= 7)
+					if (mcs_idx <= 9)
 						ss =1;
-					if (mcs_idx >= 8)
+					if (mcs_idx >= 10)
 						ss = 2;
 				}
 			}
