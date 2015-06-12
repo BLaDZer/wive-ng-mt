@@ -1548,7 +1548,7 @@ enum WIFI_MODE{
 #define DEFAULT_RF_TX_POWER         5
 #define DEFAULT_BBP_TX_FINE_POWER_CTRL 0
 
-#define MAX_INI_BUFFER_SIZE		8192
+#define MAX_INI_BUFFER_SIZE		10000
 #define MAX_PARAM_BUFFER_SIZE		(2048)	/* enough for ACL (18*64) */
 											/*18 : the length of Mac address acceptable format "01:02:03:04:05:06;") */
 											/*64 : MAX_NUM_OF_ACL_LIST */
