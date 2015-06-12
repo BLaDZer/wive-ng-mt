@@ -6434,11 +6434,13 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 			((FromWhichBSSID < MAX_MBSSID_NUM(pAd)) &&
 			(FromWhichBSSID < HW_BEACON_MAX_NUM) &&
 			(pAd->ApCfg.MBSSID[FromWhichBSSID].StaCount > 1)))
-			bDirectForward  = TRUE;
-
+			if (pAd->ApCfg.MBSSID[FromWhichBSSID].IsolateInterStaMBCast == 0)
+			{
+				bDirectForward  = TRUE;
+			}
 		/* tell caller to deliver the packet to upper layer */
 		bAnnounce = TRUE;
-	}		
+	}
 	else
 	{
 		/* if destinated STA is a associated wireless STA */

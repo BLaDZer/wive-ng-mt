@@ -3236,6 +3236,22 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) NoForwarding=%ld\n", i, pAd->ApCfg.MBSSID[i].IsolateInterStaTraffic));
 			    }
 			}
+			/*NoForwardingMBCast*/
+			if (RTMPGetKeyParameter("NoForwardingMBCast", tmpbuf, 32, pBuffer, TRUE))
+			{
+				for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
+				{
+					if (i >= pAd->ApCfg.BssidNum)
+						break;
+
+					if (simple_strtol(macptr, 0, 10) != 0)	//Enable
+						pAd->ApCfg.MBSSID[i].IsolateInterStaMBCast = TRUE;
+					else //Disable
+						pAd->ApCfg.MBSSID[i].IsolateInterStaMBCast = FALSE;
+
+					DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) NoForwardingMBCast=%d\n", i, pAd->ApCfg.MBSSID[i].IsolateInterStaMBCast));
+				}
+			}
 			/*NoForwardingBTNBSSID*/
 			if(RTMPGetKeyParameter("NoForwardingBTNBSSID", tmpbuf, 10, pBuffer, TRUE))
 			{

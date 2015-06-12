@@ -1358,6 +1358,7 @@ typedef struct _MULTISSID_STRUCT {
 	NDIS_802_11_PRIVACY_FILTER PrivacyFilter;
 	UCHAR BANClass3Data;
 	ULONG IsolateInterStaTraffic;
+	UCHAR IsolateInterStaMBCast;
 
 	UCHAR RSNIE_Len[2];
 	UCHAR RSN_IE[2][MAX_LEN_OF_RSNIE];
