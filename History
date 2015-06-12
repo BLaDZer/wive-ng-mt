@@ -981,18 +981,19 @@
 19) kernel: ralink wifi: 7610: add check payload length in WEP/TKIP.<br>
 20) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
 21) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
-22) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-23) kernel: mips: irq: use DECLARE_BITMAP.<br>
-24) kernel: mips: bmips: fix bmips_wr_vec().<br>
-25) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-26) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-27) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-28) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-29) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-30) kernel: mm: remove free_page_mlock.<br>
-31) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-32) kernel: net: udp: fix behavior of wrong checksums.<br>
-33) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+22) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
+23) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+24) kernel: mips: irq: use DECLARE_BITMAP.<br>
+25) kernel: mips: bmips: fix bmips_wr_vec().<br>
+26) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+27) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+28) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+29) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+30) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+31) kernel: mm: remove free_page_mlock.<br>
+32) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+33) kernel: net: udp: fix behavior of wrong checksums.<br>
+34) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>

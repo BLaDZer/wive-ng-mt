@@ -328,6 +328,12 @@ static USHORT update_associated_mac_entry(
 	{
 		pAd->MacTab.fAnyStationIsLegacy = TRUE;
 		NdisZeroMemory(&pEntry->HTCapability, sizeof(HT_CAPABILITY_IE));
+#ifdef DOT11_VHT_AC
+		// TODO: shiang-usw, it's ugly and need to revise it
+		NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
+		NdisZeroMemory(&pEntry->SupportVHTMCS, sizeof(pEntry->SupportVHTMCS));
+		pEntry->SupportRateMode &= (~SUPPORT_VHT_MODE);
+#endif /* DOT11_VHT_AC */
 	}
 #endif /* DOT11_N_SUPPORT */
 
@@ -366,11 +372,12 @@ static USHORT update_associated_mac_entry(
 	if (wdev->bAutoTxRateSwitch == TRUE)
 	{
 		UCHAR TableSize = 0;
-		
+
+		pEntry->bAutoTxRateSwitch = TRUE;
+
 		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 		MlmeNewTxRate(pAd, pEntry);
 
-		pEntry->bAutoTxRateSwitch = TRUE;
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 		if (! ADAPT_RATE_TABLE(pEntry->pTable))
