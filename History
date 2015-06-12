@@ -978,7 +978,7 @@
 16) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
 17) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
 18) kernel: ralink wifi: 7610: add region 22 in a band.<br>
-19) kernel: ralink wifi: 7610: add check payload length in WEP/TKIP.<br>
+19) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
 20) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
 21) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
 22) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
