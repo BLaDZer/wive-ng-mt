@@ -998,9 +998,10 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~90%).<br>
-2) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-3) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-4) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+2) need add in wireless->basic->SSID Settings NoForwardingMBCast option (only 76x2 driver, this option isolate client2client BCAST traffic).<br>
+3) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+4) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+5) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>

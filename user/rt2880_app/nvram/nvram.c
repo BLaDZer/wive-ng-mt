@@ -352,6 +352,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(DLSCapable);
 		FPRINT_STR(NoForwarding);
 		FPRINT_NUM(NoForwardingBTNBSSID);
+		FPRINT_NUM(NoForwardingMBCast);
 		FPRINT_STR(StationKeepAlive);
 		FPRINT_STR(HideSSID);
 		FPRINT_NUM(ShortSlot);

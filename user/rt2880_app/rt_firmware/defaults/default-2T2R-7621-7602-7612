@@ -190,6 +190,7 @@ offloadMode=3
 nat_mode=0
 NoForwarding=0;
 NoForwardingBTNBSSID=0
+NoForwardingMBCast=0
 NTPEnabled=off
 NTPServerIP=ru.pool.ntp.org
 OperationMode=1
