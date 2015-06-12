@@ -3304,6 +3304,9 @@ VOID detect_wmm_traffic(
 	IN	UCHAR			UserPriority,
 	IN	UCHAR			FlgIsOutput)
 {
+	if (pAd == NULL)
+		return;
+
 	/* For BE & BK case and TxBurst function is disabled */
 	if ((pAd->CommonCfg.bEnableTxBurst == FALSE) 
 #ifdef DOT11_N_SUPPORT
