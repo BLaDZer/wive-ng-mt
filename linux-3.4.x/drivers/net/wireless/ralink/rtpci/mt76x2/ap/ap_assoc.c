@@ -83,7 +83,7 @@ static void ap_assoc_info_debugshow(
 	else
 #endif /* DOT11_N_SUPPORT */
 	{
-		printk("%s - legacy STA - MODE=%d, MCS=%d\n", sAssoc, pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS);
+		printk("Legacy STA %s - MODE=%d, MCS=%d\n", sAssoc, pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS);
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("\tAuthMode=%d, WepStatus=%d, WpaState=%d, GroupKeyWepStatus=%d\n",
