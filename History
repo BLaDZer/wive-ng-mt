@@ -990,6 +990,7 @@
 27) kernel: mm: remove free_page_mlock.<br>
 28) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
 29) kernel: net: udp: fix behavior of wrong checksums.<br>
+30) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>
