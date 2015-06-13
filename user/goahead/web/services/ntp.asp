@@ -39,13 +39,13 @@ function initValue()
 {
 	var tz = "<% getCfgGeneral(1, "TZ"); %>";
 	var dateb = "<% getDATEBuilt(); %>";
-	var ena = "<% getCfgGeneral(1, "NTPEnabled"); %>";
+	var ena = '<% getCfgGeneral(1, "NTPEnabled"); %>';
 	var form = document.NTP;
 	var cTime = new Date();
 
 	initTranslation();
 
-  form.ntp_enabled.options.selectedIndex = (ena == "on") ? 1 : 0;
+  form.ntp_enabled.options.selectedIndex = 1*ena;
   
 	if (dateb == "1")
 	{

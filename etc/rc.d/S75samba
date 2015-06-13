@@ -84,7 +84,7 @@ get_param() {
     CONFIG="/etc/smb.conf"
     TEMPLATE="/etc/smb.conf.template"
 
-    if [ "$SmbTimeserver" = "1" ] && [ "$NTPEnabled" = "on" ] && [ "$NTPServerIP" != "" ]; then
+    if [ "$SmbTimeserver" = "1" ] && [ "$NTPEnabled" = "1" ] && [ "$NTPServerIP" != "" ]; then
 	ntp_support="yes"
     else
 	ntp_support="no"

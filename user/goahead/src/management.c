@@ -140,6 +140,7 @@ static void NTP(webs_t wp, char_t *path, char_t *query)
 	char_t *ntpEnabled = websGetVar(wp, T("ntp_enabled"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "NTPEnabled", ntpEnabled);
 	if (CHK_IF_DIGIT(ntpEnabled, 1))
 	{
 		char_t *tz = websGetVar(wp, T("time_zone"), T(""));
@@ -147,12 +148,9 @@ static void NTP(webs_t wp, char_t *path, char_t *query)
 
 		if ((strlen(tz)>0) && (!checkSemicolon(tz)))
 		{
-			nvram_bufset(RT2860_NVRAM, "NTPEnabled", "on");
 			nvram_bufset(RT2860_NVRAM, "NTPServerIP", ntpServer);
 			nvram_bufset(RT2860_NVRAM, "TZ", tz);
 		}
-	} else {
-		nvram_bufset(RT2860_NVRAM, "NTPEnabled", "off");
 	}
 
 	nvram_commit(RT2860_NVRAM);
