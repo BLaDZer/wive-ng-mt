@@ -182,7 +182,7 @@ config  MT76X2_AP_QA
 	default n
 
 config  MT76X2_AP_IAPP
-	bool "Provide send iapp anounses send"
+	bool "Provide iapp anounses send(roaming support)"
 	depends on MT76X2_AP
 	default n
 
