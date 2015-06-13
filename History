@@ -975,34 +975,36 @@
 13) init.d: read sysled gpio from kernel config.<br>
 14) init.d: more early btn reset check start.<br>
 15) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
-16) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
-17) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
-18) kernel: ralink wifi: 7610: add region 22 in a band.<br>
-19) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
-20) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
-21) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
-22) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
-23) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
-24) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
-25) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-26) kernel: mips: irq: use DECLARE_BITMAP.<br>
-27) kernel: mips: bmips: fix bmips_wr_vec().<br>
-28) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-29) kernel: mips: c-r4k: fix typo in probe_scache().<br>
-30) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
-31) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-32) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-33) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-34) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-35) kernel: mm: remove free_page_mlock.<br>
-36) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-37) kernel: net: udp: fix behavior of wrong checksums.<br>
-38) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+16) init.d: add basic fast roaming parametrs tune support for 76x2 drivers.<br>
+17) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
+18) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
+19) kernel: ralink wifi: 7610: add region 22 in a band.<br>
+20) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
+21) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
+22) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
+23) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
+24) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
+25) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+26) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+27) kernel: mips: irq: use DECLARE_BITMAP.<br>
+28) kernel: mips: bmips: fix bmips_wr_vec().<br>
+29) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+30) kernel: mips: c-r4k: fix typo in probe_scache().<br>
+31) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
+32) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+33) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+34) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+35) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+36) kernel: mm: remove free_page_mlock.<br>
+37) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+38) kernel: net: udp: fix behavior of wrong checksums.<br>
+39) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~90%).<br>
 2) need add in wireless->basic->SSID Settings NoForwardingMBCast option (this option isolate client2client BCAST traffic).<br>
+3) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
 3) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 4) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
 5) need add irqbalance in WebUI (in last stage of 7621 dev).<br>

@@ -562,7 +562,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(PSMode);
 		FPRINT_NUM(session_timeout_interval);
 		FPRINT_NUM(quiet_interval);
-		FPRINT_NUM(TGnWifiTest);
+		FPRINT_NUM(IdleTimeout);
 
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
 		//AP Client parameters
@@ -594,14 +594,21 @@ static int gen_wifi_config(int getmode)
 		FPRINT_NUM(DeauthFloodThreshold);
 		FPRINT_NUM(EapReqFooldThreshold);
 #endif
-		FPRINT_NUM(UseNewRateAdapt);
-		FPRINT_NUM(IdleTimeout);
 #ifdef CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE
 		FPRINT_NUM(MO_FalseCCATh);
 		FPRINT_NUM(MO_LowFalseCCATh);
 		FPRINT_NUM(DyncVgaEnable);
 #endif
-
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+		// Fast Roaming, need add in profile instead of iwpriv usage in future
+		FPRINT_NUM(ApProbeRspTimes);
+		FPRINT_NUM(AuthRspFail);
+		FPRINT_NUM(AuthRspRssi);
+		FPRINT_NUM(AssocReqRssiThres);
+		FPRINT_NUM(AssocRspIgnor);
+		FPRINT_NUM(KickStaRssiLow);
+		FPRINT_NUM(ProbeRspRssi);
+#endif
 		//Radio On/Off
 		if (!inic) {
 		    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)

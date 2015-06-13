@@ -75,6 +75,7 @@ start() {
 	fi
 	$LOG "Tune wifi modules after load..."
 	retune_wifi
+	roaming_wifi
 
 	# not load this modules after goahead start
 	# load conntrack helpers modules
@@ -94,16 +95,27 @@ gen_wifi_config() {
 retune_wifi() {
     get_param
     # preconfigure wifi
-    (sleep 5 && /etc/scripts/wifi.sh $first_wlan_root_if) &
+    (sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_root_if) &
     if [ "$first_wlan_apcli" != "" ] && [ "$ApCliEnable" = "1" ]; then
-	(sleep 5 && /etc/scripts/wifi.sh $first_wlan_apcli) &
+	(sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_apcli) &
     fi
     if [ "$second_wlan_root_if" != "" ]; then
 	# preconfigure second wlan root interface to
-	(sleep 5 && /etc/scripts/wifi.sh $second_wlan_root_if "5GHZ") &
+	(sleep 5 && /etc/scripts/wifi_advanced.sh $second_wlan_root_if "5GHZ") &
 	if [ "$second_wlan_apcli" != "" ]; then
-	    (sleep 5 && /etc/scripts/wifi.sh $second_wlan_apcli "5GHZ") &
+	    (sleep 5 && /etc/scripts/wifi_advanced.sh $second_wlan_apcli "5GHZ") &
 	fi
+    fi
+}
+
+roaming_wifi() {
+    # preconfigure wifi
+    if [ "$first_wlan_root_if" != "" ] && [ "$CONFIG_RT_FIRST_IF_MT7602E" != "" ]; then
+	(sleep 5 && /etc/scripts/wifi_roaming.sh $first_wlan_root_if) &
+    fi
+    if [ "$second_wlan_root_if" != "" ] && [ "$CONFIG_RT_SECOND_IF_MT7612E" != "" ]; then
+	# preconfigure second wlan root interface to
+	(sleep 5 && /etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ") &
     fi
 }
 
