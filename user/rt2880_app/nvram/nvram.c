@@ -268,6 +268,7 @@ static int gen_wifi_config(int mode, int genmode)
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(TxPower);
 		    FPRINT_NUM(AutoChannelSelect);
+		    FPRINT_NUM(ACSCheckTime);
 		    FPRINT_NUM(Channel);
 		    FPRINT_NUM(BasicRate);
 		    FPRINT_STR(SSID1);
