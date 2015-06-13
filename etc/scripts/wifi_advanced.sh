@@ -71,7 +71,11 @@ if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     # first need scan
     iwpriv "$1" set SiteSurvey=1
     # second reselect channel
-    iwpriv "$1" set AutoChannelSel=1
+    if [ "$2" = "5GHZ" ]; then
+	iwpriv "$1" set AutoChannelSel="$AutoChannelSelect"
+    else
+	iwpriv "$1" set AutoChannelSel="$AutoChannelSelectINIC"
+    fi
 else
     if [ "$2" = "5GHZ" ]; then
 	iwpriv "$1" set Channel="$ChannelINIC"
