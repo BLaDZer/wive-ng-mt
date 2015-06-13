@@ -236,6 +236,10 @@ case "$1" in
 	    retune_wifi
 	    ;;
 
+	roaming_wifi)
+	    roaming_wifi
+	    ;;
+
 	gen_wifi_config)
 	    gen_wifi_config
 	    ;;
@@ -246,6 +250,6 @@ case "$1" in
 	    ;;
 
 	*)
-	    echo $"Usage: $0 {start|stop|restart|wlan_down_all|retune_wifi|gen_wifi_config}"
+	    echo $"Usage: $0 {start|stop|restart|wlan_down_all|retune_wifi|roaming_wifi|gen_wifi_config}"
 	    exit 1
 esac
