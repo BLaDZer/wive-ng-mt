@@ -18,7 +18,7 @@ echo ">>>>> RECONFIGURE ROAMING WIFI IF = $1 <<<<<<<<<<"
 # AssocReqRssiThres	- range 0 - -100 dBm, reject assoc req due to weak signal, default 0 (off)
 # AssocRspIgnor		- range 0 - -100 dBm, ignore assoc req due to weak signal, default 0 (off)
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low, default 0 (off)
-# ProbeRspRssi		- range 0 - -100 dBm, auto disonnect sta if rssi provw requests low, default 0 (off)
+# ProbeRspRssi		- range 0 - -100 dBm, auto disonnect sta if rssi low at probe requests, default 0 (off)
 ################################################################################################################################
 eval `nvram_buf_get 2860 ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor KickStaRssiLow ProbeRspRssi`
 ################################################################################################################################
