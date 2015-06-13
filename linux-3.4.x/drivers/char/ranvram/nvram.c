@@ -16,7 +16,7 @@ static block_t fb[FLASH_BLOCK_NUM] =
 		.flash_max_len = ENV_BLK_SIZE*4,
 		.valid = 0
 	},
-#ifdef FLASH_BLOCK_SPLIT
+#if !defined(CONFIG_RT_SECOND_IF_NONE) && defined(CONFIG_KERNEL_NVRAM_SPLIT_INIC)
 	{
 		.name = "rtdev",
 		.flash_offset = 0x6000,

@@ -13,9 +13,6 @@
 
 #define NV_DEV "/dev/nvram"
 
-#define RT2860_NVRAM    		0
-#define RTINIC_NVRAM    		1
-
 #define BUFSZ				1024
 #define ENV_BLK_SIZE			0x1000
 
@@ -28,11 +25,14 @@
 #define FREE(x) do { if (x != NULL) {free(x); x=NULL;} } while(0)
 
 /* split 2860 and RTDEV configs by offset */
-#ifdef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+#if !defined(CONFIG_RT_SECOND_IF_NONE) && defined(CONFIG_KERNEL_NVRAM_SPLIT_INIC)
 #define FLASH_BLOCK_NUM 2
 #else
 #define FLASH_BLOCK_NUM 1
 #endif
+
+#define RT2860_NVRAM    		0
+#define RTINIC_NVRAM    		1
 
 typedef struct environment_s {
 	unsigned long crc;		//CRC32 over data bytes

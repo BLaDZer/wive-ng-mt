@@ -10,7 +10,7 @@
 #define RALINK_NVRAM_MTDNAME "Config"
 
 /* split 2860 and RTDEV configs by offset */
-#ifdef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+#if !defined(CONFIG_RT_SECOND_IF_NONE) && defined(CONFIG_KERNEL_NVRAM_SPLIT_INIC)
 #define FLASH_BLOCK_NUM 2
 #else
 #define FLASH_BLOCK_NUM 1

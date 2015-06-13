@@ -220,25 +220,24 @@ static int nvram_load_default(void)
         return 0;
 }
 
-static int gen_wifi_config(int getmode)
+static int gen_wifi_config(int mode, int genmode)
 {
 	FILE *fp = NULL;
-	int  i, ssid_num = 1, inic = 0, mode = getmode;
+	int  i, ssid_num = 1, inic = 0;
 	char tx_rate[32], wmm_enable[32];
 
-	if (mode == RT2860_NVRAM) {
+	if (genmode == RT2860_NVRAM) {
 		system("mkdir -p /etc/Wireless/RT2860");
 		fp = fopen("/etc/Wireless/RT2860/RT2860.dat", "w+");
 		printf("Build config for fist WiFi module.\n");
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	} else if (mode == RTINIC_NVRAM) {
+	} else if (genmode == RTINIC_NVRAM) {
 		system("mkdir -p /etc/Wireless/iNIC");
 		fp = fopen("/etc/Wireless/iNIC/iNIC_ap.dat", "w+");
 		/* after select file for write back to native 2860 mode */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		/* use one source offset */
 		inic = 1;
-		mode = RT2860_NVRAM;
 #endif
 		printf("Build config for second WiFi module.\n");
 #endif
@@ -656,7 +655,7 @@ void usage(char *cmd)
 int main(int argc, char *argv[])
 {
 	char *cmd = "";
-	int mode = RT2860_NVRAM;
+	int mode = RT2860_NVRAM, genmode = RT2860_NVRAM;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -667,10 +666,12 @@ int main(int argc, char *argv[])
 	else
 		cmd = argv[0];
 
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	if (!strncmp(argv[1], "rtdev", 5))
+	if (!strncmp(argv[1], "rtdev", 5)) {
+#if !defined(CONFIG_RT_SECOND_IF_NONE) && defined(CONFIG_KERNEL_NVRAM_SPLIT_INIC)
 	    mode = RTINIC_NVRAM;
 #endif
+	    genmode = RTINIC_NVRAM;
+	}
 
 	if (!strncmp(cmd, "nvram_get", 10))
 		return ra_nv_get(argc, argv);
@@ -683,7 +684,7 @@ int main(int argc, char *argv[])
 	else if (!strncmp(cmd, "nvram_clear", 12))
 		return nvram_clear(mode);
 	else if (!strncmp(cmd, "nvram_genwlconfig", 18))
-		return gen_wifi_config(mode);
+		return gen_wifi_config(mode, genmode);
 	else if (!strncmp(cmd, "nvram_renew", 12)) {
 		if (argc >= 3)
 		    return nvram_renew(mode, argv[2]);
