@@ -16,9 +16,11 @@ start() {
         depmod -a -n > /etc/modules.dep
     fi
 
-    # if goahead started
+    # wifi reconfigure and modules load only after full boot good
     if [  -f /tmp/bootgood ]; then
-	# wifi reconfigure only after goahead start
+	$LOG "Load conntrack helpers modules."
+	load_nat_helpers
+
 	$LOG "Prepare wifi config."
 	gen_wifi_config
 	if [ "$OperationMode" = "2" ] && [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
@@ -62,6 +64,7 @@ start() {
 	    ifconfig $second_wlan_root_if txqueuelen	"$txqueuelen"
 	    ip link set $second_wlan_root_if up
 	fi
+
 	if [ "$OperationMode" = "3" ]; then
 	    $LOG "WiFi APCLI interface up."
 	    # apcli mode sta interface
@@ -73,15 +76,44 @@ start() {
 		ip link set $second_wlan_apcli up
 	    fi
 	fi
-	$LOG "Tune wifi modules after load..."
+
+	$LOG "Tune wifi modules after load."
 	retune_wifi
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "1" -o "$OperationMode" = "3" ]; then
 	    roaming_wifi
 	fi
+    fi
+}
 
-	# not load this modules after goahead start
-	# load conntrack helpers modules
-	load_nat_helpers
+load_nat_helpers() {
+    # not load nf_nat helpers in bridge mode
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	# load conntrack helpers
+	eval `nvram_buf_get 2860 fwAlgSIP fwAlgGRE fwAlgPPTP fwAlgH323 fwAlgFTP fwAlgRTSP`
+	if [ "$fwAlgSIP" != "0" ]; then
+	    modprobe -q nf_conntrack_sip
+	    modprobe -q nf_nat_sip
+	fi
+	if [ "$fwAlgGRE" != "0" ]; then
+	    modprobe -q nf_conntrack_proto_gre
+	    modprobe -q nf_nat_proto_gre
+	fi
+	if [ "$fwAlgPPTP" != "0" ]; then
+	    modprobe -q nf_conntrack_pptp
+	    modprobe -q nf_nat_pptp
+	fi
+	if [ "$fwAlgH323" != "0" ]; then
+	    modprobe -q nf_conntrack_h323
+	    modprobe -q nf_nat_h323
+	fi
+	if [ "$fwAlgFTP" != "0" ]; then
+	    modprobe -q nf_conntrack_ftp
+	    modprobe -q nf_nat_ftp
+	fi
+	if [ "$fwAlgRTSP" != "0" ]; then
+	    modprobe -q nf_conntrack_rtsp
+	    modprobe -q nf_nat_rtsp
+	fi
     fi
 }
 
@@ -118,38 +150,6 @@ roaming_wifi() {
     if [ "$second_wlan_root_if" != "" ] && [ "$CONFIG_RT_SECOND_IF_MT7612E" != "" ]; then
 	# preconfigure second wlan root interface to
 	(sleep 5 && /etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ") &
-    fi
-}
-
-load_nat_helpers() {
-    # not load nf_nat helpers in bridge mode
-    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	# load conntrack helpers
-	eval `nvram_buf_get 2860 fwAlgSIP fwAlgGRE fwAlgPPTP fwAlgH323 fwAlgFTP fwAlgRTSP`
-	if [ "$fwAlgSIP" != "0" ]; then
-	    modprobe -q nf_conntrack_sip
-	    modprobe -q nf_nat_sip
-	fi
-	if [ "$fwAlgGRE" != "0" ]; then
-	    modprobe -q nf_conntrack_proto_gre
-	    modprobe -q nf_nat_proto_gre
-	fi
-	if [ "$fwAlgPPTP" != "0" ]; then
-	    modprobe -q nf_conntrack_pptp
-	    modprobe -q nf_nat_pptp
-	fi
-	if [ "$fwAlgH323" != "0" ]; then
-	    modprobe -q nf_conntrack_h323
-	    modprobe -q nf_nat_h323
-	fi
-	if [ "$fwAlgFTP" != "0" ]; then
-	    modprobe -q nf_conntrack_ftp
-	    modprobe -q nf_nat_ftp
-	fi
-	if [ "$fwAlgRTSP" != "0" ]; then
-	    modprobe -q nf_conntrack_rtsp
-	    modprobe -q nf_nat_rtsp
-	fi
     fi
 }
 
