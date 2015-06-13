@@ -23,6 +23,8 @@ start() {
 
 	$LOG "Prepare wifi config."
 	gen_wifi_config
+
+	# macclone logic for STA mode module
 	if [ "$OperationMode" = "2" ] && [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
 	    WLAN_MAC_ADDR="$macCloneMac"
 	    $LOG "STA Macclone mode. MAC: $WLAN_MAC_ADDR"
@@ -31,6 +33,7 @@ start() {
 	fi
 	mac="mac=$WLAN_MAC_ADDR"
 
+	# load needed wireless modules
     	if [ "$OperationMode" = "2" ]; then
 	    $LOG "Load wifi STA module."
     	    modprobe -q rt2860v2_sta "$mac"
@@ -65,9 +68,9 @@ start() {
 	    ip link set $second_wlan_root_if up
 	fi
 
+	# apcli mode sta interface
 	if [ "$OperationMode" = "3" ]; then
 	    $LOG "WiFi APCLI interface up."
-	    # apcli mode sta interface
 	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
 		ifconfig $first_wlan_apcli txqueuelen	"$txqueuelen"
 		ip link set $first_wlan_apcli up
@@ -77,6 +80,7 @@ start() {
 	    fi
 	fi
 
+	# tune param not automatic readed from *.dat file
 	$LOG "Tune wifi modules after load."
 	retune_wifi
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "1" -o "$OperationMode" = "3" ]; then
