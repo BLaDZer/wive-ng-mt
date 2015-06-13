@@ -351,8 +351,8 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(APSDCapable);
 		FPRINT_STR(DLSCapable);
 		FPRINT_STR(NoForwarding);
-		FPRINT_NUM(NoForwardingBTNBSSID);
-		FPRINT_NUM(NoForwardingMBCast);
+		FPRINT_STR(NoForwardingBTNBSSID);
+		FPRINT_STR(NoForwardingMBCast);
 		FPRINT_STR(StationKeepAlive);
 		FPRINT_STR(HideSSID);
 		FPRINT_NUM(ShortSlot);
@@ -560,6 +560,7 @@ static int gen_wifi_config(int getmode)
 		FPRINT_STR(EAPifname);
 		FPRINT_STR(PreAuthifname);
 		FPRINT_STR(PSMode);
+		FPRINT_STR(MaxStaNum);
 		FPRINT_NUM(session_timeout_interval);
 		FPRINT_NUM(quiet_interval);
 		FPRINT_NUM(IdleTimeout);
