@@ -75,7 +75,9 @@ start() {
 	fi
 	$LOG "Tune wifi modules after load..."
 	retune_wifi
-	roaming_wifi
+	if [ "$FastRoaming" != "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "1" -o "$OperationMode" = "3" ]; then
+	    roaming_wifi
+	fi
 
 	# not load this modules after goahead start
 	# load conntrack helpers modules
@@ -195,7 +197,7 @@ wlan_down_all() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac ApCliEnable`
+    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac ApCliEnable FastRoaming`
 }
 
 stop() {
