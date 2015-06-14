@@ -4075,7 +4075,7 @@ VOID	UserCfgInit(
 		pAd->CommonCfg.MO_Cfg.bEnable = FALSE;
 #endif /* MICROWAVE_OVEN_SUPPORT */
 #ifdef DYNAMIC_VGA_SUPPORT
-	pAd->CommonCfg.MO_Cfg.bDyncVGAEnable = FALSE;
+	pAd->CommonCfg.MO_Cfg.bDyncVGAEnable = TRUE;
 #endif /* DYNAMIC_VGA_SUPPORT */
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = MO_FALSE_CCA_TH;
 	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 10;

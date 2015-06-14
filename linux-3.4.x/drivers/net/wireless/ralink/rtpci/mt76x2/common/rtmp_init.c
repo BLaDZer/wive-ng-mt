@@ -3059,7 +3059,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif
 	if (IS_MT76x2(pAd)) {
 #ifdef DYNAMIC_VGA_SUPPORT
-	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = FALSE;
+	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
 #endif /* DYNAMIC_VGA_SUPPORT */
 	    pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = MO_FALSE_CCA_TH;
 	    pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;

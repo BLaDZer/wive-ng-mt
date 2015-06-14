@@ -30,14 +30,6 @@ if [ "$RadioOff" = "1" -a "$2" != "5GHZ" ] || [ "$RadioOffINIC" = "1" -a "$2" = 
 else
     iwpriv "$1" set RadioOn=1
 fi
-################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)############################
-if [ "$2" != "5GHZ" ]; then
-    # allow fallback to MCS0
-    iwpriv $1 set AutoFallBack=1
-    # decrease tx retry for decrease tx buffer free time
-    iwpriv $1 set LongRetry=3
-    iwpriv $1 set ShortRetry=3
-fi
 ########################################MULTICAST param##############################################
 if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     # in bridged mode direct enable Multicast2Unicast in wifi drivers if enabled
@@ -50,9 +42,17 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
 	fi
     fi
 fi
-#####################################Reduce interference##############################################
+#####################################DYNAMIC VARIABLE GAIN############################################
 if [ "$DyncVgaEnable" = "1" ]; then
     iwpriv "$1" set DyncVgaEnable=1
 else
     iwpriv "$1" set DyncVgaEnable=0
+fi
+################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)############################
+if [ "$2" != "5GHZ" ]; then
+    # allow fallback to MCS0
+    iwpriv $1 set AutoFallBack=1
+    # decrease tx retry for decrease tx buffer free time
+    iwpriv $1 set LongRetry=3
+    iwpriv $1 set ShortRetry=3
 fi
