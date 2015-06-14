@@ -1006,17 +1006,17 @@
 <br>
 <br>
 <b>TODO:</b><br>
-1) full russian ui (work end ~90%).<br>
-2) need add in wireless->basic->SSID Settings NoForwardingMBCast option (this option isolate client2client BCAST traffic) per bssid (; as divider).<br>
-3) need add in wireless->advanced MaxStaNum (range 1..MAX_NUMBER_OF_MAC, see oid.h) per bssid (; as divider).<br>
-4) need add in wireless->advanced StationKeepAlive (range 10..300sec) per bssid (; as divider).<br>
-5) need add in wireless->advances IdleTimeout (range 60..300sec).<br>
-6) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
-8) need limit wds and bssid num = 4.<br>
-9) need expand AutoChannelSel to add mode 2 and set by default (variable AutoChannelSelectMode 1/2, 1 - select channel by STA count now default, 2 - select channel by rssi).<br>
-10) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-11) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-12) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+1) need add in wireless->basic->SSID Settings NoForwardingMBCast option (this option isolate client2client BCAST traffic) per bssid (; as divider).<br>
+2) need add in wireless->advanced MaxStaNum (range 1..MAX_NUMBER_OF_MAC, see oid.h) per bssid (; as divider).<br>
+3) need add in wireless->advanced StationKeepAlive (range 10..300sec) per bssid (; as divider).<br>
+4) need add in wireless->advances IdleTimeout (range 60..300sec).<br>
+5) need limit wds and bssid num = 4.<br>
+6) need expand AutoChannelSel to add mode 2 and set by default (variable AutoChannelSelectMode 1/2, 1 - select channel by STA count now default, 2 - select channel by rssi).<br>
+7) full russian ui (work end ~90%).<br>
+8) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
+9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+10) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+11) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>
