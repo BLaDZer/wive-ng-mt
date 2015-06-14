@@ -34,6 +34,8 @@ fu_cv_sys_stat_statvfs64=yes \
 samba_cv_USE_SETEUID=yes \
 samba_cv_USE_SETREUID=yes \
 samba_cv_USE_SETRESUID=no \
+samba_cv_have_setreuid=yes \
+samba_cv_have_setresuid=yes \
 samba_cv_SIZEOF_INO_T=yes \
 samba_cv_SIZEOF_OFF_T=yes \
 samba_cv_have_longlong=yes \
@@ -55,11 +57,16 @@ samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 samba_cv_HAVE_FCNTL_LOCK=yes \
 samba_cv_HAVE_STRUCT_FLOCK64=yes \
 samba_cv_HAVE_MMAP=no \
-samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=no \
+samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes \
 samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
 samba_cv_HAVE_NATIVE_ICONV=yes \
 samba_cv_REPLACE_READDIR=no \
 samba_cv_REPLACE_INET_NTOA=no \
 samba_cv_LINUX_LFS_SUPPORT=yes \
+samba_cv_HAVE_WRFILE_KEYTAB=no \
+samba_cv_zlib_1_2_3=no \
+ac_cv_header_zlib_h=no \
+ac_cv_path_PYTHON="" \
+ac_cv_path_PYTHON_CONFIG="" \
 CPPFLAGS="$CPPFLAGS -DNDEBUG -DSHMEM_SIZE=524288 -Dfcntl=fcntl64 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1 -D_LARGEFILE64_SOURCE=1 -D_LARGE_FILES=1" \
 ./configure $CONFOPTS
