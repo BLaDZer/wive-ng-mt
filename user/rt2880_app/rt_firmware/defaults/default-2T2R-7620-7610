@@ -373,7 +373,6 @@ cdpEnabled=0
 WirelessModeINIC=14
 BasicRateINIC=15
 AutoChannelSelectINIC=2
-AutoChannelSelectMode=1
 TxPowerINIC=100
 ChannelINIC=48
 HT_TxStreamINIC=1

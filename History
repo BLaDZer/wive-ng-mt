@@ -1011,7 +1011,7 @@
 3) need add in wireless->advanced StationKeepAlive (range 10..300sec) per bssid (; as divider).<br>
 4) need add in wireless->advances IdleTimeout (range 60..300sec).<br>
 5) need limit wds and bssid num = 4.<br>
-6) need expand AutoChannelSel to add mode 2 and set by default (variable AutoChannelSelectMode 1/2, 1 - select channel by STA count now default, 2 - select channel by rssi).<br>
+6) need expand AutoChannelSel to add mode 2 and set by default (1 - select channel by STA count now default, 2 - select channel by rssi).<br>
 7) full russian ui (work end ~90%).<br>
 8) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
 9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>

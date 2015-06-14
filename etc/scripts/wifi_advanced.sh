@@ -12,9 +12,8 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ######################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC \
-	Channel ChannelINIC AutoChannelSelect AutoChannelSelectINIC AutoChannelSelectMode \
-	AutoConnect DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh M2UEnabled`
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect \
+	DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh M2UEnabled`
 ########################################STAMODE param#################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
@@ -62,20 +61,5 @@ if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; th
     if [ "$MO_FalseCCATh" != "" ] && [ "$MO_LowFalseCCATh" != "" ]; then
 	iwpriv "$1" set MO_FalseCCATh="$MO_FalseCCATh"
 	iwpriv "$1" set MO_LowFalseCCATh="$MO_LowFalseCCATh"
-    fi
-fi
-########################################Channel select################################################
-if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
-    [ "$AutoChannelSelectINIC" = "1" -a "$2" = "5GHZ" ]; then
-    # rescan and select optimal channel
-    # first need scan
-    iwpriv "$1" set SiteSurvey=1
-    # second reselect channel
-    iwpriv "$1" set AutoChannelSel="$AutoChannelSelectMode"
-else
-    if [ "$2" = "5GHZ" ]; then
-	iwpriv "$1" set Channel="$ChannelINIC"
-    else
-	iwpriv "$1" set Channel="$Channel"
     fi
 fi

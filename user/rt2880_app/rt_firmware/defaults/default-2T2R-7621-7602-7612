@@ -38,7 +38,6 @@ APSDCapable=1
 APTxop=0;0;94;47
 AuthMode=OPEN
 AutoChannelSelect=0
-AutoChannelSelectMode=2
 ACSCheckTime=0
 AutoConnect=1
 AutoRoaming=0
