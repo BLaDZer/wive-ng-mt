@@ -48,7 +48,7 @@ if [ "$DyncVgaEnable" = "1" ]; then
 else
     iwpriv "$1" set DyncVgaEnable=0
 fi
-################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)############################
+################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)#############################
 if [ "$2" != "5GHZ" ]; then
     # allow fallback to MCS0
     iwpriv $1 set AutoFallBack=1
