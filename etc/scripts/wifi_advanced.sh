@@ -13,7 +13,7 @@ echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ######################################################################################################
 eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC \
-	Channel ChannelINIC AutoChannelSelect AutoChannelSelectINIC \
+	Channel ChannelINIC AutoChannelSelect AutoChannelSelectINIC AutoChannelSelectMode \
 	AutoConnect DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh M2UEnabled`
 ########################################STAMODE param#################################################
 if [ "$OperationMode" = "2" ]; then
@@ -71,11 +71,7 @@ if [ "$AutoChannelSelect" = "1" -a "$2" != "5GHZ" ] || \
     # first need scan
     iwpriv "$1" set SiteSurvey=1
     # second reselect channel
-    if [ "$2" = "5GHZ" ]; then
-	iwpriv "$1" set AutoChannelSel="$AutoChannelSelect"
-    else
-	iwpriv "$1" set AutoChannelSel="$AutoChannelSelectINIC"
-    fi
+    iwpriv "$1" set AutoChannelSel="$AutoChannelSelectMode"
 else
     if [ "$2" = "5GHZ" ]; then
 	iwpriv "$1" set Channel="$ChannelINIC"
