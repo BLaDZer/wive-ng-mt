@@ -1083,12 +1083,12 @@ UCHAR SelectBestChannel(RTMP_ADAPTER *pAd, ChannelSel_Alg Alg)
 
 	/* init pAd->pChannelInfo->IsABand */
 	CheckPhyModeIsABand(pAd);
-    
+
 #ifdef MICROWAVE_OVEN_SUPPORT
 	if (Alg == ChannelAlgCCA)
 		pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
 #endif /* MICROWAVE_OVEN_SUPPORT */
-    
+
 	switch ( Alg )
 	{
 		case ChannelAlgRandom:

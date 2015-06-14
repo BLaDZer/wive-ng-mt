@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.106.24 Kernel Configuration
+# Linux/mips 3.4.107.37 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -868,7 +868,6 @@ CONFIG_PPPOL2TP=y
 # CONFIG_PPP_ASYNC is not set
 # CONFIG_PPP_SYNC_TTY is not set
 # CONFIG_SLIP is not set
-# CONFIG_TR is not set
 CONFIG_WLAN=y
 # CONFIG_ATMEL is not set
 # CONFIG_HOSTAP is not set
@@ -1446,6 +1445,7 @@ CONFIG_MT76X2_AP_80211AC_VHT=y
 # CONFIG_MT76X2_AP_MC_SUPPORT is not set
 # CONFIG_MT76X2_AP_ATE is not set
 # CONFIG_MT76X2_AP_IAPP is not set
+# CONFIG_MT76X2_AP_INTERFERENCE_REDUCE is not set
 # CONFIG_MT76X2_AP_DBG is not set
 
 #

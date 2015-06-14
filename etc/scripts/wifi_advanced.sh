@@ -12,8 +12,7 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ######################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect \
-	DyncVgaEnable MO_FalseCCATh MO_LowFalseCCATh M2UEnabled`
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect DyncVgaEnable M2UEnabled`
 ########################################STAMODE param#################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
@@ -52,14 +51,8 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     fi
 fi
 #####################################Reduce interference##############################################
-if [ "$CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE" != "" ] && [ "$2" != "5GHZ" ]; then
-    if [ "$DyncVgaEnable" = "1" ]; then
-	iwpriv "$1" set DyncVgaEnable=1
-    else
-	iwpriv "$1" set DyncVgaEnable=0
-    fi
-    if [ "$MO_FalseCCATh" != "" ] && [ "$MO_LowFalseCCATh" != "" ]; then
-	iwpriv "$1" set MO_FalseCCATh="$MO_FalseCCATh"
-	iwpriv "$1" set MO_LowFalseCCATh="$MO_LowFalseCCATh"
-    fi
+if [ "$DyncVgaEnable" = "1" ]; then
+    iwpriv "$1" set DyncVgaEnable=1
+else
+    iwpriv "$1" set DyncVgaEnable=0
 fi

@@ -1910,9 +1910,9 @@ enum IEEE80211_BAND {
   IEEE80211_BAND_NUMS
 };
 
-#ifdef MICROWAVE_OVEN_SUPPORT
+#if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 /* definition for mitigating microwave interference */
-#define MO_FALSE_CCA_TH	25
+#define MO_FALSE_CCA_TH	800
 #define MO_MEAS_PERIOD	0	/* 0 ~ 100 ms */
 #define MO_IDLE_PERIOD	1	/* 100 ~ 1000 ms */
 #endif /* MICROWAVE_OVEN_SUPPORT */

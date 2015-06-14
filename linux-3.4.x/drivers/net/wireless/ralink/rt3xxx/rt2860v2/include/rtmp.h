@@ -10006,9 +10006,6 @@ INT Set_MO_FalseCCATh_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg);
 
-INT Set_MO_LowFalseCCATh_Proc(
-	IN	PRTMP_ADAPTER	pAd, 
-	IN	PSTRING			arg);
 #ifdef MICROWAVE_OVEN_SUPPORT
 VOID AsicMeasureFalseCCA(
 	IN PRTMP_ADAPTER pAd);

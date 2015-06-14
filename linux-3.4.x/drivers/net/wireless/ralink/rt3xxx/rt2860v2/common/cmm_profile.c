@@ -4751,8 +4751,10 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				}
 #endif /* P2P_SUPPORT */
 
-#ifdef WOW_SUPPORT
-#endif /* WOW_SUPPORT */
+#ifdef MICROWAVE_OVEN_SUPPORT
+		if (RTMPGetKeyParameter("MO_FalseCCATh", tmpbuf, 10, pBuffer, TRUE))
+			Set_MO_FalseCCATh_Proc(pAd, tmpbuf);
+#endif /* MICROWAVE_OVEN_SUPPORT */
 
 			}while(0);
 

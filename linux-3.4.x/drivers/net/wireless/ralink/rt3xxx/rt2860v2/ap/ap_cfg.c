@@ -1321,7 +1321,6 @@ static struct {
 
 #if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 	{"MO_FalseCCATh",			Set_MO_FalseCCATh_Proc},
-	{"MO_LowFalseCCATh",		Set_MO_LowFalseCCATh_Proc},
 #ifdef DYNAMIC_VGA_SUPPORT
 	{"DyncVgaEnable",			Set_DyncVgaEnable_Proc},
 #endif /* DYNAMIC_VGA_SUPPORT */
@@ -14108,24 +14107,6 @@ INT Set_MO_FalseCCATh_Proc(
 	return TRUE;
 }
 
-INT Set_MO_LowFalseCCATh_Proc(
-	IN	PRTMP_ADAPTER	pAd, 
-	IN	PSTRING		arg)
-{
-	ULONG th;
-
-	th = simple_strtol(arg, 0, 10);
-	
-	if (th > 65535)
-		th = 65535;
-
-	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = th;
-
-	DBGPRINT(RT_DEBUG_OFF, ("%s: set low falseCCA threshold %lu for microwave oven application!!\n", __FUNCTION__, th));
-
-	return TRUE;
-}
-
 #ifdef DYNAMIC_VGA_SUPPORT
 INT Set_DyncVgaEnable_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
@@ -14153,7 +14134,7 @@ INT Set_DyncVgaEnable_Proc(
 
 		AsicBBPWriteWithRxChain(pAd, BBP_R66, pAd->CommonCfg.MO_Cfg.Stored_BBP_R66, RX_CHAIN_ALL);
 	}
-		
+
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_DyncVgaEnable_Proc::(enable = %d)\n", pAd->CommonCfg.MO_Cfg.bDyncVGAEnable));
 
 	return TRUE;

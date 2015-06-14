@@ -3042,9 +3042,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	}
 
 #ifdef DYNAMIC_VGA_SUPPORT
-	pAd->CommonCfg.MO_Cfg.bDyncVgaEnable = TRUE;
-	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 600;
-	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 100;
+	pAd->CommonCfg.MO_Cfg.bDyncVgaEnable = FALSE;
+	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 800;
+	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 10;
 #endif /* DYNAMIC_VGA_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 

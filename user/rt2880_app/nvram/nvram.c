@@ -597,7 +597,6 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 #ifdef CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE
 		FPRINT_NUM(MO_FalseCCATh);
-		FPRINT_NUM(MO_LowFalseCCATh);
 		FPRINT_NUM(DyncVgaEnable);
 #endif
 #if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)

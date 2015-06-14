@@ -4068,12 +4068,17 @@ VOID	UserCfgInit(
 #endif /* PEER_DELBA_TX_ADAPT */
 
 #if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
-	pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
+#ifdef MICROWAVE_OVEN_SUPPORT
+	if (pAd->OpMode == OPMODE_AP)
+		pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
+	else
+		pAd->CommonCfg.MO_Cfg.bEnable = FALSE;
+#endif /* MICROWAVE_OVEN_SUPPORT */
 #ifdef DYNAMIC_VGA_SUPPORT
-	pAd->CommonCfg.MO_Cfg.bDyncVGAEnable = TRUE;
+	pAd->CommonCfg.MO_Cfg.bDyncVGAEnable = FALSE;
 #endif /* DYNAMIC_VGA_SUPPORT */
-	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 600;
-	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 100;
+	pAd->CommonCfg.MO_Cfg.nFalseCCATh = MO_FALSE_CCA_TH;
+	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 10;
 #endif /* defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT) */
 
 #ifdef MAC_REPEATER_SUPPORT

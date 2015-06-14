@@ -989,6 +989,7 @@
 27) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
 28) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
 29) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+29) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
 30) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
 31) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
 32) kernel: mips: irq: use DECLARE_BITMAP.<br>
