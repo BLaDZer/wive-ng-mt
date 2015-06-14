@@ -72,11 +72,11 @@ static void ap_assoc_info_debugshow(
 #ifdef DOT11_VHT_AC
 		DBGPRINT(RT_DEBUG_TRACE, ("\t\tOperatinModeNotification(%d)\n", pEntry->ext_cap.operating_mode_notification));
 		if (pEntry->ext_cap.operating_mode_notification) {
-			printk("\t\t\tChannelWidth(%d), RxNss(%d), RxNssType(%d), ForceOpMode(%d)\n",
+			DBGPRINT(RT_DEBUG_TRACE, ("\t\t\tChannelWidth(%d), RxNss(%d), RxNssType(%d), ForceOpMode(%d)\n",
 					pEntry->operating_mode.ch_width,
 					pEntry->operating_mode.rx_nss,
 					pEntry->operating_mode.rx_nss_type,
-					pEntry->force_op_mode);
+					pEntry->force_op_mode));
 		}
 #endif /* DOT11_VHT_AC */
 	}
