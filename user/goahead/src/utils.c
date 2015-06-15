@@ -859,7 +859,7 @@ int netmask_aton(const char *ip)
 	return result;
 }
 
-void outputTimerForReload(webs_t wp, long delay)
+static void outputTimerForReload(webs_t wp, long delay)
 {
 	char lan_if_addr[32];
 	const char *lan_if_ip;

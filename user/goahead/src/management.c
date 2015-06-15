@@ -635,7 +635,18 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	websHeader(wp);
+	websWrite
+	(
+		wp,
+		T(
+		"<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"
+		"<script language=\"JavaScript\" type=\"text/javascript\">\n"
+		"ajaxReloadDelayedPage(80000);\n"
+		"</script>")
+	);
+	websFooter(wp);
+	websDone(wp, 200);
 
 	Sleep(2);
 	sync();

@@ -14,7 +14,7 @@ function createXMLHttp()
 	var xmlHttp;
 
 	try
-	{	
+	{
 		xmlHttp = new XMLHttpRequest();// Firefox, Opera 8.0+, Safari
 	}
 	catch (e)
@@ -36,7 +36,7 @@ function createXMLHttp()
 			}
 		}
 	}
-	
+
 	return xmlHttp;
 }
 
@@ -58,7 +58,7 @@ function ajaxPerformRequest(uri, handler)
 	var xmlHttp = createXMLHttp();
 	if (xmlHttp == null)
 		return;
-	
+
 	xmlHttp.onreadystatechange = function()
 	{
 		if (xmlHttp.readyState == 4)
@@ -68,13 +68,13 @@ function ajaxPerformRequest(uri, handler)
 				handler(xmlHttp.responseText);
 				handler = null;
 			}
-			
+
 			// Free resources
 			xmlHttp.onreadystatechange = null;
 			xmlHttp = null;
 		}
 	}
-	
+
 	xmlHttp.open("GET", genRandomParam(uri), true);
 	xmlHttp.send(null);
 }
@@ -125,7 +125,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 		if (xmlHttp.readyState == 4)
 		{
 			var text = xmlHttp.responseText;
-			
+
 			if (xmlHttp.status == 200)
 			{
 				element.innerHTML = '';
@@ -133,7 +133,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 			}
 			else
 				element.innerHTML = '<b>' + xmlHttp.statusText + '</b>';
-			
+
 			// Free resources
 			xmlHttp.onreadystatechange = null;
 			xmlHttp = null;
@@ -142,7 +142,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 				onLoadAction(element);
 		}
 	}
-	
+
 	xmlHttp.open("GET", genRandomParam(url), true);
 	xmlHttp.send();
 }
@@ -371,7 +371,7 @@ function ajaxShowProgress()
 	var pw = ajaxGetRootWindow();
 	if (elem == null)
 		return;
-	
+
 	var progress = [ '/', '-', '\\', '|' ];
 	var index = 0;
 
@@ -384,9 +384,9 @@ function ajaxShowProgress()
 		index = (index + 1) % progress.length;
 		pw.setTimeout(indicator, 500);
 	}
-	
+
 	pw.currentProgressHandler = indicator;
-	
+
 	indicator();
 }
 
@@ -396,7 +396,7 @@ function ajaxReloadDelayedPage(delay, url, local)
 	var pw = (local) ? window : ajaxGetRootWindow();
 
 	delay /= 1000;
-	
+
 	var reloader = function()
 	{
 		if (pw.currentProgressHandler == reloader)
@@ -420,9 +420,9 @@ function ajaxReloadDelayedPage(delay, url, local)
 				pw.location.href = url;
 		}
 	}
-	
+
 	pw.currentProgressHandler = reloader;
-	
+
 	reloader();
 }
 
