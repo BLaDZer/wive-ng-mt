@@ -2933,6 +2933,11 @@ INT	Set_HtBaWinSize_Proc(
 	
 	Value = simple_strtol(arg, 0, 10);
 
+#ifdef CONFIG_AP_SUPPORT
+	/* Intel IOT*/
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+		Value = 64;
+#endif /* CONFIG_AP_SUPPORT */
 
 	if (Value >=1 && Value <= 64)
 	{

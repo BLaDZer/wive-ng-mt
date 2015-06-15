@@ -1847,6 +1847,12 @@ static void HTParametersHook(
 	{
 		Value = simple_strtol(pValueStr, 0, 10);
 
+#ifdef CONFIG_AP_SUPPORT
+		/* Intel IOT*/
+		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+		Value = 64;
+#endif /* CONFIG_AP_SUPPORT */
+
 		if (Value >=1 && Value <= 64)
 		{		
 			pAd->CommonCfg.REGBACapability.field.RxBAWinLimit = Value;
