@@ -634,8 +634,11 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 {
-    system("fs nvramreset > /dev/console 2>&1");
-    system("fs restore > /dev/console 2>&1");
+	system("fs nvramreset > /dev/console 2>&1");
+	system("fs restore > /dev/console 2>&1");
+	sync();
+	Sleep(5);
+	reboot(RB_AUTOBOOT);
 }
 
 #ifdef CONFIG_SYSLOGD
