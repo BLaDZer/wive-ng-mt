@@ -430,6 +430,7 @@ fulldump
 /tools/xz/src/xzdec/xzdec
 /tools/xz/stamp-h1
 /tools/xz/tests/Makefile
+/tools/xz/configure
 
 #
 # prevent upload ATE in git
