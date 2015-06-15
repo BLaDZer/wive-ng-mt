@@ -41,8 +41,7 @@
   <message msgid="basic hssid" msgstr="Скрытый" />
   <message msgid="basic isolated" msgstr="Изолированный аплинк" />
   <message msgid="basic broadcast ssid" msgstr="Вещание SSID" />
-  <message msgid="basic apisolated" msgstr="Изолированная AP" />
-  <message msgid="basic mbssidapisolated" msgstr="MBSSID изоляция AP" />
+  <message msgid="basic mbssidapisolated" msgstr="Изоляция SSID между собой" />
   <message msgid="basic bssid" msgstr="BSSID (2,4ГГц)" />
   <message msgid="basic ac bssid" msgstr="BSSID (5.GHz)" />
   <message msgid="basic frequency" msgstr="Канал (2,4ГГц)" />

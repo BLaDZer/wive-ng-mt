@@ -41,8 +41,7 @@
   <message msgid="basic hssid" msgstr="Hidden" />
   <message msgid="basic isolated" msgstr="Uplink Isolated" />
   <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name" />
-  <message msgid="basic apisolated" msgstr="AP Isolation" />
-  <message msgid="basic mbssidapisolated" msgstr="MBSSID AP Isolation" />
+  <message msgid="basic mbssidapisolated" msgstr="SSID to SSID Isolation" />
   <message msgid="basic bssid" msgstr="BSSID (2.4GHz)" />
   <message msgid="basic ac bssid" msgstr="BSSID (5GHz)" />
   <message msgid="basic frequency" msgstr="Channel (2.4GHz)" />

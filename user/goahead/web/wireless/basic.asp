@@ -969,12 +969,6 @@ function wirelessModeChange(form)
 	show_abg_rate(form);
 }
 
-function switch_hidden_ssid(form)
-{
-	for (i=0; i<bssid_num; i++)
-		form.hssid[i].checked = form.broadcastssid.options.selectedIndex == 1;
-}
-
 function CheckValue(form)
 {
 	return true;
@@ -1159,15 +1153,8 @@ function CheckValue(form)
             <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
             <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove"></td>
           </tr>
-          <tr>
-            <td class="head" colspan="1" id="basicBroadcastSSID">Broadcast Network Name</td>
-            <td colspan="5"><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
           <tr id="div_mbssidapisolated">
-            <td class="head" colspan="1" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
+            <td class="head" colspan="1" id="basicMBSSIDApIsolated">SSID to SSID Isolation</td>
             <td colspan="5"><select name="mbssidapisolated" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
