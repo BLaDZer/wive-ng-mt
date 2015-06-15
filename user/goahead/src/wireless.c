@@ -1097,8 +1097,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		if ((tmp < 0) || (tmp > MAX_NUMBER_OF_MAC))
 			tmp = MAX_NUMBER_OF_MAC;
 		sprintf(stanum_array, "%d", tmp);
-		i = 2;
-		for (i; i <= ssid_num; i++)
+		for (i=2; i <= ssid_num; i++)
 			sprintf(stanum_array, "%s;%d", stanum_array, tmp);
 		nvram_bufset(RT2860_NVRAM, "MaxStaNum", stanum_array);
 	}
@@ -1108,8 +1107,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		if ((tmp < 10) || (tmp > 300))
 			tmp = 60;
 		sprintf(keepalive_array, "%d", tmp);
-		i = 2;
-		for (i; i <= ssid_num; i++)
+		for (i=2; i <= ssid_num; i++)
 			sprintf(keepalive_array, "%s;%d", keepalive_array, tmp);
 		nvram_bufset(RT2860_NVRAM, "StationKeepAlive", keepalive_array);
 	}
