@@ -118,7 +118,7 @@
   <message msgid="adv wmm configuration" msgstr="Конфигурация WMM" />
   <message msgid="adv multicast2unicast converter" msgstr="Конвертер Multicast-to-Unicast (IGMP Snooping)" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
-  <message msgid="adv maximum stations number" msgstr="Максимальное колличество клиентов" />
+  <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов" />
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
   <message msgid="adv idletimeout" msgstr="Время ожидания" />
   <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
