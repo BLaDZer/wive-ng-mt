@@ -143,8 +143,8 @@ function insertExtChannelOption(form)
 }
 
 function AutoChannelSelect(form) {
-	autoselectmode_g = <% getCfgZero(1, "AutoChannelSelectMode"); %> - 1;
-	autoselectmode_a = <% getCfgZero(1, "AutoChannelSelectModeINIC"); %> - 1;
+	autoselectmode_g = <% getCfgZero(1, "AutoChannelSelect"); %> - 1;
+	autoselectmode_a = <% getCfgZero(1, "AutoChannelSelectINIC"); %> - 1;
 
 	if (autoselectmode_g < 0) {
 		autoselectmode_g = 0;

@@ -795,30 +795,22 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	if (CHK_IF_SET(sz11aChannel)) {
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
-		if (!strncmp(sz11aChannel, "0", 2)) {
-		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "1");
-		    if (CHK_IF_SET(a_autoselect))
-		    	nvram_bufset(RT2860_NVRAM, "AutoChannelSelectModeINIC", a_autoselect);
+		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", a_autoselect);
 		    needrescan=1;
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
-		    if (CHK_IF_SET(a_autoselect))
-		    	nvram_bufset(RT2860_NVRAM, "AutoChannelSelectModeINIC", "0");
 		}
 
 	}
 #endif
 	if (CHK_IF_SET(sz11gChannel)) {
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
-		if (!strncmp(sz11gChannel, "0", 2)) {
-		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "1");
-		    if (CHK_IF_SET(g_autoselect))
-		    	nvram_bufset(RT2860_NVRAM, "AutoChannelSelectMode", g_autoselect);
+		if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
+		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", g_autoselect);
 		    needrescan=1;
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
-		    if (CHK_IF_SET(g_autoselect))
-		    	nvram_bufset(RT2860_NVRAM, "AutoChannelSelectMode", "0");
 		}
 	}
 
