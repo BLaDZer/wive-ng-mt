@@ -991,23 +991,24 @@
 29) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
 30) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
 31) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
-32) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
-33) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
-34) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
-35) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-36) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-37) kernel: mips: irq: use DECLARE_BITMAP.<br>
-38) kernel: mips: bmips: fix bmips_wr_vec().<br>
-39) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-40) kernel: mips: c-r4k: fix typo in probe_scache().<br>
-41) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
-42) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-43) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-44) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-45) kernel: mm: remove free_page_mlock.<br>
-46) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-47) kernel: net: udp: fix behavior of wrong checksums.<br>
-48) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+32) kernel: ralink wifi: 7610: fix beacon IE cap update.<br>
+33) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
+34) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+35) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
+36) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+37) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+38) kernel: mips: irq: use DECLARE_BITMAP.<br>
+39) kernel: mips: bmips: fix bmips_wr_vec().<br>
+40) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+41) kernel: mips: c-r4k: fix typo in probe_scache().<br>
+42) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
+43) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+44) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+45) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+46) kernel: mm: remove free_page_mlock.<br>
+47) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+48) kernel: net: udp: fix behavior of wrong checksums.<br>
+49) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>

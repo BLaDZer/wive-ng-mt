@@ -564,7 +564,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	}
 #endif /* DOT11_N_SUPPORT */
 
-#if defined(DOT11N_DRAFT3) || defined(DOT11V_WNM_SUPPORT)
 	/* 7.3.2.27 Extended Capabilities IE */
 	{
 		ULONG TmpLen, infoPos;
@@ -611,8 +610,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 			FrameLen += TmpLen;
 		}
 	}
-#endif /* defined(DOT11N_DRAFT3) || defined(DOT11V_WNM_SUPPORT) */
-
 
 	if ((pMbss->AuthMode == Ndis802_11AuthModeWPA) || 
 		(pMbss->AuthMode == Ndis802_11AuthModeWPAPSK))
