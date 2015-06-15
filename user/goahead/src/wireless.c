@@ -37,6 +37,8 @@ static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
+static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
+static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -183,6 +185,8 @@ void formDefineWireless(void)
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
+	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
+	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
 	websFormDefine(T("AntennaDiversity"), AntennaDiversity);
@@ -633,15 +637,15 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *hssid, *isolated_ssid, *mbssidapisolated;
+	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
 #endif
-	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, needrescan = 0;
-	char	hidden_ssid[16] = "", noforwarding[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, needrescan = 0;;
+	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -664,6 +668,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
+	mbcastisolated_ssid = websGetVar(wp, T("mbcastisolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
@@ -696,7 +701,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	new_bssid_num = atoi(bssid_num);
 
-	if (new_bssid_num < 1 || new_bssid_num > 8) {
+	if (new_bssid_num < 1 || new_bssid_num > 5) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
 		return;
 	}
@@ -746,7 +751,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
 	// Fill-in SSID
-	for (ssid=0; ssid<8; ssid++)
+	for (ssid=0; ssid<6; ssid++)
 	{
 		ssid_web_var[6] = ssid  + '1';
 		ssid_nvram_var[4] = i  + '0';
@@ -764,6 +769,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 				sprintf(noforwarding, "%s%s", noforwarding, "1;");
 			else
 				sprintf(noforwarding, "%s%s", noforwarding, "0;");
+
+			if (strchr(mbcastisolated_ssid, ssid + '0') != NULL)
+				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "1;");
+			else
+				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "0;");
+
 			i++;
 		}
 	}
@@ -776,6 +787,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "HideSSID", hidden_ssid);
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
+	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -992,10 +1004,11 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessAdvanced */
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble,
+	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
-	int ssid_num, wlan_mode;
+	int ssid_num, wlan_mode, tmp, i;
 	char_t *submitUrl;
+	char stanum_array[32] = "", keepalive_array[32] = "";
 
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	char_t	*m2u_enable, *mcast_mcs;
@@ -1039,6 +1052,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	ids_enable = websGetVar(wp, T("ids_enable"), T("0"));
 #endif
+	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
+	keepalive = websGetVar(wp, T("keepalive"), T("0"));
+	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
 
 	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
 	if (NULL != num_s)
@@ -1065,6 +1081,36 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	//txburst and burst mode set in one place
 	nvram_bufset(RT2860_NVRAM, "TxBurst", tx_burst);
 	nvram_bufset(RT2860_NVRAM, "BurstMode", tx_burst);
+
+	if (NULL != maxstanum) {
+		tmp = atoi(maxstanum);
+		if ((tmp < 0) || (tmp > MAX_NUMBER_OF_MAC))
+			tmp = MAX_NUMBER_OF_MAC;
+		sprintf(stanum_array, "%d", tmp);
+		i = 2;
+		for (i; i <= ssid_num; i++)
+			sprintf(stanum_array, "%s;%d", stanum_array, tmp);
+		nvram_bufset(RT2860_NVRAM, "MaxStaNum", stanum_array);
+	}
+
+	if (NULL != keepalive) {
+		tmp = atoi(keepalive);
+		if ((tmp < 10) || (tmp > 300))
+			tmp = 60;
+		sprintf(keepalive_array, "%d", tmp);
+		i = 2;
+		for (i; i <= ssid_num; i++)
+			sprintf(keepalive_array, "%s;%d", keepalive_array, tmp);
+		nvram_bufset(RT2860_NVRAM, "StationKeepAlive", keepalive_array);
+	}
+
+	if (NULL != idletimeout) {
+		tmp = atoi(idletimeout);
+		if ((tmp < 60) || (tmp > 300))
+			tmp = 60;
+		nvram_bufset(RT2860_NVRAM, "IdleTimeout", idletimeout);
+	}
+
 #if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 	nvram_bufset(RT2860_NVRAM, "HT_BSSCoexistence", ht_bss_coex);
 	if (strcmp(ht_bss_coex, "1") == 0)
@@ -1865,4 +1911,14 @@ static void disconnectSta(webs_t wp, char_t *path, char_t *query)
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
+}
+
+static int getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv)
+{
+	return websWrite(wp, T("%d"), MAX_NUMBER_OF_MAC);
+}
+
+static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
+{
+	return websWrite(wp, T("%d"), MAX_NUMBER_OF_BSSID);
 }

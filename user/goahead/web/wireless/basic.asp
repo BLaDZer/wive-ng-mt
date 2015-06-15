@@ -64,6 +64,8 @@ var is5gh_1t1r = '<% is5gh_1t1r(); %>';
 
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
+var bssid_num = 1*'<% getBSSIDNum(); %>';
+
 var ChannelList_24G =
 [
 	"2412MHz (Channel 1)",
@@ -171,18 +173,18 @@ function ssidDisplay(form)
 	for (var i=1; i < count; i++)
 		showElement('div_hssid' + i);
 
-	// Allow only 8 BSSID's
+	// Allow only 4 BSSID's
 	showElement(form.addBSSIDbtn, no_mbssid);
-	form.addBSSIDbtn.disabled = ((count >= 8) || (no_mbssid));
+	form.addBSSIDbtn.disabled = ((count >= bssid_num) || (no_mbssid));
 }
 
 function ssidAdd(form)
 {
 	var count = form.bssid_num.value * 1;
-	if (count < 8)
+	if (count < bssid_num)
 	{
 		showElement('div_hssid' + count);
-		enableElements(form.addBSSIDbtn, ((++count) < 8));
+		enableElements(form.addBSSIDbtn, ((++count) < bssid_num));
 		form.bssid_num.value = count;
 		form.elements['mssid_' + count].value = '';
 		form.hssid[count-1].checked = false;
@@ -215,7 +217,7 @@ function ssidRemove(form, index)
 	form.bssid_num.value = count;
 
 	// Enable controls
-	enableElements(form.addBSSIDbtn, (count < 8));
+	enableElements(form.addBSSIDbtn, (count < bssid_num));
 }
 
 function initTranslation()
@@ -230,38 +232,15 @@ function initTranslation()
 	_TR("basicNetMode", "basic network mode");
 	_TR("basicSSID", "basic ssid");
 	_TR("basicAcSSID", "basic ac ssid");
-	_TR("basicHSSID0", "basic hssid");
-	_TR("basicHSSID1", "basic hssid");
-	_TR("basicHSSID2", "basic hssid");
-	_TR("basicHSSID3", "basic hssid");
-	_TR("basicHSSID4", "basic hssid");
-	_TR("basicHSSID5", "basic hssid");
-	_TR("basicHSSID6", "basic hssid");
-	_TR("basicHSSID7", "basic hssid");
-	_TR("basicMSSID1", "basic multiple ssid");
-	_TR("basicMSSID2", "basic multiple ssid");
-	_TR("basicMSSID3", "basic multiple ssid");
-	_TR("basicMSSID4", "basic multiple ssid");
-	_TR("basicMSSID5", "basic multiple ssid");
-	_TR("basicMSSID6", "basic multiple ssid");
-	_TR("basicMSSID7", "basic multiple ssid");
+	_TR("basicHSSID", "basic hssid");
+	_TR("basicNetworkName", "basic network name");
 	_TR("basicBroadcastSSID", "basic broadcast ssid");
-	_TR("basicApIsolated", "basic apisolated");
-	_TR("basicIsolatedSSID0", "basic isolated");
+	_TR("basicIsolatedSSID", "basic isolated");
 	_TR("basicIsolatedSSID1", "basic isolated");
-	_TR("basicIsolatedSSID2", "basic isolated");
-	_TR("basicIsolatedSSID3", "basic isolated");
-	_TR("basicIsolatedSSID4", "basic isolated");
-	_TR("basicIsolatedSSID5", "basic isolated");
-	_TR("basicIsolatedSSID6", "basic isolated");
-	_TR("basicIsolatedSSID7", "basic isolated");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
 	_TR("basicMBSSIDMode", "basic mbssid mode");
 	_TR("basicWDSMode", "basic wds mode");
 	_TR("basicAPCLIMode", "basic apcli mode");
-
-	_TR("basicBSSID", "basic bssid");
-	_TR("basicAcBSSID", "basic ac bssid");
 
 	_TR("basicFreqA", "basic frequency ac");
 	_TR("basicFreqAAuto", "basic frequency auto");
@@ -302,6 +281,7 @@ function initTranslation()
 	_TR("basicVHTSignalMode", "basic signal mode");
 	_TR("basicSTBC", "basic stbc");
 	_TR("basicLDPC", "basic ldpc");
+	_TR("basicAction", "basic action");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
@@ -316,7 +296,11 @@ function initTranslation()
 	var elements = document.getElementsByTagName('input');
   	for (var i = 0; i < elements.length; i++)
     	if (elements[i].id == "basicRemove")
-			elements[i].innerHTML = _("button remove");
+			elements[i].value = _("button remove");
+	var elements = document.getElementsByTagName('span');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "basicMSSID")
+			elements[i].innerHTML = _("basic multiple ssid");
 }
 
 var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
@@ -392,7 +376,7 @@ function initValue()
 	// Hide & disable elements
 	hideElement("div_11a_basic");
 	hideElement("div_11a_name");
-	hideElement("div_11a_mac");
+	hideElement("basicAcBSSID");
 	hideElement("div_txpw_ac");
 	hideElement("div_11a_channel");
 	hideElement("div_11g_channel");
@@ -510,7 +494,7 @@ function initValue()
 
 		showElementEx("div_11a_basic", style_display_on());
 		showElementEx("div_11a_name", style_display_on());
-		showElementEx("div_11a_mac", style_display_on());
+		showElementEx("basicAcBSSID", style_display_on());
 		showElementEx("div_txpw_ac", style_display_on());
 
 		form.sz11aChannel.disabled = false;
@@ -556,15 +540,20 @@ function initValue()
 	var HiddenSSIDArray = HiddenSSID.split(";");
 
 	form.broadcastssid.options.selectedIndex = (HiddenSSID.indexOf("0") >= 0) ? 1 : 0;
-	for (i=0; i<8; i++)
+	for (i=0; i<bssid_num; i++)
 		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
 
 	var APIsolated = '<% getCfgZero(1, "NoForwarding"); %>';
 	var APIsolatedArray = APIsolated.split(";");
 
-	form.apisolated.options.selectedIndex = (APIsolated.indexOf("1") >= 0) ? 1 : 0;
-	for (i=0; i<8; i++)
+	for (i=0; i<bssid_num; i++)
 		form.isolated_ssid[i].checked = (APIsolatedArray[i] == "1");
+
+	var NoForwardingMBCast = '<% getCfgZero(1, "NoForwardingMBCast"); %>';
+	var NoForwardingMBCastArray = NoForwardingMBCast.split(";");
+
+	for (i=0; i<bssid_num; i++)
+		form.mbcastisolated_ssid[i].checked = (NoForwardingMBCastArray[i] == "1");
 
 	if (1*ht_bw == 0)
 	{
@@ -982,14 +971,8 @@ function wirelessModeChange(form)
 
 function switch_hidden_ssid(form)
 {
-	for (i=0; i<8; i++)
+	for (i=0; i<bssid_num; i++)
 		form.hssid[i].checked = form.broadcastssid.options.selectedIndex == 1;
-}
-
-function switch_isolated_ssid(form)
-{
-	for (i=0; i<8; i++)
-		form.isolated_ssid[i].checked = form.apisolated.options.selectedIndex == 1;
 }
 
 function CheckValue(form)
@@ -1010,48 +993,50 @@ function CheckValue(form)
       <form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="2" id="basicWirelessNet">Wireless Network</td>
+            <td class="title" colspan="3" id="basicWirelessNet">Wireless Network</td>
           </tr>
           <tr id="basicWirelessEnabledAc">
-            <td class="head">Wireless (5GHz)</td>
-	    	<td><select name="radioWirelessEnabledAc" class="half">
+            <td class="head" colspan="1">Wireless (5GHz)</td>
+	    	<td colspan="1"><select name="radioWirelessEnabledAc" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
+            <td colspan="1">BSSID: <% getWlanCurrentMacAC(); %></td>
           </tr>
           <tr id="basicWirelessEnabled">
-            <td class="head">Wireless (2.4GHz)</td>
-            <td><select name="radioWirelessEnabled" class="half">
+            <td class="head" colspan="1">Wireless (2.4GHz)</td>
+            <td colspan="1"><select name="radioWirelessEnabled" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
+            <td colspan="1">BSSID: <% getWlanCurrentMac(); %></td>
           <tr id="div_11a_basic" name="div_11a_basic">
-            <td class="head" id="basicAcNetMode">Network Mode (5GHz)</td>
-            <td><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
+            <td class="head" id="basicAcNetMode" colspan="1">Network Mode (5GHz)</td>
+            <td colspan="2"><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicNetMode">Network Mode (2.4GHz)</td>
-            <td><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
+            <td class="head" id="basicNetMode" colspan="1">Network Mode (2.4GHz)</td>
+            <td colspan="2"><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
               </select></td>
           </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
-            <td class="head"><font id="basicFreqA">Channel (5GHz)</font></td>
-            <td><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
+            <td class="head" colspan="1" id="basicFreqA">Channel (5GHz)</td>
+            <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqAAuto">AutoSelect</option>
                 <% getWlan11aChannels(); %>
               </select></td>
           </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
-            <td class="head"><font id="basicFreqG">Channel (2.4GHz)</font></td>
-            <td><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
+            <td class="head" colspan="1" id="basicFreqG">Channel (2.4GHz)</td>
+            <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
               </select></td>
           </tr>
           <tr id="div_txpw_ac" name="div_txpw_ac">
-            <td class="head" id="basicTxPWAc">TX Power (5GHz)</td>
-            <td><select name="tx_powerac" class="half">
+            <td class="head" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
+            <td colspan="2"><select name="tx_powerac" class="half">
                 <option value="5">5%</option>
                 <option value="10">10%</option>
                 <option value="20">20%</option>
@@ -1061,8 +1046,8 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="div_txpw" name="div_txpw">
-            <td class="head" id="basicTxPW">TX Power (2.4GHz)</td>
-            <td><select name="tx_power" class="half">
+            <td class="head" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
+            <td colspan="2"><select name="tx_power" class="half">
                 <option value="5">5%</option>
                 <option value="10">10%</option>
                 <option value="20">20%</option>
@@ -1072,141 +1057,126 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="basicMbssidModeT">
-            <td class="head" id="basicMBSSIDMode">MBSSID Mode</td>
-            <td><select name="mbssid_mode" size="1" class="half">
+            <td class="head" id="basicMBSSIDMode" colspan="1">MBSSID Mode</td>
+            <td colspan="2"><select name="mbssid_mode" size="1" class="half">
                 <option value="ra" selected id="1">2.4GHz</option>
                 <option value="rai" id="2">5GHz</option>
 		</select></td>
           </tr>
           <tr id="basicWdsModeT">
-            <td class="head" id="basicWDSMode">WDS Mode</td>
-            <td><select name="wds_mode" size="1" class="half">
+            <td class="head" id="basicWDSMode" colspan="1">WDS Mode</td>
+            <td colspan="2"><select name="wds_mode" size="1" class="half">
                 <option value="wds" selected id="1">2.4GHz</option>
                 <option value="wdsi" id="2">5GHz</option>
 		</select></td>
           </tr>
           <tr id="basicApcliModeT">
-            <td class="head" id="basicAPCLIMode">APCLI Mode</td>
-            <td><select name="apcli_mode" size="1" class="half">
+            <td class="head" id="basicAPCLIMode" colspan="1">APCLI Mode</td>
+            <td colspan="2"><select name="apcli_mode" size="1" class="half">
                 <option value="apcli0" selected id="1">2.4GHz</option>
                 <option value="apclii0" id="2">5GHz</option>
 		</select></td>
           </tr>
-          <tr id="div_11a_name" name="div_11a_name">
-            <td class="head" id="basicAcSSID">Network Name (5GHz)</td>
-            <td><input class="mid" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
-          </tr>
-          <tr>
-            <td class="head" id="basicSSID">Network Name (2.4GHz)</td>
-            <td><input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
-              <input class="mid" type="text" name="mssid_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1"); %>">
-              <font id="basicHSSID0">Hidden</font>
-              <input type="checkbox" name="hssid" value="0">
-              &nbsp; <font id="basicIsolatedSSID0">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="0">
-              <input type="button" onClick="ssidAdd(this.form);" class="normal" name="addBSSIDbtn" value="Add BSSID" id="basicAddBSSID">
-          </tr>
-          <tr id="div_hssid1" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID1">Multiple SSID</font>1</td>
-            <td><input class="mid" name="mssid_2" maxlength="32" value="<% getCfgGeneral(1, "SSID2"); %>">
-              <font id="basicHSSID1">Hidden</font>
-              <input type=checkbox name=hssid value="1">
-              &nbsp; <font id="basicIsolatedSSID1">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="1">
-              <input type="button" onClick="ssidRemove(this.form, 1);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid2" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID2">Multiple SSID</font>2</td>
-            <td><input class="mid" type="text" name="mssid_3" maxlength="32" value="<% getCfgGeneral(1, "SSID3"); %>">
-              <font id="basicHSSID2">Hidden</font>
-              <input type="checkbox" name="hssid" value="2">
-              &nbsp; <font id="basicIsolatedSSID2">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="2">
-              <input type="button" onClick="ssidRemove(this.form, 2);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid3" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID3">Multiple SSID</font>3</td>
-            <td><input class="mid" type="text" name="mssid_4" maxlength="32" value="<% getCfgGeneral(1, "SSID4"); %>">
-              <font id="basicHSSID3">Hidden</font>
-              <input type="checkbox" name="hssid" value="3">
-              &nbsp; <font id="basicIsolatedSSID3">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="3">
-              <input type="button" onClick="ssidRemove(this.form, 3);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid4" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID4">Multiple SSID</font>4</td>
-            <td><input class="mid" type="text" name="mssid_5" maxlength="32" value="<% getCfgGeneral(1, "SSID5"); %>">
-              <font id="basicHSSID4">Hidden</font>
-              <input type="checkbox" name="hssid" value="4">
-              &nbsp; <font id="basicIsolatedSSID4">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="4">
-              <input type="button" onClick="ssidRemove(this.form, 4);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid5" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID5">Multiple SSID</font>5</td>
-            <td><input class="mid" type="text" name="mssid_6" maxlength="32" value="<% getCfgGeneral(1, "SSID6"); %>">
-              <font id="basicHSSID5">Hidden</font>
-              <input type="checkbox" name="hssid" value="5">
-              &nbsp; <font id="basicIsolatedSSID5">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="5">
-              <input type="button" onClick="ssidRemove(this.form, 5);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid6" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID6">Multiple SSID</font>6</td>
-            <td><input class="mid" type="text" name="mssid_7" maxlength="32" value="<% getCfgGeneral(1, "SSID7"); %>">
-              <font id="basicHSSID6">Hidden</font>
-              <input type="checkbox" name="hssid" value="6">
-              &nbsp; <font id="basicIsolatedSSID6">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="6">
-              <input type="button" onClick="ssidRemove(this.form, 6);" class="normal" value="Remove" id="basicRemove">
-          </tr>
-          <tr id="div_hssid7" style="display:none;">
-            <td class="head">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font id="basicMSSID7">Multiple SSID</font>7</td>
-            <td><input class="mid" type="text" name="mssid_8" maxlength="32" value="<% getCfgGeneral(1, "SSID8"); %>">
-              <font id="basicHSSID7">Hidden</font>
-              <input type="checkbox" name="hssid" value="7">
-              &nbsp; <font id="basicIsolatedSSID7">Isolated</font>
-              <input type="checkbox" name="isolated_ssid" value="7">
-              <input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove">
-          </tr>
         </table>
         <table id="div_all" name="div_all" class="form" style="display:none;">
           <tr>
-            <td class="title" colspan="2" id="basicWirelessSettings">Basic Settings</td>
-          </tr>
-          <tr id="div_11a_mac" name="div_11a_mac">
-            <td class="head" id="basicAcBSSID">BSSID (5GHz)</td>
-            <td><% getWlanCurrentMacAC(); %></td>
+            <td class="title" colspan="6" id="basicWirelessSettings">Basic Settings</td>
           </tr>
           <tr>
-            <td class="head" id="basicBSSID">BSSID (2.4GHz)</td>
-            <td><% getWlanCurrentMac(); %></td>
-          </tr>
-          <tr>
-            <td class="head" id="basicBroadcastSSID">Broadcast Network Name</td>
-            <td><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr>
-            <td class="head" id="basicApIsolated">AP Isolation</td>
-            <td><select name="apisolated" class="half" onChange="switch_isolated_ssid(this.form);">
+            <td class="head" colspan="1" id="basicBroadcastSSID">Broadcast Network Name</td>
+            <td colspan="5"><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="div_mbssidapisolated">
-            <td class="head" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
-            <td><select name="mbssidapisolated" class="half">
+            <td class="head" colspan="1" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
+            <td colspan="5"><select name="mbssidapisolated" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="div_abg_rate">
-            <td class="head"><font id="basicRate">Rate</font></td>
-            <td><select name="abg_rate" class="half">
+            <td class="head" colspan="1" id="basicRate">Rate</td>
+            <td colspan="5"><select name="abg_rate" class="half">
               </select></td>
+          </tr>
+          <tr>
+          	<td class="title" colspan="1"></td>
+          	<td class="title" colspan="1" id="basicNetworkName">Network name</td>
+          	<td class="title" colspan="1" id="basicHSSID">Hidden</td>
+          	<td class="title" colspan="1" id="basicIsolatedSSID">Isolated</td>
+			<td class="title" colspan="1"><span id="basicMulticast">Multicast</span><br><span id="basicBroadcast">Broadcast</span><br><span id="basicIsolatedSSID1">Isolated</span></td>
+			<td class="title" colspan="1" id="basicAction">Action</td>
+          </tr>
+          <tr id="div_11a_name" name="div_11a_name">
+            <td class="head" id="basicAcSSID" colspan="1">Network Name (5GHz)</td>
+            <td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
+          </tr>
+          <tr>
+            <td class="head" id="basicSSID" colspan="1">Network Name (2.4GHz)</td>
+            <input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
+            <td colspan="1"><input class="normal" type="text" name="mssid_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="0"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="0"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="0"></td>
+            <td colspan="1"><input type="button" onClick="ssidAdd(this.form);" class="normal" name="addBSSIDbtn" value="Add BSSID" id="basicAddBSSID"></td>
+          </tr>
+          <tr id="div_hssid1" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>1</td>
+            <td colspan="1"><input class="normal" name="mssid_2" maxlength="32" value="<% getCfgGeneral(1, "SSID2"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="1"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="1"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="1"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 1);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid2" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>2</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_3" maxlength="32" value="<% getCfgGeneral(1, "SSID3"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="2"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="2"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="2"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 2);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid3" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>3</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_4" maxlength="32" value="<% getCfgGeneral(1, "SSID4"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="3"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="3"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="3"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 3);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid4" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>4</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_5" maxlength="32" value="<% getCfgGeneral(1, "SSID5"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="4"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="4"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="4"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 4);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid5" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>5</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_6" maxlength="32" value="<% getCfgGeneral(1, "SSID6"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="5"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="5"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="5"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 5);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid6" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>6</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_7" maxlength="32" value="<% getCfgGeneral(1, "SSID7"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="6"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="6"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="6"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 6);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr id="div_hssid7" style="display:none;">
+            <td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>7</td>
+            <td colspan="1"><input class="normal" type="text" name="mssid_8" maxlength="32" value="<% getCfgGeneral(1, "SSID8"); %>"></td>
+            <td colspan="1"><input type="checkbox" name="hssid" value="7"></td>
+            <td colspan="1"><input type="checkbox" name="isolated_ssid" value="7"></td>
+            <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
+            <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove"></td>
           </tr>
         </table>
         <table id="div_11n" name="div_11n" class="form" style="display:none;">

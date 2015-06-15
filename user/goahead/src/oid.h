@@ -177,6 +177,7 @@
 #define CISCO_OUI           0x00964000
 
 #define MAX_NUMBER_OF_MAC       32
+#define MAX_NUMBER_OF_BSSID     4
 
 typedef unsigned long   NDIS_802_11_FRAGMENTATION_THRESHOLD;
 typedef unsigned long   NDIS_802_11_RTS_THRESHOLD;

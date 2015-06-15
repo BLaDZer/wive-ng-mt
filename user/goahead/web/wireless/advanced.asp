@@ -25,6 +25,9 @@ var video_turbine_built='<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
 var ids_enable_built='<% getIdsEnableBuilt(); %>';
 var ids_enable = '<% getCfgZero(1, "IdsEnable"); %>';
+var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
+var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
+var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
 
 // var htNoiseThresh = '<% getCfgZero(1, "HT_BSSCoexApCntThr"); %>';
 // var htNoiseCoex = '<% getCfgZero(1, "HT_BSSCoexistence"); %>';
@@ -76,8 +79,11 @@ function initTranslation()
 
 	_TR("advMul2UniConver", "adv multicast2unicast converter");
 	_TR("advMul2Uni", "adv multicast2unicast");
-	_TR("advMul2UniEnable", "wireless enable");
-	_TR("advMul2UniDisable", "wireless disable");
+  _TR("advMul2UniEnable", "wireless enable");
+  _TR("advMul2UniDisable", "wireless disable");
+  _TR("advMaxStaNum", "adv maximum stations number");
+  _TR("advStationKeepAlive", "adv station keep alive");
+  _TR("advIdleTimeout", "adv idletimeout");
 
 	_TRV("advApply", "wireless apply");
 	_TRV("advCancel", "wireless cancel");
@@ -151,6 +157,9 @@ function initValue()
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
 
+  form.maxstanum.value = maxstanum;
+  form.keepalive.value = keepalive;
+  form.idletimeout.value = idletimeout;
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
 //	form.HT_BSSCoexistence[1].checked = (htNoiseCoex != '1');
@@ -231,6 +240,30 @@ function CheckValue(form)
 		return false;
 	}
 
+  if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > <% getMaxStaNum(); %>)
+  {
+    alert('Invalid Maximum stations number');
+    form.maxstanum.focus();
+    form.maxstanum.select();
+    return false;
+  }
+
+  if (isNaN(form.keepalive.value) || form.keepalive.value < 10 || form.keepalive.value > 300)
+  {
+    alert('Invalid Station Keep-Alive parametr');
+    form.keepalive.focus();
+    form.keepalive.select();
+    return false;
+  }
+
+  if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 300)
+  {
+    alert('Invalid IdleTimeout parametr');
+    form.idletimeout.focus();
+    form.idletimeout.select();
+    return false;
+  }
+
 //	if (form.HT_BSSCoexistence[0].checked)
 //	{
 //		var v = form.HT_BSSCoexApCntThr.value;
@@ -287,6 +320,18 @@ function CheckValue(form)
             <td class="head" id="advRTS">RTS Threshold</td>
             <td><input type="text" name="rts" class="half" maxlength="4" value="<% getCfgZero(1, "RTSThreshold"); %>">
               <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
+          </tr>
+          <tr>
+            <td class="head" id="advMaxStaNum">Maximum stations number</td>
+            <td><input type="text" name="maxstanum" class="half" maxlength="3" value=""><font color="#808080">(1 - <% getMaxStaNum(); %>)</font></td>
+          </tr>
+          <tr>
+            <td class="head" id="advStationKeepAlive">Station Keep-Alive</td>
+            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">s<font color="#808080">(10 - 300)</font></td>
+          </tr>
+          <tr>
+            <td class="head" id="advIdleTimeout">IdleTimeout</td>
+            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080">(60 - 300)</font></td>
           </tr>
 <!--
           <tr>

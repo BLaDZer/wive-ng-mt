@@ -975,49 +975,49 @@
 13) goahead: fix memory leak at wireless->basic page parse.<br>
 14) goahead: fix drop security settings after mode change.<br>
 15) goahead: webui: fix ntp status.<br>
-16) init.d: cleanup led blink direct calls.<br>
-17) init.d: read sysled gpio from kernel config.<br>
-18) init.d: more early btn reset check start.<br>
-19) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
-20) init.d: add basic fast roaming parametrs tune support for 76x2 drivers.<br>
-21) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
-22) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
-23) kernel: ralink wifi: 7610: add region 22 in a band.<br>
-24) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
-25) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
-26) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
-27) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
-28) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
-29) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
-29) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
-30) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-31) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-32) kernel: mips: irq: use DECLARE_BITMAP.<br>
-33) kernel: mips: bmips: fix bmips_wr_vec().<br>
-34) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-35) kernel: mips: c-r4k: fix typo in probe_scache().<br>
-36) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
-37) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-38) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-39) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-40) kernel: mm: remove free_page_mlock.<br>
-41) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-42) kernel: net: udp: fix behavior of wrong checksums.<br>
-43) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+16) goahead: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+17) goahead: add MaxStaNum for limit maximum connection.<br>
+18) goahead: add StationKeepAlive for tune interval to send alive packets to clients for detect dead link.<br>
+19) goahead: add IdleTimeout for tune timeout station idle before link set as down.<br>
+20) init.d: cleanup led blink direct calls.<br>
+21) init.d: read sysled gpio from kernel config.<br>
+22) init.d: more early btn reset check start.<br>
+23) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
+24) init.d: add basic fast roaming parametrs tune support for 76x2 drivers.<br>
+25) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
+26) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
+27) kernel: ralink wifi: 7610: add region 22 in a band.<br>
+28) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
+29) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
+30) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
+31) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
+32) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
+33) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+34) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
+35) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+36) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+37) kernel: mips: irq: use DECLARE_BITMAP.<br>
+38) kernel: mips: bmips: fix bmips_wr_vec().<br>
+39) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+40) kernel: mips: c-r4k: fix typo in probe_scache().<br>
+41) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
+42) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+43) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+44) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+45) kernel: mm: remove free_page_mlock.<br>
+46) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+47) kernel: net: udp: fix behavior of wrong checksums.<br>
+48) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>TODO:</b><br>
-1) need add in wireless->basic->SSID Settings NoForwardingMBCast option (this option isolate client2client BCAST traffic) per bssid (; as divider).<br>
-2) need add in wireless->advanced MaxStaNum (range 1..MAX_NUMBER_OF_MAC, see oid.h) per bssid (; as divider).<br>
-3) need add in wireless->advanced StationKeepAlive (range 10..300sec) per bssid (; as divider).<br>
-4) need add in wireless->advances IdleTimeout (range 60..300sec).<br>
-5) need limit wds and bssid num = 4.<br>
-6) need expand AutoChannelSel to add mode 2 and set by default if autoselect enabled (1 - select channel by STA count now default, 2 - select channel by rssi).<br>
-7) full russian ui (work end ~90%).<br>
-8) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
-9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-10) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-11) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+1) need expand AutoChannelSel to add mode 2 and set by default if autoselect enabled (1 - select channel by STA count now default, 2 - select channel by rssi).<br>
+2) full russian ui (work end ~90%).<br>
+3) need add subchannel select for 5GHz module.<br>
+4) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
+5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+6) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>

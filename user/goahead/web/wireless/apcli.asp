@@ -8,8 +8,12 @@
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/lang/b28n.js"></script>
 <title>AP Client Feature</title>
 <script type="text/javascript">
+
+Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 function SecurityModeSwitch(form)
 {
@@ -29,6 +33,7 @@ function initValue()
 	form.apcli_bridge.checked = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';
 
 	SecurityModeSwitch(form);
+  InitTranslation();
 }
 
 function CheckValue(form)
@@ -76,6 +81,11 @@ function CheckValue(form)
 		}
 	}
 }
+
+function initTranslation()
+{
+}
+
 </script>
 </head>
 

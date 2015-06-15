@@ -40,7 +40,7 @@
   <message msgid="basic multiple ssid" msgstr="Множественный SSID" />
   <message msgid="basic hssid" msgstr="Скрытый" />
   <message msgid="basic isolated" msgstr="Изолированный" />
-  <message msgid="basic broadcast ssid" msgstr="Широковещательная рассылка SSID" />
+  <message msgid="basic broadcast ssid" msgstr="Вещание SSID" />
   <message msgid="basic apisolated" msgstr="Изолированная AP" />
   <message msgid="basic mbssidapisolated" msgstr="MBSSID изоляция AP" />
   <message msgid="basic bssid" msgstr="BSSID (2,4ГГц)" />
@@ -76,6 +76,8 @@
   <message msgid="basic block coding" msgstr="Блочное пространственно-временное кодирование" />
   <message msgid="basic signal mode" msgstr="Сигнальный режим полосы" />
   <message msgid="basic vht phy mode" msgstr="Физический режим VHT" />
+  <message msgid="basic action" msgstr="Действие" />
+  <message msgid="basic network name" msgstr="Имя сети" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />
@@ -116,6 +118,9 @@
   <message msgid="adv wmm configuration" msgstr="Конфигурация WMM" />
   <message msgid="adv multicast2unicast converter" msgstr="Конвертер Multicast-to-Unicast (IGMP Snooping)" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
+  <message msgid="adv maximum stations number" msgstr="Максимальное колличество клиентов" />
+  <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
+  <message msgid="adv idletimeout" msgstr="Время ожидания" />
   <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
   <message msgid="wmm sta parameter" msgstr="Настройки WMM станции" />
 

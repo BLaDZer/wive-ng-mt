@@ -77,6 +77,8 @@
   <message msgid="basic block coding" msgstr="Space-Time Block Coding" />
   <message msgid="basic signal mode" msgstr="BandWidth Signaling Mode" />
   <message msgid="basic vht phy mode" msgstr="VHT Physical Mode" />
+  <message msgid="basic action" msgstr="Action" />
+  <message msgid="basic network name" msgstr="Network Name" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />
@@ -110,6 +112,9 @@
 
   <message msgid="adv multicast2unicast converter" msgstr="Multicast-to-Unicast Converter (IGMP Snooping)" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
+  <message msgid="adv maximum stations number" msgstr="Maximum stations number" />
+  <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
+  <message msgid="adv idletimeout" msgstr="Idle Timeout" />
 
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />
