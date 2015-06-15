@@ -539,7 +539,6 @@ function initValue()
 	var HiddenSSID  = '<% getCfgZero(1, "HideSSID"); %>';
 	var HiddenSSIDArray = HiddenSSID.split(";");
 
-	form.broadcastssid.options.selectedIndex = (HiddenSSID.indexOf("0") >= 0) ? 1 : 0;
 	for (i=0; i<bssid_num; i++)
 		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
 
