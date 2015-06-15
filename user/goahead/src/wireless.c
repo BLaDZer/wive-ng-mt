@@ -701,7 +701,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	new_bssid_num = atoi(bssid_num);
 
-	if (new_bssid_num < 1 || new_bssid_num > 5) {
+	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
 		return;
 	}
@@ -751,7 +751,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
 	// Fill-in SSID
-	for (ssid=0; ssid<6; ssid++)
+	for (ssid=0; ssid<MAX_NUMBER_OF_BSSID; ssid++)
 	{
 		ssid_web_var[6] = ssid  + '1';
 		ssid_nvram_var[4] = i  + '0';
