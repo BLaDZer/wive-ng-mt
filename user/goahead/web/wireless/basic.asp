@@ -142,12 +142,31 @@ function insertExtChannelOption(form)
 	}
 }
 
+function AutoChannelSelect(form) {
+	autoselectmode_g = <% getCfgZero(1, "AutoChannelSelectMode"); %> - 1;
+	autoselectmode_a = <% getCfgZero(1, "AutoChannelSelectModeINIC"); %> - 1;
+
+	if (autoselectmode_g < 0) {
+		autoselectmode_g = 0;
+	}
+	if (autoselectmode_a < 0) {
+		autoselectmode_a = 0;
+	}
+
+	form.autoselect_g.options.selectedIndex = autoselectmode_g;
+	form.autoselect_a.options.selectedIndex = autoselectmode_a;
+
+	displayElement('div_auto_g', (form.sz11gChannel.options.selectedIndex == 0));
+	displayElement('div_auto_a', (form.sz11aChannel.options.selectedIndex == 0));
+}
+
 function ChannelOnChange(form)
 {
 	var w_mode = form.wirelessmode.value;
 	displayElement('extension_channel', (form.n_bandwidth.options.selectedIndex == 1) && (((1*w_mode == 6) || (1*w_mode == 7)) || ((1*w_mode == 3) || (1*w_mode == 4))));
 	// add subchannel
 	insertExtChannelOption(form);
+	AutoChannelSelect(form);
 }
 
 function Channel_BandWidth_onClick()
@@ -301,6 +320,18 @@ function initTranslation()
   	for (var i = 0; i < elements.length; i++)
     	if (elements[i].id == "basicMSSID")
 			elements[i].innerHTML = _("basic multiple ssid");
+	var elements = document.getElementsByTagName('span');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "basicAutoChannelMode")
+			elements[i].innerHTML = _("basic auto channel mode");
+	var elements = document.getElementsByTagName('option');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "basicAutoBySTA")
+			elements[i].innerHTML = _("basic select by sta");
+	var elements = document.getElementsByTagName('option');
+  	for (var i = 0; i < elements.length; i++)
+    	if (elements[i].id == "basicAutoByRSSI")
+			elements[i].innerHTML = _("basic select by rssi");
 }
 
 var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
@@ -697,9 +728,9 @@ function initValue()
 	{
 		if (ht_mode == "1")
 			form.n_mode.options.selectedIndex = 1;
-// WTF??? How to choose the third of the two states?
-//		else if (ht_mode == "2")
-//			form.n_mode[2].checked = true;
+			// WTF??? How to choose the third of the two states?
+			//		else if (ht_mode == "2")
+			//			form.n_mode[2].checked = true;
 		else
 			form.n_mode.options.selectedIndex = 0;
 	} else
@@ -791,6 +822,10 @@ function initValue()
 
 	form.ac_bw.options.selectedIndex = vht_bw;
 	form.ac_bwsig.options.selectedIndex = vht_bwsig;
+
+	hideElement("div_auto_a");
+	hideElement("div_auto_g");
+	AutoChannelSelect(form);
 }
 
 function show_abg_rate(form)
@@ -976,7 +1011,7 @@ function CheckValue(form)
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="basicTitle">SSID Settings </h1>
@@ -1025,6 +1060,20 @@ function CheckValue(form)
             <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
+              </select></td>
+          </tr>
+          <tr id="div_auto_a" name="div_auto_a">
+            <td class="head" colspan="1"><span id="basicAutoChannelMode">Auto Channel Select Mode</span> (5GHz)</td>
+            <td colspan="2"><select name="autoselect_a" class="mid">
+                <option value="1" id="basicAutoBySTA">by STA count</option>
+                <option value="2" id="basicAutoByRSSI">by RSSI</option>
+              </select></td>
+          </tr>
+          <tr id="div_auto_g" name="div_auto_g">
+            <td class="head" colspan="1"><span id="basicAutoChannelMode">Auto Channel Select Mode</span> (2.4GHz)</td>
+            <td colspan="2"><select name="autoselect_g" class="mid">
+                <option value="1" id="basicAutoBySTA">by STA count</option>
+                <option value="2" id="basicAutoByRSSI">by rssi</option>
               </select></td>
           </tr>
           <tr id="div_txpw_ac" name="div_txpw_ac">
