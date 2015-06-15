@@ -112,7 +112,7 @@
 
   <message msgid="adv multicast2unicast converter" msgstr="Multicast-to-Unicast Converter (IGMP Snooping)" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
-  <message msgid="adv maximum stations number" msgstr="Maximum stations number" />
+  <message msgid="adv maximum stations number" msgstr="Maximum clients per SSID" />
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
   <message msgid="adv idletimeout" msgstr="Idle Timeout" />
 

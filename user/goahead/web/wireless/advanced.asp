@@ -322,16 +322,16 @@ function CheckValue(form)
               <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
           </tr>
           <tr>
-            <td class="head" id="advMaxStaNum">Maximum stations number</td>
-            <td><input type="text" name="maxstanum" class="half" maxlength="3" value=""><font color="#808080">(1 - <% getMaxStaNum(); %>)</font></td>
+            <td class="head" id="advMaxStaNum">Maximum clients per SSID</td>
+            <td><input type="text" name="maxstanum" class="half" maxlength="3" value=""><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
           </tr>
           <tr>
             <td class="head" id="advStationKeepAlive">Station Keep-Alive</td>
-            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">s<font color="#808080">(10 - 300)</font></td>
+            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">s<font color="#808080"> (10 - 300)</font></td>
           </tr>
           <tr>
             <td class="head" id="advIdleTimeout">IdleTimeout</td>
-            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080">(60 - 300)</font></td>
+            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080"> (60 - 300)</font></td>
           </tr>
 <!--
           <tr>

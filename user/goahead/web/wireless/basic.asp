@@ -1083,25 +1083,6 @@ function CheckValue(form)
             <td class="title" colspan="6" id="basicWirelessSettings">Basic Settings</td>
           </tr>
           <tr>
-            <td class="head" colspan="1" id="basicBroadcastSSID">Broadcast Network Name</td>
-            <td colspan="5"><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="div_mbssidapisolated">
-            <td class="head" colspan="1" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
-            <td colspan="5"><select name="mbssidapisolated" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="div_abg_rate">
-            <td class="head" colspan="1" id="basicRate">Rate</td>
-            <td colspan="5"><select name="abg_rate" class="half">
-              </select></td>
-          </tr>
-          <tr>
           	<td class="title" colspan="1"></td>
           	<td class="title" colspan="1" id="basicNetworkName">Network name</td>
           	<td class="title" colspan="1" id="basicHSSID">Hidden</td>
@@ -1177,6 +1158,25 @@ function CheckValue(form)
             <td colspan="1"><input type="checkbox" name="isolated_ssid" value="7"></td>
             <td colspan="1"><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
             <td colspan="1"><input type="button" onClick="ssidRemove(this.form, 7);" class="normal" value="Remove" id="basicRemove"></td>
+          </tr>
+          <tr>
+            <td class="head" colspan="1" id="basicBroadcastSSID">Broadcast Network Name</td>
+            <td colspan="5"><select name="broadcastssid" class="half" onChange="switch_hidden_ssid(this.form);">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="div_mbssidapisolated">
+            <td class="head" colspan="1" id="basicMBSSIDApIsolated">MBSSID AP Isolation</td>
+            <td colspan="5"><select name="mbssidapisolated" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="div_abg_rate">
+            <td class="head" colspan="1" id="basicRate">Rate</td>
+            <td colspan="5"><select name="abg_rate" class="half">
+              </select></td>
           </tr>
         </table>
         <table id="div_11n" name="div_11n" class="form" style="display:none;">
