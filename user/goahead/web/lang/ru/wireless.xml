@@ -39,7 +39,7 @@
   <message msgid="basic ac ssid" msgstr="Имя сети (5ГГц)" />
   <message msgid="basic multiple ssid" msgstr="Множественный SSID" />
   <message msgid="basic hssid" msgstr="Скрытый" />
-  <message msgid="basic isolated" msgstr="Изолированный" />
+  <message msgid="basic isolated" msgstr="Изолированный аплинк" />
   <message msgid="basic broadcast ssid" msgstr="Вещание SSID" />
   <message msgid="basic apisolated" msgstr="Изолированная AP" />
   <message msgid="basic mbssidapisolated" msgstr="MBSSID изоляция AP" />

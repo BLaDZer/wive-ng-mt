@@ -39,7 +39,7 @@
   <message msgid="basic ac ssid" msgstr="Network Name (5GHz)" />
   <message msgid="basic multiple ssid" msgstr="Multiple SSID" />
   <message msgid="basic hssid" msgstr="Hidden" />
-  <message msgid="basic isolated" msgstr="Isolated" />
+  <message msgid="basic isolated" msgstr="Uplink Isolated" />
   <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name" />
   <message msgid="basic apisolated" msgstr="AP Isolation" />
   <message msgid="basic mbssidapisolated" msgstr="MBSSID AP Isolation" />

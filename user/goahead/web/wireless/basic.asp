@@ -1086,7 +1086,7 @@ function CheckValue(form)
           	<td class="title" colspan="1"></td>
           	<td class="title" colspan="1" id="basicNetworkName">Network name</td>
           	<td class="title" colspan="1" id="basicHSSID">Hidden</td>
-          	<td class="title" colspan="1" id="basicIsolatedSSID">Isolated</td>
+          	<td class="title" colspan="1" id="basicIsolatedSSID">Uplink Isolated</td>
 			<td class="title" colspan="1"><span id="basicMulticast">Multicast</span><br><span id="basicBroadcast">Broadcast</span><br><span id="basicIsolatedSSID1">Isolated</span></td>
 			<td class="title" colspan="1" id="basicAction">Action</td>
           </tr>
