@@ -635,14 +635,12 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 50000);
+	outputTimerForReload(wp, 80000);
 
-	sync();
-	system("fs nvramreset > /dev/null 2>&1");
-	system("fs restore > /dev/null 2>&1");
-
-	sync();
 	Sleep(2);
+	sync();
+	system("(fs nvramreset && fs restore) > /dev/null 2>&1");
+	sync();
 	reboot(RB_AUTOBOOT);
 }
 
