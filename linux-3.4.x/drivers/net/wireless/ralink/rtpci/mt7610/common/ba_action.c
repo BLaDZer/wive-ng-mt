@@ -698,10 +698,8 @@ BOOLEAN BARecSessionAdd(
 
 	BAWinSize = min(((UCHAR)pFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
 
-	/* Intel patch*/
-	if (BAWinSize == 0)
-	{
-		BAWinSize = 64;
+	if (BAWinSize == 0) {
+		BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
 	}
 
 	/* get software BA rec array index, Idx*/
@@ -1334,9 +1332,8 @@ VOID PeerAddBAReqAction(
 	ADDframe.BaParm.AMSDUSupported = 0;
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
-	if (ADDframe.BaParm.BufSize == 0)
-	{
-		ADDframe.BaParm.BufSize = 64; 
+	if (ADDframe.BaParm.BufSize == 0) {
+		ADDframe.BaParm.BufSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
 	}
 	ADDframe.TimeOutValue = 0; /* pAddreqFrame->TimeOutValue; */
 
