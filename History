@@ -1020,12 +1020,13 @@
 <br>
 <br>
 <b>TODO:</b><br>
-1) full russian ui (work end ~90%).<br>
-2) need add subchannel select for 5GHz module.<br>
-3) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
-4) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-5) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-6) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+1) need add in wireless->basic->rescan algo bloks variable ACSCheckTime/ACSCheckTimeINIC (rescan interval 0-24h, default 24).<br>
+2) full russian ui (work end ~90%).<br>
+3) need add subchannel select for 5GHz module.<br>
+4) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
+5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+6) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>

@@ -644,7 +644,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
 #endif
-	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, needrescan = 0;;
+	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
 
@@ -797,9 +797,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
 		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", a_autoselect);
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "24");
 		    needrescan=1;
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
 
 	}
@@ -808,17 +810,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
 		if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", g_autoselect);
-		    needrescan=1;
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "24");
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
 		}
 	}
-
-	/* if one or more wifi modules auto channel scan enabled must set rescan interval=24h */
-	if (needrescan)
-	    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "24");
-	else
-	    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
 
 	// Rate for a, b, g
 	if (strncmp(abg_rate, "", 1))
