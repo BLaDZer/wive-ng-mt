@@ -1208,6 +1208,8 @@ static inline PUCHAR AP_Build_AMSDU_Frame_Header(
 				else
 					((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 2;
 
+					/* Clear NDP Announcement */
+					((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 0;
 			}
 			else if (pMacEntry->TxSndgType == SNDG_TYPE_NDP)
 			{
@@ -1221,10 +1223,10 @@ static inline PUCHAR AP_Build_AMSDU_Frame_Header(
 					((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 2;
 
 					/* Set NDP Announcement */
-				((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 1;
+					((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 1;
 
-				pTxBlk->TxNDPSndgBW = pMacEntry->sndgBW;
-				pTxBlk->TxNDPSndgMcs = pMacEntry->sndgMcs;
+					pTxBlk->TxNDPSndgBW = pMacEntry->sndgBW;
+					pTxBlk->TxNDPSndgMcs = pMacEntry->sndgMcs;
 			}
 
 			pTxBlk->TxSndgPkt = pMacEntry->TxSndgType;
@@ -1477,6 +1479,8 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					else
 							((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 2;
 
+							/* Clear NDP Announcement */
+							((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 0;
 				}
 				else if (pMacEntry->TxSndgType == SNDG_TYPE_NDP)
 				{
@@ -1490,7 +1494,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 							((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 2;
 
 					/* Set NDP Announcement */
-				((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 1;
+					((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 1;
 
 					pTxBlk->TxNDPSndgBW = pMacEntry->sndgBW;
 					pTxBlk->TxNDPSndgMcs = pMacEntry->sndgMcs;
@@ -1977,6 +1981,7 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 #endif /* MAC_REPEATER_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
+	MAC_TABLE_ENTRY *pMacEntry = pTxBlk->pMacEntry;
 	
 	ASSERT((pTxBlk->TxPacketList.Number > 1));
 
@@ -2014,6 +2019,10 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 
 			/* NOTE: TxWI->TxWIMPDUByteCnt will be updated after final frame was handled. */
 			RTMPWriteTxWI_Data(pAd, (TXWI_STRUC *)(&pTxBlk->HeaderBuf[TXINFO_SIZE]), pTxBlk);
+
+			if (RTMP_GET_PACKET_LOWRATE(pTxBlk->pPacket))
+				if (pMacEntry) 
+					pMacEntry->isCached = FALSE;
 		}
 		else
 		{
@@ -2312,6 +2321,9 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 						((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 3;
 					else
 						((PHT_CONTROL)pHeaderBufPtr)->CSISTEERING = 2;
+
+						/* Clear NDP Announcement */
+						((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 0;
 
 				}
 				else if (pMacEntry->TxSndgType == SNDG_TYPE_NDP)
