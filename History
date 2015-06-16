@@ -1019,7 +1019,7 @@
 2) dnsmasq: up to 2.73 version.<br>
 3) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
 4) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
-4) 
+5) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
 <br>
 <br>
 <b>TODO:</b><br>
