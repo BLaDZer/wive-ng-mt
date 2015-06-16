@@ -1016,6 +1016,7 @@
 <br>
 <b>3.2.x</b><br>
 1) toolchain: update gcc to 20150614 4.8.5-RC version form git, update headers.<br>
+2) dnsmasq: up to 2.73 version.<br>
 <br>
 <br>
 <b>TODO:</b><br>
