@@ -1014,6 +1014,10 @@
 52) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
+<b>3.2.x</b><br>
+1) toolchain: update gcc to 20150614 4.8.5-RC version form git, update headers.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~90%).<br>
 2) need add subchannel select for 5GHz module.<br>
