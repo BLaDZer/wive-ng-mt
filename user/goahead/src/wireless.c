@@ -798,7 +798,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", a_autoselect);
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "24");
-		    needrescan=1;
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
