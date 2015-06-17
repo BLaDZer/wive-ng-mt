@@ -638,7 +638,7 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
-	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect;
+	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
@@ -689,6 +689,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	n_badecline = websGetVar(wp, T("n_badecline"), T("0"));
 	g_autoselect = websGetVar(wp, T("autoselect_g"), T("0"));
 	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
+	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
+	a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
@@ -797,7 +799,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
 		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", a_autoselect);
-		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "24");
+		    if (CHK_IF_SET(a_checktime))
+		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", a_checktime);
+		    else
+		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "24");
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
@@ -809,7 +814,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
 		if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", g_autoselect);
-		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "24");
+		    if (CHK_IF_SET(g_checktime))
+		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTime", g_checktime);
+		    else
+		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "24");
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");

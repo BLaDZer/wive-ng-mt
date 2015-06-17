@@ -143,45 +143,45 @@ function insertExtChannelOption(form)
 }
 
 function AutoChannelSelect(form) {
-	autoselectmode_g = <% getCfgZero(1, "AutoChannelSelect"); %> - 1;
-	autoselectmode_a = <% getCfgZero(1, "AutoChannelSelectINIC"); %> - 1;
+	var autoselectmode_g = 1*<% getCfgZero(1, "AutoChannelSelect"); %>;
+	var autoselectmode_a = 1*<% getCfgZero(1, "AutoChannelSelectINIC"); %>;
+	var checktime_g = <% getCfgZero(1, "ACSCheckTime"); %> - 1;
+	var checktime_a = <% getCfgZero(1, "ACSCheckTimeINIC"); %> - 1;
 
-	if (autoselectmode_g < 0) {
-		autoselectmode_g = 0;
+	form.autoselect_g.options.selectedIndex = (autoselectmode_g <= 1) ? 0 : 1;
+	form.autoselect_a.options.selectedIndex = (autoselectmode_a <= 1) ? 0 : 1;
+	form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
+	form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
+
+	displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
+	displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
+	displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
+	displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
+}
+
+function GExtChannelDisplay(form) {
+	var mode = form.wirelessmode.value * 1;
+	var channel = form.sz11gChannel.value * 1;
+	var bandwidth = form.n_bandwidth.value * 1;
+
+	displayElement('extension_channel', (channel != 0) && (bandwidth != 0) && (((mode == 6) || (mode == 7)) || mode == 9))
+	enableElements(('form.n_extcha'), (channel != 0) && (bandwidth != 0) && (((mode == 6) || (mode == 7)) || mode == 9));
+}
+
+function initChecktime(form) {
+	for (var hour = 1; hour <= 24; hour++) {
+		form.checktime_a.options[hour-1] = new Option(hour, hour);
+		form.checktime_g.options[hour-1] = new Option(hour, hour);
 	}
-	if (autoselectmode_a < 0) {
-		autoselectmode_a = 0;
-	}
-
-	form.autoselect_g.options.selectedIndex = autoselectmode_g;
-	form.autoselect_a.options.selectedIndex = autoselectmode_a;
-
-	displayElement('div_auto_g', (form.sz11gChannel.options.selectedIndex == 0));
-	displayElement('div_auto_a', (form.sz11aChannel.options.selectedIndex == 0));
 }
 
 function ChannelOnChange(form)
 {
 	var w_mode = form.wirelessmode.value;
-	displayElement('extension_channel', (form.n_bandwidth.options.selectedIndex == 1) && (((1*w_mode == 6) || (1*w_mode == 7)) || ((1*w_mode == 3) || (1*w_mode == 4))));
+	GExtChannelDisplay(form);
 	// add subchannel
 	insertExtChannelOption(form);
 	AutoChannelSelect(form);
-}
-
-function Channel_BandWidth_onClick()
-{
-	var form_basic = document.wireless_basic;
-	var w_mode = form_basic.wirelessmode.value;
-
-	if (form_basic.n_bandwidth.options.selectedIndex == 0)
-	{
-		hideElement("extension_channel");
-		form_basic.n_extcha.disabled = true;
-	} else {
-		showElementEx("extension_channel", style_display_on());
-		form_basic.n_extcha.disabled = false;
-	}
 }
 
 function ssidDisplay(form)
@@ -586,18 +586,9 @@ function initValue()
 	for (i=0; i<bssid_num; i++)
 		form.mbcastisolated_ssid[i].checked = (NoForwardingMBCastArray[i] == "1");
 
-	if (1*ht_bw == 0)
-	{
-		form.n_bandwidth.options.selectedIndex = 0;
-		form.n_extcha.disabled      = true;
-		hideElement("extension_channel");
-	}
-	else
-	{
-		form.n_bandwidth.options.selectedIndex = 1;
-		form.n_extcha.disabled      = false;
-		showElementEx("extension_channel", style_display_on());
-	}
+	form.n_bandwidth.options.selectedIndex = 1*ht_bw;
+	initChecktime(form);
+	GExtChannelDisplay(form);
 
 	channel_index = 1*channel_index;
 	form.sz11gChannel.options.selectedIndex = channel_index;
@@ -776,15 +767,6 @@ function initValue()
 		form.n_extcha.options.selectedIndex = 0;
 	}
 	
-	if ((wmode == "9") || (wmode == "6"))
-	{
-		if (form.sz11gChannel.options.selectedIndex == 0)
-		{
-			hideElement("extension_channel");
-			form.n_extcha.disabled = true;
-		}
-	}
-
 	form.n_amsdu.options.selectedIndex = (ht_amsdu ==  "0") ? 0 : 1;
 	form.n_autoba.options.selectedIndex = (ht_autoba == "0") ? 0 : 1;
 	form.n_badecline.options.selectedIndex = (ht_badecline == "0") ? 0 : 1;
@@ -959,7 +941,7 @@ function wirelessModeChange(form)
 	showElementEx("div_11g_channel", style_display_on());
 
 	insertExtChannelOption(form);
-	displayElement("extension_channel", form.sz11gChannel.options.selectedIndex != 0);
+	GExtChannelDisplay(form);
 
         // Display HT modes
 	if ((wmode*1) >= 5)
@@ -1054,6 +1036,10 @@ function CheckValue(form)
             <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqAAuto">AutoSelect</option>
                 <% getWlan11aChannels(); %>
+              </select>&nbsp;&nbsp;<select name="autoselect_a" class="mid" id="autoselect_a">
+                <option value="1" id="basicAutoBySTA">by STA count</option>
+                <option value="2" id="basicAutoByRSSI">by RSSI</option>
+              </select>&nbsp;&nbsp;<select name="checktime_a" class="short" id="checktime_a">
               </select></td>
           </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
@@ -1061,20 +1047,10 @@ function CheckValue(form)
             <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
-              </select></td>
-          </tr>
-          <tr id="div_auto_a" name="div_auto_a">
-            <td class="head" colspan="1"><span id="basicAutoChannelMode">Auto Channel Select Mode</span> (5GHz)</td>
-            <td colspan="2"><select name="autoselect_a" class="mid">
-                <option value="1" id="basicAutoBySTA">by STA count</option>
-                <option value="2" id="basicAutoByRSSI">by RSSI</option>
-              </select></td>
-          </tr>
-          <tr id="div_auto_g" name="div_auto_g">
-            <td class="head" colspan="1"><span id="basicAutoChannelMode">Auto Channel Select Mode</span> (2.4GHz)</td>
-            <td colspan="2"><select name="autoselect_g" class="mid">
+              </select>&nbsp;&nbsp;<select name="autoselect_g" class="mid" id="autoselect_g">
                 <option value="1" id="basicAutoBySTA">by STA count</option>
                 <option value="2" id="basicAutoByRSSI">by rssi</option>
+              </select>&nbsp;&nbsp;<select name="checktime_g" class="short" id="checktime_g">
               </select></td>
           </tr>
           <tr id="div_txpw_ac" name="div_txpw_ac">
@@ -1221,7 +1197,7 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
-            <td><select name="n_bandwidth" class="half" onClick="Channel_BandWidth_onClick();">
+            <td><select name="n_bandwidth" class="half" onClick="GExtChannelDisplay(this.form);">
                 <option value="0">20MHz</option>
                 <option value="1">20/40MHz</option>
               </select></td>
