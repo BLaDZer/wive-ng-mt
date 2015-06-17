@@ -981,38 +981,39 @@
 19) goahead: add IdleTimeout for tune timeout station idle before link set as down.<br>
 20) goahead: add select AutoChannel algoritm (1 - select channel by STA count now default, 2 - select channel by rssi).<br>
 21) goahead: add ACSCheckTime (rescan interval 0-24h, default 24).<br>
-22) goahead: fix load defaults from webui.<br>
-23) init.d: cleanup led blink direct calls.<br>
-24) init.d: read sysled gpio from kernel config.<br>
-25) init.d: more early btn reset check start.<br>
-26) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
-27) init.d: add basic fast roaming parametrs tune support for 76x2 drivers.<br>
-28) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
-29) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
-30) kernel: ralink wifi: 7610: add region 22 in a band.<br>
-31) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
-32) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
-33) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
-34) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
-35) kernel: ralink wifi: 7610: fix beacon IE cap update.<br>
-36) kernel: ralink wifi: 7610: add lost Intel IOT workaround.<br>
-37) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
-38) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
-39) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
-40) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
-41) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
-42) kernel: mips: irq: use DECLARE_BITMAP.<br>
-43) kernel: mips: bmips: fix bmips_wr_vec().<br>
-44) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-45) kernel: mips: c-r4k: fix typo in probe_scache().<br>
-46) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
-47) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
-48) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
-49) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
-50) kernel: mm: remove free_page_mlock.<br>
-51) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
-52) kernel: net: udp: fix behavior of wrong checksums.<br>
-53) kernel: net: bridge: fix multicast router rlist endless loop.<br>
+22) goahead: fix extchannel select.<br>
+23) goahead: fix load defaults from webui.<br>
+24) init.d: cleanup led blink direct calls.<br>
+25) init.d: read sysled gpio from kernel config.<br>
+26) init.d: more early btn reset check start.<br>
+27) init.d: dnsmasq: remove -f (--filterwin2k) no needed now (need only for ppp dial-on-demand support now).<br>
+28) init.d: add basic fast roaming parametrs tune support for 76x2 drivers.<br>
+29) kernel: ralink wifi: 7610: add AC mode network type (fix modes in aplist after scan).<br>
+30) kernel: ralink wifi: 7610: increase tx ring size to 256.<br>
+31) kernel: ralink wifi: 7610: add region 22 in a band.<br>
+32) kernel: ralink wifi: 7610: add check payload length in AES/WEP/TKIP.<br>
+33) kernel: ralink wifi: 7610: fix set flags in mcs lut.<br>
+34) kernel: ralink wifi: 7610: for all mcs <= 9 need use 1T1R mode rate table.<br>
+35) kernel: ralink wifi: 7610: cleanup VHT_IE if legacy client connect.<br>
+36) kernel: ralink wifi: 7610: fix beacon IE cap update.<br>
+37) kernel: ralink wifi: 7610: add lost Intel IOT workaround.<br>
+38) kernel: ralink wifi: xxxx: fix potentional null pointer dereference in WMM processing.<br>
+39) kernel: ralink wifi: xxxx: add NoForwardingMBCast option for isolate client2client BCAST traffic.<br>
+40) kernel: ralink wifi: xxxx: review and cleanup dyncvga and microvawe oven detect support.<br>
+41) kernel: ralink_gpio: fix use gpio pins shared with extphy/pa.<br>
+42) kernel: ralink_arch: NR_IRQS is no longer dependent from BITS_PER_LONG.<br>
+43) kernel: mips: irq: use DECLARE_BITMAP.<br>
+44) kernel: mips: bmips: fix bmips_wr_vec().<br>
+45) kernel: mips: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+46) kernel: mips: c-r4k: fix typo in probe_scache().<br>
+47) kernel: mips: fix enabling of DEBUG_STACKOVERFLOW.<br>
+48) kernel: jhash: update jhash_[321]words functions to use correct initval.<br>
+49) kernel: sfhash: add generic inline helper for more gcc optimize effect.<br>
+50) kernel: mm: use clear_page_mlock() in page_remove_rmap().<br>
+51) kernel: mm: remove free_page_mlock.<br>
+52) kernel: mm: remove unevictable_pgs_mlockfreed.<br>
+53) kernel: net: udp: fix behavior of wrong checksums.<br>
+54) kernel: net: bridge: fix multicast router rlist endless loop.<br>
 <br>
 <br>
 <b>3.2.x</b><br>

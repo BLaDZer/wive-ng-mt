@@ -101,44 +101,38 @@ function addOption(list, text, value)
 function insertExtChannelOption(form)
 {
 	var wmode = form.wirelessmode.value * 1;
-	var option_length;
+	var length = form.sz11gChannel.options.length;
+	var CurrentCh = form.sz11gChannel.value * 1;
+	var x = form.n_extcha;
+	var tmp_value = x.value; // Store value
 
 	if (wmode >= 5)
 	{
-		var x = document.getElementById('n_extcha');
-		var tmp_value = x.value; // Store value
 		x.options.length = 0;
 
-		var CurrentCh = form.sz11gChannel.value * 1;
-		var option_length = form.sz11gChannel.options.length;
-
-		if ((CurrentCh >= 1) && (CurrentCh <= 4))
+		if ((CurrentCh >= 1) && (CurrentCh <= 4)) {
 			addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-		else if ((CurrentCh >= 5) && (CurrentCh <= 7))
-		{
+		} else if ((CurrentCh >= 5) && (CurrentCh <= 7)) {
 			addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
 			addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-		}
-		else if ((CurrentCh >= 8) && (CurrentCh <= 9))
-		{
+		} else if ((CurrentCh >= 8) && (CurrentCh <= 9)) {
 			addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-
-			if (option_length >= 14)
+			if (length >= 14)
 				addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-		}
-		else if (CurrentCh == 10)
-		{
+		} else if (CurrentCh == 10) {
 			addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-
-			if (option_length > 14)
+			if (length > 14)
 				addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-		}
-		else if (CurrentCh >= 11)
+		} else if (CurrentCh >= 11) {
 			addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-		else
+		} else {
 			addOption(x, "Auto Select", 0);
+		}
 
-		x.value = tmp_value;
+		if (1*ht_extcha == 1)
+			x.options.selectedIndex = (x.options.length > 1) ? 1 : 0;
+		else
+			x.options.selectedIndex = 0;
 	}
 }
 
@@ -164,8 +158,8 @@ function GExtChannelDisplay(form) {
 	var channel = form.sz11gChannel.value * 1;
 	var bandwidth = form.n_bandwidth.value * 1;
 
-	displayElement('extension_channel', (channel != 0) && (bandwidth != 0) && (((mode == 6) || (mode == 7)) || mode == 9))
-	enableElements(('form.n_extcha'), (channel != 0) && (bandwidth != 0) && (((mode == 6) || (mode == 7)) || mode == 9));
+	displayElement('extension_channel', (channel != 0) && (bandwidth != 0) && (mode >= 5));
+	enableElements(('form.n_extcha'), (channel != 0) && (bandwidth != 0) && (mode >= 5));
 }
 
 function initChecktime(form) {
@@ -178,9 +172,9 @@ function initChecktime(form) {
 function ChannelOnChange(form)
 {
 	var w_mode = form.wirelessmode.value;
-	GExtChannelDisplay(form);
 	// add subchannel
 	insertExtChannelOption(form);
+	GExtChannelDisplay(form);
 	AutoChannelSelect(form);
 }
 
@@ -755,18 +749,6 @@ function initValue()
 
 	form.n_rdg.options.selectedIndex = (ht_rdg == "0") ? 0 : 1;
 
-	var option_length = form.n_extcha.options.length;
-
-	if (1*ht_extcha == 0) {
-		if (option_length > 1)
-			form.n_extcha.options.selectedIndex = 0;
-	} else if (1*ht_extcha == 1) {
-		if (option_length > 1)
-			form.n_extcha.options.selectedIndex = 1;
-	} else {
-		form.n_extcha.options.selectedIndex = 0;
-	}
-	
 	form.n_amsdu.options.selectedIndex = (ht_amsdu ==  "0") ? 0 : 1;
 	form.n_autoba.options.selectedIndex = (ht_autoba == "0") ? 0 : 1;
 	form.n_badecline.options.selectedIndex = (ht_badecline == "0") ? 0 : 1;
