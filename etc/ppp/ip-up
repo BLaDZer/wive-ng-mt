@@ -143,4 +143,3 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
     if [ -d /etc/ppp/ip-up.d -a -x /bin/run-parts ]; then
 	run-parts /etc/ppp/ip-up.d/
     fi
-$LOG "All is start OK"

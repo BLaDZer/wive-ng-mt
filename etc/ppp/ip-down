@@ -101,5 +101,3 @@ eval `nvram_buf_get 2860 vpnPeerDNS chilli_net`
     fi
     #remove exported vpn_if_name
     rm -f /tmp/vpn_if_name
-
-$LOG "Down is OK"
