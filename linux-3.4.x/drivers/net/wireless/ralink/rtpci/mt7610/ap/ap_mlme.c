@@ -561,8 +561,10 @@ VOID APAsicEvaluateRxAnt(
 VOID APAsicRxAntEvalTimeout(
 	PRTMP_ADAPTER	pAd) 
 {
-	CHAR			larger = -127, rssi0, rssi1, rssi2;
-
+	CHAR			rssi0, rssi1, rssi2;
+#ifdef DOT11N_SS3_SUPPORT
+	CHAR			larger = -127;
+#endif
 #ifdef RALINK_ATE
 	if (ATE_ON(pAd))
 		return;
