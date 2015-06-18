@@ -53,4 +53,8 @@ if [ "$l2tp_srv_proxyarp" = "1" ] || [ "$parproutedEnabled" = "1" ]; then
     sysctl -wq net.ipv4.conf.$PPP_IFACE.proxy_arp=1
 fi
 
+#run scrips from /etc/ppp-l2tpsrv/ip-up.d
 export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
+if [ -d /etc/ppp-l2tpsrv/ip-up.d -a -x /bin/run-parts ]; then
+    run-parts /etc/ppp-l2tpsrv/ip-up.d/
+fi

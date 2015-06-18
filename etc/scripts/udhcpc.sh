@@ -326,5 +326,9 @@ case "$1" in
 	fi
 	# reenable forward for paranoid users
 	sysctl -wq net.ipv4.conf.all.forwarding=1
+	#run scrips from /etc/udhcpc.d
+	if [ -d /etc/udhcpc.d -a -x /bin/run-parts ]; then
+	    run-parts /etc/udhcpc.d/
+	fi
     ;;
 esac
