@@ -267,18 +267,20 @@ static int gen_wifi_config(int mode, int genmode)
 		if (!inic) {
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(TxPower);
-		    FPRINT_NUM(AutoChannelSelect);
-		    FPRINT_NUM(ACSCheckTime);
 		    FPRINT_NUM(Channel);
+		    FPRINT_NUM(AutoChannelSelect);
+		    FPRINT_STR(AutoChannelSkipList);
+		    FPRINT_NUM(ACSCheckTime);
 		    FPRINT_NUM(BasicRate);
 		    FPRINT_STR(SSID1);
 		    FPRINT_STR(FixedTxMode);
 		} else {
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
 		    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
-		    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
-		    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_bufget(mode, "ACSCheckTimeINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
+		    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
+		    fprintf(fp, "AutoChannelSkipList=%d\n", atoi(nvram_bufget(mode, "AutoChannelSkipListINIC")));
+		    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_bufget(mode, "ACSCheckTimeINIC")));
 		    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
 		    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
 		    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
@@ -313,7 +315,6 @@ static int gen_wifi_config(int mode, int genmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
-		FPRINT_STR(AutoChannelSkipList);
 		FPRINT_NUM(CountryRegion);
 		FPRINT_NUM(CountryRegionABand);
 		FPRINT_STR(CountryCode);

@@ -1019,10 +1019,11 @@
 <b>3.2.x</b><br>
 1) toolchain: update gcc to 20150614 4.8.5-RC version form git, update headers.<br>
 2) dnsmasq: up to 2.73 version.<br>
-3) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
-4) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
-5) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
-6) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+3) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
+4) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
+5) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
+6) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
+7) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 <br>
 <br>
 <b>TODO:</b><br>
