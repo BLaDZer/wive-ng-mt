@@ -40,6 +40,7 @@ MaxSPLength=3
 APTxop=0;0;94;47
 AuthMode=OPEN
 AutoChannelSelect=0
+AutoChannelSkipList=
 ACSCheckTime=0
 AutoConnect=1
 AutoRoaming=0

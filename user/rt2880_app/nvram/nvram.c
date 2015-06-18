@@ -313,6 +313,7 @@ static int gen_wifi_config(int mode, int genmode)
 		}
 		fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
+		FPRINT_STR(AutoChannelSkipList);
 		FPRINT_NUM(CountryRegion);
 		FPRINT_NUM(CountryRegionABand);
 		FPRINT_STR(CountryCode);
