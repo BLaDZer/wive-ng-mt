@@ -585,6 +585,7 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_STR(ApCliKey4Str);
 		FPRINT_NUM(ApCliTxMode);
 		FPRINT_NUM(ApCliTxMcs);
+		FPRINT_NUM(ApCliAPSDCapable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 		FPRINT_NUM(IdsEnable);

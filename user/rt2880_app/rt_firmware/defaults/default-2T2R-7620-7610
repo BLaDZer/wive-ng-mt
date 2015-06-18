@@ -30,6 +30,7 @@ ApCliKey4Type=
 ApCliSsid=Wive-NG-MT
 ApCliTxMcs=33
 ApCliTxMode=
+ApCliAPSDCapable=1
 ApCliWPAPSK=
 ApCliIfName=apcli0
 APCwmax=6;10;4;3
