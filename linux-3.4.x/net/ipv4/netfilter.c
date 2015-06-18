@@ -230,14 +230,7 @@ static int ipv4_netfilter_init(void)
 {
 	return nf_register_afinfo(&nf_ip_afinfo);
 }
-
-static void ipv4_netfilter_fini(void)
-{
-	nf_unregister_afinfo(&nf_ip_afinfo);
-}
-
-module_init(ipv4_netfilter_init);
-module_exit(ipv4_netfilter_fini);
+subsys_initcall(ipv4_netfilter_init);
 
 #ifdef CONFIG_SYSCTL
 struct ctl_path nf_net_ipv4_netfilter_sysctl_path[] = {
