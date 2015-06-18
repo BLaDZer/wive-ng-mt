@@ -349,7 +349,8 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_NUM(PktAggregate);
 		FPRINT_NUM(FragThreshold);
 		FPRINT_STR(AckPolicy);
-		FPRINT_STR(APSDCapable);
+		FPRINT_NUM(APSDCapable);
+		FPRINT_NUM(MaxSPLength);
 		FPRINT_STR(DLSCapable);
 		FPRINT_STR(NoForwarding);
 		FPRINT_STR(NoForwardingMBCast);
