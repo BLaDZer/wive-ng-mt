@@ -9012,6 +9012,7 @@ INT Set_ReptMode_Enable_Proc(
 
 	return TRUE;
 }
+#endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
 /* 
@@ -9057,8 +9058,6 @@ INT Set_ApCli_AutoConnect_Proc(
 	return TRUE;
 }
 #endif  /* APCLI_AUTO_CONNECT_SUPPORT */
-
-#endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef WSC_AP_SUPPORT
 INT Set_AP_WscSsid_Proc(
