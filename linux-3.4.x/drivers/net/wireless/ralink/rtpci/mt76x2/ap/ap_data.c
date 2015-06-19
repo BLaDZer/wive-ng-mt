@@ -1203,8 +1203,11 @@ static inline PUCHAR AP_Build_AMSDU_Frame_Header(
 
 }
 
-
+#ifdef TXBF_SUPPORT
+VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR TxSndgTypePerEntry)
+#else
 VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
+#endif
 {
 	HEADER_802_11 *pHeader_802_11;
 	UCHAR *pHeaderBufPtr;
@@ -1237,7 +1240,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 	pMacEntry = pTxBlk->pMacEntry;
 	if ((pMacEntry->isCached)
 #ifdef TXBF_SUPPORT
-		&& (pMacEntry->TxSndgType == SNDG_TYPE_DISABLE)
+		&& (TxSndgTypePerEntry == SNDG_TYPE_DISABLE)
 #endif /* TXBF_SUPPORT */
 	)
 	{
@@ -1279,7 +1282,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		&& !TX_BLK_TEST_FLAG(pTxBlk, fTX_bSwEncrypt)
 #endif /* SOFT_ENCRYPT */
 #ifdef TXBF_SUPPORT
-		&& (pMacEntry->TxSndgType == SNDG_TYPE_DISABLE)
+		&& (TxSndgTypePerEntry == SNDG_TYPE_DISABLE)
 #endif /* TXBF_SUPPORT */
 	)
 	{
@@ -1355,7 +1358,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		if ((pAd->CommonCfg.bRdg == TRUE) 
 			&& (CLIENT_STATUS_TEST_FLAG(pTxBlk->pMacEntry, fCLIENT_STATUS_RDG_CAPABLE))
 #ifdef TXBF_SUPPORT 
-			&& (pMacEntry->TxSndgType != SNDG_TYPE_NDP)
+			&& (TxSndgTypePerEntry != SNDG_TYPE_NDP)
 #endif /* TXBF_SUPPORT */
 		)
 		{
@@ -1370,7 +1373,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 			pTxBlk->TxSndgPkt = SNDG_TYPE_DISABLE;
 
 			NdisAcquireSpinLock(&pMacEntry->TxSndgLock);
-			if (pMacEntry->TxSndgType >= SNDG_TYPE_SOUNDING)
+			if (TxSndgTypePerEntry >= SNDG_TYPE_SOUNDING)
 			{
 				if (bHTCPlus == FALSE)
 				{
@@ -1378,7 +1381,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					bHTCPlus = TRUE;
 				}
 
-				if (pMacEntry->TxSndgType == SNDG_TYPE_SOUNDING)
+				if (TxSndgTypePerEntry == SNDG_TYPE_SOUNDING)
 				{
 					/* Select compress if supported. Otherwise select noncompress */
 					if (pAd->CommonCfg.ETxBfNoncompress==0 &&
@@ -1391,7 +1394,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 0;
 
 				}
-				else if (pMacEntry->TxSndgType == SNDG_TYPE_NDP)
+				else if (TxSndgTypePerEntry == SNDG_TYPE_NDP)
 				{
 					/* Select compress if supported. Otherwise select noncompress */
 					if ((pAd->CommonCfg.ETxBfNoncompress==0) &&
@@ -1409,8 +1412,8 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					pTxBlk->TxNDPSndgMcs = pMacEntry->sndgMcs;
 				}
 
-				pTxBlk->TxSndgPkt = pMacEntry->TxSndgType;
-				pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
+				pTxBlk->TxSndgPkt = TxSndgTypePerEntry;
+				//pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
 			}
 
 			NdisReleaseSpinLock(&pMacEntry->TxSndgLock);
@@ -1579,6 +1582,9 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 #endif /* VENDOR_FEATURE1_SUPPORT */
 
 		pMacEntry->isCached = TRUE;
+
+		if (RTMP_GET_PACKET_LOWRATE(pTxBlk->pPacket))
+			pMacEntry->isCached = FALSE;
 	}
 
 #ifdef TXBF_SUPPORT
@@ -2095,8 +2101,11 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 }
 #endif /* DOT11_N_SUPPORT */
 
-
+#ifdef TXBF_SUPPORT
+VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR TxSndgTypePerEntry)
+#else
 VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
+#endif
 {
 	HEADER_802_11 *wifi_hdr;
 	UCHAR *pHeaderBufPtr;
@@ -2224,11 +2233,11 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 			pTxBlk->TxSndgPkt = SNDG_TYPE_DISABLE;
 			
 			NdisAcquireSpinLock(&pMacEntry->TxSndgLock);
-			if (pMacEntry->TxSndgType >= SNDG_TYPE_SOUNDING)
+			if (TxSndgTypePerEntry >= SNDG_TYPE_SOUNDING)
 			{
 				NdisZeroMemory(pHeaderBufPtr, sizeof(HT_CONTROL));
 
-				if (pMacEntry->TxSndgType == SNDG_TYPE_SOUNDING)
+				if (TxSndgTypePerEntry == SNDG_TYPE_SOUNDING)
 				{
 					/* Select compress if supported. Otherwise select noncompress */
 					if ((pAd->CommonCfg.ETxBfNoncompress==0) &&
@@ -2241,7 +2250,7 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					((PHT_CONTROL)pHeaderBufPtr)->NDPAnnounce = 0;
 
 				}
-				else if (pMacEntry->TxSndgType == SNDG_TYPE_NDP)
+				else if (TxSndgTypePerEntry == SNDG_TYPE_NDP)
 				{
 					/* Select compress if supported. Otherwise select noncompress */
 					if ((pAd->CommonCfg.ETxBfNoncompress == 0) &&
@@ -2259,8 +2268,8 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 					pTxBlk->TxNDPSndgMcs = pMacEntry->sndgMcs;
 				}
 
-				pTxBlk->TxSndgPkt = pMacEntry->TxSndgType;
-				pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
+				pTxBlk->TxSndgPkt = TxSndgTypePerEntry;
+				//pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
 				bHTCPlus = TRUE;
 			}
 			NdisReleaseSpinLock(&pMacEntry->TxSndgLock);
@@ -3311,7 +3320,7 @@ VOID AP_NDPA_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		MlmeFreeMemory(pAd, buf);
 	}
 
-	pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
+	//pMacEntry->TxSndgType = SNDG_TYPE_DISABLE;
 }
 #endif /* VHT_TXBF_SUPPORT */
 
@@ -3332,7 +3341,11 @@ VOID AP_NDPA_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		None
 	========================================================================
 */
+#ifdef TXBF_SUPPORT
+NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx, UCHAR TxSndgTypePerEntry)
+#else
 NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
+#endif
 {
 	PQUEUE_ENTRY pQEntry;
 	PNDIS_PACKET pPacket;
@@ -3393,6 +3406,7 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
 		
 		pAd->NDPA_Request = FALSE;
 		pTxBlk->TxFrameType &= ~TX_NDPA_FRAME;
+		TxSndgTypePerEntry = SNDG_TYPE_DISABLE;
 
 		// Finish NDPA and then recover to mlme's own setting
 		pAd->CommonCfg.MlmeTransmit.field.MCS  = mlmeMCS;
@@ -3410,7 +3424,11 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
 				AP_AMPDU_Frame_Tx_Hdr_Trns(pAd, pTxBlk);
 			else
 #endif /* HDR_TRANS_TX_SUPPORT */
+#ifdef TXBF_SUPPORT
+				AP_AMPDU_Frame_Tx(pAd, pTxBlk, TxSndgTypePerEntry);
+#else
 				AP_AMPDU_Frame_Tx(pAd, pTxBlk);
+#endif
 			break;
 #endif /* DOT11_N_SUPPORT */
 		case TX_LEGACY_FRAME:
@@ -3419,13 +3437,21 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
 				AP_Legacy_Frame_Tx_Hdr_Trns(pAd, pTxBlk);
 			else
 #endif /* HDR_TRANS_TX_SUPPORT */
+#ifdef TXBF_SUPPORT
+				AP_Legacy_Frame_Tx(pAd, pTxBlk, TxSndgTypePerEntry);
+#else
 				AP_Legacy_Frame_Tx(pAd, pTxBlk);
+#endif
 			break;
 		case TX_MCAST_FRAME:
 #ifdef HDR_TRANS_TX_SUPPORT
 			pTxBlk->NeedTrans = FALSE;
 #endif /* HDR_TRANS_TX_SUPPORT */
+#ifdef TXBF_SUPPORT
+			AP_Legacy_Frame_Tx(pAd, pTxBlk, TxSndgTypePerEntry);
+#else
 			AP_Legacy_Frame_Tx(pAd, pTxBlk);
+#endif
 			break;
 #ifdef DOT11_N_SUPPORT
 		case TX_AMSDU_FRAME:
@@ -3745,13 +3771,26 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 		}
 		else
 		{
-			//if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE)==0)
+			//if ((RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE)==0) ||
+			//	(pAd->ApCfg.ChangeTxOpClient != pAd->MacTab.Size))
 			{
 				/* enable AC0(BE) TX_OP */
 				UCHAR	txop_value_burst = 0x20;	/* default txop for Tx-Burst */
 				UCHAR   txop_value = 0;
 
+				pAd->ApCfg.ChangeTxOpClient = pAd->MacTab.Size;
 #ifdef LINUX
+#ifdef RTMP_RBUS_SUPPORT
+				if (pAd->infType == RTMP_DEV_INF_RBUS)
+				{
+#ifdef CONFIG_RAETH_ROUTER
+					txop_value_burst = 0x10;
+#endif /* CONFIG_RAETH_ROUTER */
+#ifdef CONFIG_MAC_TO_MAC_MODE
+					txop_value_burst = 0x30;
+#endif /* CONFIG_MAC_TO_MAC_MODE */
+				}
+#endif /* RTMP_RBUS_SUPPORT */
 #endif /* LINUX */
 
 				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
@@ -3761,11 +3800,13 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				else if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
 					txop_value = 0x80;
 #ifdef DOT11_VHT_AC
-				else if (pAd->MacTab.Size == 1) {
+				else if ((pAd->MacTab.Size == 1) && (pAd->CommonCfg.bEnableTxBurst)) {
 					MAC_TABLE_ENTRY *pEntry = NULL;
 					UINT32 i = 0;
+
 		                    for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
 						pEntry = &pAd->MacTab.Content[i];
+
 						if (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC))
 							break;
 		                    }
@@ -3787,6 +3828,11 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 					txop_value = txop_value_burst;
 				else
 					txop_value = 0;
+
+#ifdef MULTI_CLIENT_SUPPORT
+				if(pAd->MacTab.Size > 2) /* for Multi-Clients */
+					txop_value = 0;		
+#endif /* MULTI_CLIENT_SUPPORT */
 
 				RegValue  &= 0xFFFFFF00;
 				/*if ((RegValue & 0x0000FF00) == 0x00005400)
@@ -4643,8 +4689,18 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 		if (pEntry && IS_ENTRY_APCLI(pEntry))
 		{
+			ULONG Now32;
+
 			if (!(pEntry && APCLI_IF_UP_CHECK(pAd, pEntry->wdev_idx)))
 				goto err;
+
+			pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->wdev_idx];
+
+			if (pApCliEntry)
+			{
+				NdisGetSystemUpTime(&Now32);
+				pApCliEntry->ApCliRcvBeaconTime = Now32;
+			}
 
 #ifdef STATS_COUNT_SUPPORT
 			pAd->ApCfg.ApCliTab[pEntry->wdev_idx].ApCliCounter.ReceivedByteCount.QuadPart += pRxBlk->MPDUtotalByteCnt;
@@ -4794,9 +4850,16 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 			OldUP = (*(pRxBlk->pData+LENGTH_802_11) & 0x07);
 	    	if (OldPwrMgmt == PWR_SAVE)
+			{
+#ifdef DROP_MASK_SUPPORT
+				/* Disable Drop Mask */
+				set_drop_mask_per_client(pAd, pEntry, 2, 0);
+#endif /* DROP_MASK_SUPPORT */
+
 	    		UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
 		}
     }
+	}
 #endif /* UAPSD_SUPPORT */
 
 	/* Drop NULL, CF-ACK(no data), CF-POLL(no data), and CF-ACK+CF-POLL(no data) data frame */
@@ -5510,7 +5573,7 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 	{
 		/* if destinated STA is a associated wireless STA */
 		pEntry = MacTableLookup(pAd, pHeader802_3);
-		if (pEntry && pEntry->Sst == SST_ASSOC)
+		if (pEntry && (pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
 		{
 			bDirectForward = TRUE;
 			bAnnounce = FALSE;

@@ -384,7 +384,7 @@ UCHAR RateSwitchTableAdapt11N3S[] = {
 	 7, 0x21,  7,  8,  14,   6,   19,   12, sg07,  65, /* mcs7 */
 #else
 	 7, 0x21,  7,  8,  14,   6,   19,   12,    7,  65, /* mcs7 */
-#endif
+#endif /* SUPPORT_SHORT_GI_RA */
      8, 0x20,  8, 30,  50,   0,   16,    9,    2,  13, /* mcs8 */
      9, 0x20,  9, 20,  50,   8,   17,   10,    4,  26, /* mcs9 */
     10, 0x20, 10, 20,  40,   9,   18,   11,    5,  39, /* mcs10 */
@@ -397,7 +397,7 @@ UCHAR RateSwitchTableAdapt11N3S[] = {
 #else
     14, 0x20, 14,  8,  18,  13,   21,   15,   14, 117, /* mcs14 */
     15, 0x20, 15,  8,  14,  14,   21,   15,   15, 130, /* mcs15 */
-#endif
+#endif /* SUPPORT_SHORT_GI_RA */
     16, 0x20, 16, 30,  50,   8,   17,    9,    3,  20, /* mcs16 */
     17, 0x20, 17, 20,  50,  16,   18,   11,    5,  39, /* mcs17 */
     18, 0x20, 18, 20,  40,  17,   19,   12,    7,  59, /* mcs18 */
@@ -424,7 +424,7 @@ UCHAR RateSwitchTableAdapt11N3S[] = {
     27,    0,  0,  0,   0,   0,   0,     0,    0,   0,
     28,    0,  0,  0,   0,   0,   0,     0,    0,   0,
     29,    0,  0,  0,   0,   0,   0,     0,    0,   0,
-#endif
+#endif /* SUPPORT_SHORT_GI_RA */
     30, 0x00,  0, 40,  101, 30 ,  30,    30,   31,  1, /* cck-1M */
     31, 0x00,  1, 40,  50,  30,   31,    31,   32,  2, /* cck-2M */
     32, 0x21, 32, 30,  50,  31,   0,     8,    0,   7, /* mcs32 or 20M/mcs0 */
@@ -472,26 +472,26 @@ UCHAR RateTableVht1S[] =
 	10,		0x4B,	7,		8, 14,			9,		0, 0, 10, 		1,
 };
 
-
+//S4
 UCHAR RateTableVht1S_MCS9[] = 
 {
-	14,		12,			0,		0, 0,				0,		0, 0, 0,		0,
+    13,     11,    0,      0,   0,      0,    0, 0,  0,     0,
 /*	[Idx]	[Mode]		[MCS]	[PER_Low/High]	[dMCS]	[upMCS3/2/1] [nSS] */
 	0,		0x10,		0, 		30, 101,			0,		0, 0, 1,		1, /* OFDM, MCS0, BW20 */
 	1,		0x45,		0, 		30, 50,				0,		0, 0, 2,		1, /* VHT, MCS0, BW40, STBC */
-	2,		0x49,		0,		30, 50,				1,		0, 0, 3,		1, /* VHT, MCS0, BW80, STBG */
-	3,		0x49,		1,		20, 50,				2,		0, 0, 4,		1, /* VHT, MCS1, BW80, STBG */
-	4,		0x49,		2,		20, 50,				3,		0, 0, 5, 		1, /* VHT, MCS2, BW80, STBG */
-	5,		0x49,		3,		15, 50,				4,		0, 0, 6, 		1, /* VHT, MCS3, BW80, STBG */
-	6,		0x49,		4,		15, 30,				5,		0, 0, 7, 		1, /* VHT, MCS4, BW80, STBG */
-	7,		0x49,		5,		10, 25,				6,		0, 0, 8, 		1, /* VHT, MCS5, BW80, STBG */
-	8,		0x49,		6,		8, 14,				7,		0, 0, 9, 		1, /* VHT, MCS6, BW80, STBG */
-	9,		0x49,		7,		8, 14,				8,		0, 0, 10, 		1, /* VHT, MCS7, BW80, STBG */
-	10,		0x4B,		7,		8, 14,				9,		0, 0, 11, 		1, /* VHT, MCS7, BW80, STBG, SGI */
-	11,		0x49,		8,		8, 14,				10,		0, 0, 12, 		1, /* VHT, MCS8, BW80, STBG */
-	12,		0x49,		9,		8, 14,				11,		0, 0, 13, 		1, /* VHT, MCS9, BW80, STBG */
-	13,		0x4A,		9,		8, 14,				12,		0, 0, 13, 		1, /* VHT, MCS9, BW80, SGI */
+     2,    0x49,    0,     30,  50,      1,    0, 0,  3,     1, /* VHT, MCS0, BW80, STBC */
+     3,    0x49,    1,     20,  50,      2,    0, 0,  4,     1, /* VHT, MCS1, BW80, STBC */
+     4,    0x49,    2,     20,  50,      3,    0, 0,  5,     1, /* VHT, MCS2, BW80, STBC */
+     5,    0x49,    3,     15,  50,      4,    0, 0,  6,     1, /* VHT, MCS3, BW80, STBC */
+     6,    0x49,    4,     15,  30,      5,    0, 0,  7,     1, /* VHT, MCS4, BW80, STBC */
+     7,    0x49,    5,     12,  25,      6,    0, 0,  8,     1, /* VHT, MCS5, BW80, STBC */
+     8,    0x49,    6,     12,  15,      7,    0, 0,  9,     1, /* VHT, MCS6, BW80, STBC */
+     9,    0x49,    7,     12,  15,      8,    0, 0, 10,     1, /* VHT, MCS7, BW80, STBC */
+    10,    0x49,    8,     12,  15,      9,    0, 0, 11,     1, /* VHT, MCS8, BW80, STBC */
+    11,    0x49,    9,     12,  15,     10,    0, 0, 12,     1, /* VHT, MCS9, BW80, STBC */
+    12,    0x4A,    9,     12,  15,     11,    0, 0, 12,     1, /* VHT, MCS9, BW80, SGI */
 };
+//S4
 
 /* 2x2 VHT-capable rate table */
 // TODO: shiang-usw, refine this!!
@@ -525,95 +525,122 @@ UCHAR RateTableVht2S_old[] =
 
 UCHAR RateTableVht2S_MCS7[] =
 {
-  31,   30,   0,      0,   0,    0,   0,  0,  0,  0,
+      41,     40, 0,      0,   0,    0,   0,  0,  0,  0,
 /*  [Idx] [Mode]  [MCS] [PER_down/up] [dMCS]  [upMCS3/2/1] [nSS] */
-  /* reserved */
-   0,   0x11, 0,    100, 101,    0,   0,  1,  1,  1,
-   1,   0x11, 0,    100, 101,    0,   0,  2,  2,  1,
-   2,   0x11, 0,    100, 101,    0,   0,  3,  3,  1,
-  
   /* The Data Rate of OFDM for long distance */
-  3,    0x11, 0,     20, 101,    3,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
-   4,   0x11, 1,     20,  40,    3,   0,  5,  5,  1,/* OFDM 1x1 MCS1 BW20 */
-   5,   0x11, 2,     20,  35,    4,   0,  6,  6,  1,/* OFDM 1x1 MCS2 BW20 */
-   6,   0x11, 3,     15,  35,    5,   0,  7,  7,  1,/* OFDM 1x1 MCS3 BW20 */
+       0,   0x11, 0,     20, 101,    0,   0,  1,  2,  1,/* OFDM 1x1 MCS0 BW20 */
+       1,   0x11, 1,     20,  40,    0,   0,  5,  2,  1,/* OFDM 1x1 MCS1 BW20 */
+       2,   0x11, 2,     20,  35,    1,   0,  6,  3,  1,/* OFDM 1x1 MCS2 BW20 */
+       3,   0x11, 3,     15,  35,    2,   0,  8,  8,  1,/* OFDM 1X1 MCS3 BW20 */
 
-  /* The Data Rate of VHT BW 20/40 */
-   7,   0x41, 0,     15,  50,    6,   0,  8,  8,  1,/* VHT 1x1 MCS0 BW20 */
-   8,   0x41, 1,     15,  50,    7,   0,  9,  9,  1,/* VHT 1x1 MCS1 BW20 */
-   9,   0x45, 1,     15,  30,    8,   0, 10, 10,  1,/* VHT 1x1 MCS1 BW40 */
+      /* The Group Data Rate of 1SS VHT BW 20 */
+       4,   0x41, 0,     25,  50,    0,   0,  5,  7,  1,/*  VHT 1x1 MCS0 BW20 */
+       5,   0x41, 1,     25,  50,    4,   0,  6,  8,  1,/*  VHT 1X1 MCS1 BW20 */
+       6,   0x41, 2,     15,  35,    5,   0,  8,  8,  1,/*  VHT 1X1 MCS2 BW20 */
+
+      /* The Group Data Rate of 1SS VHT BW 40 */
+       7,   0x45, 0,     25,  50,    6,   0,  8, 10,  1,/*  VHT 1x1 MCS0 BW40 */
+       8,   0x45, 1,     25,  50,    7,   0,  9, 11,  1,/*  VHT 1x1 MCS1 BW40 */
+       9,   0x45, 2,     15,  35,    8,   0, 11, 11,  1,/*  VHT 1x1 MCS2 BW40 */
+
+      /* The Group Data Rate of 2SS VHT BW 40 */
+      10,   0x45, 0,     25,  50,    7,   0, 20, 11,  2,/*  VHT 2x2 MCS0 BW40 */
+      11,   0x45, 1,     20,  35,    9,   0, 30, 12,  2,/*  VHT 2x2 MCS1 BW40 */
+      12,   0x45, 2,     20,  35,   11,   0, 31, 13,  2,/*  VHT 2x2 MCS2 BW40 */
+      13,   0x45, 3,     15,  30,   12,   0, 31, 14,  2,/*  VHT 2x2 MCS3 BW40 */
+      14,   0x45, 4,     15,  30,   13,   0, 32, 15,  2,/*  VHT 2x2 MCS4 BW40 */
+      15,   0x45, 5,     10,  25,   14,   0, 33, 33,  2,/*  VHT 2x2 MCS5 BW40 */
+
+      /* The Group Not Used */
+      16,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+      17,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+      18,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+      19,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
   
   /* The Group Data Rate of 1SS with VHT BW80 */
-  10,   0x49, 0,     15,  25,    9,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW80 LGI */
-  11,   0x49, 1,     20,  35,   10,   0, 21, 12,  1,/* VHT 1x1 MCS1 BW80 LGI */
-  12,   0x49, 2,     20,  35,   11,   0, 21, 13,  1,/* VHT 1x1 MCS2 BW80 LGI */
-  13,   0x49, 3,     15,  30,   12,   0, 22, 14,  1,/* VHT 1x1 MCS3 BW80 LGI */
-  14,   0x49, 4,     15,  30,   13,   0, 23, 15,  1,/* VHT 1x1 MCS4 BW80 LGI */
-  15,   0x49, 5,     10,  25,   14,   0, 24, 16,  1,/* VHT 1x1 MCS5 BW80 LGI */
-  16,   0x49, 6,      8,  15,   15,   0, 24, 17,  1,/* VHT 1x1 MCS6 BW80 LGI */
-  17,   0x49, 7,      8,  15,   16,   0, 24, 24,  1,/* VHT 1x1 MCS7 BW80 LGI */
-  18,   0x49, 8,      8,  15,   16,   0, 24, 24,  1,/* VHT 1x1 MCS8 BW80 LGI */
-  19,   0x49, 9,      8,  15,   16,   0, 24, 24,  1,/* VHT 1x1 MCS9 BW80 LGI */
+      20,   0x49, 0,     25,  50,    7,   0, 30, 21,  1,/*  VHT 1x1 MCS0 BW80 LGI */
+      21,   0x49, 1,     20,  35,    9,   0, 31, 22,  1,/*  VHT 1x1 MCS1 BW80 LGI */
+      22,   0x49, 2,     20,  35,   21,   0, 31, 23,  1,/*  VHT 1x1 MCS2 BW80 LGI */
+      23,   0x49, 3,     15,  30,   22,   0, 32, 24,  1,/*  VHT 1x1 MCS3 BW80 LGI */
+      24,   0x49, 4,     15,  30,   23,   0, 33, 25,  1,/*  VHT 1x1 MCS4 BW80 LGI */
+      25,   0x49, 5,     10,  25,   24,   0, 34, 26,  1,/*  VHT 1x1 MCS5 BW80 LGI */
+      26,   0x49, 6,      8,  15,   25,   0, 34, 27,  1,/*  VHT 1x1 MCS6 BW80 LGI */
+      27,   0x49, 7,      8,  15,   26,   0, 34, 27,  1,/*  VHT 1x1 MCS7 BW80 LGI */
+      28,   0x49, 8,      8,  15,   27,   0, 27, 27,  1,/*  VHT 1x1 MCS8 BW80 LGI */
+      29,   0x49, 9,      8,  15,   28,   0, 27, 27,  1,/*  VHT 1x1 MCS9 BW80 LGI */
 
   /* The Group Data Rate of 2SS with VHT BW80 */
-  20,   0x48, 0,     30,  50,   10,   0, 21, 12,  2,/* VHT 2x2 MCS0 BW80 LGI */
-  21,   0x48, 1,     30,  50,   20,   0, 22, 14,  2,/* VHT 2x2 MCS1 BW80 LGI */
-  22,   0x48, 2,     15,  30,   21,   0, 23, 15,  2,/* VHT 2x2 MCS2 BW80 LGI */
-  23,   0x48, 3,     15,  30,   22,   0, 24, 16,  2,/* VHT 2x2 MCS3 BW80 LGI */
-  24,   0x48, 4,     15,  30,   23,   0, 25, 25,  2,/* VHT 2x2 MCS4 BW80 LGI */
-  25,   0x48, 5,      8,  20,   24,   0, 26, 26,  2,/* VHT 2x2 MCS5 BW80 LGI */
-  26,   0x48, 6,      8,  20,   25,   0, 27, 27,  2,/* VHT 2x2 MCS6 BW80 LGI */
-  27,   0x48, 7,      8,  20,   26,   0, 28, 28,  2,/* VHT 2x2 MCS7 BW80 LGI */
-  28,   0x4A, 7,      5,  15,   27,   0, 28, 28,  2,/* VHT 2x2 MCS7 BW80 SGI */
-  29,   0x48, 9,      5,  15,   28,   0, 28, 28,  2,/* VHT 2x2 MCS9 BW80 LGI */
-  30,   0x4A, 9,      5,  15,   28,   0, 28, 28,  2,/* VHT 2x2 MCS9 BW80 SGI */
+      30,   0x48, 0,     15,  30,    9,   0, 31, 22,  2,/*  VHT 2x2 MCS0 BW80 LGI */
+      31,   0x48, 1,     15,  30,   30,   0, 32, 24,  2,/*  VHT 2x2 MCS1 BW80 LGI */
+      32,   0x48, 2,     15,  30,   31,   0, 33, 25,  2,/*  VHT 2x2 MCS2 BW80 LGI */
+      33,   0x48, 3,     15,  30,   32,   0, 34, 26,  2,/*  VHT 2x2 MCS3 BW80 LGI */
+      34,   0x48, 4,     15,  30,   33,   0, 35, 29,  2,/*  VHT 2x2 MCS4 BW80 LGI */
+      35,   0x48, 5,      8,  20,   34,   0, 36, 36,  2,/*  VHT 2x2 MCS5 BW80 LGI */
+      36,   0x48, 6,      8,  20,   35,   0, 37, 37,  2,/*  VHT 2x2 MCS6 BW80 LGI */
+      37,   0x48, 7,      8,  20,   36,   0, 38, 38,  2,/*  VHT 2x2 MCS7 BW80 LGI */
+      38,   0x4A, 7,      5,  15,   37,   0, 38, 38,  2,/*  VHT 2x2 MCS7 BW80 SGI */
+      39,   0x48, 9,      5,  15,   38,   0, 38, 38,  2,/*  VHT 2x2 MCS9 BW80 LGI */
+      40,   0x4A, 9,      5,  15,   39,   0, 38, 38,  2,/*  VHT 2x2 MCS9 BW80 SGI */
 };
 
 UCHAR RateTableVht2S[] = 
 {
-  31,   30,   0,      0,   0,    0,   0,  0,  0,  0,
+  41,     40, 0,      0,   0,    0,   0,  0,  0,  0,
 /*  [Idx] [Mode]  [MCS] [PER_down/up] [dMCS]  [upMCS3/2/1] [nSS] */
-
-  /* reserved */
-  0,    0x11, 0,    100, 101,    0,   0,  1,  1,  1,
-  1,    0x11, 0,    100, 101,    0,   0,  2,  2,  1,
-  2,    0x11, 0,    100, 101,    1,   0,  3,  3,  1,
-
   /* The Data Rate of OFDM for long distance */
-  3,    0x11, 0,     20, 101,    2,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
-  4,    0x11, 1,     20,  40,    3,   0,  5,  5,  1,/* OFDM 1x1 MCS1 BW20 */
-  5,    0x11, 2,     20,  35,    4,   0,  6,  6,  1,/* OFDM 1x1 MCS2 BW20 */
-  6,    0x11, 3,     15,  35,    5,   0,  7,  7,  1,/* OFDM 1x1 MCS3 BW20 */
+   0,   0x11, 0,     20, 101,    0,   0,  1,  2,  1,/* OFDM 1x1 MCS0 BW20 */
+   1,   0x11, 1,     20,  40,    0,   0,  5,  2,  1,/* OFDM 1x1 MCS1 BW20 */
+   2,   0x11, 2,     20,  35,    1,   0,  6,  3,  1,/* OFDM 1x1 MCS2 BW20 */
+   3,   0x11, 3,     15,  35,    2,   0,  8,  8,  1,/* OFDM 1X1 MCS3 BW20 */
 
-  /* The Data Rate of VHT BW 20/40 */
-  7,    0x41, 0,     15,  50,    6,   0,  8,  8,  1,/* VHT 1x1 MCS0 BW20 */
-  8,    0x41, 1,     15,  50,    7,   0,  9,  9,  1,/* VHT 1x1 MCS1 BW20 */
-  9,    0x45, 1,     15,  30,    8,   0, 10, 10,  1,/* VHT 1x1 MCS1 BW40 */
+  /* The Group Data Rate of 1SS VHT BW 20 */
+   4,   0x41, 0,     25,  50,    0,   0,  5,  7,  1,/*  VHT 1x1 MCS0 BW20 */
+   5,   0x41, 1,     25,  50,    4,   0,  6,  8,  1,/*  VHT 1X1 MCS1 BW20 */
+   6,   0x41, 2,     15,  35,    5,   0,  8,  8,  1,/*  VHT 1X1 MCS2 BW20 */
+
+  /* The Group Data Rate of 1SS VHT BW 40 */
+   7,   0x45, 0,     25,  50,    6,   0,  8, 10,  1,/*  VHT 1x1 MCS0 BW40 */
+   8,   0x45, 1,     25,  50,    7,   0,  9, 11,  1,/*  VHT 1x1 MCS1 BW40 */
+   9,   0x45, 2,     15,  35,    8,   0, 11, 11,  1,/*  VHT 1x1 MCS2 BW40 */
+
+  /* The Group Data Rate of 2SS VHT BW 40 */
+  10,   0x45, 0,     25,  50,    7,   0, 20, 11,  2,/*  VHT 2x2 MCS0 BW40 */
+  11,   0x45, 1,     20,  35,    9,   0, 30, 12,  2,/*  VHT 2x2 MCS1 BW40 */
+  12,   0x45, 2,     20,  35,   11,   0, 31, 13,  2,/*  VHT 2x2 MCS2 BW40 */
+  13,   0x45, 3,     15,  30,   12,   0, 31, 14,  2,/*  VHT 2x2 MCS3 BW40 */
+  14,   0x45, 4,     15,  30,   13,   0, 32, 15,  2,/*  VHT 2x2 MCS4 BW40 */
+  15,   0x45, 5,     10,  25,   14,   0, 33, 33,  2,/*  VHT 2x2 MCS5 BW40 */
+
+  /* The Group Not Used */
+  16,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+  17,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+  18,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
+  19,   0x45, 9,      0, 101,   40,   0, 40, 40,  2,
 
   /* The Group Data Rate of 1SS with VHT BW80 */
-  10,   0x49, 0,     15,  25,    9,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW80 LGI */
-  11,   0x49, 1,     20,  35,   10,   0, 21, 12,  1,/* VHT 1x1 MCS1 BW80 LGI */
-  12,   0x49, 2,     20,  35,   11,   0, 21, 13,  1,/* VHT 1x1 MCS2 BW80 LGI */
-  13,   0x49, 3,     15,  30,   12,   0, 22, 14,  1,/* VHT 1x1 MCS3 BW80 LGI */
-  14,   0x49, 4,     15,  30,   13,   0, 23, 15,  1,/* VHT 1x1 MCS4 BW80 LGI */
-  15,   0x49, 5,     10,  25,   14,   0, 24, 16,  1,/* VHT 1x1 MCS5 BW80 LGI */
-  16,   0x49, 6,      8,  15,   15,   0, 24, 17,  1,/* VHT 1x1 MCS6 BW80 LGI */
-  17,   0x49, 7,      8,  15,   16,   0, 24, 18,  1,/* VHT 1x1 MCS7 BW80 LGI */
-  18,   0x49, 8,      8,  15,   17,   0, 25, 19,  1,/* VHT 1x1 MCS8 BW80 LGI */
-  19,   0x49, 9,      8,  15,   18,   0, 25, 25,  1,/* VHT 1x1 MCS9 BW80 LGI */
+  20,   0x49, 0,     25,  50,    7,   0, 30, 21,  1,/*  VHT 1x1 MCS0 BW80 LGI */
+  21,   0x49, 1,     20,  35,    9,   0, 31, 22,  1,/*  VHT 1x1 MCS1 BW80 LGI */
+  22,   0x49, 2,     20,  35,   21,   0, 31, 23,  1,/*  VHT 1x1 MCS2 BW80 LGI */
+  23,   0x49, 3,     15,  30,   22,   0, 32, 24,  1,/*  VHT 1x1 MCS3 BW80 LGI */
+  24,   0x49, 4,     15,  30,   23,   0, 33, 25,  1,/*  VHT 1x1 MCS4 BW80 LGI */
+  25,   0x49, 5,     10,  25,   24,   0, 34, 26,  1,/*  VHT 1x1 MCS5 BW80 LGI */
+  26,   0x49, 6,      8,  15,   25,   0, 34, 27,  1,/*  VHT 1x1 MCS6 BW80 LGI */
+  27,   0x49, 7,      8,  15,   26,   0, 34, 28,  1,/*  VHT 1x1 MCS7 BW80 LGI */
+  28,   0x49, 8,      8,  15,   27,   0, 35, 29,  1,/*  VHT 1x1 MCS8 BW80 LGI */
+  29,   0x49, 9,      8,  15,   28,   0, 35, 35,  1,/*  VHT 1x1 MCS9 BW80 LGI */
 
   /* The Group Data Rate of 2SS with VHT BW 80 */
-  20,   0x48, 0,     30,  50,   10,   0, 21, 12,  2,/* VHT 2x2 MCS0 BW80 LGI */
-  21,   0x48, 1,     30,  50,   20,   0, 22, 14,  2,/* VHT 2x2 MCS1 BW80 LGI */
-  22,   0x48, 2,     15,  30,   21,   0, 23, 15,  2,/* VHT 2x2 MCS2 BW80 LGI */
-  23,   0x48, 3,     15,  30,   22,   0, 24, 16,  2,/* VHT 2x2 MCS3 BW80 LGI */
-  24,   0x48, 4,     15,  30,   23,   0, 25, 19,  2,/* VHT 2x2 MCS4 BW80 LGI */
-  25,   0x48, 5,      8,  20,   24,   0, 26, 26,  2,/* VHT 2x2 MCS5 BW80 LGI */
-  26,   0x48, 6,      8,  20,   25,   0, 27, 27,  2,/* VHT 2x2 MCS6 BW80 LGI */
-  27,   0x48, 7,      8,  20,   26,   0, 28, 28,  2,/* VHT 2x2 MCS7 BW80 LGI */
-  28,   0x48, 8,      5,  15,   27,   0, 29, 29,  2,/* VHT 2x2 MCS8 BW80 LGI */
-  29,   0x48, 9,      5,  15,   28,   0, 30, 30,  2,/* VHT 2x2 MCS9 BW80 LGI */
-  30,   0x4A, 9,      5,  15,   29,   0, 30, 30,  2,/* VHT 2x2 MCS9 BW80 SGI */
+  30,   0x48, 0,     15,  30,    9,   0, 31, 22,  2,/*  VHT 2x2 MCS0 BW80 LGI */
+  31,   0x48, 1,     15,  30,   30,   0, 32, 24,  2,/*  VHT 2x2 MCS1 BW80 LGI */
+  32,   0x48, 2,     15,  30,   31,   0, 33, 25,  2,/*  VHT 2x2 MCS2 BW80 LGI */
+  33,   0x48, 3,     15,  30,   32,   0, 34, 26,  2,/*  VHT 2x2 MCS3 BW80 LGI */
+  34,   0x48, 4,     15,  30,   33,   0, 35, 29,  2,/*  VHT 2x2 MCS4 BW80 LGI */
+  35,   0x48, 5,      8,  20,   34,   0, 36, 36,  2,/*  VHT 2x2 MCS5 BW80 LGI */
+  36,   0x48, 6,      8,  20,   35,   0, 37, 37,  2,/*  VHT 2x2 MCS6 BW80 LGI */
+  37,   0x48, 7,      8,  20,   36,   0, 38, 38,  2,/*  VHT 2x2 MCS7 BW80 LGI */
+  38,   0x48, 8,      5,  15,   37,   0, 39, 39,  2,/*  VHT 2x2 MCS8 BW80 LGI */
+  39,   0x48, 9,      5,  15,   38,   0, 40, 40,  2,/*  VHT 2x2 MCS9 BW80 LGI */
+  40,   0x4A, 9,      5,  15,   39,   0, 40, 40,  2,/*  VHT 2x2 MCS9 BW80 SGI */
 };
 
 UCHAR RateTableVht2S_BW40[] = 
@@ -621,23 +648,23 @@ UCHAR RateTableVht2S_BW40[] =
   31,   30,   0,      0,   0,    0,   0,  0,  0,  0,
 /*  [Idx] [Mode]  [MCS] [PER_down/up] [dMCS]  [upMCS3/2/1] [nSS] */
   /* reserved */
-  0,    0x11, 0,    100, 101,    0,   0,  1,  1,  1,
-  1,    0x11, 0,    100, 101,    0,   0,  2,  2,  1,
-  2,    0x11, 0,    100, 101,    1,   0,  3,  3,  1,
+  0,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
+  1,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
+  2,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
 
   /* The Data Rate of OFDM for long distance */
-  3,    0x11, 0,     20, 101,    2,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
+  3,    0x11, 0,     20, 101,    3,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
   4,    0x11, 1,     20,  40,    3,   0,  5,  5,  1,/* OFDM 1x1 MCS1 BW20 */
   5,    0x11, 2,     20,  35,    4,   0,  6,  6,  1,/* OFDM 1x1 MCS2 BW20 */
-  6,    0x11, 3,     15,  35,    5,   0,  7,  7,  1,/* OFDM 1x1 MCS3 BW20 */
+  6,    0x11, 3,     15,  35,    5,   0, 11, 11,  1,/* OFDM 1x1 MCS3 BW20 */
 
   /* The Data Rate of VHT BW 20/40 */
-  7,    0x41, 0,     15,  50,    6,   0,  8,  8,  1,/* VHT 1x1 MCS0 BW20 */
-  8,    0x41, 1,     15,  50,    7,   0, 10, 10,  1,/* VHT 1x1 MCS1 BW20 */
-  9,    0x00, 0,      0,   0,    0,   0,  0,  0,  0,
+  7,    0x41, 0,     15,  25,    3,   0, 10, 10,  1,/* VHT 1x1 MCS0 BW20 LGI*/
+  8,    0x00, 0,      0,   0,    0,   0,  0,  0,  1,
+  9,    0x00, 0,      0,   0,    0,   0,  0,  0,  1,
 
   /* The Group Data Rate of 1SS with VHT BW40 */
-  10,   0x45, 0,     15,  25,    8,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW40 LGI */
+  10,   0x45, 0,     25,  50,    7,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW40 LGI */
   11,   0x45, 1,     20,  35,   10,   0, 21, 12,  1,/* VHT 1x1 MCS1 BW40 LGI */
   12,   0x45, 2,     20,  35,   11,   0, 21, 13,  1,/* VHT 1x1 MCS2 BW40 LGI */
   13,   0x45, 3,     15,  30,   12,   0, 22, 14,  1,/* VHT 1x1 MCS3 BW40 LGI */
@@ -669,21 +696,22 @@ UCHAR RateTableVht2S_BW20[] =
   30,   28,   0,      0,   0,    0,   0,  0,  0,  0,
 /*  [Idx] [Mode]  [MCS] [PER_down/up] [dMCS]  [upMCS3/2/1] [nSS] */
   /* reserved */
-  0,    0x11, 0,    100, 101,    0,   0,  1,  1,  1,
-  1,    0x11, 0,    100, 101,    0,   0,  2,  2,  1,
-  2,    0x11, 0,    100, 101,    1,   0,  3,  3,  1,
+  0,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
+  1,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
+  2,    0x11, 0,    100, 101,    3,   0,  4,  4,  1,
 
   /* The Data Rate of OFDM for long distance */
-  3,    0x11, 0,     20, 101,    2,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
+  3,    0x11, 0,     20, 101,    3,   0,  4,  4,  1,/* OFDM 1x1 MCS0 BW20 */
   4,    0x11, 1,     20,  40,    3,   0,  5,  5,  1,/* OFDM 1x1 MCS1 BW20 */
   5,    0x11, 2,     20,  35,    4,   0,  6,  6,  1,/* OFDM 1x1 MCS2 BW20 */
-  6,    0x11, 3,     15,  35,    5,   0, 10, 10,  1,/* OFDM 1x1 MCS3 BW20 */
+  6,    0x11, 3,     15,  35,    5,   0, 13, 13,  1,/* OFDM 1x1 MCS3 BW20 */
+
   7,    0x00, 0,      0,   0,    0,   0,  0,  0,  0,
   8,    0x00, 0,      0,   0,    0,   0,  0,  0,  0,
   9,    0x00, 0,      0,   0,    0,   0,  0,  0,  0,
 
   /* The Group Data Rate of 1SS with VHT BW80 */
-  10,   0x41, 0,     15,  25,    6,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW20 LGI */
+  10,   0x41, 0,     15,  25,    3,   0, 20, 11,  1,/* VHT 1x1 MCS0 BW20 LGI */
   11,   0x41, 1,     20,  35,   10,   0, 21, 12,  1,/* VHT 1x1 MCS1 BW20 LGI */
   12,   0x41, 2,     20,  35,   11,   0, 21, 13,  1,/* VHT 1x1 MCS2 BW20 LGI */
   13,   0x41, 3,     15,  30,   12,   0, 22, 14,  1,/* VHT 1x1 MCS3 BW20 LGI */
@@ -1055,7 +1083,7 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 
 			if (pEntry->HTPhyMode.field.eTxBF || pEntry->HTPhyMode.field.iTxBF)
 				rate_ctrl.RATE_CTRL_N.STBC = FALSE;
-#endif
+#endif /* RLT_MAC */
 		}
 		else
 #endif /* RLT_MAC */
@@ -1073,7 +1101,7 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 			
 			if (pEntry->HTPhyMode.field.eTxBF || pEntry->HTPhyMode.field.iTxBF)
 				rate_ctrl.RATE_CTRL_O.STBC = FALSE;
-#endif
+#endif /* TXBF_SUPPORT */
 		}
 		else
 #endif /* RTMP_MAC */
@@ -1297,6 +1325,7 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 		}
 #endif /* WFA_VHT_PF */
 	}
+#ifdef DOT11_VHT_AC
 	else if (IS_VHT_STA(pEntry))
 	{
 		UCHAR bw_max = pEntry->MaxHTPhyMode.field.BW;
@@ -1321,6 +1350,7 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 		}
 		pEntry->HTPhyMode.field.BW = bw_max;		
 	}
+#endif /* DOT11_VHT_AC */
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 
 #ifdef AGS_SUPPORT
@@ -1440,6 +1470,13 @@ VOID MlmeSelectTxRateTable(
 						ss = 2;
 				}
 			}
+
+#ifdef THERMAL_PROTECT_SUPPORT
+			if (pAd->force_one_tx_stream == TRUE)
+			{
+			    ss = 1;
+			}
+#endif /* THERMAL_PROTECT_SUPPORT */
 
 #ifdef WFA_VHT_PF
 			if ((pAd->CommonCfg.vht_nss_cap > 0) &&
@@ -1572,6 +1609,7 @@ VOID MlmeSelectTxRateTable(
 			((pEntry->HTCapability.MCSSet[1] == 0x00) || (pAd->CommonCfg.TxStream == 1)))
 		{/* 11BGN 1S AP*/
 
+#ifdef DOT11_VHT_AC
 			if (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_2G_256QAM_CAPABLE)
 				&& (pAd->LatchRfRegs.Channel <= 14))
 			{
@@ -1583,6 +1621,7 @@ VOID MlmeSelectTxRateTable(
 
 				break;
 			}
+#endif /* DOT11_VHT_AC */
 
 #ifdef AGS_SUPPORT
 			if (SUPPORT_AGS(pAd))
@@ -1620,9 +1659,12 @@ VOID MlmeSelectTxRateTable(
 		if ((pEntry->SupportRateMode & (SUPPORT_OFDM_MODE)) && 
 			(pEntry->HTCapability.MCSSet[0] != 0x00) &&
 			(pEntry->HTCapability.MCSSet[1] != 0x00) && 
+#ifdef THERMAL_PROTECT_SUPPORT
+			(pAd->force_one_tx_stream == FALSE) &&
+#endif /* THERMAL_PROTECT_SUPPORT */
 			(((pAd->Antenna.field.TxPath == 3) && (pEntry->HTCapability.MCSSet[2] == 0x00)) || (pAd->CommonCfg.TxStream == 2)))
 		{/* 11BGN 2S AP*/
-
+#ifdef DOT11_VHT_AC
 			if (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_2G_256QAM_CAPABLE)
 				&& (pAd->LatchRfRegs.Channel <= 14))
 			{
@@ -1634,6 +1676,7 @@ VOID MlmeSelectTxRateTable(
 
 				break;
 			}
+#endif /* DOT11_VHT_AC */
 		
 #ifdef AGS_SUPPORT
 			if (SUPPORT_AGS(pAd))
@@ -1680,7 +1723,11 @@ VOID MlmeSelectTxRateTable(
 
 		/*else if ((pAd->StaActive.SupportedPhyInfo.MCSSet[0] == 0xff) && ((pAd->StaActive.SupportedPhyInfo.MCSSet[1] == 0x00) || (pAd->Antenna.field.TxPath == 1)))*/
 		if ((pEntry->HTCapability.MCSSet[0] != 0x00) && 
-			((pEntry->HTCapability.MCSSet[1] == 0x00) || (pAd->CommonCfg.TxStream == 1)))
+			((pEntry->HTCapability.MCSSet[1] == 0x00) || (pAd->CommonCfg.TxStream == 1)
+#ifdef THERMAL_PROTECT_SUPPORT
+			|| (pAd->force_one_tx_stream == TRUE)
+#endif /* THERMAL_PROTECT_SUPPORT */
+			))
 		{/* 11N 1S AP*/
 #ifdef AGS_SUPPORT
 			if (SUPPORT_AGS(pAd))
@@ -1704,7 +1751,11 @@ VOID MlmeSelectTxRateTable(
 		/*else if ((pAd->StaActive.SupportedPhyInfo.MCSSet[0] == 0xff) && (pAd->StaActive.SupportedPhyInfo.MCSSet[1] == 0xff) && (pAd->Antenna.field.TxPath == 2))*/
 		if ((pEntry->HTCapability.MCSSet[0] != 0x00) && 
 			(pEntry->HTCapability.MCSSet[1] != 0x00) && 
-			(pAd->CommonCfg.TxStream == 2))
+			(pAd->CommonCfg.TxStream == 2)
+#ifdef THERMAL_PROTECT_SUPPORT
+			&& (pAd->force_one_tx_stream == FALSE)
+#endif /* THERMAL_PROTECT_SUPPORT */
+			)
 		{/* 11N 2S AP*/
 #ifdef AGS_SUPPORT
 			if (SUPPORT_AGS(pAd))
@@ -2123,6 +2174,7 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	pEntry->lowTrafficCount = 0;
 	pEntry->perThrdAdj = PER_THRD_ADJ;
 #endif /* NEW_RATE_ADAPT_SUPPORT */
+	pEntry->lowTrafficCount = 0;
 
 #ifdef TXBF_SUPPORT
 	pEntry->phyETxBf = pEntry->phyITxBf = FALSE;

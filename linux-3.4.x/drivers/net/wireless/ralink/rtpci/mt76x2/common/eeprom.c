@@ -79,11 +79,19 @@ INT RtmpChipOpsEepromHook(
 	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;
 	UCHAR e2p_type;
 	UINT32 val;
+	NDIS_STATUS Status;
 
 #ifdef TXBF_SUPPORT
 	if (pAd->chipCap.FlgITxBfBinWrite)
 		pAd->E2pAccessMode = E2P_BIN_MODE;
 #endif
+
+	/* to get profile e2pAccessMode */
+	Status = RTMPReadParametersHook(pAd);
+	if (Status != NDIS_STATUS_SUCCESS)
+	{
+		DBGPRINT_ERR(("RTMPReadParametersHook failed, Status[=0x%08x]\n",Status));		
+	}
 
 	e2p_type = pAd->E2pAccessMode;
 
@@ -184,6 +192,45 @@ INT RtmpChipOpsEepromHook(
 	return 0;
 }
 
+#if defined(RTMP_EFUSE_SUPPORT) && defined(RTMP_FLASH_SUPPORT)
+static VOID RtmpEepromTypeAdjust(RTMP_ADAPTER *pAd, UCHAR *pE2pType)
+{
+	UINT EfuseFreeBlock=0;
+	BOOLEAN bCalFree;
+
+	eFuseGetFreeBlockCount(pAd, &EfuseFreeBlock);	
+	
+	if (EfuseFreeBlock >= pAd->chipCap.EFUSE_RESERVED_SIZE)
+	{
+		DBGPRINT(RT_DEBUG_OFF, ("NVM is efuse and the information is too less to bring up the interface\n"));
+		DBGPRINT(RT_DEBUG_OFF, ("Force to use Flash mode\n"));
+		*pE2pType = E2P_FLASH_MODE;
+	}
+	else 
+	{
+		USHORT eeFlashId = 0;
+		int listIdx;
+		BOOLEAN bFound = FALSE;
+
+		rtmp_ee_efuse_read16(pAd, 0, &eeFlashId);
+		DBGPRINT(RT_DEBUG_OFF, ("%s:: eeFlashId = 0x%x.\n", __FUNCTION__, eeFlashId));
+		for(listIdx =0 ; listIdx < EE_FLASH_ID_NUM; listIdx++)
+		{
+			if (eeFlashId == EE_FLASH_ID_LIST[listIdx])
+			{			
+				bFound = TRUE;
+				break;
+			}
+		}
+
+		if (bFound == FALSE)
+		{
+			*pE2pType = E2P_FLASH_MODE;
+			pAd->bUseEfuse = FALSE;
+		}
+	}
+}
+#endif /* defined(RTMP_EFUSE_SUPPORT) && defined(RTMP_FLASH_SUPPORT) */
 
 BOOLEAN rtmp_get_default_bin_file_by_chip(
 	IN PRTMP_ADAPTER pAd,
@@ -197,6 +244,11 @@ BOOLEAN rtmp_get_default_bin_file_by_chip(
 	
 	for (i = 0; RTMP_CHIP_E2P_FILE_TABLE[i].ChipVersion != 0; i++ )
 	{
+		if (IS_RT6352(pAd))
+		{
+			ChipVersion = 0x7620;
+		}
+
 		if (RTMP_CHIP_E2P_FILE_TABLE[i].ChipVersion == ChipVersion)
 		{
 			*pBinFileName = RTMP_CHIP_E2P_FILE_TABLE[i].name;
@@ -207,6 +259,17 @@ BOOLEAN rtmp_get_default_bin_file_by_chip(
 			break;
 		}
 	}
+#if defined(RTMP_EFUSE_SUPPORT) && defined(RTMP_FLASH_SUPPORT)
+	else if (pAd->E2pAccessMode == E2P_NONE)
+	{
+		/*
+			User doesn't set E2pAccessMode in profile, adjust access mode automatically here.
+		*/
+		efuse_probe(pAd);
+		if (pAd->bUseEfuse)
+			RtmpEepromTypeAdjust(pAd, &e2p_type);
+	}
+#endif /* defined(RTMP_EFUSE_SUPPORT) && defined(RTMP_FLASH_SUPPORT) */
 
 	if (found == TRUE)
 		DBGPRINT(RT_DEBUG_OFF, ("%s::Found E2P bin file name=%s\n", __FUNCTION__, *pBinFileName));
@@ -442,10 +505,12 @@ INT Set_EepromBufferWriteBack_Proc(
 			break;
 #endif /* RTMP_FLASH_SUPPORT */
 
+#ifdef RT65xx
 		case E2P_EEPROM_MODE:
 			DBGPRINT(RT_DEBUG_OFF, ("Write EEPROM buffer back to EEPROM\n"));
 			rtmp_ee_write_to_prom(pAd);
 			break;
+#endif /* RT65xx */
 
 		case E2P_BIN_MODE:
 			DBGPRINT(RT_DEBUG_OFF, ("Write EEPROM buffer back to BIN\n"));	

@@ -1758,9 +1758,11 @@ NDIS_802_11_NETWORK_TYPE NetworkTypeInUseSanity(BSS_ENTRY *pBss)
 	if (pBss->HtCapabilityLen != 0)
 	{
 		if (NetWorkType == Ndis802_11OFDM5) {
+#ifdef DOT11_VHT_AC
 			if (pBss->vht_cap_len != 0)
 				NetWorkType = Ndis802_11OFDM5_AC;
 			else
+#endif /* DOT11_VHT_AC */
 				NetWorkType = Ndis802_11OFDM5_N;
 		} else
 			NetWorkType = Ndis802_11OFDM24_N;

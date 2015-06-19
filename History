@@ -1025,7 +1025,8 @@
 6) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
 7) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
 8) kernel: ralink wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
-9) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+9) kernel: ralink wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
+10) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 <br>
 <br>
 <b>TODO:</b><br>

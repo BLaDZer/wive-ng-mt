@@ -108,12 +108,8 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 	LARGE_INTEGER FakeTimestamp;
 	ULONG FrameLen = 0;
 	PUCHAR pBeaconFrame = (PUCHAR)pAd->ApCfg.MBSSID[apidx].BeaconBuf;
-	UCHAR *ptr;
-	UINT i;
-	UINT32 longValue, reg_base;
 	HTTRANSMIT_SETTING BeaconTransmit = {.word = 0};   /* MGMT frame PHY rate setting when operatin at Ht rate. */
 	UCHAR PhyMode, SupRateLen;
-	UINT8 TXWISize = pAd->chipCap.TXWISize;
 	MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[apidx];
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 	UCHAR TxPwrAdj = 0;
@@ -283,6 +279,20 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 	/*
 		step 6. move BEACON TXD and frame content to on-chip memory
 	*/
+	 updateAllBeacon(pAd,  apidx, FrameLen);
+
+	pMbss->TimIELocationInBeacon = (UCHAR)FrameLen; 
+	pMbss->CapabilityInfoLocationInBeacon = sizeof(HEADER_802_11) + TIMESTAMP_LEN + 2;
+}
+
+void updateAllBeacon(RTMP_ADAPTER *pAd, INT apidx, ULONG FrameLen)
+{
+		UCHAR *ptr = NULL;
+		MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[apidx];
+		UINT32 longValue, reg_base;
+		UINT i = 0;
+		UINT8 TXWISize = pAd->chipCap.TXWISize;
+		
 	ptr = (PUCHAR)&pAd->BeaconTxWI;
 #ifdef RT_BIG_ENDIAN
     RTMPWIEndianChange(pAd, ptr, TYPE_TXWI);
@@ -311,11 +321,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 		ptr += 4;
 	}
 
-	pMbss->TimIELocationInBeacon = (UCHAR)FrameLen; 
-	pMbss->CapabilityInfoLocationInBeacon = sizeof(HEADER_802_11) + TIMESTAMP_LEN + 2;
 }
-
-
 /*
 	==========================================================================
 	Description:

@@ -1854,7 +1854,7 @@ VOID BuildBeaconChList(
 }
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
-#ifdef ED_MONITOR
+
 COUNTRY_PROP CountryProp[]=
 {
 	{"AL", CE, TRUE}, /* Albania */
@@ -2002,7 +2002,7 @@ static PCOUNTRY_PROP GetCountryProp(
 
 	return pCountryProp;
 }
-
+#ifdef ED_MONITOR
 BOOLEAN GetEDCCASupport(
 	IN PRTMP_ADAPTER pAd)
 {
@@ -2035,6 +2035,24 @@ BOOLEAN GetEDCCASupport(
 }
 #endif /* ED_MONITOR */
 
+UCHAR GetCountryRegionFromCountryCode(
+	IN PRTMP_ADAPTER pAd)
+{
+	UCHAR ret=FCC;
+#ifdef EXT_BUILD_CHANNEL_LIST
+	PCH_REGION pChReg;
+	
+	pChReg = GetChRegion(pAd->CommonCfg.CountryCode);
+	ret = pChReg->DfsType;
+	
+#else
+	PCOUNTRY_PROP pCountryProp;
+	
+	pCountryProp = GetCountryProp(pAd->CommonCfg.CountryCode);
+	ret = pCountryProp->DfsType;
+#endif
+	return ret;
+}
 #ifdef DOT11_N_SUPPORT
 static BOOLEAN IsValidChannel(
 	IN PRTMP_ADAPTER pAd,
@@ -2104,20 +2122,27 @@ BOOLEAN AC_ChannelGroupCheck(
 		36, 40, 44, 48,
 		52, 56, 60, 64,
 		100, 104, 108, 112,
-		116, 120, 124, 128,
 		132, 136, 140, 144,
 		149, 153, 157, 161
 	};
 	UINT8	num_ch = sizeof(vht_ch_group)/sizeof(UCHAR);
 	UINT8	idx;
-	
+	UCHAR 	region = GetCountryRegionFromCountryCode(pAd);
+
 	if (Channel > 14)
 	{ /* 5G Band */
 		for (idx=0; idx<num_ch; idx++) {
-			if (Channel == vht_ch_group[idx]) {
+			if (((region == CE || region == JAP) && vht_ch_group[idx] >= 132) || ((region == FCC) && vht_ch_group[idx] >= 116 && vht_ch_group[idx] <= 128))
+			{
+				continue;
+			}
+			else
+			{
+			    if (Channel == vht_ch_group[idx]) {
 				/* in BW_80 channel group */
 				RetVal = TRUE;
 				break;
+			    }
 			}
 		}
 	}
@@ -2244,8 +2269,12 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 			}
 		}
 	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: un-expected case. (channel=%d)\n", 
+			__FUNCTION__, channel));
+	}
 }
-
 
 UCHAR N_SetCenCh(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 {
