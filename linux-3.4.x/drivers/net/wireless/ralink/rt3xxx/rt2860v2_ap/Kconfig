@@ -158,10 +158,10 @@ config  RT2860V2_AP_SNMP
 	bool "Net-SNMP Support"
 	depends on RT2860V2_AP
 
-config  RT2860V2_AP_BRIDGE_FASTPATH
-	bool "Bridge wlan2lan operation offload"
-	default n
-	depends on RT2860V2_AP
+#config  RT2860V2_AP_BRIDGE_FASTPATH
+#	bool "Bridge wlan2lan operation offload"
+#	default n
+#	depends on RT2860V2_AP
 
 config  RT2860V2_AP_QLOAD
 	bool "Provide information on the current STA population and traffic levels in the QBSS."

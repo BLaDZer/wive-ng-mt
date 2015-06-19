@@ -1400,8 +1400,7 @@ INT RTMPAPSetInformation(
 
 #ifdef SNMP_SUPPORT	
 	/*snmp */
-    UINT						KeyIdx = 0;
-    PNDIS_AP_802_11_KEY			pKey = NULL;
+	PNDIS_AP_802_11_KEY			pKey = NULL;
 	TX_RTY_CFG_STRUC			tx_rty_cfg;
 	ULONG						ShortRetryLimit, LongRetryLimit;
 #endif /* SNMP_SUPPORT */
@@ -3201,7 +3200,6 @@ INT RTMPAPQueryInformation(
 #endif /* WSC_AP_SUPPORT */
 
 #ifdef SNMP_SUPPORT
-	ULONG ulInfo;
 	DefaultKeyIdxValue			*pKeyIdxValue;
 	INT							valueLen;
 	TX_RTY_CFG_STRUC			tx_rty_cfg;
@@ -3753,7 +3751,7 @@ INT RTMPAPQueryInformation(
 		}
 		case OID_802_11_WEPDEFAULTKEYVALUE:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_WEPDEFAULTKEYVALUE \n"));
-			pKeyIdxValue = wrq->u.data.pointer;
+			pKeyIdxValue = (DefaultKeyIdxValue*)wrq->u.data.pointer;
 			DBGPRINT(RT_DEBUG_TRACE,("KeyIdxValue.KeyIdx = %d, \n",pKeyIdxValue->KeyIdx));
 
 			valueLen = pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen;

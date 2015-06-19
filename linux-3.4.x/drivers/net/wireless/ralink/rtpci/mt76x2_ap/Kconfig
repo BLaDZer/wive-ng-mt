@@ -150,6 +150,10 @@ config  MT76X2_AP_DELAYED_TCP_ACK
 	depends on MT76X2_AP
 	default n
 
+config  MT76X2_AP_SNMP
+	bool "Net-SNMP Support"
+	depends on MT76X2_AP
+
 config  MT76X2_AP_SINGLE_SKU
 	bool "Single SKU"
 	depends on MT76X2_AP
@@ -168,6 +172,11 @@ config  MT76X2_AP_MC_SUPPORT
 	bool "Multiple Card Support"
 	default n
 	depends on MT76X2_AP
+
+config BAND_STEERING
+	bool "Band Steering"
+	depends on MT76X2_AP
+	default n
 
 config  MT76X2_AP_ATE
 	bool "Provide ATE testmode commands support"

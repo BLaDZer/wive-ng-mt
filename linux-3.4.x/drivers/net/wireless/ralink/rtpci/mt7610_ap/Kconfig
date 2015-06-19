@@ -139,6 +139,10 @@ choice
 	bool "Tx Power Temperature Compensation"
 endchoice
 
+config  MT7610_AP_SNMP
+	bool "Net-SNMP Support"
+	depends on MT7610_AP
+
 config  MT7610_AP_SINGLE_SKU
 	bool "Single SKU"
 	depends on MT7610_AP
