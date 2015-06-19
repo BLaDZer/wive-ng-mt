@@ -104,7 +104,6 @@ function insertExtChannelOption(form)
 	var length = form.sz11gChannel.options.length;
 	var CurrentCh = form.sz11gChannel.value * 1;
 	var x = form.n_extcha;
-	var tmp_value = x.value; // Store value
 
 	if (wmode >= 5)
 	{

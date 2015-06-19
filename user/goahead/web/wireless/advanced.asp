@@ -157,9 +157,21 @@ function initValue()
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
 
-  form.maxstanum.value = maxstanum;
-  form.keepalive.value = keepalive;
-  form.idletimeout.value = idletimeout;
+  if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>) {
+    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
+  } else {
+    form.maxstanum.value = maxstanum;
+  }
+  if (isNaN(keepalive) || keepalive < 10 || keepalive > 300) {
+    form.keepalive.value = 60;
+  } else {
+    form.keepalive.value = keepalive;
+  }
+  if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300) {
+    form.idletimeout.value = 200;
+  } else {
+    form.idletimeout.value = idletimeout;
+  }
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
 //	form.HT_BSSCoexistence[1].checked = (htNoiseCoex != '1');
