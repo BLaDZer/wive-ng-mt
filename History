@@ -1020,9 +1020,10 @@
 1) toolchain: update gcc to 20150614 4.8.5-RC version form git, update headers.<br>
 2) dnsmasq: up to 2.73 version.<br>
 3) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
-4) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
-5) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
-6) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
+4) defaults: temp set VHT_BW=20/40MHz for 7610NE, fix issue with some broadcom mobile clients.<br>
+5) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
+6) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
+7) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
 8) kernel: ralink wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
 9) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 <br>
