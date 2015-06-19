@@ -1763,7 +1763,6 @@ INT RTMPAPSetInformation(
 	PNDIS_AP_802_11_KEY			pKey = NULL;
 	TX_RTY_CFG_STRUC			tx_rty_cfg;
 	ULONG						ShortRetryLimit, LongRetryLimit;
-	UCHAR						ctmp;
 #endif /* SNMP_SUPPORT */
 
 	
@@ -2772,12 +2771,12 @@ INT RTMPAPSetInformation(
 				Status = -EINVAL;
 			else
 			{
-				pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen = (UCHAR) pKey->KeyLength;
-				NdisMoveMemory(&pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].Key, &pKey->KeyMaterial, pKey->KeyLength);
+				pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].KeyLen = (UCHAR) pKey->KeyLength;
+				NdisMoveMemory(&pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].Key, &pKey->KeyMaterial, pKey->KeyLength);
 				if (pKey->KeyIndex & 0x80000000)
 				{
 					/* Default key for tx (shared key) */
-					pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId = (UCHAR) KeyIdx;
+					pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId = (UCHAR) KeyIdx;
 				}
 				/*RestartAPIsRequired = TRUE; */
 			}
@@ -2791,23 +2790,10 @@ INT RTMPAPSetInformation(
 			if (wrq->u.data.length != sizeof(UCHAR))
 				Status = -EINVAL;
 			else
-				Status = copy_from_user(&pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId, wrq->u.data.pointer, wrq->u.data.length);
+				Status = copy_from_user(&pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId, wrq->u.data.pointer, wrq->u.data.length);
 
 			break;
 
-
-		case OID_802_11_CURRENTCHANNEL:
-			DBGPRINT(RT_DEBUG_TRACE, ("Set::OID_802_11_CURRENTCHANNEL \n"));
-			if (wrq->u.data.length != sizeof(UCHAR))
-				Status = -EINVAL;
-			else
-			{
-				STRING	ChStr[5] = {0};
-				Status = copy_from_user(&ctmp, wrq->u.data.pointer, wrq->u.data.length);
-				snprintf(ChStr, sizeof(ChStr), "%d", ctmp);
-				Set_Channel_Proc(pAd, ChStr);
-			}
-			break;
 #endif /* SNMP_SUPPORT */
 
 
@@ -4381,9 +4367,9 @@ INT RTMPAPQueryInformation(
 			pKeyIdxValue = (DefaultKeyIdxValue*)wrq->u.data.pointer;
 			DBGPRINT(RT_DEBUG_TRACE,("KeyIdxValue.KeyIdx = %d, \n",pKeyIdxValue->KeyIdx));
 
-			valueLen = pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen;
+			valueLen = pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].KeyLen;
 			NdisMoveMemory(pKeyIdxValue->Value,
-						   &pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].Key,
+						   &pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].Key,
 						   valueLen);
 			pKeyIdxValue->Value[valueLen]='\0';
 
@@ -4400,15 +4386,15 @@ INT RTMPAPQueryInformation(
 		case OID_802_11_WEPDEFAULTKEYID:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_WEPDEFAULTKEYID \n"));
 			wrq->u.data.length = sizeof(UCHAR);
-			Status = copy_to_user(wrq->u.data.pointer, &pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId, wrq->u.data.length);
-			DBGPRINT(RT_DEBUG_TRACE, ("DefaultKeyId =%d \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId));
+			Status = copy_to_user(wrq->u.data.pointer, &pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId, wrq->u.data.length);
+			DBGPRINT(RT_DEBUG_TRACE, ("DefaultKeyId =%d \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId));
 			break;
 
 		case RT_OID_802_11_WEPKEYMAPPINGLENGTH:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_WEPKEYMAPPINGLENGTH \n"));
 			wrq->u.data.length = sizeof(UCHAR);
 			Status = copy_to_user(wrq->u.data.pointer,
-									&pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen,
+									&pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].KeyLen,
 									wrq->u.data.length);
 			break;
 
@@ -4454,13 +4440,6 @@ INT RTMPAPQueryInformation(
 			Status = copy_to_user(wrq->u.data.pointer, ManufacturerNAME, wrq->u.data.length);
 			break;
 
-		case OID_802_11_CURRENTCHANNEL:
-			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_CURRENTCHANNEL \n"));
-			wrq->u.data.length = sizeof(UCHAR);
-			DBGPRINT(RT_DEBUG_TRACE, ("sizeof UCHAR=%d, channel=%d \n", sizeof(UCHAR), pAd->CommonCfg.Channel));
-			Status = copy_to_user(wrq->u.data.pointer, &pAd->CommonCfg.Channel, wrq->u.data.length);
-			DBGPRINT(RT_DEBUG_TRACE, ("Status=%d\n", Status));
-			break;
 #endif /* SNMP_SUPPORT */
 
         case OID_802_11_STATISTICS:
