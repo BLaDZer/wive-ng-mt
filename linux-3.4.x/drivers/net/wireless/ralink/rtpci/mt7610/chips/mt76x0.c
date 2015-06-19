@@ -3529,7 +3529,7 @@ static VOID ReloadLowCalResult(
 	IN RTMP_ADAPTER *pAd
 )
 {
-	UCHAR RFValue;
+	USHORT RFValue;
 	UINT32 reg_val, mac_val, i=0;
 	UINT16 tmp1,tmp2;
 	
@@ -3609,7 +3609,7 @@ static VOID ReloadMidCalResult(
 	IN RTMP_ADAPTER *pAd
 )
 {
-	UCHAR RFValue;
+	USHORT RFValue;
 	UINT32 reg_val, mac_val, i=0;
 	UINT16 tmp1,tmp2;
 	DBGPRINT(RT_DEBUG_ERROR,("<==== %s() \n",__FUNCTION__));
@@ -3689,7 +3689,7 @@ static VOID ReloadHighCalResult(
 	IN RTMP_ADAPTER *pAd
 )
 {
-	UCHAR RFValue;
+	USHORT RFValue;
 	UINT32 reg_val, mac_val, i=0;
 	UINT16 tmp1,tmp2;
 	DBGPRINT(RT_DEBUG_ERROR,("<==== %s() \n",__FUNCTION__));
@@ -3772,7 +3772,7 @@ static VOID FullCalibration(
 	IN BOOLEAN bSave)
 {
 #ifdef RTMP_FLASH_SUPPORT
-	UINT32 doCal1=0,doCal2=0;
+	USHORT doCal1=0,doCal2=0;
 	//RtmpFlashRead((UCHAR *)&doCal1, RF_OFFSET + 0x43, sizeof(doCal1));
 	rtmp_ee_flash_read(pAd, 0x43, &doCal1);
 	doCal2 = doCal1 & 0x10;
