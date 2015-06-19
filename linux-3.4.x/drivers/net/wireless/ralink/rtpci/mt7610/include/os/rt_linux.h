@@ -1230,7 +1230,11 @@ do{ \
 #ifdef WFA_VHT_PF
 #define MAX_PACKETS_IN_QUEUE				2048 /*(512)*/
 #else
+#ifdef NOISE_TEST_ADJUST
+#define MAX_PACKETS_IN_QUEUE				2048 /*(512)*/
+#else
 #define MAX_PACKETS_IN_QUEUE				1024 /*(512)*/
+#endif /* NOISE_TEST_ADJUST */
 #endif /* WFA_VHT_PF */
 #else
 #define MAX_PACKETS_IN_QUEUE				(512)

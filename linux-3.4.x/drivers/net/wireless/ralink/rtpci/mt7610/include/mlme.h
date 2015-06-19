@@ -116,7 +116,11 @@ extern UINT32 CW_MAX_IN_BITS;
 #define BSS_NOT_FOUND                    0xFFFFFFFF
 
 #ifdef CONFIG_AP_SUPPORT
+#ifdef NOISE_TEST_ADJUST
+#define MAX_LEN_OF_MLME_QUEUE            40 /*10 */
+#else
 #define MAX_LEN_OF_MLME_QUEUE            20 /*10 */
+#endif /* NOISE_TEST_ADJUST */
 #endif /* CONFIG_AP_SUPPORT */
 
 

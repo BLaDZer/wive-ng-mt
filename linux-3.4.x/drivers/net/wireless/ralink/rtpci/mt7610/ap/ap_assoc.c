@@ -281,7 +281,7 @@ static USHORT update_associated_mac_entry(
 #ifdef DOT11_VHT_AC
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14) &&
-			ie_list->vht_cap_len)
+			(ie_list->vht_cap_len))
 		{
 			VHT_CAP_INFO *vht_cap_info = &ie_list->vht_cap.vht_cap;
 

@@ -569,7 +569,9 @@ INT	Set_WscSetupLockTime_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg);
 #endif /* WSC_V2_SUPPORT */
-
+INT	Set_WscAutoTriggerDisable_Proc(
+	IN	PRTMP_ADAPTER	pAd, 
+	IN	PSTRING			arg);
 #endif /* WSC_AP_SUPPORT */
 
 
@@ -988,6 +990,7 @@ static struct {
 	{"WscMaxPinAttack", 			Set_WscMaxPinAttack_Proc},
 	{"WscSetupLockTime", 			Set_WscSetupLockTime_Proc},
 #endif /* WSC_V2_SUPPORT */
+	{"WscAutoTriggerDisable", 		Set_WscAutoTriggerDisable_Proc},
 #endif /* WSC_AP_SUPPORT */
 #ifdef UAPSD_SUPPORT
 	{"UAPSDCapable",				Set_UAPSD_Proc},
@@ -8425,6 +8428,7 @@ INT Set_ApCli_Ssid_Proc(
 		}
 #endif
 
+		pAd->ApCfg.ApCliTab[ifIndex].bPeerExist = FALSE;
 		NdisZeroMemory(pAd->ApCfg.ApCliTab[ifIndex].CfgSsid, MAX_LEN_OF_SSID);
 		NdisMoveMemory(pAd->ApCfg.ApCliTab[ifIndex].CfgSsid, arg, strlen(arg));
 		pAd->ApCfg.ApCliTab[ifIndex].CfgSsidLen = (UCHAR)strlen(arg);
@@ -8982,37 +8986,6 @@ INT	Set_ApCli_IEEE8021X_Proc(
 	return TRUE;
 }
 #endif /* APCLI_WPA_SUPPLICANT_SUPPORT */
-
-#ifdef MAC_REPEATER_SUPPORT
-INT Set_ReptMode_Enable_Proc(
-	IN  PRTMP_ADAPTER pAd, 
-	IN  PSTRING arg)
-{
-	UCHAR Enable;
-	UINT32 MacReg;
-
-	Enable = simple_strtol(arg, 0, 10);
-
-	RTMP_IO_READ32(pAd, MAC_ADDR_EXT_EN, &MacReg);
-	if (Enable)
-	{
-		MacReg |= 0x1;
-		pAd->ApCfg.bMACRepeaterEn = TRUE;
-		DBGPRINT(RT_DEBUG_TRACE, (" Repeater Mode (ON)\n"));
-	}
-	else
-	{
-		MacReg &= (~0x1);
-		pAd->ApCfg.bMACRepeaterEn = FALSE;
-		DBGPRINT(RT_DEBUG_TRACE, (" Repeate Mode (OFF)\n"));
-	}
-	RTMP_IO_WRITE32(pAd, MAC_ADDR_EXT_EN, MacReg);
-
-	DBGPRINT(RT_DEBUG_WARN, (" MACRepeaterEn = %d \n", pAd->ApCfg.bMACRepeaterEn));
-
-	return TRUE;
-}
-#endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
 /* 
@@ -10653,9 +10626,25 @@ INT	Set_WscSetupLockTime_Proc(
 }
 
 #endif /* WSC_V2_SUPPORT */
+
+INT	Set_WscAutoTriggerDisable_Proc(
+	IN	PRTMP_ADAPTER	pAd, 
+	IN	PSTRING			arg)
+{
+	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+	UCHAR bEnable = (UCHAR)simple_strtol(arg, 0, 10);
+	PWSC_CTRL pWscCtrl = &pAd->ApCfg.MBSSID[pObj->ioctl_if].WscControl;
+
+	if (bEnable == 0)
+		pWscCtrl->bWscAutoTriggerDisable = FALSE;
+	else
+		pWscCtrl->bWscAutoTriggerDisable = TRUE;
+	
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_WscAutoTriggerDisable_Proc::(bWscAutoTriggerDisable=%d)\n",
+								pWscCtrl->bWscAutoTriggerDisable));
+	return TRUE;
+}
 #endif /* WSC_AP_SUPPORT */
-
-
 
 #ifdef IAPP_SUPPORT
 INT	Set_IappPID_Proc(
@@ -12481,6 +12470,37 @@ INT Set_EthRepeaterGid_Proc(
 
 	return TRUE;
 }
+
+INT Set_ReptMode_Enable_Proc(
+	IN  PRTMP_ADAPTER pAd, 
+	IN  PSTRING arg)
+{
+	UCHAR Enable;
+	UINT32 MacReg;
+
+	Enable = simple_strtol(arg, 0, 10);
+
+	RTMP_IO_READ32(pAd, MAC_ADDR_EXT_EN, &MacReg);
+	if (Enable)
+	{
+		MacReg |= 0x1;
+		pAd->ApCfg.bMACRepeaterEn = TRUE;
+		DBGPRINT(RT_DEBUG_TRACE, (" Repeater Mode (ON)\n"));
+	}
+	else
+	{
+		MacReg &= (~0x1);
+		pAd->ApCfg.bMACRepeaterEn = FALSE;
+		DBGPRINT(RT_DEBUG_TRACE, (" Repeate Mode (OFF)\n"));
+	}
+	RTMP_IO_WRITE32(pAd, MAC_ADDR_EXT_EN, MacReg);
+
+	DBGPRINT(RT_DEBUG_WARN, (" MACRepeaterEn = %d \n", pAd->ApCfg.bMACRepeaterEn));
+
+	return TRUE;
+}
+
+
 
 #endif /* MAC_REPEATER_SUPPORT */
 

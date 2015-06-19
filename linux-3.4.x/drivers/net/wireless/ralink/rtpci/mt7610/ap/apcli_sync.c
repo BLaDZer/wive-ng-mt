@@ -161,12 +161,12 @@ static VOID ApCliMlmeProbeReqAction(
 	pApCliEntry->ApCliMlmeAux.Rssi = -9999;
 #ifdef APCLI_CONNECTION_TRIAL
 	if (pApCliEntry->TrialCh ==0)
-#endif
+#endif /* APCLI_CONNECTION_TRIAL */
 	pApCliEntry->ApCliMlmeAux.Channel = pAd->CommonCfg.Channel;
 #ifdef APCLI_CONNECTION_TRIAL
 	else
 		pApCliEntry->ApCliMlmeAux.Channel = pApCliEntry->TrialCh;
-#endif
+#endif /* APCLI_CONNECTION_TRIAL */
 	pApCliEntry->ApCliMlmeAux.SupRateLen = pAd->CommonCfg.SupRateLen;
 	NdisMoveMemory(pApCliEntry->ApCliMlmeAux.SupRate, pAd->CommonCfg.SupRate, pAd->CommonCfg.SupRateLen);
 
@@ -181,7 +181,7 @@ static VOID ApCliMlmeProbeReqAction(
 	NdisZeroMemory(pAd->ApCfg.ApCliTab[ifIndex].ApCliMlmeAux.Ssid, MAX_LEN_OF_SSID);
 	NdisCopyMemory(pAd->ApCfg.ApCliTab[ifIndex].ApCliMlmeAux.Bssid, pAd->ApCfg.ApCliTab[ifIndex].CfgApCliBssid, MAC_ADDR_LEN);
 	NdisCopyMemory(pAd->ApCfg.ApCliTab[ifIndex].ApCliMlmeAux.Ssid, pAd->ApCfg.ApCliTab[ifIndex].CfgSsid, pAd->ApCfg.ApCliTab[ifIndex].CfgSsidLen);
-#endif
+#endif /* APCLI_CONNECTION_TRIAL */
 
 	ApCliEnqueueProbeRequest(pAd, Info->SsidLen, (PCHAR) Info->Ssid, ifIndex);
 
@@ -511,7 +511,7 @@ static VOID ApCliProbeTimeoutAtJoinAction(
 #ifdef APCLI_CONNECTION_TRIAL
 	if (ifIndex == 1)
 		*pCurrCtrlState = APCLI_CTRL_DISCONNECTED;
-#endif
+#endif /* APCLI_CONNECTION_TRIAL */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("APCLI_SYNC - ApCliMlmeAux.Bssid=%02x:%02x:%02x:%02x:%02x:%02x\n",
 		pApCliEntry->ApCliMlmeAux.Bssid[0], 
@@ -642,8 +642,9 @@ static VOID ApCliEnqueueProbeRequest(
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14))
 		{	
-			FrameLen += build_vht_cap_ie(pAd, (UCHAR *)&pApCliEntry->ApCliMlmeAux.vht_cap);
+			build_vht_cap_ie(pAd, (UCHAR *)&pApCliEntry->ApCliMlmeAux.vht_cap);
 			pApCliEntry->ApCliMlmeAux.vht_cap_len = sizeof(VHT_CAP_IE);
+			FrameLen += build_vht_ies(pAd, (UCHAR *)(pOutBuffer + FrameLen), SUBTYPE_PROBE_REQ);
 		}
 #endif /* DOT11_VHT_AC */
 

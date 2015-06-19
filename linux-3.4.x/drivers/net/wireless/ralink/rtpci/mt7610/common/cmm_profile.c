@@ -1154,6 +1154,9 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 			{
 				pAd->ApCfg.MBSSID[i].bWmmCapable = TRUE;
 				bEnableWmm = TRUE;
+#ifdef MULTI_CLIENT_SUPPORT
+				pAd->CommonCfg.bWmm = TRUE;
+#endif /* MULTI_CLIENT_SUPPORT */
 			}
 			else
 			{
@@ -1215,6 +1218,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->CommonCfg.APEdcaParm.Cwmin[i] = (UCHAR) simple_strtol(macptr, 0, 10);
+#ifdef MULTI_CLIENT_SUPPORT
+			/* record profile cwmin */
+			if (i == 0)
+				pAd->CommonCfg.APCwmin = pAd->CommonCfg.APEdcaParm.Cwmin[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 
 			DBGPRINT(RT_DEBUG_TRACE, ("APCwmin[%d]=%d\n", i, pAd->CommonCfg.APEdcaParm.Cwmin[i]));
 	    }
@@ -1225,6 +1233,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->CommonCfg.APEdcaParm.Cwmax[i] = (UCHAR) simple_strtol(macptr, 0, 10);
+#ifdef MULTI_CLIENT_SUPPORT
+			/* record profile cwmax */
+			if (i == 0)
+				pAd->CommonCfg.APCwmax= pAd->CommonCfg.APEdcaParm.Cwmax[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 
 			DBGPRINT(RT_DEBUG_TRACE, ("APCwmax[%d]=%d\n", i, pAd->CommonCfg.APEdcaParm.Cwmax[i]));
 	    }
@@ -1265,6 +1278,11 @@ static void rtmp_read_ap_wmm_parms_from_file(IN  PRTMP_ADAPTER pAd, PSTRING tmpb
 	    for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
 	    {
 			pAd->ApCfg.BssEdcaParm.Cwmin[i] = (UCHAR) simple_strtol(macptr, 0, 10);
+#ifdef MULTI_CLIENT_SUPPORT
+			/* record profile cwmin */
+			if (i == 0)
+				pAd->CommonCfg.BSSCwmin = pAd->ApCfg.BssEdcaParm.Cwmin[0];
+#endif /* MULTI_CLIENT_SUPPORT */
 
 			DBGPRINT(RT_DEBUG_TRACE, ("BSSCwmin[%d]=%d\n", i, pAd->ApCfg.BssEdcaParm.Cwmin[i]));
 	    }
@@ -2844,6 +2862,12 @@ NDIS_STATUS	RTMPSetProfileParameters(
 						break;
 
 					pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime = simple_strtol(macptr, 0, 10);
+#ifdef NOISE_TEST_ADJUST
+					if (!pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime)
+						pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime = 10;
+					else if (pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime == 0xFF)
+						pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime = 0;
+#endif /* NOISE_TEST_ADJUST */
 					DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) StationKeepAliveTime=%d\n", i, pAd->ApCfg.MBSSID[apidx].StationKeepAliveTime));
 				}
 			}
@@ -3659,6 +3683,23 @@ NDIS_STATUS	RTMPSetProfileParameters(
 							DBGPRINT(RT_DEBUG_TRACE, ("Wsc_Uuid_E[%d]", i+1));
 							hex_dump("", &pWpsCtrl->Wsc_Uuid_E[0], UUID_LEN_HEX);
 						}
+					}
+
+					/* WSC AutoTrigger Disable */
+					if(RTMPGetKeyParameter("WscAutoTriggerDisable", tmpbuf, 10, pBuffer, TRUE))
+					{
+						BOOLEAN	bEn = FALSE;
+						
+						if ((strncmp(tmpbuf, "0", 1) == 0))
+							bEn = FALSE;
+						else
+							bEn = TRUE;
+
+						for (i = 0; i < pAd->ApCfg.BssidNum; i++)
+						{
+							pAd->ApCfg.MBSSID[i].WscControl.bWscAutoTriggerDisable = bEn;
+						}
+						DBGPRINT(RT_DEBUG_TRACE, ("bWscAutoTriggerDisable=%d\n", bEn));
 					}
 
 		

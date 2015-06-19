@@ -212,27 +212,6 @@ VOID APPeerProbeReqAction(
 			FrameLen += TmpLen;
 		}
 
-#ifdef A_BAND_SUPPORT
-		/* add Channel switch announcement IE */
-		if ((pAd->CommonCfg.Channel > 14)
-			&& (pAd->CommonCfg.bIEEE80211H == 1)
-			&& (pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
-		{
-			UCHAR CSAIe=IE_CHANNEL_SWITCH_ANNOUNCEMENT;
-			UCHAR CSALen=3;
-			UCHAR CSAMode=1;
-
-			MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen,
-							  1,                        &CSAIe,
-							  1,                        &CSALen,
-							  1,                        &CSAMode,
-							  1,                        &pAd->CommonCfg.Channel,
-							  1,                        &pAd->Dot11_H.CSCount,
-							  END_OF_ARGS);
-			FrameLen += TmpLen;
-		}
-#endif /* A_BAND_SUPPORT */
-
 #ifdef DOT11_N_SUPPORT
 		if (WMODE_CAP_N(PhyMode) &&
 			(pAd->ApCfg.MBSSID[apidx].DesiredHtPhyInfo.bHtEnable))
@@ -527,9 +506,9 @@ VOID APPeerProbeReqAction(
 				MakeOutgoingFrame(pOutBuffer + FrameLen,             &TmpLen,
 								  sizeof(HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE),	&HtExtChannelSwitchIe,
 								  END_OF_ARGS);
+				FrameLen += TmpLen;
 			}
 #endif /* DOT11_N_SUPPORT */
-			FrameLen += TmpLen;
 		}
 #endif /* A_BAND_SUPPORT */
 
@@ -884,6 +863,8 @@ VOID APPeerBeaconAction(
 #endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef APCLI_SUPPORT
+		ApCliCheckPeerExistence(pAd, ie_list->Ssid, ie_list->SsidLen, ie_list->Channel);
+
 		if (Elem->Wcid < MaxWcidNum)
 		{
 			PMAC_TABLE_ENTRY pEntry = NULL;
@@ -895,6 +876,18 @@ VOID APPeerBeaconAction(
 				pAd->ApCfg.ApCliTab[pEntry->MatchAPCLITabIdx].ApCliRcvBeaconTime = pAd->Mlme.Now32;
 			}
 		}
+
+			if ( (pAd->CommonCfg.bIEEE80211H == 1) &&
+				ie_list->NewChannel != 0 &&
+				pAd->CommonCfg.Channel != ie_list->NewChannel &&
+				pAd->Dot11_H.RDMode != RD_SWITCHING_MODE)
+			{
+				pAd->CommonCfg.Channel = ie_list->NewChannel;
+				pAd->Dot11_H.RDMode = RD_SWITCHING_MODE;
+				DBGPRINT(RT_DEBUG_TRACE,
+					("[APCLI]  Following root AP to switch channel to ch%u\n",
+					pAd->CommonCfg.Channel));
+			}
 
 #endif /* APCLI_SUPPORT */
 

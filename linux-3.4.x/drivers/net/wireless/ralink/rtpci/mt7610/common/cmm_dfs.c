@@ -263,30 +263,69 @@ static NewDFSTable NewDFSTable1[] =
 	},
 };
 
-/* for MT76x0 */
-static NewDFSTable NewDFSTable2[] = 
+/* 7610/7662 DFS table */
+static NewDFSTable NewDFSTable2[] = {
+	/* For BW_20 & BW_40  */
 {
-	{
-		/*		(0~9)  (~511)	 (~4095)	    (~4095)																	   */
-		/* 	ch,	mode	M	EL,	EH 	WL		WH		ErrW	TL		TH		Err_T	BL	BH			EE			PJ*/
 		NEW_DFS_FCC,
 		{
-			{0,	0,  		8,	2,	7,	106,		420,		30,		2900,	100096,	30,		0,	2147483647, 0x1400000,	0x12ee},
-			{1,	0,  		0,	0,	0,	0,		0,		0,		0, 		0, 		0,		0,	0,			0,			0},
-			{2,	3, 		20,	2,	18,	106,		420,		32,		2900, 	100096,	32, 		0,	2147483647, 0xe4e1c00,	0x12ee},
-			{3,	2, 		60,	15,	48,	900,		2048,	32,		2900, 	100096,	32, 		0,	2147483647, 0x0e4e1c00,	0x12ee},
+			{0, 0, 8, 2, 7, 106, 150,  5, 2900,  80100,  5,  0, 2147483647, 0x1400000, 0x13dc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0x1400000, 0x19dd},
+			{2, 0,40, 4,36,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xe4e1c00, 0x12dc},
+			{3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0, 2147483647, 0xe4e1c00, 0x1289},
 		}
 	},
 
 	{
-		/*		(0~9)  (~511)	 (~4095)	    (~4095)																	   */
-		/* 	ch,	mode	M	EL,	EH 	WL		WH		ErrW	TL		TH		Err_T	BL	BH			EE			PJ*/
+                NEW_DFS_EU,
+                {
+			{0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x1400000, 0x19cc},
+			{1, 0,40, 4, 36,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x1400000, 0x19dc},
+			{2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647, 0xe4e1c00, 0x19dd},
+			{3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647, 0x1400000, 0x15cc},
+                }
+	},
+
+	{
+                NEW_DFS_JAP_W53,
+                {
+			{0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647, 0x1400000, 0x16cc},
+			{1,	0,  		0,	0,	0,	0,		0,		0,		0, 		0, 		0,		0,	0,			0,			0},
+			{2, 0,40, 4,36,  96, 200,150,28400,  77000, 60,  0, 2147483647, 0xe4e1c00, 0x16dc},
+			{3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+		}
+	},
+};
+
+static NewDFSTable NewDFSTable3[] =  {
+	/* For BW_80 */
+	{
+                NEW_DFS_FCC,
+                {
+                       {0, 0, 8, 2, 9, 106, 150, 15, 2900,  80100, 15,  0, 2147483647, 0x1400000, 0x16cc},
+                       {1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0x1400000, 0x19dd},
+                       {2, 0,40, 4,36,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xe4e1c00, 0x12dc},
+                       {3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0, 2147483647, 0xe4e1c00, 0x1289},
+		}
+	},
+
+	{
 		NEW_DFS_EU,
 		{
-			{0,	0,  		8,	2,	7,	106,		420,		30,		2900,	100096,	30,		0,	2147483647, 0x1400000,	0x12ee},
+                       {0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x1400000, 0x19cc},                        
+		       {1, 0,40, 4, 36,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x1400000, 0x19dc},
+                       {2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647, 0xe4e1c00, 0x19dd},
+                       {3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647, 0x1400000, 0x15cc},
+                }
+	},
+
+	{
+                NEW_DFS_JAP_W53,
+                {
+                       {0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647, 0x1400000, 0x16cc},
 			{1,	0,  		0,	0,	0,	0,		0,		0,		0, 		0, 		0,		0,	0,			0,			0},
-			{2,	3, 		20,	2,	18,	106,		2048,	32,		2900, 	100096,	32, 		0,	2147483647, 0xe4e1c00,	0x12ee},
-			{3,	8, 		8,	2,	7,	106,		200,		32,		2900, 	296704,	32, 		0,	2147483647, 0x1400000,	0x15ee},
+                       {2, 0,40, 4,36,  96, 200,150,28400,  77000, 60,  0, 2147483647, 0xe4e1c00, 0x16dc},
+                       {3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
 		}
 	},
 };
@@ -636,6 +675,7 @@ static inline VOID DfsProgramBbpValues(PRTMP_ADAPTER pAd,
 		/* Enable detection*/
 		bbp_val = (pDfsProgramParam->ChEnable << 16);
 		RTMP_BBP_IO_WRITE32(pAd, DFS_R0, bbp_val);
+		RTMP_IO_WRITE32(pAd, 0x212C, 0x0c350001);
 	}
 #else
 	DfsInputControl = pDfsProgramParam->Symmetric_Round << 4;
@@ -1123,10 +1163,42 @@ void NewRadarDetectionStart(PRTMP_ADAPTER pAd)
 #ifdef MT76x0
 	if (IS_MT7610E(pAd))
 	{
-		if (pAd->CommonCfg.RDDurRegion == CE)
+
+		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
+			// New update: 20130606
+			if (pAd->CommonCfg.RDDurRegion == CE) {
+				*ppDFSTable = &NewDFSTable3[1];
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
+				*ppDFSTable = &NewDFSTable3[0];
+			}
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) { 	
+				/* JAP_W53 */
+				*ppDFSTable = &NewDFSTable3[2];
+			}
+			else {
+				/* JAP_W56 */
+				*ppDFSTable = &NewDFSTable3[0];
+			}
+		}
+		else { // below BW_80 using Table2
+			if (pAd->CommonCfg.RDDurRegion == CE) {
 			*ppDFSTable = &NewDFSTable2[1];
-		else
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
 			*ppDFSTable = &NewDFSTable2[0];
+	}
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) { 	
+				/* JAP_W53 */
+				*ppDFSTable = &NewDFSTable2[2];
+			}
+			else {
+				/* JAP_W56 */
+				*ppDFSTable = &NewDFSTable2[0];
+			}
+		}
 	}
 #endif /* MT76x0 */
 
@@ -1165,6 +1237,15 @@ VOID NewRadarDetectionStop(
 	RTMP_HW_TIMER_INT_DISABLE(pAd);
 #endif /* RTMP_MAC_PCI */
 
+#ifdef CARRIER_DETECTION_SUPPORT
+#ifdef MT76x0
+	if (IS_MT7610E(pAd) && 
+		pAd->CommonCfg.CarrierDetect.Enable == 0)
+	{
+		RTMP_IO_WRITE32(pAd, 0x212C, 0x80);
+	}
+#endif
+#endif
 }
 
 
@@ -2296,34 +2377,70 @@ BOOLEAN DfsSwCheckOnHwDetection(
 		return FALSE;
 	}
 
-	if (pDFSTable->type == NEW_DFS_JAP)
+	if (pDFSTable->type == NEW_DFS_JAP && 
+		((pAd->CommonCfg.Channel >= 52) && (pAd->CommonCfg.Channel <= 64)))
+	{
+		if (RadarWidth > 130) // pulse width less than 6.4us is report is 6.4us
+		{
+			 /*block W53 very large and short width*/
+			DBGPRINT(RT_DEBUG_TRACE,
+				 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+		 	bRadarCheck = FALSE;
+		}
+		else if ((RadarPeriod < 28360) ||
+			(RadarPeriod > 28700 && RadarPeriod < 76900) ||
+			(RadarPeriod > 76940))
+		{ 
+			/*(0~1418), (1435~3845us) and (3847us~) according to the spec*/
+			DBGPRINT(RT_DEBUG_TRACE,
+				("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+			bRadarCheck = FALSE;
+		}
+	}
+	else if (pDFSTable->type == NEW_DFS_JAP && 
+		((pAd->CommonCfg.Channel >= 100) && (pAd->CommonCfg.Channel <= 140)))
 	{
 		/* Double check on pusle Width and Period*/
 		if (DfsChannel < 3)
 		{
 			/*check short pulse*/
-			if (RadarWidth < 375) 
+			if (RadarWidth < 120) /* pulse width less than 6.4us is report is 6.4us */
 			{
 				/* block the illegal period */
-				if ((RadarPeriod < 2800) ||
-					(RadarPeriod > 5000 && RadarPeriod < 6400) ||
+				if ((RadarPeriod < 2900) ||
+					(RadarPeriod > 4700 && RadarPeriod < 6400) ||
 					(RadarPeriod > 6800 && RadarPeriod < 27560)||
 					(RadarPeriod > 27960 && RadarPeriod < 28360) ||
 					(RadarPeriod > 28700 && RadarPeriod < 79900) ||
 					(RadarPeriod > 80100))
 				{ 
-					 /*(0~140), (250~320us), (340~1378us), (1398~1418), (1435~3995us) and (4005us~) according to the spec*/
+					 /*(0~145), (235~320us), (340~1378us), (1398~1418), (1435~3995us) and (4005us~) according to the spec*/
 					 DBGPRINT(RT_DEBUG_TRACE,
 							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
 					 bRadarCheck = FALSE;
 				}
 			}
-			else if (RadarWidth > 375)
+			else if (RadarWidth < 130) /* 120~130 over lap range */
 			{
-				if ((RadarPeriod<3500) || (RadarPeriod>10400))
+				/* block the illegal period */
+				if ((RadarPeriod < 2900) ||
+					(RadarPeriod > 10100 && RadarPeriod < 27560) ||
+					(RadarPeriod > 27960 && RadarPeriod < 28360) ||
+					(RadarPeriod > 28700 && RadarPeriod < 79900) ||
+					(RadarPeriod > 80100))
+				{ 
+					 /*(0~145), (505~1378us), (1398~1418), (1435~3995us) and (4005us~) according to the spec*/
+					 DBGPRINT(RT_DEBUG_TRACE,
+							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+					 bRadarCheck = FALSE;
+				}
+			}
+			else if (RadarWidth >= 130)// pulse width over 6.4us is accuracy
+			{
+				if ((RadarPeriod<3900) || (RadarPeriod>10100))
 				{ 
 					 /* block the illegal period */
-					 /*(0~175) and (520us~) according to the spec*/
+					 /*(0~195) and (505us~) according to the spec*/
 					 DBGPRINT(RT_DEBUG_TRACE,
 							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
 					 bRadarCheck = FALSE;
@@ -2343,11 +2460,10 @@ BOOLEAN DfsSwCheckOnHwDetection(
 	
 			/* block the illegal period */
 			if ((RadarPeriod < 4900) ||
-        		(RadarPeriod > 8800 && RadarPeriod < 12400) ||
-				(RadarPeriod > 14000 && RadarPeriod < 15800) ||
+        		(RadarPeriod > 10200 && RadarPeriod < 12400) ||
 		        (RadarPeriod > 100100))
 			{ 
-				/*(0~245), (440~620us), (5005us~) according to the spec*/
+				/*(0~245), (510~620us), (5005us~) according to the spec*/
 				DBGPRINT(RT_DEBUG_TRACE,
 					("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
 				bRadarCheck = FALSE;
@@ -2359,31 +2475,48 @@ BOOLEAN DfsSwCheckOnHwDetection(
 				bRadarCheck = FALSE;
 		}
 	}
-	else if (pDFSTable->type == FCC)
+	else if (pDFSTable->type == NEW_DFS_FCC)
 	{
 		/* Double check on pusle Width and Period*/
 		if (DfsChannel < 3)
 		{
-			if (RadarWidth < 950) 
+			/*check short pulse*/
+			if (RadarWidth < 120) /* pulse width less than 6.4us is report is 6.4us */
 			{                       
 		        /* block the illegal period */
-				 if ((RadarPeriod < 2800) ||
-					(RadarPeriod > 10100 && RadarPeriod < 28360) || (RadarPeriod > 28700))
+				 if ((RadarPeriod < 2900) ||
+					(RadarPeriod > 4700 && RadarPeriod < 6400) ||
+					(RadarPeriod > 6800 && RadarPeriod < 10200)||					
+					(RadarPeriod > 19000 && RadarPeriod< 28360) ||
+					(RadarPeriod > 28700 && RadarPeriod< 61000) ||
+					(RadarPeriod > 61600))
 	        	{ 
-                 /*(0~140), (505~1418), (1435us~) according to the spec*/
+					/*(0~145), (235~320us), (340~510), (950~1418), (1435~3050us) and (3080us~) according to the spec*/
                 DBGPRINT(RT_DEBUG_TRACE,
                                 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
                 bRadarCheck = FALSE;
     	    	}
 			}
-			else
+			else if (RadarWidth < 130) //120~130 over lap range
 			{
-        		if ((RadarPeriod<2800) || 
-					(RadarPeriod > 10200 && RadarPeriod < 19800) ||                                     
-					(RadarPeriod>40200))
+				if ((RadarPeriod < 2900) ||
+					(RadarPeriod > 19000 && RadarPeriod < 28360) ||				
+					(RadarPeriod > 28700 && RadarPeriod < 61000) ||
+					(RadarPeriod > 61600))
         		{ 
                 	/* block the illegal period */
-                	/*(0~140) and (510us~990), (2010us~)  according to the spec*/
+					 /*(0~145), (950~1418), (1435~3050us) and (3080us~) according to the spec*/
+					 DBGPRINT(RT_DEBUG_TRACE,
+							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+					 bRadarCheck = FALSE;
+				}
+			}
+			else if (RadarWidth >= 130)
+			{
+				if ((RadarPeriod<3900) || (RadarPeriod>10100))
+        		{ 
+                	/* block the illegal period */
+					 /*(0~195) and (505us~) according to the spec*/
                 	DBGPRINT(RT_DEBUG_TRACE,
                                 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
                 	bRadarCheck = FALSE;
@@ -2436,6 +2569,11 @@ static VOID ChannelSelectOnRadarDetection(
 	{
 		if (pAd->CommonCfg.Channel == pAd->ChannelList[i].Channel)
 		{
+			if(pAd->ChannelList[i].RemainingTimeForUse != 0)
+				DBGPRINT(RT_DEBUG_TRACE, ("From block channel = %u Jump!!!\n", pAd->ChannelList[i].Channel));
+			else
+				DBGPRINT(RT_DEBUG_TRACE, ("From unblock channel = %u Jump!!!\n", pAd->ChannelList[i].Channel));
+		
 			if (pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 			{
 				if ((pAd->ChannelList[i].Channel >> 2) & 1)
@@ -2494,6 +2632,18 @@ static VOID ChannelSelectOnRadarDetection(
 #ifdef DOT11_N_SUPPORT
 	N_ChannelCheck(pAd);
 #endif /* DOT11_N_SUPPORT */
+
+	for (i=0; i<pAd->ChannelListNum; i++)
+	{
+		if (pAd->CommonCfg.Channel == pAd->ChannelList[i].Channel)
+		{
+			if(pAd->ChannelList[i].RemainingTimeForUse != 0)
+				DBGPRINT(RT_DEBUG_TRACE, ("Channel Switch to block channel = %u \n", pAd->ChannelList[i].Channel));
+			else
+				DBGPRINT(RT_DEBUG_TRACE, ("Channel Switch to unblock channel = %u \n", pAd->ChannelList[i].Channel));
+			break;
+		}
+	}
 
 	/*ApSelectChannelCheck(pAd);*/
 	if (pAd->Dot11_H.RDMode == RD_NORMAL_MODE)
@@ -2578,22 +2728,20 @@ static void dfs_sw_init(PRTMP_ADAPTER pAd)
 	pDfsSwParam->EvtDropAdjTime = 2000;
 
 	pDfsSwParam->dfs_width_ch0_err_L = DFS_SW_RADAR_CH0_ERR;
-	if (pAd->CommonCfg.RDDurRegion == CE)	
+	if (pAd->CommonCfg.RDDurRegion == CE) {
 		pDfsSwParam->dfs_period_err = (DFS_SW_RADAR_PERIOD_ERR << 2);
-	else
-		pDfsSwParam->dfs_period_err = DFS_SW_RADAR_PERIOD_ERR;
-	if (pAd->CommonCfg.RDDurRegion == CE)
-	{
 		pDfsSwParam->dfs_width_ch0_err_H = CE_STAGGERED_RADAR_CH0_H_ERR;
 		pDfsSwParam->dfs_declare_thres = CE_STAGGERED_RADAR_DECLARE_THRES;
 		pDfsSwParam->dfs_max_period = CE_STAGGERED_RADAR_PERIOD_MAX;
 	}
-	else	
-	{		
-		if (pAd->CommonCfg.RDDurRegion == FCC)
+	else {		
+		pDfsSwParam->dfs_period_err = DFS_SW_RADAR_PERIOD_ERR;
+		if (pAd->CommonCfg.RDDurRegion == FCC) {
 			pDfsSwParam->dfs_max_period = FCC_RADAR_PERIOD_MAX;
-		else if (pAd->CommonCfg.RDDurRegion == JAP)
+		}
+		else if (pAd->CommonCfg.RDDurRegion == JAP) {
 			pDfsSwParam->dfs_max_period = JAP_RADAR_PERIOD_MAX;
+	}
 	}
 	
 	pDfsSwParam->dfs_check_loop = DFS_SW_RADAR_CHECK_LOOP;
@@ -2601,18 +2749,15 @@ static void dfs_sw_init(PRTMP_ADAPTER pAd)
 	pDfsSwParam->dfs_width_diff_ch2_Shift = DFS_SW_RADAR_CH2_SHIFT;
 	pDfsSwParam->dfs_width_ch0_err_L = DFS_SW_RADAR_CH0_ERR;
 	if (pAd->CommonCfg.RDDurRegion == CE)
-		pDfsSwParam->dfs_period_err = (DFS_SW_RADAR_PERIOD_ERR << 2);
-	else
-		pDfsSwParam->dfs_period_err = DFS_SW_RADAR_PERIOD_ERR;
-
-	if (pAd->CommonCfg.RDDurRegion == CE)
 	{
+		pDfsSwParam->dfs_period_err = (DFS_SW_RADAR_PERIOD_ERR << 2);
 		pDfsSwParam->dfs_width_ch0_err_H = CE_STAGGERED_RADAR_CH0_H_ERR;
 		pDfsSwParam->dfs_declare_thres = CE_STAGGERED_RADAR_DECLARE_THRES;
 		pDfsSwParam->dfs_max_period = CE_STAGGERED_RADAR_PERIOD_MAX;
 	}
 	else
 	{
+		pDfsSwParam->dfs_period_err = DFS_SW_RADAR_PERIOD_ERR;
 		if (pAd->CommonCfg.RDDurRegion == FCC)
 			pDfsSwParam->dfs_max_period = FCC_RADAR_PERIOD_MAX;
 		else if (pAd->CommonCfg.RDDurRegion == JAP)
@@ -2671,10 +2816,42 @@ void modify_table1(PRTMP_ADAPTER pAd, ULONG idx, ULONG value)
 #ifdef MT76x0
 	if (IS_MT7610E(pAd))
 	{
-		if (pAd->CommonCfg.RDDurRegion == CE)
+		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
+			if (pAd->CommonCfg.RDDurRegion == CE) {
+				pDFSTable = &NewDFSTable3[1];
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
+				pDFSTable = &NewDFSTable3[0];
+			}
+			//else if (pAd->CommonCfg.RDDurRegion == JAP) {
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) { 	
+				/* JAP_W53 */
+				pDFSTable = &NewDFSTable3[2];
+			}
+			else {
+				/* JAP_W56 */
+				pDFSTable = &NewDFSTable3[0];
+			}
+		}
+		else {
+			if (pAd->CommonCfg.RDDurRegion == CE) {
 			pDFSTable = &NewDFSTable2[1];
-		else
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
+				pDFSTable = &NewDFSTable2[0];
+			}
+			//else if (pAd->CommonCfg.RDDurRegion == JAP) {
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) { 	
+				/* JAP_W53 */
+				pDFSTable = &NewDFSTable2[2];
+			}
+			else {
+				/* JAP_W56 */
 			pDFSTable = &NewDFSTable2[0];
+	}
+		}
 	}
 #endif /* MT76x0 */
 
@@ -2896,10 +3073,6 @@ VOID NewTimerCB_Radar(
 	pRadarDetect->bDfsInit = FALSE;
 
 	pRadarDetect->RadarTimeStampLow++;
-	
-	/*511ms*/
-	if ((pRadarDetect->RadarTimeStampLow & 0x3f) == 0)
-		DfsCheckBusyIdle(pAd);
 #ifdef MT76x0
 	if ((pRadarDetect->RadarTimeStampLow % DFS_RESET_INTERVAL) == 0)
 	{
@@ -2917,7 +3090,7 @@ VOID NewTimerCB_Radar(
 #endif
 	/*if ((pRadarDetect->McuRadarTick++ >= pRadarDetect->PollTime) &&*/
 	if ((pRadarDetect->McuRadarTick++ >= 3) && 	/* 30ms */
-		(!pRadarDetect->ch_busy) &&
+		//(!pRadarDetect->ch_busy) &&
 		(!pRadarDetect->bDfsSwDisable))
 	{
 		SwCheckDfsEvent(pAd);
@@ -2929,8 +3102,9 @@ VOID NewTimerCB_Radar(
 	DfsHwDetectionStatusGet(pAd, &channel);
 	
 		/*Check if any interrupt trigger by Radar Global Status(Radar Signals)*/
-	if ((channel & pRadarDetect->EnabledChMask) && (!pRadarDetect->ch_busy))
-	{
+	if ((channel & pRadarDetect->EnabledChMask) 
+			//&& (!pRadarDetect->ch_busy)
+	   ) {
 		radarDeclared = DfsChannelCheck(pAd, channel);
 	}
 
@@ -2944,13 +3118,18 @@ VOID NewTimerCB_Radar(
 		pRadarDetect->McuRadarDebug &= ~RADAR_SIMULATE;
 	}
 
-	if ((radarDeclared || pRadarDetect->radarDeclared) && (pRadarDetect->ch_busy_countdown == -1))
+	if ((radarDeclared || pRadarDetect->radarDeclared) 
+			&& (pRadarDetect->ch_busy_countdown == -1)
+	   ) {
 		pRadarDetect->ch_busy_countdown = 20;
-	else if(pRadarDetect->ch_busy_countdown >= 0)
+	}
+	else if (pRadarDetect->ch_busy_countdown >= 0) {
 		pRadarDetect->ch_busy_countdown--;
+	}
 
 	/*Now, find an Radar signal*/
-	if ((!pRadarDetect->ch_busy) && (pRadarDetect->ch_busy_countdown == 0))
+	//if ((!pRadarDetect->ch_busy) && (pRadarDetect->ch_busy_countdown == 0))
+	if ((pRadarDetect->ch_busy_countdown == 0))
 	{	
 		/* Radar found!!!*/
 		pRadarDetect->ch_busy_countdown = -1;

@@ -747,7 +747,7 @@ VOID APMlmeSetTxRate(
 #ifdef DOT11_N_SUPPORT
 	if (tx_mode == MODE_HTMIX || tx_mode == MODE_HTGREENFIELD)
 	{
-		if ((pTxRate->STBC) && (pEntry->MaxHTPhyMode.field.STBC))
+		if ((pTxRate->STBC) && (pEntry->MaxHTPhyMode.field.STBC) && (pAd->Antenna.field.TxPath >= 2))
 			pEntry->HTPhyMode.field.STBC = STBC_USE;
 		else
 			pEntry->HTPhyMode.field.STBC = STBC_NONE;
@@ -808,7 +808,8 @@ VOID APMlmeSetTxRate(
 		else
 			pEntry->HTPhyMode.field.ShortGI = GI_800;
 
-		if (pTxRate->STBC && (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_VHT_RXSTBC_CAPABLE)))
+		if (pTxRate->STBC && (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_VHT_RXSTBC_CAPABLE))
+			&& (pAd->Antenna.field.TxPath >= 2))
 			pEntry->HTPhyMode.field.STBC = STBC_USE;
 		else
 			pEntry->HTPhyMode.field.STBC = STBC_NONE;

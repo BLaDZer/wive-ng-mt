@@ -32,7 +32,11 @@
 #define EEPROM_IS_PROGRAMMED		0x80
 
 #ifdef RTMP_MAC_PCI
+#if defined(MT76x0) && defined(RTMP_FLASH_SUPPORT)
+#define EEPROM_SIZE					0x400
+#else
 #define EEPROM_SIZE					0x200
+#endif /*defined(MT76x0) && defined(RTMP_FLASH_SUPPORT)  */
 #endif /* RTMP_MAC_PCI */
 
 

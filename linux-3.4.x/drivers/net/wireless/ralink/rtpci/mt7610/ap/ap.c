@@ -1066,6 +1066,39 @@ VOID MacTableMaintenance(
 		}
 #endif /* APCLI_SUPPORT */
 
+#ifdef WDS_SUPPORT
+		if (IS_ENTRY_WDS(pEntry))
+		{
+			if (!CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET))
+				pMacTable->fAllStationAsRalink = FALSE;	
+
+			if (pAd->CommonCfg.bRdg && pMacTable->fAllStationAsRalink)
+			{
+				bRdgActive = TRUE;
+			}
+			else
+			{
+				bRdgActive = FALSE;
+			}
+
+			if (bRdgActive != RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
+			{
+				if (bRdgActive)
+				{
+					RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
+					AsicEnableRDG(pAd);
+				}
+				else
+				{
+					RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
+					AsicDisableRDG(pAd);
+				}
+			}
+
+			continue;
+		}
+#endif /* WDS_SUPPORT */
+
 		if (!IS_ENTRY_CLIENT(pEntry))
 			continue;
 
@@ -1091,7 +1124,12 @@ VOID MacTableMaintenance(
 		/* 1. check if there's any associated STA in power-save mode. this affects outgoing */
 		/*    MCAST/BCAST frames should be stored in PSQ till DtimCount=0 */
 		if (pEntry->PsMode == PWR_SAVE)
+		{
 			pMacTable->fAnyStationInPsm = TRUE;
+#ifdef PS_ENTRY_MAITENANCE
+			pEntry->continuous_ps_count++;
+#endif /* PS_ENTRY_MAITENANCE */
+		}
 
 #ifdef DOT11_N_SUPPORT
 		if (pEntry->MmpsMode == MMPS_DYNAMIC)
@@ -1216,6 +1254,7 @@ VOID MacTableMaintenance(
 					if (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE))
 						bQosNull = TRUE;
 
+					DBGPRINT(RT_DEBUG_WARN, ("7620 keep alive(%u) !!!\n", pEntry->Aid));
 		            ApEnqueueNullFrame(pAd, pEntry->Addr, pEntry->CurrTxRate,
 	    	                           pEntry->Aid, pEntry->apidx, bQosNull, TRUE, 0);
 				}
@@ -1228,9 +1267,19 @@ VOID MacTableMaintenance(
 		}
 
 		/* 2. delete those MAC entry that has been idle for a long time */
-		if (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout)
+
+		if ((pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout)
+#ifdef PS_ENTRY_MAITENANCE
+			|| (pEntry->continuous_ps_count > pAd->ps_timeout)
+#endif /* PS_ENTRY_MAITENANCE */
+)
 		{
 			bDisconnectSta = TRUE;
+#ifdef PS_ENTRY_MAITENANCE
+			if (pEntry->continuous_ps_count > pAd->ps_timeout)
+				DBGPRINT(RT_DEBUG_WARN, ("ps_timeout(%u) !!!\n", pEntry->Aid));
+#endif /* PS_ENTRY_MAITENANCE */
+
 			DBGPRINT(RT_DEBUG_WARN, ("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
 					PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout));
 			ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
@@ -1310,7 +1359,11 @@ VOID MacTableMaintenance(
 		if (pEntry->PsQueue.Head)
 		{
 			pEntry->PsQIdleCount ++;
+#ifdef NOISE_TEST_ADJUST
+			if (pEntry->PsQIdleCount > 4)
+#else
 			if (pEntry->PsQIdleCount > 2)
+#endif /* NOISE_TEST_ADJUST */
 			{
 				NdisAcquireSpinLock(&pAd->irq_lock);
 				APCleanupPsQueue(pAd, &pEntry->PsQueue);
@@ -1544,7 +1597,11 @@ VOID MacTableMaintenance(
 		UINT bss_index;
 
 		pMacTable->PsQIdleCount ++;
+#ifdef NOISE_TEST_ADJUST
+		if (pMacTable->PsQIdleCount > 2)
+#else
 		if (pMacTable->PsQIdleCount > 1)
+#endif /* NOISE_TEST_ADJUST */
 		{
 
 			/*NdisAcquireSpinLock(&pAd->MacTabLock); */
@@ -1680,6 +1737,13 @@ BOOLEAN APPsIndicate(
 
 		if ((old_psmode == PWR_SAVE) && (Psm == PWR_ACTIVE))
 		{
+#ifdef DROP_MASK_SUPPORT
+			/* Disable Drop Mask */
+			set_drop_mask_per_client(pAd, pEntry, 2, 0);
+#endif /* DROP_MASK_SUPPORT */
+#ifdef PS_ENTRY_MAITENANCE
+			pEntry->continuous_ps_count = 0;
+#endif /* PS_ENTRY_MAITENANCE */
 			/* TODO: For RT2870, how to handle about the BA when STA in PS mode???? */
 #ifdef RTMP_MAC_PCI
 #ifdef DOT11_N_SUPPORT
@@ -1691,6 +1755,12 @@ BOOLEAN APPsIndicate(
 			/* sleep station awakes, move all pending frames from PSQ to TXQ if any */
 			APHandleRxPsPoll(pAd, pAddr, pEntry->Aid, TRUE);
 		}
+#ifdef DROP_MASK_SUPPORT
+		else if ((old_psmode == PWR_ACTIVE) && (Psm == PWR_SAVE)) {
+			/* Enable Drop Mask */
+			set_drop_mask_per_client(pAd, pEntry, 2, 1);
+		}
+#endif /* DROP_MASK_SUPPORT */
 
 		/* move to above section */
 /*		pEntry->NoDataIdleCount = 0; */

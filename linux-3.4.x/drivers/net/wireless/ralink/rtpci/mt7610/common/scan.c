@@ -95,9 +95,10 @@ INT scan_ch_restore(RTMP_ADAPTER *pAd, UCHAR OpMode)
 			APStartUp(pAd);
 		}
 
-		if (((pAd->CommonCfg.Channel > 14) &&
+		if ((pAd->CommonCfg.Channel > 14) &&
 			(pAd->CommonCfg.bIEEE80211H == TRUE) &&
-			RadarChannelCheck(pAd, pAd->CommonCfg.Channel)))
+			RadarChannelCheck(pAd, pAd->CommonCfg.Channel) &&
+			pAd->Dot11_H.RDMode != RD_SWITCHING_MODE)
 		{
 			if (pAd->Dot11_H.InServiceMonitorCount)
 			{

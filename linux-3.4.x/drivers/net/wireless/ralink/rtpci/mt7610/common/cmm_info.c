@@ -4734,8 +4734,10 @@ INT Show_MacTable_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 #endif /* DOT11_VHT_AC */
 			printk("%-6d", pEntry->MaxHTPhyMode.field.MCS);
 			printk("%-6d", pEntry->MaxHTPhyMode.field.ShortGI);
-			printk("%-6d\n", pEntry->MaxHTPhyMode.field.STBC);
-
+			printk("%-6d", pEntry->MaxHTPhyMode.field.STBC);
+#ifdef PS_ENTRY_MAITENANCE
+			printk("\tcontinuous_ps_count = %u\n", pEntry->continuous_ps_count);
+#endif /* PS_ENTRY_MAITENANCE */
 			printk("\n");
 		}
 	} 
@@ -4743,6 +4745,18 @@ INT Show_MacTable_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 	return TRUE;
 }
 
+INT Show_Scanning_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
+{
+	if(ApScanRunning(pAd))
+	{
+		DBGPRINT(RT_DEBUG_OFF, ("### Driver Scanning\n"));
+	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_OFF, ("### Driver Idle\n"));
+	}
+	return 0;
+}
 
 INT show_devinfo_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 {

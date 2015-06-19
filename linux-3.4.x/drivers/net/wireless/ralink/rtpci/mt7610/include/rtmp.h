@@ -1599,6 +1599,12 @@ typedef struct _COMMON_CONFIG {
 	BOOLEAN bWmmCapable;	/* 0:disable WMM, 1:enable WMM */
 	QOS_CAPABILITY_PARM APQosCapability;	/* QOS capability of the current associated AP */
 	EDCA_PARM APEdcaParm;	/* EDCA parameters of the current associated AP */
+#ifdef MULTI_CLIENT_SUPPORT
+	BOOLEAN	bWmm;        		/* have BSS enable/disable WMM */
+	UCHAR	APCwmin;			/* record ap cwmin */
+	UCHAR	APCwmax;			/* record ap cwmax */
+	UCHAR	BSSCwmin;			/* record BSS cwmin */
+#endif /* MULTI_CLIENT_SUPPORT */
 	QBSS_LOAD_PARM APQbssLoad;	/* QBSS load of the current associated AP */
 	UCHAR AckPolicy[4];	/* ACK policy of the specified AC. see ACK_xxx */
 	/* a bitmap of BOOLEAN flags. each bit represent an operation status of a particular */
@@ -1808,6 +1814,10 @@ typedef struct _COMMON_CONFIG {
 #ifdef DYNAMIC_VGA_SUPPORT
 	MO_CFG_STRUCT MO_Cfg;	/* data structure for mitigating microwave interference */
 #endif /* DYNAMIC_VGA_SUPPORT */
+
+#ifdef MULTI_CLIENT_SUPPORT
+	UINT txRetryCfg;
+#endif /* MULTI_CLIENT_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
 #ifdef DBG_CTRL_SUPPORT
@@ -1902,6 +1912,16 @@ typedef struct _MAC_TABLE_ENTRY {
 	/* WPA/WPA2 4-way database */
 	UCHAR EnqueueEapolStartTimerRunning;	/* Enqueue EAPoL-Start for triggering EAP SM */
 	RALINK_TIMER_STRUCT EnqueueStartForPSKTimer;	/* A timer which enqueue EAPoL-Start for triggering PSK SM */
+
+#ifdef DROP_MASK_SUPPORT
+	BOOLEAN 		tx_fail_drop_mask_enabled;
+	NDIS_SPIN_LOCK		drop_mask_lock;
+	BOOLEAN 		ps_drop_mask_enabled;
+	RALINK_TIMER_STRUCT dropmask_timer;
+#endif /* DROP_MASK_SUPPORT */
+#ifdef PS_ENTRY_MAITENANCE
+	UINT8	continuous_ps_count;
+#endif /* PS_ENTRY_MAITENANCE */
 
 	/*jan for wpa */
 	/* record which entry revoke MIC Failure , if it leaves the BSS itself, AP won't update aMICFailTime MIB */
@@ -2032,6 +2052,7 @@ typedef struct _MAC_TABLE_ENTRY {
 
 #ifdef PEER_DELBA_TX_ADAPT
 	BOOLEAN bPeerDelBaTxAdaptEn;
+	RALINK_TIMER_STRUCT DelBA_tx_AdaptTimer;
 #endif /* PEER_DELBA_TX_ADAPT */
 
 #ifdef MFB_SUPPORT
@@ -2551,6 +2572,9 @@ typedef struct _APCLI_STRUCT {
     HEADER_802_11 NullFrame;
 
 	UAPSD_INFO	UapsdInfo;
+
+	BOOLEAN bPeerExist; /* TRUE if we hear Root AP's beacon */
+
 #ifdef MAC_REPEATER_SUPPORT
 	REPEATER_CLIENT_ENTRY RepeaterCli[MAX_EXT_MAC_ADDR_SIZE];
 	REPEATER_CLIENT_ENTRY_MAP RepeaterCliMap[MAX_EXT_MAC_ADDR_SIZE];
@@ -2717,6 +2741,8 @@ typedef struct _AP_ADMIN_CONFIG {
 	BOOLEAN BandSteering; 
 	BND_STRG_CLI_TABLE BndStrgTable;
 #endif /* BAND_STEERING */
+
+	UCHAR ChangeTxOpClient;
 } AP_ADMIN_CONFIG, *PAP_ADMIN_CONFIG;
 
 #ifdef IGMP_SNOOP_SUPPORT
@@ -3397,6 +3423,9 @@ struct _RTMP_ADAPTER {
 
 
 #endif /* CONFIG_AP_SUPPORT */
+#ifdef PS_ENTRY_MAITENANCE
+	UINT32	ps_timeout;
+#endif /* PS_ENTRY_MAITENANCE */
 
 /*=======STA=========== */
 
@@ -5250,6 +5279,12 @@ VOID AsicUpdateWAPIPN(
 VOID AsicVCORecalibration(
 	IN PRTMP_ADAPTER pAd);
 #endif /* VCORECAL_SUPPORT */
+
+#ifdef MCS_LUT_SUPPORT
+VOID asic_mcs_lut_update(
+	IN RTMP_ADAPTER *pAd, 
+	IN MAC_TABLE_ENTRY *pEntry);
+#endif /* MCS_LUT_SUPPORT */
 
 #ifdef STREAM_MODE_SUPPORT
 UINT32 StreamModeRegVal(
@@ -8763,6 +8798,51 @@ INT set_force_ip_assemble(RTMP_ADAPTER *pAd, PSTRING arg);
 #endif /* WFA_VHT_PF */
 
 
+
+#ifdef DROP_MASK_SUPPORT
+VOID asic_set_drop_mask(
+	RTMP_ADAPTER *ad,
+	USHORT	wcid,
+	BOOLEAN enable);
+
+VOID asic_drop_mask_reset(
+	RTMP_ADAPTER *ad);
+
+VOID drop_mask_init_per_client(
+	RTMP_ADAPTER *ad,
+	MAC_TABLE_ENTRY *entry);
+
+VOID drop_mask_release_per_client(
+	RTMP_ADAPTER *ad,
+	MAC_TABLE_ENTRY *entry);
+
+VOID drop_mask_per_client_reset(
+	RTMP_ADAPTER *ad);
+
+VOID set_drop_mask_per_client(
+	RTMP_ADAPTER *ad,
+	MAC_TABLE_ENTRY *entry,
+	UINT8 type,
+	BOOLEAN enable);
+
+VOID drop_mask_timer_action(
+	PVOID SystemSpecific1, 
+	PVOID FunctionContext, 
+	PVOID SystemSpecific2, 
+	PVOID SystemSpecific3);
+#endif /* DROP_MASK_SUPPORT */
+
+#ifdef PEER_DELBA_TX_ADAPT
+VOID Peer_DelBA_Tx_Adapt_Init(
+	IN RTMP_ADAPTER *pAd,
+	IN PMAC_TABLE_ENTRY pEntry);
+
+VOID PeerDelBATxAdaptTimeOut(
+	IN PVOID SystemSpecific1,
+	IN PVOID FunctionContext,
+	IN PVOID SystemSpecific2,
+	IN PVOID SystemSpecific3);   
+#endif /* PEER_DELBA_TX_ADAPT */
 
 #ifdef RLT_RF
 INT set_rf(RTMP_ADAPTER *pAd, PSTRING arg);
