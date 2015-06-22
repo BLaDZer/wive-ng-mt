@@ -878,7 +878,6 @@ static void outputTimerForReload(webs_t wp, long delay)
 	(
 		wp,
 		T(
-		"<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"
 		"<script language=\"JavaScript\" type=\"text/javascript\">\n"
 		"ajaxReloadDelayedPage(%ld, \"http://%s\");\n"
 		"</script>"),

@@ -92,7 +92,7 @@ function CheckValue(form)
 		return false;
 	}
 
-	if (!validateMac(form.wanMac.value))
+	if (!validateMAC(form.wanMac.value))
 	{
 		form.wanMac.focus();
 		return false;

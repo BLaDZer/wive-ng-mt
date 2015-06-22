@@ -151,6 +151,15 @@ function onUploadRWFSSubmit(form)
 			ajaxShowProgress);
 }
 
+function onReset2DefaultsSubmit(form)
+{
+    ajaxPostForm(
+      _("management ask reset factory"),
+      form,
+      'defaultsReloader',
+      '/messages/wait_config.asp',
+      ajaxShowProgress);
+}
 </script>
 </head>
 <body onLoad="initValue();">
@@ -212,7 +221,7 @@ function onUploadRWFSSubmit(form)
           </tr>
           <tr>
             <td class="head" id="uploadFWLocation">Filename:</td>
-            <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data" onSubmit="return uploadFirmwareCheck();" >
+            <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
                 <input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Reset RWFS on update</span><br>
                 <input name="filename" size="20" maxlength="256" type="file">
                 <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
@@ -257,10 +266,9 @@ function onUploadRWFSSubmit(form)
           </tr>
           <tr>
             <td class="head" id="manResetToFactory">Reset to factory defaults</td>
-            <td><form method="POST" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings"
-			onsubmit="return confirm(_('management ask reset factory'));">
-                <input type="submit" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half">
-                <input type="hidden" value="stub" >
+            <td><form method="POST" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
+                <input type="submit" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
+                <iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
               </form></td>
           </tr>
         </table>

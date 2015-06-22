@@ -138,10 +138,10 @@ void websHeader(webs_t wp)
 	websWrite(wp, T("Content-Type: text/html\n"));
 	websWrite(wp, T("\n"));
 	websWrite(wp, T("<html>\n<head>\n"));
-	websWrite(wp, T("<title>My Title</title>"));
-	websWrite(wp, T("<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">"));
-	websWrite(wp, T("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"));
-	websWrite(wp, T("<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>"));
+	websWrite(wp, T("<title>My Title</title>\n"));
+	websWrite(wp, T("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n"));
+	websWrite(wp, T("<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"));
+	websWrite(wp, T("<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"));
 	websWrite(wp, T("</head>\n<body>\n"));
 }
 

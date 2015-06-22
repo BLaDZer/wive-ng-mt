@@ -376,7 +376,7 @@ function displayServiceStatus()
 					</tr>
 					<tr>
 						<td class="head" id="v6OpMode">IPv6 Operation Mode</td>
-						<td><select name="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
+						<td><select name="ipv6_opmode" id="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
 							<option value="0" id="v6Disable">Disable</option>
 							<option value="1" id="v6Static">Native dynamic/static IP Connection</option>
 						</select></td>

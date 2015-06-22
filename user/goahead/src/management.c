@@ -636,11 +636,7 @@ static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
 	websHeader(wp);
-	websWrite
-	(
-		wp,
-		T(
-		"<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"
+	websWrite(wp, T(
 		"<script language=\"JavaScript\" type=\"text/javascript\">\n"
 		"ajaxReloadDelayedPage(80000);\n"
 		"</script>")
@@ -650,9 +646,10 @@ static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 
 	Sleep(2);
 	sync();
-	system("(fs nvramreset && fs restore) > /dev/null 2>&1");
+	doSystem("fs nvramreset > /dev/null 2>&1");
+	doSystem("fs restore > /dev/null 2>&1");
 	sync();
-	reboot(RB_AUTOBOOT);
+	doSystem("(sleep 5 && reboot) > /dev/null 2>&1 &");
 }
 
 #ifdef CONFIG_SYSLOGD
