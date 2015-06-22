@@ -1021,14 +1021,15 @@
 2) dnsmasq: up to 2.73 version.<br>
 3) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
 4) defaults: temp set VHT_BW=20/40MHz for 7610NE, fix issue with some broadcom mobile clients.<br>
-5) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
-6) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
-7) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
-8) kernel: ralink wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
-9) kernel: ralink wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
-10) kernel: ralink wifi: 76x2: add band steering options.<br>
-11) kernel: ralink wifi: xxxx: allow SNMP for all drivers.<br>
-12) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+5) kernel: up to 3.4.108 base version.<br>
+6) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
+7) kernel: ralink wifi: 7610: do not agregate low rate pkts.<br>
+8) kernel: ralink wifi: 7610: fix txburst in AC mode.<br>
+9) kernel: ralink wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
+10) kernel: ralink wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
+11) kernel: ralink wifi: 76x2: add band steering options.<br>
+12) kernel: ralink wifi: xxxx: allow SNMP for all drivers.<br>
+13) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 <br>
 <br>
 <b>TODO:</b><br>

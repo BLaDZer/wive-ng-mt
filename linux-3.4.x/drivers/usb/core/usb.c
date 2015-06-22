@@ -1015,6 +1015,7 @@ static int __init usb_init(void)
 		pr_info("%s: USB support disabled\n", usbcore_name);
 		return 0;
 	}
+	usb_init_pool_max();
 
 #ifdef CONFIG_RALINK_GPIO_LED_USB
 	printk(KERN_INFO "USB led has gpio %d\n", CONFIG_RALINK_GPIO_USB_LED);
