@@ -31,7 +31,7 @@
 #define _GLIBCXX_CXX_CONFIG_H 1
 
 // The current version of the C++ library in compressed ISO date format.
-#define __GLIBCXX__ 20150614
+#define __GLIBCXX__ 20150619
 
 // Macros for various attributes.
 //   _GLIBCXX_PURE

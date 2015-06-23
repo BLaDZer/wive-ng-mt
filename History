@@ -1017,7 +1017,7 @@
 <br>
 <br>
 <b>3.2.x</b><br>
-1) toolchain: update gcc to 20150614 4.8.5-RC version form git, update headers.<br>
+1) toolchain: update gcc to 20150619 4.8.5-RC version form git, update headers.<br>
 2) dnsmasq: up to 2.73 version.<br>
 3) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
 4) defaults: temp set VHT_BW=20/40MHz for 7610NE, fix issue with some broadcom mobile clients.<br>
