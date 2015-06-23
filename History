@@ -1030,7 +1030,8 @@
 11) kernel: ralink wifi: 76x2: add band steering options.<br>
 12) kernel: ralink wifi: xxxx: allow SNMP for all drivers.<br>
 13) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
-14) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+14) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
+15) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 <br>
 <br>
 <b>TODO:</b><br>
