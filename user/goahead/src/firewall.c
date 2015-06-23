@@ -1444,6 +1444,8 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 
 	// Call iptables
 	firewall_rebuild();
+	// flush conntrack for apply changes immediately
+	doSystem("echo f > /proc/net/nf_conntrack");
 }
 
 static void DMZ(webs_t wp, char_t *path, char_t *query)
