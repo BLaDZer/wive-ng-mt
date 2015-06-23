@@ -164,25 +164,15 @@ static int getNums(char *value, char delimit)
  *
  */
 static void makeIPPortFilterRule(char *buf, int len, char *iface, char *mac_address,
-	char *sip, char *sim, int sprf_int, int sprt_int, 
+	char *sip, char *sim, int sprf_int, int sprt_int,
 	char *dip, char *dim, int dprf_int, int dprt_int,
 	int proto, int action, const char *chain)
 {
 	int rc = 0;
 	char *pos = buf;
-	char *spifw = nvram_get(RT2860_NVRAM, "SPIFWEnabled");
 
-	switch (action)
-	{
-		case ACTION_DROP:
-			rc = (atoi(spifw) == 0) ? 
-				snprintf(pos, len, "iptables -A %s ", chain) :
-				snprintf(pos, len, "iptables -A %s -m state --state NEW,INVALID ", chain);
-			break;
-		case ACTION_ACCEPT:
-			rc = snprintf(pos, len, "iptables -A %s ", chain);
-			break;
-	}
+	rc = snprintf(pos, len, "iptables -A %s ", chain);
+
 	pos += rc;
 	len -= rc;
 
