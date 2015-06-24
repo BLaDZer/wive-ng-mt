@@ -128,7 +128,7 @@
   <message msgid="services misc others" msgstr="Остальные" />
   <message msgid="services misc vlan double tag" msgstr="Поддержка vlan double tag (QinQ)" />
   <message msgid="services misc reinit wan" msgstr="Переинициализировать WAN если DHCP не получил адрес" />
-  <message msgid="services misc dhcp renew" msgstr="DHCP перезапрашивать адрес при подъёме WAN интерфейса" />
+  <message msgid="services misc dhcp renew" msgstr="Перезапрашивать адрес при подъёме WAN интерфейса" />
   <message msgid="services misc ping from wan" msgstr="Разрешить icmp на WAN" />
   <message msgid="services misc stp" msgstr="Поддержка Spanning Tree (802.1d)" />
   <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
