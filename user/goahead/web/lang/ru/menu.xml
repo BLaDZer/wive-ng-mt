@@ -25,7 +25,7 @@
     <message msgid="treeapp advanced" msgstr="Расширенные" />
     <message msgid="treeapp security" msgstr="Безопастность" />
     <message msgid="treeapp wds" msgstr="WDS" />
-    <message msgid="treeapp ap client" msgstr="Клиент AP" />
+    <message msgid="treeapp ap client" msgstr="Клиент/Репитер" />
     <message msgid="treeapp station list" msgstr="Список станций" />
     <message msgid="treeapp antenna diversity" msgstr="Antenna Diversity" />
 
