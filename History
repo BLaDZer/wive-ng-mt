@@ -1034,6 +1034,7 @@
 15) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
 16) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 17) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
+18) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
 <br>
 <br>
 <b>TODO:</b><br>

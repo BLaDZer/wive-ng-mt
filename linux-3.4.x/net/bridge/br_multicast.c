@@ -34,6 +34,7 @@
 #include "br_private.h"
 
 static void br_multicast_start_querier(struct net_bridge *br);
+static void br_multicast_add_router(struct net_bridge *br, struct net_bridge_port *port);
 
 static inline int br_ip_equal(const struct br_ip *a, const struct br_ip *b)
 {
@@ -812,6 +813,8 @@ static void br_multicast_send_query(struct net_bridge *br,
 	br_group.proto = htons(ETH_P_IPV6);
 	__br_multicast_send_query(br, port, &br_group);
 #endif
+	if (port->multicast_router == 2 && hlist_unhashed(&port->rlist))
+		br_multicast_add_router(br, port);
 
 	time = jiffies;
 	time += sent < br->multicast_startup_query_count ?
