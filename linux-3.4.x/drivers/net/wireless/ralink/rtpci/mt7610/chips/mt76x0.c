@@ -3480,7 +3480,8 @@ VOID MT76x0_VCO_CalibrationMode3(
 	UCHAR RFValue = 0, Mode = 0;
 
 	rlt_rf_read(pAd, RF_BANK0, RF_R04, &RFValue);
-	Mode = (RFValue & 0xF0);	
+	//Mode = (RFValue & 0xF0);	
+	Mode = (RFValue & 0x70);
 	if (Mode == 0x30)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("%s - Calibration Mode: Open loop, closed loop, and amplitude\n", __FUNCTION__));
@@ -3496,7 +3497,8 @@ VOID MT76x0_VCO_CalibrationMode3(
 		*/
 		rlt_rf_read(pAd, RF_BANK0, RF_R06, &RFValue);
 		RFValue &= ~(0x0F);
-		RFValue |= (0x08);
+		//RFValue |= (0x08);
+		RFValue |= (0x01);
 		rlt_rf_write(pAd, RF_BANK0, RF_R06, RFValue);
 
 		rlt_rf_read(pAd, RF_BANK0, RF_R05, &RFValue);
@@ -3518,6 +3520,8 @@ VOID MT76x0_VCO_CalibrationMode3(
 		rlt_rf_read(pAd, RF_BANK0, RF_R04, &RFValue);
 		RFValue = ((RFValue & ~0x80) | 0x80); 
 		rlt_rf_write(pAd, RF_BANK0, RF_R04, RFValue);
+		
+		RTMPusecDelay(2200);
 	}
 	
 	return;

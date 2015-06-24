@@ -123,6 +123,8 @@ extern UINT32 CW_MAX_IN_BITS;
 #endif /* NOISE_TEST_ADJUST */
 #endif /* CONFIG_AP_SUPPORT */
 
+#undef MAX_LEN_OF_MLME_QUEUE
+#define MAX_LEN_OF_MLME_QUEUE 64
 
 enum SCAN_MODE{
 	/* Active scan, send probe request, and wait beacon and probe response */
