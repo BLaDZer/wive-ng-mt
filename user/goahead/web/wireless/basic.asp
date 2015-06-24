@@ -152,6 +152,15 @@ function AutoChannelSelect(form) {
 	displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
 	displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
 	displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
+
+	if (form.sz11gChannel.options.selectedIndex == 0)
+		form.sz11gChannel.style.width = "100px";
+	else
+		form.sz11gChannel.style.width = "170px";
+	if (form.sz11aChannel.options.selectedIndex == 0)
+		form.sz11aChannel.style.width = "100px";
+	else
+		form.sz11aChannel.style.width = "170px";
 }
 
 function GExtChannelDisplay(form) {
@@ -165,8 +174,8 @@ function GExtChannelDisplay(form) {
 
 function initChecktime(form) {
 	for (var hour = 1; hour <= 24; hour++) {
-		form.checktime_a.options[hour-1] = new Option(hour + _("basic hour"), hour);
-		form.checktime_g.options[hour-1] = new Option(hour + _("basic hour"), hour);
+		form.checktime_a.options[hour-1] = new Option(_("basic rescan every") + hour + _("basic hour"), hour);
+		form.checktime_g.options[hour-1] = new Option(_("basic rescan every") + hour + _("basic hour"), hour);
 	}
 }
 
@@ -297,8 +306,6 @@ function initTranslation()
 	_TR("basicSTBC", "basic stbc");
 	_TR("basicLDPC", "basic ldpc");
 	_TR("basicAction", "basic action");
-	_TR("basicRescanG", "basic rescan every");
-	_TR("basicRescanA", "basic rescan every");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
@@ -1018,24 +1025,24 @@ function CheckValue(form)
           </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
             <td class="head" colspan="1" id="basicFreqA">Channel (5GHz)</td>
-            <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
+            <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" style="width: 170px;" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqAAuto">AutoSelect</option>
                 <% getWlan11aChannels(); %>
               </select>&nbsp;&nbsp;<select name="autoselect_a" style="width: 170px;" id="autoselect_a">
                 <option value="1" id="basicAutoBySTA">by STA count</option>
                 <option value="2" id="basicAutoByRSSI">by RSSI</option>
-              </select>&nbsp;<span id="basicRescanA">Rescan every</span>&nbsp;<select name="checktime_a" class="short" id="checktime_a">
+              </select>&nbsp;&nbsp;<select name="checktime_a" style="width: 170px;" id="checktime_a">
               </select></td>
           </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
             <td class="head" colspan="1" id="basicFreqG">Channel (2.4GHz)</td>
-            <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
+            <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" style="width: 170px;" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
               </select>&nbsp;&nbsp;<select name="autoselect_g" style="width: 170px;" id="autoselect_g">
                 <option value="1" id="basicAutoBySTA">by STA count</option>
                 <option value="2" id="basicAutoByRSSI">by RSSI</option>
-              </select>&nbsp;<span id="basicRescanG">Rescan every</span>&nbsp;<select name="checktime_g" class="short" id="checktime_g">
+              </select>&nbsp;&nbsp;<select name="checktime_g" style="width: 170px;" id="checktime_g">
               </select></td>
           </tr>
           <tr id="div_txpw_ac" name="div_txpw_ac">

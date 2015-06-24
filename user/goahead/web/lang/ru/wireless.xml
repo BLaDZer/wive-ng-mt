@@ -82,7 +82,7 @@
   <message msgid="basic select by sta" msgstr="По количеству станций" />
   <message msgid="basic select by rssi" msgstr="По уровню сигнала" />
   <message msgid="basic hour" msgstr="ч" />
-  <message msgid="basic rescan every" msgstr="Каждые" />
+  <message msgid="basic rescan every" msgstr="Обновлять каждые " />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />
