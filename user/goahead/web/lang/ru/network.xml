@@ -59,7 +59,7 @@
     <message msgid="vpn enable nat" msgstr="Включить NAT" />
     <message msgid="vpn adaptive lcp" msgstr="Адаптивная LCP" />
     <message msgid="vpn pure pppoe" msgstr="Чистый PPPoE" />
-    <message msgid="vpn test server" msgstr="Test server reachable" />
+    <message msgid="vpn test server" msgstr="Проверять доступность сервера" />
     <message msgid="vpn alert password" msgstr="Пароль не может содержать пробелы или знак доллара!" />
     <message msgid="vpn alert username" msgstr="Имя пользователя не может содержать пробелы или знак доллара!" />
     <message msgid="vpn alert invalid ip" msgstr="Неверное доменное имя или IP адрес!" />

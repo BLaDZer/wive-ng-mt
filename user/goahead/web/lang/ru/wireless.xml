@@ -62,14 +62,14 @@
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
   <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
   <message msgid="basic ldpc" msgstr="Контроль чётности" />
-  <message msgid="basic ht rdg" msgstr="Reverse Direction Grant" />
+  <message msgid="basic ht rdg" msgstr="Обратный порядок передачи" />
   <message msgid="basic ht extension channel" msgstr="Дополнительный канал" />
   <message msgid="basic ht amsdu" msgstr="Агрегация MSDU" />
   <message msgid="basic ht addba" msgstr="Агрегация ACK" />
   <message msgid="basic ht delba" msgstr="Отклонять запрос агрегации ACK" />
   <message msgid="basic other" msgstr="Прочее" />
-  <message msgid="basic ht txstream" msgstr="HT TxStream" />
-  <message msgid="basic ht rxstream" msgstr="HT RxStream" />
+  <message msgid="basic ht txstream" msgstr="Пространственных потоков передачи" />
+  <message msgid="basic ht rxstream" msgstr="Пространственных потоков приёма" />
   <message msgid="basic mbssid mode" msgstr="Режим MBSSID" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
   <message msgid="basic apcli mode" msgstr="Режим APCLI" />
