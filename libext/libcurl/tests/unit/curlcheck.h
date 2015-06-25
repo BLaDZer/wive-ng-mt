@@ -36,13 +36,13 @@
     unitfail++;                                          \
   }
 
-#define verify_memory(dynamic, check, len)                              \
-  if(dynamic && memcmp(dynamic, check, len)) {                          \
+#define verify_memory(dynamic, check, len)                                  \
+  if(dynamic && memcmp(dynamic, check, len)) {                              \
     fprintf(stderr, "%s:%d Memory buffer mismatch size %d. '%s' is not\n", \
             __FILE__, __LINE__, len, hexdump((unsigned char *)check, len));      \
     fprintf(stderr, "%s:%d the same as '%s'\n",                             \
             __FILE__, __LINE__, hexdump((unsigned char *)dynamic, len));         \
-    unitfail++;                                                         \
+    unitfail++;                                                             \
   }
 
 /* fail() is for when the test case figured out by itself that a check

@@ -39,7 +39,7 @@ char *strdup(const char *str)
   if(!newstr)
     return (char *)NULL;
 
-  memcpy(newstr,str,(len+1)*sizeof(char));
+  memcpy(newstr, str, (len+1)*sizeof(char));
 
   return newstr;
 

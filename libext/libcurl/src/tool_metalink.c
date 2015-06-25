@@ -29,9 +29,9 @@
 #  include <fcntl.h>
 #endif
 
-#  ifdef USE_OPENSSL
-#    include <openssl/md5.h>
-#    include <openssl/sha.h>
+#ifdef USE_OPENSSL
+#  include <openssl/md5.h>
+#  include <openssl/sha.h>
 #elif defined(USE_GNUTLS_NETTLE)
 #  include <nettle/md5.h>
 #  include <nettle/sha.h>
@@ -688,8 +688,8 @@ static metalink_checksum *new_metalink_checksum_from_hex_digest
   }
   chksum = malloc(sizeof(metalink_checksum));
   if(chksum) {
-  chksum->digest_def = digest_def;
-  chksum->digest = digest;
+    chksum->digest_def = digest_def;
+    chksum->digest = digest;
   }
   return chksum;
 }
@@ -699,8 +699,8 @@ static metalink_resource *new_metalink_resource(const char *url)
   metalink_resource *res;
   res = malloc(sizeof(metalink_resource));
   if(res) {
-  res->next = NULL;
-  res->url = strdup(url);
+    res->next = NULL;
+    res->url = strdup(url);
     if(!res->url) {
       free(res);
       return NULL;

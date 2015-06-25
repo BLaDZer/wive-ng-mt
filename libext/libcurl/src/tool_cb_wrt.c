@@ -135,7 +135,7 @@ size_t tool_write_cb(void *buffer, size_t sz, size_t nmemb, void *userdata)
 #endif
 
   if(!outs->stream && !tool_create_output_file(outs))
-        return failure;
+    return failure;
 
   rc = fwrite(buffer, sz, nmemb, outs->stream);
 
@@ -157,4 +157,3 @@ size_t tool_write_cb(void *buffer, size_t sz, size_t nmemb, void *userdata)
 
   return rc;
 }
-

@@ -359,4 +359,3 @@ int formparse(struct OperationConfig *config,
   Curl_safefree(contents);
   return 0;
 }
-

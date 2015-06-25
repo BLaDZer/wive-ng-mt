@@ -44,11 +44,11 @@ static char *GetEnv(const char *variable, char do_expand)
     env = buf1;
     variable = buf1;
   }
-  if(do_expand && strchr(variable,'%')) {
+  if(do_expand && strchr(variable, '%')) {
     /* buf2 == variable if not expanded */
     rc = ExpandEnvironmentStrings (variable, buf2, sizeof(buf2));
     if(rc > 0 && rc < sizeof(buf2) &&
-       !strchr(buf2,'%'))    /* no vars still unexpanded */
+       !strchr(buf2, '%'))    /* no vars still unexpanded */
       env = buf2;
   }
 #else

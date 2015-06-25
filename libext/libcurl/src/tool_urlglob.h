@@ -51,7 +51,7 @@ typedef struct {
       int padlength;
       unsigned long ptr_n;
       unsigned long step;
-    } NumRange ;
+    } NumRange;
   } content;
 } URLPattern;
 
