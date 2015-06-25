@@ -80,6 +80,7 @@ fulldump
 /libext/libiconv/po/Makefile
 /libext/libiconv/po/Makefile.in
 /libext/libcurl/curl-config
+/libext/libcurl/lib/curl_config.h.in~
 /libext/libcurl/Makefile.in
 /libext/libcurl/configure
 /libext/libcurl/aclocal.m4
