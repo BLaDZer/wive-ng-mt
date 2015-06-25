@@ -4087,10 +4087,8 @@ struct _RTMP_ADAPTER {
 	   Command: "iwpriv ra0 qload show".
 	 */
 
-#ifdef QLOAD_FUNC_BUSY_TIME_STATS
-
 /* provide busy time statistics for every TBTT */
-#define QLOAD_FUNC_BUSY_TIME_STATS
+#ifdef QLOAD_FUNC_BUSY_TIME_STATS
 
 /* provide busy time alarm mechanism */
 /* use the function to avoid to locate in some noise environments */

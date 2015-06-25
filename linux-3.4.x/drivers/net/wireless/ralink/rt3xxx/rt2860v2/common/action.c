@@ -1622,9 +1622,7 @@ VOID ORIBATimerTimeout(
 /*	PUCHAR			pOutBuffer = NULL;*/
 /*	USHORT			Sequence;*/
 	UCHAR			TID;
-#ifdef DBG
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
-#endif
 
 #ifdef MAC_REPEATER_SUPPORT
 	if (pAd->ApCfg.bMACRepeaterEn)
