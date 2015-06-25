@@ -163,10 +163,10 @@ config  MT76X2_AP_READ_MAC_FROM_MTD
 	depends on MT76X2_AP
 	default y
 
-config  MT76X2_AP_BIG_ENDIAN
-	bool "Big-endian platform Support"
-	depends on MT76X2_AP
-	default n
+#config  MT76X2_AP_BIG_ENDIAN
+#	bool "Big-endian platform Support"
+#	depends on MT76X2_AP
+#	default n
 
 config  MT76X2_AP_MC_SUPPORT
 	bool "Multiple Card Support"

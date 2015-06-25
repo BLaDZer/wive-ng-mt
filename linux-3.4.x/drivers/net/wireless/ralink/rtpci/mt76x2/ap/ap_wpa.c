@@ -732,12 +732,10 @@ VOID WPARetryExec(
 
 			if (pEntry->wdev_idx < MAX_APCLI_NUM)
 			{		
-#ifdef DEBUG
+#ifdef MAC_REPEATER_SUPPORT
 				UCHAR ifIndex = pEntry->wdev_idx;
 								
 				DBGPRINT(RT_DEBUG_TRACE, ("(%s) ApCli interface[%d] startdown.\n", __FUNCTION__, ifIndex));
-#endif
-#ifdef MAC_REPEATER_SUPPORT
 				if ((pEntry->bReptCli) && (pAd->ApCfg.bMACRepeaterEn == TRUE))
 					ifIndex = (64 + ifIndex*MAX_EXT_MAC_ADDR_SIZE + pEntry->MatchReptCliIdx);
 #endif /* MAC_REPEATER_SUPPORT */

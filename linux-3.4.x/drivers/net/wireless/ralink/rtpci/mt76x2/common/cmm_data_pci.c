@@ -604,9 +604,11 @@ BOOLEAN RTMPFreeTXDUponTxDmaDone(
 	TXD_STRUC TxD, *pOriTxD;
 	BOOLEAN bReschedule = FALSE;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
+#ifdef RALINK_ATE
 #ifdef TXBF_SUPPORT
         PATE_INFO pATEInfo = &(pAd->ate);
 	ULONG stTimeChk;
+#endif
 #endif
 	ASSERT(QueIdx < NUM_OF_TX_RING);
 	if (QueIdx >= NUM_OF_TX_RING)
@@ -614,6 +616,7 @@ BOOLEAN RTMPFreeTXDUponTxDmaDone(
 
 	pTxRing = &pAd->TxRing[QueIdx];
 	RTMP_IO_READ32(pAd, pTxRing->hw_didx_addr, &pTxRing->TxDmaIdx);
+#ifdef RALINK_ATE
 #ifdef TXBF_SUPPORT
 	pATEInfo->TxDoneCount = 0;
 	
@@ -687,6 +690,7 @@ BOOLEAN RTMPFreeTXDUponTxDmaDone(
 
 	}
 #endif	
+#endif
 	while (pTxRing->TxSwFreeIdx != pTxRing->TxDmaIdx)
 	{
 		pAd->tx_packet_counter++;
