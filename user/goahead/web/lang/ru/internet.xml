@@ -62,6 +62,7 @@
   <message msgid="lan radvd" msgstr="Router Advertisement Daemon (radvd)" />
   <message msgid="lan dhcpv6" msgstr="DHCPv6 server (dhcp6s)" />
   <message msgid="lan dnsp" msgstr="DNS Proxy (dnsmasqd)" />
+  <message msgid="lan accept dhcp opts" msgstr="Применить изменения локальной сети в настройках dhcpd?" />
 
   <message msgid="dhcp title" msgstr="Список DHCP клиентов" />
   <message msgid="dhcp introduction" msgstr="Здесь вы можете увидеть DHCP клиентов." />

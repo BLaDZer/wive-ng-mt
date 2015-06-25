@@ -18,6 +18,13 @@ Butterlate.setTextDomain("buttons");
 var secs;
 var timerID = null;
 var timerRunning = false;
+var opmode = "<% getCfgZero(1, "OperationMode"); %>";
+var wan = "<% getCfgZero(1, "wanConnectionMode"); %>";
+var lanip = "<% getLanIp(); %>";
+var lanmask = "<% getLanNetmask(); %>";
+var hostname = "<% getCfgGeneral(1, "HostName"); %>";
+var lan2 = "<% getCfgZero(1, "Lan2Enabled"); %>";
+var dhcp = "<% getCfgZero(1, "dhcpEnabled"); %>";
 
 function StartTheTimer()
 {
@@ -71,11 +78,12 @@ function initTranslation()
 function initValue()
 {
 	var form = document.lanCfg;
-	var opmode = "<% getCfgZero(1, "OperationMode"); %>";
-	var wan = "<% getCfgZero(1, "wanConnectionMode"); %>";
-	var lan2 = "<% getCfgZero(1, "Lan2Enabled"); %>";
 
 	initTranslation();
+
+	form.lanIp.value = lanip;
+	form.lanNetmask.value = lanmask;
+	form.hostname.value = hostname;
 
 	// Lan2
 	form.lan2Ip.value = '<% getCfgGeneral(1, "lan2_ipaddr"); %>';
@@ -90,7 +98,7 @@ function initValue()
 function CheckValue()
 {
 	var form = document.lanCfg;
-
+	var dhcp_edit = 0;
 	if (!validateBlanksList( [ form.hostname ] ))
 		return false;
 
@@ -105,7 +113,7 @@ function CheckValue()
 		return false;
 	}
 	
-	if (document.lanCfg.lan2enabled[0].checked)
+	if (form.lan2enabled.value == "1")
 	{
 		if (!validateIP(form.lan2Ip, true))
 		{
@@ -118,6 +126,12 @@ function CheckValue()
 			return false;
 		}
 	}
+	if ((form.lanIp.value != lanip) && (dhcp == "1"))
+		dhcp_edit = 1;
+	if ((form.lanNetmask.value != lanmask) && (dhcp == "1"))
+		dhcp_edit = 1;
+	if (dhcp_edit == 1)
+		dhcp(form);
 	return true;
 }
 
@@ -125,6 +139,22 @@ function lan2_enable_switch(form)
 {
 	enableElements( [ form.lan2Ip, form.lan2Netmask ], (form.lan2enabled.value == "1"));
 	displayElement( [ 'lan2ip', 'lan2mask' ], (form.lan2enabled.value == "1"));
+}
+
+function dhcp(form) {
+	if (confirm(_("lan accept dhcp opts"))) {
+		var ip = form.lanIp.value.split(".");
+		var mask = form.lanNetmask.value.split(".");
+		var ip_start = [];
+		var ip_end = [];
+		for (var i = 0; i < 4; i++) {
+			ip_start[i] = ip[i] & mask[i];
+			ip_end[i] = ip[i] | (~ mask[i] & 0xff);
+		}
+		form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + ip_start[3];
+		form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + ip_end[3];
+		form.dhcpGateway.value = form.lanIp.value;
+	}
 }
 
 </script>
@@ -144,15 +174,16 @@ function lan2_enable_switch(form)
           <tr <% var hashost = getHostSupp();
 	if (hashost != "1") write("style=\"visibility:hidden;display:none\""); %>>
             <td class="head" id="lHostname">Hostname</td>
-            <td><input name="hostname" class="mid" value="<% getCfgGeneral(1, "HostName"); %>"></td>
+            <td><input name="hostname" class="mid" value=""></td>
           </tr>
           <tr>
             <td class="head" id="lIp">IP Address</td>
-            <td><input name="lanIp" class="mid" value="<% getLanIp(); %>" ></td>
+            <td><input name="lanIp" class="mid" value=""></td>
           </tr>
           <tr>
             <td class="head" id="lNetmask">Subnet Mask</td>
-            <td><input name="lanNetmask" class="mid" value="<% getLanNetmask(); %>"></td>
+            <td><input name="lanNetmask" class="mid" value=""></td>
+          </tr>
           </tr>
           <tr>
             <td class="head" id="lLan2">LAN2</td>
@@ -187,7 +218,11 @@ function lan2_enable_switch(form)
             <td><input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">
               &nbsp;&nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">
-              <input type="hidden" value="/internet/lan.asp" name="submit-url" ></td>
+              <input type="hidden" value="/internet/lan.asp" name="submit-url" >
+              <input type="hidden" value="<% getCfgGeneral(1, "dhcpStart"); %>" name="dhcpStart">
+              <input type="hidden" value="<% getCfgGeneral(1, "dhcpEnd"); %>" name="dhcpEnd">
+              <input type="hidden" value="<% getCfgGeneral(1, "dhcpGateway"); %>" name="dhcpGateway">
+              </td>
           </tr>
         </table>
       </form>

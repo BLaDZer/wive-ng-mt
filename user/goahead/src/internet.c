@@ -1930,7 +1930,7 @@ static void getMyMAC(webs_t wp, char_t *path, char_t *query)
 /* goform/setLan */
 static void setLan(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*ip, *nm;
+	char_t	*ip, *nm, *start_ip, *end_ip, *dgw;
 	char_t	*gw = NULL, *pd = NULL, *sd = NULL;
 	char_t *lan2enabled, *lan2_ip, *lan2_nm;
 	char_t *submitUrl;
@@ -1940,12 +1940,20 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	char	*wan_ip = nvram_get(RT2860_NVRAM, "wan_ipaddr");
 	char	*ctype = nvram_get(RT2860_NVRAM, "connectionType");
+	char    *dhcpEnabled = nvram_get(RT2860_NVRAM, "dhcpEnabled");
+	char_t  *dhcpGateway = nvram_get(RT2860_NVRAM, "dhcpGateway");
+	char_t	*old_start_ip = nvram_get(RT2860_NVRAM, "dhcpStart");
+	char_t	*old_end_ip = nvram_get(RT2860_NVRAM, "dhcpEnd");
+	char_t	*old_mask = nvram_get(RT2860_NVRAM, "dhcpMask");
 
 	ip = websGetVar(wp, T("lanIp"), T(""));
 	nm = websGetVar(wp, T("lanNetmask"), T(""));
 	lan2enabled = websGetVar(wp, T("lan2enabled"), T(""));
 	lan2_ip = websGetVar(wp, T("lan2Ip"), T(""));
 	lan2_nm = websGetVar(wp, T("lan2Netmask"), T(""));
+	start_ip = websGetVar(wp, T("dhcpStart"), T(""));
+	end_ip = websGetVar(wp, T("dhcpEnd"), T(""));
+	dgw = websGetVar(wp, T("dhcpGateway"), T(""));
 #ifdef GA_HOSTNAME_SUPPORT
 	host = websGetVar(wp, T("hostname"), T("0"));
 #endif
@@ -1993,6 +2001,16 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 #ifdef GA_HOSTNAME_SUPPORT
 	nvram_bufset(RT2860_NVRAM, "HostName", host);
 #endif
+	if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
+		if (!strncmp(old_start_ip, start_ip, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpStart", start_ip);
+		if (!strncmp(old_end_ip, end_ip, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpEnd", end_ip);
+		if (!strncmp(old_mask, nm, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpMask", nm);
+		if (!strncmp(dhcpGateway, dgw, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpGateway", dhcpGateway);
+	}
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
