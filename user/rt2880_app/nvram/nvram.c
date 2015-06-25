@@ -614,6 +614,9 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_NUM(KickStaRssiLow);
 		FPRINT_NUM(ProbeRspRssi);
 #endif
+#ifdef CONFIG_BAND_STEERING
+		FPRINT_NUM(BandSteering);
+#endif
 		//Radio On/Off
 		if (!inic) {
 		    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)

@@ -169,6 +169,10 @@ ifeq ($(CONFIG_MT76X2_AP_IDS),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_ids.o
 endif
 
+ifeq ($(CONFIG_BAND_STEERING),y)
+$(RT_DRV_NAME)-objs +=  $(RT_DRV_PATH)/ap/ap_band_steering.o
+endif
+
 ifeq ($(CONFIG_MT76X2_AP_WAPI),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_sms4.o

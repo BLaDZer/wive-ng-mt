@@ -136,6 +136,10 @@ ifeq ($(CONFIG_RT2860V2_AP_IDS),y)
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_ids.o
 endif
 
+ifeq ($(CONFIG_BAND_STEERING),y)
+$(RT_DRV_NAME)-objs +=  ../rt2860v2/ap/ap_band_steering.o
+endif
+
 ifeq ($(CONFIG_RT2860V2_AP_VIDEO_TURBINE),y)
 rt2860v2_ap-objs += ../rt2860v2/common/cmm_video.o
 endif

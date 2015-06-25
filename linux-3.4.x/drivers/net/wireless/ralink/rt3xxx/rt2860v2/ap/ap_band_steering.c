@@ -789,7 +789,7 @@ static INT D_SetCheckTime(
 
 
 #ifdef BND_STRG_DBG
-static INT D_SetMntAddr(
+INT D_SetMntAddr(
 			PBND_STRG_CLI_TABLE table,
 			PUCHAR Addr)
 {
@@ -809,7 +809,7 @@ static INT D_SetMntAddr(
 }
 #endif /* BND_STRG_DBG */
 
-static VOID D_MsgHandle(
+VOID D_MsgHandle(
 			PRTMP_ADAPTER	pAd,
 			BNDSTRG_MSG *msg)
 {
@@ -847,7 +847,7 @@ static VOID D_MsgHandle(
 
 }
 
-static BNDSTRG_OPS D_BndStrgOps = {
+BNDSTRG_OPS D_BndStrgOps = {
 	.ShowTableInfo = D_ShowTableInfo,
 	.ShowTableEntries = D_ShowTableEntries,
 	.TableEntryAdd = BndStrg_InsertEntry,
