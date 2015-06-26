@@ -646,6 +646,9 @@ static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 
 	Sleep(2);
 	sync();
+	/* send dhcpc release */
+	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
+	/* restore defaults and rwfs drop */
 	doSystem("fs nvramreset > /dev/null 2>&1");
 	doSystem("fs restore > /dev/null 2>&1");
 	sync();

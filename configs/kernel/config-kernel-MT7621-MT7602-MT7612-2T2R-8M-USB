@@ -1761,7 +1761,7 @@ CONFIG_RT_SECOND_CARD_EEPROM="flash"
 # Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver
 #
 # CONFIG_RT2860V2_STA is not set
-# CONFIG_BAND_STEERING is not set
+CONFIG_BAND_STEERING=y
 
 #
 # AP MODE MediaTek MT7602E/MT7612E PCIe Wireless Driver

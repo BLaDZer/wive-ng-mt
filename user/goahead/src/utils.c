@@ -45,6 +45,9 @@ void reboot_now(void)
 {
 	Sleep(2);
 	sync();
+	/* send dhcpc release */
+	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
+	Sleep(1);
 #ifdef CONFIG_USER_STORAGE
 	/* always send output to dev/null, fix html_error output */
 	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");

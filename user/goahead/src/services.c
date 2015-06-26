@@ -132,7 +132,7 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	if (CHK_IF_DIGIT(dhcpEnabled, 0))
 		return 0;
 
-	doSystem("killall -q -USR1 udhcpd");
+	doSystem("killall -q -SIGUSR1 udhcpd > /dev/null 2>&1");
 
 	fp = fopen("/var/udhcpd.leases", "r");
 	if (!fp)
