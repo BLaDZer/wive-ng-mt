@@ -1017,7 +1017,7 @@
 <br>
 <br>
 <b>3.2.x</b><br>
-1) toolchain: update gcc to 20150619 4.8.5-RC version form git, update headers.<br>
+1) toolchain: update gcc to 4.8.5 release, update headers.<br>
 2) dnsmasq: up to 2.73 version.<br>
 3) libcurl: up to 7.43.0 version.<br>
 4) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
