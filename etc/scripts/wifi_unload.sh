@@ -44,19 +44,19 @@ unload_modules() {
 }
 
 unload_apps() {
-    echo "Stop services..." # first step stop services
+    echo "Stop services." # first step stop services
     for serv in $stop_serv
     do
 	service $serv stop > /dev/null 2>&1
     done
-    echo "Kill aplications..." # second step terminate and kill application
+    echo "Kill aplications." # second step terminate and kill application
     for apps in $kill_apps
     do
 	(killall -q $apps && usleep 20000 && killall -q -SIGKILL $apps) > /dev/null 2>&1
     done
     # remove web pages from tmpfs and link to rootfs
     if [ -d /tmp/web ]; then
-	echo "Remove web pages from tmpfs before firmware burn to flash"
+	echo "Remove web pages from tmpfs."
 	rm -rf /tmp/web
 	ln -sf /web /tmp/web
     fi

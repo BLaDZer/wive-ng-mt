@@ -124,7 +124,7 @@ dhcpradvdreconf() {
 	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
 	    $LOG "Try get prefix from local interface $lan_if $PREFIX"
 	    if [ "$PREFIX" = "" ]; then
-		$LOG "Prefix empty..."
+		$LOG "Prefix empty!"
 	    fi
 	fi
 
@@ -307,7 +307,7 @@ get_param() {
 
 	# check wan ip set, need v4 adress at wan for tunnels config
 	if [ "$IPv6OpMode" != "1" ] && [ "$tun_wan_ipaddr" = "" ]; then
-    	    $LOG "No ipv4 adress on wan (need for tunnel mode), exit..."
+    	    $LOG "No ipv4 adress on wan (need for tunnel mode), EXIT!"
     	    exit 1
 	fi
 

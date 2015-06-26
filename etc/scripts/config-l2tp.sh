@@ -22,7 +22,7 @@ get_param() {
 
 check_param() {
     if [ "$vpnServer" = "" ] || [ "$vpnUser" = "" ] || [ "$vpnPassword" = "" ]; then
-	$LOG "Server adress, username or password not set. Exit..."
+	$LOG "Server adress, username or password not set. Exit!"
 	exit 1
     fi
 }
@@ -234,8 +234,6 @@ load_modules() {
     ifname $vpn_def_if
     " > $ppp/options.l2tp
 
-    $LOG "Starting VPN network l2tp..."
-    $LOG "Start xl2tpd"
-
+    $LOG "L2TP connect to $SERVER."
     FULLOPTS="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid"
     xl2tpd $FULLOPTS &

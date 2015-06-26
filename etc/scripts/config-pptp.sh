@@ -19,7 +19,7 @@ get_param() {
 
 check_param() {
     if [ "$vpnServer" = "" ] || [ "$vpnUser" = "" ] || [ "$vpnPassword" = "" ]; then
-	$LOG "Server adress, username or password not set. Exit..."
+	$LOG "Server adress, username or password not set. Exit!"
 	exit 1
     fi
 }
@@ -199,7 +199,7 @@ load_modules() {
     $SIXEN
     " > $OPTFILE
 
-    $LOG "PPTP connect to $SERVER ....."
+    $LOG "PPTP connect to $SERVER."
     PPPDOPT="file $OPTFILE ifname $vpn_def_if -detach noipdefault noauth persist $vpnPeerDNS $vpnDebug $vpnMTU $vpnMRU $vpnMPPE plugin"
     PLUGOPT="/lib/libpptp.so pptp_server $SERVER user $vpnUser password $vpnPassword"
     FULLOPT="$PPPDOPT $PLUGOPT"

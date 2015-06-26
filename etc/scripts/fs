@@ -103,7 +103,7 @@ burnrf() {
 }
 
 fullreset() {
-    echo "Stop services and unload modules..."
+    echo "Stop services and unload modules."
     killall -q goahead
     killall -q -SIGKILL goahead
     sys_led_blink
@@ -116,7 +116,7 @@ fullreset() {
     nvram_set 2860 CHECKMAC		"YES"
     nvram_set 2860 IS_WIVE		"NO"
     mtd_write erase RW-FS
-    echo "Now reboot..."
+    echo "Now reboot"
     reboot
 }
 

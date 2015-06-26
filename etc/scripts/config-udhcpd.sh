@@ -10,7 +10,7 @@ pidfile="/var/run/udhcpd.pid"
 leases="/var/udhcpd.leases"
 
 usage () {
-  echo "usage: config-udhcpd.sh [option]..."
+  echo "usage: config-udhcpd.sh [option]"
   echo "options:"
   echo "  -h              : print this help"
   echo "  -s ipaddr       : set ipaddr as start of the IP lease block"
@@ -61,7 +61,7 @@ config () {
       if [ "$2" = "" ]; then
         sed -e '/static_lease/d' $fname > $fbak
       elif [ "$3" = "" ]; then
-	echo "insufficient arguments.."
+	echo "insufficient arguments."
 	usage
       else
         echo "static_lease $2 $3" >> $fname

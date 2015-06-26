@@ -8,7 +8,7 @@ fi
 LOG="echo PRECONFIG"
 
 start() {
-    $LOG "Preconfigure..."
+    $LOG "Preconfigure."
 
     # blink sys/vpn leds
     if [ -f /bin/gpio ]; then

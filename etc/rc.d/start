@@ -46,7 +46,7 @@ $LOG "Init RW particion"
 bzcat $RWFSDEVICE | tar xf - -C / > /dev/null 2>&1
 
 if [ -f /etc/filesystem.ok ] && [ -f /etc/rc.d/rcS ]; then
-    $LOG "RW File system is ok - preparing..."
+    $LOG "RW File system is ok - preparing."
   else
     $LOG "File system is clear or poor."
     cp -af $TMPROOTFSD/etc/* /etc

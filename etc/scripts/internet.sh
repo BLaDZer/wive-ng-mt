@@ -161,10 +161,10 @@ if [ "$MODE" != "connect_sta" ]; then
 	fi
 	service vpnhelper stop_safe
     fi
-    $LOG "Reload wireless modules..."
+    $LOG "Reload wireless modules."
     service modules restart
     if [ "$MODE" != "wifionly" ]; then
-	$LOG "Reconfigure lan..."
+	$LOG "Reconfigure lan."
 	service lan restart
     fi
 fi

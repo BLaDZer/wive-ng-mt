@@ -60,7 +60,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
 	    newdgw=`tail -qn1 /tmp/default.gw`
 	    vpnServerIP=`tail -qn1 /tmp/vpnip`
 	    if [ "$vpnServerIP" != "" ] && [ "$newdgw" != "" ] && [ "$vpnServerIP" = "$PPP_REMOTE" ]; then
-		$LOG "Replace route to $vpnServerIP via $newdgw for ppp remote $PPP_REMOTE Corbina ?...."
+		$LOG "Replace route to $vpnServerIP via $newdgw for ppp remote $PPP_REMOTE Corbina ?!"
 		ip -4 route del $vpnServerIP > /dev/null 2>&1
 		ip -4 route replace $vpnServerIP via $newdgw
 		$LOG "Drop OUTPUT to $vpnServerIP over $PPP_IFACE"

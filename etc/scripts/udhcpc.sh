@@ -114,7 +114,7 @@ case "$1" in
 
 	# check ip/netmask
 	if [ "$NEW_IP" = "" ] || [ "$NETMASK" = "" ]; then
-	    $LOG "ERROR: DHCP not send IP/MASK.... Call you provider support!!!"
+	    $LOG "ERROR: DHCP not send IP/MASK - Call you provider support!!!"
 	    exit 1
 	fi
 
@@ -319,10 +319,10 @@ case "$1" in
 	    # restart vpn if ip changed and vpn != pppoe
 	    # or vpn enabled and not started
 	    if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" -o ! -f /var/run/$vpn_if.pid ]; then
-		$LOG "Restart vpnhelper.."
+		$LOG "Restart vpnhelper."
 		service vpnhelper restart
 	    fi
-	    $LOG "End renew procedure..."
+	    $LOG "End renew procedure."
 	fi
 	# reenable forward for paranoid users
 	sysctl -wq net.ipv4.conf.all.forwarding=1

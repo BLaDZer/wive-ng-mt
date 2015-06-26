@@ -20,7 +20,7 @@ get_param() {
 
 check_param() {
     if [ "$vpnUser" = "" ] || [ "$vpnPassword" = "" ]; then
-	$LOG "Username or password not set. Exit..."
+	$LOG "Username or password not set. Exit!"
 	exit 1
     fi
 }
@@ -145,6 +145,6 @@ PPP_STD_OPTIONS="noipdefault noauth persist $vpnPeerDNS ifname $vpn_def_if -deta
 # PPPoE invocation
 PPPOE_CMD="$vpnInterface $vpnServer $vpnService user $vpnUser password $vpnPassword $pppoedbg"
 
-$LOG "Start pppd at $vpnInterface to $vpnServer $vpnService mode PPPOE"
+$LOG "PPPOE connect over $vpnInterface to $vpnServer $vpnService"
 FULLOPT="file $OPTFILE $vpnMTU $vpnMRU $vpnMPPE $PPP_STD_OPTIONS plugin /lib/rp-pppoe.so $PPPOE_CMD"
 pppd $FULLOPT &

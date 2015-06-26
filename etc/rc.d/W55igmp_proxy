@@ -19,7 +19,7 @@ start() {
 
 	# check ip adress set at wan
 	if [ "$wan_is_not_null" = "0" ]; then
-    	    $LOG "Wait 15 sec before start..."
+    	    $LOG "Wait 15 sec before start."
 	    sleep 15
 	fi
 
