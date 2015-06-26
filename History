@@ -612,7 +612,7 @@
 <br>
 <br>
 <b>2.5.x</b><br>
-1) toolchain: apply build root patchset binutils/uclibc.<br><br>
+1) toolchain: apply build root patchset binutils/uclibc.<br>
 2) toolchain: sync uclibc patches, update gcc to 19.02.2015 4.8.5 version form git, update headers.<br>
 3) build_system: libs: try build more libs only as shared (do not install static libs to romfs if not need).<br>
 4) build_system: libs: add libxml2, libneon.<br>
@@ -1026,7 +1026,7 @@
 7) goahead: more russian translate fix.<br>
 8) goahead: flush conntrack after apply ipport/mac filter rules for start work rules immediately.<br>
 9) goahead: fix ipmacfilter default policy set.<br>
-10) goahead: add popap reqest change dhcp settings at lan settings changed.<br>
+10) goahead: add popup reqest change dhcp settings at lan settings changed.<br>
 11) goahead: send SIGUSR2 to udhcpc for ip release before reboot.<br>
 12) kernel: up to 3.4.108 base version.<br>
 13) kernel: ralink wifi: 7610: fix clean NDP announces.<br>
