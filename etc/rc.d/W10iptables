@@ -503,8 +503,8 @@ startv6() {
 
 get_param() {
     # get network, vpn, netfiletrs and others config variables
-    eval `nvram_buf_get 2860 natEnabled use_snat PortForwardEnable DMZEnable DMZIPAddress DMZNATLoopback DefaultFirewallPolicy \
-	    IPPortFilterEnable WANPingFilter RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort \
+    eval `nvram_buf_get 2860 natEnabled use_snatDMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
+	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
 	    parproutedEnabled PrinterSrvEnabled chilli_net vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward`
 

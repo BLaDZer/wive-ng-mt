@@ -548,6 +548,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	char sip[32], dip[32], sim[32], dim[32];
 	char *c_if, *firewall_enable, *default_policy;
 	char_t *rule;
+	int default_drop_flag;
 
 	// Check that IP/port filter is enabled
 	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
@@ -571,6 +572,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	default_policy = nvram_get(RT2860_NVRAM, "DefaultFirewallPolicy");
 	if (default_policy == NULL)
 		default_policy = "0";
+	default_drop_flag = atoi(default_policy);
 
 	// get wan name
 	strncpy(wan_name, getWanIfName(), sizeof(wan_name)-1);
@@ -580,8 +582,11 @@ static void iptablesIPPortFilterBuildScript(void)
 	if (fd != NULL)
 	{
 		fputs("#!/bin/sh\n\n", fd);
+		// make chain and jump to from forward
 		fprintf(fd, "iptables -t filter -N %s\n", IPPORT_FILTER_CHAIN);
 		fprintf(fd, "iptables -t filter -I FORWARD -j %s\n\n", IPPORT_FILTER_CHAIN);
+		// accept related/established sessions by conntrack
+		fprintf(fd, "iptables -t filter -A %s -m state --state ESTABLISHED,RELATED -j ACCEPT\n\n", IPPORT_FILTER_CHAIN);
 
 		while ((getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1))
 		{
@@ -675,11 +680,19 @@ static void iptablesIPPortFilterBuildScript(void)
 
 			action = atoi(action_str);
 
-			// Output regular rule
+			// build rules
 			makeIPPortFilterRule(
 				cmd, sizeof(cmd), c_if, mac_address, sip, sim, sprf_int,
 				sprt_int, dip, dim, dprf_int, dprt_int, proto, action, IPPORT_FILTER_CHAIN);
+			// write to file
 			fputs(cmd, fd);
+		}
+
+		// write default policy if drop
+		if (default_drop_flag) {
+		    snprintf(cmd, 1024, "iptables -t filter -A %s -j DROP\n\n", IPPORT_FILTER_CHAIN);
+		    // write to file
+		    fputs(cmd, fd);
 		}
 
 		//close file
@@ -754,7 +767,7 @@ static void iptablesPortForwardBuildScript(void)
 
 	// Print header for WAN/LAN
 	fputs("#!/bin/sh\n\n", fd);
-	fprintf(fd, 
+	fprintf(fd,
 		"iptables -t nat -N %s\n"
 		"iptables -t nat -A PREROUTING -j %s\n\n",
 		PORT_FORWARD_PRE_CHAIN, PORT_FORWARD_PRE_CHAIN);
