@@ -28,8 +28,6 @@ if [ "$RadioOff" = "1" -a "$2" != "5GHZ" ] || [ "$RadioOffINIC" = "1" -a "$2" = 
     iwpriv "$1" set RadioOn=0
     echo ">>>> WIFI $1 DISABLED <<<<"
     exit 0
-else
-    iwpriv "$1" set RadioOn=1
 fi
 ########################################MULTICAST PARAMS###############################################
 if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
