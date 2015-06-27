@@ -614,6 +614,8 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_NUM(KickStaRssiLow);
 		FPRINT_NUM(ProbeRspRssi);
 #endif
+		// Switch rate algo, need add in profile instead of iwpriv usage in future
+		FPRINT_NUM(RateAlg);
 #ifdef CONFIG_BAND_STEERING
 		FPRINT_NUM(BandSteering);
 #endif

@@ -42,6 +42,8 @@ rt2860v2_ap-objs += ../rt2860v2/common/cmm_data_pci.o
 
 rt2860v2_ap-objs += ../rt2860v2/rate_ctrl/ra_ctrl.o
 rt2860v2_ap-objs += ../rt2860v2/rate_ctrl/alg_legacy.o
+rt2860v2_ap-objs += ../rt2860v2/rate_ctrl/alg_ags.o
+rt2860v2_ap-objs += ../rt2860v2/rate_ctrl/alg_grp.o
 
 rt2860v2_ap-objs += ../rt2860v2/ap/ap.o
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_assoc.o
@@ -279,6 +281,7 @@ EXTRA_CFLAGS += -DRTMP_TEMPERATURE_CALIBRATION
 EXTRA_CFLAGS += -DDYNAMIC_VGA_SUPPORT
 EXTRA_CFLAGS += -DMCS_LUT_SUPPORT -DPEER_DELBA_TX_ADAPT
 EXTRA_CFLAGS += -DDROP_MASK_SUPPORT -DMULTI_CLIENT_SUPPORT
+EXTRA_CFLAGS += -DNEW_RATE_ADAPT_SUPPORT
 #EXTRA_CFLAGS += -DFIFO_EXT_SUPPORT
 #EXTRA_CFLAGS += -DSPECIFIC_BCN_BUF_SUPPORT
 ifeq ($(CONFIG_INTERNAL_PA_EXTERNAL_LNA),y)

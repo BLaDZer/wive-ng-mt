@@ -12,7 +12,8 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ######################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect DyncVgaEnable M2UEnabled`
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC \
+			    AutoConnect DyncVgaEnable M2UEnabled RateAlg`
 ########################################STAMODE param#################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
@@ -47,6 +48,14 @@ if [ "$DyncVgaEnable" = "1" ]; then
     iwpriv "$1" set DyncVgaEnable=1
 else
     iwpriv "$1" set DyncVgaEnable=0
+fi
+######################################SWITCH RATE ALGORITM############################################
+# 0 - Legacy
+# 1 - Group Switching
+# 2 - Adaptive Group Switching
+######################################################################################################
+if [ "$RateAlg" != "" ]; then
+    iwpriv "$1" set RateAlg="$RateAlg"
 fi
 ################WORKAROUND FOR TX RING FULL IN WIFI DRIVERS (ONLY 2.4GHz)#############################
 if [ "$2" != "5GHZ" ]; then

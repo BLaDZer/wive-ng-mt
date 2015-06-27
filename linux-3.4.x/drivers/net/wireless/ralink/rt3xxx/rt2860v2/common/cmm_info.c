@@ -5610,12 +5610,13 @@ INT Set_FixedRate_Proc(
     IN  PSTRING         arg)
 {
 	int rate;
-    
+
 	rate = simple_strtol(arg, 0, 10);
 	if (rate<-1 || rate > MAX_TX_RATE_INDEX)
 		return FALSE;
-    pAd->CommonCfg.FixedRate = rate;
-    DBGPRINT(RT_DEBUG_TRACE, ("Set_FixedRate_Proc::(FixedRate=%d)\n", pAd->CommonCfg.FixedRate));
+	pAd->CommonCfg.FixedRate = rate;
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_FixedRate_Proc::(FixedRate=%d)\n", pAd->CommonCfg.FixedRate));
+
 	return TRUE;
 }
 #endif /* DBG */
