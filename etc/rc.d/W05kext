@@ -97,31 +97,28 @@ offload() {
 	    # configure hw_nat module
 	    if [ "$hw_nat_wifi" = "1" ]; then
 	        hw_nat_wifi="wifi_offload=1"
-	        $LOG "hw_nat: wifi offload support enabled."
 	    else
 		hw_nat_wifi="wifi_offload=0"
 	    fi
 	    if [ "$hw_nat_udp" = "1" ]; then
 	        hw_nat_udp="udp_offload=1"
-	        $LOG "hw_nat: udp offload support enabled."
 	    else
 		hw_nat_udp="udp_offload=0"
 	    fi
 	    if [ "$CONFIG_RA_HW_NAT_IPV6" != "" ]; then
 		if [ "$hw_nat_six" = "1" ] && [ "$IPv6OpMode" != "0" ]; then
 		    hw_nat_ipv6="ipv6_offload=1"
-	    	    $LOG "hw_nat: ipv6 offload support enabled."
 		else
     		    hw_nat_ipv6="ipv6_offload=0"
 		fi
 	    fi
 	    if [ "$store_ttl" = "1" ]; then
 		hw_nat_ttl="ttl_regen=0"
-	    	$LOG "hw_nat: do not touch ttl mode enable."
 	    else
 		hw_nat_ttl="ttl_regen=1"
 	    fi
 	    # load ppe driver
+	    $LOG "hw_nat: load driver with options $hw_nat_wifi $hw_nat_udp $hw_nat_ipv6 $hw_nat_ttl"
 	    modprobe -q hw_nat "$hw_nat_wifi" "$hw_nat_udp" "$hw_nat_ipv6" "$hw_nat_ttl"
 	    # reconfigure some options
 	    if [ "$hw_nat_bind" != "" ]; then
