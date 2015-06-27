@@ -41,6 +41,7 @@ fulldump
 /autoconf.h
 /config.arch
 /config/.config
+/config/.config.old
 /config/autoconf.h
 /sdk_version.h
 /version
@@ -53,6 +54,8 @@ fulldump
 /dev/*
 /tools/bin/*
 /tools/mkimage/mkimage
+/tools/mksquash_xz-4.0/mksquashfs
+/tools/mksquash_xz-4.0/unsquashfs
 /tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
 /tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
 /tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
