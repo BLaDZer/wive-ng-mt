@@ -1043,6 +1043,7 @@
 24) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
 25) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
 26) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
+27) kernel: locking: Remove atomicy checks from {READ,WRITE}_ONCE.<br>
 <br>
 <br>
 <b>TODO:</b><br>
