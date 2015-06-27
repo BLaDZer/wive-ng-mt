@@ -813,8 +813,6 @@ static void br_multicast_send_query(struct net_bridge *br,
 	br_group.proto = htons(ETH_P_IPV6);
 	__br_multicast_send_query(br, port, &br_group);
 #endif
-	if (port->multicast_router == 2 && hlist_unhashed(&port->rlist))
-		br_multicast_add_router(br, port);
 
 	time = jiffies;
 	time += sent < br->multicast_startup_query_count ?
@@ -878,6 +876,9 @@ void br_multicast_enable_port(struct net_bridge_port *port)
 		goto out;
 
 	__br_multicast_enable_port(port);
+
+	if (port->multicast_router == 2 && hlist_unhashed(&port->rlist))
+		br_multicast_add_router(br, port);
 
 out:
 	spin_unlock(&br->multicast_lock);
