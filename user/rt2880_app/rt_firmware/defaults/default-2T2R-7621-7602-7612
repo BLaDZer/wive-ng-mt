@@ -393,7 +393,6 @@ AssocRspIgnor=0
 KickStaRssiLow=0
 ProbeRspRssi=0
 BandSteering=0
-RateAlg=0
 IRQBalance=auto
 WAN_MAC_ADDR=00:0C:43:30:52:62
 LAN_MAC_ADDR=00:0C:43:30:52:64

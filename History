@@ -1037,15 +1037,14 @@
 17) kernel: ralink_wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
 18) kernel: ralink_wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
 19) kernel: ralink_wifi: 76x2: add band steering options.<br>
-20) kernel: ralink_wifi: 7620: fix use new rate adapt.<br>
-21) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
-22) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
-23) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
-24) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
-25) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
-26) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
-27) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
-28) kernel: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+20) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
+21) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
+22) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
+23) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
+24) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+25) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
+26) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
+27) kernel: bridge: fix br_stp_set_bridge_priority race conditions.<br>
 <br>
 <br>
 <b>TODO:</b><br>
@@ -1053,10 +1052,9 @@
 2) need add subchannel select for 5GHz module.<br>
 3) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
 4) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
-5) need add in wireless->advanced RateAlg option see wifi_advanced.sh for details.<br>
-6) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-7) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+6) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>
