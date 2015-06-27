@@ -63,11 +63,6 @@ offload() {
 	    sw_nat=0
 	    $LOG "NAT Offload disabled by user, hw_nat and all fastpaths disabled."
 	fi
-	# exception for disabe hw_nat
-	if [ "$CONFIG_RALINK_RT5350" = "y" ]; then
-	    hw_nat=0
-	    $LOG "HW_NAT DISABLED: THIS SOC NOT SUPPORT PPE!!!"
-	fi
 	if [ "$CONFIG_BCM_NAT" = "y" ]; then
 	    # configure software nat offload
 	    if [ "$natFastpath" != "0" ] && [ "$sw_nat" = "1" ]; then
