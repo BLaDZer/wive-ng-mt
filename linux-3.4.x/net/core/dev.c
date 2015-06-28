@@ -6145,7 +6145,9 @@ struct netdev_queue *dev_ingress_queue_create(struct net_device *dev)
 	return queue;
 }
 
+#ifdef CONFIG_ETHTOOL
 static const struct ethtool_ops default_ethtool_ops;
+#endif
 
 /**
  *	alloc_netdev_mqs - allocate network device
@@ -6229,8 +6231,10 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 
 	strcpy(dev->name, name);
 	dev->group = INIT_NETDEV_GROUP;
+#ifdef CONFIG_ETHTOOL
 	if (!dev->ethtool_ops)
 		dev->ethtool_ops = &default_ethtool_ops;
+#endif
 	return dev;
 
 free_all:
