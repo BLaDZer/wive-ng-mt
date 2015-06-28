@@ -2002,14 +2002,14 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "HostName", host);
 #endif
 	if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
-		if (!strncmp(old_start_ip, start_ip, 15))
+		if (strncmp(old_start_ip, start_ip, 15))
 			nvram_bufset(RT2860_NVRAM, "dhcpStart", start_ip);
-		if (!strncmp(old_end_ip, end_ip, 15))
+		if (strncmp(old_end_ip, end_ip, 15))
 			nvram_bufset(RT2860_NVRAM, "dhcpEnd", end_ip);
-		if (!strncmp(old_mask, nm, 15))
+		if (strncmp(old_mask, nm, 15))
 			nvram_bufset(RT2860_NVRAM, "dhcpMask", nm);
-		if (!strncmp(dhcpGateway, dgw, 15))
-			nvram_bufset(RT2860_NVRAM, "dhcpGateway", dhcpGateway);
+		if (strncmp(dhcpGateway, dgw, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpGateway", dgw);
 	}
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
@@ -2035,7 +2035,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	websFooter(wp);
 	websDone(wp, 200);
 #else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	submitUrl = "http://%s%s", ip, websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
 	doSystem("internet.sh");

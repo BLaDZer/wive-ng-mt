@@ -13,6 +13,7 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("buttons");
 
 var secs;
@@ -126,12 +127,25 @@ function CheckValue()
 			return false;
 		}
 	}
-	if ((form.lanIp.value != lanip) && (dhcp == "1"))
-		dhcp_edit = 1;
-	if ((form.lanNetmask.value != lanmask) && (dhcp == "1"))
-		dhcp_edit = 1;
-	if (dhcp_edit == 1)
-		dhcp(form);
+
+	tmp_a = ((form.lanIp.value != lanip) || (form.lanNetmask.value != lanmask)) ? 1 : 0;
+	tmp_b = ((form.lanIp.value != lanip) && (form.lanNetmask.value != lanmask)) ? 1 : 0;
+	dhcp_edit = (((tmp_a == 1) || (tmp_b == 1)) && (dhcp == "1")) ? 1 : 0;
+	if (dhcp_edit == 1) {
+		if (confirm(_("lan accept dhcp opts"))) {
+			var ip = form.lanIp.value.split(".");
+			var mask = form.lanNetmask.value.split(".");
+			var ip_start = [];
+			var ip_end = [];
+			for (var i = 0; i < 4; i++) {
+				ip_start[i] = ip[i] & mask[i];
+				ip_end[i] = ip[i] | (~ mask[i] & 0xff);
+			}
+			form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + ip_start[3];
+			form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + ip_end[3];
+			form.dhcpGateway.value = form.lanIp.value;
+		}
+	}
 	return true;
 }
 
@@ -140,23 +154,6 @@ function lan2_enable_switch(form)
 	enableElements( [ form.lan2Ip, form.lan2Netmask ], (form.lan2enabled.value == "1"));
 	displayElement( [ 'lan2ip', 'lan2mask' ], (form.lan2enabled.value == "1"));
 }
-
-function dhcp(form) {
-	if (confirm(_("lan accept dhcp opts"))) {
-		var ip = form.lanIp.value.split(".");
-		var mask = form.lanNetmask.value.split(".");
-		var ip_start = [];
-		var ip_end = [];
-		for (var i = 0; i < 4; i++) {
-			ip_start[i] = ip[i] & mask[i];
-			ip_end[i] = ip[i] | (~ mask[i] & 0xff);
-		}
-		form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + ip_start[3];
-		form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + ip_end[3];
-		form.dhcpGateway.value = form.lanIp.value;
-	}
-}
-
 </script>
 </head>
 
