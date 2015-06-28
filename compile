@@ -14,12 +14,45 @@ export LINUXDIR=$ROOTDIR/linux
 export LANG=en_US
 export LC_ALL=POSIX
 
-#---------MODEL------------#
-if [ "$1" = "" ]; then
-    MODE=MT7620-2T2R-8M
-else
-    MODE=$1
-fi
+#----------MODE------------#
+MODE="$1"
+case "$MODE" in
+	"MT7621-MT7602-MT7612-2T2R-8M-USB")
+	    # tube sample
+	    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
+	    ;;
+	"MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
+	    # black sample
+	    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
+	    ;;
+	"MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
+	    # none sample
+	    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
+	    ;;
+	"MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB")
+	    # white sample
+	    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
+	    ;;
+	"MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M")
+	    # black horizont sample
+	    DEVNAME="SNR-CPE-W4N-5GHZ-MT"
+	    ;;
+	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M")
+	    # black dualband release
+	    DEVNAME="SNR-CPE-W4N-5GHZ-MT"
+	    ;;
+	"MT7620-2T2R-8M")
+	    # white oneband release
+	    DEVNAME="SNR-CPE-W4N-MT"
+	    ;;
+	"MT7620-2T2R-4M")
+	    # white trash sample
+	    DEVNAME="SNR-CPE-W4N-MT"
+	    ;;
+	*)
+	    echo "Not supported (unknown) mode or mode not set."
+	    exit 1
+esac
 
 #-------FABRICMODE---------#
 if [ "$2" = "" ]; then
@@ -28,37 +61,7 @@ else
     FMODE="YES"
 fi
 
-#------------------------------------#
-if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-8M-USB" ]; then
-    # tube sample
-    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
-elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB" ]; then
-    # black sample
-    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
-elif [ "$MODE" = "MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB" ]; then
-    # none sample
-    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
-elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB" ]; then
-    # white sample
-    DEVNAME="SNR-CPE-W4N-5GHZ-USB-MT"
-elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M" ]; then
-    # black horizont sample
-    DEVNAME="SNR-CPE-W4N-5GHZ-MT"
-elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M" ]; then
-    # black dualband release
-    DEVNAME="SNR-CPE-W4N-5GHZ-MT"
-elif [ "$MODE" = "MT7620-2T2R-8M" ]; then
-    # white oneband release
-    DEVNAME="SNR-CPE-W4N-MT"
-elif [ "$MODE" = "MT7620-2T2R-4M" ]; then
-    # white trash sample
-    DEVNAME="SNR-CPE-W4N-MT"
-else
-    echo "Not supported (unknown) mode."
-    exit 1
-fi
-
-#use for product id and model name
+# use for product id and model name
 export REALNAME="$MODE"
 export PRODUCTID="$DEVNAME"
 export MODEL_NAME="$DEVNAME"
@@ -67,7 +70,6 @@ export KERNEL_VER="$VERSIONPKG"
 echo "_________________________________________________________"
 echo "> Building for $PRODUCTID version $KERNEL_VER <"
 echo "_________________________________________________________"
-
 
 echo ""								>  $ROOTDIR/sdk_version.h
 echo "#define RT288X_SDK_VERSION \"$DEVNAME-$VERSIONPKG\""	>> $ROOTDIR/sdk_version.h
