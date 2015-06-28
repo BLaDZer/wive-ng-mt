@@ -8,7 +8,7 @@
     <message msgid="opmode mode gateway intro" msgstr="The first Ethernet port is treated as WAN port. All other Ethernet ports and the Wireless interface are bridged together and treated as LAN ports." />
     <message msgid="opmode mode e" msgstr="Client-Gateway:" />
     <message msgid="opmode mode e intro" msgstr="The Wireless interface is treated as WAN port, and Ethernet ports are used as LAN ports." />
-    <message msgid="opmode mode a" msgstr="Client-AP-Gateway/Client-AP-Bridge:" />
+    <message msgid="opmode mode a" msgstr="Client-AP-Gateway(WISP)/Client-AP-Bridge(Repeater):" />
     <message msgid="opmode mode a intro" msgstr="The Wireless APCli interface is treated as WAN port others ports as LAN (Client-AP-Gateway). Or all interfaces in bridge + NAT2.5 for wireless client connection (Client-AP-Bridge)." />
     <message msgid="opmode mode s" msgstr="Hotspot:" />
     <message msgid="opmode mode s intro" msgstr="The first Ethernet port is treated as WAN port. Other Ethernet ports and the Wireless interface are bridged together and are treated as hotspot ports. NAT acceleration will be disabled in this mode!" />
