@@ -278,7 +278,7 @@
 24) kernel: ralink_wifi: fix apscan support.<br>
 25) kernel: ralink_wifi: update eeprom array in driver.<br>
 26) kernel: ralink_wifi: patch fix dhcp issue on new Apple and others buggy clients (use RATE_6 instead of 24).<br>
-27) kernel: ralink_wifi: fia and enable decrease interference effects logic (dynamicvga and friends).<br>
+27) kernel: ralink_wifi: fix and enable decrease interference effects logic (dynamicvga and friends).<br>
 28) kernel: net: sysctl: set frto=2, bug TCP: snd_cwnd is null http://patchwork.ozlabs.org/patch/234793/<br>
 29) kernel: net: apply http://patchwork.ozlabs.org/patch/234793/ fix (in future need backport new FRTO code).<br>
 30) kernel: net: fastnat/fastroute: use ip_route_input_noref(), to avoid 4 atomic ops per packet.<br>
@@ -1039,12 +1039,13 @@
 19) kernel: ralink_wifi: 76x2: add band steering options.<br>
 20) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
 21) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
-22) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
-23) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
-24) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
-25) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
-26) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
-27) kernel: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+22) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
+23) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
+24) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
+25) kernel: netfilter: don't use module_init/exit in core IPV4 code.<br>
+26) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
+27) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
+28) kernel: bridge: fix br_stp_set_bridge_priority race conditions.<br>
 <br>
 <br>
 <b>TODO:</b><br>

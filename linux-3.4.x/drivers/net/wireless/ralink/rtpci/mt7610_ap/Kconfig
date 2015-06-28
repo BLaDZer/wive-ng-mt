@@ -179,6 +179,11 @@ config  MT7610_AP_QA
 	depends on MT7610_AP_ATE
 	default n
 
+config  MT7610_AP_INTERFERENCE_REDUCE
+	bool "Enable minimize 802.11 interference effects"
+	default n
+	depends on MT7610_AP
+
 config  MT7610_AP_DBG
 	bool "Debug support for AP mode"
 	depends on MT7610_AP

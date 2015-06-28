@@ -40,9 +40,3 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
 	fi
     fi
 fi
-#####################################DYNAMIC VARIABLE GAIN###############################################
-if [ "$DyncVgaEnable" = "1" ]; then
-    iwpriv "$1" set DyncVgaEnable=1
-else
-    iwpriv "$1" set DyncVgaEnable=0
-fi

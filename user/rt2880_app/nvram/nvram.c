@@ -600,10 +600,6 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_NUM(DeauthFloodThreshold);
 		FPRINT_NUM(EapReqFooldThreshold);
 #endif
-#ifdef CONFIG_RT2860V2_AP_INTERFERENCE_REDUCE
-		FPRINT_NUM(MO_FalseCCATh);
-		FPRINT_NUM(DyncVgaEnable);
-#endif
 #if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 		// Fast Roaming, need add in profile instead of iwpriv usage in future
 		FPRINT_NUM(ApProbeRspTimes);
