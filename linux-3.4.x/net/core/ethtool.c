@@ -1316,16 +1316,6 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	if (copy_from_user(&ethcmd, useraddr, sizeof(ethcmd)))
 		return -EFAULT;
 
-	if (!dev->ethtool_ops) {
-		/* ETHTOOL_GDRVINFO does not require any driver support.
-		 * It is also unprivileged and does not change anything,
-		 * so we can take a shortcut to it. */
-		if (ethcmd == ETHTOOL_GDRVINFO)
-			return ethtool_get_drvinfo(dev, useraddr);
-		else
-			return -EOPNOTSUPP;
-	}
-
 	/* Allow some commands to be done by anyone */
 	switch (ethcmd) {
 	case ETHTOOL_GSET:

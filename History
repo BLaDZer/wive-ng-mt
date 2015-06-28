@@ -1042,12 +1042,13 @@
 22) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
 23) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
 24) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
-25) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
-26) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
-27) kernel: net: netfilter: remove ip_queue support.<br>
-28) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
-29) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
-30) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+25) kernel: net: provide a default dev->ethtool_ops.<br>
+26) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
+27) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
+28) kernel: net: netfilter: remove ip_queue support.<br>
+29) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
+30) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
+31) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
 <br>
 <br>
 <b>TODO:</b><br>
