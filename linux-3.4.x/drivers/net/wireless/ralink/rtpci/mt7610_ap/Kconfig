@@ -181,7 +181,7 @@ config  MT7610_AP_QA
 
 config  MT7610_AP_INTERFERENCE_REDUCE
 	bool "Enable minimize 802.11 interference effects"
-	default n
+	default y
 	depends on MT7610_AP
 
 config  MT7610_AP_DBG
