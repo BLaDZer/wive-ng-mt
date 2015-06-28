@@ -8,8 +8,8 @@
     <message msgid="opmode mode gateway intro" msgstr="Один проводной интерфейс используется для доступа в интернет(WAN), остальные проводные и беспроводные интерфейсы используются как локальные(LAN)." />
     <message msgid="opmode mode e" msgstr="Ethernet конвертер" />
     <message msgid="opmode mode e intro" msgstr="Беспроводной интерфейс рассматривается как WAN-порт, а проводные интерфейсы используются в качестве портов LAN." />
-    <message msgid="opmode mode a" msgstr="Клиент+AП+Шлюз(WISP)/Клиент+AП+Мост(Repeater):" />
-    <message msgid="opmode mode a intro" msgstr="Wi-Fi apcli интерфейс назначается как WAN, ethernet порты и Wi-Fi AP порт - как LAN." />
+    <message msgid="opmode mode a" msgstr="Клиент+AП+Шлюз(WISP)/Клиент+AП+Мост(Repeater)" />
+    <message msgid="opmode mode a intro" msgstr="Wi-Fi apcli интерфейс назначается как WAN, ethernet порты и Wi-Fi AP порт - как LAN. Либо все порты объединяются в единый мост." />
     <message msgid="opmode mode s" msgstr="Hotspot" />
     <message msgid="opmode mode s intro" msgstr="Один проводной интерфейс используется как WAN интерфейс, остальные - объединены в мост и используются как хотспот интерфейсы. Ускорение NAT в этом режиме будет отключено!" />
     <message msgid="opmode confirm" msgstr="Для изменение режима работы необходимо перезагрузить маршрутизатор. Вы хотите продолжить?" />
