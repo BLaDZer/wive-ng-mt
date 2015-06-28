@@ -1046,6 +1046,7 @@
 26) kernel: bridge: multicast: start querier timer when running user-space stp.<br>
 27) kernel: bridge: multicast: restore router configuration on port link down/up.<br>
 28) kernel: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+29) kernel: netfilter: remove ip_queue support.<br>
 <br>
 <br>
 <b>TODO:</b><br>
