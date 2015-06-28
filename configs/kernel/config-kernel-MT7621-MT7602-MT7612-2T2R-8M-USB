@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.107.39 Kernel Configuration
+# Linux/mips 3.4.108.40 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1793,7 +1793,6 @@ CONFIG_MT76X2_AP_80211AC_VHT=y
 CONFIG_MT76X2_AP_SNMP=y
 # CONFIG_MT76X2_AP_SINGLE_SKU is not set
 # CONFIG_MT76X2_AP_READ_MAC_FROM_MTD is not set
-# CONFIG_MT76X2_AP_BIG_ENDIAN is not set
 # CONFIG_MT76X2_AP_MC_SUPPORT is not set
 # CONFIG_MT76X2_AP_ATE is not set
 CONFIG_MT76X2_AP_IAPP=y
