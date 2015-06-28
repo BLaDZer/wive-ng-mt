@@ -220,11 +220,11 @@ wifi_reconnect() {
 	    usleep 500000
 	fi
     elif [ "$OperationMode" = "3" ]; then
-	# Reenable apcli for reconnect
+	# Reenable apcli and rescan for reconnect
 	iwpriv $ApCliIfName set ApCliEnable=0
-        usleep 100000
+	usleep 100000
 	iwpriv $ApCliIfName set ApCliEnable=1
-	usleep 500000
+	iwpriv $ApCliIfName set SiteSurvey=1
     fi
 }
 
