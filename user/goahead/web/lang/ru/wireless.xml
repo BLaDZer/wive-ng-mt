@@ -166,6 +166,14 @@
   <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />
   <message msgid="secure access policy del" msgstr="Удалить" />
 
+  <message msgid="apcli title" msgstr="Клиент AP" />
+  <message msgid="apcli param" msgstr="Здесь вы можете сменить параметры клиента AP." />
+  <message msgid="apcli about" msgstr="Для корректной работы необходимо установить канал беспроводной сети (Беспроводные настройки -> Основные) как канал, используемый для подключения AP." />
+  <message msgid="apcli client param" msgstr="Параметры клиента AP" />
+  <message msgid="apcli mac" msgstr="MAC адрес (не обязательно)" />
+  <message msgid="apcli disable iface" msgstr="Отключить интерфейс AP" />
+  <message msgid="apcli enable bridge" msgstr="Включить режим моста" />
+
   <message msgid="stalist title" msgstr="Список станций" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
   <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />

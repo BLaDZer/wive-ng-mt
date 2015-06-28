@@ -15,6 +15,22 @@
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
 
+function initTranslation() {
+  _TR("apcliTitle", "apcli title");
+  _TR("apcliParameters", "apcli param");
+  _TR("apcliAbout", "apcli about");
+  _TR("apcliClientParam", "apcli client param");
+  _TR("apcliSSID", "station ssid");
+  _TR("apcliMAC", "apcli mac");
+  _TR("apcliSecurityMode", "secure security mode");
+  _TR("apcliEncryptionType", "secure encryp type");
+  _TR("apcliPass", "secure wpa pass phrase");
+  _TR("apcliDisableIface", "apcli disable iface");
+  _TR("apcliEnableBridge", "apcli enable bridge");
+  _TRV("apcliApply", "button apply");
+  _TRV("apcliCancel", "button cancel");
+}
+
 function SecurityModeSwitch(form)
 {
 	var wpa_on = (form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK');
@@ -33,7 +49,7 @@ function initValue()
 	form.apcli_bridge.checked = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';
 
 	SecurityModeSwitch(form);
-  InitTranslation();
+  initTranslation();
 }
 
 function CheckValue(form)
@@ -81,67 +97,61 @@ function CheckValue(form)
 		}
 	}
 }
-
-function initTranslation()
-{
-}
-
 </script>
 </head>
-
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
-    <td><h1>AP Client Feature</h1>
-      <p>Here you can configure AP Client parameters.</p>
-      <p>For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect.</p>
+    <td><h1 id="apcliTitle">AP Client Feature</h1>
+      <p id="apcliParameters">Here you can configure AP Client parameters.</p>
+      <p id="apcliAbout">For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect.</p>
       <hr />
       <form method="POST" name="wireless_apcli" action="/goform/wirelessApcli" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
-            <td class="title" colspan="3">AP Client Parameters</td>
+            <td class="title" colspan="3" id="apcliClientParam">AP Client Parameters</td>
           </tr>
           <tr>
-            <td class="head">SSID</td>
+            <td class="head" id="apcliSSID">SSID</td>
             <td><input name="apcli_ssid"></td>
           </tr>
           <tr>
-            <td class="head">MAC Address (Optional)</td>
+            <td class="head" id="apcliMAC">MAC Address (Optional)</td>
             <td><input name="apcli_bssid"></td>
           </tr>
           <tr>
-            <td class="head">Security Mode</td>
+            <td class="head" id="apcliSecurityMode">Security Mode</td>
             <td><select name="apcli_mode" id="apcli_mode" size="1" onChange="SecurityModeSwitch(this.form);">
-                <option value="OPEN">Open</option>
-                <option value="WPAPSK">WPAPSK</option>
-                <option value="WPA2PSK">WPA2PSK</option>
+                <option value="OPEN" id="apcliOpen">Open</option>
+                <option value="WPAPSK" id="apcliWPA">WPAPSK</option>
+                <option value="WPA2PSK" id="apcliWPA2">WPA2PSK</option>
               </select></td>
           </tr>
           <tr id="div_apcli_enc">
-            <td class="head">Encryption Type</td>
+            <td class="head" id="apcliEncryptionType">Encryption Type</td>
             <td><select name="apcli_enc" id="apcli_enc">
-                <option value="AES" selected>AES</option>
-                <option value="TKIP">TKIP</option>
+                <option value="AES" selected id="apcliAES">AES</option>
+                <option value="TKIP" id="apcliTKIP">TKIP</option>
               </select></td>
           </tr>
           <tr id="div_apcli_wpapsk">
-            <td class="head">Pass Phrase</td>
+            <td class="head" id="apcliPass">Pass Phrase</td>
             <td><input type="password" name="apcli_wpapsk" value="<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>"></td>
           </tr>
           <tr>
-            <td class="head">Disable AP Interface</td>
+            <td class="head" id="apcliDisableIface">Disable AP Interface</td>
             <td><input type="checkbox" name="apcli_apiface"></td>
           </tr>
           <tr>
-            <td class="head">Enable Bridge Mode</td>
+            <td class="head" id="apcliEnableBridge">Enable Bridge Mode</td>
             <td><input type="checkbox" name="apcli_bridge"></td>
           </tr>
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply">
+            <td><input type="submit" class="normal" value="Apply" id="apcliApply">
               &nbsp; &nbsp;
-              <input type="reset"  class="normal" value="Cancel" onClick="window.location.reload();">
+              <input type="reset"  class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">
               <input type="hidden" name="submit-url" value="/wireless/apcli.asp"></td>
           </tr>
         </table>

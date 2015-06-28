@@ -158,6 +158,14 @@
   <message msgid="secure access policy new" msgstr="Add a station Mac:" />
   <message msgid="secure access policy del" msgstr="Del" />
 
+  <message msgid="apcli title" msgstr="AP Client Feature" />
+  <message msgid="apcli param" msgstr="Here you can configure AP Client parameters." />
+  <message msgid="apcli about" msgstr="For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect." />
+  <message msgid="apcli client param" msgstr="AP Client Parameters" />
+  <message msgid="apcli mac" msgstr="MAC Address (Optional)" />
+  <message msgid="apcli disable iface" msgstr="Disable AP Interface" />
+  <message msgid="apcli enable bridge" msgstr="Enable Bridge Mode" />
+
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
   <message msgid="stalist wireless network" msgstr="Wireless Network" />
@@ -239,5 +247,4 @@
   <message msgid="about introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />
-
 </po>
