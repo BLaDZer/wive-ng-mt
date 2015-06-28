@@ -14,7 +14,6 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-var http_request = false;
 Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("buttons");
 
@@ -29,6 +28,9 @@ function connectionTypeSwitch(form)
 	displayElement('staticDHCP', conn_type == 'STATIC');
 	displayElement('dhcpReqIPRow', conn_type == 'DHCP');
 	displayElement('staticDNSAssignRow', conn_type != 'ZERO');
+
+	if (conn_type == 'STATIC')
+		form.wStaticDnsEnable.checked = true;
 
 	dnsSwitchClick(form);
 }
@@ -173,7 +175,6 @@ function initValue()
 
 function dnsSwitchClick(form)
 {
-	var visible = (form.wStaticDnsEnable.checked) ? '' : 'none';
 	displayElement( ['priDNSrow', 'secDNSrow' ],
 		(form.wStaticDnsEnable.checked) || (form.connectionType.value == 'ZERO'));
 }
