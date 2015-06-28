@@ -8,15 +8,14 @@ fi
 # get params
 . /etc/scripts/global.sh
 
-wait_connect
-
 LOG="logger -t igmpproxy"
 
 start() {
-  # if igmpproxy enable and mode not full bridge
+    # if igmpproxy enable and mode not full bridge
     if [ "$igmpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+      # wait wireless connect if need
+      wait_connect
       ( # send to background
-
 	# check ip adress set at wan
 	if [ "$wan_is_not_null" = "0" ]; then
     	    $LOG "Wait 15 sec before start."
@@ -38,7 +37,6 @@ start() {
 
         $LOG "Starting IGMPPROXY"
     	igmpproxy $OPTS /etc/igmpproxy.conf &
-
       ) & # send to background
     fi
 }
