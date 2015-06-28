@@ -51,7 +51,7 @@ void reboot_now(void)
 	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");
 	sync();
 	Sleep(2);
-	reboot(RB_AUTOBOOT);
+	doSystem("(sleep 5 && reboot) > /dev/null 2>&1 &");
 }
 
 void arplookup(char *ip, char *arp)
@@ -922,7 +922,7 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	}
 	nvram_close(RT2860_NVRAM);
 
-	outputTimerForReload(wp, 50000);
+	outputTimerForReload(wp, 80000);
 	reboot_now();
 }
 
