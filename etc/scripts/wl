@@ -4,7 +4,14 @@
 # Template to wl command - onsole script tool for fast acces to AP/STA info
 ########################################################################################################################
 
-RWCONFIGS=/etc/Wireless/rf.bin
+# include kernel config
+. /etc/scripts/config.sh
+
+is_up=`ip link show $1 up`
+if [ "$is_up" = "" ]; then
+    echo ">>>>> Wifi interface $1 not up - exit <<<<<<<<<<"
+    exit 0
+fi
 
 usage() {
   echo "Usage: $0 | showstat | showcalib | setmaxpwr " >&2
@@ -13,9 +20,6 @@ usage() {
   echo " wl scan ra0 - scan and show result of wireless interface ra0" >&2
   echo " wl showstat  ra0 - show statistic of wireless interface ra0" >&2
   echo " wl showcalib ra0 - show fabric calibrations for wireless interface ra0" >&2
-  echo " wl setmaxpwr ra0 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E  - set maximum power 0E for wireless interface ra0, default 0C" >&2
-  echo " wl setbasetxpower ra0 AAAA - set base power AA for wireless interface ra0, default 6666" >&2
-  echo " wl flashdefaults - write default calirations to flash." >&2
   echo "_____________________________________________________________________________________________________________________" >&2
  exit 1
 }
@@ -39,7 +43,9 @@ showstat()
     iwpriv $1 show descinfo
     iwpriv $1 show wdsinfo
     iwpriv $1 show bainfo
-    iwpriv $1 show igmpinfo
+    if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
+	iwpriv $1 show igmpinfo
+    fi
 }
 
 showcalib()
@@ -49,54 +55,6 @@ showcalib()
 	exit 1
     fi
     iwpriv $1 e2p
-}
-
-setmaxpwr()
-{
-    if [ "$8" = "" ]; then
-	echo "Need 8 args. Fisrt - wifi interface, others power of two channels."
-	echo "example wl setmaxpwr ra0 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E"
-	exit 1
-    fi
-
-    iwpriv $1 e2p 52=$2
-    iwpriv $1 e2p 54=$3
-    iwpriv $1 e2p 56=$4
-    iwpriv $1 e2p 58=$5
-    iwpriv $1 e2p 5A=$6
-    iwpriv $1 e2p 5C=$7
-    iwpriv $1 e2p 5E=$8
-
-    echo "After set - need reboot."
-}
-
-setbasetxpower()
-{
-    if [ "$2" = "" ]; then
-	echo "Need iface name as argument and value."
-	exit 1
-    fi
-    iwpriv $1 e2p DE=$2
-    iwpriv $1 e2p E0=$2
-    iwpriv $1 e2p E2=$2
-    iwpriv $1 e2p E4=$2
-    iwpriv $1 e2p E6=$2
-    iwpriv $1 e2p E8=$2
-    iwpriv $1 e2p EA=$2
-    iwpriv $1 e2p EC=$2
-    iwpriv $1 e2p EE=$2
-
-    echo "After set - need reboot."
-}
-
-flashdefaults()
-{
-    echo "Erase wifi Factory part and write defaults"
-    mtd_write erase Factory
-    mtd_write write $RWCONFIGS Factory
-    sync
-
-    echo "After write - need reboot."
 }
 
 main() {
@@ -112,15 +70,6 @@ main() {
       ;;
     showcalib)
       showcalib $@
-      ;;
-    setmaxpwr)
-      setmaxpwr $@
-      ;;
-    setbasetxpower)
-      setbasetxpower $@
-      ;;
-    flashdefaults)
-      flashdefaults $@
       ;;
     *)
       usage $@
