@@ -554,7 +554,6 @@ static int ipip6_err(struct sk_buff *skb, u32 info)
 
 	err = -ENOENT;
 
-	rcu_read_lock();
 	t = ipip6_tunnel_lookup(dev_net(skb->dev),
 				skb->dev,
 				iph->daddr,
@@ -585,7 +584,6 @@ static int ipip6_err(struct sk_buff *skb, u32 info)
 		t->err_count = 1;
 	t->err_time = jiffies;
 out:
-	rcu_read_unlock();
 	return err;
 }
 
@@ -605,7 +603,6 @@ static int ipip6_rcv(struct sk_buff *skb)
 
 	iph = ip_hdr(skb);
 
-	rcu_read_lock();
 	tunnel = ipip6_tunnel_lookup(dev_net(skb->dev), skb->dev,
 				     iph->saddr, iph->daddr);
 	if (tunnel != NULL) {
@@ -622,7 +619,6 @@ static int ipip6_rcv(struct sk_buff *skb)
 		if ((tunnel->dev->priv_flags & IFF_ISATAP) &&
 		    !isatap_chksrc(skb, iph, tunnel)) {
 			tunnel->dev->stats.rx_errors++;
-			rcu_read_unlock();
 			kfree_skb(skb);
 			return 0;
 		}
@@ -637,12 +633,10 @@ static int ipip6_rcv(struct sk_buff *skb)
 
 		netif_rx(skb);
 
-		rcu_read_unlock();
 		return 0;
 	}
 
 	/* no tunnel matched,  let upstream know, ipsec may handle it */
-	rcu_read_unlock();
 	return 1;
 out:
 	kfree_skb(skb);
