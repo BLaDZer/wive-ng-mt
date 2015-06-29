@@ -5,6 +5,7 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
+#include "oid.h"
 #include "libnvram.h"
 
 #define DEFAULT_FLASH_ZONE_NAME "2860"
@@ -223,7 +224,7 @@ static int nvram_load_default(void)
 static int gen_wifi_config(int mode, int genmode)
 {
 	FILE *fp = NULL;
-	int  i, ssid_num = 1, inic = 0;
+	int  i, ssid_num = 0, inic = 0;
 	char tx_rate[32], wmm_enable[32];
 
 	if (genmode == RT2860_NVRAM) {
@@ -286,14 +287,12 @@ static int gen_wifi_config(int mode, int genmode)
 		    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 		}
 
-		//Get Bssid number
+		//Get Bssid number -> need move per ssid to goahead
 		ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
-		if (ssid_num > 8)
-			ssid_num = 8;
-		else if (ssid_num < 0)
-			ssid_num = 0;
+		if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
+			ssid_num = MAX_NUMBER_OF_BSSID;
 
-		//TxRate
+		//TxRate -> need move per ssid to goahead
 		bzero(tx_rate, sizeof(tx_rate));
 		for (i = 0; i < ssid_num; i++)
 		{
@@ -306,7 +305,7 @@ static int gen_wifi_config(int mode, int genmode)
 		}
 		fprintf(fp, "TxRate=%s\n", tx_rate);
 
-		//WmmCapable
+		//WmmCapable -> need move per ssid to goahead
 		bzero(wmm_enable, sizeof(wmm_enable));
 		for (i = 0; i < ssid_num; i++)
 		{
