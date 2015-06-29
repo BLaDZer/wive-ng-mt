@@ -644,17 +644,10 @@ static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 	websFooter(wp);
 	websDone(wp, 200);
 
-	Sleep(2);
-	sync();
-	/* send dhcpc release */
-	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
-	/* always send output to dev/null, fix html_error output */
-	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");
 	/* restore defaults and rwfs drop */
 	doSystem("fs nvramreset > /dev/null 2>&1");
 	doSystem("fs restore > /dev/null 2>&1");
-	sync();
-	doSystem("(sleep 5 && reboot) > /dev/null 2>&1 &");
+	reboot_now();
 }
 
 #ifdef CONFIG_SYSLOGD

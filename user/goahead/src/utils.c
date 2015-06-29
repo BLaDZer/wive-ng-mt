@@ -43,14 +43,10 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query);
  */
 void reboot_now(void)
 {
-	Sleep(2);
-	sync();
-	/* send dhcpc release */
+	/* udhcpc send release to server */
 	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
-	/* always send output to dev/null, fix html_error output */
+	/* unload all services and flush caches for more safe reboot */
 	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");
-	sync();
-	Sleep(2);
 	doSystem("(sleep 5 && reboot) > /dev/null 2>&1 &");
 }
 
