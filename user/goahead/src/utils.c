@@ -47,7 +47,7 @@ void reboot_now(void)
 	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
 	/* unload all services and flush caches for more safe reboot */
 	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");
-	doSystem("(sleep 5 && reboot) > /dev/null 2>&1 &");
+	doSystem("(sleep 2 && reboot) > /dev/null 2>&1 &");
 }
 
 void arplookup(char *ip, char *arp)
