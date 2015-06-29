@@ -90,8 +90,7 @@ case "$1" in
 		config-vlan.sh $switchmode WWWWW
 	    fi
 	elif [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
-	    # Try reconnect at lease failed
-	    $LOG "Reconnect to AP if need."
+	    $LOG "Try reconnect to AP."
 	    wifi_reconnect
 	fi
 	# remove routes updated flags
