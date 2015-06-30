@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Wireless Station 11n Configuration</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<title>Wireless Station 11n Configuration</title>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>AP Client Feature</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -9,8 +10,7 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
-<title>AP Client Feature</title>
-<script type="text/javascript">
+<script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");

@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript">
+<script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("view");
 Butterlate.setTextDomain("buttons");
 

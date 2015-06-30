@@ -33,7 +33,7 @@ and make the above xml available).
   <head>
     <title>I18N Test</title>
     <script type="text/javascript" src="b28n.js"></script>
-    <script type="text/javascript">
+    <script language="JavaScript" type="text/javascript">
       Butterlate.setTextDomain("messages","http://butterfat.net/~bmuller/i18n");
       function startUp() {
         var test = document.getElementById("test");

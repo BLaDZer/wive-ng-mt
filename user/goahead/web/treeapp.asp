@@ -77,7 +77,7 @@ function refresh(){
 <form name="rebootForm" style="display: none;" method="GET" action="/cgi-bin/reboot.sh" >
   <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>
-<script type="text/javascript">
+<script language="JavaScript" type="text/javascript">
 var opmode = '<% getCfgZero(1, "OperationMode"); %>';
 var vpnen = '<% getVPNBuilt(); %>';
 var ipv6b = '<% getIPv6Built(); %>';

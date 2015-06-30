@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Wireless Station AMPDU Originator Delete</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<title>Wireless Station AMPDU Originator Delete</title>
 <script language="JavaScript" type="text/javascript">
 
 function initValue()

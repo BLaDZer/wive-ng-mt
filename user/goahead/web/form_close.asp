@@ -10,7 +10,7 @@
 </head>
 <body>
 <h1>Form has been submitted</h1>
-<script type="text/javascript">
+<script language="JavaScript" type="text/javascript">
 	window.close();
 </script>
 </html>
