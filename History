@@ -1021,45 +1021,46 @@
 2) toolchain: enhance build reproducability.<br>
 3) dnsmasq: up to 2.73 version.<br>
 4) libcurl: up to 7.43.0 version.<br>
-5) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
-6) nvram: add BandSteering option.<br>
-7) nvram: fix get bssid_num.<br>
-8) defaults: temp set VHT_BW=20/40MHz for 7610NE, fix issue with some broadcom mobile clients.<br>
-9) goahead: more russian translate fix.<br>
-10) goahead: flush conntrack after apply ipport/mac filter rules for start work rules immediately.<br>
-11) goahead: fix ipmacfilter default policy set.<br>
-12) goahead: fix infinitive reboot wait after opmode switch.<br>
-13) goahead: add popup reqest change dhcp settings at lan settings changed.<br>
-14) goahead: send SIGUSR2 to udhcpc for ip release before reboot.<br>
-15) kernel: up to 3.4.108 base version.<br>
-16) kernel: ralink_hw_nat: add module param to control TTL.<br>
-17) kernel: ralink_wifi: 7610: fix clean NDP announces.<br>
-18) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-19) kernel: ralink_wifi: 7610: fix txburst in AC mode.<br>
-20) kernel: ralink_wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
-21) kernel: ralink_wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
-22) kernel: ralink_wifi: 76x2: add band steering options.<br>
-23) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
-24) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
-25) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
-26) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
-27) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
-28) kernel: locking: Remove atomicy checks from {READ,WRITE}_ONCE.<br>
-29) kernel: mips: Remove unnecessary platform dma helper functions.<br>
-30) kernel: net: provide a default dev->ethtool_ops.<br>
-31) kernel: net: force a list_del() in unregister_netdevice_many().<br>
-32) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
-33) kernel: net: ax25: stop using sock->sk_protinfo.<br>
-34) kernel: net: kill sock->sk_protinfo.<br>
-35) kernel: net: remove extranous rcu_read_lock.<br>
-36) kernel: net: ip_gre: fix possible use after free.<br>
-37) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
-38) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
-39) kernel: net: netfilter: remove ip_queue support.<br>
-40) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
-41) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
-42) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
-43) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
+5) usb-modeswitch: up to 2.2.3 2015-06-29 version, usb-modeswitch-data up to 2015-06-27.<br>
+6) nvram: add AutoChannelSkipList for skip channels from autoselect result (default for 2.4GHz 12;13;14 channel must be skip).<br>
+7) nvram: add BandSteering option.<br>
+8) nvram: fix get bssid_num.<br>
+9) defaults: temp set VHT_BW=20/40MHz for 7610NE, fix issue with some broadcom mobile clients.<br>
+10) goahead: more russian translate fix.<br>
+11) goahead: flush conntrack after apply ipport/mac filter rules for start work rules immediately.<br>
+12) goahead: fix ipmacfilter default policy set.<br>
+13) goahead: fix infinitive reboot wait after opmode switch.<br>
+14) goahead: add popup reqest change dhcp settings at lan settings changed.<br>
+15) goahead: send SIGUSR2 to udhcpc for ip release before reboot.<br>
+16) kernel: up to 3.4.108 base version.<br>
+17) kernel: ralink_hw_nat: add module param to control TTL.<br>
+18) kernel: ralink_wifi: 7610: fix clean NDP announces.<br>
+19) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+20) kernel: ralink_wifi: 7610: fix txburst in AC mode.<br>
+21) kernel: ralink_wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
+22) kernel: ralink_wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
+23) kernel: ralink_wifi: 76x2: add band steering options.<br>
+24) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
+25) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
+26) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
+27) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
+28) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
+29) kernel: locking: Remove atomicy checks from {READ,WRITE}_ONCE.<br>
+30) kernel: mips: Remove unnecessary platform dma helper functions.<br>
+31) kernel: net: provide a default dev->ethtool_ops.<br>
+32) kernel: net: force a list_del() in unregister_netdevice_many().<br>
+33) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
+34) kernel: net: ax25: stop using sock->sk_protinfo.<br>
+35) kernel: net: kill sock->sk_protinfo.<br>
+36) kernel: net: remove extranous rcu_read_lock.<br>
+37) kernel: net: ip_gre: fix possible use after free.<br>
+38) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
+39) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
+40) kernel: net: netfilter: remove ip_queue support.<br>
+41) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
+42) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
+43) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+44) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
 <br>
 <br>
 <b>TODO:</b><br>
