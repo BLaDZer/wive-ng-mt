@@ -1,0 +1,7 @@
+11n 2.4GHz AP AP-RT3052 2X2 board file listing:
+Version: V2.2RW-LNA
+
+1. 4-Layer. 1 pcs per panel.
+2. PCB dimension: 130.5mm * 138mm. 
+3. PA: RT6691
+4. LNA: SGA-8343Z.

@@ -1,0 +1,8 @@
+11 b/g/n 2.4GHz AP RT3052 2X2 file listing:
+Version: V2.2RW-LNA
+
+1. 11n-AP-4 layer-PCB-StackData.gif: PCB stack data
+2. AP-RT3052-V22RW-LNA-2X2-gerber.rar: Gerber file
+3. AP-RT3052-V22RW-LNA-2X2-Overlay.pdf: Overlay
+4. AP-RT3052-V22RW-LNA-2X2-PCB.rar: Layout file in PADS2007 format
+
