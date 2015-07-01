@@ -425,4 +425,3 @@ function ajaxReloadDelayedPage(delay, url, local)
 
 	reloader();
 }
-

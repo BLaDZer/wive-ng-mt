@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html>
-
-<!-- !!! Dont forget to modify   2860 mode treeapp.asp !!! -->
-
 <head>
 <title>DTree</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -15,9 +12,8 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 </head>
-
 <body bgcolor="#FFFFFF" onLoad="initValue();">
-<script language="JavaScript">
+<script language="JavaScript" type="text/javascript">
 
 function rebootRouter(form, reloader)
 {
@@ -70,14 +66,16 @@ function go(zz) {
 function refresh(){
 	window.location.reload(false);
 }
-</script> 
+</script>
 
 <!-- <p><a href="javascript: a.openAll();" id="openall">open</a> | <a href="javascript: a.closeAll();" id="closeall">close</a></p> -->
 
-<form name="rebootForm" style="display: none;" method="GET" action="/cgi-bin/reboot.sh" >
+<form name="rebootForm" style="display: none;" method="GET" action="goform/reboot" >
   <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>
+
 <script language="JavaScript" type="text/javascript">
+
 var opmode = '<% getCfgZero(1, "OperationMode"); %>';
 var vpnen = '<% getVPNBuilt(); %>';
 var ipv6b = '<% getIPv6Built(); %>';

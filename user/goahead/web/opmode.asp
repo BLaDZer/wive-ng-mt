@@ -100,11 +100,6 @@ function initValue()
 		form.opMode[0].checked = true;
 	changeMode();
 }
-
-function msg()
-{
-}
-
 </script>
 </head>
 
@@ -141,7 +136,7 @@ function msg()
         </dl>
         <p></p>
         <center>
-          <input type="button" style="{width:120px;}" value="Apply" id="oApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', '/messages/rebooting.asp', ajaxShowProgress);">
+          <input type="button" style="{width:120px;}" value="Apply" id="oApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', '/messages/wait_config.asp', ajaxShowProgress);">
           &nbsp;&nbsp;
           <input type="reset" style="{width:120px;}" value="Reset" id="oCancel" onClick="window.location.reload()">
           <iframe id="setmodeReloader" name="setmodeReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>

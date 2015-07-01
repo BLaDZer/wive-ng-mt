@@ -37,17 +37,14 @@ static int  getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv);
 static int  gigaphy(int eid, webs_t wp, int argc, char_t **argv);
 static void setOpMode(webs_t wp, char_t *path, char_t *query);
 static void setWanPort(webs_t wp, char_t *path, char_t *query);
+static void reboot_web(webs_t wp, char_t *path, char_t *query);
 
 /*********************************************************************
  * System Utilities
  */
 void reboot_now(void)
 {
-	/* udhcpc send release to server */
-	doSystem("killall -q -SIGUSR2 udhcpc > /dev/null 2>&1");
-	/* unload all services and flush caches for more safe reboot */
-	doSystem("/etc/scripts/wifi_unload.sh > /dev/null 2>&1");
-	doSystem("(sleep 2 && reboot) > /dev/null 2>&1 &");
+	doSystem("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
 }
 
 void arplookup(char *ip, char *arp)
@@ -425,6 +422,7 @@ void formDefineUtilities(void)
 	websAspDefine(T("getStaMacAddrw"), getStaMacAddrw);
 	websFormDefine(T("setOpMode"), setOpMode);
 	websFormDefine(T("setWanPort"), setWanPort);
+	websFormDefine(T("reboot"), reboot_web);
 	websAspDefine(T("gigaphy"), gigaphy);
 }
 
@@ -856,7 +854,7 @@ int netmask_aton(const char *ip)
 	return result;
 }
 
-static void outputTimerForReload(webs_t wp, long delay)
+void outputTimerForReload(webs_t wp, long delay)
 {
 	char lan_if_addr[32];
 	const char *lan_if_ip;
@@ -870,16 +868,31 @@ static void outputTimerForReload(webs_t wp, long delay)
 			lan_if_ip = "192.168.1.1";
 	}
 
+	char_t *http_port = nvram_bufget(RT2860_NVRAM, "RemoteManagementPort");
+
 	websHeader(wp);
-	websWrite
-	(
-		wp,
-		T(
-		"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-		"ajaxReloadDelayedPage(%ld, \"http://%s\");\n"
-		"</script>"),
-		delay, lan_if_ip
-	);
+	if (strcmp(http_port, "80") == 0)
+	{
+		websWrite
+		(
+			wp,
+			T(
+				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
+				"ajaxReloadDelayedPage(%ld, \"http://%s\");\n"
+				"</script>"),
+			delay, lan_if_ip
+		);
+	} else {
+		websWrite
+		(
+			wp,
+			T(
+				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
+				"ajaxReloadDelayedPage(%ld, \"http://%s:%s\");\n"
+				"</script>"),
+			delay, lan_if_ip, http_port
+		);
+	}
 	websFooter(wp);
 	websDone(wp, 200);
 }
@@ -918,7 +931,10 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	}
 	nvram_close(RT2860_NVRAM);
 
+	/* Output timer for reloading */
 	outputTimerForReload(wp, 80000);
+
+	/* Reboot */
 	reboot_now();
 }
 
@@ -969,7 +985,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 50000);
+	outputTimerForReload(wp, 80000);
 
 	/* Reboot */
 	reboot_now();
@@ -1032,4 +1048,17 @@ static int getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv)
 	websWrite(wp, "&nbsp;");
 #endif
 	return 0;
+}
+
+/* goform/reboot */
+static void reboot_web(webs_t wp, char_t *path, char_t *query)
+{
+	/* Output timer for reloading */
+	outputTimerForReload(wp, 80000);
+
+	/* only by save and reboot logic must save rwfs */
+	doSystem("fs save > /dev/null 2>&1");
+
+	/* Reboot */
+	reboot_now();
 }

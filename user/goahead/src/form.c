@@ -140,8 +140,29 @@ void websHeader(webs_t wp)
 	websWrite(wp, T("<html>\n<head>\n"));
 	websWrite(wp, T("<title>My Title</title>\n"));
 	websWrite(wp, T("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n"));
-	websWrite(wp, T("<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"));
-	websWrite(wp, T("<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"));
+	char_t line[256];
+	FILE *fd;
+	// Copy /style/normal_ws.css
+	if ((fd = fopen("/web/style/normal_ws.css", "r")) != NULL) {
+		websWrite(wp, T("<style type=\"text/css\">\n"));
+		while (fgets(line, 255, fd)!=NULL)
+			websWrite(wp, T("%s\n"), line);
+		websWrite(wp, T("</style>\n"));
+	} else {
+		websWrite(wp, T("<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"));
+	}
+	fclose(fd);
+	// Copy /js/ajax.js
+	if ((fd = fopen("/web/js/ajax.js", "r")) != NULL) {
+		websWrite(wp, T("<script type=\"text/javascript\">\n"));
+		websWrite(wp, T("// Here is script copied from file /js/ajax.js\n"));
+		while (fgets(line, 255, fd)!=NULL)
+			websWrite(wp, T("%s\n"), line);
+	} else {
+		websWrite(wp, T("<script type=\"text/javascript\" src=\"/js/ajax.js\">\n"));
+	}
+	fclose(fd);
+	websWrite(wp, T("</script>\n"));
 	websWrite(wp, T("</head>\n<body>\n"));
 }
 

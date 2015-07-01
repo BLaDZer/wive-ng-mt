@@ -384,8 +384,6 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "dhcpSecDns", "");
 	}
 
-	char_t *http_port = nvram_bufget(RT2860_NVRAM, "RemoteManagementPort");
-
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -393,49 +391,10 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(port_changed, 1))
 	{
-		char lan_if_addr[32];
-		const char *lan_if_ip;
+		/* Output timer for reloading */
+		outputTimerForReload(wp, 80000);
 
-		// Get IP
-		if (getIfIp(getLanIfName(), lan_if_addr) != -1)
-			lan_if_ip = lan_if_addr;
-		else
-		{
-			lan_if_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
-			if (lan_if_ip == NULL)
-				lan_if_ip = "192.168.1.1";
-		}
-
-		// Output reloading
-		websHeader(wp);
-		if (strcmp(http_port, "80") == 0)
-		{
-			websWrite
-			(
-				wp,
-				T(
-				"<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"
-				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s\");\n"
-				"</script>"),
-				50000, lan_if_ip
-			);
-		}
-		else
-		{
-			websWrite
-			(
-				wp,
-				T(
-				"<script type=\"text/javascript\" src=\"/js/ajax.js\"></script>\n"
-				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s:%s\");\n"
-				"</script>"),
-				50000, lan_if_ip, http_port
-			);
-		}
-		websFooter(wp);
-		websDone(wp, 200);
+		/* Reboot */
 		reboot_now();
 	}
 	else
