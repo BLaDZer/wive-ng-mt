@@ -28,6 +28,7 @@
     <message msgid="wan static dns" msgstr="Assign static DNS Servers" />
     <message msgid="wan nat enabled" msgstr="Enable NAT" />
     <message msgid="wan mac" msgstr="WAN MAC address" />
+    <message msgid="wan reboot confirm" msgstr="Changing new MAC needs to reboot you router. Do you want to proceed?" />
 
     <message msgid="vpn title" msgstr="Virtual Private Network setup" />
     <message msgid="vpn introduction" msgstr="This page is used to configure the VPN(Virtual Private Network) tunnel on your Router. " />

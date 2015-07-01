@@ -16,7 +16,6 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
-Butterlate.setTextDomain("mode");
 Butterlate.setTextDomain("buttons");
 
 function restoremacclick()
@@ -199,7 +198,7 @@ function wanMtuChange(form)
 
 function checkMAC(form) {
 	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
-		ajaxPostForm(_('opmode confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress);
+		ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress);
 }
 </script>
 </head>

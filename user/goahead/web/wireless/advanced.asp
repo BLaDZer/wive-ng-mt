@@ -64,8 +64,10 @@ function initTranslation()
 	_TR("advTxBurstEnable", "wireless enable");
 	_TR("advTxBurstDisable", "wireless disable");
 	_TR("advPktAggr", "adv pkt aggregate");
-	_TR("advPktAggrEnable", "wireless enable");
-	_TR("advPktAggrDisable", "wireless disable");
+  _TR("advPktAggrEnable", "wireless enable");
+  _TR("advPktAggrDisable", "wireless disable");
+  _TR("advWMMEnable", "wireless enable");
+  _TR("advWMMDisable", "wireless disable");
 
 	_TR("advCountryCode", "adv country code");
 	_TR("advCountryCodeUS", "adv country code us");
@@ -406,9 +408,9 @@ function CheckValue(form)
           <tr>
             <td class="head">WMM Capable</td>
             <td><input type="radio" name="WmmCapable" value="1">
-              Enable&nbsp;
+              <font id="advWMMEnable">Enable</font>&nbsp;
               <input type="radio" name="WmmCapable" value="0" checked>
-              Disable </td>
+              <font id="advWMMDisable">Disable</font></td>
           </tr>
           <tr>
             <td class="head" id="staadvCountry">Country Region Code</td>

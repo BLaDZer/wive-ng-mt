@@ -173,6 +173,7 @@
   <message msgid="apcli mac" msgstr="MAC адрес (не обязательно)" />
   <message msgid="apcli disable iface" msgstr="Отключить интерфейс AP" />
   <message msgid="apcli enable bridge" msgstr="Включить режим моста" />
+  <message msgid="apcli reboot confirm" msgstr="Для применения настроек требуется перезагрузить маршрутизатор. Вы хотите продолжить?" />
 
   <message msgid="stalist title" msgstr="Список станций" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />

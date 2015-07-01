@@ -16,7 +16,6 @@
 
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
-Butterlate.setTextDomain("mode");
 
 function initTranslation() {
   _TR("apcliTitle", "apcli title");
@@ -152,7 +151,7 @@ function CheckValue(form)
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="apcliApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
+            <td><input type="submit" class="normal" value="Apply" id="apcliApply" onClick="ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
               &nbsp; &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">
               <input type="hidden" name="submit-url" value="/wireless/apcli.asp">

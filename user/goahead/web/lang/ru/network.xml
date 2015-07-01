@@ -28,6 +28,7 @@
     <message msgid="wan static dns" msgstr="Назначить статические сервера DNS" />
     <message msgid="wan nat enabled" msgstr="Включить NAT" />
     <message msgid="wan mac" msgstr="MAC адрес WAN" />
+    <message msgid="wan reboot confirm" msgstr="Для изменения MAC адреса требуется перезагрузть маршрутизатор. Вы хотите продолжить?" />
 
     <message msgid="vpn title" msgstr="Настройка VPN(Virtual Private Network)" />
     <message msgid="vpn introduction" msgstr="Эта страница используется для настройки VPN(Virtual Private Network) туннеля на маршрутизаторе." />

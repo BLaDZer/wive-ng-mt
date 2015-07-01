@@ -165,6 +165,7 @@
   <message msgid="apcli mac" msgstr="MAC Address (Optional)" />
   <message msgid="apcli disable iface" msgstr="Disable AP Interface" />
   <message msgid="apcli enable bridge" msgstr="Enable Bridge Mode" />
+  <message msgid="apcli reboot confirm" msgstr="For apply settings needs to reboot you router. Do you want to proceed?" />
 
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
