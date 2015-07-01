@@ -2046,10 +2046,13 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 
 static void restoremac(webs_t wp, char_t *path, char_t *query)
 {
-	printf("goahead: mac restore from factory\n");
+	/* Output timer for reloading */
+	outputTimerForReload(wp, 80000);
+
 	system("fs factory_mac > /dev/console 2>&1");
-	websWrite(wp, T("<h2>Please save and reboot from left menu for apply new mac.</h2><br>\n"));
-	websDone(wp, 200);
+
+	/* Reboot */
+	reboot_now();
 }
 
 /* goform/setWan */

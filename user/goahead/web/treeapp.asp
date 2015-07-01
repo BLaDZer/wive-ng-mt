@@ -70,7 +70,7 @@ function refresh(){
 
 <!-- <p><a href="javascript: a.openAll();" id="openall">open</a> | <a href="javascript: a.closeAll();" id="closeall">close</a></p> -->
 
-<form name="rebootForm" style="display: none;" method="GET" action="goform/reboot" >
+<form name="rebootForm" style="display: none;" method="GET" action="/goform/reboot" >
   <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>
 

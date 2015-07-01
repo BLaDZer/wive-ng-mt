@@ -18,11 +18,6 @@
 Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("buttons");
 
-function restoremacclick()
-{
-	ajaxPostRequest("/goform/restoremac", 'stub=value', true, null);
-}
-
 function connectionTypeSwitch(form)
 {
 	var conn_type = form.connectionType.value;
@@ -199,11 +194,16 @@ function wanMtuChange(form)
 function checkMAC(form) {
 	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
 		ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress);
+	else
+		form.submit();
 }
 </script>
 </head>
 
 <body onLoad="initValue();">
+<form name="rebootForm" style="display: none;" method="GET" action="/goform/restoremac" >
+  <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+</form>
 <table class="body">
   <tr>
     <td><h1 id="wTitle"></h1>
@@ -291,7 +291,7 @@ function checkMAC(form) {
             <td class="head" id="wMacAddr">WAN MAC address</td>
             <td>
 		<input name="wanMac" id="wanMac" class="mid" value="<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>">
-		<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="restoremacclick();">
+		<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
 	    </td>
           </tr>
         </table>
