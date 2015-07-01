@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/share.js"></script>
@@ -15,6 +16,7 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("mode");
 Butterlate.setTextDomain("buttons");
 
 function restoremacclick()
@@ -195,17 +197,21 @@ function wanMtuChange(form)
 	}
 }
 
+function checkMAC(form) {
+	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
+		ajaxPostForm(_('opmode confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress);
+}
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="wTitle"></h1>
       <p id="wIntroduction"></p>
       <hr>
       <form method="POST" name="wanCfg" action="/goform/setWan" onSubmit="return CheckValue(this);">
-        <table class="form">
+      	<table class="form">
           <tr>
             <td class="title" colspan="2" id="wConnection">WAN connection type</td>
           </tr>
@@ -293,10 +299,12 @@ function wanMtuChange(form)
         <br>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="wApply">
+            <td><input type="button" class="normal" value="Apply" id="wApply" onClick="checkMAC(this.form);">
               &nbsp;&nbsp;
               <input type="reset" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();">
-              <input type="hidden" value="/internet/wan.asp" name="submit-url"></td>
+              <input type="hidden" value="/internet/wan.asp" name="submit-url">
+              <iframe id="MACReloader" name="MACReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+            </td>
           </tr>
         </table>
       </form>

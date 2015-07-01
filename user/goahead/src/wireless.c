@@ -1270,11 +1270,11 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
+	/* Output timer for reloading */
+	outputTimerForReload(wp, 80000);
 
-	//network configure
-	doSystem("internet.sh");
+	/* Reboot */
+	reboot_now();
 }
 
 #ifdef CONFIG_USER_802_1X

@@ -2232,22 +2232,21 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	}
 #endif
 	if (strcmp(oldmac, mac) != 0) {
-		websHeader(wp);
+		/* Output timer for reloading */
+		outputTimerForReload(wp, 80000);
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR", mac);
 		nvram_bufset(RT2860_NVRAM, "CHECKMAC", "NO");
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		websWrite(wp, T("<h2>Please save and reboot from left menu for apply new mac.</h2><br>\n"));
-		websFooter(wp);
-		websDone(wp, 200);
+		/* Reboot */
+		reboot_now();
 	} else
 		websRedirect(wp, submitUrl);
 
 	/* Prevent deadloop at WAN apply change if VPN started */
 	doSystem("ip route flush cache && service vpnhelper stop && service wan stop");
 	initInternet();
-
 }
 
 #ifdef CONFIG_IPV6

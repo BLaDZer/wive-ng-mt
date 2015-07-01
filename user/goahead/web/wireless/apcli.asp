@@ -7,13 +7,16 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
+Butterlate.setTextDomain("mode");
 
 function initTranslation() {
   _TR("apcliTitle", "apcli title");
@@ -149,10 +152,12 @@ function CheckValue(form)
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="apcliApply">
+            <td><input type="submit" class="normal" value="Apply" id="apcliApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
               &nbsp; &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">
-              <input type="hidden" name="submit-url" value="/wireless/apcli.asp"></td>
+              <input type="hidden" name="submit-url" value="/wireless/apcli.asp">
+              <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;">
+            </td>
           </tr>
         </table>
       </form>
