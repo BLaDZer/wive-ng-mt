@@ -3,16 +3,16 @@
 # Description: Megakill script..
 # Try some methods for free ram before firmware update.
 # Workaround over workaround. Need clean in the future.
-# In 16Mb devices also reconfigure network and unload wifi modules for memsave.
+# In <=32Mb devices also reconfigure network and unload wifi modules for memsave.
 
 # include global
 . /etc/scripts/global.sh
 
-stop_serv="watchdog radvd vpnhelper shaper crontab transmission pppoe-relay ddns wscd lld2d lldpd lldpcli zebra udpxy upnp \
-	    igmp_proxy ntp dnsserver snmpd xupnp syslog inetd samba hotplug dhcpd"
+stop_serv="transmission samba xupnp radvd dynroute vpnserver vpnhelper shaper crontab ddns udpxy miniupnpd \
+	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cdp syslog watchdog"
 
-kill_apps="transmission-daemon smbd nmbd pppd xl2tpd udhcpd udhcpc dhcp6c dhcp6s crond lld2d igmpproxy inetd syslogd klogd \
-	    ntpclient ntpd zebra ripd inadyn ftpd scp miniupnpd iwevent telnetd wscd rt2860apd rt61apd dnsmasq cdp-send snmpd xupnpd"
+kill_apps="transmission-daemon smbd nmbd xupnpd pppd xl2tpd udhcpd udhcpc dhcp6c dhcp6s radvd zebra ripd crond igmpproxy \
+	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send syslogd klogd"
 
 rmmod_mod="ppp_mppe pppol2tp pptp pppoe pppox ppp_generic imq ipt_account ipt_TTL ipt_IMQ ipt_tos \
 	    ipt_REDIRECT ipt_ttl ipt_TOS xt_string xt_webstr xt_connmark xt_CONNMARK xt_conntrack \
@@ -20,7 +20,7 @@ rmmod_mod="ppp_mppe pppol2tp pptp pppoe pppox ppp_generic imq ipt_account ipt_TT
 	    nf_nat_ftp nf_nat_h323 nf_nat_pptp nf_nat_proto_gre nf_nat_sip nf_nat_rtsp \
 	    nf_conntrack_ftp nf_conntrack_proto_gre nf_conntrack_h323 nf_conntrack_sip nf_conntrack_pptp nf_conntrack_rtsp \
 	    em_nbyte sch_esfq sch_htb sch_sfq ts_fsm ts_kmp ts_bm \
-	    usblp usb-storage usbserial hso ext2 ext3 cifs"
+	    usblp usb-storage usbserial hso ext2 ext3 exfat cifs"
 
 unload_modules() {
     echo "Unload modules"
@@ -31,7 +31,6 @@ unload_modules() {
     do
         rmmod $mod > /dev/null 2>&1
     done
-
     # unload full
     rmmod_mod=`lsmod | awk {' print $1'}`
     for mod in $rmmod_mod
@@ -64,9 +63,10 @@ unload_apps() {
 
 free_mem_cahce() {
     # small workaround for defrag and clean mem
-    sysctl -wq vm.min_free_kbytes=3192
+    sysctl -wq vm.min_free_kbytes=4096
     sync
-    sysctl -wq vm.min_free_kbytes=1024
+    sysctl -wq vm.min_free_kbytes=2048
+    sync
 }
 
 # disable hotplug
