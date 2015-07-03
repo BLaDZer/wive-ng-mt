@@ -1065,7 +1065,8 @@
 45) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
 46) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
 47) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
-48) kernel: net: bridge netfilter: optimization by exclude unused modules.<br>
+48) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
+49) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
 <br>
 <br>
 <b>TODO:</b><br>
