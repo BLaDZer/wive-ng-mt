@@ -1064,6 +1064,7 @@
 44) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
 45) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
 46) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
+47) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
 <br>
 <br>
 <b>TODO:</b><br>
