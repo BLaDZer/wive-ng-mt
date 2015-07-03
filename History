@@ -1069,6 +1069,7 @@
 50) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
 51) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
 52) kernel: net: bridge: avoid OOPS if root port not found.<br>
+53) kernel: net: fix race condition in several drivers when reading stats.<br>
 <br>
 <br>
 <b>TODO:</b><br>
