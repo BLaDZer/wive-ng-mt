@@ -1,42 +1,40 @@
 <po>
-    <message msgid="hint vpn enabled" msgstr="Enable Virtual Private Network support." />
-    <message msgid="hint vpn status" msgstr="This indicator shows current state of VPN connection." />
-    <message msgid="hint vpn user" msgstr="Specify user name given by your network provider." />
-    <message msgid="hint vpn password" msgstr="Specify password given by your network provider." />
-    <message msgid="hint vpn auth type" msgstr="Select VPN authentication protocol type." />
-    <message msgid="hint vpn pppoe iface" msgstr="Select available interface for PPPoE." />
-    <message msgid="hint vpn pppoe service" msgstr="Some internet providers need to set up special PPPoE service name. You can specify it here." />
-    <message msgid="hint vpn pppoe" msgstr="Specify Access Concentrator name for PPPoE connection. If no Access Concentrator name is set system will try to connect to first available Access Concentrator." />
-    <message msgid="hint vpn pptp" msgstr="Specify host address (IP address or domain name) of VPN server." />
-    <message msgid="hint vpn l2tp server" msgstr="Use the following IP as VPN server own IP address in your VPN network." />
-    <message msgid="hint vpn apn" msgstr="Specify Access Point Name given by network provider. If no Access Point Name is specified it will be taken from modem default settings." />
-    <message msgid="hint vpn range" msgstr="Specify range of IP addresses given to clients by VPN server in L2TP server mode." />
-    <message msgid="hint vpn mtu" msgstr="Specify Maximum Transfer Unit/Maximum Recieve Unit size in octets." />
-    <message msgid="hint vpn mppe" msgstr="Enable automatic Microsoft Point-to-Point Encryption (MPPE) mode. Need set authentication method to mschap." />
-    <message msgid="hint vpn dgw" msgstr="Manage default gateway replacing in routing table." />
-    <message msgid="hint vpn dgw disabled" msgstr="Disabled means that no default gateway will be written to routing table." />
-    <message msgid="hint vpn dgw enabled" msgstr="Enabled means that default gateway will be replaced by gateway given by network provider." />
-    <message msgid="hint vpn dgw multiple" msgstr="Multiple means that default gateway will be added to existing gateway but with metric 10." />
-    <message msgid="hint vpn peerdns" msgstr="Allow to get DNS adress from VPN server and write to /etv/ppp/resolv.conf." />
-    <message msgid="hint vpn test reachable" msgstr="Check that VPN server is reachable before initiation of VPN connection." />
-    <message msgid="hint vpn debug" msgstr="Allow debug mode for VPN connections." />
-    <message msgid="hint vpn nat" msgstr="Add Network Address Translation to new VPN connection." />
-    <message msgid="hint vpn lcp" msgstr="Enable adaptive LCP echo interval." />
-    <message msgid="hint vpn pure pppoe" msgstr="Enable PURE mode if you ISP use PPPoE without DHCP (Rostelecom/R-Telecom and others ISP)." />
-    <message msgid="hint vpn lcp errors" msgstr="If this option is given, pppd will presume the peer to be dead if n LCP echo-requests are sent without receiving a valid LCP echo-reply. If this happens, pppd will terminate the connection. Use of this option requires a non-zero value for the LCP echo interval parameter. This option can be used to enable pppd to terminate after the physical connection has been broken (e.g., the modem has hung up) in situations where no hardware modem control lines are available." />
-    <message msgid="hint vpn lcp interval" msgstr="If this option is given, pppd will send an LCP echo-request frame to the peer every specified value of seconds. Normally the peer should respond to the echo-request by sending an echo-reply. This option can be used with the LCP echo failure option to detect that the peer is no longer connected." />
-    <message msgid="hint vpn type" msgstr="Specify VPN access mode." />
-    <message msgid="hint vpn type pppoe" msgstr="PPPoE (see RFC #2516) means encapsulating Point-to-Point Protocol (PPP) frames inside Ethernet frames. It is used mainly with DSL services where individual users connect to the DSL modem over Ethernet and in plain Metro Ethernet networks." />
-    <message msgid="hint vpn type pptp" msgstr="PPTP (see RFC #2637) means a method for implementing virtual private networks. PPTP uses a control channel over TCP and a GRE tunnel operating to encapsulate PPP packets." />
-    <message msgid="hint vpn type l2tp" msgstr="L2TP (see RFC #2661) means a tunneling protocol used to support virtual private networks. It does not provide any encryption or confidentiality by itself; it relies on an encryption protocol that it passes within the tunnel to provide privacy." />
-    <message msgid="hint vpn type l2tp client" msgstr="L2TP client means a connection to remote L2TP server." />
-    <message msgid="hint vpn type l2tp server" msgstr="L2TP server means a connection from remote machines to L2TP server on this router." />
-    <message msgid="hint vpn type gprs" msgstr="Modem GPRS means connection to Internet via GPRS/EDGE in GSM mobile networks." />
-    <message msgid="hint vpn type cdma" msgstr="Modem CDMA means connection to Internet via UMTS in CDMA mobile networks." />
-    <message msgid="hint vpn type kabinet" msgstr="Kabinet Authorization means connection to KABINET provider network." />
-    <message msgid="hint vpn lanauth" msgstr="Specify access mode to KABINET provider network." />
-
-    <message msgid="hint l2tp server" msgstr="Enable L2TP server." />
-    <message msgid="hint l2tp ip" msgstr="Use the following IP as VPN server own IP address in your VPN network." />
-    <message msgid="hint l2tp proxyarp" msgstr="Enable proxyarp for VPN server." />
+    <message msgid="hint vpn enabled" msgstr="Включить поддержку VPN." />
+    <message msgid="hint vpn status" msgstr="Здесь отображается текущее состояние VPN подключения." />
+    <message msgid="hint vpn user" msgstr="Укажите имя пользователя выданное вам вашим провайдером." />
+    <message msgid="hint vpn password" msgstr="Укажите пароль выданный вам вашим провайдером." />
+    <message msgid="hint vpn auth type" msgstr="Укажите тип протокола идентификация." />
+    <message msgid="hint vpn pppoe iface" msgstr="Выберите интерфейс для PPPoE соединения." />
+    <message msgid="hint vpn pppoe service" msgstr="Некоторые провайдеры требуют указывать именя сервиса для PPPOE соединения. Можете указать его в этом поле." />
+    <message msgid="hint vpn pppoe" msgstr="Укажите имя концентратора доступа для PPPOE соединения. Если не указать имени концентратора доступа, то система попытается подключиться к первому доступному концентратору." />
+    <message msgid="hint vpn pptp" msgstr="Укажите IP адрес или доменное имя VPN сервера." />
+    <message msgid="hint vpn l2tp server" msgstr="Укажите внутренний IP адрес сервера в сети VPN." />
+    <message msgid="hint vpn apn" msgstr="Укажите APN выданный вашим провайдером. Если не указать, то APN будет из настроек модема." />
+    <message msgid="hint vpn range" msgstr="Укажите клиентский диапазон IP адресов используемый VPN сервером." />
+    <message msgid="hint vpn mtu" msgstr="Укажите максимальную размерновсть блоков приёма/передачи в байтах." />
+    <message msgid="hint vpn mppe" msgstr="Включить автоматичесое использование Microsoft Point-to-Point Encryption (MPPE). Требуется установить метод идентификации в mschap." />
+    <message msgid="hint vpn dgw" msgstr="Управление шлюзом по умолчанию в таблице маршрутизации." />
+    <message msgid="hint vpn dgw disabled" msgstr="Не изменять шлюз по умолчанию указанный в таблице маршрутизации." />
+    <message msgid="hint vpn dgw enabled" msgstr="Изменить шлюз по умолчанию на шлюз выданный провайдером." />
+    <message msgid="hint vpn dgw multiple" msgstr="Добавить шлюз по умолчанию к существующим, но с метрикой 10." />
+    <message msgid="hint vpn peerdns" msgstr="Использовать адреса DNS серверов полученных от VPN сервера и записать их в файл /etv/ppp/resolv.conf." />
+    <message msgid="hint vpn test reachable" msgstr="Проверить доступность VPN сервера перед подключением." />
+    <message msgid="hint vpn debug" msgstr="Включить режим отладки для VPN подключений." />
+    <message msgid="hint vpn nat" msgstr="Включить поддержку NAT для VPN соединений." />
+    <message msgid="hint vpn lcp" msgstr="Поддержка адаптивного интервала эха LCP." />
+    <message msgid="hint vpn pure pppoe" msgstr="Следует включить использование режима Чистого PPPOE если ваш провайдер не использует DHCP (Ростелеком/Эр-Телеком и другие)." />
+    <message msgid="hint vpn lcp errors" msgstr="Если эта опция включена, то pppd будет считать соединение мёртвым, если n LCP эхо-запросов не будут подтверждены коректными LCP эхо-ответами. Если это произойдёт, то pppd разорвёт текущее соединение. Использование этой опции требует не нулевого значения интервала LCP эхо. Эта опция может быть использована для остановки pppd после потери физического соединения (например: повис модем), если нет физических линий управления модемом." />
+    <message msgid="hint vpn lcp interval" msgstr="Если эта опция включена, то pppd будет посылать LCP эхо-запросы через каждые n секунд. Вторая сторона должна отвечать на каждый эхо-запрос эхо-ответом. Эта опция может быть использована вместе с опцией Ошибка LCP echo для обнаружения отсутствия соединения." />
+    <message msgid="hint vpn type" msgstr="Укажите тип подключения VPN." />
+    <message msgid="hint vpn type pppoe" msgstr="PPPoE (см. RFC #2516) использует инкапсуляцию фреймов протокола точка-точка (PPP) во фреймы Ethernet. Он используется, главным образом, при DSL подключении, когда пользователи подключаются к DSL модему через Ethernet." />
+    <message msgid="hint vpn type pptp" msgstr="PPTP (см. RFC #2637) это реализация VPN. PPTP использует канал управления поверх TCP и GRE туннель для инкапсуляции PPP пакетов." />
+    <message msgid="hint vpn type l2tp" msgstr="L2TP (см. RFC #2661) это протокол туннелирования используемый для поддержки VPN. Он не обеспечивает шифрования или конфиденциальности сам по себе. Он опирается на протокол шифрования используемый в туннеле, чтобы обеспечить конфиденциальность." />
+    <message msgid="hint vpn type l2tp client" msgstr="Клиент L2TP используется для подключения к удалённому L2TP серверу." />
+    <message msgid="hint vpn type l2tp server" msgstr="Сервер L2TP используется для подключения удалённых клиентов к L2TP серверу на этом маршрутизаторе." />
+    <message msgid="hint vpn type gprs" msgstr="GPRS модем используется для подключения к сети Интернет через мобильные сети GPRS/EDGE." />
+    <message msgid="hint vpn type cdma" msgstr="CDMA модем используется для подключения к сети Интернет через мобильные сети CDMA." />
+    <message msgid="hint vpn type kabinet" msgstr="Авторизация КАБИНЕТ используется для подключения к провайдеру КАБИНЕТ." />
+    <message msgid="hint vpn lanauth" msgstr="Укажите режим доступа к провайдеру КАБИНЕТ." />
+    <message msgid="hint l2tp server" msgstr="Включение сервера L2TP." />
+    <message msgid="hint l2tp proxyarp" msgstr="Включить proxyarp для сервера VPN." />
 </po>

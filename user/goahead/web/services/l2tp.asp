@@ -43,7 +43,7 @@ function showHint(key)
 	if (key=='l2tp_enable')
 		text += _("hint l2tp server");
 	else if (key=='l2tp_ip')
-		text += _("hint l2tp ip");
+		text += _("hint vpn l2tp server");
 	else if (key=='l2tp_ip_list')
 		text += _("hint vpn range");
 	else if (key=='l2tp_mtu')
