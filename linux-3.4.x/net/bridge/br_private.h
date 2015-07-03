@@ -193,7 +193,9 @@ struct net_bridge
 	struct rtable 			fake_rtable;
 	bool				nf_call_iptables;
 	bool				nf_call_ip6tables;
+#if IS_ENABLED(CONFIG_IP_NF_ARPTABLES)
 	bool				nf_call_arptables;
+#endif
 #endif
 	u16				group_fwd_mask;
 
