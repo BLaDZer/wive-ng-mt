@@ -99,6 +99,13 @@ function CheckValue(form)
 		}
 	}
 }
+
+function submitForm(form) {
+  if (!ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress)) {
+    form.reboot.value = "0";
+    form.submit();
+  }
+}
 </script>
 </head>
 <body onLoad="initValue();">
@@ -151,10 +158,11 @@ function CheckValue(form)
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="apcliApply" onClick="ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
+            <td><input type="button" class="normal" value="Apply" id="apcliApply" onClick="submitForm(this.form);">
               &nbsp; &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">
               <input type="hidden" name="submit-url" value="/wireless/apcli.asp">
+              <input type="hidden" value="1" name="reboot">
               <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;">
             </td>
           </tr>

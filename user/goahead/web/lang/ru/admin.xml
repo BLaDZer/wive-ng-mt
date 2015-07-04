@@ -51,7 +51,7 @@
     <message msgid="status first lan port" msgstr="Первый LAN порт" />
     <message msgid="status near" msgstr="Ближе к порту WAN" />
     <message msgid="status distant" msgstr="Дальше от порта WAN" />
-    <message msgid="status ask reboot" msgstr="Для применения изменений требуется перезагрузка устройства. Вы хотите продолжить?" />
+    <message msgid="status ask reboot" msgstr="Для применения изменений требуется перезагрузка устройства. Выполнить перезагрузку сейчас?" />
     <message msgid="status port mode 1" msgstr="Режим порта 1" />
     <message msgid="status port mode 2" msgstr="Режим порта 2" />
     <message msgid="status port mode 3" msgstr="Режим порта 3" />

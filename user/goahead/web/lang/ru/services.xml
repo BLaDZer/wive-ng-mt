@@ -134,4 +134,5 @@
   <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
   <message msgid="services misc multicast ttl" msgstr="Не изменять multicast TTL" />
   <message msgid="services misc use pmtu" msgstr="Использовать автосогласование PMTU" />
+  <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
 </po>

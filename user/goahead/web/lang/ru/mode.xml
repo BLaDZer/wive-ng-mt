@@ -12,5 +12,5 @@
     <message msgid="opmode mode a intro" msgstr="Wi-Fi apcli интерфейс назначается как WAN, ethernet порты и Wi-Fi AP порт - как LAN. Либо все порты объединяются в единый мост." />
     <message msgid="opmode mode s" msgstr="Hotspot" />
     <message msgid="opmode mode s intro" msgstr="Один проводной интерфейс используется как WAN интерфейс, остальные - объединены в мост и используются как хотспот интерфейсы. Ускорение NAT в этом режиме будет отключено!" />
-    <message msgid="opmode confirm" msgstr="Для изменение режима работы необходимо перезагрузить маршрутизатор. Вы хотите продолжить?" />
+    <message msgid="opmode confirm" msgstr="Для изменение режима работы необходимо выполнить перезагрузку маршрутизатора. Выполнить перезагрузку?" />
 </po>

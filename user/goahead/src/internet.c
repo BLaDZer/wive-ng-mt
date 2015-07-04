@@ -2235,17 +2235,21 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	}
 #endif
 	if (strcmp(oldmac, mac) != 0) {
-		/* Output timer for reloading */
-		outputTimerForReload(wp, 80000);
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR", mac);
 		nvram_bufset(RT2860_NVRAM, "CHECKMAC", "NO");
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		/* Reboot */
-		reboot_now();
-	} else
-		websRedirect(wp, submitUrl);
+		char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
+		if (CHK_IF_DIGIT(reboot_flag, 1)) {
+			/* Output timer for reloading */
+			outputTimerForReload(wp, 80000);
+
+			/* Reboot */
+			reboot_now();
+		}
+	}
+	websRedirect(wp, submitUrl);
 
 	/* Prevent deadloop at WAN apply change if VPN started */
 	doSystem("ip route flush cache && service vpnhelper stop && service wan stop");

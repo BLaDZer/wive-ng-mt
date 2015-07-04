@@ -18,6 +18,7 @@
 #include	"utils.h"
 #include	"internet.h"
 #include	"station.h"
+#include	"helpers.h"
 
 static int  getLangBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getStationBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -984,11 +985,17 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
+	if (CHK_IF_DIGIT(reboot_flag, 1)) {
+		/* Output timer for reloading */
+		outputTimerForReload(wp, 80000);
 
-	/* Reboot */
-	reboot_now();
+		/* Reboot */
+		reboot_now();
+	} else {
+		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+		websRedirect(wp, submitUrl);
+	}
 }
 
 void STFs(int nvram, int index, char *flash_key, char *value)

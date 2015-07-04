@@ -274,15 +274,7 @@ function CheckValue(form)
 		return false;
 	}
 
-	if (form.RemoteManagementPort.value != rmtManagementPort)
-	{
-		if (!confirm("You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?"))
-			return false;
-
-		form.rmt_http_port_changed.value = '1';
-		ajaxPostForm(null, form, 'setMiscReloader', '/messages/rebooting.asp', ajaxShowProgress);
-		return false;
-	}
+	form.rmt_http_port_changed.value = (form.RemoteManagementPort.value != rmtManagementPort) ? '1' : '0';
 
 	// Timeout reload
 	TimeoutReload(20);
@@ -399,10 +391,16 @@ function displayServiceStatus()
 	ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 }
 
+function submitForm(form) {
+	if (form.RemoteManagementPort.value != rmtManagementPort)
+		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', '/messages/rebooting.asp', ajaxShowProgress)) {
+			form.reboot.value = "0";
+    		form.submit();
+}
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="lTitle">Miscellaneous Services Setup</h1>
@@ -775,11 +773,12 @@ function displayServiceStatus()
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply"  id="lApply">
+            <td><input type="button" class="normal" value="Apply"  id="lApply" onClick="submitForm(this.form);">
               &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload()">
               <input type="hidden" value="/services/misc.asp" name="submit-url">
               <input type="hidden" value="0" name="rmt_http_port_changed">
+              <input type="hidden" value="1" name="reboot">
               <iframe id="setMiscReloader" name="setMiscReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
           </tr>
         </table>

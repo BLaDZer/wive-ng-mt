@@ -240,10 +240,9 @@ function reloadPage()
 
 function setWanPort(form)
 {
-	if (confirm(_("status ask reboot")))
-	{
-		clearTimeout(timer);
-		ajaxPostForm(null, form, 'setwanReloader', '/messages/rebooting.asp');
+	if (!ajaxPostForm(_("status ask reboot"), form, 'setwanReloader', '/messages/rebooting.asp')) {
+		form.reboot.value = "0";
+    	form.submit();
 	}
 }
 
@@ -346,6 +345,8 @@ function setWanPort(form)
           </tr>
         </table>
         <input type="button" class="mid" id="statusApply" value="Apply" onClick="setWanPort(this.form);" />
+        <input type="hidden" value="1" name="reboot">
+        <input type="hidden" name="submit-url" value="/adm/status.asp">
       </form>
       <div class="whitespace">&nbsp;</div></td>
   </tr>

@@ -191,9 +191,12 @@ function wanMtuChange(form)
 	}
 }
 
-function checkMAC(form) {
+function submitForm(form) {
 	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
-		ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress);
+		if (!ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress)) {
+			form.reboot.value = "0";
+			form.submit();
+		}
 	else
 		form.submit();
 }
@@ -298,10 +301,11 @@ function checkMAC(form) {
         <br>
         <table class="buttons">
           <tr>
-            <td><input type="button" class="normal" value="Apply" id="wApply" onClick="checkMAC(this.form);">
+            <td><input type="button" class="normal" value="Apply" id="wApply" onClick="submitForm(this.form);">
               &nbsp;&nbsp;
               <input type="reset" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();">
               <input type="hidden" value="/internet/wan.asp" name="submit-url">
+              <input type="hidden" value="1" name="reboot">
               <iframe id="MACReloader" name="MACReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
             </td>
           </tr>

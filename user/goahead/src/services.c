@@ -388,8 +388,9 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	char_t *port_changed = websGetVar(wp, T("rmt_http_port_changed"), T("0"));
+	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
 
-	if (CHK_IF_DIGIT(port_changed, 1))
+	if (CHK_IF_DIGIT(port_changed, 1) && CHK_IF_DIGIT(reboot_flag, 1))
 	{
 		/* Output timer for reloading */
 		outputTimerForReload(wp, 80000);
@@ -400,7 +401,8 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	else
 	{
 		//restart some services instead full reload
-		doSystem("services_restart.sh misc");
+		if (CHK_IF_DIGIT(port_changed, 0))
+			doSystem("services_restart.sh misc");
 
 		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);

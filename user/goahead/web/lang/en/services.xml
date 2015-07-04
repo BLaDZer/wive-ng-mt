@@ -133,4 +133,5 @@
   <message msgid="services misc dont modify ttl" msgstr="Do not modify TTL" />
   <message msgid="services misc multicast ttl" msgstr="Do not modify multicast TTL" />
   <message msgid="services misc use pmtu" msgstr="Use PMTU discovery" />
+  <message msgid="services misc ask reboot" msgstr="You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?" />
 </po>
