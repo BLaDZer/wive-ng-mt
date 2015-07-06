@@ -39,6 +39,7 @@
 #endif
 
 void reboot_now(void);
+void outputTimerForReload(webs_t wp, long delay);
 void formDefineUtilities(void);
 int checkSemicolon(char *str);
 int doSystem(char_t *fmt, ...);
