@@ -1072,6 +1072,7 @@
 53) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
 54) kernel: net: bridge: avoid OOPS if root port not found.<br>
 55) kernel: net: fix race condition in several drivers when reading stats.<br>
+56) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
 <br>
 <br>
 <b>TODO:</b><br>
