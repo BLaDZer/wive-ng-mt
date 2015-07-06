@@ -409,6 +409,13 @@ dmzrules() {
 	fi
 }
 
+rwfsrulez() {
+	if [ -d /etc/iptables.d -a -x /bin/run-parts ]; then
+	    $LOG "Run scripts from /etc/iptables.d"
+	    run-parts /etc/iptables.d/
+	fi
+}
+
 start() {
     get_param
     stop
@@ -426,10 +433,18 @@ start() {
     vpnrules
     upnprules
     dmzrules
+    rwfsrulez
     #########################################ACCEPT_ESTABLISHED################################
     $LOG "Allow established/related in forward"
     iptables -A FORWARD $STATE_EST -j ACCEPT
     ############################################ENDRULES#######################################
+}
+
+rwfssixrulez() {
+	if [ -d /etc/ip6tables.d -a -x /bin/run-parts ]; then
+	    $LOG "Run scripts from /etc/ip6tables.d"
+	    run-parts /etc/ip6tables.d/
+	fi
 }
 
 startv6() {
@@ -498,6 +513,8 @@ startv6() {
 	ip6tables -A FORWARD -p ipv6-icmp ! --icmpv6-type echo-request -j ACCEPT
 	# accept established
 	ip6tables -A FORWARD $STATE_EST -j ACCEPT
+	# start user iptables scripts
+	rwfssixrulez
     fi
 }
 
@@ -579,7 +596,6 @@ clamp_mss() {
 }
 
 stop() {
-    $LOG "Clear iptables rules for ipv4 and set default actions."
     iptables -F > /dev/null 2>&1
     iptables -t nat -F > /dev/null 2>&1
     iptables -t filter -F > /dev/null 2>&1
@@ -608,7 +624,6 @@ stop() {
 
 stopv6() {
     if [ -d /proc/sys/net/ipv6 ]; then
-	$LOG "Clear iptables rules for ipv6 and set default actions."
         ip6tables -F > /dev/null 2>&1
         ip6tables -t filter -F > /dev/null 2>&1
         ip6tables -t mangle -F > /dev/null 2>&1

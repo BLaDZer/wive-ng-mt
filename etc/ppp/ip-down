@@ -94,9 +94,9 @@ eval `nvram_buf_get 2860 vpnPeerDNS chilli_net`
     $LOG "Restart need service and rebuild shaper and iptables rules"
     services_restart.sh pppd
 
-    #run scrips from /etc/ppp/ip-down.d
     export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
     if [ -d /etc/ppp/ip-down.d -a -x /bin/run-parts ]; then
+	$LOG "Run scripts from /etc/ppp/ip-down.d"
         run-parts /etc/ppp/ip-down.d/
     fi
     #remove exported vpn_if_name

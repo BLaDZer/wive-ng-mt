@@ -20,3 +20,11 @@ BUILD:
 2) cd in projectroot (/opt/Wive-MT) and start compile <target name> or compile-releases for build all targets
 
 #############################################################################################################
+CURRENT HOOKS FOR ADVANCED USER LOGIC:
+
+1) /etc/udhcp.d - scripts must be started after udcp renew event
+2) /etc/ip(6)tables.d - scripts must be started after netfilter configure
+3) /etc/ppp-l2tpsrv/ip-up(down).d - scripts must be started after client connetc(disconnect) to VPN server
+4) /etc/ppp/ip-up(down).d - scripts must be started after router connetc(disconnect) to external VPN server
+5) /etc/scripts/wan_up.sh - this script start after WAN up and full services reinit
+#############################################################################################################
