@@ -1,0 +1,64 @@
+﻿#EXTM3U url-tvg=" http://www.teleguide.info/download/new3/jtv.zip" cache=500 deinterlace=1 a tvg-shift=2 
+#EXTINF:-1 tvg-name="Первый канал" group-title="Эфирные каналы" ,Первый канал
+http://79.172.33.83:8112
+#EXTINF:-1 tvg-name="Россия 1" group-title="Эфирные каналы" ,Россия 1
+http://79.172.33.86:8104
+#EXTINF:-1 tvg-name="Россия 2" group-title="Эфирные каналы" ,Россия 2    
+http://79.172.33.83:8125
+#EXTINF:-1 tvg-name="Россия 24" group-title="Эфирные каналы" ,Россия 24
+http://79.172.33.86:5206
+#EXTINF:-1 tvg-name="Россия Культура" group-title="Эфирные каналы" ,Россия К
+http://79.172.33.82:8115
+#EXTINF:-1 tvg-name="Россия HD" group-title="Эфирные каналы" ,Россия HD
+http://79.172.33.82:8517
+#EXTINF:-1 tvg-name="НТВ" group-title="Эфирные каналы" ,НТВ
+http://79.172.33.82:8108
+#EXTINF:-1 tvg-name="Карусель" group-title="Эфирные каналы" ,Карусель  
+http://79.172.33.86:5100
+#EXTINF:-1 tvg-name="ТНТ" group-title="Эфирные каналы" ,ТНТ  
+http://79.172.33.85:9366
+#EXTINF:-1 tvg-name="СТС" group-title="Эфирные каналы" ,СТС  
+http://79.172.33.84:9234
+#EXTINF:-1 tvg-name="Рен-ТВ" group-title="Эфирные каналы" ,Рен-ТВ
+http://79.172.33.84:9227
+#EXTINF:-1 tvg-name="Домашний" group-title="Эфирные каналы" ,Домашний    
+http://79.172.33.83:8122
+#EXTINF:-1 tvg-name="ТВ-3" group-title="Эфирные каналы" ,ТВ3    
+http://79.172.33.83:8121
+#EXTINF:-1 tvg-name="Звезда" group-title="Эфирные каналы" ,Звезда
+http://79.172.33.82:8111
+#EXTINF:-1 tvg-name="4 канал" group-title="Эфирные каналы" ,4 канал
+http://79.172.33.82:8032
+#EXTINF:-1 tvg-name="5 Канал" group-title="Эфирные каналы" ,5 Канал
+http://79.172.33.83:8205
+#EXTINF:-1 tvg-name="8 Канал" group-title="Эфирные каналы" ,8 Канал
+http://79.172.33.82:8142
+#EXTINF:-1 tvg-name="ОТР" group-title="Эфирные каналы" ,ОТР
+http://79.172.33.83:8106
+#EXTINF:-1 tvg-name="Областное ТВ" group-title="Эфирные каналы" ,Областное ТВ
+http://79.172.33.84:9015
+#EXTINF:-1 tvg-name="ТВЦ" group-title="Эфирные каналы" ,ТВЦ
+http://79.172.33.83:8107
+#EXTINF:-1 tvg-name="Мир" group-title="Эфирные каналы" ,Мир
+http://79.172.33.83:8126
+#EXTINF:-1 tvg-name="NHK World TV" group-title="Эфирные каналы" ,NHK World TV
+http://79.172.33.83:5103
+#EXTINF:-1 tvg-name="Перец" group-title="Эфирные каналы" ,Перец
+http://79.172.33.84:9170
+#EXTINF:-1 tvg-name="РБК" group-title="Информационные каналы" ,РБК
+http://79.172.33.82:8113
+#EXTINF:-1 tvg-name="LifeNews" group-title="Информационные каналы" ,LifeNews
+http://79.172.33.82:8849
+#EXTINF:-1 tvg-name="Дождь" group-title="Информационные каналы" ,Дождь
+http://79.172.33.82:8144
+#EXTINF:-1 tvg-name="2x2" group-title="Развлекательные каналы" ,Эра-ТВ
+http://79.172.33.82:8106
+#EXTINF:-1 tvg-name="Ю ТВ" group-title="Развлекательные каналы" ,Ю ТВ
+http://79.172.33.84:9135
+#EXTINF:-1 tvg-name="Муз ТВ" group-title="Музыкальные каналы" ,Муз ТВ    
+http://79.172.33.83:8124
+#EXTINF:-1 tvg-name="2x2" group-title="Мультфильмы" ,2x2
+http://79.172.33.84:9308
+#EXTINF:-1 tvg-name="Спас" group-title="Религиозные" ,Спас    
+http://79.172.33.83:8120
+
