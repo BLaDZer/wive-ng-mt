@@ -396,6 +396,7 @@ function submitForm(form) {
 		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', '/messages/rebooting.asp', ajaxShowProgress)) {
 			form.reboot.value = "0";
     		form.submit();
+	}
 }
 </script>
 </head>
