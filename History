@@ -1073,6 +1073,7 @@
 54) kernel: net: bridge: avoid OOPS if root port not found.<br>
 55) kernel: net: fix race condition in several drivers when reading stats.<br>
 56) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
+57) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
 <br>
 <br>
 <b>TODO:</b><br>
