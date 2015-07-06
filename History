@@ -1074,6 +1074,7 @@
 55) kernel: net: fix race condition in several drivers when reading stats.<br>
 56) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
 57) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
+58) kernel: net: net core: remove unneded creation of an empty net/core sysctl directory.<br>
 <br>
 <br>
 <b>TODO:</b><br>
