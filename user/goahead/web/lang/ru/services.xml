@@ -36,6 +36,7 @@
   <message msgid="services ddns provider" msgstr="Провайдер Dynamic DNS" />
   <message msgid="services ddns none" msgstr="Отсутствует" />
   <message msgid="services ddns" msgstr="Имя домена" />
+  <message msgid="services ddns specify" msgstr="Пожалуйста, укажите имя пользователя, пароль и доменное имя." />
 
   <message msgid="services account title" msgstr="IP Accounting" />
   <message msgid="services account introduction" msgstr="Здесь вы можете настроить контроль учёта." />
@@ -72,6 +73,9 @@
   <message msgid="services samba server string" msgstr="Описание" />
   <message msgid="services samba os level" msgstr="Уровень (OS level)" />
   <message msgid="services samba time server" msgstr="Сервер времени" />
+  <message msgid="services samba no workgroup" msgstr="Не указана рабочая группа." />
+  <message msgid="services samba no netbios" msgstr="Не указано NetBIOS имя." />
+  <message msgid="services samba invalid os level" msgstr="Неверный уровень OS [0-255]." />
 
   <message msgid="services misc title" msgstr="Прочие настройки" />
   <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
@@ -135,4 +139,7 @@
   <message msgid="services misc multicast ttl" msgstr="Не изменять multicast TTL" />
   <message msgid="services misc use pmtu" msgstr="Использовать автосогласование PMTU" />
   <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
+  <message msgid="services misc hwnat number" msgstr="Порог аппаратного NAT должен быть числом" />
+  <message msgid="services misc hwnat over" msgstr="Порог аппаратного NAT должен иметь значение от 0 до 500" />
+  <message msgid="services misc udpxy port" msgstr="Порт UDPXY должен быть 81 или в диапазоне 1024-65535" />
 </po>

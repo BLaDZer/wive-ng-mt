@@ -23,7 +23,7 @@ function DDNSFormCheck()
 		 document.DDNS.Password.value == "" ||
 		 document.DDNS.DDNS.value == ""))
 	{
-		alert("Please specify login, password, and desired dynamic name.");
+		alert(_("services ddns specify"));
 		return false;
 	}
 

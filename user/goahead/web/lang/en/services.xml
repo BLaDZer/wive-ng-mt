@@ -36,6 +36,7 @@
   <message msgid="services ddns provider" msgstr="Dynamic DNS Provider" />
   <message msgid="services ddns none" msgstr="None" />
   <message msgid="services ddns" msgstr="Dynamic Name" />
+  <message msgid="services ddns specify" msgstr="Please specify login, password, and desired dynamic name." />
 
   <message msgid="services account title" msgstr="IP Accounting" />
   <message msgid="services account introduction" msgstr="Here you can configure Accounting Control." />
@@ -72,6 +73,9 @@
   <message msgid="services samba server string" msgstr="Server string" />
   <message msgid="services samba os level" msgstr="OS level" />
   <message msgid="services samba time server" msgstr="Enable time server" />
+  <message msgid="services samba no workgroup" msgstr="Workgroup not specified." />
+  <message msgid="services samba no netbios" msgstr="NetBIOS name not specified." />
+  <message msgid="services samba invalid os level" msgstr="Invalid OS level value [0-255]." />
 
   <message msgid="services misc title" msgstr="Miscellaneous services" />
   <message msgid="services misc introduction" msgstr="Here you can configure miscellaneous services and offloads modes." />
@@ -134,4 +138,7 @@
   <message msgid="services misc multicast ttl" msgstr="Do not modify multicast TTL" />
   <message msgid="services misc use pmtu" msgstr="Use PMTU discovery" />
   <message msgid="services misc ask reboot" msgstr="You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?" />
+  <message msgid="services misc hwnat number" msgstr="Hardware NAT threshold must be a number" />
+  <message msgid="services misc hwnat over" msgstr="Hardware NAT threshold must be a value between 0 and 500" />
+  <message msgid="services misc udpxy port" msgstr="UDPXY port must be set to 81 or between 1024-65535" />
 </po>

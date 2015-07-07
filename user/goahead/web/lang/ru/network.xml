@@ -64,6 +64,7 @@
     <message msgid="vpn alert password" msgstr="Пароль не может содержать пробелы или знак доллара!" />
     <message msgid="vpn alert username" msgstr="Имя пользователя не может содержать пробелы или знак доллара!" />
     <message msgid="vpn alert invalid ip" msgstr="Неверное доменное имя или IP адрес!" />
+    <message msgid="vpn kabinet auth" msgstr="Авторизация KABINET" />
 
     <message msgid="ipv6 title" msgstr="Настройки IPv6" />
     <message msgid="ipv6 introduction" msgstr="" />
@@ -89,6 +90,14 @@
     <message msgid="ipv6 service status" msgstr="Статус" />
     <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
     <message msgid="ipv6 dhcp6s" msgstr="Динамическая конфигурация IPv6(dhcp6s)" />
+    <message msgid="ipv6 ip empty" msgstr="Пустой IP адрес." />
+    <message msgid="ipv6 number" msgstr="Должно быть числом." />
+    <message msgid="ipv6 ip format error" msgstr="Неверный формат IP адреса." />
+    <message msgid="ipv6 hex" msgstr="Должно быть шеснадцатиричным числом." />
+    <message msgid="ipv6 invalid addr" msgstr="Неверный IPv6 адрес!" />
+    <message msgid="ipv6 invalid prefix" msgstr="Неверная длина префикса!" />
+    <message msgid="ipv6 fill all" msgstr="Пожалуйста, заполните все поля!" />
+    <message msgid="ipv6 invalid ipv4" msgstr="Неверный IPv4 адрес!" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
     <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений." />
@@ -130,6 +139,7 @@
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Действие" />
+    <message msgid="routing unsup chars" msgstr="Не поддерживаемые символы в коментарии" />
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />

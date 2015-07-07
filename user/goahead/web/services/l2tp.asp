@@ -187,7 +187,7 @@ function CheckValue(form)
 	{
 		if (!validateIP(form.l2tp_srv_ip_local, true))
 		{
-			alert('Please specify correct IP Address!');
+			alert(_("services dhcp invalid ip"));
 			form.l2tp_srv_ip_local.focus();
 			return false;
 		}

@@ -130,7 +130,7 @@ function CheckEncKey(form, i)
 		if (key.length == 10 || key.length == 26) {
 			var re = /[A-Fa-f0-9]{10,26}/;
 			if (!re.test(key)) {
-				alert("WDS"+i+"Key should be a 10/26 hexdecimal or a 5/13 ascii");
+				alert("WDS"+i+_("basic wds key1"));
 				eval("form.wds_encryp_key"+i).focus();
 				eval("form.wds_encryp_key"+i).select();
 				return false;
@@ -142,7 +142,7 @@ function CheckEncKey(form, i)
 			return true;
 		}
 		else {
-			alert("WDS"+i+"Key should be a 10/26 hexdecimal or a 5/13 ascii");
+			alert("WDS"+i+_("basic wds key1"));
 			eval("form.wds_encryp_key"+i).focus();
 			eval("form.wds_encryp_key"+i).select();
 			return false;
@@ -152,7 +152,7 @@ function CheckEncKey(form, i)
 			eval("form.wds_encryp_type"+i).options.selectedIndex == 3)
 	{
 		if (key.length < 8 || key.length > 64) {
-			alert("WDS"+i+"Key should be with length 8~64");
+			alert("WDS"+i+_("basic wds key2"));
 			eval("form.wds_encryp_key"+i).focus();
 			eval("form.wds_encryp_key"+i).select();
 			return false;
@@ -160,7 +160,7 @@ function CheckEncKey(form, i)
 		if (key.length == 64) {
 			var re = /[A-Fa-f0-9]{64}/;
 			if (!re.test(key)) {
-				alert("WDS"+i+"Key should be a 64 hexdecimal");
+				alert("WDS"+i+_("basic wds key3"));
 				eval("form.wds_encryp_key"+i).focus();
 				eval("form.wds_encryp_key"+i).select();
 				return false;
@@ -197,7 +197,7 @@ function CheckValue(form)
 			if (eval("form.wds_"+i).value == "")
 				continue;
 			if (!re.test(eval("form.wds_"+i).value)) {
-				alert("Please fill WDS remote AP MAC Address in correct format! (XX:XX:XX:XX:XX:XX)");
+				alert(_("basic wds invalid mac"));
 				eval("form.wds_"+i).focus();
 				eval("form.wds_"+i).select();
 				return false;
@@ -209,7 +209,7 @@ function CheckValue(form)
 		}
 		if (all_wds_list == "")
 		{
-			alert("No remote AP MAC addresses specified!");
+			alert(_("basic wds no mac"));
 			form.wds_1.focus();
 			form.wds_1.select(); 
 			return false;

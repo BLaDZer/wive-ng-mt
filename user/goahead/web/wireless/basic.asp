@@ -68,20 +68,20 @@ var bssid_num = 1*'<% getBSSIDNum(); %>';
 
 var ChannelList_24G =
 [
-	"2412MHz (Channel 1)",
-	"2417MHz (Channel 2)",
-	"2422MHz (Channel 3)",
-	"2427MHz (Channel 4)",
-	"2432MHz (Channel 5)",
-	"2437MHz (Channel 6)",
-	"2442MHz (Channel 7)",
-	"2447MHz (Channel 8)",
-	"2452MHz (Channel 9)",
-	"2457MHz (Channel 10)",
-	"2462MHz (Channel 11)",
-	"2467MHz (Channel 12)",
-	"2472MHz (Channel 13)",
-	"2484MHz (Channel 14)"
+	"2412MHz (" + _("station channel") + " 1)",
+	"2417MHz (" + _("station channel") + " 2)",
+	"2422MHz (" + _("station channel") + " 3)",
+	"2427MHz (" + _("station channel") + " 4)",
+	"2432MHz (" + _("station channel") + " 5)",
+	"2437MHz (" + _("station channel") + " 6)",
+	"2442MHz (" + _("station channel") + " 7)",
+	"2447MHz (" + _("station channel") + " 8)",
+	"2452MHz (" + _("station channel") + " 9)",
+	"2457MHz (" + _("station channel") + " 10)",
+	"2462MHz (" + _("station channel") + " 11)",
+	"2467MHz (" + _("station channel") + " 12)",
+	"2472MHz (" + _("station channel") + " 13)",
+	"2484MHz (" + _("station channel") + " 14)"
 ];
 
 function addOption(list, text, value)
@@ -125,7 +125,7 @@ function insertExtChannelOption(form)
 		} else if (CurrentCh >= 11) {
 			addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
 		} else {
-			addOption(x, "Auto Select", 0);
+			addOption(x, _("basic frequency auto"), 0);
 		}
 
 		if (1*ht_extcha == 1)
@@ -317,26 +317,22 @@ function initTranslation()
 			elements[i].innerHTML = _("button disable");
 		else if (elements[i].id == "enable")
 			elements[i].innerHTML = _("button enable");
-	var elements = document.getElementsByTagName('input');
-  	for (var i = 0; i < elements.length; i++)
+		else if (elements[i].id == "basicAutoBySTA")
+			elements[i].innerHTML = _("basic select by sta");
+		else if (elements[i].id == "basicAutoByRSSI")
+			elements[i].innerHTML = _("basic select by rssi");
+	elements = document.getElementsByTagName('input');
+  	for (i = 0; i < elements.length; i++)
     	if (elements[i].id == "basicRemove")
 			elements[i].value = _("button remove");
-	var elements = document.getElementsByTagName('span');
-  	for (var i = 0; i < elements.length; i++)
+	elements = document.getElementsByTagName('span');
+  	for (i = 0; i < elements.length; i++)
     	if (elements[i].id == "basicMSSID")
 			elements[i].innerHTML = _("basic multiple ssid");
-	var elements = document.getElementsByTagName('span');
-  	for (var i = 0; i < elements.length; i++)
-    	if (elements[i].id == "basicAutoChannelMode")
+		else if (elements[i].id == "basicAutoChannelMode")
 			elements[i].innerHTML = _("basic auto channel mode");
-	var elements = document.getElementsByTagName('option');
-  	for (var i = 0; i < elements.length; i++)
-    	if (elements[i].id == "basicAutoBySTA")
-			elements[i].innerHTML = _("basic select by sta");
-	var elements = document.getElementsByTagName('option');
-  	for (var i = 0; i < elements.length; i++)
-    	if (elements[i].id == "basicAutoByRSSI")
-			elements[i].innerHTML = _("basic select by rssi");
+		else if (elements[i].id == "basicChannel")
+			elements[i].innerHTML = _("station channel");
 }
 
 var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
@@ -445,23 +441,23 @@ function initValue()
 	// Init 2.4GHz
 	index = form.wirelessmode.options.length;
 
-	form.wirelessmode.options[index++] = new Option("11b/g mixed", "0");
-	form.wirelessmode.options[index++] = new Option("11b only", "1");
-	form.wirelessmode.options[index++] = new Option("11g only", "4");
-	form.wirelessmode.options[index++] = new Option("11n only", "6");
-	form.wirelessmode.options[index++] = new Option("11g/n mixed", "7");
-	form.wirelessmode.options[index++] = new Option("11b/g/n mixed", "9");
+	form.wirelessmode.options[index++] = new Option(_("basic bg"), "0");
+	form.wirelessmode.options[index++] = new Option(_("basic b"), "1");
+	form.wirelessmode.options[index++] = new Option(_("basic g"), "4");
+	form.wirelessmode.options[index++] = new Option(_("basic n"), "6");
+	form.wirelessmode.options[index++] = new Option(_("basic gn"), "7");
+	form.wirelessmode.options[index++] = new Option(_("basic bgn"), "9");
 
 	// Init 5GHz
 	if (is5gh_support == 1)
 	{
 		indexac = form.wirelessmodeac.options.length;
 
-		form.wirelessmodeac.options[indexac++] = new Option("11a only", "2");
-		form.wirelessmodeac.options[indexac++] = new Option("11a/an mixed", "8");
-		form.wirelessmodeac.options[indexac++] = new Option("11an only", "11");
-		form.wirelessmodeac.options[indexac++] = new Option("11a/an/ac mixed", "14");
-		form.wirelessmodeac.options[indexac++] = new Option("11an/ac mixed", "15");
+		form.wirelessmodeac.options[indexac++] = new Option(_("basic a"), "2");
+		form.wirelessmodeac.options[indexac++] = new Option(_("basic aan"), "8");
+		form.wirelessmodeac.options[indexac++] = new Option(_("basic an"), "11");
+		form.wirelessmodeac.options[indexac++] = new Option(_("basic anc"), "14");
+		form.wirelessmodeac.options[indexac++] = new Option(_("basic anac"), "15");
 
 	}
 
@@ -747,7 +743,7 @@ function initValue()
 	{
 		form.n_mcs.options[mcs_length] = new Option("32", "32");
 		mcs_length++;
-		form.n_mcs.options[mcs_length] = new Option("Auto", "33");
+		form.n_mcs.options[mcs_length] = new Option(_("wireless auto"), "33");
 	}
 
 	if (1*ht_mcs <= mcs_length-1)
@@ -817,7 +813,7 @@ function show_abg_rate(form)
 		var abg_rate = form.abg_rate;
 
 		abg_rate.options.length = 0;
-		abg_rate.options[0] = new Option("Auto", "0");
+		abg_rate.options[0] = new Option(_("wireless auto"), "0");
 		abg_rate.options[1] = new Option("1 Mbps", "1");
 		abg_rate.options[2] = new Option("2 Mbps", "2");
 		abg_rate.options[3] = new Option("5.5 Mbps", "5");
@@ -872,7 +868,7 @@ function show_abg_rate(form)
 		var abg_rate = form.abg_rate;
 
 		abg_rate.options.length = 0;
-		abg_rate.options[0] = new Option("Auto", "0");
+		abg_rate.options[0] = new Option(_("wireless auto"), "0");
 		abg_rate.options[1] = new Option("1 Mbps", "1");
 		abg_rate.options[2] = new Option("2 Mbps", "2");
 		abg_rate.options[3] = new Option("5.5 Mbps", "5");

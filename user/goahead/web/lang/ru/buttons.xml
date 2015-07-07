@@ -18,4 +18,10 @@
     <message msgid="button disconnect all" msgstr="Отключить всех" />
     <message msgid="button clear" msgstr="Отчистить" />
     <message msgid="button remove" msgstr="Удалить" />
+
+    <message msgid="message reboot" msgstr="Пожалуйста, подождите пока маршрутизатор перезагрузится..." />
+    <message msgid="message chmode" msgstr="Пожалуйста, подождите пока применяются изменения режима работы..." />
+    <message msgid="message config" msgstr="Пожалуйста, подождите пока применяются новые параметры..." />
+    <message msgid="message upgrade" msgstr="Обновление прошивки... Пожалуйста, не отключайте и не перезагружайте маршрутизатор." />
+    <message msgid="message rwfs" msgstr="Пожалуйста, подождите пока обновляется файловая система..." />
 </po>

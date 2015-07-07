@@ -55,6 +55,11 @@
   <message msgid="basic wds encryp type" msgstr="Тип шифрования" />
   <message msgid="basic wds encryp key" msgstr="Ключ шифрования" />
   <message msgid="basic wds ap macaddr" msgstr="AP MAC адрес" />
+  <message msgid="basic wds key1" msgstr="Ключ должен быть 10 либо 26 шестнадцатиричных чисел или 5 либо 13 символов" />
+  <message msgid="basic wds key2" msgstr="Ключ должен быть длинною от 8 до 64" />
+  <message msgid="basic wds key3" msgstr="Ключ должен состоять из 64 шестнадцатиричных чисел" />
+  <message msgid="basic wds invalid mac" msgstr="Пожалуйста, заполните правильно MAC адрес! (XX:XX:XX:XX:XX:XX)" />
+  <message msgid="basic wds no mac" msgstr="MAC адрес не указан!" />
   <message msgid="basic ht phy mode" msgstr="Физический режим HT" />
   <message msgid="basic ht op mode" msgstr="Сбережение энергии" />
   <message msgid="basic ht op mixed" msgstr="Disabled" />
@@ -83,6 +88,17 @@
   <message msgid="basic select by rssi" msgstr="по уровню шума" />
   <message msgid="basic hour" msgstr="ч" />
   <message msgid="basic rescan every" msgstr="обновлять каждые " />
+  <message msgid="basic bg" msgstr="Смешанный 11b/g" />
+  <message msgid="basic b" msgstr="Только 11b" />
+  <message msgid="basic g" msgstr="Только 11g" />
+  <message msgid="basic n" msgstr="Только 11n" />
+  <message msgid="basic gn" msgstr="Смешанный 11g/n" />
+  <message msgid="basic bgn" msgstr="Смешанный 11b/g/n" />
+  <message msgid="basic a" msgstr="Только 11a" />
+  <message msgid="basic aan" msgstr="Смешанный 11a/an" />
+  <message msgid="basic an" msgstr="Только 11an" />
+  <message msgid="basic anc" msgstr="Смешанный 11a/an/ac" />
+  <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />
@@ -129,6 +145,18 @@
   <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
   <message msgid="wmm sta parameter" msgstr="Настройки WMM станции" />
 
+  <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
+  <message msgid="adv invalid beacon" msgstr="Неверный интервал маяка" />
+  <message msgid="adv no dtim" msgstr="Пожалуйста, укажите интервал оповещения" />
+  <message msgid="adv invalid dtim" msgstr="Неверный интервал оповещения" />
+  <message msgid="adv no frag len" msgstr="Пожалуйста, укажите размер фрагмента" />
+  <message msgid="adv invalid frag len" msgstr="Неверный размер фрагмента" />
+  <message msgid="adv no rts" msgstr="Пожалуйста, укажите пороговое значение RTS" />
+  <message msgid="adv invalid rts" msgstr="Неверное пороговое значение RTS" />
+  <message msgid="adv invalid max sta num" msgstr="Неверное максимальное количество клиентов" />
+  <message msgid="adv invalid keepalive" msgstr="Неверный интервал опроса клиентов" />
+  <message msgid="adv invalid idletimeout" msgstr="Неверное время ожидания" />
+
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />
   <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных (рекомендуется использовать WPA2-PSK+AES)." />
@@ -165,6 +193,27 @@
   <message msgid="secure access policy capable" msgstr=" Политика " />
   <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />
   <message msgid="secure access policy del" msgstr="Удалить" />
+  <message msgid="secure no key" msgstr="Пожалуйста, введите ключ WPA-PSK!" />
+  <message msgid="secure choose algo" msgstr="Пожалуйста, выберите алгоритм WPA." />
+  <message msgid="secure renewal" msgstr="Пожалуйста, введите правильный интервал обновления ключа" />
+  <message msgid="secure renewal short" msgstr="Внимание: Короткий интервал обновления ключа." />
+  <message msgid="secure choose wep" msgstr="Пожалуйста, выберите опцию 802.1x WEP." />
+  <message msgid="secure choose preauth" msgstr="Пожалуйста, выберите опции пред-авторизации." />
+  <message msgid="secure no pmk" msgstr="Пожалуйста, введите период кеширования PMK." />
+  <message msgid="secure invalid mac" msgstr="Неверный MAC адрес в политиках доступа." />
+  <message msgid="secure no radius ip" msgstr="Пожалуйста, введите IP адрес RADIUS сервера." />
+  <message msgid="secure no radius port" msgstr="Пожалуйста, введите номер порта RADIUS сервера." />
+  <message msgid="secure no radius secret" msgstr="Пожалуйста, введите секретный ключ RADIUS сервера." />
+  <message msgid="secure invalid radius ip" msgstr="Пожалуйста, введите правильный IP адрес RADIUS сервера." />
+  <message msgid="secure invalid radius port" msgstr="Пожалуйста, введите правильный номер порта RADIUS сервера." />
+  <message msgid="secure invalid radius secret" msgstr="Секретный ключ содержит недопустимые символы" />
+  <message msgid="secure invalid timeout" msgstr="Пожалуйста, введите правильное время ожидания сессии или оставьте поле пустым." />
+  <message msgid="secure no wep key" msgstr="Пожалуйста, введите WEP ключ " />
+  <message msgid="secure short wep key" msgstr="Пожалуйста, введите 5 или 13 символов WEP ключа!" />
+  <message msgid="secure invalid wep key" msgstr="WEP ключ содержит недопустимые символы." />
+  <message msgid="secure long wep key" msgstr="Пожалуйста, введите 10 или 26 символов WEP ключа!" />
+  <message msgid="secure invalid key" msgstr="Неверный формат WEP ключа!" />
+  <message msgid="secure confirm" msgstr="Вы действительно хотите потерять текущие изменения?" />
 
   <message msgid="apcli title" msgstr="Клиент AP" />
   <message msgid="apcli param" msgstr="Здесь вы можете сменить параметры клиента AP." />
@@ -174,6 +223,11 @@
   <message msgid="apcli disable iface" msgstr="Отключить интерфейс AP" />
   <message msgid="apcli enable bridge" msgstr="Включить режим моста" />
   <message msgid="apcli reboot confirm" msgstr="Для применения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
+  <message msgid="apcli no ssid" msgstr="Пожалуйста, укажите SSID" />
+  <message msgid="apcli no correct bssid" msgstr="Пожалуйста, укажите правильный BSSID" />
+  <message msgid="apcli short phrase" msgstr="Длина секретной фразы должна быть не менее 8 символов" />
+  <message msgid="apcli long phrase" msgstr="Секретная фраза слишком длинная" />
+  <message msgid="apcli chars not allowed" msgstr="В секретной фразе использованны недопустимые символы" />
 
   <message msgid="stalist title" msgstr="Список станций" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
@@ -270,4 +324,12 @@
   <message msgid="about about" msgstr="О станции" />
   <message msgid="about driver version" msgstr="Версия драйвера" />
 
+  <message msgid="ant div title" msgstr="Разнесённый приём" />
+  <message msgid="ant div introduction" msgstr="Здесь вы можете настроить параметры разнесённого приёма для повышения производительности беспроводной сети." />
+  <message msgid="ant div config" msgstr="Разнесённый приём" />
+  <message msgid="ant div mode" msgstr="Режим:" />
+  <message msgid="ant div str" msgstr="Антена:" />
+  <message msgid="ant div algo" msgstr="Включить алгоритм (BBP)" />
+  <message msgid="ant div ant0" msgstr="только антена 0" />
+  <message msgid="ant div ant2" msgstr="только антена 2" />
 </po>

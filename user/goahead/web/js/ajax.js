@@ -179,105 +179,67 @@ function ajaxLoadScript(scriptFile)
 	xmlHttp.send(null);
 }
 
-function ajaxPopupWindow(popupID, url, onLoadAction)
-{
-	// Create XMLHttpRequest
-	var xmlHttp = createXMLHttp();
-	if (xmlHttp == null)
-		return;
-
-	var doc = document; //(parent != null) ? parent.document : document;
+function ajaxPopupWindow(popupID, message, onLoadAction) {
+	var doc = document;
 
 	// Produce window popup
-	var background = document.createElement('div');
+	var background = doc.createElement('div');
 	background.id = popupID + "Background";
 	background.className = 'popup_window';
 	background.style.display = 'none';
-	document.body.appendChild(background);
+	doc.body.appendChild(background);
+
+	var message_div = doc.createElement('div');
+	message_div.className = 'message';
+	message_div.innerHTML = message;
+
+	var count = doc.createElement('div');
+	count.id = 'ajxCounterIndicator';
+	count.className = 'message red';
+
+	var border = doc.createElement('div');
+	border.className = 'popup_message';
+	border.appendChild(message_div);
+	border.appendChild(count);
 
 	var popup = doc.createElement('div');
+	popup.appendChild(border);
 	popup.id = popupID + "Border";
 	popup.className = 'popup_window_border';
 	popup.style.display = 'none';
 	popup.windowLoaded = false;
 	doc.body.appendChild(popup);
 
-	// Perform HTTP request
-	xmlHttp.onreadystatechange = function()
-	{
-		if (xmlHttp.readyState == 4)
-		{
-			if (xmlHttp.status == 200)
-			{
-				// Store innerHTML
-				popup.innerHTML = xmlHttp.responseText;
-				
-				// Scroll
-				try
-				{
-					document.body.scrollTo(0, 0);
-				}
-				catch (ex)
-				{
-				}
-				
-				try
-				{
-					window.scrollTo(0, 0);
-				}
-				catch (ex)
-				{
-				}
-				
-				// Show background
-				var b_height = (document.body.innerHeight != null) ? document.body.innerHeight : document.body.clientHeight;
-				var c_width =
-					(window.innerWidth != null) ? window.innerWidth :
+	// Show background
+	var b_height =	(document.body.innerHeight != null) ? document.body.innerHeight : document.body.clientHeight;
+	var c_width  =	(window.innerWidth != null) ? window.innerWidth :
 					(document.body.innerWidth != null) ? document.body.innerWidth :
 					(window.clientWidth != null) ? window.clientWidth : document.body.clientWidth;
-				var c_height =
-					(window.innerHeight != null) ? window.innerHeight :
+	var c_height =	(window.innerHeight != null) ? window.innerHeight :
 					(document.body.innerHeight != null) ? document.body.innerHeight :
 					(window.clientHeight != null) ? window.clientHeight : document.body.clientHeight;
+	background.style.height = Math.max(b_height, c_height) + 'px';
+	background.style.display = '';
 
-				background.style.height = Math.max(b_height, c_height) + 'px';
-				background.style.display = '';
+	// Show popup
+	popup.style.display = '';
 
-				// Show popup
-				popup.style.display = '';
+	var d_width = popup.offsetWidth;
+	var d_height = popup.offsetHeight;
+	var x = Math.round((c_width - d_width)/2.0);
+	var y = Math.round((c_height - d_height)/2.0);
+	x = (x < 0) ? 0 : x;
+	y = (y < 0) ? 0 : y;
 
-				var d_width = popup.offsetWidth;
-				var d_height = popup.offsetHeight;
-				var x = Math.round((c_width - d_width)/2.0);
-				var y = Math.round((c_height - d_height)/2.0);
-				if (x < 0)
-					x = 0;
-				if (y < 0)
-					y = 0;
-
-				popup.style.left = x + 'px';
-				popup.style.top  = y + 'px';
-				popup.windowLoaded = true;
+	popup.style.left = x + 'px';
+	popup.style.top  = y + 'px';
+	popup.windowLoaded = true;
 				
-				if (onLoadAction != null)
-					onLoadAction();
-			}
-			else
-			{
-				alert(xmlHttp.statusText);
-				ajaxCloseWindow(popupID);
-			}
+	if (onLoadAction != null)
+		onLoadAction();
 
-			// Free resources
-			xmlHttp.onreadystatechange = null;
-			xmlHttp = null;
-			popupID = null;
-			popup   = null;
-		}
-	};
-
-	xmlHttp.open("GET", genRandomParam(url), true);
-	xmlHttp.send(null);
+	popupID = null;
+	popup   = null;
 }
 
 function ajaxCloseWindow(popupID)

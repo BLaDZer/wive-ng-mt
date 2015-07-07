@@ -240,7 +240,7 @@ function reloadPage()
 
 function setWanPort(form)
 {
-	if (!ajaxPostForm(_("status ask reboot"), form, 'setwanReloader', '/messages/rebooting.asp')) {
+	if (!ajaxPostForm(_("status ask reboot"), form, 'setwanReloader', _("message reboot"))) {
 		form.reboot.value = "0";
     	form.submit();
 	}

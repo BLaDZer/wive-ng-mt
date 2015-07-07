@@ -60,7 +60,7 @@ function CheckValue(form)
 
 	if (form.apcli_ssid.value.length <= 0)
 	{
-		alert("Please specify SSID");
+		alert(_("apcli no ssid"));
 		form.apcli_ssid.focus();
 		return false;
 	}
@@ -69,7 +69,7 @@ function CheckValue(form)
 	{
 		if (!validateMAC(form.apcli_bssid.value, false))
 		{
-			alert("Please specify correct BSSID");
+			alert(_("apcli no correct bssid"));
 			form.apcli_bssid.focus;
 			return false;
 		}
@@ -81,19 +81,19 @@ function CheckValue(form)
 		var wpapsk = form.apcli_wpapsk.value;
 		if (wpapsk.length < 8)
 		{
-			alert("Password phrase length should be larger than 8 characters");
+			alert(_("apcli short phrase"));
 			form.apcli_wpapsk.focus();
 			return false;
 		}
 		else if (wpapsk.length > 64)
 		{
-			alert('Password phrase is too long');
+			alert(_("apcli long phrase"));
 			form.apcli_wpapsk.focus();
 			return false;
 		}
 		else if (wpapsk.match(/[\n\r\$]/))
 		{
-			alert('Some of characters in password phrase are not allowed');
+			alert(_("apcli chars not allowed"));
 			form.apcli_wpapsk.focus();
 			return false;
 		}
@@ -101,7 +101,7 @@ function CheckValue(form)
 }
 
 function submitForm(form) {
-  if (!ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress)) {
+  if (!ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', _("message config"), ajaxShowProgress)) {
     form.reboot.value = "0";
     form.submit();
   }

@@ -169,6 +169,7 @@ function addRoutingRule(form)
 	// Destination
 	if (!validateIP(form.dest, true))
 	{
+		alert(_("ipv6 invalid ipv4"));
 		form.dest.focus();
 		return;
 	}
@@ -192,6 +193,7 @@ function addRoutingRule(form)
 	{
 		if (!validateIP(form.gateway, true))
 		{
+			alert(_("ipv6 invalid ipv4"));
 			form.gateway.focus();
 			return;
 		}
@@ -207,7 +209,7 @@ function addRoutingRule(form)
 	row[11] = form.comment.value;
 	if (row[11].indexOf(',') >= 0)
 	{
-		alert("Unsupported character in comment");
+		alert(_("routing unsup chars"));
 		form.comment.focus();
 		return;
 	}

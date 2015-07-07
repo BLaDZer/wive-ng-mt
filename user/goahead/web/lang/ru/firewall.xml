@@ -4,6 +4,9 @@
   <message msgid="dmz setting" msgstr="Настройки DMZ" />
   <message msgid="dmz ipaddr" msgstr="DMZ IP адрес" />
   <message msgid="dmz confirm" msgstr="Вы включили опцию 'DMZ NAT Loopback'. После применения этих настроек вы больше не сможете продолжить настройку через web-интерфейс, а также не сможете подключаться к маршрутизатору по протоколу SSH. Вы действительно хотите включить данную опцию?" />
+  <message msgid="dmz ip empty" msgstr="IP адрес не может быть пустым." />
+  <message msgid="dmz number" msgstr="Должно быть числом." />
+  <message msgid="dmz invalid ip" msgstr="Неправильный IP адрес." />
 
   <message msgid="alg title" msgstr="Настройки ALG" />
   <message msgid="alg introduction" msgstr="На этой странице вы можете включить или отключить сервисы ALG." />

@@ -66,6 +66,7 @@
     <message msgid="vpn alert password" msgstr="Password can not contain spaces or dollar sign!" />
     <message msgid="vpn alert username" msgstr="User name can not contain spaces or dollar sign!" />
     <message msgid="vpn alert invalid ip" msgstr="Invalid IP address or domain name!" />
+    <message msgid="vpn kabinet auth" msgstr="KABINET Authorization" />
 
     <message msgid="ipv6 title" msgstr="IPv6 Setup" />
     <message msgid="ipv6 introduction" msgstr="" />
@@ -91,6 +92,14 @@
     <message msgid="ipv6 service status" msgstr="Status" />
     <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
     <message msgid="ipv6 dhcp6s" msgstr="Dynamic IPv6 configuration(dhcp6s)" />
+    <message msgid="ipv6 ip empty" msgstr="IP address is empty." />
+    <message msgid="ipv6 number" msgstr="It should be a [0-9] number." />
+    <message msgid="ipv6 ip format error" msgstr="IP address format error." />
+    <message msgid="ipv6 hex" msgstr="It should be a [0-F] number." />
+    <message msgid="ipv6 invalid addr" msgstr="Invalid IPv6 IP address!" />
+    <message msgid="ipv6 invalid prefix" msgstr="Invalid prefix length!" />
+    <message msgid="ipv6 fill all" msgstr="Please fill all fields!" />
+    <message msgid="ipv6 invalid ipv4" msgstr="Invalid IPv4 ip address!" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications." />
@@ -132,6 +141,7 @@
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Action" />
+    <message msgid="routing unsup chars" msgstr="Unsupported character in comment" />
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />

@@ -125,7 +125,7 @@ function onUploadFirmwareSubmit(form)
 			_("management dont power off"),
 			form,
 			'firmwareReloader',
-			'/messages/wait_firmware.asp',
+			_("message upgrade"),
 			ajaxShowProgress);
 }
 
@@ -136,7 +136,7 @@ function onImportSettings(form)
 			_("management ask upload settings"),
 			form,
 			'setmanReloader',
-			'/messages/wait_config.asp',
+			_("message config"),
 			ajaxShowProgress);
 }
 
@@ -147,7 +147,7 @@ function onUploadRWFSSubmit(form)
 			_("management ask upload rwfs"),
 			form,
 			'RWFSReloader',
-			'/messages/wait_rwfs.asp',
+			_("message rwfs"),
 			ajaxShowProgress);
 }
 
@@ -157,7 +157,7 @@ function onReset2DefaultsSubmit(form)
       _("management ask reset factory"),
       form,
       'defaultsReloader',
-      '/messages/wait_config.asp',
+      _("message config"),
       ajaxShowProgress);
 }
 </script>

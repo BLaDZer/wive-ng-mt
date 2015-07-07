@@ -40,14 +40,14 @@ function checkForm(form)
 	{
 		if (form.WorkGroup.value == '')
 		{
-			alert('Workgroup not specified.');
+			alert(_("services samba no workgroup"));
 			form.WorkGroup.focus();
 			return false;
 		}
 		
 		if (form.SmbNetBIOS.value == '')
 		{
-			alert('NetBIOS name not specified.');
+			alert(_("services samba no netbios"));
 			form.SmbNetBIOS.focus();
 			return false;
 		}
@@ -59,7 +59,7 @@ function checkForm(form)
 		
 		if ((os_level < 0) || (os_level > 255))
 		{
-			alert('Invalid OS level value [0-255].');
+			alert(_("services samba invalid os level"));
 			form.SmbOsLevel.focus();
 			return false;
 		}

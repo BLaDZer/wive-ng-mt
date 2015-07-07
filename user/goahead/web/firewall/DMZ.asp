@@ -58,14 +58,14 @@ function atoi(str, num)
 function checkIPAddr(field)
 {
     if(field.value == ""){
-        alert("IP address cannot empty.");
+        alert(_("dmz ip empty"));
         field.value = field.defaultValue;
         field.focus();
         return false;
     }
 
     if ( isAllNum(field.value) == 0) {
-        alert('It should be a [0-9] number.');
+        alert(_("dmz number"));
         field.value = field.defaultValue;
         field.focus();
         return false;
@@ -75,7 +75,7 @@ function checkIPAddr(field)
         (!checkRange(field.value,2,0,255)) ||
         (!checkRange(field.value,3,0,255)) ||
         (!checkRange(field.value,4,1,254)) ){
-        alert('Invalid IP address.');
+        alert(_("dmz invalid ip"));
         field.value = field.defaultValue;
         field.focus();
         return false;

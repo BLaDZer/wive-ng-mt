@@ -90,4 +90,6 @@
     <message msgid="syslog kernel" msgstr="Уровень ядра" />
     <message msgid="syslog remote ip" msgstr="IP удалённой системы логирования" />
     <message msgid="syslog system log" msgstr="Системный лог" />
+    <message msgid="syslog not support" msgstr="Не поддерживается.\n(Busybox->\n  System Logging Utilitie ->\n    syslogd\n    Circular Buffer\n    logread" />
+    <message msgid="syslog invalid ip" msgstr="Неверный адрес сервера логов" />
 </po>

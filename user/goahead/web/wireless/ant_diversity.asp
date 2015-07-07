@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <style type="text/css">
 <!--
 #loading {
@@ -24,8 +25,9 @@
 -->
 </style>
 <script language="JavaScript" type="text/javascript">
-document.write('<div id="loading" style="display: none;"><br><br><br>Uploading firmware <br><br> Please be patient and don\'t remove usb device if it presented...</div>');
+
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 var secs
 var timerID = null
@@ -113,7 +115,17 @@ function updateAntennaStatus(str)
 
 function initTranslation()
 {
+    _TR("AntennaDiversityIntroStr", "ant div title");
+    _TR("AntennaDiversityIntro2Str", "ant div introduction");
+    _TR("AntennaDiversity", "ant div config");
+    _TR("AntennaDiversityModeStr", "ant div mode");
+    _TR("AntennaDiversityAntennaStr", "ant div str");
+    _TR("AntennaDiversityDisable", "button disable");
+    _TR("AntennaDiversityEnableAlgo", "ant div algo");
+    _TR("AntennaDiversityAntenna0", "ant div ant0");
+    _TR("AntennaDiversityAntenna2", "ant div ant2");
 
+    _TRV("AntennaDiversitySubmitStr", "button apply");
 }
 
 function pageInit(){
@@ -123,9 +135,7 @@ function pageInit(){
 	InitializeTimer();
 
 	mode = "<% getCfgGeneral(1, "AntennaDiversity"); %>"
-	if(mode == "Disable"){
-		document.AntennaDiversity.ADSelect.options.selectedIndex = 0;
-	}else if(mode == "Enable_Algorithm1"){
+	if(mode == "Enable_Algorithm1"){
 		document.AntennaDiversity.ADSelect.options.selectedIndex = 1;
 	}else if(mode == "Antenna0"){
 		document.AntennaDiversity.ADSelect.options.selectedIndex = 2;
@@ -152,10 +162,10 @@ function pageInit(){
               <tr>
                 <td class="head" id="AntennaDiversityModeStr">Mode:</td>
                 <td><select id="ADSelect" name="ADSelect">
-                    <option value="Disable">Disable</option>
-                    <option value="Enable_Algorithm1">Enable Algorithm1 (BBP)</option>
-                    <option value="Antenna0">fixed at Ant0</option>
-                    <option value="Antenna2">fixed at Ant2</option>
+                    <option value="Disable" id="AntennaDiversityDisable">Disable</option>
+                    <option value="Enable_Algorithm1" id="AntennaDiversityEnableAlgo">Enable Algorithm1 (BBP)</option>
+                    <option value="Antenna0" id="AntennaDiversityAntenna0">fixed at Ant0</option>
+                    <option value="Antenna2" id="AntennaDiversityAntenna2">fixed at Ant2</option>
                   </select></td>
               </tr>
               <tr>

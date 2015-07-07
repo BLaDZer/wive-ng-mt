@@ -253,14 +253,14 @@ function CheckValue(form)
 		// Check threshold
 		if (!validateNum(form.hwnatThreshold.value, false))
 		{
-			alert("Hardware NAT threshold must be a number");
+			alert(_("services misc hwnat number"));
 			form.hwnatThreshold.focus();
 			return false;
 		}
 		var thr = form.hwnatThreshold.value * 1;
 		if ((thr < 0) || (thr >500))
 		{
-			alert("Hardware NAT threshold must be a value between 0 and 500");
+			alert(_("services misc hwnat over"));
 			form.hwnatThreshold.focus();
 			return false;
 		}
@@ -269,7 +269,7 @@ function CheckValue(form)
 	var udpxy_port = form.udpxyPort.value * 1;
 	if (!((udpxy_port == 81) || ((udpxy_port >= 1024) && (udpxy_port <= 65535))))
 	{
-		alert("UDPXY port must be set to 81 or between 1024-65535");
+		alert(_("services misc udpxy port"));
 		form.udpxyPort.focus();
 		return false;
 	}
@@ -393,7 +393,7 @@ function displayServiceStatus()
 
 function submitForm(form) {
 	if (form.RemoteManagementPort.value != rmtManagementPort)
-		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', '/messages/rebooting.asp', ajaxShowProgress)) {
+		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', _("message reboot"), ajaxShowProgress)) {
 			form.reboot.value = "0";
     		form.submit();
 	}

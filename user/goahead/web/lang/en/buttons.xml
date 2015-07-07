@@ -18,4 +18,10 @@
     <message msgid="button disconnect all" msgstr="Disconnect All" />
     <message msgid="button clear" msgstr="Clear" />
     <message msgid="button remove" msgstr="Remove" />
+
+    <message msgid="message reboot" msgstr="Please wait while the router is rebooting..." />
+    <message msgid="message chmode" msgstr="Please wait while the new operating mode is applied..." />
+    <message msgid="message config" msgstr="Please wait while parameters are applied..." />
+    <message msgid="message upgrade" msgstr="Upgrading firmware... Please do not turn off power or reboot your router." />
+    <message msgid="message rwfs" msgstr="Please wait while new RWFS are applied..." />
 </po>

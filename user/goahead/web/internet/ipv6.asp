@@ -149,14 +149,14 @@ function isAllNum(str)
 function checkIpv4Addr(field)
 {
 	if (field.value == "") {
-		alert("Error. IP address is empty.");
+		alert(_("ipv6 ip empty"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
 	if (isAllNum(field.value) == 0) {
-		alert('It should be a [0-9] number.');
+		alert(_("ipv6 number"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -167,7 +167,7 @@ function checkIpv4Addr(field)
 			(!checkRange(field.value, 3, 0, 255)) ||
 			(!checkRange(field.value, 4, 1, 254)))
 	{
-		alert('IP adress format error.');
+		alert(_("ipv6 ip format error"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -181,7 +181,7 @@ function checkIpv6Addr(ip_addr, len)
 	ip_item = ip_addr.split(":");
 	for (var i=0; i<ip_item.length; i++) {
 		if (parseInt(ip_item[i], 16) == "NaN") {
-			alert('It should be a [0-F] number.');
+			alert(_("ipv6 hex"));
 			return false;
 		}
 	}
@@ -194,7 +194,7 @@ function CheckValue(form)
 	if (form.ipv6_opmode.value == "1") {
 		if (form.ipv6_lan_ipaddr.value != "") {
 			if (!checkIpv6Addr(form.ipv6_lan_ipaddr.value, 128)) {
-				alert("invalid IPv6 IP address!");
+				alert(_("ipv6 invalid addr"));
 				form.ipv6_lan_ipaddr.focus();
 				form.ipv6_lan_ipaddr.select();
 				return false;
@@ -202,7 +202,7 @@ function CheckValue(form)
 			if (form.ipv6_lan_prefix_len.value == "" ||
 			    form.ipv6_lan_prefix_len.value > 128 ||
 			    form.ipv6_lan_prefix_len.value < 0) {
-				alert("invalid prefix length!");
+				alert(_("ipv6 invalid prefix"));
 				form.ipv6_lan_prefix_len.focus();
 				form.ipv6_lan_prefix_len.select();
 				return false;
@@ -210,7 +210,7 @@ function CheckValue(form)
 		}
 		if (form.ipv6_wan_ipaddr.value != "") {
 			if (!checkIpv6Addr(form.ipv6_wan_ipaddr.value, 128)) {
-				alert("invalid IPv6 IP address!");
+				alert(_("ipv6 invalid addr"));
 				form.ipv6_wan_ipaddr.focus();
 				form.ipv6_wan_ipaddr.select();
 				return false;
@@ -218,7 +218,7 @@ function CheckValue(form)
 			if (form.ipv6_wan_prefix_len.value == "" ||
 			    form.ipv6_wan_prefix_len.value > 128 ||
 			    form.ipv6_wan_prefix_len.value < 0) {
-				alert("invalid prefix length!");
+				alert(_("ipv6 invalid prefix"));
 				form.ipv6_wan_prefix_len.focus();
 				form.ipv6_wan_prefix_len.select();
 				return false;
@@ -226,7 +226,7 @@ function CheckValue(form)
 		}
 		if (form.ipv6_static_gw.value != "" &&
 		    (!checkIpv6Addr(form.ipv6_static_gw.value, 128))) {
-			alert("invalid IPv6 IP address!");
+			alert(_("ipv6 invalid addr"));
 			form.ipv6_static_gw.focus();
 			form.ipv6_static_gw.select();
 			return false;
@@ -235,35 +235,35 @@ function CheckValue(form)
 		if (form.ipv6_6rd_prefix.value == "" ||
 		    form.ipv6_6rd_prefix_len.value == "" ||
 		    form.ipv6_6rd_border_ipaddr.value == "") {
-			alert("please fill all fields!");
+			alert(_("ipv6 fill all"));
 			return false;
 		}
 		if (!checkIpv6Addr(form.ipv6_6rd_prefix.value, 32)) {
-			alert("invalid IPv6 IP address!");
+			alert(_("ipv6 invalid addr"));
 			form.ipv6_6rd_prefix.focus();
 			form.ipv6_6rd_prefix.select();
 			return false;
 		}
 		if (form.ipv6_6rd_prefix_len.value > 32 ||
 		    form.ipv6_6rd_prefix_len.value < 0) {
-			alert("invalid prefix length!");
+			alert(_("ipv6 invalid prefix"));
 			form.ipv6_6rd_prefix_len.focus();
 			form.ipv6_6rd_prefix_len.select();
 			return false;
 		}
 		if (!checkIpv4Addr(form.ipv6_6rd_border_ipaddr.value)) {
-			alert("invalid IPv4 ip address!");
+			alert(_("ipv6 invalid ipv4"));
 			form.ipv6_6rd_border_ipaddr.focus();
 			form.ipv6_6rd_border_ipaddr.select();
 			return false;
 		}
 	} else if (form.ipv6_opmode.value == "3") {
 		if (form.IPv6SrvAddr.value == "" ) {
-			alert("Please fill all fields!");
+			alert(_("ipv6 fill all"));
 			return false;
 		}
 		if (!checkIpv4Addr(form.IPv6SrvAddr.value)) {
-			alert("invalid IPv4 ip address!");
+			alert(_("ipv6 invalid ipv4"));
 			form.IPv6SrvAddr.focus();
 			form.IPv6SrvAddr.select();
 			return false;

@@ -10,7 +10,9 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 var MBSSID_MAX 			= 8;
 var ACCESSPOLICYLIST_MAX	= 64;
@@ -46,7 +48,7 @@ var AccessControlList = new Array();
 
 var security_modes_list =
 [
-	[ "Disable", "Disable", 0, 0 ],
+	[ _("wireless disable"), "Disable", 0, 0 ],
 	[ "OPEN", "OPEN", 0, 0 ],
 	[ "SHARED", "SHARED", 0, 0 ],
 	[ "WEP", "WEPAUTO", 0, 0 ],
@@ -288,33 +290,33 @@ function checkData()
 		var keyvalue = document.security_form.passphrase.value;
 
 		if (keyvalue.length == 0){
-			alert('Please input wpapsk key!');
+			alert(_("secure no key"));
 			return false;
 		}
 
 		if (keyvalue.length < 8){
-			alert('Please input at least 8 character of wpapsk key!');
+			alert(_("apcli short phrase"));
 			return false;
 		}
 		
 		if(checkInjection(document.security_form.passphrase.value) == false){
-			alert('Invalid characters in Pass Phrase.');
+			alert(_("apcli chars not allowed"));
 			return false;
 		}
 
 		if(document.security_form.cipher[0].checked != true && 
 		   document.security_form.cipher[1].checked != true &&
    		   document.security_form.cipher[2].checked != true){
-   		   alert('Please choose a WPA Algorithms.');
+   		   alert(_("secure choose algo"));
    		   return false;
 		}
 
 		if(checkAllNum(document.security_form.keyRenewalInterval.value) == false){
-			alert('Please input a valid key renewal interval');
+			alert(_("secure renewal"));
 			return false;
 		}
 		if(document.security_form.keyRenewalInterval.value < 60){
-			alert('Warning: A short key renewal interval.');
+			alert(_("secure renewal short"));
 			// return false;
 		}
 		if(check_wpa() == false)
@@ -325,7 +327,7 @@ function checkData()
 	{
 		if( document.security_form.ieee8021x_wep[0].checked == false &&
 			document.security_form.ieee8021x_wep[1].checked == false){
-			alert('Please choose the 802.1x WEP option.');
+			alert(_("secure choose wep"));
 			return false;
 		}
 		if(check_radius() == false)
@@ -342,12 +344,12 @@ function checkData()
 			return false;
 		if( document.security_form.PreAuthentication[0].checked == false &&
 			document.security_form.PreAuthentication[1].checked == false){
-			alert('Please choose the Pre-Authentication options.');
+			alert(_("secure choose preauth"));
 			return false;
 		}
 
 		if(!document.security_form.PMKCachePeriod.value.length){
-			alert('Please input the PMK Cache Period.');
+			alert(_("secure no pmk"));
 			return false;
 		}
 		if(check_radius() == false)
@@ -359,7 +361,7 @@ function checkData()
 	{
 		if( document.getElementById("newap_text_" + i).value != ""){
 			if(!checkMac(document.getElementById("newap_text_" + i).value)){
-				alert("The mac address in Access Policy form is invalid.\n");
+				alert(_("secure invalid mac"));
 				return false;
 			}
 		}
@@ -373,16 +375,16 @@ function check_wpa()
 	if(document.security_form.cipher[0].checked != true && 
 		   document.security_form.cipher[1].checked != true &&
 		   document.security_form.cipher[2].checked != true){
-		   alert('Please choose a WPA Algorithms.');
+		   alert(_("secure choose algo"));
 		   return false;
 	}
 
 	if(checkAllNum(document.security_form.keyRenewalInterval.value) == false){
-		alert('Please input a valid key renewal interval');
+		alert(_("secure renewal"));
 		return false;
 	}
 	if(document.security_form.keyRenewalInterval.value < 60){
-		alert('Warning: A short key renewal interval.');
+		alert(_("secure renewal short"));
 		// return false;
 	}
 	return true;
@@ -391,35 +393,35 @@ function check_wpa()
 function check_radius()
 {
 	if(!document.security_form.RadiusServerIP.value.length){
-		alert('Please input the radius server ip address.');
+		alert(_("secure no radius ip"));
 		return false;
 	}
 	if(!document.security_form.RadiusServerPort.value.length){
-		alert('Please input the radius server port number.');
+		alert(_("secure no radius port"));
 		return false;
 	}
 	if(!document.security_form.RadiusServerSecret.value.length){
-		alert('Please input the radius server shared secret.');
+		alert(_("secure no radius secret"));
 		return false;
 	}
 
 	if(checkIpAddr(document.security_form.RadiusServerIP) == false){
-		alert('Please input a valid radius server ip address.');
+		alert(_("secure invalid radius ip"));
 		return false;
 	}
 	if( (checkRange(document.security_form.RadiusServerPort.value, 1, 1, 65535)==false) ||
 		(checkAllNum(document.security_form.RadiusServerPort.value)==false)){
-		alert('Please input a valid radius server port number.');
+		alert(_("secure invalid radius port"));
 		return false;
 	}
 	if(checkStrictInjection(document.security_form.RadiusServerSecret.value)==false){
-		alert('The shared secret contains invalid characters.');
+		alert(_("secure invalid radius secret"));
 		return false;
 	}
 
 	if(document.security_form.RadiusServerSessionTimeout.value.length){
 		if(checkAllNum(document.security_form.RadiusServerSessionTimeout.value)==false){
-			alert('Please input a valid session timeout number or u may left it empty.');
+			alert(_("secure invalid timeout"));
 			return false;
 		}	
 	}
@@ -586,7 +588,7 @@ function check_Wep(securitymode)
 		var keyvalue = document.security_form.wep_key_4.value;
 
 	if (keyvalue.length == 0 &&  (securitymode == "SHARED" || securitymode == "OPEN" || securitymode == "WEPAUTO")){ // shared wep  || md5
-		alert('Please input wep key'+defaultid+' !');
+		alert(_("secure no wep key")+defaultid+' !');
 		return false;
 	}
 
@@ -594,21 +596,25 @@ function check_Wep(securitymode)
 	if (keylength != 0){
 		if (document.security_form.WEP1Select.options.selectedIndex == 0){
 			if(keylength != 5 && keylength != 13) {
-				alert('Please input 5 or 13 characters of wep key1 !');
+				alert(_("secure short wep key"));
+				document.security_form.wep_key_1.focus();
 				return false;
 			}
 			if(checkInjection(document.security_form.wep_key_1.value)== false){
-				alert('Wep key1 contains invalid characters.');
+				alert(_("secure invalid wep key"));
+				document.security_form.wep_key_1.focus();
 				return false;
 			}
 		}
 		if (document.security_form.WEP1Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
-				alert('Please input 10 or 26 characters of wep key1 !');
+				alert(_("secure long wep key"));
+				document.security_form.wep_key_1.focus();
 				return false;
 			}
 			if(checkHex(document.security_form.wep_key_1.value) == false){
-				alert('Invalid Wep key1 format!');
+				alert(_("secure invalid key"));
+				document.security_form.wep_key_1.focus();
 				return false;
 			}
 		}
@@ -618,21 +624,25 @@ function check_Wep(securitymode)
 	if (keylength != 0){
 		if (document.security_form.WEP2Select.options.selectedIndex == 0){
 			if(keylength != 5 && keylength != 13) {
-				alert('Please input 5 or 13 characters of wep key2 !');
+				alert(_("secure short wep key"));
+				document.security_form.wep_key_2.focus();
 				return false;
 			}
 			if(checkInjection(document.security_form.wep_key_2.value)== false){
-				alert('Wep key2 contains invalid characters.');
+				alert(_("secure invalid wep key"));
+				document.security_form.wep_key_2.focus();
 				return false;
 			}			
 		}
 		if (document.security_form.WEP2Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
-				alert('Please input 10 or 26 characters of wep key2 !');
+				alert(_("secure long wep key"));
+				document.security_form.wep_key_2.focus();
 				return false;
 			}
 			if(checkHex(document.security_form.wep_key_2.value) == false){
-				alert('Invalid Wep key2 format!');
+				alert(_("secure invalid key"));
+				document.security_form.wep_key_2.focus();
 				return false;
 			}
 		}
@@ -642,21 +652,25 @@ function check_Wep(securitymode)
 	if (keylength != 0){
 		if (document.security_form.WEP3Select.options.selectedIndex == 0){
 			if(keylength != 5 && keylength != 13) {
-				alert('Please input 5 or 13 characters of wep key3 !');
+				alert(_("secure short wep key"));
+				document.security_form.wep_key_3.focus();
 				return false;
 			}
 			if(checkInjection(document.security_form.wep_key_3.value)== false){
-				alert('Wep key3 contains invalid characters.');
+				alert(_("secure invalid wep key"));
+				document.security_form.wep_key_3.focus();
 				return false;
 			}
 		}
 		if (document.security_form.WEP3Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
-				alert('Please input 10 or 26 characters of wep key3 !');
+				alert(_("secure long wep key"));
+				document.security_form.wep_key_3.focus();
 				return false;
 			}
 			if(checkHex(document.security_form.wep_key_3.value) == false){
-				alert('Invalid Wep key3 format!');
+				alert(_("secure invalid key"));
+				document.security_form.wep_key_3.focus();
 				return false;
 			}			
 		}
@@ -666,22 +680,26 @@ function check_Wep(securitymode)
 	if (keylength != 0){
 		if (document.security_form.WEP4Select.options.selectedIndex == 0){
 			if(keylength != 5 && keylength != 13) {
-				alert('Please input 5 or 13 characters of wep key4 !');
+				alert(_("secure short wep key"));
+				document.security_form.wep_key_4.focus();
 				return false;
 			}
 			if(checkInjection(document.security_form.wep_key_4.value)== false){
-				alert('Wep key4 contains invalid characters.');
+				alert(_("secure invalid wep key"));
+				document.security_form.wep_key_4.focus();
 				return false;
 			}			
 		}
 		if (document.security_form.WEP4Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
-				alert('Please input 10 or 26 characters of wep key4 !');
+				alert(_("secure long wep key"));
+				document.security_form.wep_key_4.focus();
 				return false;
 			}
 
 			if(checkHex(document.security_form.wep_key_4.value) == false){
-				alert('Invalid Wep key4 format!');
+				alert(_("secure invalid key"));
+				document.security_form.wep_key_4.focus();
 				return false;
 			}			
 		}
@@ -830,7 +848,7 @@ function selectMBSSIDChanged()
 {
 	// check if any security settings changed
 	if(changed){
-		ret = confirm("Are you sure to ignore changed?");
+		ret = confirm(_("secure confirm"));
 		if(!ret){
 			document.security_form.ssidIndex.options.selectedIndex = old_MBSSID;
 			return false;

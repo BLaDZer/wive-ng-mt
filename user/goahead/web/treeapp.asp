@@ -15,6 +15,10 @@
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <script language="JavaScript" type="text/javascript">
 
+var isFimwareUpload = 0;
+Butterlate.setTextDomain("menu");
+Butterlate.setTextDomain("buttons");
+
 function rebootRouter(form, reloader)
 {
 	if (!confirm(_('treeapp reboot confirm')))
@@ -37,12 +41,8 @@ function rebootRouter(form, reloader)
 
 	form.target = reloader;
 
-	ajaxPopupWindow('ajxReboot', '/messages/rebooting.asp', submitForm);
+	ajaxPopupWindow('ajxReboot', _("message reboot"), submitForm);
 }
-
-var isFimwareUpload = 0;
-Butterlate.setTextDomain("menu");
-Butterlate.setTextDomain("buttons");
 
 function initValue()
 {

@@ -55,6 +55,11 @@
   <message msgid="basic wds encryp type" msgstr="EncrypType" />
   <message msgid="basic wds encryp key" msgstr="Encryp Key" />
   <message msgid="basic wds ap macaddr" msgstr="AP MAC Address" />
+  <message msgid="basic wds key1" msgstr="Key should be a 10/26 hexdecimal or a 5/13 ascii" />
+  <message msgid="basic wds key2" msgstr="Key should be with length 8~64" />
+  <message msgid="basic wds key3" msgstr="Key should be a 64 hexdecimal" />
+  <message msgid="basic wds invalid mac" msgstr="Please fill WDS remote AP MAC Address in correct format! (XX:XX:XX:XX:XX:XX)" />
+  <message msgid="basic wds no mac" msgstr="No remote AP MAC addresses specified!" />
   <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
   <message msgid="basic ht op mode" msgstr="Green Filed Mode" />
   <message msgid="basic ht op mixed" msgstr="Disable" />
@@ -84,6 +89,17 @@
   <message msgid="basic select by rssi" msgstr="by noise level" />
   <message msgid="basic hour" msgstr="h" />
   <message msgid="basic rescan every" msgstr="renew every " />
+  <message msgid="basic bg" msgstr="11b/g mixed" />
+  <message msgid="basic b" msgstr="11b only" />
+  <message msgid="basic g" msgstr="11g only" />
+  <message msgid="basic n" msgstr="11n only" />
+  <message msgid="basic gn" msgstr="11g/n mixed" />
+  <message msgid="basic bgn" msgstr="11b/g/n mixed" />
+  <message msgid="basic a" msgstr="11a only" />
+  <message msgid="basic aan" msgstr="11a/an mixed" />
+  <message msgid="basic an" msgstr="11an only" />
+  <message msgid="basic anc" msgstr="11a/an/ac mixed" />
+  <message msgid="basic anac" msgstr="11an/ac mixed" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />
@@ -121,6 +137,18 @@
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
   <message msgid="adv idletimeout" msgstr="Idle Timeout" />
 
+  <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
+  <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />
+  <message msgid="adv no dtim" msgstr="Please specify DTIM Interval" />
+  <message msgid="adv invalid dtim" msgstr="Invalid DTIM Interval" />
+  <message msgid="adv no frag len" msgstr="Please specify Fragmentation Length" />
+  <message msgid="adv invalid frag len" msgstr="Invalid Fragmentation Length" />
+  <message msgid="adv no rts" msgstr="Please specify RTS Threshold" />
+  <message msgid="adv invalid rts" msgstr="Invalid RTS Threshold" />
+  <message msgid="adv invalid max sta num" msgstr="Invalid Maximum stations number" />
+  <message msgid="adv invalid keepalive" msgstr="Invalid Station Keep-Alive parametr" />
+  <message msgid="adv invalid idletimeout" msgstr="Invalid IdleTimeout parametr" />
+
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />
   <message msgid="secure ssid introduction" msgstr="You can configure wireless security and encryption to prevent unauthorized access to the router (WPA2-PSK+AES recomended)." />
@@ -157,6 +185,27 @@
   <message msgid="secure access policy capable" msgstr=" Policy " />
   <message msgid="secure access policy new" msgstr="Add a station Mac:" />
   <message msgid="secure access policy del" msgstr="Del" />
+  <message msgid="secure no key" msgstr="Please input wpapsk key!" />
+  <message msgid="secure choose algo" msgstr="Please choose a WPA Algorithms." />
+  <message msgid="secure renewal" msgstr="Please input a valid key renewal interval" />
+  <message msgid="secure renewal short" msgstr="Warning: A short key renewal interval." />
+  <message msgid="secure choose wep" msgstr="Please choose the 802.1x WEP option." />
+  <message msgid="secure choose preauth" msgstr="Please choose the Pre-Authentication options." />
+  <message msgid="secure no pmk" msgstr="Please input the PMK Cache Period." />
+  <message msgid="secure invalid mac" msgstr="The MAC address in Access Policy form is invalid." />
+  <message msgid="secure no radius ip" msgstr="Please input the radius server ip address." />
+  <message msgid="secure no radius port" msgstr="Please input the radius server port number." />
+  <message msgid="secure no radius secret" msgstr="Please input the radius server shared secret." />
+  <message msgid="secure invalid radius ip" msgstr="Please input a valid radius server ip address." />
+  <message msgid="secure invalid radius port" msgstr="Please input a valid radius server port number." />
+  <message msgid="secure invalid radius secret" msgstr="The shared secret contains invalid characters." />
+  <message msgid="secure invalid timeout" msgstr="Please input a valid session timeout number or you may left it empty." />
+  <message msgid="secure no wep key" msgstr="Please input WEP key" />
+  <message msgid="secure short wep key" msgstr="Please input 5 or 13 characters of WEP key!" />
+  <message msgid="secure invalid wep key" msgstr="WEP key contains invalid characters." />
+  <message msgid="secure long wep key" msgstr="Please input 10 or 26 characters of WEP key!" />
+  <message msgid="secure invalid key" msgstr="Invalid WEP key format!" />
+  <message msgid="secure confirm" msgstr="Are you sure to ignore changed?" />
 
   <message msgid="apcli title" msgstr="AP Client Feature" />
   <message msgid="apcli param" msgstr="Here you can configure AP Client parameters." />
@@ -166,6 +215,11 @@
   <message msgid="apcli disable iface" msgstr="Disable AP Interface" />
   <message msgid="apcli enable bridge" msgstr="Enable Bridge Mode" />
   <message msgid="apcli reboot confirm" msgstr="For apply settings needs to reboot you router. Do you want to proceed?" />
+  <message msgid="apcli no ssid" msgstr="Please specify SSID" />
+  <message msgid="apcli no correct bssid" msgstr="Please specify correct BSSID" />
+  <message msgid="apcli short phrase" msgstr="Password phrase length should be larger than 8 characters" />
+  <message msgid="apcli long phrase" msgstr="Password phrase is too long" />
+  <message msgid="apcli chars not allowed" msgstr="Some of characters in password phrase are not allowed" />
 
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
@@ -248,4 +302,13 @@
   <message msgid="about introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />
+
+  <message msgid="ant div title" msgstr="Antenna Diversity" />
+  <message msgid="ant div introduction" msgstr="Here you can configure Antenna Diversity setting to increase wireless performance." />
+  <message msgid="ant div config" msgstr="Antenna Diversity" />
+  <message msgid="ant div mode" msgstr="Mode:" />
+  <message msgid="ant div str" msgstr="Antenna:" />
+  <message msgid="ant div algo" msgstr="Enable Algorithm1 (BBP)" />
+  <message msgid="ant div ant0" msgstr="fixed at Ant0" />
+  <message msgid="ant div ant2" msgstr="fixed at Ant2" />
 </po>

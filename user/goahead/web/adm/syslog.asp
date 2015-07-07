@@ -19,8 +19,7 @@ function uploadLogField(str)
 {
 	if (str == "-1")
 	{
-		document.getElementById("syslog").value =
-		"Not support.\n(Busybox->\n  System Logging Utilitie ->\n    syslogd\n    Circular Buffer\n    logread"
+		document.getElementById("syslog").value = _("syslog not support");
 	}
 	else
 	{
@@ -90,7 +89,7 @@ function checkSetupForm(form)
 	{
 		if (!validateIP(form.RemoteSysLogIP))
 		{
-			alert("Invalid Remote system log IP address");
+			alert(_("syslog invalid ip"));
 			form.RemoteSysLogIP.focus();
 		}
 	}

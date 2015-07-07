@@ -193,7 +193,7 @@ function wanMtuChange(form)
 
 function submitForm(form) {
 	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
-		if (!ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', '/messages/wait_config.asp', ajaxShowProgress)) {
+		if (!ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', _("message config"), ajaxShowProgress)) {
 			form.reboot.value = "0";
 			form.submit();
 		}
@@ -294,7 +294,7 @@ function submitForm(form) {
             <td class="head" id="wMacAddr">WAN MAC address</td>
             <td>
 		<input name="wanMac" id="wanMac" class="mid" value="<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>">
-		<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', '/messages/wait_config.asp', ajaxShowProgress);">
+		<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
 	    </td>
           </tr>
         </table>

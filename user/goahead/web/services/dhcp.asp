@@ -80,13 +80,13 @@ function addIPItem(form)
 {
 	if (!validateMAC(form.dhcpStaticMAC.value, true))
 	{
-		alert(_("services dhcp invalid desc"));
+		alert(_("services dhcp invalid mac"));
 		form.dhcpStaticMAC.focus();
 		return;
 	}
 	if (!validateIP(form.dhcpStaticIP, true))
 	{
-		alert(_("services dhcp invalid desc"));
+		alert(_("services dhcp invalid ip"));
 		form.dhcpStaticIP.focus();
 		return;
 	}
@@ -260,11 +260,13 @@ function CheckValue(form)
 	{
 		if (!validateIP(form.dhcpStart, true))
 		{
+			alert(_("services dhcp invalid ip"));
 			form.dhcpStart.focus();
 			return false;
 		}
 		if (!validateIP(form.dhcpEnd, true))
 		{
+			alert(_("services dhcp invalid ip"));
 			form.dhcpEnd.focus();
 			return false;
 		}
@@ -277,6 +279,7 @@ function CheckValue(form)
 		{
 			if (!validateIP(form.dhcpPriDns, true))
 			{
+				alert(_("services dhcp invalid ip"));
 				form.dhcpPriDns.focus();
 				return false;
 			}
@@ -285,12 +288,14 @@ function CheckValue(form)
 		{
 			if (!validateIP(form.dhcpSecDns, true))
 			{
+				alert(_("services dhcp invalid ip"));
 				form.dhcpSecDns.focus();
 				return false;
 			}
 		}
 		if (!validateIP(form.dhcpGateway, true))
 		{
+			alert(_("services dhcp invalid ip"));
 			form.dhcpGateway.focus();
 			return false;
 		}

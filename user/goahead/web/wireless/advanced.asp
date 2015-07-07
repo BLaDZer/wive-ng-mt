@@ -11,7 +11,9 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
+
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 var bgProtection = '<% getCfgZero(1, "BGProtection"); %>';
 var shortPreamble = '<% getCfgZero(1, "TxPreamble"); %>';
@@ -87,8 +89,8 @@ function initTranslation()
   _TR("advStationKeepAlive", "adv station keep alive");
   _TR("advIdleTimeout", "adv idletimeout");
 
-	_TRV("advApply", "wireless apply");
-	_TRV("advCancel", "wireless cancel");
+	_TRV("advApply", "button apply");
+	_TRV("advCancel", "button cancel");
 }
 
 function initValue()
@@ -192,7 +194,7 @@ function CheckValue(form)
 {
 	if (form.beacon.value == "")
 	{
-		alert('Please specify Beacon Interval');
+		alert(_("adv no beacon"));
 		form.beacon.focus();
 		form.beacon.select();
 		return false;
@@ -200,7 +202,7 @@ function CheckValue(form)
 
 	if (isNaN(form.beacon.value) || form.beacon.value < 20 || form.beacon.value > 999)
 	{
-		alert('Invalid Beacon Interval');
+		alert(_("adv invalid beacon"));
 		form.beacon.focus();
 		form.beacon.select();
 		return false;
@@ -208,7 +210,7 @@ function CheckValue(form)
 
 	if (form.dtim.value == "" )
 	{
-		alert('Please specify DTIM Interval');
+		alert(_("adv no dtim"));
 		form.dtim.focus();
 		form.dtim.select();
 		return false;
@@ -216,7 +218,7 @@ function CheckValue(form)
 
 	if (isNaN(form.dtim.value) || form.dtim.value < 1 || form.dtim.value > 255)
 	{
-		alert('Invalid DTIM Interval');
+		alert(_("adv invalid dtim"));
 		form.dtim.focus();
 		form.dtim.select();
 		return false;
@@ -224,7 +226,7 @@ function CheckValue(form)
 
 	if (form.fragment.value == "" )
 	{
-		alert('Please specify Fragmentation Length');
+		alert(_("adv no frag len"));
 		form.fragment.focus();
 		form.fragment.select();
 		return false;
@@ -232,7 +234,7 @@ function CheckValue(form)
 
 	if (isNaN(form.fragment.value) || form.fragment.value < 1 || form.fragment.value > 2346)
 	{
-		alert('Invalid Fragmentation Length');
+		alert(_("adv invalid frag len"));
 		form.fragment.focus();
 		form.fragment.select();
 		return false;
@@ -240,7 +242,7 @@ function CheckValue(form)
 
 	if (form.rts.value == "" )
 	{
-		alert('Please specify RTS Threshold');
+		alert(_("adv no rts"));
 		form.rts.focus();
 		form.rts.select();
 		return false;
@@ -248,7 +250,7 @@ function CheckValue(form)
 
 	if (isNaN(form.rts.value) || form.rts.value < 1 || form.rts.value > 2347)
 	{
-		alert('Invalid RTS Threshold');
+		alert(_("adv invalid rts"));
 		form.rts.focus();
 		form.rts.select();
 		return false;
@@ -256,7 +258,7 @@ function CheckValue(form)
 
   if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > <% getMaxStaNum(); %>)
   {
-    alert('Invalid Maximum stations number');
+    alert(_("adv invalid max sta num"));
     form.maxstanum.focus();
     form.maxstanum.select();
     return false;
@@ -264,7 +266,7 @@ function CheckValue(form)
 
   if (isNaN(form.keepalive.value) || form.keepalive.value < 10 || form.keepalive.value > 300)
   {
-    alert('Invalid Station Keep-Alive parametr');
+    alert(_("adv invalid keepalive"));
     form.keepalive.focus();
     form.keepalive.select();
     return false;
@@ -272,7 +274,7 @@ function CheckValue(form)
 
   if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 300)
   {
-    alert('Invalid IdleTimeout parametr');
+    alert(_("adv invalid idletimeout"));
     form.idletimeout.focus();
     form.idletimeout.select();
     return false;

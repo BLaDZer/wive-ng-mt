@@ -4,6 +4,9 @@
   <message msgid="dmz setting" msgstr="DMZ Settings" />
   <message msgid="dmz ipaddr" msgstr="DMZ IP Address" />
   <message msgid="dmz confirm" msgstr="You have switched option 'DMZ NAT Loopback' on. After applying this configuration you will never enter this configuration web interface or connect to router by SSH protocol. Do you really want to proceed to set this option?" />
+  <message msgid="dmz ip empty" msgstr="IP address cannot empty." />
+  <message msgid="dmz number" msgstr="It should be a [0-9] number." />
+  <message msgid="dmz invalid ip" msgstr="Invalid IP address." />
 
   <message msgid="alg title" msgstr="ALG Settings" />
   <message msgid="alg introduction" msgstr="On this page you can enable/disable ALG services." />

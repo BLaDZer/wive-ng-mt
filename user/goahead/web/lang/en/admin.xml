@@ -90,4 +90,6 @@
     <message msgid="syslog kernel" msgstr="Kernel logging daemon:" />
     <message msgid="syslog remote ip" msgstr="Remote system log IP:" />
     <message msgid="syslog system log" msgstr="System Log:" />
+    <message msgid="syslog not support" msgstr="Not support.\n(Busybox->\n  System Logging Utilitie ->\n    syslogd\n    Circular Buffer\n    logread" />
+    <message msgid="syslog invalid ip" msgstr="Invalid Remote system log IP address" />
 </po>
