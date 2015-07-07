@@ -392,10 +392,14 @@ function displayServiceStatus()
 }
 
 function submitForm(form) {
-	if (form.RemoteManagementPort.value != rmtManagementPort)
+	if (form.RemoteManagementPort.value != rmtManagementPort) {
 		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', _("message reboot"), ajaxShowProgress)) {
 			form.reboot.value = "0";
     		form.submit();
+		}
+	} else {
+		form.reboot.value = "0";
+		form.submit();
 	}
 }
 </script>

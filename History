@@ -1078,10 +1078,6 @@
 59) kernel: pipe: iovec: fix memory corruption when retrying atomic copy as non-atomic (CVE-2015-1805).<br>
 <br>
 <br>
-<b>3.3.x</b><br>
-1) goahead: webui: nex step translate fixups.<br>
-<br>
-<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) need add subchannel select for 5GHz module.<br>
