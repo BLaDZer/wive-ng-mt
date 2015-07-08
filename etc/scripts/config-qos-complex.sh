@@ -60,32 +60,35 @@ qos_nf_if() {
     echo "$INCOMING -i $wan_if -p udp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
 
-    # SYN/RST/ICMP and small size packets to hih prio
-    echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 20" >> $IPTSCR
-
-    # all multicast to high prio
-    echo "$INCOMING -i $wan_if -d $mcast_net -j MARK --set-mark 20" >> $IPTSCR
-
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
     fi
+
     # next user medium prio ports
     if [ "$QoS_low_pp" != "" ]; then
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
     fi
+
     # second user high prio dscp
     if [ "$QoS_high_dscp" != "" ]; then
 	echo "$INCOMING -i $wan_if -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
     fi
+
     # next user medium prio dscp
     if [ "$QoS_low_dscp" != "" ]; then
 	echo "$INCOMING -i $wan_if -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
     fi
+
+    # tcp SYN and small size packets to high prio
+    echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
+
+    # all icmp and udp multicast to high prio
+    echo "$INCOMING -i $wan_if -p udp -d $mcast_net -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 20" >> $IPTSCR
 
     # all others set as low prio
     echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
@@ -99,21 +102,22 @@ qos_nf_if() {
     echo "$OUTGOING -o $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p udp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
 
-    # SYN/RST/ICMP and small size packets to hih prio
-    echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
-
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
 	echo "$OUTGOING -o $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 23" >> $IPTSCR
 	echo "$OUTGOING -o $wan_if -p udp -m multiport --dport $QoS_high_pp -j MARK --set-mark 23" >> $IPTSCR
     fi
+
     # next user low prio ports
     if [ "$QoS_low_pp" != "" ]; then
 	echo "$OUTGOING -o $wan_if -p tcp -m multiport --dport $QoS_low_pp -j MARK --set-mark 24" >> $IPTSCR
 	echo "$OUTGOING -o $wan_if -p udp -m multiport --dport $QoS_low_pp -j MARK --set-mark 24" >> $IPTSCR
     fi
+
+    # SYN/ICMP and small size packets to hih prio
+    echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
 
     # all others set as low prio
     echo "$OUTGOING -o $wan_if -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
