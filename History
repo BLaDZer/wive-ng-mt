@@ -1076,6 +1076,7 @@
 57) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
 58) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
 59) kernel: pipe: iovec: fix memory corruption when retrying atomic copy as non-atomic (CVE-2015-1805).<br>
+60) kernel: sched/rt: fix memory leak in alloc_rt_sched_group().<br>
 <br>
 <br>
 <b>TODO:</b><br>
