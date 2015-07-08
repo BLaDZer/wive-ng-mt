@@ -1055,32 +1055,35 @@
 36) kernel: time: jiffies_delta_to_clock_t() helper to the rescue.<br>
 37) kernel: pipe: iovec: fix memory corruption when retrying atomic copy as non-atomic (CVE-2015-1805).<br>
 38) kernel: sched/rt: fix memory leak in alloc_rt_sched_group().<br>
-39) kernel: net: provide a default dev->ethtool_ops.<br>
-40) kernel: net: force a list_del() in unregister_netdevice_many().<br>
-41) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
-42) kernel: net: ax25: stop using sock->sk_protinfo.<br>
-43) kernel: net: kill sock->sk_protinfo.<br>
-44) kernel: net: remove extranous rcu_read_lock.<br>
-45) kernel: net: ip_gre: fix possible use after free.<br>
-46) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
-47) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
-48) kernel: net: netfilter: remove ip_queue support.<br>
-49) kernel: net: netfilter: use kfree_skb() not kfree().<br>
-50) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
-51) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
-52) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
-53) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
-54) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
-55) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
-56) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
-57) kernel: net: bridge: avoid OOPS if root port not found.<br>
-58) kernel: net: bridge: disable softirqs around br_fdb_update to avoid lockup.<br>
-59) kernel: net: fix race condition in several drivers when reading stats.<br>
-60) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
-61) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
-62) kernel: net: tcp: remove redundant checks.<br>
-63) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
-64) kernel: net: ipv6: fix possible use after free of dev stats.<br>
+39) kernel: stop using NLA_PUT*().<br>
+40) kernel: netlink: Add nla_put_xx{16,32,64}() helpers.<br>
+41) kernel: net: provide a default dev->ethtool_ops.<br>
+42) kernel: net: force a list_del() in unregister_netdevice_many().<br>
+43) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
+44) kernel: net: ax25: stop using sock->sk_protinfo.<br>
+45) kernel: net: kill sock->sk_protinfo.<br>
+46) kernel: net: remove extranous rcu_read_lock.<br>
+47) kernel: net: ip_gre: fix possible use after free.<br>
+48) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
+49) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
+50) kernel: net: netfilter: remove ip_queue support.<br>
+51) kernel: net: netfilter: use kfree_skb() not kfree().<br>
+52) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
+53) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
+54) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+55) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
+56) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
+57) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
+58) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
+59) kernel: net: bridge: avoid OOPS if root port not found.<br>
+60) kernel: net: bridge: disable softirqs around br_fdb_update to avoid lockup.<br>
+61) kernel: net: fix race condition in several drivers when reading stats.<br>
+62) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
+63) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
+64) kernel: net: tcp: remove redundant checks.<br>
+65) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
+66) kernel: net: ipv6: fix possible use after free of dev stats.<br>
+67) kernel: net: cleanup unsigned to unsigned int.<br>
 <br>
 <br>
 <b>TODO:</b><br>
