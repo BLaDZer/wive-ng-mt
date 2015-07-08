@@ -67,6 +67,7 @@ qos_nf_if() {
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
     fi
+    # next user medium prio ports
     if [ "$QoS_low_pp" != "" ]; then
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
@@ -95,6 +96,7 @@ qos_nf_if() {
 	echo "$OUTGOING -o $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 23" >> $IPTSCR
 	echo "$OUTGOING -o $wan_if -p udp -m multiport --dport $QoS_high_pp -j MARK --set-mark 23" >> $IPTSCR
     fi
+    # next user low prio ports
     if [ "$QoS_low_pp" != "" ]; then
 	echo "$OUTGOING -o $wan_if -p tcp -m multiport --dport $QoS_low_pp -j MARK --set-mark 24" >> $IPTSCR
 	echo "$OUTGOING -o $wan_if -p udp -m multiport --dport $QoS_low_pp -j MARK --set-mark 24" >> $IPTSCR
