@@ -88,7 +88,7 @@ qos_nf_if() {
 
     # all icmp and udp multicast to high prio
     echo "$INCOMING -i $wan_if -p udp -d $mcast_net -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p icmp -j MARK --set-mark 20" >> $IPTSCR
 
     # all others set as low prio
     echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
@@ -117,7 +117,7 @@ qos_nf_if() {
     # SYN/ICMP and small size packets to hih prio
     echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -p icmp -j MARK --set-mark 23" >> $IPTSCR
 
     # all others set as low prio
     echo "$OUTGOING -o $wan_if -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
