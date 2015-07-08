@@ -80,18 +80,15 @@ qos_nf_if() {
     fi
     # second user high prio dscp
     if [ "$QoS_high_dscp" != "" ]; then
-	echo "$INCOMING -i $wan_if -p tcp -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
-	echo "$INCOMING -i $wan_if -p udp -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
     fi
     # next user medium prio dscp
     if [ "$QoS_low_dscp" != "" ]; then
-	echo "$INCOMING -i $wan_if -p tcp -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
-	echo "$INCOMING -i $wan_if -p udp -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
     fi
 
     # all others set as low prio
-    echo "$INCOMING -i $wan_if -p tcp -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
 
     ##################################################################################################################################
     # SET MARKERS FOR OUTGOING
@@ -119,8 +116,7 @@ qos_nf_if() {
     fi
 
     # all others set as low prio
-    echo "$OUTGOING -o $wan_if -p tcp -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p udp -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
 }
 
 qos_tc_lan() {
