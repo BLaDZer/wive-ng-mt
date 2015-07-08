@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #############################################################################################################
-# Qos helper script for Wive-NG										    #
+# Port/DSCP based Qos helper script for Wive-NG										    #
 #############################################################################################################
 
 # include global
@@ -17,6 +17,9 @@ eval `nvram_buf_get 2860 igmpEnabled \
 # get users prio ports
 QoS_high_pp=`nvram_get 2860 QoS_high_pp | awk '{ gsub(" ",","); print }'`
 QoS_low_pp=`nvram_get 2860 QoS_low_pp | awk '{ gsub(" ",","); print }'`
+# get users prio dscps
+QoS_high_dscp=`nvram_get 2860 QoS_high_dscp | awk '{ gsub(" ",","); print }'`
+QoS_low_dscp=`nvram_get 2860 QoS_low_dscp | awk '{ gsub(" ",","); print }'`
 
 IPTSCR="/etc/qos_firewall"
 INCOMING="iptables -A shaper_pre -t mangle"
@@ -28,6 +31,9 @@ qos_lm() {
     modprobe -q sch_htb
     modprobe -q xt_mark
     modprobe -q xt_length
+    if [ "$QoS_high_dscp" != "" ] || [ "$QoS_low_dscp" != "" ]; then
+	modprobe -q xt_dscp
+    fi
 }
 
 qos_nf() {
@@ -72,6 +78,16 @@ qos_nf_if() {
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
     fi
+    # second user high prio dscp
+    if [ "$QoS_high_dscp" != "" ]; then
+	echo "$INCOMING -i $wan_if -p tcp -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p udp -m dscp --dscp-class $QoS_high_dscp -j MARK --set-mark 20" >> $IPTSCR
+    fi
+    # next user medium prio dscp
+    if [ "$QoS_low_dscp" != "" ]; then
+	echo "$INCOMING -i $wan_if -p tcp -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p udp -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
+    fi
 
     # all others set as low prio
     echo "$INCOMING -i $wan_if -p tcp -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
@@ -87,7 +103,7 @@ qos_nf_if() {
     echo "$OUTGOING -o $wan_if -p udp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
 
     # SYN/RST/ICMP and small size packets to hih prio
-    echo "$INCOMING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
 
