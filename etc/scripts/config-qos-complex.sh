@@ -180,7 +180,7 @@ gos_tc_wan() {
     tc filter add dev $wan_if parent 1:0 prio 1 protocol ip handle 24 fw flowid 1:24
 }
 
-# tune netdev
+# load modules
 qos_lm
 # create target
 qos_nf

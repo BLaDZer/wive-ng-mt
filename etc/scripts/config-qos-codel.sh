@@ -21,7 +21,7 @@ qos_tc() {
     tc qdisc add dev $real_wan_if root fq_codel		> /dev/null 2>&1
 }
 
-# tune netdev
+# load modules
 qos_lm
 # add netsched rules
 qos_tc
