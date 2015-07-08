@@ -1074,11 +1074,12 @@
 55) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
 56) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
 57) kernel: net: bridge: avoid OOPS if root port not found.<br>
-58) kernel: net: fix race condition in several drivers when reading stats.<br>
-59) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
-60) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
-61) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
-62) kernel: net: ipv6: fix possible use after free of dev stats.<br>
+58) kernel: net: bridge: disable softirqs around br_fdb_update to avoid lockup.<br>
+59) kernel: net: fix race condition in several drivers when reading stats.<br>
+60) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
+61) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
+62) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
+63) kernel: net: ipv6: fix possible use after free of dev stats.<br>
 <br>
 <br>
 <b>TODO:</b><br>
