@@ -40,22 +40,27 @@ qos_nf() {
     echo "iptables -F shaper_pre -t mangle > /dev/null 2>&1" >> $IPTSCR
     echo "iptables -N shaper_post -t mangle > /dev/null 2>&1" >> $IPTSCR
     echo "iptables -F shaper_post -t mangle > /dev/null 2>&1" >> $IPTSCR
-    echo "iptables -A PREROUTING -t mangle ! -d 224.0.0.0/4 -j shaper_pre > /dev/null 2>&1" >> $IPTSCR
-    echo "iptables -A POSTROUTING -t mangle ! -s 224.0.0.0/4 -j shaper_post > /dev/null 2>&1" >> $IPTSCR
+    echo "iptables -A PREROUTING -t mangle -j shaper_pre > /dev/null 2>&1" >> $IPTSCR
+    echo "iptables -A POSTROUTING -t mangle ! -s $mcast_net -j shaper_post > /dev/null 2>&1" >> $IPTSCR
 }
 
 qos_nf_if() {
     ##################################################################################################################################
-    # SET MARKERS
+    # SET MARKERS FOR INCOMING
     ##################################################################################################################################
     # first always high prio ports
     echo "$INCOMING -i $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp --dport 0:1024 -j MARK --set-mark 21" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 21" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p udp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
+
+    # SYN/RST/ICMP and small size packets to hih prio
     echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 20" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 20" >> $IPTSCR
+
+    # all multicast to high prio
+    echo "$INCOMING -i $wan_if -d $mcast_net -j MARK --set-mark 20" >> $IPTSCR
 
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
@@ -71,13 +76,19 @@ qos_nf_if() {
     echo "$INCOMING -i $wan_if -p tcp -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p udp -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
 
+    ##################################################################################################################################
+    # SET MARKERS FOR OUTGOING
+    ##################################################################################################################################
     # first always high prio ports
     echo "$OUTGOING -o $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p udp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p udp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
+
+    # SYN/RST/ICMP and small size packets to hih prio
+    echo "$INCOMING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
+    echo "$OUTGOING -o $wan_if -p icmp -m mark --mark 0 -j MARK --set-mark 23" >> $IPTSCR
 
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
