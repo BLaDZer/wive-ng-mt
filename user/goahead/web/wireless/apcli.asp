@@ -101,7 +101,7 @@ function CheckValue(form)
 }
 
 function submitForm(form) {
-  if (!ajaxPostForm(_('apcli reboot confirm'), this.form, 'rebootReloader', _("message config"), ajaxShowProgress)) {
+  if (!ajaxPostForm(_('apcli reboot confirm'), form, 'rebootReloader', _("message config"), ajaxShowProgress)) {
     form.reboot.value = "0";
     form.submit();
   }
