@@ -220,6 +220,7 @@
   <message msgid="apcli about" msgstr="Для корректной работы необходимо установить канал беспроводной сети (Беспроводные настройки -> Основные) как канал, используемый для подключения AP." />
   <message msgid="apcli client param" msgstr="Параметры клиента AP" />
   <message msgid="apcli mac" msgstr="MAC адрес (не обязательно)" />
+  <message msgid="apcli enable autoscan" msgstr="Автоматически выбирать канал" />
   <message msgid="apcli disable iface" msgstr="Отключить интерфейс AP" />
   <message msgid="apcli enable bridge" msgstr="Включить режим моста" />
   <message msgid="apcli reboot confirm" msgstr="Для применения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />

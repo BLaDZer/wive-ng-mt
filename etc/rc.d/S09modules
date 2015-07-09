@@ -134,7 +134,7 @@ retune_wifi() {
     get_param
     # preconfigure wifi
     (sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_root_if) &
-    if [ "$first_wlan_apcli" != "" ] && [ "$ApCliEnable" = "1" ]; then
+    if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
 	(sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_apcli) &
     fi
     if [ "$second_wlan_root_if" != "" ]; then
@@ -201,7 +201,7 @@ wlan_down_all() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac ApCliEnable FastRoaming`
+    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac FastRoaming`
 }
 
 stop() {

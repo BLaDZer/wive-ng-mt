@@ -212,6 +212,7 @@
   <message msgid="apcli about" msgstr="For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect." />
   <message msgid="apcli client param" msgstr="AP Client Parameters" />
   <message msgid="apcli mac" msgstr="MAC Address (Optional)" />
+  <message msgid="apcli enable autoscan" msgstr="Auto channel select" />
   <message msgid="apcli disable iface" msgstr="Disable AP Interface" />
   <message msgid="apcli enable bridge" msgstr="Enable Bridge Mode" />
   <message msgid="apcli reboot confirm" msgstr="For apply settings needs to reboot you router. Do you want to proceed?" />

@@ -1253,6 +1253,7 @@ const parameter_fetch_t apcli_args[] =
 	{ T("apcli_mode"),              "ApCliAuthMode",        0,       T("OPEN") },
 	{ T("apcli_enc"),               "ApCliEncrypType",      0,       T("NONE") },
 	{ T("apcli_wpapsk"),            "ApCliWPAPSK",          0,       T("12345678") },
+	{ T("apcli_autoscan"),          "ApCliAutoConnect",     2,       T("off") },
 	{ T("apcli_apiface"),           "ApCliClientOnly",      2,       T("off") },
 	{ T("apcli_bridge"),            "ApCliBridgeOnly",      2,       T("off") },
 	{ NULL, NULL, 0, NULL }

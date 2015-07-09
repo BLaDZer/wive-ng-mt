@@ -27,6 +27,7 @@ function initTranslation() {
   _TR("apcliSecurityMode", "secure security mode");
   _TR("apcliEncryptionType", "secure encryp type");
   _TR("apcliPass", "secure wpa pass phrase");
+  _TR("apcliAutoscan", "apcli enable autoscan");
   _TR("apcliDisableIface", "apcli disable iface");
   _TR("apcliEnableBridge", "apcli enable bridge");
   _TRV("apcliApply", "button apply");
@@ -47,6 +48,7 @@ function initValue()
 	form.apcli_bssid.value  = '<% getCfgGeneral(1, "ApCliBssid"); %>';
 	form.apcli_mode.value   = '<% getCfgGeneral(1, "ApCliAuthMode"); %>';
 	form.apcli_enc.value    = '<% getCfgGeneral(1, "ApCliEncrypType"); %>';
+	form.apcli_autoscan.checked = '<% getCfgGeneral(1, "ApCliAutoConnect"); %>' == '1';
 	form.apcli_apiface.checked = '<% getCfgGeneral(1, "ApCliClientOnly"); %>' == '1';
 	form.apcli_bridge.checked = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';
 
@@ -146,6 +148,10 @@ function submitForm(form) {
           <tr id="div_apcli_wpapsk">
             <td class="head" id="apcliPass">Pass Phrase</td>
             <td><input type="password" name="apcli_wpapsk" value="<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>"></td>
+          </tr>
+          <tr>
+            <td class="head" id="apcliAutoscan">Auto channel select</td>
+            <td><input type="checkbox" name="apcli_autoscan"></td>
           </tr>
           <tr>
             <td class="head" id="apcliDisableIface">Disable AP Interface</td>

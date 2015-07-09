@@ -34,7 +34,8 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
 	wan_port tv_port sip_port tv_port_mcast sip_port_mcast \
 	WLAN_MAC_ADDR WLAN2_MAC_ADDR WAN_MAC_ADDR LAN_MAC_ADDR \
-	ApCliBridgeOnly ApCliIfName WdsIfName BssidIfName \
+	ApCliAutoConnect ApCliBridgeOnly \
+	ApCliIfName WdsIfName BssidIfName \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
@@ -220,11 +221,16 @@ wifi_reconnect() {
 	    usleep 500000
 	fi
     elif [ "$OperationMode" = "3" ]; then
-	# Reenable apcli and rescan for reconnect
-	iwpriv $ApCliIfName set ApCliEnable=0
-	usleep 100000
-	iwpriv $ApCliIfName set ApCliEnable=1
-	iwpriv $ApCliIfName set SiteSurvey=1
+	if [ "$ApCliAutoConnect" = "1" ]; then
+	    # Rescan switch channel if need and try reconnect
+	    iwpriv $ApCliIfName set ApCliAutoConnect=1
+	else
+	    # Reenable apcli and rescan for reconnect
+	    iwpriv $ApCliIfName set ApCliEnable=0
+	    usleep 100000
+	    iwpriv $ApCliIfName set ApCliEnable=1
+	    iwpriv $ApCliIfName set SiteSurvey=1
+	fi
     fi
 }
 

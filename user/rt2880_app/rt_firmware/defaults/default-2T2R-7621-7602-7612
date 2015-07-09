@@ -13,6 +13,7 @@ AP2040Rescan=0
 APACM=0;0;0;0
 APAifsn=3;7;1;1
 ApCliAuthMode=OPEN
+ApCliAutoConnect=0
 ApCliBridgeOnly=0
 ApCliBssid=
 ApCliClientOnly=0

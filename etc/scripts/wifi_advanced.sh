@@ -11,9 +11,9 @@ fi
 
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
-################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect M2UEnabled`
-########################################STAMODE param###########################################
+################################################################################################################
+eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect ApCliAutoConnect M2UEnabled`
+################################################STAMODE param###################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
 	iwpriv "$1" set AutoReconnect="$AutoConnect"
@@ -21,14 +21,17 @@ if [ "$OperationMode" = "2" ]; then
     # in sta mode exit
     exit 0
 fi
-########################################APMODE param############################################
-#########################################ON/OFF param###########################################
+################################################APMODE param####################################################
 if [ "$RadioOff" = "1" -a "$2" != "5GHZ" ] || [ "$RadioOffINIC" = "1" -a "$2" = "5GHZ" ]; then
     iwpriv "$1" set RadioOn=0
     echo ">>>> WIFI $1 DISABLED <<<<"
     exit 0
 fi
-########################################MULTICAST PARAMS########################################
+################################################APCLI param#####################################################
+if [ "$OperationMode" = "3" ] && [ "$1" != "ra0" ] && [ "$1" != "rai0" ] && [ "$ApCliAutoConnect" = "1" ]; then
+    iwpriv "$1" set ApCliAutoConnect=1
+fi
+################################################MULTICAST PARAMS################################################
 if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]; then
     # in bridged mode direct enable Multicast2Unicast in wifi drivers if enabled
     # in others modes auto enable by igmpproxy
