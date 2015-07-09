@@ -2961,7 +2961,7 @@ if (0) {
 		pOSPkt->dev = get_netdev_from_bssid(pAd, FromWhichBSSID);
 		pOSPkt->data = pRxBlk->pTransData;
 		pOSPkt->len = pRxBlk->TransDataSize;
-		pOSPkt->tail = pOSPkt->data + pOSPkt->len;
+		SET_OS_PKT_DATATAIL(pOSPkt, pOSPkt->data, pOSPkt->len);
 		//printk("\x1b[31m%s: rx trans ...%d\x1b[m\n", __FUNCTION__, __LINE__);
 	}
 
