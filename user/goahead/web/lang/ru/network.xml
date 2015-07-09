@@ -101,7 +101,7 @@
 
     <message msgid="qos title" msgstr="Настройки QoS" />
     <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений." />
-    <message msgid="qos warning" msgstr="Для корректной работы QoS(режимы: На основе приоритетов, комплексный, CODEL) нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
+    <message msgid="qos warning" msgstr="Для корректной работы QoS нужно выключить NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к значительному увеличению нагрузки на процессор." />
     <message msgid="qos setup" msgstr="Настройки QoS" />
     <message msgid="qos type" msgstr="Тип QoS" />
     <message msgid="qos bandwidth settings" msgstr="Параметры полосы" />
@@ -114,9 +114,12 @@
     <message msgid="qos priority port" msgstr="Настройка приоритета портов" />
     <message msgid="qos high priority ports" msgstr="Порты с высоким приоритетом" />
     <message msgid="qos low priority ports" msgstr="Порты с низким приоритетом" />
-    <message msgid="qos simple" msgstr="На основе приоритетов" />
-    <message msgid="qos shaper" msgstr="Лимиты на основе маркировки портов и HTB" />
-    <message msgid="qos codel" msgstr="Автоматическая честная очередь управляемой задержки (CODEL)" />
+    <message msgid="qos priority dscp" msgstr="Настройка приоритета по меткам DSCP" />
+    <message msgid="qos high priority dscps" msgstr="Метки пакетов с высоким приоритетом" />
+    <message msgid="qos low priority dscps" msgstr="Метки пакетов с низким приоритетом" />
+    <message msgid="qos simple" msgstr="Простая приоритезация" />
+    <message msgid="qos shaper" msgstr="Шейпер основе номеров портов и DSCP" />
+    <message msgid="qos codel" msgstr="Взвешенная справедливая очередь (CODEL)" />
 
     <message msgid="routing title" msgstr="Настройки маршрутизации" />
     <message msgid="routing introduction" msgstr="Здесь вы можете добавлять и удалять пользовательские правила маршрутизации траффика и/или включить протокол динамической маршрутизации." />

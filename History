@@ -1039,54 +1039,55 @@
 20) goahead: send SIGUSR2 to udhcpc for ip release before reboot.<br>
 21) goahead: add reboot after apcli changes apply (in SDK reboot to, drives issue?).<br>
 22) goahead: add reboot counters at apply new mac and apply apcli changes.<br>
-23) kernel: up to 3.4.108 base version.<br>
-24) kernel: ralink_hw_nat: add module param to control TTL.<br>
-25) kernel: ralink_wifi: 7610: fix clean NDP announces.<br>
-26) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-27) kernel: ralink_wifi: 7610: fix txburst in AC mode.<br>
-28) kernel: ralink_wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
-29) kernel: ralink_wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
-30) kernel: ralink_wifi: 76x2: add band steering options.<br>
-31) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
-32) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
-33) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
-34) kernel: ralink_wifi: xxxx: use macros from rt_linux.h for skb->tail manipulations instead of direct coding.<br>
-35) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
-36) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
-37) kernel: locking: Remove atomicy checks from {READ,WRITE}_ONCE.<br>
-38) kernel: mips: Remove unnecessary platform dma helper functions.<br>
-39) kernel: time: jiffies_delta_to_clock_t() helper to the rescue.<br>
-40) kernel: pipe: iovec: fix memory corruption when retrying atomic copy as non-atomic (CVE-2015-1805).<br>
-41) kernel: sched/rt: fix memory leak in alloc_rt_sched_group().<br>
-42) kernel: stop using NLA_PUT*().<br>
-43) kernel: netlink: Add nla_put_xx{16,32,64}() helpers.<br>
-44) kernel: net: provide a default dev->ethtool_ops.<br>
-45) kernel: net: force a list_del() in unregister_netdevice_many().<br>
-46) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
-47) kernel: net: ax25: stop using sock->sk_protinfo.<br>
-48) kernel: net: kill sock->sk_protinfo.<br>
-49) kernel: net: remove extranous rcu_read_lock.<br>
-50) kernel: net: ip_gre: fix possible use after free.<br>
-51) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
-52) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
-53) kernel: net: netfilter: remove ip_queue support.<br>
-54) kernel: net: netfilter: use kfree_skb() not kfree().<br>
-55) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
-56) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
-57) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
-58) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
-59) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
-60) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
-61) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
-62) kernel: net: bridge: avoid OOPS if root port not found.<br>
-63) kernel: net: bridge: disable softirqs around br_fdb_update to avoid lockup.<br>
-64) kernel: net: fix race condition in several drivers when reading stats.<br>
-65) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
-66) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
-67) kernel: net: tcp: remove redundant checks.<br>
-68) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
-69) kernel: net: ipv6: fix possible use after free of dev stats.<br>
-70) kernel: net: cleanup unsigned to unsigned int.<br>
+23) goahead: in qos page add DSCP prio values.<br>
+24) kernel: up to 3.4.108 base version.<br>
+25) kernel: ralink_hw_nat: add module param to control TTL.<br>
+26) kernel: ralink_wifi: 7610: fix clean NDP announces.<br>
+27) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+28) kernel: ralink_wifi: 7610: fix txburst in AC mode.<br>
+29) kernel: ralink_wifi: 7610: apply 3.0.0.8 post pathces from MTK.<br>
+30) kernel: ralink_wifi: 76x2: apply 3.0.3.2 post pathces from MTK.<br>
+31) kernel: ralink_wifi: 76x2: add band steering options.<br>
+32) kernel: ralink_wifi: xxxx: allow SNMP for all drivers.<br>
+33) kernel: ralink_wifi: xxxx: fix bandsteering build.<br>
+34) kernel: ralink_wifi: xxxx: move dyncvga and microwave oven detect support to MT***_AP_INTERFERENCE_REDUCE kernel options.<br>
+35) kernel: ralink_wifi: xxxx: use macros from rt_linux.h for skb->tail manipulations instead of direct coding.<br>
+36) kernel: ralink_raeth esw control: FCS bytes really not included to MIB counters.<br>
+37) kernel: ralink_raeth esw control: add IOCTL to fetch port bytes.<br>
+38) kernel: locking: Remove atomicy checks from {READ,WRITE}_ONCE.<br>
+39) kernel: mips: Remove unnecessary platform dma helper functions.<br>
+40) kernel: time: jiffies_delta_to_clock_t() helper to the rescue.<br>
+41) kernel: pipe: iovec: fix memory corruption when retrying atomic copy as non-atomic (CVE-2015-1805).<br>
+42) kernel: sched/rt: fix memory leak in alloc_rt_sched_group().<br>
+43) kernel: stop using NLA_PUT*().<br>
+44) kernel: netlink: Add nla_put_xx{16,32,64}() helpers.<br>
+45) kernel: net: provide a default dev->ethtool_ops.<br>
+46) kernel: net: force a list_del() in unregister_netdevice_many().<br>
+47) kernel: net: packet: bail out of packet_snd() if L2 header creation fails.<br>
+48) kernel: net: ax25: stop using sock->sk_protinfo.<br>
+49) kernel: net: kill sock->sk_protinfo.<br>
+50) kernel: net: remove extranous rcu_read_lock.<br>
+51) kernel: net: ip_gre: fix possible use after free.<br>
+52) kernel: net: ip_gre: remove unnecessary rcu_read_lock/unlock.<br>
+53) kernel: net: netfilter: don't use module_init/exit in core IPV4 code.<br>
+54) kernel: net: netfilter: remove ip_queue support.<br>
+55) kernel: net: netfilter: use kfree_skb() not kfree().<br>
+56) kernel: net: bridge: multicast: start querier timer when running user-space stp.<br>
+57) kernel: net: bridge: multicast: restore router configuration on port link down/up.<br>
+58) kernel: net: bridge: fix br_stp_set_bridge_priority race conditions.<br>
+59) kernel: net: bridge: skip BROUTE hook if BRIDGE_EBT_BROUTE module is not enabled.<br>
+60) kernel: net: bridge: fix broken ebtables on BRIDGE_NETFILTER disabled.<br>
+61) kernel: net: bridge: netfilter: optimization by exclude unused modules.<br>
+62) kernel: net: bridge: group bridge code closer with netcore and netfilter (improve performance).<br>
+63) kernel: net: bridge: avoid OOPS if root port not found.<br>
+64) kernel: net: bridge: disable softirqs around br_fdb_update to avoid lockup.<br>
+65) kernel: net: fix race condition in several drivers when reading stats.<br>
+66) kernel: net: tcp: shrink tcp6_timewait_sock by one cache line.<br>
+67) kernel: net: tcp: fix get_timewait4_sock() delay computation on 64bit.<br>
+68) kernel: net: tcp: remove redundant checks.<br>
+69) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
+70) kernel: net: ipv6: fix possible use after free of dev stats.<br>
+71) kernel: net: cleanup unsigned to unsigned int.<br>
 <br>
 <br>
 <b>TODO:</b><br>
@@ -1094,10 +1095,9 @@
 2) need add subchannel select for 5GHz module.<br>
 3) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
 4) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
-5) need add in qos->Complex with shaper new block "Piority DSCP settins" with 2 edit boxes as in port based prio block (variables names see in this commit).<br>
-6) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-7) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+6) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>

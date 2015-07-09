@@ -18,6 +18,8 @@ const parameter_fetch_t QoS_args[] =
 	{ T("UpVPNBWL"), "QoS_rate_vpn_limit_up", 0, T("") },
 	{ T("QoS_HPP"), "QoS_high_pp", 0, T("") },
 	{ T("QoS_LPP"), "QoS_low_pp", 0, T("") },
+	{ T("QoS_HDSCP"), "QoS_high_dscp", 0, T("") },
+	{ T("QoS_LDSCP"), "QoS_low_dscp", 0, T("") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 

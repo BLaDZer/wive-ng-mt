@@ -33,6 +33,9 @@ function initTranslation()
   _TR("QoSSetupPPort", "qos priority port");
   _TR("QoSHPP", "qos high priority ports");
   _TR("QoSLPP", "qos low priority ports");
+  _TR("QoSSetupPDSCP", "qos priority dscp");
+  _TR("QoSHDSCP", "qos high priority dscps");
+  _TR("QoSLDSCP", "qos low priority dscps");
   _TR("QoSDisable", "button disable");
   _TR("QoSSimple", "qos simple");
   _TR("QoSShaper", "qos shaper");
@@ -49,7 +52,7 @@ function QoSSelectChange(form)
   var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 
 	// Display mode-dependent elements
-	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP' ], complex_on );
+	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP' ], complex_on );
   displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
 }
 
@@ -64,6 +67,8 @@ function initializeForm(form)
 	form.UpVPNBWL.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
 	form.QoS_HPP.value		= '<% getCfgGeneral(1, "QoS_high_pp"); %>';
 	form.QoS_LPP.value		= '<% getCfgGeneral(1, "QoS_low_pp"); %>';
+	form.QoS_HDSCP.value		= '<% getCfgGeneral(1, "QoS_high_dscp"); %>';
+	form.QoS_LDSCP.value		= '<% getCfgGeneral(1, "QoS_low_dscp"); %>';
 }
 
 function bodyOnLoad(form)
@@ -140,6 +145,17 @@ function bodyOnLoad(form)
           <tr id="user_Qos_LPP">
             <td class="head" id="QoSLPP">User Low Priority Ports</td>
             <td><input name="QoS_LPP" class="superwide" size="60" maxlength="60" type="text"></td>
+          </tr>
+          <tr id="PDSCPSettings">
+            <td class="title" colspan="2" id="QoSSetupPDSCP">Priority DSCP settings</td>
+          </tr>
+          <tr id="user_Qos_HDSCP">
+            <td class="head" id="QoSHDSCP">User High Priority DSCPs</td>
+            <td><input name="QoS_HDSCP" class="superwide" size="60" maxlength="60" type="text"></td>
+          </tr>
+          <tr id="user_Qos_LDSCP">
+            <td class="head" id="QoSLDSCP">User Low Priority DSCPs</td>
+            <td><input name="QoS_LDSCP" class="superwide" size="60" maxlength="60" type="text"></td>
           </tr>
         </table>
         <table class="buttons">

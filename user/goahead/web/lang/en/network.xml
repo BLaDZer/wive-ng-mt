@@ -103,7 +103,7 @@
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications." />
-    <message msgid="qos warning" msgstr="For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off NAT offload mode.Please note that turning off NAT offload mode will very increase CPU usage." />
+    <message msgid="qos warning" msgstr="For correct operation of QoS need turning off NAT offload mode. Please note that turning off NAT offload mode will very increase CPU usage." />
     <message msgid="qos setup" msgstr="QoS Setup" />
     <message msgid="qos type" msgstr="Type of QoS" />
     <message msgid="qos bandwidth settings" msgstr="Bandwidth settings" />
@@ -116,8 +116,11 @@
     <message msgid="qos priority port" msgstr="Priority port settings" />
     <message msgid="qos high priority ports" msgstr="User High Priority Ports" />
     <message msgid="qos low priority ports" msgstr="User Low Priority Ports" />
+    <message msgid="qos priority dscp" msgstr="Priority DSCP settings" />
+    <message msgid="qos high priority dscps" msgstr="User High Priority DSCPs" />
+    <message msgid="qos low priority dscps" msgstr="User Low Priority DSCPs" />
     <message msgid="qos simple" msgstr="Simple priority based QoS" />
-    <message msgid="qos shaper" msgstr="Complex with shaper (ports based mark + HTB limit)" />
+    <message msgid="qos shaper" msgstr="Complex shaper (ports and DSCP based mark + HTB limit)" />
     <message msgid="qos codel" msgstr="Automatic Fair Queue Controlled Delay AQM (CODEL)" />
 
     <message msgid="routing title" msgstr="Static Routing Settings" />
