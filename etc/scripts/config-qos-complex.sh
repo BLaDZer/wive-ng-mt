@@ -56,9 +56,7 @@ qos_nf_if() {
     ##################################################################################################################################
     # first always high prio ports
     echo "$INCOMING -i $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p udp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
 
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
@@ -99,8 +97,6 @@ qos_nf_if() {
     # first always high prio ports
     echo "$OUTGOING -o $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
     echo "$OUTGOING -o $wan_if -p udp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p udp --sport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
 
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
