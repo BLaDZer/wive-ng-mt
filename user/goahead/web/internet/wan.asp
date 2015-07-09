@@ -192,13 +192,15 @@ function wanMtuChange(form)
 }
 
 function submitForm(form) {
-	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>")
+	if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>") {
 		if (!ajaxPostForm(_('wan reboot confirm'), form, 'MACReloader', _("message config"), ajaxShowProgress)) {
 			form.reboot.value = "0";
 			form.submit();
 		}
-	else
+	} else {
+		form.reboot.value = "0";
 		form.submit();
+	}
 }
 </script>
 </head>

@@ -267,7 +267,7 @@ function onReset2DefaultsSubmit(form)
           <tr>
             <td class="head" id="manResetToFactory">Reset to factory defaults</td>
             <td><form method="POST" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
-                <input type="submit" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
+                <input type="button" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
                 <iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
               </form></td>
           </tr>
