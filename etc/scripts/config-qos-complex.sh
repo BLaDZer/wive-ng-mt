@@ -55,19 +55,19 @@ qos_nf_if() {
     # SET MARKERS FOR INCOMING
     ##################################################################################################################################
     # first always high prio ports
-    echo "$INCOMING -i $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp --dport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
+    echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
 
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
-	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
-	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p udp -m multiport --sport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
     fi
 
     # next user medium prio ports
     if [ "$QoS_low_pp" != "" ]; then
-	echo "$INCOMING -i $wan_if -p tcp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
-	echo "$INCOMING -i $wan_if -p udp -m multiport --dport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p udp -m multiport --sport $QoS_low_pp  -j MARK --set-mark 21" >> $IPTSCR
     fi
 
     # second user high prio dscp
