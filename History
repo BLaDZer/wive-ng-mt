@@ -1090,6 +1090,7 @@
 71) kernel: net: ipv6: fix possible use after free of dev stats.<br>
 72) kernel: net: cleanup unsigned to unsigned int.<br>
 73) kernel: net: inet: remove BUG_ON() in twsk_destructor().<br>
+74) kernel: net: skb_defer_rx_timestamp should check for phydev before setting up classify.<br>
 <br>
 <br>
 <b>TODO:</b><br>

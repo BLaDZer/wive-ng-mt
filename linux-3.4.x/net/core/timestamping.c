@@ -27,7 +27,12 @@ static struct sock_filter ptp_filter[] = {
 	PTP_FILTER
 };
 
-static unsigned int classify(const struct sk_buff *skb)
+static inline unsigned int classify_raw(const struct sk_buff *skb)
+{
+	return sk_run_filter(skb, ptp_filter);
+}
+
+static inline unsigned int classify(const struct sk_buff *skb)
 {
 	if (likely(skb->dev &&
 		   skb->dev->phydev &&
@@ -106,11 +111,14 @@ bool skb_defer_rx_timestamp(struct sk_buff *skb)
 	struct phy_device *phydev;
 	unsigned int type;
 
+	if (!skb->dev || !skb->dev->phydev || !skb->dev->phydev->drv)
+		return false;
+
 	if (skb_headroom(skb) < ETH_HLEN)
 		return false;
 	__skb_push(skb, ETH_HLEN);
 
-	type = classify(skb);
+	type = classify_raw(skb);
 
 	__skb_pull(skb, ETH_HLEN);
 
