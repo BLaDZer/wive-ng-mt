@@ -1089,6 +1089,7 @@
 70) kernel: net: flow_dissector: Pre-initialize ip_proto in __skb_flow_dissect().<br>
 71) kernel: net: ipv6: fix possible use after free of dev stats.<br>
 72) kernel: net: cleanup unsigned to unsigned int.<br>
+73) kernel: net: inet: remove BUG_ON() in twsk_destructor().<br>
 <br>
 <br>
 <b>TODO:</b><br>

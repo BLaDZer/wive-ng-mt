@@ -5789,7 +5789,7 @@ INT	Set_NoForwarding_Proc(
 	else
 		return FALSE;  /*Invalid argument */
 	
-	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_NoForwarding_Proc::(NoForwarding=%ld)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_NoForwarding_Proc::(NoForwarding=%d)\n", 
 		pObj->ioctl_if, pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaTraffic));
 
 	return TRUE;
@@ -5800,7 +5800,7 @@ INT	Set_NoForwardingMBCast_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
 {
-	UCHAR NoForwardingMBCast;
+	ULONG NoForwardingMBCast;
 
 	POS_COOKIE	pObj = (POS_COOKIE) pAd->OS_Cookie;
 	
@@ -5842,7 +5842,7 @@ INT	Set_NoForwardingBTNSSID_Proc(
 	else
 		return FALSE;  /*Invalid argument */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("Set_NoForwardingBTNSSID_Proc::(NoForwarding=%ld)\n", pAd->ApCfg.IsolateInterStaTrafficBTNBSSID));
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_NoForwardingBTNSSID_Proc::(NoForwarding=%d)\n", pAd->ApCfg.IsolateInterStaTrafficBTNBSSID));
 
 	return TRUE;
 }
@@ -10849,8 +10849,9 @@ INT Set_ApCli_AutoConnect_Proc(
 	POS_COOKIE  		pObj= (POS_COOKIE) pAd->OS_Cookie;
 	UCHAR				ifIndex;
 	PAP_ADMIN_CONFIG	pApCfg;
+#ifdef AP_PARTIAL_SCAN_SUPPORT
 	long scan_mode = simple_strtol(arg, 0, 10);
-
+#endif
 	if (pObj->ioctl_if_type != INT_APCLI)
 		return FALSE;
 	pApCfg = &pAd->ApCfg;

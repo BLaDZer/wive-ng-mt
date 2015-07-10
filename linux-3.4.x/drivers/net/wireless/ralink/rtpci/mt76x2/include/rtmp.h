@@ -1556,8 +1556,8 @@ typedef struct _MULTISSID_STRUCT {
 	ULONG StatTxFailCount;
 
 	UCHAR BANClass3Data;
-	ULONG IsolateInterStaTraffic;
-	UCHAR IsolateInterStaMBCast;
+	BOOLEAN IsolateInterStaTraffic;
+	BOOLEAN IsolateInterStaMBCast;
 
 	/* outgoing BEACON frame buffer and corresponding TXWI */
 	BOOLEAN bBcnSntReq;	/* used in if beacon send or stop */
@@ -2900,7 +2900,7 @@ typedef struct _AP_ADMIN_CONFIG {
 	UCHAR BssidNum;
 	UCHAR MacMask;
 	MULTISSID_STRUCT MBSSID[HW_BEACON_MAX_NUM];
-	ULONG IsolateInterStaTrafficBTNBSSID;
+	BOOLEAN IsolateInterStaTrafficBTNBSSID;
 #ifdef CONFIG_SNIFFER_SUPPORT
 	UCHAR BssType; /* Infra mode or monitor mode */	
 #endif /*CONFIG_SNIFFER_SUPPORT*/
@@ -2950,7 +2950,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	UINT32  ACSCheckCount;          /* if  ACSCheckCount > ACSCheckTime, then do ACS check */
 #endif /* AP_SCAN_SUPPORT */
 	BOOLEAN bAvoidDfsChannel;	/* 0: disable, 1: enable */
-	BOOLEAN bIsolateInterStaTraffic;
 	BOOLEAN bHideSsid;
 
 	/* temporary latch for Auto channel selection */
