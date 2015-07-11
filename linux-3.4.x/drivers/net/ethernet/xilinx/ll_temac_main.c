@@ -786,8 +786,9 @@ static void ll_temac_recv(struct net_device *ndev)
 			skb->csum = cur_p->app3 & 0xFFFF;
 			skb->ip_summed = CHECKSUM_COMPLETE;
 		}
-
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 		if (!skb_defer_rx_timestamp(skb))
+#endif
 			netif_rx(skb);
 
 		ndev->stats.rx_packets++;

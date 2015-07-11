@@ -2344,21 +2344,8 @@ static inline ktime_t net_invalid_timestamp(void)
 extern void skb_timestamping_init(void);
 
 #ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
-
 extern void skb_clone_tx_timestamp(struct sk_buff *skb);
 extern bool skb_defer_rx_timestamp(struct sk_buff *skb);
-
-#else /* CONFIG_NETWORK_PHY_TIMESTAMPING */
-
-static inline void skb_clone_tx_timestamp(struct sk_buff *skb)
-{
-}
-
-static inline bool skb_defer_rx_timestamp(struct sk_buff *skb)
-{
-	return false;
-}
-
 #endif /* !CONFIG_NETWORK_PHY_TIMESTAMPING */
 
 /**
@@ -2407,7 +2394,9 @@ static inline void sw_tx_timestamp(struct sk_buff *skb)
  */
 static inline void skb_tx_timestamp(struct sk_buff *skb)
 {
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 	skb_clone_tx_timestamp(skb);
+#endif
 	sw_tx_timestamp(skb);
 }
 

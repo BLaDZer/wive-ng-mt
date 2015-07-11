@@ -648,7 +648,9 @@ static void xemaclite_rx_handler(struct net_device *dev)
 	dev->stats.rx_packets++;
 	dev->stats.rx_bytes += len;
 
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 	if (!skb_defer_rx_timestamp(skb))
+#endif
 		netif_rx(skb);	/* Send the packet upstream */
 }
 

@@ -722,7 +722,9 @@ fec_enet_rx(struct net_device *ndev)
 			skb_put(skb, pkt_len - 4);	/* Make room */
 			skb_copy_to_linear_data(skb, data, pkt_len - 4);
 			skb->protocol = eth_type_trans(skb, ndev);
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 			if (!skb_defer_rx_timestamp(skb))
+#endif
 				netif_rx(skb);
 		}
 

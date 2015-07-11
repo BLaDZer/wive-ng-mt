@@ -1093,6 +1093,7 @@
 74) kernel: net: cleanup unsigned to unsigned int.<br>
 75) kernel: net: inet: remove BUG_ON() in twsk_destructor().<br>
 76) kernel: net: skb_defer_rx_timestamp should check for phydev before setting up classify.<br>
+77) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
 <br>
 <br>
 <b>TODO:</b><br>

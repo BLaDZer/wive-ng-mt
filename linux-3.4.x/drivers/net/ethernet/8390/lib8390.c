@@ -728,7 +728,9 @@ static void ei_receive(struct net_device *dev)
 				skb_put(skb, pkt_len);	/* Make room */
 				ei_block_input(dev, pkt_len, skb, current_offset + sizeof(rx_frame));
 				skb->protocol = eth_type_trans(skb, dev);
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 				if (!skb_defer_rx_timestamp(skb))
+#endif
 					netif_rx(skb);
 				dev->stats.rx_packets++;
 				dev->stats.rx_bytes += pkt_len;

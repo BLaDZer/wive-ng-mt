@@ -343,10 +343,10 @@ void usbnet_skb_return (struct usbnet *dev, struct sk_buff *skb)
 	netif_dbg(dev, rx_status, dev->net, "< rx, len %zu, type 0x%x\n",
 		  skb->len + sizeof (struct ethhdr), skb->protocol);
 	memset (skb->cb, 0, sizeof (struct skb_data));
-
+#ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
 	if (skb_defer_rx_timestamp(skb))
 		return;
-
+#endif
 #if defined(CONFIG_RA_HW_NAT_PCI) && (defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE))
 	 /* ra_sw_nat_hook_rx return 1 --> continue
 	  * ra_sw_nat_hook_rx return 0 --> FWD & without netif_rx
