@@ -8954,6 +8954,7 @@ INT Set_ApCli_Wpa_Support(
     return TRUE;    
 }
 
+
 INT	Set_ApCli_IEEE8021X_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
@@ -12497,9 +12498,6 @@ INT Set_ReptMode_Enable_Proc(
 
 	return TRUE;
 }
-
-
-
 #endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef DYNAMIC_VGA_SUPPORT
