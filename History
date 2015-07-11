@@ -1091,6 +1091,7 @@
 72) kernel: net: cleanup unsigned to unsigned int.<br>
 73) kernel: net: inet: remove BUG_ON() in twsk_destructor().<br>
 74) kernel: net: skb_defer_rx_timestamp should check for phydev before setting up classify.<br>
+75) kernel: usb: cdc_ncm: add support for moving NDP to end of NCM frame.<br>
 <br>
 <br>
 <b>TODO:</b><br>
