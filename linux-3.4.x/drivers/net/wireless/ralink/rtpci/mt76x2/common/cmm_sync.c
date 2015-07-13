@@ -485,11 +485,9 @@ CHAR ConvertToSnr(RTMP_ADAPTER *pAd, UCHAR Snr)
 		return ((0xeb	- Snr) * 3) /	16 ;
 }
 
-
-
-
 #ifdef CONFIG_AP_SUPPORT
 #ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
 extern int DetectOverlappingPeriodicRound;
 
 VOID Handle_BSS_Width_Trigger_Events(RTMP_ADAPTER *pAd) 
@@ -511,6 +509,7 @@ VOID Handle_BSS_Width_Trigger_Events(RTMP_ADAPTER *pAd)
         DetectOverlappingPeriodicRound = 31;
 	}
 }
+#endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 

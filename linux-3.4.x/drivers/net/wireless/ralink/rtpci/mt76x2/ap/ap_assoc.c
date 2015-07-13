@@ -236,10 +236,7 @@ static USHORT update_associated_mac_entry(
 #ifdef DOT11N_DRAFT3
 		if (ie_list->ExtCapInfo.BssCoexistMgmtSupport)
 			pEntry->BSS2040CoexistenceMgmtSupport = 1;
-#endif /* DOT11N_DRAFT3 */
 
-
-#ifdef DOT11N_DRAFT3
 		/* 40Mhz BSS Width Trigger events */
 		if (ie_list->HTCapability.HtCapInfo.Forty_Mhz_Intolerant)
 		{
@@ -261,6 +258,7 @@ static USHORT update_associated_mac_entry(
 			Handle_BSS_Width_Trigger_Events(pAd);
 		}
 #endif /* DOT11N_DRAFT3 */
+
 #ifdef TXBF_SUPPORT
 #ifdef VHT_TXBF_SUPPORT
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&

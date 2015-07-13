@@ -1563,9 +1563,7 @@ USHORT APBuildAssociation(
 #ifdef DOT11N_DRAFT3
 				if (ExtCapInfo.BssCoexistMgmtSupport)
 					pEntry->BSS2040CoexistenceMgmtSupport = 1;
-#endif /* DOT11N_DRAFT3 */
 
-#ifdef DOT11N_DRAFT3
 				/* 40Mhz BSS Width Trigger events */
 				if (pHtCapability->HtCapInfo.Forty_Mhz_Intolerant)
 				{

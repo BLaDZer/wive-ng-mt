@@ -1591,7 +1591,7 @@ VOID PeerHTAction(
 	    					Handle_BSS_Width_Trigger_Events(pAd);
 	    				}
 				}
-#endif
+#endif /* DOT11N_DRAFT3 */
 #endif /* CONFIG_AP_SUPPORT */
 			}
     		break;

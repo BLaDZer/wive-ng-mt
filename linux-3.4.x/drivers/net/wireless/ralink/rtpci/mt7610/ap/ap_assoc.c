@@ -206,10 +206,7 @@ static USHORT update_associated_mac_entry(
 #ifdef DOT11N_DRAFT3
 		if (ie_list->ExtCapInfo.BssCoexistMgmtSupport)
 			pEntry->BSS2040CoexistenceMgmtSupport = 1;
-#endif /* DOT11N_DRAFT3 */
 
-
-#ifdef DOT11N_DRAFT3
 		/* 40Mhz BSS Width Trigger events */
 		if (ie_list->HTCapability.HtCapInfo.Forty_Mhz_Intolerant)
 		{
