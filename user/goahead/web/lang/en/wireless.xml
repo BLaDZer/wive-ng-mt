@@ -40,7 +40,7 @@
   <message msgid="basic multiple ssid" msgstr="Multiple SSID" />
   <message msgid="basic hssid" msgstr="Hidden" />
   <message msgid="basic isolated" msgstr="Isolated" />
-  <message msgid="basic uplink" msgstr="Uplink" />
+  <message msgid="basic clients" msgstr="Clients" />
   <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name" />
   <message msgid="basic mbssidapisolated" msgstr="SSID to SSID Isolation" />
   <message msgid="basic bssid" msgstr="BSSID (2.4GHz)" />

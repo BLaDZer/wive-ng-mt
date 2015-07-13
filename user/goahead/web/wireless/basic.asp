@@ -260,7 +260,7 @@ function initTranslation()
 	_TR("basicBroadcastSSID", "basic broadcast ssid");
 	_TR("basicIsolatedSSID", "basic isolated");
 	_TR("basicIsolatedSSID1", "basic isolated");
-	_TR("basicUplinkSSID", "basic uplink");
+	_TR("basicClientsSSID", "basic clients");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
 	_TR("basicMBSSIDMode", "basic mbssid mode");
 	_TR("basicWDSMode", "basic wds mode");
@@ -1093,7 +1093,7 @@ function CheckValue(form)
           	<td class="title" colspan="1"></td>
           	<td class="title" colspan="1" id="basicNetworkName">Network name</td>
           	<td class="title" colspan="1" id="basicHSSID">Hidden</td>
-          	<td class="title" colspan="1"><span id="basicUplinkSSID">Uplink</span><br><span id="basicIsolatedSSID">Isolated</span></td>
+          	<td class="title" colspan="1"><span id="basicClientsSSID">Clients</span><br><span id="basicIsolatedSSID">Isolated</span></td>
 			<td class="title" colspan="1"><span id="basicBroadcast">Broadcast</span><br><span id="basicIsolatedSSID1">Isolated</span></td>
 			<td class="title" colspan="1" id="basicAction">Action</td>
           </tr>
