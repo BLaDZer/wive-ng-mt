@@ -38,7 +38,9 @@
 #define PROCREG_DIR			"mt7620"
 #endif
 
+#ifdef CONFIG_RAETH_SNMPD
 #define PROCREG_SNMP			("/proc/" PROCREG_DIR "/snmp")
+#endif
 #define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
 void formDefineUtilities(void);

@@ -63,18 +63,6 @@
       <td class="head" id="statisticLANTxBytes" colspan="3">LAN Tx bytes:</td>
       <td colspan="3"><% getLANTxByteASP(); %></td>
     </tr>
-    <!-- =================  ALL  ================= -->
-    <tr>
-      <td class="title" colspan="6" id="statisticAllIF">All interfaces</td>
-    <tr>
-    <tr>
-      <th colspan="2" id="statisticIfName">Name</th>
-      <th id="statisticRxPkt">Rx Packets</th>
-      <th id="statisticRxBytes">Rx Bytes</th>
-      <th id="statisticTxPkt">Tx Packets</th>
-      <th id="statisticTxBytes">Tx Bytes</th>
-    </tr>
-    <% getAllNICStatisticASP(); %>
   </tbody>
 </table>
 <table class="form" id="statisticHWStats">
@@ -90,4 +78,20 @@
     <td class="head"><span id="Port">Port</span> 5</td>
   </tr>
   <% getHWStatistic(); %>
+</table>
+    <!-- =================  ALL  ================= -->
+<table class="form">
+  <tbody>
+    <tr>
+      <td class="title" colspan="6" id="statisticAllIF">All interfaces</td>
+    <tr>
+    <tr>
+      <th colspan="2" id="statisticIfName">Name</th>
+      <th id="statisticRxPkt">Rx Packets</th>
+      <th id="statisticRxBytes">Rx Bytes</th>
+      <th id="statisticTxPkt">Tx Packets</th>
+      <th id="statisticTxBytes">Tx Bytes</th>
+    </tr>
+    <% getAllNICStatisticASP(); %>
+  </tbody>
 </table>

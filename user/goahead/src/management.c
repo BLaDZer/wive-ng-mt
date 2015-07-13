@@ -723,7 +723,7 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RAETH_SNMPD
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	char buf[1024];
-	int i, wan_port;
+	int i;
 	char_t port_buf[32];
 	unsigned long long rx_count[6], tx_count[6];
 
@@ -741,16 +741,11 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	}
 	fclose(fp);
 
-	wan_port = atoi(nvram_get(RT2860_NVRAM, "wan_port"));
-
 	websWrite(wp, T("<tr>\n"));
 	websWrite(wp, T("<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
 	for (i = 0; i < 5; i++)
 	{
-		if (wan_port == 0)
-			scale(port_buf, rx_count[i]);
-		else
-			scale(port_buf, rx_count[wan_port-i]);
+		scale(port_buf, rx_count[4-i]);
 		websWrite(wp, T("<td>%s</td>\n"), port_buf);
 	}
 	websWrite(wp, T("</tr>\n"));
@@ -758,10 +753,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	websWrite(wp, T("<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
 	for (i = 0; i < 5; i++)
 	{
-		if (wan_port == 0)
-			scale(port_buf, tx_count[i]);
-		else
-			scale(port_buf, tx_count[wan_port-i]);
+		scale(port_buf, tx_count[4-i]);
 		websWrite(wp, T("<td>%s</td>\n"), port_buf);
 	}
 	websWrite(wp, T("</tr>\n"));
