@@ -46,10 +46,9 @@
     <td><% getWanNetmask(); %>
       &nbsp;</td>
   </tr>
-  <tr>
+  <tr id="defaultGW">
     <td class="head" id="statusDefaultGW">Default Gateway</td>
-    <td><% getWanGateway(); %>
-      &nbsp;</td>
+    <td id="statusDGW"></td>
   </tr>
   <tr>
     <td class="head" id="statusPrimaryDNS">Primary Domain Name Server</td>
@@ -58,6 +57,14 @@
   <tr>
     <td class="head" id="statusSecondaryDNS">Secondary Domain Name Server</td>
     <td><% getDns(2); %></td>
+  </tr>
+  <tr id="statusIPv6Int">
+    <td class="head" id="statusIPv6IntAddr">Internal IPv6 Address</td>
+    <td id="IPv6IntAddr"></td>
+  </tr>
+  <tr id="statusIPv6Ext">
+    <td class="head" id="statusIPv6ExtAddr">External IPv6 Address</td>
+    <td id="IPv6ExtAddr"></td>
   </tr>
   <tr>
     <td class="head" id="statusWANMAC">MAC Address</td>

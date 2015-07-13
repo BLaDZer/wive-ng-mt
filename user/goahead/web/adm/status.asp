@@ -159,6 +159,8 @@ function initTranslation()
 	_TR("statusPortMode3", "status port mode 3");
 	_TR("statusPortMode4", "status port mode 4");
 	_TR("statusPortMode5", "status port mode 5");
+	_TR("statusIPv6IntAddr", "status internal ipv6 address");
+	_TR("statusIPv6ExtAddr", "status external ipv6 address");
 
 	_TRV("statusApply", "button apply");
 }
@@ -229,6 +231,16 @@ function reloadPage()
 {
 	var reloader = function()
 	{
+		var defaultGW = "<% getWanGateway(); %>";
+		var ipv6b = "<% getIPv6Built(); %>";
+		var IPv6Int = "<% getIPv6IntAddr(); %>";
+		var IPv6Ext = "<% getIPv6ExtAddr(); %>";
+		ajaxModifyElementHTML("statusDGW", defaultGW);
+		ajaxModifyElementHTML("IPv6IntAddr", IPv6Int);
+		ajaxModifyElementHTML("IPv6ExtAddr", IPv6Ext);
+		displayElement("defaultGW", (defaultGW != ""));
+		displayElement("statusIPv6Int", (ipv6b == "1") && (IPv6Int != ""));
+		displayElement("statusIPv6Ext", (ipv6b == "1") && (IPv6Ext != ""));
 		initTranslation();
 		showOpMode();
 		showPortStatus();

@@ -57,6 +57,8 @@
     <message msgid="status port mode 3" msgstr="Port 3 mode" />
     <message msgid="status port mode 4" msgstr="Port 4 mode" />
     <message msgid="status port mode 5" msgstr="Port 5 mode" />
+    <message msgid="status internal ipv6 address" msgstr="Internal IPv6 Address" />
+    <message msgid="status external ipv6 address" msgstr="External IPv6 Address" />
 
     <message msgid="statistic title" msgstr="Statistic" />
     <message msgid="statistic introduction" msgstr=" Take a look at the Wive-NG-MT statistics " />

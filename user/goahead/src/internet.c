@@ -75,7 +75,11 @@ static int  vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv);
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query);
 static void setLan(webs_t wp, char_t *path, char_t *query);
 static void setWan(webs_t wp, char_t *path, char_t *query);
+#ifdef CONFIG_IPV6
 static void setIPv6(webs_t wp, char_t *path, char_t *query);
+static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv);
+static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv);
+#endif
 static void getMyMAC(webs_t wp, char_t *path, char_t *query);
 static void editRouting(webs_t wp, char_t *path, char_t *query);
 static void restoremac(webs_t wp, char_t *path, char_t *query);
@@ -134,7 +138,11 @@ void formDefineInternet(void) {
 	websAspDefine(T("getIPv6Built"), getIPv6Built);
 	websAspDefine(T("getIPv66rdBuilt"), getIPv66rdBuilt);
 	websAspDefine(T("getIP6to4Built"), getIP6to4Built);
+#ifdef CONFIG_IPV6
 	websFormDefine(T("setIPv6"), setIPv6);
+	websAspDefine(T("getIPv6IntAddr"), getIPv6IntAddr);
+	websAspDefine(T("getIPv6ExtAddr"), getIPv6ExtAddr);
+#endif
 	websFormDefine(T("getMyMAC"), getMyMAC);
 	websFormDefine(T("editRouting"), editRouting);
 	websAspDefine(T("getTransmissionBuilt"), getTransmissionBuilt);
@@ -177,7 +185,7 @@ static int getIfLive(char *ifname)
 	char buf[256], *p;
 	int i;
 
-	if (NULL == (fp = fopen("/proc/net/dev", "r"))) {
+	if (NULL == (fp = fopen(_PATH_PROCNET_DEV, "r"))) {
 		error(E_L, E_LOG, T("getIfLive: open /proc/net/dev error"));
 		return -1;
 	}
@@ -1238,6 +1246,7 @@ static int getWanNetmask(int eid, webs_t wp, int argc, char_t **argv)
 static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char   buff[256];
+	char   ifname[16];
 	int    nl = 0 ;
 	struct in_addr dest;
 	struct in_addr gw;
@@ -1252,9 +1261,12 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 	while (fgets(buff, sizeof(buff), fp) != NULL) {
 		if (nl) {
 			int ifl = 0;
-			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0')
+			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0') {
+				ifname[ifl] = buff[ifl];
 				ifl++;
-			buff[ifl]=0;    /* interface */
+			}
+			ifname[ifl] = 0;
+			buff[ifl] = 0;    /* interface */
 			if (sscanf(buff+ifl+1, "%lx%lx%X%d%d%d%lx",
 						&d, &g, &flgs, &ref, &use, &metric, &m)!=7) {
 				fclose(fp);
@@ -1264,7 +1276,7 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 			if (flgs&RTF_UP) {
 				dest.s_addr = d;
 				gw.s_addr   = g;
-				strcpy(sgw, (gw.s_addr==0 ? "" : inet_ntoa(gw)));
+				strcpy(sgw, (gw.s_addr==0 ? ifname : inet_ntoa(gw)));
 
 				if (dest.s_addr == 0) {
 					find_default_flag = 1;
@@ -2357,6 +2369,108 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 	doSystem("internet.sh");
+}
+
+/*
+ * arguments: ifname  - interface name
+ *            if_addr - buffer to store ip address
+ *            netmask - buffer to store prefix
+ * description: fetch ipv6 address
+ */
+int getIfIPv6(char *ifname, char *if_addr, char *netmask)
+{
+	FILE *fp;
+	unsigned char ipv6[16];
+	int scope, prefix;
+	char address[INET6_ADDRSTRLEN] = "";
+	char dname[IF_NAMESIZE] = "";
+
+	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+
+	if (!strcmp(opmode, "0")) {
+		return -1;
+	}
+
+	if (NULL == (fp = fopen(_PATH_PROCNET_IPV6, "r"))) {
+		error(E_L, E_LOG, T("getIPv6IntAddr: open /proc/net/if_inet6 error"));
+		return -1;
+	}
+
+	while (19 == fscanf(fp, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s",
+		&ipv6[0], &ipv6[1], &ipv6[2], &ipv6[3], &ipv6[4], &ipv6[5], &ipv6[6], &ipv6[7], &ipv6[8], &ipv6[9],
+		&ipv6[10], &ipv6[11], &ipv6[12], &ipv6[13], &ipv6[14], &ipv6[15], &prefix, &scope, dname)) {
+		if (strcmp(ifname, dname) != 0) {
+			continue;
+		}
+		if (inet_ntop(AF_INET6, ipv6, address, sizeof(address)) == NULL) {
+			continue;
+		}
+		if (scope == IPV6_ADDR_GLOBAL) {
+			break;
+		}
+	}
+	fclose(fp);
+
+	if (strlen(address)<=0) {
+		return -255;
+	} else {
+		strcpy(if_addr, address);
+		sprintf(netmask, "%d", prefix);
+		return 0;
+	}
+}
+
+static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
+	char address[INET6_ADDRSTRLEN] = "";
+	char lanif[32] = "";
+	char mask[16] = "";
+
+	strcpy(lanif, getLanIfName());
+
+	if (getIfIPv6(lanif, address, mask) != 0) {
+		return websWrite(wp, T(""));
+	} else {
+		return websWrite(wp, T("%s/%s"), address, mask);
+	}
+}
+
+static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
+	char address[INET6_ADDRSTRLEN] = "";
+	char tmpif[IF_NAMESIZE] = "";
+	char wanif[32] = "";
+	char mask[16] = "";
+	FILE *fp;
+
+	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+
+	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
+		if (!strcmp(opmode, "1")) {
+			if (vpn_mode_enabled() == 1) {
+				strcpy(wanif, getPPPIfName());
+			} else {
+				strcpy(wanif, getWanIfName());
+			}
+		} else if (!strcmp(opmode, "2")) {
+			strcpy(wanif, "6rd");
+		} else if (!strcmp(opmode, "3")) {
+			strcpy(wanif, "sit0");
+		}
+	} else {
+		while (fgets(tmpif, sizeof(tmpif), fp) != NULL) {
+			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) || 
+				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
+				strcpy(wanif, strip_space(tmpif));
+				break;
+			}
+		}
+		fclose(fp);
+	}
+	
+	if (getIfIPv6(wanif, address, mask) != 0) {
+		return websWrite(wp, T(""));
+	} else {
+		return websWrite(wp, T("%s/%s"), address, mask);
+	}
 }
 #endif
 

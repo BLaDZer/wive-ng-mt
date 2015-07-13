@@ -57,6 +57,8 @@
     <message msgid="status port mode 3" msgstr="Режим порта 3" />
     <message msgid="status port mode 4" msgstr="Режим порта 4" />
     <message msgid="status port mode 5" msgstr="Режим порта 5" />
+    <message msgid="status internal ipv6 address" msgstr="Внутренний IPv6 адрес" />
+    <message msgid="status external ipv6 address" msgstr="Внешний IPv6 адрес" />
 
     <message msgid="statistic title" msgstr="Статистика" />
     <message msgid="statistic introduction" msgstr=" Статистика устройства " />
