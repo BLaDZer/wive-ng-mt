@@ -5582,6 +5582,29 @@ INT	Set_NoForwarding_Proc(
 	return TRUE;
 }
 
+INT	Set_NoForwardingMBCast_Proc(
+	IN	PRTMP_ADAPTER	pAd, 
+	IN	PSTRING			arg)
+{
+	ULONG NoForwardingMBCast;
+
+	POS_COOKIE	pObj = (POS_COOKIE) pAd->OS_Cookie;
+
+	NoForwardingMBCast = simple_strtol(arg, 0, 10);
+
+	if (NoForwardingMBCast == 1)
+		pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast = TRUE;
+	else if (NoForwardingMBCast == 0)
+		pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast = FALSE;
+	else
+		return FALSE;  //Invalid argument 
+	
+	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_NoForwardingMBCast_Proc::(IsolateInterStaMBCast=%d)\n", 
+		pObj->ioctl_if, pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast));
+
+	return TRUE;
+}
+
 
 /* 
     ==========================================================================
@@ -5865,30 +5888,6 @@ INT	Set_AP_WpaMixPairCipher_Proc(
 
 	DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_WpaMixPairCipher_Proc=0x%02x\n", apidx, pAd->ApCfg.MBSSID[apidx].WpaMixPairCipher));
 	
-	return TRUE;
-}
-
-
-INT	Set_NoForwardingMBCast_Proc(
-	IN	PRTMP_ADAPTER	pAd, 
-	IN	PSTRING			arg)
-{
-	ULONG NoForwardingMBCast;
-
-	POS_COOKIE	pObj = (POS_COOKIE) pAd->OS_Cookie;
-	
-	NoForwardingMBCast = simple_strtol(arg, 0, 10);
-
-	if (NoForwardingMBCast == 1)
-		pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast = TRUE;
-	else if (NoForwardingMBCast == 0)
-		pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast = FALSE;
-	else
-		return FALSE;  //Invalid argument 
-	
-	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_NoForwardingMBCast_Proc::(IsolateInterStaMBCast=%d)\n", 
-		pObj->ioctl_if, pAd->ApCfg.MBSSID[pObj->ioctl_if].IsolateInterStaMBCast));
-
 	return TRUE;
 }
 
