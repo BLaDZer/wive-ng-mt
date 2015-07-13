@@ -257,7 +257,7 @@ function parseAllData(str)
 		Key4Str[i] = fields_str[12];
 		WPAPSK[i] = fields_str[13];
 		RekeyMethod[i] = fields_str[14];
-		RekeyInterval[i] = fields_str[15];
+		RekeyInterval[i] = (fields_str[15] == "") ? 3600 : fields_str[15];
 		PMKCachePeriod[i] = fields_str[16];
 		IEEE8021X[i] = fields_str[17];
 		RADIUS_Server[i] = fields_str[18];

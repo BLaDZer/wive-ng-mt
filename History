@@ -1100,6 +1100,7 @@
 <br>
 <b>3.3.x</b><br>
 1) goahead: add hardware traffic counters from switch to WebUI.<br>
+2) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
