@@ -127,10 +127,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 			var text = xmlHttp.responseText;
 
 			if (xmlHttp.status == 200)
-			{
-				element.innerHTML = '';
-				element.innerHTML = text;
-			}
+				ajaxModifyElementHTML(elementID, text);
 			else
 				element.innerHTML = '<b>' + xmlHttp.statusText + '</b>';
 

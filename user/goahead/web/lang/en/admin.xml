@@ -82,6 +82,7 @@
     <message msgid="statistic rx bytes" msgstr="Rx bytes" />
     <message msgid="statistic tx pkt" msgstr="Tx packets" />
     <message msgid="statistic tx bytes" msgstr="Tx bytes" />
+    <message msgid="statistic phy ports" msgstr="Physical ports" />
 
     <message msgid="syslog title" msgstr="System Log" />
     <message msgid="syslog introduction" msgstr="Here you can configure system logging" />

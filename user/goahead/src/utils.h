@@ -29,14 +29,17 @@
 #define LED_OFF				0
 
 #if defined (CONFIG_RALINK_MT7620)
-#define PROCREG_GMAC	"/proc/mt7620/gmac"
+#define PROCREG_DIR			"mt7620"
 #elif defined (CONFIG_RALINK_MT7621)
-#define PROCREG_GMAC	"/proc/mt7621/gmac"
+#define PROCREG_DIR			"mt7621"
 #elif defined (CONFIG_RALINK_MT7628)
-#define PROCREG_GMAC	"/proc/mt7628/gmac"
+#define PROCREG_DIR			"mt7628"
 #else
-#define PROCREG_GMAC	"/proc/mt7620/gmac"
+#define PROCREG_DIR			"mt7620"
 #endif
+
+#define PROC_SNMP			("/proc/" PROCREG_DIR "/snmp")
+#define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
 void reboot_now(void);
 void outputTimerForReload(webs_t wp, long delay);

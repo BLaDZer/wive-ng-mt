@@ -82,6 +82,7 @@
     <message msgid="statistic rx bytes" msgstr="Принято байт" />
     <message msgid="statistic tx pkt" msgstr="Отправленно пакетов" />
     <message msgid="statistic tx bytes" msgstr="Отправленно байт" />
+    <message msgid="statistic phy ports" msgstr="Физические порты" />
 
     <message msgid="syslog title" msgstr="Система логирования" />
     <message msgid="syslog introduction" msgstr="Здесь вы можете настроить систему логирования" />

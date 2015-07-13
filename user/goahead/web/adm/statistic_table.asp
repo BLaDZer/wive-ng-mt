@@ -75,6 +75,19 @@
       <th id="statisticTxBytes">Tx Bytes</th>
     </tr>
     <% getAllNICStatisticASP(); %>
-    </script>
   </tbody>
+</table>
+<table class="form" id="statisticHWStats">
+  <tr>
+    <td class="title" colspan="6" id="statisPorts">Physical ports</td>
+  </tr>
+  <tr id="statisticPorts">
+    <td class="head"></td>
+    <td class="head"><span id="Port">Port</span> 1</td>
+    <td class="head"><span id="Port">Port</span> 2</td>
+    <td class="head"><span id="Port">Port</span> 3</td>
+    <td class="head"><span id="Port">Port</span> 4</td>
+    <td class="head"><span id="Port">Port</span> 5</td>
+  </tr>
+  <% getHWStatistic(); %>
 </table>

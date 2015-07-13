@@ -45,18 +45,20 @@ function initTranslation()
 	_TR("statisticRxBytes", "statistic rx bytes");
 	_TR("statisticTxPkt", "statistic tx pkt");
 	_TR("statisticTxBytes", "statistic tx bytes");
-}
-
-function PageInit()
-{
-	initTranslation();
-	showLoadedElements();
-
-	loadStatistics();
+	_TR("statisPorts", "statistic phy ports");
+	_TR("stats_rx", "statistic rx bytes");
+	_TR("stats_tx", "statistic tx bytes");
 }
 
 function showLoadedElements()
 {
+	var wan = 1 * '<% getCfgZero(1, "wan_port"); %>';
+	var lan = '<% getCfgZero(1, "lan_port"); %>';
+	var stb_port = ('1' != '<% getCfgZero(1, "tv_port"); %>') ? -1 :
+			(wan == 0) ? 1 : wan - 1;
+	var sip_port = ('1' != '<% getCfgZero(1, "sip_port"); %>') ? -1 :
+			(wan == 0) ? 2 : wan - 2;
+
 	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
 	if (opmode == '2')
 	{
@@ -67,14 +69,52 @@ function showLoadedElements()
 
 	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 	displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
+
+	if (!((wan >= 0) && (wan <= 4)))
+		wan = 4;
+
+	// Only WLLLL, WWLLL, LLLWW, LLLLW modes supported now
+	if ((wan != 0) && (wan != 4))
+		wan = 4;
+
+	if (((lan != 'near') && (lan != 'distant')))
+		lan = 'near';
+
+	var content = '<td class="head"></td>';
+	for (i=0; i<5; i++) {
+		if (lan == 'distant') {
+			if (wan == 0) {
+				var text = 5-i;
+			} else if (wan == 4) {
+				var text = i+1;
+			}
+		} else if (lan == 'near') {
+			if (wan == 0) {
+				var text = i;
+			} else if (wan == 4){
+				var text = 4-i;
+			}
+		}
+		if (i == wan)
+			text = 'WAN';
+		else if (i == stb_port)
+			text = 'TV';
+		else if (i == sip_port)
+			text = 'SIP';
+		else
+			text = 'LAN' + text;
+		content = content + '<td class="head">' + text + '</td>';
+	}
+	ajaxModifyElementHTML('statisticPorts', content);
+	displayElement('statisticHWStats', '<% getHWStatsBuilt(); %>' == '1');
 }
 
 function loadStatistics()
 {
 	var reloader = function(element)
 	{
-		initTranslation();
 		showLoadedElements();
+		initTranslation();
 		self.setTimeout(loadStatistics, 5000);
 	}
 
@@ -83,7 +123,7 @@ function loadStatistics()
 
 </script>
 </head>
-<body onLoad="PageInit()">
+<body onLoad="loadStatistics();">
 <table class="body">
   <tr>
     <td><h1 id="statisticTitle">Statistics</h1>

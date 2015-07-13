@@ -1098,6 +1098,10 @@
 79) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
 <br>
 <br>
+<b>3.3.x</b><br>
+1) goahead: add hardware traffic counters from switch to WebUI.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) need add subchannel select for 5GHz module.<br>
