@@ -1325,6 +1325,16 @@ void restart8021XDaemon(int nvram)
 #endif
 
 /* STF means "Save To Flash" ...*/
+void STFs(int nvram, int index, char *flash_key, char *value)
+{
+	char *result;
+	char *tmp = nvram_bufget(nvram, flash_key);
+	if(!tmp)
+		tmp = "";
+	result = setNthValue(index, tmp, value);
+	nvram_bufset(nvram, flash_key, result);
+	return ;
+}
 #define STF(nvram, index, flash_key)    STFs(nvram, index, #flash_key, flash_key)
 
 /* LFF means "Load From Flash" ...*/
@@ -1418,7 +1428,7 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_USER_802_1X
-static void updateFlash8021x(int nvram)
+void updateFlash8021x(int nvram)
 {
 	char lan_if_addr[16];
 	char *RADIUS_Server;

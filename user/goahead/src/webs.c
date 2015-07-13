@@ -1537,8 +1537,6 @@ static int charCount(const char_t* str, char_t ch)
    return count;
 }
 
-
-
 static char_t* websSafeUrl(const char_t* url)
 {
 
@@ -1706,7 +1704,7 @@ int websWrite(webs_t wp, char_t *fmt, ...)
 	va_list		 vargs;
 	char_t		*buf;
 	int			 rc;
-	
+
 	a_assert(websValid(wp));
 
 	va_start(vargs, fmt);
@@ -1717,7 +1715,7 @@ int websWrite(webs_t wp, char_t *fmt, ...)
 	if (fmtValloc(&buf, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
 		trace(0, T("webs: websWrite lost data, buffer overflow\n"));
 	}
-   
+
 	va_end(vargs);
 	a_assert(buf);
 	if (buf) {
@@ -1727,6 +1725,19 @@ int websWrite(webs_t wp, char_t *fmt, ...)
 	return rc;
 }
 
+void websLongWrite(webs_t wp, char *longstr)
+{
+    char tmp[513] = {0};
+    int len = strlen(longstr);
+    char *end = longstr + len;
+
+    while(longstr < end){
+        strncpy(tmp, longstr, 512);
+        websWrite(wp, T("%s"), tmp);
+        longstr += 512;
+    }
+    return;
+}
 
 /******************************************************************************/
 /*

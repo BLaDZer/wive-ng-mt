@@ -727,7 +727,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	char_t port_buf[32];
 	unsigned long long rx_count[6], tx_count[6];
 
-	FILE *fp = fopen(PROC_SNMP, "r");
+	FILE *fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
 		printf("goahead: no snmp?\n");
 		return -1;

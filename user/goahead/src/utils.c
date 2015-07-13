@@ -289,32 +289,6 @@ sleep_again:
 }
 
 /*
- * The setitimer() is Linux-specified.
- */
-int setTimer(int microsec, void ((*sigroutine)(int)))
-{
-	struct itimerval value, ovalue;
-
-	signal(SIGALRM, sigroutine);
-	value.it_value.tv_sec = 0;
-	value.it_value.tv_usec = microsec;
-	value.it_interval.tv_sec = 0;
-	value.it_interval.tv_usec = microsec;
-	return setitimer(ITIMER_REAL, &value, &ovalue);
-}
-
-void stopTimer(void)
-{
-	struct itimerval value, ovalue;
-
-	value.it_value.tv_sec = 0;
-	value.it_value.tv_usec = 0;
-	value.it_interval.tv_sec = 0;
-	value.it_interval.tv_usec = 0;
-	setitimer(ITIMER_REAL, &value, &ovalue);
-}
-
-/*
  * configure LED blinking with proper frequency (privatly use only)
  *   on: number of ticks that LED is on
  *   off: number of ticks that LED is off
@@ -376,20 +350,6 @@ char *racat(char *s, int i)
 	static char str[32];
 	snprintf(str, 32, "%s%1d", s, i);
 	return str;
-}
-
-void websLongWrite(webs_t wp, char *longstr)
-{
-    char tmp[513] = {0};
-    int len = strlen(longstr);
-    char *end = longstr + len;
-
-    while(longstr < end){
-        strncpy(tmp, longstr, 512);
-        websWrite(wp, T("%s"), tmp);
-        longstr += 512;
-    }
-    return;
 }
 
 char *strip_space(char *str)
@@ -827,34 +787,6 @@ void redirect_wholepage(webs_t wp, const char *url)
 	websWrite(wp, T("</script></head></html>"));
 }
 
-int netmask_aton(const char *ip)
-{
-	int i, a[4], result = 0;
-	sscanf(ip, "%d.%d.%d.%d", &a[0], &a[1], &a[2], &a[3]);
-	for(i=0; i<4; i++){	/* this is dirty */
-		if(a[i] == 255){
-			result += 8;
-			continue;
-		}
-		if(a[i] == 254)
-			result += 7;
-		if(a[i] == 252)
-			result += 6;
-		if(a[i] == 248)
-			result += 5;
-		if(a[i] == 240)
-			result += 4;
-		if(a[i] == 224)
-			result += 3;
-		if(a[i] == 192)
-			result += 2;
-		if(a[i] == 128)
-			result += 1;
-		break;
-	}
-	return result;
-}
-
 void outputTimerForReload(webs_t wp, long delay)
 {
 	char lan_if_addr[32];
@@ -996,17 +928,6 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);
 	}
-}
-
-void STFs(int nvram, int index, char *flash_key, char *value)
-{
-	char *result;
-	char *tmp = nvram_bufget(nvram, flash_key);
-	if(!tmp)
-		tmp = "";
-	result = setNthValue(index, tmp, value);
-	nvram_bufset(nvram, flash_key, result);
-	return ;
 }
 
 /*

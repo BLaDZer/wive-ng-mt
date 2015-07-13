@@ -38,28 +38,23 @@
 #define PROCREG_DIR			"mt7620"
 #endif
 
-#define PROC_SNMP			("/proc/" PROCREG_DIR "/snmp")
+#define PROCREG_SNMP			("/proc/" PROCREG_DIR "/snmp")
 #define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
-void reboot_now(void);
-void outputTimerForReload(webs_t wp, long delay);
 void formDefineUtilities(void);
+void outputTimerForReload(webs_t wp, long delay);
+void reboot_now(void);
 int checkSemicolon(char *str);
 int doSystem(char_t *fmt, ...);
 char *getNthValue(int index, char *values);
 char *setNthValue(int index, char *old_values, char *new_value);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len);
-int setTimer(int mili, void ((*sigroutine)(int)));
-void stopTimer(void);
 int ledAlways(int gpio, int on);
 unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
-void websLongWrite(webs_t wp, char *longstr);
 char *strip_space(char *str);
-int netmask_aton(const char *ip);
-void STFs(int nvram, int index, char *flash_key, char *value);
 #ifdef CONFIG_USER_802_1X
 void restart8021XDaemon(int nvram);
 void updateFlash8021x(int nvram);
