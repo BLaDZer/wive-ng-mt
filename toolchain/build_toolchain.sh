@@ -184,7 +184,7 @@ if [ "$HEADERS" = "YES" ]; then
     mkdir -p $CURDIR/usr
     rm -rf $CURDIR/usr/include
     cp -rf $KERNEL_HEADERS $CURDIR/usr
-    ln -sf $CURDIR/usr/include $CURDIR/include
+    ln -rsf $CURDIR/usr/include $CURDIR/include
 fi
 export KERNEL_HEADERS=$CURDIR/usr/include
 
