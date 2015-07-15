@@ -10,12 +10,22 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<style type="text/css">
+td.port_status {
+	background-position: center center;
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 15%;
+	text-align: center;
+	vertical-align: middle;
+	cursor: default;
+}
+</style>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
 
-function initTranslation()
-{
+function initTranslation() {
 	_TR("statisticTitle", "statistic title");
 	_TR("statisticIntroduction", "statistic introduction");
 	_TR("fastpath_warning", "statistic warning");
@@ -48,10 +58,12 @@ function initTranslation()
 	_TR("statisPorts", "statistic phy ports");
 	_TR("stats_rx", "statistic rx bytes");
 	_TR("stats_tx", "statistic tx bytes");
+	_TR("statusEthPortStatus", "status ethernet port status");
 }
 
-function showLoadedElements()
-{
+function showPortStatistics() {
+	var el = document.getElementById('inpWanPort');
+	var pstatus = el.value.split(';');
 	var wan = 1 * '<% getCfgZero(1, "wan_port"); %>';
 	var lan = '<% getCfgZero(1, "lan_port"); %>';
 	var stb_port = ('1' != '<% getCfgZero(1, "tv_port"); %>') ? -1 :
@@ -59,29 +71,37 @@ function showLoadedElements()
 	var sip_port = ('1' != '<% getCfgZero(1, "sip_port"); %>') ? -1 :
 			(wan == 0) ? 2 : wan - 2;
 
-	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
-	if (opmode == '2')
-	{
-		showElement("wirelessAbout");
-		showElement("wirelessDriverVersion");
-		showElement("wirelessMacAddr");
+	if ((el == null) || (pstatus.length <= 0)) {
+		return;
 	}
-
-	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
-	displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
 
 	if (!((wan >= 0) && (wan <= 4)))
 		wan = 4;
-
-	// Only WLLLL, WWLLL, LLLWW, LLLLW modes supported now
 	if ((wan != 0) && (wan != 4))
 		wan = 4;
-
 	if (((lan != 'near') && (lan != 'distant')))
 		lan = 'near';
 
-	var content = '<td class="head"></td>';
+	var content = '<td class="head" id="statusEthPortStatus">Port Status</td>';
 	for (i=0; i<5; i++) {
+		var port = pstatus[i].split(',');
+		var image = 'empty';
+
+		if (port[0] == '1')
+		{
+			if (port[1] == '10')
+				image = '10';
+			else if (port[1] == '100')
+				image = '100';
+			else if (port[1] == '1000')
+				image = '1000';
+			else
+				image = '100';
+
+			if (port[2] == 'H')
+				image += '_h';
+		}
+
 		if (lan == 'distant') {
 			if (wan == 0) {
 				var text = 5-i;
@@ -96,24 +116,32 @@ function showLoadedElements()
 			}
 		}
 		if (i == wan)
-			text = 'WAN';
+			text = '<span style="color: #027fff;">WAN</span>';
 		else if (i == stb_port)
-			text = 'TV';
+			text = '<span style="color: #ff00d2;">TV</span>';
 		else if (i == sip_port)
-			text = 'SIP';
-		else
-			text = 'LAN' + text;
-		content = content + '<td class="head">' + text + '</td>';
+			text = '<span style="color: #ffd200;">SIP</span>';
+
+		content = content + '<td class="port_status" style="background-color: #ffffff; color: #00ffff; background-image: url(\'/graphics/' + image + '.gif\'); "><b>' + text + '</b></td>';
 	}
 	ajaxModifyElementHTML('statisticPorts', content);
 	displayElement('statisticHWStats', '<% getHWStatsBuilt(); %>' == '1');
 }
 
-function loadStatistics()
-{
-	var reloader = function(element)
-	{
+function showLoadedElements() {
+	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
+
+	displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
+	displayElement("wirelessAbout", opmode == '2');
+	displayElement("wirelessDriverVersion", opmode == '2');
+	displayElement("wirelessMacAddr", opmode == '2');
+}
+
+function loadStatistics() {
+	var reloader = function(element) {
 		showLoadedElements();
+		showPortStatistics();
 		initTranslation();
 		self.setTimeout(loadStatistics, 5000);
 	}
@@ -136,7 +164,8 @@ function loadStatistics()
       </div>
       <hr>
       <div id="statistics_table" > </div>
-      <div class="whitespace">&nbsp;</div></td>
+      <div class="whitespace">&nbsp;</div>
+    </td>
   </tr>
 </table>
 </body>

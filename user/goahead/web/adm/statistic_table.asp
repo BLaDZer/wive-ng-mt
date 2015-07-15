@@ -27,42 +27,6 @@
       <td class="head" id="statisticCpuUse" colspan="3">CPU usage: </td>
       <td colspan="3"><% getCpuUsageASP(); %></td>
     </tr>
-    <!-- =================  WAN/LAN  ================== -->
-    <tr>
-      <td class="title" colspan="6" id="statisticWANLAN">WAN/LAN</td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticWANRxPkt" colspan="3">WAN Rx packets:</td>
-      <td colspan="3"><% getWANRxPacketASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticWANRxBytes" colspan="3">WAN Rx bytes:</td>
-      <td colspan="3"><% getWANRxByteASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticWANTxPkt" colspan="3">WAN Tx packets:</td>
-      <td colspan="3"><% getWANTxPacketASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticWANTxBytes" colspan="3">WAN Tx bytes:</td>
-      <td colspan="3"><% getWANTxByteASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticLANRxPkt" colspan="3">LAN Rx packets:</td>
-      <td colspan="3"><% getLANRxPacketASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticLANRxBytes" colspan="3">LAN Rx bytes:</td>
-      <td colspan="3"><% getLANRxByteASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticLANTxPkt" colspan="3">LAN Tx packets:</td>
-      <td colspan="3"><% getLANTxPacketASP(); %></td>
-    </tr>
-    <tr>
-      <td class="head" id="statisticLANTxBytes" colspan="3">LAN Tx bytes:</td>
-      <td colspan="3"><% getLANTxByteASP(); %></td>
-    </tr>
   </tbody>
 </table>
 <table class="form" id="statisticHWStats">
@@ -70,15 +34,10 @@
     <td class="title" colspan="6" id="statisPorts">Physical ports</td>
   </tr>
   <tr id="statisticPorts">
-    <td class="head"></td>
-    <td class="head"><span id="Port">Port</span> 1</td>
-    <td class="head"><span id="Port">Port</span> 2</td>
-    <td class="head"><span id="Port">Port</span> 3</td>
-    <td class="head"><span id="Port">Port</span> 4</td>
-    <td class="head"><span id="Port">Port</span> 5</td>
   </tr>
   <% getHWStatistic(); %>
 </table>
+<input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
     <!-- =================  ALL  ================= -->
 <table class="form">
   <tbody>

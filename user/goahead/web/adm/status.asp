@@ -11,17 +11,6 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
-<style type="text/css">
-td.port_status {
-	background-position: center center;
-	background-repeat: no-repeat;
-	width: 35px;
-	height: 24px;
-	text-align: center;
-	vertical-align: middle;
-	cursor: default;
-}
-</style>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
@@ -52,75 +41,6 @@ function showOpMode()
 	ajaxModifyElementHTML('tdOperationMode', s_opmode);
 }
 
-function showPortStatus()
-{
-	var el = document.getElementById('inpWanPort');
-	if (el == null)
-		return;
-
-	var pstatus = el.value.split(';');
-
-	if (pstatus.length <= 0)
-	{
-		ajaxModifyElementHTML('portStatusRow', '<td>not supported</td>');
-		return;
-	}
-
-	var form = document.setWanForm;
-	var wan = 1 * form.wan_port.value;
-	var stb_port = (!form.tv_stbEnabled.checked) ? -1 :
-			(wan == 0) ? 1 : wan - 1;
-	var sip_port = (!form.sip_stbEnabled.checked) ? -1 :
-			(wan == 0) ? 2 : wan - 2;
-	var content = '';
-	var lan = form.lan_port.value;
-
-	for (i=0; i<pstatus.length; i++)
-	{
-		var port = pstatus[i].split(',');
-		var image = 'empty';
-
-		if (port[0] == '1')
-		{
-			if (port[1] == '10')
-				image = '10';
-			else if (port[1] == '100')
-				image = '100';
-			else if (port[1] == '1000')
-				image = '1000';
-			else
-				image = '100';
-
-			if (port[2] == 'H')
-				image += '_h';
-		}
-
-		if (lan == 'distant') {
-			if (wan == 0) {
-				var text = 5-i;
-			} else if (wan == 4) {
-				var text = i+1;
-			}
-		} else if (lan == 'near') {
-			if (wan == 0) {
-				var text = i;
-			} else if (wan == 4){
-				var text = 4-i;
-			}
-		}
-		if (i == wan)
-			text = '<span style="color: #027fff;">WAN</span>';
-		else if (i == stb_port)
-			text = '<span style="color: #ff00d2;">TV</span>';
-		else if (i == sip_port)
-			text = '<span style="color: #ffd200;">SIP</span>';
-
-		content = content + '<td class="port_status" style="background-color: #ffffff; color: #00ffff; border: 0px; background-image: url(\'/graphics/' + image + '.gif\'); "><b>' + text + '</b></td>';
-	}
-
-	ajaxModifyElementHTML('portStatusRow', '<table class="small" style="border: 0px;">' + content + '</table>');
-}
-
 function initTranslation()
 {
 	_TR("statusTitle", "status title");
@@ -148,7 +68,6 @@ function initTranslation()
 	_TR("statusLocalNetmask", "status local netmask");
 	_TR("statusLANMAC", "status mac");
 
-	_TR("statusEthPortStatus", "status ethernet port status");
 	_TR("statusPortManagement", "status port management");
 	_TR("statusWANport", "status wan port");
 	_TR("statusFirstLANport", "status first lan port");
@@ -243,7 +162,6 @@ function reloadPage()
 		displayElement("statusIPv6Ext", (ipv6b == "1") && (IPv6Ext != ""));
 		initTranslation();
 		showOpMode();
-		showPortStatus();
 		timer = self.setTimeout('reloadPage();', 3000);
 	}
 

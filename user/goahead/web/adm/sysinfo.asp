@@ -86,10 +86,4 @@
     <td class="head" id="statusLANMAC">MAC Address</td>
     <td><% getLanMac(); %></td>
   </tr>
-  <!-- ================= Other Information ================= -->
-  <tr>
-    <td class="head"><div id="statusEthPortStatus">Port Status</div>
-      <input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'></td>
-    <td id="portStatusRow"></td>
-  </tr>
 </table>
