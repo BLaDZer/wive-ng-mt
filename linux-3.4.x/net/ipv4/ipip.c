@@ -394,11 +394,11 @@ static int ipip_rcv(struct sk_buff *skb)
 	if (tunnel != NULL) {
 		struct pcpu_tstats *tstats;
 
+#ifdef CONFIG_XFRM
 		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb)) {
 			kfree_skb(skb);
 			return 0;
 		}
-#ifdef CONFIG_XFRM
 		secpath_reset(skb);
 #endif
 		skb->mac_header = skb->network_header;

@@ -647,6 +647,7 @@ static int icmpv6_rcv(struct sk_buff *skb)
 	struct icmp6hdr *hdr;
 	u8 type;
 
+#ifdef CONFIG_XFRM
 	if (!xfrm6_policy_check(NULL, XFRM_POLICY_IN, skb)) {
 		struct sec_path *sp = skb_sec_path(skb);
 		int nh;
@@ -666,6 +667,7 @@ static int icmpv6_rcv(struct sk_buff *skb)
 
 		skb_set_network_header(skb, nh);
 	}
+#endif
 
 	ICMP6_INC_STATS_BH(dev_net(dev), idev, ICMP6_MIB_INMSGS);
 
@@ -773,7 +775,9 @@ static int icmpv6_rcv(struct sk_buff *skb)
 
 discard_it:
 	ICMP6_INC_STATS_BH(dev_net(dev), idev, ICMP6_MIB_INERRORS);
+#ifdef CONFIG_XFRM
 drop_no_count:
+#endif
 	kfree_skb(skb);
 	return 0;
 }
