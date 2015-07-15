@@ -1105,6 +1105,7 @@
 4) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
 5) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
 6) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+7) kernel: net: do not process device backlog during unregistration.<br>
 <br>
 <br>
 <b>TODO:</b><br>
