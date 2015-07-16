@@ -1457,18 +1457,15 @@ static void updateFlash8021x(int nvram)
 			}
 		}
 	    }
-	}
 
-	if(apd_flag) {
-	    if (getIfIp(getLanIfName(), lan_if_addr) != -1) {
-		nvram_bufset(nvram, "RadiusEnable", "1");
-		nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
-		/* temp static code raius server at LAN network, in future need select in UI */
-		nvram_bufset(nvram, "EAPifname", "br0");
-		nvram_bufset(nvram, "PreAuthifname", "br0");
+	    if(apd_flag) {
+		if (getIfIp(getLanIfName(), lan_if_addr) != -1) {
+		    nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
+		    /* temp static code raius server at LAN network, in future need select in UI */
+		    nvram_bufset(nvram, "EAPifname", "br0");
+		    nvram_bufset(nvram, "PreAuthifname", "br0");
+		}
 	    }
-	} else {
-		nvram_bufset(nvram, "RadiusEnable", "0");
 	}
 }
 
@@ -1560,16 +1557,10 @@ static void clearRadiusSetting(int nvram, int mbssid)
 	RADIUS_Port = nvram_get(nvram, "RADIUS_Port");
 	RADIUS_Key = nvram_get(nvram, "RADIUS_Key");
 
-        nvram_init(RT2860_NVRAM);
-	nvram_bufset(nvram, "RADIUS_Server", setNthValue(mbssid, RADIUS_Server, "0"));
+	nvram_bufset(nvram, "RADIUS_Server", setNthValue(mbssid, RADIUS_Server, ""));
 	nvram_bufset(nvram, "RADIUS_Port", setNthValue(mbssid, RADIUS_Port, "1812"));
-	nvram_bufset(nvram, "RADIUS_Key", setNthValue(mbssid, RADIUS_Key, "ralink"));
-
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-	return;
+	nvram_bufset(nvram, "RADIUS_Key", setNthValue(mbssid, RADIUS_Key, "wive-ng-mt"));
 }
-
 
 static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 {
@@ -1588,10 +1579,11 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	LFW(security_mode, security_mode);
 
-	//clear Radius settings
+	nvram_init(RT2860_NVRAM);
+
+	/* clear Radius settings */
 	clearRadiusSetting(nvram, mbssid);
 
-	nvram_init(RT2860_NVRAM);
 	if ( !strcmp(security_mode, "Disable")) // !------------------       Disable Mode --------------
 	{
 		STFs(nvram, mbssid, "AuthMode", "OPEN");
