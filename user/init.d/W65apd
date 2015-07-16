@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/rt2860apd ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t apd"
+
+start() {
+    get_param
+    if [ "$RadiusEnable" = "1" ]; then
+	$LOG "Starting apd radius daemon"
+	rt2860apd
+	if [ "$second_wlan_root_if" != "" ]; then
+	    rtinicapd
+	fi
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 RadiusEnable`
+}
+
+stop() {
+    pid=`pidof rt2860apd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping  apd radius daemon"
+	killall -q rt2860apd
+	killall -q -SIGKILL rt2860apd
+    fi
+    pid=`pidof rtinicapd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping  apd radius daemon"
+	killall -q rtinicapd
+	killall -q -SIGKILL rtinicapd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

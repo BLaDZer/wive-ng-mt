@@ -1284,46 +1284,6 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	}
 }
 
-#ifdef CONFIG_USER_802_1X
-void restart8021XDaemon(int nvram)
-{
-	int i, num, apd_flag = 0;
-	char *auth_mode = nvram_get(nvram, "AuthMode");
-	char *ieee8021x = nvram_get(nvram, "IEEE8021X");
-	char *num_s = nvram_get(nvram, "BssidNum");
-
-	if(!num_s)
-		return;
-	num = atoi(num_s);
-
-	doSystem("killall -q rt2860apd");
-	doSystem("killall -q -SIGKILL rt2860apd");
-
-	/*
-	 * In fact we only support mbssid[0] to use 802.1x radius settings.
-	 */
-	for(i=0; i<num; i++){
-		char tmp_auth[128];
-		if( getNthValueSafe(i, auth_mode, ';', tmp_auth, 128) != -1){
-			if(!strcmp(tmp_auth, "WPA") || !strcmp(tmp_auth, "WPA2") || !strcmp(tmp_auth, "WPA1WPA2")){
-				apd_flag = 1;
-				break;
-			}
-		}
-
-		if( getNthValueSafe(i, ieee8021x, ';', tmp_auth, 128) != -1){
-			if(!strcmp(tmp_auth, "1")){
-				apd_flag = 1;
-				break;
-			}
-		}
-	}
-
-	if(apd_flag)
-		doSystem("rt2860apd");
-}
-#endif
-
 /* STF means "Save To Flash" ...*/
 void STFs(int nvram, int index, char *flash_key, char *value)
 {
@@ -1427,58 +1387,6 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 	return getSecurity(RT2860_NVRAM, wp, path, query);
 }
 
-#ifdef CONFIG_USER_802_1X
-void updateFlash8021x(int nvram)
-{
-	char lan_if_addr[16];
-	char *RADIUS_Server;
-	char *operation_mode;
-
-	if(! (operation_mode = nvram_get(RT2860_NVRAM, "OperationMode")))
-		return;
-
-	if(! (RADIUS_Server = nvram_get(nvram, "RADIUS_Server")))
-		return;
-
-	if(!strlen(RADIUS_Server))
-		return;
-
-	nvram_init(RT2860_NVRAM);
-	if(*operation_mode == '0'){ // Bridge
-		if (getIfIp(getLanIfName(), lan_if_addr) == -1)
-			goto out;
-		nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
-		if (RT2860_NVRAM == nvram) {
-			nvram_bufset(nvram, "EAPifname", getLanIfName());
-			nvram_bufset(nvram, "PreAuthifname", getLanIfName());
-		}
-	}else if(*operation_mode == '1'){	// Gateway
-		if (getIfIp(getLanIfName(), lan_if_addr) == -1)
-			goto out;
-		nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
-		if (RT2860_NVRAM == nvram) {
-			nvram_bufset(nvram, "EAPifname", getLanIfName());
-			nvram_bufset(nvram, "PreAuthifname", getLanIfName());
-		}
-	}else if(*operation_mode == '2'){	// Wireless gateway
-		if (getIfIp(getLanIfName(), lan_if_addr) == -1)
-			goto out;
-		nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
-		if (RT2860_NVRAM == nvram) {
-			nvram_bufset(nvram, "EAPifname", getLanIfName());
-			nvram_bufset(nvram, "PreAuthifname", getLanIfName());
-		}
-	}else{
-		printf("goahead: not op mode\n");
-		goto out;
-	}
-out:
-    nvram_commit(RT2860_NVRAM);
-    nvram_close(RT2860_NVRAM);
-    return;
-}
-#endif
-
 static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 {
 	char_t *apselect, *newap_list;
@@ -1519,6 +1427,57 @@ static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 }
 
 #ifdef CONFIG_USER_802_1X
+static void updateFlash8021x(int nvram)
+{
+	int i, num, apd_flag = 0;
+	char lan_if_addr[32];
+	char *RADIUS_Server = nvram_get(nvram, "RADIUS_Server");
+	char *auth_mode = nvram_get(nvram, "AuthMode");
+	char *ieee8021x = nvram_get(nvram, "IEEE8021X");
+	char *num_s = nvram_get(nvram, "BssidNum");
+
+	if(!num_s)
+		return;
+	num = atoi(num_s);
+
+	if(!RADIUS_Server || !strlen(RADIUS_Server))
+		return;
+
+	/*
+	 * In fact we only support mbssid[0] to use 802.1x radius settings.
+	 */
+	for(i=0; i<num; i++){
+		char tmp_auth[128];
+		if( getNthValueSafe(i, auth_mode, ';', tmp_auth, 128) != -1){
+			if(!strcmp(tmp_auth, "WPA") || !strcmp(tmp_auth, "WPA2") || !strcmp(tmp_auth, "WPA1WPA2")){
+				apd_flag = 1;
+				break;
+			}
+		}
+
+		if( getNthValueSafe(i, ieee8021x, ';', tmp_auth, 128) != -1){
+			if(!strcmp(tmp_auth, "1")){
+				apd_flag = 1;
+				break;
+			}
+		}
+	}
+
+	if(apd_flag) {
+	    if (getIfIp(getLanIfName(), lan_if_addr) != -1) {
+		nvram_bufset(nvram, "RadiusEnable", "1");
+		nvram_bufset(nvram, "own_ip_addr", lan_if_addr);
+		/* temp static code raius server at LAN network, in future need select in UI */
+		nvram_bufset(nvram, "EAPifname", "br0");
+		nvram_bufset(nvram, "PreAuthifname", "br0");
+	    }
+	} else {
+		nvram_bufset(nvram, "RadiusEnable", 0);
+	}
+
+	return;
+}
+
 static void conf8021x(int nvram, webs_t wp, int mbssid)
 {
 	char_t *RadiusServerIP, *RadiusServerPort, *RadiusServerSecret, *RadiusServerSessionTimeout;//, *RadiusServerIdleTimeout;
@@ -1530,16 +1489,12 @@ static void conf8021x(int nvram, webs_t wp, int mbssid)
 	if(!gstrlen(RadiusServerSessionTimeout))
 		RadiusServerSessionTimeout = "0";
 
-	nvram_init(RT2860_NVRAM);
 	STFs(nvram, mbssid, "RADIUS_Server", RadiusServerIP);
 	STFs(nvram, mbssid, "RADIUS_Port", RadiusServerPort);
 	STFs(nvram, mbssid, "RADIUS_Key", RadiusServerSecret);
 	STFs(nvram, mbssid, "session_timeout_interval", RadiusServerSessionTimeout);
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
 
 	updateFlash8021x(nvram);
-	restart8021XDaemon(nvram);
 }
 #endif
 
@@ -1754,9 +1709,6 @@ out:
 	websRedirect(wp, submitUrl);
 #endif
 	doSystem("internet.sh wifionly");
-#ifdef CONFIG_USER_802_1X
-	restart8021XDaemon(nvram);
-#endif
 }
 
 static void APSecurity(webs_t wp, char_t *path, char_t *query)

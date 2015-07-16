@@ -57,7 +57,3 @@ unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
-#ifdef CONFIG_USER_802_1X
-void restart8021XDaemon(int nvram);
-void updateFlash8021x(int nvram);
-#endif

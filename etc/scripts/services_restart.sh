@@ -128,18 +128,18 @@ fi
 ##########################################################
 # Always send CDP/SONMP/FDP/EDP to ISP			 #
 ##########################################################
-if [ -f /bin/cdp-send ]; then
+if [ -e /bin/cdp-send ]; then
 	service cdp restart
 fi
-if [ -f /bin/lldpd ]; then
+if [ -e /bin/lldpd ]; then
 	service lldpd restart
 fi
 
 ##########################################################
-# Always rebalance irq by cpus				 #
+# restart 802.1x wireless daemon			 #
 ##########################################################
-if [ -f /bin/irqbalance ]; then
-    service irqbalance restart
+if [ -e /bin/rt2860apd ]; then
+    service apd restart
 fi
 
 ##########################################################
@@ -153,7 +153,7 @@ if [ "$MODE" = "all" ]; then
     # Example: http://wive-ng.sf.net/downloads/wan_up.sh     #
     # This script load external routes for www.kvidex.ru ISP #
     ##########################################################
-    if [ -f /etc/scripts/wan_up.sh ]; then
+    if [ -e /etc/scripts/wan_up.sh ]; then
 	$LOG "Call user /etc/scripts/wan_up.sh script."
 	sh /etc/scripts/wan_up.sh
     fi
@@ -164,6 +164,13 @@ if [ "$MODE" = "all" ]; then
     if [ "$wanConnectionMode" != "DHCP" ] || [ "$purepppoemode" = "1" ]; then
 	service vpnhelper restart
     fi
+fi
+
+##########################################################
+# Always rebalance irq by cpus				 #
+##########################################################
+if [ -e /bin/irqbalance ]; then
+    service irqbalance restart
 fi
 
 # remove running flag

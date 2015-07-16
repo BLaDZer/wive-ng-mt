@@ -51,6 +51,7 @@ dir_  =
 
 #base system application
 dir_$(CONFIG_USER_WIRELESS_TOOLS)           += wireless_tools
+dir_$(CONFIG_USER_802_1X)                   += 802.1x
 dir_$(CONFIG_USER_WIRELESS_IW_TOOL)         += iw
 dir_$(CONFIG_USER_IPTABLES_IPTABLES)        += iptables
 dir_$(CONFIG_USER_IPTABLES_IP6TABLES)       += iptables

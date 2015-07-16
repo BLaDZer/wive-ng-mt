@@ -88,6 +88,7 @@ bool 'Link Layer Topology Discovery Protocol'	CONFIG_USER_LLTD
 bool 'Link Layer Discovery Protocol'		CONFIG_USER_LLDPD
 bool 'wpa-supplicant'				CONFIG_USER_WPA_SUPPLICANT
 bool 'wireless_tools support'			CONFIG_USER_WIRELESS_TOOLS
+bool '802.1x Authenticator'			CONFIG_USER_802_1X
 bool 'iw wireless_tool support'			CONFIG_USER_WIRELESS_IW_TOOL
 
 if [ "$CONFIG_USER_WIRELESS_IW_TOOL" = "y" ]; then

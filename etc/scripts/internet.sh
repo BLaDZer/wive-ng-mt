@@ -185,7 +185,7 @@ elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" != "" ]; then
     ethcv_config
 elif [ "$OperationMode" = "3" ] && [ "$first_wlan_apcli" != "" -o  "$second_wlan_apcli" != "" ]; then
     apcli_config
-elif [ "$OperationMode" = "4" ] && [ -f /bin/chilli ]; then
+elif [ "$OperationMode" = "4" ] && [ -e /bin/chilli ]; then
     spot_config
 else
     $LOG "Unknown mode. Please reset device."

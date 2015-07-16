@@ -109,7 +109,7 @@ fi
 # Set speed and duplex modes per port
 ##########################################################################
 set_perport_physmode() {
-    if [ -f /bin/ethtool ] && [ "$procdir" != "" ]; then
+    if [ -e /bin/ethtool ] && [ "$procdir" != "" ]; then
 	##################################
 	# start configure by ethtool
 	##################################

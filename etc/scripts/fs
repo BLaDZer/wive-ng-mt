@@ -50,7 +50,7 @@ usage() {
 
 sys_led_blink() {
     # blink sys/vpn leds
-    if [ -f /bin/gpio ]; then
+    if [ -e /bin/gpio ]; then
 	if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
 	    gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 1000
 	fi
@@ -132,7 +132,7 @@ change_mac() {
 }
 
 factory_mac() {
-    if [ -f /bin/eth_mac ]; then
+    if [ -e /bin/eth_mac ]; then
 	echo "Set nvram mac adresses from factory"
 	MACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
 	echo "Set WAN   MAC - $MACWAN"

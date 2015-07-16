@@ -858,9 +858,6 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "ApCliBridgeOnly", "0");
 		}
 		nvram_commit(RT2860_NVRAM);
-#ifdef CONFIG_USER_802_1X
-		updateFlash8021x(RT2860_NVRAM);
-#endif
 	}
 	nvram_close(RT2860_NVRAM);
 

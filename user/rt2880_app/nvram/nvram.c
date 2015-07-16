@@ -550,6 +550,7 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 		FPRINT_STR(RADIUS_Server);
 		FPRINT_STR(RADIUS_Port);
+		FPRINT_STR(RADIUS_Key);
 		FPRINT_STR(RADIUS_Key1);
 		FPRINT_STR(RADIUS_Key2);
 		FPRINT_STR(RADIUS_Key3);

@@ -331,6 +331,10 @@ char* getLanIfName(void)
 	FILE *fp;
 	char lan_if[16]; /* max 16 char in lan if name */
 
+	/* set default */
+	if (mode == NULL)
+		return if_name;
+
 	/* try read fron file exported from init.d */
 	fp = fopen("/tmp/lan_if_name", "r");
 	if (fp) {
@@ -343,10 +347,6 @@ char* getLanIfName(void)
 	    }
 	    fclose(fp);
 	}
-
-	/* set default */
-	if (NULL == mode)
-		return if_name;
 
 	/* in ethernet converter mode lan_if = eth2 */
 	if (!strncmp(mode, "2", 2))
@@ -1921,9 +1921,6 @@ void initInternet(void)
 	    initStaProfile();
 	    initStaConnection();
 	}
-#endif
-#ifdef CONFIG_USER_802_1X
-	restart8021XDaemon(RT2860_NVRAM);	// in wireless.c
 #endif
 }
 
