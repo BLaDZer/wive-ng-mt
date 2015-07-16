@@ -1109,6 +1109,7 @@
 8) kernel: net: do not process device backlog during unregistration.<br>
 9) kernel: net: call rcu_read_lock early in process_backlog.<br>
 10) kernel: net: tcp: don't abort splice() after small transfers.<br>
+11) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
 <br>
 <br>
 <b>TODO:</b><br>
