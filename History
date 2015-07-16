@@ -1103,10 +1103,11 @@
 2) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
 3) goahead: add ipv6 interfaces adresses to statisctic page.<br>
 4) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-5) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-6) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-7) kernel: net: do not process device backlog during unregistration.<br>
-8) kernel: net: call rcu_read_lock early in process_backlog.<br>
+5) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+6) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+7) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+8) kernel: net: do not process device backlog during unregistration.<br>
+9) kernel: net: call rcu_read_lock early in process_backlog.<br>
 <br>
 <br>
 <b>TODO:</b><br>

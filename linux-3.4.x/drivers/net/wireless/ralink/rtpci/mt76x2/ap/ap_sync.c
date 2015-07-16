@@ -734,11 +734,10 @@ VOID APPeerProbeReqAction(
 		{
 		    MAC_TABLE_ENTRY *pEntry=NULL;
 
-			DBGPRINT(RT_DEBUG_ERROR, ("SYNC - Send PROBE_RSP to %02x:%02x:%02x:%02x:%02x:%02x...\n",
-										PRINT_MAC(Addr2)));
-	    
+			DBGPRINT(RT_DEBUG_ERROR, ("SYNC - Send PROBE_RSP to %02x:%02x:%02x:%02x:%02x:%02x...\n", PRINT_MAC(ProbeReqParam.Addr2)));
+
 			RalinkSpecificIe[5] |= 0x8;
-			pEntry = MacTableLookup(pAd, Addr2);
+			pEntry = MacTableLookup(pAd, ProbeReqParam.Addr2);
 
 			if (pEntry != NULL)
 			{
