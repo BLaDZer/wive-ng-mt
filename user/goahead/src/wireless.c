@@ -1552,7 +1552,7 @@ static void confWPAGeneral(int nvram, webs_t wp, int mbssid)
 		STFs(nvram, mbssid, "EncrypType", "TKIPAES");
 		goto out;
 	}
-	STFs(nvram, mbssid, "DefaultKeyID", "2");	// DefaultKeyID is 2
+	STFs(nvram, mbssid, "DefaultKeyID", "1");
 	STFs(nvram, mbssid, "RekeyInterval", key_renewal_interval);
 	STFs(nvram, mbssid, "RekeyMethod", "TIME");
 	STFs(nvram, mbssid, "IEEE8021X", "0");
