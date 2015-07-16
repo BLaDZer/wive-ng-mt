@@ -1440,27 +1440,25 @@ static void updateFlash8021x(int nvram)
 		return;
 	num = atoi(num_s);
 
-	if(!RADIUS_Server || !strlen(RADIUS_Server))
-		return;
-
-	/*
-	 * In fact we only support mbssid[0] to use 802.1x radius settings.
-	 */
-	for(i=0; i<num; i++){
+	if (RADIUS_Server && strlen(RADIUS_Server)) {
+	    /*
+	    * In fact we only support mbssid[0] to use 802.1x radius settings.
+	    */
+	    for(i=0; i<num; i++) {
 		char tmp_auth[128];
-		if( getNthValueSafe(i, auth_mode, ';', tmp_auth, 128) != -1){
-			if(!strcmp(tmp_auth, "WPA") || !strcmp(tmp_auth, "WPA2") || !strcmp(tmp_auth, "WPA1WPA2")){
+		if(getNthValueSafe(i, auth_mode, ';', tmp_auth, 128) != -1) {
+			if(!strcmp(tmp_auth, "WPA") || !strcmp(tmp_auth, "WPA2") || !strcmp(tmp_auth, "WPA1WPA2")) {
 				apd_flag = 1;
 				break;
 			}
 		}
-
-		if( getNthValueSafe(i, ieee8021x, ';', tmp_auth, 128) != -1){
-			if(!strcmp(tmp_auth, "1")){
+		if(getNthValueSafe(i, ieee8021x, ';', tmp_auth, 128) != -1) {
+			if(!strcmp(tmp_auth, "1")) {
 				apd_flag = 1;
 				break;
 			}
 		}
+	    }
 	}
 
 	if(apd_flag) {
@@ -1474,8 +1472,6 @@ static void updateFlash8021x(int nvram)
 	} else {
 		nvram_bufset(nvram, "RadiusEnable", 0);
 	}
-
-	return;
 }
 
 static void conf8021x(int nvram, webs_t wp, int mbssid)
