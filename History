@@ -1112,6 +1112,7 @@
 11) kernel: net: call rcu_read_lock early in process_backlog.<br>
 12) kernel: net: tcp: don't abort splice() after small transfers.<br>
 13) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+14) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
 <br>
 <br>
 <b>TODO:</b><br>
