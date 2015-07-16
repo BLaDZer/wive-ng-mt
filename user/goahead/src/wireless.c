@@ -1427,6 +1427,19 @@ static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 }
 
 #ifdef CONFIG_USER_802_1X
+static void clearRadiusSetting(int nvram, int mbssid)
+{
+	char *RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
+
+	RADIUS_Server = nvram_get(nvram, "RADIUS_Server");
+	RADIUS_Port = nvram_get(nvram, "RADIUS_Port");
+	RADIUS_Key = nvram_get(nvram, "RADIUS_Key");
+
+	nvram_bufset(nvram, "RADIUS_Server", setNthValue(mbssid, RADIUS_Server, ""));
+	nvram_bufset(nvram, "RADIUS_Port", setNthValue(mbssid, RADIUS_Port, "1812"));
+	nvram_bufset(nvram, "RADIUS_Key", setNthValue(mbssid, RADIUS_Key, "wive-ng-mt"));
+}
+
 static void updateFlash8021x(int nvram)
 {
 	int i, num, apd_flag = 0;
@@ -1549,19 +1562,6 @@ out:
 	return;
 }
 
-static void clearRadiusSetting(int nvram, int mbssid)
-{
-	char *RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
-
-	RADIUS_Server = nvram_get(nvram, "RADIUS_Server");
-	RADIUS_Port = nvram_get(nvram, "RADIUS_Port");
-	RADIUS_Key = nvram_get(nvram, "RADIUS_Key");
-
-	nvram_bufset(nvram, "RADIUS_Server", setNthValue(mbssid, RADIUS_Server, ""));
-	nvram_bufset(nvram, "RADIUS_Port", setNthValue(mbssid, RADIUS_Port, "1812"));
-	nvram_bufset(nvram, "RADIUS_Key", setNthValue(mbssid, RADIUS_Key, "wive-ng-mt"));
-}
-
 static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	char_t *SSID;
@@ -1581,8 +1581,10 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	nvram_init(RT2860_NVRAM);
 
+#ifdef CONFIG_USER_802_1X
 	/* clear Radius settings */
 	clearRadiusSetting(nvram, mbssid);
+#endif
 
 	if ( !strcmp(security_mode, "Disable")) // !------------------       Disable Mode --------------
 	{
@@ -1672,7 +1674,7 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 			STFs(nvram, mbssid, "EncrypType", "NONE");
 		else
 			STFs(nvram, mbssid, "EncrypType", "WEP");
-	}else{
+	} else {
 		goto out;
 	}
 
