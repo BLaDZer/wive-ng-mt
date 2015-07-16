@@ -1436,14 +1436,12 @@ static void updateFlash8021x(int nvram)
 	char *ieee8021x = nvram_get(nvram, "IEEE8021X");
 	char *num_s = nvram_get(nvram, "BssidNum");
 
-	if(!num_s)
-		return;
-	num = atoi(num_s);
 
-	if (RADIUS_Server && strlen(RADIUS_Server)) {
+	if (num_s && RADIUS_Server && strlen(RADIUS_Server)) {
 	    /*
 	    * In fact we only support mbssid[0] to use 802.1x radius settings.
 	    */
+	    num = atoi(num_s);
 	    for(i=0; i<num; i++) {
 		char tmp_auth[128];
 		if(getNthValueSafe(i, auth_mode, ';', tmp_auth, 128) != -1) {
@@ -1470,7 +1468,7 @@ static void updateFlash8021x(int nvram)
 		nvram_bufset(nvram, "PreAuthifname", "br0");
 	    }
 	} else {
-		nvram_bufset(nvram, "RadiusEnable", 0);
+		nvram_bufset(nvram, "RadiusEnable", "0");
 	}
 }
 
