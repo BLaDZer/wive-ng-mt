@@ -1,5 +1,5 @@
 PROG        = usb_modeswitch
-VERS        = 2.2.3
+VERS        = 2.2.5
 LIBUSB      = $(ROOTDIR)/lib/libusb
 CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAGS	    += -Wl,--gc-sections

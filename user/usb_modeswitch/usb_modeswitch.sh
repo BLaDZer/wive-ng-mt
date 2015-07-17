@@ -1,5 +1,5 @@
 #!/bin/sh
-# part of usb_modeswitch 2.2.2
+# part of usb_modeswitch 2.2.5
 device_in()
 {
 	if [ ! -e /var/lib/usb_modeswitch/$1 ]; then
@@ -77,7 +77,6 @@ esac
 IFS='/' read -r p1 p2 <<EOF
 $1
 EOF
-#sleep 10
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 count=20
 while [ $count != 0 ]; do
@@ -96,5 +95,4 @@ while [ $count != 0 ]; do
 	fi
 done
 ) &
-# >/dev/null 2>/dev/null
 exit 0

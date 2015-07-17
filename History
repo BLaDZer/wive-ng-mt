@@ -1100,22 +1100,23 @@
 <br>
 <b>3.3.x</b><br>
 1) add 802.1x wireless radius authentification support.<br>
-2) goahead: add hardware traffic counters from switch to WebUI.<br>
-3) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
-4) goahead: add ipv6 interfaces adresses to statisctic page.<br>
-5) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-6) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-7) kernel: mm: place preemption point in do_mlockall() loop.<br>
-8) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-9) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-10) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-11) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-12) kernel: net: do not process device backlog during unregistration.<br>
-13) kernel: net: call rcu_read_lock early in process_backlog.<br>
-14) kernel: net: clone skb before setting peeked flag.<br>
-15) kernel: net: tcp: don't abort splice() after small transfers.<br>
-16) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-17) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+2) usb-modeswitch: up to 2.2.5 2015-07-16 version.<br>
+3) goahead: add hardware traffic counters from switch to WebUI.<br>
+4) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
+5) goahead: add ipv6 interfaces adresses to statisctic page.<br>
+6) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
+7) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+8) kernel: mm: place preemption point in do_mlockall() loop.<br>
+9) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+10) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+11) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+12) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+13) kernel: net: do not process device backlog during unregistration.<br>
+14) kernel: net: call rcu_read_lock early in process_backlog.<br>
+15) kernel: net: clone skb before setting peeked flag.<br>
+16) kernel: net: tcp: don't abort splice() after small transfers.<br>
+17) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+18) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
 <br>
 <br>
 <b>TODO:</b><br>
