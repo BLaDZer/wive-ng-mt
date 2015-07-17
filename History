@@ -1118,6 +1118,7 @@
 17) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
 18) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
 19) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+20) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 <br>
 <br>
 <b>TODO:</b><br>
