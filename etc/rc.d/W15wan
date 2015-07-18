@@ -5,21 +5,31 @@
 
 LOG="logger -t wan"
 
-# configure and start zeroconf daemon
-zero_conf() {
-    # reload global
-    . /etc/scripts/global.sh
-
-    if [ "$wan_is_not_null" = "0" ]; then
-	zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1
+# preconfigure some manual parametrs
+wan_if_preconf() {
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	# set manual mtu to wan if set
+	if [ "$wan_manual_mtu" != "0" ] && [ "$wan_manual_mtu" != "" ]; then
+	    $LOG "Set manual MTU to WAN $wan_manual_mtu"
+	    ip link set mtu $wan_manual_mtu dev "$wan_if"
+	fi
+	if [ "$purepppoemode" = "1" ]; then
+	    # no need forward for phys wan
+	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=0
+	else
+	    # enable forward for wan
+	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
+	fi
     fi
 }
 
-# configure dhcp client
-udhcpc_opts() {
-    # reload global
-    . /etc/scripts/global.sh
+# configure and start zeroconf daemon
+zero_conf() {
+    zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1
+}
 
+# configure dhcp client
+udhcpc_conf() {
     eval `nvram_buf_get 2860 dhcpRequestIP dhcpVendorClass wan_manual_mtu`
     if [ "$dhcpRequestIP" != "" ]; then
 	dhcpRequestIP="-r $dhcpRequestIP"
@@ -48,6 +58,9 @@ udhcpc_opts() {
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
+
+    # small wait and start dhcp client
+    (sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 }
 
 start() {
@@ -102,38 +115,13 @@ start() {
 	    fi
         fi
     elif [ "$wanConnectionMode" = "DHCP" ] && [ "$purepppoemode" != "1" ]; then
-	# get udhcp param
-	udhcpc_opts
 	$LOG "Start DHCP client at $wan_if."
-	(sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
+	udhcpc_conf
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$purepppoemode" = "1" ]; then
 	$LOG "Call zeroconf for get wan ip address."
 	zero_conf
     else
 	$LOG "Unknown mode. Please reset device."
-    fi
-}
-
-wan_if_preconf() {
-    # if not bridge wan up
-    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	# drop adress from wan if pure pppoe enabled
-	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
-	    $LOG "PURE PPPOE Mode - NOT start dhcpc or config wan!"
-	    ip -4 addr flush dev "$wan_if"
-	fi
-	# set manual mtu to wan if set
-	if [ "$wan_manual_mtu" != "0" ] && [ "$wan_manual_mtu" != "" ]; then
-	    $LOG "Set manual MTU to WAN $wan_manual_mtu"
-	    ip link set mtu $wan_manual_mtu dev "$wan_if"
-	fi
-	# enable/disable forward for wan
-	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ "$vpnPurePPPOE" = "1" ]; then
-	    # no need forward for phys wan
-	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=0
-	else
-	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
-	fi
     fi
 }
 
