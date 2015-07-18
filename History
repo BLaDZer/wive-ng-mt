@@ -1126,14 +1126,15 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
-2) need add subchannel select for 5GHz module.<br>
-3) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
-4) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
-5) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
-6) in misc page for snmp service need add allow select WAN&LAN option as ssh/web managment and community change (use snmpdcommunity nvram variable).<br>
-7) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-8) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-9) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+2) in misc page for snmp service need add allow select WAN&LAN option as ssh/web managment and community change (use snmpdcommunity nvram variable).<br>
+3) in wan page need in DHCP mode need add dhcpVendorClass edit box for set type of device manual (need for IpTV work in some case at some ugly ISP).<br>
+4) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
+5) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
+6) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
+7) need add subchannel select for 5GHz module.<br>
+8) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+9) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+10) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 <br>
 <br>
 <br>

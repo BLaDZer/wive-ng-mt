@@ -26,6 +26,11 @@ udhcpc_opts() {
     else
 	dhcpRequestIP=""
     fi
+    if [ "$dhcpVendorClass" != "" ]; then
+	dhcpVendorClass="-V $dhcpVendorClass"
+    else
+	dhcpVendorClass=""
+    fi
     if [ "$wan_manual_mtu" = "0" ] || [ "$wan_manual_mtu" = "" ]; then
 	wan_manual_mtu="-O mtu"
     else
@@ -39,7 +44,7 @@ udhcpc_opts() {
     UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a \
 		-s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
 		-O routes -O staticroutes -O msstaticroutes -O wins \
-		$rd_support $wan_manual_mtu -x hostname:$HostName -f &"
+		$rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName -f &"
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
