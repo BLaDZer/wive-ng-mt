@@ -20,7 +20,7 @@ udhcpc_opts() {
     # reload global
     . /etc/scripts/global.sh
 
-    eval `nvram_buf_get 2860 dhcpRequestIP wan_manual_mtu`
+    eval `nvram_buf_get 2860 dhcpRequestIP dhcpVendorClass wan_manual_mtu`
     if [ "$dhcpRequestIP" != "" ]; then
 	dhcpRequestIP="-r $dhcpRequestIP"
     else
