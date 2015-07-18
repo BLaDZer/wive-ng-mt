@@ -115,6 +115,7 @@
   <message msgid="services misc lldpd" msgstr="Поддержка LLDP" />
   <message msgid="services misc cdp" msgstr="Поддержка CDP" />
   <message msgid="services misc iptv" msgstr="Сервисы IPTV" />
+  <message msgid="services misc dinf" msgstr="Сервисы информации и статистики" />
   <message msgid="services misc igmp" msgstr="IGMP прокси" />
   <message msgid="services misc igmp multicast" msgstr="Multicast IGMP snooping" />
   <message msgid="services misc igmp unicast" msgstr="Преобразование мультикаста в уникаст" />
@@ -124,9 +125,9 @@
   <message msgid="services misc pass through" msgstr="Прямой пропуск" />
   <message msgid="services misc pass through pppoe" msgstr="Пропускать напрямую PPPOE" />
   <message msgid="services misc pass through ipv6" msgstr="Пропускать напрямую IPv6" />
-  <message msgid="services misc watchers" msgstr="Watchers" />
-  <message msgid="services misc watchdog" msgstr="Watchdog service" />
-  <message msgid="services misc pinger" msgstr="Pinger service" />
+  <message msgid="services misc watchers" msgstr="Системные" />
+  <message msgid="services misc watchdog" msgstr="Сторожевой таймер" />
+  <message msgid="services misc pinger" msgstr="Пинговалка ближайших узлов" />
   <message msgid="services misc ping time" msgstr="Ping check time" />
   <message msgid="services misc ping interval" msgstr="Ping check interval" />
   <message msgid="services misc others" msgstr="Остальные" />

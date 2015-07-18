@@ -10,13 +10,16 @@ LOG="logger -t snmpd"
 start() {
     get_param
     if [ "$snmpd" != "" ] && [ "$snmpd" != "0" ]; then
+	if [ "$snmpdcommunity" = "" ]; then
+	    snmpdcommunity="$HostName"
+	fi
 	$LOG "Starting SNMPD"
-	snmpd -h "$lan_ipaddr" -c "$HostName" &
+	snmpd -h "$lan_ipaddr" -c "$snmpdcommunity" &
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 snmpd HostName lan_ipaddr`
+    eval `nvram_buf_get 2860 snmpd HostName snmpdcommunity lan_ipaddr`
 }
 
 stop() {

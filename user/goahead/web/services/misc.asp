@@ -96,6 +96,11 @@ function initTranslation()
 	_TR("miscIPTVDetails", "services status details");
 	_TR("miscIPTVStatus", "services misc status");
 	_TR("miscIPTVConfig", "services status configure");
+	_TR("miscDINF", "services misc dinf");
+	_TR("miscDINFValue", "services misc value");
+	_TR("miscDINFDetails", "services status details");
+	_TR("miscDINFStatus", "services misc status");
+	_TR("miscDINFConfig", "services status configure");
 	_TR("lIgmpp", "services misc igmp");
 	_TR("lIgmppMC", "services misc igmp multicast");
 	_TR("lIgmppMC2UC", "services misc igmp unicast");
@@ -551,16 +556,6 @@ function submitForm(form) {
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
-          <tr id="snmpd">
-            <td class="head" id="lSnmp">SNMP daemon</td>
-            <td><select name="SnmpdEnabled" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
           <tr id="parprouted">
             <td class="head" id="lArppt">ARP Proxy</td>
             <td><select name="arpPT" class="half">
@@ -574,36 +569,6 @@ function submitForm(form) {
           <tr id="crond">
             <td class="head" id="lCron">Cron daemon</td>
             <td><select name="CrondEnable" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr id="lltd">
-            <td class="head" id="lLltd">LLTD daemon</td>
-            <td><select name="lltdEnbl" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr id="lldpd">
-            <td class="head" id="lLldpd">LLDP daemon</td>
-            <td><select name="lldpdEnbl" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr id="cdp">
-            <td class="head" id="lCdp">CDP daemon</td>
-            <td><select name="cdpEnbl" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
@@ -663,6 +628,54 @@ function submitForm(form) {
           <tr id="xupnpd">
             <td class="head" id="lxupnpd">UPNP media server (xupnpd)</td>
             <td><select name="xupnpdEnbl" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <!-- INFO -->
+          <tr>
+            <td class="title" id="miscDINF">Device info services</td>
+            <td class="title" id="miscDINFValue">Value</td>
+            <td class="title" id="miscDINFDetails" style="width: 88px;">Details</td>
+            <td class="title" id="miscDINFStatus" style="width: 56px;">Status</td>
+            <td class="title" id="miscDINFConfig" style="width: 80px;">Configure</td>
+          </tr>
+          <tr id="snmpd">
+            <td class="head" id="lSnmp">SNMP daemon</td>
+            <td><select name="SnmpdEnabled" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr id="lltd">
+            <td class="head" id="lLltd">LLTD daemon</td>
+            <td><select name="lltdEnbl" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr id="lldpd">
+            <td class="head" id="lLldpd">LLDP daemon</td>
+            <td><select name="lldpdEnbl" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr id="cdp">
+            <td class="head" id="lCdp">CDP daemon</td>
+            <td><select name="cdpEnbl" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>

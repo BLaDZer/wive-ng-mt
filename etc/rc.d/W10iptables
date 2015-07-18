@@ -166,8 +166,11 @@ servicelimit() {
 	    fi
 	fi
 	if [ "$snmpd" = "1" ]; then
-	    $LOG "SNMP allow to connect"
+	    $LOG "SNMP allow to connect from LAN"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 161 -j ACCEPT
+	elif [ "$snmpd" = "2" ]; then
+	    $LOG "SNMP allow to connect from LAN&WAN"
+	    iptables -A servicelimit -p udp --dport 161 -j ACCEPT
 	fi
 	if [ "$PrinterSrvEnabled" = "1" ]; then
 	    $LOG "Print server allow to connect"
