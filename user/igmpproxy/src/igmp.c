@@ -152,8 +152,14 @@ void acceptIgmp(int recvlen) {
                 return;
             }
             else if(!isAdressValidForIf(checkVIF, src)) {
-                my_log(LOG_WARNING, 0, "The source address %s for group %s, is not in any valid net for upstream VIF.",
-                    inetFmt(src, s1), inetFmt(dst, s2));
+                struct IfDesc *downVIF = getIfByAddress(src);
+                if (downVIF && downVIF->state & IF_STATE_DOWNSTREAM) {
+                    my_log(LOG_NOTICE, 0, "The source address %s for group %s is from downstream VIF. Ignoring.",
+                        inetFmt(src, s1), inetFmt(dst, s2));
+                } else {
+                    my_log(LOG_WARNING, 0, "The source address %s for group %s, is not in any valid net for upstream VIF.",
+                        inetFmt(src, s1), inetFmt(dst, s2));
+                }
                 return;
             }
 
