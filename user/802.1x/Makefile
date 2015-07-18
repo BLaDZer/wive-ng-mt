@@ -1,3 +1,6 @@
+CFLAGS += -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
+
 # If you want to support multiple radius server for multiple bssid, add following line
 CFLAGS +=  -DMULTIPLE_RADIUS
 
@@ -17,8 +20,6 @@ rtdot1xd: $(OBJS)
 clean:
 	rm -f core *.o rt2860apd
 
-#
-# add by YYHuang@Ralink
 romfs:
 	$(ROMFSINST) rt2860apd /bin/rt2860apd
 	ln -sf rt2860apd $(ROMFSDIR)/bin/rtinicapd

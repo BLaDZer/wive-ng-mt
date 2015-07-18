@@ -423,33 +423,33 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 
     conf->SsidNum = 1;
     conf->session_timeout_set = 0xffff;
-    
+
     /* Some related variable per BSS set to default */
     for (i = 0; i < MAX_MBSSID_NUM; i++)
     {
 		/* initial default shared-key material and index */
-		conf->DefaultKeyID[i] = 0;										// broadcast key index
-		conf->individual_wep_key_idx[i] = 3;							// unicast key index 
-    	conf->individual_wep_key_len[i] = WEP8021X_KEY_LEN;				// key length
-    	hostapd_get_rand(conf->IEEE8021X_ikey[i], WEP8021X_KEY_LEN);    // generate shared key randomly
+		conf->DefaultKeyID[i] = 0;					// broadcast key index
+		conf->individual_wep_key_idx[i] = 3;				// unicast key index 
+    		conf->individual_wep_key_len[i] = WEP8021X_KEY_LEN;		// key length
+    		hostapd_get_rand(conf->IEEE8021X_ikey[i], WEP8021X_KEY_LEN);    // generate shared key randomly
 
-		/* Initial NAS-ID */		
-		memcpy(conf->nasId[i], "RalinkAP", 8);
+		/* Initial NAS-ID */
+		memcpy(conf->nasId[i], "Wive-NG ", 8);
 		conf->nasId[i][8] = '0' + i;
 		conf->nasId_len[i] = 9;
   	}
-  
-	// initial default EAP IF name and Pre-Auth IF name	as "br0"
-	conf->num_eap_if = 1;	
-	conf->num_preauth_if = 1;	
-	strcpy(conf->eap_if_name[0], "br0");	
+
+	// initial default EAP IF name and Pre-Auth IF name as "br0"
+	conf->num_eap_if = 1;
+	conf->num_preauth_if = 1;
+	strcpy(conf->eap_if_name[0], "br0");
 	strcpy(conf->preauth_if_name[0], "br0");
 
-	// Get parameters from deiver through IOCTL cmd
+	// Get parameters from driver through IOCTL cmd
 	if(!Query_config_from_driver(ioctl_sock, prefix_name, conf, &errors, &flag))
 	{
 		Config_free(conf);
-    	return NULL;
+    		return NULL;
 	}
 
 	struct iwreq iwr;
@@ -461,7 +461,7 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 		sprintf(iwr.ifr_name, "%s%d", prefix_name, i);
 		iwr.u.essid.pointer = ssidBuf;
 		iwr.u.essid.length = HOSTAPD_MAX_SSID_LEN;
-		
+
 		if (ioctl(ioctl_sock, SIOCGIWESSID, &iwr) < 0) 
 		{
 			perror("ioctl[SIOCGIWESSID]");
@@ -473,9 +473,7 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 			memcpy(conf->Ssid[i], ssidBuf, conf->SsidLen[i]);
 			DBGPRINT(RT_DEBUG_TRACE, "From Driver MBSSID%d: %s, %d\n", i, conf->Ssid[i], conf->SsidLen[i]);
 		}
-				
 	}
-       
 #ifdef MULTIPLE_RADIUS
 	for (i = 0; i < MAX_MBSSID_NUM; i++)
 	{
@@ -486,21 +484,21 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 
 		if (!conf->mbss_auth_server[i])
 			continue;
-						
+
 		cserv	= conf->mbss_auth_server[i];
-		servs 	= conf->mbss_auth_servers[i];								
-			
-		DBGPRINT(RT_DEBUG_TRACE, "%s%d, Current IP: %s \n", prefix_name, i, inet_ntoa(cserv->addr));			
+		servs 	= conf->mbss_auth_servers[i];
+
+		DBGPRINT(RT_DEBUG_TRACE, "%s%d, Current IP: %s \n", prefix_name, i, inet_ntoa(cserv->addr));
 		for (c = 0; c < conf->mbss_num_auth_servers[i]; c++)
-		{				
-			nserv = &servs[c];             
+		{
+			nserv = &servs[c];
 			DBGPRINT(RT_DEBUG_TRACE, "	   Server IP List: %s \n", inet_ntoa(nserv->addr));
-		}				
+		}
 	}
 #else
     conf->auth_server = conf->auth_servers;
 #endif
-	
+
     if (errors)
     {
         DBGPRINT(RT_DEBUG_ERROR,"%d errors for radius setting\n", errors);
@@ -513,7 +511,7 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
         Config_free(conf);
         conf = NULL;
     }
-		
+
     return conf;
 }
 
