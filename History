@@ -1103,24 +1103,25 @@
 2) usb-modeswitch: up to 2.2.5 2015-07-16 version.<br>
 3) igmpproxy: silence downstream interface igmp messages.<br>
 4) igmpproxy: use monotic clock instead of time of day.<br>
-5) goahead: add hardware traffic counters from switch to WebUI.<br>
-6) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
-7) goahead: add ipv6 interfaces adresses to statisctic page.<br>
-8) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-9) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-10) kernel: mm: place preemption point in do_mlockall() loop.<br>
-11) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-12) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-13) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-14) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-15) kernel: net: do not process device backlog during unregistration.<br>
-16) kernel: net: call rcu_read_lock early in process_backlog.<br>
-17) kernel: net: clone skb before setting peeked flag.<br>
-18) kernel: net: tcp: don't abort splice() after small transfers.<br>
-19) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-20) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-21) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-22) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+5) igmpproxy: fix multiple downlink interfaces leave.<br>
+6) goahead: add hardware traffic counters from switch to WebUI.<br>
+7) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
+8) goahead: add ipv6 interfaces adresses to statisctic page.<br>
+9) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
+10) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+11) kernel: mm: place preemption point in do_mlockall() loop.<br>
+12) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+13) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+14) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+15) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+16) kernel: net: do not process device backlog during unregistration.<br>
+17) kernel: net: call rcu_read_lock early in process_backlog.<br>
+18) kernel: net: clone skb before setting peeked flag.<br>
+19) kernel: net: tcp: don't abort splice() after small transfers.<br>
+20) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+21) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+22) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+23) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 <br>
 <br>
 <b>TODO:</b><br>
