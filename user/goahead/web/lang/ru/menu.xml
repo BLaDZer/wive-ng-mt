@@ -38,7 +38,7 @@
     <message msgid="treeapp ntp settings" msgstr="Синхронизация времени" />
     <message msgid="treeapp ddns settings" msgstr="Динамический DNS" />
     <message msgid="treeapp samba" msgstr="Сервер Samba/WINS" />
-    <message msgid="treeapp accounting" msgstr="IP Accounting" />
+    <message msgid="treeapp accounting" msgstr="Учёт трафика" />
     <message msgid="treeapp miscellaneous" msgstr="Разное" />
 
     <message msgid="treeapp printersrv" msgstr="Настройки принтера" />
