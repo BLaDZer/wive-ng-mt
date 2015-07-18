@@ -231,7 +231,7 @@ display_info(struct wireless_info *	info,
       if(info->has_range && (freq < KILO))
 	channel = iw_channel_to_freq((int) freq, &freq, &info->range);
       /* Display */
-      iw_print_freq(buffer, sizeof(buffer), freq, -1, info->b.freq_flags);
+      iw_print_freq(buffer, sizeof(buffer), freq, channel, info->b.freq_flags);
       printf("%s  ", buffer);
       tokens +=4;
     }

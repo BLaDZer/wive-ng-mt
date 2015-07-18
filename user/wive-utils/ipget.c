@@ -108,12 +108,6 @@ static struct hostent *gethostbyaddr_wrapper(const char *address)
 	return gethostbyaddr((char *) &addr, 4, AF_INET);	/* IPv4 only for now */
 }
 
-/* lookup the default nameserver and display it */
-static inline void server_print(void)
-{
-	struct sockaddr_in def = _res.nsaddr_list[0];
-}
-
 /* naive function to check whether char *s is an ip address */
 static int is_ip_address(char *s)
 {
@@ -138,7 +132,6 @@ int main(int argc, char **argv)
 	}
 
 	res_init();
-	server_print();
 	if (is_ip_address(argv[1])) {
 		host = gethostbyaddr_wrapper(argv[1]);
 	} else {
