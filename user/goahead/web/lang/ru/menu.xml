@@ -36,8 +36,8 @@
     <message msgid="treeapp dhcp server" msgstr="Сервер DHCP" />
     <message msgid="treeapp l2tp server" msgstr="Сервер L2TP" />
     <message msgid="treeapp ntp settings" msgstr="Синхронизация времени" />
-    <message msgid="treeapp ddns settings" msgstr="Настройки DynDNS" />
-    <message msgid="treeapp samba" msgstr="Samba/WINS" />
+    <message msgid="treeapp ddns settings" msgstr="Динамический DNS" />
+    <message msgid="treeapp samba" msgstr="Сервер Samba/WINS" />
     <message msgid="treeapp accounting" msgstr="IP Accounting" />
     <message msgid="treeapp miscellaneous" msgstr="Разное" />
 
