@@ -101,7 +101,6 @@ update_ia(iatype, ialist, ifp, serverid, authparam)
 	struct ia *ia;
 	struct ia_conf *iac;
 	struct iapd_conf *iapdc;
-	struct iana_conf *ianac;
 	struct dhcp6_listval *iav, *siav;
 	struct timeval timo;
 
@@ -162,7 +161,6 @@ update_ia(iatype, ialist, ifp, serverid, authparam)
 				}
 				break;
 			case DHCP6_LISTVAL_STATEFULADDR6:
-				ianac = (struct iana_conf *)iac;
 				if (update_address(ia, &siav->val_statefuladdr6,
 				    ifp, &ia->ctl, callback)) {
 					debug_printf(LOG_NOTICE, FNAME,

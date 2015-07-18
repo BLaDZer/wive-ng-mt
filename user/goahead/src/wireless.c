@@ -1012,7 +1012,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
-	int ssid_num, wlan_mode, tmp, i;
+	int ssid_num, tmp, i;
 	char_t *submitUrl;
 	char stanum_array[32] = "", keepalive_array[32] = "";
 
@@ -1067,7 +1067,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		ssid_num = atoi(num_s);
 	else
 		ssid_num = 1;
-	wlan_mode = atoi(nvram_get(RT2860_NVRAM, "WirelessMode"));
 
 	//Radar Detect region
 	if ((rd_region == NULL) || (strlen(rd_region)<=0))
@@ -1446,11 +1445,7 @@ static void clearRadiusSetting(int nvram, int mbssid)
 static void conf8021x(int nvram, webs_t wp, int mbssid)
 {
 	char_t *RadiusServerIP, *RadiusServerPort, *RadiusServerSecret, *RadiusServerSessionTimeout;
-	int i, num, apd_flag = 0;
 	char lan_if_addr[32];
-	char *auth_mode = nvram_get(nvram, "AuthMode");
-	char *ieee8021x = nvram_get(nvram, "IEEE8021X");
-	char *num_s = nvram_get(nvram, "BssidNum");
 
 	if (getIfIp(getLanIfName(), lan_if_addr) != -1) {
 	    nvram_bufset(nvram, "own_ip_addr", lan_if_addr);

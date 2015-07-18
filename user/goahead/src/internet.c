@@ -1774,7 +1774,7 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 	char_t *trans = websGetVar(wp, T("routingTableDiff"), T(""));
 	char rec[256];
 	char true_iface[32], destination[32], gateway[32], netmask[32], iface[32], c_iface[32], comment[64], action[4];
-	int i = 0, rebuild_vpn = 0, iaction;
+	int i = 0, iaction;
 	char_t *submitUrl;
 
 	websHeader(wp);
@@ -1822,7 +1822,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 		}
 		else if (strcmp(iface, "VPN")==0)
 		{
-			rebuild_vpn = 1;
 			strcpy(true_iface, "ppp+");
 		}
 		else
