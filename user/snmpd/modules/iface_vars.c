@@ -19,7 +19,6 @@ static	CUnslType ifaceAddr;
 
 struct ifnet {
 	char	*if_name;		/* name, e.g. ``en1'' or ``lo'' */
-  /* 	short	if_unit;		/ * sub-unit for lower level driver */
 	short	if_mtu;			/* maximum transmission unit */
 	short	if_flags;		/* up/down, broadcast, etc. */
 	int	if_metric;		/* routing metric (external only) */
@@ -53,7 +52,7 @@ struct ifnet {
 
 	unsigned long if_idrop;		/* discard on input */
 	unsigned long if_odrop;		/* discard on output */
-/* end statistics */
+	/* end statistics */
 	struct	ifnet *if_next;
 };
 
@@ -89,51 +88,37 @@ Interface_Scan_Get_Count(void)
         static int Interface_Count=0;
 	static time_t last = 0;
 	time_t now = time ((time_t *) 0);
-	
+
 	/* allow the counter only be valid for some seconds: */
 	if (last + 2 < now) {
 	  last = now;
 	  Interface_Count = 3;
 	}
 
-	if (! Interface_Count) 
-		{
-	    while (0) 
-			{
-			Interface_Count++;
-	    		}
-		}
+	if (!Interface_Count) {
+		while (0) {
+		    Interface_Count++;
+	    	}
+	}
 	return Interface_Count;
 }
 
-static	AsnIdType	ifaceRetrieve (CIntfType item)
+static	AsnIdType ifaceRetrieve(CIntfType item)
 {
     int	interface;
-    int result, count;
-	struct ifnet ifnet;
-	struct mib_ifEntry ifacestat;
-	AsnIdType		asnresult;
+    int  count;
+    struct ifnet ifnet;
+    AsnIdType asnresult;
 
-   count = Interface_Scan_Get_Count();
+    count = Interface_Scan_Get_Count();
 
-//printf("ifaceRetrieve (item=%d) num of interfaces = %d\n",item,count);
-
-for(interface = 1; interface <= count; interface++)
-{
+    //printf("ifaceRetrieve (item=%d) num of interfaces = %d\n",item,count);
+    for(interface = 1; interface <= count; interface++)
+    {
 	;
 	//printf("ifaceRetrieve (item=%d) num of interfaces = %d\n",item,count);
-}
+    }
 
-#if 0
-switch (item)
-	{
-    case IFNUMBER: 
-	asnresult = asnUnsl (asnClassUniversal, (AsnTagType) 2, 3);
-	break;
-    default:
-	break;
-	}
-#endif
   switch (item)
 	{
     case IFINDEX: 
@@ -304,110 +289,22 @@ static	MixOpsType	ifaceOps = {
 
 			};
 
-CVoidType		ifaceInit (void)
+CVoidType ifaceInit (void)
 {
-unsigned long result;
-int ifacecount;
- FILE *in;
-struct mib_ifEntry ifacestat;
+    unsigned long result;
+    int ifacecount;
 
-  char line [1024];
- 
-
-for(ifacecount = 1;ifacecount <= IFACE_MAXTYPE;ifacecount++)
-		{	
-	//printf("ifacInit ()ifacecount=%d\n",ifacecount);    
- switch (ifacecount)
-	{
-    case IFNUMBER: 
-	result=3;
-	break;
-    default:
-	break;
+    for(ifacecount = 1;ifacecount <= IFACE_MAXTYPE;ifacecount++) {
+	//printf("ifacInit ()ifacecount=%d\n",ifacecount);
+	switch (ifacecount) {
+	case IFNUMBER:
+	    result=3;
+	    break;
+	default:
+	    break;
 	}
 	ifaceAddr = (CUnslType) result;
 		(void) misExport ((MixNamePtrType) "\53\6\1\2\1\2",
 			(MixLengthType) 8, & ifaceOps, (MixCookieType) 0);
+    }
 }
-#if 0
-for(ifacecount = 1;ifacecount <= IFACE_MAXTYPE21;ifacecount++)
-		{	
- switch (ifacecount){
-    case IFINDEX: 
-	result=0;
-	break;
-    case IFDESCR: 
-	result=0;
-	break;
-    case IFTYPE: 
-	result=0;
-	break;
-    case IFMTU: 
-	result=0;
-	break;
-    case IFSPEED: 
-	result=0;
-	break;
-    case IFPHYSADDRESS: 
-	result=0;
-	break;
-    case IFADMINSTATUS: 
-	result=0;
-	break;
-    case IFOPERSTATUS: 
-	result=0;
-	break;
-    case IFLASTCHANGE: 
-	result=0;
-	break;
-    case IFINOCTETS: 
-	result=0;
-	break;
-    case IFINUCASTPKTS: 
-	result=0;
-	break;
-    case IFINNUCASTPKTS: 
-	result=0;
-	break;
-    case IFINDISCARDS: 
-	result=0;
-	break;
-    case IFINERRORS: 
-	result=0;
-	break;
-    case IFINUNKNOWNPROTOS: 
-	result=0;
-	break;
-    case IFOUTOCTETS: 
-	result=0;
-	break;
-    case IFOUTUCASTPKTS: 
-	result=0;
-	break;
-    case IFOUTNUCASTPKTS: 
-	result=0;
-	break;
-    case IFOUTDISCARDS: 
-	result=0;
-	break;
-    case IFOUTERRORS: 
-	result=0;
-	break;
-    case IFOUTQLEN: 
-	result=0;
-	break;
-    case IFSPECIFIC: 
-	result=0;
-	break;
-    default:
-	break;
-	}		
-	
-	ifaceAddr = (CUnslType) result;
-		(void) misExport ((MixNamePtrType) "\53\6\1\2\1\2\2\1",
-			(MixLengthType) 8, & ifaceOps, (MixCookieType) 0);
-	}
-#endif
-
-}
-

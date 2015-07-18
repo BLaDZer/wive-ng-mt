@@ -43,10 +43,10 @@ struct ip_mib
 static	AsnIdType	ipRetrieve (CIntfType item)
 {
 struct ip_mib ipstat;
-	AsnIdType		asnresult;
+	AsnIdType asnresult = 0;
         FILE *in;
         char line [1024];
-	
+
   in = fopen ("/proc/net/snmp", "r");
   if (! in)
 	{

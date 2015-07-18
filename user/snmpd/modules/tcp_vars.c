@@ -37,7 +37,7 @@ static	CUnslType		tcpAddr;
 static	AsnIdType	tcpRetrieve (CIntfType item)
 {
 struct tcp_mib tcpstat;
-	AsnIdType		asnresult;
+	AsnIdType asnresult = 0;
         FILE *in;
         char line [1024];
 

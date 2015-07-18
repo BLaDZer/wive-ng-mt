@@ -17,12 +17,13 @@
 #include        <sys/file.h>
 
 #include 	<stdlib.h>
+#include	<linux/autoconf.h>
 #include	<linux/types.h>
 #include	<linux/socket.h>
 
 #include	<net/route.h>
 #include	<arpa/inet.h>
-#include	"wireless.h"
+#include	"oid.h"
 
 #include        "ctypes.h"
 #include        "local.h"
@@ -31,31 +32,12 @@
 #include        "asn.h"
 #include        "mix.h"
 #include        "systm.h"
-#include        "oid.h"
-#include	"rt_wireless.h"
+#include        "src/oid.h"
+#include	"src/wireless.h"
 
 
 #define WIRELESS_DEVICE	"ra0"
 #define IFNAMESIZE	sizeof(WIRELESS_DEVICE)
-
-typedef struct _COUNTER_HOTSPOT {
-	unsigned long           LinkUpTime;
-	unsigned long           LastDataPacketTime;
-	unsigned long           TotalTxByteCount;
-	unsigned long           TotalRxByteCount;
-} COUNTER_HOTSPOT;
-
-typedef struct _RT_802_11_MAC_ENTRY {
-	unsigned char           Addr[6];
-        unsigned char           Aid;
-	unsigned char           Psm;     // 0:PWR_ACTIVE, 1:PWR_SAVE
-	COUNTER_HOTSPOT         HSCounter;
-} RT_802_11_MAC_ENTRY;
-
-typedef struct _RT_802_11_MAC_TABLE {
-	unsigned long            Num;
-	RT_802_11_MAC_ENTRY      Entry[64]; //MAX_LEN_OF_MAC_TABLE = 32
-} RT_802_11_MAC_TABLE;
 
 #if 0
 static	MixStatusType ssidRelease(MixCookieType mix)

@@ -1,5 +1,5 @@
-CFLAGS    += -ffunction-sections -fdata-sections
-CXXFLAGS  += -ffunction-sections -fdata-sections
+CFLAGS    += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized
+CXXFLAGS  += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized
 LDFLAGS   += -Wl,--gc-sections
 
 DIRS = snmplib modules snmpd
