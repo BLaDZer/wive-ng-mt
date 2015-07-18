@@ -162,11 +162,6 @@ config  MT7610_AP_MC_SUPPORT
 	default n
 	depends on MT7610_AP
 
-config BAND_STEERING
-	bool "Band Steering"
-	depends on MT7610_AP
-	default n
-
 config  MT7610_AP_ATE
 	bool "Provide ATE testmode commands support"
 	depends on MT7610_AP

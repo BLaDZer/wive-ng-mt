@@ -180,9 +180,16 @@ source "drivers/net/wireless/ralink/rtpci/mt76x2_ap/Kconfig"
 endmenu
 endif
 
+config BAND_STEERING
+	bool "Band Steering"
+	depends on !RT_SECOND_IF_NONE
+	default n
+
+config MAX_CLIENTS
+	int "Maximum wifi clients (32/64/128/256) more clients - more mem and cpu usage."
+	depends on !(RT_SECOND_IF_NONE && RT_FIRST_IF_NONE)
+	default 32
 endmenu
-
-
 
 #######
 # NAT

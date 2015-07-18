@@ -44,25 +44,24 @@
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
 
-#define MAX_MULTICASTS_GROUP		256
-
-#define IP_GET_LOST_MAPPING(mip)	((mip & 0x0F800000) >> 23)
-#define IP_MULTICAST_A0(a0)		((a0 >> 1) | 0xE0)
-#define IP_MULTICAST_A1(a0, a1)		(((a0 & 0x1) << 7) | a1)
-
 #ifdef WIFI_IGMPSNOOP_SUPPORT
-#define RTPRIV_IOCTL_GET_MAC_TABLE          (SIOCIWFIRSTPRIV + 0x0F)
-#define RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT   (SIOCIWFIRSTPRIV + 0x1F)
-#define RTWIFI_INTFS_MAX		8
+#include "src/oid.h"
+#include "src/wireless.h"
+#define RTWIFI_INTFS_MAX 8
 
 int  rtwifi_intf_count = 0;
 char rtwifi_intfs[RTWIFI_INTFS_MAX][IFNAMSIZ];
-
 void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr);
 void rtwifi_remove_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
 #endif
+
+#define MAX_MULTICASTS_GROUP		256
+
+#define IP_GET_LOST_MAPPING(mip)	((mip & 0x0F800000) >> 23)
+#define IP_MULTICAST_A0(a0)		((a0 >> 1) | 0xE0)
+#define IP_MULTICAST_A1(a0, a1)		(((a0 & 0x1) << 7) | a1)
 
 #if defined(CONFIG_PPE_MCAST)
 #if defined(CONFIG_RAETH_GMAC2)
@@ -640,43 +639,6 @@ void rt_init(void)
 	/* add 224.0.0.1( 01:00:5e:00:00:01) to mac table */
 	create_all_hosts_rule();
 }
-
-typedef union _MACHTTRANSMIT_SETTING {
-	struct  {
-		unsigned short  MCS:7;  // MCS
-		unsigned short  BW:1;   //channel bandwidth 20MHz or 40 MHz
-		unsigned short  ShortGI:1;
-		unsigned short  STBC:2; //SPACE
-		unsigned short  eTxBF:1;
-		unsigned short  rsv:1;
-		unsigned short  iTxBF:1;
-		unsigned short  MODE:2; // Use definition MODE_xxx.
-	} field;
-		unsigned short	word;
-} MACHTTRANSMIT_SETTING;
-
-typedef struct _RT_802_11_MAC_ENTRY {
-	unsigned char		ApIdx;
-	unsigned char           Addr[6];
-	unsigned char           Aid;
-	unsigned char           Psm;     // 0:PWR_ACTIVE, 1:PWR_SAVE
-	unsigned char           MimoPs;  // 0:MMPS_STATIC, 1:MMPS_DYNAMIC, 3:MMPS_Enabled
-	char                    AvgRssi0;
-	char                    AvgRssi1;
-	char                    AvgRssi2;
-	unsigned int            ConnectedTime;
-	MACHTTRANSMIT_SETTING	TxRate;
-	unsigned int		LastRxRate;
-	int			StreamSnr[3];
-	int			SoundingRespSnr[3];
-} RT_802_11_MAC_ENTRY;
-
-#define MAX_NUMBER_OF_MAC               32 // if MAX_MBSSID_NUM is 8, this value can't be larger than 211
-
-typedef struct _RT_802_11_MAC_TABLE {
-	unsigned long            Num;
-	RT_802_11_MAC_ENTRY      Entry[MAX_NUMBER_OF_MAC]; //MAX_LEN_OF_MAC_TABLE = 32
-} RT_802_11_MAC_TABLE;
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 int addRTWiFiIntf(char *wifi)

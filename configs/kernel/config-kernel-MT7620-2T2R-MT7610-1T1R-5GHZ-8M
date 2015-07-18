@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.108.40 Kernel Configuration
+# Linux/mips 3.4.108.48 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -554,7 +554,6 @@ CONFIG_IP_NF_TARGET_TTL=m
 #
 CONFIG_NF_DEFRAG_IPV6=y
 CONFIG_NF_CONNTRACK_IPV6=y
-# CONFIG_IP6_NF_QUEUE is not set
 CONFIG_IP6_NF_IPTABLES=y
 # CONFIG_IP6_NF_MATCH_AH is not set
 # CONFIG_IP6_NF_MATCH_EUI64 is not set
@@ -1441,10 +1440,11 @@ CONFIG_MT7610_AP_SNMP=y
 # CONFIG_MT7610_AP_SINGLE_SKU is not set
 # CONFIG_MT7610_AP_READ_MAC_FROM_MTD is not set
 # CONFIG_MT7610_AP_MC_SUPPORT is not set
-# CONFIG_BAND_STEERING is not set
 # CONFIG_MT7610_AP_ATE is not set
 CONFIG_MT7610_AP_INTERFERENCE_REDUCE=y
 # CONFIG_MT7610_AP_DBG is not set
+# CONFIG_BAND_STEERING is not set
+CONFIG_MAX_CLIENTS=32
 
 #
 # NAT acell mode
