@@ -38,11 +38,11 @@
   <message msgid="services ddns" msgstr="Имя домена" />
   <message msgid="services ddns specify" msgstr="Пожалуйста, укажите имя пользователя, пароль и доменное имя." />
 
-  <message msgid="services account title" msgstr="IP Accounting" />
+  <message msgid="services account title" msgstr="Учета трафика" />
   <message msgid="services account introduction" msgstr="Здесь вы можете настроить сбор статистики по трафику для узлов вашей сети." />
   <message msgid="services account warning" msgstr="ВНИМАНИЕ! Включен режим NAT offload. По техническим причинам не возможно гарантировать коректный сбор статистики при включеном режиме NAT offload. Поэтому страница настройки IP Accounting была отключена. Для коректного сбора статистики вам нужно отключить режим NAT offload на странице Сервисы-Разное. Пожалуйста, обратите внимание, что отключение режима NAT offload увеличит загрузку процессора." />
-  <message msgid="services account settings" msgstr="Настройки IP Accounting" />
-  <message msgid="services account ipt" msgstr="IPT Accounting" />
+  <message msgid="services account settings" msgstr="Настройки учета трафика" />
+  <message msgid="services account ipt" msgstr="Учет трафика" />
 
   <message msgid="services status off" msgstr="отключено" />
   <message msgid="services status work" msgstr="работает" />
