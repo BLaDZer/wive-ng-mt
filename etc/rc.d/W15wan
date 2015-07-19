@@ -23,7 +23,7 @@ wan_if_preconf() {
 
 # configure and start zeroconf daemon
 zero_conf() {
-    zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1
+    (zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1) &
 }
 
 # configure dhcp client
@@ -50,13 +50,13 @@ udhcpc_conf() {
 	rd_support=""
     fi
     UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a -s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
-		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName"
+		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName -f"
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
 
     # small wait and start dhcp client
-    udhcpc $UDHCPCOPTS > /dev/null 2>&1
+    (udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 }
 
 start() {
