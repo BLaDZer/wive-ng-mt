@@ -1675,6 +1675,9 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 #endif /* VENDOR_FEATURE1_SUPPORT */
 
 		pMacEntry->isCached = TRUE;
+
+		if (RTMP_GET_PACKET_LOWRATE(pTxBlk->pPacket))
+			pMacEntry->isCached = FALSE;
 	}
 
 #ifdef TXBF_SUPPORT
@@ -2536,9 +2539,9 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 	}
 
 	RTMPWriteTxWI_Data(pAd, (TXWI_STRUC *)(&pTxBlk->HeaderBuf[TXINFO_SIZE]), pTxBlk);
-
-	if (pTxBlk->pMacEntry)
-		pTxBlk->pMacEntry->isCached = FALSE;
+	if (RTMP_GET_PACKET_LOWRATE(pTxBlk->pPacket))
+		if (pTxBlk->pMacEntry)
+			pTxBlk->pMacEntry->isCached = FALSE;
 	
 	HAL_WriteTxResource(pAd, pTxBlk, TRUE, &freeCnt);
 	
