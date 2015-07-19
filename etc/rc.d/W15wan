@@ -49,16 +49,14 @@ udhcpc_conf() {
     else
 	rd_support=""
     fi
-    UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a \
-		-s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
-		-O routes -O staticroutes -O msstaticroutes -O wins \
-		$rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName -f &"
+    UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a -s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
+		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName"
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
 
     # small wait and start dhcp client
-    (sleep 2 && udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
+    udhcpc $UDHCPCOPTS > /dev/null 2>&1
 }
 
 start() {

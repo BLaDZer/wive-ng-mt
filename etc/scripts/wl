@@ -27,7 +27,7 @@ usage() {
 scan()
 {
     iwpriv $1 set SiteSurvey=1
-    sleep 3
+    sleep 2
     iwpriv $1 get_site_survey
 }
 

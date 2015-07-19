@@ -28,7 +28,7 @@ start() {
     fi
 
     if [ -f /bin/dhcp6s ] && [ ! -e /etc/dhcp6cctlkey -o ! -e /etc/dhcp6sctlkey ]; then
-	$LOG "Gen dhcp6 ctl keys"
+	$LOG "DHCP6 ctl keys generate."
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6cctlkey
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6sctlkey
 	needrwfssave=1
