@@ -58,7 +58,7 @@
     <message msgid="vpn peer dns" msgstr="DNS провайдера" />
     <message msgid="vpn allow debug" msgstr="Включить отладку" />
     <message msgid="vpn enable nat" msgstr="Включить NAT" />
-    <message msgid="vpn adaptive lcp" msgstr="Адаптивная LCP" />
+    <message msgid="vpn adaptive lcp" msgstr="Адаптивный LCP интервал" />
     <message msgid="vpn pure pppoe" msgstr="Чистый PPPoE" />
     <message msgid="vpn test server" msgstr="Проверять доступность сервера" />
     <message msgid="vpn alert password" msgstr="Пароль не может содержать пробелы или знак доллара!" />

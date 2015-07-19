@@ -62,7 +62,7 @@ function showHint(key)
                 text += _("hint l2tp proxyarp");
 	else
 		show = false;
-	
+
 	if (show)
 	{
 		text += '</div>';
@@ -370,7 +370,7 @@ function displayServiceStatus()
             <td style="width: 50%;" onMouseOver="showHint('l2tp_nat')" onMouseOut="hideHint('l2tp_nat')"><input name="l2tp_srv_nat_enabled" type="checkbox">
               &nbsp;<b id="l2tpNAT">Enable NAT</b></td>
             <td style="width: 50%;" onMouseOver="showHint('l2tp_proxyarp')" onMouseOut="hideHint('l2tp_proxyarp')"><input name="l2tp_srv_proxyarp" type="checkbox">
-              &nbsp;<b id="l2tpProxyARP">L2TP proxyarp</b></td>
+              &nbsp;<b id="l2tpProxyARP">Proxyarp</b></td>
           </tr>
           <tr>
             <td style="width: 50%;" onmouseover="showHint('l2tp_mppe')" onmouseout="hideHint('l2tp_mppe')"><input name="l2tp_srv_mppe_enabled" type="checkbox">

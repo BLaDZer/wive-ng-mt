@@ -59,8 +59,8 @@
   <message msgid="services l2tp range ip" msgstr="Allocate from this IP range" />
   <message msgid="services l2tp mtu" msgstr="Tunnel MTU:" />
   <message msgid="services l2tp mru" msgstr="Tunnel MRU:" />
-  <message msgid="services l2tp proxy arp" msgstr="L2TP proxyarp" />
-  <message msgid="services l2tp users" msgstr="L2TP users" />
+  <message msgid="services l2tp proxy arp" msgstr="Proxyarp" />
+  <message msgid="services l2tp users" msgstr="Users" />
   <message msgid="services l2tp login" msgstr="Login" />
   <message msgid="services l2tp password" msgstr="Password" />
 

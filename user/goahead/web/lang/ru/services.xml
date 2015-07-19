@@ -59,8 +59,8 @@
   <message msgid="services l2tp range ip" msgstr="Диапозон клиентских IP адресов" />
   <message msgid="services l2tp mtu" msgstr="MTU туннеля" />
   <message msgid="services l2tp mru" msgstr="MRU туннеля" />
-  <message msgid="services l2tp proxy arp" msgstr="L2TP arp прокси" />
-  <message msgid="services l2tp users" msgstr="Пользователи L2TP" />
+  <message msgid="services l2tp proxy arp" msgstr="Проксировать arp запросы" />
+  <message msgid="services l2tp users" msgstr="Пользователи" />
   <message msgid="services l2tp login" msgstr="Имя пользователя" />
   <message msgid="services l2tp password" msgstr="Пароль" />
 
