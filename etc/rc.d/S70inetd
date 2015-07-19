@@ -18,10 +18,9 @@ start() {
 	fi
 	if [ -f /bin/ftpd ] && [ "$RemoteFTP" != "" ] && [ "$RemoteFTP" != "0" ]; then
 	    if [ "$FtpIdleTime" != "" ]; then
-		echo "$FtpPort stream tcp nowait $Login /bin/ftpd ftpd -wS -t $FtpIdleTime $FtpRootDir" >> /etc/inetd.conf
-	    else
-			echo "$FtpPort stream tcp nowait $Login /bin/ftpd ftpd -wS $FtpRootDir" >> /etc/inetd.conf
+		timeout="-t $FtpIdleTime"
 	    fi
+	    echo "$FtpPort stream tcp nowait $Login /bin/ftpd ftpd -wS $timeout $FtpRootDir" >> /etc/inetd.conf
 	    need_start=1
 	fi
 	if [ -f /bin/telnetd ] && [ "$RemoteTelnet" != "" ] && [ "$RemoteTelnet" != "0" ]; then
