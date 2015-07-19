@@ -1114,23 +1114,24 @@
 13) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
 14) goahead: add ipv6 interfaces adresses to statisctic page.<br>
 15) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-16) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-17) kernel: mm: place preemption point in do_mlockall() loop.<br>
-18) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-19) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-20) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-21) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-22) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-23) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-24) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-25) kernel: net: do not process device backlog during unregistration.<br>
-26) kernel: net: call rcu_read_lock early in process_backlog.<br>
-27) kernel: net: clone skb before setting peeked flag.<br>
-28) kernel: net: tcp: don't abort splice() after small transfers.<br>
-29) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-30) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-31) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-32) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+16) kernel: config: enable xt_match_time module build by default.<br>
+17) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+18) kernel: mm: place preemption point in do_mlockall() loop.<br>
+19) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+20) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+21) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+22) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+23) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+24) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+25) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+26) kernel: net: do not process device backlog during unregistration.<br>
+27) kernel: net: call rcu_read_lock early in process_backlog.<br>
+28) kernel: net: clone skb before setting peeked flag.<br>
+29) kernel: net: tcp: don't abort splice() after small transfers.<br>
+30) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+31) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+32) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+33) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 <br>
 <br>
 <b>TODO:</b><br>
