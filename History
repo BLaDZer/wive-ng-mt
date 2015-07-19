@@ -1142,9 +1142,10 @@
 5) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
 6) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
 7) need add subchannel select for 5GHz module.<br>
-8) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-9) need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-10) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+10) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+11) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
 <br>
 <br>
 <br>
