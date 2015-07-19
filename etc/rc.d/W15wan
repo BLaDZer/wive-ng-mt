@@ -13,11 +13,9 @@ wan_if_preconf() {
 	    $LOG "Set manual MTU to WAN $wan_manual_mtu"
 	    ip link set mtu $wan_manual_mtu dev "$wan_if"
 	fi
-	if [ "$purepppoemode" = "1" ]; then
-	    # no need forward for phys wan
-	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=0
-	else
-	    # enable forward for wan
+	# no need forward for phys wan in pure pppoe
+	if [ "$igmpEnabled" = "1" ] || [ "$purepppoemode" != "1" ]; then
+	    $LOG "Allow forward for $wan_if"
 	    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
 	fi
     fi

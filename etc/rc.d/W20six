@@ -96,7 +96,7 @@ start() {
 
 	if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
 	    # tune after tunnels configured
-	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces (security reason)."
+	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces (security reason), enable foe $six_wan_if."
     	    sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1
@@ -228,7 +228,7 @@ dhcpradvdstop() {
 
 dhcpcreconf() {
     if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
-	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if."
+	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if and forward enable."
 	# ipv6 mode preconfig for wan
 	sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
 	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=1

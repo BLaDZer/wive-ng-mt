@@ -59,7 +59,7 @@ case "$1" in
 	fi
 	service vpnhelper stop_safe
 	# disable forward for paranoid users
-	sysctl -wq net.ipv4.conf.all.forwarding=0
+	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# generate random ip from zeroconfig range end set
 	# this is hack for some ISPs checked client alive by arping
 	# and prevent fake unset FULL_RENEW flag at next time bound
@@ -82,7 +82,7 @@ case "$1" in
 	fi
 	service vpnhelper stop_safe
 	# disable forward for paranoid users
-	sysctl -wq net.ipv4.conf.all.forwarding=0
+	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# Workaround for infinite OFFER wait
 	if [ "$switchpart" != "LLLLL" ] && [ "$dhcpSwReset" = "1" ]; then
 	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
@@ -323,8 +323,8 @@ case "$1" in
 	    fi
 	    $LOG "End renew procedure."
 	fi
-	# reenable forward for paranoid users
-	sysctl -wq net.ipv4.conf.all.forwarding=1
+	# reenable forward for wan users
+	sysctl -wq net.ipv4.conf.$interface.forwarding=1
 	if [ -d /etc/udhcpc.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/udhcpc.d"
 	    run-parts /etc/udhcpc.d/
