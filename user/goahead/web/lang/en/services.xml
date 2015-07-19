@@ -141,5 +141,4 @@
   <message msgid="services misc ask reboot" msgstr="You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?" />
   <message msgid="services misc hwnat number" msgstr="Hardware NAT threshold must be a number" />
   <message msgid="services misc hwnat over" msgstr="Hardware NAT threshold must be a value between 0 and 500" />
-  <message msgid="services misc udpxy port" msgstr="UDPXY port must be set to 81 or between 1024-65535" />
 </po>

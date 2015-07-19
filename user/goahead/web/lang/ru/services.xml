@@ -142,5 +142,4 @@
   <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
   <message msgid="services misc hwnat number" msgstr="Порог аппаратного NAT должен быть числом" />
   <message msgid="services misc hwnat over" msgstr="Порог аппаратного NAT должен иметь значение от 0 до 500" />
-  <message msgid="services misc udpxy port" msgstr="Порт UDPXY должен быть 81 или в диапазоне 1024-65535" />
 </po>

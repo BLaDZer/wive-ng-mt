@@ -271,14 +271,6 @@ function CheckValue(form)
 		}
 	}
 
-	var udpxy_port = form.udpxyPort.value * 1;
-	if (!((udpxy_port == 81) || ((udpxy_port >= 1024) && (udpxy_port <= 65535))))
-	{
-		alert(_("services misc udpxy port"));
-		form.udpxyPort.focus();
-		return false;
-	}
-
 	form.rmt_http_port_changed.value = (form.RemoteManagementPort.value != rmtManagementPort) ? '1' : '0';
 
 	// Timeout reload
