@@ -61,14 +61,25 @@ set_def() {
 
 show() {
     echo "############################################"
-    echo "###############QOS-IN-IF####################"
+    echo "###############QOS-WAN-IF####################"
     echo "############################################"
-    echo "############QDISC $real_wan_if"
-    tc -s -d qdisc show dev $real_wan_if
-    echo "############CLASS $real_wan_if"
-    tc -s -d class show dev $real_wan_if
-    echo "############FILTER $real_wan_if"
-    tc -s -d filter show dev $real_wan_if
+    echo "############QDISC $wan_if"
+    tc -s -d qdisc show dev $wan_if
+    echo "############CLASS $wan_if"
+    tc -s -d class show dev $wan_if
+    echo "############FILTER $wan_if"
+    tc -s -d filter show dev $wan_if
+    if [ "$real_wan_if" != "" ] && [ -e "/sys/devices/virtual/net/$real_wan_if" ]; then
+	echo "############################################"
+	echo "############QOS-REALWAN-IF##################"
+	echo "############################################"
+	echo "############QDISC $real_wan_if"
+	tc -s -d qdisc show dev $real_wan_if
+	echo "############CLASS $real_wan_if"
+	tc -s -d class show dev $real_wan_if
+	echo "############FILTER $real_wan_if"
+	tc -s -d filter show dev $real_wan_if
+    fi
     echo "############################################"
     echo "###############QOS-OUT-IF###################"
     echo "############################################"

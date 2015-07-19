@@ -46,7 +46,7 @@ qos_nf() {
     echo "iptables -F shaper_pre -t mangle > /dev/null 2>&1" >> $IPTSCR
     echo "iptables -N shaper_post -t mangle > /dev/null 2>&1" >> $IPTSCR
     echo "iptables -F shaper_post -t mangle > /dev/null 2>&1" >> $IPTSCR
-    echo "iptables -A PREROUTING -t mangle -j shaper_pre > /dev/null 2>&1" >> $IPTSCR
+    echo "iptables -A PREROUTING -t mangle ! -d $mcast_net -j shaper_pre > /dev/null 2>&1" >> $IPTSCR
     echo "iptables -A POSTROUTING -t mangle ! -s $mcast_net -j shaper_post > /dev/null 2>&1" >> $IPTSCR
 }
 
@@ -83,10 +83,6 @@ qos_nf_if() {
     # tcp SYN and small size packets to high prio
     echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
     echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
-
-    # all icmp and udp multicast to high prio
-    echo "$INCOMING -i $wan_if -p udp -d $mcast_net -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p icmp -j MARK --set-mark 20" >> $IPTSCR
 
     # all others set as low prio
     echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
@@ -134,28 +130,25 @@ qos_tc_lan() {
     tc class add dev $lan_if parent 1:2 classid 1:22 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 3 quantum 1500
 
     tc qdisc add dev $lan_if parent 1:3 handle 3: sfq perturb 10 quantum 1500
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
-
     tc qdisc add dev $lan_if parent 1:20 handle 20: sfq perturb 10 quantum 1500
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
-
     tc qdisc add dev $lan_if parent 1:21 handle 21: sfq perturb 10 quantum 1500
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:21 handle 21 flow hash keys dst divisor 1024
-
     tc qdisc add dev $lan_if parent 1:22 handle 22: sfq perturb 10 quantum 1500
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:22 handle 22 flow hash keys dst divisor 1024
+
+    # local connections and multicast to router must be overheaded
+    tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $lan_ipaddr flowid 1:3
+    if [ "$igmpEnabled" != "0" ]; then
+	tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $mcast_net flowid 1:3
+    fi
 
     # filters for marked in prerouting
     tc filter add dev $lan_if parent 1:0 prio 1 protocol ip handle 20 fw flowid 1:20
     tc filter add dev $lan_if parent 1:0 prio 2 protocol ip handle 21 fw flowid 1:21
     tc filter add dev $lan_if parent 1:0 prio 3 protocol ip handle 22 fw flowid 1:22
 
-    # local connections to router must be overheaded
-    tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $lan_ipaddr flowid 1:3
-    if [ "$igmpEnabled" != "0" ]; then
-	# mcast network to
-	tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $mcast_net flowid 1:3
-    fi
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:21 handle 21 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:22 handle 22 flow hash keys dst divisor 1024
 }
 
 gos_tc_wan() {
@@ -178,22 +171,28 @@ gos_tc_wan() {
 
 # load modules
 qos_lm
-# create target
+# create netfilters chains for qos
 qos_nf
-# add netsched rules
+# add netsched htb tubes
 qos_tc_lan
 
+# build rules for WAN
+# not need shape at wan if in pure pppoe mode
 if [ "$purepppoemode" != "1" ]; then
-    # add rules for target
     qos_nf_if
     gos_tc_wan
 fi
 
-if [ "$purepppoemode" != "1" ] && [ "$wan_if" != "$real_wan_if" ]; then
-    # add rules for vpn wan to
-    wan_if="$real_wan_if"
-    QoS_rate_up="$QoS_rate_vpn_up"
-    QoS_rate_limit_up="$QoS_rate_vpn_limit_up"
-    qos_nf_if
-    gos_tc_wan
+# build rules for VPN
+if [ "$vpnEnabled" = "on" ] && [ "$wan_if" != "$real_wan_if" ]; then
+    # reload global
+    . /etc/scripts/global.sh
+    # check device ready
+    if [ "$real_wan_if" != "" ] && [ -e "/sys/devices/virtual/net/$real_wan_if" ]; then
+	wan_if="$real_wan_if"
+	QoS_rate_up="$QoS_rate_vpn_up"
+	QoS_rate_limit_up="$QoS_rate_vpn_limit_up"
+	qos_nf_if
+	gos_tc_wan
+    fi
 fi
