@@ -1118,21 +1118,22 @@
 17) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
 18) kernel: mm: place preemption point in do_mlockall() loop.<br>
 19) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-20) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-21) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-22) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-23) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-24) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-25) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-26) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-27) kernel: net: do not process device backlog during unregistration.<br>
-28) kernel: net: call rcu_read_lock early in process_backlog.<br>
-29) kernel: net: clone skb before setting peeked flag.<br>
-30) kernel: net: tcp: don't abort splice() after small transfers.<br>
-31) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-32) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-33) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-34) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+20) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+21) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+22) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+23) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+24) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+25) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+26) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+27) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+28) kernel: net: do not process device backlog during unregistration.<br>
+29) kernel: net: call rcu_read_lock early in process_backlog.<br>
+30) kernel: net: clone skb before setting peeked flag.<br>
+31) kernel: net: tcp: don't abort splice() after small transfers.<br>
+32) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+33) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+34) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+35) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 <br>
 <br>
 <b>TODO:</b><br>
