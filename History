@@ -1096,7 +1096,6 @@
 77) kernel: net: skb_defer_rx_timestamp should check for phydev before setting up classify.<br>
 78) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
 79) kernel: net: ipv6: fix possible use after free of dev stats.<br>
-80) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>3.3.x</b><br>
@@ -1138,6 +1137,7 @@
 36) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
 37) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
 38) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+39) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
