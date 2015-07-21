@@ -1,0 +1,15 @@
+# DP: Disable -fauto-inc-dec by default for m68k
+# DP: since it can generate ICEs in C++ code,
+# DP: until a fix is found.
+
+--- a/src/gcc/common.opt
++++ b/src/gcc/common.opt
+@@ -858,7 +858,7 @@ Common Report Var(flag_asynchronous_unwi
+ Generate unwind tables that are exact at each instruction boundary
+ 
+ fauto-inc-dec
+-Common Report Var(flag_auto_inc_dec) Init(1)
++Common Report Var(flag_auto_inc_dec) Init(0)
+ Generate auto-inc/dec instructions
+ 
+ ; -fcheck-bounds causes gcc to generate array bounds checks.

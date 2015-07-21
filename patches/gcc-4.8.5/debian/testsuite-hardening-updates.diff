@@ -1,0 +1,59 @@
+# DP: Fix some gcc and g++ testcases to pass with hardening defaults
+
+--- a/src/gcc/testsuite/g++.dg/asan/asan_test.C
++++ b/src/gcc/testsuite/g++.dg/asan/asan_test.C
+@@ -2,7 +2,7 @@
+ // { dg-skip-if "" { *-*-* } { "*" } { "-O2" } }
+ // { dg-skip-if "" { *-*-* } { "-flto" } { "" } }
+ // { dg-additional-sources "asan_globals_test-wrapper.cc" }
+-// { dg-options "-fsanitize=address -fno-builtin -Wall -Wno-format -Werror -g -DASAN_UAR=0 -DASAN_HAS_EXCEPTIONS=1 -DASAN_HAS_BLACKLIST=0 -DASAN_USE_DEJAGNU_GTEST=1 -lasan -lpthread -ldl" }
++// { dg-options "-fsanitize=address -fno-builtin -Wall -Wno-format -Wno-unused-result -Werror -g -DASAN_UAR=0 -DASAN_HAS_EXCEPTIONS=1 -DASAN_HAS_BLACKLIST=0 -DASAN_USE_DEJAGNU_GTEST=1 -lasan -lpthread -ldl" }
+ // { dg-additional-options "-DASAN_NEEDS_SEGV=1" { target { ! arm*-*-* } } }
+ // { dg-additional-options "-DASAN_LOW_MEMORY=1 -DASAN_NEEDS_SEGV=0" { target arm*-*-* } }
+ // { dg-additional-options "-DASAN_AVOID_EXPENSIVE_TESTS=1" { target { ! run_expensive_tests } } }
+--- a/src/gcc/testsuite/g++.dg/asan/interception-malloc-test-1.C
++++ b/src/gcc/testsuite/g++.dg/asan/interception-malloc-test-1.C
+@@ -1,7 +1,7 @@
+ // ASan interceptor can be accessed with __interceptor_ prefix.
+ 
+ // { dg-do run { target *-*-linux* } }
+-// { dg-options "-fno-builtin-free" }
++// { dg-options "-fno-builtin-free -Wno-unused-result" }
+ // { dg-additional-options "-D__NO_INLINE__" { target { *-*-linux-gnu } } }
+ // { dg-shouldfail "asan" }
+ 
+--- a/src/gcc/testsuite/gcc.c-torture/execute/memset-1.c
++++ b/src/gcc/testsuite/gcc.c-torture/execute/memset-1.c
+@@ -1,3 +1,5 @@
++/* { dg-prune-output ".*warning: memset used with constant zero length parameter.*" } */
++
+ /* Copyright (C) 2002  Free Software Foundation.
+ 
+    Test memset with various combinations of pointer alignments and lengths to
+--- a/src/gcc/testsuite/c-c++-common/asan/strncpy-overflow-1.c
++++ b/src/gcc/testsuite/c-c++-common/asan/strncpy-overflow-1.c
+@@ -1,5 +1,5 @@
+ /* { dg-do run } */
+-/* { dg-options "-fno-builtin-malloc -fno-builtin-strncpy" } */
++/* { dg-options "-fno-builtin-malloc -fno-builtin-strncpy -U_FORTIFY_SOURCE" } */
+ /* { dg-shouldfail "asan" } */
+ 
+ #include <string.h>
+--- a/src/gcc/testsuite/gcc.dg/superblock.c
++++ b/src/gcc/testsuite/gcc.dg/superblock.c
+@@ -1,5 +1,5 @@
+ /* { dg-do compile } */
+-/* { dg-options "-O2 -fno-asynchronous-unwind-tables -fsched2-use-superblocks -fdump-rtl-sched2 -fdump-rtl-bbro" } */
++/* { dg-options "-O2 -fno-asynchronous-unwind-tables -fsched2-use-superblocks -fdump-rtl-sched2 -fdump-rtl-bbro -fno-stack-protector" } */
+ 
+ typedef int aligned __attribute__ ((aligned (64)));
+ extern void abort (void);
+--- a/src/gcc/testsuite/gcc.dg/stack-usage-1.c
++++ b/src/gcc/testsuite/gcc.dg/stack-usage-1.c
+@@ -1,5 +1,5 @@
+ /* { dg-do compile } */
+-/* { dg-options "-fstack-usage" } */
++/* { dg-options "-fstack-usage -fno-stack-protector" } */
+ 
+ /* This is aimed at testing basic support for -fstack-usage in the back-ends.
+    See the SPARC back-end for example (grep flag_stack_usage_info in sparc.c).
