@@ -93,19 +93,7 @@ start() {
 	else
 		config-udhcpd.sh -D "$HostName"
 	fi
-	# Transfer the old settings
-	if [ -e /etc/dhcpd_static.conf ]; then
-	    $LOG "Transfer static dhcp leases from rwfs to nvram"
-	    dhcpStatic=""
-	    cat /etc/dhcpd_static.conf | while read line; do
-		dhcpStatic="$dhcpStatic;$line";
-	    done;
-	    nvram_set 2860 dhcpStatic "$dhcpStatic"
-	    $LOG "Remove static dhcp leases from rwfs"
-	    rm -f /etc/dhcp_static.conf
-	    fs save > /dev/console 2>&1
-	fi
-	# Write static DHCP leases
+	# write static DHCP leases
 	if [ "$dhcpStatic" != "" ]; then
 		tmp=${dhcpStatic// /-}
 		array=${tmp//;/ }
