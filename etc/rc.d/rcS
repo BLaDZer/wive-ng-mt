@@ -93,24 +93,23 @@ else
     exit 1
 fi
 
+$LOG "Start reset button check"
+butcheck &
+
 $LOG "Init RW particion"
 bzcat $RWFSDEVICE | tar xf - -C / > /dev/null 2>&1
-
-if [ -f /etc/filesystem.ok ] && [ -f /etc/rc.d/rcS ]; then
+if [ -f /etc/filesystem.ok ]; then
     $LOG "RW File system is ok - preparing."
   else
-    $LOG "File system is clear or poor."
+    $LOG "File system is clear or poor. Restore."
     cp -af $TMPROOTFSD/etc/* /etc
     $LOG "Restored. Save after full boot and configure."
     touch /etc/filesystem.ok
 fi
 
-$LOG "Umount $TMPROOTFSD"
+# umount and remove temproot
 umount -fl $TMPROOTFSD
 rm -rf $TMPROOTFSD
-
-$LOG "Start reset button check"
-butcheck &
 
 $LOG "Create start services trees"
 mkdir -p /var/run/rc0.d
