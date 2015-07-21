@@ -1,30 +1,122 @@
 #!/bin/sh
 
 ##########################################################
-# include profile variables
-##########################################################
-. /etc/profile
-
-##########################################################
 # Start all init scripts in /etc/rc.d
 # executing them in numerical order.
 ##########################################################
-for exname in /etc/rc.d/S??* ;do
-     # Ignore dangling symlinks (if any).
-     [ ! -f "$exname" ] && continue
-     [ ! -x "$exname" ] && continue
-     case "$exname" in
-	*.sh)
-	    # Source shell script for speed.
-	    (
-		trap - INT QUIT TSTP
-		set start
-		. $exname
-	    )
-	    ;;
-	*)
-	    # No sh extension, so fork subprocess.
-	    $exname start
-	    ;;
-    esac
-done
+LOG="echo INIT"
+RWFSDEVICE=`cat /proc/mtd | grep "RW-FS" | awk {' print "/dev/"$1 '} | cut -f -1 -d:`
+ROOTDEVICE=/dev/mtdblock4
+TMPROOTFSD="/tmp/rootfs"
+
+##########################################################
+# prepare filesystems
+# use tmpfs if present
+##########################################################
+tmpfs_av=`grep tmpfs -c < /proc/filesystems`
+if [ "$tmpfs_av" != "0" ]; then
+    # mount /tmp /etc in /var
+    mkdir -p /var/tmpfs
+    mount -o bind /var/tmpfs /tmp
+    # make dir for rwfs and bind it
+    mkdir -p /var/rwfs
+    mount -o bind /var/rwfs /etc
+fi
+
+##########################################################
+# prepare devices and rwfs
+# autocreate some dev nodes and refresh from mkdevs script
+##########################################################
+$LOG "Touch mdev."
+mdev -s
+
+$LOG "Mount $TMPROOTFSD"
+mkdir $TMPROOTFSD
+mount $ROOTDEVICE $TMPROOTFSD -o ro
+
+if [ -d /dev ]; then
+    $LOG "Create some persistent nodes in dev."
+    # create some folders in devfs
+    ndirs="pty tts cua misc usb block disk serial bus bus/usb net"
+    for dir in $ndirs ; do
+	mkdir -p "/dev/$dir" 2> /dev/null
+    done
+
+    # init dev particion
+    if [ -d $TMPROOTFSD ]; then
+	cp -rpf $TMPROOTFSD/dev/* /dev
+    fi
+
+    # make symlink for kcore
+    if [ -e /proc/kcore ]; then
+	ln -sf /proc/kcore /dev/core
+    fi
+
+    # make symlink for rootdev
+    if [ -e $ROOTDEVICE ]; then
+	ln -sf $ROOTDEVICE /dev/root
+    fi
+
+    # hw independed
+    mknod /dev/tts/0	c	4	64
+    mknod /dev/tts/1	c	4	65
+    mknod /dev/cua/0	c	5	64
+    mknod /dev/misc/rtc	c	10	135
+    mknod /dev/net/tun	c	10	200
+
+    if [ ! -e /dev/ppp ]; then
+	mknod /dev/ppp c 108 0
+    fi
+
+    for i in `seq 0 15`; do
+	mknod /dev/pty/m$i c 2 $i
+    done
+
+    for i in `seq 0 3`; do
+	mknod /dev/aci$i c 254 $i
+    done
+    for i in `seq 0 1`; do
+	mknod /dev/gpio$i c 252 $i
+    done
+
+    # ralink depended
+    mknod /dev/hwnat0	c	215	0
+    mknod /dev/acl0		c	230	0
+    mknod /dev/cls0		c	235	0
+    mknod /dev/ac0		c	240	0
+    mknod /dev/mrt0		c	250	0
+    mknod /dev/nvram	c	251	0
+    mknod /dev/gpio		c	252	0
+    mknod /dev/rdm0		c	254	0
+else
+    $LOG "DEVFS NOT EXIST STOP !!!"
+    exit 1
+fi
+
+$LOG "Init RW particion"
+bzcat $RWFSDEVICE | tar xf - -C / > /dev/null 2>&1
+
+if [ -f /etc/filesystem.ok ] && [ -f /etc/rc.d/rcS ]; then
+    $LOG "RW File system is ok - preparing."
+  else
+    $LOG "File system is clear or poor."
+    cp -af $TMPROOTFSD/etc/* /etc
+    $LOG "Restored. Save after full boot and configure."
+    touch /etc/filesystem.ok
+fi
+
+$LOG "Umount $TMPROOTFSD"
+umount -fl $TMPROOTFSD
+rm -rf $TMPROOTFSD
+
+$LOG "Start reset button check"
+butcheck &
+
+$LOG "Create start services trees"
+mkdir -p /var/run/rc0.d
+mkdir -p /var/run/rc1.d
+ln -s /etc/rc.d/S* /var/run/rc0.d
+ln -s /etc/rc.d/W* /var/run/rc1.d
+
+$LOG "Start services now"
+run-parts -a start /var/run/rc0.d &

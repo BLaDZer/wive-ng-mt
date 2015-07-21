@@ -154,7 +154,6 @@ romfs.subdirs:
 	cd $(ROOTDIR)
 	cp -vfra $(ROOTDIR)/etc/* $(ROMFSDIR)/etc
 	cp -vfa  $(ROOTDIR)/etc/rc.d/rcS $(ROMFSDIR)/bin/rcS
-	cp -vfa  $(ROOTDIR)/etc/rc.d/start $(ROMFSDIR)/bin/start
 	fakeroot tar -zxvf dev.tgz
 	fakeroot cp -rfva dev/* $(ROMFSDIR)/dev
 	cp $(ROOTDIR)/version $(ROMFSDIR)/etc/version
