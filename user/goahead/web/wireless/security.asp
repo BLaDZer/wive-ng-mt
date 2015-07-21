@@ -464,7 +464,7 @@ function securityMode(c_f)
 	if (security_mode == "OPEN" || security_mode == "SHARED" ||security_mode == "WEPAUTO"){
 		showWep(security_mode);
 	}else if (security_mode == "WPAPSK" || security_mode == "WPA2PSK" || security_mode == "WPAPSKWPA2PSK"){
-		<!-- WPA -->
+		// WPA
 		document.getElementById("div_wpa").style.visibility = "visible";
 		if (window.ActiveXObject) { // IE
 			document.getElementById("div_wpa").style.display = "block";
@@ -479,7 +479,8 @@ function securityMode(c_f)
 		document.security_form.cipher[1].disabled = false;
 
 		// deal with TKIP-AES mixed mode
-		if(security_mode == "WPAPSK" || security_mode == "WPA2PSK" || security_mode == "WPAPSKWPA2PSK")
+		// WTF?
+		// if(security_mode == "WPAPSK" || security_mode == "WPA2PSK" || security_mode == "WPAPSKWPA2PSK")
 			document.security_form.cipher[2].disabled = false;
 
 		document.getElementById("wpa_passphrase").style.visibility = "visible";
@@ -489,6 +490,9 @@ function securityMode(c_f)
 		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
 		document.getElementById("wpa_key_renewal_interval").style.display = '';
 		document.security_form.keyRenewalInterval.disabled = false;
+		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
+			document.security_form.cipher[1].checked = true;
+		}
 	}else if (security_mode == "WPA" || security_mode == "WPA2" || security_mode == "WPA1WPA2") //wpa enterprise
 	{
 		document.getElementById("div_wpa").style.visibility = "visible";
@@ -506,7 +510,7 @@ function securityMode(c_f)
 		document.getElementById("wpa_key_renewal_interval").style.display = '';
 		document.security_form.keyRenewalInterval.disabled = false;
 	
-		<!-- 802.1x -->
+		// 802.1x
 		document.getElementById("div_radius_server").style.visibility = "visible";
 		document.getElementById("div_radius_server").style.display = '';
 		document.security_form.RadiusServerIP.disable = false;
@@ -531,7 +535,9 @@ function securityMode(c_f)
 		if(security_mode == "WPA1WPA2"){
 			document.security_form.cipher[2].disabled = false;
 		}
-
+		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
+			document.security_form.cipher[1].checked = true;
+		}
 	}else if (security_mode == "IEEE8021X"){ // 802.1X-WEP
 		document.getElementById("div_8021x_wep").style.visibility = "visible";
 		document.getElementById("div_8021x_wep").style.display = '';

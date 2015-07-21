@@ -1117,26 +1117,27 @@
 15) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
 16) goahead: add ipv6 interfaces adresses to statisctic page.<br>
 17) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-18) kernel: config: enable xt_match_time module build by default.<br>
-19) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-20) kernel: mm: place preemption point in do_mlockall() loop.<br>
-21) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-22) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-23) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-24) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-25) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-26) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-27) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-28) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-29) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-30) kernel: net: do not process device backlog during unregistration.<br>
-31) kernel: net: call rcu_read_lock early in process_backlog.<br>
-32) kernel: net: clone skb before setting peeked flag.<br>
-33) kernel: net: tcp: don't abort splice() after small transfers.<br>
-34) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-35) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-36) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-37) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+18) goahead: in wireles securuty default select AES for all WPA modes.<br>
+19) kernel: config: enable xt_match_time module build by default.<br>
+20) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+21) kernel: mm: place preemption point in do_mlockall() loop.<br>
+22) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+23) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+24) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+25) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+26) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+27) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+28) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+29) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+30) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+31) kernel: net: do not process device backlog during unregistration.<br>
+32) kernel: net: call rcu_read_lock early in process_backlog.<br>
+33) kernel: net: clone skb before setting peeked flag.<br>
+34) kernel: net: tcp: don't abort splice() after small transfers.<br>
+35) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+36) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+37) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+38) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 <br>
 <br>
 <b>TODO:</b><br>
