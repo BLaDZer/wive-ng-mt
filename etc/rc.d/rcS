@@ -25,7 +25,7 @@ fi
 
 ##########################################################
 # prepare devices and rwfs
-# autocreate some dev nodes and refresh from mkdevs script
+# autocreate and refresh dev nodes
 ##########################################################
 $LOG "Touch mdev."
 mdev -s
