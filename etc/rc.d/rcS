@@ -11,17 +11,11 @@ TMPROOTFSD="/tmp/rootfs"
 
 ##########################################################
 # prepare filesystems
-# use tmpfs if present
 ##########################################################
-tmpfs_av=`grep tmpfs -c < /proc/filesystems`
-if [ "$tmpfs_av" != "0" ]; then
-    # mount /tmp /etc in /var
-    mkdir -p /var/tmpfs
-    mount -o bind /var/tmpfs /tmp
-    # make dir for rwfs and bind it
-    mkdir -p /var/rwfs
-    mount -o bind /var/rwfs /etc
-fi
+mkdir -p /var/tmpfs
+mkdir -p /var/rwfs
+mount -o bind /var/tmpfs /tmp
+mount -o bind /var/rwfs /etc
 
 ##########################################################
 # prepare devices and rwfs
@@ -47,14 +41,14 @@ if [ -d /dev ]; then
 	cp -rpf $TMPROOTFSD/dev/* /dev
     fi
 
-    # make symlink for kcore
-    if [ -e /proc/kcore ]; then
-	ln -sf /proc/kcore /dev/core
-    fi
-
     # make symlink for rootdev
     if [ -e $ROOTDEVICE ]; then
 	ln -sf $ROOTDEVICE /dev/root
+    fi
+
+    # make symlink for kcore
+    if [ -e /proc/kcore ]; then
+	ln -sf /proc/kcore /dev/core
     fi
 
     # hw independed
