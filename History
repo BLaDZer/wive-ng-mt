@@ -1102,42 +1102,43 @@
 1) toolchain: apply some regressions fix backport to gcc, update headers.<br>
 2) add 802.1x wireless radius authentification support.<br>
 3) usb-modeswitch: up to 2.2.5 2015-07-16 version.<br>
-4) uclibc: use position independent code for crt1, slightly red/uces size of all executables.<br>
-5) init.d: scripts start, mkdevs and rcS split and use run-parts for start S* servies.<br>
-6) init.d: wan: cleanup and fix zcip restart in some cases.<br>
-7) init.d: qos: fix warnings with vpn mode enabled and small rearrange.<br>
-8) init.d: do not touch all.forward sysctl from dhcp script.<br>
-9) init.d: do not more need wait before start udhcpc.<br>
-10) igmpproxy: silence downstream interface igmp messages.<br>
-11) igmpproxy: use monotic clock instead of time of day.<br>
-12) igmpproxy: fix multiple downlink interfaces leave.<br>
-13) igmpproxy: fix wifi snooping code to work with new drivers and use legacy oid header.<br>
-14) goahead: add hardware traffic counters from switch to WebUI.<br>
-15) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
-16) goahead: add ipv6 interfaces adresses to statisctic page.<br>
-17) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-18) goahead: in wireles securuty default select AES for all WPA modes.<br>
-19) kernel: config: enable xt_match_time module build by default.<br>
-20) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-21) kernel: mm: place preemption point in do_mlockall() loop.<br>
-22) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-23) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-24) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-25) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-26) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-27) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-28) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-29) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-30) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-31) kernel: net: do not process device backlog during unregistration.<br>
-32) kernel: net: call rcu_read_lock early in process_backlog.<br>
-33) kernel: net: clone skb before setting peeked flag.<br>
-34) kernel: net: tcp: don't abort splice() after small transfers.<br>
-35) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-36) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-37) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-38) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-39) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+4) miniupnpd: up to 1.9.20150721 version.<br>
+5) uclibc: use position independent code for crt1, slightly red/uces size of all executables.<br>
+6) init.d: scripts start, mkdevs and rcS split and use run-parts for start S* servies.<br>
+7) init.d: wan: cleanup and fix zcip restart in some cases.<br>
+8) init.d: qos: fix warnings with vpn mode enabled and small rearrange.<br>
+9) init.d: do not touch all.forward sysctl from dhcp script.<br>
+10) init.d: do not more need wait before start udhcpc.<br>
+11) igmpproxy: silence downstream interface igmp messages.<br>
+12) igmpproxy: use monotic clock instead of time of day.<br>
+13) igmpproxy: fix multiple downlink interfaces leave.<br>
+14) igmpproxy: fix wifi snooping code to work with new drivers and use legacy oid header.<br>
+15) goahead: add hardware traffic counters from switch to WebUI.<br>
+16) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
+17) goahead: add ipv6 interfaces adresses to statisctic page.<br>
+18) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
+19) goahead: in wireles securuty default select AES for all WPA modes.<br>
+20) kernel: config: enable xt_match_time module build by default.<br>
+21) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+22) kernel: mm: place preemption point in do_mlockall() loop.<br>
+23) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+24) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+25) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+26) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+27) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+28) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+29) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+30) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+31) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+32) kernel: net: do not process device backlog during unregistration.<br>
+33) kernel: net: call rcu_read_lock early in process_backlog.<br>
+34) kernel: net: clone skb before setting peeked flag.<br>
+35) kernel: net: tcp: don't abort splice() after small transfers.<br>
+36) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+37) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+38) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+39) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+40) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
