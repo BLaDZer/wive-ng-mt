@@ -210,10 +210,11 @@ function selectType(form)
 	var kabinet_on = form.vpn_type.value == '6';
 
 	// Display mode-dependent elements
-	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
+	displayElement('vpn_password_row', form.vpn_enabled.checked);
 	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_password_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
+	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
 	displayElement('vpn_test_reachable', (pptp_on || l2tp_on) && form.vpn_enabled.checked);
-	displayElement([ 'vpn_lanauth_lvl_row', 'vpn_password_row' ], kabinet_on && form.vpn_enabled.checked);
+	displayElement('vpn_lanauth_lvl_row', kabinet_on && form.vpn_enabled.checked);
 	displayElement('vpn_mppe_row', (!l2tp_server_on) && form.vpn_enabled.checked);
 	displayElement('vpn_l2tp_range', l2tp_server_on && form.vpn_enabled.checked);
 
