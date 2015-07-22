@@ -12,6 +12,7 @@ struct _RT_PHY_INFO;
 VOID dump_vht_cap(struct _RTMP_ADAPTER *pAd, VHT_CAP_IE *vht_ie);
 VOID dump_vht_op(struct _RTMP_ADAPTER *pAd, VHT_OP_IE *vht_ie);
 
+INT build_vht_txpwr_envelope(struct _RTMP_ADAPTER *pAd, UCHAR *buf);
 INT build_vht_ies(struct _RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR frm);
 INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf);
 

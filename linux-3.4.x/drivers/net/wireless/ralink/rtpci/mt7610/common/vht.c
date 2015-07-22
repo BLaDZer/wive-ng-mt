@@ -221,6 +221,33 @@ INT get_vht_op_ch_width(RTMP_ADAPTER *pAd)
 	return TRUE;
 }
 
+INT build_vht_txpwr_envelope(RTMP_ADAPTER *pAd, UCHAR *buf)
+{
+	INT len = 0, pwr_cnt;
+	VHT_TXPWR_ENV_IE txpwr_env;
+
+	NdisZeroMemory(&txpwr_env, sizeof(txpwr_env));
+
+	if (pAd->CommonCfg.vht_bw == VHT_BW_80) {
+		pwr_cnt = 2;
+	} else {
+		if (pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth == 1)
+			pwr_cnt = 1;
+		else
+			pwr_cnt = 0;
+	}
+	txpwr_env.tx_pwr_info.max_tx_pwr_cnt = pwr_cnt;
+	txpwr_env.tx_pwr_info.max_tx_pwr_interpretation = TX_PWR_INTERPRET_EIRP;
+
+// TODO: fixme, we need the real tx_pwr value for each port.
+	for (len = 0; len < pwr_cnt; len++)
+		txpwr_env.tx_pwr_bw[len] = 15;
+
+	len = 2 + pwr_cnt;
+	NdisMoveMemory(buf, &txpwr_env, len);
+	
+	return len;
+}
 
 /********************************************************************
 	Procedures for 802.11 AC Information elements

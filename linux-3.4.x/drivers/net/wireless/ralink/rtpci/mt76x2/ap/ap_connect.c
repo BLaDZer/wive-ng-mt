@@ -554,7 +554,7 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 			*ptr = IE_CH_SWITCH_WRAPPER;
 			ch_sw_wrapper = (UCHAR *)(ptr + 1); // reserve for length
 			ptr += 2; // skip len
-			
+
 			if (pComCfg->RegTransmitSetting.field.BW == BW_40) {
 				WIDE_BW_CH_SWITCH_ELEMENT wb_info;
 
@@ -590,7 +590,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 			FrameLen += (2 + wb_len + tp_len);
 		}
 #endif /* DOT11_VHT_AC */
-
 #endif /* DOT11_N_SUPPORT */
 	}
 #endif /* A_BAND_SUPPORT */

@@ -532,6 +532,22 @@ VOID APPeerProbeReqAction(
 		                          3,                 	PowerConstraintIE,
 		                          END_OF_ARGS);
 		        FrameLen += TmpLen;
+#ifdef DOT11_VHT_AC
+				if (WMODE_CAP_AC(PhyMode)) {
+					ULONG TmpLen;
+					UINT8 vht_txpwr_env_ie = IE_VHT_TXPWR_ENV;
+					UINT8 ie_len;
+					VHT_TXPWR_ENV_IE txpwr_env;
+
+					ie_len = build_vht_txpwr_envelope(pAd, (UCHAR *)&txpwr_env);
+					MakeOutgoingFrame(pOutBuffer + FrameLen, &TmpLen,
+								1,							&vht_txpwr_env_ie,
+								1,							&ie_len,
+								ie_len,						&txpwr_env,
+								END_OF_ARGS);
+					FrameLen += TmpLen;
+				}
+#endif /* DOT11_VHT_AC */
 			}
 #endif /* A_BAND_SUPPORT */
 

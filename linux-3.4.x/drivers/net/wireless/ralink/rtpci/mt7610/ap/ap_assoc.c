@@ -193,6 +193,9 @@ static USHORT update_associated_mac_entry(
 	{
 		/* Force to None-HT mode due to WiFi 11n policy */
 		ie_list->ht_cap_len = 0;
+#ifdef DOT11_VHT_AC
+		ie_list->vht_cap_len = 0;
+#endif /* DOT11_VHT_AC */
 		DBGPRINT(RT_DEBUG_TRACE, ("%s : Force the STA as Non-HT mode\n", __FUNCTION__));
 	}
 
