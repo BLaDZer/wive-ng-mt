@@ -1127,21 +1127,22 @@
 26) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
 27) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
 28) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-29) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-30) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
-31) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-32) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-33) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-34) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-35) kernel: net: do not process device backlog during unregistration.<br>
-36) kernel: net: call rcu_read_lock early in process_backlog.<br>
-37) kernel: net: clone skb before setting peeked flag.<br>
-38) kernel: net: tcp: don't abort splice() after small transfers.<br>
-39) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-40) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-41) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-42) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-43) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+29) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
+30) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+31) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
+32) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+33) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+34) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+35) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+36) kernel: net: do not process device backlog during unregistration.<br>
+37) kernel: net: call rcu_read_lock early in process_backlog.<br>
+38) kernel: net: clone skb before setting peeked flag.<br>
+39) kernel: net: tcp: don't abort splice() after small transfers.<br>
+40) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+41) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+42) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+43) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+44) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>

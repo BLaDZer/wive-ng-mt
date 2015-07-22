@@ -240,6 +240,8 @@ if (((__pEntry)) != NULL) \
 }
 #endif /* FIFO_EXT_SUPPORT */
 
+#undef MAX_LEN_OF_MLME_QUEUE
+#define MAX_LEN_OF_MLME_QUEUE 64
 
 /* */
 /* 802.11 frame formats */
