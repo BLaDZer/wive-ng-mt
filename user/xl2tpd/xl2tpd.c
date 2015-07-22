@@ -677,6 +677,7 @@ void destroy_tunnel (struct tunnel *t)
         close (t->udp_fd);
     free (t);
     free (me);
+    free (dial_no_tmp);
 }
 
 void schedule_redial(struct lac *lac)
