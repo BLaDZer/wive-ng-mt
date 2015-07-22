@@ -78,15 +78,20 @@ dir_$(CONFIG_USER_DHCP6)                    += dhcp6
 dir_$(CONFIG_USER_ZEBRA)		    += quagga
 dir_$(CONFIG_USER_SNMPD)                    += snmpd
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
+dir_$(CONFIG_USER_SAMBA)		    += samba
 
-#for usb support
-dir_$(CONFIG_USB_MODESWITCH)                += usb_modeswitch
+#for usb printer support
 dir_$(CONFIG_USER_P910ND)		    += p910nd
+
+#for usb storage support
+dir_$(CONFIG_USER_STORAGE)		    += usb
 dir_$(CONFIG_USER_NTFS3G)                   += ntfs-3g
 dir_$(CONFIG_USER_DAVFS)		    += davfs
-dir_$(CONFIG_USER_SAMBA)		    += samba
 dir_$(CONFIG_USER_TRANSMISSION)		    += transmission
-dir_$(CONFIG_USER_STORAGE)		    += usb
+
+#for usb modem support
+dir_$(CONFIG_USB_MODESWITCH)                += usb_modeswitch
+dir_$(CONFIG_USB_QMI)			    += uqmi
 
 #only ralink apps and scripts
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app

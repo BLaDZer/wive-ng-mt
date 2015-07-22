@@ -96,6 +96,7 @@ CONFIG_RTESW_SWITCH=y
 # 3G support
 #
 # CONFIG_USB_MODESWITCH is not set
+# CONFIG_USB_QMI is not set
 
 #
 # Optimization options.

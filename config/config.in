@@ -150,8 +150,9 @@ endmenu
 
 mainmenu_option next_comment
 comment '3G support'
-bool 'usb-modeswitch'		CONFIG_USB_MODESWITCH
-if [ "$CONFIG_USB_MODESWITCH" = "y" ]; then
+bool 'usb-modeswitch tool for switch 3G/4G modems mode'		CONFIG_USB_MODESWITCH
+bool 'usb-qmi for support 3G dongle uses qmi protocol'		CONFIG_USB_QMI
+if [ "$CONFIG_USB_MODESWITCH" = "y" ] || [ "$CONFIG_USB_QMI" = "y" ]; then
 	define_bool CONFIG_LIB_USB1 y
 fi
 endmenu
