@@ -840,14 +840,12 @@ VOID ap_cmm_peer_assoc_req_action(
 #ifdef DOT11_VHT_AC
 	if (ie_list->vht_cap_len)
 	{
-#ifdef DBG
 //+++Add by shiang for debug
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode)) {
 			DBGPRINT(RT_DEBUG_TRACE, ("%s():Peer is VHT capable device!\n", __FUNCTION__));
 			//dump_vht_cap(pAd, &ie_list->vht_cap);
 		}
 //---Add by shiang for debug
-#endif
 	}
 #endif /* DOT11_VHT_AC */
 

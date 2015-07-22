@@ -4354,8 +4354,13 @@ VOID RTMPUpdateLegacyTxSetting(
 		PMAC_TABLE_ENTRY	pEntry)
 {
 	HTTRANSMIT_SETTING TransmitSetting;
-	
-	if (fixed_tx_mode == FIXED_TXMODE_HT)
+
+	if ((fixed_tx_mode != FIXED_TXMODE_CCK) &&
+		(fixed_tx_mode != FIXED_TXMODE_OFDM)
+#ifdef DOT11_VHT_AC
+		&& (fixed_tx_mode != FIXED_TXMODE_VHT)
+#endif /* DOT11_VHT_AC */
+	)
 		return;
 							 				
 	TransmitSetting.word = 0;
@@ -4363,6 +4368,17 @@ VOID RTMPUpdateLegacyTxSetting(
 	TransmitSetting.field.MODE = pEntry->HTPhyMode.field.MODE;
 	TransmitSetting.field.MCS = pEntry->HTPhyMode.field.MCS;
 						
+#ifdef DOT11_VHT_AC
+	if (fixed_tx_mode == FIXED_TXMODE_VHT)
+	{
+		TransmitSetting.field.MODE = MODE_VHT;
+		TransmitSetting.field.BW = pEntry->MaxHTPhyMode.field.BW;
+		/* CCK mode allow MCS 0~3*/
+		if (TransmitSetting.field.MCS > ((1 << 4) + MCS_7))
+			TransmitSetting.field.MCS = ((1 << 4) + MCS_7);
+	}
+	else
+#endif /* DOT11_VHT_AC */
 	if (fixed_tx_mode == FIXED_TXMODE_CCK)
 	{
 		TransmitSetting.field.MODE = MODE_CCK;
