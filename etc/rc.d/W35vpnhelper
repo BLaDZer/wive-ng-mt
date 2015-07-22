@@ -34,7 +34,7 @@ start() {
       elif [ "$vpnType" = "2" ]; then
 	$LOG "L2TP calling."
 	(sleep 5 && /etc/scripts/config-l2tp.sh) &
-      elif [ "$vpnType" = "6" ]; then
+      elif [ "$vpnType" = "3" ]; then
 	lanauthpid=`pidof lanauth`
 	if [ "$lanauthpid" != "" ]; then
 	    $LOG "LANAUTH call reload."

@@ -59,13 +59,7 @@ function showHint(key)
 				text += _("hint vpn pppoe");
 			else if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2')) // PPTP client, L2TP client
 				text += _("hint vpn pptp");
-			else if (form.vpn_type.value == '3') // L2TP server
-				text += _("hint vpn l2tp server");
-			else if ((form.vpn_type.value == '4') || (form.vpn_type.value == '5')) // GSM/CDMA
-				text += _("hint vpn apn");
 		}
-		else if (key=='vpn_range')
-			text += _("hint vpn range");
 		else if (key=='vpn_mtu')
 			text += _("hint vpn mtu");
 		else if (key=='vpn_mppe')
@@ -107,20 +101,13 @@ function showHint(key)
 				text += _("hint vpn type pppoe");
 			else if (form.vpn_type.value == "1")
 				text += _("hint vpn type pptp");
-			else if ((form.vpn_type.value == "2") || (form.vpn_type.value == "3"))
+			else if (form.vpn_type.value == "2")
 			{
 				text += _("hint vpn type l2tp");
 				text += '</p><p class="val">';
-				if (form.vpn_type.value == "2")
-					text += _("hint vpn type l2tp client");
-				else
-				text += _("hint vpn type l2tp server");
+				text += _("hint vpn type l2tp client");
 			}
-			else if (form.vpn_type.value == "4")
-				text += _("hint vpn type gprs");
-			else if (form.vpn_type.value == "5")
-				text += _("hint vpn type cdma");
-			else if (form.vpn_type.value == "6")
+			else if (form.vpn_type.value == "3")
 				text += _("hint vpn type kabinet");
 			text += '</p>';
 		}
@@ -142,7 +129,7 @@ function showHint(key)
 function vpnSwitchClick(form)
 {
 	enableElements( [
-		form.vpn_server, form.vpn_range, form.vpn_auth_type,
+		form.vpn_server, form.vpn_auth_type,
 		form.vpn_user, form.vpn_pass, form.vpn_mtu, form.vpn_mppe,
 		form.vpn_peerdns, form.vpn_debug, form.vpn_nat, form.vpn_dgw,
 		form.vpn_mtu_type, form.vpn_pppoe_iface, form.vpn_type,
@@ -206,27 +193,20 @@ function selectType(form)
 	var pppoe_on = form.vpn_type.value == '0';
 	var pptp_on = form.vpn_type.value == '1';
 	var l2tp_on = form.vpn_type.value == '2';
-	var l2tp_server_on = form.vpn_type.value == '3';
-	var kabinet_on = form.vpn_type.value == '6';
+	var kabinet_on = form.vpn_type.value == '3';
 
 	// Display mode-dependent elements
 	displayElement('vpn_password_row', form.vpn_enabled.checked);
-	displayElement([ 'vpn_pppoe_iface_row', 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_password_row', 'vpn_mtu_row', 'vpn_dgw_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
-	displayElement([ 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
+	displayElement([ 'vpn_server_row', 'vpn_auth_type_row', 'vpn_user_row', 'vpn_mtu_row', 'vpn_dgw_row', 'vpn_mppe_row', table_vpn_params], (!kabinet_on) && form.vpn_enabled.checked);
+	displayElement([ 'vpn_pppoe_iface_row', 'vpn_pure_pppoe_cell', 'vpn_pppoe_service_row', 'vpn_pppoe_row' ], pppoe_on && form.vpn_enabled.checked);
 	displayElement('vpn_test_reachable', (pptp_on || l2tp_on) && form.vpn_enabled.checked);
 	displayElement('vpn_lanauth_lvl_row', kabinet_on && form.vpn_enabled.checked);
-	displayElement('vpn_mppe_row', (!l2tp_server_on) && form.vpn_enabled.checked);
-	displayElement('vpn_l2tp_range', l2tp_server_on && form.vpn_enabled.checked);
 
 	var vpn_server = _("vpn server col");
 	if (form.vpn_type.value == '0') // PPPoE
 		vpn_server = _("vpn server col ac");
 	else if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2')) // PPTP client, L2TP client
 		vpn_server = _("vpn server col host");
-	else if (form.vpn_type.value == '3') // L2TP server
-		vpn_server = 'VPN Local <acronym title="Internet Protocol">IP</acronym>';
-	else if ((form.vpn_type.value == '4') || (form.vpn_type.value == '5'))
-		vpn_server = _("vpn server col apn"); // GSM/CDMA
 
 	if ((form.vpn_type.value == '1') || (form.vpn_type.value == '2') || (form.vpn_type.value == '3'))
 		form.vpn_server.value = vpnServerIP;
@@ -252,7 +232,7 @@ function submitClick(form)
 		return false;
 	}
 
-	if ((form.vpn_type.value != "0") && (form.vpn_type.value != "6"))
+	if (form.vpn_type.value != "0" && form.vpn_type.value != "3" )
 	{
 		if (form.vpn_user.value.match(/[\s\$]/))
 		{
@@ -295,7 +275,7 @@ function initializeForm(form)
 		var lanauth_access   = '<% getCfgGeneral(1, "LANAUTH_LVL"); %>';
 
 		// Add specific option
-		form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '6');
+		form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '3');
 		form.lanauth_access.value      = lanauth_access;
 	}
 
@@ -367,7 +347,6 @@ function initTranslation()
 	_TR("vAdaptiveLCP", "vpn adaptive lcp");
 	_TR("vPurePPPoE", "vpn pure pppoe");
 	_TR("vTestServer", "vpn test server");
-	
 	_TRV("vApplyConn", "button apply connect");
 	_TRV("vReset", "button reset");
 }
@@ -412,10 +391,6 @@ function initTranslation()
           <tr id="vpn_pppoe_service_row" onMouseOver="showHint('vpn_pppoe_service')" onMouseOut="hideHint('vpn_pppoe_service')">
             <td class="head"><b id="vServiceName">Service name:</b></td>
             <td><input name="vpn_pppoe_service" class="mid" value="<% getCfgGeneral(1, "vpnService"); %>" disabled="disabled" type="text"></td>
-          </tr>
-          <tr id="vpn_l2tp_range" onMouseOver="showHint('vpn_range')" onMouseOut="hideHint('vpn_range')" style="display: none;" >
-            <td class="head"><b><acronym title="Virtual Private Network">VPN</acronym> range <acronym title="Internet Protocol">IP</acronym> adresses:</b></td>
-            <td><input name="vpn_range" class="mid" size="25" maxlength="60" value="<% getCfgGeneral(1, "vpnRange"); %>" disabled="disabled" type="text"></td>
           </tr>
           <tr id="vpn_auth_type_row" onMouseOver="showHint('vpn_auth_type')" onMouseOut="hideHint('vpn_auth_type')" >
             <td class="head"><b id="vAuthType">Authentication method:</b></td>
