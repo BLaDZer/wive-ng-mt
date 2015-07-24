@@ -244,9 +244,15 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 		{
 			pEntry = &pAd->MacTab.Content[i];
 
-			/* ENTRY PREEMPTION: initialize the entry */
-			RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
-			RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+#ifdef RT_CFG80211_SUPPORT
+			if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+			{
+				/* ENTRY PREEMPTION: initialize the entry */
+				RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
+				RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+			}
+
 
 			NdisZeroMemory(pEntry, sizeof(MAC_TABLE_ENTRY));
 
@@ -320,7 +326,12 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 
 			pEntry->bIAmBadAtheros = FALSE;
 
-			RTMPInitTimer(pAd, &pEntry->EnqueueStartForPSKTimer, GET_TIMER_FUNCTION(EnqueueStartForPSKExec), pEntry, FALSE);
+#ifdef RT_CFG80211_SUPPORT
+			if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+			{
+				RTMPInitTimer(pAd, &pEntry->EnqueueStartForPSKTimer, GET_TIMER_FUNCTION(EnqueueStartForPSKExec), pEntry, FALSE);
+			}
 
 
 #ifdef CONFIG_AP_SUPPORT
@@ -328,9 +339,14 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			{
 				if (IS_ENTRY_CLIENT(pEntry)) /* Only Clent entry need the retry timer.*/
 				{
-					RTMPInitTimer(pAd, &pEntry->RetryTimer, GET_TIMER_FUNCTION(WPARetryExec), pEntry, FALSE);
+#ifdef RT_CFG80211_SUPPORT
+					if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+					{
+						RTMPInitTimer(pAd, &pEntry->RetryTimer, GET_TIMER_FUNCTION(WPARetryExec), pEntry, FALSE);
+					}
 
-	/*				RTMP_OS_Init_Timer(pAd, &pEntry->RetryTimer, GET_TIMER_FUNCTION(WPARetryExec), pAd);*/
+
 				}
 #ifdef APCLI_SUPPORT
 				else if (IS_ENTRY_APCLI(pEntry))
@@ -628,12 +644,21 @@ BOOLEAN MacTableDeleteEntry(
 
 	if (pEntry && !IS_ENTRY_NONE(pEntry))
 	{
-		/* ENTRY PREEMPTION: Cancel all timers */
-		RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
-		RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+#ifdef RT_CFG80211_SUPPORT
+		if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+		{
+			/* ENTRY PREEMPTION: Cancel all timers */
+			RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
+			RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+		}
 
 		if (MAC_ADDR_EQUAL(pEntry->Addr, pAddr))
 		{
+#ifdef RT_CFG80211_SUPPORT 
+			CFG80211_ApStaDelSendEvent(pAd, pEntry->Addr);	
+#endif /* RT_CFG80211_SUPPORT  */
+
 
 			/* Delete this entry from ASIC on-chip WCID Table*/
 			RTMP_STA_ENTRY_MAC_RESET(pAd, wcid);
@@ -664,7 +689,12 @@ BOOLEAN MacTableDeleteEntry(
 				INT		PmkCacheIdx = -1;
 #endif /* DOT1X_SUPPORT */
 			
+#ifdef RT_CFG80211_SUPPORT
+			if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+			{
 				RTMPReleaseTimer(&pEntry->RetryTimer, &Cancelled);
+			}
 
 #ifdef DOT1X_SUPPORT    
 				/* Notify 802.1x daemon to clear this sta info*/
@@ -772,12 +802,17 @@ BOOLEAN MacTableDeleteEntry(
 #endif /* CONFIG_AP_SUPPORT */
 #endif /* UAPSD_SUPPORT */
 
-		if (pEntry->EnqueueEapolStartTimerRunning != EAPOL_START_DISABLE)
+#ifdef RT_CFG80211_SUPPORT
+		if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
 		{
-            RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
-			pEntry->EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
-        }
-		RTMPReleaseTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+			if (pEntry->EnqueueEapolStartTimerRunning != EAPOL_START_DISABLE)
+			{
+	            RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+				pEntry->EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
+	        }
+			RTMPReleaseTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
+		}
 
 
 #ifdef CONFIG_AP_SUPPORT
@@ -903,7 +938,13 @@ VOID MacTableReset(
 	   		/* Delete a entry via WCID */
 
 			/*MacTableDeleteEntry(pAd, i, pAd->MacTab.Content[i].Addr);*/
-			RTMPReleaseTimer(&pAd->MacTab.Content[i].EnqueueStartForPSKTimer, &Cancelled);
+#ifdef RT_CFG80211_SUPPORT
+			if (pAd->VifNextMode == RT_CMD_80211_IFTYPE_NOT_USED)
+#endif /* RT_CFG80211_SUPPORT */
+			{
+				RTMPReleaseTimer(&pAd->MacTab.Content[i].EnqueueStartForPSKTimer, &Cancelled);
+			}
+
             pAd->MacTab.Content[i].EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
 
 #ifdef CONFIG_AP_SUPPORT

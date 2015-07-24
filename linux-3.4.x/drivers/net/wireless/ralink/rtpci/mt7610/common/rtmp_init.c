@@ -1787,7 +1787,9 @@ VOID NICUpdateFifoStaCounters(
 	IN PRTMP_ADAPTER pAd)
 {
 	TX_STA_FIFO_STRUC	StaFifo;
+#ifdef FIFO_EXT_SUPPORT
 	TX_STA_FIFO_EXT_STRUC StaFifoExt;
+#endif /* FIFO_EXT_SUPPORT */
 	MAC_TABLE_ENTRY		*pEntry = NULL;
 	UINT32				i = 0;
 	UCHAR				pid = 0, wcid = 0;
@@ -3065,6 +3067,10 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.MO_Cfg.bDyncVgaEnable = TRUE;
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 800;
 	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 10;
+	pAd->CommonCfg.MO_Cfg.bPreviousTuneVgaUP = FALSE;
+	pAd->CommonCfg.MO_Cfg.TuneGainReverseTimes = 0;
+	RTMPInitTimer(pAd, &pAd->CommonCfg.MO_Cfg.DyncVgaLockTimer,
+		      GET_TIMER_FUNCTION(DyncVgaLockTimeout), pAd, FALSE);
 #endif /* DYNAMIC_VGA_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -3203,6 +3209,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef DOT11_VHT_AC
 	pAd->CommonCfg.bNonVhtDisallow = FALSE;
+#ifdef DISANLE_VHT80_256_QAM
+	pAd->CommonCfg.disable_vht_256QAM = DISABLE_VHT80_256_QAM;
+#endif /* DISANLE_VHT80_256_QAM */
 #endif /* DOT11_VHT_AC */
 #ifdef ED_MONITOR
 	pAd->ed_chk = FALSE; //let country region to turn on
@@ -3212,6 +3221,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->ed_ap_threshold = 1;
 #endif /* CONFIG_AP_SUPPORT */
 
+	//change to common part
+	pAd->ed_rssi_threshold = -80;
 
 	pAd->ed_chk_period = 100;
 	pAd->ed_threshold = 90;

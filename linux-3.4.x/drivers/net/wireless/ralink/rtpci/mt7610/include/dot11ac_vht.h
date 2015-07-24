@@ -33,6 +33,9 @@
 
 #include "rtmp_type.h"
 
+#ifdef DISANLE_VHT80_256_QAM
+#define DISABLE_VHT80_256_QAM		0x1
+#endif /* DISANLE_VHT80_256_QAM */
 
 #define IE_VHT_CAP		191
 #define IE_VHT_OP		192

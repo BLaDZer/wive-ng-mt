@@ -39,6 +39,10 @@
 
 #ifdef CONFIG_AP_SUPPORT
 #include "ap_autoChSel_cmm.h"
+
+#ifdef RT_CFG80211_SUPPORT
+#include <linux/nl80211.h>
+#endif /* RT_CFG80211_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 #include "wsc.h"
@@ -754,6 +758,9 @@ typedef struct _MO_CFG_STRUCT {
 	UINT16		nLowFalseCCATh;
 	UINT32		Stored_BBP_R65;
 	UCHAR		Stored_BBP_R66;
+	BOOLEAN		bPreviousTuneVgaUP; /*record previous tune gain action*/
+	UCHAR		TuneGainReverseTimes; /* gain down-up-down-up 2 times, then lock lower gain for 1 min */
+	RALINK_TIMER_STRUCT DyncVgaLockTimer; /* lock 1 min on lower gain */
 } MO_CFG_STRUCT, *PMO_CFG_STRUCT;
 #endif /* DYNAMIC_VGA_SUPPORT */
 
@@ -1484,6 +1491,19 @@ typedef struct _MULTISSID_STRUCT {
 #ifdef MAC_REPEATER_SUPPORT
 	UINT8 ApCliIdx;
 #endif /* MAC_REPEATER_SUPPORT */
+
+#ifdef RT_CFG80211_SUPPORT
+	BOOLEAN CFG_HOSTAPD;
+
+	/* Extra IEs for Probe Response provided by wpa_supplicant. E.g, WPS & P2P & WFD...etc */
+    UCHAR ProbRespExtraIe[512];
+    UINT32 ProbRespExtraIeLen;
+
+    /* Extra IEs for (Re)Association Response provided by wpa_supplicant. E.g, WPS & P2P & WFD...etc */
+    UCHAR AssocRespExtraIe[512];
+    UINT32 AssocRespExtraIeLen;
+	enum nl80211_hidden_ssid ignore_broadcast_ssid;
+#endif /* RT_CFG80211_SUPPORT */
 } MULTISSID_STRUCT, *PMULTISSID_STRUCT;
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -1579,6 +1599,8 @@ typedef struct _COMMON_CONFIG {
 	UCHAR vht_bw_signal;
 	UCHAR vht_cent_ch;
 	UCHAR vht_cent_ch2;
+	UCHAR disable_vht_256QAM; /* 0x0: normal, 0x1: disable vht80 256-QAM, 0x2: disable vht40 256-QAM, 0x4: disable vht20 256-QAM */
+	UCHAR vht_max_mcs_cap;
 #endif /* DOT11_VHT_AC */
 
 	IOT_STRUC IOTestParm;	/* 802.11n InterOpbility Test Parameter; */
@@ -3093,6 +3115,35 @@ typedef struct tx_agc_ctrl{
 	CHAR TxAgcComp;	/* Store the compensation (TxAgcStep * (idx-1)) */
 }TX_AGC_CTRL;
 
+#ifdef RT_CFG80211_SUPPORT
+typedef struct _CFG80211_VIF_DEV
+{
+	struct _CFG80211_VIF_DEV *pNext;
+	BOOLEAN isMainDev;
+	UINT32 devType;
+	struct wireless_dev *pWdev;
+	PNET_DEV net_dev;
+	UCHAR CUR_MAC[MAC_ADDR_LEN];	
+
+	/* ProbeReq Frame */	
+	BOOLEAN Cfg80211RegisterProbeReqFrame;
+	CHAR Cfg80211ProbeReqCount;
+	
+	/* Action Frame */
+	BOOLEAN Cfg80211RegisterActionFrame;	
+	CHAR Cfg80211ActionCount;
+} CFG80211_VIF_DEV, *PCFG80211_VIF_DEV;
+
+typedef struct _CFG80211_VIF_DEV_SET
+{
+#define MAX_CFG80211_VIF_DEV_NUM  2
+
+	BOOLEAN inUsed;
+	UINT32 vifDevNum;
+	LIST_HEADER vifDevList;	
+	BOOLEAN isGoingOn;
+} CFG80211_VIF_DEV_SET;
+#endif /* RT_CFG80211_SUPPORT */
 
 /*
 	The miniport adapter structure
@@ -3745,6 +3796,23 @@ struct _RTMP_ADAPTER {
 	BOOLEAN FlgCfg80211Scanning;
 	BOOLEAN FlgCfg80211Connecting;
 	UCHAR Cfg80211_Alpha2[2];
+
+	/* For add_virtual_intf */
+	CFG80211_VIF_DEV_SET Cfg80211VifDevSet;
+	BOOLEAN Cfg80211RegisterProbeReqFrame;
+	BOOLEAN Cfg80211RegisterActionFrame;
+	UCHAR Cfg80211ProbeReqCount;
+	UCHAR Cfg80211ActionCount;
+
+	UINT32 TxStatusSeq;	
+	UCHAR *pTxStatusBuf;
+	UINT32 TxStatusBufLen;	
+	BOOLEAN TxStatusInUsed;
+
+	UINT8 VifNextMode;
+
+	UCHAR *beacon_tail_buf;
+	UINT32 beacon_tail_len;
 #endif /* RT_CFG80211_SUPPORT */
 #endif /* LINUX */
 
@@ -3806,6 +3874,8 @@ struct _RTMP_ADAPTER {
 #endif /* CONFIG_AP_SUPPORT */
 
 //for STA Mode's threshold
+	//move to common part!
+	CHAR ed_rssi_threshold;
 
 	UCHAR ed_threshold;
 	UINT false_cca_threshold;
@@ -5359,7 +5429,8 @@ VOID BATableExit(
 
 #ifdef ED_MONITOR
 ULONG BssChannelAPCount(
-	IN BSS_TABLE *Tab, 
+	IN PRTMP_ADAPTER pAd,
+	IN BSS_TABLE *Tab, 	
 	IN UCHAR Channel);
 #endif /* ED_MONITOR */
 
@@ -5716,6 +5787,14 @@ VOID APPeerDlsTearDownAction(
 #endif /* QOS_DLS_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
+
+#ifdef DYNAMIC_VGA_SUPPORT
+VOID DyncVgaLockTimeout(
+	IN PVOID SystemSpecific1,
+	IN PVOID FunctionContext,
+	IN PVOID SystemSpecific2,
+	IN PVOID SystemSpecific3);
+#endif /* DYNAMIC_VGA_SUPPORT */
 
 #ifdef QOS_DLS_SUPPORT
 BOOLEAN PeerDlsReqSanity(

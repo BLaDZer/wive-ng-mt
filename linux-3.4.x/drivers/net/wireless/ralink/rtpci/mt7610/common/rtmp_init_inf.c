@@ -155,6 +155,12 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #endif /* RT3290 */
 
 
+	/* enable HW to autofallback to legacy rate to prevent ping fail in long range */
+	if (IS_MT76x0(pAd))
+	{
+		RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY , 0x10);
+	}
+
 	/* reset Adapter flags*/
 	RTMP_CLEAR_FLAGS(pAd);
 

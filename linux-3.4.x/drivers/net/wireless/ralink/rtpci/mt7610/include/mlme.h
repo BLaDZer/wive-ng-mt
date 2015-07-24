@@ -1311,6 +1311,7 @@ typedef struct _MLME_AUX {
 	UCHAR vht_op_len;
 	VHT_CAP_IE vht_cap;
 	VHT_OP_IE vht_op;
+	UCHAR vht_max_mcs_cap;
 #endif /* DOT11_VHT_AC */
 
     /* new for QOS */

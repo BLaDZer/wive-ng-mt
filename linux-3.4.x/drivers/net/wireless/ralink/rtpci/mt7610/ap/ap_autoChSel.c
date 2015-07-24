@@ -508,11 +508,14 @@ static inline UCHAR SelectClearChannelCCA(
 				else if (pAd->CommonCfg.vht_bw == VHT_BW_80) {
 					/* the same dirtyness with neighbor */
 					INT	vht_ch_idx = get_vht_neighbor_index(ch);
-					
-					dirtyness = pChannelInfo->dirtyness[vht_ch_idx+channel_idx] +
-						pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+1)] +
-						pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+2)] +
-						pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+3)];
+
+					if (vht_ch_idx != (MAX_NUM_OF_CHANNELS+1))
+					{
+						dirtyness = pChannelInfo->dirtyness[vht_ch_idx+channel_idx] +
+							pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+1)] +
+							pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+2)] +
+							pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+3)];
+					}
 				}
 #endif /* DOT11_VHT_AC */
 			}
@@ -622,14 +625,17 @@ static inline UCHAR SelectClearChannelCCA(
 				/* the same falsecca with neighbor */
 				INT	vht_ch_idx = get_vht_neighbor_index(ch);
 
-				falsecca = (pChannelInfo->dirtyness[vht_ch_idx+channel_idx] +
-					pChannelInfo->FalseCCA[vht_ch_idx+channel_idx]) +
-					(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+1)] +
-					pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+1)]) +
-					(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+2)] +
-					pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+2)]) +
-					(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+3)] +
-					pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+3)]);
+				if (vht_ch_idx != (MAX_NUM_OF_CHANNELS+1))
+				{
+					falsecca = (pChannelInfo->dirtyness[vht_ch_idx+channel_idx] +
+						pChannelInfo->FalseCCA[vht_ch_idx+channel_idx]) +
+						(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+1)] +
+						pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+1)]) +
+						(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+2)] +
+						pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+2)]) +
+						(pChannelInfo->dirtyness[vht_ch_idx+(channel_idx+3)] +
+						pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+3)]);
+				}
 			}
 #endif /* DOT11_VHT_AC */
 
@@ -765,12 +771,17 @@ static inline UCHAR SelectClearChannelApCnt(
 					}
 				}
 #ifdef DOT11_VHT_AC
-				else if(pAd->CommonCfg.vht_bw == VHT_BW_80) {
+				else if(pAd->CommonCfg.vht_bw == VHT_BW_80) 
+				{
 					INT	vht_ch_idx = get_vht_neighbor_index(pAd->ChannelList[channel_index].Channel);
-					pChannelInfo->dirtyness[vht_ch_idx+channel_index]++;
-					pChannelInfo->dirtyness[vht_ch_idx+(channel_index+1)]++;
-					pChannelInfo->dirtyness[vht_ch_idx+(channel_index+2)]++;
-					pChannelInfo->dirtyness[vht_ch_idx+(channel_index+3)]++;
+
+					if (vht_ch_idx != (MAX_NUM_OF_CHANNELS+1))
+					{
+						pChannelInfo->dirtyness[vht_ch_idx+channel_index]++;
+						pChannelInfo->dirtyness[vht_ch_idx+(channel_index+1)]++;
+						pChannelInfo->dirtyness[vht_ch_idx+(channel_index+2)]++;
+						pChannelInfo->dirtyness[vht_ch_idx+(channel_index+3)]++;
+					}
 				}
 #endif /* DOT11_VHT_AC */
 			}

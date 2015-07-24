@@ -182,4 +182,8 @@ DECLARE_TIMER_FUNCTION(drop_mask_timer_action);
 DECLARE_TIMER_FUNCTION(PeerDelBATxAdaptTimeOut);
 #endif /* PEER_DELBA_TX_ADAPT */
 
+#ifdef DYNAMIC_VGA_SUPPORT
+DECLARE_TIMER_FUNCTION(DyncVgaLockTimeout);
+#endif/* DYNAMIC_VGA_SUPPORT */
+
 #endif /* __RTMP_TIMER_H__ */

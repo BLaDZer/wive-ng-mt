@@ -147,6 +147,16 @@ VOID APPeerProbeReqAction(
 			continue; /* check next BSS */
 
 
+#ifdef RT_CFG80211_SUPPORT
+		if (pAd->Cfg80211RegisterProbeReqFrame)
+		{
+			UINT32 freq;
+			MAP_CHANNEL_ID_TO_KHZ(Elem->Channel, freq);
+			freq /= 1000;
+			CFG80211OS_RxMgmt(pAd->ApCfg.MBSSID[apidx].MSSIDDev, freq, (PUCHAR)Elem->Msg, Elem->MsgLen);
+		}
+#endif /* RT_CFG80211_SUPPORT */
+
 #ifdef BAND_STEERING
 	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL, 
@@ -344,7 +354,7 @@ VOID APPeerProbeReqAction(
 		    /* add country IE, power constraint IE */
 			if (pAd->CommonCfg.bCountryFlag)
 			{
-				ULONG TmpLen, TmpLen2=0;
+				ULONG TmpLen2=0;
 				UCHAR *TmpFrame = NULL;
 
 				os_alloc_mem(NULL, (UCHAR **)&TmpFrame, 256);
@@ -357,6 +367,7 @@ VOID APPeerProbeReqAction(
 					BuildBeaconChList(pAd, TmpFrame, &TmpLen2);
 #else
 					{
+						ULONG TmpLen = 0;
 						UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 						MakeOutgoingFrame(TmpFrame+TmpLen2,     &TmpLen,
 											1,                 	&pAd->ChannelList[0].Channel,
@@ -665,7 +676,7 @@ VOID APPeerProbeReqAction(
 #ifdef DOT11_VHT_AC
 			if (WMODE_CAP_AC(PhyMode) &&
 				(pAd->CommonCfg.Channel > 14)) {
-				FrameLen += build_vht_ies(pAd, (UCHAR *)(pOutBuffer+FrameLen), SUBTYPE_PROBE_RSP);
+				FrameLen += build_vht_ies(pAd, (UCHAR *)(pOutBuffer+FrameLen), SUBTYPE_PROBE_RSP, pAd->CommonCfg.vht_max_mcs_cap);
 			}
 #endif /* DOT11_VHT_AC */
 
@@ -712,6 +723,16 @@ VOID APPeerProbeReqAction(
 
 
 
+
+#ifdef RT_CFG80211_SUPPORT
+		if (pAd->ApCfg.MBSSID[apidx].ProbRespExtraIeLen != 0)
+		{
+			MakeOutgoingFrame(pOutBuffer+FrameLen,	&TmpLen,
+					pAd->ApCfg.MBSSID[apidx].ProbRespExtraIeLen,	&pAd->ApCfg.MBSSID[apidx].ProbRespExtraIe[0],
+					END_OF_ARGS);
+			FrameLen += TmpLen;
+		}
+#endif /* RT_CFG80211_SUPPORT */
 
 		/* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
 		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
@@ -1012,14 +1033,7 @@ VOID APPeerBeaconAction(
 					NdisMoveMemory(&pAd->ScanTab.BssEntry[Idx].TTSF[4], &Elem->TimeStamp.u.LowPart, 4);
 				}
 
-				if ((ap_count = BssChannelAPCount(&pAd->ScanTab, pAd->CommonCfg.Channel)) > pAd->ed_ap_threshold)
-				{
-					if (pAd->ed_chk)
-					{
-						DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s : BssChannelAPCount=%u, ed_ap_threshold=%u,  go to ed_monitor_exit()!!\n", __FUNCTION__, ap_count, pAd->ed_ap_threshold));
-						ed_monitor_exit(pAd);
-					}
-				}
+
 		}
 #endif /* ED_MONITOR */
 	}

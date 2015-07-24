@@ -52,7 +52,12 @@
 #define MT76x0_RF_5G_PA_MODE1_DECODE		0
 #endif /* SINGLE_SKU_V2 */
 
-UCHAR MT76x0_EeBuffer[EEPROM_SIZE] = {
+#ifdef RTMP_FLASH_SUPPORT
+UCHAR MT76x0_EeBuffer[1024] = 
+#else
+UCHAR MT76x0_EeBuffer[EEPROM_SIZE] = 
+#endif
+	{
 	0x83, 0x38, 0x01, 0x00, 0x00, 0x0c, 0x43, 0x28, 0x83, 0x00, 0x83, 0x28, 0x14, 0x18, 0xff, 0xff,
 	0xff, 0xff, 0x83, 0x28, 0x14, 0x18, 0x00, 0x00, 0x01, 0x00, 0x6a, 0xff, 0x00, 0x02, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x0c, 0x43, 0x28, 0x83, 0x01, 0x00, 0x0c,
@@ -171,6 +176,7 @@ static RTMP_REG_PAIR	MT76x0_MACRegTable[] = {
 
 	{0x150C, 0x00000002}, /* Enable Tx length > 4095 byte */
 	{0x1238, 0x001700C8}, /* Disable bt_abort_tx_en(0x1238[21] = 0) which is not used at MT7650 @MT7650_E3_CR_setting_1115.xlsx */
+	{LDO_CTRL_0, 0x00A647B6}, /* PMU_OCLEVEL<5:1> from default <5'b10010> to <5'b11011> for normal driver */
 	{LDO_CTRL1, 0x6B006464}, /* Default LDO_DIG supply 1.26V, change to 1.2V */
 	{HT_BASIC_RATE, 0x00004003}, /*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
 	{HT_CTRL_CFG, 0x000001FF},	/*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
@@ -199,7 +205,7 @@ static RTMP_REG_PAIR MT76x0_BBP_Init_Tab[] = {
 	{CORE_R42, 0x00000000},
 	{CORE_R44, 0x00000000},
 
-	{IBI_R11, 0x00000080},
+	{IBI_R11, 0x0FDE8081},
 	
 	/*
 		0x2300[5] Default Antenna:
@@ -1981,6 +1987,7 @@ static VOID MT76x0_ChipSwitchChannel(
 	CHAR SkuBasePwr;
 	CHAR ChannelPwrAdj;
 #endif /* SINGLE_SKU_V2 */
+	BOOLEAN	Cancelled;	
 
 	bbp_ch_idx = vht_prim_ch_idx(Channel, pAd->CommonCfg.Channel);
 
@@ -2097,6 +2104,9 @@ static VOID MT76x0_ChipSwitchChannel(
 				{
 					pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 = eLNAgain;
 				}
+				
+				RTMPCancelTimer(&pAd->CommonCfg.MO_Cfg.DyncVgaLockTimer, &Cancelled);
+				
 #endif /* DYNAMIC_VGA_SUPPORT */
 				RTMP_BBP_IO_WRITE32(pAd, MT76x0_BPP_SWITCH_Tab[Index].RegDate.Register,
 						(MT76x0_BPP_SWITCH_Tab[Index].RegDate.Value&(~0x0000FF00))|(eLNAgain << 8));				
@@ -3170,8 +3180,8 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 
 	pChipCap->bDoTemperatureSensor = TRUE;
 
-	pChipCap->MACRegisterVer = "MT7650_E6_MAC_CR_setting_20140520.xlsx";
-	pChipCap->BBPRegisterVer = "MT7650E6_BBP_CR_20140303.xls";
+	pChipCap->MACRegisterVer = "MT7650_E6_MAC_CR_setting_20141027.xlsx";
+	pChipCap->BBPRegisterVer = "MT7650E6_BBP_CR_20140922.xls";
 	pChipCap->RFRegisterVer = "MT7650E6_WiFi_RF_CR_20140114.xls";
 
 	RTMP_DRS_ALG_INIT(pAd, RATE_ALG_GRP);
@@ -3475,55 +3485,12 @@ VOID MT76x0_AntennaSelCtrl(
 }
 
 VOID MT76x0_VCO_CalibrationMode3(
-	IN RTMP_ADAPTER *pAd)
+	IN RTMP_ADAPTER *pAd,
+	IN UCHAR 	Channel)
 {
-	UCHAR RFValue = 0, Mode = 0;
+	/*Call in-band command to VCO calibration execution.*/
+	RTMP_CHIP_CALIBRATION(pAd, VCO_CALIBRATION, Channel);
 
-	rlt_rf_read(pAd, RF_BANK0, RF_R04, &RFValue);
-	//Mode = (RFValue & 0xF0);	
-	Mode = (RFValue & 0x70);
-	if (Mode == 0x30)
-	{
-		DBGPRINT(RT_DEBUG_TRACE, ("%s - Calibration Mode: Open loop, closed loop, and amplitude\n", __FUNCTION__));
-		/*
-			Calibration Mode - Open loop, closed loop, and amplitude:
-			B0.R06.[0]: 0
-			B0.R06.[3:1] bp_close_code: 100
-			B0.R05.[7:0] bp_open_code: 00
-			B0.R04.[2:0] cal_bits: 000
-			B0.R03.[2:0] startup_time: 011
-			B0.R03.[6:4] settle_time: 111 (from MT7650E3_WiFi_RF_CR_20121202.xls)
-
-		*/
-		rlt_rf_read(pAd, RF_BANK0, RF_R06, &RFValue);
-		RFValue &= ~(0x0F);
-		//RFValue |= (0x08);
-		RFValue |= (0x01);
-		rlt_rf_write(pAd, RF_BANK0, RF_R06, RFValue);
-
-		rlt_rf_read(pAd, RF_BANK0, RF_R05, &RFValue);
-		if (RFValue != 0)
-		{
-			RFValue = 0;
-			rlt_rf_write(pAd, RF_BANK0, RF_R05, RFValue);
-		}
-
-		rlt_rf_read(pAd, RF_BANK0, RF_R04, &RFValue);
-		RFValue &= ~(0x07);
-		rlt_rf_write(pAd, RF_BANK0, RF_R04, RFValue);
-
-		rlt_rf_read(pAd, RF_BANK0, RF_R03, &RFValue);
-		RFValue &= ~(0x77);
-		RFValue |= (0x63);
-		rlt_rf_write(pAd, RF_BANK0, RF_R03, RFValue);
-
-		rlt_rf_read(pAd, RF_BANK0, RF_R04, &RFValue);
-		RFValue = ((RFValue & ~0x80) | 0x80); 
-		rlt_rf_write(pAd, RF_BANK0, RF_R04, RFValue);
-		
-		RTMPusecDelay(2200);
-	}
-	
 	return;
 }
 
@@ -3543,47 +3510,45 @@ static VOID ReloadLowCalResult(
 	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2CC, sizeof(RFValue));
 	rtmp_ee_flash_read(pAd, 0x2CC, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B0_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK0, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2D0, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK0, RF_R39, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x2D0, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R24 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R24, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2D4, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R24, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x2D4, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2D8, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R39, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x2D8, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R17 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2DC, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R17, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x2DC, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R58 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x2E0, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R58, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x2E0, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R59 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R59, RFValue);
+	rlt_rf_write(pAd, RF_BANK6, RF_R59, (UCHAR)RFValue);
 	/* TX group delay + TX IQ */
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x2E4, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x2E4, &tmp1);
 	DBGPRINT(RT_DEBUG_TRACE,(" reg_val [%x] \n",tmp1));
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x2E6, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x2E6, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C38 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C38, reg_val);
 	/* RX group delay + RX IQ */
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x2E8, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x2E8, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x2EA, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x2EA, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C60 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C60, reg_val);
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x2EC, sizeof(tmp1));
+
 	rtmp_ee_flash_read(pAd, 0x2EC, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x2EE, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x2EE, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C70 value [%x] \n",reg_val));	
@@ -3591,9 +3556,7 @@ static VOID ReloadLowCalResult(
 	/* LOFT cal */
 	for(i=0;i<=15;i++)
 	{
-		//RtmpFlashRead((UCHAR *)&tmp1, (RF_OFFSET + 0x2F0 + i*4), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x2F0 + i*4), &tmp1);
-		//RtmpFlashRead((UCHAR *)&tmp2, (RF_OFFSET + 0x2F0 + i*4 + 2), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x2F0 + i*4 + 2), &tmp2);
 		reg_val = (tmp2 << 16) | tmp1;
 		DBGPRINT(RT_DEBUG_TRACE,(" read from 0x%x and 0x%x \n",(RF_OFFSET + 0x2F0 + i*4),(RF_OFFSET + 0x2F0 + i*4 + 2)));	
@@ -3622,48 +3585,43 @@ static VOID ReloadMidCalResult(
 	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x268, sizeof(RFValue));
 	rtmp_ee_flash_read(pAd, 0x268, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B0_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK0, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x26C, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK0, RF_R39, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x26C, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R24 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R24, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x270, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R24, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x270, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x274, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R39, (UCHAR)RFValue);
+
 	rtmp_ee_flash_read(pAd, 0x274, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R17 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x278, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R17, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x278, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R58 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x27C, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R58, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x27C, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R59 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R59, RFValue);
+	rlt_rf_write(pAd, RF_BANK6, RF_R59, (UCHAR)RFValue);
 	/* TX group delay + TX IQ */
 
-
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x280, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x280, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x282, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x282, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C38 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C38, reg_val);
 	/* RX group delay + RX IQ */
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x284, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x284, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x286, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x286, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C60 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C60, reg_val);
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x288, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x288, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x28A, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x28A, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C70 value [%x] \n",reg_val));	
@@ -3671,9 +3629,7 @@ static VOID ReloadMidCalResult(
 	/* LOFT cal */
 	for(i=0;i<=15;i++)
 	{
-		//RtmpFlashRead((UCHAR *)&tmp1, (RF_OFFSET + 0x28C + i*4), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x28C + i*4), &tmp1);
-		//RtmpFlashRead((UCHAR *)&tmp2, (RF_OFFSET + 0x28C + i*4 + 2), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x28C + i*4 + 2), &tmp2);
 		reg_val = (tmp2 << 16) | tmp1;
 		DBGPRINT(RT_DEBUG_TRACE,(" read from 0x%x and 0x%x \n",(RF_OFFSET + 0x28C + i*4),(RF_OFFSET + 0x28C + i*4 + 2)));	
@@ -3701,47 +3657,42 @@ static VOID ReloadHighCalResult(
 	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x204, sizeof(RFValue));
 	rtmp_ee_flash_read(pAd, 0x204, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B0_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK0, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x208, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK0, RF_R39, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x208, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R24 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R24, RFValue);	
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x20C, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R24, (UCHAR)RFValue);	
+	
 	rtmp_ee_flash_read(pAd, 0x20C, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R39 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R39, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x210, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R39, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x210, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R17 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x214, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R17, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x214, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R58 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R58, RFValue);
-	//RtmpFlashRead(&RFValue, RF_OFFSET + 0x218, sizeof(RFValue));
+	rlt_rf_write(pAd, RF_BANK6, RF_R58, (UCHAR)RFValue);
+	
 	rtmp_ee_flash_read(pAd, 0x218, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE,(" B6_R59 value [%x] \n",RFValue));
-	rlt_rf_write(pAd, RF_BANK6, RF_R59, RFValue);
+	rlt_rf_write(pAd, RF_BANK6, RF_R59, (UCHAR)RFValue);
 	/* TX group delay + TX IQ */
 	
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x21C, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x21C, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x21E, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x21E, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C38 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C38, reg_val);
-	/* RX group delay + RX IQ */
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x220, sizeof(tmp1));
-	rtmp_ee_flash_read(pAd, 0x220, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x222, sizeof(tmp1));
+	/* RX group delay + RX IQ */	
+	rtmp_ee_flash_read(pAd, 0x220, &tmp1);	
 	rtmp_ee_flash_read(pAd, 0x222, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C60 value [%x] \n",reg_val));
 	RTMP_IO_WRITE32(pAd, 0x2C60, reg_val);
-	//RtmpFlashRead((UCHAR *)&tmp1, RF_OFFSET + 0x224, sizeof(tmp1));
+	
 	rtmp_ee_flash_read(pAd, 0x224, &tmp1);
-	//RtmpFlashRead((UCHAR *)&tmp2, RF_OFFSET + 0x226, sizeof(tmp1));
 	rtmp_ee_flash_read(pAd, 0x226, &tmp2);
 	reg_val = (tmp2 << 16) | tmp1;
 	DBGPRINT(RT_DEBUG_TRACE,(" mac 0x2C70 value [%x] \n",reg_val));	
@@ -3749,9 +3700,7 @@ static VOID ReloadHighCalResult(
 	/* LOFT cal */
 	for(i=0;i<=15;i++)
 	{
-		//RtmpFlashRead((UCHAR *)&tmp1, (RF_OFFSET + 0x228 + i*4), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x228 + i*4), &tmp1);
-		//RtmpFlashRead((UCHAR *)&tmp2, (RF_OFFSET + 0x228 + i*4 + 2), sizeof(tmp1));
 		rtmp_ee_flash_read(pAd, (0x228 + i*4 + 2), &tmp2);
 		reg_val = (tmp2 << 16) | tmp1;
 		DBGPRINT(RT_DEBUG_TRACE,(" read from 0x%x and 0x%x \n",(RF_OFFSET + 0x228 + i*4),(RF_OFFSET + 0x228 + i*4 + 2)));	
@@ -3809,15 +3758,15 @@ static VOID FullCalibration(
 	else 
 #endif /* RTMP_FLASH_SUPPORT */
 	{
-	UINT32 param, _param1, _param2;
+	UINT32 param, _param1, _param2, paramTXBW, paramRXBW, paramBW;
 	UINT32 CalibrationMode;
 	/*
 		Do calibration.
 		The calibration sequence is very important, please do NOT change it.
 		1  RX DCOC calibration
 		2  LC tank calibration
-		3  TX Filter BW --> not ready yet @20121003
-		4  RX Filter BW --> not ready yet @20121003
+		3  TX Filter BW --> add @20150105
+		4  RX Filter BW --> add @20150105
 		5  TX RF LOFT 
 		6  TX I/Q
 		7  TX Group Delay		
@@ -3846,8 +3795,18 @@ static VOID FullCalibration(
 		_param1 = 0;
 		_param2 = (bSave == TRUE) ? 0x2 : 0x6;
 	}
-	param = _param1 | (_param2 << 8);
 
+	if (pAd->CommonCfg.BBPCurrentBW == BW_80)
+		paramBW = BW_80;
+	else if (pAd->CommonCfg.BBPCurrentBW == BW_40)
+		paramBW = BW_40;
+	else 
+		paramBW = BW_20;
+	
+	param = _param1 | (_param2 << 8);
+	paramTXBW = 1 | (paramBW << 8) | (_param2 << 16);
+	paramRXBW = 0 | (paramBW << 8) | (_param2 << 16);
+	
 	if ( IS_DOT11_H_RADAR_STATE(pAd, RD_SILENCE_MODE))
 		CalibrationMode = NON_SIGNAL_CALIBRATION;
 	else
@@ -3913,7 +3872,11 @@ static VOID FullCalibration(
 					8: A-Band (Mid) Restore Calibration
 					9: A-Band (High) Restore Calibration
 		*/
-	
+		if (CalibrationMode == FULL_CALIBRATION)
+		{
+			RTMP_CHIP_CALIBRATION(pAd, BW_CALIBRATION, paramTXBW);
+			RTMP_CHIP_CALIBRATION(pAd, BW_CALIBRATION, paramRXBW);
+		}	
 		/*
 			5. RF LOFT-Calibration parameter
 				Bit[0:7] (0:G-Band, 1: A-Band)
@@ -4060,7 +4023,7 @@ VOID MT76x0_Calibration(
 		*/
 		RTMP_CHIP_CALIBRATION(pAd, R_CALIBRATION, 0x0);
 
-		MT76x0_VCO_CalibrationMode3(pAd);
+		MT76x0_VCO_CalibrationMode3(pAd, Channel);
 		RTMPusecDelay(1);
 
 #ifdef MT76x0_TSSI_CAL_COMPENSATION
@@ -4140,7 +4103,7 @@ VOID MT76x0_TempSensor(
 			T=3.5(Dout-D25) + 25
 	*/
 	temperature = (35*(Dout-pAd->chipCap.TemperatureOffset))/10 + 25;
-	DBGPRINT(RT_DEBUG_TRACE, 
+	DBGPRINT(RT_DEBUG_INFO, 
 			("%s - Dout=%d (0x%x), TemperatureOffset = %d (0x%x), temperature = %d (0x%x)\n",
 			__FUNCTION__, Dout, Dout, pAd->chipCap.TemperatureOffset, pAd->chipCap.TemperatureOffset, temperature, temperature));
 	if (pAd->chipCap.LastTemperatureforVCO == 0x7FFF)

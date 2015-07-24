@@ -69,7 +69,8 @@ VOID AsicUpdateProtect(
 	PROT_CFG_STRUC	ProtCfg, ProtCfg4;
 	UINT32 Protect[6];
 	USHORT offset;
-	UINT32 i, PhyMode = 0x4000;
+	UCHAR i;
+	UINT16 PhyMode = 0x4000;
 	UINT32 MacReg = 0;
 
 #ifdef RALINK_ATE

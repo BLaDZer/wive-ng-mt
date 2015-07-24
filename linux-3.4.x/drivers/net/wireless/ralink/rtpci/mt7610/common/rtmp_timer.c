@@ -114,6 +114,13 @@ BUILD_TIMER_FUNCTION(drop_mask_timer_action);
 BUILD_TIMER_FUNCTION(PeerDelBATxAdaptTimeOut);
 #endif /* PEER_DELBA_TX_ADAPT */
 
+#ifdef DYNAMIC_VGA_SUPPORT
+BUILD_TIMER_FUNCTION(DyncVgaLockTimeout);
+#endif/* DYNAMIC_VGA_SUPPORT */
+
+
+
+
 #ifdef RTMP_TIMER_TASK_SUPPORT
 static void RtmpTimerQHandle(RTMP_ADAPTER *pAd)
 {

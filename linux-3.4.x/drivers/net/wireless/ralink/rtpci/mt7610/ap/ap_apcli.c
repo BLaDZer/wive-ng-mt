@@ -636,6 +636,22 @@ BOOLEAN ApCliLinkUp(
 							&pApCliEntry->ApCliMlmeAux.HtCapability,
 							pApCliEntry->ApCliMlmeAux.HtCapabilityLen);
 
+#ifdef DISANLE_VHT80_256_QAM
+			/*
+				To check SupportVHTMCS for APCLI again.
+			*/
+			if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && pApCliEntry->ApCliMlmeAux.vht_cap_len &&  pApCliEntry->ApCliMlmeAux.vht_op_len)
+			{
+				if (pApCliEntry->ApCliMlmeAux.vht_op.vht_op_info.ch_width != VHT_BW_80)
+				{
+					pMacEntry->SupportVHTMCS[8] = TRUE;
+					if (pMacEntry->MaxHTPhyMode.field.BW == BW_40)
+					{
+						pMacEntry->SupportVHTMCS[9] = TRUE;
+					}
+				}
+			}
+#endif /* DISANLE_VHT80_256_QAM */
 			
 			if (pAd->ApCfg.ApCliTab[ifIndex].bAutoTxRateSwitch == FALSE)
 			{
@@ -847,6 +863,7 @@ VOID ApCliLinkDown(
 	else
 #endif /* MAC_REPEATER_SUPPORT */
 	pApCliEntry->Valid = FALSE;	/* This link doesn't associated with any remote-AP */
+	pAd->ApCfg.ApCliTab[ifIndex].bPeerExist = FALSE;
 
 #ifdef APCLI_WPA_SUPPLICANT_SUPPORT
 	if (pApCliEntry->WpaSupplicantUP) 

@@ -468,6 +468,7 @@ VOID APStartUp(
 	/* Clear BG-Protection flag */
 	OPSTATUS_CLEAR_FLAG(pAd, fOP_STATUS_BG_PROTECTION_INUSED);
 #ifdef DOT11_VHT_AC
+	vht_max_mcs_cap(pAd);
 	if (pAd->CommonCfg.BBPCurrentBW == BW_80)
 		pAd->hw_cfg.cent_ch = pAd->CommonCfg.vht_cent_ch;
 	else
@@ -1496,17 +1497,7 @@ VOID MacTableMaintenance(
 			pAd->ApCfg.MBSSID[bss_index].PortSecured = WPA_802_1X_PORT_NOT_SECURED;
 	}
 
-#ifdef ED_MONITOR
-	if (total_sta > pAd->ed_sta_threshold)
-	{
-		/* Predict this is not test edcca case*/
-		if (pAd->ed_chk)
-		{
-			DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s: go to ed_monitor_exit()!!\n", __FUNCTION__));		
-			ed_monitor_exit(pAd);
-		}
-	}
-#endif /* ED_MONITOR */
+
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3

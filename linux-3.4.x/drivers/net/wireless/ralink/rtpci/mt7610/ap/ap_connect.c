@@ -603,7 +603,7 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #ifdef DOT11_VHT_AC
 		if (WMODE_CAP_AC(PhyMode) && (pComCfg->Channel > 14))
 		{
-			int _len = build_vht_ies(pAd, (UCHAR *)(pBeaconFrame+FrameLen), SUBTYPE_BEACON);
+			int _len = build_vht_ies(pAd, (UCHAR *)(pBeaconFrame+FrameLen), SUBTYPE_BEACON, pAd->CommonCfg.vht_max_mcs_cap);
 			FrameLen += _len;
 		}
 #endif /* DOT11_VHT_AC */

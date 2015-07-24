@@ -2936,6 +2936,15 @@ NDIS_STATUS	RTMPSetProfileParameters(
 			pAd->ed_ap_threshold = count;
 			DBGPRINT(RT_DEBUG_TRACE, ("pAd->ed_ap_threshold = %u\n", count));
 		}
+		
+		
+		/*For APs RSSI found in working channel*/
+		if (RTMPGetKeyParameter("EDCCA_AP_RSSI_TH", tmpbuf, 32, pBuffer, TRUE))
+		{
+			CHAR count = simple_strtol(tmpbuf, 0, 10);
+			pAd->ed_rssi_threshold = count;
+			DBGPRINT(RT_DEBUG_TRACE, ("pAd->ed_rssi_threshold = %u\n", count));
+		}		
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -2949,7 +2958,7 @@ NDIS_STATUS	RTMPSetProfileParameters(
 
 		if (RTMPGetKeyParameter("EDCCA_FALSE_CCA_TH", tmpbuf, 32, pBuffer, TRUE))
 		{
-			UINT count = (UINT) simple_strtol(tmpbuf, 0, 10);
+			ULONG count = (ULONG) simple_strtol(tmpbuf, 0, 10);
 			pAd->false_cca_threshold = count;
 			DBGPRINT(RT_DEBUG_TRACE, ("pAd->false_cca_threshold = %u\n", count));
 		}

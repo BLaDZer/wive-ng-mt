@@ -646,6 +646,8 @@ INT set_ed_sta_count_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_ap_count_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 #endif /* CONFIG_AP_SUPPORT */
 
+INT set_ed_current_rssi_threhold_proc(RTMP_ADAPTER *pAd, PSTRING arg);
+
 
 INT set_ed_block_tx_thresh(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_false_cca_threshold(RTMP_ADAPTER *pAd, PSTRING arg);
@@ -1174,7 +1176,7 @@ static struct {
 	{"ed_ap_th", set_ed_ap_count_proc},
 #endif /* CONFIG_AP_SUPPORT */
 
-
+	{"ed_current_rssi_th", set_ed_current_rssi_threhold_proc},	
 	{"ed_th", set_ed_threshold},
 	{"ed_false_cca_th", set_ed_false_cca_threshold},
 	{"ed_blk_cnt", set_ed_block_tx_thresh},
@@ -3901,7 +3903,7 @@ INT RTMPAPQueryInformation(
 				pMbssStat->bcPktsTx=  pMbss->bcPktsTx;
 				pMbssStat->bcPktsRx=  pMbss->bcPktsRx;
 				wrq->u.data.length = sizeof(MBSS_STATISTICS);
-				copy_to_user(wrq->u.data.pointer, pMbssStat, wrq->u.data.length);
+				Status = copy_to_user(wrq->u.data.pointer, pMbssStat, wrq->u.data.length);
 				os_free_mem(pAd, pMbssStat);
 			}
 		}
@@ -7776,7 +7778,7 @@ VOID RTMPAPIoctlRF(
 				sprintf(msg+strlen(msg), "%d %03d = %02X\n", bank_Id, rfId, regRF);
 			}
 		}
-		RtmpDrvAllRFPrint(NULL, msg, strlen(msg));
+		RtmpDrvAllRFPrint(NULL, (UCHAR *)msg, strlen(msg));
 		/* Copy the information into the user buffer */
 
 #ifdef LINUX
@@ -12049,17 +12051,6 @@ INT ed_status_read(RTMP_ADAPTER *pAd)
 			pAd->ed_silent_cnt++;
 
 			/* one point to disable edcca, we expect this is normal env not test env. */
-			if (pAd->false_cca_stat[pAd->ed_stat_lidx] > pAd->false_cca_threshold) {
-				pAd->ed_false_cca_cnt ++;
-				
-				if (pAd->ed_false_cca_cnt > pAd->ed_block_tx_threshold) {
-					stop_edcca = TRUE;
-
-					DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s: pAd->false_cca_stat[%u]=%u,  pAd->false_cca_threshold=%u !!\n", 
-						__FUNCTION__, pAd->ed_stat_lidx, pAd->false_cca_stat[pAd->ed_stat_lidx],  pAd->false_cca_threshold));
-				}
-			} else
-				pAd->ed_false_cca_cnt = 0;
 		}
 	}
 	pAd->ed_trigger_stat[pAd->ed_stat_lidx] = pAd->ed_trigger_cnt;
@@ -12074,14 +12065,6 @@ INT ed_status_read(RTMP_ADAPTER *pAd)
 	
 	RTMP_IRQ_UNLOCK(&pAd->irq_lock, irqflag);
 	
-	if (stop_edcca) /* disable edcca!*/
-	{ 
-		if (pAd->ed_chk) {
-			DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s: go to ed_monitor_exit()!!\n", __FUNCTION__));
-			ed_monitor_exit(pAd);
-		}
-	} 
-	else 
 	{
 		if (pAd->ed_trigger_cnt > pAd->ed_block_tx_threshold) {
 			if (pAd->ed_tx_stoped == FALSE) {
@@ -12253,6 +12236,19 @@ INT set_ed_ap_count_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 	return TRUE;
 }
 #endif /* CONFIG_AP_SUPPORT */
+
+
+INT set_ed_current_rssi_threhold_proc(RTMP_ADAPTER *pAd, PSTRING arg)
+{
+	INT ed_rssi_threshold = simple_strtol(arg, 0, 10);
+
+	DBGPRINT(RT_DEBUG_OFF, ("%s()::ed_rssi_threshold=%d\n", 
+		__FUNCTION__, ed_rssi_threshold));
+
+	pAd->ed_rssi_threshold = ed_rssi_threshold;
+
+	return TRUE;
+}
 
 
 INT show_ed_stat_proc(RTMP_ADAPTER *pAd, PSTRING arg)
@@ -12506,6 +12502,7 @@ INT Set_DyncVgaEnable_Proc(
 {
 	UINT Enable;
 	UINT32 bbp_val, bbp_reg = AGC1_R8;
+	BOOLEAN Cancelled;
 
 	Enable = simple_strtol(arg, 0, 10);
 
@@ -12516,6 +12513,8 @@ INT Set_DyncVgaEnable_Proc(
 		RTMP_BBP_IO_READ32(pAd, bbp_reg, &bbp_val);
 		bbp_val = (bbp_val & 0xffff00ff) | (pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 << 8);
 		RTMP_BBP_IO_WRITE32(pAd, bbp_reg, bbp_val);
+
+		RTMPCancelTimer(&pAd->CommonCfg.MO_Cfg.DyncVgaLockTimer, &Cancelled);
 	}
 		
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_DyncVgaEnable_Proc::(enable = %d)\n", pAd->CommonCfg.MO_Cfg.bDyncVgaEnable));

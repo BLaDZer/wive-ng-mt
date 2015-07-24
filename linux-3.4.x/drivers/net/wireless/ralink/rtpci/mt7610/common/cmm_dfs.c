@@ -31,6 +31,10 @@
 #ifdef DFS_SUPPORT
 #ifdef CONFIG_AP_SUPPORT
 
+#ifdef DFS_ATP_SUPPORT
+extern INT Set_AP_SSID_Proc(IN  PRTMP_ADAPTER, IN  PSTRING);
+#endif /* DFS_ATP_SUPPORT */
+
 NewDFSValidRadar NewDFSValidTable[] = 
 {
 	/* FCC-1  && (Japan W53 Radar 1 / W56 Radar 2)*/
@@ -264,71 +268,133 @@ static NewDFSTable NewDFSTable1[] =
 };
 
 /* 7610/7662 DFS table */
-static NewDFSTable NewDFSTable2[] = {
-	/* For BW_20 & BW_40  */
-{
+#ifdef RLT_BBP
+static NewDFSTable NewDFSTable2_BW20[] = {
+	{
 		NEW_DFS_FCC,
 		{
-			{0, 0, 8, 2, 7, 106, 150,  5, 2900,  80100,  5,  0, 2147483647, 0x1400000, 0x13dc},
-			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0x1400000, 0x19dd},
-			{2, 0,40, 4,36,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xe4e1c00, 0x12dc},
-			{3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0, 2147483647, 0xe4e1c00, 0x1289},
-		}
-	},
-
-	{
-                NEW_DFS_EU,
-                {
-			{0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x1400000, 0x19cc},
-			{1, 0,40, 4, 36,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x1400000, 0x19dc},
-			{2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647, 0xe4e1c00, 0x19dd},
-			{3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647, 0x1400000, 0x15cc},
-                }
-	},
-
-	{
-                NEW_DFS_JAP_W53,
-                {
-			{0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647, 0x1400000, 0x16cc},
-			{1,	0,  		0,	0,	0,	0,		0,		0,		0, 		0, 		0,		0,	0,			0,			0},
-			{2, 0,40, 4,36,  96, 200,150,28400,  77000, 60,  0, 2147483647, 0xe4e1c00, 0x16dc},
-			{3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
-		}
-	},
-};
-
-static NewDFSTable NewDFSTable3[] =  {
-	/* For BW_80 */
-	{
-                NEW_DFS_FCC,
-                {
-                       {0, 0, 8, 2, 9, 106, 150, 15, 2900,  80100, 15,  0, 2147483647, 0x1400000, 0x16cc},
-                       {1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0x1400000, 0x19dd},
-                       {2, 0,40, 4,36,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xe4e1c00, 0x12dc},
-                       {3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0, 2147483647, 0xe4e1c00, 0x1289},
+			{0, 0, 8, 2, 7, 106, 150,  5, 2900,  80100,  5,  0, 2147483647, 0xfe808, 0x13dc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0xfe808, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xfe808, 0x12cc},
+			{3, 2,60,15,48, 640,2080, 32,19600,  40200, 32,  0, 60000000,   0x57BCF00, 0x1289},
 		}
 	},
 
 	{
 		NEW_DFS_EU,
 		{
-                       {0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x1400000, 0x19cc},                        
-		       {1, 0,40, 4, 36,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x1400000, 0x19dc},
-                       {2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647, 0xe4e1c00, 0x19dd},
-                       {3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647, 0x1400000, 0x15cc},
-                }
+			{0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x155cc0, 0x19cc},
+			{1, 0,40, 4, 44,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x155cc0, 0x19cc},
+			{2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647,  0x155cc0, 0x19dd},
+			{3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647,  0x2191c0, 0x15cc},
+		}
 	},
 
 	{
-                NEW_DFS_JAP_W53,
-                {
-                       {0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647, 0x1400000, 0x16cc},
-			{1,	0,  		0,	0,	0,	0,		0,		0,		0, 		0, 		0,		0,	0,			0,			0},
-                       {2, 0,40, 4,36,  96, 200,150,28400,  77000, 60,  0, 2147483647, 0xe4e1c00, 0x16dc},
-                       {3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+		NEW_DFS_JAP_W53,
+		{
+			{0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647,  0x14c080, 0x16cc},
+			{1, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+			{2, 0,40, 4,44,  96, 200,150,28400,  77000, 60,  0, 2147483647,  0x14c080, 0x16cc},
+			{3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+		}
+	},
+
+	{
+		NEW_DFS_JAP,
+		{
+			{0, 0, 8, 2, 7, 106, 150,  5, 2900,  80100,  5,  0, 2147483647,  0x14c080, 0x13dc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647,  0x14c080, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647,  0x14c080, 0x11cc},
+			{3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0,   60000000, 0x57BCF00, 0x1089},
 		}
 	},
 };
+
+static NewDFSTable NewDFSTable2_BW40[] = {
+	{
+		NEW_DFS_FCC,
+		{
+			{0, 0, 8, 2, 7, 106, 150,  5, 2900,  80100,  5,  0, 2147483647, 0xfe808, 0x13dc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0xfe808, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0xfe808, 0x12cc},
+			{3, 2,60,15,48, 640,2080, 32,19600,  40200, 32,  0, 60000000,   0x57BCF00, 0x1289},
+		}
+	},
+
+	{
+		NEW_DFS_EU,
+		{
+			{0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647, 0x155cc0, 0x19cc},
+			{1, 0,40, 4, 44,  96,  380,150, 4900, 100096, 40, 0, 2147483647, 0x155cc0, 0x19cc},
+			{2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647, 0x155cc0, 0x19dd},
+			{3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647, 0x2191c0, 0x15cc},
+		}
+	},
+
+	{
+		NEW_DFS_JAP_W53,
+		{
+			{0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647, 0x14c080, 0x16cc},
+			{1, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+			{2, 0,40, 4,44,  96, 200,150,28400,  77000, 60,  0, 2147483647, 0x14c080, 0x16cc},
+			{3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+		}
+	},
+
+	{
+		NEW_DFS_JAP,
+		{
+			{0, 0, 8, 2, 7, 106, 150, 5,2900,  80100, 5,  0, 2147483647, 0x14c080, 0x13dc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647, 0x14c080, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647, 0x14c080, 0x12cc},
+			{3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0,   60000000, 0x57BCF00, 0x1289},
+		}
+	},
+};
+
+static NewDFSTable NewDFSTable2_BW80[] = {
+	{
+		NEW_DFS_FCC,
+		{
+			{0, 0, 8, 2, 9, 106, 150, 15, 2900,  80100, 15,  0, 2147483647,   0xfe808, 0x16cc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647,   0xfe808, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647,   0xfe808, 0x12cc},
+			{3, 2,60,15,48, 640,2080, 32,19600,  40200, 32,  0, 60000000,   0x57BCF00, 0x1289},
+		}
+	},
+
+	{
+		NEW_DFS_EU,
+		{
+			{0, 0, 8, 2,  9, 106,  150, 10, 4900, 100096, 10, 0, 2147483647,  0x155cc0, 0x19cc},
+			{1, 0,40, 4, 44,  96,  380,150, 4900, 100096, 40, 0, 2147483647,  0x155cc0, 0x19cc},
+			{2, 3,60,20, 46, 300,  640, 80, 4900,  10100, 80, 0, 2147483647,  0x155cc0, 0x19dd},
+			{3, 8, 8, 2,  9, 106,  150, 32, 4900, 296704, 32, 0, 2147483647,  0x2191c0, 0x15cc},
+		}
+	},
+
+	{
+		NEW_DFS_JAP_W53,
+		{
+			{0, 0, 8, 2, 9, 106, 150, 20,28400,  77000, 20,  0, 2147483647,  0x14c080, 0x16cc},
+			{1, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+			{2, 0,40, 4,44,  96, 200,150,28400,  77000, 60,  0, 2147483647,  0x14c080, 0x16cc},
+			{3, 0, 0, 0, 0,   0,   0,  0,    0,      0,  0,  0,          0,         0,      0},
+		}
+	},
+
+	{
+		NEW_DFS_JAP,
+		{
+			{0, 0, 8, 2, 9, 106, 150, 15, 2900,  80100, 15,  0, 2147483647,  0x14c080, 0x16cc},
+			{1, 0, 8, 2, 7, 106, 140,  5,27600,  27900,  5,  0, 2147483647,  0x14c080, 0x19dd},
+			{2, 0,40, 4,44,  96, 480,150, 2900,  80100, 40,  0, 2147483647,  0x14c080, 0x12cc},
+			{3, 2,60,15,48, 940,2080, 32,19600,  40200, 32,  0,   60000000, 0x57BCF00, 0x1289},
+		}
+	},
+};
+#endif
 
 static void dfs_sw_init(
 		IN PRTMP_ADAPTER pAd);
@@ -340,7 +406,7 @@ static BOOLEAN StagerRadarCheck(
 static BOOLEAN ChirpRadarCheck(
 		IN PRTMP_ADAPTER pAd);
 
-#ifdef MT76x0
+#ifdef RLT_BBP
 static BOOLEAN MT7650DfsEventDataFetch(
 		IN PRTMP_ADAPTER pAd,
 		IN PRADAR_DETECT_STRUCT pRadarDetect,
@@ -351,10 +417,6 @@ static BOOLEAN DfsEventDataFetch(
 		IN PRADAR_DETECT_STRUCT pRadarDetect,
 		OUT PDFS_EVENT pDfsEvent);
 #endif /* MT76x0 */
-
-static VOID DfsCheckBusyIdle(
-		IN PRTMP_ADAPTER pAd);
-
 static BOOLEAN DfsChannelCheck(
 		IN PRTMP_ADAPTER pAd,
 		IN UINT8 DfsChannel);
@@ -369,8 +431,8 @@ static BOOLEAN DfsEventDrop(
 static inline BOOLEAN NewRadarDetectionMcuStart(PRTMP_ADAPTER pAd)
 {
 	/*
-		8051 firmware don't care parameter Token, Arg0 and Arg1
-	*/
+	   8051 firmware don't care parameter Token, Arg0 and Arg1
+	 */
 	return AsicSendCommandToMcu(pAd, DFS_ONOFF_MCU_CMD, 0xff, 0x01, 0x01, FALSE);
 }
 
@@ -386,7 +448,7 @@ static inline BOOLEAN NewRadarDetectionMcuStop(PRTMP_ADAPTER pAd)
 static inline VOID DfsHwDetectionStatusGet(PRTMP_ADAPTER pAd,
 											PUINT8 pDetectedChannels)
 {
-#if MT76x0
+#ifdef RLT_BBP
 	RTMP_BBP_IO_READ32(pAd, DFS_R1, pDetectedChannels);
 #else
 	RTMP_DFS_IO_READ8(pAd, 0x2, pDetectedChannels);
@@ -397,7 +459,7 @@ static inline VOID DfsResetHwDetectionStatus(PRTMP_ADAPTER pAd)
 {
 	PRADAR_DETECT_STRUCT pRadarDetect = &pAd->CommonCfg.RadarDetect;
 
-#if MT76x0
+#ifdef RLT_BBP
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R1, pRadarDetect->EnabledChMask);
 #else
 	RTMP_DFS_IO_WRITE8(pAd, 0x2, pRadarDetect->EnabledChMask);
@@ -415,7 +477,7 @@ static inline VOID DfsCaptureModeControl(PRTMP_ADAPTER pAd,
 			((bPowerUp == TRUE) <<1) |
 			((bCapLastEvents == TRUE) << 2);
 
-#if MT76x0
+#ifdef RLT_BBP
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R36, (UINT32) bbp_val);
 #else
 	BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R126, bbp_val);
@@ -426,7 +488,7 @@ static inline VOID DfsDetectionEnable(PRTMP_ADAPTER pAd)
 {
 	PRADAR_DETECT_STRUCT pRadarDetect = &pAd->CommonCfg.RadarDetect;
 
-#if MT76x0
+#ifdef RLT_BBP
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R0, (pRadarDetect->EnabledChMask << 16));
 #else
 	RTMP_DFS_IO_WRITE8(pAd, pRadarDetect->EnabledChMask, 1);
@@ -435,7 +497,7 @@ static inline VOID DfsDetectionEnable(PRTMP_ADAPTER pAd)
 
 static inline VOID DfsDetectionDisable(PRTMP_ADAPTER pAd)
 {
-#if MT76x0
+#ifdef RLT_BBP
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R0, 0);
 #else
 	RTMP_DFS_IO_WRITE8(pAd, 0x1, 0);
@@ -449,7 +511,7 @@ static inline VOID StagerRadarGetPRIs(PRTMP_ADAPTER pAd,
 									PUINT32 pT3)
 {
 	UINT32 T_all = 0;
-#if MT76x0
+#ifdef RLT_BBP
 	UINT32 bbp_val = 0;
 	PDFS_PROGRAM_PARAM pDfsProgramParam = \
 					&pAd->CommonCfg.RadarDetect.DfsProgramParam;
@@ -457,7 +519,7 @@ static inline VOID StagerRadarGetPRIs(PRTMP_ADAPTER pAd,
 	UINT8 bbp_val = 0;
 #endif /* MT76x0 */
 
-#if MT76x0
+#ifdef RLT_BBP
 	/* select channel */
 	bbp_val = (pDfsProgramParam->ChEnable << 16) | dfs_channel;
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R0, bbp_val);
@@ -508,7 +570,7 @@ static inline VOID DfsHwDetectionGetPulseInfo(PRTMP_ADAPTER pAd,
 										PUINT32 pWidth2,
 										PUINT32 pBurst)
 {
-#if MT76x0
+#ifdef RLT_BBP
 	UINT32 bbp_val = 0;
 	PDFS_PROGRAM_PARAM pDfsProgramParam = \
 					&pAd->CommonCfg.RadarDetect.DfsProgramParam;
@@ -518,7 +580,7 @@ static inline VOID DfsHwDetectionGetPulseInfo(PRTMP_ADAPTER pAd,
 
 	*pPeriod = *pWidth1 = *pWidth2 = *pBurst = 0;
 
-#if MT76x0
+#ifdef RLT_BBP
 	/* select channel */
 	bbp_val = (pDfsProgramParam->ChEnable << 16) | ChannelIndex;
 	RTMP_BBP_IO_WRITE32(pAd, DFS_R0, bbp_val);
@@ -577,7 +639,7 @@ static inline VOID DfsProgramBbpValues(PRTMP_ADAPTER pAd,
 	PRADAR_DETECT_STRUCT pRadarDetect = &pAd->CommonCfg.RadarDetect;
 	PDFS_PROGRAM_PARAM pDfsProgramParam = &pRadarDetect->DfsProgramParam;
 	
-#ifdef MT76x0
+#ifdef RLT_BBP
 	{
 		UINT32 bbp_val = 0;
 		
@@ -615,9 +677,6 @@ static inline VOID DfsProgramBbpValues(PRTMP_ADAPTER pAd,
 		/* program each channel*/
 		for (idx = 0; idx < DfsEngineNum; idx++)
 		{
-			if (IS_MT76x0(pAd) && (idx == 1))
-				continue;
-
 			/* select channel*/
 			RTMP_BBP_IO_WRITE32(pAd, DFS_R0, idx);
 
@@ -669,7 +728,7 @@ static inline VOID DfsProgramBbpValues(PRTMP_ADAPTER pAd,
 		/* Reset status */
 		RTMP_BBP_IO_WRITE32(pAd, DFS_R1, pRadarDetect->EnabledChMask);
 
-		if (IS_MT76x0(pAd))
+		if (IS_MT76x0(pAd) || IS_MT76x2(pAd))
 			RTMP_BBP_IO_WRITE32(pAd, DFS_R36, 0x00000003);
 		
 		/* Enable detection*/
@@ -765,16 +824,7 @@ static inline VOID DfsProgramBbpValues(PRTMP_ADAPTER pAd,
 
 		/* reg 0x27, Period Delt[7:0], (Period Measurement Uncertainty)*/
 		RTMP_DFS_IO_WRITE8(pAd, 0x27, (pDfsTable->entry[idx].EpsilonT & 0xff));
-		
-		if (pDfsProgramParam->RadarEventExpire[idx] != 0)
-		{
-			RTMP_DFS_IO_WRITE8(pAd,0x39, (pDfsTable->entry[idx].EventExpiration & 0xff));
-			RTMP_DFS_IO_WRITE8(pAd,0x3a, ((pDfsTable->entry[idx].EventExpiration >> 8) & 0xff) );
-			RTMP_DFS_IO_WRITE8(pAd,0x3b, ((pDfsTable->entry[idx].EventExpiration >> 16) & 0xff));
-			RTMP_DFS_IO_WRITE8(pAd,0x3c, ((pDfsTable->entry[idx].EventExpiration >> 24) & 0xff));
-		}
-		
-	}	
+	}
 
 	/* reset status */
 	RTMP_DFS_IO_WRITE8(pAd, 0x2, pRadarDetect->EnabledChMask);
@@ -808,7 +858,7 @@ VOID ApRadarDetectPeriodic(
 	INT	i;
 
 	if (pAd->Dot11_H.RDMode == RD_NORMAL_MODE)
-	pAd->Dot11_H.InServiceMonitorCount++;
+		pAd->Dot11_H.InServiceMonitorCount++;
 
 	for (i=0; i<pAd->ChannelListNum; i++)
 	{
@@ -928,6 +978,65 @@ INT	Set_RadarStop_Proc(
 	return TRUE;
 }
 
+#ifdef DFS_ATP_SUPPORT
+INT Set_DfsAtpStart_Proc(IN PRTMP_ADAPTER pAd, IN PSTRING arg)
+{
+	INT ret;
+
+	if (simple_strtol(arg, 0, 10) == 1) {
+		/* To set the HtBw... */
+		ret = Set_AP_SSID_Proc(pAd, pAd->CommonCfg.Ssid);
+		/* reset the flag */
+		pAd->CommonCfg.RadarDetect.atp_radar_detect = FALSE;
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: reset atp_radar_detect\n", __FUNCTION__));
+		/* set not switch channel */
+		pAd->CommonCfg.RadarDetect.McuRadarDebug = RADAR_DONT_SWITCH;
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: channel do not switch\n", __FUNCTION__));
+		if (ret) {
+			printk ("AP ATP DFS ready\n");
+		}
+	}
+	else if (simple_strtol(arg, 0, 10) == 0) {
+		/* reset the flag */
+		pAd->CommonCfg.RadarDetect.atp_radar_detect = FALSE;
+		pAd->CommonCfg.RadarDetect.atp_set_ht_bw = FALSE;
+		pAd->CommonCfg.RadarDetect.atp_set_vht_bw = FALSE;
+		pAd->CommonCfg.RadarDetect.atp_set_channel_ready = FALSE;
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: reset atp_radar_detect\n", __FUNCTION__));
+		pAd->CommonCfg.RadarDetect.McuRadarDebug = 0x0;
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: channel do not switch\n", __FUNCTION__));
+	}
+	else {
+		printk ("%s: wrong arg. 1->start, 0->stop\n", __FUNCTION__);
+	}
+
+	return TRUE;
+}
+
+INT Set_DfsAtpReset_Proc(IN PRTMP_ADAPTER pAd, IN PSTRING arg)
+{
+	if (simple_strtol(arg, 0, 10) == 1) {
+		/* reset the flag */
+		pAd->CommonCfg.RadarDetect.atp_radar_detect = FALSE;
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: reset atp_radar_detect\n", __FUNCTION__));
+		printk ("AP ATP DFS ready\n");
+	}
+
+	return TRUE;
+}
+
+INT Set_DfsAtpReport_Proc(IN PRTMP_ADAPTER pAd, IN PSTRING arg)
+{
+	printk ("%s\n", __FUNCTION__);	
+	if (pAd->CommonCfg.RadarDetect.atp_radar_detect == TRUE) {
+		printk ("DfsAtpDetected\n");
+	}
+	else {
+		printk ("DfsAtp Not Detected\n");
+	}
+	return TRUE;
+}
+#endif /* DFS_ATP_SUPPORT */
 
 INT	Set_RadarSetTbl1_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
@@ -1059,13 +1168,13 @@ VOID DFSInit(PRTMP_ADAPTER pAd)
 	
 	pRadarDetect->ch_busy_countdown = -1;
 	pRadarDetect->EnabledChMask = ((1 << pAd->chipCap.DfsEngineNum) -1);
-#ifdef MT76x0
-	if (IS_MT76x0(pAd))
+#ifdef RLT_BBP
+	if (IS_MT76x0(pAd) || IS_MT76x2(pAd))
 	{
 		/*
 			Do NOT enable Radar Channel 1. (MT7650 DFS programming guide_v2_20121012.docx)
 		*/
-		pRadarDetect->EnabledChMask = 0xD;
+		pRadarDetect->EnabledChMask = 0xF;
 		pRadarDetect->bAdjustDfsAgc = FALSE;
 		pDfsProgramParam->PwrDown_Hold_Time = 0xf;
 		pDfsProgramParam->PwrGain_Offset = 0x3;
@@ -1079,12 +1188,12 @@ VOID DFSInit(PRTMP_ADAPTER pAd)
 	pRadarDetect->radarDeclared = 0;
 	pDfsProgramParam->ChEnable = pRadarDetect->EnabledChMask;
 
-#ifdef MT76x0
-	if (IS_MT76x0(pAd))
+#ifdef RLT_BBP
+	if (IS_MT76x0(pAd) || IS_MT76x2(pAd))
 	{
 		pDfsProgramParam->VGA_Mask = 0;
 		pDfsProgramParam->Packet_End_Mask = 0;
-		pDfsProgramParam->Rx_PE_Mask = 0;
+		pDfsProgramParam->Rx_PE_Mask = (IS_MT76x2(pAd)) ? 0xFF : 0x0;
 		pDfsProgramParam->DeltaDelay = 0x2;
 		pDfsProgramParam->Symmetric_Round = 0;
 	}
@@ -1160,50 +1269,69 @@ void NewRadarDetectionStart(PRTMP_ADAPTER pAd)
 		DBGPRINT(RT_DEBUG_TRACE,("DFS start, use JAP table\n"));
 	}	
 
-#ifdef MT76x0
-	if (IS_MT7610E(pAd))
+#ifdef RLT_BBP
+	if (IS_MT7610E(pAd) || IS_MT76x2(pAd))
 	{
-
 		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
 			// New update: 20130606
 			if (pAd->CommonCfg.RDDurRegion == CE) {
-				*ppDFSTable = &NewDFSTable3[1];
+				*ppDFSTable = &NewDFSTable2_BW80[1];
 			}
 			else if (pAd->CommonCfg.RDDurRegion == FCC) {
-				*ppDFSTable = &NewDFSTable3[0];
+				*ppDFSTable = &NewDFSTable2_BW80[0];
 			}
 			else if ((pAd->CommonCfg.Channel >= 52) 
 					&& (pAd->CommonCfg.Channel <= 64)) { 	
 				/* JAP_W53 */
-				*ppDFSTable = &NewDFSTable3[2];
+				*ppDFSTable = &NewDFSTable2_BW80[2];
 			}
 			else {
 				/* JAP_W56 */
-				*ppDFSTable = &NewDFSTable3[0];
+				*ppDFSTable = &NewDFSTable2_BW80[3];
 			}
 		}
-		else { // below BW_80 using Table2
+		else if (pAd->CommonCfg.BBPCurrentBW == BW_40) {
+			// New update: 20130606
 			if (pAd->CommonCfg.RDDurRegion == CE) {
-			*ppDFSTable = &NewDFSTable2[1];
+				*ppDFSTable = &NewDFSTable2_BW40[1];
 			}
 			else if (pAd->CommonCfg.RDDurRegion == FCC) {
-			*ppDFSTable = &NewDFSTable2[0];
-	}
+				*ppDFSTable = &NewDFSTable2_BW40[0];
+			}
 			else if ((pAd->CommonCfg.Channel >= 52) 
 					&& (pAd->CommonCfg.Channel <= 64)) { 	
 				/* JAP_W53 */
-				*ppDFSTable = &NewDFSTable2[2];
+				*ppDFSTable = &NewDFSTable2_BW40[2];
 			}
 			else {
 				/* JAP_W56 */
-				*ppDFSTable = &NewDFSTable2[0];
+				*ppDFSTable = &NewDFSTable2_BW40[3];
 			}
 		}
+		else if (pAd->CommonCfg.BBPCurrentBW == BW_20){
+			if (pAd->CommonCfg.RDDurRegion == CE) {
+				*ppDFSTable = &NewDFSTable2_BW20[1];
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
+				*ppDFSTable = &NewDFSTable2_BW20[0];
+			}
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) { 	
+				/* JAP_W53 */
+				*ppDFSTable = &NewDFSTable2_BW20[2];
+			}
+			else {
+				/* JAP_W56 */
+				*ppDFSTable = &NewDFSTable2_BW20[3];
+		}
+	}
+		else
+		{}
 	}
 #endif /* MT76x0 */
 
 	NewRadarDetectionProgram(pAd, (*ppDFSTable));
-	
+
 #ifdef RTMP_MAC_PCI
 	/* enable debug mode*/
 	DfsCaptureModeControl(pAd, TRUE, TRUE, FALSE);
@@ -1236,16 +1364,13 @@ VOID NewRadarDetectionStop(
 	RTMP_HW_TIMER_INT_SET(pAd, 0);
 	RTMP_HW_TIMER_INT_DISABLE(pAd);
 #endif /* RTMP_MAC_PCI */
-
 #ifdef CARRIER_DETECTION_SUPPORT
-#ifdef MT76x0
-	if (IS_MT7610E(pAd) && 
+	if ((pAd->chipCap.carrier_func == TONE_RADAR_V3) &&
 		pAd->CommonCfg.CarrierDetect.Enable == 0)
+#endif
 	{
-		RTMP_IO_WRITE32(pAd, 0x212C, 0x80);
+		RTMP_IO_WRITE32(pAd, 0x212C, 0x00);
 	}
-#endif
-#endif
 }
 
 
@@ -1272,7 +1397,7 @@ int SWRadarCheck(
 	USHORT	Total, SwIdxPlus = ENTRY_PLUS(pDfsSwParam->sw_idx[id], 1, NEW_DFS_DBG_PORT_ENT_NUM);
 	UCHAR	CounterToCheck;	
 
-#ifdef MT76x0
+#ifdef RLT_BBP
 	/* only engine 0 and engine2 support event buffer */
 	if (id == 1)
 		return 0;
@@ -2047,76 +2172,6 @@ static BOOLEAN ChirpRadarCheck(IN PRTMP_ADAPTER pAd)
 	return FALSE;
 }
 
-static VOID DfsCheckBusyIdle(
-			IN PRTMP_ADAPTER pAd)
-{
-	int busy_delta, idle_delta;	
-	PRADAR_DETECT_STRUCT pRadarDetect = &pAd->CommonCfg.RadarDetect;
-
-	RTMP_IO_READ32(pAd, CH_IDLE_STA, &pRadarDetect->idle_time);
-	RTMP_IO_READ32(pAd, CH_BUSY_STA, &pRadarDetect->busy_time);
-
-	/*ch_busy_sta_index begining at 0.*/
-	busy_delta = pRadarDetect->busy_time - pRadarDetect->ch_busy_sta[pRadarDetect->ch_busy_sta_index];
-	idle_delta = pRadarDetect->idle_time - pRadarDetect->ch_idle_sta[pRadarDetect->ch_busy_sta_index];
-
-	if (busy_delta < 0)
-	{
-		busy_delta = ~busy_delta;
-		busy_delta = (busy_delta >> CH_BUSY_SAMPLE_POWER);
-		busy_delta = ~busy_delta;
-	}
-	else
-		busy_delta = busy_delta >> CH_BUSY_SAMPLE_POWER;
-
-	if (idle_delta < 0)
-	{
-		idle_delta = ~idle_delta;
-		idle_delta = idle_delta >> CH_BUSY_SAMPLE_POWER;
-		idle_delta = ~idle_delta;
-	}
-	else
-		idle_delta = idle_delta >> CH_BUSY_SAMPLE_POWER;
-
-	pRadarDetect->ch_busy_sum += busy_delta;
-	pRadarDetect->ch_idle_sum += idle_delta;
-			
-	/* not sure if this is necessary??*/
-	if (pRadarDetect->ch_busy_sum < 0)
-		pRadarDetect->ch_busy_sum = 0;
-	if (pRadarDetect->ch_idle_sum < 0)
-		pRadarDetect->ch_idle_sum = 0;
-			
-	pRadarDetect->ch_busy_sta[pRadarDetect->ch_busy_sta_index] = pRadarDetect->busy_time;
-	pRadarDetect->ch_idle_sta[pRadarDetect->ch_busy_sta_index] = pRadarDetect->idle_time;
-			
-	pRadarDetect->ch_busy_sta_index++;
-	pRadarDetect->ch_busy_sta_index &= CH_BUSY_MASK;
-			
-	if ((pRadarDetect->ch_idle_sum >> pRadarDetect->ch_busy_idle_ratio) < pRadarDetect->ch_busy_sum )
-	{
-	
-		if (!(pRadarDetect->McuRadarDebug & RADAR_DEBUG_DONT_CHECK_BUSY))	
-			pRadarDetect->ch_busy = 1;
-	}
-	else 
-	{
-		if (!(pRadarDetect->McuRadarDebug & RADAR_DEBUG_DONT_CHECK_RSSI))
-		{
-			if ((pAd->ApCfg.RssiSample.AvgRssi0) && (pAd->ApCfg.RssiSample.AvgRssi0 > pRadarDetect->DfsRssiHigh))
-				pRadarDetect->ch_busy = 2;
-			else if ((pAd->ApCfg.RssiSample.AvgRssi0) && (pAd->ApCfg.RssiSample.AvgRssi0 < pRadarDetect->DfsRssiLow))
-				pRadarDetect->ch_busy = 3;
-			else
-				pRadarDetect->ch_busy = 0;
-		}
-	}
-
-	if (pRadarDetect->print_ch_busy_sta)
-		DBGPRINT(RT_DEBUG_TRACE, 
-				("%d %d %d %d\n", pRadarDetect->ch_idle_sum, pRadarDetect->ch_busy_sum, pAd->ApCfg.RssiSample.AvgRssi0, pRadarDetect->ch_busy));
-
-}
 
 static BOOLEAN DfsChannelCheck(
 			IN PRTMP_ADAPTER pAd,
@@ -2156,9 +2211,6 @@ static BOOLEAN DfsChannelCheck(
 		{
 			DfsHwDetectionGetPulseInfo(pAd, i, &T, &W, &W2, &B);
 
-#ifdef MT76x0
-			if (IS_MT7610E(pAd) == FALSE)
-#endif
 			if (DfsSwCheckOnHwDetection(pAd, pDFSTable, i, T, W) == FALSE)
 				continue;
 			
@@ -2178,7 +2230,7 @@ static BOOLEAN DfsChannelCheck(
 }
 
 
-#ifdef MT76x0
+#ifdef RLT_BBP
 static BOOLEAN MT7650DfsEventDataFetch(
 		IN PRTMP_ADAPTER pAd,
 		IN PRADAR_DETECT_STRUCT pRadarDetect,
@@ -2377,28 +2429,7 @@ BOOLEAN DfsSwCheckOnHwDetection(
 		return FALSE;
 	}
 
-	if (pDFSTable->type == NEW_DFS_JAP && 
-		((pAd->CommonCfg.Channel >= 52) && (pAd->CommonCfg.Channel <= 64)))
-	{
-		if (RadarWidth > 130) // pulse width less than 6.4us is report is 6.4us
-		{
-			 /*block W53 very large and short width*/
-			DBGPRINT(RT_DEBUG_TRACE,
-				 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
-		 	bRadarCheck = FALSE;
-		}
-		else if ((RadarPeriod < 28360) ||
-			(RadarPeriod > 28700 && RadarPeriod < 76900) ||
-			(RadarPeriod > 76940))
-		{ 
-			/*(0~1418), (1435~3845us) and (3847us~) according to the spec*/
-			DBGPRINT(RT_DEBUG_TRACE,
-				("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
-			bRadarCheck = FALSE;
-		}
-	}
-	else if (pDFSTable->type == NEW_DFS_JAP && 
-		((pAd->CommonCfg.Channel >= 100) && (pAd->CommonCfg.Channel <= 140)))
+	if (pDFSTable->type == NEW_DFS_JAP)
 	{
 		/* Double check on pusle Width and Period*/
 		if (DfsChannel < 3)
@@ -2482,30 +2513,26 @@ BOOLEAN DfsSwCheckOnHwDetection(
 		{
 			/*check short pulse*/
 			if (RadarWidth < 120) /* pulse width less than 6.4us is report is 6.4us */
-			{                       
+			{
 		        /* block the illegal period */
 				 if ((RadarPeriod < 2900) ||
 					(RadarPeriod > 4700 && RadarPeriod < 6400) ||
 					(RadarPeriod > 6800 && RadarPeriod < 10200)||					
-					(RadarPeriod > 19000 && RadarPeriod< 28360) ||
-					(RadarPeriod > 28700 && RadarPeriod< 61000) ||
 					(RadarPeriod > 61600))
-	        	{ 
-					/*(0~145), (235~320us), (340~510), (950~1418), (1435~3050us) and (3080us~) according to the spec*/
-                DBGPRINT(RT_DEBUG_TRACE,
-                                ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
-                bRadarCheck = FALSE;
-    	    	}
+				{ 
+					 /*(0~145), (235~320us), (340~510), (3080us~) according to the spec*/
+					 DBGPRINT(RT_DEBUG_TRACE,
+							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+					 bRadarCheck = FALSE;
+				}
 			}
 			else if (RadarWidth < 130) //120~130 over lap range
 			{
 				if ((RadarPeriod < 2900) ||
-					(RadarPeriod > 19000 && RadarPeriod < 28360) ||				
-					(RadarPeriod > 28700 && RadarPeriod < 61000) ||
 					(RadarPeriod > 61600))
-        		{ 
-                	/* block the illegal period */
-					 /*(0~145), (950~1418), (1435~3050us) and (3080us~) according to the spec*/
+				{ 
+					 /* block the illegal period */
+					 /*(0~145) and (3080us~) according to the spec*/
 					 DBGPRINT(RT_DEBUG_TRACE,
 							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
 					 bRadarCheck = FALSE;
@@ -2517,7 +2544,7 @@ BOOLEAN DfsSwCheckOnHwDetection(
         		{ 
                 	/* block the illegal period */
 					 /*(0~195) and (505us~) according to the spec*/
-                	DBGPRINT(RT_DEBUG_TRACE,
+					 DBGPRINT(RT_DEBUG_TRACE,
                                 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
                 	bRadarCheck = FALSE;
         		}                               
@@ -2527,6 +2554,27 @@ BOOLEAN DfsSwCheckOnHwDetection(
 		{
         	bRadarCheck = ChirpRadarCheck(pAd);
 		}
+	}
+	else if (pDFSTable->type == NEW_DFS_JAP_W53)
+	{
+			if (RadarWidth > 130) // pulse width less than 6.4us is report is 6.4us
+			{
+					 /*block W53 very large and short width*/
+						DBGPRINT(RT_DEBUG_TRACE,
+							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+					 	bRadarCheck = FALSE;
+			}
+			else{
+					if ((RadarPeriod < 28360) ||
+					(RadarPeriod > 28700 && RadarPeriod < 76900) ||
+					(RadarPeriod > 76940))
+					{ 
+					 /*(0~1418), (1435~3845us) and (3847us~) according to the spec*/
+						DBGPRINT(RT_DEBUG_TRACE,
+							 ("Radar check: ch=%u, T=%lu, W=%lu, blocked\n", DfsChannel, RadarPeriod, RadarWidth));
+					 	bRadarCheck = FALSE;
+					}
+			}
 	}
 
 	return bRadarCheck;
@@ -2813,65 +2861,83 @@ void modify_table1(PRTMP_ADAPTER pAd, ULONG idx, ULONG value)
 		}
 	}
 
-#ifdef MT76x0
-	if (IS_MT7610E(pAd))
+#ifdef RLT_BBP
+	if (IS_MT7610E(pAd) || IS_MT76x2(pAd))
 	{
 		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
 			if (pAd->CommonCfg.RDDurRegion == CE) {
-				pDFSTable = &NewDFSTable3[1];
+				pDFSTable = &NewDFSTable2_BW80[1];
 			}
 			else if (pAd->CommonCfg.RDDurRegion == FCC) {
-				pDFSTable = &NewDFSTable3[0];
+				pDFSTable = &NewDFSTable2_BW80[0];
 			}
-			//else if (pAd->CommonCfg.RDDurRegion == JAP) {
 			else if ((pAd->CommonCfg.Channel >= 52) 
 					&& (pAd->CommonCfg.Channel <= 64)) { 	
 				/* JAP_W53 */
-				pDFSTable = &NewDFSTable3[2];
+				pDFSTable = &NewDFSTable2_BW80[2];
 			}
 			else {
 				/* JAP_W56 */
-				pDFSTable = &NewDFSTable3[0];
+				pDFSTable = &NewDFSTable2_BW80[3];
 			}
+		}
+		else if (pAd->CommonCfg.BBPCurrentBW == BW_40) {
+			// New update: 20130606
+			if (pAd->CommonCfg.RDDurRegion == CE) {
+				pDFSTable = &NewDFSTable2_BW40[1];
+			}
+			else if (pAd->CommonCfg.RDDurRegion == FCC) {
+				pDFSTable = &NewDFSTable2_BW40[0];
+			}
+			else if ((pAd->CommonCfg.Channel >= 52) 
+					&& (pAd->CommonCfg.Channel <= 64)) {
+				/* JAP_W53 */
+				pDFSTable = &NewDFSTable2_BW40[2];
 		}
 		else {
+				/* JAP_W56 */
+				pDFSTable = &NewDFSTable2_BW40[3];
+			}
+		}
+		else if (pAd->CommonCfg.BBPCurrentBW == BW_20){
 			if (pAd->CommonCfg.RDDurRegion == CE) {
-			pDFSTable = &NewDFSTable2[1];
+				pDFSTable = &NewDFSTable2_BW20[1];
 			}
 			else if (pAd->CommonCfg.RDDurRegion == FCC) {
-				pDFSTable = &NewDFSTable2[0];
+				pDFSTable = &NewDFSTable2_BW20[0];
 			}
-			//else if (pAd->CommonCfg.RDDurRegion == JAP) {
 			else if ((pAd->CommonCfg.Channel >= 52) 
 					&& (pAd->CommonCfg.Channel <= 64)) { 	
 				/* JAP_W53 */
-				pDFSTable = &NewDFSTable2[2];
+				pDFSTable = &NewDFSTable2_BW20[2];
 			}
 			else {
 				/* JAP_W56 */
-			pDFSTable = &NewDFSTable2[0];
-	}
+				pDFSTable = &NewDFSTable2_BW20[3];
+			}
 		}
+		else
+		{}
 	}
 #endif /* MT76x0 */
 
-	if (idx == 0)
-	{
-		pDfsProgramParam->DeltaDelay = value;
-	}
-	else if (idx <= (DfsEngineNum*16))
-	{	
-		x = idx / 16;
-		y = idx % 16;
-		pRadarDetect->DFSParamFromConfig = 0; /* to prevent table be loaded from config file again */
-		switch (y)
+		if (idx == 0)
 		{
-		case 1:
-			pDFSTable->entry[x].mode = (UCHAR)value;
-			break;
-		case 2:
-			pDFSTable->entry[x].avgLen = (USHORT)value;
-			break;
+			pDfsProgramParam->DeltaDelay = value;
+		}
+		else if (idx <= (DfsEngineNum*16))
+		{	
+			x = idx / 16;
+			y = idx % 16;
+			pRadarDetect->DFSParamFromConfig = 0; /* to prevent table be loaded from config file again */
+			switch (y)
+			{
+				case 1:
+					pDFSTable->entry[x].mode = (UCHAR)value;
+					break;
+				case 2:
+					pDFSTable->entry[x].avgLen = (USHORT)value;
+					break;
 		case 3:
 			pDFSTable->entry[x].ELow = (USHORT)value;
 			break;
@@ -3073,24 +3139,28 @@ VOID NewTimerCB_Radar(
 	pRadarDetect->bDfsInit = FALSE;
 
 	pRadarDetect->RadarTimeStampLow++;
+
 #ifdef MT76x0
-	if ((pRadarDetect->RadarTimeStampLow % DFS_RESET_INTERVAL) == 0)
+	if (IS_MT7610E(pAd))
 	{
-		DfsDetectionDisable(pAd);
-		DfsDetectionEnable(pAd);
-	}
-	else if (pRadarDetect->bAdjustDfsAgc == TRUE)
-	{
-		MT7650_ADJUST_AGC(pAd);
-		MT7650_ADJUST_DFS_AGC(pAd);
-		DfsDetectionDisable(pAd);
-		DfsDetectionEnable(pAd);
-		pRadarDetect->bAdjustDfsAgc = FALSE;
+		if ((pRadarDetect->RadarTimeStampLow % DFS_RESET_INTERVAL) == 0)
+		{
+			DfsDetectionDisable(pAd);
+			DfsDetectionEnable(pAd);
+		}
+		else if (pRadarDetect->bAdjustDfsAgc == TRUE)
+		{
+			MT7650_ADJUST_AGC(pAd);
+			MT7650_ADJUST_DFS_AGC(pAd);
+			DfsDetectionDisable(pAd);
+			DfsDetectionEnable(pAd);
+			pRadarDetect->bAdjustDfsAgc = FALSE;
+		}
 	}
 #endif
+
 	/*if ((pRadarDetect->McuRadarTick++ >= pRadarDetect->PollTime) &&*/
 	if ((pRadarDetect->McuRadarTick++ >= 3) && 	/* 30ms */
-		//(!pRadarDetect->ch_busy) &&
 		(!pRadarDetect->bDfsSwDisable))
 	{
 		SwCheckDfsEvent(pAd);
@@ -3106,6 +3176,13 @@ VOID NewTimerCB_Radar(
 			//&& (!pRadarDetect->ch_busy)
 	   ) {
 		radarDeclared = DfsChannelCheck(pAd, channel);
+#ifdef DFS_ATP_SUPPORT
+		if ((radarDeclared == TRUE) && 
+				(pRadarDetect->atp_radar_detect == FALSE)) 
+		{
+			pRadarDetect->atp_radar_detect = TRUE;
+		}
+#endif /* DFS_ATP_SUPPORT */
 	}
 
 	/*reset the radar channel for new counting (Write clear) */
@@ -3143,13 +3220,13 @@ VOID NewTimerCB_Radar(
 	pRadarDetect->bDfsInit = TRUE;
 }
 
-#ifdef MT76x0
+#ifdef RLT_BBP
 #define DFS_EVENT_DATA_FETCH(__pAd, __pRadarDetect, __DfsEvent) \
 	MT7650DfsEventDataFetch(__pAd, __pRadarDetect, &__DfsEvent)
 #else
 #define DFS_EVENT_DATA_FETCH(__pAd, __pRadarDetect, __DfsEvent) \
 	DfsEventDataFetch(__pAd, __pRadarDetect, &__DfsEvent)
-#endif /* !MT76x0 */
+#endif /* MT76x0 */
 
 static VOID SwCheckDfsEvent(
 		IN PRTMP_ADAPTER pAd)
