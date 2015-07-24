@@ -235,5 +235,5 @@ load_modules() {
     " > $ppp/options.l2tp
 
     $LOG "L2TP connect to $SERVER."
-    FULLOPTS="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid"
+    FULLOPTS="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid -l"
     xl2tpd $FULLOPTS &
