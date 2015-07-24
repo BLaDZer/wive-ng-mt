@@ -1104,7 +1104,7 @@
 3) add uqmi tool (need for dongle use qmi protocol).<br>
 4) usb-modeswitch: up to 2.2.5 2015-07-16 version.<br>
 5) miniupnpd: up to 1.9.20150721 version.<br>
-6) xl2tpd: sync with devel tree Jul 21, 2015.<br>
+6) xl2tpd: sync with devel tree Jul 22, 2015 (commit eae6793).<br>
 7) uclibc: use position independent code for crt1, slightly red/uces size of all executables.<br>
 8) init.d: scripts start, mkdevs and rcS split and use run-parts for start S* servies.<br>
 9) init.d: wan: cleanup and fix zcip restart in some cases.<br>

@@ -504,7 +504,8 @@ void network_thread ()
         server_socket_processed = 0;
         currentfd = NULL;
         st = tunnels.head;
-        while (st || !server_socket_processed) {
+        while (st || !server_socket_processed)
+		{
             if (st && (st->udp_fd == -1)) {
                 st=st->next;
                 continue;
@@ -616,13 +617,10 @@ void network_thread ()
 	    {
 		do_packet_dump (buf);
 	    }
-	    if (!
-		(c = get_call (tunnel, call, from.sin_addr,
+			if (!(c = get_call (tunnel, call, from.sin_addr,
 			       from.sin_port, refme, refhim)))
 	    {
-		if ((c =
-		     get_tunnel (tunnel, from.sin_addr.s_addr,
-				 from.sin_port)))
+				if ((c = get_tunnel (tunnel, from.sin_addr.s_addr, from.sin_port)))
 		{
 		    /*
 		     * It is theoretically possible that we could be sent
@@ -638,10 +636,10 @@ void network_thread ()
 				  __FUNCTION__, call, tunnel);
 		    if (handle_special (buf, c, call) == 0)
 		    /* get a new buffer */
-        /* Let's recycle the buffer instead, even if it is the control buffer
+            /* Let's recycle the buffer instead, even if it is the control buffer
 		    buf = new_buf (MAX_RECV_SIZE);
-        */
-        recycle_buf (buf);
+            */
+            recycle_buf (buf);
 		}
 #ifdef DEBUG_MORE
 		else{
@@ -671,7 +669,7 @@ void network_thread ()
 		    control_zlb (buf, c->container, c);
 		    c->cnu = 0;
 		}
-	    };
+			}
 	}
 	if (st) st=st->next;
 	}
@@ -735,6 +733,8 @@ int connect_pppol2tp(struct tunnel *t) {
             struct sockaddr_pppol2tp sax;
 
             struct sockaddr_in server;
+
+            memset(&server, 0, sizeof(struct sockaddr_in));
             server.sin_family = AF_INET;
             server.sin_addr.s_addr = gconfig.listenaddr;
             server.sin_port = htons (gconfig.port);
@@ -766,6 +766,7 @@ int connect_pppol2tp(struct tunnel *t) {
             if (connect (ufd, (struct sockaddr *) &server, sizeof(server)) < 0) {
                 l2tp_log (LOG_CRIT, "%s: Unable to connect UDP peer. Terminating.\n",
                  __FUNCTION__);
+                close(ufd);
                 return -EINVAL;
             }
 
@@ -781,6 +782,7 @@ int connect_pppol2tp(struct tunnel *t) {
             if (flags == -1 || fcntl(fd2, F_SETFL, flags | O_NONBLOCK) == -1) {
                 l2tp_log (LOG_WARNING, "%s: Unable to set PPPoL2TP socket nonblock.\n",
                      __FUNCTION__);
+                close(fd2);
                 return -EINVAL;
             }
             memset(&sax, 0, sizeof(sax));
