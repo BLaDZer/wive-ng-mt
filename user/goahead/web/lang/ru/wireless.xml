@@ -117,7 +117,7 @@
   <message msgid="adv rts threshold range" msgstr="(1 - 2347, по умолчанию 2347)" />
   <message msgid="adv short preamble" msgstr="Короткая преамбула" />
   <message msgid="adv short slot" msgstr="Короткий слот" />
-  <message msgid="adv tx burst" msgstr="Пакетная отправка" />
+  <message msgid="adv tx burst" msgstr="Непрерывная отчередь передачи" />
   <message msgid="adv pkt aggregate" msgstr="Пакетная агрегация" />
   <message msgid="adv 80211h" msgstr="Поддержка IEEE 802.11H" />
   <message msgid="adv 80211h disable describe" msgstr="(только в диапазоне A)" />
