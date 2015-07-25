@@ -881,6 +881,7 @@ typedef struct _CHANNEL_TX_POWER {
 	CHANNEL_NO_FAT_ABOVE: Extension channel above this channel is not allowed.
 	CHANNEL_NO_FAT_BELOW: Extension channel below this channel is not allowed.
 	CHANNEL_40M_CAP: 40 BW channel group
+	CHANNEL_80M_CAP: 800 BW channel group
  */
 #define CHANNEL_DEFAULT_PROP	0x00
 #define CHANNEL_DISABLED		0x01	/* no use */
@@ -890,6 +891,7 @@ typedef struct _CHANNEL_TX_POWER {
 #define CHANNEL_NO_FAT_ABOVE	0x10
 #define CHANNEL_NO_FAT_BELOW	0x20
 #define CHANNEL_40M_CAP			0x40
+#define CHANNEL_80M_CAP			0x80
 
 	UCHAR Flags;
 

@@ -116,6 +116,10 @@ VOID BuildChannelList(
 #ifdef DOT11_N_SUPPORT
 						if (N_ChannelGroupCheck(pAd, pAd->ChannelList[index + i].Channel))
 							pAd->ChannelList[index + i].Flags |= CHANNEL_40M_CAP;
+#ifdef DOT11_VHT_AC
+						if (vht80_channel_group(pAd, pAd->ChannelList[index + i].Channel))
+							pAd->ChannelList[index + i].Flags |= CHANNEL_80M_CAP;
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
 				pAd->ChannelList[index+i].MaxTxPwr = 20;

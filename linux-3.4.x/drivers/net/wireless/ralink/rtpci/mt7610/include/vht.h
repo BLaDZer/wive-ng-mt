@@ -28,5 +28,5 @@ void assoc_vht_info_debugshow(
 	IN VHT_CAP_IE *vht_cap,
 	IN VHT_OP_IE *vht_op);
 
+BOOLEAN vht80_channel_group( struct _RTMP_ADAPTER *pAd, UCHAR channel);
 VOID vht_max_mcs_cap(RTMP_ADAPTER *pAd);
-
