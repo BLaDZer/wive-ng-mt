@@ -2110,6 +2110,11 @@ INT get_vht_neighbor_index(IN UCHAR channel)
 		|| (channel == 144) || (channel == 161)) {
 		return -3;
 	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: un-expected case. (channel=%d)\n", 
+			__FUNCTION__, channel));
+	}
 	return 0;
 }
 
@@ -2268,11 +2273,6 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 				/*pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = EXTCHA_NONE; We didn't set the ExtCh as NONE due to it'll set in RTMPSetHT()*/
 			}
 		}
-	}
-	else
-	{
-		DBGPRINT(RT_DEBUG_ERROR, ("%s: un-expected case. (channel=%d)\n", 
-			__FUNCTION__, channel));
 	}
 }
 
