@@ -2236,7 +2236,7 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 			idx = 0;
 			while(wfa_ht_ch_ext[idx] != 0) {
 				if (wfa_ht_ch_ext[idx] == Channel) {
-					pAd->CommonCfg.AddHTInfo.AddHtInfo.ExtChanOffset = pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = wfa_ht_ch_ext[idx + 1];
+					pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = wfa_ht_ch_ext[idx + 1];
 					break;
 				}
 				idx += 2;
