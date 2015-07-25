@@ -882,7 +882,7 @@ void andes_rx_process_cmd_msg(RTMP_ADAPTER *ad, struct cmd_msg *rx_msg)
 		DBGPRINT(RT_DEBUG_ERROR, ("packet is not command response/self event\n"));
 		return;
 	} 
-#ifdef DEBUG
+#ifdef DBG
 	#define LOG2HOST 3
 	if (rx_info->evt_type == LOG2HOST)
 	{
