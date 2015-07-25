@@ -47,7 +47,7 @@ int init_network (void)
 
     /* create server socket only has lns */
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = gconfig.listenaddr; 
+    server.sin_addr.s_addr = gconfig.listenaddr;
     server.sin_port = htons (gconfig.port);
 
     if ((server_socket = socket (PF_INET, SOCK_DGRAM, 0)) < 0)
@@ -85,7 +85,7 @@ int init_network (void)
 #endif
 	    gconfig.ipsecsaref=0;
     }
-    
+
     arg=1;
     if(setsockopt(server_socket, IPPROTO_IP, IP_PKTINFO, (char*)&arg, sizeof(arg)) != 0) {
 	    l2tp_log(LOG_CRIT, "setsockopt IP_PKTINFO: %s\n", strerror(errno));
@@ -94,6 +94,7 @@ int init_network (void)
     {
 	l2tp_log(LOG_INFO, "No attempt being made to use IPsec SAref's since we're not on a Linux machine.\n");
     }
+
 #endif
 
     /* turn off UDP checksums */
@@ -114,7 +115,7 @@ int init_network (void)
         int kernel_fd = socket(AF_PPPOX, SOCK_DGRAM, PX_PROTO_OL2TP);
         if (kernel_fd < 0)
         {
-	    l2tp_log (LOG_INFO, "L2TP kernel support not detected (try modprobing l2tp_ppp and pppol2tp)\n");
+            l2tp_log (LOG_INFO, "L2TP kernel support not detected (try modprobing l2tp_ppp and pppol2tp)\n");
             kernel_support = 0;
         }
         else
@@ -127,7 +128,6 @@ int init_network (void)
 #else
     l2tp_log (LOG_INFO, "This binary does not support kernel L2TP.\n");
 #endif
-
     arg = fcntl (server_socket, F_GETFL);
     arg |= O_NONBLOCK;
     fcntl (server_socket, F_SETFL, arg);
@@ -138,7 +138,7 @@ int init_network (void)
 inline void extract (void *buf, int *tunnel, int *call)
 {
     /*
-     * Extract the tunnel and call #'s, and fix the order of the 
+     * Extract the tunnel and call #'s, and fix the order of the
      * version
      */
 
@@ -189,11 +189,11 @@ void dethrottle (void *call)
 /*	struct call *c = (struct call *)call; */
 /*	if (c->throttle) {
 #ifdef DEBUG_FLOW
-		log(LOG_DEBUG, "%s: dethrottling call %d, and setting R-bit\n",__FUNCTION__,c->ourcid); 
+		log(LOG_DEBUG, "%s: dethrottling call %d, and setting R-bit\n",__FUNCTION__,c->ourcid);
 #endif 		c->rbit = RBIT;
 		c->throttle = 0;
 	} else {
-		log(LOG_DEBUG, "%s:  call %d already dethrottled?\n",__FUNCTION__,c->ourcid); 	
+		log(LOG_DEBUG, "%s:  call %d already dethrottled?\n",__FUNCTION__,c->ourcid);
 	} */
 }
 
@@ -219,7 +219,7 @@ void control_xmit (void *b)
     if (t)
     {
 #ifdef DEBUG_CONTROL_XMIT
-        l2tp_log (LOG_DEBUG,
+	    l2tp_log (LOG_DEBUG,
                     "trying to send control packet %d to %d\n", ns, t->ourtid);
 #endif
         if (ns < t->cLr)
@@ -299,7 +299,7 @@ void udp_xmit (struct buffer *buf, struct tunnel *t)
     struct iovec iov;
     struct in_pktinfo *pktinfo;
     int finallen;
-    
+
     /*
      * OKAY, now send a packet with the right SAref values.
      */
@@ -321,41 +321,42 @@ void udp_xmit (struct buffer *buf, struct tunnel *t)
 	}
 	refp = (unsigned int *)CMSG_DATA(cmsg);
 	*refp = t->refhim;
-	
+
 	finallen = cmsg->cmsg_len;
     }
-    
+
     if (t->my_addr.ipi_addr.s_addr){
 
 	if ( ! cmsg) {
-		cmsg = CMSG_FIRSTHDR(&msgh);		
+		cmsg = CMSG_FIRSTHDR(&msgh);
 	}
 	else {
 		cmsg = CMSG_NXTHDR(&msgh, cmsg);
 	}
-	
+
 	cmsg->cmsg_level = IPPROTO_IP;
 	cmsg->cmsg_type = IP_PKTINFO;
 	cmsg->cmsg_len = CMSG_LEN(sizeof(struct in_pktinfo));
 
 	pktinfo = (struct in_pktinfo*) CMSG_DATA(cmsg);
 	*pktinfo = t->my_addr;
-	
+
 	finallen += cmsg->cmsg_len;
     }
-    
+
     msgh.msg_controllen = finallen;
-    
+
     iov.iov_base = buf->start;
     iov.iov_len  = buf->len;
 
     /* return packet from whence it came */
     msgh.msg_name    = &buf->peer;
     msgh.msg_namelen = sizeof(buf->peer);
-    
+
     msgh.msg_iov  = &iov;
     msgh.msg_iovlen = 1;
     msgh.msg_flags = 0;
+
 
     /* Receive one packet. */
     if ((err = sendmsg(server_socket, &msgh, 0)) < 0) {
@@ -477,7 +478,7 @@ void network_thread ()
         if (ret <= 0)
         {
 #ifdef DEBUG_MORE
-             if (ret == 0)
+            if (ret == 0)
             {
                 if (gconfig.debug_network)
                 {
@@ -529,9 +530,9 @@ void network_thread ()
 
 	    memset(&from, 0, sizeof(from));
 	    memset(&to,   0, sizeof(to));
-	    
+
 	    fromlen = sizeof(from);
-	    
+
 	    memset(&msgh, 0, sizeof(struct msghdr));
 	    iov.iov_base = buf->start;
 	    iov.iov_len  = buf->len;
@@ -542,7 +543,7 @@ void network_thread ()
 	    msgh.msg_iov  = &iov;
 	    msgh.msg_iovlen = 1;
 	    msgh.msg_flags = 0;
-	    
+
 	    /* Receive one packet. */
 	    recvsize = recvmsg(*currentfd, &msgh, 0);
 
@@ -589,7 +590,7 @@ void network_thread ()
 			else if (gconfig.ipsecsaref && cmsg->cmsg_level == IPPROTO_IP
 			&& cmsg->cmsg_type == gconfig.sarefnum) {
 				unsigned int *refp;
-				
+
 				refp = (unsigned int *)CMSG_DATA(cmsg);
 				refme =refp[0];
 				refhim=refp[1];
@@ -635,11 +636,11 @@ void network_thread ()
 				  "%s: no such call %d on tunnel %d.  Sending special ZLB\n",
 				  __FUNCTION__, call, tunnel);
 		    if (handle_special (buf, c, call) == 0)
-		    /* get a new buffer */
-            /* Let's recycle the buffer instead, even if it is the control buffer
-		    buf = new_buf (MAX_RECV_SIZE);
-            */
-            recycle_buf (buf);
+			/* get a new buffer */
+			buf = new_buf (MAX_RECV_SIZE);
+        		/* Let's recycle the buffer instead, even if it is the control buffer
+        		    recycle_buf (buf);
+        		*/
 		}
 #ifdef DEBUG_MORE
 		else{
