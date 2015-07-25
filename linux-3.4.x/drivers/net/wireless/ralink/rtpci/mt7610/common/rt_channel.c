@@ -2130,7 +2130,7 @@ BOOLEAN AC_ChannelGroupCheck(
 		36, 40, 44, 48,
 		52, 56, 60, 64,
 		100, 104, 108, 112,
-		132, 136, 140, 144,
+		116, 120, 124, 128,
 		149, 153, 157, 161
 	};
 	UINT8	num_ch = sizeof(vht_ch_group)/sizeof(UCHAR);
@@ -2140,18 +2140,18 @@ BOOLEAN AC_ChannelGroupCheck(
 	if (Channel > 14)
 	{ /* 5G Band */
 		for (idx=0; idx<num_ch; idx++) {
+		    if (Channel == vht_ch_group[idx]) {
 			if (((region == CE || region == JAP) && vht_ch_group[idx] >= 132) || ((region == FCC) && vht_ch_group[idx] >= 116 && vht_ch_group[idx] <= 128))
 			{
 				continue;
 			}
 			else
 			{
-			    if (Channel == vht_ch_group[idx]) {
 				/* in BW_80 channel group */
 				RetVal = TRUE;
 				break;
-			    }
 			}
+		    }
 		}
 	}
 
