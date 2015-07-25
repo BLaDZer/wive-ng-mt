@@ -1710,6 +1710,10 @@ static UCHAR FillChList(
 #ifdef DOT11_N_SUPPORT
 		if (N_ChannelGroupCheck(pAd, pAd->ChannelList[j].Channel))
 			pAd->ChannelList[j].Flags |= CHANNEL_40M_CAP;
+#ifdef DOT11_VHT_AC
+		if (vht80_channel_group(pAd, pAd->ChannelList[j].Channel))
+			pAd->ChannelList[j].Flags |= CHANNEL_80M_CAP;
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef RT_CFG80211_SUPPORT
@@ -2108,6 +2112,12 @@ INT get_vht_neighbor_index(IN UCHAR channel)
 		|| (channel == 144) || (channel == 161)) {
 		return -3;
 	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: un-expected case. (channel=%d)\n", 
+			__FUNCTION__, channel));
+		return (MAX_NUM_OF_CHANNELS+1);
+	}
 	return 0;
 }
 
@@ -2120,28 +2130,29 @@ BOOLEAN AC_ChannelGroupCheck(
 		36, 40, 44, 48,
 		52, 56, 60, 64,
 		100, 104, 108, 112,
-		116, 120, 124, 128,
+		132, 136, 140, 144,
 		149, 153, 157, 161
 	};
 	UINT8	num_ch = sizeof(vht_ch_group)/sizeof(UCHAR);
 	UINT8	idx;
 	UCHAR 	region = GetCountryRegionFromCountryCode(pAd);
+
 	if (Channel > 14)
 	{ /* 5G Band */
 		for (idx=0; idx<num_ch; idx++) {
-			if (Channel == vht_ch_group[idx]) {
-				if (((region == CE || region == JAP) && vht_ch_group[idx] >= 132) || ((region == FCC) && vht_ch_group[idx] >= 116 && vht_ch_group[idx] <= 128))
-				{
-					continue;				
-				}
-				else
-				{
+			if (((region == CE || region == JAP) && vht_ch_group[idx] >= 132) || ((region == FCC) && vht_ch_group[idx] >= 116 && vht_ch_group[idx] <= 128))
+			{
+				continue;
+			}
+			else
+			{
+			    if (Channel == vht_ch_group[idx]) {
 				/* in BW_80 channel group */
 				RetVal = TRUE;
 				break;
+			    }
 			}
 		}
-	}
 	}
 
 	return RetVal;
@@ -2225,14 +2236,18 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 			idx = 0;
 			while(wfa_ht_ch_ext[idx] != 0) {
 				if (wfa_ht_ch_ext[idx] == Channel) {
-					pAd->CommonCfg.AddHTInfo.AddHtInfo.ExtChanOffset = 
-					pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = wfa_ht_ch_ext[idx + 1];
+					pAd->CommonCfg.AddHTInfo.AddHtInfo.ExtChanOffset = pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = wfa_ht_ch_ext[idx + 1];
 					break;
 				}
 				idx += 2;
 			};
-			if (wfa_ht_ch_ext[idx] == 0)
+			if (wfa_ht_ch_ext[idx] == 0) {
 				pAd->CommonCfg.RegTransmitSetting.field.BW  = BW_20;
+#ifdef DOT11_VHT_AC
+				if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && (pAd->CommonCfg.vht_bw > VHT_BW_2040))
+					pAd->CommonCfg.vht_bw = VHT_BW_2040;
+#endif /* DOT11_VHT_AC */
+			}
 		}
 		else
 		{
@@ -2260,11 +2275,6 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 				/*pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = EXTCHA_NONE; We didn't set the ExtCh as NONE due to it'll set in RTMPSetHT()*/
 			}
 		}
-	}
-	else
-	{
-		DBGPRINT(RT_DEBUG_ERROR, ("%s: un-expected case. (channel=%d)\n", 
-			__FUNCTION__, channel));
 	}
 }
 
