@@ -59,7 +59,7 @@ struct iw_priv_args ap_privtab[] = {
 { RTPRIV_IOCTL_E2P,
   IW_PRIV_TYPE_CHAR | 1024, IW_PRIV_TYPE_CHAR | 1024,
   "e2p"},
-#ifdef DBG
+#if defined(DBG) ||(defined(BB_SOC)&&defined(RALINK_ATE))
 { RTPRIV_IOCTL_BBP,
   IW_PRIV_TYPE_CHAR | 1024, IW_PRIV_TYPE_CHAR | 1024,
   "bbp"},
@@ -69,7 +69,7 @@ struct iw_priv_args ap_privtab[] = {
 { RTPRIV_IOCTL_RF,
   IW_PRIV_TYPE_CHAR | 1024, IW_PRIV_TYPE_CHAR | 1024,
   "rf"},
-#endif /* DBG */
+#endif /* defined(DBG) ||(defined(BB_SOC)&&defined(RALINK_ATE)) */
 
 #ifdef WSC_AP_SUPPORT
 { RTPRIV_IOCTL_WSC_PROFILE,
@@ -399,15 +399,15 @@ INT rt28xx_ap_ioctl(
 			RTMP_AP_IoctlHandle(pAd, wrq, CMD_RTPRIV_IOCTL_E2P, 0, NULL, 0);
 			break;
 
-#ifdef DBG
+#if defined(DBG) ||(defined(BB_SOC)&&defined(RALINK_ATE))
 		case RTPRIV_IOCTL_BBP:
 			RTMP_AP_IoctlHandle(pAd, wrq, CMD_RTPRIV_IOCTL_BBP, 0, NULL, 0);
 			break;
-			
+
 		case RTPRIV_IOCTL_MAC:
 			RTMP_AP_IoctlHandle(pAd, wrq, CMD_RTPRIV_IOCTL_MAC, 0, NULL, 0);
 			break;
-            
+
 		case RTPRIV_IOCTL_RF:
 			RTMP_AP_IoctlHandle(pAd, wrq, CMD_RTPRIV_IOCTL_RF, 0, NULL, 0);
 			break;
