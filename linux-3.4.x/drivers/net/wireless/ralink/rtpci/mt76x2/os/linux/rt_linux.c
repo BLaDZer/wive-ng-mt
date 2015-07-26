@@ -35,7 +35,9 @@
 #include "rtmp_osabl.h"
 #include "rt_os_util.h"
 #include "dot11i_wpa.h"
+
 #include <linux/rtnetlink.h>
+#include <linux/firmware.h>
 
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
 #include "../../../../../../../net/nat/hw_nat/ra_nat.h"
