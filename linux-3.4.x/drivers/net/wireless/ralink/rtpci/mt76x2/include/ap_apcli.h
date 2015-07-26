@@ -279,13 +279,6 @@ BOOLEAN ApcliCompareAuthEncryp(
 
 VOID ApCliSwitchCandidateAP(
 	IN PRTMP_ADAPTER pAd);
-
-VOID RTMPApCliReconnectionCheck(
-	IN PRTMP_ADAPTER pAd);
-
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
-
 #endif /* APCLI_SUPPORT */
-
 #endif /* _AP_APCLI_H_ */
-

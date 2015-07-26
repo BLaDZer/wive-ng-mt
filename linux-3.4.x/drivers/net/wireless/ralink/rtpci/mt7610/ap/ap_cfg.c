@@ -8384,7 +8384,6 @@ INT Set_ApCli_Enable_Proc(
 	pAd->ApCfg.ApCliTab[ifIndex].Enable = (Enable > 0) ? TRUE : FALSE;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) Set_ApCli_Enable_Proc::(enable = %d)\n", ifIndex, pAd->ApCfg.ApCliTab[ifIndex].Enable));
-	
 #ifdef APCLI_CONNECTION_TRIAL
 	if (pAd->ApCfg.ApCliTab[ifIndex].TrialCh == 0)
 #endif

@@ -3058,6 +3058,10 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif/*APCLI_WPA_SUPPLICANT_SUPPORT*/
 
 		}
+#ifdef APCLI_AUTO_CONNECT_SUPPORT
+		pAd->ApCfg.ApCliAutoConnectRunning= FALSE;
+		pAd->ApCfg.ApCliAutoConnectChannelSwitching = FALSE;
+#endif /* APCLI_AUTO_CONNECT_SUPPORT */
 #endif /* APCLI_SUPPORT */
 		pAd->ApCfg.EntryClientCount = 0;
 		pAd->ApCfg.ChangeTxOpClient = 0;

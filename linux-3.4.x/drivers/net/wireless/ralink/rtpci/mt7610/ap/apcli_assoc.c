@@ -259,7 +259,6 @@ static VOID ApCliMlmeAssocReqAction(
 	USHORT ifIndex = (USHORT)(Elem->Priv);
 	PULONG pCurrState = NULL;
 	PAPCLI_STRUCT pApCliEntry = NULL;
-	struct wifi_dev *wdev;
 #ifdef APCLI_WPA_SUPPLICANT_SUPPORT
 	USHORT			VarIesOffset = 0;
 #endif /* APCLI_WPA_SUPPLICANT_SUPPORT */
@@ -287,7 +286,6 @@ static VOID ApCliMlmeAssocReqAction(
 	pCurrState = &pAd->ApCfg.ApCliTab[ifIndex].AssocCurrState;
 
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
-	wdev = &pApCliEntry->wdev;
 
 	/* Block all authentication request durning WPA block period */
 	if (pApCliEntry->bBlockAssoc == TRUE)
@@ -387,7 +385,7 @@ static VOID ApCliMlmeAssocReqAction(
 			So, the WEP and TKIP are not allowed in HT rate.
 		*/
 		if (pAd->CommonCfg.HT_DisallowTKIP &&
-			IS_INVALID_HT_SECURITY(wdev->WepStatus))
+			IS_INVALID_HT_SECURITY(pApCliEntry->WepStatus))
 		{
 			/* Force to None-HT mode due to WiFi 11n policy */
 			pApCliEntry->ApCliMlmeAux.HtCapabilityLen = 0;

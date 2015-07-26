@@ -3187,38 +3187,6 @@ BOOLEAN ApcliCompareAuthEncryp(
 	}
 
 }
-
-VOID RTMPApCliReconnectionCheck(
-	IN PRTMP_ADAPTER pAd)
-{
-	INT i;
-	PCHAR	pApCliSsid, pApCliCfgSsid;
-	UCHAR	CfgSsidLen;
-	NDIS_802_11_SSID Ssid;
-	
-	if (pAd->ApCfg.ApCliAutoConnectRunning == FALSE)
-	{
-		for (i = 0; i < MAX_APCLI_NUM; i++)
-		{
-			pApCliSsid = pAd->ApCfg.ApCliTab[i].Ssid;
-			pApCliCfgSsid = pAd->ApCfg.ApCliTab[i].CfgSsid;
-			CfgSsidLen = pAd->ApCfg.ApCliTab[i].CfgSsidLen;
-			if ((pAd->ApCfg.ApCliTab[i].CtrlCurrState < APCLI_CTRL_AUTH ||
-				!NdisEqualMemory(pApCliSsid, pApCliCfgSsid, CfgSsidLen)) &&
-				pAd->ApCfg.ApCliTab[i].CfgSsidLen > 0 && 
-				pAd->Mlme.OneSecPeriodicRound % 10 == 0)
-			{
-				DBGPRINT(RT_DEBUG_TRACE, (" %s(): Scan channels for AP (%s)\n", 
-							__FUNCTION__, pApCliCfgSsid));
-				pAd->ApCfg.ApCliAutoConnectRunning = TRUE;
-				Ssid.SsidLength = CfgSsidLen;
-				NdisCopyMemory(Ssid.Ssid, pApCliCfgSsid, CfgSsidLen);
-				ApSiteSurvey(pAd, &Ssid, SCAN_ACTIVE, FALSE);
-				
-			}	
-		}
-	}
-}
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 #endif /* APCLI_SUPPORT */
 
