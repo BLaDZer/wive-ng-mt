@@ -885,8 +885,6 @@ VOID RTMPDrvClose(VOID *pAdSrc, VOID *net_dev)
 #endif /* EXT_BUILD_CHANNEL_LIST */
 	pAd->CommonCfg.bCountryFlag = FALSE;
 
-
-
 #ifdef WDS_SUPPORT
 	WdsDown(pAd);
 #endif /* WDS_SUPPORT */

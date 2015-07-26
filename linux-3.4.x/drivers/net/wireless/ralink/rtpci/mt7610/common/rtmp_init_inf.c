@@ -890,6 +890,7 @@ VOID RTMPDrvClose(
 		os_free_mem(NULL, pAd->CommonCfg.pChDesp);
 	pAd->CommonCfg.pChDesp = NULL;
 	pAd->CommonCfg.DfsType = MAX_RD_REGION;
+	pAd->CommonCfg.bCountryFlag = 0;
 #endif /* EXT_BUILD_CHANNEL_LIST */
 	pAd->CommonCfg.bCountryFlag = FALSE;
 
