@@ -421,6 +421,7 @@ VOID ScanNextChannel(
 		if (ScanType == FAST_SCAN_ACTIVE) {
 			RTMPSetTimer(&pAd->MlmeAux.APScanTimer, MIN_CHANNEL_TIME);//Carter test MIN_CHANNEL_TIME instead of Fast_Scan_Time
 			pAd->ApCfg.ScanChannelCnt++;
+			stay_time = FAST_ACTIVE_SCAN_TIME;
 		}
 		else /* must be SCAN_PASSIVE or SCAN_ACTIVE*/
 #endif
