@@ -553,15 +553,15 @@ VOID BAOriSessionSetUp(
 	pEntry->BAOriWcidArray[TID] = Idx;
 
 	/* Initialize BA session */
-	pBAEntry->ORI_BA_Status = Originator_WaitRes;       
+	pBAEntry->ORI_BA_Status = Originator_WaitRes;
 	pBAEntry->Wcid = pEntry->Aid;
-	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;   
+	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
 	pBAEntry->Sequence = BA_ORI_INIT_SEQ;
 	pBAEntry->Token = 1;	/* (2008-01-21) Jan Lee recommends it - this token can't be 0*/
 	pBAEntry->TID = TID;
-	pBAEntry->TimeOutValue = TimeOut;   
+	pBAEntry->TimeOutValue = TimeOut;
 	pBAEntry->pAdapter = pAd;
-	
+
 	if (!(pEntry->TXBAbitmap & (1<<TID)))
 	{
 		RTMPInitTimer(pAd, &pBAEntry->ORIBATimer, GET_TIMER_FUNCTION(BAOriSessionSetupTimeout), pBAEntry, FALSE);

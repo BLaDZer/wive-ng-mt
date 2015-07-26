@@ -546,15 +546,15 @@ VOID BAOriSessionSetUp(
 #endif
 
 	/* Initialize BA session */
-	pBAEntry->ORI_BA_Status = Originator_WaitRes;       
+	pBAEntry->ORI_BA_Status = Originator_WaitRes;
 	pBAEntry->Wcid = pEntry->Aid;
-	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;   
+	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
 	pBAEntry->Sequence = BA_ORI_INIT_SEQ;
 	pBAEntry->Token = 1;	/* (2008-01-21) Jan Lee recommends it - this token can't be 0*/
 	pBAEntry->TID = TID;
-	pBAEntry->TimeOutValue = TimeOut;   
+	pBAEntry->TimeOutValue = TimeOut;
 	pBAEntry->pAdapter = pAd;
-	
+
 	if (!(pEntry->TXBAbitmap & (1<<TID)))
 	{
 		RTMPInitTimer(pAd, &pBAEntry->ORIBATimer, GET_TIMER_FUNCTION(BAOriSessionSetupTimeout), pBAEntry, FALSE);
@@ -698,8 +698,10 @@ BOOLEAN BARecSessionAdd(
 
 	BAWinSize = min(((UCHAR)pFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
 
-	if (BAWinSize == 0) {
-		BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
+	/* Intel patch*/
+	if (BAWinSize == 0)
+	{
+		BAWinSize = 64;
 	}
 
 	/* get software BA rec array index, Idx*/
@@ -1337,8 +1339,9 @@ VOID PeerAddBAReqAction(
 	ADDframe.BaParm.AMSDUSupported = 0;
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
-	if (ADDframe.BaParm.BufSize == 0) {
-		ADDframe.BaParm.BufSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
+	if (ADDframe.BaParm.BufSize == 0)
+	{
+		ADDframe.BaParm.BufSize = 64; 
 	}
 	ADDframe.TimeOutValue = 0; /* pAddreqFrame->TimeOutValue; */
 

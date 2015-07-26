@@ -87,8 +87,6 @@
 #include "cfg80211.h"
 #endif /* RT_CFG80211_SUPPORT */
 
-#include <linux/firmware.h>
-
 #undef AP_WSC_INCLUDED
 #undef STA_WSC_INCLUDED
 #undef WSC_INCLUDED
