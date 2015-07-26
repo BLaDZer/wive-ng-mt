@@ -2224,6 +2224,8 @@ void RTMPSetCountryCode(RTMP_ADAPTER *pAd, PSTRING CountryCode)
 	pAd->CommonCfg.CountryCode[2] = ' ';
 	if (strlen((PSTRING) pAd->CommonCfg.CountryCode) != 0)
 		pAd->CommonCfg.bCountryFlag = TRUE;
+	else
+		pAd->CommonCfg.bCountryFlag = FALSE;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("CountryCode=%s\n", pAd->CommonCfg.CountryCode));
 }
