@@ -513,7 +513,7 @@ typedef union _EEPROM_ANTENNA_STRUC {
 	struct {
 		USHORT RssiIndicationMode:1; 	/* RSSI indication mode */
 		USHORT BoardType:2; 		/* 0: mini card; 1: USB pen */
-		USHORT RfIcType:54;			/* see E2PROM document */
+		USHORT RfIcType:5;			/* see E2PROM document */
 		USHORT TxPath:4;			/* 1: 1T, 2: 2T, 3: 3T */
 		USHORT RxPath:4;			/* 1: 1R, 2: 2R, 3: 3R */
 	} field;
@@ -1570,6 +1570,10 @@ VOID DisableAPMIMOPSv2(struct _RTMP_ADAPTER *pAd);
 VOID EnableAPMIMOPSv1(struct _RTMP_ADAPTER *pAd, BOOLEAN ReduceCorePower);
 VOID DisableAPMIMOPSv1(struct _RTMP_ADAPTER *pAd);
 #endif /* GREENAP_SUPPORT */
+
+#ifdef RTMP_MAC
+VOID RTxx_default_Init(struct _RTMP_ADAPTER *pAd);
+#endif /* RTMP_MAC */
 
 /* global variable */
 extern FREQUENCY_ITEM RtmpFreqItems3020[];

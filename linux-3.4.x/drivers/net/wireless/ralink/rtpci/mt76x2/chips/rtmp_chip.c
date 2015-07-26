@@ -504,6 +504,18 @@ int RtmpChipOpsHook(VOID *pCB)
 	}
 #endif
 
+#ifdef RT6352
+	if (IS_RT6352(pAd)) {
+		RT6352_Init(pAd);
+		goto done;
+	}
+#endif /* RT6352 */
+
+#ifdef RTMP_MAC
+	// TODO: default settings for rest of the chips!! change this to really default chip.
+	RTxx_default_Init(pAd);
+#endif /* RTMP_MAC */
+
 	/* We depends on RfICType and MACVersion to assign the corresponding operation callbacks. */
 
 done:
@@ -516,12 +528,6 @@ done:
 	return ret;
 }
 
-#ifdef RT6352
-	if (IS_RT6352(pAd)) {
-		RT6352_Init(pAd);
-		goto done;
-	}
-#endif /* RT6352 */
 #ifdef RT65xx
 BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
 {

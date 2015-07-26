@@ -406,7 +406,6 @@ void periodic_monitor_false_cca_adjust_vga(RTMP_ADAPTER *pAd)
 	if ((pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable) &&
 		(pAd->MacTab.Size > 0) &&
 		(pAd->chipCap.dynamic_vga_support) &&
-		(pAd->MacTab.Size > 0) &&
 		OPSTATUS_TEST_FLAG(pAd, fOP_AP_STATUS_MEDIA_STATE_CONNECTED)) {
 		UCHAR val1, val2;
 		UINT32 bbp_val1, bbp_val2;

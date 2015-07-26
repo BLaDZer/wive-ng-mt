@@ -130,7 +130,7 @@ CH_DESC Country_Region31_ChDesc_2GHZ[] =
 CH_DESC Country_Region32_ChDesc_2GHZ[] =
 {
 	{1, 11, CHANNEL_DEFAULT_PROP},
-	{12, 2, CHANNEL_PASSIVE_SCAN},
+	{12, 2, CHANNEL_PASSIVE_SCAN},	
 	{}
 };
 
@@ -219,7 +219,6 @@ CH_DESC Country_Region4_ChDesc_5GHZ[] =
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
-
 CH_DESC Country_Region5_ChDesc_5GHZ[] =
 {
 	{149, 4, CHANNEL_DEFAULT_PROP},
@@ -275,7 +274,7 @@ CH_DESC Country_Region11_ChDesc_5GHZ[] =
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 6, CHANNEL_DEFAULT_PROP},
 	{149, 4, CHANNEL_DEFAULT_PROP},
-	{}
+	{}		
 };
 
 CH_DESC Country_Region12_ChDesc_5GHZ[] =
@@ -290,7 +289,7 @@ CH_DESC Country_Region13_ChDesc_5GHZ[] =
 	{52, 4, CHANNEL_DEFAULT_PROP},
 	{100, 11, CHANNEL_DEFAULT_PROP},
 	{149, 4, CHANNEL_DEFAULT_PROP},
-	{}
+	{}	
 };
 
 CH_DESC Country_Region14_ChDesc_5GHZ[] =
@@ -299,7 +298,7 @@ CH_DESC Country_Region14_ChDesc_5GHZ[] =
 	{100, 5, CHANNEL_DEFAULT_PROP},
 	{136, 2, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
-	{}
+	{}	
 };
 
 CH_DESC Country_Region15_ChDesc_5GHZ[] =
@@ -327,7 +326,7 @@ CH_DESC Country_Region18_ChDesc_5GHZ[] =
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 5, CHANNEL_DEFAULT_PROP},
 	{132, 3, CHANNEL_DEFAULT_PROP},
-	{}
+	{}	
 };
 
 CH_DESC Country_Region19_ChDesc_5GHZ[] =
@@ -343,7 +342,7 @@ CH_DESC Country_Region20_ChDesc_5GHZ[] =
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 7, CHANNEL_DEFAULT_PROP},
 	{149, 4, CHANNEL_DEFAULT_PROP},
-	{}
+	{}		
 };
 
 CH_DESC Country_Region21_ChDesc_5GHZ[] =
@@ -351,7 +350,7 @@ CH_DESC Country_Region21_ChDesc_5GHZ[] =
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 11, CHANNEL_DEFAULT_PROP},
 	{149, 4, CHANNEL_DEFAULT_PROP},
-	{}
+	{}		
 };
 
 CH_DESC Country_Region22_ChDesc_5GHZ[] =
@@ -1714,7 +1713,7 @@ static UCHAR FillChList(
 #ifdef DOT11_VHT_AC
 		if (vht80_channel_group(pAd, pAd->ChannelList[j].Channel))
 			pAd->ChannelList[j].Flags |= CHANNEL_80M_CAP;
-#endif /* DOT11_VHT_AC */	
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef RT_CFG80211_SUPPORT
@@ -1980,6 +1979,7 @@ COUNTRY_PROP CountryProp[]=
 	{""  , 0, FALSE}	     , /* End */	
 };
 
+#ifndef EXT_BUILD_CHANNEL_LIST
 static PCOUNTRY_PROP GetCountryProp(
 	IN PUCHAR CntryCode)
 {
@@ -2002,6 +2002,8 @@ static PCOUNTRY_PROP GetCountryProp(
 
 	return pCountryProp;
 }
+#endif /* !EXT_BUILD_CHANNEL_LIST */
+
 #ifdef ED_MONITOR
 BOOLEAN GetEDCCASupport(
 	IN PRTMP_ADAPTER pAd)
@@ -2034,7 +2036,6 @@ BOOLEAN GetEDCCASupport(
 	
 }
 #endif /* ED_MONITOR */
-
 UCHAR GetCountryRegionFromCountryCode(
 	IN PRTMP_ADAPTER pAd)
 {
@@ -2053,6 +2054,7 @@ UCHAR GetCountryRegionFromCountryCode(
 #endif
 	return ret;
 }
+
 #ifdef DOT11_N_SUPPORT
 static BOOLEAN IsValidChannel(
 	IN PRTMP_ADAPTER pAd,
@@ -2128,7 +2130,7 @@ BOOLEAN AC_ChannelGroupCheck(
 		36, 40, 44, 48,
 		52, 56, 60, 64,
 		100, 104, 108, 112,
-		132, 136, 140, 144,
+		116, 120, 124, 128,
 		149, 153, 157, 161
 	};
 	UINT8	num_ch = sizeof(vht_ch_group)/sizeof(UCHAR);
@@ -2227,7 +2229,7 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 			0, 0};
 
 	if (WMODE_CAP_N(pAd->CommonCfg.PhyMode) &&
-		(pAd->CommonCfg.RegTransmitSetting.field.BW >= BW_40))
+		(pAd->CommonCfg.RegTransmitSetting.field.BW  >= BW_40))
 	{
 		if (Channel > 14)
 		{
@@ -2239,9 +2241,8 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 				}
 				idx += 2;
 			};
-
 			if (wfa_ht_ch_ext[idx] == 0) {
-				pAd->CommonCfg.RegTransmitSetting.field.BW = BW_20;
+				pAd->CommonCfg.RegTransmitSetting.field.BW  = BW_20;
 #ifdef DOT11_VHT_AC
 				if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && (pAd->CommonCfg.vht_bw > VHT_BW_2040))
 					pAd->CommonCfg.vht_bw = VHT_BW_2040;
@@ -2276,6 +2277,7 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 		}
 	}
 }
+
 
 UCHAR N_SetCenCh(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 {

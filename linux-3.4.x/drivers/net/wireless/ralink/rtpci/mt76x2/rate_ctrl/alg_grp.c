@@ -896,13 +896,17 @@ UCHAR MlmeSelectTxRateAdapt(
 				tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
-			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
+			else if (mcs[12] && (Rssi > (-85 + RssiOffset))) {
 				tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
-			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
+			else if (mcs[11] && (Rssi > (-92 + RssiOffset))) {
 				tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
+			}
+			else if (mcs[11] && (Rssi > (-94 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS0;
+				TxRateIdx = mcs[10];
 			}
 			else {
 				tx_rate = MCS_RATE_6;
@@ -1006,7 +1010,6 @@ UCHAR MlmeSelectTxRateAdapt(
 #ifdef THERMAL_PROTECT_SUPPORT
 				(pAd->force_one_tx_stream == FALSE) &&
 #endif /* THERMAL_PROTECT_SUPPORT */
-				(pEntry->MmpsMode != MMPS_STATIC) &&
 				((pAd->CommonCfg.TxStream == 2) || (pEntry->HTCapability.MCSSet[2] == 0x0)))
 		{
 			if (mcs[15]>=0 && (Rssi > (-72+RssiOffset)))

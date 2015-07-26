@@ -516,7 +516,7 @@ static inline UCHAR SelectClearChannelCCA(
 					}
 				}
 #ifdef DOT11_VHT_AC
-				else if (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80) {
+				else if (pAd->CommonCfg.vht_bw == VHT_BW_80) {
 					/* the same dirtyness with neighbor */
 					INT	vht_ch_idx = get_vht_neighbor_index(ch);
 					if (vht_ch_idx != (MAX_NUM_OF_CHANNELS+1))

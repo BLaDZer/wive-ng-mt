@@ -133,7 +133,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
  #define SINGLE_SKU_TABLE_FILE_NAME	"/etc/Wireless/iNIC/SingleSKU.dat"
  #define CARD_INFO_PATH			"/etc/Wireless/iNIC/RT2860APCard.dat"
 #endif
-#define AP_DRIVER_VERSION		"3.0.3.2"
+#define AP_DRIVER_VERSION		"3.0.3.2_rev2"
 #endif /* RTMP_MAC_PCI */
 
 #endif /* CONFIG_AP_SUPPORT */
@@ -279,22 +279,12 @@ struct iw_statistics *rt28xx_get_wireless_stats(
  ***********************************************************************************/
 typedef struct file* RTMP_OS_FD;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 typedef struct _OS_FS_INFO_
 {
-	kuid_t				fsuid;
-	kgid_t				fsgid;
+	uid_t		fsuid;
+	gid_t		fsgid;
 	mm_segment_t	fs;
 } OS_FS_INFO;
-#else
-typedef struct _OS_FS_INFO_
-{
-	uid_t				fsuid;
-	gid_t				fsgid;
-	mm_segment_t	fs;
-} OS_FS_INFO;
-
-#endif
 
 #define IS_FILE_OPEN_ERR(_fd) 	((_fd == NULL) || IS_ERR((_fd)))
 

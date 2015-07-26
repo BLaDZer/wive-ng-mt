@@ -176,6 +176,13 @@ NDIS_STATUS RTMPAllocAdapterBlock(VOID *handle, VOID **ppAdapter)
 
 		NdisAllocateSpinLock(pAd, &TimerSemLock);
 
+#ifdef SPECIFIC_BCN_BUF_SUPPORT
+#ifdef RTMP_MAC_PCI
+		NdisAllocateSpinLock(pAd, &pAd->ShrMemLock);
+#endif /* RTMP_MAC_PCI */
+#endif /* SPECIFIC_BCN_BUF_SUPPORT */
+
+
 #ifdef RALINK_ATE
 #endif /* RALINK_ATE */
 
@@ -211,11 +218,6 @@ NDIS_STATUS RTMPAllocAdapterBlock(VOID *handle, VOID **ppAdapter)
 	return Status;
 }
 
-#ifdef SPECIFIC_BCN_BUF_SUPPORT
-#ifdef RTMP_MAC_PCI
-		NdisAllocateSpinLock(pAd, &pAd->ShrMemLock);
-#endif /* RTMP_MAC_PCI */
-#endif /* SPECIFIC_BCN_BUF_SUPPORT */
 
 static UINT8 NICGetBandSupported(RTMP_ADAPTER *pAd)
 {
@@ -754,6 +756,25 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 			pAd->RfFreqOffset = 0;
 	}
 
+#ifdef RTMP_RBUS_SUPPORT
+	if (pAd->infType == RTMP_DEV_INF_RBUS)
+	{
+		if (pAd->RfFreqDelta & 0x10)
+		{
+			pAd->RfFreqOffset = (pAd->RfFreqOffset >= pAd->RfFreqDelta)? (pAd->RfFreqOffset - (pAd->RfFreqDelta & 0xf)) : 0;
+		}
+		else
+		{
+#ifdef RT6352
+			if (IS_RT6352(pAd))
+				pAd->RfFreqOffset = ((pAd->RfFreqOffset + pAd->RfFreqDelta) < 0xFF)? (pAd->RfFreqOffset + (pAd->RfFreqDelta & 0xf)) : 0xFF;
+			else
+#endif /* RT6352 */
+				pAd->RfFreqOffset = ((pAd->RfFreqOffset + pAd->RfFreqDelta) < 0x40)? (pAd->RfFreqOffset + (pAd->RfFreqDelta & 0xf)) : 0x3f;
+		}
+	}
+#endif /* RTMP_RBUS_SUPPORT */
+
 	DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: RF FreqOffset=0x%x \n", pAd->RfFreqOffset));
 
 #if !defined(EEPROM_COUNTRY_UNLOCK)
@@ -871,25 +892,6 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 			pAd->ALNAGain2 = (value >> 8);
 		}
 	}
-
-#ifdef RTMP_RBUS_SUPPORT
-	if (pAd->infType == RTMP_DEV_INF_RBUS)
-	{
-		if (pAd->RfFreqDelta & 0x10)
-		{
-			pAd->RfFreqOffset = (pAd->RfFreqOffset >= pAd->RfFreqDelta)? (pAd->RfFreqOffset - (pAd->RfFreqDelta & 0xf)) : 0;
-		}
-		else
-		{
-#ifdef RT6352
-			if (IS_RT6352(pAd))
-				pAd->RfFreqOffset = ((pAd->RfFreqOffset + pAd->RfFreqDelta) < 0xFF)? (pAd->RfFreqOffset + (pAd->RfFreqDelta & 0xf)) : 0xFF;
-			else
-#endif /* RT6352 */
-				pAd->RfFreqOffset = ((pAd->RfFreqOffset + pAd->RfFreqDelta) < 0x40)? (pAd->RfFreqOffset + (pAd->RfFreqDelta & 0xf)) : 0x3f;
-		}
-	}
-#endif /* RTMP_RBUS_SUPPORT */
 
 	if (((UCHAR)pAd->ALNAGain1 == 0xFF) || (pAd->ALNAGain1 == 0x00))
 		pAd->ALNAGain1 = pAd->ALNAGain0;

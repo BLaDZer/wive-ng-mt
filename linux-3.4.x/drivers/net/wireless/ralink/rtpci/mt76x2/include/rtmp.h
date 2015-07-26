@@ -4553,7 +4553,6 @@ struct fpga_ctrl fpga_ctl;
 
 #ifdef VHT_TXBF_SUPPORT
 	BOOLEAN NDPA_Request;
-    BOOLEAN BeaconSndDimensionFlag;    // Peer sounding dimension flag 
 #endif
 };
 
