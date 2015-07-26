@@ -658,9 +658,9 @@ BOOLEAN BARecSessionAdd(
 
 	BAWinSize = min(((UCHAR)pFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
 
-	/* Intel patch*/
-	if (BAWinSize == 0)
-		BAWinSize = 64;
+	if (BAWinSize == 0) {
+		BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
+	}
 
 	/* get software BA rec array index, Idx*/
 	Idx = pEntry->BARecWcidArray[TID];
@@ -865,6 +865,9 @@ VOID BAOriSessionTearDown(
 	if (Wcid >= MAX_LEN_OF_MAC_TABLE)
 		return;
 	
+	/* Clear WTBL2.dw15 when BA is deleted */
+	RTMP_DEL_BA_SESSION_FROM_ASIC(pAd, Wcid, TID);
+
 	/* Locate corresponding BA Originator Entry in BA Table with the (pAddr,TID).*/
 	Idx = pAd->MacTab.Content[Wcid].BAOriWcidArray[TID];
 	if ((Idx == 0) || (Idx >= MAX_LEN_OF_BA_ORI_TABLE))
@@ -1260,8 +1263,9 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 #endif /* WFA_VHT_PF */
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
-	if (ADDframe.BaParm.BufSize == 0)
-		ADDframe.BaParm.BufSize = 64; 
+	if (ADDframe.BaParm.BufSize == 0) {
+		ADDframe.BaParm.BufSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
+	}
 	ADDframe.TimeOutValue = 0; /* pAddreqFrame->TimeOutValue; */
 
 #ifdef UNALIGNMENT_SUPPORT
