@@ -22,7 +22,7 @@ function connectionTypeSwitch(form)
 {
 	var conn_type = form.connectionType.value;
 	displayElement('staticDHCP', conn_type == 'STATIC');
-	displayElement('dhcpReqIPRow', conn_type == 'DHCP');
+	displayElement(['dhcpReqIPRow', 'dhcpVendorRow'], conn_type == 'DHCP');
 	displayElement('staticDNSAssignRow', conn_type != 'ZERO');
 
 	if (conn_type == 'STATIC')
@@ -127,6 +127,7 @@ function initTranslation()
 	_TR("wDhcpMode", "wan dhcp mode");
 	_TR("wAdditionalOptions", "wan additional options");
 	_TR("wReqFromDHCP", "wan request from dhcp");
+	_TR("wDHCPVendorClass", "wan dhcp vendor class");
 	_TR("wMTU", "wan mtu");
 	_TR("wNatEnabled", "wan nat enabled");
 	_TR("wMacAddress", "inet mac");
@@ -253,6 +254,10 @@ function submitForm(form) {
           <tr id="dhcpReqIPRow">
             <td class="head" id="wReqFromDHCP">Request IP from DHCP (optional)</td>
             <td><input name="dhcpReqIP" class="mid" value="<% getCfgGeneral(1, "dhcpRequestIP"); %>"></td>
+          </tr>
+          <tr id="dhcpVendorRow">
+            <td class="head" id="wDHCPVendorClass">Type of device (optional)</td>
+            <td><input name="dhcpVendorClass" class="mid" value="<% getCfgGeneral(1, "dhcpVendorClass"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="wMTU">WAN MTU</td>

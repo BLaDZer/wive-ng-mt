@@ -2066,7 +2066,7 @@ static void restoremac(webs_t wp, char_t *path, char_t *query)
 /* goform/setWan */
 static void setWan(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*ctype, *req_ip;
+	char_t	*ctype, *req_ip, *dhcpVen;
 	char_t	*ip, *nm, *gw, *mac, *oldmac;
 	char_t	*eth, *user, *pass;
 	char_t	*nat_enable;
@@ -2086,6 +2086,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 	ctype = websGetVar(wp, T("connectionType"), T("0"));
 	req_ip = websGetVar(wp, T("dhcpReqIP"), T(""));
+	dhcpVen = websGetVar(wp, T("dhcpVendorClass"), T(""));
 
 	if (!strncmp(ctype, "STATIC", 7) || !strcmp(opmode, "0"))
 	{
@@ -2153,15 +2154,13 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "wanConnectionMode", ctype);
 		nvram_bufset(RT2860_NVRAM, "dhcpRequestIP", req_ip);
-		printf("goahead: dhcpRequestIP = %s\n", req_ip);
-		printf("goahead: wanConnectionMode = %s\n", ctype);
+		nvram_bufset(RT2860_NVRAM, "dhcpVendorClass", dhcpVen);
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
 	else if (strncmp(ctype, "ZERO", 5) == 0)
 	{
 		nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
-		printf("goahead: wanConnectionMode = %s\n", ctype);
 	}
 	else
 	{

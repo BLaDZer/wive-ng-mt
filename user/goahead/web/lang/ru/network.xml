@@ -24,6 +24,7 @@
     <message msgid="wan dhcp mode" msgstr="Настройки DHCP" />
     <message msgid="wan additional options" msgstr="Дополнительные настройки" />
     <message msgid="wan request from dhcp" msgstr="Запрос IP от DHCP (опционально)" />
+    <message msgid="wan dhcp vendor class" msgstr="Тип устройства (опционально)" />
     <message msgid="wan mtu" msgstr="WAN MTU" />
     <message msgid="wan static dns" msgstr="Назначить статические сервера DNS" />
     <message msgid="wan nat enabled" msgstr="Включить NAT" />
