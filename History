@@ -1150,11 +1150,12 @@
 49) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
 50) kernel: net: arp: fix a regression in arp_solicit().<br>
 51) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-52) kernel: net: tcp: don't abort splice() after small transfers.<br>
-53) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-54) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-55) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-56) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+52) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+53) kernel: net: tcp: don't abort splice() after small transfers.<br>
+54) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+55) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+56) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+57) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
