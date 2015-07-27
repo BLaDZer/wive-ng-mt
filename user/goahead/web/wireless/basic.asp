@@ -66,6 +66,8 @@ var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
+var fast_roaming = '<% getRoamingSupport(); %>' == '1';
+
 var ChannelList_24G =
 [
 	"2412MHz (" + _("station channel") + " 1)",
@@ -306,6 +308,15 @@ function initTranslation()
 	_TR("basicSTBC", "basic stbc");
 	_TR("basicLDPC", "basic ldpc");
 	_TR("basicAction", "basic action");
+
+	_TR("basicFastRoaming", "basic roaming");
+	_TR("basicApProbeRspTimes", "basic roaming probe times");
+	_TR("basicAuthRspFail", "basic roaming auth fail");
+	_TR("basicAuthRspRssi", "basic roaming auth rssi");
+	_TR("basicAssocReqRssiThres", "basic roaming rssi thres");
+	_TR("basicAssocRspIgnor", "basic roaming assoc ignor");
+	_TR("basicKickStaRssiLow", "basic roaming rssi low");
+	_TR("basicProbeRspRssi", "basic roaming probe rssi");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
@@ -797,6 +808,7 @@ function initValue()
 	hideElement("div_auto_a");
 	hideElement("div_auto_g");
 	AutoChannelSelect(form);
+	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
 }
 
 function show_abg_rate(form)
@@ -970,7 +982,7 @@ function wirelessModeChange(form)
 		    form.ac_ldpc.disabled = false;
 		}
 	}
-
+	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
 	show_abg_rate(form);
 }
 
@@ -1323,6 +1335,39 @@ function CheckValue(form)
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
+        </table>
+        <table id="div_roaming" name="div_roaming" class="form" style="display:none;">
+        	<tr>
+        		<td class="title" colspan="2" id="basicFastRoaming">Fast Roaming</td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicApProbeRspTimes">Limit probe reqest per client</td>
+        		<td><input type="text" name="ApProbeRspTimes" class="half" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font color="#808080"> 0 - 10 times, default 3</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicAuthRspFail">Reject auth req due to weak signal</td>
+        		<td><input type="text" name="AuthRspFail" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspFail"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicAuthRspRssi">Ignore auth req due to weak signal</td>
+        		<td><input type="text" name="AuthRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicAssocReqRssiThres">Reject assoc req due to weak signal</td>
+        		<td><input type="text" name="AssocReqRssiThres" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqRssiThres"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicAssocRspIgnor">Ignore assoc req due to weak signal</td>
+        		<td><input type="text" name="AssocRspIgnor" class="half" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicKickStaRssiLow">Auto disonnect sta if rssi low</td>
+        		<td><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="basicProbeRspRssi">Auto disonnect sta if rssi low at probe requests</td>
+        		<td><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
         </table>
         <br>
         <table class="buttons">

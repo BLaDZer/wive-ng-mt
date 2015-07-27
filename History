@@ -1123,49 +1123,49 @@
 22) goahead: snmp add allow request from WAN&LAN and community change.<br>
 23) goahead: wireless securuty default select AES for all WPA modes.<br>
 24) goahead: allow dhcpVendorClass set for DHCP client (need for IpTV work in some case at some ugly ISP).<br>
-25) kernel: config: enable xt_match_time module build by default.<br>
-26) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-27) kernel: mm: place preemption point in do_mlockall() loop.<br>
-28) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-29) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-30) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
-31) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-32) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
-33) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
-34) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
-35) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
-36) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-37) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
-38) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-39) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
-40) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
-41) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
-42) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-43) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-44) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
-45) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-46) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-47) kernel: net: do not process device backlog during unregistration.<br>
-48) kernel: net: call rcu_read_lock early in process_backlog.<br>
-49) kernel: net: clone skb before setting peeked flag.<br>
-50) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-51) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-52) kernel: net: arp: fix a regression in arp_solicit().<br>
-53) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-54) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-55) kernel: net: tcp: don't abort splice() after small transfers.<br>
-56) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-57) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-58) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-59) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-60) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+25) goahead: add basic fast roaming parametrs tune (only 76x2 drivers).<br>
+26) goahead: add BandSteering option.<br>
+27) kernel: config: enable xt_match_time module build by default.<br>
+28) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+29) kernel: mm: place preemption point in do_mlockall() loop.<br>
+30) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+31) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+32) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
+33) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+34) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
+35) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
+36) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
+37) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
+38) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+39) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
+40) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+41) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
+42) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
+43) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
+44) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+45) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+46) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
+47) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+48) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+49) kernel: net: do not process device backlog during unregistration.<br>
+50) kernel: net: call rcu_read_lock early in process_backlog.<br>
+51) kernel: net: clone skb before setting peeked flag.<br>
+52) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+53) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+54) kernel: net: arp: fix a regression in arp_solicit().<br>
+55) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+56) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+57) kernel: net: tcp: don't abort splice() after small transfers.<br>
+58) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+59) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+60) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+61) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+62) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 4) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
-5) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
-6) need add in wireless->advanced BandSteering option if CONFIG_BAND_STEERING=y.<br>
 7) need add subchannel select for 5GHz module.<br>
 8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>

@@ -100,6 +100,14 @@
   <message msgid="basic an" msgstr="11an only" />
   <message msgid="basic anc" msgstr="11a/an/ac mixed" />
   <message msgid="basic anac" msgstr="11an/ac mixed" />
+  <message msgid="basic roaming" msgstr="Fast Roaming" />
+  <message msgid="basic roaming probe times" msgstr="Limit probe request per client" />
+  <message msgid="basic roaming auth fail" msgstr="Reject auth req due to weak signal" />
+  <message msgid="basic roaming auth rssi" msgstr="Ignore auth req due to weak signal" />
+  <message msgid="basic roaming rssi thres" msgstr="Reject assoc req due to weak signal" />
+  <message msgid="basic roaming assoc ignor" msgstr="Ignore assoc req due to weak signal" />
+  <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low" />
+  <message msgid="basic roaming probe rssi" msgstr="Auto disonnect sta if rssi low at probe requests" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />

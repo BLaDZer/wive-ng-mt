@@ -39,6 +39,8 @@ static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
+static int  getRoamingSupport(int eid, webs_t wp, int argc, char_t **argv);
+static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -187,6 +189,8 @@ void formDefineWireless(void)
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
+	websAspDefine(T("getRoamingSupport"), getRoamingSupport);
+	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
 	websFormDefine(T("AntennaDiversity"), AntennaDiversity);
@@ -634,6 +638,19 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+// Fast roaming parametrs
+const parameter_fetch_t fast_roaming_flags[] =
+{
+	{ T("ApProbeRspTimes"), "ApProbeRspTimes", 0, T("3") },
+	{ T("AuthRspFail"), "AuthRspFail", 0, T("0") },
+	{ T("AuthRspRssi"), "AuthRspRssi", 0, T("0") },
+	{ T("AssocReqRssiThres"), "AssocReqRssiThres", 0, T("0") },
+	{ T("AssocRspIgnor"), "AssocRspIgnor", 0, T("0") },
+	{ T("KickStaRssiLow"), "KickStaRssiLow", 0, T("0") },
+	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("0") },
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
@@ -928,6 +945,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "RadioOffINIC", (web_radio_ac_on) ? "0" : "1");
 #endif
 
+	// Fast roaming
+#if (!defined(CONFIG_RT_FIRST_IF_NONE) && ((CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_FIRST_CARD == 7612)))
+	setupParameters(wp, fast_roaming_flags, 0);
+#elif (!defined(CONFIG_RT_SECOND_IF_NONE) && ((CONFIG_RT_SECOND_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)))
+	setupParameters(wp, fast_roaming_flags, 0);
+#endif
+
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -1158,6 +1182,12 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	// Set-up country region
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", country_region);
+
+#ifdef CONFIG_BAND_STEERING
+	char_t *bandsteering;
+	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
+	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
+#endif
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
@@ -1847,4 +1877,22 @@ static int getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv)
 static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 {
 	return websWrite(wp, T("%d"), MAX_NUMBER_OF_BSSID);
+}
+
+static int getRoamingSupport(int eid, webs_t wp, int argc, char_t **argv) {
+#if (!defined(CONFIG_RT_FIRST_IF_NONE) && ((CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_FIRST_CARD == 7612)))
+	return websWrite(wp, T("1"));
+#elif (!defined(CONFIG_RT_SECOND_IF_NONE) && ((CONFIG_RT_SECOND_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)))
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_BAND_STEERING
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
 }

@@ -30,6 +30,8 @@ var ids_enable = '<% getCfgZero(1, "IdsEnable"); %>';
 var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
 var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
+var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
+var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
 
 // var htNoiseThresh = '<% getCfgZero(1, "HT_BSSCoexApCntThr"); %>';
 // var htNoiseCoex = '<% getCfgZero(1, "HT_BSSCoexistence"); %>';
@@ -70,6 +72,9 @@ function initTranslation()
   _TR("advPktAggrDisable", "wireless disable");
   _TR("advWMMEnable", "wireless enable");
   _TR("advWMMDisable", "wireless disable");
+  _TR("advBSEnable", "wireless enable");
+  _TR("advBSDisable", "wireless disable");
+  _TR("advBSAuto", "wireless auto");
 
 	_TR("advCountryCode", "adv country code");
 	_TR("advCountryCodeUS", "adv country code us");
@@ -176,13 +181,15 @@ function initValue()
   } else {
     form.idletimeout.value = idletimeout;
   }
+
+  form.bg_protection.options.selectedIndex = 1*bandsteering;
+  displayElement("bandsteering_row", bandsteeringBuilt == "1");
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
 //	form.HT_BSSCoexistence[1].checked = (htNoiseCoex != '1');
 //	form.AP2040Rescan[0].checked = (ap2040Rescan == '1');
 //	form.AP2040Rescan[1].checked = (ap2040Rescan != '1');
 //	wifiCoexThrChange(form);
-
 }
 
 //function wifiCoexThrChange(form)
@@ -298,7 +305,7 @@ function CheckValue(form)
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="advTitle">Advanced Wireless Settings </h1>
@@ -413,6 +420,14 @@ function CheckValue(form)
               <font id="advWMMEnable">Enable</font>&nbsp;
               <input type="radio" name="WmmCapable" value="0" checked>
               <font id="advWMMDisable">Disable</font></td>
+          </tr>
+          <tr id="bandsteering_row">
+            <td class="head">BandSteering</td>
+            <td><select name="BandSteering" size="1" class="half">
+                <option value="0" selected id="advBSDisable">Disable</option>
+                <option value="1" id="advBSEnable">Enable</option>
+                <option value="2" id="advBSAuto">Auto</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="staadvCountry">Country Region Code</td>
