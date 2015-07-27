@@ -34,9 +34,9 @@ usage() {
   echo "save - Save rwfs to mtd." >&2
   echo "load - Load rwfs from mtd." >&2
   echo "restore - Crash RW-FS and reboot for restore clean rwfs." >&2
-  echo "nvramreset - Nvarm clean and load default config." >&2
+  echo "nvramreset - Nvarm clear and load default config." >&2
   echo "burnrf - Burn RF config template to Factory." >&2
-  echo "change_mac - Change/clone wan mac adree." >&2
+  echo "change_mac - Change/clone wan mac adreess." >&2
   echo "factory_mac - Set mac in nvram from factory." >&2
   echo "fullreset - 1. Full zero write in config,factory and rwfs particions." >&2
   echo "	    2. Reboot device." >&2
