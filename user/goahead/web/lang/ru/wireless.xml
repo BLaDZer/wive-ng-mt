@@ -100,13 +100,13 @@
   <message msgid="basic anc" msgstr="Смешанный 11a/an/ac" />
   <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
   <message msgid="basic roaming" msgstr="Fast Roaming" />
-  <message msgid="basic roaming probe times" msgstr="Максимальное число запросов на клиента" />
-  <message msgid="basic roaming auth fail" msgstr="Порог сигнала для отклонения авторизации" />
-  <message msgid="basic roaming auth rssi" msgstr="Порог сигнала для игнорирования авторизации" />
-  <message msgid="basic roaming rssi thres" msgstr="Порог сигнала для отклонения ассоциативного запроса" />
-  <message msgid="basic roaming assoc ignor" msgstr="Порог сигнала для игнорирования ассоциативного запроса" />
-  <message msgid="basic roaming rssi low" msgstr="Порог автоматического отключения клиента" />
-  <message msgid="basic roaming probe rssi" msgstr="Порог автоматического отключения клиентов при слабом пробном запросе" />
+  <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
+  <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
+  <message msgid="basic roaming auth rssi" msgstr="Игнорировать попытки авторизации при уровне ниже" />
+  <message msgid="basic roaming rssi thres" msgstr="Отклонить запрос соединение при уровне ниже" />
+  <message msgid="basic roaming assoc ignor" msgstr="Игнорировать запрос соединение при уровне ниже" />
+  <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
+  <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />

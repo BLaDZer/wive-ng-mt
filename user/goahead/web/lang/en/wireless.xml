@@ -107,7 +107,7 @@
   <message msgid="basic roaming rssi thres" msgstr="Reject assoc req due to weak signal" />
   <message msgid="basic roaming assoc ignor" msgstr="Ignore assoc req due to weak signal" />
   <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low" />
-  <message msgid="basic roaming probe rssi" msgstr="Auto disonnect sta if rssi low at probe requests" />
+  <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />
