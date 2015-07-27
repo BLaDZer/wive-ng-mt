@@ -382,7 +382,11 @@ extern int ax25_hard_header(struct sk_buff *, struct net_device *,
 			    unsigned short, const void *,
 			    const void *, unsigned int);
 extern int  ax25_rebuild_header(struct sk_buff *);
+extern int ax25_neigh_construct(struct neighbour *neigh);
 extern const struct header_ops ax25_header_ops;
+struct ax25_neigh_priv {
+	struct neigh_ops ops;
+};
 
 /* ax25_out.c */
 extern ax25_cb *ax25_send_frame(struct sk_buff *, int, ax25_address *, ax25_address *, ax25_digi *, struct net_device *);
