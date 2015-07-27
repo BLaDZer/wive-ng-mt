@@ -1151,7 +1151,8 @@
 50) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
 51) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 52) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-53) kernel: net: ipv4: arp: fix a lockdep splat in arp_solicit().<br>
+53) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+54) kennel: net: arp: fix a regression in arp_solicit().<br>
 <br>
 <br>
 <b>TODO:</b><br>
