@@ -1126,34 +1126,35 @@
 25) kernel: mm: place preemption point in do_mlockall() loop.<br>
 26) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
 27) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-28) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-29) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
-30) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
-31) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
-32) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
-33) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-34) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
-35) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-36) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
-37) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
-38) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
-39) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-40) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-41) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
-42) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-43) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-44) kernel: net: do not process device backlog during unregistration.<br>
-45) kernel: net: call rcu_read_lock early in process_backlog.<br>
-46) kernel: net: clone skb before setting peeked flag.<br>
-47) kernel: net: tcp: don't abort splice() after small transfers.<br>
-48) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-49) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-50) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-51) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-52) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-53) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-54) kernel: net: arp: fix a regression in arp_solicit().<br>
-55) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+28) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
+29) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+30) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
+31) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
+32) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
+33) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
+34) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+35) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
+36) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+37) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
+38) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
+39) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
+40) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+41) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+42) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
+43) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+44) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+45) kernel: net: do not process device backlog during unregistration.<br>
+46) kernel: net: call rcu_read_lock early in process_backlog.<br>
+47) kernel: net: clone skb before setting peeked flag.<br>
+48) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+49) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+50) kernel: net: arp: fix a regression in arp_solicit().<br>
+51) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+52) kernel: net: tcp: don't abort splice() after small transfers.<br>
+53) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+54) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+55) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+56) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
