@@ -1165,13 +1165,13 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
-4) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
-7) need add subchannel select for 5GHz module.<br>
-8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-10) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-11) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-12) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+2) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
+3) need add subchannel select for 5GHz module.<br>
+4) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+6) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+7) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+8) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>
