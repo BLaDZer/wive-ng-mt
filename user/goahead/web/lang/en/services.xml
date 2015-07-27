@@ -108,7 +108,7 @@
   <message msgid="services misc dnsproxy" msgstr="DNS cached proxy" />
   <message msgid="services misc upnp" msgstr="UPNP support" />
   <message msgid="services misc snmp" msgstr="SNMP daemon" />
-  <message msgid="services misc snmp community" msgstr="SNMP Community" />
+  <message msgid="services misc snmp community" msgstr="Community string" />
   <message msgid="services misc arppt" msgstr="ARP Proxy" />
   <message msgid="services misc cron" msgstr="Cron daemon" />
   <message msgid="services misc lltd" msgstr="LLTD daemon" />
