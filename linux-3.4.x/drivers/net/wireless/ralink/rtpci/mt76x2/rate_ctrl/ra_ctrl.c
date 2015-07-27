@@ -2106,7 +2106,6 @@ UCHAR MlmeSelectTxRate(
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	)
 	{/*  N mode with 1 stream */
-		{
 			if (mcs[7]>=0 && (Rssi > (-72+RssiOffset)) && (pEntry->SupportHTMCS[MCS_7]))
 				TxRateIdx = mcs[7];
 			else if (mcs[6]>=0 && (Rssi > (-74+RssiOffset)) && (pEntry->SupportHTMCS[MCS_6]))
@@ -2123,7 +2122,6 @@ UCHAR MlmeSelectTxRate(
 				TxRateIdx = mcs[1];
 			else
 				TxRateIdx = mcs[0];
-		}
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */
@@ -2171,7 +2169,6 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	MlmeSetMcsGroup(pAd, pEntry);
 
 	pEntry->lastRateIdx = 0xFF;
-	pEntry->lowTrafficCount = 0;
 	pEntry->perThrdAdj = PER_THRD_ADJ;
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	pEntry->lowTrafficCount = 0;

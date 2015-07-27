@@ -1445,7 +1445,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(
 			CHAR	mcs[24];
 			CHAR	RssiOffset = 0;
 
-			pEntry->lowTrafficCount = 0;
+			//pEntry->lowTrafficCount = 0;
 
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
@@ -1502,7 +1502,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(
 		return;
 	}
 
-	pEntry->lowTrafficCount = 0;
+	if(TxTotalCnt > 100)
+		pEntry->lowTrafficCount = 0;
 
 	/*
 		After pEntry->fLastSecAccordingRSSI = TRUE; the for loop 

@@ -1484,6 +1484,14 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			TxRetransmit = pEntry->fifoTxRtyCnt;
 			TxTotalCnt = HwTxCnt;
 			TxErrorRatio = HwErrRatio;
+
+#ifdef RT65xx
+			if (IS_RT65XX(pAd))
+			{
+				if (TxSuccess > 0)
+					pEntry->NoDataIdleCount = 0;
+			}
+#endif /* RT65xx */
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
@@ -1561,7 +1569,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			CHAR mcs[24];
 			CHAR RssiOffset = 0;
 
-			pEntry->lowTrafficCount = 0;
+			//pEntry->lowTrafficCount = 0;
 
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
@@ -1621,7 +1629,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 		return;
 	}
 
-	pEntry->lowTrafficCount = 0;
+	if(TxTotalCnt > 100)
+		pEntry->lowTrafficCount = 0;
 
 	/*
 		After pEntry->fLastSecAccordingRSSI = TRUE; the for loop 

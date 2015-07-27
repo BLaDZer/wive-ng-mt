@@ -1567,9 +1567,9 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	MlmeSetMcsGroup(pAd, pEntry);
 
 	pEntry->lastRateIdx = 0xFF;
-	pEntry->lowTrafficCount = 0;
 	pEntry->perThrdAdj = PER_THRD_ADJ;
 #endif /* NEW_RATE_ADAPT_SUPPORT */
+	pEntry->lowTrafficCount = 0;
 
 #ifdef TXBF_SUPPORT
 	pEntry->phyETxBf = pEntry->phyITxBf = FALSE;

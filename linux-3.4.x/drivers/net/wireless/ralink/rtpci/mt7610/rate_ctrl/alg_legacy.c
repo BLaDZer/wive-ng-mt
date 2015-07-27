@@ -325,6 +325,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			UCHAR	TxRateIdx;
 			CHAR	mcs[24];
 
+			pEntry->lowTrafficCount++;
+
 			/* Check existence and get the index of each MCS */
 			MlmeGetSupportedMcs(pAd, pTable, mcs);
 
@@ -363,6 +365,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif /* TXBF_SUPPORT */
 			continue;
         }
+
+	pEntry->lowTrafficCount = 0;
 
 		if (pEntry->fLastSecAccordingRSSI == TRUE)
 		{

@@ -1960,7 +1960,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			CHAR mcs[24];
 			CHAR RssiOffset = 0;
 
-            //pEntry->lowTrafficCount = 0;
+        		//pEntry->lowTrafficCount = 0;
 
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
@@ -2024,7 +2024,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		if (pAd->CommonCfg.DebugFlags & DBF_NO_BF_AWARE_RA)
 			eTxBFProbing(pAd, pEntry);
 #else
-		if (pAd->chipCap.FlgHwTxBfCap)                                                                                          
+		if (pAd->chipCap.FlgHwTxBfCap)
 			 eTxBFProbing(pAd, pEntry); 
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* TXBF_SUPPORT */
@@ -2039,8 +2039,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		return;
 	}
 
-    if(TxTotalCnt > 100)
-	pEntry->lowTrafficCount = 0;
+	if(TxTotalCnt > 100)
+		pEntry->lowTrafficCount = 0;
 
 	/*
 		After pEntry->fLastSecAccordingRSSI = TRUE; the for loop 
