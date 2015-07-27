@@ -256,7 +256,7 @@ function submitForm(form) {
             <td><input name="dhcpReqIP" class="mid" value="<% getCfgGeneral(1, "dhcpRequestIP"); %>"></td>
           </tr>
           <tr id="dhcpVendorRow">
-            <td class="head" id="wDHCPVendorClass">Type of device (optional)</td>
+            <td class="head" id="wDHCPVendorClass">Vendor class identifier (optional)</td>
             <td><input name="dhcpVendorClass" class="mid" value="<% getCfgGeneral(1, "dhcpVendorClass"); %>"></td>
           </tr>
           <tr>
