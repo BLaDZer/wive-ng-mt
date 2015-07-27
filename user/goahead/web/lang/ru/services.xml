@@ -109,6 +109,7 @@
   <message msgid="services misc dnsproxy" msgstr="DNS прокси" />
   <message msgid="services misc upnp" msgstr="Поддержка UPNP" />
   <message msgid="services misc snmp" msgstr="Поддержка SNMP" />
+  <message msgid="services misc snmp community" msgstr="SNMP сообщество" />
   <message msgid="services misc arppt" msgstr="ARP прокси" />
   <message msgid="services misc cron" msgstr="Планировщик" />
   <message msgid="services misc lltd" msgstr="Поддержка LLTD" />

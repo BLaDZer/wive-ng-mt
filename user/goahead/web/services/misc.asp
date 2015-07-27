@@ -86,6 +86,7 @@ function initTranslation()
 	_TR("lDnsp", "services misc dnsproxy");
 	_TR("lUpnp", "services misc upnp");
 	_TR("lSnmp", "services misc snmp");
+	_TR("snmpCommunity", "services misc snmp community");
 	_TR("lArppt", "services misc arppt");
 	_TR("lCron", "services misc cron");
 	_TR("lLltd", "services misc lltd");
@@ -245,6 +246,7 @@ function initValue()
 	sshRmtSelect(form);
 	pingerSelect(form);
 	udpxySelect(form);
+	snmpdRmtSelect(form);
 
 	displayServiceStatus();
 }
@@ -324,6 +326,11 @@ function sshRmtSelect(form)
 function udpxySelect(form)
 {
 	displayElement( 'udpxy_port_row', form.udpxyMode.value != '0');
+}
+
+function snmpdRmtSelect(form)
+{
+	displayElement( 'snmpCommunityRow', form.SnmpdEnabled.value != '0');
 }
 
 function displayServiceHandler(response)
@@ -637,13 +644,18 @@ function submitForm(form) {
           </tr>
           <tr id="snmpd">
             <td class="head" id="lSnmp">SNMP daemon</td>
-            <td><select name="SnmpdEnabled" class="half">
+            <td><select name="SnmpdEnabled" class="half" onchange="snmpdRmtSelect(this.form);">
                 <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
+                <option value="1">LAN</option>
+                <option value="2">LAN &amp; WAN</option>
               </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
+          </tr>
+          <tr id="snmpCommunityRow" style="display: none;">
+            <td class="head" id="snmpCommunity">SNMP Community</td>
+            <td colspan="4"><input class="half" name="snmpdcommunity" value="<% getCfgGeneral(1, "snmpdcommunity"); %>"></td>
           </tr>
           <tr id="lltd">
             <td class="head" id="lLltd">LLTD daemon</td>

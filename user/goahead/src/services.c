@@ -357,6 +357,7 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("ttlMcastStore"), "store_ttl_mcast", 0, T("0") },
 #ifdef CONFIG_USER_SNMPD
 	{ T("SnmpdEnabled"), "snmpd", 0, T("0") },
+	{ T("snmpdcommunity"), "snmpdcommunity", 0, T("") },
 #endif
 	{ T("mssPmtu"), "mss_use_pmtu", 0, T("1") },
 	{ NULL, NULL, 0, NULL } // Terminator

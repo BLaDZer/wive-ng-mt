@@ -1120,48 +1120,48 @@
 19) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
 20) goahead: add ipv6 interfaces adresses to statisctic page.<br>
 21) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-22) goahead: in wireles securuty default select AES for all WPA modes.<br>
-23) kernel: config: enable xt_match_time module build by default.<br>
-24) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
-25) kernel: mm: place preemption point in do_mlockall() loop.<br>
-26) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-27) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-28) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
-29) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-30) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
-31) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
-32) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
-33) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
-34) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-35) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
-36) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-37) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
-38) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
-39) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
-40) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-41) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-42) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
-43) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-44) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-45) kernel: net: do not process device backlog during unregistration.<br>
-46) kernel: net: call rcu_read_lock early in process_backlog.<br>
-47) kernel: net: clone skb before setting peeked flag.<br>
-48) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-49) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-50) kernel: net: arp: fix a regression in arp_solicit().<br>
-51) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-52) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-53) kernel: net: tcp: don't abort splice() after small transfers.<br>
-54) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-55) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-56) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-57) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-58) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+22) goahead: snmp add allow request from WAN&LAN and community change.<br>
+23) goahead: wireless securuty default select AES for all WPA modes.<br>
+24) kernel: config: enable xt_match_time module build by default.<br>
+25) kernel: sched/fair: Fix RCU stall upon -ENOMEM in sched_create_group().<br>
+26) kernel: mm: place preemption point in do_mlockall() loop.<br>
+27) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+28) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+29) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
+30) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+31) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
+32) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
+33) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
+34) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
+35) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+36) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
+37) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+38) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
+39) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
+40) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
+41) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+42) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+43) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
+44) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+45) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+46) kernel: net: do not process device backlog during unregistration.<br>
+47) kernel: net: call rcu_read_lock early in process_backlog.<br>
+48) kernel: net: clone skb before setting peeked flag.<br>
+49) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+50) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+51) kernel: net: arp: fix a regression in arp_solicit().<br>
+52) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+53) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+54) kernel: net: tcp: don't abort splice() after small transfers.<br>
+55) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+56) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+57) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+58) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+59) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
-2) in misc page for snmp service need add allow select WAN&LAN option as ssh/web managment and community change (use snmpdcommunity nvram variable).<br>
 3) in wan page need in DHCP mode need add dhcpVendorClass edit box for set type of device manual (need for IpTV work in some case at some ugly ISP).<br>
 4) need add in wireless->advanced IEEE80211H option (need for 5GHz outdor AP sertifications, this 1/0 per bssid param with ; divider).<br>
 5) need add in wireless->basic fast roaming tune table (parametrs see in /etc/scripts/wifi_roaming.sh, only 76x2 drivers).<br>
