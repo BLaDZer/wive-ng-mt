@@ -1152,7 +1152,8 @@
 51) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 52) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 53) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-54) kennel: net: arp: fix a regression in arp_solicit().<br>
+54) kernel: net: arp: fix a regression in arp_solicit().<br>
+55) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
 <br>
 <br>
 <b>TODO:</b><br>
