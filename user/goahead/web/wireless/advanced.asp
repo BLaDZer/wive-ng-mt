@@ -182,7 +182,7 @@ function initValue()
     form.idletimeout.value = idletimeout;
   }
 
-  form.bg_protection.options.selectedIndex = 1*bandsteering;
+  form.BandSteering.options.selectedIndex = 1*bandsteering;
   displayElement("bandsteering_row", bandsteeringBuilt == "1");
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
