@@ -317,10 +317,11 @@ function initTranslation()
 	_TR("basicAssocRspIgnor", "basic roaming assoc ignor");
 	_TR("basicKickStaRssiLow", "basic roaming rssi low");
 	_TR("basicProbeRspRssi", "basic roaming probe rssi");
+	_TR("basic80211h", "basic dot11h");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
-	_TRV("basicAddBSSID", "button add")
+	_TRV("basicAddBSSID", "button add");
 
 	var elements = document.getElementsByTagName('option');
   	for (var i = 0; i < elements.length; i++)
@@ -430,6 +431,7 @@ function initValue()
 	hideElement("div_11n");
 	hideElement("div_ac");
 	hideElement("basicWirelessEnabledAc");
+	hideElement("div_dot11h");
 
 	form.sz11aChannel.disabled = true;
 	form.sz11gChannel.disabled = true;
@@ -542,6 +544,7 @@ function initValue()
 
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
+		showElementEx("div_dot11h", style_display_on());
 	}
 
         // Display HT modes
@@ -580,24 +583,22 @@ function initValue()
 
 	// Initialize bssid
 	var HiddenSSID  = '<% getCfgZero(1, "HideSSID"); %>';
-	var HiddenSSIDArray = HiddenSSID.split(";");
-
-	for (i=0; i<bssid_num; i++)
-		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
-
 	var APIsolated = '<% getCfgZero(1, "NoForwarding"); %>';
-	var APIsolatedArray = APIsolated.split(";");
-
-	for (i=0; i<bssid_num; i++)
-		form.isolated_ssid[i].checked = (APIsolatedArray[i] == "1");
-
 	var NoForwardingMBCast = '<% getCfgZero(1, "NoForwardingMBCast"); %>';
+	var IEEE80211H = '<% getCfgZero(1, "IEEE80211H"); %>';
+	var HiddenSSIDArray = HiddenSSID.split(";");
+	var APIsolatedArray = APIsolated.split(";");
 	var NoForwardingMBCastArray = NoForwardingMBCast.split(";");
+	var dot11hArray = IEEE80211H.split(";");
 
-	for (i=0; i<bssid_num; i++)
+	for (i=0; i<bssid_num; i++) {
+		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
+		form.isolated_ssid[i].checked = (APIsolatedArray[i] == "1");
 		form.mbcastisolated_ssid[i].checked = (NoForwardingMBCastArray[i] == "1");
+	}
 
 	form.n_bandwidth.options.selectedIndex = 1*ht_bw;
+	form.dot11h.options.selectedIndex = 1*dot11hArray[0];
 	initChecktime(form);
 	GExtChannelDisplay(form);
 
@@ -915,6 +916,7 @@ function wirelessModeChange(form)
 	hideElement("div_11n");
 	hideElement("div_ac");
 	hideElement("basicWirelessEnabledAc");
+	hideElement("div_dot11h");
 	show14channel(true);
 
 	form.sz11aChannel.disabled = true;
@@ -966,6 +968,7 @@ function wirelessModeChange(form)
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
 		showElementEx("basicWirelessEnabledAc", style_display_on());
+		showElementEx("div_dot11h", style_display_on());
 
     		// Display VHT modes
     		if ((1*wmodeac) >= 14)
@@ -990,7 +993,6 @@ function CheckValue(form)
 {
 	return true;
 }
-
 </script>
 </head>
 
@@ -1188,6 +1190,13 @@ function CheckValue(form)
           <tr id="div_abg_rate">
             <td class="head" colspan="1" id="basicRate">Rate</td>
             <td colspan="5"><select name="abg_rate" class="half">
+              </select></td>
+          </tr>
+          <tr id="div_dot11h">
+            <td class="head" colspan="1" id="basic80211h">IEEE802.11H</td>
+            <td colspan="5"><select name="dot11h" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
         </table>

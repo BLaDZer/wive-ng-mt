@@ -656,13 +656,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *dot11h;
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
 #endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
-	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0", ieee80211h[16] = "";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -721,6 +721,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
 #endif
 	new_bssid_num = atoi(bssid_num);
+	dot11h = websGetVar(wp, T("dot11h"), T(""));
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -795,6 +796,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "1;");
 			else
 				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "0;");
+#ifndef CONFIG_RT_SECOND_IF_NONE
+			if (CHK_IF_DIGIT(dot11h, 1))
+				sprintf(ieee80211h, "%s%s", ieee80211h, "1;");
+			else
+				sprintf(ieee80211h, "%s%s", ieee80211h, "0;");
+#endif
 
 			i++;
 		}
@@ -802,6 +809,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
+	nvram_bufset(RT2860_NVRAM, "IEEE80211H", ieee80211h);
 #endif
 	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
