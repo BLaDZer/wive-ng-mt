@@ -420,9 +420,6 @@ static BOOLEAN DfsEventDataFetch(
 		OUT PDFS_EVENT pDfsEvent);
 #endif /* MT76x0 */
 
-static VOID DfsCheckBusyIdle(
-		IN PRTMP_ADAPTER pAd);
-
 static BOOLEAN DfsChannelCheck(
 		IN PRTMP_ADAPTER pAd,
 		IN UINT8 DfsChannel);
@@ -2194,77 +2191,6 @@ static BOOLEAN ChirpRadarCheck(IN PRTMP_ADAPTER pAd)
 	}
 	/* default */
 	return FALSE;
-}
-
-static VOID DfsCheckBusyIdle(
-			IN PRTMP_ADAPTER pAd)
-{
-	int busy_delta, idle_delta;	
-	PRADAR_DETECT_STRUCT pRadarDetect = &pAd->CommonCfg.RadarDetect;
-
-	RTMP_IO_READ32(pAd, CH_IDLE_STA, &pRadarDetect->idle_time);
-	RTMP_IO_READ32(pAd, CH_BUSY_STA, &pRadarDetect->busy_time);
-
-	/*ch_busy_sta_index begining at 0.*/
-	busy_delta = pRadarDetect->busy_time - pRadarDetect->ch_busy_sta[pRadarDetect->ch_busy_sta_index];
-	idle_delta = pRadarDetect->idle_time - pRadarDetect->ch_idle_sta[pRadarDetect->ch_busy_sta_index];
-
-	if (busy_delta < 0)
-	{
-		busy_delta = ~busy_delta;
-		busy_delta = (busy_delta >> CH_BUSY_SAMPLE_POWER);
-		busy_delta = ~busy_delta;
-	}
-	else
-		busy_delta = busy_delta >> CH_BUSY_SAMPLE_POWER;
-
-	if (idle_delta < 0)
-	{
-		idle_delta = ~idle_delta;
-		idle_delta = idle_delta >> CH_BUSY_SAMPLE_POWER;
-		idle_delta = ~idle_delta;
-	}
-	else
-		idle_delta = idle_delta >> CH_BUSY_SAMPLE_POWER;
-
-	pRadarDetect->ch_busy_sum += busy_delta;
-	pRadarDetect->ch_idle_sum += idle_delta;
-			
-	/* not sure if this is necessary??*/
-	if (pRadarDetect->ch_busy_sum < 0)
-		pRadarDetect->ch_busy_sum = 0;
-	if (pRadarDetect->ch_idle_sum < 0)
-		pRadarDetect->ch_idle_sum = 0;
-			
-	pRadarDetect->ch_busy_sta[pRadarDetect->ch_busy_sta_index] = pRadarDetect->busy_time;
-	pRadarDetect->ch_idle_sta[pRadarDetect->ch_busy_sta_index] = pRadarDetect->idle_time;
-			
-	pRadarDetect->ch_busy_sta_index++;
-	pRadarDetect->ch_busy_sta_index &= CH_BUSY_MASK;
-			
-	if ((pRadarDetect->ch_idle_sum >> pRadarDetect->ch_busy_idle_ratio) < pRadarDetect->ch_busy_sum )
-	{
-	
-		if (!(pRadarDetect->McuRadarDebug & RADAR_DEBUG_DONT_CHECK_BUSY))	
-			pRadarDetect->ch_busy = 1;
-	}
-	else 
-	{
-		if (!(pRadarDetect->McuRadarDebug & RADAR_DEBUG_DONT_CHECK_RSSI))
-		{
-			if ((pAd->ApCfg.RssiSample.AvgRssi0) && (pAd->ApCfg.RssiSample.AvgRssi0 > pRadarDetect->DfsRssiHigh))
-				pRadarDetect->ch_busy = 2;
-			else if ((pAd->ApCfg.RssiSample.AvgRssi0) && (pAd->ApCfg.RssiSample.AvgRssi0 < pRadarDetect->DfsRssiLow))
-				pRadarDetect->ch_busy = 3;
-			else
-				pRadarDetect->ch_busy = 0;
-		}
-	}
-
-	if (pRadarDetect->print_ch_busy_sta)
-		DBGPRINT(RT_DEBUG_TRACE, 
-				("%d %d %d %d\n", pRadarDetect->ch_idle_sum, pRadarDetect->ch_busy_sum, pAd->ApCfg.RssiSample.AvgRssi0, pRadarDetect->ch_busy));
-
 }
 
 static BOOLEAN DfsChannelCheck(
