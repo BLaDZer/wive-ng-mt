@@ -265,7 +265,14 @@ static int gen_wifi_config(int mode, int genmode)
 #define FPRINT_STR(x) fprintf(fp, #x"=%s\n", nvram_bufget(mode, #x));
 
 	if (RT2860_NVRAM == mode) {
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		if (!inic) {
+#endif
+		    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)
+			fprintf(fp, "RadioOn=0\n");
+		    else
+			fprintf(fp, "RadioOn=1\n");
+
 		    FPRINT_NUM(WirelessMode);
 		    FPRINT_NUM(TxPower);
 		    FPRINT_NUM(Channel);
@@ -275,7 +282,13 @@ static int gen_wifi_config(int mode, int genmode)
 		    FPRINT_NUM(BasicRate);
 		    FPRINT_STR(SSID1);
 		    FPRINT_STR(FixedTxMode);
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		} else {
+		    if (atoi(nvram_bufget(mode, "RadioOffINIC")) == 1)
+			fprintf(fp, "RadioOn=0\n");
+		    else
+			fprintf(fp, "RadioOn=1\n");
+
 		    fprintf(fp, "WirelessMode=%d\n", atoi(nvram_bufget(mode, "WirelessModeINIC")));
 		    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
 		    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
@@ -286,7 +299,7 @@ static int gen_wifi_config(int mode, int genmode)
 		    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
 		    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 		}
-
+#endif
 		//Get Bssid number -> need move per ssid to goahead
 		ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
 		if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
@@ -296,10 +309,14 @@ static int gen_wifi_config(int mode, int genmode)
 		bzero(tx_rate, sizeof(tx_rate));
 		for (i = 0; i < ssid_num; i++)
 		{
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		    if (!inic)
+#endif
 			snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRate")));
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		    else
 			snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRateINIC")));
+#endif
 
 		    snprintf(tx_rate+strlen(tx_rate), 1, "%c", ';');
 		}
@@ -433,24 +450,28 @@ static int gen_wifi_config(int mode, int genmode)
 		FPRINT_NUM(HT_MIMOPSMode);
 		FPRINT_NUM(HT_MIMOPS);
 
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		if (!inic) {
+#endif
 		    FPRINT_NUM(HT_TxStream);
 		    FPRINT_NUM(HT_RxStream);
 		    FPRINT_NUM(HT_EXTCHA);
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 		} else {
 		    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_bufget(mode, "HT_EXTCHAINIC")));
 		    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_bufget(mode, "HT_TxStreamINIC")));
 		    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_bufget(mode, "HT_RxStreamINIC")));
-#ifndef CONFIG_RT_SECOND_IF_NONE
-		    // VHT
-		    FPRINT_NUM(VHT_BW);
-		    FPRINT_NUM(VHT_BW_SIGNAL);
-		    FPRINT_NUM(VHT_DisallowNonVHT);
-		    FPRINT_NUM(VHT_LDPC);
-		    FPRINT_NUM(VHT_SGI);
-		    FPRINT_NUM(VHT_STBC);
-#endif
 		}
+#endif
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		// VHT
+		FPRINT_NUM(VHT_BW);
+		FPRINT_NUM(VHT_BW_SIGNAL);
+		FPRINT_NUM(VHT_DisallowNonVHT);
+		FPRINT_NUM(VHT_LDPC);
+		FPRINT_NUM(VHT_SGI);
+		FPRINT_NUM(VHT_STBC);
+#endif
 
 		FPRINT_NUM(AccessPolicy0);
 		FPRINT_STR(AccessControlList0);
@@ -612,20 +633,6 @@ static int gen_wifi_config(int mode, int genmode)
 #ifdef CONFIG_BAND_STEERING
 		FPRINT_NUM(BandSteering);
 #endif
-		//Radio On/Off
-		if (!inic) {
-		    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)
-			fprintf(fp, "RadioOn=0\n");
-		    else
-			fprintf(fp, "RadioOn=1\n");
-		} else {
-		    if (atoi(nvram_bufget(mode, "RadioOffINIC")) == 1)
-			fprintf(fp, "RadioOn=0\n");
-		    else
-			fprintf(fp, "RadioOn=1\n");
-		}
-	}
-
 	fclose(fp);
 	nvram_close(mode);
 	sync();
