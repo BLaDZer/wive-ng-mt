@@ -224,7 +224,10 @@ static int nvram_load_default(void)
 static int gen_wifi_config(int mode, int genmode)
 {
 	FILE *fp = NULL;
-	int  i, ssid_num = 0, inic = 0;
+	int  i, ssid_num = 0;
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	int inic = 0;
+#endif
 	char tx_rate[32], wmm_enable[32];
 
 	if (genmode == RT2860_NVRAM) {
