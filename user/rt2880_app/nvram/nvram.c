@@ -231,7 +231,6 @@ static int gen_wifi_config(int mode, int genmode)
 		system("mkdir -p /etc/Wireless/RT2860");
 		fp = fopen("/etc/Wireless/RT2860/RT2860.dat", "w+");
 		printf("Build config for fist WiFi module.\n");
-#ifndef CONFIG_RT_SECOND_IF_NONE
 	} else if (genmode == RTINIC_NVRAM) {
 		system("mkdir -p /etc/Wireless/iNIC");
 		fp = fopen("/etc/Wireless/iNIC/iNIC_ap.dat", "w+");
@@ -241,7 +240,6 @@ static int gen_wifi_config(int mode, int genmode)
 		inic = 1;
 #endif
 		printf("Build config for second WiFi module.\n");
-#endif
 	} else {
 		printf("gen_wifi_config: mode unknown...\n");
 		return 0;
