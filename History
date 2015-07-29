@@ -1162,8 +1162,9 @@
 61) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
 62) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
 63) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-64) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-65) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+64) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+65) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+66) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
