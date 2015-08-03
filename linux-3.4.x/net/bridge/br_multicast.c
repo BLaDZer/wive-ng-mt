@@ -1155,18 +1155,6 @@ static void br_multicast_leave_group(struct net_bridge *br,
 	if (!mp)
 		goto out;
 
-	querier_exist = timer_pending(&br->multicast_querier_timer);
-
-	time = jiffies + br->multicast_last_member_count *
-			 br->multicast_last_member_interval;
-
-	if (br->multicast_querier && !querier_exist) {
-		__br_multicast_send_query(br, port, &mp->addr);
-
-		mod_timer(port ? &port->multicast_query_timer :
-				 &br->multicast_query_timer, time);
-	}
-
 	if (port && (port->flags & BR_MULTICAST_FAST_LEAVE)) {
 		struct net_bridge_port_group __rcu **pp;
 
@@ -1175,9 +1163,6 @@ static void br_multicast_leave_group(struct net_bridge *br,
 		     pp = &p->next) {
 			if (!br_port_group_equal(p, port, src))
 				continue;
-
-			if (!p->m2u && querier_exist)
-				break;
 
 			rcu_assign_pointer(*pp, p->next);
 			hlist_del_init(&p->mglist);
@@ -1191,8 +1176,22 @@ static void br_multicast_leave_group(struct net_bridge *br,
 		goto out;
 	}
 
+	querier_exist = timer_pending(&br->multicast_querier_timer);
+	if (querier_exist)
+		goto out;
+
+	time = jiffies + br->multicast_last_member_count *
+			 br->multicast_last_member_interval;
+
+	if (!querier_exist && br->multicast_querier) {
+		__br_multicast_send_query(br, port, &mp->addr);
+
+		mod_timer(port ? &port->multicast_query_timer :
+				 &br->multicast_query_timer, time);
+	}
+
 	if (!port) {
-		if (mp->mglist &&
+		if (!querier_exist && mp->mglist &&
 		    (timer_pending(&mp->timer) ?
 		     time_after(mp->timer.expires, time) :
 		     try_to_del_timer_sync(&mp->timer) >= 0)) {
@@ -1207,9 +1206,6 @@ static void br_multicast_leave_group(struct net_bridge *br,
 	     p = mlock_dereference(p->next, br)) {
 		if (!br_port_group_equal(p, port, src))
 			continue;
-
-		if (!p->m2u && querier_exist)
-			break;
 
 		if (!hlist_unhashed(&p->mglist) &&
 		    (timer_pending(&p->timer) ?

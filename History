@@ -1150,22 +1150,23 @@
 49) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
 50) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
 51) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-52) kernel: net: do not process device backlog during unregistration.<br>
-53) kernel: net: call rcu_read_lock early in process_backlog.<br>
-54) kernel: net: clone skb before setting peeked flag.<br>
-55) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-56) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-57) kernel: net: arp: fix a regression in arp_solicit().<br>
-58) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-59) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-60) kernel: net: tcp: don't abort splice() after small transfers.<br>
-61) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-62) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-63) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-64) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-65) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-66) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-67) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+52) kernel: net: bridge: mcast: give fast leave precedence over multicast router and querier.<br>
+53) kernel: net: do not process device backlog during unregistration.<br>
+54) kernel: net: call rcu_read_lock early in process_backlog.<br>
+55) kernel: net: clone skb before setting peeked flag.<br>
+56) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+57) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+58) kernel: net: arp: fix a regression in arp_solicit().<br>
+59) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+60) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+61) kernel: net: tcp: don't abort splice() after small transfers.<br>
+62) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+63) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+64) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+65) kernel: net: tcp: tso: allow deferring under reordering state.<br>
+66) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+67) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+68) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
