@@ -1,5 +1,4 @@
 # Options for all pppd sessions
-lock
 noauth
 noipdefault
 nolog

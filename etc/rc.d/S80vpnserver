@@ -88,7 +88,6 @@ refuse-mschap
 require-mschap-v2
 $l2tp_srv_mppe_enabled
 $l2tp_srv_mppe_no_stateful
-lock
 minunit 10
 external_chap_sec
 ip-up-script $ppp/ip-up
