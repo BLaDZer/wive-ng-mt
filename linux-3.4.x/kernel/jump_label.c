@@ -56,6 +56,11 @@ jump_label_sort_entries(struct jump_entry *start, struct jump_entry *stop)
 
 static void jump_label_update(struct static_key *key, int enable);
 
+static inline bool static_key_type(struct static_key *key)
+{
+	return (unsigned long)key->entries & JUMP_TYPE_MASK;
+}
+
 void static_key_slow_inc(struct static_key *key)
 {
 	if (atomic_inc_not_zero(&key->enabled))
@@ -63,7 +68,7 @@ void static_key_slow_inc(struct static_key *key)
 
 	jump_label_lock();
 	if (atomic_read(&key->enabled) == 0) {
-		if (!jump_label_get_branch_default(key))
+		if (!static_key_type(key))
 			jump_label_update(key, JUMP_LABEL_JMP);
 		else
 			jump_label_update(key, JUMP_LABEL_NOP);
@@ -86,7 +91,7 @@ static void __static_key_slow_dec(struct static_key *key,
 		atomic_inc(&key->enabled);
 		schedule_delayed_work(work, rate_limit);
 	} else {
-		if (!jump_label_get_branch_default(key))
+		if (!static_key_type(key))
 			jump_label_update(key, JUMP_LABEL_NOP);
 		else
 			jump_label_update(key, JUMP_LABEL_JMP);
@@ -173,15 +178,17 @@ static void __jump_label_update(struct static_key *key,
 	}
 }
 
+static inline struct jump_entry *static_key_entries(struct static_key *key)
+{
+	return (struct jump_entry *)((unsigned long)key->entries & ~JUMP_TYPE_MASK);
+}
+
 static enum jump_label_type jump_label_type(struct static_key *key)
 {
-	bool true_branch = jump_label_get_branch_default(key);
-	bool state = static_key_enabled(key);
+	bool enabled = static_key_enabled(key);
+	bool type = static_key_type(key);
 
-	if ((!true_branch && state) || (true_branch && !state))
-		return JUMP_LABEL_JMP;
-
-	return JUMP_LABEL_NOP;
+	return enabled ^ type;
 }
 
 void __init jump_label_init(void)
@@ -436,7 +443,7 @@ int jump_label_text_reserved(void *start, void *end)
 static void jump_label_update(struct static_key *key, int enable)
 {
 	struct jump_entry *stop = __stop___jump_table;
-	struct jump_entry *entry = jump_label_get_entries(key);
+	struct jump_entry *entry = static_key_entries(key);
 
 #ifdef CONFIG_MODULES
 	struct module *mod = __module_address((unsigned long)key);
