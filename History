@@ -1177,6 +1177,7 @@
 76) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
 77) kernel: jump_label: locking/static_keys: rework update logic.<br>
 78) kernel: jump_label: add jump_entry_key() helper.<br>
+79) kernel: jump_label: module: fix module locking.<br>
 <br>
 <br>
 <b>TODO:</b><br>
