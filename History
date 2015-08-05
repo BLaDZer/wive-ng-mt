@@ -1173,11 +1173,12 @@
 72) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
 73) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
 74) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-75) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
-76) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
-77) kernel: jump_label: locking/static_keys: rework update logic.<br>
-78) kernel: jump_label: add jump_entry_key() helper.<br>
-79) kernel: jump_label: module: fix module locking.<br>
+75) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+76) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
+77) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
+78) kernel: jump_label: locking/static_keys: rework update logic.<br>
+79) kernel: jump_label: add jump_entry_key() helper.<br>
+80) kernel: jump_label: module: fix module locking.<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -1208,11 +1208,10 @@ static int arp_netdev_event(struct notifier_block *this, unsigned long event,
 		neigh_changeaddr(&arp_tbl, dev);
 		rt_cache_flush(dev_net(dev), 0);
 		break;
-#ifdef CONFIG_ARP_NOTIFY_MEDIA_STATE
 	case NETDEV_CHANGE:
 		neigh_changeaddr(&arp_tbl, dev);
+#ifdef CONFIG_ARP_NOTIFY_MEDIA_STATE
 		rt_cache_flush(dev_net(dev), 0);
-
 		/* Send bcast  ARP in neighbours to update arp tables */
 		rcu_read_lock();
 		in_dev = __in_dev_get_rcu(dev);
@@ -1220,12 +1219,11 @@ static int arp_netdev_event(struct notifier_block *this, unsigned long event,
 		    goto out;
 
 		for (ifa = in_dev->ifa_list; ifa; ifa = ifa->ifa_next)
-		    arp_send(ARPOP_REQUEST, ETH_P_ARP, ifa->ifa_address,
-			    dev, ifa->ifa_address, NULL, dev->dev_addr, NULL);
+		    arp_send(ARPOP_REQUEST, ETH_P_ARP, ifa->ifa_address, dev, ifa->ifa_address, NULL, dev->dev_addr, NULL);
 out:
 		rcu_read_unlock();
-		break;
 #endif
+		break;
 	default:
 		break;
 	}

@@ -1717,6 +1717,9 @@ static int ndisc_netdev_event(struct notifier_block *this, unsigned long event, 
 		neigh_changeaddr(&nd_tbl, dev);
 		fib6_run_gc(~0UL, net);
 		break;
+	case NETDEV_CHANGE:
+		neigh_changeaddr(&nd_tbl, dev);
+		break;
 	case NETDEV_DOWN:
 		neigh_ifdown(&nd_tbl, dev);
 		fib6_run_gc(~0UL, net);
