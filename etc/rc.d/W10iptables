@@ -483,6 +483,13 @@ startv6() {
 	# allow multicast for all
 	ip6tables -A INPUT -d ff00::/8 -j ACCEPT
 
+	# dnsproxy
+	if [ "$dnsPEnabled" = "1" ]; then
+	    $LOG "V6: Dnsproxy allow to connect"
+	    ip6tables -A INPUT -i $lan_if -p udp --dport 53 -j ACCEPT
+	    ip6tables -A INPUT -i $lan_if $STATE_NEW -p tcp --dport 53 -j ACCEPT
+	fi
+
 	# miniupnpd use for ipv6 pinhole support
 	if [ "$upnpEnabled" = "1" ] && [ "$ROUTE_MODE" = "on" ]; then
 	    $LOG "V6: Add base upnp rules"

@@ -1115,70 +1115,71 @@
 14) init.d: do not touch all.forward sysctl from dhcp script.<br>
 15) init.d: do not more need wait before start udhcpc.<br>
 16) init.d: fix vpn server work regression.<br>
-17) igmpproxy: silence downstream interface igmp messages.<br>
-18) igmpproxy: use monotic clock instead of time of day.<br>
-19) igmpproxy: fix multiple downlink interfaces leave.<br>
-20) igmpproxy: fix wifi snooping code to work with new drivers and use legacy oid header.<br>
-21) goahead: add hardware traffic counters from switch to WebUI.<br>
-22) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
-23) goahead: add ipv6 interfaces adresses to statisctic page.<br>
-24) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
-25) goahead: snmp add allow request from WAN&LAN and community change.<br>
-26) goahead: wireless securuty default select AES for all WPA modes.<br>
-27) goahead: allow dhcpVendorClass set for DHCP client (need for IpTV work in some case at some ugly ISP).<br>
-28) goahead: add basic fast roaming parametrs tune (only 76x2 drivers).<br>
-29) goahead: add BandSteering option.<br>
-30) goahead: add IEEE 802.11h option (enable 802.11h include DFS support).<br>
-31) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
-32) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
-33) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
-34) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
-35) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
-36) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
-37) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
-38) kernel: ralink_wifi: 76x2: fix mt76x2_get_current_temp() periodic calls.<br>
-39) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
-40) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
-41) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
-42) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
-43) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
-44) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
-45) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
-46) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
-47) kernel: config: enable xt_match_time module build by default.<br>
-48) kernel: sched/fair: fix RCU stall upon -ENOMEM in sched_create_group().<br>
-49) kernel: mm: place preemption point in do_mlockall() loop.<br>
-50) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-51) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-52) kenrel: mips: Fix HIGHMEM crash in __update_cache().<br>
-53) kernel: mips: Fix cpu_has_mips_r2_exec_hazard.<br>
-54) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-55) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-56) kernel: net: bridge: mcast: give fast leave precedence over multicast router and querier.<br>
-57) kernel: net: do not process device backlog during unregistration.<br>
-58) kernel: net: call rcu_read_lock early in process_backlog.<br>
-59) kernel: net: clone skb before setting peeked flag.<br>
-60) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-61) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-62) kernel: net: arp: fix a regression in arp_solicit().<br>
-63) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-64) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-65) kernel: net: tcp: don't abort splice() after small transfers.<br>
-66) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-67) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-68) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-69) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-70) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
-71) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
-72) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-73) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-74) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-75) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
-76) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
-77) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
-78) kernel: jump_label: locking/static_keys: rework update logic.<br>
-79) kernel: jump_label: add jump_entry_key() helper.<br>
-80) kernel: jump_label: module: fix module locking.<br>
+17) inif.d: iptables: v6: add rules for allow dnsmasq work as ipv6 nameserver.<br>
+18) igmpproxy: silence downstream interface igmp messages.<br>
+19) igmpproxy: use monotic clock instead of time of day.<br>
+20) igmpproxy: fix multiple downlink interfaces leave.<br>
+21) igmpproxy: fix wifi snooping code to work with new drivers and use legacy oid header.<br>
+22) goahead: add hardware traffic counters from switch to WebUI.<br>
+23) goahead: use 3600 secs as default rekey interval for new BSSIDs.<br>
+24) goahead: add ipv6 interfaces adresses to statisctic page.<br>
+25) goahead: show dgw interface name if dgw add over if without ip adress at next hop.<br>
+26) goahead: snmp add allow request from WAN&LAN and community change.<br>
+27) goahead: wireless securuty default select AES for all WPA modes.<br>
+28) goahead: allow dhcpVendorClass set for DHCP client (need for IpTV work in some case at some ugly ISP).<br>
+29) goahead: add basic fast roaming parametrs tune (only 76x2 drivers).<br>
+30) goahead: add BandSteering option.<br>
+31) goahead: add IEEE 802.11h option (enable 802.11h include DFS support).<br>
+32) kenrel: ralink_mtd: add Micron MT29F1G08ABAEA (128MB) to MT7621 NAND table.<br>
+33) kernel: ralink_arch: disable MT7621 PCIe clock if PCI not builded.<br>
+34) kernel: ralink_arch: fix MT7621 sleep mode clock (1/4 on sleep, 4/4 under load).<br>
+35) kernel: ralink_arch: detect MT7628/MT7688 package type (AN/KN).<br>
+36) kernel: ralink_wifi: 7620: apply post patches (dynvga BBP config fix).<br>
+37) kernel: ralink_wifi: 76x2: update to 3.0.3.2_rev2.<br>
+38) kernel: ralink_wifi: 76x2: fix rssi feedback work.<br>
+39) kernel: ralink_wifi: 76x2: fix mt76x2_get_current_temp() periodic calls.<br>
+40) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
+41) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
+42) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
+43) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
+44) kernel: ralink_wifi: xxxx: backport low traffic detect fix in rate alg.<br>
+45) kernel: ralink_wifi: xxxx: move bandsteering options from driver code.<br>
+46) kernel: ralink_wifi: xxxx: add max clients kernel options.<br>
+47) kernel: ralink_wifi: xxxx: apply post mlme fixes.<br>
+48) kernel: config: enable xt_match_time module build by default.<br>
+49) kernel: sched/fair: fix RCU stall upon -ENOMEM in sched_create_group().<br>
+50) kernel: mm: place preemption point in do_mlockall() loop.<br>
+51) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+52) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+53) kenrel: mips: Fix HIGHMEM crash in __update_cache().<br>
+54) kernel: mips: Fix cpu_has_mips_r2_exec_hazard.<br>
+55) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+56) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+57) kernel: net: bridge: mcast: give fast leave precedence over multicast router and querier.<br>
+58) kernel: net: do not process device backlog during unregistration.<br>
+59) kernel: net: call rcu_read_lock early in process_backlog.<br>
+60) kernel: net: clone skb before setting peeked flag.<br>
+61) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+62) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+63) kernel: net: arp: fix a regression in arp_solicit().<br>
+64) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+65) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+66) kernel: net: tcp: don't abort splice() after small transfers.<br>
+67) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+68) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+69) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+70) kernel: net: tcp: tso: allow deferring under reordering state.<br>
+71) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
+72) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
+73) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+74) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+75) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+76) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+77) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
+78) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
+79) kernel: jump_label: locking/static_keys: rework update logic.<br>
+80) kernel: jump_label: add jump_entry_key() helper.<br>
+81) kernel: jump_label: module: fix module locking.<br>
 <br>
 <br>
 <b>TODO:</b><br>
