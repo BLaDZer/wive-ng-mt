@@ -1179,12 +1179,13 @@
 78) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
 79) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
 80) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-81) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-82) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-83) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
-84) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
-85) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
-86) kernel: net: ipv6: fix MLD Query message check.<br>
+81) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
+82) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+83) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+84) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+85) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
+86) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
+87) kernel: net: ipv6: fix MLD Query message check.<br>
 <br>
 <br>
 <b>TODO:</b><br>
