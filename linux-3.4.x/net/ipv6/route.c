@@ -435,10 +435,6 @@ static void rt6_probe(struct rt6_info *rt)
 out:
 	rcu_read_unlock();
 }
-#else
-static inline void rt6_probe(struct rt6_info *rt)
-{
-}
 #endif
 
 /*
@@ -512,12 +508,16 @@ static struct rt6_info *find_match(struct rt6_info *rt, int oif, int strict,
 		goto out;
 
 	if (m > *mpri) {
+#ifdef CONFIG_IPV6_ROUTER_PREF
 		if (strict & RT6_LOOKUP_F_REACHABLE)
 			rt6_probe(match);
+#endif
 		*mpri = m;
 		match = rt;
+#ifdef CONFIG_IPV6_ROUTER_PREF
 	} else if (strict & RT6_LOOKUP_F_REACHABLE) {
 		rt6_probe(rt);
+#endif
 	}
 
 out:
