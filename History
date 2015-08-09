@@ -1193,6 +1193,7 @@
 <br>
 <b>3.4.x</b><br>
 1) add hotspot mode support (basic CoovaChilli port).<br>
+2) init.d: fix wan restart in apcli_gw mode.<br>
 <br>
 <br>
 <b>TODO:</b><br>
