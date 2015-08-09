@@ -4,8 +4,9 @@
 DIR	  := $(shell pwd)/coova-chilli-1.3.0
 
 CONFOPTS  := --host=mipsel-linux --enable-shared--disable-static --prefix=$(DIR)/filesystem --with-poll
-CONFOPTS  += --disable-tap --disable-debug --disable-largelimits --disable-miniportal --disable-json --enable-disable
-CONFOPTS  += --enable-dhcpopt --enable-multilan --enable-multiroute -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-chilliredir --enable-chilliproxy
+CONFOPTS  += --disable-tap --disable-debug --disable-largelimits --disable-miniportal --disable-json
+CONFOPTS  += --enable-dhcpopt --enable-multilan --enable-multiroute -enable-sessionstate --enable-sessionid --enable-apsessionid
+CONFOPTS  += --enable-miniconfig --enable-chilliredir --enable-chilliproxy --enable-config=/etc/chilli.conf
 
 ifndef CONFIG_IPV6
 CONFOPTS  += --without-ipv6
