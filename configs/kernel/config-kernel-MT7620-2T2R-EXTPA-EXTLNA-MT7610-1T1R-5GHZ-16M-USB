@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.108.48 Kernel Configuration
+# Linux/mips 3.4.108.53 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -915,8 +915,11 @@ CONFIG_PPP_SYNC_TTY=y
 #
 # CONFIG_USB_KAWETH is not set
 # CONFIG_USB_PEGASUS is not set
+# CONFIG_USB_RTL8150 is not set
+# CONFIG_USB_RTL8152 is not set
 CONFIG_USB_USBNET=m
 # CONFIG_USB_NET_AX8817X is not set
+# CONFIG_USB_NET_AX88179_178A is not set
 CONFIG_USB_NET_CDCETHER=m
 # CONFIG_USB_NET_CDC_EEM is not set
 CONFIG_USB_NET_CDC_NCM=m
