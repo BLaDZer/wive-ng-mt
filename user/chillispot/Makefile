@@ -37,10 +37,12 @@ romfs:
 	$(ROMFSINST) -s /etc/rc.d/W88chillispot /etc/init.d/chillispot
 	cp -fva $(DIR)/filesystem/lib/*.so*  $(ROMFSDIR)/lib
 	cp -fva $(DIR)/filesystem/sbin/*  $(ROMFSDIR)/sbin
-	cp -fva $(DIR)/filesystem/etc/chilli.conf  $(ROMFSDIR)/sbin
+	cp -fva $(DIR)/filesystem/etc/chilli/defaults  $(ROMFSDIR)/etc
 
 clean:
 	-make clean -C $(DIR)
+	rm -rf $(DIR)/filesystem
 
 distclean:
 	-make distclean -C $(DIR)
+	rm -rf $(DIR)/filesystem
