@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/chilli ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t ChilliSpot"
+PARAMS="net dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 \
+    radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname \
+    radiusnasporttype coaport lease uamserver uamhomepage uamsecret \
+    uamallowed macallowed"
+BOOLPARAMS="coanoipcheck uamanydns"
+
+start() {
+    if [ "$OperationMode" = "4" ] && [ -f /etc/chilli.conf ]; then
+	$LOG "Starting ChilliSpot"
+	get_params
+	modprobe tun
+	chilli "$PARLINE"
+    fi
+}
+
+stop() {
+    pid=`pidof chilli`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping ChilliSpot"
+	killall -q chilli
+	killall -q -SIGKILL chilli
+    fi
+}
+
+get_params() {
+    PARLINE="--dhcpif br0"
+    for i in $PARAMS; do
+	val=`nvram_get 2860 chilli_$i`
+	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
+    done
+    for i in $BOOLPARAMS; do
+	val=`nvram_get 2860 chilli_$i`
+	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
+    done
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

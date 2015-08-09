@@ -79,6 +79,7 @@ dir_$(CONFIG_USER_ZEBRA)		    += quagga
 dir_$(CONFIG_USER_SNMPD)                    += snmpd
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
 dir_$(CONFIG_USER_SAMBA)		    += samba
+dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
 
 #for usb printer support
 dir_$(CONFIG_USER_P910ND)		    += p910nd
