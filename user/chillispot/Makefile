@@ -6,10 +6,10 @@ PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-1.3.0
 
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-mmap --without-nfcoova --prefix=$(DIR)/filesystem
-CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json --disable-dhcpradius
+CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
 CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
 
-DEBUG     := y
+#DEBUG     := y
 ifdef DEBUG
 CONFOPTS  +=  --disable-debug --disable-debug2
 else
