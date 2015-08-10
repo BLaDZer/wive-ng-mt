@@ -167,18 +167,11 @@ stop() {
 	    echo "d default" > $var/l2tp-control
 	    usleep 500000
 	fi
-	count=0
-	# try 3 times for correct shutdown
-	while kill "$pid" > /dev/null 2>&1; do
-	    pid=`pidof xl2tpd-srv`
+	# terminate xl2tp-srv daemon
+	while killall -q xl2tpd-srv; do
 	    usleep 500000
-	    count="$(($count+1))"
-	    if [ "$count" = "5" ]; then
-		break
-	    fi
+	    killall -q -SIGKILL xl2tpd-srv
 	done
-	# if not correct terminate need kill
-	kill -SIGKILL "$pid" > /dev/null 2>&1
 	# remove server control socket
 	rm -f $var/l2tp-control
 	# remove server pidfile
