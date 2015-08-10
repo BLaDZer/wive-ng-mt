@@ -5,7 +5,7 @@ PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-1.3.0
 
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --prefix=$(DIR)/filesystem --with-poll
-CONFOPTS  += --disable-tap--disable-largelimits --disable-miniportal --disable-json --enable-debug  --enable-debug2
+CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json --disable-debug  --disable-debug2
 CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-apsessionid
 CONFOPTS  += --enable-miniconfig --enable-chilliredir --enable-chilliproxy
 
