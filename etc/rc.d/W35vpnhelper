@@ -71,10 +71,14 @@ killall_vpn() {
 	fi
 	# second terminate xl2tpd client only
 	$LOG "xl2tpd: daemon terminate."
-	kill "$pid" > /dev/null 2>&1
+	# terminate xl2tp daemon
+	while killall -q xl2tpd; do
+	    usleep 500000
+	    killall -q -SIGKILL xl2tpd
+	done
     fi
 
-    # safe terminate vpn client if l2tp server enabled
+    # safe terminate pppd if l2tp server enabled
     if [ "$l2tp_srv_enabled" = "1" ]; then
 	# first send HUP for terminate connections and try some times
 	# second send TERM for exit pppd process
@@ -102,11 +106,6 @@ killall_vpn() {
 	    rm -f /var/run/$vpn_if.pid
 	fi
     else # fast terminate ppp clients
-	# terminate xl2tp daemon
-	while killall -q xl2tpd; do
-	    usleep 500000
-	    killall -q -SIGKILL xl2tpd
-	done
 	# try disconnect before kill
 	killall -q -SIGHUP pppd
 	usleep 500000
@@ -118,6 +117,7 @@ killall_vpn() {
 	# remove pid files
 	rm -f /var/run/ppp*.pid
     fi
+
     # remove VPN server IP file
     rm -f /tmp/vpnip
     # remove vpn_if_name export
