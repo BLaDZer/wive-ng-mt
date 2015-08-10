@@ -339,7 +339,7 @@ void death_handler (int signal)
     /* erase pid and control files */
     unlink (gconfig.pidfile);
     unlink (gconfig.controlfile);
-    free(dial_no_tmp);
+    //free(dial_no_tmp); /* double free, this allready freed in tunnel destroy */
     close(server_socket);
     close(control_fd);
     closelog();

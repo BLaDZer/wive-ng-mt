@@ -1195,6 +1195,7 @@
 1) add hotspot mode support (basic CoovaChilli port).<br>
 2) init.d: fix wan restart in apcli_gw mode.<br>
 3) init.d: fix xl2tp client/server restart infinity stop at some cases.<br>
+4) xl2tpd: fix double free regression at death signal.<br>
 <br>
 <br>
 <b>TODO:</b><br>
