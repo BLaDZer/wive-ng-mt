@@ -1,16 +1,27 @@
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
 
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-1.3.0
 
-CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --prefix=$(DIR)/filesystem --with-poll
-CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json --disable-debug  --disable-debug2
-CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-apsessionid
-CONFOPTS  += --enable-miniconfig --enable-chilliredir --enable-chilliproxy
+CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-ipc-msg --without-mmap --without-nfcoova --prefix=$(DIR)/filesystem
+CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json --disable-dhcpradius
+CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
+
+DEBUG     := y
+ifdef DEBUG
+CONFOPTS  +=  --disable-debug --disable-debug2
+else
+CONFOPTS  +=  --enable-debug --enable-debug2
+endif
 
 ifndef CONFIG_IPV6
 CONFOPTS  += --without-ipv6
+endif
+
+ifdef CONFIG_IP_NF_QUEUE
+CONFOPTS  += --with-nfqueue
 endif
 
 ifdef CONFIG_LIB_OPENSSL

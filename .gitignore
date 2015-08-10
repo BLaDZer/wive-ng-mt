@@ -394,6 +394,11 @@ fulldump
 /user/irqbalance/configure
 /user/irqbalance/Makefile
 /user/irqbalance/Makefile.in
+/user/chillispot/coova-chilli-1.3.0/Makefile.in
+/user/chillispot/coova-chilli-1.3.0/configure
+/user/chillispot/coova-chilli-1.3.0/debian/Makefile
+/user/chillispot/coova-chilli-1.3.0/distro/Makefile
+/user/chillispot/coova-chilli-1.3.0/doc/Makefile
 
 #
 # exclude enerated files from kernel

@@ -155,7 +155,7 @@ AUTOMAKE = ${SHELL} /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0/missing auto
 AWK = gawk
 CC = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS =  -Os -pipe -mno-branch-likely -mno-long-calls -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking -I/opt/Wive-MT -I/opt/Wive-MT/lib/shared/include/libiconv -I/opt/Wive-MT/lib/shared/include/event2 -I/opt/Wive-MT/lib/shared/include/curl -I/opt/Wive-MT/lib/shared/include/pcap -I/opt/Wive-MT/lib/shared/include/openssl -I/opt/Wive-MT/lib/shared/include/libusb-1.0 -I/opt/Wive-MT/lib/shared/include/libxml2 -I/opt/Wive-MT/lib/shared/include/neon -I/opt/Wive-MT/lib/shared/include/mtd -I/opt/Wive-MT/libnvram -isystem /opt/Wive-MT/lib/shared/include -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack -fno-strict-overflow -fno-aggressive-loop-optimizations -fno-var-tracking-assignments -fno-tree-slsr -fno-delete-null-pointer-checks -pipe -fno-builtin -Dlinux -D__linux__ -Dunix -DEMBED  -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
+CFLAGS =  -Os -pipe -mno-branch-likely -mno-long-calls -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing -Wno-pointer-sign -Wno-unused-but-set-variable -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking -I/opt/Wive-MT -I/opt/Wive-MT/lib/shared/include/libiconv -I/opt/Wive-MT/lib/shared/include/event2 -I/opt/Wive-MT/lib/shared/include/curl -I/opt/Wive-MT/lib/shared/include/pcap -I/opt/Wive-MT/lib/shared/include/openssl -I/opt/Wive-MT/lib/shared/include/libusb-1.0 -I/opt/Wive-MT/lib/shared/include/libxml2 -I/opt/Wive-MT/lib/shared/include/neon -I/opt/Wive-MT/lib/shared/include/mtd -I/opt/Wive-MT/libnvram -isystem /opt/Wive-MT/lib/shared/include -funit-at-a-time -ffast-math -fforce-addr -fconserve-stack -fno-strict-overflow -fno-aggressive-loop-optimizations -fno-var-tracking-assignments -fno-tree-slsr -fno-delete-null-pointer-checks -pipe -fno-builtin -Dlinux -D__linux__ -Dunix -DEMBED 
 CPP = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo
@@ -178,7 +178,7 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ld
-LDFLAGS = -Wl,--fatal-warnings -L/opt/Wive-MT/lib/shared/lib
+LDFLAGS = -Wl,--fatal-warnings -L/opt/Wive-MT/lib/shared/lib -Wl,--fatal-warnings -L/opt/Wive-MT/lib/shared/lib
 LIBCURL = -lcurl -lz
 LIBNETFILTER_QUEUE = 
 LIBOBJS =  ${LIBOBJDIR}memcmp$U.o
