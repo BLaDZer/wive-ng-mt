@@ -689,10 +689,10 @@ void destroy_tunnel (struct tunnel *t)
     if (t->udp_fd > -1 )
         close (t->udp_fd);
     free (t);
-	if(me->oldptyconf)
-		free(me->oldptyconf);
+    //if(me->oldptyconf)
+    //	free(me->oldptyconf); /* allready destroed in destroy call */
     free (me);
-    free (dial_no_tmp);
+    //free (dial_no_tmp); /* not destroy anyway, break recall */
 }
 
 void schedule_redial(struct lac *lac)
@@ -1898,4 +1898,3 @@ int main (int argc, char *argv[])
     network_thread ();
     return 0;
 }
-
