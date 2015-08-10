@@ -159,17 +159,18 @@ get_param() {
 
 stop() {
     $LOG "Stop l2tp vpn server"
-    # try firt disconnect all clients
-    if [ -e $var/l2tp-control ] && [ -f $var/l2tpd.pid ]; then
-	echo "d default" > $var/l2tp-control
-	usleep 500000
-    fi
+    pid=`pidof xl2tpd-srv`
     # stop vpn server
-    if [ -f $var/l2tpd.pid ]; then
-	pid=`cat $var/l2tpd.pid`
+    if [ "$pid" != "" ]; then
+	if [ -e $var/l2tp-control ]; then
+	    # try firt disconnect all clients
+	    echo "d default" > $var/l2tp-control
+	    usleep 500000
+	fi
 	count=0
 	# try 3 times for correct shutdown
 	while kill "$pid" > /dev/null 2>&1; do
+	    pid=`pidof xl2tpd-srv`
 	    usleep 500000
 	    count="$(($count+1))"
 	    if [ "$count" = "5" ]; then
@@ -178,6 +179,9 @@ stop() {
 	done
 	# if not correct terminate need kill
 	kill -SIGKILL "$pid" > /dev/null 2>&1
+	# remove server control socket
+	rm -f $var/l2tp-control
+	# remove server pidfile
 	rm -f $var/l2tpd.pid
     fi
 }

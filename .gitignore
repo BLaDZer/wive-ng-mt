@@ -297,6 +297,9 @@ fulldump
 /user/davfs/po/Makefile.in
 /user/davfs/src/Makefile
 /user/davfs/src/Makefile.in
+/user/davfs/config/config.sub
+/user/davfs/config/config.guess
+/user/davfs/config/missing
 /user/transmission/autom4te.cache/*
 /user/transmission/libtool
 /user/transmission/web/Makefile
