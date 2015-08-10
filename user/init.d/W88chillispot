@@ -9,18 +9,17 @@ fi
 . /etc/scripts/global.sh
 
 LOG="logger -t ChilliSpot"
-PARAMS="net dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 \
-    radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname \
-    radiusnasporttype coaport lease uamserver uamhomepage uamsecret \
-    uamallowed macallowed"
+PARAMS="net dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname \
+	radiusnasporttype coaport lease uamserver uamhomepage uamsecret uamallowed macallowed"
+
 BOOLPARAMS="coanoipcheck uamanydns"
 
 start() {
-    if [ "$OperationMode" = "4" ] && [ -f /etc/chilli.conf ]; then
+    if [ "$OperationMode" = "4" ]; then
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe tun
-	chilli "$PARLINE"
+	chilli "$PARLINE" &
     fi
 }
 

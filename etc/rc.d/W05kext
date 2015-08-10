@@ -43,7 +43,7 @@ nat_mode() {
 
 offload() {
     # In bridge and chillispot mode not fastnat use
-    if [ "$OperationMode" != "0" ] && [ "$OperationMode" != "4" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	eval `nvram_buf_get 2860 hw_nat_bind hw_nat_wifi hw_nat_udp hw_nat_six offloadMode natFastpath routeFastpath filterFastpath store_ttl`
 	# select NAT offload mode
 	if [ "$offloadMode" = "1" ]; then
@@ -150,7 +150,7 @@ offload() {
 
 pthrough() {
     # In bridge and chillispot mode not passth use
-    if [ "$OperationMode" != "0" ] && [ "$OperationMode" != "4" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	eval `nvram_buf_get 2860 pppoe_pass ipv6_pass`
 	# pppoe and ip_v6 kernel mode relay.
 	if [ -d /proc/pthrough ]; then

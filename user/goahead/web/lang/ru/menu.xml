@@ -14,7 +14,7 @@
     <message msgid="treeapp ipv6" msgstr="Настройки IPv6" />
     <message msgid="treeapp vpn" msgstr="Настройки VPN" />
     <message msgid="treeapp routing" msgstr="Маршрутизация" />
-    <message msgid="treeapp hotspot" msgstr="Настройки Hotspot" />
+    <message msgid="treeapp hotspot" msgstr="Hotspot" />
     <message msgid="treeapp qos" msgstr="QoS" />
 
     <message msgid="treeapp profile" msgstr="Профиль" />

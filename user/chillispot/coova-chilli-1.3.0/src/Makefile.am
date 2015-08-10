@@ -26,11 +26,11 @@ iphash.c lookup.c system.h util.c options.c statusfile.c conn.c sig.c \
 garden.c dns.c session.c pkt.c chksum.c net.c safe.c
 
 AM_CFLAGS = -D_GNU_SOURCE -Wall -fno-builtin -fno-strict-aliasing \
-  -O2 -fomit-frame-pointer -funroll-loops -pipe -I$(top_builddir)/bstring \
- -DDEFCHILLICONF='"$(sysconfdir)/chilli.conf"'\
- -DDEFPIDFILE='"$(localstatedir)/run/chilli.pid"'\
- -DDEFSTATEDIR='"$(localstatedir)/run"'\
- -DSBINDIR='"$(sbindir)"' 
+  -Os -fomit-frame-pointer -pipe -I$(top_builddir)/bstring \
+ -DDEFCHILLICONF='"/etc/chilli.conf"'\
+ -DDEFPIDFILE='"/var/run/chilli.pid"'\
+ -DDEFSTATEDIR='"/var/run"'\
+ -DSBINDIR='"/sbin"'
 
 chilli_SOURCES= main.c
 chilli_radconfig_SOURCES = main-radconfig.c 
