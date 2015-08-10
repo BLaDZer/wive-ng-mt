@@ -139,7 +139,6 @@ function initTranslation()
 
 function initValue()
 {
-	var opmode = "<% getCfgZero(1, "OperationMode"); %>";
 	var stp = <% getCfgZero(1, "stpEnabled"); %>;
 	var igmp = <% getCfgZero(1, "igmpEnabled"); %>;
 	var igmp_snoop = '<% getCfgGeneral(1, "igmpSnoopMode"); %>';
@@ -231,14 +230,7 @@ function initValue()
 	displayElement('xupnpd', xupnpdb == '1');
 	displayElement('dnsproxy', dnsp == '1');
 
-	// Set-up fastpaths
-	if (opmode == "4")
-	{
-		form.offloadMode.value = defaultNumber("0", "1");
-		form.offloadMode.disabled = true;
-	}
-	else
-		form.offloadMode.value = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
+	form.offloadMode.value = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 	offloadModeSelect(form);
 
 	igmpSelect(form);
