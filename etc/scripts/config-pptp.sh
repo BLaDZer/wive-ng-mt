@@ -7,9 +7,6 @@
 # include global
 . /etc/scripts/global.sh
 
-# stop all pppd/xl2tpd daemons
-service vpnhelper killall_vpn
-
 LOG="logger -t vpnhelper-pptp"
 
 get_param() {
