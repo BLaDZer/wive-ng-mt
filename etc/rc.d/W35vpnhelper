@@ -4,7 +4,7 @@
 . /etc/scripts/global.sh
 
 # get local param always
-eval `nvram_buf_get 2860 vpnInterface vpnUser vpnPassword l2tp_srv_enabled`
+eval `nvram_buf_get 2860 vpnInterface vpnUser vpnPassword l2tp_srv_enabled MODEMENABLED`
 
 # constants
 LOG="logger -t vpnhelper"
@@ -49,89 +49,92 @@ start() {
 
 # close alll ppp based tuns and kill daemons
 killall_vpn() {
- $LOG "Disconnect from vpn servers and kill daemons."
-    # delete all routes to vpnnet
-    # this prevent deadloop in kernel
-    ip -4 route flush dev $vpn_if > /dev/null 2>&1
+    xl2tpdpid=`pidof xl2tpd`
+    pppdpid=`pidof pppd`
+    if [ "$xl2tpdpid" != "" ] || [ "$pppdpid" != "" ]; then
+	$LOG "Disconnect from vpn servers and stop daemons."
+	# delete all routes to vpnnet
+	# this prevent deadloop in kernel
+	ip -4 route flush dev $vpn_if > /dev/null 2>&1
 
-    # clear conntrack and routes tables/caches
-    flush_net_caches
+	# clear conntrack and routes tables/caches
+	flush_net_caches
 
-    # if xl2tp configured correct terminate xl2tpd daemon
-    pid=`pidof xl2tpd`
-    if [ -f /etc/ppp/l2tpd.conf ] && [ "$pid" != "" ]; then
-	# first disconnect
-	if [ -e /var/run/xl2tpd/l2tp-control ]; then
-	    lac=`cat /etc/ppp/l2tpd.conf | grep lns | cut -f 2- -d =`
-	    if [ "$lac" != "" ]; then
-		$LOG "xl2tpd: disconnect from $lac."
-		echo "d $lac" > /var/run/xl2tpd/l2tp-control
-		usleep 500000
-	    fi
-	fi
-	# second terminate xl2tpd client only
-	$LOG "xl2tpd: daemon terminate."
-	# terminate xl2tp daemon
-	while killall -q xl2tpd; do
-	    usleep 500000
-	    killall -q -SIGKILL xl2tpd
-	done
-    fi
-
-    # safe terminate pppd if l2tp server enabled
-    if [ "$l2tp_srv_enabled" = "1" ]; then
-	# first send HUP for terminate connections and try some times
-	# second send TERM for exit pppd process
-	# if process not terminated send KILL
-	# vpn client always use $vpn_if
-        if [ -f /var/run/$vpn_if.pid ]; then
-	    pid=`cat /var/run/$vpn_if.pid`
-	    if [ "$pid" != "" ]; then
-		$LOG "pppd: close connection for pid $pid."
-		kill -SIGHUP "$pid"  > /dev/null 2>&1
-	    fi
-	    # terminate pppd
-	    count=0
-	    $LOG "pppd: daemon terminate $pid."
-	    while kill "$pid" > /dev/null 2>&1; do
-		if [ "$count" = "5" ]; then
-		    $LOG "pppd: daemon kill $pid."
-		    kill -SIGKILL "$pid"  > /dev/null 2>&1
-		    count=0
+        # if xl2tp configured correct terminate xl2tpd daemon
+	if [ -f /etc/ppp/l2tpd.conf ] && [ "$xl2tpdpid" != "" ]; then
+	    # first disconnect
+	    if [ -e /var/run/xl2tpd/l2tp-control ]; then
+		lac=`cat /etc/ppp/l2tpd.conf | grep lns | cut -f 2- -d =`
+		if [ "$lac" != "" ]; then
+		    $LOG "xl2tpd: disconnect from $lac."
+		    echo "d $lac" > /var/run/xl2tpd/l2tp-control
 		    usleep 500000
 		fi
-		count="$(($count+1))"
+	    fi
+	    # second terminate xl2tpd client only
+	    $LOG "xl2tpd: daemon terminate."
+	    # terminate xl2tp daemon
+	    while killall -q xl2tpd; do
 		usleep 500000
+		killall -q -SIGKILL xl2tpd
 	    done
-	    rm -f /var/run/$vpn_if.pid
 	fi
-    else # fast terminate ppp clients
-	# try disconnect before kill
-	killall -q -SIGHUP pppd
-	usleep 500000
-	# terminate pppd daeon
-	while killall -q pppd; do
-	    usleep 500000
-	    killall -q -SIGKILL pppd
-	done
-	# remove pid files
-	rm -f /var/run/ppp*.pid
-    fi
 
-    # remove VPN server IP file
-    rm -f /tmp/vpnip
-    # remove vpn_if_name export
-    rm -f /tmp/vpn_if_name
-    # remove client control socket
-    rm -f /var/run/xl2tpd/l2tp-control
-    # remove xl2tpd client pid
-    rm -f /var/run/xl2tpd/l2tpd.pid
-    # clear conntrack and routes tables/caches
-    flush_net_caches
+	# safe terminate pppd if l2tp server enabled
+	if [ "$l2tp_srv_enabled" = "1" ] || [ "$MODEMENABLED" = "1" ]; then
+	    # first send HUP for terminate connections and try some times
+	    # second send TERM for exit pppd process
+	    # if process not terminated send KILL
+	    # vpn client always use $vpn_if
+    	    if [ -f /var/run/$vpn_if.pid ]; then
+		pppdpid=`cat /var/run/$vpn_if.pid`
+		if [ "$pppdpid" != "" ]; then
+		    $LOG "pppd: close connection for pid $pppdpid."
+		    kill -SIGHUP "$pppdpid"  > /dev/null 2>&1
+		fi
+		# terminate pppd
+		count=0
+		$LOG "pppd: daemon terminate $pppdpid."
+		while kill "$pppdpid" > /dev/null 2>&1; do
+		    if [ "$count" = "5" ]; then
+			$LOG "pppd: daemon kill $pppdpid."
+			kill -SIGKILL "$pppdpid"  > /dev/null 2>&1
+			count=0
+			usleep 500000
+		    fi
+		    count="$(($count+1))"
+		    usleep 500000
+		done
+		rm -f /var/run/$vpn_if.pid
+	    fi
+	else # fast terminate ppp clients
+	    # try disconnect before kill
+	    killall -q -SIGHUP pppd
+	    usleep 500000
+	    # terminate pppd daeon
+	    while killall -q pppd; do
+		usleep 500000
+		killall -q -SIGKILL pppd
+	    done
+	    # remove pid files
+	    rm -f /var/run/ppp*.pid
+	fi
+
+	# remove VPN server IP file
+	rm -f /tmp/vpnip
+	# remove vpn_if_name export
+	rm -f /tmp/vpn_if_name
+	# remove client control socket
+	rm -f /var/run/xl2tpd/l2tp-control
+	# remove xl2tpd client pid
+	rm -f /var/run/xl2tpd/l2tpd.pid
+	# clear conntrack and routes tables/caches
+	flush_net_caches
+    fi
 }
 
 stop() {
- $LOG "Stop vpnhelpers"
+    $LOG "Stop vpnhelpers"
     # Kill helpers
     killall -q config-pppoe.sh
     killall -q config-l2tp.sh

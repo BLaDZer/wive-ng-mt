@@ -40,7 +40,6 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc \
 	Ipv6InVPN \
-	MODEMENABLED \
 	QoSEnable`
 
 # name/mask for first wlanmodule used in system logic
