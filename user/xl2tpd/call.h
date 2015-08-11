@@ -74,7 +74,6 @@ struct call
     int rbuf_pos;               /* Read buffer position */
     int rbuf_max;               /* Read buffer data length */
     struct buffer *ppp_buf;     /* Packet readed from pty */
-    struct termios *oldptyconf;
     int die;
     int nego;                   /* Show negotiation? */
     int pppd;                   /* PID of pppd */

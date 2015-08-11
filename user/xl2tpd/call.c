@@ -468,15 +468,8 @@ void destroy_call (struct call *c)
             c->lac->rsched = schedule (tv, magic_lac_dial, c->lac);
         }
     }
-    if(c->oldptyconf)
-		free(c->oldptyconf);
-
-    /* This is totally the wrong place to free the memory.
-     * It's already being done by the upper layers.
     free (c);
-   */
 }
-
 
 struct call *new_call (struct tunnel *parent)
 {
@@ -536,7 +529,6 @@ struct call *new_call (struct tunnel *parent)
     tmp->rbuf_pos = 0;
     tmp->rbuf_max = 0;
     tmp->ppp_buf = new_payload (parent->peer);
-    tmp->oldptyconf = malloc (sizeof (struct termios));
     tmp->pnu = 0;
     tmp->cnu = 0;
     tmp->needclose = 0;

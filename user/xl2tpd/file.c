@@ -1096,8 +1096,8 @@ int set_lns (char *word, char *value, int context, void *item)
             d[0] = 0;
             d++;
         }
-#if 0 
-		// why would you want to lookup hostnames at this time? 
+#if 0
+	// why would you want to lookup hostnames at this time?
         hp = gethostbyname (value);
         if (!hp)
         {
