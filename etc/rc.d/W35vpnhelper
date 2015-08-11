@@ -47,8 +47,23 @@ start() {
     fi
 }
 
-# close alll ppp based tuns and kill daemons
-killall_vpn() {
+stop() {
+    # Kill helpers
+    killall -q config-pppoe.sh
+    killall -q config-l2tp.sh
+    killall -q config-pptp.sh
+    killall -q config-lanauth.sh
+    killall -q -SIGKILL config-pppoe.sh
+    killall -q -SIGKILL config-l2tp.sh
+    killall -q -SIGKILL config-pptp.sh
+    killall -q -SIGKILL config-lanauth.sh
+
+    # Kill lanauth only if vpn disable
+    if [ "$vpnEnabled" = "off" ] || [ "$vpnType" != "6" ]; then
+	/etc/scripts/config-lanauth.sh stop
+    fi
+
+    # close alll ppp based tuns and kill daemons
     xl2tpdpid=`pidof xl2tpd`
     pppdpid=`pidof pppd`
     if [ "$xl2tpdpid" != "" ] || [ "$pppdpid" != "" ]; then
@@ -133,27 +148,6 @@ killall_vpn() {
     fi
 }
 
-stop() {
-    $LOG "Stop vpnhelpers"
-    # Kill helpers
-    killall -q config-pppoe.sh
-    killall -q config-l2tp.sh
-    killall -q config-pptp.sh
-    killall -q config-lanauth.sh
-    killall -q -SIGKILL config-pppoe.sh
-    killall -q -SIGKILL config-l2tp.sh
-    killall -q -SIGKILL config-pptp.sh
-    killall -q -SIGKILL config-lanauth.sh
-
-    # Kill lanauth only if vpn disable
-    if [ "$vpnEnabled" = "off" ] || [ "$vpnType" != "6" ]; then
-	/etc/scripts/config-lanauth.sh stop
-    fi
-
-    # stop all pppd/xl2tpd daemons
-    killall_vpn
-}
-
 #############################################################
 # Do`not stop pppoe connections and others vpn in some cases
 #############################################################
@@ -171,10 +165,6 @@ case "$1" in
 
 	stop)
 	    stop
-	    ;;
-
-	killall_vpn)
-	    killall_vpn
 	    ;;
 
 	stop_safe)

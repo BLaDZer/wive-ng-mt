@@ -158,10 +158,10 @@ get_param() {
 }
 
 stop() {
-    $LOG "Stop l2tp vpn server"
     pid=`pidof xl2tpd-srv`
     # stop vpn server
     if [ "$pid" != "" ]; then
+	$LOG "Stop l2tp vpn server"
 	if [ -e $var/l2tp-control ]; then
 	    # try firt disconnect all clients
 	    echo "d default" > $var/l2tp-control

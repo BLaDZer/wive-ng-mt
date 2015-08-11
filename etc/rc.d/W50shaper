@@ -93,7 +93,7 @@ show() {
 }
 
 stop() {
- $LOG "Stopping SHAPER"
+    $LOG "Stopping SHAPER"
     # Drop all QoS rules
     set_def
     rm -f $IPTSCR
