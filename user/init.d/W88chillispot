@@ -9,7 +9,7 @@ fi
 . /etc/scripts/global.sh
 
 LOG="logger -t ChilliSpot"
-PARAMS="net dhcpstart dhcpsend dns1 dns2 domain \
+PARAMS="net dhcpstart dhcpsend dynip dns1 dns2 domain \
 	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease \
 	uamserver uamhomepage uamsecret uamallowed macallowed"
 
