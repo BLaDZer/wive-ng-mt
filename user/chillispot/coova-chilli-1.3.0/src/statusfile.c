@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -47,14 +47,14 @@ int loadstatus() {
 
   statedir_file(filedest, sizeof(filedest), _options.usestatusfile, 0);
 
-  log_dbg("Loading file %s", filedest);
+  syslog(LOG_DEBUG, "Loading file %s", filedest);
 
   file = fopen(filedest, "r");
-  if (!file) { log_err(errno, "could not open file %s", filedest); return -1; }
+  if (!file) { syslog(LOG_ERR, "%s: could not open file %s", strerror(errno), filedest); return -1; }
 
   while ((c = fgetc(file)) != MARK_START) {
     if (c == EOF) { 
-      log_err(errno, "end of file");
+      syslog(LOG_ERR, "%s: end of file", strerror(errno));
       fclose(file); 
       return -1; 
     }
@@ -62,28 +62,28 @@ int loadstatus() {
 
   time(&wall);
   if (fread(&r_wall, sizeof(time_t), 1, file) != 1) {
-    log_err(errno, "bad binary file");
+    syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
     if (c == EOF) { fclose(file); return -1; }
   }
 
   rt = mainclock_tick();
   if (fread(&r_rt, sizeof(time_t), 1, file) != 1) {
-    log_err(errno, "bad binary file");
+    syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
     if (c == EOF) { fclose(file); return -1; }
   }
 
   if ((c = fgetc(file)) != MARK_START) {
-    log_err(errno, "bad binary file");
+    syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
     fclose(file); 
     return -1; 
   }
 
   rtoffset = wall - rt;
-  log_dbg("now: wall = %d, rt = %d, wall at rt=0 %d",
+  syslog(LOG_DEBUG, "now: wall = %d, rt = %d, wall at rt=0 %d",
 	  (int)wall, (int)rt, (int)rtoffset);
 
   r_rtoffset = r_wall - r_rt;
-  log_dbg("file: wall = %d, rt = %d, wall at rt=0 %d",
+  syslog(LOG_DEBUG, "file: wall = %d, rt = %d, wall at rt=0 %d",
 	  (int)r_wall, (int)r_rt, (int)r_rtoffset);
 
   while (fread(&dhcpconn, sizeof(struct dhcp_conn_t), 1, file) == 1) {
@@ -94,14 +94,14 @@ int loadstatus() {
     /* todo: read a md5 checksum or magic token */
 
     if ((c = fgetc(file)) != MARK_NEXT) {
-      log_err(errno, "bad binary file");
+      syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
       fclose(file); 
       return -1;
     }
 
     if (dhcp_hashget(dhcp, &conn, dhcpconn.hismac)) {
 
-      log_info("Loading dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X",
+      syslog(LOG_INFO, "Loading dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X",
 	       dhcpconn.hismac[0], dhcpconn.hismac[1],
 	       dhcpconn.hismac[2], dhcpconn.hismac[3],
 	       dhcpconn.hismac[4], dhcpconn.hismac[5]);
@@ -138,13 +138,13 @@ int loadstatus() {
 	memset(conn->dnat[n].mac, 0, PKT_ETH_ALEN); 
       }
       
-      log_dbg("checking IP %s", inet_ntoa(dhcpconn.hisip));
+      syslog(LOG_DEBUG, "checking IP %s", inet_ntoa(dhcpconn.hisip));
 
       /* add into ippool */
       if (ippool_getip(ippool, &newipm, &dhcpconn.hisip)) {
 	if (ippool_newip(ippool, &newipm, &dhcpconn.hisip, 1)) {
 	  if (ippool_newip(ippool, &newipm, &dhcpconn.hisip, 0)) {
-	    log_err(0, "Failed to allocate either static or dynamic IP address");
+	    syslog(LOG_ERR, "Failed to allocate either static or dynamic IP address");
 	    conn->hisip.s_addr = 0;
 	  }
 	}
@@ -159,7 +159,7 @@ int loadstatus() {
 	  struct app_conn_t *aconn = 0;
 	  
 	  if ((c = fgetc(file)) != MARK_NEXT) {
-	    log_err(errno, "bad binary file");
+	    syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
 	    fclose(file); 
 	    return -1;
 	  }
@@ -175,12 +175,12 @@ int loadstatus() {
 	    /*
 	     * Fix time_t values:
 	     *  start_time, interim_time,
-	     *  last_sent_time, last_time,
+	     *  last_up_time, last_time,
 	     *  uamtime
 	     */
 	    localizetime(appconn.s_state.start_time);
 	    localizetime(appconn.s_state.interim_time);
-	    localizetime(appconn.s_state.last_sent_time);
+	    localizetime(appconn.s_state.last_up_time);
 	    localizetime(appconn.s_state.last_time);
 	    localizetime(appconn.s_state.uamtime);
 
@@ -214,14 +214,14 @@ int loadstatus() {
 	  /* todo: read a md5 checksum or magic token */
 	}
 	else {
-	  log_err(errno, "Problem loading state file %s",filedest);
+	  syslog(LOG_ERR, "%s: Problem loading state file %s", strerror(errno), filedest);
 	  break;
 	}
       }
 
     } else {
 
-      log_info("Known dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X",
+      syslog(LOG_INFO, "Known dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X",
 	       dhcpconn.hismac[0], dhcpconn.hismac[1],
 	       dhcpconn.hismac[2], dhcpconn.hismac[3],
 	       dhcpconn.hismac[4], dhcpconn.hismac[5]);
@@ -230,12 +230,12 @@ int loadstatus() {
       
       if (dhcpconn.peer) {
 
-	log_info("Reading appconn (peer)");
+	syslog(LOG_INFO, "Reading appconn (peer)");
 
 	if (fread(&appconn, sizeof(struct app_conn_t), 1, file) == 1) {
 
 	  if ((c = fgetc(file)) != MARK_NEXT) {
-	    log_err(errno, "bad binary file");
+	    syslog(LOG_ERR, "%s: bad binary file", strerror(errno));
 	    fclose(file); 
 	    return -1;
 	  }
@@ -246,7 +246,7 @@ int loadstatus() {
 	     */
 	    struct app_conn_t *aconn = (struct app_conn_t*) conn->peer;
 	    
-	    log_info("Overwriting existing appconn %d", appconn.s_state.authenticated);
+	    syslog(LOG_INFO, "Overwriting existing appconn %d", appconn.s_state.authenticated);
 	    
 	    memcpy(&aconn->s_params, &appconn.s_params, sizeof(struct session_params));
 	    memcpy(&aconn->s_state, &appconn.s_state, sizeof(struct session_state));
@@ -257,12 +257,12 @@ int loadstatus() {
 	     */
 	    struct app_conn_t *aconn = 0;
 	    
-	    log_info("Creating new appconn (peer)");
+	    syslog(LOG_INFO, "Creating new appconn (peer)");
 	    
 	    if (ippool_getip(ippool, &newipm, &conn->hisip)) {
 	      if (ippool_newip(ippool, &newipm, &conn->hisip, 1)) {
 		if (ippool_newip(ippool, &newipm, &conn->hisip, 0)) {
-		  log_err(0, "Failed to allocate either static or dynamic IP address");
+		  syslog(LOG_ERR, "Failed to allocate either static or dynamic IP address");
 		  fclose(file); 
 		  return -1;
 		}
@@ -319,10 +319,10 @@ int printstatus() {
 
   statedir_file(filedest, sizeof(filedest), _options.usestatusfile, 0);
 
-  log_dbg("Writing status file: %s", filedest);
+  syslog(LOG_DEBUG, "Writing status file: %s", filedest);
 
   file = fopen(filedest, "w");
-  if (!file) { log_err(errno, "could not open file %s", filedest); return -1; }
+  if (!file) { syslog(LOG_ERR, "%s: could not open file %s", strerror(errno), filedest); return -1; }
   fprintf(file, "#CoovaChilli-Version: %s\n", VERSION);
   fprintf(file, "#Timestamp: %d\n", (int) mainclock);
 
@@ -347,7 +347,7 @@ int printstatus() {
 #ifdef ENABLE_LAYER3
     case DHCP_AUTH_ROUTER:
 #endif
-      log_dbg("Saving dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X %s",
+      syslog(LOG_DEBUG, "Saving dhcp connection %.2X-%.2X-%.2X-%.2X-%.2X-%.2X %s",
 	      dhcpconn->hismac[0], dhcpconn->hismac[1],
 	      dhcpconn->hismac[2], dhcpconn->hismac[3],
 	      dhcpconn->hismac[4], dhcpconn->hismac[5],
@@ -389,7 +389,7 @@ int printstatus() {
   statedir_file(filedest, sizeof(filedest), _options.usestatusfile, 0);
 
   file = fopen(filedest, "w");
-  if (!file) { log_err(errno, "could not open file %s", filedest); return -1; }
+  if (!file) { syslog(LOG_ERR, "%s: could not open file %s", strerror(errno), filedest); return -1; }
 
   fprintf(file, "#Version:1.1\n");
   fprintf(file, "#SessionID = SID\n#Start-Time = ST\n");

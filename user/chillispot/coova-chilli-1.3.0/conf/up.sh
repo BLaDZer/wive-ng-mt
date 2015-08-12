@@ -18,6 +18,7 @@ ipt_in() {
     ipt -I INPUT -i $TUNTAP $*
 }
 
+run_up() {
 if [ -n "$TUNTAP" ]
 then
     # ifconfig $TUNTAP mtu $MTU
@@ -86,3 +87,14 @@ fi
 
 # site specific stuff optional
 [ -e /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0/filesystem/etc/chilli/ipup.sh ] && . /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0/filesystem/etc/chilli/ipup.sh
+}
+
+
+FLOCK=$(which flock)
+if [ -n "$FLOCK" ] && [ -z "$LOCKED_FILE" ]
+then
+    export LOCKED_FILE=/tmp/.chilli-flock
+    flock -x $LOCKED_FILE -c "$0 $@"
+else
+    run_up
+fi

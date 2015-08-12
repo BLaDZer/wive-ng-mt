@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -464,29 +464,9 @@ struct pkt_chillihdr_t {
 #define is_8021q(pkt) (((struct pkt_ethhdr8021q_t *)pkt)->tpid == htons(PKT_ETH_PROTO_8021Q))
 #define get8021q(pkt) (((struct pkt_ethhdr8021q_t *)pkt)->pcp_cfi_vid)
 
-#define sizeofeth2(is8021q)   (PKT_ETH_HLEN+((is8021q)?4:0))
-#define sizeofip2(is8021q)    (sizeofeth2(is8021q)+PKT_IP_HLEN)
-#define sizeofdot1x2(is8021q) (sizeofeth2(is8021q)+PKT_DOT1X_HLEN)
-#define sizeofudp2(is8021q)   (sizeofip2(is8021q)+PKT_UDP_HLEN)
-#define sizeoftcp2(is8021q)   (sizeofip2(is8021q)+PKT_TCP_HLEN)
-#ifdef ENABLE_IPV6
-#define sizeofip62(is8021q)   (sizeofeth2(is8021q)+PKT_IPv6_HLEN)
-#define sizeofudp62(is8021q)  (sizeofip62(is8021q)+PKT_UDP_HLEN)
-#define sizeoftcp62(is8021q)  (sizeofip62(is8021q)+PKT_TCP_HLEN)
-#endif
-
-#define sizeofeth(pkt)   sizeofeth2(is_8021q(pkt))
-#define sizeofip(pkt)    sizeofip2(is_8021q(pkt))
-#define sizeofdot1x(pkt) sizeofdot1x2(is_8021q(pkt))
-#define sizeofudp(pkt)   sizeofudp2(is_8021q(pkt))
-#define sizeoftcp(pkt)   sizeoftcp2(is_8021q(pkt))
-#define sizeofarp(pkt)   (sizeofeth(pkt)+sizeof(struct arp_packet_t))
+#define sizeofeth2(is1q) (PKT_ETH_HLEN+((is1q)?4:0))
+#define sizeofeth(pkt)   (sizeofeth2(is_8021q(pkt)))
 #define ethhdr8021q(pkt) ((struct pkt_ethhdr8021q_t *)pkt)
-#ifdef ENABLE_IPV6
-#define sizeofip6(pkt)   sizeofip62(is_8021q(pkt))
-#define sizeofudp6(pkt)  sizeofudp62(is_8021q(pkt))
-#define sizeoftcp6(pkt)  sizeoftcp62(is_8021q(pkt))
-#endif
 
 #define copy_ethproto(o,n)  \
   if (is_8021q(o)) { \
@@ -497,23 +477,25 @@ struct pkt_chillihdr_t {
     ((struct pkt_ethhdr_t *)n)->prot = ((struct pkt_ethhdr_t *)o)->prot; \
   }
 
-#else
+#else /* ENABLE_IEEE80211Q */
 
 #define sizeofeth2(x)   (PKT_ETH_HLEN)
-#define sizeofip2(x)    (sizeofeth2(x)+PKT_IP_HLEN)
-#define sizeofdot1x2(x) (sizeofeth2(x)+PKT_DOT1X_HLEN)
-#define sizeofudp2(x)   (sizeofip2(x)+PKT_UDP_HLEN)
-#define sizeoftcp2(x)   (sizeofip2(x)+PKT_TCP_HLEN)
-#define sizeofeth(pkt)   sizeofeth2(0)
-#define sizeofip(pkt)    sizeofip2(0)
-#define sizeofdot1x(pkt) sizeofdot1x2(0)
-#define sizeofudp(pkt)   sizeofudp2(0)
-#define sizeoftcp(pkt)   sizeoftcp2(0)
-#define sizeofarp(pkt)   (sizeofeth(pkt)+sizeof(struct arp_packet_t))
-
+#define sizeofeth(pkt)    (PKT_ETH_HLEN)
 #define copy_ethproto(o,n) { \
     ((struct pkt_ethhdr_t *)n)->prot = ((struct pkt_ethhdr_t *)o)->prot; \
   }
+
+#endif /* ENABLE_IEEE80211Q */
+
+#define sizeofip(pkt)     (sizeofeth(pkt)+((pkt_iphdr(pkt)->version_ihl & 0xf)*4))
+#define sizeofdot1x(pkt)  (sizeofeth(pkt)+PKT_DOT1X_HLEN)
+#define sizeofudp(pkt)    (sizeofip(pkt)+PKT_UDP_HLEN)
+#define sizeoftcp(pkt)    (sizeofip(pkt)+PKT_TCP_HLEN)
+#define sizeofarp(pkt)    (sizeofeth(pkt)+sizeof(struct arp_packet_t))
+#ifdef ENABLE_IPV6
+#define sizeofip6(pkt)    (sizeofeth(pkt)+sizeof(pkt_ip6hdr_t))
+#define sizeofudp6(pkt)   (sizeofip6(pkt)+PKT_UDP_HLEN)
+#define sizeoftcp6(pkt)   (sizeofip6(pkt)+PKT_TCP_HLEN)
 #endif
 
 #define pkt_ethhdr(pkt)   ((struct pkt_ethhdr_t *)pkt)
@@ -577,5 +559,8 @@ struct pkt_buffer {
 #define pkt_buffer_is_ip(pb)   ((pb)->offset == PKT_BUFFER_IPOFF)
 #define pkt_buffer_is_eth(pb)  ((pb)->offset == PKT_BUFFER_ETHOFF)
 #define pkt_buffer_is_vlan(pb) ((pb)->offset == PKT_BUFFER_VLANOFF)
+
+#define MAC_FMT "%.2X-%.2X-%.2X-%.2X-%.2X-%.2X"
+#define MAC_ARG(x) (x)[0],(x)[1],(x)[2],(x)[3],(x)[4],(x)[5]
 
 #endif

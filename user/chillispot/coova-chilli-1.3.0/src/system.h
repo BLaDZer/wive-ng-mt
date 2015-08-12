@@ -4,7 +4,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -31,15 +31,12 @@
 #undef __STRICT_ANSI__
  */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
 #include <ctype.h>
-
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
+#include <stdint.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdio.h>
+#include <time.h>
 
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>
@@ -51,6 +48,10 @@
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
 #endif
 
 #ifdef HAVE_ERRNO_H
@@ -75,6 +76,11 @@
 
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+
+#ifdef HAVE_LINUX_SYSINFO_H
+#define _LINUX_KERNEL_H
+#include <linux/sysinfo.h>
 #endif
 
 #ifdef HAVE_SYS_SYSINFO_H
@@ -257,7 +263,6 @@
 #include <errno.h>
 
 #define safe_snprintf portable_snprintf
-char *safe_strncpy(char *dst, const char *src, size_t size);
 
 int safe_accept(int fd, struct sockaddr *sa, socklen_t *lenptr);
 int safe_select(int nfds, fd_set *readfds, fd_set *writefds,
@@ -280,6 +285,7 @@ int safe_recvfrom(int sockfd, void *buf, size_t len, int flags,
 		  struct sockaddr *src_addr, socklen_t *addrlen);
 int safe_sendto(int s, const void *b, size_t blen, int flags,
 		const struct sockaddr *dest_addr, socklen_t addrlen);
+int safe_sendmsg(int sockfd, struct msghdr *msg, int flags);
 int safe_close (int fd);
 pid_t safe_fork();
 

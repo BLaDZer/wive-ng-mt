@@ -4,7 +4,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -35,7 +35,7 @@ int chilli_module_load(void **ctx, char *name) {
   lib_handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
 
   if (!lib_handle) {
-    log_err(errno, "chilli_module_load() %s", dlerror());
+    syslog(LOG_ERR, "%s: chilli_module_load() %s", strerror(errno), dlerror());
     return -1;
   }
 
@@ -49,14 +49,14 @@ int chilli_module_load(void **ctx, char *name) {
   sym = dlsym(lib_handle, path);
   if ((error = dlerror()) != NULL) {
     dlclose(lib_handle);
-    log_err(errno, "%s", error);
+    syslog(LOG_ERR, "%s: %s", strerror(errno), error);
     return -1;
   }
 
   m = (struct chilli_module *) sym;
   m->lib = lib_handle;
 
-  log_dbg("Loaded module %s", name);
+  syslog(LOG_DEBUG, "Loaded module %s", name);
 
   *ctx = m;
   

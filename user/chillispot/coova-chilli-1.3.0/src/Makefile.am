@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS=foreign
+AUTOMAKE_OPTIONS=foreign subdir-objects
 
 SUBDIRS = 
 EXTRA_DIST = cmdline.ggo cmdline.patch \
@@ -9,8 +9,8 @@ cmdline.mini.sh cmdline.mini.gen
 chilliincludedir = $(includedir)/chilli
 chilliinclude_HEADERS = \
 chilli.h session.h garden.h radius.h options.h \
-tun.h ippool.h md5.h redir.h dhcp.h syserr.h iphash.h \
-radius_wispr.h radius_chillispot.h ssl.h dns.h net.h \
+tun.h ippool.h md5.h redir.h dhcp.h iphash.h \
+radius_wispr.h radius_coovachilli.h ssl.h dns.h net.h \
 pkt.h conn.h lookup.h chilli_limits.h cmdline.h debug.h \
 radius_pkt.h ../bstring/bstrlib.h ../config.h system.h 
 
@@ -21,16 +21,16 @@ chilli chilli_response chilli_radconfig chilli_opt
 suid_programs =
 
 libchilli_la_SOURCES = \
-chilli.c tun.c ippool.c radius.c md5.c redir.c dhcp.c syserr.c \
+chilli.c tun.c ippool.c radius.c md5.c redir.c dhcp.c \
 iphash.c lookup.c system.h util.c options.c statusfile.c conn.c sig.c \
 garden.c dns.c session.c pkt.c chksum.c net.c safe.c
 
 AM_CFLAGS = -D_GNU_SOURCE -Wall -fno-builtin -fno-strict-aliasing \
-  -Os -fomit-frame-pointer -pipe -I$(top_builddir)/bstring \
+  -fomit-frame-pointer -funroll-loops -pipe -I$(top_builddir)/bstring \
  -DDEFCHILLICONF='"/etc/chilli.conf"'\
  -DDEFPIDFILE='"/var/run/chilli.pid"'\
  -DDEFSTATEDIR='"/var/run"'\
- -DSBINDIR='"/sbin"'
+ -DSBINDIR='"/sbin"' 
 
 chilli_SOURCES= main.c
 chilli_radconfig_SOURCES = main-radconfig.c 
@@ -89,7 +89,7 @@ libchilli_la_SOURCES += mssl.c mssl.h
 libchilli_la_LIBADD += -lmatrixssl
 LDADD += -lmatrixssl
 if WITH_MATRIXSSL_CLI
-SUBDIRS = mssl
+SUBDIRS += mssl
 endif
 endif
 
@@ -166,13 +166,17 @@ endif
 if WITH_MODULES
 sample_la_SOURCES = sample-mod.c
 sample_la_LDFLAGS = -module -avoid-version
-pkglibdir = $(libdir)/coova-chilli
-pkglib_LTLIBRARIES = sample.la
+samplelibdir = $(libdir)/coova-chilli
+samplelib_LTLIBRARIES = sample.la
 libchilli_la_SOURCES += chilli_module.c
 libchilli_la_LIBADD += -ldl
 LDADD += -ldl
 chilliinclude_HEADERS += chilli_module.h
 AM_CFLAGS += -DDEFLIBDIR='"$(libdir)/coova-chilli"'
+endif
+
+if !HAVE_STRLCPY
+libchilli_la_SOURCES += ../extern/strlcpy.c
 endif
 
 CMDLINE = cmdline.ggo
@@ -190,9 +194,9 @@ install-exec-hook:
 main-opt.c: cmdline.c cmdline.h
 
 cmdline.c cmdline.h: cmdline.ggo cmdline.patch
-	cat $(CMDLINE) | gengetopt -C 
-	cp cmdline.c cmdline.c.orig
-	patch -p0 < cmdline.patch
+#	cat $(CMDLINE) | gengetopt -C 
+#	cp cmdline.c cmdline.c.orig
+#	patch -p0 < cmdline.patch
 
 cmdline.mini.gen: cmdline.ggo 
 	sh cmdline.mini.sh > cmdline.mini.gen

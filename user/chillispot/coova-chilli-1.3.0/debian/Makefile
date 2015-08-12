@@ -83,7 +83,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.in
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -167,17 +167,17 @@ OTOOL64 =
 PACKAGE = coova-chilli
 PACKAGE_BUGREPORT = support@coova.com
 PACKAGE_NAME = coova-chilli
-PACKAGE_STRING = coova-chilli 1.3.0
+PACKAGE_STRING = coova-chilli 1.3.1.3
 PACKAGE_TARNAME = coova-chilli
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.3.0
+PACKAGE_VERSION = 1.3.1.3
 PATH_SEPARATOR = :
 RANLIB = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = /opt/Wive-MT/toolchain/bin/mipsel-linux-uclibc-strip
-VERSION = 1.3.0
+VERSION = 1.3.1.3
 abs_builddir = /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0/debian
 abs_srcdir = /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0/debian
 abs_top_builddir = /opt/Wive-MT/user/chillispot/coova-chilli-1.3.0

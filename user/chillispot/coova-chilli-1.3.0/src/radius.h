@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -177,7 +177,7 @@
 
 #include "radius_pkt.h"
 #include "radius_wispr.h"
-#include "radius_chillispot.h"
+#include "radius_coovachilli.h"
 
 struct radius_queue_t {      /* Holder for queued packets */
   int state;                 /* 0=empty, 1=full */
@@ -386,8 +386,8 @@ int radius_hmac_md5(struct radius_t *this, struct radius_packet_t *pack,
 #ifdef RADIUS_QUEUE_PACKET_PTR
 #define RADIUS_QUEUE_PKT(p, field) (p)->field
 #define RADIUS_QUEUE_PKTPTR(p) (p)
-#define RADIUS_QUEUE_PKTFREE(p) if((p))free((p));(p)=NULL;log_dbg("Freeing RADIUS packet")
-#define RADIUS_QUEUE_PKTALLOC(p) if((p))free((p));(p)=calloc(sizeof(struct radius_packet_t),1);log_dbg("Allocating RADIUS packet")
+#define RADIUS_QUEUE_PKTFREE(p) if((p))free((p));(p)=NULL;syslog(LOG_DEBUG, "Freeing RADIUS packet")
+#define RADIUS_QUEUE_PKTALLOC(p) if((p))free((p));(p)=calloc(sizeof(struct radius_packet_t),1);syslog(LOG_DEBUG, "Allocating RADIUS packet")
 #define RADIUS_QUEUE_HASPKT(p) ((p) != NULL)
 #else
 #define RADIUS_QUEUE_PKT(p, field) (p).field

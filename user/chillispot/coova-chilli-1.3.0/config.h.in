@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define enable the recording of accept-language */
 #undef ENABLE_ACCEPTLANGUAGE
@@ -6,8 +6,11 @@
 /* Define to enable Accounting-On and Accounting-Off */
 #undef ENABLE_ACCOUNTING_ONOFF
 
-/* Define to enable the use of the ChilliSpot-AP-Session-Id attribute */
+/* Define to enable the use of the CoovaChilli-AP-Session-Id attribute */
 #undef ENABLE_APSESSIONID
+
+/* Define to include Authenticated Garden */
+#undef ENABLE_AUTHEDALLOWED
 
 /* Define to enable binary status file */
 #undef ENABLE_BINSTATFILE
@@ -27,9 +30,6 @@
 /* Define to enable chilli_script helper */
 #undef ENABLE_CHILLISCRIPT
 
-/* Define to enable the use of the ChilliSpot-Config attribute */
-#undef ENABLE_CHILLISPOTCONFIG
-
 /* Define to enable Chilli XML */
 #undef ENABLE_CHILLIXML
 
@@ -41,6 +41,9 @@
 
 /* none */
 #undef ENABLE_CONFIG
+
+/* Define to enable the use of the CoovaChilli-Config attribute */
+#undef ENABLE_COOVACHILLICONFIG
 
 /* Define to enable debugging */
 #undef ENABLE_DEBUG
@@ -65,6 +68,9 @@
 
 /* Define to enable admin-user VSA support */
 #undef ENABLE_EXTADMVSA
+
+/* Enable the forcing (NAT) of DNS */
+#undef ENABLE_FORCEDNS
 
 /* Define to enable walled garden accounting */
 #undef ENABLE_GARDENACCOUNTING
@@ -144,14 +150,23 @@
 /* Define to Redir content-injection support */
 #undef ENABLE_REDIRINJECT
 
+/* Define to enable per session DHCP relay */
+#undef ENABLE_SESSDHCP
+
+/* Define to enable per session DNS enforcement */
+#undef ENABLE_SESSDNS
+
 /* Define to enable Chilli session walled garden */
 #undef ENABLE_SESSGARDEN
 
-/* Define to enable the use of the ChilliSpot-Session-Id attribute */
+/* Define to enable the use of the CoovaChilli-Session-Id attribute */
 #undef ENABLE_SESSIONID
 
-/* Define to enable extended use of the ChilliSpot-Session-State attribute */
+/* Define to enable extended use of the CoovaChilli-Session-State attribute */
 #undef ENABLE_SESSIONSTATE
+
+/* Define to enable per session postauth proxy */
+#undef ENABLE_SESSPROXY
 
 /* Define to enable Simple Service Discovery Protocol */
 #undef ENABLE_SSDP
@@ -176,6 +191,9 @@
 
 /* Define enable the recording of user-agent */
 #undef ENABLE_USERAGENT
+
+/* Define to enable WPAD */
+#undef ENABLE_WPAD
 
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
@@ -260,6 +278,9 @@
 
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
+
+/* Define to 1 if you have the <linux/sysinfo.h> header file. */
+#undef HAVE_LINUX_SYSINFO_H
 
 /* if tp_vlan_tci exists */
 #undef HAVE_LINUX_TPACKET_AUXDATA_TP_VLAN_TCI
@@ -366,6 +387,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
 /* Define to 1 if you have the `strstr' function. */
 #undef HAVE_STRSTR
 
@@ -441,6 +465,9 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#undef NO_MINUS_C_MINUS_O
 
 /* Name of package */
 #undef PACKAGE

@@ -102,34 +102,36 @@ sbin_PROGRAMS = chilli$(EXEEXT) chilli_response$(EXEEXT) \
 @WITH_MATRIXSSL_TRUE@am__append_16 = mssl.c mssl.h
 @WITH_MATRIXSSL_TRUE@am__append_17 = -lmatrixssl
 @WITH_MATRIXSSL_TRUE@am__append_18 = -lmatrixssl
-@WITH_AVL_TRUE@am__append_19 = avl/avl.c avl/avl.h avl/list.h \
+@WITH_MATRIXSSL_CLI_TRUE@@WITH_MATRIXSSL_TRUE@am__append_19 = mssl
+@WITH_AVL_TRUE@am__append_20 = avl/avl.c avl/avl.h avl/list.h \
 @WITH_AVL_TRUE@avl/common_types.h avl/container_of.h
 
-@WITH_SSL_TRUE@am__append_20 = ssl.c ms_chap.c 
-@WITH_NETFILTER_QUEUE_TRUE@am__append_21 = queue.c
-@WITH_NETFILTER_QUEUE_TRUE@am__append_22 = ${LIBNETFILTER_QUEUE}
-@WITH_NETNAT_TRUE@am__append_23 = nat.c nat.h
-@WITH_PCAP_TRUE@am__append_24 = ${LIBPCAP}
-@WITH_MULTIROUTE_TRUE@am__append_25 = chilli_rtmon
-@WITH_MULTIROUTE_TRUE@am__append_26 = rtmon.c rtmon.h
-@WITH_CHILLIQUERY_TRUE@am__append_27 = chilli_query
-@WITH_CHILLIQUERY_TRUE@am__append_28 = cmdsock.c
-@WITH_CHILLIQUERY_TRUE@am__append_29 = cmdsock.h
-@WITH_CHILLIPROXY_TRUE@am__append_30 = chilli_proxy
-@WITH_CHILLIPROXY_TRUE@@WITH_CURL_TRUE@am__append_31 = -lcurl -lz 
-@WITH_CHILLIRADSEC_TRUE@am__append_32 = chilli_radsec
-@WITH_CHILLISCRIPT_TRUE@am__append_33 = chilli_script
+@WITH_SSL_TRUE@am__append_21 = ssl.c ms_chap.c 
+@WITH_NETFILTER_QUEUE_TRUE@am__append_22 = queue.c
+@WITH_NETFILTER_QUEUE_TRUE@am__append_23 = ${LIBNETFILTER_QUEUE}
+@WITH_NETNAT_TRUE@am__append_24 = nat.c nat.h
+@WITH_PCAP_TRUE@am__append_25 = ${LIBPCAP}
+@WITH_MULTIROUTE_TRUE@am__append_26 = chilli_rtmon
+@WITH_MULTIROUTE_TRUE@am__append_27 = rtmon.c rtmon.h
+@WITH_CHILLIQUERY_TRUE@am__append_28 = chilli_query
+@WITH_CHILLIQUERY_TRUE@am__append_29 = cmdsock.c
+@WITH_CHILLIQUERY_TRUE@am__append_30 = cmdsock.h
+@WITH_CHILLIPROXY_TRUE@am__append_31 = chilli_proxy
+@WITH_CHILLIPROXY_TRUE@@WITH_CURL_TRUE@am__append_32 = -lcurl -lz 
+@WITH_CHILLIRADSEC_TRUE@am__append_33 = chilli_radsec
 @WITH_CHILLISCRIPT_TRUE@am__append_34 = chilli_script
-@WITH_CHILLIREDIR_TRUE@am__append_35 = chilli_redir
-@WITH_CHILLIREDIR_TRUE@@WITH_CURL_TRUE@am__append_36 = -lcurl -lz 
-@WITH_NETFILTER_COOVA_TRUE@am__append_37 = linux
-@WITH_NETFILTER_COOVA_TRUE@am__append_38 = kcoova.c
-@WITH_MODULES_TRUE@am__append_39 = chilli_module.c
-@WITH_MODULES_TRUE@am__append_40 = -ldl
+@WITH_CHILLISCRIPT_TRUE@am__append_35 = chilli_script
+@WITH_CHILLIREDIR_TRUE@am__append_36 = chilli_redir
+@WITH_CHILLIREDIR_TRUE@@WITH_CURL_TRUE@am__append_37 = -lcurl -lz 
+@WITH_NETFILTER_COOVA_TRUE@am__append_38 = linux
+@WITH_NETFILTER_COOVA_TRUE@am__append_39 = kcoova.c
+@WITH_MODULES_TRUE@am__append_40 = chilli_module.c
 @WITH_MODULES_TRUE@am__append_41 = -ldl
-@WITH_MODULES_TRUE@am__append_42 = chilli_module.h
-@WITH_MODULES_TRUE@am__append_43 = -DDEFLIBDIR='"$(libdir)/coova-chilli"'
-@WITH_CONFIG_TRUE@am__append_44 = `[ -e ../../cmdline.ggo ] && echo ../../cmdline.ggo`
+@WITH_MODULES_TRUE@am__append_42 = -ldl
+@WITH_MODULES_TRUE@am__append_43 = chilli_module.h
+@WITH_MODULES_TRUE@am__append_44 = -DDEFLIBDIR='"$(libdir)/coova-chilli"'
+@HAVE_STRLCPY_FALSE@am__append_45 = ../extern/strlcpy.c
+@WITH_CONFIG_TRUE@am__append_46 = `[ -e ../../cmdline.ggo ] && echo ../../cmdline.ggo`
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(am__chilliinclude_HEADERS_DIST)
@@ -137,7 +139,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.in
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -171,9 +173,9 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkglibdir)" \
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(samplelibdir)" \
 	"$(DESTDIR)$(sbindir)" "$(DESTDIR)$(chilliincludedir)"
-LTLIBRARIES = $(lib_LTLIBRARIES) $(pkglib_LTLIBRARIES)
+LTLIBRARIES = $(lib_LTLIBRARIES) $(samplelib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 @WITH_OPENSSL_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 @WITH_CYASSL_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
@@ -181,20 +183,21 @@ libchilli_la_DEPENDENCIES = $(top_builddir)/bstring/libbstring.la \
 	$(am__append_5) $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libchilli_la_SOURCES_DIST = chilli.c tun.c ippool.c radius.c md5.c \
-	redir.c dhcp.c syserr.c iphash.c lookup.c system.h util.c \
-	options.c statusfile.c conn.c sig.c garden.c dns.c session.c \
-	pkt.c chksum.c net.c safe.c patricia.c patricia.h ewt.c ewt.h \
+	redir.c dhcp.c iphash.c lookup.c system.h util.c options.c \
+	statusfile.c conn.c sig.c garden.c dns.c session.c pkt.c \
+	chksum.c net.c safe.c patricia.c patricia.h ewt.c ewt.h \
 	location.c sfhash.c lookup3.c mssl.c mssl.h avl/avl.c \
 	avl/avl.h avl/list.h avl/common_types.h avl/container_of.h \
 	ssl.c ms_chap.c queue.c nat.c nat.h rtmon.c rtmon.h cmdsock.c \
-	kcoova.c chilli_module.c
+	kcoova.c chilli_module.c ../extern/strlcpy.c
 @WITH_PATRICIA_TRUE@am__objects_1 = patricia.lo
 @WITH_EWTAPI_TRUE@am__objects_2 = ewt.lo
 @WITH_LOCATION_TRUE@am__objects_3 = location.lo
 @WITH_SFHASH_TRUE@am__objects_4 = sfhash.lo
 @WITH_LOOKUP3_TRUE@am__objects_5 = lookup3.lo
 @WITH_MATRIXSSL_TRUE@am__objects_6 = mssl.lo
-@WITH_AVL_TRUE@am__objects_7 = avl.lo
+am__dirstamp = $(am__leading_dot)dirstamp
+@WITH_AVL_TRUE@am__objects_7 = avl/avl.lo
 @WITH_SSL_TRUE@am__objects_8 = ssl.lo ms_chap.lo
 @WITH_NETFILTER_QUEUE_TRUE@am__objects_9 = queue.lo
 @WITH_NETNAT_TRUE@am__objects_10 = nat.lo
@@ -202,15 +205,16 @@ am__libchilli_la_SOURCES_DIST = chilli.c tun.c ippool.c radius.c md5.c \
 @WITH_CHILLIQUERY_TRUE@am__objects_12 = cmdsock.lo
 @WITH_NETFILTER_COOVA_TRUE@am__objects_13 = kcoova.lo
 @WITH_MODULES_TRUE@am__objects_14 = chilli_module.lo
+@HAVE_STRLCPY_FALSE@am__objects_15 = ../extern/strlcpy.lo
 am_libchilli_la_OBJECTS = chilli.lo tun.lo ippool.lo radius.lo md5.lo \
-	redir.lo dhcp.lo syserr.lo iphash.lo lookup.lo util.lo \
-	options.lo statusfile.lo conn.lo sig.lo garden.lo dns.lo \
-	session.lo pkt.lo chksum.lo net.lo safe.lo $(am__objects_1) \
+	redir.lo dhcp.lo iphash.lo lookup.lo util.lo options.lo \
+	statusfile.lo conn.lo sig.lo garden.lo dns.lo session.lo \
+	pkt.lo chksum.lo net.lo safe.lo $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
-	$(am__objects_14)
+	$(am__objects_14) $(am__objects_15)
 libchilli_la_OBJECTS = $(am_libchilli_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -223,7 +227,7 @@ sample_la_OBJECTS = $(am_sample_la_OBJECTS)
 sample_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(sample_la_LDFLAGS) $(LDFLAGS) -o $@
-@WITH_MODULES_TRUE@am_sample_la_rpath = -rpath $(pkglibdir)
+@WITH_MODULES_TRUE@am_sample_la_rpath = -rpath $(samplelibdir)
 @WITH_MULTIROUTE_TRUE@am__EXEEXT_1 = chilli_rtmon$(EXEEXT)
 @WITH_CHILLIQUERY_TRUE@am__EXEEXT_2 = chilli_query$(EXEEXT)
 @WITH_CHILLIPROXY_TRUE@am__EXEEXT_3 = chilli_proxy$(EXEEXT)
@@ -242,10 +246,10 @@ chilli_DEPENDENCIES = libchilli.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 am__chilli_opt_SOURCES_DIST = main-opt.c cmdline.mini.c cmdline.c
-@WITH_MINICONFIG_TRUE@am__objects_15 = cmdline.mini.$(OBJEXT)
-@WITH_MINICONFIG_FALSE@am__objects_16 = cmdline.$(OBJEXT)
-am_chilli_opt_OBJECTS = main-opt.$(OBJEXT) $(am__objects_15) \
-	$(am__objects_16)
+@WITH_MINICONFIG_TRUE@am__objects_16 = cmdline.mini.$(OBJEXT)
+@WITH_MINICONFIG_FALSE@am__objects_17 = cmdline.$(OBJEXT)
+am_chilli_opt_OBJECTS = main-opt.$(OBJEXT) $(am__objects_16) \
+	$(am__objects_17)
 chilli_opt_OBJECTS = $(am_chilli_opt_OBJECTS)
 chilli_opt_LDADD = $(LDADD)
 chilli_opt_DEPENDENCIES = libchilli.la \
@@ -377,11 +381,11 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__chilliinclude_HEADERS_DIST = chilli.h session.h garden.h radius.h \
-	options.h tun.h ippool.h md5.h redir.h dhcp.h syserr.h \
-	iphash.h radius_wispr.h radius_chillispot.h ssl.h dns.h net.h \
-	pkt.h conn.h lookup.h chilli_limits.h cmdline.h debug.h \
-	radius_pkt.h ../bstring/bstrlib.h ../config.h system.h \
-	cmdsock.h chilli_module.h
+	options.h tun.h ippool.h md5.h redir.h dhcp.h iphash.h \
+	radius_wispr.h radius_coovachilli.h ssl.h dns.h net.h pkt.h \
+	conn.h lookup.h chilli_limits.h cmdline.h debug.h radius_pkt.h \
+	../bstring/bstrlib.h ../config.h system.h cmdsock.h \
+	chilli_module.h
 HEADERS = $(chilliinclude_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
@@ -410,7 +414,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = linux mssl
+DIST_SUBDIRS = mssl linux
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -437,7 +441,6 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-@WITH_MODULES_TRUE@pkglibdir = $(libdir)/coova-chilli
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
@@ -557,10 +560,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AUTOMAKE_OPTIONS = foreign
-SUBDIRS = $(am__append_37)
-@WITH_MATRIXSSL_CLI_TRUE@@WITH_MATRIXSSL_TRUE@SUBDIRS = mssl \
-@WITH_MATRIXSSL_CLI_TRUE@@WITH_MATRIXSSL_TRUE@	$(am__append_37)
+AUTOMAKE_OPTIONS = foreign subdir-objects
+SUBDIRS = $(am__append_19) $(am__append_38)
 EXTRA_DIST = cmdline.ggo cmdline.patch \
 linux/Makefile linux/xt_coova.c linux/xt_coova.h \
 linux/ipt_coova.h linux/libxt_coova.c \
@@ -568,27 +569,28 @@ cmdline.mini.sh cmdline.mini.gen
 
 chilliincludedir = $(includedir)/chilli
 chilliinclude_HEADERS = chilli.h session.h garden.h radius.h options.h \
-	tun.h ippool.h md5.h redir.h dhcp.h syserr.h iphash.h \
-	radius_wispr.h radius_chillispot.h ssl.h dns.h net.h pkt.h \
-	conn.h lookup.h chilli_limits.h cmdline.h debug.h radius_pkt.h \
-	../bstring/bstrlib.h ../config.h system.h $(am__append_29) \
-	$(am__append_42)
+	tun.h ippool.h md5.h redir.h dhcp.h iphash.h radius_wispr.h \
+	radius_coovachilli.h ssl.h dns.h net.h pkt.h conn.h lookup.h \
+	chilli_limits.h cmdline.h debug.h radius_pkt.h \
+	../bstring/bstrlib.h ../config.h system.h $(am__append_30) \
+	$(am__append_43)
 lib_LTLIBRARIES = libchilli.la
-suid_programs = $(am__append_34)
+suid_programs = $(am__append_35)
 libchilli_la_SOURCES = chilli.c tun.c ippool.c radius.c md5.c redir.c \
-	dhcp.c syserr.c iphash.c lookup.c system.h util.c options.c \
+	dhcp.c iphash.c lookup.c system.h util.c options.c \
 	statusfile.c conn.c sig.c garden.c dns.c session.c pkt.c \
 	chksum.c net.c safe.c $(am__append_3) $(am__append_7) \
 	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_16) $(am__append_19) $(am__append_20) \
-	$(am__append_21) $(am__append_23) $(am__append_26) \
-	$(am__append_28) $(am__append_38) $(am__append_39)
-AM_CFLAGS = -D_GNU_SOURCE -Wall -fno-builtin -fno-strict-aliasing -Os \
-	-fomit-frame-pointer -pipe -I$(top_builddir)/bstring \
-	-DDEFCHILLICONF='"/etc/chilli.conf"' \
+	$(am__append_16) $(am__append_20) $(am__append_21) \
+	$(am__append_22) $(am__append_24) $(am__append_27) \
+	$(am__append_29) $(am__append_39) $(am__append_40) \
+	$(am__append_45)
+AM_CFLAGS = -D_GNU_SOURCE -Wall -fno-builtin -fno-strict-aliasing \
+	-fomit-frame-pointer -funroll-loops -pipe \
+	-I$(top_builddir)/bstring -DDEFCHILLICONF='"/etc/chilli.conf"' \
 	-DDEFPIDFILE='"/var/run/chilli.pid"' \
 	-DDEFSTATEDIR='"/var/run"' -DSBINDIR='"/sbin"' $(am__append_4) \
-	$(am__append_8) $(am__append_43)
+	$(am__append_8) $(am__append_44)
 chilli_SOURCES = main.c
 chilli_radconfig_SOURCES = main-radconfig.c 
 chilli_response_SOURCES = main-response.c 
@@ -596,24 +598,25 @@ chilli_query_SOURCES = main-query.c
 chilli_opt_SOURCES = main-opt.c $(am__append_1) $(am__append_2)
 libchilli_la_LIBADD = $(top_builddir)/bstring/libbstring.la \
 	$(am__append_5) $(am__append_12) $(am__append_14) \
-	$(am__append_17) $(am__append_40)
+	$(am__append_17) $(am__append_41)
 LDADD = libchilli.la ${LIBRT} $(top_builddir)/bstring/libbstring.la \
 	$(am__append_6) $(am__append_13) $(am__append_15) \
-	$(am__append_18) $(am__append_22) $(am__append_24) \
-	$(am__append_41)
+	$(am__append_18) $(am__append_23) $(am__append_25) \
+	$(am__append_42)
 @WITH_MULTIROUTE_TRUE@chilli_rtmon_SOURCES = main-rtmon.c 
 @WITH_CHILLIPROXY_TRUE@chilli_proxy_SOURCES = main-proxy.c 
-@WITH_CHILLIPROXY_TRUE@chilli_proxy_LDADD = ${LDADD} $(am__append_31)
+@WITH_CHILLIPROXY_TRUE@chilli_proxy_LDADD = ${LDADD} $(am__append_32)
 @WITH_CHILLIRADSEC_TRUE@chilli_radsec_SOURCES = main-radsec.c 
 @WITH_CHILLIRADSEC_TRUE@chilli_radsec_LDADD = ${LDADD}
 @WITH_CHILLISCRIPT_TRUE@chilli_script_SOURCES = main-script.c 
 @WITH_CHILLISCRIPT_TRUE@chilli_script_LDADD = ${LDADD}
 @WITH_CHILLIREDIR_TRUE@chilli_redir_SOURCES = main-redir.c 
-@WITH_CHILLIREDIR_TRUE@chilli_redir_LDADD = ${LDADD} $(am__append_36)
+@WITH_CHILLIREDIR_TRUE@chilli_redir_LDADD = ${LDADD} $(am__append_37)
 @WITH_MODULES_TRUE@sample_la_SOURCES = sample-mod.c
 @WITH_MODULES_TRUE@sample_la_LDFLAGS = -module -avoid-version
-@WITH_MODULES_TRUE@pkglib_LTLIBRARIES = sample.la
-CMDLINE = cmdline.ggo $(am__append_44)
+@WITH_MODULES_TRUE@samplelibdir = $(libdir)/coova-chilli
+@WITH_MODULES_TRUE@samplelib_LTLIBRARIES = sample.la
+CMDLINE = cmdline.ggo $(am__append_46)
 all: all-recursive
 
 .SUFFIXES:
@@ -684,33 +687,33 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-install-pkglibLTLIBRARIES: $(pkglib_LTLIBRARIES)
+install-samplelibLTLIBRARIES: $(samplelib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	@list='$(pkglib_LTLIBRARIES)'; test -n "$(pkglibdir)" || list=; \
+	@list='$(samplelib_LTLIBRARIES)'; test -n "$(samplelibdir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(pkglibdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(pkglibdir)" || exit 1; \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(pkglibdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(pkglibdir)"; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(samplelibdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(samplelibdir)" || exit 1; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(samplelibdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(samplelibdir)"; \
 	}
 
-uninstall-pkglibLTLIBRARIES:
+uninstall-samplelibLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkglib_LTLIBRARIES)'; test -n "$(pkglibdir)" || list=; \
+	@list='$(samplelib_LTLIBRARIES)'; test -n "$(samplelibdir)" || list=; \
 	for p in $$list; do \
 	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(pkglibdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(samplelibdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(samplelibdir)/$$f"; \
 	done
 
-clean-pkglibLTLIBRARIES:
-	-test -z "$(pkglib_LTLIBRARIES)" || rm -f $(pkglib_LTLIBRARIES)
-	@list='$(pkglib_LTLIBRARIES)'; \
+clean-samplelibLTLIBRARIES:
+	-test -z "$(samplelib_LTLIBRARIES)" || rm -f $(samplelib_LTLIBRARIES)
+	@list='$(samplelib_LTLIBRARIES)'; \
 	locs=`for p in $$list; do echo $$p; done | \
 	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
 	      sort -u`; \
@@ -718,6 +721,21 @@ clean-pkglibLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+avl/$(am__dirstamp):
+	@$(MKDIR_P) avl
+	@: > avl/$(am__dirstamp)
+avl/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) avl/$(DEPDIR)
+	@: > avl/$(DEPDIR)/$(am__dirstamp)
+avl/avl.lo: avl/$(am__dirstamp) avl/$(DEPDIR)/$(am__dirstamp)
+../extern/$(am__dirstamp):
+	@$(MKDIR_P) ../extern
+	@: > ../extern/$(am__dirstamp)
+../extern/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../extern/$(DEPDIR)
+	@: > ../extern/$(DEPDIR)/$(am__dirstamp)
+../extern/strlcpy.lo: ../extern/$(am__dirstamp) \
+	../extern/$(DEPDIR)/$(am__dirstamp)
 
 libchilli.la: $(libchilli_la_OBJECTS) $(libchilli_la_DEPENDENCIES) $(EXTRA_libchilli_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libchilli_la_OBJECTS) $(libchilli_la_LIBADD) $(LIBS)
@@ -816,11 +834,15 @@ chilli_script$(EXEEXT): $(chilli_script_OBJECTS) $(chilli_script_DEPENDENCIES) $
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f ../extern/*.$(OBJEXT)
+	-rm -f ../extern/*.lo
+	-rm -f avl/*.$(OBJEXT)
+	-rm -f avl/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../extern/$(DEPDIR)/strlcpy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chilli.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chilli_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chksum.Plo@am__quote@
@@ -867,43 +889,41 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sig.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ssl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statusfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syserr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tun.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@avl/$(DEPDIR)/avl.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
-
-avl.lo: avl/avl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT avl.lo -MD -MP -MF $(DEPDIR)/avl.Tpo -c -o avl.lo `test -f 'avl/avl.c' || echo '$(srcdir)/'`avl/avl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/avl.Tpo $(DEPDIR)/avl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='avl/avl.c' object='avl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o avl.lo `test -f 'avl/avl.c' || echo '$(srcdir)/'`avl/avl.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf ../extern/.libs ../extern/_libs
+	-rm -rf avl/.libs avl/_libs
 install-chilliincludeHEADERS: $(chilliinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(chilliinclude_HEADERS)'; test -n "$(chilliincludedir)" || list=; \
@@ -1085,7 +1105,7 @@ check: check-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(chilliincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(samplelibdir)" "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(chilliincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -1114,6 +1134,10 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../extern/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../extern/$(am__dirstamp)
+	-rm -f avl/$(DEPDIR)/$(am__dirstamp)
+	-rm -f avl/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1121,10 +1145,10 @@ maintainer-clean-generic:
 clean: clean-recursive
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-pkglibLTLIBRARIES clean-sbinPROGRAMS mostlyclean-am
+	clean-samplelibLTLIBRARIES clean-sbinPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ../extern/$(DEPDIR) ./$(DEPDIR) avl/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1141,14 +1165,14 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-chilliincludeHEADERS
+install-data-am: install-chilliincludeHEADERS \
+	install-samplelibLTLIBRARIES
 
 install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-libLTLIBRARIES install-pkglibLTLIBRARIES \
-	install-sbinPROGRAMS
+install-exec-am: install-libLTLIBRARIES install-sbinPROGRAMS
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 install-html: install-html-recursive
@@ -1172,7 +1196,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ../extern/$(DEPDIR) ./$(DEPDIR) avl/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1190,14 +1214,14 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-chilliincludeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pkglibLTLIBRARIES uninstall-sbinPROGRAMS
+	uninstall-samplelibLTLIBRARIES uninstall-sbinPROGRAMS
 
 .MAKE: $(am__recursive_targets) install-am install-exec-am \
 	install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
 	check-am clean clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-pkglibLTLIBRARIES clean-sbinPROGRAMS \
+	clean-libtool clean-samplelibLTLIBRARIES clean-sbinPROGRAMS \
 	cscopelist-am ctags ctags-am distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
@@ -1205,14 +1229,15 @@ uninstall-am: uninstall-chilliincludeHEADERS uninstall-libLTLIBRARIES \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-exec-hook install-html install-html-am install-info \
 	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-pkglibLTLIBRARIES install-ps \
-	install-ps-am install-sbinPROGRAMS install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am \
-	uninstall-chilliincludeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pkglibLTLIBRARIES uninstall-sbinPROGRAMS
+	install-pdf-am install-ps install-ps-am \
+	install-samplelibLTLIBRARIES install-sbinPROGRAMS \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-chilliincludeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-samplelibLTLIBRARIES \
+	uninstall-sbinPROGRAMS
 
 
 install-exec-hook:
@@ -1225,9 +1250,9 @@ install-exec-hook:
 main-opt.c: cmdline.c cmdline.h
 
 cmdline.c cmdline.h: cmdline.ggo cmdline.patch
-	cat $(CMDLINE) | gengetopt -C 
-	cp cmdline.c cmdline.c.orig
-	patch -p0 < cmdline.patch
+#	cat $(CMDLINE) | gengetopt -C 
+#	cp cmdline.c cmdline.c.orig
+#	patch -p0 < cmdline.patch
 
 cmdline.mini.gen: cmdline.ggo 
 	sh cmdline.mini.sh > cmdline.mini.gen

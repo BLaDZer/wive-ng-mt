@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -22,12 +22,12 @@
 #define _CHILLI_H
 
 #include "system.h"
+#include "debug.h"
 #include "chilli_limits.h"
 #include "tun.h"
 #include "ippool.h"
 #include "radius.h"
 #include "redir.h"
-#include "syserr.h"
 #include "session.h"
 #include "dhcp.h"
 #include "options.h"
@@ -35,6 +35,10 @@
 #include "net.h"
 #include "md5.h"
 #include "dns.h"
+
+#ifndef HAVE_STRLCPY
+extern size_t strlcpy(char *dst, const char *src, size_t dsize);
+#endif
 
 /*#define XXX_IO_DAEMON 1*/
 

@@ -6,7 +6,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -35,27 +35,27 @@ static int chilliauth_cb(struct radius_t *radius,
   size_t offset = 0;
 
   if (!pack) { 
-    log_err(0, "Radius request timed out");
+    syslog(LOG_ERR, "Radius request timed out");
     return 0;
   }
 
   if ((pack->code != RADIUS_CODE_ACCESS_REJECT) && 
       (pack->code != RADIUS_CODE_ACCESS_CHALLENGE) &&
       (pack->code != RADIUS_CODE_ACCESS_ACCEPT)) {
-    log_err(0, "Unknown radius access reply code %d", pack->code);
+    syslog(LOG_ERR, "Unknown radius access reply code %d", pack->code);
     return 0;
   }
 
   /* ACCESS-ACCEPT */
   if (pack->code != RADIUS_CODE_ACCESS_ACCEPT) {
-    log_err(0, "Administrative-User Login Failed");
+    syslog(LOG_ERR, "Administrative-User Login Failed");
     return 0;
   }
 
   while (!radius_getnextattr(pack, &attr, 
 			     RADIUS_ATTR_VENDOR_SPECIFIC,
-			     RADIUS_VENDOR_CHILLISPOT,
-			     RADIUS_ATTR_CHILLISPOT_CONFIG, 
+			     RADIUS_VENDOR_COOVACHILLI,
+			     RADIUS_ATTR_COOVACHILLI_CONFIG,
 			     0, &offset)) {
     printf("%.*s\n", attr->l - 2, (const char *)attr->v.t);
   }
@@ -74,13 +74,13 @@ int static chilliauth() {
   int ret=-1;
 
   if (!_options.adminuser || !_options.adminpasswd) {
-    log_err(0, "Must be used with --adminuser and --adminpasswd");
+    syslog(LOG_ERR, "Must be used with --adminuser and --adminpasswd");
     return 1;
   }
 
   if (radius_new(&radius, &_options.radiuslisten, 0, 0, 0) ||
       radius_init_q(radius, 4)) {
-    log_err(0, "Failed to create radius");
+    syslog(LOG_ERR, "Failed to create radius");
     return ret;
   }
 
@@ -93,9 +93,9 @@ int static chilliauth() {
     int fd;
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) >= 0) {
       memset(&ifr, 0, sizeof(ifr));
-      safe_strncpy(ifr.ifr_name, _options.dhcpif, IFNAMSIZ);
+      strlcpy(ifr.ifr_name, _options.dhcpif, IFNAMSIZ);
       if (ioctl(fd, SIOCGIFHWADDR, &ifr) < 0) {
-	log_err(errno, "ioctl(d=%d, request=%d) failed", fd, SIOCGIFHWADDR);
+	syslog(LOG_ERR, "%s: ioctl(d=%d, request=%d) failed", strerror(errno), fd, SIOCGIFHWADDR);
       }
       memcpy(hwaddr, ifr.ifr_hwaddr.sa_data, PKT_ETH_ALEN);
       close(fd);
@@ -109,7 +109,7 @@ int static chilliauth() {
   ret = chilli_auth_radius(radius);
 
   if (radius->fd <= 0) {
-    log_err(0, "not a valid socket!");
+    syslog(LOG_ERR, "not a valid socket!");
     return ret;
   } 
 
@@ -129,7 +129,7 @@ int static chilliauth() {
 
     switch (status = select(maxfd + 1, &fds, NULL, NULL, &idleTime)) {
     case -1:
-      log_err(errno, "select() returned -1!");
+      syslog(LOG_ERR, "%s: select() returned -1!", strerror(errno));
       break;  
     case 0:
       radius_timeout(radius);
@@ -140,7 +140,7 @@ int static chilliauth() {
     if (status > 0) {
       if (FD_ISSET(radius->fd, &fds)) {
 	if (radius_decaps(radius, 0) < 0) {
-	  log_err(0, "radius_ind() failed!");
+	  syslog(LOG_ERR, "radius_ind() failed!");
 	}
 	else {
 	  ret = 0;
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
   options_init();
 
   if (process_options(argc, argv, 1)) {
-    log_err(errno, "Exiting...");
+    syslog(LOG_ERR, "%s: Exiting...", strerror(errno));
     exit(1);
   }
   

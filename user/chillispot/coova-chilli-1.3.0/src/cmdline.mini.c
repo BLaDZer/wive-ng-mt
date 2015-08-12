@@ -4,7 +4,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -29,7 +29,9 @@
 
 #include <getopt.h>
 
+#ifndef _debug_
 #define _debug_ 0
+#endif
 
 #define OPT_string  0
 #define OPT_integer 1
@@ -161,7 +163,7 @@ int mini_cmdline_file(char *filename, struct gengetopt_args_info *args_info,
   int i;
 
   if (!file) {
-    log_err(errno, "Could not open file %s", filename);
+    syslog(LOG_ERR, "%s: Could not open file %s", strerror(errno), filename);
     return -1;
   }
 

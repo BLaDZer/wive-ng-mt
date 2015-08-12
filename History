@@ -1104,7 +1104,7 @@
 3) enable 802.11H and DFS support by default (need for sertifications test and more compat with apple products).<br>
 4) add 802.1x wireless radius authentification support.<br>
 5) add uqmi tool (need for dongle use qmi protocol).<br>
-6) add hotspot mode support (basic CoovaChilli port).<br>
+6) add hotspot mode support (basic CoovaChilli port version 1.3.1.3 commit: Aug 12, 2015 79be51a).<br>
 7) usb-modeswitch: up to 2.2.5 2015-07-16 version.<br>
 8) miniupnpd: up to 1.9.20150721 version.<br>
 9) dnsmasq: up to 2.75 version.<br>

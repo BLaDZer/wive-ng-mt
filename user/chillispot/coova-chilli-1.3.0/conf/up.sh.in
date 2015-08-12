@@ -18,6 +18,7 @@ ipt_in() {
     ipt -I INPUT -i $TUNTAP $*
 }
 
+run_up() {
 if [ -n "$TUNTAP" ]
 then
     # ifconfig $TUNTAP mtu $MTU
@@ -86,3 +87,14 @@ fi
 
 # site specific stuff optional
 [ -e @ETCCHILLI@/ipup.sh ] && . @ETCCHILLI@/ipup.sh
+}
+
+
+FLOCK=$(which flock)
+if [ -n "$FLOCK" ] && [ -z "$LOCKED_FILE" ]
+then
+    export LOCKED_FILE=/tmp/.chilli-flock
+    flock -x $LOCKED_FILE -c "$0 $@"
+else
+    run_up
+fi

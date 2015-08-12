@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -19,7 +19,6 @@
  */
 
 #include "chilli.h"
-#include "debug.h"
 #ifdef ENABLE_MODULES
 #include "chilli_module.h"
 #endif
@@ -83,6 +82,10 @@ int safe_write(int s, void *b, size_t blen) {
   do {
     ret = write(s, b, blen);
   } while (ret == -1 && errno == EINTR);
+#if(_debug_)
+  if (ret < 0)
+    syslog(LOG_ERR, "%s: write(%d, %zd)", strerror(errno), s, blen);
+#endif
   return ret;
 }
 
@@ -91,6 +94,10 @@ int safe_recv(int sockfd, void *buf, size_t len, int flags) {
   do {
     ret = recv(sockfd, buf, len, flags);
   } while (ret == -1 && errno == EINTR);
+#if(_debug_)
+  if (ret < 0)
+    syslog(LOG_ERR, "%s: recv(%d, %zd)", strerror(errno), sockfd, len);
+#endif
   return ret;
 }
 
@@ -115,6 +122,14 @@ int safe_recvmsg(int sockfd, struct msghdr *msg, int flags) {
   int ret;
   do {
     ret = recvmsg(sockfd, msg, flags);
+  } while (ret == -1 && errno == EINTR);
+  return ret;
+}
+
+int safe_sendmsg(int sockfd, struct msghdr *msg, int flags) {
+  int ret;
+  do {
+    ret = sendmsg(sockfd, msg, flags);
   } while (ret == -1 && errno == EINTR);
   return ret;
 }

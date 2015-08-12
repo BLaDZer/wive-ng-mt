@@ -4,7 +4,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -318,7 +318,7 @@ static int process_args(int argc, char *argv[], int argidx) {
 	  parse_mac(((uint8_t *)args[i].field), argv[argidx+1]);
 	  break;
 	case CMDSOCK_FIELD_STRING:
-	  safe_strncpy(((char *)args[i].field), argv[argidx+1], args[i].length);
+	  strlcpy(((char *)args[i].field), argv[argidx+1], args[i].length);
 	  break;
 	case CMDSOCK_FIELD_INTEGER:
 	  switch(args[i].length) {
@@ -437,7 +437,7 @@ int main(int argc, char **argv) {
   itval.it_value.tv_usec = 0; 
   
   if (setitimer(ITIMER_REAL, &itval, NULL)) {
-    log_err(errno, "setitimer() failed!");
+    syslog(LOG_ERR, "%s: setitimer() failed!", strerror(errno));
   }
   
   if (argc < 2) return usage(argv[0]);
@@ -579,7 +579,7 @@ int main(int argc, char **argv) {
     printf("blen %d\n", blen);
 
     if (fd < 0) {
-      log_err(errno,"socket() failed");
+      syslog(LOG_ERR, "%s: socket() failed", strerror(errno));
       exit(1);
     }
 

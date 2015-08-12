@@ -1,5 +1,42 @@
+== ChangeLog (CoovaChilli-v1.3.1.3) ==
+* Fix json encoding for radius reply.
+
+== ChangeLog (CoovaChilli-v1.3.1.2) ==
+* Add json support.
+
+== ChangeLog (CoovaChilli-v1.3.1 git2763bb5) ==
+
+* Added NethServer distro spec.in
+* Pass redir_request *rreq to redir_main_exit()
+* Add terminateTime to chilli session json object
+* Pass redir_request *rreq to redir_main_exit() (Unbreaks building with OpenSSL support)
+* Reference the members of socket struct correctly
+* Do no drop IP fragments (needed for some UDP VPN)
+* Fixed automake warnings
+* Fix building using clang & dev_set_address() on the BSD's
+* Fix indentation of closing brakets in check_options()
+* Use ifaliasreq for BSDs & derivatives
+* When calling redir_main_exit() from redir_main() pass it forked
+* Allow Coova to be built using clang without any options enabled
+* Fix CR/LF > LF
+* Fix build with FreeBSD
+* Moved on github (https://github.com/coova/coova-chilli)
+* Added haserl dependency for miniportal
+* Added libtool, automake and libssl-dev, iptables, gengetopt as dependencies to build a .deb from sources
+* Now SO_REUSEPORT socket flag is checked at runtime
+* Fix compile w/o patricia support
 
 == ChangeLog (CoovaChilli current svn revision) ==
+
+* New compile time option ''--enable-authedallowed'' which will allocate memory and enable the ''authedallowed'' runtime option
+* New runtime option ''authedallowed'' which is used just like ''uamallowed'' but defines resources not to be subject to bandwidth limits or accounting (outside of "garden accounting")
+* Smoothed out leaky bucket bandwidth calculation by considering fractions of seconds
+* New runtime option ''uamauthedallowed'' is a boolean option that has all ''uamallowed'' resources put outside of bandwidth limits or accounting
+* New runtime option ''postauthproxyssl'' to have postauth proxy send https to proxy, previously this was the default when redirssl is used
+* Runtime option ''mmapring'' to enable using RX/TX rings when compiled with ''--with-mmap''
+* Fix ICMP fragmentation needed messages to carrying original IP header plus 8 bytes (64bits)
+* Added runtime option ''nosystemdns'' to prevent the use of the system DNS servers to be used for DHCP subscribers
+* Added compile option ''--enable-wpad'' to add support for WPAD via DHCP and DNS, new runtime option ''--wpadpacfile=filename''
 
 == ChangeLog (CoovaChilli-v1.3.0 svn revision 480) ==
 
@@ -62,7 +99,7 @@
 * Added ''uamanyipex'' that defines a subnet to exclude from ''uamanyip''
 * Changed the name of ''anyipexclude'' to ''uamnatanyipex'' to be more accurate, see http://lists.coova.org/pipermail/chilli/2011-March/001616.html
 * Support for Framed-IP-Netmask in RADIUS macauth replies
-* Added new attributes for DHCP parameter setting in RADIUS macauth replies, see dictionary.chillispot
+* Added new attributes for DHCP parameter setting in RADIUS macauth replies, see dictionary.coovachilli
 * Added compile time option ''--disable-coa'' to optionally remove CoA support
 * Added compile time option ''--disable-tcpreset'' to optionally disable TCP session resetting
 * Fixups for BSD based systems

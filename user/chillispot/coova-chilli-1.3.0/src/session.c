@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -68,13 +68,16 @@ int session_json_params(struct session_state *state,
   bcatcstr(json,"\",\"userName\":\"");
   bcatcstr(json,state->redir.username);
   bcatcstr(json, "\",\"startTime\":");
-  bassignformat(tmp, "%ld", mainclock_towall(init ? mainclock_now() : starttime));
+  bassignformat(tmp, "%ld", (long) mainclock_towall(init ? mainclock_now() : starttime));
   bconcat(json, tmp);
   bcatcstr(json,",\"sessionTimeout\":");
-  bassignformat(tmp, "%lld", params->sessiontimeout);
+  bassignformat(tmp, "%ld", (long) params->sessiontimeout);
+  bconcat(json, tmp);
+  bcatcstr(json,",\"terminateTime\":");
+  bassignformat(tmp, "%ld", (long) params->sessionterminatetime);
   bconcat(json, tmp);
   bcatcstr(json,",\"idleTimeout\":");
-  bassignformat(tmp, "%ld", params->idletimeout);
+  bassignformat(tmp, "%ld", (long) params->idletimeout);
   bconcat(json, tmp);
 #ifdef ENABLE_IEEE8021Q
   if (_options.ieee8021q && state->tag8021q) {
@@ -115,27 +118,27 @@ int session_json_acct(struct session_state *state,
   uint32_t idletime;
   
   sessiontime = mainclock_diffu(state->start_time);
-  idletime    = mainclock_diffu(state->last_sent_time);
+  idletime    = mainclock_diffu(state->last_up_time);
 
   init = init || !state->authenticated;
 
   bcatcstr(json,"\"sessionTime\":");
-  bassignformat(tmp, "%ld", init ? 0 : sessiontime);
+  bassignformat(tmp, "%ld", init ? 0 : (long)sessiontime);
   bconcat(json, tmp);
   bcatcstr(json,",\"idleTime\":");
-  bassignformat(tmp, "%ld", init ? 0 : idletime);
+  bassignformat(tmp, "%ld", init ? 0 : (long)idletime);
   bconcat(json, tmp);
   bcatcstr(json,",\"inputOctets\":");
-  bassignformat(tmp, "%ld",init ? 0 :  inoctets);
+  bassignformat(tmp, "%ld",init ? 0 :  (long)inoctets);
   bconcat(json, tmp);
   bcatcstr(json,",\"outputOctets\":");
-  bassignformat(tmp, "%ld", init ? 0 : outoctets);
+  bassignformat(tmp, "%ld", init ? 0 : (long)outoctets);
   bconcat(json, tmp);
   bcatcstr(json,",\"inputGigawords\":");
-  bassignformat(tmp, "%ld", init ? 0 : ingigawords);
+  bassignformat(tmp, "%ld", init ? 0 : (long)ingigawords);
   bconcat(json, tmp);
   bcatcstr(json,",\"outputGigawords\":");
-  bassignformat(tmp, "%ld", init ? 0 : outgigawords);
+  bassignformat(tmp, "%ld", init ? 0 : (long)outgigawords);
   bconcat(json, tmp);
   bassignformat(tmp, ",\"viewPoint\":\"%s\"", 
 		_options.swapoctets ? "nas" : "client");

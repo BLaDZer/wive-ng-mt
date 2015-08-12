@@ -66,6 +66,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -ay intltool --download-all --allow-force
 	urpmi --auto -ay fakeroot --download-all --allow-force
 	urpmi --auto -ay gperf --download-all --allow-force
+	urpmi --auto -ay gengetopt --download-all --allow-force
     elif [ "$ISMAGEIA" = "1" ]; then
 	urpmi --auto bc --download-all
 	urpmi --auto flex --download-all
@@ -90,6 +91,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto intltool --download-all
 	urpmi --auto fakeroot --download-all
 	urpmi --auto gperf --download-all
+	urpmi --auto gengetopt --download-all
     elif [ "$ISUBUNTU" = "1" ]; then
 	sudo apt-get update
 	sudo apt-get -y install build-essential
@@ -107,8 +109,9 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	sudo apt-get -y install gperf
 	sudo apt-get -y install zlib1g-dev	# for build tools
 	sudo apt-get -y install gcc-multilib	# for build tools
-	sudo apt-get -y install gawk	# for build tools
+	sudo apt-get -y install gawk		# for build tools
 	sudo apt-get -y install autopoint	# for build davfs
+	sudo apt-get -y install gengetopt	# for build chillispot
     else
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
@@ -124,6 +127,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -a intltool- --download-all --allow-force
 	urpmi --auto -a fakeroot- --download-all --allow-force
 	urpmi --auto -a gperf- --download-all --allow-force
+	urpmi --auto -a gengetopt- --download-all --allow-force
     fi
 fi
 

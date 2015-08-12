@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -100,8 +100,10 @@ int main(int argc, char **argv) {
     chap_ident = atoi(argv[idx+4]);
 
   /* challenge - argv 1 */
+  if (strlen(argv[idx+1]) >= sizeof(buffer))
+    return usage(argv[0]);
   memset(buffer, 0, sizeof(buffer));
-  strcpy(buffer, argv[idx+1]);
+  strlcpy(buffer, argv[idx+1], sizeof(buffer));
   hextochar(buffer, challenge, MD5LEN);
 
   /* uamsecret - argv 2 */
@@ -116,7 +118,7 @@ int main(int argc, char **argv) {
     int m, n, plen = strlen(argv[idx+3]);
     
     memset(p, 0, sizeof(p));
-    safe_strncpy((char *)p, argv[idx+3], RADIUS_PWSIZE);
+    strlcpy((char *)p, argv[idx+3], RADIUS_PWSIZE);
     
     for (m=0; m < plen;) {
       for (n=0; n < REDIR_MD5LEN; m++, n++) {

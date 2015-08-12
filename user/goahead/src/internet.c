@@ -2532,7 +2532,6 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
 	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 
-	fprintf(stderr, "goform/setHotspot: opmode %s", opmode);
 	websHeader(wp);
 	//Re-check operation mode before any changes
 	if (!strcmp(opmode, "4"))

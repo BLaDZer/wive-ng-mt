@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(coova-chilli, 1.3.0, support@coova.com)
+AC_INIT(coova-chilli, 1.3.1.3, support@coova.com)
 AC_CONFIG_SRCDIR([src/chilli.c])
 
 AM_INIT_AUTOMAKE
@@ -13,6 +13,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CC_C_O
 
 #JJAKO Check for libtool
 AC_PROG_LIBTOOL
@@ -66,7 +67,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h errno.h fcntl.h dirent.h \
 		  netdb.h netinet/in.h netinet/tcp.h \
 		  stdint.h stddef.h stdlib.h string.h \
-		  sys/ioctl.h sys/socket.h sys/sysinfo.h \
+		  sys/ioctl.h sys/socket.h linux/sysinfo.h sys/sysinfo.h \
 		  sys/param.h sys/time.h time.h \
 		  sys/ipc.h sys/msg.h signal.h \
 		  sys/wait.h sys/un.h ifaddrs.h \
@@ -109,7 +110,7 @@ AC_FUNC_MEMCMP
 AC_FUNC_SELECT_ARGTYPES
 AC_CHECK_FUNCS([gethostbyname getprotoent gettimeofday inet_ntoa \
 memset select socket strdup strerror strstr strtol getline dirname \
-glob getaddrinfo getnameinfo getifaddrs sysinfo])
+glob getaddrinfo getnameinfo getifaddrs sysinfo strlcpy])
 AC_CHECK_LIB(resolv, res_init)
 
 AC_ARG_ENABLE(chilliquery, [AC_HELP_STRING([--disable-chilliquery],[Disable chilli_query])], 
@@ -171,7 +172,7 @@ if test x"$enable_radproxy" = xyes; then
 fi
 
 AC_ARG_ENABLE(json, [AC_HELP_STRING([--disable-json],[Disable support for JSON])], 
-  enable_json=$enableval, enable_json=yes)
+  enable_json=$enableval, enable_json=no)
 
 if test x"$enable_json" = xyes; then
    AC_DEFINE(ENABLE_JSON,1,[Define to enable Chilli JSON])
@@ -189,6 +190,13 @@ AC_ARG_ENABLE(dhcpradius, [AC_HELP_STRING([--disable-dhcpradius],[Disable suppor
 
 if test x"$enable_dhcpradius" = xyes; then
    AC_DEFINE(ENABLE_DHCPRADIUS,1,[Define to enable DHCP/RADIUS integration])
+fi
+
+AC_ARG_ENABLE(wpad, [AC_HELP_STRING([--enable-wpad],[Enable support WPAD])], 
+  enable_wpad=$enableval, enable_wpad=no)
+
+if test x"$enable_wpad" = xyes; then
+   AC_DEFINE(ENABLE_WPAD,1,[Define to enable WPAD])
 fi
 
 AC_ARG_ENABLE(gardenaccounting, [AC_HELP_STRING([--enable-gardenaccounting],[Enable walled garden accounting])], 
@@ -239,6 +247,27 @@ AC_ARG_ENABLE(sessgarden, [AC_HELP_STRING([--enable-sessgarden],[Enable support 
 
 if test x"$enable_sessgarden" = xyes; then
    AC_DEFINE(ENABLE_SESSGARDEN,1,[Define to enable Chilli session walled garden])
+fi
+
+AC_ARG_ENABLE(sessproxy, [AC_HELP_STRING([--enable-sessproxy],[Enable support for per session postauth proxy])], 
+  enable_sessproxy=$enableval, enable_sessproxy=no)
+
+if test x"$enable_sessproxy" = xyes; then
+   AC_DEFINE(ENABLE_SESSPROXY,1,[Define to enable per session postauth proxy])
+fi
+
+AC_ARG_ENABLE(sessdhcp, [AC_HELP_STRING([--enable-sessdhcp],[Enable support for per session DHCP relay])], 
+  enable_sessdhcp=$enableval, enable_sessdhcp=no)
+
+if test x"$enable_sessdhcp" = xyes; then
+   AC_DEFINE(ENABLE_SESSDHCP,1,[Define to enable per session DHCP relay])
+fi
+
+AC_ARG_ENABLE(sessdns, [AC_HELP_STRING([--enable-sessdns],[Enable support for per session DNS enforcement])], 
+  enable_sessdns=$enableval, enable_sessdns=no)
+
+if test x"$enable_sessdns" = xyes; then
+   AC_DEFINE(ENABLE_SESSDNS,1,[Define to enable per session DNS enforcement])
 fi
 
 AC_ARG_ENABLE(chillixml, [AC_HELP_STRING([--enable-chillixml],[Enable use of chillixml])], 
@@ -411,6 +440,16 @@ AS_IF([test x"$with_patricia" != xno],
 
 AM_CONDITIONAL(WITH_PATRICIA, [test x"$with_patricia" != xno])
 
+
+AC_ARG_ENABLE([authedallowed],
+ [AS_HELP_STRING([--enable-authedallowed], [enable Authurized Garden])],[],[with_authedallowed=no])
+
+AS_IF([test x"$with_authedallowed" != xno],
+  [AC_DEFINE([ENABLE_AUTHEDALLOWED], [1], [Define to include Authenticated Garden])])
+
+AM_CONDITIONAL(WITH_AUTHEDALLOWED, [test x"$with_authedallowed" != xno])
+
+
 AC_ARG_WITH([ipv6],
  [AS_HELP_STRING([--without-ipv6], [enable IPv6])],[],[with_ipv6=yes])
 
@@ -544,32 +583,32 @@ fi
 
 AM_CONDITIONAL(WITH_CLUSTER, [test x"$enable_cluster" = xyes])
 
-AC_ARG_ENABLE(sessionstate, [AC_HELP_STRING([--enable-sessionstate],[Enable extended use of the ChilliSpot-Session-State attribute])], 
+AC_ARG_ENABLE(sessionstate, [AC_HELP_STRING([--enable-sessionstate],[Enable extended use of the CoovaChilli-Session-State attribute])], 
   enable_sessionstate=$enableval, enable_sessionstate=no)
 
 if test x"$enable_sessionstate" = xyes; then
-   AC_DEFINE(ENABLE_SESSIONSTATE,1,[Define to enable extended use of the ChilliSpot-Session-State attribute])
+   AC_DEFINE(ENABLE_SESSIONSTATE,1,[Define to enable extended use of the CoovaChilli-Session-State attribute])
 fi
 
-AC_ARG_ENABLE(sessionid, [AC_HELP_STRING([--enable-sessionid],[Enable the use of the ChilliSpot-Session-Id attribute])], 
+AC_ARG_ENABLE(sessionid, [AC_HELP_STRING([--enable-sessionid],[Enable the use of the CoovaChilli-Session-Id attribute])], 
   enable_sessionid=$enableval, enable_sessionid=no)
 
 if test x"$enable_sessionid" = xyes; then
-   AC_DEFINE(ENABLE_SESSIONID,1,[Define to enable the use of the ChilliSpot-Session-Id attribute])
+   AC_DEFINE(ENABLE_SESSIONID,1,[Define to enable the use of the CoovaChilli-Session-Id attribute])
 fi
 
-AC_ARG_ENABLE(apsessionid, [AC_HELP_STRING([--enable-apsessionid],[Enable the use of the ChilliSpot-AP-Session-Id attribute])], 
+AC_ARG_ENABLE(apsessionid, [AC_HELP_STRING([--enable-apsessionid],[Enable the use of the CoovaChilli-AP-Session-Id attribute])], 
   enable_apsessionid=$enableval, enable_apsessionid=no)
 
 if test x"$enable_apsessionid" = xyes; then
-   AC_DEFINE(ENABLE_APSESSIONID,1,[Define to enable the use of the ChilliSpot-AP-Session-Id attribute])
+   AC_DEFINE(ENABLE_APSESSIONID,1,[Define to enable the use of the CoovaChilli-AP-Session-Id attribute])
 fi
 
-AC_ARG_ENABLE(chillispotconfig, [AC_HELP_STRING([--disable-chillispotconfig],[Disable the use of the ChilliSpot-Config attribute])], 
-  enable_chillispotconfig=$enableval, enable_chillispotconfig=yes)
+AC_ARG_ENABLE(coovachilliconfig, [AC_HELP_STRING([--disable-coovachilliconfig],[Disable the use of the CoovaChilli-Config attribute])], 
+  enable_coovachilliconfig=$enableval, enable_coovachilliconfig=yes)
 
-if test x"$enable_chillispotconfig" = xyes; then
-   AC_DEFINE(ENABLE_CHILLISPOTCONFIG,1,[Define to enable the use of the ChilliSpot-Config attribute])
+if test x"$enable_coovachilliconfig" = xyes; then
+   AC_DEFINE(ENABLE_COOVACHILLICONFIG,1,[Define to enable the use of the CoovaChilli-Config attribute])
 fi
 
 AC_ARG_ENABLE(mdns, [AC_HELP_STRING([--enable-mdns],[Enable support for MDNS])], 
@@ -728,7 +767,18 @@ fi
 
 AM_CONDITIONAL(WITH_LOCATION, [test x"$enable_location" = xyes])
 
+
+AC_ARG_ENABLE(forcedns, [AC_HELP_STRING([--enable-forcedns],[Enable the forcing (NAT) of DNS])], 
+  enable_forcedns=$enableval, enable_forcedns=no)
+
+if test x"$enable_forcedns" = xyes ; then
+   AC_DEFINE(ENABLE_FORCEDNS,1,[Enable the forcing (NAT) of DNS])
+fi
+
+
 AC_CHECK_LIB(rt, clock_gettime)
+
+AM_CONDITIONAL([HAVE_STRLCPY], [test "x$ac_cv_func_strlcpy" = xyes])
 
 AC_ARG_ENABLE(config,
  [  --enable-config=file],

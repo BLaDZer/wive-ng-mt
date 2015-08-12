@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -49,6 +49,19 @@ struct session_params {
 #define UAM_INJECT_URL     (1<<7)
 #define UAM_CLEAR_URL      (1<<8)
   uint16_t flags;
+
+#ifdef ENABLE_SESSPROXY
+  struct in_addr postauth_proxy;
+  uint16_t postauth_proxyport;
+#endif
+
+#ifdef ENABLE_SESSDHCP
+  struct in_addr dhcp_relay;
+#endif
+
+#ifdef ENABLE_SESSDNS
+  struct in_addr dns1;
+#endif
 
 #ifdef ENABLE_SESSGARDEN
   pass_through pass_throughs[SESSION_PASS_THROUGH_MAX];
@@ -116,7 +129,9 @@ struct session_state {
   time_t start_time;
   time_t interim_time;
 
-  time_t last_sent_time; /* Last time a packet was sent. Used for idle timeout calculations */
+  struct timespec last_bw_time;
+
+  time_t last_up_time;
   time_t last_time; /* Last time a packet was received or sent */
   time_t uamtime;
 

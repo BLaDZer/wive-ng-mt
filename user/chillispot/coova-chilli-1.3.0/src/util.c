@@ -5,7 +5,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -19,12 +19,6 @@
  */
 
 #include "chilli.h"
-
-char *safe_strncpy(char *dst, const char *src, size_t size) {
-  if (!size) return dst;
-  dst[--size] = '\0';
-  return strncpy(dst, src, size);
-}
 
 int statedir_file(char *dst, int dlen, char *file, char *deffile) {
   char *statedir = _options.statedir ? _options.statedir : DEFSTATEDIR;
@@ -81,7 +75,7 @@ int get_urlparts(char *src, char *host, int hostsize, int *port, int *uripos) {
     slashslash = src + 8;
   }
   else {
-    log_err(0, "URL must start with http:// or https:// [%s]!", src);
+    syslog(LOG_ERR, "URL must start with http:// or https:// [%s]!", src);
     return -1;
   }
   
@@ -100,7 +94,7 @@ int get_urlparts(char *src, char *host, int hostsize, int *port, int *uripos) {
     /* ...:port/... */
     hostlen = colon - slashslash;
     if (1 != sscanf(colon+1, "%d", port)) {
-      log_err(0, "Not able to parse URL port: %s!", src);
+      syslog(LOG_ERR, "Not able to parse URL port: %s!", src);
       return -1;
     }
   }
@@ -109,11 +103,11 @@ int get_urlparts(char *src, char *host, int hostsize, int *port, int *uripos) {
   }
 
   if (hostlen > (hostsize-1)) {
-    log_err(0, "URL hostname larger than %d: %s!", hostsize-1, src);
+    syslog(LOG_ERR, "URL hostname larger than %d: %s!", hostsize-1, src);
     return -1;
   }
 
-  safe_strncpy(host, slashslash, hostsize);
+  strlcpy(host, slashslash, hostsize);
   host[hostlen] = 0;
 
   if (uripos) {

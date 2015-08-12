@@ -4,7 +4,7 @@
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -37,11 +37,11 @@ kmod(char cmd, struct in_addr *addr) {
       safe_snprintf(line, sizeof(line), "%c\n", cmd);
 
     rd = safe_write(fd, line, strlen(line));
-    log_dbg("kmod wrote %d %s", rd, line);
+    syslog(LOG_DEBUG, "kmod wrote %d %s", rd, line);
     close(fd);
     return rd == strlen(line);
   } else {
-    log_err(errno, "could not open %s", file);
+    syslog(LOG_ERR, "%s: could not open %s", strerror(errno), file);
   }
   return 0;
 }
@@ -89,7 +89,7 @@ kmod_coova_sync() {
   
   while ((read = getline(&line, &len, fp)) != -1) {
     if (len > 256) {
-      log_err(errno, "problem");
+      syslog(LOG_ERR, "%s: problem", strerror(errno));
       continue;
     }
 
@@ -121,12 +121,12 @@ kmod_coova_sync() {
 	    appconn->s_state.input_packets = pout;
 	  }
 	} else {
-	  log_dbg("Unknown entry");
+	  syslog(LOG_DEBUG, "Unknown entry");
 	}
       }
 
     } else {
-      log_err(errno, "Error parsing %s", line);
+      syslog(LOG_ERR, "%s: Error parsing %s", strerror(errno), line);
     }
   }
   

@@ -3,7 +3,7 @@
 sysconf_DATA = chilli.conf 
 
 chillidir = $(sysconfdir)/chilli
-chilli_SCRIPTS = functions up.sh down.sh newmulti.sh
+chilli_SCRIPTS = functions up.sh down.sh newmulti.sh wpad.dat
 chilli_DATA = defaults gui-config-default.ini
 
 pythondir = $(libdir)/python
@@ -68,4 +68,10 @@ defaults: Makefile defaults.in
 	rm -f defaults defaults.tmp
 	$(edit) defaults.in >defaults.tmp
 	mv defaults.tmp defaults
+
+wpad.dat: Makefile wpad.dat.in
+	rm -f wpad.dat wpad.dat.tmp
+	$(edit) wpad.dat.in >wpad.dat.tmp
+	mv wpad.dat.tmp wpad.dat
+	chmod a+x wpad.dat
 
