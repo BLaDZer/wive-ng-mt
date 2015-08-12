@@ -635,12 +635,8 @@ void network_thread ()
 			l2tp_log (LOG_DEBUG,
 				  "%s: no such call %d on tunnel %d.  Sending special ZLB\n",
 				  __FUNCTION__, call, tunnel);
-		    if (handle_special (buf, c, call) == 0)
-			/* get a new buffer */
+		    if (1==handle_special (buf, c, call))
 			buf = new_buf (MAX_RECV_SIZE);
-        		/* Let's recycle the buffer instead, even if it is the control buffer
-        		    recycle_buf (buf);
-        		*/
 		}
 #ifdef DEBUG_MORE
 		else{
@@ -663,7 +659,7 @@ void network_thread ()
 		{
 		    if (gconfig.debug_tunnel)
 			l2tp_log (LOG_DEBUG, "%s: bad packet\n", __FUNCTION__);
-		};
+            }
 		if (c->cnu)
 		{
 		    /* Send Zero Byte Packet */

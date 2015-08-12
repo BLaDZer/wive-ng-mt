@@ -1109,7 +1109,7 @@
 8) miniupnpd: up to 1.9.20150721 version.<br>
 9) dnsmasq: up to 2.75 version.<br>
 10) dropbear: up to 2015.68 version.<br>
-11) xl2tpd: sync with devel tree Jul 22, 2015 (commit eae6793).<br>
+11) xl2tpd: sync with devel tree 12 Aug 2015 (commit 5674a58).<br>
 12) xl2tpd: fix double free regression at death signal.<br>
 13) xl2tpd: fix redial regression.<br>
 14) uclibc: use position independent code for crt1, slightly red/uces size of all executables.<br>
