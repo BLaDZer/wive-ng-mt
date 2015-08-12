@@ -99,8 +99,8 @@ much traffic. */
 #define DROPBEAR_3DES
 #define DROPBEAR_AES256
 /*#define DROPBEAR_BLOWFISH*/
-#define DROPBEAR_TWOFISH256
-#define DROPBEAR_TWOFISH128
+/*#define DROPBEAR_TWOFISH256*/
+/*#define DROPBEAR_TWOFISH128*/
 
 /* Enable CBC mode for ciphers. This has security issues though
  * is the most compatible with older SSH implementations */
@@ -181,7 +181,7 @@ If you test it please contact the Dropbear author */
  * Both modes will use ~35kB for decompression (using windowBits=15 for
  * interoperability) */
 #ifndef DROPBEAR_ZLIB_WINDOW_BITS
-#define DROPBEAR_ZLIB_WINDOW_BITS 15 
+#define DROPBEAR_ZLIB_WINDOW_BITS 15
 #endif
 
 /* Server won't allow zlib compression until after authentication. Prevents
@@ -339,7 +339,7 @@ be overridden at runtime with -I. 0 disables idle timeouts */
 #define DEFAULT_IDLE_TIMEOUT 360
 
 /* The default path. This will often get replaced by the shell */
-#define DEFAULT_PATH "/usr/bin:/bin"
+#define DEFAULT_PATH "/bin:/sbin:/usr/bin:/usr/sbin:/etc/scripts"
 
 /* Some other defines (that mostly should be left alone) are defined
  * in sysoptions.h */
