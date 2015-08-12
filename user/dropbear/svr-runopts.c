@@ -311,7 +311,6 @@ void svr_getopts(int argc, char ** argv) {
 					svr_opts.bannerfile);
 		}
 		buf_setpos(svr_opts.banner, 0);
-
 	}
 	
 	if (recv_window_arg) {
@@ -361,7 +360,7 @@ static void addportandaddress(char* spec) {
 				dropbear_exit("Missing port");
 			}
 		} else {
-		/* search for ':', that separates address and port */
+			/* search for ':', that separates address and port */
 			svr_opts.ports[svr_opts.portcount] = strrchr(myspec, ':');
 		}
 
@@ -418,8 +417,8 @@ static void loadhostkey(const char *keyfile, int fatal_duplicate) {
 	enum signkey_type type = DROPBEAR_SIGNKEY_ANY;
 	if (readhostkey(keyfile, read_key, &type) == DROPBEAR_FAILURE) {
 		if (!svr_opts.delay_hostkey) {
-		dropbear_log(LOG_WARNING, "Failed loading %s", keyfile);
-	}
+			dropbear_log(LOG_WARNING, "Failed loading %s", keyfile);
+		}
 	}
 
 #ifdef DROPBEAR_RSA

@@ -43,9 +43,9 @@ void cli_auth_getmethods() {
 	TRACE(("enter cli_auth_getmethods"))
 	CHECKCLEARTOWRITE();
 	buf_putbyte(ses.writepayload, SSH_MSG_USERAUTH_REQUEST);
-	buf_putstring(ses.writepayload, cli_opts.username, 
+	buf_putstring(ses.writepayload, cli_opts.username,
 			strlen(cli_opts.username));
-	buf_putstring(ses.writepayload, SSH_SERVICE_CONNECTION, 
+	buf_putstring(ses.writepayload, SSH_SERVICE_CONNECTION,
 			SSH_SERVICE_CONNECTION_LEN);
 	buf_putstring(ses.writepayload, "none", 4); /* 'none' method */
 
@@ -75,7 +75,7 @@ void cli_auth_getmethods() {
 
 void recv_msg_userauth_banner() {
 
-	unsigned char* banner = NULL;
+	char* banner = NULL;
 	unsigned int bannerlen;
 	unsigned int i, linecount;
 
@@ -151,8 +151,8 @@ void recv_msg_userauth_specific_60() {
 
 void recv_msg_userauth_failure() {
 
-	unsigned char * methods = NULL;
-	unsigned char * tok = NULL;
+	char * methods = NULL;
+	char * tok = NULL;
 	unsigned int methlen = 0;
 	unsigned int partial = 0;
 	unsigned int i = 0;
@@ -180,22 +180,22 @@ void recv_msg_userauth_failure() {
 		return;
 	} else  {
 #ifdef ENABLE_CLI_PUBKEY_AUTH
-	/* If it was a pubkey auth request, we should cross that key 
-	 * off the list. */
-	if (cli_ses.lastauthtype == AUTH_TYPE_PUBKEY) {
-		cli_pubkeyfail();
-	}
+		/* If it was a pubkey auth request, we should cross that key 
+		 * off the list. */
+		if (cli_ses.lastauthtype == AUTH_TYPE_PUBKEY) {
+			cli_pubkeyfail();
+		}
 #endif
 
 #ifdef ENABLE_CLI_INTERACT_AUTH
-	/* If we get a failure message for keyboard interactive without
-	 * receiving any request info packet, then we don't bother trying
-	 * keyboard interactive again */
-	if (cli_ses.lastauthtype == AUTH_TYPE_INTERACT
-			&& !cli_ses.interact_request_received) {
-		TRACE(("setting auth_interact_failed = 1"))
-		cli_ses.auth_interact_failed = 1;
-	}
+		/* If we get a failure message for keyboard interactive without
+		 * receiving any request info packet, then we don't bother trying
+		 * keyboard interactive again */
+		if (cli_ses.lastauthtype == AUTH_TYPE_INTERACT
+				&& !cli_ses.interact_request_received) {
+			TRACE(("setting auth_interact_failed = 1"))
+			cli_ses.auth_interact_failed = 1;
+		}
 #endif
 		cli_ses.state = USERAUTH_FAIL_RCVD;
 		cli_ses.lastauthtype = AUTH_TYPE_NONE;
@@ -252,7 +252,7 @@ void recv_msg_userauth_failure() {
 	}
 
 	m_free(methods);
-
+		
 	TRACE(("leave recv_msg_userauth_failure"))
 }
 

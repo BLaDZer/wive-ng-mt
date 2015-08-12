@@ -67,10 +67,10 @@ pamConvFunc(int num_msg,
 		dropbear_log(LOG_INFO, "pamConvFunc() called with >1 messages: not supported.");
 		return PAM_CONV_ERR;
 	}
-	
+
 	/* make a copy we can strip */
 	compare_message = m_strdup((*msg)->msg);
-
+	
 	/* Make the string lowercase. */
 	msg_len = strlen(compare_message);
 	for (i = 0; i < msg_len; i++) {
@@ -188,7 +188,7 @@ void svr_auth_pam() {
 
 	pam_handle_t* pamHandlep = NULL;
 
-	unsigned char * password = NULL;
+	char * password = NULL;
 	unsigned int passwordlen;
 
 	int rc = PAM_SUCCESS;

@@ -52,7 +52,7 @@ dropbear_dss_key * gen_dss_priv_key(unsigned int size) {
 	}
 
 	key = m_malloc(sizeof(*key));
-	
+
 	m_mp_alloc_init_multi(&key->p, &key->q, &key->g, &key->y, &key->x, NULL);
 	
 	getq(key);
@@ -67,7 +67,7 @@ dropbear_dss_key * gen_dss_priv_key(unsigned int size) {
 
 static void getq(dropbear_dss_key *key) {
 
-	char buf[QSIZE];
+	unsigned char buf[QSIZE];
 
 	/* 160 bit prime */
 	genrandom(buf, QSIZE);

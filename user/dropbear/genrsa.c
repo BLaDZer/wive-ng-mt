@@ -59,13 +59,13 @@ dropbear_rsa_key * gen_rsa_priv_key(unsigned int size) {
 	}
 
 	while (1) {
-	getrsaprime(key->p, &pminus, key->e, size/16);
-	getrsaprime(key->q, &qminus, key->e, size/16);
+		getrsaprime(key->p, &pminus, key->e, size/16);
+		getrsaprime(key->q, &qminus, key->e, size/16);
 
-	if (mp_mul(key->p, key->q, key->n) != MP_OKAY) {
-		fprintf(stderr, "RSA generation failed\n");
-		exit(1);
-	}
+		if (mp_mul(key->p, key->q, key->n) != MP_OKAY) {
+			fprintf(stderr, "RSA generation failed\n");
+			exit(1);
+		}
 
 		if ((unsigned int)mp_count_bits(key->n) == size) {
 			break;

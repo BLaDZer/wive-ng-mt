@@ -96,7 +96,7 @@ int verbose_mode = 0;
 int showprogress = 1;
 
 /* This is the program to execute for the secured connection. ("ssh" or -S) */
-char *ssh_program = _PATH_SSH_PROGRAM;
+char *ssh_program = DROPBEAR_PATH_SSH_PROGRAM;
 
 /* This is used to store the pid of ssh_program */
 pid_t do_cmd_pid = -1;
@@ -208,8 +208,8 @@ do_cmd(char *host, char *remuser, char *cmd, int *fdin, int *fdout, int argc)
 	close(reserved[0]);
 	close(reserved[1]);
 
-    /* uClinux needs to build the args here before vforking,
-       otherwise we do it later on. */
+	/* uClinux needs to build the args here before vforking,
+	   otherwise we do it later on. */
 #ifdef USE_VFORK
 	arg_setup(host, remuser, cmd);
 #endif
@@ -437,7 +437,7 @@ main(int argc, char **argv)
 	}
 	/*
 	 * Finally check the exit status of the ssh process, if one was forked
-	 * and no error has occured yet
+	 * and no error has occurred yet
 	 */
 	if (do_cmd_pid != -1 && errs == 0) {
 		if (remin != -1)
