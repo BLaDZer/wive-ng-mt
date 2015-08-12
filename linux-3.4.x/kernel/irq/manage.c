@@ -888,7 +888,6 @@ static int
 __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 {
 	struct irqaction *old, **old_ptr;
-	const char *old_name = NULL;
 	unsigned long flags, thread_mask = 0;
 	int ret, nested, shared = 0;
 	cpumask_var_t mask;
@@ -974,12 +973,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		 * set the trigger type must match. Also all must
 		 * agree on ONESHOT.
 		 */
+
+#define IRQF_MISMATCH \
+	(IRQF_TRIGGER_MASK | IRQF_ONESHOT | IRQF_NO_SUSPEND)
+
 		if (!((old->flags & new->flags) & IRQF_SHARED) ||
-		    ((old->flags ^ new->flags) & IRQF_TRIGGER_MASK) ||
-		    ((old->flags ^ new->flags) & IRQF_ONESHOT)) {
-			old_name = old->name;
+		    ((old->flags ^ new->flags) & IRQF_MISMATCH))
 			goto mismatch;
-		}
 
 		/* All handlers must agree on per-cpuness */
 		if ((old->flags & IRQF_PERCPU) !=
@@ -1122,8 +1122,7 @@ mismatch:
 #ifdef CONFIG_DEBUG_SHIRQ
 	if (!(new->flags & IRQF_PROBE_SHARED)) {
 		printk(KERN_ERR "IRQ handler type mismatch for IRQ %d\n", irq);
-		if (old_name)
-			printk(KERN_ERR "current handler: %s\n", old_name);
+		printk(KERN_ERR "current handler: %s\n", old->name);
 		dump_stack();
 	}
 #endif

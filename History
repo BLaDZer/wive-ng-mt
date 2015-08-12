@@ -1196,9 +1196,7 @@
 95) kernel: net: ipv6: fix MLD Query message check.<br>
 96) kernel: backport new ASIX AX88179/178A USB 3.0/2.0 Ethernet driver.<br>
 97) kernel: backport new Realtek RTL8152/8153 USB 3.0/2.0 Ethernet driver.<br>
-<br>
-<br>
-<b>3.4.x</b><br>
+98) kernel: irq: Warn when shared interrupts do not match on NO_SUSPEND.<br>
 <br>
 <br>
 <b>TODO:</b><br>
