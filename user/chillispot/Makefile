@@ -11,9 +11,9 @@ CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-a
 
 #DEBUG     := y
 ifdef DEBUG
-CONFOPTS  +=  --disable-debug --disable-debug2
-else
 CONFOPTS  +=  --enable-debug --enable-debug2
+else
+CONFOPTS  +=  --disable-debug --disable-debug2
 endif
 
 ifndef CONFIG_IPV6
