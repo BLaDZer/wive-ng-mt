@@ -1172,7 +1172,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "6");
 	}
 	else if (!strncmp(countrycode, "RU", 3)) {
-		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "0");
+		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "7");
 	}
 	else if (!strncmp(countrycode, "FR", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "2");
