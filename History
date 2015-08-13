@@ -1175,27 +1175,27 @@
 74) kernel: net: call rcu_read_lock early in process_backlog.<br>
 75) kernel: net: clone skb before setting peeked flag.<br>
 76) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-77) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-78) kernel: net: arp: fix a regression in arp_solicit().<br>
-79) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-80) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-81) kernel: net: tcp: don't abort splice() after small transfers.<br>
-82) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-83) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-84) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-85) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-86) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
-87) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
-88) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-89) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
-90) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-91) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-92) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
-93) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
-94) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
-95) kernel: net: ipv6: fix MLD Query message check.<br>
-96) kernel: backport new ASIX AX88179/178A USB 3.0/2.0 Ethernet driver.<br>
-97) kernel: backport new Realtek RTL8152/8153 USB 3.0/2.0 Ethernet driver.<br>
+77) kernel: net: fix skb_set_peeked use-after-free bug.<br>
+78) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+79) kernel: net: arp: fix a regression in arp_solicit().<br>
+80) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+81) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+82) kernel: net: tcp: don't abort splice() after small transfers.<br>
+83) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+84) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+85) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+86) kernel: net: tcp: tso: allow deferring under reordering state.<br>
+87) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
+88) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
+89) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+90) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
+91) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+92) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+93) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+94) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
+95) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
+96) kernel: net: ipv6: fix MLD Query message check.<br>
+97) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 98) kernel: irq: Warn when shared interrupts do not match on NO_SUSPEND.<br>
 <br>
 <br>
