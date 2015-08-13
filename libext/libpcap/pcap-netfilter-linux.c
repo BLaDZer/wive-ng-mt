@@ -11,8 +11,8 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote 
- * products derived from this software without specific prior written 
+ * 3. The name of the author may not be used to endorse or promote
+ * products derived from this software without specific prior written
  * permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -57,14 +57,14 @@
 #include <linux/netfilter/nfnetlink_queue.h>
 
 /* NOTE: if your program drops privilages after pcap_activate() it WON'T work with nfqueue.
- *       It took me quite some time to debug ;/ 
+ *       It took me quite some time to debug ;/
  *
  *       Sending any data to nfnetlink socket requires CAP_NET_ADMIN privilages,
  *       and in nfqueue we need to send verdict reply after recving packet.
  *
  *       In tcpdump you can disable dropping privilages with -Z root
  */
- 
+
 #include "pcap-netfilter-linux.h"
 
 #define HDR_LENGTH (NLMSG_LENGTH(NLMSG_ALIGN(sizeof(struct nfgenmsg))))
@@ -74,11 +74,19 @@
 
 typedef enum { OTHER = -1, NFLOG, NFQUEUE } nftype_t;
 
+/*
+ * Private data for capturing on Linux netfilter sockets.
+ */
+struct pcap_netfilter {
+	u_int	packets_read;	/* count of packets read with recvfrom() */
+};
+
 static int nfqueue_send_verdict(const pcap_t *handle, u_int16_t group_id, u_int32_t id, u_int32_t verdict);
 
 static int
 netfilter_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_char *user)
 {
+	struct pcap_netfilter *handlep = handle->priv;
 	const unsigned char *buf;
 	int count = 0;
 	int len;
@@ -108,19 +116,18 @@ netfilter_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_c
 			return -1;
 		}
 
-		if (NFNL_SUBSYS_ID(nlh->nlmsg_type) == NFNL_SUBSYS_ULOG && 
-			NFNL_MSG_TYPE(nlh->nlmsg_type) == NFULNL_MSG_PACKET) 
-				type = NFLOG;
-
-		if (NFNL_SUBSYS_ID(nlh->nlmsg_type) == NFNL_SUBSYS_QUEUE && 
-			NFNL_MSG_TYPE(nlh->nlmsg_type) == NFQNL_MSG_PACKET)
-				type = NFQUEUE;
+		if (NFNL_SUBSYS_ID(nlh->nlmsg_type) == NFNL_SUBSYS_ULOG &&
+		    NFNL_MSG_TYPE(nlh->nlmsg_type) == NFULNL_MSG_PACKET)
+			type = NFLOG;
+		else if (NFNL_SUBSYS_ID(nlh->nlmsg_type) == NFNL_SUBSYS_QUEUE &&
+		         NFNL_MSG_TYPE(nlh->nlmsg_type) == NFQNL_MSG_PACKET)
+			type = NFQUEUE;
 
 		if (type != OTHER) {
 			const unsigned char *payload = NULL;
 			struct pcap_pkthdr pkth;
 
-			const struct nfgenmsg *nfg;
+			const struct nfgenmsg *nfg = NULL;
 			int id = 0;
 
 			if (handle->linktype != DLT_NFLOG) {
@@ -177,9 +184,9 @@ netfilter_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_c
 
 				gettimeofday(&pkth.ts, NULL);
 				if (handle->fcode.bf_insns == NULL ||
-						bpf_filter(handle->fcode.bf_insns, payload, pkth.len, pkth.caplen)) 
+						bpf_filter(handle->fcode.bf_insns, payload, pkth.len, pkth.caplen))
 				{
-					handle->md.packets_read++;
+					handlep->packets_read++;
 					callback(user, &pkth, payload);
 					count++;
 				}
@@ -187,7 +194,10 @@ netfilter_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_c
 
 			if (type == NFQUEUE) {
 				/* XXX, possible responses: NF_DROP, NF_ACCEPT, NF_STOLEN, NF_QUEUE, NF_REPEAT, NF_STOP */
-				nfqueue_send_verdict(handle, ntohs(nfg->res_id), id, NF_ACCEPT);
+				/* if type == NFQUEUE, handle->linktype is always != DLT_NFLOG,
+				   so nfg is always initialized to NLMSG_DATA(nlh). */
+				if (nfg != NULL)
+					nfqueue_send_verdict(handle, ntohs(nfg->res_id), id, NF_ACCEPT);
 			}
 		}
 
@@ -211,7 +221,9 @@ netfilter_set_datalink(pcap_t *handle, int dlt)
 static int
 netfilter_stats_linux(pcap_t *handle, struct pcap_stat *stats)
 {
-	stats->ps_recv = handle->md.packets_read;
+	struct pcap_netfilter *handlep = handle->priv;
+
+	stats->ps_recv = handlep->packets_read;
 	stats->ps_drop = 0;
 	stats->ps_ifdrop = 0;
 	return 0;
@@ -222,7 +234,7 @@ netfilter_inject_linux(pcap_t *handle, const void *buf, size_t size)
 {
 	snprintf(handle->errbuf, PCAP_ERRBUF_SIZE, "inject not supported on netfilter devices");
 	return (-1);
-}                           
+}
 
 struct my_nfattr {
 	u_int16_t nfa_len;
@@ -240,7 +252,7 @@ netfilter_send_config_msg(const pcap_t *handle, u_int16_t msg_type, int ack, u_i
 
 	struct sockaddr_nl snl;
 	static unsigned int seq_id;
-	
+
 	if (!seq_id)
 		seq_id = time(NULL);
 	++seq_id;
@@ -332,7 +344,7 @@ nflog_send_config_cmd(const pcap_t *handle, u_int16_t group_id, u_int8_t cmd, u_
 	return nflog_send_config_msg(handle, family, group_id, &nfa);
 }
 
-static int 
+static int
 nflog_send_config_mode(const pcap_t *handle, u_int16_t group_id, u_int8_t copy_mode, u_int32_t copy_range)
 {
 	struct nfulnl_msg_config_mode msg;
@@ -386,7 +398,7 @@ nfqueue_send_config_cmd(const pcap_t *handle, u_int16_t group_id, u_int8_t cmd, 
 	return nfqueue_send_config_msg(handle, AF_UNSPEC, group_id, &nfa);
 }
 
-static int 
+static int
 nfqueue_send_config_mode(const pcap_t *handle, u_int16_t group_id, u_int8_t copy_mode, u_int32_t copy_range)
 {
 	struct nfqnl_msg_config_params msg;
@@ -419,7 +431,7 @@ netfilter_activate(pcap_t* handle)
 		dev += strlen(NFQUEUE_IFACE);
 		type = NFQUEUE;
 	}
- 
+
 	if (type != OTHER && *dev == ':') {
 		dev++;
 		while (*dev) {
@@ -428,7 +440,7 @@ netfilter_activate(pcap_t* handle)
 
 			if (group_count == 32) {
 				snprintf(handle->errbuf, PCAP_ERRBUF_SIZE,
-						"Maximum 32 netfilter groups! dev: %s", 
+						"Maximum 32 netfilter groups! dev: %s",
 						handle->opt.source);
 				return PCAP_ERROR;
 			}
@@ -453,7 +465,7 @@ netfilter_activate(pcap_t* handle)
 
 	if (type == OTHER || *dev) {
 		snprintf(handle->errbuf, PCAP_ERRBUF_SIZE,
-				"Can't get netfilter group(s) index from %s", 
+				"Can't get netfilter group(s) index from %s",
 				handle->opt.source);
 		return PCAP_ERROR;
 	}
@@ -471,7 +483,6 @@ netfilter_activate(pcap_t* handle)
 	handle->inject_op = netfilter_inject_linux;
 	handle->setfilter_op = install_bpf_program; /* no kernel filtering */
 	handle->setdirection_op = NULL;
-	handle->set_datalink_op = NULL;
 	handle->set_datalink_op = netfilter_set_datalink;
 	handle->getnonblock_op = pcap_getnonblock_fd;
 	handle->setnonblock_op = pcap_setnonblock_fd;
@@ -591,7 +602,7 @@ netfilter_create(const char *device, char *ebuf, int *is_ours)
 	/* Does it begin with NFLOG_IFACE or NFQUEUE_IFACE? */
 	if (strncmp(cp, NFLOG_IFACE, sizeof NFLOG_IFACE - 1) == 0)
 		cp += sizeof NFLOG_IFACE - 1;
-	else if (strncmp(cp, NFQUEUE_IFACE, sizeof NFQUEUE_IFACE - 1) == 0) 
+	else if (strncmp(cp, NFQUEUE_IFACE, sizeof NFQUEUE_IFACE - 1) == 0)
 		cp += sizeof NFQUEUE_IFACE - 1;
 	else {
 		/* Nope, doesn't begin with NFLOG_IFACE nor NFQUEUE_IFACE */
@@ -612,7 +623,7 @@ netfilter_create(const char *device, char *ebuf, int *is_ours)
 	/* OK, it's probably ours. */
 	*is_ours = 1;
 
-	p = pcap_create_common(device, ebuf);
+	p = pcap_create_common(device, ebuf, sizeof (struct pcap_netfilter));
 	if (p == NULL)
 		return (NULL);
 
@@ -620,12 +631,11 @@ netfilter_create(const char *device, char *ebuf, int *is_ours)
 	return (p);
 }
 
-int 
+int
 netfilter_findalldevs(pcap_if_t **alldevsp, char *err_str)
 {
-	pcap_if_t *found_dev = *alldevsp;
 	int sock;
-	
+
 	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
 	if (sock < 0) {
 		/* if netlink is not supported this is not fatal */
@@ -637,9 +647,9 @@ netfilter_findalldevs(pcap_if_t **alldevsp, char *err_str)
 	}
 	close(sock);
 
-	if (pcap_add_if(&found_dev, NFLOG_IFACE, 0, "Linux netfilter log (NFLOG) interface", err_str) < 0)
+	if (pcap_add_if(alldevsp, NFLOG_IFACE, 0, "Linux netfilter log (NFLOG) interface", err_str) < 0)
 		return -1;
-	if (pcap_add_if(&found_dev, NFQUEUE_IFACE, 0, "Linux netfilter queue (NFQUEUE) interface", err_str) < 0)
+	if (pcap_add_if(alldevsp, NFQUEUE_IFACE, 0, "Linux netfilter queue (NFQUEUE) interface", err_str) < 0)
 		return -1;
 	return 0;
 }

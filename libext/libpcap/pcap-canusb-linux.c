@@ -38,12 +38,15 @@
 
 #include <libusb-1.0/libusb.h>
 
-#include "pcap-int.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <string.h>
+#include <pthread.h>
 
+#include "pcap-int.h"
+#include "pcap-canusb-linux.h"
 
 #define CANUSB_IFACE "canusb"
 
@@ -73,27 +76,24 @@ struct CAN_Msg
     uint8_t data[8];
 };
 
-struct canusb_t
-{
+/*
+ * Private data for capturing on Linux CANbus USB devices.
+ */
+struct pcap_canusb {
     libusb_context *ctx;
     libusb_device_handle *dev;
-    char *serial;
     pthread_t worker;
     int rdpipe, wrpipe;
-    volatile int* loop;
+    volatile int loop;
 };
-
-static struct canusb_t canusb;
-static volatile int loop;
 
 int canusb_findalldevs(pcap_if_t **alldevsp, char *err_str)
 {
     libusb_context *fdctx;
     libusb_device** devs;
     unsigned char sernum[65];
-    unsigned char buf[96];
     int cnt, i;
-    
+
     if (libusb_init(&fdctx) != 0) {
         /*
          * XXX - if this doesn't just mean "no USB file system mounted",
@@ -101,7 +101,7 @@ int canusb_findalldevs(pcap_if_t **alldevsp, char *err_str)
          * saying "no CANUSB devices".
          */
         return 0;
-    } 
+    }
 
     cnt = libusb_get_device_list(fdctx,&devs);
 
@@ -112,27 +112,28 @@ int canusb_findalldevs(pcap_if_t **alldevsp, char *err_str)
         struct libusb_device_descriptor desc;
         libusb_get_device_descriptor(devs[i],&desc);
 
-        if ((desc.idVendor != CANUSB_VID) || (desc.idProduct != CANUSB_PID)) 
+        if ((desc.idVendor != CANUSB_VID) || (desc.idProduct != CANUSB_PID))
             continue; //It is not, check next device
-          
+
         //It is!
         libusb_device_handle *dh = NULL;
 
-        if (ret = libusb_open(devs[i],&dh) == 0)
+        if ((ret = libusb_open(devs[i],&dh)) == 0)
         {
             char dev_name[30];
-            char dev_descr[50]; 
+            char dev_descr[50];
             int n = libusb_get_string_descriptor_ascii(dh,desc.iSerialNumber,sernum,64);
             sernum[n] = 0;
 
             snprintf(dev_name, 30, CANUSB_IFACE"%s", sernum);
             snprintf(dev_descr, 50, "CanUSB [%s]", sernum);
-            
+
             libusb_close(dh);
-            
+
             if (pcap_add_if(alldevsp, dev_name, 0, dev_descr, err_str) < 0)
             {
                 libusb_free_device_list(devs,1);
+                libusb_exit(fdctx);
                 return -1;
             }
         }
@@ -145,22 +146,21 @@ int canusb_findalldevs(pcap_if_t **alldevsp, char *err_str)
 
 static libusb_device_handle* canusb_opendevice(struct libusb_context *ctx, char* devserial)
 {
-    libusb_device_handle* dh;
     libusb_device** devs;
     unsigned char serial[65];
     int cnt,i,n;
-    
+
     cnt = libusb_get_device_list(ctx,&devs);
 
     for(i=0;i<cnt;i++)
-    {    
+    {
         // Check if this device is interesting.
         struct libusb_device_descriptor desc;
         libusb_get_device_descriptor(devs[i],&desc);
 
         if ((desc.idVendor != CANUSB_VID) || (desc.idProduct != CANUSB_PID))
           continue;
-          
+
         //Found one!
         libusb_device_handle *dh = NULL;
 
@@ -169,7 +169,7 @@ static libusb_device_handle* canusb_opendevice(struct libusb_context *ctx, char*
         n = libusb_get_string_descriptor_ascii(dh,desc.iSerialNumber,serial,64);
         serial[n] = 0;
 
-        if ((devserial) && (strcmp(serial,devserial) != 0))
+        if ((devserial) && (strcmp((char *)serial,devserial) != 0))
         {
             libusb_close(dh);
             continue;
@@ -192,9 +192,9 @@ static libusb_device_handle* canusb_opendevice(struct libusb_context *ctx, char*
             libusb_close(dh);
             continue;
         }
-        
+
         //Fount it!
-        libusb_free_device_list(devs,1);        
+        libusb_free_device_list(devs,1);
         return dh;
     }
 
@@ -205,13 +205,12 @@ static libusb_device_handle* canusb_opendevice(struct libusb_context *ctx, char*
 
 pcap_t *
 canusb_create(const char *device, char *ebuf, int *is_ours)
-{ 
+{
     const char *cp;
     char *cpend;
     long devnum;
     pcap_t* p;
-
-    libusb_init(&canusb.ctx);
+    struct pcap_canusb *canusb;
 
     /* Does this look like a DAG device? */
     cp = strrchr(device, '/');
@@ -240,11 +239,15 @@ canusb_create(const char *device, char *ebuf, int *is_ours)
     /* OK, it's probably ours. */
     *is_ours = 1;
 
-    p = pcap_create_common(device, ebuf);
+    p = pcap_create_common(device, ebuf, sizeof (struct pcap_canusb));
     if (p == NULL)
         return (NULL);
 
-    memset(&canusb, 0x00, sizeof(canusb));
+    canusb = p->priv;
+    canusb->ctx = NULL;
+    canusb->dev = NULL;
+    canusb->rdpipe = -1;
+    canusb->wrpipe = -1;
 
     p->activate_op = canusb_activate;
 
@@ -252,65 +255,55 @@ canusb_create(const char *device, char *ebuf, int *is_ours)
 }
 
 
-static void* canusb_capture_thread(struct canusb_t *canusb)
+static void* canusb_capture_thread(void *arg)
 {
-    struct libusb_context *ctx;
-    libusb_device_handle *dev;
-    int i, n;  
-    struct 
+    struct pcap_canusb *canusb = arg;
+    int i;
+    struct
     {
       uint8_t rxsz, txsz;
     } status;
-    char *serial;
-  
-    libusb_init(&ctx);
-  
-    serial = canusb->serial;
-    dev = canusb_opendevice(ctx, serial);
-  
-    fcntl(canusb->wrpipe, F_SETFL, O_NONBLOCK);  
 
-    while(*canusb->loop)
+    fcntl(canusb->wrpipe, F_SETFL, O_NONBLOCK);
+
+    while(canusb->loop)
     {
-        int sz, ret;
+        int sz;
         struct CAN_Msg msg;
-    
-        libusb_interrupt_transfer(dev, 0x81, (unsigned char*)&status, sizeof(status), &sz, 100);
-        //HACK!!!!! -> drop buffered data, read new one by reading twice.        
-        ret = libusb_interrupt_transfer(dev, 0x81, (unsigned char*)&status, sizeof(status), &sz, 100);                                   
+
+        libusb_interrupt_transfer(canusb->dev, 0x81, (unsigned char*)&status, sizeof(status), &sz, 100);
+        //HACK!!!!! -> drop buffered data, read new one by reading twice.
+        libusb_interrupt_transfer(canusb->dev, 0x81, (unsigned char*)&status, sizeof(status), &sz, 100);
 
         for(i = 0; i<status.rxsz; i++)
         {
-            libusb_bulk_transfer(dev, 0x85, (unsigned char*)&msg, sizeof(msg), &sz, 100);      
-            n = write(canusb->wrpipe, &msg, sizeof(msg));
+            libusb_bulk_transfer(canusb->dev, 0x85, (unsigned char*)&msg, sizeof(msg), &sz, 100);
+            if(write(canusb->wrpipe, &msg, sizeof(msg)) < 0)
+                fprintf(stderr,"write() error: %s\n", strerror(errno));
         }
 
     }
-  
-    libusb_close(dev);
-    libusb_exit(ctx);
-  
+
     return NULL;
 }
 
-static int canusb_startcapture(struct canusb_t* this)
+static int canusb_startcapture(struct pcap_canusb* this)
 {
     int pipefd[2];
 
     if (pipe(pipefd) == -1)
         return -1;
 
-    canusb.rdpipe = pipefd[0];
-    canusb.wrpipe = pipefd[1];
-    canusb.loop = &loop;
+    this->rdpipe = pipefd[0];
+    this->wrpipe = pipefd[1];
 
-    loop = 1;  
-    pthread_create(&this->worker, NULL, canusb_capture_thread, &canusb);
+    this->loop = 1;
+    pthread_create(&this->worker, NULL, canusb_capture_thread, this);
 
-    return canusb.rdpipe;
+    return this->rdpipe;
 }
 
-static void canusb_clearbufs(struct canusb_t* this)
+static void canusb_clearbufs(struct pcap_canusb* this)
 {
     unsigned char cmd[16];
     int al;
@@ -319,28 +312,44 @@ static void canusb_clearbufs(struct canusb_t* this)
     cmd[1] = 1;  //Empty outgoing buffer
     cmd[3] = 0;  //Not a write to serial number
     memset(&cmd[4],0,16-4);
-        
+
     libusb_interrupt_transfer(this->dev, 0x1,cmd,16,&al,100);
 }
 
 
 static void canusb_close(pcap_t* handle)
 {
-    loop = 0;
-    pthread_join(canusb.worker, NULL);
+    struct pcap_canusb *canusb = handle->priv;
 
-    if (canusb.dev)
+    canusb->loop = 0;
+    pthread_join(canusb->worker, NULL);
+
+    if (canusb->dev)
     {
-        libusb_close(canusb.dev);
-        canusb.dev = NULL;    
-    }    
+        libusb_close(canusb->dev);
+        canusb->dev = NULL;
+    }
+    if (canusb->ctx)
+    {
+        libusb_exit(canusb->ctx);
+        canusb->ctx = NULL;
+    }
 }
 
 
 
 static int canusb_activate(pcap_t* handle)
 {
+    struct pcap_canusb *canusb = handle->priv;
     char *serial;
+
+    if (libusb_init(&canusb->ctx) != 0) {
+        /*
+         * XXX - what causes this to fail?
+         */
+        snprintf(handle->errbuf, PCAP_ERRBUF_SIZE, "libusb_init() failed");
+        return PCAP_ERROR;
+    }
 
     handle->read_op = canusb_read_linux;
 
@@ -359,18 +368,18 @@ static int canusb_activate(pcap_t* handle)
     handle->set_datalink_op = NULL;
 
     serial = handle->opt.source + strlen(CANUSB_IFACE);
-    canusb.serial = strdup(serial);
 
-    canusb.dev = canusb_opendevice(canusb.ctx,serial);
-    if (!canusb.dev)
+    canusb->dev = canusb_opendevice(canusb->ctx, serial);
+    if (!canusb->dev)
     {
-        snprintf(handle->errbuf, PCAP_ERRBUF_SIZE, "Can't open USB Device:");  
+        libusb_exit(canusb->ctx);
+        snprintf(handle->errbuf, PCAP_ERRBUF_SIZE, "Can't open USB Device");
         return PCAP_ERROR;
     }
 
-    canusb_clearbufs(&canusb);
+    canusb_clearbufs(canusb);
 
-    handle->fd = canusb_startcapture(&canusb);
+    handle->fd = canusb_startcapture(canusb);
     handle->selectable_fd = handle->fd;
 
     return 0;
@@ -383,12 +392,10 @@ static int
 canusb_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_char *user)
 {
     static struct timeval firstpacket = { -1, -1};
-  
-    int msgsent = 0;
     int i = 0;
     struct CAN_Msg msg;
     struct pcap_pkthdr pkth;
-  
+
     while(i < max_packets)
     {
         int n;
@@ -399,10 +406,10 @@ canusb_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_char
         pkth.caplen = pkth.len = n;
         pkth.caplen -= 4;
         pkth.caplen -= 8 - msg.length;
-    
+
         if ((firstpacket.tv_sec == -1) && (firstpacket.tv_usec == -1))
             gettimeofday(&firstpacket, NULL);
-      
+
         pkth.ts.tv_usec = firstpacket.tv_usec + (msg.timestamp % 100) * 10000;
         pkth.ts.tv_sec = firstpacket.tv_usec + (msg.timestamp / 100);
         if (pkth.ts.tv_usec > 1000000)
@@ -414,7 +421,7 @@ canusb_read_linux(pcap_t *handle, int max_packets, pcap_handler callback, u_char
         callback(user, &pkth, (void*)&msg.id);
         i++;
     }
-  
+
     return i;
 }
 

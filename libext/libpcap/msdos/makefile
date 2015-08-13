@@ -71,7 +71,7 @@ grammar.c tokdefs.h: grammar.y
 
 bcc.arg:    msdos\Makefile
             @copy &&|
-              $(DEFS) -ml -c -v -3 -Os -po -RT- -w-
+              $(DEFS) -ml -c -v -3 -O2 -po -RT- -w-
               -I$(WATT_INC) -I. -I.\msdos\pm_drvr -H=$(TEMP)\bcc.sym
 | $<
 
