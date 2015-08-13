@@ -1195,8 +1195,9 @@
 94) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
 95) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
 96) kernel: net: ipv6: fix MLD Query message check.<br>
-97) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
-98) kernel: irq: Warn when shared interrupts do not match on NO_SUSPEND.<br>
+97) kernel: net: netfilter: ip[6]t_REJECT: fix wrong transport header pointer in TCP reset.<br>
+98) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
+99) kernel: irq: Warn when shared interrupts do not match on NO_SUSPEND.<br>
 <br>
 <br>
 <b>TODO:</b><br>
