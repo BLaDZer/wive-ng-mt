@@ -7,7 +7,7 @@ DIR	  := $(PWD)/coova-chilli-1.3.0
 
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-mmap --without-nfcoova --prefix=$(DIR)/filesystem
 CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
-CONFOPTS  += --enable-dhcpopt -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
+CONFOPTS  += -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
 
 #DEBUG     := y
 ifdef DEBUG
@@ -46,7 +46,6 @@ romfs:
 	$(ROMFSINST) -s /etc/rc.d/W88chillispot /etc/init.d/chillispot
 	cp -fva $(DIR)/filesystem/lib/*.so*  $(ROMFSDIR)/lib
 	cp -fva $(DIR)/filesystem/sbin/*  $(ROMFSDIR)/sbin
-	cp -fva $(PWD)/chilli.conf $(ROMFSDIR)/etc
 
 clean:
 	-make clean -C $(DIR)

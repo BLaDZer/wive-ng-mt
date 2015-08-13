@@ -9,7 +9,7 @@ fi
 . /etc/scripts/global.sh
 
 LOG="logger -t ChilliSpot"
-PARAMS="net dhcpstart dhcpsend dynip dns1 dns2 domain \
+PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain \
 	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease \
 	uamserver uamhomepage uamsecret uamallowed macallowed"
 
@@ -20,7 +20,7 @@ start() {
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe -q tun
-	chilli $PARLINE &
+	chilli $DEBUG $PARLINE &
     fi
 }
 
@@ -34,7 +34,8 @@ stop() {
 }
 
 get_params() {
-    PARLINE="--dhcpif br0 --conf=/etc/chilli.conf"
+    #DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    PARLINE="--dhcpif br0 --dhcpbroadcast"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
 	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
