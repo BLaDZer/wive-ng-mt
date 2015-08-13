@@ -1210,6 +1210,7 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
+2) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
 3) need add subchannel select for 5GHz module.<br>
 4) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
 5) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
