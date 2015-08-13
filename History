@@ -1203,6 +1203,10 @@
 102) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
+<b>3.4.x</b><br>
+1) kernel: net: fix race condition in store_rps_map.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 3) need add subchannel select for 5GHz module.<br>
