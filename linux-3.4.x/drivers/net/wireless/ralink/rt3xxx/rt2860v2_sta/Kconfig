@@ -72,7 +72,7 @@ config  RT2860V2_STA_P2P
 
 config  RT2860V2_STA_READ_MAC_FROM_MTD
 	bool "Read and set MAC from MTD/EEPROM"
-	default y
+	default n
 	depends on RT2860V2_STA
 
 config  RT2860V2_STA_ATE

@@ -43,7 +43,7 @@ config  MT76X2_AP_MBSS_NEW_MBSSID_MODE
 	bool "New MBSSID mode support"
 	depends on MT76X2_AP
 	depends on MT76X2_AP_MBSS
-	default n
+	default y
 
 config  MT76X2_AP_APCLI
 	bool "AP-Client Support"
@@ -161,7 +161,7 @@ config  MT76X2_AP_SINGLE_SKU
 config  MT76X2_AP_READ_MAC_FROM_MTD
 	bool "Read and set MAC from MTD/EEPROM"
 	depends on MT76X2_AP
-	default y
+	default n
 
 #config  MT76X2_AP_BIG_ENDIAN
 #	bool "Big-endian platform Support"
