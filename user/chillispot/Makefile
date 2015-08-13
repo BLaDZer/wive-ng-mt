@@ -9,7 +9,7 @@ CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --
 CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
 CONFOPTS  += -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
 
-DEBUG     := y
+#DEBUG     := y
 ifdef DEBUG
 CONFOPTS  +=  --enable-debug --enable-debug2
 else
