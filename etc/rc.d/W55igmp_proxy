@@ -44,7 +44,7 @@ start() {
 gen_config() {
 ####################generate config###########################
 printf "
-quickleave
+$igmpFastLeave
 phyint $wan_if upstream ratelimit 0 threshold 1
 altnet 0.0.0.0/0
 phyint $lan_if downstream ratelimit 0 threshold 1
@@ -54,7 +54,7 @@ phyint $vpn_if disabled
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpM2UConvMode`
+    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpM2UConvMode igmpFastLeave`
     ####################################
     # remap wan if to vlan bridge
     ####################################
@@ -104,6 +104,14 @@ get_param() {
 	OPTS="-$igmpPort$igmpSnoopMode$M2UEnabled"
     else
 	OPTS=""
+    fi
+    ####################################
+    # quick leave enable/disable
+    ####################################
+    if [ "$igmpFastLeave" = "1" ]; then
+	igmpFastLeave="quickleave"
+    else
+	igmpFastLeave=""
     fi
 }
 

@@ -118,6 +118,7 @@
   <message msgid="services misc dinf" msgstr="Device info services" />
   <message msgid="services misc igmp" msgstr="IGMP proxy" />
   <message msgid="services misc igmp multicast" msgstr="Multicast IGMP snooping" />
+  <message msgid="services misc igmp fastleave" msgstr="Fast leave support" />
   <message msgid="services misc igmp unicast" msgstr="Multicast to Unicast conversion" />
   <message msgid="services misc udpxy" msgstr="Multicast to http proxy (udpxy)" />
   <message msgid="services misc udpxy port" msgstr="UDPXY port" />

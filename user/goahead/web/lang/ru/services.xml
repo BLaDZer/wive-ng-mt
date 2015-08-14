@@ -119,6 +119,7 @@
   <message msgid="services misc dinf" msgstr="Сервисы информации и статистики" />
   <message msgid="services misc igmp" msgstr="IGMP прокси" />
   <message msgid="services misc igmp multicast" msgstr="Multicast IGMP snooping" />
+  <message msgid="services misc igmp fastleave" msgstr="Поддержка Fast leave" />
   <message msgid="services misc igmp unicast" msgstr="Преобразование мультикаста в уникаст" />
   <message msgid="services misc udpxy" msgstr="Multicast to http прокси (udpxy)" />
   <message msgid="services misc udpxy port" msgstr="Порт UDPXY" />

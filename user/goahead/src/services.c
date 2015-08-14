@@ -318,6 +318,7 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("lldpdEnbl"), "lldpdEnabled", 0, T("0") },
 	{ T("igmpEnbl"), "igmpEnabled", 0, T("0") },
 	{ T("igmpSnoop"), "igmpSnoopMode", 0, T("") },
+	{ T("igmpFastL"), "igmpFastLeave", 0, T("") },
 	{ T("igmpM2UConv"), "igmpM2UConvMode", 0, T("") },
 	{ T("upnpEnbl"), "upnpEnabled", 0, T("0") },
 	{ T("xupnpdEnbl"), "xupnpd", 0, T("0") },

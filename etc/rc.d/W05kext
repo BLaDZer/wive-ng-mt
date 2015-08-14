@@ -176,7 +176,7 @@ pthrough() {
 }
 
 multicast() {
-    eval `nvram_buf_get 2860 igmpEnabled igmpM2UConvMode UDPXYMode xupnpd upnpEnabled`
+    eval `nvram_buf_get 2860 igmpEnabled igmpM2UConvMode igmpFastLeave`
     if [ "$OperationMode" = "2" ]; then
 	$LOG "Multicast to unicast conversion disabled (not supported in client gateway mode)."
     else
@@ -195,7 +195,11 @@ multicast() {
 	    if [ "$INTERFACES" != "" ]; then
 		$LOG "Enable bridge fast leave and multicast to unicast conversion for $INTERFACES"
 		for ifname in $INTERFACES; do
-		    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		    if [ "$igmpFastLeave" = "1" ]; then
+			echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		    else
+			echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		    fi
 		    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
 		done
 	    fi
@@ -207,10 +211,6 @@ multicast() {
 		echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
 	    done
 	fi
-    fi
-    if [ "$xupnpd" != "0" ] || [ "$upnpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ] || [ "$igmpEnabled" != "0" ] ; then
-        $LOG "Disable rp_filter - need for recive multicast work."
-	sysctl -wq net.ipv4.conf.all.rp_filter=0
     fi
 }
 

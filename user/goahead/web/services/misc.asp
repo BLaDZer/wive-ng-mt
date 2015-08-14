@@ -104,6 +104,7 @@ function initTranslation()
 	_TR("miscDINFConfig", "services status configure");
 	_TR("lIgmpp", "services misc igmp");
 	_TR("lIgmppMC", "services misc igmp multicast");
+	_TR("lIgmppFL", "services misc igmp fastleave");
 	_TR("lIgmppMC2UC", "services misc igmp unicast");
 	_TR("ludpxy", "services misc udpxy");
 	_TR("miscUDPXYPort", "services misc udpxy port");
@@ -142,6 +143,7 @@ function initValue()
 	var stp = <% getCfgZero(1, "stpEnabled"); %>;
 	var igmp = <% getCfgZero(1, "igmpEnabled"); %>;
 	var igmp_snoop = '<% getCfgGeneral(1, "igmpSnoopMode"); %>';
+	var igmp_fastl = '<% getCfgGeneral(1, "igmpFastLeave"); %>';
 	var igmpM2UConv = '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';
 	var upnp = <% getCfgZero(1, "upnpEnabled"); %>;
 	var xupnpd = <% getCfgZero(1, "xupnpd"); %>;
@@ -179,6 +181,7 @@ function initValue()
 	form.stpEnbl.options.selectedIndex = 1*stp;
 	form.igmpEnbl.options.selectedIndex = (igmpb == '1') ? 1*igmp : 0;
 	form.igmpSnoop.value = igmp_snoop;
+	form.igmpFastL.value = igmp_fastl;
 	form.igmpM2UConv.value = igmpM2UConv;
 	form.upnpEnbl.options.selectedIndex = 1*upnp;
 	form.xupnpdEnbl.options.selectedIndex = 1*xupnpd;
@@ -302,6 +305,7 @@ function pingerSelect(form)
 function igmpSelect(form)
 {
 	displayElement( [ 'igmpSnoop', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
+	displayElement( [ 'igmpFastL', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
 	displayElement( [ 'igmpM2UConv', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
 }
 
@@ -590,6 +594,13 @@ function submitForm(form) {
             <td colspan="4"><select name="igmpSnoop" class="half">
                 <option value="">Auto</option>
                 <option value="n" id="disable">Disable</option>
+              </select></td>
+          </tr>
+          <tr id="igmpFastL">
+            <td class="head" id="lIgmppFL">Fast leave support</td>
+            <td colspan="4"><select name="igmpFastL" class="half">
+                <option value="1">Enable</option>
+                <option value="0" id="disable">Disable</option>
               </select></td>
           </tr>
           <tr id="igmpM2UConv">
