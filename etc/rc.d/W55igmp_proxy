@@ -43,6 +43,12 @@ start() {
 
 gen_config() {
 ####################generate config###########################
+if [ "$igmpFastLeave" = "1" ]; then
+    igmpFastLeave="quickleave"
+else
+    igmpFastLeave=""
+fi
+
 printf "
 $igmpFastLeave
 phyint $wan_if upstream ratelimit 0 threshold 1
@@ -104,14 +110,6 @@ get_param() {
 	OPTS="-$igmpPort$igmpSnoopMode$M2UEnabled"
     else
 	OPTS=""
-    fi
-    ####################################
-    # quick leave enable/disable
-    ####################################
-    if [ "$igmpFastLeave" = "1" ]; then
-	igmpFastLeave="quickleave"
-    else
-	igmpFastLeave=""
     fi
 }
 
