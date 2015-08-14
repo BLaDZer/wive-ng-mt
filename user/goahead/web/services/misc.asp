@@ -590,14 +590,14 @@ function submitForm(form) {
             <td>&nbsp;</td>
           </tr>
           <tr id="igmpSnoop">
-            <td class="head" id="lIgmppMC">Multicast IGMP snooping</td>
+            <td class="head" id="lIgmppMC">IGMP snooping support</td>
             <td colspan="4"><select name="igmpSnoop" class="half">
                 <option value="">Auto</option>
                 <option value="n" id="disable">Disable</option>
               </select></td>
           </tr>
           <tr id="igmpFastL">
-            <td class="head" id="lIgmppFL">Fast leave support</td>
+            <td class="head" id="lIgmppFL">IGMP fast leave support</td>
             <td colspan="4"><select name="igmpFastL" class="half">
                 <option value="1">Enable</option>
                 <option value="0" id="disable">Disable</option>
