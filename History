@@ -1206,6 +1206,7 @@
 <br>
 <br>
 <b>3.4.x</b><br>
+1) kernel: ralink_wifi: 76x2: fix null pointer dereference in aplcli mode on SMP devices.<br>
 <br>
 <br>
 <b>TODO:</b><br>
