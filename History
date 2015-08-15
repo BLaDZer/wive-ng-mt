@@ -1209,7 +1209,8 @@
 108) kernel: net: packet: read num_members once in packet_rcv_fanout().<br>
 109) kernel: net: packet: avoid out of bounds read in round robin fanout.<br>
 110) kernel: net: inet: frags: fix defragmented packet's IP  header for af_packet.<br>
-111) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
+111) kernel: net: socket: fix the wrong returns for recvmsg and sendmsg.<br>
+112) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
 <b>3.4.x</b><br>
