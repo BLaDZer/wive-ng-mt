@@ -267,11 +267,6 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_MCSFEEDBACK_CAPABLE);
 				
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
-
-
-				/*init to 3, otherwise  the  bridge + bridge toppology case will not sync peer's capbility by beacon, then the originator ba win size is too small*/
-				pEntry->MaxRAmpduFactor = 3;
-
 #ifdef DOT11_VHT_AC
 		//copy from update_associated_mac_entry()
 		if ((wdev->PhyMode == MODE_VHT) &&
