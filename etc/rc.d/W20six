@@ -368,7 +368,7 @@ stop() {
 	# cleanup global adresses
 	echo "#!/bin/sh" > /tmp/ip6addrdel
 	ip -6 -o addr show scope global | awk {' print "ip -6 addr del " $4 " dev " $2 '} >> /tmp/ip6addrdel
-	chmod 777 /tmp/ip6addrdel
+	chmod 755 /tmp/ip6addrdel
 	sh /tmp/ip6addrdel
 	rm -f /tmp/ip6addrdel
 
