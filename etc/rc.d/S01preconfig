@@ -27,11 +27,8 @@ start() {
     mount -a
     chmod 777 /tmp
 
-    $LOG "Create some folders in var and etc."
-    ndirs="/var/run /var/lock /var/lock/subsys /var/log /var/tmp /var/run/xl2tpd"
-    for dir in $ndirs ; do
-	mkdir -p "$dir" > /dev/null 2>&1
-    done
+    # create some folders in var"
+    mkdir -p /var/run /var/lock /var/lock/subsys /var/log /var/tmp
 
     # remove vpn resolv.conf
     rm -f /etc/ppp/resolv.conf

@@ -12,8 +12,7 @@ TMPROOTFSD="/tmp/rootfs"
 ##########################################################
 # prepare filesystems
 ##########################################################
-mkdir -p /var/tmpfs
-mkdir -p /var/rwfs
+mkdir -p /var/tmpfs /var/rwfs
 mount -o bind /var/tmpfs /tmp
 mount -o bind /var/rwfs /etc
 
@@ -75,13 +74,9 @@ if [ -d /dev ]; then
 
     # ralink depended
     mknod /dev/hwnat0	c	215	0
-    mknod /dev/acl0		c	230	0
-    mknod /dev/cls0		c	235	0
-    mknod /dev/ac0		c	240	0
-    mknod /dev/mrt0		c	250	0
     mknod /dev/nvram	c	251	0
-    mknod /dev/gpio		c	252	0
-    mknod /dev/rdm0		c	254	0
+    mknod /dev/gpio	c	252	0
+    mknod /dev/rdm0	c	254	0
 else
     $LOG "DEVFS NOT EXIST STOP !!!"
     exit 1
@@ -106,8 +101,7 @@ umount -fl $TMPROOTFSD
 rm -rf $TMPROOTFSD
 
 $LOG "Create start services trees"
-mkdir -p /var/run/rc0.d
-mkdir -p /var/run/rc1.d
+mkdir -p /var/run/rc0.d /var/run/rc1.d
 ln -s /etc/rc.d/S* /var/run/rc0.d
 ln -s /etc/rc.d/W* /var/run/rc1.d
 
