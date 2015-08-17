@@ -14,9 +14,7 @@ start() {
     get_param
     if [ "$xupnpd" = "1" ]; then
 	# make config dirs if not exist
-	mkdir -p /etc/xupnpd/config
-	mkdir -p /etc/xupnpd/config/postinit
-	mkdir -p /tmp/xupnpd-feeds
+	mkdir -p /etc/xupnpd/config /etc/xupnpd/config/postinit /tmp/xupnpd-feeds
 	( # send to background
 	    # check ip adress set at wan
 	    if [ "$wan_is_not_null" = "0" ]; then
