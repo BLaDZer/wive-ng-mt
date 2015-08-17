@@ -530,6 +530,7 @@ static inline UCHAR SelectClearChannelCCA(
 			}
 			else
 			{ /* 2.4G Hz */
+				UCHAR ExChannel_idx = 0;
 				if (pAd->ChannelList[channel_idx].Channel == 14)
 				{
 					dirtyness = 0xFFFFFFFF;
@@ -537,26 +538,17 @@ static inline UCHAR SelectClearChannelCCA(
 				}
 				else
 				{
-					UCHAR ExChannel_idx = 0;
-					if (pAd->ChannelList[channel_idx].Channel == 14)
+					NdisZeroMemory(ExChannel, sizeof(ExChannel));
+					if (((channel_idx - 4) >=0) && ((channel_idx - 4) < pAd->ChannelListNum))
 					{
-						dirtyness = 0xFFFFFFFF;
-						break;
+						dirtyness += pChannelInfo->dirtyness[channel_idx - 4];
+						ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx - 4].Channel;
 					}
-					else
-					{
-						NdisZeroMemory(ExChannel, sizeof(ExChannel));
-						if (((channel_idx - 4) >=0) && ((channel_idx - 4) < pAd->ChannelListNum))
-						{
-							dirtyness += pChannelInfo->dirtyness[channel_idx - 4];
-							ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx - 4].Channel;
-					    }
 
-						if (((channel_idx + 4) >=0) && ((channel_idx + 4) < pAd->ChannelListNum))
-						{
-						    dirtyness += pChannelInfo->dirtyness[channel_idx + 4];
-						    ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx + 4].Channel;
-						}
+					if (((channel_idx + 4) >=0) && ((channel_idx + 4) < pAd->ChannelListNum))
+					{
+					    dirtyness += pChannelInfo->dirtyness[channel_idx + 4];
+					    ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx + 4].Channel;
 					}
 				}
 			}
