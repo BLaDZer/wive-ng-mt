@@ -1344,14 +1344,16 @@ static void iptablesWebsFilterRun(void)
 
 void firewall_rebuild_etc(void)
 {
-	//rebuild firewall scripts in etc
+	// Rebuild firewall scripts in etc
 
 	// Port forwarding
 	char *pfw_enable = nvram_get(RT2860_NVRAM, "PortForwardEnable");
 	if (pfw_enable == NULL)
 		pfw_enable = "0";
 
+	// Remove portforwards scripts
 	doSystem("rm -f " _PATH_PFW_FILE);
+	doSystem("rm -f " _PATH_PFW_FILE_VPN);
 	if (strcmp(pfw_enable, "1") == 0) // Turned on?
 		iptablesPortForwardBuildScript();
 
@@ -1360,6 +1362,7 @@ void firewall_rebuild_etc(void)
 	if (ipf_enable == NULL)
 		ipf_enable = "0";
 
+	// Remove mac filter script
 	doSystem("rm -f " _PATH_MACIP_FILE);
 	if (strcmp(ipf_enable, "1") == 0) // Turned on?
 		iptablesIPPortFilterBuildScript();

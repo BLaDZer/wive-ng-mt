@@ -1480,10 +1480,10 @@ static void rebuildVPNRoutes(char *src_rrs)
 	if (rrs == NULL)
 		return;
 
-	FILE *fd = fopen(PATH_PPP_ROUTES, "w");
+	FILE *fd = fopen(_PATH_PPP_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("goahead: open %s failed\n", PATH_PPP_ROUTES);
+		printf("goahead: open %s failed\n", _PATH_PPP_ROUTES);
 		return;
 	}
 
@@ -1517,9 +1517,9 @@ static void rebuildVPNRoutes(char *src_rrs)
 	fclose(fd);
 
 	if (nwritten <= 0)
-		unlink(PATH_PPP_ROUTES);
+		unlink(_PATH_PPP_ROUTES);
 	else
-		chmod(PATH_PPP_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
+		chmod(_PATH_PPP_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
 }
 
 static void rebuildLANWANRoutes(char *src_rrs)
@@ -1536,10 +1536,10 @@ static void rebuildLANWANRoutes(char *src_rrs)
 	if (rrs == NULL)
 		return;
 
-	FILE *fd = fopen(PATH_LANWAN_ROUTES, "w");
+	FILE *fd = fopen(_PATH_LANWAN_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("goahead: open %s failed\n", PATH_LANWAN_ROUTES);
+		printf("goahead: open %s failed\n", _PATH_LANWAN_ROUTES);
 		return;
 	}
 
@@ -1597,17 +1597,19 @@ static void rebuildLANWANRoutes(char *src_rrs)
 	fclose(fd);
 
 	if (nwritten <= 0)
-		unlink(PATH_LANWAN_ROUTES);
+		unlink(_PATH_LANWAN_ROUTES);
 	else
-		chmod(PATH_LANWAN_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
+		chmod(_PATH_LANWAN_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
 }
 
 void staticRoutingInit(void)
 {
 	// Get routing rules
 	char *rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
-	if (rrs == NULL)
-		printf("goahead: RoutingRules are empty\n");
+
+	// Remove static routes scripts
+	doSystem("rm -f " _PATH_PPP_ROUTES);
+	doSystem("rm -f " _PATH_LANWAN_ROUTES);
 
 	// And rebuild VPN routes
 	rebuildLANWANRoutes(rrs);

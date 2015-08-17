@@ -24,8 +24,8 @@
 #define _PATH_PROCNET_DEV		"/proc/net/dev"
 #define _PATH_IPT_ACCOUNTING_FILE	"/proc/net/ipt_account/mynetwork"
 
-#define PATH_PPP_ROUTES			"/etc/routes_ppp_replace"
-#define PATH_LANWAN_ROUTES		"/etc/routes_replace"
+#define _PATH_PPP_ROUTES		"/etc/routes_ppp_replace"
+#define _PATH_LANWAN_ROUTES		"/etc/routes_replace"
 
 #define _PATH_PFW			"/etc"
 #define _PATH_PFW_FILE			_PATH_PFW "/portforward"

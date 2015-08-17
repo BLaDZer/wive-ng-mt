@@ -27,17 +27,14 @@ start() {
     mount -a
     chmod 777 /tmp
 
-    $LOG "Delete old configs."
-    rm_conf="zebra.conf ripd.conf macipfilter websfilter portforward ppp_firewall routes_ppp_replace qos_firewall ppp/resolv.conf"
-    for file in $rm_conf ; do
-	rm -f /etc/$file
-    done
-
     $LOG "Create some folders in var and etc."
     ndirs="/var/run /var/lock /var/lock/subsys /var/log /var/tmp /var/run/xl2tpd"
     for dir in $ndirs ; do
 	mkdir -p "$dir" > /dev/null 2>&1
     done
+
+    # remove vpn resolv.conf
+    rm -f /etc/ppp/resolv.conf
 
     # this may be need for some apps
     ln -sf /var/lock /var/locks
