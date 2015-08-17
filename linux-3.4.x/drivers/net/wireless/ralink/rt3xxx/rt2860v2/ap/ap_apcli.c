@@ -653,6 +653,9 @@ BOOLEAN ApCliLinkUp(
 				}
 
 				pMacEntry->MaxHTPhyMode.field.STBC = (pHtCapability->HtCapInfo.RxSTBC & (pAd->CommonCfg.DesiredHtPhy.TxSTBC));
+				if (pHtCapability->HtCapParm.MpduDensity < 5)
+					pMacEntry->MpduDensity = 5;
+				else
 				pMacEntry->MpduDensity = pHtCapability->HtCapParm.MpduDensity;
 				pMacEntry->MaxRAmpduFactor = pHtCapability->HtCapParm.MaxRAmpduFactor;
 				pMacEntry->MmpsMode = (UCHAR)pHtCapability->HtCapInfo.MimoPs;

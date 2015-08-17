@@ -233,7 +233,9 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 			pEntry->MaxHTPhyMode.word = HTPhyMode.word;
 			pEntry->MinHTPhyMode.word = wdev->MinHTPhyMode.word;
 			pEntry->HTPhyMode.word = pEntry->MaxHTPhyMode.word;
-
+			/* default */
+			pEntry->MpduDensity = 5;
+			pEntry->MaxRAmpduFactor = 3;
 #ifdef DOT11_N_SUPPORT
 			if (wdev->PhyMode >= MODE_HTMIX)
 			{
