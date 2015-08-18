@@ -96,7 +96,7 @@ const struct {
  * Non-zero means failure to parse.
  */
 int Curl_sasl_digest_get_pair(const char *str, char *value, char *content,
-                                const char **endptr)
+                              const char **endptr)
 {
   int c;
   bool starts_with_quote = FALSE;

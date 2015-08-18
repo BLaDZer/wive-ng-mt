@@ -125,56 +125,64 @@ schannel_connect_step1(struct connectdata *conn, int sockindex)
       /* certificate validation on CE doesn't seem to work right; we'll
          do it following a more manual process. */
       schannel_cred.dwFlags = SCH_CRED_MANUAL_CRED_VALIDATION |
-                              SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
-                              SCH_CRED_IGNORE_REVOCATION_OFFLINE;
+        SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
+        SCH_CRED_IGNORE_REVOCATION_OFFLINE;
 #else
-      schannel_cred.dwFlags = SCH_CRED_AUTO_CRED_VALIDATION |
-                              SCH_CRED_REVOCATION_CHECK_CHAIN;
+      schannel_cred.dwFlags = SCH_CRED_AUTO_CRED_VALIDATION;
+      if(data->set.ssl_no_revoke)
+        schannel_cred.dwFlags |= SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
+                                 SCH_CRED_IGNORE_REVOCATION_OFFLINE;
+      else
+        schannel_cred.dwFlags |= SCH_CRED_REVOCATION_CHECK_CHAIN;
 #endif
-      infof(data, "schannel: checking server certificate revocation\n");
+      if(data->set.ssl_no_revoke)
+        infof(data, "schannel: disabled server certificate revocation "
+                    "checks\n");
+      else
+        infof(data, "schannel: checking server certificate revocation\n");
     }
     else {
       schannel_cred.dwFlags = SCH_CRED_MANUAL_CRED_VALIDATION |
-                              SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
-                              SCH_CRED_IGNORE_REVOCATION_OFFLINE;
-      infof(data, "schannel: disable server certificate revocation checks\n");
+        SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
+        SCH_CRED_IGNORE_REVOCATION_OFFLINE;
+      infof(data, "schannel: disabled server certificate revocation checks\n");
     }
 
     if(!data->set.ssl.verifyhost) {
       schannel_cred.dwFlags |= SCH_CRED_NO_SERVERNAME_CHECK;
       infof(data, "schannel: verifyhost setting prevents Schannel from "
-                  "comparing the supplied target name with the subject "
-                  "names in server certificates. Also disables SNI.\n");
+            "comparing the supplied target name with the subject "
+            "names in server certificates. Also disables SNI.\n");
     }
 
     switch(data->set.ssl.version) {
-      default:
-      case CURL_SSLVERSION_DEFAULT:
-      case CURL_SSLVERSION_TLSv1:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_0_CLIENT |
-                                              SP_PROT_TLS1_1_CLIENT |
-                                              SP_PROT_TLS1_2_CLIENT;
-        break;
-      case CURL_SSLVERSION_TLSv1_0:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_0_CLIENT;
-        break;
-      case CURL_SSLVERSION_TLSv1_1:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_1_CLIENT;
-        break;
-      case CURL_SSLVERSION_TLSv1_2:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_2_CLIENT;
-        break;
-      case CURL_SSLVERSION_SSLv3:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_SSL3_CLIENT;
-        break;
-      case CURL_SSLVERSION_SSLv2:
-        schannel_cred.grbitEnabledProtocols = SP_PROT_SSL2_CLIENT;
-        break;
+    default:
+    case CURL_SSLVERSION_DEFAULT:
+    case CURL_SSLVERSION_TLSv1:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_0_CLIENT |
+        SP_PROT_TLS1_1_CLIENT |
+        SP_PROT_TLS1_2_CLIENT;
+      break;
+    case CURL_SSLVERSION_TLSv1_0:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_0_CLIENT;
+      break;
+    case CURL_SSLVERSION_TLSv1_1:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_1_CLIENT;
+      break;
+    case CURL_SSLVERSION_TLSv1_2:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_TLS1_2_CLIENT;
+      break;
+    case CURL_SSLVERSION_SSLv3:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_SSL3_CLIENT;
+      break;
+    case CURL_SSLVERSION_SSLv2:
+      schannel_cred.grbitEnabledProtocols = SP_PROT_SSL2_CLIENT;
+      break;
     }
 
     /* allocate memory for the re-usable credential handle */
     connssl->cred = (struct curl_schannel_cred *)
-                     malloc(sizeof(struct curl_schannel_cred));
+      malloc(sizeof(struct curl_schannel_cred));
     if(!connssl->cred) {
       failf(data, "schannel: unable to allocate memory");
       return CURLE_OUT_OF_MEMORY;
@@ -216,12 +224,12 @@ schannel_connect_step1(struct connectdata *conn, int sockindex)
 
   /* setup request flags */
   connssl->req_flags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT |
-                       ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY |
-                       ISC_REQ_STREAM;
+    ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY |
+    ISC_REQ_STREAM;
 
   /* allocate memory for the security context handle */
   connssl->ctxt = (struct curl_schannel_ctxt *)
-                   malloc(sizeof(struct curl_schannel_ctxt));
+    malloc(sizeof(struct curl_schannel_ctxt));
   if(!connssl->ctxt) {
     failf(data, "schannel: unable to allocate memory");
     return CURLE_OUT_OF_MEMORY;
@@ -331,7 +339,7 @@ schannel_connect_step2(struct connectdata *conn, int sockindex)
      CURL_SCHANNEL_BUFFER_FREE_SIZE) {
     /* increase internal encrypted data buffer */
     reallocated_length = connssl->encdata_offset +
-                         CURL_SCHANNEL_BUFFER_FREE_SIZE;
+      CURL_SCHANNEL_BUFFER_FREE_SIZE;
     reallocated_buffer = realloc(connssl->encdata_buffer,
                                  reallocated_length);
 
@@ -372,7 +380,7 @@ schannel_connect_step2(struct connectdata *conn, int sockindex)
     }
 
     infof(data, "schannel: encrypted data buffer: offset %zu length %zu\n",
-        connssl->encdata_offset, connssl->encdata_length);
+          connssl->encdata_offset, connssl->encdata_length);
 
     /* setup input buffers */
     InitSecBuffer(&inbuf[0], SECBUFFER_TOKEN, malloc(connssl->encdata_offset),
@@ -469,21 +477,21 @@ schannel_connect_step2(struct connectdata *conn, int sockindex)
     if(inbuf[1].BufferType == SECBUFFER_EXTRA && inbuf[1].cbBuffer > 0) {
       infof(data, "schannel: encrypted data length: %lu\n", inbuf[1].cbBuffer);
       /*
-         There are two cases where we could be getting extra data here:
-         1) If we're renegotiating a connection and the handshake is already
-            complete (from the server perspective), it can encrypted app data
-            (not handshake data) in an extra buffer at this point.
-         2) (sspi_status == SEC_I_CONTINUE_NEEDED) We are negotiating a
-            connection and this extra data is part of the handshake.
-            We should process the data immediately; waiting for the socket to
-            be ready may fail since the server is done sending handshake data.
-       */
+        There are two cases where we could be getting extra data here:
+        1) If we're renegotiating a connection and the handshake is already
+        complete (from the server perspective), it can encrypted app data
+        (not handshake data) in an extra buffer at this point.
+        2) (sspi_status == SEC_I_CONTINUE_NEEDED) We are negotiating a
+        connection and this extra data is part of the handshake.
+        We should process the data immediately; waiting for the socket to
+        be ready may fail since the server is done sending handshake data.
+      */
       /* check if the remaining data is less than the total amount
          and therefore begins after the already processed data */
       if(connssl->encdata_offset > inbuf[1].cbBuffer) {
         memmove(connssl->encdata_buffer,
                 (connssl->encdata_buffer + connssl->encdata_offset) -
-                  inbuf[1].cbBuffer, inbuf[1].cbBuffer);
+                inbuf[1].cbBuffer, inbuf[1].cbBuffer);
         connssl->encdata_offset = inbuf[1].cbBuffer;
         if(sspi_status == SEC_I_CONTINUE_NEEDED) {
           doread = FALSE;
@@ -713,9 +721,9 @@ schannel_send(struct connectdata *conn, int sockindex,
   /* check if the maximum stream sizes were queried */
   if(connssl->stream_sizes.cbMaximumMessage == 0) {
     sspi_status = s_pSecFn->QueryContextAttributes(
-                              &connssl->ctxt->ctxt_handle,
-                              SECPKG_ATTR_STREAM_SIZES,
-                              &connssl->stream_sizes);
+      &connssl->ctxt->ctxt_handle,
+      SECPKG_ATTR_STREAM_SIZES,
+      &connssl->stream_sizes);
     if(sspi_status != SEC_E_OK) {
       *err = CURLE_SEND_ERROR;
       return -1;
@@ -730,7 +738,7 @@ schannel_send(struct connectdata *conn, int sockindex,
 
   /* calculate the complete message length and allocate a buffer for it */
   data_len = connssl->stream_sizes.cbHeader + len +
-              connssl->stream_sizes.cbTrailer;
+    connssl->stream_sizes.cbTrailer;
   data = (unsigned char *) malloc(data_len);
   if(data == NULL) {
     *err = CURLE_OUT_OF_MEMORY;
@@ -763,19 +771,19 @@ schannel_send(struct connectdata *conn, int sockindex,
     len = outbuf[0].cbBuffer + outbuf[1].cbBuffer + outbuf[2].cbBuffer;
 
     /*
-       It's important to send the full message which includes the header,
-       encrypted payload, and trailer.  Until the client receives all the
-       data a coherent message has not been delivered and the client
-       can't read any of it.
+      It's important to send the full message which includes the header,
+      encrypted payload, and trailer.  Until the client receives all the
+      data a coherent message has not been delivered and the client
+      can't read any of it.
 
-       If we wanted to buffer the unwritten encrypted bytes, we would
-       tell the client that all data it has requested to be sent has been
-       sent. The unwritten encrypted bytes would be the first bytes to
-       send on the next invocation.
-       Here's the catch with this - if we tell the client that all the
-       bytes have been sent, will the client call this method again to
-       send the buffered data?  Looking at who calls this function, it
-       seems the answer is NO.
+      If we wanted to buffer the unwritten encrypted bytes, we would
+      tell the client that all data it has requested to be sent has been
+      sent. The unwritten encrypted bytes would be the first bytes to
+      send on the next invocation.
+      Here's the catch with this - if we tell the client that all the
+      bytes have been sent, will the client call this method again to
+      send the buffered data?  Looking at who calls this function, it
+      seems the answer is NO.
     */
 
     /* send entire message or fail */
@@ -901,28 +909,28 @@ schannel_recv(struct connectdata *conn, int sockindex,
     size = connssl->encdata_length - connssl->encdata_offset;
     if(size < CURL_SCHANNEL_BUFFER_FREE_SIZE ||
        connssl->encdata_length < min_encdata_length) {
-    reallocated_length = connssl->encdata_offset +
-                         CURL_SCHANNEL_BUFFER_FREE_SIZE;
+      reallocated_length = connssl->encdata_offset +
+                           CURL_SCHANNEL_BUFFER_FREE_SIZE;
       if(reallocated_length < min_encdata_length) {
         reallocated_length = min_encdata_length;
-    }
-    reallocated_buffer = realloc(connssl->encdata_buffer,
-                                 reallocated_length);
-    if(reallocated_buffer == NULL) {
-      *err = CURLE_OUT_OF_MEMORY;
+      }
+      reallocated_buffer = realloc(connssl->encdata_buffer,
+                                   reallocated_length);
+      if(reallocated_buffer == NULL) {
+        *err = CURLE_OUT_OF_MEMORY;
         failf(data, "schannel: unable to re-allocate memory");
         goto cleanup;
-    }
+      }
 
       connssl->encdata_buffer = reallocated_buffer;
       connssl->encdata_length = reallocated_length;
       size = connssl->encdata_length - connssl->encdata_offset;
       infof(data, "schannel: encdata_buffer resized %zu\n",
             connssl->encdata_length);
-  }
+    }
 
-  infof(data, "schannel: encrypted data buffer: offset %zu length %zu\n",
-        connssl->encdata_offset, connssl->encdata_length);
+    infof(data, "schannel: encrypted data buffer: offset %zu length %zu\n",
+          connssl->encdata_offset, connssl->encdata_length);
 
     /* read encrypted data from socket */
     *err = Curl_read_plain(conn->sock[sockindex],
@@ -963,7 +971,6 @@ schannel_recv(struct connectdata *conn, int sockindex,
     InitSecBuffer(&inbuf[1], SECBUFFER_EMPTY, NULL, 0);
     InitSecBuffer(&inbuf[2], SECBUFFER_EMPTY, NULL, 0);
     InitSecBuffer(&inbuf[3], SECBUFFER_EMPTY, NULL, 0);
-
     InitSecBufferDesc(&inbuf_desc, inbuf, 4);
 
     /* http://msdn.microsoft.com/en-us/library/windows/desktop/aa375348.aspx */
@@ -973,7 +980,7 @@ schannel_recv(struct connectdata *conn, int sockindex,
     /* check if everything went fine (server may want to renegotiate
        or shutdown the connection context) */
     if(sspi_status == SEC_E_OK || sspi_status == SEC_I_RENEGOTIATE ||
-                                  sspi_status == SEC_I_CONTEXT_EXPIRED) {
+       sspi_status == SEC_I_CONTEXT_EXPIRED) {
       /* check for successfully decrypted data, even before actual
          renegotiation or shutdown of the connection context */
       if(inbuf[1].BufferType == SECBUFFER_DATA) {
@@ -998,9 +1005,9 @@ schannel_recv(struct connectdata *conn, int sockindex,
             failf(data, "schannel: unable to re-allocate memory");
             goto cleanup;
           }
-            connssl->decdata_buffer = reallocated_buffer;
-            connssl->decdata_length = reallocated_length;
-          }
+          connssl->decdata_buffer = reallocated_buffer;
+          connssl->decdata_length = reallocated_length;
+        }
 
         /* copy decrypted data to internal buffer */
         size = inbuf[1].cbBuffer;
@@ -1022,26 +1029,26 @@ schannel_recv(struct connectdata *conn, int sockindex,
 
         /* check if the remaining data is less than the total amount
          * and therefore begins after the already processed data
-        */
+         */
         if(connssl->encdata_offset > inbuf[3].cbBuffer) {
           /* move remaining encrypted data forward to the beginning of
              buffer */
           memmove(connssl->encdata_buffer,
                   (connssl->encdata_buffer + connssl->encdata_offset) -
-                    inbuf[3].cbBuffer, inbuf[3].cbBuffer);
+                  inbuf[3].cbBuffer, inbuf[3].cbBuffer);
           connssl->encdata_offset = inbuf[3].cbBuffer;
         }
 
         infof(data, "schannel: encrypted data cached: offset %zu length %zu\n",
               connssl->encdata_offset, connssl->encdata_length);
       }
-      else{
+      else {
         /* reset encrypted buffer offset, because there is no data remaining */
         connssl->encdata_offset = 0;
       }
 
-    /* check if server wants to renegotiate the connection context */
-    if(sspi_status == SEC_I_RENEGOTIATE) {
+      /* check if server wants to renegotiate the connection context */
+      if(sspi_status == SEC_I_RENEGOTIATE) {
         infof(data, "schannel: remote party requests renegotiation\n");
         if(*err && *err != CURLE_AGAIN) {
           infof(data, "schannel: can't renogotiate, an error is pending\n");
@@ -1053,10 +1060,10 @@ schannel_recv(struct connectdata *conn, int sockindex,
                       "encrypted data available\n");
           goto cleanup;
         }
-      /* begin renegotiation */
-      infof(data, "schannel: renegotiating SSL/TLS connection\n");
-      connssl->state = ssl_connection_negotiating;
-      connssl->connecting_state = ssl_connect_2_writing;
+        /* begin renegotiation */
+        infof(data, "schannel: renegotiating SSL/TLS connection\n");
+        connssl->state = ssl_connection_negotiating;
+        connssl->connecting_state = ssl_connect_2_writing;
         *err = schannel_connect_common(conn, sockindex, FALSE, &done);
         if(*err) {
           infof(data, "schannel: renegotiation failed\n");
@@ -1084,7 +1091,7 @@ schannel_recv(struct connectdata *conn, int sockindex,
         *err = CURLE_AGAIN;
       infof(data, "schannel: failed to decrypt data, need more data\n");
       goto cleanup;
-      }
+    }
     else {
       *err = CURLE_RECV_ERROR;
       infof(data, "schannel: failed to read data from server: %s\n",
@@ -1113,12 +1120,25 @@ cleanup:
   */
   if(len && !connssl->decdata_offset && connssl->recv_connection_closed &&
      !connssl->recv_sspi_close_notify) {
-    DWORD winver_full, winver_major, winver_minor;
-    winver_full = GetVersion();
-    winver_major = (DWORD)(LOBYTE(LOWORD(winver_full)));
-    winver_minor = (DWORD)(HIBYTE(LOWORD(winver_full)));
+    BOOL isWin2k;
+    ULONGLONG cm;
+    OSVERSIONINFOEX osver;
 
-    if(winver_major == 5 && winver_minor == 0 && sspi_status == SEC_E_OK)
+    memset(&osver, 0, sizeof(osver));
+    osver.dwOSVersionInfoSize = sizeof(osver);
+    osver.dwMajorVersion = 5;
+
+    cm = VerSetConditionMask(0, VER_MAJORVERSION, VER_EQUAL);
+    cm = VerSetConditionMask(cm, VER_MINORVERSION, VER_EQUAL);
+    cm = VerSetConditionMask(cm, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+    cm = VerSetConditionMask(cm, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
+
+    isWin2k = VerifyVersionInfo(&osver,
+                                (VER_MAJORVERSION | VER_MINORVERSION |
+                                 VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR),
+                                cm);
+
+    if(isWin2k && sspi_status == SEC_E_OK)
       connssl->recv_sspi_close_notify = true;
     else {
       *err = CURLE_RECV_ERROR;
@@ -1236,18 +1256,18 @@ int Curl_schannel_shutdown(struct connectdata *conn, int sockindex)
     InitSecBufferDesc(&outbuf_desc, &outbuf, 1);
 
     sspi_status = s_pSecFn->InitializeSecurityContext(
-         &connssl->cred->cred_handle,
-         &connssl->ctxt->ctxt_handle,
-         host_name,
-         connssl->req_flags,
-         0,
-         0,
-         NULL,
-         0,
-         &connssl->ctxt->ctxt_handle,
-         &outbuf_desc,
-         &connssl->ret_flags,
-         &connssl->ctxt->time_stamp);
+      &connssl->cred->cred_handle,
+      &connssl->ctxt->ctxt_handle,
+      host_name,
+      connssl->req_flags,
+      0,
+      0,
+      NULL,
+      0,
+      &connssl->ctxt->ctxt_handle,
+      &outbuf_desc,
+      &connssl->ret_flags,
+      &connssl->ctxt->time_stamp);
 
     Curl_unicodefree(host_name);
 
@@ -1385,7 +1405,8 @@ static CURLcode verify_certificate(struct connectdata *conn, int sockindex)
                                 NULL,
                                 pCertContextServer->hCertStore,
                                 &ChainPara,
-                                0,
+                                (data->set.ssl_no_revoke ? 0 :
+                                 CERT_CHAIN_REVOCATION_CHECK_CHAIN),
                                 NULL,
                                 &pChainContext)) {
       failf(data, "schannel: CertGetCertificateChain failed: %s",
@@ -1396,21 +1417,24 @@ static CURLcode verify_certificate(struct connectdata *conn, int sockindex)
 
     if(result == CURLE_OK) {
       CERT_SIMPLE_CHAIN *pSimpleChain = pChainContext->rgpChain[0];
-      DWORD dwTrustErrorMask = ~(DWORD)(CERT_TRUST_IS_NOT_TIME_NESTED|
-                                 CERT_TRUST_REVOCATION_STATUS_UNKNOWN);
+      DWORD dwTrustErrorMask = ~(DWORD)(CERT_TRUST_IS_NOT_TIME_NESTED);
       dwTrustErrorMask &= pSimpleChain->TrustStatus.dwErrorStatus;
       if(dwTrustErrorMask) {
-        if(dwTrustErrorMask & CERT_TRUST_IS_PARTIAL_CHAIN)
+        if(dwTrustErrorMask & CERT_TRUST_IS_REVOKED)
           failf(data, "schannel: CertGetCertificateChain trust error"
-                      " CERT_TRUST_IS_PARTIAL_CHAIN");
-        if(dwTrustErrorMask & CERT_TRUST_IS_UNTRUSTED_ROOT)
+                " CERT_TRUST_IS_REVOKED");
+        else if(dwTrustErrorMask & CERT_TRUST_IS_PARTIAL_CHAIN)
           failf(data, "schannel: CertGetCertificateChain trust error"
-                      " CERT_TRUST_IS_UNTRUSTED_ROOT");
-        if(dwTrustErrorMask & CERT_TRUST_IS_NOT_TIME_VALID)
+                " CERT_TRUST_IS_PARTIAL_CHAIN");
+        else if(dwTrustErrorMask & CERT_TRUST_IS_UNTRUSTED_ROOT)
           failf(data, "schannel: CertGetCertificateChain trust error"
-                      " CERT_TRUST_IS_NOT_TIME_VALID");
-        failf(data, "schannel: CertGetCertificateChain error mask: 0x%08x",
-              dwTrustErrorMask);
+                " CERT_TRUST_IS_UNTRUSTED_ROOT");
+        else if(dwTrustErrorMask & CERT_TRUST_IS_NOT_TIME_VALID)
+          failf(data, "schannel: CertGetCertificateChain trust error"
+                " CERT_TRUST_IS_NOT_TIME_VALID");
+        else
+          failf(data, "schannel: CertGetCertificateChain error mask: 0x%08x",
+                dwTrustErrorMask);
         result = CURLE_PEER_FAILED_VERIFICATION;
       }
     }
@@ -1426,6 +1450,14 @@ static CURLcode verify_certificate(struct connectdata *conn, int sockindex)
       cert_hostname.const_tchar_ptr = cert_hostname_buff;
       hostname.tchar_ptr = Curl_convert_UTF8_to_tchar(conn->host.name);
 
+      /* TODO: Fix this for certificates with multiple alternative names.
+      Right now we're only asking for the first preferred alternative name.
+      Instead we'd need to do all via CERT_NAME_SEARCH_ALL_NAMES_FLAG
+      (if WinCE supports that?) and run this section in a loop for each.
+      https://msdn.microsoft.com/en-us/library/windows/desktop/aa376086.aspx
+      curl: (51) schannel: CertGetNameString() certificate hostname
+      (.google.com) did not match connection (google.com)
+      */
       len = CertGetNameString(pCertContextServer,
                               CERT_NAME_DNS_TYPE,
                               0,

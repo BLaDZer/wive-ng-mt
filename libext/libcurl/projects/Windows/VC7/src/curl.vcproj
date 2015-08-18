@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
-	Name="curlsrc"
+	Version="7.00"
+	Name="curl"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="LIB Release - LIB OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -35,10 +35,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="crypt32.lib wldap32.lib ws2_32.lib libcurl.lib libeay32.lib ssleay32.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\LIB Release"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\LIB Release"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -57,17 +57,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Release - DLL Windows SSPI|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -90,10 +84,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -112,17 +106,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release - DLL Windows SSPI|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -145,10 +133,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -167,17 +155,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - DLL OpenSSL - DLL LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -200,10 +182,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib libeay32.lib ssleay32.lib libssh2d.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\DLL Debug,..\..\..\..\..\libssh2\build\Win32\VC7.1\DLL Debug"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\DLL Debug,..\..\..\..\..\libssh2\build\Win32\VC7\DLL Debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -224,17 +206,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - LIB OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -257,10 +233,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="crypt32.lib wldap32.lib ws2_32.lib libcurld.lib libeay32.lib ssleay32.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\LIB Debug"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\LIB Debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -281,17 +257,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Debug - DLL OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -314,10 +284,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -338,17 +308,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - LIB OpenSSL - LIB LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -371,10 +335,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="crypt32.lib wldap32.lib ws2_32.lib libcurld.lib libeay32.lib ssleay32.lib libssh2d.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\LIB Debug,..\..\..\..\..\libssh2\build\Win32\VC7.1\LIB Debug"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\LIB Debug,..\..\..\..\..\libssh2\build\Win32\VC7\LIB Debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -395,17 +359,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release - DLL OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -428,10 +386,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib libeay32.lib ssleay32.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\DLL Release"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\DLL Release"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -450,17 +408,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release - DLL OpenSSL - DLL LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -483,10 +435,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib libeay32.lib ssleay32.lib libssh2.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\DLL Release,..\..\..\..\..\libssh2\build\Win32\VC7.1\DLL Release"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\DLL Release,..\..\..\..\..\libssh2\build\Win32\VC7\DLL Release"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -505,17 +457,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -538,10 +484,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -560,17 +506,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release - LIB OpenSSL - LIB LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -593,10 +533,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="crypt32.lib wldap32.lib ws2_32.lib libcurl.lib libeay32.lib ssleay32.lib libssh2.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\LIB Release,..\..\..\..\..\libssh2\build\Win32\VC7.1\LIB Release"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\LIB Release,..\..\..\..\..\libssh2\build\Win32\VC7\LIB Release"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -615,17 +555,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - DLL OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -648,10 +582,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib libeay32.lib ssleay32.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7.1\DLL Debug"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName),..\..\..\..\..\openssl\build\Win32\VC7\DLL Debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -672,17 +606,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -705,10 +633,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -729,17 +657,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Debug|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -762,10 +684,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -786,17 +708,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Release - DLL OpenSSL - DLL LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -819,10 +735,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -841,17 +757,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Release - DLL OpenSSL|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -874,10 +784,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -896,17 +806,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Debug - DLL OpenSSL - DLL LibSSH2|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -929,10 +833,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -953,17 +857,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - DLL Windows SSPI|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -986,10 +884,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -1010,17 +908,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Release|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1043,10 +935,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -1065,17 +957,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Debug - DLL Windows SSPI|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1098,10 +984,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -1122,17 +1008,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Debug - DLL Windows SSPI - DLL WinIDN|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1155,10 +1035,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -1179,17 +1059,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="DLL Release - DLL Windows SSPI - DLL WinIDN|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1212,10 +1086,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -1234,17 +1108,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Debug - DLL Windows SSPI - DLL WinIDN|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1267,10 +1135,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="normaliz.lib wldap32.lib ws2_32.lib libcurld.lib"
-				OutputFile="$(OutDir)\curld.exe"
+				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"/>
@@ -1291,17 +1159,11 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="LIB Release - DLL Windows SSPI - DLL WinIDN|Win32"
-			OutputDirectory=".\..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)\src"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -1324,10 +1186,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO"
 				AdditionalDependencies="normaliz.lib wldap32.lib ws2_32.lib libcurl.lib"
-				OutputFile="$(OutDir)\curl.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7.1\$(ConfigurationName)"
+				AdditionalLibraryDirectories="..\..\..\..\build\Win32\VC7\$(ConfigurationName)"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -1346,17 +1208,9 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 		<Filter
 			Name="Source Files"

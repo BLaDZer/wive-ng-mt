@@ -876,7 +876,7 @@ int main(int argc, char **argv)
       memset(&test, 0, sizeof(test));
       if (do_tftp(&test, tp, n) < 0)
         break;
-        free(test.buffer);
+      free(test.buffer);
     }
     sclose(peer);
     peer = CURL_SOCKET_BAD;
@@ -1088,7 +1088,7 @@ static int parse_servercmd(struct testcase *req)
       else
         break;
     }
-      free(orgcmd);
+    free(orgcmd);
   }
 
   return 0; /* OK! */

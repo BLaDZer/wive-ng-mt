@@ -725,6 +725,10 @@ typedef enum {
    servers, a user can this way allow the vulnerability back. */
 #define CURLSSLOPT_ALLOW_BEAST (1<<0)
 
+/* - NO_REVOKE tells libcurl to disable certificate revocation checks for those
+   SSL backends where such behavior is present. */
+#define CURLSSLOPT_NO_REVOKE (1<<1)
+
 #ifndef CURL_NO_OLDIES /* define this to test if your app builds with all
                           the obsolete stuff removed! */
 
@@ -846,7 +850,7 @@ typedef enum {
   CINIT(WRITEDATA, OBJECTPOINT, 1),
 
   /* The full URL to get/put */
-  CINIT(URL,  OBJECTPOINT, 2),
+  CINIT(URL, OBJECTPOINT, 2),
 
   /* Port number to connect to, if other than default. */
   CINIT(PORT, LONG, 3),

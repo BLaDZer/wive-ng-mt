@@ -42,6 +42,10 @@
  *
  * This example requires libcurl 7.9.7 or later.
  */
+/* <DESC>
+ * implements an fopen() abstraction allowing reading from URLs
+ * </DESC>
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -499,7 +503,7 @@ int main(int argc, char *argv[])
   }
 
   do {
-    nread = url_fread(buffer, 1,sizeof(buffer), handle);
+    nread = url_fread(buffer, 1, sizeof(buffer), handle);
     fwrite(buffer,1,nread,outf);
   } while(nread);
 

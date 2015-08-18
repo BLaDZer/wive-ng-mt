@@ -357,8 +357,8 @@ test_cleanup:
   fclose(hd_src);
 
   /* free local memory */
-    free(sockets.read.sockets);
-    free(sockets.write.sockets);
+  free(sockets.read.sockets);
+  free(sockets.write.sockets);
 
   return res;
 }

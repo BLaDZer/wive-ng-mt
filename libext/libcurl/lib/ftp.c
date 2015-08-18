@@ -1887,7 +1887,7 @@ static CURLcode proxy_magic(struct connectdata *conn,
     memset(&http_proxy, 0, sizeof(http_proxy));
     data->req.protop = &http_proxy;
 
-    result = Curl_proxyCONNECT(conn, SECONDARYSOCKET, newhost, newport);
+    result = Curl_proxyCONNECT(conn, SECONDARYSOCKET, newhost, newport, TRUE);
 
     data->req.protop = ftp_save;
 
@@ -1944,12 +1944,12 @@ static CURLcode ftp_state_pasv_resp(struct connectdata *conn,
       unsigned int num;
       char separator[4];
       ptr++;
-      if(5  == sscanf(ptr, "%c%c%c%u%c",
-                      &separator[0],
-                      &separator[1],
-                      &separator[2],
-                      &num,
-                      &separator[3])) {
+      if(5 == sscanf(ptr, "%c%c%c%u%c",
+                     &separator[0],
+                     &separator[1],
+                     &separator[2],
+                     &num,
+                     &separator[3])) {
         const char sep1 = separator[0];
         int i;
 
@@ -1997,8 +1997,8 @@ static CURLcode ftp_state_pasv_resp(struct connectdata *conn,
      */
     while(*str) {
       if(6 == sscanf(str, "%d,%d,%d,%d,%d,%d",
-                      &ip[0], &ip[1], &ip[2], &ip[3],
-                      &port[0], &port[1]))
+                     &ip[0], &ip[1], &ip[2], &ip[3],
+                     &port[0], &port[1]))
         break;
       str++;
     }
@@ -3645,7 +3645,7 @@ static CURLcode ftp_do_more(struct connectdata *conn, int *completep)
     if(conn->tunnel_state[SECONDARYSOCKET] == TUNNEL_CONNECT) {
       /* As we're in TUNNEL_CONNECT state now, we know the proxy name and port
          aren't used so we blank their arguments. TODO: make this nicer */
-      result = Curl_proxyCONNECT(conn, SECONDARYSOCKET, NULL, 0);
+      result = Curl_proxyCONNECT(conn, SECONDARYSOCKET, NULL, 0, FALSE);
 
       return result;
     }

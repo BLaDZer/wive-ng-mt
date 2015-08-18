@@ -76,7 +76,7 @@ static void bundle_destroy(struct connectbundle *cb_ptr)
     cb_ptr->conn_list = NULL;
   }
   free(cb_ptr);
-  }
+}
 
 /* Add a connection to a bundle */
 static CURLcode bundle_add_conn(struct connectbundle *cb_ptr,
@@ -127,7 +127,7 @@ void Curl_conncache_destroy(struct conncache *connc)
 {
   if(connc)
     Curl_hash_destroy(&connc->hash);
-  }
+}
 
 /* returns an allocated key to find a bundle for this connection */
 static char *hashkey(struct connectdata *conn)

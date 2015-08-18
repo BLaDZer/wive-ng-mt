@@ -30,7 +30,7 @@ LIBRTMP_PATH = ../../librtmp-2.4
 endif
 # Edit the path below to point to the base of your libidn package.
 ifndef LIBIDN_PATH
-LIBIDN_PATH = ../../libidn-1.30
+LIBIDN_PATH = ../../libidn-1.32
 endif
 # Edit the path below to point to the base of your MS IDN package.
 # Microsoft Internationalized Domain Names (IDN) Mitigation APIs 1.1
@@ -58,7 +58,7 @@ CC	= $(CROSSPREFIX)gcc
 CFLAGS	= $(CURL_CFLAG_EXTRAS) -g -O2 -Wall
 CFLAGS	+= -fno-strict-aliasing
 # comment LDFLAGS below to keep debug info
-LDFLAGS	= -s
+LDFLAGS	= $(CURL_LDFLAG_EXTRAS) -s
 AR	= $(CROSSPREFIX)ar
 RANLIB	= $(CROSSPREFIX)ranlib
 RC	= $(CROSSPREFIX)windres

@@ -789,9 +789,9 @@ static CURLcode smb_request_state(struct connectdata *conn, bool *done)
         result = CURLE_RECV_ERROR;
       }
       else
-      result = Curl_client_write(conn, CLIENTWRITE_BODY,
-                                 (char *)msg + off + sizeof(unsigned int),
-                                 len);
+        result = Curl_client_write(conn, CLIENTWRITE_BODY,
+                                   (char *)msg + off + sizeof(unsigned int),
+                                   len);
       if(result) {
         req->result = result;
         next_state = SMB_CLOSE;

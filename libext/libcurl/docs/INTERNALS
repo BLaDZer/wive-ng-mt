@@ -280,7 +280,7 @@ Curl_disconnect()
    connection.
 
 <a name="http"></a>
- HTTP(S)
+HTTP(S)
 =======
 
  HTTP offers a lot and is the protocol in curl that uses the most lines of
@@ -305,7 +305,7 @@ Curl_disconnect()
  is done this way to overcome problems with flawed firewalls and lame servers.
 
 <a name="ftp"></a>
- FTP
+FTP
 ===
 
  The `Curl_if2ip()` function can be used for getting the IP number of a
@@ -317,7 +317,7 @@ Curl_disconnect()
  make firewalls and similar happy.
 
 <a name="kerberos"></a>
- Kerberos
+Kerberos
 --------
 
  Kerberos support is mainly in lib/krb5.c and lib/security.c but also
@@ -325,31 +325,31 @@ Curl_disconnect()
  `socks_gssapi.c` and `socks_sspi.c` for SOCKS5 proxy specifics.
 
 <a name="telnet"></a>
- TELNET
+TELNET
 ======
 
  Telnet is implemented in lib/telnet.c.
 
 <a name="file"></a>
- FILE
+FILE
 ====
 
  The file:// protocol is dealt with in lib/file.c.
 
 <a name="smb"></a>
- SMB
+SMB
 ===
 
  The smb:// protocol is dealt with in lib/smb.c.
 
 <a name="ldap"></a>
- LDAP
+LDAP
 ====
 
  Everything LDAP is in lib/ldap.c and lib/openldap.c
 
 <a name="email"></a>
- E-mail
+E-mail
 ======
 
  The e-mail related source code is in lib/imap.c, lib/pop3.c and lib/smtp.c.
@@ -1056,7 +1056,7 @@ for older and later versions as things don't change drastically that often.
   cache that all added SessionHandles share by default.
 
 ## Curl_share
-
+  
   The libcurl share API allocates a `Curl_share` struct, exposed to the
   external API as "CURLSH *".
 

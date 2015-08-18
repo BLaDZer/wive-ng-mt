@@ -99,7 +99,7 @@ thdbufdestroy(void * private)
     localkey_t i;
 
     for(i = (localkey_t) 0; i < LK_LAST; i++) {
-        free(p->buf);
+      free(p->buf);
       p++;
       }
 
@@ -279,7 +279,7 @@ Curl_getnameinfo_a(const struct sockaddr * sa, curl_socklen_t salen,
 
   if(servname && servnamelen)
     if(!(eservname = malloc(servnamelen))) {
-        free(enodename);
+      free(enodename);
       return EAI_MEMORY;
       }
 
@@ -300,8 +300,8 @@ Curl_getnameinfo_a(const struct sockaddr * sa, curl_socklen_t salen,
       }
     }
 
-    free(enodename);
-    free(eservname);
+  free(enodename);
+  free(eservname);
   return status;
 }
 
@@ -334,7 +334,7 @@ Curl_getaddrinfo_a(const char * nodename, const char * servname,
     i = strlen(servname);
 
     if(!(eservname = malloc(i + 1))) {
-        free(enodename);
+      free(enodename);
       return EAI_MEMORY;
       }
 
@@ -343,8 +343,8 @@ Curl_getaddrinfo_a(const char * nodename, const char * servname,
     }
 
   status = getaddrinfo(enodename, eservname, hints, res);
-    free(enodename);
-    free(eservname);
+  free(enodename);
+  free(eservname);
   return status;
 }
 
@@ -871,7 +871,7 @@ Curl_gss_init_sec_context_a(OM_uint32 * minor_status,
                              target_name, mech_type, req_flags, time_req,
                              input_chan_bindings, inp, actual_mech_type,
                              output_token, ret_flags, time_rec);
-    free(in.value);
+  free(in.value);
 
   if(rc != GSS_S_COMPLETE || !output_token ||
       !output_token->length || !output_token->value)
@@ -968,7 +968,7 @@ Curl_ldap_simple_bind_s_a(void * ld, char * dn, char * passwd)
     i = strlen(passwd);
 
     if(!(epasswd = malloc(i + 1))) {
-        free(edn);
+      free(edn);
       return LDAP_NO_MEMORY;
       }
 
@@ -977,8 +977,8 @@ Curl_ldap_simple_bind_s_a(void * ld, char * dn, char * passwd)
     }
 
   i = ldap_simple_bind_s(ld, edn, epasswd);
-    free(epasswd);
-    free(edn);
+  free(epasswd);
+  free(edn);
   return i;
 }
 
@@ -1055,8 +1055,8 @@ Curl_ldap_search_s_a(void * ld, char * base, int scope, char * filter,
     free(eattrs);
     }
 
-    free(efilter);
-    free(ebase);
+  free(efilter);
+  free(ebase);
   return status;
 }
 
@@ -1084,7 +1084,7 @@ Curl_ldap_get_values_len_a(void * ld, LDAPMessage * entry, const char * attr)
     }
 
   result = ldap_get_values_len(ld, entry, cp);
-    free(cp);
+  free(cp);
 
   /* Result data are binary in nature, so they haven't been
      converted to EBCDIC. Therefore do not convert. */

@@ -142,7 +142,6 @@ find_oldest_idle_connection_in_bundle(struct SessionHandle *data,
                                       struct connectbundle *bundle);
 static void conn_free(struct connectdata *conn);
 static void signalPipeClose(struct curl_llist *pipeline, bool pipe_broke);
-static CURLcode do_init(struct connectdata *conn);
 static CURLcode parse_url_login(struct SessionHandle *data,
                                 struct connectdata *conn,
                                 char **userptr, char **passwdptr,
@@ -2235,7 +2234,8 @@ CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option,
 
   case CURLOPT_SSL_OPTIONS:
     arg = va_arg(param, long);
-    data->set.ssl_enable_beast = arg&CURLSSLOPT_ALLOW_BEAST?TRUE:FALSE;
+    data->set.ssl_enable_beast = !!(arg & CURLSSLOPT_ALLOW_BEAST);
+    data->set.ssl_no_revoke = !!(arg & CURLSSLOPT_NO_REVOKE);
     break;
 
 #endif
@@ -2825,16 +2825,16 @@ static bool IsPipeliningPossible(const struct SessionHandle *handle,
 
     if(Curl_pipeline_wanted(handle->multi, CURLPIPE_HTTP1) &&
        (handle->set.httpversion != CURL_HTTP_VERSION_1_0) &&
-     (handle->set.httpreq == HTTPREQ_GET ||
+       (handle->set.httpreq == HTTPREQ_GET ||
         handle->set.httpreq == HTTPREQ_HEAD))
       /* didn't ask for HTTP/1.0 and a GET or HEAD */
-    return TRUE;
+      return TRUE;
 
     if(Curl_pipeline_wanted(handle->multi, CURLPIPE_MULTIPLEX) &&
        (handle->set.httpversion == CURL_HTTP_VERSION_2_0))
       /* allows HTTP/2 */
       return TRUE;
-}
+  }
   return FALSE;
 }
 
@@ -3145,8 +3145,8 @@ ConnectionExists(struct SessionHandle *data,
         }
 
         infof(data, "Server doesn't support multi-use (yet)\n");
-      canPipeline = FALSE;
-    }
+        canPipeline = FALSE;
+      }
     }
 
     curr = bundle->conn_list->head;
@@ -3173,17 +3173,17 @@ ConnectionExists(struct SessionHandle *data,
 
         if(!check->bits.multiplex) {
           /* If not multiplexing, make sure the pipe has only GET requests */
-        struct SessionHandle* sh = gethandleathead(check->send_pipe);
-        struct SessionHandle* rh = gethandleathead(check->recv_pipe);
-        if(sh) {
-          if(!IsPipeliningPossible(sh, check))
-            continue;
+          struct SessionHandle* sh = gethandleathead(check->send_pipe);
+          struct SessionHandle* rh = gethandleathead(check->recv_pipe);
+          if(sh) {
+            if(!IsPipeliningPossible(sh, check))
+              continue;
+          }
+          else if(rh) {
+            if(!IsPipeliningPossible(rh, check))
+              continue;
+          }
         }
-        else if(rh) {
-          if(!IsPipeliningPossible(rh, check))
-            continue;
-        }
-      }
       }
       else {
         if(pipeLen > 0) {
@@ -3384,15 +3384,15 @@ ConnectionExists(struct SessionHandle *data,
           }
 
           if(max_pipe_len) {
-          if(pipeLen < best_pipe_len) {
-            /* This connection has a shorter pipe so far. We'll pick this
-               and continue searching */
-            chosen = check;
-            best_pipe_len = pipeLen;
-            continue;
+            if(pipeLen < best_pipe_len) {
+              /* This connection has a shorter pipe so far. We'll pick this
+                 and continue searching */
+              chosen = check;
+              best_pipe_len = pipeLen;
+              continue;
+            }
           }
-        }
-        else {
+          else {
             /* When not pipelining (== multiplexed), we have a match here! */
             chosen = check;
             infof(data, "Multiplexed connection found!\n");
@@ -3824,7 +3824,7 @@ static struct connectdata *allocate_conn(struct SessionHandle *data)
 #endif
 
   if(Curl_pipeline_wanted(data->multi, CURLPIPE_HTTP1) &&
-      !conn->master_buffer) {
+     !conn->master_buffer) {
     /* Allocate master_buffer to be used for HTTP/1 pipelining */
     conn->master_buffer = calloc(BUFSIZE, sizeof (char));
     if(!conn->master_buffer)
@@ -5651,7 +5651,7 @@ static CURLcode create_conn(struct SessionHandle *data,
     }
 
     /* since we skip do_init() */
-    do_init(conn);
+    Curl_init_do(data, conn);
 
     goto out;
   }
@@ -5751,7 +5751,7 @@ static CURLcode create_conn(struct SessionHandle *data,
          "soon", and we wait for that */
       connections_available = FALSE;
     else
-    bundle = Curl_conncache_find_bundle(conn, data->state.conn_cache);
+      bundle = Curl_conncache_find_bundle(conn, data->state.conn_cache);
 
     if(max_host_connections > 0 && bundle &&
        (bundle->num_connections >= max_host_connections)) {
@@ -5830,7 +5830,7 @@ static CURLcode create_conn(struct SessionHandle *data,
   conn->inuse = TRUE;
 
   /* Setup and init stuff before DO starts, in preparing for the transfer. */
-  do_init(conn);
+  Curl_init_do(data, conn);
 
   /*
    * Setup whatever necessary for a resumed transfer
@@ -6112,20 +6112,24 @@ CURLcode Curl_done(struct connectdata **connp,
 }
 
 /*
- * do_init() inits the readwrite session. This is inited each time (in the DO
- * function before the protocol-specific DO functions are invoked) for a
- * transfer, sometimes multiple times on the same SessionHandle. Make sure
+ * Curl_init_do() inits the readwrite session. This is inited each time (in
+ * the DO function before the protocol-specific DO functions are invoked) for
+ * a transfer, sometimes multiple times on the same SessionHandle. Make sure
  * nothing in here depends on stuff that are setup dynamically for the
  * transfer.
+ *
+ * Allow this function to get called with 'conn' set to NULL.
  */
 
-static CURLcode do_init(struct connectdata *conn)
+CURLcode Curl_init_do(struct SessionHandle *data, struct connectdata *conn)
 {
-  struct SessionHandle *data = conn->data;
   struct SingleRequest *k = &data->req;
 
+  if(conn)
+    conn->bits.do_more = FALSE; /* by default there's no curl_do_more() to
+                                 * use */
+
   data->state.done = FALSE; /* Curl_done() is not called yet */
-  conn->bits.do_more = FALSE; /* by default there's no curl_do_more() to use */
   data->state.expect100header = FALSE;
 
   if(data->set.opt_no_body)

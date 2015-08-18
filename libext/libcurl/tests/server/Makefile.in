@@ -612,7 +612,7 @@ fake_ntlm_LDADD = @CURL_NETWORK_AND_TIME_LIBS@
 fake_ntlm_CFLAGS = $(AM_CFLAGS)
 
 # Makefile.inc provides neat definitions
-EXTRA_DIST = base64.pl Makefile.inc
+EXTRA_DIST = base64.pl Makefile.inc CMakeLists.txt
 all: all-am
 
 .SUFFIXES:

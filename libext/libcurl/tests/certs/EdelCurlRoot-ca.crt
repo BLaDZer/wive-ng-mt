@@ -2,7 +2,7 @@ Certificate:
     Data:
         Version: 3 (0x2)
         Serial Number: 14269504311616 (0xcfa60bc5140)
-        Signature Algorithm: sha1WithRSAEncryption
+    Signature Algorithm: sha1WithRSAEncryption
         Issuer:
             countryName               = NN
             organizationName          = Edel Curl Arctic Illudium Research Cloud

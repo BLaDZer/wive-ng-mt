@@ -23,7 +23,6 @@ lies!
 
 <datacheck>
 HTTP/1.1 101 Switching!
-
 </datacheck>
 
 # listen to the upgrade request!

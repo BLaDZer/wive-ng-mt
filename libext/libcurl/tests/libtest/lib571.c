@@ -195,7 +195,7 @@ int test(char *URL)
   }
 
 test_cleanup:
-    free(stream_uri);
+  free(stream_uri);
 
   if(protofile)
     fclose(protofile);

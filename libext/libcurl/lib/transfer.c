@@ -756,7 +756,6 @@ static CURLcode readwrite_data(struct SessionHandle *data,
               result = Curl_unencode_gzip_write(conn, k, nread);
             break;
 
-          case COMPRESS:
           default:
             failf (data, "Unrecognized content encoding type. "
                    "libcurl understands `identity', `deflate' and `gzip' "
@@ -1314,6 +1313,11 @@ CURLcode Curl_pretransfer(struct SessionHandle *data)
   data->state.authproxy.want = data->set.proxyauth;
   Curl_safefree(data->info.wouldredirect);
   data->info.wouldredirect = NULL;
+
+  if(data->set.httpreq == HTTPREQ_PUT)
+    data->state.infilesize = data->set.filesize;
+  else
+    data->state.infilesize = data->set.postfieldsize;
 
   /* If there is a list of cookie files to read, do it now! */
   if(data->change.cookielist)

@@ -87,6 +87,10 @@ struct Curl_multi {
   curl_socket_callback socket_cb;
   void *socket_userp;
 
+  /* callback function and user data pointer for server push */
+  curl_push_callback push_cb;
+  void *push_userp;
+
   /* Hostname cache */
   struct curl_hash hostcache;
 
@@ -146,4 +150,3 @@ struct Curl_multi {
 };
 
 #endif /* HEADER_CURL_MULTIHANDLE_H */
-

@@ -481,12 +481,12 @@ static CURLcode choose_mech(struct connectdata *conn)
   const struct Curl_sec_client_mech *mech = &Curl_krb5_client_mech;
 
   tmp_allocation = realloc(conn->app_data, mech->size);
-    if(tmp_allocation == NULL) {
+  if(tmp_allocation == NULL) {
     failf(data, "Failed realloc of size %u", mech->size);
-      mech = NULL;
-      return CURLE_OUT_OF_MEMORY;
-    }
-    conn->app_data = tmp_allocation;
+    mech = NULL;
+    return CURLE_OUT_OF_MEMORY;
+  }
+  conn->app_data = tmp_allocation;
 
   if(mech->init) {
     ret = mech->init(conn->app_data);
@@ -494,36 +494,36 @@ static CURLcode choose_mech(struct connectdata *conn)
       infof(data, "Failed initialization for %s. Skipping it.\n",
             mech->name);
       return CURLE_FAILED_INIT;
-      }
     }
+  }
 
   infof(data, "Trying mechanism %s...\n", mech->name);
   ret = ftp_send_command(conn, "AUTH %s", mech->name);
-    if(ret < 0)
-      /* FIXME: This error is too generic but it is OK for now. */
-      return CURLE_COULDNT_CONNECT;
+  if(ret < 0)
+    /* FIXME: This error is too generic but it is OK for now. */
+    return CURLE_COULDNT_CONNECT;
 
-    if(ret/100 != 3) {
-      switch(ret) {
-      case 504:
-        infof(data, "Mechanism %s is not supported by the server (server "
+  if(ret/100 != 3) {
+    switch(ret) {
+    case 504:
+      infof(data, "Mechanism %s is not supported by the server (server "
             "returned ftp code: 504).\n", mech->name);
-        break;
-      case 534:
-        infof(data, "Mechanism %s was rejected by the server (server returned "
+      break;
+    case 534:
+      infof(data, "Mechanism %s was rejected by the server (server returned "
             "ftp code: 534).\n", mech->name);
-        break;
-      default:
-        if(ret/100 == 5) {
-          infof(data, "server does not support the security extensions\n");
-          return CURLE_USE_SSL_FAILED;
-        }
-        break;
+      break;
+    default:
+      if(ret/100 == 5) {
+        infof(data, "server does not support the security extensions\n");
+        return CURLE_USE_SSL_FAILED;
       }
-    return CURLE_LOGIN_DENIED;
+      break;
     }
+    return CURLE_LOGIN_DENIED;
+  }
 
-    /* Authenticate */
+  /* Authenticate */
   ret = mech->auth(conn->app_data, conn);
 
   if(ret != AUTH_CONTINUE) {

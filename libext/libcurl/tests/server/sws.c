@@ -442,7 +442,7 @@ static int parse_servercmd(struct httprequest *req)
       else
         break;
     }
-      free(orgcmd);
+    free(orgcmd);
   }
 
   return 0; /* OK! */
@@ -1127,7 +1127,7 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
     }
 
     if(got_exit_signal) {
-        free(ptr);
+      free(ptr);
       return -1;
     }
 
@@ -1137,7 +1137,7 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
       error = errno;
       logmsg("fopen() failed with error: %d %s", error, strerror(error));
       logmsg("  [4] Error opening file: %s", filename);
-        free(ptr);
+      free(ptr);
       return 0;
     }
     else {
@@ -1146,15 +1146,15 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
       fclose(stream);
       if(error) {
         logmsg("getpart() failed with error: %d", error);
-          free(ptr);
+        free(ptr);
         return 0;
       }
     }
   }
 
   if(got_exit_signal) {
-      free(ptr);
-      free(cmd);
+    free(ptr);
+    free(cmd);
     return -1;
   }
 
@@ -1177,8 +1177,8 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
     error = errno;
     logmsg("fopen() failed with error: %d %s", error, strerror(error));
     logmsg("  [5] Error opening file: %s", responsedump);
-      free(ptr);
-      free(cmd);
+    free(ptr);
+    free(cmd);
     return -1;
   }
 
@@ -1222,22 +1222,22 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
            responsedump, error, strerror(error));
 
   if(got_exit_signal) {
-      free(ptr);
-      free(cmd);
+    free(ptr);
+    free(cmd);
     return -1;
   }
 
   if(sendfailure) {
     logmsg("Sending response failed. Only (%zu bytes) of (%zu bytes) were sent",
            responsesize-count, responsesize);
-      free(ptr);
-      free(cmd);
+    free(ptr);
+    free(cmd);
     return -1;
   }
 
   logmsg("Response sent (%zu bytes) and written to %s",
          responsesize, responsedump);
-    free(ptr);
+  free(ptr);
 
   if(cmdsize > 0 ) {
     char command[32];
@@ -1273,7 +1273,7 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
         ptr = NULL;
     } while(ptr && *ptr);
   }
-    free(cmd);
+  free(cmd);
   req->open = use_gopher?FALSE:persistant;
 
   prevtestno = req->testno;

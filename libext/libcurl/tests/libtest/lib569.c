@@ -115,7 +115,7 @@ test_cleanup:
   if(idfile)
     fclose(idfile);
 
-    free(stream_uri);
+  free(stream_uri);
   curl_easy_cleanup(curl);
   curl_global_cleanup();
 

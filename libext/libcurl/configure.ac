@@ -47,6 +47,7 @@ CURL_CHECK_OPTION_WERROR
 CURL_CHECK_OPTION_CURLDEBUG
 CURL_CHECK_OPTION_SYMBOL_HIDING
 CURL_CHECK_OPTION_ARES
+CURL_CHECK_OPTION_RT
 
 XC_CHECK_PATH_SEPARATOR
 
@@ -1509,6 +1510,46 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
 
 
   if test X"$HAVECRYPTO" = X"yes"; then
+     AC_MSG_CHECKING([OpenSSL linking without -ldl])
+     saved_libs=$LIBS
+     AC_TRY_LINK(
+        [
+          #include <openssl/evp.h>
+        ],
+        [
+          SSLeay_add_all_algorithms();
+        ],
+        [
+          AC_MSG_RESULT(yes)
+          LIBS="$saved_libs"
+        ],
+        [
+          AC_MSG_RESULT(no)
+          AC_MSG_CHECKING([OpenSSL linking with -ldl])
+          LIBS="-ldl $LIBS"
+          AC_TRY_LINK(
+          [
+            #include <openssl/evp.h>
+          ],
+          [
+            SSLeay_add_all_algorithms();
+          ],
+          [
+            AC_MSG_RESULT(yes)
+            LIBS="$saved_libs -ldl"
+          ],
+          [
+            AC_MSG_RESULT(no)
+            LIBS="$saved_libs"
+          ]
+          )
+
+        ]
+     )
+
+  fi
+
+  if test X"$HAVECRYPTO" = X"yes"; then
     dnl This is only reasonable to do if crypto actually is there: check for
     dnl SSL libs NOTE: it is important to do this AFTER the crypto lib
 
@@ -2134,56 +2175,56 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
     fi
 
     if test -z "$addlib"; then
-        # Without pkg-config, we'll kludge in some defaults
+      # Without pkg-config, we'll kludge in some defaults
       AC_MSG_WARN([Using hard-wired libraries and compilation flags for NSS.])
       addld="-L$OPT_NSS/lib"
       addlib="-lssl3 -lsmime3 -lnss3 -lplds4 -lplc4 -lnspr4"
-        addcflags="-I$OPT_NSS/include"
-        version="unknown"
-        nssprefix=$OPT_NSS
+      addcflags="-I$OPT_NSS/include"
+      version="unknown"
+      nssprefix=$OPT_NSS
     fi
 
     CLEANLDFLAGS="$LDFLAGS"
-      CLEANLIBS="$LIBS"
-      CLEANCPPFLAGS="$CPPFLAGS"
+    CLEANLIBS="$LIBS"
+    CLEANCPPFLAGS="$CPPFLAGS"
 
     LDFLAGS="$addld $LDFLAGS"
-      LIBS="$addlib $LIBS"
-      if test "$addcflags" != "-I/usr/include"; then
-         CPPFLAGS="$CPPFLAGS $addcflags"
-      fi
+    LIBS="$addlib $LIBS"
+    if test "$addcflags" != "-I/usr/include"; then
+       CPPFLAGS="$CPPFLAGS $addcflags"
+    fi
 
-      dnl The function SSL_VersionRangeSet() is needed to enable TLS > 1.0
-      AC_CHECK_LIB(nss3, SSL_VersionRangeSet,
-       [
-       AC_DEFINE(USE_NSS, 1, [if NSS is enabled])
-       AC_SUBST(USE_NSS, [1])
-       USE_NSS="yes"
-       NSS_ENABLED=1
-       curl_ssl_msg="enabled (NSS)"
-       ],
-       [
+    dnl The function SSL_VersionRangeSet() is needed to enable TLS > 1.0
+    AC_CHECK_LIB(nss3, SSL_VersionRangeSet,
+     [
+     AC_DEFINE(USE_NSS, 1, [if NSS is enabled])
+     AC_SUBST(USE_NSS, [1])
+     USE_NSS="yes"
+     NSS_ENABLED=1
+     curl_ssl_msg="enabled (NSS)"
+     ],
+     [
        LDFLAGS="$CLEANLDFLAGS"
-         LIBS="$CLEANLIBS"
-         CPPFLAGS="$CLEANCPPFLAGS"
-       ])
+       LIBS="$CLEANLIBS"
+       CPPFLAGS="$CLEANCPPFLAGS"
+     ])
 
-      if test "x$USE_NSS" = "xyes"; then
-        AC_MSG_NOTICE([detected NSS version $version])
+    if test "x$USE_NSS" = "xyes"; then
+      AC_MSG_NOTICE([detected NSS version $version])
 
-        dnl needed when linking the curl tool without USE_EXPLICIT_LIB_DEPS
-        NSS_LIBS=$addlib
-        AC_SUBST([NSS_LIBS])
+      dnl needed when linking the curl tool without USE_EXPLICIT_LIB_DEPS
+      NSS_LIBS=$addlib
+      AC_SUBST([NSS_LIBS])
 
-        dnl when shared libs were found in a path that the run-time
-        dnl linker doesn't search through, we need to add it to
-        dnl LD_LIBRARY_PATH to prevent further configure tests to fail
-        dnl due to this
-        if test "x$cross_compiling" != "xyes"; then
-          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$nssprefix/lib$libsuff"
-          export LD_LIBRARY_PATH
-          AC_MSG_NOTICE([Added $nssprefix/lib$libsuff to LD_LIBRARY_PATH])
-        fi
+      dnl when shared libs were found in a path that the run-time
+      dnl linker doesn't search through, we need to add it to
+      dnl LD_LIBRARY_PATH to prevent further configure tests to fail
+      dnl due to this
+      if test "x$cross_compiling" != "xyes"; then
+        LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$nssprefix/lib$libsuff"
+        export LD_LIBRARY_PATH
+        AC_MSG_NOTICE([Added $nssprefix/lib$libsuff to LD_LIBRARY_PATH])
+      fi
 
     fi dnl NSS found
 
@@ -3217,7 +3258,7 @@ if test "x$want_thres" = xyes && test "x$want_ares" = xyes; then
 [Options --enable-threaded-resolver and --enable-ares are mutually exclusive])
 fi
 
-if test "$want_thres" = "yes"; then
+if test "$want_thres" = "yes" && test "$dontwant_rt" = "no"; then
   AC_CHECK_HEADER(pthread.h,
     [ AC_DEFINE(HAVE_PTHREAD_H, 1, [if you have <pthread.h>])
       save_CFLAGS="$CFLAGS"

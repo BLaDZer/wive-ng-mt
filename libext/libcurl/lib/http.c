@@ -86,7 +86,6 @@
  * Forward declarations.
  */
 
-static CURLcode http_disconnect(struct connectdata *conn, bool dead);
 static int http_getsock_do(struct connectdata *conn,
                            curl_socket_t *socks,
                            int numsocks);
@@ -117,7 +116,7 @@ const struct Curl_handler Curl_handler_http = {
   http_getsock_do,                      /* doing_getsock */
   ZERO_NULL,                            /* domore_getsock */
   ZERO_NULL,                            /* perform_getsock */
-  http_disconnect,                      /* disconnect */
+  ZERO_NULL,                            /* disconnect */
   ZERO_NULL,                            /* readwrite */
   PORT_HTTP,                            /* defport */
   CURLPROTO_HTTP,                       /* protocol */
@@ -141,7 +140,7 @@ const struct Curl_handler Curl_handler_https = {
   http_getsock_do,                      /* doing_getsock */
   ZERO_NULL,                            /* domore_getsock */
   ZERO_NULL,                            /* perform_getsock */
-  http_disconnect,                      /* disconnect */
+  ZERO_NULL,                            /* disconnect */
   ZERO_NULL,                            /* readwrite */
   PORT_HTTPS,                           /* defport */
   CURLPROTO_HTTPS,                      /* protocol */
@@ -164,22 +163,8 @@ CURLcode Curl_http_setup_conn(struct connectdata *conn)
   conn->data->req.protop = http;
 
   Curl_http2_setup_conn(conn);
+  Curl_http2_setup_req(conn->data);
 
-  return CURLE_OK;
-}
-
-static CURLcode http_disconnect(struct connectdata *conn, bool dead_connection)
-{
-#ifdef USE_NGHTTP2
-  struct HTTP *http = conn->data->req.protop;
-  if(http) {
-    Curl_add_buffer_free(http->header_recvbuf);
-    http->header_recvbuf = NULL; /* clear the pointer */
-  }
-#else
-  (void)conn;
-#endif
-  (void)dead_connection;
   return CURLE_OK;
 }
 
@@ -1458,7 +1443,10 @@ CURLcode Curl_http_done(struct connectdata *conn,
                         CURLcode status, bool premature)
 {
   struct SessionHandle *data = conn->data;
-  struct HTTP *http =data->req.protop;
+  struct HTTP *http = data->req.protop;
+#ifdef USE_NGHTTP2
+  struct http_conn *httpc = &conn->proto.httpc;
+#endif
 
   Curl_unencode_cleanup(conn);
 
@@ -1491,6 +1479,15 @@ CURLcode Curl_http_done(struct connectdata *conn,
     DEBUGF(infof(data, "free header_recvbuf!!\n"));
     Curl_add_buffer_free(http->header_recvbuf);
     http->header_recvbuf = NULL; /* clear the pointer */
+    for(; http->push_headers_used > 0; --http->push_headers_used) {
+      free(http->push_headers[http->push_headers_used - 1]);
+    }
+    free(http->push_headers);
+    http->push_headers = NULL;
+  }
+  if(http->stream_id) {
+    nghttp2_session_set_stream_user_data(httpc->h2, http->stream_id, 0);
+    http->stream_id = 0;
   }
 #endif
 
@@ -2313,7 +2310,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       );
 
   /* clear userpwd to avoid re-using credentials from re-used connections */
-    Curl_safefree(conn->allocptr.userpwd);
+  Curl_safefree(conn->allocptr.userpwd);
 
   /*
    * Free proxyuserpwd for Negotiate/NTLM. Cannot reuse as it is associated
@@ -3466,15 +3463,15 @@ CURLcode Curl_http_readwrite_headers(struct SessionHandle *data,
     else if(checkprefix("Server:", k->p)) {
       if(conn->httpversion < 20) {
         /* only do this for non-h2 servers */
-      char *server_name = Curl_copy_header_value(k->p);
+        char *server_name = Curl_copy_header_value(k->p);
 
-      /* Turn off pipelining if the server version is blacklisted */
+        /* Turn off pipelining if the server version is blacklisted  */
         if(conn->bundle && (conn->bundle->multiuse == BUNDLE_PIPELINING)) {
-        if(Curl_pipeline_server_blacklisted(data, server_name))
+          if(Curl_pipeline_server_blacklisted(data, server_name))
             conn->bundle->multiuse = BUNDLE_NO_MULTIUSE;
+        }
+        free(server_name);
       }
-      free(server_name);
-    }
     }
     else if((conn->httpversion == 10) &&
             conn->bits.httpproxy &&
@@ -3571,14 +3568,6 @@ CURLcode Curl_http_readwrite_headers(struct SessionHandle *data,
           k->auto_decoding = GZIP;
           start += 6;
         }
-        else if(checkprefix("compress", start)) {
-          k->auto_decoding = COMPRESS;
-          start += 8;
-        }
-        else if(checkprefix("x-compress", start)) {
-          k->auto_decoding = COMPRESS;
-          start += 10;
-        }
         else
           /* unknown! */
           break;
@@ -3611,9 +3600,6 @@ CURLcode Curl_http_readwrite_headers(struct SessionHandle *data,
       else if(checkprefix("gzip", start)
               || checkprefix("x-gzip", start))
         k->auto_decoding = GZIP;
-      else if(checkprefix("compress", start)
-              || checkprefix("x-compress", start))
-        k->auto_decoding = COMPRESS;
     }
     else if(checkprefix("Content-Range:", k->p)) {
       /* Content-Range: bytes [num]-

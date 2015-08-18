@@ -4734,7 +4734,7 @@ while(@ARGV) {
     }
     elsif ($ARGV[0] eq "-c") {
         # use this path to curl instead of default
-        $DBGCURL=$CURL=$ARGV[1];
+        $DBGCURL=$CURL="\"$ARGV[1]\"";
         shift @ARGV;
     }
     elsif ($ARGV[0] eq "-vc") {
@@ -5006,17 +5006,17 @@ sub disabledtests {
     my ($file) = @_;
 
     if(open(D, "<$file")) {
-    while(<D>) {
-        if(/^ *\#/) {
-            # allow comments
-            next;
+        while(<D>) {
+            if(/^ *\#/) {
+                # allow comments
+                next;
+            }
+            if($_ =~ /(\d+)/) {
+                $disabled{$1}=$1; # disable this test number
+            }
         }
-        if($_ =~ /(\d+)/) {
-            $disabled{$1}=$1; # disable this test number
-        }
+        close(D);
     }
-    close(D);
-}
 }
 
 # globally disabled tests

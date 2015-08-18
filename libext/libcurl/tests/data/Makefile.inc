@@ -153,7 +153,7 @@ test1516 \
 \
 test1520 \
 \
-test1525 test1526 test1527 test1528 test1529 test1530 \
+test1525 test1526 test1527 test1528 test1529 test1530 test1531 \
 \
 test1600 test1601 test1602 \
 \
@@ -166,4 +166,4 @@ test2008 test2009 test2010 test2011 test2012 test2013 test2014 test2015 \
 test2016 test2017 test2018 test2019 test2020 test2021 test2022 test2023 \
 test2024 test2025 test2026 test2027 test2028 test2029 test2030 test2031 \
 test2032 test2033 test2034 test2035 test2036 test2037 test2038 test2039 \
-test2040
+test2040 test2041 test2042 test2043

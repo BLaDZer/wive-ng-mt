@@ -85,12 +85,12 @@ int test(char *URL)
 
     if(!running) {
       if(handles_added >= NUM_HANDLES)
-      break; /* done */
+        break; /* done */
 
       /* Add the rest of the handles now that the first handle has completed
          its request. */
-    while(handles_added < NUM_HANDLES)
-      multi_add_handle(m, curl[handles_added++]);
+      while(handles_added < NUM_HANDLES)
+        multi_add_handle(m, curl[handles_added++]);
     }
 
     FD_ZERO(&rd);
