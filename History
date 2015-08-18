@@ -1193,34 +1193,35 @@
 92) kernel: net: call rcu_read_lock early in process_backlog.<br>
 93) kernel: net: clone skb before setting peeked flag.<br>
 94) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-95) kernel: net: fix skb_set_peeked use-after-free bug.<br>
-96) kernel: net: fix race condition in store_rps_map.<br>
-97) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-98) kernel: net: arp: fix a regression in arp_solicit().<br>
-99) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-100) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-101) kernel: net: arp: filter NOARP neighbours for SIOCGARP.<br>
-102) kernel: net: tcp: don't abort splice() after small transfers.<br>
-103) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-104) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-105) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-106) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-107) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
-108) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
-109) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-110) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
-111) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-112) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-113) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
-114) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
-115) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
-116) kernel: net: ipv6: fix MLD Query message check.<br>
-117) kernel: net: netfilter: ip[6]t_REJECT: fix wrong transport header pointer in TCP reset.<br>
-118) kernel: net: netfilter: ip6t_REJECT: skip checksum verification for outgoing ipv6 packets.<br>
-119) kenrel: net: netfilter: bridge: don't leak skb in error paths.<br>
-120) kernel: net: packet: read num_members once in packet_rcv_fanout().<br>
-121) kernel: net: packet: avoid out of bounds read in round robin fanout.<br>
-122) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
+95) kernel: net: ppp: fix device unregistration upon netns deletion.<br>
+96) kernel: net: fix skb_set_peeked use-after-free bug.<br>
+97) kernel: net: fix race condition in store_rps_map.<br>
+98) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+99) kernel: net: arp: fix a regression in arp_solicit().<br>
+100) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+101) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+102) kernel: net: arp: filter NOARP neighbours for SIOCGARP.<br>
+103) kernel: net: tcp: don't abort splice() after small transfers.<br>
+104) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+105) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+106) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+107) kernel: net: tcp: tso: allow deferring under reordering state.<br>
+108) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
+109) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
+110) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+111) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
+112) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+113) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+114) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+115) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
+116) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
+117) kernel: net: ipv6: fix MLD Query message check.<br>
+118) kernel: net: netfilter: ip[6]t_REJECT: fix wrong transport header pointer in TCP reset.<br>
+119) kernel: net: netfilter: ip6t_REJECT: skip checksum verification for outgoing ipv6 packets.<br>
+120) kenrel: net: netfilter: bridge: don't leak skb in error paths.<br>
+121) kernel: net: packet: read num_members once in packet_rcv_fanout().<br>
+122) kernel: net: packet: avoid out of bounds read in round robin fanout.<br>
+123) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
 <b>TODO:</b><br>
