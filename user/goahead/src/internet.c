@@ -721,8 +721,6 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 		if (strcmp(vpn_type, "6") == 0)
 			fetch = lanauth_args;
 #endif
-		printf("goahead: vpn_enabled value : %s\n", vpn_enabled);
-
 		setupParameters(wp, fetch, 0);
 
 		// Check if routing table is enabled
