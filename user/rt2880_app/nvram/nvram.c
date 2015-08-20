@@ -571,7 +571,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(DFS_R66);
 	FPRINT_STR(blockch);
 #endif
-#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT7610_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
+#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
 	FPRINT_NUM(GreenAP);
 #endif
 #if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
