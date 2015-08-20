@@ -229,6 +229,7 @@ fulldump
 /user/ntfs-3g/Makefile
 /user/ntfs-3g/configure
 /user/ntfs-3g/src/Makefile
+/user/ntfs-3g/src/Makefile.in
 /user/ntfs-3g/ntfsprogs/Makefile
 /user/ntfs-3g/libntfs-3g/Makefile
 /user/ntfs-3g/libfuse-lite/Makefile
