@@ -28,7 +28,6 @@ stamp-h1
 zconf.hash.c
 lkc_defs.h
 libtool
-aclocal.m4
 autom4te.cache
 autom4te.cache/*
 config.h.in~
