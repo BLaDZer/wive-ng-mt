@@ -22,8 +22,9 @@
 *.moc
 .sgbuilt_user
 .libs
-lex.*.c
 .copts_*
+lex.*.c
+stamp-h1
 zconf.hash.c
 lkc_defs.h
 libtool
@@ -83,10 +84,8 @@ fulldump
 /libext/libiconv/po/Makefile
 /libext/libiconv/po/Makefile.in
 /libext/libcurl/curl-config
-/libext/libcurl/lib/curl_config.h.in~
 /libext/libcurl/Makefile.in
 /libext/libcurl/configure
-/libext/libcurl/aclocal.m4
 /libext/libcurl/docs/examples/Makefile
 /libext/libcurl/docs/libcurl/Makefile
 /libext/libcurl/docs/libcurl/libcurl-symbols.3
@@ -97,7 +96,6 @@ fulldump
 /libext/libcurl/include/curl/curlbuild.h
 /libext/libcurl/libcurl.pc
 /libext/libcurl/libext/Makefile
-/libext/libcurl/libext/stamp-h1
 /libext/libcurl/libtool
 /libext/libcurl/Makefile
 /libext/libcurl/*/Makefile
@@ -144,8 +142,6 @@ fulldump
 /libext/libcurl/packages/Win32/cygwin/Makefile
 /libext/libcurl/packages/vms/Makefile
 /libext/libcurl/src/Makefile
-/libext/libxml2/autom4te.cache
-/libext/libxml2t/autom4te.cache/*
 /libext/libxml2/configure
 /libext/libxml2/Makefile
 /libext/libxml2/doc/Makefile
@@ -156,13 +152,9 @@ fulldump
 /libext/libxml2/python/tests/Makefile
 /libext/libxml2/xstc/Makefile
 /libext/libneon/config.h
-/libext/libneon/config.h.in~
 /libext/libneon/configure
 /libext/libneon/Makefile
-/libext/libevent/autom4te.cache
-/libext/libevent/autom4te.cache/*
 /libext/libevent/config.h
-/libext/libevent/config.h.in~
 /libext/libevent/configure
 /libext/libevent/include/event2/event-config.h
 /libext/libevent/include/Makefile
@@ -175,7 +167,6 @@ fulldump
 /libext/libevent/Makefile.in
 /libext/libevent/*/Makefile.in
 /libext/libevent/sample/Makefile
-/libext/libevent/stamp-h1
 /libext/libevent/test/Makefile
 /libext/libiconv/tests/Makefile
 /libext/libiconv/srclib/Makefile
@@ -184,7 +175,6 @@ fulldump
 /libext/libiconv/libext/Makefile
 /libext/libiconv/config.h
 /libext/libiconv/configure
-/libext/libiconv/stamp-h1
 /libext/libiconv/Makefile
 /libext/libiconv/libtool
 /libext/libiconv/preload/libtool
@@ -195,7 +185,6 @@ fulldump
 /libext/libiconv/libcharset/include/localcharset.h.build.in
 /libext/libupnp/configure
 /libext/libupnp/Makefile
-/libext/libupnp/aclocal.m4
 /libext/libupnp/Makefile.in
 /libext/libupnp/docs/dist/Makefile
 /libext/libupnp/docs/dist/Makefile.in
@@ -226,8 +215,6 @@ fulldump
 /libext/libpcap/Makefile
 /libext/libpcap/Mkaefile.in
 /libext/libpcap/configure
-/libext/libpcap/autom4te.cache
-/libext/libpcap/autom4te.cache/*
 /libext/libnl/configure
 /libext/libnl/lib/libnl.a
 
@@ -238,15 +225,8 @@ fulldump
 /user/busybox/docs/busybox.net/BusyBox.html
 /user/busybox/include/bbconfigopts_bz2.h
 /user/busybox/include/NUM_APPLETS.h
-/user/chillispot/chillispot-1.1.0/stamp-h1
 /user/dropbear/Makefile
-/user/dropbear/config.status
 /user/dropbear/configure
-/user/ethtool/autom4te.cache
-/user/ethtool/autom4te.cache/*
-/user/ntfs-3g/stamp-h1
-/user/ntfs-3g/autom4te.cache
-/user/ntfs-3g/autom4te.cache/*
 /user/ntfs-3g/Makefile
 /user/ntfs-3g/configure
 /user/ntfs-3g/src/Makefile
@@ -268,19 +248,13 @@ fulldump
 /user/ppp/pppd/plugins/radius/Makefile
 /user/ppp/pppd/plugins/rp-pppoe/Makefile
 /user/ppp/pppstats/Makefile
-/user/radvd/aclocal.m4
-/user/radvd/autom4te.cache
-/user/radvd/autom4te.cache/*
 /user/radvd/config.h
-/user/radvd/config.status
 /user/radvd/configure
 /user/radvd/device.c
 /user/radvd/Makefile.in
 /user/radvd/scanner.c
-/user/radvd/stamp-h1
 /user/radvd/Makefile
 /user/radvd/redhat/radvd.spec
-/user/davfs/autom4te.cache/*
 /user/davfs/Makefile
 /user/davfs/Makefile.in
 /user/davfs/configure
@@ -300,7 +274,6 @@ fulldump
 /user/davfs/config/config.sub
 /user/davfs/config/config.guess
 /user/davfs/config/missing
-/user/transmission/autom4te.cache/*
 /user/transmission/libtool
 /user/transmission/web/Makefile
 /user/transmission/web/images/Makefile
@@ -319,7 +292,6 @@ fulldump
 /user/transmission/Makefile
 /user/transmission/Makefile.in
 /user/transmission/configure
-/user/transmission/config.status
 /user/quagga/doc/Makefile
 /user/quagga/doc/Makefile.in
 /user/quagga/doc/.am*
@@ -331,10 +303,6 @@ fulldump
 /user/quagga/tests/test-commands-defun.c
 /user/quagga/tests/bgpd.tests/Makefile
 /user/quagga/tests/libzebra.tests/Makefile
-/user/quagga/autom4te.cache
-/user/quagga/autom4te.cache/*
-/user/quagga/config.h.in~
-/user/quagga/stamp-h1
 /user/quagga/configure
 /user/quagga/Makefile
 /user/quagga/Makefile.in
@@ -386,22 +354,18 @@ fulldump
 /user/tcpdump/Makefile
 /user/tcpdump/Mkaefile.in
 /user/tcpdump/configure
-/user/tcpdump/autom4te.cache
-/user/tcpdump/autom4te.cache/*
 /user/miniupnp/config.h
-/user/dhcp6/wide-dhcpv6/autom4te.cache
-/user/dhcp6/wide-dhcpv6/autom4te.cache/*
 /user/dhcp6/wide-dhcpv6/configure
 /user/dhcp6/wide-dhcpv6/Makefile
 /user/udpxy/udpxy.dep
 /user/irqbalance/configure
 /user/irqbalance/Makefile
 /user/irqbalance/Makefile.in
-/user/chillispot/coova-chilli-1.3.0/Makefile.in
-/user/chillispot/coova-chilli-1.3.0/configure
-/user/chillispot/coova-chilli-1.3.0/debian/Makefile
-/user/chillispot/coova-chilli-1.3.0/distro/Makefile
-/user/chillispot/coova-chilli-1.3.0/doc/Makefile
+/user/chillispot/coova-chilli-master/Makefile.in
+/user/chillispot/coova-chilli-master/configure
+/user/chillispot/coova-chilli-master/debian/Makefile
+/user/chillispot/coova-chilli-master/distro/Makefile
+/user/chillispot/coova-chilli-master/doc/Makefile
 
 #
 # exclude enerated files from kernel
@@ -441,7 +405,6 @@ fulldump
 /tools/xz/src/xzdec/Makefile
 /tools/xz/src/xzdec/lzmadec
 /tools/xz/src/xzdec/xzdec
-/tools/xz/stamp-h1
 /tools/xz/tests/Makefile
 /tools/xz/configure
 
