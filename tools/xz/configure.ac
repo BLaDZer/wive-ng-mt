@@ -328,15 +328,47 @@ AM_CONDITIONAL(COND_SMALL, test "x$enable_small" = xyes)
 #############
 
 AC_MSG_CHECKING([if threading support is wanted])
-AC_ARG_ENABLE([threads], AS_HELP_STRING([--disable-threads],
-		[Disable threading support.
-		This makes some things thread-unsafe.]),
+AC_ARG_ENABLE([threads], AS_HELP_STRING([--enable-threads=METHOD],
+		[Supported METHODS are `yes', `no', `posix', `win95', and
+		`vista'. The default is `yes'. Using `no' together with
+		--enable-small makes liblzma thread unsafe.]),
 	[], [enable_threads=yes])
-if test "x$enable_threads" != xyes && test "x$enable_threads" != xno; then
-	AC_MSG_RESULT([])
-	AC_MSG_ERROR([--enable-threads accepts only `yes' or `no'])
+
+if test "x$enable_threads" = xyes; then
+	case $host_os in
+		mingw*)
+			case $host_cpu in
+				i?86)   enable_threads=win95 ;;
+				*)      enable_threads=vista ;;
+			esac
+			;;
+		*)
+			enable_threads=posix
+			;;
+	esac
 fi
-AC_MSG_RESULT([$enable_threads])
+
+case $enable_threads in
+	posix | win95 | vista)
+		AC_MSG_RESULT([yes, $enable_threads])
+		;;
+	no)
+		AC_MSG_RESULT([no])
+		;;
+	*)
+	AC_MSG_RESULT([])
+		AC_MSG_ERROR([--enable-threads only accepts `yes', `no', `posix', `win95', or `vista'])
+		;;
+esac
+
+# The Win95 threading lacks thread-safe one-time initialization function.
+# It's better to disallow it instead of allowing threaded but thread-unsafe
+# build.
+if test "x$enable_small$enable_threads" = xyeswin95; then
+	AC_MSG_ERROR([--enable-threads=win95 and --enable-small cannot be
+		used at the same time])
+fi
+
 # We use the actual result a little later.
 
 
@@ -409,20 +441,52 @@ AC_ARG_ENABLE([doc], [AS_HELP_STRING([--disable-doc],
 AM_CONDITIONAL([COND_DOC], [test x$enable_doc != xno])
 
 
+#####################
+# Symbol versioning #
+#####################
+
+AC_MSG_CHECKING([if library symbol versioning should be used])
+AC_ARG_ENABLE([symbol-versions], [AS_HELP_STRING([--enable-symbol-versions],
+		[Use symbol versioning for liblzma. Enabled by default on
+		GNU/Linux, other GNU-based systems, and FreeBSD.])],
+	[], [enable_symbol_versions=auto])
+if test "x$enable_symbol_versions" = xauto; then
+	case $host_os in
+		# NOTE: Even if one omits -gnu on GNU/Linux (e.g.
+		# i486-slackware-linux), configure will (via config.sub)
+		# append -gnu (e.g. i486-slackware-linux-gnu), and this
+		# test will work correctly.
+		gnu* | *-gnu* | freebsd*)
+			enable_symbol_versions=yes
+			;;
+		*)
+			enable_symbol_versions=no
+			;;
+	esac
+fi
+AC_MSG_RESULT([$enable_symbol_versions])
+AM_CONDITIONAL([COND_SYMVERS], [test "x$enable_symbol_versions" = xyes])
+
+
 ###############################################################################
 # Checks for programs.
 ###############################################################################
 
 echo
 gl_POSIX_SHELL
-if test -z "$POSIX_SHELL" ; then
+if test -z "$POSIX_SHELL" && test "x$enable_scripts" = xyes ; then
 	AC_MSG_ERROR([No POSIX conforming shell (sh) was found.])
 fi
 
 echo
 echo "Initializing Automake:"
 
-AM_INIT_AUTOMAKE([1.12 foreign tar-v7 filename-length-max=99 serial-tests])
+# We don't use "subdir-objects" yet because it breaks "make distclean" when
+# dependencies are enabled (as of Automake 1.14.1) due to this bug:
+# http://debbugs.gnu.org/cgi/bugreport.cgi?bug=17354
+# The -Wno-unsupported is used to silence warnings about missing
+# "subdir-objects".
+AM_INIT_AUTOMAKE([1.12 foreign tar-v7 filename-length-max=99 serial-tests -Wno-unsupported])
 AC_PROG_LN_S
 
 AC_PROG_CC_C99
@@ -434,18 +498,49 @@ AM_PROG_CC_C_O
 AM_PROG_AS
 AC_USE_SYSTEM_EXTENSIONS
 
-if test "x$enable_threads" = xyes; then
+case $enable_threads in
+	posix)
 	echo
-	echo "Threading support:"
-	AX_PTHREAD
+		echo "POSIX threading support:"
+		AX_PTHREAD([:]) dnl We don't need the HAVE_PTHREAD macro.
 	LIBS="$LIBS $PTHREAD_LIBS"
 	AM_CFLAGS="$AM_CFLAGS $PTHREAD_CFLAGS"
 
-	dnl NOTE: PTHREAD_CC is ignored. It would be useful on AIX, but
-	dnl it's tricky to get it right together with AC_PROG_CC_C99.
-	dnl Thus, this is handled by telling the user in INSTALL to set
-	dnl the correct CC manually.
-fi
+		dnl NOTE: PTHREAD_CC is ignored. It would be useful on AIX,
+		dnl but it's tricky to get it right together with
+		dnl AC_PROG_CC_C99. Thus, this is handled by telling the
+		dnl user in INSTALL to set the correct CC manually.
+
+		AC_DEFINE([MYTHREAD_POSIX], [1],
+			[Define to 1 when using POSIX threads (pthreads).])
+
+		# These are nice to have but not mandatory.
+		#
+		# FIXME: xz uses clock_gettime if it is available and can do
+		# it even when threading is disabled. Moving this outside
+		# of pthread detection may be undesirable because then
+		# liblzma may get linked against librt even when librt isn't
+		# needed by liblzma.
+		OLD_CFLAGS=$CFLAGS
+		CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+		AC_SEARCH_LIBS([clock_gettime], [rt])
+		AC_CHECK_FUNCS([clock_gettime pthread_condattr_setclock])
+		AC_CHECK_DECLS([CLOCK_MONOTONIC], [], [], [[#include <time.h>]])
+		CFLAGS=$OLD_CFLAGS
+		;;
+	win95)
+		AC_DEFINE([MYTHREAD_WIN95], [1], [Define to 1 when using
+			Windows 95 (and thus XP) compatible threads.
+			This avoids use of features that were added in
+			Windows Vista.])
+		;;
+	vista)
+		AC_DEFINE([MYTHREAD_VISTA], [1], [Define to 1 when using
+			Windows Vista compatible threads. This uses
+			features that are not available on Windows XP.])
+		;;
+esac
+AM_CONDITIONAL([COND_THREADS], [test "x$enable_threads" != xno])
 
 echo
 echo "Initializing Libtool:"
@@ -481,6 +576,9 @@ echo "System headers and functions:"
 AC_CHECK_HEADERS([fcntl.h limits.h sys/time.h],
 	[],
 	[AC_MSG_ERROR([Required header file(s) are missing.])])
+
+# This allows the use of the intrinsic functions if they are available.
+AC_CHECK_HEADERS([immintrin.h])
 
 
 ###############################################################################
@@ -527,11 +625,77 @@ gl_GETOPT
 # Find the best function to set timestamps.
 AC_CHECK_FUNCS([futimens futimes futimesat utimes utime], [break])
 
+# These are nice to have but not mandatory.
+AC_CHECK_FUNCS([posix_fadvise pipe2])
+
 TUKLIB_PROGNAME
 TUKLIB_INTEGER
 TUKLIB_PHYSMEM
 TUKLIB_CPUCORES
 TUKLIB_MBSTR
+
+# Check for system-provided SHA-256. At least the following is supported:
+#
+# OS       Headers                     Library  Type           Function
+# FreeBSD  sys/types.h + sha256.h      libmd    SHA256_CTX     SHA256_Init
+# NetBSD   sys/types.h + sha2.h                 SHA256_CTX     SHA256_Init
+# OpenBSD  sys/types.h + sha2.h                 SHA2_CTX       SHA256Init
+# Solaris  sys/types.h + sha2.h        libmd    SHA256_CTX     SHA256Init
+# MINIX 3  sys/types.h + minix/sha2.h  libutil  SHA256_CTX     SHA256_Init
+# Darwin   CommonCrypto/CommonDigest.h          CC_SHA256_CTX  CC_SHA256_Init
+#
+# Note that Darwin's CC_SHA256_Update takes buffer size as uint32_t instead
+# of size_t.
+#
+# We don't check for e.g. OpenSSL or libgcrypt because we don't want
+# to introduce dependencies to other packages by default. Maybe such
+# libraries could be supported via additional configure options though.
+#
+if test "x$enable_check_sha256" = "xyes"; then
+	# Test for Common Crypto before others, because Darwin has sha256.h
+	# too and we don't want to use that, because on older versions it
+	# uses OpenSSL functions, whose SHA256_Init is not guaranteed to
+	# succeed.
+	sha256_header_found=no
+	AC_CHECK_HEADERS(
+		[CommonCrypto/CommonDigest.h sha256.h sha2.h minix/sha2.h],
+		[sha256_header_found=yes ; break])
+	if test "x$sha256_header_found" = xyes; then
+		AC_CHECK_TYPES([CC_SHA256_CTX, SHA256_CTX, SHA2_CTX], [], [],
+			[[#ifdef HAVE_SYS_TYPES_H
+			  # include <sys/types.h>
+			  #endif
+			  #ifdef HAVE_COMMONCRYPTO_COMMONDIGEST_H
+			  # include <CommonCrypto/CommonDigest.h>
+			  #endif
+			  #ifdef HAVE_SHA256_H
+			  # include <sha256.h>
+			  #endif
+			  #ifdef HAVE_SHA2_H
+			  # include <sha2.h>
+			  #endif
+			  #ifdef HAVE_MINIX_SHA2_H
+			  # include <minix/sha2.h>
+			  #endif]])
+		AC_SEARCH_LIBS([SHA256_Init], [md util])
+		AC_SEARCH_LIBS([SHA256Init], [md])
+		AC_CHECK_FUNCS([CC_SHA256_Init SHA256_Init SHA256Init],
+			[break])
+	fi
+fi
+AM_CONDITIONAL([COND_INTERNAL_SHA256],
+	[test "x$ac_cv_func_SHA256_Init" != xyes \
+		&& test "x$ac_cv_func_SHA256Init" != xyes \
+		&& test "x$ac_cv_func_CC_SHA256_Init" != xyes])
+
+# Check for SSE2 intrinsics.
+AC_CHECK_DECL([_mm_movemask_epi8],
+	[AC_DEFINE([HAVE__MM_MOVEMASK_EPI8], [1],
+		[Define to 1 if _mm_movemask_epi8 is available.])],
+	[],
+[#ifdef HAVE_IMMINTRIN_H
+#include <immintrin.h>
+#endif])
 
 
 ###############################################################################
@@ -657,9 +821,15 @@ if test x$tuklib_cv_physmem_method = xunknown; then
 	echo "or make a patch to add support for this operating system."
 fi
 
-# Not threading yet so don't warn.
-#if test x$tuklib_cv_cpucores_method = xunknown; then
-#	echo
-#	echo "WARNING:"
-#	echo "No supported method to detect the number of CPU cores."
-#fi
+if test x$tuklib_cv_cpucores_method = xunknown; then
+	echo
+	echo "WARNING:"
+	echo "No supported method to detect the number of CPU cores."
+fi
+
+if test "x$enable_threads$enable_small" = xnoyes; then
+	echo
+	echo "NOTE:"
+	echo "liblzma will be thread unsafe due the combination"
+	echo "of --disable-threads --enable-small."
+fi

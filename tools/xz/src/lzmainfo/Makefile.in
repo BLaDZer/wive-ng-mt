@@ -109,9 +109,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__lzmainfo_SOURCES_DIST = lzmainfo.c \
-	$(top_srcdir)/src/common/tuklib_progname.c \
-	$(top_srcdir)/src/common/tuklib_exit.c lzmainfo_w32res.rc
+am__lzmainfo_SOURCES_DIST = lzmainfo.c ../common/tuklib_progname.c \
+	../common/tuklib_exit.c lzmainfo_w32res.rc
 @COND_W32_TRUE@am__objects_1 = lzmainfo_w32res.$(OBJEXT)
 am_lzmainfo_OBJECTS = lzmainfo-lzmainfo.$(OBJEXT) \
 	lzmainfo-tuklib_progname.$(OBJEXT) \
@@ -363,9 +362,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xz = @xz@
-lzmainfo_SOURCES = lzmainfo.c \
-	$(top_srcdir)/src/common/tuklib_progname.c \
-	$(top_srcdir)/src/common/tuklib_exit.c $(am__append_1)
+lzmainfo_SOURCES = lzmainfo.c ../common/tuklib_progname.c \
+	../common/tuklib_exit.c $(am__append_1)
 lzmainfo_CPPFLAGS = \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-I$(top_srcdir)/src/common \
@@ -508,33 +506,33 @@ lzmainfo-lzmainfo.obj: lzmainfo.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-lzmainfo.obj `if test -f 'lzmainfo.c'; then $(CYGPATH_W) 'lzmainfo.c'; else $(CYGPATH_W) '$(srcdir)/lzmainfo.c'; fi`
 
-lzmainfo-tuklib_progname.o: $(top_srcdir)/src/common/tuklib_progname.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_progname.o -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_progname.Tpo -c -o lzmainfo-tuklib_progname.o `test -f '$(top_srcdir)/src/common/tuklib_progname.c' || echo '$(srcdir)/'`$(top_srcdir)/src/common/tuklib_progname.c
+lzmainfo-tuklib_progname.o: ../common/tuklib_progname.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_progname.o -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_progname.Tpo -c -o lzmainfo-tuklib_progname.o `test -f '../common/tuklib_progname.c' || echo '$(srcdir)/'`../common/tuklib_progname.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lzmainfo-tuklib_progname.Tpo $(DEPDIR)/lzmainfo-tuklib_progname.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/common/tuklib_progname.c' object='lzmainfo-tuklib_progname.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../common/tuklib_progname.c' object='lzmainfo-tuklib_progname.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_progname.o `test -f '$(top_srcdir)/src/common/tuklib_progname.c' || echo '$(srcdir)/'`$(top_srcdir)/src/common/tuklib_progname.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_progname.o `test -f '../common/tuklib_progname.c' || echo '$(srcdir)/'`../common/tuklib_progname.c
 
-lzmainfo-tuklib_progname.obj: $(top_srcdir)/src/common/tuklib_progname.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_progname.obj -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_progname.Tpo -c -o lzmainfo-tuklib_progname.obj `if test -f '$(top_srcdir)/src/common/tuklib_progname.c'; then $(CYGPATH_W) '$(top_srcdir)/src/common/tuklib_progname.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/common/tuklib_progname.c'; fi`
+lzmainfo-tuklib_progname.obj: ../common/tuklib_progname.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_progname.obj -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_progname.Tpo -c -o lzmainfo-tuklib_progname.obj `if test -f '../common/tuklib_progname.c'; then $(CYGPATH_W) '../common/tuklib_progname.c'; else $(CYGPATH_W) '$(srcdir)/../common/tuklib_progname.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lzmainfo-tuklib_progname.Tpo $(DEPDIR)/lzmainfo-tuklib_progname.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/common/tuklib_progname.c' object='lzmainfo-tuklib_progname.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../common/tuklib_progname.c' object='lzmainfo-tuklib_progname.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_progname.obj `if test -f '$(top_srcdir)/src/common/tuklib_progname.c'; then $(CYGPATH_W) '$(top_srcdir)/src/common/tuklib_progname.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/common/tuklib_progname.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_progname.obj `if test -f '../common/tuklib_progname.c'; then $(CYGPATH_W) '../common/tuklib_progname.c'; else $(CYGPATH_W) '$(srcdir)/../common/tuklib_progname.c'; fi`
 
-lzmainfo-tuklib_exit.o: $(top_srcdir)/src/common/tuklib_exit.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_exit.o -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_exit.Tpo -c -o lzmainfo-tuklib_exit.o `test -f '$(top_srcdir)/src/common/tuklib_exit.c' || echo '$(srcdir)/'`$(top_srcdir)/src/common/tuklib_exit.c
+lzmainfo-tuklib_exit.o: ../common/tuklib_exit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_exit.o -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_exit.Tpo -c -o lzmainfo-tuklib_exit.o `test -f '../common/tuklib_exit.c' || echo '$(srcdir)/'`../common/tuklib_exit.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lzmainfo-tuklib_exit.Tpo $(DEPDIR)/lzmainfo-tuklib_exit.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/common/tuklib_exit.c' object='lzmainfo-tuklib_exit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../common/tuklib_exit.c' object='lzmainfo-tuklib_exit.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_exit.o `test -f '$(top_srcdir)/src/common/tuklib_exit.c' || echo '$(srcdir)/'`$(top_srcdir)/src/common/tuklib_exit.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_exit.o `test -f '../common/tuklib_exit.c' || echo '$(srcdir)/'`../common/tuklib_exit.c
 
-lzmainfo-tuklib_exit.obj: $(top_srcdir)/src/common/tuklib_exit.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_exit.obj -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_exit.Tpo -c -o lzmainfo-tuklib_exit.obj `if test -f '$(top_srcdir)/src/common/tuklib_exit.c'; then $(CYGPATH_W) '$(top_srcdir)/src/common/tuklib_exit.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/common/tuklib_exit.c'; fi`
+lzmainfo-tuklib_exit.obj: ../common/tuklib_exit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lzmainfo-tuklib_exit.obj -MD -MP -MF $(DEPDIR)/lzmainfo-tuklib_exit.Tpo -c -o lzmainfo-tuklib_exit.obj `if test -f '../common/tuklib_exit.c'; then $(CYGPATH_W) '../common/tuklib_exit.c'; else $(CYGPATH_W) '$(srcdir)/../common/tuklib_exit.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lzmainfo-tuklib_exit.Tpo $(DEPDIR)/lzmainfo-tuklib_exit.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/common/tuklib_exit.c' object='lzmainfo-tuklib_exit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../common/tuklib_exit.c' object='lzmainfo-tuklib_exit.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_exit.obj `if test -f '$(top_srcdir)/src/common/tuklib_exit.c'; then $(CYGPATH_W) '$(top_srcdir)/src/common/tuklib_exit.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/common/tuklib_exit.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lzmainfo_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lzmainfo-tuklib_exit.obj `if test -f '../common/tuklib_exit.c'; then $(CYGPATH_W) '../common/tuklib_exit.c'; else $(CYGPATH_W) '$(srcdir)/../common/tuklib_exit.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

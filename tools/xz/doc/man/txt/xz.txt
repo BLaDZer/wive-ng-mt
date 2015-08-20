@@ -216,6 +216,18 @@ OPTIONS
               Write  the  compressed  or  decompressed data to standard output
               instead of a file.  This implies --keep.
 
+       --single-stream
+              Decompress only the first .xz stream, and silently ignore possi-
+              ble  remaining  input  data following the stream.  Normally such
+              trailing garbage makes xz display an error.
+
+              xz never decompresses more than one stream from .lzma  files  or
+              raw  streams, but this option still makes xz ignore the possible
+              trailing data after the .lzma file or raw stream.
+
+              This option has no effect if the operation mode is not  --decom-
+              press or --test.
+
        --no-sparse
               Disable creation of sparse files.  By default, if  decompressing
               into  a  regular  file,  xz tries to make the file sparse if the
@@ -304,6 +316,21 @@ OPTIONS
 
               Integrity of the .xz headers is always verified with CRC32.   It
               is not possible to change or disable it.
+
+       --ignore-check
+              Don't verify the integrity check of  the  compressed  data  when
+              decompressing.   The  CRC32 values in the .xz headers will still
+              be verified normally.
+
+              Do not use this option unless you know what you are doing.  Pos-
+              sible reasons to use this option:
+
+              o  Trying to recover data from a corrupt .xz file.
+
+              o  Speeding  up decompression.  This matters mostly with SHA-256
+                 or with files that have compressed extremely well.  It's rec-
+                 ommended  to  not use this option for this purpose unless the
+                 file integrity is verified externally in some other way.
 
        -0 ... -9
               Select  a compression preset level.  The default is -6.  If mul-
@@ -421,6 +448,80 @@ OPTIONS
               tively.  These are provided  only  for  backwards  compatibility
               with LZMA Utils.  Avoid using these options.
 
+       --block-size=size
+              When compressing to the .xz format, split the  input  data  into
+              blocks  of  size bytes.  The blocks are compressed independently
+              from each other, which helps with multi-threading and makes lim-
+              ited random-access decompression possible.  This option is typi-
+              cally used to override the default block size in  multi-threaded
+              mode, but this option can be used in single-threaded mode too.
+
+              In  multi-threaded  mode  about  three  times size bytes will be
+              allocated in each thread for buffering input  and  output.   The
+              default  size is three times the LZMA2 dictionary size or 1 MiB,
+              whichever is more.  Typically a good value is 2-4 times the size
+              of the LZMA2 dictionary or at least 1 MiB.  Using size less than
+              the LZMA2 dictionary size is waste of RAM because then the LZMA2
+              dictionary  buffer  will never get fully used.  The sizes of the
+              blocks are stored in the block headers, which a  future  version
+              of xz will use for multi-threaded decompression.
+
+              In  single-threaded  mode no block splitting is done by default.
+              Setting this option doesn't affect memory usage.  No size infor-
+              mation is stored in block headers, thus files created in single-
+              threaded mode won't be identical  to  files  created  in  multi-
+              threaded  mode.   The lack of size information also means that a
+              future version of xz won't  be  able  decompress  the  files  in
+              multi-threaded mode.
+
+       --block-list=sizes
+              When  compressing to the .xz format, start a new block after the
+              given intervals of uncompressed data.
+
+              The uncompressed sizes of the blocks are specified as  a  comma-
+              separated  list.   Omitting a size (two or more consecutive com-
+              mas) is a shorthand to use the size of the previous block.
+
+              If the input file is bigger than the  sum  of  sizes,  the  last
+              value in sizes is repeated until the end of the file.  A special
+              value of 0 may be used as the last value to  indicate  that  the
+              rest of the file should be encoded as a single block.
+
+              If  one  specifies  sizes  that  exceed the encoder's block size
+              (either the default value in threaded mode or the  value  speci-
+              fied with --block-size=size), the encoder will create additional
+              blocks while keeping the boundaries  specified  in  sizes.   For
+              example,      if      one      specifies      --block-size=10MiB
+              --block-list=5MiB,10MiB,8MiB,12MiB,24MiB and the input  file  is
+              80  MiB, one will get 11 blocks: 5, 10, 8, 10, 2, 10, 10, 4, 10,
+              10, and 1 MiB.
+
+              In multi-threaded mode the sizes of the blocks are stored in the
+              block  headers.  This isn't done in single-threaded mode, so the
+              encoded output won't be identical to that of the  multi-threaded
+              mode.
+
+       --flush-timeout=timeout
+              When  compressing, if more than timeout milliseconds (a positive
+              integer) has passed since the previous flush  and  reading  more
+              input  would  block,  all the pending input data is flushed from
+              the encoder and made available in the output stream.   This  can
+              be useful if xz is used to compress data that is streamed over a
+              network.  Small timeout values make the data  available  at  the
+              receiving  end with a small delay, but large timeout values give
+              better compression ratio.
+
+              This feature is disabled by default.  If this option  is  speci-
+              fied  more  than  once,  the last one takes effect.  The special
+              timeout value of 0 can be used to explicitly disable  this  fea-
+              ture.
+
+              This feature is not available on non-POSIX systems.
+
+              This  feature is still experimental.  Currently xz is unsuitable
+              for decompressing the stream in real time due  to  how  xz  does
+              buffering.
+
        --memlimit-compress=limit
               Set  a  memory  usage  limit for compression.  If this option is
               specified multiple times, the last one takes effect.
@@ -473,22 +574,17 @@ OPTIONS
               mat=raw).
 
        -T threads, --threads=threads
-              Specify the number of worker threads to use.  The actual  number
-              of  threads can be less than threads if using more threads would
-              exceed the memory usage limit.
+              Specify the number of worker threads to use.  Setting threads to
+              a  special value 0 makes xz use as many threads as there are CPU
+              cores on the system.  The actual number of threads can  be  less
+              than  threads  if the input file is not big enough for threading
+              with the given settings or if using more  threads  would  exceed
+              the memory usage limit.
 
-              Multithreaded compression and decompression are not  implemented
-              yet, so this option has no effect for now.
-
-              As  of  writing  (2010-09-27), it hasn't been decided if threads
-              will be used by default on multicore systems  once  support  for
-              threading has been implemented.  Comments are welcome.  The com-
-              plicating factor is that using many threads  will  increase  the
-              memory  usage dramatically.  Note that if multithreading will be
-              the default, it will probably be done  so  that  single-threaded
-              and  multithreaded modes produce the same output, so compression
-              ratio won't be  significantly  affected  if  threading  will  be
-              enabled by default.
+              Currently  the  only threading method is to split the input into
+              blocks and compress them independently  from  each  other.   The
+              default  block  size depends on the compression level and can be
+              overriden with the --block-size=size option.
 
    Custom compressor filter chains
        A  custom  filter  chain  allows specifying the compression settings in
@@ -1019,6 +1115,8 @@ ROBOT MODE
                   with this xz version
               3.  yes or no indicating if all block  headers  have  both  com-
                   pressed size and uncompressed size stored in them
+              Since xz 5.1.2alpha:
+              4.  Minimum xz version required to decompress the file
 
        The columns of the totals line:
               2.  Number of streams
@@ -1038,6 +1136,8 @@ ROBOT MODE
                   the files with this xz version
               11. yes  or  no  indicating  if all block headers have both com-
                   pressed size and uncompressed size stored in them
+              Since xz 5.1.2alpha:
+              12. Minimum xz version required to decompress the file
 
        Future versions may add new line types and new columns can be added  to
        the existing line types, but the existing columns won't be changed.
@@ -1374,4 +1474,4 @@ SEE ALSO
 
 
 
-Tukaani                           2013-06-21                             XZ(1)
+Tukaani                           2014-12-16                             XZ(1)
