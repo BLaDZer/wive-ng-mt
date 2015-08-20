@@ -1157,7 +1157,7 @@
 56) kernel: ralink_wifi: 76x2: fix RSSI calculation on iLNA scheme<br>
 57) kernel: ralink_wifi: 76x2: fix null pointer dereference in aplcli mode on SMP devices.<br>
 58) kernel: ralink_wifi: 76x2: temporarily disable buggy QuickInitMCSRate RateCtrl algorithm (periodic drop to CCK issue).<br>
-59) kernel: ralink_wifi: 7610: update to 3.0.0.8a_rev3.<br>
+59) kernel: ralink_wifi: 7610: update to 3.0.0.9 version.<br>
 60) kernel: ralink_wifi: 7610: do not agregate low rate pkts.<br>
 61) kernel: ralink_wifi: 7610: fix compat with draft2 802.11ac specifications.<br>
 62) kernel: ralink_wifi: 7610: backport autoselect channel fixes.<br>
