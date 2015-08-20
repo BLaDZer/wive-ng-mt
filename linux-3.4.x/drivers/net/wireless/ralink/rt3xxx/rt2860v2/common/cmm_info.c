@@ -3811,15 +3811,19 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	IN PRTMP_ADAPTER pAd, 
 	IN RTMP_IOCTL_INPUT_STRUCT *wrq)
 {
-	INT i, MacTabWCID;
+	INT i;
 	UINT16 wrq_len = wrq->u.data.length;
+#ifndef CONFIG_STA_SUPPORT
 	POS_COOKIE pObj = (POS_COOKIE)pAd->OS_Cookie;
+	INT MacTabWCID;
+#endif
 	RT_802_11_MAC_TABLE *pMacTab = NULL;
 	PRT_802_11_MAC_ENTRY pDst;
 	MAC_TABLE_ENTRY *pEntry;
 
 	wrq->u.data.length = 0;
 
+#ifndef CONFIG_STA_SUPPORT
 #ifdef APCLI_SUPPORT
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
@@ -3877,7 +3881,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		return;
 	}
 #endif
-
+#endif
 	if (wrq_len < sizeof(RT_802_11_MAC_TABLE))
 		return;
 
