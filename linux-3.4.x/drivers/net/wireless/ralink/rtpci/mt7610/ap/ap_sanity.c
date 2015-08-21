@@ -333,6 +333,14 @@ BOOLEAN PeerAssocReqCmmSanity(
 				DBGPRINT(RT_DEBUG_WARN, ("%s():wrong IE_VHT_CAP, eid->Len = %d\n",
 							__FUNCTION__, eid_ptr->Len));
 			}
+
+		case IE_VHT_OP:
+			if (eid_ptr->Len == sizeof(VHT_OP_IE))
+			{
+				NdisMoveMemory(&ie_lists->vht_op, eid_ptr->Octet, sizeof(VHT_OP_IE));
+				ie_lists->vht_op_len = eid_ptr->Len;
+				DBGPRINT(RT_DEBUG_TRACE, ("%s():IE_VHT_OP\n", __FUNCTION__));
+			}
 #endif /* DOT11_VHT_AC */
             default:
                 break;

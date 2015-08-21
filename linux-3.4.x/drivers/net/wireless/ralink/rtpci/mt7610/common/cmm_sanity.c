@@ -1279,9 +1279,9 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 		if (CtrlChannel != 0)
 			ie_list->Channel = CtrlChannel;
 		else {
-			if (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40
+			if ((pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40)
 #ifdef DOT11_VHT_AC
-				|| pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80
+				|| (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80)
 #endif /* DOT11_VHT_AC */
 			) {
 				if (pAd->MlmeAux.Channel)
@@ -1289,8 +1289,8 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				else
 					ie_list->Channel = pAd->CommonCfg.Channel;
 			}
-		else
-			ie_list->Channel = LatchRfChannel;
+			else
+				ie_list->Channel = LatchRfChannel;
 		}
 		Sanity |= 0x4;
 	}

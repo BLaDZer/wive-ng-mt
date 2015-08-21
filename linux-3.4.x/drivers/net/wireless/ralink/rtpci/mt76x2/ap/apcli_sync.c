@@ -505,6 +505,17 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 				RTMPZeroMemory(&pApCliEntry->MlmeAux.AddHtInfo, SIZE_ADD_HT_INFO_IE);
 				pApCliEntry->MlmeAux.HtCapabilityLen = 0;
 			}
+#ifdef DOT11_VHT_AC
+			if (ie_list->vht_op_len)
+			{
+				/*
+					To save the VHT Channel Width of AP.
+				*/
+				RTMPZeroMemory(&pApCliEntry->MlmeAux.vht_op, sizeof(VHT_OP_IE));
+				NdisCopyMemory(&pApCliEntry->MlmeAux.vht_op, &(ie_list->vht_op_ie), ie_list->vht_op_len);
+			}
+#endif /* DOT11_VHT_AC */
+
 			ApCliUpdateMlmeRate(pAd, ifIndex);
 
 #ifdef DOT11_N_SUPPORT
@@ -732,7 +743,6 @@ static VOID ApCliEnqueueProbeRequest(
 			build_vht_cap_ie(pAd, (UCHAR *)&pApCliEntry->MlmeAux.vht_cap);
 			pApCliEntry->MlmeAux.vht_cap_len = sizeof(VHT_CAP_IE);
 			FrameLen += build_vht_ies(pAd, (UCHAR *)(pOutBuffer + FrameLen), SUBTYPE_PROBE_REQ);
-			pApCliEntry->MlmeAux.vht_cap_len = sizeof(VHT_CAP_IE);
 		}
 #endif /* DOT11_VHT_AC */
 #ifdef WSC_AP_SUPPORT

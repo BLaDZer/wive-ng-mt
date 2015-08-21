@@ -1242,6 +1242,7 @@ INT RTMP_COM_IoctlHandle(
 		{
 			RT_CMD_IOCTL_RATE *pRate = (RT_CMD_IOCTL_RATE *)pData;
 			HTTRANSMIT_SETTING HtPhyMode;
+			UINT8 BW = 0, GI = 0;
 
 #ifdef APCLI_SUPPORT
 			if (pRate->priv_flags == INT_APCLI)
@@ -1260,8 +1261,20 @@ INT RTMP_COM_IoctlHandle(
 				MBSS_PHY_MODE_RESET(pObj->ioctl_if, HtPhyMode);
 #endif /* MBSS_SUPPORT */
 			}
-			RtmpDrvMaxRateGet(pAd, HtPhyMode.field.MODE, HtPhyMode.field.ShortGI,
-							HtPhyMode.field.BW, HtPhyMode.field.MCS,
+#ifdef DOT11_VHT_AC
+			if (HtPhyMode.field.BW == BW_40 && pAd->CommonCfg.vht_bw == VHT_BW_80 && HtPhyMode.field.MODE >= MODE_VHT) {
+				BW = 2;
+				GI = pAd->CommonCfg.vht_sgi_80;
+			}
+			else
+#endif /* DOT11_VHT_AC */
+			{
+				BW = HtPhyMode.field.BW;
+				GI = HtPhyMode.field.ShortGI;
+			}
+
+			RtmpDrvMaxRateGet(pAd, HtPhyMode.field.MODE, GI,
+							BW, HtPhyMode.field.MCS,
 							(UINT32 *)&pRate->BitRate);
 		}
 			break;

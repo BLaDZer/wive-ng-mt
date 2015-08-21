@@ -1326,8 +1326,9 @@ VOID PeerAddBAReqAction(
 	if (pMacEntry && (pMacEntry->MaxHTPhyMode.field.MODE == MODE_VHT) && (Status == 0))
 		ADDframe.BaParm.AMSDUSupported = pAddreqFrame->BaParm.AMSDUSupported;
 	else
-#endif
-	ADDframe.BaParm.AMSDUSupported = 0;
+#endif /* DOT11_VHT_AC */
+		ADDframe.BaParm.AMSDUSupported = 0;
+
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
 	if (ADDframe.BaParm.BufSize == 0) {

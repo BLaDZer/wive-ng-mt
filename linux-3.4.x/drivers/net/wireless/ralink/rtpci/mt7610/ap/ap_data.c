@@ -3944,14 +3944,15 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				else if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
 					txop_value = 0x80;
 #ifdef DOT11_VHT_AC
-				else if (pAd->MacTab.Size == 1) {
+				else if ((pAd->MacTab.Size == 1) && (pAd->CommonCfg.bEnableTxBurst)) {
 					MAC_TABLE_ENTRY *pEntry = NULL;
 					UINT32 i = 0;
-		                    for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
+
+		                	for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
 						pEntry = &pAd->MacTab.Content[i];
 						if (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC))
 							break;
-		                    }
+		                	}
 
 					if (pEntry && i < MAX_LEN_OF_MAC_TABLE) {
 						if (((pEntry->HTPhyMode.field.MODE == MODE_HTMIX || pEntry->HTPhyMode.field.MODE == MODE_HTGREENFIELD) &&
@@ -3971,6 +3972,10 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				else
 					txop_value = 0;
 
+#ifdef MULTI_CLIENT_SUPPORT
+				if(pAd->MacTab.Size > 2) /* for Multi-Clients */
+					txop_value = 0;		
+#endif /* MULTI_CLIENT_SUPPORT */
 
 				RegValue  &= 0xFFFFFF00;
 				/*if ((RegValue & 0x0000FF00) == 0x00005400)
