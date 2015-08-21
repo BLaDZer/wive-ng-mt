@@ -364,7 +364,6 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #endif /* DOT11_N_SUPPORT */
 
 	/* after reading Registry, we now know if in AP mode or STA mode*/
-
 	DBGPRINT(RT_DEBUG_OFF, ("2. Phy Mode = %d\n", pAd->CommonCfg.PhyMode));
 
 	/* We should read EEPROM for all cases.  rt2860b*/

@@ -2759,10 +2759,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.REGBACapability.word = pAd->CommonCfg.BACapability.word;
 #endif /* DOT11_N_SUPPORT */
 
-	/*pAd->CommonCfg.HTPhyMode.field.BW = BW_20;*/
-	/*pAd->CommonCfg.HTPhyMode.field.MCS = MCS_AUTO;*/
-	/*pAd->CommonCfg.HTPhyMode.field.ShortGI = GI_800;*/
-	/*pAd->CommonCfg.HTPhyMode.field.STBC = STBC_NONE;*/
 	pAd->CommonCfg.TxRate = RATE_6;
 	
 	pAd->CommonCfg.MlmeTransmit.field.MCS = MCS_RATE_6;
