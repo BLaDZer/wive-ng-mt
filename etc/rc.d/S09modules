@@ -24,34 +24,30 @@ start() {
 	$LOG "Prepare wifi config."
 	gen_wifi_config
 
-	# macclone logic for STA mode module
-	if [ "$OperationMode" = "2" ] && [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
-	    WLAN_MAC_ADDR="$macCloneMac"
-	    $LOG "STA Macclone mode. MAC: $WLAN_MAC_ADDR"
-	else
-	    $LOG "AP/STA Normal mode. MAC: $WLAN_MAC_ADDR"
-	fi
-	mac="mac=$WLAN_MAC_ADDR"
-
 	# load needed wireless modules
     	if [ "$OperationMode" = "2" ]; then
+	    # macclone logic for STA mode module
+	    if [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
+		$LOG "STA Macclone mode. MAC: $macCloneMac"
+		mac="mac=$macCloneMac"
+	    else
+		mac=""
+	    fi
 	    $LOG "Load wifi STA module."
     	    modprobe -q rt2860v2_sta "$mac"
 	else
 	    $LOG "Load wifi AP module."
 	    if [ "$CONFIG_RALINK_MT7621" != "" ] && [ "$CONFIG_MT76X2_AP" != "" ]; then
 		# single driver - dual module
-    		modprobe -q mt76x2_ap "$mac"
+    		modprobe -q mt76x2_ap
 	    else
-    		modprobe -q rt2860v2_ap "$mac"
+    		modprobe -q rt2860v2_ap
 		if [ "$second_wlan_root_if" != "" ]; then
-		    # second mac adress
-		    mac="mac=$WLAN2_MAC_ADDR"
 		    $LOG "Load external wifi AP module."
 		    if [ "$CONFIG_MT76X2_AP" != "" ]; then
-    			modprobe -q mt76x2_ap "$mac"
+    			modprobe -q mt76x2_ap
 		    else
-			modprobe -q mt7610_ap "$mac"
+			modprobe -q mt7610_ap
 		    fi
 		fi
 	    fi
