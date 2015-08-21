@@ -2413,6 +2413,8 @@ NDIS_STATUS	RTMPSetProfileParameters(
 		{
 			pAd->CommonCfg.Channel = (UCHAR) simple_strtol(tmpbuf, 0, 10);
 			DBGPRINT(RT_DEBUG_TRACE, ("Channel=%d\n", pAd->CommonCfg.Channel));
+			if (pAd->CommonCfg.Channel > 14)
+				pAd->Dot11_H.org_ch = pAd->CommonCfg.Channel;
 		}
 
 		/*WirelessMode*/

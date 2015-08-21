@@ -189,6 +189,7 @@ UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 		if (prim_ch >= vht_ch_80M[idx].ch_low_bnd &&
 			prim_ch <= vht_ch_80M[idx].ch_up_bnd)
 		{
+			pAd->CommonCfg.vht_cent_ch = vht_ch_80M[idx].cent_freq_idx;
 			return vht_ch_80M[idx].cent_freq_idx;
 		}
 		idx++;
@@ -332,12 +333,23 @@ INT build_vht_pwr_envelope(RTMP_ADAPTER *pAd, UCHAR *buf)
 INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 {
 	VHT_OP_IE vht_op;
+	UCHAR cent_ch;
 #ifdef RT_BIG_ENDIAN
 	UINT16 tmp;
 #endif /* RT_BIG_ENDIAN */
 
 	NdisZeroMemory((UCHAR *)&vht_op, sizeof(VHT_OP_IE));
 	vht_op.vht_op_info.ch_width = (pAd->CommonCfg.vht_bw == VHT_BW_80 ? 1: 0);
+
+#ifdef CONFIG_AP_SUPPORT
+	if (pAd->CommonCfg.Channel > 14 && 
+		(pAd->CommonCfg.bIEEE80211H == 1) && 
+		(pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
+		cent_ch = vht_cent_ch_freq(pAd, pAd->Dot11_H.org_ch);
+	else
+#endif /* CONFIG_AP_SUPPORT */
+		cent_ch = vht_cent_ch_freq(pAd, pAd->CommonCfg.Channel);
+
 	switch (vht_op.vht_op_info.ch_width)
 	{
 		case 0:
@@ -346,11 +358,11 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 			break;
 		case 1:
 		case 2:
-			vht_op.vht_op_info.center_freq_1 = pAd->CommonCfg.vht_cent_ch;
+			vht_op.vht_op_info.center_freq_1 = cent_ch;
 			vht_op.vht_op_info.center_freq_2 = 0;
 			break;
 		case 3:
-			vht_op.vht_op_info.center_freq_1 = pAd->CommonCfg.vht_cent_ch;
+			vht_op.vht_op_info.center_freq_1 = cent_ch;
 			vht_op.vht_op_info.center_freq_2 = pAd->CommonCfg.vht_cent_ch2;
 			break;
 	}

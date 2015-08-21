@@ -307,6 +307,7 @@ INT	Set_Channel_Proc(
 			if ((pAd->CommonCfg.Channel > 14 )
 				&& (pAd->CommonCfg.bIEEE80211H == TRUE))
 			{
+				pAd->Dot11_H.org_ch = pAd->CommonCfg.Channel;
 				if (pAd->Dot11_H.RDMode == RD_SILENCE_MODE)
 				{
 					APStop(pAd);
