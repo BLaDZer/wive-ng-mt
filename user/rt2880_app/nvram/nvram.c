@@ -265,6 +265,12 @@ static int gen_wifi_config(int mode, int genmode)
 #define FPRINT_NUM(x) fprintf(fp, #x"=%d\n", atoi(nvram_bufget(mode, #x)));
 #define FPRINT_STR(x) fprintf(fp, #x"=%s\n", nvram_bufget(mode, #x));
 
+	// MAC adresses per devices
+	if (genmode == RT2860_NVRAM)
+	    fprintf(fp, "MacAddress=%s\n", nvram_bufget(mode, "WLAN_MAC_ADDR"));
+	else if (genmode == RTINIC_NVRAM)
+	    fprintf(fp, "MacAddress=%s\n", nvram_bufget(mode, "WLAN2_MAC_ADDR"));
+
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
