@@ -315,16 +315,16 @@ static int gen_wifi_config(int mode, int genmode)
 	if (inic) {
 	    snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessModeINIC"));
 	    for (i = 1; i < ssid_num; i++)
-		snprintf(wmm_enable+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessModeINIC"));
+		snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessModeINIC"));
 	} else {
 	    snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
 	    for (i = 1; i < ssid_num; i++)
-		snprintf(wmm_enable+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
+		snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
 	}
 #else
 	snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
 	for (i = 1; i < ssid_num; i++)
-		    snprintf(wmm_enable+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
+		    snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
 #endif
 	fprintf(fp, "WirelessMode=%s\n", w_mode);
 
