@@ -313,28 +313,28 @@ static int gen_wifi_config(int mode, int genmode)
 
 	//TxRate -> need move per ssid to goahead
 	bzero(tx_rate, sizeof(tx_rate));
-	for (i = 0; i < ssid_num; i++)
-	{
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	    if (!inic)
-#endif
-		snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRate")));
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	    else
-		snprintf(tx_rate+strlen(tx_rate), 1, "%d", atoi(nvram_bufget(mode, "TxRateINIC")));
-#endif
-
-	    snprintf(tx_rate+strlen(tx_rate), 1, "%c", ';');
+	if (inic) {
+	    snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRateINIC"));
+	    for (i = 1; i < ssid_num; i++)
+		snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRateINIC"));
+	} else {
+	    snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRate"));
+	    for (i = 1; i < ssid_num; i++)
+		snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRate"));
 	}
+#else
+	snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRate"));
+	for (i = 1; i < ssid_num; i++)
+	    snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRate"));
+#endif
 	fprintf(fp, "TxRate=%s\n", tx_rate);
 
 	//WmmCapable -> need move per ssid to goahead
 	bzero(wmm_enable, sizeof(wmm_enable));
-	for (i = 0; i < ssid_num; i++)
-	{
-		snprintf(wmm_enable+strlen(wmm_enable), 1, "%d", atoi(nvram_bufget(mode, "WmmCapable")));
-		snprintf(wmm_enable+strlen(wmm_enable), 1, "%c", ';');
-	}
+	snprintf(wmm_enable, 2, "%s", nvram_bufget(mode, "WmmCapable"));
+	for (i = 1; i < ssid_num; i++)
+		snprintf(wmm_enable+strlen(wmm_enable), 3, ";%s", nvram_bufget(mode, "WmmCapable"));
 	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
 	FPRINT_NUM(CountryRegion);
