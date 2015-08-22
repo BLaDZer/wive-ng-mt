@@ -279,7 +279,6 @@ static int gen_wifi_config(int mode, int genmode)
 	    else
 		fprintf(fp, "RadioOn=1\n");
 
-	    FPRINT_NUM(WirelessMode);
 	    FPRINT_NUM(TxPower);
 	    FPRINT_NUM(Channel);
 	    FPRINT_NUM(AutoChannelSelect);
