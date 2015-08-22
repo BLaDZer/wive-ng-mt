@@ -227,8 +227,8 @@ static int ra_nvram_init(void)
 	}
 
 	sema_init(&nvram_sem, 1);
-reinit:
 	down(&nvram_sem);
+reinit:
 	for (i = 0; i < FLASH_BLOCK_NUM; i++)
 		ret=init_nvram_block(i);
 		if (ret == NEED_REINIT) {  /* try flash cleanup */
@@ -339,8 +339,8 @@ static int ra_nvram_close(int index)
 
 	if (!fb[index].valid)
 		return 0;
-	down(&nvram_sem);
 
+	down(&nvram_sem);
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
 		if (fb[index].cache[i].name) {
 			KFREE(fb[index].cache[i].name);
@@ -351,8 +351,8 @@ static int ra_nvram_close(int index)
 			fb[index].cache[i].value = NULL;
 		}
 	}
-
 	up(&nvram_sem);
+
 	return 0;
 }
 
@@ -392,13 +392,17 @@ static int nvram_clear(int index)
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
-		if (!fb[index].env.data)
+		if (!fb[index].env.data) {
+			up(&nvram_sem);
 			return -ENOMEM;
+		}
 	}
 	memset(fb[index].env.data, 0xFF, len);
 
 	/* calculate crc */
 	fb[index].env.crc = (unsigned long)nv_crc32(0, (unsigned char *)fb[index].env.data, len);
+
+	up(&nvram_sem);
 
         /* write crc to flash */
 	to = fb[index].flash_offset;
@@ -415,7 +419,6 @@ static int nvram_clear(int index)
 	fb[index].dirty = 0;
 	fb[index].valid = 1;
 
-	up(&nvram_sem);
 
 	return 0;
 }
@@ -441,8 +444,10 @@ static int nvram_commit(int index)
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
-		if (!fb[index].env.data)
+		if (!fb[index].env.data) {
+			up(&nvram_sem);
 			return -ENOMEM;
+		}
 	}
 	memset(fb[index].env.data, 0, len);
 	p = fb[index].env.data;
@@ -511,8 +516,7 @@ static int nvram_set(int index, char *name, char *value)
 		}
 		fb[index].cache[idx].name = kstrdup(name, GFP_KERNEL);
 		fb[index].cache[idx].value = kstrdup(value, GFP_KERNEL);
-	}
-	else {
+	} else {
 		/* abandon the previous value */
 		KFREE(fb[index].cache[idx].value);
 		fb[index].cache[idx].value = kstrdup(value, GFP_KERNEL);
@@ -563,8 +567,10 @@ static int const nvram_getall(int index, char *buf)
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
-		if (!fb[index].env.data)
+		if (!fb[index].env.data) {
+			up(&nvram_sem);
 			return -ENOMEM;
+		}
 	}
 	memset(fb[index].env.data, 0, len);
 	p = buf;

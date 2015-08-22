@@ -68,11 +68,12 @@ typedef struct nvram_ioctl_s {
 	int size;
 } nvram_ioctl_t;
 
-#define RALINK_NVRAM_IOCTL_GET		0x01
-#define RALINK_NVRAM_IOCTL_GETALL	0x02
-#define RALINK_NVRAM_IOCTL_SET		0x03
-#define RALINK_NVRAM_IOCTL_COMMIT	0x04
-#define RALINK_NVRAM_IOCTL_CLEAR	0x05
+#define RALINK_NVRAM_IOCTL		0x1000
+#define RALINK_NVRAM_IOCTL_GET		RALINK_NVRAM_IOCTL + 0x01
+#define RALINK_NVRAM_IOCTL_GETALL	RALINK_NVRAM_IOCTL + 0x02
+#define RALINK_NVRAM_IOCTL_SET		RALINK_NVRAM_IOCTL + 0x03
+#define RALINK_NVRAM_IOCTL_COMMIT	RALINK_NVRAM_IOCTL + 0x04
+#define RALINK_NVRAM_IOCTL_CLEAR	RALINK_NVRAM_IOCTL + 0x05
 
 extern int ra_mtd_write_nm(char *name, loff_t to, size_t len, const u_char *buf);
 extern int ra_mtd_read_nm(char *name, loff_t from, size_t len, u_char *buf);

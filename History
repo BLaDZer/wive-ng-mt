@@ -1234,6 +1234,10 @@
 133) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
+<b>3.4.x</b><br>
+1) kernel: nvram: fix nvram small lock imbalance.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
