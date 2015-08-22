@@ -11,9 +11,6 @@ if [ ! -f $APROOTDIR/configure ]; then
     autoreconf -fi
     autoconf
 fi
-if [ ! -f $APROOTDIR/Makefile ]; then
-    automake --add-missing --force-missing --copy
-fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --disable-zlib --disable-openpty"
