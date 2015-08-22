@@ -315,7 +315,7 @@ static int gen_wifi_config(int mode, int genmode)
 	snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
 	for (i = 1; i < ssid_num; i++)
 		snprintf(wmm_enable+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
-	fprintf(fp, "WirelessMode=%s\n", wmm_enable);
+	fprintf(fp, "WirelessMode=%s\n", w_mode);
 
 	//TxRate -> need move per ssid to goahead
 	bzero(tx_rate, sizeof(tx_rate));
