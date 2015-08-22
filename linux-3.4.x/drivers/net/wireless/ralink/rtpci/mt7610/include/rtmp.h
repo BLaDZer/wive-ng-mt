@@ -8053,10 +8053,9 @@ INT	Set_BurstMode_Proc(
 
 #ifdef DOT11_VHT_AC
 INT Set_VhtBw_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
-INT	Set_VhtGi_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT Set_VhtStbc_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT Set_VhtBwSignal_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
-INT	Set_VhtDisallowNonVHT_Proc(
+INT Set_VhtDisallowNonVHT_Proc(
 	IN RTMP_ADAPTER *pAd, 
 	IN PSTRING arg);
 #endif /* DOT11_VHT_AC */
