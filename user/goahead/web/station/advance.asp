@@ -73,19 +73,16 @@ function wirelessModeChange()
 		form.country_region_a.disabled = true;
 	else if (nmode == 2)
 		form.country_region_bg.disabled = true;
-	
+
 	var ht_streams = (nmode == 9) || (nmode == 6) || (nmode == 7);
 	displayElement('div_ht_tx_stream', ht_streams);
 	displayElement('div_ht_rx_stream', ht_streams);
-	
-	hideElement("div_tx_rate");
+
 	hideElement("div_ht_phy_mode");
 
 	if (nmode >= 5)
 		showElement("div_ht_phy_mode");
-	else
-		showElement("div_tx_rate");
-	
+
 	// Display b/g protection & country region
 	var amode = '<% getStaSuppAMode(); %>';
 	//var c_reg = (nmode != 6); // N only
@@ -107,7 +104,6 @@ function initTranslation()
 	_TR("staadvBGProAuto", "wireless auto");
 	_TR("staadvBGProOn", "wireless on");
 	_TR("staadvBGProOff", "wireless off");
-	_TR("staadvTxRate", "staadv tx rate");
 	_TR("staadvTxRateAuto", "wireless auto");
 	_TR("staadvTxBurst", "adv tx burst");
 	_TR("staadvHTPhyMode", "basic ht phy mode");
@@ -344,27 +340,6 @@ function init11NValues()
                 <option value="40">40%</option>
                 <option value="70">70%</option>
                 <option value="100">100%</option>
-              </select></td>
-          </tr>
-          <tr id="div_tx_rate" name="div_tx_rate" <% var wm = getCfgZero(0, "WirelessMode");
-	if (wm == "0" || wm == "1" || wm == "2" || wm == "3")
-	write("style=\"display:none;\""); %>>
-            <td class="head" id="staadvTxRate">Tx Rate</td>
-            <td><select name="tx_rate" class="half">
-                <option value="0" id="staadvTxRateAuto" <% var rate = getCfgZero(0, "TxRate");
-			if (rate == "0") write("selected"); %>>Auto</option>
-                <option value="1" <% if (rate == "1") write("selected"); %>>1 Mbps</option>
-                <option value="2" <% if (rate == "2") write("selected"); %>>2 Mbps</option>
-                <option value="3" <% if (rate == "3") write("selected"); %>>5.5 Mbps</option>
-                <option value="4" <% if (rate == "4") write("selected"); %>>11 Mbps</option>
-                <option value="5" <% if (rate == "5") write("selected"); %>>6 Mbps</option>
-                <option value="6" <% if (rate == "6") write("selected"); %>>9 Mbps</option>
-                <option value="7" <% if (rate == "7") write("selected"); %>>12 Mbps</option>
-                <option value="8" <% if (rate == "8") write("selected"); %>>18 Mbps</option>
-                <option value="9" <% if (rate == "9") write("selected"); %>>24 Mbps</option>
-                <option value="10" <% if (rate == "10") write("selected"); %>>36 Mbps</option>
-                <option value="11" <% if (rate == "11") write("selected"); %>>48 Mbps</option>
-                <option value="12" <% if (rate == "12") write("selected"); %>>54 Mbps</option>
               </select></td>
           </tr>
           <tr>

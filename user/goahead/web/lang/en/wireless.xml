@@ -297,7 +297,6 @@
   <message msgid="staadv infra" msgstr="Wireless Mode" />
   <message msgid="staadv country" msgstr="Country Region Code" />
   <message msgid="staadv bgprotect" msgstr="B/G Protection" />
-  <message msgid="staadv tx rate" msgstr="Tx Rate" />
   <message msgid="staadv bw" msgstr="BW" />
   <message msgid="staadv gi" msgstr="GI" />
 

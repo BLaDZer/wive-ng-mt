@@ -2446,9 +2446,9 @@ static void setSta11nCfg(webs_t wp, char_t *path, char_t *query)
  */
 static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *w_mode, *cr_bg, *cr_a, *bg_prot, *rate, *burst;
+	char_t *w_mode, *cr_bg, *cr_a, *bg_prot, *burst;
 	char_t *ht, *bw, *gi, *mcs, *tx_power, *sta_ar, *sta_ac, *sta_fc;
-	int s, ret, wireless_mode=0, tx_rate=0;
+	int s, ret, wireless_mode=0;
 
 	unsigned char radio_status=0;
 
@@ -2457,8 +2457,6 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	cr_bg = websGetVar(wp, T("country_region_bg"), T("0"));
 	cr_a = websGetVar(wp, T("country_region_a"), T("0"));
 	bg_prot = websGetVar(wp, T("bg_protection"), T("0"));
-	rate = websGetVar(wp, T("tx_rate"), T("0"));
-	tx_rate = atoi(rate);
 	burst = websGetVar(wp, T("tx_burst"), T("off"));
 	ht = websGetVar(wp, T("n_mode"), T("0"));
 	bw = websGetVar(wp, T("n_bandwidth"), T("0"));
@@ -2527,7 +2525,6 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", cr_bg);
 	nvram_bufset(RT2860_NVRAM, "CountryRegionABand", cr_a);
 	nvram_bufset(RT2860_NVRAM, "BGProtection", bg_prot);
-	nvram_bufset(RT2860_NVRAM, "TxRate", rate);
 	nvram_bufset(RT2860_NVRAM, "TxPower", tx_power);
 	nvram_bufset(RT2860_NVRAM, "HT_TxStream", tx_stream);
 	nvram_bufset(RT2860_NVRAM, "HT_RxStream", rx_stream);

@@ -304,7 +304,6 @@
   <message msgid="staadv infra" msgstr="Режим Wi-Fi(Infra)" />
   <message msgid="staadv country" msgstr="Региональный код страны" />
   <message msgid="staadv bgprotect" msgstr="Защита B/G" />
-  <message msgid="staadv tx rate" msgstr="Скорость передачи" />
   <message msgid="staadv bw" msgstr="BW" />
   <message msgid="staadv gi" msgstr="GI" />
 
