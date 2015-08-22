@@ -1237,6 +1237,7 @@
 <b>3.4.x</b><br>
 1) kernel: nvram: fix nvram small lock imbalance.<br>
 2) 802.1x: sync with 5.0.0.0 SDK.<br>
+3) nvram: fix Wireless mode in MBSSID generate to dat file.<br>
 <br>
 <br>
 <b>TODO:</b><br>

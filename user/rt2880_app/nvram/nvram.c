@@ -228,7 +228,7 @@ static int gen_wifi_config(int mode, int genmode)
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	int inic = 0;
 #endif
-	char tx_rate[32], wmm_enable[32];
+	char w_mode[32], tx_rate[32], wmm_enable[32];
 
 	if (genmode == RT2860_NVRAM) {
 		system("mkdir -p /etc/Wireless/RT2860");
@@ -306,10 +306,17 @@ static int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 	}
 #endif
-	//Get Bssid number -> need move per ssid to goahead
+	//Limit ssid
 	ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
 	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
 		ssid_num = MAX_NUMBER_OF_BSSID;
+
+	//WirelessMode -> need move per ssid to goahead
+	bzero(w_mode, sizeof(w_mode));
+	snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
+	for (i = 1; i < ssid_num; i++)
+		snprintf(wmm_enable+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
+	fprintf(fp, "WirelessMode=%s\n", wmm_enable);
 
 	//TxRate -> need move per ssid to goahead
 	bzero(tx_rate, sizeof(tx_rate));
