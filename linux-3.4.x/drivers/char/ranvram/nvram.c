@@ -597,4 +597,6 @@ static int const nvram_getall(int index, char *buf)
 
 late_initcall(ra_nvram_init);
 module_exit(ra_nvram_exit);
-MODULE_DESCRIPTION("NVRAM module for Ralink/Mediatek SOC`s");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Mediatek");
+MODULE_DESCRIPTION("NVRAM module for Mediatek SOC`s");
