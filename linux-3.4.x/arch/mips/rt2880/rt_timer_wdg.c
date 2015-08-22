@@ -133,12 +133,16 @@ void set_wdg_timer_ebl(unsigned int timer, unsigned int ebl)
 	else
 		result |= (0x2<<21);
 	sysRegWrite(GPIOMODE, result);
-	
+
 	// reset output low period is 100us
 	result=sysRegRead(RSTSTAT);
 	result &= ~(0x3FFF);
 	result |= 0x64;
 	sysRegWrite(RSTSTAT, result);
+#endif
+#else
+#if defined(CONFIG_RALINK_MT7620)
+	sysRegWrite(0xB0000038, 0x80000000); //disable wdt_output
 #endif
 #endif
 }
