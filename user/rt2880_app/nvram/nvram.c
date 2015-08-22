@@ -228,7 +228,7 @@ static int gen_wifi_config(int mode, int genmode)
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	int inic = 0;
 #endif
-	char w_mode[32], tx_rate[32], wmm_enable[32];
+	char w_mode[64], wmm_enable[64];
 
 	if (genmode == RT2860_NVRAM) {
 		system("mkdir -p /etc/Wireless/RT2860");
@@ -271,6 +271,11 @@ static int gen_wifi_config(int mode, int genmode)
 	else if (genmode == RTINIC_NVRAM)
 	    fprintf(fp, "MacAddress=%s\n", nvram_bufget(mode, "WLAN2_MAC_ADDR"));
 
+	// Limit numbers ssid
+	ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
+	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
+		ssid_num = MAX_NUMBER_OF_BSSID;
+
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
@@ -278,6 +283,13 @@ static int gen_wifi_config(int mode, int genmode)
 		fprintf(fp, "RadioOn=0\n");
 	    else
 		fprintf(fp, "RadioOn=1\n");
+
+	    // WirelessMode -> need move per ssid to goahead
+	    bzero(w_mode, sizeof(w_mode));
+	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessMode"));
+	    for (i = 1; i < ssid_num; i++)
+		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessMode"));
+	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
 	    FPRINT_NUM(TxPower);
 	    FPRINT_NUM(Channel);
@@ -294,6 +306,13 @@ static int gen_wifi_config(int mode, int genmode)
 	    else
 		fprintf(fp, "RadioOn=1\n");
 
+	    // WirelessMode -> need move per ssid to goahead
+	    bzero(w_mode, sizeof(w_mode));
+	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessModeINIC"));
+	    for (i = 1; i < ssid_num; i++)
+		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessModeINIC"));
+	    fprintf(fp, "WirelessMode=%s\n", w_mode);
+
 	    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
 	    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
 	    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
@@ -304,54 +323,12 @@ static int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 	}
 #endif
-	//Limit ssid
-	ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
-	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
-		ssid_num = MAX_NUMBER_OF_BSSID;
 
-	//WirelessMode -> need move per ssid to goahead
-	bzero(w_mode, sizeof(w_mode));
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (inic) {
-	    snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessModeINIC"));
-	    for (i = 1; i < ssid_num; i++)
-		snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessModeINIC"));
-	} else {
-	    snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
-	    for (i = 1; i < ssid_num; i++)
-		snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
-	}
-#else
-	snprintf(w_mode, 2, "%s", nvram_bufget(mode, "WirelessMode"));
-	for (i = 1; i < ssid_num; i++)
-		    snprintf(w_mode+strlen(w_mode), 3, ";%s", nvram_bufget(mode, "WirelessMode"));
-#endif
-	fprintf(fp, "WirelessMode=%s\n", w_mode);
-
-     	//TxRate -> need move per ssid to goahead
-	bzero(tx_rate, sizeof(tx_rate));
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (inic) {
-	    snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRateINIC"));
-	    for (i = 1; i < ssid_num; i++)
-		snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRateINIC"));
-	} else {
-	    snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRate"));
-	    for (i = 1; i < ssid_num; i++)
-		snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRate"));
-	}
-#else
-	snprintf(tx_rate, 2, "%s", nvram_bufget(mode, "TxRate"));
-	for (i = 1; i < ssid_num; i++)
-		snprintf(tx_rate+strlen(tx_rate), 3, ";%s", nvram_bufget(mode, "TxRate"));
-#endif
-	fprintf(fp, "TxRate=%s\n", tx_rate);
-
-	//WmmCapable -> need move per ssid to goahead
+	// WmmCapable -> need move per ssid to goahead
 	bzero(wmm_enable, sizeof(wmm_enable));
-	snprintf(wmm_enable, 2, "%s", nvram_bufget(mode, "WmmCapable"));
+	sprintf(wmm_enable, "%s", nvram_bufget(mode, "WmmCapable"));
 	for (i = 1; i < ssid_num; i++)
-		snprintf(wmm_enable+strlen(wmm_enable), 3, ";%s", nvram_bufget(mode, "WmmCapable"));
+		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_bufget(mode, "WmmCapable"));
 	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
 	FPRINT_NUM(CountryRegion);
