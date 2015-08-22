@@ -1765,11 +1765,12 @@ typedef struct _COMMON_CONFIG {
 	UCHAR vht_bw_signal;
 	UCHAR vht_cent_ch;
 	UCHAR vht_cent_ch2;
+#ifdef WFA_VHT_PF
 	UCHAR vht_mcs_cap;
 	UCHAR vht_nss_cap;
 	USHORT vht_tx_hrate;
 	USHORT vht_rx_hrate;
-	BOOLEAN ht20_forbid;
+#endif /* WFA_VHT_PF */
 	BOOLEAN vht_ldpc;
 #endif /* DOT11_VHT_AC */
 
