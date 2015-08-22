@@ -83,7 +83,9 @@ typedef	enum	_Dot1xInternalCmd
 {
 	DOT1X_DISCONNECT_ENTRY, 			
 	DOT1X_RELOAD_CONFIG,
+#ifdef RADIUS_MAC_ACL_SUPPORT
 	DOT1X_ACL_ENTRY,
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 }	DOT1X_INTERNAL_CMD;
 
 // Key mapping keys require a BSSID
@@ -132,8 +134,10 @@ typedef struct PACKED _DOT1X_CMM_CONF
 	unsigned char 		PreAuthifname[MAX_MBSSID_NUM][IFNAMSIZ];
 	unsigned char		PreAuthifname_len[MAX_MBSSID_NUM];
 	DOT1X_BSS_INFO		Dot1xBssInfo[MAX_MBSSID_NUM];
+#ifdef RADIUS_MAC_ACL_SUPPORT
 	unsigned char RadiusAclEnable[MAX_MBSSID_NUM];
 	unsigned int AclCacheTimeout[MAX_MBSSID_NUM];
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 } DOT1X_CMM_CONF, *PDOT1X_CMM_CONF;
 
 typedef struct PACKED _DOT1X_IDLE_TIMEOUT

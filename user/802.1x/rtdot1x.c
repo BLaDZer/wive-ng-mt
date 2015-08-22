@@ -28,7 +28,9 @@
 #include "sta_info.h"
 #include "radius_client.h"
 #include "config.h"
+#ifdef RADIUS_MAC_ACL_SUPPORT
 #include "ieee802_11_auth.h"
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
 //#define RT2860AP_SYSTEM_PATH   "/etc/Wireless/RT2860AP/RT2860AP.dat"
 
@@ -321,7 +323,7 @@ static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
 			case DOT1X_RELOAD_CONFIG:
 				Handle_reload_config(rtapd);
 			break;
-			
+#ifdef RADIUS_MAC_ACL_SUPPORT
 			case DOT1X_ACL_ENTRY:
 				DBGPRINT(RT_DEBUG_TRACE, "STA(%02x:%02x:%02x:%02x:%02x:%02x) go to RADIUS-ACL Checking.\n", MAC2STR(sa));	
 				DBGPRINT(RT_DEBUG_TRACE, "--> From AP Index: %d\n", apidx);
@@ -337,7 +339,7 @@ static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
 				}
 				
 			break;
-				
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
 			default:
 				DBGPRINT(RT_DEBUG_ERROR, "Unknown internal command(%d)!!!\n", icmd);
@@ -526,11 +528,14 @@ static int Apd_setup_interface(rtapd *rtapd)
 #else	
     DBGPRINT(RT_DEBUG_TRACE,"rtapd->radius->auth_serv_sock = %d\n",rtapd->radius->auth_serv_sock);
 #endif
+
+#ifdef RADIUS_MAC_ACL_SUPPORT
 	if (hostapd_acl_init(rtapd))
 	{
 		DBGPRINT(RT_DEBUG_ERROR,"ACL initialization failed.\n");
 		return -1;
 	}
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
 	return 0;
 }
@@ -838,6 +843,7 @@ int main(int argc, char *argv[])
         
         eloop_run();
 
+#ifdef RADIUS_MAC_ACL_SUPPORT
 	/* Clear Inside Radius ACL Cache */
 	hostapd_acl_deinit(interfaces.rtapd[0]);
 
@@ -847,6 +853,7 @@ int main(int argc, char *argv[])
 		RT_ioctl(interfaces.rtapd[0]->ioctl_sock, RT_PRIV_IOCTL, (char *)&auth_pid, sizeof(int), 
 				prefix_name, i, RT_OID_802_DOT1X_RADIUS_ACL_CLEAR_CACHE);
 	}
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
         Apd_free_stas(interfaces.rtapd[0]);
 	    ret = 0;

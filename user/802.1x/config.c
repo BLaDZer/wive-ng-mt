@@ -386,13 +386,14 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 			num_preauth_if ++;
 		}
 		
+#ifdef RADIUS_MAC_ACL_SUPPORT
 		// Radius ACL Cache
 		conf->RadiusAclEnable[i] = pDot1xCmmConf->RadiusAclEnable[i];
 	        DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Enable: %d \n", i, conf->RadiusAclEnable[i]);
 		
 		conf->AclCacheTimeout[i] = pDot1xCmmConf->AclCacheTimeout[i];
 		DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Cache_Timeout: %d \n", i, conf->AclCacheTimeout[i]);
-
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 	}
 
 	if (num_eap_if > 0)

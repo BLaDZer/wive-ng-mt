@@ -22,7 +22,7 @@
 #include "config.h"
 
 /* It shall be the same with wireless driver */
-#define dot1x_version	"2.7.0.0"
+#define dot1x_version	"3.0.0.0"
 
 #define NIC_DBG_STRING      ("[DOT1X] ")
 
@@ -54,9 +54,11 @@
 #define OID_802_DOT1X_STATIC_WEP_COPY				0x0544
 #define OID_802_DOT1X_IDLE_TIMEOUT					0x0545
 
+#ifdef RADIUS_MAC_ACL_SUPPORT
 #define OID_802_DOT1X_RADIUS_ACL_NEW_CACHE                              0x0546
 #define OID_802_DOT1X_RADIUS_ACL_DEL_CACHE                              0x0547
 #define OID_802_DOT1X_RADIUS_ACL_CLEAR_CACHE                            0x0548
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 #define OID_802_DOT1X_QUERY_STA_AID                                     0x0549
 
 
@@ -66,9 +68,11 @@
 #define RT_OID_802_DOT1X_STATIC_WEP_COPY	(OID_GET_SET_TOGGLE | OID_802_DOT1X_STATIC_WEP_COPY)
 #define RT_OID_802_DOT1X_IDLE_TIMEOUT		(OID_GET_SET_TOGGLE | OID_802_DOT1X_IDLE_TIMEOUT)
 
+#ifdef RADIUS_MAC_ACL_SUPPORT
 #define RT_OID_802_DOT1X_RADIUS_ACL_NEW_CACHE   (OID_GET_SET_TOGGLE | OID_802_DOT1X_RADIUS_ACL_NEW_CACHE)
 #define RT_OID_802_DOT1X_RADIUS_ACL_DEL_CACHE   (OID_GET_SET_TOGGLE | OID_802_DOT1X_RADIUS_ACL_DEL_CACHE)
 #define RT_OID_802_DOT1X_RADIUS_ACL_CLEAR_CACHE (OID_GET_SET_TOGGLE | OID_802_DOT1X_RADIUS_ACL_CLEAR_CACHE)
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
 #endif
 
@@ -134,10 +138,11 @@ typedef struct apd_data {
 
 	struct radius_client_data *radius;
 
+#ifdef RADIUS_MAC_ACL_SUPPORT
 	/* Radius ACL & Query Cache */
 	struct hostapd_cached_radius_acl *acl_cache;
 	struct hostapd_acl_query_data *acl_queries;
-
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 } rtapd;
 
 typedef struct recv_from_ra {
@@ -147,10 +152,12 @@ typedef struct recv_from_ra {
     u8 xframe[1];    
 } __attribute__ ((packed)) priv_rec;
 
+#ifdef RADIUS_MAC_ACL_SUPPORT
 typedef struct _RT_802_11_ACL_ENTRY {
 	unsigned char Addr[MAC_ADDR_LEN];
 	unsigned short Rsv;
 } RT_802_11_ACL_ENTRY, *PRT_802_11_ACL_ENTRY;
+#endif /* RADIUS_MAC_ACL_SUPPORT */
 
 typedef struct _DOT1X_QUERY_STA_AID {
         unsigned char StaAddr[6];
