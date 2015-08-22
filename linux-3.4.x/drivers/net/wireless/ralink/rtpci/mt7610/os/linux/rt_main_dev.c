@@ -41,9 +41,9 @@
 #endif
 #endif
 
-#ifdef RTMP_MAC_PCI
 MODULE_LICENSE("GPL");
-#endif /* RTMP_MAC_PCI */
+MODULE_AUTHOR("Mediatek");
+MODULE_DESCRIPTION("MT7610 WiFi driver");
 
 #ifdef CONFIG_APSTA_MIXED_SUPPORT
 /*UINT32 CW_MAX_IN_BITS;*/

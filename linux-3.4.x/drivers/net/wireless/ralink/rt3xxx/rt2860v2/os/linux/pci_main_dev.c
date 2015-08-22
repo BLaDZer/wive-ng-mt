@@ -521,7 +521,7 @@ static VOID __devexit rt2860_remove_one(
 	/* Free the root net_device */
 	RtmpOSNetDevFree(net_dev);
 }
- 
+
 MODULE_LICENSE("Proprietary");
-
-
+MODULE_AUTHOR("Mediatek");
+MODULE_DESCRIPTION("MT7620 WiFi driver");

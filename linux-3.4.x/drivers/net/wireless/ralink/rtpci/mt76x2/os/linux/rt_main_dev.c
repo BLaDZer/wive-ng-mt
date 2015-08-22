@@ -41,11 +41,9 @@
 #endif
 
 // TODO: shiang-6590, remove it when MP
-#ifdef RTMP_MAC_PCI
 MODULE_LICENSE("GPL");
-#endif /* RTMP_MAC_PCI */
-// TODO: End---
-
+MODULE_AUTHOR("Mediatek");
+MODULE_DESCRIPTION("MT76x2 WiFi driver");
 
 #ifdef BTCOEX_CONCURRENT
 int CoexChannel;
