@@ -1,5 +1,5 @@
 /* lib/defs.h.  Generated from defs.h.in by configure.  */
-/* lib/defs.h.in.  Generated from configure.in by autoheader.  */
+/* lib/defs.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to 1 to disable pthreads */
 /* #undef DISABLE_PTHREADS */
