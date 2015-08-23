@@ -1211,7 +1211,7 @@ VOID DFSInit(PRTMP_ADAPTER pAd)
 		pDfsProgramParam->Packet_End_Mask = 0;
 		//pDfsProgramParam->Rx_PE_Mask = 0;
 		pDfsProgramParam->Rx_PE_Mask = (IS_MT76x2E(pAd)) ? 0xFF : 0x0; //lala
-		printk ("lala: Rx_PE_Mask=0x%02x\n", pDfsProgramParam->Rx_PE_Mask);
+		DBGPRINT(RT_DEBUG_TRACE,("lala: Rx_PE_Mask=0x%02x\n", pDfsProgramParam->Rx_PE_Mask);
 		pDfsProgramParam->DeltaDelay = 0x2;
 		pDfsProgramParam->Symmetric_Round = 0;
 	}
@@ -1228,7 +1228,7 @@ VOID DFSInit(PRTMP_ADAPTER pAd)
 		s/w detection needs event buffer.
 	*/
 	if (pAd->chipCap.DfsEngineNum > 4) {
-		printk ("lala: %s DfsEngineNum=%d\n", __FUNCTION__, pAd->chipCap.DfsEngineNum);
+		DBGPRINT(RT_DEBUG_TRACE,("lala: %s DfsEngineNum=%d\n", __FUNCTION__, pAd->chipCap.DfsEngineNum);
 		pRadarDetect->bDfsSwDisable = TRUE; 	/* Default close s/w detection for new DFS*/
 	}
 	
