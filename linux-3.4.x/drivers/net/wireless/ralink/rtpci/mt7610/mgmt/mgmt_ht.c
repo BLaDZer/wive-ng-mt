@@ -23,7 +23,7 @@ INT ht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, HT_CAPABILITY_IE 
 		pAd->MacTab.fAnyStationNonGF = TRUE;
 	}
 
-	if ((peer->HtCapInfo.ChannelWidth) && (my->ChannelWidth))
+	if ((peer->HtCapInfo.ChannelWidth) && (my->ChannelWidth) && (pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth))
 	{
 		pEntry->MaxHTPhyMode.field.BW= BW_40;
 		pEntry->MaxHTPhyMode.field.ShortGI = ((my->ShortGIfor40) & (peer->HtCapInfo.ShortGIfor40));

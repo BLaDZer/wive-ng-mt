@@ -1177,64 +1177,66 @@
 76) kernel: ralink_wifi: xxxx: fix fallback to 20MHz in some cases.<br>
 77) kernel: ralink_wifi: xxxx: fix mpdu default settings in some cases.<br>
 78) kernel: ralink_wifi: xxxx: fix AP-Client reconnect issue on timeout Root-AP beacons (update last time on RX activity).<br>
-79) kernel: ralink_wifi: xxxx: tune rate_ctl TrainUpHighThrd (110->100).<br>
-80) kernel: ralink_wifi: xxxx: ability to obtain WDS and AP-Client connection info.<br>
-81) kernel: ralink_wifi: xxxx: show correct AP-Client interface name.<br>
-82) kernel: config: enable xt_match_time module build by default.<br>
-83) kernel: sched/fair: fix RCU stall upon -ENOMEM in sched_create_group().<br>
-84) kernel: mm: place preemption point in do_mlockall() loop.<br>
-85) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
-86) kernel: time: make *secs_to_jiffies static always inline (small optimize).<br>
-87) kernel: irq: warn when shared interrupts do not match on NO_SUSPEND.<br>
-88) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
-89) kenrel: mips: fix HIGHMEM crash in __update_cache().<br>
-90) kernel: mips: fix cpu_has_mips_r2_exec_hazard.<br>
-91) kernel: mips: make set_pte() SMP safe.<br>
-92) kernel: mips: handle page faults of executable but unreadable pages.<br>
-93) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
-94) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
-95) kernel: jump_label: locking/static_keys: rework update logic.<br>
-96) kernel: jump_label: add jump_entry_key() helper.<br>
-97) kernel: jump_label: module: fix module locking.<br>
-98) kernel: net: inet: frags: fix defragmented packet's IP  header for af_packet.<br>
-99) kernel: net: socket: fix the wrong returns for recvmsg and sendmsg.<br>
-100) kernel: net: neigh: do not modify unlinked entries.<br>
-101) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
-102) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
-103) kernel: net: bridge: mcast: give fast leave precedence over multicast router and querier.<br>
-104) kernel: net: do not process device backlog during unregistration.<br>
-105) kernel: net: call rcu_read_lock early in process_backlog.<br>
-106) kernel: net: clone skb before setting peeked flag.<br>
-107) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
-108) kernel: net: ppp: fix device unregistration upon netns deletion.<br>
-109) kernel: net: fix skb_set_peeked use-after-free bug.<br>
-110) kernel: net: fix race condition in store_rps_map.<br>
-111) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
-112) kernel: net: arp: fix a regression in arp_solicit().<br>
-113) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
-114) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
-115) kernel: net: arp: filter NOARP neighbours for SIOCGARP.<br>
-116) kernel: net: tcp: don't abort splice() after small transfers.<br>
-117) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
-118) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
-119) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
-120) kernel: net: tcp: tso: allow deferring under reordering state.<br>
-121) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
-122) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
-123) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
-124) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
-125) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
-126) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
-127) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
-128) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
-129) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
-130) kernel: net: ipv6: fix MLD Query message check.<br>
-131) kernel: net: netfilter: ip[6]t_REJECT: fix wrong transport header pointer in TCP reset.<br>
-132) kernel: net: netfilter: ip6t_REJECT: skip checksum verification for outgoing ipv6 packets.<br>
-133) kenrel: net: netfilter: bridge: don't leak skb in error paths.<br>
-134) kernel: net: packet: read num_members once in packet_rcv_fanout().<br>
-135) kernel: net: packet: avoid out of bounds read in round robin fanout.<br>
-136) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
+79) kernel: ralink_wifi: xxxx: fix some potentional null pointer dereference.<br>
+80) kernel: ralink_wifi: xxxx: fix ht_width set.<br>
+81) kernel: ralink_wifi: xxxx: tune rate_ctl TrainUpHighThrd (110->100).<br>
+82) kernel: ralink_wifi: xxxx: ability to obtain WDS and AP-Client connection info.<br>
+83) kernel: ralink_wifi: xxxx: show correct AP-Client interface name.<br>
+84) kernel: config: enable xt_match_time module build by default.<br>
+85) kernel: sched/fair: fix RCU stall upon -ENOMEM in sched_create_group().<br>
+86) kernel: mm: place preemption point in do_mlockall() loop.<br>
+87) kernel: lib/int_sqrt.c: optimize square root algorithm.<br>
+88) kernel: time: make *secs_to_jiffies static always inline (small optimize).<br>
+89) kernel: irq: warn when shared interrupts do not match on NO_SUSPEND.<br>
+90) kernel: mips: fix sched_getaffinity with MT FPAFF enabled.<br>
+91) kenrel: mips: fix HIGHMEM crash in __update_cache().<br>
+92) kernel: mips: fix cpu_has_mips_r2_exec_hazard.<br>
+93) kernel: mips: make set_pte() SMP safe.<br>
+94) kernel: mips: handle page faults of executable but unreadable pages.<br>
+95) kernel: jump_label: rename JUMP_LABEL_{EN,DIS}ABLE to JUMP_LABEL_{JMP,NOP}.<br>
+96) kenrel: jump_label: locking/static_keys: rename JUMP_LABEL_TYPE_* and related helpers to the static_key* pattern.<br>
+97) kernel: jump_label: locking/static_keys: rework update logic.<br>
+98) kernel: jump_label: add jump_entry_key() helper.<br>
+99) kernel: jump_label: module: fix module locking.<br>
+100) kernel: net: inet: frags: fix defragmented packet's IP  header for af_packet.<br>
+101) kernel: net: socket: fix the wrong returns for recvmsg and sendmsg.<br>
+102) kernel: net: neigh: do not modify unlinked entries.<br>
+103) kernel: net: avoid gcc miss optimization regression in data rx path.<br>
+104) kernel: net: bridge: ability to fast isolation any port w/o ebtables.<br>
+105) kernel: net: bridge: mcast: give fast leave precedence over multicast router and querier.<br>
+106) kernel: net: do not process device backlog during unregistration.<br>
+107) kernel: net: call rcu_read_lock early in process_backlog.<br>
+108) kernel: net: clone skb before setting peeked flag.<br>
+109) kernel: net: fq_codel: fix return value of fq_codel_drop().<br>
+110) kernel: net: ppp: fix device unregistration upon netns deletion.<br>
+111) kernel: net: fix skb_set_peeked use-after-free bug.<br>
+112) kernel: net: fix race condition in store_rps_map.<br>
+113) kernel: net: arp: fix a lockdep splat in arp_solicit().<br>
+114) kernel: net: arp: fix a regression in arp_solicit().<br>
+115) kernel: net: arp: inherit metadata dst when creating ARP requests.<br>
+116) kernel: net: arp: remove special case to give AX25 it's open arp operations.<br>
+117) kernel: net: arp: filter NOARP neighbours for SIOCGARP.<br>
+118) kernel: net: tcp: don't abort splice() after small transfers.<br>
+119) kernel: net: tcp: splice: fix an infinite loop in tcp_read_sock().<br>
+120) kernel: net: tcp: remove obsolete check in tcp_set_skb_tso_segs().<br>
+121) kernel: net: tcp: avoid merging segments on the OOO queue into a cloned SKB.<br>
+122) kernel: net: tcp: tso: allow deferring under reordering state.<br>
+123) kernel: net: tcp: fix recv with flags MSG_WAITALL | MSG_PEEK.<br>
+124) kernel: net: tcp: allow segment with FIN in tcp_try_coalesce().<br>
+125) kernel: net: ipv4: be more aggressive when probing alternative gateways.<br>
+126) kernel: net: ipv4: fix NULL checking in devinet_ioctl().<br>
+127) kernel: net: ipv6: lock socket in ip6_datagram_connect().<br>
+128) kernel: net: ipv6: update flowi6_oif in ip6_dst_lookup_flow if not set.<br>
+129) kernel: net: ipv6: flush and refresh nd cache on netdev_change change (as ipv4).<br>
+130) kernel: net: ipv6: make ipv6_is_mld() inline and use it from ip6_mc_input().<br>
+131) kernel: net: ipv6: make MLD packets to only be processed locally.<br>
+132) kernel: net: ipv6: fix MLD Query message check.<br>
+133) kernel: net: netfilter: ip[6]t_REJECT: fix wrong transport header pointer in TCP reset.<br>
+134) kernel: net: netfilter: ip6t_REJECT: skip checksum verification for outgoing ipv6 packets.<br>
+135) kenrel: net: netfilter: bridge: don't leak skb in error paths.<br>
+136) kernel: net: packet: read num_members once in packet_rcv_fanout().<br>
+137) kernel: net: packet: avoid out of bounds read in round robin fanout.<br>
+138) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
 <b>TODO:</b><br>
