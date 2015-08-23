@@ -1752,7 +1752,7 @@ VOID APUpdateOperationMode(
 		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, (ALLN_SETPROTECT), TRUE, pAd->MacTab.fAnyStationNonGF);
 	}
 		
-	if (pAd->MacTab.fAnyStationIsLegacy)
+	if (pAd->MacTab.fAnyStationIsLegacy || pAd->MacTab.Size > 1)
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 3;
 		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, (ALLN_SETPROTECT), TRUE, pAd->MacTab.fAnyStationNonGF);
