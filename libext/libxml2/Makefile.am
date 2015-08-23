@@ -1199,7 +1199,7 @@ xml2Conf.sh: xml2Conf.sh.in Makefile
 	&& mv xml2Conf.tmp xml2Conf.sh
 
 CLEANFILES = runxmlconf.log test.out xml2Conf.sh *.gcda *.gcno *.res
-DISTCLEANFILES = COPYING missing.lst
+DISTCLEANFILES = COPYING missing.lst filesystem
 
 confexecdir=$(libdir)
 confexec_DATA = xml2Conf.sh

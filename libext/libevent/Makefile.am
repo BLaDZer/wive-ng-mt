@@ -245,4 +245,4 @@ shared: install
 	cp -vfra ./filesystem/include/*	$(LIBCDIRSHARED)/include
 
 
-DISTCLEANFILES = *~ libevent.pc ./include/event2/event-config.h
+DISTCLEANFILES = *~ libevent.pc ./include/event2/event-config.h filesystem

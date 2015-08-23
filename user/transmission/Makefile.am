@@ -50,4 +50,5 @@ romfs: install
 DISTCLEANFILES = \
   intltool-extract \
   intltool-merge \
-  intltool-update 
+  intltool-update \
+  filesystem
