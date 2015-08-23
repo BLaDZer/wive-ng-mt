@@ -183,6 +183,7 @@ function bool () {
 	      def="y"
 	      ;;
 	 "n") defprompt="N/y/?"
+	      def="y"
 	      ;;
 	esac
 	while :; do
