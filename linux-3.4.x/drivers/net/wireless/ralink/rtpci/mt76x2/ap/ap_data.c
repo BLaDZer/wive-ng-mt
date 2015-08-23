@@ -3982,7 +3982,7 @@ BOOLEAN APCheckVaildDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #endif /* RLT_MAC_DBG */
 //---Add by shiang for debug
 
-		if(pAd->ApCfg.BANClass3Data == TRUE)
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			break;
 
 		isVaild = TRUE;

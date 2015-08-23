@@ -4133,7 +4133,7 @@ BOOLEAN APCheckVaildDataFrame(
 		}
 //---Add by shiang for debug
 
-		if(pAd->ApCfg.BANClass3Data == TRUE)
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			break; /* give up this frame */
 
 		isVaild = TRUE;
@@ -4241,7 +4241,7 @@ VOID APHandleRxMgmtFrame(
 			}
 		}
 	
-		if (pAd->ApCfg.BANClass3Data == TRUE)
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 		{
 			/* disallow new association */
 			if ((pHeader->FC.SubType == SUBTYPE_ASSOC_REQ) || (pHeader->FC.SubType == SUBTYPE_AUTH))

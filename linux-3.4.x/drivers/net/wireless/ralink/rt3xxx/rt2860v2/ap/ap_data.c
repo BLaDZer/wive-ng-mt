@@ -3654,8 +3654,8 @@ BOOLEAN APCheckVaildDataFrame(
 		/* check if Class2 or 3 error */
 		if ((pHeader->FC.FrDs == 0) && (APCheckClass2Class3Error(pAd, pRxWI->WirelessCliID, pHeader))) 
 			break; /* give up this frame */
-	
-		if(pAd->ApCfg.BANClass3Data == TRUE)
+
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			break; /* give up this frame */
 
 		isVaild = TRUE;
@@ -3787,8 +3787,8 @@ VOID APHandleRxMgmtFrame(
 				break;
 			}
 		}
-	
-		if (pAd->ApCfg.BANClass3Data == TRUE)
+
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 		{
 			/* disallow new association */
 			if ((pHeader->FC.SubType == SUBTYPE_ASSOC_REQ) || (pHeader->FC.SubType == SUBTYPE_AUTH))
