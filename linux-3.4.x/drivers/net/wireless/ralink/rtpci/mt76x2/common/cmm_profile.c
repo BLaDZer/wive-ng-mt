@@ -787,15 +787,17 @@ static void rtmp_read_ap_client_from_file(
 		{
 			pApCliEntry = &pAd->ApCfg.ApCliTab[i];
 
+			NdisZeroMemory(&(pApCliEntry->CfgApCliBssid), MAC_ADDR_LEN);
+
 			if(strlen(macptr) != 17)  /*Mac address acceptable format 01:02:03:04:05:06 length 17*/
-				continue; 
+				continue;
 			if(strcmp(macptr,"00:00:00:00:00:00") == 0)
-				continue; 
+				continue;
 			for (j=0; j<MAC_ADDR_LEN; j++)
 			{
 				AtoH(macptr, &macAddress[j], 1);
 				macptr=macptr+3;
-			}	
+			}
 			memcpy(pApCliEntry->CfgApCliBssid, &macAddress, MAC_ADDR_LEN);
 			pApCliEntry->Valid = FALSE;/* it should be set when successfuley association*/
 		}
