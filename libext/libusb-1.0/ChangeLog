@@ -1,5 +1,63 @@
 For detailed information about the changes below, please see the git log or
-visit: http://log.libusbx.org
+visit: http://log.libusb.info
+
+2014-05-30: v1.0.19
+* Add support for USB bulk streams on Linux and Mac OS X (#11)
+* Windows: Add AMD and Intel USB-3.0 root hub support
+* Windows: Fix USB 3.0 speed detection on Windows 8 or later (#10)
+* Added Russian translation for libusb_strerror strings
+* All: Various small fixes and cleanups
+The (#xx) numbers are libusb issue numbers, see ie:
+https://github.com/libusb/libusb/issues/11
+
+2014-01-25: v1.0.18
+* Fix multiple memory leaks
+* Fix a crash when HID transfers return no data on Windows
+* Ensure all pending events are consumed
+* Improve Android and ucLinux support
+* Multiple Windows improvements (error logging, VS2013, VIA xHCI support)
+* Multiple OS X improvements (broken compilation, SIGFPE, 64bit support)
+
+2013-09-06: v1.0.17
+* Hotplug callbacks now always get passed a libusb_context, even if it is
+  the default context. Previously NULL would be passed for the default context,
+  but since the first context created is the default context, and most apps
+  use only 1 context, this meant that apps explicitly creating a context would
+  still get passed NULL
+* Android: Add .mk files to build with the Android NDK
+* Darwin: Add Xcode project
+* Darwin: Fix crash on unplug (#121)
+* Linux: Fix hang (deadlock) on libusb_exit
+* Linux: Fix libusb build failure with --disable-udev (#124)
+* Linux: Fix libusb_get_device_list() hang with --disable-udev (#130)
+* OpenBSD: Update OpenBSD backend with support for control transfers to
+  non-ugen(4) devices and make get_configuration() no longer generate I/O.
+  Note that using this libusb version on OpenBSD requires using
+  OpenBSD 5.3-current or later. Users of older OpenBSD versions are advised
+  to stay with the libusb shipped with OpenBSD (mpi)
+* Windows: fix libusb_dll_2010.vcxproj link errors (#129)
+* Various other bug fixes and improvements
+
+2013-07-11: v1.0.16
+* Add hotplug support for Darwin and Linux (#9)
+* Add superspeed endpoint companion descriptor support (#15)
+* Add BOS descriptor support (#15)
+* Make descriptor parsing code more robust
+* New libusb_get_port_numbers API, this is libusb_get_port_path without
+  the unnecessary context parameter, libusb_get_port_path is now deprecated
+* New libusb_strerror API (#14)
+* New libusb_set_auto_detach_kernel_driver API (#17)
+* Improve topology API docs (#95)
+* Logging now use a single write call per log-message, avoiding log-message
+  "interlacing" when using multiple threads.
+* Android: use Android logging when building on Android (#101)
+* Darwin: make libusb_reset reenumerate device on descriptors change (#89)
+* Darwin: add support for the LIBUSB_TRANSFER_ADD_ZERO_PACKET flag (#91)
+* Darwin: add a device cache (#112, #114)
+* Examples: Add sam3u_benchmark isochronous example by Harald Welte (#109)
+* Many other bug fixes and improvements
+The (#xx) numbers are libusbx issue numbers, see ie:
+https://github.com/libusbx/libusbx/issues/9
 
 2013-04-15: v1.0.15
 * Improve transfer cancellation and avoid short read failures on broken descriptors
@@ -19,7 +77,7 @@ visit: http://log.libusbx.org
 * Reverts the previous API change with regards to bMaxPower.
   If this doesn't matter to you, you are encouraged to keep using v1.0.13,
   as it will use the same attribute as v2.0, to be released soon.
-* Note that LIBUSBX_API_VERSION is *decreased* to 0x010000FF and the previous
+* Note that LIBUSB_API_VERSION is *decreased* to 0x010000FF and the previous
   guidelines with regards to concurrent use of MaxPower/bMaxPower still apply.
 
 2012-09-20: v1.0.13
@@ -30,11 +88,11 @@ visit: http://log.libusbx.org
 * Fix broken support for the 0.1 -> 1.0 libusb-compat layer
 * Fix unwanted cancellation of pending timeouts as well as major timeout related bugs
 * Fix handling of HID and composite devices on Windows
-* Introduce LIBUSBX_API_VERSION macro
+* Introduce LIBUSB_API_VERSION macro
 * Add Cypress FX/FX2 firmware upload sample, based on fxload from
   http://linux-hotplug.sourceforge.net
 * Add libusb0 (libusb-win32) and libusbK driver support on Windows. Note that while
-  the drivers allow it, isochronous transfers are not supported yet in libusbx. Also
+  the drivers allow it, isochronous transfers are not supported yet in libusb. Also
   not supported yet is the use of libusb-win32 filter drivers on composite interfaces
 * Add support for the new get_capabilities ioctl on Linux and avoid unnecessary
   splitting of bulk transfers
@@ -135,18 +193,18 @@ visit: http://log.libusbx.org
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 APPENDIX A - How to maintain code compatibility with versions of libusb and
-libusbx that use MaxPower:
+libusb that use MaxPower:
 
 If you must to maintain compatibility with versions of the library that aren't
 using the bMaxPower attribute in struct libusb_config_descriptor, the 
-recommended way is to use the new LIBUSBX_API_VERSION macro with an #ifdef.
+recommended way is to use the new LIBUSB_API_VERSION macro with an #ifdef.
 For instance, if your code was written as follows:
 
   if (dev->config[0].MaxPower < 250)
 
 Then you should modify it to have:
 
-#if defined(LIBUSBX_API_VERSION) && (LIBUSBX_API_VERSION >= 0x01000100)
+#if defined(LIBUSB_API_VERSION) && (LIBUSB_API_VERSION >= 0x01000100)
   if (dev->config[0].bMaxPower < 250)
 #else
   if (dev->config[0].MaxPower < 250)

@@ -1,5 +1,5 @@
 /*
- * Windows CE backend for libusbx 1.0
+ * Windows CE backend for libusb 1.0
  * Copyright © 2011-2013 RealVNC Ltd.
  * Large portions taken from Windows backend, which is
  * Copyright © 2009-2010 Pete Batard <pbatard@gmail.com>
@@ -38,7 +38,7 @@ unsigned __stdcall wince_clock_gettime_threaded(void* param);
 uint64_t hires_frequency, hires_ticks_to_ps;
 int errno;
 const uint64_t epoch_time = UINT64_C(116444736000000000);       // 1970.01.01 00:00:000 in MS Filetime
-enum windows_version windows_version = WINDOWS_CE;
+int windows_version = WINDOWS_CE;
 static int concurrent_usage = -1;
 // Timer thread
 // NB: index 0 is for monotonic and 1 is for the thread exit event
@@ -234,6 +234,12 @@ static int wince_init(struct libusb_context *ctx)
 			usbi_err(ctx, "Unable to create timer thread - aborting");
 			goto init_exit;
 		}
+
+		// Wait for timer thread to init before continuing.
+		if (WaitForSingleObject(timer_response, INFINITE) != WAIT_OBJECT_0) {
+			usbi_err(ctx, "Failed to wait for timer thread to become ready - aborting");
+			goto init_exit;
+		}
 	}
 	// At this stage, either we went through full init successfully, or didn't need to
 	r = LIBUSB_SUCCESS;
@@ -341,10 +347,10 @@ static int wince_get_device_list(
 	UKW_DEVICE devices[MAX_DEVICE_COUNT];
 	struct discovered_devs * new_devices = *discdevs;
 	DWORD count = 0, i;
-	struct libusb_device *dev;
+	struct libusb_device *dev = NULL;
 	unsigned char bus_addr, dev_addr;
 	unsigned long session_id;
-	BOOL success, need_unref = FALSE;
+	BOOL success;
 	DWORD release_list_offset = 0;
 	int r = LIBUSB_SUCCESS;
 
@@ -378,7 +384,6 @@ static int wince_get_device_list(
 				r = LIBUSB_ERROR_NO_MEM;
 				goto err_out;
 			}
-			need_unref = TRUE;
 			r = init_device(dev, devices[i], bus_addr, dev_addr);
 			if (r < 0)
 				goto err_out;
@@ -391,14 +396,13 @@ static int wince_get_device_list(
 			r = LIBUSB_ERROR_NO_MEM;
 			goto err_out;
 		}
-		need_unref = FALSE;
+		safe_unref_device(dev);
 	}
 	*discdevs = new_devices;
 	return r;
 err_out:
 	*discdevs = new_devices;
-	if (need_unref)
-		libusb_unref_device(dev);
+	safe_unref_device(dev);
 	// Release the remainder of the unprocessed device list.
 	// The devices added to new_devices already will still be passed up to libusb, 
 	// which can dispose of them at its leisure.
@@ -435,7 +439,7 @@ static int wince_get_active_config_descriptor(
 {
 	struct wince_device_priv *priv = _device_priv(device);
 	DWORD actualSize = len;
-	*host_endian = 1;
+	*host_endian = 0;
 	if (!UkwGetConfigDescriptor(priv->dev, UKW_ACTIVE_CONFIGURATION, buffer, len, &actualSize)) {
 		return translate_driver_error(GetLastError());
 	}
@@ -685,6 +689,8 @@ static int wince_submit_transfer(
 		return wince_submit_control_or_bulk_transfer(itransfer);
 	case LIBUSB_TRANSFER_TYPE_ISOCHRONOUS:
 		return wince_submit_iso_transfer(itransfer);
+	case LIBUSB_TRANSFER_TYPE_BULK_STREAM:
+		return LIBUSB_ERROR_NOT_SUPPORTED;
 	default:
 		usbi_err(TRANSFER_CTX(transfer), "unknown endpoint type %d", transfer->type);
 		return LIBUSB_ERROR_INVALID_PARAM;
@@ -797,6 +803,8 @@ static void wince_handle_callback (struct usbi_transfer *itransfer, uint32_t io_
 	case LIBUSB_TRANSFER_TYPE_ISOCHRONOUS:
 		wince_transfer_callback (itransfer, io_result, io_size);
 		break;
+	case LIBUSB_TRANSFER_TYPE_BULK_STREAM:
+		return LIBUSB_ERROR_NOT_SUPPORTED;
 	default:
 		usbi_err(ITRANSFER_CTX(itransfer), "unknown endpoint type %d", transfer->type);
 	}
@@ -878,6 +886,11 @@ unsigned __stdcall wince_clock_gettime_threaded(void* param)
 		usbi_dbg("hires timer available (Frequency: %"PRIu64" Hz)", hires_frequency);
 	}
 
+	// Signal wince_init() that we're ready to service requests
+	if (ReleaseSemaphore(timer_response, 1, NULL) == 0) {
+		usbi_dbg("unable to release timer semaphore: %s", windows_error_str(0));
+	}
+
 	// Main loop - wait for requests
 	while (1) {
 		timer_index = WaitForMultipleObjects(2, timer_request, FALSE, INFINITE) - WAIT_OBJECT_0;
@@ -912,7 +925,7 @@ unsigned __stdcall wince_clock_gettime_threaded(void* param)
 			nb_responses = InterlockedExchange((LONG*)&request_count[0], 0);
 			if ( (nb_responses)
 			  && (ReleaseSemaphore(timer_response, nb_responses, NULL) == 0) ) {
-				usbi_dbg("unable to release timer semaphore %d: %s", windows_error_str(0));
+				usbi_dbg("unable to release timer semaphore: %s", windows_error_str(0));
 			}
 			continue;
 		case 1: // time to quit
@@ -978,12 +991,14 @@ const struct usbi_os_backend wince_backend = {
         wince_exit,
 
         wince_get_device_list,
+	NULL,				/* hotplug_poll */
         wince_open,
         wince_close,
 
         wince_get_device_descriptor,
         wince_get_active_config_descriptor,
         wince_get_config_descriptor,
+	NULL,				/* get_config_descriptor_by_value() */
 
         wince_get_configuration,
         wince_set_configuration,
@@ -993,6 +1008,9 @@ const struct usbi_os_backend wince_backend = {
         wince_set_interface_altsetting,
         wince_clear_halt,
         wince_reset_device,
+
+	NULL,				/* alloc_streams */
+	NULL,				/* free_streams */
 
         wince_kernel_driver_active,
         wince_detach_kernel_driver,

@@ -40,7 +40,7 @@ static bool dosyslog = false;
 #endif
 
 #ifndef FXLOAD_VERSION
-#define FXLOAD_VERSION (__DATE__ " (libusbx)")
+#define FXLOAD_VERSION (__DATE__ " (libusb)")
 #endif
 
 #ifndef ARRAYSIZE
@@ -69,7 +69,7 @@ static int print_usage(int error_code) {
 	fprintf(stderr, "  -i <path>       -- Firmware to upload\n");
 	fprintf(stderr, "  -t <type>       -- Target type: an21, fx, fx2, fx2lp, fx3\n");
 	fprintf(stderr, "  -d <vid:pid>    -- Target device, as an USB VID:PID\n");
-	fprintf(stderr, "  -p <bus,addr>   -- Target device, as a libusbx bus number and device address path\n");
+	fprintf(stderr, "  -p <bus,addr>   -- Target device, as a libusb bus number and device address path\n");
 	fprintf(stderr, "  -v              -- Increase verbosity\n");
 	fprintf(stderr, "  -q              -- Decrease verbosity (silent mode)\n");
 	fprintf(stderr, "  -V              -- Print program version\n");
@@ -147,7 +147,7 @@ int main(int argc, char*argv[])
 		return print_usage(-1);
 	}
 	if ((device_id != NULL) && (device_path != NULL)) {
-		logerror("only one of -d or -a can be specified\n");
+		logerror("only one of -d or -p can be specified\n");
 		return print_usage(-1);
 	}
 
@@ -165,7 +165,7 @@ int main(int argc, char*argv[])
 		}
 	}
 
-	/* open the device using libusbx */
+	/* open the device using libusb */
 	status = libusb_init(NULL);
 	if (status < 0) {
 		logerror("libusb_init() failed: %s\n", libusb_error_name(status));
@@ -242,14 +242,8 @@ int main(int argc, char*argv[])
 	}
 
 	/* We need to claim the first interface */
+	libusb_set_auto_detach_kernel_driver(device, 1);
 	status = libusb_claim_interface(device, 0);
-#if defined(__linux__)
-	if (status != LIBUSB_SUCCESS) {
-		/* Maybe we need to detach the driver */
-		libusb_detach_kernel_driver(device, 0);
-		status = libusb_claim_interface(device, 0);
-	}
-#endif
 	if (status != LIBUSB_SUCCESS) {
 		logerror("libusb_claim_interface failed: %s\n", libusb_error_name(status));
 		goto err;
