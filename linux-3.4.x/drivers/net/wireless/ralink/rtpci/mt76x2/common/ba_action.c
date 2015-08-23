@@ -338,6 +338,10 @@ static USHORT ba_indicate_reordering_mpdus_in_order(
 
 		/* dequeue in-order frame from reodering list */
 		mpdu_blk = ba_reordering_mpdu_dequeue(&pBAEntry->list);
+		if(mpdu_blk == NULL)
+		{
+			break;
+		}
 		/* pass this frame up */
 		ANNOUNCE_REORDERING_PACKET(pAd, mpdu_blk);
 		/* move to next sequence */
@@ -362,23 +366,27 @@ static void ba_indicate_reordering_mpdus_le_seq(
 
 	NdisAcquireSpinLock(&pBAEntry->RxReRingLock);
 	while ((mpdu_blk = ba_reordering_mpdu_probe(&pBAEntry->list)))
-		{
-			/* find in-order frame */
+	{
+		/* find in-order frame */
 		if ((mpdu_blk->Sequence == Sequence) || SEQ_SMALLER(mpdu_blk->Sequence, Sequence, MAXSEQ))
 		{
 			/* dequeue in-order frame from reodering list */
 			mpdu_blk = ba_reordering_mpdu_dequeue(&pBAEntry->list);
-			/* pass this frame up */
-			ANNOUNCE_REORDERING_PACKET(pAd, mpdu_blk);
-			/* free mpdu_blk */
-			ba_mpdu_blk_free(pAd, mpdu_blk);            
-		}
-		else
+			if(mpdu_blk == NULL)
 			{
 				break;
 			}
+			/* pass this frame up */
+			ANNOUNCE_REORDERING_PACKET(pAd, mpdu_blk);
+			/* free mpdu_blk */
+			ba_mpdu_blk_free(pAd, mpdu_blk);
+		}
+		else
+		{
+		    break;
+		}
 	}
-	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);   
+	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);
 }
 
 

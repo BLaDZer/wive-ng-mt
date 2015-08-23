@@ -3348,7 +3348,7 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
 #endif
 {
 	PQUEUE_ENTRY pQEntry;
-	PNDIS_PACKET pPacket;
+	PNDIS_PACKET pPacket = NULL;
 
 	if ((pAd->Dot11_H.RDMode != RD_NORMAL_MODE)
 #ifdef CARRIER_DETECTION_SUPPORT

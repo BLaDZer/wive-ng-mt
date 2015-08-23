@@ -2974,7 +2974,7 @@ NDIS_STATUS APHardTransmit(
 	IN	UCHAR			QueIdx)
 {
 	PQUEUE_ENTRY	pQEntry;
-	PNDIS_PACKET	pPacket;
+	PNDIS_PACKET	pPacket = NULL;
 	UCHAR apidx;
 	
 /*	PQUEUE_HEADER   pQueue; */
