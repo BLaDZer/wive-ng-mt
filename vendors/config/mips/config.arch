@@ -6,10 +6,8 @@
 #  to reduce the number of places that need to be edited when something
 #  common changes.  If you include this file you may provide:
 #
-#  VENDOR_CFLAGS       - vendor specific flags to pass to the compiler
 #  LOPT                - library optimisation flags
 #  UOPT                - user optimisation flags
-#  GLIBC_TARGET_OPTS   - flags needed for gcc
 #
 #  David McCullough <davidm@snapgear.com>
 #
@@ -82,17 +80,19 @@ UCLINUX_BUILD_SET 		:= 0 # have we set a special config below
 # Pull in common definitions
 include $(ROOTDIR)/vendors/config/common/config.arch
 
-############################################################################
+#############################################################################################
 #
 # General purpose lib building rules,  uClibc.config uses these when
 # possible
 #
 
-############################ PLATFORM FLAGS ##############################
-POPT	:= -mips32r2 -march=mips32r2 -mtune=mips32r2 -D__MIPSEL__
-POPT	:= -mno-branch-likely -mno-long-calls
+############################ PLATFORM FLAGS #################################################
+POPT	:= -mips32r2 -march=mips32r2 -mtune=mips32r2
+POPT	+= -Os -pipe -fno-builtin -mno-branch-likely -mno-long-calls
+POPT	+= -Dlinux -Dunix -DEMBED -DMIPSEL
+POPT	+= -D__linux__ -D__unix__ -D__EMBED__ -D__MIPSEL__
 
-############################ WARN/ERROR FLAGS ##############################
+############################ WARN/ERROR FLAGS ###############################################
 # base flags for warnings
 WOPT	:= -Wall -Wno-trigraphs -Wno-long-long -Wno-format-security -Wno-strict-aliasing
 
@@ -102,12 +102,12 @@ WOPT	+= -Wno-pointer-sign
 # disable variable unused warnings in gcc 4.6.0
 WOPT	+= -Wno-unused-but-set-variable
 
-########################### BUILD FLAGS/OPTIONS##############################
+########################### BUILD FLAGS/OPTIONS##############################################
 
-LOPT	+=  -Os -pipe $(POPT) $(WOPT)
-UOPT	+=  -Os -pipe $(POPT) $(WOPT)
+LOPT	+= $(POPT) $(WOPT)
+UOPT	+= $(POPT) $(WOPT)
 
-############################################################################
+#############################################################################################
 #
 # Settings for building uclibc
 #
@@ -131,7 +131,7 @@ endif
 	UCLINUX_BUILD_SET=1
 endif
 
-############################################################################
+##############################################################################################
 #
 # Settings for building user apps
 #
@@ -224,7 +224,7 @@ endif
 	UCLINUX_BUILD_SET=1
 endif
 
-############################################################################
+#############################################################################################
 #
 # Building flags applyed for all
 #
@@ -246,10 +246,6 @@ CFLAGS += -fno-tree-slsr
 # more safe codegeneration
 CFLAGS += -fno-delete-null-pointer-checks
 
-CFLAGS += -pipe -fno-builtin
-CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
-CFLAGS += $(VENDOR_CFLAGS)
-
 # set cxx flags as cflags
 CXXFLAGS := $(CFLAGS)
 
@@ -259,8 +255,8 @@ UCLIB_CFLAG := $(CFLAGS)
 STRIP_FLAGS := -x -R .note -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo -g --strip-unneeded
 endif
 
-############################################################################
+#############################################################################################
 #
 # fall through,  do other config options perhaps
 #
-############################################################################
+#############################################################################################
