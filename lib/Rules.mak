@@ -42,28 +42,28 @@ endif
 
 CROSS_COMPILE ?= $(CROSS)
 
-CC         = $(CROSS_COMPILE)gcc
-AR         = $(CROSS_COMPILE)ar
-LD         = $(CROSS_COMPILE)ld
-NM         = $(CROSS_COMPILE)nm
-OBJDUMP    = $(CROSS_COMPILE)objdump
-STRIPTOOL  = $(CROSS_COMPILE)strip
+CC         	:= $(CROSS_COMPILE)gcc
+AR         	:= $(CROSS_COMPILE)ar
+LD         	:= $(CROSS_COMPILE)ld
+NM         	:= $(CROSS_COMPILE)nm
+OBJDUMP    	:= $(CROSS_COMPILE)objdump
+STRIPTOOL  	:= $(CROSS_COMPILE)strip
 
-INSTALL    = install
-LN         = ln
-RM         = rm -f
-TAR        = tar
-SED        = sed
-AWK        = awk
+INSTALL    	:= install
+LN         	:= ln
+RM         	:= rm -f
+TAR        	:= tar
+SED        	:= sed
+AWK        	:= awk
 
-STRIP_FLAGS ?= -x -R .note -R .comment
+STRIP_FLAGS 	?= -x -R .note -R .comment
 
 ## unused? if yes, remove after 0.9.31
 ## UNIFDEF := $(top_builddir)extra/scripts/unifdef
 
 # Select the compiler needed to build binaries for your development system
-HOSTCC     = gcc
-BUILD_CFLAGS = -Os -Wall
+HOSTCC		:= gcc
+BUILD_CFLAGS	:= -Os -Wall $(UCLIB_CFLAG)
 
 #---------------------------------------------------------
 # Nothing beyond this point should ever be touched by mere

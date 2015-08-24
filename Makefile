@@ -17,10 +17,10 @@ ROOTDIR	:= $(shell pwd)
 
 all: tools linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
 
-CONFIG_VENDOR=Mediatek
-CONFIG_LINUXDIR=linux
-CONFIG_LIBCDIR=lib
-CONFIG_LANGUAGE="en_EN.UTF-8:en"
+CONFIG_VENDOR	:= Mediatek
+CONFIG_LINUXDIR := linux
+CONFIG_LIBCDIR	:= lib
+CONFIG_LANGUAGE	:= "en_EN.UTF-8:en"
 
 #########################################################################################################
 # Tune locale to eng

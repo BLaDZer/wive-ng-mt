@@ -54,30 +54,30 @@ ARCH				?= mips
 # crosscompile prepare
 #########################################################################################################
 ROOTDIR				?= /opt/Wive-MT
-FIRMROOT			= $(ROOTDIR)
-LINUX_CONFIG			= $(FIRMROOT)/linux/.config
-TOOLCHAINDIR			= $(FIRMROOT)/toolchain
-LINUXINCDIR			= $(LIBCDIRSHARED)/include
-CONFIG_CROSS_COMPILER_PATH	= $(TOOLCHAINDIR)/bin
-CROSS_COMPILE			= $(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-
-KERNEL_CROSS_COMPILE		= $(CROSS_COMPILE)
-CROSS				= $(CROSS_COMPILE)
+FIRMROOT			:= $(ROOTDIR)
+LINUX_CONFIG			:= $(FIRMROOT)/linux/.config
+TOOLCHAINDIR			:= $(FIRMROOT)/toolchain
+LINUXINCDIR			:= $(LIBCDIRSHARED)/include
+CONFIG_CROSS_COMPILER_PATH	:= $(TOOLCHAINDIR)/bin
+CROSS_COMPILE			:= $(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-
+KERNEL_CROSS_COMPILE		:= $(CROSS_COMPILE)
+CROSS				:= $(CROSS_COMPILE)
 
-CC				= $(CROSS_COMPILE)gcc
-AS				= $(CROSS_COMPILE)as
-CXX				= $(CROSS_COMPILE)g++
-AR				= $(CROSS_COMPILE)ar
-LD				= $(CROSS_COMPILE)ld
-OBJCOPY				= $(CROSS_COMPILE)objcopy
-RANLIB				= $(CROSS_COMPILE)ranlib
-ELF2FLT				= elf2flt
-STRIPTOOL			= $(CROSS_COMPILE)strip
-STRIP				= $(STRIPTOOL)
+CC				:= $(CROSS_COMPILE)gcc
+AS				:= $(CROSS_COMPILE)as
+CXX				:= $(CROSS_COMPILE)g++
+AR				:= $(CROSS_COMPILE)ar
+LD				:= $(CROSS_COMPILE)ld
+OBJCOPY				:= $(CROSS_COMPILE)objcopy
+RANLIB				:= $(CROSS_COMPILE)ranlib
+ELF2FLT				:= elf2flt
+STRIPTOOL			:= $(CROSS_COMPILE)strip
+STRIP				:= $(STRIPTOOL)
 
-GCC_DIR   = $(shell $(CC) -v 2>&1|grep specs|sed -e 's/.* \(.*\)specs/\1\./')
-MACH_DIR  = $(shell $(CC) -print-multi-directory)
+GCC_DIR   			:= $(shell $(CC) -v 2>&1|grep specs|sed -e 's/.* \(.*\)specs/\1\./')
+MACH_DIR  			:= $(shell $(CC) -print-multi-directory)
 
-UCLINUX_BUILD_SET = 0		# have we set a special config below
+UCLINUX_BUILD_SET 		:= 0 # have we set a special config below
 
 # Pull in common definitions
 include $(ROOTDIR)/vendors/config/common/config.arch
@@ -251,7 +251,13 @@ CFLAGS += -Dlinux -D__linux__ -Dunix -DEMBED
 CFLAGS += $(VENDOR_CFLAGS)
 
 # set cxx flags as cflags
-CXXFLAGS = $(CFLAGS)
+CXXFLAGS := $(CFLAGS)
+
+# export for uclibc
+ifdef UCLINUX_BUILD_LIB
+UCLIB_CFLAG := $(CFLAGS)
+STRIP_FLAGS := -x -R .note -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo -g --strip-unneeded
+endif
 
 ############################################################################
 #

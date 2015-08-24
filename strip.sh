@@ -2,7 +2,7 @@
 
 RO_ROOT=romfs
 TOOLSPREFIX=./toolchain/bin/mipsel-linux-uclibc
-STRIPOPT="-R .comment -R .note -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo -g --strip-unneeded"
+STRIPOPT="-R .note -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo -g --strip-unneeded"
 STRIP="$TOOLSPREFIX-strip $STRIPOPT"
 OBJCOPY="$TOOLSPREFIX-objcopy $STRIPOPT"
 SSTRIP=./tools/sstrip/sstrip
