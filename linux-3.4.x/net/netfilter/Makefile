@@ -118,6 +118,7 @@ obj-$(CONFIG_NETFILTER_XT_MATCH_U32) += xt_u32.o
 obj-$(CONFIG_NETFILTER_XT_MATCH_LAYER7) += xt_layer7.o
 obj-$(CONFIG_NETFILTER_XT_MATCH_WEBSTR) += xt_webstr.o
 obj-$(CONFIG_NETFILTER_XT_MATCH_ETHPORT) += xt_ethport.o
+obj-$(CONFIG_NETFILTER_XT_MATCH_COOVA) += xt_coova.o
 
 # ipset
 obj-$(CONFIG_IP_SET) += ipset/

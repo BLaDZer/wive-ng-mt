@@ -24,13 +24,19 @@ ifdef CONFIG_IP_NF_QUEUE
 CONFOPTS  += --with-nfqueue
 endif
 
+ifdef CONFIG_NETFILTER_XT_MATCH_COOVA
+CONFOPTS  += --with-nfcoova
+endif
+
 ifdef CONFIG_LIB_OPENSSL
 CONFOPTS  += --with-openssl -enable-chilliradsec
 endif
 
-ifdef CONFIG_LIB_PCAP
-CONFOPTS  += --with-pcap
-endif
+#ifdef CONFIG_LIB_PCAP
+#CONFOPTS  += --with-pcap
+#else
+CONFOPTS  += --without-pcap
+#endif
 
 ifdef CONFIG_LIB_CURL
 CONFOPTS  += --with-curl

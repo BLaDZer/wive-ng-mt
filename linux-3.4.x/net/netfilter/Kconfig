@@ -1210,6 +1210,12 @@ config NETFILTER_XT_MATCH_ETHPORT
 	help
 	  This option adds a 'ethport' match.
 
+config NETFILTER_XT_MATCH_COOVA
+	tristate 'Coova chillispot match support'
+	depends on NETFILTER_XTABLES && (IP6_NF_IPTABLES || IP6_NF_IPTABLES=n)
+	help
+	  This option adds a 'coova' match.
+
 endif # NETFILTER_XTABLES
 
 endmenu
