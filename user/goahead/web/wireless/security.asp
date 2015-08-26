@@ -1095,9 +1095,8 @@ function onPreAuthenticationClick(type)
                 </select></td>
             </tr>
           </table>
-          
-          <!-- <br> --> 
-          
+          <!-- <br> -->
+
           <!-- WPA -->
           <table id="div_wpa" name="div_wpa" class="form" style="visibility: hidden; display: none;">
             <tr>

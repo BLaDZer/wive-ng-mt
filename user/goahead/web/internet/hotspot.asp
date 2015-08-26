@@ -60,16 +60,16 @@ function initTranslation()
 	_TR("sRadSecret", "hotspot radius secret");
 	_TR("sNasId", "hotspot radius nas");
 	_TR("sRadLocId", "hotspot radius location id");
-  _TR("sRadLocName", "hotspot radius location name");
-  _TR("sRadCoaPort", "hotspot radius coa port");
-  _TR("sRadCoaNoIpCheck", "hotspot radius no check ip");
-  _TR("sUamServer", "hotspot uam server");
-  _TR("sUamHomepage", "hotspot uam homepage");
-  _TR("sUamSecret", "hotspot uam secret");
-  _TR("sUamAllowed", "hotspot uam allowed");
-  _TR("sUamAnyDNS", "hotspot uam any dns");
-  _TR("sMacAllowed", "hotspot uam mac");
-  
+	_TR("sRadLocName", "hotspot radius location name");
+	_TR("sRadCoaPort", "hotspot radius coa port");
+	_TR("sRadCoaNoIpCheck", "hotspot radius no check ip");
+	_TR("sUamServer", "hotspot uam server");
+	_TR("sUamHomepage", "hotspot uam homepage");
+	_TR("sUamSecret", "hotspot uam secret");
+	_TR("sUamAllowed", "hotspot uam allowed");
+	_TR("sUamAnyDNS", "hotspot uam any dns");
+	_TR("sMacAllowed", "hotspot uam mac");
+
 	_TRV("sApply", "button apply");
 	_TRV("sCancel", "button cancel");
 }
@@ -89,14 +89,14 @@ function initValue()
 function CheckValue()
 {
 	var form = document.spotCfg;
-	
+
 	var chkIp = [form.sIp, form.sNetmask, form.sPriDns, form.sSecDns];
 	var chkSpace = [form.sDomain, form.sRadServer1, form.sRadServer2, 
 	    form.sRadSecret, form.sNasId, form.sRadLocationId, form.sRadLocationName,
 	    form.sUamServer, form.sUamHomepage, form.sUamSecret, form.sUamAllowed, form.sMacAllowed];
 	var chkInt = [form.sLease, form.sRadCoaPort];
 	var obj;
-	
+
 	for(var i=0; i<chkIp.length; i++) {
 		obj = chkIp[i];
 		if (!validateIP(obj, true))
@@ -161,7 +161,7 @@ function CheckValue()
           </tr>
           <tr>
             <td class="head" id="sDomain">Domain name</td>
-            <td><input name="sDomain" maxlength="31" value="<% getCfgGeneral(1, "chilli_domain"); %>"></td>
+            <td><input name="sDomain" maxlength="64" value="<% getCfgGeneral(1, "chilli_domain"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sLease">Lease time (sec)</td>
@@ -169,19 +169,19 @@ function CheckValue()
           </tr>
           <tr>
             <td class="head" id="sRadServer1">Radius server auth address</td>
-            <td><input name="sRadServer1" maxlength="15" value="<% getCfgGeneral(1, "chilli_radiusserver1"); %>"></td>
+            <td><input name="sRadServer1" maxlength="256" value="<% getCfgGeneral(1, "chilli_radiusserver1"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sRadServer2">Radius server acct address</td>
-            <td><input name="sRadServer2" maxlength="15" value="<% getCfgGeneral(1, "chilli_radiusserver2"); %>"></td>
+            <td><input name="sRadServer2" maxlength="256" value="<% getCfgGeneral(1, "chilli_radiusserver2"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sRadSecret">Radius server secret</td>
-            <td><input name="sRadSecret" maxlength="31" value="<% getCfgGeneral(1, "chilli_radiussecret"); %>"></td>
+            <td><input name="sRadSecret" maxlength="256" value="<% getCfgGeneral(1, "chilli_radiussecret"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sNasId">Radius NAS ID</td>
-            <td><input name="sNasId" maxlength="31" value="<% getCfgGeneral(1, "chilli_radiusnasid"); %>"></td>
+            <td><input name="sNasId" maxlength="256" value="<% getCfgGeneral(1, "chilli_radiusnasid"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sRadLocId">Radius Location ID</td>
@@ -201,19 +201,19 @@ function CheckValue()
           </tr>
           <tr>
             <td class="head" id="sUamServer">UAM server URL</td>
-            <td><input name="sUamServer" maxlength="63" value="<% getCfgGeneral(1, "chilli_uamserver"); %>"></td>
+            <td><input name="sUamServer" maxlength="256" value="<% getCfgGeneral(1, "chilli_uamserver"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sUamHomepage">UAM homepage URL</td>
-            <td><input name="sUamHomepage" maxlength="63" value="<% getCfgGeneral(1, "chilli_uamhomepage"); %>"></td>
+            <td><input name="sUamHomepage" maxlength="256" value="<% getCfgGeneral(1, "chilli_uamhomepage"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sUamSecret">UAM secret</td>
-            <td><input name="sUamSecret" maxlength="31" value="<% getCfgGeneral(1, "chilli_uamsecret"); %>"></td>
+            <td><input name="sUamSecret" maxlength="256" value="<% getCfgGeneral(1, "chilli_uamsecret"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sUamAllowed">UAM allowed hosts</td>
-            <td><input name="sUamAllowed" maxlength="127" value="<% getCfgGeneral(1, "chilli_uamallowed"); %>"></td>
+            <td><input name="sUamAllowed" maxlength="512" value="<% getCfgGeneral(1, "chilli_uamallowed"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sUamAnyDNS">Allow all DNS requests</td>
@@ -221,7 +221,7 @@ function CheckValue()
           </tr>
           <tr>
             <td class="head" id="sMacAllowed">Allowed MAC</td>
-            <td><input name="sMacAllowed" maxlength="127" value="<% getCfgGeneral(1, "chilli_macallowed"); %>"></td>
+            <td><input name="sMacAllowed" maxlength="512" value="<% getCfgGeneral(1, "chilli_macallowed"); %>"></td>
           </tr>
         </table>
         <table width="95%" cellpadding="2" cellspacing="1">
