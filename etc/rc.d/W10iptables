@@ -190,6 +190,11 @@ servicelimit() {
 	    # Incoming peers
 	    iptables -A servicelimit -p tcp --dport $TransInPort -j ACCEPT
 	fi
+	# Chillispot rules
+	if [ "$OperationMode" = "4" ]; then
+		$LOG "Chillispot allow reqests to 3990 port from $lan_if"
+		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 3990 -j ACCEPT
+	fi
 	if [ "$WANPingFilter" = "0" ] && [ "$ROUTE_MODE" = "on" ]; then
     	    $LOG "icmp drop ping from wan $wan_if"
     	    iptables -A servicelimit -i $wan_if -p icmp --icmp-type echo-request -j DROP
@@ -243,6 +248,10 @@ forwardlimit() {
 		iptables -A FORWARD -o $wan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
 		iptables -A FORWARD ! -o $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
 		if [ "$OperationMode" = "4" ]; then
+		    if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
+			iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
+			iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
+		    fi
 		    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 		    iptables -t nat -A POSTROUTING -o $phys_wan_if -s $chilli_net -j MASQUERADE
 		fi
