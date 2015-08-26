@@ -3982,6 +3982,7 @@ int dhcp_receive_ip(struct dhcp_ctx *ctx, uint8_t *pack, size_t len) {
 
   conn->lasttime = mainclock_now();
 
+#if 0
   if (
 #ifdef ENABLE_LAYER3
       !_options.layer3 &&
@@ -3992,6 +3993,7 @@ int dhcp_receive_ip(struct dhcp_ctx *ctx, uint8_t *pack, size_t len) {
     /*dhcp_sendRENEW(conn, pack, len);*/
     return 0;
   }
+#endif
 
   switch (pack_iph->protocol) {
 
