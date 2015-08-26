@@ -35,6 +35,7 @@ stop() {
 
 get_params() {
     #DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    DEBUG="--logfacility=7 --loglevel=7"
     PARLINE="--dhcpif br0"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
