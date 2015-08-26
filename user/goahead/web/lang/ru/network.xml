@@ -147,7 +147,8 @@
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />
-    <message msgid="hotspot setup" msgstr="Настройка точки" />
+    <message msgid="hotspot setup" msgstr="Настройка хотспота" />
+    <message msgid="hotspot enable" msgstr="Включить хотспот" />
     <message msgid="hotspot domain" msgstr="Имя доменна" />
     <message msgid="hotspot lease" msgstr="Время аренды (сек)" />
     <message msgid="hotspot radius auth" msgstr="Адрес RADIUS сервера аутентификации" />

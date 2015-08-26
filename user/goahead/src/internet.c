@@ -2432,6 +2432,8 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char mask[16] = "";
 	FILE *fp;
 
+	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+
 	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
 		if (!strcmp(opmode, "1")) {
 			if (vpn_mode_enabled() == 1) {
@@ -2467,6 +2469,7 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 // ChilliSpot variables
 const parameter_fetch_t chilli_vars[] =
 {
+	{ T("spotEnable"),		"hotspot",			0,       T("") },
 	{ T("sPriDns"),			"chilli_dns1",			0,       T("") },
 	{ T("sSecDns"),			"chilli_dns2",			0,       T("") },
 	{ T("sDomain"),			"chilli_domain",		0,       T("") },
@@ -2528,16 +2531,11 @@ static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/setHotspot */
 static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
-	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-
-	websHeader(wp);
-
-	nvram_init(RT2860_NVRAM);
 	char_t *ip = websGetVar(wp, T("sIp"), T(""));
 	char_t *amask = websGetVar(wp, T("sNetmask"), T(""));
-
 	struct in_addr iip;
 	struct in_addr imask;
+
 	iip.s_addr = inet_addr(ip);
 	imask.s_addr = inet_addr(amask);
 	int h_mask=ntohl(imask.s_addr);
@@ -2551,6 +2549,9 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 
 	char_t subnet[20];
 	sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
+
+	nvram_init(RT2860_NVRAM);
+
 	if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
 		printf("goahead: Set chilli_net nvram error!");
 
@@ -2558,6 +2559,8 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
+
+	websHeader(wp);
 	websWrite(wp, T("<h3>Hotspot configuration done.</h3><br>\n"));
 	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"), ip);
 	websFooter(wp);

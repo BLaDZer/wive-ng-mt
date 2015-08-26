@@ -49,6 +49,7 @@ function initTranslation()
 	_TR("sTitle", "hotspot title");
 	_TR("sIntroduction", "hotspot introduction");
 	_TR("spotSetup", "hotspot setup");
+	_TR("spotEnable", "hotspot enable");
 	_TR("sIp", "inet ip");
 	_TR("sNetwork", "inet netmask");
 	_TR("sPriDns", "inet pri dns");
@@ -80,6 +81,7 @@ function initValue()
 	var opmode = "<% getCfgZero(1, "OperationMode"); %>";
 	var wan = "<% getCfgZero(1, "wanConnectionMode"); %>";
 	document.spotCfg.sRadCoaNoIpCheck.checked = ("<% getCfgZero(1, "chilli_coanoipcheck"); %>" == "on");
+	document.spotCfg.spotEnable.checked = ("<% getCfgZero(1, "hotspot"); %>" == "on");
 	document.spotCfg.sUamAnyDns.checked = ("<% getCfgZero(1, "chilli_uamanydns"); %>" == "on");
 
 	initTranslation();
@@ -143,6 +145,10 @@ function CheckValue()
             <td class="title" colspan="2" id="spotSetup">Hotspot Setup</td>
           </tr>
           <!================ Hotspot variables ==========================>
+          <tr>
+            <td class="head" id="spotEnable">Enable hotspot</td>
+            <td><input name="spotEnable" type="checkbox"></td>
+          </tr>
           <tr>
             <td class="head" id="sIp">Subnet Address</td>
             <td><input name="sIp" maxlength="15" value="<% getSpotIp(); %>" ></td>

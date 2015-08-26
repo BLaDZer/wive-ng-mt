@@ -13,10 +13,10 @@ PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain \
 	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease \
 	uamserver uamhomepage uamsecret uamallowed macallowed"
 
-BOOLPARAMS="coanoipcheck uamanydns"
+BOOLPARAMS="coanoipcheck uamanyip uamanydns"
 
 start() {
-    if [ "$chilli_enable" = "1" ]; then
+    if [ "$hotspot" = "on" ]; then
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe -q tun
