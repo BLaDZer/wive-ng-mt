@@ -3710,10 +3710,10 @@ int dhcp_receive_ip(struct dhcp_ctx *ctx, uint8_t *pack, size_t len) {
    *  Check to see if we know MAC address
    */
   if (!dhcp_hashget(this, &conn, pack_ethh->src)) {
-
+#if 0
     if (this->debug)
       syslog(LOG_DEBUG, "Address found");
-
+#endif
     ourip.s_addr = conn->ourip.s_addr;
 
   } else {
