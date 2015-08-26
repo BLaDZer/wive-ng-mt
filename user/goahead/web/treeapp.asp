@@ -92,6 +92,7 @@ var ad = '<% isAntennaDiversityBuilt(); %>';
 var transb = '<% getTransmissionBuilt(); %>';
 var ipt_account = '<% getIPTAccountBuilt(); %>';
 var ddnsb = "<% getDDNSBuilt(); %>";
+var spot = "<% getSpotBuilt(); %>";
 
 a = new dTree('a');
 a.config.useStatusText=true;
@@ -117,12 +118,11 @@ a.add(303, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 if (opmode != '0')
 	a.add(304, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 
-if (opmode == '4')
-	a.add(305, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
-
 if (swqos == '1')
 	a.add(306, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
 
+if (spot == '1')
+	a.add(305, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
 
 if (opmode == '2')
 {
@@ -158,7 +158,7 @@ if (opmode != '0') {
 
 // Services
 a.add(500, 0,   _("treeapp services"),          "javascript:a.oo(500);");
-if (opmode != '4')	a.add(501, 500, _("treeapp dhcp server"),       "javascript:go('services/dhcp.asp');");
+a.add(501, 500, _("treeapp dhcp server"),       "javascript:go('services/dhcp.asp');");
 a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.asp');");
 a.add(503, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
 if (ddnsb == "1") a.add(504, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");

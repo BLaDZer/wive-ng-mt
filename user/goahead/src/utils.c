@@ -845,10 +845,6 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	if (strncmp(mode, old_mode, 2))
 	{
 		nvram_bufset(RT2860_NVRAM, "OperationMode", mode);
-#ifdef CONFIG_USER_CHILLISPOT
-		if (!strncmp(mode, "4", 2))
-			nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "0");
-#endif
 		/* from or to ap client mode */
 		if (!strncmp(mode, "3", 2))
 			nvram_bufset(RT2860_NVRAM, "ApCliEnable", "1");

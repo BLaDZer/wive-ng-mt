@@ -122,7 +122,7 @@ getWanIfName() {
     if [ "$OperationMode" = "0" ]; then
 	# bridge
 	wan_if="br0"
-    elif [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
+    elif [ "$OperationMode" = "1" ]; then
 	# gateway/chillispot
 	wan_if="$phys_wan_if"
     elif [ "$OperationMode" = "2" ]; then
@@ -295,7 +295,7 @@ get_switch_type() {
 }
 
 get_switch_part() {
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ]; then
+    if [ "$OperationMode" = "1" ]; then
 	# get manual vlan parts
 	tv_portVLAN=`nvram_get 2860 tv_portVLAN | awk '{ gsub(","," "); print }'`
 	sip_portVLAN=`nvram_get 2860 sip_portVLAN | awk '{ gsub(","," "); print }'`

@@ -124,30 +124,6 @@ apcli_config() {
 	fi
 }
 
-spot_config() {
-	$LOG "HotSpot OperationMode: $OperationMode"
-	# flush "$phys_lan_if" ip and remove from bridge
-	# add lan interface
-	$LOG "Readd $phys_lan_if in br0"
-	readdif_to_br $phys_lan_if
-	$LOG "Readd $first_wlan_root_if in br0"
-	readdif_to_br $first_wlan_root_if
-	if [ "$second_wlan_root_if" != "" ]; then
-	    $LOG "Readd $second_wlan_root_if in br0"
-	    readdif_to_br $second_wlan_root_if
-	fi
-	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
-	    addMBSSID $first_wlan_mbss
-	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
-	    addMBSSID $second_wlan_mbss
-	fi
-	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
-	    addWds $first_wlan_wds
-	elif [ "$second_wlan_wds" != "" ] && [ "$second_wlan_wds" = "$WdsIfName" ]; then
-	    addWds $second_wlan_wds
-	fi
-}
-
 ethcv_config() {
 	$LOG "Ethernet Converter OperationMode: $OperationMode"
 }
@@ -185,8 +161,6 @@ elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" != "" ]; then
     ethcv_config
 elif [ "$OperationMode" = "3" ] && [ "$first_wlan_apcli" != "" -o  "$second_wlan_apcli" != "" ]; then
     apcli_config
-elif [ "$OperationMode" = "4" ] && [ -e /bin/chilli ]; then
-    spot_config
 else
     $LOG "Unknown mode. Please reset device."
 fi

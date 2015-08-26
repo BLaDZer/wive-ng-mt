@@ -2533,45 +2533,39 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 
 	websHeader(wp);
-	//Re-check operation mode before any changes
-	if (!strcmp(opmode, "4"))
-	{
-		nvram_init(RT2860_NVRAM);
-		char_t *ip = websGetVar(wp, T("sIp"), T(""));
-		char_t *amask = websGetVar(wp, T("sNetmask"), T(""));
 
-		struct in_addr iip;
-		struct in_addr imask;
-		iip.s_addr = inet_addr(ip);
-		imask.s_addr = inet_addr(amask);
-		int h_mask=ntohl(imask.s_addr);
-		int i;
-		for (i = 30; i > 0; i--) {
-			if (h_mask >= 0 - (1 << (32 - i)))
-				break;
-		}
-		if (!i) i = 24;
-		iip.s_addr &= ntohl(0 - (1 << (32 - i)));
+	nvram_init(RT2860_NVRAM);
+	char_t *ip = websGetVar(wp, T("sIp"), T(""));
+	char_t *amask = websGetVar(wp, T("sNetmask"), T(""));
 
-		char_t subnet[20];
-		sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
-		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-			printf("goahead: Set chilli_net nvram error!");
-
-		setupParameters(wp, chilli_vars, 0);
-
-		nvram_commit(RT2860_NVRAM);
-		nvram_close(RT2860_NVRAM);
-		websWrite(wp, T("<h3>Hotspot configuration done.</h3><br>\n"));
-		websWrite(wp, T("Wait till device will be reconfigured...<br>\n"), ip);
-		websFooter(wp);
-		websDone(wp, 200);
-		doSystem("internet.sh");
-	} else {
-		websWrite(wp, T("<h3>Error, try again</h3><br>\n"));
-		websFooter(wp);
-		websDone(wp, 200);
+	struct in_addr iip;
+	struct in_addr imask;
+	iip.s_addr = inet_addr(ip);
+	imask.s_addr = inet_addr(amask);
+	int h_mask=ntohl(imask.s_addr);
+	int i;
+	for (i = 30; i > 0; i--) {
+		if (h_mask >= 0 - (1 << (32 - i)))
+			break;
 	}
+	if (!i) i = 24;
+	iip.s_addr &= ntohl(0 - (1 << (32 - i)));
+
+	char_t subnet[20];
+	sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
+	if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
+		printf("goahead: Set chilli_net nvram error!");
+
+	setupParameters(wp, chilli_vars, 0);
+
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
+	websWrite(wp, T("<h3>Hotspot configuration done.</h3><br>\n"));
+	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"), ip);
+	websFooter(wp);
+	websDone(wp, 200);
+	doSystem("internet.sh");
+
 	return;
 }
 #endif //CONFIG_USER_CHILLISPOT

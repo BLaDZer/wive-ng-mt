@@ -132,7 +132,7 @@ stop() {
     killall -q -SIGKILL zcip
 
     # in gw/hotspot modes down wlan if not bridge and not apcli_bridge
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "3" -a "$ApCliBridgeOnly" != "1" ] || [ "$OperationMode" = "4" ]; then
+    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "3" -a "$ApCliBridgeOnly" != "1" ]; then
 	# down wan iface
 	ip link set "$wan_if" down > /dev/null 2>&1
     fi

@@ -7,7 +7,7 @@ LOG="logger -t dhcpd"
 
 start() {
   dhcpEnabled=`nvram_get 2860 dhcpEnabled`
-    if [ "$dhcpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$OperationMode" != "4" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+    if [ "$dhcpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$chilli_enable" != "1" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	$LOG "Configure dhcpserver"
 	get_param
 

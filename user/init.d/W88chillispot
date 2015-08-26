@@ -16,7 +16,7 @@ PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain \
 BOOLPARAMS="coanoipcheck uamanydns"
 
 start() {
-    if [ "$OperationMode" = "4" ]; then
+    if [ "$chilli_enable" = "1" ]; then
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe -q tun

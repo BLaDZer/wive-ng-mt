@@ -57,7 +57,7 @@ set_mac_wan_lan() {
     # set MAC adresses LAN for phys iface (always set for physycal external switch one or dual phy mode)
     # set MAC adresses LAN/WAN if not bridge and not ethernet converter modes
     # in gw/hotspot modes set mac to wan (always set for physycal external dual phy mode swicth)
-    if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "4" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
 	# LAN mac config
 	$LOG "$phys_lan_if MACADDR $LAN_MAC_ADDR"
 	ifconfig "$phys_lan_if" down
