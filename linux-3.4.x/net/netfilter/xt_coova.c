@@ -305,14 +305,16 @@ static int coova_mt_check(const struct xt_mtchk_param *par)
 	    strnlen(info->name, XT_COOVA_NAME_LEN) == XT_COOVA_NAME_LEN)
 		return -EINVAL;
 
+#ifdef DEBUG
 	printk(KERN_INFO "xt_coova: looking for %s\n", info->name);
-
+#endif
 	mutex_lock(&coova_mutex);
 	t = coova_table_lookup(info->name);
 	if (t != NULL) {
 		t->refcnt++;
-		printk(KERN_INFO "xt_coova: found %s refcnt=%d\n", 
-		       info->name, t->refcnt);
+#ifdef DEBUG
+		printk(KERN_INFO "xt_coova: found %s refcnt=%d\n", info->name, t->refcnt);
+#endif
 		goto out;
 	}
 
@@ -348,11 +350,14 @@ static int coova_mt_check(const struct xt_mtchk_param *par)
 	spin_lock_bh(&coova_lock);
 	list_add_tail(&t->list, &tables);
 	spin_unlock_bh(&coova_lock);
-	printk(KERN_INFO "xt_coova: created %s refcnt=%d\n", 
-	       t->name, t->refcnt);
+#ifdef DEBUG
+	printk(KERN_INFO "xt_coova: created %s refcnt=%d\n", t->name, t->refcnt);
+#endif
 out:
 	mutex_unlock(&coova_mutex);
-	printk(KERN_INFO "xt_coova: match ret=%d\n", ret); 
+#ifdef DEBUG
+	printk(KERN_INFO "xt_coova: match ret=%d\n", ret);
+#endif
 	return ret;
 }
 
@@ -520,7 +525,9 @@ coova_mt_proc_write(struct file *file, const char __user *input,
 		release = true;
 		break;
 	default:
+#ifdef DEBUG
 		printk(KERN_INFO KBUILD_MODNAME ": Need +ip, -ip, or /\n");
+#endif
 		return -EINVAL;
 	}
 
@@ -535,8 +542,9 @@ coova_mt_proc_write(struct file *file, const char __user *input,
 	}
 
 	if (!succ) {
-		printk(KERN_INFO KBUILD_MODNAME ": illegal address written "
-		       "to procfs\n");
+#ifdef DEBUG
+		printk(KERN_INFO KBUILD_MODNAME ": illegal address written to procfs\n");
+#endif
 		return -EINVAL;
 	}
 
