@@ -2432,8 +2432,6 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char mask[16] = "";
 	FILE *fp;
 
-	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
-
 	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
 		if (!strcmp(opmode, "1")) {
 			if (vpn_mode_enabled() == 1) {
@@ -2456,7 +2454,7 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 		}
 		fclose(fp);
 	}
-	
+
 	if (getIfIPv6(wanif, address, mask) != 0) {
 		return websWrite(wp, T(""));
 	} else {
