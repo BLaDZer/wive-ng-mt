@@ -11,7 +11,7 @@ PPP_REMOTE="$5"
 PPP_IPPARAM="$6"
 LOG="logger -t pppd"
 
-eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upnpEnabled parproutedEnabled chilli_net`
+eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upnpEnabled parproutedEnabled`
 
     #export for goahead and vpnhelper
     echo -n "$PPP_IFACE" > /tmp/vpn_if_name
