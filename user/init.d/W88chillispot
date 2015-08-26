@@ -44,6 +44,7 @@ get_params() {
 	val=`nvram_get 2860 chilli_$i`
 	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
     done
+    touch /etc/chilli.conf
 }
 
 case "$1" in
