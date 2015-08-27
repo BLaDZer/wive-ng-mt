@@ -1,6 +1,9 @@
 .EXPORT_ALL_VARIABLES:
 
-SUBDIRS_APP = mii_mgr nvram reg switch gpio mtd hw_nat switch_rtl eth_mac ated
+SUBDIRS_APP := mii_mgr nvram reg switch gpio mtd hw_nat switch_rtl eth_mac
+ifdef CONFIG_RALINKAPP_ATED
+SUBDIRS_APP += ated
+endif
 
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
