@@ -1244,6 +1244,7 @@
 1) build_system: add new metal 7620a+7612ne internal pa/lna sd usb 16/128Mb sample.<br>
 2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
 3) coova-chilli: move to use xt_coova netfilter module instead of libpcap.<br>
+4) kernel: tcp: fix slow start after idle vs TSO/GSO.<br>
 <br>
 <br>
 <b>TODO:</b><br>
