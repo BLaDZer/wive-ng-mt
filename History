@@ -1240,6 +1240,12 @@
 139) kernel: backport new ASIX AX88179/178A and Realtek RTL8152/8153 USB 3.0/2.0 Ethernet drivers.<br>
 <br>
 <br>
+<b>3.4.x</b><br>
+1) build_system: add new metal 7620a+7612ne internal pa/lna sd usb 16/128Mb sample.<br>
+2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
+3) coova-chilli: move to use xt_coova netfilter module instead of libpcap.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
