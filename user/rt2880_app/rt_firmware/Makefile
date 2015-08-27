@@ -48,12 +48,21 @@ endif
 # external PCI-E 76x2 WiFi module
 ifdef CONFIG_MT76X2_AP
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
-	$(ROMFSINST) -S MT7602E_EEPROM.bin						/etc/Wireless/MT7602E_EEPROM.bin
-	$(ROMFSINST) -S MT7612E_EEPROM.bin						/etc/Wireless/MT7612E_EEPROM.bin
+ifdef CONFIG_MT76X2_AP_INTERNAL_PA_INTERNAL_LNA
+	$(ROMFSINST) -S MT7602E_EEPROM-FEM-INTERNALPALNA.bin				/etc/Wireless/MT7602E_EEPROM.bin
+	$(ROMFSINST) -S MT7612E_EEPROM-FEM-INTERNALPALNA.bin				/etc/Wireless/MT7612E_EEPROM.bin
+else
+	$(ROMFSINST) -S MT7602E_EEPROM-FEM-EXTERNALPALNA.bin				/etc/Wireless/MT7602E_EEPROM.bin
+	$(ROMFSINST) -S MT7612E_EEPROM-FEM-EXTERNALPALNA.bin				/etc/Wireless/MT7612E_EEPROM.bin
+endif
 	$(ROMFSINST) -s	/etc/Wireless/MT7602E_EEPROM.bin				/etc/Wireless/iNIC/MT7602E_EEPROM.bin
 	$(ROMFSINST) -s	/etc/Wireless/MT7612E_EEPROM.bin				/etc/Wireless/iNIC/MT7612E_EEPROM.bin
 ifdef CONFIG_RALINK_MT7620
+ifdef CONFIG_MT76X2_AP_INTERNAL_PA_INTERNAL_LNA
+	$(ROMFSINST) -S MT7620_7612_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+else
 	$(ROMFSINST) -S MT7620_7612_AP_2T2R-4L_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+endif
 	$(ROMFSINST) -S	defaults/default-2T2R-7620-7612					/etc/default/nvram_default
 endif
 ifdef CONFIG_RALINK_MT7621
