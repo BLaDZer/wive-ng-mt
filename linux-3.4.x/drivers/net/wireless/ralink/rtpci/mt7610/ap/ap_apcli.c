@@ -639,7 +639,7 @@ BOOLEAN ApCliLinkUp(
 							&pApCliEntry->ApCliMlmeAux.HtCapability,
 							pApCliEntry->ApCliMlmeAux.HtCapabilityLen);
 
-#ifdef DISANLE_VHT80_256_QAM
+#ifdef CONFIG_DISABLE_VHT80_256_QAM
 			/*
 				To check SupportVHTMCS for APCLI again.
 			*/
@@ -654,7 +654,7 @@ BOOLEAN ApCliLinkUp(
 					}
 				}
 			}
-#endif /* DISANLE_VHT80_256_QAM */
+#endif /* DISABLE_VHT80_256_QAM */
 			
 			if (pAd->ApCfg.ApCliTab[ifIndex].bAutoTxRateSwitch == FALSE)
 			{

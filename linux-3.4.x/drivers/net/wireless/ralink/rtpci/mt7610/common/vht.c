@@ -285,12 +285,12 @@ VOID vht_max_mcs_cap(RTMP_ADAPTER *pAd)
 	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: disable_vht_256QAM = 0x%x\n", 
 		__FUNCTION__, pAd->CommonCfg.disable_vht_256QAM));		
 
-#ifdef DISANLE_VHT80_256_QAM	
+#ifdef CONFIG_DISABLE_VHT80_256_QAM	
 	if ((pAd->CommonCfg.vht_bw == VHT_BW_80) && 
 		(pAd->CommonCfg.disable_vht_256QAM & DISABLE_VHT80_256_QAM))
 		pAd->CommonCfg.vht_max_mcs_cap = VHT_MCS_CAP_7;
 	else
-#endif /* DISANLE_VHT80_256_QAM */
+#endif /* DISABLE_VHT80_256_QAM */
 	pAd->CommonCfg.vht_max_mcs_cap = VHT_MCS_CAP_9;
 	
 	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: vht_max_mcs_cap = %d\n", 
@@ -414,7 +414,7 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR VhtMaxMcsCap)
 {
 	VHT_CAP_IE vht_cap_ie;
-	INT rx_nss, tx_nss, mcs_cap;
+	INT rx_nss, tx_nss;
 #ifdef RT_BIG_ENDIAN
 	UINT32 tmp_1;
 	UINT64 tmp_2;

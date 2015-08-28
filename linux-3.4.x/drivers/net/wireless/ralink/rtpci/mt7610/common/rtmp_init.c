@@ -3216,9 +3216,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef DOT11_VHT_AC
 	pAd->CommonCfg.bNonVhtDisallow = FALSE;
-#ifdef DISANLE_VHT80_256_QAM
+#ifdef CONFIG_DISABLE_VHT80_256_QAM
 	pAd->CommonCfg.disable_vht_256QAM = DISABLE_VHT80_256_QAM;
-#endif /* DISANLE_VHT80_256_QAM */
+#endif /* DISABLE_VHT80_256_QAM */
 #endif /* DOT11_VHT_AC */
 
 #ifdef ED_MONITOR
