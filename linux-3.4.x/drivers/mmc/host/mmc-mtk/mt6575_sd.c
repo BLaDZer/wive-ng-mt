@@ -2484,10 +2484,6 @@ static int __init mt_msdc_init(void)
     reg1 = sdr_read32((volatile u32*)(RALINK_SYSCTL_BASE + 0x1340));
     reg1 |= (0x1<<11); // Normal mode(AP mode), SDXC CLK=PAD_GPIO0=GPIO11, driving = 8mA
     sdr_write32((volatile u32*)(RALINK_SYSCTL_BASE + 0x1340), reg1);
-
-    reg1 = sdr_read32((volatile u32*)(RALINK_SYSCTL_BASE + 0x1350));
-    reg1 |= (0x1<<11);
-    sdr_write32((volatile u32*)(RALINK_SYSCTL_BASE + 0x1350), reg1);
 #endif
     sdr_write32((volatile u32*)(RALINK_SYSCTL_BASE + 0x60), reg);
 
@@ -2515,4 +2511,4 @@ module_exit(mt_msdc_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("MediaTek SD/MMC Card driver");
-MODULE_AUTHOR("Infinity Chen <infinity.chen@mediatek.com>");
+MODULE_AUTHOR("Mediatek");
