@@ -995,8 +995,7 @@ VOID MacTableMaintenance(
 	INT total_sta = 0;
 #endif /* ED_MONITOR */
 
-	for (bss_index = BSS0; bss_index < MAX_MBSSID_NUM(pAd); bss_index++)
-		fAnyStationPortSecured[bss_index] = 0;
+	NdisZeroMemory(fAnyStationPortSecured, sizeof(fAnyStationPortSecured));
 
 	pMacTable = &pAd->MacTab;
 	pMacTable->fAnyStationInPsm = FALSE;
