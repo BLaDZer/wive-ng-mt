@@ -1245,6 +1245,7 @@
 2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
 3) coova-chilli: move to use xt_coova netfilter module instead of libpcap.<br>
 4) kernel: tcp: fix slow start after idle vs TSO/GSO.<br>
+5) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
 6) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
 7) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
 <br>

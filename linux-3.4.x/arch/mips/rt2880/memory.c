@@ -48,6 +48,7 @@
 #include <asm/rt2880/prom.h>
 //#define DEBUG
 
+#define RAM_BASE	0x00000000
 #ifdef CONFIG_RALINK_RAM_SIZE
 #define RAM_SIZE        CONFIG_RALINK_RAM_SIZE*1024*1024	/* Fixed SDRAM SIZE */
 #endif
@@ -63,8 +64,10 @@
 #elif defined (CONFIG_RALINK_RT3883)
 #define MAX_RAM_SIZE  (128*1024*1024)
 #define TEST_OFFSET	127
-#elif defined (CONFIG_RALINK_MT7620) || \
-    defined (CONFIG_RALINK_MT7621)
+#elif defined (CONFIG_RALINK_MT7620)
+#define MAX_RAM_SIZE  (256*1024*1024)
+#define TEST_OFFSET	255
+#elif defined (CONFIG_RALINK_MT7621)
 #ifdef CONFIG_HIGHMEM
 #define MAX_RAM_SIZE  (512*1024*1024)
 #define TEST_OFFSET	511
@@ -76,8 +79,6 @@
 #define MAX_RAM_SIZE  (64*1024*1024)
 #define TEST_OFFSET	63
 #endif
-
-#define RAM_BASE		0x00000000
 
 #define PFN_ALIGN(x)		(((unsigned long)(x) + (PAGE_SIZE - 1)) & PAGE_MASK)
 
@@ -104,49 +105,22 @@ static char *mtypes[3] = {
 /* References to section boundaries */
 extern char _end;
 
-struct prom_pmemblock * __init prom_getmdesc(void)
+#ifdef CONFIG_UBOOT_CMDLINE
+static unsigned int __init prom_get_ramsize(void)
 {
-	char *env_str;
-	unsigned int ramsize, rambase;
+	char *argptr;
+	unsigned int ramsize = 0;
 
-	env_str = prom_getenv("ramsize");
-	if (!env_str) {
-#ifdef CONFIG_RAM_SIZE_AUTO
-		ramsize = MAX_RAM_SIZE;
-#else
-		ramsize = RAM_SIZE;
-#endif
-#ifdef DEBUG
-		prom_printf("ramsize = %d MBytes\n", ramsize / 1024 / 1024);
-#endif
-	} else {
-#ifdef DEBUG
-		prom_printf("ramsize = %s\n", env_str);
-#endif
-		ramsize = simple_strtol(env_str, NULL, 0);
+	argptr = prom_getcmdline();
+
+	if ((argptr = strstr(argptr, "ramsize=")) != NULL) {
+		argptr += strlen("ramsize=");
+		ramsize = simple_strtoul(&argptr[0], NULL, 0);
 	}
 
-	env_str = prom_getenv("rambase");
-	if (!env_str) {
-		rambase = RAM_BASE;
-#ifdef DEBUG
-		prom_printf("rambase not set, set to default (0x%08X)\n", rambase);
-#endif
-	} else {
-		rambase = simple_strtol(env_str, NULL, 0);
-#ifdef DEBUG
-		prom_printf("rambase = %s\n", env_str);
-#endif
-	}
-
-	memset(mdesc, 0, sizeof(mdesc));
-
-	mdesc[0].type = surfboard_ram;
-	mdesc[0].base = rambase;
-	mdesc[0].size = ramsize;
-
-	return &mdesc[0];
+	return ramsize;
 }
+#endif
 
 void __init prom_meminit(void)
 {
@@ -187,7 +161,20 @@ void __init prom_meminit(void)
 	/* Set ram size */
 	add_memory_region(RAM_BASE, mem, BOOT_MEM_RAM);
 #else	/* Fixed mesize */
-        add_memory_region(RAM_BASE, RAM_SIZE, BOOT_MEM_RAM);
+	phys_t ramsize = 0;
+
+#ifdef CONFIG_UBOOT_CMDLINE
+	ramsize = (phys_t)prom_get_ramsize();
+#endif
+	if (ramsize < MIN_RAM_SIZE || ramsize > MAX_RAM_SIZE)
+		ramsize = RAM_SIZE;
+
+#if defined(CONFIG_RALINK_MT7621)
+	if (ramsize >= (448*1024*1024))
+		add_memory_region(RAM_BASE, ramsize + 64*1024*1024, BOOT_MEM_RAM);
+	else
+#endif
+	add_memory_region(RAM_BASE, ramsize, BOOT_MEM_RAM);
 #endif	/* CONFIG_RAM_SIZE_AUTO */
 }
 
