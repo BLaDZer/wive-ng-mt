@@ -68,7 +68,7 @@ VOID BA_MaxWinSizeReasign(
 			MaxPeerRxSize = (1 << (pEntryPeer->VhtMaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
 		else
 			MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
-	}	
+	}
 
 #ifdef RT65xx
 	if (IS_RT65XX(pAd)) {

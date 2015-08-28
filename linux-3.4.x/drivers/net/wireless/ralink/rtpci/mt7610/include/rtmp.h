@@ -2202,8 +2202,9 @@ typedef struct _MAC_TABLE_ENTRY {
 	/* 802.11n features. */
 	UCHAR MpduDensity;
 	UCHAR MaxRAmpduFactor;
+	UCHAR VhtMaxRAmpduFactor;
 	UCHAR AMsduSize;
-	UCHAR MmpsMode;		/* MIMO power save more. */
+	UCHAR MmpsMode;		/* MIMO power save mode. */
 
 	HT_CAPABILITY_IE HTCapability;
 

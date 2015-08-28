@@ -59,6 +59,14 @@ VOID BA_MaxWinSizeReasign(
 	else
 		MaxPeerRxSize = (((1 << (pEntryPeer->MaxRAmpduFactor + 3)) * 10) / 16) -1;
 
+	if(pEntryPeer->MaxHTPhyMode.field.MODE == MODE_VHT)
+	{
+		if (CLIENT_STATUS_TEST_FLAG(pEntryPeer, fCLIENT_STATUS_RALINK_CHIPSET))
+			MaxPeerRxSize = (1 << (pEntryPeer->VhtMaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
+		else
+			MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
+	}
+
 #ifdef RT65xx
 	if (IS_RT65XX(pAd))
 		MaxSize = 31;
@@ -85,10 +93,6 @@ VOID BA_MaxWinSizeReasign(
 	}
 	else
 		MaxSize = 7;
-
-#ifdef CONFIG_AP_SUPPORT
-#endif /* CONFIG_AP_SUPPORT */
-
 
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ba>WinSize=%d, MaxSize=%d, MaxPeerRxSize=%d\n", 

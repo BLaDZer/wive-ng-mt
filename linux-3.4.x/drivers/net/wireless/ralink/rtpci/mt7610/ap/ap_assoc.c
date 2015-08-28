@@ -289,6 +289,11 @@ static USHORT update_associated_mac_entry(
 			if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
 				pEntry->MaxHTPhyMode.field.BW = BW_80;
 
+			pEntry->VhtMaxRAmpduFactor = ie_list->vht_cap.vht_cap.max_ampdu_exp;
+
+			DBGPRINT(RT_DEBUG_TRACE, ("Orig HT MaxRAmpduFactor %d , VHT MaxRAmpduFactor %d \n"
+			,ie_list->HTCapability.HtCapParm.MaxRAmpduFactor,ie_list->vht_cap.vht_cap.max_ampdu_exp));
+
 			if ((ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_9) && 
 				(pAd->CommonCfg.vht_max_mcs_cap == VHT_MCS_CAP_9))
 			{
