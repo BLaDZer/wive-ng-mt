@@ -327,7 +327,7 @@ static USHORT update_associated_mac_entry(
 			VHT_CAP_INFO *vht_cap_info = &ie_list->vht_cap.vht_cap;
 
 			pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
-			if ((pEntry->MaxHTPhyMode.field.BW== BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
+			if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
 				pEntry->MaxHTPhyMode.field.BW = BW_80;
 
 			pEntry->VhtMaxRAmpduFactor = ie_list->vht_cap.vht_cap.max_ampdu_exp;
@@ -343,7 +343,7 @@ static USHORT update_associated_mac_entry(
 					pEntry->MaxHTPhyMode.field.MCS = 9;
 			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
 				pEntry->MaxHTPhyMode.field.MCS = 8;
-			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
+			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {
 				pEntry->MaxHTPhyMode.field.MCS = 7;
 			}
 			

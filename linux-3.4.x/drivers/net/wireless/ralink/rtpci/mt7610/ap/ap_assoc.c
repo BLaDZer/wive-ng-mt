@@ -303,10 +303,11 @@ static USHORT update_associated_mac_entry(
 				else
 #endif /* MT76x0 */
 				pEntry->MaxHTPhyMode.field.MCS = 9;
-			}
-			else if ((ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) &&
-				(pAd->CommonCfg.vht_max_mcs_cap == VHT_MCS_CAP_8))
+			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
 				pEntry->MaxHTPhyMode.field.MCS = 8;
+			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {
+				pEntry->MaxHTPhyMode.field.MCS = 7;
+			}
 
 			if (vht_cap_info->sgi_80M)
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE);
