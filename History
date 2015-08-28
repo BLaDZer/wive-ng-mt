@@ -1249,6 +1249,7 @@
 6) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
 7) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
 8) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+9) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
 <br>
 <br>
 <b>TODO:</b><br>

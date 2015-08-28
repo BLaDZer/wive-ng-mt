@@ -5978,8 +5978,8 @@ void assoc_ht_info_debugshow(
 
 		DBGPRINT(RT_DEBUG_TRACE, ("Peer - 11n HT Info\n"));
 		DBGPRINT(RT_DEBUG_TRACE, ("\tHT Cap Info: \n"));
-		DBGPRINT(RT_DEBUG_TRACE, ("\t\t AdvCode(%d), BW(%d), MIMOPS(%d), GF(%d), ShortGI_20(%d), ShortGI_40(%d)\n",
-			pHTCap->AdvCoding, pHTCap->ChannelWidth, pHTCap->MimoPs, pHTCap->GF,
+		DBGPRINT(RT_DEBUG_TRACE, ("\t\t HtLdpc(%d), BW(%d), MIMOPS(%d), GF(%d), ShortGI_20(%d), ShortGI_40(%d)\n",
+			pHTCap->ht_rx_ldpc, pHTCap->ChannelWidth, pHTCap->MimoPs, pHTCap->GF,
 			pHTCap->ShortGIfor20, pHTCap->ShortGIfor40));
 		DBGPRINT(RT_DEBUG_TRACE, ("\t\t TxSTBC(%d), RxSTBC(%d), DelayedBA(%d), A-MSDU(%d), CCK_40(%d)\n",
 			pHTCap->TxSTBC, pHTCap->RxSTBC, pHTCap->DelayedBA, pHTCap->AMsduSize, pHTCap->CCKmodein40));

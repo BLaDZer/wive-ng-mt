@@ -254,9 +254,9 @@ typedef struct GNU_PACKED{
 	USHORT	GF:1;
 	USHORT	MimoPs:2;
 	USHORT	ChannelWidth:1;
-	USHORT	AdvCoding:1;
+	USHORT	ht_rx_ldpc:1;
 #else
-	USHORT	AdvCoding:1;
+	USHORT	ht_rx_ldpc:1;
 	USHORT	ChannelWidth:1;
 	USHORT	MimoPs:2;		/* mimo power safe */
 	USHORT	GF:1;			/* green field */

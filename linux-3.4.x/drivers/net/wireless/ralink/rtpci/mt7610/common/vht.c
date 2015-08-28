@@ -414,13 +414,19 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR VhtMaxMcsCap)
 {
 	VHT_CAP_IE vht_cap_ie;
+	INT rx_nss, tx_nss, mcs_cap;
 #ifdef RT_BIG_ENDIAN
 	UINT32 tmp_1;
 	UINT64 tmp_2;
 #endif /*RT_BIG_ENDIAN*/
+
 	NdisZeroMemory((UCHAR *)&vht_cap_ie,  sizeof(VHT_CAP_IE));
 	vht_cap_ie.vht_cap.max_mpdu_len = 0; // TODO: Ask Jerry about hardware limitation.
 	vht_cap_ie.vht_cap.ch_width = 0; /* not support 160 or 80 + 80 MHz */
+
+	/* always set ldpc to 0 7610 do not support it */
+	vht_cap_ie.vht_cap.rx_ldpc = 0;
+
 	vht_cap_ie.vht_cap.sgi_80M = pAd->CommonCfg.vht_sgi_80;
 	vht_cap_ie.vht_cap.htc_vht_cap = 1;
 	vht_cap_ie.vht_cap.max_ampdu_exp = 3; // TODO: Ask Jerry about the hardware limitation, currently set as 64K
@@ -461,8 +467,10 @@ INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR VhtMaxMcsCap)
 	vht_cap_ie.mcs_set.tx_mcs_map.mcs_ss7 = VHT_MCS_CAP_NA;
 	vht_cap_ie.mcs_set.tx_mcs_map.mcs_ss8 = VHT_MCS_CAP_NA;
 
+	rx_nss = pAd->CommonCfg.RxStream;
+	tx_nss = pAd->CommonCfg.TxStream;
 
-	switch  (pAd->CommonCfg.RxStream)
+	switch  (rx_nss)
 	{
 		case 1:
 			vht_cap_ie.mcs_set.rx_high_rate = 292;
@@ -489,7 +497,7 @@ INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR VhtMaxMcsCap)
 			break;
 	}
 
-	switch (pAd->CommonCfg.TxStream)
+	switch (tx_nss)
 	{
 		case 1:
 			vht_cap_ie.mcs_set.tx_high_rate = 292;

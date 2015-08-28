@@ -236,7 +236,9 @@ VOID RTMPSetHT(
 													rt_ht_cap->MimoPs,
 													rt_ht_cap->MpduDensity,
 													rt_ht_cap->MaxRAmpduFactor));
-	
+	/* always set ldpc field to 0, 7610 not support LDPC */
+	ht_cap->HtCapInfo.ht_rx_ldpc = 0;
+
 	if(pHTPhyMode->HtMode == HTMODE_GF)
 	{
 		ht_cap->HtCapInfo.GF = 1;
