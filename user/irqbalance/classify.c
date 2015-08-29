@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <assert.h>
+#include <errno.h>
 
 #include "irqbalance.h"
 #include "types.h"
@@ -36,17 +37,80 @@ struct user_irq_policy {
 static GList *interrupts_db = NULL;
 static GList *banned_irqs = NULL;
 static GList *cl_banned_irqs = NULL;
+static GList *cl_banned_modules = NULL;
 
+#define SYSFS_DIR "/sys"
 #define SYSDEV_DIR "/sys/bus/pci/devices"
 
 #define PCI_MAX_CLASS 0x14
 #define PCI_MAX_SERIAL_SUBCLASS 0x81
 
-static int get_pci_irq_class(int pci_class)
+#define PCI_INVAL_DATA 0xFFFFFFFF
+
+struct pci_info {
+	unsigned short vendor;
+	unsigned short device;
+	unsigned short sub_vendor;
+	unsigned short sub_device;
+	unsigned int class;
+};
+
+/* PCI vendor ID, device ID */
+#define PCI_VENDOR_PLX 0x10b5
+#define PCI_DEVICE_PLX_PEX8619 0x8619
+#define PCI_VENDOR_CAVIUM 0x177d
+#define PCI_DEVICE_CAVIUM_CN61XX 0x0093
+
+/* PCI subsystem vendor ID, subsystem device ID */
+#define PCI_SUB_VENDOR_EMC 0x1120
+#define PCI_SUB_DEVICE_EMC_055B 0x055b
+#define PCI_SUB_DEVICE_EMC_0568 0x0568
+#define PCI_SUB_DEVICE_EMC_dd00 0xdd00
+
+/*
+ * Apply software workarounds for some special devices
+ *
+ * The world is not perfect and supplies us with broken PCI devices.
+ * Usually there are two sort of cases:
+ *
+ *     1. The device is special
+ *        Before shipping the devices, PCI spec doesn't have the definitions.
+ *
+ *     2. Buggy PCI devices
+ *        Some PCI devices don't follow the PCI class code definitions.
+ */
+static void apply_pci_quirks(const struct pci_info *pci, int *irq_class)
 {
-	int major = pci_class >> 16;
-	int sub = (pci_class & 0xFF00) >> 8;
-	short irq_class = IRQ_NODEF;
+	if ((pci->vendor == PCI_VENDOR_PLX) &&
+	    (pci->device == PCI_DEVICE_PLX_PEX8619) &&
+	    (pci->sub_vendor == PCI_SUB_VENDOR_EMC)) {
+		switch (pci->sub_device) {
+			case PCI_SUB_DEVICE_EMC_055B:
+			case PCI_SUB_DEVICE_EMC_dd00:
+				*irq_class = IRQ_SCSI;
+				break;
+		}
+	}
+
+	if ((pci->vendor == PCI_VENDOR_CAVIUM) &&
+	    (pci->device == PCI_DEVICE_CAVIUM_CN61XX) &&
+	    (pci->sub_vendor == PCI_SUB_VENDOR_EMC)) {
+		switch (pci->sub_device) {
+			case PCI_SUB_DEVICE_EMC_0568:
+				*irq_class = IRQ_SCSI;
+				break;
+		}
+	}
+
+	return;
+}
+
+/* Determin IRQ class based on PCI class code */
+static int map_pci_irq_class(unsigned int pci_class)
+{
+	unsigned int major = pci_class >> 16;
+	unsigned int sub = (pci_class & 0xFF00) >> 8;
+	int irq_class = IRQ_NODEF;
 	/*
 	 * Class codes lifted from below PCI-SIG spec:
 	 *
@@ -119,6 +183,80 @@ static int get_pci_irq_class(int pci_class)
 	return irq_class;
 }
 
+/* Read specific data from sysfs */
+static unsigned int read_pci_data(const char *devpath, const char* file)
+{
+	char path[PATH_MAX];
+	FILE *fd;
+	unsigned int data = PCI_INVAL_DATA;
+
+	sprintf(path, "%s/%s", devpath, file);
+
+	fd = fopen(path, "r");
+
+	if (!fd) {
+		log(TO_CONSOLE, LOG_WARNING, "PCI: can't open file:%s\n", path);
+		return data;
+	}
+
+	(void) fscanf(fd, "%x", &data);
+	fclose(fd);
+
+	return data;
+}
+
+/* Get pci information for IRQ classification */
+static int get_pci_info(const char *devpath, struct pci_info *pci)
+{
+	unsigned int data = PCI_INVAL_DATA;
+
+	if ((data = read_pci_data(devpath, "vendor")) == PCI_INVAL_DATA)
+		return -ENODEV;
+	pci->vendor = (unsigned short)data;
+
+	if ((data = read_pci_data(devpath, "device")) == PCI_INVAL_DATA)
+		return -ENODEV;
+	pci->device = (unsigned short)data;
+
+	if ((data = read_pci_data(devpath, "subsystem_vendor")) == PCI_INVAL_DATA)
+		return -ENODEV;
+	pci->sub_vendor = (unsigned short)data;
+
+	if ((data = read_pci_data(devpath, "subsystem_device")) == PCI_INVAL_DATA)
+		return -ENODEV;
+	pci->sub_device = (unsigned short)data;
+
+	if ((data = read_pci_data(devpath, "class")) == PCI_INVAL_DATA)
+		return -ENODEV;
+	pci->class = data;
+
+	return 0;
+}
+
+/* Return IRQ class for given devpath */
+static int get_irq_class(const char *devpath)
+{
+	int irq_class = IRQ_NODEF;
+	struct pci_info pci;
+
+	/* Get PCI info from sysfs */
+	if (get_pci_info(devpath, &pci) < 0)
+		return IRQ_NODEF;
+
+	/* Map PCI class code to irq class */
+	irq_class = map_pci_irq_class(pci.class);
+	if (irq_class < 0) {
+		log(TO_CONSOLE, LOG_WARNING, "Invalid PCI class code %d\n",
+		    pci.class);
+		return IRQ_NODEF;
+	}
+
+	/* Reassign irq class for some buggy devices */
+	apply_pci_quirks(&pci, &irq_class);
+
+	return irq_class;
+}
+
 static gint compare_ints(gconstpointer a, gconstpointer b)
 {
 	const struct irq_info *ai = a;
@@ -148,6 +286,7 @@ static void add_banned_irq(int irq, GList **list)
 	new->hint_policy = HINT_POLICY_EXACT;
 
 	*list = g_list_append(*list, new);
+	log(TO_CONSOLE, LOG_INFO, "IRQ %d was BANNED.\n", irq);
 	return;
 }
 
@@ -155,7 +294,6 @@ void add_cl_banned_irq(int irq)
 {
 	add_banned_irq(irq, &cl_banned_irqs);
 }
-
 
 static int is_banned_irq(int irq)
 {
@@ -168,15 +306,46 @@ static int is_banned_irq(int irq)
 	return entry ? 1:0;
 }
 
+gint substr_find(gconstpointer a, gconstpointer b)
+{
+	if (strstr(b, a))
+		return 0;
+	else
+		return 1;
+}
+
+static void add_banned_module(char *modname, GList **modlist)
+{
+	GList *entry;
+	char *newmod;
+	
+	entry = g_list_find_custom(*modlist, modname, substr_find);
+	if (entry)
+		return;
+
+	newmod = strdup(modname);
+	if (!newmod) {
+		log(TO_CONSOLE, LOG_WARNING, "No memory to ban module %s\n", modname);
+		return;
+	}
+
+	*modlist = g_list_append(*modlist, newmod);
+}
+
+void add_cl_banned_module(char *modname)
+{
+	add_banned_module(modname, &cl_banned_modules);
+}
+
 			
 /*
  * Inserts an irq_info struct into the intterupts_db list
  * devpath points to the device directory in sysfs for the 
- * related device
+ * related device. NULL devpath means no sysfs entries for
+ * this irq.
  */
 static struct irq_info *add_one_irq_to_db(const char *devpath, int irq, struct user_irq_policy *pol)
 {
-	int pci_class = 0;
 	int irq_class = IRQ_OTHER;
 	int rc;
 	struct irq_info *new, find;
@@ -213,30 +382,12 @@ static struct irq_info *add_one_irq_to_db(const char *devpath, int irq, struct u
 
 	interrupts_db = g_list_append(interrupts_db, new);
 
-	sprintf(path, "%s/class", devpath);
-
-	fd = fopen(path, "r");
-
-	if (!fd) {
-		perror("Can't open class file: ");
-		goto get_numa_node;
-	}
-
-	rc = fscanf(fd, "%x", &pci_class);
-	fclose(fd);
-
-	if (!rc)
-		goto get_numa_node;
-
-
-	/*
-	 * Map PCI class code to irq class
-	 */
-	irq_class = get_pci_irq_class(pci_class);
-
-	if (irq_class < 0) {
-		log(TO_CONSOLE, LOG_WARNING, "Invalid PCI class code %d\n", pci_class);
-		goto get_numa_node;
+ 	/* Some special irqs have NULL devpath */
+	if (devpath != NULL) {
+		/* Map PCI class code to irq class */
+		irq_class = get_irq_class(devpath);
+		if (irq_class < 0)
+			goto get_numa_node;
 	}
 
 	new->class = irq_class;
@@ -389,6 +540,10 @@ static void get_irq_user_policy(char *path, int irq, struct user_irq_policy *pol
 	if (!polscript)
 		return;
 
+	/* Use SYSFS_DIR for irq has no sysfs entries */
+	if (!path)
+		path = SYSFS_DIR;
+
 	cmd = alloca(strlen(path)+strlen(polscript)+64);
 	if (!cmd)
 		return;
@@ -408,11 +563,21 @@ static void get_irq_user_policy(char *path, int irq, struct user_irq_policy *pol
 	pclose(output);
 }
 
-static int check_for_irq_ban(char *path, int irq)
+static int check_for_module_ban(char *name)
 {
-	char *cmd;
-	int rc;
-	struct irq_info find;
+	GList *entry;
+
+	entry = g_list_find_custom(cl_banned_modules, name, substr_find);
+
+	if (entry)
+		return 1;
+	else
+		return 0;
+}
+
+static int check_for_irq_ban(char *path, int irq, GList *proc_interrupts)
+{
+	struct irq_info find, *res;
 	GList *entry;
 
 	/*
@@ -422,6 +587,20 @@ static int check_for_irq_ban(char *path, int irq)
 	entry = g_list_find_custom(cl_banned_irqs, &find, compare_ints);
 	if (entry)
 		return 1;
+
+	/*
+	 * Check to see if we banned module which the irq belongs to.
+	 */
+	entry = g_list_find_custom(proc_interrupts, &find, compare_ints);
+	if (entry) {
+		res = entry->data;
+		if (check_for_module_ban(res->name))
+			return 1;
+	}
+
+#ifdef INCLUDE_BANSCRIPT
+	char *cmd;
+	int rc;
 
 	if (!banscript)
 		return 0;
@@ -448,14 +627,14 @@ static int check_for_irq_ban(char *path, int irq)
 		log(TO_ALL, LOG_INFO, "irq %d is baned by %s\n", irq, banscript);
 		return 1;
 	}
+#endif
 	return 0;
-
 }
 
 /*
- * Figures out which interrupt(s) relate to the device we're looking at in dirname
+ * Figures out which interrupt(s) relate to the device we"re looking at in dirname
  */
-static void build_one_dev_entry(const char *dirname)
+static void build_one_dev_entry(const char *dirname, GList *tmp_irqs)
 {
 	struct dirent *entry;
 	DIR *msidir;
@@ -482,7 +661,7 @@ static void build_one_dev_entry(const char *dirname)
 				if (new)
 					continue;
 				get_irq_user_policy(devpath, irqnum, &pol);
-				if ((pol.ban == 1) || (check_for_irq_ban(devpath, irqnum))) {
+				if ((pol.ban == 1) || (check_for_irq_ban(devpath, irqnum, tmp_irqs))) {
 					add_banned_irq(irqnum, &banned_irqs);
 					continue;
 				}
@@ -511,7 +690,7 @@ static void build_one_dev_entry(const char *dirname)
 		if (new)
 			goto done;
 		get_irq_user_policy(devpath, irqnum, &pol);
-		if ((pol.ban == 1) || (check_for_irq_ban(path, irqnum))) {
+		if ((pol.ban == 1) || (check_for_irq_ban(path, irqnum, tmp_irqs))) {
 			add_banned_irq(irqnum, &banned_irqs);
 			goto done;
 		}
@@ -544,7 +723,14 @@ void free_irq_db(void)
 	rebalance_irq_list = NULL;
 }
 
-static void add_new_irq(int irq, struct irq_info *hint)
+void free_cl_opts(void)
+{
+	g_list_free_full(cl_banned_modules, free);
+	g_list_free_full(cl_banned_irqs, free);
+	g_list_free(banned_irqs);
+}
+
+static void add_new_irq(int irq, struct irq_info *hint, GList *proc_interrupts)
 {
 	struct irq_info *new;
 	struct user_irq_policy pol;
@@ -553,12 +739,13 @@ static void add_new_irq(int irq, struct irq_info *hint)
 	if (new)
 		return;
 
-	get_irq_user_policy("/sys", irq, &pol);
-	if ((pol.ban == 1) || check_for_irq_ban(NULL, irq)) {
+	/* Set NULL devpath for the irq has no sysfs entries */
+	get_irq_user_policy(NULL, irq, &pol);
+	if ((pol.ban == 1) || check_for_irq_ban(NULL, irq, proc_interrupts)) { /*FIXME*/
 		add_banned_irq(irq, &banned_irqs);
 		new = get_irq_info(irq);
 	} else
-		new = add_one_irq_to_db("/sys", irq, &pol);
+		new = add_one_irq_to_db(NULL, irq, &pol);
 
 	if (!new) {
 		log(TO_CONSOLE, LOG_WARNING, "add_new_irq: Failed to add irq %d\n", irq);
@@ -576,13 +763,13 @@ static void add_new_irq(int irq, struct irq_info *hint)
 	new->level = map_class_to_level[new->class];
 }
 
-static void add_missing_irq(struct irq_info *info, void *unused __attribute__((unused)))
+static void add_missing_irq(struct irq_info *info, void *attr)
 {
 	struct irq_info *lookup = get_irq_info(info->irq);
+	GList *proc_interrupts = (GList *) attr;
 
 	if (!lookup)
-		add_new_irq(info->irq, info);
-	
+		add_new_irq(info->irq, info, proc_interrupts);
 }
 
 
@@ -593,7 +780,7 @@ void rebuild_irq_db(void)
 	GList *tmp_irqs = NULL;
 
 	free_irq_db();
-		
+
 	tmp_irqs = collect_full_irq_list();
 
 	devdir = opendir(SYSDEV_DIR);
@@ -606,14 +793,14 @@ void rebuild_irq_db(void)
 		if (!entry)
 			break;
 
-		build_one_dev_entry(entry->d_name);
+		build_one_dev_entry(entry->d_name, tmp_irqs);
 
 	} while (entry != NULL);
 
 	closedir(devdir);
 
 
-	for_each_irq(tmp_irqs, add_missing_irq, NULL);
+	for_each_irq(tmp_irqs, add_missing_irq, tmp_irqs);
 
 free:
 	g_list_free_full(tmp_irqs, free);

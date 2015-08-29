@@ -1,4 +1,4 @@
-AC_INIT(irqbalance,1.0.8)
+AC_INIT(irqbalance,1.0.9)
 AC_PREREQ(2.12)dnl
 AM_CONFIG_HEADER(config.h)
 
@@ -30,6 +30,17 @@ AC_C_CONST
 AC_C_INLINE
 AM_PROG_CC_C_O
 
+AC_ARG_WITH([systemd],
+  [ AS_HELP_STRING([--with-systemd],[Add systemd-lib support])]
+)
+AS_IF(
+  [test "x$with_systemd" = xyes], [
+    PKG_CHECK_MODULES([SYSTEMD], [libsystemd-journal], [journal_lib=yes])
+    AC_DEFINE(HAVE_LIBSYSTEMD, 1, [systemd support])
+    AC_CHECK_LIB([systemd], [sd_journal_print_with_location])
+    AC_CHECK_LIB([systemd], [sd_journal_print])
+])
+
 AC_ARG_WITH([glib2],
   [AS_HELP_STRING([--without-glib2],
     [Don't use system glib2 library. Use local implementation instead.])],
@@ -38,6 +49,10 @@ AC_ARG_WITH([glib2],
 
 local_glib2=
 AS_IF(
+  [test "x$with_glib2" = xyes],
+  [PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.28])],
+  
+  [test "x$with_glib2" = xno],
   [local_glib2="yes"],
 
   [PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.28], [], [local_glib2="yes"])]

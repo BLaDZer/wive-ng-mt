@@ -58,6 +58,51 @@ cpumask_t cpu_possible_map;
 */
 cpumask_t unbanned_cpus;
 
+/*
+ * By default do not place IRQs on CPUs the kernel keeps isolated,
+ * as specified through the isolcpus= boot commandline. Users can
+ * override this with the IRQBALANCE_BANNED_CPUS environment variable.
+ */
+static void setup_banned_cpus(void)
+{
+	FILE *file;
+	char *c, *line = NULL;
+	size_t size = 0;
+	const char *isolcpus = "isolcpus=";
+	char buffer[4096];
+
+	/* A manually specified cpumask overrides auto-detection. */
+	if (getenv("IRQBALANCE_BANNED_CPUS"))  {
+		cpumask_parse_user(getenv("IRQBALANCE_BANNED_CPUS"), strlen(getenv("IRQBALANCE_BANNED_CPUS")), banned_cpus);
+		goto out;
+	}
+
+	file = fopen("/proc/cmdline", "r");
+	if (!file)
+		goto out;
+
+	if (getline(&line, &size, file) <= 0)
+		goto out2;
+
+	if ((c = strstr(line, isolcpus))) {
+		char *end;
+		int len;
+
+		c += strlen(isolcpus);
+		for (end = c; *end != ' ' && *end != '\0' && *end != '\n'; end++);
+		len = end - c;
+
+		cpulist_parse(c, len, banned_cpus);
+	}
+
+ out2:
+	fclose(file);
+ out:
+	cpumask_scnprintf(buffer, 4096, banned_cpus);
+	log(TO_CONSOLE, LOG_INFO, "Isolated CPUs: %s\n", buffer);
+	free(line);
+}
+
 static struct topo_obj* add_cache_domain_to_package(struct topo_obj *cache, 
 						    int packageid, cpumask_t package_mask)
 {
@@ -294,15 +339,22 @@ static void dump_irq(struct irq_info *info, void *data)
 {
 	int spaces = (long int)data;
 	int i;
-	for (i=0; i<spaces; i++) log(TO_CONSOLE, LOG_INFO, " ");
-	log(TO_CONSOLE, LOG_INFO, "Interrupt %i node_num is %d (%s/%u) \n",
-	    info->irq, irq_numa_node(info)->number, classes[info->class], (unsigned int)info->load);
+	char * indent = malloc (sizeof(char) * (spaces + 1));
+
+	for ( i = 0; i < spaces; i++ )
+		indent[i] = log_indent[0];
+
+	indent[i] = '\0';
+	log(TO_CONSOLE, LOG_INFO, "%sInterrupt %i node_num is %d (%s/%llu:%llu) \n", indent,
+	    info->irq, irq_numa_node(info)->number, classes[info->class], info->load, (info->irq_count - info->last_irq_count));
+	free(indent);
 }
 
-static void dump_topo_obj(struct topo_obj *d, void *data __attribute__((unused)))
+static void dump_balance_obj(struct topo_obj *d, void *data __attribute__((unused)))
 {
 	struct topo_obj *c = (struct topo_obj *)d;
-	log(TO_CONSOLE, LOG_INFO, "                CPU number %i  numa_node is %d (load %lu)\n",
+	log(TO_CONSOLE, LOG_INFO, "%s%s%s%sCPU number %i  numa_node is %d (load %lu)\n",
+	    log_indent, log_indent, log_indent, log_indent,
 	    c->number, cpu_numa_node(c)->number , (unsigned long)c->load);
 	if (c->interrupts)
 		for_each_irq(c->interrupts, dump_irq, (void *)18);
@@ -312,10 +364,11 @@ static void dump_cache_domain(struct topo_obj *d, void *data)
 {
 	char *buffer = data;
 	cpumask_scnprintf(buffer, 4095, d->mask);
-	log(TO_CONSOLE, LOG_INFO, "        Cache domain %i:  numa_node is %d cpu mask is %s  (load %lu) \n",
+	log(TO_CONSOLE, LOG_INFO, "%s%sCache domain %i:  numa_node is %d cpu mask is %s  (load %lu) \n",
+	    log_indent, log_indent,
 	    d->number, cache_domain_numa_node(d)->number, buffer, (unsigned long)d->load);
 	if (d->children)
-		for_each_object(d->children, dump_topo_obj, NULL);
+		for_each_object(d->children, dump_balance_obj, NULL);
 	if (g_list_length(d->interrupts) > 0)
 		for_each_irq(d->interrupts, dump_irq, (void *)10);
 }
@@ -364,6 +417,8 @@ void parse_cpu_tree(void)
 {
 	DIR *dir;
 	struct dirent *entry;
+
+	setup_banned_cpus();
 
 	cpus_complement(unbanned_cpus, banned_cpus);
 

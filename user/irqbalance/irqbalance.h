@@ -12,10 +12,15 @@
 #include <limits.h>
 
 #include "types.h"
+#include "config.h"
 #ifdef HAVE_NUMA_H
 #include <numa.h>
 #else
 #define numa_available() -1
+#endif
+
+#ifdef HAVE_LIBSYSTEMD
+#include <systemd/sd-journal.h>
 #endif
 
 extern int package_count;
@@ -60,6 +65,7 @@ enum hp_e {
 };
 
 extern int debug_mode;
+extern int journal_logging;
 extern int one_shot_mode;
 extern int need_rescan;
 extern enum hp_e global_hint_policy;
@@ -110,6 +116,8 @@ extern void add_cl_banned_irq(int irq);
 extern void for_each_irq(GList *list, void (*cb)(struct irq_info *info,  void *data), void *data);
 extern struct irq_info *get_irq_info(int irq);
 extern void migrate_irq(GList **from, GList **to, struct irq_info *info);
+extern void free_cl_opts(void);
+extern void add_cl_banned_module(char *modname);
 #define irq_numa_node(irq) ((irq)->numa_node)
 
 
@@ -134,13 +142,34 @@ static inline void for_each_object(GList *list, void (*cb)(struct topo_obj *obj,
 #define TO_CONSOLE	(1 << 1)
 #define TO_ALL		(TO_SYSLOG | TO_CONSOLE)
 
+extern const char * log_indent;
 extern unsigned int log_mask;
-#define log(mask, lvl, fmt, args...) do {\
-	if (log_mask & mask & TO_SYSLOG)\
-		syslog(lvl, fmt, ##args);\
-	if (log_mask & mask & TO_CONSOLE)\
-		printf(fmt, ##args);\
+#ifdef HAVE_LIBSYSTEMD
+#define log(mask, lvl, fmt, args...) do {					\
+	if (journal_logging) {							\
+		sd_journal_print(lvl, fmt, ##args);				\
+		if (log_mask & mask & TO_CONSOLE)				\
+			printf(fmt, ##args);					\
+	} else { 								\
+		if (log_mask & mask & TO_SYSLOG) 				\
+			syslog(lvl, fmt, ##args); 				\
+		if (log_mask & mask & TO_CONSOLE) 				\
+			printf(fmt, ##args); 					\
+	} 									\
 }while(0)
+#else /* ! HAVE_LIBSYSTEMD */
+#define log(mask, lvl, fmt, args...) do {					\
+	if (journal_logging) {							\
+		printf("<%d>", lvl); 						\
+		printf(fmt, ##args);						\
+	} else { 								\
+		if (log_mask & mask & TO_SYSLOG) 				\
+			syslog(lvl, fmt, ##args); 				\
+		if (log_mask & mask & TO_CONSOLE) 				\
+			printf(fmt, ##args); 					\
+	} 									\
+}while(0)
+#endif /* HAVE_LIBSYSTEMD */
 
-#endif
+#endif /* __INCLUDE_GUARD_IRQBALANCE_H_ */
 

@@ -42,7 +42,7 @@ GList* collect_full_irq_list()
 	FILE *file;
 	char *line = NULL;
 	size_t size = 0;
-	char *irq_name, *savedptr, *last_token, *p;
+	char *irq_name, *irq_mod, *savedptr, *last_token, *p;
 
 	file = fopen("/proc/interrupts", "r");
 	if (!file)
@@ -68,7 +68,7 @@ GList* collect_full_irq_list()
 		c = line;
 		while (isblank(*(c)))
 			c++;
-			
+
 		if (!(*c>='0' && *c<='9'))
 			break;
 		c = strchr(line, ':');
@@ -83,6 +83,7 @@ GList* collect_full_irq_list()
 			irq_name = last_token;
 			last_token = p;
 		}
+		irq_mod = last_token;
 
 		*c = 0;
 		c++;
@@ -97,11 +98,11 @@ GList* collect_full_irq_list()
 			} else {
 				info->type = IRQ_TYPE_LEGACY;
 				info->class = IRQ_OTHER;
-			} 
+			}
 			info->hint_policy = global_hint_policy;
+			info->name = strdupa(irq_mod);
 			tmp_list = g_list_append(tmp_list, info);
 		}
-
 	}
 	fclose(file);
 	free(line);
@@ -210,13 +211,6 @@ void parse_proc_interrupts(void)
 }
 
 
-static void accumulate_irq_count(struct irq_info *info, void *data)
-{
-	uint64_t *acc = data;
-
-	*acc += (info->irq_count - info->last_irq_count);
-}
-
 static void assign_load_slice(struct irq_info *info, void *data)
 {
 	uint64_t *load_slice = data;
@@ -242,36 +236,68 @@ static uint64_t get_parent_branch_irq_count_share(struct topo_obj *d)
 		total_irq_count /= g_list_length((d->parent)->children);
 	}
 
-	if (g_list_length(d->interrupts) > 0)
-		for_each_irq(d->interrupts, accumulate_irq_count, &total_irq_count);
+	total_irq_count += d->irq_count;
 
 	return total_irq_count;
+}
+
+static void get_children_branch_irq_count(struct topo_obj *d, void *data)
+{
+	uint64_t *total_irq_count = data;
+
+	if (g_list_length(d->children) > 0)
+		for_each_object(d->children, get_children_branch_irq_count, total_irq_count);
+
+	*total_irq_count += d->irq_count;
 }
 
 static void compute_irq_branch_load_share(struct topo_obj *d, void *data __attribute__((unused)))
 {
 	uint64_t local_irq_counts = 0;
 	uint64_t load_slice;
-	int	load_divisor = g_list_length(d->children);
-
-	d->load /= (load_divisor ? load_divisor : 1);
 
 	if (g_list_length(d->interrupts) > 0) {
 		local_irq_counts = get_parent_branch_irq_count_share(d);
+		if (g_list_length(d->children) > 0)
+			for_each_object(d->children, get_children_branch_irq_count, &local_irq_counts);
 		load_slice = local_irq_counts ? (d->load / local_irq_counts) : 1;
 		for_each_irq(d->interrupts, assign_load_slice, &load_slice);
 	}
 
-	if (d->parent)
-		d->parent->load += d->load;
 }
 
-static void reset_load(struct topo_obj *d, void *data __attribute__((unused)))
+static void accumulate_irq_count(struct irq_info *info, void *data)
 {
-	if (d->parent)
-		reset_load(d->parent, NULL);
+	uint64_t *acc = data;
 
-	d->load = 0;
+	*acc += (info->irq_count - info->last_irq_count);
+}
+
+static void accumulate_interrupts(struct topo_obj *d, void *data __attribute__((unused)))
+{
+	if (g_list_length(d->children) > 0) {
+		for_each_object(d->children, accumulate_interrupts, NULL);
+	}
+
+	d->irq_count = 0;
+	if (g_list_length(d->interrupts) > 0)
+		for_each_irq(d->interrupts, accumulate_irq_count, &(d->irq_count));
+}
+
+static void accumulate_load(struct topo_obj *d, void *data)
+{
+	uint64_t *load = data;
+
+	*load += d->load;
+}
+
+static void set_load(struct topo_obj *d, void *data __attribute__((unused)))
+{
+	if (g_list_length(d->children) > 0) {
+		for_each_object(d->children, set_load, NULL);
+		d->load = 0;
+		for_each_object(d->children, accumulate_load, &(d->load));
+	}
 }
 
 void parse_proc_stat(void)
@@ -346,9 +372,14 @@ void parse_proc_stat(void)
 	}
 
 	/*
- 	 * Reset the load values for all objects above cpus
+ 	 * Set the load values for all objects above cpus
  	 */
-	for_each_object(cache_domains, reset_load, NULL);
+	for_each_object(numa_nodes, set_load, NULL);
+
+	/*
+ 	 * Collect local irq_count on each object
+ 	 */
+	for_each_object(numa_nodes, accumulate_interrupts, NULL);
 
 	/*
  	 * Now that we have load for each cpu attribute a fair share of the load

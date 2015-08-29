@@ -46,6 +46,7 @@ enum obj_type_e {
 struct topo_obj {
 	uint64_t load;
 	uint64_t last_load;
+	uint64_t irq_count;
 	enum obj_type_e obj_type;
 	int number;
 	int powersave_mode;
@@ -70,8 +71,9 @@ struct irq_info {
 	uint64_t last_irq_count;
 	uint64_t load;
 	int moved;
-struct topo_obj *assigned_obj;
-   unsigned int warned;
+	struct topo_obj *assigned_obj;
+	unsigned int warned;
+	char *name;
 };
 
 #endif

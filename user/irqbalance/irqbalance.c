@@ -46,8 +46,10 @@ int one_shot_mode;
 int debug_mode;
 int foreground_mode;
 int numa_avail;
+int journal_logging = 0;
 int need_rescan;
 unsigned int log_mask = TO_ALL;
+const char *log_indent;
 enum hp_e global_hint_policy = HINT_POLICY_IGNORE;
 unsigned long power_thresh = ULONG_MAX;
 unsigned long deepest_cache = 2;
@@ -56,6 +58,7 @@ char *pidfile = NULL;
 char *banscript = NULL;
 char *polscript = NULL;
 long HZ;
+int sleep_interval = SLEEP_INTERVAL;
 
 static void sleep_approx(int seconds)
 {
@@ -83,13 +86,17 @@ struct option lopts[] = {
 	{"deepestcache", 1, NULL, 'c'},
 	{"policyscript", 1, NULL, 'l'},
 	{"pid", 1, NULL, 's'},
+	{"journal", 0, NULL, 'j'},
+	{"banmod", 1 , NULL, 'm'},
+	{"interval", 1 , NULL, 't'},
 	{0, 0, 0, 0}
 };
 
 static void usage(void)
 {
-	log(TO_CONSOLE, LOG_INFO, "irqbalance [--oneshot | -o] [--debug | -d] [--foreground | -f] [--hintpolicy= | -h [exact|subset|ignore]]\n");
-	log(TO_CONSOLE, LOG_INFO, "	[--powerthresh= | -p <off> | <n>] [--banirq= | -i <n>] [--policyscript=<script>] [--pid= | -s <file>] [--deepestcache= | -c <n>]\n");
+	log(TO_CONSOLE, LOG_INFO, "irqbalance [--oneshot | -o] [--debug | -d] [--foreground | -f] [--journal | -j] [--hintpolicy= | -h [exact|subset|ignore]]\n");
+	log(TO_CONSOLE, LOG_INFO, "	[--powerthresh= | -p <off> | <n>] [--banirq= | -i <n>] [--banmod= | -m <module>] [--policyscript= | -l <script>]\n");
+	log(TO_CONSOLE, LOG_INFO, "	[--pid= | -s <file>] [--deepestcache= | -c <n>] [--interval= | -t <n>]\n");
 }
 
 static void parse_command_line(int argc, char **argv)
@@ -99,7 +106,7 @@ static void parse_command_line(int argc, char **argv)
 	unsigned long val;
 
 	while ((opt = getopt_long(argc, argv,
-		"odfh:i:p:s:c:b:l:",
+		"odfjh:i:p:s:c:b:l:m:t:",
 		lopts, &longind)) != -1) {
 
 		switch(opt) {
@@ -113,7 +120,7 @@ static void parse_command_line(int argc, char **argv)
 				 * Banscript is no longer supported unless
 				 * explicitly enabled
 				 */
-				log(TO_CONSOLE, LOG_INFO, "--banscript is not supported on this version of irqbalance, please use --polscript");
+				log(TO_CONSOLE, LOG_INFO, "--banscript is not supported on this version of irqbalance, please use --policyscript\n");
 				usage();
 				exit(1);
 #endif
@@ -156,6 +163,9 @@ static void parse_command_line(int argc, char **argv)
 			case 'l':
 				polscript = strdup(optarg);
 				break;
+			case 'm':
+				add_cl_banned_module(optarg);
+				break;
 			case 'p':
 				if (!strncmp(optarg, "off", strlen(optarg)))
 					power_thresh = ULONG_MAX;
@@ -172,6 +182,17 @@ static void parse_command_line(int argc, char **argv)
 				break;
 			case 's':
 				pidfile = optarg;
+				break;
+			case 'j':
+				journal_logging=1;
+				foreground_mode=1;
+				break;
+			case 't':
+				sleep_interval = strtol(optarg, NULL, 10);
+				if (sleep_interval < 1) {
+					usage();
+					exit(1);
+				}
 				break;
 		}
 	}
@@ -247,10 +268,9 @@ int main(int argc, char** argv)
 	sigaddset(&sigset,SIGUSR1);
 	sigaddset(&sigset,SIGUSR2);
 	sigprocmask(SIG_BLOCK, &sigset, &old_sigset);
-
 #ifdef HAVE_GETOPT_LONG
 	parse_command_line(argc, argv);
-#else
+#else /* ! HAVE_GETOPT_LONG */
 	if (argc>1 && strstr(argv[1],"--debug")) {
 		debug_mode=1;
 		foreground_mode=1;
@@ -259,27 +279,34 @@ int main(int argc, char** argv)
 		foreground_mode=1;
 	if (argc>1 && strstr(argv[1],"--oneshot"))
 		one_shot_mode=1;
-#endif
+	if (argc>1 && strstr(argv[1],"--journal")) {
+		journal_logging=1;
+		foreground_mode=1;
+	}
+#endif /* HAVE_GETOPT_LONG */
 
 	/*
  	 * Open the syslog connection
  	 */
 	openlog(argv[0], 0, LOG_DAEMON);
 
-	if (getenv("IRQBALANCE_BANNED_CPUS"))  {
-		cpumask_parse_user(getenv("IRQBALANCE_BANNED_CPUS"), strlen(getenv("IRQBALANCE_BANNED_CPUS")), banned_cpus);
-	}
-
 	if (getenv("IRQBALANCE_ONESHOT")) 
 		one_shot_mode=1;
 
-	if (getenv("IRQBALANCE_DEBUG")) 
+	if (getenv("IRQBALANCE_DEBUG")) {
 		debug_mode=1;
+		foreground_mode=1;
+	}
 
 	/*
  	 * If we are't in debug mode, don't dump anything to the console
  	 * note that everything goes to the console before we check this
  	 */
+	if (journal_logging)
+		log_indent = "....";
+	else
+		log_indent = "    ";
+
 	if (!debug_mode)
 		log_mask &= ~TO_CONSOLE;
 
@@ -359,7 +386,7 @@ int main(int argc, char** argv)
 	parse_proc_stat();
 
 	while (keep_going) {
-		sleep_approx(SLEEP_INTERVAL);
+		sleep_approx(sleep_interval);
 		log(TO_CONSOLE, LOG_INFO, "\n\n\n-----------------------------------------------------------------------------\n");
 
 
@@ -379,7 +406,7 @@ int main(int argc, char** argv)
 			for_each_irq(NULL, force_rebalance_irq, NULL);
 			parse_proc_interrupts();
 			parse_proc_stat();
-			sleep_approx(SLEEP_INTERVAL);
+			sleep_approx(sleep_interval);
 			clear_work_stats();
 			parse_proc_interrupts();
 			parse_proc_stat();
@@ -399,6 +426,7 @@ int main(int argc, char** argv)
 
 	}
 	free_object_tree();
+	free_cl_opts();
 
 	/* Remove pidfile */
 	if (!foreground_mode && pidfile)

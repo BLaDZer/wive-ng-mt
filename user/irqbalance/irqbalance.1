@@ -46,6 +46,10 @@ Causes irqbalance to print extra debug information.  Implies --foreground.
 Causes irqbalance to run in the foreground (without --debug).
 
 .TP
+.B -j, --journal
+Enables log output optimized for systemd-journal.
+
+.TP
 .B -h, --hintpolicy=[exact | subset | ignore]
 Set the policy for how IRQ kernel affinity hinting is treated.  Can be one of:
 .P
@@ -126,7 +130,10 @@ is identical to the --hintpolicy setting, but applied per irq
 Have irqbalance write its process id to the specified file.  By default no
 pidfile is written.  The written pidfile is automatically unlinked when
 irqbalance exits. It is ignored when used with --debug or --foreground.
-
+.TP
+.B -t, --interval=<time>
+Set the measurement time for irqbalance.  irqbalance will sleep for <time>
+seconds between samples of the irq load on the system cpus. Defaults to 10.
 .SH "ENVIRONMENT VARIABLES"
 .TP
 .B IRQBALANCE_ONESHOT
