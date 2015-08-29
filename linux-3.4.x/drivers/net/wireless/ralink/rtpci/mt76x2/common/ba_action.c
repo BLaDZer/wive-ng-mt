@@ -602,8 +602,8 @@ VOID BAOriSessionAdd(
 
 		pBAEntry->ORIBATimer.TimerValue = 0;	/*pFrame->TimeOutValue;*/
 
-		DBGPRINT(RT_DEBUG_TRACE, ("%s():TXBAbitmap=%x, AMSDUCap=%d, BAWinSize=%d, TimeOut=%ld\n",
-					__FUNCTION__, pEntry->TXBAbitmap, pBAEntry->amsdu_cap,
+		DBGPRINT(RT_DEBUG_TRACE, ("%s():TXBAbitmap=%x, BAWinSize=%d, TimeOut=%ld\n",
+					__FUNCTION__, pEntry->TXBAbitmap, 
 					pBAEntry->BAWinSize, pBAEntry->ORIBATimer.TimerValue));
 
 		/* SEND BAR */

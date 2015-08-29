@@ -1047,6 +1047,7 @@ typedef struct _BA_ORI_ENTRY {
 	UCHAR TID;
 	UCHAR BAWinSize;
 	UCHAR Token;
+	UCHAR amsdu_cap;
 /* Sequence is to fill every outgoing QoS DATA frame's sequence field in 802.11 header. */
 	USHORT Sequence;
 	USHORT TimeOutValue;

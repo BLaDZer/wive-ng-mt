@@ -606,9 +606,10 @@ VOID BAOriSessionAdd(
 		BA_MaxWinSizeReasign(pAd, pEntry, &pBAEntry->BAWinSize);
 
 		pBAEntry->TimeOutValue = pFrame->TimeOutValue;
+		pBAEntry->amsdu_cap = pFrame->BaParm.AMSDUSupported;
 		pBAEntry->ORI_BA_Status = Originator_Done;
 		pAd->BATable.numDoneOriginator ++;
-		
+
 		/* reset sequence number */
 		pBAEntry->Sequence = BA_ORI_INIT_SEQ;
 		/* Set Bitmap flag.*/
@@ -2310,8 +2311,8 @@ VOID Peer_DelBA_Tx_Adapt_Enable(
 		UINT32 MacReg = 0;
 		BOOLEAN Cancelled;
 
-		RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
 		pEntry->bPeerDelBaTxAdaptEn = 1;
+		RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
 
 		/* Enable Tx Mac look up table */
 		RTMP_IO_READ32(pAd, TX_FBK_LIMIT, &MacReg);
