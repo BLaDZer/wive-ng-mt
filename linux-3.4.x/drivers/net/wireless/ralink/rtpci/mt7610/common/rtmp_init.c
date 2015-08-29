@@ -995,8 +995,8 @@ VOID	NICInitAsicFromEEPROM(
 	/* Internal Tx ALC */
 	if (((NicConfig2.field.DynamicTxAgcControl == 1) && 
             (NicConfig2.field.bInternalTxALC == 1)) ||
-            ((!IS_RT3390(pAd)) && (!IS_RT3350(pAd)) &&
-            (!IS_RT3352(pAd)) && (!IS_RT5350(pAd)) && (!IS_RT5390(pAd)) && (!IS_RT3290(pAd))))
+            (!IS_RT3352(pAd)) && (!IS_RT5350(pAd)) &&
+            (!IS_RT5390(pAd)) && (!IS_RT3290(pAd)) && (!IS_RT6352(pAd)) && (!IS_MT7601(pAd))))
 	{
 		/*
 			If both DynamicTxAgcControl and bInternalTxALC are enabled,
@@ -2728,6 +2728,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.BssCoexApCntThr = 0;
 	pAd->CommonCfg.Bss2040NeedFallBack = 0;
 #endif  /* DOT11N_DRAFT3 */
+
+	pAd->CommonCfg.bRcvBSSWidthTriggerEvents = FALSE;
 
 	NdisZeroMemory(&pAd->CommonCfg.AddHTInfo, sizeof(pAd->CommonCfg.AddHTInfo));
 	pAd->CommonCfg.BACapability.field.MMPSmode = MMPS_ENABLE;
