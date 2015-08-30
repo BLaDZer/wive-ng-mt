@@ -323,7 +323,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 						SET_ENTRY_CLIENT(pEntry);
 
 		} while (FALSE);
-
+			pEntry->isCached = FALSE;
 			pEntry->bIAmBadAtheros = FALSE;
 
 #ifdef RT_CFG80211_SUPPORT

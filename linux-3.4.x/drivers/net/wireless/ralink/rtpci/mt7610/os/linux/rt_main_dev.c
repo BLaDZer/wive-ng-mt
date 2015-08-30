@@ -394,6 +394,8 @@ PNET_DEV RtmpPhyNetDevInit(
 
 	RTMP_DRIVER_OP_MODE_GET(pAd, &OpMode);
 
+	/* put private data structure */
+	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);
 
 #ifdef CONFIG_APSTA_MIXED_SUPPORT
 #if WIRELESS_EXT >= 12
@@ -403,9 +405,6 @@ PNET_DEV RtmpPhyNetDevInit(
 	}
 #endif /*WIRELESS_EXT >= 12 */
 #endif /* CONFIG_APSTA_MIXED_SUPPORT */
-
-	/* put private data structure */
-	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);
 
 	/* double-check if pAd is associated with the net_dev */
 	if (RTMP_OS_NETDEV_GET_PRIV(net_dev) == NULL)
