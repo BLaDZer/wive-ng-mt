@@ -1608,8 +1608,10 @@ typedef struct _COMMON_CONFIG {
 	UCHAR vht_bw_signal;
 	UCHAR vht_cent_ch;
 	UCHAR vht_cent_ch2;
-	UCHAR disable_vht_256QAM; /* 0x0: normal, 0x1: disable vht80 256-QAM, 0x2: disable vht40 256-QAM, 0x4: disable vht20 256-QAM */
 	UCHAR vht_max_mcs_cap;
+#ifdef CONFIG_DISABLE_VHT80_256_QAM
+	UCHAR disable_vht_256QAM; /* 0x0: normal, 0x1: disable vht80 256-QAM, 0x2: disable vht40 256-QAM, 0x4: disable vht20 256-QAM */
+#endif
 #endif /* DOT11_VHT_AC */
 
 	IOT_STRUC IOTestParm;	/* 802.11n InterOpbility Test Parameter; */

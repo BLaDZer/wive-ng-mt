@@ -282,19 +282,19 @@ INT build_ext_bss_load(RTMP_ADAPTER *pAd, UCHAR *buf)
 
 VOID vht_max_mcs_cap(RTMP_ADAPTER *pAd)
 {
-	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: disable_vht_256QAM = 0x%x\n", 
-		__FUNCTION__, pAd->CommonCfg.disable_vht_256QAM));		
+#ifdef CONFIG_DISABLE_VHT80_256_QAM
+	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: disable_vht_256QAM = 0x%x\n",
+		__FUNCTION__, pAd->CommonCfg.disable_vht_256QAM));
 
-#ifdef CONFIG_DISABLE_VHT80_256_QAM	
-	if ((pAd->CommonCfg.vht_bw == VHT_BW_80) && 
+	if ((pAd->CommonCfg.vht_bw == VHT_BW_80) &&
 		(pAd->CommonCfg.disable_vht_256QAM & DISABLE_VHT80_256_QAM))
 		pAd->CommonCfg.vht_max_mcs_cap = VHT_MCS_CAP_7;
 	else
 #endif /* DISABLE_VHT80_256_QAM */
 	pAd->CommonCfg.vht_max_mcs_cap = VHT_MCS_CAP_9;
-	
-	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: vht_max_mcs_cap = %d\n", 
-		__FUNCTION__, pAd->CommonCfg.vht_max_mcs_cap));		
+
+	DBGPRINT(RT_DEBUG_TRACE, ("@@@ %s: vht_max_mcs_cap = %d\n",
+		__FUNCTION__, pAd->CommonCfg.vht_max_mcs_cap));	
 }
 
 /*
