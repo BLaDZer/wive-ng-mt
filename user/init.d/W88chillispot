@@ -21,6 +21,7 @@ start() {
 	get_params
 	modprobe -q tun
 	chilli $DEBUG $PARLINE &
+	#wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
     fi
 }
 
@@ -34,9 +35,13 @@ stop() {
 }
 
 get_params() {
-    #DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
-    DEBUG="--logfacility=7 --loglevel=7"
-    PARLINE="--dhcpif br0"
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusnasid`
+    if [ "$chilli_debug" = "1" ]; then
+	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    else
+	DEBUG="--logfacility=7 --loglevel=7"
+    fi
+    PARLINE="--dhcpif $lan_if"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
 	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
@@ -45,7 +50,6 @@ get_params() {
 	val=`nvram_get 2860 chilli_$i`
 	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
     done
-    touch /etc/chilli.conf
 }
 
 case "$1" in

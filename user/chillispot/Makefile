@@ -48,6 +48,7 @@ all:
 	./configure $(CONFOPTS) && $(MAKE) -j$(HOST_NCPU) DESTDIR=$(DIR)/filesystem && $(MAKE) install)
 
 romfs:
+	$(ROMFSINST) -S chilli.conf /etc/chilli.conf
 	$(ROMFSINST) -S init.d/W88chillispot /etc/rc.d/W88chillispot
 	$(ROMFSINST) -s /etc/rc.d/W88chillispot /etc/init.d/chillispot
 	cp -fva $(DIR)/filesystem/lib/*.so*  $(ROMFSDIR)/lib

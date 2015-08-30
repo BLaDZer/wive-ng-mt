@@ -395,6 +395,7 @@ ProbeRspRssi=0
 BandSteering=0
 IRQBalance=auto
 hotspot=off
+chilli_debug=0
 chilli_net=192.168.182.0/24
 chilli_dhcpstart=100
 chilli_dhcpend=200

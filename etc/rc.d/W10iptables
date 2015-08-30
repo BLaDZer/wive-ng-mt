@@ -194,6 +194,7 @@ servicelimit() {
 	if [ "$hotspot" = "on" ]; then
 		$LOG "Chillispot allow reqests to 3990 port from $lan_if"
 		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 3990 -j ACCEPT
+		iptables -A servicelimit -i tun0 -s $chilli_net -j ACCEPT
 	fi
 	if [ "$WANPingFilter" = "0" ] && [ "$ROUTE_MODE" = "on" ]; then
     	    $LOG "icmp drop ping from wan $wan_if"
@@ -248,7 +249,8 @@ forwardlimit() {
 		    iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
 		fi
 		iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
-		iptables -t nat -A POSTROUTING -o $phys_wan_if -s $chilli_net -j MASQUERADE
+		iptables -t nat -A PREROUTING -i tun0 -d $chilli_net -j ACCEPT
+		iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
 	    fi
 	    # second lan
 	    if [ "$Lan2Enabled" = "1" ]; then
