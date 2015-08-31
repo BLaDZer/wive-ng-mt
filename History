@@ -1253,6 +1253,7 @@
 10) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
 11) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
 12) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+13) kernel: igmp: inhibit reports for local multicast groups.<br>
 <br>
 <br>
 <b>TODO:</b><br>
