@@ -5,9 +5,12 @@
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
-CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-mmap --without-nfcoova --prefix=$(DIR)/filesystem
+CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
 CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
-CONFOPTS  += -enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
+CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig
+CONFOPTS  += --enable-chilliradsec --enable-chilliredir --enable-chilliproxy
+CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-multilan --enable-forcedns --enable-layer3
+# --enable-location
 
 #DEBUG     := y
 ifdef DEBUG
@@ -31,12 +34,6 @@ endif
 ifdef CONFIG_LIB_OPENSSL
 CONFOPTS  += --with-openssl -enable-chilliradsec
 endif
-
-#ifdef CONFIG_LIB_PCAP
-#CONFOPTS  += --with-pcap
-#else
-CONFOPTS  += --without-pcap
-#endif
 
 ifdef CONFIG_LIB_CURL
 CONFOPTS  += --with-curl

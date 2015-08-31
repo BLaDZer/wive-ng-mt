@@ -3982,18 +3982,18 @@ int dhcp_receive_ip(struct dhcp_ctx *ctx, uint8_t *pack, size_t len) {
 
   conn->lasttime = mainclock_now();
 
-#if 0
   if (
 #ifdef ENABLE_LAYER3
       !_options.layer3 &&
 #endif
       pack_iph->saddr != conn->hisip.s_addr) {
+#if 0
     syslog(LOG_DEBUG, "Received packet with spoofed source!");
+#endif
     OTHER_RECEIVED(conn, pack_iph);
     /*dhcp_sendRENEW(conn, pack, len);*/
     return 0;
   }
-#endif
 
   switch (pack_iph->protocol) {
 
