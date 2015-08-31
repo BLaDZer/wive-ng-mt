@@ -68,6 +68,7 @@ function initTranslation()
 	_TR("sUamHomepage", "hotspot uam homepage");
 	_TR("sUamSecret", "hotspot uam secret");
 	_TR("sUamAllowed", "hotspot uam allowed");
+	_TR("ssUamDomain", "hotspot uam domain");
 	_TR("sUamAnyDNS", "hotspot uam any dns");
 	_TR("sMacAllowed", "hotspot uam mac");
 
@@ -95,7 +96,7 @@ function CheckValue()
 	var chkIp = [form.sIp, form.sNetmask, form.sPriDns, form.sSecDns];
 	var chkSpace = [form.sDomain, form.sRadServer1, form.sRadServer2, 
 	    form.sRadSecret, form.sNasId, form.sRadLocationId, form.sRadLocationName,
-	    form.sUamServer, form.sUamHomepage, form.sUamSecret, form.sUamAllowed, form.sMacAllowed];
+	    form.sUamServer, form.sUamHomepage, form.sUamSecret, form.sUamAllowed, form.sUamDomain, form.sMacAllowed];
 	var chkInt = [form.sLease, form.sRadCoaPort];
 	var obj;
 
@@ -219,7 +220,11 @@ function CheckValue()
           </tr>
           <tr>
             <td class="head" id="sUamAllowed">UAM allowed hosts</td>
-            <td><input name="sUamAllowed" maxlength="512" value="<% getCfgGeneral(1, "chilli_uamallowed"); %>"></td>
+            <td><input name="sUamAllowed" maxlength="1024" value="<% getCfgGeneral(1, "chilli_uamallowed"); %>"></td>
+          </tr>
+          <tr>
+            <td class="head" id="sUamDomain">UAM allowed domains</td>
+            <td><input name="sUamDomain" maxlength="1024" value="<% getCfgGeneral(1, "chilli_uamdomain"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="sUamAnyDNS">Allow all DNS requests</td>

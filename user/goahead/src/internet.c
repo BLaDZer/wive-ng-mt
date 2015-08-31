@@ -2486,6 +2486,7 @@ const parameter_fetch_t chilli_vars[] =
 	{ T("sUamHomepage"),		"chilli_uamhomepage",		0,       T("") },
 	{ T("sUamSecret"),		"chilli_uamsecret",		0,       T("") },
 	{ T("sUamAllowed"),		"chilli_uamallowed",		0,       T("") },
+	{ T("sUamDomain"),		"chilli_uamdomain",		0,       T("") },
 	{ T("sUamAnyDns"),		"chilli_uamanydns",		1,       T("") },
 	{ T("sMacAllowed"),		"chilli_macallowed",		0,       T("") },
 	{ NULL, NULL, 0, 0 } // Terminator

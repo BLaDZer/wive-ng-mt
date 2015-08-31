@@ -9,7 +9,7 @@ CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --
 CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
 CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig
 CONFOPTS  += --enable-chilliradsec --enable-chilliredir --enable-chilliproxy
-CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-multilan --enable-forcedns --enable-layer3
+CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-multilan --enable-forcedns --enable-layer3 --enable-redirdnsreq
 # --enable-location
 
 #DEBUG     := y

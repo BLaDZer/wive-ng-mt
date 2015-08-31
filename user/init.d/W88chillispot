@@ -10,8 +10,8 @@ fi
 
 LOG="logger -t ChilliSpot"
 PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain \
-	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease \
-	uamserver uamhomepage uamsecret uamallowed macallowed"
+	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype
+	coaport lease uamserver uamhomepage uamsecret"
 
 BOOLPARAMS="coanoipcheck uamanyip uamanydns"
 
@@ -20,7 +20,7 @@ start() {
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe -q tun
-	chilli $DEBUG $PARLINE &
+	chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG &
 	#wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
     fi
 }
@@ -35,12 +35,7 @@ stop() {
 }
 
 get_params() {
-    eval `nvram_buf_get 2860 chilli_debug chilli_radiusnasid`
-    if [ "$chilli_debug" = "1" ]; then
-	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
-    else
-	DEBUG="--logfacility=7 --loglevel=7"
-    fi
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
     PARLINE="--dhcpif $lan_if"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
@@ -50,6 +45,26 @@ get_params() {
 	val=`nvram_get 2860 chilli_$i`
 	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
     done
+    if [ "$chilli_debug" = "1" ]; then
+	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    else
+	DEBUG="--logfacility=7 --loglevel=7"
+    fi
+    if [ "$chilli_uamallowed" ]; then
+	uamallowed="--uamallowed=$chilli_uamallowed"
+    else
+	uamallowed=""
+    fi
+    if [ "$chilli_macallowed" ]; then
+	macallowed="--macallowed=$chilli_macallowed"
+    else
+	macallowed=""
+    fi
+    if [ "$chilli_uamdomain" ]; then
+	uamdomain="--redirdnsreq --uamdomain=$chilli_uamdomain"
+    else
+	uamdomain=""
+    fi
 }
 
 case "$1" in

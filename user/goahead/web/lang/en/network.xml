@@ -165,6 +165,7 @@
     <message msgid="hotspot uam homepage" msgstr="UAM homepage URL" />
     <message msgid="hotspot uam secret" msgstr="UAM secret" />
     <message msgid="hotspot uam allowed" msgstr="UAM allowed hosts" />
+    <message msgid="hotspot uam domain" msgstr="UAM allowed domains" />
     <message msgid="hotspot uam any dns" msgstr="Allow all DNS requests" />
     <message msgid="hotspot uam mac" msgstr="Allowed MAC" />
     <message msgid="hotspot dont space" msgstr="Space in field is not allowed!" />

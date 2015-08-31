@@ -163,6 +163,7 @@
     <message msgid="hotspot uam homepage" msgstr="Страница UAM" />
     <message msgid="hotspot uam secret" msgstr="Секретное слово UAM" />
     <message msgid="hotspot uam allowed" msgstr="UAM allowed hosts" />
+    <message msgid="hotspot uam domain" msgstr="UAM allowed domains" />
     <message msgid="hotspot uam any dns" msgstr="Разрешить любые DNS запросы" />
     <message msgid="hotspot uam mac" msgstr="Разрешённые MAC" />
     <message msgid="hotspot dont space" msgstr="Пробелы в поле запрещены!" />
