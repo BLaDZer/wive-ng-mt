@@ -469,7 +469,7 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int i, s;
+	int i, s, err = 0;
 	struct iwreq iwr;
 	RT_802_11_MAC_TABLE table = {0};
 	s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -477,14 +477,15 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	iwr.u.data.pointer = (caddr_t) &table;
 
 	if (s < 0) {
-		printf("goahead: ioctl sock failed!");
-		return -1;
+		printf("goahead: first wlan: ioctl sock failed!");
+		err = -1;
+		goto out24;
 	}
 
 	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
-		printf("goahead: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
-		close(s);
-		return -1;
+		printf("goahead: first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
+		err = -1;
+		goto out24;
 	}
 
 	for (i = 0; i < table.Num; i++) {
@@ -542,6 +543,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
+out24:
 	close(s);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
@@ -550,14 +552,15 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	iwr.u.data.pointer = (caddr_t) &table;
 
 	if (s < 0) {
-		printf("goahead: ioctl sock failed!");
-		return -1;
+		printf("goahead: second wlan: ioctl sock failed!");
+		err = -1;
+		goto out5;
 	}
 
 	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
-		printf("goahead: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
-		close(s);
-		return -1;
+		printf("goahead: second wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
+		err = -1;
+		goto out5;
 	}
 
 	for (i = 0; i < table.Num; i++) {
@@ -615,9 +618,10 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
+out5:
 	close(s);
 #endif
-	return 0;
+	return err;
 }
 
 static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
