@@ -14,29 +14,39 @@ CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-m
 
 #DEBUG     := y
 ifdef DEBUG
-CONFOPTS  +=  --enable-debug --enable-debug2
+CONFOPTS  += --enable-debug --enable-debug2
 else
-CONFOPTS  +=  --disable-debug --disable-debug2
+CONFOPTS  += --disable-debug --disable-debug2
 endif
 
-ifndef CONFIG_IPV6
+ifdef CONFIG_IPV6
+CONFOPTS  += --with-ipv6
+else
 CONFOPTS  += --without-ipv6
 endif
 
 ifdef CONFIG_IP_NF_QUEUE
 CONFOPTS  += --with-nfqueue
+else
+CONFOPTS  += --without-nfqueue
 endif
 
 ifdef CONFIG_NETFILTER_XT_MATCH_COOVA
 CONFOPTS  += --with-nfcoova
+else
+CONFOPTS  += --without-nfcoova
 endif
 
 ifdef CONFIG_LIB_OPENSSL
-CONFOPTS  += --with-openssl -enable-chilliradsec
+CONFOPTS  += --with-openssl --enable-chilliradsec
+else
+CONFOPTS  += --without-openssl --disable-chilliradsec
 endif
 
 ifdef CONFIG_LIB_CURL
 CONFOPTS  += --with-curl
+else
+CONFOPTS  += --without-curl
 endif
 
 all:
