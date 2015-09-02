@@ -1255,6 +1255,7 @@
 12) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
 13) kernel: igmp: inhibit reports for local multicast groups.<br>
 14) kernel: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+15) kernel: bridge: multicast-to-unicast: fix echoes on STA.<br>
 <br>
 <br>
 <b>TODO:</b><br>
