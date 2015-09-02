@@ -83,10 +83,6 @@
 #include <linux/sysinfo.h>
 #endif
 
-#ifdef HAVE_SYS_SYSINFO_H
-#include <sys/sysinfo.h>
-#endif
-
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
@@ -137,6 +133,10 @@
 #include <linux/rtnetlink.h>
 #ifndef HAVE_SYS_UN_H
 #include <linux/un.h>
+#endif
+
+#ifdef HAVE_SYS_SYSINFO_H
+#include <sys/sysinfo.h>
 #endif
 
 #elif defined (__FreeBSD__)  || defined (__APPLE__) || defined (__OpenBSD__) || defined (__NetBSD__)

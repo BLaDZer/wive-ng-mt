@@ -1,0 +1,117 @@
+diff -uNrwB 1/coova-chilli-master/src/dhcp.c 2/coova-chilli-master/src/dhcp.c
+--- 1/coova-chilli-master/src/dhcp.c	2015-08-19 22:14:03.000000000 +0600
++++ 2/coova-chilli-master/src/dhcp.c	2015-08-31 17:25:21.000000000 +0600
+@@ -3710,10 +3710,10 @@
+    *  Check to see if we know MAC address
+    */
+   if (!dhcp_hashget(this, &conn, pack_ethh->src)) {
+-
++#if 0
+     if (this->debug)
+       syslog(LOG_DEBUG, "Address found");
+-
++#endif
+     ourip.s_addr = conn->ourip.s_addr;
+ 
+   } else {
+@@ -3987,7 +3987,9 @@
+       !_options.layer3 &&
+ #endif
+       pack_iph->saddr != conn->hisip.s_addr) {
++#if 0
+     syslog(LOG_DEBUG, "Received packet with spoofed source!");
++#endif
+     OTHER_RECEIVED(conn, pack_iph);
+     /*dhcp_sendRENEW(conn, pack, len);*/
+     return 0;
+diff -uNrwB 1/coova-chilli-master/src/linux/Makefile 2/coova-chilli-master/src/linux/Makefile
+--- 1/coova-chilli-master/src/linux/Makefile	2015-08-19 22:14:03.000000000 +0600
++++ 2/coova-chilli-master/src/linux/Makefile	2015-08-26 03:10:57.000000000 +0600
+@@ -1,3 +1,4 @@
++ifdef DEEEAD #move module to kernel and lib to iptables
+ KERNEL_DIR ?= /usr/src/linux-headers-$(shell uname -r)
+ 
+ obj-m += xt_coova.o
+@@ -30,3 +31,22 @@
+ distdir:
+ 
+ distclean: clean
+\ В конце файла нет новой строки
++else
++all:
++	#echo ok
++
++install:
++	#echo ok
++
++clean:
++	#echo ok
++
++modules:
++	#echo ok
++
++modules_install:
++	#echo ok
++
++modules_clean:
++	#echo ok
++endif
+diff -uNrwB 1/coova-chilli-master/src/Makefile.am 2/coova-chilli-master/src/Makefile.am
+--- 1/coova-chilli-master/src/Makefile.am	2015-08-19 22:14:03.000000000 +0600
++++ 2/coova-chilli-master/src/Makefile.am	2015-08-26 02:47:38.000000000 +0600
+@@ -25,12 +25,12 @@
+ iphash.c lookup.c system.h util.c options.c statusfile.c conn.c sig.c \
+ garden.c dns.c session.c pkt.c chksum.c net.c safe.c
+ 
+-AM_CFLAGS = -D_GNU_SOURCE -Wall -Werror -fno-builtin -fno-strict-aliasing \
++AM_CFLAGS = -D_GNU_SOURCE -Wall -fno-builtin -fno-strict-aliasing \
+   -fomit-frame-pointer -funroll-loops -pipe -I$(top_builddir)/bstring \
+- -DDEFCHILLICONF='"$(sysconfdir)/chilli.conf"'\
+- -DDEFPIDFILE='"$(localstatedir)/run/chilli.pid"'\
+- -DDEFSTATEDIR='"$(localstatedir)/run"'\
+- -DSBINDIR='"$(sbindir)"' 
++ -DDEFCHILLICONF='"/etc/chilli.conf"'\
++ -DDEFPIDFILE='"/var/run/chilli.pid"'\
++ -DDEFSTATEDIR='"/var/run"'\
++ -DSBINDIR='"/sbin"' 
+ 
+ chilli_SOURCES= main.c
+ chilli_radconfig_SOURCES = main-radconfig.c 
+@@ -194,9 +194,9 @@
+ main-opt.c: cmdline.c cmdline.h
+ 
+ cmdline.c cmdline.h: cmdline.ggo cmdline.patch
+-	cat $(CMDLINE) | gengetopt -C 
+-	cp cmdline.c cmdline.c.orig
+-	patch -p0 < cmdline.patch
++#	cat $(CMDLINE) | gengetopt -C 
++#	cp cmdline.c cmdline.c.orig
++#	patch -p0 < cmdline.patch
+ 
+ cmdline.mini.gen: cmdline.ggo 
+ 	sh cmdline.mini.sh > cmdline.mini.gen
+diff -uNrwB 1/coova-chilli-master/src/system.h 2/coova-chilli-master/src/system.h
+--- 1/coova-chilli-master/src/system.h	2015-08-19 22:14:03.000000000 +0600
++++ 2/coova-chilli-master/src/system.h	2015-09-03 03:48:24.000000000 +0600
+@@ -83,10 +83,6 @@
+ #include <linux/sysinfo.h>
+ #endif
+ 
+-#ifdef HAVE_SYS_SYSINFO_H
+-#include <sys/sysinfo.h>
+-#endif
+-
+ #ifdef HAVE_TIME_H
+ #include <time.h>
+ #endif
+@@ -139,6 +135,10 @@
+ #include <linux/un.h>
+ #endif
+ 
++#ifdef HAVE_SYS_SYSINFO_H
++#include <sys/sysinfo.h>
++#endif
++
+ #elif defined (__FreeBSD__)  || defined (__APPLE__) || defined (__OpenBSD__) || defined (__NetBSD__)
+ #include <net/if.h>
+ #include <net/bpf.h>
