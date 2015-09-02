@@ -1242,19 +1242,20 @@
 <br>
 <b>3.4.x</b><br>
 1) build_system: add new metal 7620a+7612ne internal pa/lna sd usb 16/128Mb sample.<br>
-2) irqbalance: update to 04.08.2015 git version.<br>
-3) coova-chilli: move to use xt_coova netfilter module instead of libpcap.<br>
-4) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-5) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-6) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-7) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-8) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-9) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-10) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-11) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-12) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-13) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-14) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
+3) irqbalance: update to 04.08.2015 git version.<br>
+4) coova-chilli: move to use xt_coova netfilter module instead of libpcap.<br>
+5) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+6) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+7) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+8) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+9) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+10) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+11) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+12) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+13) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+14) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+15) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
 <br>
 <br>
 <b>TODO:</b><br>
