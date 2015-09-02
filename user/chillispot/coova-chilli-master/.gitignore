@@ -112,7 +112,6 @@ miniportal/tos.chi
 miniportal/uam.sh
 miniportal/wispr.sh
 
-src/cmdline.[ch]
 autom4te.cache
 
 debian/coova-chilli.debhelper.log

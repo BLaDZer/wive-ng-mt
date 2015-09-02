@@ -2,6 +2,9 @@
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
+CFLAGS	 += -ffunction-sections -fdata-sections
+LDFLAGS  += -Wl,--gc-sections
+
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
