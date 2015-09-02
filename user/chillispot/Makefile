@@ -50,16 +50,15 @@ else
 CONFOPTS  += --without-curl
 endif
 
-CONFIGURE_VARS += \
-	ac_cv_func_malloc_0_nonnull=yes \
-	ac_cv_func_realloc_0_nonnull=yes \
-	ac_cv_func_memcmp_working=yes \
-	ac_cv_func_setvbuf_reversed=no
-
 all:
 	(cd $(DIR) ; if [ ! -f ./configure ]; then  aclocal; autoreconf -fi;  autoconf; fi ; \
 	if [ ! -f ./Makefile ]; then  automake --add-missing --force-missing --copy; fi ; \
-	$(CONFIGURE_VARS) ./configure $(CONFOPTS) && $(MAKE) -j$(HOST_NCPU) DESTDIR=$(DIR)/filesystem && $(MAKE) install)
+	ac_cv_func_malloc_0_nonnull=yes \
+	ac_cv_func_realloc_0_nonnull=yes \
+	ac_cv_func_memcmp_working=yes \
+	ac_cv_func_setvbuf_reversed=no \
+	ac_cv_lib_resolv_res_init=yes \
+	./configure $(CONFOPTS) && $(MAKE) -j$(HOST_NCPU) DESTDIR=$(DIR)/filesystem && $(MAKE) install)
 
 romfs:
 	$(ROMFSINST) -S chilli.conf /etc/chilli.conf
