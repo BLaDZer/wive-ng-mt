@@ -1,19 +1,17 @@
+.EXPORT_ALL_VARIABLES:
+
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
-CFLAGS	 += -ffunction-sections -fdata-sections
-LDFLAGS  += -Wl,--gc-sections
-
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
-CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
-CONFOPTS  += --disable-tap --disable-largelimits --disable-miniportal --disable-json
-CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig
-CONFOPTS  += --enable-chilliradsec --enable-chilliredir --enable-chilliproxy
-CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-multilan --enable-forcedns --enable-layer3 --enable-redirdnsreq
-# --enable-location
+CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-gnu-ld --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
+CONFOPTS  += --disable-tap --disable-largelimits --disable-json --disable-miniportal
+CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid --enable-miniconfig --enable-chilliredir --enable-chilliproxy
+CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-multiroute --enable-multilan --enable-redirdnsreq
+# --enable-location --enable-forcedns --enable-layer3
 
 #DEBUG     := y
 ifdef DEBUG
@@ -52,10 +50,16 @@ else
 CONFOPTS  += --without-curl
 endif
 
+CONFIGURE_VARS += \
+	ac_cv_func_malloc_0_nonnull=yes \
+	ac_cv_func_realloc_0_nonnull=yes \
+	ac_cv_func_memcmp_working=yes \
+	ac_cv_func_setvbuf_reversed=no
+
 all:
 	(cd $(DIR) ; if [ ! -f ./configure ]; then  aclocal; autoreconf -fi;  autoconf; fi ; \
 	if [ ! -f ./Makefile ]; then  automake --add-missing --force-missing --copy; fi ; \
-	./configure $(CONFOPTS) && $(MAKE) -j$(HOST_NCPU) DESTDIR=$(DIR)/filesystem && $(MAKE) install)
+	$(CONFIGURE_VARS) ./configure $(CONFOPTS) && $(MAKE) -j$(HOST_NCPU) DESTDIR=$(DIR)/filesystem && $(MAKE) install)
 
 romfs:
 	$(ROMFSINST) -S chilli.conf /etc/chilli.conf

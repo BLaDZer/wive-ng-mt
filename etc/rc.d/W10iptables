@@ -192,8 +192,8 @@ servicelimit() {
 	fi
 	# Chillispot rules
 	if [ "$hotspot" = "on" ]; then
-		$LOG "Chillispot allow reqests to 3990 port from $lan_if"
-		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 3990 -j ACCEPT
+		$LOG "Chillispot allow reqests to 3990-3991 ports from $lan_if"
+		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 3990:3991 -j ACCEPT
 		iptables -A servicelimit -i tun0 -s $chilli_net -j ACCEPT
 	fi
 	if [ "$WANPingFilter" = "0" ] && [ "$ROUTE_MODE" = "on" ]; then

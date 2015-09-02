@@ -20,7 +20,7 @@ start() {
 	$LOG "Starting ChilliSpot"
 	get_params
 	modprobe -q tun
-	chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG &
+	chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
 	#wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
     fi
 }
@@ -32,6 +32,7 @@ stop() {
 	killall -q chilli
 	killall -q -SIGKILL chilli
     fi
+    rm -f /var/run/chilli*
 }
 
 get_params() {
