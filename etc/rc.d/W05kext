@@ -153,7 +153,7 @@ pthrough() {
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	eval `nvram_buf_get 2860 pppoe_pass ipv6_pass`
 	# pppoe and ip_v6 kernel mode relay.
-	if [ -d /proc/pthrough ]; then
+	if [ -d /proc/net/pthrough ]; then
 	    if [ "$pppoe_pass" = "1" ]; then
 		$LOG "PPPOE Pass Through enable for $lan_if and $wan_if interfaces."
 		echo "$lan_if,$wan_if" > /proc/net/pthrough/pppoe
@@ -168,9 +168,9 @@ pthrough() {
 	    fi
 	fi
     else
-	if [ -d /proc/pthrough ]; then
-	    echo "null,null" > /proc/pthrough/pppoe
-	    echo "null,null" > /proc/pthrough/ipv6
+	if [ -d /proc/net/pthrough ]; then
+	    echo "null,null" > /proc/net/pthrough/pppoe
+	    echo "null,null" > /proc/net/pthrough/ipv6
 	fi
     fi
 }
