@@ -622,6 +622,12 @@ static inline struct sk_buff *alloc_skb_fclone(unsigned int size,
 	return __alloc_skb(size, priority, 1, NUMA_NO_NODE);
 }
 
+extern struct sk_buff *__alloc_skb_head(gfp_t priority, int node);
+static inline struct sk_buff *alloc_skb_head(gfp_t priority)
+{
+	return __alloc_skb_head(priority, -1);
+}
+
 extern struct sk_buff *skb_morph(struct sk_buff *dst, struct sk_buff *src);
 #if IS_ENABLED(CONFIG_MACVTAP)
 extern int skb_copy_ubufs(struct sk_buff *skb, gfp_t gfp_mask);
