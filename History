@@ -1260,6 +1260,7 @@
 17) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
 18) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
 19) kernel: net: add function to allocate sk_buff head without data area.<br>
+20) kernel: net: fix sk_buff head without data area.<br>
 <br>
 <br>
 <b>TODO:</b><br>
