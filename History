@@ -1253,9 +1253,10 @@
 10) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
 11) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
 12) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-13) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-14) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-15) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+13) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+14) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+15) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+16) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
 <br>
 <br>
 <b>TODO:</b><br>
