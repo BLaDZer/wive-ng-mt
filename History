@@ -1261,8 +1261,9 @@
 18) kernel: net: add function to allocate sk_buff head without data area.<br>
 19) kernel: net: fix sk_buff head without data area.<br>
 20) kernel: net: sock_flag() cleanup.<br>
-21) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-22) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+21) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+22) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+23) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
