@@ -1257,11 +1257,12 @@
 14) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
 15) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
 16) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-17) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-18) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-19) kernel: net: add function to allocate sk_buff head without data area.<br>
-20) kernel: net: fix sk_buff head without data area.<br>
-21) kernel: net: sock_flag() cleanup.<br>
+17) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+18) kernel: net: add function to allocate sk_buff head without data area.<br>
+19) kernel: net: fix sk_buff head without data area.<br>
+20) kernel: net: sock_flag() cleanup.<br>
+21) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+22) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
