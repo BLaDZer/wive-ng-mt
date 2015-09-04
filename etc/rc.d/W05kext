@@ -156,15 +156,15 @@ pthrough() {
 	if [ -d /proc/pthrough ]; then
 	    if [ "$pppoe_pass" = "1" ]; then
 		$LOG "PPPOE Pass Through enable for $lan_if and $wan_if interfaces."
-		echo "$lan_if,$wan_if" > /proc/pthrough/pppoe
+		echo "$lan_if,$wan_if" > /proc/net/pthrough/pppoe
 	    else
-		echo "null,null" > /proc/pthrough/pppoe
+		echo "null,null" > /proc/net/pthrough/pppoe
 	    fi
 	    if [ "$ipv6_pass" = "1" ]; then
 		$LOG "IPv6 Pass Through enable for $lan_if and $wan_if interfaces."
-		echo "$lan_if,$wan_if" > /proc/pthrough/ipv6
+		echo "$lan_if,$wan_if" > /proc/net/pthrough/ipv6
 	    else
-		echo "null,null" > /proc/pthrough/ipv6
+		echo "null,null" > /proc/net/pthrough/ipv6
 	    fi
 	fi
     else
