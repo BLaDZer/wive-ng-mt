@@ -91,7 +91,7 @@ void show_usage(void)
 #else
 
 #if defined (CONFIG_RALINK_MT7621)
-    printf("Drop packets on Foe Entry\n");
+    printf("Set Foe Entry to PacketDrop\n");
     printf("hw_nat -k [entry_num]\n");
     printf("Ex: hw_nat -k 1234\n\n");
 #endif
