@@ -1258,12 +1258,13 @@
 15) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
 16) kernel: net: igmp: inhibit reports for local multicast groups.<br>
 17) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-18) kernel: net: add function to allocate sk_buff head without data area.<br>
-19) kernel: net: fix sk_buff head without data area.<br>
-20) kernel: net: sock_flag() cleanup.<br>
-21) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-22) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-23) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+18) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+19) kernel: net: add function to allocate sk_buff head without data area.<br>
+20) kernel: net: fix sk_buff head without data area.<br>
+21) kernel: net: sock_flag() cleanup.<br>
+22) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+23) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+24) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
