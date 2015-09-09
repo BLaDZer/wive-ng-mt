@@ -1253,18 +1253,19 @@
 10) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
 11) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
 12) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-13) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-14) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-15) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-16) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-17) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-18) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-19) kernel: net: add function to allocate sk_buff head without data area.<br>
-20) kernel: net: fix sk_buff head without data area.<br>
-21) kernel: net: sock_flag() cleanup.<br>
-22) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-23) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-24) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+13) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+14) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+15) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+16) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+17) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+18) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+19) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+20) kernel: net: add function to allocate sk_buff head without data area.<br>
+21) kernel: net: fix sk_buff head without data area.<br>
+22) kernel: net: sock_flag() cleanup.<br>
+23) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+24) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+25) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
