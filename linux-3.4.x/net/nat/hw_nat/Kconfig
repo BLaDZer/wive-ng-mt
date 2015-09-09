@@ -320,7 +320,7 @@ config  RA_HW_NAT_PBND_RD_LMT
 	default 10
 
 config  RA_HW_NAT_IPV6
-	bool "IPv6 Acceleration (work only DDR RAM devices)"
+	bool "IPv6 Acceleration"
 	depends on RA_HW_NAT && IPV6 && !(RALINK_RT3052)
 	default n
 	help
