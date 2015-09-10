@@ -1,13 +1,17 @@
 config  RAETH
-	tristate "Ralink GMAC"
+	bool "Ralink GMAC"
 	---help---
-	  This driver supports Ralink gigabit ethernet family of
-	  adapters.
+	  This driver supports Ralink gigabit ethernet family of adapters.
 
 config  RAETH_NAPI
 	bool "Use NAPI for IRQ processing (instead of Tasklets)"
 	default y
 	depends on RAETH
+
+config  RAETH_NAPI_GRO
+	bool "Use NAPI Generic Receive Offload (GRO)"
+	depends on RAETH_NAPI && RAETH_CHECKSUM_OFFLOAD
+	default n
 
 config  RAETH_BQL
 	bool "Support Tx Byte Queue Limit (BQL)"
@@ -49,11 +53,6 @@ config RAETH_SG_DMA_TX
 	bool "Transmit scatter-gather (fragmented) packets"
 	depends on RAETH_CHECKSUM_OFFLOAD && !(RALINK_RT5350 || RALINK_MT7628)
 	default y
-
-config  RAETH_NAPI_GRO
-	bool "Use NAPI Generic Receive Offload (GRO)"
-	depends on RAETH_NAPI && RAETH_CHECKSUM_OFFLOAD && RAETH_SG_DMA_TX
-	default n
 
 config RAETH_TSO
 	bool "TSOv4 (TCP Segmentaton Offload)"
