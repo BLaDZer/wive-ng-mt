@@ -1245,43 +1245,45 @@
 2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
 3) irqbalance: update to 04.08.2015 git version.<br>
 4) init.d: fix path to passthrouth control files.<br>
-5) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-6) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
-7) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-8) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-9) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-10) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-11) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-12) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
-13) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-14) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-15) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-16) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-17) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-18) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-19) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-20) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-21) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-22) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-23) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-24) kernel: net: add function to allocate sk_buff head without data area.<br>
-25) kernel: net: fix sk_buff head without data area.<br>
-26) kernel: net: sock_flag() cleanup.<br>
-27) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-28) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-29) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+5) defaults: add fast roaming and radio resource managment parametrs.<br>
+6) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+7) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
+8) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+9) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+10) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+11) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+12) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+13) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+14) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+15) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+16) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+17) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+18) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+19) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+20) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+21) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+22) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+23) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+24) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+25) kernel: net: add function to allocate sk_buff head without data area.<br>
+26) kernel: net: fix sk_buff head without data area.<br>
+27) kernel: net: sock_flag() cleanup.<br>
+28) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+29) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+30) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) kernel: port ipv6 passthrouth module.<br>
-3) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
-4) need add subchannel select for 5GHz module.<br>
-5) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-6) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-7) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-8) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-9) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+3) need review and experimants with new roaming code in MT76x2 driver and implement to WebUI.<br>
+4) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
+5) need add subchannel select for 5GHz module.<br>
+6) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+7) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+8) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+9) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+10) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>
