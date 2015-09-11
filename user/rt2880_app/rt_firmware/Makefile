@@ -20,6 +20,7 @@ else
 	cp -f MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
 endif
 	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN					/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN
+	$(ROMFSINST) -S	MT7620_AP_2T2R-4L_V15.BIN                         		/etc/Wireless/rfbackup.bin
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 	rm -f MT7620_AP_2T2R-4L_BACKUP.BIN
 endif
