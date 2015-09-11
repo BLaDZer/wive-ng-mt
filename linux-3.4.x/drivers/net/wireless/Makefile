@@ -62,10 +62,7 @@ obj-$(CONFIG_MWIFIEX)	+= mwifiex/
 obj-$(CONFIG_BRCMFMAC)	+= brcm80211/
 obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
 
-ifdef CONFIG_RT_FIRST_IF_RT2860
-# use old driver for 7620 else use 76x2 driver for 7620 to
 obj-$(CONFIG_RT2860V2_AP)       += ralink/rt3xxx/rt2860v2_ap/
 obj-$(CONFIG_RT2860V2_STA)      += ralink/rt3xxx/rt2860v2_sta/
-endif
 obj-$(CONFIG_MT7610_AP)         += ralink/rtpci/mt7610_ap/
 obj-$(CONFIG_MT76X2_AP)         += ralink/rtpci/mt76x2_ap/
