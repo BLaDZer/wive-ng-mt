@@ -40,7 +40,7 @@ config  RT2860V2_STA_VIDEO_TURBINE
 	depends on RT2860V2_STA
 
 config  RT2860V2_STA_RTMP_INTERNAL_TX_ALC
-	bool "TSSI Compensation"
+	bool "TSSI Compensation (Internal TX ALC)"
 	depends on RT2860V2_STA
 	depends on RALINK_RT3350 || RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7620
 

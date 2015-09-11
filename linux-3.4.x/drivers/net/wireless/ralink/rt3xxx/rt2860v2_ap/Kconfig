@@ -94,13 +94,13 @@ config  RT2860V2_AP_ADJ_PWR_CONSUMPTION_SUPPORT
 	depends on RALINK_MT7620
 
 config  RT2860V2_AP_RTMP_INTERNAL_TX_ALC
-	bool "TSSI Compensation"
+	bool "TSSI Compensation (Internal TX ALC)"
 	default n
 	depends on RT2860V2_AP
 	depends on RALINK_RT3350 || RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7620
 
 config  RT2860V2_AP_RTMP_TEMPERATURE_COMPENSATION
-	bool "Temperature Compensation"
+	bool "Temperature Compensation (External TX ALC)"
 	default n
 	depends on RT2860V2_AP
 	depends on RALINK_MT7620

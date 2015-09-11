@@ -89,12 +89,12 @@ config  MT76X2_AP_ED_MONITOR
 config  MT76X2_AP_DOT11R_FT_SUPPORT
 	bool "802.11r Fast BSS Transition"
 	depends on MT76X2_AP
-	default y
+	default n
 
 config  MT76X2_AP_DOT11K_RRM_SUPPORT
 	bool "802.11k Radio Resource Management"
 	depends on MT76X2_AP
-	default y
+	default n
 
 #config  MT76X2_AP_VIDEO_TURBINE
 #	bool "Video Turbine support"
@@ -182,12 +182,13 @@ config  MT76X2_AP_SNMP
 config  MT76X2_AP_SINGLE_SKU
 	bool "Single SKU support"
 	depends on MT76X2_AP
+	default n
 
 config  MT76X2_AP_RTMP_INTERNAL_TX_ALC
 	bool "MT7620 TSSI Compensation (Internal TX ALC)"
 	depends on MT76X2_AP
 	depends on RT_FIRST_IF_MT7620
-	default n
+	default y
 
 config  MT76X2_AP_RTMP_TEMPERATURE_COMPENSATION
 	bool "MT7620 Temperature Compensation (External TX ALC)"
@@ -221,11 +222,6 @@ config  MT76X2_AP_QA
 	bool "Provide QA tool support"
 	depends on MT76X2_AP
 	depends on MT76X2_AP_ATE
-	default n
-
-config  MT76X2_AP_IAPP
-	bool "Provide iapp anounses send(roaming support)"
-	depends on MT76X2_AP
 	default n
 
 config  MT76X2_AP_INTERFERENCE_REDUCE
