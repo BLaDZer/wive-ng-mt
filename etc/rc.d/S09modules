@@ -144,7 +144,7 @@ retune_wifi() {
 
 roaming_wifi() {
     # preconfigure wifi
-    if [ "$first_wlan_root_if" != "" ] && [ "$CONFIG_RT_FIRST_IF_MT7602E" != "" ]; then
+    if [ "$first_wlan_root_if" != "" ] && [ "$CONFIG_RT_FIRST_IF_MT7602E" != "" -o "$CONFIG_RT_FIRST_IF_MT7620" != "" ]; then
 	(sleep 5 && /etc/scripts/wifi_roaming.sh $first_wlan_root_if) &
     fi
     if [ "$second_wlan_root_if" != "" ] && [ "$CONFIG_RT_SECOND_IF_MT7612E" != "" ]; then

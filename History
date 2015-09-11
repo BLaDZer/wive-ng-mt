@@ -1252,22 +1252,24 @@
 9) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
 10) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
 11) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-12) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-13) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-14) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-15) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-16) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-17) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-18) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-19) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-20) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-21) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-22) kernel: net: add function to allocate sk_buff head without data area.<br>
-23) kernel: net: fix sk_buff head without data area.<br>
-24) kernel: net: sock_flag() cleanup.<br>
-25) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-26) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-27) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+12) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+13) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+14) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+15) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+16) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+17) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+18) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+19) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+20) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+21) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+22) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+23) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+24) kernel: net: add function to allocate sk_buff head without data area.<br>
+25) kernel: net: fix sk_buff head without data area.<br>
+26) kernel: net: sock_flag() cleanup.<br>
+27) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+28) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+29) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
 <br>
 <br>
 <b>TODO:</b><br>

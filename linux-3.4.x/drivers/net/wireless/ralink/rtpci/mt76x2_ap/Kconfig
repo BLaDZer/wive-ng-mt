@@ -1,11 +1,11 @@
 config MT76X2_AP
-	tristate "MediaTek MT7602E/7612E 802.11n/ac AP Support"
+	tristate "MediaTek MT7620/MT7602E/7612E 802.11n/ac AP Support"
 	select WIRELESS_EXT
 	select WEXT_SPY
 	select WEXT_PRIV
 
 config  MT76X2_AP_LED
-	bool "LED Support"
+	bool "LED support"
 	depends on MT76X2_AP
 	default y
 
@@ -16,11 +16,13 @@ config  MT76X2_AP_WSC
 
 config  MT76X2_AP_WSC_V2
 	bool "WSC V2 (WiFi Simple Config Version 2)"
+	depends on MT76X2_AP
 	depends on MT76X2_AP_WSC
 	default n
 
 config  MT76X2_AP_WSC_NFC_SUPPORT
 	bool "WSC out-of-band (NFC)"
+	depends on MT76X2_AP
 	depends on MT76X2_AP_WSC
 	default n
 
@@ -51,28 +53,28 @@ config  MT76X2_AP_APCLI
 	default y
 
 config  MT76X2_AP_APCLI_CERT
-	bool "AP-Client TGn Cert Support"
+	bool "AP-Client TGn Cert support"
 	depends on MT76X2_AP
 	depends on MT76X2_AP_APCLI
 	default n
 
 config  MT76X2_AP_MAC_REPEATER
-	bool "MAC Repeater Mode Support"
+	bool "MAC Repeater Mode support"
 	depends on MT76X2_AP
 	depends on MT76X2_AP_APCLI
 	default n
 
-config  MT76X2_AP_NETIF_BLOCK
-	bool "NETIF Block"
+config  MT76X2_AP_CON_WPS_SUPPORT
+	bool "Concurrent WPS support"
 	depends on MT76X2_AP
+	depends on MT76X2_AP_APCLI
+	depends on MT76X2_AP_WSC_V2
 	default n
-	help
-	  Support Net interface block while Tx-Sw queue full
 
 config  MT76X2_AP_DFS
 	bool "DFS support"
 	depends on MT76X2_AP
-	default n
+	default y
 
 config  MT76X2_AP_CARRIER
 	bool "Carrier Detection support"
@@ -80,13 +82,19 @@ config  MT76X2_AP_CARRIER
 	default n
 
 config  MT76X2_AP_ED_MONITOR
-	bool "ED CCA Monitor Support"
+	bool "ED CCA Monitor support"
 	depends on MT76X2_AP
 	default n
 
-#config  MT76X2_AP_EXT_CHANNEL_LIST
-#	bool "Extension Channel List"
-#	depends on MT76X2_AP
+config  MT76X2_AP_DOT11R_FT_SUPPORT
+	bool "802.11r Fast BSS Transition"
+	depends on MT76X2_AP
+	default y
+
+config  MT76X2_AP_DOT11K_RRM_SUPPORT
+	bool "802.11k Radio Resource Management"
+	depends on MT76X2_AP
+	default y
 
 #config  MT76X2_AP_VIDEO_TURBINE
 #	bool "Video Turbine support"
@@ -96,46 +104,43 @@ config  MT76X2_AP_ED_MONITOR
 config  MT76X2_AP_GREENAP
 	bool "Green AP mode support"
 	depends on MT76X2_AP
+	depends on RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7602E
+	default n
 
 config  MT76X2_AP_DLS
-	bool "802.11e DLS (Direct-Link Setup) Support"
+	bool "802.11e DLS (Direct-Link Setup) support"
+	depends on MT76X2_AP
+	default n
+
+config  MT76X2_AP_WAPI
+	bool "WAPI Support"
 	depends on MT76X2_AP
 	default n
 
 config  MT76X2_AP_IDS
-	bool "IDS (Intrusion Detection System) Support"
+	bool "IDS (Intrusion Detection System) support"
 	depends on MT76X2_AP
 	default n
 
 config  MT76X2_AP_80211N_DRAFT3
-	bool "802.11n Draft3"
+	bool "802.11n Draft3 (BSS Coexistence)"
 	depends on MT76X2_AP
 	default n
 
 config  MT76X2_AP_80211AC_VHT
-	bool "802.11ac Support"
+	bool "802.11ac support"
 	depends on MT76X2_AP
+	depends on (RT_FIRST_IF_MT7612E || RT_SECOND_IF_MT7612E)
 	default y
 
 config  MT76X2_AP_TXBF_SUPPORT
-	bool "Tx Beam Forming Support"
+	bool "Tx Beam Forming support"
 	depends on MT76X2_AP
+	depends on (RT_FIRST_IF_MT7612E || RT_SECOND_IF_MT7612E)
 	default n
 
-choice
-	prompt "Choose Power Design"
-	depends on MT76X2_AP
-	default MT76X2_AP_INTERNAL_PA_INTERNAL_LNA
-config  MT76X2_AP_INTERNAL_PA_INTERNAL_LNA
-	bool "Internal PA and Internal LNA"
-config  MT76X2_AP_INTERNAL_PA_EXTERNAL_LNA
-	bool "Internal PA and External LNA"
-config  MT76X2_AP_EXTERNAL_PA_EXTERNAL_LNA
-	bool "External PA and External LNA"
-endchoice
-
 config  MT76X2_AP_80211W_PMF
-	bool "802.11w Protected Management Frames (PMF) Support"
+	bool "802.11w Protected Management Frames (PMF) support"
 	depends on MT76X2_AP
 	default n
 
@@ -149,26 +154,47 @@ config  MT76X2_AP_MCAST_RATE_SPECIFIC
 	depends on MT76X2_AP
 	default n
 
+config  MT76X2_AP_NETIF_BLOCK
+	bool "NETIF Block"
+	depends on MT76X2_AP
+	default n
+	help
+	  Support Net interface block while Tx-Sw queue full
+
 #config  MT76X2_AP_HDR_TRANS
-#	bool "Header Translation Rx Support"
+#	bool "Header Translation Rx support"
 #	depends on MT76X2_AP
 
 #config  MT76X2_AP_CSO
-#	bool "CSO/TSO Support"
+#	bool "Checksum offload (CSO) support"
 #	depends on MT76X2_AP
 
 config  MT76X2_AP_DELAYED_TCP_ACK
-	bool "Delayed TCP ACK Support"
+	bool "Delayed TCP ACK support"
 	depends on MT76X2_AP
 	default n
 
 config  MT76X2_AP_SNMP
 	bool "Net-SNMP Support"
 	depends on MT76X2_AP
+	default y
 
 config  MT76X2_AP_SINGLE_SKU
-	bool "Single SKU"
+	bool "Single SKU support"
 	depends on MT76X2_AP
+
+config  MT76X2_AP_RTMP_INTERNAL_TX_ALC
+	bool "MT7620 TSSI Compensation (Internal TX ALC)"
+	depends on MT76X2_AP
+	depends on RT_FIRST_IF_MT7620
+	depends on !CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA
+	default n
+
+config  MT76X2_AP_RTMP_TEMPERATURE_COMPENSATION
+	bool "MT7620 Temperature Compensation (External TX ALC)"
+	depends on MT76X2_AP
+	depends on RT_FIRST_IF_MT7620
+	default n
 
 config  MT76X2_AP_READ_MAC_FROM_MTD
 	bool "Read and set MAC from MTD/EEPROM"
@@ -176,12 +202,13 @@ config  MT76X2_AP_READ_MAC_FROM_MTD
 	default n
 
 #config  MT76X2_AP_BIG_ENDIAN
-#	bool "Big-endian platform Support"
+#	bool "Big-endian platform support"
 #	depends on MT76X2_AP
+#	depends on !RT_FIRST_IF_MT7620
 #	default n
 
 config  MT76X2_AP_MC_SUPPORT
-	bool "Multiple Card Support"
+	bool "Multiple Card support"
 	default n
 	depends on MT76X2_AP
 

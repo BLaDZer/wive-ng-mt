@@ -125,7 +125,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 #define AP_PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
-#define AP_RTMP_FIRMWARE_FILE_NAME	"/etc/Wireless/rf.bin"
+#define AP_RTMP_FIRMWARE_FILE_NAME	"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define AP_NIC_DEVICE_NAME		"RT2860AP"
 #define AP_DRIVER_VERSION		"2.7.2.0"
 #ifdef MULTIPLE_CARD_SUPPORT
@@ -136,7 +136,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #ifdef RTMP_RBUS_SUPPORT
 /* This used for rbus-based chip, maybe we can integrate it together. */
 #ifndef P2P_SUPPORT
-#define RTMP_FIRMWARE_FILE_NAME		"/etc/Wireless/rf.bin"
+#define RTMP_FIRMWARE_FILE_NAME		"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #endif /* P2P_SUPPORT */
 #define AP_PROFILE_PATH_RBUS		"/etc/Wireless/RT2860/RT2860.dat"
@@ -156,7 +156,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 
 
 #ifdef RTMP_RBUS_SUPPORT
-#define RTMP_FIRMWARE_FILE_NAME		"/etc/Wireless/rf.bin"
+#define RTMP_FIRMWARE_FILE_NAME		"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #define STA_PROFILE_PATH_RBUS		"/etc/Wireless/RT2860/RT2860.dat"
 #define RT2880_STA_DRIVER_VERSION	"1.0.0.0"

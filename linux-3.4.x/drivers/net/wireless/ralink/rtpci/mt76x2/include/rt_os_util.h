@@ -157,6 +157,7 @@ PNDIS_PACKET ClonePacket(
 	IN	PUCHAR					pData,
 	IN	ULONG					DataSize);
 
+
 void wlan_802_11_to_802_3_packet(
 	IN	PNET_DEV				pNetDev,
 	IN	UCHAR					OpMode,
@@ -168,7 +169,6 @@ void wlan_802_11_to_802_3_packet(
 	IN	PUCHAR					pHeader802_3,
 	IN  UCHAR					FromWhichBSSID,
 	IN	UCHAR					*TPID);
-
 #ifdef CONFIG_SNIFFER_SUPPORT
 void send_prism_monitor_packets(
 		PNET_DEV pNetDev,
@@ -278,6 +278,10 @@ INT RtmpOSNetDevAlloc(PNET_DEV *new_dev_p, UINT32 privDataSize);
 INT RtmpOSNetDevOpsAlloc(PVOID *pNetDevOps);
 
 
+#ifdef CONFIG_STA_SUPPORT
+INT RtmpOSNotifyRawData(PNET_DEV pNetDev, UCHAR *buf, INT len, ULONG type, USHORT proto);
+
+#endif /* CONFIG_STA_SUPPORT */
 
 PNET_DEV RtmpOSNetDevGetByName(PNET_DEV pNetDev, PSTRING pDevName);
 
@@ -641,6 +645,21 @@ PNDIS_PACKET RTMP_AllocateRxPacketBuffer(
 	OUT	PVOID					*VirtualAddress,
 	OUT	PNDIS_PHYSICAL_ADDRESS	PhysicalAddress);
 
+#ifdef CONFIG_STA_SUPPORT
+#ifdef CONFIG_PM
+#ifdef USB_SUPPORT_SELECTIVE_SUSPEND
+
+int RTMP_Usb_AutoPM_Put_Interface(
+	IN	VOID			*pUsb_Dev,
+	IN	VOID			*intf);
+
+int  RTMP_Usb_AutoPM_Get_Interface(
+	IN	VOID			*pUsb_Dev,
+	IN	VOID			*intf);
+
+#endif /* USB_SUPPORT_SELECTIVE_SUSPEND */
+#endif /* CONFIG_PM */
+#endif /* CONFIG_STA_SUPPORT */
 
 
 

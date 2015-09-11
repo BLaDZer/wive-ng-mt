@@ -233,10 +233,12 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 			pEntry->MaxHTPhyMode.word = HTPhyMode.word;
 			pEntry->MinHTPhyMode.word = wdev->MinHTPhyMode.word;
 			pEntry->HTPhyMode.word = pEntry->MaxHTPhyMode.word;
+
 #ifdef DOT11_N_SUPPORT
 			/* default */
 			pEntry->MpduDensity = 5;
 			pEntry->MaxRAmpduFactor = 3;
+
 			if (wdev->PhyMode >= MODE_HTMIX)
 			{
 				if (wdev->DesiredTransmitSetting.field.MCS != MCS_AUTO)
@@ -267,6 +269,7 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_MCSFEEDBACK_CAPABLE);
 				
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
+
 #ifdef DOT11_VHT_AC
 		//copy from update_associated_mac_entry()
 		if ((wdev->PhyMode == MODE_VHT) &&
@@ -1029,7 +1032,7 @@ INT Show_WdsTable_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 				DBGPRINT(RT_DEBUG_OFF, ("%dS-M%-2d", ((pEntry->HTPhyMode.field.MCS>>4) + 1), (pEntry->HTPhyMode.field.MCS & 0xf)));
 			else
 #endif /* DOT11_VHT_AC */			
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.MCS));
+				DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.MCS));
 			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.ShortGI));
 			DBGPRINT(RT_DEBUG_OFF, ("%-6d\n", pEntry->HTPhyMode.field.STBC));
 
@@ -1518,7 +1521,7 @@ VOID WDS_Remove(RTMP_ADAPTER *pAd)
 	{
 		wdev = &pAd->WdsTab.WdsEntry[index].wdev;
 		if (wdev->if_dev)
-		{
+	    {
 			RtmpOSNetDevProtect(1);
 			RtmpOSNetDevDetach(wdev->if_dev);
 			RtmpOSNetDevProtect(0);
@@ -1533,7 +1536,7 @@ VOID WDS_Remove(RTMP_ADAPTER *pAd)
 
 BOOLEAN WDS_StatsGet(RTMP_ADAPTER *pAd, RT_CMD_STATS64 *pStats)
 {
-	INT WDS_apidx = 0, index;
+	INT WDS_apidx = 0,index;
 	RT_802_11_WDS_ENTRY *pWdsEntry;
 
 	for(index = 0; index < MAX_WDS_ENTRY; index++)
@@ -1544,7 +1547,7 @@ BOOLEAN WDS_StatsGet(RTMP_ADAPTER *pAd, RT_CMD_STATS64 *pStats)
 			break;
 		}
 	}
-
+		
 	if(index >= MAX_WDS_ENTRY)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s(): can not find wds I/F\n", __FUNCTION__));

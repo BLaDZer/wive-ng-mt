@@ -489,6 +489,8 @@ int RtmpChipOpsHook(VOID *pCB)
 	/* EDCCA */
 	pChipOps->ChipSetEDCCA= NULL;
 
+
+
 #ifdef RT8592
 	if (IS_RT8592(pAd)) {
 		RT85592_Init(pAd);
@@ -504,6 +506,7 @@ int RtmpChipOpsHook(VOID *pCB)
 	}
 #endif
 
+
 #ifdef RT6352
 	if (IS_RT6352(pAd)) {
 		RT6352_Init(pAd);
@@ -517,6 +520,8 @@ int RtmpChipOpsHook(VOID *pCB)
 #endif /* RTMP_MAC */
 
 	/* We depends on RfICType and MACVersion to assign the corresponding operation callbacks. */
+
+
 
 done:
 	DBGPRINT(RT_DEBUG_TRACE, ("Chip specific bbpRegTbSize=%d!\n", pChipCap->bbpRegTbSize));

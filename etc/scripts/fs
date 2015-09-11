@@ -16,12 +16,8 @@ MTDRWFS=`cat /proc/mtd | grep "RW-FS" | awk {' print "/dev/"$1 '} | cut -f -1 -d
 RWFSSIZEHEX="0x`cat /proc/mtd | grep "RW-FS" | awk {' print $2 '}`"
 TGZfs_size=`echo $(($RWFSSIZEHEX))`
 
-# rf calibs
-if [ -f /etc/Wireless/rfbackup.bin ]; then
-    RFCONFIGS=/etc/Wireless/rfbackup.bin
-else
-    RFCONFIGS=/etc/Wireless/rf.bin
-fi
+# backuped rf calibs
+RFCONFIGS=/etc/Wireless/rfbackup.bin
 
 get_size() {
   ls -sk "$1" | sed -e "s/ \+/ /g" | cut -d" " -f2

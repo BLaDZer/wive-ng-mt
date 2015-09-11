@@ -2,6 +2,8 @@
 
 #include "rt_config.h"
 
+
+
 #define BA_ORI_INIT_SEQ		(pEntry->TxSeq[TID]) /* 1 : inital sequence number of BA session*/
 
 #define ORI_SESSION_MAX_RETRY	8
@@ -56,19 +58,16 @@ VOID BA_MaxWinSizeReasign(
 	UCHAR MaxSize;
 	UCHAR MaxPeerRxSize;
 
-
 	if (CLIENT_STATUS_TEST_FLAG(pEntryPeer, fCLIENT_STATUS_RALINK_CHIPSET))
 		MaxPeerRxSize = (1 << (pEntryPeer->MaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
 	else
 		MaxPeerRxSize = (((1 << (pEntryPeer->MaxRAmpduFactor + 3)) * 10) / 16) -1;
 
-	if(pEntryPeer->MaxHTPhyMode.field.MODE == MODE_VHT)
-	{
-		if (CLIENT_STATUS_TEST_FLAG(pEntryPeer, fCLIENT_STATUS_RALINK_CHIPSET))
-			MaxPeerRxSize = (1 << (pEntryPeer->VhtMaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
-		else
-			MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
-	}
+	if(WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && (pAd->CommonCfg.Channel > 14) 
+	&& pEntryPeer->VhtMaxRAmpduFactor != 0)
+	{		
+		MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
+	}	
 
 #ifdef RT65xx
 	if (IS_RT65XX(pAd)) {
@@ -99,8 +98,10 @@ VOID BA_MaxWinSizeReasign(
 	else
 		MaxSize = 20;			/* for not 3x3, MaxSize use ((32KB/1.5KB) -1) ~= 20 */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("ba>WinSize=%d, MaxSize=%d, MaxPeerRxSize=%d\n", 
-			*pWinSize, MaxSize, MaxPeerRxSize));
+	DBGPRINT(RT_DEBUG_TRACE, ("ba>WinSize=%d, MaxSize=%d, MaxPeerRxSize=%d, \
+	pEntryPeer->MaxRAmpduFactor=%d, pEntryPeer->VhtMaxRAmpduFactor=%d\n", 
+			*pWinSize, MaxSize, MaxPeerRxSize
+			, pEntryPeer->MaxRAmpduFactor, pEntryPeer->VhtMaxRAmpduFactor));
 
 	MaxSize = min(MaxPeerRxSize, MaxSize);
 	if ((*pWinSize) > MaxSize)
@@ -132,6 +133,21 @@ void Announce_Reordering_Packet(RTMP_ADAPTER *pAd, struct reordering_mpdu *mpdu)
 			AP_ANNOUNCE_OR_FORWARD_802_3_PACKET(pAd, pPacket, RTMP_GET_PACKET_IF(pPacket));
 #endif /* CONFIG_AP_SUPPORT */
 
+#ifdef CONFIG_STA_SUPPORT
+#if defined(P2P_SUPPORT) || defined(RT_CFG80211_P2P_SUPPORT)
+		if (IS_OPMODE_AP(mpdu))
+		{
+			AP_ANNOUNCE_OR_FORWARD_802_3_PACKET(pAd, pPacket, RTMP_GET_PACKET_IF(pPacket));
+		}
+		else
+		{
+			ANNOUNCE_OR_FORWARD_802_3_PACKET(pAd, pPacket, RTMP_GET_PACKET_IF(pPacket));
+		}
+#else
+		IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+			ANNOUNCE_OR_FORWARD_802_3_PACKET(pAd, pPacket, RTMP_GET_PACKET_IF(pPacket));
+#endif /* P2P_SUPPORT */
+#endif /* CONFIG_STA_SUPPORT */
 	}
 }
 
@@ -366,8 +382,8 @@ static void ba_indicate_reordering_mpdus_le_seq(
 
 	NdisAcquireSpinLock(&pBAEntry->RxReRingLock);
 	while ((mpdu_blk = ba_reordering_mpdu_probe(&pBAEntry->list)))
-	{
-		/* find in-order frame */
+		{
+			/* find in-order frame */
 		if ((mpdu_blk->Sequence == Sequence) || SEQ_SMALLER(mpdu_blk->Sequence, Sequence, MAXSEQ))
 		{
 			/* dequeue in-order frame from reodering list */
@@ -379,14 +395,14 @@ static void ba_indicate_reordering_mpdus_le_seq(
 			/* pass this frame up */
 			ANNOUNCE_REORDERING_PACKET(pAd, mpdu_blk);
 			/* free mpdu_blk */
-			ba_mpdu_blk_free(pAd, mpdu_blk);
+			ba_mpdu_blk_free(pAd, mpdu_blk);            
 		}
 		else
-		{
-		    break;
-		}
+			{
+				break;
+			}
 	}
-	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);
+	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);   
 }
 
 
@@ -491,7 +507,7 @@ VOID BAOriSessionSetUp(
 		DBGPRINT(RT_DEBUG_TRACE, ("Wrong TID %d!\n", TID));
 		return;
 	}
-
+    
 	if ((pAd->CommonCfg.BACapability.field.AutoBA != TRUE)  &&  (isForced == FALSE))
 		return;
 
@@ -529,15 +545,15 @@ VOID BAOriSessionSetUp(
 	pEntry->BAOriWcidArray[TID] = Idx;
 
 	/* Initialize BA session */
-	pBAEntry->ORI_BA_Status = Originator_WaitRes;
+	pBAEntry->ORI_BA_Status = Originator_WaitRes;       
 	pBAEntry->Wcid = pEntry->wcid;
 	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.TxBAWinLimit;
 	pBAEntry->Sequence = BA_ORI_INIT_SEQ;
 	pBAEntry->Token = 1;	/* (2008-01-21) Jan Lee recommends it - this token can't be 0*/
 	pBAEntry->TID = TID;
-	pBAEntry->TimeOutValue = TimeOut;
+	pBAEntry->TimeOutValue = TimeOut;   
 	pBAEntry->pAdapter = pAd;
-
+	
 	if (!(pEntry->TXBAbitmap & (1<<TID)))
 	{
 		RTMPInitTimer(pAd, &pBAEntry->ORIBATimer, GET_TIMER_FUNCTION(BAOriSessionSetupTimeout), pBAEntry, FALSE);
@@ -586,16 +602,13 @@ VOID BAOriSessionAdd(
 			pBAEntry->BAWinSize = min(pBAEntry->BAWinSize, MaxPeerBufSize);
 			BA_MaxWinSizeReasign(pAd, pEntry, &pBAEntry->BAWinSize);
 		}
-
 		pBAEntry->TimeOutValue = pFrame->TimeOutValue;
 		pBAEntry->amsdu_cap = pFrame->BaParm.AMSDUSupported;
 		pBAEntry->ORI_BA_Status = Originator_Done;
 		pAd->BATable.numDoneOriginator ++;
 		
 		/* reset sequence number */
-		
 		pBAEntry->Sequence = BA_ORI_INIT_SEQ;
-		
 		/* Set Bitmap flag.*/
 		pEntry->TXBAbitmap |= (1<<TID);
 		RTMPCancelTimer(&pBAEntry->ORIBATimer, &Cancelled);
@@ -805,7 +818,7 @@ VOID BATableFreeOriEntry(RTMP_ADAPTER *pAd, ULONG Idx)
 	if ((Idx == 0) || (Idx >= MAX_LEN_OF_BA_ORI_TABLE))
 		return;
 
-	pBAEntry = &pAd->BATable.BAOriEntry[Idx];
+	pBAEntry =&pAd->BATable.BAOriEntry[Idx];
 
 	NdisAcquireSpinLock(&pAd->BATabLock);
 	if (pBAEntry->ORI_BA_Status != Originator_NONE)
@@ -813,17 +826,17 @@ VOID BATableFreeOriEntry(RTMP_ADAPTER *pAd, ULONG Idx)
 		pEntry = &pAd->MacTab.Content[pBAEntry->Wcid];
 		pEntry->BAOriWcidArray[pBAEntry->TID] = 0;
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: Wcid = %d, TID = %d\n", __FUNCTION__, pBAEntry->Wcid, pBAEntry->TID));
-		
+
 		if (pBAEntry->ORI_BA_Status == Originator_Done)
 		{
 			pAd->BATable.numDoneOriginator -= 1;
-			pEntry->TXBAbitmap &= (~(1<<(pBAEntry->TID) ));
+		 	pEntry->TXBAbitmap &= (~(1<<(pBAEntry->TID) ));
 			DBGPRINT(RT_DEBUG_TRACE, ("BATableFreeOriEntry numAsOriginator= %ld\n", pAd->BATable.numAsRecipient));
 			/* Erase Bitmap flag.*/
 		}
-		
+	
 		ASSERT(pAd->BATable.numAsOriginator != 0);
-		
+
 		pAd->BATable.numAsOriginator -= 1;
 		
 		pBAEntry->ORI_BA_Status = Originator_NONE;
@@ -838,21 +851,22 @@ VOID BATableFreeRecEntry(RTMP_ADAPTER *pAd, ULONG Idx)
 	BA_REC_ENTRY    *pBAEntry = NULL;
 	MAC_TABLE_ENTRY *pEntry;
 
+
 	if ((Idx == 0) || (Idx >= MAX_LEN_OF_BA_REC_TABLE))
 		return;
 
-	pBAEntry = &pAd->BATable.BARecEntry[Idx];
+	pBAEntry =&pAd->BATable.BARecEntry[Idx];
 
 	NdisAcquireSpinLock(&pAd->BATabLock);
 	if (pBAEntry->REC_BA_Status != Recipient_NONE)
 	{
 		pEntry = &pAd->MacTab.Content[pBAEntry->Wcid];
 		pEntry->BARecWcidArray[pBAEntry->TID] = 0;
-		
+
 		ASSERT(pAd->BATable.numAsRecipient != 0);
-		
+
 		pAd->BATable.numAsRecipient -= 1;
-		
+
 		pBAEntry->REC_BA_Status = Recipient_NONE;
 	}
 	NdisReleaseSpinLock(&pAd->BATabLock);
@@ -1073,6 +1087,14 @@ VOID BAOriSessionSetupTimeout(
 
 	pAd = pBAEntry->pAdapter;
 
+#ifdef CONFIG_STA_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+	{
+		/* Do nothing if monitor mode is on*/
+		if (MONITOR_ON(pAd))
+			return;
+	}
+#endif /* CONFIG_STA_SUPPORT */
     
 #ifdef RALINK_ATE
 	/* Nothing to do in ATE mode. */
@@ -1086,6 +1108,19 @@ VOID BAOriSessionSetupTimeout(
 	{
 		MLME_ADDBA_REQ_STRUCT AddbaReq;  
 
+#ifdef CONFIG_STA_SUPPORT
+		IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+		{
+			if (INFRA_ON(pAd) && 
+				RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_BSS_SCAN_IN_PROGRESS) &&
+				(OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_MEDIA_STATE_CONNECTED)))
+			{
+				/* In scan progress and have no chance to send out, just re-schedule to another time period */
+				RTMPSetTimer(&pBAEntry->ORIBATimer, ORI_BA_SESSION_TIMEOUT);
+				return;
+			}
+		}
+#endif /* CONFIG_STA_SUPPORT */
 
 		NdisZeroMemory(&AddbaReq, sizeof(AddbaReq));
 		COPY_MAC_ADDR(AddbaReq.pAddr, pEntry->Addr);
@@ -1216,6 +1251,20 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 #if defined(P2P_SUPPORT) || defined(RT_CFG80211_P2P_SUPPORT)
 	if (pMacEntry)
 	{
+#ifdef CONFIG_STA_SUPPORT
+		if (ADHOC_ON(pAd)
+#ifdef QOS_DLS_SUPPORT
+			|| (IS_ENTRY_DLS(pMacEntry))
+#endif /* QOS_DLS_SUPPORT */
+#if defined(DOT11Z_TDLS_SUPPORT) || defined(CFG_TDLS_SUPPORT) 
+			|| (IS_ENTRY_TDLS(pMacEntry))
+#endif /* DOT11Z_TDLS_SUPPORT || CFG_TDLS_SUPPORT */
+		)
+		{
+			ActHeaderInit(pAd, &ADDframe.Hdr, pAddr, pAd->StaCfg.wdev.if_addr, pAd->CommonCfg.Bssid);
+		}
+		else
+#endif /* CONFIG_STA_SUPPORT */
 		{
 			ActHeaderInit(pAd, &ADDframe.Hdr, pAddr, pMacEntry->wdev->if_addr, pMacEntry->wdev->bssid);
 		}
@@ -1251,6 +1300,22 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		}
 	}
 #endif /* CONFIG_AP_SUPPORT */
+#ifdef CONFIG_STA_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+	{
+		if (ADHOC_ON(pAd)
+#ifdef QOS_DLS_SUPPORT
+			|| (IS_ENTRY_DLS(pMacEntry))
+#endif /* QOS_DLS_SUPPORT */
+#if defined(DOT11Z_TDLS_SUPPORT) || defined(CFG_TDLS_SUPPORT) 
+			|| (IS_ENTRY_TDLS(pMacEntry))
+#endif /* DOT11Z_TDLS_SUPPORT || CFG_TDLS_SUPPORT */
+			)
+			ActHeaderInit(pAd, &ADDframe.Hdr, pAddr, pAd->StaCfg.wdev.if_addr, pAd->CommonCfg.Bssid);
+		else
+			ActHeaderInit(pAd, &ADDframe.Hdr, pAd->CommonCfg.Bssid, pAd->StaCfg.wdev.if_addr, pAddr);
+	}
+#endif /* CONFIG_STA_SUPPORT */
 #endif /* P2P_SUPPORT */
 	ADDframe.Category = CATEGORY_BA;
 	ADDframe.Action = ADDBA_RESP;
@@ -1335,6 +1400,9 @@ VOID PeerAddBARspAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		}
 		/* Rcv Decline StatusCode*/
 		if ((pFrame->StatusCode == 37) 
+#ifdef CONFIG_STA_SUPPORT            
+            || ((pAd->OpMode == OPMODE_STA) && STA_TGN_WIFI_ON(pAd) && (pFrame->StatusCode != 0))
+#endif /* CONFIG_STA_SUPPORT */            
             ) 
 		{
 			pAd->MacTab.Content[Elem->Wcid].BADeclineBitmap |= 1<<pFrame->BaParm.TID;
@@ -1475,7 +1543,6 @@ VOID SendSMPSAction(RTMP_ADAPTER *pAd, UCHAR Wcid, UCHAR smps)
 	{
 #ifdef MAC_REPEATER_SUPPORT
 		UINT apidx = pEntry->wdev_idx;
-
 		if (pEntry->bReptCli)
 			ActHeaderInit(pAd, &Frame.Hdr, pEntry->Addr, pAd->ApCfg.ApCliTab[apidx].RepeaterCli[pEntry->MatchReptCliIdx].CurrentAddress, wdev->bssid);
 		else
@@ -1611,6 +1678,21 @@ void convert_reordering_packet_to_preAMSDU_or_802_3_packet(
 		RTMP_AP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
 #endif /* CONFIG_AP_SUPPORT */
 
+#ifdef CONFIG_STA_SUPPORT
+#if defined(P2P_SUPPORT) || defined(RT_CFG80211_P2P_SUPPORT)
+	if (IS_PKT_OPMODE_AP(pRxBlk))
+	{
+		RTMP_AP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
+	}
+	else
+	{
+		RTMP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
+	}
+#else
+	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+		RTMP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
+#endif /* P2P_SUPPORT */
+#endif /* CONFIG_STA_SUPPORT */
 
 	ASSERT(pRxBlk->pRxPacket);
 
@@ -1650,6 +1732,16 @@ void convert_reordering_packet_to_preAMSDU_or_802_3_packet(
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
+#ifdef CONFIG_STA_SUPPORT
+		IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
+		{
+#ifdef LINUX
+			UCHAR *data_p;
+			data_p = OS_PKT_HEAD_BUF_EXTEND(pRxPkt, LENGTH_802_3);
+			NdisMoveMemory(data_p, Header802_3, LENGTH_802_3);
+#endif
+		}
+#endif /* CONFIG_STA_SUPPORT */
 	}
 }
 
@@ -2195,7 +2287,6 @@ static VOID Peer_DelBA_Tx_Adapt_Enable(
 #endif /* MCS_LUT_SUPPORT */
 }
 
-
 static VOID Peer_DelBA_Tx_Adapt_Disable(
 	IN PRTMP_ADAPTER pAd,
 	IN PMAC_TABLE_ENTRY pEntry)
@@ -2205,7 +2296,7 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 		DBGPRINT(RT_DEBUG_WARN, ("%s(): Warning! Null pointer.\n", __FUNCTION__));
 		return;
 	}
-
+	
 	if(!RTMP_TEST_MORE_FLAG(pAd, fASIC_CAP_MCS_LUT) || !(pEntry->wcid < 128))
 	{
 		DBGPRINT(RT_DEBUG_WARN, 
@@ -2213,7 +2304,7 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 				__FUNCTION__));
 		return;
 	}
-
+	
 	if (pEntry && pEntry->bPeerDelBaTxAdaptEn) {
 		BOOLEAN Cancelled;
 

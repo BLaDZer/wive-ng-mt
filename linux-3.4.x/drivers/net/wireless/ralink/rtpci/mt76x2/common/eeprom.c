@@ -34,8 +34,8 @@ struct chip_map{
 
 struct chip_map RTMP_CHIP_E2P_FILE_TABLE[] = {
 #ifdef MT76x2
-	{0x7602,	"MT7602E_EEPROM.bin"},
-	{0x7612,	"MT7612E_EEPROM.bin"},
+	{0x7602, "MT7602E_EEPROM.bin"},
+	{0x7612, "MT7612E_EEPROM.bin"},
 #endif
 #ifdef RT6352
 	{0x7620,	"MT7620_AP_2T2R-4L_V15.BIN"},
@@ -48,7 +48,7 @@ UCHAR RtmpEepromGetDefault(
 {
 	UCHAR e2p_default = E2P_FLASH_MODE;
 
-#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612) && \
+#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_FIRST_CARD == 7620) && \
     (CONFIG_RT_SECOND_CARD == 7602 || CONFIG_RT_SECOND_CARD == 7612)
 	if ( pAd->dev_idx == 0 )
 	{
@@ -58,7 +58,7 @@ UCHAR RtmpEepromGetDefault(
 			e2p_default = E2P_EEPROM_MODE;
 		if ( RTMPEqualMemory("flash", CONFIG_RT_FIRST_CARD_EEPROM, 5) )
 			e2p_default = E2P_FLASH_MODE;
-		goto out;
+		goto out;	
 	}
 
 	if ( pAd->dev_idx == 1 )
@@ -69,7 +69,7 @@ UCHAR RtmpEepromGetDefault(
 			e2p_default = E2P_EEPROM_MODE;
 		if ( RTMPEqualMemory("flash", CONFIG_RT_SECOND_CARD_EEPROM, 5) )
 			e2p_default = E2P_FLASH_MODE;
-		goto out;
+		goto out;	
 	}
 out:
 #endif
@@ -82,7 +82,6 @@ out:
 static VOID RtmpEepromTypeAdjust(RTMP_ADAPTER *pAd, UCHAR *pE2pType)
 {
 	UINT EfuseFreeBlock=0;
-	BOOLEAN bCalFree;
 
 	eFuseGetFreeBlockCount(pAd, &EfuseFreeBlock);	
 	
@@ -126,25 +125,17 @@ INT RtmpChipOpsEepromHook(
 	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;
 	UCHAR e2p_type;
 	UINT32 val;
-	NDIS_STATUS Status;
 
 #ifdef TXBF_SUPPORT
 	if (pAd->chipCap.FlgITxBfBinWrite)
 		pAd->E2pAccessMode = E2P_BIN_MODE;
-#endif
-
-	/* to get profile e2pAccessMode */
-	Status = RTMPReadParametersHook(pAd);
-	if (Status != NDIS_STATUS_SUCCESS)
-	{
-		DBGPRINT_ERR(("RTMPReadParametersHook failed, Status[=0x%08x]\n",Status));		
-	}
+#endif		
 
 	e2p_type = pAd->E2pAccessMode;
 
 	DBGPRINT(RT_DEBUG_OFF, ("%s::e2p_type=%d, inf_Type=%d\n", __FUNCTION__, e2p_type, infType));
 
-	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))			
 		return -1;
 
 	/* If e2p_type is out of range, get the default mode */
@@ -178,7 +169,7 @@ INT RtmpChipOpsEepromHook(
 			pChipOps->eeinit = rtmp_ee_load_from_bin;
 			pChipOps->eeread = rtmp_ee_bin_read16;
 			pChipOps->eewrite = rtmp_ee_bin_write16;
-			DBGPRINT(RT_DEBUG_OFF, ("NVM is BIN mode\n"));
+			DBGPRINT(RT_DEBUG_OFF, ("NVM is BIN mode\n"));	
 			return 0;
 		}
 
@@ -189,7 +180,7 @@ INT RtmpChipOpsEepromHook(
 			pChipOps->eeread = rtmp_ee_flash_read;
 			pChipOps->eewrite = rtmp_ee_flash_write;
 			pAd->flash_offset = DEFAULT_RF_OFFSET;
-#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612) && \
+#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_FIRST_CARD == 7620) && \
     (CONFIG_RT_SECOND_CARD == 7602 || CONFIG_RT_SECOND_CARD == 7612)
 			if ( pAd->dev_idx == 0 )
 				pAd->flash_offset = CONFIG_RT_FIRST_IF_RF_OFFSET;
@@ -211,7 +202,7 @@ INT RtmpChipOpsEepromHook(
 				pChipOps->eeinit = eFuse_init;
 				pChipOps->eeread = rtmp_ee_efuse_read16;
 				pChipOps->eewrite = rtmp_ee_efuse_write16;
-				DBGPRINT(RT_DEBUG_OFF, ("NVM is EFUSE mode\n"));
+				DBGPRINT(RT_DEBUG_OFF, ("NVM is EFUSE mode\n"));	
 				return 0;
 			}
 			else
@@ -224,7 +215,7 @@ INT RtmpChipOpsEepromHook(
 	}
 
 	/* Hook functions based on interface types for EEPROM */
-	switch (infType)
+	switch (infType) 
 	{
 #ifdef RTMP_PCI_SUPPORT
 		case RTMP_DEV_INF_PCI:
@@ -450,7 +441,7 @@ INT Set_LoadEepromBufferFromBin_Proc(
 	INT result;
 
 #ifdef CAL_FREE_IC_SUPPORT
-		BOOLEAN bCalFree=0;
+	BOOLEAN bCalFree=0;
 #endif /* CAL_FREE_IC_SUPPORT */
 
 	if (bEnable < 0)
