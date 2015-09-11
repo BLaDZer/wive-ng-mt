@@ -2201,6 +2201,11 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 	IN PMAC_TABLE_ENTRY pEntry)
 {
 #ifdef MCS_LUT_SUPPORT
+	if ((pAd == NULL) || (pEntry == NULL)) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s(): Warning! Null pointer.\n", __FUNCTION__));
+		return;
+	}
+
 	if(!RTMP_TEST_MORE_FLAG(pAd, fASIC_CAP_MCS_LUT) || !(pEntry->wcid < 128))
 	{
 		DBGPRINT(RT_DEBUG_WARN, 
@@ -2208,7 +2213,7 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 				__FUNCTION__));
 		return;
 	}
-	
+
 	if (pEntry && pEntry->bPeerDelBaTxAdaptEn) {
 		BOOLEAN Cancelled;
 

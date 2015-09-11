@@ -160,7 +160,7 @@ UCHAR eFuseReadRegisters(
 			RtmpusecDelay(2);
 			break;
 		}	
-		RtmpusecDelay(2);
+		RtmpusecDelay(200);
 		i++;	
 	}
 
@@ -262,8 +262,7 @@ VOID eFusePhysicalReadRegisters(
 			RtmpusecDelay(2);
 			break;
 		}
-		
-		RtmpusecDelay(2);
+		RtmpusecDelay(200);
 		i++;	
 	}
 
@@ -418,7 +417,7 @@ static VOID eFusePhysicalWriteRegisters(
 			RtmpusecDelay(2);
 			break;
 		}
-		RtmpusecDelay(2);
+		RtmpusecDelay(200);
 		i++;	
 	}
 
@@ -487,8 +486,7 @@ static VOID eFusePhysicalWriteRegisters(
 			RtmpusecDelay(2);
 			break;
 		}
-		
-		RtmpusecDelay(2);	
+		RtmpusecDelay(200);
 		i++;	
 	}
 }

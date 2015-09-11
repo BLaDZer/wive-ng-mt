@@ -1389,7 +1389,8 @@ VOID RTMPDeQueuePacket(
 #endif /* defined(DBG_TX_RING_DEPTH) || defined(DBG_TXQ_DEPTH) */
 #endif /* DBG_DIAGNOSE */
 
-			if (FreeNumber[QueIdx] <= 5)
+			if (FreeNumber[QueIdx] <= 5 ||
+				(pAd->RalinkCounters.OneSecTxRetryOkCount + pAd->RalinkCounters.OneSecTxNoRetryOkCount) <= (TX_RING_SIZE >> 1))
 			{
 				/* free Tx(QueIdx) resources*/
 				RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);

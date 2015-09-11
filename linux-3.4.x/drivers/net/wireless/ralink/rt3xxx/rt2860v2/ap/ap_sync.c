@@ -774,6 +774,16 @@ VOID APPeerProbeReqAction(
 	}
 
 #endif /* P2P_SUPPORT */
+	/* add Mediatek-specific IE here */
+	{
+		ULONG TmpLen = 0;
+		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
+
+		MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
+		9, MediatekSpecificIe,
+		END_OF_ARGS);
+		FrameLen += TmpLen;
+	}
 
 		/* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
 		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);

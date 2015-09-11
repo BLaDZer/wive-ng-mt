@@ -977,31 +977,46 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* DOT11_N_SUPPORT */
 
    	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
-{
-	ULONG TmpLen;
-	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
+	{
+	    ULONG TmpLen;
+	    UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
 
-	if (pComCfg->bAggregationCapable)
+	    if (pComCfg->bAggregationCapable)
 		RalinkSpecificIe[5] |= 0x1;
-	if (pComCfg->bPiggyBackCapable)
+	    if (pComCfg->bPiggyBackCapable)
 		RalinkSpecificIe[5] |= 0x2;
 #ifdef DOT11_N_SUPPORT
-	if (pComCfg->bRdg)
+	    if (pComCfg->bRdg)
 		RalinkSpecificIe[5] |= 0x4;
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef DOT11_VHT_AC
-	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
+	    if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
 		RalinkSpecificIe[5] |= 0x8;
 #endif /* DOT11_VHT_AC */
 
-	MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
+	    MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
 						9,                   RalinkSpecificIe,
 						END_OF_ARGS);
-	FrameLen += TmpLen;
+	    FrameLen += TmpLen;
 
-}
-	
+	}
+
+	/* add Mediatek-specific IE here */
+	{
+		ULONG TmpLen = 0;
+		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
+
+#ifdef DOT11_VHT_AC
+		if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
+		MediatekSpecificIe[5] |= 0x8;
+#endif /* DOT11_VHT_AC */
+
+		MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
+		9, MediatekSpecificIe,
+		END_OF_ARGS);
+		FrameLen += TmpLen;
+	}
 
 	/* step 6. Since FrameLen may change, update TXWI. */
 #ifdef A_BAND_SUPPORT
