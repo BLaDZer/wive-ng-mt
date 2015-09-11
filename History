@@ -1276,7 +1276,7 @@
 <b>TODO:</b><br>
 1) full russian ui (work end ~95%).<br>
 2) kernel: port ipv6 passthrouth module.<br>
-3) need review and experimants with new roaming code in MT76x2 driver and implement to WebUI.<br>
+3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
 4) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
 5) need add subchannel select for 5GHz module.<br>
 6) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
