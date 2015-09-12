@@ -39,7 +39,6 @@
 
 /* Local use file */
 #define PROC_NET_ARP_PATH				"/proc/net/arp"
-#define IAPP_PID_BACKUP_FILE				"/etc/Wireless/pid_iapp"
 
 
 /* Definition of IAPP */

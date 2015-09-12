@@ -101,8 +101,10 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	IAPP_IN		INT32				*pDataLen,
 	IAPP_IN		UCHAR				ApIdx,
 	IAPP_IN		INT32				Flags);
+
 static INT32 IAPP_IPC_MSG_Init(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
+
 static BOOLEAN IAPP_L2UpdateFrameSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		UCHAR				*pMac);
@@ -113,20 +115,16 @@ static BOOLEAN IAPP_MsgProcess(
 	IAPP_IN		UCHAR				*pMsg,
 	IAPP_IN		INT32				Len);
 
-static VOID IAPP_PID_Backup(
-	IAPP_IN		pid_t				PID);
-static VOID IAPP_PID_Kill(
-	VOID);
-
 static BOOLEAN IAPP_SIG_Process(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		RT_SIGNAL_STRUC		*pSig,
+	IAPP_IN		RT_SIGNAL_STRUC			*pSig,
 	IAPP_IN		INT32				Len,
 	IAPP_IN		UCHAR				*pCmdBuf,
 	IAPP_IN		UCHAR				*pRspBuf);
 
 static BOOLEAN IAPP_SocketClose(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
+
 static BOOLEAN IAPP_SocketOpen(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
 
@@ -215,8 +213,10 @@ static VOID IAPP_RcvHandlerApInfor(
 
 static VOID IAPP_Usage(
 	VOID);
+
 static VOID IAPP_USR2Handle(
 	IAPP_IN		INT32				Sig);
+
 static VOID IAPP_TerminateHandle(
 	IAPP_IN		INT32				Sig);
 
@@ -998,89 +998,6 @@ static BOOLEAN IAPP_MsgProcess(
 
 	return TRUE;
 } /* End of IAPP_MsgProcess */
-
-
-/*
-========================================================================
-Routine Description:
-	Open a file with filename = our PID.
-
-Arguments:
-	PID - our background process ID
-
-Return Value:
-	None
-
-Note:
-	Why to backup PID?
-
-	Because always we will restart new IAPP daemon but forget to destroy
-	the old IAPP daemon, many IAPP daemons will exist in kernel.
-
-	So we will delete old IAPP daemon whenever you start a new IAPP daemon.
-========================================================================
-*/
-static VOID IAPP_PID_Backup(
-	IAPP_IN		pid_t		PID)
-{
-#ifdef IAPP_OS_LINUX
-	FILE  *pFile;
-	CHAR  Buffer[30];
-
-
-	/* prepare PID file content */
-	IAPP_MEM_ZERO(Buffer, sizeof(Buffer));
-	sprintf(Buffer, "PID = %d\n", PID);
-
-	/* re-open and truncate file to zero length by using "wb" */
-	/* write new PID in the file */
-	pFile = fopen(IAPP_PID_BACKUP_FILE, "wb");
-	fwrite(Buffer, strlen(Buffer), 1, pFile);
-	fclose(pFile);
-#endif // IAPP_OS_LINUX //
-} /* End of IAPP_PID_Backup */
-
-
-/*
-========================================================================
-Routine Description:
-	Kill running IAPP daemon if exists.
-
-Arguments:
-	None
-
-Return Value:
-	None
-
-Note:
-========================================================================
-*/
-static VOID IAPP_PID_Kill(
-    VOID)
-{
-#ifdef IAPP_OS_LINUX
-	FILE  *pFile;
-	pid_t PID;
-	CHAR  SysCmd[30];
-
-
-	/* get last PID */
-	pFile = fopen(IAPP_PID_BACKUP_FILE, "rb");
-	if (pFile == NULL)
-		return;
-	/* End of if */
-	fscanf(pFile, "PID = %d\n", &PID);
-	fclose(pFile);
-
-	/* kill old IAPP daemon */
-	sprintf(SysCmd, "kill %d\n", PID);
-	system(SysCmd);
-
-	/* sleep for a where to kill old daemon */
-	sleep(2);
-#endif // IAPP_OS_LINUX //
-} /* End of IAPP_PID_Kill */
-
 
 /*
 ========================================================================
@@ -3269,7 +3186,6 @@ VOID IAPP_Task(
 						pCtrlBK->CommonKey, &ComLen, 0,
 						RT_FT_KEY_SET | OID_GET_SET_TOGGLE);
 #endif // FT_KDP_KEY_FROM_DAEMON //
-	IAPP_PID_Backup(PidAuth);
 
 	/* start IAPP function (while FlgIsLoop in the function) */
 	IAPP_Start(pCtrlBK);
@@ -3315,9 +3231,6 @@ STATUS IAPP_Init(INT32 Argc, CHAR *pArgv[])
 
 	/* init */
 	IAPP_MEM_ZERO(pCtrlBK, sizeof(RTMP_IAPP));
-
-	/* kill old IAPP daemon if exists */
-	IAPP_PID_Kill();
 
 	/* parse arguments from SysCmd line */
 	if (IAPP_ArgumentParse(pCtrlBK, Argc, pArgv) == FALSE)
