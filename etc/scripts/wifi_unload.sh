@@ -9,10 +9,10 @@
 . /etc/scripts/global.sh
 
 stop_serv="chillispot transmission samba xupnp radvd dynroute vpnserver vpnhelper shaper crontab ddns udpxy miniupnpd \
-	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cdp syslog watchdog"
+	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cdp iappd syslog watchdog"
 
 kill_apps="chilli transmission-daemon smbd nmbd xupnpd pppd xl2tpd udhcpd udhcpc dhcp6c dhcp6s radvd zebra ripd crond igmpproxy \
-	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send syslogd klogd"
+	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd syslogd klogd"
 
 rmmod_mod="ppp_mppe pppol2tp pptp pppoe pppox ppp_generic imq ipt_account ipt_TTL ipt_IMQ ipt_tos \
 	    ipt_REDIRECT ipt_ttl ipt_TOS xt_string xt_webstr xt_connmark xt_CONNMARK xt_conntrack \
