@@ -27,12 +27,16 @@ get_param() {
 }
 
 stop() {
-    pid=`pidof lld2d`
+    pid=`pidof lldpd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping LLDPD"
 	killall -q lldpd
-	killall -q lldpcli
 	killall -q -SIGKILL lldpd
+    fi
+    pid=`pidof lldpcli`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping LLDPD cli"
+	killall -q lldpcli
 	killall -q -SIGKILL lldpcli
     fi
     rm -f /var/run/lldpd.socket
