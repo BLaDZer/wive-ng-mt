@@ -1,6 +1,6 @@
 /*
  * IpV6 passthrough
- * This module is used to pass through the PPPoE packets
+ * This module is used to pass through the IPv6 packets
  */
 #include <linux/module.h>
 #include <linux/version.h>
