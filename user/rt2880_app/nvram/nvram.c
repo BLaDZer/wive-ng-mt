@@ -629,9 +629,20 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(KickStaRssiLow);
 	FPRINT_NUM(ProbeRspRssi);
 #ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+	/* Fast roaming auth transitions config */
 	FPRINT_STR(FtSupport);
 	FPRINT_STR(FtRic);
 	FPRINT_STR(FtOtd);
+	/* Mobility domain ID of Fast Bss. */
+	FPRINT_STR(FtMdId1);
+	FPRINT_STR(FtMdId2);
+	FPRINT_STR(FtMdId3);
+	FPRINT_STR(FtMdId4);
+	/* R0 Key Handler Identification. */
+	FPRINT_STR(FtR0khId1);
+	FPRINT_STR(FtR0khId2);
+	FPRINT_STR(FtR0khId3);
+	FPRINT_STR(FtR0khId4);
 #endif
 #ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
 	FPRINT_STR(RRMEnable);
