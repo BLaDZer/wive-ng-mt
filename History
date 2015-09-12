@@ -1281,11 +1281,14 @@
 4) need add multiif support in iappd daemon.<br>
 5) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
 6) need add subchannel select for 5GHz module.<br>
-7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-8) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-9) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-10) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-11) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+7) need add lost FastRoaming parametr (1 enable roaming extensions, 0 disable).<br>
+8) need add IdsEnable AuthFloodThreshold AssocReqFloodThreshold ReassocReqFloodThreshold ProbeReqFloodThreshold
+    DisassocFloodThreshold DeauthFloodThreshold EapReqFooldThreshold parametrs to basic WebUI after roaming block.<br>
+9) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+10) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+11) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+12) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+13) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>
