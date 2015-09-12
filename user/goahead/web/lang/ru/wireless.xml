@@ -99,7 +99,7 @@
   <message msgid="basic an" msgstr="Только 11an" />
   <message msgid="basic anc" msgstr="Смешанный 11a/an/ac" />
   <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
-  <message msgid="basic roaming" msgstr="Fast Roaming" />
+  <message msgid="basic roaming" msgstr="Базовые настройки роуминга" />
   <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
   <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
   <message msgid="basic roaming auth rssi" msgstr="Игнорировать попытки авторизации при уровне ниже" />

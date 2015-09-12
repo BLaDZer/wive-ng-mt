@@ -1248,36 +1248,37 @@
 5) irqbalance: update to 04.08.2015 git version.<br>
 6) init.d: fix path to passthrouth control files.<br>
 7) init.d: hotplug support automount sd card if exist.<br>
-8) defaults: add fast roaming and radio resource managment parametrs.<br>
-9) goahead: fix fast roaming extensions enable/disable options.<br>
-10) goahead: add IDS parametrs to WebUI.<br>
-11) kernel: configs: enable IDS for all devices.<br>
-12) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-13) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
-14) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-15) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-16) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-17) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-18) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-19) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
-20) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-21) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-22) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-23) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-24) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-25) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-26) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-27) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-28) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-29) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-30) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-31) kernel: net: add function to allocate sk_buff head without data area.<br>
-32) kernel: net: fix sk_buff head without data area.<br>
-33) kernel: net: sock_flag() cleanup.<br>
-34) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-35) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-36) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-37) kernel: net: implement ipv6 passthrouth logic.<br>
+8) init.d: add entware_install.sh script for fast install entware support to sd/hdd.<br>
+9) defaults: add fast roaming and radio resource managment parametrs.<br>
+10) goahead: fix fast roaming extensions enable/disable options.<br>
+11) goahead: add IDS parametrs to WebUI.<br>
+12) kernel: configs: enable IDS for all devices.<br>
+13) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+14) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
+15) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+16) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+17) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+18) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+19) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+20) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+21) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+22) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+23) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+24) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+25) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+26) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+27) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+28) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+29) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+30) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+31) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+32) kernel: net: add function to allocate sk_buff head without data area.<br>
+33) kernel: net: fix sk_buff head without data area.<br>
+34) kernel: net: sock_flag() cleanup.<br>
+35) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+36) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+37) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+38) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
@@ -1286,14 +1287,11 @@
 3) need add multiif support in iappd daemon.<br>
 4) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
 5) need add subchannel select for 5GHz module.<br>
-6) need add lost FastRoaming parametr (1 enable roaming extensions, 0 disable).<br>
-7) need add IdsEnable AuthFloodThreshold AssocReqFloodThreshold ReassocReqFloodThreshold ProbeReqFloodThreshold
-    DisassocFloodThreshold DeauthFloodThreshold EapReqFooldThreshold parametrs to basic WebUI after roaming block.<br>
-8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-10) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-11) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-12) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+6) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+7) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+8) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+9) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+10) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>

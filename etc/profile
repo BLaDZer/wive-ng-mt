@@ -19,8 +19,13 @@ if [ -d /opt/etc ]; then
 else
     export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/etc/scripts
 fi
-export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
-export HOME=${HOME:-/}
+if [ -d /opt/home ]; then
+    export HOME=/opt/home/
+else
+    export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
+    export HOME=${HOME:-/}
+fi
+
 export TMPDIR=/tmp/
 export TMP=/tmp/
 export PS1='[`hostname`@`echo $PWD`]# '

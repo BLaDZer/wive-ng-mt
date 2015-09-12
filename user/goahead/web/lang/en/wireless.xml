@@ -100,7 +100,7 @@
   <message msgid="basic an" msgstr="11an only" />
   <message msgid="basic anc" msgstr="11a/an/ac mixed" />
   <message msgid="basic anac" msgstr="11an/ac mixed" />
-  <message msgid="basic roaming" msgstr="Fast Roaming" />
+  <message msgid="basic roaming" msgstr="Basic Roaming settings" />
   <message msgid="basic roaming probe times" msgstr="Limit probe request per client" />
   <message msgid="basic roaming auth fail" msgstr="Reject auth req due to weak signal" />
   <message msgid="basic roaming auth rssi" msgstr="Ignore auth req due to weak signal" />
