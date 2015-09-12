@@ -511,13 +511,24 @@ static inline UCHAR SelectClearChannelCCA(
 							&& ((channel_idx + GetABandChOffset(pAd,ch)) < pAd->ChannelListNum))
 					{
 						INT ChOffsetIdx = channel_idx + GetABandChOffset(pAd,ch);
+
+						if (pChannelInfo->FalseCCA[ChOffsetIdx] > CCA_THRESHOLD)
+							continue;
+						
 						dirtyness += pChannelInfo->dirtyness[ChOffsetIdx];
 					}
 				}
 #ifdef DOT11_VHT_AC
-				else if (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80) {
+				else if (pAd->CommonCfg.vht_bw == VHT_BW_80) {
 					/* the same dirtyness with neighbor */
 					INT	vht_ch_idx = get_vht_neighbor_index(ch);
+					
+					if ((pChannelInfo->FalseCCA[vht_ch_idx+channel_idx] > CCA_THRESHOLD) ||
+						(pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+1)] > CCA_THRESHOLD) ||
+						(pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+2)] > CCA_THRESHOLD) ||
+						(pChannelInfo->FalseCCA[vht_ch_idx+(channel_idx+3)] > CCA_THRESHOLD))
+						continue;
+					
 					if (vht_ch_idx != (MAX_NUM_OF_CHANNELS+1))
 					{
 						dirtyness = pChannelInfo->dirtyness[vht_ch_idx+channel_idx] +

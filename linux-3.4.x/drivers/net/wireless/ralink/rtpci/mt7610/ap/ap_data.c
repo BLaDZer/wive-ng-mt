@@ -5073,10 +5073,10 @@ VOID APHandleRxDataFrame(
 #ifdef DOT11_N_SUPPORT
 #ifndef DOT11_VHT_AC
 #ifndef WFA_VHT_PF
-// TODO: shiang@PF#2, is this atheros protection still necessary here????
+	// TODO: shiang@PF#2, is this atheros protection still necessary here????
 	/* check Atheros Client */
 	if (!pEntry->bIAmBadAtheros && (pFmeCtrl->Retry) &&
-		(pRxWI->RxWIPhyMode < MODE_VHT) &&
+		(pRxBlk->rx_rate.field.MODE < MODE_VHT) &&
 		(pRxInfo->AMPDU == 1) && (pAd->CommonCfg.bHTProtect == TRUE)
 	)
 	{
@@ -5576,8 +5576,10 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 
 #ifdef DOT11_N_SUPPORT
 	/* check Atheros Client */
-	if (!pEntry->bIAmBadAtheros && (pFmeCtrl->Retry ) 
-		&& (pRxInfo->AMPDU == 1) && (pAd->CommonCfg.bHTProtect == TRUE)
+	// TODO: shiang@PF#2, is this atheros protection still necessary here????
+	if (!pEntry->bIAmBadAtheros && (pFmeCtrl->Retry) &&
+		(pRxBlk->rx_rate.field.MODE < MODE_VHT) &&
+		(pRxInfo->AMPDU == 1) && (pAd->CommonCfg.bHTProtect == TRUE)
 	)
 	{
 		if (pAd->CommonCfg.IOTestParm.bRTSLongProtOn == FALSE)

@@ -1194,6 +1194,17 @@ VOID ap_cmm_peer_assoc_req_action(
 
 }
   
+	/* add Mediatek-specific IE here */
+	{
+		ULONG TmpLen = 0;
+		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
+
+		MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
+		9, MediatekSpecificIe,
+		END_OF_ARGS);
+		FrameLen += TmpLen;
+	}
+
 #ifdef WSC_AP_SUPPORT
 	if (pEntry->bWscCapable)
 	{
