@@ -1,4 +1,4 @@
 
-config NET_PPPOE_PTHROUGH
-	bool "PPPoE Pass Through"
+config NET_PPPOEIPV6_PTHROUGH
+	bool "PPPoE/IPv6 Pass Through"
 	default y

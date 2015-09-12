@@ -1272,23 +1272,23 @@
 29) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
 30) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
 31) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+32) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
-1) full russian ui (work end ~95%).<br>
-2) kernel: port ipv6 passthrouth module.<br>
-3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-4) need add multiif support in iappd daemon.<br>
-5) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
-6) need add subchannel select for 5GHz module.<br>
-7) need add lost FastRoaming parametr (1 enable roaming extensions, 0 disable).<br>
-8) need add IdsEnable AuthFloodThreshold AssocReqFloodThreshold ReassocReqFloodThreshold ProbeReqFloodThreshold
+1) full russian ui (work end ~98%).<br>
+2) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+3) need add multiif support in iappd daemon.<br>
+4) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
+5) need add subchannel select for 5GHz module.<br>
+6) need add lost FastRoaming parametr (1 enable roaming extensions, 0 disable).<br>
+7) need add IdsEnable AuthFloodThreshold AssocReqFloodThreshold ReassocReqFloodThreshold ProbeReqFloodThreshold
     DisassocFloodThreshold DeauthFloodThreshold EapReqFooldThreshold parametrs to basic WebUI after roaming block.<br>
-9) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-10) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-11) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-12) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-13) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+10) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+11) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+12) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>

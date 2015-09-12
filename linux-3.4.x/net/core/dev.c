@@ -144,7 +144,7 @@
 
 #include "net-sysfs.h"
 
-#ifdef CONFIG_NET_PPPOE_PTHROUGH
+#ifdef CONFIG_NET_PPPOEIPV6_PTHROUGH
 #include "pthrough/pthrough.h"
 #endif
 
@@ -3401,7 +3401,7 @@ another_round:
 			goto out;
 	}
 
-#ifdef CONFIG_NET_PPPOE_PTHROUGH
+#ifdef CONFIG_NET_PPPOEIPV6_PTHROUGH
 	// if packet forwarded return 1
 	if (private_pthrough(skb)) {
 		ret = NET_RX_SUCCESS;
@@ -4599,18 +4599,18 @@ static int __net_init dev_proc_net_init(struct net *net)
 	if (wext_proc_init(net))
 		goto out_ptype;
 
-#ifdef CONFIG_NET_PPPOE_PTHROUGH
+#ifdef CONFIG_NET_PPPOEIPV6_PTHROUGH
 	if (pthrough_create_proc_entry(net))
 		goto out_pthrough;
-#endif /* CONFIG_NET_PPPOE_PTHROUGH */
+#endif /* CONFIG_NET_PPPOEIPV6_PTHROUGH */
 
 	rc = 0;
 out:
 	return rc;
-#ifdef CONFIG_NET_PPPOE_PTHROUGH
+#ifdef CONFIG_NET_PPPOEIPV6_PTHROUGH
 out_pthrough:
 	pthrough_remove_proc_entry(net);
-#endif /* CONFIG_NET_PPPOE_PTHROUGH */
+#endif /* CONFIG_NET_PPPOEIPV6_PTHROUGH */
 out_ptype:
 	proc_net_remove(net, "ptype");
 out_softnet:

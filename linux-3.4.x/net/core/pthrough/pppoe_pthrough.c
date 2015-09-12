@@ -46,8 +46,10 @@ int pppoe_pthrough(struct sk_buff *skb)
 	if (skb->protocol == htons(ETH_P_PPP_SES) || skb->protocol == htons(ETH_P_PPP_DISC)) {
 		dev_lan = pppoe_dev_lan;
 		dev_wan = pppoe_dev_wan;
+
 		if (!dev_lan || !dev_wan || !skb->dev)
 			return 0;
+
 		eth = (struct ethhdr *)skb_mac_header(skb);
 		if (skb->dev == dev_lan) {
 #ifdef PTHROUGH_DEBUG
@@ -61,7 +63,7 @@ int pppoe_pthrough(struct sk_buff *skb)
 #endif
 			if (!compare_ether_addr(dev_wan->dev_addr, eth->h_source))
 				return 0;
-			
+
 			for (i=0; i<pthrough_idx; i++) {
 				if (!compare_ether_addr(pthrough_table[i], eth->h_source))
 					break;
@@ -76,7 +78,7 @@ int pppoe_pthrough(struct sk_buff *skb)
 					printk("%s PPPoE table full!! (%d)\n", PTHROUGH_LOG, pthrough_idx);
 #endif
 			}
-			
+
 			passthrough_skb(skb, dev_wan);
 			return 1;
 		}
