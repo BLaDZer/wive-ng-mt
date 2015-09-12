@@ -37,6 +37,11 @@ start() {
 	    fi
 	fi
     fi
+    if [ -d /sys/bus/platform/drivers/mtk-sd ]; then
+	if [ -f /etc/scripts/automount.sh ] && [ -f /bin/blkid ]; then
+	    echo "mmcblk[0-9]p[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
+	fi
+    fi
 
     $LOG "Set mdev as kernel hotplug helper and enable device autoprobe."
     echo "/bin/mdev" > /proc/sys/kernel/hotplug
@@ -53,7 +58,7 @@ rescan() {
 	fi
 
 	# touch uevent for cold start usb and other hotplug devices allready connected to SOC at boot
-	( find /sys -type f -name 'uevent' | grep usb | while read dev_event; do
+	( find /sys -type f -name 'uevent' | grep -E "sd|usb" | while read dev_event; do
     	    echo "add" > $dev_event
 	done ) &
     fi
