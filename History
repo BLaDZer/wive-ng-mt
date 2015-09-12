@@ -1249,32 +1249,35 @@
 6) init.d: fix path to passthrouth control files.<br>
 7) init.d: hotplug support automount sd card if exist.<br>
 8) defaults: add fast roaming and radio resource managment parametrs.<br>
-9) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-10) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
-11) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-12) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-13) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-14) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-15) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-16) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
-17) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-18) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-20) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-21) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-22) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-23) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-24) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-25) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-26) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-27) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-28) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-29) kernel: net: add function to allocate sk_buff head without data area.<br>
-30) kernel: net: fix sk_buff head without data area.<br>
-31) kernel: net: sock_flag() cleanup.<br>
-32) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-33) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-34) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-35) kernel: net: implement ipv6 passthrouth logic.<br>
+9) goahead: fix fast roaming extensions enable/disable options.<br>
+10) goahead: add IDS parametrs to WebUI.<br>
+11) kernel: configs: enable IDS for all devices.<br>
+12) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+13) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
+14) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+15) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+16) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+17) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+18) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+19) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+20) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+21) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+22) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+23) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+24) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+25) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+26) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+27) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+28) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+29) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+30) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+31) kernel: net: add function to allocate sk_buff head without data area.<br>
+32) kernel: net: fix sk_buff head without data area.<br>
+33) kernel: net: sock_flag() cleanup.<br>
+34) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+35) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+36) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+37) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>

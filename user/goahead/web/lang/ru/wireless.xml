@@ -108,6 +108,14 @@
   <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
+  <message msgid="basic ids" msgstr="Обнаружение вторжений (IDS)" />
+  <message msgid="basic ids auth" msgstr="Пороговое значение аутентификаций" />
+  <message msgid="basic ids assoc" msgstr="Пороговое значение запросов на ассоциацию" />
+  <message msgid="basic ids reassoc" msgstr="Пороговое значение повторных запросов на ассоциацию" />
+  <message msgid="basic ids probe" msgstr="Пороговое значение запросов пробы" />
+  <message msgid="basic ids disassoc" msgstr="Пороговое значение запросов остановки ассоциации" />
+  <message msgid="basic ids deauth" msgstr="Пороговое значение деаутентификаций" />
+  <message msgid="basic ids eap" msgstr="Пороговое значение EAP запросов" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />

@@ -642,6 +642,7 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 // Fast roaming parametrs
 const parameter_fetch_t fast_roaming_flags[] =
 {
@@ -654,6 +655,22 @@ const parameter_fetch_t fast_roaming_flags[] =
 	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("0") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };
+#endif
+
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
+// IDS parametrs
+const parameter_fetch_t ids_flags[] =
+{
+	{ T("AuthFloodThreshold"), "AuthFloodThreshold", 0, T("32") },
+	{ T("AssocReqFloodThreshold"), "AssocReqFloodThreshold", 0, T("32") },
+	{ T("ReassocReqFloodThreshold"), "ReassocReqFloodThreshold", 0, T("32") },
+	{ T("ProbeReqFloodThreshold"), "ProbeReqFloodThreshold", 0, T("32") },
+	{ T("DisassocFloodThreshold"), "DisassocFloodThreshold", 0, T("32") },
+	{ T("DeauthFloodThreshold"), "DeauthFloodThreshold", 0, T("32") },
+	{ T("EapReqFloodThreshold"), "EapReqFloodThreshold", 0, T("32") },
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+#endif
 
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
@@ -661,6 +678,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *dot11h;
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+	char_t  *fastroaming;
+#endif
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
+	char_t *ids_enable;
+#endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
@@ -671,13 +694,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	// Get current mode & new mode
 	char *radio = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
-	if (radio == NULL)
-		radio = "0";
+	radio = (radio == NULL) ? "0" : radio;
 	int web_radio_on = CHK_IF_DIGIT(radio, 1);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char *radioac = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
-	if (radioac == NULL)
-		radioac = "0";
+	radioac = (radioac == NULL) ? "0" : radioac;
 	int web_radio_ac_on = CHK_IF_DIGIT(radioac, 1);
 #endif
 	// fetch from web input
@@ -712,6 +733,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
 	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
 	a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
+	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
+#endif
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
+	ids_enable = websGetVar(wp, T("ids_enable"), T("0"));
+	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
+#endif
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
@@ -958,10 +987,16 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 
 	// Fast roaming
-#if (!defined(CONFIG_RT_FIRST_IF_NONE) && ((CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_FIRST_CARD == 7612)))
-	setupParameters(wp, fast_roaming_flags, 0);
-#elif (!defined(CONFIG_RT_SECOND_IF_NONE) && ((CONFIG_RT_SECOND_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)))
-	setupParameters(wp, fast_roaming_flags, 0);
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+	nvram_bufset(RT2860_NVRAM, "FastRoaming", fastroaming);
+	if (CHK_IF_DIGIT(fastroaming, 1))
+		setupParameters(wp, fast_roaming_flags, 0);
+#endif
+
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
+	nvram_bufset(RT2860_NVRAM, "IdsEnable", ids_enable);
+	if (CHK_IF_DIGIT(ids_enable, 1))
+		setupParameters(wp, ids_flags, 0);
 #endif
 
 	nvram_commit(RT2860_NVRAM);
@@ -1058,9 +1093,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t *video_turbine;
 #endif
 #endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_RT2860V2_STA_IDS)
-	char_t *ids_enable;
-#endif
 #if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
 	char_t *ht_bss_coex, *ap2040_rescan, *ht_noise_thresh;
 #endif
@@ -1090,9 +1122,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
-#endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
-	ids_enable = websGetVar(wp, T("ids_enable"), T("0"));
 #endif
 	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
 	keepalive = websGetVar(wp, T("keepalive"), T("0"));
@@ -1164,9 +1193,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
-#endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
-	nvram_bufset(RT2860_NVRAM, "IdsEnable", ids_enable);
 #endif
 	nvram_bufset(RT2860_NVRAM, "CountryCode", countrycode);
 	if (!strncmp(countrycode, "US", 3)) {
@@ -1892,9 +1918,7 @@ static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 static int getRoamingSupport(int eid, webs_t wp, int argc, char_t **argv) {
-#if (!defined(CONFIG_RT_FIRST_IF_NONE) && ((CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_FIRST_CARD == 7612)))
-	return websWrite(wp, T("1"));
-#elif (!defined(CONFIG_RT_SECOND_IF_NONE) && ((CONFIG_RT_SECOND_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)))
+#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

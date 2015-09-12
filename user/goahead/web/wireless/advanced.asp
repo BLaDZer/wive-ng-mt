@@ -25,8 +25,6 @@ var m2uEnabled = '<% getCfgZero(1, "M2UEnabled"); %>';
 var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
 var video_turbine_built='<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
-var ids_enable_built='<% getIdsEnableBuilt(); %>';
-var ids_enable = '<% getCfgZero(1, "IdsEnable"); %>';
 var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
 var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
@@ -157,11 +155,6 @@ function initValue()
 		else
 			displayElement('video_turbine_row', false);
 	}
-
-	if (ids_enable_built == '1')
-		form.ids_enable[(ids_enable == '1') ? 0 : 1].checked = true;
-	else
-		displayElement('ids_enable_row', false);
 
 	form.WmmCapable[0].checked = (wmmCapable == '1');
 	form.WmmCapable[1].checked = (wmmCapable != '1');
@@ -397,13 +390,6 @@ function CheckValue(form)
               <font id="advPktAggrEnable">Enable</font>&nbsp;
               <input type="radio" name="pkt_aggregate" value="0" checked>
               <font id="advPktAggrDisable">Disable</font></td>
-          </tr>
-          <tr id="ids_enable_row">
-            <td class="head">Intrusion Detection (IDS)</td>
-            <td><input type="radio" name="ids_enable" value="1">
-              Enable&nbsp;
-              <input type="radio" name="ids_enable" value="0">
-              Disable </td>
           </tr>
 <!--
           <tr>

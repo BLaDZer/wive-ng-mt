@@ -67,6 +67,7 @@ var green_on = '<% getGreenAPBuilt(); %>' == '1';
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
 var fast_roaming = '<% getRoamingSupport(); %>' == '1';
+var ids_built='<% getIdsEnableBuilt(); %>' == '1';
 
 var ChannelList_24G =
 [
@@ -98,6 +99,16 @@ function addOption(list, text, value)
 	{
 		list.add(option); // IE only
 	}
+}
+
+function fastRoamingChange(form) {
+	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
+	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], (form.FastRoaming.value == "1") && fast_roaming);
+}
+
+function idsChange(form) {
+	displayElement("div_ids", ids_built);
+	displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], (form.IdsEnable.value == "1") && ids_built);
 }
 
 function insertExtChannelOption(form)
@@ -310,6 +321,7 @@ function initTranslation()
 	_TR("basicAction", "basic action");
 
 	_TR("basicFastRoaming", "basic roaming");
+	_TR("fast_roaming", "basic roaming");
 	_TR("basicApProbeRspTimes", "basic roaming probe times");
 	_TR("basicAuthRspFail", "basic roaming auth fail");
 	_TR("basicAuthRspRssi", "basic roaming auth rssi");
@@ -318,6 +330,16 @@ function initTranslation()
 	_TR("basicKickStaRssiLow", "basic roaming rssi low");
 	_TR("basicProbeRspRssi", "basic roaming probe rssi");
 	_TR("basic80211h", "basic dot11h");
+
+	_TR("basicIDS", "basic ids");
+	_TR("ids", "basic ids");
+	_TR("basicAuthFloodThreshold", "basic ids auth");
+	_TR("basicAssocReqFloodThreshold", "basic ids assoc");
+	_TR("basicReassocReqFloodThreshold", "basic ids reassoc");
+	_TR("basicProbeReqFloodThreshold", "basic ids probe");
+	_TR("basicDisassocFloodThreshold", "basic ids disassoc");
+	_TR("basicDeauthFloodThreshold", "basic ids deauth");
+	_TR("basicEapReqFloodThreshold", "basic ids eap");
 
 	_TRV("basicApply", "button apply");
 	_TRV("basicCancel", "button cancel");
@@ -809,7 +831,10 @@ function initValue()
 	hideElement("div_auto_a");
 	hideElement("div_auto_g");
 	AutoChannelSelect(form);
-	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
+	form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "FastRoaming"); %>' ==  '1') ? 1 : 0;
+	fastRoamingChange(form);
+	form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "IdsEnable"); %>' ==  '1') ? 1 : 0;
+	idsChange(form);
 }
 
 function show_abg_rate(form)
@@ -985,7 +1010,7 @@ function wirelessModeChange(form)
 		    form.ac_ldpc.disabled = false;
 		}
 	}
-	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
+	fastRoamingChange(form);
 	show_abg_rate(form);
 }
 
@@ -1350,32 +1375,83 @@ function CheckValue(form)
         		<td class="title" colspan="2" id="basicFastRoaming">Fast Roaming</td>
         	</tr>
         	<tr>
+        		<td class="head" id="fast_roaming">Fast-roaming</td>
+        		<td>
+        			<select name="FastRoaming" size="1" class="half" onChange="fastRoamingChange(this.form);">
+        				<option value="0" id="disable">Disable</option>
+        				<option value="1" id="enable">Enable</option>
+        			</select>
+        		</td>
+        	</tr>
+        	<tr id="row_ApProbeRspTimes" style="display:none;">
         		<td class="head" id="basicApProbeRspTimes">Limit probe reqest per client</td>
         		<td><input type="text" name="ApProbeRspTimes" class="half" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font color="#808080"> 0 - 10 times, default 3</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_AuthRspFail" style="display:none;">
         		<td class="head" id="basicAuthRspFail">Reject auth req due to weak signal</td>
         		<td><input type="text" name="AuthRspFail" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspFail"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_AuthRspRssi" style="display:none;">
         		<td class="head" id="basicAuthRspRssi">Ignore auth req due to weak signal</td>
         		<td><input type="text" name="AuthRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_AssocReqRssiThres" style="display:none;">
         		<td class="head" id="basicAssocReqRssiThres">Reject assoc req due to weak signal</td>
         		<td><input type="text" name="AssocReqRssiThres" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqRssiThres"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_AssocRspIgnor" style="display:none;">
         		<td class="head" id="basicAssocRspIgnor">Ignore assoc req due to weak signal</td>
         		<td><input type="text" name="AssocRspIgnor" class="half" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_KickStaRssiLow" style="display:none;">
         		<td class="head" id="basicKickStaRssiLow">Auto disonnect sta if rssi low</td>
         		<td><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr>
+        	<tr id="row_ProbeRspRssi" style="display:none;">
         		<td class="head" id="basicProbeRspRssi">Auto disonnect sta if rssi low at probe requests</td>
         		<td><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        </table>
+        <table id="div_ids" name="div_ids" class="form" style="display:none;">
+        	<tr>
+        		<td class="title" colspan="2" id="basicIDS">Intrusion Detection (IDS)</td>
+        	</tr>
+        	<tr>
+        		<td class="head" id="ids">Intrusion Detection (IDS)</td>
+        		<td>
+        			<select name="IdsEnable" size="1" class="half" onChange="idsChange(this.form);">
+        				<option value="0" id="disable">Disable</option>
+        				<option value="1" id="enable">Enable</option>
+        			</select>
+        		</td>
+        	</tr>
+        	<tr id="row_AuthFloodThreshold" style="display:none;">
+        		<td class="head" id="basicAuthFloodThreshold">Authentication</td>
+        		<td><input type="text" name="AuthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_AssocReqFloodThreshold" style="display:none;">
+        		<td class="head" id="basicAssocReqFloodThreshold">Association request</td>
+        		<td><input type="text" name="AssocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_ReassocReqFloodThreshold" style="display:none;">
+        		<td class="head" id="basicReassocReqFloodThreshold">Reassociation request</td>
+        		<td><input type="text" name="ReassocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_ProbeReqFloodThreshold" style="display:none;">
+        		<td class="head" id="basicProbeReqFloodThreshold">Probe request</td>
+        		<td><input type="text" name="ProbeReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_DisassocFloodThreshold" style="display:none;">
+        		<td class="head" id="basicDisassocFloodThreshold">Disassociation</td>
+        		<td><input type="text" name="DisassocFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_DeauthFloodThreshold" style="display:none;">
+        		<td class="head" id="basicDeauthFloodThreshold">Deauthentication</td>
+        		<td><input type="text" name="DeauthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        	</tr>
+        	<tr id="row_EapReqFloodThreshold" style="display:none;">
+        		<td class="head" id="basicEapReqFloodThreshold">EAP request</td>
+        		<td><input type="text" name="EapReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
         	</tr>
         </table>
         <br>
