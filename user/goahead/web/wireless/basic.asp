@@ -1427,31 +1427,31 @@ function CheckValue(form)
         	</tr>
         	<tr id="row_AuthFloodThreshold" style="display:none;">
         		<td class="head" id="basicAuthFloodThreshold">Authentication</td>
-        		<td><input type="text" name="AuthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="AuthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_AssocReqFloodThreshold" style="display:none;">
         		<td class="head" id="basicAssocReqFloodThreshold">Association request</td>
-        		<td><input type="text" name="AssocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="AssocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_ReassocReqFloodThreshold" style="display:none;">
         		<td class="head" id="basicReassocReqFloodThreshold">Reassociation request</td>
-        		<td><input type="text" name="ReassocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="ReassocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_ProbeReqFloodThreshold" style="display:none;">
         		<td class="head" id="basicProbeReqFloodThreshold">Probe request</td>
-        		<td><input type="text" name="ProbeReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="ProbeReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_DisassocFloodThreshold" style="display:none;">
         		<td class="head" id="basicDisassocFloodThreshold">Disassociation</td>
-        		<td><input type="text" name="DisassocFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="DisassocFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_DeauthFloodThreshold" style="display:none;">
         		<td class="head" id="basicDeauthFloodThreshold">Deauthentication</td>
-        		<td><input type="text" name="DeauthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="DeauthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_EapReqFloodThreshold" style="display:none;">
         		<td class="head" id="basicEapReqFloodThreshold">EAP request</td>
-        		<td><input type="text" name="EapReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 32</font></td>
+        		<td><input type="text" name="EapReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         </table>
         <br>
