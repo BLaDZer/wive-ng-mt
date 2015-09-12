@@ -33,12 +33,6 @@ config BRIDGE
 
 	  If unsure, say N.
 
-config BRIDGE_2WAYS_FDB
-	bool "2-Ways Forwarding DataBase"
-	depends on BRIDGE
-	---help---
-	  prevent ARP flooding attack (memory protection code)
-
 config BRIDGE_IGMP_SNOOPING
 	bool "IGMP/MLD snooping"
 	depends on BRIDGE
@@ -53,9 +47,22 @@ config BRIDGE_IGMP_SNOOPING
 
 	  If unsure, say Y.
 
+config BRIDGE_2WAYS_FDB
+	bool "2-Ways Forwarding DataBase"
+	depends on BRIDGE
+	---help---
+	  prevent ARP flooding attack (memory protection code)
+
+	  If unsure, say Y.
+
 config BRIDGE_EAP
 	bool "Bridge 802.1x/EAP workaround"
 	depends on BRIDGE
 	default y
 	---help---
-	  Bridge do not forward 802.1x/EAP frames and always accept eap to local.
+	  When bridging, do not forward EAP frames to other ports, only deliver
+	  them locally.
+	  Fixes WPA authentication issues with multiples APs that are connected to
+	  each other via bridges.
+
+	  If unsure, say Y.
