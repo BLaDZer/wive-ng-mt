@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/ralinkiappd ]; then
+    exit 0
+fi
+
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t apd"
+
+start() {
+    get_param
+    if [ "$FastRoaming" = "1" ]; then
+	$LOG "Starting iappd roaming daemon"
+	ralinkiappd -e $lan_if -w $first_wlan_root_if -k 12345678 -d 3
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 FtSupport`
+}
+
+stop() {
+    pid=`pidof ralinkiappd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping  apd radius daemon"
+	killall -q ralinkiappd
+	killall -q -SIGKILL ralinkiappd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

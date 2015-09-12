@@ -54,6 +54,10 @@ servicelimit() {
 	if [ "$dhcpEnabled" != "0" ]; then
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi
+	if [ "$FastRoaming" != "0" ]; then
+	    iptables -A servicelimit -i $lan_if -p udp --dport 3517 -j ACCEPT
+	    iptables -A servicelimit -i $lan_if -p tcp --dport 3517 -j ACCEPT
+	fi
 	if [ "$dnsPEnabled" = "1" ]; then
 	    $LOG "Dnsproxy allow to connect"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 53 -j ACCEPT
@@ -542,7 +546,7 @@ startv6() {
 get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled use_snat DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
-	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort \
+	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort FastRoaming \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
 	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward`
 
