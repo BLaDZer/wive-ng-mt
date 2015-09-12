@@ -79,7 +79,7 @@ start() {
 	# tune param not automatic readed from *.dat file
 	$LOG "Tune wifi modules after load."
 	retune_wifi
-	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "1" -o "$OperationMode" = "3" ]; then
+	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
 	    roaming_wifi
 	fi
     fi
@@ -127,8 +127,7 @@ gen_wifi_config() {
 }
 
 retune_wifi() {
-    get_param
-    # preconfigure wifi
+    # advanced postconfigure wifi parametrs
     (sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_root_if) &
     if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
 	(sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_apcli) &
@@ -143,7 +142,7 @@ retune_wifi() {
 }
 
 roaming_wifi() {
-    # preconfigure wifi
+    # roaming postconfigure wifi parametrs
     if [ "$first_wlan_root_if" != "" ] && [ "$CONFIG_RT_FIRST_IF_MT7602E" != "" -o "$CONFIG_RT_FIRST_IF_MT7620" != "" ]; then
 	(sleep 5 && /etc/scripts/wifi_roaming.sh $first_wlan_root_if) &
     fi
