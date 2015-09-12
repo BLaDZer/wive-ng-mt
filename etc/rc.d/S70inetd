@@ -13,7 +13,7 @@ start() {
 	echo > /etc/inetd.conf
 	need_start=0
 	if [ -f /bin/dropbear ] && [ "$RemoteSSH" != "" ] && [ "$RemoteSSH" != "0" ]; then
-	    echo "$RemoteSSHPort stream tcp nowait $Login /bin/dropbear /bin/dropbear -i -K 60 -I 360 -j" >> /etc/inetd.conf
+	    echo "$RemoteSSHPort stream tcp nowait $Login /bin/dropbear /bin/dropbear -i -R -K 60 -I 360 -j" >> /etc/inetd.conf
 	    need_start=1
 	fi
 	if [ -f /bin/ftpd ] && [ "$RemoteFTP" != "" ] && [ "$RemoteFTP" != "0" ]; then

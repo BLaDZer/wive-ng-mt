@@ -37,7 +37,6 @@ void import(char *filename, int offset, int len)
 	system("nvram_clear 2860");
 	snprintf(cmd, 4096, "nvram_renew 2860 %s", pname);
 	system(cmd);
-	system("fs save > /dev/console 2>&1");
 }
 
 int main (int argc, char *argv[])

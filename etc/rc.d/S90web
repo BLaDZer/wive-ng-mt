@@ -15,11 +15,6 @@ start() {
 	    $LOG "Copy user web pages to tmpfs."
     	    cp -rpf /etc/web/* /tmp/web
 	fi
-	#wait and backup nvram setting and save rwfs
-	if [ -f /tmp/needrwfssave ]; then
-	    sh `(sleep 40 && fs save > /dev/console)` &
-	    rm -f /tmp/needrwfssave
-	fi
 	#blink only sys led limit blink time 10 sec after goahead start
 	if [ -f /bin/gpio ]; then
 	    # include kernel config
@@ -31,6 +26,11 @@ start() {
 	fi
 	$LOG "Start WEB Managment Server."
 	goahead &
+	if [ -f /tmp/needrwfssave ]; then
+	    $LOG "Wait 20sec for rwfs changes save"
+	    sh `(sleep 20 && fs save > /dev/console)` &
+	    rm -f /tmp/needrwfssave
+	fi
     else
 	echo "GOAHEAD NOT FOUND!!! FIX THIS AND REBUILD FIRMWARE."
     fi

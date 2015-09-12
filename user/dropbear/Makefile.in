@@ -12,7 +12,7 @@
 MULTI=1
 
 ifndef PROGRAMS
-	PROGRAMS=dropbear dropbearkey scp
+	PROGRAMS=dropbear scp
 endif
 
 STATIC_LTC=libtomcrypt/libtomcrypt.a
@@ -233,10 +233,9 @@ romfs: install
 ifeq ($(MULTI), 1)
 	$(ROMFSINST) -S filesystem/bin/dropbearmulti  /bin/dropbearmulti
 	$(ROMFSINST) -s /bin/dropbearmulti /bin/dropbear
-	$(ROMFSINST) -s /bin/dropbearmulti /bin/dropbearkey
 	$(ROMFSINST) -s /bin/dropbearmulti /bin/scp
 else
 	$(ROMFSINST) -S filesystem/sbin/dropbear  /sbin/dropbear
-	$(ROMFSINST) -S filesystem/bin/dropbearkey  /bin/dropbearkey
 	$(ROMFSINST) -S filesystem/bin/scp  /bin/scp
 endif
+	mkdir -p $(ROMFSDIR)/etc/dropbear

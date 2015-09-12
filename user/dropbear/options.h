@@ -96,7 +96,7 @@ much traffic. */
  * Including multiple keysize variants the same cipher 
  * (eg AES256 as well as AES128) will result in a minimal size increase.*/
 #define DROPBEAR_AES128
-#define DROPBEAR_3DES
+/* #define DROPBEAR_3DES */
 #define DROPBEAR_AES256
 /*#define DROPBEAR_BLOWFISH*/
 /*#define DROPBEAR_TWOFISH256*/
@@ -162,7 +162,7 @@ If you test it please contact the Dropbear author */
    with badly seeded /dev/urandom when systems first boot.
    This also requires a runtime flag "-R". This adds ~4kB to binary size (or hardly 
    anything if dropbearkey is linked in a "dropbearmulti" binary) */
-#undef DROPBEAR_DELAY_HOSTKEY
+#define DROPBEAR_DELAY_HOSTKEY
 
 /* Enable Curve25519 for key exchange. This is another elliptic
  * curve method with good security properties. Increases binary size
