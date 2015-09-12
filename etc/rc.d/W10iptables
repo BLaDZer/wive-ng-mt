@@ -54,7 +54,7 @@ servicelimit() {
 	if [ "$dhcpEnabled" != "0" ]; then
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi
-	if [ "$FastRoaming" != "0" ]; then
+	if [ "$FastRoaming" = "1" ]; then
 	    iptables -A servicelimit -i $lan_if -p udp --dport 3517 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p tcp --dport 3517 -j ACCEPT
 	fi
