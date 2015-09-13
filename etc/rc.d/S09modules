@@ -37,7 +37,7 @@ start() {
     	    modprobe -q rt2860v2_sta "$mac"
 	else
 	    $LOG "Load wifi AP module."
-	    if [ "$CONFIG_RALINK_MT7621" != "" ] && [ "$CONFIG_MT76X2_AP" != "" ]; then
+	    if [ "$CONFIG_RALINK_MT7621" != "" -o "$CONFIG_RT_FIRST_IF_MT7620" != "" ] && [ "$CONFIG_MT76X2_AP" != "" ]; then
 		# single driver - dual module
     		modprobe -q mt76x2_ap
 	    else
