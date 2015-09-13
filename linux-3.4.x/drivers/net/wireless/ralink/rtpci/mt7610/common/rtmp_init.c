@@ -3067,7 +3067,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef DYNAMIC_VGA_SUPPORT
 	pAd->CommonCfg.MO_Cfg.bDyncVgaEnable = TRUE;
-	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 800;
+	pAd->CommonCfg.MO_Cfg.nFalseCCATh = 600;
 	pAd->CommonCfg.MO_Cfg.nLowFalseCCATh = 10;
 	pAd->CommonCfg.MO_Cfg.bPreviousTuneVgaUP = FALSE;
 	pAd->CommonCfg.MO_Cfg.TuneGainReverseTimes = 0;
