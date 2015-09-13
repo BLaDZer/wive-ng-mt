@@ -39,6 +39,7 @@ start() {
     fi
     if [ -d /sys/bus/platform/drivers/mtk-sd ]; then
 	if [ -f /etc/scripts/automount.sh ] && [ -f /bin/blkid ]; then
+	    echo "mmcblk[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	    echo "mmcblk[0-9]p[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	fi
     fi
