@@ -156,7 +156,6 @@ if [ "$FMODE" = "YES" ]; then
     echo "BUILD FABRIC MODE"
 
     echo "Copy ATE code to tree"
-
     mkdir -p $ROOTDIR/user/rt2880_app/ated
     cp -rf /mnt/svalka/linux/ate/ated/* $ROOTDIR/user/rt2880_app/ated
     mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
@@ -166,13 +165,15 @@ if [ "$FMODE" = "YES" ]; then
     mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
     cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
 
-
+    echo "Reconfigure kernel"
     sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
     sed 's/# CONFIG_MT7610_AP_ATE is not set/CONFIG_MT7610_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
     sed 's/# CONFIG_MT76X2_AP_ATE is not set/CONFIG_MT76X2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+
+    echo "Reconfigure userspace"
     sed 's/# CONFIG_TELNETD is not set/CONFIG_TELNETD=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
     mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
     sed 's/# CONFIG_FEATURE_TELNETD_INETD_WAIT is not set/CONFIG_FEATURE_TELNETD_INETD_WAIT=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp

@@ -168,7 +168,7 @@ config  MT7610_AP_QA
 	bool "Provide QA tool support"
 	depends on MT7610_AP
 	depends on MT7610_AP_ATE
-	default n
+	default y
 
 config  MT7610_AP_INTERFERENCE_REDUCE
 	bool "Enable minimize 802.11 interference effects"

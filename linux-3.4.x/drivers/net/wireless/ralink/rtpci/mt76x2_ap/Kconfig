@@ -222,7 +222,7 @@ config  MT76X2_AP_QA
 	bool "Provide QA tool support"
 	depends on MT76X2_AP
 	depends on MT76X2_AP_ATE
-	default n
+	default y
 
 config  MT76X2_AP_INTERFERENCE_REDUCE
 	bool "Enable minimize 802.11 interference effects"
