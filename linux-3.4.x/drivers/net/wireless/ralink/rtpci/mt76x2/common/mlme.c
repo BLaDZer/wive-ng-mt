@@ -1090,7 +1090,7 @@ VOID MlmePeriodicExec(
 #ifdef MICROWAVE_OVEN_SUPPORT
 	if (pAd->CommonCfg.MO_Cfg.bEnable)
 	{
-		UINT8 stage = pAd->Mlme.PeriodicRound%10;
+		UINT8 stage = pAd->CommonCfg.MO_Cfg.nPeriod_Cnt%10;
 
 		if (stage == MO_MEAS_PERIOD)
 		{
