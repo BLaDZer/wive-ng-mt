@@ -833,7 +833,7 @@ function initValue()
 	AutoChannelSelect(form);
 	form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "FastRoaming"); %>' ==  '1') ? 1 : 0;
 	fastRoamingChange(form);
-	form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "IdsEnable"); %>' ==  '1') ? 1 : 0;
+	form.IdsEnable.options.selectedIndex = ('<% getCfgGeneral(1, "IdsEnable"); %>' ==  '1') ? 1 : 0;
 	idsChange(form);
 }
 
@@ -1230,35 +1230,35 @@ function CheckValue(form)
             <td class="title" colspan="2" id="basicHTPhyMode">HT Physical Mode</td>
           </tr>
           <tr>
-            <td class="head" id="basicHTChannelBW">Channel BandWidth</td>
-            <td><select name="n_bandwidth" class="half" onClick="GExtChannelDisplay(this.form);">
+            <td class="head" id="basicHTChannelBW" width="70%">Channel BandWidth</td>
+            <td width="30%"><select name="n_bandwidth" class="half" onClick="GExtChannelDisplay(this.form);">
                 <option value="0">20MHz</option>
                 <option value="1">20/40MHz</option>
               </select></td>
           </tr>
           <tr name="extension_channel" id="extension_channel">
-            <td class="head" id="basicHTExtChannel">Extension Channel</td>
-            <td><select id="n_extcha" name="n_extcha" class="mid">
+            <td class="head" id="basicHTExtChannel" width="70%">Extension Channel</td>
+            <td width="30%"><select id="n_extcha" name="n_extcha" class="mid">
                 <option value="1" selected>2412MHz (Channel 1)</option>
               </select></td>
           </tr>
           <tr id="div_ht_tx_stream">
-            <td class="head" id="basicHTTxStream">HT TxStream</td>
-            <td><select name="tx_stream" class="half">
+            <td class="head" id="basicHTTxStream" width="70%">HT TxStream</td>
+            <td width="30%"><select name="tx_stream" class="half">
                 <option value="1">1</option>
                 <option value="2" id="div_HtTx2Stream">2</option>
               </select></td>
           </tr>
           <tr id="div_ht_rx_stream">
-            <td class="head" id="basicHTRxStream">HT RxStream</td>
-            <td><select name="rx_stream" class="half">
+            <td class="head" id="basicHTRxStream" width="70%">HT RxStream</td>
+            <td width="30%"><select name="rx_stream" class="half">
                 <option value="1">1</option>
                 <option value="2" id="div_HtRx2Stream">2</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head">MCS</td>
-            <td><select name="n_mcs" class="half">
+            <td class="head" width="70%">MCS</td>
+            <td width="30%"><select name="n_mcs" class="half">
                 <option value = "0">0</option>
                 <option value = "1">1</option>
                 <option value = "2">2</option>
@@ -1280,50 +1280,50 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTGI">Guard Interval</td>
-            <td><select name="n_gi" class="half">
+            <td class="head" id="basicHTGI" width="70%">Guard Interval</td>
+            <td width="30%"><select name="n_gi" class="half">
                 <option value="0" id="basicHTLongGI">Long</option>
                 <option value="1" id="basicHTAutoGI">Auto</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHSTBC">Space-Time Block Coding</td>
-            <td><select name="n_stbc" class="half">
+            <td class="head" id="basicHSTBC" width="70%">Space-Time Block Coding</td>
+            <td width="30%"><select name="n_stbc" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTAMSDU">Aggregation MSDU</td>
-            <td><select name="n_amsdu" class="half">
+            <td class="head" id="basicHTAMSDU" width="70%">Aggregation MSDU</td>
+            <td width="30%"><select name="n_amsdu" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTAddBA">Auto Block ACK</td>
-            <td><select name="n_autoba" class="half">
+            <td class="head" id="basicHTAddBA" width="70%">Auto Block ACK</td>
+            <td width="30%"><select name="n_autoba" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTDelBA">Decline Block ACK Request</td>
-            <td><select name="n_badecline" class="half">
+            <td class="head" id="basicHTDelBA" width="70%">Decline Block ACK Request</td>
+            <td width="30%"><select name="n_badecline" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="htOpModeRow" style="display: none;">
-            <td class="head" id="basicHTOPMode">Green Filed Mode</td>
-            <td><select name="n_mode" class="half">
+            <td class="head" id="basicHTOPMode" width="70%">Green Filed Mode</td>
+            <td width="30%"><select name="n_mode" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="basicHTRDG">Reverse Direction Grant</td>
-            <td><select name="n_rdg" class="half">
+            <td class="head" id="basicHTRDG" width="70%">Reverse Direction Grant</td>
+            <td width="30%"><select name="n_rdg" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
@@ -1334,37 +1334,37 @@ function CheckValue(form)
             <td class="title" colspan="2" id="basicVHTPhyMode">VHT Physical Mode</td>
           </tr>
           <tr id="basicVHTBW" >
-            <td class="head" id="basicVHTBandWidth">Channel BandWidth</td>
-            <td><select name="ac_bw" size="1" class="half">
+            <td class="head" id="basicVHTBandWidth" width="70%">Channel BandWidth</td>
+            <td width="30%"><select name="ac_bw" size="1" class="half">
                 <option value="0" selected id="1">20/40MHz</option>
                 <option value="1" id="2">20/40/80MHz</option>
 		</select></td>
           </tr>
           <tr id="basicVHTBWSIGNAL">
-            <td class="head" id="basicVHTSignalMode">BandWidth Signaling Mode</td>
-            <td><select name="ac_bwsig" size="1" class="half">
+            <td class="head" id="basicVHTSignalMode" width="70%">BandWidth Signaling Mode</td>
+            <td width="30%"><select name="ac_bwsig" size="1" class="half">
                 <option value="0" selected id="disable">Disable</option>
                 <option value="1" id="2">Static</option>
                 <option value="2" id="3">Dynamic</option>
 		</select></td>
           </tr>
           <tr>
-            <td class="head" id="basicVHTGI">Guard Interval</td>
-            <td><select name="ac_gi" class="half">
+            <td class="head" id="basicVHTGI" width="70%">Guard Interval</td>
+            <td width="30%"><select name="ac_gi" class="half">
                 <option value="0" id="basicVHTLongGI">Long</option>
                 <option value="1" id="basicVHTAutoGI">Auto</option>
               </select></td>
           </tr>
           <tr id="div_11a_stbc" name="div_11a_stbc">
-            <td class="head" id="basicVHTSTBC">Space-Time Block Coding</td>
-            <td><select name="ac_stbc" class="half">
+            <td class="head" id="basicVHTSTBC" width="70%">Space-Time Block Coding</td>
+            <td width="30%"><select name="ac_stbc" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="div_11a_ldpc" name="div_11a_ldpc">
-            <td class="head" id="basicLDPC">Low Disenty parity check</td>
-            <td><select name="ac_ldpc" class="half">
+            <td class="head" id="basicLDPC" width="70%">Low Disenty parity check</td>
+            <td width="30%"><select name="ac_ldpc" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
@@ -1375,8 +1375,8 @@ function CheckValue(form)
         		<td class="title" colspan="2" id="basicFastRoaming">Fast Roaming</td>
         	</tr>
         	<tr>
-        		<td class="head" id="fast_roaming">Fast-roaming</td>
-        		<td>
+        		<td class="head" id="fast_roaming" width="70%">Fast-roaming</td>
+        		<td width="30%">
         			<select name="FastRoaming" size="1" class="half" onChange="fastRoamingChange(this.form);">
         				<option value="0" id="disable">Disable</option>
         				<option value="1" id="enable">Enable</option>
@@ -1384,32 +1384,32 @@ function CheckValue(form)
         		</td>
         	</tr>
         	<tr id="row_ApProbeRspTimes" style="display:none;">
-        		<td class="head" id="basicApProbeRspTimes">Limit probe reqest per client</td>
-        		<td><input type="text" name="ApProbeRspTimes" class="half" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font color="#808080"> 0 - 10 times, default 3</font></td>
+        		<td class="head" id="basicApProbeRspTimes" width="70%">Limit probe reqest per client</td>
+        		<td width="30%"><input type="text" name="ApProbeRspTimes" class="half" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font color="#808080"> 0 - 10 times, default 3</font></td>
         	</tr>
         	<tr id="row_AuthRspFail" style="display:none;">
-        		<td class="head" id="basicAuthRspFail">Reject auth req due to weak signal</td>
-        		<td><input type="text" name="AuthRspFail" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspFail"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicAuthRspFail" width="70%">Reject auth req due to weak signal</td>
+        		<td width="30%"><input type="text" name="AuthRspFail" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspFail"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_AuthRspRssi" style="display:none;">
-        		<td class="head" id="basicAuthRspRssi">Ignore auth req due to weak signal</td>
-        		<td><input type="text" name="AuthRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicAuthRspRssi" width="70%">Ignore auth req due to weak signal</td>
+        		<td width="30%"><input type="text" name="AuthRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "AuthRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_AssocReqRssiThres" style="display:none;">
-        		<td class="head" id="basicAssocReqRssiThres">Reject assoc req due to weak signal</td>
-        		<td><input type="text" name="AssocReqRssiThres" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqRssiThres"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicAssocReqRssiThres" width="70%">Reject assoc req due to weak signal</td>
+        		<td width="30%"><input type="text" name="AssocReqRssiThres" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqRssiThres"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_AssocRspIgnor" style="display:none;">
-        		<td class="head" id="basicAssocRspIgnor">Ignore assoc req due to weak signal</td>
-        		<td><input type="text" name="AssocRspIgnor" class="half" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicAssocRspIgnor" width="70%">Ignore assoc req due to weak signal</td>
+        		<td width="30%"><input type="text" name="AssocRspIgnor" class="half" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_KickStaRssiLow" style="display:none;">
-        		<td class="head" id="basicKickStaRssiLow">Auto disonnect sta if rssi low</td>
-        		<td><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicKickStaRssiLow" width="70%">Auto disonnect sta if rssi low</td>
+        		<td width="30%"><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_ProbeRspRssi" style="display:none;">
-        		<td class="head" id="basicProbeRspRssi">Auto disonnect sta if rssi low at probe requests</td>
-        		<td><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        		<td class="head" id="basicProbeRspRssi" width="70%">Auto disonnect sta if rssi low at probe requests</td>
+        		<td width="30%"><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">
@@ -1417,8 +1417,8 @@ function CheckValue(form)
         		<td class="title" colspan="2" id="basicIDS">Intrusion Detection (IDS)</td>
         	</tr>
         	<tr>
-        		<td class="head" id="ids">Intrusion Detection (IDS)</td>
-        		<td>
+        		<td class="head" id="ids" width="70%">Intrusion Detection (IDS)</td>
+        		<td width="30%">
         			<select name="IdsEnable" size="1" class="half" onChange="idsChange(this.form);">
         				<option value="0" id="disable">Disable</option>
         				<option value="1" id="enable">Enable</option>
@@ -1426,32 +1426,32 @@ function CheckValue(form)
         		</td>
         	</tr>
         	<tr id="row_AuthFloodThreshold" style="display:none;">
-        		<td class="head" id="basicAuthFloodThreshold">Authentication</td>
-        		<td><input type="text" name="AuthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicAuthFloodThreshold" width="70%">Authentication</td>
+        		<td width="30%"><input type="text" name="AuthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_AssocReqFloodThreshold" style="display:none;">
-        		<td class="head" id="basicAssocReqFloodThreshold">Association request</td>
-        		<td><input type="text" name="AssocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicAssocReqFloodThreshold" width="70%">Association request</td>
+        		<td width="30%"><input type="text" name="AssocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_ReassocReqFloodThreshold" style="display:none;">
-        		<td class="head" id="basicReassocReqFloodThreshold">Reassociation request</td>
-        		<td><input type="text" name="ReassocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicReassocReqFloodThreshold" width="70%">Reassociation request</td>
+        		<td width="30%"><input type="text" name="ReassocReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_ProbeReqFloodThreshold" style="display:none;">
-        		<td class="head" id="basicProbeReqFloodThreshold">Probe request</td>
-        		<td><input type="text" name="ProbeReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicProbeReqFloodThreshold" width="70%">Probe request</td>
+        		<td width="30%"><input type="text" name="ProbeReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_DisassocFloodThreshold" style="display:none;">
-        		<td class="head" id="basicDisassocFloodThreshold">Disassociation</td>
-        		<td><input type="text" name="DisassocFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicDisassocFloodThreshold" width="70%">Disassociation</td>
+        		<td width="30%"><input type="text" name="DisassocFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_DeauthFloodThreshold" style="display:none;">
-        		<td class="head" id="basicDeauthFloodThreshold">Deauthentication</td>
-        		<td><input type="text" name="DeauthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicDeauthFloodThreshold" width="70%">Deauthentication</td>
+        		<td width="30%"><input type="text" name="DeauthFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         	<tr id="row_EapReqFloodThreshold" style="display:none;">
-        		<td class="head" id="basicEapReqFloodThreshold">EAP request</td>
-        		<td><input type="text" name="EapReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+        		<td class="head" id="basicEapReqFloodThreshold" width="70%">EAP request</td>
+        		<td width="30%"><input type="text" name="EapReqFloodThreshold" class="half" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
         	</tr>
         </table>
         <br>

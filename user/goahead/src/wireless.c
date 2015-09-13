@@ -661,13 +661,13 @@ const parameter_fetch_t fast_roaming_flags[] =
 // IDS parametrs
 const parameter_fetch_t ids_flags[] =
 {
-	{ T("AuthFloodThreshold"), "AuthFloodThreshold", 0, T("32") },
-	{ T("AssocReqFloodThreshold"), "AssocReqFloodThreshold", 0, T("32") },
-	{ T("ReassocReqFloodThreshold"), "ReassocReqFloodThreshold", 0, T("32") },
-	{ T("ProbeReqFloodThreshold"), "ProbeReqFloodThreshold", 0, T("32") },
-	{ T("DisassocFloodThreshold"), "DisassocFloodThreshold", 0, T("32") },
-	{ T("DeauthFloodThreshold"), "DeauthFloodThreshold", 0, T("32") },
-	{ T("EapReqFloodThreshold"), "EapReqFloodThreshold", 0, T("32") },
+	{ T("AuthFloodThreshold"), "AuthFloodThreshold", 0, T("64") },
+	{ T("AssocReqFloodThreshold"), "AssocReqFloodThreshold", 0, T("64") },
+	{ T("ReassocReqFloodThreshold"), "ReassocReqFloodThreshold", 0, T("64") },
+	{ T("ProbeReqFloodThreshold"), "ProbeReqFloodThreshold", 0, T("64") },
+	{ T("DisassocFloodThreshold"), "DisassocFloodThreshold", 0, T("64") },
+	{ T("DeauthFloodThreshold"), "DeauthFloodThreshold", 0, T("64") },
+	{ T("EapReqFloodThreshold"), "EapReqFloodThreshold", 0, T("64") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 #endif
@@ -738,7 +738,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
 #endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
-	ids_enable = websGetVar(wp, T("ids_enable"), T("0"));
+	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
 	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
 #endif
 
