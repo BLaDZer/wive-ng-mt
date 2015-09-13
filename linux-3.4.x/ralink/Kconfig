@@ -278,7 +278,7 @@ default y if (RT305x_INIC_MII || RT3352_INIC_MII)
 
 config RTDEV_PCI
 bool
-default y if (MT7610_AP || MT76X2_AP)
+default y if ((MT7610_AP || MT76X2_AP) && PCI)
 endmenu
 
 endmenu
