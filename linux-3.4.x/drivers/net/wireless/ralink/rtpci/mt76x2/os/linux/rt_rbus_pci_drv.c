@@ -891,9 +891,12 @@ VOID RTMPHandleInterrupt(VOID *pAdSrc)
 	UINT32 IntSource;
 	POS_COOKIE pObj;
 	unsigned long flags=0;
-	UINT32 INT_RX_DATA = 0, INT_RX_CMD=0, TxCoherent = 0, RxCoherent = 0, FifoStaFullInt = 0;
+	UINT32 INT_RX_DATA = 0, TxCoherent = 0, RxCoherent = 0, FifoStaFullInt = 0;
 	UINT32 INT_MGMT_DLY = 0, INT_HCCA_DLY = 0, INT_AC3_DLY = 0, INT_AC2_DLY = 0, INT_AC1_DLY = 0, INT_AC0_DLY = 0;
 	UINT32 PreTBTTInt = 0, TBTTInt = 0, GPTimeOutInt = 0, RadarInt = 0, AutoWakeupInt = 0;
+#ifdef RLT_MAC
+	UINT32 INT_RX_CMD=0;
+#endif
 
 	pObj = (POS_COOKIE) pAd->OS_Cookie;
 

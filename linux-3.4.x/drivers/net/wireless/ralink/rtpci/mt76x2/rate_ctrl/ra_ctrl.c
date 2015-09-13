@@ -1141,9 +1141,9 @@ VOID APMlmeSetTxRate(
 	IN RTMP_RA_LEGACY_TB *pTxRate)
 {
 	UCHAR tx_mode = pTxRate->Mode;
+#ifdef DOT11_VHT_AC
 	UCHAR tx_bw = pTxRate->BW;
 
-#ifdef DOT11_VHT_AC
 	if ((pAd->chipCap.phy_caps & fPHY_CAP_VHT) &&
 		((pEntry->pTable == RateTableVht2S) || (pEntry->pTable == RateTableVht1S) ||
 		 (pEntry->pTable == RateTableVht1S_MCS9) ||

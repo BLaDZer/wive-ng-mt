@@ -582,7 +582,9 @@ VOID RTMPSetLEDStatus(
 	UCHAR			LedMode;
 	UCHAR			MCUCmd = 0;
 	BOOLEAN 		bIgnored = FALSE;
+#ifdef MT76x2
 	INT led_cmd = -1;
+#endif
 #ifdef WSC_INCLUDED
 #ifdef WSC_LED_SUPPORT
 	PWSC_CTRL		pWscControl = NULL;

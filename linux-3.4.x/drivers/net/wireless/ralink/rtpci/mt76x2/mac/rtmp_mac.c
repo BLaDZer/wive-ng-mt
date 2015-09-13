@@ -74,9 +74,13 @@ VOID RTMPWriteTxWI(
 	PMAC_TABLE_ENTRY pMac = NULL;
 	TXWI_STRUC TxWI, *pTxWI;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
-	UINT TxEAPId_Cal = 0;
 	UCHAR stbc, bw, mcs, sgi, phy_mode, mpdu_density = 0, mimops = 0, ldpc = 0;
+#ifdef MT76x2
 	UCHAR tx_stream_mode = 0;
+#endif
+#ifdef RLT_MAC
+	UINT TxEAPId_Cal = 0;
+#endif
 #ifdef TXBF_SUPPORT
 	UCHAR eTxBf, iTxBf, sounding, ndp_rate;
 #endif
@@ -354,8 +358,9 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 	BOOLEAN lut_enable = 0;
 	UCHAR mbc_wcid;
 #endif /* MCS_LUT_SUPPORT */
+#ifdef MT76x2
 	UCHAR tx_stream_mode = 0;
-
+#endif /* MT76x2 */
 
 	ASSERT(pTxWI);
 
@@ -774,7 +779,9 @@ VOID RTMPWriteTxWI_Cache(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 #ifdef MCS_LUT_SUPPORT
 	BOOLEAN lut_enable;
 #endif /* MCS_LUT_SUPPORT */
+#ifdef MT76x2
 	UCHAR tx_stream_mode = 0;
+#endif /* MT76x2 */
 
 
 	/* If CCK or OFDM, BW must be 20*/

@@ -341,8 +341,9 @@ INT RT_CfgSetWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	LONG cfg_mode;
 	UCHAR wmode, *mode_str;
+#ifdef MT76x2
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
-
+#endif /* MT76x2 */
 	cfg_mode = simple_strtol(arg, 0, 10);
 
 	/* check if chip support 5G band when WirelessMode is 5G band */
@@ -426,7 +427,9 @@ INT RT_CfgSetMbssWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	INT cfg_mode;
 	UCHAR wmode;
+#ifdef MT76x2
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
+#endif /* MT76x2 */
 
 	cfg_mode = simple_strtol(arg, 0, 10);
 
@@ -2990,11 +2993,12 @@ INT report_ed_count(RTMP_ADAPTER *pAd, PSTRING arg)
 INT set_channel_ed_monitor_enable(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	DBGPRINT(RT_DEBUG_OFF, ("=====> %s \n", __FUNCTION__));
+	/* A band 0x0e , G band 0x20 , 20150331 */
+	UINT32 mac_val = 0;
+#ifdef RLT_BBP
 	UCHAR ED_TH = (pAd->CommonCfg.Channel > 14)?0x0e:0x20;
-    /* A band 0x0e , G band 0x20 , 20150331 */
-    UINT32 mac_val = 0;
-    UINT32 bbp_val;
-    
+	UINT32 bbp_val;
+#endif
 	RTMP_IO_READ32(pAd, CH_TIME_CFG, &mac_val);
 	mac_val |= 0x40;
 	RTMP_IO_WRITE32(pAd, CH_TIME_CFG, mac_val);

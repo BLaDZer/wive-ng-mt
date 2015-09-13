@@ -1820,7 +1820,10 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 	UINT32				i = 0;
 	UCHAR				pid = 0, wcid = 0;
 	INT32				reTry;
-	UCHAR				succMCS, PhyMode;
+	UCHAR				succMCS;
+#ifdef RT65xx
+	UCHAR				PhyMode;
+#endif /* RT65xx */
 
 #ifdef RALINK_ATE
 	/* Nothing to do in ATE mode */

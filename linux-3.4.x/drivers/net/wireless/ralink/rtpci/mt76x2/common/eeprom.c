@@ -124,8 +124,9 @@ INT RtmpChipOpsEepromHook(
 {
 	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;
 	UCHAR e2p_type;
+#ifdef RTMP_PCI_SUPPORT
 	UINT32 val;
-
+#endif
 #ifdef TXBF_SUPPORT
 	if (pAd->chipCap.FlgITxBfBinWrite)
 		pAd->E2pAccessMode = E2P_BIN_MODE;

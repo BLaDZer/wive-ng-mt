@@ -3240,8 +3240,9 @@ VOID Update_Rssi_Sample(
 	CHAR rssi[3] = {0};
 	UCHAR snr[3] = {0};
 	BOOLEAN bInitial = FALSE;
+#ifdef RLT_MAC
 	CHAR Phymode = get_pkt_phymode_by_rxwi(pAd, pRxWI);
-
+#endif
 	if (!(pRssi->AvgRssi0 | pRssi->AvgRssi0X8 | pRssi->LastRssi0))
 		bInitial = TRUE;
 

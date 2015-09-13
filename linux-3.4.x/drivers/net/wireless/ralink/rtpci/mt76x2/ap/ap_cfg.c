@@ -5075,11 +5075,11 @@ INT RTMPAPQueryInformation(
 #ifdef RTMP_MAC_PCI
 			{
 			
-				USHORT  device_id;
+				USHORT  device_id = 0;
 				if (((POS_COOKIE)pAd->OS_Cookie)->pci_dev != NULL)
-			    	pci_read_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, PCI_DEVICE_ID, &device_id);
-				else 
-					DBGPRINT(RT_DEBUG_TRACE, (" pci_dev = NULL\n"));
+			    	    pci_read_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, PCI_DEVICE_ID, &device_id);
+				else
+				    DBGPRINT(RT_DEBUG_TRACE, (" pci_dev = NULL\n"));
 				snprintf((PSTRING)snmp_tmp, sizeof(snmp_tmp), "%04x %04x\n", NIC_PCI_VENDOR_ID, device_id);
 			}
 #endif /* RTMP_MAC_PCI */
@@ -14761,8 +14761,9 @@ INT Set_AP_DyncVgaEnable_Proc(
 	IN	PSTRING		arg)
 {
 	UINT Enable;
+#ifdef MT76x2
 	UINT32 bbp_val;
-
+#endif
 	Enable = simple_strtol(arg, 0, 10);
 
 	pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = (Enable > 0) ? TRUE : FALSE;
