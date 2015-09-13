@@ -896,6 +896,9 @@ typedef struct _MO_CFG_STRUCT {
 	UINT16 		nFalseCCACnt;	
 	UINT16		nFalseCCATh;	/* default is 100 */
 #ifdef RT6352
+	UINT32		Stored_BBP_R65;
+	UCHAR		Stored_RF_B5_R6;
+	UCHAR		Stored_RF_B5_R7;
 	UCHAR		Stored_RF_B7_R6;
 	UCHAR		Stored_RF_B7_R7;
 #endif /* RT6352 */

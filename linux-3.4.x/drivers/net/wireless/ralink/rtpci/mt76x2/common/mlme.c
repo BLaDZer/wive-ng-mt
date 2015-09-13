@@ -1099,16 +1099,17 @@ VOID MlmePeriodicExec(
 		}
 		else if (stage == MO_IDLE_PERIOD)
 		{
-			UINT16 Idx;
+			RX_STA_CNT1_STRUC   RxStaCnt1;
 
-			for (Idx = MO_MEAS_PERIOD + 1; Idx < MO_IDLE_PERIOD + 1; Idx++)
-				pAd->CommonCfg.MO_Cfg.nFalseCCACnt += pAd->RalinkCounters.FalseCCACnt_100MS[Idx];
+			RTMP_IO_READ32(pAd, RX_STA_CNT1, &RxStaCnt1.word);
+			pAd->CommonCfg.MO_Cfg.nFalseCCACnt += RxStaCnt1.field.FalseCca;
 
 			//printk("%s: fales cca1 %d\n", __FUNCTION__, pAd->CommonCfg.MO_Cfg.nFalseCCACnt);
 			if (pAd->CommonCfg.MO_Cfg.nFalseCCACnt > pAd->CommonCfg.MO_Cfg.nFalseCCATh)
 				ASIC_MITIGATE_MICROWAVE(pAd);
 
 		}
+		pAd->CommonCfg.MO_Cfg.nPeriod_Cnt++;
 	}
 #endif /* MICROWAVE_OVEN_SUPPORT */
 

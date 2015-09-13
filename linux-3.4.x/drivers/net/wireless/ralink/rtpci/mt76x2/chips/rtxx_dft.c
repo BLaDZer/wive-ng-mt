@@ -86,7 +86,7 @@ FREQUENCY_ITEM *FreqItems3020 = RtmpFreqItems3020;
 #if defined(RTMP_INTERNAL_TX_ALC) || defined(RTMP_TEMPERATURE_COMPENSATION) 
 
 /* The Tx power tuning entry*/
-const TX_POWER_TUNING_ENTRY_STRUCT TxPowerTuningTableOrg[] = 
+TX_POWER_TUNING_ENTRY_STRUCT TxPowerTuningTableOrg[] = 
 {
 /*	idxTxPowerTable		Tx power control over RF			Tx power control over MAC*/
 /*	(zero-based array)		{ RF R12[4:0]: Tx0 ALC},			{MAC 0x1314~0x1324}*/

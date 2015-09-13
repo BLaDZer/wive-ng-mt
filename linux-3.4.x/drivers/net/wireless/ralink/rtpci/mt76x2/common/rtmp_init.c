@@ -3783,7 +3783,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 	pAd->CommonCfg.bWiFiTest = FALSE;
 #ifdef RTMP_MAC_PCI
-    pAd->bPCIclkOff = FALSE;
+	pAd->bPCIclkOff = FALSE;
 #endif /* RTMP_MAC_PCI */
 
 #ifdef CONFIG_AP_SUPPORT
@@ -3970,13 +3970,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	else
 		pAd->CommonCfg.MO_Cfg.bEnable = FALSE;
 #endif
-	if (IS_MT76x2(pAd)) {
 #ifdef DYNAMIC_VGA_SUPPORT
-	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
+	pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
 #endif /* DYNAMIC_VGA_SUPPORT */
-	    pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = MO_FALSE_CCA_TH;
-	    pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
-	}
+	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = MO_FALSE_CCA_TH;
+	pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
 #endif /* MICROWAVE_OVEN_SUPPORT */
 
 #ifdef RT6352

@@ -754,6 +754,9 @@ static VOID NICInitRT6352BbpRegisters(
 	IN	PRTMP_ADAPTER pAd)
 {
 	UCHAR BbpReg = 0;
+#ifdef MICROWAVE_OVEN_SUPPORT
+	UINT8 BBPValue = 0;
+#endif /* MICROWAVE_OVEN_SUPPORT */
 	UINT32 i;
 	//USHORT k_count = 0;
 	//UINT32 MacValue = 0, MacValue1 = 0;
@@ -776,7 +779,7 @@ static VOID NICInitRT6352BbpRegisters(
 			__FUNCTION__,
 			BBPR105.field.EnableSIGRemodulation,
 			BBPR105.field.MLDFor2Stream));
-	
+
 	/*	 Avoid data lost and CRC error */
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R4, &BbpReg);
 	BbpReg = ((BbpReg & ~0x40) | 0x40); /* MAC interface control (MAC_IF_80M, 1: 80 MHz) */
@@ -827,6 +830,13 @@ static VOID NICInitRT6352BbpRegisters(
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R4, &BbpReg);
 	BbpReg = ((BbpReg & ~0x40) | 0x40); /* MAC interface control (MAC_IF_80M, 1: 80 MHz) */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R4, BbpReg);
+
+#ifdef MICROWAVE_OVEN_SUPPORT
+	/* Backup BBP_R65  */
+	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R65, &BBPValue);
+	pAd->CommonCfg.MO_Cfg.Stored_BBP_R65 = BBPValue;
+	DBGPRINT(RT_DEBUG_TRACE, ("Stored_BBP_R65=%x @%s \n", pAd->CommonCfg.MO_Cfg.Stored_BBP_R65, __FUNCTION__));
+#endif /* MICROWAVE_OVEN_SUPPORT */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<-- %s\n", __FUNCTION__));
 }
@@ -4919,8 +4929,8 @@ static VOID RT6352_AsicMeasureFalseCCA(
 static VOID RT6352_AsicMitigateMicrowave(
 	IN PRTMP_ADAPTER pAd)
 {
-	UINT8	RegValue, RFValue;
-	printk("Detect Microwave...\n");
+	UINT8	RegValue;
+	DBGPRINT(RT_DEBUG_TRACE, ("Detect Microwave...\n"));
 
 	/* set middle gain */
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R65, &RegValue);

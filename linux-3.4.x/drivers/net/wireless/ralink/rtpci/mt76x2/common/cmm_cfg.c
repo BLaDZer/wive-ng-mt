@@ -3005,9 +3005,9 @@ INT set_channel_ed_monitor_enable(RTMP_ADAPTER *pAd, PSTRING arg)
 
 #ifdef RLT_BBP
 	if (IS_MT76x0(pAd) || IS_MT76x2(pAd)) {
-	RTMP_BBP_IO_READ32(pAd, AGC1_R2, &bbp_val);
-	bbp_val = (bbp_val & 0xFFFF0000) | (ED_TH << 8) | ED_TH;
-	RTMP_BBP_IO_WRITE32(pAd, AGC1_R2, bbp_val);
+	    RTMP_BBP_IO_READ32(pAd, AGC1_R2, &bbp_val);
+	    bbp_val = (bbp_val & 0xFFFF0000) | (ED_TH << 8) | ED_TH;
+	    RTMP_BBP_IO_WRITE32(pAd, AGC1_R2, bbp_val);
 	}
 #endif
 

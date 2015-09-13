@@ -14736,6 +14736,24 @@ INT RTMP_AP_IoctlHandle(
 }
 
 
+#if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
+INT Set_MO_FalseCCATh_Proc(
+	IN	PRTMP_ADAPTER	pAd,
+	IN	PSTRING			arg)
+{
+	ULONG th;
+
+	th = simple_strtol(arg, 0, 10);
+
+	if (th > 65535)
+		th = 65535;
+
+	pAd->CommonCfg.MO_Cfg.nFalseCCATh = th;
+
+	DBGPRINT(RT_DEBUG_OFF, ("%s: set falseCCA threshold %lu for microwave oven application!!\n", __FUNCTION__, th));
+
+	return TRUE;
+}
 
 #ifdef DYNAMIC_VGA_SUPPORT
 INT Set_AP_DyncVgaEnable_Proc(
@@ -14756,7 +14774,7 @@ INT Set_AP_DyncVgaEnable_Proc(
 			RTMP_BBP_IO_READ32(pAd, AGC1_R8, &bbp_val);
 			bbp_val = (bbp_val & 0xffff80ff) | (pAd->CommonCfg.lna_vga_ctl.agc_vga_init_0 << 8);
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val);
-	
+
 			if (pAd->CommonCfg.RxStream >= 2) {
 				RTMP_BBP_IO_READ32(pAd, AGC1_R9, &bbp_val);
 				bbp_val = (bbp_val & 0xffff80ff) | (pAd->CommonCfg.lna_vga_ctl.agc_vga_init_1 << 8);
@@ -14828,6 +14846,7 @@ INT set_false_cca_low_th(PRTMP_ADAPTER pAd, PSTRING arg)
 	return TRUE;
 }
 #endif /* DYNAMIC_VGA_SUPPORT */
+#endif /* MICROWAVE_OVEN_SUPPORT || DYNAMIC_VGA_SUPPORT */
 
 #ifdef THERMAL_PROTECT_SUPPORT
 INT set_thermal_protection_criteria_proc(
