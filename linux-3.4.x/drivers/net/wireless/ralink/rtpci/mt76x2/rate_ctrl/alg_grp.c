@@ -2186,10 +2186,10 @@ VOID StaQuickResponeForRateUpExecAdapt(
 		return;
 	}
 #endif	/* MFB_SUPPORT */
-
+#ifdef NEW_RATE_ADAPT_QUICK_DOWN
     if(QuickInitMCSRate(pAd,pEntry, TxSuccess, TxRetransmit) == TRUE)
         return;
-
+#endif
 	/* Remember the current rate */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
 #ifdef TXBF_SUPPORT
@@ -2604,12 +2604,12 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 			eTxBFProbing(pAd, pEntry);
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* TXBF_SUPPORT */
-
+#ifdef NEW_RATE_ADAPT_QUICK_DOWN
 		if (TxTotalCnt > 0)
 		{
 			TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
 		}
-
+#endif
 		return;
 	}
 
@@ -2620,8 +2620,9 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 		pEntry->fLastSecAccordingRSSI = FALSE;
 		pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
 		/* DBGPRINT_RAW(RT_DEBUG_TRACE,("DRS: MCS is according to RSSI, and ignore tuning this sec \n")); */
-
+#ifdef NEW_RATE_ADAPT_QUICK_DOWN
 		TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
+#endif
 		DBGPRINT(RT_DEBUG_TRACE ,("Trigger @ RSSI Mapping\n"));
 
 		/* reset all OneSecTx counters */

@@ -628,7 +628,7 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getStationBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -928,7 +928,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
  */
 static int getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	unsigned char DriverVersionInfo[8];
 	int s;
 
@@ -953,7 +953,7 @@ static int getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	unsigned char CurrentAddress[6];
 	int s;
 

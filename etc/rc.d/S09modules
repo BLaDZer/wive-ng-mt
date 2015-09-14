@@ -34,7 +34,12 @@ start() {
 		mac=""
 	    fi
 	    $LOG "Load wifi STA module."
-    	    modprobe -q rt2860v2_sta "$mac"
+	    if [ "$CONFIG_RT2860V2_STA" != "" ]; then
+    		modprobe -q rt2860v2_sta "$mac"
+	    fi
+	    if [ "$CONFIG_MT76X2_STA" != "" ]; then
+		modprobe -q mt76x2_sta
+	    fi
 	else
 	    $LOG "Load wifi AP module."
 	    if [ "$CONFIG_RT2860V2_AP" != "" ]; then
@@ -199,10 +204,10 @@ stop() {
     wlan_down_all
     if [ -d /sys/module/hw_nat ]; then
         $LOG "Unload hw_nat and wireless modules."
-        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap"
+        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta"
     else
         $LOG "Unload wireless modules."
-        mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap"
+        mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta"
     fi
     for module in $mod
     do

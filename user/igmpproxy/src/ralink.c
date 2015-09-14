@@ -759,7 +759,7 @@ int _WiFiSTALookUPByMac(char *wifi, unsigned int mac1, unsigned int mac2)
 
 	for (i = 0; i < table.Num; i++) {
 		unsigned int c_mac1 = 0, c_mac2 = 0;
-#ifdef CONFIG_RT2860V2_AP_TXBF
+#if defined(CONFIG_RT2860V2_AP_TXBF) || defined(CONFIG_MT76X2_AP_TXBF)
 		RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
 		c_mac1 = (pe->Addr[3]) | (pe->Addr[2] << 8) | (pe->Addr[1] << 16) | (pe->Addr[0] << 24);
 		c_mac2 = pe->Addr[5] | (pe->Addr[4] << 8);

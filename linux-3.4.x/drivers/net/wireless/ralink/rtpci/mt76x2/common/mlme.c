@@ -745,7 +745,7 @@ NDIS_STATUS MlmeInit(RTMP_ADAPTER *pAd)
 			/* state machine init*/
 			MlmeCntlInit(pAd, &pAd->Mlme.CntlMachine, NULL);
 
-#ifdef RTMP_MAC_PCI
+#ifdef RTMP_PCI_SUPPORT
 			RTMPInitTimer(pAd, &pAd->Mlme.PsPollTimer, GET_TIMER_FUNCTION(PsPollWakeExec), pAd, FALSE);
 			pAd->Mlme.bPsPollTimerRunning = FALSE;
 #ifdef PCIE_PS_SUPPORT
@@ -755,7 +755,7 @@ NDIS_STATUS MlmeInit(RTMP_ADAPTER *pAd)
 				RTMPInitTimer(pAd, &pAd->Mlme.RadioOnOffTimer, GET_TIMER_FUNCTION(RadioOnExec), pAd, FALSE);
 			}
 #endif /* PCIE_PS_SUPPORT */
-#endif /* RTMP_MAC_PCI */
+#endif /* RTMP_MAC_PCI_SUPPORT */
 
 			RTMPInitTimer(pAd, &pAd->Mlme.LinkDownTimer, GET_TIMER_FUNCTION(LinkDownExec), pAd, FALSE);
 			RTMPInitTimer(pAd, &pAd->StaCfg.StaQuickResponeForRateUpTimer, GET_TIMER_FUNCTION(StaQuickResponeForRateUpExec), pAd, FALSE);

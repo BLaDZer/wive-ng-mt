@@ -315,8 +315,8 @@ INT rtmp_ee_load_from_bin(
 	RTMP_OS_FD srcf;
 	RTMP_OS_FS_INFO osFSInfo;
 
-#ifdef RT_SOC_SUPPORT
 #ifdef MULTIPLE_CARD_SUPPORT
+#ifdef RT_SOC_SUPPORT
 	STRING bin_file_path[128];
 	PSTRING bin_file_name = NULL;
 	UINT32 chip_ver = (pAd->MACVersion >> 16);
@@ -331,8 +331,8 @@ INT rtmp_ee_load_from_bin(
 		src = bin_file_path;
 	}
 	else
-#endif /* MULTIPLE_CARD_SUPPORT */
 #endif /* RT_SOC_SUPPORT */
+#endif /* MULTIPLE_CARD_SUPPORT */
 		src = BIN_FILE_PATH;
 	
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::FileName=%s\n", __FUNCTION__, src));
@@ -382,8 +382,8 @@ INT rtmp_ee_write_to_bin(
 	RTMP_OS_FD srcf;
 	RTMP_OS_FS_INFO osFSInfo;
 
-#ifdef RT_SOC_SUPPORT
 #ifdef MULTIPLE_CARD_SUPPORT
+#ifdef RT_SOC_SUPPORT
 	STRING bin_file_path[128];
 	PSTRING bin_file_name = NULL;
 	UINT32 chip_ver = (pAd->MACVersion >> 16);
@@ -398,8 +398,8 @@ INT rtmp_ee_write_to_bin(
 		src = bin_file_path;
 	}
 	else
-#endif /* MULTIPLE_CARD_SUPPORT */
 #endif /* RT_SOC_SUPPORT */
+#endif /* MULTIPLE_CARD_SUPPORT */
 		src = BIN_FILE_PATH;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::FileName=%s\n", __FUNCTION__, src));

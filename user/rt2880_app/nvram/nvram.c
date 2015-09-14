@@ -509,7 +509,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(MaxStaNum);
 	FPRINT_NUM(IdleTimeout);
 
-#ifdef CONFIG_RT2860V2_STA
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	FPRINT_NUM(AutoConnect);
 	FPRINT_NUM(FastConnect);
 	FPRINT_NUM(AutoRoaming);
@@ -517,7 +517,7 @@ static int gen_wifi_config(int mode, int genmode)
 #if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) ||  defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST)
 	FPRINT_NUM(ChannelGeography);
 #endif
-#if defined(CONFIG_RT2860V2_STA_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG)
+#if defined(CONFIG_RT2860V2_AP_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG)
 	FPRINT_NUM(WirelessEvent);
 #endif
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)

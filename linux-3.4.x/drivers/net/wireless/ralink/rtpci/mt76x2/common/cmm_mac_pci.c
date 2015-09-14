@@ -1916,21 +1916,20 @@ VOID PsPollWakeExec(
 	IN PVOID SystemSpecific2, 
 	IN PVOID SystemSpecific3) 
 {
+#ifdef PCIE_PS_SUPPORT
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)FunctionContext;
 	unsigned long flags;
 
     DBGPRINT(RT_DEBUG_TRACE,("-->PsPollWakeExec \n"));
 
 	RTMP_INT_LOCK(&pAd->irq_lock, flags);
-#ifdef PCIE_PS_SUPPORT
     if (pAd->Mlme.bPsPollTimerRunning)
     {
 	    RTMPPCIeLinkCtrlValueRestore(pAd, RESTORE_WAKEUP);
 		pAd->Mlme.bPsPollTimerRunning = FALSE;
     }
-#endif /* PCIE_PS_SUPPORT */
 	RTMP_INT_UNLOCK(&pAd->irq_lock, flags);
-
+#endif /* PCIE_PS_SUPPORT */
 #ifdef MT76x2
 	if (IS_MT76x2(pAd))
 		AsicForceWakeup(pAd,FALSE);
@@ -2731,6 +2730,5 @@ INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 
 	return 0;
 }
-
 #endif /* RTMP_MAC_PCI */
 

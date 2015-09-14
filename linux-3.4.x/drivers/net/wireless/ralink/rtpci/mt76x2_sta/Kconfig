@@ -1,0 +1,4 @@
+config MT76X2_STA
+	tristate "MediaTek MT7620/MT7602E/7612E 802.11n/ac STA Support"
+	depends on MT76X2_AP
+	default n

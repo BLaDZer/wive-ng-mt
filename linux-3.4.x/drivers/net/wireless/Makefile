@@ -66,3 +66,4 @@ obj-$(CONFIG_RT2860V2_AP)       += ralink/rt3xxx/rt2860v2_ap/
 obj-$(CONFIG_RT2860V2_STA)      += ralink/rt3xxx/rt2860v2_sta/
 obj-$(CONFIG_MT7610_AP)         += ralink/rtpci/mt7610_ap/
 obj-$(CONFIG_MT76X2_AP)         += ralink/rtpci/mt76x2_ap/
+obj-$(CONFIG_MT76X2_STA)        += ralink/rtpci/mt76x2_sta/

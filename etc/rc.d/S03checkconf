@@ -60,7 +60,7 @@ checkminimalconfig()
     if   [ "$OperationMode" = "3" ] && [ "$CONFIG_RT2860V2_AP_APCLI" = "" -a "$CONFIG_MT7610_AP_APCLI" = "" -a "$CONFIG_MT76X2_AP_APCLI" = "" ]; then
 	nvram_set 2860 OperationMode 1
 	OperationMode="1"
-    elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" = "" ]; then
+    elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" = "" ] && [ "$CONFIG_MT76X2_STA" = "" ]; then
 	nvram_set 2860 OperationMode 1
 	OperationMode="1"
     fi

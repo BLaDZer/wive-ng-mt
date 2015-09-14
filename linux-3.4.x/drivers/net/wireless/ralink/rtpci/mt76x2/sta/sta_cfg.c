@@ -600,7 +600,9 @@ static struct {
 	{"pbf_loopback", set_pbf_loopback},
 	{"pbf_rx_drop", set_pbf_rx_drop},
 #endif
+#ifdef CONFIG_ANDES_SUPPORT
 	{"fw_debug", set_fw_debug},
+#endif
 #ifdef RT_CFG80211_SUPPORT
 	{"DisableCfg2040Scan",				Set_DisableCfg2040Scan_Proc},
 #endif	
@@ -7994,12 +7996,12 @@ VOID RTMPIoctlShow(
 		show_pwr_info(pAd, NULL);
 		wrq->u.data.length = 0;
 		break;
-
+#ifdef DBG_DIAGNOSE
 	case SHOW_DIAGNOSE_INFO:
 		Show_Diag_Proc(pAd, NULL);
 		wrq->u.data.length = 0;
 		break;	
-
+#endif
         default:
             DBGPRINT(RT_DEBUG_TRACE, ("%s - unknow subcmd = %d\n", __FUNCTION__, subcmd));
             break;
@@ -8551,7 +8553,9 @@ RtmpIoctl_rt_ioctl_giwscan(
 		pBssTable->pRsnIe = pBssEntry->RsnIE.IE;
 		pBssTable->WpsIeLen = pBssEntry->WpsIE.IELen;
 		pBssTable->pWpsIe = pBssEntry->WpsIE.IE;
+#ifdef DOT11_VHT_AC
 		pBssTable->VHTCapabilityLen = pBssEntry->vht_cap_len;
+#endif
 		pBssTable->FlgIsPrivacyOn = CAP_IS_PRIVACY_ON(pBssEntry->CapabilityInfo);
 		set_quality(&pBssTable->Signal, pBssEntry);
 	}
@@ -10773,11 +10777,10 @@ INT RTMP_STA_IoctlHandle(
 		case CMD_RTPRIV_IOCTL_SITESURVEY_GET:
 			RTMPIoctlGetSiteSurvey(pAd, pRequest);
 			break;
-
+#ifdef DBG
 		case CMD_RTPRIV_IOCTL_MAC:
 			RTMPIoctlMAC(pAd, pRequest);
 			break;
-
 		case CMD_RTPRIV_IOCTL_E2P:
 			RTMPIoctlE2PROM(pAd, pRequest);
 			break;
@@ -10787,6 +10790,7 @@ INT RTMP_STA_IoctlHandle(
 			RTMPIoctlRF(pAd, pRequest);
 #endif /* RTMP_RF_RW_SUPPORT */
 			break;
+#endif
 
 		case CMD_RTPRIV_IOCTL_BBP:
 			RTMPIoctlBbp(pAd, pRequest, pData, Data);

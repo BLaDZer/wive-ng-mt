@@ -118,8 +118,8 @@ static NDIS_STATUS rtmp_ee_flash_reset(RTMP_ADAPTER *pAd, UCHAR *start)
 	PSTRING file_name = NULL;
 	UINT32 chip_id = (pAd->ChipID >> 16);
 
-#ifdef RT_SOC_SUPPORT
 #ifdef MULTIPLE_CARD_SUPPORT
+#ifdef RT_SOC_SUPPORT
 	STRING	BinFilePath[128];
 	PSTRING	pBinFileName = NULL;
 	UINT32	ChipVerion = (pAd->MACVersion >> 16);
@@ -135,8 +135,8 @@ static NDIS_STATUS rtmp_ee_flash_reset(RTMP_ADAPTER *pAd, UCHAR *start)
 		DBGPRINT(RT_DEBUG_TRACE, ("%s(): src = %s\n", __FUNCTION__, src));
 	}
 	else
-#endif /* MULTIPLE_CARD_SUPPORT */
 #endif /* RT_SOC_SUPPORT */
+#endif /* MULTIPLE_CARD_SUPPORT */
 	if (rtmp_get_default_bin_file_by_chip(pAd, chip_id, &file_name) == TRUE) {
 		sprintf(file_path, "%s%s", EEPROM_FILE_DIR, file_name);
 		src = file_path;
