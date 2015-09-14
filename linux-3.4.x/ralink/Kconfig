@@ -267,6 +267,18 @@ config MTK_XHCI
 	bool "MediaTek USB3/USB2/USB1.1 xHCI controller support"
 	depends on (RALINK_MT7621)
 	select USB_ARCH_HAS_XHCI
+
+config RTDEV_USB
+bool
+default y if (RT305x_INIC_USB || RT3572_AP || RT5572_AP)
+
+config RTDEV_MII
+bool
+default y if (RT305x_INIC_MII || RT3352_INIC_MII)
+
+config RTDEV_PCI
+bool
+default y if ((MT7610_AP || MT76X2_AP) && PCI)
 endmenu
 
 endmenu
