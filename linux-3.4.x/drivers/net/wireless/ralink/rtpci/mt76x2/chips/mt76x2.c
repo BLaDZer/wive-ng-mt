@@ -2808,12 +2808,12 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	choffset = 14;
 	ASSERT((ad->TxPower[choffset].Channel == 36));
 
-	for (i = 0; i < 39; i++) {
+	for (i = 0; i < 40; i++) {
 		ad->TxPower[i + choffset].Power = cap->tx_0_target_pwr_a_band[get_chl_grp(ad->TxPower[i+choffset].Channel)];
 		ad->TxPower[i + choffset].Power2 = cap->tx_1_target_pwr_a_band[get_chl_grp(ad->TxPower[i+choffset].Channel)];
 	}
 
-	choffset = 14 + 12 + 16 + 11;
+	choffset = 14 + 12 + 17 + 11;
 
 #ifdef DOT11_VHT_AC
 	ASSERT((ad->TxPower[choffset].Channel == 42));
@@ -2822,11 +2822,11 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	/* For VHT80MHz, we need assign tx power for central channel 42, 58, 106, 122, and 155 */
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: Update Tx power control of the central channel (42, 58, 106, 122 and 155) for VHT BW80\n", __FUNCTION__));
 		
-	NdisMoveMemory(&ad->TxPower[53], &ad->TxPower[16], sizeof(CHANNEL_TX_POWER)); // channel 42 = channel 40
-	NdisMoveMemory(&ad->TxPower[54], &ad->TxPower[22], sizeof(CHANNEL_TX_POWER)); // channel 58 = channel 56
-	NdisMoveMemory(&ad->TxPower[55], &ad->TxPower[28], sizeof(CHANNEL_TX_POWER)); // channel 106 = channel 104
-	NdisMoveMemory(&ad->TxPower[56], &ad->TxPower[34], sizeof(CHANNEL_TX_POWER)); // channel 122 = channel 120
-	NdisMoveMemory(&ad->TxPower[57], &ad->TxPower[44], sizeof(CHANNEL_TX_POWER)); // channel 155 = channel 153
+	NdisMoveMemory(&ad->TxPower[choffset], &ad->TxPower[16], sizeof(CHANNEL_TX_POWER)); // channel 42 = channel 40
+	NdisMoveMemory(&ad->TxPower[choffset+1], &ad->TxPower[22], sizeof(CHANNEL_TX_POWER)); // channel 58 = channel 56
+	NdisMoveMemory(&ad->TxPower[choffset+2], &ad->TxPower[28], sizeof(CHANNEL_TX_POWER)); // channel 106 = channel 104
+	NdisMoveMemory(&ad->TxPower[choffset+3], &ad->TxPower[34], sizeof(CHANNEL_TX_POWER)); // channel 122 = channel 120
+	NdisMoveMemory(&ad->TxPower[choffset+4], &ad->TxPower[45], sizeof(CHANNEL_TX_POWER)); // channel 155 = channel 153
 
 	ad->TxPower[choffset].Channel = 42;
 	ad->TxPower[choffset+1].Channel = 58;
@@ -2834,8 +2834,7 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	ad->TxPower[choffset+3].Channel = 122;
 	ad->TxPower[choffset+4].Channel = 155;
 
-	choffset += 5;		/* the central channel of VHT80 */
-	choffset = (MAX_NUM_OF_CHANNELS - 1);
+	choffset = MAX_NUM_OF_CHANNELS;
 #endif /* DOT11_VHT_AC */
 
 	/* 4. Print and Debug*/
