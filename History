@@ -1244,44 +1244,45 @@
 1) build_system: add new metal 7620a+7612ne internal pa/lna sd usb 16/128Mb sample.<br>
 2) build_system: enable hotspot support for all devices (need test webui fixup and configure review).<br>
 3) build_system: add iappd demon for basic roaming support.<br>
-4) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
-5) irqbalance: update to 04.08.2015 git version.<br>
-6) init.d: fix path to passthrouth control files.<br>
-7) init.d: hotplug support automount sd card if exist.<br>
-8) init.d: add entware_install.sh script for fast install entware support to sd/hdd.<br>
-9) defaults: add fast roaming and radio resource managment parametrs.<br>
-10) goahead: fix fast roaming extensions enable/disable options.<br>
-11) goahead: add IDS parametrs to WebUI.<br>
-12) kernel: configs: enable IDS for all devices.<br>
-13) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-14) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-15) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
-16) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-17) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-18) kernel: ralink_arch: drop deprecated RTDEV_XXX params, use CONFIG_RT_FIRST_IF_XXX/CONFIG_RT_SECOND_IF_XXX to handle driver features.<br>
-19) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-20) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-21) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-22) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
-23) kernel: ralink_wifi: 76x2: fix microwave oven detect support.<br>
-24) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-25) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-26) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-27) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-28) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-29) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-30) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-31) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-32) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-33) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-34) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-35) kernel: net: add function to allocate sk_buff head without data area.<br>
-36) kernel: net: fix sk_buff head without data area.<br>
-37) kernel: net: sock_flag() cleanup.<br>
-38) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-39) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-40) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-41) kernel: net: implement ipv6 passthrouth logic.<br>
+4) build_system: rework defaults and rf calibs factory/backups install.<br>
+5) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
+6) irqbalance: update to 04.08.2015 git version.<br>
+7) init.d: fix path to passthrouth control files.<br>
+8) init.d: hotplug support automount sd card if exist.<br>
+9) init.d: add entware_install.sh script for fast install entware support to sd/hdd.<br>
+10) defaults: add fast roaming and radio resource managment parametrs.<br>
+11) goahead: fix fast roaming extensions enable/disable options.<br>
+12) goahead: add IDS parametrs to WebUI.<br>
+13) kernel: configs: enable IDS for all devices.<br>
+14) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+15) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+16) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
+17) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+18) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+19) kernel: ralink_arch: drop deprecated RTDEV_XXX params, use CONFIG_RT_FIRST_IF_XXX/CONFIG_RT_SECOND_IF_XXX to handle driver features.<br>
+20) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+21) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+22) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+23) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+24) kernel: ralink_wifi: 76x2: fix microwave oven detect support.<br>
+25) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+26) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+27) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+28) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+29) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+30) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+31) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+32) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+33) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+34) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+35) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+36) kernel: net: add function to allocate sk_buff head without data area.<br>
+37) kernel: net: fix sk_buff head without data area.<br>
+38) kernel: net: sock_flag() cleanup.<br>
+39) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+40) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+41) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+42) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
