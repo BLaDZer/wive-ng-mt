@@ -13,20 +13,20 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$FastRoaming" = "1" ]; then
+    if [ "$FastRoamingIAPP" = "1" ]; then
 	$LOG "Starting iappd roaming daemon"
 	ralinkiappd -e $lan_if -w $first_wlan_root_if -k 12345678 -d 3
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 FastRoaming`
+    eval `nvram_buf_get 2860 FastRoamingIAPP`
 }
 
 stop() {
     pid=`pidof ralinkiappd`
     if [ "$pid" != "" ]; then
-	$LOG "Stopping  apd radius daemon"
+	$LOG "Stopping  iappd roaming daemon"
 	killall -q ralinkiappd
 	killall -q -SIGKILL ralinkiappd
     fi

@@ -385,6 +385,7 @@ HT_EXTCHAINIC=1
 SSID1INIC=Wive-NG-MT-5GHZ
 FixedTxModeINIC=
 FastRoaming=0
+FastRoamingIAPP=0
 ApProbeRspTimes=3
 AuthRspFail=0
 AuthRspRssi=0
