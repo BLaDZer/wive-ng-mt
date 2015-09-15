@@ -1403,13 +1403,13 @@ function CheckValue(form)
         		<td class="head" id="basicAssocRspIgnor" width="70%">Ignore assoc req due to weak signal</td>
         		<td width="30%"><input type="text" name="AssocRspIgnor" class="half" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
-        	<tr id="row_KickStaRssiLow" style="display:none;">
-        		<td class="head" id="basicKickStaRssiLow" width="70%">Auto disonnect sta if rssi low</td>
-        		<td width="30%"><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
-        	</tr>
         	<tr id="row_ProbeRspRssi" style="display:none;">
         		<td class="head" id="basicProbeRspRssi" width="70%">Auto disonnect sta if rssi low at probe requests</td>
         		<td width="30%"><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr id="row_KickStaRssiLow" style="display:none;">
+        		<td class="head" id="basicKickStaRssiLow" width="70%">Auto disonnect sta if rssi low</td>
+        		<td width="30%"><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">
