@@ -448,7 +448,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(HT_DisallowTKIP);
 	FPRINT_NUM(HT_40MHZ_INTOLERANT);
 	FPRINT_NUM(HT_MIMOPSMode);
-	FPRINT_NUM(HT_MIMOPS);
 
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
