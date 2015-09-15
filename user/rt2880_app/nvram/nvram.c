@@ -617,7 +617,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(ProbeReqFloodThreshold);
 	FPRINT_NUM(DisassocFloodThreshold);
 	FPRINT_NUM(DeauthFloodThreshold);
-	FPRINT_NUM(EapReqFooldThreshold);
+	FPRINT_NUM(EapReqFloodThreshold);
 #endif
 #if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 	// Fast Roaming, need add in profile instead of iwpriv usage in future
