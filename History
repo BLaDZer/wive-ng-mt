@@ -1265,24 +1265,25 @@
 22) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
 23) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
 24) kernel: ralink_wifi: 76x2: fix microwave oven detect support.<br>
-25) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-26) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-27) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-28) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-29) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-30) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-31) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-32) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-33) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-34) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-35) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-36) kernel: net: add function to allocate sk_buff head without data area.<br>
-37) kernel: net: fix sk_buff head without data area.<br>
-38) kernel: net: sock_flag() cleanup.<br>
-39) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-40) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-41) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-42) kernel: net: implement ipv6 passthrouth logic.<br>
+25) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+26) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+27) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+28) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+29) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+30) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+31) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+32) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+33) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+34) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+35) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+36) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+37) kernel: net: add function to allocate sk_buff head without data area.<br>
+38) kernel: net: fix sk_buff head without data area.<br>
+39) kernel: net: sock_flag() cleanup.<br>
+40) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+41) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+42) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+43) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>

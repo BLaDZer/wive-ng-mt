@@ -1252,28 +1252,28 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			}
 		}
 #endif /* BAND_STEERING */
-		
+
 		//YF: kickout sta when 3 of 5 exceeds the threshold.
-		CHAR rssiIndex = 0, overRssiThresCount = 0; 
-		if (pMbss->RssiLowForStaKickOut != 0)
+		//sfstudio: need some times (> rssi index size) for accumulate rssi statistics (prevent reassoc flood)
+		if (pMbss->RssiLowForStaKickOut != 0 && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN)
 		{
-#define CHECK_DATA_RSSI_UP_BOUND 3
+			CHAR rssiIndex = 0, overRssiThresCount = 0;
 			for (rssiIndex=0; rssiIndex<MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
 			{
-				if ((pEntry->LastDataRssi[rssiIndex] !=0 ) && 
+				if ((pEntry->LastDataRssi[rssiIndex] !=0 ) &&
 				    (pEntry->LastDataRssi[rssiIndex] < pMbss->RssiLowForStaKickOut))
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("%d:[%d] Fail.\n",rssiIndex,pEntry->LastDataRssi[rssiIndex]));
 					overRssiThresCount++;
+					if (overRssiThresCount >= CHECK_DATA_RSSI_UP_BOUND)
+					{
+					    bDisconnectSta = TRUE;
+					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]-[%d]Times\n",
+							PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, overRssiThresCount);
+					    break;
+					}
 				}
 			}
-	
-			if (overRssiThresCount >= CHECK_DATA_RSSI_UP_BOUND)
-			{
-				bDisconnectSta = TRUE;
-				DBGPRINT(RT_DEBUG_WARN, ("Dis STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]-[%d]Times\n",
-							PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, overRssiThresCount));
-			}	
 
 		}
 
