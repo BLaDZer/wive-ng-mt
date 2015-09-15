@@ -290,6 +290,7 @@ TxPreamble=1
 IdleTimeout=200
 MaxStaNum=32;32;32;32
 StationKeepAlive=60;60;60;60
+EntryLifeCheck=512
 TransmissionEnabled=0
 TZ=OMST-6
 UDPXYMode=0

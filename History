@@ -1288,15 +1288,16 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~98%).<br>
-2) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-3) need add multiif support in iappd daemon.<br>
-4) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
-5) need add subchannel select for 5GHz module.<br>
-6) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-7) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-8) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-9) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-10) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+2) need add in UI advanced EntryLifeCheck variable (how pkts TX fail before connection drop, default 512).<br>
+3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+4) need add multiif support in iappd daemon.<br>
+5) need fix ui for channel 5GHz select (allow 36-64 and 136—165 channels for RU AbandRegion=7).<br>
+6) need add subchannel select for 5GHz module.<br>
+7) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+8) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+9) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+10) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+11) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
 <br>
 <br>
 <br>

@@ -364,6 +364,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(NoForwardingMBCast);
 	FPRINT_NUM(NoForwardingBTNBSSID);
 	FPRINT_STR(StationKeepAlive);
+	FPRINT_STR(EntryLifeCheck);
 	FPRINT_STR(HideSSID);
 	FPRINT_STR(IEEE8021X);
 	FPRINT_STR(IEEE80211H);
