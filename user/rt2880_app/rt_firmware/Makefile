@@ -10,13 +10,6 @@ ifndef CONFIG_RT_SECOND_IF_NONE
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
 endif
 ###################################################################################################################################################
-#install profiles symlinks for all chips (for ATE compat needed)
-###################################################################################################################################################
-	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860AP
-	mkdir -p $(ROMFSDIR)/etc/Wireless/RT2860STA
-	$(ROMFSINST) -s /etc/Wireless/RT2860/RT2860.dat /etc/Wireless/RT2860AP/RT2860AP.dat
-	$(ROMFSINST) -s /etc/Wireless/RT2860/RT2860.dat /etc/Wireless/RT2860STA/RT2860STA.dat
-###################################################################################################################################################
 # internal MT7620 WiFi module
 ###################################################################################################################################################
 ifdef CONFIG_RALINK_MT7620
