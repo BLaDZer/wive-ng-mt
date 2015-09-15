@@ -17,10 +17,27 @@ export LC_ALL=POSIX
 #----------MODE------------#
 MODE="$1"
 case "$MODE" in
+	####################################
+	# dual band 7621A + 7602NE + 7612NE
+	####################################
 	"MT7621-MT7602-MT7612-2T2R-8M-USB")
 	    # tube sample
 	    DEVNAME="SNR-CPE-MD2-5GHZ-USB-MT"
 	    ;;
+	####################################
+	# dual band 7620A + 7612NE
+	####################################
+	"MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M")
+	    # black horizont sample
+	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
+	    ;;
+	"MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB")
+	    # metal horizont sample
+	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
+	    ;;
+	####################################
+	# dual band 7620A + 7610NE
+	####################################
 	"MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
 	    # black sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
@@ -33,18 +50,13 @@ case "$MODE" in
 	    # white sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
 	    ;;
-	"MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M")
-	    # black horizont sample
-	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
-	    ;;
-	"MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB")
-	    # metal horizont sample
-	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
-	    ;;
 	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M")
 	    # black dualband release
 	    DEVNAME="SNR-CPE-MD1-5GHZ-MT"
 	    ;;
+	####################################
+	# one band 7620N
+	####################################
 	"MT7620-2T2R-8M")
 	    # white oneband release
 	    DEVNAME="SNR-CPE-W4N-MT"
