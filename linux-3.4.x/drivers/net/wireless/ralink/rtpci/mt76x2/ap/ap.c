@@ -1254,8 +1254,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #endif /* BAND_STEERING */
 
 		//YF: kickout sta when 3 of 5 exceeds the threshold.
-		//sfstudio: need some times (> rssi index size) for accumulate rssi statistics (prevent reassoc flood)
-		if (pMbss->RssiLowForStaKickOut != 0 && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN)
+		//sfstudio: only client kick and need some times (> rssi index size) for accumulate rssi statistics (prevent reassoc flood)
+		if (IS_ENTRY_CLIENT(pEntry) && (pMbss->RssiLowForStaKickOut != 0 && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN))
 		{
 			CHAR rssiIndex = 0, overRssiThresCount = 0;
 			for (rssiIndex=0; rssiIndex<MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
