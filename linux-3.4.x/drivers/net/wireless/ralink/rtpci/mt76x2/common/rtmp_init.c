@@ -3668,6 +3668,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		pAd->ApCfg.DisassocFloodThreshold = 0;
 		pAd->ApCfg.DeauthFloodThreshold = 0;
 		pAd->ApCfg.EapReqFloodThreshold = 0;
+		pAd->ApCfg.DataFloodThreshold = 0;
 		RTMPClearAllIdsCounter(pAd);
 #endif /* IDS_SUPPORT */
 
