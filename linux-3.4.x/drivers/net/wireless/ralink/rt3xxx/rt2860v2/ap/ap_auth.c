@@ -247,12 +247,15 @@ static VOID APPeerAuthReqAtIdleAction(
 #ifdef BAND_STEERING
 	BOOLEAN bAuthCheck = TRUE;
 #endif /* BAND_STEERING */
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
 
-	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
-							Addr2, &Alg, &Seq, &Status, Chtxt
-		))
+	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt))
 		return;
-    
+
 #ifdef P2P_SUPPORT
 	if (P2P_GO_ON(pAd) && (pAd->P2pCfg.bStopAuthRsp == TRUE))
 	{
@@ -449,12 +452,13 @@ static VOID APPeerAuthConfirmAction(
 	UCHAR			Addr1[MAC_ADDR_LEN];
 	UINT32			apidx;
 
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
 
-
-
-	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
-							Addr2, &Alg, &Seq, &Status, Chtxt
-		)) 
+	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt))
 		return;
 
 	for (apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)

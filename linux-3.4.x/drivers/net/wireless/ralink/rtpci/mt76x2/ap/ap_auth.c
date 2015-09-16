@@ -273,6 +273,11 @@ static VOID APPeerAuthReqAtIdleAction(
 	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
 
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
 
 	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
 							Addr2, &Alg, &Seq, &Status, Chtxt
@@ -281,7 +286,6 @@ static VOID APPeerAuthReqAtIdleAction(
 #endif /* DOT11R_FT_SUPPORT */
 		))
 		return;
-    
 
 	/* Find which MBSSID to be authenticate */
 	apidx = get_apidx_by_addr(pAd, Addr1);
@@ -543,7 +547,11 @@ static VOID APPeerAuthConfirmAction(
 	PFT_INFO pFtInfoBuf;
 #endif /* DOT11R_FT_SUPPORT */
 
-
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
 
 	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
 							Addr2, &Alg, &Seq, &Status, Chtxt
