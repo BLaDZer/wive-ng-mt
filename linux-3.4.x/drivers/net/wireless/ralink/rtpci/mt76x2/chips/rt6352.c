@@ -4098,7 +4098,7 @@ UCHAR RT6352_GetSkuChannelBasePwr(
 	CHAR max_tx1_pwr;
 	UINT16 TargetPwr = 0;
 	UINT32 MacReg;
-
+#ifdef RT6352
 	if (IS_RT6352(pAd))
 	{
 		RTMP_IO_READ32(pAd, TX_ALG_CFG_0, &MacReg);
@@ -4116,7 +4116,7 @@ UCHAR RT6352_GetSkuChannelBasePwr(
 
 		base_pwr = tx_pwr1;
 	}
-	
+#endif /* RT6352 */
 	DlListForEachSafe(ch, ch_temp, &pAd->SingleSkuPwrList, CH_POWER, List)
 	{
 		start_ch = ch->StartChannel;

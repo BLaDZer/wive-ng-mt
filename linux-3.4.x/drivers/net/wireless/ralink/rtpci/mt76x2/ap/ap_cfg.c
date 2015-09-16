@@ -9177,7 +9177,7 @@ VOID RTMPIoctlQueryStaAid(
 #endif /* DOT1X_SUPPORT */
 
 
-#if defined(DBG) ||(defined(BB_SOC)&&defined(RALINK_ATE))
+#if defined(DBG) || (defined(BB_SOC) && defined(RALINK_ATE))
 
 #ifdef RT65xx
 VOID RTMPAPIoctlBBP32(RTMP_ADAPTER *pAd, RTMP_IOCTL_INPUT_STRUCT *wrq)

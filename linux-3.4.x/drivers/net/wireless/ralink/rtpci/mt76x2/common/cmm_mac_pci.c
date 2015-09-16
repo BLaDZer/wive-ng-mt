@@ -1668,7 +1668,7 @@ VOID RT28xx_UpdateBeaconToAsic(
 			RTMP_CHIP_UPDATE_BEACON(pAd, pAd->BeaconOffset[bcn_idx] + i, longptr, 4);
 			ptr += 4;
 		}
-
+#ifdef RT6352
 		/* Update CapabilityInfo in Beacon*/
 		if (IS_RT6352(pAd))
 		{
@@ -1689,6 +1689,7 @@ VOID RT28xx_UpdateBeaconToAsic(
 			}
 		}
 		else
+#endif /* RT6352 */
 		{
 			if (wr_bytes > 1)
 				CapInfoPos = (CapInfoPos & (~(wr_bytes - 1)));

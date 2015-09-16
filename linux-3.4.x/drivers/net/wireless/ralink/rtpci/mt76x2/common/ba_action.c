@@ -2307,7 +2307,7 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 	
 	if (pEntry && pEntry->bPeerDelBaTxAdaptEn) {
 		BOOLEAN Cancelled;
-
+#ifdef RT6352
 		if (IS_RT6352(pAd))
 		{
 			UINT32 MacReg = 0;
@@ -2319,7 +2319,7 @@ static VOID Peer_DelBA_Tx_Adapt_Disable(
 					("%s():TX_FBK_LIMIT = 0x%08x\n",
 					__FUNCTION__, MacReg));
 		}
-
+#endif /* RT6352 */
 		pEntry->bPeerDelBaTxAdaptEn = 0;
 		RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
 		asic_mcs_lut_update(pAd, pEntry);

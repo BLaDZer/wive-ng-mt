@@ -260,7 +260,7 @@ BOOLEAN rtmp_get_default_bin_file_by_chip(
 		{
 			ChipVersion = 0x7620;
 		}
-#endif
+#endif /* RT6352 */
 		if (RTMP_CHIP_E2P_FILE_TABLE[i].ChipVersion == ChipVersion)
 		{
 			*pBinFileName = RTMP_CHIP_E2P_FILE_TABLE[i].name;

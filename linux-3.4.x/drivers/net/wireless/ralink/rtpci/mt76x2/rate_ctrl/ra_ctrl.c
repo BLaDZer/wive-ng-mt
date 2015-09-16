@@ -2588,8 +2588,8 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	pEntry->CurrTxRateStableTime = 0;
 	pEntry->TxRateUpPenalty = 0;
 	pEntry->LowPacket = FALSE;
-    pEntry->LastSaveRateIdx = 0;
-    NdisZeroMemory(pEntry->DownTxMCSRate, sizeof(pEntry->DownTxMCSRate));
+	pEntry->LastSaveRateIdx = 0;
+	NdisZeroMemory(pEntry->DownTxMCSRate, sizeof(pEntry->DownTxMCSRate));
 
 	MlmeClearAllTxQuality(pEntry);
 }

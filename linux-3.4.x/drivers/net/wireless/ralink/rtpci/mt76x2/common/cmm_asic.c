@@ -3946,6 +3946,7 @@ VOID pkt_aggr_num_change(
 	IN PRTMP_ADAPTER pAd, 
 	IN USHORT num)
 {
+#ifdef RT6352
 	if (IS_RT6352(pAd))
 	{
 		if (num < 5)
@@ -3965,7 +3966,7 @@ VOID pkt_aggr_num_change(
 			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M2S, 0x77765544);
 		}
 	}
-
+#endif /* RT6352 */
 }
 
 VOID asic_tune_be_wmm(

@@ -896,7 +896,7 @@ typedef struct _MO_CFG_STRUCT {
 	UINT16 		nFalseCCACnt;	
 	UINT16		nFalseCCATh;	/* default is 100 */
 #ifdef RT6352
-	UINT32		Stored_BBP_R65;
+	UCHAR		Stored_BBP_R65;
 	UCHAR		Stored_RF_B5_R6;
 	UCHAR		Stored_RF_B5_R7;
 	UCHAR		Stored_RF_B7_R6;
@@ -906,7 +906,7 @@ typedef struct _MO_CFG_STRUCT {
 #endif /* MICROWAVE_OVEN_SUPPORT */
 
 /* TODO: need to integrate with MICROWAVE_OVEN_SUPPORT */
-//#ifdef DYNAMIC_VGA_SUPPORT
+#ifdef DYNAMIC_VGA_SUPPORT
 /* for dynamic vga */
 typedef struct _LNA_VGA_CTL_STRUCT {
 	BOOLEAN		bEnable;
@@ -924,7 +924,7 @@ typedef struct _LNA_VGA_CTL_STRUCT {
 	UCHAR 		agc_vga_ori_1; /* the original vga gain initialized by firmware at start up */
 	UINT16		agc_1_vga_set1_2;	
 } LNA_VGA_CTL_STRUCT, *PLNA_VGA_CTL_STRUCT;
-//#endif /* DYNAMIC_VGA_SUPPORT */
+#endif /* DYNAMIC_VGA_SUPPORT */
 
 /***************************************************************************
   *	security key related data structure
@@ -2255,9 +2255,9 @@ typedef struct _COMMON_CONFIG {
 #endif /* RT6352 */
 
 /* TODO: need to integrate with MICROWAVE_OVEN_SUPPORT */
-//#ifdef DYNAMIC_VGA_SUPPORT
+#ifdef DYNAMIC_VGA_SUPPORT
 	LNA_VGA_CTL_STRUCT lna_vga_ctl;
-//#endif /* DYNAMIC_VGA_SUPPORT */
+#endif /* DYNAMIC_VGA_SUPPORT */
 
 #ifdef DELAYED_TCP_ACK
 #define		TCP_ACK_BURST_LEVEL		10

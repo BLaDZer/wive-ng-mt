@@ -102,6 +102,11 @@ VOID get_dev_config_idx(RTMP_ADAPTER *pAd)
 		if (chip_id == second_card)
 			idx = 1;
 	} else {
+#ifdef RT6352
+		if (IS_RT6352(pAd))
+			idx = 0;
+		else
+#endif
 		if (IS_RT8592(pAd))
 			idx = 0;
 		else if (IS_RT5392(pAd) || IS_MT76x0(pAd))
@@ -178,14 +183,15 @@ static UCHAR *get_dev_profile(RTMP_ADAPTER *pAd)
 #ifdef CONFIG_STA_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
 		{
-#if defined(CONFIG_RT_FIRST_CARD) || defined(CONFIG_RT_SECOND_CARD)
+#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_FIRST_CARD == 7620) && \
+    (CONFIG_RT_SECOND_CARD == 7602 || CONFIG_RT_SECOND_CARD == 7612)
 			INT card_idx = pAd->dev_idx;
 			if (card_idx == 0)
-				src = FIRST_AP_PROFILE_PATH;
+				src = FIRST_STA_PROFILE_PATH;
 			else if (card_idx == 1)
-				src = SECOND_AP_PROFILE_PATH;
+				src = SECOND_STA_PROFILE_PATH;
 			else
-#endif /* defined(CONFIG_RT_FIRST_CARD) || defined(CONFIG_RT_SECOND_CARD) */
+#endif
 			src = STA_PROFILE_PATH;
 		}
 #endif /* CONFIG_STA_SUPPORT */
@@ -207,9 +213,9 @@ static CHAR *get_sku_profile(RTMP_ADAPTER *pAd)
 	INT card_idx = pAd->dev_idx;
 
 	if (card_idx == 0)
-		src = FIRST_AP_SINGLE_SKU_PATH;
+		src = FIRST_IF_SINGLE_SKU_PATH;
 	else if (card_idx == 1)
-		src = SECOND_AP_SINGLE_SKU_PATH;
+		src = SECOND_IF_SINGLE_SKU_PATH;
 #endif
 
 	return src;

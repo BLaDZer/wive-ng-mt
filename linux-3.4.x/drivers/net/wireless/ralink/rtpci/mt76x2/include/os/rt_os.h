@@ -83,7 +83,7 @@
 #define RTPRIV_IOCTL_SET							(SIOCIWFIRSTPRIV + 0x02)
 #define RT_PRIV_IOCTL_EXT							(SIOCIWFIRSTPRIV + 0x0E) /* Sync. with RT61 (for wpa_supplicant) */				
 
-#if defined(DBG) ||(defined(BB_SOC)&&defined(RALINK_ATE))
+#if defined(DBG) || (defined(BB_SOC) && defined(RALINK_ATE))
 #define RTPRIV_IOCTL_BBP                            (SIOCIWFIRSTPRIV + 0x03)
 #define RTPRIV_IOCTL_MAC                            (SIOCIWFIRSTPRIV + 0x05)
 
