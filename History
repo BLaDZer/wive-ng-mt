@@ -1246,50 +1246,50 @@
 3) init.d: fix path to passthrouth control files.<br>
 4) init.d: hotplug support automount sd card if exist.<br>
 5) init.d: add entware_install.sh script for fast install entware support to sd/hdd.<br>
-6) defaults: add fast roaming and radio resource managment parametrs.<br>
-7) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
-8) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
-9) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
-10) kernel: ralink_arch: drop deprecated RTDEV_XXX params, use CONFIG_RT_FIRST_IF_XXX/CONFIG_RT_SECOND_IF_XXX to handle driver features.<br>
-11) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
-12) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
-13) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
-14) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
-15) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
-16) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
-17) kernel: ralink_wifi: 76x2: fix microwave oven detect support.<br>
-18) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
-19) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
-20) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
-21) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
-22) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-23) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-24) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-25) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-26) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-27) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-28) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-29) kernel: net: add function to allocate sk_buff head without data area.<br>
-30) kernel: net: fix sk_buff head without data area.<br>
-31) kernel: net: sock_flag() cleanup.<br>
-32) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-33) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-34) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-35) kernel: net: implement ipv6 passthrouth logic.<br>
+6) kernel: ralink_mtd: sync MT7621/MT7628 SPI/NAND flash drivers with SDK 5.0.0.0.<br>
+7) kernel: ralink_raeth: code refactoring and sync with 5.0.0.0 SDK.<br>
+8) kernel: ralink_arch: sync with SDK 5.0.0.0.<br>
+9) kernel: ralink_arch: drop deprecated RTDEV_XXX params, use CONFIG_RT_FIRST_IF_XXX/CONFIG_RT_SECOND_IF_XXX to handle driver features.<br>
+10) kernel: ralink_sdxc: fix MT7628 SDXC init.<br>
+11) kernel: ralink_ppe: sync with 5.0.0.0 SDK.<br>
+12) kernel: ralink_wifi: 7610: always set ldpc field to 0 in CAP_IE (7610 not support LDCP).<br>
+13) kernel: ralink_wifi: 7610: fix calculate rx amdsu size.<br>
+14) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0 universal (7620+7602+7612 chisp support) version.<br>
+15) kernel: ralink_wifi: 76x2: fix microwave oven detect support.<br>
+16) kernel: ralink_wifi: xxxx: fix mcs7 cap parse.<br>
+17) kernel: ralink_wifi: xxxx: fix txring full in some cases(high noise level or if client lost connect).<br>
+18) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
+19) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
+20) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
+21) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+22) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+23) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+24) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+25) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+26) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+27) kernel: net: add function to allocate sk_buff head without data area.<br>
+28) kernel: net: fix sk_buff head without data area.<br>
+29) kernel: net: sock_flag() cleanup.<br>
+30) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+31) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+32) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+33) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>3.4.x</b><br>
 1) build_system: add iappd demon for basic roaming support (disabled by default).<br>
 2) build_system: rework defaults and rf calibs factory/backups install.<br>
-3) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
-4) goahead: fix fast roaming extensions enable/disable options.<br>
-5) goahead: add IDS parametrs to WebUI.<br>
-6) kernel: configs: enable IDS for all devices.<br>
-7) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-8) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
-9) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
-10) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
-11) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+3) defaults: add fast roaming and radio resource managment parametrs.<br>
+4) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
+5) goahead: fix fast roaming extensions enable/disable options.<br>
+6) goahead: add IDS parametrs to WebUI.<br>
+7) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
+8) kernel: configs: enable IDS for all devices.<br>
+9) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+10) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
+11) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+12) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+13) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
 <br>
 <br>
 <b>TODO:</b><br>
