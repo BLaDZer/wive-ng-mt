@@ -250,7 +250,7 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int  idx = 0, channel;
 	const char *value = nvram_bufget(RT2860_NVRAM,"CountryRegionABand");
-	const char *channel_s = nvram_bufget(RT2860_NVRAM, "Channel");
+	const char *channel_s = nvram_bufget(RT2860_NVRAM, "ChannelINIC");
 
 	channel = (channel_s == NULL)? 0 : atoi(channel_s);
 	if ((value == NULL) || (strcmp(value, "") == 0) ||
