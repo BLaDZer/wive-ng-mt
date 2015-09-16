@@ -32,12 +32,19 @@ VOID mgmt_tb_set_mcast_entry(RTMP_ADAPTER *pAd)
 {
 	MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[MCAST_WCID];
 
-	pEntry->EntryType = ENTRY_WDEV;	
+	pEntry->EntryType = ENTRY_WDEV;
 	pEntry->Sst = SST_ASSOC;
 	pEntry->Aid = MCAST_WCID;	/* Softap supports 1 BSSID and use WCID=0 as multicast Wcid index*/
 	pEntry->wcid = MCAST_WCID;
 	pEntry->PsMode = PWR_ACTIVE;
 	pEntry->CurrTxRate = pAd->CommonCfg.MlmeRate;
+
+	pEntry->Addr[0] = 0x01;
+	pEntry->HTPhyMode.field.MODE = MODE_OFDM;
+	pEntry->HTPhyMode.field.MCS = 3;
+
+	NdisMoveMemory(pEntry->Addr, &BROADCAST_ADDR[0], MAC_ADDR_LEN);
+
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd){
 		pEntry->wdev = &pAd->ApCfg.MBSSID[MAIN_MBSSID].wdev;

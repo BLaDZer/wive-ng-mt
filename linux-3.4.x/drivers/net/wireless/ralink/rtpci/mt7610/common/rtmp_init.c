@@ -2868,6 +2868,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			pAd->ApCfg.MBSSID[j].WpaMixPairCipher = MIX_CIPHER_NOTUSE;
 			pAd->ApCfg.MBSSID[j].RekeyCountDown = 0;	/* it's used for WPA rekey */
 
+			/* init the default 60 seconds*/
+			pAd->ApCfg.MBSSID[j].StationKeepAliveTime = 60;
+
 #ifdef DOT1X_SUPPORT
 			pAd->ApCfg.MBSSID[j].IEEE8021X = FALSE;
 			pAd->ApCfg.MBSSID[j].PreAuth = FALSE;

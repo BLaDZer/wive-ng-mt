@@ -3727,6 +3727,9 @@ VOID	UserCfgInit(
 			pAd->ApCfg.MBSSID[j].WpaMixPairCipher = MIX_CIPHER_NOTUSE;
 			pAd->ApCfg.MBSSID[j].RekeyCountDown = 0;	/* it's used for WPA rekey */
 
+			/* init the default 60 seconds*/
+			pAd->ApCfg.MBSSID[j].StationKeepAliveTime = 60;
+
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 			pAd->ApCfg.MBSSID[j].TxPwrAdj = -1;
 #endif /* SPECIFIC_TX_POWER_SUPPORT */

@@ -2493,11 +2493,18 @@ VOID AsicSetMcastWC(
 {
 	MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[MCAST_WCID];
 	USHORT		offset;
-	
+
 	pEntry->Sst        = SST_ASSOC;
 	pEntry->Aid        = MCAST_WCID;	/* Softap supports 1 BSSID and use WCID=0 as multicast Wcid index*/
 	pEntry->PsMode     = PWR_ACTIVE;
 	pEntry->CurrTxRate = pAd->CommonCfg.MlmeRate; 
+
+	pEntry->Addr[0] = 0x01;
+	pEntry->HTPhyMode.field.MODE = MODE_OFDM;
+	pEntry->HTPhyMode.field.MCS = 3;
+
+	NdisMoveMemory(pEntry->Addr, &BROADCAST_ADDR[0], MAC_ADDR_LEN);
+
 	offset = MAC_WCID_BASE + BSS0Mcast_WCID * HW_WCID_ENTRY_SIZE;
 }
 

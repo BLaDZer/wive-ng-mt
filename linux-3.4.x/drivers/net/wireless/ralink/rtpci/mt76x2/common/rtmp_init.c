@@ -3526,6 +3526,10 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			mbss->RekeyCountDown = 0;	/* it's used for WPA rekey */
 
 			mbss->ProbeRspTimes = 3;
+
+			/* init the default 60 seconds*/
+			mbss->StationKeepAliveTime = 60;
+
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 			if (IS_RT6352(pAd) || IS_MT76x2(pAd))
 				mbss->TxPwrAdj = -1;

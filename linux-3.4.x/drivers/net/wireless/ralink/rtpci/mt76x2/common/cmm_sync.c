@@ -109,6 +109,8 @@ VOID BuildChannelList(RTMP_ADAPTER *pAd)
 					if (pChannelList[i] == pAd->TxPower[j].Channel)
 						NdisMoveMemory(&pAd->ChannelList[index+i], &pAd->TxPower[j], sizeof(CHANNEL_TX_POWER));
 						pAd->ChannelList[index + i].Flags = pChannelListFlag[i];
+						// TODO: shiang-7603, NdisMoveMemory may replace the pAd->ChannelList[index+i].Channel as other values!
+						pAd->ChannelList[index + i].Channel = pChannelList[i];
 				}
 
 #ifdef DOT11_N_SUPPORT
@@ -225,6 +227,8 @@ VOID BuildChannelList(RTMP_ADAPTER *pAd)
 					if (pChannelList[i] == pAd->TxPower[j].Channel)
 						NdisMoveMemory(&pAd->ChannelList[index+i], &pAd->TxPower[j], sizeof(CHANNEL_TX_POWER));
 						pAd->ChannelList[index + i].Flags = pChannelListFlag[i];
+						// TODO: shiang-7603, NdisMoveMemory may replace the pAd->ChannelList[index+i].Channel as other values!
+						pAd->ChannelList[index + i].Channel = pChannelList[i];
 				}
 
 #ifdef DOT11_N_SUPPORT
