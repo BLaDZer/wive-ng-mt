@@ -1411,7 +1411,7 @@ function CheckValue(form)
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">
         	<tr>
-        		<td class="title" id="basicIDS" width="50%">Intrusion Detection (IDS)</td>
+        		<td class="title" id="basicIDS" width="50%">Intrusion Detection settings</td>
         		<td class="title" width="50%" style="text-align:right">
         			<select name="IdsEnable" size="1" class="half" onChange="idsChange(this.form);">
         				<option value="0" id="disable">Disable</option>

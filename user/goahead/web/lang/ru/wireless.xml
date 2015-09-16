@@ -99,7 +99,7 @@
   <message msgid="basic an" msgstr="Только 11an" />
   <message msgid="basic anc" msgstr="Смешанный 11a/an/ac" />
   <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
-  <message msgid="basic roaming" msgstr="Базовые настройки роуминга" />
+  <message msgid="basic roaming" msgstr="Настройки роуминга" />
   <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
   <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
   <message msgid="basic roaming auth rssi" msgstr="Игнорировать попытки авторизации при уровне ниже" />
@@ -108,7 +108,7 @@
   <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
-  <message msgid="basic ids" msgstr="Обнаружение вторжений (IDS)" />
+  <message msgid="basic ids" msgstr="Обнаружение вторжений" />
   <message msgid="basic ids auth" msgstr="Пороговое значение аутентификаций" />
   <message msgid="basic ids assoc" msgstr="Пороговое значение запросов на ассоциацию" />
   <message msgid="basic ids reassoc" msgstr="Пороговое значение повторных запросов на ассоциацию" />
