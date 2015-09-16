@@ -1271,19 +1271,22 @@
 28) kernel: ralink_wifi: xxxx: prepare to full migrate to 3.0.4.0 for all 7620 devices (now build new driver only for 7620A/7621+7612 devices).<br>
 29) kernel: mips: do not need PERCPU_SECTION in vmlinux if not SMP kernel build.<br>
 30) kernel: mips: uapi: fix unrecognized opcode WSBH/DSBH/DSHD when using MIPS16.<br>
-31) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
-32) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
-33) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
-34) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
-35) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
-36) kernel: net: igmp: inhibit reports for local multicast groups.<br>
-37) kernel: net: add function to allocate sk_buff head without data area.<br>
-38) kernel: net: fix sk_buff head without data area.<br>
-39) kernel: net: sock_flag() cleanup.<br>
-40) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
-41) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
-42) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
-43) kernel: net: implement ipv6 passthrouth logic.<br>
+31) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
+32) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+33) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+34) kernel: net: skb_free_datagram_locked() doesnt drop all packets.<br>
+35) kernel: net: bridge: multicast-to-unicast: fix echoes on STA.<br>
+36) kernel: net: bridge: multicast-to-unicast: use src from original skb (not from clone).<br>
+37) kernel: net: tcp: fix slow start after idle vs TSO/GSO.<br>
+38) kernel: net: tcp: speedup SIOCINQ ioctl.<br>
+39) kernel: net: igmp: inhibit reports for local multicast groups.<br>
+40) kernel: net: add function to allocate sk_buff head without data area.<br>
+41) kernel: net: fix sk_buff head without data area.<br>
+42) kernel: net: sock_flag() cleanup.<br>
+43) kernel: net: ping: prevent NULL pointer dereference on write to msg_name.<br>
+44) kernel: net: ipv6: send NEWLINK on RA managed/otherconf changes.<br>
+45) kernel: net: ipv4: don't report neigh uptodate state in rtcache procfs.<br>
+46) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
 <b>TODO:</b><br>
