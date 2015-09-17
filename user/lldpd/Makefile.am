@@ -47,6 +47,6 @@ romfs: install
 	$(ROMFSINST) -S init.d/W84lldpd /etc/rc.d/W84lldpd
 	$(ROMFSINST) -s /etc/rc.d/W84lldpd /etc/init.d/lldpd
 	$(ROMFSINST) -S lldpd.conf /etc/lldpd.conf
-	cp -apr filesystem/lib/*.so* $(ROMFSDIR)/lib
-	cp -apr filesystem/sbin/* $(ROMFSDIR)/sbin
+	cp -aprfv filesystem/lib/*.so* $(ROMFSDIR)/lib
+	cp -aprfv filesystem/sbin/* $(ROMFSDIR)/sbin
 	rm -rf filesystem
