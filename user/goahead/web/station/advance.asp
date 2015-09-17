@@ -363,9 +363,7 @@ function init11NValues()
           </tr>
         </table>
         <br>
-        <table id="div_ht_phy_mode" name="div_ht_phy_mode" width="90%" class="form" <%
-	if (wm == "0" || wm == "1" || wm == "2" || wm == "3")
-	write("style=\"display:none;\""); %>>
+        <table id="div_ht_phy_mode" name="div_ht_phy_mode" width="90%" class="form">
           <tr>
             <td class="title" colspan="2" id="staadvHTPhyMode">HT Physical Mode</td>
           </tr>
