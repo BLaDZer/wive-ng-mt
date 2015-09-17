@@ -505,11 +505,11 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(session_timeout_interval);
 	FPRINT_NUM(quiet_interval);
 
-	FPRINT_STR(PSMode);
 	FPRINT_STR(MaxStaNum);
 	FPRINT_NUM(IdleTimeout);
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
+	FPRINT_STR(PSMode);
 	FPRINT_NUM(AutoConnect);
 	FPRINT_NUM(FastConnect);
 	FPRINT_NUM(AutoRoaming);
