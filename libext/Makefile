@@ -66,8 +66,6 @@ dir_$(CONFIG_LIB_XML2)            += libxml2
 dir_$(CONFIG_LIB_NEON)            += libneon
 dir_$(CONFIG_LIB_CURL)            += libcurl
 
-dir_$(CONFIG_LIB_NEON)            := libneon
-
 OPENSSL_CONFIG = RT2880 no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no-mdc2 no-rfc3779 no-seed \
                   no-ec no-ecdh no-ec2m no-ecdsa no-err no-threads no-idea no-rc2 no-rc5 \
                   no-hw no-md2 no-sse2 no-dso no-ts no-ripemd no-rmd160 no-sha0 \
