@@ -1,12 +1,17 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/irqbalance ] || [ "$CONFIG_SMP" = "" ]; then
+if [ ! -f /bin/irqbalance ]; then
     exit 0
 fi
 
 #include global config
 . /etc/scripts/global.sh
+
+#if not SMP
+if [ "$CONFIG_SMP" = "" ]; then
+    exit 0
+fi
 
 LOG="logger -t irqbalance"
 
