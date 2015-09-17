@@ -23,7 +23,7 @@ fi
 
 if [ "$CONFIG_LIB_NEON" = "y" ]; then
     define_bool CONFIG_LIB_ZLIB y
-    define_bool CONFIG_LIB_LIBXML2 y
+    define_bool CONFIG_LIB_XML2 y
     define_bool CONFIG_LIB_OPENSSL y
 fi
 
@@ -47,7 +47,7 @@ bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
 if [ "$CONFIG_USER_DAVFS" = "y" ]; then
     define_bool CONFIG_LIB_NEON y
     define_bool CONFIG_LIB_ZLIB y
-    define_bool CONFIG_LIB_LIBXML2 y
+    define_bool CONFIG_LIB_XML2 y
     define_bool CONFIG_LIB_ICONV y
 fi
 if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
