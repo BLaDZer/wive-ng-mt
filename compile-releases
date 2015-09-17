@@ -11,15 +11,15 @@ DEVLISTSAMPLES="MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB MT7620-2T2R-EXTPA-EXTLNA-MT
 ./clear
 
 # for fabric build only real devices
-if [ "$1" = "" ]; then
-    DEVLIST="$DEVLISTREAL $DEVLISTSAMPLES"
-else
+if [ "$1" = "YES" ]; then
     DEVLIST="$DEVLISTREAL"
+else
+    DEVLIST="$DEVLISTREAL $DEVLISTSAMPLES"
 fi
 
 for devname in $DEVLIST
 do
     ./clear RELEASE
-    nice -19 ./compile "$devname" $1 || exit 1
+    nice -19 ./compile "$devname" $1 $2 || exit 1
     cp -f $PWD/images/*.zip $PWD/releases
 done

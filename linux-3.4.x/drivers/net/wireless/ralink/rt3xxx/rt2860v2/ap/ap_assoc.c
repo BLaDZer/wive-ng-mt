@@ -1129,7 +1129,7 @@ VOID MbssKickOutStas(
 #endif /* MAC_REPEATER_SUPPORT */
 
 			APMlmeKickOutSta(pAd, pEntry->Addr, pEntry->Aid, Reason);
-	}
+		}
 	}
 
 	return;

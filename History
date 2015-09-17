@@ -1276,7 +1276,7 @@
 33) kernel: net: implement ipv6 passthrouth logic.<br>
 <br>
 <br>
-<b>3.4.x</b><br>
+<b>3.5.x</b><br>
 1) build_system: add iappd demon for basic roaming support (disabled by default).<br>
 2) build_system: rework defaults and rf calibs factory/backups install.<br>
 3) build_system: rework link and install depended libs.<br>
