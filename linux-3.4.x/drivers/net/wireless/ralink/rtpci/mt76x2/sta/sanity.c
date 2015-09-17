@@ -335,7 +335,7 @@ BOOLEAN PeerAssocRspSanity(
 	/* Check the MIC during FT */
 	if (pAd->StaCfg.Dot11RCommInfo.bFtSupport &&
 	    pAd->StaCfg.Dot11RCommInfo.bInMobilityDomain &&
-	    pAd->StaCfg.WepStatus != Ndis802_11WEPDisabled) {
+	    pAd->StaCfg.wdev.WepStatus != Ndis802_11WEPDisabled) {
 		UINT8 rcvd_mic[16];
 		UINT8 ft_mic[16];
 

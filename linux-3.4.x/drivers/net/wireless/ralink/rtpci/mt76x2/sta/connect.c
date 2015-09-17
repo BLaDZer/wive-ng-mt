@@ -1812,7 +1812,7 @@ VOID LinkUp(RTMP_ADAPTER *pAd, UCHAR BssType)
 				       pAd->MlmeAux.FtIeInfo.R0khIdLen);
 			pAd->StaCfg.Dot11RCommInfo.R0khIdLen = pAd->MlmeAux.FtIeInfo.R0khIdLen;
 
-			if (pAd->StaCfg.AuthMode == Ndis802_11AuthModeWPA2PSK) {
+			if (pAd->StaCfg.wdev.AuthMode == Ndis802_11AuthModeWPA2PSK) {
 				/* Update PMK. */
 				if (pAd->StaCfg.WpaPassPhraseLen == 64) {
 					AtoH(pAd->StaCfg.WpaPassPhrase, pAd->StaCfg.PMK, 32);

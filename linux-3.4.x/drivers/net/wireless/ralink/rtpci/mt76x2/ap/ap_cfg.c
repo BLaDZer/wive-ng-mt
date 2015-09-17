@@ -5029,7 +5029,7 @@ INT RTMPAPQueryInformation(
 			wrq->u.data.length = sizeof(DefaultKeyIdxValue);
 
 			Status = copy_to_user(wrq->u.data.pointer, pKeyIdxValue, wrq->u.data.length);
-			DBGPRINT(RT_DEBUG_TRACE,("DefaultKeyId = %d, total len = %d, str len=%d, KeyValue= %02x %02x %02x %02x \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId, wrq->u.data.length, pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen,
+			DBGPRINT(RT_DEBUG_TRACE,("DefaultKeyId = %d, total len = %d, str len=%d, KeyValue= %02x %02x %02x %02x \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId, wrq->u.data.length, pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].KeyLen,
 			pAd->SharedKey[pObj->ioctl_if][0].Key[0],
 			pAd->SharedKey[pObj->ioctl_if][1].Key[0],
 			pAd->SharedKey[pObj->ioctl_if][2].Key[0],

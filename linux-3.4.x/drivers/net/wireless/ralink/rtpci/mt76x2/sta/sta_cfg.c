@@ -4740,12 +4740,12 @@ INT RTMPSetInformation(
 				Status = -EINVAL;
 			else
 			{
-				pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].KeyLen = (UCHAR) pKey->KeyLength;
-				NdisMoveMemory(&pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].Key, &pKey->KeyMaterial, pKey->KeyLength);
+				pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].KeyLen = (UCHAR) pKey->KeyLength;
+				NdisMoveMemory(&pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].Key, &pKey->KeyMaterial, pKey->KeyLength);
 				if (pKey->KeyIndex & 0x80000000)
 				{
 					/* Default key for tx (shared key) */
-					pAd->StaCfg.DefaultKeyId = (UCHAR) KeyIdx;
+					pAd->StaCfg.wdev.DefaultKeyId = (UCHAR) KeyIdx;
 				}
 				/*RestartAPIsRequired = TRUE; */
 			}
@@ -4759,7 +4759,7 @@ INT RTMPSetInformation(
 			if (wrq->u.data.length != sizeof(UCHAR))
 				Status = -EINVAL;
 			else
-				Status = copy_from_user(&pAd->StaCfg.DefaultKeyId, wrq->u.data.pointer, wrq->u.data.length);
+				Status = copy_from_user(&pAd->StaCfg.wdev.DefaultKeyId, wrq->u.data.pointer, wrq->u.data.length);
 
 			break;
 
@@ -4877,7 +4877,7 @@ INT RTMPSetInformation(
                 if (Status == NDIS_STATUS_SUCCESS)
                 {                	
                 	/* Obtain the NMK and tx_iv of AE */
-                	pAd->StaCfg.DefaultKeyId = wapi_mkey.key_id;
+                	pAd->StaCfg.wdev.DefaultKeyId = wapi_mkey.key_id;
                 	/*NdisMoveMemory(pAd->StaCfg.rx_iv, wapi_mkey.m_tx_iv, LEN_WAPI_TSC); */
                 	NdisMoveMemory(pAd->StaCfg.NMK, wapi_mkey.NMK, 16);
 
@@ -4888,7 +4888,7 @@ INT RTMPSetInformation(
 					WAPIInstallSharedKey(pAd, 
 										 pAd->StaCfg.GroupCipher, 
 										 BSS0, 
-										 pAd->StaCfg.DefaultKeyId, 
+										 pAd->StaCfg.wdev.DefaultKeyId, 
 										 MCAST_WCID,
 										 pAd->StaCfg.GTK);
 																		
@@ -5857,9 +5857,9 @@ INT RTMPQueryInformation(
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_WEPDEFAULTKEYVALUE \n"));
 			pKeyIdxValue = wrq->u.data.pointer;
 			DBGPRINT(RT_DEBUG_TRACE,("KeyIdxValue.KeyIdx = %d, \n",pKeyIdxValue->KeyIdx));
-			valueLen = pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].KeyLen;
+			valueLen = pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].KeyLen;
 			NdisMoveMemory(pKeyIdxValue->Value,
-						   &pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].Key,
+						   &pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].Key,
 						   valueLen);
 			pKeyIdxValue->Value[valueLen]='\0';
 
@@ -5867,9 +5867,9 @@ INT RTMPQueryInformation(
 
 			Status = copy_to_user(wrq->u.data.pointer, pKeyIdxValue, wrq->u.data.length);
 			DBGPRINT(RT_DEBUG_TRACE,("DefaultKeyId = %d, total len = %d, str len=%d, KeyValue= %02x %02x %02x %02x \n", 
-										pAd->StaCfg.DefaultKeyId, 
+										pAd->StaCfg.wdev.DefaultKeyId, 
 										wrq->u.data.length, 
-										pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].KeyLen,
+										pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].KeyLen,
 										pAd->SharedKey[BSS0][0].Key[0],
 										pAd->SharedKey[BSS0][1].Key[0],
 										pAd->SharedKey[BSS0][2].Key[0],
@@ -5879,15 +5879,15 @@ INT RTMPQueryInformation(
 		case OID_802_11_WEPDEFAULTKEYID:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_WEPDEFAULTKEYID \n"));
 			wrq->u.data.length = sizeof(UCHAR);
-			Status = copy_to_user(wrq->u.data.pointer, &pAd->StaCfg.DefaultKeyId, wrq->u.data.length);
-			DBGPRINT(RT_DEBUG_TRACE, ("DefaultKeyId =%d \n", pAd->StaCfg.DefaultKeyId));
+			Status = copy_to_user(wrq->u.data.pointer, &pAd->StaCfg.wdev.DefaultKeyId, wrq->u.data.length);
+			DBGPRINT(RT_DEBUG_TRACE, ("DefaultKeyId =%d \n", pAd->StaCfg.wdev.DefaultKeyId));
 			break;
 
 		case RT_OID_802_11_WEPKEYMAPPINGLENGTH:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_WEPKEYMAPPINGLENGTH \n"));
 			wrq->u.data.length = sizeof(UCHAR);
 			Status = copy_to_user(wrq->u.data.pointer,
-									&pAd->SharedKey[BSS0][pAd->StaCfg.DefaultKeyId].KeyLen,
+									&pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].KeyLen,
 									wrq->u.data.length);
 			break;
 
@@ -9235,8 +9235,8 @@ RtmpIoctl_rt_ioctl_siwauth(
     	case RT_CMD_STA_IOCTL_WPA_AUTH_PRIVACY_INVOKED:
             /*if (pIoctlWpa->value == 0)
 			{
-                pAd->StaCfg.AuthMode = Ndis802_11AuthModeOpen;
-                pAd->StaCfg.WepStatus = Ndis802_11WEPDisabled;
+                pAd->StaCfg.wdev.AuthMode = Ndis802_11AuthModeOpen;
+                pAd->StaCfg.wdev.WepStatus = Ndis802_11WEPDisabled;
                 pAd->StaCfg.PairCipher = Ndis802_11WEPDisabled;
         	    pAd->StaCfg.GroupCipher = Ndis802_11WEPDisabled;
             }*/            

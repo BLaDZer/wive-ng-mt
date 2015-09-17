@@ -2471,8 +2471,6 @@ typedef struct _STA_ADMIN_CONFIG {
 		Security segment
 	*/
 	NDIS_802_11_PRIVACY_FILTER PrivacyFilter;	/* PrivacyFilter enum for 802.1X */
-	NDIS_802_11_AUTHENTICATION_MODE AuthMode;       /* This should match to whatever microsoft defined */
-	NDIS_802_11_WEP_STATUS WepStatus;
 
 	/* Add to support different cipher suite for WPA2/WPA mode */
 	NDIS_802_11_ENCRYPTION_STATUS GroupCipher;	/* Multicast cipher suite */
@@ -2490,8 +2488,6 @@ typedef struct _STA_ADMIN_CONFIG {
 	CIPHER_KEY TxGTK;
 	BSSID_INFO SavedPMK[PMKID_NO];
 	UINT SavedPMKNum;	/* Saved PMKID number */
-
-	UCHAR DefaultKeyId;
 
 #ifdef WAPI_SUPPORT
 	UCHAR WAPIPassPhrase[64];	/* WAPI PSK pass phrase */

@@ -779,7 +779,7 @@ VOID MlmeReassocReqAction(
 
 			/* Indicate the FT procedure */
 			if (pAd->StaCfg.Dot11RCommInfo.bInMobilityDomain &&
-			    pAd->StaCfg.WepStatus != Ndis802_11WEPDisabled) {
+			    pAd->StaCfg.wdev.WepStatus != Ndis802_11WEPDisabled) {
 				UINT8 FtIeLen = 0;
 				PMAC_TABLE_ENTRY pEntry;
 				FT_MIC_CTR_FIELD mic_ctr;
@@ -1166,7 +1166,7 @@ VOID MlmeDisassocReqAction(
 
 #ifdef WAPI_SUPPORT
 	WAPI_InternalCmdAction(pAd,
-			       pAd->StaCfg.AuthMode,
+			       pAd->StaCfg.wdev.AuthMode,
 			       BSS0, pDisassocReq->Addr, WAI_MLME_DISCONNECT);
 #endif /* WAPI_SUPPORT */
 
@@ -1782,7 +1782,7 @@ VOID PeerDisassocAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 #ifdef WAPI_SUPPORT
 			WAPI_InternalCmdAction(pAd,
-					       pAd->StaCfg.AuthMode,
+					       pAd->StaCfg.wdev.AuthMode,
 					       BSS0,
 					       Addr2, WAI_MLME_DISCONNECT);
 #endif /* WAPI_SUPPORT */

@@ -3670,7 +3670,7 @@ VOID STA_Legacy_Frame_Tx_Hdr_Trns(
 
 #ifdef ADHOC_WPA2PSK_SUPPORT
 	if (ADHOC_ON(pAd)
-	    && (pAd->StaCfg.AuthMode == Ndis802_11AuthModeWPA2PSK)
+	    && (pAd->StaCfg.wdev.AuthMode == Ndis802_11AuthModeWPA2PSK)
 	    && (pAd->StaCfg.GroupCipher == Ndis802_11AESEnable)
 	    && (!pTxBlk->pMacEntry)) {
 		/* use Wcid as Hardware Key Index */
