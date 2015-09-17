@@ -241,7 +241,8 @@ doxygen: FORCE
 FORCE:
 
 shared: install
-	cp -vfa ./filesystem/lib/*.*	$(LIBCDIRSHARED)/lib
+	cp -vfa ./filesystem/lib/*.so*	$(LIBCDIRSHARED)/lib
+	-cp -vfa ./filesystem/lib/*.la*	$(LIBCDIRSHARED)/lib
 	cp -vfra ./filesystem/include/*	$(LIBCDIRSHARED)/include
 
 

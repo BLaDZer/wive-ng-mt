@@ -16,7 +16,8 @@ if [ ! -f $APROOTDIR/Makefile ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --enable-shared=no --enable-static=no --disable-mtab --disable-debug"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --disable-mtab --disable-debug"
 CONFOPTS="$CONFOPTS --disable-library --disable-ldconfig --disable-mount-helper --with-fuse=internal"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 

@@ -132,7 +132,7 @@ lib_install:
 	$(MAKE) -j$(HOST_NCPU) -C $(LIBCDIR) install_headers ARCH=mips PREFIX=$(LIBCDIRSHARED)/ DEVEL_PREFIX= MULTILIB_DIR=lib
 	#####################COMPOSE LIBC SHARE LIBC######################
 	mkdir -p $(LIBCDIRSHARED)/lib
-	cp -aprfv $(LIBCDIR)/lib/*.a* $(LIBCDIRSHARED)/lib
+	cp -aprfv $(LIBCDIR)/lib/*.a $(LIBCDIRSHARED)/lib
 	cp -aprfv $(LIBCDIR)/lib/*.so* $(LIBCDIRSHARED)/lib
 
 .PHONY: toolchain_headers_update
@@ -173,7 +173,7 @@ modules_install:
 .PHONY: romfs.post
 romfs.post:
 	##################COPY_RUNTIME_LIBS####################
-	cp -aprfv $(LIBCDIRSHARED)/lib/* $(ROMFSDIR)/lib
+	cp -aprfv $(LIBCDIRSHARED)/lib/*.so* $(ROMFSDIR)/lib
 	find $(ROOTDIR)/toolchain/lib -type f -name 'libgcc_s*so*' -exec cp -vfap {} $(ROMFSDIR)/lib/ \;
 	######################CLEANUP##########################
 	-find $(ROMFSDIR)/. -name CVS | xargs -r rm -rf

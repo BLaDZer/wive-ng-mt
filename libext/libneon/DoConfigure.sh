@@ -26,7 +26,8 @@ if [ ! -f $APROOTDIR/configure ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug --enable-webdav --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug --enable-webdav"
 CONFOPTS="$CONFOPTS --without-pakchois --without-ca-bundle --without-gssapi --without-libproxy --with-ssl --with-libs=$LIBDIR"
 
 ./configure $CONFOPTS

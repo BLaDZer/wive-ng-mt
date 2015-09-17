@@ -15,6 +15,7 @@ if [ ! -f $APROOTDIR/configure ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD --prefix=$APROOTDIR/filesystem"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
 CONFOPTS="$CONFOPTS --with-readline=no --with-embedded-libevent=no --with-privsep=no --with-xml=no --with-json=no"
 CONFOPTS="$CONFOPTS --disable-privsep --disable-cdp --disable-libssp --disable-hardening"
 CONFOPTS="$CONFOPTS --enable-fdp --enable-edp --enable-lldpmed --enable-dot1 --enable-dot3"

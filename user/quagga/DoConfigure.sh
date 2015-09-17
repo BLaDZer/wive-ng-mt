@@ -17,6 +17,7 @@ fi
 
 CONFOPTS="--host=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
 CONFOPTS="$CONFOPTS --disable-bgpd --disable-babeld --disable-ripngd"
 CONFOPTS="$CONFOPTS --disable-ospfapi --disable-ospfclient --disable-ospfd --disable-ospf6d"
 CONFOPTS="$CONFOPTS --disable-dependency-tracking"

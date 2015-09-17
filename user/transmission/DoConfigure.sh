@@ -20,6 +20,7 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 
 ./configure $CONFOPTS \
 	    --prefix=$APROOTDIR/filesystem \
+	    --enable-shared --disable-static \
 	    --disable-cli --disable-mac --disable-nls --disable-utp \
 	    --without-gtk \
 	    --enable-external-natpmp \

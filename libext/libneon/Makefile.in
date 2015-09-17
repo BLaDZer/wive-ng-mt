@@ -209,6 +209,7 @@ doc-status:
 
 shared:
 	cp -vfa ./src/.libs/*.so*	$(LIBCDIRSHARED)/lib
+	-cp -vfa ./src/.libs/*.la*	$(LIBCDIRSHARED)/lib
 	mkdir -p $(LIBCDIRSHARED)/include/neon
 	cp -vfra ./src/ne_*.h $(LIBCDIRSHARED)/include/neon
 	rm -rf ./filesystem

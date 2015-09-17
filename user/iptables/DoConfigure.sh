@@ -24,6 +24,7 @@ if [ -f ../../linux/.config ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-dependency-tracking --enable-static --disable-shared --with-xtlibdir=/lib $IPV6"
+# always build static lib (use only by iptables and miniupnpd)
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-dependency-tracking --disable-shared --enable-static --with-xtlibdir=/lib $IPV6"
 
 ./configure $CONFOPTS

@@ -26,9 +26,9 @@ if [ ! -f $APROOTDIR/Makefile.in ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
 CONFOPTS="$CONFOPTS --disable-dependency-tracking"
-CONFOPTS="$CONFOPTS --enable-shared --enable-static"
-CONFOPTS="$CONFOPTS --disable-udev --disable-timerfd --disable-examples-build --disable-tests-build --disable-static"
+CONFOPTS="$CONFOPTS --disable-udev --disable-timerfd --disable-examples-build --disable-tests-build"
 CONFOPTS="$CONFOPTS --enable-log --enable-debug-log"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 

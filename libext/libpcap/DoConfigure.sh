@@ -35,7 +35,8 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
-CONFOPTS="$CONFOPTS --enable-shared --with-pcap=linux"
+CONFOPTS="$CONFOPTS --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --with-pcap=linux"
 CONFOPTS="$CONFOPTS --disable-bluetooth --disable-canusb --disable-can --without-flex --without-bison --without-libnl $IPV6"
 
 ./configure $CONFOPTS
