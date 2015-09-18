@@ -48,7 +48,7 @@ romfs:
 	$(ROMFSINST) -S ndsctl /bin/ndsctl
 	$(ROMFSINST) -S nodogsplash /bin/nodogsplash
 	mkdir -p $(ROMFSDIR)/etc/nodogsplash $(ROMFSDIR)/etc/nodogsplash/htdocs $(ROMFSDIR)/etc/nodogsplash/pages $(ROMFSDIR)/etc/nodogsplash/htdocs/images
-	cp -aprvf resources/*.conf $(ROMFSDIR)/etc/nodogsplash/
+	cp -aprvf resources/nodogsplash.conf.template $(ROMFSDIR)/etc/nodogsplash/nodogsplash.conf.template
 	cp -aprvf resources/*.html $(ROMFSDIR)/etc/nodogsplash/htdocs/
 	cp -aprvf resources/*.jpg $(ROMFSDIR)/etc/nodogsplash/htdocs/images/
 	$(ROMFSINST) -S init.d/W89nodogsplash /etc/rc.d/W89nodogsplash

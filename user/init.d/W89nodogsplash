@@ -7,16 +7,27 @@ fi
 
 LOG="logger -t nodogsplash"
 
+# get params
+. /etc/scripts/global.sh
+
 start() {
     get_param
     if [ "$nodogsplash_enable" = "1" ]; then
 	$LOG "Starting SNMPD"
+	printf "
+	    GatewayInterface $lan_if
+	    GatewayAddress $lan_ipaddr
+	    GatewayName $HostName
+	" > $CONF
+	cat $CTMP >> $CONF
 	nodogsplash -s &
     fi
 }
 
 get_param() {
     eval `nvram_buf_get 2860 nodogsplash_enable`
+    CONF="/etc/nodogsplash/nodogsplash.conf"
+    CTMP="/etc/nodogsplash/nodogsplash.conf.template"
 }
 
 stop() {
