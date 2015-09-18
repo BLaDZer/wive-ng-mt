@@ -1113,7 +1113,6 @@ static UCHAR RT6352_ChipAGCAdjust(
 	IN UCHAR				OrigR66Value)
 {
 	UCHAR R66 = OrigR66Value;
-	CHAR lanGain = GET_LNA_GAIN(pAd);
 
 	if (pAd->LatchRfRegs.Channel <= 14)
 		R66 = 0x04 + 2 * GET_LNA_GAIN(pAd);

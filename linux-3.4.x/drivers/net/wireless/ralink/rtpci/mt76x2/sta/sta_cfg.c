@@ -2974,7 +2974,6 @@ INT Set_WlanLed_Proc(
 #ifdef CONFIG_SWMCU_SUPPORT
 	PSWMCU_LED_CONTROL pSWMCULedCntl = &pAd->LedCntl.SWMCULedCntl;
 #endif /* CONFIG_SWMCU_SUPPORT */
-	BOOLEAN Cancelled;
 
 	bWlanLed = (ULONG) simple_strtol(arg, 0, 10);
 #ifdef CONFIG_SWMCU_SUPPORT
@@ -3132,7 +3131,6 @@ INT RTMPSetInformation(
 #endif /* WPA_SUPPLICANT_SUPPORT */
 
 #ifdef SNMP_SUPPORT	
-	TX_RTY_CFG_STRUC tx_rty_cfg;
 	ULONG ShortRetryLimit, LongRetryLimit;
 	UCHAR ctmp;
 #endif /* SNMP_SUPPORT */
@@ -3383,8 +3381,6 @@ INT RTMPSetInformation(
                 Status  = -EINVAL;
             else
             {
-            	UINT32	Value;
-				
                 Status = copy_from_user(&StaConfig, wrq->u.data.pointer, wrq->u.data.length);
                 pAd->CommonCfg.bEnableTxBurst = StaConfig.EnableTxBurst;
                 pAd->CommonCfg.UseBGProtection = StaConfig.UseBGProtection;
@@ -4974,7 +4970,6 @@ INT RTMPQueryInformation(
 #ifdef SNMP_SUPPORT	
 	DefaultKeyIdxValue			*pKeyIdxValue;
 	INT							valueLen;
-	TX_RTY_CFG_STRUC			tx_rty_cfg;
 	ULONG						ShortRetryLimit, LongRetryLimit;
 	UCHAR						tmp[64];
 #endif /*SNMP */
@@ -5913,7 +5908,7 @@ INT RTMPQueryInformation(
 #ifdef RTMP_MAC_PCI
 			{
 			
-				USHORT  device_id;
+				USHORT  device_id = 0;
 				if (((POS_COOKIE)pAd->OS_Cookie)->pci_dev != NULL)
 			    	pci_read_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, PCI_DEVICE_ID, &device_id);
 				else 
@@ -7051,7 +7046,7 @@ VOID RTMPIoctlRF_rlt(
 {
 	PSTRING				this_char;
 	PSTRING				value;
-	UCHAR				regRF = 0, rf_bank = 0;
+	UCHAR				regRF = 0;
 	PSTRING				mpool, msg;
 	PSTRING				arg;
 	PSTRING				ptr;
@@ -9919,11 +9914,9 @@ Note:
 INT
 RtmpIoctl_rt_ioctl_giwrate(RTMP_ADAPTER *pAd, VOID *pData, ULONG Data)
 {
-    int rate_index = 0, rate_count = 0;
-	HTTRANSMIT_SETTING ht_setting; 
-	struct wifi_dev *wdev = &pAd->StaCfg.wdev;
+    HTTRANSMIT_SETTING ht_setting; 
+    struct wifi_dev *wdev = &pAd->StaCfg.wdev;
 
-    
     if ((wdev->bAutoTxRateSwitch == FALSE) &&
         (INFRA_ON(pAd)) &&
         ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) || (pAd->MacTab.Content[BSSID_WCID].HTPhyMode.field.MODE <= MODE_OFDM)))
@@ -10481,19 +10474,20 @@ RtmpIoctl_rt_private_get_statistics(
 		if (pAd->MacTab.Size > 0)
 		{
 			static char *phyMode[5] = {"CCK", "OFDM", "MM", "GF", "VHT"};
+#ifdef RT65xx
 			static char *bw[3] = {"20M", "40M", "80M"};
 			static char *fec_coding[2] = {"bcc", "ldpc"};
+#endif
 			int i;
-    		    	
 			for (i=1; i<MAX_LEN_OF_MAC_TABLE; i++)
 			{
 				PMAC_TABLE_ENTRY pEntry = &(pAd->MacTab.Content[i]);
 				if (IS_ENTRY_CLIENT(pEntry) && pEntry->Sst==SST_ASSOC)
 				{
 					UINT32 lastRxRate = pEntry->LastRxRate;
+#ifdef RT65xx
 					UINT32 lastTxRate = pEntry->LastTxRate;
-			
-#ifdef RT65xx			
+
 					if (IS_RT65XX(pAd)) {
 						if (((lastTxRate >> 13) & 0x7) == 0x04) {
 							sprintf(extra+strlen(extra), "Last TX Rate                    = MCS%d, %dSS, %s, %s, %cGI, %s%s\n",
@@ -10514,7 +10508,7 @@ RtmpIoctl_rt_private_get_statistics(
 							phyMode[(lastTxRate >> 13) & 0x7],
 							((lastTxRate >> 10) & 0x3)? ", STBC": " ");
 						}
-						
+
 						if (((lastRxRate >> 13) & 0x7) == 0x04) {
 							sprintf(extra+strlen(extra), "Last RX Rate                    = MCS%d, %dSS, %s, %s, %cGI, %s%s\n",
 								lastRxRate & 0x0F,
@@ -10549,7 +10543,7 @@ RtmpIoctl_rt_private_get_statistics(
 				}
 			}
 		}
-#else    		    	
+#else
 		sprintf(extra+strlen(extra), "RSSI-A                          = %ld\n", (LONG)(pAd->StaCfg.RssiSample.AvgRssi0 - pAd->BbpRssiToDbmDelta));
 		sprintf(extra+strlen(extra), "RSSI-B (if available)           = %ld\n", (LONG)(pAd->StaCfg.RssiSample.AvgRssi1 - pAd->BbpRssiToDbmDelta));
         	sprintf(extra+strlen(extra), "RSSI-C (if available)           = %ld\n\n", (LONG)(pAd->StaCfg.RssiSample.AvgRssi2 - pAd->BbpRssiToDbmDelta));
