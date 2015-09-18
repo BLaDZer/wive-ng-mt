@@ -43,6 +43,8 @@ install:
 	cp resources/splash.html $(DESTDIR)/etc/nodogsplash/htdocs/
 	cp resources/infoskel.html $(DESTDIR)/etc/nodogsplash/htdocs/
 	cp resources/splash.jpg $(DESTDIR)/etc/nodogsplash/htdocs/images/
+	$(ROMFSINST) -S init.d/W89nodogsplash /etc/rc.d/W89nodogsplash
+	$(ROMFSINST) -s /etc/rc.d/W89nodogsplash /etc/init.d/nodogsplash
 
 romfs:
 	$(ROMFSINST) -S ndsctl /bin/ndsctl
