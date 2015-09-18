@@ -14747,6 +14747,8 @@ INT Set_MO_FalseCCATh_Proc(
 
 	if (th > 65535)
 		th = 65535;
+        if (th < 300)
+		rh = MO_FALSE_CCA_TH;
 
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = th;
 

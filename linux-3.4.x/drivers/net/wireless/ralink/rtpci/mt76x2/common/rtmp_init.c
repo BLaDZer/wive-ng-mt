@@ -3977,6 +3977,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
 	else
 		pAd->CommonCfg.MO_Cfg.bEnable = FALSE;
+	pAd->CommonCfg.MO_Cfg.nFalseCCATh = MO_FALSE_CCA_TH;
 #endif
 #ifdef DYNAMIC_VGA_SUPPORT
 	pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
