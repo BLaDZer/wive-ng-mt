@@ -174,6 +174,14 @@ if [ "$MODE" = "all" ]; then
 fi
 
 ##########################################################
+# restart nodogsplash hotspot daemon			 #
+# need always restart - netfilter reconfigure by daemon  #
+##########################################################
+if [ -e /bin/nodogsplash ]; then
+    service nodogsplash restart
+fi
+
+##########################################################
 # Always rebalance irq by cpus				 #
 ##########################################################
 if [ -e /bin/irqbalance ]; then

@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/nodogsplash ]; then
+    exit 0
+fi
+
+LOG="logger -t nodogsplash"
+
+start() {
+    get_param
+    if [ "$nodogsplash_enable" = "1" ]; then
+	$LOG "Starting SNMPD"
+	nodogsplash -s &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 nodogsplash_enable`
+}
+
+stop() {
+    pid=`pidof nodogsplash`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping SNMPD"
+	killall -q nodogsplash
+	killall -q -SIGKILL nodogsplash
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac
