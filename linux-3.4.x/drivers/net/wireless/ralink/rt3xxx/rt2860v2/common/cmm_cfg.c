@@ -370,6 +370,13 @@ UCHAR RT_CfgMbssWirelessModeMaxGet(
 			IsAnyG = TRUE;
 			IsAny24N = TRUE;
 		}
+
+		if (pMbss->PhyMode == PHY_11GN_MIXED)
+		{
+			IsAnyB = FALSE;
+			IsAnyG = TRUE;
+			IsAny24N = TRUE;
+		}
 #endif /* DOT11_N_SUPPORT */
 	}
 
@@ -653,39 +660,35 @@ INT RT_CfgSetWPAPSKKey(
 	return TRUE;
 }
 
-INT	RT_CfgSetFixedTxPhyMode(
-	IN	PSTRING			arg)
+INT	RT_CfgSetFixedTxPhyMode(PSTRING arg)
 {
-	INT		fix_tx_mode = FIXED_TXMODE_HT;
-	UINT32	value;
+	INT fix_tx_mode = FIXED_TXMODE_HT;
+	ULONG value;
 
-	if (strcmp(arg, "OFDM") == 0 || strcmp(arg, "ofdm") == 0)
-	{
+
+	if (rtstrcasecmp(arg, "OFDM") == TRUE)
 		fix_tx_mode = FIXED_TXMODE_OFDM;
-	}	
-	else if (strcmp(arg, "CCK") == 0 || strcmp(arg, "cck") == 0)
-	{
+	else if (rtstrcasecmp(arg, "CCK") == TRUE)
 	    fix_tx_mode = FIXED_TXMODE_CCK;
-	}
-	else if (strcmp(arg, "HT") == 0 || strcmp(arg, "ht") == 0)
-	{
+	else if (rtstrcasecmp(arg, "HT") == TRUE)
 	    fix_tx_mode = FIXED_TXMODE_HT;
-	}
 	else
 	{
 		value = simple_strtol(arg, 0, 10);
-		/* 1 : CCK*/
-		/* 2 : OFDM*/
-		/* otherwise : HT*/
-		if (value == FIXED_TXMODE_CCK || value == FIXED_TXMODE_OFDM)
-			fix_tx_mode = value;	
-		else
-			fix_tx_mode = FIXED_TXMODE_HT;
+		switch (value)
+		{
+			case FIXED_TXMODE_CCK:
+			case FIXED_TXMODE_OFDM:
+			case FIXED_TXMODE_HT:
+				fix_tx_mode = value;
+				break;
+			default:
+				fix_tx_mode = FIXED_TXMODE_HT;
+		}
 	}
 
 	return fix_tx_mode;
-					
-}	
+}
 
 INT	RT_CfgSetMacAddress(
 	IN 	PRTMP_ADAPTER 	pAd,

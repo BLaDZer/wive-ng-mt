@@ -277,9 +277,9 @@ VOID APMakeBssBeacon(
 		*/
 
 		UCHAR rclass32[]={32, 1, 2, 3, 4, 5, 6, 7};
-        UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
+    		UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
 		UCHAR rclasslen = 8; /*sizeof(rclass32); */
-		if (PhyMode == PHY_11BGN_MIXED)
+		if (PhyMode == PHY_11BGN_MIXED || PhyMode == PHY_11GN_MIXED)
 		{
 			MakeOutgoingFrame(pBeaconFrame+FrameLen,&TmpLen,
 							  1,                    &APChannelReportIe,

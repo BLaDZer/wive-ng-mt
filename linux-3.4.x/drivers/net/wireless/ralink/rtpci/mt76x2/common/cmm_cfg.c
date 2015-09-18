@@ -669,8 +669,7 @@ INT	RT_CfgSetFixedTxPhyMode(PSTRING arg)
 	}
 
 	return fix_tx_mode;
-					
-}	
+}
 
 INT	RT_CfgSetMacAddress(
 	IN 	PRTMP_ADAPTER 	pAd,

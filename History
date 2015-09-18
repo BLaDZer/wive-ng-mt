@@ -1287,16 +1287,20 @@
 8) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
 9) goahead: fix fast roaming extensions enable/disable options.<br>
 10) goahead: add IDS parametrs to WebUI.<br>
-11) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
-12) kernel: configs: enable IDS for all devices.<br>
-13) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-14) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
-15) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
-16) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
-17) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
-18) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
-19) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
-20) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+11) goahead: review txmode set for new drivers notation.<br>
+12) goahead: fix 80211.x start if server adress unset.<br>
+13) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
+14) kernel: configs: enable IDS for all devices.<br>
+15) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+16) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
+17) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
+18) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+19) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
+20) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
+21) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
+22) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
+23) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+24) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -1728,7 +1728,7 @@ VOID APUpdateOperationMode(
 		bDisableBGProtect = TRUE;
 	}
 		
-	if (pAd->MacTab.fAnyStationIsLegacy || pAd->MacTab.Size > 1)
+	if (pAd->MacTab.fAnyStationIsLegacy)
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 3;
 		bDisableBGProtect = TRUE;

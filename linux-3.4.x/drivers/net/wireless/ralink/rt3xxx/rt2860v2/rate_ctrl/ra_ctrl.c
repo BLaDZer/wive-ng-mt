@@ -1255,7 +1255,7 @@ VOID MlmeSelectTxRateTable(
 #endif /* DOT11N_SS3_SUPPORT */
 #endif /* DOT11_N_SUPPORT */
 
-		if (((pEntry->SupportRateMode == SUPPORT_CCK_MODE) || pAd->CommonCfg.PhyMode==PHY_11B) 
+		if (((pEntry->SupportRateMode == SUPPORT_CCK_MODE) || pAd->CommonCfg.PhyMode == PHY_11B)
 #ifdef DOT11_N_SUPPORT
 		/*Iverson mark for Adhoc b mode,sta will use rate 54  Mbps when connect with sta b/g/n mode */
 		/* && (pEntry->HTCapability.MCSSet[0] == 0) && (pEntry->HTCapability.MCSSet[1] == 0)*/
