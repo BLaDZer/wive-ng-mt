@@ -931,9 +931,6 @@ VOID BAOriSessionTearDown(
 		return;
 	}
 
-	/* Clear WTBL2.dw15 when BA is deleted */
-	RTMP_DEL_BA_SESSION_FROM_ASIC(pAd, Wcid, TID);  
-
 	/* Locate corresponding BA Originator Entry in BA Table with the (pAddr,TID).*/
 	Idx = pAd->MacTab.Content[Wcid].BAOriWcidArray[TID];
 	if ((Idx == 0) || (Idx >= MAX_LEN_OF_BA_ORI_TABLE))
