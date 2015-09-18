@@ -44,7 +44,7 @@ nat_mode() {
 offload() {
     # In bridge and chillispot mode not fastnat use
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	eval `nvram_buf_get 2860 hw_nat_bind hw_nat_wifi hw_nat_udp hw_nat_six offloadMode natFastpath routeFastpath filterFastpath store_ttl`
+	eval `nvram_buf_get 2860 hw_nat_bind hw_nat_wifi hw_nat_udp hw_nat_six offloadMode natFastpath routeFastpath filterFastpath store_ttl nodogsplash_enable`
 	# select NAT offload mode
 	if [ "$offloadMode" = "1" ]; then
 	    hw_nat=0
@@ -62,6 +62,10 @@ offload() {
 	    hw_nat=0
 	    sw_nat=0
 	    $LOG "NAT Offload disabled by user, hw_nat and all fastpaths disabled."
+	fi
+	if [ "$hotspot" = "on" ] || [ "$nodogsplash_enable" = "1" ]; then
+	    sw_nat=0
+	    $LOG "Hotspot mode enabled  - disable NAT Fastpath."
 	fi
 	if [ "$CONFIG_BCM_NAT" = "y" ]; then
 	    # configure software nat offload
