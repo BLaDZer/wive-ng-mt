@@ -14821,17 +14821,11 @@ INT set_false_cca_hi_th(PRTMP_ADAPTER pAd, PSTRING arg)
 {
 	INT32 val = simple_strtol(arg, 0, 10);
 
-	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? 800 : val;
-
-#ifdef RT6352
-	if (IS_RT6352(pAd)) {
-		pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? 600 : val;
-	}
-#endif /* RT6352 */
+	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? MO_FALSE_CCA_TH : val;
 
 	DBGPRINT(RT_DEBUG_OFF, ("%s::(false cca high threshould = %d)\n", 
 		__FUNCTION__, pAd->CommonCfg.lna_vga_ctl.nFalseCCATh));
-	
+
 	return TRUE;
 }
 
