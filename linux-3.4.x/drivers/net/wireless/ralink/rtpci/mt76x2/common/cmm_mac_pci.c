@@ -1798,11 +1798,11 @@ VOID RT28xxPciStaAsicForceWakeup(RTMP_ADAPTER *pAd, BOOLEAN bFromTx)
     else
 #endif /* PCIE_PS_SUPPORT */
     {
-    	BOOLEAN	Canceled;
-	
-        /* PCI, 2860-PCIe*/
-         DBGPRINT(RT_DEBUG_TRACE, ("<==RT28xxPciStaAsicForceWakeup::Original PCI Power Saving\n"));
 #ifdef MT76x2
+    		BOOLEAN	Canceled;
+
+    		/* PCI, 2860-PCIe*/
+        	DBGPRINT(RT_DEBUG_TRACE, ("<==RT28xxPciStaAsicForceWakeup::Original PCI Power Saving\n"));
 		if (IS_MT76x2(pAd))
 		{
 			RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD);
@@ -2194,25 +2194,24 @@ BOOLEAN RT28xxPciAsicRadioOn(RTMP_ADAPTER *pAd, UCHAR Level)
  */
 BOOLEAN RT28xxPciAsicRadioOff(
 	IN RTMP_ADAPTER *pAd,
-	IN UCHAR Level, 
-	IN USHORT TbttNumToNextWakeUp) 
+	IN UCHAR Level,
+	IN USHORT TbttNumToNextWakeUp)
 {
-#ifdef CONFIG_STA_SUPPORT	
-	WPDMA_GLO_CFG_STRUC	DmaCfg;
-	UCHAR		i, tempBBP_R3 = 0;
-#ifdef PCIE_PS_SUPPORT	
-    ULONG		BeaconPeriodTime;
+#ifdef CONFIG_STA_SUPPORT
+	UCHAR		tempBBP_R3 = 0;
+#ifdef PCIE_PS_SUPPORT
+	ULONG		BeaconPeriodTime;
 	UINT32		PsPollTime = 0/*, MACValue*/;
 	UINT32		TbTTTime = 0;
 	BOOLEAN		Cancelled;
-#endif /* PCIE_PS_SUPPORT */	
-#endif /* CONFIG_STA_SUPPORT */
 #if defined(CONFIG_STA_SUPPORT) || defined(RT2860)
 	BOOLEAN		brc = FALSE;
 #endif /* defined(CONFIG_STA_SUPPORT) || defined(RT2860) */
+#endif /* PCIE_PS_SUPPORT */
+#endif /* CONFIG_STA_SUPPORT */
 
 
-    UINT32 RxDmaIdx, RxCpuIdx;
+	UINT32 RxDmaIdx, RxCpuIdx;
 	DBGPRINT(RT_DEBUG_TRACE, ("%s ===> Lv= %d, TxCpuIdx = %d, TxDmaIdx = %d. RxCpuIdx = %d, RxDmaIdx = %d.\n", 
 								__FUNCTION__, Level,pAd->TxRing[0].TxCpuIdx, pAd->TxRing[0].TxDmaIdx, 
 								pAd->RxRing[0].RxCpuIdx, pAd->RxRing[0].RxDmaIdx));

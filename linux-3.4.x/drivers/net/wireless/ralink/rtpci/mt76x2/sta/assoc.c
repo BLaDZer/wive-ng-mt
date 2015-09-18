@@ -168,7 +168,9 @@ VOID MlmeAssocReqAction(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem)
 {
+#ifdef VHT_TXBF_SUPPORT
 	ULONG Idx;
+#endif /* VHT_TXBF_SUPPORT */
 	UCHAR ApAddr[6];
 	HEADER_802_11 AssocHdr;
 	UCHAR WmeIe[9] = {IE_VENDOR_SPECIFIC, 0x07, 0x00, 0x50, 0xf2, 0x02, 0x00, 0x01, 0x00};
@@ -697,7 +699,9 @@ VOID MlmeReassocReqAction(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM * Elem)
 {
+#ifdef VHT_TXBF_SUPPORT
 	ULONG Idx;
+#endif /* VHT_TXBF_SUPPORT */
 	UCHAR ApAddr[6];
 	HEADER_802_11 ReassocHdr;
 	UCHAR WmeIe[9] = {IE_VENDOR_SPECIFIC, 0x07, 0x00, 0x50, 0xf2, 0x02, 0x00, 0x01, 0x00};

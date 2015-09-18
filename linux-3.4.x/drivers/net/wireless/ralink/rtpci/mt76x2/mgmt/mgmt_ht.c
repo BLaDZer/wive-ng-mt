@@ -713,9 +713,9 @@ VOID RTMPSetIndividualHT(RTMP_ADAPTER *pAd, UCHAR apidx)
 */
 VOID RTMPDisableDesiredHtInfo(RTMP_ADAPTER *pAd)
 {
+#ifdef CONFIG_AP_SUPPORT
 	struct wifi_dev *wdev;
 
-#ifdef CONFIG_AP_SUPPORT
 	UINT8 idx = 0;
 
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)

@@ -461,7 +461,7 @@ void announce_802_3_packet(
 	IN PNDIS_PACKET pNetPkt,
 	IN UCHAR OpMode)
 {
-	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)pAdSrc;
+	RTMP_ADAPTER __maybe_unused *pAd = (RTMP_ADAPTER *)pAdSrc;
 	struct sk_buff *pRxPkt;
 
 	ASSERT(pNetPkt);

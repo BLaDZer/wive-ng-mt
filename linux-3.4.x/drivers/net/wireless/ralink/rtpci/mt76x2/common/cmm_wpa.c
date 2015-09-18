@@ -609,8 +609,6 @@ VOID RTMPToWirelessSta(
 			Status = STASendPacket(pAd, pPacket);
 			if (Status == NDIS_STATUS_SUCCESS)
 			{
-				UCHAR   Index;
-				
 				/* Dequeue one frame from TxSwQueue0..3 queue and process it*/
 				/* There are three place calling dequeue for TX ring.*/
 				/* 1. Here, right after queueing the frame.*/
@@ -870,8 +868,8 @@ VOID WPAStart4WayHS(
     PEAPOL_PACKET	pEapolFrame;
 	PUINT8			pBssid = NULL;
 	UCHAR			group_cipher = Ndis802_11WEPDisabled;
-	struct wifi_dev *wdev;
 #ifdef CONFIG_AP_SUPPORT
+	struct wifi_dev *wdev;
 	MULTISSID_STRUCT *pMbss;
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -1567,11 +1565,12 @@ VOID WPAPairMsg3Retry(
 	UCHAR				default_key = 0;
 	UCHAR				group_cipher = Ndis802_11WEPDisabled;
 	PUINT8				rsnie_ptr = NULL;
-	PUINT8				pmk_ptr = NULL;
+
 	UCHAR				rsnie_len = 0;
 	UCHAR 				TxTsc[6];
 	UCHAR               Header802_3[LENGTH_802_3];
 #ifdef CONFIG_AP_SUPPORT
+	PUINT8				pmk_ptr = NULL;
 	UCHAR				apidx = 0;
 #endif /* CONFIG_AP_SUPPORT */
 #if defined(CONFIG_HOTSPOT) && defined(CONFIG_AP_SUPPORT)
@@ -1920,7 +1919,9 @@ VOID PeerPairMsg4Action(
     PHEADER_802_11      pHeader;
     UINT            	MsgLen;
     BOOLEAN             Cancelled;
-	UCHAR				group_cipher = Ndis802_11WEPDisabled;
+#ifdef CONFIG_AP_SUPPORT
+    UCHAR				group_cipher = Ndis802_11WEPDisabled;
+#endif /* CONFIG_AP_SUPPORT */
 
     DBGPRINT(RT_DEBUG_TRACE, ("===> PeerPairMsg4Action\n"));
 
@@ -2562,10 +2563,12 @@ VOID PeerGroupMsg2Action(
     UINT            	Len;
     PUCHAR          	pData;
     BOOLEAN         	Cancelled;
-	PEAPOL_PACKET       pMsg2;	
-	UCHAR				group_cipher = Ndis802_11WEPDisabled;	
+    PEAPOL_PACKET       pMsg2;
+#ifdef CONFIG_AP_SUPPORT
+    UCHAR				group_cipher = Ndis802_11WEPDisabled;
+#endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("===> PeerGroupMsg2Action \n"));
+    DBGPRINT(RT_DEBUG_TRACE, ("===> PeerGroupMsg2Action \n"));
 
     if ((!pEntry) || !IS_ENTRY_CLIENT(pEntry))
         return;

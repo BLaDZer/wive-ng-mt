@@ -4952,7 +4952,8 @@ INT RTMPQueryInformation(
     NDIS_802_11_AUTHENTICATION_MODE AuthMode;
     NDIS_802_11_WEP_STATUS WepStatus;
     NDIS_MEDIA_STATE MediaState;
-    ULONG BssBufSize, ulInfo=0, NetworkTypeList[4], apsd = 0, RateValue=0;
+    ULONG BssBufSize, ulInfo=0, NetworkTypeList[4], apsd = 0;
+    UINT32  RateValue=0;
     USHORT BssLen = 0;
     PUCHAR pBuf = NULL, pPtr;
     INT Status = NDIS_STATUS_SUCCESS;
@@ -5850,7 +5851,7 @@ INT RTMPQueryInformation(
 
 		case OID_802_11_WEPDEFAULTKEYVALUE:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_WEPDEFAULTKEYVALUE \n"));
-			pKeyIdxValue = wrq->u.data.pointer;
+			pKeyIdxValue = (DefaultKeyIdxValue*)wrq->u.data.pointer;
 			DBGPRINT(RT_DEBUG_TRACE,("KeyIdxValue.KeyIdx = %d, \n",pKeyIdxValue->KeyIdx));
 			valueLen = pAd->SharedKey[BSS0][pAd->StaCfg.wdev.DefaultKeyId].KeyLen;
 			NdisMoveMemory(pKeyIdxValue->Value,

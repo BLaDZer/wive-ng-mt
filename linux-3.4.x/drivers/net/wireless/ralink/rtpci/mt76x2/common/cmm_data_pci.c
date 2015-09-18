@@ -691,7 +691,9 @@ BOOLEAN RTMPFreeTXDUponTxDmaDone(
 	UCHAR FREE = 0;
 	TXD_STRUC TxD, *pOriTxD;
 	BOOLEAN bReschedule = FALSE;
+#ifdef CONFIG_AP_SUPPORT
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
+#endif /* CONFIG_AP_SUPPORT */
 #ifdef RALINK_ATE
 #ifdef TXBF_SUPPORT
 	ULONG stTimeChk;
@@ -1107,10 +1109,11 @@ VOID RTMPHandleMgmtRingDmaDoneInterrupt(RTMP_ADAPTER *pAd)
 /*	int 		 i;*/
 	UCHAR	FREE = 0;
 	PRTMP_MGMT_RING pMgmtRing = &pAd->MgmtRing;
+#ifdef CONFIG_AP_SUPPORT
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
+#endif /* CONFIG_AP_SUPPORT */
 
 	NdisAcquireSpinLock(&pAd->MgmtRingLock);
-	
 	RTMP_IO_READ32(pAd, pMgmtRing->hw_didx_addr, &pMgmtRing->TxDmaIdx);
 	while (pMgmtRing->TxSwFreeIdx!= pMgmtRing->TxDmaIdx)
 	{

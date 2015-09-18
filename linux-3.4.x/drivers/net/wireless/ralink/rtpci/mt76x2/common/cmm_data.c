@@ -1917,12 +1917,13 @@ VOID RTMPDeQueuePacket(
 	unsigned long	IrqFlags = 0;
 	BOOLEAN hasTxDesc = FALSE;
 	TX_BLK TxBlk, *pTxBlk;
-	UCHAR RAWcid;
 #ifdef TXBF_SUPPORT 
 	UCHAR TxSndgType = SNDG_TYPE_DISABLE;
-#endif /* TXBF_SUPPORT */	
+#endif /* TXBF_SUPPORT */
+#ifdef CONFIG_AP_SUPPORT
+	UCHAR RAWcid;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
-
+#endif /* CONFIG_AP_SUPPORT */
 #ifdef DBG_DIAGNOSE
 	BOOLEAN firstRound;
 	RtmpDiagStruct *pDiagStruct = &pAd->DiagStruct;
@@ -4057,8 +4058,9 @@ VOID RtmpEnqueueNullFrame(
 #endif /* DOT11Z_TDLS_SUPPORT */
 		}
 #endif /* CONFIG_STA_SUPPORT */
-
+#ifdef CONFIG_AP_SUPPORT
 body:
+#endif /* CONFIG_AP_SUPPORT */
 		pNullFr->FC.Type = FC_TYPE_DATA;
 
 		if (bQosNull)
@@ -4250,7 +4252,9 @@ VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	HEADER_802_11 *pHeader = pRxBlk->pHeader;
 	PNDIS_PACKET pRxPacket = pRxBlk->pRxPacket;
 	INT op_mode = pRxBlk->OpMode;
+#ifdef CONFIG_AP_SUPPORT
 	BOOLEAN 	bPassTheBcastPkt = FALSE;
+#endif /* CONFIG_AP_SUPPORT */
 #ifdef APCLI_SUPPORT
 #ifdef APCLI_CERT_SUPPORT	
 	PAPCLI_STRUCT pApCliEntry = NULL;

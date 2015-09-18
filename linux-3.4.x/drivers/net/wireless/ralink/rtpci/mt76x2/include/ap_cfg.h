@@ -80,15 +80,6 @@ VOID RTMPAPIoctlRF(
 
 #endif /* DBG */
 
-VOID RtmpDrvRateGet(
-	IN	VOID					*pReserved,
-	IN	UINT8					MODE,
-	IN	UINT8					ShortGI,
-	IN	UINT8					BW,
-	IN	UINT8					MCS,
-	IN  UINT8                   Antena,
-	OUT	UINT32					*pRate);
-
 #ifdef WSC_AP_SUPPORT
 VOID RTMPIoctlWscProfile(
 	IN PRTMP_ADAPTER pAdapter, 

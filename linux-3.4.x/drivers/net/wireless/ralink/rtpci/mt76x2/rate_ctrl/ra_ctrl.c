@@ -1453,8 +1453,9 @@ VOID MlmeSetTxRate(
 	struct wifi_dev *wdev = &pAd->StaCfg.wdev;
 	UCHAR	MaxMode = MODE_OFDM;
 	UCHAR tx_mode = pTxRate->Mode;
+#ifdef RT8592
 	UCHAR tx_bw = pTxRate->BW;
-	HTTRANSMIT_SETTING *tx_setting = &pAd->StaCfg.wdev.HTPhyMode;
+#endif /* RT8592 */
 
 #ifdef DOT11_N_SUPPORT
 	MaxMode = MODE_HTGREENFIELD;
