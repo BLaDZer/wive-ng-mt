@@ -1283,7 +1283,7 @@
 4) userapps: add nodogsplash (stabalone simple captive portal support).<br>
 5) defaults: add fast roaming and radio resource managment parametrs.<br>
 6) defaults: enable WMM support by default (this long time ready for production).<br>
-7) coovachilli: up to version 1.3.1.3 commit: commit c6221da).<br>
+7) coovachilli: up to version 1.3.1.3 commit: commit 12c8d8c).<br>
 8) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
 9) goahead: fix fast roaming extensions enable/disable options.<br>
 10) goahead: add IDS parametrs to WebUI.<br>
