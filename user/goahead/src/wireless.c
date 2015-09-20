@@ -1290,6 +1290,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	doSystem("internet.sh wifionly");
 }
 
+#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
 /* goform/wirelessWds */
 static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 {
@@ -1343,7 +1344,9 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	// restart wireless network
 	doSystem("internet.sh wifionly");
 }
+#endif
 
+#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
 const parameter_fetch_t apcli_args[] =
 {
 	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("") },
@@ -1381,6 +1384,7 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 		websRedirect(wp, submitUrl);
 	}
 }
+#endif
 
 /* STF means "Save To Flash" ...*/
 void STFs(int nvram, int index, char *flash_key, char *value)
