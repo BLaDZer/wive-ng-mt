@@ -1,8 +1,6 @@
 .EXPORT_ALL_VARIABLES:
 
 -include $(LINUX_CONFIG)
--include $(CONFIG_CONFIG)
--include $(ARCH_CONFIG)
 
 IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
     rtm_map.o iptunnel.o ip6tunnel.o tunnel.o ipneigh.o ipntable.o iplink.o \
