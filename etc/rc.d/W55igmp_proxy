@@ -95,7 +95,7 @@ get_param() {
     ####################################
     # correct mode for igmpsnooping
     ####################################
-    if [ "$igmpSnoopMode" = "n" -o "$tv_port" = "1" -o "$sip_port" = "1" ] || [ "$igmpM2UConvMode" = "all" ] || [ "$igmpM2UConvMode" = "lan" ]; then
+    if [ "$igmpSnoopMode" = "n" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ] || [ "$igmpM2UConvMode" = "all" ] || [ "$igmpM2UConvMode" = "lan" ]; then
         # force hibryd mode snooping disabled
 	igmpSnoopMode="n"
     else
