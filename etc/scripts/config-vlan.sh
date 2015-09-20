@@ -140,6 +140,17 @@ reinit_all_phys() {
 	reset_all_phys
 }
 
+igmpsnooping() {
+	# enable/disable HW igmpsnooping on all ports
+        for port in `seq 0 6`; do
+	    if [ "$igmpSnoopMode" = "n" ]; then
+		switch igmpsnoop disable $port
+	    else
+		switch igmpsnoop enable $port
+	    fi
+	done
+}
+
 restore7620Esw()
 {
         $LOG "Restore internal MT7620 switch mode to dumb mode"
@@ -154,6 +165,10 @@ restore7620Esw()
 
 	# clear configured vlan parts
 	switch vlan clear
+
+	# config igmpsnoop
+	igmpsnooping
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -294,6 +309,9 @@ config7620Esw()
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 
+	# config igmpsnoop
+	igmpsnooping
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -308,6 +326,10 @@ restore7530Esw()
 
 	# clear configured vlan parts
 	switch vlan clear
+
+	# config igmpsnoop
+	igmpsnooping
+
 	#clear mac table if vlan configuration changed
 	switch clear
 }
@@ -365,12 +387,15 @@ config7530Esw()
 	switch tag off 6
 	switch tag off 5
 
+	# config igmpsnoop
+	igmpsnooping
+
 	# clear mac table if vlan configuration changed
 	switch clear
 
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then

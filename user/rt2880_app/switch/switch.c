@@ -1966,7 +1966,7 @@ void igmp_on(int argc, char *argv[])
 
 	reg_write(REG_ESW_ISC, value);
 
-	printf("config igmpsnoop.\n");
+	//printf("config igmpsnoop.\n");
 }
 
 
@@ -1978,7 +1978,7 @@ void igmp_off()
 	reg_read(REG_ESW_ISC, &value);
 	value &= ~(1 << 18);//disable
 	reg_write(REG_ESW_ISC, value);
-	printf("config igmpsnoop off.\n");
+	//printf("config igmpsnoop off.\n");
 }
 
 void igmp_disable(int argc, char *argv[])
