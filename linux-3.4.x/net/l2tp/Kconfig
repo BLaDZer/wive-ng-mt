@@ -46,7 +46,7 @@ config L2TP_DEBUGFS
 
 config L2TP_V3
 	bool "L2TPv3 support (EXPERIMENTAL)"
-	depends on EXPERIMENTAL && L2TP
+	depends on L2TP
 	help
 	  Layer Two Tunneling Protocol Version 3
 

@@ -1,8 +1,20 @@
+.EXPORT_ALL_VARIABLES:
+
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
+
 IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
     rtm_map.o iptunnel.o ip6tunnel.o tunnel.o ipneigh.o ipntable.o iplink.o \
     ipmaddr.o ipmonitor.o ipmroute.o ipprefix.o iptuntap.o \
     iplink_vlan.o link_veth.o
-#    link_gre.o iplink_can.o iplink_macvlan.o iplink_macvtap.o ipl2tp.o \
+
+ifdef CONFIG_L2TP_V3
+CFLAGS	+= -DL2TP_V3_SUPPORT
+IPOBJ	+= ipl2tp.o
+endif
+
+#    link_gre.o iplink_can.o iplink_macvlan.o iplink_macvtap.o \
 #    ipxfrm.o xfrm_state.o xfrm_policy.o xfrm_monitor.o \
 
 RTMONOBJ=rtmon.o
