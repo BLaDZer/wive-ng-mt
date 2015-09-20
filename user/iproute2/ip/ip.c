@@ -50,10 +50,10 @@ static void usage(void)
 #else
 #ifdef L2TP_V3_SUPPORT
 "where  OBJECT := { link | addr | addrlabel | route | rule | neigh | ntable |\n"
-"                   tunnel | tuntap | maddr | mroute | mrule | monitor | netns }\n"
+"                   tunnel | tuntap | maddr | mroute | mrule | monitor | netns | l2tp }\n"
 #else
 "where  OBJECT := { link | addr | addrlabel | route | rule | neigh | ntable |\n"
-"                   tunnel | tuntap | maddr | mroute | mrule | monitor | netns | l2tp }\n"
+"                   tunnel | tuntap | maddr | mroute | mrule | monitor | netns }\n"
 #endif
 #endif
 "       OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |\n"
