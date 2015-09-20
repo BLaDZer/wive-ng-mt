@@ -23,6 +23,8 @@ var wdsEncrypKey1  = '<% getCfgGeneral(1, "Wds1Key"); %>';
 var wdsEncrypKey2  = '<% getCfgGeneral(1, "Wds2Key"); %>';
 var wdsEncrypKey3  = '<% getCfgGeneral(1, "Wds3Key"); %>';
 
+var WDS_NUM_MAX = 4;
+
 function WdsSecurityOnChange(form, i)
 {
 	enableElements( [ eval("form.wds_encryp_key"+i) ], (eval("form.wds_encryp_type"+i).options.selectedIndex >= 1));
@@ -192,7 +194,7 @@ function CheckValue(form)
 	if (form.wds_mode.options.selectedIndex >= 2)
 	{
 		var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
-		for (i = 1; i <= 4; i++)
+		for (i = 1; i <= WDS_NUM_MAX; i++)
 		{
 			if (eval("form.wds_"+i).value == "")
 				continue;
@@ -235,7 +237,7 @@ function CheckValue(form)
     <td><h1>Wireless Distribution System</h1>
       <p>Wireless Distribution System Settings</p>
       <hr />
-      <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this.form);">
+      <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this);">
         <table class="form">
           <tr>
             <td class="title" id="basicWDSTitle" colspan="2">Wireless Distribution System</td>

@@ -1291,31 +1291,31 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 }
 
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
+const parameter_fetch_t wds_args[] =
+{
+	{ T("wds_phy_mode"), "WdsPhyMode", 0, T("") },
+	{ T("wds_encryp_type"), "WdsEncrypType", 0,       T("") },
+	{ T("wds_encryp_key0"), "Wds0Key", 0, T("") },
+	{ T("wds_encryp_key1"), "Wds1Key", 0, T("") },
+	{ T("wds_encryp_key2"), "Wds2Key", 0, T("") },
+	{ T("wds_encryp_key3"), "Wds3Key", 0, T("") },
+	{ NULL, NULL, 0, NULL }
+};
+
 /* goform/wirelessWds */
 static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wds_mode, *wds_phy_mode, *wds_encryp_type, *wds_encryp_key0, *wds_encryp_key1,*wds_encryp_key2, *wds_encryp_key3, *wds_list;
+	char_t	*wds_mode, *wds_list;
 	char_t *submitUrl;
 
 	wds_mode = websGetVar(wp, T("wds_mode"), T("0"));
-	wds_phy_mode = websGetVar(wp, T("wds_phy_mode"), T(""));
-	wds_encryp_type = websGetVar(wp, T("wds_encryp_type"), T(""));
-	wds_encryp_key0 = websGetVar(wp, T("wds_encryp_key0"), T(""));
-	wds_encryp_key1 = websGetVar(wp, T("wds_encryp_key1"), T(""));
-	wds_encryp_key2 = websGetVar(wp, T("wds_encryp_key2"), T(""));
-	wds_encryp_key3 = websGetVar(wp, T("wds_encryp_key3"), T(""));
 	wds_list = websGetVar(wp, T("wds_list"), T(""));
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "WdsEnable", wds_mode);
-	if (strncmp(wds_mode, "0", 2)) {
-		nvram_bufset(RT2860_NVRAM, "WdsPhyMode", wds_phy_mode);
-		nvram_bufset(RT2860_NVRAM, "WdsEncrypType", wds_encryp_type);
-		nvram_bufset(RT2860_NVRAM, "Wds0Key", wds_encryp_key0);
-		nvram_bufset(RT2860_NVRAM, "Wds1Key", wds_encryp_key1);
-		nvram_bufset(RT2860_NVRAM, "Wds2Key", wds_encryp_key2);
-		nvram_bufset(RT2860_NVRAM, "Wds3Key", wds_encryp_key3);
-		if (!strncmp(wds_mode, "2", 2) || !strncmp(wds_mode, "3", 2)) {
+	if (!CHK_IF_DIGIT(wds_mode, 0)) {
+		setupParameters(wp, wds_args, 0);
+		if (CHK_IF_DIGIT(wds_mode, 2) || CHK_IF_DIGIT(wds_mode, 3)) {
 			if (0 != strlen(wds_list))
 				nvram_bufset(RT2860_NVRAM, "WdsList", wds_list);
 		}
@@ -1323,23 +1323,8 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-#ifdef PRINT_DEBUG
-	//debug print
-	websHeader(wp);
-	websWrite(wp, T("wds_mode: %s<br>\n"), wds_mode);
-	websWrite(wp, T("wds_phy_mode: %s<br>\n"), wds_phy_mode);
-	websWrite(wp, T("wds_encryp_type: %s<br>\n"), wds_encryp_type);
-	websWrite(wp, T("wds_encryp_key0: %s<br>\n"), wds_encryp_key0);
-	websWrite(wp, T("wds_encryp_key1: %s<br>\n"), wds_encryp_key1);
-	websWrite(wp, T("wds_encryp_key2: %s<br>\n"), wds_encryp_key2);
-	websWrite(wp, T("wds_encryp_key3: %s<br>\n"), wds_encryp_key3);
-	websWrite(wp, T("wds_list: %s<br>\n"), wds_list);
-	websFooter(wp);
-	websDone(wp, 200);
-#else
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
-#endif
 
 	// restart wireless network
 	doSystem("internet.sh wifionly");
