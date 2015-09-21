@@ -341,7 +341,7 @@ static VOID APPeerAuthReqAtIdleAction(
 SendAuth:
 #endif /* DOT11W_PMF_SUPPORT */
 
-    pRcvHdr = (PHEADER_802_11)(Elem->Msg);
+	pRcvHdr = (PHEADER_802_11)(Elem->Msg);
 	DBGPRINT(RT_DEBUG_TRACE,
 			("AUTH - MBSS(%d), Rcv AUTH seq#%d, Alg=%d, Status=%d from "
 			"[wcid=%d]%02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -351,14 +351,13 @@ SendAuth:
          rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-         DBGPRINT(RT_DEBUG_TRACE, ("%s: AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n", 
- 				  wdev->if_dev->name, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
-
          if (((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
             ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
          {
+    		DBGPRINT(RT_DEBUG_TRACE, ("%s: AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n", 
+ 				  wdev->if_dev->name, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
                 DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
-		
+
 		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold))
                 	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
 

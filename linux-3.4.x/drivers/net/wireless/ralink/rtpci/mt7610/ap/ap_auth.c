@@ -244,6 +244,8 @@ static VOID APPeerAuthReqAtIdleAction(
 	ULONG FrameLen = 0;
 	MAC_TABLE_ENTRY *pEntry;
 	UCHAR ChTxtIe = 16, ChTxtLen = CIPHER_TEXT_LEN;
+	MULTISSID_STRUCT *pMbss;
+	CHAR rssi;
 #ifdef BAND_STEERING
 	BOOLEAN bAuthCheck = TRUE;
 #endif /* BAND_STEERING */
@@ -258,7 +260,7 @@ static VOID APPeerAuthReqAtIdleAction(
 		return;
     
 
-    /* Find which MBSSID to be authenticate */
+	/* Find which MBSSID to be authenticate */
 	for (apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)
 	{	
 		if (RTMPEqualMemory(Addr1, pAd->ApCfg.MBSSID[apidx].Bssid, MAC_ADDR_LEN))
@@ -270,6 +272,8 @@ static VOID APPeerAuthReqAtIdleAction(
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - Bssid not found\n"));
 		return;
 	}
+
+	pMbss = &pAd->ApCfg.MBSSID[apidx];
 
 	if ((pAd->ApCfg.MBSSID[apidx].MSSIDDev != NULL) &&
 		!(RTMP_OS_NETDEV_STATE_RUNNING(pAd->ApCfg.MBSSID[apidx].MSSIDDev)))
@@ -306,12 +310,34 @@ static VOID APPeerAuthReqAtIdleAction(
 	}
 
 
-    pRcvHdr = (PHEADER_802_11)(Elem->Msg);
+	pRcvHdr = (PHEADER_802_11)(Elem->Msg);
 	DBGPRINT(RT_DEBUG_TRACE,
 			("AUTH - MBSS(%d), Rcv AUTH seq#%d, Alg=%d, Status=%d from "
 			"[wcid=%d]%02x:%02x:%02x:%02x:%02x:%02x\n",
 			apidx, Seq, Alg, Status, Elem->Wcid, PRINT_MAC(Addr2)));
 
+        /* YF@20130102: Refuse the weak signal of AuthReq */
+         rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
+                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
+
+         if (((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
+            ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
+         {
+    		DBGPRINT(RT_DEBUG_TRACE, ("AUTH-MBSS(%d): AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n",
+ 				  apidx, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
+                DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
+
+		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold))
+                	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+
+                /* If this STA exists, delete it. */
+                if (pEntry)
+                        MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+
+                RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
+                return;
+         }
 
 #ifdef WSC_V2_SUPPORT
 	/* Do not check ACL when WPS V2 is enabled and ACL policy is positive. */

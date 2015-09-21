@@ -2861,6 +2861,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		pAd->ApCfg.BssidNum = MAX_MBSSID_NUM(pAd);
 		for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
 		{
+			pAd->ApCfg.MBSSID[j].AuthFailRssiThreshold = 0;
+			pAd->ApCfg.MBSSID[j].AuthNoRspRssiThreshold = 0;
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut = 0;
 			pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold = 0;
 

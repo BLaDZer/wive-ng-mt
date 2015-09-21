@@ -222,6 +222,14 @@ INT Set_AP_PMKCachePeriod_Proc(
     IN  PRTMP_ADAPTER   pAdapter, 
     IN  PSTRING          arg);
 
+INT Set_AP_AUTH_FAIL_RSSI_THRESHOLD(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg);
+
+INT Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg);
+
 INT Set_AP_KickStaRssiLow_Proc(
     IN  PRTMP_ADAPTER    pAd,
     IN  PSTRING          arg);
@@ -787,6 +795,8 @@ static struct {
 	{"ACLClearAll",					Set_ACLClearAll_Proc},
 	{"WPAPSK",					Set_AP_WPAPSK_Proc},
 	{"RadioOn",					Set_RadioOn_Proc},
+	{"AuthRspFail",                 		Set_AP_AUTH_FAIL_RSSI_THRESHOLD},
+	{"AuthRspRssi",					Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD},
 	{"KickStaRssiLow",				Set_AP_KickStaRssiLow_Proc},
 	{"ProbeRspRssi",				Set_AP_PROBE_RSSI_THRESHOLD},
 #ifdef AP_SCAN_SUPPORT
@@ -5740,6 +5750,68 @@ INT	Set_AP_WPAPSK_Proc(
 #endif /* WSC_AP_SUPPORT */    
 
 	return TRUE;
+}
+
+INT     Set_AP_AUTH_FAIL_RSSI_THRESHOLD(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_AUTH_FAIL_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_AUTH_FAIL_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].AuthFailRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_AUTH_RSSI_THRESHOLD=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].AuthFailRssiThreshold));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+        	DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AuthFailRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+INT     Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_AUTH_NO_RSP_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].AuthNoRspRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].AuthNoRspRssiThreshold));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AuthNoRspRssiThreshold ));
+        }
+
+        return TRUE;
 }
 
 /*
