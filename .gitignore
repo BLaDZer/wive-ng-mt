@@ -221,6 +221,7 @@ fulldump
 #
 # exclude enerated files from user apps
 #
+/user/iproute2/ip/static-syms.h
 /user/busybox/*/Config.in
 /user/busybox/docs/busybox.net/BusyBox.html
 /user/busybox/include/bbconfigopts_bz2.h
