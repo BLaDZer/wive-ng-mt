@@ -1483,6 +1483,7 @@ typedef struct _MULTISSID_STRUCT {
 #endif /* IDS_SUPPORT */
 	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
 	CHAR RssiLowForStaKickOut;
+	CHAR ProbeRspRssiThreshold;
 
 	/* used in if beacon send or stop */
 	BOOLEAN bBcnSntReq;

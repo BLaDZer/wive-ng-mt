@@ -3721,6 +3721,7 @@ VOID	UserCfgInit(
 		for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
 		{
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut = 0;
+			pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold = 0;
 
 			pAd->ApCfg.MBSSID[j].AuthMode = Ndis802_11AuthModeOpen;
 			pAd->ApCfg.MBSSID[j].WepStatus = Ndis802_11EncryptionDisabled;
