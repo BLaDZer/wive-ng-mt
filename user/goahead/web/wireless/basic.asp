@@ -102,7 +102,7 @@ function addOption(list, text, value)
 
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
-	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], true);
+	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
 }
 
 function idsChange(form) {
