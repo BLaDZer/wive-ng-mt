@@ -1513,6 +1513,7 @@ typedef struct _MULTISSID_STRUCT {
 	UINT32 AssocRespExtraIeLen;
 	enum nl80211_hidden_ssid ignore_broadcast_ssid;
 #endif /* RT_CFG80211_SUPPORT */
+	CHAR ProbeRspTimes;
 } MULTISSID_STRUCT, *PMULTISSID_STRUCT;
 #endif /* CONFIG_AP_SUPPORT */
 

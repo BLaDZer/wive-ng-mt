@@ -104,7 +104,7 @@ VOID APPeerProbeReqAction(
 	UCHAR         DsLen = 1;
 	UCHAR   ErpIeLen = 1;
 	UCHAR         apidx = 0, PhyMode, SupRateLen;
-	CHAR rssi = 0;
+	CHAR rssi = 0, idx = 0;
 	UCHAR   RSNIe=IE_WPA, RSNIe2=IE_WPA2;
 	BOOLEAN		bRequestRssi=FALSE;
 
@@ -755,9 +755,9 @@ VOID APPeerProbeReqAction(
 	}
 
 		/* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+		for (idx = 0; idx < pAd->ApCfg.MBSSID[apidx].ProbeRspTimes; idx++)
+			MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+
 		MlmeFreeMemory(pAd, pOutBuffer);
 	}
 }

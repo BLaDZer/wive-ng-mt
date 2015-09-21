@@ -177,6 +177,10 @@ INT Set_AP_PKT_PWR(
     IN  PSTRING          arg);
 #endif /* SPECIFIC_TX_POWER_SUPPORT */
 
+INT Set_AP_PROBE_RSP_TIMES(
+    IN  PRTMP_ADAPTER   pAdapter,
+    IN  PSTRING          arg);
+
 INT Set_AP_SSID_Proc(
     IN  PRTMP_ADAPTER   pAdapter, 
     IN  PSTRING          arg);
@@ -906,6 +910,7 @@ static struct {
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 	{"PktPwr",						Set_AP_PKT_PWR},
 #endif /* SPECIFIC_TX_POWER_SUPPORT */
+	{"ApProbeRspTimes",				Set_AP_PROBE_RSP_TIMES},
 	{"AuthRspFail",                 		Set_AP_AUTH_FAIL_RSSI_THRESHOLD},
 	{"AuthRspRssi",					Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD},
 	{"AssocReqRssiThres",				Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD},
@@ -5948,6 +5953,26 @@ INT	Set_AP_RekeyInterval_Proc(
 								apidx, pAd->ApCfg.MBSSID[apidx].WPAREKEY.ReKeyInterval));
 
 	return TRUE;
+}
+
+INT Set_AP_PROBE_RSP_TIMES(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        INT input;
+        input = simple_strtol(arg, 0, 10);
+
+        if ((input >= 0) && (input <= 10))
+                pAd->ApCfg.MBSSID[apidx].ProbeRspTimes = input;
+        else
+                DBGPRINT(RT_DEBUG_ERROR, ("AP[%d]->ProbeRspTimes: Out of Range\n", apidx));
+
+	DBGPRINT(RT_DEBUG_TRACE, ("AP[%d]->ProbeRspTimes: %d\n", apidx, pAd->ApCfg.MBSSID[apidx].ProbeRspTimes));
+
+	return TRUE;
+
 }
 
 #ifdef SPECIFIC_TX_POWER_SUPPORT
