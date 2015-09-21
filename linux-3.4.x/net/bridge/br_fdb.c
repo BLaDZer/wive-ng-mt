@@ -462,7 +462,7 @@ void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source,
 			fdb->updated = jiffies;
 		}
 	} else {
-		spin_lock(&br->hash_lock);
+		spin_lock_bh(&br->hash_lock);
 		if (likely(!fdb_find(head, addr))) {
 			fdb = fdb_create(head, source, addr);
 			if (fdb)
@@ -471,7 +471,7 @@ void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source,
 		/* else  we lose race and someone else inserts
 		 * it first, don't bother updating
 		 */
-		spin_unlock(&br->hash_lock);
+		spin_unlock_bh(&br->hash_lock);
 	}
 }
 
