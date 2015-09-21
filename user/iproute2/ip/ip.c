@@ -83,7 +83,9 @@ static const struct cmd {
 	{ "ntable",	do_ipntable },
 	{ "ntbl",	do_ipntable },
 	{ "link",	do_iplink },
-//	{ "l2tp",	do_ipl2tp },
+#ifdef L2TP_V3_SUPPORT
+	{ "l2tp",	do_ipl2tp },
+#endif
 	{ "tunnel",	do_iptunnel },
 	{ "tunl",	do_iptunnel },
 	{ "tuntap",	do_iptuntap },
