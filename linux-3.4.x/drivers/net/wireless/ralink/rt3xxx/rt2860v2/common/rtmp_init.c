@@ -3720,6 +3720,8 @@ VOID	UserCfgInit(
 		pAd->ApCfg.BssidNum = MAX_MBSSID_NUM(pAd);
 		for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
 		{
+			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut = 0;
+
 			pAd->ApCfg.MBSSID[j].AuthMode = Ndis802_11AuthModeOpen;
 			pAd->ApCfg.MBSSID[j].WepStatus = Ndis802_11EncryptionDisabled;
 			pAd->ApCfg.MBSSID[j].GroupKeyWepStatus = Ndis802_11EncryptionDisabled;

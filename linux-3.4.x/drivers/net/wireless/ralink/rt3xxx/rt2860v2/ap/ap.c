@@ -960,6 +960,7 @@ VOID MacTableMaintenance(
 	int lastClient=0;
 #endif /* defined(PRE_ANT_SWITCH) || defined(CFO_TRACK) */
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
+	MULTISSID_STRUCT *pMbss;
 
 	for (bss_index = BSS0; bss_index < MAX_MBSSID_NUM(pAd); bss_index++)
 		fAnyStationPortSecured[bss_index] = 0;
@@ -1037,6 +1038,8 @@ VOID MacTableMaintenance(
 		pEntry->NoDataIdleCount ++;  
 		pEntry->StaConnectTime ++;
 
+		pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
+
 		/* 0. STA failed to complete association should be removed to save MAC table space. */
 		if ((pEntry->Sst != SST_ASSOC) && (pEntry->NoDataIdleCount >= pEntry->AssocDeadLine))
 		{
@@ -1102,10 +1105,9 @@ VOID MacTableMaintenance(
 
 		/* detect the station alive status */
 		/* detect the station alive status */
-		if ((pAd->ApCfg.MBSSID[pEntry->apidx].StationKeepAliveTime > 0) &&
-			(pEntry->NoDataIdleCount >= pAd->ApCfg.MBSSID[pEntry->apidx].StationKeepAliveTime))
+		if ((pMbss->StationKeepAliveTime > 0) &&
+			(pEntry->NoDataIdleCount >= pMbss->StationKeepAliveTime))
 		{
-			MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
 
 			/*
 				If no any data success between ap and the station for
@@ -1217,6 +1219,30 @@ VOID MacTableMaintenance(
 					pEntry->Addr[4],pEntry->Addr[5],
 					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck));
 			}
+		}
+
+		//YF: kickout sta when 3 of 5 exceeds the threshold.
+		//sfstudio: only client kick and need some times (> rssi index size) for accumulate rssi statistics (prevent reassoc flood)
+		if (IS_ENTRY_CLIENT(pEntry) && (pMbss->RssiLowForStaKickOut != 0 && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN))
+		{
+			CHAR rssiIndex = 0, overRssiThresCount = 0;
+			for (rssiIndex=0; rssiIndex<MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
+			{
+				if ((pEntry->LastDataRssi[rssiIndex] !=0 ) &&
+				    (pEntry->LastDataRssi[rssiIndex] < pMbss->RssiLowForStaKickOut))
+				{
+					DBGPRINT(RT_DEBUG_TRACE, ("%d:[%d] Fail.\n",rssiIndex,pEntry->LastDataRssi[rssiIndex]));
+					overRssiThresCount++;
+					if (overRssiThresCount >= CHECK_DATA_RSSI_UP_BOUND)
+					{
+					    bDisconnectSta = TRUE;
+					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]-[%d]Times\n",
+							PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, overRssiThresCount);
+					    break;
+					}
+				}
+			}
+
 		}
 
 		if (bDisconnectSta)

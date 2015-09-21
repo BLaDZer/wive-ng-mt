@@ -4475,6 +4475,16 @@ VOID APHandleRxDataFrame(
    	/* update rssi sample */
    	Update_Rssi_Sample(pAd, &pEntry->RssiSample, pRxWI);
 
+	if (pAd->ApCfg.MBSSID[pEntry->apidx].RssiLowForStaKickOut != 0)
+	{
+		pEntry->curLastDataRssiIndex = pEntry->curLastDataRssiIndex % MAX_LAST_DATA_RSSI_LEN;
+		pEntry->LastDataRssi[pEntry->curLastDataRssiIndex] = RTMPMaxRssi(pAd, pEntry->RssiSample.LastRssi0, 
+					pEntry->RssiSample.LastRssi1, pEntry->RssiSample.LastRssi2);
+		//DBGPRINT(RT_DEBUG_TRACE, ("Recored ==> %d:[%d].\n",pEntry->curLastDataRssiIndex, 
+		//						   pEntry->LastDataRssi[pEntry->curLastDataRssiIndex]));
+		pEntry->curLastDataRssiIndex++;
+	}
+
 	if (pRxD->U2M)
 	{
 		pEntry->LastRxRate = (ULONG)((pRxWI->MCS) + (pRxWI->BW <<7) + (pRxWI->ShortGI <<8) + (pRxWI->STBC <<9) + (pRxWI->PHYMODE <<14));

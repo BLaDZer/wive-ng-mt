@@ -1481,17 +1481,13 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR RssiOfRcvdSpoofedUnknownMgmt;
 	CHAR RssiOfRcvdReplayAttack;
 #endif /* IDS_SUPPORT */
+	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
+	CHAR RssiLowForStaKickOut;
 
 	/* used in if beacon send or stop */
 	BOOLEAN bBcnSntReq;
 	UCHAR BcnBufIdx;
-
-
-
-
-
 	UCHAR PhyMode;
-
 
 	/* UAPSD information: such as enable or disable, do not remove */
 	UAPSD_INFO UapsdInfo;
@@ -1504,12 +1500,12 @@ typedef struct _MULTISSID_STRUCT {
 	BOOLEAN CFG_HOSTAPD;
 
 	/* Extra IEs for Probe Response provided by wpa_supplicant. E.g, WPS & P2P & WFD...etc */
-    UCHAR ProbRespExtraIe[512];
-    UINT32 ProbRespExtraIeLen;
+	UCHAR ProbRespExtraIe[512];
+	UINT32 ProbRespExtraIeLen;
 
-    /* Extra IEs for (Re)Association Response provided by wpa_supplicant. E.g, WPS & P2P & WFD...etc */
-    UCHAR AssocRespExtraIe[512];
-    UINT32 AssocRespExtraIeLen;
+	/* Extra IEs for (Re)Association Response provided by wpa_supplicant. E.g, WPS & P2P & WFD...etc */
+	UCHAR AssocRespExtraIe[512];
+	UINT32 AssocRespExtraIeLen;
 	enum nl80211_hidden_ssid ignore_broadcast_ssid;
 #endif /* RT_CFG80211_SUPPORT */
 } MULTISSID_STRUCT, *PMULTISSID_STRUCT;
@@ -2041,6 +2037,13 @@ typedef struct _MAC_TABLE_ENTRY {
 					   yet statistics handle */
 
 #endif /* UAPSD_SUPPORT */
+
+#ifdef CONFIG_AP_SUPPORT
+#define MAX_LAST_DATA_RSSI_LEN 5
+#define CHECK_DATA_RSSI_UP_BOUND (MAX_LAST_DATA_RSSI_LEN-2)
+	CHAR LastDataRssi[MAX_LAST_DATA_RSSI_LEN];
+	CHAR curLastDataRssiIndex;
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 	BOOLEAN bSendBAR;

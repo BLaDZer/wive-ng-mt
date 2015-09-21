@@ -237,6 +237,10 @@ INT Set_AP_PMKCachePeriod_Proc(
     IN  PRTMP_ADAPTER   pAdapter, 
     IN  PSTRING          arg);
 
+INT Set_AP_KickStaRssiLow_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg);
+
 INT Set_AP_DefaultKeyID_Proc(
     IN  PRTMP_ADAPTER   pAdapter, 
     IN  PSTRING          arg);
@@ -882,6 +886,7 @@ static struct {
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 	{"PktPwr",						Set_AP_PKT_PWR},
 #endif /* SPECIFIC_TX_POWER_SUPPORT */
+	{"KickStaRssiLow",				Set_AP_KickStaRssiLow_Proc},
 #ifdef AP_SCAN_SUPPORT
 	{"SiteSurvey",					Set_SiteSurvey_Proc},
 	{"AutoChannelSel",				Set_AutoChannelSel_Proc},
@@ -6002,6 +6007,49 @@ INT	Set_AP_PMKCachePeriod_Proc(
 									apidx, pAd->ApCfg.MBSSID[apidx].PMKCachePeriod));
 
 	return TRUE;
+}
+
+/*
+    ==========================================================================
+    Description:
+        Set lower limit for AP kicking out a STA.
+    Return:
+        TRUE if all parameters are OK, FALSE otherwise
+    ==========================================================================
+*/
+INT Set_AP_KickStaRssiLow_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable RssiLowForStaKickOut Function\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("RssiLowForStaKickOut Value Error.\n"));
+                return FALSE;
+        }
+
+
+        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOut = rssi;
+
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) RssiLowForStaKickOut=%d\n", 
+				  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOut));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut ));
+        }
+
+        return TRUE;
 }
 
 /* 
