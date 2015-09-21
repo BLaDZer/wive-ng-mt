@@ -1482,6 +1482,8 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR RssiOfRcvdReplayAttack;
 #endif /* IDS_SUPPORT */
 	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
+	CHAR AssocReqFailRssiThreshold;
+	CHAR AssocReqNoRspRssiThreshold;
 	CHAR AuthFailRssiThreshold;
 	CHAR AuthNoRspRssiThreshold;
 	CHAR RssiLowForStaKickOut;

@@ -95,6 +95,9 @@ static USHORT update_associated_mac_entry(
 	BOOLEAN	 supportsETxBF = FALSE;
 #endif // TXBF_SUPPORT //
 
+	BOOLEAN bAssocSkip = FALSE;
+	BOOLEAN bAssocNoRsp = FALSE;
+	CHAR rssi;
 
 	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
 
@@ -902,12 +905,34 @@ VOID ap_cmm_peer_assoc_req_action(
 	if (FlgIs11bSta == 1)
 		SupRateLen = 4;
 
-	if (bACLReject == TRUE)
+	/* YF@20120419: Refuse the weak signal of AssocReq */
+	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
+				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
+				  wdev->if_dev->name, wdev->AssocReqFailRssiThreshold,
+				  wdev->AssocReqNoRspRssiThreshold, rssi));
+
+	if ((wdev->AssocReqFailRssiThreshold != 0) && (rssi < wdev->AssocReqFailRssiThreshold))
 	{
-	    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
+		bAssocSkip = TRUE;
+	}
+	else if ((wdev->AssocReqNoRspRssiThreshold != 0) && (rssi < wdev->AssocReqNoRspRssiThreshold))
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		bAssocNoRsp = TRUE;
+	}
+
+	if (bACLReject == TRUE || bAssocSkip || bAssocNoRsp)
+	{
+		if (!bAssocNoRsp)
+		{
+		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, Addr2, 
+		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 							wdev->Bssid);
-		StatusCode = MLME_UNSPECIFY_FAIL;
-	    MakeOutgoingFrame(pOutBuffer,               &FrameLen,
+		    StatusCode = MLME_UNSPECIFY_FAIL;
+		    MakeOutgoingFrame(pOutBuffer,               &FrameLen,
 	                      sizeof(HEADER_802_11),    &AssocRspHdr,
 	                      2,                        &CapabilityInfoForAssocResp,
 	                      2,                        &StatusCode,
@@ -916,8 +941,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	                      1,                        &SupRateLen,
 	                      SupRateLen,               pAd->CommonCfg.SupRate,
 	                      END_OF_ARGS);
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+		    MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		}
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, ie_list->Addr2, pEntry->apidx, 0);
 
@@ -926,6 +952,13 @@ VOID ap_cmm_peer_assoc_req_action(
 		if (pEntry)
 			MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 #endif /* WSC_V2_SUPPORT */
+
+		if (bAssocSkip == TRUE)
+		{
+			pEntry = MacTableLookup(pAd, ie_list->Addr2);
+			if (pEntry)
+				MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+		}
 
 		goto LabelOK;
 	}

@@ -168,6 +168,10 @@ VOID ap_cmm_peer_assoc_req_action(
 	EXT_CAP_INFO_ELEMENT	ExtCapInfo;
 	UCHAR SupRateLen, PhyMode, FlgIs11bSta;
 
+	MULTISSID_STRUCT *pMbss;
+	BOOLEAN bAssocSkip = FALSE;
+	BOOLEAN bAssocNoRsp = FALSE;
+	CHAR rssi;
 
 	/* allocate memory */
 	os_alloc_mem(NULL, (UCHAR **)&RSN_IE, MAX_LEN_OF_RSNIE);
@@ -211,11 +215,12 @@ VOID ap_cmm_peer_assoc_req_action(
 	/* goto label_err; */
 
 	pEntry = MacTableLookup(pAd, Addr2);
-    if (!pEntry) {
+	if (!pEntry) {
 		DBGPRINT(RT_DEBUG_ERROR, ("NoAuth MAC - %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(Addr2)));
 		goto LabelOK;
 	}
 
+	pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
 	PhyMode = pAd->ApCfg.MBSSID[pEntry->apidx].PhyMode;
 
 	FlgIs11bSta = 1;
@@ -387,15 +392,36 @@ VOID ap_cmm_peer_assoc_req_action(
 	if (FlgIs11bSta == 1)
 		SupRateLen = 4;
 
-	if (bACLReject == TRUE)
+	/* YF@20120419: Refuse the weak signal of AssocReq */
+	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
+				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
+				  wdev->if_dev->name, pMbss->AssocReqFailRssiThreshold,
+				  pMbss->AssocReqNoRspRssiThreshold, rssi));
+
+	if ((pMbss->AssocReqFailRssiThreshold != 0) && (rssi < pMbss->AssocReqFailRssiThreshold))
 	{
-	    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, Addr2, 
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
+		bAssocSkip = TRUE;
+	}
+	else if ((pMbss->AssocReqNoRspRssiThreshold != 0) && (rssi < pMbss->AssocReqNoRspRssiThreshold))
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		bAssocNoRsp = TRUE;
+	}
+
+	if (bACLReject == TRUE || bAssocSkip || bAssocNoRsp)
+	{
+		if (!bAssocNoRsp)
+		{
+		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, Addr2, 
 #ifdef P2P_SUPPORT
 							pAd->ApCfg.MBSSID[pEntry->apidx].Bssid,
 #endif /* P2P_SUPPORT */
 							pAd->ApCfg.MBSSID[pEntry->apidx].Bssid);
-		StatusCode = MLME_UNSPECIFY_FAIL;
-	    MakeOutgoingFrame(pOutBuffer,               &FrameLen,
+		    StatusCode = MLME_UNSPECIFY_FAIL;
+		    MakeOutgoingFrame(pOutBuffer,               &FrameLen,
 	                      sizeof(HEADER_802_11),    &AssocRspHdr,
 	                      2,                        &CapabilityInfoForAssocResp,
 	                      2,                        &StatusCode,
@@ -404,8 +430,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	                      1,                        &SupRateLen,
 	                      SupRateLen,               pAd->CommonCfg.SupRate,
 	                      END_OF_ARGS);
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+		    MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		}
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, pEntry->apidx, 0);
 
@@ -414,6 +441,13 @@ VOID ap_cmm_peer_assoc_req_action(
 		if (pEntry)
 			MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 #endif /* WSC_V2_SUPPORT */
+
+		if (bAssocSkip == TRUE)
+		{
+			pEntry = MacTableLookup(pAd, Addr2);
+			if (pEntry)
+				MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+		}
 
 		goto LabelOK;
 	}
