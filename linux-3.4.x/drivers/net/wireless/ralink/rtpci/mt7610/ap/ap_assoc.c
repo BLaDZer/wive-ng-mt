@@ -95,10 +95,6 @@ static USHORT update_associated_mac_entry(
 	BOOLEAN	 supportsETxBF = FALSE;
 #endif // TXBF_SUPPORT //
 
-	BOOLEAN bAssocSkip = FALSE;
-	BOOLEAN bAssocNoRsp = FALSE;
-	CHAR rssi;
-
 	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
 
 	/* Update auth, wep, legacy transmit rate setting . */
@@ -680,6 +676,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	UINT32 tmp_1;
 	UINT64 tmp_2;
 #endif /*RT_BIG_ENDIAN*/
+	BOOLEAN bAssocSkip = FALSE;
+	BOOLEAN bAssocNoRsp = FALSE;
+	CHAR rssi;
 
 	/* allocate memory */
 	os_alloc_mem(NULL, (UCHAR **)&ie_list, sizeof(IE_LISTS));
@@ -909,9 +908,8 @@ VOID ap_cmm_peer_assoc_req_action(
 	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-	DBGPRINT(RT_DEBUG_TRACE, ("%s: ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
-				  wdev->if_dev->name, wdev->AssocReqFailRssiThreshold,
-				  wdev->AssocReqNoRspRssiThreshold, rssi));
+	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
+				  wdev->AssocReqFailRssiThreshold, wdev->AssocReqNoRspRssiThreshold, rssi));
 
 	if ((wdev->AssocReqFailRssiThreshold != 0) && (rssi < wdev->AssocReqFailRssiThreshold))
 	{
@@ -928,7 +926,6 @@ VOID ap_cmm_peer_assoc_req_action(
 	{
 		if (!bAssocNoRsp)
 		{
-		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, Addr2, 
 		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 							wdev->Bssid);
 		    StatusCode = MLME_UNSPECIFY_FAIL;
