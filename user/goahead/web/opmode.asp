@@ -57,12 +57,9 @@ function initValue()
 	var gwb = "<% getGWBuilt(); %>";
 	var apcli = "<% getWlanApcliBuilt(); %>";
 	var sta = "<% getStationBuilt(); %>";
-	var mem_size = <% getMemAmount(); %>;
 	var form = document.opmode;
 
 	initTranslation();
-
-	displayElement("ram_caution", mem_size < 30000);
 
 	if (gwb == "0")
 	{

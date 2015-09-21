@@ -176,7 +176,7 @@ function initValue()
   }
 
   form.BandSteering.options.selectedIndex = 1*bandsteering;
-  displayElement("bandsteering_row", bandsteeringBuilt == "1");
+  displayElement('bandsteering_row', bandsteeringBuilt == "1");
 //	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
 //	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
 //	form.HT_BSSCoexistence[1].checked = (htNoiseCoex != '1');

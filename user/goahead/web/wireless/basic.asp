@@ -66,7 +66,6 @@ var green_on = '<% getGreenAPBuilt(); %>' == '1';
 
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
-var fast_roaming = '<% getRoamingSupport(); %>' == '1';
 var ids_built='<% getIdsEnableBuilt(); %>' == '1';
 
 var ChannelList_24G =
@@ -102,12 +101,12 @@ function addOption(list, text, value)
 }
 
 function fastRoamingChange(form) {
-	displayElement("div_roaming", (form.radioWirelessEnabledAc.value == "1") && fast_roaming);
-	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], (form.FastRoaming.value == "1") && fast_roaming);
+	displayElement('div_roaming', true);
+	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], true);
 }
 
 function idsChange(form) {
-	displayElement("div_ids", ids_built);
+	displayElement('div_ids', ids_built);
 	displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], (form.IdsEnable.value == "1") && ids_built);
 }
 

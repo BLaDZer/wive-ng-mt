@@ -29,7 +29,6 @@ static int  getCfgZero(int eid, webs_t wp, int argc, char_t **argv);
 static int  getCfgNthZero(int eid, webs_t wp, int argc, char_t **argv);
 static int  getPlatform(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSdkVersion(int eid, webs_t wp, int argc, char_t **argv);
-static int  getMemAmount(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSysUptime(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSysDateTime(int eid, webs_t wp, int argc, char_t **argv);
 static int  getPortStatus(int eid, webs_t wp, int argc, char_t **argv);
@@ -375,7 +374,6 @@ void formDefineUtilities(void)
 	websAspDefine(T("getPlatform"), getPlatform);
 	websAspDefine(T("getStationBuilt"), getStationBuilt);
 	websAspDefine(T("getSdkVersion"), getSdkVersion);
-	websAspDefine(T("getMemAmount"), getMemAmount);
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
 	websAspDefine(T("getPortStatus"), getPortStatus);
@@ -650,38 +648,6 @@ static int gigaphy(int eid, webs_t wp, int argc, char_t **argv)
 static int getSdkVersion(int eid, webs_t wp, int argc, char_t **argv)
 {
 	return websWrite(wp, T("%s"), RT288X_SDK_VERSION);
-}
-
-/*
- * description: check ram size
- */
-static int getMemAmount(int eid, webs_t wp, int argc, char_t **argv)
-{
-	char line[256];
-	char key[64];
-	long long value;
-
-	FILE *fp = fopen("/proc/meminfo", "r");
-
-	// Now open /proc/meminfo and output neccessary information
-	if (fp != NULL)
-	{
-		while ( fgets(line, sizeof(line), fp) )
-		{
-			if (sscanf(line, "%s %lld", key, &value) == 2)
-			{
-				if (strcmp(key, "MemTotal:") == 0)
-				{
-					fclose(fp);
-					return websWrite(wp, T("%ld"), (long)value);
-				}
-			}
-		}
-
-		fclose(fp);
-	}
-
-	return websWrite(wp, T("0"), RT288X_SDK_VERSION);
 }
 
 /*

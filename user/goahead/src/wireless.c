@@ -39,7 +39,6 @@ static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
-static int  getRoamingSupport(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
@@ -189,7 +188,6 @@ void formDefineWireless(void)
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
-	websAspDefine(T("getRoamingSupport"), getRoamingSupport);
 	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
 	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
 #if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
@@ -642,7 +640,6 @@ static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
-#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 // Fast roaming parametrs
 const parameter_fetch_t fast_roaming_flags[] =
 {
@@ -655,7 +652,6 @@ const parameter_fetch_t fast_roaming_flags[] =
 	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("0") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };
-#endif
 
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 // IDS parametrs
@@ -678,9 +674,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *dot11h;
-#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 	char_t  *fastroaming;
-#endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
 #endif
@@ -733,10 +727,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
 	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
 	a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
-#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
 	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
-#endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
 	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
@@ -1018,11 +1010,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 
 	// Fast roaming
-#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
 	nvram_bufset(RT2860_NVRAM, "FastRoaming", fastroaming);
 	if (CHK_IF_DIGIT(fastroaming, 1))
 		setupParameters(wp, fast_roaming_flags, 0);
-#endif
 
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	nvram_bufset(RT2860_NVRAM, "IdsEnable", ids_enable);
@@ -1938,14 +1928,6 @@ static int getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv)
 static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 {
 	return websWrite(wp, T("%d"), MAX_NUMBER_OF_BSSID);
-}
-
-static int getRoamingSupport(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
 }
 
 static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {

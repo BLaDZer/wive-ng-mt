@@ -157,9 +157,9 @@ function reloadPage()
 		ajaxModifyElementHTML("statusDGW", defaultGW);
 		ajaxModifyElementHTML("IPv6IntAddr", IPv6Int);
 		ajaxModifyElementHTML("IPv6ExtAddr", IPv6Ext);
-		displayElement("defaultGW", (defaultGW != ""));
-		displayElement("statusIPv6Int", (ipv6b == "1") && (IPv6Int != ""));
-		displayElement("statusIPv6Ext", (ipv6b == "1") && (IPv6Ext != ""));
+		displayElement('defaultGW', (defaultGW != ""));
+		displayElement('statusIPv6Int', (ipv6b == "1") && (IPv6Int != ""));
+		displayElement('statusIPv6Ext', (ipv6b == "1") && (IPv6Ext != ""));
 		initTranslation();
 		showOpMode();
 		timer = self.setTimeout('reloadPage();', 3000);

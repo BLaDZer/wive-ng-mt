@@ -133,9 +133,9 @@ function showLoadedElements() {
 	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 
 	displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
-	displayElement("wirelessAbout", opmode == '2');
-	displayElement("wirelessDriverVersion", opmode == '2');
-	displayElement("wirelessMacAddr", opmode == '2');
+	displayElement('wirelessAbout', opmode == '2');
+	displayElement('wirelessDriverVersion', opmode == '2');
+	displayElement('wirelessMacAddr', opmode == '2');
 }
 
 function loadStatistics() {
