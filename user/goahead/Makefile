@@ -17,11 +17,6 @@ endif
 endif
 endif
 endif
-ifeq ("$(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY)", "")
-ifeq ("$(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)", "")
-	rm -f $(ROMFSDIR)$(ROOT_DIRECTORY)/wireless/ant_diversity.asp
-endif
-endif
 ifeq ("$(CONFIG_USER_CHILLISPOT)", "")
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/internet/hotspot.asp
 endif

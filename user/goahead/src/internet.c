@@ -1905,10 +1905,6 @@ void initInternet(void)
 	//configure system
 	doSystem("internet.sh");
 
-#ifdef CONFIG_RT2860V2_AP_ANTENNA_DIVERSITY
-	//set work antenna n
-	AntennaDiversityInit();
-#endif
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	//automatically connect to AP according to the active profile
 	opmode = nvram_get(RT2860_NVRAM, "OperationMode");

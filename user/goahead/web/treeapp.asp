@@ -88,7 +88,6 @@ var printersrvb = '<% getPrinterSrvBuilt(); %>';
 var usbmodemb = '<% getUSBModemBuilt(); %>';
 var syslogb = '<% getSysLogBuilt(); %>';
 var swqos = '<% getSWQoSBuilt(); %>';
-var ad = '<% isAntennaDiversityBuilt(); %>';
 var transb = '<% getTransmissionBuilt(); %>';
 var ipt_account = '<% getIPTAccountBuilt(); %>';
 var ddnsb = "<% getDDNSBuilt(); %>";
@@ -143,8 +142,6 @@ else
 	if (opmode == '3')
 		a.add(406, 400, _("treeapp ap client"),     "javascript:go('wireless/apcli.asp');");
 	a.add(407, 400, _("treeapp station list"),          "javascript:go('wireless/stainfo.asp');");
-	if (ad == '1')
-		a.add(408, 400, "Antenna Diversity",		"javascript:go('wireless/ant_diversity.asp');");
 }
 
 // Firewall

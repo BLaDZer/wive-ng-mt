@@ -339,13 +339,4 @@
   <message msgid="about introduction" msgstr="." />
   <message msgid="about about" msgstr="О станции" />
   <message msgid="about driver version" msgstr="Версия драйвера" />
-
-  <message msgid="ant div title" msgstr="Разнесённый приём" />
-  <message msgid="ant div introduction" msgstr="Здесь вы можете настроить параметры разнесённого приёма для повышения производительности беспроводной сети." />
-  <message msgid="ant div config" msgstr="Разнесённый приём" />
-  <message msgid="ant div mode" msgstr="Режим:" />
-  <message msgid="ant div str" msgstr="Антена:" />
-  <message msgid="ant div algo" msgstr="Включить алгоритм (BBP)" />
-  <message msgid="ant div ant0" msgstr="только антена 0" />
-  <message msgid="ant div ant2" msgstr="только антена 2" />
 </po>

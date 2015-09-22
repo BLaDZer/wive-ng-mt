@@ -32,7 +32,6 @@ static int  getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
-static int  isAntennaDiversityBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
@@ -48,10 +47,6 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query);
 static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
 static void APSecurity(webs_t wp, char_t *path, char_t *query);
 static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
-#if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
-static void AntennaDiversity(webs_t wp, char_t *path, char_t *query);
-static void getAntenna(webs_t wp, char_t *path, char_t *query);
-#endif
 
 static int default_shown_mbssid[3]  = {0,0,0};
 
@@ -189,11 +184,6 @@ void formDefineWireless(void)
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
 	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
-	websAspDefine(T("isAntennaDiversityBuilt"), isAntennaDiversityBuilt);
-#if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
-	websFormDefine(T("AntennaDiversity"), AntennaDiversity);
-	websFormDefine(T("getAntenna"), getAntenna);
-#endif
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
@@ -1807,80 +1797,6 @@ static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 	return 0;
 }
-
-#if defined(CONFIG_RT2860V2_RT3XXX_AP_ANTENNA_DIVERSITY) || defined(CONFIG_RT2860V2_RT3XXX_STA_ANTENNA_DIVERSITY)
-void AntennaDiversityInit(void)
-{
-	char *mode = nvram_get(RT2860_NVRAM, "AntennaDiversity");
-
-	if(!gstrcmp(mode, "Disable")){				// Disable
-		doSystem("echo 0 > /proc/AntDiv/AD_RUN");
-	}else if(!gstrcmp(mode, "Enable_Algorithm1")){
-		doSystem("echo 1 > /proc/AntDiv/AD_ALGORITHM"); // Algorithm1
-		doSystem("echo 1 > /proc/AntDiv/AD_RUN");
-	}else if(!gstrcmp(mode, "Enable_Algorithm2")){
-		doSystem("echo 2 > /proc/AntDiv/AD_ALGORITHM"); // Algorithm2
-		doSystem("echo 1 > /proc/AntDiv/AD_RUN");
-	}else if(!gstrcmp(mode, "Antenna0")){				// fix Ant0
-		doSystem("echo 0 > /proc/AntDiv/AD_RUN");
-		doSystem("echo 0 > /proc/AntDiv/AD_FORCE_ANTENNA");
-	}else if(!gstrcmp(mode, "Antenna2")){				// fix Ant2
-		doSystem("echo 0 > /proc/AntDiv/AD_RUN");
-		doSystem("echo 2 > /proc/AntDiv/AD_FORCE_ANTENNA");
-	}else
-		doSystem("echo 0 > /proc/AntDiv/AD_RUN");
-	return;
-}
-
-static void AntennaDiversity(webs_t wp, char_t *path, char_t *query)
-{
-	char_t	*mode;
-
-	mode = websGetVar(wp, T("ADSelect"), T(""));
-	if(!mode || !strlen(mode))
-		return;
-
-	nvram_set(RT2860_NVRAM, "AntennaDiversity", mode);
-
-	// re-init
-	AntennaDiversityInit();
-
-	//debug print
-	websHeader(wp);
-	websWrite(wp, T("mode:%s"), mode);
-	websFooter(wp);
-	websDone(wp, 200);
-}
-
-static void getAntenna(webs_t wp, char_t *path, char_t *query)
-{
-	char buf[32];
-	FILE *fp = fopen("/proc/AntDiv/AD_CHOSEN_ANTENNA", "r");
-	if(!fp){
-		strcpy(buf, "not support\n");
-	}else{
-		fgets(buf, 32, fp);
-		fclose(fp);
-	}
-	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
-	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
-	websWrite(wp, T("\n"));
-	websWrite(wp, "%s", buf);
-	websDone(wp, 200);
-}
-
-static int isAntennaDiversityBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-	websWrite(wp, T("1"));
-	return 0;
-}
-#else
-static int isAntennaDiversityBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-	websWrite(wp, T("0"));
-	return 0;
-}
-#endif
 
 static int get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {

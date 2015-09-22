@@ -319,13 +319,4 @@
   <message msgid="about introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />
-
-  <message msgid="ant div title" msgstr="Antenna Diversity" />
-  <message msgid="ant div introduction" msgstr="Here you can configure Antenna Diversity setting to increase wireless performance." />
-  <message msgid="ant div config" msgstr="Antenna Diversity" />
-  <message msgid="ant div mode" msgstr="Mode:" />
-  <message msgid="ant div str" msgstr="Antenna:" />
-  <message msgid="ant div algo" msgstr="Enable Algorithm1 (BBP)" />
-  <message msgid="ant div ant0" msgstr="fixed at Ant0" />
-  <message msgid="ant div ant2" msgstr="fixed at Ant2" />
 </po>
