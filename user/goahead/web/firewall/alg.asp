@@ -44,7 +44,6 @@ function initTranslation()
 
 </script>
 </head>
-<!--     body      -->
 <body onLoad="updateState();">
 <table class="body">
   <tr>

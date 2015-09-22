@@ -40,7 +40,6 @@ function initTranslation()
 function initValue()
 {
 	// initTranslation();
-	//document.storage_disk_adm.realloc_parted.disabled = true;
 }
 
 function CheckSelect()

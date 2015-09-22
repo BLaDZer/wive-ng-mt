@@ -279,8 +279,7 @@ function parseAllData(str)
 function checkData()
 {
 	var securitymode;
-//	var ssid = document.security_form.Ssid.value;
-	
+
 	securitymode = document.security_form.security_mode.value;
 	if (securitymode == "OPEN" || securitymode == "SHARED" ||securitymode == "WEPAUTO")
 	{
@@ -298,7 +297,7 @@ function checkData()
 			alert(_("apcli short phrase"));
 			return false;
 		}
-		
+
 		if(checkInjection(document.security_form.passphrase.value) == false){
 			alert(_("apcli chars not allowed"));
 			return false;
@@ -317,7 +316,6 @@ function checkData()
 		}
 		if(document.security_form.keyRenewalInterval.value < 60){
 			alert(_("secure renewal short"));
-			// return false;
 		}
 		if(check_wpa() == false)
 			return false;
@@ -385,7 +383,6 @@ function check_wpa()
 	}
 	if(document.security_form.keyRenewalInterval.value < 60){
 		alert(_("secure renewal short"));
-		// return false;
 	}
 	return true;
 }
@@ -423,7 +420,7 @@ function check_radius()
 		if(checkAllNum(document.security_form.RadiusServerSessionTimeout.value)==false){
 			alert(_("secure invalid timeout"));
 			return false;
-		}	
+		}
 	}
 
 	return true;
@@ -479,9 +476,7 @@ function securityMode(c_f)
 		document.security_form.cipher[1].disabled = false;
 
 		// deal with TKIP-AES mixed mode
-		// WTF?
-		// if(security_mode == "WPAPSK" || security_mode == "WPA2PSK" || security_mode == "WPAPSKWPA2PSK")
-			document.security_form.cipher[2].disabled = false;
+		document.security_form.cipher[2].disabled = false;
 
 		document.getElementById("wpa_passphrase").style.visibility = "visible";
 		document.getElementById("wpa_passphrase").style.display = '';
@@ -509,15 +504,15 @@ function securityMode(c_f)
 		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
 		document.getElementById("wpa_key_renewal_interval").style.display = '';
 		document.security_form.keyRenewalInterval.disabled = false;
-	
+
 		// 802.1x
 		document.getElementById("div_radius_server").style.visibility = "visible";
 		document.getElementById("div_radius_server").style.display = '';
 		document.security_form.RadiusServerIP.disable = false;
 		document.security_form.RadiusServerPort.disable = false;
-		document.security_form.RadiusServerSecret.disable = false;	
+		document.security_form.RadiusServerSecret.disable = false;
 		document.security_form.RadiusServerSessionTimeout.disable = false;
-		document.security_form.RadiusServerIdleTimeout.disable = false;	
+		document.security_form.RadiusServerIdleTimeout.disable = false;
 
 		if(security_mode == "WPA")
 			document.security_form.cipher[2].disabled = false;
@@ -547,9 +542,8 @@ function securityMode(c_f)
 		document.security_form.ieee8021x_wep.disable = false;
 		document.security_form.RadiusServerIP.disable = false;
 		document.security_form.RadiusServerPort.disable = false;
-		document.security_form.RadiusServerSecret.disable = false;	
+		document.security_form.RadiusServerSecret.disable = false;
 		document.security_form.RadiusServerSessionTimeout.disable = false;
-		//document.security_form.RadiusServerIdleTimeout.disable = false;
 	}
 }
 
@@ -564,7 +558,7 @@ function showWep(mode)
 	<!-- WEP -->
 	document.getElementById("div_wep").style.visibility = "visible";
 
-	if (window.ActiveXObject) { // IE 
+	if (window.ActiveXObject) { // IE
 		document.getElementById("div_wep").style.display = "block";
 	}
 	else if (window.XMLHttpRequest) { // Mozilla, Safari...
@@ -575,9 +569,7 @@ function showWep(mode)
 		document.getElementById("div_security_shared_mode").style.visibility = "visible";
 		document.getElementById("div_security_shared_mode").style.display = '';
 	}
-	//document.security_form.wep_auth_type.disabled = false;
 }
-
 
 function check_Wep(securitymode)
 {
@@ -638,7 +630,7 @@ function check_Wep(securitymode)
 				alert(_("secure invalid wep key"));
 				document.security_form.wep_key_2.focus();
 				return false;
-			}			
+			}
 		}
 		if (document.security_form.WEP2Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
@@ -678,7 +670,7 @@ function check_Wep(securitymode)
 				alert(_("secure invalid key"));
 				document.security_form.wep_key_3.focus();
 				return false;
-			}			
+			}
 		}
 	}
 
@@ -694,7 +686,7 @@ function check_Wep(securitymode)
 				alert(_("secure invalid wep key"));
 				document.security_form.wep_key_4.focus();
 				return false;
-			}			
+			}
 		}
 		if (document.security_form.WEP4Select.options.selectedIndex == 1){
 			if(keylength != 10 && keylength != 26) {
@@ -707,12 +699,12 @@ function check_Wep(securitymode)
 				alert(_("secure invalid key"));
 				document.security_form.wep_key_4.focus();
 				return false;
-			}			
+			}
 		}
 	}
 	return true;
 }
-	
+
 function submit_apply()
 {
 	if (checkData() == true)
@@ -740,7 +732,7 @@ function LoadFields(MBSSID)
 			setup = false;
 		if ((mode[2] > 0) && (b8021x == '0'))
 			setup = false;
-		
+
 		if (setup)
 			sp_select.options.add(new Option(mode[0], mode[1]));
 	}
@@ -782,7 +774,6 @@ function LoadFields(MBSSID)
 	document.getElementById("passphrase").value = WPAPSK[MBSSID];
 	document.getElementById("keyRenewalInterval").value = RekeyInterval[MBSSID];
 	document.getElementById("PMKCachePeriod").value = PMKCachePeriod[MBSSID];
-	//document.getElementById("PreAuthentication").value = PreAuth[MBSSID];
 	if(PreAuth[MBSSID] == "0")
 		document.security_form.PreAuthentication[0].checked = true;
 	else
@@ -795,15 +786,14 @@ function LoadFields(MBSSID)
 		else
 			document.security_form.ieee8021x_wep[0].checked = true;
 	}
-	
+
 	document.getElementById("RadiusServerIP").value = RADIUS_Server[MBSSID];
 	document.getElementById("RadiusServerPort").value = RADIUS_Port[MBSSID];
 	document.getElementById("RadiusServerSecret").value = RADIUS_Key[MBSSID];
 	document.getElementById("RadiusServerSessionTimeout").value = session_timeout_interval[MBSSID];
-	
+
 	securityMode(0);
 }
-
 
 function ShowAP(MBSSID)
 {
@@ -970,7 +960,7 @@ function UpdateMBSSIDList()
 		var j = document.security_form.ssidIndex.options.length;
 		document.security_form.ssidIndex.options[j] = new Option(SSID[i], i, false, false);
 	}
-	
+
 	document.security_form.ssidIndex.options.selectedIndex = defaultShownMBSSID;
 	old_MBSSID = defaultShownMBSSID;
 	changeSecurityPolicyTableTitle(SSID[defaultShownMBSSID]);
@@ -1016,7 +1006,6 @@ function onPreAuthenticationClick(type)
         <p id="securityIntroduction">Here you can configure wireless security and encryption to prevent unauthorized access to the router.</p>
         <hr />
         <form method="post" name="security_form" action="/goform/APSecurity" onSubmit="return submit_apply();">
-          
           <!-- ---------------------  MBSSID Selection  --------------------- -->
           <table class="form">
             <tr>
@@ -1133,8 +1122,7 @@ function onPreAuthenticationClick(type)
                 <font id="secureWPAPreAuthEnable">Enable &nbsp;</font></td>
             </tr>
           </table>
-          
-          <!-- 802.1x --> 
+          <!-- 802.1x -->
           <!-- WEP  -->
           <table id="div_8021x_wep" name="div_8021x_wep" class="form" style="visibility: hidden; display: none;">
             <tr>
@@ -1173,11 +1161,9 @@ function onPreAuthenticationClick(type)
               <td><input name="RadiusServerIdleTimeout" id="RadiusServerIdleTimeout" size="3" maxlength="4" value="" onKeyUp="setChange(1)" readonly></td>
             </tr>
           </table>
-          
-          <!--									--> 
-          <!--	AccessPolicy for mbssid 		--> 
-          <!--									--> 
-          
+          <!--				-->
+          <!--	AccessPolicy for mbssid -->
+          <!--				-->
           <script language="JavaScript" type="text/javascript">
 var aptable;
 
@@ -1217,8 +1203,7 @@ for (aptable = 0; aptable < MBSSID_MAX; aptable++)
 	document.write("<tr><td class=\"head\">"+_("secure access policy new")+"</td>");
 	document.write("	<td><input name=\"newap_text_"+aptable+"\" id=\"newap_text_"+aptable+"\" size=\"16\" maxlength=\"20\"></td></tr></tbody></table>");
 }
-</script> 
-          
+</script>
           <!-- <br> -->
           <table border="0" cellpadding="2" cellspacing="1" width="90%">
             <tr align="center">

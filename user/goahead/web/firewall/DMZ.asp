@@ -163,8 +163,6 @@ function dmzLoopbackWarning(element)
 
 </script>
 </head>
-
-<!--     body      -->
 <body onLoad="pageInit()">
 <table class="body">
   <tr>

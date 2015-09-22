@@ -11,7 +11,6 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
-//Butterlate.setTextDomain("wireless");
 
 var profiles = [];
 var bssid_list = [];
@@ -49,7 +48,7 @@ function parseProfiles(form)
 {
 	// Prepare hash map
 	var map = [];
-	
+
 	for (var i=0; i<form.elements.length; i++)
 	{
 		var element = form.elements[i];
@@ -57,7 +56,7 @@ function parseProfiles(form)
 		if ((name != null) && (name.indexOf('sta') == 0))
 			map[name] = element.value.split(';');
 	}
-	
+
 	// Create profiles
 	var p_list = map['staProfile'];
 	for (var i=0; i<p_list.length; i++)
@@ -72,7 +71,7 @@ function parseProfiles(form)
 				var list = map[key];
 				profile[key] = (i < list.length) ? list[i] : '';
 			}
-		
+
 			profiles.push(profile);
 		}
 	}

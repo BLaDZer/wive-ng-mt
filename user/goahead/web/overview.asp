@@ -69,9 +69,7 @@ function setLanguage()
   <tr>
     <td><h1>Wive-NG-MT - firmware for Mediatek based Wi-Fi CPE productions by NAG</h1>
       <p id="ovIntroduction" />
-
       <!-- ----------------- Langauge Settings ----------------- -->
-
       <form method="post" name="Lang" action="/goform/setSysLang">
         <blockquote>
           <fieldset>

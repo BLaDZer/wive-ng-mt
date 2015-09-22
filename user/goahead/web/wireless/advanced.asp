@@ -31,10 +31,6 @@ var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
 var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
 var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
 
-// var htNoiseThresh = '<% getCfgZero(1, "HT_BSSCoexApCntThr"); %>';
-// var htNoiseCoex = '<% getCfgZero(1, "HT_BSSCoexistence"); %>';
-// var ap2040Rescan = '<% getCfgZero(1, "AP2040Rescan"); %>';
-
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
 
 function initTranslation()
@@ -66,13 +62,13 @@ function initTranslation()
 	_TR("advTxBurstEnable", "wireless enable");
 	_TR("advTxBurstDisable", "wireless disable");
 	_TR("advPktAggr", "adv pkt aggregate");
-  _TR("advPktAggrEnable", "wireless enable");
-  _TR("advPktAggrDisable", "wireless disable");
-  _TR("advWMMEnable", "wireless enable");
-  _TR("advWMMDisable", "wireless disable");
-  _TR("advBSEnable", "wireless enable");
-  _TR("advBSDisable", "wireless disable");
-  _TR("advBSAuto", "wireless auto");
+	_TR("advPktAggrEnable", "wireless enable");
+	_TR("advPktAggrDisable", "wireless disable");
+	_TR("advWMMEnable", "wireless enable");
+	_TR("advWMMDisable", "wireless disable");
+	_TR("advBSEnable", "wireless enable");
+	_TR("advBSDisable", "wireless disable");
+	_TR("advBSAuto", "wireless auto");
 
 	_TR("advCountryCode", "adv country code");
 	_TR("advCountryCodeUS", "adv country code us");
@@ -86,11 +82,11 @@ function initTranslation()
 
 	_TR("advMul2UniConver", "adv multicast2unicast converter");
 	_TR("advMul2Uni", "adv multicast2unicast");
-  _TR("advMul2UniEnable", "wireless enable");
-  _TR("advMul2UniDisable", "wireless disable");
-  _TR("advMaxStaNum", "adv maximum stations number");
-  _TR("advStationKeepAlive", "adv station keep alive");
-  _TR("advIdleTimeout", "adv idletimeout");
+	_TR("advMul2UniEnable", "wireless enable");
+	_TR("advMul2UniDisable", "wireless disable");
+	_TR("advMaxStaNum", "adv maximum stations number");
+	_TR("advStationKeepAlive", "adv station keep alive");
+	_TR("advIdleTimeout", "adv idletimeout");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
@@ -177,18 +173,7 @@ function initValue()
 
   form.BandSteering.options.selectedIndex = 1*bandsteering;
   displayElement('bandsteering_row', bandsteeringBuilt == "1");
-//	form.HT_BSSCoexApCntThr.value = htNoiseThresh;
-//	form.HT_BSSCoexistence[0].checked = (htNoiseCoex == '1');
-//	form.HT_BSSCoexistence[1].checked = (htNoiseCoex != '1');
-//	form.AP2040Rescan[0].checked = (ap2040Rescan == '1');
-//	form.AP2040Rescan[1].checked = (ap2040Rescan != '1');
-//	wifiCoexThrChange(form);
 }
-
-//function wifiCoexThrChange(form)
-//{
-//	displayElement('wifi_coex_thr_row', form.HT_BSSCoexistence[0].checked);
-//}
 
 function CheckValue(form)
 {
@@ -280,19 +265,7 @@ function CheckValue(form)
     return false;
   }
 
-//	if (form.HT_BSSCoexistence[0].checked)
-//	{
-//		var v = form.HT_BSSCoexApCntThr.value;
-//		if ((isNaN(v)) || ((v*1) < 0) || ((v*1) > 255))
-//		{
-//			alert('Please specify correct 40Mhz coexistence threshold value');
-//			form.HT_BSSCoexApCntThr.focus();
-//			form.HT_BSSCoexApCntThr.select();
-//			return false;
-//		}
-//	}
-
-	return true;
+  return true;
 }
 
 </script>
@@ -349,20 +322,6 @@ function CheckValue(form)
             <td class="head" id="advIdleTimeout">IdleTimeout</td>
             <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080"> (60 - 300)</font></td>
           </tr>
-<!--
-          <tr>
-            <td class="head">Wi-Fi coexistence</td>
-            <td><input type="radio" name="HT_BSSCoexistence" value="1" onChange="wifiCoexThrChange(this.form);">
-              Enable&nbsp;
-              <input type="radio" name="HT_BSSCoexistence" value="0" onChange="wifiCoexThrChange(this.form);" checked>
-              Disable </td>
-          </tr>
-          <tr id="wifi_coex_thr_row" style="display: none;">
-            <td class="head">40Mhz coexistence threshold</td>
-            <td><input name="HT_BSSCoexApCntThr" class="half" value="">
-              <span style="color: #808080">&nbsp;(range 0 - 255, 0 = auto)</span></td>
-          </tr>
--->
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
             <td><input type="radio" name="short_preamble" value="1">
@@ -391,15 +350,6 @@ function CheckValue(form)
               <input type="radio" name="pkt_aggregate" value="0" checked>
               <font id="advPktAggrDisable">Disable</font></td>
           </tr>
-<!--
-          <tr>
-            <td class="head">Rescan HT Mode</td>
-            <td><input type="radio" name="AP2040Rescan" value="1">
-              Enable&nbsp;
-              <input type="radio" name="AP2040Rescan" value="0" checked>
-              Disable </td>
-          </tr>
--->
           <tr>
             <td class="head">WMM Capable</td>
             <td><input type="radio" name="WmmCapable" value="1">

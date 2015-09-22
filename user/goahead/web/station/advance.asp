@@ -88,7 +88,6 @@ function wirelessModeChange()
 	//var c_reg = (nmode != 6); // N only
 	var prot  = (nmode != 1) && (nmode != 4) && (nmode != 6); // B only, G only, N only
 	displayElement('bgProtectionRow', prot);
-	//displayElement('CountryRegionRowBG', c_reg);
 	displayElement('CountryRegionRowA', (prot) && (amode == '1'));
 }
 
@@ -142,7 +141,7 @@ function initValue()
 	var radio_off   = "<% getCfgZero(1, "RadioOff"); %>";
 	var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
 	var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
-	
+
 	var form = document.sta_advance;
 
 	if (1*is3t3r == 1)
@@ -164,15 +163,15 @@ function initValue()
 	// MAC clone
 	form.macCloneEnbl.options.selectedIndex = (clone == '1') ? 1 : 0;
 	macCloneSwitch(form);
-	
+
 	form.staAutoRoaming.checked = (staAR == '1');
 	form.staAutoConnect.checked = (staAC == '1');
 	form.staFastConnect.checked = (staFC == '1');
 	form.radioWirelessEnabled.checked = (radio_off == "0");
-	
+
 	form.tx_stream.value = tx_stream_idx;
 	form.rx_stream.value = rx_stream_idx;
-	
+
 	// Set-up TX power combo
 	for (var i=0; i<form.tx_power.options.length; i++)
 	{

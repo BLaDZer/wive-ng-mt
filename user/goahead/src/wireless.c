@@ -1104,9 +1104,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t *video_turbine;
 #endif
 #endif
-#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
-	char_t *ht_bss_coex, *ap2040_rescan, *ht_noise_thresh;
-#endif
 	//fetch from web input
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
@@ -1122,11 +1119,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
-#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
-	ht_noise_thresh = websGetVar(wp, T("HT_BSSCoexApCntThr"), T("0"));
-	ht_bss_coex = websGetVar(wp, T("HT_BSSCoexistence"), T("0"));
-	ap2040_rescan = websGetVar(wp, T("AP2040Rescan"), T("0"));
-#endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
@@ -1190,12 +1182,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "IdleTimeout", idletimeout);
 	}
 
-#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
-	nvram_bufset(RT2860_NVRAM, "HT_BSSCoexistence", ht_bss_coex);
-	if (strcmp(ht_bss_coex, "1") == 0)
-		nvram_bufset(RT2860_NVRAM, "HT_BSSCoexApCntThr", ht_noise_thresh);
-	nvram_bufset(RT2860_NVRAM, "AP2040Rescan", ap2040_rescan);
-#endif
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	nvram_bufset(RT2860_NVRAM, "M2UEnabled", m2u_enable);

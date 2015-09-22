@@ -95,7 +95,7 @@ function initValues()
 		'activex' : '<% getCfgZero(1, "websFilterActivex"); %>',
 		'cookies' : '<% getCfgZero(1, "websFilterCookies"); %>'
 	};
-	
+
 	var urls = '<% getCfgGeneral(1, "websURLFilters"); %>';
 	var hosts = '<% getCfgGeneral(1, "websHostFilters"); %>';
 
@@ -104,7 +104,7 @@ function initValues()
 
 	for (var field in st)
 		setElementChecked('websFilter_' + field, st[field] == '1');
-	
+
 	genFilteringTable();
 	initTranslation();
 }
@@ -125,14 +125,14 @@ function addAllRules(list, type)
 function submitForm(form)
 {
 	var ents = { 'url' : [], 'host': [] };
-	
+
 	// Separate into 2 arrays
 	for (var i=0; i<filteringRules.length; i++)
 		ents[filteringRules[i][0]].push(filteringRules[i][1]);
-	
+
 	form.urlFiltering.value  = ents['url'].join(';');
 	form.hostFiltering.value = ents['host'].join(';');
-	
+
 	return true;
 }
 
@@ -152,8 +152,6 @@ function initTranslation()
 
 </script>
 </head>
-
-<!--     body      -->
 <body onLoad="initValues();">
 <table class="body">
   <tr>
@@ -162,7 +160,6 @@ function initTranslation()
       <p id="ContentFilterIntrodution">Here you can setup Content Filter to restrict access to unwanted content.</p>
       <hr>
       <form action="/goform/webContentFilterSetup" method="POST" name="websContentFilterSetup" onSubmit="return submitForm(this);">
-        
         <!-- New content filtering -->
         <table class="form">
           <tr>
