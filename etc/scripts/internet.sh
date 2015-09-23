@@ -15,7 +15,7 @@ LOG="logger -t reconfig"
 addWds() {
         eval `nvram_buf_get 2860 WdsEnable WdsNum`
 	wdsif="$1"
-	if [ "$WdsEnable" = "1" ]; then
+	if [ "$WdsEnable" != "0" ]; then
 	    if [ "$WdsNum" = "" ]; then
 		WdsNum=1
 	    fi
