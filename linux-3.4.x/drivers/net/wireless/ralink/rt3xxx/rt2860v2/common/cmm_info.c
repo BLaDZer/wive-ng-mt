@@ -574,6 +574,39 @@ INT	Set_MBSS_WirelessMode_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
 {
+	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+	INT MaxPhyMode = PHY_11G;
+	LONG WirelessMode;
+
+
+	/* sanity check */
+#ifdef DOT11_N_SUPPORT
+	if (!RTMP_TEST_MORE_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DOT_11N))
+		MaxPhyMode = PHY_11N_5G;
+#endif /* DOT11_N_SUPPORT */
+
+	WirelessMode = simple_strtol(arg, 0, 10);
+	if (WirelessMode > MaxPhyMode)
+		return FALSE; /* out of range */
+
+	if ((WirelessMode == PHY_11ABG_MIXED)
+#ifdef DOT11_N_SUPPORT
+		|| (WirelessMode == PHY_11ABGN_MIXED)
+		|| (WirelessMode == PHY_11AGN_MIXED)
+#endif /* DOT11_N_SUPPORT */
+		)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("mbss> Wrong phy mode for AP!\n"));
+		return FALSE;
+	}
+
+	/* assign wireless mode for the BSS */
+	pAd->ApCfg.MBSSID[pObj->ioctl_if].PhyMode = WirelessMode;
+
+	/*
+		If the band is different with other BSS, we will correct it in
+		RT_CfgSetMbssWirelessMode()
+	*/
 	return Set_Cmm_WirelessMode_Proc(pAd, arg, 1);
 }
 #endif /* MBSS_SUPPORT */
