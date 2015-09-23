@@ -19,7 +19,8 @@ addWds() {
 	    if [ "$WdsNum" = "" ]; then
 		WdsNum=1
 	    fi
-    	    for ifnum in `seq 0 $WdsNum`; do
+	    let "wdsrealnum=$WdsNum-1"
+    	    for ifnum in `seq 0 $wdsrealnum`; do
 		$LOG "Readd ${wdsif}${ifnum} in br0"
 		readdif_to_br ${wdsif}${ifnum}
     	    done
@@ -29,6 +30,7 @@ addWds() {
 addMBSSID() {
 	eval `nvram_buf_get 2860 BssidNum`
 	mbssidif="$1"
+	# skip root if readd
 	if [ "$BssidNum" != "0" ] && [ "$BssidNum" != "1" ]; then
 	    let "bssrealnum=$BssidNum-1"
 	    for ifnum in `seq 1 $bssrealnum`; do
