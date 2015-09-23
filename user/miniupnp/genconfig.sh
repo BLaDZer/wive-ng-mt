@@ -34,15 +34,6 @@ case "$argv" in
 esac
 done
 
-# replace defaults
-LEASEFILE=1
-VENDORCFG=1
-PCP=1
-IPV6=
-if [ -f ../../linux/.config ]; then
-    IPV6=`cat ../../linux/.config | grep "CONFIG_IPV6=y" -c`
-fi
-
 RM="rm -f"
 MV="mv"
 CONFIGFILE=`mktemp tmp.config.h.XXXXXXXXXX`
@@ -55,8 +46,6 @@ LOG_MINIUPNPD="LOG_DAEMON"
 
 # detecting the OS name and version
 OS_NAME=Wifi-Router
-OS_VERSION=WIVE-NG-MT
-OS_URL=http://wive-ng.sf.net
 
 ${RM} ${CONFIGFILE}
 
@@ -296,11 +285,19 @@ case $OS_NAME in
 		;;
 	Wifi-Router)
 		echo "#define USE_NETFILTER 1" >> ${CONFIGFILE}
+		echo "#define USE_IFACEWATCHER 1" >> ${CONFIGFILE}
 		FW=netfilter
 		OS_NAME=Wifi-Router
 		OS_VERSION=WIVE-RTN
 		OS_URL=http://wive-ng.sf.net
 		HAVE_IP_MREQN=1
+		LEASEFILE=1
+		VENDORCFG=1
+		PCP=1
+		IPV6=
+		if [ -f ../../linux/.config ]; then
+		    IPV6=`cat ../../linux/.config | grep "CONFIG_IPV6=y" -c`
+		fi
 		;;
 	*)
 		echo "Unknown OS : $OS_NAME"
