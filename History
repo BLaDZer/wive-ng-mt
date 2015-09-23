@@ -1310,6 +1310,7 @@
 31) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
 32) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
 33) kernel: net: route: prevent oops.<br>
+34) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
 <br>
 <br>
 <b>TODO:</b><br>
