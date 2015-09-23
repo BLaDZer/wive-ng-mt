@@ -1189,7 +1189,9 @@ VOID MlmeNewRateAdapt(
 	USHORT		phyRateLimit20 = 0;
 	BOOLEAN		bTrainUp = FALSE;
 #ifdef TXBF_SUPPORT
+#ifdef TXBF_AWARE
 	BOOLEAN 	invertTxBf = FALSE;
+#endif /*  TXBF_AWARE */
 #endif /*  TXBF_SUPPORT */
 	UCHAR *pTable = pEntry->pTable;
 	UCHAR CurrRateIdx = pEntry->CurrTxRateIndex;
@@ -1205,7 +1207,9 @@ VOID MlmeNewRateAdapt(
 	if (TxErrorRatio >= TrainDown)
 	{
 #ifdef TXBF_SUPPORT
+#ifdef TXBF_AWARE
 		RTMP_RA_GRP_TB *pDownRate, *pLastNonBfRate;
+#endif /*  TXBF_AWARE */
 #endif /* TXBF_SUPPORT */
 
 		/*  Downgrade TX quality if PER >= Rate-Down threshold */
