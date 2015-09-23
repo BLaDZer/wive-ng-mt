@@ -1284,6 +1284,8 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 		if (CHK_IF_DIGIT(wds_mode, 2) || CHK_IF_DIGIT(wds_mode, 3)) {
 			if (0 != strlen(wds_list))
 				nvram_bufset(RT2860_NVRAM, "WdsList", wds_list);
+		} else {
+			nvram_bufset(RT2860_NVRAM, "WdsList", "");
 		}
 	}
 	nvram_commit(RT2860_NVRAM);
