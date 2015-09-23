@@ -13,28 +13,29 @@ MODE="$1"
 LOG="logger -t reconfig"
 
 addWds() {
-    # if kernel build without WDS support - exit
-    wds_en=`nvram_get 2860 WdsEnable`
-    wdsif="$1"
-    if [ "$wds_en" != "0" ]; then
-        for ifnum in `seq 0 3`; do
-	$LOG "Readd ${wdsif}${ifnum} in br0"
-	readdif_to_br ${wdsif}${ifnum}
-        done
-    fi
+        eval `nvram_buf_get 2860 WdsEnable WdsNum`
+	wdsif="$1"
+	if [ "$WdsEnable" = "1" ]; then
+	    if [ "$WdsNum" = "" ]; then
+		WdsNum=1
+	    fi
+    	    for ifnum in `seq 0 $WdsNum`; do
+		$LOG "Readd ${wdsif}${ifnum} in br0"
+		readdif_to_br ${wdsif}${ifnum}
+    	    done
+	fi
 }
 
 addMBSSID() {
-    # if kernel build without Multiple SSID support - exit
-    bssidnum=`nvram_get 2860 BssidNum`
-    mbssidif="$1"
-    if [ "$bssidnum" != "0" ] && [ "$bssidnum" != "1" ]; then
-	let "bssrealnum=$bssidnum-1"
-	for ifnum in `seq 1 $bssrealnum`; do
-	    $LOG "Readd ${mbssidif}${ifnum} in br0"
-	    readdif_to_br ${mbssidif}${ifnum}
-	done
-    fi
+	eval `nvram_buf_get 2860 BssidNum`
+	mbssidif="$1"
+	if [ "$BssidNum" != "0" ] && [ "$BssidNum" != "1" ]; then
+	    let "bssrealnum=$BssidNum-1"
+	    for ifnum in `seq 1 $bssrealnum`; do
+		$LOG "Readd ${mbssidif}${ifnum} in br0"
+		readdif_to_br ${mbssidif}${ifnum}
+	    done
+	fi
 }
 
 bridge_config() {
