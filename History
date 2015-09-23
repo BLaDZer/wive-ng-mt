@@ -1320,7 +1320,7 @@
 2) need add in UI advanced EntryLifeCheck variable (how pkts TX fail before connection drop, default 512).<br>
 3) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
 4) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-5) need add tx beamforming parametrs in WebUi Basic if CONFIG_RT_SECOND_CARD=7612 or CONFIG_RT_FIRST_CARD=7602.<br>
+5) need add tx beamforming parametrs in WebUi Basic if CONFIG_RT_SECOND_CARD=7612 or CONFIG_RT_FIRST_CARD=7602 (ITxBfEn,ETxBfeeEn,ETxBfEnCond variables 0/1, see rtmp.h).<br>
 6) need add multiif support in iappd daemon.<br>
 7) need add subchannel select for 5GHz module.<br>
 8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
