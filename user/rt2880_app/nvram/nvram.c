@@ -537,14 +537,17 @@ static int gen_wifi_config(int mode, int genmode)
 #if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER)
 	FPRINT_NUM(CarrierDetect);
 #endif
-#if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
-	FPRINT_NUM(CSPeriod);
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT)
 	FPRINT_NUM(ITxBfEn);
-	FPRINT_NUM(ETxBfEnCond);
 	FPRINT_NUM(ITxBfTimeout);
+	FPRINT_NUM(ETxBfEnCond);
+	FPRINT_NUM(ETxBfeeEn);
 	FPRINT_NUM(ETxBfTimeout);
 	FPRINT_NUM(ETxBfNoncompress);
 	FPRINT_NUM(ETxBfIncapable);
+#endif
+#if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+	FPRINT_NUM(CSPeriod);
 	FPRINT_NUM(DfsLowerLimit);
 	FPRINT_NUM(DfsUpperLimit);
 	FPRINT_NUM(DfsIndoor);
