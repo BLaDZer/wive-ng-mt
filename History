@@ -1285,30 +1285,31 @@
 6) defaults: add fast roaming and radio resource managment parametrs.<br>
 7) defaults: enable WMM support by default (this long time ready for production).<br>
 8) coovachilli: up to version 1.3.1.3 commit: commit 12c8d8c).<br>
-9) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
-10) iproute2: allow config l2tpip tunnels if configured in kernel.<br>
-11) goahead: fix fast roaming extensions enable/disable options.<br>
-12) goahead: add IDS parametrs to WebUI.<br>
-13) goahead: review txmode set for new drivers notation.<br>
-14) goahead: fix 80211.x start if server adress unset.<br>
-15) goahead: fix wds configure.<br>
-16) goahead: allow roaming extensions tune for all drivers.<br>
-17) init.d: preconfigure igmpsnooping for all ports.<br>
-18) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
-19) kernel: configs: enable IDS for all devices.<br>
-20) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-21) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
-22) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
-23) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
-24) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
-25) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
-26) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
-27) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
-28) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
-29) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
-30) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
-31) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
-32) kernel: net: route: prevent oops.<br>
+9) miniupnpd: up to 1.9.20150922 version.<br>
+10) dropbear: generate host key only if reqest (speedup first boot and more security in some cases).<br>
+11) iproute2: allow config l2tpip tunnels if configured in kernel.<br>
+12) goahead: fix fast roaming extensions enable/disable options.<br>
+13) goahead: add IDS parametrs to WebUI.<br>
+14) goahead: review txmode set for new drivers notation.<br>
+15) goahead: fix 80211.x start if server adress unset.<br>
+16) goahead: fix wds configure.<br>
+17) goahead: allow roaming extensions tune for all drivers.<br>
+18) init.d: preconfigure igmpsnooping for all ports.<br>
+19) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
+20) kernel: configs: enable IDS for all devices.<br>
+21) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+22) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
+23) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
+24) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+25) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
+26) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
+27) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
+28) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
+29) kernel: usb: usbnet: Fix a race between usbnet_stop() and the BH.<br>
+30) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+31) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+32) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
+33) kernel: net: route: prevent oops.<br>
 <br>
 <br>
 <b>TODO:</b><br>
