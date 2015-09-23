@@ -300,6 +300,7 @@ case $OS_NAME in
 		OS_NAME=Wifi-Router
 		OS_VERSION=WIVE-RTN
 		OS_URL=http://wive-ng.sf.net
+		HAVE_IP_MREQN=1
 		;;
 	*)
 		echo "Unknown OS : $OS_NAME"
