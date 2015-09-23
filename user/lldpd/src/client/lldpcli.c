@@ -385,7 +385,7 @@ input_append(const char *arg, struct inputs *inputs, int acceptdir)
 {
 	struct stat statbuf;
 	if (stat(arg, &statbuf) == -1) {
-		log_info("lldpctl", "cannot find configuration file/directory %s",
+		log_warn("lldpctl", "cannot find configuration file/directory %s",
 		    arg);
 		return;
 	}
@@ -432,7 +432,7 @@ main(int argc, char *argv[])
 	int ch, debug = 1, rc = EXIT_FAILURE;
 	const char *fmt = "plain";
 	lldpctl_conn_t *conn = NULL;
-	const char *options = is_lldpctl(argv[0])?"hdvf:":"hdsvf:c:u:";
+	const char *options = is_lldpctl(argv[0])?"hdvf:u:":"hdsvf:c:u:";
 
 	int gotinputs = 0;
 	struct inputs inputs;
@@ -442,22 +442,12 @@ main(int argc, char *argv[])
 
 	signal(SIGHUP, SIG_IGN);
 
-	/* Initialize logging */
-	while ((ch = getopt(argc, argv, options)) != -1) {
-		switch (ch) {
-		case 'd': debug++; break;
-		case 's': debug--; break;
-		}
-	}
-	log_init(debug, __progname);
-	lldpctl_log_level(debug);
-
 	/* Get and parse command line options */
 	optind = 1;
 	while ((ch = getopt(argc, argv, options)) != -1) {
 		switch (ch) {
-		case 'd': break;
-		case 's': break;
+		case 'd': debug++; break;
+		case 's': debug--; break;
 		case 'h':
 			usage();
 			break;
@@ -472,12 +462,21 @@ main(int argc, char *argv[])
 			fmt = optarg;
 			break;
 		case 'c':
+			if (!gotinputs) {
+				log_init(debug, __progname);
+				lldpctl_log_level(debug);
 			gotinputs = 1;
+			}
 			input_append(optarg, &inputs, 1);
 			break;
 		default:
 			usage();
 		}
+	}
+
+	if (!gotinputs) {
+		log_init(debug, __progname);
+		lldpctl_log_level(debug);
 	}
 
 	/* Disable SIGPIPE */

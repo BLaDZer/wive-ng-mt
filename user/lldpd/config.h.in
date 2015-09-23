@@ -24,7 +24,7 @@
 /* LLDP-MED extension */
 #undef ENABLE_LLDPMED
 
-/* compatibility with Linux kernel older than 2.6.18 */
+/* compatibility with Linux kernel older than 2.6.32 */
 #undef ENABLE_OLDIES
 
 /* Privilege separation */

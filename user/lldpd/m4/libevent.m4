@@ -7,8 +7,8 @@ AC_DEFUN([lldp_CHECK_LIBEVENT], [
   AC_ARG_WITH([embedded-libevent],
     AS_HELP_STRING(
       [--with-embedded-libevent],
-      [Force the use of embedded libevent @<:@default=no@:>@]
-  ))
+      [Use embedded libevent @<:@default=auto@:>@]
+  ), [], [with_embedded_libevent=auto])
   if test x"$with_embedded_libevent" = x"yes"; then
      LIBEVENT_EMBEDDED=1
   else
@@ -27,15 +27,23 @@ AC_DEFUN([lldp_CHECK_LIBEVENT], [
        [
          AC_MSG_RESULT([yes])
        ], [
+         if test x"$with_embedded_libevent" = x"auto"; then
          AC_MSG_RESULT([no, using shipped libevent])
          LIBEVENT_EMBEDDED=1
+         else
+           AC_MSG_ERROR([*** unusable system libevent])
+         fi
        ])
        CFLAGS="$_save_CFLAGS"
        LIBS="$_save_LIBS"
     ], [
-      # No appropriate version, let's use the shipped copy
+      # No appropriate version, let's use the shipped copy if possible
+      if test x"$with_embedded_libevent" = x"auto"; then
       AC_MSG_NOTICE([using shipped libevent])
       LIBEVENT_EMBEDDED=1
+      else
+        AC_MSG_ERROR([*** libevent not found])
+      fi
     ])
   fi
 
@@ -45,11 +53,18 @@ AC_DEFUN([lldp_CHECK_LIBEVENT], [
     LIBEVENT_LDFLAGS="\$(top_builddir)/libevent/libevent.la"
   fi
 
-  # Override configure arguments
-  ac_configure_args="$ac_configure_args --disable-libevent-regress --disable-thread-support --disable-openssl"
-  ac_configure_args="$ac_configure_args --disable-malloc-replacement --disable-debug-mode --enable-function-sections"
-  ac_configure_args="$ac_configure_args --disable-shared --with-pic --enable-static --enable-silent-rules"
-  AC_CONFIG_SUBDIRS([libevent])
+  # Call ./configure in libevent. Need it for make dist...
+  libevent_configure_args="$libevent_configure_args --disable-libevent-regress"
+  libevent_configure_args="$libevent_configure_args --disable-thread-support"
+  libevent_configure_args="$libevent_configure_args --disable-openssl"
+  libevent_configure_args="$libevent_configure_args --disable-malloc-replacement"
+  libevent_configure_args="$libevent_configure_args --disable-debug-mode"
+  libevent_configure_args="$libevent_configure_args --enable-function-sections"
+  libevent_configure_args="$libevent_configure_args --disable-shared"
+  libevent_configure_args="$libevent_configure_args --with-pic"
+  libevent_configure_args="$libevent_configure_args --enable-static"
+  lldp_CONFIG_SUBDIRS([libevent], [$libevent_configure_args])
+
   AM_CONDITIONAL([LIBEVENT_EMBEDDED], [test x"$LIBEVENT_EMBEDDED" != x])
   AC_SUBST([LIBEVENT_LIBS])
   AC_SUBST([LIBEVENT_CFLAGS])

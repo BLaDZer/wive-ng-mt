@@ -27,11 +27,11 @@ liblldpd_la_SOURCES  = \
 	protocols/sonmp.h \
 	protocols/edp.c \
 	protocols/edp.h
-liblldpd_la_CFLAGS   = $(AM_CFLAGS) @LIBEVENT_CFLAGS@
+liblldpd_la_CFLAGS   = $(AM_CFLAGS) $(LIBEVENT_CFLAGS)
 liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
 liblldpd_la_LIBADD   = \
 	$(top_builddir)/src/libcommon-daemon-client.la \
-	$(top_builddir)/src/libcommon-daemon-lib.la @LIBEVENT_LIBS@
+	$(top_builddir)/src/libcommon-daemon-lib.la $(LIBEVENT_LIBS)
 
 if HOST_OS_LINUX
 liblldpd_la_SOURCES += \
@@ -97,7 +97,7 @@ endif
 ## lldpd
 lldpd_SOURCES = main.c
 lldpd_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
-lldpd_LDADD   = liblldpd.la @LIBEVENT_LDFLAGS@
+lldpd_LDADD   = liblldpd.la -levent
 
 # Add SNMP support if needed
 if USE_SNMP

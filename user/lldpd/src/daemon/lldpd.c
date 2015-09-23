@@ -1060,6 +1060,8 @@ lldpd_update_localchassis(struct lldpd *cfg)
 			        fatal("localchassis", "failed to set minimal system description");
 	        }
         }
+	if (cfg->g_config.c_platform == NULL)
+		cfg->g_config.c_platform = strdup(un.sysname);
 
 	/* Check routing */
 	if (lldpd_routing_enabled(cfg)) {
@@ -1495,7 +1497,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	log_init(debug, __progname);
 	tzset();		/* Get timezone info before chroot */
 
-	log_debug("main", "lldpd starting...");
+	log_debug("main", "lldpd " PACKAGE_VERSION " starting...");
 #ifdef ENABLE_PRIVSEP
 	/* Grab uid and gid to use for priv sep */
 	if ((user = getpwnam(PRIVSEP_USER)) == NULL)

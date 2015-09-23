@@ -5,8 +5,11 @@ ACLOCAL_AMFLAGS = -I m4
 CFLAGS	+= -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
 CFLAGS	+= -ffunction-sections -fdata-sections
 LDFLAGS	+= -Wl,--gc-sections
+LIBEVENT_CFLAGS = "-I$(ROOTDIR)/lib/shared/include"
+LIBEVENT_LIBS = "-L$(ROOTDIR)/lib/shared/lib -levent"
 
-SUBDIRS      = src/compat src src/daemon src/lib src/client tests osx
+SUBDIRS      = src/compat src src/daemon src/lib src/client 
+#tests osx
 EXTRA_DIST   = $(DX_CONFIG) include get-version autogen.sh
 DIST_SUBDIRS = $(SUBDIRS)
 DISTCLEANFILES = ChangeLog filsystem
@@ -16,7 +19,7 @@ doc_DATA = ChangeLog
 
 __force-changelog-generation:
 ChangeLog: __force-changelog-generation
-	$(AM_V_GEN)if test -d $(top_srcdir)/.git; then \
+	$(AM_V_GEN)if test -e $(top_srcdir)/.git; then \
 		prev=$$(git describe --tags --always --match '[0-9]*' 2> /dev/null) ; \
 		for tag in $$(git tag | $(EGREP) '^[0-9]+(\.[0-9]+){1,}$$' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr); do \
 			if [ x"$$prev" = x ]; then prev=$$tag ; fi ; \
@@ -38,7 +41,7 @@ MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
 # systemd and launchd files are not installed in the prefix, don't
 # request them for distcheck
-DISTCHECK_CONFIGURE_FLAGS = \
+DISTCHECK_CONFIGURE_FLAGS = $(CONFIGURE_ARGS) \
         --with-sysusersdir=no \
         --with-systemdsystemunitdir=no \
 	--with-launchddaemonsdir=no

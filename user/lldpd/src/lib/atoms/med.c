@@ -497,6 +497,7 @@ read_fixed_precision(lldpctl_atom_t *atom,
 		return NULL;
 	}
 	strlcpy(stored, result, len);
+	free(result);
 	return stored;
 }
 
@@ -824,7 +825,7 @@ _lldpctl_atom_set_int_med_caelement(lldpctl_atom_t *atom, lldpctl_key_t key,
 
 	switch (key) {
 	case lldpctl_k_med_civicaddress_type:
-		if (value <= 0 || value > 128) goto bad;
+		if (value < 0 || value > 128) goto bad;
 		el->type = value;
 		return atom;
 	default:

@@ -31,7 +31,7 @@ static int
 cdp_send(struct lldpd *global,
 	 struct lldpd_hardware *hardware, int version)
 {
-	const char *platform = "Linux";
+	const char *platform = "Unknown";
 	struct lldpd_chassis *chassis;
 	struct lldpd_mgmt *mgmt;
 	struct lldpd_port *port;

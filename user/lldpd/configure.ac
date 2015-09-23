@@ -37,6 +37,7 @@ AM_PROG_AR
 
 # Configure libtool
 LT_INIT
+gl_LD_VERSION_SCRIPT
 
 #######################
 ### Checks
@@ -78,6 +79,8 @@ AX_CFLAGS_GCC_OPTION([-Wformat], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wformat-security], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wfatal-errors], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wcast-align], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wheader-guard], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wdocumentation], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Winline], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-fno-omit-frame-pointer], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-unused-parameter], [LLDP_CFLAGS])
@@ -89,7 +92,7 @@ AX_LDFLAGS_OPTION([-Wl,-z,now], [LLDP_LDFLAGS])
 # Hardening
 AC_ARG_ENABLE([hardening],
   [AS_HELP_STRING([--enable-hardening],
-    [Enable compiler and linker options to frustrate memory corruption exploits @<:@yes@:>@])],
+    [Enable compiler and linker options to frustrate memory corruption exploits @<:@default=yes@:>@])],
   [hardening="$enableval"],
   [hardening="yes"])
 
@@ -125,7 +128,7 @@ AC_CONFIG_LIBOBJ_DIR([src/compat])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_FORK
-# setproctitle (maybe through libbsd)
+# setproctitle (maybe through libbsd [until 0.5, it is only a stub function])
 AC_SEARCH_LIBS([setproctitle], [util bsd])
 AC_REPLACE_FUNCS([setproctitle])
 AC_CHECK_FUNCS([setproctitle_init])
@@ -162,7 +165,7 @@ AC_CACHE_SAVE
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.4], [have_check=yes], [have_check=no])
 
 # Libevent
-lldp_CHECK_LIBEVENT
+#lldp_CHECK_LIBEVENT
 
 # Compatibility with pkg.m4 < 0.27
 m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR],
@@ -294,7 +297,7 @@ lldp_ARG_ENABLE([dot3], [Dot3 extension (PHY stuff)], [yes])
 lldp_ARG_ENABLE([custom], [Custom TLV support], [yes])
 
 # Oldies
-lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.18], [no])
+lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.32], [no])
 
 #######################
 # Output results

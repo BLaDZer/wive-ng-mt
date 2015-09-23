@@ -1,4 +1,6 @@
 EXTRA_DIST = resources lipo
+EXTRA_DIST += distribution.xml.in im.bernat.lldpd.plist.in scripts/postinstall.in scripts/preinstall.in
+TEMPLATES   = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    scripts/preinstall
 
 if HOST_OS_OSX
 
@@ -29,8 +31,9 @@ pkg: requirements ../$(PKG_NAME)
 
 # This is a component. We only have one. We could have more and
 # provide optional components to be installed.
-pkg.1/$(PKG_NAME): $(PKG_DIR) scripts
+pkg.1/$(PKG_NAME): $(PKG_DIR) scripts/postinstall scripts/preinstall
 	[ -d pkg.1 ] || mkdir pkg.1
+	chmod +x scripts/postinstall scripts/preinstall
 	$(PKGBUILD) \
 		--root $(PKG_DIR) \
 		--identifier im.bernat.@PACKAGE@.daemon \
@@ -61,15 +64,11 @@ if HAVE_LAUNCHDDAEMONSDIR
 launchddaemons_DATA = im.bernat.lldpd.plist
 endif
 
-TEMPLATES   = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    scripts/preinstall
-EXTRA_DIST += distribution.xml.in im.bernat.lldpd.plist.in scripts/postinstall.in scripts/preinstall.in
 CLEANFILES  = $(TEMPLATES)
 distribution.xml: distribution.xml.in
 im.bernat.lldpd.plist: im.bernat.lldpd.plist.in
 scripts/postinstall: scripts/postinstall.in
-	chmod +x $@
 scripts/preinstall: scripts/preinstall.in
-	chmod +x $@
 include $(top_srcdir)/edit.am
 
 .PHONY: pkg requirements

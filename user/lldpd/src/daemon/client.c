@@ -145,7 +145,7 @@ client_handle_set_configuration(struct lldpd *cfg, enum hmsg_type *type,
 	}
 	if (CHANGED_STR(c_hostname)) {
 		log_debug("rpc", "change system name to %s",
-		    config->c_hostname?config->c_hostname:"(NULL");
+		    config->c_hostname?config->c_hostname:"(NULL)");
 		free(cfg->g_config.c_hostname);
 		cfg->g_config.c_hostname = xstrdup(config->c_hostname);
 		levent_update_now(cfg);
@@ -233,6 +233,27 @@ client_handle_get_interfaces(struct lldpd *cfg, enum hmsg_type *type,
 		iff_next = TAILQ_NEXT(iff, next);
 		TAILQ_REMOVE(&ifs, iff, next);
 		free(iff);
+	}
+
+	return output_len;
+}
+
+/* Return the local chassis.
+   Input:  nothing.
+   Output: local chassis (lldpd_chassis)
+*/
+static ssize_t
+client_handle_get_local_chassis(struct lldpd *cfg, enum hmsg_type *type,
+    void *input, int input_len, void **output, int *subscribed)
+{
+    struct lldpd_chassis *chassis = LOCAL_CHASSIS(cfg);
+	ssize_t output_len;
+
+	log_debug("rpc", "client request the local chassis");
+	output_len = lldpd_chassis_serialize(chassis, output);
+	if (output_len <= 0) {
+		output_len = 0;
+		*type = NONE;
 	}
 
 	return output_len;
@@ -446,6 +467,7 @@ static struct client_handle client_handles[] = {
 	{ SET_CONFIG,		"Set configuration", client_handle_set_configuration },
 	{ GET_INTERFACES,	"Get interfaces",    client_handle_get_interfaces },
 	{ GET_INTERFACE,	"Get interface",     client_handle_get_interface },
+	{ GET_CHASSIS,		"Get local chassis", client_handle_get_local_chassis },
 	{ SET_PORT,		"Set port",          client_handle_set_port },
 	{ SUBSCRIBE,		"Subscribe",         client_handle_subscribe },
 	{ 0,			NULL } };

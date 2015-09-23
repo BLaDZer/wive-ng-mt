@@ -6,7 +6,7 @@ if HAVE_CHECK
 
 TESTS = check_marshal check_pattern check_lldp check_cdp check_sonmp check_edp check_fixedpoint
 AM_CFLAGS += @CHECK_CFLAGS@
-LDADD = $(top_builddir)/src/daemon/liblldpd.la @CHECK_LIBS@ @LIBEVENT_LDFLAGS@
+LDADD = $(top_builddir)/src/daemon/liblldpd.la @CHECK_LIBS@ -levent
 
 check_marshal_SOURCES = check_marshal.c \
 	$(top_srcdir)/src/marshal.h \
