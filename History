@@ -1309,7 +1309,7 @@
 30) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
 31) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
 32) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
-33) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if average rssi return 0.<br>
+33) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if RTMPMaxRssi return 0.<br>
 34) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
 35) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
 36) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
