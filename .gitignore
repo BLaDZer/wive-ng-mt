@@ -368,6 +368,8 @@ fulldump
 /user/chillispot/coova-chilli-master/debian/Makefile
 /user/chillispot/coova-chilli-master/distro/Makefile
 /user/chillispot/coova-chilli-master/doc/Makefile
+/user/lldpd/osx/Makefile
+/user/lldpd/tests/Makefile
 
 #
 # exclude enerated files from kernel

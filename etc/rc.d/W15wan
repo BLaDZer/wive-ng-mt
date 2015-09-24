@@ -83,33 +83,27 @@ start() {
 		$LOG "ERROR: WAN's IP address is set identical to LAN. Need change LAN_IP adress!!!"
 		exit 0
 	    fi
-	    # wan interface up and default gateway
+	    # wan interface adress set and up
 	    ifconfig "$wan_if" "$wan_ipaddr" netmask "$wan_netmask"
-	    # always treat bridge mode having static wan connection
-	    # route mode
-	    if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
-		ip -4 route replace default via $wan_gateway
-	    fi
-	    # add routes configured in web
-	    if [ -f /etc/routes_replace ]; then
-		$LOG "Add user routes."
-		/etc/routes_replace replace "$phys_lan_if" "$wan_if"
-	    fi
-	    # Add route to multicast subnet
-	    if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
-		$LOG "Add route to multicast subnet."
-		ip -4 route replace "$mcast_net" dev "$wan_if"
-	    fi
 	else
-	    # wan interface up and default gateway
-	    ifconfig br0 $lan_ipaddr netmask $lan_netmask
-	    # if bridge mode dgw on dev br0 set
-	    if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
-    		ip -4 route replace default dev br0 via $wan_gateway
-	    else
-    		ip -4 route replace default dev br0
-	    fi
+	    # bridge interface adress set and up
+	    ifconfig br0 "$lan_ipaddr" netmask "$lan_netmask"
         fi
+	# always treat bridge mode having static wan connection
+	if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
+	    $LOG "Add default route via $wan_gateway."
+	    ip -4 route replace default via $wan_gateway
+	fi
+	# add routes configured in web
+	if [ -f /etc/routes_replace ]; then
+	    $LOG "Add user routes."
+	    /etc/routes_replace replace "$phys_lan_if" "$wan_if"
+	fi
+	# Add route to multicast subnet
+	if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
+	    $LOG "Add route to multicast subnet."
+	    ip -4 route replace "$mcast_net" dev "$wan_if"
+	fi
     elif [ "$wanConnectionMode" = "DHCP" ] && [ "$purepppoemode" != "1" ]; then
 	$LOG "Start DHCP client at $wan_if."
 	udhcpc_conf
