@@ -1008,48 +1008,48 @@ INT Show_WdsTable_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 							pAd->RxRing[0].RxCpuIdx,
 							pAd->RxRing[0].RxDmaIdx));
 #endif /* RTMP_MAC_PCI */
-	
-	DBGPRINT(RT_DEBUG_OFF, ("\n%-19s%-4s%-4s%-4s%-7s%-7s%-7s%-10s%-6s%-6s%-6s%-6s\n",
-				"MAC", "IDX", "AID", "PSM", "RSSI0", "RSSI1", "RSSI2", "PhMd", "BW", "MCS", "SGI", "STBC"));
-	
+
+	printk("\n%-19s%-4s%-4s%-4s%-7s%-7s%-7s%-10s%-6s%-6s%-6s%-6s\n",
+				"MAC", "IDX", "AID", "PSM", "RSSI0", "RSSI1", "RSSI2", "PhMd", "BW", "MCS", "SGI", "STBC");
+
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		PMAC_TABLE_ENTRY pEntry = &pAd->MacTab.Content[i];
 		if (IS_ENTRY_WDS(pEntry))
 		{
-			DBGPRINT(RT_DEBUG_OFF, ("%02X:%02X:%02X:%02X:%02X:%02X  ", PRINT_MAC(pEntry->Addr)));
-			DBGPRINT(RT_DEBUG_OFF,("%-4d", (int)pEntry->wdev_idx));
-			DBGPRINT(RT_DEBUG_OFF, ("%-4d", (int)pEntry->Aid));
-			DBGPRINT(RT_DEBUG_OFF, ("%-4d", (int)pEntry->PsMode));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi0));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi1));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi2));
-			DBGPRINT(RT_DEBUG_OFF, ("%-10s", get_phymode_str(pEntry->HTPhyMode.field.MODE)));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6s", get_bw_str(pEntry->HTPhyMode.field.BW)));
+			printk("%02X:%02X:%02X:%02X:%02X:%02X  ", PRINT_MAC(pEntry->Addr));
+			printk("%-4d", (int)pEntry->wdev_idx);
+			printk("%-4d", (int)pEntry->Aid);
+			printk("%-4d", (int)pEntry->PsMode);
+			printk("%-7d", pEntry->RssiSample.AvgRssi0);
+			printk("%-7d", pEntry->RssiSample.AvgRssi1);
+			printk("%-7d", pEntry->RssiSample.AvgRssi2);
+			printk("%-10s", get_phymode_str(pEntry->HTPhyMode.field.MODE));
+			printk("%-6s", get_bw_str(pEntry->HTPhyMode.field.BW));
 
 #ifdef DOT11_VHT_AC
 			if (pEntry->HTPhyMode.field.MODE == MODE_VHT)
-				DBGPRINT(RT_DEBUG_OFF, ("%dS-M%-2d", ((pEntry->HTPhyMode.field.MCS>>4) + 1), (pEntry->HTPhyMode.field.MCS & 0xf)));
-			else
-#endif /* DOT11_VHT_AC */			
-				DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.MCS));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.ShortGI));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d\n", pEntry->HTPhyMode.field.STBC));
-
-//+++Add by shiang for debug
-			DBGPRINT(RT_DEBUG_OFF, (" MaxCap:%-10s", get_phymode_str(pEntry->MaxHTPhyMode.field.MODE)));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6s", get_bw_str(pEntry->MaxHTPhyMode.field.BW)));
-#ifdef DOT11_VHT_AC
-			if (pEntry->MaxHTPhyMode.field.MODE == MODE_VHT)
-				DBGPRINT(RT_DEBUG_OFF, ("%dS-M%d", ((pEntry->MaxHTPhyMode.field.MCS>>4) + 1), (pEntry->MaxHTPhyMode.field.MCS & 0xf)));
+				printk("%dS-M%-2d", ((pEntry->HTPhyMode.field.MCS>>4) + 1), (pEntry->HTPhyMode.field.MCS & 0xf));
 			else
 #endif /* DOT11_VHT_AC */
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->MaxHTPhyMode.field.MCS));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->MaxHTPhyMode.field.ShortGI));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d\n", pEntry->MaxHTPhyMode.field.STBC));
+			printk("%-6d", pEntry->HTPhyMode.field.MCS);
+			printk("%-6d", pEntry->HTPhyMode.field.ShortGI);
+			printk("%-6d\n", pEntry->HTPhyMode.field.STBC);
+
+//+++Add by shiang for debug
+			printk(" MaxCap:%-10s", get_phymode_str(pEntry->MaxHTPhyMode.field.MODE));
+			printk("%-6s", get_bw_str(pEntry->MaxHTPhyMode.field.BW));
+#ifdef DOT11_VHT_AC
+			if (pEntry->MaxHTPhyMode.field.MODE == MODE_VHT)
+				printk("%dS-M%d", ((pEntry->MaxHTPhyMode.field.MCS>>4) + 1), (pEntry->MaxHTPhyMode.field.MCS & 0xf));
+			else
+#endif /* DOT11_VHT_AC */
+			printk("%-6d", pEntry->MaxHTPhyMode.field.MCS);
+			printk("%-6d", pEntry->MaxHTPhyMode.field.ShortGI);
+			printk("%-6d\n", pEntry->MaxHTPhyMode.field.STBC);
 //---Add by shiang for debug
 		}
-	} 
+	}
 
 	return TRUE;
 }

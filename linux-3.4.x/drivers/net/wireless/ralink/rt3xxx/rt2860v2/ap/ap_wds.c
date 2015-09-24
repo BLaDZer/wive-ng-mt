@@ -877,26 +877,26 @@ INT	Show_WdsTable_Proc(
 							pAd->RxRing.RxDmaIdx));
 #endif /* RTMP_MAC_PCI */
 	
-	DBGPRINT(RT_DEBUG_OFF, ("\n%-19s%-4s%-4s%-4s%-7s%-7s%-7s%-10s%-6s%-6s%-6s%-6s\n",
-				"MAC", "IDX", "AID", "PSM", "RSSI0", "RSSI1", "RSSI2", "PhMd", "BW", "MCS", "SGI", "STBC"));
+	printk("\n%-19s%-4s%-4s%-4s%-7s%-7s%-7s%-10s%-6s%-6s%-6s%-6s\n",
+				"MAC", "IDX", "AID", "PSM", "RSSI0", "RSSI1", "RSSI2", "PhMd", "BW", "MCS", "SGI", "STBC");
 	
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		PMAC_TABLE_ENTRY pEntry = &pAd->MacTab.Content[i];
 		if (IS_ENTRY_WDS(pEntry))
 		{
-			DBGPRINT(RT_DEBUG_OFF, ("%02X:%02X:%02X:%02X:%02X:%02X  ", PRINT_MAC(pEntry->Addr)));
-			DBGPRINT(RT_DEBUG_OFF,("%-4d", (int)pEntry->MatchWDSTabIdx));
-			DBGPRINT(RT_DEBUG_OFF, ("%-4d", (int)pEntry->Aid));
-			DBGPRINT(RT_DEBUG_OFF, ("%-4d", (int)pEntry->PsMode));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi0));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi1));
-			DBGPRINT(RT_DEBUG_OFF, ("%-7d", pEntry->RssiSample.AvgRssi2));
-			DBGPRINT(RT_DEBUG_OFF, ("%-10s", GetPhyMode(pEntry->HTPhyMode.field.MODE)));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6s", GetBW(pEntry->HTPhyMode.field.BW)));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.MCS));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d", pEntry->HTPhyMode.field.ShortGI));
-			DBGPRINT(RT_DEBUG_OFF, ("%-6d\n", pEntry->HTPhyMode.field.STBC));
+			printk("%02X:%02X:%02X:%02X:%02X:%02X  ", PRINT_MAC(pEntry->Addr));
+			printk("%-4d", (int)pEntry->MatchWDSTabIdx);
+			printk("%-4d", (int)pEntry->Aid);
+			printk("%-4d", (int)pEntry->PsMode);
+			printk("%-7d", pEntry->RssiSample.AvgRssi0);
+			printk("%-7d", pEntry->RssiSample.AvgRssi1);
+			printk("%-7d", pEntry->RssiSample.AvgRssi2);
+			printk("%-10s", GetPhyMode(pEntry->HTPhyMode.field.MODE));
+			printk("%-6s", GetBW(pEntry->HTPhyMode.field.BW));
+			printk("%-6d", pEntry->HTPhyMode.field.MCS);
+			printk("%-6d", pEntry->HTPhyMode.field.ShortGI);
+			printk("%-6d\n", pEntry->HTPhyMode.field.STBC);
 		}
 	} 
 
