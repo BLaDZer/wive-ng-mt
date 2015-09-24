@@ -88,7 +88,7 @@ start() {
 	else
 	    # bridge interface adress set and up
 	    ifconfig br0 "$lan_ipaddr" netmask "$lan_netmask"
-        fi
+	fi
 	# always treat bridge mode having static wan connection
 	if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
 	    $LOG "Add default route via $wan_gateway."
