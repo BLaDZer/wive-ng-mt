@@ -1671,7 +1671,7 @@ static VOID RT3883_ChipSwitchChannel(
 	CHAR TxPwer = 0, TxPwer2 = DEFAULT_RF_TX_POWER, TxPwer3 = 0, lanGain;
 	UINT32 mac_val;
 	UINT32 TxPinCfg;
-	UINT8 RFValue = 0, BbpValue = 0;;
+	UINT8 RFValue = 0, BbpValue = 0;
 
 	/* Search Tx power value*/
 	/*

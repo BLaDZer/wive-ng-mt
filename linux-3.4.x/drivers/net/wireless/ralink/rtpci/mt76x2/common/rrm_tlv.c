@@ -500,7 +500,7 @@ VOID RRM_EnqueueBcnReq(
 
 	/* Insert Action header here. */
 	{
-		ULONG tmpLen = sizeof(HEADER_802_11);;
+		ULONG tmpLen = sizeof(HEADER_802_11);
 		MeasureReqMode.word = 0;
 		MakeMeasurementReqFrame(pAd, pOutBuffer, &tmpLen,
 			TotalLen, CATEGORY_RM, RRM_MEASURE_REQ, MeasureReqToken,
@@ -839,7 +839,7 @@ VOID RRM_EnqueueTxStreamMeasureReq(
 
 	/* Insert Action header here. */
 	{
-		ULONG tmpLen = sizeof(HEADER_802_11);;
+		ULONG tmpLen = sizeof(HEADER_802_11);
 		MeasureReqMode.field.Enable = 1;
 		MeasureReqMode.field.DurationMandatory =
 			pMlmeTxMeasureReq->bDurationMandatory;

@@ -71,7 +71,6 @@ VOID MBSS_Init(
 	IN PRTMP_ADAPTER 				pAd,
 	IN RTMP_OS_NETDEV_OP_HOOK		*pNetDevOps)
 {
-#define MBSS_MAX_DEV_NUM	32
 	PNET_DEV pDevNew;
 	INT32 IdBss, MaxNumBss;
 	INT status;

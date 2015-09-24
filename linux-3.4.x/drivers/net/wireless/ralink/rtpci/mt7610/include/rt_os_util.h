@@ -873,7 +873,7 @@ BOOLEAN CFG80211OS_RxMgmt(
 	IN PNET_DEV pNetDev, 
 	IN INT32 freq, 
 	IN PUCHAR frame, 
-	IN UINT32 len);;
+	IN UINT32 len);
 #endif /* RT_CFG80211_SUPPORT */
 
 

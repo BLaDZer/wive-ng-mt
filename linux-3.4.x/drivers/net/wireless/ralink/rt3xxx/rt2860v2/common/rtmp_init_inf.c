@@ -1068,13 +1068,11 @@ VOID RTMPDrvClose(
 #endif /* EXT_BUILD_CHANNEL_LIST */
 	pAd->CommonCfg.bCountryFlag = 0;
 
-
-
 #ifdef WDS_SUPPORT
 	WdsDown(pAd);
 #endif /* WDS_SUPPORT */
 
-	RtmpOsMsDelay(20); /* wait for disconnect requests transmitted */
+	RtmpOsMsDelay(30); /* wait for disconnect requests transmitted */
 
 	for (i = 0 ; i < NUM_OF_TX_RING; i++)
 	{
