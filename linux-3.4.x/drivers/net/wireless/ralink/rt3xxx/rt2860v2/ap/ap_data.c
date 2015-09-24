@@ -4350,7 +4350,7 @@ VOID APHandleRxDataFrame(
 				}
 
 				/*receive corresponding WDS packet, disable TX lock state (fix WDS jam issue) */
-				if(pEntry->LockEntryTx == TRUE)
+				if(pEntry && (pEntry->LockEntryTx == TRUE))
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("Receive WDS packet, disable TX lock state!\n"));
 					pEntry->ContinueTxFailCnt = 0;

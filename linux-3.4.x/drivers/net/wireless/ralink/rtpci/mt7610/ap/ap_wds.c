@@ -94,11 +94,11 @@ LONG WdsEntryAlloc(
 			break;
 		}
 	}
+	NdisReleaseSpinLock(&pAd->WdsTabLock);
 
 	if (i == MAX_WDS_ENTRY)
 		DBGPRINT(RT_DEBUG_ERROR, ("%s: Unable to allocate WdsEntry.\n", __FUNCTION__));
 
-	NdisReleaseSpinLock(&pAd->WdsTabLock);
 
 	return WdsTabIdx;
 }
@@ -142,7 +142,8 @@ BOOLEAN MacTableDeleteWDSEntry(
 		return FALSE;
 
 
-	MacTableDeleteEntry(pAd, wcid, pAddr);
+	else
+		return MacTableDeleteEntry(pAd, wcid, pAddr);
 
 	return TRUE;
 }
@@ -646,7 +647,6 @@ VOID WdsPeerBeaconProc(
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_AGGREGATION_CAPABLE);
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_PIGGYBACK_CAPABLE);
 				/*RTMPSetPiggyBack(pAd, TRUE); */
-				
 			}
 			else if (ClientRalinkIe & 0x00000001)
 			{

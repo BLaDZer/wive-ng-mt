@@ -262,9 +262,9 @@ static LONG avgPhase(LONG mPhase[], int pLength)
 }
 #endif
 
+#if 0
 typedef
 	COMPLEX_VALUE (*PCAP_IQ_DATA)[3];	/* CAP_IQ_DATA - Buffer to hold I/Q data for three RX chains */
-
 
 /*
 	RemoveDC - calculate mean and subtract. Return peak values
@@ -324,7 +324,6 @@ static void RemoveDC(
 	}
 }
 
-#if 0
 /*
 	CalcRFCalPhase - process RF calibration to calculate phase of the three channels
 		Parameters:

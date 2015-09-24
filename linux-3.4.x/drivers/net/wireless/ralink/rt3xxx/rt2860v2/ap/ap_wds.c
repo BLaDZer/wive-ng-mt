@@ -94,11 +94,11 @@ LONG WdsEntryAlloc(
 			break;
 		}
 	}
+	NdisReleaseSpinLock(&pAd->WdsTabLock);
 
 	if (i == MAX_WDS_ENTRY)
 		DBGPRINT(RT_DEBUG_ERROR, ("%s: Unable to allocate WdsEntry.\n", __FUNCTION__));
 
-	NdisReleaseSpinLock(&pAd->WdsTabLock);
 
 	return WdsTabIdx;
 }
@@ -142,7 +142,8 @@ BOOLEAN MacTableDeleteWDSEntry(
 		return FALSE;
 
 
-	MacTableDeleteEntry(pAd, wcid, pAddr);
+	else
+		return MacTableDeleteEntry(pAd, wcid, pAddr);
 
 	return TRUE;
 }
@@ -189,6 +190,10 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					HTPhyMode.field.MODE = MODE_OFDM;
 					HTPhyMode.field.MCS = 7;
 					pEntry->RateLen = 8;
+					if (pAd->CommonCfg.PhyMode == PHY_11G ||
+					    pAd->CommonCfg.PhyMode == PHY_11N_2_4G ||
+					    pAd->CommonCfg.PhyMode == PHY_11GN_MIXED)
+						pEntry->SupportRateMode |= SUPPORT_CCK_MODE;
 					break;
 
 				case MODE_CCK:
@@ -205,6 +210,10 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					HTPhyMode.field.STBC = pAd->WdsTab.WdsEntry[WdsTabIdx].HTPhyMode.field.STBC;
 					HTPhyMode.field.MODE = MODE_HTMIX;
 					pEntry->RateLen = 12;
+					if (pAd->CommonCfg.PhyMode == PHY_11G ||
+						pAd->CommonCfg.PhyMode == PHY_11N_2_4G ||
+						pAd->CommonCfg.PhyMode == PHY_11GN_MIXED)
+						pEntry->SupportRateMode |= SUPPORT_CCK_MODE;
 					break;
 
 				case MODE_HTGREENFIELD:
@@ -214,6 +223,10 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					HTPhyMode.field.STBC = pAd->WdsTab.WdsEntry[WdsTabIdx].HTPhyMode.field.STBC;
 					HTPhyMode.field.MODE = MODE_HTGREENFIELD;
 					pEntry->RateLen = 12;
+					if (pAd->CommonCfg.PhyMode == PHY_11G ||
+						pAd->CommonCfg.PhyMode == PHY_11N_2_4G ||
+						pAd->CommonCfg.PhyMode == PHY_11GN_MIXED)
+						pEntry->SupportRateMode |= SUPPORT_CCK_MODE;
 					break;
 #endif /* DOT11_N_SUPPORT */
 
@@ -665,8 +678,11 @@ VOID WdsPeerBeaconProc(
 		if (ClientRalinkIe & 0x00000004)
 			CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET);
 		else
+		{
 			CLIENT_STATUS_CLEAR_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET);
-			
+			CLIENT_STATUS_CLEAR_FLAG(pEntry, fCLIENT_STATUS_RDG_CAPABLE);
+		}
+
 		if (pAd->CommonCfg.bAggregationCapable)
 		{
 			if ((pAd->CommonCfg.bPiggyBackCapable) && (ClientRalinkIe & 0x00000003) == 3)
@@ -674,7 +690,6 @@ VOID WdsPeerBeaconProc(
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_AGGREGATION_CAPABLE);
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_PIGGYBACK_CAPABLE);
 				/*RTMPSetPiggyBack(pAd, TRUE); */
-				
 			}
 			else if (ClientRalinkIe & 0x00000001)
 			{
@@ -767,6 +782,8 @@ VOID WdsPeerBeaconProc(
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_HTC_CAPABLE);
 			if (pAd->CommonCfg.bRdg && pHtCapability->ExtHtCapInfo.RDGSupport)
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_RDG_CAPABLE);	
+			else
+				CLIENT_STATUS_CLEAR_FLAG(pEntry, fCLIENT_STATUS_RDG_CAPABLE);
 			if (pHtCapability->ExtHtCapInfo.MCSFeedback == 0x03)
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_MCSFEEDBACK_CAPABLE);
 
