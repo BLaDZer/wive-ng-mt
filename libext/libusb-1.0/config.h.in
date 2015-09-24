@@ -85,6 +85,9 @@
 /* Darwin backend */
 #undef OS_DARWIN
 
+/* Haiku backend */
+#undef OS_HAIKU
+
 /* Linux backend */
 #undef OS_LINUX
 
@@ -138,6 +141,9 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Oldest Windows version supported */
+#undef WINVER
 
 /* Use GNU extensions */
 #undef _GNU_SOURCE
