@@ -6926,12 +6926,12 @@ INT	Set_InvTxBfTag_Proc(
     IN  PSTRING         arg)
 {
 	int profileNum;
+	UINT  rValue;
+#ifndef MT76x2
 	UCHAR row[EXP_MAX_BYTES];
 	UCHAR r163Value = 0;
-	UINT  rValue;
 
 	/* Disable Profile Updates during access */
-#ifndef MT76x2
 	RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R163, &r163Value);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R163, r163Value & ~0x88);
 
@@ -7157,9 +7157,8 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 	int calFunction = simple_strtol(arg, 0, 10);
 	int calParams[2];
 	int ret;
-	UINT value32, r27Value = 0, r173Value = 0;
 	ITXBF_PHASE_PARAMS phaseParams;
-	UCHAR divPhase[2] = {0}, phaseValues[2] = {0};
+	UCHAR phaseValues[2] = {0};
 	UCHAR channel = pAd->CommonCfg.Channel;
         UCHAR LoPhase;
 
@@ -7329,8 +7328,9 @@ INT	Set_ETxBfEnCond_Proc(
 {
 	UCHAR i, enableETxBf;
 	MAC_TABLE_ENTRY		*pEntry;
+#ifndef MT76x2
 	UINT8	byteValue;
-
+#endif
 	enableETxBf = simple_strtol(arg, 0, 10);
 
 	if (enableETxBf > 1)
@@ -7422,9 +7422,8 @@ INT	Set_StaETxBfEnCond_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
 {
-	UCHAR i, enableETxBf;
+	UCHAR enableETxBf;
 	MAC_TABLE_ENTRY		*pEntry;
-	UINT8	byteValue;
 
 	enableETxBf = simple_strtol(arg, 0, 10);
 
@@ -7502,7 +7501,6 @@ INT	Set_ETxBfEnCond_ApCliProc(
 {
 	UCHAR i, enableETxBf;
 	MAC_TABLE_ENTRY		*pEntry;
-	UINT8	byteValue;
 
 	enableETxBf = simple_strtol(arg, 0, 10);
 
@@ -7703,10 +7701,7 @@ INT	Set_ITxBfEn_Proc(
 	UINT32  i;
 	UCHAR   enableITxBF;
 	BOOLEAN bCalibrated;
-	UINT8   byteValue;
 	UINT    value32;
-	ULONG   irq_flags;
-
 
 	enableITxBF = simple_strtol(arg, 0, 10);
 
@@ -7953,12 +7948,8 @@ INT Set_TxBfProfileTagRead(
     IN PRTMP_ADAPTER pAd,
 	IN PSTRING arg)
 {
-	ULONG   value64;
-	UCHAR   profileIdx, subcarrierIdx;
-	UCHAR   Input[2];
-	CHAR	*value, value8;
+	UCHAR   profileIdx;
 	UINT    value32, readValue32[5];
-	INT 	i;
 	UCHAR   validFlg;
 
 	profileIdx = simple_strtol(arg, 0, 10);
@@ -8063,11 +8054,8 @@ INT Set_TxBfProfileTagWrite(
     IN PRTMP_ADAPTER pAd,
 	IN PSTRING arg)
 {
-	UCHAR   profileIdx, subcarrierIdx;
-	UCHAR   Input[2];
-	CHAR	*value;
+	UCHAR   profileIdx;
 	UINT    value32, readValue32[5];
-	INT 	i;
 
 	profileIdx = simple_strtol(arg, 0, 10);
 

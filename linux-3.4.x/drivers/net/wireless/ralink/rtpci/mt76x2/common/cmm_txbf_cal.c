@@ -200,22 +200,23 @@ typedef	struct {
 	LONG	q:8;
 }	COMPLEX_VALUE;		/* Signed 8-bit complex values */
 
-#define CALC_LENGTH		1024				/* Number of samples used to perform phase calculation for LNA or Divider Calibration */
-#define CALC_LENGTH_DC	(CALC_LENGTH+512)	/* Number of samples used for DC removal */
-#define MAX_CAPTURE_LENGTH		4096			/* Maximum number of samples to capture */
-#define DIVCAL_CAPTURE_LENGTH	(CALC_LENGTH+1024)	/* Length of capture for Divider or LNA Calibration */
+#define CALC_LENGTH			1024					/* Number of samples used to perform phase calculation for LNA or Divider Calibration */
+#define CALC_LENGTH_DC			(CALC_LENGTH+512)			/* Number of samples used for DC removal */
+#define MAX_CAPTURE_LENGTH		4096					/* Maximum number of samples to capture */
+#define DIVCAL_CAPTURE_LENGTH		(CALC_LENGTH+1024)			/* Length of capture for Divider or LNA Calibration */
 
-#define FIXED_M_PI		0x1000						/* Scaling for fixed point PI */
-#define DEG(rad)		(radToDeg180(rad-FIXED_M_PI)+180)	/* Convert fixed radians (0x1000=pi) to degrees range [0 360) */
-#define DEG180(rad)		radToDeg180(rad)		/* Convert fixed radians (0x1000=pi) to degrees range [-180 180) */
+#define FIXED_M_PI			0x1000					/* Scaling for fixed point PI */
 
 #define BYTE_PHASE_SHIFT		5					/* Shift to convert from byte phase (0x80=pi) to normal phase (0x1000=pi) */
 #define CONVERT_TO_BYTE_PHASE(p)	(int)(((p)+(1<<(BYTE_PHASE_SHIFT-1)))>>BYTE_PHASE_SHIFT)	/* Convert from normal phase to byte phase */
 
-#define R65_LNA_LOW		0x4
-#define R65_LNA_MID		0x8
-#define R65_LNA_HIGH	0xC
+#define R65_LNA_LOW			0x4
+#define R65_LNA_MID			0x8
+#define R65_LNA_HIGH			0xC
 
+#ifdef DBG
+#define DEG(rad)			(radToDeg180(rad-FIXED_M_PI)+180)	/* Convert fixed radians (0x1000=pi) to degrees range [0 360) */
+#define DEG180(rad)			radToDeg180(rad)			/* Convert fixed radians (0x1000=pi) to degrees range [-180 180) */
 
 /*
 	radMod2pi - converts angle in radians to the range [-pi pi)
@@ -239,7 +240,6 @@ static int radToDeg180(LONG rad)
 	return (int)(radMod2pi(rad)*180/FIXED_M_PI);
 }
 
-
 /*
 	avgPhase - computes the average phase.
 		Phase is adjusted so all values are within the range mPhase[0] +/-pi
@@ -260,7 +260,7 @@ static LONG avgPhase(LONG mPhase[], int pLength)
 
 	return iAtan2(sumSin, sumCos);
 }
-
+#endif
 
 typedef
 	COMPLEX_VALUE (*PCAP_IQ_DATA)[3];	/* CAP_IQ_DATA - Buffer to hold I/Q data for three RX chains */
@@ -324,7 +324,7 @@ static void RemoveDC(
 	}
 }
 
-
+#if 0
 /*
 	CalcRFCalPhase - process RF calibration to calculate phase of the three channels
 		Parameters:
@@ -409,7 +409,7 @@ static void CalcRFCalPhase(
 		}
 	}
 }
-
+#endif
 
 #ifdef MT76x2
 static VOID CalcDividerPhase(
@@ -684,8 +684,7 @@ static VOID CalcDividerPhase(
 #endif /* LINUX */
 #endif /* DBG */
 
-
-
+#if 0
 /*
 	ITxBFSaveData - save MAC data
 		Returns pointer to allocated buffer containing saved data
@@ -725,7 +724,7 @@ static void ITxBFRestoreData(PRTMP_ADAPTER pAd, UINT32 *saveData)
 		RTMP_IO_WRITE32(pAd, macAddr, *sdPtr);
 	}
 }
-
+#endif
 
 /*
 	mapChannelKHz - map channel number to KHz
@@ -821,6 +820,7 @@ static UCHAR InterpParam(int ch, int chBeg, int chEnd, UCHAR yBeg, UCHAR yEnd)
 */
 
 #ifdef MT76x2
+#if 0
 static void mt76x2_ITxBFDivParams(UCHAR divValues[2], int channel, ITXBF_DIV_PARAMS *divParams)
 {
 	if (channel <= 14)
@@ -837,6 +837,7 @@ static void mt76x2_ITxBFDivParams(UCHAR divValues[2], int channel, ITXBF_DIV_PAR
 		divValues[0] = InterpParam(channel, 149, 173, divParams->E1aHighBeg, divParams->E1aHighEnd);
 }
 #endif
+#endif
 
 /*
 	ITxBFLnaParams - interpolate LNA compensation parameter based on channel and EEPROM.
@@ -848,8 +849,6 @@ static void mt76x2_ITxBFDivParams(UCHAR divValues[2], int channel, ITXBF_DIV_PAR
 #ifdef MT76x2
 static void mt76x2_ITxBFLnaParams(UCHAR lnaValues[3], int channel, ITXBF_LNA_PARAMS *lnaParams)
 {
-	int i;
-
 	if (channel <= 14) {
 		lnaValues[0] = InterpParam(channel, 1, 14, lnaParams->E1gBeg[0], lnaParams->E1gEnd[0]);
 		lnaValues[1] = InterpParam(channel, 1, 14, lnaParams->E1gBeg[1], lnaParams->E1gEnd[1]);
@@ -1248,7 +1247,6 @@ VOID mt76x2_ITxBFLoadLNAComp(
 {
 	ITXBF_LNA_PARAMS lnaParams;
 	UCHAR lnaValues[3];
-	UCHAR bbpValue = 0;
 	int i;
 	UCHAR channel = pAd->CommonCfg.Channel;
 	UINT  value32;
@@ -2555,8 +2553,7 @@ INT mt76x2_ITxBFPhaseCalibration(
 	UINT32 value32[2];
 	UCHAR  timeOutCount;
 	INT    mPhase[2];
-    INT    mPhase0;
-    INT    mCalPhase0;
+	INT    mCalPhase0;
 	LONG   avgIData, avgQData;
 	UCHAR  i;
 	UCHAR   divPhase[2] = {0};
@@ -3287,8 +3284,6 @@ UCHAR Read_PFMUTxBfProfile(
 	INT carrierIndex, scIndex;
 	INT	profileNum;
 	SC_TABLE_ENTRY *pTab = NULL;
-	INT j, c;
-	UCHAR  r163Value = 0;
 	UINT32 value32;
 	UCHAR  GrpTab[3] = {1, 2, 4};
 	UCHAR  GrpInc;
