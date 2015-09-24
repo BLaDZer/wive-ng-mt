@@ -327,15 +327,16 @@ static VOID APPeerAuthReqAtIdleAction(
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 
-         if (((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
-            ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
+         if (((pMbss->AuthFailRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
+            ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
          {
     		DBGPRINT(RT_DEBUG_TRACE, ("AUTH-MBSS(%d): AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n",
  				  apidx, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
-                DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
 
-		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold))
+		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) {
+            		DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
                 	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+		}
 
                 /* If this STA exists, delete it. */
                 if (pEntry)

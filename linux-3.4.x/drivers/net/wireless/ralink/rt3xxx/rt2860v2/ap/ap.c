@@ -1228,8 +1228,7 @@ VOID MacTableMaintenance(
 			CHAR rssiIndex = 0, overRssiThresCount = 0;
 			for (rssiIndex=0; rssiIndex<MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
 			{
-				if ((pEntry->LastDataRssi[rssiIndex] !=0 ) &&
-				    (pEntry->LastDataRssi[rssiIndex] < pMbss->RssiLowForStaKickOut))
+				if (pEntry->LastDataRssi[rssiIndex] !=0 && pEntry->LastDataRssi[rssiIndex] < pMbss->RssiLowForStaKickOut)
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("%d:[%d] Fail.\n",rssiIndex,pEntry->LastDataRssi[rssiIndex]));
 					overRssiThresCount++;

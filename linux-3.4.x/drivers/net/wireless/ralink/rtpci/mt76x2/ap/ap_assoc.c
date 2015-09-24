@@ -1084,18 +1084,16 @@ SendAssocResponse:
 	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-	DBGPRINT(RT_DEBUG_TRACE, ("%s: ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
-				  wdev->if_dev->name, pMbss->AssocReqFailRssiThreshold,
-				  pMbss->AssocReqNoRspRssiThreshold, rssi));
 
-	if ((pMbss->AssocReqFailRssiThreshold != 0) && (rssi < pMbss->AssocReqFailRssiThreshold))
+	if ((pMbss->AssocReqFailRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AssocReqFailRssiThreshold))
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
 		bAssocSkip = TRUE;
 	}
-	else if ((pMbss->AssocReqNoRspRssiThreshold != 0) && (rssi < pMbss->AssocReqNoRspRssiThreshold))
+
+	if ((pMbss->AssocReqNoRspRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AssocReqNoRspRssiThreshold))
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		DBGPRINT(RT_DEBUG_TRACE, ("Ignore this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
 		bAssocNoRsp = TRUE;
 	}
 

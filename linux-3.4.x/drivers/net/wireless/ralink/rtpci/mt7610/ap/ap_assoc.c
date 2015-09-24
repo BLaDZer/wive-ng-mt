@@ -908,17 +908,16 @@ VOID ap_cmm_peer_assoc_req_action(
 	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC_FAIL_REQ Threshold = %d, ASSOC_NO_RSP_REQ Threshold = %d,PktMaxRssi=%d\n",
-				  wdev->AssocReqFailRssiThreshold, wdev->AssocReqNoRspRssiThreshold, rssi));
 
-	if ((wdev->AssocReqFailRssiThreshold != 0) && (rssi < wdev->AssocReqFailRssiThreshold))
+	if ((wdev->AssocReqFailRssiThreshold != 0) && (rssi !=0) && (rssi < wdev->AssocReqFailRssiThreshold))
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
 		bAssocSkip = TRUE;
 	}
-	else if ((wdev->AssocReqNoRspRssiThreshold != 0) && (rssi < wdev->AssocReqNoRspRssiThreshold))
+
+	if ((wdev->AssocReqNoRspRssiThreshold != 0) && (rssi !=0) && (rssi < wdev->AssocReqNoRspRssiThreshold))
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		DBGPRINT(RT_DEBUG_TRACE, ("Ignore this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
 		bAssocNoRsp = TRUE;
 	}
 

@@ -55,7 +55,7 @@ VOID APPeerProbeReqAction(
 	UCHAR RSNIe=IE_WPA, RSNIe2=IE_WPA2;
 	MULTISSID_STRUCT *mbss;
 	struct wifi_dev *wdev;
-	CHAR rssi = 0, idx = 0;
+	CHAR idx = 0;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
@@ -106,22 +106,21 @@ VOID APPeerProbeReqAction(
 		else
 			continue; /* check next BSS */
 
-	   rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+		if (mbss->ProbeRspRssiThreshold != 0)
+		{
+			CHAR rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 
-       if ((mbss->ProbeRspRssiThreshold != 0) && (rssi < mbss->ProbeRspRssiThreshold))
-       {
-            DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n",
-                                  wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
-			continue;
-	   }
-	    	
-
+			if (rssi != 0 && rssi < mbss->ProbeRspRssiThreshold) {
+			    DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
+			    continue;
+			}
+		}
 
 #ifdef BAND_STEERING
-	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
-										NULL, 
+		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+										NULL,
 										ProbeReqParam.Addr2,
 										Elem->MsgType,
 										Elem->Rssi0,

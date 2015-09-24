@@ -347,19 +347,21 @@ SendAuth:
 			"[wcid=%d]%02x:%02x:%02x:%02x:%02x:%02x\n",
 			apidx, Seq, Alg, Status, Elem->Wcid, PRINT_MAC(Addr2)));
 
-        /* YF@20130102: Refuse the weak signal of AuthReq */
+	 /* YF@20130102: Refuse the weak signal of AuthReq */
          rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-         if (((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
-            ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
+
+         if (((pMbss->AuthFailRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AuthFailRssiThreshold)) ||
+            ((pMbss->AuthNoRspRssiThreshold != 0) && (rssi !=0) && (rssi < pMbss->AuthNoRspRssiThreshold)))
          {
     		DBGPRINT(RT_DEBUG_TRACE, ("%s: AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n", 
  				  wdev->if_dev->name, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
-                DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
 
-		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold))
+		if ((pMbss->AuthFailRssiThreshold != 0) && (rssi < pMbss->AuthFailRssiThreshold)) {
+            		DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
                 	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+		}
 
                 /* If this STA exists, delete it. */
                 if (pEntry)

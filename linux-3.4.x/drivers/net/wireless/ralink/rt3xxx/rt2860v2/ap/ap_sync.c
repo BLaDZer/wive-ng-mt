@@ -111,14 +111,14 @@ VOID APPeerProbeReqAction(
 	UCHAR         DsLen = 1;/*, IbssLen = 2, TimLen=1, */
 				  /*BitmapControl=0, VirtualBitmap=0; */
 	UCHAR   ErpIeLen = 1;
-	UCHAR  apidx = 0, PhyMode, SupRateLen;
-	CHAR rssi = 0, idx = 0;
+	UCHAR	apidx = 0, PhyMode, SupRateLen;
+	CHAR	idx = 0;
 	UCHAR   RSNIe=IE_WPA, RSNIe2=IE_WPA2;/*, RSN_Len=22; */
 	BOOLEAN		bRequestRssi=FALSE;
 
 #ifdef WSC_AP_SUPPORT
-    UCHAR		  Addr3[MAC_ADDR_LEN];
-    PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
+	UCHAR		  Addr3[MAC_ADDR_LEN];
+	PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
 
 	COPY_MAC_ADDR(Addr3, pFrame->Hdr.Addr3);
 #endif /* WSC_AP_SUPPORT */
@@ -164,15 +164,18 @@ VOID APPeerProbeReqAction(
 		else
 			continue; /* check next BSS */
 
-		rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+		if (pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold != 0)
+		{
+			CHAR rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 
-		if ((pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold != 0) && (rssi < pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold))
-		{
-			DBGPRINT(RT_DEBUG_INFO, ("PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold, rssi));
-			continue;
+			if (rssi != 0 && rssi < pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold) {
+			    DBGPRINT(RT_DEBUG_INFO, ("PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold, rssi));
+			    continue;
+			}
 		}
+
 #ifdef BAND_STEERING
 		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL, 
