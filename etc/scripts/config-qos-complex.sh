@@ -141,9 +141,11 @@ qos_tc_lan() {
     fi
 
     # filters for marked in prerouting
-    tc filter add dev $lan_if parent 1:0 prio 1 protocol ip handle 20 fw flowid 1:20
-    tc filter add dev $lan_if parent 1:0 prio 2 protocol ip handle 21 fw flowid 1:21
-    tc filter add dev $lan_if parent 1:0 prio 3 protocol ip handle 22 fw flowid 1:22
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	tc filter add dev $lan_if parent 1:0 prio 1 protocol ip handle 20 fw flowid 1:20
+	tc filter add dev $lan_if parent 1:0 prio 2 protocol ip handle 21 fw flowid 1:21
+	tc filter add dev $lan_if parent 1:0 prio 3 protocol ip handle 22 fw flowid 1:22
+    fi
 
     tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
     tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
@@ -171,14 +173,18 @@ gos_tc_wan() {
 
 # load modules
 qos_lm
-# create netfilters chains for qos
-qos_nf
+
 # add netsched htb tubes
 qos_tc_lan
 
-# build rules for WAN
-# not need shape at wan if in pure pppoe mode
-if [ "$purepppoemode" != "1" ]; then
+# create netfilters chains for qos
+if  [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ] || [ "$vpnEnabled" = "on" -a "$wan_if" != "$real_wan_if" ]; then
+    qos_nf
+fi
+
+if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoemode" != "1" ]; then
+    # build rules for WAN
+    # not need shape at wan if in pure pppoe mode or bridget mode
     qos_nf_if
     gos_tc_wan
 fi

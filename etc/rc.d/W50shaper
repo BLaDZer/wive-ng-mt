@@ -8,10 +8,6 @@ fi
 # include functions and env
 . /etc/scripts/global.sh
 
-if [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
-    exit 0
-fi
-
 # chek wan is up
 wan_up=`ip -4 -o link show $real_wan_if up | grep -c ""` > /dev/null 2>&1
 if [ "$wan_up" = "0" ]; then
