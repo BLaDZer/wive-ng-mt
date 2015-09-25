@@ -1265,6 +1265,7 @@ const parameter_fetch_t wds_args[] =
 	{ T("wds_encryp_key1"), "Wds1Key", 0, T("") },
 	{ T("wds_encryp_key2"), "Wds2Key", 0, T("") },
 	{ T("wds_encryp_key3"), "Wds3Key", 0, T("") },
+	{ T("wds_num"), "WdsNum", 0, T("0") },
 	{ NULL, NULL, 0, NULL }
 };
 
