@@ -5145,7 +5145,7 @@ VOID APHandleRxDataFrame(
    	OldPwrMgmt = APPsIndicate(pAd, pHeader->Addr2, pEntry->Aid, pFmeCtrl->PwrMgmt);
 #ifdef UAPSD_SUPPORT
 	if (pFmeCtrl->PwrMgmt)
-	{		
+	{
 	   	if ((CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_APSD_CAPABLE)) &&
 			(pFmeCtrl->SubType & 0x08))
 	   	{
@@ -5165,17 +5165,17 @@ VOID APHandleRxDataFrame(
 	   		UCHAR  OldUP;
 
 			OldUP = (*(pRxBlk->pData+LENGTH_802_11) & 0x07);
-	    	if (OldPwrMgmt == PWR_SAVE)
-		{
+	    		if (OldPwrMgmt == PWR_SAVE)
+			{
 #ifdef DROP_MASK_SUPPORT
-			/* Disable Drop Mask */
-			set_drop_mask_per_client(pAd, pEntry, 2, 0);
+			    /* Disable Drop Mask */
+			    set_drop_mask_per_client(pAd, pEntry, 2, 0);
 #endif /* DROP_MASK_SUPPORT */
-	    		UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
-		}
+	    		    UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
+			}
 	    	/* End of if */
 		}
-    } /* End of if */
+	} /* End of if */
 #endif /* UAPSD_SUPPORT */
 
 	/* Drop NULL, CF-ACK(no data), CF-POLL(no data), and CF-ACK+CF-POLL(no data) data frame */

@@ -4478,9 +4478,9 @@ VOID APHandleRxDataFrame(
 	if (pAd->ApCfg.MBSSID[pEntry->apidx].RssiLowForStaKickOut != 0)
 	{
 		pEntry->curLastDataRssiIndex = pEntry->curLastDataRssiIndex % MAX_LAST_DATA_RSSI_LEN;
-		pEntry->LastDataRssi[pEntry->curLastDataRssiIndex] = RTMPMaxRssi(pAd, pEntry->RssiSample.LastRssi0, 
+		pEntry->LastDataRssi[pEntry->curLastDataRssiIndex] = RTMPMaxRssi(pAd, pEntry->RssiSample.LastRssi0,
 					pEntry->RssiSample.LastRssi1, pEntry->RssiSample.LastRssi2);
-		//DBGPRINT(RT_DEBUG_TRACE, ("Recored ==> %d:[%d].\n",pEntry->curLastDataRssiIndex, 
+		//DBGPRINT(RT_DEBUG_TRACE, ("Recored ==> %d:[%d].\n",pEntry->curLastDataRssiIndex,
 		//						   pEntry->LastDataRssi[pEntry->curLastDataRssiIndex]));
 		pEntry->curLastDataRssiIndex++;
 	}
@@ -4545,7 +4545,7 @@ VOID APHandleRxDataFrame(
 	   		UCHAR  OldUP;
 
 			OldUP = (*(pRxBlk->pData+LENGTH_802_11) & 0x07);
-	    	if (OldPwrMgmt == PWR_SAVE)
+	    		if (OldPwrMgmt == PWR_SAVE)
 			{
 #ifdef DROP_MASK_SUPPORT
 				/* Disable Drop Mask */

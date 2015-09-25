@@ -5628,11 +5628,11 @@ if (0 /*!(pRxInfo->Mcast || pRxInfo->Bcast)*/){
 	   		UCHAR  OldUP;
 
 			OldUP = (*(pData+LENGTH_802_11) & 0x07);
-	    	if (OldPwrMgmt == PWR_SAVE)
-	    		UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
+	    		if (OldPwrMgmt == PWR_SAVE)
+	    		    UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
 	    	/* End of if */
 		}
-    } /* End of if */
+	} /* End of if */
 #endif /* UAPSD_SUPPORT */
 
 	/* Drop NULL, CF-ACK(no data), CF-POLL(no data), and CF-ACK+CF-POLL(no data) data frame */
