@@ -90,9 +90,9 @@ start() {
 	    ifconfig br0 "$lan_ipaddr" netmask "$lan_netmask"
 	fi
 	# always treat bridge mode having static wan connection
-	if [ "$wan_gateway" != "" ] && [ "$wan_gateway" != "0.0.0.0" ]; then
+	if [ "$wan_gateway" != "" ]; then
 	    $LOG "Add default route via $wan_gateway."
-	    ip -4 route replace default via $wan_gateway
+	    ip -4 route replace default via "$wan_gateway"
 	fi
 	# add routes configured in web
 	if [ -f /etc/routes_replace ]; then

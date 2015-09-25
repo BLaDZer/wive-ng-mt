@@ -71,9 +71,6 @@ set_routest_to_server() {
 	fi
     else
 	newdgw="$wan_gateway"
-	if [ "$newdgw" = "0.0.0.0" ]; then
-	    newdgw=""
-	fi
     fi
 
     if [ "$newdgw" != "" ] && [ "$newdgw" != "$SERVER" ]; then

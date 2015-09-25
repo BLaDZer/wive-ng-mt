@@ -189,10 +189,15 @@ getWanIpaddr() {
 	wan_manual_mtu=""
 	wan_ipaddr=""
 	wan_netmask=""
-	if [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ] || [ "$wan_gateway" = "0.0.0.0" ]; then
+	if [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ]; then
 	    # allow router acess to internet in bridge mode
 	    wan_gateway=""
 	fi
+    fi
+
+    # if dgw is 0.0.0.0 replace to null
+    if [ "$wan_gateway" = "0.0.0.0" ]; then
+	    wan_gateway=""
     fi
 
     # get from if and return physical wan ip
