@@ -135,14 +135,14 @@ qos_tc_lan() {
     # root classes
     tc qdisc add dev $lan_if root handle 1: htb default 22
     # all trafs limit
-    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 256k
+    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 512k
     # overhead class for mcast and local connections
     tc class add dev $lan_if parent 1: classid 1:3 htb rate ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
 
     # subclass prio
-    tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500
-    tc class add dev $lan_if parent 1:2 classid 1:21 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 2 quantum 1500
-    tc class add dev $lan_if parent 1:2 classid 1:22 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 3 quantum 1500
+    tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500 burst 256k
+    tc class add dev $lan_if parent 1:2 classid 1:21 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 2 quantum 1500 burst 128k
+    tc class add dev $lan_if parent 1:2 classid 1:22 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 3 quantum 1500 burst 64k
 
     # add sfq discipline to end htb class
     tc qdisc add dev $lan_if parent 1:3 handle 3: sfq perturb 10 quantum 1500
