@@ -77,7 +77,7 @@ qos_nf_if() {
     fi
 
     # if use offload do not mark all others high prio pakcets
-    if [ "$offloadMode" != "0" ]; then
+    if [ "$offloadMode" = "0" ]; then
 	# tcp SYN and small size packets to high prio
 	echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
@@ -102,7 +102,7 @@ qos_nf_if() {
     fi
 
     # if use offload do not mark all others high prio pakcets
-    if [ "$offloadMode" != "0" ]; then
+    if [ "$offloadMode" = "0" ]; then
 	# SYN/ICMP and small size packets to hih prio
 	echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
 	echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
