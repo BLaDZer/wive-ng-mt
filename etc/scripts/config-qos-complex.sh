@@ -175,10 +175,10 @@ gos_tc_wan() {
     ##################################################################################################################################
     $LOG "All outgoing $wan_if rate: normal $QoS_rate_limit_up , maximum $QoS_rate_up (kbit/s)"
     tc qdisc add dev $wan_if root handle 1: htb default 24
-    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit quantum 1500 burst 50k
+    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit quantum 1500 burst 256k
 
-    tc class add dev $wan_if parent 1:1 classid 1:23 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 0 quantum 1500
-    tc class add dev $wan_if parent 1:1 classid 1:24 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 1 quantum 1500
+    tc class add dev $wan_if parent 1:1 classid 1:23 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 0 quantum 1500 burst 128k
+    tc class add dev $wan_if parent 1:1 classid 1:24 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 1 quantum 1500 burst 64k
 
     tc qdisc add dev $wan_if parent 1:23 handle 23: sfq perturb 10 quantum 1500
     tc qdisc add dev $wan_if parent 1:24 handle 24: sfq perturb 10 quantum 1500
