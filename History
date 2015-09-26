@@ -1322,6 +1322,7 @@
 43) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
 44) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
 45) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
+46) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
 <br>
 <br>
 <b>TODO:</b><br>
