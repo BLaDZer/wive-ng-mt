@@ -18,33 +18,34 @@ LOG="logger -t QoS"
 IPTSCR="/etc/qos_firewall"
 
 start() {
-if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ]; then
-    $LOG "Set default rules."
-    set_def
+    eval `nvram_buf_get 2860 QoSEnable`
+    if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ]; then
+	$LOG "Set default rules."
+	set_def
 
-    # create iptables stub
-    printf "#!/bin/sh\n\n" > $IPTSCR
+	# create iptables stub
+	printf "#!/bin/sh\n\n" > $IPTSCR
 
-    ######################################
-    # netfilter script generate
-    ######################################
+	######################################
+	# netfilter script generate
+	######################################
 
-    # set execute bits for all
-    if [ -f $IPTSCR ]; then
-	chmod 755 $IPTSCR
+	# set execute bits for all
+	if [ -f $IPTSCR ]; then
+	    chmod 755 $IPTSCR
+	fi
+
+	######################################
+	# call shaper helpers
+	######################################
+	if [ "$QoSEnable" = "1" ]; then
+	    /etc/scripts/config-qos-tc_prio.sh
+	elif [ "$QoSEnable" = "2" ]; then
+	    /etc/scripts/config-qos-complex.sh
+	elif [ "$QoSEnable" = "3" ]; then
+	    /etc/scripts/config-qos-codel.sh
+	fi
     fi
-
-    ######################################
-    # call shaper helpers
-    ######################################
-    if [ "$QoSEnable" = "1" ]; then
-	/etc/scripts/config-qos-tc_prio.sh
-    elif [ "$QoSEnable" = "2" ]; then
-	/etc/scripts/config-qos-complex.sh
-    elif [ "$QoSEnable" = "3" ]; then
-	/etc/scripts/config-qos-codel.sh
-    fi
-fi
 }
 
 set_def() {

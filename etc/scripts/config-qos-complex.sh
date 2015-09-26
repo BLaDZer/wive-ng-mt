@@ -10,7 +10,7 @@
 LOG="logger -t Complex QoS"
 
 # get config
-eval `nvram_buf_get 2860 igmpEnabled \
+eval `nvram_buf_get 2860 igmpEnabled offloadMode \
     QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up \
     QoS_rate_vpn_up QoS_rate_vpn_limit_up`
 
