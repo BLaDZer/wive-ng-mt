@@ -43,7 +43,7 @@ start() {
 
 get_param() {
     # get parametrs
-    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode offloadMode lan_ipaddr lan_netmask TZ \
+    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode lan_ipaddr lan_netmask TZ \
 	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
 	    ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName wan_port`
 
@@ -70,13 +70,6 @@ checkminimalconfig()
     #
     if [ "$IPv6OpMode" = "" ]; then
 	nvram_set IPv6OpMode 0
-    fi
-
-    #
-    #	set default offload mode to complex if not set
-    #
-    if [ "$offloadMode" = "" ]; then
-	nvram_set offloadMode 3
     fi
 
     #

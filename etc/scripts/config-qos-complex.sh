@@ -54,10 +54,6 @@ qos_nf_if() {
     ##################################################################################################################################
     # SET MARKERS FOR INCOMING
     ##################################################################################################################################
-    # first always high prio ports
-    echo "$INCOMING -i $wan_if -p tcp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p udp --sport 0:1024 -j MARK --set-mark 20" >> $IPTSCR
-
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
@@ -80,20 +76,19 @@ qos_nf_if() {
 	echo "$INCOMING -i $wan_if -m dscp --dscp-class $QoS_low_dscp  -j MARK --set-mark 21" >> $IPTSCR
     fi
 
-    # tcp SYN and small size packets to high prio
-    echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
-    echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
+    # if use offload do not mark all others high prio pakcets
+    if [ "$offloadMode" != "0" ]; then
+	# tcp SYN and small size packets to high prio
+	echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
 
-    # all others set as low prio
-    echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
+	# all others set as low prio
+	echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
+    fi
 
     ##################################################################################################################################
     # SET MARKERS FOR OUTGOING
     ##################################################################################################################################
-    # first always high prio ports
-    echo "$OUTGOING -o $wan_if -p tcp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p udp --dport 0:1024 -j MARK --set-mark 23" >> $IPTSCR
-
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
 	echo "$OUTGOING -o $wan_if -p tcp -m multiport --dport $QoS_high_pp -j MARK --set-mark 23" >> $IPTSCR
@@ -106,13 +101,16 @@ qos_nf_if() {
 	echo "$OUTGOING -o $wan_if -p udp -m multiport --dport $QoS_low_pp -j MARK --set-mark 24" >> $IPTSCR
     fi
 
-    # SYN/ICMP and small size packets to hih prio
-    echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
-    echo "$OUTGOING -o $wan_if -p icmp -j MARK --set-mark 23" >> $IPTSCR
+    # if use offload do not mark all others high prio pakcets
+    if [ "$offloadMode" != "0" ]; then
+	# SYN/ICMP and small size packets to hih prio
+	echo "$OUTGOING -o $wan_if -p tcp --syn -j MARK --set-mark 23" >> $IPTSCR
+	echo "$OUTGOING -o $wan_if -p tcp -m length --length :64 -j MARK --set-mark 23" >> $IPTSCR
+	echo "$OUTGOING -o $wan_if -p icmp -j MARK --set-mark 23" >> $IPTSCR
 
-    # all others set as low prio
-    echo "$OUTGOING -o $wan_if -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
+	# all others set as low prio
+	echo "$OUTGOING -o $wan_if -m mark --mark 0 -j MARK --set-mark 24" >> $IPTSCR
+    fi
 }
 
 qos_tc_lan() {
