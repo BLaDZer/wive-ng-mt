@@ -10,9 +10,7 @@
 LOG="logger -t Complex QoS"
 
 # get config
-eval `nvram_buf_get 2860 igmpEnabled offloadMode \
-    QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up \
-    QoS_rate_vpn_up QoS_rate_vpn_limit_up`
+eval `nvram_buf_get 2860 igmpEnabled offloadMode QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up QoS_rate_vpn_up QoS_rate_vpn_limit_up`
 
 IPTSCR="/etc/qos_firewall"
 INCOMING="iptables -A shaper_pre -t mangle"
@@ -141,8 +139,8 @@ qos_tc_lan() {
 
     # subclass prio
     tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500 burst 256k
-    tc class add dev $lan_if parent 1:2 classid 1:21 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 2 quantum 1500 burst 128k
-    tc class add dev $lan_if parent 1:2 classid 1:22 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 3 quantum 1500 burst 64k
+    tc class add dev $lan_if parent 1:2 classid 1:21 htb rate $((9*QoS_rate_limit_down/10))kbit ceil $((9*QoS_rate_down/10))kbit prio 2 quantum 1500 burst 128k
+    tc class add dev $lan_if parent 1:2 classid 1:22 htb rate $((8*QoS_rate_limit_down/10))kbit ceil $((8*QoS_rate_down/10))kbit prio 3 quantum 1500 burst 64k
 
     # add sfq discipline to end htb class
     tc qdisc add dev $lan_if parent 1:3 handle 3: sfq perturb 10 quantum 1500
@@ -178,7 +176,7 @@ gos_tc_wan() {
     tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit quantum 1500 burst 256k
 
     tc class add dev $wan_if parent 1:1 classid 1:23 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 0 quantum 1500 burst 128k
-    tc class add dev $wan_if parent 1:1 classid 1:24 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 1 quantum 1500 burst 64k
+    tc class add dev $wan_if parent 1:1 classid 1:24 htb rate $((9*QoS_rate_limit_up/10))kbit ceil $((9*QoS_rate_up/10))kbit prio 1 quantum 1500 burst 64k
 
     tc qdisc add dev $wan_if parent 1:23 handle 23: sfq perturb 10 quantum 1500
     tc qdisc add dev $wan_if parent 1:24 handle 24: sfq perturb 10 quantum 1500

@@ -1301,28 +1301,29 @@
 22) init.d: add WdsNum variable and use in wds up interface code (no up unused wds ifaces).<br>
 23) init.d: allow set dgw in bridge mode (for internet acess from AP).<br>
 24) init.d: base shaper work in bridge mode.<br>
-25) inti.d: review complex qos logic for more fast and easy use.<br>
-26) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
-27) kernel: configs: enable IDS for all devices.<br>
-28) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-29) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
-30) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
-31) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
-32) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
-33) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
-34) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
-35) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
-36) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if RTMPMaxRssi return 0.<br>
-37) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
-38) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
-39) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
-40) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
-41) kernel: net: route: prevent oops.<br>
-42) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
-43) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
-44) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
-45) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
-46) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
+25) init.d: review complex qos logic for more fast and easy use.<br>
+26) init.d: complex qos now auto limit maxrate for low prio tubes at 90/80% of prio tube.<br>
+27) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
+28) kernel: configs: enable IDS for all devices.<br>
+29) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+30) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
+31) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
+32) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+33) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
+34) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
+35) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
+36) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
+37) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if RTMPMaxRssi return 0.<br>
+38) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
+39) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+40) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+41) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
+42) kernel: net: route: prevent oops.<br>
+43) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
+44) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
+45) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
+46) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
+47) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
 <br>
 <br>
 <b>TODO:</b><br>
