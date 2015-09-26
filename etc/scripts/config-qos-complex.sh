@@ -118,37 +118,44 @@ qos_tc_lan() {
     # FROM UPLINK TO LAN. BIND AT LAN_IF
     ##################################################################################################################################
     $LOG "All incoming $lan_if rate: normal $QoS_rate_limit_down , maximum $QoS_rate_down (kbit/s)"
+    # root classes
     tc qdisc add dev $lan_if root handle 1: htb default 22
-    tc class add dev $lan_if parent 1:  classid 1:1 htb rate 90mbit quantum 1500 burst 500k
-    tc class add dev $lan_if parent 1:1 classid 1:2 htb rate ${QoS_rate_down}kbit quantum 1500 burst 100k
-    tc class add dev $lan_if parent 1:1 classid 1:3 htb rate 80 ceil 90mbit prio 0 quantum 1500 burst 100k
+    # all trafs
+    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil 90mbit quantum 1500 burst 256k
+    # overhead class for mcast and local connections
+    tc class add dev $lan_if parent 1: classid 1:3 htb rate 98mbit ceil 100mbit quantum 1500 burst 1024k
 
+    # subclass prio
     tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500
     tc class add dev $lan_if parent 1:2 classid 1:21 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 2 quantum 1500
     tc class add dev $lan_if parent 1:2 classid 1:22 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 3 quantum 1500
 
+    # add sfq discipline to end htb class
     tc qdisc add dev $lan_if parent 1:3 handle 3: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:20 handle 20: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:21 handle 21: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:22 handle 22: sfq perturb 10 quantum 1500
 
-    # local connections and multicast to router must be overheaded
+    # switch sfq to use dst hash
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:21 handle 21 flow hash keys dst divisor 1024
+    tc filter add dev $lan_if protocol ip pref 1 parent 1:22 handle 22 flow hash keys dst divisor 1024
+
+    # local connections and multicast to router must be overheaded send to 1:3
     tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $lan_ipaddr flowid 1:3
     if [ "$igmpEnabled" != "0" ]; then
-	tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $mcast_net flowid 1:3
+        tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $mcast_net flowid 1:3
     fi
 
     # filters for marked in prerouting
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	# user marked filters
 	tc filter add dev $lan_if parent 1:0 prio 1 protocol ip handle 20 fw flowid 1:20
 	tc filter add dev $lan_if parent 1:0 prio 2 protocol ip handle 21 fw flowid 1:21
 	tc filter add dev $lan_if parent 1:0 prio 3 protocol ip handle 22 fw flowid 1:22
     fi
 
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:21 handle 21 flow hash keys dst divisor 1024
-    tc filter add dev $lan_if protocol ip pref 1 parent 1:22 handle 22 flow hash keys dst divisor 1024
 }
 
 gos_tc_wan() {
@@ -165,8 +172,11 @@ gos_tc_wan() {
     tc qdisc add dev $wan_if parent 1:23 handle 23: sfq perturb 10 quantum 1500
     tc qdisc add dev $wan_if parent 1:24 handle 24: sfq perturb 10 quantum 1500
 
-    tc filter add dev $wan_if parent 1:0 prio 0 protocol ip handle 23 fw flowid 1:23
-    tc filter add dev $wan_if parent 1:0 prio 1 protocol ip handle 24 fw flowid 1:24
+    # filters for marked in prerouting
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	tc filter add dev $wan_if parent 1:0 prio 0 protocol ip handle 23 fw flowid 1:23
+	tc filter add dev $wan_if parent 1:0 prio 1 protocol ip handle 24 fw flowid 1:24
+    fi
 }
 
 # load modules
