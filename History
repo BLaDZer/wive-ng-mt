@@ -1321,6 +1321,7 @@
 42) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
 43) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
 44) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
+45) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
 <br>
 <br>
 <b>TODO:</b><br>
