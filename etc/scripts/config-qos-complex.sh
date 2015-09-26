@@ -14,16 +14,24 @@ eval `nvram_buf_get 2860 igmpEnabled offloadMode \
     QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up \
     QoS_rate_vpn_up QoS_rate_vpn_limit_up`
 
-# get users prio ports
-QoS_high_pp=`nvram_get 2860 QoS_high_pp | awk '{ gsub(" ",","); print }'`
-QoS_low_pp=`nvram_get 2860 QoS_low_pp | awk '{ gsub(" ",","); print }'`
-# get users prio dscps
-QoS_high_dscp=`nvram_get 2860 QoS_high_dscp | awk '{ gsub(" ",","); print }'`
-QoS_low_dscp=`nvram_get 2860 QoS_low_dscp | awk '{ gsub(" ",","); print }'`
-
 IPTSCR="/etc/qos_firewall"
 INCOMING="iptables -A shaper_pre -t mangle"
 OUTGOING="iptables -A shaper_post -t mangle"
+
+# maximum hw link rate
+MAX_LINK_RATE="100"
+
+# default high prio ports
+DEFHIG_PTCP="22,23,53,80,443,1720,5060"
+DEFHIG_PUDP="53,953,1720"
+
+# get users prio ports
+QoS_high_pp=`nvram_get 2860 QoS_high_pp | awk '{ gsub(" ",","); print }'`
+QoS_low_pp=`nvram_get 2860 QoS_low_pp | awk '{ gsub(" ",","); print }'`
+
+# get users prio dscps
+QoS_high_dscp=`nvram_get 2860 QoS_high_dscp | awk '{ gsub(" ",","); print }'`
+QoS_low_dscp=`nvram_get 2860 QoS_low_dscp | awk '{ gsub(" ",","); print }'`
 
 qos_lm() {
     # Load modules
@@ -54,6 +62,16 @@ qos_nf_if() {
     ##################################################################################################################################
     # SET MARKERS FOR INCOMING
     ##################################################################################################################################
+    # if use offload do not mark all others high prio pakcets
+    if [ "$offloadMode" = "0" ]; then
+	# default allways high priority ports
+	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $DEFHIG_PTCP -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p udp -m multiport --sport $DEFHIG_PUDP -j MARK --set-mark 20" >> $IPTSCR
+	# tcp SYN and small size packets to high prio
+	echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
+	echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
+    fi
+
     # second user high prio ports
     if [ "$QoS_high_pp" != "" ]; then
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $QoS_high_pp -j MARK --set-mark 20" >> $IPTSCR
@@ -78,10 +96,6 @@ qos_nf_if() {
 
     # if use offload do not mark all others high prio pakcets
     if [ "$offloadMode" = "0" ]; then
-	# tcp SYN and small size packets to high prio
-	echo "$INCOMING -i $wan_if -p tcp --syn -j MARK --set-mark 20" >> $IPTSCR
-	echo "$INCOMING -i $wan_if -p tcp -m length --length :64 -j MARK --set-mark 20" >> $IPTSCR
-
 	# all others set as low prio
 	echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
     fi
@@ -120,10 +134,10 @@ qos_tc_lan() {
     $LOG "All incoming $lan_if rate: normal $QoS_rate_limit_down , maximum $QoS_rate_down (kbit/s)"
     # root classes
     tc qdisc add dev $lan_if root handle 1: htb default 22
-    # all trafs
-    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil 90mbit quantum 1500 burst 256k
+    # all trafs limit
+    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 256k
     # overhead class for mcast and local connections
-    tc class add dev $lan_if parent 1: classid 1:3 htb rate 98mbit ceil 100mbit quantum 1500 burst 1024k
+    tc class add dev $lan_if parent 1: classid 1:3 htb rate ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
 
     # subclass prio
     tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500
