@@ -1,7 +1,8 @@
 #!/bin/sh
 
 #############################################################################################################
-# Port/DSCP based Qos helper script for Wive-NG										    #
+# Port/DSCP based Qos helper script for Wive-NG								    #
+# This try make univelsal QoS with small CPU overhead for use in routers				    #
 #############################################################################################################
 
 # include global
@@ -20,7 +21,7 @@ OUTGOING="iptables -A shaper_post -t mangle"
 MAX_LINK_RATE="100"
 
 # default high prio ports
-DEFHIG_PTCP="22,23,53,80,443,1720,5060"
+DEFHIG_PTCP="22,23,53,80,81,110,443,1720,5060,8080"
 DEFHIG_PUDP="53,953,1720"
 
 # get users prio ports
@@ -130,14 +131,16 @@ qos_tc_lan() {
     # FROM UPLINK TO LAN. BIND AT LAN_IF
     ##################################################################################################################################
     $LOG "All incoming $lan_if rate: normal $QoS_rate_limit_down , maximum $QoS_rate_down (kbit/s)"
-    # root classes
+    # add htb
     tc qdisc add dev $lan_if root handle 1: htb default 22
+    # root class
+    tc class add dev $lan_if parent 1:  classid 1:1 htb rate ${MAX_LINK_RATE}mbit ceil ${MAX_LINK_RATE}mbit quantum 1500
     # all trafs limit
-    tc class add dev $lan_if parent 1: classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 512k
-    # overhead class for mcast and local connections
-    tc class add dev $lan_if parent 1: classid 1:3 htb rate ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
+    tc class add dev $lan_if parent 1:1 classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500
+    # overload class for mcast and local connections
+    tc class add dev $lan_if parent 1:1 classid 1:3 htb rate ${MAX_LINK_RATE}mbit ceil ${MAX_LINK_RATE}mbit quantum 1500
 
-    # subclass prio
+    # subclass prio with rates limits
     tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500 burst 256k
     tc class add dev $lan_if parent 1:2 classid 1:21 htb rate $((9*QoS_rate_limit_down/10))kbit ceil $((9*QoS_rate_down/10))kbit prio 2 quantum 1500 burst 128k
     tc class add dev $lan_if parent 1:2 classid 1:22 htb rate $((8*QoS_rate_limit_down/10))kbit ceil $((8*QoS_rate_down/10))kbit prio 3 quantum 1500 burst 64k
@@ -148,20 +151,20 @@ qos_tc_lan() {
     tc qdisc add dev $lan_if parent 1:21 handle 21: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:22 handle 22: sfq perturb 10 quantum 1500
 
-    # switch sfq to use dst hash
+    # switch sfq to use dst adresses hash
     tc filter add dev $lan_if protocol ip pref 1 parent 1:3 handle 3 flow hash keys dst divisor 1024
     tc filter add dev $lan_if protocol ip pref 1 parent 1:20 handle 20 flow hash keys dst divisor 1024
     tc filter add dev $lan_if protocol ip pref 1 parent 1:21 handle 21 flow hash keys dst divisor 1024
     tc filter add dev $lan_if protocol ip pref 1 parent 1:22 handle 22 flow hash keys dst divisor 1024
 
-    # local connections, icmp and multicast to router must be overheaded send to 1:3
+    # local connections, icmp and multicast to router must be overheaded, send to 1:3
     tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $lan_ipaddr flowid 1:3
     tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip protocol 1 0xff flowid 1:3
     if [ "$igmpEnabled" != "0" ]; then
         tc filter add dev $lan_if parent 1:0 protocol ip prio 0 u32 match ip src $mcast_net flowid 1:3
     fi
 
-    # in router modes filters for marked in prerouting
+    # send marked in prerouting pakets to differenf classes
     tc filter add dev $lan_if parent 1:0 prio 1 protocol ip handle 20 fw flowid 1:20
     tc filter add dev $lan_if parent 1:0 prio 2 protocol ip handle 21 fw flowid 1:21
     tc filter add dev $lan_if parent 1:0 prio 3 protocol ip handle 22 fw flowid 1:22
@@ -173,7 +176,7 @@ gos_tc_wan() {
     ##################################################################################################################################
     $LOG "All outgoing $wan_if rate: normal $QoS_rate_limit_up , maximum $QoS_rate_up (kbit/s)"
     tc qdisc add dev $wan_if root handle 1: htb default 24
-    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit quantum 1500 burst 256k
+    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500
 
     tc class add dev $wan_if parent 1:1 classid 1:23 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 0 quantum 1500 burst 128k
     tc class add dev $wan_if parent 1:1 classid 1:24 htb rate $((9*QoS_rate_limit_up/10))kbit ceil $((9*QoS_rate_up/10))kbit prio 1 quantum 1500 burst 64k
