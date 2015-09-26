@@ -1319,6 +1319,7 @@
 40) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
 41) kernel: net: route: prevent oops.<br>
 42) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
+43) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
 <br>
 <br>
 <b>TODO:</b><br>
