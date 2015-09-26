@@ -140,22 +140,22 @@ function bodyOnLoad(form)
           </tr>
           <tr id="user_Qos_HPP">
             <td class="head" id="QoSHPP">User High Priority Ports</td>
-            <td><input name="QoS_HPP" class="superwide" size="60" maxlength="60" type="text"></td>
+            <td><input name="QoS_HPP" class="superwide" size="60" maxlength="1024" type="text"></td>
           </tr>
           <tr id="user_Qos_LPP">
             <td class="head" id="QoSLPP">User Low Priority Ports</td>
-            <td><input name="QoS_LPP" class="superwide" size="60" maxlength="60" type="text"></td>
+            <td><input name="QoS_LPP" class="superwide" size="60" maxlength="1024" type="text"></td>
           </tr>
           <tr id="PDSCPSettings">
             <td class="title" colspan="2" id="QoSSetupPDSCP">Priority DSCP settings</td>
           </tr>
           <tr id="user_Qos_HDSCP">
             <td class="head" id="QoSHDSCP">User High Priority DSCPs</td>
-            <td><input name="QoS_HDSCP" class="superwide" size="60" maxlength="60" type="text"></td>
+            <td><input name="QoS_HDSCP" class="superwide" size="60" maxlength="1024" type="text"></td>
           </tr>
           <tr id="user_Qos_LDSCP">
             <td class="head" id="QoSLDSCP">User Low Priority DSCPs</td>
-            <td><input name="QoS_LDSCP" class="superwide" size="60" maxlength="60" type="text"></td>
+            <td><input name="QoS_LDSCP" class="superwide" size="60" maxlength="1024" type="text"></td>
           </tr>
         </table>
         <table class="buttons">
