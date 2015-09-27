@@ -62,7 +62,7 @@ qos_nf_if() {
     # SET MARKERS FOR INCOMING
     ##################################################################################################################################
     # if use offload do not mark all others high prio pakcets
-    if [ "$offloadMode" = "0" ]; then
+    if [ "$offloadMode" = "0" ] || [ "$offloadMode" = "1" ]; then
 	# default allways high priority ports
 	echo "$INCOMING -i $wan_if -p tcp -m multiport --sport $DEFHIG_PTCP -j MARK --set-mark 20" >> $IPTSCR
 	echo "$INCOMING -i $wan_if -p udp -m multiport --sport $DEFHIG_PUDP -j MARK --set-mark 20" >> $IPTSCR
@@ -94,7 +94,7 @@ qos_nf_if() {
     fi
 
     # if use offload do not mark all others high prio pakcets
-    if [ "$offloadMode" = "0" ]; then
+    if [ "$offloadMode" = "0" ] || [ "$offloadMode" = "1" ]; then
 	# all others set as low prio
 	echo "$INCOMING -i $wan_if -m mark --mark 0 -j MARK --set-mark 22" >> $IPTSCR
     fi
