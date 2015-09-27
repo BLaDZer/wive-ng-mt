@@ -1340,21 +1340,21 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="div_ITxBfEn">
-            <td class="head" id="basicITxBfEn" width="50%">Reverse Direction Grant</td>
+            <td class="head" id="basicITxBfEn" width="50%">iTxBF(beamforming)</td>
             <td width="50%"><select name="ITxBfEn" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="div_ETxBfeeEn">
-            <td class="head" id="basicETxBfeeEn" width="50%">Reverse Direction Grant</td>
+            <td class="head" id="basicETxBfeeEn" width="50%">BFee feature</td>
             <td width="50%"><select name="ETxBfeeEn" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="div_ETxBfEnCond">
-            <td class="head" id="basicETxBfEnCond" width="50%">Reverse Direction Grant</td>
+            <td class="head" id="basicETxBfEnCond" width="50%">Sending of sounding and beamforming</td>
             <td width="50%"><select name="ETxBfEnCond" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
