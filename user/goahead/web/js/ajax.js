@@ -9,35 +9,21 @@
 
 *******************************************/
 
-function createXMLHttp()
-{
-	var xmlHttp;
-
-	try
-	{
-		xmlHttp = new XMLHttpRequest();// Firefox, Opera 8.0+, Safari
-	}
-	catch (e)
-	{
-		try
-		{
-			xmlHttp = new ActiveXObject("Msxml2.XMLHTTP"); // Internet Explorer
+function createXMLHttp() {
+	var result = false;
+	var actions = [
+		function() {return new XMLHttpRequest()},
+		function() {return new ActiveXObject('Msxml2.XMLHTTP')},
+		function() {return new ActiveXObject('Microsoft.XMLHTTP')}
+	];
+	for(var i = 0; i < actions.length; i++) {
+		try {
+			result = actions[i]();
+			break;
 		}
-		catch (e)
-		{
-			try
-			{
-				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			catch (e)
-			{
-				alert("No AJAX support!");
-				return null;
-			}
-		}
+		catch (e) {}
 	}
-
-	return xmlHttp;
+	return result;
 }
 
 function genRandomParam(uri)
@@ -56,7 +42,7 @@ function genRandomParam(uri)
 function ajaxPerformRequest(uri, handler)
 {
 	var xmlHttp = createXMLHttp();
-	if (xmlHttp == null)
+	if (!xmlHttp)
 		return;
 
 	xmlHttp.onreadystatechange = function()
@@ -82,7 +68,7 @@ function ajaxPerformRequest(uri, handler)
 function ajaxPostRequest(uri, content, refresh, handler)
 {
 	var xmlHttp = createXMLHttp();
-	if (xmlHttp == null)
+	if (!xmlHttp)
 		return;
 
 	xmlHttp.onreadystatechange = function()
@@ -117,7 +103,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 
 	// Create XMLHttpRequest
 	var xmlHttp = createXMLHttp();
-	if (xmlHttp == null)
+	if (!xmlHttp)
 		return;
 
 	xmlHttp.onreadystatechange = function()
@@ -147,7 +133,7 @@ function ajaxLoadElement(elementID, url, onLoadAction)
 function ajaxLoadScript(scriptFile)
 {
 	var xmlHttp = createXMLHttp();
-	if (xmlHttp == null)
+	if (!xmlHttp)
 		return;
 
 	xmlHttp.onreadystatechange = function()

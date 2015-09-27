@@ -36,6 +36,7 @@ static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
 static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
 static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
+static int  getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -181,6 +182,7 @@ void formDefineWireless(void)
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
+	websAspDefine(T("getTXBFBuilt"), getTXBFBuilt);
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
 	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
@@ -672,6 +674,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0;
 #endif
+#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
+#endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
 	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0", ieee80211h[16] = "";
 	char	*submitUrl;
@@ -737,6 +742,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	new_bssid_num = atoi(bssid_num);
 	dot11h = websGetVar(wp, T("dot11h"), T(""));
+
+#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+	ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
+	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
+	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
+#endif
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -978,6 +989,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
 	}
 
+#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+	nvram_bufset(RT2860_NVRAM, "ITxBfEn", ITxBfEn);
+	nvram_bufset(RT2860_NVRAM, "ETxBfeeEn", ETxBfeeEn);
+	nvram_bufset(RT2860_NVRAM, "ETxBfEnCond", ETxBfEnCond);
+#endif
+
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// VHT_Modes
 	if (is_vht)
@@ -1095,7 +1112,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout,
 		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid_num, tmp, i;
-	char_t *submitUrl;
+	char_t *life_check, *submitUrl;
 	char stanum_array[32] = "", keepalive_array[32] = "";
 
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
@@ -1105,7 +1122,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #endif
 #endif
 	//fetch from web input
-	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	beacon = websGetVar(wp, T("beacon"), T("100"));
 	dtim = websGetVar(wp, T("dtim"), T("1"));
@@ -1129,6 +1145,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
 	keepalive = websGetVar(wp, T("keepalive"), T("0"));
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
+	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
 
 	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
 	if (NULL != num_s)
@@ -1179,7 +1196,16 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		tmp = atoi(idletimeout);
 		if ((tmp < 60) || (tmp > 300))
 			tmp = 60;
+		sprintf(idletimeout, "%d", tmp);
 		nvram_bufset(RT2860_NVRAM, "IdleTimeout", idletimeout);
+	}
+
+	if (NULL != life_check) {
+		tmp = atoi(life_check);
+		if ((tmp < 128) || (tmp > 2048))
+			tmp = 512;
+		sprintf(life_check, "%d", tmp);
+		nvram_bufset(RT2860_NVRAM, "EntryLifeCheck", life_check);
 	}
 
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
@@ -1780,6 +1806,16 @@ static int is5gh_support(int eid, webs_t wp, int argc, char_t **argv)
 static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if CONFIG_RT_SECOND_CARD==7612 || CONFIG_RT_FIRST_CARD==7602
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));

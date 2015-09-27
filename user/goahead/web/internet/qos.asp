@@ -24,6 +24,12 @@ function initTranslation()
   _TR("QoSSetupStr", "qos setup");
   _TR("QoSStr", "qos type");
   _TR("QoSSetupBW", "qos bandwidth settings");
+
+  _TR("QoSModeStr", "qos mode");
+  _TR("QoSAll", "qos mode all");
+  _TR("QoSWAN", "qos mode wan");
+  _TR("QoSVPN", "qos mode vpn");
+
   _TR("QoSUpBWStr", "qos upload rate");
   _TR("QoSUpBWLStr", "qos upload limit");
   _TR("QoSDownBWStr", "qos download rate");
@@ -52,13 +58,14 @@ function QoSSelectChange(form)
   var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 
 	// Display mode-dependent elements
-	displayElement( [ 'BWSettings', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP' ], complex_on );
+	displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP' ], complex_on );
   displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
 }
 
 function initializeForm(form)
 {
-	form.QoSSelect.value		= '<% getCfgGeneral(1, "QoSEnable"); %>';
+  form.QoSSelect.value    = '<% getCfgGeneral(1, "QoSEnable"); %>';
+  form.QoSMode.value    = '<% getCfgGeneral(1, "QoSMode"); %>';
 	form.UpBW.value    		= '<% getCfgGeneral(1, "QoS_rate_up"); %>';
 	form.UpBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
 	form.DownBW.value		= '<% getCfgGeneral(1, "QoS_rate_down"); %>';
@@ -104,6 +111,14 @@ function bodyOnLoad(form)
           </tr>
           <tr id="BWSettings">
             <td class="title" colspan="2" id="QoSSetupBW">Bandwidth settings</td>
+          </tr>
+          <tr id="QoSMode">
+            <td class="head" id="QoSModeStr">Shape from:</td>
+            <td><select name="QoSMode" class="wide">
+                <option value="0" id="QoSAll">All</option>
+                <option value="1" id="QoSWAN">Only WAN</option>
+                <option value="2" id="QoSVPN">Only VPN</option>
+              </select></td>
           </tr>
           <tr id="QoSUpBW">
             <td class="head" id="QoSUpBWStr">Upload rate:</td>

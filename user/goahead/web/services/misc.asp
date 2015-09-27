@@ -127,6 +127,11 @@ function initTranslation()
 	_TR("miscDontModifyMCTTL", "services misc multicast ttl");
 	_TR("miscUsePMTU", "services misc use pmtu");
 
+	_TR("miscIRQBalance", "services misc irqbalance");
+	_TR("miscAuto", "services misc auto");
+	_TR("miscRouter", "services misc router");
+	_TR("miscStorage", "services misc storage");
+
 	_TRV("lApply", "button apply");
 	_TRV("lCancel", "button cancel");
 
@@ -173,6 +178,7 @@ function initValue()
 	var hw_nat_wifi_pt = '<% getCfgGeneral(1, "hw_nat_wifi"); %>';
 	var hw_nat_udp_pt = '<% getCfgGeneral(1, "hw_nat_udp"); %>';
 	var hw_nat_six_pt = '<% getCfgGeneral(1, "hw_nat_six"); %>';
+	var smp = "<% isSMP(); %>";
 
 	initTranslation();
 
@@ -242,6 +248,9 @@ function initValue()
 	pingerSelect(form);
 	udpxySelect(form);
 	snmpdRmtSelect(form);
+
+	form.IRQBalance.value = "<% getCfgGeneral(1, "IRQBalance"); %>";
+	displayElement('IRQBalance', smp == '1');
 
 	displayServiceStatus();
 }
@@ -743,6 +752,14 @@ function submitForm(form) {
             <td colspan="4"><select name="vlanDoubleTag" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="irqbalance" style="display:none;">
+            <td class="head" id="miscIRQBalance">IRQBalance</td>
+            <td colspan="4"><select name="IRQBalance" class="half">
+                <option value="auto" id="miscAuto">Auto</option>
+                <option value="router" id="miscRouter">Router</option>
+                <option value="storage" id="miscStorage">Storage</option>
               </select></td>
           </tr>
           <tr>

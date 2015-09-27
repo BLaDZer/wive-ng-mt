@@ -116,6 +116,9 @@
   <message msgid="basic ids disassoc" msgstr="Пороговое значение запросов остановки ассоциации" />
   <message msgid="basic ids deauth" msgstr="Пороговое значение деаутентификаций" />
   <message msgid="basic ids eap" msgstr="Пороговое значение EAP запросов" />
+  <message msgid="basic itxbfen" msgstr="iTxBF(Формирование луча)" />
+  <message msgid="basic etxbfeeen" msgstr="Поддержка BFee" />
+  <message msgid="basic etxbfencond" msgstr="Отправка оповещений для формирования луча" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />
@@ -158,6 +161,7 @@
   <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов на каждый SSID" />
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
   <message msgid="adv idletimeout" msgstr="Время ожидания" />
+  <message msgid="adv entrylifecheck" msgstr="Количество ошибок отправки пакетов для отключения клиента" />
   <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
   <message msgid="wmm sta parameter" msgstr="Настройки WMM станции" />
 
@@ -172,6 +176,7 @@
   <message msgid="adv invalid max sta num" msgstr="Неверное максимальное количество клиентов" />
   <message msgid="adv invalid keepalive" msgstr="Неверный интервал опроса клиентов" />
   <message msgid="adv invalid idletimeout" msgstr="Неверное время ожидания" />
+  <message msgid="adv invalid entrylifecheck" msgstr="Неверное количество ошибок отправки пакетов" />
 
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />

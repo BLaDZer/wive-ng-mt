@@ -117,6 +117,9 @@
   <message msgid="basic ids disassoc" msgstr="Disassociation flood threshold" />
   <message msgid="basic ids deauth" msgstr="Deauthentication flood threshold" />
   <message msgid="basic ids eap" msgstr="EAP request flood threshold" />
+  <message msgid="basic itxbfen" msgstr="iTxBF(beamforming)" />
+  <message msgid="basic etxbfeeen" msgstr="BFee feature" />
+  <message msgid="basic etxbfencond" msgstr="Sending of sounding and beamforming" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />
@@ -153,6 +156,7 @@
   <message msgid="adv maximum stations number" msgstr="Maximum clients per SSID" />
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
   <message msgid="adv idletimeout" msgstr="Idle Timeout" />
+  <message msgid="adv entrylifecheck" msgstr="How pkts TX fail before connection drop" />
 
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
   <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />
@@ -165,6 +169,7 @@
   <message msgid="adv invalid max sta num" msgstr="Invalid Maximum stations number" />
   <message msgid="adv invalid keepalive" msgstr="Invalid Station Keep-Alive parametr" />
   <message msgid="adv invalid idletimeout" msgstr="Invalid IdleTimeout parametr" />
+  <message msgid="adv invalid entrylifecheck" msgstr="Invalid EntryLifeCheck parametr" />
 
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />

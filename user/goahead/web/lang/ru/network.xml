@@ -121,6 +121,10 @@
     <message msgid="qos simple" msgstr="Простая приоритезация" />
     <message msgid="qos shaper" msgstr="Шейпер основе номеров портов и DSCP" />
     <message msgid="qos codel" msgstr="Взвешенная справедливая очередь (CODEL)" />
+    <message msgid="qos mode" msgstr="Обрабатываем:" />
+    <message msgid="qos mode all" msgstr="Всё" />
+    <message msgid="qos mode wan" msgstr="Только WAN" />
+    <message msgid="qos mode vpn" msgstr="Только VPN" />
 
     <message msgid="routing title" msgstr="Настройки маршрутизации" />
     <message msgid="routing introduction" msgstr="Здесь вы можете добавлять и удалять пользовательские правила маршрутизации траффика и/или включить протокол динамической маршрутизации." />

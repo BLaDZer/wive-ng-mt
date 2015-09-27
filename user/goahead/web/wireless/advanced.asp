@@ -86,7 +86,8 @@ function initTranslation()
 	_TR("advMul2UniDisable", "wireless disable");
 	_TR("advMaxStaNum", "adv maximum stations number");
 	_TR("advStationKeepAlive", "adv station keep alive");
-	_TR("advIdleTimeout", "adv idletimeout");
+  _TR("advIdleTimeout", "adv idletimeout");
+  _TR("advEntryLifeCheck", "adv entrylifecheck");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
@@ -265,6 +266,14 @@ function CheckValue(form)
     return false;
   }
 
+  if (isNaN(form.EntryLifeCheck.value) || form.EntryLifeCheck.value < 128 || form.EntryLifeCheck.value > 2048)
+  {
+    alert(_("adv invalid entrylifecheck"));
+    form.EntryLifeCheck.focus();
+    form.EntryLifeCheck.select();
+    return false;
+  }
+
   return true;
 }
 
@@ -321,6 +330,10 @@ function CheckValue(form)
           <tr>
             <td class="head" id="advIdleTimeout">IdleTimeout</td>
             <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080"> (60 - 300)</font></td>
+          </tr>
+          <tr>
+            <td class="head" id="advEntryLifeCheck">EntryLifeCheck</td>
+            <td><input type="text" name="EntryLifeCheck" class="half" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>"><font color="#808080"> (128 - 2048)</font></td>
           </tr>
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>

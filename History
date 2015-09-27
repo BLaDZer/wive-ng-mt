@@ -1297,52 +1297,52 @@
 18) goahead: fix wds configure.<br>
 19) goahead: allow roaming extensions tune for all drivers.<br>
 20) goahead: rework wds page.<br>
-21) init.d: preconfigure igmpsnooping for all ports.<br>
-22) init.d: add WdsNum variable and use in wds up interface code (no up unused wds ifaces).<br>
-23) init.d: allow set dgw in bridge mode (for internet acess from AP).<br>
-24) init.d: base shaper work in bridge mode.<br>
-25) init.d: review complex qos logic for more fast and easy use.<br>
-26) init.d: complex qos now auto limit maxrate for low prio tubes at 90/80% of prio tube.<br>
-27) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
-28) kernel: configs: enable IDS for all devices.<br>
-29) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
-30) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
-31) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
-32) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
-33) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
-34) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
-35) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
-36) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
-37) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if RTMPMaxRssi return 0.<br>
-38) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
-39) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
-40) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
-41) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
-42) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
-43) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
-44) kernel: net: net_sched: sch_htb: let skb->priority refer to non-leaf class.<br>
-45) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
-46) kernel: net: route: prevent oops.<br>
-47) kernel: net: tcp_cubic: better follow cubic curve after idle period.<br>
-48) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
-49) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
+21) goahead: add type of QOS in webui (WAN/VPN/WAN+VPN).<br>
+22) goahead: add EntryLifeCheck option (how pkts TX fail before connection drop, default 512).<br>
+23) goahead: add tx beamforming parametrs.<br>
+24) goahead: add irqbalance in WebUI.<br>
+25) init.d: preconfigure igmpsnooping for all ports.<br>
+26) init.d: add WdsNum variable and use in wds up interface code (no up unused wds ifaces).<br>
+27) init.d: allow set dgw in bridge mode (for internet acess from AP).<br>
+28) init.d: base shaper work in bridge mode.<br>
+29) init.d: review complex qos logic for more fast and easy use.<br>
+30) init.d: complex qos now auto limit maxrate for low prio tubes at 90/80% of prio tube.<br>
+31) kernel: configs: disable ralink QoS netfiler tables rearrange (break captive portals work).<br>
+32) kernel: configs: enable IDS for all devices.<br>
+33) kernel: configs: switch MT7620 to 76x2 driver for all devices.<br>
+34) kernel: ralink_ppe: fix reset pre-bind register on MT7621/MT7623 with pre-bind enabled.<br>
+35) kernel: ralink_wifi: 76x2: do not alloc skb buffers for unsupported second RX ring on MT7620 (save more RAM).<br>
+36) kernel: ralink_wifi: 76x2: improve kick STA by low RSSI.<br>
+37) kernel: ralink_wifi: 7620: fix HTMIX mode work if MBSSID enabled.<br>
+38) kernel: ralink_wifi: xxxx: backport some actual for all fixes from v4 driver.<br>
+39) kernel: ralink_wifi: xxxx: fix modulation down to CCK in MBSSID mode regression.<br>
+40) kernel: ralink_wifi: xxxx: port basic roaming optons support to all drivers.<br>
+41) kernel: ralink_wifi: xxxx: fix uncorrect drop clietns in roma path if RTMPMaxRssi return 0.<br>
+42) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
+43) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
+44) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
+45) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
+46) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
+47) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
+48) kernel: net: net_sched: sch_htb: let skb->priority refer to non-leaf class.<br>
+49) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
+50) kernel: net: route: prevent oops.<br>
+51) kernel: net: tcp_cubic: better follow cubic curve after idle period.<br>
+52) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
+53) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~98%).<br>
-2) need add in UI for complex qos variable QoSMode (shape from 0-all,1-only WAN,2-only VPN).<br>
-3) need add in UI advanced EntryLifeCheck variable (how pkts TX fail before connection drop, default 512).<br>
-4) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
-5) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-6) need add tx beamforming parametrs in WebUi Basic if CONFIG_RT_SECOND_CARD=7612 or CONFIG_RT_FIRST_CARD=7602 (ITxBfEn,ETxBfeeEn,ETxBfEnCond variables 0/1, see rtmp.h).<br>
-7) need add multiif support in iappd daemon.<br>
-8) need add subchannel select for 5GHz module.<br>
-9) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-10) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-11) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-12) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-13) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-14) in fair fair future: need add perip shaper script and webui .<br>
+2) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
+3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+4) need add multiif support in iappd daemon.<br>
+5) need add subchannel select for 5GHz module.<br>
+6) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+7) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+8) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+9) in fair fair future: need add perip shaper script and webui .<br>
+10) in fair fair future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>

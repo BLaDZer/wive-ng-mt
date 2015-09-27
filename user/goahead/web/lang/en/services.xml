@@ -143,4 +143,8 @@
   <message msgid="services misc ask reboot" msgstr="You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?" />
   <message msgid="services misc hwnat number" msgstr="Hardware NAT threshold must be a number" />
   <message msgid="services misc hwnat over" msgstr="Hardware NAT threshold must be a value between 0 and 500" />
+  <message msgid="services misc irqbalance" msgstr="IRQBalance (optimize mode)" />
+  <message msgid="services misc auto" msgstr="Auto" />
+  <message msgid="services misc router" msgstr="Router" />
+  <message msgid="services misc storage" msgstr="Local services" />
 </po>

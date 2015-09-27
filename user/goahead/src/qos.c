@@ -10,6 +10,7 @@
 
 const parameter_fetch_t QoS_args[] =
 	{
+	{ T("QoSMode"), "QoSMode", 0, T("0") },
 	{ T("UpBW"), "QoS_rate_up", 0, T("") },
 	{ T("UpBWL"), "QoS_rate_limit_up", 0, T("") },
 	{ T("DownBW"), "QoS_rate_down", 0, T("") },

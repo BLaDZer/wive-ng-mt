@@ -123,6 +123,10 @@
     <message msgid="qos simple" msgstr="Simple priority based QoS" />
     <message msgid="qos shaper" msgstr="Complex shaper (ports and DSCP based mark + HTB limit)" />
     <message msgid="qos codel" msgstr="Automatic Fair Queue Controlled Delay AQM (CODEL)" />
+    <message msgid="qos mode" msgstr="Shape from:" />
+    <message msgid="qos mode all" msgstr="All" />
+    <message msgid="qos mode wan" msgstr="Only WAN" />
+    <message msgid="qos mode vpn" msgstr="Only VPN" />
 
     <message msgid="routing title" msgstr="Static Routing Settings" />
     <message msgid="routing introduction" msgstr="You can add and remove custom Internet routing rules and/or enable dynamic routing exchange protocol here." />

@@ -34,6 +34,7 @@ static void setSamba(webs_t wp, char_t *path, char_t *query);
 static void setMiscServices(webs_t wp, char_t *path, char_t *query);
 static void formIptAccounting(webs_t wp, char_t *path, char_t *query);
 static void l2tpConfig(webs_t wp, char_t *path, char_t *query);
+static int  isSMP(int eid, webs_t wp, int argc, char_t **argv);
 
 /*** Busybox leases.h ***/
 static uint64_t hton64(uint64_t v)
@@ -82,6 +83,7 @@ void formDefineServices(void)
 	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
 	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
 	websAspDefine(T("getProcessList"), getProcessList);
+	websAspDefine(T("isSMP"), isSMP);
 }
 
 static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
@@ -361,6 +363,9 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("snmpdcommunity"), "snmpdcommunity", 0, T("") },
 #endif
 	{ T("mssPmtu"), "mss_use_pmtu", 0, T("1") },
+#ifdef CONFIG_RALINK_MT7621
+	{ T("IRQBalance"), "IRQBalance", 0, T("auto") },
+#endif
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
@@ -728,4 +733,12 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 	nvram_close(RT2860_NVRAM);
 
 	return 0;
+}
+
+static int isSMP(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_RALINK_MT7621
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
 }
