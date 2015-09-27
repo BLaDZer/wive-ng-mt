@@ -1224,7 +1224,7 @@ VOID MacTableMaintenance(
 		//YF: kickout sta when 30 of 32 exceeds the threshold.
 		//sfstudio: only client kick, not power saved client and need some times for accumulate rssi statistics (prevent reassoc flood)
 		if (pMbss->RssiLowForStaKickOut != 0 &&
-			IS_ENTRY_CLIENT(pEntry) && pEntry->PsMode != PWR_SAVE && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN)
+			IS_ENTRY_CLIENT(pEntry) && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN)
 		{
 			CHAR rssiIndex = 0, overRssiThresCount = 0;
 			for (rssiIndex=0; rssiIndex < MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
