@@ -355,14 +355,18 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(BurstMode);
 	FPRINT_NUM(PktAggregate);
 	FPRINT_NUM(FragThreshold);
-	FPRINT_NUM(APSDCapable);
 	FPRINT_NUM(MaxSPLength);
 	FPRINT_NUM(ShortSlot);
+	FPRINT_NUM(NoForwardingBTNBSSID);
+	FPRINT_NUM(session_timeout_interval);
+	FPRINT_NUM(quiet_interval);
+	FPRINT_NUM(IdleTimeout);
+
+	FPRINT_STR(APSDCapable);
 	FPRINT_STR(AckPolicy);
 	FPRINT_STR(DLSCapable);
 	FPRINT_STR(NoForwarding);
 	FPRINT_STR(NoForwardingMBCast);
-	FPRINT_NUM(NoForwardingBTNBSSID);
 	FPRINT_STR(StationKeepAlive);
 	FPRINT_STR(EntryLifeCheck);
 	FPRINT_STR(HideSSID);
@@ -382,7 +386,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(AuthMode);
 	FPRINT_STR(EncrypType);
     	FPRINT_STR(RekeyMethod);
-	FPRINT_NUM(RekeyInterval);
+	FPRINT_STR(RekeyInterval);
 	FPRINT_STR(PMKCachePeriod);
 
 	FPRINT_STR(WPAPSK1);
@@ -502,11 +506,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(own_ip_addr);
 	FPRINT_STR(EAPifname);
 	FPRINT_STR(PreAuthifname);
-	FPRINT_NUM(session_timeout_interval);
-	FPRINT_NUM(quiet_interval);
-
 	FPRINT_STR(MaxStaNum);
-	FPRINT_NUM(IdleTimeout);
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	FPRINT_STR(PSMode);
@@ -608,9 +608,9 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(ApCliKey3Str);
 	FPRINT_NUM(ApCliKey4Type);
 	FPRINT_STR(ApCliKey4Str);
-	FPRINT_NUM(ApCliTxMode);
-	FPRINT_NUM(ApCliTxMcs);
-	FPRINT_NUM(ApCliAPSDCapable);
+	FPRINT_STR(ApCliTxMode);
+	FPRINT_STR(ApCliTxMcs);
+	FPRINT_STR(ApCliAPSDCapable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	FPRINT_NUM(IdsEnable);
