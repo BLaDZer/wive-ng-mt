@@ -1329,18 +1329,19 @@
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~98%).<br>
-2) need add in UI advanced EntryLifeCheck variable (how pkts TX fail before connection drop, default 512).<br>
-3) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
-4) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-5) need add tx beamforming parametrs in WebUi Basic if CONFIG_RT_SECOND_CARD=7612 or CONFIG_RT_FIRST_CARD=7602 (ITxBfEn,ETxBfeeEn,ETxBfEnCond variables 0/1, see rtmp.h).<br>
-6) need add multiif support in iappd daemon.<br>
-7) need add subchannel select for 5GHz module.<br>
-8) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
-9) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
-10) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-11) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-12) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-13) in fair fair future: need add perip shaper script and webui .<br>
+2) need add in UI for complex qos variable QoSMode (shape from 0-all,1-only WAN,2-only VPN).<br>
+3) need add in UI advanced EntryLifeCheck variable (how pkts TX fail before connection drop, default 512).<br>
+4) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
+5) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+6) need add tx beamforming parametrs in WebUi Basic if CONFIG_RT_SECOND_CARD=7612 or CONFIG_RT_FIRST_CARD=7602 (ITxBfEn,ETxBfeeEn,ETxBfEnCond variables 0/1, see rtmp.h).<br>
+7) need add multiif support in iappd daemon.<br>
+8) need add subchannel select for 5GHz module.<br>
+9) need add irqbalance in WebUI (in last stage of 7621 dev).<br>
+10) port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+11) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+12) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+13) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+14) in fair fair future: need add perip shaper script and webui .<br>
 <br>
 <br>
 <br>

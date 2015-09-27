@@ -11,7 +11,7 @@
 LOG="logger -t Complex QoS"
 
 # get config
-eval `nvram_buf_get 2860 igmpEnabled offloadMode QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up QoS_rate_vpn_up QoS_rate_vpn_limit_up`
+eval `nvram_buf_get 2860 igmpEnabled offloadMode QoSMode QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up QoS_rate_vpn_up QoS_rate_vpn_limit_up`
 
 IPTSCR="/etc/qos_firewall"
 INCOMING="iptables -A shaper_pre -t mangle"
@@ -199,7 +199,7 @@ if  [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ] || [ "$vpnEnabled" 
     qos_nf
 fi
 
-if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoemode" != "1" ]; then
+if [ "$OperationMode" != "0" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "1"] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoemode" != "1" ]; then
     # build rules for WAN
     # not need shape at wan if in pure pppoe mode or bridget mode
     qos_nf_if
@@ -207,7 +207,7 @@ if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoe
 fi
 
 # build rules for VPN
-if [ "$vpnEnabled" = "on" ] && [ "$wan_if" != "$real_wan_if" ]; then
+if [ "$vpnEnabled" = "on" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "2"] && [ "$wan_if" != "$real_wan_if" ]; then
     # reload global
     . /etc/scripts/global.sh
     # check device ready

@@ -222,6 +222,7 @@ PrinterSrvBidir=1
 PrinterSrvEnabled=0
 PSMode=CAM
 QoSEnable=0
+QoSMode=0
 QoS_high_pp=1720 4190 5060 5190 5191 5192 5193 5222 5223 5269 5270
 QoS_low_pp=20 25 21 8010
 QoS_high_dscp=EF
