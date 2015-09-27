@@ -1323,8 +1323,9 @@
 44) kernel: net: net_sched: sch_htb: let skb->priority refer to non-leaf class.<br>
 45) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
 46) kernel: net: route: prevent oops.<br>
-47) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
-48) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
+47) kernel: net: tcp_cubic: better follow cubic curve after idle period.<br>
+48) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
+49) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
 <br>
 <br>
 <b>TODO:</b><br>
