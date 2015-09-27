@@ -1317,13 +1317,14 @@
 38) kernel: usb: usbnet: fix a race between usbnet_stop() and the BH.<br>
 39) kernel: usb: net: qmi_wwan: Sierra Wireless MC73xx -> Sierra Wireless MC7304/MC7354.<br>
 40) kernel: usb: qcserial: add HP lt4111 LTE/EV-DO/HSPA+ Gobi 4G Module.<br>
-41) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
-42) kernel: net: route: prevent oops.<br>
-43) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
-44) kernel: net: sch_htb: let skb->priority refer to non-leaf class.<br>
-45) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
-46) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
-47) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
+41) kernel: net: net_sched: sfq: put sfq_unlink in a do - while loop.<br>
+42) kernel: net: net_sched: Pass the skb into change so it can access NETLINK_CB.<br>
+43) kernel: net: net_sched: fix error return code in fw_change_attrs().<br>
+44) kernel: net: net_sched: sch_htb: let skb->priority refer to non-leaf class.<br>
+45) kernel: net: ipv6: ip6_fragment: fix headroom tests and skb leak.<br>
+46) kernel: net: route: prevent oops.<br>
+47) kernel: net: fix crashes on pppoe disconnect/reconnect.<br>
+48) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
 <br>
 <br>
 <b>TODO:</b><br>
