@@ -1281,7 +1281,7 @@
 2) build_system: rework defaults and rf calibs factory/backups install.<br>
 3) build_system: rework link and install depended libs.<br>
 4) kernel: up to 3.4.109 version.<br>
-5) userapps: add nodogsplash (stabalone simple captive portal support).<br>
+5) userapps: add nodogsplash (stabalone simple captive portal support commit dd8e4a6).<br>
 6) defaults: add fast roaming and radio resource managment parametrs.<br>
 7) defaults: enable WMM support by default (this long time ready for production).<br>
 8) libusb: up to 1.0.20 version.<br>
