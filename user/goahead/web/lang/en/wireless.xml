@@ -117,6 +117,7 @@
   <message msgid="basic ids disassoc" msgstr="Disassociation flood threshold" />
   <message msgid="basic ids deauth" msgstr="Deauthentication flood threshold" />
   <message msgid="basic ids eap" msgstr="EAP request flood threshold" />
+  <message msgid="basic txbf" msgstr="Beamforming" />
   <message msgid="basic itxbfen" msgstr="TX Beamforming" />
   <message msgid="basic etxbfeeen" msgstr="BFee feature" />
   <message msgid="basic etxbfencond" msgstr="Sending of sounding and beamforming" />

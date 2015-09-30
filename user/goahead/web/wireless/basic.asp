@@ -183,7 +183,7 @@ function GExtChannelDisplay(form) {
 	var bandwidth = form.n_bandwidth.value * 1;
 
 	displayElement('extension_channel', (channel != 0) && (bandwidth != 0) && (mode >= 5));
-	enableElements(('form.n_extcha'), (channel != 0) && (bandwidth != 0) && (mode >= 5));
+	enableElements(form.n_extcha, (channel != 0) && (bandwidth != 0) && (mode >= 5));
 }
 
 function initChecktime(form) {
@@ -341,6 +341,7 @@ function initTranslation()
 	_TR("basicDisassocFloodThreshold", "basic ids disassoc");
 	_TR("basicDeauthFloodThreshold", "basic ids deauth");
 	_TR("basicEapReqFloodThreshold", "basic ids eap");
+	_TR("basicTxBf", "basic txbf");
 	_TR("basicITxBfEn", "basic itxbfen");
 	_TR("basicETxBfeeEn", "basic etxbfeeen");
 	_TR("basicETxBfEnCond", "basic etxbfencond");
@@ -845,15 +846,16 @@ function initValue()
 		form.ETxBfeeEn.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfeeEn"); %>' ==  '1') ? 1 : 0;
 		form.ETxBfEnCond.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfEnCond"); %>' ==  '1') ? 1 : 0;
 	}
-	displayElement(['div_ITxBfEn', 'div_ETxBfeeEn', 'div_ETxBfEnCond'], txbf_built == '1');
+	displayElement( 'div_txbf', txbf_built == '1');
 }
 
 function show_abg_rate(form)
 {
 	var wmode = form.wirelessmode.value;
+	var wmode_ac = form.wirelessmodeac.value;
 
-	hideElement("div_abg_rate");
-	form.abg_rate.disabled = true;
+	displayElement("div_abg_rate", (wmode < 5) && ((is5gh_support == '1') && (wmode_ac < 5)));
+	enableElements(form.abg_rate, wmode < 5 && ((is5gh_support == '1') && (wmode_ac < 5)));
 
 	//ABG Rate
 	if ((wmode == "0") || (wmode == "2") || (wmode == "4"))
@@ -933,11 +935,6 @@ function show_abg_rate(form)
 			abg_rate.value = "11";
 		else
 			abg_rate.value = "0";
-	}
-	else
-	{
-		hideElement("div_abg_rate");
-		form.abg_rate.disabled = true;
 	}
 }
 
@@ -1339,27 +1336,6 @@ function CheckValue(form)
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
-          <tr id="div_ITxBfEn">
-            <td class="head" id="basicITxBfEn" width="50%">iTxBF(beamforming)</td>
-            <td width="50%"><select name="ITxBfEn" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="div_ETxBfeeEn">
-            <td class="head" id="basicETxBfeeEn" width="50%">BFee feature</td>
-            <td width="50%"><select name="ETxBfeeEn" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="div_ETxBfEnCond">
-            <td class="head" id="basicETxBfEnCond" width="50%">Sending of sounding and beamforming</td>
-            <td width="50%"><select name="ETxBfEnCond" class="half">
-                <option value="0" id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
         </table>
         <table id="div_ac" name="div_ac" class="form" style="display:none;">
           <tr>
@@ -1397,6 +1373,32 @@ function CheckValue(form)
           <tr id="div_11a_ldpc" name="div_11a_ldpc">
             <td class="head" id="basicLDPC" width="50%">Low Disenty parity check</td>
             <td width="50%"><select name="ac_ldpc" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+        </table>
+        <table id="div_txbf" name="div_txbf" class="form" style="display:none;">
+          <tr>
+            <td class="title" colspan="2" id="basicTxBf">Beamforming</td>
+          </tr>
+          <tr id="div_ITxBfEn">
+            <td class="head" id="basicITxBfEn" width="50%">iTxBF(beamforming)</td>
+            <td width="50%"><select name="ITxBfEn" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="div_ETxBfeeEn">
+            <td class="head" id="basicETxBfeeEn" width="50%">BFee feature</td>
+            <td width="50%"><select name="ETxBfeeEn" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="div_ETxBfEnCond">
+            <td class="head" id="basicETxBfEnCond" width="50%">Sending of sounding and beamforming</td>
+            <td width="50%"><select name="ETxBfEnCond" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>

@@ -666,19 +666,23 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *dot11h;
-	char_t  *fastroaming;
+	char_t  *fastroaming, *token;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
 #endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
-	int     is_vht = 0;
+	int     is_vht = 0, mode_ac;
+	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
+	char 	txModeInic[5 * MAX_NUMBER_OF_BSSID] = "";
 #endif
 #if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
 #endif
-	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num;
-	char	hidden_ssid[16] = "", noforwarding[16] = "", noforwardingmbcast[16] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0", ieee80211h[16] = "";
+	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
+	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
+	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	char 	txMode[5 * MAX_NUMBER_OF_BSSID] = "";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -692,6 +696,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
+	mode = atoi(wirelessmode);
 	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
 	apcli_mode = websGetVar(wp, T("apcli_mode"), T("apcli0"));
@@ -704,6 +709,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
+	int rate = atoi(abg_rate);
 
 	tx_stream = websGetVar(wp, T("tx_stream"), T("1"));
 	rx_stream = websGetVar(wp, T("rx_stream"), T("1"));
@@ -731,6 +737,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
+	mode_ac = atoi(wirelessmodeac);
 	tx_power_ac = websGetVar(wp, T("tx_power_ac"), T("100"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
@@ -766,12 +773,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		return;
 	}
 
-	if (atoi(wirelessmode) >= 5)
-		is_ht = 1;
-
+	is_ht = (mode >= 5) ? 1 : 0;
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	if (atoi(wirelessmodeac) >= 14)
-		is_vht = 1;
+	is_vht = (mode_ac >= 14) ? 1 : 0;
 #endif
 
 	nvram_init(RT2860_NVRAM);
@@ -789,9 +793,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "WdsIfName", wds_mode);
 
 	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
-	if (!strncmp(wirelessmode, "4", 2) || !strncmp(wirelessmode, "7", 2)) //g, gn
+	if ((mode == 4) || (mode == 7)) //g, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
-	else if (!strncmp(wirelessmode, "1", 2)) //b
+	else if ((mode == 1)) //b
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "3");
 	else // bg,bgn,n
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "15");
@@ -799,36 +803,53 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
 	// Fill-in SSID
-	for (ssid=0; ssid<MAX_NUMBER_OF_BSSID; ssid++)
+	for (ssid=0; ssid < new_bssid_num; ssid++)
 	{
 		ssid_web_var[6] = ssid  + '1';
 		ssid_nvram_var[4] = i  + '0';
+		token = (i != new_bssid_num) ? ";" : "";
 
 		char_t *mssid = websGetVar(wp, ssid_web_var, T(""));
 		if (CHK_IF_SET(mssid))
 		{
 			nvram_bufset(RT2860_NVRAM, ssid_nvram_var, mssid);
-			if (strchr(hssid, ssid + '0') != NULL)
-				sprintf(hidden_ssid, "%s%s", hidden_ssid, "1;");
-			else
-				sprintf(hidden_ssid, "%s%s", hidden_ssid, "0;");
-
-			if (strchr(isolated_ssid, ssid + '0') != NULL)
-				sprintf(noforwarding, "%s%s", noforwarding, "1;");
-			else
-				sprintf(noforwarding, "%s%s", noforwarding, "0;");
-
-			if (strchr(mbcastisolated_ssid, ssid + '0') != NULL)
-				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "1;");
-			else
-				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, "0;");
+			sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
+			sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(noforwarding, "%s%s", noforwarding, token);
+			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
+			if (strncmp(abg_rate, "", 1)) {
+				if (mode == 1) {
+					sprintf(txMode, "%s%s", txMode, "CCK");
+				} else if ((mode >= 5)) {
+					sprintf(txMode, "%s%s", txMode, "HT");
+				} else {
+					if (rate == 1 || rate == 2 || rate == 5 || rate == 11)
+						sprintf(txMode, "%s%s", txMode, "CCK");
+					else
+						sprintf(txMode, "%s%s", txMode, "OFDM");
+				}
 #ifndef CONFIG_RT_SECOND_IF_NONE
-			if (CHK_IF_DIGIT(dot11h, 1))
-				sprintf(ieee80211h, "%s%s", ieee80211h, "1;");
-			else
-				sprintf(ieee80211h, "%s%s", ieee80211h, "0;");
+				if (mode_ac >= 14)
+					sprintf(txModeInic, "%s%s", txModeInic, "VHT");
+				else if (mode_ac >= 5)
+					sprintf(txModeInic, "%s%s", txModeInic, "HT");
+				else
+					sprintf(txModeInic, "%s%s", txModeInic, "OFDM");
 #endif
-
+			} else {
+				sprintf(txMode, "%s%s", txMode, "HT");
+#ifndef CONFIG_RT_SECOND_IF_NONE
+				sprintf(txModeInic, "%s%s", txModeInic, "VHT");
+#endif
+			}
+			sprintf(txMode, "%s%s", txMode, token);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+			sprintf(txModeInic, "%s%s", txModeInic, token);
+			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
+			sprintf(ieee80211h, "%s%s", ieee80211h, token);
+#endif
 			i++;
 		}
 	}
@@ -836,6 +857,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
 	nvram_bufset(RT2860_NVRAM, "IEEE80211H", ieee80211h);
+	nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", txModeInic);
 #endif
 	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
@@ -843,6 +865,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
+	nvram_bufset(RT2860_NVRAM, "FixedTxMode", txMode);
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -850,25 +873,18 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "ChannelINIC", sz11aChannel);
 		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", a_autoselect);
-		    if (CHK_IF_SET(a_checktime))
-		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", a_checktime);
-		    else
-		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "24");
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", (CHK_IF_SET(a_checktime)) ? a_checktime : "24");
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
-
 	}
 #endif
 	if (CHK_IF_SET(sz11gChannel)) {
 		nvram_bufset(RT2860_NVRAM, "Channel", sz11gChannel);
 		if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", g_autoselect);
-		    if (CHK_IF_SET(g_checktime))
-		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTime", g_checktime);
-		    else
-		    	nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "24");
+		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", (CHK_IF_SET(g_checktime)) ? g_checktime : "24");
 		} else {
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
@@ -878,101 +894,50 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// Rate for a, b, g, n, ac
 	// In the future need allow set this per MBSSID
 	if (strncmp(abg_rate, "", 1))
-	{
-		int rate = atoi(abg_rate);
-		if (!strncmp(wirelessmode, "1", 2)) {
-			is_ht = 0;
-			nvram_bufset(RT2860_NVRAM, "FixedTxMode", "CCK;CCK;CCK;CCK");
-			if (rate == 1)
+		switch (rate) {
+			case 1:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "0");
-			else if (rate == 2)
+				break;
+			case 2:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "1");
-			else if (rate == 5)
+				break;
+			case 5:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "2");
-			else if (rate == 11)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
-		} else
-		if (!strncmp(wirelessmode, "0", 2) || !strncmp(wirelessmode, "4", 2)) {
-			is_ht = 0;
-			if (rate == 1 || rate == 2 || rate == 5 || rate == 11)
-				nvram_bufset(RT2860_NVRAM, "FixedTxMode", "CCK;CCK;CCK;CCK");
-			else
-				nvram_bufset(RT2860_NVRAM, "FixedTxMode", "OFDM;OFDM;OFDM;OFDM");
-			if (rate == 1)
+				break;
+			case 6:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "0");
-			else if (rate == 2)
+				break;
+			case 9:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "1");
-			else if (rate == 5)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "2");
-			else if (rate == 6)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "0");
-			else if (rate == 9)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "1");
-			else if (rate == 11)
+				break;
+			case 11:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
-			else if (rate == 12)
+				break;
+			case 12:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "2");
-			else if (rate == 18)
+				break;
+			case 18:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
-			else if (rate == 24)
+				break;
+			case 24:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "4");
-			else if (rate == 36)
+				break;
+			case 36:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "5");
-			else if (rate == 48)
+				break;
+			case 48:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "6");
-			else if (rate == 54)
+				break;
+			case 54:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "7");
-			else
+				break;
+			default:
 				nvram_bufset(RT2860_NVRAM, "HT_MCS", "33");
-		} else
-		if (!strncmp(wirelessmode, "6", 2) || !strncmp(wirelessmode, "7", 2) || !strncmp(wirelessmode, "9", 2)) {
-			is_ht = 1;
-			nvram_bufset(RT2860_NVRAM, "FixedTxMode", "HT;HT;HT;HT");
-			if (rate == 1)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "0");
-			else if (rate == 2)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "1");
-			else if (rate == 5)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "2");
-			else if (rate == 6)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "0");
-			else if (rate == 9)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "1");
-			else if (rate == 11)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
-			else if (rate == 12)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "2");
-			else if (rate == 18)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "3");
-			else if (rate == 24)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "4");
-			else if (rate == 36)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "5");
-			else if (rate == 48)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "6");
-			else if (rate == 54)
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "7");
-			else
-				nvram_bufset(RT2860_NVRAM, "HT_MCS", "33");
+				break;
 		}
-#ifndef CONFIG_RT_SECOND_IF_NONE
-		// Rate for a, an, ac
-		if (!strncmp(wirelessmodeac, "14", 3) || !strncmp(wirelessmodeac, "15", 3)) {
-			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT;VHT;VHT;VHT");
-		} else if (!strncmp(wirelessmodeac, "8", 2) || !strncmp(wirelessmodeac, "11", 3)) {
-			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "HT;HT;HT;HT");
-		} else if (!strncmp(wirelessmodeac, "2", 2)) {
-			nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "OFDM;OFDM;OFDM;OFDM");
-		}
-#endif
-	} else {
-		nvram_bufset(RT2860_NVRAM, "FixedTxMode", "HT;HT;HT;HT");
-		nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", "VHT;VHT;VHT;VHT");
-	}
 
 	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
-	if (is_ht)
-	{
+	if (is_ht) {
 		nvram_bufset(RT2860_NVRAM, "HT_OpMode", n_mode);
 		nvram_bufset(RT2860_NVRAM, "HT_BW", n_bandwidth);
 		nvram_bufset(RT2860_NVRAM, "HT_GI", n_gi);

@@ -116,6 +116,7 @@
   <message msgid="basic ids disassoc" msgstr="Пороговое значение запросов остановки ассоциации" />
   <message msgid="basic ids deauth" msgstr="Пороговое значение деаутентификаций" />
   <message msgid="basic ids eap" msgstr="Пороговое значение EAP запросов" />
+  <message msgid="basic txbf" msgstr="Формирование луча" />
   <message msgid="basic itxbfen" msgstr="Формирование луча" />
   <message msgid="basic etxbfeeen" msgstr="Поддержка BFee" />
   <message msgid="basic etxbfencond" msgstr="Отправка оповещений для формирования луча" />
