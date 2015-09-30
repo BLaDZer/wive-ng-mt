@@ -2592,6 +2592,7 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 	__be32 orig_daddr;
 	__be32 orig_saddr;
 	int orig_oif;
+	int err = -ENETUNREACH;
 
 	res.fi		= NULL;
 #ifdef CONFIG_IP_MULTIPLE_TABLES
@@ -2698,7 +2699,8 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 		goto make_route;
 	}
 
-	if (fib_lookup(net, fl4, &res)) {
+	err = fib_lookup(net, fl4, &res));
+	if (err) {
 		res.fi = NULL;
 		if (fl4->flowi4_oif) {
 			/* Apparently, routing tables are wrong. Assume,
@@ -2725,7 +2727,7 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 			res.type = RTN_UNICAST;
 			goto make_route;
 		}
-		rth = ERR_PTR(-ENETUNREACH);
+		rth = ERR_PTR(err);
 		goto out;
 	}
 
