@@ -1335,7 +1335,7 @@
 <b>3.6.x</b><br>
 1) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
 2) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-3) kernel: net: ipv6: compute net once in raw6_send_hdrinc.<br>
+3) kernel: net: ipv6: compute net once in raw6_send_hdrinc and ip6_finish_output2.<br>
 <br>
 <br>
 <b>TODO:</b><br>
