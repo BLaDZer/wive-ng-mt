@@ -1333,7 +1333,8 @@
 <br>
 <br>
 <b>3.6.x</b><br>
-1) kernel: net: ipv6: Add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+1) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+2) kernel: net: ipv6: Add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
 <br>
 <br>
 <b>TODO:</b><br>
