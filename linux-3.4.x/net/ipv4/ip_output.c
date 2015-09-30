@@ -251,11 +251,12 @@ int ip_mc_output(struct sk_buff *skb)
 	struct sock *sk = skb->sk;
 	struct rtable *rt = skb_rtable(skb);
 	struct net_device *dev = rt->dst.dev;
+	struct net *net = dev_net(dev);
 
 	/*
 	 *	If the indicated interface is up and running, send the packet.
 	 */
-	IP_UPD_PO_STATS(dev_net(dev), IPSTATS_MIB_OUT, skb->len);
+	IP_UPD_PO_STATS(net, IPSTATS_MIB_OUT, skb->len);
 
 	skb->dev = dev;
 	skb->protocol = htons(ETH_P_IP);
@@ -310,8 +311,9 @@ int ip_mc_output(struct sk_buff *skb)
 int ip_output(struct sk_buff *skb)
 {
 	struct net_device *dev = skb_dst(skb)->dev;
+	struct net *net = dev_net(dev);
 
-	IP_UPD_PO_STATS(dev_net(dev), IPSTATS_MIB_OUT, skb->len);
+	IP_UPD_PO_STATS(net, IPSTATS_MIB_OUT, skb->len);
 
 	skb->dev = dev;
 	skb->protocol = htons(ETH_P_IP);
