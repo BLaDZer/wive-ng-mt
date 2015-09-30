@@ -243,10 +243,10 @@
 #define USB_PORT_STAT_RESET         0x0010
 #define USB_PORT_STAT_POWER         0x0100
 #define USB_PORT_STAT_LOW_SPEED     0x0200
-#define USB_PORT_STAT_HIGH_SPEED    0x0400  /* support for EHCI */
+#define USB_PORT_STAT_HIGH_SPEED    0x0400	/* support for EHCI */
 #define USB_PORT_STAT_SUPER_SPEED   0x0600	/* faking support to XHCI */
 #define USB_PORT_STAT_SPEED_MASK	\
-    (USB_PORT_STAT_LOW_SPEED | USB_PORT_STAT_HIGH_SPEED)
+	(USB_PORT_STAT_LOW_SPEED | USB_PORT_STAT_HIGH_SPEED)
 
 /*
  * Changes to wPortStatus bit field in USB 3.0
@@ -278,7 +278,7 @@
 #define HUB_CHAR_OCPM               0x0018
 
 /*
- *Hub Status & Hub Change bit masks
+ * Hub Status & Hub Change bit masks
  */
 #define HUB_STATUS_LOCAL_POWER	0x0001
 #define HUB_STATUS_OVERCURRENT	0x0002

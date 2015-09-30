@@ -54,6 +54,8 @@
 
 #include <asm/byteorder.h>	/* for nton* / ntoh* stuff */
 
+//#define CONFIG_NET_VLAN 1
+
 
 /*
  *	The number of receive packet buffers, and the required packet buffer
@@ -322,6 +324,7 @@ extern uchar		NetEtherNullAddr[6];
 extern ushort		NetOurVLAN;		/* Our VLAN 			*/
 extern ushort		NetOurNativeVLAN;	/* Our Native VLAN 		*/
 #endif
+
 extern uchar		NetCDPAddr[6]; 		/* Ethernet CDP address		*/
 extern ushort		CDPNativeVLAN;		/* CDP returned native VLAN	*/
 extern ushort		CDPApplianceVLAN;	/* CDP returned appliance VLAN	*/
@@ -336,8 +339,7 @@ extern int		NetState;		/* Network loop state		*/
 extern int		NetRestartWrap;		/* Tried all network devices	*/
 #endif
 
-
-typedef enum { BOOTP, RARP, ARP, TFTP, DHCP, PING, DNS, NFS, CDP, NETCONS, TFTPD} proto_t;
+typedef enum { BOOTP, RARP, ARP, TFTP, DHCP, PING, DNS, NFS, CDP, NETCONS, TFTPD } proto_t;
 
 /* from net/net.c */
 extern char	BootFile[128];			/* Boot File name		*/

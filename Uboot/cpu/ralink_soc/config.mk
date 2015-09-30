@@ -20,14 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307 USA
 #
-
-v=$(shell export LC_ALL=C; $(AS) --version |grep "GNU assembler" |cut -d. -f2)
-MIPSFLAGS=$(shell export LC_ALL=C; \
-if [ "$v" -lt "14" ]; then \
-	echo "-mabicalls"; \
-else \
-	echo "-mabicalls"; \
-fi)
+MIPSFLAGS=-mabicalls
 # 	Dennis Lee, Big Endian need -EB otherwise remove -EB
 #	echo "-mcpu=4kc -EB -mabicalls"; 
 #	echo "-march=4kc -mtune=4kc -Wa,-mips_allow_branch_to_undefined -mabicalls"; 

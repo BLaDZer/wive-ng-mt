@@ -360,7 +360,7 @@ main (int argc, char **argv)
 					usage ();
 #if defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
 				stage1_start = strtoul (*++argv, (char **)&ptr, 16);
-#else
+#else					
 				dram_cfg0 = strtoul (*++argv, (char **)&ptr, 16);
 				if (*ptr) {
 				    fprintf (stderr,
@@ -375,7 +375,7 @@ main (int argc, char **argv)
 					usage ();
 #if defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
 				bootloader_start = strtoul (*++argv, (char **)&ptr, 16);
-#else
+#else				
 				dram_cfg1 = strtoul (*++argv, (char **)&ptr, 16);
 				if (*ptr) {
 				    fprintf (stderr,
@@ -633,10 +633,10 @@ NXTARG:		;
 	hdr->ih_nand.nand_info_1.total_size = NAND_TOTALSIZE_INDEX;
 	hdr->ih_nand.nand_info_1.block_size = NAND_BLOCKSIZE_INDEX;
 	hdr->ih_nand.nand_info_1.magic_id = 0xDA0;
-	hdr->ih_nand.nand_info_1_data = htonl((unsigned int)(hdr->ih_nand.nand_info_1_data));
-	hdr->ih_nand.nand_ac_timing = htonl(NAND_ACCTIME);
+	hdr->ih_nand.nand_info_1_data = htonl((unsigned int)(hdr->ih_nand.nand_info_1_data));	
+	hdr->ih_nand.nand_ac_timing = htonl(NAND_ACCTIME);	
 #endif
-#endif
+#endif	
 #else
 	//if dram_size=2M, that means dram parameters is invalid
 	if(dram_size==0) { 
@@ -735,16 +735,16 @@ NXTARG:		;
 #endif
 	}
 #else
-#error "DRAM config in imageheader is not supported"
-#endif
+#error "DRAM config in imageheader is not supported"	
+#endif	
 #endif
 #endif /* ! MT7621_ASIC_BOARD or MT7621_FPGA_BOARD */
 
 #if (defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD))
 	//crc((const char *)hdr, &(hdr->ih_nand.crc), sizeof(image_header_t));	
-	crc((const char *)hdr, &checksum, sizeof(image_header_t));
-	hdr->ih_nand.crc = htonl(checksum);
-#endif
+    crc((const char *)hdr, &checksum, sizeof(image_header_t));
+    hdr->ih_nand.crc = htonl(checksum);
+#endif	
 	checksum = crc32(0,(const char *)hdr,sizeof(image_header_t));
 
 	hdr->ih_hcrc = htonl(checksum);

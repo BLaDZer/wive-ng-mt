@@ -51,6 +51,7 @@
 #include <asm/addrspace.h>
 #include <asm/byteorder.h>
 
+#include <gpio.h>
 
 #define DD printf("### %s %d\n", __FUNCTION__, __LINE__);
 //#define DD
@@ -105,6 +106,7 @@ int usb_init(void)
 	int i, start_index = 0;
         struct usb_device *dev;
 
+	gpio_init_usb();
 
 	running=0;
 	dev_index=0;
@@ -120,7 +122,7 @@ int usb_init(void)
         /* init low_level USB */
 #define	CONFIG_USB_MAX_CONTROLLER_COUNT 1
         for (i = 0; i < CONFIG_USB_MAX_CONTROLLER_COUNT; i++) {
-	/* init low_level USB */
+                /* init low_level USB */
                 printf("USB%d:   ", i);
                 if (usb_lowlevel_init(i, USB_INIT_HOST, &ctrl)) {
                         puts("lowlevel init failed\n");
@@ -146,14 +148,14 @@ int usb_init(void)
                         printf("%d USB Device(s) found\n",
                                 dev_index - start_index);
 
-		running=1;
-	}
+		running = 1;
+        }
 
         USB_PRINTF("scan end\n");
         if (!running) {
                 puts("USB error: all controllers failed lowlevel init\n");
-		return -1;
-	}
+                return -1;
+        }
 
 	return 0;
 }
@@ -422,11 +424,11 @@ int usb_get_descriptor(struct usb_device *dev, unsigned char type, unsigned char
 int usb_get_configuration_no(struct usb_device *dev,
 			     unsigned char *buffer, int cfgno)
 {
- 	int result;
+	int result;
 	unsigned int length;
 	struct usb_config_descriptor *config;
 
-	config=(struct usb_config_descriptor *)&buffer[0];
+	config = (struct usb_config_descriptor *)&buffer[0];
 	result = usb_get_descriptor(dev, USB_DT_CONFIG, cfgno, buffer, 9);
 	if (result < 9) {
 		if (result < 0)
@@ -717,21 +719,21 @@ struct usb_device * usb_get_dev_index(int index)
  */
 struct usb_device *usb_alloc_new_device(void *controller)
 {
-	int i;
-	USB_PRINTF("New Device %d\n",dev_index);
-	if(dev_index==USB_MAX_DEVICE) {
-		printf("ERROR, too many USB Devices, max=%d\n",USB_MAX_DEVICE);
-		return NULL;
-	}
+        int i;
+        USB_PRINTF("New Device %d\n", dev_index);
+        if (dev_index == USB_MAX_DEVICE) {
+                printf("ERROR, too many USB Devices, max=%d\n", USB_MAX_DEVICE);
+                return NULL;
+        }
         /* default Address is 0, real addresses start with 1 */
         usb_dev[dev_index].devnum = dev_index + 1;
-	usb_dev[dev_index].maxchild=0;
-	for(i=0;i<USB_MAXCHILDREN;i++)
-		usb_dev[dev_index].children[i]=NULL;
-	usb_dev[dev_index].parent=NULL;
+        usb_dev[dev_index].maxchild = 0;
+        for (i = 0; i < USB_MAXCHILDREN; i++)
+                usb_dev[dev_index].children[i] = NULL;
+        usb_dev[dev_index].parent = NULL;
         usb_dev[dev_index].controller = controller;
-	dev_index++;
-	return &usb_dev[dev_index-1];
+        dev_index++;
+        return &usb_dev[dev_index - 1];
 }
 
 
@@ -816,8 +818,8 @@ int usb_new_device(struct usb_device *dev)
 	 * of that is done for XHCI unlike EHCI.
 	 */
 #ifndef CONFIG_USB_XHCI
-		err = usb_get_descriptor(dev, USB_DT_DEVICE, 0, desc, 64);
-		if (err < 0) {
+	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0, desc, 64);
+	if (err < 0) {
 		USB_PRINTF("usb_new_device: usb_get_descriptor() failed\n");
 		return 1;
 	}
@@ -854,7 +856,7 @@ int usb_new_device(struct usb_device *dev)
 	}
 #endif
 
-	dev->epmaxpacketin [0] = dev->descriptor.bMaxPacketSize0;
+	dev->epmaxpacketin[0] = dev->descriptor.bMaxPacketSize0;
 	dev->epmaxpacketout[0] = dev->descriptor.bMaxPacketSize0;
 	switch (dev->descriptor.bMaxPacketSize0) {
 	case 8:
@@ -936,10 +938,10 @@ int usb_new_device(struct usb_device *dev)
 	USB_PRINTF("Product      %s\n", dev->prod);
 	USB_PRINTF("SerialNumber %s\n", dev->serial);
 	/* now prode if the device is a hub */
-	usb_hub_probe(dev,0);
+	usb_hub_probe(dev, 0);
 
 	return 0;
-	}
+}
 
 /*
  * Free the newly created device node.
@@ -952,7 +954,7 @@ void usb_free_device(void)
         USB_PRINTF("Freeing device node: %d\n", dev_index);
         memset(&usb_dev[dev_index], 0, sizeof(struct usb_device));
         usb_dev[dev_index].devnum = -1;
-	}
+}
 
 #include "usb_hub.c"
 

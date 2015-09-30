@@ -659,13 +659,13 @@ ulong flash_get_size(FPWV *addr, flash_info_t *info)
 			info->size = 0x00800000 * (sizeof(FPW)/2);
 		//	printf("\n EN_ID_29LV640H, Size = %08x bytes\n",info->size);
 			break;
-			#if 0
+#if 0
 			info->flash_id = FLASH_UNKNOWN;
 			info->sector_count = 0;
 			info->size = 0;
 			return (0);			/* => no or unknown flash */
 			break;
-			#endif
+#endif
 		}
 
 	flash_get_offsets((ulong)addr, info);
@@ -880,23 +880,22 @@ int	flash_erase(flash_info_t *info, int s_first, int s_last)
 	{
 		s_kk = 16;
 		s_sector_size = 0x00000800;
-		printf("\n SSI Manufacture so its small sector  \n");
+		printf("\n SSI Manufacture so its small sector\n");
 	}
 	
 	for (sect = s_first; sect<=s_last && rcode == 0; sect++) {
 
 		if (info->protect[sect] != 0)	/* protected, skip it */
 		{
-			printf("\n sect[%d] is protected,skip \n",sect);
+			printf("\n sect[%d] is protected,skip\n",sect);
 			continue;
-		}	
-		printf("\n erase sector  = %d \n",sect);
+		}
+		printf(" erase sector = %d\n",sect);
 
 		/* Disable interrupts which might cause a timeout here */
 		//flag = disable_interrupts();
 
 		addr = (FPWV *)(info->start[sect]);
-
 
 		//add by kaiker
 		if( sect == 0 || flash_use_SSI_standard == 1)
@@ -905,11 +904,11 @@ int	flash_erase(flash_info_t *info, int s_first, int s_last)
 
 			if(flash_use_SSI_standard)
 			{
-				printf("\n Erase to sector address[%08X]\n",addr);
+				printf("\n Erase to sector address [%08X]\n",addr);
 			}
 			else
 			{
-				printf("\n Elase Sector 0 with 8K SIZE,The sector 0 is Total 64K\n");
+				printf("\n Erase Sector 0 with 8K SIZE, the sector 0 is Total 64K\n");
 			}
 						
 			for(kk =0 ; kk < s_kk ;kk++)
@@ -997,8 +996,8 @@ int	flash_erase(flash_info_t *info, int s_first, int s_last)
 			*/
 
 		start = get_timer(0);
+		last = start;
 
-#if 1
 		/* wait at least 50us for AMD, 80us for Intel.
 		 * Let's wait 1 ms.
 		 */
@@ -1022,21 +1021,11 @@ int	flash_erase(flash_info_t *info, int s_first, int s_last)
 			poll++;
 			/* show that we're waiting */
 			if ((get_timer(last)) > CFG_HZ) {/* every second */
-				putc('*');
+				putc('.');
 				last = get_timer(0);
 			}
 		}
-		printf("sect = %d,s_last = %d,erase poll = %d\n",sect,s_last,poll);
-#else
-
-#endif
-
-
-		/* show that we're waiting */
-		if ((get_timer(last)) > CFG_HZ) {	/* every second */
-			putc('.');
-			last = get_timer(0);
-		}
+//		printf("sect = %d,s_last = %d,erase poll = %d\n",sect,s_last,poll);
 
 		flash_reset(info);	/* reset to read mode	*/
 	}
@@ -1076,7 +1065,7 @@ int write_buff(flash_info_t *info, uchar *src, ulong addr, ulong cnt)
 		}	
 		if(get_timer(rt2880_flash_start_t) > CFG_FLASH_STATE_DISPLAY_TOUT)
 		{
-			printf("\n addr = 0x%08X ,cnt=%d ",addr,left);
+			printf(" addr = 0x%08X, cnt=%d\n", addr, left);
 			rt2880_flash_start_t = get_timer(0);
 		}
 
@@ -1122,20 +1111,9 @@ static int write_word_amd(flash_info_t *info, FPWV *dest, FPW data)
 
 	start = get_timer(0);
 
-	while(*dest != 0xFFFF)  {
-#ifndef RT3052_FPGA_BOARD
-		if (get_timer(start) > CFG_FLASH_STATE_DISPLAY_TOUT) 
-		{
-			start = get_timer(0);
-			printf("\n dest[0x%08X]=%04X\n",dest,*dest);
-		}
-#endif
-		
-#if 1 //defined (RT2880_ASIC_BOARD) || defined (RT3052_ASIC_BOARD)
-#else
-		printf("Not Erase: address 0x%08x(value=0x%08x)\n", (ulong) dest, *dest);
+	if (*dest != 0xFFFF)  {
+		printf("Not Erased: address 0x%08x (value=0x%08x)\n", (ulong) dest, *dest);
 		return (2);
-#endif
 	}
 	
 	base = (FPWV *)(info->start[0]);

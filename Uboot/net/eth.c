@@ -54,9 +54,6 @@ extern int scc_initialize(bd_t*);
 extern int skge_initialize(bd_t*);
 extern int tsec_initialize(bd_t*, int);
 extern int rt2880_eth_initialize(bd_t *bis);
-#if defined(CONFIG_AG7100)
-extern int ag7100_enet_initialize(bd_t *bis);
-#endif
 
 static struct eth_device *eth_devices, *eth_current;
 
@@ -219,11 +216,6 @@ int eth_initialize(bd_t *bis)
 	rt2880_eth_initialize(bis);
 #endif
 
-#if defined(CONFIG_AG7100)
-	ag7100_enet_initialize(bis);
-#endif
-	
-
 	if (!eth_devices) {
 		puts ("No ethernet found.\n");
 	} else {
@@ -241,9 +233,11 @@ int eth_initialize(bd_t *bis)
 				puts (" [PRIME]");
 			}
 
-#define GMAC0_OFFSET    0x28
-#define GDMA1_MAC_ADRL  0x2C
-#define GDMA1_MAC_ADRH  0x30
+#if defined (MT7621_MP)
+#define GMAC0_OFFSET	0xE000
+#else
+#define GMAC0_OFFSET	0x28
+#endif
 
 			//get Ethernet mac address from flash
 #if defined (CFG_ENV_IS_IN_NAND)
@@ -264,14 +258,6 @@ int eth_initialize(bd_t *bis)
 				eth_parse_enetaddr(CONFIG_ETHADDR, rt2880_gmac1_mac);
 
 			memcpy(dev->enetaddr, rt2880_gmac1_mac, 6);
-
-			//set my mac to gdma register
-			regValue = (rt2880_gmac1_mac[0] << 8)|(rt2880_gmac1_mac[1]);
-			*(volatile u_long *)(dev->iobase + GDMA1_MAC_ADRH)= regValue;
-
-			regValue = (rt2880_gmac1_mac[2] << 24) | (rt2880_gmac1_mac[3] <<16) | 
-			           (rt2880_gmac1_mac[4] << 8) | rt2880_gmac1_mac[5];
-			*(volatile u_long *)(dev->iobase + GDMA1_MAC_ADRL)= regValue;
 
 			eth_number++;
 			dev = dev->next;

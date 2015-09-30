@@ -1,13 +1,6 @@
 if [ "$MT7621_FPGA_BOARD" = "y" -o "$MT7621_ASIC_BOARD" = "y" ]; then
-string 'Cross Compiler Path' CONFIG_CROSS_COMPILER_PATH  /opt/mips-2012.03/bin/
-elif [ "$RT2880_FPGA_BOARD" = "y" -o "$RT2880_ASIC_BOARD" = "y" -o
-	  "$RT3052_FPGA_BOARD" = "y" -o "$RT3052_ASIC_BOARD" = "y" -o
-	  "$RT3352_FPGA_BOARD" = "y" -o "$RT3352_ASIC_BOARD" = "y" -o
-	  "$RT3883_FPGA_BOARD" = "y" -o "$RT3883_ASIC_BOARD" = "y" -o
-	  "$RT5350_FPGA_BOARD" = "y" -o "$RT5350_ASIC_BOARD" = "y" -o
-	  "$RT6855A_FPGA_BOARD" = "y" -o "$RT6855A_ASIC_BOARD" = "y" -o
-	  "$MT7620_FPGA_BOARD" = "y" -o "$MT7620_ASIC_BOARD" = "y" -o
-	  "$MT7628_FPGA_BOARD" = "y" -o "$MT7628_ASIC_BOARD" = "y" ]; then
+string 'Cross Compiler Path' CONFIG_CROSS_COMPILER_PATH  /opt/mips-2012.03/bin
+else
 string 'Cross Compiler Path' CONFIG_CROSS_COMPILER_PATH  /opt/buildroot-gcc342/bin
 fi
 comment ""
@@ -68,6 +61,8 @@ fi
 if [ "$MAC_TO_GIGAPHY_MODE" = "y" ]; then
     hex "GigaPHY address for Auto Polling" MAC_TO_GIGAPHY_MODE_ADDR 0x1f
 fi
+
+comment ""
 
 #-----------------------
 # RT2880 FLASH
@@ -143,6 +138,7 @@ if [ "$P5_RGMII_TO_MAC_MODE" = "y" ]; then
     define_bool GPIOx_RESET_MODE y
 fi
 
+comment ""
 
 #-----------------------
 # RT3052 FLASH
@@ -178,7 +174,7 @@ choice 'DRAM Bus' "16bits ON_BOARD_16BIT_DRAM_BUS \
 # RT3052 Option
 #-----------------------
 comment ""
-if [ "$ON_BOARD_NOR_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_NOR_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
 			  ROM UBOOT_ROM 
 			 " ROM
@@ -248,7 +244,7 @@ define_bool ON_BOARD_16BIT_DRAM_BUS y
 # RT3350 Option
 #-----------------------
 comment ""
-if [ "$ON_BOARD_NOR_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_NOR_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
 			  ROM UBOOT_ROM 
 			 " ROM
@@ -287,12 +283,13 @@ choice 'Use GE1 or GE2' "GMAC1 RT3883_USE_GE1  \
 	                 GMAC2 RT3883_USE_GE2
 			"
 if [ "$RT3883_USE_GE1" = "y" ]; then
-choice 'GE1 connected to' "GE_MII_FORCE_100	 GE_MII_FORCE_100 \
-		           GE_RVMII_FORCE_100 GE_RVMII_FORCE_100 \
-		  	   GE_MII_AN		 GE_MII_AN \
-		           GE_RGMII_FORCE_1000(MT7530)      GE_RGMII_FORCE_1000 \
-		           GE_RGMII_FORCE_VITESSE   GE_RGMII_FORCE_VITESSE \
-		           GE_RGMII_AN		 GE_RGMII_AN 
+choice 'GE1 connected to' "GE_MII_FORCE_100		GE_MII_FORCE_100 \
+			    GE_RVMII_FORCE_100		GE_RVMII_FORCE_100 \
+			    GE_MII_AN			GE_MII_AN \
+			    GE_RGMII_FORCE_1000		GE_RGMII_FORCE_1000 \
+			    GE_RGMII_FORCE_RTL8367	GE_RGMII_FORCE_RTL8367 \
+			    GE_RGMII_FORCE_VITESSE	GE_RGMII_FORCE_VITESSE \
+			    GE_RGMII_AN			GE_RGMII_AN 
 			  "
 else
 choice 'GE2 connected to' "GE_MII_FORCE_100		GE_MII_FORCE_100 \
@@ -303,19 +300,10 @@ choice 'GE2 connected to' "GE_MII_FORCE_100		GE_MII_FORCE_100 \
 			   "
 fi
 
-bool "RTL8367 swich support" RTL8367_SW
-
-if [ "$RTL8367_SW" = "y" ]; then
-choice 'RTL8367 ASIC select'	"RTL8367M_VB	RTL8367_ASIC_MVB \
-			 RTL8367R_VB	RTL8367_ASIC_RVB
-			" RTL8367M_VB
-int ' RTL8367 Reset GPIO Pin'	RTL8367_RST_GPIO	-1
-fi
-
 if [ "$GE_MII_FORCE_100" = "y" -o \
      "$GE_RVMII_FORCE_100" = "y" ]; then
     define_bool MAC_TO_100SW_MODE y
-fi     
+fi
 
 if [ "$GE_MII_AN" = "y" ]; then
     define_bool MAC_TO_100PHY_MODE y
@@ -325,6 +313,25 @@ fi
 if [ "$GE_RGMII_FORCE_VITESSE" = "y" ]; then
     define_bool  MAC_TO_VITESSE_MODE y
     define_bool  GPIOx_RESET_MODE y
+fi
+
+if [ "$GE_RGMII_FORCE_RTL8367" = "y" ]; then
+    define_bool  MAC_TO_RTL8367_MODE y
+
+    choice 'ASIC type' "RTL8367M	SWITCH_ASIC_RTL8367M \
+			RTL8367R	SWITCH_ASIC_RTL8367R \
+			RTL8367R-VB	SWITCH_ASIC_RTL8367RVB \
+			RTL8367RB	SWITCH_ASIC_RTL8367RB
+			"
+
+    choice 'Control IF' "SMI		SWITCH_CTRLIF_SMI \
+			 MDIO		SWITCH_CTRLIF_MDIO
+			"
+
+    choice 'CPU Port' "Ext0		SWITCH_CPU_PORT_EXT0 \
+			Ext1		SWITCH_CPU_PORT_EXT1 \
+			Ext2		SWITCH_CPU_PORT_EXT2
+			"
 fi
 
 if [ "$GE_RGMII_FORCE_1000" = "y" ]; then
@@ -337,6 +344,7 @@ if [ "$GE_RGMII_AN" = "y" ]; then
     hex "GigaPHY address for Auto Polling" MAC_TO_GIGAPHY_MODE_ADDR 0x1f
 fi
 
+comment ""
 
 #-----------------------
 # RT3883 FLASH
@@ -345,6 +353,10 @@ choice 'Flash Type' "NOR ON_BOARD_NOR_FLASH_COMPONENT \
                      NAND ON_BOARD_NAND_FLASH_COMPONENT \
                      SPI ON_BOARD_SPI_FLASH_COMPONENT
 		    " NOR
+
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
+	bool "Use 40MHz SPI clock" SPI_FAST_CLOCK
+fi
 
 if [ "$DUAL_IMAGE_SUPPORT" = "y" ]; then
 choice 'Flash Size' "4M ON_BOARD_4M_FLASH_COMPONENT \
@@ -373,7 +385,8 @@ choice 'DRAM Bus' "16bits ON_BOARD_16BIT_DRAM_BUS \
 else
 choice 'DDR Component' "256Mb ON_BOARD_256M_DRAM_COMPONENT \
                         512Mb ON_BOARD_512M_DRAM_COMPONENT \
-                        1024Mb ON_BOARD_1024M_DRAM_COMPONENT
+                        1024Mb ON_BOARD_1024M_DRAM_COMPONENT \
+                        2048Mb ON_BOARD_2048M_DRAM_COMPONENT
 		      " 512Mb
 
 choice 'DDR Width' "8bits ON_BOARD_DDR_WIDTH_8 \
@@ -389,7 +402,7 @@ fi
 # RT3883 Option
 #-----------------------
 comment ""
-if [ "$ON_BOARD_NOR_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_NOR_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
 			  ROM UBOOT_ROM 
 			 " ROM
@@ -449,6 +462,8 @@ fi
 if [ "$P5_RGMII_TO_MAC_MODE" = "y" ]; then
     define_bool GPIOx_RESET_MODE y
 fi
+
+comment ""
 
 #-----------------------
 # RT3352 FLASH
@@ -661,7 +676,7 @@ define_bool ON_BOARD_16BIT_DRAM_BUS y
 # RT6855 Option
 #-----------------------
 comment ""
-if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
 			  ROM UBOOT_ROM 
 			 " ROM
@@ -776,7 +791,7 @@ define_bool ON_BOARD_16BIT_DRAM_BUS y
 # RT6855A Option
 #-----------------------
 comment ""
-if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
 #choice 'Ram/Rom version' "RAM UBOOT_RAM \
 #			  ROM UBOOT_ROM 
 #			 " ROM
@@ -870,6 +885,7 @@ if [ "$P4_MAC_TO_PHY_MODE" = "y" ]; then
    hex "GigaPHY address for Auto Polling" MAC_TO_GIGAPHY_MODE_ADDR2 0x4
 fi
 
+comment ""
 
 #-----------------------
 # MT7620 FLASH
@@ -877,6 +893,11 @@ fi
 choice 'Flash Type' "NAND ON_BOARD_NAND_FLASH_COMPONENT \
                      SPI ON_BOARD_SPI_FLASH_COMPONENT
 		    "SPI
+
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
+	bool "Use 50MHz SPI clock" SPI_FAST_CLOCK
+	bool "Use SPI flash double read mode" SPI_FLASH_READ_DOR
+fi
 
 if [ "$DUAL_IMAGE_SUPPORT" = "y" ]; then
 choice 'Flash Size' "4M ON_BOARD_4M_FLASH_COMPONENT \
@@ -934,7 +955,7 @@ define_bool RX_SCATTER_GATTER_DMA y
 
 #bool "Tiny Uboot" CONFIG_TINY_UBOOT
 
-if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
 			  ROM UBOOT_ROM 
 			 " ROM
@@ -948,7 +969,7 @@ fi
 #
 # Enable(uncomment) following line to enable the adjustment for CPU PLL settings in menuconfig,
 # and then input:  make mrproper;make menuconfig
-#define_bool MT7620_CPU_PLL_PARAMETERS y
+define_bool MT7620_CPU_PLL_PARAMETERS y
 
 if [ "$MT7620_CPU_PLL_PARAMETERS" = "y" ]; then
 	if [ "$ON_BOARD_SDR" = "y" ]; then
@@ -1013,8 +1034,8 @@ if [ "$MT7620_CPU_PLL_PARAMETERS" = "y" ]; then
 			define_hex	CPLL_DIV_RATIO_CFG	2
 		fi
 
-		#hex "    SSC conf (CPLL_CFG0[4:9])"		CPLL_SSC_CFG			0x7
-		define_hex	CPLL_SSC_CFG	0x7
+		hex "    SSC conf (CPLL_CFG0[4:9])"		CPLL_SSC_CFG			0x7
+		#define_hex	CPLL_SSC_CFG	0x7
 	fi
 else
 	#
@@ -1041,6 +1062,7 @@ if [ "$LAN_WAN_PARTITION" = "y" ]; then
 		                LLLL/W RALINK_EV_BOARD_PVLAN 
 			       "
 fi
+bool "Enable all Ethernet PHY" EPHY_LINK_UP
 
 if [ "$ON_BOARD_NAND_FLASH_COMPONENT" = "y" ]; then
 bool "Static DRAM Parameter" DRAM_PARAMETERS
@@ -1165,16 +1187,22 @@ if [ "$GE_RGMII_INTERNAL_P4_AN" = "y" -a "$MT7621_USE_GE2" = "y" ]; then
     define_hex   MAC_TO_GIGAPHY_MODE_ADDR 0x4
 fi
 
+comment ""
 
 #-----------------------
 # MT7621 FLASH
 #-----------------------
-choice 'Flash Type' "NAND ON_BOARD_NAND_FLASH_COMPONENT \
-                     SPI ON_BOARD_SPI_FLASH_COMPONENT
+choice 'Flash Type' "NAND	ON_BOARD_NAND_FLASH_COMPONENT \
+                     SPI	ON_BOARD_SPI_FLASH_COMPONENT
 		    "SPI
 if [ "$ON_BOARD_NAND_FLASH_COMPONENT" = "y" ]; then
 
 define_bool	ON_BOARD_NAND_BOOTSTRAP y
+
+comment "NAND partitions size (in 0x20000 blocks count)"
+int 'Bootloader' NAND_BLK_BOOTLOADER	4
+int 'Config'     NAND_BLK_CONFIG	10
+int 'Factory'    NAND_BLK_FACTORY	2
 
 #choice 'NAND parameters' "BootStrap ON_BOARD_NAND_BOOTSTRAP	\
 #			  Header    ON_BOARD_NAND_HEADER
@@ -1276,6 +1304,10 @@ hex "NAND Access timing (Hex)"	NAND_ACCTIME	0x44433
 
 fi
 
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
+	bool "Use 30MHz SPI clock" SPI_FAST_CLOCK
+fi
+
 if [ "$DUAL_IMAGE_SUPPORT" = "y" ]; then
 choice 'Flash Size' "4M ON_BOARD_4M_FLASH_COMPONENT \
                      8M ON_BOARD_8M_FLASH_COMPONENT \
@@ -1283,46 +1315,15 @@ choice 'Flash Size' "4M ON_BOARD_4M_FLASH_COMPONENT \
 		    " 4M
 fi
 
-define_bool ON_BOARD_DDR3 y
-define_bool ON_BOARD_DDR_WIDTH_16 y
-define_bool ON_BOARD_16BIT_DRAM_BUS y
+comment ""
 
-choice 'DDR Component' "512Mb  ON_BOARD_512M_DRAM_COMPONENT  \
-			1024Mb ON_BOARD_1024M_DRAM_COMPONENT \
-			2048Mb ON_BOARD_2048M_DRAM_COMPONENT \
-			4096Mb ON_BOARD_4096M_DRAM_COMPONENT
-			" 1024Mb
-
-choice 'DRAM Speed'    "1200Mhz MT7621_DDR_1200MHZ \
-			1066Mhz MT7621_DDR_1066MHZ \
-			800Mhz MT7621_DDR_800MHZ \
-			400Mhz MT7621_DDR_400MHZ
-			"800Mhz
-
-
-#================
-#1PLL=10, 20, 30
-#3PLL=11, 21, 31
-#================
-if [ "$MT7621_DDR_1200MHZ" = "y" ]; then
-    define_hex  MT7621_DDR_SPEED    11
-fi
-if [ "$MT7621_DDR_1066MHZ" = "y" ]; then
-    define_hex  MT7621_DDR_SPEED    21
-fi
-if [ "$MT7621_DDR_800MHZ" = "y" ]; then
-    define_hex  MT7621_DDR_SPEED    31
-fi
-if [ "$MT7621_DDR_400MHZ" = "y" ]; then
-    define_hex  MT7621_DDR_SPEED    41
-fi
-
-choice 'CPU Frequency' " 880Mhz MT7621_CPU_880MHZ \
-						875Mhz MT7621_CPU_875MHZ \
-		   				800Mhz MT7621_CPU_800MHZ \
-						500Mhz MT7621_CPU_500MHZ \
-						50Mhz MT7621_CPU_50MHZ"
-						800Mhz
+choice 'CPU Frequency' "900Mhz MT7621_CPU_900MHZ \
+			880Mhz MT7621_CPU_880MHZ \
+			875Mhz MT7621_CPU_875MHZ \
+			800Mhz MT7621_CPU_800MHZ \
+			500Mhz MT7621_CPU_500MHZ \
+			50Mhz MT7621_CPU_50MHZ
+			" 880Mhz
 
 if [ "$MT7621_CPU_900MHZ" = "y" ]; then
     define_hex  MT7621_CPU_FREQUENCY    384
@@ -1342,6 +1343,40 @@ fi
 if [ "$MT7621_CPU_50MHZ" = "y" ]; then
     define_hex  MT7621_CPU_FREQUENCY    32
 fi
+
+define_bool ON_BOARD_DDR3 y
+define_bool ON_BOARD_DDR_WIDTH_16 y
+define_bool ON_BOARD_16BIT_DRAM_BUS y
+
+choice 'DDR Component' "512Mb  ON_BOARD_512M_DRAM_COMPONENT  \
+			1024Mb ON_BOARD_1024M_DRAM_COMPONENT \
+			2048Mb ON_BOARD_2048M_DRAM_COMPONENT \
+			4096Mb ON_BOARD_4096M_DRAM_COMPONENT
+			" 1024Mb
+
+choice 'DRAM Speed'    "1200Mhz MT7621_DDR_1200MHZ \
+			1066Mhz MT7621_DDR_1066MHZ \
+			800Mhz MT7621_DDR_800MHZ \
+			400Mhz MT7621_DDR_400MHZ
+			" 800Mhz
+
+#================
+#1PLL=10, 20, 30
+#3PLL=11, 21, 31
+#================
+if [ "$MT7621_DDR_1200MHZ" = "y" ]; then
+    define_hex  MT7621_DDR_SPEED    11
+fi
+if [ "$MT7621_DDR_1066MHZ" = "y" ]; then
+    define_hex  MT7621_DDR_SPEED    21
+fi
+if [ "$MT7621_DDR_800MHZ" = "y" ]; then
+    define_hex  MT7621_DDR_SPEED    31
+fi
+if [ "$MT7621_DDR_400MHZ" = "y" ]; then
+    define_hex  MT7621_DDR_SPEED    41
+fi
+
 #-----------------------
 # MT7621 Option
 #-----------------------
@@ -1349,27 +1384,9 @@ comment ""
 
 define_bool PDMA_NEW y
 define_bool RX_SCATTER_GATTER_DMA y
+define_bool RALINK_DUAL_VPE_FUN y
 
-#bool "Tiny Uboot" CONFIG_TINY_UBOOT
-
-if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
-choice 'Ram/Rom version' "RAM UBOOT_RAM \
-			  ROM UBOOT_ROM 
-			 " ROM
-else
-define_bool UBOOT_RAM y
-fi
-
-bool "Dual Image" DUAL_IMAGE_SUPPORT
 bool "Dual Core Support" RALINK_DUAL_CORE_FUN
-define_bool RALINK_DUAL_VPE_FUN	y
-
-bool "Partition LAN/WAN" LAN_WAN_PARTITION
-if [ "$LAN_WAN_PARTITION" = "y" ]; then
- choice 'LAN/WAN Board Layout' "W/LLLL RALINK_DEMO_BOARD_PVLAN \
-		                LLLL/W RALINK_EV_BOARD_PVLAN 
-			       "
-fi
 
 bool "DDR ACTiming Setting" DDR_ACT_SETTING
 if [ "$DDR_ACT_SETTING" = "y" ]; then
@@ -1409,6 +1426,25 @@ define_string DDR_CHIP DEFAULT_DDR2_1024M
 fi
 fi
 
+if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
+choice 'Ram/Rom version' "RAM UBOOT_RAM \
+			  ROM UBOOT_ROM 
+			 " ROM
+else
+define_bool UBOOT_RAM y
+fi
+
+#bool "Tiny Uboot" CONFIG_TINY_UBOOT
+#bool "Dual Image" DUAL_IMAGE_SUPPORT
+
+bool "Partition LAN/WAN" LAN_WAN_PARTITION
+if [ "$LAN_WAN_PARTITION" = "y" ]; then
+choice 'LAN/WAN Board Layout' "W/LLLL RALINK_DEMO_BOARD_PVLAN \
+		                LLLL/W RALINK_EV_BOARD_PVLAN
+			       "
+fi
+bool "Enable all Ethernet PHY" EPHY_LINK_UP
+
 if [ "$UBOOT_RAM" = "y" ]; then
 define_hex TEXT_BASE  0xA0200000
 else
@@ -1434,6 +1470,8 @@ define_bool P4_MAC_TO_NONE_MODE y
 # MT7628 FLASH
 #-----------------------
 define_bool ON_BOARD_SPI_FLASH_COMPONENT y
+
+bool "Use 40MHz SPI clock" SPI_FAST_CLOCK
 
 if [ "$DUAL_IMAGE_SUPPORT" = "y" ]; then
 choice 'Flash Size' "4M ON_BOARD_4M_FLASH_COMPONENT \
@@ -1490,7 +1528,7 @@ comment ""
 
 bool "Tiny Uboot" CONFIG_TINY_UBOOT
 
-#if [ "$ON_BOARD_SPI_FLASH_COMPONENT" == "y" ]; then
+#if [ "$ON_BOARD_SPI_FLASH_COMPONENT" = "y" ]; then
 choice 'Ram/Rom version' "RAM UBOOT_RAM \
                           ROM UBOOT_ROM
                          " ROM
@@ -1513,7 +1551,7 @@ if [ "$MT7628_CPU_PLL_PARAMETERS" = "y" ]; then
                                  " CPLL
 
     hex "Fractional divider for clock source (0x1~0xA)" CPU_FRAC_DIV 0x1
-else
+        else
 	define_bool     CPUCLK_FROM_CPLL               y
     define_hex		CPU_FRAC_DIV					0x1
 fi
@@ -1529,6 +1567,7 @@ if [ "$LAN_WAN_PARTITION" = "y" ]; then
                                "
 fi
 fi
+bool "Enable all Ethernet PHY" EPHY_LINK_UP
 
 if [ "$UBOOT_RAM" = "y" ]; then
 define_hex TEXT_BASE  0x80200000
@@ -1539,6 +1578,27 @@ fi
 fi
 ##################################################################################################
 
-bool "USB support enable" RALINK_USB_SUPPORT
+comment "GPIO pins (-1 mean unused)"
+
+int 'BTN Reset GPIO'  GPIO_BTN_RESET	-1
+int 'BTN WPS GPIO'    GPIO_BTN_WPS	-1
+int 'BTN WiFi GPIO'   GPIO_BTN_WLTOG	-1
+int 'BTN Router GPIO' GPIO_BTN_ROUTER	-1
+int 'LED All GPIO'    GPIO_LED_ALL	-1
+int 'LED Init1 GPIO'  GPIO_LED_INIT1	-1
+int 'LED Init2 GPIO'  GPIO_LED_INIT2	-1
+int 'LED Init3 GPIO'  GPIO_LED_INIT3	-1
+int 'LED Init4 GPIO'  GPIO_LED_INIT4	-1
+int 'LED Init5 GPIO'  GPIO_LED_INIT5	-1
+int 'LED Init6 GPIO'  GPIO_LED_INIT6	-1
+int 'LED Init7 GPIO'  GPIO_LED_INIT7	-1
+int 'LED Init8 GPIO'  GPIO_LED_INIT8	-1
+int 'LED Alert1 GPIO' GPIO_LED_ALERT1	-1
+int 'LED Alert2 GPIO' GPIO_LED_ALERT2	-1
+int 'LED Alert3 GPIO' GPIO_LED_ALERT3	-1
+int 'LED Alert4 GPIO' GPIO_LED_ALERT4	-1
+int 'LED Power GPIO'  GPIO_LED_POWER	-1
+int 'USB Power GPIO'  GPIO_USB_POWER	-1
+int 'RST iNIC GPIO'   GPIO_RST_INIC	-1
+
 bool "ERASE command support enable" RALINK_ERASE_SUPPORT
-int 'Reset button GPIO NUMBER' CONFIG_GPIO_RESET	1

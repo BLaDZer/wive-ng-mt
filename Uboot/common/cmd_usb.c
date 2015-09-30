@@ -219,15 +219,15 @@ void usb_display_config(struct usb_device *dev)
 	struct usb_config *config;
 	struct usb_interface *ifdesc;
 	struct usb_endpoint_descriptor *epdesc;
-	int i,ii;
+	int i, ii;
 
-	config= &dev->config;
+	config = &dev->config;
 	usb_display_conf_desc(&config->desc, dev);
-	for(i=0;i<config->no_of_if;i++) {
-		ifdesc= &config->if_desc[i];
+	for (i = 0; i < config->no_of_if; i++) {
+		ifdesc = &config->if_desc[i];
 	usb_display_if_desc(&ifdesc->desc, dev);
-		for(ii=0;ii<ifdesc->no_of_ep;ii++) {
-			epdesc= &ifdesc->ep_desc[ii];
+		for (ii = 0; ii < ifdesc->no_of_ep; ii++) {
+			epdesc = &ifdesc->ep_desc[ii];
 			usb_display_ep_desc(epdesc);
 		}
 	}
@@ -321,6 +321,8 @@ void usb_show_tree(struct usb_device *dev)
 #ifdef CONFIG_USB_STORAGE
 int do_usbboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
+	DECLARE_GLOBAL_DATA_PTR;
+
 	char *boot_device = NULL;
 	char *ep;
 	int dev, part=1, rcode;
@@ -452,7 +454,6 @@ int do_usbboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
  */
 int do_usb (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-
 	int i;
 	struct usb_device *dev = NULL;
 #ifdef CONFIG_USB_STORAGE
@@ -651,3 +652,4 @@ U_BOOT_CMD(
 );
 #endif
 #endif
+

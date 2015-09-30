@@ -33,8 +33,8 @@
 #include <spi_api.h>
 #include <nand_api.h>
 
-#include <cmd_tftpServer.h>
 #include <gpio.h>
+#include <cmd_tftpServer.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 #undef DEBUG
@@ -66,7 +66,6 @@ extern int timer_init(void);
 extern void  rt2880_eth_halt(struct eth_device* dev);
 
 extern void setup_internal_gsw(void); 
-extern void setup_external_gsw(void); 
 //extern void pci_init(void);
 
 extern int incaip_set_cpuclk(void);
@@ -89,6 +88,7 @@ extern void rt3883_gsw_init(void);
 extern void rt305x_esw_init(void);
 #endif
 extern void LANWANPartition(void);
+extern int rtl8367_gsw_init_pre(void);
 
 extern struct eth_device* 	rt2880_pdev;
 
@@ -105,6 +105,7 @@ const char version_string[] =
 	U_BOOT_VERSION" (" __DATE__ " - " __TIME__ ")";
 
 extern ulong load_addr; /* Default Load Address */
+
 
 unsigned long mips_cpu_feq;
 unsigned long mips_bus_feq;
@@ -287,7 +288,7 @@ static void Init_System_Mode(void)
 			mips_cpu_feq = ((BASE_CLOCK * mult_ratio ) / div_ratio) * 1000 * 1000;
 		}
 	}
-	reg = (RALINK_REG(RT2880_SYSCFG_REG)) >> 4 & 0x3;
+	reg = ((RALINK_REG(RT2880_SYSCFG_REG)) >> 4) & 0x3;
 	if(reg == 0x0){				/* SDR (MT7620 E1) */
 		mips_bus_feq = mips_cpu_feq/4;
 	}else if(reg == 0x1 || reg == 0x2 ){	/* DDR1 & DDR2 */
@@ -307,6 +308,7 @@ static void Init_System_Mode(void)
 	}
 	mips_bus_feq = mips_cpu_feq/3;
 #elif defined(MT7621_ASIC_BOARD)
+	clk_sel = (reg>>5)&0x1; // OCP
 	reg = RALINK_REG(RALINK_SYSCTL_BASE + 0x2C);
 	if( reg & ((0x1UL) << 30)) {
 		reg = RALINK_REG(RALINK_MEMCTRL_BASE + 0x648);
@@ -324,7 +326,10 @@ static void Init_System_Mode(void)
 		reg = RALINK_REG(RALINK_SYSCTL_BASE + 0x44);
 		mips_cpu_feq = (500 * (reg & 0x1F) / ((reg >> 8) & 0x1F)) * 1000 * 1000;
 	}
-	mips_bus_feq = mips_cpu_feq/4;
+	if (clk_sel)
+		mips_bus_feq = mips_cpu_feq/4;
+	else
+		mips_bus_feq = mips_cpu_feq/3;
 #elif defined (RT3883_ASIC_BOARD) 
 	clk_sel = (reg>>8) & 0x03;
 	switch(clk_sel) {
@@ -506,7 +511,7 @@ static int init_func_ram (void)
 #else
 	int board_type = 0;	/* use dummy arg */
 #endif
-	puts ("DRAM:  ");
+	puts ("DRAM: ");
 
 /*init dram config*/
 #ifdef RALINK_DDR_OPTIMIZATION
@@ -524,7 +529,6 @@ static int init_func_ram (void)
 }
 #endif
 #endif
-
 
 	if ((gd->ram_size = initdram (board_type)) > 0) {
 		print_size (gd->ram_size, "\n");
@@ -656,7 +660,7 @@ __attribute__((nomips16)) void board_init_f(ulong bootflag)
 	else
 		frac = CPU_FRAC_DIV;
 	i = 0;
-
+	
 	while(frac < fdiv) {
 		value = RALINK_REG(RALINK_DYN_CFG0_REG);
 		fdiv = ((value>>8)&0x0F);
@@ -736,28 +740,43 @@ __attribute__((nomips16)) void board_init_f(ulong bootflag)
 
 	init_func_ram(); 
 
-	/* reset Frame engine */
+	gpio_init();
+
+	/* reset Frame Engine */
 	value = le32_to_cpu(*(volatile u_long *)(RALINK_SYSCTL_BASE + 0x0034));
-	udelay(100);    
 #if defined (RT2880_FPGA_BOARD) || defined (RT2880_ASIC_BOARD)
-	value |= (1 << 18);
+	value |= (1U << 18);
+#elif defined (MT7620_FPGA_BOARD) || defined (MT7620_ASIC_BOARD)
+	/* reset PPE & FE */
+	value |= ((1U << 31)|(1U << 21));
 #elif defined (MT7621_FPGA_BOARD) || defined (MT7621_ASIC_BOARD)
-	/* nothing */
+	/* reset PPE & FE */
+	value |= ((1U << 31)|(1U << 6));
 	//value |= (1<<26 | 1<<25 | 1<<24); /* PCIE de-assert for E3 */
+#elif defined (MT7628_FPGA_BOARD) || defined (MT7628_ASIC_BOARD) || \
+      defined (RT5350_FPGA_BOARD) || defined (RT5350_ASIC_BOARD)
+	/* reset ESW & FE */
+	value |= ((1U << 23)|(1U << 21));
 #else
-	//2880 -> 3052 reset Frame Engine from 18 to 21
-	value |= (1 << 21);
+	/* 3052/3352/3883 (FE only) */
+	value |= (1U << 21);
 #endif
 	*(volatile u_long *)(RALINK_SYSCTL_BASE + 0x0034) = cpu_to_le32(value);	
+	udelay(100);
 #if defined (RT2880_FPGA_BOARD) || defined (RT2880_ASIC_BOARD)
-	value &= ~(1 << 18);
+	value &= ~(1U << 18);
+#elif defined (MT7620_FPGA_BOARD) || defined (MT7620_ASIC_BOARD)
+	value &= ~((1U << 31)|(1U << 21));
 #elif defined (MT7621_FPGA_BOARD) || defined (MT7621_ASIC_BOARD)
-	/* nothing */
+	value &= ~((1U << 31)|(1U << 6));
+#elif defined (MT7628_FPGA_BOARD) || defined (MT7628_ASIC_BOARD) || \
+      defined (RT5350_FPGA_BOARD) || defined (RT5350_ASIC_BOARD)
+	value &= ~((1U << 23)|(1U << 21));
 #else
-	value &= ~(1 << 21);
+	value &= ~(1U << 21);
 #endif
 	*(volatile u_long *)(RALINK_SYSCTL_BASE + 0x0034) = cpu_to_le32(value);	
-	udelay(200);      
+	udelay(300);
 
 #if 0	
 	for (init_fnc_ptr = init_sequence; *init_fnc_ptr; ++init_fnc_ptr) {
@@ -870,10 +889,10 @@ __attribute__((nomips16)) void board_init_f(ulong bootflag)
 	 * tricky: relocate code to original TEXT_BASE
 	 * for ICE souce level debuggind mode 
 	 */	
-	debug ("relocate_code Pointer at: %08lx\n", addr);
+//	debug ("relocate_code Pointer at: %08lx\n", addr);
 	relocate_code (addr_sp, id, /*TEXT_BASE*/ addr);	
 #else
-	debug ("relocate_code Pointer at: %08lx\n", addr);
+//	debug ("relocate_code Pointer at: %08lx\n", addr);
 	relocate_code (addr_sp, id, addr);
 #endif
 
@@ -1079,7 +1098,7 @@ int copy_image(int dir, unsigned long image_size)
 		}
 		else {
 			e_end = CFG_KERN_ADDR + len - 1;
-			if (get_addr_boundary(&e_end - 1) != 0)
+			if (get_addr_boundary(&e_end) != 0)
 				return -1;
 		        printf("Erase from 0x%X To 0x%X\n", CFG_KERN_ADDR, e_end);
 			flash_sect_erase(CFG_KERN_ADDR, e_end);
@@ -1289,6 +1308,36 @@ int check_image_validation(void)
 }
 #endif
 
+static int check_uboot_image_validation(ulong image_ptr, ulong image_size)
+{
+	image_header_t *hdr = (image_header_t*)image_ptr;
+
+	if (image_size > UBOOT_FILE_SIZE_MAX) {
+		printf("U-Boot image size %d too big!\n", image_size);
+		return -1;
+	}
+
+	if (image_size < UBOOT_FILE_SIZE_MIN) {
+		printf("U-Boot image size %d too small!\n", image_size);
+		return -1;
+	}
+
+#if defined (UBOOT_RAM) && (defined (CFG_ENV_IS_IN_NAND) || defined (CFG_ENV_IS_IN_SPI))
+	/* RAM mode Uboot */
+	if (ntohl(hdr->ih_magic) != IH_MAGIC) {
+		printf("Invalid U-Boot image %s!\n", "header");
+		return -1;
+	}
+#else
+	/* ROM mode Uboot */
+	if (ntohl(hdr->ih_magic) == IH_MAGIC) {
+		printf("Invalid U-Boot image %s!\n", "(RAM mode)");
+		return -1;
+	}
+#endif
+
+	return 0;
+}
 
 /************************************************************************
  *
@@ -1300,11 +1349,7 @@ int check_image_validation(void)
  ************************************************************************
  */
 
-extern int do_load_serial_bin (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 gd_t gd_data;
-#ifdef RTL8367_SW
-extern int rtl8367m_switch_init_pre();
-#endif
  
 __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 {
@@ -1323,6 +1368,12 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 	char addr_str[11];
 #if defined (CFG_ENV_IS_IN_FLASH)
 	ulong e_end;
+#endif
+	ulong load_address;
+#if defined (UBOOT_RAM) && (defined (CFG_ENV_IS_IN_NAND) || defined (CFG_ENV_IS_IN_SPI))
+	char *uboot_file = "uboot.img";
+#else
+	char *uboot_file = "uboot.bin";
 #endif
 
 #if defined (RT2880_FPGA_BOARD) || defined (RT2880_ASIC_BOARD)
@@ -1345,7 +1396,6 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 	rw_rf_reg(1, 29, &i);
 	printf("done. ");
 	rw_rf_reg(0, 29, &i);
-	printf("rf reg 29 = %d\n", i);
 
 	/* print SSC for confirmation */ /* TODO: remove these in formanl release*/
 	u32 value = RALINK_REG(0xb0000054);
@@ -1403,7 +1453,6 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 #endif
 #endif
 
-#ifdef RALINK_USB_SUPPORT
 #if defined(RT3052_ASIC_BOARD) || defined(RT2883_ASIC_BOARD)
 	void config_usbotg(void);
 	config_usbotg();
@@ -1414,13 +1463,9 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 	void config_usb_mtk_xhci();
 	config_usb_mtk_xhci();
 #endif
-#endif
-
 #if defined (MT7620_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
-#ifdef RALINK_PCIE0_RST
 	void disable_pcie();
 	disable_pcie();
-#endif
 #endif
 
 	u32 reg = RALINK_REG(RT2880_RSTSTAT_REG);
@@ -1550,7 +1595,8 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 	nand_env_init();
 #elif defined (CFG_ENV_IS_IN_SPI)
 	spi_env_init();
-#else //CFG_ENV_IS_IN_FLASH
+#else
+	flash_env_init();
 #endif //CFG_ENV_IS_IN_FLASH
 
 #if defined(RT3052_ASIC_BOARD)
@@ -1898,7 +1944,7 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 		icache_ways *
 		icache_linesz;
 
-	printf("icache: sets:%d, ways:%d, linesz:%d ,total:%d\n", 
+	printf("icache: sets:%d, ways:%d, linesz:%d, total:%d\n", 
 			icache_sets, icache_ways, icache_linesz, icache_size);
 
 	/*
@@ -1916,7 +1962,7 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 		dcache_ways *
 		dcache_linesz;
 
-	printf("dcache: sets:%d, ways:%d, linesz:%d ,total:%d \n", 
+	printf("dcache: sets:%d, ways:%d, linesz:%d, total:%d \n", 
 			dcache_sets, dcache_ways, dcache_linesz, dcache_size);
 
 #endif
@@ -1933,7 +1979,7 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 		debug("\nSDRAM bus set to 16 bit \n");
 	}
 */
-	debug(" estimate memory size =%d Mbytes\n",gd->ram_size /1024/1024 );
+	debug(" estimate memory size = %d Mbytes\n",gd->ram_size /1024/1024 );
 
 #if defined (RT3052_ASIC_BOARD) || defined (RT3052_FPGA_BOARD)  || \
     defined (RT3352_ASIC_BOARD) || defined (RT3352_FPGA_BOARD)  || \
@@ -1944,26 +1990,31 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
       defined (MT7620_ASIC_BOARD) || defined (MT7620_FPGA_BOARD)
 	rt_gsw_init();
 #elif defined (RT6855A_ASIC_BOARD) || defined (RT6855A_FPGA_BOARD)
-    #ifdef FPGA_BOARD
+#ifdef FPGA_BOARD
 	rt6855A_eth_gpio_reset();
-    #endif
+#endif
 	rt6855A_gsw_init();
 #elif defined (MT7621_ASIC_BOARD) || defined (MT7621_FPGA_BOARD)
+#if defined (MAC_TO_MT7530_MODE) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
 	//enable MDIO
-	RALINK_REG(0xbe000060) &= ~(1 << 12); //set MDIO to Normal mode
+	RALINK_REG(0xbe000060) &= ~(3 << 12); //set MDIO to Normal mode
 	RALINK_REG(0xbe000060) &= ~(1 << 14); //set RGMII1 to Normal mode
+#if defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
 	RALINK_REG(0xbe000060) &= ~(1 << 15); //set RGMII2 to Normal mode
-    #if defined (MT7621_USE_GE2) && defined (GE_RGMII_FORCE_1000)
-	setup_external_gsw();
-    #elif defined (MAC_TO_MT7530_MODE) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
-	setup_internal_gsw();
-    #endif
-#elif defined (RT3883_ASIC_BOARD) && defined (RTL8367_SW)
-	rtl8367m_switch_init_pre();
-#elif defined (RT3883_ASIC_BOARD) && defined (MAC_TO_MT7530_MODE)
-        rt3883_gsw_init();
 #endif
+	setup_internal_gsw();
+#endif
+#elif defined (RT3883_ASIC_BOARD) && defined (MAC_TO_MT7530_MODE)
+	rt3883_gsw_init();
+#endif
+
+#if defined (MAC_TO_RTL8367_MODE)
+	rtl8367_gsw_init_pre();
+#else
 	LANWANPartition();
+#endif
+
+	LED_HIDE_ALL();
 
 #ifdef DUAL_IMAGE_SUPPORT
 	check_image_validation();
@@ -1994,17 +2045,15 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 	}
 	putc ('\n');
 	if(BootType == '3') {
-#if 0 /* boot ftp */
 		char *argv[2];
 		sprintf(addr_str, "0x%X", CFG_KERN_ADDR);
 		argv[1] = &addr_str[0];
 		printf("   \n3: System Boot system code via Flash.\n");
+#if 0
 		do_bootm(cmdtp, 0, 2, argv);
 #else
+		/* prepare tftpd and boot */
 		eth_initialize(gd->bd);
-		char *argv[2];
-		sprintf(addr_str, "0x%X", CFG_KERN_ADDR);
-		argv[1] = &addr_str[0];
 		do_tftpd(cmdtp, 0, 2, argv);
 #endif
 	}
@@ -2043,12 +2092,12 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 
 #if defined (CFG_ENV_IS_IN_NAND)
 			if (1) {
-				unsigned int load_address = simple_strtoul(argv[1], NULL, 16);
+				load_address = simple_strtoul(argv[1], NULL, 16);
 				ranand_erase_write((u8 *)load_address, CFG_KERN_ADDR-CFG_FLASH_BASE, NetBootFileXferSize);
 			}
 #elif defined (CFG_ENV_IS_IN_SPI)
 			if (1) {
-				unsigned int load_address = simple_strtoul(argv[1], NULL, 16);
+				load_address = simple_strtoul(argv[1], NULL, 16);
 				raspi_erase_write((u8 *)load_address, CFG_KERN_ADDR-CFG_FLASH_BASE, NetBootFileXferSize);
 			}
 #else //CFG_ENV_IS_IN_FLASH
@@ -2131,15 +2180,12 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 			setenv("autostart", "no");
 			my_tmp = do_load_serial_bin(cmdtp, 0, argc, argv);
 			NetBootFileXferSize=simple_strtoul(getenv("filesize"), NULL, 16);
-#if defined(SMALL_UBOOT_PARTITION)
-			if (NetBootFileXferSize > CFG_UBOOT_SIZE || my_tmp == 1) {
-				printf("Abort: Bootloader is too big or download aborted!\n");
+			if (my_tmp == 1) {
+				printf("\n Download aborted!\n");
 			}
-#else
-			if (NetBootFileXferSize > CFG_BOOTLOADER_SIZE || my_tmp == 1) {
-				printf("Abort: Bootloader is too big or download aborted!\n");
+			else if (check_uboot_image_validation(CFG_LOAD_ADDR, NetBootFileXferSize) != 0) {
+				printf("\n Abort: Invalid U-Boot image!\n");
 			}
-#endif
 #if defined (CFG_ENV_IS_IN_NAND)
 			else {
 				ranand_erase_write((char *)CFG_LOAD_ADDR, 0, NetBootFileXferSize);
@@ -2148,7 +2194,7 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 			else {
 				raspi_erase_write((char *)CFG_LOAD_ADDR, 0, NetBootFileXferSize);
 			}
-#else //CFG_ENV_IS_IN_FLASH
+#else
 			else {
 				//protect off uboot
 				flash_sect_protect(0, CFG_FLASH_BASE, CFG_FLASH_BASE+CFG_BOOTLOADER_SIZE-1);
@@ -2166,12 +2212,12 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 				//protect on uboot
 				flash_sect_protect(1, CFG_FLASH_BASE, CFG_FLASH_BASE+CFG_BOOTLOADER_SIZE-1);
 			}
-#endif //CFG_ENV_IS_IN_FLASH
+#endif // CFG_ENV_IS_IN_FLASH
 
 			//reset            
 			do_reset(cmdtp, 0, argc, argv);
 			break;
-#endif // RALINK_UPGRADE_BY_SERIAL //
+#endif /* RALINK_UPGRADE_BY_SERIAL */
 		case '8':
 			printf("   \n%d: System Load UBoot to SDRAM via TFTP. \n", SEL_LOAD_BOOT_SDRAM);
 			tftp_config(SEL_LOAD_BOOT_SDRAM, argv);
@@ -2188,30 +2234,24 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 				printf(" Operation terminated\n");
 				break;
 			}
+			setenv("bootfile", uboot_file);
 			tftp_config(SEL_LOAD_BOOT_WRITE_FLASH, argv);
-			argc= 3;
+			argc = 3;
 			setenv("autostart", "no");
 			do_tftpb(cmdtp, 0, argc, argv);
-#if defined(SMALL_UBOOT_PARTITION)
-			if (NetBootFileXferSize > CFG_UBOOT_SIZE) {
-				printf("Abort: bootloader size %d too big! \n", NetBootFileXferSize);
+			load_address = simple_strtoul(argv[1], NULL, 16);
+			if (check_uboot_image_validation(load_address, NetBootFileXferSize) != 0) {
+				printf("\n Abort: Invalid U-Boot image!\n");
 			}
-#else
-			if (NetBootFileXferSize > CFG_BOOTLOADER_SIZE) {
-				printf("Abort: bootloader size %d too big! \n", NetBootFileXferSize);
-			}
-#endif
 #if defined (CFG_ENV_IS_IN_NAND)
 			else {
-				unsigned int load_address = simple_strtoul(argv[1], NULL, 16);
 				ranand_erase_write((char *)load_address, 0, NetBootFileXferSize);
 			}
 #elif defined (CFG_ENV_IS_IN_SPI)
 			else {
-				unsigned int load_address = simple_strtoul(argv[1], NULL, 16);
 				raspi_erase_write((char *)load_address, 0, NetBootFileXferSize);
 			}
-#else //CFG_ENV_IS_IN_FLASH
+#else
 			else {
 				//protect off uboot
 				flash_sect_protect(0, CFG_FLASH_BASE, CFG_FLASH_BASE+CFG_BOOTLOADER_SIZE-1);
@@ -2242,7 +2282,6 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 			setenv("autostart", "no");
 			my_tmp = do_load_serial_bin(cmdtp, 0, argc, argv);
 			NetBootFileXferSize=simple_strtoul(getenv("filesize"), NULL, 16);
-
 #if defined (CFG_ENV_IS_IN_NAND)
 			ranand_erase_write((char *)CFG_LOAD_ADDR, CFG_KERN_ADDR-CFG_FLASH_BASE, NetBootFileXferSize);
 #elif defined (CFG_ENV_IS_IN_SPI)
@@ -2484,92 +2523,94 @@ void adjust_rf_r17(void)
 	u32 r17;
 	u32 i;
 	u32 val;
+	u32 r17_offs = 0x3a;
 	u32 j = 0;
+
+#if defined (RT3883_ASIC_BOARD)
+	r17_offs = 0x44;
+#endif
 
 	//read from EE offset 0x3A
 #if defined (CFG_ENV_IS_IN_NAND)
-	ranand_read((char *)&r17, CFG_FACTORY_ADDR-CFG_FLASH_BASE+0x3a, 1);
+	ranand_read((char *)&r17, CFG_FACTORY_ADDR-CFG_FLASH_BASE+r17_offs, 1);
 #elif defined (CFG_ENV_IS_IN_SPI)
-	raspi_read((char *)&r17, CFG_FACTORY_ADDR-CFG_FLASH_BASE+0x3a, 1);
-#else //CFG_ENV_IS_IN_FLASH
-#if defined (RT2880_ASIC_BOARD)
-	r17 = *(volatile u32 *)(CFG_FACTORY_ADDR+0x3a);
-#elif defined (RT3883_ASIC_BOARD)
-	r17 = *(volatile u32 *)(CFG_FACTORY_ADDR+0x44);
-#endif
-
+	raspi_read((char *)&r17, CFG_FACTORY_ADDR-CFG_FLASH_BASE+r17_offs, 1);
+#else
+	r17 = *(volatile u32 *)(CFG_FACTORY_ADDR+r17_offs);
 #endif
 	r17 &= 0xff;
-	//printf("EE offset 0x3A is  0x%0X\n", r17);
-	if((r17 == 0) || (r17 == 0xff)){
-	    r17 = 0x2c;
+
+//	printf("EE offset 0x%02X is 0x%02X\n", r17_offs, r17);
+
+	if ((r17 == 0) || (r17 == 0xff)){
+		r17 = 0x26;
 	}
 
 	if(r17 <= 0xf) {
 		for(i=1; i<=r17; i++) {
-		//write to RF R17
-		val = i;
-		val |= 1 << 7;
-		rw_rf_reg(1, 17, &val);
-		udelay(2000);
-		rw_rf_reg(0, 17, &val);
-		//printf("Update RF_R17 to 0x%0X\n", val);
-		}	
+			//write to RF R17
+			val = i;
+			val |= 1 << 7;
+			rw_rf_reg(1, 17, &val);
+			udelay(2000);
+			//rw_rf_reg(0, 17, &val);
+			//printf("Update RF_R17 to 0x%0X\n", val);
+		}
 	}
 	else{
 		for(i=1; i<=0xf; i++) {
-		//write to RF R17
-		val = i;
-		val |= 1 << 7;
-		rw_rf_reg(1, 17, &val);
-		udelay(2000);
-		rw_rf_reg(0, 17, &val);
-		printf("Update RF_R17 to 0x%0X\n", val);
+			//write to RF R17
+			val = i;
+			val |= 1 << 7;
+			rw_rf_reg(1, 17, &val);
+			udelay(2000);
+			//rw_rf_reg(0, 17, &val);
+			//printf("Update RF_R17 to 0x%0X\n", val);
 		}
 		val = 0x1f;
 		val |= 1 << 7;
 		rw_rf_reg(1, 17, &val);
 		udelay(2000);
-		rw_rf_reg(0, 17, &val);
-		printf("Update RF_R17 to 0x%0X\n", val);
+		//rw_rf_reg(0, 17, &val);
+		//printf("Update RF_R17 to 0x%0X\n", val);
 		
 		if(r17 <= 0x1f) {
 			for(i=0x1e; i>=r17; i--) {
-			//write to RF R17
-			val = i;
-			val |= 1 << 7;
-			rw_rf_reg(1, 17, &val);
-			udelay(2000);
-			rw_rf_reg(0, 17, &val);
-			printf("Update RF_R17 to 0x%0X\n", val);
+				//write to RF R17
+				val = i;
+				val |= 1 << 7;
+				rw_rf_reg(1, 17, &val);
+				udelay(2000);
+				//rw_rf_reg(0, 17, &val);
+				//printf("Update RF_R17 to 0x%0X\n", val);
 			}
 		} else if((r17 > 0x1f) && (r17 <=0x2f)){
 			for(i=0x2f; i>=r17; i--) {
-			//write to RF R17
-			val = i;
-			val |= 1 << 7;
-			rw_rf_reg(1, 17, &val);
-			udelay(2000);
-			rw_rf_reg(0, 17, &val);
-			//printf("Update RF_R17 to 0x%0X\n", val);
+				//write to RF R17
+				val = i;
+				val |= 1 << 7;
+				rw_rf_reg(1, 17, &val);
+				udelay(2000);
+				//rw_rf_reg(0, 17, &val);
+				//printf("Update RF_R17 to 0x%0X\n", val);
 			}
 		}else {
 			val = 0x2f;
 			val |= 1 << 7;
 			rw_rf_reg(1, 17, &val);
 			udelay(2000);
-			rw_rf_reg(0, 17, &val);
+			//rw_rf_reg(0, 17, &val);
 			//printf("Update RF_R17 to 0x%0X\n", val);
 		}
 		if((r17 > 0x2f) && (r17 <= 0x3f)){
 			for(i=0x3f; i>=r17; i--) {
-			//write to RF R17
-			val = i;
-			val |= 1 << 7;
-			rw_rf_reg(1, 17, &val);
-			udelay(2000);
-			rw_rf_reg(0, 17, &val);
-			//printf("Update RF_R17 to 0x%0X\n", val);
+				//write to RF R17
+				val = i;
+				val |= 1 << 7;
+				rw_rf_reg(1, 17, &val);
+				udelay(2000);
+				//rw_rf_reg(0, 17, &val);
+				//printf("Update RF_R17 to 0x%0X\n", val);
 			}
 		}
 		if(r17 > 0x3f){
@@ -2577,12 +2618,13 @@ void adjust_rf_r17(void)
 			val |= 1 << 7;
 			rw_rf_reg(1, 17, &val);
 			udelay(2000);
-			rw_rf_reg(0, 17, &val);
+			//rw_rf_reg(0, 17, &val);
 			//printf("Only Update RF_R17 to 0x%0X\n", val);
 		}
 	}
-	//rw_rf_reg(0, 17, &val);
-	//printf("Read RF_R17 = 0x%0X\n", val);
+
+//	rw_rf_reg(0, 17, &val);
+//	printf("Read RF_R17 = 0x%0X\n", val);
 }
 #endif
 
@@ -2851,11 +2893,10 @@ static int watchdog_reset()
 #endif
 
 #if defined (MT7620_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
-#ifdef RALINK_PCIE0_RST
 void disable_pcie(void)
 {
 	u32 val;
-
+	
 	val = RALINK_REG(RT2880_RSTCTRL_REG);    // assert RC RST
 	val |= RALINK_PCIE0_RST;
 	RALINK_REG(RT2880_RSTCTRL_REG) = val;
@@ -2866,7 +2907,6 @@ void disable_pcie(void)
 	RALINK_REG(RT2880_CLKCFG1_REG) = val;
 #endif
 }
-#endif
 #endif
 
 #if defined (CONFIG_DDR_CAL)
@@ -3265,14 +3305,14 @@ MIN_FAILED:
 		{
 			fine_dqs[i] = temp;
 		}
-#if (MAX_TEST_LOOP > 1)
+#if (MAX_TEST_LOOP > 1)	
 		min_statistic[i][min_coarse_dqs[i]][min_fine_dqs[i]]++;
 		max_statistic[i][max_coarse_dqs[i]][max_fine_dqs[i]]++;
 		center_statistic[i][coarse_dqs[i]][fine_dqs[i]]++;
 #endif
 	}
 	reg = (coarse_dqs[1]<<12)|(fine_dqs[1]<<8)|(coarse_dqs[0]<<4)|fine_dqs[0];
-
+	
 #if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
 	RALINK_REG(RALINK_MEMCTRL_BASE+0x10) &= ~(0x1<<4);
 #else
@@ -3280,20 +3320,43 @@ MIN_FAILED:
 #endif
 	RALINK_REG(RALINK_MEMCTRL_BASE+0x64) = reg;
 	RALINK_REG(RALINK_MEMCTRL_BASE+0x48) = ddr_cfg2_reg;
-#if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
+#if defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)	
 	RALINK_REG(RALINK_MEMCTRL_BASE+0x10) |= (0x1<<4);
 #else
 	RALINK_REG(RALINK_MEMCTRL_BASE+0x18) |= (0x1<<4);
 #endif
 
 	test_count++;
-
-
+	
+	
 FINAL:
-		for (j = 0; j < 2; j++)
+		for (j = 0; j < 2; j++)	
 			cal_debug("[%02X%02X%02X%02X]",min_coarse_dqs[j],min_fine_dqs[j], max_coarse_dqs[j],max_fine_dqs[j]);
 		cal_debug("\nDDR Calibration DQS reg = %08X\n",reg);
 
 	return ;
 }
 #endif /* #defined (CONFIG_DDR_CAL) */
+
+/* Restore to default. */
+int reset_to_default(void)
+{
+	ulong addr, size;
+
+	addr = CFG_ENV_ADDR;
+	size = CFG_CONFIG_SIZE;
+	printf("Erase 0x%08x size 0x%x\n", addr, size);
+
+	/* Restore to default. */
+#if defined (CFG_ENV_IS_IN_NAND)
+	ranand_erase((addr-CFG_FLASH_BASE), size);
+#elif defined (CFG_ENV_IS_IN_SPI)
+	raspi_erase((addr-CFG_FLASH_BASE), size);
+#else
+	flash_sect_protect(0, addr, addr+size-1);
+	flash_sect_erase(addr, addr+size-1);
+	flash_sect_protect(1, addr, addr+size-1);
+#endif
+
+	return 0;
+}

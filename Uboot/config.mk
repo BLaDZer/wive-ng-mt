@@ -38,6 +38,7 @@ endif
 else
 RALINK_RW_RF_REG_FUN = ON
 endif
+RALINK_USB = OFF
 RALINK_EHCI = OFF
 RALINK_OHCI = OFF
 MTK_XHCI = OFF
@@ -167,8 +168,7 @@ RANLIB	= $(CROSS_COMPILE)RANLIB
 
 RELFLAGS= $(PLATFORM_RELFLAGS)
 DBGFLAGS= -gdwarf-2 -DDEBUG
-OPTFLAGS= -Os 
-#-fomit-frame-pointer
+OPTFLAGS= -Os
 ifndef LDSCRIPT
 #LDSCRIPT := $(TOPDIR)/board/$(BOARDDIR)/u-boot.lds.debug
 LDSCRIPT := $(TOPDIR)/board/$(BOARDDIR)/u-boot.lds
@@ -177,13 +177,18 @@ OBJCFLAGS += --gap-fill=0xff
 
 gccincdir := $(shell export LC_ALL=C; $(CC) -print-file-name=include)
 
-
 CPPFLAGS := $(DBGFLAGS) $(OPTFLAGS) $(RELFLAGS)		\
 	-D__KERNEL__ -DTEXT_BASE=$(TEXT_BASE) 		\
 	-I$(TOPDIR)/include				\
 	-fno-builtin -ffreestanding -nostdinc -isystem	\
 	$(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
 #	-DROUTER100					\
+
+ifeq ($(MT7621_MP),y)
+CPPFLAGS += -EL -mmt -mips32r2
+else
+CPPFLAGS += -march=4kc -mtune=4kc
+endif
 
 ifeq ($(UN_NECESSITY_U_BOOT_CMD_OPEN),ON)
 CPPFLAGS += -DRT2880_U_BOOT_CMD_OPEN
@@ -243,12 +248,6 @@ CPPFLAGS += -DRALINK_DDR_POWERSAVE -DCONFIG_DDR_CAL
 endif
 endif
 
-ifeq ($(MT7621_MP),y)
-CPPFLAGS += -EL -mmt -mips32r2
-else
-CPPFLAGS += -march=4kc -mtune=4kc
-endif
-
 ifeq ($(RALINK_SPI_UPGRADE_CHECK),ON)
 CPPFLAGS += -DRALINK_SPI_UPGRADE_CHECK
 endif
@@ -301,8 +300,8 @@ ifeq ($(CONFIG_LZMA),ON)
 CPPFLAGS += -DCONFIG_LZMA
 endif
 
-ifeq ($(RALINK_USB_SUPPORT),y)
-CPPFLAGS += -DRALINK_USB_SUPPORT
+ifeq ($(CONFIG_XZ),ON)
+CPPFLAGS += -DCONFIG_XZ
 endif
 
 ifeq ($(RALINK_OHCI),ON)
@@ -525,24 +524,12 @@ ifeq ($(MAC_TO_VITESSE_MODE),y)
 CPPFLAGS += -DMAC_TO_VITESSE_MODE
 endif
 
+ifeq ($(MAC_TO_RTL8367_MODE),y)
+CPPFLAGS += -DMAC_TO_RTL8367_MODE
+endif
+
 ifeq ($(MAC_TO_MT7530_MODE),y)
 CPPFLAGS += -DMAC_TO_MT7530_MODE
-endif
-
-ifeq ($(RTL8367_SW),y)
-CPPFLAGS += -DRTL8367_SW
-endif
-
-ifeq ($(RTL8367_ASIC_MVB),y)
-CPPFLAGS += -DRTL8367_ASIC_MVB
-endif
-
-ifeq ($(RTL8367_ASIC_RVB),y)
-CPPFLAGS += -DRTL8367_ASIC_RVB
-endif
-
-ifdef RTL8367_RST_GPIO
-CPPFLAGS += -DRTL8367_RST_GPIO=$(RTL8367_RST_GPIO)
 endif
 
 ifeq ($(MAC_TO_GIGAPHY_MODE),y)
@@ -551,11 +538,11 @@ endif
 
 ifdef MAC_TO_GIGAPHY_MODE_ADDR
 CPPFLAGS += -DMAC_TO_GIGAPHY_MODE_ADDR=$(MAC_TO_GIGAPHY_MODE_ADDR)
-endif
+endif 
 
 ifdef MAC_TO_GIGAPHY_MODE_ADDR2
 CPPFLAGS += -DMAC_TO_GIGAPHY_MODE_ADDR2=$(MAC_TO_GIGAPHY_MODE_ADDR2)
-endif
+endif 
 
 ifeq ($(MAC_TO_100SW_MODE),y)
 CPPFLAGS += -DMAC_TO_100SW_MODE
@@ -776,17 +763,23 @@ CFLAGS := $(CPPFLAGS) -Wall -Wno-trigraphs
 endif
 endif
 
+CFLAGS += -Wno-unused -Wno-unused-variable -Wno-unused-but-set-variable
+
 AFLAGS_DEBUG := -Wa,-gstabs
 AFLAGS := $(AFLAGS_DEBUG) -D__ASSEMBLY__ $(CPPFLAGS)
 ifeq ($(CONFIG_TINY_UBOOT), y)
 CONFIG_CROSS_COMPILER_PATH = /opt/buildroot-gcc463/usr/bin
-CFLAGS +=-fpic -G0 -mips16 -fomit-frame-pointer -mno-long-calls -DCONFIG_TINY_UBOOT -DCONFIG_MIPS16
+CFLAGS += -fpic -G0 -mips16 -fomit-frame-pointer -mno-long-calls -DCONFIG_TINY_UBOOT -DCONFIG_MIPS16
 AFLAGS += -fpic -mabicalls
 endif
 
+ifeq ($(MT7621_MP),y)
+CFLAGS += -G0 -fomit-frame-pointer -Wno-pointer-sign
+endif
+
 #ifeq ($(MT7621_MP),y)
-#CFLAGS +=-fpic
-#AFLAGS +=-fno-pic
+#CFLAGS += -fpic
+#AFLAGS += -fno-pic
 #endif
 
 LDFLAGS += -Bstatic -T $(LDSCRIPT) -Ttext $(TEXT_BASE) $(PLATFORM_LDFLAGS)

@@ -81,10 +81,10 @@
 #ifndef MAC_TO_GIGAPHY_MODE_ADDR
 #error "MAC_TO_GIGAPHY_MODE_ADDR not defined in config.mk"
 #endif
-#elif defined (MAC_TO_VITESSE_MODE) && defined(RTL8367_SW)
-#define GMAC_MODE	"(MAC to RTL GiGa Mode)"
 #elif defined (MAC_TO_VITESSE_MODE)
 #define GMAC_MODE	"(MAC to VITESSE Mode)"
+#elif defined (MAC_TO_RTL8367_MODE)
+#define GMAC_MODE	"(MAC to RTL8367 Mode)"
 #elif defined (MAC_TO_MT7530_MODE)
 #define GMAC_MODE	"(MAC to MT7530 Mode)"
 #elif defined (RT3052_ASIC_BOARD) || defined (RT3052_FPGA_BOARD) || \

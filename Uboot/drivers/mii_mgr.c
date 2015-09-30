@@ -3,10 +3,13 @@
 #include <rt_mmap.h>
 #include <configs/rt2880.h>
 
-
+#if defined (CONFIG_MIPS16)
+#define outw(address, value)    *((volatile uint32_t *)(address)) = (value)
+#define inw(address)            (*(volatile u32 *)(address))
+#else
 #define outw(address, value)    *((volatile uint32_t *)(address)) = cpu_to_le32(value)
 #define inw(address)            le32_to_cpu(*(volatile u32 *)(address))
-
+#endif
 #if defined (RT3052_FPGA_BOARD) || defined (RT3052_ASIC_BOARD) || \
     defined (RT3352_FPGA_BOARD) || defined (RT3352_ASIC_BOARD) || \
     defined (RT5350_FPGA_BOARD) || defined (RT5350_ASIC_BOARD) || \
@@ -89,7 +92,7 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 {
 	u32 volatile  			status	= 0;
 	u32 volatile  			data 	= 0;
-	u32 				rc	= 0;
+	u32			  			rc		= 0;
 	unsigned long volatile  t_start = get_timer(0);
 
 	/* We enable mdio gpio purpose register, and disable it when exit.	 */
@@ -103,7 +106,7 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 		if(!( inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) 
 		{
 			break;
-		}else if(get_timer(t_start) > (5 * CFG_HZ)){
+		}else if(get_timer(t_start) > (5UL * CFG_HZ)){
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing !!\n");
 			return rc;
@@ -130,7 +133,7 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 			enable_mdio(0);
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing and Time Out!!\n");
@@ -154,7 +157,7 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		{
 			break;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing !!\n");
@@ -178,7 +181,7 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 			enable_mdio(0);
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing and Time Out!!\n");
@@ -186,7 +189,6 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		}
 	}
 }
-
 #elif defined (MT7621_FPGA_BOARD) || defined (MT7621_ASIC_BOARD) || defined (MT7620_ASIC_BOARD)
 u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 {
@@ -203,7 +205,7 @@ u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 		if(!( inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) 
 		{
 			break;
-		}else if(get_timer(t_start) > (5 * CFG_HZ)){
+		}else if(get_timer(t_start) > (5UL * CFG_HZ)){
 			printf("\n MDIO Read operation is ongoing !!\n");
 			return rc;
 		}
@@ -228,7 +230,7 @@ u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			printf("\n MDIO Read operation is ongoing and Time Out!!\n");
 			return 0;
@@ -248,7 +250,7 @@ u32 __mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		{
 			break;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			printf("\n MDIO Write operation is ongoing !!\n");
 			return 0;
@@ -271,7 +273,7 @@ u32 __mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		{
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			printf("\n MDIO Write operation is ongoing and Time Out!!\n");
 			return 0;
@@ -350,7 +352,7 @@ u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 		if(!( inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) 
 		{
 			break;
-		}else if(get_timer(t_start) > (5 * CFG_HZ)){
+		}else if(get_timer(t_start) > (5UL * CFG_HZ)){
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing !!\n");
 			return rc;
@@ -375,7 +377,7 @@ u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 			enable_mdio(0);
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing and Time Out!!\n");
@@ -399,7 +401,7 @@ u32 __mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		{
 			break;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing !!\n");
@@ -422,7 +424,7 @@ u32 __mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 			enable_mdio(0);
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing and Time Out!!\n");
@@ -515,7 +517,7 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 #endif
 		{
 			break;
-		}else if(get_timer(t_start) > (5 * CFG_HZ)){
+		}else if(get_timer(t_start) > (5UL * CFG_HZ)){
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing !!\n");
 			return rc;
@@ -562,7 +564,7 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 			return 1;
 		}
 #endif
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Read operation is ongoing and Time Out!!\n");
@@ -595,7 +597,7 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 		{
 			break;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing !!\n");
@@ -636,7 +638,7 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 			enable_mdio(0);
 			return 1;
 		}
-		else if(get_timer(t_start) > (5 * CFG_HZ))
+		else if(get_timer(t_start) > (5UL * CFG_HZ))
 		{
 			enable_mdio(0);
 			printf("\n MDIO Write operation is ongoing and Time Out!!\n");

@@ -220,6 +220,11 @@ LIBS += fs/fat/libfat.a
 LIBS += disk/libdisk.a
 endif
 
+ifeq ($(MTK_USB),ON)
+LIBS += fs/fat/libfat.a
+LIBS += disk/libdisk.a
+endif
+
 #LIBS += post/libpost.a post/cpu/libcpu.a
 LIBS += common/libcommon.a
 .PHONY : $(LIBS)
@@ -250,11 +255,11 @@ endif
 all:		clean $(ALL)
 
 u-boot.hex:	u-boot
-		$(OBJCOPY) ${OBJCFLAGS} -O ihex $< $@
+		$(OBJCOPY) $(OBJCFLAGS) -O ihex $< $@
 
 
 u-boot.srec:	u-boot
-		$(OBJCOPY) ${OBJCFLAGS} -O srec $< $@
+		$(OBJCOPY) $(OBJCFLAGS) -O srec $< $@
 
 ifeq ($(MT7621_MP), y)
 ifeq ($(CFG_ENV_IS), IN_NAND)
@@ -274,7 +279,7 @@ ifeq ($(DDR_ACT_SETTING), y)
 		echo "0 10"|xxd -r|dd bs=1 count=1 seek=38 of=uboot_a.bin conv=notrunc
 endif
 		echo "0 $(MT7621_DDR_SPEED)"|xxd -r|dd bs=1 count=1 seek=39 of=uboot_a.bin conv=notrunc
-#SLT baudrate echo "0 00c20100"|xxd -r|dd bs=1 seek=304 of=uboot_a.bin conv=notrunc
+		echo "0 00c20100"|xxd -r|dd bs=1 seek=304 of=uboot_a.bin conv=notrunc
 		chmod 777 uboot_a.bin
 		dd if=uboot.bin of=uboot_a.bin bs=1 count=$(shell export LC_ALL=C; stat -c %s uboot.bin) \
 		seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s mt7621_stage_L2.bin)+4095)/4096)*4096-64" |bc) conv=notrunc
@@ -300,21 +305,20 @@ ifeq ($(DDR_ACT_SETTING), y)
 		./mt7621_ddr.sh uboot_a.bin uboot_a.bin mt7621_ddr_param.txt $(DDR_CHIP) $(CFG_ENV_IS)
 		echo "0 10"|xxd -r|dd bs=1 count=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+38))" |bc) conv=notrunc
 endif
-#SLT baudrate echo "0 00c20100"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+304))" |bc) conv=notrunc
-		
+		echo "0 00c20100"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+304))" |bc) conv=notrunc
 		mv uboot_a.bin uboot.bin
-endif		
+endif
 endif
 
 uboot.bin:	u-boot
-		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
+		$(OBJCOPY) $(OBJCFLAGS) -O binary $< $@
 
 ifneq ($(MT7621_MP), y)
 uboot.img:	uboot.bin
 ifeq ($(CFG_ENV_IS), IN_SPI)
 		./tools/mkimage -A $(ARCH) -T standalone -C none \
-		-a $(TEXT_BASE) -e $(shell export LC_ALL=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
-		-n "$(shell export LC_ALL=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
+		-a $(TEXT_BASE) -e $(shell export LC_ALL=C; export LC_ALL=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
+		-n "$(shell export LC_ALL=C; export LC_ALL=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
 		-r $(DRAM_TYPE) -s $(DRAM_TOTAL_WIDTH) -t $(DRAM_SIZE) -u $(DRAM_WIDTH) \
 		-y $(DRAM_SYSCFG0) -z $(DRAM_SYSCFG1) -w $(CPU_PLL_CFG) -d $< $@
 endif
@@ -338,7 +342,7 @@ else
 		-r $(DRAM_TYPE) -s $(DRAM_TOTAL_WIDTH) -t $(DRAM_SIZE) -u $(DRAM_WIDTH) \
 		-y $(shell export LC_ALL=C; echo "40") \
 		-z $(shell export LC_ALL=C; echo "obase=16;(($(shell export LC_ALL=C; stat -c %s mt7621_stage_L2.bin)+64+4095)/4096)*4096" |bc) -d $< $@
-		@rm -fr uboot_a.bin
+#		@rm -fr uboot_a.bin
 endif
 endif
 
@@ -372,7 +376,7 @@ u-boot.dis:	u-boot
 #u-boot:		depend $(SUBDIRS) $(OBJS) $(LIBS) $(LDSCRIPT)
 #		UNDEF_SYM=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__u_boot_cmd_.*\)/-u\1/p'|sort|uniq`;\
 #		$(LD) $(LDFLAGS) $$UNDEF_SYM $(OBJS) \
-#			--start-group $(LIBS) --end-group -L $(shell export LC_ALL=C; export LC_ALL=C; dirname) $(CC) $(CFLAGS) -print-libgcc-file-name -lgcc \
+#			--start-group $(LIBS) --end-group -L $(shell export LC_ALL=C; export LC_ALL=C; export LC_ALL=C; dirname) $(CC) $(CFLAGS) -print-libgcc-file-name -lgcc \
 #			-Map u-boot.map -o u-boot 
 			
 u-boot:		depend $(SUBDIRS) $(OBJS) $(LIBS) $(LDSCRIPT)
@@ -1814,7 +1818,6 @@ clean:
 		-o -name '*.o'  -o -name '*.a'  -o -name '*.a.map'  \) -print \
 		| xargs rm -f
 	find ./ -name '.depend' -print | xargs rm -f
-
 	rm -f examples/hello_world examples/timer \
 	      examples/eepro100_eeprom examples/sched \
 	      examples/mem_to_mem_idma2intr examples/82559_eeprom

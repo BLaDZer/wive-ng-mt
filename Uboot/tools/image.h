@@ -231,6 +231,7 @@ typedef struct  nand_info_1_type {
 	uint32_t	magic_id	: 12;	
 } nand_info_1_t;
 
+	
 typedef struct nand_header {
 	uint32_t			nand_ac_timing;
 	uint32_t				ih_stage_offset;			/* stage1 offset */
@@ -261,7 +262,7 @@ typedef struct image_header {
 	nand_header_t	ih_nand;
 #else
 	dram_header_t   ih_dram;
-#endif
+#endif	
 } image_header_t;
 
 

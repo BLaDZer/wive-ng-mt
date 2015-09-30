@@ -4,8 +4,6 @@
 #if defined (__KERNEL_NAND__)
 #include <linux/bug.h>
 #else
-#define true 		1 
-#define false 		0  
 #define bool		u8
 #endif
 

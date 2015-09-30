@@ -49,7 +49,6 @@
  * CPU then you MUST define LITTLEENDIAN in the configuration file!
  */
 
-
 #include <common.h>
 #include <command.h>
 #include <asm/processor.h>
@@ -232,6 +231,7 @@ int usb_stor_scan(int mode)
 
 	usb_max_devs=0;
 	for(i=0;i<USB_MAX_DEVICE;i++) {
+
 		dev=usb_get_dev_index(i); /* get device */
 		USB_STOR_PRINTF("i=%d\n",i);
 		if(dev==NULL) {
@@ -241,6 +241,7 @@ int usb_stor_scan(int mode)
 			/* get info and fill it in */
 			if(usb_stor_get_info(dev, &usb_stor[usb_max_devs], &usb_dev_desc[usb_max_devs]))
 				usb_max_devs++;
+
 		} /* if storage device */
 		if(usb_max_devs==USB_MAX_STOR_DEV) {
 			printf("max USB Storage Device reached: %d stopping\n",usb_max_devs);
@@ -462,7 +463,7 @@ static int usb_stor_BBB_comdat(ccb *srb, struct us_data *us)
 		dir_in, srb->lun, srb->cmdlen, srb->cmd, srb->datalen,
 		srb->pdata);
 	if (srb->cmdlen) {
-		for(result = 0;result < srb->cmdlen;result++)
+		for (result = 0; result < srb->cmdlen; result++)
 			printf("cmd[%d] %#x ", result, srb->cmd[result]);
 		printf("\n");
 	}
@@ -535,7 +536,7 @@ int usb_stor_CB_comdat(ccb *srb, struct us_data *us)
 
 		USB_STOR_PRINTF("CB_transport: control msg returned %d, direction is %s to go 0x%lx\n",result,dir_in ? "IN" : "OUT",srb->datalen);
 		if (srb->datalen) {
-			result = us_one_transfer(us, pipe, srb->pdata,srb->datalen);
+			result = us_one_transfer(us, pipe, srb->pdata, srb->datalen);
 			USB_STOR_PRINTF("CBI attempted to transfer data, result is %d status %lX, len %d\n", result,us->pusb_dev->status,us->pusb_dev->act_len);
 			if(!(us->pusb_dev->status & USB_ST_NAK_REC))
 				break;
@@ -630,7 +631,7 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 	result = usb_stor_BBB_comdat(srb, us);
 	if (result < 0) {
 		USB_STOR_PRINTF("failed to send CBW status %ld\n",
-			us->pusb_dev->status);
+		      us->pusb_dev->status);
 		usb_stor_BBB_reset(us);
 		return USB_STOR_TRANSPORT_FAILED;
 	}
@@ -652,7 +653,7 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 	result = usb_bulk_msg(us->pusb_dev, pipe, ptr2, srb->datalen,
 			      &data_actlen, USB_CNTL_TIMEOUT * 5);
 	/* special handling of STALL in DATA phase */
-	if((result < 0) && (us->pusb_dev->status & USB_ST_STALLED)) {
+	if ((result < 0) && (us->pusb_dev->status & USB_ST_STALLED)) {
 		USB_STOR_PRINTF("DATA:stall\n");
 		/* clear the STALL on the endpoint */
 		result = usb_stor_BBB_clear_endpt_stall(us,
@@ -663,7 +664,7 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 	}
 	if (result < 0) {
 		USB_STOR_PRINTF("usb_bulk_msg error status %ld\n",
-			us->pusb_dev->status);
+		      us->pusb_dev->status);
 		usb_stor_BBB_reset(us);
 		return USB_STOR_TRANSPORT_FAILED;
 	}
@@ -673,9 +674,9 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 	printf("\n");
 #endif
 	/* STATUS phase + error handling */
-   st:
+st:
 	retry = 0;
-   again:
+again:
 	USB_STOR_PRINTF("STATUS phase\n");
 	memset(csw, 0, UMASS_BBB_CSW_SIZE);
 
@@ -694,7 +695,7 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 	}
 	if (result < 0) {
 		USB_STOR_PRINTF("usb_bulk_msg error status %ld\n",
-			us->pusb_dev->status);
+		      us->pusb_dev->status);
 		usb_stor_BBB_reset(us);
 		return USB_STOR_TRANSPORT_FAILED;
 	}
@@ -726,7 +727,7 @@ static int usb_stor_BBB_transport(ccb *srb, struct us_data *us)
 		return USB_STOR_TRANSPORT_FAILED;
 	} else if (data_actlen > srb->datalen) {
 		USB_STOR_PRINTF("transferred %dB instead of %ldB\n",
-			data_actlen, srb->datalen);
+		      data_actlen, srb->datalen);
 		return USB_STOR_TRANSPORT_FAILED;
 	} else if (csw->bCSWStatus == CSWSTATUS_FAILED) {
 		USB_STOR_PRINTF("FAILED\n");
@@ -840,6 +841,7 @@ static int usb_inquiry(ccb *srb,struct us_data *ss)
 {
 	int retry,i;
 	retry=5;
+
 	do {
 		memset(&srb->cmd[0],0,12);
 		srb->cmd[0]=SCSI_INQUIRY;
@@ -949,14 +951,14 @@ unsigned long usb_stor_read(int device, unsigned long blknr, unsigned long blkcn
 	unsigned long *buffer;
 
 	buffer = (unsigned long*)KSEG1ADDR(tmp_buf);
-
+	
 	if (blkcnt == 0)
 		return 0;
 
 	device &= 0xff;
 	/* Setup  device
 	 */
-	USB_STOR_PRINTF("\nusb_read: dev %d \n",device);
+	USB_STOR_PRINTF("\nusb_read: dev %d \n", device);
 	dev=NULL;
 	for(i=0;i<USB_MAX_DEVICE;i++) {
 		dev=usb_get_dev_index(i);
@@ -1009,6 +1011,7 @@ retry_it:
 	usb_disable_asynch(0); /* asynch transfer allowed */
 	if(blkcnt>=USB_MAX_READ_BLK)
 		printf("\n");
+
 	return(blkcnt);
 }
 

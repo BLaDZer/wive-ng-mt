@@ -44,20 +44,20 @@
 
 /* device request (setup) */
 struct devrequest {
-	unsigned char requesttype;
-	unsigned char request;
-	unsigned short value;
-	unsigned short index;
-	unsigned short length;
+	unsigned char	requesttype;
+	unsigned char	request;
+	unsigned short	value;
+	unsigned short	index;
+	unsigned short	length;
 } __attribute__ ((packed));
 
 /* Interface */
 struct usb_interface {
 	struct usb_interface_descriptor desc;
 
-	unsigned char  no_of_ep;
+	unsigned char	no_of_ep;
 	unsigned char	num_altsetting;
-	unsigned char  act_altsetting;
+	unsigned char	act_altsetting;
 
 	struct usb_endpoint_descriptor ep_desc[USB_MAXENDPOINTS];
 	/*
@@ -72,7 +72,7 @@ struct usb_interface {
 struct usb_config {
 	struct usb_config_descriptor desc;
 
-	unsigned char  no_of_if;		/* number of interfaces */
+	unsigned char	no_of_if;	/* number of interfaces */
 	struct usb_interface if_desc[USB_MAXINTERFACES];
 } __attribute__ ((packed));
 
@@ -85,11 +85,11 @@ enum {
 };
 
 struct usb_device {
-	int devnum;			/* Device number on USB bus */
+	int	devnum;			/* Device number on USB bus */
 	int	speed;			/* full/low/high */
-	char mf[32];			/* manufacturer */
-	char prod[32];			/* product */
-	char serial[32];		/* serial number */
+	char	mf[32];			/* manufacturer */
+	char	prod[32];		/* product */
+	char	serial[32];		/* serial number */
 
 	/* Maximum packet size; one of: PACKET_SIZE_* */
 	int maxpacketsize;
@@ -161,13 +161,13 @@ int usb_lowlevel_stop(int index);
 int submit_bulk_msg(struct usb_device *dev, unsigned long pipe,
 			void *buffer, int transfer_len);
 int submit_control_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
-			int transfer_len,struct devrequest *setup);
+			int transfer_len, struct devrequest *setup);
 int submit_int_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
 			int transfer_len, int interval);
 
 /* Defines */
-#define USB_UHCI_VEND_ID 0x8086
-#define USB_UHCI_DEV_ID	 0x7112
+#define USB_UHCI_VEND_ID	0x8086
+#define USB_UHCI_DEV_ID		0x7112
 
 /*
  * PXA25x can only act as USB device. There are drivers
@@ -240,7 +240,7 @@ int usb_stop(void); /* stop the USB Controller */
 int usb_set_protocol(struct usb_device *dev, int ifnum, int protocol);
 int usb_set_idle(struct usb_device *dev, int ifnum, int duration,
 			int report_id);
-struct usb_device * usb_get_dev_index(int index);
+struct usb_device *usb_get_dev_index(int index);
 int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 			unsigned char request, unsigned char requesttype,
 			unsigned short value, unsigned short index,
@@ -248,9 +248,9 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 int usb_bulk_msg(struct usb_device *dev, unsigned int pipe,
 			void *data, int len, int *actual_length, int timeout);
 int usb_submit_int_msg(struct usb_device *dev, unsigned long pipe,
-			void *buffer,int transfer_len, int interval);
+			void *buffer, int transfer_len, int interval);
 int usb_disable_asynch(int disable);
-int usb_maxpacket(struct usb_device *dev,unsigned long pipe);
+int usb_maxpacket(struct usb_device *dev, unsigned long pipe);
 int usb_get_configuration_no(struct usb_device *dev, unsigned char *buffer,
 				int cfgno);
 int usb_get_report(struct usb_device *dev, int ifnum, unsigned char type,
@@ -267,7 +267,7 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate);
 #define __swap_16(x) \
 	({ unsigned short x_ = (unsigned short)x; \
 	 (unsigned short)( \
-		((x_ & 0x00FFU) << 8) | ((x_ & 0xFF00U) >> 8) ); \
+		((x_ & 0x00FFU) << 8) | ((x_ & 0xFF00U) >> 8)); \
 	})
 #define __swap_32(x) \
 	({ unsigned long x_ = (unsigned long)x; \
@@ -275,7 +275,7 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate);
 		((x_ & 0x000000FFUL) << 24) | \
 		((x_ & 0x0000FF00UL) <<	 8) | \
 		((x_ & 0x00FF0000UL) >>	 8) | \
-		((x_ & 0xFF000000UL) >> 24) ); \
+		((x_ & 0xFF000000UL) >> 24)); \
 	})
 
 #ifdef __LITTLE_ENDIAN
@@ -329,7 +329,7 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate);
 		(dev)->maxpacketsize)
 #endif
 
-#define default_pipe(dev) ((dev)->speed <<26)
+#define default_pipe(dev) ((dev)->speed << 26)
 
 #define usb_sndctrlpipe(dev, endpoint)	((PIPE_CONTROL << 30) | \
 					 create_pipe(dev, endpoint))
@@ -416,7 +416,7 @@ struct usb_hub_descriptor {
 	unsigned char  bHubContrCurrent;
 	unsigned char  DeviceRemovable[(USB_MAXCHILDREN+1+7)/8];
 	unsigned char  PortPowerCtrlMask[(USB_MAXCHILDREN+1+7)/8];
-		/* DeviceRemovable and PortPwrCtrlMask want to be variable-length
+	/* DeviceRemovable and PortPwrCtrlMask want to be variable-length
 	   bitmaps that hold max 255 entries. (bit0 is ignored) */
 } __attribute__ ((packed));
 

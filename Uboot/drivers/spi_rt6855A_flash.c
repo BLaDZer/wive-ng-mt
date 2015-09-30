@@ -66,7 +66,7 @@
 
 #define SPI_FIFO_SIZE 16
 
-#define ADDR_4B			// if all instruction use 4B address mode
+//#define ADDR_4B		// if all instruction use 4B address mode
 //#define RD_MODE_FAST		// use Fast Read instead of normal Read
 //#define RD_MODE_DIOR		// use DIOR (0xBB)instead of normal Read
 //#define RD_MODE_DOR		// use DOR (0x3B) instead of normal Read
@@ -86,7 +86,7 @@
 
 static int raspi_wait_ready(int sleep_ms);
 #if defined USER_MODE || defined COMMAND_MODE
-static unsigned int spi_wait_nsec = 0;
+static unsigned int spi_wait_nsec = 150;
 static int spic_busy_wait(void)
 {
 	do {
@@ -188,6 +188,7 @@ static int spic_write(const u8 *cmd, size_t n_cmd, const u8 *txbuf, size_t n_tx)
 #endif // USER_MODE //
 
 extern unsigned long mips_bus_feq;
+
 void spic_init(void)
 {
 #if defined USER_MODE || defined COMMAND_MODE
@@ -201,6 +202,7 @@ void spic_init(void)
 	ra_or(RT2880_RSTCTRL_REG, RSTCTRL_SPI_RESET);
 	udelay(1);
 	ra_and(RT2880_RSTCTRL_REG, ~RSTCTRL_SPI_RESET);
+	udelay(1);
 
 #if defined(RALINK_VITESSE_SWITCH_CONNECT_SPI_CS1)
         /* config ARB and set the low or high active correctly according to the device */
@@ -224,7 +226,34 @@ void spic_init(void)
 	printf("spi_wait_nsec: %x \n", spi_wait_nsec);
 
 #elif defined BBU_MODE
-#if defined (RT6855_ASIC_BOARD) || defined (RT6855_FPGA_BOARD)
+
+#if defined (MT7621_ASIC_BOARD) || defined (MT7628_ASIC_BOARD)
+	u32 clk_sys, clk_div, reg;
+
+#if defined (MT7621_ASIC_BOARD)
+	clk_sys = 125;	/* bclk = 125 MHz */
+#ifdef SPI_FAST_CLOCK
+	clk_div = 4;	/* bclk/4 -> 31.25 MHz */
+#else
+	clk_div = 5;	/* bclk/5 -> 25 MHz */
+#endif
+#else
+	clk_sys = mips_bus_feq / 1000000;
+#ifdef SPI_FAST_CLOCK
+	clk_div = 5;	/* hclk/5 -> 40 MHz */
+#else
+	clk_div = 8;	/* hclk/8 -> 25 MHz */
+#endif
+#endif
+	reg = ra_inl(SPI_REG_MASTER);
+	reg &=  ~(0x7);
+	reg &=  ~(0xfff << 16);
+	reg |= ((clk_div - 2) << 16);
+	ra_outl(SPI_REG_MASTER, reg);
+
+	printf("MediaTek SPI flash driver, SPI clock: %dMHz\n", clk_sys / clk_div);
+
+#elif defined (RT6855_ASIC_BOARD) || defined (RT6855_FPGA_BOARD)
 	// enable SMC bank 0 alias addressing
 	ra_or(RALINK_SYSCTL_BASE + 0x38, 0x80000000);
 #endif
@@ -295,6 +324,7 @@ static struct chip_info chips_data [] = {
 	{ "S25FL116K",          0x01, 0x40150140, 64 * 1024, 32,  0 },
 	{ "25Q16BSIG",          0xc8, 0x4015c840, 64 * 1024, 32,  0 },
 };
+
 
 #ifdef COMMAND_MODE
 static int raspi_cmd(const u8 cmd, const u32 addr, const u8 mode, u8 *buf, const size_t n_buf, const u32 user, const int flag)
@@ -453,17 +483,15 @@ static int bbu_mb_spic_trans(const u8 code, const u32 addr, u8 *buf, const size_
 	int i, q, r;
 	int rc = -1;
 
-	if (flag != SPIC_READ_BYTES && flag != SPIC_WRITE_BYTES) {
-		printf("we currently support more-byte-mode for reading and writing data only\n");
+	if (flag != SPIC_READ_BYTES && flag != SPIC_WRITE_BYTES)
 		return -1;
-	}
 
 	/* step 0. enable more byte mode */
 	ra_or(SPI_REG_MASTER, (1 << 2));
 
 	bbu_spic_busy_wait();
 
-	/* step 1. set opcode & address, and fix cmd bit count to 32 (or 40) */
+	/* step 1. set opcode & address */
 	if (spi_chip_info && spi_chip_info->addr4b) {
 		ra_and(SPI_REG_CTL, ~SPI_CTL_ADDREXT_MASK);
 		ra_or(SPI_REG_CTL, (code << 24) & SPI_CTL_ADDREXT_MASK);
@@ -471,60 +499,66 @@ static int bbu_mb_spic_trans(const u8 code, const u32 addr, u8 *buf, const size_
 	}
 	else
 	{
-		ra_outl(SPI_REG_OPCODE, (code << 24) & 0xff000000);
-		ra_or(SPI_REG_OPCODE, (addr & 0xffffff));
+		reg = (code << 24) | (addr & 0xffffff);
+		ra_outl(SPI_REG_OPCODE, reg);
 	}
-	ra_and(SPI_REG_MOREBUF, ~SPI_MBCTL_CMD_MASK);
-	if (spi_chip_info && spi_chip_info->addr4b)
-		ra_or(SPI_REG_MOREBUF, (40 << 24));
-	else
-		ra_or(SPI_REG_MOREBUF, (32 << 24));
 
-	/* step 2. write DI/DO data #0 ~ #7 */
-	if (flag & SPIC_WRITE_BYTES) {
-		if (buf == NULL) {
-			printf("%s: write null buf\n", __func__);
-			goto RET_MB_TRANS;
-		}
-		for (i = 0; i < n_tx; i++) {
-			q = i / 4;
-			r = i % 4;
-			if (r == 0)
-				ra_outl(SPI_REG_DATA(q), 0);
-			ra_or(SPI_REG_DATA(q), (*(buf + i) << (r * 8)));
-		}
-	}
+	reg = ra_inl(SPI_REG_MOREBUF);
+	reg &= ~SPI_MBCTL_TX_RX_CNT_MASK;
+	reg &= ~SPI_MBCTL_CMD_MASK;
+
+	/* step 2. set cmd bit count to 32 (or 40) */
+	if (spi_chip_info && spi_chip_info->addr4b)
+		reg |= ((5 << 3) << 24);
+	else
+		reg |= ((4 << 3) << 24);
 
 	/* step 3. set rx (miso_bit_cnt) and tx (mosi_bit_cnt) bit count */
-	ra_and(SPI_REG_MOREBUF, ~SPI_MBCTL_TX_RX_CNT_MASK);
-	ra_or(SPI_REG_MOREBUF, (n_rx << 3 << 12));
-	ra_or(SPI_REG_MOREBUF, n_tx << 3);
+	reg |= ((n_rx << 3) << 12);
+	reg |=  (n_tx << 3);
 
-	/* step 4. kick */
-	ra_or(SPI_REG_CTL, SPI_CTL_START);
+	ra_outl(SPI_REG_MOREBUF, reg);
 
-	/* step 5. wait spi_master_busy */
-	bbu_spic_busy_wait();
+	/* step 4. write DI/DO data #0 ~ #7 */
 	if (flag & SPIC_WRITE_BYTES) {
-		rc = 0;
-		goto RET_MB_TRANS;
+		if (buf == NULL)
+			goto RET_MB_TRANS;
+		reg = 0;
+		for (i = 0; i < n_tx; i++) {
+			r = i % 4;
+			if (r == 0)
+				reg = 0;
+			reg |= (*(buf + i) << (r * 8));
+			if (r == 3 || (i+1) == n_tx) {
+				q = i / 4;
+				ra_outl(SPI_REG_DATA(q), reg);
+			}
+		}
 	}
 
-	/* step 6. read DI/DO data #0 */
+	/* step 5. kick */
+	ra_or(SPI_REG_CTL, SPI_CTL_START);
+
+	/* step 6. wait spi_master_busy */
+	bbu_spic_busy_wait();
+
+	/* step 7. read DI/DO data #0 */
 	if (flag & SPIC_READ_BYTES) {
-		if (buf == NULL) {
-			printf("%s: read null buf\n", __func__);
-			return -1;
-		}
+		if (buf == NULL)
+			goto RET_MB_TRANS;
+		reg = 0;
 		for (i = 0; i < n_rx; i++) {
-			q = i / 4;
 			r = i % 4;
-			reg = ra_inl(SPI_REG_DATA(q));
+			if (r == 0) {
+				q = i / 4;
+				reg = ra_inl(SPI_REG_DATA(q));
+			}
 			*(buf + i) = (u8)(reg >> (r * 8));
 		}
 	}
 
 	rc = 0;
+
 RET_MB_TRANS:
 	/* step #. disable more byte mode */
 	ra_and(SPI_REG_MASTER, ~(1 << 2));
@@ -548,10 +582,8 @@ static int bbu_spic_trans(const u8 code, const u32 addr, u8 *buf, const size_t n
 
 	/* step 2. write DI/DO data #0 */
 	if (flag & SPIC_WRITE_BYTES) {
-		if (buf == NULL) {
-			printf("%s: write null buf\n", __func__);
+		if (buf == NULL)
 			return -1;
-		}
 		ra_outl(SPI_REG_DATA0, 0);
 		switch (n_tx) {
 		case 8:
@@ -588,10 +620,8 @@ static int bbu_spic_trans(const u8 code, const u32 addr, u8 *buf, const size_t n
 
 	/* step 6. read DI/DO data #0 */
 	if (flag & SPIC_READ_BYTES) {
-		if (buf == NULL) {
-			printf("%s: read null buf\n", __func__);
+		if (buf == NULL)
 			return -1;
-		}
 		reg = ra_inl(SPI_REG_DATA0);
 		switch (n_rx) {
 		case 4:
@@ -637,7 +667,7 @@ static int raspi_read_devid(u8 *rxbuf, int n_rx)
 #elif defined COMMAND_MODE
 	retval = raspi_cmd(code, 0, 0, rxbuf, n_rx, 0, SPIC_READ_BYTES);
 #elif defined BBU_MODE
-	retval = bbu_spic_trans(code, 0, rxbuf, 1, 3, SPIC_READ_BYTES);
+	retval = bbu_spic_trans(code, 0, rxbuf, 1, 4, SPIC_READ_BYTES);
 	if (!retval)
 		retval = n_rx;
 #endif
@@ -734,6 +764,7 @@ static int raspi_read_scur(u8 *val)
 	return 0;
 }
 
+static inline int raspi_write_enable(void);
 static int raspi_4byte_mode(int enable)
 {
 	ssize_t retval;
@@ -815,6 +846,13 @@ static int raspi_4byte_mode(int enable)
 		}
 		retval = bbu_spic_trans(code, 0, NULL, 1, 0, 0);
 #endif
+		// for Winbond's W25Q256FV, need to clear extend address register
+		if ((!enable) && (spi_chip_info->id == 0xef))
+		{
+			code = 0x0;
+			raspi_write_enable();
+			raspi_write_rg(0xc5, &code);
+		}
 		if (retval != 0) {
 			printf("%s: ret: %x\n", __func__, retval);
 			return -1;
@@ -870,6 +908,8 @@ static inline int raspi_unprotect(void)
 		sr = 0;
 		raspi_write_sr(&sr);
 	}
+
+	return 0;
 }
 
 /*
@@ -978,15 +1018,15 @@ static int raspi_erase_sector(u32 offset)
 struct chip_info *chip_prob(void)
 {
 	struct chip_info *info, *match;
-	u8 buf[5];
+	u8 buf[5] = {0};
 	u32 jedec, weight;
 	int i;
 
 	raspi_read_devid(buf, 5);
-	jedec = (u32)((u32)(buf[1] << 24) | ((u32)buf[2] << 16) | ((u32)buf[3] <<8) | (u32)buf[4]);
+	jedec = (u32)((u32)(buf[1] << 24) | ((u32)buf[2] << 16) | ((u32)buf[3] << 8) | (u32)buf[4]);
 
 #ifdef BBU_MODE
-	printf("flash manufacture id: %x, device id %x %x\n", buf[0], buf[1], buf[2]);
+	printf("spi device id: %x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
 #else
 	printf("spi device id: %x %x %x %x %x (%x)\n", buf[0], buf[1], buf[2], buf[3], buf[4], jedec);
 #endif
@@ -998,8 +1038,7 @@ struct chip_info *chip_prob(void)
 		info = &chips_data[i];
 		if (info->id == buf[0]) {
 #ifdef BBU_MODE
-			if ((u8)(info->jedec_id >> 24 & 0xff) == buf[1] &&
-			    (u8)(info->jedec_id >> 16 & 0xff) == buf[2])
+			if ((info->jedec_id & 0xffffff00) == jedec)
 #else
 			if (info->jedec_id == jedec)
 #endif
@@ -1101,7 +1140,7 @@ int raspi_read(char *buf, unsigned int from, int len)
 #ifdef RD_MODE_QIOR
 	code = OPCODE_QIOR;
 #endif
-	raspi_set_quad();		
+	raspi_set_quad();
 #elif defined (RD_MODE_DOR)
 	code = OPCODE_DOR;
 #elif defined (RD_MODE_DIOR)
@@ -1467,6 +1506,7 @@ int do_mem_cp(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
 	unsigned int addr, dest;
 	int count;
+	DECLARE_GLOBAL_DATA_PTR;
 
 	addr = CFG_LOAD_ADDR;
 	count = (unsigned int)NetBootFileXferSize;

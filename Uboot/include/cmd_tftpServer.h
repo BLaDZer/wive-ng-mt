@@ -5,25 +5,13 @@
 #include <command.h>
 #include <net.h>
 #include <image.h>
+//#include "bootp.h"
 #include <gpio.h>
-#include <replace.h>
-#include "../autoconf.h"
-
-#if defined (ON_BOARD_128M_DRAM_COMPONENT) ||  defined (ON_BOARD_256M_DRAM_COMPONENT)
-/* 8Mb ram for recive image buffer */
-#define PTR_SIZE	0x7AFFFF
-#elif defined (ON_BOARD_512M_DRAM_COMPONENT) || defined (ON_BOARD_1024M_DRAM_COMPONENT) || \
-	defined (ON_BOARD_2048M_DRAM_COMPONENT) || defined (ON_BOARD_4096M_DRAM_COMPONENT)
-/* 32Mb ram for recive image buffer */
-#define PTR_SIZE	0x1EBFFFC
-#else
-/* default 8Mb */
-#define PTR_SIZE	0x7AFFFF
-#endif
 
 #define PORT_TFTP	69		/* Well known TFTP port #		*/
 #define TIMEOUT		2		/* Seconds to timeout for a lost pkt	*/
 #define TIMEOUT_COUNT	10		/* # of timeouts before giving up  */
+
 					/* (for checking the image size)	*/
 #define HASHES_PER_LINE	65		/* Number of "loading" hashes per line	*/
 
@@ -44,11 +32,13 @@
 #define STATE_BAD_MAGIC	5
 #define STATE_FINISHACK	6
 
+
 #define TFTP_BLOCK_SIZE		512		    /* default TFTP block size	*/
 #define TFTP_SEQUENCE_SIZE	((ulong)(1<<16))    /* sequence number is 16 bit */
 
 #define DEFAULT_NAME_LEN	(8 + 4 + 1)
 
+#define TRX_MAGIC		0x56190527      /* Image Magic Number */
 /**********************************************************************/
 /*
  *	Global functions and variables.
@@ -56,8 +46,28 @@
 
 /* tftpd.c */
 int do_tftpd(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
-int check_trx(int mode);
-void TftpdStart(void);
+void TftpdStart(void);// Begin TFTP get
 
 /**********************************************************************/
+
+extern void LED_POWER_ON(void);
+extern void LED_ALERT_ON(void);
+extern void LED_ALERT_OFF(void);
+
+
+/*
+Error message defined in RFC1350. 
+char *tftp_errmsg[9] = {
+     "Undefined error code",
+     "File not found",
+     "Access violation",
+     "Disk full or allocation exceeded",
+     "Illegal TFTP operation",
+     "Unknown transfer ID",
+     "File already exists",
+     "No such user",
+     "Failure to negotiate RFC1782 options",
+};
+*/
+
 #endif

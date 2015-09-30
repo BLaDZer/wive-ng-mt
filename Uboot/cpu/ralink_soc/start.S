@@ -734,7 +734,7 @@ CPLL_DONE:
 	nop
 
 #if defined(ON_BOARD_DDR1)||defined(ON_BOARD_DDR2)
-        
+ 
 #if defined(RT6855_FPGA_BOARD)||defined(RT6855_ASIC_BOARD) || \
     defined(MT7620_FPGA_BOARD)||defined(MT7620_ASIC_BOARD)
 	/* Use default SYSCFG1 setting */
@@ -750,7 +750,6 @@ CPLL_DONE:
 #elif defined (RT6855A_FPGA_BOARD) || defined (RT6855A_ASIC_BOARD)
 	/* set DRAM IO PAD for DDR2 */
 #if defined(ON_BOARD_DDR2)
-
 #if 0
 	la t0, RALINK_SYSCTL_BASE + 0x4
 	lw t1, 0(t0)
@@ -1554,7 +1553,7 @@ DDR_READY:
 	la		t0, RALINK_DDR_CFG10
 	li		t1, 0x40404848
 	sw		t1, 0(t0)
-#endif	
+#endif
 #endif
 
 #if defined(MT7628_ASIC_BOARD)
@@ -2212,20 +2211,6 @@ tRFCinit:
         nop
         sw t6, 0(t5)
         nop
-#if defined(MT7620_ASIC_BOARD) || defined(MT7620_FPGA_BOARD)
-#if 0	// set GPIO36(PERST_N) to output mode and pull low
-	li	t0, RALINK_PIO_BASE + 0x4C
-	lw	t1, 0(t0)
-	li	t2, 1<<12
-	or	t1, t1, t2
-	sw	t1, 0(t0)
-	li	t0, RALINK_PIO_BASE + 0x48
-	lw	t1, 0(t0)
-	li	t2, ~(1<<12)
-	and	t1, t1, t2
-	sw	t1, 0(t0)
-#endif
-#endif
 		
 #if defined(RT3052_ASIC_BOARD) || defined (RT3052_FPGA_BOARD)
 #if defined(ON_BOARD_16BIT_DRAM_BUS)

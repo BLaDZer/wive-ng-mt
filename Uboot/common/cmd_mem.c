@@ -1006,6 +1006,8 @@ int do_mem_cp ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	ulong	addr = 0, dest = 0, count = 0;
 	int	size;
 
+	DECLARE_GLOBAL_DATA_PTR;
+
 	if(!memcmp(argv[0],"cp.linux",sizeof("cp.linux")))
 	{
 /* 8M/16 flash:

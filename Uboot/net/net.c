@@ -82,13 +82,11 @@
 #include <miiphy.h>
 #endif
 
-//#define CONFIG_NET_VLAN 1
-
 #if (CONFIG_COMMANDS & CFG_CMD_NET)
 
-#define ARP_TIMEOUT		3		/* Seconds before trying ARP again */
+#define ARP_TIMEOUT		4UL		/* Seconds before trying ARP again */
 #ifndef	CONFIG_NET_RETRY_COUNT
-# define ARP_TIMEOUT_COUNT	8		/* # of timeouts before giving up  */
+# define ARP_TIMEOUT_COUNT	6		/* # of timeouts before giving up  */
 #else
 # define ARP_TIMEOUT_COUNT  (CONFIG_NET_RETRY_COUNT)
 #endif
@@ -118,7 +116,6 @@ uchar		NetServerEther[6] =	/* Boot server enet address		*/
 			{ 0, 0, 0, 0, 0, 0 };
 IPaddr_t	NetOurIP;		/* Our IP addr (0 = unknown)		*/
 IPaddr_t	NetServerIP;		/* Our IP addr (0 = unknown)		*/
-IPaddr_t	NetTestIP;		/* Our IP addr (0 = unknown)		*/
 volatile uchar *NetRxPkt;		/* Current receive packet		*/
 int		NetRxPktLen;		/* Current rx packet length		*/
 unsigned	NetIPID;		/* IP packet ID				*/
@@ -199,14 +196,11 @@ int		NetArpWaitTry;
 extern VALID_BUFFER_STRUCT  rt2880_free_buf_list;
 //kaiker
 extern BUFFER_ELEM *rt2880_free_buf_entry_dequeue(VALID_BUFFER_STRUCT *hdr);
-extern void TftpSend (void);
 
 extern void TftpdStart(void);
-extern IPaddr_t TempServerIP=0;
-
-#ifdef CONFIG_NET_VLAN
-ushort getenv_VLAN(char *var);
-#endif
+extern void LED_ALERT_ON(void);
+extern void LED_ALERT_OFF(void);
+IPaddr_t TempServerIP=0;
 
 /*=======================================*/
 //===================================================
@@ -263,9 +257,6 @@ void ArpTimeoutCheck(void)
 
 	/* check for arp timeout */
 	if ((t - NetArpWaitTimerStart) > ARP_TIMEOUT * CFG_HZ) {
-		printf("t: %x, NetArpWaitTimerStart: %x, ARP_TIMEOUT * CFG_HZ: %x\n", t, NetArpWaitTimerStart, ARP_TIMEOUT * CFG_HZ);
-		printf("NetArpWaitTry: %x, ARP_TIMEOUT_COUNT: %x\n", NetArpWaitTry, ARP_TIMEOUT_COUNT);
-
 		NetArpWaitTry++;
 
 		if (NetArpWaitTry >= ARP_TIMEOUT_COUNT) {
@@ -292,7 +283,7 @@ NetLoop(proto_t protocol)
 	DECLARE_GLOBAL_DATA_PTR;
 
 	bd_t *bd = gd->bd;
-	int i = 0;
+	int i;
 
 #ifdef CONFIG_NET_MULTI
 	NetRestarted = 0;
@@ -388,16 +379,17 @@ restart:
 		NetServerIP = getenv_IPaddr ("serverip");
 		break;
 
-        case TFTPD:
-                NetCopyIP(&NetOurIP, &bd->bi_ip_addr);
-                NetServerIP = getenv_IPaddr ("serverip");
-                NetOurGatewayIP = getenv_IPaddr ("gatewayip");
-                NetOurSubnetMask= getenv_IPaddr ("netmask");
+	case TFTPD:
+		NetCopyIP(&NetOurIP, &bd->bi_ip_addr);
+		NetServerIP = getenv_IPaddr ("serverip");
+		NetOurGatewayIP = getenv_IPaddr ("gatewayip");
+		NetOurSubnetMask= getenv_IPaddr ("netmask");
 #ifdef CONFIG_NET_VLAN
-                NetOurVLAN = getenv_VLAN("vlan");
-                NetOurNativeVLAN = getenv_VLAN("nvlan");
+		NetOurVLAN = getenv_VLAN("vlan");
+		NetOurNativeVLAN = getenv_VLAN("nvlan");
 #endif
-                break;
+		break;
+
 #if 0
 	case BOOTP:
 	case RARP:
@@ -446,7 +438,6 @@ restart:
 		case TFTPD:
 			TftpdStart();
 			break;
-
 
 #if (CONFIG_COMMANDS & CFG_CMD_DHCP)
 		case DHCP:
@@ -518,7 +509,7 @@ restart:
 	i = 1;
 	timeDelta = 266000000;
 
-	for (;;) {		
+	for (;;) {
 		WATCHDOG_RESET();
 #ifdef CONFIG_SHOW_ACTIVITY
 		{
@@ -550,9 +541,15 @@ restart:
 		if (timeHandler && ((get_timer(0) - timeStart) > timeDelta)) {
 			thand_f *x;
 
-                        ++i;
-                        if (i==0xffffff)
-                                i = 0;
+			if (i%2 == 0){
+				LED_ALERT_ON();
+			} else{
+				LED_ALERT_OFF();
+			}
+			++i;
+			if (i==0xffffff)
+				i = 0;
+
 
 #if defined(CONFIG_MII) || (CONFIG_COMMANDS & CFG_CMD_MII)
 #if defined(CFG_FAULT_ECHO_LINK_DOWN) && defined(CONFIG_STATUS_LED) && defined(STATUS_LED_RED)
@@ -592,6 +589,7 @@ restart:
 				sprintf(buf, "%lX", (unsigned long)load_addr);
 				setenv("fileaddr", buf);
 			}
+			LED_ALERT_OFF();
 			eth_halt();
 			return NetBootFileXferSize;
 
@@ -633,7 +631,7 @@ void NetStartAgain (void)
 		return;
 	}
 #ifndef CONFIG_NET_MULTI
-	NetSetTimeout (10 * CFG_HZ, startAgainTimeout);
+	NetSetTimeout (10UL * CFG_HZ, startAgainTimeout);
 	NetSetHandler (startAgainHandler);
 #else	/* !CONFIG_NET_MULTI*/
 	eth_halt ();
@@ -1204,7 +1202,7 @@ NetReceive(volatile uchar * inpkt, int len)
 	{
 		printf("\n en[%d] < ETHER_HDR_SIZE\n",len);
 		return;
-	}	
+	}
 
 #if (CONFIG_COMMANDS & CFG_CMD_CDP)
 	/* keep track if packet is CDP */
@@ -1512,7 +1510,7 @@ NetReceive(volatile uchar * inpkt, int len)
 		/*
 		 *	IP header OK.  Pass the packet to the current handler.
 		 */
-		 NetCopyIP(&TempServerIP,(void*)&ip->ip_src); /*TempServerIP is used in TFTPD */
+		NetCopyIP(&TempServerIP,(void*)&ip->ip_src);/*TempServerIP is used in TFTPD */
 		(*packetHandler)((uchar *)ip +IP_HDR_SIZE,
 						ntohs(ip->udp_dst),
 						ntohs(ip->udp_src),
@@ -1540,9 +1538,7 @@ static int net_check_prereq (proto_t protocol)
 	case NFS:
 #endif
 	case NETCONS:
-
 	case TFTPD:
-
 	case TFTP:
 		if (NetServerIP == 0) {
 			puts ("*** ERROR: `serverip' not set\n");

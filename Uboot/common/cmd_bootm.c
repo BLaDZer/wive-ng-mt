@@ -51,7 +51,7 @@
 #endif /* CONFIG_XZ */
 
  /*cmd_boot.c*/
-extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
+ extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 
 #if (CONFIG_COMMANDS & CFG_CMD_DATE) || defined(CONFIG_TIMESTAMP)
 #include <rtc.h>
@@ -158,41 +158,46 @@ extern void lynxkdi_boot( image_header_t * );
 #endif
 
 image_header_t header;
-ulong load_addr =  CFG_LOAD_ADDR;		/* Default Load Address */
+ulong load_addr = 0x80200000;	/* Default Load Address */
+ulong lastAddr = 0;
+ulong lastData = 0;
+ulong lastLen = 0;
 
 static inline void mips_cache_set(u32 v)
 {
 	asm volatile ("mtc0 %0, $16" : : "r" (v));
 }
 
-
-
-int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+/* Check firmware image at load_addr or argv[1].
+ * @return:
+ * 	> 0:	firmware good. length of firmware.
+ * 	= 0:	not defined.
+ * 	< 0:	invalid firmware.
+ */
+int verify_kernel_image (int argc, char *argv[], ulong *pAddr, ulong *pData, ulong *pLen)
 {
 	ulong	addr;
-	ulong	data, len, checksum;
-	ulong  *len_ptr;
-	uint	unc_len = 0x800000;
-	int	i, verify;
-	char	*name, *s;
-	int	(*appl)(int, char *[]);
+	ulong	data, len = 0, checksum;
+	int	verify;
+	char	*s;
 	image_header_t *hdr = &header;
-
-
-	//mips_cache_set(3);
 
 	s = getenv ("verify");
 	verify = (s && (*s == 'n')) ? 0 : 1;
-    
+
 	if (argc < 2) {
 		addr = load_addr;
 	} else {
 		addr = simple_strtoul(argv[1], NULL, 16);
 	}
 
-	
+	if (addr == lastAddr && ntohl(hdr->ih_magic) == IH_MAGIC) {
+		len = ntohl(hdr->ih_size);
+		goto skip;
+	}
+
 	SHOW_BOOT_PROGRESS (1);
-	printf ("## Booting image at %08lx ...\n", addr);
+	printf ("## Checking image at %08lx ...\n", addr);
 
 #ifdef DUAL_IMAGE_SUPPORT
 	if (strcmp(getenv("Image1Stable"), "1") != 0) {
@@ -210,17 +215,17 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	}
 #endif
 
-   /* YJ, 5/16/2006 */
-   if (addr == 0x8A200000)
-	   ((void(*) (void)) (0x8A200000U))();	
-   else if(addr == 0x80200000)
-	   ((void(*) (void)) (0x80200000U))();	
-   else if(addr == 0x8A300000)
-	   ((void(*) (void)) (0x8A300000U))();	
-   else if(addr == 0x88001000)
-	   ((void(*) (void)) (0x88001000U))();	
-   else if(addr == 0x8B800000)
-	   ((void(*) (void)) (0x8B800000U))();	
+	/* YJ, 5/16/2006 */
+	if (addr == 0x8A200000)
+	   ((void(*) (void)) (0x8A200000U))();
+	else if(addr == 0x80200000)
+	   ((void(*) (void)) (0x80200000U))();
+	else if(addr == 0x8A300000)
+	   ((void(*) (void)) (0x8A300000U))();
+	else if(addr == 0x88001000)
+	   ((void(*) (void)) (0x88001000U))();
+	else if(addr == 0x8B800000)
+	   ((void(*) (void)) (0x8B800000U))();
 
 	/* Copy header so we can blank CRC field for re-calculation */
 #ifdef CONFIG_HAS_DATAFLASH
@@ -229,51 +234,49 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	}
 #endif
 
-	do {	
+	do {
 #if defined (CFG_ENV_IS_IN_NAND)
-	if (addr >= CFG_FLASH_BASE)
-		ranand_read(&header, (char *)(addr - CFG_FLASH_BASE), sizeof(image_header_t));
-	else
-		memmove (&header, (char *)addr, sizeof(image_header_t));
+		if (addr >= CFG_FLASH_BASE)
+			ranand_read(&header, (char *)(addr - CFG_FLASH_BASE), sizeof(image_header_t));
+		else
 #elif defined (CFG_ENV_IS_IN_SPI)
-	if (addr >= CFG_FLASH_BASE)
-		raspi_read(&header, (char *)(addr - CFG_FLASH_BASE), sizeof(image_header_t));
-	else
-		memmove (&header, (char *)addr, sizeof(image_header_t));
-#else //CFG_ENV_IS_IN_FLASH
-	memmove (&header, (char *)addr, sizeof(image_header_t));
-#endif //CFG_ENV_IS_IN_FLASH
+		if (addr >= CFG_FLASH_BASE)
+			raspi_read(&header, (char *)(addr - CFG_FLASH_BASE), sizeof(image_header_t));
+		else
+#endif
+			memmove (&header, (char *)addr, sizeof(image_header_t));
 
-	if (ntohl(hdr->ih_magic) != IH_MAGIC) {
+		if (ntohl(hdr->ih_magic) != IH_MAGIC) {
 #ifdef __I386__	/* correct image format not implemented yet - fake it */
-		if (fake_header(hdr, (void*)addr, -1) != NULL) {
-			/* to compensate for the addition below */
-			addr -= sizeof(image_header_t);
-			/* turnof verify,
-			 * fake_header() does not fake the data crc
-			 */
-			verify = 0;
-		} else
+			if (fake_header(hdr, (void*)addr, -1) != NULL) {
+				/* to compensate for the addition below */
+				addr -= sizeof(image_header_t);
+				/* turnof verify,
+				 * fake_header() does not fake the data crc
+				 */
+				verify = 0;
+			} else
 #endif	/* __I386__ */
-	    {
-		printf ("Bad Magic Number,%08X \n",ntohl(hdr->ih_magic));
+			{
+				printf ("Bad Magic Number,%08X \n",ntohl(hdr->ih_magic));
 #if defined (CFG_ENV_IS_IN_NAND)
-			addr += CFG_BLOCKSIZE;
-			if ((addr-CFG_FLASH_BASE) < 0x2000000) /* Suppose minimum NAND flash size 32MB */
-			{	
-				printf("Search header in next block address %x\n",addr-CFG_FLASH_BASE); 
-				continue;
+				addr += CFG_BLOCKSIZE;
+				if ((addr-CFG_FLASH_BASE) < 0x2000000) /* Suppose minimum NAND flash size 32MB */
+				{	
+					printf("Search header in next block address %x\n",addr-CFG_FLASH_BASE); 
+					continue;
+				}
+				else
+#endif
+				{
+					SHOW_BOOT_PROGRESS (-1);
+					return -1;
+				}
 			}
-			else
-#endif				
-			{	
-		SHOW_BOOT_PROGRESS (-1);
-		return 1;
-	    }
-	}
-	}
-	break;
+		}
+		break;
 	}while (1);
+
 	SHOW_BOOT_PROGRESS (2);
 
 	data = (ulong)&header;
@@ -285,7 +288,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	if (crc32 (0, (char *)data, len) != checksum) {
 		puts ("Bad Header Checksum\n");
 		SHOW_BOOT_PROGRESS (-2);
-		return 1;
+		return -2;
 	}
 	SHOW_BOOT_PROGRESS (3);
 
@@ -304,13 +307,13 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 #if defined (CFG_ENV_IS_IN_NAND)
 	if (addr >= CFG_FLASH_BASE) {
-		ulong load_addr = CFG_SPINAND_LOAD_ADDR;
+		unsigned int load_addr = CFG_SPINAND_LOAD_ADDR;
 		ranand_read(load_addr, data - CFG_FLASH_BASE, len);
 		data = load_addr;
 	}
 #elif defined (CFG_ENV_IS_IN_SPI)
 	if (addr >= CFG_FLASH_BASE) {
-		ulong load_addr = CFG_SPINAND_LOAD_ADDR;
+		unsigned int load_addr = CFG_SPINAND_LOAD_ADDR;
 		raspi_read(load_addr, data - CFG_FLASH_BASE, len);
 		data = load_addr;
 	}
@@ -321,11 +324,43 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		if (crc32 (0, (char *)data, len) != ntohl(hdr->ih_dcrc)) {
 			printf ("Bad Data CRC\n");
 			SHOW_BOOT_PROGRESS (-3);
-			return 1;
+			return -3;
 		}
 		puts ("OK\n");
 	}
 	SHOW_BOOT_PROGRESS (4);
+
+	lastAddr = addr;
+	lastData = data;
+	lastLen  = len;
+
+skip:
+	if (pAddr != NULL) *pAddr = lastAddr;
+	if (pData != NULL) *pData = lastData;
+	if (pLen  != NULL) *pLen  = lastLen;
+
+	return (int)(sizeof(image_header_t) + len);
+}
+
+int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+{
+	ulong	addr;
+	ulong	data, len;
+	ulong	*len_ptr;
+	uint	unc_len = 0x800000;
+	int	i, verify;
+	char	*name, *s;
+	int	(*appl)(int, char *[]);
+	image_header_t *hdr = &header;
+
+	//mips_cache_set(3);
+
+	i = verify_kernel_image(argc, argv, &addr, &data, &len);
+	if (i <= 0)
+		return 1;
+
+	s = getenv ("verify");
+	verify = (s && (*s == 'n')) ? 0 : 1;
 
 	len_ptr = (ulong *)data;
 
@@ -1312,8 +1347,16 @@ print_image_hdr (image_header_t *hdr)
 	time_t timestamp = (time_t)ntohl(hdr->ih_time);
 	struct rtc_time tm;
 #endif
+	uint8_t *p_name = hdr->ih_name;
+	int i_name = IH_NMLEN;
 
-	printf ("   Image Name:   %.*s\n", IH_NMLEN, hdr->ih_name);
+	/* check ASUS specific header */
+	if (p_name[0] < 0x20 || p_name[0] > 0x7e) {
+		p_name += 4;
+		i_name -= 4;
+	}
+
+	printf ("   Image Name:   %.*s\n", i_name, p_name);
 #if (CONFIG_COMMANDS & CFG_CMD_DATE) || defined(CONFIG_TIMESTAMP)
 	to_tm (timestamp, &tm);
 	printf ("   Created:      %4d-%02d-%02d  %2d:%02d:%02d UTC\n",

@@ -27,66 +27,41 @@ include $(TOPDIR)/config.mk
 
 LIB	= libdrivers.a
 
-OBJS	= rt2880_eth.o i2c_drv.o
+OBJS	= rt2880_eth.o gpio.o
 
 ifeq ($(RALINK_MDIO_ACCESS_FUN),ON)
 OBJS	+= mii_mgr.o
 endif
 
-ifeq ($(CONFIG_ATHEROS_PHY),y)
-ifeq ($(CONFIG_AG7100),y)
-OBJS	+= ag7100.o athrs16_phy.o meminit.o
-else
-OBJS	+= athrs16_phy.o rt2880_eth.o
-endif
-else
-OBJS	+= rt2880_eth.o
-endif
-
-ifdef RTL8367_SW
-OBJS += smi.o
-
-OBJS += rtk_api.o
-OBJS += rtl8370_asicdrv.o
-OBJS += rtl8370_asicdrv_led.o
-OBJS += rtl8370_asicdrv_lut.o
-OBJS += rtl8370_asicdrv_phy.o
-OBJS += rtl8370_asicdrv_port.o
-OBJS += rtl8370_asicdrv_portIsolation.o
-endif
-
-ifeq ($(CFG_ENV_IS), IN_FLASH)
-OBJS	+= spi_drv.o 
+ifeq ($(MAC_TO_RTL8367_MODE),y)
+include rtl8367/rtl8367.mk
 endif
 
 ifeq ($(CFG_ENV_IS), IN_SPI)
- ifeq ($(RT6855A_MP), y)
+ifeq ($(RT6855A_MP), y)
  OBJS	+= spi_rt6855A_flash.o 
- else
- ifeq ($(MT7621_MP), y)
+else
+ifeq ($(MT7621_MP), y)
  OBJS	+= spi_rt6855A_flash.o 
- else
- ifeq ($(MT7628_MP), y)
+else
+ifeq ($(MT7628_MP), y)
  OBJS	+= spi_rt6855A_flash.o 
- else
+else
  OBJS	+= spi_flash.o 
- endif
- endif
- endif
- ifeq ($(RT3883_MP), y)
- OBJS	+= spi_drv.o 
- endif
+endif
+endif
+endif
 endif
 
 ifeq ($(CFG_ENV_IS), IN_NAND)
- ifeq ($(MT7621_MP), y)
-	OBJS    += nand/mtk_nand.o nand/bmt.o nand/nand_base.o nand/nand_ids.o
- else
-OBJS	+= nand_flash.o 
- endif
- ifeq ($(RT3883_MP), y)
- OBJS	+= spi_drv.o 
- endif
+ifeq ($(MT7621_MP), y)
+OBJS	+= nand/mtk_nand.o nand/nand_base.o
+else
+OBJS	+= nand_flash.o
+endif
+ifeq ($(RT3883_MP), y)
+OBJS	+= spi_drv.o
+endif
 endif
 
 ifeq ($(MTK_XHCI), ON)

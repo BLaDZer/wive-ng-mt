@@ -198,7 +198,7 @@ _start:
 	.align 4
 reset:
     b	__reset_vector
-        nop
+	nop
 
 /**************************************************************************************
  Register use while executing in this file: ("GLOBAL" denotes a common value.)
@@ -489,7 +489,7 @@ finish_initialisation:
 	/* Set up temporary stack */
 	li	t0, CONFIG_SYS_SDRAM_BASE + CONFIG_SYS_INIT_SP_OFFSET
 	la	sp, 0(t0)
-	set_tag 0x06	
+	set_tag 0x06
 	lui	t9, %hi(board_init_f)
 	addiu t9, %lo(board_init_f)
 	jr	t9
@@ -629,7 +629,7 @@ gcr_found:
      lw     r4_temp_data, 0x000c(r5_temp_addr)  #CHIP_REV_ID
      ext    r19_more_cores, r4_temp_data, 17, 1
 #else
-       li     r19_more_cores, 0
+     li     r19_more_cores, 0
 #endif
 
 done_init_gpr:
@@ -786,7 +786,7 @@ init_gic:
     nop
 
     li     r5_temp_addr, GCR_GIC_STATUS        # Read GCR_GIC_STATUS
-    lw      r4_temp_data, 0(r5_temp_addr)
+	lw      r4_temp_data, 0(r5_temp_addr)
     ext     r4_temp_data, r4_temp_data, 0, 1    # Isolate  GCR_GIC_STATUS[GIC_EX].
     beqz    r4_temp_data, done_gic              # If no gic then skip.
     nop
@@ -962,7 +962,7 @@ init_mc:
 	li	t1, 1<<8
 	or  t2, t2, t1
 	sw	t2, 0(t0)
-	
+
 	/* enter accessible PSE SRAM */
 
 	/* RESET PSE SRAM */
@@ -1049,7 +1049,6 @@ DLY:
 	sw		$29, 80(t0)
 	sw		$30, 84(t0)
 	sw		$31, 88(t0)
-
 
 	li		t9 , 0xBE108800
 	jalr    t9

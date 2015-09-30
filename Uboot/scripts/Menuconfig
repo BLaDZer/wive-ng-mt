@@ -1291,6 +1291,7 @@ save_configuration () {
 	echo -n "."
 
 	DEF_CONFIG="${1:-.config}"
+	#DEF_CONFIG_H="include/linux/autoconf.h"
 	DEF_CONFIG_H="autoconf.h"
 
 	CONFIG=.tmpconfig
@@ -1408,7 +1409,7 @@ else
 	echo "No $UBOOT_VER_FILE found" 
 fi
 
-backtitle="Ralink BootLoader ${RALINK_LOCAL_VERSION} Configuration"
+backtitle="Mediatek BootLoader ${RALINK_LOCAL_VERSION} Configuration"
 
 trap "cleanup ; exit 1" 1 2 15
 

@@ -26,8 +26,6 @@
 #include <asm/addrspace.h>
 //#include "LzmaDecode.h"
 
-//#define MAX_SDRAM_SIZE	(64*1024*1024)
-//#define MIN_SDRAM_SIZE	(8*1024*1024)
 #define MAX_SDRAM_SIZE	(256*1024*1024)
 #define MIN_SDRAM_SIZE	(8*1024*1024)
 
@@ -37,6 +35,7 @@
 #define MIN_RT2880_SDRAM_SIZE	(32*1024*1024)
 #endif
 
+extern int do_reset(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 
 /*
  * Check memory range for valid RAM. A simple memory test determines
@@ -57,8 +56,6 @@ long get_ram_size(volatile long *base, long maxsize)
 		save[i++] = *addr;
 		
 		*addr = ~cnt;
-
-		
 	}
 
 	addr = base;
@@ -66,7 +63,6 @@ long get_ram_size(volatile long *base, long maxsize)
 
 	*addr = 0;
 
-	
 	if ((val = *addr) != 0) {
 		/* Restore the original data before leaving the function.
 		 */
@@ -135,19 +131,28 @@ long int initdram(int board_type)
 		return MIN_SDRAM_SIZE;
 	}
 #endif
-	 
 
-
+#if defined (ON_BOARD_4096M_DRAM_COMPONENT) 
+	size = 448 * 1024 * 1024;
+#else
 	size = get_ram_size((ulong *)CFG_SDRAM_BASE, MAX_SDRAM_SIZE);
+	if (size <= MIN_SDRAM_SIZE)
+	{
+		printf("RAM size (0x%08x) too small !!! do_reset\n", size);
+		udelay(100 * 1000);
+		do_reset (NULL, 0, 0, NULL);
+	}
+
 	if (size > max_size)
 	{
 		max_size = size;
 	//	printf("\n Return MAX size!! \n");
 		return max_size;
 	}
+#endif
+
 //	printf("\n Return Real size =%d !! \n",size);
 	return size;
-	
 }
 
 int checkboard (void)

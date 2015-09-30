@@ -61,21 +61,30 @@
 #define SR_EPE			0x20	/* Erase/Program error */
 #define SR_SRWD			0x80	/* SR write protect */
 
-#define ra_inl(addr)  (*(volatile u32 *)(addr))
-#define ra_outl(addr, value)  (*(volatile u32 *)(addr) = (value))
-#define ra_and(addr, value) ra_outl(addr, (ra_inl(addr) & (value)))
-#define ra_or(addr, value) ra_outl(addr, (ra_inl(addr) | (value)))
+#define ra_inl(addr)		(*(volatile u32 *)(addr))
+#define ra_outl(addr, value)	(*(volatile u32 *)(addr) = (value))
+#define ra_and(addr, value)	ra_outl(addr, (ra_inl(addr) & (value)))
+#define ra_or(addr, value)	ra_outl(addr, (ra_inl(addr) | (value)))
 #define RT2880_REG(x)		(*((volatile u32 *)(x)))
 
-/*#define ra_dbg(args...)*/
-#define ra_dbg(args...) do { if (1) printf(args); } while(0)
+#define ra_dbg(args...)
+//#define ra_dbg(args...) do { if (1) printf(args); } while(0)
 
 #define SPI_FIFO_SIZE 16
 
+#ifdef SPI_FAST_CLOCK
+#define CFG_CLK_DIV		SPICFG_SPICLK_DIV4 /* 200/4 = 50.0 MHz */
+#else
+#define CFG_CLK_DIV		SPICFG_SPICLK_DIV8 /* 200/8 = 25.0 MHz */
+#endif
+
 #if defined (MT7620_ASIC_BOARD) || defined (MT7620_FPGA_BOARD)
 #define COMMAND_MODE		// define this for SPI flash command/user mode support
+#if defined (SPI_FLASH_READ_DOR)
+#define RD_MODE_DOR		// use DOR (0x3B) instead of normal Read
 #endif
-//#define COMMAND_MODE		// define this for SPI flash command/user mode support
+#endif
+
 //#define ADDR_4B			// if all instruction use 4B address mode
 //#define RD_MODE_FAST		// use Fast Read instead of normal Read
 //#define RD_MODE_DIOR		// use DIOR (0xBB)instead of normal Read
@@ -88,9 +97,8 @@
 #if defined(RD_MODE_QOR) || defined(RD_MODE_QIOR)
 #define RD_MODE_QUAD
 #endif
-
 static int raspi_wait_ready(int sleep_ms);
-static unsigned int spi_wait_nsec = 0;
+static unsigned int spi_wait_nsec = 150;
 
 #if 0
 static void gpio0_low(void)
@@ -127,6 +135,7 @@ static int spic_busy_wait(void)
 #define SPIC_USER_MODE (1<<2)
 #define SPIC_4B_ADDR (1<<3)
 
+#if !defined(COMMAND_MODE)
 /*
  * @cmd: command and address
  * @n_cmd: size of command, in bytes
@@ -203,47 +212,48 @@ static int spic_write(const u8 *cmd, size_t n_cmd, const u8 *txbuf, size_t n_tx)
 {
 	return spic_transfer(cmd, n_cmd, (u8 *)txbuf, n_tx, SPIC_WRITE_BYTES);
 }
+#endif /* ! COMMAND_MODE */
 
 extern unsigned long mips_bus_feq;
+
 int spic_init(void)
 {
 	// use normal(SPI) mode instead of GPIO mode
-	ra_and(RT2880_GPIOMODE_REG, ~(1 << 1));
 #if defined (RT6855_ASIC_BOARD) || defined (RT6855_FPGA_BOARD)
 	ra_or(RT2880_GPIOMODE_REG, (1 << 11));
 #elif defined (MT7620_ASIC_BOARD) || defined (MT7620_FPGA_BOARD)
-	/* keep GPIOMODE[11] SPI_GPIO_MODE=0 in spi flash case */
 	ra_and(RT2880_GPIOMODE_REG, ~(1 << 11));
+#else
+	ra_and(RT2880_GPIOMODE_REG, ~(1 << 1));
 #endif
+
 	// reset spi block
 	ra_or(RT2880_RSTCTRL_REG, RSTCTRL_SPI_RESET);
 	udelay(1);
 	ra_and(RT2880_RSTCTRL_REG, ~RSTCTRL_SPI_RESET);
+	udelay(1);
 
 #if defined(RALINK_VITESSE_SWITCH_CONNECT_SPI_CS1)
-        /* config ARB and set the low or high active correctly according to the device */
+	/* config ARB and set the low or high active correctly according to the device */
 	RT2880_REG(RT2880_SPI_ARB_REG) = SPIARB_ARB_EN | (SPIARB_SPI1_ACTIVE_MODE <<1) | SPIARB_SPI0_ACTIVE_MODE;
-        RT2880_REG(RT2880_SPI0_CTL_REG) = (~SPIARB_SPI0_ACTIVE_MODE)&0x1;     //disable first
-        RT2880_REG(RT2880_SPI1_CTL_REG) = (~SPIARB_SPI1_ACTIVE_MODE)&0x1;     //disable first
+	RT2880_REG(RT2880_SPI0_CTL_REG) = (~SPIARB_SPI0_ACTIVE_MODE)&0x1;     //disable first
+	RT2880_REG(RT2880_SPI1_CTL_REG) = (~SPIARB_SPI1_ACTIVE_MODE)&0x1;     //disable first
 #endif
 
-	// FIXME, clk_div should depend on spi-flash.
-#ifdef ADDR_4B // use 4 byte address mode
-	ra_outl(RT2880_SPI0_CFG_REG, SPICFG_MSBFIRST | SPICFG_TXCLKEDGE_FALLING | SPICFG_SPICLK_DIV8 | SPICFG_SPICLKPOL | SPICFG_ADDRMODE);
+#if !defined(COMMAND_MODE)
+	ra_outl(RT2880_SPI0_CFG_REG, SPICFG_MSBFIRST | SPICFG_RXCLKEDGE_FALLING | SPICFG_TXCLKEDGE_FALLING | CFG_CLK_DIV);
 #else
-	ra_outl(RT2880_SPI0_CFG_REG, SPICFG_MSBFIRST | SPICFG_TXCLKEDGE_FALLING | SPICFG_SPICLK_DIV8 | SPICFG_SPICLKPOL);
+	ra_outl(RT2880_SPI0_CFG_REG, SPICFG_MSBFIRST | SPICFG_TXCLKEDGE_FALLING | SPICFG_SPICLKPOL | CFG_CLK_DIV);
 #endif
-								
+
 	// set idle state
 	ra_outl(RT2880_SPI0_CTL_REG, SPICTL_HIZSDO | SPICTL_SPIENA_HIGH);
 
-	spi_wait_nsec = (8 * 1000 / ((mips_bus_feq / 1000 / 1000 / SPICFG_SPICLK_DIV8) )) >> 1 ;
+	spi_wait_nsec = (8 * 1000 / (128 / (CFG_CLK_DIV+1)) ) >> 1 ;
+	printf("Ralink SPI flash driver, SPI clock: %dMHz\n", (mips_bus_feq / 1000000) >> (CFG_CLK_DIV+1));
 
-	printf("spi_wait_nsec: %x \n", spi_wait_nsec);
 	return 0;
 }
-
-
 
 struct chip_info {
 	char		*name;
@@ -405,6 +415,32 @@ static int raspi_cmd(const u8 cmd, const u32 addr, const u8 mode, u8 *buf, const
 	return retval;
 }
 #endif
+
+/*
+ * Set write enable latch with Write Enable command.
+ * Returns negative if error occurred.
+ */
+static int raspi_write_enable(void)
+{
+	u8 code = OPCODE_WREN;
+
+#ifdef COMMAND_MODE
+	return raspi_cmd(code, 0, 0, 0, 0, 0, 0);
+#else
+	return spic_write(&code, 1, NULL, 0);
+#endif
+}
+
+static int raspi_write_disable(void)
+{
+	u8 code = OPCODE_WRDI;
+
+#ifdef COMMAND_MODE
+	return raspi_cmd(code, 0, 0, 0, 0, 0, 0);
+#else
+	return spic_write(&code, 1, NULL, 0);
+#endif
+}
 
 #if defined (RD_MODE_QUAD)
 static int raspi_set_quad()
@@ -588,6 +624,7 @@ static int raspi_clear_sr()
 
 
 #ifndef NO_4B_ADDRESS_SUPPORT
+#ifdef SPI_FLASH_DBG_CMD
 static int raspi_read_scur(u8 *val)
 {
 	ssize_t retval;
@@ -609,6 +646,7 @@ static int raspi_read_scur(u8 *val)
 	}
 	return 0;
 }
+#endif /* SPI_FLASH_DBG_CMD */
 
 static int raspi_4byte_mode(int enable)
 {
@@ -643,7 +681,7 @@ static int raspi_4byte_mode(int enable)
 		u8 code;
 
 		raspi_wait_ready(1);
-	    raspi_write_enable();
+		raspi_write_enable();
 	
 		if (enable)
 		{
@@ -683,31 +721,6 @@ static int raspi_4byte_mode(int enable)
 
 
 
-/*
- * Set write enable latch with Write Enable command.
- * Returns negative if error occurred.
- */
-static inline int raspi_write_enable(void)
-{
-	u8 code = OPCODE_WREN;
-
-#ifdef COMMAND_MODE
-	raspi_cmd(code, 0, 0, 0, 0, 0, 0);	
-#else
-	return spic_write(&code, 1, NULL, 0);
-#endif
-}
-
-static inline int raspi_write_disable(void)
-{
-	u8 code = OPCODE_WRDI;
-
-#ifdef COMMAND_MODE
-	raspi_cmd(code, 0, 0, 0, 0, 0, 0);
-#else
-	return spic_write(&code, 1, NULL, 0);
-#endif
-}
 
 /*
  * Set all sectors (global) unprotected if they are protected.
@@ -765,7 +778,9 @@ static int raspi_wait_ready(int sleep_ms)
  */
 static int raspi_erase_sector(u32 offset)
 {
+#if !defined(COMMAND_MODE)
 	u8 buf[5];
+#endif
 
 	/* Wait until finished previous write command. */
 	if (raspi_wait_ready(3))
@@ -895,7 +910,12 @@ int raspi_erase(unsigned int offs, int len)
 
 int raspi_read(char *buf, unsigned int from, int len)
 {
-	u8 cmd[5], code;
+#ifdef COMMAND_MODE
+	u8 code;
+#else
+	u8 cmd[5];
+#endif /* COMMAND_MODE */
+
 	int rdlen;
 	//u32 start_time, end_time;
 
@@ -1310,6 +1330,7 @@ int do_mem_cp(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	unsigned int addr, dest;
 	int count;
 
+	DECLARE_GLOBAL_DATA_PTR;
 	addr = CFG_LOAD_ADDR;
 	count = (unsigned int)NetBootFileXferSize;
 
