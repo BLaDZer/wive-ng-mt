@@ -456,9 +456,11 @@ int ip_fragment(struct sk_buff *skb, int (*output)(struct sk_buff *))
 	int offset;
 	__be16 not_last_frag;
 	struct rtable *rt = skb_rtable(skb);
+	struct net *net;
 	int err = 0;
 
 	dev = rt->dst.dev;
+	net = dev_net(dev);
 
 	/*
 	 *	Point into the IP datagram header.
@@ -561,7 +563,7 @@ int ip_fragment(struct sk_buff *skb, int (*output)(struct sk_buff *))
 			err = output(skb);
 
 			if (!err)
-				IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGCREATES);
+				IP_INC_STATS(net, IPSTATS_MIB_FRAGCREATES);
 			if (err || !frag)
 				break;
 
@@ -571,7 +573,7 @@ int ip_fragment(struct sk_buff *skb, int (*output)(struct sk_buff *))
 		}
 
 		if (err == 0) {
-			IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGOKS);
+			IP_INC_STATS(net, IPSTATS_MIB_FRAGOKS);
 			return 0;
 		}
 
@@ -580,7 +582,7 @@ int ip_fragment(struct sk_buff *skb, int (*output)(struct sk_buff *))
 			kfree_skb(frag);
 			frag = skb;
 		}
-		IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGFAILS);
+		IP_INC_STATS(net, IPSTATS_MIB_FRAGFAILS);
 		return err;
 
 slow_path_clean:
@@ -694,15 +696,15 @@ slow_path:
 		if (err)
 			goto fail;
 
-		IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGCREATES);
+		IP_INC_STATS(net, IPSTATS_MIB_FRAGCREATES);
 	}
 	consume_skb(skb);
-	IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGOKS);
+	IP_INC_STATS(net, IPSTATS_MIB_FRAGOKS);
 	return err;
 
 fail:
 	kfree_skb(skb);
-	IP_INC_STATS(dev_net(dev), IPSTATS_MIB_FRAGFAILS);
+	IP_INC_STATS(net, IPSTATS_MIB_FRAGFAILS);
 	return err;
 }
 EXPORT_SYMBOL(ip_fragment);
