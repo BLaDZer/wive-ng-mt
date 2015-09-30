@@ -176,8 +176,10 @@ static VOID APPeerDeauthReqAction(
 		{
 			MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
 			PFRAME_802_11 Fr = (PFRAME_802_11)Elem->Msg;
+#ifdef DBG
 			unsigned char *tmp = (unsigned char *)pMbss->wdev.bssid;
 			unsigned char *tmp2 = (unsigned char *)&Fr->Hdr.Addr1;
+#endif
 			if (memcmp(&Fr->Hdr.Addr1, pMbss->wdev.bssid, 6) != 0)
 			{
 				DBGPRINT(RT_DEBUG_TRACE, ("da not match bssid,bssid:0x%02x%02x%02x%02x%02x%02x, addr1:0x%02x%02x%02x%02x%02x%02x\n",
