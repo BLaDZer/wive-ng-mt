@@ -431,7 +431,7 @@ int dm_bm_read_lock(struct dm_block_manager *bm, dm_block_t b,
 	int r;
 
 	p = dm_bufio_read(to_bufio(bm), b, (struct dm_buffer **) result);
-	if (unlikely(IS_ERR(p)))
+	if (IS_ERR(p))
 		return PTR_ERR(p);
 
 	aux = dm_bufio_get_aux_data(to_buffer(*result));
@@ -464,7 +464,7 @@ int dm_bm_write_lock(struct dm_block_manager *bm,
 	int r;
 
 	p = dm_bufio_read(to_bufio(bm), b, (struct dm_buffer **) result);
-	if (unlikely(IS_ERR(p)))
+	if (IS_ERR(p))
 		return PTR_ERR(p);
 
 	aux = dm_bufio_get_aux_data(to_buffer(*result));
@@ -497,7 +497,7 @@ int dm_bm_read_try_lock(struct dm_block_manager *bm,
 	int r;
 
 	p = dm_bufio_get(to_bufio(bm), b, (struct dm_buffer **) result);
-	if (unlikely(IS_ERR(p)))
+	if (IS_ERR(p))
 		return PTR_ERR(p);
 	if (unlikely(!p))
 		return -EWOULDBLOCK;
@@ -530,7 +530,7 @@ int dm_bm_write_lock_zero(struct dm_block_manager *bm,
 	void *p;
 
 	p = dm_bufio_new(to_bufio(bm), b, (struct dm_buffer **) result);
-	if (unlikely(IS_ERR(p)))
+	if IS_ERR(p))
 		return PTR_ERR(p);
 
 	memset(p, 0, dm_bm_block_size(bm));

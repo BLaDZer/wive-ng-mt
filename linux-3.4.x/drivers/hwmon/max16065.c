@@ -647,7 +647,7 @@ static int max16065_probe(struct i2c_client *client,
 	}
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
-	if (unlikely(IS_ERR(data->hwmon_dev))) {
+	if (IS_ERR(data->hwmon_dev)) {
 		ret = PTR_ERR(data->hwmon_dev);
 		goto out;
 	}

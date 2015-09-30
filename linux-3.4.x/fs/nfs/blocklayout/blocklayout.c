@@ -714,7 +714,7 @@ fill_invalid_ext:
 				(unsigned long long)isect);
 			page = bl_find_get_zeroing_page(wdata->inode, index,
 							cow_read);
-			if (unlikely(IS_ERR(page))) {
+			if (IS_ERR(page)) {
 				wdata->pnfs_error = PTR_ERR(page);
 				goto out;
 			} else if (page == NULL)
