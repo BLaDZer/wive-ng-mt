@@ -199,7 +199,7 @@ if  [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ] || [ "$vpnEnabled" 
     qos_nf
 fi
 
-if [ "$OperationMode" != "0" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "1"] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoemode" != "1" ]; then
+if [ "$OperationMode" != "0" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "1" ] && [ "$ApCliBridgeOnly" != "1" ] && [ "$purepppoemode" != "1" ]; then
     # build rules for WAN
     # not need shape at wan if in pure pppoe mode or bridget mode
     qos_nf_if
@@ -207,7 +207,7 @@ if [ "$OperationMode" != "0" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "1"] && [ "
 fi
 
 # build rules for VPN
-if [ "$vpnEnabled" = "on" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "2"] && [ "$wan_if" != "$real_wan_if" ]; then
+if [ "$vpnEnabled" = "on" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "2" ] && [ "$wan_if" != "$real_wan_if" ]; then
     # reload global
     . /etc/scripts/global.sh
     # check device ready
