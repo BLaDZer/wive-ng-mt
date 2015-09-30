@@ -353,6 +353,9 @@ fulldump
 /user/quagga/zebra/Makefile.in
 /user/quagga/zebra/testzebra
 /user/quagga/zebra/zebra
+/user/quagga/doc/defines.texi
+/user/quagga/pimd/Makefile
+/user/quagga/vtysh/vtysh_cmd.c
 /user/tcpdump/Makefile
 /user/tcpdump/Mkaefile.in
 /user/tcpdump/configure
