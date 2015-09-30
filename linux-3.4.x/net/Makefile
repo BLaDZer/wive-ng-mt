@@ -15,13 +15,31 @@ obj-$(CONFIG_NET)		+= $(tmp-y)
 # LLC has to be linked before the files in net/802/
 obj-$(CONFIG_LLC)		+= llc/
 obj-$(CONFIG_NET)		+= ethernet/ 802/ sched/ netlink/
+ifneq ($(CONFIG_VLAN_8021Q),)
+obj-y				+= 8021q/
+endif
+obj-$(CONFIG_UNIX)		+= unix/
+obj-$(CONFIG_PACKET)		+= packet/
 obj-$(CONFIG_NETFILTER)		+= netfilter/
 obj-$(CONFIG_BRIDGE)		+= bridge/
 obj-$(CONFIG_INET)		+= ipv4/
-obj-$(CONFIG_XFRM)		+= xfrm/
-obj-$(CONFIG_UNIX)		+= unix/
 obj-$(CONFIG_NET)		+= ipv6/
-obj-$(CONFIG_PACKET)		+= packet/
+obj-$(CONFIG_XFRM)		+= xfrm/
+
+# This is hooks for Ralink PPE
+ifneq ($(CONFIG_RA_NAT_NONE),y)
+# if raeth not module build move hook to raether.c
+ifneq ($(CONFIG_RAETH),y)
+obj-y				+= nat/foe_hook/
+endif
+endif
+
+# Ralink hardware NAT/PPPOE Offload support
+obj-$(CONFIG_RA_NAT_HW)         += nat/hw_nat/
+
+# Software NAT Offload
+obj-$(CONFIG_BCM_NAT)		+= nat/bcm_nat/
+
 obj-$(CONFIG_NET_KEY)		+= key/
 obj-$(CONFIG_NET_DSA)		+= dsa/
 obj-$(CONFIG_IPX)		+= ipx/
@@ -42,9 +60,6 @@ obj-$(CONFIG_L2TP)		+= l2tp/
 obj-$(CONFIG_DECNET)		+= decnet/
 obj-$(CONFIG_ECONET)		+= econet/
 obj-$(CONFIG_PHONET)		+= phonet/
-ifneq ($(CONFIG_VLAN_8021Q),)
-obj-y				+= 8021q/
-endif
 obj-$(CONFIG_IP_DCCP)		+= dccp/
 obj-$(CONFIG_IP_SCTP)		+= sctp/
 obj-$(CONFIG_RDS)		+= rds/
@@ -71,16 +86,3 @@ obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
 obj-$(CONFIG_NFC)		+= nfc/
 obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
 
-# This is hooks for Ralink PPE
-ifneq ($(CONFIG_RA_NAT_NONE),y)
-# if raeth not module build move hook to raether.c
-ifneq ($(CONFIG_RAETH),y)
-obj-y				+= nat/foe_hook/
-endif
-endif
-
-# Ralink hardware NAT/PPPOE Offload support
-obj-$(CONFIG_RA_NAT_HW)         += nat/hw_nat/
-
-# Software NAT Offload
-obj-$(CONFIG_BCM_NAT)		+= nat/bcm_nat/
