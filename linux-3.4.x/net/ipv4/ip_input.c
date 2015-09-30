@@ -400,6 +400,7 @@ drop:
 int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev)
 {
 	const struct iphdr *iph;
+	struct net *net;
 	u32 len;
 
 	/* When the interface is in promisc. mode, drop all the crap
@@ -408,11 +409,11 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 	if (skb->pkt_type == PACKET_OTHERHOST)
 		goto drop;
 
-
-	IP_UPD_PO_STATS_BH(dev_net(dev), IPSTATS_MIB_IN, skb->len);
+	net = dev_net(dev);
+	IP_UPD_PO_STATS_BH(net, IPSTATS_MIB_IN, skb->len);
 
 	if ((skb = skb_share_check(skb, GFP_ATOMIC)) == NULL) {
-		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INDISCARDS);
+		IP_INC_STATS_BH(net, IPSTATS_MIB_INDISCARDS);
 		goto out;
 	}
 
@@ -445,7 +446,7 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 
 	len = ntohs(iph->tot_len);
 	if (skb->len < len) {
-		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INTRUNCATEDPKTS);
+		IP_INC_STATS_BH(net, IPSTATS_MIB_INTRUNCATEDPKTS);
 		goto drop;
 	} else if (len < (iph->ihl*4))
 		goto inhdr_error;
@@ -455,7 +456,7 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 	 * Note this now means skb->len holds ntohs(iph->tot_len).
 	 */
 	if (pskb_trim_rcsum(skb, len)) {
-		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INDISCARDS);
+		IP_INC_STATS_BH(net, IPSTATS_MIB_INDISCARDS);
 		goto drop;
 	}
 
@@ -476,7 +477,7 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 		       ip_rcv_finish);
 
 inhdr_error:
-	IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INHDRERRORS);
+	IP_INC_STATS_BH(net, IPSTATS_MIB_INHDRERRORS);
 drop:
 	kfree_skb(skb);
 out:
