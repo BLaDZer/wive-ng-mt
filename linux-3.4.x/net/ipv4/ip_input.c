@@ -348,6 +348,7 @@ static
 int __fastpathnet ip_rcv_finish(struct sk_buff *skb)
 {
 	const struct iphdr *iph = ip_hdr(skb);
+	struct net *net = dev_net(skb->dev);
 	struct rtable *rt;
 
 	/*
@@ -359,8 +360,7 @@ int __fastpathnet ip_rcv_finish(struct sk_buff *skb)
 					       iph->tos, skb->dev);
 		if (unlikely(err)) {
 			if (err == -EXDEV)
-				NET_INC_STATS_BH(dev_net(skb->dev),
-						 LINUX_MIB_IPRPFILTER);
+				NET_INC_STATS_BH(net, LINUX_MIB_IPRPFILTER);
 			goto drop;
 		}
 	}
@@ -381,11 +381,9 @@ int __fastpathnet ip_rcv_finish(struct sk_buff *skb)
 
 	rt = skb_rtable(skb);
 	if (rt->rt_type == RTN_MULTICAST) {
-		IP_UPD_PO_STATS_BH(dev_net(rt->dst.dev), IPSTATS_MIB_INMCAST,
-				skb->len);
+		IP_UPD_PO_STATS_BH(net, IPSTATS_MIB_INMCAST, skb->len);
 	} else if (rt->rt_type == RTN_BROADCAST)
-		IP_UPD_PO_STATS_BH(dev_net(rt->dst.dev), IPSTATS_MIB_INBCAST,
-				skb->len);
+		IP_UPD_PO_STATS_BH(net, IPSTATS_MIB_INBCAST, skb->len);
 
 	return dst_input(skb);
 
