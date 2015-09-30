@@ -1332,6 +1332,10 @@
 53) kernel: ppp: fix lockdep splat in ppp_dev_uninit().<br>
 <br>
 <br>
+<b>3.6.x</b><br>
+1) kernel: net: ipv6: Add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~98%).<br>
 2) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
