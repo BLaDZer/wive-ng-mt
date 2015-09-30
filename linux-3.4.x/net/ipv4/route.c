@@ -2699,7 +2699,7 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 		goto make_route;
 	}
 
-	err = fib_lookup(net, fl4, &res));
+	err = fib_lookup(net, fl4, &res);
 	if (err) {
 		res.fi = NULL;
 		if (fl4->flowi4_oif) {
