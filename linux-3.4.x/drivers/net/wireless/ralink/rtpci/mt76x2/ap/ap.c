@@ -480,12 +480,12 @@ VOID APStartUp(RTMP_ADAPTER *pAd)
 	AsicLockChannel(pAd, pAd->hw_cfg.cent_ch);
 
 #ifdef DOT11_VHT_AC
-//+++Add by shiang for debug
-DBGPRINT(RT_DEBUG_OFF, ("%s(): AP Set CentralFreq at %d(Prim=%d, HT-CentCh=%d, VHT-CentCh=%d, BBP_BW=%d)\n",
+	//+++Add by shiang for debug
+	DBGPRINT(RT_DEBUG_OFF, ("%s(): AP Set CentralFreq at %d(Prim=%d, HT-CentCh=%d, VHT-CentCh=%d, BBP_BW=%d)\n",
 						__FUNCTION__, pAd->hw_cfg.cent_ch, pAd->CommonCfg.Channel, 
 						pAd->CommonCfg.CentralChannel, pAd->CommonCfg.vht_cent_ch,
 						pAd->CommonCfg.BBPCurrentBW));
-//---Add by shiang for debug
+	//---Add by shiang for debug
 #endif /* DOT11_VHT_AC */
 
 #ifdef DOT11_N_SUPPORT

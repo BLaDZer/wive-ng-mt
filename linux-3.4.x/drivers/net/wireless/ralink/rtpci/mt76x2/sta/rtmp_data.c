@@ -440,9 +440,6 @@ VOID STAHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	UCHAR FromWhichBSSID = BSS0;
 	UCHAR UserPriority = 0;
 
-//+++Add by shiang for debug
-//---Add by shiangf for debug
-
 	if ((pHeader->FC.FrDs == 1) && (pHeader->FC.ToDs == 1)) {
 #ifdef CLIENT_WDS
 			if ((pRxBlk->wcid < MAX_LEN_OF_MAC_TABLE)
@@ -1042,9 +1039,6 @@ VOID STAHandleRxDataFrame_Hdr_Trns(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	UCHAR FromWhichBSSID = BSS0;
 	UCHAR UserPriority = 0;
 	UCHAR *pData;
-
-//+++Add by shiang for debug
-//---Add by shiangf for debug
 
 	if ((pHeader->FC.FrDs == 1) && (pHeader->FC.ToDs == 1)) {
 #ifdef CLIENT_WDS

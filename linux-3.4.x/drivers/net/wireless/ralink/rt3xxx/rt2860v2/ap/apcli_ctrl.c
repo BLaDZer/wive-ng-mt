@@ -1612,7 +1612,7 @@ VOID ApCliWpaMicFailureReportFrame(
 	UCHAR			Wcid;
 	PMAC_TABLE_ENTRY pMacEntry = NULL;
 	USHORT ifIndex = (USHORT)(Elem->Priv);
-	DBGPRINT(RT_DEBUG_TRACE, ("\ApCliWpaMicFailureReportFrame ----->\n"));
+	DBGPRINT(RT_DEBUG_TRACE, ("ApCliWpaMicFailureReportFrame ----->\n"));
 
 	if (ifIndex >= MAX_APCLI_NUM)
 		return;
@@ -1625,7 +1625,7 @@ VOID ApCliWpaMicFailureReportFrame(
 	pMacEntry = &pAd->MacTab.Content[pAd->ApCfg.ApCliTab[ifIndex].MacTabWCID];
 	if (!IS_ENTRY_APCLI(pMacEntry))
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("!IS_ENTRY_APCLI(pMacEntry)\n", __FUNCTION__));
+		DBGPRINT(RT_DEBUG_ERROR, ("!IS_ENTRY_APCLI(pMacEntry)\n"));
 		return;
 	}
 	

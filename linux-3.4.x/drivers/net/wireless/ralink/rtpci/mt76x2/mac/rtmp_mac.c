@@ -330,14 +330,6 @@ VOID RTMPWriteTxWI(
 #endif /* RTMP_MAC */
 
 	NdisMoveMemory(pOutTxWI, &TxWI, TXWISize);
-#ifdef DBG
-//+++Add by shiang for debug
-if (0){
-	hex_dump("TxWI", (UCHAR *)pOutTxWI, TXWISize);
-	dump_txwi(pAd, pOutTxWI);
-}
-//---Add by shiang for debug
-#endif
 }
 
 

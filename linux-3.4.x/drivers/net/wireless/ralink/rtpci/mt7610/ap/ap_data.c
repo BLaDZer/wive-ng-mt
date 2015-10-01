@@ -3531,22 +3531,10 @@ BOOLEAN APCheckClass2Class3Error(
 	/* If no mathed wcid index in ASIC on chip, do we need more check???  need to check again. 06-06-2006 */
 	if (Wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
-		MAC_TABLE_ENTRY *pEntry;
-		
 		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
-					__FUNCTION__, PRINT_MAC(pHeader->Addr2), 
+					__FUNCTION__, PRINT_MAC(pHeader->Addr2),
 					Wcid, MAX_LEN_OF_MAC_TABLE));
-//+++Add by shiang for debug
-//		hex_dump("Class2ErrPkt", (UCHAR *)pHeader, sizeof(HEADER_802_11));
-		pEntry = MacTableLookup(pAd, pHeader->Addr2);
-		if (pEntry)
-		{
-			if ((pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
-			{
-			}
-			return FALSE;
-		}
-//---Add by shiang for debug
+
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, pHeader);
 		return TRUE;
 	}
@@ -4087,7 +4075,9 @@ VOID APRxDErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	/* DBGPRINT(RT_DEBUG_TRACE, ("<--APRxDErrorHandle\n")); */
 }
 
+#ifdef RLT_MAC_DBG
 static int dump_next_valid = 0;
+#endif
 BOOLEAN APCheckVaildDataFrame(
 	IN RTMP_ADAPTER *pAd,
 	IN RX_BLK *pRxBlk)
@@ -4109,6 +4099,7 @@ BOOLEAN APCheckVaildDataFrame(
 			break; /* give up this frame */
 
 //+++Add by shiang for debug
+#ifdef RLT_MAC_DBG
 		if (pRxWI->RxWIWirelessCliID >= MAX_LEN_OF_MAC_TABLE) {
 				MAC_TABLE_ENTRY *pEntry = NULL;
 
@@ -4121,16 +4112,15 @@ BOOLEAN APCheckVaildDataFrame(
 		}
 		else if (dump_next_valid)
 		{
-#ifdef RLT_MAC
 				DBGPRINT(RT_DEBUG_ERROR, ("NextValidWcidPkt: seq=%d, ts=0x%02x%02x%02x%02x\n",
 									pHeader->Sequence,
 									pRxBlk->pRxWI->RXWI_N.rssi[0],
 									pRxBlk->pRxWI->RXWI_N.rssi[1],
 									pRxBlk->pRxWI->RXWI_N.rssi[2],
 									pRxBlk->pRxWI->RXWI_N.rssi[3]));
-#endif /* RLT_MAC */		
 				dump_next_valid = 0;
 		}
+#endif /* RLT_MAC_DBG */
 //---Add by shiang for debug
 
 		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
@@ -6028,26 +6018,6 @@ BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd)
 #ifdef RT_BIG_ENDIAN
 		RTMPFrameEndianChange(pAd, (PUCHAR)pHeader, DIR_READ, TRUE);
 		RTMPWIEndianChange(pAd , (PUCHAR)pRxWI, TYPE_RXWI);
-#endif
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-		DBGPRINT(RT_DEBUG_TRACE, ("==>%s():Dump the RxD, RxFCEInfo and RxInfo:\n", __FUNCTION__));
-		hex_dump("hw_rx_info", &rxblk.hw_rx_info[0], sizeof(rxblk.hw_rx_info));
-		hex_dump("RxD", (UCHAR *)pRxD, sizeof(RXD_STRUC));
-		dump_rxd(pAd, pRxD);
-#ifdef RLT_MAC
-		dumpRxFCEInfo(pAd, pFceInfo);
-#endif /* RLT_MAC */
-		dump_rxinfo(pAd, pRxInfo);
-
-		DBGPRINT(RT_DEBUG_TRACE, ("Dump the RxWI and RxPacket:\n"));
-		dump_rxwi(pAd, pRxWI);
-		hex_dump("RxPacket", (UCHAR *)pHeader, pRxWI->RxWIMPDUByteCnt);
-		DBGPRINT(RT_DEBUG_TRACE, ("<==%s():Finish dump!\n", __FUNCTION__));
-}
-//---Add by shiang for debug
 #endif
 
 #ifdef DBG_CTRL_SUPPORT

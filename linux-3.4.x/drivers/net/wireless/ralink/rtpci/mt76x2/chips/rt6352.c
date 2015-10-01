@@ -5568,7 +5568,7 @@ void RT6352_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
 		__FUNCTION__, rx0_rssi, rx1_rssi));	
 
 	/*
@@ -5582,7 +5582,7 @@ void RT6352_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	else
 		pAd->chipCap.avg_rssi_all = (pAd->chipCap.avg_rssi_0 + pAd->chipCap.avg_rssi_1)/512;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: update rssi all(%d)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: update rssi all(%d)\n", 
 		__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 

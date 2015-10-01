@@ -351,9 +351,6 @@ USHORT RtmpPCI_WriteSingleTxResource(
 
 	ral_write_txd(pAd, pTxD, pTxInfo, FALSE, FIFO_EDCA);
 
-//+++Add by shiang for debug
-//---Add by shiang for debug
-
 #ifdef RT_BIG_ENDIAN
 	RTMPWIEndianChange(pAd, (PUCHAR)(pDMAHeaderBufVA), TYPE_TXWI);
 	RTMPFrameEndianChange(pAd, (PUCHAR)(pDMAHeaderBufVA + TXWISize), DIR_WRITE, FALSE);
@@ -652,10 +649,6 @@ int RtmpPCIMgmtKickOut(
 	RTMPDescriptorEndianChange((UCHAR *)pTxD, TYPE_TXD);
 	WriteBackToDescriptor((UCHAR *)pDestTxD, (UCHAR *)pTxD, FALSE, TYPE_TXD);
 #endif
-
-//+++Add by shiang for debug
-//---Add by shiang for debug
-
 
 	pAd->RalinkCounters.KickTxCount++;
 	pAd->RalinkCounters.OneSecTxDoneCount++;
@@ -2215,9 +2208,6 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 	}
 #endif
 #endif /* VHT_TXBF_SUPPORT */
-
-//+++Add by shiang for debug
-//---Add by shiang for debug
 
 #ifdef RT_BIG_ENDIAN
 	RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);

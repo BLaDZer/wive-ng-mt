@@ -3695,16 +3695,6 @@ VOID RTMPEnableRxTx(
 	
 	{
 		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0xc);
-
-//+++Add by shiang for debug for pbf_loopback
-//			RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x2c);
-//---Add by shiang for debug
-//+++Add by shiang for debug invalid RxWI->WCID 
-#ifdef RT8592
-#endif /* RT8592 */
-//---Add by shiang for  debug invalid RxWI->WCID 
-
-
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<== RTMPEnableRxTx\n"));	

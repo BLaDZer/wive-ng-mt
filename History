@@ -1334,11 +1334,12 @@
 <br>
 <b>3.6.x</b><br>
 1) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
-2) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-3) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-4) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-5) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-6) kernel: net: ipv4/6: compute net once in some cases.<br>
+2) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+3) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+4) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+5) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+6) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+7) kernel: net: ipv4/6: compute net once in some cases.<br>
 <br>
 <br>
 <b>TODO:</b><br>

@@ -177,16 +177,7 @@ VOID RTMPWriteTxWI(
 
 	pTxWI->TxWIPacketId = pTxWI->TxWIMCS;
 	NdisMoveMemory(pOutTxWI, &TxWI, TXWISize);
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0){
-	hex_dump("TxWI", (UCHAR *)pOutTxWI, TXWISize);
 }
-//---Add by shiang for debug
-#endif
-}
-
 
 VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 {

@@ -261,23 +261,6 @@ USHORT RtmpPCI_WriteSingleTxResource(
 
 	ral_write_txd(pAd, pTxBlk, pTxD, pTxInfo, FALSE, FIFO_EDCA);
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	DBGPRINT(RT_DEBUG_OFF, ("%s():pTxD->SDPtr0=0x%x, SrcBufPtr=0x%p!\n", __FUNCTION__, pTxD->SDPtr0, pTxBlk->pSrcBufData));
-	
-	hex_dump("DataTxD", pTxRing->Cell[TxIdx].AllocVa, TXD_SIZE);
-	dump_txd(pAd, (TXD_STRUC *)pTxRing->Cell[TxIdx].AllocVa);
-
-	hex_dump("DataTxInfo", pTxRing->Cell[TxIdx].AllocVa + sizeof(TXD_STRUC), sizeof(TXINFO_STRUC));
-	dump_txinfo(pAd, (TXINFO_STRUC *)(pTxRing->Cell[TxIdx].AllocVa + sizeof(TXD_STRUC)));
-
-	hex_dump("DataPktHdr", pDMAHeaderBufVA, inf_hdr_len);
-	hex_dump("DataPktInfo", pTxBlk->pSrcBufData, pTxD->SDLen1);
-}
-//---Add by shiang for debug
-#endif
-
 #ifdef RT_BIG_ENDIAN
 	RTMPWIEndianChange(pAd, (PUCHAR)(pDMAHeaderBufVA), TYPE_TXWI);
 	RTMPFrameEndianChange(pAd, (PUCHAR)(pDMAHeaderBufVA + TXWISize), DIR_WRITE, FALSE);
@@ -579,23 +562,6 @@ int RtmpPCIMgmtKickOut(
 #ifdef RT_BIG_ENDIAN
 	RTMPDescriptorEndianChange((UCHAR *)pTxD, TYPE_TXD);
 	WriteBackToDescriptor((UCHAR *)pDestTxD, (UCHAR *)pTxD, FALSE, TYPE_TXD);
-#endif
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	TXWI_STRUC *pTxWI = (TXWI_STRUC *)(pSrcBufVA + TXINFO_SIZE);
-	
-	DBGPRINT(RT_DEBUG_OFF, ("%s():pTxD->SDPtr0=0x%x, SrcBufPtr=0x%p, SwIdx=%ld\n", __FUNCTION__,
-							pTxD->SDPtr0, (UCHAR *)(pSrcBufVA + TXINFO_SIZE), SwIdx));
-
-	hex_dump("MgmtTxDInfo", pAd->MgmtRing.Cell[SwIdx].AllocVa, TXD_SIZE);
-	dump_txd(pAd, (TXD_STRUC *)pAd->MgmtRing.Cell[SwIdx].AllocVa);
-	dump_txinfo(pAd, (TXINFO_STRUC *)(pAd->MgmtRing.Cell[SwIdx].AllocVa + sizeof(TXD_STRUC)));
-	dumpTxWI(pAd, pTxWI);
-	hex_dump("MgmtPktInfo", (pSrcBufVA + TXINFO_SIZE), pTxD->SDLen0);
-}
-//---Add by shiang for debug
 #endif
 
 	pAd->RalinkCounters.KickTxCount++;
@@ -1700,20 +1666,6 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 	pTxD->SDLen1 = 0;
 	pTxD->SDPtr0 = SrcBufPA;
 	pTxD->DMADONE = 0;
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0){
-	DBGPRINT(RT_DEBUG_OFF, ("%s():pTxD->SDPtr0=0x%x, SrcBufPtr=0x%p, TxRing=%d, SwIdx=%ld\n", __FUNCTION__,
-							pTxD->SDPtr0, (UCHAR *)(pSrcBufVA + TXINFO_SIZE), QueIdx, SwIdx));
-
-	hex_dump("MgmtTxDInfo", pAd->TxRing[QueIdx].Cell[SwIdx].AllocVa, TXD_SIZE);
-	dump_txd(pAd, (TXD_STRUC *)pAd->TxRing[QueIdx].Cell[SwIdx].AllocVa);
-	dump_txinfo(pAd, (TXINFO_STRUC *)(pAd->TxRing[QueIdx].Cell[SwIdx].AllocVa + sizeof(TXD_STRUC)));
-	hex_dump("MgmtPktInfo", (pSrcBufVA + TXINFO_SIZE), pTxD->SDLen0);
-}
-//---Add by shiang for debug
-#endif
 
 #ifdef RT_BIG_ENDIAN
 	RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);

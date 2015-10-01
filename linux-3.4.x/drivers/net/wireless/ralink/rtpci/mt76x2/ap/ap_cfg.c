@@ -1767,8 +1767,6 @@ VOID RTMPAPGetAssoMacTable(
 			sprintf(msg+strlen(msg),"%-7d", (int)pEntry->StaConnectTime);
 			sprintf(msg+strlen(msg),"%-10d, %d, %d%%\n", pEntry->DebugFIFOCount, pEntry->DebugTxCount, 
 						(pEntry->DebugTxCount) ? ((pEntry->DebugTxCount-pEntry->DebugFIFOCount)*100/pEntry->DebugTxCount) : 0);
-//+++Add by shiang for debug
-//---Add by shiang for debug
 			sprintf(msg+strlen(msg),"\n");
 		}
 	}

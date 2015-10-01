@@ -3095,13 +3095,17 @@ NDIS_STATUS APCheckRxError(
 */
 BOOLEAN APCheckClass2Class3Error(
 	IN	PRTMP_ADAPTER	pAd,
-	IN 	ULONG Wcid, 
+	IN 	ULONG Wcid,
 	IN	PHEADER_802_11	pHeader)
 {
 	/* software MAC table might be smaller than ASIC on-chip total size. */
 	/* If no mathed wcid index in ASIC on chip, do we need more check???  need to check again. 06-06-2006 */
 	if (Wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
+		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
+					__FUNCTION__, PRINT_MAC(pHeader->Addr2),
+					Wcid, MAX_LEN_OF_MAC_TABLE));
+
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, pHeader);
 		return TRUE;
 	}
@@ -3111,12 +3115,12 @@ BOOLEAN APCheckClass2Class3Error(
 	else if (pAd->MacTab.Content[Wcid].Sst == SST_AUTH)
 	{
 		APCls3errAction(pAd, Wcid, pHeader);
-		return TRUE; 
+		return TRUE;
 	}
 	else
 	{
 		APCls2errAction(pAd, Wcid, pHeader);
-		return TRUE; 
+		return TRUE;
 	}
 	return FALSE;
 }

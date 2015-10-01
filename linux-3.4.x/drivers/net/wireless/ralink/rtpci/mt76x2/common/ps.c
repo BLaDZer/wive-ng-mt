@@ -221,6 +221,7 @@ VOID RtmpHandleRxPsPoll(RTMP_ADAPTER *pAd, UCHAR *pAddr, USHORT wcid, BOOLEAN is
 							So we can not count it for UAPSD; Or the SP will
 							not closed until timeout.
 						*/
+						;
 					}
 					else
 						UAPSD_MR_MIX_PS_POLL_RCV(pAd, pMacEntry);
@@ -291,7 +292,6 @@ VOID RtmpHandleRxPsPoll(RTMP_ADAPTER *pAd, UCHAR *pAddr, USHORT wcid, BOOLEAN is
 	{
 		DBGPRINT(RT_DEBUG_ERROR,("rcv PS-POLL (AID=%d not match) from %02x:%02x:%02x:%02x:%02x:%02x\n", 
 			  pMacEntry->Aid, PRINT_MAC(pAddr)));
-
 	}
 }
 
@@ -352,6 +352,11 @@ BOOLEAN RtmpPsIndicate(RTMP_ADAPTER *pAd, UCHAR *pAddr, UCHAR wcid, UCHAR Psm)
 			SendRefreshBAR(pAd, pEntry);
 #endif /* DOT11_N_SUPPORT */
 #endif /* RTMP_MAC_PCI */
+
+			DBGPRINT(RT_DEBUG_TRACE,
+					("RtmpPsIndicate - %02x:%02x:%02x:%02x:%02x:%02x wakes up, "
+					"act like rx PS-POLL\n",
+					pAddr[0],pAddr[1],pAddr[2],pAddr[3],pAddr[4],pAddr[5]));
 
 			/* sleep station awakes, move all pending frames from PSQ to TXQ if any */
 			RtmpHandleRxPsPoll(pAd, pAddr, pEntry->wcid, TRUE);

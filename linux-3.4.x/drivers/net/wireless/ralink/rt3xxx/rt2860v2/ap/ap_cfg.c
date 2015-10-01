@@ -4047,7 +4047,7 @@ INT RTMPAPQueryInformation(
 	            wrq->u.data.length = sizeof(pAd->CommonCfg.BBPCurrentBW);
 		    ulInfo = pAd->CommonCfg.BBPCurrentBW;	
 	            Status = copy_to_user(wrq->u.data.pointer, &ulInfo, wrq->u.data.length);
-	            DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_CHANNEL_WIDTH (%u)\n",ulInfo));
+	            DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_CHANNEL_WIDTH (%lu)\n",ulInfo));
 	            break;
 	        }
 		break;
@@ -4061,7 +4061,7 @@ INT RTMPAPQueryInformation(
 	            {
 					Status = -EFAULT;
 	            }
-	            DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_COUNTRY_REGION (%x)\n",ulInfo));				
+	            DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_COUNTRY_REGION (%lu)\n",ulInfo));				
 	            break;
 
 		case OID_802_11_BEACON_PERIOD:
@@ -4071,7 +4071,7 @@ INT RTMPAPQueryInformation(
 	            {
 					Status = -EFAULT;
 	            }
-	            DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_BEACON_PERIOD (%u)\n",ulInfo));
+	            DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_BEACON_PERIOD (%lu)\n",ulInfo));
 		     break;
 
 	        case RT_OID_802_11_TX_POWER_LEVEL_1:
@@ -4104,7 +4104,7 @@ INT RTMPAPQueryInformation(
 	            wrq->u.data.length = sizeof(ulInfo);
 	            ulInfo = pAd->CommonCfg.TxPreamble;				
 	            Status = copy_to_user(wrq->u.data.pointer, &ulInfo, wrq->u.data.length);
-	            DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_PREAMBLE(=%d)\n", pAd->CommonCfg.TxPreamble));
+	            DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_OID_802_11_PREAMBLE(=%ld)\n", pAd->CommonCfg.TxPreamble));
 	            break;
 
 	        case OID_802_11_HT_STBC:
@@ -4136,14 +4136,14 @@ INT RTMPAPQueryInformation(
 	            wrq->u.data.length = sizeof(ulInfo);
 		     ulInfo = pAd->CommonCfg.BACapability.field.AmsduEnable;	
 	            Status = copy_to_user(wrq->u.data.pointer, &ulInfo, wrq->u.data.length);
-		     DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_AMSDU (=%d)\n",ulInfo));
+		     DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_AMSDU (=%ld)\n",ulInfo));
 		     break;			
 
 		case OID_802_11_AMPDU:
 	            wrq->u.data.length = sizeof(ulInfo);
 		     ulInfo = pAd->CommonCfg.BACapability.field.AutoBA;	
 	            Status = copy_to_user(wrq->u.data.pointer, &ulInfo, wrq->u.data.length);
-		     DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_AMPDU (=%d)\n",ulInfo));
+		     DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_AMPDU (=%ld)\n",ulInfo));
 		     break;
 #ifdef P2P_SUPPORT
 		case OID_802_11_P2P_Connected_MAC:			

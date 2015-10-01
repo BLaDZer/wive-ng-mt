@@ -692,9 +692,9 @@ static VOID AsicAntennaDefaultReset(
 	{
 
 		pAntenna->word = 0;
-		pAntenna->field.RfIcType = RFIC_2820;
+		pAntenna->field.RfIcType = RFIC_7650;
 		pAntenna->field.TxPath = 1;
-		pAntenna->field.RxPath = 2;
+		pAntenna->field.RxPath = 1;
 	}
 	DBGPRINT(RT_DEBUG_WARN, ("E2PROM error, hard code as 0x%04x\n", pAntenna->word));	
 }

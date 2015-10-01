@@ -849,14 +849,6 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	RTMPWIEndianChange(pAd, (PUCHAR)pFirstTxWI, TYPE_TXWI);
 #endif
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("TxMgmtPkt", (UCHAR *)pHeader_802_11, ((SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE) > 7000 ? 7000 : (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE)));
-}
-//---Add by shiang for debug
-#endif
-
 	/* Now do hardware-depened kick out.*/
 	HAL_KickOutMgmtTx(pAd, QueIdx, pPacket, pSrcBufVA, SrcBufLen);
 
@@ -2361,15 +2353,6 @@ VOID Indicate_Legacy_Packet(
 	UCHAR Header802_3[LENGTH_802_3];
 	USHORT VLAN_VID = 0, VLAN_Priority = 0;
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("Indicate_Legacy_Packet", pRxBlk->pData, pRxBlk->DataSize);
-	hex_dump("802_11_hdr", (UCHAR *)pRxBlk->pHeader, LENGTH_802_11);
-}
-//---Add by shiang for debug
-#endif
-
 	/*
 		1. get 802.3 Header
 		2. remove LLC
@@ -2401,24 +2384,8 @@ if (0) {
 #endif /* WDS_VLAN_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("Before80211_2_8023", pRxBlk->pData, pRxBlk->DataSize);
-	hex_dump("header802_3", &Header802_3[0], LENGTH_802_3);
-}
-//---Add by shiang for debug
-#endif
 	RT_80211_TO_8023_PACKET(pAd, VLAN_VID, VLAN_Priority,
 							pRxBlk, Header802_3, FromWhichBSSID, TPID);
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("After80211_2_8023", GET_OS_PKT_DATAPTR(pRxBlk->pRxPacket), GET_OS_PKT_LEN(pRxBlk->pRxPacket));
-}
-//---Add by shiang for debug
-#endif
-
 	
 	/* pass this 802.3 packet to upper layer or forward this packet to WM directly*/
 	
@@ -2492,15 +2459,6 @@ VOID Indicate_Legacy_Packet_Hdr_Trns(
 
 	struct sk_buff *pOSPkt;
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("Indicate_Legacy_Packet", pRxBlk->pTransData, pRxBlk->TransDataSize);
-	hex_dump("802_11_hdr", pRxBlk->pHeader, LENGTH_802_11);
-}
-//---Add by shiang for debug
-#endif
-
 	/*
 		1. get 802.3 Header
 		2. remove LLC
@@ -2529,17 +2487,6 @@ if (0) {
 #endif /* WDS_VLAN_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("Before80211_2_8023", pRxBlk->pData, pRxBlk->TransDataSize);
-	hex_dump("header802_3", &Header802_3[0], LENGTH_802_3);
-}
-//---Add by shiang for debug
-#endif
-
-
-
 	{
 		pOSPkt = RTPKT_TO_OSPKT(pRxPacket);
 
@@ -2550,14 +2497,6 @@ if (0) {
 		SET_OS_PKT_DATATAIL(pOSPkt, pOSPkt->data, pOSPkt->len);
 		//printk("\x1b[31m%s: rx trans ...%d\x1b[m\n", __FUNCTION__, __LINE__);
 	}
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0) {
-	hex_dump("After80211_2_8023", GET_OS_PKT_DATAPTR(pRxBlk->pRxPacket), GET_OS_PKT_LEN(pRxBlk->pRxPacket));
-}
-//---Add by shiang for debug
-#endif
 
 	/* pass this 802.3 packet to upper layer or forward this packet to WM directly*/
 	

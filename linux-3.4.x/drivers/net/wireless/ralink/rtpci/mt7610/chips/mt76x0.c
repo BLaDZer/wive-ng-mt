@@ -2668,7 +2668,7 @@ void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
 		__FUNCTION__, rx0_rssi, rx1_rssi));	
 
 	/*
@@ -2682,7 +2682,7 @@ void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	else
 		pAd->chipCap.avg_rssi_all = pAd->chipCap.avg_rssi_0 / 256;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: update rssi all(%d)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: update rssi all(%d)\n", 
 		__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 
@@ -3300,7 +3300,7 @@ static VOID MT76x0_AsicGetTxPowerOffset(
 	INOUT PULONG pTxPwr)
 {
 	CONFIGURATION_OF_TX_POWER_CONTROL_OVER_MAC CfgOfTxPwrCtrlOverMAC;
-	DBGPRINT(RT_DEBUG_INFO, ("-->MT76x0_AsicGetTxPowerOffset\n"));
+	DBGPRINT(RT_DEBUG_LOUD, ("-->MT76x0_AsicGetTxPowerOffset\n"));
 
 	NdisZeroMemory(&CfgOfTxPwrCtrlOverMAC, sizeof(CfgOfTxPwrCtrlOverMAC));
 
@@ -3335,7 +3335,7 @@ static VOID MT76x0_AsicGetTxPowerOffset(
 #endif /* DOT11_VHT_AC */
 
 	NdisCopyMemory(pTxPwr, (UCHAR *)&CfgOfTxPwrCtrlOverMAC, sizeof(CfgOfTxPwrCtrlOverMAC));
-	DBGPRINT(RT_DEBUG_INFO, ("<--MT76x0_AsicGetTxPowerOffset\n"));
+	DBGPRINT(RT_DEBUG_LOUD, ("<--MT76x0_AsicGetTxPowerOffset\n"));
 }
 
 /*

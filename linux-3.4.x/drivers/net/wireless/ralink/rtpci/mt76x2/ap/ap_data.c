@@ -3784,21 +3784,9 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	/* If no mathed wcid index in ASIC on chip, do we need more check???  need to check again. 06-06-2006 */
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
-		MAC_TABLE_ENTRY *pEntry;
-		
 		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%d) > %d\n",
-					__FUNCTION__, PRINT_MAC(hdr->Addr2), 
+					__FUNCTION__, PRINT_MAC(hdr->Addr2),
 					wcid, MAX_LEN_OF_MAC_TABLE));
-//+++Add by shiang for debug
-		pEntry = MacTableLookup(pAd, hdr->Addr2);
-		if (pEntry)
-		{
-			if ((pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
-			{
-			}
-			return FALSE;
-		}
-//---Add by shiang for debug
 
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
@@ -4028,12 +4016,12 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 					MAC_TABLE_ENTRY *pEntry = NULL;
 					UINT32 i = 0;
 
-		                    for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
+		                	for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
 						pEntry = &pAd->MacTab.Content[i];
 
 						if (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC))
 							break;
-		                    }
+		                	}
 
 					if (pEntry && i < MAX_LEN_OF_MAC_TABLE) {
 						if (((pEntry->HTPhyMode.field.MODE == MODE_HTMIX || pEntry->HTPhyMode.field.MODE == MODE_HTGREENFIELD) &&
@@ -4786,9 +4774,6 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	pApCliEntry = &pAd->ApCfg.ApCliTab[0];
 #endif
 
-//+++Add by shiang for debug
-//---Add by shiangf for debug
-			
 	if (APCheckVaildDataFrame(pAd, pRxBlk) != TRUE)
 		goto err;
 
@@ -5339,16 +5324,6 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	FRAME_CONTROL *pFmeCtrl = &pHeader->FC;
 	COUNTER_RALINK *pCounter = &pAd->RalinkCounters;
 	UCHAR *pData;
-
-#ifdef DBG
-//+++Add by shiang for debug
-if (0 /*!(pRxInfo->Mcast || pRxInfo->Bcast)*/){
-	DBGPRINT(RT_DEBUG_OFF, ("-->%s(%d): Dump Related Info!\n", __FUNCTION__, __LINE__));
-	hex_dump("DataFrameHeader", pHeader, 36);
-	hex_dump("DataFramePayload", pRxBlk->pTransData , pRxBlk->TransDataSize);
-}
-//---Add by shiangf for debug
-#endif
 
 	if (APCheckVaildDataFrame(pAd, pRxBlk) != TRUE)
 	{
