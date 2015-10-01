@@ -15,7 +15,7 @@ start() {
     get_param
     if [ "$FastRoamingIAPP" = "1" ]; then
 	$LOG "Starting iappd roaming daemon"
-	ralinkiappd -e $lan_if -w $first_wlan_root_if -k 12345678 -d 3
+	ralinkiappd -e "$lan_if" -w "$first_wlan_root_if" -d 3
     fi
 }
 

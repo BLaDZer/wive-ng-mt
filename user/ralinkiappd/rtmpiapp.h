@@ -61,22 +61,9 @@
 #define FT_KDP_FUNC_SOCK_COMM		/* use socket to communicate with driver */
 #define FT_KDP_FUNC_PKT_ENCRYPT		/* do encryption for each IAPP packet */
 #define FT_KDP_SELECT_TIMEOUT		/* use timeout to wait for any packet */
-#define FT_KDP_KEY_FROM_DAEMON		/* key is set in daemon */
+//#define FT_KDP_KEY_FROM_DAEMON		/* key is set in daemon */
 
-#ifdef RTL865X_SOC
-#define FT_KDP_DEFAULT_IF_ETH		"eth1"
-#else
-
-#ifdef IAPP_OS_LINUX
 #define FT_KDP_DEFAULT_IF_ETH		"br0"
-#endif
-
-#ifdef IAPP_OS_VXWORKS
-#define FT_KDP_DEFAULT_IF_ETH		"mirror0"
-#endif
-
-#endif
-
 #define FT_KDP_DEFAULT_IF_WLAN		"br0" /* used to receive command from WLAN */
 #define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"ra0" /* ioctl command to WLAN */
 

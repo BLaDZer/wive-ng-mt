@@ -38,54 +38,54 @@
 
 
 /* Local use file */
-#define PROC_NET_ARP_PATH				"/proc/net/arp"
+#define PROC_NET_ARP_PATH			"/proc/net/arp"
 
 
 /* Definition of IAPP */
-#define IAPP_VERSION					0
+#define IAPP_VERSION				0
 
 /*
 	The UDP Port parameter is the UDP port number to be opened for the IAPP
 	for transmission and reception of IAPP packets.
 */
-#define IAPP_UDP_PORT					3517 /* used in UDP connection */
+#define IAPP_UDP_PORT				3517 /* used in UDP connection */
 
 /*
 	The TCP Port parameter is the TCP port number that the IAPP entity opens
 	to listen for new IAPP TCP connections from the IAPP entities of other APs.
 */
-#define IAPP_TCP_PORT					3517 /* used in TCP connection */
+#define IAPP_TCP_PORT				3517 /* used in TCP connection */
 
 
 /* Message type */
-#define IAPP_ETH_PRO					0xEEEE
-#define IAPPMSGQUEID					1
-#define RADIUSMSGQUEID					2
-#define RRB_ETH_PRO					0x890D
+#define IAPP_ETH_PRO				0xEEEE
+#define IAPPMSGQUEID				1
+#define RADIUSMSGQUEID				2
+#define RRB_ETH_PRO				0x890D
 
 
 /* Message subtype */
 #define IAPP_OPEN_SERVICE_REQ			0
 #define IAPP_OPEN_SERVICE_RSP			1
 #define IAPP_CLOSE_SERVICE_REQ			2
-#define IAPP_SIGNAL_REQ					3
-#define IAPP_SET_OID_REQ				4
-#define IAPP_QUERY_OID_REQ				5
-#define IAPP_QUERY_OID_RSP				6
+#define IAPP_SIGNAL_REQ				3
+#define IAPP_SET_OID_REQ			4
+#define IAPP_QUERY_OID_REQ			5
+#define IAPP_QUERY_OID_RSP			6
 
 
 /* Definition of signal */
-#define IAPP_SIG_NONE					0
+#define IAPP_SIG_NONE				0
 #define IAPP_SIG_ASSOCIATION			1
 #define IAPP_SIG_REASSOCIATION			2
-#define IAPP_SIG_TERMINATE				3
+#define IAPP_SIG_TERMINATE			3
 
 
 /* Definition of IAPP command */ /* reference to IEEE802.11f page 50 */
-#define IAPP_CMD_ADD_NOTIFY				0	/* ADD-notify */
+#define IAPP_CMD_ADD_NOTIFY			0	/* ADD-notify */
 #define IAPP_CMD_MOVE_NOTIFY			1	/* MOVE-notify */
 #define IAPP_CMD_MOVE_RESPONSE			2	/* MOVE-response */
-#define IAPP_CMD_SEND_SECURITY_BLOCK	3	/* Send-Security-Block */
+#define IAPP_CMD_SEND_SECURITY_BLOCK		3	/* Send-Security-Block */
 #define IAPP_CMD_ACK_SECURITY_BLOCK		4	/* ACK-Security-Block */
 #define IAPP_CMD_CACHE_NOTIFY			5	/* CACHE-notify */
 #define IAPP_CMD_CACHE_RESPONSE			6	/* CACHE-response */
@@ -105,17 +105,17 @@
 
 
 /* Definition of general */
-#define IAPP_SELECT_TIMEOUT				5 /* unit: second */
+#define IAPP_SELECT_TIMEOUT			5 /* unit: second */
 
 #define IAPP_MAX_RCV_PKT_SIZE			1600
 #define IAPP_MAX_RCV_PKT_SIZE_SAFE		100
 
 #define IAPP_IP_HEADER_OFFSET			14 /* skip MAC header */
 #define IAPP_IP_PROTO_OFFSET			9
-#define IAPP_IP_PROTO_UDP				17
+#define IAPP_IP_PROTO_UDP			17
 #define IAPP_UDP_DST_PORT_OFFSET		(20+2)
 
-#define IAPP_MAC_IP_UDP_LEN				(14+20+8)
+#define IAPP_MAC_IP_UDP_LEN			(14+20+8)
 
 /* 16 for extra 8B encryption & 8B-align, other 16B for safe */
 #define IAPP_SECURITY_EXTEND_LEN		32
@@ -125,5 +125,4 @@
 #define IAPP_INOUT
 
 #endif /* __IAPP_DEF_H__ */
-
 /* End of iapp_def.h */

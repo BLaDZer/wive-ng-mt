@@ -59,7 +59,9 @@ dir_$(CONFIG_USER_CDP)			    += cdp-tools
 dir_$(CONFIG_USER_LLTD)			    += lldt
 dir_$(CONFIG_USER_LLDPD)		    += lldpd
 dir_$(CONFIG_USER_INADYN)                   += inadyn
+ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
 dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
+endif
 dir_$(CONFIG_USER_WPA_SUPPLICANT)	    += wpa_supplicant
 dir_$(CONFIG_USER_DNSMASQ)                  += dnsmasq
 dir_$(CONFIG_USER_DROPBEAR)                 += dropbear

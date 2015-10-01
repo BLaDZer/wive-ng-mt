@@ -3,7 +3,7 @@ OBJS = rtmpiapp.o
 
 # If you want to debug daemon, add following line
 CFLAGS += -DDBG
-CFLAGS += -I./
+CFLAGS += -I./ -I../goahead/src/
 
 $(EXEC): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)

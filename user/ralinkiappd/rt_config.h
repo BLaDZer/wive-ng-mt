@@ -48,6 +48,7 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
+#include "oid.h"
 
 /* Re-Definition */
 #define CHAR			char
@@ -63,26 +64,6 @@
 #define INT32			int
 #define UINT32			uint32_t
 
-/* Definition of OID to RALINK AP driver */
-#define OID_GET_SET_TOGGLE					0x8000
-#define RT_QUERY_SIGNAL_CONTEXT				0x0402
-#define RT_SET_IAPP_PID						0x0404
-#define RT_SET_APD_PID						0x0405
-#define RT_SET_DEL_MAC_ENTRY				0x0406
-#define RT_QUERY_EVENT_TABLE				0x0407
-
-#define RT_SET_FT_STATION_NOTIFY			0x0408
-#define RT_SET_FT_KEY_REQ					0x0409
-#define RT_SET_FT_KEY_RSP					0x040a
-
-#define RT_FT_KEY_SET						0x040b
-#define RT_FT_DATA_ENCRYPT					0x040c
-#define RT_FT_DATA_DECRYPT					0x040d
-#define RT_FT_NEIGHBOR_REPORT				0x040e
-#define RT_FT_NEIGHBOR_REQUEST				0x040f
-#define RT_FT_NEIGHBOR_RESPONSE				0x0410
-#define RT_FT_ACTION_FORWARD				0x0411
-
 typedef enum _BOOLEAN {
 	FALSE = 0,
 	TRUE = 1
@@ -90,7 +71,7 @@ typedef enum _BOOLEAN {
 
 
 /* BYTE Order */
-#define __BYTE_ORDER					__LITTLE_ENDIAN /* __BIG_ENDIAN */
+#define __BYTE_ORDER				__LITTLE_ENDIAN /* __BIG_ENDIAN */
 
 /* ReDefinition */
 #define NdisZeroMemory(__Dst, __Len)		memset(__Dst, 0, __Len)
@@ -122,19 +103,18 @@ VOID os_free_mem(UCHAR *pAd, VOID *pMem)
     }									\
 }
 #else
-
     /* no debug information */
     #define DBGPRINT(Level, Fmt)
 #endif
 
-#define MAX_NUM_OF_EVENT			30  /* entry # in EVENT table */
+#define MAX_NUM_OF_EVENT				30  /* entry # in EVENT table */
 
 typedef struct _RT_802_11_EVENT_LOG {
 
-	ULONG	SystemTime;					/* timestammp (jiffies) */
+	ULONG	SystemTime;				/* timestammp (jiffies) */
 	UCHAR	TriggerAddr[ETH_ALEN];
 	UCHAR	DetectorAddr[ETH_ALEN];
-	UINT16	Event;						/* EVENT_xxx */
+	UINT16	Event;					/* EVENT_xxx */
 } RT_802_11_EVENT_LOG, *PRT_802_11_EVENT_LOG;
 
 typedef struct _RT_802_11_EVENT_TABLE {
@@ -155,29 +135,30 @@ typedef struct PACKED _FT_KDP_EVT_HEADER {
 
 typedef struct PACKED _RT_SIGNAL_STRUC {
 
+	/* IEEE80211R_SUPPORT */
 	VOID	*pNext; /* point to next signal */
 
 	UINT16	Sequence;
 	UCHAR	MacAddr[ETH_ALEN];
 	UCHAR	CurrAPAddr[ETH_ALEN];
 
-#define FT_KDP_SIG_NOTHING				0x00 /* no signal */
-#define FT_KDP_SIG_IAPP_ASSOCIATION		0x01 /* A station has associated */
-#define FT_KDP_SIG_IAPP_REASSOCIATION	0x02 /* A station has re-associated */
+#define FT_KDP_SIG_NOTHING			0x00 /* no signal */
+#define FT_KDP_SIG_IAPP_ASSOCIATION		0x01 /* a station has associated */
+#define FT_KDP_SIG_IAPP_REASSOCIATION	0x02 /* a station has re-associated */
 #define FT_KDP_SIG_TERMINATE			0x03 /* terminate the daemon */
 
-#define FT_KDP_SIG_FT_ASSOCIATION		0x50 /* A FT station has associated */
-#define FT_KDP_SIG_FT_REASSOCIATION		0x51 /* A FT station has re-associated */
+#define FT_KDP_SIG_FT_ASSOCIATION		0x50 /* a FT station has associated */
+#define FT_KDP_SIG_FT_REASSOCIATION		0x51 /* a FT station has re-associated */
 #define FT_KDP_SIG_KEY_TIMEOUT			0x52 /* PMK-R1 KEY Timeout */
-#define FT_KDP_SIG_KEY_REQ				0x53 /* Request PMK-R1 KEY from R0KH */
-#define FT_KDP_SIG_ACTION				0x54 /* Forward FT Action frame to DS */
+#define FT_KDP_SIG_KEY_REQ			0x53 /* request PMK-R1 KEY from R0KH */
+#define FT_KDP_SIG_ACTION			0x54 /* forward FT Action frame to DS */
 
 #define FT_KDP_SIG_AP_INFO_REQ			0x70 /* request neighbor AP info. */
 #define FT_KDP_SIG_AP_INFO_RSP			0x71 /* response my AP info. */
 
 /* FT KDP internal use */
-#define FT_KDP_SIG_KEY_REQ_AUTO			0xA0 /* Request PMK-R1 KEY from R0KH */
-#define FT_KDP_SIG_KEY_RSP_AUTO			0xA1 /* Response PMK-R1 KEY to R1KH */
+#define FT_KDP_SIG_KEY_REQ_AUTO			0xA0 /* request PMK-R1 KEY from R0KH */
+#define FT_KDP_SIG_KEY_RSP_AUTO			0xA1 /* response PMK-R1 KEY to R1KH */
 #define FT_KDP_SIG_INFO_BROADCAST		0xB0 /* broadcast our AP information */
 
 #define FT_KSP_SIG_DEBUG_TRACE			0xC0 /* enable debug flag to TRACE */
@@ -198,14 +179,19 @@ typedef struct PACKED _RT_SIGNAL_STRUC {
 		For FT_KDP_SIG_KEY_REQ_AUTO:	it is FT_KDP_EVT_KEY_REQ
 		For FT_KDP_SIG_KEY_RSP_AUTO:	it is FT_KDP_SIG_KEY_RSP
 	*/
-	UCHAR	Reserved[3];			/* let Content address four-byte align */
+	UCHAR	Reserved[3];			/* let address of Content[] 4B align */
 	UCHAR	Content[1024];			/* signal content */
 
+/* 1024 means size of Content[] */
 #define RT_SIGNAL_STRUC_HDR_SIZE			(sizeof(RT_SIGNAL_STRUC)-1024)
 } RT_SIGNAL_STRUC, *PRT_SIGNAL_STRUC;
 
-static INT32 RTDebugLevel = RT_DEBUG_ERROR;
+/* definition of signal */
+#define	SIG_NONE					0 /* same as FT_KDP_SIG_NOTHING */
+#define SIG_ASSOCIATION				1 /* same as FT_KDP_SIG_ASSOCIATION */
+#define SIG_REASSOCIATION			2 /* same as FT_KDP_SIG_REASSOCIATION */
 
+static INT32 RTDebugLevel = RT_DEBUG_ERROR;
 #endif /* __RT_CONFIG_H__ */
 
 /* End of rt_config.h */

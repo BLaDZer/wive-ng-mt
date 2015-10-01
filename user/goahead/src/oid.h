@@ -120,6 +120,23 @@
 #define RT_OID_802_11_WSC_QUERY_PROFILE             0x0750
 #define RT_OID_WSC_UUID                             0x0753
 
+// IAPPD/802.11R oids
+#define RT_QUERY_SIGNAL_CONTEXT                     0x0402
+#define RT_SET_IAPP_PID                             0x0404
+#define RT_SET_APD_PID                              0x0405
+#define RT_SET_DEL_MAC_ENTRY                        0x0406
+#define RT_QUERY_EVENT_TABLE                        0x0407
+#define RT_SET_FT_STATION_NOTIFY                    0x0408
+#define RT_SET_FT_KEY_REQ                           0x0409
+#define RT_SET_FT_KEY_RSP                           0x040a
+#define RT_FT_KEY_SET                               0x040b
+#define RT_FT_DATA_ENCRYPT                          0x040c
+#define RT_FT_DATA_DECRYPT                          0x040d
+#define RT_FT_NEIGHBOR_REPORT                       0x040e
+#define RT_FT_NEIGHBOR_REQUEST                      0x040f
+#define RT_FT_NEIGHBOR_RESPONSE                     0x0410
+#define RT_FT_ACTION_FORWARD                        0x0411
+
 // Ralink defined OIDs
 // Dennis Lee move to platform specific
 #define RT_OID_802_11_BSSID                   (OID_GET_SET_TOGGLE | OID_802_11_BSSID)
