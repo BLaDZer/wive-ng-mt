@@ -1,5 +1,6 @@
 #include <common.h>
 #include <command.h>
+#include <version.h>
 #include <rt_mmap.h>
 #include <configs/rt2880.h>
 #include <malloc.h>
@@ -97,6 +98,9 @@
 #if defined(RD_MODE_QOR) || defined(RD_MODE_QIOR)
 #define RD_MODE_QUAD
 #endif
+
+extern void LED_ALERT_BLINK(void);
+
 static int raspi_wait_ready(int sleep_ms);
 static unsigned int spi_wait_nsec = 150;
 
@@ -250,7 +254,7 @@ int spic_init(void)
 	ra_outl(RT2880_SPI0_CTL_REG, SPICTL_HIZSDO | SPICTL_SPIENA_HIGH);
 
 	spi_wait_nsec = (8 * 1000 / (128 / (CFG_CLK_DIV+1)) ) >> 1 ;
-	printf("Ralink SPI flash driver, SPI clock: %dMHz\n", (mips_bus_feq / 1000000) >> (CFG_CLK_DIV+1));
+	printf("%s SPI flash driver, SPI clock: %dMHz\n", RLT_MTK_VENDOR_NAME, (mips_bus_feq / 1000000) >> (CFG_CLK_DIV+1));
 
 	return 0;
 }
@@ -901,6 +905,7 @@ int raspi_erase(unsigned int offs, int len)
 
 		offs += spi_chip_info->sector_size;
 		len -= spi_chip_info->sector_size;
+		LED_ALERT_BLINK();
 		printf(".");
 	}
 	printf("\n");
@@ -1161,7 +1166,10 @@ int raspi_write(char *buf, unsigned int to, int len)
 
 		//printf("%s:: to:%x page_size:%x ret:%x\n", __func__, to, page_size, rc);
 		if ((retlen & 0xffff) == 0)
+		{
+			LED_ALERT_BLINK();
 			printf(".");
+		}
 
 		if (rc > 0) {
 			retlen += rc;

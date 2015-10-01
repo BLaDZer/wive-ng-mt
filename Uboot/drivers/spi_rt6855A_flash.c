@@ -1,5 +1,6 @@
 #include <common.h>
 #include <command.h>
+#include <version.h>
 #include <rt_mmap.h>
 #include <configs/rt2880.h>
 #include <malloc.h>
@@ -83,6 +84,7 @@
 #define SPIC_USER_MODE (1<<2)
 #define SPIC_4B_ADDR (1<<3)
 
+extern void LED_ALERT_BLINK(void);
 
 static int raspi_wait_ready(int sleep_ms);
 #if defined USER_MODE || defined COMMAND_MODE
@@ -251,7 +253,7 @@ void spic_init(void)
 	reg |= ((clk_div - 2) << 16);
 	ra_outl(SPI_REG_MASTER, reg);
 
-	printf("MediaTek SPI flash driver, SPI clock: %dMHz\n", clk_sys / clk_div);
+	printf("%s SPI flash driver, SPI clock: %dMHz\n", RLT_MTK_VENDOR_NAME, clk_sys / clk_div);
 
 #elif defined (RT6855_ASIC_BOARD) || defined (RT6855_FPGA_BOARD)
 	// enable SMC bank 0 alias addressing
@@ -1081,6 +1083,7 @@ int raspi_erase(unsigned int offs, int len)
 
 		offs += spi_chip_info->sector_size;
 		len -= spi_chip_info->sector_size;
+		LED_ALERT_BLINK();
 		printf(".");
 	}
 	printf("\n");
@@ -1344,7 +1347,10 @@ int raspi_write(char *buf, unsigned int to, int len)
 
 		//printf("%s:: to:%x page_size:%x ret:%x\n", __func__, to, page_size, rc);
 		if ((retlen & 0xffff) == 0)
+		{
+			LED_ALERT_BLINK();
 			printf(".");
+		}
 
 		if (rc > 0) {
 			retlen += rc;
