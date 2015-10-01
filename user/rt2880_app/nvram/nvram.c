@@ -632,22 +632,22 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(ProbeRspRssi);
 #ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
 	/* Fast roaming auth transitions config */
-	FPRINT_STR(FtSupport);
-	FPRINT_STR(FtRic);
-	FPRINT_STR(FtOtd);
-	/* Mobility domain ID of Fast Bss. */
+	FPRINT_STR(FtSupport);  /* Enable Fast BSS Transition */
+	FPRINT_STR(FtRic);	/* Enable FT resource request */
+	FPRINT_STR(FtOtd);	/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Ovet-the-Air only) */
+				/* Mobility domain ID of Fast Bss. */
 	FPRINT_STR(FtMdId1);
 	FPRINT_STR(FtMdId2);
 	FPRINT_STR(FtMdId3);
 	FPRINT_STR(FtMdId4);
-	/* R0 Key Handler Identification. */
+				/* R0 Key Handler Identification. */
 	FPRINT_STR(FtR0khId1);
 	FPRINT_STR(FtR0khId2);
 	FPRINT_STR(FtR0khId3);
 	FPRINT_STR(FtR0khId4);
 #endif
 #ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
-	FPRINT_STR(RRMEnable);
+	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
 	FPRINT_STR(RegulatoryClass);
 #endif
 #ifdef CONFIG_BAND_STEERING
