@@ -66,7 +66,7 @@ int gpio_set_dir(void) {
 #endif
 
 #define LOADDEFAULTS		5
-#define FULLRESETTIME		60
+#define FULLRESETTIME		90
 
 void gpio_wait(void) {
 	int d, presstime_reset=0;
