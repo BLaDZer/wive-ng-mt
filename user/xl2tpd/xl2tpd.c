@@ -1516,6 +1516,7 @@ int control_handle_lac_remove(FILE* resf, char* bufp){
     if (lac->t)
     {
         lac_disconnect (lac->t->ourtid);
+        lac->t->lac = NULL;
     }
     // removes lac from laclist
     if (prev_lac == NULL)
