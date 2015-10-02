@@ -82,7 +82,7 @@ function initValue()
 	var opmode = "<% getCfgZero(1, "OperationMode"); %>";
 	var wan = "<% getCfgZero(1, "wanConnectionMode"); %>";
 	document.spotCfg.sRadCoaNoIpCheck.checked = ("<% getCfgZero(1, "chilli_coanoipcheck"); %>" == "on");
-	document.spotCfg.spotEnable.checked = ("<% getCfgZero(1, "hotspot"); %>" == "on");
+	document.spotCfg.spotEnable.checked = ("<% getCfgZero(1, "chilli_enable"); %>" == "on");
 	document.spotCfg.sUamAnyDns.checked = ("<% getCfgZero(1, "chilli_uamanydns"); %>" == "on");
 
 	initTranslation();

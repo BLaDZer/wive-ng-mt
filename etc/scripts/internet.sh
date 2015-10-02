@@ -154,7 +154,6 @@ fi
 #   1 = Gateway Mode
 #   2 = Ethernet Converter Mode
 #   3 = AP Client
-#   4 = Hotspot Mode
 #
 if [ "$OperationMode" = "0" ]; then
     bridge_config

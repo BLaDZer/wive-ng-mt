@@ -63,9 +63,9 @@ offload() {
 	    sw_nat=0
 	    $LOG "NAT Offload disabled by user, hw_nat and all fastpaths disabled."
 	fi
-	if [ "$hotspot" = "on" ] || [ "$nodogsplash_enable" = "1" ]; then
+	if [ "$nodogsplash_enable" = "1" ]; then
 	    sw_nat=0
-	    $LOG "Hotspot mode enabled  - disable NAT Fastpath."
+	    $LOG "Nodogsplash enabled  - disable NAT Fastpath."
 	fi
 	if [ "$CONFIG_BCM_NAT" = "y" ]; then
 	    # configure software nat offload

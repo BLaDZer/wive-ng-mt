@@ -195,7 +195,7 @@ servicelimit() {
 	    iptables -A servicelimit -p tcp --dport $TransInPort -j ACCEPT
 	fi
 	# Chillispot rules
-	if [ "$hotspot" = "on" ]; then
+	if [ "$chilli_enable" = "on" ]; then
 		$LOG "Chillispot allow reqests to 3990-3991 ports from $lan_if"
 		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 3990:3991 -j ACCEPT
 		iptables -A servicelimit -i tun0 -s $chilli_net -j ACCEPT
@@ -247,14 +247,13 @@ forwardlimit() {
 		iptables -N l2tpsrvfwd
 		iptables -A FORWARD -j l2tpsrvfwd
 	    fi
-	    if [ "$hotspot" = "on" ]; then
+	    if [ "$chilli_enable" = "on" ]; then
 		if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
 		    iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
 		    iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
 		fi
 		iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 		iptables -t nat -A PREROUTING -i tun0 -d $chilli_net -j ACCEPT
-		iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
 	    fi
 	    # second lan
 	    if [ "$Lan2Enabled" = "1" ]; then
@@ -308,7 +307,7 @@ natrules() {
 	    fi
 	    #######################NAT##################################
 	    if [ "$ROUTE_MODE" = "on" ] && [ "$natEnabled" = "1" ]; then
-		if [ "$hotspot" != "on" ]; then
+		if [ "$chilli_enable" != "on" ]; then
 		    # lan gw/wireless client/apcli mode NAT
 		    if  [ "$use_snat" = "1" ]; then
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr

@@ -9,19 +9,50 @@ fi
 . /etc/scripts/global.sh
 
 LOG="logger -t ChilliSpot"
-PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain \
-	radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype
-	coaport lease uamserver uamhomepage uamsecret"
+PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid \
+	radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease uamserver uamhomepage uamsecret"
 
 BOOLPARAMS="coanoipcheck uamanyip uamanydns"
 
 start() {
-    if [ "$hotspot" = "on" ]; then
+    if [ "$chilli_enable" = "on" ]; then
 	$LOG "Starting ChilliSpot"
+	(
 	get_params
-	modprobe -q tun
+	# chilli start only after radius reachable (workaround register at online auth services)
+	count=0
+	reachable=0
+	while [ $reachable -eq 0 ]; do
+	    $LOG "Check for radius server $chilli_radiusserver1 reachable"
+    	    ping -q -c 1 "$chilli_radiusserver1"
+    	    if [ "$?" -eq 0 ]; then
+        	reachable=1
+    	    else
+        	$LOG "Radius server unreachable wait 5 sec."
+        	sleep 5
+        	reachable=0
+		count="$(($count+1))"
+		if [ "$count" = "5" ]; then
+		    reachable=1
+    		    $LOG "Not radius server reachable, icmp filtered?"
+		fi
+    	    fi
+	done
+	# activate location
+	if [ "$chilli_radiusserver1" = "radius.hotspotsystem.com" ]; then
+	    wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
+	fi
+	# prevent double start
+	pid=`pidof chilli`
+	if [ "$pid" != "" ]; then
+	    $LOG "Stopping ChilliSpot"
+	    killall -q chilli
+	    killall -q -SIGKILL chilli
+	    rm -f /var/run/chilli*
+	    usleep 500000
+	fi
 	chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
-	#wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
+	) & # send to background
     fi
 }
 
@@ -36,7 +67,8 @@ stop() {
 }
 
 get_params() {
-    eval `nvram_buf_get 2860 chilli_debug chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
+    modprobe -q tun
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
     PARLINE="--dhcpif $lan_if"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`

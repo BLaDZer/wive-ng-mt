@@ -39,7 +39,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc Ipv6InVPN \
-	hotspot chilli_net`
+	chilli_enable chilli_net`
 
 # name/mask for first wlanmodule used in system logic
 getFirstWlanIfName() {

@@ -2465,7 +2465,7 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 // ChilliSpot variables
 const parameter_fetch_t chilli_vars[] =
 {
-	{ T("spotEnable"),		"hotspot",			0,       T("") },
+	{ T("spotEnable"),		"chilli_enable",		0,       T("") },
 	{ T("sPriDns"),			"chilli_dns1",			0,       T("") },
 	{ T("sSecDns"),			"chilli_dns2",			0,       T("") },
 	{ T("sDomain"),			"chilli_domain",		0,       T("") },
@@ -2558,11 +2558,11 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	websHeader(wp);
-	websWrite(wp, T("<h3>Hotspot configuration done.</h3><br>\n"));
 	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"), ip);
 	websFooter(wp);
 	websDone(wp, 200);
-	doSystem("internet.sh");
+	doSystem("service dhcpd restart"); /* for enable/disable native dhcp */
+	doSystem("service chillispot restart");
 
 	return;
 }
