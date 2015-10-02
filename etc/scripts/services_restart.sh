@@ -99,9 +99,6 @@ if [ "$MODE" = "misc" ] || [ "$MODE" = "all" ]; then
     if [ -e /etc/init.d/inetd ]; then
         service inetd restart
     fi
-    if [ -e /etc/init.d/chillispot ]; then
-        service chillispot restart
-    fi
     if [ -e /etc/init.d/transmission ]; then
 	service transmission restart
     fi
@@ -174,11 +171,14 @@ if [ "$MODE" = "all" ]; then
 fi
 
 ##########################################################
-# restart nodogsplash hotspot daemon			 #
+# restart nodogsplash/chillispot hotspot daemon		 #
 # need always restart - netfilter reconfigure by daemon  #
 ##########################################################
 if [ -e /bin/nodogsplash ]; then
     service nodogsplash restart
+fi
+if [ -e /bin/chilli ]; then
+    service chillispot restart
 fi
 
 ##########################################################
