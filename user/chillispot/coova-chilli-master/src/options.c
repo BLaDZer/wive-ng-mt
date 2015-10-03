@@ -113,7 +113,9 @@ static int opt_run(int argc, char **argv, int reload) {
 
   chilli_binconfig(file, sizeof(file), 0);
 
+#if(_debug_ > 1)
   syslog(LOG_DEBUG, "(Re)processing options [%s]", file);
+#endif
 
   if ((status = safe_fork()) < 0) {
     syslog(LOG_ERR, "%s: fork() returned -1!", strerror(errno));
@@ -137,7 +139,9 @@ static int opt_run(int argc, char **argv, int reload) {
   newargs[i++] = file;
   newargs[i++] = reload ? "-r" : NULL;
 
+#if(_debug_ > 1)
   syslog(LOG_DEBUG, "running chilli_opt on %s", file);
+#endif
 
   if (execv(SBINDIR "/chilli_opt", newargs) != 0) {
     syslog(LOG_ERR, "%s: execl() did not return 0!", strerror(errno));
@@ -186,8 +190,9 @@ int options_load(int argc, char **argv, bstring bt) {
 
   if (fd < 0) return 0;
   done_before = 1;
-
+#if(_debug_ > 1)
   syslog(LOG_DEBUG, "PID %d rereading binary file %s", getpid(), file);
+#endif
   return options_fromfd(fd, bt);
 }
 
@@ -659,7 +664,9 @@ void reprocess_options(int argc, char **argv) {
 int reload_options(int argc, char **argv) {
   bstring bt = bfromcstr("");
   int ok = options_load(argc, argv, bt);
+#if(_debug_ > 1)
   syslog(LOG_DEBUG, "PID %d reloaded binary options file", getpid());
+#endif
   bdestroy(bt);
   return ok;
 }
