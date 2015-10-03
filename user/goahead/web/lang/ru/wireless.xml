@@ -108,14 +108,14 @@
   <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
-  <message msgid="basic ids" msgstr="Обнаружение вторжений" />
-  <message msgid="basic ids auth" msgstr="Пороговое значение аутентификаций" />
-  <message msgid="basic ids assoc" msgstr="Пороговое значение запросов на ассоциацию" />
-  <message msgid="basic ids reassoc" msgstr="Пороговое значение повторных запросов на ассоциацию" />
-  <message msgid="basic ids probe" msgstr="Пороговое значение запросов пробы" />
-  <message msgid="basic ids disassoc" msgstr="Пороговое значение запросов остановки ассоциации" />
-  <message msgid="basic ids deauth" msgstr="Пороговое значение деаутентификаций" />
-  <message msgid="basic ids eap" msgstr="Пороговое значение EAP запросов" />
+  <message msgid="basic ids" msgstr="Предотвращение вторжений" />
+  <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />
+  <message msgid="basic ids assoc" msgstr="Ограничение числа запросов ассоциации" />
+  <message msgid="basic ids reassoc" msgstr="Ограничение числа повторных запросов ассоциации" />
+  <message msgid="basic ids probe" msgstr="Ограничение числа запросов параметров AP" />
+  <message msgid="basic ids disassoc" msgstr="Ограничение числа запросов на отключение" />
+  <message msgid="basic ids deauth" msgstr="Ограничение числа запросов деаутентификации" />
+  <message msgid="basic ids eap" msgstr="Ограничение числа EAP запросов" />
   <message msgid="basic txbf" msgstr="Формирование луча" />
   <message msgid="basic itxbfen" msgstr="Формирование луча" />
   <message msgid="basic etxbfeeen" msgstr="Поддержка BFee" />
