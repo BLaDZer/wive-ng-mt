@@ -1,5 +1,5 @@
 <po>
-  <message msgid="dmz title" msgstr=" DMZ Settings " />
+  <message msgid="dmz title" msgstr="DMZ Settings" />
   <message msgid="dmz introduction" msgstr="You can set up a De-Militarized Zone (DMZ) to separate your external services from the rest of LAN." />
   <message msgid="dmz setting" msgstr="DMZ Settings" />
   <message msgid="dmz ipaddr" msgstr="DMZ IP Address" />
@@ -12,7 +12,7 @@
   <message msgid="alg introduction" msgstr="On this page you can enable/disable ALG services." />
   <message msgid="alg setting" msgstr="ALG Settings" />
 
-  <message msgid="port title" msgstr="MAC/IP/Port Filtering Settings " />
+  <message msgid="port title" msgstr="MAC/IP/Port Filtering Settings" />
   <message msgid="port introduction" msgstr="You can set up firewall rules to protect your network from viruses, worms and other malicious activity on the Internet." />
   <message msgid="port basic setting" msgstr="Basic Settings" />
   <message msgid="port basic filter" msgstr="MAC/IP/Port Filtering" />

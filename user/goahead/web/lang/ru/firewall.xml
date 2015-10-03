@@ -1,7 +1,7 @@
 <po>
-  <message msgid="dmz title" msgstr=" Настройки DMZ " />
+  <message msgid="dmz title" msgstr="Настройка DMZ" />
   <message msgid="dmz introduction" msgstr="Вы можете настроить De-Militarized Zone (DMZ) для отделения сервера во внутренней сети от Интернет." />
-  <message msgid="dmz setting" msgstr="Настройки DMZ" />
+  <message msgid="dmz setting" msgstr="Настройка DMZ" />
   <message msgid="dmz ipaddr" msgstr="DMZ IP адрес" />
   <message msgid="dmz confirm" msgstr="Вы включили опцию 'DMZ NAT Loopback'. После применения этих настроек вы больше не сможете продолжить настройку через web-интерфейс, а также не сможете подключаться к маршрутизатору по протоколу SSH. Вы действительно хотите включить данную опцию?" />
   <message msgid="dmz ip empty" msgstr="IP адрес не может быть пустым." />

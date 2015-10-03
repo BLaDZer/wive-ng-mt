@@ -28,8 +28,8 @@
 
   <message msgid="basic tx power" msgstr="TX Power (2.4GHz)" />
   <message msgid="basic tx power ac" msgstr="TX Power (5GHz)" />
-  <message msgid="basic title" msgstr="Basic Wireless Settings " />
-  <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point. " />
+  <message msgid="basic title" msgstr="Basic Wireless Settings" />
+  <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point." />
   <message msgid="basic wireless network" msgstr="Wireless Network" />
   <message msgid="basic wireless settings" msgstr="SSID Settings" />
   <message msgid="basic radio button" msgstr="Radio On/Off" />
@@ -246,7 +246,7 @@
   <message msgid="apcli chars not allowed" msgstr="Some of characters in password phrase are not allowed" />
 
   <message msgid="stalist title" msgstr="Station List" />
-  <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here. " />
+  <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here." />
   <message msgid="stalist wireless network" msgstr="Wireless Network" />
 
   <message msgid="prof title" msgstr="Station Profile" />

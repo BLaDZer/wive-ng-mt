@@ -252,8 +252,8 @@
   <message msgid="apcli long phrase" msgstr="Секретная фраза слишком длинная" />
   <message msgid="apcli chars not allowed" msgstr="В секретной фразе использованны недопустимые символы" />
 
-  <message msgid="stalist title" msgstr="Список станций" />
-  <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список станций, подключенных к данной точке доступа. " />
+  <message msgid="stalist title" msgstr="Активные подключения" />
+  <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список клиентов, подключенных к данной точке доступа." />
   <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
 
   <message msgid="prof title" msgstr="Профиль станции" />
