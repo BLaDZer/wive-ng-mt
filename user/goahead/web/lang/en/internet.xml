@@ -60,9 +60,6 @@
   <message msgid="lan snmp" msgstr="SNMP daemon (snmpd)" />
   <message msgid="lan igmpp" msgstr="Multicast route (igmpproxy)" />
   <message msgid="lan upnp" msgstr="Auto portmap service (miniupnpd)" />
-  <message msgid="lan radvd" msgstr="Router Advertisement Daemon (radvd)" />
-  <message msgid="lan dhcpv6" msgstr="DHCPv6 server (dhcp6s)" />
-  <message msgid="lan dnsp" msgstr="DNS Proxy (dnsmasqd)" />
   <message msgid="lan accept dhcp opts" msgstr="Apply change network settings to dhcpd?" />
 
   <message msgid="dhcp title" msgstr="DHCP Client List" />

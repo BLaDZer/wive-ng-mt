@@ -89,8 +89,8 @@
     <message msgid="ipv6 service name" msgstr="Название сервиса" />
     <message msgid="ipv6 service value" msgstr="Значение" />
     <message msgid="ipv6 service status" msgstr="Статус" />
-    <message msgid="ipv6 radvd" msgstr="Router Advertisement(radvd)" />
-    <message msgid="ipv6 dhcp6s" msgstr="Динамическая конфигурация IPv6(dhcp6s)" />
+    <message msgid="ipv6 radvd" msgstr="Автоматически выдавать клиентам IPv6 адреса (radvd)" />
+    <message msgid="ipv6 dhcp6s" msgstr="Автоматически выдавать клиентам DNS/prefix (dhcp6s)" />
     <message msgid="ipv6 ip empty" msgstr="Пустой IP адрес." />
     <message msgid="ipv6 number" msgstr="Должно быть числом." />
     <message msgid="ipv6 ip format error" msgstr="Неверный формат IP адреса." />

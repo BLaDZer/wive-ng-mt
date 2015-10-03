@@ -56,12 +56,9 @@
   <message msgid="lan cdp" msgstr="Link Layer Cisco Discovery (cdp)" />
   <message msgid="lan lltd" msgstr="Link Layer Topology Discovery (lltd)" />
   <message msgid="lan lldpd" msgstr="Link Layer Discovery Daemon (lldpd)" />
-  <message msgid="lan snmp" msgstr="SNMP daemon (snmpd)" />
-  <message msgid="lan igmpp" msgstr="Multicast route (igmpproxy)" />
-  <message msgid="lan upnp" msgstr="Auto portmap service (miniupnpd)" />
-  <message msgid="lan radvd" msgstr="Router Advertisement Daemon (radvd)" />
-  <message msgid="lan dhcpv6" msgstr="DHCPv6 server (dhcp6s)" />
-  <message msgid="lan dnsp" msgstr="DNS Proxy (dnsmasqd)" />
+  <message msgid="lan snmp" msgstr="Сервер статистики (snmpd)" />
+  <message msgid="lan igmpp" msgstr="Маршрутизация мультикаста (igmpproxy)" />
+  <message msgid="lan upnp" msgstr="Автоматический проброс портов (miniupnpd)" />
   <message msgid="lan accept dhcp opts" msgstr="Применить изменения локальной сети в настройках dhcpd?" />
 
   <message msgid="dhcp title" msgstr="Список DHCP клиентов" />
