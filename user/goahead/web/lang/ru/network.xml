@@ -119,7 +119,7 @@
     <message msgid="qos high priority dscps" msgstr="Метки пакетов с высоким приоритетом" />
     <message msgid="qos low priority dscps" msgstr="Метки пакетов с низким приоритетом" />
     <message msgid="qos simple" msgstr="Простая приоритезация" />
-    <message msgid="qos shaper" msgstr="Шейпер основе номеров портов и DSCP" />
+    <message msgid="qos shaper" msgstr="Шейпер на основе номеров портов и DSCP" />
     <message msgid="qos codel" msgstr="Взвешенная справедливая очередь (CODEL)" />
     <message msgid="qos mode" msgstr="Обрабатываем:" />
     <message msgid="qos mode all" msgstr="Всё" />
