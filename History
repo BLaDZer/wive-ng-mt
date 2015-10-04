@@ -1336,8 +1336,8 @@
 1) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
 2) init.d: fix chillispot work (now work ok tested with hotspotsystem.com).<br>
 3) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-4) kernel: ralink_wifi: xxxx: kick sta at rssi low reowrk with avgRssi and RssiSample.<br>
-5) kernel: vfs: Remove incorrect debugging WARN in prepend_path.<br>
+4) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+5) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
 6) kenrel: net: af_inet: only check perm protocol when register proto.<br>
 7) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
 8) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
