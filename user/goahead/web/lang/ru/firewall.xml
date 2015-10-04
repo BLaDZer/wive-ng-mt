@@ -1,6 +1,6 @@
 <po>
   <message msgid="dmz title" msgstr="Настройка демилитаризованной зоны" />
-  <message msgid="dmz introduction" msgstr="Вы можете настроить De-Militarized Zone (DMZ) для отделения сервера во внутренней сети от Интернет." />
+  <message msgid="dmz introduction" msgstr="Вы можете настроить De-Militarized Zone (DMZ) для того что бы сделать ваш локальный сервер общедоступным." />
   <message msgid="dmz setting" msgstr="Включить DMZ" />
   <message msgid="dmz ipaddr" msgstr="IP адрес" />
   <message msgid="dmz confirm" msgstr="Вы включили опцию 'DMZ NAT Loopback'. После применения этих настроек вы больше не сможете продолжить настройку через web-интерфейс, а также не сможете подключаться к маршрутизатору по протоколу SSH. Вы действительно хотите включить данную опцию?" />
