@@ -86,7 +86,7 @@ function onInit()
 </head>
 <frameset id="homeFrameset" rows="70,1*" cols="*" border="0" framespacing="0" frameborder="NO" onLoad="onInit()">
   <frame src="title.htm" name="title" frameborder="NO" scrolling="NO" marginwidth="0" marginheight="0">
-  <frameset id="homeMenuFrameset" cols="220,1*">
+  <frameset id="homeMenuFrameset" cols="200,1*">
     <frame src="treeapp.asp" name="menu" marginwidth="0" marginheight="0" scrolling="AUTO" frameborder="NO" >
     <frame src="overview.asp" name="view" scrolling="AUTO" marginwidth="0" topmargin="0" marginheight="0" frameborder="NO">
   </frameset>

@@ -1,8 +1,8 @@
 <po>
     <message msgid="treeapp router" msgstr="Маршрутизатор" />
     <message msgid="treeapp operation mode" msgstr="Режим работы" />
-    <message msgid="treeapp network settings" msgstr="Настройки проводной сети" />
-    <message msgid="treeapp wireless settings" msgstr="Настройки беспроводной сети" />
+    <message msgid="treeapp network settings" msgstr="Настройки сети" />
+    <message msgid="treeapp wireless settings" msgstr="Настройки радио" />
     <message msgid="treeapp firewall" msgstr="Сетевой экран" />
     <message msgid="treeapp services" msgstr="Сервисы" />
     <message msgid="treeapp usb" msgstr="Настройки USB" />
