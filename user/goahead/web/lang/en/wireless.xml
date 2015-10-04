@@ -152,7 +152,8 @@
   <message msgid="adv country code ie" msgstr="IE (Ireland)" />
   <message msgid="adv country code hk" msgstr="HK (Hong Kong)" />
 
-  <message msgid="adv multicast2unicast converter" msgstr="Multicast-to-Unicast Converter (IGMP Snooping)" />
+  <message msgid="adv wmm" msgstr="Wireless Multimedia" />
+  <message msgid="adv multicast2unicast converter" msgstr="Multicast-to-Unicast Converter" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
   <message msgid="adv maximum stations number" msgstr="Maximum clients per SSID" />
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
@@ -321,7 +322,7 @@
   <message msgid="11n ampdu manual" msgstr="Manual" />
   <message msgid="11n mpdu density" msgstr="MPDU density" />
 
-  <message msgid="about title" msgstr="Station About" />
+  <message msgid="about title" msgstr="Device About" />
   <message msgid="about introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />

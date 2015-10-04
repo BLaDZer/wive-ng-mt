@@ -142,6 +142,7 @@
   <message msgid="adv pkt aggregate" msgstr="Пакетная агрегация" />
   <message msgid="adv 80211h" msgstr="Поддержка IEEE 802.11H" />
   <message msgid="adv 80211h disable describe" msgstr="(только в диапазоне A)" />
+
   <message msgid="adv country code" msgstr="Код страны" />
   <message msgid="adv country code us" msgstr="US (United States)" />
   <message msgid="adv country code jp" msgstr="JP (Japan)" />
@@ -150,21 +151,14 @@
   <message msgid="adv country code tw" msgstr="TW (Taiwan)" />
   <message msgid="adv country code ie" msgstr="IE (Ireland)" />
   <message msgid="adv country code hk" msgstr="HK (Hong Kong)" />
-  <message msgid="adv carrier" msgstr="Carrier Detect" />
-  <message msgid="adv wmm" msgstr="Wi-Fi Multimedia" />
-  <message msgid="adv wmm capable" msgstr="Поддержка WMM" />
-  <message msgid="adv apds capable" msgstr="Поддержка APSD" />
-  <message msgid="adv dls capable" msgstr="Поддержка DLS" />
-  <message msgid="adv wmm parameter" msgstr="Настройки WMM" />
-  <message msgid="adv wmm configuration" msgstr="Конфигурация WMM" />
+
+  <message msgid="adv wmm" msgstr="Поддержка WMM" />
   <message msgid="adv multicast2unicast converter" msgstr="Конвертер Multicast-to-Unicast" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
   <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов на каждый SSID" />
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
   <message msgid="adv idletimeout" msgstr="Время ожидания" />
   <message msgid="adv entrylifecheck" msgstr="Число попыток отправки пакета до отключения клиента" />
-  <message msgid="wmm ap parameter" msgstr="Настройки WMM точки доступа" />
-  <message msgid="wmm sta parameter" msgstr="Настройки WMM станции" />
 
   <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
   <message msgid="adv invalid beacon" msgstr="Неверный интервал маяка" />
@@ -315,24 +309,11 @@
   <message msgid="staadv title" msgstr="Расширенная конфигурация станции" />
   <message msgid="staadv introduction" msgstr="Здесь представлены опции для тонкой настройки станции." />
   <message msgid="staadv config" msgstr="Расширенная конфигурация" />
-  <message msgid="staadv infra" msgstr="Режим Wi-Fi(Infra)" />
+  <message msgid="staadv infra" msgstr="Режим Wi-Fi (Infrastructure)" />
   <message msgid="staadv country" msgstr="Региональный код страны" />
   <message msgid="staadv bgprotect" msgstr="Защита B/G" />
   <message msgid="staadv bw" msgstr="BW" />
   <message msgid="staadv gi" msgstr="GI" />
-
-  <message msgid="qos title" msgstr="Конфигурация QoS" />
-  <message msgid="qos introduction" msgstr="Настройки качества обслуживания" />
-  <message msgid="qos config" msgstr="Настройки Qos" />
-  <message msgid="qos wmm" msgstr="WMM" />
-  <message msgid="qos wmm power save" msgstr="Энергосбережение WMM" />
-  <message msgid="qos wmm ps mode" msgstr="Режим PS" />
-  <message msgid="qos dls" msgstr="Настройки Direct Link" />
-  <message msgid="qos dls timeoutvalue" msgstr="Тайм-аут" />
-  <message msgid="qos second" msgstr=" сек" />
-  <message msgid="qos dls status" msgstr="Статус DLS" />
-  <message msgid="qos dls timeout" msgstr="Тайм-аут" />
-  <message msgid="qos teardown" msgstr="Обрыв" />
 
   <message msgid="11n title" msgstr="Конфигурация 11n станции" />
   <message msgid="11n introduction" msgstr="." />
@@ -341,8 +322,8 @@
   <message msgid="11n ampdu manual" msgstr="Вручную" />
   <message msgid="11n mpdu density" msgstr="Плотность MPDU" />
 
-  <message msgid="about title" msgstr="Информация о станции" />
+  <message msgid="about title" msgstr="Информация о устройстве" />
   <message msgid="about introduction" msgstr="." />
-  <message msgid="about about" msgstr="О станции" />
+  <message msgid="about about" msgstr="О устройстве" />
   <message msgid="about driver version" msgstr="Версия драйвера" />
 </po>

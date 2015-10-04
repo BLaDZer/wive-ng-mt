@@ -64,12 +64,14 @@ function initTranslation()
 	_TR("advPktAggr", "adv pkt aggregate");
 	_TR("advPktAggrEnable", "wireless enable");
 	_TR("advPktAggrDisable", "wireless disable");
+	_TR("advWmm", "adv wmm");
 	_TR("advWMMEnable", "wireless enable");
 	_TR("advWMMDisable", "wireless disable");
 	_TR("advBSEnable", "wireless enable");
 	_TR("advBSDisable", "wireless disable");
 	_TR("advBSAuto", "wireless auto");
 
+	_TR("staadvCountry", "staadv country");
 	_TR("advCountryCode", "adv country code");
 	_TR("advCountryCodeUS", "adv country code us");
 	_TR("advCountryCodeJP", "adv country code jp");
@@ -86,8 +88,8 @@ function initTranslation()
 	_TR("advMul2UniDisable", "wireless disable");
 	_TR("advMaxStaNum", "adv maximum stations number");
 	_TR("advStationKeepAlive", "adv station keep alive");
-  _TR("advIdleTimeout", "adv idletimeout");
-  _TR("advEntryLifeCheck", "adv entrylifecheck");
+	_TR("advIdleTimeout", "adv idletimeout");
+	_TR("advEntryLifeCheck", "adv entrylifecheck");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
@@ -364,7 +366,7 @@ function CheckValue(form)
               <font id="advPktAggrDisable">Disable</font></td>
           </tr>
           <tr>
-            <td class="head">WMM Capable</td>
+            <td id="advWmm" class="head">WMM Capable</td>
             <td><input type="radio" name="WmmCapable" value="1">
               <font id="advWMMEnable">Enable</font>&nbsp;
               <input type="radio" name="WmmCapable" value="0" checked>
@@ -401,7 +403,7 @@ function CheckValue(form)
         <input type="hidden" name="rebootAP" value="0">
         <table id="div_m2u" name="div_m2u" class="form">
           <tr>
-            <td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter (IGMP Snooping)</td>
+            <td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter</td>
           </tr>
           <tr>
             <td class="head" id="advMul2Uni">Multicast-to-Unicast</td>
