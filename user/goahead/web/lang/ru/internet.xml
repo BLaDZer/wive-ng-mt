@@ -102,11 +102,4 @@
   <message msgid="routing net" msgstr="Сеть" />
   <message msgid="routing LAN" msgstr="LAN" />
   <message msgid="routing WAN" msgstr="WAN" />
-
-  <message msgid="routing dynamic Title" msgstr="Динамическая маршрутизация" />
-  <message msgid="routing dynamic Title2" msgstr="Протокол динамической маршрутизации" />
-  <message msgid="routing dynamic rip disable" msgstr="Выкл." />
-  <message msgid="routing dynamic rip enable" msgstr="Вкл." />
-  <message msgid="routing dynamic rip apply" msgstr="Применить" />
-  <message msgid="routing dynamic rip reset" msgstr="Сброс" />
 </po>

@@ -1,8 +1,8 @@
 <po>
-  <message msgid="dmz title" msgstr="Настройка DMZ" />
+  <message msgid="dmz title" msgstr="Настройка демилитаризованной зоны" />
   <message msgid="dmz introduction" msgstr="Вы можете настроить De-Militarized Zone (DMZ) для отделения сервера во внутренней сети от Интернет." />
-  <message msgid="dmz setting" msgstr="Настройка DMZ" />
-  <message msgid="dmz ipaddr" msgstr="DMZ IP адрес" />
+  <message msgid="dmz setting" msgstr="Включить DMZ" />
+  <message msgid="dmz ipaddr" msgstr="IP адрес" />
   <message msgid="dmz confirm" msgstr="Вы включили опцию 'DMZ NAT Loopback'. После применения этих настроек вы больше не сможете продолжить настройку через web-интерфейс, а также не сможете подключаться к маршрутизатору по протоколу SSH. Вы действительно хотите включить данную опцию?" />
   <message msgid="dmz ip empty" msgstr="IP адрес не может быть пустым." />
   <message msgid="dmz number" msgstr="Должно быть числом." />
@@ -10,7 +10,7 @@
 
   <message msgid="alg title" msgstr="Настройки ALG" />
   <message msgid="alg introduction" msgstr="На этой странице вы можете включить или отключить сервисы ALG." />
-  <message msgid="alg setting" msgstr="Настройки ALG" />
+  <message msgid="alg setting" msgstr="Настройки протоколов поддерживаемых ALG" />
 
   <message msgid="port title" msgstr="Настройки фильтрации по MAC/IP/портам" />
   <message msgid="port introduction" msgstr="Вы можете настроить правила сетевого экрана для блокировки вирусов, червей и прочего нежелательного траффика из сети Интернет." />

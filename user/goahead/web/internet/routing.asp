@@ -38,7 +38,7 @@ function initTranslation()
 	_TR("routingTableComment", "routing comment");
 	_TR("routingHost", "routing host");
 	_TR("routingNet", "routing net");
-	_TR("dynamicRoutingTitle", "routing dynamic Title");
+	_TR("dynamicRoutingTitle", "routing dynamic title");
 	_TR("RIP", "routing rip")
 	_TR("RIPDisable", "button disable");
 	_TR("RIPEnable", "button enable");

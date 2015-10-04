@@ -29,8 +29,8 @@
     <message msgid="treeapp station list" msgstr="Station List" />
 
     <message msgid="treeapp firewall" msgstr="Firewall" />
-    <message msgid="treeapp alg" msgstr="ALG" />
-    <message msgid="treeapp dmz" msgstr="DMZ" />
+    <message msgid="treeapp alg" msgstr="Application Level gateway" />
+    <message msgid="treeapp dmz" msgstr="Demilitarized Zone" />
     <message msgid="treeapp content filtering" msgstr="Content Filtering" />
 
     <message msgid="treeapp dhcp server" msgstr="DHCP Server" />

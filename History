@@ -1347,7 +1347,7 @@
 <br>
 <br>
 <b>TODO:</b><br>
-1) full russian ui (work end ~98%).<br>
+1) full russian ui (work end ~99%).<br>
 2) need add nodogsplash config in webui->hotspot (select chillispot or nodogsplash mode).<br>
 3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
 4) need add multiif support in iappd daemon.<br>

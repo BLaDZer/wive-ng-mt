@@ -140,8 +140,8 @@
     <message msgid="routing interface" msgstr="Interface" />
     <message msgid="routing interface name" msgstr="Interface Name" />
     <message msgid="routing comment" msgstr="Comment" />
-    <message msgid="routing dynamic Title" msgstr="Dynamic Routing Protocol" />
-    <message msgid="routing rip" msgstr="RIP" />
+    <message msgid="routing dynamic title" msgstr="Dynamic Routing Support" />
+    <message msgid="routing rip" msgstr="Support RIP protocol" />
     <message msgid="routing del title" msgstr="Current Routing table:" />
     <message msgid="routing number" msgstr="No." />
     <message msgid="routing del flags" msgstr="Flags" />

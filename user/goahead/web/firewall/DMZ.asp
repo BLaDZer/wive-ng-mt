@@ -42,7 +42,7 @@ function atoi(str, num)
 	  	if(i != num )
 			return -1;
 	}
-	
+
 	for(i=0; i<str.length; i++){
 		if(str.charAt(i) == '.'){
 			str = str.substring(0, i);
@@ -123,12 +123,12 @@ function initTranslation()
 {
 	_TR("dmzTitle", "dmz title");
 	_TR("dmzIntroduction", "dmz introduction");
-	_TR("dmzSetting", "dmz setting");
+	_TR("dmzSetting", "dmz title");
 	_TR("dmzSet", "dmz setting");
-  _TR("dmzDisable", "button disable");
-  _TR("dmzEnable", "button enable");
-  _TR("dmzDisable2", "button disable");
-  _TR("dmzEnable2", "button enable");
+	_TR("dmzDisable", "button disable");
+	_TR("dmzEnable", "button enable");
+	_TR("dmzDisable2", "button disable");
+	_TR("dmzEnable2", "button enable");
 	_TR("dmzIPAddr", "dmz ipaddr");
 
 	_TRV("dmzApply", "button apply");
@@ -141,7 +141,7 @@ function pageInit()
 
 	initTranslation();
 	var dmz_loopback = "<% getCfgZero(1, "DMZNATLoopback"); %>";
-	
+
 	form.dmzLoopback.value = dmz_loopback;
 	dmzEnableSwitch(form);
 }
@@ -149,7 +149,7 @@ function pageInit()
 function dmzEnableSwitch(form)
 {
 	enableElements([form.DMZIPAddress, form.dmzLoopback], form.DMZEnabled.value == '1');
-  displayElement([ 'dmzAdress', 'dmzLoopback' ], form.DMZEnabled.value == '1');
+	displayElement([ 'dmzAdress', 'dmzLoopback' ], form.DMZEnabled.value == '1');
 }
 
 function dmzLoopbackWarning(element)

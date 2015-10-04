@@ -138,16 +138,16 @@
     <message msgid="routing interface" msgstr="Интерфейс" />
     <message msgid="routing interface name" msgstr="Имя интерфейса" />
     <message msgid="routing comment" msgstr="Комментарий" />
-    <message msgid="routing dynamic Title" msgstr="Протокол динамической маршрутизации" />
-    <message msgid="routing rip" msgstr="RIP" />
-    <message msgid="routing del title" msgstr="Таблица текущей маршрутизации:" />
+    <message msgid="routing dynamic title" msgstr="Поддержка динамической маршрутизации" />
+    <message msgid="routing rip" msgstr="Поддержка протокола RIP" />
+    <message msgid="routing del title" msgstr="Текущая таблица маршрутизации:" />
     <message msgid="routing number" msgstr="No." />
     <message msgid="routing del flags" msgstr="Флаги" />
     <message msgid="routing del metric" msgstr="Metric" />
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Действие" />
-    <message msgid="routing unsup chars" msgstr="Не поддерживаемые символы в коментарии" />
+    <message msgid="routing unsup chars" msgstr="Неподдерживаемые символы в коментарии" />
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />

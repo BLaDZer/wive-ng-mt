@@ -1,8 +1,8 @@
 <po>
     <message msgid="treeapp router" msgstr="Маршрутизатор" />
     <message msgid="treeapp operation mode" msgstr="Режим работы" />
-    <message msgid="treeapp network settings" msgstr="Сетевые настройки" />
-    <message msgid="treeapp wireless settings" msgstr="Беспроводные настройки" />
+    <message msgid="treeapp network settings" msgstr="Настройки проводной сети" />
+    <message msgid="treeapp wireless settings" msgstr="Настройки беспроводной сети" />
     <message msgid="treeapp firewall" msgstr="Сетевой экран" />
     <message msgid="treeapp services" msgstr="Сервисы" />
     <message msgid="treeapp usb" msgstr="Настройки USB" />
@@ -28,8 +28,8 @@
     <message msgid="treeapp ap client" msgstr="Клиент/Репитер" />
     <message msgid="treeapp station list" msgstr="Активные подключения" />
 
-    <message msgid="treeapp alg" msgstr="ALG" />
-    <message msgid="treeapp dmz" msgstr="DMZ" />
+    <message msgid="treeapp alg" msgstr="Шлюз прикладного уровня" />
+    <message msgid="treeapp dmz" msgstr="Демилитаризованная зона" />
     <message msgid="treeapp content filtering" msgstr="Фильтрация содержимого" />
 
     <message msgid="treeapp dhcp server" msgstr="Сервер DHCP" />

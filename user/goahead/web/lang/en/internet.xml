@@ -103,11 +103,4 @@
   <message msgid="routing net" msgstr="Net" />
   <message msgid="routing LAN" msgstr="LAN" />
   <message msgid="routing WAN" msgstr="WAN" />
-
-  <message msgid="routing dynamic Title" msgstr="Dynamic Routing Settings" />
-  <message msgid="routing dynamic Title2" msgstr="Dynamic Routing Protocol" />
-  <message msgid="routing dynamic rip disable" msgstr="Disable" />
-  <message msgid="routing dynamic rip enable" msgstr="Enable" />
-  <message msgid="routing dynamic rip apply" msgstr="Apply" />
-  <message msgid="routing dynamic rip reset" msgstr="Reset" />
 </po>
