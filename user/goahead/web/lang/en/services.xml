@@ -135,7 +135,7 @@
   <message msgid="services misc vlan double tag" msgstr="Vlan double tag QinQ support" />
   <message msgid="services misc reinit wan" msgstr="Reinit WAN if DHCP lease fail" />
   <message msgid="services misc dhcp renew" msgstr="DHCP renew lease at WAN UP" />
-  <message msgid="services misc ping from wan" msgstr="Accept ping from WAN" />
+  <message msgid="services misc ping from wan" msgstr="Accept icmp echo from WAN network" />
   <message msgid="services misc stp" msgstr="802.1d Spanning Tree" />
   <message msgid="services misc dont modify ttl" msgstr="Do not modify TTL" />
   <message msgid="services misc multicast ttl" msgstr="Do not modify multicast TTL" />

@@ -121,7 +121,7 @@
   <message msgid="services misc igmp multicast" msgstr="Поддержка IGMP snooping" />
   <message msgid="services misc igmp fastleave" msgstr="Поддержка IGMP fast leave" />
   <message msgid="services misc igmp unicast" msgstr="Преобразование мультикаста в уникаст" />
-  <message msgid="services misc udpxy" msgstr="Multicast to http прокси" />
+  <message msgid="services misc udpxy" msgstr="Преобразование мультикаста в http" />
   <message msgid="services misc udpxy port" msgstr="Порт UDPXY" />
   <message msgid="services misc xupnpd" msgstr="DLNA медиа сервер" />
   <message msgid="services misc pass through" msgstr="Прямой пропуск" />
@@ -134,12 +134,12 @@
   <message msgid="services misc ping interval" msgstr="Ping check interval" />
   <message msgid="services misc others" msgstr="Остальные" />
   <message msgid="services misc vlan double tag" msgstr="Поддержка vlan double tag" />
-  <message msgid="services misc reinit wan" msgstr="Переинициализировать WAN если DHCP не получил адрес" />
-  <message msgid="services misc dhcp renew" msgstr="Перезапрашивать адрес при подъёме WAN интерфейса" />
-  <message msgid="services misc ping from wan" msgstr="Разрешить icmp на WAN" />
+  <message msgid="services misc reinit wan" msgstr="Переподнять WAN линк если DHCP не получил адрес" />
+  <message msgid="services misc dhcp renew" msgstr="Перезапросить адрес при подъёме WAN интерфейса" />
+  <message msgid="services misc ping from wan" msgstr="Разрешить icmp echo из WAN подсети" />
   <message msgid="services misc stp" msgstr="Поддержка Spanning Tree" />
   <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
-  <message msgid="services misc multicast ttl" msgstr="Не изменять multicast TTL" />
+  <message msgid="services misc multicast ttl" msgstr="Не изменять TTL мультикаст трафика" />
   <message msgid="services misc use pmtu" msgstr="Использовать автосогласование PMTU" />
   <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
   <message msgid="services misc hwnat number" msgstr="Порог аппаратного NAT должен быть числом" />
