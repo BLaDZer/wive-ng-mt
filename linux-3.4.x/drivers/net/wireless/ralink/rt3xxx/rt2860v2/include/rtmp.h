@@ -2126,7 +2126,6 @@ typedef struct _STA_ADMIN_CONFIG {
 	INT32 BF_SNR[3];	/* Last RXWI BF SNR. Units=0.25 dB */
 #endif /* DOT11N_SS3_SUPPORT */
 	RSSI_SAMPLE RssiSample;
-	ULONG NumOfAvgRssiSample;
 
 	ULONG LastBeaconRxTime;	/* OS's timestamp of the last BEACON RX time */
 	ULONG Last11bBeaconRxTime;	/* OS's timestamp of the last 11B BEACON RX time */
@@ -3093,7 +3092,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	ULONG MICFailureCounter;
 
 	RSSI_SAMPLE RssiSample;
-	ULONG NumOfAvgRssiSample;
 
 	BOOLEAN bAutoChannelAtBootup;	/* 0: disable, 1: enable */
 	ChannelSel_Alg AutoChannelAlg;	/* Alg for selecting Channel */

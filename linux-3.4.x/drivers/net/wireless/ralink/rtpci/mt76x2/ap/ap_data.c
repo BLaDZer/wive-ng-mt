@@ -4792,8 +4792,6 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	if (pRxInfo->U2M)
 	{
 		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
-		pAd->ApCfg.NumOfAvgRssiSample ++;
-	
 #ifdef DBG_DIAGNOSE
 		if (pAd->DiagStruct.inited) {
 			struct dbg_diag_info *diag_info;

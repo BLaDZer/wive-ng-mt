@@ -5045,7 +5045,6 @@ BOOLEAN APRxDoneInterruptHandle(
 				if (pRxD->U2M)
 				{
 					Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
-					pAd->ApCfg.NumOfAvgRssiSample ++;
 #ifdef DBG_DIAGNOSE
 					if (pRxWI->MCS < 24) /* 3*3 */
 					{
@@ -5230,7 +5229,6 @@ BOOLEAN APHandleRxDonePacket(
 			if (pRxD->U2M)
 			{
 				Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
-				pAd->ApCfg.NumOfAvgRssiSample++;
 #ifdef DBG_DIAGNOSE
 				if (pRxWI->MCS < 24)
 				{

@@ -6170,7 +6170,6 @@ BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd)
 					if (pRxInfo->U2M)
 					{
 						Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
-						pAd->ApCfg.NumOfAvgRssiSample ++;
 #ifdef DBG_DIAGNOSE
 						{
 							struct dbg_diag_info *diag_info = &pAd->DiagStruct.diag_info[pAd->DiagStruct.ArrayCurIdx];
@@ -6386,7 +6385,6 @@ BOOLEAN APHandleRxDonePacket(
 			if (pRxInfo->U2M)
 			{
 				Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
-				pAd->ApCfg.NumOfAvgRssiSample++;
 #ifdef DBG_DIAGNOSE
 				{
 					struct dbg_diag_info *diag_info = &pAd->DiagStruct.diag_info[pAd->DiagStruct.ArrayCurIdx];

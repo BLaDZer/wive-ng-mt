@@ -2667,7 +2667,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	ULONG MICFailureCounter;
 
 	RSSI_SAMPLE RssiSample;
-	ULONG NumOfAvgRssiSample;
 
 	BOOLEAN bAutoChannelAtBootup;	/* 0: disable, 1: enable */
 	ChannelSel_Alg AutoChannelAlg;	/* Alg for selecting Channel */
