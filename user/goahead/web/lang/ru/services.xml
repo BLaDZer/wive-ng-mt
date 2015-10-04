@@ -107,7 +107,7 @@
   <message msgid="services misc value" msgstr="Значение" />
   <message msgid="services misc status" msgstr="Статус" />
   <message msgid="services misc dnsproxy" msgstr="DNS прокси" />
-  <message msgid="services misc upnp" msgstr="Поддержка UPNP" />
+  <message msgid="services misc upnp" msgstr="Поддержка авто проброса портов UPNP" />
   <message msgid="services misc snmp" msgstr="Поддержка SNMP" />
   <message msgid="services misc snmp community" msgstr="Строка сообщества" />
   <message msgid="services misc arppt" msgstr="ARP прокси" />
@@ -121,9 +121,9 @@
   <message msgid="services misc igmp multicast" msgstr="Поддержка IGMP snooping" />
   <message msgid="services misc igmp fastleave" msgstr="Поддержка IGMP fast leave" />
   <message msgid="services misc igmp unicast" msgstr="Преобразование мультикаста в уникаст" />
-  <message msgid="services misc udpxy" msgstr="Multicast to http прокси (udpxy)" />
+  <message msgid="services misc udpxy" msgstr="Multicast to http прокси" />
   <message msgid="services misc udpxy port" msgstr="Порт UDPXY" />
-  <message msgid="services misc xupnpd" msgstr="UPNP медиа сервер (xupnpd)" />
+  <message msgid="services misc xupnpd" msgstr="DLNA медиа сервер" />
   <message msgid="services misc pass through" msgstr="Прямой пропуск" />
   <message msgid="services misc pass through pppoe" msgstr="Пропускать напрямую PPPOE" />
   <message msgid="services misc pass through ipv6" msgstr="Пропускать напрямую IPv6" />
@@ -133,18 +133,18 @@
   <message msgid="services misc ping time" msgstr="Ping check time" />
   <message msgid="services misc ping interval" msgstr="Ping check interval" />
   <message msgid="services misc others" msgstr="Остальные" />
-  <message msgid="services misc vlan double tag" msgstr="Поддержка vlan double tag (QinQ)" />
+  <message msgid="services misc vlan double tag" msgstr="Поддержка vlan double tag" />
   <message msgid="services misc reinit wan" msgstr="Переинициализировать WAN если DHCP не получил адрес" />
   <message msgid="services misc dhcp renew" msgstr="Перезапрашивать адрес при подъёме WAN интерфейса" />
   <message msgid="services misc ping from wan" msgstr="Разрешить icmp на WAN" />
-  <message msgid="services misc stp" msgstr="Поддержка Spanning Tree (802.1d)" />
+  <message msgid="services misc stp" msgstr="Поддержка Spanning Tree" />
   <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
   <message msgid="services misc multicast ttl" msgstr="Не изменять multicast TTL" />
   <message msgid="services misc use pmtu" msgstr="Использовать автосогласование PMTU" />
   <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
   <message msgid="services misc hwnat number" msgstr="Порог аппаратного NAT должен быть числом" />
   <message msgid="services misc hwnat over" msgstr="Порог аппаратного NAT должен иметь значение от 0 до 500" />
-  <message msgid="services misc irqbalance" msgstr="IRQBalance (приоритет)" />
+  <message msgid="services misc irqbalance" msgstr="Распределение прерываний по ядрам" />
   <message msgid="services misc auto" msgstr="Автоматически" />
   <message msgid="services misc router" msgstr="Маршрутизация" />
   <message msgid="services misc storage" msgstr="Локальные сервисы" />

@@ -106,7 +106,7 @@
   <message msgid="services misc value" msgstr="Value" />
   <message msgid="services misc status" msgstr="Status" />
   <message msgid="services misc dnsproxy" msgstr="DNS cached proxy" />
-  <message msgid="services misc upnp" msgstr="UPNP support" />
+  <message msgid="services misc upnp" msgstr="UPNP auto portmap" />
   <message msgid="services misc snmp" msgstr="SNMP daemon" />
   <message msgid="services misc snmp community" msgstr="Community string" />
   <message msgid="services misc arppt" msgstr="ARP Proxy" />
@@ -120,9 +120,9 @@
   <message msgid="services misc igmp multicast" msgstr="IGMP snooping support" />
   <message msgid="services misc igmp fastleave" msgstr="IGMP fast leave support" />
   <message msgid="services misc igmp unicast" msgstr="Multicast to Unicast conversion" />
-  <message msgid="services misc udpxy" msgstr="Multicast to http proxy (udpxy)" />
+  <message msgid="services misc udpxy" msgstr="Multicast to http proxy" />
   <message msgid="services misc udpxy port" msgstr="UDPXY port" />
-  <message msgid="services misc xupnpd" msgstr="UPNP media server (xupnpd)" />
+  <message msgid="services misc xupnpd" msgstr="DLNA media server" />
   <message msgid="services misc pass through" msgstr="Pass Through" />
   <message msgid="services misc pass through pppoe" msgstr="PPPOE pass through" />
   <message msgid="services misc pass through ipv6" msgstr="IPv6 pass through" />
@@ -143,7 +143,7 @@
   <message msgid="services misc ask reboot" msgstr="You have changed remote management port number. This change needs to reboot your router. Do you want to proceed?" />
   <message msgid="services misc hwnat number" msgstr="Hardware NAT threshold must be a number" />
   <message msgid="services misc hwnat over" msgstr="Hardware NAT threshold must be a value between 0 and 500" />
-  <message msgid="services misc irqbalance" msgstr="IRQBalance (optimize mode)" />
+  <message msgid="services misc irqbalance" msgstr="IRQ per cpu core balance" />
   <message msgid="services misc auto" msgstr="Auto" />
   <message msgid="services misc router" msgstr="Router" />
   <message msgid="services misc storage" msgstr="Local services" />
