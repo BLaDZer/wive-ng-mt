@@ -7,14 +7,14 @@
 #
 ############################################################################
 
-HOST_BUILD = $(shell (uname -m) 2>/dev/null || echo unknown)-pc-linux-gnu
+HOST_BUILD = $(shell export LC_ALL=C; (uname -m) 2>/dev/null || echo unknown)-pc-linux-gnu
 
 # A macro to make testing gcc features easier
-check-gcc-flag = $(shell \
+check-gcc-flag = $(shell export LC_ALL=C; \
     if $(CC) $(strip $(1)) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
     then echo "$(strip $(1))"; else echo "$(strip $(2))"; fi)
 
-check-gcc-nowarn = $(shell \
+check-gcc-nowarn = $(shell export LC_ALL=C; \
     if $(CC) -W$(strip $(1)) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
     then echo "-Wno-$(strip $(1))"; else echo "$(strip $(2))"; fi)
 
@@ -114,7 +114,7 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	STL_INCDIR=$(ROOTDIR)/include/STLport
 	STL_LIBDIR=$(ROOTDIR)/lib/STLport/lib
 
-	ifeq "$(shell $(LD) --fatal-warnings 2>&1 | grep 'unrecognized option')" ""
+	ifeq "$(shell export LC_ALL=C; $(LD) --fatal-warnings 2>&1 | grep 'unrecognized option')" ""
 		# Linker warnings are almost always a sign of badness
 		LDFLAGS  += -Wl,--fatal-warnings
 	endif

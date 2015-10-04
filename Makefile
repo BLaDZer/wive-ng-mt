@@ -31,11 +31,12 @@ LC_MESSAGES	:= C
 LC_ALL		:= C
 
 #########################################################################################################
-# Cleanup CFLAGS/CPPFLAGS
+# Cleanup CFLAGS/CPPFLAGS/LDFALGS
 #
 CFLAGS		:=
 CPPFLAGS	:=
 CXXFLAGS	:=
+LDFLAGS		:=
 
 ############################################################################
 #
@@ -43,7 +44,10 @@ CXXFLAGS	:=
 #
 
 MAKE		:= make
-HOSTCC		:= gcc
+HOSTCC       	:= gcc
+HOSTCXX      	:= g++
+HOSTCFLAGS   	:= -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89 -fno-delete-null-pointer-checks
+HOSTCXXFLAGS 	:= -O2
 
 ROMFSINST	:= romfs-inst.sh
 TFTPDIR		:= /images
@@ -90,6 +94,7 @@ KCONFIG_NOTIMESTAMP := 1
 DIRS :=  $(ROOTDIR)/vendors $(ROOTDIR)/user $(ROOTDIR)/lib
 
 export LANG LC_COLLATE LC_MESSAGES LC_ALL
+export HOSTCC HOSTCXX HOSTCFLAGS HOSTCXXFLAGS CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 export ROOTDIR FIRMROOT
 export KCONFIG_NOTIMESTAMP
 export CONFIG_VENDOR CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
@@ -99,8 +104,7 @@ export RT288X_SDK_VERSION DEVNAME REALNAME VERSIONPKG VERSIONSTR
 export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST IMAGEDIR RELFILES TFTPDIR
 export IMAGEDIR RELFILES TFTPDIR
 export BUILD_START_STRING
-export HOST_NCPU DIRS
-export HOSTCC PATH
+export HOST_NCPU DIRS PATH
 
 ############################################################################
 

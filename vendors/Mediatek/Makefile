@@ -106,7 +106,7 @@ endif
 ifeq    ($(CONFIG_ROOTFS_IN_FLASH_NO_PADDING),)
 	@cd $(IMAGEDIR) ; \
 	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a $(ENTRYPOINT) \
-	-e $(shell readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
+	-e $(shell export LC_ALL=C; readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
 	-n $(PRODUCTID) -d $(KERNELZ).$(COMP) $(IMAGE)
 else
 	# For No padded need write kernel size in image header
@@ -116,7 +116,7 @@ else
 	RSIZE=`wc -c $(RAMDISK) | awk '{print $$1}'` ; \
 	KRN_SIZE=`expr $$ISIZE - $$RSIZE + 64` ; \
 	$(MKIMAGE_DIR)/mkimage -A mips -O linux -T kernel -C $(COMP) -a $(ENTRYPOINT) \
-	-e $(shell readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
+	-e $(shell export LC_ALL=C; readelf -h $(LINUXDIR)/vmlinux | grep "Entry" | awk '{print $$4}') \
 	-k $$KRN_SIZE -n $(PRODUCTID) -d $(KERNELZ).$(COMP) $(IMAGE)
 endif
 
