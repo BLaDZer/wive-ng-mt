@@ -2874,13 +2874,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	SHORT freqOffset;		/* Last RXWI FOFFSET */
 	SHORT freqOffsetValid;	/* Set when freqOffset field has been updated */
 
-#ifdef CONFIG_AP_SUPPORT
-#define MAX_LAST_DATA_RSSI_LEN 32
-#define CHECK_DATA_RSSI_UP_BOUND (MAX_LAST_DATA_RSSI_LEN-2)
-	CHAR LastDataRssi[MAX_LAST_DATA_RSSI_LEN];
-	CHAR curLastDataRssiIndex;
-#endif /* CONFIG_AP_SUPPORT */
-
 #ifdef DOT11_N_SUPPORT
 	USHORT NoBADataCountDown;
 

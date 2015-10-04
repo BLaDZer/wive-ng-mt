@@ -1308,26 +1308,13 @@ VOID MacTableMaintenance(
 			}
 		}
 
-		//YF: kickout sta when 30 of 32 exceeds the threshold.
-		//sfstudio: only client kick, not power saved client and need some times for accumulate rssi statistics (prevent reassoc flood)
-		if (pMbss->RssiLowForStaKickOut != 0 &&
-			IS_ENTRY_CLIENT(pEntry) && pEntry->StaConnectTime > MAX_LAST_DATA_RSSI_LEN)
+		/* kickout low RSSI clients */
+		if (pMbss->RssiLowForStaKickOut != 0 && IS_ENTRY_CLIENT(pEntry))
 		{
-			CHAR rssiIndex = 0, overRssiThresCount = 0;
-			for (rssiIndex=0; rssiIndex < MAX_LAST_DATA_RSSI_LEN; rssiIndex++)
-			{
-				if (pEntry->LastDataRssi[rssiIndex] !=0 && pEntry->LastDataRssi[rssiIndex] < pMbss->RssiLowForStaKickOut)
-				{
-					DBGPRINT(RT_DEBUG_TRACE, ("%d:[%d] Fail.\n",rssiIndex,pEntry->LastDataRssi[rssiIndex]));
-					overRssiThresCount++;
-					if (overRssiThresCount >= CHECK_DATA_RSSI_UP_BOUND)
-					{
-					    bDisconnectSta = TRUE;
-					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]-[%d]Times\n",
-							PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, overRssiThresCount);
-					    break;
-					}
-				}
+			CHAR avgRssi=RTMPAvgRssi(pAd, &pEntry->RssiSample);
+			if (avgRssi != 0 && avgRssi < pMbss->RssiLowForStaKickOut) {
+				bDisconnectSta = TRUE;
+				printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]\n", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut);
 			}
 
 		}

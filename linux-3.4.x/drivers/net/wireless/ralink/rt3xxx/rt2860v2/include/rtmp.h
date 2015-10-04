@@ -2495,14 +2495,6 @@ typedef struct _MAC_TABLE_ENTRY {
 					   yet statistics handle */
 
 #endif /* UAPSD_SUPPORT */
-
-#ifdef CONFIG_AP_SUPPORT
-#define MAX_LAST_DATA_RSSI_LEN 32
-#define CHECK_DATA_RSSI_UP_BOUND (MAX_LAST_DATA_RSSI_LEN-2)
-	CHAR LastDataRssi[MAX_LAST_DATA_RSSI_LEN];
-	CHAR curLastDataRssiIndex;
-#endif /* CONFIG_AP_SUPPORT */
-
 #ifdef DOT11_N_SUPPORT
 	BOOLEAN bSendBAR;
 	USHORT NoBADataCountDown;
