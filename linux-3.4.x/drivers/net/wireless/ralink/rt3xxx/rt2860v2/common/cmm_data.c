@@ -1160,20 +1160,18 @@ BOOLEAN RTMP_FillTxBlkInfo(
 
 		if (pTxBlk->TxFrameType == TX_LEGACY_FRAME)
 		{
-			if ( (RTMP_GET_PACKET_LOWRATE(pPacket)) ||
-                ((pAd->OpMode == OPMODE_AP) && (pMacEntry->MaxHTPhyMode.field.MODE == MODE_CCK) && (pMacEntry->MaxHTPhyMode.field.MCS == RATE_1)))
+			if ((RTMP_GET_PACKET_LOWRATE(pPacket)) ||
+			    ((pAd->OpMode == OPMODE_AP) && (pMacEntry->MaxHTPhyMode.field.MODE == MODE_CCK) && (pMacEntry->MaxHTPhyMode.field.MCS == RATE_1)))
 			{	/* Specific packet, i.e., bDHCPFrame, bEAPOLFrame, bWAIFrame, need force low rate.*/
 				pTxBlk->pTransmit = &pAd->MacTab.Content[MCAST_WCID].HTPhyMode;
-
 #ifdef WAPI_SUPPORT
 				/* 	According to WAPIA certification description, WAI packets can not
 					include QoS header */
 				if (RTMP_GET_PACKET_WAI(pTxBlk->pPacket))
 				{
 					TX_BLK_CLEAR_FLAG(pTxBlk, fTX_bWMM);
-					TX_BLK_SET_FLAG(pTxBlk, fTX_bForceNonQoS);
 				}
-#endif /* WAPI_SUPPORT */		
+#endif /* WAPI_SUPPORT */
 #ifdef DOT11_N_SUPPORT
 				/* Modify the WMM bit for ICV issue. If we have a packet with EOSP field need to set as 1, how to handle it???*/
 				if (IS_HT_STA(pTxBlk->pMacEntry) &&
@@ -1181,11 +1179,10 @@ BOOLEAN RTMP_FillTxBlkInfo(
 					((pAd->CommonCfg.bRdg == TRUE) && CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_RDG_CAPABLE)))
 				{
 					TX_BLK_CLEAR_FLAG(pTxBlk, fTX_bWMM);
-					TX_BLK_SET_FLAG(pTxBlk, fTX_bForceNonQoS);
 				}
 #endif /* DOT11_N_SUPPORT */
+				TX_BLK_SET_FLAG(pTxBlk, fTX_bForceNonQoS);
 			}
-			
 #ifdef DOT11_N_SUPPORT
 			if ( (IS_HT_RATE(pMacEntry) == FALSE) &&
 				(CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_PIGGYBACK_CAPABLE)))
