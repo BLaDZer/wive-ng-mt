@@ -152,7 +152,7 @@
   <message msgid="adv country code ie" msgstr="IE (Ireland)" />
   <message msgid="adv country code hk" msgstr="HK (Hong Kong)" />
 
-  <message msgid="adv wmm" msgstr="Поддержка WMM" />
+  <message msgid="adv wmm" msgstr="Поддержка Wireless Multimedia" />
   <message msgid="adv multicast2unicast converter" msgstr="Конвертер Multicast-to-Unicast" />
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
   <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов на каждый SSID" />
