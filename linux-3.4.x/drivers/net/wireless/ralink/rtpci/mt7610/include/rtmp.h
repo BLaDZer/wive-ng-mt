@@ -2004,6 +2004,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	USHORT CapabilityInfo;
 	UCHAR LastRssi;
 	ULONG NoDataIdleCount;
+	UINT16 RssiLowStaKickOutDelayCount;
 	UINT16 StationKeepAliveCount;	/* unit: second */
 	ULONG PsQIdleCount;
 	QUEUE_HEADER PsQueue;

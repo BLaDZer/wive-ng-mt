@@ -1312,11 +1312,16 @@ VOID MacTableMaintenance(
 		if (pMbss->RssiLowForStaKickOut != 0 && IS_ENTRY_CLIENT(pEntry))
 		{
 			CHAR avgRssi=RTMPAvgRssi(pAd, &pEntry->RssiSample);
+			/* if 5 sec all data frames have low rssi - kick STA, else drop count and again */
 			if (avgRssi != 0 && avgRssi < pMbss->RssiLowForStaKickOut) {
-				bDisconnectSta = TRUE;
-				printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]\n", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut);
-			}
-
+				if (pEntry->RssiLowStaKickOutDelayCount++ > 5) {
+				    pEntry->RssiLowStaKickOutDelayCount = 0;
+				    bDisconnectSta = TRUE;
+				    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last 5 seconds\n",
+											    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut);
+				}
+			} else
+				pEntry->RssiLowStaKickOutDelayCount = 0;
 		}
 
 		if (bDisconnectSta)

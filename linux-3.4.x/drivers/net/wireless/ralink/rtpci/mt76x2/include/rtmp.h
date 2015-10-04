@@ -2936,6 +2936,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	BOOLEAN IsReassocSta;	/* Indicate whether this is a reassociation procedure */
 	ULONG NoDataIdleCount;
 	ULONG AssocDeadLine;
+	UINT16 RssiLowStaKickOutDelayCount;
 	UINT16 StationKeepAliveCount;	/* unit: second */
 	USHORT CapabilityInfo;
 	UCHAR PsMode;
