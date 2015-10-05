@@ -11,7 +11,7 @@ fi
 
 echo ">>>>> RECONFIGURE ROAMING WIFI IF = $1 <<<<<<<<<<"
 
-###############################################PARAMETRS TABLE##################################################################
+###############################################PARAMETRS TABLE###################################################################################
 # ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 3
 # AuthRspFail		- range 0 - -100 dBm, reject auth req due to weak signal, default 0 (off)
 # AuthRspRssi		- range 0 - -100 dBm, ignore auth req due to weak signal, default 0 (off)
@@ -20,9 +20,9 @@ echo ">>>>> RECONFIGURE ROAMING WIFI IF = $1 <<<<<<<<<<"
 # ProbeRspRssi		- range 0 - -100 dBm, auto disonnect sta if rssi low at probe requests, default 0 (off)
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low, default 0 (off)
 # KickStaRssiLowDelay	- range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
-################################################################################################################################
-eval `nvram_buf_get 2860 ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor KickStaRssiLow ProbeRspRssi`
-################################################################################################################################
+#################################################################################################################################################
+eval `nvram_buf_get 2860 ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor KickStaRssiLow KickStaRssiLowDelay ProbeRspRssi`
+#################################################################################################################################################
 if [ "$ApProbeRspTimes" != "" ]; then
     iwpriv "$1" set ApProbeRspTimes="$ApProbeRspTimes"
 fi
