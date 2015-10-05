@@ -103,8 +103,8 @@
   <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
   <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
   <message msgid="basic roaming auth rssi" msgstr="Игнорировать попытки авторизации при уровне ниже" />
-  <message msgid="basic roaming rssi thres" msgstr="Отклонить запрос соединение при уровне ниже" />
-  <message msgid="basic roaming assoc ignor" msgstr="Игнорировать запрос соединение при уровне ниже" />
+  <message msgid="basic roaming rssi thres" msgstr="Отклонить запрос соединения при уровне ниже" />
+  <message msgid="basic roaming assoc ignor" msgstr="Игнорировать запрос соединения при уровне ниже" />
   <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
   <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного отключения" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
