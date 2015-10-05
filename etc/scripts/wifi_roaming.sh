@@ -42,6 +42,6 @@ if [ "$KickStaRssiLow" != "" ]; then
     iwpriv "$1" set KickStaRssiLow="$KickStaRssiLow"
 fi
 if [ "$KickStaRssiLowDelay" != "" ]; then
-    iwpriv "$1" set KickStaRssiLow="$KickStaRssiLowDelay"
+    iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
 fi
 ################################################################################################################################
