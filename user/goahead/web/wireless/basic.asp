@@ -104,7 +104,7 @@ function addOption(list, text, value)
 
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
-	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
+	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
 }
 
 function idsChange(form) {
@@ -329,6 +329,7 @@ function initTranslation()
 	_TR("basicAssocReqRssiThres", "basic roaming rssi thres");
 	_TR("basicAssocRspIgnor", "basic roaming assoc ignor");
 	_TR("basicKickStaRssiLow", "basic roaming rssi low");
+	_TR("basicKickStaRssiLowDelay", "basic roaming rssi low delay");
 	_TR("basicProbeRspRssi", "basic roaming probe rssi");
 	_TR("basic80211h", "basic dot11h");
 
@@ -1441,6 +1442,10 @@ function CheckValue(form)
         	<tr id="row_KickStaRssiLow" style="display:none;">
         		<td class="head" id="basicKickStaRssiLow" width="50%">Auto disonnect sta if rssi low</td>
         		<td width="50%"><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr id="row_KickStaRssiLowDelay" style="display:none;">
+        		<td class="head" id="basicKickStaRssiLowDelay" width="50%">How time rssi check before kick</td>
+        		<td width="50%"><input type="text" name="KickStaRssiLowDelay" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLowDelay"); %>"><font color="#808080"> 0 - 200 seconds, default 5 </font></td>
         	</tr>
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">

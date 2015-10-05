@@ -1831,8 +1831,9 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR AssocReqFailRssiThreshold;
 	CHAR AssocReqNoRspRssiThreshold;
 	CHAR AuthFailRssiThreshold;
-	CHAR AuthNoRspRssiThreshold;	
+	CHAR AuthNoRspRssiThreshold;
 	CHAR RssiLowForStaKickOut;
+	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
 
 	CHAR FilterUnusedPacket;
@@ -2936,13 +2937,13 @@ typedef struct _MAC_TABLE_ENTRY {
 	BOOLEAN IsReassocSta;	/* Indicate whether this is a reassociation procedure */
 	ULONG NoDataIdleCount;
 	ULONG AssocDeadLine;
-	UINT16 RssiLowStaKickOutDelayCount;
 	UINT16 StationKeepAliveCount;	/* unit: second */
 	USHORT CapabilityInfo;
 	UCHAR PsMode;
 	UCHAR FlgPsModeIsWakeForAWhile; /* wake up for a while until a condition */
 	UCHAR VirtualTimeout; /* peer power save virtual timeout */
 	ULONG PsQIdleCount;
+	UCHAR RssiLowStaKickOutDelayCount;
 	QUEUE_HEADER PsQueue;
 
 #ifdef WDS_SUPPORT

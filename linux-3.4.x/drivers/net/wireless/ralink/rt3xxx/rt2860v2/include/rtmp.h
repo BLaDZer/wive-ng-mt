@@ -1526,12 +1526,14 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR RssiOfRcvdSpoofedUnknownMgmt;
 	CHAR RssiOfRcvdReplayAttack;
 #endif /* IDS_SUPPORT */
+
 	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
 	CHAR AssocReqFailRssiThreshold;
 	CHAR AssocReqNoRspRssiThreshold;
 	CHAR AuthFailRssiThreshold;
 	CHAR AuthNoRspRssiThreshold;
 	CHAR RssiLowForStaKickOut;
+	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
 
 	/* used in if beacon send or stop */
@@ -2455,13 +2457,13 @@ typedef struct _MAC_TABLE_ENTRY {
 	USHORT CapabilityInfo;
 	UCHAR LastRssi;
 	ULONG NoDataIdleCount;
-	UINT16 RssiLowStaKickOutDelayCount;
 	UINT16 StationKeepAliveCount;	/* unit: second */
 	ULONG PsQIdleCount;
 	QUEUE_HEADER PsQueue;
 
 	UINT32 StaConnectTime;	/* the live time of this station since associated with AP */
 	UINT32 StaIdleTimeout;	/* idle timeout per entry */
+	UCHAR RssiLowStaKickOutDelayCount;
 
 #ifdef UAPSD_SUPPORT
 	/* these UAPSD states are used on the fly */

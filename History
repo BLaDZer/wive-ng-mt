@@ -1334,21 +1334,22 @@
 <br>
 <b>3.6.x</b><br>
 1) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
-2) init.d: fix chillispot work (now work ok tested with hotspotsystem.com).<br>
-3) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-4) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
-5) kernel: ralink_wifi: xxxx: always set ForceNonQoS flag for low rate pkts.<br>
-6) kernel: ralink_wifi: xxxx: add 5sec delay in kick STA by low RSSI (if in 5 sec interval all data frames have low rssi - kick STA).<br>
-7) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-8) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-9) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-10) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-11) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-12) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-13) kernel: net: ipv4/6: compute net once in some cases.<br>
-14) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-15) kernel: net: fix skb csum races when peeking.<br>
-16) kernel: net: Initialize flow flags in input path.<br>
+2) goahead: make delay rssi check before kick configurable.<br>
+3) init.d: fix chillispot work (now work ok tested with hotspotsystem.com).<br>
+4) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+5) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+6) kernel: ralink_wifi: xxxx: always set ForceNonQoS flag for low rate pkts.<br>
+7) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
+8) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
+9) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+10) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+11) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+12) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+13) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+14) kernel: net: ipv4/6: compute net once in some cases.<br>
+15) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+16) kernel: net: fix skb csum races when peeking.<br>
+17) kernel: net: Initialize flow flags in input path.<br>
 <br>
 <br>
 <b>TODO:</b><br>

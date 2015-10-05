@@ -3513,7 +3513,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			mbss->AuthFailRssiThreshold = 0;
 			mbss->AuthNoRspRssiThreshold = 0;
 			mbss->RssiLowForStaKickOut = 0;
-                        mbss->ProbeRspRssiThreshold = 0;
+			mbss->RssiLowForStaKickOutDelay = 5;
+			mbss->ProbeRspRssiThreshold = 0;
 
 			mbss->StatTxRetryOkCount = 0;
 			mbss->StatTxFailCount = 0;

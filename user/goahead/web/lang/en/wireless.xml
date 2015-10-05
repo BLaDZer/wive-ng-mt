@@ -107,6 +107,7 @@
   <message msgid="basic roaming rssi thres" msgstr="Reject assoc req due to weak signal" />
   <message msgid="basic roaming assoc ignor" msgstr="Ignore assoc req due to weak signal" />
   <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low" />
+  <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
   <message msgid="basic dot11h" msgstr="IEEE 802.11h support" />
   <message msgid="basic ids" msgstr="Intrusion Detection settings" />

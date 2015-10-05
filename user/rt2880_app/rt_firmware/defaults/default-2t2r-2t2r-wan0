@@ -394,6 +394,7 @@ AuthRspRssi=0
 AssocReqRssiThres=0
 AssocRspIgnor=0
 KickStaRssiLow=0
+KickStaRssiLowDelay=5
 ProbeRspRssi=0
 BandSteering=0
 FtSupport=0;0;0;0

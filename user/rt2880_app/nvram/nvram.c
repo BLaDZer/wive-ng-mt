@@ -622,13 +622,14 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(DeauthFloodThreshold);
 	FPRINT_NUM(EapReqFloodThreshold);
 #endif
-	// Fast Roaming, need add in profile instead of iwpriv usage in future
+	/* Basic Roaming, need add in profile instead of iwpriv usage in future */
 	FPRINT_NUM(ApProbeRspTimes);
 	FPRINT_NUM(AuthRspFail);
 	FPRINT_NUM(AuthRspRssi);
 	FPRINT_NUM(AssocReqRssiThres);
 	FPRINT_NUM(AssocRspIgnor);
 	FPRINT_NUM(KickStaRssiLow);
+	FPRINT_NUM(KickStaRssiLowDelay);
 	FPRINT_NUM(ProbeRspRssi);
 #ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
 	/* Fast roaming auth transitions config */

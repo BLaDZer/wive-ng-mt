@@ -17,8 +17,9 @@ echo ">>>>> RECONFIGURE ROAMING WIFI IF = $1 <<<<<<<<<<"
 # AuthRspRssi		- range 0 - -100 dBm, ignore auth req due to weak signal, default 0 (off)
 # AssocReqRssiThres	- range 0 - -100 dBm, reject assoc req due to weak signal, default 0 (off)
 # AssocRspIgnor		- range 0 - -100 dBm, ignore assoc req due to weak signal, default 0 (off)
-# KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low, default 0 (off)
 # ProbeRspRssi		- range 0 - -100 dBm, auto disonnect sta if rssi low at probe requests, default 0 (off)
+# KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low, default 0 (off)
+# KickStaRssiLowDelay	- range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
 ################################################################################################################################
 eval `nvram_buf_get 2860 ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor KickStaRssiLow ProbeRspRssi`
 ################################################################################################################################
@@ -34,10 +35,13 @@ fi
 if [ "$AssocRspIgnor" != "" ]; then
     iwpriv "$1" set AssocRspIgnor="$AssocRspIgnor"
 fi
+if [ "$ProbeRspRssi" != "" ]; then
+    iwpriv "$1" set ProbeRspRssi="$ProbeRspRssi"
+fi
 if [ "$KickStaRssiLow" != "" ]; then
     iwpriv "$1" set KickStaRssiLow="$KickStaRssiLow"
 fi
-if [ "$ProbeRspRssi" != "" ]; then
-    iwpriv "$1" set ProbeRspRssi="$ProbeRspRssi"
+if [ "$KickStaRssiLowDelay" != "" ]; then
+    iwpriv "$1" set KickStaRssiLow="$KickStaRssiLowDelay"
 fi
 ################################################################################################################################

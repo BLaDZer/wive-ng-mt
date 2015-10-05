@@ -264,6 +264,10 @@ INT Set_AP_PACKET_FILTER_Proc(
     IN  PRTMP_ADAPTER    pAd,
     IN  PSTRING          arg);
 
+INT Set_AP_KickStaRssiLowDelay_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg);
+
 INT Set_AP_PROBE_RSSI_THRESHOLD(
     IN  PRTMP_ADAPTER    pAd,
     IN  PSTRING          arg);
@@ -921,6 +925,7 @@ static struct {
 	{"AssocReqRssiThres",           Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD},
 	{"AssocRspIgnor",               Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD},
 	{"KickStaRssiLow",				Set_AP_KickStaRssiLow_Proc},
+	{"KickStaRssiLowDelay",				Set_AP_KickStaRssiLowDelay_Proc},
 	{"ProbeRspRssi",                Set_AP_PROBE_RSSI_THRESHOLD},
 	{"FilterUnused",				Set_AP_PACKET_FILTER_Proc},
 #ifdef AP_SCAN_SUPPORT
@@ -6940,6 +6945,31 @@ INT     Set_AP_PACKET_FILTER_Proc(
 		pAd->ApCfg.MBSSID[apidx].FilterUnusedPacket = val;
 		
 		return TRUE;
+}
+
+INT Set_AP_KickStaRssiLowDelay_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        CHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        UCHAR timeout;
+        timeout = simple_strtol(arg, 0, 10);
+
+        if (timeout < 0 || timeout > 200)
+	    timeout = 5;
+
+        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutDelay = timeout;
+
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) RssiLowForStaKickOutDelay=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutDelay));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutDelay));
+        }
+
+        return TRUE;
 }
 
 INT     Set_AP_PROBE_RSSI_THRESHOLD(
