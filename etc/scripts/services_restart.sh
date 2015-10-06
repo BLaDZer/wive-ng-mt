@@ -1,8 +1,15 @@
 #!/bin/sh
 
 ##########################################################
-# This scipt restart needed services
+# This scipt restart needed services                     #
+#							 #
+# MODES:						 #
+# all -  call from internel.sh - full reconfigure	 #
+# dhcp - call from dhcp script after full renew		 #
+# pppd - call from ip-up/down scripts			 #
+# misc - call from goahead by apply change in misc page	 #
 ##########################################################
+
 
 # prevent double start configure in one time
 while [ -e /tmp/servicerestart_runing ]; do
@@ -19,14 +26,6 @@ LOG="logger -t services"
 MODE="$1"
 
 $LOG "Restart needed services and scripts. Mode $MODE"
-
-##########################################################
-# MODES:						 #
-# all -  call from internel.sh - full reconfigure	 #
-# dhcp - call from dhcp script after full renew		 #
-# pppd - call from ip-up/down scripts			 #
-# misc - call from goahead by apply change in misc page	 #
-##########################################################
 
 ##########################################################
 # Always reload shaper and netfilter rules		 #
