@@ -8,13 +8,12 @@ PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-gnu-ld --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
-CONFOPTS  += --disable-tap --disable-largelimits --disable-json --disable-miniportal --disable-miniconfig
+CONFOPTS  += --disable-tap --disable-largelimits --disable-json --disable-miniportal --disable-miniconfig --disable-layer3 --disable-dhcpopt
 CONFOPTS  += --enable-chilliproxy --enable-chilliredir --enable-chilliquery
 CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid
 CONFOPTS  += --enable-leakybucket --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
-CONFOPTS  += --enable-dhcpopt --enable-layer3
-CONFOPTS  += --enable-uamanyip --enable-uamuiport
 CONFOPTS  += --enable-multiroute --enable-multilan
+CONFOPTS  += --enable-uamanyip --enable-uamuiport
 
 #DEBUG     := y
 ifdef DEBUG
