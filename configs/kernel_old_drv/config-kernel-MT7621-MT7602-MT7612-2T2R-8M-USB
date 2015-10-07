@@ -1045,7 +1045,7 @@ CONFIG_SERIAL_CORE_CONSOLE=y
 # CONFIG_APPLICOM is not set
 # CONFIG_RAW_DRIVER is not set
 # CONFIG_TCG_TPM is not set
-CONFIG_DEVPORT=y
+# CONFIG_DEVPORT is not set
 # CONFIG_RAMOOPS is not set
 # CONFIG_I2C is not set
 # CONFIG_SPI is not set
