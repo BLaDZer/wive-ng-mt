@@ -45,7 +45,7 @@
 
     <message msgid="treeapp disk" msgstr="Управление дисками" />
     <message msgid="treeapp ftpsrv" msgstr="Сервер FTP" />
-    <message msgid="treeapp transmission" msgstr="BitTorrent" />
+    <message msgid="treeapp transmission" msgstr="Клиент торрент" />
     <message msgid="treeapp sambasrv" msgstr="Сервер SAMBA" />
 
     <message msgid="treeapp management" msgstr="Управление" />

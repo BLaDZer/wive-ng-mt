@@ -165,20 +165,20 @@ a.add(510, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.as
 
 if (usbb == "1")
 {
-	a.add(800,   0, _("treeapp usb"),		"javascript:a.oo(800);");
-	if (printersrvb == "1")	a.add(802, 800, _("treeapp printersrv"),	"javascript:go('usb/P910NDprintersrv.asp');");
+    a.add(800,   0, _("treeapp usb"),		"javascript:a.oo(800);");
+    if (printersrvb == "1")	a.add(802, 800, _("treeapp printersrv"),	"javascript:go('usb/P910NDprintersrv.asp');");
     if (usbmodemb == "1")	a.add(803, 800, _("treeapp usbmodem"),		"javascript:go('usb/USBmodem.asp');");
-	if (storageb == "1")
-	{
-		a.add(850,   0, _("treeapp storage"),		"javascript:a.oo(850);");
-		a.add(852, 850, _("treeapp disk"),		"javascript:go('storage/disk_admin.asp');");
-		if (ftpb == "1")
-			a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
-		if (transb == "1")
-			a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/transmission.asp');");
-		if (smbb == "1")
-			a.add(855, 850, _("treeapp sambasrv"),		"javascript:go('services/samba.asp');");
-	}
+    if (storageb == "1")
+    {
+	    a.add(850,   0, _("treeapp storage"),		"javascript:a.oo(850);");
+	    a.add(852, 850, _("treeapp disk"),			"javascript:go('storage/disk_admin.asp');");
+	    if (ftpb == "1")
+		a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
+	    if (smbb == "1")
+		a.add(855, 850, _("treeapp sambasrv"),		"javascript:go('services/samba.asp');");
+	    if (transb == "1")
+		a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/transmission.asp');");
+    }
 }
 
 a.add(900,   0, _("treeapp administration"),        "javascript:a.oo(900);");
