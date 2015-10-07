@@ -1358,6 +1358,7 @@
 23) kernel: net: ipv4/6: compute net once in some cases.<br>
 24) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
 25) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+26) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
 <br>
 <br>
 <b>TODO:</b><br>
