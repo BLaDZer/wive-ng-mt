@@ -12,7 +12,7 @@ CONFOPTS  += --disable-tap --disable-largelimits --disable-json --disable-minipo
 CONFOPTS  += --enable-chilliproxy --enable-chilliredir --enable-chilliquery
 CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid
 CONFOPTS  += --enable-leakybucket --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
-CONFOPTS  += --enable-dhcpopt --enable-ssdp --enable-layer3
+CONFOPTS  += --enable-dhcpopt --enable-layer3
 CONFOPTS  += --enable-uamanyip --enable-uamuiport
 CONFOPTS  += --enable-multiroute --enable-multilan
 
