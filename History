@@ -1336,7 +1336,7 @@
 1) libcurl: up to 7.45.0 version.<br>
 2) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
 3) goahead: make delay rssi check before kick configurable.<br>
-4) init.d: fix chillispot work (now work ok tested with hotspotsystem.com).<br>
+4) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
 5) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
 6) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
 7) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
