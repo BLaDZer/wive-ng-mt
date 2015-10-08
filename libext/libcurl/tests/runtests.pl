@@ -397,7 +397,7 @@ sub init_serverpidfile_hash {
 sub checkdied {
     use POSIX ":sys_wait_h";
     my $pid = $_[0];
-    if(not defined $pid || $pid <= 0) {
+    if((not defined $pid) || $pid <= 0) {
         return 0;
     }
     my $rc = waitpid($pid, &WNOHANG);
@@ -4744,7 +4744,7 @@ while(@ARGV) {
         # the development version as then it won't be able to run any tests
         # since it can't verify the servers!
 
-        $VCURL=$ARGV[1];
+        $VCURL="\"$ARGV[1]\"";
         shift @ARGV;
     }
     elsif ($ARGV[0] eq "-d") {

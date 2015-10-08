@@ -399,6 +399,7 @@ static CURLcode readwrite_data(struct SessionHandle *data,
   size_t excess = 0; /* excess bytes read */
   bool is_empty_data = FALSE;
   bool readmore = FALSE; /* used by RTP to signal for more data */
+  int maxloops = 100;
 
   *done = FALSE;
 
@@ -794,7 +795,7 @@ static CURLcode readwrite_data(struct SessionHandle *data,
       k->keepon &= ~KEEP_RECV;
     }
 
-  } while(data_pending(conn));
+  } while(data_pending(conn) && maxloops--);
 
   if(((k->keepon & (KEEP_RECV|KEEP_SEND)) == KEEP_SEND) &&
      conn->bits.close ) {
@@ -923,7 +924,8 @@ static CURLcode readwrite_upload(struct SessionHandle *data,
             if(!data->set.crlf) {
               /* we're here only because FTP is in ASCII mode...
                  bump infilesize for the LF we just added */
-              data->state.infilesize++;
+              if(data->state.infilesize != -1)
+                data->state.infilesize++;
             }
           }
           else

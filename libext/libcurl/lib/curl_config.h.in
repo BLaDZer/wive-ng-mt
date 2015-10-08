@@ -279,6 +279,10 @@
 /* Define to 1 if you have a working gmtime_r function. */
 #undef HAVE_GMTIME_R
 
+/* Define to 1 if you have the `gnutls_certificate_set_x509_key_file2'
+   function. */
+#undef HAVE_GNUTLS_CERTIFICATE_SET_X509_KEY_FILE2
+
 /* if you have the function gnutls_srp_verifier */
 #undef HAVE_GNUTLS_SRP
 

@@ -27,8 +27,8 @@ CURLMOPT_PUSHFUNCTION \- callback that approves or denies server pushes
 .nf
 #include <curl/curl.h>
 
-char *curl_pushheader_bynum(push_headers, int num);
-char *curl_pushheader_byname(push_headers, const char *name);
+char *curl_pushheader_bynum(struct curl_pushheaders *h, size_t num);
+char *curl_pushheader_byname(struct curl_pushheaders *h, const char *name);
 
 int curl_push_callback(CURL *parent,
                        CURL *easy,
@@ -69,7 +69,7 @@ multi handle, the callback must not do that by itself.
 The callback can access PUSH_PROMISE headers with two accessor
 functions. These functions can only be used from within this callback and they
 can only access the PUSH_PROMISE headers. The normal response headers will be
-pased to the header callback for pushed streams just as for normal streams.
+passed to the header callback for pushed streams just as for normal streams.
 .IP curl_pushheader_bynum
 Returns the header at index 'num' (or NULL). The returned pointer points to a
 "name:value" string that will be freed when this callback returns.
@@ -105,7 +105,7 @@ int push_callback(CURL *parent,
   FILE *out;
   headp = curl_pushheader_byname(headers, ":path");
   if(headp && !strncmp(headp, "/push-", 6)) {
-    fprintf(stderr, "The PATH is %s\n", headp);
+    fprintf(stderr, "The PATH is %s\\n", headp);
 
     /* save the push here */
     out = fopen("pushed-stream", "wb");

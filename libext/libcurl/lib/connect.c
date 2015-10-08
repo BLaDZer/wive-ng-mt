@@ -619,7 +619,7 @@ static bool getaddressinfo(struct sockaddr* sa, char* addr,
 
   switch (sa->sa_family) {
     case AF_INET:
-      si = (struct sockaddr_in*) sa;
+      si = (struct sockaddr_in*)(void*) sa;
       if(Curl_inet_ntop(sa->sa_family, &si->sin_addr,
                         addr, MAX_IPADR_LEN)) {
         us_port = ntohs(si->sin_port);
@@ -629,7 +629,7 @@ static bool getaddressinfo(struct sockaddr* sa, char* addr,
       break;
 #ifdef ENABLE_IPV6
     case AF_INET6:
-      si6 = (struct sockaddr_in6*)sa;
+      si6 = (struct sockaddr_in6*)(void*) sa;
       if(Curl_inet_ntop(sa->sa_family, &si6->sin6_addr,
                         addr, MAX_IPADR_LEN)) {
         us_port = ntohs(si6->sin6_port);
@@ -857,12 +857,11 @@ CURLcode Curl_is_connected(struct connectdata *conn,
   return result;
 }
 
-static void tcpnodelay(struct connectdata *conn,
-                       curl_socket_t sockfd)
+void Curl_tcpnodelay(struct connectdata *conn, curl_socket_t sockfd)
 {
 #ifdef TCP_NODELAY
   struct SessionHandle *data= conn->data;
-  curl_socklen_t onoff = (curl_socklen_t) data->set.tcp_nodelay;
+  curl_socklen_t onoff = (curl_socklen_t) 1;
   int level = IPPROTO_TCP;
 
 #if 0
@@ -1033,7 +1032,7 @@ static CURLcode singleipconnect(struct connectdata *conn,
   is_tcp = (addr.family == AF_INET) && addr.socktype == SOCK_STREAM;
 #endif
   if(is_tcp && data->set.tcp_nodelay)
-    tcpnodelay(conn, sockfd);
+    Curl_tcpnodelay(conn, sockfd);
 
   nosigpipe(conn, sockfd);
 

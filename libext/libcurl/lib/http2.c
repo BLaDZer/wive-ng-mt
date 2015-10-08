@@ -34,6 +34,7 @@
 #include "multiif.h"
 #include "conncache.h"
 #include "url.h"
+#include "connect.h"
 
 /* The last #include files should be: */
 #include "curl_memory.h"
@@ -373,7 +374,7 @@ static int push_promise(struct SessionHandle *data,
 static int on_frame_recv(nghttp2_session *session, const nghttp2_frame *frame,
                          void *userp)
 {
-  struct connectdata *conn = NULL;
+  struct connectdata *conn = (struct connectdata *)userp;
   struct http_conn *httpc = NULL;
   struct SessionHandle *data_s = NULL;
   struct HTTP *stream = NULL;
@@ -381,8 +382,6 @@ static int on_frame_recv(nghttp2_session *session, const nghttp2_frame *frame,
   int rv;
   size_t left, ncopy;
   int32_t stream_id = frame->hd.stream_id;
-
-  (void)userp;
 
   if(!stream_id) {
     /* stream ID zero is for connection-oriented stuff */
@@ -461,7 +460,14 @@ static int on_frame_recv(nghttp2_session *session, const nghttp2_frame *frame,
     stream->memlen += ncopy;
 
     data_s->state.drain++;
-    Curl_expire(data_s, 1);
+    {
+      /* get the pointer from userp again since it was re-assigned above */
+      struct connectdata *conn_s = (struct connectdata *)userp;
+
+      /* if we receive data for another handle, wake that up */
+      if(conn_s->data != data_s)
+        Curl_expire(data_s, 1);
+    }
     break;
   case NGHTTP2_PUSH_PROMISE:
     rv = push_promise(data_s, conn, &frame->push_promise);
@@ -527,10 +533,10 @@ static int on_data_chunk_recv(nghttp2_session *session, uint8_t flags,
   struct HTTP *stream;
   struct SessionHandle *data_s;
   size_t nread;
+  struct connectdata *conn = (struct connectdata *)userp;
   (void)session;
   (void)flags;
   (void)data;
-  (void)userp;
 
   DEBUGASSERT(stream_id); /* should never be a zero stream ID here */
 
@@ -552,8 +558,11 @@ static int on_data_chunk_recv(nghttp2_session *session, uint8_t flags,
   stream->memlen += nread;
 
   data_s->state.drain++;
-  Curl_expire(data_s, 1); /* TODO: fix so that this can be set to 0 for
-                             immediately? */
+
+  /* if we receive data for another handle, wake that up */
+  if(conn->data != data_s)
+    Curl_expire(data_s, 1); /* TODO: fix so that this can be set to 0 for
+                               immediately? */
 
   DEBUGF(infof(data_s, "%zu data received for stream %u "
                "(%zu left in buffer %p, total %zu)\n",
@@ -700,9 +709,8 @@ static int on_header(nghttp2_session *session, const nghttp2_frame *frame,
   struct HTTP *stream;
   struct SessionHandle *data_s;
   int32_t stream_id = frame->hd.stream_id;
-
+  struct connectdata *conn = (struct connectdata *)userp;
   (void)flags;
-  (void)userp;
 
   DEBUGASSERT(stream_id); /* should never be a zero stream ID here */
 
@@ -766,7 +774,9 @@ static int on_header(nghttp2_session *session, const nghttp2_frame *frame,
     Curl_add_buffer(stream->header_recvbuf, value, valuelen);
     Curl_add_buffer(stream->header_recvbuf, "\r\n", 2);
     data_s->state.drain++;
-    Curl_expire(data_s, 1);
+    /* if we receive data for another handle, wake that up */
+    if(conn->data != data_s)
+      Curl_expire(data_s, 1);
 
     DEBUGF(infof(data_s, "h2 status: HTTP/2 %03d\n",
                  stream->status_code));
@@ -781,7 +791,9 @@ static int on_header(nghttp2_session *session, const nghttp2_frame *frame,
   Curl_add_buffer(stream->header_recvbuf, value, valuelen);
   Curl_add_buffer(stream->header_recvbuf, "\r\n", 2);
   data_s->state.drain++;
-  Curl_expire(data_s, 1);
+  /* if we receive data for another handle, wake that up */
+  if(conn->data != data_s)
+    Curl_expire(data_s, 1);
 
   DEBUGF(infof(data_s, "h2 header: %.*s: %.*s\n", namelen, name, valuelen,
                value));
@@ -906,21 +918,7 @@ CURLcode Curl_http2_init(struct connectdata *conn)
       failf(conn->data, "Couldn't initialize nghttp2!");
       return CURLE_OUT_OF_MEMORY; /* most likely at least */
     }
-
-    if(rc) {
-      failf(conn->data, "Couldn't init stream hash!");
-      return CURLE_OUT_OF_MEMORY; /* most likely at least */
-    }
   }
-  return CURLE_OK;
-}
-
-/*
- * Send a request using http2
- */
-CURLcode Curl_http2_send_request(struct connectdata *conn)
-{
-  (void)conn;
   return CURLE_OK;
 }
 
@@ -1297,10 +1295,14 @@ static ssize_t http2_send(struct connectdata *conn, int sockindex,
   authority_idx = 0;
 
   for(i = 3; i < nheader; ++i) {
+    size_t hlen;
     end = strchr(hdbuf, ':');
     if(!end)
       goto fail;
-    if(end - hdbuf == 4 && Curl_raw_nequal("host", hdbuf, 4)) {
+    hlen = end - hdbuf;
+    if(hlen == 10 && Curl_raw_nequal("connection", hdbuf, 10))
+      ; /* skip Connection: headers! */
+    else if(hlen == 4 && Curl_raw_nequal("host", hdbuf, 4)) {
       authority_idx = i;
       nva[i].name = (unsigned char *)":authority";
       nva[i].namelen = (uint16_t)strlen((char *)nva[i].name);
@@ -1439,6 +1441,10 @@ CURLcode Curl_http2_setup(struct connectdata *conn)
 
   infof(conn->data, "Connection state changed (HTTP/2 confirmed)\n");
   Curl_multi_connchanged(conn->data->multi);
+
+  /* switch on TCP_NODELAY as we need to send off packets without delay for
+     maximum throughput */
+  Curl_tcpnodelay(conn, conn->sock[FIRSTSOCKET]);
 
   return CURLE_OK;
 }

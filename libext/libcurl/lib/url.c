@@ -2441,6 +2441,12 @@ CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option,
     data->set.redir_protocols = va_arg(param, long);
     break;
 
+  case CURLOPT_DEFAULT_PROTOCOL:
+    /* Set the protocol to use when the URL doesn't include any protocol */
+    result = setstropt(&data->set.str[STRING_DEFAULT_PROTOCOL],
+                       va_arg(param, char *));
+    break;
+
   case CURLOPT_MAIL_FROM:
     /* Set the SMTP mail originator */
     result = setstropt(&data->set.str[STRING_MAIL_FROM],
@@ -4028,27 +4034,30 @@ static CURLcode parseurlandfillconn(struct SessionHandle *data,
       }
 
       /*
-       * Since there was no protocol part specified, we guess what protocol it
-       * is based on the first letters of the server name.
+       * Since there was no protocol part specified in the URL use the
+       * user-specified default protocol. If we weren't given a default make a
+       * guess by matching some protocols against the host's outermost
+       * sub-domain name. Finally if there was no match use HTTP.
        */
 
-      /* Note: if you add a new protocol, please update the list in
-       * lib/version.c too! */
-
-      if(checkprefix("FTP.", conn->host.name))
-        protop = "ftp";
-      else if(checkprefix("DICT.", conn->host.name))
-        protop = "DICT";
-      else if(checkprefix("LDAP.", conn->host.name))
-        protop = "LDAP";
-      else if(checkprefix("IMAP.", conn->host.name))
-        protop = "IMAP";
-      else if(checkprefix("SMTP.", conn->host.name))
-        protop = "smtp";
-      else if(checkprefix("POP3.", conn->host.name))
-        protop = "pop3";
-      else {
-        protop = "http";
+      protop = data->set.str[STRING_DEFAULT_PROTOCOL];
+      if(!protop) {
+        /* Note: if you add a new protocol, please update the list in
+         * lib/version.c too! */
+        if(checkprefix("FTP.", conn->host.name))
+          protop = "ftp";
+        else if(checkprefix("DICT.", conn->host.name))
+          protop = "DICT";
+        else if(checkprefix("LDAP.", conn->host.name))
+          protop = "LDAP";
+        else if(checkprefix("IMAP.", conn->host.name))
+          protop = "IMAP";
+        else if(checkprefix("SMTP.", conn->host.name))
+          protop = "smtp";
+        else if(checkprefix("POP3.", conn->host.name))
+          protop = "pop3";
+        else
+          protop = "http";
       }
 
       *prot_missing = TRUE; /* not given in URL */
@@ -4631,10 +4640,24 @@ static CURLcode parse_proxy(struct SessionHandle *data,
   /* Get port number off proxy.server.com:1080 */
   prox_portno = strchr(portptr, ':');
   if(prox_portno) {
+    char *endp = NULL;
+    long port = 0;
     *prox_portno = 0x0; /* cut off number from host name */
     prox_portno ++;
     /* now set the local port number */
-    conn->port = strtol(prox_portno, NULL, 10);
+    port = strtol(prox_portno, &endp, 10);
+    if((endp && *endp && (*endp != '/') && (*endp != ' ')) ||
+       (port >= 65536) ) {
+      /* meant to detect for example invalid IPv6 numerical addresses without
+         brackets: "2a00:fac0:a000::7:13". Accept a trailing slash only
+         because we then allow "URL style" with the number followed by a
+         slash, used in curl test cases already. Space is also an acceptable
+         terminating symbol. */
+      infof(data, "No valid port number in proxy string (%s)\n",
+            prox_portno);
+    }
+    else
+      conn->port = port;
   }
   else {
     if(proxyptr[0]=='/')
@@ -5816,12 +5839,14 @@ static CURLcode create_conn(struct SessionHandle *data,
        data->state.authhost.done) {
       infof(data, "NTLM picked AND auth done set, clear picked!\n");
       data->state.authhost.picked = CURLAUTH_NONE;
+      data->state.authhost.done = FALSE;
     }
 
     if((data->state.authproxy.picked & (CURLAUTH_NTLM | CURLAUTH_NTLM_WB)) &&
        data->state.authproxy.done) {
       infof(data, "NTLM-proxy picked AND auth done set, clear picked!\n");
       data->state.authproxy.picked = CURLAUTH_NONE;
+      data->state.authproxy.done = FALSE;
     }
 #endif
   }
