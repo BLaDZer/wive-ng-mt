@@ -40,7 +40,7 @@ start() {
 	done
 	# activate location
 	if [ "$chilli_radiusserver1" = "radius.hotspotsystem.com" ]; then
-	    wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova -O /tmp/remote.sh
+	    wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova\&uptime=`uptime|sed "s/ /\%20/g"|sed "s/:/\%3A/g"|sed "s/,/\%2C/g"` -O /tmp/chilli_apinstalled
 	fi
 	# prevent double start
 	pid=`pidof chilli`
