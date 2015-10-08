@@ -1361,6 +1361,7 @@
 26) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
 27) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
 28) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+29) kernel: usb: xhci: follow upstream.<br>
 <br>
 <br>
 <b>TODO:</b><br>
