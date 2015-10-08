@@ -1362,6 +1362,7 @@
 27) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
 28) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
 29) kernel: usb: xhci: follow upstream.<br>
+30) kernel: usb: option: add ZTE PIDs.<br>
 <br>
 <br>
 <b>TODO:</b><br>
