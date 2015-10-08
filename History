@@ -1366,6 +1366,7 @@
 31) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
 32) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
 33) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+34) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
 <br>
 <br>
 <b>TODO:</b><br>
