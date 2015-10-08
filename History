@@ -1346,23 +1346,24 @@
 11) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
 12) kernel: net: initialize flow flags in input path.<br>
 13) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-14) kernel: net: usb: asix: fix crash on skb alloc failure.<br>
-15) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-16) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-17) kernel: net: fix skb csum races when peeking.<br>
-18) kernel: net: af_key: net: fix RCU splat.<br>
-19) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-20) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-21) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-22) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-23) kernel: net: ipv4/6: compute net once in some cases.<br>
-24) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-25) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-26) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-27) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-28) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-29) kernel: usb: xhci: follow upstream.<br>
-30) kernel: usb: option: add ZTE PIDs.<br>
+14) kernel: drivercore: fix unregistration path of platform devices.<br>
+15) kernel: usb: xhci: follow upstream.<br>
+16) kernel: usb: option: add ZTE PIDs.<br>
+17) kernel: net: usb: asix: fix crash on skb alloc failure.<br>
+18) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+19) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+20) kernel: net: fix skb csum races when peeking.<br>
+21) kernel: net: af_key: net: fix RCU splat.<br>
+22) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+23) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+24) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+25) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+26) kernel: net: ipv4/6: compute net once in some cases.<br>
+27) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+28) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+29) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+30) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+31) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
 <br>
 <br>
 <b>TODO:</b><br>
