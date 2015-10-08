@@ -1353,17 +1353,18 @@
 18) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
 19) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
 20) kernel: net: fix skb csum races when peeking.<br>
-21) kernel: net: af_key: net: fix RCU splat.<br>
-22) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-23) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-24) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-25) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-26) kernel: net: ipv4/6: compute net once in some cases.<br>
-27) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-28) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-29) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-30) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-31) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+21) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+22) kernel: net: af_key: net: fix RCU splat.<br>
+23) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+24) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+25) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+26) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+27) kernel: net: ipv4/6: compute net once in some cases.<br>
+28) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+29) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+30) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+31) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+32) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
 <br>
 <br>
 <b>TODO:</b><br>
