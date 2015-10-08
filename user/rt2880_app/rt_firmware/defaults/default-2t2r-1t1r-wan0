@@ -88,6 +88,7 @@ dhcpPriDns=
 dhcpSecDns=
 dhcpStart=192.168.1.2
 dhcpSwReset=0
+dhcpARPPTimeout=2000
 DisableOLBC=1
 DLSCapable=0;0;0;0
 DMZEnable=0

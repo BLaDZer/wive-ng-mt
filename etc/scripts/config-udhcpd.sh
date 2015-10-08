@@ -22,7 +22,7 @@ usage () {
   echo "  -g gateway      : set gateway as router's IP address"
   echo "  -w wins	  : set wins server IP address"
   echo "  -t time         : set time seconds as the IP life time"
-  echo "  -r [sleep_time] : run dhcp server"
+  echo "  -r              : run dhcp server"
   echo "  -k              : kill the running dhcp server"
   echo "  -S [mac ipaddr] : statically assign IP to given MAC address"
   exit
@@ -104,14 +104,13 @@ case "$1" in
   "-t") config "$1" "$2";;
   "-S") config "$1" "$2" "$3";;
   "-r")
-
     killall -q udhcpd
     killall -q -SIGKILL udhcpd
     rm -f $pidfile
     touch $leases
     touch $fname
     echo "lease_file $leases" >> $fname
-    udhcpd -S $fname &
+    udhcpd $fname $2 &
     ;;
   "-k")
     service dhcpd stop

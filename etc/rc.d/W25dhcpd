@@ -103,7 +103,7 @@ start() {
 		done
 	fi
 	$LOG "Start dhcpserver"
-	config-udhcpd.sh -r
+	config-udhcpd.sh -r "$DHCEXTARGS"
     elif [ "$dhcpEnabled" = "2" ]; then
 	$LOG "Start dhcprelay"
 	dhcprelay $lan_if $wan_if &
@@ -132,7 +132,15 @@ set_dns()
 
 get_param() {
     # dhcpd params
-    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpLease SmbEnabled dnsPEnabled dhcpStatic`
+    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpARPPTimeout dhcpLease SmbEnabled dnsPEnabled dhcpStatic`
+    # log to syslog
+    DHCEXTARGS="-S"
+    # tune arp ping interval for adress dubliction check
+    if [ "$dhcpARPPTimeout" = "" ]; then
+	DHCEXTARGS="$DHCEXTARGS -a 2000"
+    else
+	DHCEXTARGS="$DHCEXTARGS -a $dhcpARPPTimeout"
+    fi
 }
 
 stop() {
