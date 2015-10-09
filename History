@@ -1342,8 +1342,8 @@
 7) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
 8) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
 9) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
-10) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-11) kernel: ralink_wifi: 7620: fix DROP_MASK race condition.<br>
+10) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
+11) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
 12) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
 13) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
 14) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
