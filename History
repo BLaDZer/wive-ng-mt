@@ -1343,30 +1343,31 @@
 8) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
 9) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
 10) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-11) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-12) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-13) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-14) kernel: drivercore: fix unregistration path of platform devices.<br>
-15) kernel: usb: xhci: follow upstream.<br>
-16) kernel: usb: option: add ZTE PIDs.<br>
-17) kernel: usb: asix: fix crash on skb alloc failure.<br>
-18) kernel: net: initialize flow flags in input path.<br>
-19) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-20) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-21) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-22) kernel: net: fix skb csum races when peeking.<br>
-23) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-24) kernel: net: af_key: net: fix RCU splat.<br>
-25) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-26) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-27) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-28) kernel: net: ipv4/6: compute net once in some cases.<br>
-29) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-30) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-31) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-32) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-33) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-34) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+11) kernel: ralink_wifi: 7620: fix DROP_MASK race condition.<br>
+12) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+13) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+14) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+15) kernel: drivercore: fix unregistration path of platform devices.<br>
+16) kernel: usb: xhci: follow upstream.<br>
+17) kernel: usb: option: add ZTE PIDs.<br>
+18) kernel: usb: asix: fix crash on skb alloc failure.<br>
+19) kernel: net: initialize flow flags in input path.<br>
+20) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+21) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+22) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+23) kernel: net: fix skb csum races when peeking.<br>
+24) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+25) kernel: net: af_key: net: fix RCU splat.<br>
+26) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+27) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+28) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+29) kernel: net: ipv4/6: compute net once in some cases.<br>
+30) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+31) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+32) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+33) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+34) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+35) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
 <br>
 <br>
 <b>TODO:</b><br>

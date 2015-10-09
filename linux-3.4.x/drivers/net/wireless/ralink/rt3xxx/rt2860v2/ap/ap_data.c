@@ -4520,9 +4520,9 @@ VOID APHandleRxDataFrame(
 #ifdef UAPSD_SUPPORT
 	if (pFmeCtrl->PwrMgmt)
 	{
-	   	if ((CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_APSD_CAPABLE)) &&
+		if ((CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_APSD_CAPABLE)) &&
 			(pFmeCtrl->SubType & 0x08))
-	   	{
+		{
 			/*
 				In IEEE802.11e, 11.2.1.4 Power management with APSD,
 				If there is no unscheduled SP in progress, the unscheduled SP begins
@@ -4549,7 +4549,7 @@ VOID APHandleRxDataFrame(
 			}
 	    	/* End of if */
 		}
-    } /* End of if */
+	} /* End of if */
 #endif /* UAPSD_SUPPORT */
 
 	/* Drop NULL, CF-ACK(no data), CF-POLL(no data), and CF-ACK+CF-POLL(no data) data frame */
