@@ -155,7 +155,6 @@
     <message msgid="hotspot profile" msgstr="Имя профиля" />
     <message msgid="hotspot manual" msgstr="Ручной" />
     <message msgid="hotspot domain" msgstr="Имя доменна" />
-    <message msgid="hotspot lease" msgstr="Время аренды (сек)" />
     <message msgid="hotspot radius auth" msgstr="Адрес RADIUS сервера аутентификации" />
     <message msgid="hotspot radius acct" msgstr="Адрес RADIUS сервера учёта" />
     <message msgid="hotspot radius secret" msgstr="Секретное слово RADIUS сервера" />

@@ -2598,8 +2598,12 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	else
 #endif
 	if(CHK_IF_DIGIT(enabled, 0)) {
+#ifdef CONFIG_USER_CHILLISPOT
 		nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+#endif
+#ifdef CONFIG_USER_NODOGSPLASH
 		nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
+#endif
 	}
 
 	nvram_commit(RT2860_NVRAM);
@@ -2615,8 +2619,14 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
+	doSystem("service iptables restart");
 	doSystem("service dhcpd restart"); /* for enable/disable native dhcp */
+#ifdef CONFIG_USER_CHILLISPOT
 	doSystem("service chillispot restart");
+#endif
+#ifdef CONFIG_USER_NODOGSPLASH
+	doSystem("service nodogsplash restart");
+#endif
 }
 #endif // HOTSPOT
 

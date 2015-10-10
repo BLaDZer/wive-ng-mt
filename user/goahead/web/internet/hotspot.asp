@@ -13,6 +13,7 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
+Butterlate.setTextDomain("internet");
 Butterlate.setTextDomain("hint");
 Butterlate.setTextDomain("buttons");
 
@@ -21,11 +22,12 @@ var chilli_built='<% getChilliBuilt(); %>' == '1';
 var nodog_built='<% getNoDogBuilt(); %>' == '1';
 
 var Profiles = [
-  // "Profile", "Provider name", "IP", "Netmask", "Primary DNS", "Secondary DNS", "Domain name", "Lease time", "Radius server auth address", "Radius server acct address", "Radius server secret", "Radius NAS ID", "Radius Location ID", "Radius Location Name", "Radius CoA/DM port", "No IP check for CoA/DM request", "UAM server URL", "UAM homepage URL", "UAM secret", "UAM allowed hosts", "UAM allowed domains", "Allow all DNS requests", "Allowed MAC"
+  // "Profile", "Provider name", "IP", "Netmask", "Start DHCP IP", "End DHCP IP", "Primary DNS", "Secondary DNS", "Domain name", "Lease time", "Radius server auth address", "Radius server acct address", "Radius server secret", "Radius NAS ID", "Radius Location ID", "Radius Location Name", "Radius CoA/DM port", "No IP check for CoA/DM request", "UAM server URL", "UAM homepage URL", "UAM secret", "UAM allowed hosts", "UAM allowed domains", "Allow all DNS requests", "Allowed MAC"
   ["manual", _("hotspot manual"), false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-  ["hotspotsystem", "HotSpotSystem.com", "192.168.182.0", "255.255.255.0", "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "radius.hotspotsystem.com", "radius2.hotspotsystem.com", "hotsys123", false, false, false, "3779", false, "https://customer.hotspotsystem.com/customer/hotspotlogin.php", "", "hotsys123", "194.149.46.0/24,198.241.128.0/17,66.211.128.0/17,216.113.128.0/17,70.42.128.0/17,128.242.125.0/24,216.52.17.0/24,62.249.232.74,155.136.68.77,155.136.66.34,66.4.128.0/17,66.211.128.0/17,66.235.128.0/17,88.221.136.146,195.228.254.149,195.228.254.152,203.211.140.157,203.211.150.204,www.paypal.com,mobile.paypal.com,www.paypalobjects.com,sstats.paypal-metrics.com,altfarm.mediaplex.com,live.adyen.com,www.worldpay.com,secure.worldpay.com,www.directebanking.com,betalen.rabobank.nl,ideal.ing.nl,ideal.abnamro.nl,www.ing.nl,www.hotspotsystem.com,customer.hotspotsystem.com,tech.hotspotsystem.com,a1.hotspotsystem.com,a2.hotspotsystem.com,a3.hotspotsystem.com,a4.hotspotsystem.com,a5.hotspotsystem.com,a6.hotspotsystem.com,a7.hotspotsystem.com,a8.hotspotsystem.com,a9.hotspotsystem.com,a10.hotspotsystem.com,a11.hotspotsystem.com,a12.hotspotsystem.com,a13.hotspotsystem.com,a14.hotspotsystem.com,a15.hotspotsystem.com,a16.hotspotsystem.com,a17.hotspotsystem.com,a18.hotspotsystem.com,a19.hotspotsystem.com,a20.hotspotsystem.com", "paypal.com,paypalobjects.com,paypal-metrics.com,mediaplex.com,worldpay.com,adyen.com,hotspotsystem.com,geotrust.com", false, false],
-  ["mywifi", "MyWifi", "192.168.182.0", "255.255.255.0", "8.8.8.8", "8.8.4.4", "key.chillispot.info", false, "radiusm.mywifi.com", "radiuss.mywifi.com", false, false, false, false, "3779", false, "http://access.mywifi.com", "", false, "212.118.48.0/24,212.158.173.0/24,91.227.52.0/24,91.227.53.0/24,91.200.28.0/24,91.200.30.0/24,91.232.115.0/26,webmoney.ru,wmtransfer.com,webmoney.com.mx", "login.wmtransfer.com,security.webmoney.ru,access.mywifi.com,webmoney.ru,wmtransfer.com,webmoney.com.mx", false, false],
-  ["saiwifi", "SAIWifi", "192.168.182.0", "255.255.255.0", "8.8.8.8", "8.8.4.4", "key.chillispot.info", false, "176.111.96.30", "92.63.105.213", false, false, false, false, "3779", false, "http://hotspot.saiwifi.ru", "", false, "77.88.8.2,176.111.96.30,176.111.96.13", "stat.saiwifi.ru,hotspot.saiwifi.ru", false, false]
+  ["hotspotsystem", "HotSpotSystem.com", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "radius.hotspotsystem.com", "radius2.hotspotsystem.com", "hotsys123", false, false, false, "3779", false, "https://customer.hotspotsystem.com/customer/hotspotlogin.php", "", "hotsys123", "194.149.46.0/24,198.241.128.0/17,66.211.128.0/17,216.113.128.0/17,70.42.128.0/17,128.242.125.0/24,216.52.17.0/24,62.249.232.74,155.136.68.77,155.136.66.34,66.4.128.0/17,66.211.128.0/17,66.235.128.0/17,88.221.136.146,195.228.254.149,195.228.254.152,203.211.140.157,203.211.150.204,www.paypal.com,mobile.paypal.com,www.paypalobjects.com,sstats.paypal-metrics.com,altfarm.mediaplex.com,live.adyen.com,www.worldpay.com,secure.worldpay.com,www.directebanking.com,betalen.rabobank.nl,ideal.ing.nl,ideal.abnamro.nl,www.ing.nl,www.hotspotsystem.com,customer.hotspotsystem.com,tech.hotspotsystem.com,a1.hotspotsystem.com,a2.hotspotsystem.com,a3.hotspotsystem.com,a4.hotspotsystem.com,a5.hotspotsystem.com,a6.hotspotsystem.com,a7.hotspotsystem.com,a8.hotspotsystem.com,a9.hotspotsystem.com,a10.hotspotsystem.com,a11.hotspotsystem.com,a12.hotspotsystem.com,a13.hotspotsystem.com,a14.hotspotsystem.com,a15.hotspotsystem.com,a16.hotspotsystem.com,a17.hotspotsystem.com,a18.hotspotsystem.com,a19.hotspotsystem.com,a20.hotspotsystem.com", "paypal.com,paypalobjects.com,paypal-metrics.com,mediaplex.com,worldpay.com,adyen.com,hotspotsystem.com,geotrust.com", false, false],
+  ["mywifi", "MyWifi", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "radiusm.mywifi.com", "radiuss.mywifi.com", false, false, false, false, "3779", false, "http://access.mywifi.com", "", false, "212.118.48.0/24,212.158.173.0/24,91.227.52.0/24,91.227.53.0/24,91.200.28.0/24,91.200.30.0/24,91.232.115.0/26,webmoney.ru,wmtransfer.com,webmoney.com.mx", "login.wmtransfer.com,security.webmoney.ru,access.mywifi.com,webmoney.ru,wmtransfer.com,webmoney.com.mx", false, false],
+  ["saiwifi", "SAIWifi", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "176.111.96.30", "92.63.105.213", false, false, false, false, "3779", false, "http://hotspot.saiwifi.ru", "", false, "77.88.8.2,176.111.96.30,176.111.96.13", "stat.saiwifi.ru,hotspot.saiwifi.ru", false, false],
+  ["enforta", "Enforta", "192.168.182.0", "255.255.255.0", false, false, "87.241.223.68", "192.168.182.1", "key.chillispot.info", false, "185.12.28.167", "0.0.0.0", "enforta1242-8201-service_36Cloud", false, false, false, "3779", false, "http://hs.enforta.ru", "", false, "185.12.28.167,87.241.223.68,192.168.182.1", "", false, false]
 ];
 
 function hideHint() {
@@ -40,13 +42,17 @@ function showHint(key){
 
   if (key == 'spot_enable')
     text += _("hint spot enable");
-  else if (document.spotCfg.spotEnable.value == "1") // hints for chilli
+/*  else if (document.spotCfg.spotEnable.value == "1") // hints for chilli
     if (key == 'spot_profile')
       text += _("hint spot profile");
     else if (key == 'spot_ip')
       text += _("hint spot ip");
     else if (key == 'spot_mask')
       text += _("hint spot mask");
+    else if (key == 'spot_startip')
+      text += _("hint spot startip");
+    else if (key == 'spot_endip')
+      text += _("hint spot endip");
     else if (key == 'spot_dns')
       text += _("hint spot dns");
     else if (key == 'spot_domain')
@@ -85,7 +91,7 @@ function showHint(key){
       text += _("hint spot macallowed");
     else
       show = false;
-  else if (document.spotCfg.spotEnable.value == "2") // hints for nodog
+  else */if (document.spotCfg.spotEnable.value == "2") // hints for nodog
     if (key == 'GatewayIPRange')
       text += _("hint nodog ip range");
     else if (key == 'RedirectURL')
@@ -134,10 +140,12 @@ function initTranslation() {
   _TR("spotProfile", "hotspot profile");
   _TR("sIp", "inet ip");
   _TR("sNetmask", "inet netmask");
+  _TR("sStartIP", "lan dhcp start");
+  _TR("sEndIP", "lan dhcp end");
   _TR("sPriDns", "inet pri dns");
   _TR("sSecDns", "inet sec dns");
   _TR("sDomain", "hotspot domain");
-  _TR("sLease", "hotspot lease");
+  _TR("sLease", "lan dhcp lease");
   _TR("sRadServer1", "hotspot radius auth");
   _TR("sRadServer2", "hotspot radius acct");
   _TR("sRadSecret", "hotspot radius secret");
@@ -179,7 +187,7 @@ function initTranslation() {
 }
 
 function ModeOnChange(form) {
-  displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed"], (form.spotEnable.value == "1"));
+  displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed"], (form.spotEnable.value == "1"));
   displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], (form.spotEnable.value == "2"));
 
     form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
@@ -202,29 +210,31 @@ function ProfileOnChange(form) {
     if (tmp[0] == form.spotProfile.value) {
       insertVal(form, "sIp", (!tmp[2]) ? "<% getSpotIp(); %>" : tmp[2], tmp[2]);
       insertVal(form, "sNetmask", (!tmp[3]) ? "<% getSpotNetmask(); %>" : tmp[3], tmp[3]);
-      insertVal(form, "sPriDns", (!tmp[4]) ? "<% getCfgGeneral(1, "chilli_dns1"); %>" : tmp[4], tmp[4]);
-      insertVal(form, "sSecDns", (!tmp[5]) ? "<% getCfgGeneral(1, "chilli_dns2"); %>" : tmp[5], tmp[5]);
-      insertVal(form, "sDomain", (!tmp[6]) ? "<% getCfgGeneral(1, "chilli_domain"); %>" : tmp[6], tmp[6]);
-      insertVal(form, "sLease", (!tmp[7]) ? "<% getCfgGeneral(1, "chilli_lease"); %>" : tmp[7], tmp[7]);
-      insertVal(form, "sRadServer1", (!tmp[8]) ? "<% getCfgGeneral(1, "chilli_radiusserver1"); %>" : tmp[8], tmp[8]);
-      insertVal(form, "sRadServer2", (!tmp[9]) ? "<% getCfgGeneral(1, "chilli_radiusserver2"); %>" : tmp[9], tmp[9]);
-      insertVal(form, "sRadSecret", (!tmp[10]) ? "<% getCfgGeneral(1, "chilli_radiussecret"); %>" : tmp[10], tmp[10]);
-      insertVal(form, "sNasId", (!tmp[11]) ? "<% getCfgGeneral(1, "chilli_radiusnasid"); %>" : tmp[11], tmp[11]);
-      insertVal(form, "sRadLocId", (!tmp[12]) ? "<% getCfgGeneral(1, "chilli_radiuslocationid"); %>" : tmp[12], tmp[12]);
-      insertVal(form, "sRadLocName", (!tmp[13]) ? "<% getCfgGeneral(1, "chilli_radiuslocationname"); %>" : tmp[13], tmp[13]);
-      insertVal(form, "sRadCoaPort", (!tmp[14]) ? "<% getCfgGeneral(1, "chilli_coaport"); %>" : tmp[14], tmp[14]);
-      insertVal(form, "sRadCoaNoIpCheck", (!tmp[15]) ? "<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" : tmp[15], tmp[15]);
-      if(!tmp[15])
+      insertVal(form, "sStartIP", (!tmp[4]) ? "<% getCfgGeneral(1, "chilli_dhcpstart"); %>" : tmp[4], tmp[4]);
+      insertVal(form, "sEndIP", (!tmp[5]) ? "<% getCfgGeneral(1, "chilli_dhcpend"); %>" : tmp[5], tmp[5]);
+      insertVal(form, "sPriDns", (!tmp[6]) ? "<% getCfgGeneral(1, "chilli_dns1"); %>" : tmp[6], tmp[6]);
+      insertVal(form, "sSecDns", (!tmp[7]) ? "<% getCfgGeneral(1, "chilli_dns2"); %>" : tmp[7], tmp[7]);
+      insertVal(form, "sDomain", (!tmp[8]) ? "<% getCfgGeneral(1, "chilli_domain"); %>" : tmp[8], tmp[8]);
+      insertVal(form, "sLease", (!tmp[9]) ? "<% getCfgGeneral(1, "chilli_lease"); %>" : tmp[9], tmp[9]);
+      insertVal(form, "sRadServer1", (!tmp[10]) ? "<% getCfgGeneral(1, "chilli_radiusserver1"); %>" : tmp[10], tmp[10]);
+      insertVal(form, "sRadServer2", (!tmp[11]) ? "<% getCfgGeneral(1, "chilli_radiusserver2"); %>" : tmp[11], tmp[11]);
+      insertVal(form, "sRadSecret", (!tmp[12]) ? "<% getCfgGeneral(1, "chilli_radiussecret"); %>" : tmp[12], tmp[12]);
+      insertVal(form, "sNasId", (!tmp[13]) ? "<% getCfgGeneral(1, "chilli_radiusnasid"); %>" : tmp[13], tmp[13]);
+      insertVal(form, "sRadLocId", (!tmp[14]) ? "<% getCfgGeneral(1, "chilli_radiuslocationid"); %>" : tmp[14], tmp[14]);
+      insertVal(form, "sRadLocName", (!tmp[15]) ? "<% getCfgGeneral(1, "chilli_radiuslocationname"); %>" : tmp[15], tmp[15]);
+      insertVal(form, "sRadCoaPort", (!tmp[16]) ? "<% getCfgGeneral(1, "chilli_coaport"); %>" : tmp[16], tmp[16]);
+      insertVal(form, "sRadCoaNoIpCheck", (!tmp[17]) ? "<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" : tmp[17], tmp[17]);
+      if(!tmp[17])
         form.sRadCoaNoIpCheck.value = ("<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" == "on") ? "on" : "off";
-      insertVal(form, "sUamServer", (!tmp[16]) ? "<% getCfgGeneral(1, "chilli_uamserver"); %>" : tmp[16], tmp[16]);
-      insertVal(form, "sUamHomepage", (!tmp[17]) ? "<% getCfgGeneral(1, "chilli_uamhomepage"); %>" : tmp[17], tmp[17]);
-      insertVal(form, "sUamSecret", (!tmp[18]) ? "<% getCfgGeneral(1, "chilli_uamsecret"); %>" : tmp[18], tmp[18]);
-      insertVal(form, "sUamAllowed", (!tmp[19]) ? "<% getCfgGeneral(1, "chilli_uamallowed"); %>" : tmp[19], tmp[19]);
-      insertVal(form, "sUamDomain", (!tmp[20]) ? "<% getCfgGeneral(1, "chilli_uamdomain"); %>" : tmp[20], tmp[20]);
-      insertVal(form, "sUamAnyDNS", (!tmp[21]) ? "<% getCfgGeneral(1, "chilli_uamanydns"); %>" : tmp[21], tmp[21]);
-      if(!tmp[21])
+      insertVal(form, "sUamServer", (!tmp[18]) ? "<% getCfgGeneral(1, "chilli_uamserver"); %>" : tmp[18], tmp[18]);
+      insertVal(form, "sUamHomepage", (!tmp[19]) ? "<% getCfgGeneral(1, "chilli_uamhomepage"); %>" : tmp[19], tmp[19]);
+      insertVal(form, "sUamSecret", (!tmp[20]) ? "<% getCfgGeneral(1, "chilli_uamsecret"); %>" : tmp[20], tmp[20]);
+      insertVal(form, "sUamAllowed", (!tmp[21]) ? "<% getCfgGeneral(1, "chilli_uamallowed"); %>" : tmp[21], tmp[21]);
+      insertVal(form, "sUamDomain", (!tmp[22]) ? "<% getCfgGeneral(1, "chilli_uamdomain"); %>" : tmp[22], tmp[22]);
+      insertVal(form, "sUamAnyDNS", (!tmp[23]) ? "<% getCfgGeneral(1, "chilli_uamanydns"); %>" : tmp[23], tmp[23]);
+      if(!tmp[23])
         form.sUamAnyDNS.value = ("<% getCfgGeneral(1, "chilli_uamanydns"); %>" == "on") ? "on" : "off";
-      insertVal(form, "sMacAllowed", (!tmp[22]) ? "<% getCfgGeneral(1, "chilli_macallowed"); %>" : tmp[22], tmp[22]);
+      insertVal(form, "sMacAllowed", (!tmp[24]) ? "<% getCfgGeneral(1, "chilli_macallowed"); %>" : tmp[24], tmp[24]);
     }
   }
 }
@@ -286,118 +296,130 @@ function CheckValue(form) {
           form.sNetmask.select();
           return false;
         }
+        // Check start IP
+        if ((tmp[4] == false) && !checkDigitRange(form.sStartIP.value, 1, 254)) {
+          form.sStartIP.focus();
+          form.sStartIP.select();
+          return false;
+        }
+        // Check end IP
+        if ((tmp[5] == false) && !checkDigitRange(form.sEndIP.value, 1, 254)) {
+          form.sEndIP.focus();
+          form.sEndIP.select();
+          return false;
+        }
         // Check Primary DNS
-        if ((tmp[4] == false) && !validateIP(form.sPriDns, true)) {
+        if ((tmp[6] == false) && !validateIP(form.sPriDns, true)) {
           form.sPriDns.focus();
           form.sPriDns.select();
           return false;
         }
         // Check Secondery DNS
-        if ((tmp[5] == false) && !validateIP(form.sSecDns, true)) {
+        if ((tmp[7] == false) && !validateIP(form.sSecDns, true)) {
           form.sSecDns.focus();
           form.sSecDns.select();
           return false;
         }
         // Check Domain
-        if ((tmp[6] == false) && (form.sDomain.value.indexOf(" ") >= 0)) {
+        if ((tmp[8] == false) && (form.sDomain.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sDomain.focus();
           form.sDomain.select();
           return false;
         }
         // Check sLease
-        if ((tmp[7] == false) && !/^\d+$/.test(form.sLease.value)) {
+        if ((tmp[9] == false) && !/^\d+$/.test(form.sLease.value)) {
           alert(_("hotspot expects number"));
           form.sLease.focus();
           form.sLease.select();
           return false;
         }
         // Check sRadServer1
-        if ((tmp[8] == false) && (form.sRadServer1.value.indexOf(" ") >= 0)) {
+        if ((tmp[10] == false) && (form.sRadServer1.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sRadServer1.focus();
           form.sRadServer1.select();
           return false;
         }
         // Check sRadServer2
-        if ((tmp[9] == false) && (form.sRadServer2.value.indexOf(" ") >= 0)) {
+        if ((tmp[11] == false) && (form.sRadServer2.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sRadServer2.focus();
           form.sRadServer2.select();
           return false;
         }
         // Check sRadSecret
-        if ((tmp[10] == false) && (form.sRadSecret.value.indexOf(" ") >= 0)) {
+        if ((tmp[12] == false) && (form.sRadSecret.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sRadSecret.focus();
           form.sRadSecret.select();
           return false;
         }
         // Check sNasId
-        if ((tmp[11] == false) && (form.sNasId.value.indexOf(" ") >= 0)) {
+        if ((tmp[13] == false) && (form.sNasId.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sNasId.focus();
           form.sNasId.select();
           return false;
         }
         // Check sRadLocId
-        if ((tmp[12] == false) && (form.sRadLocId.value.indexOf(" ") >= 0)) {
+        if ((tmp[14] == false) && (form.sRadLocId.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sRadLocId.focus();
           form.sRadLocId.select();
           return false;
         }
         // Check sRadLocName
-        if ((tmp[13] == false) && (form.sRadLocName.value.indexOf(" ") >= 0)) {
+        if ((tmp[15] == false) && (form.sRadLocName.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sRadLocName.focus();
           form.sRadLocName.select();
           return false;
         }
         // Check sRadCoaPort
-        if ((tmp[14] == false) && !/^\d+$/.test(form.sRadCoaPort.value)) {
+        if ((tmp[16] == false) && !/^\d+$/.test(form.sRadCoaPort.value)) {
           alert(_("hotspot expects number"));
           form.sRadCoaPort.focus();
           form.sRadCoaPort.select();
           return false;
         }
         // Check sUamServer
-        if ((tmp[16] == false) && (form.sUamServer.value.indexOf(" ") >= 0)) {
+        if ((tmp[18] == false) && (form.sUamServer.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sUamServer.focus();
           form.sUamServer.select();
           return false;
         }
         // Check sUamHomepage
-        if ((tmp[17] == false) && (form.sUamHomepage.value.indexOf(" ") >= 0)) {
+        if ((tmp[19] == false) && (form.sUamHomepage.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sUamHomepage.focus();
           form.sUamHomepage.select();
           return false;
         }
         // Check sUamSecret
-        if ((tmp[18] == false) && (form.sUamSecret.value.indexOf(" ") >= 0)) {
+        if ((tmp[20] == false) && (form.sUamSecret.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sUamSecret.focus();
           form.sUamSecret.select();
           return false;
         }
         // Check sUamAllowed
-        if ((tmp[19] == false) && (form.sUamAllowed.value.indexOf(" ") >= 0)) {
+        if ((tmp[21] == false) && (form.sUamAllowed.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sUamAllowed.focus();
           form.sUamAllowed.select();
           return false;
         }
         // Check sUamDomain
-        if ((tmp[20] == false) && (form.sUamDomain.value.indexOf(" ") >= 0)) {
+        if ((tmp[22] == false) && (form.sUamDomain.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sUamDomain.focus();
           form.sUamDomain.select();
           return false;
         }
         // Check sMacAllowed
-        if ((tmp[22] == false) && (form.sMacAllowed.value.indexOf(" ") >= 0)) {
+        if ((tmp[24] == false) && (form.sMacAllowed.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
           form.sMacAllowed.focus();
           form.sMacAllowed.select();
@@ -479,7 +501,7 @@ function CheckValue(form) {
             <tr id="row_chilli" style="display:none;" onMouseOver="showHint('spot_profile');" onMouseOut="hideHint();">
               <td class="head" id="spotProfile">Chilli profile</td>
               <td>
-                <select name="spotProfile" class="half" onChange="ProfileOnChange(this.form);"></select>
+                <select name="spotProfile" class="mid" onChange="ProfileOnChange(this.form);"></select>
               </td>
             </tr>
             <tr id="row_sIp" style="display:none;" onMouseOver="showHint('spot_ip');" onMouseOut="hideHint();">
@@ -489,6 +511,14 @@ function CheckValue(form) {
             <tr id="row_sNetmask" style="display:none;" onMouseOver="showHint('spot_mask');" onMouseOut="hideHint();">
               <td class="head" id="sNetmask">Subnet Mask</td>
               <td><input name="sNetmask" maxlength="15" value=""></td>
+            </tr>
+            <tr id="row_sStartIP" style="display:none;" onMouseOver="showHint('spot_startip');" onMouseOut="hideHint();">
+              <td class="head" id="sStartIP">Start IP</td>
+              <td><input name="sStartIP" maxlength="3" value=""></td>
+            </tr>
+            <tr id="row_sEndIP" style="display:none;" onMouseOver="showHint('spot_endip');" onMouseOut="hideHint();">
+              <td class="head" id="sEndIP">End IP</td>
+              <td><input name="sEndIP" maxlength="3" value=""></td>
             </tr>
             <tr id="row_sPriDns" style="display:none;" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
               <td class="head" id="sPriDns">Primary DNS Server</td>

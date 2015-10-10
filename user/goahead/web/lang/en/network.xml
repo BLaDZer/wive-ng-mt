@@ -157,7 +157,6 @@
     <message msgid="hotspot manual" msgstr="Manual" />
     <message msgid="hotspot setup" msgstr="Hotspot Setup" />
     <message msgid="hotspot domain" msgstr="Domain name" />
-    <message msgid="hotspot lease" msgstr="Lease time (sec)" />
     <message msgid="hotspot radius auth" msgstr="Radius server auth address" />
     <message msgid="hotspot radius acct" msgstr="Radius server acct address" />
     <message msgid="hotspot radius secret" msgstr="Radius server secret" />

@@ -39,7 +39,7 @@
     <message msgid="hint l2tp server" msgstr="Включение сервера L2TP." />
     <message msgid="hint l2tp proxyarp" msgstr="Включить proxyarp для сервера VPN." />
 
-    <message msgid="hint spot enable" msgstr="" />
+    <message msgid="hint spot enable" msgstr="Включение сервисов Hotspot" />
     <message msgid="hint spot profile" msgstr="" />
     <message msgid="hint spot ip" msgstr="" />
     <message msgid="hint spot mask" msgstr="" />
