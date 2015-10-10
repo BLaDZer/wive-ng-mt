@@ -17,14 +17,12 @@ start() {
     get_param
     if [ "$nodogsplash_enable" = "1" ]; then
 	$LOG "Starting Nodogsplash"
-	printf "
-	    GatewayInterface $lan_if
-	    GatewayAddress $lan_ipaddr
-	    GatewayName $HostName
-	" > $CONF
+	echo"GatewayInterface $lan_if"		>  $CONF
+	echo"GatewayAddress $lan_ipaddr"	>> $CONF
+	echo"GatewayName $HostName"		>> $CONF
 	for i in $PARAMS; do
 	    val=`nvram_get 2860 nodog_$i`
-	    [ -n "$val" ] && echo "$i=$val" >> $CONF
+	    [ -n "$val" ] && echo "$i $val"	>> $CONF
 	done
 	cat $CTMP >> $CONF
 	nodogsplash -s &
