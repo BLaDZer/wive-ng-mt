@@ -34,6 +34,17 @@ $LOG "Restart needed services and scripts. Mode $MODE"
     service iptables restart
 
 ##########################################################
+# restart nodogsplash/chillispot hotspot daemon		 #
+# need always restart - netfilter reconfigure by daemon  #
+##########################################################
+if [ -e /bin/nodogsplash ]; then
+    service nodogsplash restart
+fi
+if [ -e /bin/chilli ]; then
+    service chillispot restart
+fi
+
+##########################################################
 # Regenerate resolv only if wan_static_dns on
 ##########################################################
 if [ "$wan_static_dns" = "on" ]; then
@@ -167,17 +178,6 @@ if [ "$MODE" = "all" ]; then
     if [ "$wanConnectionMode" != "DHCP" ] || [ "$purepppoemode" = "1" ]; then
 	service vpnhelper restart
     fi
-fi
-
-##########################################################
-# restart nodogsplash/chillispot hotspot daemon		 #
-# need always restart - netfilter reconfigure by daemon  #
-##########################################################
-if [ -e /bin/nodogsplash ]; then
-    service nodogsplash restart
-fi
-if [ -e /bin/chilli ]; then
-    service chillispot restart
 fi
 
 ##########################################################
