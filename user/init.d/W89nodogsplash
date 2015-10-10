@@ -6,6 +6,9 @@ if [ ! -f /bin/nodogsplash ]; then
 fi
 
 LOG="logger -t nodogsplash"
+PARAMS="GatewayIPRange RedirectURL MaxClients ClientIdleTimeout ClientForceTimeout \
+AuthenticateImmediately MACMechanism BlockedMACList AllowedMACList TrustedMACList \
+PasswordAuthentication Password UsernameAuthentication Username PasswordAttempts"
 
 # get params
 . /etc/scripts/global.sh
@@ -13,12 +16,16 @@ LOG="logger -t nodogsplash"
 start() {
     get_param
     if [ "$nodogsplash_enable" = "1" ]; then
-	$LOG "Starting SNMPD"
+	$LOG "Starting Nodogsplash"
 	printf "
 	    GatewayInterface $lan_if
 	    GatewayAddress $lan_ipaddr
 	    GatewayName $HostName
 	" > $CONF
+	for i in $PARAMS; do
+	    val=`nvram_get 2860 nodog_$i`
+	    [ -n "$val" ] && echo "$i=$val" >> $CONF
+	done
 	cat $CTMP >> $CONF
 	nodogsplash -s &
     fi
@@ -33,7 +40,7 @@ get_param() {
 stop() {
     pid=`pidof nodogsplash`
     if [ "$pid" != "" ]; then
-	$LOG "Stopping SNMPD"
+	$LOG "Stopping Nodogsplash"
 	killall -q nodogsplash
 	killall -q -SIGKILL nodogsplash
     fi

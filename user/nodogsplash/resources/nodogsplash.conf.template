@@ -7,7 +7,7 @@
 # touched by Nodogsplash at all.
 # Defaults to 0.0.0.0/0, that is, all addresses.
 #
-GatewayIPRange 0.0.0.0/0
+# GatewayIPRange 0.0.0.0/0
 
 # Parameter: RedirectURL
 # Default: none
@@ -16,7 +16,7 @@ GatewayIPRange 0.0.0.0/0
 # to their initially requested page.
 # If RedirectURL is set, the user is redirected to this URL instead.
 #
-RedirectURL http://wive-ng.sf.net
+# RedirectURL http://wive-ng.sf.net
 
 # Parameter: MaxClients
 # Default: 20
@@ -25,7 +25,7 @@ RedirectURL http://wive-ng.sf.net
 # connect at any time.  (Does not include users on the TrustedMACList,
 # who do not authenticate.)
 #
-MaxClients 32
+# MaxClients 32
 
 # ClientIdleTimeout
 # Parameter: ClientIdleTimeout
@@ -34,7 +34,7 @@ MaxClients 32
 # Set ClientIdleTimeout to the desired of number of minutes
 # of inactivity before a user is automatically 'deauthenticated'.
 #
-ClientIdleTimeout 10
+# ClientIdleTimeout 10
 
 # Parameter: ClientForceTimeout
 # Default: 360
@@ -42,7 +42,7 @@ ClientIdleTimeout 10
 # Set ClientForceTimeout to the desired number of minutes before
 # a user is automatically 'deauthenticated', whether active or not
 #
-ClientForceTimeout 360
+# ClientForceTimeout 360
 
 # FirewallRuleSet: authenticated-users
 #

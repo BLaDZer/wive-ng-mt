@@ -1,4 +1,5 @@
 <po>
+    <message msgid="hint title" msgstr="HINT" />
     <message msgid="hint vpn enabled" msgstr="Enable Virtual Private Network support." />
     <message msgid="hint vpn status" msgstr="This indicator shows current state of VPN connection." />
     <message msgid="hint vpn user" msgstr="Specify user name given by your network provider." />
@@ -37,4 +38,42 @@
     <message msgid="hint vpn lanauth" msgstr="Specify access mode to KABINET provider network." />
     <message msgid="hint l2tp server" msgstr="Enable L2TP server." />
     <message msgid="hint l2tp proxyarp" msgstr="Enable proxyarp for VPN server." />
+
+    <message msgid="hint spot enable" msgstr="" />
+    <message msgid="hint spot profile" msgstr="" />
+    <message msgid="hint spot ip" msgstr="" />
+    <message msgid="hint spot mask" msgstr="" />
+    <message msgid="hint spot dns" msgstr="" />
+    <message msgid="hint spot domain" msgstr="" />
+    <message msgid="hint spot lease" msgstr="" />
+    <message msgid="hint spot auth" msgstr="" />
+    <message msgid="hint spot acct" msgstr="" />
+    <message msgid="hint spot rad secret" msgstr="" />
+    <message msgid="hint spot nasid" msgstr="" />
+    <message msgid="hint spot locid" msgstr="" />
+    <message msgid="hint spot locname" msgstr="" />
+    <message msgid="hint spot port" msgstr="" />
+    <message msgid="hint spot ipcheck" msgstr="" />
+    <message msgid="hint spot uamserver" msgstr="" />
+    <message msgid="hint spot uamhomepage" msgstr="" />
+    <message msgid="hint spot uamsecret" msgstr="" />
+    <message msgid="hint spot uamallowed" msgstr="" />
+    <message msgid="hint spot uamdomain" msgstr="" />
+    <message msgid="hint spot uamdns" msgstr="" />
+    <message msgid="hint spot macallowed" msgstr="" />
+    <message msgid="hint nodog ip range" msgstr="By setting this parameter, you can specify a range of IP addresses on the GatewayInterface that will be responded to and managed by Nodogsplash. Addresses outside this range do not have their packets touched by Nodogsplash at all. Defaults to 0.0.0.0/0, that is, all addresses." />
+    <message msgid="hint nodog url" msgstr="After authentication, normally a user is redirected to their initially requested page. If RedirectURL is set, the user is redirected to this URL instead." />
+    <message msgid="hint nodog max clients" msgstr="Set MaxClients to the maximum number of users allowed to connect at any time.(Does not include users on the TrustedMACList, who do not authenticate.)" />
+    <message msgid="hint nodog idle" msgstr="Set ClientIdleTimeout to the desired of number of minutes of inactivity before a user is automatically 'deauthenticated'." />
+    <message msgid="hint nodog force" msgstr="Set ClientForceTimeout to the desired number of minutes before a user is automatically 'deauthenticated', whether active or not" />
+    <message msgid="hint nodog auth immediately" msgstr="Set to Enable, to immediately authenticate users who make a http port 80 request on the GatewayInterface (that is, do not serve a splash page, just redirect to the user's request, or to RedirectURL if set)." />
+    <message msgid="hint nodog mac" msgstr="Either block or allow. If 'block', MAC addresses on BlockedMACList are blocked from authenticating, and all others are allowed. If 'allow', MAC addresses on AllowedMACList are allowed to authenticate, and all other (non-trusted) MAC's are blocked." />
+    <message msgid="hint nodog blocked" msgstr="Comma-separated list of MAC addresses who will be completely blocked from the GatewayInterface. Ignored if MACMechanism is allow. N.B.: weak security, since MAC addresses are easy to spoof." />
+    <message msgid="hint nodog allowed" msgstr="Comma-separated list of MAC addresses who will not be completely blocked from the GatewayInterface. Ignored if MACMechanism is block. N.B.: weak security, since MAC addresses are easy to spoof." />
+    <message msgid="hint nodog trusted" msgstr="Comma-separated list of MAC addresses who are not subject to authentication, and are not restricted by any FirewallRuleSet. N.B.: weak security, since MAC addresses are easy to spoof." />
+    <message msgid="hint nodog auth pass" msgstr="Set to Enable, to require a password matching the Password parameter to be supplied when authenticating." />
+    <message msgid="hint nodog pass" msgstr="Whitespace delimited string that is compared to user-supplied password when authenticating." />
+    <message msgid="hint nodog auth user" msgstr="Set to Enable, to require a username matching the Username parameter to be supplied when authenticating." />
+    <message msgid="hint nodog user" msgstr="Whitespace delimited string that is compared to user-supplied username when authenticating." />
+    <message msgid="hint nodog attempts" msgstr="Integer number of failed password/username entries before a user is forced to reauthenticate." />
 </po>

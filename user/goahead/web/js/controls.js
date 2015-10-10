@@ -101,6 +101,20 @@ function disableElement(element, disabled)
 		element.disabled = disabled;
 }
 
+function addOption(list, text, value)
+{
+	var option = new Option(text, value);
+
+	try
+	{
+		list.add(option, null); // standards compliant
+	}
+	catch(ex)
+	{
+		list.add(option); // IE only
+	}
+}
+
 self.getElementValue = function(element)
 {
 	if (typeof(element) == 'string')

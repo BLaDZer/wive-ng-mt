@@ -88,20 +88,6 @@ var ChannelList_24G =
 	"2484MHz (" + _("station channel") + " 14)"
 ];
 
-function addOption(list, text, value)
-{
-	var option = new Option(text, value);
-
-	try
-	{
-		list.add(option, null); // standards compliant
-	}
-	catch(ex)
-	{
-		list.add(option); // IE only
-	}
-}
-
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
 	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");

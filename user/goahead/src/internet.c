@@ -91,6 +91,8 @@ static int getSpotIp(int eid, webs_t wp, int argc, char_t **argv);
 static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv);
 static void setHotspot(webs_t wp, char_t *path, char_t *query);
 #endif
+static int  getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv);
 
 /*** VPN statuses ***/
 typedef struct vpn_status_t
@@ -172,6 +174,8 @@ void formDefineInternet(void) {
 	websAspDefine(T("getSpotNetmask"), getSpotNetmask);
 	websFormDefine(T("setHotspot"), setHotspot);
 #endif
+	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
+	websAspDefine(T("getNoDogBuilt"), getNoDogBuilt);
 }
 
 /*
@@ -1148,7 +1152,7 @@ static int getXupnpdBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getSpotBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_USER_CHILLISPOT
+#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -2461,11 +2465,13 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 }
 #endif
 
+#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 #ifdef CONFIG_USER_CHILLISPOT
 // ChilliSpot variables
 const parameter_fetch_t chilli_vars[] =
 {
-	{ T("spotEnable"),		"chilli_enable",		0,       T("") },
+	{ T("chilliEnable"),			"chilli_enable",			0,       T("") },
+	{ T("spotProfile"),			"chilli_profile",			0,       T("manual") },
 	{ T("sPriDns"),			"chilli_dns1",			0,       T("") },
 	{ T("sSecDns"),			"chilli_dns2",			0,       T("") },
 	{ T("sDomain"),			"chilli_domain",		0,       T("") },
@@ -2474,21 +2480,45 @@ const parameter_fetch_t chilli_vars[] =
 	{ T("sRadServer2"),		"chilli_radiusserver2",		0,       T("") },
 	{ T("sRadSecret"),		"chilli_radiussecret",		0,       T("") },
 	{ T("sNasId"),			"chilli_radiusnasid",		0,       T("") },
-	{ T("sRadLocationId"),		"chilli_radiuslocationid",	0,       T("") },
-	{ T("sRadLocationName"),	"chilli_radiuslocationname",	0,       T("") },
+	{ T("sRadLocId"),		"chilli_radiuslocationid",	0,       T("") },
+	{ T("sRadLocName"),	"chilli_radiuslocationname",	0,       T("") },
 	{ T("sRadCoaPort"),		"chilli_coaport",		0,       T("") },
-	{ T("sRadCoaNoIpCheck"),	"chilli_coanoipcheck",		1,       T("") },
+	{ T("sRadCoaNoIpCheck"),	"chilli_coanoipcheck",		0,       T("") },
 	{ T("sUamServer"),		"chilli_uamserver",		0,       T("") },
 	{ T("sUamHomepage"),		"chilli_uamhomepage",		0,       T("") },
 	{ T("sUamSecret"),		"chilli_uamsecret",		0,       T("") },
 	{ T("sUamAllowed"),		"chilli_uamallowed",		0,       T("") },
 	{ T("sUamDomain"),		"chilli_uamdomain",		0,       T("") },
-	{ T("sUamAnyDns"),		"chilli_uamanydns",		1,       T("") },
+	{ T("sUamAnyDNS"),		"chilli_uamanydns",		0,       T("") },
 	{ T("sMacAllowed"),		"chilli_macallowed",		0,       T("") },
 	{ NULL, NULL, 0, 0 } // Terminator
 };
+#endif
+#ifdef CONFIG_USER_NODOGSPLASH
+// NoDogSplash variables
+const parameter_fetch_t nodog_vars[] =
+{
+	{ T("nodogEnable"),			"nodogsplash_enable",			0,       T("") },
+	{ T("GatewayIPRange"),			"nodog_GatewayIPRange",			0,       T("0.0.0.0/0") },
+	{ T("RedirectURL"),			"nodog_RedirectURL",			0,       T("http://wive-ng.sf.net") },
+	{ T("MaxClients"),			"nodog_MaxClients",		0,       T("32") },
+	{ T("ClientIdleTimeout"),			"nodog_ClientIdleTimeout",			0,       T("10") },
+	{ T("ClientForceTimeout"),		"nodog_ClientForceTimeout",		0,       T("360") },
+	{ T("AuthenticateImmediately"),		"nodog_AuthenticateImmediately",		0,       T("no") },
+	{ T("MACMechanism"),		"nodog_MACMechanism",		0,       T("block") },
+	{ T("BlockedMACList"),		"nodog_BlockedMACList",		0,       T("") },
+	{ T("AllowedMACList"),			"nodog_AllowedMACList",		0,       T("") },
+	{ T("TrustedMACList"),		"nodog_TrustedMACList",	0,       T("") },
+	{ T("PasswordAuthentication"),	"nodog_PasswordAuthentication",	0,       T("no") },
+	{ T("Password"),		"nodog_Password",		0,       T("nodog") },
+	{ T("UsernameAuthentication"),	"nodog_UsernameAuthentication",		0,       T("no") },
+	{ T("Username"),		"nodog_Username",		0,       T("guest") },
+	{ T("PasswordAttempts"),		"nodog_PasswordAttempts",		0,       T("5") },
+	{ NULL, NULL, 0, 0 } // Terminator
+};
+#endif
 
-
+#ifdef CONFIG_USER_CHILLISPOT
 /*
  * description: write hotspot network ip address
  */
@@ -2524,12 +2554,16 @@ static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv)
 
 	return websWrite(wp, T("%s"), inet_ntoa(mask));
 }
+#endif
 
 /* goform/setHotspot */
 static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *ip = websGetVar(wp, T("sIp"), T(""));
-	char_t *amask = websGetVar(wp, T("sNetmask"), T(""));
+	char_t *enabled = websGetVar(wp, T("spotEnable"), T("0"));
+	char_t *submitUrl;
+#ifdef CONFIG_USER_CHILLISPOT
+	char_t *ip = websGetVar(wp, T("sIp"), T("192.168.182.0"));
+	char_t *amask = websGetVar(wp, T("sNetmask"), T("255.255.255.0"));
 	struct in_addr iip;
 	struct in_addr imask;
 
@@ -2546,24 +2580,60 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 
 	char_t subnet[20];
 	sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
+#endif
 
 	nvram_init(RT2860_NVRAM);
 
-	if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-		printf("goahead: Set chilli_net nvram error!");
-
-	setupParameters(wp, chilli_vars, 0);
+#ifdef CONFIG_USER_CHILLISPOT
+	if(CHK_IF_DIGIT(enabled, 1)) {
+		setupParameters(wp, chilli_vars, 0);
+		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
+			printf("goahead: Set chilli_net nvram error!");
+	}
+	else
+#endif
+#ifdef CONFIG_USER_NODOGSPLASH
+	if(CHK_IF_DIGIT(enabled, 2))
+		setupParameters(wp, nodog_vars, 0);
+	else
+#endif
+	if(CHK_IF_DIGIT(enabled, 0)) {
+		nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+		nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
+	}
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+#ifdef PRINT_DEBUG
+	//debug print
 	websHeader(wp);
-	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"), ip);
+	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"));
 	websFooter(wp);
 	websDone(wp, 200);
+#else
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
+#endif
 	doSystem("service dhcpd restart"); /* for enable/disable native dhcp */
 	doSystem("service chillispot restart");
-
-	return;
 }
-#endif //CONFIG_USER_CHILLISPOT
+#endif // HOTSPOT
+
+static int getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_USER_CHILLISPOT
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_USER_NODOGSPLASH
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}

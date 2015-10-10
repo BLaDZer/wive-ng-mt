@@ -50,8 +50,8 @@
     <message msgid="vpn kabinet offline" msgstr="offline" />
     <message msgid="vpn kabinet" msgstr="kabinet" />
     <message msgid="vpn kabinet full" msgstr="full" />
-    <message msgid="vpn username" msgstr="Username:" />
-    <message msgid="vpn password" msgstr="Password:" />
+    <message msgid="vpn username" msgstr="Username" />
+    <message msgid="vpn password" msgstr="Password" />
     <message msgid="vpn mtu mru" msgstr="MTU/MRU" />
     <message msgid="vpn enabled" msgstr="Enabled" />
     <message msgid="vpn disabled" msgstr="Disabled" />
@@ -153,8 +153,9 @@
 
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />
+    <message msgid="hotspot profile" msgstr="Profile name" />
+    <message msgid="hotspot manual" msgstr="Manual" />
     <message msgid="hotspot setup" msgstr="Hotspot Setup" />
-    <message msgid="hotspot enable" msgstr="Hotspot Enable" />
     <message msgid="hotspot domain" msgstr="Domain name" />
     <message msgid="hotspot lease" msgstr="Lease time (sec)" />
     <message msgid="hotspot radius auth" msgstr="Radius server auth address" />
@@ -174,4 +175,17 @@
     <message msgid="hotspot uam mac" msgstr="Allowed MAC" />
     <message msgid="hotspot dont space" msgstr="Space in field is not allowed!" />
     <message msgid="hotspot expects number" msgstr="This field expects number!" />
+    <message msgid="hotspot nodog ip range" msgstr="Range of IP addresses" />
+    <message msgid="hotspot nodog url" msgstr="Redirected to URL after authentication" />
+    <message msgid="hotspot nodog max clients" msgstr="Maximum number of users" />
+    <message msgid="hotspot nodog idle timeout" msgstr="Inactivity before a user is 'deauthenticated'" />
+    <message msgid="hotspot nodog force timeout" msgstr="Minutes before a user is 'deauthenticated'" />
+    <message msgid="hotspot nodog auth" msgstr="Authenticate Immediately" />
+    <message msgid="hotspot nodog mechanism" msgstr="MAC Mechanism" />
+    <message msgid="hotspot nodog blocked list" msgstr="List Blocked MAC Addresses" />
+    <message msgid="hotspot nodog allowed list" msgstr="List Allowed MAC Addresses" />
+    <message msgid="hotspot nodog trusted list" msgstr="List Trusted MAC Addresses" />
+    <message msgid="hotspot nodog pass" msgstr="Password Authentication" />
+    <message msgid="hotspot nodog user" msgstr="Username Authentication" />
+    <message msgid="hotspot nodog pass attempts" msgstr="Password Attempts" />
 </po>

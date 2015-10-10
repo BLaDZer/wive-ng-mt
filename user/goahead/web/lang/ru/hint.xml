@@ -1,4 +1,5 @@
 <po>
+    <message msgid="hint title" msgstr="Подсказка" />
     <message msgid="hint vpn enabled" msgstr="Включить поддержку VPN." />
     <message msgid="hint vpn status" msgstr="Здесь отображается текущее состояние VPN подключения." />
     <message msgid="hint vpn user" msgstr="Укажите имя пользователя выданное вам вашим провайдером." />
@@ -37,4 +38,42 @@
     <message msgid="hint vpn lanauth" msgstr="Укажите режим доступа к провайдеру КАБИНЕТ." />
     <message msgid="hint l2tp server" msgstr="Включение сервера L2TP." />
     <message msgid="hint l2tp proxyarp" msgstr="Включить proxyarp для сервера VPN." />
+
+    <message msgid="hint spot enable" msgstr="" />
+    <message msgid="hint spot profile" msgstr="" />
+    <message msgid="hint spot ip" msgstr="" />
+    <message msgid="hint spot mask" msgstr="" />
+    <message msgid="hint spot dns" msgstr="" />
+    <message msgid="hint spot domain" msgstr="" />
+    <message msgid="hint spot lease" msgstr="" />
+    <message msgid="hint spot auth" msgstr="" />
+    <message msgid="hint spot acct" msgstr="" />
+    <message msgid="hint spot rad secret" msgstr="" />
+    <message msgid="hint spot nasid" msgstr="" />
+    <message msgid="hint spot locid" msgstr="" />
+    <message msgid="hint spot locname" msgstr="" />
+    <message msgid="hint spot port" msgstr="" />
+    <message msgid="hint spot ipcheck" msgstr="" />
+    <message msgid="hint spot uamserver" msgstr="" />
+    <message msgid="hint spot uamhomepage" msgstr="" />
+    <message msgid="hint spot uamsecret" msgstr="" />
+    <message msgid="hint spot uamallowed" msgstr="" />
+    <message msgid="hint spot uamdomain" msgstr="" />
+    <message msgid="hint spot uamdns" msgstr="" />
+    <message msgid="hint spot macallowed" msgstr="" />
+    <message msgid="hint nodog ip range" msgstr="By setting this parameter, you can specify a range of IP addresses on the GatewayInterface that will be responded to and managed by Nodogsplash. Addresses outside this range do not have their packets touched by Nodogsplash at all. Defaults to 0.0.0.0/0, that is, all addresses." />
+    <message msgid="hint nodog url" msgstr="Если данный параметр пустой, то, после авторизации, пользователь будет перенаправляться на запрошенную им страницу, иначе перенаправление будет на страницу указанную в данном параметре." />
+    <message msgid="hint nodog max clients" msgstr="Максимальное количество пользователей, без учёта пользователей доступ в сеть которым неограничен." />
+    <message msgid="hint nodog idle" msgstr="В случае неактивности пользователя в течении указанного времени, в минутах, он будет автоматически отключен." />
+    <message msgid="hint nodog force" msgstr="Через указанное время, в минутах, пользователь будет отключен, без учёта его активности." />
+    <message msgid="hint nodog auth immediately" msgstr="Set to Enable, to immediately authenticate users who make a http port 80 request on the GatewayInterface (that is, do not serve a splash page, just redirect to the user's request, or to RedirectURL if set)." />
+    <message msgid="hint nodog mac" msgstr="При значении 'Блокировка' доступ в сеть будет предоставлен всем, кроме списка адресов, которым доступ в сеть запрещён. При значении 'Разрешён' доступ в сеть будет предоставлен только списку адресов, которым доступ в сеть разрешён." />
+    <message msgid="hint nodog blocked" msgstr="Список MAC адресов, через запятую, которым запрещён доступ в сеть." />
+    <message msgid="hint nodog allowed" msgstr="Список MAC адресов, через запятую, которым разрешён доступ в сеть." />
+    <message msgid="hint nodog trusted" msgstr="Список MAC адресов, через запятую, имеющие неограниченный доступ в сеть без авторизации." />
+    <message msgid="hint nodog auth pass" msgstr="Set to Enable, to require a password matching the Password parameter to be supplied when authenticating." />
+    <message msgid="hint nodog pass" msgstr="Whitespace delimited string that is compared to user-supplied password when authenticating." />
+    <message msgid="hint nodog auth user" msgstr="Set to Enable, to require a username matching the Username parameter to be supplied when authenticating." />
+    <message msgid="hint nodog user" msgstr="Whitespace delimited string that is compared to user-supplied username when authenticating." />
+    <message msgid="hint nodog attempts" msgstr="Integer number of failed password/username entries before a user is forced to reauthenticate." />
 </po>

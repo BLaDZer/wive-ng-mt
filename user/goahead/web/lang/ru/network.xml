@@ -50,8 +50,8 @@
     <message msgid="vpn kabinet offline" msgstr="offline" />
     <message msgid="vpn kabinet" msgstr="kabinet" />
     <message msgid="vpn kabinet full" msgstr="full" />
-    <message msgid="vpn username" msgstr="Имя пользователя:" />
-    <message msgid="vpn password" msgstr="Пароль:" />
+    <message msgid="vpn username" msgstr="Имя пользователя" />
+    <message msgid="vpn password" msgstr="Пароль" />
     <message msgid="vpn mtu mru" msgstr="MTU/MRU" />
     <message msgid="vpn lcp interval" msgstr="Интервал LCP echo:" />
     <message msgid="vpn lcp failure" msgstr="Ошибка LCP echo:" />
@@ -152,7 +152,8 @@
     <message msgid="hotspot title" msgstr="" />
     <message msgid="hotspot introduction" msgstr="" />
     <message msgid="hotspot setup" msgstr="Настройка хотспота" />
-    <message msgid="hotspot enable" msgstr="Включить хотспот" />
+    <message msgid="hotspot profile" msgstr="Имя профиля" />
+    <message msgid="hotspot manual" msgstr="Ручной" />
     <message msgid="hotspot domain" msgstr="Имя доменна" />
     <message msgid="hotspot lease" msgstr="Время аренды (сек)" />
     <message msgid="hotspot radius auth" msgstr="Адрес RADIUS сервера аутентификации" />
@@ -160,16 +161,29 @@
     <message msgid="hotspot radius secret" msgstr="Секретное слово RADIUS сервера" />
     <message msgid="hotspot radius nas" msgstr="Radius NAS ID" />
     <message msgid="hotspot radius location id" msgstr="Radius Location ID" />
-    <message msgid="hotspot radius location name" msgstr="Radius Location Name" />
+    <message msgid="hotspot radius location name" msgstr="Radius название места" />
     <message msgid="hotspot radius coa port" msgstr="Radius CoA/DM порт" />
     <message msgid="hotspot radius no check ip" msgstr="Не проверять IP в CoA/DM запросах" />
     <message msgid="hotspot uam server" msgstr="URL для UAM сервера" />
     <message msgid="hotspot uam homepage" msgstr="Страница UAM" />
     <message msgid="hotspot uam secret" msgstr="Секретное слово UAM" />
-    <message msgid="hotspot uam allowed" msgstr="UAM allowed hosts" />
-    <message msgid="hotspot uam domain" msgstr="UAM allowed domains" />
+    <message msgid="hotspot uam allowed" msgstr="Разрешённые UAM хосты" />
+    <message msgid="hotspot uam domain" msgstr="Разрешённые UAM домены" />
     <message msgid="hotspot uam any dns" msgstr="Разрешить любые DNS запросы" />
     <message msgid="hotspot uam mac" msgstr="Разрешённые MAC" />
     <message msgid="hotspot dont space" msgstr="Пробелы в поле запрещены!" />
     <message msgid="hotspot expects number" msgstr="В этом поле должны быть цыфры!" />
+    <message msgid="hotspot nodog ip range" msgstr="Диапазон IP адресов" />
+    <message msgid="hotspot nodog url" msgstr="Адрес перенаправления" />
+    <message msgid="hotspot nodog max clients" msgstr="Максимальное число клиентов" />
+    <message msgid="hotspot nodog idle timeout" msgstr="Время бездействия до отключения" />
+    <message msgid="hotspot nodog force timeout" msgstr="Время до отключения" />
+    <message msgid="hotspot nodog auth" msgstr="Авторизовывать сразу" />
+    <message msgid="hotspot nodog mechanism" msgstr="Механизм фильтрации MAC адресов" />
+    <message msgid="hotspot nodog blocked list" msgstr="Список блокируемых MAC адресов" />
+    <message msgid="hotspot nodog allowed list" msgstr="Список разрешённых MAC адресов" />
+    <message msgid="hotspot nodog trusted list" msgstr="Список доверенных MAC адресов" />
+    <message msgid="hotspot nodog pass" msgstr="Авторизация по паролю" />
+    <message msgid="hotspot nodog user" msgstr="Авторизация по имени пользователя" />
+    <message msgid="hotspot nodog pass attempts" msgstr="Число попыток ввода пароля" />
 </po>

@@ -38,21 +38,40 @@ start() {
 		fi
     	    fi
 	done
-	# activate location
-	if [ "$chilli_radiusserver1" = "radius.hotspotsystem.com" ]; then
-	    wget http://tech.hotspotsystem.com/up.php?mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`\&nasid=$chilli_radiusnasid\&os_date=coova\&uptime=`uptime|sed "s/ /\%20/g"|sed "s/:/\%3A/g"|sed "s/,/\%2C/g"` -O /tmp/chilli_apinstalled
-	fi
 	# prevent double start
 	pid=`pidof chilli`
 	if [ "$pid" != "" ]; then
 	    $LOG "Stopping ChilliSpot"
-	    killall -q chilli
-	    killall -q -SIGKILL chilli
-	    rm -f /var/run/chilli*
+    	    killall -q chilli
+    	    killall -q -SIGKILL chilli
+    	    killall -q chilli_stat
+    	    killall -q -SIGKILL chilli_stat
+    	    rm -f /tmp/chilli* /var/run/chilli*
 	    usleep 500000
+	fi
+	# activate location
+	if [ "$chilli_radiusserver1" = "radius.hotspotsystem.com" ]; then
+	    wget -q http://tech.hotspotsystem.com/up.php?mac=$mac\&nasid=$chilli_radiusnasid -O /tmp/chilli_apinstalled > /dev/null 2>&1
+	    echo "#!/bin/sh" 		> /tmp/chilli_stat
+	    echo "while true; do" 	>> /tmp/chilli_stat
+	    echo "sleep 60" 		>> /tmp/chilli_stat
+	    echo "wget -q http://tech.hotspotsystem.com/up.php?mac=$mac\&nasid=$chilli_radiusnasid\&os_date=coova\&uptime=\`uptime|sed \"s/" "/\%20/g\"|sed \"s/:/\%3A/g\"|sed \"s/,/\%2C/g\"\` -O /tmp/chilli_getstate > /dev/null 2>&1"  >> /tmp/chilli_stat
+	    echo "done" 		>> /tmp/chilli_stat
+	elif [ "$chilli_radiusserver1" = "radiusm.mywifi.com" ]; then
+	    echo "#!/bin/sh" 		> /tmp/chilli_stat
+	    echo "while true; do" 	>> /tmp/chilli_stat
+	    echo "sleep 60" 		>> /tmp/chilli_stat
+    	    echo "wget -q http://www.mywifi.com/getstate -O /tmp/chilli_getstate > /dev/null 2>&1" >> /tmp/chilli_stat
+	    echo "done" 		>> /tmp/chilli_stat
+	fi
+	# status location
+	if [ -e /tmp/chilli_stat ]; then
+	    chmod 777 /tmp/chilli_stat
+	    /tmp/chilli_stat &
 	fi
 	chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
 	) & # send to background
+	# statistics
     fi
 }
 
@@ -62,8 +81,10 @@ stop() {
 	$LOG "Stopping ChilliSpot"
 	killall -q chilli
 	killall -q -SIGKILL chilli
+    	killall -q chilli_stat
+    	killall -q -SIGKILL chilli_stat
     fi
-    rm -f /var/run/chilli*
+    rm -f /var/run/chilli* /tmp/chilli*
 }
 
 get_params() {
@@ -98,6 +119,7 @@ get_params() {
     else
 	uamdomain=""
     fi
+    mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
 }
 
 case "$1" in
