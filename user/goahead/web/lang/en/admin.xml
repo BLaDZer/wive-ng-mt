@@ -8,7 +8,6 @@
     <message msgid="management administrator settings" msgstr="Administrator Settings" />
     <message msgid="management administrator login" msgstr="Login" />
     <message msgid="management administrator password" msgstr="Password" />
-    <message msgid="management apply login" msgstr="Apply new login/password" />
     <message msgid="management firmware" msgstr="Firmware update" />
     <message msgid="management filename" msgstr="Filename:" />
     <message msgid="management reset rwfs" msgstr="Reset RWFS on update" />

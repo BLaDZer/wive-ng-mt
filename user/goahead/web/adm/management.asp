@@ -27,7 +27,6 @@ function initTranslation()
   _TR("manAdmSet", "management administrator settings");
   _TR("manAdmLodin", "management administrator login");
   _TR("manAdmPasswd", "management administrator password");
-  _TR("manApplyLogin", "management apply login");
   _TR("manAdmFirmware", "management firmware");
   _TR("uploadFWLocation", "management filename");
   _TR("manResetRWFS", "management reset rwfs");
@@ -208,7 +207,7 @@ function onReset2DefaultsSubmit(form)
               <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
             </tr>
             <tr>
-              <td class="head" id="manApplyLogin">Apply new login/password</td>
+              <td class="head" ></td>
               <td><input type="hidden" name="submit-url" value="/adm/management.asp" >
                 <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
             </tr>

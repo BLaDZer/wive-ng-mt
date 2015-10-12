@@ -8,7 +8,6 @@
     <message msgid="management administrator settings" msgstr="Настройки администратора" />
     <message msgid="management administrator login" msgstr="Имя пользователя" />
     <message msgid="management administrator password" msgstr="Пароль" />
-    <message msgid="management apply login" msgstr="Применить имя пользователя и пароль" />
     <message msgid="management firmware" msgstr="Обновление прошивки" />
     <message msgid="management filename" msgstr="Имя файла:" />
     <message msgid="management reset rwfs" msgstr="Сброс RWFS при обновлении" />
