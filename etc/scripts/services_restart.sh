@@ -16,7 +16,6 @@ while [ -e /tmp/servicerestart_runing ]; do
     # Sleep until file does exists/is created
     usleep 500000
 done
-CRETURN=0
 touch /tmp/servicerestart_runing
 
 # include global config
@@ -189,4 +188,3 @@ fi
 
 # remove running flag
 rm -f /tmp/servicerestart_runing
-exit $CRETURN

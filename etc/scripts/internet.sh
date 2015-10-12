@@ -4,6 +4,13 @@
 # internet.sh - reconfigure network helper for goahead #
 ########################################################
 
+# prevent double start configure in one time
+while [ -e /tmp/reconfigure_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+touch /tmp/reconfigure_runing
+
 # include global config
 . /etc/scripts/global.sh
 
@@ -178,3 +185,6 @@ config-vlan.sh $switchmode $switchpart
 
 # some daemons need restart
 services_restart.sh all
+
+# remove running flag
+rm -f /tmp/reconfigure_runing
