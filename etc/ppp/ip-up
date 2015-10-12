@@ -106,7 +106,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
     if [ "$vpnNAT" = "on" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	if  [ "$use_snat" = "1" ] && [ "$PPP_LOCAL" != "" ] ; then
 	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
-	    if [ "$OperationMode" = 4 ]; then
+	    if [ "$chilli_enable" = "on" ]; then
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
 	    fi
 	    if [ "$Lan2Enabled" = "1" ]; then
@@ -114,7 +114,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
 	    fi
 	else
 	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j MASQUERADE" >> $PPP_FIREWALL
-	    if [ "$OperationMode" = 4 ]; then
+	    if [ "$chilli_enable" = "on" ]; then
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j MASQUERADE" >> $PPP_FIREWALL
 	    fi
 	    if [ "$Lan2Enabled" = "1" ]; then
