@@ -867,7 +867,7 @@
 60) kernel: ppp: unset skb checksum complete in ppp_receive_frame.<br>
 61) kernel: ppp: mppe: sanity error path rework.<br>
 62) kernel: ppp: mppe: discard late packet in stateless mode.<br>
-63) kernel: ip_forward: Drop frames with attached skb->sk.<br>
+63) kernel: ip_forward: drop frames with attached skb->sk.<br>
 64) kernel: tcp: fix possible deadlock in tcp_send_fin().<br>
 65) kernel: dql: dql_queued() should write first to reduce bus transactions.<br>
 <br>
@@ -1371,6 +1371,7 @@
 36) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
 37) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
 38) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+39) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
