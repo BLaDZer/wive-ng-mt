@@ -308,19 +308,11 @@ natrules() {
 	    #######################NAT##################################
 	    if [ "$ROUTE_MODE" = "on" ] && [ "$natEnabled" = "1" ]; then
 		if [ "$chilli_enable" != "on" ]; then
-		    # lan gw/wireless client/apcli mode NAT
+		    # normal NAT
 		    if  [ "$use_snat" = "1" ]; then
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr
 		    else
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
-		    fi
-		    if [ "$Lan2Enabled" = "1" ]; then
-		        # lan gw/wireless client/apcli mode NAT for second lan
-		        if  [ "$use_snat" = "1" ]; then
-			    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
-			else
-			    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
-			fi
 		    fi
 		else
 		    # chillispot NAT
@@ -328,6 +320,14 @@ natrules() {
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
 		    else
 			iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
+		    fi
+		fi
+		if [ "$Lan2Enabled" = "1" ]; then
+		    # LAN2 network NAT
+		    if  [ "$use_snat" = "1" ]; then
+			iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
+		    else
+			iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
 		    fi
 		fi
 	    fi
