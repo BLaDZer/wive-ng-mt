@@ -1336,42 +1336,43 @@
 1) libcurl: up to 7.45.0 version.<br>
 2) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
 3) goahead: make delay rssi check before kick configurable.<br>
-4) goahead: add chilispot/nodog configure and profiles for auth services.<br>
-5) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
-6) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
-7) init.d: serialize network->services reconfigure scripts run.<br>
-8) kernel: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
-9) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-10) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
-11) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
-12) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
-13) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
-14) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-15) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-16) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-17) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-18) kernel: drivercore: fix unregistration path of platform devices.<br>
-19) kernel: usb: xhci: follow upstream.<br>
-20) kernel: usb: option: add ZTE PIDs.<br>
-21) kernel: usb: asix: fix crash on skb alloc failure.<br>
-22) kernel: net: initialize flow flags in input path.<br>
-23) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-24) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-25) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-26) kernel: net: fix skb csum races when peeking.<br>
-27) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-28) kernel: net: af_key: net: fix RCU splat.<br>
-29) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-30) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-31) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-32) kernel: net: ipv4/6: compute net once in some cases.<br>
-33) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-34) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-35) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-36) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-37) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-38) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-39) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+4) miniupnpd: workaround issue with Windows 10 (UDA 2.0 devices and control points SHALL implement IPv4 and IPv6).<br>
+5) goahead: add chilispot/nodog configure and profiles for auth services.<br>
+6) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
+7) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
+8) init.d: serialize network->services reconfigure scripts run.<br>
+9) kernel: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
+10) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+11) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+12) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
+13) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
+14) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
+15) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
+16) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+17) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+18) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+19) kernel: drivercore: fix unregistration path of platform devices.<br>
+20) kernel: usb: xhci: follow upstream.<br>
+21) kernel: usb: option: add ZTE PIDs.<br>
+22) kernel: usb: asix: fix crash on skb alloc failure.<br>
+23) kernel: net: initialize flow flags in input path.<br>
+24) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+25) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+26) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+27) kernel: net: fix skb csum races when peeking.<br>
+28) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+29) kernel: net: af_key: net: fix RCU splat.<br>
+30) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+31) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+32) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+33) kernel: net: ipv4/6: compute net once in some cases.<br>
+34) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+35) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+36) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+37) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+38) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+39) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+40) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
