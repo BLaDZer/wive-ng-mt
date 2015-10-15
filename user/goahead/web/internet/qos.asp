@@ -58,7 +58,7 @@ function QoSSelectChange(form)
   var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 
 	// Display mode-dependent elements
-	displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP' ], complex_on );
+	displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP', 'PDSCPSettings' ], complex_on );
   displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
 }
 

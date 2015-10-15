@@ -1,1 +1,1 @@
-<% getProcessList("radvd", "dhcp6s"); %>
+<% getProcessList("radvd", "dhcp6s", "chilli", "nodogsplash"); %>

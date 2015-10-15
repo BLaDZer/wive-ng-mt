@@ -652,7 +652,7 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 	const vpn_status_t *st = &st_table[status];
 	websWrite(
 		wp,
-		T("<b>Status: <font color=\"#%06x\">%s</font></b>\n"),
+		T("<b><font color=\"#%06x\">%s</font></b>\n"),
 		st->color, st->status
 	);
 
@@ -2619,14 +2619,7 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
-	doSystem("service iptables restart");
-	doSystem("service dhcpd restart"); /* for enable/disable native dhcp */
-#ifdef CONFIG_USER_CHILLISPOT
-	doSystem("service chillispot restart");
-#endif
-#ifdef CONFIG_USER_NODOGSPLASH
-	doSystem("service nodogsplash restart");
-#endif
+	doSystem("services_restart.sh all");
 }
 #endif // HOTSPOT
 

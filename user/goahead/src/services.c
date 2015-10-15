@@ -204,6 +204,7 @@ const parameter_fetch_t dhcp_args[] =
 	{ T("dhcpGateway"),             "dhcpGateway",          0,       T("") },
 	{ T("dhcpLease"),               "dhcpLease",            0,       T("86400") },
 	{ T("dhcpDomain"),              "dhcpDomain",           0,       T("localdomain") },
+	{ T("dhcpARPPTimeout"),         "dhcpARPPTimeout",      0,       T("2000") },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -316,24 +317,36 @@ const parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_USER_CDP
 	{ T("cdpEnbl"), "cdpEnabled", 0, T("0") },
 #endif
+#ifdef CONFIG_USER_LLTD
 	{ T("lltdEnbl"), "lltdEnabled", 0, T("0") },
+#endif
+#ifdef CONFIG_USER_LLDPD
 	{ T("lldpdEnbl"), "lldpdEnabled", 0, T("0") },
+#endif
 	{ T("igmpEnbl"), "igmpEnabled", 0, T("0") },
 	{ T("igmpSnoop"), "igmpSnoopMode", 0, T("") },
 	{ T("igmpFastL"), "igmpFastLeave", 0, T("") },
 	{ T("igmpM2UConv"), "igmpM2UConvMode", 0, T("") },
+#ifdef CONFIG_USER_MINIUPNPD
 	{ T("upnpEnbl"), "upnpEnabled", 0, T("0") },
+#endif
+#ifdef CONFIG_USER_XUPNPD
 	{ T("xupnpdEnbl"), "xupnpd", 0, T("0") },
+#endif
 	{ T("dnspEnbl"), "dnsPEnabled", 0, T("0") },
 	{ T("rmtHTTP"), "RemoteManagement", 0, T("0") },
 	{ T("RemoteManagementPort"), "RemoteManagementPort", 0, T("80") },
+#ifdef CONFIG_USER_DROPBEAR
 	{ T("rmtSSH"), "RemoteSSH", 0, T("0") },
 	{ T("RemoteSSHPort"), "RemoteSSHPort", 0, T("22") },
+#endif
 #ifdef CONFIG_TELNETD
 	{ T("rmtTelnet"), "RemoteTelnet", 0, T("0") },
 #endif
+#ifdef CONFIG_USER_UDPXY
 	{ T("udpxyMode"), "UDPXYMode", 0, T("0") },
 	{ T("udpxyPort"), "UDPXYPort", 0, T("81") },
+#endif
 	{ T("watchdogEnable"), "WatchdogEnabled", 0, T("0") },
 	{ T("pingWANEnbl"), "WANPingFilter", 0, T("0") },
 	{ T("krnlPppoePass"), "pppoe_pass", 0, T("0") },
@@ -348,7 +361,9 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("natFastpath"), "natFastpath", 0, T("0") },
 	{ T("routeFastpath"), "routeFastpath", 0, T("1") },
 	{ T("filterFastpath"), "filterFastpath", 0, T("1") },
+#ifdef CONFIG_CROND
 	{ T("CrondEnable"), "CrondEnable", 0, T("0") },
+#endif
 	{ T("ForceRenewDHCP"), "ForceRenewDHCP", 0, T("1") },
 #ifdef CONFIG_USER_PARPROUTED
 	{ T("arpPT"), "parproutedEnabled", 0, T("0") },

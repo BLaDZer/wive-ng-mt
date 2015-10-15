@@ -149,8 +149,9 @@
     <message msgid="routing action" msgstr="Действие" />
     <message msgid="routing unsup chars" msgstr="Неподдерживаемые символы в коментарии" />
 
-    <message msgid="hotspot title" msgstr="" />
+    <message msgid="hotspot title" msgstr="Настройки Хот-спот" />
     <message msgid="hotspot introduction" msgstr="" />
+    <message msgid="hotspot fastpath warning" msgstr="ВНИМАНИЕ! Включен режим NAT offload. По техническим причинам невозможно гарантировать коректную работу сервиса при включенном режиме NAT offload. Для коректной работы сервиса вам нужно отключить режим NAT offload на странице Сервисы-Разное. Пожалуйста, обратите внимание, что отключение режима NAT offload увеличит загрузку процессора." />
     <message msgid="hotspot setup" msgstr="Настройка хотспота" />
     <message msgid="hotspot profile" msgstr="Имя профиля" />
     <message msgid="hotspot manual" msgstr="Ручной" />

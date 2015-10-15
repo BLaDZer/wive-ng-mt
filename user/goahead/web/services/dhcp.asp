@@ -193,10 +193,10 @@ function dhcpTypeSwitch()
 	var dnsproxy = <% getCfgZero(1, "dnsPEnabled"); %> * 1;
 	var dhcp_on = form.dhcpEnabled.options.selectedIndex == 1;
 	
-	enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease ], dhcp_on);
-	displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList' ], dhcp_on );
+	enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease, form.dhcpARPPTimeout ], dhcp_on);
+	displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList', 'arpping' ], dhcp_on );
 	enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && (!dnsproxy) );
-	displayElement( [ 'pridns', 'secdns' ], !dnsproxy);
+	displayElement( [ 'pridns', 'secdns' ], !dnsproxy && dhcp_on);
 	
 	genTable(!dhcp_on);
 	displayServiceStatus();
@@ -225,6 +225,7 @@ function initTranslation()
 	_TR("dIP", "inet ip");
 	_TR("dExpires", "services dhcp expires");
 	_TR("dStatic", "services dhcp static");
+	_TR("ldhcpARPPTimeout", "services dhcp arpping timeout");
 	
 	_TRV("lApply", "button apply");
 	_TRV("lCancel", "button cancel");
@@ -437,7 +438,7 @@ function displayServiceHandler(response)
     if (row != null)
     {
       // Fill-up status
-      if (service[0]*1 == '0')
+      if (service[0]*1 == 0)
         tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
       else
         tds[2].innerHTML = (daemons[service[2]] == 1) ?
@@ -507,6 +508,10 @@ function displayServiceStatus()
           <tr id="lease">
             <td class="head" id="lDhcpLease">DHCP Lease Time (in seconds)</td>
             <td colspan="2"><input name="dhcpLease" class="mid" value="<% getCfgGeneral(1, "dhcpLease"); %>"></td>
+          </tr>
+          <tr id="arpping">
+            <td class="head" id="ldhcpARPPTimeout">DHCP ARP ping timeout (in ms)</td>
+            <td colspan="2"><input name="dhcpARPPTimeout" class="mid" value="<% getCfgGeneral(1, "dhcpARPPTimeout"); %>"></td>
           </tr>
         </table>
         <div id="dhcpClientsTable"> </div>

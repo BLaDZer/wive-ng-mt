@@ -26,8 +26,8 @@ var Profiles = [
   ["manual", _("hotspot manual"), false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
   ["hotspotsystem", "HotSpotSystem.com", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "radius.hotspotsystem.com", "radius2.hotspotsystem.com", "hotsys123", false, false, false, "3779", false, "https://customer.hotspotsystem.com/customer/hotspotlogin.php", "", "hotsys123", "194.149.46.0/24,198.241.128.0/17,66.211.128.0/17,216.113.128.0/17,70.42.128.0/17,128.242.125.0/24,216.52.17.0/24,62.249.232.74,155.136.68.77,155.136.66.34,66.4.128.0/17,66.211.128.0/17,66.235.128.0/17,88.221.136.146,195.228.254.149,195.228.254.152,203.211.140.157,203.211.150.204,www.paypal.com,mobile.paypal.com,www.paypalobjects.com,sstats.paypal-metrics.com,altfarm.mediaplex.com,live.adyen.com,www.worldpay.com,secure.worldpay.com,www.directebanking.com,betalen.rabobank.nl,ideal.ing.nl,ideal.abnamro.nl,www.ing.nl,www.hotspotsystem.com,customer.hotspotsystem.com,tech.hotspotsystem.com,a1.hotspotsystem.com,a2.hotspotsystem.com,a3.hotspotsystem.com,a4.hotspotsystem.com,a5.hotspotsystem.com,a6.hotspotsystem.com,a7.hotspotsystem.com,a8.hotspotsystem.com,a9.hotspotsystem.com,a10.hotspotsystem.com,a11.hotspotsystem.com,a12.hotspotsystem.com,a13.hotspotsystem.com,a14.hotspotsystem.com,a15.hotspotsystem.com,a16.hotspotsystem.com,a17.hotspotsystem.com,a18.hotspotsystem.com,a19.hotspotsystem.com,a20.hotspotsystem.com", "paypal.com,paypalobjects.com,paypal-metrics.com,mediaplex.com,worldpay.com,adyen.com,hotspotsystem.com,geotrust.com", false, false],
   ["mywifi", "MyWifi", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "radiusm.mywifi.com", "radiuss.mywifi.com", false, false, false, false, "3779", false, "http://access.mywifi.com", "", false, "212.118.48.0/24,212.158.173.0/24,91.227.52.0/24,91.227.53.0/24,91.200.28.0/24,91.200.30.0/24,91.232.115.0/26,webmoney.ru,wmtransfer.com,webmoney.com.mx", "login.wmtransfer.com,security.webmoney.ru,access.mywifi.com,webmoney.ru,wmtransfer.com,webmoney.com.mx", false, false],
-  ["saiwifi", "SAIWifi", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "176.111.96.30", "92.63.105.213", false, false, false, false, "3779", false, "http://hotspot.saiwifi.ru", "", false, "77.88.8.2,176.111.96.30,176.111.96.13", "stat.saiwifi.ru,hotspot.saiwifi.ru", false, false],
-  ["enforta", "Enforta", "192.168.182.0", "255.255.255.0", false, false, "87.241.223.68", "192.168.182.1", "key.chillispot.info", false, "185.12.28.167", "0.0.0.0", "enforta1242-8201-service_36Cloud", false, false, false, "3779", false, "http://hs.enforta.ru", "", false, "185.12.28.167,87.241.223.68,192.168.182.1", "", false, false]
+/*  ["saiwifi", "SAIWifi", "192.168.182.0", "255.255.255.0", false, false, "192.168.182.1", "192.168.182.1", "key.chillispot.info", false, "176.111.96.30", "92.63.105.213", false, false, false, false, "3779", false, "http://hotspot.saiwifi.ru", "", false, "77.88.8.2,176.111.96.30,176.111.96.13", "stat.saiwifi.ru,hotspot.saiwifi.ru", false, false],
+  ["enforta", "Enforta", "192.168.182.0", "255.255.255.0", false, false, "87.241.223.68", "192.168.182.1", "key.chillispot.info", false, "185.12.28.167", "0.0.0.0", "enforta1242-8201-service_36Cloud", false, false, false, "3779", false, "http://hs.enforta.ru", "", false, "185.12.28.167,87.241.223.68,192.168.182.1", "", false, false] */
 ];
 
 function hideHint() {
@@ -136,6 +136,7 @@ function showHint(key){
 function initTranslation() {
   _TR("sTitle", "hotspot title");
   _TR("sIntroduction", "hotspot introduction");
+  _TR("fastpath_warning", "hotspot fastpath warning");
   _TR("spotSetup", "hotspot setup");
   _TR("spotProfile", "hotspot profile");
   _TR("sIp", "inet ip");
@@ -249,6 +250,8 @@ function MACMechanismOnChange(form) {
 function initValue() {
   var form = document.spotCfg;
 
+  var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
+
   var enabled = form.spotEnable;
   enabled.options.length = 0;
   addOption(enabled, _("button disable"), "0");
@@ -277,6 +280,8 @@ function initValue() {
 
   ModeOnChange(form);
   initTranslation();
+
+//  displayElement('fastpath_warning', ((nat_fp == '1') || (nat_fp == '2') || (nat_fp == '3')) && enabled.value != "0");
 }
 
 function CheckValue(form) {
@@ -491,6 +496,12 @@ function CheckValue(form) {
         <h1 id="sTitle"></h1>
         <p id="sIntroduction"></p>
         <hr />
+        <!-- Fastpath -->
+        <div style="display:none;" id="fastpath_warning">
+        <p><span style="color: #ff0000;"><b>CAUTION!&nbsp;</b></span> <b>NAT offload mode</b> option is turned on.</p>
+        <p>For technical reasons, the correct service operation is not possible when <b>NAT offload mode</b> option is turned on.</p>
+        <p>For correct work you need to shut down <b>NAT offload mode</b> option on the <a href="/services/misc.asp#nat_fastpath_ref">MISC&nbsp;Services</a> configuration page.</p>
+        <p>Please note that turning off <b>NAT offload mode</b> will increase CPU usage up to 50%.</p></div>
         <form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
           <table class="form">
             <tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
