@@ -1362,17 +1362,18 @@
 27) kernel: net: fix skb csum races when peeking.<br>
 28) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
 29) kernel: net: af_key: net: fix RCU splat.<br>
-30) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-31) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-32) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-33) kernel: net: ipv4/6: compute net once in some cases.<br>
-34) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-35) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-36) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-37) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-38) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-39) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-40) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+30) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+31) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+32) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+33) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+34) kernel: net: ipv4/6: compute net once in some cases.<br>
+35) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+36) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+37) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+38) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+39) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+40) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+41) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
