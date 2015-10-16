@@ -24,7 +24,7 @@ CURRENT HOOKS FOR ADVANCED USER LOGIC:
 
 1) /etc/udhcp.d - scripts start after udcp renew event
 2) /etc/ip(6)tables.d - scripts start after netfilter configure
-3) /etc/ppp-l2tpsrv/ip-up(down).d - scripts start after client connetc(disconnect) to VPN server
+3) /etc/ppp-l2tpsrv/ip-up(down).d - scripts start after client connect(disconnect) to VPN server
 4) /etc/ppp/ip-up(down).d - scripts start after router connetc(disconnect) to external VPN server
 5) /etc/scripts/wan_up.sh - this script start after WAN up and full services reinit
 #############################################################################################################
