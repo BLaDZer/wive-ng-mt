@@ -1995,6 +1995,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "wan_gateway", gw);
 		nvram_bufset(RT2860_NVRAM, "wan_primary_dns", pd);
 		nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
+		nvram_bufset(RT2860_NVRAM, "wan_static_dns", "on");
 	}
 
 	nvram_bufset(RT2860_NVRAM, "lan_ipaddr", ip);
