@@ -2536,7 +2536,8 @@ VOID ApCliCheckPeerExistence(RTMP_ADAPTER *pAd, CHAR *Ssid, UCHAR SsidLen, UCHAR
 			continue;
 
 		else if (Channel == pAd->CommonCfg.Channel &&
-			(NdisEqualMemory(Ssid, pApCliEntry->CfgSsid, SsidLen) || SsidLen == 0 /* Hidden */))
+			((SsidLen == pApCliEntry->CfgSsidLen && NdisEqualMemory(Ssid, pApCliEntry->CfgSsid, SsidLen)) ||
+			SsidLen == 0 /* Hidden */))
 		{
 			pApCliEntry->bPeerExist = TRUE;
 		}

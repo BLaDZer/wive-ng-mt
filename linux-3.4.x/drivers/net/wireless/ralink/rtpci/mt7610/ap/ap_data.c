@@ -4104,7 +4104,7 @@ BOOLEAN APCheckVaildDataFrame(
 				MAC_TABLE_ENTRY *pEntry = NULL;
 
 				pEntry = MacTableLookup(pAd, pHeader->Addr2);
-				if (pEntry && (pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
+				if (pEntry && (pEntry->Sst == SST_ASSOC) && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
 				{
 					pRxWI->RxWIWirelessCliID = pEntry->Aid;
 					dump_next_valid = 1;
