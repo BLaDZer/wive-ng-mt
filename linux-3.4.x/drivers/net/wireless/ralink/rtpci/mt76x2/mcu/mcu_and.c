@@ -279,11 +279,6 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 		if (!IS_MT76x2(ad)) {
 			/* erase ilm */
 			for (idx = start_offset; idx < end_offset; idx += 4) {
-				val = (*(cap->FWImageName + idx)) +
-				   (*(cap->FWImageName + idx + 3) << 24) +
-				   (*(cap->FWImageName + idx + 2) << 16) +
-				   (*(cap->FWImageName + idx + 1) << 8);
-
 				RTMP_IO_WRITE32(ad, 0x80000 + (idx - FW_INFO_SIZE), 0);
 			}
 
@@ -294,11 +289,6 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 	
 				for (idx = start_offset; idx < end_offset; idx += 4)
 				{
-					val = (*(cap->FWImageName + idx)) +
-						(*(cap->FWImageName + idx + 3) << 24) +
-						(*(cap->FWImageName + idx + 2) << 16) +
-						(*(cap->FWImageName + idx + 1) << 8);
-
 					RTMP_IO_WRITE32(ad, 0x80000 + (0x54000 - IV_SIZE) + (idx - FW_INFO_SIZE), 0);
 				}
 			}
@@ -310,11 +300,6 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 	
 			/* erase dlm */
 			for (idx = start_offset; idx < end_offset; idx += 4) {
-				val = (*(cap->FWImageName + idx)) +
-					(*(cap->FWImageName + idx + 3) << 24) +
-					(*(cap->FWImageName + idx + 2) << 16) +
-					(*(cap->FWImageName + idx + 1) << 8);
-
 				RTMP_IO_WRITE32(ad, 0x80000 + (0x54000 - IV_SIZE) + (idx - FW_INFO_SIZE), 0);
 			}
 		}
@@ -492,6 +477,7 @@ loadfw_protect:
 	RTMP_IO_WRITE32(ad, PCIE_REMAP_BASE4, 0x0);
 
 #ifdef RTMP_FLASH_SUPPORT
+#ifdef MT76x2
 	if (IS_MT76x2(ad))
 	{
 		USHORT ee_val = 0;
@@ -509,6 +495,7 @@ loadfw_protect:
 			RTMP_IO_WRITE32(ad, COM_REG0, mac_value);
 		}
 	}
+#endif /* MT76x2 */
 #endif /* RTMP_FLASH_SUPPORT */
 
 
@@ -1197,6 +1184,7 @@ static void andes_ctrl_pci_init(RTMP_ADAPTER *ad)
 {
 	struct MCU_CTRL *ctl = &ad->MCUCtrl;
 
+	RTMP_SPIN_LOCK_IRQ(&ad->mcu_atomic);
 	RTMP_CLEAR_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD);
 	ctl->cmd_seq = 0;
 #ifndef WORKQUEUE_BH
@@ -1223,6 +1211,7 @@ static void andes_ctrl_pci_init(RTMP_ADAPTER *ad)
 	ctl->free_cmd_msg = 0;
 	OS_SET_BIT(MCU_INIT, &ctl->flags);
 	ctl->ad = ad;
+	RTMP_SPIN_UNLOCK_IRQ(&ad->mcu_atomic);
 }
 #endif
 
@@ -1248,6 +1237,7 @@ static void andes_ctrl_pci_exit(RTMP_ADAPTER *ad)
 {
 	struct MCU_CTRL *ctl = &ad->MCUCtrl;
 
+	RTMP_SPIN_LOCK_IRQSAVE(&ad->mcu_atomic, &flags);
 	RTMP_CLEAR_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD);
 	OS_CLEAR_BIT(MCU_INIT, &ctl->flags);
 	RTMP_OS_TASKLET_KILL(&ctl->cmd_msg_task);
@@ -1268,6 +1258,7 @@ static void andes_ctrl_pci_exit(RTMP_ADAPTER *ad)
 	DBGPRINT(RT_DEBUG_OFF, ("rx_receive_fail_count = %ld\n", ctl->rx_receive_fail_count));
 	DBGPRINT(RT_DEBUG_OFF, ("alloc_cmd_msg = %ld\n", ctl->alloc_cmd_msg));
 	DBGPRINT(RT_DEBUG_OFF, ("free_cmd_msg = %ld\n", ctl->free_cmd_msg));
+	RTMP_SPIN_UNLOCK_IRQRESTORE(&ad->mcu_atomic, &flags);
 }
 #endif
 
@@ -1373,10 +1364,22 @@ int andes_send_cmd_msg(PRTMP_ADAPTER ad, struct cmd_msg *msg)
 	int ret = 0;
 	BOOLEAN need_wait = msg->need_wait;
 
+#ifdef RTMP_PCI_SUPPORT
+	RTMP_SPIN_LOCK(&ad->mcu_atomic);
+#endif
+	
+
+
 	if (!RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD) 
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_NIC_NOT_EXIST) 
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_SUSPEND)) { 
 		andes_free_cmd_msg(msg);
+#ifdef RTMP_PCI_SUPPORT
+		RTMP_SPIN_UNLOCK(&ad->mcu_atomic);
+#endif
+		
+
+
 		return NDIS_STATUS_FAILURE;
 	}
 
@@ -1436,10 +1439,11 @@ retransmit:
 		}
 	}
 
+
 #ifdef RTMP_PCI_SUPPORT
-	/* For ePA/eLNA settle time */
-	RtmpusecDelay(60);
-#endif 
+	RTMP_SPIN_UNLOCK(&ad->mcu_atomic);
+	RtmpOsMsDelay(10);
+#endif
 	
 	return ret;
 }
@@ -2060,11 +2064,6 @@ int andes_pwr_saving(RTMP_ADAPTER *ad, u32 op, u32 level,
 	int ret = 0;
 	BOOLEAN need_wait = FALSE;
 
-#ifdef CONFIG_STA_SUPPORT
-#ifdef RTMP_MAC_PCI
-	need_wait = TRUE;
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_STA_SUPPORT */
 
 	/* Power operation and Power Level */
 	var_len = 8;
