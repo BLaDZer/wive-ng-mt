@@ -1342,43 +1342,44 @@
 7) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
 8) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
 9) init.d: serialize network->services reconfigure scripts run.<br>
-10) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
-11) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
-12) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
-13) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
-14) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-15) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-16) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
-17) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
-18) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
-19) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
-20) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
-21) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-22) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-23) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-24) kernel: drivercore: fix unregistration path of platform devices.<br>
-25) kernel: usb: xhci: follow upstream.<br>
-26) kernel: usb: option: add ZTE PIDs.<br>
-27) kernel: usb: asix: fix crash on skb alloc failure.<br>
-28) kernel: net: initialize flow flags in input path.<br>
-29) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-30) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-31) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-32) kernel: net: fix skb csum races when peeking.<br>
-33) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-34) kernel: net: af_key: net: fix RCU splat.<br>
-35) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-36) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-37) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-38) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-39) kernel: net: ipv4/6: compute net once in some cases.<br>
-40) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-41) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-42) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-43) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-44) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-45) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-46) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+10) init.d: reset all port and restore defaults particion (workaround eee bug at some samples in AP bridge mode).<br>
+11) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
+12) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
+13) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
+14) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
+15) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
+16) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+17) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+18) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
+19) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
+20) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
+21) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
+22) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+23) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+24) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+25) kernel: drivercore: fix unregistration path of platform devices.<br>
+26) kernel: usb: xhci: follow upstream.<br>
+27) kernel: usb: option: add ZTE PIDs.<br>
+28) kernel: usb: asix: fix crash on skb alloc failure.<br>
+29) kernel: net: initialize flow flags in input path.<br>
+30) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+31) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+32) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+33) kernel: net: fix skb csum races when peeking.<br>
+34) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+35) kernel: net: af_key: net: fix RCU splat.<br>
+36) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+37) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+38) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+39) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+40) kernel: net: ipv4/6: compute net once in some cases.<br>
+41) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+42) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+43) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+44) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+45) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+46) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+47) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>

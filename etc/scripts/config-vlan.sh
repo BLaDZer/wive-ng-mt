@@ -6,6 +6,13 @@
 # usage: config-vlan.sh <switch_type> <vlan_type>          #
 ############################################################
 
+# prevent double start configure in one time
+while [ -e /tmp/vlanconfig_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+touch /tmp/vlanconfig_runing
+
 LOG="logger -t ESW"
 
 usage() {
@@ -111,10 +118,8 @@ reset_all_phys() {
 	for port in `seq $start $end`; do
     	    link_down $port
 	done
-
-	# force Windows clients to renew IP and update DNS server
-	sleep 1
-
+	# wait clients renew dhcp
+	usleep 500000
 	# enable ports
 	for port in `seq $start $end`; do
     	    link_up $port
@@ -168,6 +173,9 @@ restore7620Esw()
 
 	# config igmpsnoop
 	igmpsnooping
+
+	# reinit all ports
+	reinit_all_phys
 
 	# clear mac table if vlan configuration changed
 	switch clear
@@ -330,6 +338,9 @@ restore7530Esw()
 	# config igmpsnoop
 	igmpsnooping
 
+	# reinit all ports
+	reinit_all_phys
+
 	#clear mac table if vlan configuration changed
 	switch clear
 }
@@ -438,3 +449,6 @@ else
 	echo ""
 	usage "$0"
 fi
+
+# remove running flag
+rm -f /tmp/vlanconfig_runing
