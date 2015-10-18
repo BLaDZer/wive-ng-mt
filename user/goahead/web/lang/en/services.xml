@@ -19,7 +19,7 @@
   <message msgid="services dhcp expires" msgstr="Expires in" />
   <message msgid="services dhcp static" msgstr="Static" />
   <message msgid="services dhcp domain" msgstr="DHCP Domain" />
-  <message msgid="services dhcp arpping timeout" msgstr="DHCP ARP ping timeout (in ms)" />
+  <message msgid="services dhcp arpping timeout" msgstr="Adress conflict check timeout (ms)" />
 
   <message msgid="services ntp title" msgstr="NTP Management" />
   <message msgid="services ntp introduction" msgstr="Here you can configure time synchronization." />

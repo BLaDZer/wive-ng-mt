@@ -19,7 +19,7 @@
   <message msgid="services dhcp expires" msgstr="Истекает через" />
   <message msgid="services dhcp static" msgstr="Выделеный" />
   <message msgid="services dhcp domain" msgstr="Домен DHCP" />
-  <message msgid="services dhcp arpping timeout" msgstr="Время ожидания ARP ping" />
+  <message msgid="services dhcp arpping timeout" msgstr="Таймаут проверки конфликта адресов" />
 
   <message msgid="services ntp title" msgstr="Управление NTP" />
   <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить синхронизацию времени" />
