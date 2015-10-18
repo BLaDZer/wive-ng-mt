@@ -218,8 +218,10 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 #ifdef DBG
 	u32 loop = 0;
 #endif
-	u32 idx = 0, val = 0;
-	u32 mac_value;
+#ifdef DBG
+	u32 val = 0;
+#endif
+	u32 idx = 0, mac_value;
 	u32 start_offset, end_offset;
 	RTMP_CHIP_CAP *cap = &ad->chipCap;
 	
@@ -1235,6 +1237,7 @@ void andes_ctrl_init(RTMP_ADAPTER *ad)
 #ifdef RTMP_PCI_SUPPORT
 static void andes_ctrl_pci_exit(RTMP_ADAPTER *ad)
 {
+	unsigned long flags;
 	struct MCU_CTRL *ctl = &ad->MCUCtrl;
 
 	RTMP_SPIN_LOCK_IRQSAVE(&ad->mcu_atomic, &flags);
