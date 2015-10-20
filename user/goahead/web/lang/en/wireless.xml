@@ -158,8 +158,8 @@
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
   <message msgid="adv maximum stations number" msgstr="Maximum clients per SSID" />
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
-  <message msgid="adv idletimeout" msgstr="Idle Timeout" />
-  <message msgid="adv entrylifecheck" msgstr="How pkts TX fail before connection drop" />
+  <message msgid="adv idletimeout" msgstr="Idle timeout before disconnect" />
+  <message msgid="adv entrylifecheck" msgstr="TX retry fail before disconnect " />
 
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
   <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />

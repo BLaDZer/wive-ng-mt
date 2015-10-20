@@ -158,7 +158,7 @@
   <message msgid="adv multicast2unicast" msgstr="Multicast-to-Unicast" />
   <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов на каждый SSID" />
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
-  <message msgid="adv idletimeout" msgstr="Время ожидания" />
+  <message msgid="adv idletimeout" msgstr="Время бездействия до отключения клиента" />
   <message msgid="adv entrylifecheck" msgstr="Число попыток отправки пакета до отключения клиента" />
 
   <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
