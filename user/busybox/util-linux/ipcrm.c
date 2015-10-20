@@ -119,7 +119,7 @@ int ipcrm_main(int argc, char **argv)
 
 			if (remove_ids(what, &argv[2]))
 				fflush_stdout_and_exit(EXIT_FAILURE);
-			puts("resource(s) deleted");
+			printf("resource(s) deleted\n");
 			return 0;
 		}
 	}

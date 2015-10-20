@@ -69,7 +69,7 @@ static void show_clock(const char **pp_rtcname, int utc)
 	strftime(cp, sizeof(cp), "%c", ptm);
 #else
 	char *cp = ctime(&t);
-	chomp(cp);
+	strchrnul(cp, '\n')[0] = '\0';
 #endif
 
 #if !SHOW_HWCLOCK_DIFF

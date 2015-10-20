@@ -1,6 +1,7 @@
 /* vi: set sw=4 ts=4: */
 /*
  * Ask for a password
+ * I use a static buffer in this function.  Plan accordingly.
  *
  * Copyright (C) 1999-2004 by Erik Andersen <andersen@codepoet.org>
  *
@@ -22,8 +23,8 @@ char* FAST_FUNC bb_ask(const int fd, int timeout, const char *prompt)
 {
 	/* Was static char[BIGNUM] */
 	enum { sizeof_passwd = 128 };
+	static char *passwd;
 
-	char *passwd;
 	char *ret;
 	int i;
 	struct sigaction sa, oldsa;
@@ -61,7 +62,8 @@ char* FAST_FUNC bb_ask(const int fd, int timeout, const char *prompt)
 		alarm(timeout);
 	}
 
-	passwd = auto_string(xmalloc(sizeof_passwd));
+	if (!passwd)
+		passwd = xmalloc(sizeof_passwd);
 	ret = passwd;
 	i = 0;
 	while (1) {

@@ -283,7 +283,7 @@ struct globals {
 	unsigned rule_idx;
 #endif
 	struct rule cur_rule;
-	char timestr[sizeof("HH:MM:SS.123456")];
+	char timestr[sizeof("60.123456")];
 } FIX_ALIASING;
 #define G (*(struct globals*)&bb_common_bufsiz1)
 #define INIT_G() do { \
@@ -406,7 +406,7 @@ static void parse_next_rule(void)
 		}
 
 		/* 3rd field: mode - device permissions */
-		G.cur_rule.mode = bb_parse_mode(tokens[2], G.cur_rule.mode);
+		bb_parse_mode(tokens[2], &G.cur_rule.mode);
 
 		/* 4th field (opt): ">|=alias" or "!" to not create the node */
 		val = tokens[3];
@@ -471,7 +471,7 @@ static const struct rule *next_rule(void)
 	if (G.parser) {
 		parse_next_rule();
 		if (G.rule_vec) { /* mdev -s */
-			rule = xmemdup(&G.cur_rule, sizeof(G.cur_rule));
+			rule = memcpy(xmalloc(sizeof(G.cur_rule)), &G.cur_rule, sizeof(G.cur_rule));
 			G.rule_vec = xrealloc_vector(G.rule_vec, 4, G.rule_idx);
 			G.rule_vec[G.rule_idx++] = rule;
 			dbg3("> G.rule_vec[G.rule_idx:%d]=%p", G.rule_idx, G.rule_vec[G.rule_idx]);
@@ -614,7 +614,7 @@ static void make_device(char *device_name, char *path, int operation)
 	 * We use strstr("/block/") to forestall future surprises.
 	 */
 	type = S_IFCHR;
-	if (strstr(path, "/block/") || (G.subsystem && is_prefixed_with(G.subsystem, "block")))
+	if (strstr(path, "/block/") || (G.subsystem && strncmp(G.subsystem, "block", 5) == 0))
 		type = S_IFBLK;
 
 #if ENABLE_FEATURE_MDEV_CONF
@@ -927,11 +927,7 @@ static char *curtime(void)
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	sprintf(
-		strftime_HHMMSS(G.timestr, sizeof(G.timestr), &tv.tv_sec),
-		".%06u",
-		(unsigned)tv.tv_usec
-	);
+	sprintf(G.timestr, "%u.%06u", (unsigned)tv.tv_sec % 60, (unsigned)tv.tv_usec);
 	return G.timestr;
 }
 
@@ -951,7 +947,7 @@ static void open_mdev_log(const char *seq, unsigned my_pid)
  * Active mdev pokes us with SIGCHLD to check the new file.
  */
 static int
-wait_for_seqfile(unsigned expected_seq)
+wait_for_seqfile(const char *seq)
 {
 	/* We time out after 2 sec */
 	static const struct timespec ts = { 0, 32*1000*1000 };
@@ -966,14 +962,12 @@ wait_for_seqfile(unsigned expected_seq)
 
 	for (;;) {
 		int seqlen;
-		char seqbuf[sizeof(long)*3 + 2];
-		unsigned seqbufnum;
+		char seqbuf[sizeof(int)*3 + 2];
 
 		if (seq_fd < 0) {
 			seq_fd = open("mdev.seq", O_RDWR);
 			if (seq_fd < 0)
 				break;
-			close_on_exec_on(seq_fd);
 		}
 		seqlen = pread(seq_fd, seqbuf, sizeof(seqbuf) - 1, 0);
 		if (seqlen < 0) {
@@ -984,25 +978,17 @@ wait_for_seqfile(unsigned expected_seq)
 		seqbuf[seqlen] = '\0';
 		if (seqbuf[0] == '\n' || seqbuf[0] == '\0') {
 			/* seed file: write out seq ASAP */
-			xwrite_str(seq_fd, utoa(expected_seq));
+			xwrite_str(seq_fd, seq);
 			xlseek(seq_fd, 0, SEEK_SET);
 			dbg2("first seq written");
 			break;
 		}
-		seqbufnum = atoll(seqbuf);
-		if (seqbufnum == expected_seq) {
+		if (strcmp(seq, seqbuf) == 0) {
 			/* correct idx */
 			break;
 		}
-		if (seqbufnum > expected_seq) {
-			/* a later mdev runs already (this was seen by users to happen) */
-			/* do not overwrite seqfile on exit */
-			close(seq_fd);
-			seq_fd = -1;
-			break;
-		}
 		if (do_once) {
-			dbg2("%s mdev.seq='%s', need '%u'", curtime(), seqbuf, expected_seq);
+			dbg2("%s waiting for '%s'", curtime(), seqbuf);
 			do_once = 0;
 		}
 		if (sigtimedwait(&set_CHLD, NULL, &ts) >= 0) {
@@ -1010,7 +996,7 @@ wait_for_seqfile(unsigned expected_seq)
 			continue; /* don't decrement timeout! */
 		}
 		if (--timeout == 0) {
-			dbg1("%s mdev.seq='%s'", "timed out", seqbuf);
+			dbg1("%s waiting for '%s'", "timed out", seqbuf);
 			break;
 		}
 	}
@@ -1093,7 +1079,6 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
 		char *env_devname;
 		char *env_devpath;
 		unsigned my_pid;
-		unsigned seqnum = seqnum; /* for compiler */
 		int seq_fd;
 		smalluint op;
 
@@ -1115,11 +1100,7 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
 		my_pid = getpid();
 		open_mdev_log(seq, my_pid);
 
-		seq_fd = -1;
-		if (seq) {
-			seqnum = atoll(seq);
-			seq_fd = wait_for_seqfile(seqnum);
-		}
+		seq_fd = seq ? wait_for_seqfile(seq) : -1;
 
 		dbg1("%s "
 			"ACTION:%s SUBSYSTEM:%s DEVNAME:%s DEVPATH:%s"
@@ -1147,7 +1128,7 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
 
 		dbg1("%s exiting", curtime());
 		if (seq_fd >= 0) {
-			xwrite_str(seq_fd, utoa(seqnum + 1));
+			xwrite_str(seq_fd, utoa(xatou(seq) + 1));
 			signal_mdevs(my_pid);
 		}
 	}

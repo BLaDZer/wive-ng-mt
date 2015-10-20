@@ -74,7 +74,7 @@
 
 static void write_wtmp(void)
 {
-	struct utmpx utmp;
+	struct utmp utmp;
 	struct utsname uts;
 	/* "man utmp" says wtmp file should *not* be created automagically */
 	/*if (access(bb_path_wtmp_file, R_OK|W_OK) == -1) {
@@ -88,7 +88,7 @@ static void write_wtmp(void)
 	utmp.ut_line[0] = '~'; utmp.ut_line[1] = '~'; /* = strcpy(utmp.ut_line, "~~"); */
 	uname(&uts);
 	safe_strncpy(utmp.ut_host, uts.release, sizeof(utmp.ut_host));
-	updwtmpx(bb_path_wtmp_file, &utmp);
+	updwtmp(bb_path_wtmp_file, &utmp);
 }
 #else
 #define write_wtmp() ((void)0)

@@ -348,6 +348,7 @@ static int tftp_protocol(
 			 * as if it is "block 0" */
 			block_nr = 0;
 		}
+
 	} else { /* tftp */
 		/* Open file (must be after changing user) */
 		local_fd = CMD_GET(option_mask32) ? STDOUT_FILENO : STDIN_FILENO;

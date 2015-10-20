@@ -33,6 +33,7 @@ typedef struct module_info {
 static int FAST_FUNC parse_module(const char *fname, struct stat *sb UNUSED_PARAM,
 				void *data, int depth UNUSED_PARAM)
 {
+	char modname[MODULE_NAME_LEN];
 	module_info **first = (module_info **) data;
 	char *image, *ptr;
 	module_info *info;
@@ -50,12 +51,9 @@ static int FAST_FUNC parse_module(const char *fname, struct stat *sb UNUSED_PARA
 
 	info->dnext = info->dprev = info;
 	info->name = xstrdup(fname + 2); /* skip "./" */
-	info->modname = filename2modname(
-			bb_get_last_path_component_nostrip(fname),
-			NULL
-	);
+	info->modname = xstrdup(filename2modname(fname, modname));
 	for (ptr = image; ptr < image + len - 10; ptr++) {
-		if (is_prefixed_with(ptr, "depends=")) {
+		if (strncmp(ptr, "depends=", 8) == 0) {
 			char *u;
 
 			ptr += 8;
@@ -64,15 +62,15 @@ static int FAST_FUNC parse_module(const char *fname, struct stat *sb UNUSED_PARA
 					*u = '_';
 			ptr += string_to_llist(ptr, &info->dependencies, ",");
 		} else if (ENABLE_FEATURE_MODUTILS_ALIAS
-		 && is_prefixed_with(ptr, "alias=")
+		 && strncmp(ptr, "alias=", 6) == 0
 		) {
 			llist_add_to(&info->aliases, xstrdup(ptr + 6));
 			ptr += strlen(ptr);
 		} else if (ENABLE_FEATURE_MODUTILS_SYMBOLS
-		 && is_prefixed_with(ptr, "__ksymtab_")
+		 && strncmp(ptr, "__ksymtab_", 10) == 0
 		) {
 			ptr += 10;
-			if (is_prefixed_with(ptr, "gpl")
+			if (strncmp(ptr, "gpl", 3) == 0
 			 || strcmp(ptr, "strings") == 0
 			) {
 				continue;
@@ -249,12 +247,11 @@ int depmod_main(int argc UNUSED_PARAM, char **argv)
 		const char *fname = bb_basename(m->name);
 		int fnlen = strchrnul(fname, '.') - fname;
 		while (m->aliases) {
-			/*
-			 * Last word used to be a basename
-			 * (filename with path and .ko.* stripped)
-			 * at the time of module-init-tools 3.4.
-			 * kmod v.12 uses module name, i.e., s/-/_/g.
-			 */
+			/* Last word can well be m->modname instead,
+			 * but depmod from module-init-tools 3.4
+			 * uses module basename, i.e., no s/-/_/g.
+			 * (pathname and .ko.* are still stripped)
+			 * Mimicking that... */
 			printf("alias %s %.*s\n",
 				(char*)llist_pop(&m->aliases),
 				fnlen, fname);

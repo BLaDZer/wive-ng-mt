@@ -89,9 +89,13 @@ struct in6_ifreq {
 /* Display an Internet socket address. */
 static const char* FAST_FUNC INET_sprint(struct sockaddr *sap, int numeric)
 {
+	static char *buff; /* defaults to NULL */
+
+	free(buff);
 	if (sap->sa_family == 0xFFFF || sap->sa_family == 0)
 		return "[NONE SET]";
-	return auto_string(INET_rresolve((struct sockaddr_in *) sap, numeric, 0xffffff00));
+	buff = INET_rresolve((struct sockaddr_in *) sap, numeric, 0xffffff00);
+	return buff;
 }
 
 #ifdef UNUSED_AND_BUGGY
@@ -167,9 +171,13 @@ static const struct aftype inet_aftype = {
 /* dirty! struct sockaddr usually doesn't suffer for inet6 addresses, fst. */
 static const char* FAST_FUNC INET6_sprint(struct sockaddr *sap, int numeric)
 {
+	static char *buff;
+
+	free(buff);
 	if (sap->sa_family == 0xFFFF || sap->sa_family == 0)
 		return "[NONE SET]";
-	return auto_string(INET6_rresolve((struct sockaddr_in6 *) sap, numeric));
+	buff = INET6_rresolve((struct sockaddr_in6 *) sap, numeric);
+	return buff;
 }
 
 #ifdef UNUSED
@@ -215,11 +223,13 @@ static const struct aftype inet6_aftype = {
 /* Display an UNSPEC address. */
 static char* FAST_FUNC UNSPEC_print(unsigned char *ptr)
 {
-	char *buff;
+	static char *buff;
+
 	char *pos;
 	unsigned int i;
 
-	buff = auto_string(xmalloc(sizeof(struct sockaddr) * 3 + 1));
+	if (!buff)
+		buff = xmalloc(sizeof(struct sockaddr) * 3 + 1);
 	pos = buff;
 	for (i = 0; i < sizeof(struct sockaddr); i++) {
 		/* careful -- not every libc's sprintf returns # bytes written */
@@ -702,12 +712,14 @@ static const struct hwtype loop_hwtype = {
 /* Display an Ethernet address in readable format. */
 static char* FAST_FUNC ether_print(unsigned char *ptr)
 {
-	char *buff;
+	static char *buff;
+
+	free(buff);
 	buff = xasprintf("%02X:%02X:%02X:%02X:%02X:%02X",
 			 (ptr[0] & 0377), (ptr[1] & 0377), (ptr[2] & 0377),
 			 (ptr[3] & 0377), (ptr[4] & 0377), (ptr[5] & 0377)
 		);
-	return auto_string(buff);
+	return buff;
 }
 
 static const struct hwtype ether_hwtype = {

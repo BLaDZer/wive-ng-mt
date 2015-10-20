@@ -32,7 +32,7 @@
 int wall_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int wall_main(int argc UNUSED_PARAM, char **argv)
 {
-	struct utmpx *ut;
+	struct utmp *ut;
 	char *msg;
 	int fd;
 
@@ -46,8 +46,8 @@ int wall_main(int argc UNUSED_PARAM, char **argv)
 	msg = xmalloc_read(fd, NULL);
 	if (ENABLE_FEATURE_CLEAN_UP && argv[1])
 		close(fd);
-	setutxent();
-	while ((ut = getutxent()) != NULL) {
+	setutent();
+	while ((ut = getutent()) != NULL) {
 		char *line;
 		if (ut->ut_type != USER_PROCESS)
 			continue;
@@ -56,7 +56,7 @@ int wall_main(int argc UNUSED_PARAM, char **argv)
 		free(line);
 	}
 	if (ENABLE_FEATURE_CLEAN_UP) {
-		endutxent();
+		endutent();
 		free(msg);
 	}
 	return EXIT_SUCCESS;

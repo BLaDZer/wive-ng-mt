@@ -68,6 +68,7 @@ struct globals {
 	const struct hwtype *hw; /* current hardware type */
 	const char *device;      /* current device */
 	smallint hw_set;         /* flag if hw-type was set (-H) */
+
 } FIX_ALIASING;
 #define G (*(struct globals*)&bb_common_bufsiz1)
 #define ap         (G.ap        )

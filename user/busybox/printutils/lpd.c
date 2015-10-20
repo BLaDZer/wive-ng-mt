@@ -200,15 +200,15 @@ int lpd_main(int argc UNUSED_PARAM, char *argv[])
 		if (2 != s[0] && 3 != s[0])
 			goto unsupported_cmd;
 		if (spooling & (1 << (s[0]-1))) {
-			puts("Duplicated subcommand");
+			printf("Duplicated subcommand\n");
 			goto err_exit;
 		}
 		// get filename
-		chomp(s);
+		*strchrnul(s, '\n') = '\0';
 		fname = strchr(s, ' ');
 		if (!fname) {
 // bad_fname:
-			puts("No or bad filename");
+			printf("No or bad filename\n");
 			goto err_exit;
 		}
 		*fname++ = '\0';
@@ -219,13 +219,13 @@ int lpd_main(int argc UNUSED_PARAM, char *argv[])
 		// get length
 		expected_len = bb_strtou(s + 1, NULL, 10);
 		if (errno || expected_len < 0) {
-			puts("Bad length");
+			printf("Bad length\n");
 			goto err_exit;
 		}
 		if (2 == s[0] && expected_len > 16 * 1024) {
 			// SECURITY:
 			// ctrlfile can't be big (we want to read it back later!)
-			puts("File is too big");
+			printf("File is too big\n");
 			goto err_exit;
 		}
 

@@ -20,7 +20,6 @@
 //usage:     "\n	-D		Don't assign a password"
 //usage:     "\n	-H		Don't create home directory"
 //usage:     "\n	-u UID		User id"
-//usage:     "\n	-k SKEL		Skeleton directory (/etc/skel)"
 
 #include "libbb.h"
 
@@ -40,7 +39,6 @@
 #define OPT_SYSTEM_ACCOUNT (1 << 5)
 #define OPT_DONT_MAKE_HOME (1 << 6)
 #define OPT_UID            (1 << 7)
-#define OPT_SKEL           (1 << 8)
 
 /* remix */
 /* recoded such that the uid may be passed in *p */
@@ -136,7 +134,6 @@ static const char adduser_longopts[] ALIGN1 =
 		"system\0"              No_argument       "S"
 		"no-create-home\0"      No_argument       "H"
 		"uid\0"                 Required_argument "u"
-		"skel\0"                Required_argument "k"
 		;
 #endif
 
@@ -153,7 +150,6 @@ int adduser_main(int argc UNUSED_PARAM, char **argv)
 	char *p;
 	unsigned opts;
 	char *uid;
-	const char *skel = "/etc/skel";
 
 #if ENABLE_FEATURE_ADDUSER_LONG_OPTIONS
 	applet_long_options = adduser_longopts;
@@ -172,7 +168,7 @@ int adduser_main(int argc UNUSED_PARAM, char **argv)
 	/* at least one and at most two non-option args */
 	/* disable interactive passwd for system accounts */
 	opt_complementary = "-1:?2:SD";
-	opts = getopt32(argv, "h:g:s:G:DSHu:k:", &pw.pw_dir, &pw.pw_gecos, &pw.pw_shell, &usegroup, &uid, &skel);
+	opts = getopt32(argv, "h:g:s:G:DSHu:", &pw.pw_dir, &pw.pw_gecos, &pw.pw_shell, &usegroup, &uid);
 	if (opts & OPT_UID)
 		pw.pw_uid = xatou_range(uid, 0, CONFIG_LAST_ID);
 
@@ -254,9 +250,8 @@ int adduser_main(int argc UNUSED_PARAM, char **argv)
 				NULL
 			};
 			/* Be silent on any errors (like: no /etc/skel) */
-			if (!(opts & OPT_SKEL))
-				logmode = LOGMODE_NONE;
-			copy_file(skel, pw.pw_dir, FILEUTILS_RECUR);
+			logmode = LOGMODE_NONE;
+			copy_file("/etc/skel", pw.pw_dir, FILEUTILS_RECUR);
 			logmode = LOGMODE_STDIO;
 			chown_main(4, (char**)args);
 		}

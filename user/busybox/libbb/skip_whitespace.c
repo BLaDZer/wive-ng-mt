@@ -33,7 +33,7 @@ char* FAST_FUNC skip_non_whitespace(const char *s)
 
 char* FAST_FUNC skip_dev_pfx(const char *tty_name)
 {
-	if (is_prefixed_with(tty_name, "/dev/"))
+	if (strncmp(tty_name, "/dev/", 5) == 0)
 		tty_name += 5;
 	return (char*)tty_name;
 }

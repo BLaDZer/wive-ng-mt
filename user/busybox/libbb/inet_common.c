@@ -32,12 +32,14 @@ int FAST_FUNC INET_resolve(const char *name, struct sockaddr_in *s_in, int hostf
 		return 0;
 	}
 	/* If we expect this to be a hostname, try hostname database first */
-	if (hostfirst) {
 #ifdef DEBUG
+	if (hostfirst) {
 		bb_error_msg("gethostbyname(%s)", name);
+	}
 #endif
+	if (hostfirst) {
 		hp = gethostbyname(name);
-		if (hp) {
+		if (hp != NULL) {
 			memcpy(&s_in->sin_addr, hp->h_addr_list[0],
 				sizeof(struct in_addr));
 			return 0;
@@ -49,7 +51,7 @@ int FAST_FUNC INET_resolve(const char *name, struct sockaddr_in *s_in, int hostf
 	bb_error_msg("getnetbyname(%s)", name);
 #endif
 	np = getnetbyname(name);
-	if (np) {
+	if (np != NULL) {
 		s_in->sin_addr.s_addr = htonl(np->n_net);
 		return 1;
 	}
@@ -64,7 +66,7 @@ int FAST_FUNC INET_resolve(const char *name, struct sockaddr_in *s_in, int hostf
 	bb_error_msg("gethostbyname(%s)", name);
 #endif
 	hp = gethostbyname(name);
-	if (!hp) {
+	if (hp == NULL) {
 		return -1;
 	}
 	memcpy(&s_in->sin_addr, hp->h_addr_list[0], sizeof(struct in_addr));
@@ -72,7 +74,7 @@ int FAST_FUNC INET_resolve(const char *name, struct sockaddr_in *s_in, int hostf
 }
 
 
-/* numeric: & 0x8000: "default" instead of "*",
+/* numeric: & 0x8000: default instead of *,
  *          & 0x4000: host instead of net,
  *          & 0x0fff: don't resolve
  */
@@ -81,16 +83,16 @@ char* FAST_FUNC INET_rresolve(struct sockaddr_in *s_in, int numeric, uint32_t ne
 	/* addr-to-name cache */
 	struct addr {
 		struct addr *next;
-		uint32_t nip;
-		smallint is_host;
+		struct sockaddr_in addr;
+		int host;
 		char name[1];
 	};
 	static struct addr *cache = NULL;
 
 	struct addr *pn;
 	char *name;
-	uint32_t nip;
-	smallint is_host;
+	uint32_t ad, host_ad;
+	int host = 0;
 
 	if (s_in->sin_family != AF_INET) {
 #ifdef DEBUG
@@ -100,57 +102,61 @@ char* FAST_FUNC INET_rresolve(struct sockaddr_in *s_in, int numeric, uint32_t ne
 		errno = EAFNOSUPPORT;
 		return NULL;
 	}
-	nip = s_in->sin_addr.s_addr;
+	ad = s_in->sin_addr.s_addr;
 #ifdef DEBUG
-	bb_error_msg("rresolve: %08x mask:%08x num:%08x", (unsigned)nip, netmask, numeric);
+	bb_error_msg("rresolve: %08x, mask %08x, num %08x", (unsigned)ad, netmask, numeric);
 #endif
-	if (numeric & 0x0FFF)
-		return xmalloc_sockaddr2dotted_noport((void*)s_in);
-	if (nip == INADDR_ANY) {
-		if (numeric & 0x8000)
-			return xstrdup("default");
-		return xstrdup("*");
+	if (ad == INADDR_ANY) {
+		if ((numeric & 0x0FFF) == 0) {
+			if (numeric & 0x8000)
+				return xstrdup("default");
+			return xstrdup("*");
+		}
 	}
+	if (numeric & 0x0FFF)
+		return xstrdup(inet_ntoa(s_in->sin_addr));
 
-	is_host = ((nip & (~netmask)) != 0 || (numeric & 0x4000));
-
+	if ((ad & (~netmask)) != 0 || (numeric & 0x4000))
+		host = 1;
 	pn = cache;
 	while (pn) {
-		if (pn->nip == nip && pn->is_host == is_host) {
+		if (pn->addr.sin_addr.s_addr == ad && pn->host == host) {
 #ifdef DEBUG
 			bb_error_msg("rresolve: found %s %08x in cache",
-				(is_host ? "host" : "net"), (unsigned)nip);
+					  (host ? "host" : "net"), (unsigned)ad);
 #endif
 			return xstrdup(pn->name);
 		}
 		pn = pn->next;
 	}
 
+	host_ad = ntohl(ad);
 	name = NULL;
-	if (is_host) {
+	if (host) {
+		struct hostent *ent;
 #ifdef DEBUG
-		bb_error_msg("sockaddr2host_noport(%08x)", (unsigned)nip);
+		bb_error_msg("gethostbyaddr (%08x)", (unsigned)ad);
 #endif
-		name = xmalloc_sockaddr2host_noport((void*)s_in);
+		ent = gethostbyaddr((char *) &ad, 4, AF_INET);
+		if (ent)
+			name = xstrdup(ent->h_name);
 	} else if (ENABLE_FEATURE_ETC_NETWORKS) {
 		struct netent *np;
 #ifdef DEBUG
-		bb_error_msg("getnetbyaddr(%08x)", (unsigned)ntohl(nip));
+		bb_error_msg("getnetbyaddr (%08x)", (unsigned)host_ad);
 #endif
-		np = getnetbyaddr(ntohl(nip), AF_INET);
+		np = getnetbyaddr(host_ad, AF_INET);
 		if (np)
 			name = xstrdup(np->n_name);
 	}
 	if (!name)
-		name = xmalloc_sockaddr2dotted_noport((void*)s_in);
-
+		name = xstrdup(inet_ntoa(s_in->sin_addr));
 	pn = xmalloc(sizeof(*pn) + strlen(name)); /* no '+ 1', it's already accounted for */
 	pn->next = cache;
-	pn->nip = nip;
-	pn->is_host = is_host;
+	pn->addr = *s_in;
+	pn->host = host;
 	strcpy(pn->name, name);
 	cache = pn;
-
 	return name;
 }
 
@@ -182,6 +188,9 @@ int FAST_FUNC INET6_resolve(const char *name, struct sockaddr_in6 *sin6)
 
 char* FAST_FUNC INET6_rresolve(struct sockaddr_in6 *sin6, int numeric)
 {
+	char name[128];
+	int s;
+
 	if (sin6->sin6_family != AF_INET6) {
 #ifdef DEBUG
 		bb_error_msg("rresolve: unsupported address family %d!",
@@ -191,7 +200,8 @@ char* FAST_FUNC INET6_rresolve(struct sockaddr_in6 *sin6, int numeric)
 		return NULL;
 	}
 	if (numeric & 0x7FFF) {
-		return xmalloc_sockaddr2dotted_noport((void*)sin6);
+		inet_ntop(AF_INET6, &sin6->sin6_addr, name, sizeof(name));
+		return xstrdup(name);
 	}
 	if (IN6_IS_ADDR_UNSPECIFIED(&sin6->sin6_addr)) {
 		if (numeric & 0x8000)
@@ -199,7 +209,15 @@ char* FAST_FUNC INET6_rresolve(struct sockaddr_in6 *sin6, int numeric)
 		return xstrdup("*");
 	}
 
-	return xmalloc_sockaddr2host_noport((void*)sin6);
+	s = getnameinfo((struct sockaddr *) sin6, sizeof(*sin6),
+				name, sizeof(name),
+				/*serv,servlen:*/ NULL, 0,
+				0);
+	if (s != 0) {
+		bb_error_msg("getnameinfo failed");
+		return NULL;
+	}
+	return xstrdup(name);
 }
 
 #endif  /* CONFIG_FEATURE_IPV6 */

@@ -69,44 +69,28 @@ pid_t FAST_FUNC xspawn(char **argv)
 }
 
 #if ENABLE_FEATURE_PREFER_APPLETS
-static jmp_buf die_jmp;
-static void jump(void)
-{
-	/* Special case. We arrive here if NOFORK applet
-	 * calls xfunc, which then decides to die.
-	 * We don't die, but jump instead back to caller.
-	 * NOFORK applets still cannot carelessly call xfuncs:
-	 * p = xmalloc(10);
-	 * q = xmalloc(10); // BUG! if this dies, we leak p!
-	 */
-	/* | 0x100 allows to pass zero exitcode (longjmp can't pass 0).
-	 * This works because exitcodes are bytes,
-	 * run_nofork_applet() ensures that by "& 0xff" */
-	longjmp(die_jmp, xfunc_error_retval | 0x100);
-}
-
 struct nofork_save_area {
 	jmp_buf die_jmp;
-	void (*die_func)(void);
 	const char *applet_name;
 	uint32_t option_mask32;
+	int die_sleep;
 	uint8_t xfunc_error_retval;
 };
 static void save_nofork_data(struct nofork_save_area *save)
 {
 	memcpy(&save->die_jmp, &die_jmp, sizeof(die_jmp));
-	save->die_func = die_func;
 	save->applet_name = applet_name;
-	save->option_mask32 = option_mask32;
 	save->xfunc_error_retval = xfunc_error_retval;
+	save->option_mask32 = option_mask32;
+	save->die_sleep = die_sleep;
 }
 static void restore_nofork_data(struct nofork_save_area *save)
 {
 	memcpy(&die_jmp, &save->die_jmp, sizeof(die_jmp));
-	die_func = save->die_func;
 	applet_name = save->applet_name;
-	option_mask32 = save->option_mask32;
 	xfunc_error_retval = save->xfunc_error_retval;
+	option_mask32 = save->option_mask32;
+	die_sleep = save->die_sleep;
 }
 
 int FAST_FUNC run_nofork_applet(int applet_no, char **argv)
@@ -149,8 +133,11 @@ int FAST_FUNC run_nofork_applet(int applet_no, char **argv)
 	while (argv[argc])
 		argc++;
 
-	/* If xfunc "dies" in NOFORK applet, die_func longjmp's here instead */
-	die_func = jump;
+	/* Special flag for xfunc_die(). If xfunc will "die"
+	 * in NOFORK applet, xfunc_die() sees negative
+	 * die_sleep and longjmp here instead. */
+	die_sleep = -1;
+
 	rc = setjmp(die_jmp);
 	if (!rc) {
 		/* Some callers (xargs)
@@ -159,8 +146,10 @@ int FAST_FUNC run_nofork_applet(int applet_no, char **argv)
 		memcpy(tmp_argv, argv, (argc+1) * sizeof(tmp_argv[0]));
 		/* Finally we can call NOFORK applet's main() */
 		rc = applet_main[applet_no](argc, tmp_argv);
-	} else {
-		/* xfunc died in NOFORK applet */
+	} else { /* xfunc died in NOFORK applet */
+		/* in case they meant to return 0... */
+		if (rc == -2222)
+			rc = 0;
 	}
 
 	/* Restoring some globals */

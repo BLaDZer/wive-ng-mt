@@ -112,7 +112,7 @@ int uniq_main(int argc UNUSED_PARAM, char **argv)
 					/* %7lu matches GNU coreutils 6.9 */
 					printf("%7lu ", dups + 1);
 				}
-				puts(old_line);
+				printf("%s\n", old_line);
 			}
 			free(old_line);
 		}

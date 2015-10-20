@@ -768,10 +768,7 @@ ACTF(delete)
 {
 	int rc;
 	if (S_ISDIR(statbuf->st_mode)) {
-		/* "find . -delete" skips rmdir(".") */
-		rc = 0;
-		if (NOT_LONE_CHAR(fileName, '.'))
-			rc = rmdir(fileName);
+		rc = rmdir(fileName);
 	} else {
 		rc = unlink(fileName);
 	}
@@ -1264,8 +1261,7 @@ static action*** parse_params(char **argv)
 			ap->perm_char = arg1[0];
 			arg1 = (arg1[0] == '/' ? arg1+1 : plus_minus_num(arg1));
 			/*ap->perm_mask = 0; - ALLOC_ACTION did it */
-			ap->perm_mask = bb_parse_mode(arg1, ap->perm_mask);
-			if (ap->perm_mask == (mode_t)-1)
+			if (!bb_parse_mode(arg1, &ap->perm_mask))
 				bb_error_msg_and_die("invalid mode '%s'", arg1);
 		}
 #endif
@@ -1464,10 +1460,12 @@ int find_main(int argc UNUSED_PARAM, char **argv)
 				NULL,           /* user data */
 				0)              /* depth */
 		) {
-			status |= EXIT_FAILURE;
+			status = EXIT_FAILURE;
+			goto out;
 		}
 	}
 
-	IF_FEATURE_FIND_EXEC_PLUS(status |= flush_exec_plus();)
+	IF_FEATURE_FIND_EXEC_PLUS(status = flush_exec_plus();)
+out:
 	return status;
 }

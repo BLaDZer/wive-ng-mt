@@ -371,9 +371,9 @@ static int ask(const char *string, int def)
 		}
 	}
 	if (def)
-		puts("y");
+		printf("y\n");
 	else {
-		puts("n");
+		printf("n\n");
 		errors_uncorrected = 1;
 	}
 	return def;
@@ -405,7 +405,7 @@ static void check_mount(void)
 		if (isatty(0) && isatty(1))
 			cont = ask("Do you really want to continue", 0);
 		if (!cont) {
-			puts("Check aborted");
+			printf("Check aborted\n");
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -470,8 +470,8 @@ static void write_block(unsigned nr, void *addr)
 	if (!nr)
 		return;
 	if (nr < FIRSTZONE || nr >= ZONES) {
-		puts("Internal error: trying to write bad block\n"
-			"Write request ignored");
+		printf("Internal error: trying to write bad block\n"
+			   "Write request ignored\n");
 		errors_uncorrected = 1;
 		return;
 	}
@@ -659,7 +659,7 @@ static void read_tables(void)
 	if (INODE_BUFFER_SIZE != read(dev_fd, inode_buffer, INODE_BUFFER_SIZE))
 		die("can't read inodes");
 	if (NORM_FIRSTZONE != FIRSTZONE) {
-		puts("warning: firstzone!=norm_firstzone");
+		printf("warning: firstzone!=norm_firstzone\n");
 		errors_uncorrected = 1;
 	}
 	get_dirsize();
@@ -713,7 +713,7 @@ static void get_inode_common(unsigned nr, uint16_t i_mode)
 	} else
 		links++;
 	if (!++inode_count[nr]) {
-		puts("Warning: inode count too big");
+		printf("Warning: inode count too big\n");
 		inode_count[nr]--;
 		errors_uncorrected = 1;
 	}
@@ -1299,7 +1299,7 @@ int fsck_minix_main(int argc UNUSED_PARAM, char **argv)
 	}
 	if (changed) {
 		write_tables();
-		puts("FILE SYSTEM HAS BEEN CHANGED");
+		printf("FILE SYSTEM HAS BEEN CHANGED\n");
 		sync();
 	} else if (OPT_repair)
 		write_superblock();

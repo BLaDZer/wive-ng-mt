@@ -45,6 +45,7 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 	int host_len = -1;
 	struct rtattr * tb[RTA_MAX+1];
 	char abuf[256];
+	SPRINT_BUF(b1);
 
 	if (n->nlmsg_type != RTM_NEWRULE)
 		return 0;
@@ -109,7 +110,7 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 	}
 
 	if (r->rtm_tos) {
-		printf("tos %s ", rtnl_dsfield_n2a(r->rtm_tos));
+		printf("tos %s ", rtnl_dsfield_n2a(r->rtm_tos, b1));
 	}
 	if (tb[RTA_PROTOINFO]) {
 		printf("fwmark %#x ", *(uint32_t*)RTA_DATA(tb[RTA_PROTOINFO]));
@@ -120,7 +121,7 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 	}
 
 	if (r->rtm_table)
-		printf("lookup %s ", rtnl_rttable_n2a(r->rtm_table));
+		printf("lookup %s ", rtnl_rttable_n2a(r->rtm_table, b1));
 
 	if (tb[RTA_FLOW]) {
 		uint32_t to = *(uint32_t*)RTA_DATA(tb[RTA_FLOW]);
@@ -128,10 +129,10 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 		to &= 0xFFFF;
 		if (from) {
 			printf("realms %s/",
-				rtnl_rtrealm_n2a(from));
+				rtnl_rtrealm_n2a(from, b1));
 		}
 		printf("%s ",
-			rtnl_rtrealm_n2a(to));
+			rtnl_rtrealm_n2a(to, b1));
 	}
 
 	if (r->rtm_type == RTN_NAT) {
@@ -144,7 +145,7 @@ static int FAST_FUNC print_rule(const struct sockaddr_nl *who UNUSED_PARAM,
 		} else
 			printf("masquerade");
 	} else if (r->rtm_type != RTN_UNICAST)
-		fputs(rtnl_rtntype_n2a(r->rtm_type), stdout);
+		fputs(rtnl_rtntype_n2a(r->rtm_type, b1), stdout);
 
 	bb_putchar('\n');
 	/*fflush_all();*/

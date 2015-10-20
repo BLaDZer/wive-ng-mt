@@ -672,20 +672,23 @@ static char *username_path_completion(char *ud)
  */
 static NOINLINE unsigned complete_username(const char *ud)
 {
-	struct passwd *pw;
+	/* Using _r function to avoid pulling in static buffers */
+	char line_buff[256];
+	struct passwd pwd;
+	struct passwd *result;
 	unsigned userlen;
 
 	ud++; /* skip ~ */
 	userlen = strlen(ud);
 
 	setpwent();
-	while ((pw = getpwent()) != NULL) {
+	while (!getpwent_r(&pwd, line_buff, sizeof(line_buff), &result)) {
 		/* Null usernames should result in all users as possible completions. */
-		if (/* !ud[0] || */ is_prefixed_with(pw->pw_name, ud)) {
-			add_match(xasprintf("~%s/", pw->pw_name));
+		if (/*!userlen || */ strncmp(ud, pwd.pw_name, userlen) == 0) {
+			add_match(xasprintf("~%s/", pwd.pw_name));
 		}
 	}
-	endpwent(); /* don't keep password file open */
+	endpwent();
 
 	return 1 + userlen;
 }
@@ -792,7 +795,7 @@ static NOINLINE unsigned complete_cmd_dir_file(const char *command, int type)
 			if (!pfind[0] && DOT_OR_DOTDOT(name_found))
 				continue;
 			/* match? */
-			if (!is_prefixed_with(name_found, pfind))
+			if (strncmp(name_found, pfind, pf_len) != 0)
 				continue; /* no */
 
 			found = concat_path_file(paths[i], name_found);
@@ -1879,16 +1882,15 @@ static void parse_and_put_prompt(const char *prmt_ptr)
 						cwd_buf = xrealloc_getcwd_or_warn(NULL);
 						if (!cwd_buf)
 							cwd_buf = (char *)bb_msg_unknown;
-						else if (home_pwd_buf[0]) {
-							char *after_home_user;
-
+						else {
 							/* /home/user[/something] -> ~[/something] */
-							after_home_user = is_prefixed_with(cwd_buf, home_pwd_buf);
-							if (after_home_user
-							 && (*after_home_user == '/' || *after_home_user == '\0')
+							l = strlen(home_pwd_buf);
+							if (l != 0
+							 && strncmp(home_pwd_buf, cwd_buf, l) == 0
+							 && (cwd_buf[l] == '/' || cwd_buf[l] == '\0')
 							) {
 								cwd_buf[0] = '~';
-								overlapping_strcpy(cwd_buf + 1, after_home_user);
+								overlapping_strcpy(cwd_buf + 1, cwd_buf + l);
 							}
 						}
 					}

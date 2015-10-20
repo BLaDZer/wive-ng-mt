@@ -373,7 +373,7 @@ int date_main(int argc UNUSED_PARAM, char **argv)
 		date_buf[0] = '\0';
 	} else {
 		/* Handle special conversions */
-		if (is_prefixed_with(fmt_dt2str, "%f")) {
+		if (strncmp(fmt_dt2str, "%f", 2) == 0) {
 			fmt_dt2str = (char*)"%Y.%m.%d-%H:%M:%S";
 		}
 		/* Generate output string */

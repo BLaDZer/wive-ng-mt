@@ -83,6 +83,7 @@ int showkey_main(int argc UNUSED_PARAM, char **argv)
 			if (04 /*CTRL-D*/ == c)
 				break;
 		}
+
 	} else {
 		// we assume a PC keyboard
 		xioctl(STDIN_FILENO, KDGKBMODE, &kbmode);

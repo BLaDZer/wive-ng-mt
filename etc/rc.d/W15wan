@@ -23,12 +23,7 @@ wan_if_preconf() {
 
 # configure and start zeroconf daemon
 zero_conf() {
-    if [ "$SysLogd" = "1" ]; then
-	logto="syslog"
-    else
-	logto="none"
-    fi
-    (export LOGGING=$logto; zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1) &
+    (zcip $wan_if /etc/scripts/zcip.script > /dev/null 2>&1) &
 }
 
 # configure dhcp client

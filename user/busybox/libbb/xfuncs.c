@@ -207,6 +207,7 @@ off_t FAST_FUNC fdlength(int fd)
 			else bottom = pos;
 
 		// If we can't, it's smaller.
+
 		} else {
 			if (bottom == top) {
 				if (!top) return 0;

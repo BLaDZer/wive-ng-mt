@@ -377,7 +377,7 @@ ftpdataio_get_pasv_fd(void)
 		return remote_fd;
 	}
 
-	setsockopt_keepalive(remote_fd);
+	setsockopt(remote_fd, SOL_SOCKET, SO_KEEPALIVE, &const_int_1, sizeof(const_int_1));
 	return remote_fd;
 }
 
@@ -1116,9 +1116,6 @@ int ftpd_main(int argc, char **argv)
 int ftpd_main(int argc UNUSED_PARAM, char **argv)
 #endif
 {
-#if ENABLE_FEATURE_FTP_AUTHENTICATION
-	struct passwd *pw = NULL;
-#endif
 	unsigned abs_timeout;
 	unsigned verbose_S;
 	smallint opts;
@@ -1186,33 +1183,39 @@ int ftpd_main(int argc UNUSED_PARAM, char **argv)
 		, SIG_IGN);
 
 	/* Set up options on the command socket (do we need these all? why?) */
-	setsockopt_1(STDIN_FILENO, IPPROTO_TCP, TCP_NODELAY);
-	setsockopt_keepalive(STDIN_FILENO);
+	setsockopt(STDIN_FILENO, IPPROTO_TCP, TCP_NODELAY, &const_int_1, sizeof(const_int_1));
+	setsockopt(STDIN_FILENO, SOL_SOCKET, SO_KEEPALIVE, &const_int_1, sizeof(const_int_1));
 	/* Telnet protocol over command link may send "urgent" data,
 	 * we prefer it to be received in the "normal" data stream: */
-	setsockopt_1(STDIN_FILENO, SOL_SOCKET, SO_OOBINLINE);
+	setsockopt(STDIN_FILENO, SOL_SOCKET, SO_OOBINLINE, &const_int_1, sizeof(const_int_1));
 
 	WRITE_OK(FTP_GREET);
 	signal(SIGALRM, timeout_handler);
 
 #if ENABLE_FEATURE_FTP_AUTHENTICATION
-	while (1) {
-		uint32_t cmdval = cmdio_get_cmd_and_arg();
+	{
+		struct passwd *pw = NULL;
+
+		while (1) {
+			uint32_t cmdval = cmdio_get_cmd_and_arg();
+
 			if (cmdval == const_USER) {
-			pw = getpwnam(G.ftp_arg);
-			cmdio_write_raw(STR(FTP_GIVEPWORD)" Please specify password\r\n");
-		} else if (cmdval == const_PASS) {
-			if (check_password(pw, G.ftp_arg) > 0) {
-				break;	/* login success */
+				pw = getpwnam(G.ftp_arg);
+				cmdio_write_raw(STR(FTP_GIVEPWORD)" Please specify password\r\n");
+			} else if (cmdval == const_PASS) {
+				if (check_password(pw, G.ftp_arg) > 0) {
+					break;	/* login success */
+				}
+				cmdio_write_raw(STR(FTP_LOGINERR)" Login failed\r\n");
+				pw = NULL;
+			} else if (cmdval == const_QUIT) {
+				WRITE_OK(FTP_GOODBYE);
+				return 0;
+			} else {
+				cmdio_write_raw(STR(FTP_LOGINERR)" Login with USER and PASS\r\n");
 			}
-			cmdio_write_raw(STR(FTP_LOGINERR)" Login failed\r\n");
-			pw = NULL;
-		} else if (cmdval == const_QUIT) {
-			WRITE_OK(FTP_GOODBYE);
-			return 0;
-		} else {
-			cmdio_write_raw(STR(FTP_LOGINERR)" Login with USER and PASS\r\n");
 		}
+		change_identity(pw);
 	}
 	WRITE_OK(FTP_LOGINOK);
 #endif
@@ -1229,10 +1232,6 @@ int ftpd_main(int argc UNUSED_PARAM, char **argv)
 #endif
 		xchroot(argv[0]);
 	}
-
-#if ENABLE_FEATURE_FTP_AUTHENTICATION
-	change_identity(pw);
-#endif
 
 	/* RFC-959 Section 5.1
 	 * The following commands and options MUST be supported by every

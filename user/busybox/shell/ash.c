@@ -537,12 +537,11 @@ flush_stdout_stderr(void)
 	INT_ON;
 }
 
-/* Was called outcslow(c,FILE*), but c was always '\n' */
 static void
-newline_and_flush(FILE *dest)
+outcslow(int c, FILE *dest)
 {
 	INT_OFF;
-	putc('\n', dest);
+	putc(c, dest);
 	fflush(dest);
 	INT_ON;
 }
@@ -599,6 +598,8 @@ out2str(const char *p)
 #define CTLVAR       ((unsigned char)'\202')    /* variable defn */
 #define CTLENDVAR    ((unsigned char)'\203')
 #define CTLBACKQ     ((unsigned char)'\204')
+#define CTLQUOTE 01             /* ored with CTLBACKQ code if in quotes */
+/*      CTLBACKQ | CTLQUOTE == '\205' */
 #define CTLARI       ((unsigned char)'\206')    /* arithmetic expression */
 #define CTLENDARI    ((unsigned char)'\207')
 #define CTLQUOTEMARK ((unsigned char)'\210')
@@ -607,6 +608,7 @@ out2str(const char *p)
 /* variable substitution byte (follows CTLVAR) */
 #define VSTYPE  0x0f            /* type of variable substitution */
 #define VSNUL   0x10            /* colon--treat the empty string as unset */
+#define VSQUOTE 0x80            /* inside double quotes--suppress splitting */
 
 /* values of VSTYPE field */
 #define VSNORMAL        0x1     /* normal variable:  $var or ${var} */
@@ -626,9 +628,8 @@ out2str(const char *p)
 #endif
 
 static const char dolatstr[] ALIGN1 = {
-	CTLQUOTEMARK, CTLVAR, VSNORMAL, '@', '=', CTLQUOTEMARK, '\0'
+	CTLVAR, VSNORMAL|VSQUOTE, '@', '=', '\0'
 };
-#define DOLATSTRLEN 6
 
 #define NCMD      0
 #define NPIPE     1
@@ -864,7 +865,9 @@ trace_puts_quoted(char *s)
 		case '\\': c = '\\'; goto backslash;
 		case CTLESC: c = 'e'; goto backslash;
 		case CTLVAR: c = 'v'; goto backslash;
+		case CTLVAR+CTLQUOTE: c = 'V'; goto backslash;
 		case CTLBACKQ: c = 'q'; goto backslash;
+		case CTLBACKQ+CTLQUOTE: c = 'Q'; goto backslash;
  backslash:
 			putc('\\', tracefile);
 			putc(c, tracefile);
@@ -1027,6 +1030,7 @@ sharg(union node *arg, FILE *fp)
 			putc('}', fp);
 			break;
 		case CTLBACKQ:
+		case CTLBACKQ|CTLQUOTE:
 			putc('$', fp);
 			putc('(', fp);
 			shtree(bqlist->n, -1, NULL, fp);
@@ -1203,7 +1207,7 @@ ash_vmsg(const char *msg, va_list ap)
 			fprintf(stderr, "line %d: ", startlinno);
 	}
 	vfprintf(stderr, msg, ap);
-	newline_and_flush(stderr);
+	outcslow('\n', stderr);
 }
 
 /*
@@ -2026,7 +2030,7 @@ varcmp(const char *p, const char *q)
 	int c, d;
 
 	while ((c = *p) == (d = *q)) {
-		if (c == '\0' || c == '=')
+		if (!c || c == '=')
 			goto out;
 		p++;
 		q++;
@@ -2243,7 +2247,7 @@ setvar(const char *name, const char *val, int flags)
 }
 
 static void FAST_FUNC
-setvar0(const char *name, const char *val)
+setvar2(const char *name, const char *val)
 {
 	setvar(name, val, 0);
 }
@@ -2306,7 +2310,7 @@ unsetvar(const char *s)
 			free(vp);
 			INT_ON;
 		} else {
-			setvar0(s, NULL);
+			setvar2(s, 0);
 			vp->flags &= ~VEXPORT;
 		}
  ok:
@@ -3337,7 +3341,6 @@ unaliascmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 #define SHOW_ONLY_PGID  0x01    /* show only pgid (jobs -p) */
 #define SHOW_PIDS       0x02    /* show individual pids, not just one line per job */
 #define SHOW_CHANGED    0x04    /* only jobs whose state has changed */
-#define SHOW_STDERR     0x08    /* print to stderr (else stdout) */
 
 /*
  * A job structure contains information about a job.  A job is either a
@@ -3852,7 +3855,7 @@ showpipe(struct job *jp /*, FILE *out*/)
 	psend = jp->ps + jp->nprocs;
 	for (ps = jp->ps + 1; ps < psend; ps++)
 		printf(" | %s", ps->ps_cmd);
-	newline_and_flush(stdout);
+	outcslow('\n', stdout);
 	flush_stdout_stderr();
 }
 
@@ -3912,33 +3915,39 @@ fg_bgcmd(int argc UNUSED_PARAM, char **argv)
 #endif
 
 static int
-sprint_status48(char *s, int status, int sigonly)
+sprint_status(char *s, int status, int sigonly)
 {
 	int col;
 	int st;
 
 	col = 0;
 	if (!WIFEXITED(status)) {
-		if (JOBS && WIFSTOPPED(status))
+#if JOBS
+		if (WIFSTOPPED(status))
 			st = WSTOPSIG(status);
 		else
+#endif
 			st = WTERMSIG(status);
 		if (sigonly) {
 			if (st == SIGINT || st == SIGPIPE)
 				goto out;
-			if (JOBS && WIFSTOPPED(status))
+#if JOBS
+			if (WIFSTOPPED(status))
 				goto out;
+#endif
 		}
 		st &= 0x7f;
 //TODO: use bbox's get_signame? strsignal adds ~600 bytes to text+rodata
 		col = fmtstr(s, 32, strsignal(st));
 		if (WCOREDUMP(status)) {
-			strcpy(s + col, " (core dumped)");
-			col += sizeof(" (core dumped)")-1;
+			col += fmtstr(s + col, 16, " (core dumped)");
 		}
 	} else if (!sigonly) {
 		st = WEXITSTATUS(status);
-		col = fmtstr(s, 16, (st ? "Done(%d)" : "Done"), st);
+		if (st)
+			col = fmtstr(s, 16, "Done(%d)", st);
+		else
+			col = fmtstr(s, 16, "Done");
 	}
  out:
 	return col;
@@ -3951,6 +3960,7 @@ dowait(int wait_flags, struct job *job)
 	int status;
 	struct job *jp;
 	struct job *thisjob;
+	int state;
 
 	TRACE(("dowait(0x%x) called\n", wait_flags));
 
@@ -3968,12 +3978,11 @@ dowait(int wait_flags, struct job *job)
 	INT_OFF;
 	thisjob = NULL;
 	for (jp = curjob; jp; jp = jp->prev_job) {
-		int jobstate;
 		struct procstat *ps;
 		struct procstat *psend;
 		if (jp->state == JOBDONE)
 			continue;
-		jobstate = JOBDONE;
+		state = JOBDONE;
 		ps = jp->ps;
 		psend = ps + jp->nprocs;
 		do {
@@ -3985,41 +3994,41 @@ dowait(int wait_flags, struct job *job)
 				thisjob = jp;
 			}
 			if (ps->ps_status == -1)
-				jobstate = JOBRUNNING;
+				state = JOBRUNNING;
 #if JOBS
-			if (jobstate == JOBRUNNING)
+			if (state == JOBRUNNING)
 				continue;
 			if (WIFSTOPPED(ps->ps_status)) {
 				jp->stopstatus = ps->ps_status;
-				jobstate = JOBSTOPPED;
+				state = JOBSTOPPED;
 			}
 #endif
 		} while (++ps < psend);
-		if (!thisjob)
-			continue;
-
-		/* Found the job where one of its processes changed its state.
-		 * Is there at least one live and running process in this job? */
-		if (jobstate != JOBRUNNING) {
-			/* No. All live processes in the job are stopped
-			 * (JOBSTOPPED) or there are no live processes (JOBDONE)
-			 */
-			thisjob->changed = 1;
-			if (thisjob->state != jobstate) {
-				TRACE(("Job %d: changing state from %d to %d\n",
-					jobno(thisjob), thisjob->state, jobstate));
-				thisjob->state = jobstate;
-#if JOBS
-				if (jobstate == JOBSTOPPED)
-					set_curjob(thisjob, CUR_STOPPED);
-#endif
-			}
-		}
-		goto out;
+		if (thisjob)
+			goto gotjob;
 	}
-	/* The process wasn't found in job list */
-	if (JOBS && !WIFSTOPPED(status))
+#if JOBS
+	if (!WIFSTOPPED(status))
+#endif
 		jobless--;
+	goto out;
+
+ gotjob:
+	if (state != JOBRUNNING) {
+		thisjob->changed = 1;
+
+		if (thisjob->state != state) {
+			TRACE(("Job %d: changing state from %d to %d\n",
+				jobno(thisjob), thisjob->state, state));
+			thisjob->state = state;
+#if JOBS
+			if (state == JOBSTOPPED) {
+				set_curjob(thisjob, CUR_STOPPED);
+			}
+#endif
+		}
+	}
+
  out:
 	INT_ON;
 
@@ -4027,7 +4036,7 @@ dowait(int wait_flags, struct job *job)
 		char s[48 + 1];
 		int len;
 
-		len = sprint_status48(s, status, 1);
+		len = sprint_status(s, status, 1);
 		if (len) {
 			s[len] = '\n';
 			s[len + 1] = '\0';
@@ -4048,14 +4057,13 @@ blocking_wait_with_raise_on_sig(void)
 
 #if JOBS
 static void
-showjob(struct job *jp, int mode)
+showjob(FILE *out, struct job *jp, int mode)
 {
 	struct procstat *ps;
 	struct procstat *psend;
 	int col;
 	int indent_col;
-	char s[16 + 16 + 48];
-	FILE *out = (mode & SHOW_STDERR ? stderr : stdout);
+	char s[80];
 
 	ps = jp->ps;
 
@@ -4085,7 +4093,7 @@ showjob(struct job *jp, int mode)
 		int status = psend[-1].ps_status;
 		if (jp->state == JOBSTOPPED)
 			status = jp->stopstatus;
-		col += sprint_status48(s + col, status, 0);
+		col += sprint_status(s + col, status, 0);
 	}
 	/* By now, "[JOBID]*  [maybe PID] STATUS" is printed */
 
@@ -4112,7 +4120,7 @@ showjob(struct job *jp, int mode)
 				ps->ps_cmd
 		);
 	} while (++ps != psend);
-	newline_and_flush(out);
+	outcslow('\n', out);
 
 	jp->changed = 0;
 
@@ -4127,7 +4135,7 @@ showjob(struct job *jp, int mode)
  * statuses have changed since the last call to showjobs.
  */
 static void
-showjobs(int mode)
+showjobs(FILE *out, int mode)
 {
 	struct job *jp;
 
@@ -4139,7 +4147,7 @@ showjobs(int mode)
 
 	for (jp = curjob; jp; jp = jp->prev_job) {
 		if (!(mode & SHOW_CHANGED) || jp->changed) {
-			showjob(jp, mode);
+			showjob(out, jp, mode);
 		}
 	}
 }
@@ -4160,10 +4168,10 @@ jobscmd(int argc UNUSED_PARAM, char **argv)
 	argv = argptr;
 	if (*argv) {
 		do
-			showjob(getjob(*argv, 0), mode);
+			showjob(stdout, getjob(*argv, 0), mode);
 		while (*++argv);
 	} else {
-		showjobs(mode);
+		showjobs(stdout, mode);
 	}
 
 	return 0;
@@ -4405,7 +4413,11 @@ cmdputs(const char *s)
 				str = "${#";
 			else
 				str = "${";
-			goto dostr;
+			if (!(subtype & VSQUOTE) == !(quoted & 1))
+				goto dostr;
+			quoted ^= 1;
+			c = '"';
+			break;
 		case CTLENDVAR:
 			str = "\"}" + !(quoted & 1);
 			quoted >>= 1;
@@ -4413,6 +4425,9 @@ cmdputs(const char *s)
 			goto dostr;
 		case CTLBACKQ:
 			str = "$(...)";
+			goto dostr;
+		case CTLBACKQ+CTLQUOTE:
+			str = "\"$(...)\"";
 			goto dostr;
 #if ENABLE_SH_MATH_SUPPORT
 		case CTLARI:
@@ -4748,7 +4763,7 @@ forkchild(struct job *jp, union node *n, int mode)
 		 * Our solution: ONLY bare $(trap) or `trap` is special.
 		 */
 		/* Save trap handler strings for trap builtin to print */
-		trap_ptr = xmemdup(trap, sizeof(trap));
+		trap_ptr = memcpy(xmalloc(sizeof(trap)), trap, sizeof(trap));
 		/* Fall through into clearing traps */
 	}
 	clear_traps();
@@ -5490,7 +5505,7 @@ ash_arith(const char *s)
 	arith_t result;
 
 	math_state.lookupvar = lookupvar;
-	math_state.setvar    = setvar0;
+	math_state.setvar    = setvar2;
 	//math_state.endofname = endofname;
 
 	INT_OFF;
@@ -5511,23 +5526,18 @@ ash_arith(const char *s)
 #define EXP_VARTILDE    0x4     /* expand tildes in an assignment */
 #define EXP_REDIR       0x8     /* file glob for a redirection (1 match only) */
 #define EXP_CASE        0x10    /* keeps quotes around for CASE pattern */
-#define EXP_QPAT        0x20    /* pattern in quoted parameter expansion */
+#define EXP_RECORD      0x20    /* need to record arguments for ifs breakup */
 #define EXP_VARTILDE2   0x40    /* expand tildes after colons only */
 #define EXP_WORD        0x80    /* expand word in parameter expansion */
-#define EXP_QUOTED      0x100   /* expand word in double quotes */
+#define EXP_QWORD       0x100   /* expand word in quoted parameter expansion */
 /*
  * rmescape() flags
  */
 #define RMESCAPE_ALLOC  0x1     /* Allocate a new string */
 #define RMESCAPE_GLOB   0x2     /* Add backslashes for glob */
+#define RMESCAPE_QUOTED 0x4     /* Remove CTLESC unless in quotes */
 #define RMESCAPE_GROW   0x8     /* Grow strings instead of stalloc */
 #define RMESCAPE_HEAP   0x10    /* Malloc strings instead of stalloc */
-#define RMESCAPE_SLASH  0x20    /* Stop globbing after slash */
-
-/* Add CTLESC when necessary. */
-#define QUOTES_ESC     (EXP_FULL | EXP_CASE | EXP_QPAT | EXP_REDIR)
-/* Do not skip NUL characters. */
-#define QUOTES_KEEPNUL EXP_TILDE
 
 /*
  * Structure specifying which parts of the string should be searched
@@ -5569,8 +5579,8 @@ cvtnum(arith_t num)
 {
 	int len;
 
-	expdest = makestrspace(sizeof(arith_t)*3 + 2, expdest);
-	len = fmtstr(expdest, sizeof(arith_t)*3 + 2, ARITH_FMT, num);
+	expdest = makestrspace(32, expdest);
+	len = fmtstr(expdest, 32, ARITH_FMT, num);
 	STADJUST(len, expdest);
 	return len;
 }
@@ -5592,16 +5602,14 @@ esclen(const char *start, const char *p)
 static char *
 rmescapes(char *str, int flag)
 {
-	static const char qchars[] ALIGN1 = {
-		IF_ASH_BASH_COMPAT('/',) CTLESC, CTLQUOTEMARK, '\0' };
+	static const char qchars[] ALIGN1 = { CTLESC, CTLQUOTEMARK, '\0' };
 
 	char *p, *q, *r;
 	unsigned inquotes;
 	unsigned protect_against_glob;
 	unsigned globbing;
-	IF_ASH_BASH_COMPAT(unsigned slash = flag & RMESCAPE_SLASH;)
 
-	p = strpbrk(str, qchars IF_ASH_BASH_COMPAT(+ !slash));
+	p = strpbrk(str, qchars);
 	if (!p)
 		return str;
 
@@ -5628,11 +5636,13 @@ rmescapes(char *str, int flag)
 		}
 	}
 
-	inquotes = 0;
+	inquotes = (flag & RMESCAPE_QUOTED) ^ RMESCAPE_QUOTED;
 	globbing = flag & RMESCAPE_GLOB;
 	protect_against_glob = globbing;
 	while (*p) {
 		if ((unsigned char)*p == CTLQUOTEMARK) {
+// TODO: if no RMESCAPE_QUOTED in flags, inquotes never becomes 0
+// (alternates between RMESCAPE_QUOTED and ~RMESCAPE_QUOTED). Is it ok?
 // Note: both inquotes and protect_against_glob only affect whether
 // CTLESC,<ch> gets converted to <ch> or to \<ch>
 			inquotes = ~inquotes;
@@ -5640,23 +5650,17 @@ rmescapes(char *str, int flag)
 			protect_against_glob = globbing;
 			continue;
 		}
-		if ((unsigned char)*p == CTLESC) {
-			p++;
-			if (protect_against_glob) {
-				*q++ = '\\';
-			}
-		} else if (*p == '\\' && !inquotes) {
+		if (*p == '\\') {
 			/* naked back slash */
 			protect_against_glob = 0;
 			goto copy;
 		}
-#if ENABLE_ASH_BASH_COMPAT
-		else if (*p == '/' && slash) {
-			/* stop handling globbing and mark location of slash */
-			globbing = slash = 0;
-			*p = CTLESC;
+		if ((unsigned char)*p == CTLESC) {
+			p++;
+			if (protect_against_glob && inquotes && *p != '/') {
+				*q++ = '\\';
+			}
 		}
-#endif
 		protect_against_glob = globbing;
  copy:
 		*q++ = *p++;
@@ -5676,9 +5680,13 @@ rmescapes(char *str, int flag)
  * Returns an stalloced string.
  */
 static char *
-preglob(const char *pattern, int flag)
+preglob(const char *pattern, int quoted, int flag)
 {
-	return rmescapes((char *)pattern, flag | RMESCAPE_GLOB);
+	flag |= RMESCAPE_GLOB;
+	if (quoted) {
+		flag |= RMESCAPE_QUOTED;
+	}
+	return rmescapes((char *)pattern, flag);
 }
 
 /*
@@ -5687,36 +5695,29 @@ preglob(const char *pattern, int flag)
 static void
 memtodest(const char *p, size_t len, int syntax, int quotes)
 {
-	char *q;
+	char *q = expdest;
 
-	if (!len)
-		return;
+	q = makestrspace(quotes ? len * 2 : len, q);
 
-	q = makestrspace((quotes & QUOTES_ESC) ? len * 2 : len, expdest);
-
-	do {
+	while (len--) {
 		unsigned char c = *p++;
-		if (c) {
-			int n = SIT(c, syntax);
-			if ((quotes & QUOTES_ESC) &&
-					((n == CCTL) ||
-					(((quotes & EXP_FULL) || syntax != BASESYNTAX) &&
-					n == CBACK)))
-				USTPUTC(CTLESC, q);
-		} else if (!(quotes & QUOTES_KEEPNUL))
+		if (c == '\0')
 			continue;
+		if (quotes) {
+			int n = SIT(c, syntax);
+			if (n == CCTL || n == CBACK)
+				USTPUTC(CTLESC, q);
+		}
 		USTPUTC(c, q);
-	} while (--len);
+	}
 
 	expdest = q;
 }
 
-static size_t
+static void
 strtodest(const char *p, int syntax, int quotes)
 {
-	size_t len = strlen(p);
-	memtodest(p, len, syntax, quotes);
-	return len;
+	memtodest(p, strlen(p), syntax, quotes);
 }
 
 /*
@@ -5789,7 +5790,8 @@ exptilde(char *startp, char *p, int flags)
 	char *name;
 	struct passwd *pw;
 	const char *home;
-	int quotes = flags & QUOTES_ESC;
+	int quotes = flags & (EXP_FULL | EXP_CASE | EXP_REDIR);
+	int startloc;
 
 	name = p + 1;
 
@@ -5821,7 +5823,9 @@ exptilde(char *startp, char *p, int flags)
 	if (!home || !*home)
 		goto lose;
 	*p = c;
+	startloc = expdest - (char *)stackblock();
 	strtodest(home, SQSYNTAX, quotes);
+	recordregion(startloc, expdest - (char *)stackblock(), 0);
 	return p;
  lose:
 	*p = c;
@@ -5894,7 +5898,7 @@ evalbackcmd(union node *n, struct backcmd *result)
  * Expand stuff in backwards quotes.
  */
 static void
-expbackq(union node *cmd, int flag)
+expbackq(union node *cmd, int quoted, int quotes)
 {
 	struct backcmd in;
 	int i;
@@ -5902,7 +5906,7 @@ expbackq(union node *cmd, int flag)
 	char *p;
 	char *dest;
 	int startloc;
-	int syntax = flag & EXP_QUOTED ? DQSYNTAX : BASESYNTAX;
+	int syntax = quoted ? DQSYNTAX : BASESYNTAX;
 	struct stackmark smark;
 
 	INT_OFF;
@@ -5918,11 +5922,11 @@ expbackq(union node *cmd, int flag)
 	if (i == 0)
 		goto read;
 	for (;;) {
-		memtodest(p, i, syntax, flag & QUOTES_ESC);
+		memtodest(p, i, syntax, quotes);
  read:
 		if (in.fd < 0)
 			break;
-		i = nonblock_immune_read(in.fd, buf, sizeof(buf));
+		i = nonblock_immune_read(in.fd, buf, sizeof(buf), /*loop_on_EINTR:*/ 1);
 		TRACE(("expbackq: read returns %d\n", i));
 		if (i <= 0)
 			break;
@@ -5942,7 +5946,7 @@ expbackq(union node *cmd, int flag)
 		STUNPUTC(dest);
 	expdest = dest;
 
-	if (!(flag & EXP_QUOTED))
+	if (quoted == 0)
 		recordregion(startloc, dest - (char *)stackblock(), 0);
 	TRACE(("evalbackq: size:%d:'%.*s'\n",
 		(int)((dest - (char *)stackblock()) - startloc),
@@ -5956,10 +5960,11 @@ expbackq(union node *cmd, int flag)
  * evaluate, place result in (backed up) result, adjust string position.
  */
 static void
-expari(int flag)
+expari(int quotes)
 {
 	char *p, *start;
 	int begoff;
+	int flag;
 	int len;
 
 	/* ifsfree(); */
@@ -5997,14 +6002,16 @@ expari(int flag)
 
 	removerecordregions(begoff);
 
+	flag = p[1];
+
 	expdest = p;
 
-	if (flag & QUOTES_ESC)
-		rmescapes(p + 1, 0);
+	if (quotes)
+		rmescapes(p + 2, 0);
 
-	len = cvtnum(ash_arith(p + 1));
+	len = cvtnum(ash_arith(p + 2));
 
-	if (!(flag & EXP_QUOTED))
+	if (flag != '"')
 		recordregion(begoff, begoff + len, 0);
 }
 #endif
@@ -6032,13 +6039,15 @@ argstr(char *p, int flags, struct strlist *var_str_list)
 		CTLESC,
 		CTLVAR,
 		CTLBACKQ,
+		CTLBACKQ | CTLQUOTE,
 #if ENABLE_SH_MATH_SUPPORT
 		CTLENDARI,
 #endif
 		'\0'
 	};
 	const char *reject = spclchars;
-	int breakall = (flags & (EXP_WORD | EXP_QUOTED)) == EXP_WORD;
+	int quotes = flags & (EXP_FULL | EXP_CASE | EXP_REDIR); /* do CTLESC */
+	int breakall = flags & EXP_WORD;
 	int inquotes;
 	size_t length;
 	int startloc;
@@ -6056,6 +6065,8 @@ argstr(char *p, int flags, struct strlist *var_str_list)
 		flags &= ~EXP_TILDE;
  tilde:
 		q = p;
+		if ((unsigned char)*q == CTLESC && (flags & EXP_QWORD))
+			q++;
 		if (*q == '~')
 			p = exptilde(p, q, flags);
 	}
@@ -6112,14 +6123,19 @@ argstr(char *p, int flags, struct strlist *var_str_list)
 		case CTLENDVAR: /* ??? */
 			goto breakloop;
 		case CTLQUOTEMARK:
-			inquotes ^= EXP_QUOTED;
 			/* "$@" syntax adherence hack */
-			if (inquotes && !memcmp(p, dolatstr + 1, DOLATSTRLEN - 1)) {
-				p = evalvar(p + 1, flags | inquotes, /* var_str_list: */ NULL) + 1;
+			if (!inquotes
+			 && memcmp(p, dolatstr, 4) == 0
+			 && (  p[4] == (char)CTLQUOTEMARK
+			    || (p[4] == (char)CTLENDVAR && p[5] == (char)CTLQUOTEMARK)
+			    )
+			) {
+				p = evalvar(p + 1, flags, /* var_str_list: */ NULL) + 1;
 				goto start;
 			}
+			inquotes = !inquotes;
  addquote:
-			if (flags & QUOTES_ESC) {
+			if (quotes) {
 				p--;
 				length++;
 				startloc++;
@@ -6128,30 +6144,22 @@ argstr(char *p, int flags, struct strlist *var_str_list)
 		case CTLESC:
 			startloc++;
 			length++;
-
-			/*
-			 * Quoted parameter expansion pattern: remove quote
-			 * unless inside inner quotes or we have a literal
-			 * backslash.
-			 */
-			if (((flags | inquotes) & (EXP_QPAT | EXP_QUOTED)) ==
-			    EXP_QPAT && *p != '\\')
-				break;
-
 			goto addquote;
 		case CTLVAR:
 			TRACE(("argstr: evalvar('%s')\n", p));
-			p = evalvar(p, flags | inquotes, var_str_list);
+			p = evalvar(p, flags, var_str_list);
 			TRACE(("argstr: evalvar:'%s'\n", (char *)stackblock()));
 			goto start;
 		case CTLBACKQ:
-			expbackq(argbackq->n, flags | inquotes);
+			c = '\0';
+		case CTLBACKQ|CTLQUOTE:
+			expbackq(argbackq->n, c, quotes);
 			argbackq = argbackq->next;
 			goto start;
 #if ENABLE_SH_MATH_SUPPORT
 		case CTLENDARI:
 			p--;
-			expari(flags | inquotes);
+			expari(quotes);
 			goto start;
 #endif
 		}
@@ -6281,17 +6289,60 @@ varunset(const char *end, const char *var, const char *umsg, int varflags)
 	ash_msg_and_raise_error("%.*s: %s%s", (int)(end - var - 1), var, msg, tail);
 }
 
+#if ENABLE_ASH_BASH_COMPAT
+static char *
+parse_sub_pattern(char *arg, int varflags)
+{
+	char *idx, *repl = NULL;
+	unsigned char c;
+
+	//char *org_arg = arg;
+	//bb_error_msg("arg:'%s' varflags:%x", arg, varflags);
+	idx = arg;
+	while (1) {
+		c = *arg;
+		if (!c)
+			break;
+		if (c == '/') {
+			/* Only the first '/' seen is our separator */
+			if (!repl) {
+				repl = idx + 1;
+				c = '\0';
+			}
+		}
+		*idx++ = c;
+		arg++;
+		/*
+		 * Example: v='ab\c'; echo ${v/\\b/_\\_\z_}
+		 * The result is a_\_z_c (not a\_\_z_c)!
+		 *
+		 * Enable debug prints in this function and you'll see:
+		 * ash: arg:'\\b/_\\_z_' varflags:d
+		 * ash: pattern:'\\b' repl:'_\_z_'
+		 * That is, \\b is interpreted as \\b, but \\_ as \_!
+		 * IOW: search pattern and replace string treat backslashes
+		 * differently! That is the reason why we check repl below:
+		 */
+		if (c == '\\' && *arg == '\\' && repl && !(varflags & VSQUOTE))
+			arg++; /* skip both '\', not just first one */
+	}
+	*idx = c; /* NUL */
+	//bb_error_msg("pattern:'%s' repl:'%s'", org_arg, repl);
+
+	return repl;
+}
+#endif /* ENABLE_ASH_BASH_COMPAT */
+
 static const char *
 subevalvar(char *p, char *varname, int strloc, int subtype,
-		int startloc, int varflags, int flag, struct strlist *var_str_list)
+		int startloc, int varflags, int quotes, struct strlist *var_str_list)
 {
 	struct nodelist *saveargbackq = argbackq;
-	int quotes = flag & QUOTES_ESC;
 	char *startp;
 	char *loc;
 	char *rmesc, *rmescend;
 	char *str;
-	IF_ASH_BASH_COMPAT(char *repl = NULL;)
+	IF_ASH_BASH_COMPAT(const char *repl = NULL;)
 	IF_ASH_BASH_COMPAT(int pos, len, orig_len;)
 	int saveherefd = herefd;
 	int amount, resetloc;
@@ -6303,8 +6354,7 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 	//		p, varname, strloc, subtype, startloc, varflags, quotes);
 
 	herefd = -1;
-	argstr(p, EXP_TILDE | (subtype != VSASSIGN && subtype != VSQUESTION ?
-			(flag & (EXP_QUOTED | EXP_QPAT) ? EXP_QPAT : EXP_CASE) : 0),
+	argstr(p, (subtype != VSASSIGN && subtype != VSQUESTION) ? EXP_CASE : 0,
 			var_str_list);
 	STPUTC('\0', expdest);
 	herefd = saveherefd;
@@ -6313,7 +6363,7 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 
 	switch (subtype) {
 	case VSASSIGN:
-		setvar0(varname, startp);
+		setvar2(varname, startp);
 		amount = startp - expdest;
 		STADJUST(amount, expdest);
 		return startp;
@@ -6416,17 +6466,7 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 	}
 	rmescend--;
 	str = (char *)stackblock() + strloc;
-	/*
-	 * Example: v='a\bc'; echo ${v/\\b/_\\_\z_}
-	 * The result is a_\_z_c (not a\_\_z_c)!
-	 *
-	 * The search pattern and replace string treat backslashes differently!
-	 * RMESCAPE_SLASH causes preglob to work differently on the pattern
-	 * and string.  It's only used on the first call.
-	 */
-	preglob(str, IF_ASH_BASH_COMPAT(
-		(subtype == VSREPLACE || subtype == VSREPLACEALL) && !repl ?
-			RMESCAPE_SLASH :) 0);
+	preglob(str, varflags & VSQUOTE, 0);
 
 #if ENABLE_ASH_BASH_COMPAT
 	workloc = expdest - (char *)stackblock();
@@ -6434,12 +6474,11 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 		char *idx, *end;
 
 		if (!repl) {
-			if ((repl=strchr(str, CTLESC)))
-				*repl++ = '\0';
-			else
+			repl = parse_sub_pattern(str, varflags);
+			//bb_error_msg("repl:'%s'", repl);
+			if (!repl)
 				repl = nullstr;
 		}
-		//bb_error_msg("str:'%s' repl:'%s'", str, repl);
 
 		/* If there's no pattern to match, return the expansion unmolested */
 		if (str[0] == '\0')
@@ -6572,15 +6611,12 @@ varvalue(char *name, int varflags, int flags, struct strlist *var_str_list)
 	const char *p;
 	int num;
 	int i;
+	int sepq = 0;
 	ssize_t len = 0;
-	int sep;
-	int quoted = flags & EXP_QUOTED;
 	int subtype = varflags & VSTYPE;
-	int discard = subtype == VSPLUS || subtype == VSLENGTH;
-	int quotes = (discard ? 0 : (flags & QUOTES_ESC)) | QUOTES_KEEPNUL;
+	int quotes = flags & (EXP_FULL | EXP_CASE | EXP_REDIR);
+	int quoted = varflags & VSQUOTE;
 	int syntax = quoted ? DQSYNTAX : BASESYNTAX;
-
-	sep = quoted ? ((flags & EXP_FULL) << CHAR_BIT) : 0;
 
 	switch (*name) {
 	case '$':
@@ -6616,7 +6652,7 @@ varvalue(char *name, int varflags, int flags, struct strlist *var_str_list)
 		break;
 	case '@': {
 		char **ap;
-		char sepc;
+		int sep;
 
 		if (quoted && (flags & EXP_FULL)) {
 			/* note: this is not meant as PEOF value */
@@ -6626,20 +6662,39 @@ varvalue(char *name, int varflags, int flags, struct strlist *var_str_list)
 		/* fall through */
 	case '*':
 		sep = ifsset() ? (unsigned char)(ifsval()[0]) : ' ';
+		i = SIT(sep, syntax);
+		if (quotes && (i == CCTL || i == CBACK))
+			sepq = 1;
  param:
 		ap = shellparam.p;
-		sepc = sep;
 		if (!ap)
 			return -1;
 		while ((p = *ap++) != NULL) {
-			len += strtodest(p, syntax, quotes);
+			size_t partlen;
+
+			partlen = strlen(p);
+			len += partlen;
+
+			if (!(subtype == VSPLUS || subtype == VSLENGTH))
+				memtodest(p, partlen, syntax, quotes);
 
 			if (*ap && sep) {
+				char *q;
+
 				len++;
-				memtodest(&sepc, 1, syntax, quotes);
+				if (subtype == VSPLUS || subtype == VSLENGTH) {
+					continue;
+				}
+				q = expdest;
+				if (sepq)
+					STPUTC(CTLESC, q);
+				/* note: may put NUL despite sep != 0
+				 * (see sep = 1 << CHAR_BIT above) */
+				STPUTC(sep, q);
+				expdest = q;
 			}
 		}
-		break;
+		return len;
 	} /* case '@' and '*' */
 	case '0':
 	case '1':
@@ -6688,7 +6743,9 @@ varvalue(char *name, int varflags, int flags, struct strlist *var_str_list)
 		if (!p)
 			return -1;
 
-		len = strtodest(p, syntax, quotes);
+		len = strlen(p);
+		if (!(subtype == VSPLUS || subtype == VSLENGTH))
+			memtodest(p, len, syntax, quotes);
 #if ENABLE_UNICODE_SUPPORT
 		if (subtype == VSLENGTH && len > 0) {
 			reinit_unicode_for_ash();
@@ -6697,10 +6754,10 @@ varvalue(char *name, int varflags, int flags, struct strlist *var_str_list)
 			}
 		}
 #endif
-		break;
+		return len;
 	}
 
-	if (discard)
+	if (subtype == VSPLUS || subtype == VSLENGTH)
 		STADJUST(-len, expdest);
 	return len;
 }
@@ -6714,7 +6771,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 {
 	char varflags;
 	char subtype;
-	int quoted;
+	char quoted;
 	char easy;
 	char *var;
 	int patloc;
@@ -6723,7 +6780,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 
 	varflags = (unsigned char) *p++;
 	subtype = varflags & VSTYPE;
-	quoted = flags & EXP_QUOTED;
+	quoted = varflags & VSQUOTE;
 	var = p;
 	easy = (!quoted || (*var == '@' && shellparam.nparam));
 	startloc = expdest - (char *)stackblock();
@@ -6744,7 +6801,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 		if (varlen < 0) {
 			argstr(
 				p,
-				flags | EXP_TILDE | EXP_WORD,
+				flags | (quoted ? EXP_TILDE|EXP_QWORD : EXP_TILDE|EXP_WORD),
 				var_str_list
 			);
 			goto end;
@@ -6758,7 +6815,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 		if (varlen < 0) {
 			if (subevalvar(p, var, /* strloc: */ 0,
 					subtype, startloc, varflags,
-					/* quotes: */ flags & ~QUOTES_ESC,
+					/* quotes: */ 0,
 					var_str_list)
 			) {
 				varflags &= ~VSNUL;
@@ -6815,7 +6872,10 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 		STPUTC('\0', expdest);
 		patloc = expdest - (char *)stackblock();
 		if (NULL == subevalvar(p, /* varname: */ NULL, patloc, subtype,
-				startloc, varflags, flags, var_str_list)) {
+				startloc, varflags,
+				/* quotes: */ flags & (EXP_FULL | EXP_CASE | EXP_REDIR),
+				var_str_list)
+		) {
 			int amount = expdest - (
 				(char *)stackblock() + patloc - 1
 			);
@@ -6834,7 +6894,7 @@ evalvar(char *p, int flags, struct strlist *var_str_list)
 			unsigned char c = *p++;
 			if (c == CTLESC)
 				p++;
-			else if (c == CTLBACKQ) {
+			else if (c == CTLBACKQ || c == (CTLBACKQ|CTLQUOTE)) {
 				if (varlen >= 0)
 					argbackq = argbackq->next;
 			} else if (c == CTLVAR) {
@@ -6989,11 +7049,10 @@ expmeta(char *expdir, char *enddir, char *name)
 	struct dirent *dp;
 	int atend;
 	int matchdot;
-	int esc;
 
 	metaflag = 0;
 	start = name;
-	for (p = name; esc = 0, *p; p += esc + 1) {
+	for (p = name; *p; p++) {
 		if (*p == '*' || *p == '?')
 			metaflag = 1;
 		else if (*p == '[') {
@@ -7010,16 +7069,15 @@ expmeta(char *expdir, char *enddir, char *name)
 					break;
 				}
 			}
-		} else {
-			if (*p == '\\')
-				esc++;
-			if (p[esc] == '/') {
-				if (metaflag)
-					break;
-				start = p + esc + 1;
-			}
+		} else if (*p == '\\')
+			p++;
+		else if (*p == '/') {
+			if (metaflag)
+				goto out;
+			start = p + 1;
 		}
 	}
+ out:
 	if (metaflag == 0) {    /* we've reached the end of the file name */
 		if (enddir != expdir)
 			metaflag++;
@@ -7059,8 +7117,7 @@ expmeta(char *expdir, char *enddir, char *name)
 		atend = 1;
 	} else {
 		atend = 0;
-		*endname = '\0';
-		endname += esc + 1;
+		*endname++ = '\0';
 	}
 	matchdot = 0;
 	p = start;
@@ -7085,7 +7142,7 @@ expmeta(char *expdir, char *enddir, char *name)
 	}
 	closedir(dirp);
 	if (!atend)
-		endname[-esc - 1] = esc ? '\\' : '/';
+		endname[-1] = '/';
 }
 
 static struct strlist *
@@ -7173,7 +7230,7 @@ expandmeta(struct strlist *str /*, int flag*/)
 		savelastp = exparg.lastp;
 
 		INT_OFF;
-		p = preglob(str->text, RMESCAPE_ALLOC | RMESCAPE_HEAP);
+		p = preglob(str->text, 0, RMESCAPE_ALLOC | RMESCAPE_HEAP);
 		{
 			int i = strlen(str->text);
 			expdir = ckmalloc(i < 2048 ? 2048 : i); /* XXX */
@@ -7263,7 +7320,7 @@ static void
 expandhere(union node *arg, int fd)
 {
 	herefd = fd;
-	expandarg(arg, (struct arglist *)NULL, EXP_QUOTED);
+	expandarg(arg, (struct arglist *)NULL, 0);
 	full_write(fd, stackblock(), expdest - (char *)stackblock());
 }
 
@@ -7273,7 +7330,7 @@ expandhere(union node *arg, int fd)
 static int
 patmatch(char *pattern, const char *string)
 {
-	return pmatch(preglob(pattern, 0), string);
+	return pmatch(preglob(pattern, 0, 0), string);
 }
 
 /*
@@ -8526,7 +8583,7 @@ evalfor(union node *n, int flags)
 	arglist.list = NULL;
 	arglist.lastp = &arglist.list;
 	for (argp = n->nfor.args; argp; argp = argp->narg.next) {
-		expandarg(argp, &arglist, EXP_FULL | EXP_TILDE);
+		expandarg(argp, &arglist, EXP_FULL | EXP_TILDE | EXP_RECORD);
 		/* XXX */
 		if (evalskip)
 			goto out;
@@ -8537,7 +8594,7 @@ evalfor(union node *n, int flags)
 	loopnest++;
 	flags &= EV_TESTED;
 	for (sp = arglist.list; sp; sp = sp->next) {
-		setvar0(n->nfor.var, sp->text);
+		setvar2(n->nfor.var, sp->text);
 		evaltree(n->nfor.body, flags);
 		if (evalskip) {
 			if (evalskip == SKIPCONT && --skipcount <= 0) {
@@ -8908,8 +8965,7 @@ parse_command_args(char **argv, const char **path)
  * Make a variable a local variable.  When a variable is made local, it's
  * value and flags are saved in a localvar structure.  The saved values
  * will be restored when the shell function returns.  We handle the name
- * "-" as a special case: it makes changes to "set +-options" local
- * (options will be restored on return from the function).
+ * "-" as a special case.
  */
 static void
 mklocal(char *name)
@@ -8917,37 +8973,21 @@ mklocal(char *name)
 	struct localvar *lvp;
 	struct var **vpp;
 	struct var *vp;
-	char *eq = strchr(name, '=');
 
 	INT_OFF;
-	/* Cater for duplicate "local". Examples:
-	 * x=0; f() { local x=1; echo $x; local x; echo $x; }; f; echo $x
-	 * x=0; f() { local x=1; echo $x; local x=2; echo $x; }; f; echo $x
-	 */
-	lvp = localvars;
-	while (lvp) {
-		if (lvp->vp && varcmp(lvp->vp->var_text, name) == 0) {
-			if (eq)
-				setvareq(name, 0);
-			/* else:
-			 * it's a duplicate "local VAR" declaration, do nothing
-			 */
-			return;
-		}
-		lvp = lvp->next;
-	}
-
-	lvp = ckzalloc(sizeof(*lvp));
+	lvp = ckzalloc(sizeof(struct localvar));
 	if (LONE_DASH(name)) {
 		char *p;
 		p = ckmalloc(sizeof(optlist));
 		lvp->text = memcpy(p, optlist, sizeof(optlist));
 		vp = NULL;
 	} else {
+		char *eq;
+
 		vpp = hashvar(name);
 		vp = *findvar(vpp, name);
+		eq = strchr(name, '=');
 		if (vp == NULL) {
-			/* variable did not exist yet */
 			if (eq)
 				setvareq(name, VSTRFIXED);
 			else
@@ -8957,15 +8997,12 @@ mklocal(char *name)
 		} else {
 			lvp->text = vp->var_text;
 			lvp->flags = vp->flags;
-			/* make sure neither "struct var" nor string gets freed
-			 * during (un)setting:
-			 */
 			vp->flags |= VSTRFIXED|VTEXTFIXED;
 			if (eq)
 				setvareq(name, 0);
 			else
 				/* "local VAR" unsets VAR: */
-				setvar0(name, NULL);
+				setvar(name, NULL, 0);
 		}
 	}
 	lvp->vp = vp;
@@ -9447,6 +9484,7 @@ evalcommand(union node *cmd, int flags)
 		if (evalfun(cmdentry.u.func, argc, argv, flags))
 			goto raise;
 		break;
+
 	} /* switch */
 
  out:
@@ -9456,7 +9494,7 @@ evalcommand(union node *cmd, int flags)
 		 * '_' in 'vi' command mode during line editing...
 		 * However I implemented that within libedit itself.
 		 */
-		setvar0("_", lastarg);
+		setvar2("_", lastarg);
 	}
 	popstackmark(&smark);
 }
@@ -9642,7 +9680,7 @@ preadfd(void)
 #if ENABLE_FEATURE_EDITING
  retry:
 	if (!iflag || g_parsefile->pf_fd != STDIN_FILENO)
-		nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1);
+		nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1, /*loop_on_EINTR:*/ 1);
 	else {
 		int timeout = -1;
 # if ENABLE_ASH_IDLE_TIMEOUT
@@ -9677,14 +9715,14 @@ preadfd(void)
 			}
 # if ENABLE_ASH_IDLE_TIMEOUT
 			else if (errno == EAGAIN && timeout > 0) {
-				puts("\007timed out waiting for input: auto-logout");
+				printf("\007timed out waiting for input: auto-logout\n");
 				exitshell();
 			}
 # endif
 		}
 	}
 #else
-	nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1);
+	nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1, /*loop_on_EINTR:*/ 1);
 #endif
 
 #if 0 /* disabled: nonblock_immune_read() handles this problem */
@@ -10029,8 +10067,10 @@ setinputstring(char *string)
 
 #if ENABLE_ASH_MAIL
 
-/* Hash of mtimes of mailboxes */
-static unsigned mailtime_hash;
+#define MAXMBOXES 10
+
+/* times of mailboxes */
+static time_t mailtime[MAXMBOXES];
 /* Set if MAIL or MAILPATH is changed. */
 static smallint mail_var_path_changed;
 
@@ -10046,14 +10086,13 @@ chkmail(void)
 	const char *mpath;
 	char *p;
 	char *q;
-	unsigned new_hash;
+	time_t *mtp;
 	struct stackmark smark;
 	struct stat statb;
 
 	setstackmark(&smark);
 	mpath = mpathset() ? mpathval() : mailval();
-	new_hash = 0;
-	for (;;) {
+	for (mtp = mailtime; mtp < mailtime + MAXMBOXES; mtp++) {
 		p = path_advance(&mpath, nullstr);
 		if (p == NULL)
 			break;
@@ -10067,15 +10106,16 @@ chkmail(void)
 #endif
 		q[-1] = '\0';                   /* delete trailing '/' */
 		if (stat(p, &statb) < 0) {
+			*mtp = 0;
 			continue;
 		}
-		/* Very simplistic "hash": just a sum of all mtimes */
-		new_hash += (unsigned)statb.st_mtime;
-	}
-	if (!mail_var_path_changed && mailtime_hash != new_hash) {
-		if (mailtime_hash != 0)
-			out2str("you have mail\n");
-		mailtime_hash = new_hash;
+		if (!mail_var_path_changed && statb.st_mtime != *mtp) {
+			fprintf(
+				stderr, "%s\n",
+				pathopt ? pathopt : "you have mail"
+			);
+		}
+		*mtp = statb.st_mtime;
 	}
 	mail_var_path_changed = 0;
 	popstackmark(&smark);
@@ -10347,10 +10387,8 @@ getopts(char *optstr, char *optvar, char **optfirst, int *param_optind, int *opt
 	char c = '?';
 	int done = 0;
 	int err = 0;
-	char sbuf[2];
+	char s[12];
 	char **optnext;
-
-	sbuf[1] = '\0';
 
 	if (*param_optind < 1)
 		return 1;
@@ -10378,9 +10416,9 @@ getopts(char *optstr, char *optvar, char **optfirst, int *param_optind, int *opt
 	for (q = optstr; *q != c;) {
 		if (*q == '\0') {
 			if (optstr[0] == ':') {
-				sbuf[0] = c;
-				/*sbuf[1] = '\0'; - already is */
-				err |= setvarsafe("OPTARG", sbuf, 0);
+				s[0] = c;
+				s[1] = '\0';
+				err |= setvarsafe("OPTARG", s, 0);
 			} else {
 				fprintf(stderr, "Illegal option -%c\n", c);
 				unsetvar("OPTARG");
@@ -10395,9 +10433,9 @@ getopts(char *optstr, char *optvar, char **optfirst, int *param_optind, int *opt
 	if (*++q == ':') {
 		if (*p == '\0' && (p = *optnext) == NULL) {
 			if (optstr[0] == ':') {
-				sbuf[0] = c;
-				/*sbuf[1] = '\0'; - already is */
-				err |= setvarsafe("OPTARG", sbuf, 0);
+				s[0] = c;
+				s[1] = '\0';
+				err |= setvarsafe("OPTARG", s, 0);
 				c = ':';
 			} else {
 				fprintf(stderr, "No arg for -%c option\n", c);
@@ -10416,10 +10454,11 @@ getopts(char *optstr, char *optvar, char **optfirst, int *param_optind, int *opt
  out:
 	*optoff = p ? p - *(optnext - 1) : -1;
 	*param_optind = optnext - optfirst + 1;
-	err |= setvarsafe("OPTIND", itoa(*param_optind), VNOFUNC);
-	sbuf[0] = c;
-	/*sbuf[1] = '\0'; - already is */
-	err |= setvarsafe(optvar, sbuf, 0);
+	fmtstr(s, sizeof(s), "%d", *param_optind);
+	err |= setvarsafe("OPTIND", s, VNOFUNC);
+	s[0] = c;
+	s[1] = '\0';
+	err |= setvarsafe(optvar, s, 0);
 	if (err) {
 		*param_optind = 1;
 		*optoff = -1;
@@ -10472,6 +10511,7 @@ struct heredoc {
 };
 
 static smallint tokpushback;           /* last token pushed back */
+static smallint parsebackquote;        /* nonzero if we are inside backquotes */
 static smallint quoteflag;             /* set if (part of) last token was quoted */
 static token_id_t lasttoken;           /* last token read (integer id Txxx) */
 static struct heredoc *heredoclist;    /* list of here documents to read */
@@ -10516,7 +10556,7 @@ static union node *andor(void);
 static union node *pipeline(void);
 static union node *parse_command(void);
 static void parseheredoc(void);
-static char nexttoken_ends_list(void);
+static char peektoken(void);
 static int readtoken(void);
 
 static union node *
@@ -10526,7 +10566,7 @@ list(int nlflag)
 	int tok;
 
 	checkkwd = CHKNL | CHKKWD | CHKALIAS;
-	if (nlflag == 2 && nexttoken_ends_list())
+	if (nlflag == 2 && peektoken())
 		return NULL;
 	n1 = NULL;
 	for (;;) {
@@ -10568,15 +10608,8 @@ list(int nlflag)
 				tokpushback = 1;
 			}
 			checkkwd = CHKNL | CHKKWD | CHKALIAS;
-			if (nexttoken_ends_list()) {
-				/* Testcase: "<<EOF; then <W".
-				 * It used to segfault w/o this check:
-				 */
-				if (heredoclist) {
-					raise_error_unexpected_syntax(-1);
-				}
+			if (peektoken())
 				return n1;
-			}
 			break;
 		case TEOF:
 			if (heredoclist)
@@ -11131,6 +11164,19 @@ readtoken1(int c, int syntax, char *eofmark, int striptabs)
 
 	IF_ASH_BASH_COMPAT(smallint bash_dollar_squote = 0;)
 
+#if __GNUC__
+	/* Avoid longjmp clobbering */
+	(void) &out;
+	(void) &quotef;
+	(void) &dblquote;
+	(void) &varnest;
+	(void) &arinest;
+	(void) &parenlevel;
+	(void) &dqvarnest;
+	(void) &oldstyle;
+	(void) &prevsyntax;
+	(void) &syntax;
+#endif
 	startlinno = g_parsefile->linno;
 	bqlist = NULL;
 	quotef = 0;
@@ -11200,9 +11246,11 @@ readtoken1(int c, int syntax, char *eofmark, int striptabs)
 				 && c != '$'
 				 && (c != '"' || eofmark != NULL)
 				) {
+					USTPUTC(CTLESC, out);
 					USTPUTC('\\', out);
 				}
-				USTPUTC(CTLESC, out);
+				if (SIT(c, SQSYNTAX) == CCTL)
+					USTPUTC(CTLESC, out);
 				USTPUTC(c, out);
 				quotef = 1;
 			}
@@ -11220,7 +11268,9 @@ readtoken1(int c, int syntax, char *eofmark, int striptabs)
 			goto quotemark;
 		case CENDQUOTE:
 			IF_ASH_BASH_COMPAT(bash_dollar_squote = 0;)
-			if (eofmark != NULL && varnest == 0) {
+			if (eofmark != NULL && arinest == 0
+			 && varnest == 0
+			) {
 				USTPUTC(c, out);
 			} else {
 				if (dqvarnest == 0) {
@@ -11254,9 +11304,10 @@ readtoken1(int c, int syntax, char *eofmark, int striptabs)
 				parenlevel--;
 			} else {
 				if (pgetc() == ')') {
-					c = CTLENDARI;
 					if (--arinest == 0) {
 						syntax = prevsyntax;
+						dblquote = (syntax == DQSYNTAX);
+						c = CTLENDARI;
 					}
 				} else {
 					/*
@@ -11298,7 +11349,7 @@ readtoken1(int c, int syntax, char *eofmark, int striptabs)
 	if (syntax == ARISYNTAX)
 		raise_error_syntax("missing '))'");
 #endif
-	if (syntax != BASESYNTAX && eofmark == NULL)
+	if (syntax != BASESYNTAX && !parsebackquote && eofmark == NULL)
 		raise_error_syntax("unterminated quoted string");
 	if (varnest != 0) {
 		startlinno = g_parsefile->linno;
@@ -11575,10 +11626,12 @@ parsesub: {
  do_pungetc:
 			pungetc();
 		}
+		if (dblquote || arinest)
+			flags |= VSQUOTE;
 		((unsigned char *)stackblock())[typeloc] = subtype | flags;
 		if (subtype != VSNORMAL) {
 			varnest++;
-			if (dblquote) {
+			if (dblquote || arinest) {
 				dqvarnest++;
 			}
 		}
@@ -11594,17 +11647,34 @@ parsesub: {
  */
 parsebackq: {
 	struct nodelist **nlpp;
+	smallint savepbq;
 	union node *n;
-	char *str;
+	char *volatile str;
+	struct jmploc jmploc;
+	struct jmploc *volatile savehandler;
 	size_t savelen;
 	smallint saveprompt = 0;
 
+#ifdef __GNUC__
+	(void) &saveprompt;
+#endif
+	savepbq = parsebackquote;
+	if (setjmp(jmploc.loc)) {
+		free(str);
+		parsebackquote = 0;
+		exception_handler = savehandler;
+		longjmp(exception_handler->loc, 1);
+	}
+	INT_OFF;
 	str = NULL;
 	savelen = out - (char *)stackblock();
 	if (savelen > 0) {
-		str = alloca(savelen);
+		str = ckmalloc(savelen);
 		memcpy(str, stackblock(), savelen);
 	}
+	savehandler = exception_handler;
+	exception_handler = &jmploc;
+	INT_ON;
 	if (oldstyle) {
 		/* We must read until the closing backquote, giving special
 		 * treatment to some slashes, and then push the string and
@@ -11675,6 +11745,7 @@ parsebackq: {
 		nlpp = &(*nlpp)->next;
 	*nlpp = stzalloc(sizeof(**nlpp));
 	/* (*nlpp)->next = NULL; - stzalloc did it */
+	parsebackquote = oldstyle;
 
 	if (oldstyle) {
 		saveprompt = doprompt;
@@ -11703,8 +11774,17 @@ parsebackq: {
 	if (str) {
 		memcpy(out, str, savelen);
 		STADJUST(savelen, out);
+		INT_OFF;
+		free(str);
+		str = NULL;
+		INT_ON;
 	}
-	USTPUTC(CTLBACKQ, out);
+	parsebackquote = savepbq;
+	exception_handler = savehandler;
+	if (arinest || dblquote)
+		USTPUTC(CTLBACKQ | CTLQUOTE, out);
+	else
+		USTPUTC(CTLBACKQ, out);
 	if (oldstyle)
 		goto parsebackq_oldreturn;
 	goto parsebackq_newreturn;
@@ -11718,11 +11798,22 @@ parsearith: {
 	if (++arinest == 1) {
 		prevsyntax = syntax;
 		syntax = ARISYNTAX;
+		USTPUTC(CTLARI, out);
+		if (dblquote)
+			USTPUTC('"', out);
+		else
+			USTPUTC(' ', out);
+	} else {
+		/*
+		 * we collapse embedded arithmetic expansion to
+		 * parenthesis, which should be equivalent
+		 */
+		USTPUTC('(', out);
 	}
-	USTPUTC(CTLARI, out);
 	goto parsearith_return;
 }
 #endif
+
 } /* end of readtoken */
 
 /*
@@ -11955,7 +12046,7 @@ readtoken(void)
 }
 
 static char
-nexttoken_ends_list(void)
+peektoken(void)
 {
 	int t;
 
@@ -12033,7 +12124,7 @@ expandstr(const char *ps)
 	n.narg.text = wordtext;
 	n.narg.backquote = backquotelist;
 
-	expandarg(&n, NULL, EXP_QUOTED);
+	expandarg(&n, NULL, 0);
 	return stackblock();
 }
 #endif
@@ -12115,7 +12206,7 @@ cmdloop(int top)
 		setstackmark(&smark);
 #if JOBS
 		if (doing_jobctl)
-			showjobs(SHOW_CHANGED|SHOW_STDERR);
+			showjobs(stderr, SHOW_CHANGED);
 #endif
 		inter = 0;
 		if (iflag && top) {
@@ -12790,7 +12881,7 @@ readcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 	 * to jump out of it.
 	 */
 	INT_OFF;
-	r = shell_builtin_read(setvar0,
+	r = shell_builtin_read(setvar2,
 		argptr,
 		bltinlookup("IFS"), /* can be NULL */
 		read_flags,
@@ -12808,11 +12899,21 @@ readcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 }
 
 static int FAST_FUNC
-umaskcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
+umaskcmd(int argc UNUSED_PARAM, char **argv)
 {
-	static const char permuser[3] ALIGN1 = "ogu";
+	static const char permuser[3] ALIGN1 = "ugo";
+	static const char permmode[3] ALIGN1 = "rwx";
+	static const short permmask[] ALIGN2 = {
+		S_IRUSR, S_IWUSR, S_IXUSR,
+		S_IRGRP, S_IWGRP, S_IXGRP,
+		S_IROTH, S_IWOTH, S_IXOTH
+	};
 
+	/* TODO: use bb_parse_mode() instead */
+
+	char *ap;
 	mode_t mask;
+	int i;
 	int symbolic_mode = 0;
 
 	while (nextopt("S") != '\0') {
@@ -12824,43 +12925,45 @@ umaskcmd(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 	umask(mask);
 	INT_ON;
 
-	if (*argptr == NULL) {
+	ap = *argptr;
+	if (ap == NULL) {
 		if (symbolic_mode) {
-			char buf[sizeof(",u=rwx,g=rwx,o=rwx")];
+			char buf[18];
 			char *p = buf;
-			int i;
 
-			i = 2;
-			for (;;) {
-				*p++ = ',';
+			for (i = 0; i < 3; i++) {
+				int j;
+
 				*p++ = permuser[i];
 				*p++ = '=';
-				/* mask is 0..0uuugggooo. i=2 selects uuu bits */
-				if (!(mask & 0400)) *p++ = 'r';
-				if (!(mask & 0200)) *p++ = 'w';
-				if (!(mask & 0100)) *p++ = 'x';
-				mask <<= 3;
-				if (--i < 0)
-					break;
+				for (j = 0; j < 3; j++) {
+					if ((mask & permmask[3 * i + j]) == 0) {
+						*p++ = permmode[j];
+					}
+				}
+				*p++ = ',';
 			}
-			*p = '\0';
-			puts(buf + 1);
+			*--p = 0;
+			puts(buf);
 		} else {
-			out1fmt("%04o\n", mask);
+			out1fmt("%.4o\n", mask);
 		}
 	} else {
-		char *modestr = *argptr;
-                /* numeric umasks are taken as-is */
-                /* symbolic umasks are inverted: "umask a=rx" calls umask(222) */
-		if (!isdigit(modestr[0]))
-			mask ^= 0777;
-		mask = bb_parse_mode(modestr, mask);
-		if ((unsigned)mask > 0777) {
-			ash_msg_and_raise_error("illegal mode: %s", modestr);
+		if (isdigit((unsigned char) *ap)) {
+			mask = 0;
+			do {
+				if (*ap >= '8' || *ap < '0')
+					ash_msg_and_raise_error(msg_illnum, argv[1]);
+				mask = (mask << 3) + (*ap - '0');
+			} while (*++ap != '\0');
+			umask(mask);
+		} else {
+			mask = ~mask & 0777;
+			if (!bb_parse_mode(ap, &mask)) {
+				ash_msg_and_raise_error("illegal mode: %s", ap);
+			}
+			umask(~mask & 0777);
 		}
-		if (!isdigit(modestr[0]))
-			mask ^= 0777;
-		umask(mask);
 	}
 	return 0;
 }
@@ -12939,14 +13042,14 @@ init(void)
 			}
 		}
 
-		setvar0("PPID", utoa(getppid()));
+		setvar2("PPID", utoa(getppid()));
 #if ENABLE_ASH_BASH_COMPAT
 		p = lookupvar("SHLVL");
 		setvar("SHLVL", utoa((p ? atoi(p) : 0) + 1), VEXPORT);
 		if (!lookupvar("HOSTNAME")) {
 			struct utsname uts;
 			uname(&uts);
-			setvar0("HOSTNAME", uts.nodename);
+			setvar2("HOSTNAME", uts.nodename);
 		}
 #endif
 		p = lookupvar("PWD");
@@ -13127,7 +13230,7 @@ int ash_main(int argc UNUSED_PARAM, char **argv)
 			exitshell();
 		}
 		if (e == EXINT) {
-			newline_and_flush(stderr);
+			outcslow('\n', stderr);
 		}
 
 		popstackmark(&smark);
@@ -13202,7 +13305,7 @@ int ash_main(int argc UNUSED_PARAM, char **argv)
 				hp = lookupvar("HOME");
 				if (hp) {
 					hp = concat_path_file(hp, ".ash_history");
-					setvar0("HISTFILE", hp);
+					setvar2("HISTFILE", hp);
 					free((char*)hp);
 					hp = lookupvar("HISTFILE");
 				}

@@ -44,28 +44,11 @@ static unsigned long long scale(unsigned long d)
 	return ((unsigned long long)d * G.mem_unit) >> G_unit_steps;
 }
 
-static unsigned long parse_cached_kb(void)
-{
-	char buf[60]; /* actual lines we expect are ~30 chars or less */
-	FILE *fp;
-	unsigned long cached = 0;
-
-	fp = xfopen_for_read("/proc/meminfo");
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		if (sscanf(buf, "Cached: %lu %*s\n", &cached) == 1)
-			break;
-	}
-	if (ENABLE_FEATURE_CLEAN_UP)
-		fclose(fp);
-
-	return cached;
-}
 
 int free_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int free_main(int argc UNUSED_PARAM, char **argv IF_NOT_DESKTOP(UNUSED_PARAM))
 {
 	struct sysinfo info;
-	unsigned long long cached;
 
 	INIT_G();
 
@@ -90,47 +73,49 @@ int free_main(int argc UNUSED_PARAM, char **argv IF_NOT_DESKTOP(UNUSED_PARAM))
 		}
 	}
 #endif
-	printf("       %11s%11s%11s%11s%11s%11s\n"
-	"Mem:   ",
+
+	sysinfo(&info);
+
+	/* Kernels prior to 2.4.x will return info.mem_unit==0, so cope... */
+	G.mem_unit = (info.mem_unit ? info.mem_unit : 1);
+
+	printf("     %13s%13s%13s%13s%13s\n",
 		"total",
 		"used",
 		"free",
-		"shared", "buffers", "cached" /* swap and total don't have these columns */
+		"shared", "buffers" /* swap and total don't have these columns */
+		/* procps version 3.2.8 also shows "cached" column, but
+		 * sysinfo() does not provide this value, need to parse
+		 * /proc/meminfo instead and get "Cached: NNN kB" from there.
+		 */
 	);
 
-	sysinfo(&info);
-	/* Kernels prior to 2.4.x will return info.mem_unit==0, so cope... */
-	G.mem_unit = (info.mem_unit ? info.mem_unit : 1);
-	/* Extract cached from /proc/meminfo and convert to mem_units */
-	cached = ((unsigned long long) parse_cached_kb() * 1024) / G.mem_unit;
+#define FIELDS_5 "%13llu%13llu%13llu%13llu%13llu\n"
+#define FIELDS_3 (FIELDS_5 + 2*6)
+#define FIELDS_2 (FIELDS_5 + 3*6)
 
-#define FIELDS_6 "%11llu%11llu%11llu%11llu%11llu%11llu\n"
-#define FIELDS_3 (FIELDS_6 + 3*6)
-#define FIELDS_2 (FIELDS_6 + 4*6)
-
-	printf(FIELDS_6,
-		scale(info.totalram),                //total
-		scale(info.totalram - info.freeram), //used
-		scale(info.freeram),                 //free
-		scale(info.sharedram),               //shared
-		scale(info.bufferram),               //buffers
-		scale(cached)                        //cached
+	printf("Mem: ");
+	printf(FIELDS_5,
+		scale(info.totalram),
+		scale(info.totalram - info.freeram),
+		scale(info.freeram),
+		scale(info.sharedram),
+		scale(info.bufferram)
 	);
 	/* Show alternate, more meaningful busy/free numbers by counting
-	 * buffer cache as free memory. */
-	printf("-/+ buffers/cache:");
-	cached += info.freeram;
-	cached += info.bufferram;
+	 * buffer cache as free memory (make it "-/+ buffers/cache"
+	 * if/when we add support for "cached" column): */
+	printf("-/+ buffers:      ");
 	printf(FIELDS_2,
-		scale(info.totalram - cached), //used
-		scale(cached)                  //free
+		scale(info.totalram - info.freeram - info.bufferram),
+		scale(info.freeram + info.bufferram)
 	);
 #if BB_MMU
-	printf("Swap:  ");
+	printf("Swap:");
 	printf(FIELDS_3,
-		scale(info.totalswap),                 //total
-		scale(info.totalswap - info.freeswap), //used
-		scale(info.freeswap)                   //free
+		scale(info.totalswap),
+		scale(info.totalswap - info.freeswap),
+		scale(info.freeswap)
 	);
 #endif
 	return EXIT_SUCCESS;

@@ -57,48 +57,48 @@ struct spwd {
 
 #ifdef UNUSED_FOR_NOW
 /* Open database for reading */
-void FAST_FUNC setspent(void);
+extern void setspent(void);
 
 /* Close database */
-void FAST_FUNC endspent(void);
+extern void endspent(void);
 
 /* Get next entry from database, perhaps after opening the file */
-struct spwd* FAST_FUNC getspent(void);
+extern struct spwd *getspent(void);
 
 /* Get shadow entry matching NAME */
-struct spwd* FAST_FUNC getspnam(const char *__name);
+extern struct spwd *getspnam(const char *__name);
 
 /* Read shadow entry from STRING */
-struct spwd* FAST_FUNC sgetspent(const char *__string);
+extern struct spwd *sgetspent(const char *__string);
 
 /* Read next shadow entry from STREAM */
-struct spwd* FAST_FUNC fgetspent(FILE *__stream);
+extern struct spwd *fgetspent(FILE *__stream);
 
 /* Write line containing shadow password entry to stream */
-int FAST_FUNC putspent(const struct spwd *__p, FILE *__stream);
+extern int putspent(const struct spwd *__p, FILE *__stream);
 
 /* Reentrant versions of some of the functions above */
-int FAST_FUNC getspent_r(struct spwd *__result_buf, char *__buffer,
+extern int getspent_r(struct spwd *__result_buf, char *__buffer,
 		size_t __buflen, struct spwd **__result);
 #endif
 
-int FAST_FUNC getspnam_r(const char *__name, struct spwd *__result_buf,
+extern int getspnam_r(const char *__name, struct spwd *__result_buf,
 		char *__buffer, size_t __buflen,
 		struct spwd **__result);
 
 #ifdef UNUSED_FOR_NOW
-int FAST_FUNC sgetspent_r(const char *__string, struct spwd *__result_buf,
+extern int sgetspent_r(const char *__string, struct spwd *__result_buf,
 		char *__buffer, size_t __buflen,
 		struct spwd **__result);
 
-int FAST_FUNC fgetspent_r(FILE *__stream, struct spwd *__result_buf,
+extern int fgetspent_r(FILE *__stream, struct spwd *__result_buf,
 		char *__buffer, size_t __buflen,
 		struct spwd **__result);
 /* Protect password file against multi writers */
-int FAST_FUNC lckpwdf(void);
+extern int lckpwdf(void);
 
 /* Unlock password file */
-int FAST_FUNC ulckpwdf(void);
+extern int ulckpwdf(void);
 #endif
 
 POP_SAVED_FUNCTION_VISIBILITY

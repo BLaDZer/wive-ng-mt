@@ -87,6 +87,7 @@ static int FAST_FUNC print_route(const struct sockaddr_nl *who UNUSED_PARAM,
 	inet_prefix dst;
 	inet_prefix src;
 	int host_len = -1;
+	SPRINT_BUF(b1);
 
 	if (n->nlmsg_type != RTM_NEWROUTE && n->nlmsg_type != RTM_DELROUTE) {
 		fprintf(stderr, "Not a route: %08x %08x %08x\n",
@@ -235,7 +236,7 @@ static int FAST_FUNC print_route(const struct sockaddr_nl *who UNUSED_PARAM,
 		printf("Deleted ");
 	}
 	if (r->rtm_type != RTN_UNICAST /* && !G_filter.type - always 0 */) {
-		printf("%s ", rtnl_rtntype_n2a(r->rtm_type));
+		printf("%s ", rtnl_rtntype_n2a(r->rtm_type, b1));
 	}
 
 	if (tb[RTA_DST]) {
