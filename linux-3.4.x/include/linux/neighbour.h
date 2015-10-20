@@ -112,12 +112,12 @@ enum {
 	NDTPA_APP_PROBES,		/* u32 */
 	NDTPA_UCAST_PROBES,		/* u32 */
 	NDTPA_MCAST_PROBES,		/* u32 */
-	NDTPA_MCAST_REPROBES,		/* u32 */
 	NDTPA_ANYCAST_DELAY,		/* u64, msecs */
 	NDTPA_PROXY_DELAY,		/* u64, msecs */
 	NDTPA_PROXY_QLEN,		/* u32 */
 	NDTPA_LOCKTIME,			/* u64, msecs */
 	NDTPA_QUEUE_LENBYTES,		/* u32 */
+	NDTPA_MCAST_REPROBES,		/* u32 */
 	__NDTPA_MAX
 };
 #define NDTPA_MAX (__NDTPA_MAX - 1)
