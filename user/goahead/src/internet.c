@@ -2476,6 +2476,8 @@ const parameter_fetch_t chilli_vars[] =
 	{ T("sPriDns"),			"chilli_dns1",			0,       T("") },
 	{ T("sSecDns"),			"chilli_dns2",			0,       T("") },
 	{ T("sDomain"),			"chilli_domain",		0,       T("") },
+	{ T("sStartIP"),		"chilli_dhcpstart",		0,       T("") },
+	{ T("sEndIP"),			"chilli_dhcpend",		0,       T("") },
 	{ T("sLease"),			"chilli_lease",			0,       T("") },
 	{ T("sRadServer1"),		"chilli_radiusserver1",		0,       T("") },
 	{ T("sRadServer2"),		"chilli_radiusserver2",		0,       T("") },

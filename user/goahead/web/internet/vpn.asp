@@ -275,7 +275,8 @@ function initializeForm(form)
 		var lanauth_access   = '<% getCfgGeneral(1, "LANAUTH_LVL"); %>';
 
 		// Add specific option
-		form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '3');
+		if (form.vpn_type.options.length == 3)
+			form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '3');
 		form.lanauth_access.value      = lanauth_access;
 	}
 

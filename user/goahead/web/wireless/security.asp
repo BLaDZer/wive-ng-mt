@@ -485,9 +485,9 @@ function securityMode(c_f)
 		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
 		document.getElementById("wpa_key_renewal_interval").style.display = '';
 		document.security_form.keyRenewalInterval.disabled = false;
-		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
+/*		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
 			document.security_form.cipher[1].checked = true;
-		}
+		} */
 	}else if (security_mode == "WPA" || security_mode == "WPA2" || security_mode == "WPA1WPA2") //wpa enterprise
 	{
 		document.getElementById("div_wpa").style.visibility = "visible";
@@ -530,9 +530,9 @@ function securityMode(c_f)
 		if(security_mode == "WPA1WPA2"){
 			document.security_form.cipher[2].disabled = false;
 		}
-		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
+/*		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
 			document.security_form.cipher[1].checked = true;
-		}
+		} */
 	}else if (security_mode == "IEEE8021X"){ // 802.1X-WEP
 		document.getElementById("div_8021x_wep").style.visibility = "visible";
 		document.getElementById("div_8021x_wep").style.display = '';
@@ -764,12 +764,19 @@ function LoadFields(MBSSID)
 		document.getElementById("security_shared_mode").selectedIndex = 0;
 
 	// WPA
-	if(EncrypType[MBSSID] == "TKIP")
+	if(EncrypType[MBSSID] == "TKIP") {
 		document.security_form.cipher[0].checked = true;
-	else if(EncrypType[MBSSID] == "AES")
+		document.security_form.cipher[1].checked = false;
+		document.security_form.cipher[2].checked = false;
+	} else if(EncrypType[MBSSID] == "AES") {
+		document.security_form.cipher[0].checked = false;
 		document.security_form.cipher[1].checked = true;
-	else if(EncrypType[MBSSID] == "TKIPAES")
+		document.security_form.cipher[2].checked = false;
+	} else if(EncrypType[MBSSID] == "TKIPAES") {
+		document.security_form.cipher[0].checked = false;
+		document.security_form.cipher[1].checked = false;
 		document.security_form.cipher[2].checked = true;
+	}
 
 	document.getElementById("passphrase").value = WPAPSK[MBSSID];
 	document.getElementById("keyRenewalInterval").value = RekeyInterval[MBSSID];
