@@ -1360,29 +1360,30 @@
 25) kernel: drivercore: fix unregistration path of platform devices.<br>
 26) kernel: usb: xhci: follow upstream.<br>
 27) kernel: usb: option: add ZTE PIDs.<br>
-28) kernel: usb/core: update power budget for SuperSpeed.<br>
-29) kernel: usb: asix: fix crash on skb alloc failure.<br>
-30) kernel: net: initialize flow flags in input path.<br>
-31) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-32) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-33) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-34) kernel: net: fix skb csum races when peeking.<br>
-35) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-36) kernel: net: af_key: net: fix RCU splat.<br>
-37) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-38) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-39) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-40) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-41) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-42) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-43) kernel: net: ipv4/6: compute net once in some cases.<br>
-44) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-45) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-46) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-47) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-48) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-49) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-50) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+28) kernel: usb: xHCI: backports from 3.10 tree.<br>
+29) kernel: usb/core: update power budget for SuperSpeed.<br>
+30) kernel: usb: asix: fix crash on skb alloc failure.<br>
+31) kernel: net: initialize flow flags in input path.<br>
+32) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+33) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+34) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+35) kernel: net: fix skb csum races when peeking.<br>
+36) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+37) kernel: net: af_key: net: fix RCU splat.<br>
+38) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+39) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+40) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+41) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+42) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+43) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+44) kernel: net: ipv4/6: compute net once in some cases.<br>
+45) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+46) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+47) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+48) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+49) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+50) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+51) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <b
 r>
 <br>
