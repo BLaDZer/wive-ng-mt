@@ -125,7 +125,7 @@ case "$1" in
 	fi
 
 	# if dgw iface changed need fullrenew procedure
-	DGW_IF_CHANGED=`ip -4 route show default | grep -v "dev $interface " | sed 's,.*dev \([^ ]*\) .*,\1,g''`
+	DGW_IF_CHANGED=`ip -4 route show default | grep -v "dev $interface " | sed 's,.*dev \([^ ]*\) .*,\1,g'`
 	if [ "$DGW_IF_CHANGED" =! "" ]; then
 	    FULL_RENEW=1
 	fi

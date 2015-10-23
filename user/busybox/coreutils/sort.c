@@ -25,14 +25,14 @@
 //usage:     "\n	-f	Ignore case"
 //usage:     "\n	-g	General numerical sort"
 //usage:     "\n	-i	Ignore unprintable characters"
-//usage:     "\n	-k	Sort key"
 //usage:     "\n	-M	Sort month"
 //usage:	)
+//-h, --human-numeric-sort: compare human readable numbers (e.g., 2K 1G)
 //usage:     "\n	-n	Sort numbers"
 //usage:	IF_FEATURE_SORT_BIG(
 //usage:     "\n	-o	Output to file"
-//usage:     "\n	-k	Sort by key"
-//usage:     "\n	-t CHAR	Key separator"
+//usage:     "\n	-t CHAR	Field separator"
+//usage:     "\n	-k N[,M] Sort by Nth field"
 //usage:	)
 //usage:     "\n	-r	Reverse sort order"
 //usage:	IF_FEATURE_SORT_BIG(
@@ -106,7 +106,9 @@ static struct sort_key {
 
 static char *get_key(char *str, struct sort_key *key, int flags)
 {
-	int start = 0, end = 0, len, j;
+	int start = start; /* for compiler */
+	int end;
+	int len, j;
 	unsigned i;
 
 	/* Special case whole string, so we don't have to make a copy */
@@ -123,12 +125,15 @@ static char *get_key(char *str, struct sort_key *key, int flags)
 			end = len;
 		/* Loop through fields */
 		else {
+			unsigned char ch = 0;
+
 			end = 0;
 			for (i = 1; i < key->range[2*j] + j; i++) {
 				if (key_separator) {
 					/* Skip body of key and separator */
-					while (str[end]) {
-						if (str[end++] == key_separator)
+					while ((ch = str[end]) != '\0') {
+							end++;
+						if (ch == key_separator)
 							break;
 					}
 				} else {
@@ -136,12 +141,20 @@ static char *get_key(char *str, struct sort_key *key, int flags)
 					while (isspace(str[end]))
 						end++;
 					/* Skip body of key */
-					while (str[end]) {
+					while (str[end] != '\0') {
 						if (isspace(str[end]))
 							break;
 						end++;
 					}
 				}
+			}
+			/* Remove last delim: "abc:def:" => "abc:def" */
+			if (j && ch) {
+				//if (str[end-1] != key_separator)
+				//  bb_error_msg(_and_die("BUG! "
+				//  "str[start:%d,end:%d]:'%.*s'",
+				//  start, end, (int)(end-start), &str[start]);
+				end--;
 			}
 		}
 		if (!j) start = end;
@@ -163,7 +176,8 @@ static char *get_key(char *str, struct sort_key *key, int flags)
 		if (start > len) start = len;
 	}
 	/* Make the copy */
-	if (end < start) end = start;
+	if (end < start)
+		end = start;
 	str = xstrndup(str+start, end-start);
 	/* Handle -d */
 	if (flags & FLAG_d) {
