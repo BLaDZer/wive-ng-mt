@@ -32,13 +32,13 @@ usage() {
 
 disable_all_ports() {
         for port in `seq 0 4`; do
-	    mii_mgr -s -p $port -r 0 -v 0x0800
+	    mii_mgr -s -p $port -r 0 -v 0x0800 > /dev/null 2>&1
 	done
 }
 
 enable_all_ports() {
 	for port in `seq 0 4`; do
-	    mii_mgr -s -p $port -r 0 -v 0x9000
+	    mii_mgr -s -p $port -r 0 -v 0x9000 > /dev/null 2>&1
 	done
 }
 
@@ -66,7 +66,7 @@ link_down() {
 	esac
 	new=$pre$rep$post
 	# power down
-	mii_mgr -s -p "$1" -r 0 -v $new
+	mii_mgr -s -p "$1" -r 0 -v $new > /dev/null 2>&1
 }
 
 link_up() {
@@ -92,9 +92,9 @@ link_up() {
 	esac
 	new=$pre$rep$post
 	# power up
-	mii_mgr -s -p "$1" -r 0 -v $new
+	mii_mgr -s -p "$1" -r 0 -v $new > /dev/null 2>&1
 	# link up
-	mii_mgr -s -p "$1" -r 0 -v 0x9000
+	mii_mgr -s -p "$1" -r 0 -v 0x9000 > /dev/null 2>&1
 }
 
 reset_all_phys() {
