@@ -1,1 +1,0 @@
-#define CONFIG_EXTRA_CFLAGS "-Os -ffast-math -fforce-addr -fno-stack-protector -fno-strict-overflow -fno-var-tracking-assignments -fno-aggressive-loop-optimizations -fno-tree-slsr -fomit-frame-pointer -fno-delete-null-pointer-checks -femit-struct-debug-baseonly -fno-var-tracking -fno-strict-aliasing"
