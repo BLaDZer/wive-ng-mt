@@ -134,7 +134,7 @@ config FEATURE_UDHCP_8021Q
 
 config UDHCPC_DEFAULT_SCRIPT
 	string "Absolute path to config script"
-	default "/usr/share/udhcpc/default.script"
+	default "/etc/scripts/udhcpc-script"
 	depends on UDHCPC
 	help
 	  This script is called after udhcpc receives an answer. See

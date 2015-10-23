@@ -49,7 +49,7 @@ udhcpc_conf() {
     else
 	rd_support=""
     fi
-    UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a -s /bin/udhcpc.sh -p /var/run/udhcpc.pid \
+    UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a -s /etc/scripts/udhcpc-script -p /var/run/udhcpc.pid \
 		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName -f"
 
     # remove routes updated flags
