@@ -28,14 +28,31 @@
  * SUCH DAMAGE.
  */
 
-#if defined(CONFIG_RAETH_ESW)				/* internal ralink esw */
+#include <linux/autoconf.h>
+#if defined(CONFIG_RAETH_ESW)		/* internal ralink esw */
 #define WAN_DEF "eth2.2"
-#elif defined(CONFIG_RAETH_GMAC2)			/* vetisse or rtl8367m dual phy */
+#elif defined(CONFIG_RAETH_GMAC2)	/* vetisse or rtl8367m dual phy */
 #define WAN_DEF "eth3"
 #else
-#define WAN_DEF "eth2.2"				/* this is stub support only switched devices */
+#define WAN_DEF "eth2.2"		/* this is stub support only switched devices */
 #endif
 #define LAN_DEF "br0"
+
+#include <errno.h>
+#include <err.h>
+
+#ifndef err
+#define err(exitcode, format, args...) errx(exitcode, format ": %s", ## args, strerror(errno))
+#endif
+#ifndef errx
+#define errx(exitcode, format, args...) { warnx(format, ## args); exit(exitcode); }
+#endif
+#ifndef warn
+#define warn(format, args...) warnx(format ": %s", ## args, strerror(errno))
+#endif
+#ifndef warnx
+#define warnx(format, args...) fprintf(stderr, format "\n", ## args)
+#endif
 
 #ifdef __KAME__
 #define IN6_IFF_INVALID (IN6_IFF_ANYCAST|IN6_IFF_TENTATIVE|\

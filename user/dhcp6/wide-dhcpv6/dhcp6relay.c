@@ -53,8 +53,6 @@
 #include <syslog.h>
 #include <unistd.h>
 #include <stdlib.h>		/* XXX: freebsd2 needs this for opt{arg,ind} */
-#include <errno.h>
-#include <err.h>
 #include <string.h>
 
 #include <dhcp6.h>

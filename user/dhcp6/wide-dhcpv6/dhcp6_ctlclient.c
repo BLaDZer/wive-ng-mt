@@ -48,7 +48,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <netdb.h>
-#include <err.h>
+#include <common.h>
 
 #include <control.h>
 #include <auth.h>

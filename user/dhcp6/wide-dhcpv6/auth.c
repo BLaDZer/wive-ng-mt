@@ -64,7 +64,6 @@
 
 #include <syslog.h>
 #include <string.h>
-#include <errno.h>
 
 #include <dhcp6.h>
 #include <config.h>

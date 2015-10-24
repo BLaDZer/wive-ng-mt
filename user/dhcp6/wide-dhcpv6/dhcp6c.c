@@ -64,8 +64,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <errno.h>
-#include <err.h>
 #include <ifaddrs.h>
 
 #include <dhcp6.h>

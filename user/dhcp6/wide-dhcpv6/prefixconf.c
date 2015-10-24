@@ -46,7 +46,6 @@
 #include <netinet6/nd6.h>
 #endif
 
-#include <errno.h>
 #include <syslog.h>
 #include <string.h>
 #include <stdio.h>

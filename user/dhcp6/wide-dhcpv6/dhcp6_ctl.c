@@ -51,7 +51,6 @@
 #include <string.h>
 #include <syslog.h>
 #include <netdb.h>
-#include <errno.h>
 
 #include <dhcp6.h>
 #include <config.h>

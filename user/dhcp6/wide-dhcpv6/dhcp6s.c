@@ -43,8 +43,6 @@
 #  include <time.h>
 # endif
 #endif
-#include <errno.h>
-#include <err.h>
 
 #include <net/if.h>
 #ifdef __FreeBSD__
@@ -63,7 +61,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <err.h>
 #include <netdb.h>
 #include <limits.h>
 

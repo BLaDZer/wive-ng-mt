@@ -38,6 +38,7 @@
 #include <netinet/in.h>
 
 #include <errno.h>
+#include <err.h>
 #include <syslog.h>
 #include <string.h>
 #ifdef HAVE_STDARG_H

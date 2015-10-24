@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ifaddrs.h>
-#include <errno.h>
 
 #include <dhcp6.h>
 #include <config.h>

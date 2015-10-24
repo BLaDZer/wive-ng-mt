@@ -47,7 +47,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ifaddrs.h>
-#include <errno.h>
 #ifdef __linux__
 #ifndef __USE_XOPEN
 #define __USE_XOPEN
