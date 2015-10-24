@@ -1860,4 +1860,4 @@ CONFIG_BCM_NAT=y
 #
 # Ralink Devices
 #
-# CONFIG_RT3XXX_EHCI_OHCI is not set
+CONFIG_RT3XXX_EHCI_OHCI=y
