@@ -108,7 +108,7 @@ VOID APPeerProbeReqAction(
 
 		if (mbss->ProbeRspRssiThreshold != 0)
 		{
-			CHAR rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 

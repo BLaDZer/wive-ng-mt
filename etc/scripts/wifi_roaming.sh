@@ -29,6 +29,9 @@ fi
 if [ "$AuthRspFail" != "" ]; then
     iwpriv "$1" set AuthRspFail="$AuthRspFail"
 fi
+if [ "$AuthRspRssi" != "" ]; then
+    iwpriv "$1" set AuthRspRssi="$AuthRspRssi"
+fi
 if [ "$AssocReqRssiThres" != "" ]; then
     iwpriv "$1" set AssocReqRssiThres="$AssocReqRssiThres"
 fi
