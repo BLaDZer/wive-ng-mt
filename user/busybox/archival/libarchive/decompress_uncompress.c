@@ -168,7 +168,7 @@ unpack_Z_stream(transformer_state_t *xstate)
 		if (insize < (int) (IBUFSIZ + 64) - IBUFSIZ) {
 			rsize = safe_read(xstate->src_fd, inbuf + insize, IBUFSIZ);
 			if (rsize < 0)
-				bb_error_msg(bb_msg_read_error);
+				bb_error_msg_and_die(bb_msg_read_error);
 			insize += rsize;
 		}
 

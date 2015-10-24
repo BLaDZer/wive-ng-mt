@@ -1333,7 +1333,7 @@
 <br>
 <br>
 <b>3.6.x</b><br>
-1) busybox: update to 1.24.0 version.<br>
+1) busybox: update to 1.24.1 version.<br>
 2) libcurl: up to 7.45.0 version.<br>
 3) coovachilli: up to version 1.3.1.3 commit: commit 2b4db5a).<br>
 4) xupnpd: up to 1.033 version commit 5c3ff1.<br>
