@@ -1348,7 +1348,7 @@
 13) init.d: serialize network->services reconfigure scripts run.<br>
 14) init.d: reset all port and restore defaults particion (workaround eee bug at some samples in AP bridge mode).<br>
 15) init.d: fix mmc mount speed.<br>
-16) init.d: iptables: rwork ipv6 rules sets.<br>
+16) init.d: iptables: rework ipv6 rules generate (more readable).<br>
 17) kernel: up to 3.4.110 version.<br>
 18) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
 19) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
