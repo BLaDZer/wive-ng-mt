@@ -68,6 +68,7 @@
 #include <linux/module.h>
 #include <linux/sysctl.h>
 #include <linux/kernel.h>
+#include <linux/prefetch.h>
 #include <net/dst.h>
 #include <net/tcp.h>
 #include <net/inet_common.h>
@@ -3267,6 +3268,8 @@ static int tcp_clean_rtx_queue(struct sock *sk, int prior_fackets,
 
 			fully_acked = 0;
 		} else {
+			/* Speedup tcp_unlink_write_queue() and next loop */
+			prefetchw(skb->next);
 			acked_pcount = tcp_skb_pcount(skb);
 		}
 
@@ -3688,6 +3691,9 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	int pkts_acked = 0;
 	int previous_packets_out = 0;
 	int frto_cwnd = 0;
+
+	/* We very likely will need to access write queue head. */
+	prefetchw(sk->sk_write_queue.next);
 
 	/* If the ack is older than previous acks
 	 * then we can probably ignore it.

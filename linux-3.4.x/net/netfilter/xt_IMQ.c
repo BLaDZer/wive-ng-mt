@@ -9,7 +9,6 @@
 
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 #include "../nat/hw_nat/ra_nat.h"
-#include "../nat/hw_nat/frame_engine.h"
 #endif
 
 static unsigned int imq_target(struct sk_buff *pskb,
