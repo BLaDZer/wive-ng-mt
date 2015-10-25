@@ -174,37 +174,37 @@ checkmacandfactory() {
     # vend mask must not be vald if nvram defaults loaded
     #
 
-    # read and check defaults macs from factory
+    # read and check defaults macs from factory and nvram
     if [ -f /bin/eth_mac ] && [ "$CHECKMAC" = "YES" ]; then
-        RALINKMAC="00:0C:43"
-        ISDEFWMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
-        ISDEFLMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
-        FIRSTBITSW=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-        FIRSTBITSL=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-        if [ "$ISDEFWMAC" != "1" ] && [ "$ISDEFLMAC" != "1" ] && [ $FIRSTBITSW != "FF" ] && [ $FIRSTBITSL != "FF" ]; then
-	    OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	    OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	    $LOG "Factory mac adresess: $OLDMACWAN $OLDMACLAN"
-	else
-	    OLDMACWAN=""
-	    OLDMACLAN=""
-	fi
-	if [ $FIRSTBITSW = "FF" ] || [ $FIRSTBITSL = "FF" ]; then
-	    $LOG "Mac adresses poor. Clear and load defaults to nvram."
-	    ########################################
+	# if check byte is FF - factory is poor need rebuild
+        FIRSTBITSLAN=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+        FIRSTBITSWAN=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+        FIRSTBITSWLAN=`eth_mac r wlan | cut -f -1 -d : | awk '{ print toupper($1) }'`
+	if [ "$FIRSTBITSLAN" = "FF" ] || [ "$FIRSTBITSWAN" = "FF" ] || [ "$FIRSTBITSWLAN" = "FF" ]; then
+	    $LOG "Factory part poor. Clear and load defaults to nvram and factory."
+	    fs burnrf
 	    # force rebuild mac if reset to defaults
-	    ########################################
 	    FORCE_REBUILD_MAC="YES"
 	fi
-	if [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ]; then
-	    # check macs consistent
+	# chek chipmaker range
+        RALINKMAC="00:0C:43"
+        ISDEFWANMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
+        ISDEFLANMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
+        ISDEFWLANMAC=`eth_mac r wlan | grep -i "$RALINKMAC" -c`
+        if [ "$ISDEFWANMAC" != "1" ] && [ "$ISDEFLANMAC" != "1" ] && [ "$ISDEFWLANMAC" != "1" ] && [ "$FORCE_REBUILD_MAC" != "YES" ]; then
+	    # MAC in not chipmaker range test consistemn with nvram
+	    # read factory macs
+	    OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    OLDMACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	    # test consistent with nvram
 	    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$OLDMACWAN" -c`
 	    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$OLDMACLAN" -c`
-    	    if [ $MAC_TEST = "0" ] || [ $LANMAC_TEST = "0" ]; then
+	    WLANMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$OLDMACWLAN" -c`
+	    $LOG "Factory mac adresess: $OLDMACWAN $OLDMACLAN $OLDMACWLAN"
+    	    if [ "$MAC_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$WLANMAC_TEST" = "0" ]; then
 	        $LOG "MACs not consistent in factory and nvram, write factory MACs to nvram."
-		########################################
 		# force rebuild mac if unconsistent
-		########################################
 		FORCE_REBUILD_MAC="YES"
 		DONTTOUCHFACTORY="YES"
 	    fi
@@ -217,9 +217,8 @@ checkmacandfactory() {
     WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
     LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
     if [ "$CHECKMAC" != "NO" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
-        if [ $MAC_TEST = "0" ] || [ $WMAC_TEST = "0" ] || [ $WMAC2_TEST = "0" ] || [ $LANMAC_TEST = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
+        if [ "$MAC_TEST" = "0" ] || [ "$WMAC_TEST" = "0" ] || [ "$WMAC2_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
 	    $LOG "MAC is not in vendor range or sdk defaults or unconsistent - start MAC generate"
-	    rm -f /etc/backup/nvram_backup.dat
 	    genmac
 	fi
     fi
@@ -235,18 +234,19 @@ genmac() {
     mac_wlan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
     mac_wlan2=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
 
-    if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ]; then
+    if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
 	$LOG "Use original macs for wan/lan readed by factory before replace"
 	MAC="$OLDMACWAN"
 	LANMAC="$OLDMACLAN"
+	WMAC="$OLDMACWLAN"
 	VENDMASK=`echo $MAC | cut -f -3 -d :`
     else
 	$LOG "Write new generated wan/lan macs"
 	MAC="$VENDMASK:$mac_wan"
 	LANMAC="$VENDMASK:$mac_lan"
+	WMAC="$VENDMASK:$mac_wlan"
     fi
 
-    WMAC="$VENDMASK:$mac_wlan"
     WMAC2="$VENDMASK:$mac_wlan2"
 
     $LOG "Set WAN   MAC - $MAC"
