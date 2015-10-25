@@ -111,58 +111,11 @@ static struct lldpd_ops eth_ops = {
 	.cleanup = iflinux_eth_close,
 };
 
-#ifdef ENABLE_OLDIES
-static int
-old_iflinux_is_bridge(struct lldpd *cfg,
-    struct interfaces_device_list *interfaces,
-    struct interfaces_device *iface)
-{
-	int j;
-	int ifptindices[MAX_PORTS] = {};
-	unsigned long args2[4] = {
-		BRCTL_GET_PORT_LIST,
-		(unsigned long)ifptindices,
-		MAX_PORTS,
-		0
-	};
-	struct ifreq ifr = {
-		.ifr_data = (char*)&args2
-	};
-
-	strlcpy(ifr.ifr_name, iface->name, IFNAMSIZ);
-
-	if (ioctl(cfg->g_sock, SIOCDEVPRIVATE, &ifr) < 0)
-		/* This can happen with a 64bit kernel and 32bit
-		   userland, don't output anything about this to avoid
-		   to fill logs. */
-		return 0;
-
-	for (j = 0; j < MAX_PORTS; j++) {
-		struct interfaces_device *port;
-		if (!ifptindices[j]) continue;
-		port = interfaces_indextointerface(interfaces, ifptindices[j]);
-		if (!port) continue;
-		if (port->upper) {
-			log_debug("interfaces",
-			    "strange, port %s for bridge %s already has upper interface %s",
-			    port->name, iface->name, port->upper->name);
-		} else {
-			log_debug("interfaces",
-			    "port %s is bridged to %s",
-			    port->name, iface->name);
-			port->upper = iface;
-		}
-	}
-	return 1;
-}
-#endif
-
 static int
 iflinux_is_bridge(struct lldpd *cfg,
     struct interfaces_device_list *interfaces,
     struct interfaces_device *iface)
 {
-#ifdef ENABLE_OLDIES
 	struct interfaces_device *port;
 	char path[SYSFS_PATH_MAX];
 	int f;
@@ -172,7 +125,7 @@ iflinux_is_bridge(struct lldpd *cfg,
 		    iface->name)) >= SYSFS_PATH_MAX)
 		log_warnx("interfaces", "path truncated");
 	if ((f = priv_open(path)) < 0)
-		return old_iflinux_is_bridge(cfg, interfaces, iface);
+		return 0;
 	close(f);
 
 	/* Also grab all ports */
@@ -192,9 +145,6 @@ iflinux_is_bridge(struct lldpd *cfg,
 	}
 
 	return 1;
-#else
-	return 0;
-#endif
 }
 
 static int
@@ -240,7 +190,6 @@ iflinux_is_bond(struct lldpd *cfg,
     struct interfaces_device_list *interfaces,
     struct interfaces_device *master)
 {
-#ifdef ENABLE_OLDIES
 	/* Shortcut if we detect the new team driver. Upper and lower links
 	 * should already be set with netlink in this case.  */
 	if (master->driver && !strcmp(master->driver, "team")) {
@@ -273,7 +222,6 @@ iflinux_is_bond(struct lldpd *cfg,
 		}
 		return 1;
 	}
-#endif
 	return 0;
 }
 

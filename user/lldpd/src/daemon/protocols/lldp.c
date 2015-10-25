@@ -20,7 +20,6 @@
 
 #include <unistd.h>
 #include <errno.h>
-#include <assert.h>
 #include <time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -161,7 +160,7 @@ static int _lldp_send(struct lldpd *global,
 	/* Management addresses */
 	TAILQ_FOREACH(mgmt, &chassis->c_mgmt, m_entries) {
 		proto = lldpd_af_to_lldp_proto(mgmt->m_family);
-		assert(proto != LLDP_MGMT_ADDR_NONE);
+		if (proto == LLDP_MGMT_ADDR_NONE) continue;
 		if (!(
 			  POKE_START_LLDP_TLV(LLDP_TLV_MGMT_ADDR) &&
 			  /* Size of the address, including its type */
@@ -726,6 +725,11 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 		case LLDP_TLV_MGMT_ADDR:
 			CHECK_TLV_SIZE(1, "Management address");
 			addr_str_length = PEEK_UINT8;
+			if (addr_str_length > sizeof(addr_str_buffer)) {
+				log_warnx("lldp", "too large management address on %s",
+				    hardware->h_ifname);
+				goto malformed;
+			}
 			CHECK_TLV_SIZE(1 + addr_str_length, "Management address");
 			PEEK_BYTES(addr_str_buffer, addr_str_length);
 			addr_length = addr_str_length - 1;
@@ -744,15 +748,18 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 				iface = 0;
 			mgmt = lldpd_alloc_mgmt(af, addr_ptr, addr_length, iface);
 			if (mgmt == NULL) {
-				assert(errno == ENOMEM);
+				if (errno == ENOMEM)
 				log_warn("lldp", "unable to allocate memory "
 							"for management address");
+				else
+					log_warn("lldp", "too large management address "
+					    "received on %s", hardware->h_ifname);
 						goto malformed;
 			}
 			TAILQ_INSERT_TAIL(&chassis->c_mgmt, mgmt, m_entries);
 			break;
 		case LLDP_TLV_ORG:
-			CHECK_TLV_SIZE(4, "Organisational");
+			CHECK_TLV_SIZE(1 + (int)sizeof(orgid), "Organisational");
 			PEEK_BYTES(orgid, sizeof(orgid));
 			tlv_subtype = PEEK_UINT8;
 			if (memcmp(dot1, orgid, sizeof(orgid)) == 0) {
