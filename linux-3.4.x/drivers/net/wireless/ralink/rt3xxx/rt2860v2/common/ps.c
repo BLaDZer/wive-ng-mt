@@ -19,8 +19,6 @@
 	All related POWER SAVE function body.
 
 ***************************************************************************/
-
-#define MODULE_POWER_SAVE
 #include "rt_config.h"
 
 
