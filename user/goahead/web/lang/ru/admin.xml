@@ -62,8 +62,6 @@
     <message msgid="statistic title" msgstr="Статистика" />
     <message msgid="statistic introduction" msgstr=" Статистика устройства " />
     <message msgid="statistic warning" msgstr="Для корректнектного сбора статистики нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
-    <message msgid="statistic wireless about" msgstr="О драйвере беспроводной сети" />
-    <message msgid="statistic wireless version" msgstr="Версия драйвера" />
     <message msgid="statistic memory and cpu" msgstr="Память и CPU" />
     <message msgid="statistic memory total" msgstr="Памяти всего:" />
     <message msgid="statistic memory left" msgstr="Памяти свободно:" />
