@@ -3981,7 +3981,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = MO_FALSE_CCA_TH;
 #endif
 #ifdef DYNAMIC_VGA_SUPPORT
-	pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
+	/* for 76x2 chips dyn vga auto enable in mt76x2_get_agc_gain */
+	if (IS_MT76x2(pAd))
+	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = FALSE;
+	else
+	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
 #endif /* DYNAMIC_VGA_SUPPORT */
 	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = MO_FALSE_CCA_TH;
 	pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
