@@ -188,4 +188,9 @@ DECLARE_TIMER_FUNCTION(DyncVgaLockTimeout);
 #if defined (ED_MONITOR) && defined (ED_SMART)
 DECLARE_TIMER_FUNCTION(ed_testing_timeout);
 #endif /*ED_MONITOR*/
+
+#ifdef RTMP_MAC_PCI
+DECLARE_TIMER_FUNCTION(TxDoneCleanupExec);
+#endif
+
 #endif /* __RTMP_TIMER_H__ */

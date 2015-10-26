@@ -3292,6 +3292,10 @@ struct _RTMP_ADAPTER {
 	NDIS_SPIN_LOCK CtrlRingLock;	/* Ctrl Ring spinlock */
 #endif /* CONFIG_ANDES_SUPPORT */
 
+#ifdef RTMP_MAC_PCI
+	RALINK_TIMER_STRUCT TxDoneCleanupTimer;
+#endif
+
 	UCHAR LastMCUCmd;
 
 /*****************************************************************************************/
@@ -8499,6 +8503,12 @@ ra_dma_addr_t RtmpDrvPciMapSingle(
 	IN size_t size,
 	IN INT sd_idx,
 	IN INT direction);
+
+VOID TxDoneCleanupExec(
+	IN PVOID SystemSpecific1,
+	IN PVOID FunctionContext,
+	IN PVOID SystemSpecific2,
+	IN PVOID SystemSpecific3);
 #endif /* RTMP_MAC_PCI */
 
 

@@ -3643,6 +3643,10 @@ struct _RTMP_ADAPTER {
 	RTMP_MGMT_RING MgmtRing;
 	NDIS_SPIN_LOCK MgmtRingLock;	/* Prio Ring spinlock */
 
+#ifdef RTMP_MAC_PCI
+	RALINK_TIMER_STRUCT TxDoneCleanupTimer;
+#endif
+
 	UCHAR LastMCUCmd;
 
 /*****************************************************************************************/
@@ -9395,6 +9399,13 @@ ra_dma_addr_t RtmpDrvPciMapSingle(
 	IN	size_t					size,
 	IN	int						sd_idx,
 	IN	int						direction);
+
+VOID TxDoneCleanupExec(
+	IN PVOID SystemSpecific1,
+	IN PVOID FunctionContext,
+	IN PVOID SystemSpecific2,
+	IN PVOID SystemSpecific3);
+
 #endif /* RTMP_MAC_PCI */
 
 #ifdef CONFIG_STA_SUPPORT

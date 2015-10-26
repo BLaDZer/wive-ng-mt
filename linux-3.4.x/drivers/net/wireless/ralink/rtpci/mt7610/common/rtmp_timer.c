@@ -125,6 +125,10 @@ BUILD_TIMER_FUNCTION(ed_testing_timeout);
 
 
 
+#ifdef RTMP_MAC_PCI
+BUILD_TIMER_FUNCTION(TxDoneCleanupExec);
+#endif /* RTMP_MAC_PCI */
+
 #ifdef RTMP_TIMER_TASK_SUPPORT
 static void RtmpTimerQHandle(RTMP_ADAPTER *pAd)
 {

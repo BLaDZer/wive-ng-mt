@@ -229,4 +229,8 @@ DECLARE_TIMER_FUNCTION(ApCliWpaDisassocApAndBlockAssoc);
 DECLARE_TIMER_FUNCTION(Peer_DelBA_Tx_AdaptTimeOut);
 #endif /* PEER_DELBA_TX_ADAPT */
 
+#ifdef RTMP_MAC_PCI
+DECLARE_TIMER_FUNCTION(TxDoneCleanupExec);
+#endif
+
 #endif /* __RTMP_TIMER_H__ */

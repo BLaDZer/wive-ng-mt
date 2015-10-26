@@ -525,8 +525,10 @@ NDIS_STATUS RTMPInitTxRxRingMemory(RTMP_ADAPTER *pAd)
 
 	pAd->PrivateInfo.TxRingFullCnt = 0;
 		
-	return Status;
+	/* Init timer to flush completed packets from TX queues */
+	RTMPInitTimer(pAd, &pAd->TxDoneCleanupTimer, GET_TIMER_FUNCTION(TxDoneCleanupExec), pAd, FALSE);
 
+	return Status;
 }
 
 

@@ -164,6 +164,10 @@ BUILD_TIMER_FUNCTION(ApCliWpaDisassocApAndBlockAssoc);
 BUILD_TIMER_FUNCTION(Peer_DelBA_Tx_AdaptTimeOut);
 #endif /* PEER_DELBA_TX_ADAPT */
 
+#ifdef RTMP_MAC_PCI
+BUILD_TIMER_FUNCTION(TxDoneCleanupExec);
+#endif /* RTMP_MAC_PCI */
+
 #ifdef RTMP_TIMER_TASK_SUPPORT
 static void RtmpTimerQHandle(RTMP_ADAPTER *pAd)
 {

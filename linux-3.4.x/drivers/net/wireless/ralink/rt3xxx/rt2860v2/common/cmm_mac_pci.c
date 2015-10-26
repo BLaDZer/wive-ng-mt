@@ -403,9 +403,11 @@ NDIS_STATUS RTMPInitTxRxRingMemory
 		
 		DBGPRINT(RT_DEBUG_TRACE, ("<-- NICInitTxRxRingAndBacklogQueue\n"));
 	}
-	
+
+	/* Init timer to flush completed packets from TX queues */
+	RTMPInitTimer(pAd, &pAd->TxDoneCleanupTimer, GET_TIMER_FUNCTION(TxDoneCleanupExec), pAd, FALSE);
+
 	return Status;
-	
 }
 
 

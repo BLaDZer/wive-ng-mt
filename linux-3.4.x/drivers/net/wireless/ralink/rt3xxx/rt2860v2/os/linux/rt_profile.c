@@ -765,6 +765,11 @@ int	RTMPSendPackets(
 
 	INC_COUNTER64(pAd->WlanCounters.TransmitCountFrmOs);
 
+#ifdef RTMP_MAC_PCI
+	/* Update timer to flush tx ring buffer */
+	RTMPModTimer(&pAd->TxDoneCleanupTimer, 50);
+#endif /* RTMP_MAC_PCI */
+
 	if (pPacket == NULL)
 		goto done;
 
