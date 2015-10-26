@@ -272,7 +272,12 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 	NDIS_802_11_SSID            SSIDQuery;
 	int							QueryCount=0, EAGAIN_Count=0;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	pBssidList = (PNDIS_802_11_BSSID_LIST_EX) malloc(65536*2);  //64k
 	memset(pBssidList, 0x00, sizeof(char)*65536*2);
 
@@ -736,7 +741,11 @@ static int getStaConnectedBSSID(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned char BssidQuery[6];
 	int s;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	//fprintf(stderr, "-->ssi_getStaConnectedBSSID()\n");
 	//step 1
@@ -784,7 +793,12 @@ static int getStaExtraInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
 	unsigned long lExtraInfo;
 	int s, ret;
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	char *ExtraInfoTable[11] = {
 		"Link is Up",
@@ -815,7 +829,14 @@ static int getStaExtraInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getLinkingMode(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int s = socket(AF_INET, SOCK_DGRAM, 0);
+	int s;
+
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	HTTRANSMIT_SETTING HTSetting;
 
 	memset(&HTSetting, 0x00, sizeof(HTTRANSMIT_SETTING));
@@ -843,7 +864,12 @@ static int getStaHT(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp,"%s %s %s %s", tmpBW, tmpGI, tmpSTBC, tmpMCS);
 	}
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	memset(&HTSetting, 0x00, sizeof(HTTRANSMIT_SETTING));
 	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(HTTRANSMIT_SETTING));
 	close(s);
@@ -894,7 +920,11 @@ static int getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "&nbsp;");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	// Current Channel
 	OidQueryInformation(OID_802_11_CONFIGURATION, s, "ra0", &Configuration, sizeof(NDIS_802_11_CONFIGURATION));
@@ -949,7 +979,12 @@ static int getStaLinkQuality(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0%%");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Get Link Status Info from driver
 	OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, s, "ra0", &LinkStatus, sizeof(RT_802_11_LINK_STATUS));
 
@@ -1064,7 +1099,12 @@ static int getStaLinkRxRate(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	double fLastRxRate = 1;
 	DisplayLastTxRxRateFor11n(s, RT_OID_802_11_QUERY_LAST_RX_RATE, &fLastRxRate);
 
@@ -1081,7 +1121,12 @@ static int getStaLinkRxRate(int eid, webs_t wp, int argc, char_t **argv)
 static int getStaLinkStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int s, ret;
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	ret = OidQueryInformation(OID_GEN_MEDIA_CONNECT_STATUS, s, "ra0", &G_ConnectStatus, sizeof(G_ConnectStatus));
 	if (ret < 0 )
@@ -1140,7 +1185,12 @@ static int getStaLinkTxRate(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	double fLastTxRate = 1;
 	DisplayLastTxRxRateFor11n(s, RT_OID_802_11_QUERY_LAST_TX_RATE, &fLastTxRate);
 
@@ -1199,7 +1249,12 @@ static int getStaNoiseLevel(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0%%");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Noise Level
 	// Get Noise Level From Driver
 	OidQueryInformation(RT_OID_802_11_QUERY_NOISE_LEVEL, s, "ra0", &lNoise, sizeof(lNoise));
@@ -1655,7 +1710,11 @@ void initStaConnection(void)
 	// Set-up current SSID
 	nvram_set(RT2860_NVRAM, "staCur_SSID", p->SSID);
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return;
+	}
 
 	// Fetch current wireless mode
 	unsigned long CurrentWirelessMode;
@@ -1865,9 +1924,13 @@ void initStaConnection(void)
 
 static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
+	unsigned int ConnectStatus = 0;
+	int s;
+
 	// Check if profiles are read
 	if (headerProfileSetting == NULL)
 		initStaProfile();
+
 	if (headerProfileSetting == NULL)
 		return 0;
 
@@ -1879,12 +1942,13 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 		return 0;
 
 	// Perform driver requests
-	int s = socket(AF_INET, SOCK_DGRAM, 0);
-	if (s < 0)
-		return 0;
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	//step 1
-	unsigned int ConnectStatus = 0;
 	if (OidQueryInformation(OID_GEN_MEDIA_CONNECT_STATUS, s, "ra0", &ConnectStatus, sizeof(ConnectStatus)) < 0)
 	{
 		error(E_L, E_LOG, T("Query OID_GEN_MEDIA_CONNECT_STATUS error!"));
@@ -1995,7 +2059,12 @@ static int getStaRadioStatus(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned long RadioStatus=0;
 	int s, ret;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	ret = OidQueryInformation(RT_OID_802_11_RADIO, s, "ra0", &RadioStatus, sizeof(RadioStatus));
 	if (ret < 0)
 		error(E_L, E_LOG, T("getStaRadioStatus: Query RT_OID_802_11_RADIO failed!"));
@@ -2017,7 +2086,12 @@ static int getStaRxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Get Link Status Info from driver
 	OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, s, "ra0", &LinkStatus, sizeof(RT_802_11_LINK_STATUS));
 
@@ -2045,7 +2119,12 @@ static int getStaTxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Get Link Status Info from driver
 	OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, s, "ra0", &LinkStatus, sizeof(RT_802_11_LINK_STATUS));
 
@@ -2074,7 +2153,12 @@ static int getRSSI(webs_t wp, int antenna)
 		return 0;
 	}
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Get Link Status Info from driver
 	OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, s, "ra0", &LinkStatus, sizeof(RT_802_11_LINK_STATUS));
 
@@ -2159,7 +2243,12 @@ static int getStaSNR(int eid, webs_t wp, int argc, char_t **argv)
 		return  websWrite(wp, "n/a");
 	}
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	if (n == 0)
 		ret = OidQueryInformation(RT_OID_802_11_SNR_0, s, "ra0", &SNR, sizeof(SNR));
 	else if (n == 1)
@@ -2189,7 +2278,12 @@ static int getStaStatsRxCRCErr(int eid, webs_t wp, int argc, char_t **argv)
 	int s;
 	memset(&Statistics, 0x00, sizeof(Statistics));
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	// Frames Received With CRC Error
 	if (OidQueryInformation(OID_802_11_STATISTICS, s, "ra0", &Statistics, sizeof(Statistics)) >= 0)
 		websWrite(wp, "%ld", Statistics.FCSErrorCount.QuadPart);
@@ -2208,7 +2302,12 @@ static int getStaStatsRxDup(int eid, webs_t wp, int argc, char_t **argv)
 	NDIS_802_11_STATISTICS  Statistics;
 
 	int s;
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	memset(&Statistics, 0x00, sizeof(Statistics));
 	// Duplicate Frames Received
@@ -2229,7 +2328,11 @@ static int getStaStatsRxOk(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned long lRcvOk = 0;
 	int s;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	// Frames Received Successfully
 	if (OidQueryInformation(OID_GEN_RCV_OK, s, "ra0", &lRcvOk, sizeof(lRcvOk)) >= 0)
@@ -2249,7 +2352,11 @@ static int getStaStatsRxNoBuf(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned long lRcvNoBuf = 0;
 	int s;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	// Frames Dropped Due To Out-of-Resource
 	if (OidQueryInformation(OID_GEN_RCV_NO_BUFFER, s, "ra0", &lRcvNoBuf, sizeof(lRcvNoBuf)) >= 0)
@@ -2270,7 +2377,11 @@ static int getStaStatsTx(int eid, webs_t wp, int argc, char_t **argv)
 	char  tmpStatisics[16];
 	int   s, ret=0;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	memset(&tmpStatisics, 0x00, sizeof(tmpStatisics));
 
@@ -2321,7 +2432,12 @@ static int myGetSuppAMode(void)
 	PNDIS_802_11_NETWORK_TYPE_LIST pNetworkTypeList = (PNDIS_802_11_NETWORK_TYPE_LIST) malloc(lBufLen);
 	int i, s, G_bSupportAMode=0;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	if (OidQueryInformation(OID_802_11_NETWORK_TYPES_SUPPORTED, s, "ra0", pNetworkTypeList, lBufLen) >= 0)
 	{
 		for (i = 0 ; i < pNetworkTypeList->NumberOfItems ; i++)
@@ -2388,7 +2504,14 @@ static int getStaWirelessMode(int eid, webs_t wp, int argc, char_t **argv)
  */
 static void resetStaCounters(webs_t wp, char_t *path, char_t *query)
 {
-	int s = socket(AF_INET, SOCK_DGRAM, 0);
+	int s;
+
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return;
+	}
+
 	OidSetInformation(RT_OID_802_11_RESET_COUNTERS, s, "ra0", 0, 0);
 	close(s);
 	websRedirect(wp, "station/statistics.asp");
@@ -2426,9 +2549,11 @@ static void setSta11nCfg(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
-	if (s < 0)
-		return; //if error
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return;
+	}
 
 	OidQueryInformation(RT_OID_802_11_QUERY_IMME_BA_CAP, s, "ra0", &BACap, sizeof(BACap));
 	BACap.Policy = policy;
@@ -2497,7 +2622,11 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	// Some other stuff
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return;
+	}
 
 	if ((web_radio_on && nvram_radio_on) || ((!web_radio_on) && (!nvram_radio_on)))
 	{
@@ -2665,7 +2794,11 @@ static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query)
 
 	if (setflag)
 	{
-		s = socket(AF_INET, SOCK_DGRAM, 0);
+		if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+		{
+		    printf("goahead: open socket failed\n");
+		    return;
+		}
 
 		memcpy(oriEntry.MACAddr, Bssid, 6);
 		oriEntry.IsRecipient = 0; //false

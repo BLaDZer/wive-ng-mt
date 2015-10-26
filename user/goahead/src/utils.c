@@ -898,7 +898,11 @@ static int getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned char DriverVersionInfo[8];
 	int s;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
 
 	/* Driver */
 	if (OidQueryInformation(RT_OID_VERSION_INFO, s, "ra0", &DriverVersionInfo, sizeof(DriverVersionInfo)) >= 0) {
@@ -923,7 +927,12 @@ static int getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned char CurrentAddress[6];
 	int s;
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
+	{
+		printf("goahead: open socket failed\n");
+		return -1;
+	}
+
 	if (OidQueryInformation(OID_802_3_CURRENT_ADDRESS, s, "ra0", &CurrentAddress, sizeof(CurrentAddress)) >= 0)
 		websWrite(wp, "%02X-%02X-%02X-%02X-%02X-%02X", CurrentAddress[0], CurrentAddress[1],
 				CurrentAddress[2], CurrentAddress[3], CurrentAddress[4], CurrentAddress[5]);
