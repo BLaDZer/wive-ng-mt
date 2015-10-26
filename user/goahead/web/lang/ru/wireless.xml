@@ -30,6 +30,8 @@
   <message msgid="basic tx power ac" msgstr="Мощность передатчика  (5GHz)" />
   <message msgid="basic title" msgstr="Основные настройки Wi-Fi " />
   <message msgid="basic introduction" msgstr="Для настройки точки доступа достаточно задать название сети (SSID) и выбрать канал." />
+  <message msgid="basic wireless" msgstr="Радиомодуль (2.4GHz)" />
+  <message msgid="basic wireless ac" msgstr="Радиомодуль (5GHz)" />
   <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
   <message msgid="basic wireless settings" msgstr="Настройки SSID" />
   <message msgid="basic radio button" msgstr="Wi-Fi вкл./выкл." />
@@ -73,14 +75,16 @@
   <message msgid="basic ht addba" msgstr="Агрегация ACK" />
   <message msgid="basic ht delba" msgstr="Отклонять запрос агрегации ACK" />
   <message msgid="basic other" msgstr="Прочее" />
-  <message msgid="basic ht txstream" msgstr="Пространственных потоков передачи" />
-  <message msgid="basic ht rxstream" msgstr="Пространственных потоков приёма" />
+  <message msgid="basic ht txstream" msgstr="Количество пространственных потоков передачи" />
+  <message msgid="basic ht rxstream" msgstr="Количество пространственных потоков приёма" />
   <message msgid="basic mbssid mode" msgstr="Режим MBSSID" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
   <message msgid="basic apcli mode" msgstr="Режим APCLI" />
   <message msgid="basic block coding" msgstr="Блочное пространственно-временное кодирование" />
   <message msgid="basic signal mode" msgstr="Сигнальный режим полосы" />
   <message msgid="basic vht phy mode" msgstr="Физический режим VHT" />
+  <message msgid="basic signal mode static" msgstr="Постоянный" />
+  <message msgid="basic signal mode dynamic" msgstr="Динамический" />
   <message msgid="basic action" msgstr="Действие" />
   <message msgid="basic network name" msgstr="Имя сети" />
   <message msgid="basic auto channel mode" msgstr="Автоматическая настройка канала" />

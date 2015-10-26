@@ -583,13 +583,13 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #endif
 }
 
-#ifdef CONFIG_RAETH_SNMPD
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
-	char buf[1024];
 	int i;
 	char_t port_buf[32];
 	unsigned long long rx_count[6], tx_count[6];
 
+#ifdef CONFIG_RAETH_SNMPD
+	char buf[1024];
 	FILE *fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
 		printf("goahead: no snmp?\n");
@@ -603,6 +603,10 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 			break;
 	}
 	fclose(fp);
+#else
+	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
+	tx_count[0] = tx_count[1] = tx_count[2] = tx_count[3] = tx_count[4] = tx_count[5] = 0;
+#endif
 
 	websWrite(wp, T("<tr>\n"));
 	websWrite(wp, T("<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
@@ -622,7 +626,6 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	websWrite(wp, T("</tr>\n"));
 	return 0;
 }
-#endif
 
 void formDefineManagement(void)
 {
@@ -640,9 +643,7 @@ void formDefineManagement(void)
 	websAspDefine(T("getCpuUsageASP"), getCpuUsageASP);
 	websAspDefine(T("getAllNICStatisticASP"), getAllNICStatisticASP);
 	websAspDefine(T("getHWStatsBuilt"), getHWStatsBuilt);
-#ifdef CONFIG_RAETH_SNMPD
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
-#endif
 	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
 #ifdef CONFIG_SYSLOGD
 	websFormDefine(T("syslog"), syslog);

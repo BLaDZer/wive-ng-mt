@@ -115,6 +115,7 @@ function initTranslation()
 	_TR("wConnection", "wan connection");
 	_TR("wConnTypeStatic", "wan connection type static");
 	_TR("wConnTypeDhcp", "wan connection type dhcp");
+	_TR("wConnTypeZero", "wan connection type zero");
 
 	_TR("wStaticMode", "wan static mode");
 	_TR("wStaticIp", "inet ip");
@@ -129,6 +130,8 @@ function initTranslation()
 	_TR("wReqFromDHCP", "wan request from dhcp");
 	_TR("wDHCPVendorClass", "wan dhcp vendor class");
 	_TR("wMTU", "wan mtu");
+	_TR("wAuto", "inet auto");
+	_TR("wCustom", "routing custom");
 	_TR("wNatEnabled", "wan nat enabled");
 	_TR("wMacAddress", "inet mac");
 	_TR("wMacAddr", "wan mac");
@@ -227,7 +230,7 @@ function submitForm(form) {
             <td><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
                 <option value="STATIC" id="wConnTypeStatic" selected="selected">Static Mode (fixed IP)</option>
                 <option value="DHCP" id="wConnTypeDhcp">DHCP (Auto Config)</option>
-                <option value="ZERO" id="wConnTypeDhcp">Zeroconf</option>
+                <option value="ZERO" id="wConnTypeZero">Zeroconf</option>
               </select></td>
           </tr>
         </table>
@@ -265,8 +268,8 @@ function submitForm(form) {
             <td class="head" id="wMTU">WAN MTU</td>
             <td><input name="wan_mtu" type="text" class="half" style="display:none;">
               <select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="half">
-                <option value="0">AUTO</option>
-                <option value="1" selected="selected">Custom</option>
+                <option value="0" id="wAuto">AUTO</option>
+                <option value="1" selected="selected" id="wCustom">Custom</option>
                 <option value="1500">1500</option>
                 <option value="1492">1492</option>
                 <option value="1460">1460</option>

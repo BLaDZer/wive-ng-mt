@@ -70,7 +70,7 @@ function onInit()
 		ifc.add(new Option("WAN", "WAN"));
 		ifc.add(new Option("VPN", "VPN"));
 	}
-	ifc.add(new Option("Custom", "Custom"));
+	ifc.add(new Option(_("routing custom"), "Custom"));
 
 	form.hostnet.value = 'host';
 	form.interface.value = 'LAN';

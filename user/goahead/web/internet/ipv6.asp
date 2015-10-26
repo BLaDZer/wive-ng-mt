@@ -268,6 +268,9 @@ function CheckValue(form)
 			form.IPv6SrvAddr.select();
 			return false;
 		}
+	} else if (form.ipv6_opmode.value == "0") {
+		form.radvdEnbl.options.selectedIndex = 0;
+		form.dhcpv6Enbl.options.selectedIndex = 0;
 	}
 	return true;
 }

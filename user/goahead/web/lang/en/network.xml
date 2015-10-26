@@ -20,6 +20,7 @@
     <message msgid="wan connection type" msgstr="WAN Connection Type:" />
     <message msgid="wan connection type static" msgstr="STATIC (Fixed IP)" />
     <message msgid="wan connection type dhcp" msgstr="DHCP (Auto Config)" />
+    <message msgid="wan connection type zero" msgstr="Zeroconf" />
     <message msgid="wan static mode" msgstr="Static Mode" />
     <message msgid="wan dhcp mode" msgstr="DHCP Mode" />
     <message msgid="wan additional options" msgstr="Additional Options" />
@@ -139,6 +140,7 @@
     <message msgid="routing gateway" msgstr="Gateway" />
     <message msgid="routing interface" msgstr="Interface" />
     <message msgid="routing interface name" msgstr="Interface Name" />
+    <message msgid="routing custom" msgstr="Custom" />
     <message msgid="routing comment" msgstr="Comment" />
     <message msgid="routing dynamic title" msgstr="Dynamic Routing Support" />
     <message msgid="routing rip" msgstr="Support RIP protocol" />
@@ -153,7 +155,6 @@
 
     <message msgid="hotspot title" msgstr="Hotspot settings" />
     <message msgid="hotspot introduction" msgstr="" />
-    <message msgid="hotspot fastpath warning" msgstr="CAUTION! NAT offload mode option is turned on. For technical reasons, the correct service operation is not possible when NAT offload mode option is turned on. For correct work you need to shut down NAT offload mode option on the MISC Services configuration page. Please note that turning off NAT offload mode will increase CPU usage up to 50%." />
     <message msgid="hotspot profile" msgstr="Profile name" />
     <message msgid="hotspot manual" msgstr="Manual" />
     <message msgid="hotspot setup" msgstr="Hotspot Setup" />

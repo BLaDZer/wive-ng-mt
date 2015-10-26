@@ -30,6 +30,8 @@
   <message msgid="basic tx power ac" msgstr="TX Power (5GHz)" />
   <message msgid="basic title" msgstr="Basic Wireless Settings" />
   <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point." />
+  <message msgid="basic wireless" msgstr="Wireless (2.4GHz)" />
+  <message msgid="basic wireless ac" msgstr="Wireless (5GHz)" />
   <message msgid="basic wireless network" msgstr="Wireless Network" />
   <message msgid="basic wireless settings" msgstr="SSID Settings" />
   <message msgid="basic radio button" msgstr="Radio On/Off" />
@@ -82,6 +84,8 @@
   <message msgid="basic block coding" msgstr="Space-Time Block Coding" />
   <message msgid="basic signal mode" msgstr="BandWidth Signaling Mode" />
   <message msgid="basic vht phy mode" msgstr="VHT Physical Mode" />
+  <message msgid="basic signal mode static" msgstr="Static" />
+  <message msgid="basic signal mode dynamic" msgstr="Dynamic" />
   <message msgid="basic action" msgstr="Action" />
   <message msgid="basic network name" msgstr="Network Name" />
   <message msgid="basic auto channel mode" msgstr="Auto Channel Select Mode" />

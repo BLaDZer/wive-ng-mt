@@ -248,6 +248,8 @@ function initTranslation()
 	_TR("basicTitle", "basic title");
 	_TR("basicIntroduction", "basic introduction");
 
+	_TR("basicWireless", "basic wireless");
+	_TR("basicWirelessAC", "basic wireless ac");
 	_TR("basicWirelessNet", "basic wireless network");
 	_TR("basicWirelessSettings", "basic wireless settings");
 	_TR("basicRadioButton", "basic radio button");
@@ -303,6 +305,8 @@ function initTranslation()
 	_TR("basicVHTBandWidth", "basic ht channel bandwidth");
 	_TR("basicVHTSTBC", "basic block coding");
 	_TR("basicVHTSignalMode", "basic signal mode");
+	_TR("basicVHTStatic", "basic signal mode static");
+	_TR("basicVHTDynamic", "basic signal mode dynamic");
 	_TR("basicSTBC", "basic stbc");
 	_TR("basicLDPC", "basic ldpc");
 	_TR("basicAction", "basic action");
@@ -1029,7 +1033,7 @@ function CheckValue(form)
             <td class="title" colspan="3" id="basicWirelessNet">Wireless Network</td>
           </tr>
           <tr id="basicWirelessEnabledAc">
-            <td class="head" colspan="1">Wireless (5GHz)</td>
+            <td class="head" colspan="1" id="basicWirelessAC">Wireless (5GHz)</td>
 	    	<td colspan="1"><select name="radioWirelessEnabledAc" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
@@ -1037,7 +1041,7 @@ function CheckValue(form)
             <td colspan="1">BSSID: <% getWlanCurrentMacAC(); %></td>
           </tr>
           <tr id="basicWirelessEnabled">
-            <td class="head" colspan="1">Wireless (2.4GHz)</td>
+            <td class="head" colspan="1" id="basicWireless">Wireless (2.4GHz)</td>
             <td colspan="1"><select name="radioWirelessEnabled" class="half">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
@@ -1339,8 +1343,8 @@ function CheckValue(form)
             <td class="head" id="basicVHTSignalMode" width="50%">BandWidth Signaling Mode</td>
             <td width="50%"><select name="ac_bwsig" size="1" class="half">
                 <option value="0" selected id="disable">Disable</option>
-                <option value="1" id="2">Static</option>
-                <option value="2" id="3">Dynamic</option>
+                <option value="1" id="2" id="basicVHTStatic">Static</option>
+                <option value="2" id="3" id="basicVHTDynamic">Dynamic</option>
 		</select></td>
           </tr>
           <tr>

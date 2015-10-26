@@ -2263,6 +2263,9 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 #ifdef CONFIG_IPV6
 const parameter_fetch_t service_ipv6_flags[] = 
 {
+	{ T("dhcp6c_enable"), "IPv6Dhcpc", 2, T("off") },
+	{ T("ipv6_allow_forward"), "IPv6AllowForward", 2, T("off") },
+	{ T("ipv6_Ipv6InVPN"), "Ipv6InVPN", 2, T("off") },
 #ifdef CONFIG_USER_RADVD
 	{ T("radvdEnbl"), "radvdEnabled", 0, T("0") },
 #endif
@@ -2276,24 +2279,12 @@ const parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*opmode, *submitUrl;
-	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *dhcp6c_enable, *ipv6_allow_forward, *Ipv6InVPN;
+	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr;
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
 
 	opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
 
-	dhcp6c_enable = websGetVar(wp, T("dhcp6c_enable"), T("off"));
-	dhcp6c_enable = (strcmp(dhcp6c_enable, "on") == 0) ? "1" : "0";
-
-	ipv6_allow_forward = websGetVar(wp, T("ipv6_allow_forward"), T("off"));
-	ipv6_allow_forward = (strcmp(ipv6_allow_forward, "on") == 0) ? "1" : "0";
-
-	Ipv6InVPN = websGetVar(wp, T("ipv6_Ipv6InVPN"), T("off"));
-	Ipv6InVPN = (strcmp(Ipv6InVPN, "on") == 0) ? "1" : "0";
-
 	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "IPv6Dhcpc", dhcp6c_enable);
-	nvram_bufset(RT2860_NVRAM, "IPv6AllowForward", ipv6_allow_forward);
-	nvram_bufset(RT2860_NVRAM, "Ipv6InVPN", Ipv6InVPN);
 
 	if (!strcmp(opmode, "1")) {
 		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
@@ -2322,9 +2313,9 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 #endif
 	}
 	nvram_bufset(RT2860_NVRAM, "IPv6OpMode", opmode);
-	if (strcmp(opmode, "0")){
-		setupParameters(wp, service_ipv6_flags, 0);
-	}
+
+	setupParameters(wp, service_ipv6_flags, 0);
+
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 

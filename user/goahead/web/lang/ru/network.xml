@@ -13,6 +13,7 @@
     <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
     <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
     <message msgid="inet invalid mtu" msgstr="Неверное значение MTU" />
+    <message msgid="inet auto" msgstr="Автоматически" />
 
     <message msgid="wan title" msgstr="Настройки Wide Area Network (WAN)" />
     <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
@@ -20,6 +21,7 @@
     <message msgid="wan connection type" msgstr="Тип подключения WAN:" />
     <message msgid="wan connection type static" msgstr="STATIC (фиксированный IP)" />
     <message msgid="wan connection type dhcp" msgstr="DHCP (автоматическая настройка)" />
+    <message msgid="wan connection type zero" msgstr="Zeroconf (без настройки)" />
     <message msgid="wan static mode" msgstr="Фиксированные настройки" />
     <message msgid="wan dhcp mode" msgstr="Настройки DHCP" />
     <message msgid="wan additional options" msgstr="Дополнительные настройки" />
@@ -47,14 +49,14 @@
     <message msgid="vpn service name" msgstr="Имя сервиса:" />
     <message msgid="vpn auth type" msgstr="Метод авторизации:" />
     <message msgid="vpn lanauth lvl" msgstr="Уровень доступа KABINET:" />
-    <message msgid="vpn kabinet offline" msgstr="offline" />
-    <message msgid="vpn kabinet" msgstr="kabinet" />
-    <message msgid="vpn kabinet full" msgstr="full" />
+    <message msgid="vpn kabinet offline" msgstr="Отключен" />
+    <message msgid="vpn kabinet" msgstr="Стандартный" />
+    <message msgid="vpn kabinet full" msgstr="Полный" />
     <message msgid="vpn username" msgstr="Имя пользователя" />
     <message msgid="vpn password" msgstr="Пароль" />
     <message msgid="vpn mtu mru" msgstr="MTU/MRU" />
-    <message msgid="vpn lcp interval" msgstr="Интервал LCP echo:" />
-    <message msgid="vpn lcp failure" msgstr="Ошибка LCP echo:" />
+    <message msgid="vpn lcp interval" msgstr="Интервал LCP эхо-запросов:" />
+    <message msgid="vpn lcp failure" msgstr="Ошибок LCP эхо-запросов:" />
     <message msgid="vpn allow mppe" msgstr="Разрешить MPPE" />
     <message msgid="vpn peer dns" msgstr="DNS провайдера" />
     <message msgid="vpn allow debug" msgstr="Включить отладку" />
@@ -137,13 +139,14 @@
     <message msgid="routing gateway" msgstr="Шлюз" />
     <message msgid="routing interface" msgstr="Интерфейс" />
     <message msgid="routing interface name" msgstr="Имя интерфейса" />
+    <message msgid="routing custom" msgstr="Вручную" />
     <message msgid="routing comment" msgstr="Комментарий" />
     <message msgid="routing dynamic title" msgstr="Поддержка динамической маршрутизации" />
     <message msgid="routing rip" msgstr="Поддержка протокола RIP" />
     <message msgid="routing del title" msgstr="Текущая таблица маршрутизации:" />
     <message msgid="routing number" msgstr="No." />
     <message msgid="routing del flags" msgstr="Флаги" />
-    <message msgid="routing del metric" msgstr="Metric" />
+    <message msgid="routing del metric" msgstr="Метрика" />
     <message msgid="routing del ref" msgstr="Ref" />
     <message msgid="routing del use" msgstr="Use" />
     <message msgid="routing action" msgstr="Действие" />
@@ -151,7 +154,6 @@
 
     <message msgid="hotspot title" msgstr="Настройки Хот-спот" />
     <message msgid="hotspot introduction" msgstr="" />
-    <message msgid="hotspot fastpath warning" msgstr="ВНИМАНИЕ! Включен режим NAT offload. По техническим причинам невозможно гарантировать коректную работу сервиса при включенном режиме NAT offload. Для коректной работы сервиса вам нужно отключить режим NAT offload на странице Сервисы-Разное. Пожалуйста, обратите внимание, что отключение режима NAT offload увеличит загрузку процессора." />
     <message msgid="hotspot setup" msgstr="Настройка хотспота" />
     <message msgid="hotspot profile" msgstr="Имя профиля" />
     <message msgid="hotspot manual" msgstr="Вручную" />
@@ -172,7 +174,7 @@
     <message msgid="hotspot uam any dns" msgstr="Разрешить любые DNS запросы" />
     <message msgid="hotspot uam mac" msgstr="Разрешённые MAC" />
     <message msgid="hotspot dont space" msgstr="Пробелы в поле запрещены!" />
-    <message msgid="hotspot expects number" msgstr="В этом поле должны быть цыфры!" />
+    <message msgid="hotspot expects number" msgstr="В этом поле должны быть цифры!" />
     <message msgid="hotspot nodog ip range" msgstr="Диапазон IP адресов" />
     <message msgid="hotspot nodog url" msgstr="Адрес перенаправления" />
     <message msgid="hotspot nodog max clients" msgstr="Максимальное число клиентов" />

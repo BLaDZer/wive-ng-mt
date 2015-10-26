@@ -136,7 +136,6 @@ function showHint(key){
 function initTranslation() {
   _TR("sTitle", "hotspot title");
   _TR("sIntroduction", "hotspot introduction");
-  _TR("fastpath_warning", "hotspot fastpath warning");
   _TR("spotSetup", "hotspot setup");
   _TR("spotProfile", "hotspot profile");
   _TR("sIp", "inet ip");
@@ -280,8 +279,6 @@ function initValue() {
 
   ModeOnChange(form);
   initTranslation();
-
-//  displayElement('fastpath_warning', ((nat_fp == '1') || (nat_fp == '2') || (nat_fp == '3')) && enabled.value != "0");
 }
 
 function CheckValue(form) {
@@ -496,12 +493,6 @@ function CheckValue(form) {
         <h1 id="sTitle"></h1>
         <p id="sIntroduction"></p>
         <hr />
-        <!-- Fastpath -->
-        <div style="display:none;" id="fastpath_warning">
-        <p><span style="color: #ff0000;"><b>CAUTION!&nbsp;</b></span> <b>NAT offload mode</b> option is turned on.</p>
-        <p>For technical reasons, the correct service operation is not possible when <b>NAT offload mode</b> option is turned on.</p>
-        <p>For correct work you need to shut down <b>NAT offload mode</b> option on the <a href="/services/misc.asp#nat_fastpath_ref">MISC&nbsp;Services</a> configuration page.</p>
-        <p>Please note that turning off <b>NAT offload mode</b> will increase CPU usage up to 50%.</p></div>
         <form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
           <table class="form">
             <tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
