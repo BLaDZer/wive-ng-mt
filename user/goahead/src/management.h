@@ -1,7 +1,6 @@
 #ifndef __MANAGEMENT_H__
 #define __MANAGEMENT_H__
 
-#define PROC_IF_STATISTIC	"/proc/net/dev"
 #define PROC_MEM_STATISTIC	"/proc/meminfo"
 #define PROC_CPU_STATISTIC	"/proc/stat"
 

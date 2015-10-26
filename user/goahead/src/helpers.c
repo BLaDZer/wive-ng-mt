@@ -6,8 +6,7 @@
 #include <sys/stat.h>
 
 #include	"utils.h"
-
-#define _PATH_PROCNET_DEV      "/proc/net/dev"
+#include	"internet.h"
 
 // Sizes table
 const char *normalSizes[] =

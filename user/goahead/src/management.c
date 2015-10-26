@@ -282,7 +282,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	struct ifreq ifr;
 	int skfd;
 
-	FILE *fp = fopen(PROC_IF_STATISTIC, "r");
+	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 	if (fp == NULL)
 	{
 		printf("goahead: no proc?\n");
