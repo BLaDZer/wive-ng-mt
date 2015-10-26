@@ -65,7 +65,7 @@ int wl_proc_exit(void);
 #endif /* CONFIG_RALINK_MT7620 */
 
 #ifndef PROCREG_DIR
-#define PROCREG_DIR             "rt3883"
+#define PROCREG_DIR             "mt7620"
 #endif /* PROCREG_DIR */
 
 #ifdef CONFIG_PROC_FS

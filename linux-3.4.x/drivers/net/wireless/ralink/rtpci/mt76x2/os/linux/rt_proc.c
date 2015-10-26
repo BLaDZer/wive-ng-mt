@@ -40,10 +40,6 @@ int wl_proc_exit(void);
 #define PROCREG_DIR             "rt2880"
 #endif /* CONFIG_RALINK_RT2880 */
 
-#ifdef CONFIG_RALINK_RT3052
-#define PROCREG_DIR             "rt3052"
-#endif /* CONFIG_RALINK_RT3052 */
-
 #ifdef CONFIG_RALINK_RT2883
 #define PROCREG_DIR             "rt2883"
 #endif /* CONFIG_RALINK_RT2883 */
@@ -52,12 +48,24 @@ int wl_proc_exit(void);
 #define PROCREG_DIR             "rt3883"
 #endif /* CONFIG_RALINK_RT3883 */
 
+#ifdef CONFIG_RALINK_RT3052
+#define PROCREG_DIR             "rt3052"
+#endif /* CONFIG_RALINK_RT3052 */
+
+#ifdef CONFIG_RALINK_RT3352
+#define PROCREG_DIR             "rt3352"
+#endif /* CONFIG_RALINK_RT3352 */
+
 #ifdef CONFIG_RALINK_RT5350
 #define PROCREG_DIR             "rt5350"
 #endif /* CONFIG_RALINK_RT5350 */
 
+#ifdef CONFIG_RALINK_MT7620
+#define PROCREG_DIR             "mt7620"
+#endif /* CONFIG_RALINK_MT7620 */
+
 #ifndef PROCREG_DIR
-#define PROCREG_DIR             "rt2880"
+#define PROCREG_DIR             "mt7620"
 #endif /* PROCREG_DIR */
 
 #ifdef CONFIG_PROC_FS
