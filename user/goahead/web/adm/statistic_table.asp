@@ -1,16 +1,5 @@
 <table class="form">
   <tbody>
-    <tr id="wirelessAbout" style="display:none;">
-      <td class="title" colspan="6" id="statWiFiAbout">Wireless About</td>
-    </tr>
-    <tr id="wirelessDriverVersion" style="display:none;">
-      <td class="head" colspan="3" id="statWiFiVer">Driver Version</td>
-      <td colspan="3"><% getStaDriverVer(); %></td>
-    </tr>
-    <tr id="wirelessMacAddr" style="display:none;">
-      <td class="head" colspan="3" id="statWiFiMAC">Mac Address</td>
-      <td colspan="3"><% getStaMacAddrw(); %></td>
-    </tr>
     <!-- ==============  MEMORY and CPU  =============== -->
     <tr>
       <td class="title" colspan="6" id="statisticMMCPU">Memory and CPU</td>

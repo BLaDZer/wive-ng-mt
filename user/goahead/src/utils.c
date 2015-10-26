@@ -32,8 +32,6 @@ static int  getSdkVersion(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSysUptime(int eid, webs_t wp, int argc, char_t **argv);
 static int  getSysDateTime(int eid, webs_t wp, int argc, char_t **argv);
 static int  getPortStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int  getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv);
-static int  getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv);
 static int  gigaphy(int eid, webs_t wp, int argc, char_t **argv);
 static void setOpMode(webs_t wp, char_t *path, char_t *query);
 static void setWanPort(webs_t wp, char_t *path, char_t *query);
@@ -377,8 +375,6 @@ void formDefineUtilities(void)
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
 	websAspDefine(T("getPortStatus"), getPortStatus);
-	websAspDefine(T("getStaDriverVer"), getStaDriverVer);
-	websAspDefine(T("getStaMacAddrw"), getStaMacAddrw);
 	websFormDefine(T("setOpMode"), setOpMode);
 	websFormDefine(T("setWanPort"), setWanPort);
 	websFormDefine(T("reboot"), reboot_web);
@@ -887,63 +883,6 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);
 	}
-}
-
-/*
- * description: write station driver version
- */
-static int getStaDriverVer(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
-	unsigned char DriverVersionInfo[8];
-	int s;
-
-	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
-	{
-		printf("goahead: open socket failed\n");
-		return -1;
-	}
-
-	/* Driver */
-	if (OidQueryInformation(RT_OID_VERSION_INFO, s, "ra0", &DriverVersionInfo, sizeof(DriverVersionInfo)) >= 0) {
-		websWrite(wp, "%s", DriverVersionInfo);
-	}
-	else
-		websWrite(wp, "&nbsp;");
-
-	close(s);
-#else
-	websWrite(wp, "STA driver not compiled &nbsp;");
-#endif
-	return 0;
-}
-
-/*
- * description: write station mac address
- */
-static int getStaMacAddrw(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
-	unsigned char CurrentAddress[6];
-	int s;
-
-	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0);
-	{
-		printf("goahead: open socket failed\n");
-		return -1;
-	}
-
-	if (OidQueryInformation(OID_802_3_CURRENT_ADDRESS, s, "ra0", &CurrentAddress, sizeof(CurrentAddress)) >= 0)
-		websWrite(wp, "%02X-%02X-%02X-%02X-%02X-%02X", CurrentAddress[0], CurrentAddress[1],
-				CurrentAddress[2], CurrentAddress[3], CurrentAddress[4], CurrentAddress[5]);
-	else
-		websWrite(wp, "&nbsp;");
-
-	close(s);
-#else
-	websWrite(wp, "&nbsp;");
-#endif
-	return 0;
 }
 
 /* goform/reboot */
