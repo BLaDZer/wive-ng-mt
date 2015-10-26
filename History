@@ -1336,7 +1336,7 @@
 1) busybox: update to 1.24.1 version.<br>
 2) lldpd: up to 0.7.19 version.<br>
 3) libcurl: up to 7.45.0 version.<br>
-4) coovachilli: up to version 1.3.1.3 commit: commit 2b4db5a).<br>
+4) coovachilli: up to version 1.3.1.3 commit: commit 75327bf).<br>
 5) xupnpd: up to 1.033 version commit 5c3ff1.<br>
 6) xl2tpd: sync with devel tree 01 Oct 2015 (commit 5faece3).<br>
 7) miniupnpd: workaround issue with Windows 10 (UDA 2.0 devices and control points SHALL implement IPv4 and IPv6).<br>
