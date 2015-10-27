@@ -1057,7 +1057,31 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 	IN RTMP_ADAPTER *pAd,
 	IN RTMP_TX_DONE_MASK tx_mask)
 {
+	unsigned long IrqFlags;
 	BOOLEAN bReschedule = FALSE;
+
+	/* Make sure Tx ring resource won't be used by other threads*/
+	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
+
+	if (tx_mask & TX_AC0_DONE)
+	    bReschedule = RTMPFreeTXDUponTxDmaDone(pAd, QID_AC_BE);
+
+	if (tx_mask & TX_AC3_DONE)
+	    bReschedule |= RTMPFreeTXDUponTxDmaDone(pAd, QID_AC_VO);
+
+	if (tx_mask & TX_AC2_DONE)
+	    bReschedule |= RTMPFreeTXDUponTxDmaDone(pAd, QID_AC_VI);
+
+	if (tx_mask & TX_AC1_DONE)
+	    bReschedule |= RTMPFreeTXDUponTxDmaDone(pAd, QID_AC_BK);
+
+#ifdef RTMP_MAC
+	if (pAd->chipCap.hif_type == HIF_RTMP && tx_mask & TX_HCCA_DONE)
+	    bReschedule |= RTMPFreeTXDUponTxDmaDone(pAd, QID_HCCA);
+#endif /* RTMP_MAC */
+
+	/* Make sure to release Tx ring resource*/
+	RTMP_IRQ_UNLOCK(&pAd->irq_lock, IrqFlags);
 
 	/* Dequeue outgoing frames from TxSwQueue[] and process it*/
 	RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, MAX_TX_PROCESS);
