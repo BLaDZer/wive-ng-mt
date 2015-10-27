@@ -372,7 +372,7 @@ function displayServiceStatus()
 			<h1 id="v6Title">IPv6 Setup</h1>
 			<p id="v6Introduction"></p>
 			<hr />
-			<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this.form);">
+			<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this);">
 				<table class="form">
 					<tr>
 						<td class="title" colspan="2" id="v6ConnType">IPv6 Connection Type</td>
