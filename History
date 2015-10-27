@@ -1357,7 +1357,7 @@
 22) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
 23) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
 24) kernel: ralink_wifi: 76x2: fix dynvga enable procedure.<br>
-25) kernel: ralink_wifi: 76x2: restore flush ringes logic in RX interrupt.<br>
+25) kernel: ralink_wifi: 76x2: restore flush rings logic in RX interrupt.<br>
 26) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
 27) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
 28) kernel: ralink_wifi: xxxx: reject/ignore roaming parametrs now rework with average RSSI instead of max.<br>
