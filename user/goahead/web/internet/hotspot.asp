@@ -190,8 +190,8 @@ function ModeOnChange(form) {
   displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed"], (form.spotEnable.value == "1"));
   displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], (form.spotEnable.value == "2"));
 
-    form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
-    form.nodogEnable.value == (form.spotEnable.value == "2") ? "1" : "0";
+  form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
+  form.nodogEnable.value == (form.spotEnable.value == "2") ? "1" : "0";
 
   if (form.spotEnable.value == "1")
     ProfileOnChange(form);
@@ -268,9 +268,13 @@ function initValue() {
 
   var prof = form.spotProfile;
   prof.options.length = 0;
-  for(var i = 0; i < Profiles.length; i++)
+  for(var i = 0; i < Profiles.length; i++) {
     addOption(prof, Profiles[i][1], Profiles[i][0]);
-  prof.value = old_profile;
+    if(Profiles[i][0] == old_profile)
+      prof.value = old_profile;
+  }
+  if(old_profile == "0")
+    prof.options.selectedIndex == 0;
 
   form.AuthenticateImmediately.value = ("<% getCfgGeneral(1, "nodog_AuthenticateImmediately"); %>" == "1") ? "1" : "0";
   form.MACMechanism.value = ("<% getCfgGeneral(1, "nodog_MACMechanism"); %>" == "allow") ? "allow" : "block";
@@ -288,36 +292,42 @@ function CheckValue(form) {
       if (tmp[0] == form.spotProfile.value) {
         // Check Network
         if ((tmp[2] == false) && !validateIP(form.sIp, true)) {
+          alert(_("ipv6 invalid ipv4"));
           form.sIp.focus();
           form.sIp.select();
           return false;
         }
         // Check Netmask
         if ((tmp[3] == false) && !validateIP(form.sNetmask, true)) {
+          alert(_("ipv6 invalid ipv4"));
           form.sNetmask.focus();
           form.sNetmask.select();
           return false;
         }
         // Check start IP
         if ((tmp[4] == false) && !checkDigitRange(form.sStartIP.value, 1, 254)) {
+          alert(_("hotspot expects number"));
           form.sStartIP.focus();
           form.sStartIP.select();
           return false;
         }
         // Check end IP
         if ((tmp[5] == false) && !checkDigitRange(form.sEndIP.value, 1, 254)) {
+          alert(_("hotspot expects number"));
           form.sEndIP.focus();
           form.sEndIP.select();
           return false;
         }
         // Check Primary DNS
         if ((tmp[6] == false) && !validateIP(form.sPriDns, true)) {
+          alert(_("ipv6 invalid ipv4"));
           form.sPriDns.focus();
           form.sPriDns.select();
           return false;
         }
         // Check Secondery DNS
         if ((tmp[7] == false) && !validateIP(form.sSecDns, true)) {
+          alert(_("ipv6 invalid ipv4"));
           form.sSecDns.focus();
           form.sSecDns.select();
           return false;
