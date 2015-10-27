@@ -106,7 +106,7 @@ function genRulesTable()
 		'<td><input type="text" class="short" name="redirectFromPort" tabindex="6"></td>' + 
 		'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="7"></td>' + 
 		'<td rowspan="2"><input type="text" class="normal" name="comment" tabindex="8"></td>' +
-		'<td rowspan="2" style="text-align: center;"><input type="button" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
+		'<td rowspan="2" style="text-align: center;"><input type="button" class="half" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
 		'</tr>' +
 		'<tr>' +
 		'<td><input type="text" class="short" name="toPort" tabindex="4"></td>' + 
@@ -184,7 +184,7 @@ function genFilteringTable()
 		'<td><input type="text" tabindex="19" class="short" name="dFromPort" disabled="disabled"></td>' +
 		'<td rowspan="2"><select tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
 		'<td rowspan="2"><input tabindex="22" type="text" class="normal" name="comment"></td>' +
-		'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
+		'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="half" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
 		'</tr>' +
 		'<tr>' +
 		'<td><input type="text" tabindex="14" class="normal" name="sip_mask"></td>' +

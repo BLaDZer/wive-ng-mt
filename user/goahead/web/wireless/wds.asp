@@ -91,8 +91,13 @@ function WdsModeOnChange(form) {
 
 function initTranslation()
 {
+	_TR("basicWDS", "basic wds title");
+	_TR("basicWDSIntroduction", "basic wds introduction");
 	_TR("basicWDSTitle", "basic wds title");
 	_TR("basicWDSMode", "basic wds mode");
+	_TR("basicWDSLazyMode", "basic wds lazy mode");
+	_TR("basicWDSBridgeMode", "basic wds bridge mode");
+	_TR("basicWDSRepeaterMode", "basic wds repeater mode");
 	_TR("basicWDSPhyMode", "basic wds phy mode");
 	_TR("basicWDSDisable", "button disable");
 	_TR("basicWDSEncrypType", "basic wds encryp type");
@@ -274,8 +279,8 @@ function CheckValue(form) {
 <body onLoad="initValue();">
 <table class="body">
   <tr>
-    <td><h1>Wireless Distribution System</h1>
-      <p>Wireless Distribution System Settings</p>
+    <td><h1 id="basicWDS">Wireless Distribution System</h1>
+      <p id="basicWDSIntroduction">Wireless Distribution System Settings</p>
       <hr />
       <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this);">
         <table class="form">
@@ -283,9 +288,9 @@ function CheckValue(form) {
             <td class="title" id="basicWDSTitle" colspan="4">Wireless Distribution System</td>
             <td class="title" style="text-align:right"><select name="wds_mode" id="wds_mode" class="normal" onChange="WdsModeOnChange(this.form);">
                 <option value=0 id="basicWDSDisable">Disable</option>
-                <option value=4>Lazy Mode</option>
-                <option value=2>Bridge Mode</option>
-                <option value=3>Repeater Mode</option>
+                <option value=4 id="basicWDSLazyMode">Lazy Mode</option>
+                <option value=2 id="basicWDSBridgeMode">Bridge Mode</option>
+                <option value=3 id="basicWDSRepeaterMode">Repeater Mode</option>
               </select></td>
           </tr>
           <tr id="dev_head" style="display:none;">

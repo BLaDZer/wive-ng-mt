@@ -128,6 +128,7 @@ function initTranslation()
 	_TR("miscUsePMTU", "services misc use pmtu");
 
 	_TR("miscIRQBalance", "services misc irqbalance");
+	_TR("miscIGMPAuto", "services misc auto");
 	_TR("miscAuto", "services misc auto");
 	_TR("miscRouter", "services misc router");
 	_TR("miscStorage", "services misc storage");
@@ -601,7 +602,7 @@ function submitForm(form) {
           <tr id="igmpSnoop">
             <td class="head" id="lIgmppMC">IGMP snooping support</td>
             <td colspan="4"><select name="igmpSnoop" class="half">
-                <option value="">Auto</option>
+                <option value="" id="miscIGMPAuto">Auto</option>
                 <option value="n" id="disable">Disable</option>
               </select></td>
           </tr>

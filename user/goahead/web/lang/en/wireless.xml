@@ -52,7 +52,11 @@
   <message msgid="basic frequency auto" msgstr="AutoSelect" />
   <message msgid="basic rate" msgstr="Rate" />
   <message msgid="basic wds title" msgstr="Wireless Distribution System" />
+  <message msgid="basic wds introduction" msgstr="Wireless Distribution System Settings" />
   <message msgid="basic wds mode" msgstr="WDS Mode" />
+  <message msgid="basic wds lazy mode" msgstr="Lazy Mode" />
+  <message msgid="basic wds bridge mode" msgstr="Bridge Mode" />
+  <message msgid="basic wds repeater mode" msgstr="Repeater Mode" />
   <message msgid="basic wds phy mode" msgstr="Phy Mode" />
   <message msgid="basic wds encryp type" msgstr="EncrypType" />
   <message msgid="basic wds encryp key" msgstr="Encryp Key" />
@@ -254,6 +258,7 @@
   <message msgid="stalist title" msgstr="Station List" />
   <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here." />
   <message msgid="stalist wireless network" msgstr="Wireless Network" />
+  <message msgid="stalist conn time" msgstr="CONN TIME" />
 
   <message msgid="prof title" msgstr="Station Profile" />
   <message msgid="prof introduction" msgstr="The Status page shows settings and current operation status of the Station." />

@@ -19,6 +19,8 @@ function initTranslation()
 	_TR("stalistIntroduction", "stalist introduction");
 	_TR("stalistWirelessNet", "stalist wireless network");
   _TR("stalistMacAddr", "stalist mac address");
+  _TR("stalistConnTime", "stalist conn time");
+  _TR("stalistAction", "basic action");
 
   _TRV("disconnectAll", "button disconnect all");
 }
@@ -53,7 +55,7 @@ function PageInit()
           </tr>
           <tr>
             <th id="stalistMacAddr">MAC ADDRESS</th>
-            <th>CONN TIME</th>
+            <th id="stalistConnTime">CONN TIME</th>
             <th>AID</th>
             <th>PSM</th>
             <th>MIMO PS</th>
@@ -64,7 +66,7 @@ function PageInit()
             <th>LDPC</th>
             <th>MODE</th>
             <th>RSSI</th>
-            <th>ACTIONS</th>
+            <th id="stalistAction">ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>
         </table>

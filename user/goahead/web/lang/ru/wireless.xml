@@ -52,7 +52,11 @@
   <message msgid="basic frequency auto" msgstr="Автовыбор" />
   <message msgid="basic rate" msgstr="Скорость" />
   <message msgid="basic wds title" msgstr="Wireless Distribution System" />
+  <message msgid="basic wds introduction" msgstr="Настройка Wireless Distribution System" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
+  <message msgid="basic wds lazy mode" msgstr="Ленивый" />
+  <message msgid="basic wds bridge mode" msgstr="Мост" />
+  <message msgid="basic wds repeater mode" msgstr="Повторитель" />
   <message msgid="basic wds phy mode" msgstr="Физический режим" />
   <message msgid="basic wds encryp type" msgstr="Тип шифрования" />
   <message msgid="basic wds encryp key" msgstr="Ключ шифрования" />
@@ -254,6 +258,7 @@
   <message msgid="stalist title" msgstr="Активные подключения" />
   <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список клиентов, подключенных к данной точке доступа." />
   <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
+  <message msgid="stalist conn time" msgstr="Время подкл." />
 
   <message msgid="prof title" msgstr="Профиль станции" />
   <message msgid="prof introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />
