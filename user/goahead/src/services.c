@@ -35,6 +35,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query);
 static void formIptAccounting(webs_t wp, char_t *path, char_t *query);
 static void l2tpConfig(webs_t wp, char_t *path, char_t *query);
 static int  isSMP(int eid, webs_t wp, int argc, char_t **argv);
+static int  getSmbFPBuilt(int eid, webs_t wp, int argc, char_t **argv);
 
 /*** Busybox leases.h ***/
 static uint64_t hton64(uint64_t v)
@@ -84,6 +85,7 @@ void formDefineServices(void)
 	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
 	websAspDefine(T("getProcessList"), getProcessList);
 	websAspDefine(T("isSMP"), isSMP);
+	websAspDefine(T("getSmbFPBuilt"), getSmbFPBuilt);
 }
 
 static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
@@ -380,6 +382,9 @@ const parameter_fetch_t service_misc_flags[] =
 	{ T("mssPmtu"), "mss_use_pmtu", 0, T("1") },
 #ifdef CONFIG_RALINK_MT7621
 	{ T("IRQBalance"), "IRQBalance", 0, T("auto") },
+#endif
+#ifdef CONFIG_NETFILTER_FP_SMB
+	{ T("smbFastpath"), "smbFastpath", 0, T("0") },
 #endif
 	{ NULL, NULL, 0, NULL } // Terminator
 };
@@ -752,6 +757,14 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 
 static int isSMP(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RALINK_MT7621
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getSmbFPBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_NETFILTER_FP_SMB
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

@@ -72,6 +72,7 @@ function initTranslation()
 	_TR("miscNATFastpath", "services misc nat fastpath");
 	_TR("miscRouteFastpath", "services misc route fastpath");
 	_TR("miscNFFastpath", "services misc netfilter fastpath");
+	_TR("miscSmbFastpath", "services misc samba fastpath");
 	_TR("miscRemoteSetup", "services misc remote setup");
 	_TR("miscWebRemote", "services misc web remote");
 	_TR("miscWebPort", "services misc web port");
@@ -180,6 +181,7 @@ function initValue()
 	var hw_nat_udp_pt = '<% getCfgGeneral(1, "hw_nat_udp"); %>';
 	var hw_nat_six_pt = '<% getCfgGeneral(1, "hw_nat_six"); %>';
 	var smp = "<% isSMP(); %>";
+	var smbfp_built = "<% getSmbFPBuilt(); %>";
 
 	initTranslation();
 
@@ -252,6 +254,9 @@ function initValue()
 
 	form.IRQBalance.value = "<% getCfgGeneral(1, "IRQBalance"); %>";
 	displayElement('IRQBalance', smp == '1');
+
+	form.smbFastpath.options.selectedIndex = ("<% getCfgGeneral(1, "smbFastpath"); %>" == "1") ? 1 : 0;
+	displayElement('smb_fastpath_row', smbfp_built == '1');
 
 	displayServiceStatus();
 }
@@ -494,6 +499,13 @@ function submitForm(form) {
           <tr id="filter_fastpath_row" style="display: none;">
             <td class="head" id="miscNFFastpath">Netfilter fastpath</td>
             <td colspan="4"><select name="filterFastpath" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="smb_fastpath_row" style="display: none;">
+            <td class="head" id="miscSmbFastpath">Fastpath for samba traffic</td>
+            <td colspan="4"><select name="smbFastpath" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>

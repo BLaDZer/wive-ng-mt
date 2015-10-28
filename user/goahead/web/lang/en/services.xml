@@ -97,6 +97,7 @@
   <message msgid="services misc nat fastpath" msgstr="NAT fastpath" />
   <message msgid="services misc route fastpath" msgstr="Route fastpath" />
   <message msgid="services misc netfilter fastpath" msgstr="Netfilter fastpath" />
+  <message msgid="services misc samba fastpath" msgstr="Samba fastpath" />
   <message msgid="services misc remote setup" msgstr="Remote management" />
   <message msgid="services misc web remote" msgstr="HTTP Remote Management" />
   <message msgid="services misc web port" msgstr="Remote HTTP port" />

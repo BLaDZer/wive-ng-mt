@@ -18,9 +18,26 @@ Butterlate.setTextDomain("network");
 Butterlate.setTextDomain("hint");
 Butterlate.setTextDomain("buttons");
 
+var vpnEnabled = '<% getCfgGeneral(1, "vpnEnabled"); %>';
 var vpnType     = '<% getCfgGeneral(1, "vpnType"); %>';
 var vpnServerIP = (vpnType != '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
 var vpnACName   = (vpnType == '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
+var mppe       = '<% getCfgGeneral(1, "vpnMPPE"); %>';
+var peerdns    = '<% getCfgGeneral(1, "vpnPeerDNS"); %>';
+var debug      = '<% getCfgGeneral(1, "vpnDebug"); %>';
+var nat        = '<% getCfgGeneral(1, "vpnNAT"); %>';
+var dgw        = '<% getCfgGeneral(1, "vpnDGW"); %>';
+var vpn_auth   = '<% getCfgGeneral(1, "vpnAuthProtocol"); %>';
+var lcp        = '<% getCfgGeneral(1, "vpnEnableLCP"); %>';
+var pure_pppoe = '<% getCfgGeneral(1, "vpnPurePPPOE"); %>';
+var lcp_errors = '<% getCfgGeneral(1, "vpnLCPFailure"); %>';
+var lcp_int    = '<% getCfgGeneral(1, "vpnLCPInterval"); %>';
+var vpn_test   = '<% getCfgGeneral(1, "vpnTestReachable"); %>';
+var lanauth_access   = '<% getCfgGeneral(1, "LANAUTH_LVL"); %>';
+var vpn_mtu_field = '<% getCfgGeneral(1, "vpnMTU"); %>';
+var vpn_user = '<% getCfgGeneral(1, "vpnUser"); %>';
+var vpn_pass = '<% getCfgGeneral(1, "vpnPassword"); %>';
+var vpn_pppoe_service = '<% getCfgGeneral(1, "vpnService"); %>';
 
 var table_vpn_params= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
 
@@ -218,7 +235,27 @@ function selectType(form)
 
 function resetClick(form)
 {
-	form.reset();
+	vpnEnabled = 'off';
+	vpnType = '0';
+	vpnServerIP = '';
+	vpnACName = '';
+	mppe = 'off';
+	peerdns = 'on';
+	debug = 'off';
+	nat = 'on';
+	dgw = '1';
+	vpn_auth = '0';
+	lcp = 'on';
+	pure_pppoe = '0';
+	lcp_errors = '10';
+	lcp_int = '25';
+	vpn_test = '1';
+	lanauth_access = '';
+	vpn_mtu_field = 'AUTO';
+	vpn_user = 'vpn_user';
+	vpn_pass = 'vpn_password';
+	vpn_pppoe_service = '';
+
 	bodyOnLoad(form);
 	return true;
 }
@@ -254,27 +291,9 @@ function submitClick(form)
 
 function initializeForm(form)
 {
-	var vpnEnabled = '<% getCfgGeneral(1, "vpnEnabled"); %>';
-	var vpnType   = '<% getCfgGeneral(1, "vpnType"); %>';
-	var mppe       = '<% getCfgGeneral(1, "vpnMPPE"); %>';
-	var peerdns    = '<% getCfgGeneral(1, "vpnPeerDNS"); %>';
-	var debug      = '<% getCfgGeneral(1, "vpnDebug"); %>';
-	var nat        = '<% getCfgGeneral(1, "vpnNAT"); %>';
-	var dgw        = '<% getCfgGeneral(1, "vpnDGW"); %>';
-	var vpn_auth   = '<% getCfgGeneral(1, "vpnAuthProtocol"); %>';
-	var lcp        = '<% getCfgGeneral(1, "vpnEnableLCP"); %>';
-	var pure_pppoe = '<% getCfgGeneral(1, "vpnPurePPPOE"); %>';
-	var lcp_errors = '<% getCfgGeneral(1, "vpnLCPFailure"); %>';
-	var lcp_int    = '<% getCfgGeneral(1, "vpnLCPInterval"); %>';
-	var vpn_test   = '<% getCfgGeneral(1, "vpnTestReachable"); %>';
-
 	var kabinet_built = '<% getLANAUTHBuilt(); %>';
 
-	if (kabinet_built != '0')
-	{
-		var lanauth_access   = '<% getCfgGeneral(1, "LANAUTH_LVL"); %>';
-
-		// Add specific option
+	if (kabinet_built != '0') {
 		if (form.vpn_type.options.length == 3)
 			form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '3');
 		form.lanauth_access.value      = lanauth_access;
@@ -293,6 +312,10 @@ function initializeForm(form)
 	form.vpn_auth_type.value = vpn_auth;
 	form.vpn_lcp_errors.value= lcp_errors;
 	form.vpn_lcp_interval.value = lcp_int;
+	form.vpn_mtu_field.value = vpn_mtu_field;
+	form.vpn_user.value = vpn_user;
+	form.vpn_pass.value = vpn_pass;
+	form.vpn_pppoe_service.value = vpn_pppoe_service;
 
 	selectType(form);
 }
@@ -390,11 +413,11 @@ function initTranslation()
           </tr>
           <tr id="vpn_server_row" onMouseOver="showHint('vpn_server')" onMouseOut="hideHint('vpn_server')">
             <td class="head" id="vpn_server_col"><b id="vServerCol">Host, <acronym title="Internet Protocol">IP</acronym>, <acronym title="Access Concentrator">AC</acronym> or <acronym title="Access Point Name">APN</acronym> name:</b></td>
-            <td><input name="vpn_server" class="mid" value="<% getCfgGeneral(1, "vpnServer"); %>" disabled="disabled" type="text"></td>
+            <td><input name="vpn_server" class="mid" value="" disabled="disabled" type="text"></td>
           </tr>
           <tr id="vpn_pppoe_service_row" onMouseOver="showHint('vpn_pppoe_service')" onMouseOut="hideHint('vpn_pppoe_service')">
             <td class="head"><b id="vServiceName">Service name:</b></td>
-            <td><input name="vpn_pppoe_service" class="mid" value="<% getCfgGeneral(1, "vpnService"); %>" disabled="disabled" type="text"></td>
+            <td><input name="vpn_pppoe_service" class="mid" value="" disabled="disabled" type="text"></td>
           </tr>
           <tr id="vpn_auth_type_row" onMouseOver="showHint('vpn_auth_type')" onMouseOut="hideHint('vpn_auth_type')" >
             <td class="head"><b id="vAuthType">Authentication method:</b></td>
@@ -415,15 +438,15 @@ function initTranslation()
           </tr>
           <tr id="vpn_user_row" onMouseOver="showHint('vpn_user')" onMouseOut="hideHint('vpn_user')" >
             <td class="head"><b id="vUsername">User name:</b></td>
-            <td><input name="vpn_user" class="mid" size="25" maxlength="60" value="<% getCfgGeneral(1, "vpnUser"); %>" disabled="disabled" type="text"></td>
+            <td><input name="vpn_user" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="text"></td>
           </tr>
           <tr id="vpn_password_row" onMouseOver="showHint('vpn_password')" onMouseOut="hideHint('vpn_password')" >
             <td class="head"><b id="vPassword">Password:</b></td>
-            <td><input name="vpn_pass" class="mid" size="25" maxlength="60" value="<% getCfgGeneral(1, "vpnPassword"); %>" disabled="disabled" type="password"></td>
+            <td><input name="vpn_pass" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="password"></td>
           </tr>
           <tr id="vpn_mtu_row" onMouseOver="showHint('vpn_mtu')" onMouseOut="hideHint('vpn_mtu')" >
             <td class="head"><b id="vMTUMRU"><acronym title="Maximum Transfer Unit">MTU</acronym>/<acronym title="Maximum Recieve Unit">MRU:</acronym></b></td>
-            <td><input id="vpn_mtu_field" name="vpn_mtu" maxlength="4" disabled="disabled" type="text" class="half" style="display:none; " value="<% getCfgGeneral(1, "vpnMTU"); %>" >
+            <td><input id="vpn_mtu_field" name="vpn_mtu" maxlength="4" disabled="disabled" type="text" class="half" style="display:none; " value="" >
               <select id="vpn_mtu_select" disabled="disabled" name="vpn_mtu_type" onChange="mtuChange(this.form);" class="mid" >
                 <option value="AUTO" id="vMTUAuto">AUTO</option>
                 <option value="1" selected="selected" id="vCustom">Custom</option>

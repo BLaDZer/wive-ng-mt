@@ -98,6 +98,7 @@
   <message msgid="services misc nat fastpath" msgstr="Ускорение NAT" />
   <message msgid="services misc route fastpath" msgstr="Ускорение маршрутизации" />
   <message msgid="services misc netfilter fastpath" msgstr="Ускорение фильтра пакетов" />
+  <message msgid="services misc samba fastpath" msgstr="Ускорение траффика Samba" />
   <message msgid="services misc remote setup" msgstr="Удалённое управление" />
   <message msgid="services misc web remote" msgstr="Управление через HTTP" />
   <message msgid="services misc web port" msgstr="Порт HTTP" />

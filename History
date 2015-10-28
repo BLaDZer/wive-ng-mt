@@ -1402,16 +1402,15 @@
 <br>
 <br>
 <b>TODO:</b><br>
-1) need add in misc smbFastpath variable if CONFIG_NETFILTER_FP_SMB=y (skip nf_hooks for samba traffic for speedup).<br>
-2) full russian ui (work end ~99%).<br>
-3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-4) need add multiif support in iappd daemon.<br>
-5) need add subchannel select for 5GHz module.<br>
-6) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-7) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-8) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-9) in fair fair future: need add perip shaper script and webui .<br>
-10) in fair fair future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+1) full russian ui (work end ~99%).<br>
+2) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+3) need add multiif support in iappd daemon.<br>
+4) need add subchannel select for 5GHz module.<br>
+5) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+6) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+7) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+8) in fair fair future: need add perip shaper script and webui .<br>
+9) in fair fair future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>
