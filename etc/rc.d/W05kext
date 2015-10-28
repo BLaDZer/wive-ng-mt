@@ -9,6 +9,7 @@ start() {
     six_mode
     nat_mode
     offload
+    smb_fp
     pthrough
     multicast
     # This is set only if wan or lan in bridge
@@ -38,6 +39,19 @@ nat_mode() {
     else
 	sysctl -wq net.netfilter.nf_conntrack_nat_mode=0
 	$LOG "Nat mode Linux Hybrid"
+    fi
+}
+
+smb_fp() {
+    if [ "$CONFIG_NETFILTER_FP_SMB" = "y" ]; then
+	eval `nvram_buf_get 2860 smbFastpath`
+	if [ "$smbFastpath" = "1" ] && [ "$lan_ipaddr" != "" ]; then
+	    $LOG "SMB traffic offload enabled on $lan_ipaddr"
+	    echo "$lan_ipaddr" > /proc/net/netfilter/nf_fp_smb
+	else
+	    $LOG "SMB traffic offload disabled"
+	    echo "0.0.0.0" > /proc/net/netfilter/nf_fp_smb
+	fi
     fi
 }
 

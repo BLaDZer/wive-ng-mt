@@ -50,6 +50,7 @@ BasicRate=351
 BeaconPeriod=50
 BGProtection=2
 natFastpath=1
+smbFastpath=1
 routeFastpath=1
 filterFastpath=1
 BSSACM=0;0;0;0
