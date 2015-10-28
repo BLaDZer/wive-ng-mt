@@ -1383,19 +1383,20 @@
 48) kernel: net: af_key: net: fix RCU splat.<br>
 49) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
 50) kernel: net: add netfilter SMB fastpath module.<br>
-51) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-52) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-53) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-54) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-55) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-56) kernel: net: ipv4/6: compute net once in some cases.<br>
-57) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-58) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-59) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-60) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-61) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-62) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-63) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+51) kernel: net: remove sk_init() helper.<br>
+52) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+53) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+54) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+55) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+56) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+57) kernel: net: ipv4/6: compute net once in some cases.<br>
+58) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+59) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+60) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+61) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+62) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+63) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+64) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
