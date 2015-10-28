@@ -335,7 +335,8 @@ function initTranslation()
 	_TR("vUsername", "vpn username");
 	_TR("vPassword", "vpn password");
 	_TR("vMTUMRU", "vpn mtu mru");
-	_TR("vAuto", "inet auto");
+	_TR("vAuthTypeAuto", "inet auto");
+	_TR("vMTUAuto", "inet auto");
 	_TR("vCustom", "routing custom");
 	_TR("vGateway", "inet gateway");
 	_TR("vGWdisable", "button disable");
@@ -398,7 +399,7 @@ function initTranslation()
           <tr id="vpn_auth_type_row" onMouseOver="showHint('vpn_auth_type')" onMouseOut="hideHint('vpn_auth_type')" >
             <td class="head"><b id="vAuthType">Authentication method:</b></td>
             <td><select id="vpn_auth_type_select" disabled="disabled" name="vpn_auth_type" class="mid">
-                <option value="0" selected="selected">AUTO</option>
+                <option value="0" id="vAuthTypeAuto" selected="selected">AUTO</option>
                 <option value="1">PAP</option>
                 <option value="2">CHAP</option>
                 <option value="3">MSCHAP</option>
@@ -424,7 +425,7 @@ function initTranslation()
             <td class="head"><b id="vMTUMRU"><acronym title="Maximum Transfer Unit">MTU</acronym>/<acronym title="Maximum Recieve Unit">MRU:</acronym></b></td>
             <td><input id="vpn_mtu_field" name="vpn_mtu" maxlength="4" disabled="disabled" type="text" class="half" style="display:none; " value="<% getCfgGeneral(1, "vpnMTU"); %>" >
               <select id="vpn_mtu_select" disabled="disabled" name="vpn_mtu_type" onChange="mtuChange(this.form);" class="mid" >
-                <option value="AUTO" id="vAuto">AUTO</option>
+                <option value="AUTO" id="vMTUAuto">AUTO</option>
                 <option value="1" selected="selected" id="vCustom">Custom</option>
                 <option value="1492">1492</option>
                 <option value="1440">1440</option>
