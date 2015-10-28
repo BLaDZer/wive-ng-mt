@@ -450,6 +450,9 @@ struct sk_buff {
 #ifdef CONFIG_BRIDGE_NETFILTER
 	struct nf_bridge_info	*nf_bridge;
 #endif
+#if defined(CONFIG_NETFILTER_FP_SMB)
+	__u32			nf_fp_cache;
+#endif
 
 	int			skb_iif;
 
@@ -2466,6 +2469,7 @@ static inline void nf_bridge_get(struct nf_bridge_info *nf_bridge)
 		atomic_inc(&nf_bridge->use);
 }
 #endif /* CONFIG_BRIDGE_NETFILTER */
+
 static inline void nf_reset(struct sk_buff *skb)
 {
 #if IS_ENABLED(CONFIG_NF_CONNTRACK)
@@ -2500,6 +2504,9 @@ static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src)
 #ifdef CONFIG_BRIDGE_NETFILTER
 	dst->nf_bridge  = src->nf_bridge;
 	nf_bridge_get(src->nf_bridge);
+#endif
+#if defined(CONFIG_NETFILTER_FP_SMB)
+	dst->nf_fp_cache = src->nf_fp_cache;
 #endif
 }
 
