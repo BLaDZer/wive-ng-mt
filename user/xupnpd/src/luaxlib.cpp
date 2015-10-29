@@ -721,15 +721,15 @@ static int lua_m3u_scan(lua_State* L)
 
                     if(strcmp(de->d_name,"lost+found"))
                     {
-                        lua_pushinteger(L,idx++);
+                    lua_pushinteger(L,idx++);
 
-                        lua_getglobal(L,"m3u");
-                        lua_getfield(L,-1,"scan");
-                        lua_remove(L,-2);
-                        lua_pushstring(L,track_url);
-                        lua_call(L,1,1);
+                    lua_getglobal(L,"m3u");
+                    lua_getfield(L,-1,"scan");
+                    lua_remove(L,-2);
+                    lua_pushstring(L,track_url);
+                    lua_call(L,1,1);
 
-                        lua_rawset(L,-3);       // element
+                    lua_rawset(L,-3);       // element
                     }
                 }else
                 {

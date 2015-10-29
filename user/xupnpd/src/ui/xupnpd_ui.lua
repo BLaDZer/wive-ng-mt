@@ -576,26 +576,21 @@ function ui_handler(args,data,ip,url)
 
     local action=string.match(url,'^/ui/(.+)$')
 
-	if action then
-		local  path_file , file_format =string.match(action, "(.+%.(%a+))[%?]?.*$")
-		
-		if  file_format == 'm3u' then 
-			ui_download(action)
+    if action=='style' then
+        http_send_headers(200,'css')
+        http.sendfile(cfg.ui_path..'bootstrap.min.css')
         return
-		elseif file_format then
-			http_send_headers(200,file_format)
-			http.sendfile(cfg.ui_path..path_file)
+    elseif action=='api' then
+        ui_api_call(args)
         return
     end
 
-		if action == "api" then 
-			ui_api_call(args)
+    if action and string.find(action,'.+%.m3u$') then
+        ui_download(action)
         return
     end
 
-	else
-		action='main' 
-	end
+    if not action then action='main' end
 
     http_send_headers(200,'html')
 
