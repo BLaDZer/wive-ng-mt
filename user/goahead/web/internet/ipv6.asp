@@ -258,11 +258,7 @@ function CheckValue(form)
 			return false;
 		}
 	} else if (form.ipv6_opmode.value == "3") {
-		if (form.IPv6SrvAddr.value == "" ) {
-			alert(_("ipv6 fill all"));
-			return false;
-		}
-		if (!checkIpv4Addr(form.IPv6SrvAddr.value)) {
+		if (!validateIP(form.IPv6SrvAddr, false)) {
 			alert(_("ipv6 invalid ipv4"));
 			form.IPv6SrvAddr.focus();
 			form.IPv6SrvAddr.select();

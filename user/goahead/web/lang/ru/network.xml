@@ -175,6 +175,7 @@
     <message msgid="hotspot uam mac" msgstr="Разрешённые MAC" />
     <message msgid="hotspot dont space" msgstr="Пробелы в поле запрещены!" />
     <message msgid="hotspot expects number" msgstr="В этом поле должны быть цифры!" />
+    <message msgid="hotspot mac list" msgstr="Пожалуйста, заполните правильно список MAC адресов!" />
     <message msgid="hotspot nodog ip range" msgstr="Диапазон IP адресов" />
     <message msgid="hotspot nodog url" msgstr="Адрес перенаправления" />
     <message msgid="hotspot nodog max clients" msgstr="Максимальное число клиентов" />

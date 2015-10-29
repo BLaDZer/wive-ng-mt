@@ -17,6 +17,20 @@
 Butterlate.setTextDomain("buttons");
 Butterlate.setTextDomain("network");
 
+var QoSSelect = '<% getCfgGeneral(1, "QoSEnable"); %>';
+var QoSMode = '<% getCfgGeneral(1, "QoSMode"); %>';
+var UpBW = '<% getCfgGeneral(1, "QoS_rate_up"); %>';
+var UpBWL = '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
+var DownBW = '<% getCfgGeneral(1, "QoS_rate_down"); %>';
+var DownBWL = '<% getCfgGeneral(1, "QoS_rate_limit_down"); %>';
+var UpVPNBW = '<% getCfgGeneral(1, "QoS_rate_vpn_up"); %>';
+var UpVPNBWL = '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
+var QoS_HPP = '<% getCfgGeneral(1, "QoS_high_pp"); %>';
+var QoS_LPP = '<% getCfgGeneral(1, "QoS_low_pp"); %>';
+var QoS_HDSCP = '<% getCfgGeneral(1, "QoS_high_dscp"); %>';
+var QoS_LDSCP = '<% getCfgGeneral(1, "QoS_low_dscp"); %>';
+
+
 function initTranslation()
 {
   _TR("QoSTitleStr", "qos title");
@@ -64,18 +78,18 @@ function QoSSelectChange(form)
 
 function initializeForm(form)
 {
-  form.QoSSelect.value    = '<% getCfgGeneral(1, "QoSEnable"); %>';
-  form.QoSMode.value    = '<% getCfgGeneral(1, "QoSMode"); %>';
-	form.UpBW.value    		= '<% getCfgGeneral(1, "QoS_rate_up"); %>';
-	form.UpBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
-	form.DownBW.value		= '<% getCfgGeneral(1, "QoS_rate_down"); %>';
-	form.DownBWL.value		= '<% getCfgGeneral(1, "QoS_rate_limit_down"); %>';
-	form.UpVPNBW.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_up"); %>';
-	form.UpVPNBWL.value		= '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
-	form.QoS_HPP.value		= '<% getCfgGeneral(1, "QoS_high_pp"); %>';
-	form.QoS_LPP.value		= '<% getCfgGeneral(1, "QoS_low_pp"); %>';
-	form.QoS_HDSCP.value		= '<% getCfgGeneral(1, "QoS_high_dscp"); %>';
-	form.QoS_LDSCP.value		= '<% getCfgGeneral(1, "QoS_low_dscp"); %>';
+  form.QoSSelect.value = QoSSelect;
+  form.QoSMode.value = QoSMode;
+	form.UpBW.value = UpBW;
+	form.UpBWL.value = UpBWL;
+	form.DownBW.value = DownBW;
+	form.DownBWL.value = DownBWL;
+	form.UpVPNBW.value = UpVPNBW;
+	form.UpVPNBWL.value = UpVPNBWL;
+	form.QoS_HPP.value = QoS_HPP;
+	form.QoS_LPP.value = QoS_LPP;
+	form.QoS_HDSCP.value = QoS_HDSCP;
+	form.QoS_LDSCP.value = QoS_LDSCP;
 }
 
 function bodyOnLoad(form)
@@ -83,6 +97,25 @@ function bodyOnLoad(form)
 	initializeForm(form);
 	QoSSelectChange(form);
   initTranslation();
+}
+
+function resetClick(form)
+{
+  QoSSelect = '0';
+  QoSMode = '0';
+  UpBW = '90000';
+  UpBWL = '80000';
+  DownBW = '90000';
+  DownBWL = '80000';
+  UpVPNBW = '70000';
+  UpVPNBWL = '60000';
+  QoS_HPP = '1720 4190 5060 5190 5191 5192 5193 5222 5223 5269 5270';
+  QoS_LPP = '20 25 21 8010';
+  QoS_HDSCP = 'EF';
+  QoS_LDSCP = '';
+
+  bodyOnLoad(form);
+  return true;
 }
 
 </script>
@@ -177,7 +210,7 @@ function bodyOnLoad(form)
           <tr>
             <td><input value="/internet/qos.asp" name="submit-url" type="hidden">
               <input type=submit class="normal" value="Apply" id="QoSApply">
-              <input type=reset  class="normal" value="Reset" id="QoSReset" onClick="window.location.reload()"></td>
+              <input type=button  class="normal" value="Reset" id="QoSReset" onClick="resetClick(this.form);"></td>
           </tr>
         </table>
       </form></td>

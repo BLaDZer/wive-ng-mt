@@ -55,6 +55,25 @@ function validateMAC(mac, info)
 	return true;
 }
 
+function validateMACList(array, info)
+{
+	try
+	{
+		for (var i=0; i<array.length; i++)
+		{
+			if (!validateMAC(array[i], info))
+				return false;
+		}
+		
+		return true;
+	}
+	catch (e)
+	{
+		alert(e);
+		return false;
+	}
+}
+
 function validateIP(ip, info)
 {
 	var re = /^(?:(?:0|1\d{0,2}|2([0-4]\d?|5[0-5]?|[6-9]?)|[3-9]\d?)\.){3}(?:0|1\d{0,2}|2([0-4]\d?|5[0-5]?|[6-9]?)|[3-9]\d?)$/;

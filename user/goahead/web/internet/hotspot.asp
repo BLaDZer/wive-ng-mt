@@ -191,7 +191,7 @@ function ModeOnChange(form) {
   displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], (form.spotEnable.value == "2"));
 
   form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
-  form.nodogEnable.value == (form.spotEnable.value == "2") ? "1" : "0";
+  form.nodogEnable.value = (form.spotEnable.value == "2") ? "1" : "0";
 
   if (form.spotEnable.value == "1")
     ProfileOnChange(form);
@@ -433,6 +433,11 @@ function CheckValue(form) {
         // Check sMacAllowed
         if ((tmp[24] == false) && (form.sMacAllowed.value.indexOf(" ") >= 0)) {
           alert(_("hotspot dont space"));
+          form.sMacAllowed.focus();
+          form.sMacAllowed.select();
+          return false;
+        } else if (validateMACList(form.sMacAllowed.value.split(",")), false) {
+          alert(_("hotspot mac list"));
           form.sMacAllowed.focus();
           form.sMacAllowed.select();
           return false;

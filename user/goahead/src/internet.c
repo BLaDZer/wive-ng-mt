@@ -715,23 +715,13 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 	if ((strcmp(vpn_enabled, "on")) || strcmp(vpn_type, "0"))
 		nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
 
-	// Now store VPN_ENABLED flag
-	// Do not set other params if VPN is turned off
-	if (!strcmp(vpn_enabled, "on"))
-	{
-		const parameter_fetch_t *fetch = vpn_args;
+	const parameter_fetch_t *fetch = vpn_args;
 
 #ifdef CONFIG_USER_KABINET
-		if (strcmp(vpn_type, "6") == 0)
-			fetch = lanauth_args;
+	if (CHK_IF_DIGIT(vpn_type, 3))
+		fetch = lanauth_args;
 #endif
-		setupParameters(wp, fetch, 0);
-
-		// Check if routing table is enabled
-		char *vpn_rt_enabled = websGetVar(wp, T("vpn_routing_enabled"), T("off"));
-		if (vpn_rt_enabled[0] == '\0')
-			vpn_rt_enabled="off";
-	}
+	setupParameters(wp, fetch, 0);
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
