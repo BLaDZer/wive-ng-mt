@@ -325,6 +325,7 @@ vpnTestReachable=1
 vpnType=0
 vpnUser=vpn_user
 vpnRange=
+LANAUTH_LVL=2
 wanConnectionMode=DHCP
 wan_gateway=
 wan_ipaddr=
