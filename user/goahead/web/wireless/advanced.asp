@@ -310,33 +310,33 @@ function CheckValue(form)
           <tr>
             <td class="head" id="advDTIM">Data Beacon Rate</td>
             <td><input type="text" name="dtim" class="half" maxlength="3" value="<% getCfgZero(1, "DtimPeriod"); %>">
-              ms <font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
+              times <font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
           </tr>
           <tr>
             <td class="head" id="advFrag">Fragment Threshold</td>
             <td><input type="text" name="fragment" class="half" maxlength="4" value="<% getCfgZero(1, "FragThreshold"); %>">
-              <font color="#808080" id="advFragRange">(range 256 - 2346)</font></td>
+              bytes <font color="#808080" id="advFragRange">(range 256 - 2346)</font></td>
           </tr>
           <tr>
             <td class="head" id="advRTS">RTS Threshold</td>
             <td><input type="text" name="rts" class="half" maxlength="4" value="<% getCfgZero(1, "RTSThreshold"); %>">
-              <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
+              bytes <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
           </tr>
           <tr>
             <td class="head" id="advMaxStaNum">Maximum clients per SSID</td>
-            <td><input type="text" name="maxstanum" class="half" maxlength="3" value=""><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
+            <td><input type="text" name="maxstanum" class="half" maxlength="3" value="">num<font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
           </tr>
           <tr>
             <td class="head" id="advStationKeepAlive">Station Keep-Alive</td>
-            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">s<font color="#808080"> (10 - 300)</font></td>
+            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">sec<font color="#808080"> (10 - 300)</font></td>
           </tr>
           <tr>
             <td class="head" id="advIdleTimeout">IdleTimeout</td>
-            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">s<font color="#808080"> (60 - 300)</font></td>
+            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">sec<font color="#808080"> (60 - 300)</font></td>
           </tr>
           <tr>
             <td class="head" id="advEntryLifeCheck">EntryLifeCheck</td>
-            <td><input type="text" name="EntryLifeCheck" class="half" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>"><font color="#808080"> (128 - 2048)</font></td>
+            <td><input type="text" name="EntryLifeCheck" class="half" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">times<font color="#808080"> (128 - 2048)</font></td>
           </tr>
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
