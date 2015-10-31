@@ -382,25 +382,6 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="staadvCountry">Country Region Code</td>
-            <td><select id="country_region" name="country_region" class="mid">
-                <option value=0 <% var cr_bg = getCfgZero(0, "CountryRegion"); if (cr_bg == "0") write("selected"); %> >0: CH1-11 (FCC)</option>
-                <option value=1 <% if (cr_bg == "1") write("selected"); %> >1: CH1-13 (IC)</option>
-                <option value=2 <% if (cr_bg == "2") write("selected"); %> >2: CH10-11 (ETSI)</option>
-                <option value=3 <% if (cr_bg == "3") write("selected"); %> >3: CH10-13 (SPAIN)</option>
-                <option value=4 <% if (cr_bg == "4") write("selected"); %> >4: CH14 (France)</option>
-                <option value=5 <% if (cr_bg == "5") write("selected"); %> >5: CH1-14 (MKK)</option>
-                <option value=6 <% if (cr_bg == "6") write("selected"); %> >6: CH3-9 (MKK1)</option>
-                <option value=7 <% if (cr_bg == "7") write("selected"); %> >7: CH5-13 (Israel)</option>
-              </select></td>
-          </tr>
-          <tr>
-            <td class="head" id="advCountryCode"> Country Code </td>
-            <td><select name="country_code" class="mid">
-                <% listCountryCodes(); %>
-              </select></td>
-          </tr>
-          <tr>
             <td class="head">Multicast TX rate</td>
             <td><select name="McastMcs" class="half">
                 <option value="0">0</option>
@@ -419,6 +400,25 @@ function CheckValue(form)
                 <option value="13">13</option>
                 <option value="14">14</option>
                 <option value="15">15</option>
+              </select></td>
+          </tr>
+          <tr>
+            <td class="head" id="staadvCountry">Country Region Code</td>
+            <td><select id="country_region" name="country_region" class="mid">
+                <option value=0 <% var cr_bg = getCfgZero(0, "CountryRegion"); if (cr_bg == "0") write("selected"); %> >0: CH1-11 (FCC)</option>
+                <option value=1 <% if (cr_bg == "1") write("selected"); %> >1: CH1-13 (IC)</option>
+                <option value=2 <% if (cr_bg == "2") write("selected"); %> >2: CH10-11 (ETSI)</option>
+                <option value=3 <% if (cr_bg == "3") write("selected"); %> >3: CH10-13 (SPAIN)</option>
+                <option value=4 <% if (cr_bg == "4") write("selected"); %> >4: CH14 (France)</option>
+                <option value=5 <% if (cr_bg == "5") write("selected"); %> >5: CH1-14 (MKK)</option>
+                <option value=6 <% if (cr_bg == "6") write("selected"); %> >6: CH3-9 (MKK1)</option>
+                <option value=7 <% if (cr_bg == "7") write("selected"); %> >7: CH5-13 (Israel)</option>
+              </select></td>
+          </tr>
+          <tr>
+            <td class="head" id="advCountryCode"> Country Code </td>
+            <td><select name="country_code" class="mid">
+                <% listCountryCodes(); %>
               </select></td>
           </tr>
         </table>
