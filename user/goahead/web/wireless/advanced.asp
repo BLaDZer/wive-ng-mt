@@ -141,13 +141,14 @@ function initValue()
 		form.pkt_aggregate[1].checked = true;
 	}
 
+	form.McastMcs.value = mcastMcs;
+
 	//multicase to unicast converter
 	hideElement('div_m2u');
 	if (m2uBuilt == '1')
 	{
 		showElement('div_m2u');
 
-		form.McastMcs.value = mcastMcs;
 		form.m2u_enable[(m2uEnabled == '1') ? 0 : 1 ].checked = true;
 		if (video_turbine_built == '1')
 			form.video_turbine[(video_turbine == '1') ? 0 : 1].checked = true;
@@ -155,27 +156,27 @@ function initValue()
 			displayElement('video_turbine_row', false);
 	}
 
-	form.WmmCapable[0].checked = (wmmCapable == '1');
-	form.WmmCapable[1].checked = (wmmCapable != '1');
+        form.WmmCapable[0].checked = (wmmCapable == '1');
+        form.WmmCapable[1].checked = (wmmCapable != '1');
 
-  if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>) {
-    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
-  } else {
-    form.maxstanum.value = maxstanum;
-  }
-  if (isNaN(keepalive) || keepalive < 10 || keepalive > 300) {
-    form.keepalive.value = 60;
-  } else {
-    form.keepalive.value = keepalive;
-  }
-  if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300) {
-    form.idletimeout.value = 200;
-  } else {
-    form.idletimeout.value = idletimeout;
-  }
+        if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>) {
+	    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
+        } else {
+	    form.maxstanum.value = maxstanum;
+	}
+	if (isNaN(keepalive) || keepalive < 10 || keepalive > 300) {
+	    form.keepalive.value = 60;
+	} else {
+	    form.keepalive.value = keepalive;
+	}
+	if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300) {
+	    form.idletimeout.value = 200;
+	} else {
+	    form.idletimeout.value = idletimeout;
+	}
 
-  form.BandSteering.options.selectedIndex = 1*bandsteering;
-  displayElement('bandsteering_row', bandsteeringBuilt == "1");
+	form.BandSteering.options.selectedIndex = 1*bandsteering;
+	displayElement('bandsteering_row', bandsteeringBuilt == "1");
 }
 
 function CheckValue(form)
@@ -399,19 +400,6 @@ function CheckValue(form)
                 <% listCountryCodes(); %>
               </select></td>
           </tr>
-        </table>
-        <input type="hidden" name="rebootAP" value="0">
-        <table id="div_m2u" name="div_m2u" class="form">
-          <tr>
-            <td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter</td>
-          </tr>
-          <tr>
-            <td class="head" id="advMul2Uni">Multicast-to-Unicast</td>
-            <td><input type="radio" name="m2u_enable" value="1">
-              <font id="advMul2UniEnable">Enable</font>&nbsp;
-              <input type="radio" name="m2u_enable" value="0">
-              <font id="advMul2UniDisable">Disable</font></td>
-          </tr>
           <tr>
             <td class="head">Multicast TX rate</td>
             <td><select name="McastMcs" class="half">
@@ -432,6 +420,19 @@ function CheckValue(form)
                 <option value="14">14</option>
                 <option value="15">15</option>
               </select></td>
+          </tr>
+        </table>
+        <input type="hidden" name="rebootAP" value="0">
+        <table id="div_m2u" name="div_m2u" class="form">
+          <tr>
+            <td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter</td>
+          </tr>
+          <tr>
+            <td class="head" id="advMul2Uni">Multicast-to-Unicast</td>
+            <td><input type="radio" name="m2u_enable" value="1">
+              <font id="advMul2UniEnable">Enable</font>&nbsp;
+              <input type="radio" name="m2u_enable" value="0">
+              <font id="advMul2UniDisable">Disable</font></td>
           </tr>
           <tr id="video_turbine_row">
             <td class="head">Video turbine</td>
