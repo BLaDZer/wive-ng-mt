@@ -28,3 +28,12 @@ CURRENT HOOKS FOR ADVANCED USER LOGIC:
 4) /etc/ppp/ip-up(down).d - scripts start after router connetc(disconnect) to external VPN server
 5) /etc/scripts/wan_up.sh - this script start after WAN up and full services reinit
 #############################################################################################################
+McastPhyMode, PHY mode for Multicast frames
+
+McastMcs, MCS for Multicast frames, ranges from 0 to 15
+MODE=0, Full disable mcast (not use this mode)
+MODE=1, Legacy CCK modes range of 0 ~ 3 and 8 ~ 11 (not use mode 1 in real life)
+MODE=2, Legacy OFDM range 0-7 (default 3)
+MODE=3, HTMIX mode range 0-15
+MODE=4, VHT mode (now not use in real life, only 802.11AC modules)
+#############################################################################################################

@@ -1367,53 +1367,55 @@
 32) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
 33) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 34) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
-35) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-36) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-37) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-38) kernel: drivers/core: fix unregistration path of platform devices.<br>
-39) kernel: jump label: remove static_branch().<br>
-40) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-41) kernel: usb: xhci: follow upstream.<br>
-42) kernel: usb: option: add ZTE PIDs.<br>
-43) kernel: usb: xHCI: backports from 3.10 tree.<br>
-44) kernel: usb: core: update power budget for SuperSpeed.<br>
-45) kernel: usb: asix: fix crash on skb alloc failure.<br>
-46) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-47) kernel: net: initialize flow flags in input path.<br>
-48) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-49) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-50) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-51) kernel: net: fix skb csum races when peeking.<br>
-52) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-53) kernel: net: af_key: net: fix RCU splat.<br>
-54) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-55) kernel: net: add netfilter SMB fastpath module.<br>
-56) kernel: net: remove sk_init() helper.<br>
-57) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-58) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-59) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-60) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-61) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-62) kernel: net: ipv4/6: compute net once in some cases.<br>
-63) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-64) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-65) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-66) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-67) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-68) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-69) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+35) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
+36) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+37) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+38) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+39) kernel: drivers/core: fix unregistration path of platform devices.<br>
+40) kernel: jump label: remove static_branch().<br>
+41) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+42) kernel: usb: xhci: follow upstream.<br>
+43) kernel: usb: option: add ZTE PIDs.<br>
+44) kernel: usb: xHCI: backports from 3.10 tree.<br>
+45) kernel: usb: core: update power budget for SuperSpeed.<br>
+46) kernel: usb: asix: fix crash on skb alloc failure.<br>
+47) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+48) kernel: net: initialize flow flags in input path.<br>
+49) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+50) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+51) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+52) kernel: net: fix skb csum races when peeking.<br>
+53) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+54) kernel: net: af_key: net: fix RCU splat.<br>
+55) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+56) kernel: net: add netfilter SMB fastpath module.<br>
+57) kernel: net: remove sk_init() helper.<br>
+58) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+59) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+60) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+61) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+62) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+63) kernel: net: ipv4/6: compute net once in some cases.<br>
+64) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+65) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+66) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+67) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+68) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+69) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+70) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
-2) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
-3) need add multiif support in iappd daemon.<br>
-4) need add subchannel select for 5GHz module.<br>
-5) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
-6) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-7) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-8) in fair fair future: need add perip shaper script and webui .<br>
-9) in fair fair future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+2) need add McastPhyMode and fix McastMcs in webui (see README, not need add 0-1,4, not used in real life).<br>
+3) need review, experiments with new roaming code in MT76x2 driver and implement to WebUI.<br>
+4) need add multiif support in iappd daemon.<br>
+5) need add subchannel select for 5GHz module.<br>
+6) in fair faif future: need add in firewall support xt_time matches for parental control.<br>
+7) in fair faif future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+8) in fair fair future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+9) in fair fair future: need add perip shaper script and webui .<br>
+10) in fair fair future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>
