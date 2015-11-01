@@ -1401,12 +1401,13 @@
 66) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
 67) kernel: net: ipv4/6: compute net once in some cases.<br>
 68) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-69) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-70) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-71) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-72) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-73) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-74) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+69) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+70) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+71) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+72) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+73) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+74) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+75) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 <br>
 <br>
 <b>TODO:</b><br>
