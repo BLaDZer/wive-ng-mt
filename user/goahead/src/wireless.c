@@ -968,8 +968,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
 		// for 1T1R module always disable (support only in STA mode for 1T1R)
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
+		nvram_bufset(RT2860_NVRAM, "HT_LDPC", "0");
 #else
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
+		nvram_bufset(RT2860_NVRAM, "HT_LDPC", ac_ldpc);
 #endif
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
