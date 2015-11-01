@@ -8,6 +8,10 @@ fi
 # get params
 . /etc/scripts/global.sh
 
+if [ "$OperationMode" = "0" ]; then
+    exit 0
+fi
+
 LOG="logger -t ChilliSpot"
 PARAMS="net dhcpstart dhcpend dynip dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid \
 	radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease uamserver uamhomepage uamsecret"

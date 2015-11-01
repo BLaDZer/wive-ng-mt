@@ -5,13 +5,17 @@ if [ ! -f /bin/nodogsplash ]; then
     exit 0
 fi
 
+# get params
+. /etc/scripts/global.sh
+
+if [ "$OperationMode" = "0" ]; then
+    exit 0
+fi
+
 LOG="logger -t nodogsplash"
 PARAMS="GatewayIPRange RedirectURL MaxClients ClientIdleTimeout ClientForceTimeout \
 AuthenticateImmediately MACMechanism BlockedMACList AllowedMACList TrustedMACList \
 PasswordAuthentication Password UsernameAuthentication Username PasswordAttempts"
-
-# get params
-. /etc/scripts/global.sh
 
 start() {
     get_param
