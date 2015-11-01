@@ -12,17 +12,20 @@ LOG="logger -t dyndns"
 
 start() {
     get_param
-    if  [ "$DDNS" != "" ] && [ "$DDNSProvider" != "" ] && [ "$DDNSProvider" != "none" ] && [ "$DDNSAccount" != "" ] && [ "$DDNSPassword" != "" ]; then
-	$LOG "Starting DynDNS"
-	if [ "$DDNSProvider" = "dyndns.org" ]; then
-	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background $logto
-	elif [ "$DDNSProvider" = "zoneedit.com" ] || [ "$DDNSProvider" = "no-ip.com" ]; then
-	    inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background $logto
-	elif [ "$DDNSProvider" = "freedns.afraid.org" ]; then
-	    inadyn -a $DDNS,$DDNSAccount --dyndns_system default@$DDNSProvider --background $logto
-	else
-	    $LOG "Unknown DDNS provider: $DDNSProvider"
-	fi
+    if  [ "$DDNS" = "" ] || [ "$DDNSProvider" = "" ] || [ "$DDNSProvider" = "none" ] || \
+	[ "$DDNSAccount" = "" -a "$DDNSProvider" != "freedns.afraid.org" ] || [ "$DDNSPassword" = "" ]; then
+	$LOG "Incorrectly set one or several parameters. Exit."
+	exit 1
+    fi
+    $LOG "Starting DynDNS"
+    if [ "$DDNSProvider" = "dyndns.org" ]; then
+        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background $logto
+    elif [ "$DDNSProvider" = "zoneedit.com" ] || [ "$DDNSProvider" = "no-ip.com" ]; then
+        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background $logto
+    elif [ "$DDNSProvider" = "freedns.afraid.org" ]; then
+        inadyn -a $DDNS,$DDNSPassword --dyndns_system default@$DDNSProvider --background $logto
+    else
+        $LOG "Unknown DDNS provider: $DDNSProvider"
     fi
 }
 
