@@ -103,11 +103,15 @@ ifdef BUILD_WE_ESSENTIAL
   WEDEF_FLAG= -DWE_ESSENTIAL=y
 endif
 
+# Drop limitation of few SSID string in iwconfig
+WEDEF_FLAG+=-DUNLIMIT_SSID_HACK
+
 # Other flags
 CFLAGS += -Os -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wpointer-arith -Wcast-qual -Winline -I.
 CFLAGS += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections
+
 
 DEPFLAGS=-MMD
 XCFLAGS=$(CFLAGS) $(DEPFLAGS) $(WARN) $(HEADERS) $(WELIB_FLAG) $(WEDEF_FLAG)
@@ -154,7 +158,7 @@ $(DYNAMIC): $(OBJS:.o=.so)
 # Compilation of the static library
 $(STATIC): $(OBJS:.o=.so)
 	$(RM) $@
-	$(AR) cru $@ $^
+	$(AR) cr $@ $^
 	$(RANLIB) $@
 
 # Installation : So crude but so effective ;-)
