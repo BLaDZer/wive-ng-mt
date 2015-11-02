@@ -1990,8 +1990,7 @@ static int ip_route_input_mc(struct sk_buff *skb, __be32 daddr, __be32 saddr,
 	if (in_dev == NULL)
 		return -EINVAL;
 
-	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr) ||
-	    ipv4_is_loopback(saddr) || skb->protocol != htons(ETH_P_IP))
+	if (ipv4_is_loopback(saddr) || ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr) || skb->protocol != htons(ETH_P_IP))
 		goto e_inval;
 
 	if (ipv4_is_zeronet(saddr)) {
