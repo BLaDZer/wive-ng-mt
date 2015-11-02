@@ -1079,7 +1079,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t *life_check, *submitUrl;
 	char stanum_array[32] = "", keepalive_array[32] = "";
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
-	char_t	*mcast_mcs;
+	char_t	*mcast_mode, *mcast_mcs;
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	char_t	*m2u_enable;
@@ -1102,6 +1102,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
+	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
@@ -1178,6 +1179,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
+	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);
 	nvram_bufset(RT2860_NVRAM, "McastMcs", mcast_mcs);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
@@ -1238,6 +1240,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("rd_region: %s<br>\n"), rd_region);
 	websWrite(wp, T("countrycode: %s<br>\n"), countrycode);
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
+	websWrite(wp, T("McastPhyMode: %s<br>\n"), mcast_mode);
 	websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)

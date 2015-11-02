@@ -583,16 +583,12 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 		vpn_enabled = "off";
 
 	// Do not perform other checks if VPN is turned off
-	if (strcmp(vpn_enabled, "on")==0)
-	{
+	if (strcmp(vpn_enabled, "on")==0) {
 #ifdef CONFIG_USER_KABINET
-		if (strcmp(vpn_type, "6") == 0)
-		{
+		if (CHK_IF_DIGIT(vpn_type, 3)) {
 			status = (get_LANAUTHState() + 1) % 5;
 			st_table = lanauth_statuses;
-		}
-		else
-		{
+		} else {
 #endif
 			// Status is at least 'offline' now
 			status++;
@@ -602,28 +598,23 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 			if (found==0)
 				found = procps_count("xl2tpd");
 
-			if (found>0)
-			{
+			if (found>0) {
 				// Now status is at least 'connecting'
 				status++;
 
 				// Try to search for 'pppXX' device
 				FILE * fd = fopen(_PATH_PROCNET_DEV, "r");
 
-				if (fd != NULL)
-				{
+				if (fd != NULL) {
 					int ppp_id;
 					char_t line[256];
 
 					// Read all ifaces and check match
-					while (fgets(line, 255, fd)!=NULL)
-					{
+					while (fgets(line, 255, fd)!=NULL) {
 						// Filter only 'pppXX'
-						if (sscanf(line, " ppp%d", &ppp_id)==1)
-						{
+						if (sscanf(line, " ppp%d", &ppp_id)==1) {
 							// Check if ppp interface has number at least 8
-							if ((ppp_id >= 0) && (ppp_id <= 8))
-							{
+							if ((ppp_id >= 0) && (ppp_id <= 8)) {
 								status++; // Status is set to 'connected'
 								break; // Do not search more
 							}
@@ -631,15 +622,11 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 					}
 
 					fclose(fd);
-				}
-				else
-				{
+				} else {
 					fprintf(stderr, "Warning: cannot open %s (%s).\n",
 						_PATH_PROCNET_DEV, strerror(errno));
 				}
-			}
-			else if (found<0)
-			{
+			} else if (found<0) {
 				fprintf(stderr, "Warning: cannot serach process 'pppd' or 'xl2tpd': %s\n",
 						strerror(-found));
 			}

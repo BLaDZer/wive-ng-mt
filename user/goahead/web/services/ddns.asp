@@ -18,11 +18,18 @@ Butterlate.setTextDomain("buttons");
 
 function DDNSFormCheck()
 {
-	if (document.DDNS.DDNSProvider.value != "none" && 
+	if(document.DDNS.DDNSProvider.value != "none" &&
+		document.DDNS.DDNSProvider.value != "freedns.afraid.org" &&
 		(document.DDNS.Account.value == "" ||
 		 document.DDNS.Password.value == "" ||
-		 document.DDNS.DDNS.value == ""))
-	{
+		 document.DDNS.DDNS.value == "")
+		) {
+		alert(_("services ddns specify"));
+		return false;
+	} else if (document.DDNS.DDNSProvider.value == "freedns.afraid.org" &&
+		(document.DDNS.Password.value == "" ||
+		 document.DDNS.DDNS.value == "")
+		) {
 		alert(_("services ddns specify"));
 		return false;
 	}
@@ -34,21 +41,26 @@ function DDNSupdateState()
 {
 	var form = document.DDNS;
 	
-	enableElements( [ form.Account, form.Password, form.DDNS ], form.DDNSProvider.options.selectedIndex != 0 );
-	displayElement( [ "div_login", "div_password", "div_dynname" ], form.DDNSProvider.options.selectedIndex != 0 );
+	enableElements( [ form.Password, form.DDNS ], form.DDNSProvider.options.selectedIndex != 0 );
+	displayElement( [ "div_password", "div_dynname" ], form.DDNSProvider.options.selectedIndex != 0 );
+	enableElements( form.Account, form.DDNSProvider.options.selectedIndex != 0 && form.DDNSProvider.value != "freedns.afraid.org");
+	displayElement( "div_login", form.DDNSProvider.options.selectedIndex != 0 && form.DDNSProvider.value != "freedns.afraid.org");
 	displayServiceStatus();
+	initTranslation();
 }
 
 function initTranslation()
 {
 	_TR("manTitle", "services ddns title");
 	_TR("manIntroduction", "services ddns introduction");
-	_TR("manImportant", "services ddns important");
 	_TR("manDdnsSet", "services ddns setup");
 	_TR("DdnsProvider", "services ddns provider");
 	_TR("manDdnsNone", "services ddns none");
 	_TR("manDdnsAccount", "services l2tp login");
-	_TR("manDdnsPasswd", "services l2tp password");
+	if(document.DDNS.DDNSProvider.value != "freedns.afraid.org")
+		_TR("manDdnsPasswd", "services l2tp password");
+	else
+		_TR("manDdnsPasswd", "services ddns key");
 	_TR("manDdns", "services ddns");
 
 	_TRV("manDdnsApply", "button apply");
@@ -72,7 +84,6 @@ function initValue()
 		form.DDNSProvider.options.selectedIndex = 4;
 
 	DDNSupdateState();
-	initTranslation();
 }
 
 function displayServiceHandler(response)
@@ -126,7 +137,6 @@ function displayServiceStatus()
   <tr>
     <td><h1 id="manTitle">DDNS Settings</h1>
       <p id="manIntroduction">Here you can configure Dynamic DNS settings.</p>
-      <p id="manImportant">IMPORTANT: if you use freedns.afraid.org - must input key in login and password fields.</p>
       <hr>
       <!-- ================= DDNS  ================= -->
       <form method="post" name="DDNS" action="/goform/DDNS">

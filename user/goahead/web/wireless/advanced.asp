@@ -22,6 +22,7 @@ var txBurst = '<% getCfgZero(1, "TxBurst"); %>';
 var pktAggregate = '<% getCfgZero(1, "PktAggregate"); %>';
 var m2uBuilt = '<% getWlanM2UBuilt(); %>';
 var m2uEnabled = '<% getCfgZero(1, "M2UEnabled"); %>';
+var McastPhyMode = defaultNumber('<% getCfgZero(1, "McastPhyMode"); %>', '2');
 var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
 var video_turbine_built='<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
@@ -88,8 +89,11 @@ function initTranslation()
 	_TR("advMul2UniDisable", "wireless disable");
 	_TR("advMaxStaNum", "adv maximum stations number");
 	_TR("advStationKeepAlive", "adv station keep alive");
-	_TR("advIdleTimeout", "adv idletimeout");
-	_TR("advEntryLifeCheck", "adv entrylifecheck");
+  _TR("advIdleTimeout", "adv idletimeout");
+  _TR("advEntryLifeCheck", "adv entrylifecheck");
+  _TR("advMcastRate", "adv mcast rate");
+  _TR("advOFDM", "adv ofdm");
+  _TR("advHTMIX", "adv htmix");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
@@ -141,7 +145,8 @@ function initValue()
 		form.pkt_aggregate[1].checked = true;
 	}
 
-	form.McastMcs.value = mcastMcs;
+	form.McastPhyMode.value = McastPhyMode;
+  McastSwitch(form);
 
 	//multicase to unicast converter
 	hideElement('div_m2u');
@@ -177,6 +182,18 @@ function initValue()
 
 	form.BandSteering.options.selectedIndex = 1*bandsteering;
 	displayElement('bandsteering_row', bandsteeringBuilt == "1");
+}
+
+function McastSwitch(form) {
+  form.McastMcs.options.length = 0;
+
+  max_mcs = (form.McastPhyMode.value == "2") ? 7 : 15;
+
+  for(var i = 0; i < (max_mcs + 1); i++) {
+    addOption(form.McastMcs, i, i);
+    if(i <= mcastMcs)
+      form.McastMcs.options.selectedIndex = i;
+  }
 }
 
 function CheckValue(form)
@@ -382,25 +399,12 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr>
-            <td class="head">Multicast TX rate</td>
-            <td><select name="McastMcs" class="half">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-              </select></td>
+            <td class="head" id="advMcastRate">Multicast TX rate</td>
+            <td><select name="McastPhyMode" class="mid" onClick="McastSwitch(this.form);">
+              <option value="2" id="advOFDM">Legacy OFDM</option>
+              <option value="3" id="advHTMIX">HTMIX</option>
+            </select>&nbsp;&nbsp;&nbsp;
+            <select name="McastMcs" class="half"></select></td>
           </tr>
           <tr>
             <td class="head" id="staadvCountry">Country Region Code</td>

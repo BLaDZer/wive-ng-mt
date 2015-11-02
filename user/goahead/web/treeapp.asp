@@ -108,7 +108,7 @@ a.add(301, 300, _("treeapp lan"),			"javascript:go('internet/lan.asp');");
 if (opmode != '0')
 	a.add(302, 300, _("treeapp wan"),		"javascript:go('internet/wan.asp');");
 
-if (ipv6b == "1") {
+if (ipv6b == "1" && opmode != '0') {
 	a.add(307, 300, _("treeapp ipv6"), 		    "javascript:go('internet/ipv6.asp');");
 }
 
@@ -120,7 +120,7 @@ if (opmode != '0')
 if (swqos == '1')
 	a.add(306, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
 
-if (spot == '1')
+if (spot == '1' && opmode != '0')
 	a.add(305, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
 
 if (opmode == '2')
@@ -160,7 +160,7 @@ a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.as
 a.add(503, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
 if (ddnsb == "1") a.add(504, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
 if (smbb == "1") a.add(505, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
-if (ipt_account == "1") a.add(506, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
+if (ipt_account == "1" && opmode != '0') a.add(506, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
 a.add(510, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
 if (usbb == "1")

@@ -168,6 +168,9 @@
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
   <message msgid="adv idletimeout" msgstr="Idle timeout before disconnect" />
   <message msgid="adv entrylifecheck" msgstr="TX retry fail before disconnect " />
+  <message msgid="adv mcast rate" msgstr="Multicast TX rate" />
+  <message msgid="adv ofdm" msgstr="Legacy OFDM" />
+  <message msgid="adv htmix" msgstr="HTMIX" />
 
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
   <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />

@@ -32,11 +32,11 @@
 
   <message msgid="services ddns title" msgstr="Dynamic DNS Settings" />
   <message msgid="services ddns introduction" msgstr="Here you can configure Dynamic DNS settings." />
-  <message msgid="services ddns important" msgstr="IMPORTANT: if you use freedns.afraid.org - must input key in login and password fields." />
   <message msgid="services ddns setup" msgstr="Dynamic DNS setup" />
   <message msgid="services ddns provider" msgstr="Dynamic DNS Provider" />
   <message msgid="services ddns none" msgstr="None" />
   <message msgid="services ddns" msgstr="Dynamic Name" />
+  <message msgid="services ddns key" msgstr="Key" />
   <message msgid="services ddns specify" msgstr="Please specify login, password, and desired dynamic name." />
 
   <message msgid="services account title" msgstr="IP Accounting" />

@@ -131,7 +131,7 @@ function CheckValue()
 	tmp_a = ((form.lanIp.value != lanip) || (form.lanNetmask.value != lanmask)) ? 1 : 0;
 	tmp_b = ((form.lanIp.value != lanip) && (form.lanNetmask.value != lanmask)) ? 1 : 0;
 	dhcp_edit = (((tmp_a == 1) || (tmp_b == 1)) && (dhcp == "1")) ? 1 : 0;
-	if (dhcp_edit == 1) {
+	if (dhcp_edit == 1 && opmode != '0') {
 		if (confirm(_("lan accept dhcp opts"))) {
 			var ip = form.lanIp.value.split(".");
 			var mask = form.lanNetmask.value.split(".");

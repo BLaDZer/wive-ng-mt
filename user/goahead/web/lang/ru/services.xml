@@ -32,11 +32,11 @@
 
   <message msgid="services ddns title" msgstr="Настройки Dynamic DNS" />
   <message msgid="services ddns introduction" msgstr="Здесь вы можете настроить параметры Dynamic DNS." />
-  <message msgid="services ddns important" msgstr="ВАЖНО: если вы используете freedns.afraid.org - введите ключ в поля имени пользователя и пароля." />
   <message msgid="services ddns setup" msgstr="Настройки DDNS" />
   <message msgid="services ddns provider" msgstr="Провайдер Dynamic DNS" />
   <message msgid="services ddns none" msgstr="Отсутствует" />
   <message msgid="services ddns" msgstr="Имя домена" />
+  <message msgid="services ddns key" msgstr="Ключ" />
   <message msgid="services ddns specify" msgstr="Пожалуйста, укажите имя пользователя, пароль и доменное имя." />
 
   <message msgid="services account title" msgstr="Учета трафика" />
