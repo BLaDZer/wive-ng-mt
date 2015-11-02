@@ -291,7 +291,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: open socket failed\n");
+		printf("goahead: getAllNICStatisticASP: open socket failed\n");
 		fclose(fp);
 		return -1;
 	}

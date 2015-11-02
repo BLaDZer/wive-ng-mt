@@ -687,13 +687,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char	*submitUrl;
 
 	// Get current mode & new mode
-	char *radio = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
-	radio = (radio == NULL) ? "0" : radio;
-	int web_radio_on = CHK_IF_DIGIT(radio, 1);
+	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	char *radioac = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
-	radioac = (radioac == NULL) ? "0" : radioac;
-	int web_radio_ac_on = CHK_IF_DIGIT(radioac, 1);
+	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
@@ -979,9 +975,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "VHT_BW_SIGNAL", ac_bwsig);
 	}
 #endif
-	nvram_bufset(RT2860_NVRAM, "RadioOff", (web_radio_on) ? "0" : "1");
+	nvram_bufset(RT2860_NVRAM, "RadioOn", web_radio_on);
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	nvram_bufset(RT2860_NVRAM, "RadioOffINIC", (web_radio_ac_on) ? "0" : "1");
+	nvram_bufset(RT2860_NVRAM, "RadioOnINIC", web_radio_ac_on);
 #endif
 
 	// Fast roaming

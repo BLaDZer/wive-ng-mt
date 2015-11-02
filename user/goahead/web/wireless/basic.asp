@@ -14,8 +14,8 @@
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
 
-var radio_off = "<% getCfgZero(1, "RadioOff"); %>";
-var radio_off_ac = "<% getCfgZero(1, "RadioOffINIC"); %>";
+var radio_on = "<% getCfgZero(1, "RadioOn"); %>";
+var radio_on_ac = "<% getCfgZero(1, "RadioOnINIC"); %>";
 
 var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
 var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
@@ -429,11 +429,8 @@ function initValue()
 
 	var form = document.wireless_basic;
 
-	radio = (radio_off == "0") ? 1 : 0;
-	radioac = (radio_off_ac == "0") ? 1 : 0;
-
-	form.radioWirelessEnabled.options.selectedIndex = radio;
-	form.radioWirelessEnabledAc.options.selectedIndex = radioac;
+	form.radioWirelessEnabled.options.selectedIndex = radio_on;
+	form.radioWirelessEnabledAc.options.selectedIndex = radio_on_ac;
 
 	// Hide & disable elements
 	hideElement("div_11a_basic");

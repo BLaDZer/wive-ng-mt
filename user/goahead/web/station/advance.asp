@@ -138,7 +138,6 @@ function initValue()
 	var staAC = '<% getCfgZero(1, "AutoConnect"); %>';
 	var staFC = '<% getCfgZero(1, "FastConnect"); %>';
 	var txPower = '<% getCfgZero(1, "TxPower"); %>';
-	var radio_off   = "<% getCfgZero(1, "RadioOff"); %>";
 	var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
 	var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
 
@@ -167,7 +166,6 @@ function initValue()
 	form.staAutoRoaming.checked = (staAR == '1');
 	form.staAutoConnect.checked = (staAC == '1');
 	form.staFastConnect.checked = (staFC == '1');
-	form.radioWirelessEnabled.checked = (radio_off == "0");
 
 	form.tx_stream.value = tx_stream_idx;
 	form.rx_stream.value = rx_stream_idx;
@@ -248,11 +246,6 @@ function init11NValues()
         <table class="form">
           <tr>
             <td class="title" colspan="6" id="staadvConfig">Advance Configuration</td>
-          </tr>
-          <tr>
-            <td class="head">Wireless enable</td>
-            <td><input type="checkbox" name="radioWirelessEnabled">
-              &nbsp;enabled </td>
           </tr>
           <tr>
             <td class="head" id="wMacAddressClone">MAC Clone</td>

@@ -12,7 +12,7 @@ fi
 echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 
 ################################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOff RadioOffINIC AutoConnect ApCliAutoConnect M2UEnabled`
+eval `nvram_buf_get 2860 OperationMode RadioOn RadioOnINIC AutoConnect ApCliAutoConnect M2UEnabled`
 ################################################STAMODE param###################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" != "" ]; then
@@ -22,7 +22,7 @@ if [ "$OperationMode" = "2" ]; then
     exit 0
 fi
 ################################################APMODE param####################################################
-if [ "$RadioOff" = "1" -a "$2" != "5GHZ" ] || [ "$RadioOffINIC" = "1" -a "$2" = "5GHZ" ]; then
+if [ "$RadioOn" = "0" -a "$2" != "5GHZ" ] || [ "$RadioOnINIC" = "0" -a "$2" = "5GHZ" ]; then
     iwpriv "$1" set RadioOn=0
     echo ">>>> WIFI $1 DISABLED <<<<"
     exit 0

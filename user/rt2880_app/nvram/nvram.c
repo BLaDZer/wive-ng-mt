@@ -279,11 +279,6 @@ static int gen_wifi_config(int mode, int genmode)
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
-	    if (atoi(nvram_bufget(mode, "RadioOff")) == 1)
-		fprintf(fp, "RadioOn=0\n");
-	    else
-		fprintf(fp, "RadioOn=1\n");
-
 	    // WirelessMode -> need move per ssid to goahead
 	    bzero(w_mode, sizeof(w_mode));
 	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessMode"));
@@ -291,6 +286,7 @@ static int gen_wifi_config(int mode, int genmode)
 		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessMode"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
+	    FPRINT_NUM(RadioOn);
 	    FPRINT_NUM(TxPower);
 	    FPRINT_NUM(Channel);
 	    FPRINT_NUM(AutoChannelSelect);
@@ -301,11 +297,6 @@ static int gen_wifi_config(int mode, int genmode)
 	    FPRINT_STR(FixedTxMode);
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
-	    if (atoi(nvram_bufget(mode, "RadioOffINIC")) == 1)
-		fprintf(fp, "RadioOn=0\n");
-	    else
-		fprintf(fp, "RadioOn=1\n");
-
 	    // WirelessMode -> need move per ssid to goahead
 	    bzero(w_mode, sizeof(w_mode));
 	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessModeINIC"));
@@ -313,6 +304,7 @@ static int gen_wifi_config(int mode, int genmode)
 		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessModeINIC"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
+	    fprintf(fp, "RadioOn=%d\n", atoi(nvram_bufget(mode, "RadioOnINIC")));
 	    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
 	    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
 	    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
