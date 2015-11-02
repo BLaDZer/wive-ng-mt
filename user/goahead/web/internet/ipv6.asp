@@ -83,6 +83,8 @@ function initValue()
 		form.ipv6_6rd_border_ipaddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
 	} else if (opmode == "3") {
 		form.IPv6SrvAddr.value = "<% getCfgGeneral(1, "IPv6SrvAddr"); %>";
+		if (form.IPv6SrvAddr.value == "")
+			form.IPv6SrvAddr.value = "192.88.99.1";
 	}
 
 	form.dhcp6c_enable.checked = (dhcp6c == "1");

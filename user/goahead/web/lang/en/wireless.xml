@@ -139,13 +139,13 @@
   <message msgid="adv basic data rate default" msgstr="Default(1-2-5.5-11 Mbps)" />
   <message msgid="adv basic data rate all" msgstr="All(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Beacon Interval" />
-  <message msgid="adv beacon interval range" msgstr="(range 20 - 999)" />
+  <message msgid="adv beacon interval range" msgstr="ms (range 20 - 999)" />
   <message msgid="adv dtim" msgstr="Data Beacon Rate" />
-  <message msgid="adv dtim range" msgstr="(range 1 - 255)" />
+  <message msgid="adv dtim range" msgstr="times (range 1 - 255)" />
   <message msgid="adv fragment threshold" msgstr="Fragment Threshold" />
-  <message msgid="adv fragment threshold range" msgstr="(range 256 - 2346)" />
+  <message msgid="adv fragment threshold range" msgstr="bytes (range 256 - 2346)" />
   <message msgid="adv rts threshold" msgstr="RTS Threshold" />
-  <message msgid="adv rts threshold range" msgstr="(range 1 - 2347)" />
+  <message msgid="adv rts threshold range" msgstr="bytes (range 1 - 2347)" />
   <message msgid="adv short preamble" msgstr="Short Preamble" />
   <message msgid="adv short slot" msgstr="Short Slot" />
   <message msgid="adv tx burst" msgstr="Tx Burst" />
@@ -168,9 +168,13 @@
   <message msgid="adv station keep alive" msgstr="Station Keep-Alive" />
   <message msgid="adv idletimeout" msgstr="Idle timeout before disconnect" />
   <message msgid="adv entrylifecheck" msgstr="TX retry fail before disconnect " />
-  <message msgid="adv mcast rate" msgstr="Multicast TX rate" />
+  <message msgid="adv mcast rate" msgstr="Multicast TX mode" />
   <message msgid="adv ofdm" msgstr="Legacy OFDM" />
   <message msgid="adv htmix" msgstr="HTMIX" />
+  <message msgid="adv maximum stations range" msgstr="num" />
+  <message msgid="adv station keep alive range" msgstr="sec (range 10 - 300)" />
+  <message msgid="adv idletimeout range" msgstr="sec (range 60 - 300)" />
+  <message msgid="adv entrylifecheck range" msgstr="times (range 128 - 2048)" />
 
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
   <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />
@@ -323,7 +327,7 @@
   <message msgid="staadv introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="staadv config" msgstr="Advanced Configuration" />
   <message msgid="staadv infra" msgstr="Wireless Mode" />
-  <message msgid="staadv country" msgstr="Country Region Code" />
+  <message msgid="staadv region" msgstr="Region settings" />
   <message msgid="staadv bgprotect" msgstr="B/G Protection" />
   <message msgid="staadv bw" msgstr="BW" />
   <message msgid="staadv gi" msgstr="GI" />

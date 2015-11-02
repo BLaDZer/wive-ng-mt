@@ -72,15 +72,12 @@ function initTranslation()
 	_TR("advBSDisable", "wireless disable");
 	_TR("advBSAuto", "wireless auto");
 
-	_TR("staadvCountry", "staadv country");
-	_TR("advCountryCode", "adv country code");
-	_TR("advCountryCodeUS", "adv country code us");
-	_TR("advCountryCodeJP", "adv country code jp");
-	_TR("advCountryCodeRU", "adv country code ru");
-	_TR("advCountryCodeFR", "adv country code fr");
-	_TR("advCountryCodeTW", "adv country code tw");
-	_TR("advCountryCodeIE", "adv country code ie");
-	_TR("advCountryCodeHK", "adv country code hk");
+  _TR("advMaxStaNumRange", "adv maximum stations range");
+  _TR("advKeepAliveSec", "adv station keep alive range");
+  _TR("advIdleTimeoutSec", "adv idletimeout range");
+  _TR("advEntryLifeCheckTimes", "adv entrylifecheck range");
+
+	_TR("staadvRegion", "staadv region");
 	_TR("advCountryCodeNONE", "wireless none");
 
 	_TR("advMul2UniConver", "adv multicast2unicast converter");
@@ -190,7 +187,7 @@ function McastSwitch(form) {
   max_mcs = (form.McastPhyMode.value == "2") ? 7 : 15;
 
   for(var i = 0; i < (max_mcs + 1); i++) {
-    addOption(form.McastMcs, i, i);
+    addOption(form.McastMcs, "MCS: " + i, i);
     if(i <= mcastMcs)
       form.McastMcs.options.selectedIndex = i;
   }
@@ -322,38 +319,42 @@ function CheckValue(form)
           <tr>
             <td class="head" id="advBeaconInterval">Beacon Interval</td>
             <td><input type="text" name="beacon" class="half" maxlength="3" value="<% getCfgZero(1, "BeaconPeriod"); %>">
-              ms <font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
+            <font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
           </tr>
           <tr>
             <td class="head" id="advDTIM">Data Beacon Rate</td>
             <td><input type="text" name="dtim" class="half" maxlength="3" value="<% getCfgZero(1, "DtimPeriod"); %>">
-              times <font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
+            <font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
           </tr>
           <tr>
             <td class="head" id="advFrag">Fragment Threshold</td>
             <td><input type="text" name="fragment" class="half" maxlength="4" value="<% getCfgZero(1, "FragThreshold"); %>">
-              bytes <font color="#808080" id="advFragRange">(range 256 - 2346)</font></td>
+            <font color="#808080" id="advFragRange">(range 256 - 2346)</font></td>
           </tr>
           <tr>
             <td class="head" id="advRTS">RTS Threshold</td>
             <td><input type="text" name="rts" class="half" maxlength="4" value="<% getCfgZero(1, "RTSThreshold"); %>">
-              bytes <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
+            <font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
           </tr>
           <tr>
             <td class="head" id="advMaxStaNum">Maximum clients per SSID</td>
-            <td><input type="text" name="maxstanum" class="half" maxlength="3" value="">num<font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
+            <td><input type="text" name="maxstanum" class="half" maxlength="3" value="">
+            <font color="#808080" id="advMaxStaNumRange">num</font><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
           </tr>
           <tr>
             <td class="head" id="advStationKeepAlive">Station Keep-Alive</td>
-            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">sec<font color="#808080"> (10 - 300)</font></td>
+            <td><input type="text" name="keepalive" class="half" maxlength="3" value="">
+            <font color="#808080" id="advKeepAliveSec"> (10 - 300)</font></td>
           </tr>
           <tr>
             <td class="head" id="advIdleTimeout">IdleTimeout</td>
-            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">sec<font color="#808080"> (60 - 300)</font></td>
+            <td><input type="text" name="idletimeout" class="half" maxlength="3" value="">
+            <font color="#808080" id="advIdleTimeoutSec"> (60 - 300)</font></td>
           </tr>
           <tr>
             <td class="head" id="advEntryLifeCheck">EntryLifeCheck</td>
-            <td><input type="text" name="EntryLifeCheck" class="half" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">times<font color="#808080"> (128 - 2048)</font></td>
+            <td><input type="text" name="EntryLifeCheck" class="half" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">
+            <font color="#808080" id="advEntryLifeCheckTimes"> (128 - 2048)</font></td>
           </tr>
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
@@ -399,16 +400,16 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr>
-            <td class="head" id="advMcastRate">Multicast TX rate</td>
-            <td><select name="McastPhyMode" class="mid" onClick="McastSwitch(this.form);">
+            <td class="head" id="advMcastRate">Multicast TX mode</td>
+            <td><select name="McastPhyMode" style="width: 150px;" onClick="McastSwitch(this.form);">
               <option value="2" id="advOFDM">Legacy OFDM</option>
               <option value="3" id="advHTMIX">HTMIX</option>
             </select>&nbsp;&nbsp;&nbsp;
             <select name="McastMcs" class="half"></select></td>
           </tr>
           <tr>
-            <td class="head" id="staadvCountry">Country Region Code</td>
-            <td><select id="country_region" name="country_region" class="mid">
+            <td class="head" id="staadvRegion">Region settings</td>
+            <td><select id="country_region" name="country_region" style="width: 150px;">
                 <option value=0 <% var cr_bg = getCfgZero(0, "CountryRegion"); if (cr_bg == "0") write("selected"); %> >0: CH1-11 (FCC)</option>
                 <option value=1 <% if (cr_bg == "1") write("selected"); %> >1: CH1-13 (IC)</option>
                 <option value=2 <% if (cr_bg == "2") write("selected"); %> >2: CH10-11 (ETSI)</option>
@@ -417,11 +418,8 @@ function CheckValue(form)
                 <option value=5 <% if (cr_bg == "5") write("selected"); %> >5: CH1-14 (MKK)</option>
                 <option value=6 <% if (cr_bg == "6") write("selected"); %> >6: CH3-9 (MKK1)</option>
                 <option value=7 <% if (cr_bg == "7") write("selected"); %> >7: CH5-13 (Israel)</option>
-              </select></td>
-          </tr>
-          <tr>
-            <td class="head" id="advCountryCode"> Country Code </td>
-            <td><select name="country_code" class="mid">
+              </select>&nbsp;&nbsp;&nbsp;
+              <select name="country_code" class="mid">
                 <% listCountryCodes(); %>
               </select></td>
           </tr>

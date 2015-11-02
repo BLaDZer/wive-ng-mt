@@ -138,13 +138,13 @@
   <message msgid="adv basic data rate default" msgstr="Стандартные(1-2-5.5-11 Mbps)" />
   <message msgid="adv basic data rate all" msgstr="Все(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Интервал маяка" />
-  <message msgid="adv beacon interval range" msgstr="(20 - 999, по умолчанию 100)" />
+  <message msgid="adv beacon interval range" msgstr="мс (диапазон 20 - 999)" />
   <message msgid="adv dtim" msgstr="Интервал оповещения" />
-  <message msgid="adv dtim range" msgstr="(диапазон 1 - 255, по умолчанию 1)" />
+  <message msgid="adv dtim range" msgstr="количество (диапазон 1 - 255)" />
   <message msgid="adv fragment threshold" msgstr="Макс. размер фрагмента" />
-  <message msgid="adv fragment threshold range" msgstr="(256 - 2346, по умолчанию 2346)" />
+  <message msgid="adv fragment threshold range" msgstr="байт (диапазон 256 - 2346)" />
   <message msgid="adv rts threshold" msgstr="Пороговое значение RTS" />
-  <message msgid="adv rts threshold range" msgstr="(1 - 2347, по умолчанию 2347)" />
+  <message msgid="adv rts threshold range" msgstr="байт (диапазон 1 - 2347)" />
   <message msgid="adv short preamble" msgstr="Короткая преамбула" />
   <message msgid="adv short slot" msgstr="Короткий слот" />
   <message msgid="adv tx burst" msgstr="Непрерывная очередь передачи" />
@@ -168,9 +168,13 @@
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
   <message msgid="adv idletimeout" msgstr="Время бездействия до отключения клиента" />
   <message msgid="adv entrylifecheck" msgstr="Число попыток отправки пакета до отключения клиента" />
-  <message msgid="adv mcast rate" msgstr="Скорость передачи Multicast" />
+  <message msgid="adv mcast rate" msgstr="Режим передачи Multicast" />
   <message msgid="adv ofdm" msgstr="Стандартный OFDM" />
   <message msgid="adv htmix" msgstr="HTMIX" />
+  <message msgid="adv maximum stations range" msgstr="количество" />
+  <message msgid="adv station keep alive range" msgstr="секунд (диапазон 10 - 300)" />
+  <message msgid="adv idletimeout range" msgstr="секунд (диапазон 60 - 300)" />
+  <message msgid="adv entrylifecheck range" msgstr="количество (диапазон 128 - 2048)" />
 
   <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
   <message msgid="adv invalid beacon" msgstr="Неверный интервал маяка" />
@@ -323,7 +327,7 @@
   <message msgid="staadv introduction" msgstr="Здесь представлены опции для тонкой настройки станции." />
   <message msgid="staadv config" msgstr="Расширенная конфигурация" />
   <message msgid="staadv infra" msgstr="Режим Wi-Fi (Infrastructure)" />
-  <message msgid="staadv country" msgstr="Региональный код страны" />
+  <message msgid="staadv region" msgstr="Региональные настройки" />
   <message msgid="staadv bgprotect" msgstr="Защита B/G" />
   <message msgid="staadv bw" msgstr="BW" />
   <message msgid="staadv gi" msgstr="GI" />
