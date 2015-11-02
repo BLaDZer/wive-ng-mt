@@ -14,8 +14,7 @@ start() {
     get_param
     if  [ "$DDNS" = "" ] || [ "$DDNSProvider" = "" ] || [ "$DDNSProvider" = "none" ] || \
 	[ "$DDNSAccount" = "" -a "$DDNSProvider" != "freedns.afraid.org" ] || [ "$DDNSPassword" = "" ]; then
-	$LOG "Incorrectly set one or several parameters. Exit."
-	exit 1
+	exit 0
     fi
     $LOG "Starting DynDNS"
     if [ "$DDNSProvider" = "dyndns.org" ]; then
