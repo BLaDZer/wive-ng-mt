@@ -1410,6 +1410,7 @@
 75) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
 76) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
 77) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+78) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
 <br>
 <br>
 <b>TODO:</b><br>
