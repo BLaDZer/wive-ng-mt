@@ -16,7 +16,7 @@ start() {
     fi
 
     # bridge preconfigure if not ethernet converter mode
-    brisup=`ip -4 -o link show br0 up | grep -c ""` > /dev/null 2>&1
+    brisup=`ip -o -4 link show br0 up | wc -l` > /dev/null 2>&1
     if [ "$brisup" = "0" ] && [ "$OperationMode" != "2" ]; then
 	if [ ! -d /proc/sys/net/ipv4/conf/br0 ]; then
 	    $LOG "Add bridge in the system"

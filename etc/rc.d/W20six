@@ -16,7 +16,7 @@ LOG="logger -t ipv6"
 
 calculate_and_set_mtu() {
     # get mtu from wan
-    wanmtu=`ip -4 -o link show dev $tun_wan_if | awk {' print $5 '}`
+    wanmtu=`ip -o -4 link show dev "$tun_wan_if" | awk {' print $5 '}`
     if [ "$wanmtu" = "" ]; then
 	#min of max for tun at wan
 	$LOG "Use default MTU 1460"

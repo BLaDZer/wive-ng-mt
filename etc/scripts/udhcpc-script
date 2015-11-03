@@ -101,7 +101,7 @@ case "$1" in
 
     renew|bound)
 	NEW_IP="$ip"
-	OLD_IP=`ip -4 addr show dev $interface | awk '/inet / {print $2}' | cut -f1 -d"/"` > /dev/null 2>&1
+	OLD_IP=`ip -o -4 addr show dev "$interface" | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
 	# set full renew flag
 	if [ "$NEW_IP" = "$OLD_IP" ]; then
 	    FULL_RENEW=0
@@ -125,7 +125,7 @@ case "$1" in
 	fi
 
 	# if dgw iface changed need fullrenew procedure
-	DGW_IF_CHANGED=`ip -4 route show default | grep -v "dev $interface " | sed 's,.*dev \([^ ]*\) .*,\1,g'`
+	DGW_IF_CHANGED=`ip -o -4 route show default | grep -v "dev $interface " | sed 's,.*dev \([^ ]*\) .*,\1,g'`
 	if [ "$DGW_IF_CHANGED" =! "" ]; then
 	    FULL_RENEW=1
 	fi
@@ -273,7 +273,7 @@ case "$1" in
 			# parce dnsservers
 			for daddr in $dns ; do
 	    		    echo nameserver $daddr >> $RESOLV_CONF
-			    ROUTE_NS=`ip -4 -o route get "$daddr" | cut -f -3 -d " "`
+			    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
 			    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
 				$LOG "Add static route to DNS $ROUTE_NS dev $interface"
 				REPLACE="ip route replace $ROUTE_NS dev $interface"

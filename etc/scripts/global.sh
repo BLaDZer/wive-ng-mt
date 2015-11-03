@@ -143,7 +143,7 @@ getWanIfName() {
     	    real_wan_if="$vpn_if"
 	else
 	    # first ppp iface is client
-	    get_ppp_wan_if=`ip -4 -o link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
+	    get_ppp_wan_if=`ip -o -4 link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
 	    if [ "$get_ppp_wan_if" != "" ]; then
     		real_wan_if="$get_ppp_wan_if"
 	    fi
@@ -162,7 +162,7 @@ getSixWanIfName() {
     if [ "$IPv6OpMode" = "1" ]; then
 	if [ "$vpnEnabled" = "on" ] && [ "$Ipv6InVPN" = "1" ]; then
 	    # first ppp iface is client
-	    get_ppp_wan_if=`ip -4 -o link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
+	    get_ppp_wan_if=`ip -o -4 link show | grep ppp | awk {' print $2 '} | cut -f -1 -d :`
 	    if [ "$get_ppp_wan_if" != "" ]; then
     		six_wan_if="$get_ppp_wan_if"
 	    else
@@ -201,11 +201,11 @@ getWanIpaddr() {
 
     # get from if and return physical wan ip
     if [ "$wan_ipaddr" = "" ]; then
-	wan_ipaddr=`ip -o -4 addr show dev $wan_if scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
+	wan_ipaddr=`ip -o -4 addr show dev "$wan_if" scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
     fi
 
     # get from if and return vpn or physical wan ip
-    real_wan_ipaddr=`ip -o -4 addr show dev $real_wan_if scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
+    real_wan_ipaddr=`ip -o -4 addr show dev "$real_wan_if" scope global | awk {' print $4 '} | cut -f1 -d"/"` > /dev/null 2>&1
     if [ "$real_wan_ipaddr" = "" ]; then
 	real_wan_ipaddr="$wan_ipaddr"
     fi
@@ -213,8 +213,8 @@ getWanIpaddr() {
 
 getWanReady() {
     # check interfaces configured
-    wan_is_not_null=`ip -o -4 addr show $wan_if scope global | wc -l` > /dev/null 2>&1
-    realwan_is_not_null=`ip -o -4 addr show $real_wan_if scope global | wc -l` > /dev/null 2>&1
+    wan_is_not_null=`ip -o -4 addr show "$wan_if" scope global | wc -l` > /dev/null 2>&1
+    realwan_is_not_null=`ip -o -4 addr show "$real_wan_if" scope global | wc -l` > /dev/null 2>&1
 }
 
 # reconnect to AP

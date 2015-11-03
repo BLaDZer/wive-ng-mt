@@ -621,7 +621,7 @@ clamp_mss() {
 	# use current iface mtu for mss calculate (MSS=MTU-40 bytes)
 	# for phys wan if dev exist
 	if [ -d /proc/sys/net/ipv4/conf/$wan_if ]; then
-	    cur_mtu=`ip link show $wan_if | grep mtu | awk {' print $5 '}`
+	    cur_mtu=`ip -o link show $wan_if | grep mtu | awk {' print $5 '}`
 	    if [ "$cur_mtu" != "" ]; then
 		let "hole_mtu=$cur_mtu-40"
 	    else
@@ -631,7 +631,7 @@ clamp_mss() {
 	fi
 	# for vpn if dev exists
 	if [ -d /proc/sys/net/ipv4/conf/$real_wan_if ] && [ "$real_wan_if" != "$wan_if" ]; then
-	    cur_mtu=`ip -4 -o link show dev $real_wan_if | awk {' print $5 '}`
+	    cur_mtu=`ip -o -4 link show dev "$real_wan_if" | awk {' print $5 '}`
 	    if [ "$cur_mtu" != "" ]; then
 		let "hole_mtu=$cur_mtu-40"
 	    else

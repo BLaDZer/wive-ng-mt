@@ -3,7 +3,7 @@
 # include kernel config
 . /etc/scripts/config.sh
 
-is_up=`ip link show $1 up`
+is_up=`ip -o link show $1 up`
 if [ "$is_up" = "" ]; then
     echo ">>>>> Wifi interface $1 not up - skip roaming tune <<<<<<<<<<"
     exit 0

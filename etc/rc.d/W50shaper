@@ -9,7 +9,7 @@ fi
 . /etc/scripts/global.sh
 
 # chek wan is up
-wan_up=`ip -4 -o link show $real_wan_if up | grep -c ""` > /dev/null 2>&1
+wan_up=`ip -o -4 link show "$real_wan_if" up | wc -l` > /dev/null 2>&1
 if [ "$wan_up" = "0" ]; then
     exit 0
 fi
