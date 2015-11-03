@@ -1374,10 +1374,11 @@
 39) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 40) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
 41) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-42) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-43) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-44) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-45) kernel: drivers/core: fix unregistration path of platform devices.<br>
+42) kernel: ralink_wifi: xxxx: disable multiclient hack support in driver.<br>
+43) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+44) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+45) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+46) kernel: drivers/core: fix unregistration path of platform devices.<br>
 47) kernel: jump label: remove static_branch().<br>
 48) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
 49) kernel: usb: xhci: follow upstream.<br>
