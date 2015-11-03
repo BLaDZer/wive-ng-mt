@@ -33,7 +33,7 @@ gen_hosts() {
     if [ "$real_wan_ipaddr" != "" ]; then
 	# if dynamic dns and dmz enable - dnsmasq must set DDNS=DMZIP
 	# if dynamic dns and dmz disable - dnsmasq must set DDNS=WANIP
-	if [ "$DDNS" != "" ] && [ "$DDNSAccount" != "" ]; then
+	if [ "$DDNS" != "" ]; then
 	    if [ "$DMZEnable" = "1" ] && [ "$DMZIPAddress" != "" ]; then
 		echo "$DMZIPAddress	$DDNS"		>> /etc/hosts
 	    else
@@ -64,7 +64,7 @@ gen_hosts() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 dnsPEnabled DDNS DDNSAccount DMZEnable DMZIPAddress`
+    eval `nvram_buf_get 2860 dnsPEnabled DDNS DMZEnable DMZIPAddress`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"
