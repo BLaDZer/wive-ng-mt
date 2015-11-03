@@ -592,14 +592,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(ApCliEncrypType);
 	FPRINT_STR(ApCliDefaultKeyID);
 	FPRINT_STR(ApCliWPAPSK);
-	FPRINT_NUM(ApCliKey1Type);
-	FPRINT_STR(ApCliKey1Str);
-	FPRINT_NUM(ApCliKey2Type);
-	FPRINT_STR(ApCliKey2Str);
-	FPRINT_NUM(ApCliKey3Type);
-	FPRINT_STR(ApCliKey3Str);
-	FPRINT_NUM(ApCliKey4Type);
-	FPRINT_STR(ApCliKey4Str);
 	FPRINT_STR(ApCliTxMode);
 	FPRINT_STR(ApCliTxMcs);
 	FPRINT_STR(ApCliAPSDCapable);
