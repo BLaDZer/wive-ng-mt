@@ -56,7 +56,7 @@ smb_fp() {
 }
 
 offload() {
-    # In bridge and chillispot mode not fastnat use
+    # In bridge mode not fastpaths or hw_nat use
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	eval `nvram_buf_get 2860 hw_nat_bind hw_nat_wifi hw_nat_udp hw_nat_six offloadMode natFastpath routeFastpath filterFastpath store_ttl nodogsplash_enable`
 	# select NAT offload mode
