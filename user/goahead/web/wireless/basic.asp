@@ -63,12 +63,10 @@ var is5gh_support = '<% is5gh_support(); %>';
 var is5gh_1t1r = '<% is5gh_1t1r(); %>';
 
 var green_on = '<% getGreenAPBuilt(); %>' == '1';
+var ids_built ='<% getIdsEnableBuilt(); %>' == '1';
+var txbf_built = '<% getTXBFBuilt(); %>';
 
 var bssid_num = 1*'<% getBSSIDNum(); %>';
-
-var ids_built='<% getIdsEnableBuilt(); %>' == '1';
-
-var txbf_built = '<% getTXBFBuilt(); %>';
 
 var ChannelList_24G =
 [

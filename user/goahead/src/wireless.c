@@ -1790,7 +1790,7 @@ static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if CONFIG_RT_SECOND_CARD==7612 || CONFIG_RT_FIRST_CARD==7602
+#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
