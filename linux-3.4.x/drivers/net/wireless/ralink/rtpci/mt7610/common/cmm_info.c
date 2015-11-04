@@ -3015,7 +3015,7 @@ INT	Set_HtBaWinSize_Proc(
 	}
 	else
 	{
-        pAd->CommonCfg.REGBACapability.field.RxBAWinLimit = 64;
+    		pAd->CommonCfg.REGBACapability.field.RxBAWinLimit = 64;
 		pAd->CommonCfg.BACapability.field.RxBAWinLimit = 64;
 	}
 	
