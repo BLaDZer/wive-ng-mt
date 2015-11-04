@@ -14850,8 +14850,9 @@ INT set_dynamic_lna_trigger_timer_proc(
 
 INT set_agc_vga_clamp_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 {
+#ifdef MT76x2
 	INT32 val = simple_strtol(arg, 0, 10);
-
+#endif
 	if (pAd->CommonCfg.Channel > 14)
 		return FALSE;
 
