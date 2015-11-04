@@ -10503,7 +10503,9 @@ VOID RTMPIoctlStatistics(RTMP_ADAPTER *pAd, RTMP_IOCTL_INPUT_STRUCT *wrq)
 	}
 
 	sprintf(msg+strlen(msg), "Current temperature = %d\n", pChipCap->current_temp);
+#ifdef DYNAMIC_VGA_SUPPORT
 	sprintf(msg+strlen(msg), "Average RSSI = %d\n", pChipCap->avg_rssi_all);
+#endif
 	sprintf(msg+strlen(msg), "Tx success                      = %ld\n", txCount);
 #ifdef ENHANCED_STAT_DISPLAY
 	per = txCount==0? 0: 1000*(pAd->WlanCounters.RetryCount.u.LowPart+pAd->WlanCounters.FailedCount.u.LowPart)/(pAd->WlanCounters.RetryCount.u.LowPart+pAd->WlanCounters.FailedCount.u.LowPart+txCount);
@@ -14765,7 +14767,6 @@ INT RTMP_AP_IoctlHandle(
 	return Status;
 }
 
-
 #if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 INT Set_MO_FalseCCATh_Proc(
 	IN	PRTMP_ADAPTER	pAd,
@@ -14777,8 +14778,6 @@ INT Set_MO_FalseCCATh_Proc(
 
 	if (th > 65535)
 		th = 65535;
-        if (th < 300)
-		th = MO_FALSE_CCA_TH;
 
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = th;
 
@@ -14889,7 +14888,13 @@ INT set_false_cca_hi_th(PRTMP_ADAPTER pAd, PSTRING arg)
 {
 	INT32 val = simple_strtol(arg, 0, 10);
 
-	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? MO_FALSE_CCA_TH : val;
+	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? 800 : val;
+
+#ifdef RT6352
+	if (IS_RT6352(pAd)) {
+		pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = (val <= 0) ? 600 : val;
+	}
+#endif /* RT6352 */
 
 	DBGPRINT(RT_DEBUG_OFF, ("%s::(false cca high threshould = %d)\n", 
 		__FUNCTION__, pAd->CommonCfg.lna_vga_ctl.nFalseCCATh));

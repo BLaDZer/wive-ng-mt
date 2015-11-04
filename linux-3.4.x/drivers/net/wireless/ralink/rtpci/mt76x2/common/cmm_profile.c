@@ -2054,7 +2054,7 @@ static void HTParametersHook(
 		}
 		else
 		{
-            pAd->CommonCfg.REGBACapability.field.RxBAWinLimit = 64;
+			pAd->CommonCfg.REGBACapability.field.RxBAWinLimit = 64;
 			pAd->CommonCfg.BACapability.field.RxBAWinLimit = 64;
 			DBGPRINT(RT_DEBUG_TRACE, ("HT: BA Windw Size = 64 (Defualt)\n"));
 		}

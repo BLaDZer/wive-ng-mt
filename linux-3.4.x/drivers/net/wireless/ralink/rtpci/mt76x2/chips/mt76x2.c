@@ -1787,6 +1787,7 @@ void mt76x2_get_external_lna_gain(RTMP_ADAPTER *ad)
 
 void mt76x2_get_agc_gain(RTMP_ADAPTER *ad, BOOLEAN init_phase)
 {
+#ifdef DYNAMIC_VGA_SUPPORT
 	UCHAR val;
 	USHORT val16;
 	UINT32 bbp_val;
@@ -1819,6 +1820,7 @@ void mt76x2_get_agc_gain(RTMP_ADAPTER *ad, BOOLEAN init_phase)
 	}
 
 	ad->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
+#endif
 }
 
 int mt76x2_reinit_agc_gain(RTMP_ADAPTER *ad, u8 channel)
@@ -4878,7 +4880,7 @@ void mt7612_set_ed_cca(RTMP_ADAPTER *ad, BOOLEAN enable)
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::0x%x: 0x%08X\n", __FUNCTION__, TXOP_CTRL_CFG, mac_val));
 }
 #endif /* ED_MONITOR */
-#ifdef DYNAMIC_VGA_SUPPORT
+
 void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 {
 	UINT32 reg_val = 0;
@@ -4924,6 +4926,7 @@ void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 		__FUNCTION__, lna_gain, vga_gain, lna_gain_mode, y, z, reg_val));
 }
 
+#ifdef DYNAMIC_VGA_SUPPORT
 void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 {
 	INT32 rx0_rssi, rx1_rssi;
@@ -5298,7 +5301,7 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 			val2 = ((((bbp_val2 & (0x00007f00)) >> 8) & 0x7f) - pAd->chipCap.compensate_level);
 			bbp_val2 = (bbp_val2 & 0xffff80ff) | (val2 << 8);
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, bbp_val2);			
-		} else {
+		} else	{
 			RTMP_BBP_IO_READ32(pAd, AGC1_R8, &bbp_val1);
 			val1 = ((bbp_val1 & (0x00007f00)) >> 8) & 0x7f;
 			RTMP_BBP_IO_READ32(pAd, AGC1_R9, &bbp_val2);
@@ -5366,7 +5369,6 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 
 	}
 }
-
 #endif /* DYNAMIC_VGA_SUPPORT */
 
 VOID mt76x2_antenna_sel_ctl(

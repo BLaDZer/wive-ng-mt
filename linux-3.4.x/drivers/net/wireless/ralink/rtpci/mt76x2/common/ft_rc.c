@@ -836,7 +836,7 @@ extern BOOLEAN BARecSessionAdd(
 	BaParm.BufSize = min(((UCHAR)AddreqFrame.BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);
 	if (BaParm.BufSize == 0)
 	{
-		BaParm.BufSize = 64; 
+		BaParm.BufSize = 64;
 	}
 	TimeOutValue = 0;
 

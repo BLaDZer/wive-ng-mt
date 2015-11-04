@@ -3097,12 +3097,12 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef UAPSD_SUPPORT
 #ifdef CONFIG_AP_SUPPORT
-{
-	UINT32 IdMbss;
+	{
+	    UINT32 IdMbss;
 
-	for(IdMbss=0; IdMbss<HW_BEACON_MAX_NUM; IdMbss++)
+	    for(IdMbss=0; IdMbss<HW_BEACON_MAX_NUM; IdMbss++)
 		UAPSD_INFO_INIT(&pAd->ApCfg.MBSSID[IdMbss].UapsdInfo);
-}
+	}
 #endif /* CONFIG_AP_SUPPORT */
 #ifdef CONFIG_STA_SUPPORT
 	pAd->StaCfg.UapsdInfo.bAPSDCapable = FALSE;
@@ -3738,6 +3738,22 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		pAd->ApCfg.EntryClientCount = 0;
 		pAd->ApCfg.ChangeTxOpClient = 0;
 	}
+
+#ifdef DYNAMIC_VGA_SUPPORT
+	if (IS_MT76x2(pAd)) {
+		pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = FALSE;
+		pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = 800;
+		pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
+	}
+
+#ifdef RT6352
+	if (IS_RT6352(pAd)) {
+		pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
+		pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = 600;
+		pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
+	}
+#endif
+#endif /* DYNAMIC_VGA_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 #ifdef ETH_CONVERT_SUPPORT
@@ -3972,23 +3988,12 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif /* CAPTURE_MODE */
 #endif /* CONFIG_FPGA_MODE */
 
-#if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 #ifdef MICROWAVE_OVEN_SUPPORT
 	if (pAd->OpMode == OPMODE_AP)
 		pAd->CommonCfg.MO_Cfg.bEnable = TRUE;
 	else
 		pAd->CommonCfg.MO_Cfg.bEnable = FALSE;
 	pAd->CommonCfg.MO_Cfg.nFalseCCATh = MO_FALSE_CCA_TH;
-#endif
-#ifdef DYNAMIC_VGA_SUPPORT
-	/* for 76x2 chips dyn vga auto enable in mt76x2_get_agc_gain */
-	if (IS_MT76x2(pAd))
-	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = FALSE;
-	else
-	    pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable = TRUE;
-#endif /* DYNAMIC_VGA_SUPPORT */
-	pAd->CommonCfg.lna_vga_ctl.nFalseCCATh = MO_FALSE_CCA_TH;
-	pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh = 10;
 #endif /* MICROWAVE_OVEN_SUPPORT */
 
 #ifdef RT6352
