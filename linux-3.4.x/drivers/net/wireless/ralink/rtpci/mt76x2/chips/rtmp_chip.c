@@ -56,7 +56,8 @@ VOID RtmpChipWriteHighMemory(
 {
 #ifdef RTMP_MAC_PCI
 #ifdef SPECIFIC_BCN_BUF_SUPPORT
-unsigned long irqFlag = 0;
+	unsigned long irqFlag = 0;
+
 	RTMP_MAC_SHR_MSEL_LOCK(pAd, HIGHER_SHRMEM, irqFlag);
 	RtmpChipWriteMemory(pAd, Offset, Value, Unit);
 	RTMP_MAC_SHR_MSEL_UNLOCK(pAd, LOWER_SHRMEM, irqFlag);

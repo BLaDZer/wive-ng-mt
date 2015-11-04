@@ -2546,6 +2546,13 @@ VOID AsicAddPairwiseKeyEntry(
 	UCHAR *pKey = pCipherKey->Key;
 	UCHAR *pTxMic = pCipherKey->TxMic;
 	UCHAR *pRxMic = pCipherKey->RxMic;
+#ifdef RTMP_MAC
+#ifdef RTMP_MAC_PCI
+#ifdef SPECIFIC_BCN_BUF_SUPPORT
+	unsigned long irqFlag = 0;
+#endif /* SPECIFIC_BCN_BUF_SUPPORT */
+#endif /* RTMP_MAC_PCI */
+#endif /* RTMP_MAC */
 #ifdef DBG
 	UCHAR CipherAlg = pCipherKey->CipherAlg;
 #endif
@@ -2560,9 +2567,6 @@ VOID AsicAddPairwiseKeyEntry(
 		pairwise_key_base = PAIRWISE_KEY_TABLE_BASE;
 		pairwise_key_len = HW_KEY_ENTRY_SIZE;
 #ifdef RTMP_MAC_PCI
-#ifdef SPECIFIC_BCN_BUF_SUPPORT
-	unsigned long irqFlag = 0;
-#endif /* SPECIFIC_BCN_BUF_SUPPORT */
 #ifdef SPECIFIC_BCN_BUF_SUPPORT
 		RTMP_MAC_SHR_MSEL_LOCK(pAd, LOWER_SHRMEM, irqFlag);
 #endif /* SPECIFIC_BCN_BUF_SUPPORT */
