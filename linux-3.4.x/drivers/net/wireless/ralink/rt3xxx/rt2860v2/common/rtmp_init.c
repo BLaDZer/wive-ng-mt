@@ -3413,7 +3413,7 @@ VOID	UserCfgInit(
 	pAd->CommonCfg.TrainUpRule = 2; // 1;
 	pAd->CommonCfg.TrainUpRuleRSSI = -70; // 0;
 	pAd->CommonCfg.TrainUpLowThrd = 90;
-	pAd->CommonCfg.TrainUpHighThrd = 110;
+	pAd->CommonCfg.TrainUpHighThrd = 100;
 #if defined (RT2883) || defined (RT3883)
 	pAd->CommonCfg.FixedRate = -1;
 #endif

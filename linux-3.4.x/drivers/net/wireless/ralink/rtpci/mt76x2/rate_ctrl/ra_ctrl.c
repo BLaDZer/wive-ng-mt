@@ -1285,6 +1285,7 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 
 	/* BW depends on BSSWidthTrigger and Negotiated BW */
 	if (pAd->CommonCfg.bRcvBSSWidthTriggerEvents ||
+		(pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth == 0) ||
 		(pEntry->MaxHTPhyMode.field.BW==BW_20) ||
 		(pAd->CommonCfg.BBPCurrentBW==BW_20))
 		pEntry->HTPhyMode.field.BW = BW_20;
@@ -2571,7 +2572,7 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 #ifdef NEW_RATE_ADAPT_SUPPORT
 	MlmeSetMcsGroup(pAd, pEntry);
 
-	pEntry->lastRateIdx = 1;
+	pEntry->lastRateIdx = 0xFF;
 	pEntry->perThrdAdj = PER_THRD_ADJ;
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	pEntry->lowTrafficCount = 0;

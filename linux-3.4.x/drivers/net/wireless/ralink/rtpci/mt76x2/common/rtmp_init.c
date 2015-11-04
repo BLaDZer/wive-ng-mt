@@ -3211,7 +3211,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.TrainUpRule = 2; // 1;
 	pAd->CommonCfg.TrainUpRuleRSSI = -70; // 0;
 	pAd->CommonCfg.TrainUpLowThrd = 90;
-	pAd->CommonCfg.TrainUpHighThrd = 110;
+	pAd->CommonCfg.TrainUpHighThrd = 100;
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 
 #ifdef PS_ENTRY_MAITENANCE
