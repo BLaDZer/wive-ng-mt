@@ -2005,8 +2005,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			CHAR mcs[24];
 			CHAR RssiOffset = 0;
 
-            //pEntry->lowTrafficCount = 0;
-
+			//pEntry->lowTrafficCount = 0;
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
 
@@ -2024,7 +2023,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 				RssiOffset = 5;
 			}
 
-            TxRateIdx = pEntry->CurrTxRateIndex;
+		TxRateIdx = pEntry->CurrTxRateIndex;
 
                /* Select the Tx rate based on the RSSI */
 	        if((pEntry->lowTrafficCount == pAd->CommonCfg.lowTrafficThrd) &&

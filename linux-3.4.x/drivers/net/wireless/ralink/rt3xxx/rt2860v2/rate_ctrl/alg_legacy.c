@@ -368,8 +368,8 @@ VOID APMlmeDynamicTxRateSwitching(
 #endif
 
 		/* Check for low traffic case */
-        if (TxTotalCnt <= 15)
-        {
+    		if (TxTotalCnt <= 15)
+    		{
 			UCHAR	TxRateIdx;
 			CHAR	mcs[24];
 #ifdef NEW_RATE_ADAPT_SUPPORT
@@ -412,9 +412,9 @@ VOID APMlmeDynamicTxRateSwitching(
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* TXBF_SUPPORT */
 			continue;
-        }
+    		}
 #ifdef NEW_RATE_ADAPT_SUPPORT
-	pEntry->lowTrafficCount = 0;
+		pEntry->lowTrafficCount = 0;
 #endif
 		if (pEntry->fLastSecAccordingRSSI == TRUE)
 		{
