@@ -1399,21 +1399,22 @@
 64) kernel: net: add netfilter SMB fastpath module.<br>
 65) kernel: net: remove sk_init() helper.<br>
 66) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-67) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-68) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-69) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-70) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-71) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-72) kernel: net: ipv4/6: compute net once in some cases.<br>
-73) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-74) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-75) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-76) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-77) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-78) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-79) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-80) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-81) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+67) kernel: net: ppp, slip: validate VJ compression slot parameters completely.<br>
+68) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+69) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+70) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+71) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+72) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+73) kernel: net: ipv4/6: compute net once in some cases.<br>
+74) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+75) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+76) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+77) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+78) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+79) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+80) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+81) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+82) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
 <br>
 <br>
 <b>TODO:</b><br>
