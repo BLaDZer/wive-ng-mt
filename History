@@ -1373,7 +1373,7 @@
 38) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 39) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
 40) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-41) kernel: ralink_wifi: xxxx: disable dfs and txbf support in driver (need review).<br>
+41) kernel: ralink_wifi: xxxx: disable dfs support in driver (need review).<br>
 42) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
 43) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
 44) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
