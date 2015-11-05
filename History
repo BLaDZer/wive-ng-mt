@@ -1415,6 +1415,7 @@
 80) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
 81) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 82) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+83) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
 <br>
 <br>
 <b>TODO:</b><br>
