@@ -675,7 +675,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0, mode_ac;
 	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	txModeInic[5 * MAX_NUMBER_OF_BSSID] = "";
 #endif
 #if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
@@ -683,7 +682,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
 	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
-	char 	txMode[5 * MAX_NUMBER_OF_BSSID] = "";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -816,34 +814,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(noforwarding, "%s%s", noforwarding, token);
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
-			if (strncmp(abg_rate, "", 1)) {
-				if (mode == 1) {
-					sprintf(txMode, "%s%s", txMode, "CCK");
-				} else if ((mode >= 5)) {
-					sprintf(txMode, "%s%s", txMode, "HT");
-				} else {
-					if (rate == 1 || rate == 2 || rate == 5 || rate == 11)
-						sprintf(txMode, "%s%s", txMode, "CCK");
-					else
-						sprintf(txMode, "%s%s", txMode, "OFDM");
-				}
 #ifndef CONFIG_RT_SECOND_IF_NONE
-				if (mode_ac >= 14)
-					sprintf(txModeInic, "%s%s", txModeInic, "VHT");
-				else if (mode_ac >= 5)
-					sprintf(txModeInic, "%s%s", txModeInic, "HT");
-				else
-					sprintf(txModeInic, "%s%s", txModeInic, "OFDM");
-#endif
-			} else {
-				sprintf(txMode, "%s%s", txMode, "HT");
-#ifndef CONFIG_RT_SECOND_IF_NONE
-				sprintf(txModeInic, "%s%s", txModeInic, "VHT");
-#endif
-			}
-			sprintf(txMode, "%s%s", txMode, token);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-			sprintf(txModeInic, "%s%s", txModeInic, token);
 			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
 #endif
@@ -854,7 +825,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
 	nvram_bufset(RT2860_NVRAM, "IEEE80211H", ieee80211h);
-	nvram_bufset(RT2860_NVRAM, "FixedTxModeINIC", txModeInic);
 #endif
 	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
@@ -862,7 +832,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
-	nvram_bufset(RT2860_NVRAM, "FixedTxMode", txMode);
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE

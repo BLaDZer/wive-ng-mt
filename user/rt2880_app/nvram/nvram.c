@@ -294,7 +294,6 @@ static int gen_wifi_config(int mode, int genmode)
 	    FPRINT_NUM(ACSCheckTime);
 	    FPRINT_NUM(BasicRate);
 	    FPRINT_STR(SSID1);
-	    FPRINT_STR(FixedTxMode);
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
 	    // WirelessMode -> need move per ssid to goahead
@@ -312,7 +311,6 @@ static int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_bufget(mode, "ACSCheckTimeINIC")));
 	    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
 	    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
-	    fprintf(fp, "FixedTxMode=%s\n", nvram_bufget(mode, "FixedTxModeINIC"));
 	}
 #endif
 
