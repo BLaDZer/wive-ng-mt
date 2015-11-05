@@ -1405,17 +1405,18 @@
 70) kenrel: net: af_inet: only check perm protocol when register proto.<br>
 71) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
 72) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-73) kernel: net: ipv4/6: compute net once in some cases.<br>
-74) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-75) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-76) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-77) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-78) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-79) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-80) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-81) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-82) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-83) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+73) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
+74) kernel: net: ipv4/6: compute net once in some cases.<br>
+75) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+76) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+77) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+78) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+79) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+80) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+81) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+82) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+83) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+84) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
 <br>
 <br>
 <b>TODO:</b><br>
