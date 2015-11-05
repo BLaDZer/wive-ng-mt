@@ -313,6 +313,8 @@ static int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
 	}
 #endif
+	// Stub
+	fprintf(fp, "FixedTxMode=\n");
 
 	// WmmCapable -> need move per ssid to goahead
 	bzero(wmm_enable, sizeof(wmm_enable));
