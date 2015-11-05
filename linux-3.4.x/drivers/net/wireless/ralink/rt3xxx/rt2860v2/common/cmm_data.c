@@ -2621,12 +2621,11 @@ MAC_TABLE_ENTRY *MacTableLookup(
 }
 
 #ifdef MULTI_CLIENT_SUPPORT
-/* for Multi-Clients */
-static VOID asic_change_tx_retry(
+VOID asic_change_tx_retry(
 	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
 {
-	UINT32  TxRtyCfg, MacReg = 0;
+	UINT32	TxRtyCfg, MacReg = 0;
 
 	if (pAd->CommonCfg.txRetryCfg == 0) {
 		/* txRetryCfg is invalid, should not be 0 */
@@ -2643,47 +2642,68 @@ static VOID asic_change_tx_retry(
 
 		/* Tx RTS retry default 32 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
-		MacReg &= 0xFFFFFF00;
+		if (IS_RT6352(pAd))
+		    MacReg &= 0xFFFFFF00;
+		else
+		    MacReg &= 0xFEFFFF00;
 		MacReg |= 0x20;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 	}
 	else
 	{
-		/* Tx date retry 8 */
-		TxRtyCfg = 0x4100080A;
+		/* Tx date retry 7 */
+		TxRtyCfg = 0x4100070A;
 		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
 		/* Tx RTS retry 3 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
-		MacReg &= 0xFFFFFF00;
-		MacReg |= 0x03;
+		if (IS_RT6352(pAd))
+		{
+		    MacReg &= 0xFFFFFF00;
+		    MacReg |= 0x03;
+		} else {
+		    MacReg &= 0xFEFFFF00;
+		    MacReg |= 0x01000003;
+		}
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
+#if 0
+		/* enable fallback legacy */
+		if (pAd->CommonCfg.Channel > 14)
+			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
+		else
+			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1010);
+#endif
 	}
 }
 
-static VOID pkt_aggr_num_change(
+VOID pkt_aggr_num_change(
 	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
 {
-	if (num < 5)
+#ifdef RT6352
+	if (IS_RT6352(pAd))
 	{
-		/* use default */
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M1S, 0x77777777);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M2S, 0x77777777);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M1S, 0x77777777);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M2S, 0x77777777);
+		if (num < 5)
+		{
+			/* use default */
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M1S, 0x77777777);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M2S, 0x77777777);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M1S, 0x77777777);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M2S, 0x77777777);
+		}
+		else
+		{
+			/* modify by MCS */
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M1S, 0x77754433);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M2S, 0x77765543);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M1S, 0x77765544);
+			RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M2S, 0x77765544);
+		}
 	}
-	else
-	{
-		/* modify by MCS */
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M1S, 0x77754433);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_20M2S, 0x77765543);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M1S, 0x77765544);
-		RTMP_IO_WRITE32(pAd, AMPDU_MAX_LEN_40M2S, 0x77765544);
-	}
+#endif /* RT6352 */
 }
 
-static VOID asic_tune_be_wmm(
+VOID asic_tune_be_wmm(
 	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
 {

@@ -1625,7 +1625,7 @@ if (triggerBitMap != 0)*/
 		pAd->ApCfg.ChangeTxOpClient = pAd->MacTab.Size;
 		pAd->ApCfg.fStaHighTrafficCount = pMacTable->fStationHighTrafficCount;
 		if (pAd->ApCfg.fAllStatIsHighTraffic == TRUE)
-			{
+		{
 			UINT32 RegValue;
 			UCHAR txop_value = 0;
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
@@ -1635,11 +1635,8 @@ if (triggerBitMap != 0)*/
 			else
 				txop_value = 0;
 #ifdef MULTI_CLIENT_SUPPORT
-			//if ((triggerBitMap & 0x3) != 0)
-			{
-				changeTxRetry(pAd, pAd->ApCfg.EntryClientCount);
-				DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.1) under HT/VHT mode\n", __FUNCTION__));
-			}
+			asic_change_tx_retry(pAd, pAd->ApCfg.EntryClientCount);
+			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.1) under HT/VHT mode\n", __FUNCTION__));
 			if(pAd->MacTab.Size > 2) /* for Multi-Clients */
 			{
 				txop_value = 0;
@@ -1659,11 +1656,8 @@ if (triggerBitMap != 0)*/
 			UCHAR txop_value = 0;
 			//BOOLEAN bEnableSpecificTxOp = FALSE; //unused
 #ifdef MULTI_CLIENT_SUPPORT
-			//if ((triggerBitMap & 0x3) != 0)
-			{
-				changeTxRetry(pAd, 1);
-				DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.2) under HT/VHT mode\n", __FUNCTION__));
-			}
+			asic_change_tx_retry(pAd, 1);
+			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.2) under HT/VHT mode\n", __FUNCTION__));
 #endif /* MULTI_CLIENT_SUPPORT */
 
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))

@@ -3196,10 +3196,7 @@ typedef struct _AP_ADMIN_CONFIG {
 #endif /* DOT11_N_SUPPORT */
 
 	UCHAR	EntryClientCount;
-#ifdef MULTI_CLIENT_SUPPORT
 	UCHAR ChangeTxOpClient;
-#endif /* MULTI_CLIENT_SUPPORT */
-
 #ifdef MAC_REPEATER_SUPPORT
 	BOOLEAN bMACRepeaterEn;
 	UCHAR MACRepeaterOuiMode;

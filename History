@@ -1373,46 +1373,47 @@
 38) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 39) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
 40) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-41) kernel: ralink_wifi: xxxx: disable multiclient hack, dfs anf txbf support in driver (need review).<br>
-42) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-43) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-44) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-45) kernel: drivers/core: fix unregistration path of platform devices.<br>
-46) kernel: jump label: remove static_branch().<br>
-47) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-48) kernel: usb: xhci: follow upstream.<br>
-49) kernel: usb: option: add ZTE PIDs.<br>
-50) kernel: usb: xHCI: backports from 3.10 tree.<br>
-51) kernel: usb: core: update power budget for SuperSpeed.<br>
-52) kernel: usb: asix: fix crash on skb alloc failure.<br>
-53) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-54) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-55) kernel: net: initialize flow flags in input path.<br>
-56) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-57) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-58) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-59) kernel: net: fix skb csum races when peeking.<br>
-60) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-61) kernel: net: af_key: net: fix RCU splat.<br>
-62) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-63) kernel: net: add netfilter SMB fastpath module.<br>
-64) kernel: net: remove sk_init() helper.<br>
-65) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-66) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-67) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-68) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-69) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-70) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-71) kernel: net: ipv4/6: compute net once in some cases.<br>
-72) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-73) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-74) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-75) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-76) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-77) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-78) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-79) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-80) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+41) kernel: ralink_wifi: xxxx: disable dfs and txbf support in driver (need review).<br>
+42) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
+43) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+44) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+45) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+46) kernel: drivers/core: fix unregistration path of platform devices.<br>
+47) kernel: jump label: remove static_branch().<br>
+48) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+49) kernel: usb: xhci: follow upstream.<br>
+50) kernel: usb: option: add ZTE PIDs.<br>
+51) kernel: usb: xHCI: backports from 3.10 tree.<br>
+52) kernel: usb: core: update power budget for SuperSpeed.<br>
+53) kernel: usb: asix: fix crash on skb alloc failure.<br>
+54) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
+55) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+56) kernel: net: initialize flow flags in input path.<br>
+57) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+58) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+59) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+60) kernel: net: fix skb csum races when peeking.<br>
+61) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+62) kernel: net: af_key: net: fix RCU splat.<br>
+63) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+64) kernel: net: add netfilter SMB fastpath module.<br>
+65) kernel: net: remove sk_init() helper.<br>
+66) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
+67) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+68) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+69) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+70) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+71) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+72) kernel: net: ipv4/6: compute net once in some cases.<br>
+73) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+74) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+75) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+76) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+77) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+78) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+79) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+80) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+81) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
 <br>
 <br>
 <b>TODO:</b><br>

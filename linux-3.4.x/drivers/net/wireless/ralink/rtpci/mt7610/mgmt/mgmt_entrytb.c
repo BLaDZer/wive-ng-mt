@@ -79,17 +79,16 @@ MAC_TABLE_ENTRY *MacTableLookup(
 }
 
 #ifdef MULTI_CLIENT_SUPPORT
-/* for Multi-Clients */
-VOID changeTxRetry(
-	IN PRTMP_ADAPTER pAd, 
+VOID asic_change_tx_retry(
+	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
-{		
+{
 	UINT32	TxRtyCfg, MacReg = 0;
-	
+
 	if (pAd->CommonCfg.txRetryCfg == 0) {
 		/* txRetryCfg is invalid, should not be 0 */
 		DBGPRINT(RT_DEBUG_TRACE, ("txRetryCfg=%x\n", pAd->CommonCfg.txRetryCfg));
-		return ;
+		return;
 	}
 
 	if (num < 3)
@@ -109,48 +108,35 @@ VOID changeTxRetry(
 	{
 		/* Tx date retry 7 */
 		TxRtyCfg = 0x4100070A;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);	
+		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
 		/* Tx RTS retry 3 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
 		MacReg &= 0xFEFFFF00;
 		MacReg |= 0x01000003;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
-
-		/* En fbk lgcy */
-		RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
+#if 0
+		/* enable fallback legacy */
+		if (pAd->CommonCfg.Channel > 14)
+			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
+		else
+			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1010);
+#endif
 	}
 }
 
-VOID pktAggrNumChange(
-	IN PRTMP_ADAPTER pAd, 
+VOID pkt_aggr_num_change(
+	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
 {
-#ifdef NOISE_TEST_ADJUST
-	if (num >= 5)
-	{
-		UCHAR idx;
-		MAC_TABLE_ENTRY *pEntry = NULL;
-
-		for (idx = 1; idx < MAX_LEN_OF_MAC_TABLE; idx++)
-		{
-			pEntry = &pAd->MacTab.Content[idx];
-
-			if (pEntry && IS_ENTRY_CLIENT(pEntry))
-			{
-				BASessionTearDownALL(pAd, pEntry->Aid);
-			}
-		}
-	}
-#endif /* NOISE_TEST_ADJUST */
 }
 
-VOID tuneBEWMM(
-	IN PRTMP_ADAPTER pAd, 
+VOID asic_tune_be_wmm(
+	IN PRTMP_ADAPTER pAd,
 	IN USHORT num)
 {
 	UCHAR  bssCwmin = 4, apCwmin = 4, apCwmax = 6;
-			
+
 	if (num <= 4)
 	{
 		/* use profile cwmin */
@@ -185,11 +171,11 @@ VOID tuneBEWMM(
 		apCwmax = 6;
 		bssCwmin = 8;
 	}
-	
+
 	pAd->CommonCfg.APEdcaParm.Cwmin[0] = apCwmin;
 	pAd->CommonCfg.APEdcaParm.Cwmax[0] = apCwmax;
 	pAd->ApCfg.BssEdcaParm.Cwmin[0] = bssCwmin;
-			
+
 	AsicSetEdcaParm(pAd, &pAd->CommonCfg.APEdcaParm);
 }
 #endif /* MULTI_CLIENT_SUPPORT */
@@ -604,10 +590,10 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 		USHORT size;
 
 		size = pAd->ApCfg.EntryClientCount;
-		changeTxRetry(pAd, size);
+		asic_change_tx_retry(pAd, size);
 		
 		if (pAd->CommonCfg.bWmm)
-			tuneBEWMM(pAd, size);
+			asic_tune_be_wmm(pAd, size);
 	}
 #endif /* MULTI_CLIENT_SUPPORT */
 #endif // CONFIG_AP_SUPPORT //
@@ -895,10 +881,10 @@ BOOLEAN MacTableDeleteEntry(
 		USHORT size;
 
 		size = pAd->ApCfg.EntryClientCount;
-		changeTxRetry(pAd, size);
+		asic_change_tx_retry(pAd, size);
 		
 		if (pAd->CommonCfg.bWmm)
-			tuneBEWMM(pAd, size);
+			asic_tune_be_wmm(pAd, size);
 	}
 #endif /* MULTI_CLIENT_SUPPORT */
 

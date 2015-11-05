@@ -996,7 +996,7 @@ VOID	NICInitAsicFromEEPROM(
 	if (((NicConfig2.field.DynamicTxAgcControl == 1) && 
             (NicConfig2.field.bInternalTxALC == 1)) ||
             (!IS_RT3352(pAd)) && (!IS_RT5350(pAd)) &&
-            (!IS_RT5390(pAd)) && (!IS_RT3290(pAd)) && (!IS_RT6352(pAd)) && (!IS_MT7601(pAd))))
+            (!IS_RT5390(pAd)) && (!IS_RT3290(pAd)) && (!IS_MT7601(pAd))))
 	{
 		/*
 			If both DynamicTxAgcControl and bInternalTxALC are enabled,
