@@ -40,6 +40,7 @@ static int  getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -186,6 +187,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
 	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
+	websAspDefine(T("getDFSBuilt"), getDFSBuilt);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
@@ -666,7 +668,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *dot11h;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *ackpolicy_ssid;
 	char_t  *fastroaming, *token;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
@@ -674,14 +676,17 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0, mode_ac;
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+	char_t	*dot11h;
 	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
-#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+#endif
+#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
 #endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	char 	ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -701,6 +706,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
 	mbcastisolated_ssid = websGetVar(wp, T("mbcastisolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
+	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
@@ -733,7 +739,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
 	mode_ac = atoi(wirelessmodeac);
-	tx_power_ac = websGetVar(wp, T("tx_power_ac"), T("100"));
+	tx_power_ac = websGetVar(wp, T("tx_powerac"), T("100"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 	ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
@@ -741,11 +747,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("1"));
 	ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
 	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+	dot11h = websGetVar(wp, T("dot11h"), T(""));
+#endif
 #endif
 	new_bssid_num = atoi(bssid_num);
-	dot11h = websGetVar(wp, T("dot11h"), T(""));
 
-#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
 	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
 	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
@@ -814,9 +822,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(noforwarding, "%s%s", noforwarding, token);
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
+			sprintf(ackpolicy, "%s%s", ackpolicy, (strchr(ackpolicy_ssid, ssid + '0') != NULL) ? "0" : "1");
+			sprintf(ackpolicy, "%s%s", ackpolicy, token);
 #ifndef CONFIG_RT_SECOND_IF_NONE
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
+#endif
 #endif
 			i++;
 		}
@@ -824,7 +836,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 	nvram_bufset(RT2860_NVRAM, "IEEE80211H", ieee80211h);
+#endif
 #endif
 	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
@@ -832,6 +846,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
+	nvram_bufset(RT2860_NVRAM, "AckPolicy", ackpolicy);
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -920,7 +935,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
 	}
 
-#if (CONFIG_RT_SECOND_CARD==7612) || (CONFIG_RT_FIRST_CARD==7602)
+#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	nvram_bufset(RT2860_NVRAM, "ITxBfEn", ITxBfEn);
 	nvram_bufset(RT2860_NVRAM, "ETxBfeeEn", ETxBfeeEn);
 	nvram_bufset(RT2860_NVRAM, "ETxBfEnCond", ETxBfEnCond);
@@ -1017,12 +1032,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
-	#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
-		websWrite(wp, T("1"));
-	#else
-		websWrite(wp, T("0"));
-	#endif
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
+	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
 #endif
@@ -1818,6 +1829,18 @@ static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_BAND_STEERING
 	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif	
 #else
 	return websWrite(wp, T("0"));
 #endif

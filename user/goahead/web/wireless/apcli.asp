@@ -36,7 +36,9 @@ function initTranslation() {
 
 function SecurityModeSwitch(form)
 {
+  var enc_type = '<% getCfgGeneral(1, "ApCliEncrypType"); %>';
 	var wpa_on = (form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK');
+  form.apcli_enc.value = (enc_type != "") ? "AES" : enc_type;
 	displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], wpa_on);
 }
 
@@ -47,7 +49,6 @@ function initValue()
 	form.apcli_ssid.value   = '<% getCfgGeneral(1, "ApCliSsid"); %>';
 	form.apcli_bssid.value  = '<% getCfgGeneral(1, "ApCliBssid"); %>';
 	form.apcli_mode.value   = '<% getCfgGeneral(1, "ApCliAuthMode"); %>';
-	form.apcli_enc.value    = '<% getCfgGeneral(1, "ApCliEncrypType"); %>';
 	form.apcli_autoscan.checked = '<% getCfgGeneral(1, "ApCliAutoConnect"); %>' == '1';
 	form.apcli_apiface.checked = '<% getCfgGeneral(1, "ApCliClientOnly"); %>' == '1';
 	form.apcli_bridge.checked = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';

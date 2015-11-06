@@ -129,6 +129,9 @@
   <message msgid="basic itxbfen" msgstr="Формирование луча" />
   <message msgid="basic etxbfeeen" msgstr="Поддержка BFee" />
   <message msgid="basic etxbfencond" msgstr="Отправка оповещений для формирования луча" />
+  <message msgid="basic ack policy" msgstr="Политика ACK" />
+  <message msgid="basic ack policy normal" msgstr="Нормальный" />
+  <message msgid="basic ack policy no" msgstr="Не запрашивать" />
 
   <message msgid="adv title" msgstr="Расширенные настройки Wi-Fi" />
   <message msgid="adv introduction" msgstr="Используйте расширенные настройки для более тонкой настройки вашего беспроводного соединения." />

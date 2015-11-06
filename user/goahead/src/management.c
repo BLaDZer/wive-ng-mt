@@ -212,20 +212,17 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 	ddns_acc = websGetVar(wp, T("Account"), T(""));
 	ddns_pass = websGetVar(wp, T("Password"), T(""));
 
-	if(!ddns_provider || !ddns || !ddns_acc || !ddns_pass)
-		return;
-
-	if(!strcmp(T("none"), ddns_provider )){
+	if(!strcmp(T("none"), ddns_provider))
 		ddns = ddns_acc = ddns_pass = &empty_char;
-	}else{
-		if(!strlen(ddns) || !strlen(ddns_acc) || !strlen(ddns_pass))
-			return;
-	}
+	else if(!strcmp(T("freedns.afraid.org"), ddns_provider)) {
+		ddns_acc = &empty_char;
+		if((!strlen(ddns) || !strlen(ddns_pass)) || (checkSemicolon(ddns) || checkSemicolon(ddns_pass)))
+			goto invalid_values;
+	} else if((!strlen(ddns) || !strlen(ddns_acc) || !strlen(ddns_pass)) ||
+		(checkSemicolon(ddns) || checkSemicolon(ddns_acc) || checkSemicolon(ddns_pass)))
+			goto invalid_values;
 
-	if(checkSemicolon(ddns) || checkSemicolon(ddns_acc) || checkSemicolon(ddns_pass))
-		return;
-
-        nvram_init(RT2860_NVRAM);
+	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "DDNSProvider", ddns_provider);
 	nvram_bufset(RT2860_NVRAM, "DDNS", ddns);
 	nvram_bufset(RT2860_NVRAM, "DDNSAccount", ddns_acc);
@@ -233,9 +230,9 @@ static void DDNS(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-
 	doSystem("service ddns restart");
 
+invalid_values:
 #ifdef PRINT_DEBUG
 	websHeader(wp);
 	websWrite(wp, T("<h2>DDNS Settings</h2><br>\n"));

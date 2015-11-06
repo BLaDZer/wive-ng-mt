@@ -140,8 +140,10 @@ function initValue()
 	for (var i=0; i < WDS_NUM_MAX; i++) {
 		//select phy_mode
 		var phy_mode = form.elements['wds_phy_mode' + (i+1)];
-		
-			
+
+		if (!is5gh_1t1r && is5gh)
+			addOption(phy_mode, 'VHT', 'VHT');
+
 		if (wdsPhyMode[i] == "CCK" || wdsPhyMode[i] == "cck")
 			phy_mode.options.selectedIndex = 0;
 		else if (wdsPhyMode[i] == "OFDM" || wdsPhyMode[i] == "ofdm")
@@ -150,11 +152,9 @@ function initValue()
 			phy_mode.options.selectedIndex = 2;
 		else if (wdsPhyMode[i] == "GREENFIELD" || wdsPhyMode[i] == "greenfield")
 			phy_mode.options.selectedIndex = 3;
-		else if (!is5gh_1t1r && is5gh) {
-			addOption(phy_mode, 'VHT', 'VHT');
-			if (wdsPhyMode[i] == "VHT" || wdsPhyMode[i] == "vht")
+		else if (wdsPhyMode[i] == "VHT" || wdsPhyMode[i] == "vht")
 				phy_mode.options.selectedIndex = 4;
-		} else
+		else
 			phy_mode.options.selectedIndex = 2;
 
 		//select encryp_type

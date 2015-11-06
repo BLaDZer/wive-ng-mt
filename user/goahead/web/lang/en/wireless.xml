@@ -130,6 +130,9 @@
   <message msgid="basic itxbfen" msgstr="TX Beamforming" />
   <message msgid="basic etxbfeeen" msgstr="BFee feature" />
   <message msgid="basic etxbfencond" msgstr="Sending of sounding and beamforming" />
+  <message msgid="basic ack policy" msgstr="ACK Policy" />
+  <message msgid="basic ack policy normal" msgstr="Normal ack" />
+  <message msgid="basic ack policy no" msgstr="No ack" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />

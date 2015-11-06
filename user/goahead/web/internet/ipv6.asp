@@ -21,55 +21,19 @@ var ipv66rdb = "<% getIPv66rdBuilt(); %>";
 var ip6to4b = "<% getIP6to4Built(); %>";
 var vpn = "<% getCfgZero(1, "vpnEnabled"); %>";
 var vpnv6 = "<% getCfgZero(1, "Ipv6InVPN"); %>";
+var radvdb = "<% getRadvdBuilt(); %>";
+var dhcpv6b = "<% getDhcpv6Built(); %>";
 
 function SwitchOpMode(form)
 {
-	enableElements( [ form.ipv6_allow_forward ], (form.ipv6_opmode.options.selectedIndex != 0));
-	enableElements( [ form.ipv6_Ipv6InVPN ], (form.ipv6_opmode.options.selectedIndex != 0) && (vpn == "on"));
-	enableElements( [ form.dhcp6c_enable ], (form.ipv6_opmode.options.selectedIndex == 1));
-	enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], (form.ipv6_opmode.options.selectedIndex == 1) && (!form.dhcp6c_enable.checked));
-	enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], (ipv66rdb == "1") && (form.ipv6_opmode.options.selectedIndex == 2));
-	enableElements( [ form.IPv6SrvAddr ], (form.ipv6_opmode.options.selectedIndex == form.ipv6_opmode.options.length-1));
+	var opmode = form.ipv6_opmode.value;
 
-	displayElement( [ 'IPv6AllowForwardRowDisplay' ], (form.ipv6_opmode.options.selectedIndex != 0));
-	displayElement( [ 'v6invpn' ], (form.ipv6_opmode.options.selectedIndex != 0) && (vpn == "on"));
-	displayElement( [ 'dhcp6cRowDisplay' ], (form.ipv6_opmode.options.selectedIndex == 1));
-	displayElement( [ 'v6StaticTable' ], (form.ipv6_opmode.options.selectedIndex == 1) && (!form.dhcp6c_enable.checked));
-	displayElement( [ 'v66rdTable' ], (ipv66rdb == "1") && (form.ipv6_opmode.options.selectedIndex == 2));
-	displayElement( [ '6to4Table' ], (form.ipv6_opmode.options.selectedIndex == form.ipv6_opmode.options.length-1));
-	displayElement( [ 'daemons' ], (form.ipv6_opmode.options.selectedIndex != 0));
-}
-
-function initValue()
-{
-	var form = document.ipv6_cfg;
-	var opmode = "<% getCfgZero(1, "IPv6OpMode"); %>";
-	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
-	var ipv6_allow_forward = "<% getCfgZero(1, "IPv6AllowForward"); %>";
-	var opmode_len = form.ipv6_opmode.options.length;
-	var radvdb = "<% getRadvdBuilt(); %>";
-	var dhcpv6b = "<% getDhcpv6Built(); %>";
-	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
-	var dhcpv6 = <% getCfgZero(1, "dhcpv6Enabled"); %>;
-
-
-	if (ipv66rdb == "1") {
-		form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
-		opmode_len++;
-	}
-	if (ip6to4b == "1") {
-		form.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
-		opmode_len++;
-	}
-
-	if (opmode == "1")
-		form.ipv6_opmode.options.selectedIndex = 1;
-	else if (opmode == "2")
-		form.ipv6_opmode.options.selectedIndex = 2;
-	else if (opmode == "3")
-		form.ipv6_opmode.options.selectedIndex = opmode_len-1;
-
-	SwitchOpMode(form);
+	enableElements( [ form.ipv6_allow_forward ], (opmode != "0"));
+	enableElements( [ form.ipv6_Ipv6InVPN ], (opmode != "0") && (vpn == "on"));
+	enableElements( [ form.dhcp6c_enable ], (opmode == "1"));
+	enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], (opmode == "1") && (!form.dhcp6c_enable.checked));
+	enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], (ipv66rdb == "1") && (opmode == "2"));
+	enableElements( [ form.IPv6SrvAddr ], opmode == "3");
 
 	if (opmode == "1") {
 		form.ipv6_lan_ipaddr.value = "<% getCfgGeneral(1, "IPv6IPAddr"); %>";
@@ -87,9 +51,42 @@ function initValue()
 			form.IPv6SrvAddr.value = "192.88.99.1";
 	}
 
+	displayElement( 'IPv6AllowForwardRowDisplay', (opmode != "0"));
+	displayElement( 'v6invpn', (opmode != "0") && (vpn == "on"));
+	displayElement( 'dhcp6cRowDisplay', (opmode == "1"));
+	displayElement( 'v6StaticTable', (opmode == "1") && (!form.dhcp6c_enable.checked));
+	displayElement( 'v66rdTable', (ipv66rdb == "1") && (opmode == "2"));
+	displayElement( '6to4Table', (opmode == "3"));
+	displayElement( 'daemons', (opmode != "0") && (radvdb == '1' || dhcpv6b == '1'));
+}
+
+function initValue()
+{
+	var form = document.ipv6_cfg;
+	var opmode = "<% getCfgZero(1, "IPv6OpMode"); %>";
+	var dhcp6c = "<% getCfgZero(1, "IPv6Dhcpc"); %>";
+	var ipv6_allow_forward = "<% getCfgZero(1, "IPv6AllowForward"); %>";
+	var opmode_len = form.ipv6_opmode.options.length;
+	var radvd = <% getCfgZero(1, "radvdEnabled"); %>;
+	var dhcpv6 = <% getCfgZero(1, "dhcpv6Enabled"); %>;
+
+	if (ipv66rdb == "1") {
+		form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
+		opmode_len++;
+	}
+	if (ip6to4b == "1") {
+		form.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
+		opmode_len++;
+	}
+
+	if (opmode == "1")
+		form.ipv6_opmode.options.selectedIndex = 1;
+	else if (opmode == "2")
+		form.ipv6_opmode.options.selectedIndex = 2;
+	else if (opmode == "3")
+		form.ipv6_opmode.options.selectedIndex = opmode_len - 1;
+
 	form.dhcp6c_enable.checked = (dhcp6c == "1");
-	if (dhcp6c == "1")
-	    document.getElementById("v6StaticTable").style.visibility = "hidden";
 
 	form.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
 	form.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
@@ -97,8 +94,10 @@ function initValue()
 	form.radvdEnbl.options.selectedIndex = 1*radvd;
 	form.dhcpv6Enbl.options.selectedIndex = 1*dhcpv6;
 
-	displayElement('radvd', radvdb == '1');
-	displayElement('dhcpv6', dhcpv6b == '1');
+	SwitchOpMode(form);
+
+	displayElement( 'radvd', radvdb == '1');
+	displayElement( 'dhcpv6', dhcpv6b == '1');
 
 	initTranslation();
 

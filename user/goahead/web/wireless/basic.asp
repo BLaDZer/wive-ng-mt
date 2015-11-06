@@ -66,6 +66,10 @@ var green_on = '<% getGreenAPBuilt(); %>' == '1';
 var ids_built ='<% getIdsEnableBuilt(); %>' == '1';
 var txbf_built = '<% getTXBFBuilt(); %>';
 
+var dfs_built = '<% getDFSBuilt(); %>' == '1';
+
+var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
+
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
 var ChannelList_24G =
@@ -265,6 +269,9 @@ function initTranslation()
 	_TR("basicMBSSIDMode", "basic mbssid mode");
 	_TR("basicWDSMode", "basic wds mode");
 	_TR("basicAPCLIMode", "basic apcli mode");
+	_TR("basicAckPolicy", "basic ack policy");
+	_TR("basicNormalAck", "basic ack policy normal");
+	_TR("basicNoAck", "basic ack policy no");
 
 	_TR("basicFreqA", "basic frequency ac");
 	_TR("basicFreqAAuto", "basic frequency auto");
@@ -444,7 +451,6 @@ function initValue()
 	hideElement("div_11n");
 	hideElement("div_ac");
 	hideElement("basicWirelessEnabledAc");
-	hideElement("div_dot11h");
 
 	form.sz11aChannel.disabled = true;
 	form.sz11gChannel.disabled = true;
@@ -557,7 +563,6 @@ function initValue()
 
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
-		showElementEx("div_dot11h", style_display_on());
 	}
 
         // Display HT modes
@@ -603,6 +608,7 @@ function initValue()
 	var APIsolatedArray = APIsolated.split(";");
 	var NoForwardingMBCastArray = NoForwardingMBCast.split(";");
 	var dot11hArray = IEEE80211H.split(";");
+	var AckPolicyArray = ackpolicy.split(";");
 
 	for (i=0; i<bssid_num; i++) {
 		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
@@ -612,6 +618,7 @@ function initValue()
 
 	form.n_bandwidth.options.selectedIndex = 1*ht_bw;
 	form.dot11h.options.selectedIndex = 1*dot11hArray[0];
+	form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 	initChecktime(form);
 	GExtChannelDisplay(form);
 
@@ -833,6 +840,7 @@ function initValue()
 		form.ETxBfEnCond.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfEnCond"); %>' ==  '1') ? 1 : 0;
 	}
 	displayElement( 'div_txbf', txbf_built == '1');
+	wirelessOnChange(form);
 }
 
 function show_abg_rate(form)
@@ -935,7 +943,6 @@ function wirelessModeChange(form)
 	hideElement("div_11n");
 	hideElement("div_ac");
 	hideElement("basicWirelessEnabledAc");
-	hideElement("div_dot11h");
 	show14channel(true);
 
 	form.sz11aChannel.disabled = true;
@@ -987,7 +994,6 @@ function wirelessModeChange(form)
 		form.sz11aChannel.disabled = false;
 		showElementEx("div_11a_channel", style_display_on());
 		showElementEx("basicWirelessEnabledAc", style_display_on());
-		showElementEx("div_dot11h", style_display_on());
 
     		// Display VHT modes
     		if ((1*wmodeac) >= 14)
@@ -1004,8 +1010,16 @@ function wirelessModeChange(form)
 		    form.ac_ldpc.disabled = false;
 		}
 	}
+	wirelessOnChange(form);
 	fastRoamingChange(form);
 	show_abg_rate(form);
+}
+
+function wirelessOnChange(form)
+{
+	displayElement( 'div_dot11h', dfs_built && (form.radioWirelessEnabledAc.value == "1"));
+	displayElement( [ 'div_ac', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], form.radioWirelessEnabledAc.value == "1");
+	displayElement( [ 'div_11n', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], form.radioWirelessEnabled.value == "1");
 }
 
 function CheckValue(form)
@@ -1029,7 +1043,7 @@ function CheckValue(form)
           </tr>
           <tr id="basicWirelessEnabledAc">
             <td class="head" colspan="1" id="basicWirelessAC">Wireless (5GHz)</td>
-	    	<td colspan="1"><select name="radioWirelessEnabledAc" class="half">
+	    	<td colspan="1"><select name="radioWirelessEnabledAc" class="half" onChange="wirelessOnChange(this.form);">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
@@ -1037,7 +1051,7 @@ function CheckValue(form)
           </tr>
           <tr id="basicWirelessEnabled">
             <td class="head" colspan="1" id="basicWireless">Wireless (2.4GHz)</td>
-            <td colspan="1"><select name="radioWirelessEnabled" class="half">
+            <td colspan="1"><select name="radioWirelessEnabled" class="half" onChange="wirelessOnChange(this.form);">
                 <option value="0" id="disable">Disabled</option>
                 <option value="1" id="enable">Enabled</option>
               </select></td>
@@ -1047,7 +1061,7 @@ function CheckValue(form)
             <td colspan="2"><select name="wirelessmodeac" id="wirelessmodeac" class="mid" onChange="wirelessModeChange(this.form);">
               </select></td>
           </tr>
-          <tr>
+          <tr id="div_11g_basic" name="div_11g_basic">
             <td class="head" id="basicNetMode" colspan="1">Network Mode (2.4GHz)</td>
             <td colspan="2"><select name="wirelessmode" id="wirelessmode" class="mid" onChange="wirelessModeChange(this.form);">
               </select></td>
@@ -1134,7 +1148,7 @@ function CheckValue(form)
             <td class="head" id="basicAcSSID" colspan="1">Network Name (5GHz)</td>
             <td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
           </tr>
-          <tr>
+          <tr id="div_11g_name" name="div_11g_name">
             <td class="head" id="basicSSID" colspan="1">Network Name (2.4GHz)</td>
             <input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
             <td colspan="1"><input class="normal" type="text" name="mssid_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1"); %>"></td>
@@ -1209,6 +1223,13 @@ function CheckValue(form)
           <tr id="div_abg_rate">
             <td class="head" colspan="1" id="basicRate">Rate</td>
             <td colspan="5"><select name="abg_rate" class="half">
+              </select></td>
+          </tr>
+          <tr id="div_ackpolicy">
+            <td class="head" colspan="1" id="basicAckPolicy">ACK Policy</td>
+            <td colspan="5"><select name="AckPolicy" style="width:128px;">
+                <option value="0" id="basicNormalAck">Normal ack</option>
+                <option value="1" id="basicNoAck">No ack</option>
               </select></td>
           </tr>
           <tr id="div_dot11h">
