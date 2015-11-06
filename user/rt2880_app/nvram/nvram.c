@@ -572,6 +572,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(EDCCA_FALSE_CCA_TH);
 	FPRINT_NUM(ED_LEARN_TH);
 	FPRINT_NUM(EDCCA_BLOCK_CHECK_TH);
+#endif
 #if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
 	FPRINT_NUM(GreenAP);
 #endif
