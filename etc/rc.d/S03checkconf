@@ -220,11 +220,13 @@ genmac() {
 	fi
     fi
 
-    # write config to nvram
+    # write macs config to nvram
     nvram_set 2860 WAN_MAC_ADDR   "$MAC"
     nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
     nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"
     nvram_set 2860 WLAN2_MAC_ADDR "$WMAC2"
+    # set checkmac flag after rebuild
+    nvram_set 2860 CHECKMAC "YES"
 }
 
 stop() {
