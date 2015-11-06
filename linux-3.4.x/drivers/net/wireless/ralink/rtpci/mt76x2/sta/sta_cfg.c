@@ -165,8 +165,8 @@ INT set_ed_threshold(RTMP_ADAPTER *pAd, PSTRING arg);
 INT show_ed_stat_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_current_rssi_threhold_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_debug_proc(RTMP_ADAPTER *pAd, PSTRING arg);
-#endif /* ED_MONITOR */
 INT show_ed_cnt_for_channel_quality(RTMP_ADAPTER *pAd, PSTRING arg);
+#endif /* ED_MONITOR */
 
 
 static struct {
@@ -589,8 +589,8 @@ static struct {
 	{"ed_false_cca_th", set_ed_false_cca_threshold},
 	{"ed_blk_cnt", set_ed_block_tx_thresh},
 	{"ed_stat", show_ed_stat_proc},
-#endif /* ED_MONITOR */
 	{"ed_count_show", show_ed_cnt_for_channel_quality},
+#endif /* ED_MONITOR */
 
 #ifdef CONFIG_SNIFFER_SUPPORT
 	{"mc", set_monitor_channel},

@@ -43,9 +43,8 @@ start() {
 
 get_param() {
     # get parametrs
-    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode lan_ipaddr lan_netmask TZ \
-	    WorkGroup SmbNetBIOS SmbString HostName UDPXYPort RemoteManagementPort RemoteSSHPort \
-	    RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck wan_port`
+    eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
+	    RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck ED_MODE`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -63,6 +62,16 @@ checkminimalconfig()
     elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" = "" ] && [ "$CONFIG_MT76X2_STA" = "" ]; then
 	nvram_set 2860 OperationMode 1
 	OperationMode="1"
+    fi
+
+    #
+    #	drop apcli specific flags in not apcli enabled modes
+    #
+    if [ "$OperationMode" != "3" ]; then
+	if [ "$ApCliBridgeOnly" != "0" ] || [ "$ApCliClientOnly" != "0" ]; then
+	    nvram_set 2860 ApCliBridgeOnly 0
+	    nvram_set 2860 ApCliClientOnly 0
+	fi
     fi
 
     #
@@ -88,16 +97,6 @@ checkminimalconfig()
     fi
 
     #
-    #	drop apcli specific flags in not apcli enabled modes
-    #
-    if [ "$OperationMode" != "3" ]; then
-	if [ "$ApCliBridgeOnly" != "0" ] || [ "$ApCliClientOnly" != "0" ]; then
-	    nvram_set 2860 ApCliBridgeOnly 0
-	    nvram_set 2860 ApCliClientOnly 0
-	fi
-    fi
-
-    #
     #	correct apcli/wds/mbssid interfaces names for dual band use
     #
     if [ "$ApCliIfName" = "" ] || [ "$WdsIfName" = "" ] || [ "$BssidIfName" = "" ]; then
@@ -107,71 +106,14 @@ checkminimalconfig()
     fi
 
     #
-    # timezone
+    #	if ED_MODE not set set defaults (added in 3.6.3 version)
     #
-    if [ "$TZ" = "" ]; then
-        nvram_set 2860 TZ "OMST-7"
-    fi
-
-    #
-    # user and password need set
-    #
-    if [ "$Login" = "" ] || [ "$Password" = "" ]; then
-        nvram_set 2860 Login "Admin"
-        nvram_set 2860 Password "Admin"
-    fi
-
-    #
-    # dafault lan ip/mask
-    #
-    if [ "$lan_ipaddr" = "" ] || [ "$lan_netmask" = "" ]; then
-	nvram_set 2860 lan_ipaddr 192.168.1.1
-	nvram_set 2860 lan_netmask 255.255.255.0
-    fi
-
-    #
-    # need hostname
-    #
-    if [ "$HostName" = "" ]; then
-	HostName="Wive-NG-MT"
-	nvram_set 2860 HostName "$HostName"
-    fi
-    echo "$HostName" > /etc/hostname
-    hostname -F /etc/hostname
-
-    #
-    # samba configs to
-    #
-    if [ -f /bin/smbd ] || [ -f /bin/nmbd ]; then
-	if [ "$WorkGroup" = "" ] || [ "$SmbNetBIOS" = "" ] || [ "$SmbString" = "" ]; then
-	    WorkGroup="LOCALNET"
-	    SmbNetBIOS="$HostName"
-	    SmbString="$HostName-SERVER"
-	    nvram_set 2860 WorkGroup LOCALNET
-	    nvram_set 2860 SmbNetBIOS "$SmbNetBIOS"
-	    nvram_set 2860 SmbString "$SmbString"
-	fi
-    fi
-
-    #
-    # Udpxy default port
-    #
-    if [ -f /bin/udpxy ] && [ "$UDPXYPort" = "" ]; then
-	nvram_set 2860 UDPXYPort 81
-    fi
-
-    #
-    # WebUI default port
-    #
-    if [ "$RemoteManagementPort" = "" ]; then
-	nvram_set 2860 RemoteManagementPort 80
-    fi
-
-    #
-    # SSH default port
-    #
-    if [ "$RemoteSSHPort" = "" ]; then
-	nvram_set 2860 RemoteSSHPort 22
+    if [ "$ED_MODE" = "" ]; then
+	nvram_set 2860 ED_MODE 1
+	nvram_set 2860 EDCCA_ED_TH 85
+	nvram_set 2860 EDCCA_FALSE_CCA_TH 180
+	nvram_set 2860 EDCCA_BLOCK_CHECK_TH 2
+	nvram_set 2860 ED_LEARN_TH 50
     fi
 }
 

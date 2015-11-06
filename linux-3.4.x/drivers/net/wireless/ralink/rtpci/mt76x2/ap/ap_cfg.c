@@ -773,8 +773,8 @@ INT set_ed_false_cca_threshold(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_threshold(RTMP_ADAPTER *pAd, PSTRING arg);
 INT show_ed_stat_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_ed_debug_proc(RTMP_ADAPTER *pAd, PSTRING arg);
-#endif /* ED_MONITOR */
 INT show_ed_cnt_for_channel_quality(RTMP_ADAPTER *pAd, PSTRING arg);
+#endif /* ED_MONITOR */
 
 
 #ifdef THERMAL_PROTECT_SUPPORT	
@@ -1485,8 +1485,8 @@ static struct {
 	{"ed_blk_cnt", set_ed_block_tx_thresh},
 	{"ed_stat", show_ed_stat_proc},
 	{"ed_debug", set_ed_debug_proc},
-#endif /* ED_MONITOR */
 	{"ed_count_show", show_ed_cnt_for_channel_quality},
+#endif /* ED_MONITOR */
 
 #ifdef RT_CFG80211_SUPPORT
 	{"DisableCfg2040Scan",				Set_DisableCfg2040Scan_Proc},

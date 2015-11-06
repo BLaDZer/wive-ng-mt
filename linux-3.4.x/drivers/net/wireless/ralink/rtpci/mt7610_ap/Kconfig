@@ -77,7 +77,7 @@ config  MT7610_AP_CARRIER
 	default n
 
 config  MT7610_ED_MONITOR
-	bool "ED CCA Monitor Support"
+	bool "Clear-Channel Assessment (CCA) Monitor Support"
 	depends on MT7610_AP
 	default n
 

@@ -2341,7 +2341,7 @@ INT edcca_tx_stop_start(RTMP_ADAPTER *pAd, BOOLEAN stop)
 {	
 	UINT32 macCfg, macCfg_2, macStatus,MacValue;	
 	UINT32 MTxCycle;
-	ULONG stTime, mt_time, mr_time;
+	ULONG stTime, mt_time;
 #ifdef CONFIG_STA_SUPPORT	
 	static BOOLEAN orig_auto_reconnect_setting;
 #endif /* CONFIG_STA_SUPPORT */
@@ -2457,10 +2457,8 @@ VOID ed_testing_timeout(
 
 INT ed_status_read(RTMP_ADAPTER *pAd)
 {
-	UINT32 period_us = pAd->ed_chk_period * 1000;
 	ULONG irqflag;
-	BOOLEAN stop_edcca = FALSE;
-	BOOLEAN stop_tx = FALSE;
+	UINT32 period_us = pAd->ed_chk_period * 1000;
 		
 	INT percent;
 	RX_STA_CNT1_STRUC RxStaCnt1;
@@ -2975,7 +2973,6 @@ INT show_ed_stat_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 INT report_ed_count(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	INT period_us = 0;
-	INT irqflags = 0;
 	UINT32 ed_stat, percentage = 0;
 
 
@@ -3025,6 +3022,7 @@ INT set_channel_ed_monitor_enable(RTMP_ADAPTER *pAd, PSTRING arg)
 	return TRUE;
 }
 
+#ifdef ED_MONITOR
 INT show_ed_cnt_for_channel_quality(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	if(pAd->ed_chk == FALSE)
@@ -3033,14 +3031,8 @@ INT show_ed_cnt_for_channel_quality(RTMP_ADAPTER *pAd, PSTRING arg)
 	}
 	else
 	{
-#ifdef ED_MONITOR
 		report_ed_count(pAd, arg);
-#else
-		DBGPRINT(RT_DEBUG_OFF, ("%s : unexpected ed_chk = %d  without ED_MONITOR compile flag\n", __FUNCTION__,pAd->ed_chk));
-		pAd->ed_chk = 0;
-#endif /* ED_MONITOR */
 	}
-	
 	return TRUE;
 }
-
+#endif /* ED_MONITOR */

@@ -74,7 +74,8 @@ config  MT76X2_AP_CON_WPS_SUPPORT
 config  MT76X2_AP_DFS
 	bool "DFS support"
 	depends on MT76X2_AP
-	default y
+	depends on (RT_FIRST_IF_MT7612E || RT_SECOND_IF_MT7612E)
+	default n
 
 config  MT76X2_AP_CARRIER
 	bool "Carrier Detection support"
@@ -82,7 +83,7 @@ config  MT76X2_AP_CARRIER
 	default n
 
 config  MT76X2_AP_ED_MONITOR
-	bool "ED CCA Monitor support"
+	bool "Clear-Channel Assessment (CCA) Monitor Support"
 	depends on MT76X2_AP
 	default n
 
