@@ -2686,7 +2686,7 @@ VOID MlmeRALog(
 				pEntry->HTPhyMode.field.MODE==MODE_CCK? 'C': (pEntry->HTPhyMode.field.ShortGI? 'S': 'L'),
 				pEntry->HTPhyMode.field.BW? '4': '2',
 				stbc? 'S': 's',
-				csd? 'C': 'c',
+				' ',
 				pEntry->HTPhyMode.field.eTxBF? 'E': (pEntry->HTPhyMode.field.iTxBF? 'I': '-'),
 				TxErrorRatio, tp, bfRatio) );
 		}
