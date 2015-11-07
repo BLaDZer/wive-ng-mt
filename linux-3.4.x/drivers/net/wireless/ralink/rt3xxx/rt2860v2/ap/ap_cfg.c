@@ -5042,7 +5042,6 @@ INT Set_CountryCode_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
 {
-
 #ifdef EXT_BUILD_CHANNEL_LIST
 	/* reset temp table status */
 	pAd->CommonCfg.pChDesp = NULL;
@@ -5051,6 +5050,7 @@ INT Set_CountryCode_Proc(
 
 	if(strlen(arg) == 2)
 	{
+		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 		NdisMoveMemory(pAd->CommonCfg.CountryCode, arg, 2);
 		pAd->CommonCfg.bCountryFlag = TRUE;
 	}

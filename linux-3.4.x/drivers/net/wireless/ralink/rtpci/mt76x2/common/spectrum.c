@@ -2472,11 +2472,11 @@ INT Set_PwrConstraint(
 	IN	PSTRING			arg)
 {
 
-typedef struct __PWR_CONSTRAIN_CFG
-{
-	CHAR Attenuation;
-	ULONG TxPowerPercentage;	
-} PWR_CONSTRAIN_CFG;
+	typedef struct __PWR_CONSTRAIN_CFG
+	{
+	    CHAR Attenuation;
+	    ULONG TxPowerPercentage;
+	} PWR_CONSTRAIN_CFG;
 
 	PWR_CONSTRAIN_CFG PwrConstrainTab[] =
 	{

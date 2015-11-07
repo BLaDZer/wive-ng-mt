@@ -2216,21 +2216,19 @@ static void HTParametersHook(
 }
 #endif /* DOT11_N_SUPPORT */
 
-
-
-
 void RTMPSetCountryCode(RTMP_ADAPTER *pAd, PSTRING CountryCode)
 {
-	NdisMoveMemory(pAd->CommonCfg.CountryCode, CountryCode , 2);
-	pAd->CommonCfg.CountryCode[2] = ' ';
-	if (strlen((PSTRING) pAd->CommonCfg.CountryCode) != 0)
+	if (strlen((PSTRING)CountryCode) != 0) {
+		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		NdisMoveMemory(pAd->CommonCfg.CountryCode, CountryCode , 2);
 		pAd->CommonCfg.bCountryFlag = TRUE;
-	else
+	} else {
+		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 		pAd->CommonCfg.bCountryFlag = FALSE;
+	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("CountryCode=%s\n", pAd->CommonCfg.CountryCode));
 }
-
 
 NDIS_STATUS	RTMPSetProfileParameters(
 	IN RTMP_ADAPTER *pAd,

@@ -4211,15 +4211,15 @@ INT Set_CountryCode_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
 {
-
 #ifdef EXT_BUILD_CHANNEL_LIST
 	/* reset temp table status */
 	pAd->CommonCfg.pChDesp = NULL;
-	pAd->CommonCfg.DfsType = MAX_RD_REGION;	
+	pAd->CommonCfg.DfsType = MAX_RD_REGION;
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
 	if(strlen(arg) == 2)
 	{
+		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 		NdisMoveMemory(pAd->CommonCfg.CountryCode, arg, 2);
 		pAd->CommonCfg.bCountryFlag = TRUE;
 	}
@@ -4330,7 +4330,6 @@ INT Set_CountryString_Proc(
 				{
 					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
-					pAd->CommonCfg.CountryCode[2] = ' ';
 
 					pAd->CommonCfg.bCountryFlag = TRUE;
 
@@ -4362,7 +4361,6 @@ INT Set_CountryString_Proc(
 				{
 					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
-					pAd->CommonCfg.CountryCode[2] = ' ';
 
 					pAd->CommonCfg.bCountryFlag = TRUE;
 

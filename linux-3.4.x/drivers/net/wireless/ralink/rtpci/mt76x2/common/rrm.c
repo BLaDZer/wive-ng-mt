@@ -473,7 +473,7 @@ INT RRM_InfoDisplay_Proc(
 	}
 
 	DBGPRINT(RT_DEBUG_OFF, ("Country Code=%s\n",
-		pAd->CommonCfg.CountryCode));
+		(PSTRING)pAd->CommonCfg.CountryCode));
 
 	DBGPRINT(RT_DEBUG_OFF, ("Power Constraint=%d\n",
 		pAd->CommonCfg.PwrConstraint));
