@@ -29,6 +29,19 @@
 #include "action.h"
 
 
+/* The regulatory information in the Russia (RU) */
+DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
+{
+/*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
+    {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
+    {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
+    {4,                 {11,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}},
+    {5,                 {3,                  20,            {12, 13, 14}}}
+};
+#define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
+
 /* The regulatory information in the USA (US) */
 DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
 {
@@ -44,8 +57,8 @@ DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] =
     {8,                 {5,                   17,           {11, 13, 15, 17, 19}}}, 
     {9,                 {5,                   30,           {11, 13, 15, 17, 19}}}, 
     {10,                {2,                   20,           {21, 25}}}, 
-    {11,                {2,                   33,            {21, 25}}}, 
-    {12,                {11,                  30,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
+    {11,                {2,                   33,           {21, 25}}}, 
+    {12,                {11,                  30,           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
 };
 #define USA_REGULATORY_INFO_SIZE (sizeof(USARegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
 
@@ -115,7 +128,12 @@ UINT8 GetRegulatoryMaxTxPwr(
 	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
 
 
-	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
+	if (strncmp(pCountry, "RU", 2) == 0)
+	{
+		MaxRegulatoryClassNum = RU_REGULATORY_INFO_SIZE;
+		pRegulatoryClass = &RURegulatoryInfo[0];
+	}
+	else if (strncmp(pCountry, "US", 2) == 0)
 	{
 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
 		pRegulatoryClass = &USARegulatoryInfo[0];
@@ -836,7 +854,17 @@ VOID InsertChannelRepIE(
 	PDOT11_CHANNEL_SET pChannelSet = NULL;
 
 	Len = 1;
-	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
+	if (strncmp(pCountry, "RU", 2) == 0)
+	{
+		if (RegulatoryClass >= RU_REGULATORY_INFO_SIZE)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("%s: RU Unknow Requlatory class (%d)\n",
+						__FUNCTION__, RegulatoryClass));
+			return;
+		}
+		pChannelSet = &RURegulatoryInfo[RegulatoryClass].ChannelSet;
+	}
+	else if (strncmp(pCountry, "US", 2) == 0)
 	{
 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
 		{
@@ -2609,6 +2637,13 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
 	pRugClass = NULL;
 	do
 	{
+		if (strncmp(pCountryCode, "RU", 2) == 0)
+		{
+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
+				break;
+			pRugClass = &RURegulatoryInfo[RugClass];
+		}
+
 		if (strncmp(pCountryCode, "US", 2) == 0)
 		{
 			if (RugClass >= USA_REGULATORY_INFO_SIZE)

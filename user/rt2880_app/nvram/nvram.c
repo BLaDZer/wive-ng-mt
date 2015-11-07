@@ -640,10 +640,15 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 #ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
 	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
-	if (!inic)
-	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "CountryRegion")));
-	else
-	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "CountryRegionABand")));
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (!inic) {
+	    FPRINT_STR(RegulatoryClass);
+	} else {
+	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "RegulatoryClassINIC")));
+	}
+#else
+	FPRINT_STR(RegulatoryClass);
+#endif
 #endif
 #ifdef CONFIG_BAND_STEERING
 	FPRINT_NUM(BandSteering);

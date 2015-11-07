@@ -859,6 +859,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+		if (atoi(sz11aChannel) >= 52)
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "2");
+		else if (atoi(sz11aChannel) >= 149)
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "3");
+		else
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1");
+#endif
 	}
 #endif
 	if (CHK_IF_SET(sz11gChannel)) {
@@ -870,6 +878,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
 		}
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+		if (atoi(sz11gChannel) >= 12)
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5");
+		else
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "4");
+#endif
 	}
 
 	// Rate for a, b, g, n, ac
