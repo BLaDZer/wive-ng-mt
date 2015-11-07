@@ -13,14 +13,14 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$FastRoamingIAPP" = "1" ]; then
+    if [ "$FastRoaming" = "1" ] && [ "$FtSupport" != "" ] && [ "$FtSupport" != "0;0;0;0" ] ; then
 	$LOG "Starting iappd roaming daemon"
 	ralinkiappd -e "$lan_if" -w "$first_wlan_root_if" -d 3
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 FastRoamingIAPP`
+    eval `nvram_buf_get 2860 FastRoaming FtSupport`
 }
 
 stop() {
