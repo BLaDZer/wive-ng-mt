@@ -525,7 +525,7 @@ INT BndStrg_SetInfFlags(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table, BOOLEAN bI
 		BND_STRG_DBGPRINT(RT_DEBUG_OFF,
 					(BLUE("%s(): BSS (%02x:%02x:%02x:%02x:%02x:%02x)")
 					 BLUE(" set 5G Inf %s.\n")
-					 , __FUNCTION__, PRINT_MAC(pAd->ApCfg.MBSSID[0].Bssid),
+					 , __FUNCTION__, PRINT_MAC(pAd->CommonCfg.Bssid),
 					 bInfReady ? "ready" : "not ready"));
 	}
 	else if (table->b2GInfReady ^ bInfReady)
@@ -543,7 +543,7 @@ INT BndStrg_SetInfFlags(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table, BOOLEAN bI
 		BND_STRG_DBGPRINT(RT_DEBUG_OFF,
 					(BLUE("%s(): BSS (%02x:%02x:%02x:%02x:%02x:%02x)")
 					 BLUE(" set 2G Inf %s.\n")
-					 , __FUNCTION__, PRINT_MAC(pAd->ApCfg.MBSSID[0].Bssid),
+					 , __FUNCTION__, PRINT_MAC(pAd->CommonCfg.Bssid),
 					 bInfReady ? "ready" : "not ready"));
 	}
 	
