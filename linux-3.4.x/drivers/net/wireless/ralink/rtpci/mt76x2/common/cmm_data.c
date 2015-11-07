@@ -256,8 +256,12 @@ VOID RTMP_BASetup(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, UINT8 UPriority)
 			}
 #endif /* APCLI_SUPPORT */
 
-			if (((pEntry->TXBAbitmap & (1<<UPriority)) == 0) 
-				&& (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)
+			if (((pEntry->TXBAbitmap & (1<<UPriority)) == 0) /* && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED) */
+				/*
+				    For IOT compatibility, BA session can be bulit when following conditions matched
+					1. It is Ralink chip or
+					2. It is OPEN or AES mode,
+				*/
 				&& ((IS_ENTRY_CLIENT(pEntry) && CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET)) || 
 					 IS_ENTRY_MESH(pEntry) || IS_ENTRY_WDS(pEntry) ||
 				 	 (IS_ENTRY_APCLI(pEntry) && (isRalink == TRUE) && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)) || 
@@ -1175,12 +1179,12 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 			)
 			{
 				pMacEntry->HTPhyMode.field.MODE = MODE_OFDM;
-				pMacEntry->HTPhyMode.field.MCS = MCS_RATE_24;
+				pMacEntry->HTPhyMode.field.MCS = MCS_RATE_6;
 			}
 			else
 			{
 				pMacEntry->HTPhyMode.field.MODE = MODE_CCK;
-				pMacEntry->HTPhyMode.field.MCS = MCS_1;
+				pMacEntry->HTPhyMode.field.MCS = MCS_0;
 			}
 
 			wcid = pMacEntry->Aid;
@@ -1225,7 +1229,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
                 PrevMode = transmit->field.MODE;
 
                 transmit->field.MODE = MODE_OFDM;
-                transmit->field.MCS = MCS_RATE_24;
+                transmit->field.MCS = MCS_RATE_6;
                 RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, 
                             bAckRequired, FALSE, 0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), 
 			    PID, 0, SNDG_TYPE_NDP, IFS_BACKOFF, transmit);

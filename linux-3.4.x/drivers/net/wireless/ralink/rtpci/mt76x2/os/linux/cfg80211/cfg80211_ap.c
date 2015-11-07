@@ -286,7 +286,7 @@ VOID CFG80211_UpdateBeacon(
 	BeaconTransmit.field.MODE = MODE_OFDM; /* Use 6Mbps */
 	else
 #endif
-		BeaconTransmit.field.MODE = MODE_CCK;	
+	BeaconTransmit.field.MODE = MODE_CCK;
 	BeaconTransmit.field.MCS = MCS_RATE_6;
 
 	//YF 
