@@ -632,33 +632,7 @@ function initValue()
 	{
 		// Calculate current channel
 		var channel_indexacnew;
-		if ((countrycode == 'RU') || (countrycode == 'NONE'))
-		{
-			if (channel_indexac <= 64)
-			{
-				channel_indexacnew = channel_indexac;
-				channel_indexacnew = channel_indexacnew / 4;
-				if (channel_indexac != 0)
-					channel_indexacnew = channel_indexacnew - 8;
-			}
-			else if ((channel_indexac >= 100) && (channel_indexac <= 140))
-			{
-				channel_indexacnew = channel_indexac;
-				channel_indexacnew = channel_indexacnew / 4;
-				channel_indexacnew = channel_indexacnew - 16;
-			}
-			else if (channel_indexac >= 149)
-			{
-				channel_indexacnew = channel_indexac - 1;
-				channel_indexacnew = channel_indexacnew / 4;
-				channel_indexacnew = channel_indexacnew - 17;
-			}
-			else
-			{
-				channel_indexacnew = 0;
-			}
-		}
-		else if ((countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE') || (countrycode == 'NO'))
+		if ((countrycode == 'NONE') || (countrycode == 'RU') || (countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE') || (countrycode == 'NO'))
 		{
 			if (channel_indexac <= 64)
 			{

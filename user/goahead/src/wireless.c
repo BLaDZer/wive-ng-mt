@@ -245,19 +245,7 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 	const char *channel_s = nvram_bufget(RT2860_NVRAM, "ChannelINIC");
 
 	channel = (channel_s == NULL)? 0 : atoi(channel_s);
-	if ((value == NULL) || (strcmp(value, "") == 0) ||
-		(strcmp(value, "7") == 0)) {
-		/* 36~64 */
-		for (idx = 0; idx < 8; idx++)
-			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
-					(36+4*idx == channel)? "selected" : "", 5180+20*idx,
-					"MHz (Channel ", 36+4*idx, ")</option>");
-		/* 149~165 */
-		for (idx = 28; idx < 33; idx++)
-			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
-					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
-					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "0") == 0) {
+	if ((value == NULL) || (strcmp(value, "") == 0) || (strcmp(value, "0") == 0) || (strcmp(value, "7") == 0)) {
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
