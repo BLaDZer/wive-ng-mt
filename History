@@ -1430,8 +1430,8 @@
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add ED_MODE to Advanced UI (0/1 - enable/disable Clear-Channel Assessment Monitor Support).<br>
-3) need add RRMEnable to Advanced UI (0/1 - enable/disable Radio Resource Managment per ssid with ; divider, one combo for all).<br>
-4) need add FtSupport to Roaming block UI (0/1 - enable/disable Fast Transition per ssid with ; divider, one combo for all).<br>
+3) need add RRMEnable to Roaming block (0/1 - enable/disable Radio Resource Managment 802.11k CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT per ssid with ; divider, one combo for all).<br>
+4) need add FtSupport to Roaming block (0/1 - enable/disable Fast Transition 802.11r CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT per ssid with ; divider, one combo for all).<br>
 5) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
 6) need add subchannel select for 5GHz module.<br>
 7) in very far future: need add in firewall support xt_time matches for parental control.<br>
