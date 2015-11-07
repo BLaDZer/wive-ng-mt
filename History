@@ -1377,7 +1377,7 @@
 42) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 43) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
 44) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-45) kernel: ralink_wifi: xxxx: enable ed-monitor,dfs,rrm support by default.<br>
+45) kernel: ralink_wifi: xxxx: enable dfs,rrm support by default.<br>
 46) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
 47) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
 48) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
