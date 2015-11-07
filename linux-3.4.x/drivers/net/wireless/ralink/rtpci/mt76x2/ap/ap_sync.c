@@ -489,7 +489,10 @@ VOID APPeerProbeReqAction(
 	    /* add country IE, power constraint IE */
 		if (pAd->CommonCfg.bCountryFlag)
 		{
-			ULONG TmpLen, TmpLen2=0;
+#ifndef EXT_BUILD_CHANNEL_LIST
+			ULONG TmpLen =0;
+#endif
+			ULONG TmpLen2 = 0;
 			UCHAR *TmpFrame = NULL;
 
 			os_alloc_mem(NULL, (UCHAR **)&TmpFrame, 256);

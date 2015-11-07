@@ -57,9 +57,10 @@ config  RT2860V2_AP_CARRIER
 	help
 	Carrier Sense Multi-Access/Collision Detection.
 
-#config  RT2860V2_AP_EXT_CHANNEL_LIST
-#	bool "Extension Channel List"
-#	depends on RT2860V2_AP
+config  RT2860V2_AP_EXT_CHANNEL_LIST
+	bool "Extension Channel List 802.11d compat"
+	depends on RT2860V2_AP
+	default n
 
 config  RT2860V2_AP_DLS
 	bool "DLS (Direct-Link Setup) Support"

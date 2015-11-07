@@ -97,6 +97,11 @@ config  MT76X2_AP_DOT11K_RRM_SUPPORT
 	depends on MT76X2_AP
 	default n
 
+config  MT76X2_AP_EXT_CHANNEL_LIST
+	bool "Extension Channel List 802.11d compat"
+	depends on MT76X2_AP
+	default n
+
 #config  MT76X2_AP_VIDEO_TURBINE
 #	bool "Video Turbine support"
 #	depends on MT76X2_AP

@@ -291,7 +291,7 @@ function init11NValues()
                 <option value="4" <% if (cr_a == "4") write("selected"); %>>4:CH149,153,157,161,165</option>
                 <option value="5" <% if (cr_a == "5") write("selected"); %>>5:CH149,153,157,161,</option>
                 <option value="6" <% if (cr_a == "6") write("selected"); %>>6:CH36,40,44,48</option>
-                <option value="7" <% if (cr_a == "7") write("selected"); %>>7:CH36,40,44,48,52,56,60,64,100,104,108,112,116,120,124,128,132,136,140,149,153,157,161,165</option>
+                <option value="7" <% if (cr_a == "7") write("selected"); %>>7:CH36,40,44,48,52,56,60,64,149,153,157,161,165</option>
                 <option value="8" <% if (cr_a == "8") write("selected"); %>>8:CH52,56,60,64</option>
                 <option value="9" <% if (cr_a == "9") write("selected"); %>>9:CH34,38,42,46</option>
                 <option value="10" <% if (cr_a == "10") write("selected"); %>>10:CH34,36,38,40,42,44,46,48,52,56,60,64</option>
