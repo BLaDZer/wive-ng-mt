@@ -115,7 +115,7 @@ UINT8 GetRegulatoryMaxTxPwr(
 	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
 
 
-	if (strncmp(pCountry, "US", 2) == 0)
+	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
 	{
 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
 		pRegulatoryClass = &USARegulatoryInfo[0];
@@ -832,7 +832,7 @@ VOID InsertChannelRepIE(
 	PDOT11_CHANNEL_SET pChannelSet = NULL;
 
 	Len = 1;
-	if (strncmp(pCountry, "US", 2) == 0)
+	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
 	{
 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
 		{
