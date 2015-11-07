@@ -80,6 +80,8 @@ dir_$(CONFIG_USER_RADVD)               	    += radvd
 dir_$(CONFIG_USER_DHCP6)                    += dhcp6
 dir_$(CONFIG_USER_ZEBRA)		    += quagga
 dir_$(CONFIG_USER_SNMPD)                    += snmpd
+dir_$(CONFIG_USER_CWMPD)                    += netcwmp
+
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
 dir_$(CONFIG_USER_SAMBA)		    += samba
 dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
@@ -109,7 +111,6 @@ dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 ifdef CONFIG_RALINK_MT7621
 dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
-
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
