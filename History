@@ -1377,7 +1377,7 @@
 42) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
 43) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
 44) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-45) kernel: ralink_wifi: xxxx: disable dfs support in driver (need review).<br>
+45) kernel: ralink_wifi: xxxx: enable ed-monitor,dfs,rrm support by default.<br>
 46) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
 47) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
 48) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
@@ -1430,14 +1430,15 @@
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add ED_MODE to Advanced UI (0/1 - enable/disable Clear-Channel Assessment Monitor Support).<br>
-3) need add RRMEnable to Advanced UI (0/1 - enable/disable per ssid with ; divider, one combo for all).<br>
-4) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
-5) need add subchannel select for 5GHz module.<br>
-6) in very far future: need add in firewall support xt_time matches for parental control.<br>
-7) in very far future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
-8) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-9) in very far future: need add perip shaper script and webui .<br>
-10) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+3) need add RRMEnable to Advanced UI (0/1 - enable/disable Radio Resource Managment per ssid with ; divider, one combo for all).<br>
+4) need add FtSupport to Roaming block UI (0/1 - enable/disable Fast Transition per ssid with ; divider, one combo for all).<br>
+5) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
+6) need add subchannel select for 5GHz module.<br>
+7) in very far future: need add in firewall support xt_time matches for parental control.<br>
+8) in very far future: need add davfs2 webui for managment online disk drives (as yandex disk and others very slow, really need?).<br>
+9) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+10) in very far future: need add perip shaper script and webui .<br>
+11) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>

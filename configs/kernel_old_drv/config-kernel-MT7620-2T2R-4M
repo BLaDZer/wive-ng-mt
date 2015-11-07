@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.108.68 Kernel Configuration
+# Linux/mips 3.4.110.75 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -232,6 +232,7 @@ CONFIG_SLAB=y
 # CONFIG_SLOB is not set
 # CONFIG_PROFILING is not set
 CONFIG_JUMP_LABEL=y
+CONFIG_ARCH_USE_BUILTIN_BSWAP=y
 CONFIG_HAVE_DMA_ATTRS=y
 CONFIG_HAVE_GENERIC_INIT_TASK=y
 CONFIG_HAVE_ARCH_JUMP_LABEL=y
