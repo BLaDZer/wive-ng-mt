@@ -1366,7 +1366,7 @@
 31) kernel: ralink_wifi: 76x2: fix dynvga enable procedure.<br>
 32) kernel: ralink_wifi: 76x2: decrease memory usage for Andes RX1 ring.<br>
 33) kernel: ralink_wifi: 76x2: allways use mcs_0/6 for managment frames (depended by band) for compat.<br>
-34) kernel: ralink_wifi: 76x2: enable 802.11R (radio resource managment by default).<br>
+34) kernel: ralink_wifi: 76x2: enable 802.11K (radio resource managment by default).<br>
 35) kernel: ralink_wifi: xxxx: optimize reschedule Tx cleanup timer.<br>
 36) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
 37) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
