@@ -235,7 +235,6 @@ CH_DESC Country_Region6_ChDesc_5GHZ[] =
 CH_DESC Country_Region7_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
