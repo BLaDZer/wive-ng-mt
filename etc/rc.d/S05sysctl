@@ -45,19 +45,6 @@ start() {
 	# heruistic overcommit
 	sysctl -wq vm.overcommit_memory=0
     fi
-
-############################### INCREASE NETWORK BUFFERS ##################################
-    # min allocatet mem for sockets 2Mb
-    # before moderates limit 4Mb
-    # global limit per socket mem 8Mb
-    echo "512 1024 1536" > /proc/sys/net/ipv4/tcp_mem
-
-    echo "2097152" > /proc/sys/net/core/wmem_max
-    echo "4194304" > /proc/sys/net/core/rmem_max
-#################################### SET PARANOID PARAMS###################################
-    echo 1    > /proc/sys/kernel/panic
-    echo 1    > /proc/sys/kernel/panic_on_oops
-    echo 1    > /proc/sys/vm/panic_on_oom
 }
 
 stop() {
