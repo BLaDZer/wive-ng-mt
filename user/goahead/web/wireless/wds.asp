@@ -165,7 +165,7 @@ function initValue()
 			encryp_type.options.selectedIndex = 1;
 		else if (wdsEncrypType[i] == "TKIP" || wdsEncrypType[i] == "tkip")
 			encryp_type.options.selectedIndex = 2;
-		else if (wdsEncrypType[i] == "AES" || wdsEncrypType[i] == "aes")
+		else
 			encryp_type.options.selectedIndex = 3;
 
 		//select wds_list

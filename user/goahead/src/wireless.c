@@ -651,7 +651,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline, *ackpolicy_ssid;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *token;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
@@ -669,7 +669,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 	char	*submitUrl;
 
 	// Get current mode & new mode
@@ -689,7 +689,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
 	mbcastisolated_ssid = websGetVar(wp, T("mbcastisolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
-	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
@@ -805,8 +804,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(noforwarding, "%s%s", noforwarding, token);
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
-			sprintf(ackpolicy, "%s%s", ackpolicy, (strchr(ackpolicy_ssid, ssid + '0') != NULL) ? "0" : "1");
-			sprintf(ackpolicy, "%s%s", ackpolicy, token);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 #if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
@@ -829,7 +826,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
-	nvram_bufset(RT2860_NVRAM, "AckPolicy", ackpolicy);
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -843,10 +839,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
 #ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
-		if (atoi(sz11aChannel) >= 52)
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "2");
-		else if (atoi(sz11aChannel) >= 149)
+		if (atoi(sz11aChannel) >= 149)
 		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "3");
+		else if (atoi(sz11aChannel) >= 52)
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "2");
 		else
 		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1");
 #endif
@@ -1047,11 +1043,11 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 /* goform/wirelessAdvanced */
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout,
-		*short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
-	int ssid_num, tmp, i;
-	char_t *life_check, *submitUrl;
-	char stanum_array[32] = "", keepalive_array[32] = "";
+	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
+	char_t  *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
+	int ssid = 0, ssid_num, tmp, i;
+	char_t *ackpolicy_ssid, *life_check, *submitUrl, *token;
+	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	char_t	*mcast_mode, *mcast_mcs;
 #endif
@@ -1089,6 +1085,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	keepalive = websGetVar(wp, T("keepalive"), T("0"));
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
 	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
+	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
 
 	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
 	if (NULL != num_s)
@@ -1151,6 +1148,15 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "EntryLifeCheck", life_check);
 	}
 
+	i = 1;
+	for (ssid=0; ssid < ssid_num; ssid++) {
+		token = (i != ssid_num) ? ";" : "";
+		sprintf(ackpolicy, "%s%s", ackpolicy, (strchr(ackpolicy_ssid, ssid + '0') != NULL) ? "0" : "1");
+		sprintf(ackpolicy, "%s%s", ackpolicy, token);
+		i++;
+	}
+
+	nvram_bufset(RT2860_NVRAM, "AckPolicy", ackpolicy);
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);

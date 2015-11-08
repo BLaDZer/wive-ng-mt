@@ -68,8 +68,6 @@ var txbf_built = '<% getTXBFBuilt(); %>';
 
 var dfs_built = '<% getDFSBuilt(); %>' == '1';
 
-var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
-
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
 var ChannelList_24G =
@@ -148,21 +146,15 @@ function AutoChannelSelect(form) {
 	form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
 	form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
 
+	form.sz11gChannel.className = (form.sz11gChannel.options.selectedIndex == 0) ? "half" : "mid";
+	form.sz11aChannel.className = (form.sz11aChannel.options.selectedIndex == 0) ? "half" : "mid";
+
 	displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
 	displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
 	displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
 	displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
 	displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
 	displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
-
-	if (form.sz11gChannel.options.selectedIndex == 0)
-		form.sz11gChannel.style.width = "100px";
-	else
-		form.sz11gChannel.style.width = "170px";
-	if (form.sz11aChannel.options.selectedIndex == 0)
-		form.sz11aChannel.style.width = "100px";
-	else
-		form.sz11aChannel.style.width = "170px";
 }
 
 function GExtChannelDisplay(form) {
@@ -269,9 +261,6 @@ function initTranslation()
 	_TR("basicMBSSIDMode", "basic mbssid mode");
 	_TR("basicWDSMode", "basic wds mode");
 	_TR("basicAPCLIMode", "basic apcli mode");
-	_TR("basicAckPolicy", "basic ack policy");
-	_TR("basicNormalAck", "basic ack policy normal");
-	_TR("basicNoAck", "basic ack policy no");
 
 	_TR("basicFreqA", "basic frequency ac");
 	_TR("basicFreqAAuto", "basic frequency auto");
@@ -435,7 +424,7 @@ function initValue()
 	var form = document.wireless_basic;
 
 	form.radioWirelessEnabled.options.selectedIndex = radio_on;
-	form.radioWirelessEnabledAc.options.selectedIndex = radio_on_ac;
+	form.radioWirelessEnabledAc.options.selectedIndex = (is5gh_support == 1) ? radio_on_ac : 0;
 
 	// Hide & disable elements
 	hideElement("div_11a_basic");
@@ -608,7 +597,6 @@ function initValue()
 	var APIsolatedArray = APIsolated.split(";");
 	var NoForwardingMBCastArray = NoForwardingMBCast.split(";");
 	var dot11hArray = IEEE80211H.split(";");
-	var AckPolicyArray = ackpolicy.split(";");
 
 	for (i=0; i<bssid_num; i++) {
 		form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
@@ -618,7 +606,6 @@ function initValue()
 
 	form.n_bandwidth.options.selectedIndex = 1*ht_bw;
 	form.dot11h.options.selectedIndex = 1*dot11hArray[0];
-	form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 	initChecktime(form);
 	GExtChannelDisplay(form);
 
@@ -1042,7 +1029,7 @@ function CheckValue(form)
           </tr>
           <tr id="div_11a_channel" name="div_11a_channel">
             <td class="head" colspan="1" id="basicFreqA">Channel (5GHz)</td>
-            <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" style="width: 170px;" onChange="ChannelOnChange(this.form);">
+            <td colspan="2"><select id="sz11aChannel" name="sz11aChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqAAuto">AutoSelect</option>
                 <% getWlan11aChannels(); %>
               </select>&nbsp;&nbsp;<select name="autoselect_a" style="width: 170px;" id="autoselect_a">
@@ -1053,7 +1040,7 @@ function CheckValue(form)
           </tr>
           <tr id="div_11g_channel" name="div_11g_channel">
             <td class="head" colspan="1" id="basicFreqG">Channel (2.4GHz)</td>
-            <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" style="width: 170px;" onChange="ChannelOnChange(this.form);">
+            <td colspan="2"><select id="sz11gChannel" name="sz11gChannel" class="mid" onChange="ChannelOnChange(this.form);">
                 <option value="0" id="basicFreqGAuto">AutoSelect</option>
                 <% getWlan11gChannels(); %>
               </select>&nbsp;&nbsp;<select name="autoselect_g" style="width: 170px;" id="autoselect_g">
@@ -1197,13 +1184,6 @@ function CheckValue(form)
           <tr id="div_abg_rate">
             <td class="head" colspan="1" id="basicRate">Rate</td>
             <td colspan="5"><select name="abg_rate" class="half">
-              </select></td>
-          </tr>
-          <tr id="div_ackpolicy">
-            <td class="head" colspan="1" id="basicAckPolicy">ACK Policy</td>
-            <td colspan="5"><select name="AckPolicy" style="width:128px;">
-                <option value="0" id="basicNormalAck">Normal ack</option>
-                <option value="1" id="basicNoAck">No ack</option>
               </select></td>
           </tr>
           <tr id="div_dot11h">

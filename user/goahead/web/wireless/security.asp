@@ -768,14 +768,14 @@ function LoadFields(MBSSID)
 		document.security_form.cipher[0].checked = true;
 		document.security_form.cipher[1].checked = false;
 		document.security_form.cipher[2].checked = false;
-	} else if(EncrypType[MBSSID] == "AES") {
-		document.security_form.cipher[0].checked = false;
-		document.security_form.cipher[1].checked = true;
-		document.security_form.cipher[2].checked = false;
 	} else if(EncrypType[MBSSID] == "TKIPAES") {
 		document.security_form.cipher[0].checked = false;
 		document.security_form.cipher[1].checked = false;
 		document.security_form.cipher[2].checked = true;
+	} else {
+		document.security_form.cipher[0].checked = false;
+		document.security_form.cipher[1].checked = true;
+		document.security_form.cipher[2].checked = false;
 	}
 
 	document.getElementById("passphrase").value = WPAPSK[MBSSID];

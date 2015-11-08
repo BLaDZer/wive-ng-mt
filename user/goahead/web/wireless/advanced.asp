@@ -31,7 +31,7 @@ var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
 var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
 var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
-
+var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
 
 function initTranslation()
@@ -91,6 +91,9 @@ function initTranslation()
   _TR("advMcastRate", "adv mcast rate");
   _TR("advOFDM", "adv ofdm");
   _TR("advHTMIX", "adv htmix");
+  _TR("advAckPolicy", "basic ack policy");
+  _TR("advNormalAck", "basic ack policy normal");
+  _TR("advNoAck", "basic ack policy no");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
@@ -100,6 +103,7 @@ function initValue()
 {
 	var datarateArray;
 	var form = document.wireless_advanced;
+  var AckPolicyArray = ackpolicy.split(";");
 
 	initTranslation();
 	form.bg_protection.options.selectedIndex = 1*bgProtection;
@@ -179,6 +183,8 @@ function initValue()
 
 	form.BandSteering.options.selectedIndex = 1*bandsteering;
 	displayElement('bandsteering_row', bandsteeringBuilt == "1");
+
+  form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 }
 
 function McastSwitch(form) {
@@ -406,6 +412,13 @@ function CheckValue(form)
               <option value="3" id="advHTMIX">HTMIX</option>
             </select>&nbsp;&nbsp;&nbsp;
             <select name="McastMcs" class="half"></select></td>
+          </tr>
+          <tr id="div_ackpolicy">
+            <td class="head" colspan="1" id="advAckPolicy">ACK Policy</td>
+            <td colspan="5"><select name="AckPolicy" style="width: 150px;">
+                <option value="0" id="advNormalAck">Normal ack</option>
+                <option value="1" id="advNoAck">No ack</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
