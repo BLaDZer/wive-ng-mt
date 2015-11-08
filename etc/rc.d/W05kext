@@ -202,7 +202,7 @@ multicast() {
     	    phys_lan_if="eth2"
 	fi
 	eval `nvram_buf_get 2860 igmpEnabled igmpM2UConvMode igmpFastLeave`
-	wlifs=`ip -o -4 link show | grep ra | awk {' print $2 '} | cut -f -1 -d :`
+	wlifs=`ip -o -4 link show | grep -E "ra|wds" | awk {' print $2 '} | cut -f -1 -d :`
 	if [ "$igmpM2UConvMode" = "all" ]; then
 	    INTERFACES="$phys_lan_if $wlifs"
 	elif [ "$igmpM2UConvMode" = "lan" ]; then
