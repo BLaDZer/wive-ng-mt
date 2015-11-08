@@ -43,7 +43,7 @@ DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
 #define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
 
 /* The regulatory information in the USA (US) */
-DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
+static DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,	                {0,                   0,           {0}}}, /* Invlid entry*/
@@ -64,7 +64,7 @@ DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] =
 
 
 /* The regulatory information in Europe */
-DOT11_REGULATORY_INFORMATION EuropeRegulatoryInfo[] = 
+static DOT11_REGULATORY_INFORMATION EuropeRegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
@@ -77,7 +77,7 @@ DOT11_REGULATORY_INFORMATION EuropeRegulatoryInfo[] =
 
 
 /* The regulatory information in Japan */
-DOT11_REGULATORY_INFORMATION JapanRegulatoryInfo[] = 
+static DOT11_REGULATORY_INFORMATION JapanRegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
@@ -137,6 +137,11 @@ UINT8 GetRegulatoryMaxTxPwr(
 	{
 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
 		pRegulatoryClass = &USARegulatoryInfo[0];
+	}
+	else if (strncmp(pCountry, "EU", 2) == 0)
+	{
+		MaxRegulatoryClassNum = EU_REGULATORY_INFO_SIZE;
+		pRegulatoryClass = &EuropeRegulatoryInfo[0];
 	}
 	else if (strncmp(pCountry, "JP", 2) == 0)
 	{
@@ -873,6 +878,16 @@ VOID InsertChannelRepIE(
 			return;
 		}
 		pChannelSet = &USARegulatoryInfo[RegulatoryClass].ChannelSet;
+	}
+	else if (strncmp(pCountry, "EU", 2) == 0)
+	{
+		if (RegulatoryClass >= EU_REGULATORY_INFO_SIZE)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("%s: EU Unknow Requlatory class (%d)\n",
+						__FUNCTION__, RegulatoryClass));
+			return;
+		}
+		pChannelSet = &EuropeRegulatoryInfo[RegulatoryClass].ChannelSet;
 	}
 	else if (strncmp(pCountry, "JP", 2) == 0)
 	{
@@ -2649,6 +2664,13 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &USARegulatoryInfo[RugClass];
+		}
+
+		if (strncmp(pCountryCode, "EU", 2) == 0)
+		{
+			if (RugClass >= EU_REGULATORY_INFO_SIZE)
+				break;
+			pRugClass = &EuropeRegulatoryInfo[RugClass];
 		}
 
 		if (strncmp(pCountryCode, "JP", 2) == 0)
