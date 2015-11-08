@@ -1447,14 +1447,14 @@ UCHAR RT3350_GetDesiredTSSI(
 		}
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: desiredTSSI = %d, Latest Tx HT setting: MODE = %d, MCS = %d, STBC = %d\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: desiredTSSI = %d, Latest Tx HT setting: MODE = %d, MCS = %d, STBC = %d\n", 
 		__FUNCTION__, 
 		desiredTSSI, 
 		pLatestTxHTSetting->field.MODE, 
 		pLatestTxHTSetting->field.MCS, 
 		pLatestTxHTSetting->field.STBC));
 
-	DBGPRINT(RT_DEBUG_INFO, ("<--- %s\n", __FUNCTION__));
+	DBGPRINT(RT_DEBUG_TRACE, ("<--- %s\n", __FUNCTION__));
 
 	return desiredTSSI;
 }

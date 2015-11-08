@@ -1823,7 +1823,7 @@ CHAR SignedExtension6To8(
 	/* 6-bit --->  8-bit */
 	CHAR value = org_value;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: original value is 0x%02x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: original value is 0x%02x\n", __FUNCTION__, value));
 
 	if ((value & 0x20) == 0x00) /* positive */
 	{
@@ -1834,7 +1834,7 @@ CHAR SignedExtension6To8(
 		value = (value | 0xC0);
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: extended value is 0x%02x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: extended value is 0x%02x\n", __FUNCTION__, value));
 
 	return value;
 }
@@ -4027,9 +4027,9 @@ static VOID RT6352_AsicExtraPowerOverMAC(
 	ExtraPwrOverTxPwrCfg8 |= (ExtraPwrOverMAC & 0x0000FF00) >> 8; /* Get Tx power for HT MCS 15 */
 	RTMP_IO_WRITE32(pAd, TX_PWR_CFG_8, ExtraPwrOverTxPwrCfg8);
 		
-	DBGPRINT(RT_DEBUG_INFO, ("Offset =0x13D8, TxPwr = 0x%08X, ", (UINT)ExtraPwrOverTxPwrCfg8));
+	DBGPRINT(RT_DEBUG_TRACE, ("Offset =0x13D8, TxPwr = 0x%08X, ", (UINT)ExtraPwrOverTxPwrCfg8));
 	
-	DBGPRINT(RT_DEBUG_INFO, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
 		(UINT)ExtraPwrOverTxPwrCfg7, 
 		(UINT)ExtraPwrOverTxPwrCfg9));
 }
@@ -4782,7 +4782,7 @@ VOID RT6352_AsicAdjustTxPower(
 					RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R49, &BBPR49);
 					pAd->CurrTemperature = (INT32) BBPR49;
 
-					DBGPRINT(RT_DEBUG_INFO, ("Current Temperature from BBP_R49=0x%x\n", pAd->CurrTemperature));
+					DBGPRINT(RT_DEBUG_TRACE, ("Current Temperature from BBP_R49=0x%x\n", pAd->CurrTemperature));
 					RT6352_TemperatureCalibration(pAd);
 					pAd->CommonCfg.bEnTemperatureTrack = FALSE;
 
@@ -5011,7 +5011,7 @@ VOID RT6352_TemperatureCalibration(
 			RT635xWriteRFRegister(pAd, RF_BANK6, RF_R04, 0x00);
 			RT635xWriteRFRegister(pAd, RF_BANK4, RF_R10, 0x51);
 			RT635xWriteRFRegister(pAd, RF_BANK6, RF_R10, 0x51);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::CurrentTemper > 20\n", __FUNCTION__));
+			DBGPRINT(RT_DEBUG_TRACE, ("%s::CurrentTemper > 20\n", __FUNCTION__));
 		}
 	}
 }

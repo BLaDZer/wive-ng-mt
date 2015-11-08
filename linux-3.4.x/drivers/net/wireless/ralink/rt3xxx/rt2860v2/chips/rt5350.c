@@ -1999,7 +1999,7 @@ UINT32 RT5350_GetDesiredTSSI(
 							break;
 					}
 					desiredTSSI = RT5350_desiredTSSIOverCCK[MCS];
-				    DBGPRINT(RT_DEBUG_INFO, ("CCK: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
+				    DBGPRINT(RT_DEBUG_TRACE, ("CCK: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
 					break;
 
 				case 1: /* OFDM */
@@ -2036,11 +2036,11 @@ UINT32 RT5350_GetDesiredTSSI(
 	                        break;
 					};
 					desiredTSSI = RT5350_desiredTSSIOverOFDM[MCS];
-				    DBGPRINT(RT_DEBUG_INFO, ("OFDM: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
+				    DBGPRINT(RT_DEBUG_TRACE, ("OFDM: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
 					break;
 
 				case 2: /* HT */
-				    DBGPRINT(RT_DEBUG_INFO, ("mixed mode or green-field mode\n"));
+				    DBGPRINT(RT_DEBUG_TRACE, ("mixed mode or green-field mode\n"));
 
 					/* Get TSSI_INFO2 = tssi_report[23:16] */
 					RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R47, &BbpR47);
@@ -2058,7 +2058,7 @@ UINT32 RT5350_GetDesiredTSSI(
 					else
 						desiredTSSI = RT5350_desiredTSSIOverHT[MCS];
 
-				    DBGPRINT(RT_DEBUG_INFO, ("HT: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
+				    DBGPRINT(RT_DEBUG_TRACE, ("HT: desiredTSSI = %d, MCS = %d\n", desiredTSSI, MCS));
 					break;
 			}
 			break;

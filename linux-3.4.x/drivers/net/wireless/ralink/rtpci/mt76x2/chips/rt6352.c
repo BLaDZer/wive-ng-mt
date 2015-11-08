@@ -1836,7 +1836,7 @@ CHAR SignedExtension6To8(
 	/* 6-bit --->  8-bit */
 	CHAR value = org_value;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: original value is 0x%02x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: original value is 0x%02x\n", __FUNCTION__, value));
 
 	if ((value & 0x20) == 0x00) /* positive */
 	{
@@ -1847,7 +1847,7 @@ CHAR SignedExtension6To8(
 		value = (value | 0xC0);
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: extended value is 0x%02x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: extended value is 0x%02x\n", __FUNCTION__, value));
 
 	return value;
 }
@@ -4036,9 +4036,9 @@ static VOID RT6352_AsicExtraPowerOverMAC(
 	ExtraPwrOverTxPwrCfg8 |= (ExtraPwrOverMAC & 0x0000FF00) >> 8; /* Get Tx power for HT MCS 15 */
 	RTMP_IO_WRITE32(pAd, TX_PWR_CFG_8, ExtraPwrOverTxPwrCfg8);
 		
-	DBGPRINT(RT_DEBUG_INFO, ("Offset =0x13D8, TxPwr = 0x%08X, ", (UINT)ExtraPwrOverTxPwrCfg8));
+	DBGPRINT(RT_DEBUG_TRACE, ("Offset =0x13D8, TxPwr = 0x%08X, ", (UINT)ExtraPwrOverTxPwrCfg8));
 	
-	DBGPRINT(RT_DEBUG_INFO, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
 		(UINT)ExtraPwrOverTxPwrCfg7, 
 		(UINT)ExtraPwrOverTxPwrCfg9));
 }
@@ -5074,7 +5074,7 @@ VOID RT6352_TemperatureCalibration(
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R10, 0x41);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R10, 0x41);
 		pAd->bLowTemperatureTrigger = TRUE;
-		DBGPRINT(RT_DEBUG_INFO, ("%s:: CurrentTemper < 20 \n", __FUNCTION__));
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:: CurrentTemper < 20 \n", __FUNCTION__));
 	}
 	else
 	{
@@ -5087,7 +5087,7 @@ VOID RT6352_TemperatureCalibration(
 				RT635xWriteRFRegister(pAd, RF_BANK4, RF_R10, 0x51);
 				RT635xWriteRFRegister(pAd, RF_BANK6, RF_R10, 0x51);
 				pAd->bLowTemperatureTrigger = FALSE;
-				DBGPRINT(RT_DEBUG_INFO, ("%s::CurrentTemper > 30\n", __FUNCTION__));
+				DBGPRINT(RT_DEBUG_TRACE, ("%s::CurrentTemper > 30\n", __FUNCTION__));
 			}
 		}
 		else
@@ -5096,7 +5096,7 @@ VOID RT6352_TemperatureCalibration(
 			RT635xWriteRFRegister(pAd, RF_BANK6, RF_R04, 0x00);
 			RT635xWriteRFRegister(pAd, RF_BANK4, RF_R10, 0x51);
 			RT635xWriteRFRegister(pAd, RF_BANK6, RF_R10, 0x51);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::CurrentTemper > 20\n", __FUNCTION__));
+			DBGPRINT(RT_DEBUG_TRACE, ("%s::CurrentTemper > 20\n", __FUNCTION__));
 		}
 	}
 }
@@ -5602,13 +5602,13 @@ static VOID RT6352_AsicDynamicVgaGainControl(
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
 		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
 		{
-			DBGPRINT(RT_DEBUG_INFO,("pAd->chipCap.avg_rssi_all = %d , no dync vga\n", pAd->chipCap.avg_rssi_all));
+			DBGPRINT(RT_DEBUG_TRACE,("pAd->chipCap.avg_rssi_all = %d , no dync vga\n", pAd->chipCap.avg_rssi_all));
 			return;
 		}
 
 		RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R66, &BbpReg);
 		
-		DBGPRINT(RT_DEBUG_INFO,
+		DBGPRINT(RT_DEBUG_TRACE,
 			("RT6352 one second False CCA=%d, fixed R66 at 0x%x\n", pAd->RalinkCounters.OneSecFalseCCACnt, BbpReg));
 
 		if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.lna_vga_ctl.nFalseCCATh)

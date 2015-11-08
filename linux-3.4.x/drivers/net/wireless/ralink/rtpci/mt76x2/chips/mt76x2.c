@@ -889,7 +889,7 @@ void mt76x2_tx_pwr_gain(RTMP_ADAPTER *ad, u8 channel, u8 bw)
 	value = value & (~TX_ALC_CFG_0_CH_INT_0_MASK);
 	value |= TX_ALC_CFG_0_CH_INT_0(tx_0_pwr);
 	//value |= TX_ALC_CFG_0_CH_INT_0(0x7);
-	DBGPRINT(RT_DEBUG_INFO, ("tx_0_pwr = %d\n", tx_0_pwr));
+	DBGPRINT(RT_DEBUG_TRACE, ("tx_0_pwr = %d\n", tx_0_pwr));
 	RTMP_IO_WRITE32(ad, TX_ALC_CFG_0, value);
 	
 	/* TX1 channel initial transmission gain setting */
@@ -897,7 +897,7 @@ void mt76x2_tx_pwr_gain(RTMP_ADAPTER *ad, u8 channel, u8 bw)
 	value = value & (~TX_ALC_CFG_0_CH_INT_1_MASK);
 	value |= TX_ALC_CFG_0_CH_INT_1(tx_1_pwr);
 	//value |= TX_ALC_CFG_0_CH_INT_1(0x7);
-	DBGPRINT(RT_DEBUG_INFO, ("tx_1_pwr = %d\n", tx_1_pwr));
+	DBGPRINT(RT_DEBUG_TRACE, ("tx_1_pwr = %d\n", tx_1_pwr));
 	RTMP_IO_WRITE32(ad, TX_ALC_CFG_0, value);
 }
 
@@ -1097,13 +1097,13 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 	andes_init_gain(ad, channel, TRUE, eLNA_gain_from_e2p);
 
 	RTMP_BBP_IO_READ32(ad, AGC1_R8, &value);
-	DBGPRINT(RT_DEBUG_INFO, ("%s::BBP 0x2320=0x%08x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::BBP 0x2320=0x%08x\n", __FUNCTION__, value));
 	RTMP_BBP_IO_READ32(ad, AGC1_R9, &value);
-	DBGPRINT(RT_DEBUG_INFO, ("%s::BBP 0x2324=0x%08x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::BBP 0x2324=0x%08x\n", __FUNCTION__, value));
 	RTMP_BBP_IO_READ32(ad, AGC1_R4, &value);
-	DBGPRINT(RT_DEBUG_INFO, ("%s::BBP 0x2310=0x%08x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::BBP 0x2310=0x%08x\n", __FUNCTION__, value));
 	RTMP_BBP_IO_READ32(ad, AGC1_R5, &value);
-	DBGPRINT(RT_DEBUG_INFO, ("%s::BBP 0x2314=0x%08x\n", __FUNCTION__, value));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::BBP 0x2314=0x%08x\n", __FUNCTION__, value));
 
 	if (MT_REV_GTE(ad, MT76x2, REV_MT76x2E3)) {
 		/* LDPC RX */
@@ -1133,7 +1133,7 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 		RTMP_IO_READ32(ad, 0x1200, &value);
 		value &= 0x1;
 		RTMP_BBP_IO_READ32(ad, 0x2130, &value1);
-		DBGPRINT(RT_DEBUG_INFO,("%s:: Wait until MAC 0x1200 bit0 and BBP 0x2130 become 0\n", __FUNCTION__));
+		DBGPRINT(RT_DEBUG_TRACE,("%s:: Wait until MAC 0x1200 bit0 and BBP 0x2130 become 0\n", __FUNCTION__));
 		RtmpusecDelay(1);
 		loop++;
 	} while (((value != 0) || (value1 != 0)) && (loop < 300));
@@ -1307,7 +1307,7 @@ void mt76x2_tssi_compensation(RTMP_ADAPTER *ad, u8 channel)
 		return;
 	
 	if (cap->tssi_stage == TSSI_TRIGGER_STAGE) {
-		DBGPRINT(RT_DEBUG_INFO, ("%s:TSS_TRIGGER(channel = %d)\n", __FUNCTION__, channel));
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:TSS_TRIGGER(channel = %d)\n", __FUNCTION__, channel));
 		param.mt76x2_tssi_comp_param.pa_mode = (1 << 8);
 		param.mt76x2_tssi_comp_param.tssi_slope_offset = 0;
 		
@@ -1326,7 +1326,7 @@ void mt76x2_tssi_compensation(RTMP_ADAPTER *ad, u8 channel)
 	
 	if ((value & (1 << 4)) == 0) {
 
-		DBGPRINT(RT_DEBUG_INFO, ("%s:TSSI_COMP(channel = %d)\n", __FUNCTION__, channel));
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:TSSI_COMP(channel = %d)\n", __FUNCTION__, channel));
 
 		if (channel > 14) {
 			if (ad->chipCap.PAType == EXT_PA_2G_5G)
@@ -1429,7 +1429,7 @@ void mt76x2_calibration(RTMP_ADAPTER *ad, u8 channel)
 		RTMP_IO_READ32(ad, 0x1200, &value);
 		value &= 0x1;
 		RTMP_BBP_IO_READ32(ad, 0x2130, &value1);
-		DBGPRINT(RT_DEBUG_INFO, ("%s:: Wait until MAC 0x1200 bit0 and BBP 0x2130 become 0\n", __FUNCTION__));
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:: Wait until MAC 0x1200 bit0 and BBP 0x2130 become 0\n", __FUNCTION__));
 		RtmpusecDelay(1);
 		loop++;
 	} while (((value != 0) || (value1 != 0)) && (loop < 300));
@@ -3440,7 +3440,7 @@ void percentage_delta_pwr(RTMP_ADAPTER *ad)
 	tx_alc_ch_init_1 = ((mac_val & 0x3F00) >> 8) + mac_drop_pwr*2;
 	if (tx_alc_ch_init_1<= 0)
 		tx_alc_ch_init_1 = 0;
-	DBGPRINT(RT_DEBUG_INFO, ("%s::<Before> TX_ALC_CFG_0=0x%0x, tx_alc_ch_init_0=0x%0x, tx_alc_ch_init_1=0x%0x\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::<Before> TX_ALC_CFG_0=0x%0x, tx_alc_ch_init_0=0x%0x, tx_alc_ch_init_1=0x%0x\n", 
 		__FUNCTION__, mac_val, tx_alc_ch_init_0, tx_alc_ch_init_1));
 	
 	mac_val = mac_val & (~TX_ALC_CFG_0_CH_INT_0_MASK);
@@ -3449,7 +3449,7 @@ void percentage_delta_pwr(RTMP_ADAPTER *ad)
 	mac_val |= TX_ALC_CFG_0_CH_INT_1(tx_alc_ch_init_1);
 	RTMP_IO_WRITE32(ad, TX_ALC_CFG_0, mac_val);
 	
-	DBGPRINT(RT_DEBUG_INFO, ("%s::<After> TX_ALC_CFG_0=0x%0x\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::<After> TX_ALC_CFG_0=0x%0x\n", 
 		__FUNCTION__, mac_val));
 }
 
@@ -3473,7 +3473,7 @@ void mt76x2_get_current_temp(RTMP_ADAPTER *ad)
 	else
 	        pChipCap->current_temp = 25;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s::read_temp=%d (0x%x), current_temp=%d (0x%x)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s::read_temp=%d (0x%x), current_temp=%d (0x%x)\n", 
 		__FUNCTION__, temp_val, temp_val, pChipCap->current_temp, pChipCap->current_temp));
 }
 
@@ -4922,7 +4922,7 @@ void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 	reg_val = (reg_val & 0xFFFF0000) | (z << 8) | z;
 	RTMP_BBP_IO_WRITE32(pAd, AGC1_R2, reg_val);
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: lna_gain(%d), vga_gain(%d), lna_gain_mode(%d), y=%d, z=%d, 0x2308=0x%08x\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: lna_gain(%d), vga_gain(%d), lna_gain_mode(%d), y=%d, z=%d, 0x2308=0x%08x\n", 
 		__FUNCTION__, lna_gain, vga_gain, lna_gain_mode, y, z, reg_val));
 }
 
@@ -4946,7 +4946,7 @@ void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
 		__FUNCTION__, rx0_rssi, rx1_rssi));	
 
 	/*
@@ -4960,7 +4960,7 @@ void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	else
 		pAd->chipCap.avg_rssi_all = (pAd->chipCap.avg_rssi_0 + pAd->chipCap.avg_rssi_1)/512;
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: update rssi all(%d)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: update rssi all(%d)\n", 
 		__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 
@@ -5093,7 +5093,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		}
 	}	
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: dynamic ChE mode(0x%x)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", 
 		__FUNCTION__, mode));
 
 	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
@@ -5265,7 +5265,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 				break;
 		}
 
-		DBGPRINT(RT_DEBUG_INFO, ("%s:: updated dynamic_chE_mode(0x%x), dynamic_chE_trigger(%d)\n", 
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:: updated dynamic_chE_mode(0x%x), dynamic_chE_trigger(%d)\n", 
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode, pAd->chipCap.dynamic_chE_trigger));
 	} else
 		pAd->chipCap.dynamic_chE_trigger = FALSE;
@@ -5286,7 +5286,7 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 		UCHAR VgaGainLowerBound = 0x10;
 
 		if (dynamic_channel_model_adjust(pAd) == TRUE) {
-			DBGPRINT(RT_DEBUG_INFO, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
+			DBGPRINT(RT_DEBUG_TRACE, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
 			return;
 		}
 
@@ -5308,11 +5308,11 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 			val2 = ((bbp_val2 & (0x00007f00)) >> 8) & 0x7f;
 		}
 
-		DBGPRINT(RT_DEBUG_INFO, ("vga_init_0 = %x, vga_init_1 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc_vga_init_0, pAd->CommonCfg.lna_vga_ctl.agc_vga_init_1));
-		DBGPRINT(RT_DEBUG_INFO, ("ori AGC1_R8 = %x, ori AGC1_R9 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc1_r8_backup, pAd->CommonCfg.lna_vga_ctl.agc1_r9_backup));
+		DBGPRINT(RT_DEBUG_TRACE, ("vga_init_0 = %x, vga_init_1 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc_vga_init_0, pAd->CommonCfg.lna_vga_ctl.agc_vga_init_1));
+		DBGPRINT(RT_DEBUG_TRACE, ("ori AGC1_R8 = %x, ori AGC1_R9 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc1_r8_backup, pAd->CommonCfg.lna_vga_ctl.agc1_r9_backup));
 		DBGPRINT(RT_DEBUG_TRACE,
 			("MT76x2 one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n", pAd->RalinkCounters.OneSecFalseCCACnt, val1, val2));
-		DBGPRINT(RT_DEBUG_INFO, ("compensate level = %x\n", pAd->chipCap.compensate_level));
+		DBGPRINT(RT_DEBUG_TRACE, ("compensate level = %x\n", pAd->chipCap.compensate_level));
 
 		//dynamic_ed_cca_threshold_adjust(pAd);
 

@@ -1166,7 +1166,7 @@ VOID SelectBandMT76x0(
 		return;
 	}
 	
-	DBGPRINT(RT_DEBUG_INFO, ("%s: -->\n", __FUNCTION__));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: -->\n", __FUNCTION__));
 
 	if (Channel <= 14) 
 	{
@@ -1218,7 +1218,7 @@ VOID SelectBandMT76x0(
 		RTMP_IO_WRITE32(pAd, TX0_RF_GAIN_CORR, 0x01010102);
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s: <--\n", __FUNCTION__));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: <--\n", __FUNCTION__));
 }
 
 /*
@@ -1246,7 +1246,7 @@ VOID SetRfChFreqParametersMT76x0(
 		return;
 	}
 	
-	DBGPRINT(RT_DEBUG_INFO, ("%s: -->\n", __FUNCTION__));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: -->\n", __FUNCTION__));
 
 	for (i = 0; i < MT76x0_SDM_Channel_Size; i++)
 	{
@@ -1560,7 +1560,7 @@ VOID SetRfChFreqParametersMT76x0(
 		RTMP_IO_WRITE32(pAd, TX_ALC_CFG_1, MacReg); /* Set Atten mode = 0 For Ext A band, Disable Tx Inc DCOC Cal by Chee's comment. @MT7650_CR_setting_1018.xlsx */		
 	}
 	
-	DBGPRINT(RT_DEBUG_INFO, ("%s: <--\n", __FUNCTION__));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: <--\n", __FUNCTION__));
 }
 
 static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
@@ -2724,7 +2724,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		}
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: dynamic ChE mode(0x%x)\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", 
 		__FUNCTION__, mode));
 
 	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
@@ -2786,7 +2786,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 				break;
 		}
 
-		DBGPRINT(RT_DEBUG_INFO, ("%s:: updated dynamic_chE_mode(0x%x)\n", 
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:: updated dynamic_chE_mode(0x%x)\n", 
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode));
 	} 
 
@@ -2796,7 +2796,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 void MT76x0_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 {
 	if (dynamic_channel_model_adjust(pAd) == TRUE) {
-		DBGPRINT(RT_DEBUG_INFO, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
+		DBGPRINT(RT_DEBUG_TRACE, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
 		return;
 	}	
 	
@@ -2907,7 +2907,7 @@ VOID MT76x0_AsicExtraPowerOverMAC(
 	ExtraPwrOverTxPwrCfg9 |= (ExtraPwrOverMAC & 0x00003F00) >> 8; /* Get Tx power for STBC MCS 7 */
 	RTMP_IO_WRITE32(pAd, TX_PWR_CFG_9, ExtraPwrOverTxPwrCfg9);
 	
-	DBGPRINT(RT_DEBUG_INFO, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("Offset = 0x13D4, TxPwr = 0x%08X, Offset = 0x13DC, TxPwr = 0x%08X\n", 
 		(UINT)ExtraPwrOverTxPwrCfg7, 
 		(UINT)ExtraPwrOverTxPwrCfg9));
 }
@@ -4392,7 +4392,7 @@ VOID MT76x0_TempSensor(
 			T=3.5(Dout-D25) + 25
 	*/
 	temperature = (35*(Dout-pAd->chipCap.TemperatureOffset))/10 + 25;
-	DBGPRINT(RT_DEBUG_INFO, 
+	DBGPRINT(RT_DEBUG_TRACE, 
 			("%s - Dout=%d (0x%x), TemperatureOffset = %d (0x%x), temperature = %d (0x%x)\n",
 			__FUNCTION__, Dout, Dout, pAd->chipCap.TemperatureOffset, pAd->chipCap.TemperatureOffset, temperature, temperature));
 	if (pAd->chipCap.LastTemperatureforVCO == 0x7FFF)
