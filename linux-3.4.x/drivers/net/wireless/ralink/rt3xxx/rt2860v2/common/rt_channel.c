@@ -1620,7 +1620,7 @@ static PCH_REGION GetChRegion(
 
 	/* Default: use WO*/
 	if (pChRegion == NULL)
-		pChRegion = GetChRegion("WO");
+		pChRegion = GetChRegion("RU");
 
 	return pChRegion;
 }

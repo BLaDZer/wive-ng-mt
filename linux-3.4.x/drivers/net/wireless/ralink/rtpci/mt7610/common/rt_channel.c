@@ -1626,7 +1626,7 @@ static PCH_REGION GetChRegion(
 
 	/* Default: use WO*/
 	if (pChRegion == NULL)
-		pChRegion = GetChRegion("WO");
+		pChRegion = GetChRegion("RU");
 
 	return pChRegion;
 }
@@ -1997,7 +1997,7 @@ static PCOUNTRY_PROP GetCountryProp(
 
 	/* Default: use WO*/
 	if (pCountryProp == NULL)
-		pCountryProp = GetCountryProp("WO");
+		pCountryProp = GetCountryProp("RU");
 
 	return pCountryProp;
 }
