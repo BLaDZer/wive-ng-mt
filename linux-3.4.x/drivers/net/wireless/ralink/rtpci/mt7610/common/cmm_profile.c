@@ -2220,6 +2220,7 @@ void RTMPSetCountryCode(RTMP_ADAPTER *pAd, PSTRING CountryCode)
 {
 	if (strlen((PSTRING)CountryCode) != 0) {
 		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		pAd->CommonCfg.CountryCode[2] = ' ';
 		NdisMoveMemory(pAd->CommonCfg.CountryCode, CountryCode , 2);
 		pAd->CommonCfg.bCountryFlag = TRUE;
 	} else {

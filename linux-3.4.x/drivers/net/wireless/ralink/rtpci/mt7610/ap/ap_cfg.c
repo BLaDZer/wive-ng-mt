@@ -4330,6 +4330,7 @@ INT Set_CountryString_Proc(
 				{
 					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
+					pAd->CommonCfg.CountryCode[2] = ' ';
 
 					pAd->CommonCfg.bCountryFlag = TRUE;
 
@@ -4361,6 +4362,7 @@ INT Set_CountryString_Proc(
 				{
 					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
+					pAd->CommonCfg.CountryCode[2] = ' ';
 
 					pAd->CommonCfg.bCountryFlag = TRUE;
 
