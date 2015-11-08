@@ -1,877 +1,430 @@
-diff --git a/.gitignore b/.gitignore
-index bddf4d0..e69de29 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1,430 +0,0 @@
--#
--# exclude enerated files from all
--#
--*.o
--*.a
--*.a.*
--*.o.*
--*.la
--*.la.*
--*.so
--*.so.*
--*.dep
--*.deps
--*.depend
--*.pc
--*.orig
--*.rej
--*.lo
--*.gdb
--*.tab.c
--*.tab.h
--*.moc
--*.tmp
--.sgbuilt_user
--.libs
--.copts_*
--lex.*.c
--stamp-h1
--zconf.hash.c
--lkc_defs.h
--libtool
--autom4te.cache
--autom4te.cache/*
--config.h.in~
--config.log
--configure.log
--config.status
--filesystem
--fulldump
--
--# others
--/autoconf.h
--/config.arch
--/config/.config
--/config/.config.old
--/config/autoconf.h
--/sdk_version.h
--/version
--/linux
--/romfs
--/romfs/*
--/images
--/images/*
--/dev
--/dev/*
--/tools/bin/*
--/tools/mkimage/mkimage
--/tools/mksquash_xz-4.0/mksquashfs
--/tools/mksquash_xz-4.0/unsquashfs
--/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
--/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
--/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
--/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/unsquashfs
--/tools/sstrip/sstrip
--/etc/compile-date
--/etc/default/RT2860_default_novlan
--/etc/scripts/config.sh
--/etc/Wireless/rf.bin
--/etc/Wireless/RT2860/RT2860.dat
--/lib/.config*
--/lib/lib
--/lib/lib/*
--/lib/shared
--/lib/shared/*
--
--#
--# exclude enerated files from libs
--#
--/libext/openssl/Makefile
--/libext/libiconv/libcharset/libext/Makefile
--/libext/libiconv/libcharset/config.h
--/libext/libiconv/preload/Makefile
--/libext/libiconv/man/Makefile
--/libext/libiconv/po/Makefile
--/libext/libiconv/po/Makefile.in
--/libext/libcurl/curl-config
--/libext/libcurl/Makefile.in
--/libext/libcurl/configure
--/libext/libcurl/docs/examples/Makefile
--/libext/libcurl/docs/libcurl/Makefile
--/libext/libcurl/docs/libcurl/libcurl-symbols.3
--/libext/libcurl/docs/Makefile
--/libext/libcurl/include/curl/Makefile
--/libext/libcurl/include/Makefile
--/libext/libcurl/libext/curl_config.h
--/libext/libcurl/include/curl/curlbuild.h
--/libext/libcurl/libcurl.pc
--/libext/libcurl/libext/Makefile
--/libext/libcurl/libtool
--/libext/libcurl/Makefile
--/libext/libcurl/*/Makefile
--/libext/libcurl/*/*/Makefile
--/libext/libcurl/packages/AIX/Makefile
--/libext/libcurl/packages/AIX/RPM/Makefile
--/libext/libcurl/packages/EPM/curl.list
--/libext/libcurl/packages/EPM/Makefile
--/libext/libcurl/packages/Linux/Makefile
--/libext/libcurl/packages/Linux/RPM/Makefile
--/libext/libcurl/packages/Makefile
--/libext/libcurl/packages/Solaris/Makefile
--/libext/libcurl/packages/vms/Makefile
--/libext/libcurl/packages/Win32/cygwin/Makefile
--/libext/libcurl/packages/Win32/Makefile
--/libext/libcurl/src/curl_config.h
--/libext/libcurl/src/Makefile
--/libext/libcurl/tests/configurehelp.pm
--/libext/libcurl/tests/data/Makefile
--/libext/libcurl/tests/libtest/Makefile
--/libext/libcurl/tests/Makefile
--/libext/libcurl/tests/server/Makefile
--/libext/libcurl/tests/unit/Makefile
--/libext/libcurl/tests/certs/scripts/Makefile
--/libext/libcurl/curl-config
--/libext/libcurl/docs/Makefile
--/libext/libcurl/docs/examples/Makefile
--/libext/libcurl/docs/libcurl/Makefile
--/libext/libcurl/docs/libcurl/opts/Makefile
--/libext/libcurl/include/Makefile
--/libext/libcurl/include/curl/Makefile
--/libext/libcurl/libext/Makefile
--/libext/libcurl/libcurl.pc
--/libext/libcurl/libtool
--/libext/libcurl/packages/AIX/Makefile
--/libext/libcurl/packages/AIX/RPM/Makefile
--/libext/libcurl/packages/EPM/Makefile
--/libext/libcurl/packages/EPM/curl.list
--/libext/libcurl/packages/Linux/Makefile
--/libext/libcurl/packages/Linux/RPM/Makefile
--/libext/libcurl/packages/Makefile
--/libext/libcurl/packages/Solaris/Makefile
--/libext/libcurl/packages/Win32/Makefile
--/libext/libcurl/packages/Win32/cygwin/Makefile
--/libext/libcurl/packages/vms/Makefile
--/libext/libcurl/src/Makefile
--/libext/libxml2/configure
--/libext/libxml2/Makefile
--/libext/libxml2/doc/Makefile
--/libext/libxml2/doc/devhelp/Makefile
--/libext/libxml2/doc/examples/Makefile
--/libext/libxml2/example/Makefile
--/libext/libxml2/python/Makefile
--/libext/libxml2/python/tests/Makefile
--/libext/libxml2/xstc/Makefile
--/libext/libneon/config.h
--/libext/libneon/configure
--/libext/libneon/Makefile
--/libext/libevent/config.h
--/libext/libevent/configure
--/libext/libevent/include/event2/event-config.h
--/libext/libevent/include/Makefile
--/libext/libevent/libevent_openssl.pc
--/libext/libevent/libevent.pc
--/libext/libevent/libevent_pthreads.pc
--/libext/libevent/libtool
--/libext/libevent/Makefile
--/libext/libevent/*/Makefile
--/libext/libevent/Makefile.in
--/libext/libevent/*/Makefile.in
--/libext/libevent/sample/Makefile
--/libext/libevent/test/Makefile
--/libext/libiconv/tests/Makefile
--/libext/libiconv/srclib/Makefile
--/libext/libiconv/src/Makefile
--/libext/libiconv/libext/config.h
--/libext/libiconv/libext/Makefile
--/libext/libiconv/config.h
--/libext/libiconv/configure
--/libext/libiconv/Makefile
--/libext/libiconv/libtool
--/libext/libiconv/preload/libtool
--/libext/libiconv/libcharset/libtool
--/libext/libiconv/libcharset/Makefile
--/libext/libiconv/libcharset/configure
--/libext/libiconv/libcharset/config.h.in
--/libext/libiconv/libcharset/include/localcharset.h.build.in
--/libext/libupnp/configure
--/libext/libupnp/Makefile
--/libext/libupnp/Makefile.in
--/libext/libupnp/docs/dist/Makefile
--/libext/libupnp/docs/dist/Makefile.in
--/libext/libupnp/ixml/Makefile
--/libext/libupnp/ixml/Makefile.in
--/libext/libupnp/ixml/doc/Makefile
--/libext/libupnp/ixml/doc/Makefile.in
--/libext/libupnp/threadutil/Makefile
--/libext/libupnp/threadutil/Makefile.in
--/libext/libupnp/upnp/Makefile
--/libext/libupnp/upnp/Makefile.in
--/libext/libupnp/upnp/doc/Makefile
--/libext/libupnp/upnp/doc/Makefile.in
--/libext/libupnp/upnp/sample/Makefile
--/libext/libupnp/upnp/sample/Makefile.in
--/libext/libnfnetlink/configure
--/libext/libnfnetlink/Makefile
--/libext/libnfnetlink/Makefile.in
--/libext/libnfnetlink/src/Makefile
--/libext/libnfnetlink/utils/Makefile
--/libext/libnfnetlink/include/Makefile
--/libext/libnfnetlink/include/libnfnetlink/Makefile
--/libext/libusb-1.0/Makefile
--/libext/libusb-1.0/doc/Makefile
--/libext/libusb-1.0/examples/Makefile
--/libext/libusb-1.0/libusb/Makefile
--/libext/libusb-1.0/tests/Makefile
--/libext/libpcap/Makefile
--/libext/libpcap/Mkaefile.in
--/libext/libpcap/configure
--/libext/libnl/configure
--/libext/libnl/lib/libnl.a
--
--#
--# exclude enerated files from user apps
--#
--/user/iproute2/ip/static-syms.h
--/user/busybox/*/Config.in
--/user/busybox/docs/busybox.net/BusyBox.html
--/user/busybox/include/bbconfigopts_bz2.h
--/user/busybox/include/NUM_APPLETS.h
--/user/dropbear/Makefile
--/user/dropbear/configure
--/user/ntfs-3g/Makefile
--/user/ntfs-3g/configure
--/user/ntfs-3g/src/Makefile
--/user/ntfs-3g/src/Makefile.in
--/user/ntfs-3g/ntfsprogs/Makefile
--/user/ntfs-3g/libntfs-3g/Makefile
--/user/ntfs-3g/libfuse-lite/Makefile
--/user/ntfs-3g/include/Makefile
--/user/ntfs-3g/include/ntfs-3g/Makefile
--/user/ntfs-3g/include/fuse-lite/Makefile
--/user/ppp/chat/Makefile
--/user/ppp/Makefile
--/user/ppp/*/Makefile
--/user/ppp/pppd/Makefile
--/user/ppp/pppd/plugins/Makefile
--/user/ppp/pppd/plugins/*/Makefile
--/user/ppp/pppd/plugins/pppoatm/Makefile
--/user/ppp/pppd/plugins/pppol2tp/Makefile
--/user/ppp/pppd/plugins/pptp/Makefile
--/user/ppp/pppd/plugins/radius/Makefile
--/user/ppp/pppd/plugins/rp-pppoe/Makefile
--/user/ppp/pppstats/Makefile
--/user/radvd/config.h
--/user/radvd/configure
--/user/radvd/device.c
--/user/radvd/Makefile.in
--/user/radvd/scanner.c
--/user/radvd/Makefile
--/user/radvd/redhat/radvd.spec
--/user/davfs/Makefile
--/user/davfs/Makefile.in
--/user/davfs/configure
--/user/davfs/config.h.in
--/user/davfs/etc/Makefile
--/user/davfs/etc/Makefile.in
--/user/davfs/man/Makefile
--/user/davfs/man/Makefile.in
--/user/davfs/man/de/Makefile
--/user/davfs/man/de/Makefile.in
--/user/davfs/man/es/Makefile
--/user/davfs/man/es/Makefile.in
--/user/davfs/po/Makefile
--/user/davfs/po/Makefile.in
--/user/davfs/src/Makefile
--/user/davfs/src/Makefile.in
--/user/davfs/config/config.sub
--/user/davfs/config/config.guess
--/user/davfs/config/missing
--/user/transmission/libtool
--/user/transmission/web/Makefile
--/user/transmission/web/images/Makefile
--/user/transmission/web/javascript/Makefile
--/user/transmission/web/javascript/jquery/Makefile
--/user/transmission/web/style/Makefile
--/user/transmission/web/style/jqueryui/Makefile
--/user/transmission/web/style/jqueryui/images/Makefile
--/user/transmission/web/style/transmission/Makefile
--/user/transmission/web/style/transmission/images/Makefile
--/user/transmission/web/style/transmission/images/buttons/Makefile
--/user/transmission/web/Makefile
--/user/transmission/macosx/Makefile
--/user/transmission/gtk/Makefile
--/user/transmission/gtk/icons/Makefile
--/user/transmission/Makefile
--/user/transmission/Makefile.in
--/user/transmission/configure
--/user/quagga/doc/Makefile
--/user/quagga/doc/Makefile.in
--/user/quagga/doc/.am*
--/user/quagga/doc/quagga.info
--/user/quagga/doc/quagga.info-1
--/user/quagga/doc/quagga.info-2
--/user/quagga/solaris/Makefile
--/user/quagga/tests/Makefile
--/user/quagga/tests/test-commands-defun.c
--/user/quagga/tests/bgpd.tests/Makefile
--/user/quagga/tests/libzebra.tests/Makefile
--/user/quagga/configure
--/user/quagga/Makefile
--/user/quagga/Makefile.in
--/user/quagga/bgpd/Makefile
--/user/quagga/bgpd/Makefile.in
--/user/quagga/ospf6d/Makefile
--/user/quagga/ospf6d/Makefile.in
--/user/quagga/ospfd/Makefile
--/user/quagga/ospfd/Makefile.in
--/user/quagga/ripngd/Makefile
--/user/quagga/ripngd/Makefile.in
--/user/quagga/vtysh/Makefile
--/user/quagga/vtysh/Makefile.in
--/user/quagga/babeld/Makefile
--/user/quagga/babeld/Makefile.in
--/user/quagga/config.h
--/user/quagga/isisd/Makefile
--/user/quagga/isisd/Makefile.in
--/user/quagga/isisd/topology/Makefile
--/user/quagga/isisd/topology/Makefile.in
--/user/quagga/lib/Makefile
--/user/quagga/lib/Makefile.in
--/user/quagga/lib/version.h
--/user/quagga/m4/Makefile
--/user/quagga/m4/Makefile.in
--/user/quagga/ospfclient/Makefile
--/user/quagga/ospfclient/Makefile.in
--/user/quagga/pkgsrc/Makefile
--/user/quagga/pkgsrc/Makefile.in
--/user/quagga/pkgsrc/bgpd.sh
--/user/quagga/pkgsrc/ospf6d.sh
--/user/quagga/pkgsrc/ospfd.sh
--/user/quagga/pkgsrc/ripd.sh
--/user/quagga/pkgsrc/ripngd.sh
--/user/quagga/pkgsrc/zebra.sh
--/user/quagga/redhat/Makefile
--/user/quagga/redhat/Makefile.in
--/user/quagga/redhat/quagga.spec
--/user/quagga/ripd/Makefile
--/user/quagga/ripd/Makefile.in
--/user/quagga/ripd/ripd
--/user/quagga/vtysh/extract.pl
--/user/quagga/watchquagga/Makefile
--/user/quagga/watchquagga/watchquagga
--/user/quagga/zebra/Makefile
--/user/quagga/zebra/Makefile.in
--/user/quagga/zebra/testzebra
--/user/quagga/zebra/zebra
--/user/quagga/doc/defines.texi
--/user/quagga/pimd/Makefile
--/user/quagga/vtysh/vtysh_cmd.c
--/user/tcpdump/Makefile
--/user/tcpdump/Mkaefile.in
--/user/tcpdump/configure
--/user/miniupnp/config.h
--/user/dhcp6/wide-dhcpv6/configure
--/user/dhcp6/wide-dhcpv6/Makefile
--/user/udpxy/udpxy.dep
--/user/irqbalance/configure
--/user/irqbalance/Makefile
--/user/irqbalance/Makefile.in
--/user/chillispot/coova-chilli-master/Makefile.in
--/user/chillispot/coova-chilli-master/configure
--/user/chillispot/coova-chilli-master/debian/Makefile
--/user/chillispot/coova-chilli-master/distro/Makefile
--/user/chillispot/coova-chilli-master/doc/Makefile
--/user/lldpd/osx/Makefile
--/user/lldpd/tests/Makefile
--/user/netcwmp/tests/src/Makefile
--
--#
--# exclude enerated files from kernel
--#
--/linux/*
--/linux-3.4.x/include/linux/autoconf.h
--/linux-3.4.x/include/linux/utsrelease.h
--/linux-3.4.x/arch/mips/kernel/vmlinux.lds
--/linux-3.4.x/include/asm-mips/asm-offsets.h
--/linux-3.4.x/include/linux/compile.h
--
--#
--# exclude enerated files from tools
--#
--/tools/xz/libext/Makefile.in
--/tools/xz/lib/Makefile.in
--/tools/xz/Doxyfile
--/tools/xz/Makefile
--/tools/xz/config.h
--/tools/xz/debug/Makefile
--/tools/xz/lib/Makefile
--/tools/xz/po/Makefile
--/tools/xz/po/Makefile.in
--/tools/xz/po/POTFILES
--/tools/xz/src/Makefile
--/tools/xz/src/liblzma/Makefile
--/tools/xz/src/liblzma/api/Makefile
--/tools/xz/src/lzmainfo/Makefile
--/tools/xz/src/lzmainfo/lzmainfo
--/tools/xz/src/scripts/Makefile
--/tools/xz/src/scripts/xzdiff
--/tools/xz/src/scripts/xzgrep
--/tools/xz/src/scripts/xzless
--/tools/xz/src/scripts/xzmore
--/tools/xz/src/xz/Makefile
--/tools/xz/src/xz/xz
--/tools/xz/src/xzdec/Makefile
--/tools/xz/src/xzdec/lzmadec
--/tools/xz/src/xzdec/xzdec
--/tools/xz/tests/Makefile
--/tools/xz/configure
--
--#
--# prevent upload ATE in git
--#
--/user/rt2880_app/ated/*
--/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
--/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
--/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
--
--#
--# exclude toolchain
--#
--!/toolchain
-diff --git a/History b/History
-index aedb0a6..0ec111e 100644
---- a/History
-+++ b/History
-@@ -1381,50 +1381,51 @@
- 46) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
- 47) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
- 48) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
--49) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
--50) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
--51) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
--52) kernel: drivers/core: fix unregistration path of platform devices.<br>
--53) kernel: jump label: remove static_branch().<br>
--54) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
--55) kernel: usb: xhci: follow upstream.<br>
--56) kernel: usb: option: add ZTE PIDs.<br>
--57) kernel: usb: xHCI: backports from 3.10 tree.<br>
--58) kernel: usb: core: update power budget for SuperSpeed.<br>
--59) kernel: usb: asix: fix crash on skb alloc failure.<br>
--60) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
--61) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
--62) kernel: net: initialize flow flags in input path.<br>
--63) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
--64) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
--65) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
--66) kernel: net: fix skb csum races when peeking.<br>
--67) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
--68) kernel: net: af_key: net: fix RCU splat.<br>
--69) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
--70) kernel: net: add netfilter SMB fastpath module.<br>
--71) kernel: net: remove sk_init() helper.<br>
--72) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
--73) kernel: net: ppp, slip: validate VJ compression slot parameters completely.<br>
--74) kernel: net: xps: fix calculation of initial number of xps queues.<br>
--75) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
--76) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
--77) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
--78) kenrel: net: af_inet: only check perm protocol when register proto.<br>
--79) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
--80) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
--81) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
--82) kernel: net: ipv4/6: compute net once in some cases.<br>
--83) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
--84) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
--85) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
--86) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
--87) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
--88) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
--89) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
--90) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
--91) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
--92) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
-+49) kernel: ralink_wifi: xxxx: add correct regulatory tables to Russia.<br>
-+50) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-+51) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-+52) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-+53) kernel: drivers/core: fix unregistration path of platform devices.<br>
-+54) kernel: jump label: remove static_branch().<br>
-+55) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-+56) kernel: usb: xhci: follow upstream.<br>
-+57) kernel: usb: option: add ZTE PIDs.<br>
-+58) kernel: usb: xHCI: backports from 3.10 tree.<br>
-+59) kernel: usb: core: update power budget for SuperSpeed.<br>
-+60) kernel: usb: asix: fix crash on skb alloc failure.<br>
-+61) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-+62) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-+63) kernel: net: initialize flow flags in input path.<br>
-+64) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-+65) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-+66) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-+67) kernel: net: fix skb csum races when peeking.<br>
-+68) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-+69) kernel: net: af_key: net: fix RCU splat.<br>
-+70) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-+71) kernel: net: add netfilter SMB fastpath module.<br>
-+72) kernel: net: remove sk_init() helper.<br>
-+73) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-+74) kernel: net: ppp, slip: validate VJ compression slot parameters completely.<br>
-+75) kernel: net: xps: fix calculation of initial number of xps queues.<br>
-+76) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
-+77) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-+78) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-+79) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-+80) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-+81) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-+82) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
-+83) kernel: net: ipv4/6: compute net once in some cases.<br>
-+84) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-+85) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-+86) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-+87) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-+88) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-+89) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-+90) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-+91) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-+92) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-+93) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
- <br>
- <br>
- <b>TODO:</b><br>
-diff --git a/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/common/spectrum.c b/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/common/spectrum.c
-index 1d55323..39880cc 100644
---- a/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/common/spectrum.c
-+++ b/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/common/spectrum.c
-@@ -29,6 +29,19 @@
- #include "action.h"
- 
- 
-+/* The regulatory information in the Russia (RU) */
-+DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
-+{
-+/*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
-+    {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
-+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
-+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
-+    {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
-+    {4,                 {11,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}},
-+    {5,                 {3,                  20,            {12, 13, 14}}}
-+};
-+#define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
-+
- /* The regulatory information in the USA (US) */
- DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
- {
-@@ -44,8 +57,8 @@ DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] =
-     {8,                 {5,                   17,           {11, 13, 15, 17, 19}}}, 
-     {9,                 {5,                   30,           {11, 13, 15, 17, 19}}}, 
-     {10,                {2,                   20,           {21, 25}}}, 
--    {11,                {2,                   33,            {21, 25}}}, 
--    {12,                {11,                  30,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
-+    {11,                {2,                   33,           {21, 25}}}, 
-+    {12,                {11,                  30,           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
- };
- #define USA_REGULATORY_INFO_SIZE (sizeof(USARegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
- 
-@@ -115,7 +128,12 @@ UINT8 GetRegulatoryMaxTxPwr(
- 	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
- 
- 
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		MaxRegulatoryClassNum = RU_REGULATORY_INFO_SIZE;
-+		pRegulatoryClass = &RURegulatoryInfo[0];
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
- 		pRegulatoryClass = &USARegulatoryInfo[0];
-@@ -836,7 +854,17 @@ VOID InsertChannelRepIE(
- 	PDOT11_CHANNEL_SET pChannelSet = NULL;
- 
- 	Len = 1;
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		if (RegulatoryClass >= RU_REGULATORY_INFO_SIZE)
-+		{
-+			DBGPRINT(RT_DEBUG_ERROR, ("%s: RU Unknow Requlatory class (%d)\n",
-+						__FUNCTION__, RegulatoryClass));
-+			return;
-+		}
-+		pChannelSet = &RURegulatoryInfo[RegulatoryClass].ChannelSet;
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
- 		{
-@@ -2401,6 +2429,13 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
- 	pRugClass = NULL;
- 	do
- 	{
-+		if (strncmp(pCountryCode, "RU", 2) == 0)
-+		{
-+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
-+				break;
-+			pRugClass = &RURegulatoryInfo[RugClass];
-+		}
-+
- 		if (strncmp(pCountryCode, "US", 2) == 0)
- 		{
- 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
-diff --git a/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/common/spectrum.c b/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/common/spectrum.c
-index 5752be1..510994f 100644
---- a/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/common/spectrum.c
-+++ b/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/common/spectrum.c
-@@ -29,6 +29,19 @@
- #include "action.h"
- 
- 
-+/* The regulatory information in the Russia (RU) */
-+DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
-+{
-+/*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
-+    {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
-+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
-+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
-+    {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
-+    {4,                 {11,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}},
-+    {5,                 {3,                  20,            {12, 13, 14}}}
-+};
-+#define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
-+
- /* The regulatory information in the USA (US) */
- DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
- {
-@@ -44,8 +57,8 @@ DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] =
-     {8,                 {5,                   17,           {11, 13, 15, 17, 19}}}, 
-     {9,                 {5,                   30,           {11, 13, 15, 17, 19}}}, 
-     {10,                {2,                   20,           {21, 25}}}, 
--    {11,                {2,                   33,            {21, 25}}}, 
--    {12,                {11,                  30,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
-+    {11,                {2,                   33,           {21, 25}}}, 
-+    {12,                {11,                  30,           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
- };
- #define USA_REGULATORY_INFO_SIZE (sizeof(USARegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
- 
-@@ -115,7 +128,12 @@ UINT8 GetRegulatoryMaxTxPwr(
- 	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
- 
- 
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		MaxRegulatoryClassNum = RU_REGULATORY_INFO_SIZE;
-+		pRegulatoryClass = &RURegulatoryInfo[0];
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
- 		pRegulatoryClass = &USARegulatoryInfo[0];
-@@ -832,7 +850,17 @@ VOID InsertChannelRepIE(
- 	PDOT11_CHANNEL_SET pChannelSet = NULL;
- 
- 	Len = 1;
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		if (RegulatoryClass >= RU_REGULATORY_INFO_SIZE)
-+		{
-+			DBGPRINT(RT_DEBUG_ERROR, ("%s: RU Unknow Requlatory class (%d)\n",
-+						__FUNCTION__, RegulatoryClass));
-+			return;
-+		}
-+		pChannelSet = &RURegulatoryInfo[RegulatoryClass].ChannelSet;
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
- 		{
-@@ -2329,6 +2357,13 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
- 	pRugClass = NULL;
- 	do
- 	{
-+		if (strncmp(pCountryCode, "RU", 2) == 0)
-+		{
-+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
-+				break;
-+			pRugClass = &RURegulatoryInfo[RugClass];
-+		}
-+
- 		if (strncmp(pCountryCode, "US", 2) == 0)
- 		{
- 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
-diff --git a/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/common/spectrum.c b/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/common/spectrum.c
-index db750a5..56cd04f 100644
---- a/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/common/spectrum.c
-+++ b/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/common/spectrum.c
-@@ -29,6 +29,19 @@
- #include "action.h"
- 
- 
-+/* The regulatory information in the Russia (RU) */
-+DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
-+{
-+/*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
-+    {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
-+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
-+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
-+    {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
-+    {4,                 {11,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}},
-+    {5,                 {3,                  20,            {12, 13, 14}}}
-+};
-+#define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
-+
- /* The regulatory information in the USA (US) */
- DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] = 
- {
-@@ -44,8 +57,8 @@ DOT11_REGULATORY_INFORMATION USARegulatoryInfo[] =
-     {8,                 {5,                   17,           {11, 13, 15, 17, 19}}}, 
-     {9,                 {5,                   30,           {11, 13, 15, 17, 19}}}, 
-     {10,                {2,                   20,           {21, 25}}}, 
--    {11,                {2,                   33,            {21, 25}}}, 
--    {12,                {11,                  30,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
-+    {11,                {2,                   33,           {21, 25}}}, 
-+    {12,                {11,                  30,           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}}
- };
- #define USA_REGULATORY_INFO_SIZE (sizeof(USARegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
- 
-@@ -115,7 +128,12 @@ UINT8 GetRegulatoryMaxTxPwr(
- 	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
- 
- 
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		MaxRegulatoryClassNum = RU_REGULATORY_INFO_SIZE;
-+		pRegulatoryClass = &RURegulatoryInfo[0];
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
- 		pRegulatoryClass = &USARegulatoryInfo[0];
-@@ -836,7 +854,17 @@ VOID InsertChannelRepIE(
- 	PDOT11_CHANNEL_SET pChannelSet = NULL;
- 
- 	Len = 1;
--	if (strncmp(pCountry, "US", 2) == 0 || strncmp(pCountry, "RU", 2) == 0)
-+	if (strncmp(pCountry, "RU", 2) == 0)
-+	{
-+		if (RegulatoryClass >= RU_REGULATORY_INFO_SIZE)
-+		{
-+			DBGPRINT(RT_DEBUG_ERROR, ("%s: RU Unknow Requlatory class (%d)\n",
-+						__FUNCTION__, RegulatoryClass));
-+			return;
-+		}
-+		pChannelSet = &RURegulatoryInfo[RegulatoryClass].ChannelSet;
-+	}
-+	else if (strncmp(pCountry, "US", 2) == 0)
- 	{
- 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
- 		{
-@@ -2609,6 +2637,13 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
- 	pRugClass = NULL;
- 	do
- 	{
-+		if (strncmp(pCountryCode, "RU", 2) == 0)
-+		{
-+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
-+				break;
-+			pRugClass = &RURegulatoryInfo[RugClass];
-+		}
-+
- 		if (strncmp(pCountryCode, "US", 2) == 0)
- 		{
- 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
-diff --git a/user/goahead/src/wireless.c b/user/goahead/src/wireless.c
-index bc92729..c3600fb 100644
---- a/user/goahead/src/wireless.c
-+++ b/user/goahead/src/wireless.c
-@@ -859,6 +859,13 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
- 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
- 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
- 		}
-+		/* select RRM regulatory class */
-+		if (atoi(sz11aChannel) >= 52)
-+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "2");
-+		else if (atoi(sz11aChannel) >= 149)
-+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "3");
-+		else
-+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1");
- 	}
- #endif
- 	if (CHK_IF_SET(sz11gChannel)) {
-@@ -870,6 +877,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
- 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
- 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
- 		}
-+		/* select RRM regulatory class */
-+		if (atoi(sz11gChannel) >= 12)
-+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5");
-+		else
-+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "4");
- 	}
- 
- 	// Rate for a, b, g, n, ac
-diff --git a/user/rt2880_app/nvram/nvram.c b/user/rt2880_app/nvram/nvram.c
-index 3a18af0..a052134 100644
---- a/user/rt2880_app/nvram/nvram.c
-+++ b/user/rt2880_app/nvram/nvram.c
-@@ -640,10 +640,15 @@ static int gen_wifi_config(int mode, int genmode)
- #endif
- #ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
- 	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
--	if (!inic)
--	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "CountryRegion")));
--	else
--	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "CountryRegionABand")));
-+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-+	if (!inic) {
-+	    FPRINT_STR(RegulatoryClass);
-+	} else {
-+	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "RegulatoryClassINIC")));
-+	}
-+#else
-+	FPRINT_STR(RegulatoryClass);
-+#endif
- #endif
- #ifdef CONFIG_BAND_STEERING
- 	FPRINT_NUM(BandSteering);
-diff --git a/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan0 b/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan0
-index 514279a..279d21a 100644
---- a/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan0
-+++ b/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan0
-@@ -401,7 +401,8 @@ FtR0khId2=00004f577276
- FtR0khId3=00004f577278
- FtR0khId4=00004f57727A
- RRMEnable=0;0;0;0
--RegulatoryClass=5
-+RegulatoryClass=4
-+RegulatoryClassINIC=1
- ITxBfEn=1
- ITxBfTimeout=0
- ETxBfeeEn=1
-diff --git a/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan4 b/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan4
-index 4d29155..b8a7860 100644
---- a/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan4
-+++ b/user/rt2880_app/rt_firmware/defaults/default-2t2r-1t1r-wan4
-@@ -401,7 +401,8 @@ FtR0khId2=00004f577276
- FtR0khId3=00004f577278
- FtR0khId4=00004f57727A
- RRMEnable=0;0;0;0
--RegulatoryClass=5
-+RegulatoryClass=4
-+RegulatoryClassINIC=1
- ITxBfEn=1
- ITxBfTimeout=0
- ETxBfeeEn=1
-diff --git a/user/rt2880_app/rt_firmware/defaults/default-2t2r-2t2r-wan0 b/user/rt2880_app/rt_firmware/defaults/default-2t2r-2t2r-wan0
-index 5dfd702..68c3e79 100644
---- a/user/rt2880_app/rt_firmware/defaults/default-2t2r-2t2r-wan0
-+++ b/user/rt2880_app/rt_firmware/defaults/default-2t2r-2t2r-wan0
-@@ -401,7 +401,8 @@ FtR0khId2=00004f577276
- FtR0khId3=00004f577278
- FtR0khId4=00004f57727A
- RRMEnable=0;0;0;0
--RegulatoryClass=5
-+RegulatoryClass=4
-+RegulatoryClassINIC=1
- ITxBfEn=1
- ITxBfTimeout=0
- ETxBfeeEn=1
+#
+# exclude enerated files from all
+#
+*.o
+*.a
+*.a.*
+*.o.*
+*.la
+*.la.*
+*.so
+*.so.*
+*.dep
+*.deps
+*.depend
+*.pc
+*.orig
+*.rej
+*.lo
+*.gdb
+*.tab.c
+*.tab.h
+*.moc
+*.tmp
+.sgbuilt_user
+.libs
+.copts_*
+lex.*.c
+stamp-h1
+zconf.hash.c
+lkc_defs.h
+libtool
+autom4te.cache
+autom4te.cache/*
+config.h.in~
+config.log
+configure.log
+config.status
+filesystem
+fulldump
+
+# others
+/autoconf.h
+/config.arch
+/config/.config
+/config/.config.old
+/config/autoconf.h
+/sdk_version.h
+/version
+/linux
+/romfs
+/romfs/*
+/images
+/images/*
+/dev
+/dev/*
+/tools/bin/*
+/tools/mkimage/mkimage
+/tools/mksquash_xz-4.0/mksquashfs
+/tools/mksquash_xz-4.0/unsquashfs
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/unsquashfs
+/tools/sstrip/sstrip
+/etc/compile-date
+/etc/default/RT2860_default_novlan
+/etc/scripts/config.sh
+/etc/Wireless/rf.bin
+/etc/Wireless/RT2860/RT2860.dat
+/lib/.config*
+/lib/lib
+/lib/lib/*
+/lib/shared
+/lib/shared/*
+
+#
+# exclude enerated files from libs
+#
+/libext/openssl/Makefile
+/libext/libiconv/libcharset/libext/Makefile
+/libext/libiconv/libcharset/config.h
+/libext/libiconv/preload/Makefile
+/libext/libiconv/man/Makefile
+/libext/libiconv/po/Makefile
+/libext/libiconv/po/Makefile.in
+/libext/libcurl/curl-config
+/libext/libcurl/Makefile.in
+/libext/libcurl/configure
+/libext/libcurl/docs/examples/Makefile
+/libext/libcurl/docs/libcurl/Makefile
+/libext/libcurl/docs/libcurl/libcurl-symbols.3
+/libext/libcurl/docs/Makefile
+/libext/libcurl/include/curl/Makefile
+/libext/libcurl/include/Makefile
+/libext/libcurl/libext/curl_config.h
+/libext/libcurl/include/curl/curlbuild.h
+/libext/libcurl/libcurl.pc
+/libext/libcurl/libext/Makefile
+/libext/libcurl/libtool
+/libext/libcurl/Makefile
+/libext/libcurl/*/Makefile
+/libext/libcurl/*/*/Makefile
+/libext/libcurl/packages/AIX/Makefile
+/libext/libcurl/packages/AIX/RPM/Makefile
+/libext/libcurl/packages/EPM/curl.list
+/libext/libcurl/packages/EPM/Makefile
+/libext/libcurl/packages/Linux/Makefile
+/libext/libcurl/packages/Linux/RPM/Makefile
+/libext/libcurl/packages/Makefile
+/libext/libcurl/packages/Solaris/Makefile
+/libext/libcurl/packages/vms/Makefile
+/libext/libcurl/packages/Win32/cygwin/Makefile
+/libext/libcurl/packages/Win32/Makefile
+/libext/libcurl/src/curl_config.h
+/libext/libcurl/src/Makefile
+/libext/libcurl/tests/configurehelp.pm
+/libext/libcurl/tests/data/Makefile
+/libext/libcurl/tests/libtest/Makefile
+/libext/libcurl/tests/Makefile
+/libext/libcurl/tests/server/Makefile
+/libext/libcurl/tests/unit/Makefile
+/libext/libcurl/tests/certs/scripts/Makefile
+/libext/libcurl/curl-config
+/libext/libcurl/docs/Makefile
+/libext/libcurl/docs/examples/Makefile
+/libext/libcurl/docs/libcurl/Makefile
+/libext/libcurl/docs/libcurl/opts/Makefile
+/libext/libcurl/include/Makefile
+/libext/libcurl/include/curl/Makefile
+/libext/libcurl/libext/Makefile
+/libext/libcurl/libcurl.pc
+/libext/libcurl/libtool
+/libext/libcurl/packages/AIX/Makefile
+/libext/libcurl/packages/AIX/RPM/Makefile
+/libext/libcurl/packages/EPM/Makefile
+/libext/libcurl/packages/EPM/curl.list
+/libext/libcurl/packages/Linux/Makefile
+/libext/libcurl/packages/Linux/RPM/Makefile
+/libext/libcurl/packages/Makefile
+/libext/libcurl/packages/Solaris/Makefile
+/libext/libcurl/packages/Win32/Makefile
+/libext/libcurl/packages/Win32/cygwin/Makefile
+/libext/libcurl/packages/vms/Makefile
+/libext/libcurl/src/Makefile
+/libext/libxml2/configure
+/libext/libxml2/Makefile
+/libext/libxml2/doc/Makefile
+/libext/libxml2/doc/devhelp/Makefile
+/libext/libxml2/doc/examples/Makefile
+/libext/libxml2/example/Makefile
+/libext/libxml2/python/Makefile
+/libext/libxml2/python/tests/Makefile
+/libext/libxml2/xstc/Makefile
+/libext/libneon/config.h
+/libext/libneon/configure
+/libext/libneon/Makefile
+/libext/libevent/config.h
+/libext/libevent/configure
+/libext/libevent/include/event2/event-config.h
+/libext/libevent/include/Makefile
+/libext/libevent/libevent_openssl.pc
+/libext/libevent/libevent.pc
+/libext/libevent/libevent_pthreads.pc
+/libext/libevent/libtool
+/libext/libevent/Makefile
+/libext/libevent/*/Makefile
+/libext/libevent/Makefile.in
+/libext/libevent/*/Makefile.in
+/libext/libevent/sample/Makefile
+/libext/libevent/test/Makefile
+/libext/libiconv/tests/Makefile
+/libext/libiconv/srclib/Makefile
+/libext/libiconv/src/Makefile
+/libext/libiconv/libext/config.h
+/libext/libiconv/libext/Makefile
+/libext/libiconv/config.h
+/libext/libiconv/configure
+/libext/libiconv/Makefile
+/libext/libiconv/libtool
+/libext/libiconv/preload/libtool
+/libext/libiconv/libcharset/libtool
+/libext/libiconv/libcharset/Makefile
+/libext/libiconv/libcharset/configure
+/libext/libiconv/libcharset/config.h.in
+/libext/libiconv/libcharset/include/localcharset.h.build.in
+/libext/libupnp/configure
+/libext/libupnp/Makefile
+/libext/libupnp/Makefile.in
+/libext/libupnp/docs/dist/Makefile
+/libext/libupnp/docs/dist/Makefile.in
+/libext/libupnp/ixml/Makefile
+/libext/libupnp/ixml/Makefile.in
+/libext/libupnp/ixml/doc/Makefile
+/libext/libupnp/ixml/doc/Makefile.in
+/libext/libupnp/threadutil/Makefile
+/libext/libupnp/threadutil/Makefile.in
+/libext/libupnp/upnp/Makefile
+/libext/libupnp/upnp/Makefile.in
+/libext/libupnp/upnp/doc/Makefile
+/libext/libupnp/upnp/doc/Makefile.in
+/libext/libupnp/upnp/sample/Makefile
+/libext/libupnp/upnp/sample/Makefile.in
+/libext/libnfnetlink/configure
+/libext/libnfnetlink/Makefile
+/libext/libnfnetlink/Makefile.in
+/libext/libnfnetlink/src/Makefile
+/libext/libnfnetlink/utils/Makefile
+/libext/libnfnetlink/include/Makefile
+/libext/libnfnetlink/include/libnfnetlink/Makefile
+/libext/libusb-1.0/Makefile
+/libext/libusb-1.0/doc/Makefile
+/libext/libusb-1.0/examples/Makefile
+/libext/libusb-1.0/libusb/Makefile
+/libext/libusb-1.0/tests/Makefile
+/libext/libpcap/Makefile
+/libext/libpcap/Mkaefile.in
+/libext/libpcap/configure
+/libext/libnl/configure
+/libext/libnl/lib/libnl.a
+
+#
+# exclude enerated files from user apps
+#
+/user/iproute2/ip/static-syms.h
+/user/busybox/*/Config.in
+/user/busybox/docs/busybox.net/BusyBox.html
+/user/busybox/include/bbconfigopts_bz2.h
+/user/busybox/include/NUM_APPLETS.h
+/user/dropbear/Makefile
+/user/dropbear/configure
+/user/ntfs-3g/Makefile
+/user/ntfs-3g/configure
+/user/ntfs-3g/src/Makefile
+/user/ntfs-3g/src/Makefile.in
+/user/ntfs-3g/ntfsprogs/Makefile
+/user/ntfs-3g/libntfs-3g/Makefile
+/user/ntfs-3g/libfuse-lite/Makefile
+/user/ntfs-3g/include/Makefile
+/user/ntfs-3g/include/ntfs-3g/Makefile
+/user/ntfs-3g/include/fuse-lite/Makefile
+/user/ppp/chat/Makefile
+/user/ppp/Makefile
+/user/ppp/*/Makefile
+/user/ppp/pppd/Makefile
+/user/ppp/pppd/plugins/Makefile
+/user/ppp/pppd/plugins/*/Makefile
+/user/ppp/pppd/plugins/pppoatm/Makefile
+/user/ppp/pppd/plugins/pppol2tp/Makefile
+/user/ppp/pppd/plugins/pptp/Makefile
+/user/ppp/pppd/plugins/radius/Makefile
+/user/ppp/pppd/plugins/rp-pppoe/Makefile
+/user/ppp/pppstats/Makefile
+/user/radvd/config.h
+/user/radvd/configure
+/user/radvd/device.c
+/user/radvd/Makefile.in
+/user/radvd/scanner.c
+/user/radvd/Makefile
+/user/radvd/redhat/radvd.spec
+/user/davfs/Makefile
+/user/davfs/Makefile.in
+/user/davfs/configure
+/user/davfs/config.h.in
+/user/davfs/etc/Makefile
+/user/davfs/etc/Makefile.in
+/user/davfs/man/Makefile
+/user/davfs/man/Makefile.in
+/user/davfs/man/de/Makefile
+/user/davfs/man/de/Makefile.in
+/user/davfs/man/es/Makefile
+/user/davfs/man/es/Makefile.in
+/user/davfs/po/Makefile
+/user/davfs/po/Makefile.in
+/user/davfs/src/Makefile
+/user/davfs/src/Makefile.in
+/user/davfs/config/config.sub
+/user/davfs/config/config.guess
+/user/davfs/config/missing
+/user/transmission/libtool
+/user/transmission/web/Makefile
+/user/transmission/web/images/Makefile
+/user/transmission/web/javascript/Makefile
+/user/transmission/web/javascript/jquery/Makefile
+/user/transmission/web/style/Makefile
+/user/transmission/web/style/jqueryui/Makefile
+/user/transmission/web/style/jqueryui/images/Makefile
+/user/transmission/web/style/transmission/Makefile
+/user/transmission/web/style/transmission/images/Makefile
+/user/transmission/web/style/transmission/images/buttons/Makefile
+/user/transmission/web/Makefile
+/user/transmission/macosx/Makefile
+/user/transmission/gtk/Makefile
+/user/transmission/gtk/icons/Makefile
+/user/transmission/Makefile
+/user/transmission/Makefile.in
+/user/transmission/configure
+/user/quagga/doc/Makefile
+/user/quagga/doc/Makefile.in
+/user/quagga/doc/.am*
+/user/quagga/doc/quagga.info
+/user/quagga/doc/quagga.info-1
+/user/quagga/doc/quagga.info-2
+/user/quagga/solaris/Makefile
+/user/quagga/tests/Makefile
+/user/quagga/tests/test-commands-defun.c
+/user/quagga/tests/bgpd.tests/Makefile
+/user/quagga/tests/libzebra.tests/Makefile
+/user/quagga/configure
+/user/quagga/Makefile
+/user/quagga/Makefile.in
+/user/quagga/bgpd/Makefile
+/user/quagga/bgpd/Makefile.in
+/user/quagga/ospf6d/Makefile
+/user/quagga/ospf6d/Makefile.in
+/user/quagga/ospfd/Makefile
+/user/quagga/ospfd/Makefile.in
+/user/quagga/ripngd/Makefile
+/user/quagga/ripngd/Makefile.in
+/user/quagga/vtysh/Makefile
+/user/quagga/vtysh/Makefile.in
+/user/quagga/babeld/Makefile
+/user/quagga/babeld/Makefile.in
+/user/quagga/config.h
+/user/quagga/isisd/Makefile
+/user/quagga/isisd/Makefile.in
+/user/quagga/isisd/topology/Makefile
+/user/quagga/isisd/topology/Makefile.in
+/user/quagga/lib/Makefile
+/user/quagga/lib/Makefile.in
+/user/quagga/lib/version.h
+/user/quagga/m4/Makefile
+/user/quagga/m4/Makefile.in
+/user/quagga/ospfclient/Makefile
+/user/quagga/ospfclient/Makefile.in
+/user/quagga/pkgsrc/Makefile
+/user/quagga/pkgsrc/Makefile.in
+/user/quagga/pkgsrc/bgpd.sh
+/user/quagga/pkgsrc/ospf6d.sh
+/user/quagga/pkgsrc/ospfd.sh
+/user/quagga/pkgsrc/ripd.sh
+/user/quagga/pkgsrc/ripngd.sh
+/user/quagga/pkgsrc/zebra.sh
+/user/quagga/redhat/Makefile
+/user/quagga/redhat/Makefile.in
+/user/quagga/redhat/quagga.spec
+/user/quagga/ripd/Makefile
+/user/quagga/ripd/Makefile.in
+/user/quagga/ripd/ripd
+/user/quagga/vtysh/extract.pl
+/user/quagga/watchquagga/Makefile
+/user/quagga/watchquagga/watchquagga
+/user/quagga/zebra/Makefile
+/user/quagga/zebra/Makefile.in
+/user/quagga/zebra/testzebra
+/user/quagga/zebra/zebra
+/user/quagga/doc/defines.texi
+/user/quagga/pimd/Makefile
+/user/quagga/vtysh/vtysh_cmd.c
+/user/tcpdump/Makefile
+/user/tcpdump/Mkaefile.in
+/user/tcpdump/configure
+/user/miniupnp/config.h
+/user/dhcp6/wide-dhcpv6/configure
+/user/dhcp6/wide-dhcpv6/Makefile
+/user/udpxy/udpxy.dep
+/user/irqbalance/configure
+/user/irqbalance/Makefile
+/user/irqbalance/Makefile.in
+/user/chillispot/coova-chilli-master/Makefile.in
+/user/chillispot/coova-chilli-master/configure
+/user/chillispot/coova-chilli-master/debian/Makefile
+/user/chillispot/coova-chilli-master/distro/Makefile
+/user/chillispot/coova-chilli-master/doc/Makefile
+/user/lldpd/osx/Makefile
+/user/lldpd/tests/Makefile
+/user/netcwmp/tests/src/Makefile
+
+#
+# exclude enerated files from kernel
+#
+/linux/*
+/linux-3.4.x/include/linux/autoconf.h
+/linux-3.4.x/include/linux/utsrelease.h
+/linux-3.4.x/arch/mips/kernel/vmlinux.lds
+/linux-3.4.x/include/asm-mips/asm-offsets.h
+/linux-3.4.x/include/linux/compile.h
+
+#
+# exclude enerated files from tools
+#
+/tools/xz/libext/Makefile.in
+/tools/xz/lib/Makefile.in
+/tools/xz/Doxyfile
+/tools/xz/Makefile
+/tools/xz/config.h
+/tools/xz/debug/Makefile
+/tools/xz/lib/Makefile
+/tools/xz/po/Makefile
+/tools/xz/po/Makefile.in
+/tools/xz/po/POTFILES
+/tools/xz/src/Makefile
+/tools/xz/src/liblzma/Makefile
+/tools/xz/src/liblzma/api/Makefile
+/tools/xz/src/lzmainfo/Makefile
+/tools/xz/src/lzmainfo/lzmainfo
+/tools/xz/src/scripts/Makefile
+/tools/xz/src/scripts/xzdiff
+/tools/xz/src/scripts/xzgrep
+/tools/xz/src/scripts/xzless
+/tools/xz/src/scripts/xzmore
+/tools/xz/src/xz/Makefile
+/tools/xz/src/xz/xz
+/tools/xz/src/xzdec/Makefile
+/tools/xz/src/xzdec/lzmadec
+/tools/xz/src/xzdec/xzdec
+/tools/xz/tests/Makefile
+/tools/xz/configure
+
+#
+# prevent upload ATE in git
+#
+/user/rt2880_app/ated/*
+/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
+/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
+/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
+
+#
+# exclude toolchain
+#
+!/toolchain
