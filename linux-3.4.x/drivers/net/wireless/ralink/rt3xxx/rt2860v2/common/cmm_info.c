@@ -6656,7 +6656,7 @@ INT	Show_ModuleTxpower_Proc(
 		MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
 #endif /* MAC_REPEATER_SUPPORT */
  
- 	DBGPRINT(RT_DEBUG_OFF, ("=============================================================\n"));
+ 	printk("=============================================================\n");
  	if((pAd->ApCfg.ApCliTab[ifIndex].CtrlCurrState == APCLI_CTRL_CONNECTED)
  		&& (pAd->ApCfg.ApCliTab[ifIndex].SsidLen != 0))
  	{
@@ -6673,22 +6673,22 @@ INT	Show_ModuleTxpower_Proc(
 #endif /* MAC_REPEATER_SUPPORT */
 				)
  				{
- 					DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : %02X:%02X:%02X:%02X:%02X:%02X   SSID:%s\n",ifIndex,
+ 					printk("ApCli%d Connected AP : %02X:%02X:%02X:%02X:%02X:%02X   SSID:%s\n",ifIndex,
  						pEntry->Addr[0], pEntry->Addr[1], pEntry->Addr[2],
  						pEntry->Addr[3], pEntry->Addr[4], pEntry->Addr[5],
- 						pAd->ApCfg.ApCliTab[ifIndex].Ssid));
+ 						pAd->ApCfg.ApCliTab[ifIndex].Ssid);
 					bConnect=TRUE;
  				}
  		}
 
 		if (!bConnect)
-			DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : Disconnect\n",ifIndex));
+			printk("ApCli%d Connected AP : Disconnect\n",ifIndex);
  	}
  	else
  	{
- 		DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : Disconnect\n",ifIndex));
+ 		printk("ApCli%d Connected AP : Disconnect\n",ifIndex);
  	}
- 	DBGPRINT(RT_DEBUG_OFF, ("=============================================================\n"));
+ 	printk("=============================================================\n");
      	DBGPRINT(RT_DEBUG_TRACE, ("<==RTMPIoctlConnStatus\n"));
  	return TRUE;
 }

@@ -235,7 +235,7 @@ BOOLEAN rtmp_chk_itxbf_calibration(
 		offset = *(calptr + calIdx);
 		RT28xx_EEPROM_READ16(pAd, offset, eeVal);
 		ee_sum += eeVal;
-		DBGPRINT(RT_DEBUG_INFO, ("Check EEPROM(offset=0x%x, eeVal=0x%x, ee_sum=0x%x)!\n", 
+		DBGPRINT(RT_DEBUG_INFO, ("TxBF Check EEPROM(offset=0x%x, eeVal=0x%x, ee_sum=0x%x)!\n", 
 					offset, eeVal, ee_sum));
 		if (eeVal!=0xffff && eeVal!=0)
 			return TRUE;
@@ -244,7 +244,7 @@ BOOLEAN rtmp_chk_itxbf_calibration(
 	if ((ee_sum == (0xffff * calCnt)) || (ee_sum == 0x0))
 	{
 		bCalibrated = FALSE;
-		DBGPRINT(RT_DEBUG_TRACE, ("EEPROM all 0xffff(cnt =%d, sum=0x%x), not valid calibration value!\n",
+		DBGPRINT(RT_DEBUG_INFO, ("TxBF EEPROM all 0xffff(cnt =%d, sum=0x%x), not valid calibration value!\n",
 					calCnt, ee_sum));
 	}
 
