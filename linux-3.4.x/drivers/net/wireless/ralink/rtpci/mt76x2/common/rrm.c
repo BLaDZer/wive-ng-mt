@@ -482,7 +482,7 @@ INT RRM_InfoDisplay_Proc(
 
 		printk("%d ", pAd->CommonCfg.RegulatoryClass[loop]);
 	}
-	printk("\n"));
+	printk("\n");
 
 	printk("Regulator TxPowerPercentage=%ld\n", pAd->CommonCfg.TxPowerPercentage);
 
