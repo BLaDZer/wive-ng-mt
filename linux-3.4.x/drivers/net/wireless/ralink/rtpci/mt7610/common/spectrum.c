@@ -37,8 +37,7 @@ DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
     {1,                 {4,                  23,            {36, 40, 44, 48}}},
     {2,                 {4,                  23,            {52, 56, 60, 64}}},
     {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
-    {4,                 {11,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}}},
-    {5,                 {3,                  20,            {12, 13, 14}}}
+    {4,                 {14,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}}}
 };
 #define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFORMATION))
 
