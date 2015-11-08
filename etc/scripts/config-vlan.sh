@@ -146,14 +146,21 @@ reinit_all_phys() {
 }
 
 igmpsnooping() {
-	# enable/disable HW igmpsnooping on all ports
-        for port in `seq 0 6`; do
-	    if [ "$igmpSnoopMode" = "n" ]; then
+	# enable/disable HW igmpsnooping for bridge modes and per defaults
+	# in router mode igmpproxy direct tune snooping in switch
+	if [ "$igmpSnoopMode" = "n" ]; then
+	    switch igmpsnoop off
+    	    for port in `seq 0 6`; do
 		switch igmpsnoop disable $port
-	    else
-		switch igmpsnoop enable $port
+	    done
+	else
+	    if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "3" ] || [ "$ApCliBridgeOnly" = "1" ]; then
+		switch igmpsnoop on 3 1111111
+    		for port in `seq 0 6`; do
+		    switch igmpsnoop enable $port
+		done
 	    fi
-	done
+	fi
 }
 
 restore7620Esw()
@@ -406,7 +413,7 @@ config7530Esw()
 
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
+eval `nvram_buf_get 2860 OperationMode ApCliBridgeOnly wan_port tv_port sip_port igmpSnoopMode`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
