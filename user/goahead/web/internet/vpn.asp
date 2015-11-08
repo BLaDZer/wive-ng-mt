@@ -235,29 +235,8 @@ function selectType(form)
 
 function resetClick(form)
 {
-	vpnEnabled = 'off';
-	vpnType = '0';
-	vpnServerIP = '';
-	vpnACName = '';
-	mppe = 'off';
-	peerdns = 'on';
-	debug = 'off';
-	nat = 'on';
-	dgw = '1';
-	vpn_auth = '0';
-	lcp = 'on';
-	pure_pppoe = '0';
-	lcp_errors = '10';
-	lcp_int = '25';
-	vpn_test = '1';
-	lanauth_access = '';
-	vpn_mtu_field = 'AUTO';
-	vpn_user = 'vpn_user';
-	vpn_pass = 'vpn_password';
-	vpn_pppoe_service = '';
-
-	bodyOnLoad(form);
-	return true;
+    form.reset.value = "1";
+    form.submit();
 }
 
 function submitClick(form)
@@ -548,6 +527,7 @@ function initTranslation()
           <tr>
             <td><input name="lanauth_pass_changed" type="hidden">
               <input value="/internet/vpn.asp" name="submit-url" type="hidden">
+              <input value="0" name="reset" type="hidden">
               <input class="mid" id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return submitClick(this.form);" >
               &nbsp;&nbsp;
               <input class="normal" id="vReset" value="Reset" name="reset_button" onClick="resetClick(this.form);" type="button"></td>

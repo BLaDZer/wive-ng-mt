@@ -24,6 +24,24 @@
 #define CHK_IF_EMPTYSTR(var) \
 	((var == NULL) || (var[0] == '\0'))
 
+/* STF means "Save To Flash" ...*/
+#define STF(nvram, index, flash_key)    STFs(nvram, index, #flash_key, flash_key)
+
+/* LFF means "Load From Flash" ...*/
+#define LFF(result, nvram, x, n)								\
+				do{		char tmp[128];					\
+				    if(! ( x  = nvram_get(nvram, #x)) )				\
+					tmp[0] = '\0';						\
+				    else{							\
+					if( getNthValueSafe(n, x, ';', tmp, 128) != -1){	\
+					    gstrncat(result, tmp, 4096);			\
+					}							\
+				    }gstrncat(result, "\r", 4096);				\
+				}while(0)
+
+/* Load from Web */
+#define LFW(x, y) do{ if(! ( x = websGetVar(wp, T(#y), T("")))) return;	}while(0)
+
 //----------------------------------------------
 
 /* Special functions */
@@ -61,4 +79,6 @@ extern char *catIndex(char *buf, const char *ptr, int index);
 extern int initSplitter(string_split_t *buf);
 extern int splitString(string_split_t *buf, const char *string, char splitter);
 extern int freeSplitter(string_split_t *buf);
+
+extern void STFs(int nvram, int index, char *flash_key, char *value);
 #endif /* HELPERS_H_ */

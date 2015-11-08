@@ -1315,34 +1315,6 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 }
 #endif
 
-/* STF means "Save To Flash" ...*/
-void STFs(int nvram, int index, char *flash_key, char *value)
-{
-	char *result;
-	char *tmp = nvram_bufget(nvram, flash_key);
-	if(!tmp)
-		tmp = "";
-	result = setNthValue(index, tmp, value);
-	nvram_bufset(nvram, flash_key, result);
-	return ;
-}
-#define STF(nvram, index, flash_key)    STFs(nvram, index, #flash_key, flash_key)
-
-/* LFF means "Load From Flash" ...*/
-#define LFF(result, nvram, x, n)								\
-				do{		char tmp[128];					\
-				    if(! ( x  = nvram_get(nvram, #x)) )				\
-					tmp[0] = '\0';						\
-				    else{							\
-					if( getNthValueSafe(n, x, ';', tmp, 128) != -1){	\
-					    gstrncat(result, tmp, 4096);			\
-					}							\
-				    }gstrncat(result, "\r", 4096);				\
-				}while(0)
-
-/* Load from Web */
-#define LFW(x, y) do{ if(! ( x = websGetVar(wp, T(#y), T("")))) return;	}while(0)
-
 static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	int num_ssid, i;

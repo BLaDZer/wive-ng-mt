@@ -189,3 +189,14 @@ int freeSplitter(string_split_t *buf)
 	}
 	return 0;
 }
+
+void STFs(int nvram, int index, char *flash_key, char *value)
+{
+	char *result;
+	char *tmp = nvram_bufget(nvram, flash_key);
+	if(!tmp)
+		tmp = "";
+	result = setNthValue(index, tmp, value);
+	nvram_bufset(nvram, flash_key, result);
+	return ;
+}

@@ -685,6 +685,14 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 {
 	char_t  *vpn_enabled, *submitUrl, *vpn_type;
 
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	if (CHK_IF_DIGIT(reset, 1)) {
+		resetToDefault(RT2860_NVRAM, "vpnEnabled", "vpnType", "vpnServer", "vpnMPPE", "vpnPeerDNS", "vpnDebug",
+			"vpnNAT", "vpnDGW", "vpnAuthProtocol", "vpnEnableLCP", "vpnPurePPPOE", "vpnLCPFailure", "vpnLCPInterval",
+			"vpnTestReachable", "LANAUTH_LVL", "vpnMTU", "vpnUser", "vpnPassword", "vpnService");
+		goto out;
+	}
+
 	vpn_enabled = websGetVar(wp, T("vpn_enabled"), T(""));
 	vpn_type = websGetVar(wp, T("vpn_type"), T("0"));
 
@@ -713,6 +721,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+out:
 	//kill helpers firt sigterm second sigkill
 	printf("goahead: Kill vpn helpers\n");
 	system("killall -q W60vpnhelper");
@@ -2532,6 +2541,23 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *enabled = websGetVar(wp, T("spotEnable"), T("0"));
 	char_t *submitUrl;
+
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	if (CHK_IF_DIGIT(reset, 1)) {
+		resetToDefault(RT2860_NVRAM, "chilli_enable", "chilli_profile", "chilli_dns1",
+			"chilli_dns2", "chilli_domain", "chilli_dhcpstart", "chilli_dhcpend",
+			"chilli_lease", "chilli_radiusserver1", "chilli_radiusserver2",
+			"chilli_radiussecret", "chilli_radiusnasid", "chilli_radiuslocationid",
+			"chilli_radiuslocationname", "chilli_coaport", "chilli_coanoipcheck",
+			"chilli_uamserver", "chilli_uamhomepage", "chilli_uamsecret", "chilli_uamallowed",
+			"chilli_uamdomain", "chilli_uamanydns", "chilli_macallowed", "nodogsplash_enable",
+			"nodog_GatewayIPRange", "nodog_RedirectURL", "nodog_MaxClients",
+			"nodog_ClientIdleTimeout", "nodog_ClientForceTimeout", "nodog_AuthenticateImmediately",
+			"nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
+			"nodog_TrustedMACList", "nodog_PasswordAuthentication", "nodog_Password",
+			"nodog_UsernameAuthentication", "nodog_Username", "nodog_PasswordAttempts");
+		goto out;
+	}
 #ifdef CONFIG_USER_CHILLISPOT
 	char_t *ip = websGetVar(wp, T("sIp"), T("192.168.182.0"));
 	char_t *amask = websGetVar(wp, T("sNetmask"), T("255.255.255.0"));
@@ -2580,6 +2606,7 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+out:
 #ifdef PRINT_DEBUG
 	//debug print
 	websHeader(wp);

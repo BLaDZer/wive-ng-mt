@@ -178,6 +178,7 @@ function initTranslation() {
   _TR("PasswordAttempts", "hotspot nodog pass attempts");
   _TRV("sApply", "button apply");
   _TRV("sCancel", "button cancel");
+  _TRV("sReset", "button reset");
   var elements = document.getElementsByTagName('option');
     for (var i = 0; i < elements.length; i++)
       if (elements[i].id == "disable")
@@ -499,6 +500,11 @@ function CheckValue(form) {
     }
   return true;
 }
+
+function resetClick(form) {
+    form.reset.value = "1";
+    form.submit();
+}
 </script>
 </head>
 <body onLoad="initValue();">
@@ -709,7 +715,9 @@ function CheckValue(form) {
             <tr>
               <td>
                 <input type="submit" class="normal" value="Apply" id="sApply">&nbsp;&nbsp;
-                <input type="reset"  class="normal" value="Cancel" id="sCancel">
+                <input type="reset"  class="normal" value="Cancel" id="sCancel">&nbsp;&nbsp;
+                <input type="button" class="normal" value="Reset" id="sReset" onClick="resetClick(this.form);">
+                <input type="hidden" name="reset" value="0">
                 <input type="hidden" name="submit-url" value="/internet/hotspot.asp" >
                 <input type="hidden" name="chilliEnable" value="<% getCfgZero(1, "chilli_enable"); %>" >
                 <input type="hidden" name="nodogEnable" value="<% getCfgZero(1, "nodogsplash_enable"); %>" >

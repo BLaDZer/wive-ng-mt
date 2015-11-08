@@ -897,3 +897,62 @@ static void reboot_web(webs_t wp, char_t *path, char_t *query)
 	/* Reboot */
 	reboot_now();
 }
+
+int resetToDefault(int idx_nvram, char_t *fmt, ...)
+{
+	va_list vargs;
+	char buf[BUFSZ];
+	char_t *p, *tmp;
+	int result = 0;
+	int found = 0;
+
+	FILE *fp = fopen(DEFAULT_NVRAM, "r");
+	if(!fp) {
+		trace(0, T("error open default settings\n"));
+		return -1;
+	}
+	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf[0] == '\n' || buf[0] == '#')
+			continue;
+		if (!strncmp(buf, "Default\n", 8)) {
+			found = 1;
+			break;
+		}
+	}
+	if (!found) {
+		trace(0, T("file format error!\n"));
+		result = -1;
+		goto out;
+	}
+	if (nvram_init(idx_nvram) == -1) {
+		trace(0, T("cant init nvram\n"));
+		result = -1;
+		goto out;
+	}
+	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf[0] == '\n' || buf[0] == '#')
+			continue;
+		if (!(p = strchr(buf, '='))) {
+			trace(0, T("file format error!\n"));
+			goto out_with_commit;
+		}
+		buf[strlen(buf) - 1] = '\0';
+		*p++ = '\0';
+
+		va_start(vargs, fmt);
+		while(*fmt) {
+			tmp = va_arg(vargs, char_t *);
+			if (strncmp(buf, tmp, strlen(buf))) {
+				nvram_bufset(idx_nvram, buf, p);
+				break;
+			}
+		}
+		va_end(vargs);
+	}
+out_with_commit:
+	nvram_commit(idx_nvram);
+	nvram_close(idx_nvram);
+out:
+	fclose(fp);
+	return result;
+}
