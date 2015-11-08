@@ -570,8 +570,7 @@ VOID QBSS_LoadUpdate(
 		|| (pAd->FlgQloadAlarmIsSuspended == TRUE)
 #endif
 	    )
-		return;
-		return;
+	return;
 
 	/* calculate new time period if needed */
 	if ((UpTime > 0) &&
