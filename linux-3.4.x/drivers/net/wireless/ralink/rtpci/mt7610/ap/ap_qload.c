@@ -565,9 +565,9 @@ VOID QBSS_LoadUpdate(
 
 
 	/* check whether channel busy time calculation is enabled */
-	if ((pAd->phy_ctrl.FlgQloadEnable == 0)
+	if ((pAd->FlgQloadEnable == 0)
 #ifdef QLOAD_FUNC_BUSY_TIME_ALARM
-		|| (pAd->phy_ctrl.FlgQloadAlarmIsSuspended == TRUE)
+		|| (pAd->FlgQloadAlarmIsSuspended == TRUE)
 #endif
 	    )
 		return;

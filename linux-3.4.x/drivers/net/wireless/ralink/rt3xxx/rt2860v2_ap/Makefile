@@ -55,9 +55,7 @@ rt2860v2_ap-objs += ../rt2860v2/ap/ap_sync.o
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_wpa.o
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_data.o
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_autoChSel.o
-ifeq ($(CONFIG_RT2860V2_AP_QLOAD),y)
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_qload.o
-endif
 rt2860v2_ap-objs += ../rt2860v2/ap/ap_cfg.o
 
 rt2860v2_ap-objs += ../rt2860v2/os/linux/rt_proc.o
