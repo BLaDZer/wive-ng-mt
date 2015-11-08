@@ -898,7 +898,8 @@ static void reboot_web(webs_t wp, char_t *path, char_t *query)
 	reboot_now();
 }
 
-int resetToDefault(int idx_nvram, char_t *fmt, ...)
+/* read reqested options by defaults file and wirte to nvram */
+int OptRstDefault(int idx_nvram, char_t *fmt, ...)
 {
 	va_list vargs;
 	char buf[BUFSZ];
