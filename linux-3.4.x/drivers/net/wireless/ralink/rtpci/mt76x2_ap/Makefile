@@ -282,7 +282,9 @@ EXTRA_CFLAGS += -DRTMP_FLASH_SUPPORT
 #EXTRA_CFLAGS += -DRTMP_EFUSE_SUPPORT -DCAL_FREE_IC_SUPPORT
 
 # provide information on the current STA population and traffic levels in the QBSS
-#EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS
+EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS
+# switch to new channel or disable subchannels if channel very high load
+#EXTRA_CFLAGS += -DQLOAD_FUNC_BUSY_TIME_ALARM
 
 ifneq ($(CONFIG_RA_HW_NAT_WIFI),y)
 EXTRA_CFLAGS += -DCONFIG_RA_NAT_NONE

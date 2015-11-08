@@ -4088,11 +4088,6 @@ struct _RTMP_ADAPTER {
 
 /* provide busy time statistics for every TBTT */
 #ifdef QLOAD_FUNC_BUSY_TIME_STATS
-
-/* provide busy time alarm mechanism */
-/* use the function to avoid to locate in some noise environments */
-#define QLOAD_FUNC_BUSY_TIME_ALARM
-
 #define QLOAD_BUSY_INTERVALS	20	/* partition TBTT to QLOAD_BUSY_INTERVALS */
 	/* for primary channel & secondary channel */
 	UINT32 QloadBusyCountPri[QLOAD_BUSY_INTERVALS];

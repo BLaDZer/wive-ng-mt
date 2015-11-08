@@ -73,11 +73,10 @@ typedef struct GNU_PACKED {
 #define QBSS_LOAD_ALARM_DURATION				100 /* unit: TBTT */
 
 
-static VOID QBSS_LoadAlarmSuspend(
- 	IN		RTMP_ADAPTER	*pAd);
-
 #ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 /* handle a alarm */
+static VOID QBSS_LoadAlarmSuspend(
+ 	IN		RTMP_ADAPTER	*pAd);
 static VOID QBSS_LoadAlarm(
  	IN		RTMP_ADAPTER	*pAd);
 static VOID QBSS_LoadAlarmBusyTimeThresholdReset(
@@ -388,13 +387,13 @@ Return Value:
 Note:
 ========================================================================
 */
+#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 static VOID QBSS_LoadAlarmSuspend(
  	IN		RTMP_ADAPTER	*pAd)
 {
-#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 	pAd->FlgQloadAlarmIsSuspended = TRUE;
-#endif /* QLOAD_FUNC_BUSY_TIME_ALARM */
 } /* End of QBSS_LoadAlarmSuspend */
+#endif /* QLOAD_FUNC_BUSY_TIME_ALARM */
 
 
 /*
@@ -576,9 +575,12 @@ VOID QBSS_LoadUpdate(
 
 
 	/* check whether channel busy time calculation is enabled */
-	if ((pAd->FlgQloadEnable == 0) ||
-		(pAd->FlgQloadAlarmIsSuspended == TRUE))
-	{
+	if ((pAd->phy_ctrl.FlgQloadEnable == 0)
+#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
+		|| (pAd->phy_ctrl.FlgQloadAlarmIsSuspended == TRUE)
+#endif
+	    )
+		return;
 		return;
 	} /* End of if */
 

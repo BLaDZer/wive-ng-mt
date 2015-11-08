@@ -4496,11 +4496,6 @@ typedef struct rtmp_phy_ctrl{
 
 	   Command: "iwpriv ra0 qload show".
 	 */
-
-/* provide busy time alarm mechanism */
-/* use the function to avoid to locate in some noise environments */
-#define QLOAD_FUNC_BUSY_TIME_ALARM
-
 #ifdef QLOAD_FUNC_BUSY_TIME_STATS
 #define QLOAD_BUSY_INTERVALS	20	/* partition TBTT to QLOAD_BUSY_INTERVALS */
 	/* for primary channel & secondary channel */

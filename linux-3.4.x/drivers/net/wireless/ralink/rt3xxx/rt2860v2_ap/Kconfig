@@ -150,11 +150,6 @@ config  RT2860V2_AP_SNMP
 #	default n
 #	depends on RT2860V2_AP
 
-config  RT2860V2_AP_QLOAD
-	bool "Provide information on the current STA population and traffic levels in the QBSS."
-	default n
-	depends on RT2860V2_AP
-
 config  RT2860V2_AP_INTERFERENCE_REDUCE
 	bool "Enable minimize 802.11 interference effects"
 	default y

@@ -229,10 +229,10 @@ EXTRA_CFLAGS += -DRTMP_FLASH_SUPPORT
 # provide roaming support
 #EXTRA_CFLAGS += -DIAPP_SUPPORT
 
-# provide busy time statistics for every TBTT
-ifeq ($(CONFIG_RT2860V2_AP_QLOAD),y)
-EXTRA_CFLAGS += -DQLOAD_FUNC_BUSY_TIME_STATS -DAP_QLOAD_SUPPORT
-endif
+# provide information on the current STA population and traffic levels in the QBSS
+EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS
+# switch to new channel or disable subchannels if channel very high load
+#EXTRA_CFLAGS += -DQLOAD_FUNC_BUSY_TIME_ALARM
 
 ifneq ($(CONFIG_RA_HW_NAT_WIFI),y)
 EXTRA_CFLAGS += -DCONFIG_RA_NAT_NONE
