@@ -5050,7 +5050,6 @@ INT Set_CountryCode_Proc(
 
 	if(strlen(arg) == 2)
 	{
-		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
 		NdisMoveMemory(pAd->CommonCfg.CountryCode, arg, 2);
 		pAd->CommonCfg.bCountryFlag = TRUE;
 	}
