@@ -250,9 +250,9 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm_sanity.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm.o
 endif
 
-#ifeq ($(CONFIG_MT76X2_AP_DBG),y)
+ifeq ($(CONFIG_MT76X2_AP_DBG),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/sys_log.o
-#endif
+endif
 
 ###################
 #  CFLAGS
@@ -353,11 +353,11 @@ ifeq ($(CONFIG_MT76X2_AP_READ_MAC_FROM_MTD),y)
 EXTRA_CFLAGS += -DREAD_MAC_FROM_EEPROM
 endif
 
-#ifeq ($(CONFIG_MT76X2_AP_DBG),y)
+ifeq ($(CONFIG_MT76X2_AP_DBG),y)
 EXTRA_CFLAGS += -DDBG
 #EXTRA_CFLAGS += -DDBG_DIAGNOSE -DDBG_RX_MCS -DDBG_TX_MCS
 EXTRA_CFLAGS += -DSYSTEM_LOG_SUPPORT
-#endif
+endif
 
 ifeq ($(CONFIG_MT76X2_AP_ATE),y)
 EXTRA_CFLAGS += -DRALINK_ATE -DCONFIG_RT2880_ATE_CMD_NEW
