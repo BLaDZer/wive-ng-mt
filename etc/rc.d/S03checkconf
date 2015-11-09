@@ -156,11 +156,10 @@ genmac() {
 	WMAC="$OLDMACWLAN"
 	VENDMASK=`echo $MAC | cut -f -3 -d :`
     else
-	$LOG "Generate new macs"
+	$LOG "Generate and use new macs"
 	mac_wan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
 	mac_lan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
 	mac_wlan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
-	$LOG "Write new generated macs"
 	WANMAC="$VENDMASK:$mac_wan"
 	LANMAC="$VENDMASK:$mac_lan"
 	WMAC="$VENDMASK:$mac_wlan"
