@@ -144,10 +144,6 @@ genmac() {
     # get variables
     get_param
 
-    # allways build new mac for WLAN2
-    mac_wlan2=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
-    WMAC2="$VENDMASK:$mac_wlan2"
-
     # restore from factory or new generate for LAN/WAN/WLAN
     if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
 	$LOG "Use original macs readed by factory before replace"
@@ -164,6 +160,10 @@ genmac() {
 	LANMAC="$VENDMASK:$mac_lan"
 	WMAC="$VENDMASK:$mac_wlan"
     fi
+
+    # allways build new mac for WLAN2
+    mac_wlan2=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
+    WMAC2="$VENDMASK:$mac_wlan2"
 
     # write macs config to nvram
     if [ "$DONTTOUCHWAN" != "YES" ]; then
