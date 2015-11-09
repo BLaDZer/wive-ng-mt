@@ -206,7 +206,7 @@ checkmacandfactory() {
     # set mask for macs generate and vendor name
     # vend mask must not be vald if nvram defaults loaded
     #
-    if [ "$CHECKMAC" != "NO" ]
+    if [ "$CHECKMAC" != "NO" ]; then
 	invendorrangetest
 	dupelocalmacstest
     fi
