@@ -128,26 +128,24 @@ change_mac() {
 }
 
 factory_mac() {
-    if [ -e /bin/eth_mac ]; then
-	echo "Set nvram mac adresses from factory"
-	MACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	echo "Set WAN   MAC - $MACWAN"
-	nvram_set 2860 WAN_MAC_ADDR   "$MACWAN"
-	MACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	echo "Set LAN   MAC - $MACLAN"
-	nvram_set 2860 LAN_MAC_ADDR   "$MACLAN"
-	if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
-	    MACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	    echo "Set WLAN1 MAC - $MACWLAN"
-	    nvram_set 2860 WLAN_MAC_ADDR  "$MACWLAN"
-	fi
-	if [ "$CONFIG_RT_SECOND_IF_NONE" = "" ]; then
-	    MACWLAN2=`eth_mac r wlan2 | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	    echo "Set WLAN2 MAC - $MACWLAN2"
-	    nvram_set 2860 WLAN2_MAC_ADDR "$MACWLAN2"
-	fi
-	nvram_set 2860 CHECKMAC YES
+    echo "Set nvram mac adresses from factory"
+    MACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+    echo "Set WAN   MAC - $MACWAN"
+    nvram_set 2860 WAN_MAC_ADDR   "$MACWAN"
+    MACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+    echo "Set LAN   MAC - $MACLAN"
+    nvram_set 2860 LAN_MAC_ADDR   "$MACLAN"
+    if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
+	MACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	echo "Set WLAN1 MAC - $MACWLAN"
+	nvram_set 2860 WLAN_MAC_ADDR  "$MACWLAN"
     fi
+    if [ "$CONFIG_RT_SECOND_IF_NONE" = "" ]; then
+	MACWLAN2=`eth_mac r wlan2 | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	echo "Set WLAN2 MAC - $MACWLAN2"
+	nvram_set 2860 WLAN2_MAC_ADDR "$MACWLAN2"
+    fi
+    nvram_set 2860 CHECKMAC YES
 }
 
 main() {
