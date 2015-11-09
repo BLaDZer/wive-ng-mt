@@ -148,7 +148,7 @@ genmac() {
     get_param
 
     # restore from factory or new generate for LAN/WAN/WLAN
-    if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
+    if [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
 	$LOG "Use original macs readed by factory before replace"
 	WANMAC="$OLDMACWAN"
 	LANMAC="$OLDMACLAN"
@@ -183,7 +183,7 @@ genmac() {
     nvram_set 2860 CHECKMAC "YES"
 
     # write config to factory
-    if [ -f /bin/eth_mac ] && [ "$DONTTOUCHFACTORY" != "YES" ]; then
+    if [ "$DONTTOUCHFACTORY" != "YES" ]; then
 	if [ "$DONTTOUCHWAN" != "YES" ]; then
 	    FWMAC=`echo $WANMAC | sed "s/:/ /g"`
 	    eth_mac w wan $FWMAC
