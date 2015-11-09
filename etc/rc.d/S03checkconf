@@ -154,7 +154,7 @@ genmac() {
 	WANMAC="$OLDMACWAN"
 	LANMAC="$OLDMACLAN"
 	WMAC="$OLDMACWLAN"
-	VENDMASK=`echo $MAC | cut -f -3 -d :`
+	VENDMASK=`echo $WANMAC | cut -f -3 -d :`
     else
 	$LOG "Generate and use new macs"
 	mac_wan=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
