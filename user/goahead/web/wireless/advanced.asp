@@ -405,20 +405,20 @@ function CheckValue(form)
                 <option value="2" id="advBSAuto">Auto</option>
               </select></td>
           </tr>
-          <tr>
-            <td class="head" id="advMcastRate">Multicast TX mode</td>
-            <td><select name="McastPhyMode" style="width: 150px;" onClick="McastSwitch(this.form);">
-              <option value="2" id="advOFDM">Legacy OFDM</option>
-              <option value="3" id="advHTMIX">HTMIX</option>
-            </select>&nbsp;&nbsp;&nbsp;
-            <select name="McastMcs" class="half"></select></td>
-          </tr>
           <tr id="div_ackpolicy">
             <td class="head" colspan="1" id="advAckPolicy">ACK Policy</td>
             <td colspan="5"><select name="AckPolicy" style="width: 150px;">
                 <option value="0" id="advNormalAck">Normal ack</option>
                 <option value="1" id="advNoAck">No ack</option>
               </select></td>
+          </tr>
+          <tr>
+            <td class="head" id="advMcastRate">Multicast TX mode</td>
+            <td><select name="McastPhyMode" style="width: 150px;" onClick="McastSwitch(this.form);">
+              <option value="2" id="advOFDM">Legacy OFDM</option>
+              <option value="3" id="advHTMIX">HTMIX</option>
+            </select>&nbsp;&nbsp;&nbsp;
+            <select name="McastMcs" style="width: 150px;"></select></td>
           </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
