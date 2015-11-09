@@ -168,7 +168,7 @@ genmac() {
     WMAC2="$VENDMASK:$mac_wlan2"
 
     # write macs config to nvram
-    if [ "$DONTTOUCHWAN" =! "YES" ]; then
+    if [ "$DONTTOUCHWAN" != "YES" ]; then
 	$LOG "Set WAN   MAC - $WANMAC"
 	nvram_set 2860 WAN_MAC_ADDR   "$WANMAC"
     fi
@@ -183,7 +183,7 @@ genmac() {
 
     # write config to factory
     if [ -f /bin/eth_mac ] && [ "$DONTTOUCHFACTORY" != "YES" ]; then
-	if [ "$DONTTOUCHWAN" =! "YES" ]; then
+	if [ "$DONTTOUCHWAN" != "YES" ]; then
 	    FWMAC=`echo $WANMAC | sed "s/:/ /g"`
 	    eth_mac w wan $FWMAC
 	fi
