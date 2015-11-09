@@ -131,8 +131,11 @@ dupelocalmacstest() {
     LANMAC_TEST=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
     WLANMAC_TEST=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
     if [ "$LANMAC_TEST" = "$WLANMAC_TEST" ]; then
-	$LOG "MAC loacal macs dupe detected - force rebuild local macs"
+	$LOG "Local macs dupe detected - force rebuild local macs"
 	# force rebuild mac if unconsistent
+	OLDMACWAN=""
+	OLDMACLAN=""
+	OLDMACWLAN=""
 	FORCE_REBUILD_MAC="YES"
 	DONTTOUCHFACTORY="NO"
 	DONTTOUCHWAN="YES"
