@@ -84,11 +84,12 @@ invendorrangetest() {
     FIRSTBITSWLAN=`eth_mac r wlan | cut -f -1 -d : | awk '{ print toupper($1) }'`
     if [ "$FIRSTBITSLAN" = "FF" ] || [ "$FIRSTBITSWAN" = "FF" ] || [ "$FIRSTBITSWLAN" = "FF" ]; then
 	$LOG "Factory part poor. Clear and load defaults to nvram and factory."
-	fs burnrf
 	# force rebuild mac if reset to defaults
 	FORCE_REBUILD_MAC="YES"
 	DONTTOUCHFACTORY="NO"
 	DONTTOUCHWAN="NO"
+	# write factory defaults
+	fs burnrf
     fi
     # chek chipmaker range
     RALINKMAC="00:0C:43"
