@@ -175,27 +175,27 @@ genmac() {
 
     if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
 	$LOG "Use original macs for wan/lan readed by factory before replace"
-	MAC="$OLDMACWAN"
+	WANMAC="$OLDMACWAN"
 	LANMAC="$OLDMACLAN"
 	WMAC="$OLDMACWLAN"
 	VENDMASK=`echo $MAC | cut -f -3 -d :`
     else
 	$LOG "Write new generated wan/lan macs"
-	MAC="$VENDMASK:$mac_wan"
+	WANMAC="$VENDMASK:$mac_wan"
 	LANMAC="$VENDMASK:$mac_lan"
 	WMAC="$VENDMASK:$mac_wlan"
     fi
 
     WMAC2="$VENDMASK:$mac_wlan2"
 
-    $LOG "Set WAN   MAC - $MAC"
+    $LOG "Set WAN   MAC - $WANMAC"
     $LOG "Set LAN   MAC - $LANMAC"
     $LOG "Set WLAN1 MAC - $WMAC"
     $LOG "Set WLAN2 MAC - $WMAC2"
 
     # write config to factory
     if [ -f /bin/eth_mac ] && [ "$DONTTOUCHFACTORY" != "YES" ]; then
-	FWMAC=`echo $MAC | sed "s/:/ /g"`
+	FWMAC=`echo $WANMAC | sed "s/:/ /g"`
 	eth_mac w wan $FWMAC
 	FLMAC=`echo $LANMAC | sed "s/:/ /g"`
 	eth_mac w lan $FLMAC
@@ -210,7 +210,7 @@ genmac() {
     fi
 
     # write macs config to nvram
-    nvram_set 2860 WAN_MAC_ADDR   "$MAC"
+    nvram_set 2860 WAN_MAC_ADDR   "$WANMAC"
     nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
     nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"
     nvram_set 2860 WLAN2_MAC_ADDR "$WMAC2"
