@@ -150,13 +150,12 @@ checkmacandfactory() {
 	    fi
 	fi
     fi
-
     # check macs in vendor range
-    MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
-    WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
-    WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
-    LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
     if [ "$CHECKMAC" != "NO" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
+	MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+	WMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$VENDMASK" -c`
+	WMAC2_TEST=`nvram_get 2860 WLAN2_MAC_ADDR | grep -i "$VENDMASK" -c`
+	LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
         if [ "$MAC_TEST" = "0" ] || [ "$WMAC_TEST" = "0" ] || [ "$WMAC2_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
 	    $LOG "MAC is not in vendor range or sdk defaults or unconsistent - start MAC generate"
 	    genmac
