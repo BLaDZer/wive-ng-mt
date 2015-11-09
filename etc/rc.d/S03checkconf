@@ -91,7 +91,7 @@ invendorrangetest() {
 	# write factory defaults
 	fs burnrf
     fi
-    # chek chipmaker range
+    # chekc in chipmaker range
     RALINKMAC="00:0C:43"
     ISDEFWANMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
     ISDEFLANMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
