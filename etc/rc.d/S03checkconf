@@ -10,37 +10,6 @@ LOG="echo checkconf "
 # include kernel config
 . /etc/scripts/config.sh
 
-start() {
-    # get variables
-    get_param
-
-    if [ "$IS_WIVE" != "YES" ]; then
-	$LOG ">>>> FIRST BOOT OR NVRAM TRUNCLATED <<<<"
-	###############################################
-	# write RF calib, clear and load nvram defaults
-	###############################################
-	fs burnrf
-    	fs nvramreset
-	###############################################
-	# reread parametrs and set needed falgs
-	###############################################
-	get_param
-	FORCE_REBUILD_MAC="YES"
-	CHECKMAC="YES"
-    else
-	$LOG ">>>>>>>>>>>> NORMAL BOOT <<<<<<<<<<<<<<<"
-    fi
-
-    # check minimal config options andcorrect if need
-    checkminimalconfig
-
-    # check macs correct and consystent
-    checkmacandfactory
-
-    # set checked flag
-    touch /tmp/nvram_checked
-}
-
 get_param() {
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
@@ -107,13 +76,7 @@ checkminimalconfig()
 
 }
 
-checkmacandfactory() {
-    #
-    # check mac correct set if check mac in nvram set to not NO and web not start
-    # set mask for macs generate and vendor name
-    # vend mask must not be vald if nvram defaults loaded
-    #
-
+consistentmactest() {
     # read and check defaults macs from factory and nvram
     if [ -f /bin/eth_mac ] && [ "$CHECKMAC" = "YES" ]; then
 	# if check byte is FF - factory is poor need rebuild
@@ -125,6 +88,8 @@ checkmacandfactory() {
 	    fs burnrf
 	    # force rebuild mac if reset to defaults
 	    FORCE_REBUILD_MAC="YES"
+	    DONTTOUCHFACTORY="NO"
+	    DONTTOUCHWAN="NO"
 	fi
 	# chek chipmaker range
         RALINKMAC="00:0C:43"
@@ -147,9 +112,13 @@ checkmacandfactory() {
 		# force rebuild mac if unconsistent
 		FORCE_REBUILD_MAC="YES"
 		DONTTOUCHFACTORY="YES"
+		DONTTOUCHWAN="NO"
 	    fi
 	fi
     fi
+}
+
+invendorrangetest() {
     # check macs in vendor range
     if [ "$CHECKMAC" != "NO" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
 	MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$VENDMASK" -c`
@@ -158,10 +127,29 @@ checkmacandfactory() {
 	LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$VENDMASK" -c`
         if [ "$MAC_TEST" = "0" ] || [ "$WMAC_TEST" = "0" ] || [ "$WMAC2_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$FORCE_REBUILD_MAC" = "YES" ]; then
 	    $LOG "MAC is not in vendor range or sdk defaults or unconsistent - start MAC generate"
+	    # force rebuild mac if unconsistent
+	    FORCE_REBUILD_MAC="YES"
+	    DONTTOUCHFACTORY="NO"
+	    DONTTOUCHWAN="NO"
 	    genmac
 	fi
     fi
+}
 
+dupelocalmacstest() {
+    # china fabric stupid workaround
+    if [ -f /bin/eth_mac ] && [ "$CHECKMAC" != "NO" -o "$FORCE_REBUILD_MAC" = "YES" ]; then
+	LANMAC_TEST=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	WLANMAC_TEST=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	if [ "$LANMAC_TEST" = "$WLANMAC_TEST" ]; then
+	    $LOG "MAC loacal macs dupe detected - force rebuild local macs"
+	    # force rebuild mac if unconsistent
+	    FORCE_REBUILD_MAC="YES"
+	    DONTTOUCHFACTORY="NO"
+	    DONTTOUCHWAN="YES"
+	    genmac
+	fi
+    fi
 }
 
 genmac() {
@@ -174,29 +162,39 @@ genmac() {
     mac_wlan2=`cat /dev/urandom | hexdump | head -n1 | cut -f 2- -d " " | sed ':BEGIN;s/^\([^ ]\{0,29\}\) /\1/;tBEGIN' | sed 's/\(..\)/\1:/g; s/.$//' | tail -q -c 9`
 
     if [ -f /bin/eth_mac ] && [ "$OLDMACWAN" != "" ] && [ "$OLDMACLAN" != "" ] && [ "$OLDMACWLAN" != "" ]; then
-	$LOG "Use original macs for wan/lan readed by factory before replace"
+	$LOG "Use original macs readed by factory before replace"
 	WANMAC="$OLDMACWAN"
 	LANMAC="$OLDMACLAN"
 	WMAC="$OLDMACWLAN"
 	VENDMASK=`echo $MAC | cut -f -3 -d :`
     else
-	$LOG "Write new generated wan/lan macs"
+	$LOG "Write new generated macs"
 	WANMAC="$VENDMASK:$mac_wan"
 	LANMAC="$VENDMASK:$mac_lan"
 	WMAC="$VENDMASK:$mac_wlan"
     fi
-
     WMAC2="$VENDMASK:$mac_wlan2"
 
-    $LOG "Set WAN   MAC - $WANMAC"
+    # write macs config to nvram
+    if [ "$DONTTOUCHWAN" =! "YES" ]; then
+	$LOG "Set WAN   MAC - $WANMAC"
+	nvram_set 2860 WAN_MAC_ADDR   "$WANMAC"
+    fi
     $LOG "Set LAN   MAC - $LANMAC"
+    nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
     $LOG "Set WLAN1 MAC - $WMAC"
+    nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"
     $LOG "Set WLAN2 MAC - $WMAC2"
+    nvram_set 2860 WLAN2_MAC_ADDR "$WMAC2"
+    $LOG "Set checkmac flag after rebuild"
+    nvram_set 2860 CHECKMAC "YES"
 
     # write config to factory
     if [ -f /bin/eth_mac ] && [ "$DONTTOUCHFACTORY" != "YES" ]; then
-	FWMAC=`echo $WANMAC | sed "s/:/ /g"`
-	eth_mac w wan $FWMAC
+	if [ "$DONTTOUCHWAN" =! "YES" ]; then
+	    FWMAC=`echo $WANMAC | sed "s/:/ /g"`
+	    eth_mac w wan $FWMAC
+	fi
 	FLMAC=`echo $LANMAC | sed "s/:/ /g"`
 	eth_mac w lan $FLMAC
 	if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
@@ -208,14 +206,48 @@ genmac() {
 	    eth_mac w wlan2 $FWLMAC2
 	fi
     fi
+}
 
-    # write macs config to nvram
-    nvram_set 2860 WAN_MAC_ADDR   "$WANMAC"
-    nvram_set 2860 LAN_MAC_ADDR   "$LANMAC"
-    nvram_set 2860 WLAN_MAC_ADDR  "$WMAC"
-    nvram_set 2860 WLAN2_MAC_ADDR "$WMAC2"
-    # set checkmac flag after rebuild
-    nvram_set 2860 CHECKMAC "YES"
+checkmacandfactory() {
+    #
+    # check mac correct set if check mac in nvram set to not NO and web not start
+    # set mask for macs generate and vendor name
+    # vend mask must not be vald if nvram defaults loaded
+    #
+    consistentmactest
+    invendorrangetest
+    dupelocalmacstest
+}
+
+start() {
+    # get variables
+    get_param
+
+    if [ "$IS_WIVE" != "YES" ]; then
+	$LOG ">>>> FIRST BOOT OR NVRAM TRUNCLATED <<<<"
+	###############################################
+	# write RF calib, clear and load nvram defaults
+	###############################################
+	fs burnrf
+    	fs nvramreset
+	###############################################
+	# reread parametrs and set needed falgs
+	###############################################
+	get_param
+	FORCE_REBUILD_MAC="YES"
+	CHECKMAC="YES"
+    else
+	$LOG ">>>>>>>>>>>> NORMAL BOOT <<<<<<<<<<<<<<<"
+    fi
+
+    # check minimal config options andcorrect if need
+    checkminimalconfig
+
+    # check macs correct and consystent
+    checkmacandfactory
+
+    # set checked flag
+    touch /tmp/nvram_checked
 }
 
 stop() {
@@ -231,6 +263,10 @@ case "$1" in
 	    genmac
 	    ;;
 
+	checkmacandfactory)
+	    checkmacandfactory
+	    ;;
+
 	stop)
 	    stop
 	    ;;
@@ -240,6 +276,6 @@ case "$1" in
 	    start
 	    ;;
 	*)
-	    echo $"Usage: $0 {start|genmac|stop|restart}"
+	    echo $"Usage: $0 {start|genmac|checkmacandfactory|stop|restart}"
 	    exit 1
 esac
