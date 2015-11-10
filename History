@@ -1419,16 +1419,17 @@
 84) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
 85) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
 86) kernel: net: ipv4/6: compute net once in some cases.<br>
-87) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-88) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-89) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-90) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-91) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-92) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-93) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-94) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-95) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-96) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+87) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
+88) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+89) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+90) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+91) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+92) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+93) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+94) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+95) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+96) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+97) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
 <br>
 <br>
 <b>TODO:</b><br>
