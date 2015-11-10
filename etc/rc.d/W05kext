@@ -194,38 +194,42 @@ pthrough() {
 }
 
 multicast() {
-    if [ "$switchpart" = "LLLLL" ]; then
-    	# for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
-    	phys_lan_if="eth2"
-    fi
-    eval `nvram_buf_get 2860 igmpM2UConvMode igmpFastLeave`
-    wlifs=`ip -o -4 link show up | grep -E "ra|wds" | awk {' print $2 '} | cut -f -1 -d :`
-    if [ "$igmpM2UConvMode" = "all" ]; then
-	INTERFACES="$phys_lan_if $wlifs"
-    elif [ "$igmpM2UConvMode" = "lan" ]; then
-	INTERFACES="$phys_lan_if"
-    elif [ "$igmpM2UConvMode" = "wlan" ]; then
-	INTERFACES="$wlifs"
+    if [ "$OperationMode" = "2" ]; then
+	$LOG "Multicast to unicast conversion disabled (not supported in client gateway mode)."
     else
-	# disable for all ifaces
-	INTERFACES="$phys_lan_if $wlifs"
-	for ifname in $INTERFACES; do
-	    echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
-	    echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
-	done
-	INTERFACES=""
-    fi
-    if [ "$INTERFACES" != "" ]; then
-	$LOG "Enable multicast to unicast conversion for $INTERFACES"
-	for ifname in $INTERFACES; do
-	if [ "$igmpFastLeave" = "1" ]; then
-	    $LOG "Enable bridge igmp fast leave for $INTERFACES"
-	    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
-	else
-	    echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+	if [ "$switchpart" = "LLLLL" ]; then
+    	    # for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
+    	    phys_lan_if="eth2"
 	fi
-	echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
-	done
+	eval `nvram_buf_get 2860 igmpM2UConvMode igmpFastLeave`
+	wlifs=`ip -o -4 link show up | grep -E "ra|wds" | awk {' print $2 '} | cut -f -1 -d :`
+	if [ "$igmpM2UConvMode" = "all" ]; then
+	    INTERFACES="$phys_lan_if $wlifs"
+	elif [ "$igmpM2UConvMode" = "lan" ]; then
+	    INTERFACES="$phys_lan_if"
+	elif [ "$igmpM2UConvMode" = "wlan" ]; then
+	    INTERFACES="$wlifs"
+	else
+	    # disable for all ifaces
+	    INTERFACES="$phys_lan_if $wlifs"
+	    for ifname in $INTERFACES; do
+		echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
+	    done
+	    INTERFACES=""
+	fi
+	if [ "$INTERFACES" != "" ]; then
+	    $LOG "Enable multicast to unicast conversion for $INTERFACES"
+	    for ifname in $INTERFACES; do
+		if [ "$igmpFastLeave" = "1" ]; then
+		    $LOG "Enable bridge igmp fast leave for $INTERFACES"
+		    echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		else
+		    echo 0 > /sys/devices/virtual/net/$ifname/brport/multicast_fast_leave
+		fi
+		echo 1 > /sys/devices/virtual/net/$ifname/brport/multicast_to_unicast
+	    done
+	fi
     fi
 }
 
