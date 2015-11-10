@@ -43,7 +43,7 @@ showstat()
     iwpriv $1 show descinfo
     iwpriv $1 show wdsinfo
     iwpriv $1 show bainfo
-    if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ]|| [ "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" ]; then
+    if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" ]; then
 	iwpriv $1 show igmpinfo
     fi
 }
