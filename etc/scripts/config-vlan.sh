@@ -154,7 +154,7 @@ igmpsnooping() {
 		switch igmpsnoop disable $port
 	    done
 	else
-	    if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "3" ] || [ "$ApCliBridgeOnly" = "1" ]; then
+	    if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 		switch igmpsnoop on 3 1111111
     		for port in `seq 0 6`; do
 		    switch igmpsnoop enable $port
