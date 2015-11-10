@@ -197,7 +197,7 @@ multicast() {
     if [ "$OperationMode" = "2" ]; then
 	$LOG "Multicast to unicast conversion disabled (not supported in client gateway mode)."
     else
-	if [ "$OperationMode" = "3" ]; then
+	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "3" ]; then
     	    # for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
     	    phys_lan_if="eth2"
 	fi
