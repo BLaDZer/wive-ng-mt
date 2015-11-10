@@ -86,8 +86,7 @@ get_param() {
     ####################################
     # auto M2U enable in wifi drivers
     ####################################
-    if [ "$M2UEnabled" = "1" ] && \
-	[ "$igmpM2UConvMode" != "all" ] && [ "$igmpM2UConvMode" != "wlan" ]; then
+    if [ "$M2UEnabled" = "1" ] && [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" ]; then
 	M2UEnabled="a"
     else
 	M2UEnabled=""
@@ -95,7 +94,7 @@ get_param() {
     ####################################
     # correct mode for igmpsnooping
     ####################################
-    if [ "$igmpSnoopMode" = "n" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ] || [ "$igmpM2UConvMode" = "all" ] || [ "$igmpM2UConvMode" = "lan" ]; then
+    if [ "$igmpSnoopMode" = "n" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
         # force hibryd mode snooping disabled
 	igmpSnoopMode="n"
     else
