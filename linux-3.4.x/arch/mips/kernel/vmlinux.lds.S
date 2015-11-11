@@ -182,6 +182,7 @@ SECTIONS
 	DISCARDS
 	/DISCARD/ : {
 		/* ABI crap starts here */
+		*(.MIPS.abiflags)
 		*(.MIPS.options)
 		*(.options)
 		*(.pdr)

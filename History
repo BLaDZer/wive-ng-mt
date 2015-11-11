@@ -1388,51 +1388,52 @@
 53) kernel: ralink_wifi: xxxx: fix end enabled by default bss_qload (without alarm) for use in autochannel select and AP load annonse in beacons.<br>
 54) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
 55) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-56) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-57) kernel: drivers/core: fix unregistration path of platform devices.<br>
-58) kernel: jump label: remove static_branch().<br>
-59) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-60) kernel: mm: make sendfile(2) killable.<br>
-61) kernel: usb: xhci: follow upstream.<br>
-62) kernel: usb: xhci: backports from 3.10 tree.<br>
-63) kernel: usb: option: add ZTE PIDs.<br>
-64) kernel: usb: core: update power budget for SuperSpeed.<br>
-65) kernel: usb: asix: fix crash on skb alloc failure.<br>
-66) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-67) kernel: net: initialize flow flags in input path.<br>
-68) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-69) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-70) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-71) kernel: net: fix skb csum races when peeking.<br>
-72) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-73) kernel: net: af_key: net: fix RCU splat.<br>
-74) kernel: net: add netfilter SMB fastpath module.<br>
-75) kernel: net: remove sk_init() helper.<br>
-76) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-77) kernel: net: xps: fix calculation of initial number of xps queues.<br>
-78) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
-79) kernel: net: fix a race in dst_release().<br>
-80) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-81) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
-82) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-83) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-84) kenrel: net: af_inet: only check perm protocol when register proto.<br>
-85) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-86) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-87) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
-88) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-89) kernel: net: ipv4/6: compute net once in some cases.<br>
-90) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
-91) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-92) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-93) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-94) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-95) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-96) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-97) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-98) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-99) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-100) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+56) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
+57) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+58) kernel: drivers/core: fix unregistration path of platform devices.<br>
+59) kernel: jump label: remove static_branch().<br>
+60) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+61) kernel: mm: make sendfile(2) killable.<br>
+62) kernel: usb: xhci: follow upstream.<br>
+63) kernel: usb: xhci: backports from 3.10 tree.<br>
+64) kernel: usb: option: add ZTE PIDs.<br>
+65) kernel: usb: core: update power budget for SuperSpeed.<br>
+66) kernel: usb: asix: fix crash on skb alloc failure.<br>
+67) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+68) kernel: net: initialize flow flags in input path.<br>
+69) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+70) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+71) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+72) kernel: net: fix skb csum races when peeking.<br>
+73) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+74) kernel: net: af_key: net: fix RCU splat.<br>
+75) kernel: net: add netfilter SMB fastpath module.<br>
+76) kernel: net: remove sk_init() helper.<br>
+77) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
+78) kernel: net: xps: fix calculation of initial number of xps queues.<br>
+79) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
+80) kernel: net: fix a race in dst_release().<br>
+81) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
+82) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
+83) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+84) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+85) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+86) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+87) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+88) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
+89) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+90) kernel: net: ipv4/6: compute net once in some cases.<br>
+91) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
+92) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+93) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+94) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+95) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+96) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+97) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+98) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+99) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+100) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+101) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
 <br>
 <br>
 <b>TODO:</b><br>
