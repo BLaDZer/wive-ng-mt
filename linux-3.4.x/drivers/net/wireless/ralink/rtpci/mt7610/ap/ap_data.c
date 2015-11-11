@@ -263,22 +263,12 @@ NDIS_STATUS APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 
 
 	RTMP_QueryPacketInfo(pPacket, &PacketInfo, &pSrcBufVA, &SrcBufLen);
-
-	if (pSrcBufVA == NULL)
+	if ((pSrcBufVA == NULL) || (SrcBufLen <= 14))
 	{
-		/*
-			Resourece is low, system did not allocate virtual address
-			return NDIS_STATUS_FAILURE directly to upper layer
-		*/
 		RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+		DBGPRINT(RT_DEBUG_ERROR, ("%s():pkt error(%p, %d)\n",
+					__FUNCTION__, pSrcBufVA, SrcBufLen));
 		return NDIS_STATUS_FAILURE;
-	}
-
-	if (SrcBufLen <= 14)
-	{
-		DBGPRINT(RT_DEBUG_ERROR,("APSendPacket --> Ndis Packet buffer error !!!\n"));
-		RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
-		return (NDIS_STATUS_FAILURE);
 	}
 
 	Wcid = RTMP_GET_PACKET_WCID(pPacket);
@@ -6510,8 +6500,7 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 	{
 		/* if destinated STA is a associated wireless STA */
 		pEntry = MacTableLookup(pAd, pHeader802_3);
-
-		if (pEntry && pEntry->Sst == SST_ASSOC)
+		if (pEntry && (pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
 		{
 			bDirectForward = TRUE;
 			bAnnounce = FALSE;

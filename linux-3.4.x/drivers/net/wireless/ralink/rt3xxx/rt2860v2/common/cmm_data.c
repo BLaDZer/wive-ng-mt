@@ -139,10 +139,12 @@ NDIS_STATUS MiniportMMRequest(
 #ifdef RTMP_MAC_PCI
 		if (bUseDataQ)
 		{
-			/* free Tx(QueIdx) resources*/
 			FreeNum = GET_TXRING_FREENO(pAd, QueIdx);
 			if (FreeNum <= 5)
-			RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);
+			{
+				/* free Tx(QueIdx) resources*/
+				RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);
+			}
 			FreeNum = GET_TXRING_FREENO(pAd, QueIdx);
 		}
 		else

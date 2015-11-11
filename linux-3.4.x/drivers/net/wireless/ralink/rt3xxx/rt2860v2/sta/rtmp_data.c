@@ -1549,22 +1549,12 @@ NDIS_STATUS STASendPacket(
 	/* Prepare packet information structure for buffer descriptor */
 	/* chained within a single NDIS packet. */
 	RTMP_QueryPacketInfo(pPacket, &PacketInfo, &pSrcBufVA, &SrcBufLen);
-
-	if (pSrcBufVA == NULL) {
-		DBGPRINT(RT_DEBUG_ERROR,
-			 ("STASendPacket --> pSrcBufVA == NULL !!!SrcBufLen=%x\n",
-			  SrcBufLen));
-		/* Resourece is low, system did not allocate virtual address */
-		/* return NDIS_STATUS_FAILURE directly to upper layer */
+	if ((pSrcBufVA == NULL) || (SrcBufLen <= 14))
+	{
 		RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+		DBGPRINT(RT_DEBUG_ERROR, ("%s():pkt error(%p, %d)\n",
+					__FUNCTION__, pSrcBufVA, SrcBufLen));
 		return NDIS_STATUS_FAILURE;
-	}
-
-	if (SrcBufLen < 14) {
-		DBGPRINT(RT_DEBUG_ERROR,
-			 ("STASendPacket --> Ndis Packet buffer error !!!\n"));
-		RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
-		return (NDIS_STATUS_FAILURE);
 	}
 
 	/* In HT rate adhoc mode, A-MPDU is often used. So need to lookup BA Table and MAC Entry. */

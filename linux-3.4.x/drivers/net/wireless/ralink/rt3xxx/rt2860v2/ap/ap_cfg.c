@@ -12588,6 +12588,7 @@ INT Set_McastPhyMode(
 
 		case MCAST_OFDM:	/* OFDM */
 			pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_OFDM;
+			pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 			break;
 #ifdef DOT11_N_SUPPORT
 		case MCAST_HTMIX:	/* HTMIX */
