@@ -82,7 +82,7 @@ invendorrangetest() {
     ISCRASHEDWANMAC=`eth_mac r wan | grep -i "$CRASHEDMAC" -c`
     ISCRASHEDLANMAC=`eth_mac r lan | grep -i "$CRASHEDMAC" -c`
     ISCRASHEDWLANMAC=`eth_mac r wlan | grep -i "$CRASHEDMAC" -c`
-    if [ "$ISCRASHEDWANMAC" = "1" ] || [ "$ISCRASHEDLANMAC" = "1" ] || [ "$ISCRASHEDWLANMAC" != "1" ]; then
+    if [ "$ISCRASHEDWANMAC" = "1" ] || [ "$ISCRASHEDLANMAC" = "1" ] || [ "$ISCRASHEDWLANMAC" = "1" ]; then
 	$LOG "Factory part poor. Clear and load defaults to factory."
 	fs burnrf
     fi
