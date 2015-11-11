@@ -99,24 +99,24 @@ invendorrangetest() {
     ISDEFWLANMAC=`eth_mac r wlan | grep -i "$RALINKMAC" -c`
     if [ "$ISDEFWANMAC" = "1" ] || [ "$ISDEFLANMAC" = "1" ] || [ "$ISDEFWLANMAC" = "1" ]; then
 	$LOG "MACs in chipmaker range rebuild macs."
-	FORCE_REBUILD_MAC="YES"
+	NEEDREBUILDMACS="YES"
 	DONTTOUCHFACTORY="NO"
 	DONTTOUCHWAN="NO"
     fi
     # check macs in vendor range
-    if [ "$FORCE_REBUILD_MAC" != "YES" ]; then
+    if [ "$NEEDREBUILDMACS" != "YES" ]; then
 	ISVENWANMAC=`eth_mac r wan | grep -i "$VENDMASK" -c`
 	ISVENLANMAC=`eth_mac r lan | grep -i "$VENDMASK" -c`
 	ISVENWLANMAC=`eth_mac r wlan | grep -i "$VENDMASK" -c`
 	if [ "$ISVENWANMAC" != "1" ] || [ "$ISVENLANMAC" != "1" ] || [ "$ISVENWLANMAC" != "1" ]; then
     	    $LOG "MACs is not in vendor range rebuild macs."
-	    FORCE_REBUILD_MAC="YES"
+	    NEEDREBUILDMACS="YES"
 	    DONTTOUCHFACTORY="NO"
 	    DONTTOUCHWAN="NO"
 	fi
     fi
     # check factory consistent with nvram
-    if [ "$FORCE_REBUILD_MAC" != "YES" ]; then
+    if [ "$NEEDREBUILDMACS" != "YES" ]; then
 	OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
 	OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
 	OLDMACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
@@ -126,13 +126,13 @@ invendorrangetest() {
 	$LOG "Factory mac adresess: $OLDMACWAN $OLDMACLAN $OLDMACWLAN"
     	if [ "$MAC_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$WLANMAC_TEST" = "0" ]; then
 	    $LOG "MACs not consistent in factory and nvram, write factory MACs to nvram."
-	    FORCE_REBUILD_MAC="YES"
+	    NEEDREBUILDMACS="YES"
 	    DONTTOUCHFACTORY="YES"
 	    DONTTOUCHWAN="NO"
 	fi
     fi
     # need rebuild macs
-    if [ "$FORCE_REBUILD_MAC" = "YES" ]; then
+    if [ "$NEEDREBUILDMACS" = "YES" ]; then
         $LOG "Start MAC generate"
         genmac
     fi
@@ -148,7 +148,7 @@ dupelocalmacstest() {
 	OLDMACWAN=""
 	OLDMACLAN=""
 	OLDMACWLAN=""
-	FORCE_REBUILD_MAC="YES"
+	NEEDREBUILDMACS="YES"
 	DONTTOUCHFACTORY="NO"
 	DONTTOUCHWAN="YES"
         genmac
@@ -234,7 +234,7 @@ start() {
 	# reread parametrs and set needed falgs
 	###############################################
 	get_param
-	FORCE_REBUILD_MAC="YES"
+	NEEDREBUILDMACS="YES"
 	CHECKMAC="YES"
     else
 	$LOG ">>>>>>>>>>>> NORMAL BOOT <<<<<<<<<<<<<<<"
