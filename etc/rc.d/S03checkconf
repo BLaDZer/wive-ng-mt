@@ -77,39 +77,37 @@ checkminimalconfig()
 }
 
 invendorrangetest() {
-    # read and check defaults macs from factory and nvram
-    # if check byte is FF - factory is poor need rebuild
-    FIRSTBITSLAN=`eth_mac r lan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-    FIRSTBITSWAN=`eth_mac r wan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-    FIRSTBITSWLAN=`eth_mac r wlan | cut -f -1 -d : | awk '{ print toupper($1) }'`
-    if [ "$FIRSTBITSLAN" = "FF" ] || [ "$FIRSTBITSWAN" = "FF" ] || [ "$FIRSTBITSWLAN" = "FF" ]; then
-	$LOG "Factory part poor. Clear and load defaults to nvram and factory."
-	# force rebuild mac if reset to defaults
-	FORCE_REBUILD_MAC="YES"
-	DONTTOUCHFACTORY="NO"
-	DONTTOUCHWAN="NO"
-	# write factory defaults
+    # check macs is FF - factory is poor need rebuild
+    CRASHEDMAC="FF:FF:FF"
+    ISCRASHEDWANMAC=`eth_mac r wan | grep -i "$CRASHEDMAC" -c`
+    ISCRASHEDLANMAC=`eth_mac r lan | grep -i "$CRASHEDMAC" -c`
+    ISCRASHEDWLANMAC=`eth_mac r wlan | grep -i "$CRASHEDMAC" -c`
+    if [ "$ISCRASHEDWANMAC" = "1" ] || [ "$ISCRASHEDLANMAC" = "1" ] || [ "$ISCRASHEDWLANMAC" != "1" ]; then
+	$LOG "Factory part poor. Clear and load defaults to factory."
 	fs burnrf
     fi
-    # chekc in chipmaker range
+    # check in chipmaker range
     RALINKMAC="00:0C:43"
     ISDEFWANMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
     ISDEFLANMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
     ISDEFWLANMAC=`eth_mac r wlan | grep -i "$RALINKMAC" -c`
-    if [ "$ISDEFWANMAC" != "1" ] && [ "$ISDEFLANMAC" != "1" ] && [ "$ISDEFWLANMAC" != "1" ] && [ "$FORCE_REBUILD_MAC" != "YES" ]; then
-	# MAC in not chipmaker range test consistemn with nvram
-	# read factory macs
+    if [ "$ISDEFWANMAC" = "1" ] || [ "$ISDEFLANMAC" = "1" ] || [ "$ISDEFWLANMAC" != "1" ]; then
+	$LOG "MACs in chipmaker range rebuild macs."
+	FORCE_REBUILD_MAC="YES"
+	DONTTOUCHFACTORY="NO"
+	DONTTOUCHWAN="NO"
+    fi
+    # check factory consistent with nvram
+    if [ "$FORCE_REBUILD_MAC" != "YES" ]; then
 	OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
 	OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
 	OLDMACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	# test consistent with nvram
 	MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$OLDMACWAN" -c`
 	LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$OLDMACLAN" -c`
 	WLANMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$OLDMACWLAN" -c`
 	$LOG "Factory mac adresess: $OLDMACWAN $OLDMACLAN $OLDMACWLAN"
     	if [ "$MAC_TEST" = "0" ] || [ "$LANMAC_TEST" = "0" ] || [ "$WLANMAC_TEST" = "0" ]; then
 	    $LOG "MACs not consistent in factory and nvram, write factory MACs to nvram."
-	    # force rebuild mac if unconsistent
 	    FORCE_REBUILD_MAC="YES"
 	    DONTTOUCHFACTORY="YES"
 	    DONTTOUCHWAN="NO"
