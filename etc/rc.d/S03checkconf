@@ -91,7 +91,7 @@ invendorrangetest() {
     ISDEFWANMAC=`eth_mac r wan | grep -i "$RALINKMAC" -c`
     ISDEFLANMAC=`eth_mac r lan | grep -i "$RALINKMAC" -c`
     ISDEFWLANMAC=`eth_mac r wlan | grep -i "$RALINKMAC" -c`
-    if [ "$ISDEFWANMAC" = "1" ] || [ "$ISDEFLANMAC" = "1" ] || [ "$ISDEFWLANMAC" != "1" ]; then
+    if [ "$ISDEFWANMAC" = "1" ] || [ "$ISDEFLANMAC" = "1" ] || [ "$ISDEFWLANMAC" = "1" ]; then
 	$LOG "MACs in chipmaker range rebuild macs."
 	FORCE_REBUILD_MAC="YES"
 	DONTTOUCHFACTORY="NO"
