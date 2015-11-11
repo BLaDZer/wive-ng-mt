@@ -173,6 +173,13 @@ VOID ap_cmm_peer_assoc_req_action(
 	BOOLEAN bAssocNoRsp = FALSE;
 	CHAR rssi;
 
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
+		return;
+	}
+
 	/* allocate memory */
 	os_alloc_mem(NULL, (UCHAR **)&RSN_IE, MAX_LEN_OF_RSNIE);
 	if (RSN_IE == NULL)
@@ -1750,14 +1757,14 @@ USHORT APBuildAssociation(
 			if (pAd->ApCfg.MBSSID[pEntry->apidx].bAutoTxRateSwitch == TRUE)
 			{
 				UCHAR TableSize = 0;
-				
+
+				pEntry->bAutoTxRateSwitch = TRUE;
+
 				MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 				MlmeNewTxRate(pAd, pEntry);
 
 				/* don't need to update these register */
 				/*AsicUpdateAutoFallBackTable(pAd, pTable); */
-
-				pEntry->bAutoTxRateSwitch = TRUE;
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 				if (! ADAPT_RATE_TABLE(pEntry->pTable))

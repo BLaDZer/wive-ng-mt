@@ -261,29 +261,30 @@ VOID APPeerProbeReqAction(
 			(wdev->DesiredHtPhyInfo.bHtEnable))
 		{
 			ULONG TmpLen;
-			UCHAR	HtLen, AddHtLen, NewExtLen;
-#ifdef RT_BIG_ENDIAN
+			UCHAR	HtLen, AddHtLen;
 			HT_CAPABILITY_IE HtCapabilityTmp;
+#ifdef RT_BIG_ENDIAN
 			ADD_HT_INFO_IE	addHTInfoTmp;
 #endif
 
-/* YF@20120419: Fix IOT Issue with Atheros STA on Windows 7 When IEEE80211H flag turn on. */
-
-			HtLen = sizeof(pAd->CommonCfg.HtCapability);
+			/* YF@20120419: Fix IOT Issue with Atheros STA on Windows 7 When IEEE80211H flag turn on. */
+                        HtLen = sizeof(pAd->CommonCfg.HtCapability);
 			AddHtLen = sizeof(pAd->CommonCfg.AddHTInfo);
-			NewExtLen = 1;
 			/*New extension channel offset IE is included in Beacon, Probe Rsp or channel Switch Announcement Frame */
 #ifndef RT_BIG_ENDIAN
+			NdisMoveMemory(&HtCapabilityTmp, &pAd->CommonCfg.HtCapability, HtLen);
+			HtCapabilityTmp.HtCapInfo.ChannelWidth = pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth;
 			MakeOutgoingFrame(pOutBuffer + FrameLen,            &TmpLen,
 							  1,                                &HtCapIe,
 							  1,                                &HtLen,
-							 sizeof(HT_CAPABILITY_IE),          &pAd->CommonCfg.HtCapability,
+							 sizeof(HT_CAPABILITY_IE),          &HtCapabilityTmp,
 							  1,                                &AddHtInfoIe,
 							  1,                                &AddHtLen,
 							 sizeof(ADD_HT_INFO_IE),          &pAd->CommonCfg.AddHTInfo,
 							  END_OF_ARGS);
 #else
 			NdisMoveMemory(&HtCapabilityTmp, &pAd->CommonCfg.HtCapability, HtLen);
+			HtCapabilityTmp.HtCapInfo.ChannelWidth = pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth;
 			*(USHORT *)(&HtCapabilityTmp.HtCapInfo) = SWAP16(*(USHORT *)(&HtCapabilityTmp.HtCapInfo));
 #ifdef UNALIGNMENT_SUPPORT
 			{
@@ -734,7 +735,7 @@ VOID APPeerProbeReqAction(
 			(wdev->DesiredHtPhyInfo.bHtEnable))
 		{
 			ULONG TmpLen;
-			UCHAR	HtLen, AddHtLen;/*, NewExtLen; */
+			UCHAR	HtLen, AddHtLen;
 #ifdef RT_BIG_ENDIAN
 			HT_CAPABILITY_IE HtCapabilityTmp;
 			ADD_HT_INFO_IE	addHTInfoTmp;

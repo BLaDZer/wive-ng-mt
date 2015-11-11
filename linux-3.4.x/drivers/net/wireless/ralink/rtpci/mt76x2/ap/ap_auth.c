@@ -286,12 +286,19 @@ static VOID APPeerAuthReqAtIdleAction(
  		return;
 	}
 
-	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
+		return;
+	}
+
+	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1,
 							Addr2, &Alg, &Seq, &Status, Chtxt
 #ifdef DOT11R_FT_SUPPORT
 							,&FtInfo
 #endif /* DOT11R_FT_SUPPORT */
-		))
+	    ))
 		return;
 
 	/* Find which MBSSID to be authenticate */

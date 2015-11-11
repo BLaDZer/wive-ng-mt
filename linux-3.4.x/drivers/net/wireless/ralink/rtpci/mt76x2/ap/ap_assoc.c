@@ -573,7 +573,7 @@ static USHORT APBuildAssociation(
 
 	MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
 
-    if ((WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_G) 
+    if (pAd && (WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_G) 
 #ifdef DOT11_N_SUPPORT
 		|| WMODE_EQUAL(pAd->CommonCfg.PhyMode, (WMODE_G | WMODE_GN))
 #endif /* DOT11_N_SUPPORT */
@@ -816,6 +816,13 @@ VOID ap_cmm_peer_assoc_req_action(
 	UINT32 tmp_1;
 	UINT64 tmp_2;
 #endif /*RT_BIG_ENDIAN*/
+
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
+		return;
+	}
 
 	/* allocate memory */
 	os_alloc_mem(NULL, (UCHAR **)&ie_list, sizeof(IE_LISTS));

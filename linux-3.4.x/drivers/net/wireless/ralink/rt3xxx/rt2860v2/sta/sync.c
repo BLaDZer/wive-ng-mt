@@ -2650,7 +2650,7 @@ VOID PeerProbeReqAction(
 	CHAR          Ssid[MAX_LEN_OF_SSID];
 	UCHAR         SsidLen;
 #ifdef DOT11_N_SUPPORT
-	UCHAR		  HtLen, AddHtLen, NewExtLen;
+	UCHAR		  HtLen, AddHtLen;
 #endif /* DOT11_N_SUPPORT */
 	HEADER_802_11 ProbeRspHdr;
 	NDIS_STATUS   NStatus;
@@ -2755,7 +2755,6 @@ VOID PeerProbeReqAction(
 				UCHAR	BROADCOM[4] = {0x0, 0x90, 0x4c, 0x33};
 				HtLen = sizeof(pAd->CommonCfg.HtCapability);
 				AddHtLen = sizeof(pAd->CommonCfg.AddHTInfo);
-				NewExtLen = 1;
 				/* New extension channel offset IE is included in Beacon, Probe Rsp or channel Switch Announcement Frame */
 				if (pAd->bBroadComHT == TRUE)
 				{

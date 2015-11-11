@@ -256,6 +256,13 @@ static VOID APPeerAuthReqAtIdleAction(
  		return;
 	}
 
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
+		return;
+	}
+
 	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt))
 		return;
     
