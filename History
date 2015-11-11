@@ -1434,6 +1434,7 @@
 99) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
 100) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
 101) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+102) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
 <br>
 <br>
 <b>TODO:</b><br>
