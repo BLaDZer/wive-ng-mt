@@ -198,105 +198,101 @@ static void Handle_reload_config(
 }
 
 static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
-{                              
+{
 	rtapd *rtapd = eloop_ctx;
 	int len;
 	unsigned char buf[3000];
 	u8 *sa, *da, *pos, *pos_vlan, apidx=0, isVlanTag=0;
 	u16 ethertype,i;
-    priv_rec *rec;
-    size_t left;
-	u8 	RalinkIe[9] = {221, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00}; 
+	priv_rec *rec;
+	size_t left;
+	u8 RalinkIe[9]   = {221, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
+	u8 MediatekIe[9] = {221, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
 
 	len = recv(sock, buf, sizeof(buf), 0);
 	if (len < 0)
-    {
-		perror("recv");
-        Handle_term(15,eloop_ctx,sock_ctx);
-        return;
+	{
+	    perror("recv");
+    	    Handle_term(15,eloop_ctx,sock_ctx);
+    	    return;
 	}
 
 	rec = (priv_rec*)buf;
-    left = len -sizeof(*rec)+1;
+        left = len -sizeof(*rec)+1;
 	if (left <= 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR," too short recv\n");
 		return;
 	}
-						
-    sa = rec->saddr;
+
+        sa = rec->saddr;
 	da = rec->daddr;
 	ethertype = rec->ethtype[0] << 8;
 	ethertype |= rec->ethtype[1];
-			
 #ifdef ETH_P_VLAN
 	if(ethertype == ETH_P_VLAN)
-    {
-    	pos_vlan = rec->xframe;
-
-        if(left >= 4)
-        {
+	{
+    	    pos_vlan = rec->xframe;
+	    if(left >= 4)
+	    {
 			ethertype = *(pos_vlan+2) << 8;
 			ethertype |= *(pos_vlan+3);
-		}
-			
-		if((ethertype == ETH_P_PRE_AUTH) || (ethertype == ETH_P_PAE))
-		{
-			isVlanTag = 1;
-			DBGPRINT(RT_DEBUG_TRACE,"Recv vlan tag for 802.1x. (%02x %02x)\n", *(pos_vlan), *(pos_vlan+1));		
-		}
-    }
-#endif
-	
-	if ((ethertype == ETH_P_PRE_AUTH) || (ethertype == ETH_P_PAE))	
-    {
-        // search this packet is coming from which interface
-		for (i = 0; i < rtapd->conf->SsidNum; i++)
-		{		    
-			if (memcmp(da, rtapd->own_addr[i], 6) == 0)
-		    {
-		        apidx = i;		        
-		        break;
-		    }
-		}
-		
-		if(i >= rtapd->conf->SsidNum)
-		{
-	        DBGPRINT(RT_DEBUG_WARN, "Receive unexpected DA (%02x:%02x:%02x:%02x:%02x:%02x)\n",
-										MAC2STR(da));
-		    return;
-		}
+	    }
 
-		if (ethertype == ETH_P_PRE_AUTH)
+	    if((ethertype == ETH_P_PRE_AUTH) || (ethertype == ETH_P_PAE))
+	    {
+		isVlanTag = 1;
+		DBGPRINT(RT_DEBUG_TRACE,"Recv vlan tag for 802.1x. (%02x %02x)\n", *(pos_vlan), *(pos_vlan+1));
+	    }
+	}
+#endif
+	if ((ethertype == ETH_P_PRE_AUTH) || (ethertype == ETH_P_PAE))
+	{
+    	    // search this packet is coming from which interface
+	    for (i = 0; i < rtapd->conf->SsidNum; i++)
+	    {
+		if (memcmp(da, rtapd->own_addr[i], 6) == 0)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, "Receive WPA2 pre-auth packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+			apidx = i;
+		        break;
 		}
-		else
-		{
-			DBGPRINT(RT_DEBUG_TRACE, "Receive EAP packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
-		}
-    }
+	    }
+
+	    if(i >= rtapd->conf->SsidNum)
+	    {
+		    DBGPRINT(RT_DEBUG_WARN, "Receive unexpected DA (%02x:%02x:%02x:%02x:%02x:%02x)\n", MAC2STR(da));
+		    return;
+	    }
+	    if (ethertype == ETH_P_PRE_AUTH)
+	    {
+		DBGPRINT(RT_DEBUG_TRACE, "Receive WPA2 pre-auth packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+	    }
+	    else
+	    {
+		DBGPRINT(RT_DEBUG_TRACE, "Receive EAP packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+	    }
+	}
 	else
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "Receive unexpected ethertype 0x%04X!!!\n", ethertype);
 		return;
 	}
 
-    pos = rec->xframe;
-    
-    //strip 4 bytes for valn tag
-    if(isVlanTag)
-    {
-    	pos += 4;
-    	left -= 4;
+	pos = rec->xframe;
+
+	/* strip 4 bytes for valn tag */
+	if(isVlanTag)
+	{
+    	    pos += 4;
+    	    left -= 4;
 	}
-    
+
+	DBGPRINT(RT_DEBUG_TRACE, "Received %02x %02x %02x %02x %02x %02x (left=%d)\n", pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], left);
+
 	/* Check if this is a internal command or not */
-	if (left == sizeof(RalinkIe) && 
-		RTMPCompareMemory(pos, RalinkIe, 5) == 0)
+	if ((left >= sizeof(RalinkIe) && RTMPCompareMemory(pos, RalinkIe, 5) == 0) || (left >= sizeof(MediatekIe) && RTMPCompareMemory(pos, MediatekIe, 5) == 0))
 	{
 		u8	icmd = *(pos + 5);
-	
 		switch(icmd)
 		{
 			case DOT1X_DISCONNECT_ENTRY:
@@ -311,7 +307,7 @@ static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
 				if (s)
 				{
 					DBGPRINT(RT_DEBUG_TRACE,"This station(%02x:%02x:%02x:%02x:%02x:%02x) is removed.\n", MAC2STR(sa));
-					Ap_free_sta(rtapd, s);						
+					Ap_free_sta(rtapd, s);
 				}
 				else
 				{
@@ -325,19 +321,18 @@ static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
 			break;
 #ifdef RADIUS_MAC_ACL_SUPPORT
 			case DOT1X_ACL_ENTRY:
-				DBGPRINT(RT_DEBUG_TRACE, "STA(%02x:%02x:%02x:%02x:%02x:%02x) go to RADIUS-ACL Checking.\n", MAC2STR(sa));	
+				DBGPRINT(RT_DEBUG_TRACE, "STA(%02x:%02x:%02x:%02x:%02x:%02x) go to RADIUS-ACL Checking.\n", MAC2STR(sa));
 				DBGPRINT(RT_DEBUG_TRACE, "--> From AP Index: %d\n", apidx);
 				DBGPRINT(RT_DEBUG_TRACE, "--> Socket No.: %d\n", sock);
 				u32 session_timeout, acct_interim_interval;
 				int vlan_id = 0, res = 0;
-				
-				res = hostapd_allowed_address(rtapd, sa, &apidx, ethertype, sock, NULL, 0, 
+
+				res = hostapd_allowed_address(rtapd, sa, &apidx, ethertype, sock, NULL, 0,
 							&session_timeout, &acct_interim_interval, &vlan_id);
 				if (res == HOSTAPD_ACL_ACCEPT_TIMEOUT)
                                 {
                                         DBGPRINT(RT_DEBUG_TRACE, "--> SessionTimeout: %d\n", session_timeout);
 				}
-				
 			break;
 #endif /* RADIUS_MAC_ACL_SUPPORT */
 
@@ -542,11 +537,11 @@ static int Apd_setup_interface(rtapd *rtapd)
 
 static void usage(void)
 {
-	DBGPRINT(RT_DEBUG_OFF, "USAGE :  	rtdot1xd [optional command]\n");
-	DBGPRINT(RT_DEBUG_OFF, "[optional command] : \n");
-	DBGPRINT(RT_DEBUG_OFF, "-i <card_number> : indicate which card is used\n");
-	DBGPRINT(RT_DEBUG_OFF, "-d <debug_level> : set debug level\n");
-	
+	printf("USAGE:	rtdot1xd [optional command]\n");
+	printf("[optional command] : \n");
+	printf("	-i <card_number> : indicate which card is used\n");
+	printf("	-d <debug_level> : set debug level\n");
+
 	exit(1);
 }
 
@@ -565,23 +560,21 @@ static rtapd * Apd_init(const char *prefix_name)
 
 	rtapd->prefix_wlan_name = strdup(prefix_name);
 	if (rtapd->prefix_wlan_name == NULL)
-    {
+        {
 		DBGPRINT(RT_DEBUG_ERROR,"Could not allocate memory for prefix_wlan_name\n");
 		goto fail;
 	}
 
-    // init ioctl socket
-    rtapd->ioctl_sock = socket(PF_INET, SOCK_DGRAM, 0);
-    if (rtapd->ioctl_sock < 0)
-    {
-	    DBGPRINT(RT_DEBUG_ERROR,"Could not init ioctl socket \n");	
+        // init ioctl socket
+        rtapd->ioctl_sock = socket(PF_INET, SOCK_DGRAM, 0);
+        if (rtapd->ioctl_sock < 0)
+        {
+	    DBGPRINT(RT_DEBUG_ERROR,"Could not init ioctl socket \n");
 	    goto fail;
-    }
-   
-
+        }
 	rtapd->conf = Config_read(rtapd->ioctl_sock, rtapd->prefix_wlan_name);
 	if (rtapd->conf == NULL)
-    {
+        {
 		DBGPRINT(RT_DEBUG_ERROR,"Could not allocate memory for rtapd->conf \n");
 		goto fail;
 	}
@@ -595,7 +588,7 @@ static rtapd * Apd_init(const char *prefix_name)
 	return rtapd;
 
 fail:
-	if (rtapd) {		
+	if (rtapd) {
 		if (rtapd->conf)
 			Config_free(rtapd->conf);
 
