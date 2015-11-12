@@ -1418,7 +1418,7 @@
 83) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
 84) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
 85) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
-86) kenrel: net: af_inet: only check perm protocol when register proto.<br>
+86) kernel: net: af_inet: only check perm protocol when register proto.<br>
 87) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
 88) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
 89) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
