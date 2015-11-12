@@ -1333,111 +1333,112 @@
 <br>
 <br>
 <b>3.6.x</b><br>
-1) busybox: update to 1.24.1 version.<br>
-2) lldpd: up to 0.7.19 version.<br>
-3) libcurl: up to 7.45.0 version.<br>
-4) coovachilli: up to version 1.3.1.3 (commit: 3d7730).<br>
-5) nodogsplash: up to version 0.9 (commit: 1a9c0f).<br>
-6) xupnpd: up to 1.033 version commit 5c3ff1.<br>
-7) xl2tpd: sync with devel tree 06 Nov 2015.<br>
-8) miniupnpd: workaround issue with Windows 10 (UDA 2.0 devices and control points SHALL implement IPv4 and IPv6).<br>
-9) wireless_tool: sync with internal x86 router tree.<br>
-10) 802.1x: add support MediatekIE and small cleanup.<br>
-11) add netcwnmp - basic tr_069 agent support.<br>
-12) busybox: allow user RPC, and add /etc/rpc for compat with classic distro apps.<br>
-13) goahead: make delay rssi check before kick configurable.<br>
-14) goahead: add chilispot/nodog configure and profiles for auth services.<br>
-15) goahead: always set wan_static_dns to on in bridge mode.<br>
-16) defaults/goahead/init: remove RadioOff variable, diret use RadioOn instead.<br>
-17) defaults: increase max clients to 56 for 7620 and to 72 for 7621 based AP.<br>
-18) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
-19) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
-20) init.d: serialize network->services reconfigure scripts run.<br>
-21) init.d: reset all port and restore defaults particion (workaround eee bug at some samples in AP bridge mode).<br>
-22) init.d: fix mmc mount speed.<br>
-23) init.d: iptables: rework ipv6 rules generate (more readable).<br>
-24) init.d: refactoring checkconf logic.<br>
-25) init.d: dyndns: for dnsafraid not need set and use DDNSAccount, only key in DDNSPassword used for login.<br>
-26) init.d: checkconf: add workaround for stupids china engeeneers from fabric (WLAN macs must be individual to).<br>
-27) init.d: fix M2U and snooping work in some modes and cases.<br>
-28) kernel: up to 3.4.110 version.<br>
-29) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
-30) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
-31) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
-32) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
-33) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
-34) kernel: ralink_wifi: 76x2: fix dynvga enable procedure.<br>
-35) kernel: ralink_wifi: 76x2: decrease memory usage for Andes RX1 ring.<br>
-36) kernel: ralink_wifi: 76x2: allways use mcs_0/6 for managment frames (depended by band) for compat.<br>
-37) kernel: ralink_wifi: 76x2: enable 802.11K (radio resource managment by default).<br>
-38) kernel: ralink_wifi: 76x2: 802.11k use channel power information form US table to RU region (need for work RRM).<br>
-39) kernel: ralink_wifi: xxxx: optimize reschedule Tx cleanup timer.<br>
-40) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-41) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
-42) kernel: ralink_wifi: xxxx: reject/ignore roaming parametrs now rework with average RSSI instead of max.<br>
-43) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
-44) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
-45) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
-46) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
-47) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-48) kernel: ralink_wifi: xxxx: enable dfs,rrm support by default.<br>
-49) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
-50) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
-51) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
-52) kernel: ralink_wifi: xxxx: add correct regulatory table to Russia.<br>
-53) kernel: ralink_wifi: xxxx: fix compath with 802.11d.<br>
-54) kernel: ralink_wifi: xxxx: fix end enabled by default bss_qload (without alarm) for use in autochannel select and AP load annonse in beacons.<br>
-55) kernel: ralink_wifi: xxxx: backport OID_802_DOT1X_QUERY_STA_AID ioctl support for full compath with new 802.1x daemon.<br>
-56) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-57) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-58) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
-59) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-60) kernel: drivers/core: fix unregistration path of platform devices.<br>
-61) kernel: jump label: remove static_branch().<br>
-62) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-63) kernel: mm: make sendfile(2) killable.<br>
-64) kernel: usb: xhci: follow upstream.<br>
-65) kernel: usb: xhci: backports from 3.10 tree.<br>
-66) kernel: usb: option: add ZTE PIDs.<br>
-67) kernel: usb: core: update power budget for SuperSpeed.<br>
-68) kernel: usb: asix: fix crash on skb alloc failure.<br>
-69) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-70) kernel: net: initialize flow flags in input path.<br>
-71) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-72) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-73) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-74) kernel: net: fix skb csum races when peeking.<br>
-75) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-76) kernel: net: af_key: net: fix RCU splat.<br>
-77) kernel: net: add netfilter SMB fastpath module.<br>
-78) kernel: net: remove sk_init() helper.<br>
-79) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-80) kernel: net: xps: fix calculation of initial number of xps queues.<br>
-81) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
-82) kernel: net: fix a race in dst_release().<br>
-83) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-84) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
-85) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-86) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-87) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
-88) kernel: net: af_inet: only check perm protocol when register proto.<br>
-89) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-90) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-91) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
-92) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-93) kernel: net: ipv4/6: compute net once in some cases.<br>
-94) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
-95) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-96) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-97) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-98) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-99) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-100) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-101) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-102) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-103) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-104) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
-105) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
+1) uboot: up to 5.0.0.3 version.<br>
+2) busybox: update to 1.24.1 version.<br>
+3) lldpd: up to 0.7.19 version.<br>
+4) libcurl: up to 7.45.0 version.<br>
+5) coovachilli: up to version 1.3.1.3 (commit: 3d7730).<br>
+6) nodogsplash: up to version 0.9 (commit: 1a9c0f).<br>
+7) xupnpd: up to 1.033 version commit 5c3ff1.<br>
+8) xl2tpd: sync with devel tree 06 Nov 2015.<br>
+9) miniupnpd: workaround issue with Windows 10 (UDA 2.0 devices and control points SHALL implement IPv4 and IPv6).<br>
+10) wireless_tool: sync with internal x86 router tree.<br>
+11) 802.1x: add support MediatekIE and small cleanup.<br>
+12) add netcwnmp - basic tr_069 agent support.<br>
+13) busybox: allow user RPC, and add /etc/rpc for compat with classic distro apps.<br>
+14) goahead: make delay rssi check before kick configurable.<br>
+15) goahead: add chilispot/nodog configure and profiles for auth services.<br>
+16) goahead: always set wan_static_dns to on in bridge mode.<br>
+17) defaults/goahead/init: remove RadioOff variable, diret use RadioOn instead.<br>
+18) defaults: increase max clients to 56 for 7620 and to 72 for 7621 based AP.<br>
+19) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
+20) init.d: udhpd add dhcpARPPTimeout options for conflict adresses check time tune.<br>
+21) init.d: serialize network->services reconfigure scripts run.<br>
+22) init.d: reset all port and restore defaults particion (workaround eee bug at some samples in AP bridge mode).<br>
+23) init.d: fix mmc mount speed.<br>
+24) init.d: iptables: rework ipv6 rules generate (more readable).<br>
+25) init.d: refactoring checkconf logic.<br>
+26) init.d: dyndns: for dnsafraid not need set and use DDNSAccount, only key in DDNSPassword used for login.<br>
+27) init.d: checkconf: add workaround for stupids china engeeneers from fabric (WLAN macs must be individual to).<br>
+28) init.d: fix M2U and snooping work in some modes and cases.<br>
+29) kernel: up to 3.4.110 version.<br>
+30) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
+31) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
+32) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
+33) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
+34) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
+35) kernel: ralink_wifi: 76x2: fix dynvga enable procedure.<br>
+36) kernel: ralink_wifi: 76x2: decrease memory usage for Andes RX1 ring.<br>
+37) kernel: ralink_wifi: 76x2: allways use mcs_0/6 for managment frames (depended by band) for compat.<br>
+38) kernel: ralink_wifi: 76x2: enable 802.11K (radio resource managment by default).<br>
+39) kernel: ralink_wifi: 76x2: 802.11k use channel power information form US table to RU region (need for work RRM).<br>
+40) kernel: ralink_wifi: xxxx: optimize reschedule Tx cleanup timer.<br>
+41) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+42) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+43) kernel: ralink_wifi: xxxx: reject/ignore roaming parametrs now rework with average RSSI instead of max.<br>
+44) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
+45) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
+46) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
+47) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
+48) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
+49) kernel: ralink_wifi: xxxx: enable dfs,rrm support by default.<br>
+50) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
+51) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
+52) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
+53) kernel: ralink_wifi: xxxx: add correct regulatory table to Russia.<br>
+54) kernel: ralink_wifi: xxxx: fix compath with 802.11d.<br>
+55) kernel: ralink_wifi: xxxx: fix end enabled by default bss_qload (without alarm) for use in autochannel select and AP load annonse in beacons.<br>
+56) kernel: ralink_wifi: xxxx: backport OID_802_DOT1X_QUERY_STA_AID ioctl support for full compath with new 802.1x daemon.<br>
+57) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+58) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+59) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
+60) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+61) kernel: drivers/core: fix unregistration path of platform devices.<br>
+62) kernel: jump label: remove static_branch().<br>
+63) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+64) kernel: mm: make sendfile(2) killable.<br>
+65) kernel: usb: xhci: follow upstream.<br>
+66) kernel: usb: xhci: backports from 3.10 tree.<br>
+67) kernel: usb: option: add ZTE PIDs.<br>
+68) kernel: usb: core: update power budget for SuperSpeed.<br>
+69) kernel: usb: asix: fix crash on skb alloc failure.<br>
+70) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+71) kernel: net: initialize flow flags in input path.<br>
+72) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+73) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+74) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+75) kernel: net: fix skb csum races when peeking.<br>
+76) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+77) kernel: net: af_key: net: fix RCU splat.<br>
+78) kernel: net: add netfilter SMB fastpath module.<br>
+79) kernel: net: remove sk_init() helper.<br>
+80) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
+81) kernel: net: xps: fix calculation of initial number of xps queues.<br>
+82) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
+83) kernel: net: fix a race in dst_release().<br>
+84) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
+85) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
+86) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+87) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+88) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
+89) kernel: net: af_inet: only check perm protocol when register proto.<br>
+90) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+91) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+92) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
+93) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+94) kernel: net: ipv4/6: compute net once in some cases.<br>
+95) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
+96) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+97) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+98) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+99) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+100) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+101) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+102) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+103) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+104) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+105) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+106) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
 <br>
 <br>
 <b>TODO:</b><br>

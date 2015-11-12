@@ -297,14 +297,17 @@ static void Init_System_Mode(void)
 		mips_bus_feq = mips_cpu_feq/5;
 	}
 #elif defined (MT7628_ASIC_BOARD)
+	clk_sel = (reg>>6) & 0x1; // XTAL 25/40
 	reg = RALINK_REG(RALINK_CLKCFG0_REG);
 	if (reg & (0x1<<1)) {
+		/* BBP PLL */
 		mips_cpu_feq = (480*1000*1000)/CPU_FRAC_DIV;
 	}else if (reg & 0x1) {
-		mips_cpu_feq = ((RALINK_REG(RALINK_SYSCTL_BASE+0x10)>>6)&0x1) ? (40*1000*1000)/CPU_FRAC_DIV \
-					   : (25*1000*1000)/CPU_FRAC_DIV;
+		/* XTAL */
+		mips_cpu_feq = (clk_sel) ? (40*1000*1000)/CPU_FRAC_DIV : (25*1000*1000)/CPU_FRAC_DIV;
 	}else {
-		mips_cpu_feq = (575*1000*1000)/CPU_FRAC_DIV;
+		/* CPU PLL */
+		mips_cpu_feq = (clk_sel) ? (580*1000*1000)/CPU_FRAC_DIV : (575*1000*1000)/CPU_FRAC_DIV;
 	}
 	mips_bus_feq = mips_cpu_feq/3;
 #elif defined(MT7621_ASIC_BOARD)
@@ -326,10 +329,8 @@ static void Init_System_Mode(void)
 		reg = RALINK_REG(RALINK_SYSCTL_BASE + 0x44);
 		mips_cpu_feq = (500 * (reg & 0x1F) / ((reg >> 8) & 0x1F)) * 1000 * 1000;
 	}
-	if (clk_sel)
+	/* SYS_CLK always CPU/4 (not depend from OCP) */
 		mips_bus_feq = mips_cpu_feq/4;
-	else
-		mips_bus_feq = mips_cpu_feq/3;
 #elif defined (RT3883_ASIC_BOARD) 
 	clk_sel = (reg>>8) & 0x03;
 	switch(clk_sel) {
@@ -531,7 +532,11 @@ static int init_func_ram (void)
 #endif
 
 	if ((gd->ram_size = initdram (board_type)) > 0) {
-		print_size (gd->ram_size, "\n");
+		ulong ram_size = gd->ram_size;
+#if defined (ON_BOARD_4096M_DRAM_COMPONENT)
+		ram_size += 64*1024*1024;
+#endif
+		print_size (ram_size, "\n");
 		return (0);  
 	}
 	puts ("*** failed ***\n");
@@ -1568,7 +1573,6 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 
 #if defined(MT7628_ASIC_BOARD)	/* Enable WLED share pin */
 	RALINK_REG(RALINK_SYSCTL_BASE+0x3C)|= (1<<8);	
-	RALINK_REG(RALINK_SYSCTL_BASE+0x64)&= ~((0x3<<16)|(0x3));
 #endif	
 #if defined(RT3052_ASIC_BOARD) || defined(RT3352_ASIC_BOARD) || defined(RT5350_ASIC_BOARD)
 	//turn on all Ethernet LEDs around 0.5sec.
@@ -2104,7 +2108,12 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 #endif
 
 	debug("\n #### The CPU freq = %d MHZ #### \n",mips_cpu_feq/1000/1000);
+
+#if defined (ON_BOARD_4096M_DRAM_COMPONENT) 
+	debug(" estimate memory size = %d Mbytes\n", gd->ram_size/1024/1024 + 64);
+#else
 	debug(" estimate memory size = %d Mbytes\n",gd->ram_size /1024/1024 );
+#endif
 
 #if defined (RT3052_ASIC_BOARD) || defined (RT3052_FPGA_BOARD)  || \
     defined (RT3352_ASIC_BOARD) || defined (RT3352_FPGA_BOARD)  || \

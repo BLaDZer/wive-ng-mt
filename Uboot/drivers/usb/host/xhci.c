@@ -979,6 +979,8 @@ submit_control_msg(struct usb_device *udev, unsigned long pipe, void *buffer,
 	return xhci_ctrl_tx(udev, pipe, setup, length, buffer);
 }
 
+static int xhci_inited = 0;
+
 /**
  * Intialises the XHCI host controller
  * and allocates the necessary data structures
@@ -1005,6 +1007,8 @@ int usb_lowlevel_init(int index, enum usb_init_type init, void **controller)
 
 	ctrl->hccr = hccr;
 	ctrl->hcor = hcor;
+
+	xhci_inited = 1;
 
 	/*
 	 * Program the Number of Device Slots Enabled field in the CONFIG
@@ -1063,8 +1067,11 @@ int usb_lowlevel_init(int index, enum usb_init_type init, void **controller)
  */
 int usb_lowlevel_stop(int index)
 {
-	struct xhci_ctrl *ctrl = (xhcic + index);
+	struct xhci_ctrl *ctrl = &xhcic[index];
 	u32 temp;
+
+	if (!xhci_inited)
+		return 0;
 
 	xhci_reset(ctrl->hcor);
 
@@ -1077,6 +1084,8 @@ int usb_lowlevel_stop(int index)
 	xhci_hcd_stop(index);
 
 	xhci_cleanup(ctrl);
+
+	xhci_inited = 0;
 
 	return 0;
 }
