@@ -67,6 +67,8 @@ var ids_built ='<% getIdsEnableBuilt(); %>' == '1';
 var txbf_built = '<% getTXBFBuilt(); %>';
 
 var dfs_built = '<% getDFSBuilt(); %>' == '1';
+var rrm_built = '<% getRRMBuilt(); %>' == '1';
+var ft_built = '<% getFTBuilt(); %>' == '1';
 
 var bssid_num = 1*'<% getBSSIDNum(); %>';
 
@@ -91,6 +93,8 @@ var ChannelList_24G =
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
 	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
+	displayElement( "row_RRMEnable", (form.FastRoaming.value == "1") && rrm_built);
+	displayElement( "row_FtSupport", (form.FastRoaming.value == "1") && ft_built);
 }
 
 function idsChange(form) {
@@ -316,6 +320,8 @@ function initTranslation()
 	_TR("basicKickStaRssiLowDelay", "basic roaming rssi low delay");
 	_TR("basicProbeRspRssi", "basic roaming probe rssi");
 	_TR("basic80211h", "basic dot11h");
+	_TR("basicRRMEnable", "basic roaming rrm");
+	_TR("basicFtSupport", "basic roaming ft");
 
 	_TR("basicIDS", "basic ids");
 	_TR("ids", "basic ids");
@@ -801,6 +807,14 @@ function initValue()
 		form.ETxBfEnCond.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfEnCond"); %>' ==  '1') ? 1 : 0;
 	}
 	displayElement( 'div_txbf', txbf_built == '1');
+
+	var rrm = '<% getCfgZero(1, "RRMEnable"); %>';
+	var ft = '<% getCfgZero(1, "FtSupport"); %>';
+	var rrmArray = rrm.split(";");
+	var ftArray = ft.split(";");
+	form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
+	form.FtSupport.options.selectedIndex = 1*ftArray[0];
+
 	wirelessOnChange(form);
 }
 
@@ -1406,6 +1420,20 @@ function CheckValue(form)
         	<tr id="row_KickStaRssiLowDelay" style="display:none;">
         		<td class="head" id="basicKickStaRssiLowDelay" width="50%">How time rssi check before kick</td>
         		<td width="50%"><input type="text" name="KickStaRssiLowDelay" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLowDelay"); %>"><font color="#808080"> 0 - 200 seconds, default 5 </font></td>
+        	</tr>
+        	<tr id="row_RRMEnable" style="display:none;">
+        		<td class="head" id="basicRRMEnable" width="50%">RRMEnable</td>
+        		<td width="50%"><select name="RRMEnable" class="half">
+        			<option value="0" id="disable">Disable</option>
+        			<option value="1" id="enable">Enable</option>
+              </select></td>
+        	</tr>
+        	<tr id="row_FtSupport" style="display:none;">
+        		<td class="head" id="basicFtSupport" width="50%">FtSupport</td>
+        		<td width="50%"><select name="FtSupport" class="half">
+        			<option value="0" id="disable">Disable</option>
+        			<option value="1" id="enable">Enable</option>
+              </select></td>
         	</tr>
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">

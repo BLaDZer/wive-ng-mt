@@ -116,6 +116,8 @@
   <message msgid="basic roaming rssi low" msgstr="Отключить клиента при уровне ниже" />
   <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного отключения" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
+  <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
+  <message msgid="basic roaming ft" msgstr="Быстрое подключение 802.11R" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
   <message msgid="basic ids" msgstr="Предотвращение вторжений" />
   <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />

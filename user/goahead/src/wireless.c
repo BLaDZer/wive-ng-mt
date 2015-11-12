@@ -41,6 +41,8 @@ static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
 static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getFTBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -188,6 +190,8 @@ void formDefineWireless(void)
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
 	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
 	websAspDefine(T("getDFSBuilt"), getDFSBuilt);
+	websAspDefine(T("getRRMBuilt"), getRRMBuilt);
+	websAspDefine(T("getFTBuilt"), getFTBuilt);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
@@ -667,6 +671,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
 #endif
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+	char_t	*rrm;
+	char 	ieee80211k[2 * MAX_NUMBER_OF_BSSID] = "";
+#endif
+#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+	char_t	*ft;
+	char 	ieee80211r[2 * MAX_NUMBER_OF_BSSID] = "";
+#endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
 	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
@@ -740,6 +752,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
 	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
 #endif
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+	rrm = websGetVar(wp, T("RRMEnable"), T("1"));
+#endif
+#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+	ft = websGetVar(wp, T("FtSupport"), T("1"));
+#endif
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -810,6 +828,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
 #endif
 #endif
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+			sprintf(ieee80211k, "%s%s", ieee80211k, (CHK_IF_DIGIT(rrm, 1)) ? "1" : "0");
+			sprintf(ieee80211k, "%s%s", ieee80211k, token);
+#endif
+#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+			sprintf(ieee80211r, "%s%s", ieee80211r, (CHK_IF_DIGIT(ft, 1)) ? "1" : "0");
+			sprintf(ieee80211r, "%s%s", ieee80211r, token);
+#endif
 			i++;
 		}
 	}
@@ -826,6 +852,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+	nvram_bufset(RT2860_NVRAM, "RRMEnable", ieee80211k);
+#endif
+#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+	nvram_bufset(RT2860_NVRAM, "FtSupport", ieee80211r);
+#endif
 
 	// Channel & automatic channel select
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -1813,6 +1845,22 @@ static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #else
 	return websWrite(wp, T("0"));
 #endif	
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getFTBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
 #endif

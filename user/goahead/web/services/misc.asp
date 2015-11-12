@@ -147,6 +147,8 @@ function initTranslation()
 
 function initValue()
 {
+	var opmode = "<% getCfgZero(1, "OperationMode"); %>";
+	var apcli_bridge = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>';
 	var stp = <% getCfgZero(1, "stpEnabled"); %>;
 	var igmp = <% getCfgZero(1, "igmpEnabled"); %>;
 	var igmp_snoop = '<% getCfgGeneral(1, "igmpSnoopMode"); %>';
@@ -237,10 +239,13 @@ function initValue()
 	displayElement('lltd', lltdb == '1');
 	displayElement('lldpd', lldpdb == '1');
 	displayElement('snmpd', snmpdb == '1');
-	displayElement('igmpProxy', igmpb == '1');
+	displayElement('igmpProxy', (igmpb == '1') && (opmode != "0") && (apcli_bridge != "1"));
 	displayElement('upnp', upnpb == '1');
 	displayElement('xupnpd', xupnpdb == '1');
 	displayElement('dnsproxy', dnsp == '1');
+
+	displayElement('igmpFastL', ((igmpb == '1') && (opmode != "0") && (apcli_bridge != "1")) || (opmode != "2"));
+	displayElement('igmpM2UConv', opmode != "2");
 
 	form.offloadMode.value = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 	offloadModeSelect(form);
@@ -319,9 +324,7 @@ function pingerSelect(form)
 
 function igmpSelect(form)
 {
-	displayElement( [ 'igmpSnoop', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
-	displayElement( [ 'igmpFastL', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
-	displayElement( [ 'igmpM2UConv', 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
+	displayElement( [ 'mcast_store_ttl_row' ] , form.igmpEnbl.value == '1');
 }
 
 function httpRmtSelect(form)
@@ -824,7 +827,6 @@ function submitForm(form) {
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
-          <tr>
         </table>
         <table class="buttons">
           <tr>

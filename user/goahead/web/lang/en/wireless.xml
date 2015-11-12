@@ -117,6 +117,8 @@
   <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low" />
   <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
+  <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
+  <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
   <message msgid="basic dot11h" msgstr="IEEE 802.11h support" />
   <message msgid="basic ids" msgstr="Intrusion Detection settings" />
   <message msgid="basic ids auth" msgstr="Authentication flood threshold" />
