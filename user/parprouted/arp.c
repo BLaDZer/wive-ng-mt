@@ -366,7 +366,7 @@ void *arp(char *ifname)
     do {
       pthread_testcancel();
       /* Sleep a bit in order not to overload the system */
-      usleep(300);
+      usleep(600);
 
       if (arp_recv(sock, &frame) <= 0)
     	    continue;
