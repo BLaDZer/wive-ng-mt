@@ -4536,10 +4536,12 @@ INT RTMPAPQueryInformation(
 #ifdef DOT1X_SUPPORT
 		case OID_802_DOT1X_CONFIGURATION:
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::Get Radius setting(%d)\n", sizeof(DOT1X_CMM_CONF)));
-				RTMPIoctlQueryRadiusConf(pAd, wrq);	
+				RTMPIoctlQueryRadiusConf(pAd, wrq);
 			break;
-#endif /* DOT1X_SUPPORT */			
-
+		case OID_802_DOT1X_QUERY_STA_AID:
+			RTMPIoctlQueryStaAid(pAd, wrq);
+        		break;
+#endif /* DOT1X_SUPPORT */
 		case RT_OID_802_11_MAC_ADDRESS:
                         wrq->u.data.length = MAC_ADDR_LEN;
                         Status = copy_to_user(wrq->u.data.pointer, &pAd->ApCfg.MBSSID[apidx].Bssid, wrq->u.data.length);
@@ -8513,6 +8515,42 @@ VOID RTMPIoctlSetIdleTimeout(
 	}
 	
 	return;
+}
+
+VOID RTMPIoctlQueryStaAid(
+        IN      PRTMP_ADAPTER   pAd,
+        IN      RTMP_IOCTL_INPUT_STRUCT *wrq)
+{
+	DOT1X_QUERY_STA_AID macBuf;
+	MAC_TABLE_ENTRY *pEntry = NULL;
+
+	if (wrq->u.data.length != sizeof(DOT1X_QUERY_STA_AID))
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s : the length is mis-match\n", __FUNCTION__));
+        	return;
+	}
+	else
+	{
+		copy_from_user(&macBuf, wrq->u.data.pointer, wrq->u.data.length);
+		pEntry = MacTableLookup(pAd, macBuf.StaAddr);
+
+		if (pEntry != NULL)
+		{
+			wrq->u.data.length = sizeof(DOT1X_QUERY_STA_AID);
+			macBuf.aid = pEntry->Aid;
+			if (copy_to_user(wrq->u.data.pointer, &macBuf, wrq->u.data.length))
+			{
+				DBGPRINT(RT_DEBUG_ERROR, ("%s: copy_to_user() fail\n", __FUNCTION__));
+			}
+			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_DOT1X_QUERY_STA_AID(%02x:%02x:%02x:%02x:%02x:%02x, AID=%d)\n",
+						PRINT_MAC(macBuf.StaAddr), macBuf.aid));
+		}
+		else
+		{
+			DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_DOT1X_QUERY_STA_AID(%02x:%02x:%02x:%02x:%02x:%02x, Not Found)\n",
+					PRINT_MAC(macBuf.StaAddr)));
+		}
+	}
 }
 #endif /* DOT1X_SUPPORT */
 
