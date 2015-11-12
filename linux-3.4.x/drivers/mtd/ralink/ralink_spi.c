@@ -721,6 +721,26 @@ static int raspi_4byte_mode(int enable)
 	return 0;
 }
 
+#if defined (CONFIG_MTD_SPI_FAST_CLOCK)
+static void raspi_drive_strength(void)
+{
+	u8 code = 0;
+
+	if (flash->chip->id == 0xef) {
+		/* set Winbond DVP[1:0] as 10 (driving strength 50%) */
+		if (raspi_read_rg(&code, 0x15) == 0) {
+			/* Winbond DVP[1:0] is 11 by default (driving strength 25%) */
+			if ((code & 0x60) == 0x60) {
+				code &= ~0x60;
+				code |= 0x40;
+				raspi_write_enable();
+				raspi_write_rg(&code, 0x11);
+			}
+		}
+	}
+}
+#endif
+
 /*
  * Set write enable latch with Write Enable command.
  * Returns negative if error occurred.
@@ -1160,7 +1180,7 @@ struct chip_info *chip_prob(void)
  * understands FAST_READ (for clocks over 25 MHz).
  */
 extern int ra_check_flash_type(void);
-static int raspi_probe(void)
+static int __init raspi_init(void)
 {
 	struct chip_info *chip;
 #if defined (SPI_DEBUG)
@@ -1210,6 +1230,11 @@ static int raspi_probe(void)
 	flash->mtd.unlock = ramtd_unlock;
 #endif
 
+#if defined (CONFIG_MTD_SPI_FAST_CLOCK)
+	/* tune flash chip output driving strength */
+	raspi_drive_strength();
+#endif
+
 	printk("%s (%02x %04x) (%u Kbytes)\n",
 	       chip->name, chip->id, chip->jedec_id, (uint32_t)flash->mtd.size / 1024);
 
@@ -1246,11 +1271,6 @@ static int raspi_probe(void)
 #endif
 
 	return mtd_device_register(&flash->mtd, rt2880_partitions, ARRAY_SIZE(rt2880_partitions));
-}
-
-static int __init raspi_init(void)
-{
-	return raspi_probe();
 }
 
 static void __exit raspi_exit(void)
