@@ -21,7 +21,7 @@ wan_if_preconf() {
     fi
 }
 
-# static or brdge modes configurations
+# static or brdige modes configurations
 static_conf() {
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	if [ "$wan_ipaddr" = "" ] || [ "$wan_netmask" = "" ]; then
