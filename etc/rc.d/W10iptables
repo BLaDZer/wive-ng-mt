@@ -337,7 +337,7 @@ natrules() {
 vpnrules() {
 	if [ "$PPP_CONNECT" = "on" ]; then
 	    $LOG "Call to add VPN netfilter rules."
-	    PPPIFLIST=`ip addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
+	    PPPIFLIST=`ip -4 addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
 	    for pppnum in $PPPIFLIST; do
 		if [ -e /tmp/ppp_firewall_$pppnum ]; then
 		    eval "/tmp/ppp_firewall_$pppnum"

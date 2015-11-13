@@ -65,7 +65,7 @@ case "$1" in
 	# and prevent fake unset FULL_RENEW flag at next time bound
 	rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
 	ip -4 addr flush dev $interface
-	ip -4 addr add $rndip/32 dev $interface
+	ip -4 addr replace $rndip/32 dev $interface
 	# never need down iface
 	ip link set $interface up
 	# remove routes updated flags

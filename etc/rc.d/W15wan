@@ -21,8 +21,43 @@ wan_if_preconf() {
     fi
 }
 
+# static or brdge modes configurations
+static_conf() {
+    if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
+	if [ "$wan_ipaddr" = "" ] || [ "$wan_netmask" = "" ]; then
+	    $LOG "ERROR: WAN's IP address/nemask not set. Need set this in WAN config!!!"
+	    exit 1
+	fi
+	if [ "$wan_ipaddr" = "$lan_ipaddr" ]; then
+	    $LOG "ERROR: WAN's IP address is set identical to LAN. Need change LAN_IP adress!!!"
+	    exit 1
+	fi
+	$LOG "Wan interface $wan_if set $wan_ipaddr netmask $wan_netmask and up."
+	ifconfig "$wan_if" "$wan_ipaddr" netmask "$wan_netmask"
+    else
+	$LOG "Bridge interface adress set and up."
+	ifconfig br0 "$lan_ipaddr" netmask "$lan_netmask"
+    fi
+    # always treat bridge mode having static wan connection
+    if [ "$wan_gateway" != "" ]; then
+	$LOG "Add default route via $wan_gateway."
+	ip -4 route replace default via "$wan_gateway"
+    fi
+    # add routes configured in web
+    if [ -f /etc/routes_replace ]; then
+	$LOG "Add user routes."
+	/etc/routes_replace replace "$phys_lan_if" "$wan_if"
+    fi
+    # Add route to multicast subnet
+    if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
+	$LOG "Add route to multicast subnet."
+	ip -4 route replace "$mcast_net" dev "$wan_if"
+    fi
+}
+
 # configure and start zeroconf daemon
 zero_conf() {
+    $LOG "Call zeroconf for get wan ip address."
     if [ "$SysLogd" = "1" ]; then
 	logto="syslog"
     else
@@ -34,6 +69,8 @@ zero_conf() {
 # configure dhcp client
 udhcpc_conf() {
     eval `nvram_buf_get 2860 dhcpRequestIP dhcpVendorClass wan_manual_mtu`
+
+    $LOG "Start DHCP client at $wan_if."
     if [ "$dhcpRequestIP" != "" ]; then
 	dhcpRequestIP="-r $dhcpRequestIP"
     else
@@ -78,45 +115,14 @@ start() {
     ip link set "$wan_if" up
 
     if [ "$wanConnectionMode" = "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
-	if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	    # lan and wan ip should not be the same except in bridge mode
-	    if [ "$wan_ipaddr" = "" ] || [ "$wan_netmask" = "" ]; then
-		$LOG "ERROR: WAN's IP address/nemask not set. Need set this in WAN config!!!"
-		exit 0
-	    fi
-	    if [ "$wan_ipaddr" = "$lan_ipaddr" ]; then
-		$LOG "ERROR: WAN's IP address is set identical to LAN. Need change LAN_IP adress!!!"
-		exit 0
-	    fi
-	    # wan interface adress set and up
-	    ifconfig "$wan_if" "$wan_ipaddr" netmask "$wan_netmask"
-	else
-	    # bridge interface adress set and up
-	    ifconfig br0 "$lan_ipaddr" netmask "$lan_netmask"
-	fi
-	# always treat bridge mode having static wan connection
-	if [ "$wan_gateway" != "" ]; then
-	    $LOG "Add default route via $wan_gateway."
-	    ip -4 route replace default via "$wan_gateway"
-	fi
-	# add routes configured in web
-	if [ -f /etc/routes_replace ]; then
-	    $LOG "Add user routes."
-	    /etc/routes_replace replace "$phys_lan_if" "$wan_if"
-	fi
-	# Add route to multicast subnet
-	if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
-	    $LOG "Add route to multicast subnet."
-	    ip -4 route replace "$mcast_net" dev "$wan_if"
-	fi
+	static_conf
     elif [ "$wanConnectionMode" = "DHCP" ] && [ "$purepppoemode" != "1" ]; then
-	$LOG "Start DHCP client at $wan_if."
 	udhcpc_conf
     elif [ "$wanConnectionMode" = "ZERO" ] || [ "$purepppoemode" = "1" ]; then
-	$LOG "Call zeroconf for get wan ip address."
 	zero_conf
     else
 	$LOG "Unknown mode. Please reset device."
+	exit 1
     fi
 }
 
