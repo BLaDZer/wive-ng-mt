@@ -75,7 +75,7 @@ static u8 xt_ct_find_proto(const struct xt_tgchk_param *par)
 static int xt_ct_tg_check_v0(const struct xt_tgchk_param *par)
 {
 	struct xt_ct_target_info *info = par->targinfo;
-	struct nf_conntrack_tuple t;
+	struct nf_conntrack_tuple t = {};
 	struct nf_conn_help *help;
 	struct nf_conn *ct;
 	int ret = 0;
@@ -161,7 +161,7 @@ static void __xt_ct_tg_timeout_put(struct ctnl_timeout *timeout)
 static int xt_ct_tg_check_v1(const struct xt_tgchk_param *par)
 {
 	struct xt_ct_target_info_v1 *info = par->targinfo;
-	struct nf_conntrack_tuple t;
+	struct nf_conntrack_tuple t = {};
 	struct nf_conn_help *help;
 	struct nf_conn *ct;
 	int ret = 0;

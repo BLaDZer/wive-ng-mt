@@ -173,7 +173,7 @@ static void pptp_destroy_siblings(struct nf_conn *ct)
 {
 	struct net *net = nf_ct_net(ct);
 	const struct nf_conn_help *help = nfct_help(ct);
-	struct nf_conntrack_tuple t;
+	struct nf_conntrack_tuple t = {};
 
 	nf_ct_gre_keymap_destroy(ct);
 
