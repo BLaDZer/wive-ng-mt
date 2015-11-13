@@ -39,16 +39,16 @@ case "$MODE" in
 	####################################
 	# dual band 7620A + 7610NE
 	####################################
+	"MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB")
+	    # white sample
+	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
+	    ;;
 	"MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
 	    # black sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
 	    ;;
 	"MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
 	    # none sample
-	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
-	    ;;
-	"MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB")
-	    # white sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
 	    ;;
 	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M")
