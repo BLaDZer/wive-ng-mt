@@ -46,7 +46,7 @@ else
     vpnInterface="br0"
 fi
 
-IN_BR=`brctl show | grep $vpnInterface -c`
+IN_BR=`brctl show | grep "$vpnInterface" -c`
 if [ "$vpnInterface" != "br0" ] && [ "$IN_BR" = "1" ]; then
     PPPOE_vpnInterface="br0"
     $LOG "$PPPOE_vpnInterface in bridge. Set pppoe interface to br0"

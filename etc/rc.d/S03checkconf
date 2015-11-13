@@ -103,11 +103,11 @@ invendorrangetest() {
 	DONTTOUCHFACTORY="NO"
 	DONTTOUCHWAN="NO"
     fi
-    # check macs in vendor range
+    # check macs in vendor range or corrupted
     if [ "$NEEDREBUILDMACS" != "YES" ]; then
-	ISVENWANMAC=`eth_mac r wan | grep -i "$VENDMASK" -c`
-	ISVENLANMAC=`eth_mac r lan | grep -i "$VENDMASK" -c`
-	ISVENWLANMAC=`eth_mac r wlan | grep -i "$VENDMASK" -c`
+	ISVENWANMAC=`eth_mac r wan | grep -E "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$" | grep -i "$VENDMASK" -c`
+	ISVENLANMAC=`eth_mac r lan | grep -E "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$" | grep -i "$VENDMASK" -c`
+	ISVENWLANMAC=`eth_mac r wlan | grep -E "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$" | grep -i "$VENDMASK" -c`
 	if [ "$ISVENWANMAC" != "1" ] || [ "$ISVENLANMAC" != "1" ] || [ "$ISVENWLANMAC" != "1" ]; then
     	    $LOG "MACs is not in vendor range rebuild macs."
 	    NEEDREBUILDMACS="YES"
@@ -117,9 +117,9 @@ invendorrangetest() {
     fi
     # check factory consistent with nvram
     if [ "$NEEDREBUILDMACS" != "YES" ]; then
-	OLDMACWAN=`eth_mac r wan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	OLDMACLAN=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-	OLDMACWLAN=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+	OLDMACWAN=`eth_mac r wan"`
+	OLDMACLAN=`eth_mac r lan"`
+	OLDMACWLAN=`eth_mac r wlan"`
 	MAC_TEST=`nvram_get 2860 WAN_MAC_ADDR | grep -i "$OLDMACWAN" -c`
 	LANMAC_TEST=`nvram_get 2860 LAN_MAC_ADDR | grep -i "$OLDMACLAN" -c`
 	WLANMAC_TEST=`nvram_get 2860 WLAN_MAC_ADDR | grep -i "$OLDMACWLAN" -c`
@@ -140,8 +140,8 @@ invendorrangetest() {
 
 dupelocalmacstest() {
     # china fabric stupid workaround
-    LANMAC_TEST=`eth_mac r lan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
-    WLANMAC_TEST=`eth_mac r wlan | egrep "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"`
+    LANMAC_TEST=`eth_mac r lan"`
+    WLANMAC_TEST=`eth_mac r wlan"`
     if [ "$LANMAC_TEST" = "$WLANMAC_TEST" ]; then
 	$LOG "Local macs dupe detected - force rebuild local macs"
 	# force rebuild mac if unconsistent
