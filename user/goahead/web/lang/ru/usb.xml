@@ -25,7 +25,7 @@
   <message msgid="adduser overwrite" msgstr="Overwrite Capability" />
   <message msgid="adduser erase" msgstr="Erase Capability" />
   <message msgid="adduser smb" msgstr="Samba Setup" />
-  
+
   <message msgid="ftp title" msgstr="Настройки FTP" />
   <message msgid="ftp introduction" msgstr="" />
   <message msgid="ftp server setup" msgstr="Настройки FTP сервера" />
@@ -35,7 +35,7 @@
   <message msgid="ftp server maxusers" msgstr="Макс. пользователей" />
   <message msgid="ftp server logintimeout" msgstr="Тайм-аут логина" />
   <message msgid="ftp server staytimeout" msgstr="Тайм-аут простоя" />
-  
+
   <message msgid="smb title" msgstr="Настройки SAMBA" />
   <message msgid="smb introduction" msgstr="" />
   <message msgid="smb server setup" msgstr="Настройки SAMBA-сервера" />
@@ -47,22 +47,9 @@
   <message msgid="smb server allowuser" msgstr="Пользователи, которым разрешен доступ" />
   <message msgid="smb adddir name" msgstr="Имя каталога" />
   <message msgid="smb adddir accessusers" msgstr="Доступ пользователю" />
-  
-  <message msgid="webcam title" msgstr="Web Camera Settings" />
-  <message msgid="webcam introduction" msgstr="" />
-  <message msgid="webcam settings" msgstr="Web Camera Setup" />
-  <message msgid="webcam capability" msgstr="Capability" />
-  <message msgid="webcam resolution" msgstr="Resolution" />
-  <message msgid="webcam fps" msgstr="Frames Per Second" />
-  <message msgid="webcam port" msgstr="Port" />
-  
+
   <message msgid="printer title" msgstr="Настройки принт-сервера" />
   <message msgid="printer introduction" msgstr="" />
   <message msgid="printer settings" msgstr="Настройка сервера печати" />
   <message msgid="printer capability" msgstr="Возможности" />
-  
-  <message msgid="usbiNIC title" msgstr="USB iNIC Settings" />
-  <message msgid="usbiNIC introduction" msgstr="" />
-  <message msgid="usbiNIC settings" msgstr="USB iNIC Setup" />
-  <message msgid="usbiNIC capability" msgstr="Capability" />
 </po>
