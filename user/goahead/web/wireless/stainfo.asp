@@ -66,7 +66,7 @@ function PageInit()
             <th>LDPC</th>
             <th>MODE</th>
             <th>RSSI</th>
-            <th>QALITY</th>
+            <th>QUALITY</th>
             <th id="stalistAction">ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>
