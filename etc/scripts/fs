@@ -104,13 +104,9 @@ fullreset() {
     killall -q -SIGKILL goahead
     sys_led_blink
     wifi_unload.sh
-    echo "Set boot flag to regenerate all at next boot."
-    nvram_set 2860 WLAN2_MAC_ADDR	"DEAD"
-    nvram_set 2860 WLAN_MAC_ADDR	"DEAD"
-    nvram_set 2860 WAN_MAC_ADDR		"DEAD"
-    nvram_set 2860 LAN_MAC_ADDR		"DEAD"
-    nvram_set 2860 CHECKMAC		"YES"
-    nvram_set 2860 IS_WIVE		"NO"
+    echo "Erase rwfs,nvram,factory (rebuild after reboot)."
+    mtd_write erase Factory
+    mtd_write erase Config
     mtd_write erase RW-FS
     echo "Now reboot"
     reboot
