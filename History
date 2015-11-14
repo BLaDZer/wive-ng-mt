@@ -1363,13 +1363,13 @@
 28) init.d: checkconf: add workaround for stupids china engeeneers from fabric (WLAN macs must be individual to).<br>
 29) init.d: fix M2U and snooping work in some modes and cases.<br>
 30) kernel: up to 3.4.110 version.<br>
-31) kernel: ralink_arch: add two memory regions for MT7621 with 512M (Normal + Highmem).<br>
-32) kernel: ralink_arch: fix MT7621 SYS_CLK calculation, show separated OCP/SYS frequency.<br>
-33) kernel: ralink_arch: add MT7688 detection, expand MT7628/MT7688 CPU clock detection.<br>
-34) kernel: ralink_spi: increase output driving strength to 50% for Winbond SPI flash chips.<br>
-35) kernel: ralink_spi: fix calculate MT7621 SPI clock and update dividers.<br>
-36) kernel: ralink_spi: cleanup SPI flash drivers, improve performance for 4byte mode chips (>=32MB).<br>
-37) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
+31) kernel: ralink_ppe: fix FOE handle (AI=HIT_BIND_MULTICAST_TO_CPU with SP=6 on MT7620).<br>
+32) kernel: ralink_spi: increase output driving strength to 50% for Winbond SPI flash chips.<br>
+33) kernel: ralink_spi: fix calculate MT7621 SPI clock and update dividers.<br>
+34) kernel: ralink_spi: cleanup SPI flash drivers, improve performance for 4byte mode chips (>=32MB).<br>
+35) kernel: ralink_arch: add two memory regions for MT7621 with 512M (Normal + Highmem).<br>
+36) kernel: ralink_arch: fix MT7621 SYS_CLK calculation, show separated OCP/SYS frequency.<br>
+37) kernel: ralink_arch: add MT7688 detection, expand MT7628/MT7688 CPU clock detection.<br>
 38) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
 39) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
 40) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
