@@ -206,21 +206,6 @@ static int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *De
 	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
 }
 
-static unsigned int ConvertRssiToSignalQuality(long RSSI)
-{
-	unsigned int signal_quality;
-	if (RSSI >= -50)
-		signal_quality = 100;
-	else if (RSSI >= -80)    // between -50 ~ -80dbm
-		signal_quality = (unsigned int)(24 + (RSSI + 80) * 2.6);
-	else if (RSSI >= -90)   // between -80 ~ -90dbm
-		signal_quality = (unsigned int)((RSSI + 90) * 2.6);
-	else    // < -84 dbm
-		signal_quality = 0;
-
-	return signal_quality;
-}
-
 /*
  * description: write station Adhoc Channel (a << 8 | bg)
  */

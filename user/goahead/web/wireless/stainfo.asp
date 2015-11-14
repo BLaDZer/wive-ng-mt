@@ -15,14 +15,14 @@ Butterlate.setTextDomain("buttons");
 
 function initTranslation()
 {
-	_TR("stalistTitle", "stalist title");
-	_TR("stalistIntroduction", "stalist introduction");
-	_TR("stalistWirelessNet", "stalist wireless network");
-  _TR("stalistMacAddr", "stalist mac address");
-  _TR("stalistConnTime", "stalist conn time");
-  _TR("stalistAction", "basic action");
+    _TR("stalistTitle", "stalist title");
+    _TR("stalistIntroduction", "stalist introduction");
+    _TR("stalistWirelessNet", "stalist wireless network");
+    _TR("stalistMacAddr", "stalist mac address");
+    _TR("stalistConnTime", "stalist conn time");
+    _TR("stalistAction", "basic action");
 
-  _TRV("disconnectAll", "button disconnect all");
+    _TRV("disconnectAll", "button disconnect all");
 }
 
 function doDisconnectSta(form, mac)
@@ -33,11 +33,11 @@ function doDisconnectSta(form, mac)
 
 function PageInit()
 {
-	initTranslation();
-  var elements = document.getElementsByTagName('input');
-  for (var i = 0; i < elements.length; i++)
+    initTranslation();
+    var elements = document.getElementsByTagName('input');
+    for (var i = 0; i < elements.length; i++)
     if(elements[i].id == "disconnect")
-      elements[i].value = _("button disconnect");
+	    elements[i].value = _("button disconnect");
 }
 </script>
 </head>
@@ -51,7 +51,7 @@ function PageInit()
       <form name="sta" action="/goform/disconnectSta" method="POST">
         <table class="form">
           <tr>
-            <td class="title" colspan="13" id="stalistWirelessNet">Wireless Network</td>
+            <td class="title" colspan="14" id="stalistWirelessNet">Wireless Network</td>
           </tr>
           <tr>
             <th id="stalistMacAddr">MAC ADDRESS</th>
@@ -66,6 +66,7 @@ function PageInit()
             <th>LDPC</th>
             <th>MODE</th>
             <th>RSSI</th>
+            <th>QALITY</th>
             <th id="stalistAction">ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>

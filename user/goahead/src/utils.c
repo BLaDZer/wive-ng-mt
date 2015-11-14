@@ -976,3 +976,29 @@ int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceN
 
 	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
 }
+
+int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+{
+	struct iwreq wrq;
+
+	strcpy(wrq.ifr_name, DeviceName);
+	wrq.u.data.length = PtrLength;
+	wrq.u.data.pointer = (caddr_t)ptr;
+
+	return (ioctl(socket_id, QueryCode, &wrq));
+}
+
+unsigned int ConvertRssiToSignalQuality(long RSSI)
+{
+	unsigned int signal_quality;
+	if (RSSI >= -50)
+		signal_quality = 100;
+	else if (RSSI >= -80)    // between -50 ~ -80dbm
+		signal_quality = (unsigned int)(24 + (RSSI + 80) * 2.6);
+	else if (RSSI >= -90)   // between -80 ~ -90dbm
+		signal_quality = (unsigned int)((RSSI + 90) * 2.6);
+	else    // < -84 dbm
+		signal_quality = 0;
+
+	return signal_quality;
+}
