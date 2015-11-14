@@ -446,6 +446,17 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+static int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+{
+	struct iwreq wrq;
+
+	strcpy(wrq.ifr_name, DeviceName);
+	wrq.u.data.length = PtrLength;
+	wrq.u.data.pointer = (caddr_t)ptr;
+
+	return (ioctl(socket_id, QueryCode, &wrq));
+}
+
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int i, s, err = 0;

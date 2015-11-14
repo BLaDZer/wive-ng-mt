@@ -962,32 +962,6 @@ out:
 	return result;
 }
 
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
-{
-	struct iwreq wrq;
-
-	strcpy(wrq.ifr_name, DeviceName);
-	wrq.u.data.length = PtrLength;
-	wrq.u.data.pointer = (caddr_t)ptr;
-	wrq.u.data.flags = OidQueryCode;
-
-	if (OidQueryCode == OID_802_11_BSSID_LIST)
-		wrq.u.data.length = 8192;
-
-	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
-}
-
-int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
-{
-	struct iwreq wrq;
-
-	strcpy(wrq.ifr_name, DeviceName);
-	wrq.u.data.length = PtrLength;
-	wrq.u.data.pointer = (caddr_t)ptr;
-
-	return (ioctl(socket_id, QueryCode, &wrq));
-}
-
 unsigned int ConvertRssiToSignalQuality(long RSSI)
 {
 	unsigned int signal_quality;

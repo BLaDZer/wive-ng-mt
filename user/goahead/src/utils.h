@@ -60,6 +60,4 @@ char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
 int OptRstDefault(int idx_nvram, char_t *fmt, ...);
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
-int RtpQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
