@@ -609,15 +609,15 @@ static int getLangBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_RALINK_MT7620) && defined(CONFIG_RAETH_ESW)
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, MT7610 1T1R 5GHz, 100FDX"));
-#elif defined(CONFIG_MT76X2_AP) || defined(CONFIG_MT76X2_AP_MODULE)
+#elif defined(CONFIG_RT_SECOND_IF_MT7612E)
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, MT7612 2T2R 5GHz, 100FDX"));
 #else
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, 100FDX"));
 #endif
 #elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
-    return websWrite(wp, T("MT7621 1000FDX"));
+    return websWrite(wp, T("MT7621 1000FDX MT76x2 2T2R dualband"));
 #else
     return websWrite(wp, T("Unknown switch mode"));
 #endif
