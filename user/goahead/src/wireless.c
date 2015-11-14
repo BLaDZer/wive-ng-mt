@@ -449,19 +449,17 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int i, s, err = 0;
-	struct iwreq iwr;
 	RT_802_11_MAC_TABLE table = {0};
-	s = socket(AF_INET, SOCK_DGRAM, 0);
-	strncpy(iwr.ifr_name, "ra0", IFNAMSIZ);
-	iwr.u.data.pointer = (caddr_t) &table;
 
+	s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0) {
 		printf("goahead: first wlan: ioctl sock failed!");
 		err = -1;
 		goto out24;
 	}
 
-	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
+	if (OidQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "ra0", &table, sizeof(table)) < 0)
+	{
 		printf("goahead: first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
 		err = -1;
 		goto out24;
@@ -527,17 +525,15 @@ out24:
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
-	strncpy(iwr.ifr_name, "rai0", IFNAMSIZ);
-	iwr.u.data.pointer = (caddr_t) &table;
-
 	if (s < 0) {
 		printf("goahead: second wlan: ioctl sock failed!");
 		err = -1;
 		goto out5;
 	}
 
-	if (ioctl(s, RTPRIV_IOCTL_GET_MAC_TABLE, &iwr) < 0) {
-		printf("goahead: second wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
+	if (OidQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "rai0", &table, sizeof(table)) < 0)
+	{
+		printf("goahead: first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed!");
 		err = -1;
 		goto out5;
 	}

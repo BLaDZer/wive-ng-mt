@@ -194,24 +194,7 @@ void freeHeaderProfileSettings(void)
 	headerProfileSetting = NULL;
 }
 
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
-{
-	struct iwreq wrq;
-
-	strcpy(wrq.ifr_name, DeviceName);
-	wrq.u.data.length = PtrLength;
-	wrq.u.data.pointer = (caddr_t) ptr;
-	wrq.u.data.flags = OidQueryCode;
-
-#if WIRELESS_EXT > 17
-	if ( OidQueryCode == OID_802_11_BSSID_LIST )
-		wrq.u.data.length = 8192;
-#endif
-
-	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
-}
-
-int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+static int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
 
@@ -223,7 +206,7 @@ int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceNam
 	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
 }
 
-unsigned int ConvertRssiToSignalQuality(long RSSI)
+static unsigned int ConvertRssiToSignalQuality(long RSSI)
 {
 	unsigned int signal_quality;
 	if (RSSI >= -50)

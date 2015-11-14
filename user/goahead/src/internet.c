@@ -89,6 +89,8 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query);
 #ifdef CONFIG_USER_CHILLISPOT
 static int getSpotIp(int eid, webs_t wp, int argc, char_t **argv);
 static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv);
+#endif
+#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 static void setHotspot(webs_t wp, char_t *path, char_t *query);
 #endif
 static int  getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -172,6 +174,8 @@ void formDefineInternet(void) {
 #ifdef CONFIG_USER_CHILLISPOT
 	websAspDefine(T("getSpotIp"), getSpotIp);
 	websAspDefine(T("getSpotNetmask"), getSpotNetmask);
+#endif
+#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 	websFormDefine(T("setHotspot"), setHotspot);
 #endif
 	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
@@ -2474,6 +2478,7 @@ const parameter_fetch_t chilli_vars[] =
 	{ NULL, NULL, 0, 0 } // Terminator
 };
 #endif
+
 #ifdef CONFIG_USER_NODOGSPLASH
 // NoDogSplash variables
 const parameter_fetch_t nodog_vars[] =
