@@ -521,13 +521,13 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    // RSSI
 #if defined(CONFIG_RT_FIRST_IF_MT7610E)
 	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
-	    websWrite(wp, T("<td>%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
+	    websWrite(wp, T("<td>%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
 #elif defined(CONFIG_RALINK_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E)
 	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-	    websWrite(wp, T("<td>%d%,%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+	    websWrite(wp, T("<td>%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
-	    websWrite(wp, T("<td>%d%,%d%,%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi2));
+	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
 	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
@@ -597,13 +597,13 @@ out24:
 	    // RSSI
 #if defined(CONFIG_MT7610_AP) || defined(CONFIG_RT_SECOND_IF_MT7610E)
 	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
-	    websWrite(wp, T("<td>%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
+	    websWrite(wp, T("<td>%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
 #elif defined(CONFIG_RT_SECOND_IF_MT7612E)
 	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-	    websWrite(wp, T("<td>%d%,%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+	    websWrite(wp, T("<td>%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
-	    websWrite(wp, T("<td>%d%,%d%,%d%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi2));
+	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
 	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
