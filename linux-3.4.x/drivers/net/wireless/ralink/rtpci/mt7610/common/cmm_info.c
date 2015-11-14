@@ -389,6 +389,8 @@ INT	Set_TxPower_Proc(
 	else
 		success = FALSE;
 
+	percentage_delta_pwr(pAd);
+
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_TxPower_Proc::(TxPowerPercentage=%ld)\n", pAd->CommonCfg.TxPowerPercentage));
 
 	return success;

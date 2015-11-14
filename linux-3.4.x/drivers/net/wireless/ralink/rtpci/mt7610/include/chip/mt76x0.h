@@ -310,5 +310,6 @@ VOID MT76x0_Read_TSSI_From_EEPROM(
 #define MT7610_TS_STATE_HIGH   0x01
 #define MT7610_TS_STATE_LOW    0x02
 
-#endif /* __MT76x0_H__ */
+void percentage_delta_pwr(struct _RTMP_ADAPTER *ad);
 
+#endif /* __MT76x0_H__ */

@@ -1916,7 +1916,7 @@ void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char delta_p
 }
 
 #define MIN_TSSI_WORKABLE_PWR 20 //10 dB
-void percentage_delta_pwr(RTMP_ADAPTER *ad) 
+void percentage_delta_pwr(RTMP_ADAPTER *ad)
 {
 	CHAR mac_drop_pwr = 0, tx_alc_ch_init_0 = 0, tx_alc_ch_init_1 = 0, orig_mac_pwr = 0;
 	UCHAR mdsm_drop_pwr;

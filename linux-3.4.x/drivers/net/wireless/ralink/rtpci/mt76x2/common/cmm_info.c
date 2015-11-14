@@ -690,6 +690,10 @@ INT	Set_TxPower_Proc(
 	else
 		success = FALSE;
 
+#ifdef MT76x2
+	if (IS_MT76x2(pAd))
+	    percentage_delta_pwr(pAd);
+#endif
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_TxPower_Proc::(TxPowerPercentage=%ld)\n", pAd->CommonCfg.TxPowerPercentage));
 
 	return success;
