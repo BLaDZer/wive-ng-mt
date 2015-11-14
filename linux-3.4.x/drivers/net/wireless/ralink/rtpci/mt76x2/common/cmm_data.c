@@ -4219,6 +4219,32 @@ VOID RtmpPrepareHwNullFrame(
 
 }
 
+bool check_duplicated_mgmt_frame(HEADER_802_11 *pHeader)
+{
+       static DUPLICATED_FRAME duplicated_frame[15]={
+               {-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}},
+               {-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}},
+               {-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}},{-1,{0}}};
+       INT current_sn = pHeader->Sequence;
+       UINT16 retry = pHeader->FC.Retry;
+       UINT16 mgmt_type = pHeader->FC.SubType;
+
+       if (mgmt_type >= 15) {
+	    DBGPRINT(RT_DEBUG_OFF, ("%s:: check duplicated mgmt frame fail(invilide mgmt subtype(%d)) \n",__FUNCTION__, mgmt_type));
+	    return FALSE;
+       }
+
+       if (MAC_ADDR_EQUAL(duplicated_frame[mgmt_type].prev_mgmt_src_addr, pHeader->Addr2) && retry == 1 
+               && duplicated_frame[mgmt_type].prev_mgmt_frame_sn == current_sn) {
+           DBGPRINT(RT_DEBUG_INFO, ("%s:: Drop duplicated mgmt frame(subtype=%d, current_sn=%d, prev_sn=%d, retry=%d) \n",__FUNCTION__, 
+                       mgmt_type, current_sn, duplicated_frame[mgmt_type].prev_mgmt_frame_sn, retry));
+               return TRUE;
+       } else {
+               duplicated_frame[mgmt_type].prev_mgmt_frame_sn = current_sn;
+               COPY_MAC_ADDR(duplicated_frame[mgmt_type].prev_mgmt_src_addr, pHeader->Addr2);
+               return FALSE;
+       }
+}
 
 // TODO: shiang-usw, modify the op_mode assignment for this function!!!
 VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
@@ -4437,6 +4463,13 @@ VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		*/
 	}
 #endif /* defined(CONFIG_AP_SUPPORT) defined(DOT11Z_TDLS_SUPPORT) || defined(CFG_TDLS_SUPPORT) */
+
+       /* check duplicated mgmt frame */
+       if(check_duplicated_mgmt_frame(pHeader) == TRUE)
+       {
+               goto done;
+       }
+
 #ifdef CUSTOMER_DCC_FEATURE
 	REPORT_MGMT_FRAME_TO_MLME(pAd, pRxBlk->wcid, pHeader,
 					pRxBlk->DataSize,

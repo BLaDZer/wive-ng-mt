@@ -2634,15 +2634,11 @@ NDIS_STATUS	RTMPSetProfileParameters(
 	    /*TxPower*/
 		if(RTMPGetKeyParameter("TxPower", tmpbuf, 10, pBuffer, TRUE))
 		{
-			pAd->CommonCfg.TxPowerPercentage = (ULONG) simple_strtol(tmpbuf, 0, 10);
-			DBGPRINT(RT_DEBUG_TRACE, ("TxPower=%ld\n", pAd->CommonCfg.TxPowerPercentage));
+			Set_TxPower_Proc(pAd, tmpbuf);
 		}
 		/*BGProtection*/
 		if(RTMPGetKeyParameter("BGProtection", tmpbuf, 10, pBuffer, TRUE))
 		{
-	/*#if 0	#ifndef WIFI_TEST*/
-	/*		pAd->CommonCfg.UseBGProtection = 2; disable b/g protection for throughput test*/
-	/*#else*/
 			switch (simple_strtol(tmpbuf, 0, 10))
 			{
 				case 1: /*Always On*/
@@ -2656,7 +2652,6 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					pAd->CommonCfg.UseBGProtection = 0;
 					break;
 			}
-	/*#endif*/
 			DBGPRINT(RT_DEBUG_TRACE, ("BGProtection=%ld\n", pAd->CommonCfg.UseBGProtection));
 		}
 

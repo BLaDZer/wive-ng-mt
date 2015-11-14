@@ -116,15 +116,14 @@ extern UINT32 CW_MAX_IN_BITS;
 #define BSS_NOT_FOUND                    0xFFFFFFFF
 
 #ifdef CONFIG_AP_SUPPORT
-#ifdef NOISE_TEST_ADJUST
-#define MAX_LEN_OF_MLME_QUEUE            40 /*10 */
-#else
-#define MAX_LEN_OF_MLME_QUEUE            20 /*10 */
-#endif /* NOISE_TEST_ADJUST */
+#ifndef CONFIG_STA_SUPPORT
+#define MAX_LEN_OF_MLME_QUEUE            64 /*20*/ /*10 */
+#endif
 #endif /* CONFIG_AP_SUPPORT */
 
-#undef MAX_LEN_OF_MLME_QUEUE
-#define MAX_LEN_OF_MLME_QUEUE 64
+#ifdef CONFIG_STA_SUPPORT
+#define MAX_LEN_OF_MLME_QUEUE            40 /*10 */
+#endif /* CONFIG_STA_SUPPORT */
 
 enum SCAN_MODE{
 	/* Active scan, send probe request, and wait beacon and probe response */

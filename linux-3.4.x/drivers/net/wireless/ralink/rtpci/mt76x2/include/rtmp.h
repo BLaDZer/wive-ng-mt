@@ -2654,20 +2654,16 @@ typedef struct _STA_ADMIN_CONFIG {
 
 	BOOLEAN bFastConnect;
 
-/*connectinfo  for tmp store connect info from UI*/
+	/*connectinfo  for tmp store connect info from UI*/
 	BOOLEAN Connectinfoflag;
 	UCHAR   ConnectinfoBssid[MAC_ADDR_LEN];
 	UCHAR   ConnectinfoChannel;
 	UCHAR   ConnectinfoSsidLen;
 	CHAR    ConnectinfoSsid[MAX_LEN_OF_SSID];
 	UCHAR ConnectinfoBssType;
-	
-
-
 
 	/* UAPSD information: such as enable or disable, do not remove */
 	UAPSD_INFO UapsdInfo;
-
 
 #ifdef CONFIG_DOT11U_INTERWORKING
 	GAS_CTRL GASCtrl;
@@ -2772,6 +2768,11 @@ typedef struct _AP_MLME_AUX {
 	CHAR Challenge[CIPHER_TEXT_LEN];
 } AP_MLME_AUX, *PAP_MLME_AUX;
 #endif /* CONFIG_AP_SUPPORT */
+
+typedef struct _DUPLICATED_FRAME {
+       INT prev_mgmt_frame_sn;
+       UCHAR prev_mgmt_src_addr[6];
+}DUPLICATED_FRAME;
 
 #ifdef ADHOC_WPA2PSK_SUPPORT
 typedef struct _FOUR_WAY_HANDSHAKE_PROFILE {

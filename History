@@ -1382,75 +1382,77 @@
 47) kernel: ralink_wifi: 76x2: allways use mcs_0/6 for managment frames (depended by band) for compat.<br>
 48) kernel: ralink_wifi: 76x2: enable 802.11K (radio resource managment by default).<br>
 49) kernel: ralink_wifi: 76x2: 802.11k use channel power information form US table to RU region (need for work RRM).<br>
-50) kernel: ralink_wifi: xxxx: optimize reschedule Tx cleanup timer.<br>
-51) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
-52) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
-53) kernel: ralink_wifi: xxxx: reject/ignore roaming parametrs now rework with average RSSI instead of max.<br>
-54) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
-55) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
-56) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
-57) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
-58) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
-59) kernel: ralink_wifi: xxxx: enable dfs,rrm support by default.<br>
-60) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
-61) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
-62) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
-63) kernel: ralink_wifi: xxxx: add correct regulatory table to Russia.<br>
-64) kernel: ralink_wifi: xxxx: fix compath with 802.11d.<br>
-65) kernel: ralink_wifi: xxxx: fix end enabled by default bss_qload (without alarm) for use in autochannel select and AP load annonse in beacons.<br>
-66) kernel: ralink_wifi: xxxx: backport OID_802_DOT1X_QUERY_STA_AID ioctl support for full compath with new 802.1x daemon.<br>
-67) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-68) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-69) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
-70) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-71) kernel: drivers/core: fix unregistration path of platform devices.<br>
-72) kernel: jump label: remove static_branch().<br>
-73) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-74) kernel: mm: make sendfile(2) killable.<br>
-75) kernel: sd: clear PS bit before Mode Select.<br>
-76) kernel: usb: xhci: follow upstream.<br>
-77) kernel: usb: xhci: backports from 3.10 tree.<br>
-78) kernel: usb: option: add ZTE PIDs.<br>
-79) kernel: usb: core: update power budget for SuperSpeed.<br>
-80) kernel: usb: asix: fix crash on skb alloc failure.<br>
-81) kernel: net: initialize flow flags in input path.<br>
-82) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-83) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-84) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-85) kernel: net: fix skb csum races when peeking.<br>
-86) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-87) kernel: net: af_key: net: fix RCU splat.<br>
-88) kernel: net: remove sk_init() helper.<br>
-89) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-90) kernel: net: xps: fix calculation of initial number of xps queues.<br>
-91) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
-92) kernel: net: fix a race in dst_release().<br>
-93) kernel: net: netfilter: add SMB fastpath module.<br>
-94) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-95) kernel: net: netfilter: incorrect hash calculation in some cases.<br>
-96) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-97) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
-98) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-99) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-100) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
-101) kernel: net: af_inet: only check perm protocol when register proto.<br>
-102) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-103) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-104) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
-105) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-106) kernel: net: ipv4/6: compute net once in some cases.<br>
-107) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
-108) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-109) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-110) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-111) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-112) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-113) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-114) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-115) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-116) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-117) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
-118) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
+50) kernel: ralink_wifi: 76x2: assoc reqest packets - fix duplicated mgmt frame to host.<br>
+51) kernel: ralink_wifi: xxxx: optimize reschedule Tx cleanup timer.<br>
+52) kernel: ralink_wifi: xxxx: fix regression in APChkCls2Cls3Err implemented by shiang (3.0.0.x and later drivers).<br>
+53) kernel: ralink_wifi: xxxx: kick sta at rssi low rework with avgRssi and RssiSample.<br>
+54) kernel: ralink_wifi: xxxx: reject/ignore roaming parametrs now rework with average RSSI instead of max.<br>
+55) kernel: ralink_wifi: xxxx: add configurable delay in kick STA by low RSSI (if in this interval all data frames have low rssi - kick STA).<br>
+56) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference in MlmeNewTxRate.<br>
+57) kernel: ralink_wifi: xxxx: fix DROP_MASK race condition.<br>
+58) kernel: ralink_wifi: xxxx: backport some fixes from 3.0.4.0.p1 to all.<br>
+59) kernel: ralink_wifi: xxxx: allow set rates for multicast.<br>
+60) kernel: ralink_wifi: xxxx: enable dfs,rrm support by default.<br>
+61) kernel: ralink_wifi: xxxx: fix speed regression at multiclient aptune logic.<br>
+62) kernel: ralink_wifi: xxxx: enable Clear-Channel Assessment (CCA) Monitor Support in test targets with new drivers.<br>
+63) kernel: ralink_wifi: xxxx: fix very old CountryCode read from profile bug.<br>
+64) kernel: ralink_wifi: xxxx: add correct regulatory table to Russia.<br>
+65) kernel: ralink_wifi: xxxx: fix compath with 802.11d.<br>
+66) kernel: ralink_wifi: xxxx: fix end enabled by default bss_qload (without alarm) for use in autochannel select and AP load annonse in beacons.<br>
+67) kernel: ralink_wifi: xxxx: backport OID_802_DOT1X_QUERY_STA_AID ioctl support for full compath with new 802.1x daemon.<br>
+68) kernel: ralink_wifi: xxxx: fix transit power setting in profile takes no effect.<br>
+69) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
+70) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+71) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
+72) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+73) kernel: drivers/core: fix unregistration path of platform devices.<br>
+74) kernel: jump label: remove static_branch().<br>
+75) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+76) kernel: mm: make sendfile(2) killable.<br>
+77) kernel: sd: clear PS bit before Mode Select.<br>
+78) kernel: usb: xhci: follow upstream.<br>
+79) kernel: usb: xhci: backports from 3.10 tree.<br>
+80) kernel: usb: option: add ZTE PIDs.<br>
+81) kernel: usb: core: update power budget for SuperSpeed.<br>
+82) kernel: usb: asix: fix crash on skb alloc failure.<br>
+83) kernel: net: initialize flow flags in input path.<br>
+84) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+85) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+86) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+87) kernel: net: fix skb csum races when peeking.<br>
+88) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+89) kernel: net: af_key: net: fix RCU splat.<br>
+90) kernel: net: remove sk_init() helper.<br>
+91) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
+92) kernel: net: xps: fix calculation of initial number of xps queues.<br>
+93) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
+94) kernel: net: fix a race in dst_release().<br>
+95) kernel: net: netfilter: add SMB fastpath module.<br>
+96) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+97) kernel: net: netfilter: incorrect hash calculation in some cases.<br>
+98) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
+99) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
+100) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+101) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+102) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
+103) kernel: net: af_inet: only check perm protocol when register proto.<br>
+104) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+105) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+106) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
+107) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+108) kernel: net: ipv4/6: compute net once in some cases.<br>
+109) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
+110) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+111) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+112) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+113) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+114) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+115) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+116) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+117) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+118) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+119) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+120) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
 <br>
 <br>
 <b>TODO:</b><br>

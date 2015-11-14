@@ -126,7 +126,7 @@ extern UINT32 CW_MAX_IN_BITS;
 
 #ifdef CONFIG_AP_SUPPORT
 #ifndef CONFIG_STA_SUPPORT
-#define MAX_LEN_OF_MLME_QUEUE            20 /*10 */
+#define MAX_LEN_OF_MLME_QUEUE            64 /*20*/ /*10 */
 #endif
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -239,9 +239,6 @@ if (((__pEntry)) != NULL) \
 	(__pEntry)->OneSecRxSGICount = 0; \
 }
 #endif /* FIFO_EXT_SUPPORT */
-
-#undef MAX_LEN_OF_MLME_QUEUE
-#define MAX_LEN_OF_MLME_QUEUE 64
 
 /* */
 /* 802.11 frame formats */
