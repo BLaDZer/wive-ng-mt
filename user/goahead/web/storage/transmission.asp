@@ -150,7 +150,7 @@ function submit_apply(parm)
           </tr>
           <tr>
             <td class="head">Password</td>
-            <td><input type=password name="transPass" size=16 maxlength=16 value="<% getCfgGeneral(1, "TransPass"); %>" ></td>
+            <td><input type="password" name="transPass" size=16 maxlength=16 value="<% getCfgGeneral(1, "TransPass"); %>" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
           </tr>
           <tr>
             <td class="head">Incoming peer port</td>

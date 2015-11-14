@@ -314,7 +314,7 @@ function CheckValue(form) {
                 <option value="TKIP">TKIP</option>
                 <option value="AES">AES</option>
             </select></td>
-            <td><input type="text" name="wds_encryp_key0" class="normal" value=""></td>
+            <td><input type="password" type="text" name="wds_encryp_key0" class="normal" value="" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             <td><input type="button" class="normal" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
           </tr>
           <tr id="div_wds1" style="display:none;">
@@ -331,7 +331,7 @@ function CheckValue(form) {
                 <option value="TKIP">TKIP</option>
                 <option value="AES">AES</option>
             </select></td>
-            <td><input type="text" name="wds_encryp_key1" class="normal" value=""></td>
+            <td><input type="password" type="text" name="wds_encryp_key1" class="normal" value="" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 1);"></td>
           </tr>
           <tr id="div_wds2" style="display:none;">
@@ -348,7 +348,7 @@ function CheckValue(form) {
                 <option value="TKIP">TKIP</option>
                 <option value="AES">AES</option>
             </select></td>
-            <td><input type="text" name="wds_encryp_key2" class="normal" value=""></td>
+            <td><input type="password" type="text" name="wds_encryp_key2" class="normal" value="" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 2);"></td>
           </tr>
           <tr id="div_wds3" style="display:none;">
@@ -365,7 +365,7 @@ function CheckValue(form) {
                 <option value="TKIP">TKIP</option>
                 <option value="AES">AES</option>
             </select></td>
-            <td><input type="text" name="wds_encryp_key3" class="normal" value=""></td>
+            <td><input type="password" type="text" name="wds_encryp_key3" class="normal" value="" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 3);"></td>
           </tr>
         </table>

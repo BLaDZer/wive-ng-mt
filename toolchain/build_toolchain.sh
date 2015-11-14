@@ -16,6 +16,8 @@ GCC=YES
 UCLIB=YES
 GCCCPP=YES
 
+CPU_OVERLOAD=4
+
 export LANGUAGE=en_EN.UTF-8:en
 
 export LC_PAPER=en_EN.UTF-8
@@ -192,6 +194,17 @@ if [ "$HEADERS" = "YES" ]; then
 fi
 export KERNEL_HEADERS=$CURDIR/usr/include
 
+if [ -f /proc/cpuinfo ]; then
+    n=`grep -c processor /proc/cpuinfo`;
+    if [ $n -gt 1 ]; then
+	HOST_NCPU=`expr $n \* $CPU_OVERLOAD`;
+    else
+	HOST_NCPU=$n;
+    fi;
+else
+    HOST_NCPU=1;
+fi
+
 if [ "$BINUTILS" = "YES" ]; then
     echo "=====================BUILD-BINUTILS====================="
     mkdir -p build-binutils && cd build-binutils
@@ -199,7 +212,7 @@ if [ "$BINUTILS" = "YES" ]; then
 	--with-sysroot=$PREFIX --with-build-sysroot=$PREFIX $EXT_OPT \
 	--enable-deterministic-archives --enable-plugins --disable-libssp --disable-libada \
 	--disable-multilib --disable-werror --disable-lto --disable-nls && \
-	make -j8 KERNEL_HEADERS=$KERNEL_HEADERS && \
+	make -j$HOST_NCPU KERNEL_HEADERS=$KERNEL_HEADERS && \
 	make install) || exit 1
     cd ..
 fi
@@ -213,7 +226,7 @@ if [ "$GCC" = "YES" ]; then
 	--with-sysroot=$PREFIX --with-headers=$KERNEL_HEADERS \
 	--enable-version-specific-runtime-libs --enable-languages=c \
 	$EXT_OPT && \
-	make -j8 && \
+	make -j$HOST_NCPU && \
 	make install) || exit 1
     cd ..
 fi
@@ -223,7 +236,7 @@ if [ "$UCLIB" = "YES" ]; then
     cp -fv uclibc-config $UCLIBCVER/.config
     cd $UCLIBCVER
     (make oldconfig ROOTDIR=$CURDIR PREFIX=$CURDIR CROSS_COMPILER_PREFIX=$CURDIR/bin/mipsel-linux-uclibc- && \
-	make -j8 ROOTDIR=$CURDIR PREFIX=$CURDIR CROSS_COMPILER_PREFIX=$CURDIR/bin/mipsel-linux-uclibc- && \
+	make -j$HOST_NCPU ROOTDIR=$CURDIR PREFIX=$CURDIR CROSS_COMPILER_PREFIX=$CURDIR/bin/mipsel-linux-uclibc- && \
 	make install ROOTDIR=$CURDIR PREFIX=$CURDIR CROSS_COMPILER_PREFIX=$CURDIR/bin/mipsel-linux-uclibc-) || exit 1
     cd ..
 fi
@@ -236,7 +249,7 @@ if [ "$GCCCPP" = "YES" ]; then
 	--with-sysroot=$PREFIX --with-headers=$KERNEL_HEADERS \
 	--enable-version-specific-runtime-libs --enable-languages=c++ \
 	$EXT_OPT && \
-	make -j8 all-host all-target-libgcc all-target-libstdc++-v3  && \
+	make -j$HOST_NCPU all-host all-target-libgcc all-target-libstdc++-v3  && \
 	make install-host install-target-libgcc install-target-libstdc++-v3) || exit 1
     cd ..
 fi

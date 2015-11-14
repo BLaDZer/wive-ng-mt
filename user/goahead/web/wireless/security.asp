@@ -1060,7 +1060,7 @@ function onPreAuthenticationClick(type)
             <tr>
               <td class="head1" rowspan="4" id="secureWEPKey">WEP Keys</td>
               <td class="head2" id="secureWEPKey1">WEP Key 1 :</td>
-              <td><input name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
               <td><select id="WEP1Select" class="half" name="WEP1Select" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1068,7 +1068,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey2">WEP Key 2 : </td>
-              <td><input name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
               <td><select id="WEP2Select" name="WEP2Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1076,7 +1076,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey3">WEP Key 3 : </td>
-              <td><input name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
               <td><select id="WEP3Select" name="WEP3Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1084,7 +1084,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey4">WEP Key 4 : </td>
-              <td><input name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
               <td><select id="WEP4Select" name="WEP4Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1109,7 +1109,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr id="wpa_passphrase" name="wpa_passphrase" style="visibility: hidden;">
               <td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
-              <td><input name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
               <td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
@@ -1157,7 +1157,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head" id="secureRadiusSharedSecret"> Shared Secret </td>
-              <td><input name="RadiusServerSecret" id="RadiusServerSecret" size="16" maxlength="64" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="RadiusServerSecret" id="RadiusServerSecret" size="16" maxlength="64" value="" onKeyUp="setChange(1)" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr>
               <td class="head" id="secureRadiusSessionTimeout"> Session Timeout </td>

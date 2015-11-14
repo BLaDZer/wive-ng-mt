@@ -421,7 +421,7 @@ function initTranslation()
           </tr>
           <tr id="vpn_password_row" onMouseOver="showHint('vpn_password')" onMouseOut="hideHint('vpn_password')" >
             <td class="head"><b id="vPassword">Password:</b></td>
-            <td><input name="vpn_pass" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="password"></td>
+            <td><input name="vpn_pass" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="password" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
           </tr>
           <tr id="vpn_mtu_row" onMouseOver="showHint('vpn_mtu')" onMouseOut="hideHint('vpn_mtu')" >
             <td class="head"><b id="vMTUMRU"><acronym title="Maximum Transfer Unit">MTU</acronym>/<acronym title="Maximum Recieve Unit">MRU:</acronym></b></td>

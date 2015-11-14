@@ -193,6 +193,7 @@
   <message msgid="adv invalid keepalive" msgstr="Неверный интервал опроса клиентов" />
   <message msgid="adv invalid idletimeout" msgstr="Неверное время ожидания" />
   <message msgid="adv invalid entrylifecheck" msgstr="Неверное количество ошибок отправки пакетов" />
+  <message msgid="adv ed mode" msgstr="Монитор CCA" />
 
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />

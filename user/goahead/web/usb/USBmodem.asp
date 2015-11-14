@@ -275,7 +275,7 @@ function showModemStatus()
           </tr>
           <tr id="modem_pass_row" onMouseOver="showHint('modem_pass')" onMouseOut="hideHint('modem_pass')">
             <td class="head">Password:</td>
-            <td><input name="modem_pass" class="mid" size="25" maxlength="60" type="password"></td>
+            <td><input name="modem_pass" class="mid" size="25" maxlength="60" type="password" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
           </tr>
           <tr id="modem_dialn_row" style="display: none;" onMouseOver="showHint('modem_dialn')" onMouseOut="hideHint('modem_dialn')">
             <td class="head">Dial number:</td>

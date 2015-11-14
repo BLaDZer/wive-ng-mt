@@ -1074,7 +1074,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
 	char_t  *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
 	int ssid = 0, ssid_num, tmp, i;
-	char_t *ackpolicy_ssid, *life_check, *submitUrl, *token;
+	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *token;
 	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	char_t	*mcast_mode, *mcast_mcs;
@@ -1114,6 +1114,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
 	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
 	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
+	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
 
 	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
 	if (NULL != num_s)
@@ -1230,6 +1231,8 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
 #endif
 
+	nvram_bufset(RT2860_NVRAM, "ED_MODE", ed_mode);
+
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -1254,6 +1257,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
 #endif
+	websWrite(wp, T("ED_MODE: %s<br>\n"), ed_mode);
 	websFooter(wp);
 	websDone(wp, 200);
 #else

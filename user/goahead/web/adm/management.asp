@@ -204,7 +204,7 @@ function onReset2DefaultsSubmit(form)
             </tr>
             <tr>
               <td class="head" id="manAdmPasswd">Password</td>
-              <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>' onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr>
               <td class="head" ></td>

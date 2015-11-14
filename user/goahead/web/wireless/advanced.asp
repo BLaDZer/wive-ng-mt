@@ -33,6 +33,7 @@ var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
 var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
 var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
+var ED_MODE = '<% getCfgZero(1, "ED_MODE"); %>';
 
 function initTranslation()
 {
@@ -54,22 +55,10 @@ function initTranslation()
 	_TR("advRTS", "adv rts threshold");
 	_TR("advRTSRange", "adv rts threshold range");
 	_TR("advShortPre", "adv short preamble");
-	_TR("advShortPreEnable", "wireless enable");
-	_TR("advShortPreDisable", "wireless disable");
 	_TR("advShortSlot", "adv short slot");
-	_TR("advShortSlotEnable", "wireless enable");
-	_TR("advShortSlotDisable", "wireless disable");
 	_TR("advTxBurst", "adv tx burst");
-	_TR("advTxBurstEnable", "wireless enable");
-	_TR("advTxBurstDisable", "wireless disable");
 	_TR("advPktAggr", "adv pkt aggregate");
-	_TR("advPktAggrEnable", "wireless enable");
-	_TR("advPktAggrDisable", "wireless disable");
 	_TR("advWmm", "adv wmm");
-	_TR("advWMMEnable", "wireless enable");
-	_TR("advWMMDisable", "wireless disable");
-	_TR("advBSEnable", "wireless enable");
-	_TR("advBSDisable", "wireless disable");
 	_TR("advBSAuto", "wireless auto");
 
   _TR("advMaxStaNumRange", "adv maximum stations range");
@@ -94,9 +83,23 @@ function initTranslation()
   _TR("advAckPolicy", "basic ack policy");
   _TR("advNormalAck", "basic ack policy normal");
   _TR("advNoAck", "basic ack policy no");
+  _TR("advED_MODE", "adv ed mode");
 
 	_TRV("advApply", "button apply");
 	_TRV("advCancel", "button cancel");
+
+  var elements = document.getElementsByTagName('option');
+    for (var i = 0; i < elements.length; i++)
+      if (elements[i].id == "disable")
+      elements[i].innerHTML = _("button disable");
+    else if (elements[i].id == "enable")
+      elements[i].innerHTML = _("button enable");
+  var elements = document.getElementsByTagName('font');
+    for (var i = 0; i < elements.length; i++)
+      if (elements[i].id == "disable")
+      elements[i].innerHTML = _("button disable");
+    else if (elements[i].id == "enable")
+      elements[i].innerHTML = _("button enable");
 }
 
 function initValue()
@@ -185,6 +188,14 @@ function initValue()
 	displayElement('bandsteering_row', bandsteeringBuilt == "1");
 
   form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
+
+  if (ED_MODE == '1') {
+    form.ED_MODE[0].checked = true;
+    form.ED_MODE[1].checked = false;
+  } else {
+    form.ED_MODE[0].checked = false;
+    form.ED_MODE[1].checked = true;
+  }
 }
 
 function McastSwitch(form) {
@@ -365,43 +376,43 @@ function CheckValue(form)
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
             <td><input type="radio" name="short_preamble" value="1">
-              <font id="advShortPreEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="short_preamble" value="0">
-              <font id="advShortPreDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr>
             <td class="head" id="advShortSlot">Short Slot</td>
             <td><input type="radio" name="short_slot" value="1" checked>
-              <font id="advShortSlotEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="short_slot" value="0">
-              <font id="advShortSlotDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr>
             <td class="head" id="advTxBurst">Tx Burst</td>
             <td><input type="radio" name="tx_burst" value="1" checked>
-              <font id="advTxBurstEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="tx_burst" value="0">
-              <font id="advTxBurstDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr>
             <td class="head" id="advPktAggr">Pkt_Aggregate</td>
             <td><input type="radio" name="pkt_aggregate" value="1">
-              <font id="advPktAggrEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="pkt_aggregate" value="0" checked>
-              <font id="advPktAggrDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr>
             <td id="advWmm" class="head">WMM Capable</td>
             <td><input type="radio" name="WmmCapable" value="1">
-              <font id="advWMMEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="WmmCapable" value="0" checked>
-              <font id="advWMMDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr id="bandsteering_row">
             <td class="head">BandSteering</td>
             <td><select name="BandSteering" size="1" class="half">
-                <option value="0" selected id="advBSDisable">Disable</option>
-                <option value="1" id="advBSEnable">Enable</option>
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
                 <option value="2" id="advBSAuto">Auto</option>
               </select></td>
           </tr>
@@ -419,6 +430,13 @@ function CheckValue(form)
               <option value="3" id="advHTMIX">HTMIX</option>
             </select>&nbsp;&nbsp;&nbsp;
             <select name="McastMcs" style="width: 150px;"></select></td>
+          </tr>
+          <tr id="div_ED_MODE">
+            <td class="head" colspan="1" id="advED_MODE">ACK Policy</td>
+            <td><input type="radio" name="ED_MODE" value="1">
+              <font id="enable">Enable</font>&nbsp;
+              <input type="radio" name="ED_MODE" value="0">
+              <font id="disable">Disable</font></td>
           </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
@@ -445,16 +463,16 @@ function CheckValue(form)
           <tr>
             <td class="head" id="advMul2Uni">Multicast-to-Unicast</td>
             <td><input type="radio" name="m2u_enable" value="1">
-              <font id="advMul2UniEnable">Enable</font>&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="m2u_enable" value="0">
-              <font id="advMul2UniDisable">Disable</font></td>
+              <font id="disable">Disable</font></td>
           </tr>
           <tr id="video_turbine_row">
             <td class="head">Video turbine</td>
             <td><input type="radio" name="video_turbine" value="1">
-              Enable&nbsp;
+              <font id="enable">Enable</font>&nbsp;
               <input type="radio" name="video_turbine" value="0">
-              Disable </td>
+              <font id="disable">Disable</font></td>
           </tr>
         </table>
         <br>

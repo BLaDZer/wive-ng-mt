@@ -569,7 +569,7 @@ function resetClick(form) {
             </tr>
             <tr id="row_sRadSecret" style="display:none;" onMouseOver="showHint('spot_rad_secret');" onMouseOut="hideHint();">
               <td class="head" id="sRadSecret">Radius server secret</td>
-              <td><input name="sRadSecret" maxlength="256" value=""></td>
+              <td><input name="sRadSecret" maxlength="256" value="" type="password" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr id="row_sNasId" style="display:none;" onMouseOver="showHint('spot_nasid');" onMouseOut="hideHint();">
               <td class="head" id="sNasId">Radius NAS ID</td>
@@ -606,7 +606,7 @@ function resetClick(form) {
             </tr>
             <tr id="row_sUamSecret" style="display:none;" onMouseOver="showHint('spot_uamsecret');" onMouseOut="hideHint();">
               <td class="head" id="sUamSecret">UAM secret</td>
-              <td><input name="sUamSecret" maxlength="256" value=""></td>
+              <td><input name="sUamSecret" maxlength="256" value="" type="password" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr id="row_sUamAllowed" style="display:none;" onMouseOver="showHint('spot_uamallowed');" onMouseOut="hideHint();">
               <td class="head" id="sUamAllowed">UAM allowed hosts</td>
@@ -691,7 +691,7 @@ function resetClick(form) {
             </tr>
             <tr id="row_Password" style="display:none;" onMouseOver="showHint('Password');" onMouseOut="hideHint();">
               <td class="head" id="Password">Password</td>
-              <td><input name="Password" maxlength="128" value="<% getCfgGeneral(1, "nodog_Password"); %>"></td>
+              <td><input type="password" name="Password" maxlength="128" value="<% getCfgGeneral(1, "nodog_Password"); %>" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
             </tr>
             <tr id="row_UsernameAuthentication" style="display:none;" onMouseOver="showHint('UsernameAuthentication');" onMouseOut="hideHint();">
               <td class="head" id="UsernameAuthentication">Username Authentication</td>

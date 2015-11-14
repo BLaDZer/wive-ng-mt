@@ -81,7 +81,7 @@ function genTable(form)
 	{
 		var row = userList[i];
 		table += '<tr><td>' + row[0] + '<input name="l2tp_srv_user' + i + '" type="hidden" value="' + row[0] + '"></td>';
-		table += '<td>' + row[1] + '<input name="l2tp_srv_pass' + i + '" type="hidden" value="' + row[1] + '"></td>';
+		table += '<td>xxxx<input name="l2tp_srv_pass' + i + '" type="hidden" value="' + row[1] + '"></td>';
 		var js = (form.l2tp_srv_enabled.options.selectedIndex != 0) ? 'javascript:deleteUser(document.l2tpConfig, ' + i + ');' : 'javascript:void()';
 		var color = (form.l2tp_srv_enabled.options.selectedIndex != 0) ? 'ff0000' : '808080';
 		table += '<td style="text-align: center;"><a style="color: #' + color + ';" title="' + _("services dhcp delete record") + '" href="' + js + '"><img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
@@ -90,7 +90,7 @@ function genTable(form)
 	if (userList.length < 10)
 	{
 		table += '<tr><td><input class="mid" value="" name="l2tpLogin"' + dis + '></td>';
-		table += '<td><input class="mid" value="" name="l2tpPassword"' + dis + '></td>';
+		table += '<td><input type="password" class="mid" value="" name="l2tpPassword"' + dis + ' onblur="this.select(); this.setAttribute(\'type\',\'password\');" onfocus="this.select(); this.setAttribute(\'type\',\'text\');"></td>';
 		table += '<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add") + '" onclick="addUser(this.form);"' + dis + '></td></tr>';
 	}
 	table += '</table>';
