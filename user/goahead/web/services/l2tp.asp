@@ -90,7 +90,7 @@ function genTable(form)
 	if (userList.length < 10)
 	{
 		table += '<tr><td><input class="mid" value="" name="l2tpLogin"' + dis + '></td>';
-		table += '<td><input type="password" class="mid" value="" name="l2tpPassword"' + dis + ' onblur="this.select(); this.setAttribute(\'type\',\'password\');" onfocus="this.select(); this.setAttribute(\'type\',\'text\');"></td>';
+		table += '<td><input type="password" class="mid" value="" name="l2tpPassword"' + dis + '></td>';
 		table += '<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add") + '" onclick="addUser(this.form);"' + dis + '></td></tr>';
 	}
 	table += '</table>';

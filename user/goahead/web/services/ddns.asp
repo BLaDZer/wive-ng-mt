@@ -161,7 +161,7 @@ function displayServiceStatus()
           </tr>
           <tr id="div_password">
             <td class="head" id="manDdnsPasswd">Password</td>
-            <td colspan="2"><input size="16" name="Password" value="<% getCfgGeneral(1, "DDNSPassword"); %>" type="password" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
+            <td colspan="2"><input size="16" name="Password" value="<% getCfgGeneral(1, "DDNSPassword"); %>" type="password"></td>
           </tr>
           <tr id="div_dynname">
             <td class="head" id="manDdns">Dynamic Name</td>

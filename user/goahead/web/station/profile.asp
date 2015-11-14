@@ -163,7 +163,7 @@ function appendProfile(p)
 			'<option value="0" selected>64 bit (10 hex digits / 5 ascii characters)</option>' +
 			'<option value="1">128 bit (26 hex digits / 13 ascii characters)</option>' +
 			'</select>');
-		td(n, '<input type="password" id="staKey' + key + p_id + '" onblur="this.select(); this.setAttribute(\'type\',\'password\');" onfocus="this.select(); this.setAttribute(\'type\',\'text\');">');
+		td(n, '<input type="password" id="staKey' + key + p_id + '">');
 		td(n, '<input type="radio" id="staKey' + key + 'DefaultId' + p_id + '" name="staKeyDefaultId' + p_id + '">&nbsp;default');
 	}
 	
@@ -173,7 +173,7 @@ function appendProfile(p)
 		td( { 'class': 'title', 'colspan': 6 }, 'Wireless Protected Access (WPA1, WPA2)');
 	tr( { 'id': 'rowWpaPsk' + p_id });
 		td( { 'class': 'head', 'colspan': 1 }, 'WPA Pass Phrase');
-		td( { 'colspan': 5 }, '<input type="password" id="staWpaPsk' + p_id + '"  onblur="this.select(); this.setAttribute(\'type\',\'password\');" onfocus="this.select(); this.setAttribute(\'type\',\'text\');">');
+		td( { 'colspan': 5 }, '<input type="password" id="staWpaPsk' + p_id + '">');
 }
 
 function setupEncryption(p)

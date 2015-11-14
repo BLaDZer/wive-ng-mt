@@ -148,7 +148,7 @@ function submitForm(form) {
           </tr>
           <tr id="div_apcli_wpapsk">
             <td class="head" id="apcliPass">Pass Phrase</td>
-            <td><input type="password" name="apcli_wpapsk" value="<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>" onblur="this.select(); this.setAttribute('type','password');" onfocus="this.select(); this.setAttribute('type','text');"></td>
+            <td><input type="password" name="apcli_wpapsk" value="<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="apcliAutoscan">Auto channel select</td>
