@@ -47,4 +47,4 @@ export LC_IDENTIFICATION=ru_RU.UTF-8
 export LC_ALL=
 
 #last particion mounted to /media set as public for samba and torrent home dir
-export public=`df -h | grep "/dev/sd" | grep "media" | awk {' print $6 '} | tail -q -n1`
+export public=`df -h | grep -E "/dev/sd|/dev/mmc" | grep "media" | awk {' print $6 '} | tail -q -n1`
