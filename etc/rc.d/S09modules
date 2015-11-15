@@ -26,33 +26,8 @@ start() {
 
 	# load needed wireless modules
 	if [ ! -e /tmp/wireless_modules_loaded ]; then
-    	    if [ "$OperationMode" = "2" ]; then
-		# macclone logic for STA mode module
-		if [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
-		    $LOG "STA Macclone mode. MAC: $macCloneMac"
-		    mac="mac=$macCloneMac"
-		else
-		    mac=""
-		fi
-		$LOG "Load wifi STA module."
-		if [ "$CONFIG_RT2860V2_STA" != "" ]; then
-    		    modprobe -q rt2860v2_sta "$mac"
-		fi
-		if [ "$CONFIG_MT76X2_STA" != "" ]; then
-		    modprobe -q mt76x2_sta
-		fi
-	    else
-		$LOG "Load wifi AP module."
-		if [ "$CONFIG_RT2860V2_AP" != "" ]; then
-    		    modprobe -q rt2860v2_ap
-		fi
-		if [ "$CONFIG_MT7610_AP" != "" ]; then
-		    modprobe -q mt7610_ap
-		fi
-		if [ "$CONFIG_MT76X2_AP" != "" ]; then
-    		    modprobe -q mt76x2_ap
-		fi
-	    fi
+	    $LOG "Load wireless modules."
+	    load_wireless_modules
 	fi
 	# set flag wireless modules loaded
 	touch /tmp/wireless_modules_loaded
@@ -85,6 +60,36 @@ start() {
 	retune_wifi
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
 	    roaming_wifi
+	fi
+    fi
+}
+
+load_wireless_modules() {
+    if [ "$OperationMode" = "2" ]; then
+	# macclone logic for STA mode module
+	if [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
+	    $LOG "STA Macclone mode. MAC: $macCloneMac"
+	    mac="mac=$macCloneMac"
+	else
+	    mac=""
+	fi
+	$LOG "Load wifi STA module."
+	if [ "$CONFIG_RT2860V2_STA" != "" ]; then
+    	    modprobe -q rt2860v2_sta "$mac"
+	fi
+	if [ "$CONFIG_MT76X2_STA" != "" ]; then
+	    modprobe -q mt76x2_sta
+	fi
+    else
+	$LOG "Load wifi AP module."
+	if [ "$CONFIG_RT2860V2_AP" != "" ]; then
+    	    modprobe -q rt2860v2_ap
+	fi
+	if [ "$CONFIG_MT7610_AP" != "" ]; then
+	    modprobe -q mt7610_ap
+	fi
+	if [ "$CONFIG_MT76X2_AP" != "" ]; then
+    	    modprobe -q mt76x2_ap
 	fi
     fi
 }
@@ -260,8 +265,8 @@ case "$1" in
 	    ;;
 
 	full_reload)
-	    wifi_unload
 	    stop
+	    wifi_unload
 	    start
 	    ;;
 
