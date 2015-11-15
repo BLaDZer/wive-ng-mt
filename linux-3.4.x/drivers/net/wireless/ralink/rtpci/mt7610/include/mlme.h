@@ -1463,6 +1463,7 @@ typedef struct _IE_lists {
 	BOOLEAN bWscCapable;
 #endif /* WSC_AP_SUPPORT */
 	ULONG RalinkIe;
+	ULONG MediatekIe;
 	EXT_CAP_INFO_ELEMENT ExtCapInfo;
 	UCHAR ht_cap_len;
 	HT_CAPABILITY_IE HTCapability;
@@ -1504,6 +1505,7 @@ typedef struct _bcn_ie_list {
 	QBSS_LOAD_PARM QbssLoad;
 	QOS_CAPABILITY_PARM QosCapability;
 	ULONG RalinkIe;
+	ULONG MediatekIe;
 	EXT_CAP_INFO_ELEMENT ExtCapInfo;
 	UCHAR HtCapabilityLen;
 	UCHAR PreNHtCapabilityLen;

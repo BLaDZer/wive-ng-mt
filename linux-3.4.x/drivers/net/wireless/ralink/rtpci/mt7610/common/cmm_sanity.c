@@ -1071,6 +1071,11 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				else
 					ie_list->RalinkIe = 0xf0000000; /* Set to non-zero value (can't set bit0-2) to represent this is Ralink Chip. So at linkup, we will set ralinkchip flag.*/
 			}
+			else if (NdisEqualMemory(pEid->Octet, MTK_OUI, 3) && (pEid->Len == 7))
+			{
+				if (pEid->Octet[3] != 0)
+					ie_list->MediatekIe= pEid->Octet[3];
+			}
 			else if (NdisEqualMemory(pEid->Octet, WPA_OUI, 4))
 			{
 				/* Copy to pVIE which will report to bssid list.*/

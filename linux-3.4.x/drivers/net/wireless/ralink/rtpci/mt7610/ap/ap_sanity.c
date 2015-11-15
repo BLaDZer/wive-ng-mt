@@ -35,6 +35,7 @@ extern UCHAR	RSN_OUI[];
 extern UCHAR	WME_INFO_ELEM[];
 extern UCHAR	WME_PARM_ELEM[];
 extern UCHAR	RALINK_OUI[];
+extern UCHAR    MTK_OUI[];
 
 extern UCHAR 	BROADCOM_OUI[]; 
 extern UCHAR    WPS_OUI[];
@@ -253,6 +254,13 @@ BOOLEAN PeerAssocReqCmmSanity(
 		                    	ie_lists->RalinkIe = eid_ptr->Octet[3];
         			else
         				ie_lists->RalinkIe = 0xf0000000; /* Set to non-zero value (can't set bit0-2) to represent this is Ralink Chip. So at linkup, we will set ralinkchip flag. */
+                    break;
+                }
+
+                if (NdisEqualMemory(eid_ptr->Octet, MTK_OUI, 3) && (eid_ptr->Len == 7))
+                {
+			if (eid_ptr->Octet[3] != 0)
+		       	ie_lists->MediatekIe= eid_ptr->Octet[3];
                     break;
                 }
                 
