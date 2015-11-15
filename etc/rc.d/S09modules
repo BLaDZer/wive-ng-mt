@@ -162,7 +162,6 @@ roaming_wifi() {
 }
 
 wlan_down_all() {
-    get_param
     $LOG "Shutdown all wireless interfaces."
 
     # always clear conntrack and routes tables/caches
@@ -204,10 +203,6 @@ wlan_down_all() {
     flush_net_caches
 }
 
-get_param() {
-    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac FastRoaming`
-}
-
 stop() {
     $LOG "link wifi down first"
     wlan_down_all
@@ -227,6 +222,10 @@ wifi_unload() {
 	fi
     done
     rm -f /tmp/wireless_modules_loaded
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac FastRoaming`
 }
 
 case "$1" in
