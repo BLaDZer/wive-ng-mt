@@ -47,18 +47,27 @@ if [ "$SmbEnabled" = "1" ]; then
     cat $TEMPLATE >> $CONFIG
 
     # share /media
-    if [ -d /proc/bus/usb ]; then
-	if [ "$public" != "" ]; then
-	    echo "[public]" >> $CONFIG
-	    echo "    comment = pub" >> $CONFIG
-	    echo "    path = $public" >> $CONFIG
-	    echo "    public = yes" >> $CONFIG
-	    echo "    browseable = yes" >> $CONFIG
-	    echo "    guest ok = yes" >> $CONFIG
-	    echo "    guest only = yes" >> $CONFIG
-	    echo "    writable = yes" >> $CONFIG
-	    echo "" >> $CONFIG
-	fi
+    if [ "$public" != "" ]; then
+	echo "[public]" >> $CONFIG
+	echo "    comment = pub" >> $CONFIG
+	echo "    path = $public" >> $CONFIG
+	echo "    public = yes" >> $CONFIG
+	echo "    browseable = yes" >> $CONFIG
+	echo "    guest ok = yes" >> $CONFIG
+	echo "    guest only = yes" >> $CONFIG
+	echo "    writable = yes" >> $CONFIG
+	echo "" >> $CONFIG
+    fi
+    if [ "$publicsd" != "" ]; then
+	echo "[public_sd]" >> $CONFIG
+	echo "    comment = pub_sdcard" >> $CONFIG
+	echo "    path = $publicsd" >> $CONFIG
+	echo "    public = yes" >> $CONFIG
+	echo "    browseable = yes" >> $CONFIG
+	echo "    guest ok = yes" >> $CONFIG
+	echo "    guest only = yes" >> $CONFIG
+	echo "    writable = yes" >> $CONFIG
+	echo "" >> $CONFIG
     fi
 
     if [ -f /var/lock/smbd.pid ] || [ -f /var/lock/nmbd.pid ]; then
