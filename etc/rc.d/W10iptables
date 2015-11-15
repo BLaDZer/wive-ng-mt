@@ -290,12 +290,13 @@ simpleqos() {
 
 natrules() {
 	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
-	    $LOG "Add NAT rules"
 	    ####################PORTFORWARD#############################
 	    if [ -f /etc/portforward ] && [ "$PortForwardEnable" = "1" ]; then
 		if [ "$IPPortFilterEnable" != "1" ] && [ ! -f /etc/macipfilter ]; then
+		    $LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		    iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 		    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+			$LOG "Allow forward from $realwan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 			iptables -A FORWARD -i $real_wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 		    fi
 		fi
@@ -307,14 +308,14 @@ natrules() {
 	    #######################NAT##################################
 	    if [ "$ROUTE_MODE" = "on" ] && [ "$natEnabled" = "1" ]; then
 		if [ "$chilli_enable" != "on" ]; then
-		    # normal NAT
+		    $LOG "Add NAT from $lan_ipaddr/$lan_netmask to $wan_if."
 		    if  [ "$use_snat" = "1" ]; then
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr
 		    else
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
 		    fi
 		else
-		    # chillispot NAT
+		    $LOG "Add NAT from $chilli_net to $wan_if."
 		    if  [ "$use_snat" = "1" ]; then
 		        iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
 		    else
@@ -322,7 +323,7 @@ natrules() {
 		    fi
 		fi
 		if [ "$Lan2Enabled" = "1" ]; then
-		    # LAN2 network NAT
+		    $LOG "Add NAT from $lan2_ip/$lan2_nm to $wan_if."
 		    if  [ "$use_snat" = "1" ]; then
 			iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
 		    else
