@@ -25,33 +25,37 @@ start() {
 	gen_wifi_config
 
 	# load needed wireless modules
-    	if [ "$OperationMode" = "2" ]; then
-	    # macclone logic for STA mode module
-	    if [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
-		$LOG "STA Macclone mode. MAC: $macCloneMac"
-		mac="mac=$macCloneMac"
+	if [ ! -e /tmp/wireless_modules_loaded ]; then
+    	    if [ "$OperationMode" = "2" ]; then
+		# macclone logic for STA mode module
+		if [ "$macCloneEnabled" = "1" ] && [ "$macCloneMac" != "" ]; then
+		    $LOG "STA Macclone mode. MAC: $macCloneMac"
+		    mac="mac=$macCloneMac"
+		else
+		    mac=""
+		fi
+		$LOG "Load wifi STA module."
+		if [ "$CONFIG_RT2860V2_STA" != "" ]; then
+    		    modprobe -q rt2860v2_sta "$mac"
+		fi
+		if [ "$CONFIG_MT76X2_STA" != "" ]; then
+		    modprobe -q mt76x2_sta
+		fi
 	    else
-		mac=""
-	    fi
-	    $LOG "Load wifi STA module."
-	    if [ "$CONFIG_RT2860V2_STA" != "" ]; then
-    		modprobe -q rt2860v2_sta "$mac"
-	    fi
-	    if [ "$CONFIG_MT76X2_STA" != "" ]; then
-		modprobe -q mt76x2_sta
-	    fi
-	else
-	    $LOG "Load wifi AP module."
-	    if [ "$CONFIG_RT2860V2_AP" != "" ]; then
-    		modprobe -q rt2860v2_ap
-	    fi
-	    if [ "$CONFIG_MT7610_AP" != "" ]; then
-		modprobe -q mt7610_ap
-	    fi
-	    if [ "$CONFIG_MT76X2_AP" != "" ]; then
-    		modprobe -q mt76x2_ap
+		$LOG "Load wifi AP module."
+		if [ "$CONFIG_RT2860V2_AP" != "" ]; then
+    		    modprobe -q rt2860v2_ap
+		fi
+		if [ "$CONFIG_MT7610_AP" != "" ]; then
+		    modprobe -q mt7610_ap
+		fi
+		if [ "$CONFIG_MT76X2_AP" != "" ]; then
+    		    modprobe -q mt76x2_ap
+		fi
 	    fi
 	fi
+	# set flag wireless modules loaded
+	touch /tmp/wireless_modules_loaded
 
 	# root interfaces must be up first
 	$LOG "WiFi interfaces up."
@@ -203,18 +207,21 @@ stop() {
     $LOG "link wifi down first"
     wlan_down_all
     if [ -d /sys/module/hw_nat ]; then
-        $LOG "Unload hw_nat and wireless modules."
-        mod="hw_nat rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta"
-    else
-        $LOG "Unload wireless modules."
-        mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta"
+	$LOG "Unload hw_nat module."
+	rmmod hw_nat > /dev/null 2>&1
     fi
+}
+
+wifi_unload() {
+    $LOG "Unload wireless modules."
+    mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta"
     for module in $mod
     do
 	if [ -d /sys/module/$module ]; then
 	    rmmod $module > /dev/null 2>&1
 	fi
     done
+    rm -f /tmp/wireless_modules_loaded
 }
 
 case "$1" in
@@ -252,7 +259,13 @@ case "$1" in
 	    start
 	    ;;
 
+	full_reload)
+	    wifi_unload
+	    stop
+	    start
+	    ;;
+
 	*)
-	    echo $"Usage: $0 {start|stop|restart|wlan_down_all|load_nat_helpers|retune_wifi|roaming_wifi|gen_wifi_config}"
+	    echo $"Usage: $0 {start|stop|restart|full_reload|wlan_down_all|load_nat_helpers|retune_wifi|roaming_wifi|gen_wifi_config}"
 	    exit 1
 esac
