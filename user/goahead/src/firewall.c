@@ -689,11 +689,13 @@ static void iptablesIPPortFilterBuildScript(void)
 		}
 
 		// write default policy if drop
-		if (default_drop_flag) {
+		if (default_drop_flag)
 		    snprintf(cmd, 1024, "iptables -t filter -A %s -j DROP\n\n", IPPORT_FILTER_CHAIN);
-		    // write to file
-		    fputs(cmd, fd);
-		}
+		else
+		    snprintf(cmd, 1024, "iptables -t filter -A %s -j ACCEPT\n\n", IPPORT_FILTER_CHAIN);
+
+		// write to file
+		fputs(cmd, fd);
 
 		//close file
 		fclose(fd);
