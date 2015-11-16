@@ -57,7 +57,9 @@ case "$1" in
 	    $LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
 	    service six stop
 	fi
-	service vpnhelper stop_safe
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" ]; then
+	    service vpnhelper stop
+	fi
 	# disable forward for paranoid users
 	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# generate random ip from zeroconfig range end set
@@ -80,7 +82,9 @@ case "$1" in
 	    $LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
 	    service six stop
 	fi
-	service vpnhelper stop_safe
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" ]; then
+	    service vpnhelper stop
+	fi
 	# disable forward for paranoid users
 	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# Workaround for infinite OFFER wait

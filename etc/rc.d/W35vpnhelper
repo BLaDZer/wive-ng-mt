@@ -148,16 +148,6 @@ stop() {
     fi
 }
 
-#############################################################
-# Do`not stop pppoe connections and others vpn in some cases
-#############################################################
-stop_safe() {
-    if [ "$OperationMode" != "0" ] && [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	stop > /dev/null 2>&1
-    fi
-}
-
-
 case "$1" in
 	start)
 	    start

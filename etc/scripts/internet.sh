@@ -140,19 +140,15 @@ ethcv_config() {
 
 # some reload and reconfigure
 if [ "$MODE" != "connect_sta" ]; then
-    if [ "$MODE" != "wifionly" ]; then
-	if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
-	    $LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
-	    service six stop
-	fi
-	service vpnhelper stop_safe
+    if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
+	$LOG "all tunnels in ipv6 deconfig before modules reload (prevent race)"
+	service six stop
     fi
+    service vpnhelper stop
     $LOG "Reload wireless modules."
     service modules restart
-    if [ "$MODE" != "wifionly" ]; then
-	$LOG "Reconfigure lan."
-	service lan restart
-    fi
+    $LOG "Reconfigure lan."
+    service lan restart
 fi
 
 # OperationMode adjustment:

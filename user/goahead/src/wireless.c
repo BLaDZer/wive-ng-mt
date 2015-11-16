@@ -1062,7 +1062,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 
-	doSystem("internet.sh wifionly");
+	doSystem("internet.sh");
 }
 
 static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
@@ -1283,7 +1283,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #endif
 
 	// restart wireless network
-	doSystem("internet.sh wifionly");
+	doSystem("internet.sh");
 }
 
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
@@ -1326,7 +1326,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 
 	// restart wireless network
-	doSystem("internet.sh wifionly");
+	doSystem("internet.sh");
 }
 #endif
 
@@ -1723,7 +1723,7 @@ out:
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
-	doSystem("internet.sh wifionly");
+	doSystem("internet.sh");
 }
 
 static void APSecurity(webs_t wp, char_t *path, char_t *query)
