@@ -1456,6 +1456,10 @@
 121) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
 <br>
 <br>
+<b>3.7.x</b><br>
+1) kernel: net: packet: infer protocol from ethernet header if unset.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add subchannel select for 5GHz module.<br>
