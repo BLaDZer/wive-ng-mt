@@ -711,8 +711,11 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 		return;
 	}
 
-	if ((strcmp(vpn_enabled, "on")) || strcmp(vpn_type, "0"))
+	if ((strncmp(vpn_enabled, "on", 3)) || !CHK_IF_DIGIT(vpn_type, 0))
 		nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
+
+	if (strncmp(vpn_enabled, "on", 3))
+		goto out_with_commit;
 
 	const parameter_fetch_t *fetch = vpn_args;
 
@@ -722,6 +725,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 #endif
 	setupParameters(wp, fetch, 0);
 
+out_with_commit:
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
