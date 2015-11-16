@@ -1458,6 +1458,9 @@
 <br>
 <b>3.7.x</b><br>
 1) kernel: net: packet: infer protocol from ethernet header if unset.<br>
+2) kernel: net: ipv6: select fragment id during UFO segmentation if not set.<br>
+3) kernel: net: ipv6: fix fragment id assignment on LE arches.<br>
+4) kernel: net: ipv6: call ipv6_proxy_select_ident instead of ipv6_select_ident in udp6_ufo_fragment.<br>
 <br>
 <br>
 <b>TODO:</b><br>
