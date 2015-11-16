@@ -1457,11 +1457,12 @@
 <br>
 <br>
 <b>3.7.x</b><br>
-1) kernel: net: packet: infer protocol from ethernet header if unset.<br>
-2) kernel: net: ipv6: select fragment id during UFO segmentation if not set.<br>
-3) kernel: net: ipv6: fix fragment id assignment on LE arches.<br>
-4) kernel: net: ipv6: call ipv6_proxy_select_ident instead of ipv6_select_ident in udp6_ufo_fragment.<br>
-5) kernel: net: ipv6: RTAX_FEATURE_ALLFRAG causes inefficient TCP segment sizing.<br>
+1) kernel: net: add dev_loopback_xmit() to avoid duplicate code.<br>
+2) kernel: net: packet: infer protocol from ethernet header if unset.<br>
+3) kernel: net: ipv6: select fragment id during UFO segmentation if not set.<br>
+4) kernel: net: ipv6: fix fragment id assignment on LE arches.<br>
+5) kernel: net: ipv6: call ipv6_proxy_select_ident instead of ipv6_select_ident in udp6_ufo_fragment.<br>
+6) kernel: net: ipv6: RTAX_FEATURE_ALLFRAG causes inefficient TCP segment sizing.<br>
 <br>
 <br>
 <b>TODO:</b><br>
