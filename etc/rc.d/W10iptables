@@ -267,10 +267,8 @@ forwardlimit() {
 		# in proxy arp mode need all forward packets to acepted
 		iptables -I FORWARD -j ACCEPT
 	    fi
-	    # tune mss size for tranzit packets
-	    clamp_mss
-	    # set defaults ipportfilter policy
-	    if [ "$DefaultFirewallPolicy" != "1" ] || [ "$IPPortFilterEnable" != "1" -o ! -f /etc/macipfilter ]; then
+	    # allow forward packets for portfw rules
+	    if [ "$IPPortFilterEnable" != "1" ] || [ ! -f /etc/macipfilter ]; then
 		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 		if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
@@ -278,6 +276,8 @@ forwardlimit() {
 		    iptables -A FORWARD -i $real_wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 		fi
 	    fi
+	    # tune mss size for tranzit packets
+	    clamp_mss
 	    # hack for stupid and greedy ISP
 	    if [ "$store_ttl" = "1" ]; then
 		$LOG "Increase TTL for input packets"
@@ -568,7 +568,7 @@ startv6() {
 
 get_param() {
     # get network, vpn, netfiletrs and others config variables
-    eval `nvram_buf_get 2860 natEnabled use_snat DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable DefaultFirewallPolicy WANPingFilter \
+    eval `nvram_buf_get 2860 natEnabled use_snat DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort FastRoaming FtSupport \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
 	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
