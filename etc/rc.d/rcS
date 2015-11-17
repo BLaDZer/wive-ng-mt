@@ -105,5 +105,18 @@ mkdir -p /var/run/rc0.d /var/run/rc1.d
 ln -s /etc/rc.d/S* /var/run/rc0.d
 ln -s /etc/rc.d/W* /var/run/rc1.d
 
+# create fstab if not exist
+touch /etc/fstab
+
+mount -t devpts /dev/pts /dev/pts
+mount -a
+chmod 777 /tmp
+
+# create some folders in var"
+mkdir -p /var/run /var/lock /var/lock/subsys /var/log /var/tmp
+
+# this may be need for some apps
+ln -sf /var/lock /var/locks
+
 $LOG "Start services now"
 run-parts -a start /var/run/rc0.d &

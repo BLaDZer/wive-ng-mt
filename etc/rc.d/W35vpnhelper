@@ -143,6 +143,8 @@ stop() {
 	rm -f /var/run/xl2tpd/l2tp-control
 	# remove xl2tpd client pid
 	rm -f /var/run/xl2tpd/l2tpd.pid
+	# remove resolv.conf
+	rm -f /etc/ppp/resolv.conf
 	# clear conntrack and routes tables/caches
 	flush_net_caches
     fi
