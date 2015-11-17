@@ -3426,8 +3426,6 @@ VOID dynamic_tune_be_tx_op(
 		{
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
 			{
-				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-
 				if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE))
 				{
 					RegValue = pAd->CommonCfg.RestoreBurstMode;
@@ -3444,6 +3442,9 @@ VOID dynamic_tune_be_tx_op(
 
 					RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
 				}
+
+				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
+
 				/* disable AC0(BE) TX_OP */
 				RegValue  &= 0xFFFFFF00; /* for WMM test */
 				/*if ((RegValue & 0x0000FF00) == 0x00004300) */
@@ -3489,8 +3490,6 @@ VOID dynamic_tune_be_tx_op(
 #endif /* RTMP_RBUS_SUPPORT */
 #endif /* LINUX */
 
-				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-				
 				if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE))
 					txop_value = 0x80;				
 				else if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
@@ -3504,6 +3503,8 @@ VOID dynamic_tune_be_tx_op(
 				if(pAd->MacTab.Size > 2) /* for Multi-Clients */
 					txop_value = 0; 	
 #endif /* MULTI_CLIENT_SUPPORT */
+
+				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
 
 				RegValue  &= 0xFFFFFF00;
 				/*if ((RegValue & 0x0000FF00) == 0x00005400)

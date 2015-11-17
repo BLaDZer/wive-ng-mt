@@ -100,7 +100,7 @@ VOID asic_change_tx_retry(
 
 		/* Tx RTS retry default 32 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
-		MacReg &= 0xFFFFFF00;
+		MacReg &= 0xFEFFFF00;
 		MacReg |= 0x20;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 	}

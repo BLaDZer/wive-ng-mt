@@ -331,6 +331,9 @@ INT	Set_Channel_Proc(
  	INT		success = TRUE;
 	UCHAR	Channel;	
 
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF))
+		return FALSE;
+
 	Channel = (UCHAR) simple_strtol(arg, 0, 10);
 
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
@@ -686,14 +689,15 @@ INT	Set_TxPower_Proc(
 		}
 #endif /* CONFIG_STA_SUPPORT */
 		success = TRUE;
+#ifdef MT76x2
+		if (IS_MT76x2(pAd)) {
+			mt76x2_update_tx_power_percentage(pAd);
+		}
+#endif
 	}
 	else
 		success = FALSE;
 
-#ifdef MT76x2
-	if (IS_MT76x2(pAd))
-	    percentage_delta_pwr(pAd);
-#endif
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_TxPower_Proc::(TxPowerPercentage=%ld)\n", pAd->CommonCfg.TxPowerPercentage));
 
 	return success;
