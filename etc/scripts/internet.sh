@@ -145,7 +145,7 @@ if [ "$MODE" != "connect_sta" ]; then
 	service six stop
     fi
     service vpnhelper stop
-    $LOG "Reload wireless modules."
+    $LOG "Reload modules."
     service modules restart
     $LOG "Reconfigure lan."
     service lan restart
