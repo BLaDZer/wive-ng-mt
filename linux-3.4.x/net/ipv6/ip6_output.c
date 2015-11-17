@@ -155,7 +155,8 @@ static int ip6_finish_output2(struct sk_buff *skb)
 static int ip6_finish_output(struct sk_buff *skb)
 {
 	if ((skb->len > ip6_skb_dst_mtu(skb) && !skb_is_gso(skb)) ||
-	    dst_allfrag(skb_dst(skb)))
+	    dst_allfrag(skb_dst(skb)) ||
+	    (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max_size))
 		return ip6_fragment(skb, ip6_finish_output2);
 	else
 		return ip6_finish_output2(skb);
@@ -519,7 +520,8 @@ int ip6_forward(struct sk_buff *skb)
 	if (mtu < IPV6_MIN_MTU)
 		mtu = IPV6_MIN_MTU;
 
-	if (skb->len > mtu && !skb_is_gso(skb)) {
+	if ((!skb->local_df && skb->len > mtu && !skb_is_gso(skb)) ||
+	    (IP6CB(skb)->frag_max_size && IP6CB(skb)->frag_max_size > mtu)) {
 		/* Again, force OUTPUT device used as source address */
 		skb->dev = dst->dev;
 		icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
@@ -637,6 +639,16 @@ int ip6_fragment(struct sk_buff *skb, int (*output)(struct sk_buff *))
 	 */
 	if (unlikely(!skb->local_df && skb->len > mtu))
 		goto fail_toobig;
+
+	if (IP6CB(skb)->frag_max_size) {
+		if (IP6CB(skb)->frag_max_size > mtu)
+			goto fail_toobig;
+
+		/* don't send fragments larger than what we received */
+		mtu = IP6CB(skb)->frag_max_size;
+		if (mtu < IPV6_MIN_MTU)
+			mtu = IPV6_MIN_MTU;
+	}
 
 	if (np && np->frag_size < mtu) {
 		if (np->frag_size)
