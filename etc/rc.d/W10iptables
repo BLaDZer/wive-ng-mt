@@ -285,41 +285,38 @@ simpleqos() {
 }
 
 natrules() {
-	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
-	    ####################PORTFORWARD#############################
-	    if [ -f /etc/portforward ] && [ "$PortForwardEnable" = "1" ]; then
-		if  [ "$wan_ipaddr" != "" ]; then
-		    $LOG "Add portforward rules"
-		    /etc/portforward "$wan_ipaddr"
-		fi
+	####################PORTFORWARD#############################
+	if [ -f /etc/portforward ] && [ "$PortForwardEnable" = "1" ]; then
+	    if  [ "$wan_ipaddr" != "" ]; then
+		$LOG "Add portforward rules"
+		/etc/portforward "$wan_ipaddr"
 	    fi
-	    #######################NAT##################################
-	    if [ "$natEnabled" = "1" ]; then
-		if [ "$chilli_enable" != "on" ]; then
-		    $LOG "Add NAT from $lan_ipaddr/$lan_netmask to $wan_if."
-		    if  [ "$use_snat" = "1" ]; then
-		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr
-		    else
-		        iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
-		    fi
+	fi
+	#######################NAT##################################
+	if [ "$natEnabled" = "1" ]; then
+	    if [ "$chilli_enable" != "on" ]; then
+		$LOG "Add NAT from $lan_ipaddr/$lan_netmask to $wan_if."
+		if  [ "$use_snat" = "1" ]; then
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr
 		else
-		    $LOG "Add NAT from $chilli_net to $wan_if."
-		    if  [ "$use_snat" = "1" ]; then
-		        iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
-		    else
-			iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
-		    fi
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
 		fi
-		if [ "$Lan2Enabled" = "1" ]; then
-		    $LOG "Add NAT from $lan2_ip/$lan2_nm to $wan_if."
-		    if  [ "$use_snat" = "1" ]; then
-			iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
-		    else
-			iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
-		    fi
+	    else
+		$LOG "Add NAT from $chilli_net to $wan_if."
+		if  [ "$use_snat" = "1" ]; then
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
+		else
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
 		fi
 	    fi
-	    ###########################################################
+	    if [ "$Lan2Enabled" = "1" ]; then
+		$LOG "Add NAT from $lan2_ip/$lan2_nm to $wan_if."
+		if  [ "$use_snat" = "1" ]; then
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
+		else
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
+		fi
+	    fi
 	fi
 }
 
@@ -334,33 +331,31 @@ vpnrules() {
 }
 
 upnprules() {
-	if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
-	    if [ "$upnpEnabled" = "1" ]; then
-		$LOG "Add base upnp rules"
-		# nat rules
-    		iptables -t nat -N MINIUPNPD
-    		iptables -t nat -F MINIUPNPD
-    		iptables -t nat -N MINIUPNPD-PCP-PEER
-    		iptables -t nat -F MINIUPNPD-PCP-PEER
-		if [ "$igmpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ]; then
-		    # multicast no need forward to upnp chain
-    		    iptables -t nat -A PREROUTING -i $wan_if ! -s $mcast_net -j MINIUPNPD
-    		    iptables -t nat -A POSTROUTING -o $wan_if ! -d $mcast_net -j MINIUPNPD-PCP-PEER
-		else
-		    # all packets join to UPNP
-    		    iptables -t nat -A PREROUTING -i $wan_if -j MINIUPNPD
-    		    iptables -t nat -A POSTROUTING -o $wan_if -j MINIUPNPD-PCP-PEER
-		fi
-		# all packets from join redirect to UPNP
-		if [ "$vpnNAT" != "off" ] && [ "$real_wan_if" != "" ]; then
-		    iptables -t nat -A PREROUTING -i $real_wan_if -j MINIUPNPD
-    		    iptables -t nat -A POSTROUTING -o $real_wan_if -j MINIUPNPD-PCP-PEER
-		fi
-		# filter rules
-    		iptables -t filter -N MINIUPNPD
-    		iptables -t filter -F MINIUPNPD
-    		iptables -t filter -I FORWARD -j MINIUPNPD
-    	    fi
+	if [ "$upnpEnabled" = "1" ]; then
+	    $LOG "Add base upnp rules"
+	    # nat rules
+	    iptables -t nat -N MINIUPNPD
+	    iptables -t nat -F MINIUPNPD
+	    iptables -t nat -N MINIUPNPD-PCP-PEER
+	    iptables -t nat -F MINIUPNPD-PCP-PEER
+	    if [ "$igmpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ]; then
+		# multicast no need forward to upnp chain
+		iptables -t nat -A PREROUTING -i $wan_if ! -s $mcast_net -j MINIUPNPD
+		iptables -t nat -A POSTROUTING -o $wan_if ! -d $mcast_net -j MINIUPNPD-PCP-PEER
+	    else
+		# all packets join to UPNP
+		iptables -t nat -A PREROUTING -i $wan_if -j MINIUPNPD
+		iptables -t nat -A POSTROUTING -o $wan_if -j MINIUPNPD-PCP-PEER
+	    fi
+	    # all packets from join redirect to UPNP
+	    if [ "$vpnNAT" != "off" ] && [ "$real_wan_if" != "" ]; then
+		iptables -t nat -A PREROUTING -i $real_wan_if -j MINIUPNPD
+		iptables -t nat -A POSTROUTING -o $real_wan_if -j MINIUPNPD-PCP-PEER
+	    fi
+	    # filter rules
+	    iptables -t filter -N MINIUPNPD
+	    iptables -t filter -F MINIUPNPD
+	    iptables -t filter -I FORWARD -j MINIUPNPD
 	fi
 }
 
@@ -474,7 +469,9 @@ start() {
 	    iptaccounting
 	    forwardlimit
 	    simpleqos
-	    natrules
+	    if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
+		natrules
+	    fi
 	    clampmss
 	    tunettl
 	fi
@@ -482,8 +479,10 @@ start() {
 	    vpnrules
 	fi
 	if [ "$ROUTE_MODE" = "on" ]; then
-	    upnprules
-	    dmzrules
+	    if [ "$natEnabled" = "1" ] || [ "$vpnNAT" != "off" ]; then
+		upnprules
+		dmzrules
+	    fi
 	fi
 	rwfsrulez
 	#########################################ACCEPT_ESTABLISHED################################
