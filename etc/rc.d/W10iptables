@@ -324,15 +324,13 @@ natrules() {
 }
 
 vpnrules() {
-	if [ "$PPP_CONNECT" = "on" ]; then
-	    $LOG "Call to add VPN netfilter rules."
-	    PPPIFLIST=`ip -4 addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
-	    for pppnum in $PPPIFLIST; do
-		if [ -e /tmp/ppp_firewall_$pppnum ]; then
-		    eval "/tmp/ppp_firewall_$pppnum"
-		fi
-	    done
-	fi
+	$LOG "Call to add VPN netfilter rules."
+	PPPIFLIST=`ip -4 addr list | awk '/[0-9].*\: ppp.*/ { sub (":","",$2); print $2; }'`
+	for pppnum in $PPPIFLIST; do
+	    if [ -e /tmp/ppp_firewall_$pppnum ]; then
+		eval "/tmp/ppp_firewall_$pppnum"
+	    fi
+	done
 }
 
 upnprules() {
@@ -480,7 +478,9 @@ start() {
 	    clampmss
 	    tunettl
 	fi
-	vpnrules
+	if [ "$PPP_CONNECT" = "on" ]; then
+	    vpnrules
+	fi
 	if [ "$ROUTE_MODE" = "on" ]; then
 	    upnprules
 	    dmzrules
