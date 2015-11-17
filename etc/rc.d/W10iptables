@@ -414,6 +414,47 @@ dmzrules() {
 	fi
 }
 
+clampmss() {
+    if [ "$mss_use_pmtu" != "0" ]; then
+	# automatic correct mss based from pmtu discovery
+	iptables -t mangle -A FORWARD -p tcp ! -o $lan_if --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+    else
+	# use current iface mtu for mss calculate (MSS=MTU-40 bytes)
+	# for phys wan if dev exist
+	if [ -d /proc/sys/net/ipv4/conf/$wan_if ]; then
+	    cur_mtu=`ip -o link show $wan_if | grep mtu | awk {' print $5 '}`
+	    if [ "$cur_mtu" != "" ]; then
+		let "hole_mtu=$cur_mtu-40"
+	    else
+		hole_mtu="1460"
+	    fi
+	    iptables -t mangle -A FORWARD -p tcp -o $wan_if --tcp-flags SYN,RST SYN -m tcpmss --mss $hole_mtu:65535 -j TCPMSS --set-mss $hole_mtu
+	fi
+	# for vpn if dev exists
+	if [ -d /proc/sys/net/ipv4/conf/$real_wan_if ] && [ "$real_wan_if" != "$wan_if" ]; then
+	    cur_mtu=`ip -o -4 link show dev "$real_wan_if" | awk {' print $5 '}`
+	    if [ "$cur_mtu" != "" ]; then
+		let "hole_mtu=$cur_mtu-40"
+	    else
+		hole_mtu="1460"
+	    fi
+	    iptables -t mangle -A FORWARD -p tcp -o $real_wan_if --tcp-flags SYN,RST SYN -m tcpmss --mss $hole_mtu:65535 -j TCPMSS --set-mss $hole_mtu
+	fi
+    fi
+}
+
+tunettl() {
+    # hack for stupid and greedy ISP
+    if [ "$store_ttl" = "1" ]; then
+	$LOG "Increase TTL for input packets"
+	iptables -t mangle -A PREROUTING -i $wan_if -j TTL --ttl-inc 1
+	if [ "$igmpEnabled" != "0" ] && [ "$store_ttl_mcast" = "1" ]; then
+	    $LOG "Increase TTL for input multicast packets"
+	    iptables -t mangle -A PREROUTING -i $wan_if -d $mcast_net -p udp -j TTL --ttl-inc 1
+	fi
+    fi
+}
+
 rwfsrulez() {
 	if [ -d /etc/iptables.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/iptables.d"
@@ -606,47 +647,6 @@ get_param() {
     STATE_NEW="-m state --state NEW"
     STATE_EST="-m state --state ESTABLISHED,RELATED"
     CONNLIMIT="-m connlimit --connlimit-above"
-}
-
-tunettl() {
-	# hack for stupid and greedy ISP
-	if [ "$store_ttl" = "1" ]; then
-	    $LOG "Increase TTL for input packets"
-	    iptables -t mangle -A PREROUTING -i $wan_if -j TTL --ttl-inc 1
-	    if [ "$igmpEnabled" != "0" ] && [ "$store_ttl_mcast" = "1" ]; then
-		$LOG "Increase TTL for input multicast packets"
-		iptables -t mangle -A PREROUTING -i $wan_if -d $mcast_net -p udp -j TTL --ttl-inc 1
-	    fi
-	fi
-}
-
-clampmss() {
-    if [ "$mss_use_pmtu" != "0" ]; then
-	# automatic correct mss based from pmtu discovery
-	iptables -t mangle -A FORWARD -p tcp ! -o $lan_if --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-    else
-	# use current iface mtu for mss calculate (MSS=MTU-40 bytes)
-	# for phys wan if dev exist
-	if [ -d /proc/sys/net/ipv4/conf/$wan_if ]; then
-	    cur_mtu=`ip -o link show $wan_if | grep mtu | awk {' print $5 '}`
-	    if [ "$cur_mtu" != "" ]; then
-		let "hole_mtu=$cur_mtu-40"
-	    else
-		hole_mtu="1460"
-	    fi
-	    iptables -t mangle -A FORWARD -p tcp -o $wan_if --tcp-flags SYN,RST SYN -m tcpmss --mss $hole_mtu:65535 -j TCPMSS --set-mss $hole_mtu
-	fi
-	# for vpn if dev exists
-	if [ -d /proc/sys/net/ipv4/conf/$real_wan_if ] && [ "$real_wan_if" != "$wan_if" ]; then
-	    cur_mtu=`ip -o -4 link show dev "$real_wan_if" | awk {' print $5 '}`
-	    if [ "$cur_mtu" != "" ]; then
-		let "hole_mtu=$cur_mtu-40"
-	    else
-		hole_mtu="1460"
-	    fi
-	    iptables -t mangle -A FORWARD -p tcp -o $real_wan_if --tcp-flags SYN,RST SYN -m tcpmss --mss $hole_mtu:65535 -j TCPMSS --set-mss $hole_mtu
-	fi
-    fi
 }
 
 stop() {
