@@ -540,7 +540,7 @@ forwardlimitv6() {
     	    ip6tables -A FORWARD -o $lan_if -j ACCEPT
 	fi
 
-        if [ "$WANPingFilter" = "0" ] && [ "$ROUTE_MODE" = "on" ]; then
+        if [ "$WANPingFilter" = "0" ]; then
 	    $LOG "V6: Filter all ipv6 icmp echo requests to router clients."
     	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	else
@@ -561,7 +561,7 @@ forwardlimitv6() {
 
 upnprulesv6() {
 	# miniupnpd use for ipv6 pinhole support
-	if [ "$upnpEnabled" = "1" ] && [ "$ROUTE_MODE" = "on" ]; then
+	if [ "$upnpEnabled" = "1" ]; then
 	    $LOG "V6: Add base upnp rules"
 	    ip6tables -t filter -N MINIUPNPD
 	    ip6tables -t filter -A FORWARD -i $six_wan_if ! -o $six_wan_if -j MINIUPNPD
@@ -590,8 +590,10 @@ startv6() {
 	    ip6tables -A INPUT $STATE_EST -j ACCEPT
 	    #########################################DYNAMICRULES###################################
 	    servicelimitv6
-	    forwardlimitv6
-	    upnprulesv6
+	    if [ "$ROUTE_MODE" = "on" ]; then
+		forwardlimitv6
+		upnprulesv6
+	    fi
 	    rwfsrulezv6
 	    #########################################ACCEPT_ESTABLISHED################################
 	    $LOG "Allow established/related in forward"
