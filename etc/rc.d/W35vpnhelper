@@ -27,13 +27,13 @@ start() {
       # call to vpn
       if [ "$vpnType" = "0" ]; then
 	$LOG "PPPOE calling."
-	(sleep 5 && /etc/scripts/config-pppoe.sh) &
+	(sleep 2 && /etc/scripts/config-pppoe.sh) &
       elif [ "$vpnType" = "1" ]; then
 	$LOG "PPTP calling."
-	(sleep 5 && /etc/scripts/config-pptp.sh) &
+	(sleep 2 && /etc/scripts/config-pptp.sh) &
       elif [ "$vpnType" = "2" ]; then
 	$LOG "L2TP calling."
-	(sleep 5 && /etc/scripts/config-l2tp.sh) &
+	(sleep 2 && /etc/scripts/config-l2tp.sh) &
       elif [ "$vpnType" = "3" ]; then
 	lanauthpid=`pidof lanauth`
 	if [ "$lanauthpid" != "" ]; then
@@ -41,7 +41,7 @@ start() {
 	    /etc/scripts/config-lanauth.sh reload &
 	else
 	    $LOG "LANAUTH calling."
-	    (sleep 5 && /etc/scripts/config-lanauth.sh start) &
+	    (sleep 2 && /etc/scripts/config-lanauth.sh start) &
 	fi
       fi
     fi
