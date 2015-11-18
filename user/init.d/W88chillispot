@@ -73,7 +73,7 @@ start() {
 	    chmod 777 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
-	chilli --kname=on $ipvsix $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
+	chilli --kname=on $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
 	) & # send to background
 	# statistics
     fi

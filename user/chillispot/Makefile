@@ -22,11 +22,11 @@ else
 CONFOPTS  += --disable-debug --disable-debug2
 endif
 
-ifdef CONFIG_IPV6
-CONFOPTS  += --with-ipv6
-else
+#ifdef CONFIG_IPV6
+#CONFOPTS  += --with-ipv6
+#else
 CONFOPTS  += --without-ipv6
-endif
+#endif
 
 ifdef CONFIG_IP_NF_QUEUE
 CONFOPTS  += --with-nfqueue
