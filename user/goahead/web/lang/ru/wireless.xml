@@ -226,7 +226,6 @@
   <message msgid="secure radius port" msgstr=" Порт " />
   <message msgid="secure radius shared secret" msgstr=" Shared Secret " />
   <message msgid="secure radius session timeout" msgstr=" Тайм-аут сессии " />
-  <message msgid="secure radius idle timeout" msgstr=" Тайм-аут неактивности " />
   <message msgid="secure access policy" msgstr=" Политика доступа " />
   <message msgid="secure access policy capable" msgstr=" Политика " />
   <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />

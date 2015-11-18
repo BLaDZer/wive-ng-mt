@@ -226,7 +226,6 @@
   <message msgid="secure radius port" msgstr=" Port " />
   <message msgid="secure radius shared secret" msgstr=" Shared Secret " />
   <message msgid="secure radius session timeout" msgstr=" Session Timeout " />
-  <message msgid="secure radius idle timeout" msgstr=" Idle Timeout " />
   <message msgid="secure access policy" msgstr=" Access Policy " />
   <message msgid="secure access policy capable" msgstr=" Policy " />
   <message msgid="secure access policy new" msgstr="Add a station Mac:" />

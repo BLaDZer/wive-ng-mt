@@ -454,7 +454,6 @@ function securityMode(c_f)
 	document.security_form.RadiusServerPort.disable = true;
 	document.security_form.RadiusServerSecret.disable = true;
 	document.security_form.RadiusServerSessionTimeout.disable = true;
-	document.security_form.RadiusServerIdleTimeout.disable = true;
 
 	security_mode = document.security_form.security_mode.value;
 
@@ -512,7 +511,6 @@ function securityMode(c_f)
 		document.security_form.RadiusServerPort.disable = false;
 		document.security_form.RadiusServerSecret.disable = false;
 		document.security_form.RadiusServerSessionTimeout.disable = false;
-		document.security_form.RadiusServerIdleTimeout.disable = false;
 
 		if(security_mode == "WPA")
 			document.security_form.cipher[2].disabled = false;
@@ -947,7 +945,6 @@ function initTranslation()
 	_TR("secureRadiusPort", "secure radius port");
 	_TR("secureRadiusSharedSecret", "secure radius shared secret");
 	_TR("secureRadiusSessionTimeout", "secure radius session timeout");
-	_TR("secureRadiusIdleTimeout", "secure radius idle timeout");
 
 	_TRV("secureApply", "wireless apply");
 	_TRV("secureCancel", "wireless cancel");
@@ -1162,10 +1159,6 @@ function onPreAuthenticationClick(type)
             <tr>
               <td class="head" id="secureRadiusSessionTimeout"> Session Timeout </td>
               <td><input name="RadiusServerSessionTimeout" id="RadiusServerSessionTimeout" size="3" maxlength="4" value="0" onKeyUp="setChange(1)"></td>
-            </tr>
-            <tr>
-              <td class="head" id="secureRadiusIdleTimeout"> Idle Timeout </td>
-              <td><input name="RadiusServerIdleTimeout" id="RadiusServerIdleTimeout" size="3" maxlength="4" value="" onKeyUp="setChange(1)" readonly></td>
             </tr>
           </table>
           <!--				-->
