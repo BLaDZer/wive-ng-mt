@@ -97,8 +97,18 @@
 #define DEFAULT_IDLE_INTERVAL 				60
 
 
-#if DBG
-extern u32 	RTDebugLevel;	
+#ifdef DBG
+extern u32 	RTDebugLevel;
+#ifdef SYSLOG
+#include<syslog.h>
+#define DBGPRINT(Level, fmt, args...) 					\
+{                                   \
+    if (Level <= RTDebugLevel)      \
+    {                               \
+	syslog(LOG_ERR, fmt, ## args);			\
+    }                               \
+}
+#else
 #define DBGPRINT(Level, fmt, args...) 					\
 {                                   \
     if (Level <= RTDebugLevel)      \
@@ -107,6 +117,7 @@ extern u32 	RTDebugLevel;
 		printf( fmt, ## args);			\
     }                               \
 }
+#endif
 #else
 #define DBGPRINT(Level, fmt, args...) 	
 #endif

@@ -1345,7 +1345,7 @@
 10) xl2tpd: sync with devel tree 06 Nov 2015.<br>
 11) miniupnpd: workaround issue with Windows 10 (UDA 2.0 devices and control points SHALL implement IPv4 and IPv6).<br>
 12) wireless_tool: sync with internal x86 router tree.<br>
-13) 802.1x: add support MediatekIE and small cleanup.<br>
+13) 802.1x: add support MediatekIE and small cleanup and add base syslog support.<br>
 14) add netcwnmp - basic tr_069 agent support.<br>
 15) busybox: allow user RPC, and add /etc/rpc for compat with classic distro apps.<br>
 16) goahead: make delay rssi check before kick configurable.<br>

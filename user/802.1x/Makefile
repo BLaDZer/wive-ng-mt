@@ -2,13 +2,13 @@ CFLAGS += -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
 LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
 
 # If you want to support multiple radius server for multiple bssid, add following line
-CFLAGS +=  -DMULTIPLE_RADIUS
+CFLAGS += -DMULTIPLE_RADIUS
 
 # If you want to support acl by mac radius server add following line, and ieee802_11_auth.o in OBJS
-CFLAGS +=  -DRADIUS_MAC_ACL_SUPPORT
+CFLAGS += -DRADIUS_MAC_ACL_SUPPORT
 
 # If you want to debug daemon, add following line
-#CFLAGS +=  -DDBG
+CFLAGS += -DDBG -DSYSLOG
 
 OBJS =	rtdot1x.o eloop.o eapol_sm.o radius.o md5.o  \
 	config.o ieee802_1x.o  \
