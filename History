@@ -1352,8 +1352,8 @@
 17) goahead: add chilispot/nodog configure and profiles for auth services.<br>
 18) goahead: always set wan_static_dns to on in bridge mode.<br>
 19) goahead: add signal qality calculation in station list.<br>
-20) goahead: review and fix all UI logic.<br>
-21) goahead: fix lost iptfilter default policy accept rule.<br>
+20) goahead: fix lost iptfilter default policy accept rule.<br>
+21) goahead: review and fix all UI logic.<br>
 22) defaults/goahead/init: remove RadioOff variable, diret use RadioOn instead.<br>
 23) defaults: increase max clients to 56 for 7620 and to 72 for 7621 based AP.<br>
 24) init.d: fix chillispot work (now work ok tested with hotspotsystem.com, commit 2a36dfd).<br>
@@ -1377,7 +1377,7 @@
 42) kernel: ralink_arch: add MT7688 detection, expand MT7628/MT7688 CPU clock detection.<br>
 43) kernel: ralink_raeth: add support MT7621/MT7530 GSW EPHY LED control.<br>
 44) kernel: ralink_raeth: allow override MT7621/MT7530 GSW port forward mask.<br>
-45) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chisp support) version.<br>
+45) kernel: ralink_wifi: 76x2: driver update to 3.0.4.0.p1 universal (7620+7602+7612 chips support) version.<br>
 46) kernel: ralink_wifi: 76x2: DRS_TX_QUALITY_WORST_BOUND set to 8 as all others (this mix rate at train down).<br>
 47) kernel: ralink_wifi: 76x2: fix dynvga enable procedure.<br>
 48) kernel: ralink_wifi: 76x2: decrease memory usage for Andes RX1 ring.<br>
@@ -1404,14 +1404,14 @@
 69) kernel: ralink_wifi: xxxx: backport OID_802_DOT1X_QUERY_STA_AID ioctl support for full compath with new 802.1x daemon.<br>
 70) kernel: ralink_wifi: xxxx: fix transit power setting in profile takes no effect.<br>
 71) kernel: vfs: remove incorrect debugging WARN in prepend_path.<br>
-72) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
-73) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
-74) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
-75) kernel: drivers/core: fix unregistration path of platform devices.<br>
-76) kernel: jump label: remove static_branch().<br>
-77) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
-78) kernel: mm: make sendfile(2) killable.<br>
-79) kernel: sd: clear PS bit before Mode Select.<br>
+72) kernel: jump label: remove static_branch().<br>
+73) kernel: optimize net_get_random_once on CONFIG_JUMP_LABEL is not set.<br>
+74) kernel: mm: make sendfile(2) killable.<br>
+75) kernel: sd: clear PS bit before Mode Select.<br>
+76) kernel: drivers/net: convert compare_ether_addr to ether_addr_equal.<br>
+77) kernel: drivers/core: fix unregistration path of platform devices.<br>
+78) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
+79) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
 80) kernel: usb: xhci: follow upstream.<br>
 81) kernel: usb: xhci: backports from 3.10 tree.<br>
 82) kernel: usb: option: add ZTE PIDs.<br>
