@@ -1209,14 +1209,15 @@ static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
 		return 0;
 	}
 
+	if (f->defrag) {
+		skb = ip_check_defrag(skb, IP_DEFRAG_AF_PACKET);
+		if (!skb)
+			return 0;
+	}
+
 	switch (f->type) {
 	case PACKET_FANOUT_HASH:
 	default:
-		if (f->defrag) {
-			skb = ip_check_defrag(skb, IP_DEFRAG_AF_PACKET);
-			if (!skb)
-				return 0;
-		}
 		skb_get_rxhash(skb);
 		sk = fanout_demux_hash(f, skb, num);
 		break;
