@@ -2,7 +2,7 @@ EXEC = ralinkiappd
 OBJS = rtmpiapp.o
 
 # If you want to debug daemon, add following line
-CFLAGS += -DDBG
+CFLAGS += -DDBG -DSYSLOG
 CFLAGS += -I./ -I../goahead/src/
 
 $(EXEC): $(OBJS)

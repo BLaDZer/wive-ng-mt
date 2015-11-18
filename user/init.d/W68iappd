@@ -15,7 +15,10 @@ start() {
     get_param
     if [ "$FastRoaming" = "1" ] && [ "$FtSupport" != "" ] && [ "$FtSupport" != "0;0;0;0" ] ; then
 	$LOG "Starting iappd roaming daemon"
-	ralinkiappd -e "$lan_if" -w "$first_wlan_root_if" -d 3
+	# ethernet if - lan_if
+	# wlan if for recive data - standalone if or bridge interface
+	# wlan if for ioctl - standalone if
+	ralinkiappd -e "$lan_if" -w "$lan_if" -wi "$first_wlan_root_if"
     fi
 }
 

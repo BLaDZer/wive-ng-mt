@@ -3016,7 +3016,7 @@ static VOID IAPP_Usage(
 {
 	printf("\tUSAGE:\t\tralinkiappd <-e eth_if_name> <-w wireless_if_name>\n");
 	printf("\t\t\t\t<-k security_key> <-d debug level>\n");
-	printf("\tDefault:\tralinkiappd -e br0 -w ra0 -k 12345678 -d 3\n");
+	printf("\tDefault:\tralinkiappd -e br0 -w br0 -wi ra0\n");
 } /* End of IAPP_Usage */
 
 

@@ -92,9 +92,18 @@ VOID os_free_mem(UCHAR *pAd, VOID *pMem)
 #define RT_DEBUG_TRACE					3
 #define RT_DEBUG_INFO					4
 
-#define NIC_DBG_STRING					(" ")
-
+static INT32 RTDebugLevel = RT_DEBUG_ERROR;
 #ifdef DBG
+#ifdef SYSLOG
+#include<syslog.h>
+#define DBGPRINT(Level, fmt, args...) 					\
+{                                   \
+    if (Level <= RTDebugLevel)      \
+    {                               \
+	syslog(LOG_ERR, fmt, ## args);			\
+    }                               \
+}
+#else
 #define DBGPRINT(Level, Fmt)			\
 {										\
     if (Level <= RTDebugLevel)			\
@@ -102,6 +111,7 @@ VOID os_free_mem(UCHAR *pAd, VOID *pMem)
         printf Fmt;						\
     }									\
 }
+#endif
 #else
     /* no debug information */
     #define DBGPRINT(Level, Fmt)
@@ -190,8 +200,6 @@ typedef struct PACKED _RT_SIGNAL_STRUC {
 #define	SIG_NONE					0 /* same as FT_KDP_SIG_NOTHING */
 #define SIG_ASSOCIATION				1 /* same as FT_KDP_SIG_ASSOCIATION */
 #define SIG_REASSOCIATION			2 /* same as FT_KDP_SIG_REASSOCIATION */
-
-static INT32 RTDebugLevel = RT_DEBUG_ERROR;
 #endif /* __RT_CONFIG_H__ */
 
 /* End of rt_config.h */
