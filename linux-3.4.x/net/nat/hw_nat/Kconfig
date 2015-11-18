@@ -32,21 +32,21 @@ config  RA_HW_NAT_BINDING_THRESHOLD
 config  RA_HW_NAT_QURT_LMT
 	int "Max entries allowed build when Free Entries>3/4 (MUST <16384)"
 	depends on RA_HW_NAT
-	default 100
+	default 16383
 	help
 	  Free entries > 3/4
 
 config  RA_HW_NAT_HALF_LMT
 	int "Max entries allowed build when Free Entries>1/2 (MUST <16384)"
 	depends on RA_HW_NAT
-	default 50
+	default 16383
 	help
 	  1/2 < Free entries < 3/4
 
 config  RA_HW_NAT_FULL_LMT
 	int "Max entries allowed build when Free Entries<1/2 (MUST <16384)"
 	depends on RA_HW_NAT
-	default 25
+	default 16383
 	help
 	  Free entries < 1/2
 
