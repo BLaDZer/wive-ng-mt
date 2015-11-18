@@ -123,9 +123,9 @@ get_params() {
     else
 	uamdomain=""
     fi
-    if [ "$IPv6OpMode" = "1" ]
+    if [ "$IPv6OpMode" = "1" ]; then
 	ipvsix="--ipv6 --ipv6mode=6and4"
-    elif [ "$IPv6OpMode" = "3" ]
+    elif [ "$IPv6OpMode" = "3" ]; then
 	ipvsix="--ipv6 --ipv6mode=6to4"
     else
 	ipvsix=""
