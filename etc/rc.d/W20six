@@ -80,7 +80,7 @@ start() {
 	    ip link set mtu $sitmtu dev $six_wan_if
         elif [ "$IPv6OpMode" = "3" ]; then
 	    # this section for 6to4 tunnel mode
-    	    $LOG "Tunel ipv6 in ipv4 configure and up"
+    	    $LOG "Tunel ipv6 to ipv4 configure and up"
     	    calculate_and_set_mtu									# Calculate and set mtu
 	    $LOG "Up $six_wan_if interface"
 	    ip -6 link set $six_wan_if up
