@@ -799,7 +799,7 @@ int main(int argc, char *argv[])
 		}
 	} 
 
-	printf("Ralink DOT1X daemon, version = '%s' \n", dot1x_version);
+	DBGPRINT(RT_DEBUG_OFF, "Ralink DOT1X daemon, version = '%s' \n", dot1x_version);
 	DBGPRINT(RT_DEBUG_TRACE, "prefix_name = '%s'\n", prefix_name);
 
 
