@@ -70,6 +70,8 @@ start() {
 	fi
 	# status location
 	if [ -e /tmp/chilli_stat ]; then
+	    killall -q chilli_stat
+	    killall -q -9 chilli_stat
 	    chmod 777 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
