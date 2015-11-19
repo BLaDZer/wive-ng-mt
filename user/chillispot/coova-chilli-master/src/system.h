@@ -262,8 +262,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define safe_snprintf portable_snprintf
-
 int safe_accept(int fd, struct sockaddr *sa, socklen_t *lenptr);
 int safe_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout);
@@ -287,7 +285,6 @@ int safe_sendto(int s, const void *b, size_t blen, int flags,
 		const struct sockaddr *dest_addr, socklen_t addrlen);
 int safe_sendmsg(int sockfd, struct msghdr *msg, int flags);
 int safe_close (int fd);
-pid_t safe_fork();
 
 #ifndef TEMP_FAILURE_RETRY
 #define TEMP_FAILURE_RETRY(expression)          \
