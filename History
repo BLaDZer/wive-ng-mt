@@ -1415,59 +1415,60 @@
 80) kernel: drivers/core: fix unregistration path of platform devices.<br>
 81) kernel: mips: use ARCH_USE_BUILTIN_BSWAP.<br>
 82) kernel: mips: vmlinux: discard .MIPS.abiflags.<br>
-83) kernel: usb: xhci: follow upstream.<br>
-84) kernel: usb: xhci: backports from 3.10 tree.<br>
-85) kernel: usb: option: add ZTE PIDs.<br>
-86) kernel: usb: core: update power budget for SuperSpeed.<br>
-87) kernel: usb: asix: fix crash on skb alloc failure.<br>
-88) kernel: net: initialize flow flags in input path.<br>
-89) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
-90) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
-91) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
-92) kernel: net: fix skb csum races when peeking.<br>
-93) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
-94) kernel: net: af_key: net: fix RCU splat.<br>
-95) kernel: net: remove sk_init() helper.<br>
-96) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
-97) kernel: net: xps: fix calculation of initial number of xps queues.<br>
-98) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
-99) kernel: net: fix a race in dst_release().<br>
-100) kernel: net: add dev_loopback_xmit() to avoid duplicate code.<br>
-101) kernel: net: use skb_clone to avoid alloc_pages failure.<br>
-102) kernel: net: netfilter: add SMB fastpath module.<br>
-103) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
-104) kernel: net: netfilter: incorrect hash calculation in some cases.<br>
-105) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
-106) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
-107) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
-108) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
-109) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
-110) kernel: net: af_packet: infer protocol from ethernet header if unset.<br>
-111) kernel: net: af_packet: allow packets defragmentation not only for hash fanout type.<br>
-112) kernel: net: af_inet: only check perm protocol when register proto.<br>
-113) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
-114) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
-115) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
-116) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
-117) kernel: net: ipv4/6: compute net once in some cases.<br>
-118) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
-119) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
-120) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
-121) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
-122) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
-123) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
-124) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
-125) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
-126) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
-127) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
-128) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
-129) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
-130) kernel: net: ipv6: select fragment id during UFO segmentation if not set.<br>
-131) kernel: net: ipv6: fix fragment id assignment on LE arches.<br>
-132) kernel: net: ipv6: call ipv6_proxy_select_ident instead of ipv6_select_ident in udp6_ufo_fragment.<br>
-133) kernel: net: ipv6: RTAX_FEATURE_ALLFRAG causes inefficient TCP segment sizing.<br>
-134) kernel: net: ipv6: fix IPv6 UDP fragmentation issue.<br>
-135) kernel: net: ipv6: nf_conntrack_ipv6: fix tracking of ICMPv6 error messages containing fragments.<br>
+83) kernel: mips: fix PAGE_MASK definition.<br>
+84) kernel: usb: xhci: follow upstream.<br>
+85) kernel: usb: xhci: backports from 3.10 tree.<br>
+86) kernel: usb: option: add ZTE PIDs.<br>
+87) kernel: usb: core: update power budget for SuperSpeed.<br>
+88) kernel: usb: asix: fix crash on skb alloc failure.<br>
+89) kernel: net: initialize flow flags in input path.<br>
+90) kernel: net: unix/caif: sk_socket can disappear when state is unlocked.<br>
+91) kernel: net: ipip, sit: fix ipv4_update_pmtu calls.<br>
+92) kernel: net: route: fix behaviour of unreachable, blackhole and prohibit routes.<br>
+93) kernel: net: fix skb csum races when peeking.<br>
+94) kernel: net: fib_rules: fix fib rule dumps across multiple.<br>
+95) kernel: net: af_key: net: fix RCU splat.<br>
+96) kernel: net: remove sk_init() helper.<br>
+97) kernel: net: tcp: generate CA_EVENT_TX_START on data frames.<br>
+98) kernel: net: xps: fix calculation of initial number of xps queues.<br>
+99) kernel: net: avoid NULL deref in inet_ctl_sock_destroy().<br>
+100) kernel: net: fix a race in dst_release().<br>
+101) kernel: net: add dev_loopback_xmit() to avoid duplicate code.<br>
+102) kernel: net: use skb_clone to avoid alloc_pages failure.<br>
+103) kernel: net: netfilter: add SMB fastpath module.<br>
+104) kernel: net: netfilter: ip[6]t_REJECT: tcp-reset using wrong MAC source if bridged.<br>
+105) kernel: net: netfilter: incorrect hash calculation in some cases.<br>
+106) kernel: net: ppp: fix pppoe_dev deletion condition in pppoe_release().<br>
+107) kernel: net: ppp: slip: validate VJ compression slot parameters completely.<br>
+108) kernel: net: neighbour: use source address of last enqueued packet for solicitation.<br>
+109) kernel: net: neighbour: add mcast_resolicit to configure the number of multicast resolicitations in PROBE state.<br>
+110) kenrel: net: af_packet: fix regression if pppd sends packets with only a header and no payload.<br>
+111) kernel: net: af_packet: infer protocol from ethernet header if unset.<br>
+112) kernel: net: af_packet: allow packets defragmentation not only for hash fanout type.<br>
+113) kernel: net: af_inet: only check perm protocol when register proto.<br>
+114) kernel: net: af_unix: return data from multiple SKBs on recv() with MSG_PEEK flag.<br>
+115) kernel: net: af_unix: fix logic about sk_peek_offset.<br>
+116) kernel: net: af_unix: do not report POLLOUT on listeners.<br>
+117) kernel: net: ipv4/icmp: redirect messages can use the ingress daddr as source.<br>
+118) kernel: net: ipv4/6: compute net once in some cases.<br>
+119) kernel: net: ipv4: fix a potential deadlock in mcast getsockopt() path.<br>
+120) kernel: net: ipv6: add RT6_LOOKUP_F_IFACE flag if oif is set.<br>
+121) kernel: net: ipv6: dont add RT6_LOOKUP_F_IFACE flag if saddr set.<br>
+122) kernel: net: ipv6: add labels for site-local and 6bone testing addresses (RFC6724).<br>
+123) kernel: net: ipv6: add anti-spoofing checks for 6to4 and 6rd.<br>
+124) kernel: net: ipv6: only apply anti-spoofing checks to not-pointopoint tunnels.<br>
+125) kernel: net: ipv6: nat: do not drop DNATed 6to4/6rd packets.<br>
+126) kernel: net: ipv6: remove redundant oif checks in rt6_device_match.<br>
+127) kernel: net: ipv6: drop frames with attached skb->sk in forwarding.<br>
+128) kernel: net: ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues.<br>
+129) kernel: net: ipv6: recreate ipv6 link-local addresses when increasing MTU over IPV6_MIN_MTU.<br>
+130) kernel: net: ipv6: fix a potential use after free in sit.c.<br>
+131) kernel: net: ipv6: select fragment id during UFO segmentation if not set.<br>
+132) kernel: net: ipv6: fix fragment id assignment on LE arches.<br>
+133) kernel: net: ipv6: call ipv6_proxy_select_ident instead of ipv6_select_ident in udp6_ufo_fragment.<br>
+134) kernel: net: ipv6: RTAX_FEATURE_ALLFRAG causes inefficient TCP segment sizing.<br>
+135) kernel: net: ipv6: fix IPv6 UDP fragmentation issue.<br>
+136) kernel: net: ipv6: nf_conntrack_ipv6: fix tracking of ICMPv6 error messages containing fragments.<br>
 <br>
 <br>
 <b>TODO:</b><br>
