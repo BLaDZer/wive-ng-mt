@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.90 2015/04/26 14:43:28 nanard Exp $
+# $Id: Makefile.linux,v 1.91 2015/10/26 16:53:25 nanard Exp $
 # MiniUPnP project
 # (c) 2006-2015 Thomas Bernard
 # http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
@@ -77,7 +77,7 @@ ifeq "$(wildcard /etc/gentoo-release )" ""
 LIBS ?= -liptc
 else # gentoo
 # the following is better, at least on gentoo with iptables 1.4.6
-# see http://miniupnp.tuxfamily.org/forum/viewtopic.php?p=1618
+# see http://miniupnp.tuxfamily.org/forum/viewtopic.php?p=1618
 # and http://miniupnp.tuxfamily.org/forum/viewtopic.php?p=2183
 LIBS ?= -lip4tc
 CFLAGS := -DIPTABLES_143 $(CFLAGS)
@@ -132,7 +132,7 @@ TESTIP6TC := $(shell test -f /lib/libip6tc.so && echo 1)
 ifeq ($(TESTIP6TC), 1)
 LIBS := $(LIBS) -lip6tc
 endif # ($(TESTIP6TC), 1)
-endif # ($(TEST), 1)
+endif # ($(TEST), 1)
 endif # ifdef IPTABLESPATH
 endif # ifdef PCFILE_FOUND
 
@@ -152,7 +152,8 @@ TESTUPNPDESCGENOBJS = testupnpdescgen.o upnpdescgen.o
 
 EXECUTABLES = miniupnpd testupnpdescgen testgetifstats \
               testupnppermissions miniupnpdctl testgetifaddr \
-              testasyncsendto testportinuse
+              testasyncsendto testportinuse \
+              testssdppktgen
 
 .PHONY:	all clean install depend genuuid
 
@@ -166,7 +167,8 @@ clean:
 	$(RM) testasyncsendto.o
 	$(RM) testportinuse.o
 	$(RM) miniupnpdctl.o
-	$(RM) -r filesystem
+	$(RM) validateupnppermissions validategetifaddr validatessdppktgen
+	$(RM) -rf filesystem
 
 install:	miniupnpd miniupnpd.8 miniupnpd.conf genuuid \
 	netfilter/iptables_init.sh netfilter/iptables_removeall.sh \
@@ -201,6 +203,20 @@ else
 	sed -i -e "s/^uuid=[-0-9a-f]*/uuid=`($(STAGING_DIR_HOST)/bin/genuuid||$(STAGING_DIR_HOST)/bin/uuidgen||$(STAGING_DIR_HOST)/bin/uuid) 2>/dev/null`/" miniupnpd.conf
 endif
 
+check:	validateupnppermissions validategetifaddr validatessdppktgen
+
+validateupnppermissions:	testupnppermissions testupnppermissions.sh
+	./testupnppermissions.sh
+	touch $@
+
+validategetifaddr:	testgetifaddr testgetifaddr.sh
+	./testgetifaddr.sh
+	touch $@
+
+validatessdppktgen:	testssdppktgen
+	./testssdppktgen
+	touch $@
+
 miniupnpd:	$(BASEOBJS) $(LNXOBJS) $(NETFILTEROBJS) $(LIBS)
 
 testupnpdescgen:	$(TESTUPNPDESCGENOBJS)
@@ -208,6 +224,8 @@ testupnpdescgen:	$(TESTUPNPDESCGENOBJS)
 testgetifstats:	testgetifstats.o linux/getifstats.o
 
 testupnppermissions:	testupnppermissions.o upnppermissions.o
+
+testssdppktgen:	testssdppktgen.o
 
 testgetroute:   testgetroute.o linux/getroute.o upnputils.o
 
@@ -228,7 +246,7 @@ depend:	config.h
 	$(ALLOBJS:.o=.c) $(TESTUPNPDESCGENOBJS:.o=.c) \
 	testgetifstats.c testupnppermissions.c testgetifaddr.c \
 	testgetroute.c testasyncsendto.c testportinuse.c \
-	miniupnpdctl.c 2>/dev/null
+	miniupnpdctl.c testssdppktgen.c 2>/dev/null
 
 # DO NOT DELETE
 
@@ -303,3 +321,4 @@ testgetifaddr.o: config.h getifaddr.h
 testasyncsendto.o: miniupnpdtypes.h config.h upnputils.h asyncsendto.h
 testportinuse.o: macros.h config.h portinuse.h
 miniupnpdctl.o: macros.h
+testssdppktgen.o: macros.h config.h miniupnpdpath.h upnphttp.h

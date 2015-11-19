@@ -1,4 +1,4 @@
-/* $Id: minissdp.c,v 1.80 2015/09/17 12:39:00 nanard Exp $ */
+/* $Id: minissdp.c,v 1.81 2015/10/26 16:51:32 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2015 Thomas Bernard
@@ -34,14 +34,6 @@
 #define LL_SSDP_MCAST_ADDR "FF02::C"
 #define SL_SSDP_MCAST_ADDR "FF05::C"
 #define GL_SSDP_MCAST_ADDR "FF0E::C"
-
-/* maximum lenght of SSDP packets we are generating
- * (reception is done in a 1500byte buffer) */
-#ifdef ENABLE_HTTPS
-#define SSDP_PACKET_MAX_LEN 768
-#else
-#define SSDP_PACKET_MAX_LEN 512
-#endif
 
 /* AddMulticastMembership()
  * param s		socket
