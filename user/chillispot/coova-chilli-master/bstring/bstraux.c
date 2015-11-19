@@ -1,17 +1,21 @@
 /*
  * This source file is part of the bstring string library.  This code was
- * written by Paul Hsieh in 2002-2007, and is covered by the BSD open source 
- * license. Refer to the accompanying documentation for details on usage and 
- * license.
+ * written by Paul Hsieh in 2002-2015, and is covered by the BSD open source
+ * license and the GPL. Refer to the accompanying documentation for details
+ * on usage and license.
  */
 
 /*
  * bstraux.c
  *
  * This file is not necessarily part of the core bstring library itself, but
- * is just an auxilliary module which includes miscellaneous or trivial 
+ * is just an auxilliary module which includes miscellaneous or trivial
  * functions.
  */
+
+#if defined (_MSC_VER)
+# define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -193,6 +197,10 @@ int i, l, c;
 }
 
 static size_t readNothing (void *buff, size_t elsize, size_t nelem, void *parm) {
+	buff = buff;
+	elsize = elsize;
+	nelem = nelem;
+	parm = parm;
 	return 0; /* Immediately indicate EOF. */
 }
 
@@ -605,7 +613,7 @@ struct bsUuCtx {
 };
 
 static size_t bsUuDecodePart (void *buff, size_t elsize, size_t nelem, void *parm) {
-struct tagbstring eol = bsStatic ("\r\n");
+static struct tagbstring eol = bsStatic ("\r\n");
 struct bsUuCtx * luuCtx = (struct bsUuCtx *) parm;
 size_t tsz;
 int l, lret;
@@ -840,6 +848,8 @@ int obl;
 bstring bStrfTime (const char * fmt, const struct tm * timeptr) {
 #if defined (__TURBOC__) && !defined (__BORLANDC__)
 static struct tagbstring ns = bsStatic ("bStrfTime Not supported");
+	fmt = fmt;
+	timeptr = timeptr;
 	return &ns;
 #else
 bstring buff;
@@ -849,8 +859,8 @@ size_t r;
 	if (fmt == NULL) return NULL;
 
 	/* Since the length is not determinable beforehand, a search is
-	   performed using the truncating "vsnprintf" call (to avoid buffer
-	   overflows) on increasing potential sizes for the output result. */
+	   performed using the truncating "strftime" call on increasing 
+	   potential sizes for the output result. */
 
 	if ((n = (int) (2*strlen (fmt))) < 16) n = 16;
 	buff = bfromcstralloc (n+2, "");
@@ -940,25 +950,26 @@ bstring b, t;
 	if ((c = UCHAR_MAX + 1) == termchar) c++;
 
 	for (i=0; ; i++) {
-		if (termchar == c || (maxlen > 0 && i >= maxlen)) c = EOF;
-		else c = vgetchar (vgcCtx);
-
+		if (termchar == c || (maxlen > 0 && i >= maxlen)) break;
+		c = vgetchar (vgcCtx);
 		if (EOF == c) break;
 
 		if (i+1 >= b->mlen) {
 
-			/* Double size, but deal with unusual case of numeric
-			   overflows */
+			/* Double size, and deal with numeric overflows */
 
-			if ((m = b->mlen << 1)   <= b->mlen &&
-			    (m = b->mlen + 1024) <= b->mlen &&
-			    (m = b->mlen + 16)   <= b->mlen &&
-			    (m = b->mlen + 1)    <= b->mlen) t = NULL;
-			else t = bfromcstralloc (m, "");
+			if (b->mlen <= INT_MAX / 2) m = b->mlen << 1;
+			else if (b->mlen <= INT_MAX - 1024) m = b->mlen + 1024;
+			else if (b->mlen <= INT_MAX - 16) m = b->mlen + 16;
+			else if (b->mlen <= INT_MAX - 1) m = b->mlen + 1;
+			else {
+				bSecureDestroy (b); /* Cleanse partial buffer */
+				return NULL;
+			}
 
+			t = bfromcstrrangealloc (b->mlen + 1, m, "");
 			if (t) memcpy (t->data, b->data, i);
-			b->slen = i;
-			bSecureDestroy (b); /* Cleanse previous buffer */
+			bSecureDestroy (b);     /* Cleanse previous buffer */
 			b = t;
 			if (!b) return b;
 		}
@@ -1125,4 +1136,3 @@ void * parm;
 	free (ws);
 	return parm;
 }
-
