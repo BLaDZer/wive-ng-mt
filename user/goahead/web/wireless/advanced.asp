@@ -33,6 +33,7 @@ var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
 var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
 var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
+var EDCCABuilt = '<% getEDCCABuilt(); %>';
 var ED_MODE = '<% getCfgZero(1, "ED_MODE"); %>';
 
 function initTranslation()
@@ -110,92 +111,44 @@ function initValue()
 
 	initTranslation();
 	form.bg_protection.options.selectedIndex = 1*bgProtection;
-
-	if (shortPreamble == '1')
-	{
-		form.short_preamble[0].checked = true;
-		form.short_preamble[1].checked = false;
-	}
-	else
-	{
-		form.short_preamble[0].checked = false;
-		form.short_preamble[1].checked = true;
-	}
-
-	if (shortSlot == '1')
-		form.short_slot[0].checked = true;
-	else
-		form.short_slot[1].checked = true;
-
-	if (txBurst == '1')
-	{
-		form.tx_burst[0].checked = true;
-		form.tx_burst[1].checked = false;
-	}
-	else
-	{
-		form.tx_burst[0].checked = false;
-		form.tx_burst[1].checked = true;
-	}
-
-	if (pktAggregate == '1')
-	{
-		form.pkt_aggregate[0].checked = true;
-		form.pkt_aggregate[1].checked = false;
-	}
-	else
-	{
-		form.pkt_aggregate[0].checked = false;
-		form.pkt_aggregate[1].checked = true;
-	}
+  form.short_preamble.options.selectedIndex = (shortPreamble == '1') ? 1 : 0;
+  form.short_slot.options.selectedIndex = (shortSlot == '1') ? 1 : 0;
+  form.tx_burst.options.selectedIndex = (txBurst == '1') ? 1 : 0;
+  form.pkt_aggregate.options.selectedIndex = (pktAggregate == '1') ? 1 : 0;
 
 	form.McastPhyMode.value = McastPhyMode;
   McastSwitch(form);
 
 	//multicase to unicast converter
-	hideElement('div_m2u');
-	if (m2uBuilt == '1')
-	{
-		showElement('div_m2u');
+  displayElement('div_m2u', m2uBuilt == '1');
+  form.m2u_enable.options.selectedIndex = (m2uEnabled == '1') ? 1 : 0;
+  displayElement('video_turbine_row', (m2uBuilt == '1') && (video_turbine_built == '1'));
+  form.video_turbine.options.selectedIndex = (video_turbine == '1') ? 1 : 0;
 
-		form.m2u_enable[(m2uEnabled == '1') ? 0 : 1 ].checked = true;
-		if (video_turbine_built == '1')
-			form.video_turbine[(video_turbine == '1') ? 0 : 1].checked = true;
-		else
-			displayElement('video_turbine_row', false);
-	}
+  form.WmmCapable.options.selectedIndex = (wmmCapable == '1') ? 1 : 0;
 
-        form.WmmCapable[0].checked = (wmmCapable == '1');
-        form.WmmCapable[1].checked = (wmmCapable != '1');
+  if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
+    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
+  else
+    form.maxstanum.value = maxstanum;
 
-        if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>) {
-	    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
-        } else {
-	    form.maxstanum.value = maxstanum;
-	}
-	if (isNaN(keepalive) || keepalive < 10 || keepalive > 300) {
+	if (isNaN(keepalive) || keepalive < 10 || keepalive > 300)
 	    form.keepalive.value = 60;
-	} else {
+	else
 	    form.keepalive.value = keepalive;
-	}
-	if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300) {
+
+	if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300)
 	    form.idletimeout.value = 200;
-	} else {
+	else
 	    form.idletimeout.value = idletimeout;
-	}
 
 	form.BandSteering.options.selectedIndex = 1*bandsteering;
 	displayElement('bandsteering_row', bandsteeringBuilt == "1");
 
   form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 
-  if (ED_MODE == '1') {
-    form.ED_MODE[0].checked = true;
-    form.ED_MODE[1].checked = false;
-  } else {
-    form.ED_MODE[0].checked = false;
-    form.ED_MODE[1].checked = true;
-  }
+  form.ED_MODE.options.selectedIndex = (ED_MODE == '1') ? 1 : 0;
+  displayElement('div_ED_MODE', EDCCABuilt == "1");
 }
 
 function McastSwitch(form) {
@@ -375,38 +328,38 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="advShortPre">Short Preamble</td>
-            <td><input type="radio" name="short_preamble" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="short_preamble" value="0">
-              <font id="disable">Disable</font></td>
+            <td><select name="short_preamble" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="advShortSlot">Short Slot</td>
-            <td><input type="radio" name="short_slot" value="1" checked>
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="short_slot" value="0">
-              <font id="disable">Disable</font></td>
+            <td><select name="short_slot" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="advTxBurst">Tx Burst</td>
-            <td><input type="radio" name="tx_burst" value="1" checked>
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="tx_burst" value="0">
-              <font id="disable">Disable</font></td>
+            <td><select name="tx_burst" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="advPktAggr">Pkt_Aggregate</td>
-            <td><input type="radio" name="pkt_aggregate" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="pkt_aggregate" value="0" checked>
-              <font id="disable">Disable</font></td>
+            <td><select name="pkt_aggregate" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td id="advWmm" class="head">WMM Capable</td>
-            <td><input type="radio" name="WmmCapable" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="WmmCapable" value="0" checked>
-              <font id="disable">Disable</font></td>
+            <td><select name="WmmCapable" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="bandsteering_row">
             <td class="head">BandSteering</td>
@@ -432,11 +385,11 @@ function CheckValue(form)
             <select name="McastMcs" style="width: 150px;"></select></td>
           </tr>
           <tr id="div_ED_MODE">
-            <td class="head" colspan="1" id="advED_MODE">ACK Policy</td>
-            <td><input type="radio" name="ED_MODE" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="ED_MODE" value="0">
-              <font id="disable">Disable</font></td>
+            <td class="head" colspan="1" id="advED_MODE">Clear-Channel Assessment Monitor</td>
+            <td><select name="ED_MODE" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
@@ -462,17 +415,17 @@ function CheckValue(form)
           </tr>
           <tr>
             <td class="head" id="advMul2Uni">Multicast-to-Unicast</td>
-            <td><input type="radio" name="m2u_enable" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="m2u_enable" value="0">
-              <font id="disable">Disable</font></td>
+            <td><select name="m2u_enable" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
           <tr id="video_turbine_row">
             <td class="head">Video turbine</td>
-            <td><input type="radio" name="video_turbine" value="1">
-              <font id="enable">Enable</font>&nbsp;
-              <input type="radio" name="video_turbine" value="0">
-              <font id="disable">Disable</font></td>
+            <td><select name="video_turbine" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
           </tr>
         </table>
         <br>

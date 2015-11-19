@@ -59,5 +59,5 @@ unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
-int OptRstDefault(int idx_nvram, char_t *fmt, ...);
+int OptRstDefault(int idx_nvram, int num, ...);
 unsigned int ConvertRssiToSignalQuality(long RSSI);

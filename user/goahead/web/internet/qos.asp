@@ -101,21 +101,8 @@ function bodyOnLoad(form)
 
 function resetClick(form)
 {
-  QoSSelect = '0';
-  QoSMode = '0';
-  UpBW = '90000';
-  UpBWL = '80000';
-  DownBW = '90000';
-  DownBWL = '80000';
-  UpVPNBW = '70000';
-  UpVPNBWL = '60000';
-  QoS_HPP = '1720 4190 5060 5190 5191 5192 5193 5222 5223 5269 5270';
-  QoS_LPP = '20 25 21 8010';
-  QoS_HDSCP = 'EF';
-  QoS_LDSCP = '';
-
-  bodyOnLoad(form);
-  return true;
+    form.reset.value = "1";
+    form.submit();
 }
 
 </script>
@@ -211,6 +198,7 @@ function resetClick(form)
             <td><input value="/internet/qos.asp" name="submit-url" type="hidden">
               <input type=submit class="normal" value="Apply" id="QoSApply">
               <input type=button  class="normal" value="Reset" id="QoSReset" onClick="resetClick(this.form);"></td>
+              <input value="0" name="reset" type="hidden">
           </tr>
         </table>
       </form></td>

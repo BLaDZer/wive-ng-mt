@@ -903,13 +903,14 @@ static void reboot_web(webs_t wp, char_t *path, char_t *query)
 }
 
 /* read reqested options by defaults file and wirte to nvram */
-int OptRstDefault(int idx_nvram, char_t *fmt, ...)
+int OptRstDefault(int idx_nvram, int num, ...)
 {
 	va_list vargs;
 	char buf[BUFSZ];
-	char_t *p, *tmp;
+	char_t *p, *tmp, *args;
 	int result = 0;
 	int found = 0;
+	int n = 0;
 
 	FILE *fp = fopen(DEFAULT_NVRAM, "r");
 	if(!fp) {
@@ -944,10 +945,10 @@ int OptRstDefault(int idx_nvram, char_t *fmt, ...)
 		buf[strlen(buf) - 1] = '\0';
 		*p++ = '\0';
 
-		va_start(vargs, fmt);
-		while(*fmt) {
+		va_start(vargs, num);
+		for(n = num; n > 0; n--) {
 			tmp = va_arg(vargs, char_t *);
-			if (strncmp(buf, tmp, strlen(buf))) {
+			if (!strncmp(buf, tmp, strlen(buf))) {
 				nvram_bufset(idx_nvram, buf, p);
 				break;
 			}

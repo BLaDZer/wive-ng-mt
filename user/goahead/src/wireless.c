@@ -43,6 +43,7 @@ static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getFTBuilt(int eid, webs_t wp, int argc, char_t **argv);
+static int  getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv);
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
 static void disconnectSta(webs_t wp, char_t *path, char_t *query);
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
@@ -192,6 +193,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getDFSBuilt"), getDFSBuilt);
 	websAspDefine(T("getRRMBuilt"), getRRMBuilt);
 	websAspDefine(T("getFTBuilt"), getFTBuilt);
+	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
@@ -1881,4 +1883,12 @@ static int getFTBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #else
 	return websWrite(wp, T("0"));
 #endif
+}
+
+static int getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR)
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif	
 }
