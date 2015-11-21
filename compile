@@ -4,7 +4,6 @@ DOS2UNIX=NO
 FULLREBUILD=NO
 VERSIONPKG="3.6.9.RU.`date +%d%m%Y`"
 
-
 #---Set_env_ROOTDIR_to_current_dir---#
 ROOTDIR=`pwd`
 export ROOTDIR=$ROOTDIR
