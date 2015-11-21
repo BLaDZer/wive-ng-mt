@@ -132,8 +132,8 @@
   <message msgid="services misc watchers" msgstr="Системные" />
   <message msgid="services misc watchdog" msgstr="Сторожевой таймер" />
   <message msgid="services misc pinger" msgstr="Пинговалка ближайших узлов" />
-  <message msgid="services misc ping time" msgstr="Ping check time" />
-  <message msgid="services misc ping interval" msgstr="Ping check interval" />
+  <message msgid="services misc ping time" msgstr="Время проверки пингов" />
+  <message msgid="services misc ping interval" msgstr="Интервал проверки пингов" />
   <message msgid="services misc others" msgstr="Остальные" />
   <message msgid="services misc vlan double tag" msgstr="Поддержка двойного тегирования vlan" />
   <message msgid="services misc reinit wan" msgstr="Переподнять WAN линк если DHCP не получил адрес" />

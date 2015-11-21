@@ -624,7 +624,7 @@ function submitForm(form) {
           <tr id="igmpFastL">
             <td class="head" id="lIgmppFL">IGMP fast leave support</td>
             <td colspan="4"><select name="igmpFastL" class="half">
-                <option value="1">Enable</option>
+                <option value="1" id="enable">Enable</option>
                 <option value="0" id="disable">Disable</option>
               </select></td>
           </tr>

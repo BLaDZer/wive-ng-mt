@@ -46,7 +46,7 @@
 #define DEFAULT_NVRAM			"/etc/default/nvram_default"
 
 void formDefineUtilities(void);
-void outputTimerForReload(webs_t wp, long delay);
+void outputTimerForReload(webs_t wp, char_t *url, long delay);
 void reboot_now(void);
 int checkSemicolon(char *str);
 int doSystem(char_t *fmt, ...);

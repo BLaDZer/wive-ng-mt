@@ -1349,8 +1349,6 @@ const parameter_fetch_t apcli_args[] =
 /* goform/wirelessApcli */
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *submitUrl;
-
 	//fetch from web input
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "ApCliEnable", "1");
@@ -1359,14 +1357,14 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	if (CHK_IF_DIGIT(reboot_flag, 1)) {
 		/* Output timer for reloading */
-		outputTimerForReload(wp, 80000);
+		outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
 		/* Reboot */
 		reboot_now();
 	} else {
-		submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);
 	}
 }

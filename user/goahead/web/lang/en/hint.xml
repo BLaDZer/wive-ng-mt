@@ -71,9 +71,9 @@
     <message msgid="hint nodog blocked" msgstr="Comma-separated list of MAC addresses who will be completely blocked from the GatewayInterface. Ignored if MACMechanism is allow. N.B.: weak security, since MAC addresses are easy to spoof." />
     <message msgid="hint nodog allowed" msgstr="Comma-separated list of MAC addresses who will not be completely blocked from the GatewayInterface. Ignored if MACMechanism is block. N.B.: weak security, since MAC addresses are easy to spoof." />
     <message msgid="hint nodog trusted" msgstr="Comma-separated list of MAC addresses who are not subject to authentication, and are not restricted by any FirewallRuleSet. N.B.: weak security, since MAC addresses are easy to spoof." />
-    <message msgid="hint nodog auth pass" msgstr="Set to Enable, to require a password matching the Password parameter to be supplied when authenticating." />
+    <message msgid="hint nodog auth pass" msgstr="Set to Enable, to require a password matching the Password parameter to be supplied when authenticating. For correct operation you need, previously, to load the authorization page in rwfs." />
     <message msgid="hint nodog pass" msgstr="Whitespace delimited string that is compared to user-supplied password when authenticating." />
-    <message msgid="hint nodog auth user" msgstr="Set to Enable, to require a username matching the Username parameter to be supplied when authenticating." />
+    <message msgid="hint nodog auth user" msgstr="Set to Enable, to require a username matching the Username parameter to be supplied when authenticating. For correct operation you need, previously, to load the authorization page in rwfs." />
     <message msgid="hint nodog user" msgstr="Whitespace delimited string that is compared to user-supplied username when authenticating." />
     <message msgid="hint nodog attempts" msgstr="Integer number of failed password/username entries before a user is forced to reauthenticate." />
 </po>

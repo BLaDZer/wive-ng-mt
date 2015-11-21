@@ -1470,6 +1470,12 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 {
 	char *dmzE, *ip_address, *dmzLoopback;
 
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	if (CHK_IF_DIGIT(reset, 1)) {
+		OptRstDefault(RT2860_NVRAM, 3, "DMZEnable", "DMZIPAddress", "DMZNATLoopback");
+		goto out;
+	}
+
 	dmzE = websGetVar(wp, T("DMZEnabled"), T(""));
 	ip_address = websGetVar(wp, T("DMZIPAddress"), T(""));
 	dmzLoopback = websGetVar(wp, T("dmzLoopback"), T("off"));
@@ -1493,7 +1499,7 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 	}
 	else
 		return;
-
+out:
 #ifdef PRINT_DEBUG
 	websHeader(wp);
 	websWrite(wp, T("DMZEnabled: %s<br>\n"), dmzE);

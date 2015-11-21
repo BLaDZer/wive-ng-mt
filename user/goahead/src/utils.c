@@ -753,7 +753,7 @@ void redirect_wholepage(webs_t wp, const char *url)
 	websWrite(wp, T("</script></head></html>"));
 }
 
-void outputTimerForReload(webs_t wp, long delay)
+void outputTimerForReload(webs_t wp, char_t *url, long delay)
 {
 	char lan_if_addr[32];
 	const char *lan_if_ip;
@@ -777,9 +777,9 @@ void outputTimerForReload(webs_t wp, long delay)
 			wp,
 			T(
 				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s\");\n"
+				"ajaxReloadDelayedPage(%ld, \"http://%s%s\");\n"
 				"</script>"),
-			delay, lan_if_ip
+			delay, lan_if_ip, url
 		);
 	} else {
 		websWrite
@@ -787,9 +787,9 @@ void outputTimerForReload(webs_t wp, long delay)
 			wp,
 			T(
 				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s:%s\");\n"
+				"ajaxReloadDelayedPage(%ld, \"http://%s:%s%s\");\n"
 				"</script>"),
-			delay, lan_if_ip, http_port
+			delay, lan_if_ip, http_port, url
 		);
 	}
 	websFooter(wp);
@@ -824,7 +824,7 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	outputTimerForReload(wp, "", 80000);
 
 	/* Reboot */
 	reboot_now();
@@ -877,14 +877,14 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	if (CHK_IF_DIGIT(reboot_flag, 1)) {
 		/* Output timer for reloading */
-		outputTimerForReload(wp, 80000);
+		outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
 		/* Reboot */
 		reboot_now();
 	} else {
-		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);
 	}
 }
@@ -893,7 +893,7 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 static void reboot_web(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	outputTimerForReload(wp, "", 80000);
 
 	/* only by save and reboot logic must save rwfs */
 	doSystem("fs save > /dev/null 2>&1");
@@ -907,7 +907,7 @@ int OptRstDefault(int idx_nvram, int num, ...)
 {
 	va_list vargs;
 	char buf[BUFSZ];
-	char_t *p, *tmp, *args;
+	char_t *p, *tmp;
 	int result = 0;
 	int found = 0;
 	int n = 0;

@@ -416,11 +416,12 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 	char_t *port_changed = websGetVar(wp, T("rmt_http_port_changed"), T("0"));
 	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 
 	if (CHK_IF_DIGIT(port_changed, 1) && CHK_IF_DIGIT(reboot_flag, 1))
 	{
 		/* Output timer for reloading */
-		outputTimerForReload(wp, 80000);
+		outputTimerForReload(wp, ""/* submitUrl */, 80000); 
 
 		/* Reboot */
 		reboot_now();
@@ -430,8 +431,6 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 		//restart some services instead full reload
 		if (CHK_IF_DIGIT(port_changed, 0))
 			doSystem("services_restart.sh misc");
-
-		char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 		websRedirect(wp, submitUrl);
 	}
 }
@@ -686,6 +685,18 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 	char_t *submitUrl;
 	int i=0;
 
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	if (CHK_IF_DIGIT(reset, 1)) {
+		OptRstDefault(RT2860_NVRAM, 30, "l2tp_srv_enabled", "l2tp_srv_ip_range", "l2tp_srv_ip_local",
+			"l2tp_srv_lcp_adapt", "l2tp_srv_debug", "l2tp_srv_nat_enabled", "l2tp_srv_mppe_enabled",
+			"l2tp_srv_proxyarp", "l2tp_srv_mtu_size", "l2tp_srv_mru_size", "l2tp_srv_user0",
+			"l2tp_srv_user1", "l2tp_srv_user2", "l2tp_srv_user3", "l2tp_srv_user4", "l2tp_srv_user5",
+			"l2tp_srv_user6", "l2tp_srv_user7", "l2tp_srv_user8", "l2tp_srv_user9", "l2tp_srv_pass0",
+			"l2tp_srv_pass1", "l2tp_srv_pass2", "l2tp_srv_pass3", "l2tp_srv_pass4", "l2tp_srv_pass5",
+			"l2tp_srv_pass6", "l2tp_srv_pass7", "l2tp_srv_pass8", "l2tp_srv_pass9");
+		goto out;
+	}
+
 	char_t *l2tp_enabled = websGetVar(wp, T("l2tp_srv_enabled"), T("0"));
 
 	if (l2tp_enabled == NULL)
@@ -723,6 +734,7 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+out:
 	firewall_rebuild();
 
 	doSystem("service vpnserver restart");

@@ -161,6 +161,10 @@ function dmzLoopbackWarning(element)
 	}
 }
 
+function resetClick(form) {
+    form.reset.value = "1";
+    form.submit();
+}
 </script>
 </head>
 <body onLoad="pageInit()">
@@ -197,8 +201,10 @@ function dmzLoopbackWarning(element)
         <table class="buttons">
           <tr>
             <td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ" onClick="return formCheck()">
-              <input type="reset" class="normal" value="Reset" id="dmzReset" name="reset">
-              <input type="hidden" name="submit-url" value="/firewall/DMZ.asp" ></td>
+              <input type="button" class="normal" value="Reset" id="dmzReset" name="reset" onClick="resetClick(this.form);">
+              <input type="hidden" name="submit-url" value="/firewall/DMZ.asp" >
+              <input type="hidden" name="reset" value="0">
+            </td>
           </tr>
         </table>
       </form>

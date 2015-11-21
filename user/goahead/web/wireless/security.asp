@@ -1205,8 +1205,8 @@ for (aptable = 0; aptable < MBSSID_MAX; aptable++)
 }
 </script>
           <!-- <br> -->
-          <table border="0" cellpadding="2" cellspacing="1" width="90%">
-            <tr align="center">
+          <table class="button">
+            <tr>
               <td><input style="width: 120px;" value="Apply" id="secureApply" type="submit">
                 &nbsp; &nbsp;
                 <input style="width: 120px;" value="Cancel" id="secureCancel" type="reset" onClick="window.location.reload();" >

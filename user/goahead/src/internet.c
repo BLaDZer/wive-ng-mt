@@ -2046,7 +2046,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 static void restoremac(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	outputTimerForReload(wp, "", 80000);
 
 	system("fs factory_mac > /dev/console 2>&1");
 
@@ -2241,7 +2241,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
 		if (CHK_IF_DIGIT(reboot_flag, 1)) {
 			/* Output timer for reloading */
-			outputTimerForReload(wp, 80000);
+			outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
 			/* Reboot */
 			reboot_now();

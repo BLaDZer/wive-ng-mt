@@ -248,6 +248,7 @@ function initTranslation()
 	_TR("l2tpMPPE", "vpn allow mppe");
 	
 	_TRV("l2tpApply", "button apply");
+	_TRV("l2tpReset", "button reset");
 }
 
 function displayServiceHandler(response)
@@ -295,6 +296,11 @@ function displayServiceStatus()
 	ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 }
 
+function resetClick(form)
+{
+    form.reset.value = "1";
+    form.submit();
+}
 </script>
 </head>
 
@@ -380,8 +386,11 @@ function displayServiceStatus()
         <div id="l2tpUserList"> </div>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" id="l2tpApply" value="Apply">
-              <input type="hidden" value="/services/l2tp.asp" name="submit-url"></td>
+            <td><input type="submit" class="normal" id="l2tpApply" value="Apply">&nbsp;&nbsp;
+              <input class="normal" id="l2tpReset" value="Reset" name="reset_button" onClick="resetClick(this.form);" type="button">
+              <input type="hidden" value="/services/l2tp.asp" name="submit-url">
+              <input value="0" name="reset" type="hidden">
+            </td>
           </tr>
         </table>
       </form>

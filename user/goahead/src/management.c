@@ -495,7 +495,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, 80000);
+	outputTimerForReload(wp, "", 80000);
 
 	/* restore defaults and rwfs drop */
 	doSystem("fs nvramreset > /dev/null 2>&1");
