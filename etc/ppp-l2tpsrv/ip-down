@@ -35,5 +35,5 @@ iptables -D servicelimit -i $PPP_IFACE -m state --state NEW -p tcp -m multiport 
 export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
 if [ -d /etc/ppp-l2tpsrv/ip-down.d -a -x /bin/run-parts ]; then
     $LOG "Run scripts from /etc/ppp-l2tpsrv/ip-down.d"
-    run-parts /etc/ppp-l2tpsrv/ip-down.d/
+    run-parts /etc/ppp-l2tpsrv/ip-down.d
 fi

@@ -331,7 +331,7 @@ case "$1" in
 	sysctl -wq net.ipv4.conf.$interface.forwarding=1
 	if [ -d /etc/udhcpc.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/udhcpc.d"
-	    run-parts /etc/udhcpc.d/
+	    run-parts /etc/udhcpc.d
 	fi
     ;;
 esac

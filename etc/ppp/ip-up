@@ -141,5 +141,5 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
     export PPP_IFACE PPP_TTY PPP_SPEED PPP_LOCAL PPP_REMOTE PPP_IPPARAM
     if [ -d /etc/ppp/ip-up.d -a -x /bin/run-parts ]; then
 	$LOG "Run scripts from /etc/ppp/ip-up.d"
-	run-parts /etc/ppp/ip-up.d/
+	run-parts /etc/ppp/ip-up.d
     fi

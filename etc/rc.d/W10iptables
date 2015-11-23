@@ -451,7 +451,7 @@ tunettl() {
 rwfsrulez() {
 	if [ -d /etc/iptables.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/iptables.d"
-	    run-parts /etc/iptables.d/
+	    run-parts /etc/iptables.d
 	fi
 }
 
@@ -460,7 +460,7 @@ restart() {
 	stop
 	$LOG "Add netfiler rules"
 	#########################################DEFAULTRULES###################################
-	iptables -I INPUT -i lo -j ACCEPT
+	iptables -A INPUT -i lo -j ACCEPT
 	$LOG "Allow established/related in input"
 	iptables -A INPUT $STATE_EST -j ACCEPT
 	#########################################DYNAMICRULES###################################
@@ -574,7 +574,7 @@ upnprulesv6() {
 rwfsrulezv6() {
 	if [ -d /etc/ip6tables.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/ip6tables.d"
-	    run-parts /etc/ip6tables.d/
+	    run-parts /etc/ip6tables.d
 	fi
 }
 
