@@ -540,9 +540,11 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 #if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 	FPRINT_NUM(CSPeriod);
-	FPRINT_NUM(DfsLowerLimit);
-	FPRINT_NUM(DfsUpperLimit);
 	FPRINT_NUM(DfsIndoor);
+	FPRINT_NUM(SymRoundFromCfg);
+	FPRINT_NUM(BusyIdleFromCfg);
+	FPRINT_NUM(DfsRssiHighFromCfg);
+	FPRINT_NUM(DfsRssiLowFromCfg);
 	FPRINT_NUM(DFSParamFromConfig);
 	FPRINT_STR(FCCParamCh0);
 	FPRINT_STR(FCCParamCh1);
@@ -560,11 +562,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(JAPW53ParamCh1);
 	FPRINT_STR(JAPW53ParamCh2);
 	FPRINT_STR(JAPW53ParamCh3);
-	FPRINT_NUM(FixDfsLimit);
-	FPRINT_NUM(LongPulseRadarTh);
-	FPRINT_NUM(AvgRssiReq);
-	FPRINT_NUM(DFS_R66);
-	FPRINT_STR(blockch);
 #endif
 #if defined(CONFIG_MT7610_AP_ED_MONITOR) ||  defined(CONFIG_MT76X2_AP_ED_MONITOR)
 	FPRINT_NUM(EDCCA_ED_TH);
