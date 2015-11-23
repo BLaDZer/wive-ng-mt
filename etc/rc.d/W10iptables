@@ -455,7 +455,7 @@ rwfsrulez() {
 	fi
 }
 
-start() {
+restart() {
 	get_param
 	stop
 	$LOG "Add netfiler rules"
@@ -578,7 +578,7 @@ rwfsrulezv6() {
 	fi
 }
 
-startv6() {
+restartv6() {
 	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" != "0" ]; then
 	    get_param
 	    stopv6
@@ -705,8 +705,8 @@ stopv6() {
 
 case "$1" in
         start)
-            start
-            startv6
+            restart
+            restartv6
             ;;
 
         stop)
@@ -715,10 +715,8 @@ case "$1" in
             ;;
 
         restart)
-            stop
-            stopv6
-            start
-            startv6
+            restart
+            restartv6
             ;;
         *)
             echo $"Usage: $0 {start|stop|restart}"
