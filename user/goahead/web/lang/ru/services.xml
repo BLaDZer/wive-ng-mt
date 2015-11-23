@@ -65,9 +65,9 @@
   <message msgid="services l2tp login" msgstr="Имя пользователя" />
   <message msgid="services l2tp password" msgstr="Пароль" />
 
-  <message msgid="services samba title" msgstr="Настройки Samba/CIFS" />
-  <message msgid="services samba introduction" msgstr="Здесь вы можете настроить сервисы Samba/CIFS." />
-  <message msgid="services samba settings" msgstr="Настройки Samba/CIFS" />
+  <message msgid="services samba title" msgstr="Настройки Samba/WINS" />
+  <message msgid="services samba introduction" msgstr="Здесь вы можете настроить сервисы Samba/WINS." />
+  <message msgid="services samba settings" msgstr="Настройки Samba/WINS" />
   <message msgid="services samba enabled" msgstr="Samba" />
   <message msgid="services samba workgroup" msgstr="Рабочая группа" />
   <message msgid="services samba netbios name" msgstr="Имя Netbios" />

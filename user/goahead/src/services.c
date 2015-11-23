@@ -436,7 +436,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 }
 
 //------------------------------------------------------------------------------
-// Samba/CIFS setup
+// Samba/Wins setup
 const parameter_fetch_t service_samba_flags[] =
 {
 	{ T("WorkGroup"), "WorkGroup", 0, T("") },

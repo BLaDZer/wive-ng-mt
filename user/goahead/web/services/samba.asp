@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Samba/CIFS setup</title>
+<title>Samba/WINS setup</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -136,13 +136,13 @@ function displayServiceStatus()
 <body onLoad="initValue(document.formSamba);">
 <table class="body">
   <tr>
-    <td><h1 id="sambaTitle">Samba/CIFS Setup</h1>
-      <p id="sambaIntroduction">Here you can configure Samba/CIFS service.</p>
+    <td><h1 id="sambaTitle">Samba/WINS Setup</h1>
+      <p id="sambaIntroduction">Here you can configure Samba/WINS service.</p>
       <hr>
       <form action="/goform/formSamba" method="POST" name="formSamba" onSubmit="return checkForm(this);" >
         <table class="form">
           <tr>
-            <td class="title" colspan="3" id="sambaSettings">Samba/CIFS Settings</td>
+            <td class="title" colspan="3" id="sambaSettings">Samba/WINS Settings</td>
           </tr>
           <tr id="samba">
             <td class="head" id="sambaEnabled">Enable Samba</td>
