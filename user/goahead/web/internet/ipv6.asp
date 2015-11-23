@@ -104,78 +104,6 @@ function initValue()
 	displayServiceStatus();
 }
 
-function atoi(str, num)
-{
-	i = 1;
-	if (num != 1) {
-		while (i != num && str.length != 0) {
-			if (str.charAt(0) == '.') {
-				i++;
-			}
-			str = str.substring(1);
-		}
-		if (i != num)
-			return -1;
-	}
-
-	for (i=0; i<str.length; i++) {
-		if (str.charAt(i) == '.') {
-			str = str.substring(0, i);
-			break;
-		}
-	}
-	if (str.length == 0)
-		return -1;
-	return parseInt(str, 10);
-}
-
-function checkRange(str, num, min, max)
-{
-	d = atoi(str, num);
-	if (d > max || d < min)
-		return false;
-	return true;
-}
-
-function isAllNum(str)
-{
-	for (var i=0; i<str.length; i++) {
-		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
-			continue;
-		return 0;
-	}
-	return 1;
-}
-
-function checkIpv4Addr(field)
-{
-	if (field.value == "") {
-		alert(_("ipv6 ip empty"));
-		field.value = field.defaultValue;
-		field.focus();
-		return false;
-	}
-
-	if (isAllNum(field.value) == 0) {
-		alert(_("ipv6 number"));
-		field.value = field.defaultValue;
-		field.focus();
-		return false;
-	}
-
-	if ((!checkRange(field.value, 1, 0, 255)) ||
-			(!checkRange(field.value, 2, 0, 255)) ||
-			(!checkRange(field.value, 3, 0, 255)) ||
-			(!checkRange(field.value, 4, 1, 254)))
-	{
-		alert(_("ipv6 ip format error"));
-		field.value = field.defaultValue;
-		field.focus();
-		return false;
-	}
-	return true;
-}
-
 function checkIpv6Addr(ip_addr, len)
 {
 	var ip_item = new Array();
@@ -252,7 +180,7 @@ function CheckValue(form)
 			form.ipv6_6rd_prefix_len.select();
 			return false;
 		}
-		if (!checkIpv4Addr(form.ipv6_6rd_border_ipaddr.value)) {
+		if (!validateIP(form.ipv6_6rd_border_ipaddr.value, 0)) {
 			alert(_("ipv6 invalid ipv4"));
 			form.ipv6_6rd_border_ipaddr.focus();
 			form.ipv6_6rd_border_ipaddr.select();

@@ -8,82 +8,12 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("firewall");
 Butterlate.setTextDomain("buttons");
-
-function deleteClick()
-{
-    return true;
-}
-
-
-function checkRange(str, num, min, max)
-{
-	d = atoi(str,num);
-	if(d > max || d < min)
-		return false;
-	return true;
-}
-
-
-function atoi(str, num)
-{
-	i=1;
-	if(num != 1 ){
-		while (i != num && str.length != 0){
-			if(str.charAt(0) == '.'){
-				i++;
-			}
-			str = str.substring(1);
-		}
-	  	if(i != num )
-			return -1;
-	}
-
-	for(i=0; i<str.length; i++){
-		if(str.charAt(i) == '.'){
-			str = str.substring(0, i);
-			break;
-		}
-	}
-	if(str.length == 0)
-		return -1;
-	return parseInt(str, 10);
-}
-
-
-function checkIPAddr(field)
-{
-    if(field.value == ""){
-        alert(_("dmz ip empty"));
-        field.value = field.defaultValue;
-        field.focus();
-        return false;
-    }
-
-    if ( isAllNum(field.value) == 0) {
-        alert(_("dmz number"));
-        field.value = field.defaultValue;
-        field.focus();
-        return false;
-    }
-
-    if( (!checkRange(field.value,1,0,255)) ||
-        (!checkRange(field.value,2,0,255)) ||
-        (!checkRange(field.value,3,0,255)) ||
-        (!checkRange(field.value,4,1,254)) ){
-        alert(_("dmz invalid ip"));
-        field.value = field.defaultValue;
-        field.focus();
-        return false;
-    }
-
-   return true;
-}
-
 
 function formCheck()
 {
@@ -92,7 +22,7 @@ function formCheck()
 		return true;
 	}
 
-	if ( !checkIPAddr(document.DMZ.DMZIPAddress) ) {
+	if ( !validateIP(document.DMZ.DMZIPAddress, 0) ) {
 		document.DMZ.DMZIPAddress.focus();
 		return false;
 	}
@@ -201,7 +131,7 @@ function resetClick(form) {
         <table class="buttons">
           <tr>
             <td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ" onClick="return formCheck()">
-              <input type="button" class="normal" value="Reset" id="dmzReset" name="reset" onClick="resetClick(this.form);">
+              <input type="button" class="normal" value="Reset" id="dmzReset" name="reset_button" onClick="resetClick(this.form);">
               <input type="hidden" name="submit-url" value="/firewall/DMZ.asp" >
               <input type="hidden" name="reset" value="0">
             </td>
