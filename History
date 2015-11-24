@@ -1474,6 +1474,7 @@
 <br>
 <b>3.7.x</b><br>
 1) add 7621+7602+7612_USB_SD_SIM_16_512 metal sample support.<br>
+2) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
 <br>
 <br>
 <b>TODO:</b><br>
