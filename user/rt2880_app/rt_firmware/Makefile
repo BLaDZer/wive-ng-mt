@@ -79,7 +79,11 @@ else ifeq ($(CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7612_AP_2T2R-4L_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 endif
 ifdef CONFIG_RALINK_MT7621
-	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_BACKUP.BIN					/etc/Wireless/rfbackup.bin
+ifdef CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+else
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+endif
 endif
 # replace defaults for black horiontal 7620a+7612 and  7621 tube not production samples
 	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan0							/etc/default/nvram_default

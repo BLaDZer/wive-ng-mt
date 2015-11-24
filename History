@@ -1472,6 +1472,10 @@
 137) kernel: net: ipv6: nf_conntrack_ipv6: fix tracking of ICMPv6 error messages containing fragments.<br>
 <br>
 <br>
+<b>3.7.x</b><br>
+1) add 7621+7602+7612_USB_SD_SIM_16_512 metal sample support.<br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add subchannel select for 5GHz module.<br>
