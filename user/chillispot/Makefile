@@ -22,6 +22,7 @@ else
 CONFOPTS  += --disable-debug --disable-debug2
 endif
 
+# ipv6 very very limited and unstable suppot in coova
 #ifdef CONFIG_IPV6
 #CONFOPTS  += --with-ipv6
 #else
@@ -46,11 +47,12 @@ else
 CONFOPTS  += --without-openssl --disable-chilliradsec
 endif
 
-ifdef CONFIG_LIB_CURL
-CONFOPTS  += --with-curl
-else
+# curl not need for regular build without miniportal
+#ifdef CONFIG_LIB_CURL
+#CONFOPTS  += --with-curl
+#else
 CONFOPTS  += --without-curl
-endif
+#endif
 
 all:
 	(cd $(DIR) ; if [ ! -f ./configure ]; then  aclocal; autoreconf -fi;  autoconf; fi ; \
