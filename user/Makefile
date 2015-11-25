@@ -111,8 +111,6 @@ dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 ifdef CONFIG_RALINK_MT7621
 dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
-dir_$(CONFIG_USER_CHILLISPOT)               := chillispot
-
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
