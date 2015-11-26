@@ -93,7 +93,6 @@ ln -sf /var/lock /var/locks
 
 chmod 777 /tmp
 
-$LOG "Start reset button check"
 butcheck &
 
 $LOG "Init RW particion"
