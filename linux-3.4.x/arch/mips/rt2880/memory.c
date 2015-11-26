@@ -68,16 +68,11 @@
 #define MAX_RAM_SIZE  (256*1024*1024)
 #define TEST_OFFSET	255
 #elif defined (CONFIG_RALINK_MT7621)
-#ifdef CONFIG_HIGHMEM
-#define MAX_RAM_SIZE  (512*1024*1024)
-#define TEST_OFFSET	511
+#define MAX_RAM_SIZE  (448*1024*1024)
+#define TEST_OFFSET	447
 #else
 #define MAX_RAM_SIZE  (256*1024*1024)
 #define TEST_OFFSET	255
-#endif
-#else
-#define MAX_RAM_SIZE  (64*1024*1024)
-#define TEST_OFFSET	63
 #endif
 
 #define PFN_ALIGN(x)		(((unsigned long)(x) + (PAGE_SIZE - 1)) & PAGE_MASK)
