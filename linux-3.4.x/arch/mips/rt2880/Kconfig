@@ -183,7 +183,6 @@ config RT2880_DRAM_256M
 config RT2880_DRAM_512M
 	bool "512M (448M + 64M Highmem)"
 	depends on RALINK_MT7621
-	select HIGHMEM
 
 endchoice
 
