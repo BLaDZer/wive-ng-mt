@@ -1477,6 +1477,7 @@
 2) coovachilli: up to version 1.3.1.3 (commit: 98845a84).<br>
 3) xl2tpd: sync with devel tree 26 Nov 2015.<br>
 4) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+5) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 <br>
 <br>
 <b>TODO:</b><br>
