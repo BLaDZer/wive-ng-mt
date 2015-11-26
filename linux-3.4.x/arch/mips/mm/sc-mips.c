@@ -23,7 +23,6 @@
  */
 static void mips_sc_wback_inv(unsigned long addr, unsigned long size)
 {
-	__sync();
 	blast_scache_range(addr, addr + size);
 }
 
