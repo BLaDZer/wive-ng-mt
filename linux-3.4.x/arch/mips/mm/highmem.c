@@ -75,8 +75,8 @@ void __kunmap_atomic(void *kvaddr)
 		return;
 	}
 
-	type = kmap_atomic_idx();
 #ifdef CONFIG_DEBUG_HIGHMEM
+	type = kmap_atomic_idx();
 	{
 		int idx = type + KM_TYPE_NR * smp_processor_id();
 
