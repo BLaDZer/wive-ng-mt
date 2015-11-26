@@ -67,16 +67,15 @@ EXPORT_SYMBOL(kmap_atomic);
 void __kunmap_atomic(void *kvaddr)
 {
 	unsigned long vaddr = (unsigned long) kvaddr & PAGE_MASK;
-#ifdef CONFIG_DEBUG_HIGHMEM
-	int type;
-#endif
+	int type __maybe_unused;
+
 	if (vaddr < FIXADDR_START) { // FIXME
 		pagefault_enable();
 		return;
 	}
 
-#ifdef CONFIG_DEBUG_HIGHMEM
 	type = kmap_atomic_idx();
+#ifdef CONFIG_DEBUG_HIGHMEM
 	{
 		int idx = type + KM_TYPE_NR * smp_processor_id();
 

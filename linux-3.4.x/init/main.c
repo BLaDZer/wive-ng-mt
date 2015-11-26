@@ -806,7 +806,7 @@ static void run_init_process(const char *init_filename)
  */
 #ifdef CONFIG_MTD_RALINK
 #if defined(CONFIG_TMPFS) || defined(CONFIG_RAMFS)
-static void build_console(void)
+static noinline void build_console(void)
 {
         #define mknoddev(m,s) (m<<8|s)
         printk(KERN_INFO "Build the /dev/console node.\n");
@@ -814,6 +814,7 @@ static void build_console(void)
 }
 #endif
 #endif
+
 static noinline int init_post(void)
 {
 #ifdef CONFIG_MTD_RALINK
@@ -885,7 +886,7 @@ static noinline int init_post(void)
 	build_console();
 #endif
 	if (sys_open((const char __user *) "/dev/console", O_RDWR|O_NONBLOCK, 0) < 0)
-	    printk(KERN_INFO "Please be patient, while Wive-RTNL loads ...\n");
+	    printk(KERN_INFO "Please be patient, while Wive-NG loads ...\n");
 #endif
 
 	current->signal->flags |= SIGNAL_UNKILLABLE;
