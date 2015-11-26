@@ -22,11 +22,11 @@ case "$MODE" in
 	####################################
 	"MT7621-MT7602-MT7612-2T2R-16M-USB")
 	    # metal sample
-	    DEVNAME="SNR-CPE-MD2-5GHZ-USB-MT"
+	    DEVNAME="SNR-CPE-ME2-5GHZ-USB-MT"
 	    ;;
 	"MT7621-MT7602-MT7612-2T2R-8M-USB")
 	    # tube sample
-	    DEVNAME="SNR-CPE-MD2-5GHZ-USB-MT"
+	    DEVNAME="SNR-CPE-ME2-5GHZ-USB-MT"
 	    ;;
 	####################################
 	# dual band 7620A + 7612NE
