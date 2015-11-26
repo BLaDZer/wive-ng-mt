@@ -1481,8 +1481,9 @@
 6) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
 7) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
 8) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-9) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-10) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+9) kenrel: mips: allow long calls on highmem support builds.<br>
+10) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+11) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 <br>
 <br>
 <b>TODO:</b><br>
