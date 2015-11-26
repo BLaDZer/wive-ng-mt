@@ -155,6 +155,7 @@ config  RALINK_CPUSLEEP
 #--------------------------
 config RAM_SIZE_AUTO
         bool "Autodetect RAM size"
+	depends on !HIGHMEM
 	default y
 
 choice
