@@ -171,6 +171,10 @@ void __update_cache(struct vm_area_struct *vma, unsigned long address,
 		return;
 	}
 	page = pfn_to_page(pfn);
+
+	if (PageHighMem(page))
+		return;
+
 	if (page_mapped(page) && Page_dcache_dirty(page)) {
 		void *kaddr = NULL;
 		if (PageHighMem(page)) {
