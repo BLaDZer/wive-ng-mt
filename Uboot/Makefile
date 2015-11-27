@@ -1833,8 +1833,6 @@ clean:
 	rm -f scripts/lxdialog/lxdialog
 	rm -f a.out
 	rm -f .menuconfig.log*
-	rm -f mt7621_stage_L2.bin
-	rm -f mt7621_stage_sram.bin
 
 clobber:	clean
 	find . -type f \( -name .depend \
