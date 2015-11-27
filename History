@@ -1484,8 +1484,9 @@
 9) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
 10) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
 11) kenrel: mips: allow long calls on highmem support builds.<br>
-12) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-13) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+12) kernel: ralink_gpio: cleanup and small fixup.<br>
+13) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+14) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 <br>
 <br>
 <b>TODO:</b><br>

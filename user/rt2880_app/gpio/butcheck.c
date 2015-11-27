@@ -9,7 +9,7 @@
 #include <linux/autoconf.h>
 #include "linux/ralink_gpio.h"
 
-int gpio_read_int(int *value) {
+static int gpio_read_but(int *value) {
 	int fd, req;
 
 	*value = 0;
@@ -34,7 +34,7 @@ int gpio_read_int(int *value) {
 	return 0;
 }
 
-int gpio_set_dir(void) {
+static int gpio_set_dir_in(void) {
 	int fd, req;
 
 	fd = open(GPIO_DEV, O_RDONLY);
@@ -68,14 +68,14 @@ int gpio_set_dir(void) {
 #define LOADDEFAULTS		5
 #define FULLRESETTIME		90
 
-void gpio_wait(void) {
+static void gpio_wait(void) {
 	int d, presstime_reset=0;
 #if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
 	int presstime_wps=0;
 #endif
 	while (1) {
-	    gpio_set_dir();
-	    gpio_read_int(&d);
+	    gpio_set_dir_in();
+	    gpio_read_but(&d);
             /*
 	     * gpio number = bit for test (if 0 - pressed, if 1 - open)
 	     * if pressed wait and up count after one minit stop wait and call fullreset
