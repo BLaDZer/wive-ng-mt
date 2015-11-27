@@ -1827,14 +1827,16 @@ static int nf_conntrack_init_init_net(void)
 #endif
 
 	if (!nf_conntrack_htable_size) {
-	    /* max size = foe tables max records,
-		this good balance for router */
-#if defined(CONFIG_RA_HW_NAT_TBL_16K)
-    	    nf_conntrack_htable_size = 8192;
+#if (CONFIG_RALINK_RAM_SIZE > 128)
+	    nf_conntrack_htable_size = 32768;
+	    max_factor = 1;
+#elif (CONFIG_RALINK_RAM_SIZE > 256) || defined(CONFIG_HIGHMEM)
+	    nf_conntrack_htable_size = 49152;
+	    max_factor = 1;
 #else
-    	    nf_conntrack_htable_size = 4096;
-#endif
+    	    nf_conntrack_htable_size = 16384;
 	    max_factor = 2;
+#endif
 	}
 
 	nf_conntrack_max = max_factor * nf_conntrack_htable_size;
