@@ -90,7 +90,7 @@ CROSS_COMPILE = $(CONFIG_CROSS_COMPILER_PATH)/i386-linux-
 endif
 endif
 ifeq ($(ARCH),mips)
-CROSS_COMPILE = $(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-uclibc-
+CROSS_COMPILE = $(CONFIG_CROSS_COMPILER_PATH)/mipsel-linux-
 endif
 ifeq ($(ARCH),nios)
 CROSS_COMPILE = $(CONFIG_CROSS_COMPILER_PATH)/nios-elf-
