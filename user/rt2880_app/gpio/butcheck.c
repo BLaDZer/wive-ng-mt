@@ -9,6 +9,19 @@
 #include <linux/autoconf.h>
 #include "linux/ralink_gpio.h"
 
+//#define DEBUG
+
+#if (CONFIG_RALINK_GPIO_BTN_RESET >= 32)
+#define GPIO_GRP		32
+#define TEST_BIT(x, n)		(((x) & (1 << (n-GPIO_GRP))) != 0)
+#else
+#define GPIO_GRP		0
+#define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
+#endif
+
+#define LOADDEFAULTS		5
+#define FULLRESETTIME		90
+
 static int gpio_read_but(int *value) {
 	int fd, req;
 
@@ -34,7 +47,7 @@ static int gpio_read_but(int *value) {
 	return 0;
 }
 
-static int gpio_set_dir_in(void) {
+static int gpio_set_dir_in(int gpio_num) {
 	int fd, req;
 
 	fd = open(GPIO_DEV, O_RDONLY);
@@ -48,7 +61,7 @@ static int gpio_set_dir_in(void) {
 #else
 	req = RALINK_GPIO_SET_DIR_IN;
 #endif
-	if (ioctl(fd, req, 0xffffffff) < 0) {
+	if (ioctl(fd, req, ((0xffffffff) & (1 << (gpio_num-GPIO_GRP)))) < 0) {
 		perror("ioctl");
 		close(fd);
 		return -1;
@@ -57,24 +70,13 @@ static int gpio_set_dir_in(void) {
 	return 0;
 }
 
-//#define DEBUG
-
-#if (CONFIG_RALINK_GPIO_BTN_RESET >= 32)
-#define TEST_BIT(x, n)		(((x) & (1 << (n-32))) != 0)
-#else
-#define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
-#endif
-
-#define LOADDEFAULTS		5
-#define FULLRESETTIME		90
-
 static void gpio_wait(void) {
 	int d, presstime_reset=0;
 #if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
 	int presstime_wps=0;
 #endif
 	while (1) {
-	    gpio_set_dir_in();
+	    gpio_set_dir_in(CONFIG_RALINK_GPIO_BTN_RESET);
 	    gpio_read_but(&d);
             /*
 	     * gpio number = bit for test (if 0 - pressed, if 1 - open)
@@ -105,6 +107,8 @@ static void gpio_wait(void) {
 	    	}
 	    }
 #if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
+	    gpio_set_dir_in(CONFIG_RALINK_GPIO_BTN_WPS);
+	    gpio_read_but(&d);
 	    if ((!TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_WPS)) && presstime_wps < FULLRESETTIME) {
 #ifdef DEBUG
 		printf("butcheck_wps: pressed 0x%x, test %d, selected %d\n", d, !TEST_BIT(d, CONFIG_RALINK_GPIO_BTN_WPS), CONFIG_RALINK_GPIO_BTN_WPS);
