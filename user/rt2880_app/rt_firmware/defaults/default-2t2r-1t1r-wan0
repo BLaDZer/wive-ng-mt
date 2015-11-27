@@ -206,6 +206,7 @@ port2_swmode=auto
 port3_swmode=auto
 port4_swmode=auto
 port5_swmode=auto
+ForwardSesLimit=0
 PortForwardEnable=0
 PortForwardRules=
 pppoe_pass=0

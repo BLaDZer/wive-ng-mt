@@ -240,6 +240,13 @@ forwardlimit() {
     	    $LOG "Add rules for web content filters"
     	    /etc/websfilter
 	fi
+	if [ "$ForwardSesLimit" != "" ] && [ "$ForwardSesLimit" != "0" ]; then
+	    $LOG "Limit per user tcp sessions to $ForwardSesLimit"
+	    iptables -A FORWARD -o $wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
+	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+		iptables -A FORWARD -o $real_wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
+	    fi
+	fi
 	if [ "$l2tp_srv_enabled" = "1" ]; then
 	    # add forward chain for vpn server
 	    iptables -N l2tpsrvfwd
@@ -548,6 +555,14 @@ forwardlimitv6() {
 	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	fi
 
+	if [ "$ForwardSesLimit" != "" ] && [ "$ForwardSesLimit" != "0" ]; then
+	    $LOG "Limit per user tcp sessions to $ForwardSesLimit"
+	    ip6tables -A FORWARD -o $wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
+	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+		ip6tables -A FORWARD -o $real_wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
+	    fi
+	fi
+
 	# allow all others icmp messages (mtu probing and others) to router and clients
 	ip6tables -A FORWARD -p ipv6-icmp ! --icmpv6-type echo-request -j ACCEPT
 
@@ -607,7 +622,7 @@ get_param() {
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort FtSupport \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
 	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
-	    QoSEnable`
+	    ForwardSesLimit QoSEnable`
 
     # use for route mode detect
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then

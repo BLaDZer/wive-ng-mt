@@ -143,6 +143,7 @@ igmpFastLeave=0
 IgmpSnEnable=0
 igmpM2UConvMode=wlan
 M2UEnabled=0
+ForwardSesLimit=0
 IPPortFilterEnable=0
 IPPortFilterRules=
 IPv6OpMode=0

@@ -1478,27 +1478,29 @@
 3) xl2tpd: sync with devel tree 26 Nov 2015.<br>
 4) butcheck: set dir per gpio instead of all.<br>
 5) uboot: add profile for ME2 7621 sample.<br>
-6) kernel: mips: fix work highmem at 7621 samples.<br>
-7) kernel: mips: fix highmem crash in __update_cache.<br>
-8) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-9) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
-10) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-11) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-12) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-13) kenrel: mips: allow long calls on highmem support builds.<br>
-14) kernel: ralink_gpio: cleanup and small fixup.<br>
-15) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-16) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+6) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
+7) kernel: mips: fix work highmem at 7621 samples.<br>
+8) kernel: mips: fix highmem crash in __update_cache.<br>
+9) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+10) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
+11) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+12) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+13) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+14) kenrel: mips: allow long calls on highmem support builds.<br>
+15) kernel: ralink_gpio: cleanup and small fixup.<br>
+16) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+17) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 <br>
 <br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
-2) need add subchannel select for 5GHz module.<br>
-3) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
-4) in very far future: need add in firewall support xt_time matches for parental control.<br>
-5) in very far future: need add perip shaper script and webui .<br>
-6) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-7) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+2) need add ForwardSesLimit to Firewall page (default 0 - disabled).<br>
+3) need add subchannel select for 5GHz module.<br>
+4) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
+5) in very far future: need add in firewall support xt_time matches for parental control.<br>
+6) in very far future: need add perip shaper script and webui .<br>
+7) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+8) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>
