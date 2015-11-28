@@ -274,11 +274,7 @@ void control_xmit (void *b)
         tv.tv_usec = 0;
 
         if (buf->retries > 1)
-        {
-            tv.tv_sec = (time_t)((buf->retries-1) * 2);
-            if (tv.tv_sec > 8)
-                tv.tv_sec = 8;
-        }
+	    tv.tv_sec = 1*pow(2, buf->retries-1);
 
         schedule (tv, control_xmit, buf);
 #ifdef DEBUG_CONTROL_XMIT
