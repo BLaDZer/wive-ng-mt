@@ -80,6 +80,16 @@ case $TYPE in
 	    if [ ! -d /sys/module/usbserial ]; then
 		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
 	    fi
+	elif [ "${idVendor}" = "0af0" ]; then
+	    $LOG "Load HSO for ${idVendor}:${idProduct}"
+	    if [ ! -d /sys/module/hso ]; then
+		modprobe -q hso
+	    fi
+	elif [ "${idVendor}" = "1435" ]; then
+	    $LOG "Load QCSERIAL for ${idVendor}:${idProduct}"
+	    if [ ! -d /sys/module/qcserial ]; then
+		modprobe -q qcserial
+	    fi
 	else
 	    $LOG "Uncknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
 	    mod="usbserial option cdc_acm cdc-wdm cdc_ether cdc_mbim cdc_ncm huawei_cdc_ncm pl2303 usb_wwan qmi_wwan qcserial hso"
