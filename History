@@ -1475,7 +1475,7 @@
 <b>3.7.x</b><br>
 1) toolchain: rebuild with current kernel headers.<br>
 2) add 7621+7602+7612_USB_SD_SIM_16_512 metal sample support.<br>
-3) coovachilli: up to version 1.3.1.3 (commit: 4d4094e0).<br>
+3) coovachilli: up to version 1.3.1.3 (commit: 0169dbdd).<br>
 4) xl2tpd: sync with devel tree 26 Nov 2015.<br>
 5) butcheck: set dir per gpio instead of all.<br>
 6) uboot: add profile for ME2 7621 sample.<br>
