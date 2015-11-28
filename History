@@ -1480,15 +1480,16 @@
 5) butcheck: set dir per gpio instead of all.<br>
 6) uboot: add profile for ME2 7621 sample.<br>
 7) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
-8) kernel: mips: fix work highmem at 7621 samples.<br>
-9) kernel: mips: fix highmem crash in __update_cache.<br>
-10) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-11) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
-12) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-13) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-14) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-15) kenrel: mips: allow long calls on highmem support builds.<br>
-16) kernel: ralink_gpio: cleanup and small fixup.<br>
+8) kernel: hw_nat: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
+9) kernel: mips: fix work highmem at 7621 samples.<br>
+10) kernel: mips: fix highmem crash in __update_cache.<br>
+11) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+12) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
+13) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+14) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+15) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+16) kenrel: mips: allow long calls on highmem support builds.<br>
+17) kernel: ralink_gpio: cleanup and small fixup.<br>
 18) kernel: net: increase conntrack size depend by ram_size.<br>
 19) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
 20) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
