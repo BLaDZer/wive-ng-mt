@@ -1,32 +1,69 @@
-diff -uNrwB 1/coova-chilli-master/src/dhcp.c 2/coova-chilli-master/src/dhcp.c
---- 1/coova-chilli-master/src/dhcp.c	2015-08-19 22:14:03.000000000 +0600
-+++ 2/coova-chilli-master/src/dhcp.c	2015-08-31 17:25:21.000000000 +0600
-@@ -3710,10 +3710,10 @@
+diff -uNrwB coova-chilli-48c6233/Makefile.am coova-chilli-master/Makefile.am
+--- coova-chilli-48c6233/Makefile.am	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/Makefile.am	2015-08-20 15:59:49.000000000 +0600
+@@ -5,7 +5,8 @@
+ if WITH_JSONLIB
+ SUBDIRS += json
+ endif
+-SUBDIRS += src doc www conf debian distro
++SUBDIRS += src www conf
++# doc debian distro
+ if WITH_MINIPORTAL
+ SUBDIRS += miniportal
+ endif
+diff -uNrwB coova-chilli-48c6233/src/dhcp.c coova-chilli-master/src/dhcp.c
+--- coova-chilli-48c6233/src/dhcp.c	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/dhcp.c	2015-11-28 16:34:13.000000000 +0600
+@@ -3779,10 +3779,10 @@
     *  Check to see if we know MAC address
     */
    if (!dhcp_hashget(this, &conn, pack_ethh->src)) {
 -
 +#if 0
-     if (this->debug)
+     if (_options.debug)
        syslog(LOG_DEBUG, "Address found");
 -
 +#endif
      ourip.s_addr = conn->ourip.s_addr;
  
    } else {
-@@ -3987,7 +3987,9 @@
-       !_options.layer3 &&
+@@ -4071,8 +4071,10 @@
+           !_options.layer3 &&
  #endif
-       pack_iph->saddr != conn->hisip.s_addr) {
+           pack_iph->saddr != conn->hisip.s_addr) {
 +#if 0
-     syslog(LOG_DEBUG, "Received packet with spoofed source!");
+     if (_options.debug)
+       syslog(LOG_DEBUG, "Received packet with spoofed source!");
 +#endif
      OTHER_RECEIVED(conn, pack_iph);
      /*dhcp_sendRENEW(conn, pack, len);*/
      return 0;
-diff -uNrwB 1/coova-chilli-master/src/linux/Makefile 2/coova-chilli-master/src/linux/Makefile
---- 1/coova-chilli-master/src/linux/Makefile	2015-08-19 22:14:03.000000000 +0600
-+++ 2/coova-chilli-master/src/linux/Makefile	2015-08-26 03:10:57.000000000 +0600
+diff -uNrwB coova-chilli-48c6233/src/dns.c coova-chilli-master/src/dns.c
+--- coova-chilli-48c6233/src/dns.c	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/dns.c	2015-11-28 16:34:13.000000000 +0600
+@@ -146,9 +146,7 @@
+   char required = 0;
+ 
+   uint16_t type;
+-  #if(_debug_)
+   uint16_t class;
+-  #endif
+   uint32_t ttl;
+   uint16_t rdlen;
+ 
+@@ -190,9 +188,7 @@
+   len -= 2;
+ 
+   memcpy(&us, p_pkt, sizeof(us));
+-  #if(_debug_)
+   class = ntohs(us);
+-  #endif
+   p_pkt += 2;
+   len -= 2;
+ 
+diff -uNrwB coova-chilli-48c6233/src/linux/Makefile coova-chilli-master/src/linux/Makefile
+--- coova-chilli-48c6233/src/linux/Makefile	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/linux/Makefile	2015-08-26 03:10:57.000000000 +0600
 @@ -1,3 +1,4 @@
 +ifdef DEEEAD #move module to kernel and lib to iptables
  KERNEL_DIR ?= /usr/src/linux-headers-$(shell uname -r)
@@ -56,9 +93,9 @@ diff -uNrwB 1/coova-chilli-master/src/linux/Makefile 2/coova-chilli-master/src/l
 +modules_clean:
 +	#echo ok
 +endif
-diff -uNrwB 1/coova-chilli-master/src/Makefile.am 2/coova-chilli-master/src/Makefile.am
---- 1/coova-chilli-master/src/Makefile.am	2015-08-19 22:14:03.000000000 +0600
-+++ 2/coova-chilli-master/src/Makefile.am	2015-08-26 02:47:38.000000000 +0600
+diff -uNrwB coova-chilli-48c6233/src/Makefile.am coova-chilli-master/src/Makefile.am
+--- coova-chilli-48c6233/src/Makefile.am	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/Makefile.am	2015-11-25 10:21:27.000000000 +0600
 @@ -25,12 +25,12 @@
  iphash.c lookup.c system.h util.c options.c statusfile.c conn.c sig.c \
  garden.c dns.c session.c pkt.c chksum.c net.c safe.c
@@ -90,20 +127,86 @@ diff -uNrwB 1/coova-chilli-master/src/Makefile.am 2/coova-chilli-master/src/Make
  
  cmdline.mini.gen: cmdline.ggo 
  	sh cmdline.mini.sh > cmdline.mini.gen
-diff -uNrwB 1/coova-chilli-master/src/system.h 2/coova-chilli-master/src/system.h
---- 1/coova-chilli-master/src/system.h	2015-08-19 22:14:03.000000000 +0600
-+++ 2/coova-chilli-master/src/system.h	2015-09-03 03:48:24.000000000 +0600
-@@ -83,10 +83,6 @@
- #include <linux/sysinfo.h>
+diff -uNrwB coova-chilli-48c6233/src/options.c coova-chilli-master/src/options.c
+--- coova-chilli-48c6233/src/options.c	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/options.c	2015-11-19 12:42:27.000000000 +0600
+@@ -113,7 +113,9 @@
+ 
+   chilli_binconfig(file, sizeof(file), 0);
+ 
++#if(_debug_ > 1)
+   syslog(LOG_DEBUG, "(Re)processing options [%s]", file);
++#endif
+ 
+   if ((status = fork()) < 0) {
+     syslog(LOG_ERR, "%s: fork() returned -1!", strerror(errno));
+@@ -137,7 +139,9 @@
+   newargs[i++] = file;
+   newargs[i++] = reload ? "-r" : NULL;
+ 
++#if(_debug_ > 1)
+   syslog(LOG_DEBUG, "running chilli_opt on %s", file);
++#endif
+ 
+   if (execv(SBINDIR "/chilli_opt", newargs) != 0) {
+     syslog(LOG_ERR, "%s: execl() did not return 0!", strerror(errno));
+@@ -188,8 +192,9 @@
+ 
+   if (fd < 0) return 0;
+   done_before = 1;
+-
++#if(_debug_ > 1)
+   syslog(LOG_DEBUG, "PID %d rereading binary file %s", getpid(), file);
++#endif
+   return options_fromfd(fd, bt);
+ }
+ 
+@@ -661,7 +666,9 @@
+ int reload_options(int argc, char **argv) {
+   bstring bt = bfromcstr("");
+   int ok = options_load(argc, argv, bt);
++#if(_debug_ > 1)
+   syslog(LOG_DEBUG, "PID %d reloaded binary options file", getpid());
++#endif
+   bdestroy(bt);
+   return ok;
+ }
+diff -uNrwB coova-chilli-48c6233/src/redir.c coova-chilli-master/src/redir.c
+--- coova-chilli-48c6233/src/redir.c	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/redir.c	2015-11-28 16:34:13.000000000 +0600
+@@ -3778,11 +3778,11 @@
+             setenv("CHI_SESSION_ID", conn.s_state.sessionid, 1);
+             setenv("CHI_USERNAME", conn.s_state.redir.username, 1);
+             setenv("CHI_USERURL", conn.s_state.redir.userurl, 1);
+-            snprintf(buffer, sizeof(buffer), "%lu", conn.s_state.input_octets);
++            snprintf(buffer, sizeof(buffer), "%llu", conn.s_state.input_octets);
+             setenv("CHI_INPUT_BYTES", buffer, 1);
+-            snprintf(buffer, sizeof(buffer), "%lu", conn.s_state.output_octets);
++            snprintf(buffer, sizeof(buffer), "%llu", conn.s_state.output_octets);
+             setenv("CHI_OUTPUT_BYTES", buffer, 1);
+-            snprintf(buffer, sizeof(buffer), "%lu", conn.s_params.sessiontimeout);
++            snprintf(buffer, sizeof(buffer), "%llu", conn.s_params.sessiontimeout);
+             setenv("CHI_SESSION_TIMEOUT", buffer, 1);
+ 
+             redir_chartohex(conn.s_state.redir.uamchal, buffer, REDIR_MD5LEN);
+diff -uNrwB coova-chilli-48c6233/src/system.h coova-chilli-master/src/system.h
+--- coova-chilli-48c6233/src/system.h	2015-11-28 06:06:49.000000000 +0600
++++ coova-chilli-master/src/system.h	2015-11-25 10:21:27.000000000 +0600
+@@ -78,14 +78,10 @@
+ #include <sys/stat.h>
  #endif
  
 -#ifdef HAVE_SYS_SYSINFO_H
 -#include <sys/sysinfo.h>
+-#else
+ #ifdef HAVE_LINUX_SYSINFO_H
+ #define _LINUX_KERNEL_H
+ #include <linux/sysinfo.h>
+ #endif
 -#endif
--
+ 
  #ifdef HAVE_TIME_H
  #include <time.h>
- #endif
 @@ -139,6 +135,10 @@
  #include <linux/un.h>
  #endif
