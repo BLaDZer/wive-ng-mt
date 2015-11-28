@@ -80,11 +80,6 @@ case $TYPE in
 	    if [ ! -d /sys/module/hso ]; then
 		modprobe -q hso
 	    fi
-	elif [ "${idVendor}" = "1435" ]; then
-	    $LOG "Load QCSERIAL for ${idVendor}:${idProduct}"
-	    if [ ! -d /sys/module/qcserial ]; then
-		modprobe -q qcserial
-	    fi
 	elif [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
 	    $LOG "Load usbserial for ${idVendor}:${idProduct}"
 	    if [ ! -d /sys/module/usbserial ]; then

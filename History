@@ -1489,7 +1489,6 @@
 14) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
 15) kenrel: mips: allow long calls on highmem support builds.<br>
 16) kernel: ralink_gpio: cleanup and small fixup.<br>
-17) kernel: usb: qmi/qserial: add WNC D16Q1 LTE module support.<br>
 18) kernel: net: increase conntrack size depend by ram_size.<br>
 19) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
 20) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
