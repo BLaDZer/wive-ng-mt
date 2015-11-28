@@ -110,7 +110,7 @@ case $TYPE in
         ;;
     *)
 	# skip try load modules for internal hubs
-	if [ "${idVendor}:${idProduct}" = "0000:0000" ]; then
+	if [ "${idVendor}:${idProduct}" = "0000:0000" ] || [ "${idVendor}" = "1d6b" ]; then
 	    exit 0
 	fi
 
