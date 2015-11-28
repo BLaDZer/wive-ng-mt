@@ -31,6 +31,8 @@
 #include "ipsecmast.h"
 #include "misc.h"    /* for IPADDY macro */
 
+#include <math.h>
+
 char hostname[256];
 int server_socket;              /* Server socket */
 #ifdef USE_KERNEL
