@@ -74,38 +74,21 @@ case $TYPE in
 	fi
         ;;
     255/255/255)
-	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
-	    $LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem"
-	    if [ "${idVendor}" = "0af0" ]; then
-		if [ ! -d /sys/module/hso ]; then
-		    $LOG "Load hso"
-		    modprobe -q hso
-		fi
-	    else
-		if [ ! -d /sys/module/usbserial ]; then
-		    $LOG "Load usbserial for ${idVendor}:${idProduct}"
-		    if [ "$CONFIG_USB_SERIAL_GENERIC" != "" ]; then
-			modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
-		    else
-			modprobe -q usbserial
-		    fi
-		fi
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
+	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ] && [ "${idVendor}" != "0af0" ]; then
+	    $LOG "Load usbserial for ${idVendor}:${idProduct}"
+	    if [ ! -d /sys/module/usbserial ]; then
+		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
 	    fi
 	else
-	    $LOG "${ACTION} ${idVendor}:${idProduct} unknow serial device! Load all builded serial drivers."
-	    modprobe -q usbserial
-	    modprobe -q option
-	    modprobe -q cdc_acm
-	    modprobe -q cdc-wdm
-	    modprobe -q cdc_ether
-	    modprobe -q cdc_mbim
-	    modprobe -q cdc_ncm
-	    modprobe -q huawei_cdc_ncm
-	    modprobe -q pl2303
-	    modprobe -q usb_wwan
-	    modprobe -q qmi_wwan
-	    modprobe -q qcserial
-	    modprobe -q hso
+	    $LOG "Uncknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
+	    mod="usbserial option cdc_acm cdc-wdm cdc_ether cdc_mbim cdc_ncm huawei_cdc_ncm pl2303 usb_wwan qmi_wwan qcserial hso"
+	    for module in $mod
+	    do
+		if [ ! -d /sys/module/$module ]; then
+		    modprobe -q $module
+		fi
+	    done
 	fi
         ;;
     *)
