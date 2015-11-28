@@ -75,7 +75,7 @@ case $TYPE in
         ;;
     255/255/255)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
-	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ] && [ "${idVendor}" != "0af0" ]; then
+	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ] && [ "${idVendor}" != "0af0" ] && [ "${idVendor}" != "1435" ]; then
 	    $LOG "Load usbserial for ${idVendor}:${idProduct}"
 	    if [ ! -d /sys/module/usbserial ]; then
 		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
