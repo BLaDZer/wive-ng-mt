@@ -75,12 +75,7 @@ case $TYPE in
         ;;
     255/255/255)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
-	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ] && [ "${idVendor}" != "0af0" ] && [ "${idVendor}" != "1435" ]; then
-	    $LOG "Load usbserial for ${idVendor}:${idProduct}"
-	    if [ ! -d /sys/module/usbserial ]; then
-		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
-	    fi
-	elif [ "${idVendor}" = "0af0" ]; then
+	if [ "${idVendor}" = "0af0" ]; then
 	    $LOG "Load HSO for ${idVendor}:${idProduct}"
 	    if [ ! -d /sys/module/hso ]; then
 		modprobe -q hso
@@ -89,6 +84,11 @@ case $TYPE in
 	    $LOG "Load QCSERIAL for ${idVendor}:${idProduct}"
 	    if [ ! -d /sys/module/qcserial ]; then
 		modprobe -q qcserial
+	    fi
+	elif [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
+	    $LOG "Load usbserial for ${idVendor}:${idProduct}"
+	    if [ ! -d /sys/module/usbserial ]; then
+		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
 	    fi
 	else
 	    $LOG "Uncknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
