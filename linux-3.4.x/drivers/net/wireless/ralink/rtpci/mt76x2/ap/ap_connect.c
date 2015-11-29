@@ -421,8 +421,8 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		step 1 - update BEACON's Capability
 	*/
 	ptr = pBeaconFrame + pMbss->CapabilityInfoLocationInBeacon;
-	*ptr = (UCHAR)(pMbss->CapabilityInfo & 0x00ff);
-	*(ptr+1) = (UCHAR)((pMbss->CapabilityInfo & 0xff00) >> 8);
+	//prevent little/big endian issue. and let asic_write_bcn_buf() handle it.
+	*(UINT16 *)ptr = pMbss->CapabilityInfo;
 
 	/*
 		step 2 - update TIM IE
