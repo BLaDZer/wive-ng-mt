@@ -372,9 +372,10 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 			pEntry->wdev_idx = WdsTabIdx;
 			pEntry->wdev = wdev;
 			COPY_MAC_ADDR(&wdev->bssid[0], &pEntry->Addr[0]);
-						
+
+			AsicUpdateRxWCIDTable(pAd, pEntry->wcid, pAddr);
 			AsicUpdateWdsEncryption(pAd, pEntry->wcid);
-			
+
 			DBGPRINT(RT_DEBUG_OFF, ("%s() - allocate entry #%d(link to WCID %d), Total= %d\n",
 						__FUNCTION__, WdsTabIdx, wds_entry->MacTabMatchWCID, pAd->WdsTab.Size));
 			break;
@@ -714,10 +715,10 @@ VOID WdsPeerBeaconProc(
 {
 	UCHAR MaxSupportedRate = RATE_11;
 
-	MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
-
 	if (pEntry && IS_ENTRY_WDS(pEntry))
 	{
+		MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
+
 		pEntry->MaxSupportedRate = min(pAd->CommonCfg.MaxTxRate, MaxSupportedRate);
 		pEntry->RateLen = MaxSupportedRateLen;
 
@@ -905,6 +906,8 @@ VOID WdsPeerBeaconProc(
 
 		}
 #endif /* DOT11_N_SUPPORT */
+
+		CLIENT_STATUS_CLEAR_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
 
 		if (bWmmCapable
 #ifdef DOT11_N_SUPPORT
