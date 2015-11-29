@@ -1386,7 +1386,7 @@ __End_Of_APPeerBeaconAction:
 #ifdef CONFIG_AP_SUPPORT
 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 {
-	if (ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+	if (pAd->pChannelInfo != NULL && ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
 	{
 		if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
 			pAd->pChannelInfo->ApCnt[pAd->ApCfg.current_channel_index]++;
@@ -1782,7 +1782,7 @@ __End_Of_APPeerBeaconAtScanAction:
 #ifdef CONFIG_AP_SUPPORT
 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 {
-	if (ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+	if (pAd->pChannelInfo != NULL && ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
 	{
 		if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
 			pAd->pChannelInfo->ApCnt[pAd->ApCfg.current_channel_index]++;
