@@ -115,7 +115,7 @@ BINDIR?=$(DESTDIR)${PREFIX}/bin
 MANDIR?=$(DESTDIR)${PREFIX}/share/man
 
 
-all: $(EXEC) 
+all: $(EXEC)
 
 clean:
 	rm -f $(OBJS) $(EXEC) pfc.o pfc

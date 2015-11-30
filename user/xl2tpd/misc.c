@@ -23,7 +23,7 @@
 #include <errno.h>
 #include <string.h>
 #include <syslog.h>
-#if (__GLIBC__ < 2)
+#if defined (__GLIBC__) && (__GLIBC__ < 2)
 # if defined(FREEBSD) || defined(OPENBSD)
 #  include <sys/signal.h>
 # elif defined(LINUX)

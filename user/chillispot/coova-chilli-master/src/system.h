@@ -72,11 +72,6 @@
 #include <sys/stat.h>
 #endif
 
-#ifdef HAVE_LINUX_SYSINFO_H
-#define _LINUX_KERNEL_H
-#include <linux/sysinfo.h>
-#endif
-
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
@@ -122,6 +117,15 @@
 #include <inttypes.h>
 #endif
 
+#ifdef HAVE_LINUX_SYSINFO_H
+#define _LINUX_KERNEL_H
+#include <linux/sysinfo.h>
+#else
+#ifdef HAVE_SYS_SYSINFO_H
+#include <sys/sysinfo.h>
+#endif
+#endif
+
 #if defined(__linux__)
 #include <asm/types.h>
 #include <linux/if.h>
@@ -132,10 +136,6 @@
 #include <linux/rtnetlink.h>
 #ifndef HAVE_SYS_UN_H
 #include <linux/un.h>
-#endif
-
-#ifdef HAVE_SYS_SYSINFO_H
-#include <sys/sysinfo.h>
 #endif
 
 #elif defined (__FreeBSD__)  || defined (__APPLE__) || defined (__OpenBSD__) || defined (__NetBSD__)
@@ -167,10 +167,6 @@
 
 #ifdef HAVE_NET_IF_TUN_H
 #include <net/if_tun.h>
-#endif
-
-#ifdef HAVE_NET_ETHERNET_H
-#include <net/ethernet.h>
 #endif
 
 #ifdef HAVE_ASM_TYPES_H
