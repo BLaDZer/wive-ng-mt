@@ -1479,28 +1479,29 @@
 4) coovachilli: up to version 1.3.1.3 (commit: cdd35ac).<br>
 5) xl2tpd: sync with devel tree 26 Nov 2015.<br>
 6) dropbear: up to 2015.70 version.<br>
-7) butcheck: set dir per gpio instead of all.<br>
-8) dnsmasq: fix crash when empty address from DNS overlays A record from hosts.<br>
-9) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
-10) kernel: exfat: upstream updates.<br>
-11) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
-12) kernel: hw_nat: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
-13) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
-14) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
-15) kernel: ralink_wifi: 76x2: small fix WDS.<br>
-16) kernel: mips: fix work highmem at 7621 samples.<br>
-17) kernel: mips: fix highmem crash in __update_cache.<br>
-18) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-19) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
-20) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-21) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-22) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-23) kenrel: mips: allow long calls on highmem support builds.<br>
-24) kernel: ralink_gpio: cleanup and small fixup.<br>
-25) kernel: net: increase conntrack size depend by ram_size.<br>
-26) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-27) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-28) kernel: net: ipv6: fix tunnel error handling.<br>
+7) irqbalance: update to 23.11.2015 git version.<br>
+8) butcheck: set dir per gpio instead of all.<br>
+9) dnsmasq: fix crash when empty address from DNS overlays A record from hosts.<br>
+10) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
+11) kernel: exfat: upstream updates.<br>
+12) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
+13) kernel: hw_nat: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
+14) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
+15) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
+16) kernel: ralink_wifi: 76x2: small fix WDS.<br>
+17) kernel: mips: fix work highmem at 7621 samples.<br>
+18) kernel: mips: fix highmem crash in __update_cache.<br>
+19) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+20) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
+21) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+22) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+23) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+24) kenrel: mips: allow long calls on highmem support builds.<br>
+25) kernel: ralink_gpio: cleanup and small fixup.<br>
+26) kernel: net: increase conntrack size depend by ram_size.<br>
+27) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+28) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+29) kernel: net: ipv6: fix tunnel error handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
