@@ -161,7 +161,7 @@ netboot_common (int proto, cmd_tbl_t *cmdtp, int argc, char *argv[])
 	int   size;
 
 
-		printf("\n netboot_common, argc= %d \n", argc);
+//		printf("\n netboot_common, argc= %d \n", argc);
 	/* pre-set load_addr */
 	if ((s = getenv("loadaddr")) != NULL) {
 		load_addr = simple_strtoul(s, NULL, 16);

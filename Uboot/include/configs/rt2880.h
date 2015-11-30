@@ -92,13 +92,13 @@ extern unsigned int  CFG_BLOCKSIZE;
 
 #define SERIAL_CLOCK_DIVISOR 16
 
-#define CONFIG_BOOTDELAY	2	/* autoboot after 2 seconds	*/
+#define CONFIG_BOOTDELAY	1	/* autoboot after 1 seconds	*/
 
 #define CONFIG_BAUDRATE		57600
 
 #define CONFIG_SERVERIP		192.168.1.131
 #define CONFIG_IPADDR		192.168.1.1
-#define CONFIG_ETHADDR		"00:0C:43:30:52:11"
+#define CONFIG_ETHADDR		"F8:F0:82:30:52:11"
 /* valid baudrates */
 #define CFG_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200 }
 
@@ -166,15 +166,13 @@ extern unsigned int  CFG_BLOCKSIZE;
  * for TEST 
  */
 #define CFG_CONSOLE_INFO_QUIET	
+#define	CFG_LOAD_ADDR		(CFG_SDRAM_BASE + (gd->ram_size)/2)	/* default load address	*/
 
 #if defined (RT2880_FPGA_BOARD) || defined (RT2880_ASIC_BOARD)
-#define	CFG_LOAD_ADDR		0x8A100000	/* default load address	*/
 #define CFG_HTTP_DL_ADDR	0x8A300000
-
 #define CFG_MEMTEST_START	0x8A100000
 #define CFG_MEMTEST_END		0x8A400000
 #else
-#define	CFG_LOAD_ADDR		0x80100000	/* default load address	*/
 #define CFG_HTTP_DL_ADDR	0x80300000
 #if defined(RT6855A_FPGA_BOARD) || defined(RT6855A_ASIC_BOARD) || defined(MT7620_FPGA_BOARD) || defined(MT7620_ASIC_BOARD) || defined(MT7628_FPGA_BOARD) || defined(MT7628_ASIC_BOARD)
 #define CFG_SPINAND_LOAD_ADDR	0x80c00000
