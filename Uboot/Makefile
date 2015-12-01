@@ -220,11 +220,6 @@ LIBS += fs/fat/libfat.a
 LIBS += disk/libdisk.a
 endif
 
-ifeq ($(MTK_USB),ON)
-LIBS += fs/fat/libfat.a
-LIBS += disk/libdisk.a
-endif
-
 #LIBS += post/libpost.a post/cpu/libcpu.a
 LIBS += common/libcommon.a
 .PHONY : $(LIBS)
