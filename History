@@ -1493,16 +1493,15 @@
 18) kernel: mips: fix work highmem at 7621 samples.<br>
 19) kernel: mips: fix highmem crash in __update_cache.<br>
 20) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-21) kernel: mips: revert: HIGHMEM fixes for cache aliasing and non-DMA I/O.<br>
-22) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-23) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-24) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-25) kenrel: mips: allow long calls on highmem support builds.<br>
-26) kernel: ralink_gpio: cleanup and small fixup.<br>
-27) kernel: net: increase conntrack size depend by ram_size.<br>
-28) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-29) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-30) kernel: net: ipv6: fix tunnel error handling.<br>
+21) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+22) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+23) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+24) kenrel: mips: allow long calls on highmem support builds.<br>
+25) kernel: ralink_gpio: cleanup and small fixup.<br>
+26) kernel: net: increase conntrack size depend by ram_size.<br>
+27) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+28) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+29) kernel: net: ipv6: fix tunnel error handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
