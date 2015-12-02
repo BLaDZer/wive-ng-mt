@@ -39,7 +39,7 @@ cfg.dlna_notify=true
 cfg.dlna_subscribe_ttl=60
 
 -- group by 'group-title'
-cfg.group=true
+cfg.group=false
 
 -- sort files
 cfg.sort_files=true

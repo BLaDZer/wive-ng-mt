@@ -3,51 +3,49 @@
 udp://@239.1.128.1:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,Россия 1
 udp://@239.1.128.2:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,НТВ 
+#EXTINF:-1 group-title="Эфир - Омск" ,НТВ
 udp://@239.1.128.3:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,Россия 24
-udp://@233.7.70.68:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,5 канал Петербург
 udp://@239.1.128.5:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,Россия К 
+#EXTINF:-1 group-title="Эфир - Омск" ,Россия К
 udp://@239.1.128.6:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,Россия 2 
+#EXTINF:-1 group-title="Эфир - Омск" ,Россия 2
 udp://@239.1.128.7:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,Карусель (+0) 
+#EXTINF:-1 group-title="Эфир - Омск" ,Карусель (+0)
 udp://@233.7.70.40:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,СТС 
+#EXTINF:-1 group-title="Эфир - Омск" ,СТС
 udp://@239.1.128.14:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,ТНТ
-udp://@239.1.128.12:4000 
-#EXTINF:-1 group-title="Эфир - Омск" ,ТВ3 
+udp://@239.1.128.12:4000
+#EXTINF:-1 group-title="Эфир - Омск" ,ТВ3
 udp://@233.7.70.221:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,ТВЦентр
 udp://@233.7.70.219:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,РЕН-ТВ 
+#EXTINF:-1 group-title="Эфир - Омск" ,РЕН-ТВ
 udp://@239.1.128.13:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,МУЗ ТВ 
+#EXTINF:-1 group-title="Эфир - Омск" ,МУЗ ТВ
 udp://@233.7.70.137:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Домашний 
+#EXTINF:-1 group-title="Эфир - Омск" ,Домашний
 udp://@239.1.128.16:4000
-#EXTINF:-1 group-title="Эфир - Омск" ,Перец (ДТВ) 
+#EXTINF:-1 group-title="Эфир - Омск" ,Перец (ДТВ)
 udp://@239.1.128.17:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,Звезда
 udp://@233.7.70.69:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,ОРТРК 
+#EXTINF:-1 group-title="Эфир - Омск" ,ОРТРК
 udp://@239.1.128.20:4000
 #EXTINF:-1 group-title="Эфир - Омск" ,Агро ТВ
 udp://@233.7.70.57:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Russia Today 
+#EXTINF:-1 group-title="Эфир - Омск" ,Russia Today
 udp://@233.7.70.82:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,РБК-ТВ
 udp://@233.7.70.22:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,France 24 (fr) 
+#EXTINF:-1 group-title="Эфир - Омск" ,France 24 (fr)
 udp://@233.7.70.149:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,CNN
 udp://@233.7.70.150:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,TV XXI Век 
+#EXTINF:-1 group-title="Эфир - Омск" ,TV XXI Век
 udp://@233.7.70.35:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,National Geographic 
+#EXTINF:-1 group-title="Эфир - Омск" ,National Geographic
 udp://@233.7.70.32:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Домашние Животные
 udp://@233.7.70.91:5000
@@ -57,63 +55,63 @@ udp://@233.7.70.92:5000
 udp://@233.7.70.93:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Drive
 udp://@233.7.70.31:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Охота и рыбалка 
+#EXTINF:-1 group-title="Эфир - Омск" ,Охота и рыбалка
 udp://@233.7.70.48:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Усадьба ТВ 
+#EXTINF:-1 group-title="Эфир - Омск" ,Усадьба ТВ
 udp://@233.7.70.51:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Ocean TV 
+#EXTINF:-1 group-title="Эфир - Омск" ,Ocean TV
 udp://@233.7.70.95:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Здоровое ТВ 
+#EXTINF:-1 group-title="Эфир - Омск" ,Здоровое ТВ
 udp://@233.7.70.49:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,English Club TV 
+#EXTINF:-1 group-title="Эфир - Омск" ,English Club TV
 udp://@233.7.70.96:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Euronews
 udp://@233.7.70.42:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,СГУ ТВ
 udp://@233.7.70.23:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Канал Disney 
+#EXTINF:-1 group-title="Эфир - Омск" ,Канал Disney
 udp://@233.7.70.9:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Мульт 
+#EXTINF:-1 group-title="Эфир - Омск" ,Мульт
 udp://@233.7.70.57:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Радость моя 
+#EXTINF:-1 group-title="Эфир - Омск" ,Радость моя
 udp://@233.7.70.100:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Мать и дитя 
+#EXTINF:-1 group-title="Эфир - Омск" ,Мать и дитя
 udp://@233.7.70.41:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Amazing life
 udp://@233.7.70.21:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,E!Entertaiment 
+#EXTINF:-1 group-title="Эфир - Омск" ,E!Entertaiment
 udp://@233.7.70.72:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Fashion TV 
+#EXTINF:-1 group-title="Эфир - Омск" ,Fashion TV
 udp://@233.7.70.47:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Style 
+#EXTINF:-1 group-title="Эфир - Омск" ,Style
 udp://@233.7.70.140:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Юмор ТВ
 udp://@233.7.70.46:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,2x2(+2) 
+#EXTINF:-1 group-title="Эфир - Омск" ,2x2(+2)
 udp://@233.7.70.124:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,ТДК 
+#EXTINF:-1 group-title="Эфир - Омск" ,ТДК
 udp://@233.7.70.50:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,A-ONE 
+#EXTINF:-1 group-title="Эфир - Омск" ,A-ONE
 udp://@233.7.70.52:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,RUSSIAN MUSICBOX
 udp://@233.7.70.54:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,О2 Молодежный
 udp://@233.7.70.55:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,RU.TV 
+#EXTINF:-1 group-title="Эфир - Омск" ,RU.TV
 udp://@233.7.70.83:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,MCM TOP 
+#EXTINF:-1 group-title="Эфир - Омск" ,MCM TOP
 udp://@233.7.70.109:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport 
+#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport
 udp://@233.7.70.45:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport 2 
+#EXTINF:-1 group-title="Эфир - Омск" ,Eurosport 2
 udp://@233.7.70.81:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,КХЛ
 udp://@233.7.70.37:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,Спорт 1 
+#EXTINF:-1 group-title="Эфир - Омск" ,Спорт 1
 udp://@233.7.70.75:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Fashion TV
 udp://@233.7.70.47:5000
-#EXTINF:-1 group-title="Эфир - Омск" , Style
+#EXTINF:-1 group-title="Эфир - Омск" ,Style
 udp://@233.7.70.140:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,World Fashion
 udp://@233.7.70.141:5000
@@ -121,7 +119,7 @@ udp://@233.7.70.141:5000
 udp://@233.7.70.20:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,Про деньги
 udp://@233.7.70.142:5000
-#EXTINF:-1 group-title="Эфир - Омск" ,ТРО 
+#EXTINF:-1 group-title="Эфир - Омск" ,ТРО
 udp://@233.7.70.143:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,ТНВ
 udp://@233.7.70.144:5000
@@ -135,475 +133,3 @@ udp://@233.7.70.146:5000
 udp://@233.7.70.147:5000
 #EXTINF:-1 group-title="Эфир - Омск" ,ТОП ШОП
 udp://@233.7.70.56:5000
-#EXTINF:-1 group-title="Музыкальные" ,Music Box TV
-udp://@233.7.70.53:5000
-#EXTINF:-1 group-title="Музыкальные" ,VH1 Classic
-udp://@233.7.70.229:5000
-#EXTINF:-1 group-title="Музыкальные" ,RuSong TV
-udp://@233.7.70.228:5000
-#EXTINF:-1 group-title="Музыкальные" ,Bridge TV
-udp://@233.7.70.110:5000
-#EXTINF:-1 group-title="Музыкальные" ,МУЗ ТВ
-udp://@233.7.70.137:5000
-#EXTINF:-1 group-title="Музыкальные" ,Mezzo Live HD
-udp://@233.7.70.125:5000
-#EXTINF:-1 group-title="Музыкальные" ,Mezzo
-udp://@233.7.70.204:5000
-#EXTINF:-1 group-title="Музыкальные" ,Music Box RU
-udp://@233.7.70.54:5000
-#EXTINF:-1 group-title="Музыкальные" ,VH1 European
-udp://@233.7.70.152:5000
-#EXTINF:-1 group-title="Музыкальные" ,MCM Top
-udp://@233.7.70.109:5000
-#EXTINF:-1 group-title="Музыкальные" ,Europa plus TV
-udp://@233.7.70.196:5000
-#EXTINF:-1 group-title="Музыкальные" ,MTV
-udp://@233.7.70.202:5000
-#EXTINF:-1 group-title="Музыкальные" ,MTV Live HD
-udp://@233.7.70.161:5000
-#EXTINF:-1 group-title="Музыкальные" ,MTV Dance
-udp://@233.7.70.207:5000
-#EXTINF:-1 group-title="Музыкальные" ,MTV Hits
-udp://@233.7.70.208:5000
-#EXTINF:-1 group-title="Музыкальные" ,MTV Rocks
-udp://@233.7.70.209:5000
-#EXTINF:-1 group-title="Музыкальные" ,RuTV
-udp://@233.7.70.83:5000
-#EXTINF:-1 group-title="Музыкальные" ,A-One
-udp://@233.7.70.52:5000
-#EXTINF:-1 group-title="Музыкальные" ,Ля Минор
-udp://@233.7.70.108:5000
-#EXTINF:-1 group-title="Музыкальные" ,Шансон
-udp://@233.7.70.107:5000
-#EXTINF:-1 group-title="Кино" ,TVXXI
-udp://@233.7.70.35:5000
-#EXTINF:-1 group-title="Кино" ,SET HD
-udp://@233.7.70.126:5000
-#EXTINF:-1 group-title="Кино" ,SET
-udp://@233.7.70.70:5000
-#EXTINF:-1 group-title="Кино" ,Sony Turbo
-udp://@233.7.70.166:5000
-#EXTINF:-1 group-title="Кино" ,Sony Sci-Fi
-udp://@233.7.70.184:5000
-#EXTINF:-1 group-title="Кино" ,FOX HD
-udp://@233.7.70.127:5000
-#EXTINF:-1 group-title="Кино" ,FOX
-udp://@233.7.70.154:5000
-#EXTINF:-1 group-title="Кино" ,Fox Life HD
-udp://@233.7.70.158:5000
-#EXTINF:-1 group-title="Кино" ,Fox life
-udp://@233.7.70.85:5000
-#EXTINF:-1 group-title="Кино" ,TV1000
-udp://@233.7.70.36:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 MEGAHIT HD
-udp://@233.7.70.128:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 MEGAHIT HD
-udp://@233.7.70.178:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 PREMIUM HD
-udp://@233.7.70.129:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 PREMIUM HD
-udp://@233.7.70.193:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 COMEDY HD
-udp://@233.7.70.179:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 COMEDY HD
-udp://@233.7.70.130:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 Action
-udp://@233.7.70.59:5000
-#EXTINF:-1 group-title="Кино" ,TV1000 Русское кино
-udp://@233.7.70.67:5000
-#EXTINF:-1 group-title="Кино" ,Paramount Channel HD
-udp://@233.7.70.114:5000
-#EXTINF:-1 group-title="Кино" ,Paramount Channel
-udp://@233.7.70.113:5000
-#EXTINF:-1 group-title="Кино" ,Universal Channel
-udp://@233.7.70.151:5000
-#EXTINF:-1 group-title="Кино" ,MGM
-udp://@233.7.70.205:5000
-#EXTINF:-1 group-title="Кино" ,CBS Drama
-udp://@233.7.70.232:5000
-#EXTINF:-1 group-title="Кино" ,Русский бестселлер
-udp://@233.7.70.176:5000
-#EXTINF:-1 group-title="Кино" ,Русский роман
-udp://@233.7.70.153:5000
-#EXTINF:-1 group-title="Кино" ,Русский Иллюзион
-udp://@233.7.70.155:5000
-#EXTINF:-1 group-title="Кино" ,Кино ТВ
-udp://@233.7.70.167:5000
-#EXTINF:-1 group-title="Кино" ,AMEDIA Premium HD
-udp://@233.7.70.239:5000
-#EXTINF:-1 group-title="Кино" ,AMEDIA 1 HD
-udp://@233.7.70.222:5000
-#EXTINF:-1 group-title="Кино" ,AMEDIA 1
-udp://@233.7.70.214:5000
-#EXTINF:-1 group-title="Кино" ,AMEDIA 2
-udp://@233.7.70.212:5000
-#EXTINF:-1 group-title="Кино" ,Еврокино
-udp://@233.7.70.235:5000
-#EXTINF:-1 group-title="Кино" ,Иллюзион+
-udp://@233.7.70.62:5000
-#EXTINF:-1 group-title="Кино" ,Комедия ТВ
-udp://@233.7.70.80:5000
-#EXTINF:-1 group-title="Кино" ,НТВ Кино Плюс
-udp://@233.7.70.247:5000
-#EXTINF:-1 group-title="Кино" ,НТВ Кино Союз
-udp://@233.7.70.248:5000
-#EXTINF:-1 group-title="Кино" ,НТВ Наше Кино
-udp://@233.7.70.249:5000
-#EXTINF:-1 group-title="Кино" ,НТВ Новое Кино
-udp://@233.7.70.250:5000
-#EXTINF:-1 group-title="Кино" ,Звезда
-udp://@233.7.70.69:5000
-#EXTINF:-1 group-title="Кино" ,Мир
-udp://@233.7.70.58:5000
-#EXTINF:-1 group-title="Кино" ,Феникс+Кино
-udp://@233.7.70.86:5000
-#EXTINF:-1 group-title="Кино" ,НСТ
-udp://@233.7.70.74:5000
-#EXTINF:-1 group-title="Кино" ,Zee TV
-udp://@233.7.70.104:5000
-#EXTINF:-1 group-title="Информационные" ,РБК
-udp://@233.7.70.22:5000
-#EXTINF:-1 group-title="Информационные" ,Страна
-udp://@233.7.70.213:5000
-#EXTINF:-1 group-title="Информационные" ,Мир 24
-udp://@233.7.70.120:5000
-#EXTINF:-1 group-title="Информационные" ,Россия 24
-udp://@233.7.70.68:5000
-#EXTINF:-1 group-title="Информационные" ,Успех
-udp://@233.7.70.34:5000
-#EXTINF:-1 group-title="Информационные" ,Euronews
-udp://@233.7.70.42:5000
-#EXTINF:-1 group-title="Информационные" ,Lifenews
-udp://@233.7.70.76:5000
-#EXTINF:-1 group-title="Информационные" ,Конференция ТВ
-udp://@233.7.70.55:5000
-#EXTINF:-1 group-title="Информационные" ,Телеканал Совета Федерации
-udp://@233.7.70.77:5000
-#EXTINF:-1 group-title="Информационные" ,RT HD
-udp://@233.7.70.216:5000
-#EXTINF:-1 group-title="Информационные" ,RT
-udp://@233.7.70.82:5000
-#EXTINF:-1 group-title="Информационные" ,RTД HD
-udp://@233.7.70.217:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Россия 2
-udp://@233.7.70.172:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Спорт 1 HD
-udp://@233.7.70.131:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Спорт 1
-udp://@233.7.70.75:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,СПОРТ
-udp://@233.7.70.254:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,НТВ Спорт Плюс
-udp://@233.7.70.251:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Eurosport HD
-udp://@233.7.70.132:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Eurosport
-udp://@233.7.70.45:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Eurosport 2
-udp://@233.7.70.81:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Eurosport news
-udp://@233.7.70.197:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,КХЛ HD
-udp://@233.7.70.177:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,КХЛ
-udp://@233.7.70.37:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,КХЛ
-udp://@233.7.70.150:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Наш Футбол HD
-udp://@233.7.70.116:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Футбол
-udp://@233.7.70.210:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,НТВ Баскетбол
-udp://@233.7.70.246:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Бойцовский клуб
-udp://@233.7.70.233:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Боец
-udp://@233.7.70.78:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Viasat Sport
-udp://@233.7.70.138:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Драйв
-udp://@233.7.70.31:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Авто плюс
-udp://@233.7.70.79:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,AB Moteurs
-udp://@233.7.70.183:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Motors TV
-udp://@233.7.70.206:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Outdoor Channel HD
-udp://@233.7.70.163:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Outdoor Channel
-udp://@233.7.70.226:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Охота и рыбалка
-udp://@233.7.70.48:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Extreme Sports
-udp://@233.7.70.147:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Русский экстрим
-udp://@233.7.70.139:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,Живи
-udp://@233.7.70.105:5000
-#EXTINF:-1 group-title="Спорт и отдых" ,MyZen HD
-udp://@233.7.70.160:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery channel HD
-udp://@233.7.70.253:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery channel
-udp://@233.7.70.26:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery Science HD
-udp://@233.7.70.195:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery Science
-udp://@233.7.70.27:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery World
-udp://@233.7.70.28:5000
-#EXTINF:-1 group-title="Познавательные" ,Animal Planet HD
-udp://@233.7.70.225:5000
-#EXTINF:-1 group-title="Познавательные" ,Animal Planet
-udp://@233.7.70.30:5000
-#EXTINF:-1 group-title="Познавательные" ,National Geographic HD
-udp://@233.7.70.159:5000
-#EXTINF:-1 group-title="Познавательные" ,National Geographic
-udp://@233.7.70.32:5000
-#EXTINF:-1 group-title="Познавательные" ,Nat Geo Wild HD
-udp://@233.7.70.133:5000
-#EXTINF:-1 group-title="Познавательные" ,Nat Geo Wild
-udp://@233.7.70.223:5000
-#EXTINF:-1 group-title="Познавательные" ,Наука 2.0
-udp://@233.7.70.243:5000
-#EXTINF:-1 group-title="Познавательные" ,Моя планета
-udp://@233.7.70.71:5000
-#EXTINF:-1 group-title="Познавательные" ,365 дней
-udp://@233.7.70.182:5000
-#EXTINF:-1 group-title="Познавательные" ,История
-udp://@233.7.70.173:5000
-#EXTINF:-1 group-title="Познавательные" ,24 Док
-udp://@233.7.70.181:5000
-#EXTINF:-1 group-title="Познавательные" ,24 Техно
-udp://@233.7.70.89:5000
-#EXTINF:-1 group-title="Познавательные" ,Оружие
-udp://@233.7.70.252:5000
-#EXTINF:-1 group-title="Познавательные" ,History HD
-udp://@233.7.70.230:5000
-#EXTINF:-1 group-title="Познавательные" ,History
-udp://@233.7.70.185:5000
-#EXTINF:-1 group-title="Познавательные" ,Ocean TV
-udp://@233.7.70.95:5000
-#EXTINF:-1 group-title="Познавательные" ,Viasat Explorer
-udp://@233.7.70.33:5000
-#EXTINF:-1 group-title="Познавательные" ,Viasat Nature
-udp://@233.7.70.103:5000
-#EXTINF:-1 group-title="Познавательные" ,VIASAT NATURE / HISTORY HD
-udp://@233.7.70.180:5000
-#EXTINF:-1 group-title="Познавательные" ,VIASAT NATURE / HISTORY HD
-udp://@233.7.70.134:5000
-#EXTINF:-1 group-title="Познавательные" ,Viasat History
-udp://@233.7.70.88:5000
-#EXTINF:-1 group-title="Познавательные" ,Travel and Adventure HD
-udp://@233.7.70.156:5000
-#EXTINF:-1 group-title="Познавательные" ,Travel and Adventure
-udp://@233.7.70.119:5000
-#EXTINF:-1 group-title="Познавательные" ,Discovery ID
-udp://@233.7.70.192:5000
-#EXTINF:-1 group-title="Познавательные" ,Nautical Channel
-udp://@233.7.70.84:5000
-#EXTINF:-1 group-title="Познавательные" ,ZooПАРК
-udp://@233.7.70.90:5000
-#EXTINF:-1 group-title="Познавательные" ,Da Vinci Learning
-udp://@233.7.70.63:5000
-#EXTINF:-1 group-title="Познавательные" ,Кто есть кто
-udp://@233.7.70.241:5000
-#EXTINF:-1 group-title="Познавательные" ,Здоровое ТВ
-udp://@233.7.70.49:5000
-#EXTINF:-1 group-title="Познавательные" ,Усадьба ТВ
-udp://@233.7.70.51:5000
-#EXTINF:-1 group-title="Познавательные" ,Кухня ТВ
-udp://@233.7.70.94:5000
-#EXTINF:-1 group-title="Познавательные" ,Агро-ТВ
-udp://@233.7.70.57:5000
-#EXTINF:-1 group-title="Познавательные" ,Первый образовательный
-udp://@233.7.70.23:5000
-#EXTINF:-1 group-title="Познавательные" ,Просвещение
-udp://@233.7.70.168:5000
-#EXTINF:-1 group-title="Детские" ,Nickelodeon
-udp://@233.7.70.97:5000
-#EXTINF:-1 group-title="Детские" ,Nickelodeon HD
-udp://@233.7.70.164:5000
-#EXTINF:-1 group-title="Детские" ,Nick Junior
-udp://@233.7.70.169:5000
-#EXTINF:-1 group-title="Детские" ,2x2
-udp://@233.7.70.124:5000
-#EXTINF:-1 group-title="Детские" ,2x2
-udp://@233.7.70.43:5000
-#EXTINF:-1 group-title="Детские" ,Cartoon Network
-udp://@233.7.70.102:5000
-#EXTINF:-1 group-title="Детские" ,Boomerang
-udp://@233.7.70.187:5000
-#EXTINF:-1 group-title="Детские" ,Карусель
-udp://@233.7.70.40:5000
-#EXTINF:-1 group-title="Детские" ,Карусель
-udp://@233.7.70.170:5000
-#EXTINF:-1 group-title="Детские" ,Детский мир
-udp://@233.7.70.234:5000
-#EXTINF:-1 group-title="Детские" ,Мультимания
-udp://@233.7.70.242:5000
-#EXTINF:-1 group-title="Детские" ,Детский
-udp://@233.7.70.99:5000
-#EXTINF:-1 group-title="Детские" ,Tiji
-udp://@233.7.70.101:5000
-#EXTINF:-1 group-title="Детские" ,JimJam
-udp://@233.7.70.148:5000
-#EXTINF:-1 group-title="Детские" ,Gulli
-udp://@233.7.70.171:5000
-#EXTINF:-1 group-title="Детские" ,Disney
-udp://@233.7.70.9:5000
-#EXTINF:-1 group-title="Детские" ,Disney
-udp://@233.7.70.91:5000
-#EXTINF:-1 group-title="Детские" ,Мать и дитя
-udp://@233.7.70.41:5000
-#EXTINF:-1 group-title="Детские" ,Радость моя
-udp://@233.7.70.100:5000
-#EXTINF:-1 group-title="На других языках" ,English Club TV
-udp://@233.7.70.96:5000
-#EXTINF:-1 group-title="На других языках" ,Deutsche Welle
-udp://@233.7.70.191:5000
-#EXTINF:-1 group-title="На других языках" ,France 24
-udp://@233.7.70.149:5000
-#EXTINF:-1 group-title="На других языках" ,BBC World News
-udp://@233.7.70.186:5000
-#EXTINF:-1 group-title="На других языках" ,Arirang TV
-udp://@233.7.70.111:5000
-#EXTINF:-1 group-title="На других языках" ,Bаby TV
-udp://@233.7.70.188:5000
-#EXTINF:-1 group-title="На других языках" ,NHK World TV
-udp://@233.7.70.224:5000
-#EXTINF:-1 group-title="Мода и стиль" ,Fashion One HD
-udp://@233.7.70.162:5000
-#EXTINF:-1 group-title="Мода и стиль" ,Fashion TV
-udp://@233.7.70.47:5000
-#EXTINF:-1 group-title="Мода и стиль" ,Style TV
-udp://@233.7.70.140:5000
-#EXTINF:-1 group-title="Мода и стиль" ,Amazing Life
-udp://@233.7.70.21:5000
-#EXTINF:-1 group-title="Мода и стиль" ,TDK
-udp://@233.7.70.50:5000
-#EXTINF:-1 group-title="Развлекательные" ,Paramount Comedy
-udp://@233.7.70.227:5000
-#EXTINF:-1 group-title="Развлекательные" ,E! Entertainment
-udp://@233.7.70.72:5000
-#EXTINF:-1 group-title="Развлекательные" ,Пятница
-udp://@233.7.70.175:5000
-#EXTINF:-1 group-title="Развлекательные" ,Пятница
-udp://@233.7.70.198:5000
-#EXTINF:-1 group-title="Развлекательные" ,Пятница
-udp://@233.7.70.237:5000
-#EXTINF:-1 group-title="Развлекательные" ,Парк развлечений
-udp://@233.7.70.142:5000
-#EXTINF:-1 group-title="Развлекательные" ,Юмор Box
-udp://@233.7.70.46:5000
-#EXTINF:-1 group-title="Развлекательные" ,Раз ТВ
-udp://@233.7.70.145:5000
-#EXTINF:-1 group-title="Развлекательные" ,8 канал
-udp://@233.7.70.215:5000
-#EXTINF:-1 group-title="Развлекательные" ,TLC
-udp://@233.7.70.29:5000
-#EXTINF:-1 group-title="Разное" ,Ретро ТВ
-udp://@233.7.70.44:5000
-#EXTINF:-1 group-title="Разное" ,Ностальгия
-udp://@233.7.70.245:5000
-#EXTINF:-1 group-title="Разное" ,CBS Reality
-udp://@233.7.70.231:5000
-#EXTINF:-1 group-title="Разное" ,Всё ТВ
-udp://@233.7.70.174:5000
-#EXTINF:-1 group-title="Разное" ,Комсомольская Правда
-udp://@233.7.70.240:5000
-#EXTINF:-1 group-title="Разное" ,ТРО Союз
-udp://@233.7.70.143:5000
-#EXTINF:-1 group-title="Разное" ,Союз
-udp://@233.7.70.24:5000
-#EXTINF:-1 group-title="Разное" ,Спас
-udp://@233.7.70.38:5000
-#EXTINF:-1 group-title="Разное" ,Инва Медиа ТВ
-udp://@233.7.70.39:5000
-#EXTINF:-1 group-title="Разное" ,Shoping life
-udp://@233.7.70.135:5000
-#EXTINF:-1 group-title="Разное" ,TopShop TV
-udp://@233.7.70.56:5000
-#EXTINF:-1 group-title="HD" ,Первый канал HD
-udp://@233.7.70.200:5000
-#EXTINF:-1 group-title="HD" ,Россия HD
-udp://@233.7.70.201:5000
-#EXTINF:-1 group-title="HD" ,Спорт 1 HD
-udp://@233.7.70.131:5000
-#EXTINF:-1 group-title="HD" ,Наш Футбол HD
-udp://@233.7.70.116:5000
-#EXTINF:-1 group-title="HD" ,КХЛ HD
-udp://@233.7.70.177:5000
-#EXTINF:-1 group-title="HD" ,Eurosport HD
-udp://@233.7.70.132:5000
-#EXTINF:-1 group-title="HD" ,Discovery channel HD
-udp://@233.7.70.253:5000
-#EXTINF:-1 group-title="HD" ,Discovery Science HD
-udp://@233.7.70.195:5000
-#EXTINF:-1 group-title="HD" ,Animal Planet HD
-udp://@233.7.70.225:5000
-#EXTINF:-1 group-title="HD" ,National Geographic HD
-udp://@233.7.70.159:5000
-#EXTINF:-1 group-title="HD" ,Nat Geo Wild HD
-udp://@233.7.70.133:5000
-#EXTINF:-1 group-title="HD" ,History HD
-udp://@233.7.70.230:5000
-#EXTINF:-1 group-title="HD" ,VIASAT NATURE / HISTORY HD
-udp://@233.7.70.180:5000
-#EXTINF:-1 group-title="HD" ,VIASAT NATURE / HISTORY HD
-udp://@233.7.70.134:5000
-#EXTINF:-1 group-title="HD" ,Travel and Adventure HD
-udp://@233.7.70.156:5000
-#EXTINF:-1 group-title="HD" ,Outdoor Channel HD
-udp://@233.7.70.163:5000
-#EXTINF:-1 group-title="HD" ,Mezzo Live HD
-udp://@233.7.70.125:5000
-#EXTINF:-1 group-title="HD" ,MTV Live HD
-udp://@233.7.70.161:5000
-#EXTINF:-1 group-title="HD" ,SET HD
-udp://@233.7.70.126:5000
-#EXTINF:-1 group-title="HD" ,FOX HD
-udp://@233.7.70.127:5000
-#EXTINF:-1 group-title="HD" ,Fox Life HD
-udp://@233.7.70.158:5000
-#EXTINF:-1 group-title="HD" ,TV1000 MEGAHIT HD
-udp://@233.7.70.128:5000
-#EXTINF:-1 group-title="HD" ,TV1000 MEGAHIT HD
-udp://@233.7.70.178:5000
-#EXTINF:-1 group-title="HD" ,TV1000 PREMIUM HD
-udp://@233.7.70.129:5000
-#EXTINF:-1 group-title="HD" ,TV1000 PREMIUM HD
-udp://@233.7.70.193:5000
-#EXTINF:-1 group-title="HD" ,TV1000 COMEDY HD
-udp://@233.7.70.179:5000
-#EXTINF:-1 group-title="HD" ,TV1000 COMEDY HD
-udp://@233.7.70.130:5000
-#EXTINF:-1 group-title="HD" ,Paramount Channel HD
-udp://@233.7.70.114:5000
-#EXTINF:-1 group-title="HD" ,AMEDIA Premium HD
-udp://@233.7.70.239:5000
-#EXTINF:-1 group-title="HD" ,AMEDIA 1 HD
-udp://@233.7.70.222:5000
-#EXTINF:-1 group-title="HD" ,RT HD
-udp://@233.7.70.216:5000
-#EXTINF:-1 group-title="HD" ,RTД HD
-udp://@233.7.70.217:5000
-#EXTINF:-1 group-title="HD" ,Fashion One HD
-udp://@233.7.70.162:5000
-#EXTINF:-1 group-title="HD" ,MyZen HD
-udp://@233.7.70.160:5000
-#EXTINF:-1 group-title="HD" ,Nickelodeon HD
-udp://@233.7.70.164:5000
-
-#Каналы для взрослых
-#EXTINF:-1 group-title="XXX" ,Русская ночь
-#udp://@233.7.70.112:5000
-#EXTINF:-1 group-title="XXX" ,XXL
-#udp://@233.7.70.122:5000
-#EXTINF:-1 group-title="XXX" ,О-ля-ля
-#udp://@233.7.70.236:5000
-#EXTINF:-1 group-title="XXX" ,Blue Hustler
-#udp://@233.7.70.121:5000
-#EXTINF:-1 group-title="XXX" ,Playboy
-#udp://@233.7.70.115:5000

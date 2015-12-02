@@ -1483,25 +1483,26 @@
 8) butcheck: set dir per gpio instead of all.<br>
 9) dnsmasq: fix crash when empty address from DNS overlays A record from hosts.<br>
 10) nodogsplash: fixed segfault in httpd_thread.c under high load (commit 251e61db).<br>
-11) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
-12) kernel: exfat: upstream updates.<br>
-13) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
-14) kernel: hw_nat: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
-15) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
-16) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
-17) kernel: ralink_wifi: 76x2: small fix WDS.<br>
-18) kernel: mips: fix work highmem at 7621 samples.<br>
-19) kernel: mips: fix highmem crash in __update_cache.<br>
-20) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-21) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-22) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-23) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-24) kenrel: mips: allow long calls on highmem support builds.<br>
-25) kernel: ralink_gpio: cleanup and small fixup.<br>
-26) kernel: net: increase conntrack size depend by ram_size.<br>
-27) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-28) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-29) kernel: net: ipv6: fix tunnel error handling.<br>
+11) xupnpd: move TTK-IPTV to feed and cleanup RTK-TV.<br>
+12) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
+13) kernel: exfat: upstream updates.<br>
+14) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
+15) kernel: hw_nat: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
+16) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
+17) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
+18) kernel: ralink_wifi: 76x2: small fix WDS.<br>
+19) kernel: mips: fix work highmem at 7621 samples.<br>
+20) kernel: mips: fix highmem crash in __update_cache.<br>
+21) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+22) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+23) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+24) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+25) kenrel: mips: allow long calls on highmem support builds.<br>
+26) kernel: ralink_gpio: cleanup and small fixup.<br>
+27) kernel: net: increase conntrack size depend by ram_size.<br>
+28) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+29) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+30) kernel: net: ipv6: fix tunnel error handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
