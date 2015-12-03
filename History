@@ -1490,20 +1490,21 @@
 15) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
 16) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
 17) kernel: ralink_wifi: 76x2: small fix WDS.<br>
-18) kernel: exfat: upstream updates.<br>
-19) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
-20) kernel: mips: fix work highmem at 7621 samples.<br>
-21) kernel: mips: fix highmem crash in __update_cache.<br>
+18) kernel: ralink_gpio: cleanup and small fixup.<br>
+19) kernel: exfat: upstream updates.<br>
+20) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
+21) kernel: usb: add new devives support to serial drivers.<br>
 22) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
 23) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
 24) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-25) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-26) kenrel: mips: allow long calls on highmem support builds.<br>
-27) kernel: ralink_gpio: cleanup and small fixup.<br>
-28) kernel: net: increase conntrack size depend by ram_size.<br>
-29) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-30) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-31) kernel: net: ipv6: fix tunnel error handling.<br>
+25) kernel: mips: fix work highmem at 7621 samples.<br>
+26) kernel: mips: fix highmem crash in __update_cache.<br>
+27) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+28) kenrel: mips: allow long calls on highmem support builds.<br>
+29) kernel: net: increase conntrack size depend by ram_size.<br>
+30) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+31) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+32) kernel: net: ipv6: fix tunnel error handling.<br>
 <br>
 <br>
 <b>TODO:</b><br>
