@@ -1,0 +1,158 @@
+#EXTM3U name="Ростелеком"
+#EXTINF:-1,Amedia 1 HD
+udp://@225.54.41.29:5000
+#EXTINF:-1,Amedia Hit HD
+udp://@225.54.41.41:5000
+#EXTINF:-1,Amedia Premium HD
+udp://@225.54.43.30:5000
+#EXTINF:-1,Amedia Premium HD
+udp://@225.54.41.30:5000
+#EXTINF:-1,Animal Planet HD
+udp://@225.54.41.19:5000
+#EXTINF:-1,Animal Planet HD
+udp://@225.54.43.19:5000
+#EXTINF:-1,Discovery Channel HD
+udp://@225.54.41.18:5000
+#EXTINF:-1,Discovery Science HD
+udp://@225.54.41.35:5000
+#EXTINF:-1,Eurosport 1 HD
+udp://@225.54.41.2:5000
+#EXTINF:-1,Eurosport 1 HD
+udp://@225.54.43.2:5000
+#EXTINF:-1,Fashion One HD
+udp://@225.54.41.12:5000
+#EXTINF:-1,Fox HD
+udp://@225.54.41.17:5000
+#EXTINF:-1,Fox Life HD
+udp://@225.54.41.5:5000
+#EXTINF:-1,History HD
+udp://@225.54.41.26:5000
+#EXTINF:-1,Mezzo Live HD
+udp://@225.54.41.11:5000
+#EXTINF:-1,MTV Live HD
+udp://@225.54.41.10:5000
+#EXTINF:-1,myZen.tv HD
+udp://@225.54.41.9:5000
+#EXTINF:-1,National Geographic HD
+udp://@225.54.41.6:5000
+#EXTINF:-1,Nat Geo Wild HD
+udp://@225.54.41.7:5000
+#EXTINF:-1,Nickelodeon HD
+udp://@225.54.41.15:5000
+#EXTINF:-1,Outdoor HD
+udp://@225.54.41.13:5000
+#EXTINF:-1,Paramount Channel HD
+udp://@225.54.41.31:5000
+#EXTINF:-1,Paramount Comedy HD
+udp://@225.54.41.37:5000
+#EXTINF:-1,Russia Today HD
+udp://@225.54.41.25:5000
+#EXTINF:-1,SET HD
+udp://@225.54.41.16:5000
+#EXTINF:-1,TLC HD
+udp://@225.54.41.36:5000
+#EXTINF:-1,http://iptv.zone Travel+ Adventure HD
+udp://@225.54.41.8:5000
+#EXTINF:-1,TV1000 Comedy HD
+udp://@225.54.43.22:5000
+#EXTINF:-1,TV1000 Comedy HD
+udp://@225.54.41.22:5000
+#EXTINF:-1,TV1000 Megahit HD
+udp://@225.54.41.21:5000
+#EXTINF:-1,TV1000 Megahit HD
+udp://@225.54.43.21:5000
+#EXTINF:-1,TV1000 Premium HD
+udp://@225.54.41.20:5000
+#EXTINF:-1,TV1000 Premium HD
+udp://@225.54.43.20:5000
+#EXTINF:-1,Viasat Nature/History HD
+udp://@225.54.41.28:5000
+#EXTINF:-1,Viasat Nature/History HD
+udp://@225.54.43.28:5000
+#EXTINF:-1,КХЛ HD
+udp://@225.54.41.27:5000
+#EXTINF:-1,КХЛ HD
+udp://@225.54.43.27:5000
+#EXTINF:-1,Наш футбол HD
+udp://@225.54.43.4:5000
+#EXTINF:-1,Наш футбол HD
+udp://@225.54.41.4:5000
+#EXTINF:-1,НТВ+ Футбол 1 HD
+udp://@225.54.41.38:5000
+#EXTINF:-1,НТВ+ Футбол 2 HD
+udp://@225.54.41.39:5000
+#EXTINF:-1,НТВ+ Футбол 3 HD
+udp://@225.54.41.40:5000
+#EXTINF:-1,Первый канал HD
+udp://@225.54.41.1:5000
+#EXTINF:-1,РОССИЯ HD
+udp://@225.54.41.23:5000
+#EXTINF:-1,Спорт 1 HD
+udp://@225.54.41.3:5000
+#EXTINF:-1,Страшное HD
+udp://@225.54.41.32:5000
+#EXTINF:-1,МИР 24
+udp://@225.54.23.13:5000
+#EXTINF:-1,Discovery Channel
+udp://@225.54.23.59:5000
+#EXTINF:-1,DTX
+udp://@225.54.23.74:5000
+#EXTINF:-1,ID Xtra
+udp://@225.54.23.83:5000
+#EXTINF:-1,ID Xtra
+#EXTINF:-1,Первый образовательный
+udp://@225.54.23.73:5000
+#EXTINF:-1,Food Network
+udp://@225.54.23.69:5000
+#EXTINF:-1,Ocean TV
+udp://@225.54.23.70:5000
+#EXTINF:-1,TLC
+udp://@225.54.23.111:5000
+#EXTINF:-1,Пятница! (+3)
+udp://@239.1.128.54:5000
+#EXTINF:-1,СТС Love
+udp://@225.54.23.20:5000
+#EXTINF:-1,Da Vinci Learning
+udp://@225.54.23.78:5000
+#EXTINF:-1,Gulli
+udp://@225.54.23.100:5000
+#EXTINF:-1,TiJi
+udp://@225.54.23.94:5000
+#EXTINF:-1,Радость Моя
+udp://@225.54.23.93:5000
+#EXTINF:-1,TV1000 Русское кино
+udp://@225.54.23.24:5000
+#EXTINF:-1,Zee-TV
+udp://@225.54.23.47:5000
+#EXTINF:-1,Комедия ТВ
+udp://@225.54.23.25:5000
+#EXTINF:-1,Русский бестселлер
+udp://@225.54.23.50:5000
+#EXTINF:-1,КХЛ
+udp://@225.54.23.132:5000
+#EXTINF:-1,Футбол
+udp://@225.54.23.138:5000
+#EXTINF:-1,A-ONE
+udp://@225.54.23.114:5000
+#EXTINF:-1,MCM TOP
+udp://@225.54.23.121:5000
+#EXTINF:-1,VH1
+udp://@225.54.23.120:5000
+#EXTINF:-1,Ля-Минор
+udp://@225.54.23.119:5000
+#EXTINF:-1,ПИК ТВ
+udp://@225.54.23.113:5000
+#EXTINF:-1,Шансон-TB
+udp://@225.54.23.118:5000
+#EXTINF:-1,Shop 24
+udp://@225.54.23.12:5000
+#EXTINF:-1,Shoping Live
+udp://@225.54.23.2:5000
+#EXTINF:-1,Top Shop TV
+udp://@225.54.23.3:5000
+#EXTINF:-1,TV Sale
+udp://@225.54.23.32:5000
+#EXTINF:-1,ТРО
+udp://@225.54.23.153:5000
+#EXTINF:-1,Brazzers TV Europe
+udp://@225.54.23.158:5000
