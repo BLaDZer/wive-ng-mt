@@ -1827,7 +1827,7 @@ static int nf_conntrack_init_init_net(void)
 #endif
 
 	if (!nf_conntrack_htable_size) {
-#if (CONFIG_RALINK_RAM_SIZE > 128) || defined(CONFIG_HIGHMEM)
+#if (defined(CONFIG_RALINK_RAM_SIZE) && CONFIG_RALINK_RAM_SIZE > 128) || defined(CONFIG_HIGHMEM)
 	    nf_conntrack_htable_size  = 32768;
 #if defined(CONFIG_HIGHMEM)
 	    max_factor = 2;
