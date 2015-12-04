@@ -1474,7 +1474,7 @@ redir_write(struct redir_socket_t *sock, char *buf, size_t len) {
 
 #if(_debug_ > 1)
   if (_options.debug)
-    syslog(LOG_DEBUG, "redir_write(%d)",len);
+    syslog(LOG_DEBUG, "redir_write(%zd)",len);
 #endif
 
   while (r < len) {
@@ -3709,7 +3709,7 @@ int redir_main(struct redir_t *redir,
                   if ((buflen = safe_read(ctop[0], buffer, bufsize)) > 0) {
 #if(_debug_ > 1)
                     if (_options.debug)
-                      syslog(LOG_DEBUG, "script_read(%d)",buflen);
+                      syslog(LOG_DEBUG, "script_read(%zd)",buflen);
 #endif
                     if (redir_write(&socket, buffer, (size_t) buflen) < 0) {
                       syslog(LOG_ERR, "%s: redir_write() failed!", strerror(errno));
@@ -3717,7 +3717,7 @@ int redir_main(struct redir_t *redir,
                     }
 #if(_debug_ > 1)
                     if (_options.debug)
-                      syslog(LOG_DEBUG, "ssl_write(%d)",buflen);
+                      syslog(LOG_DEBUG, "ssl_write(%zd)",buflen);
 #endif
                   } else {
 #if(_debug_ > 1)
@@ -3779,11 +3779,11 @@ int redir_main(struct redir_t *redir,
             setenv("CHI_SESSION_ID", conn.s_state.sessionid, 1);
             setenv("CHI_USERNAME", conn.s_state.redir.username, 1);
             setenv("CHI_USERURL", conn.s_state.redir.userurl, 1);
-            snprintf(buffer, sizeof(buffer), "%", conn.s_state.input_octets);
+            snprintf(buffer, sizeof(buffer), "%" PRIu64, conn.s_state.input_octets);
             setenv("CHI_INPUT_BYTES", buffer, 1);
-            snprintf(buffer, sizeof(buffer), "%", conn.s_state.output_octets);
+            snprintf(buffer, sizeof(buffer), "%" PRIu64, conn.s_state.output_octets);
             setenv("CHI_OUTPUT_BYTES", buffer, 1);
-            snprintf(buffer, sizeof(buffer), "%", conn.s_params.sessiontimeout);
+            snprintf(buffer, sizeof(buffer), "%" PRIu64, conn.s_params.sessiontimeout);
             setenv("CHI_SESSION_TIMEOUT", buffer, 1);
 
             redir_chartohex(conn.s_state.redir.uamchal, buffer, REDIR_MD5LEN);
