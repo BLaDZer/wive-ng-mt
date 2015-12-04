@@ -1507,6 +1507,7 @@
 32) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
 33) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 34) kernel: net: ipv6: fix tunnel error handling.<br>
+35) kernel: net: neighbour: fix crash at dumping device-agnostic proxy entries.<br>
 <br>
 <br>
 <b>TODO:</b><br>
