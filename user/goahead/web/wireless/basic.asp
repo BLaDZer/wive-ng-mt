@@ -719,9 +719,6 @@ function initValue()
 	{
 		if (ht_mode == "1")
 			form.n_mode.options.selectedIndex = 1;
-			// WTF??? How to choose the third of the two states?
-			//		else if (ht_mode == "2")
-			//			form.n_mode[2].checked = true;
 		else
 			form.n_mode.options.selectedIndex = 0;
 	} else

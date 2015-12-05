@@ -597,7 +597,7 @@ out24:
 	    }
 
 	    // RSSI
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_RT_SECOND_IF_MT7610E)
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
 	    websWrite(wp, T("<td>%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
 #elif defined(CONFIG_RT_SECOND_IF_MT7612E)
@@ -627,9 +627,10 @@ static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+// HT green AP operation supports all >=2T2R chips at not depend from GREENAP_SUPPORT config option (GREEAP is powersave code not operation mode)
 static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
+#if defined(CONFIG_RT2860V2_AP_MODULE) || defined(CONFIG_MT76X2_AP_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -982,7 +983,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// VHT_Modes
 	if (is_vht)
 	{
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#if defined(CONFIG_MT7610_AP_MODULE)
 		// for 1T1R module always disable (support only in STA mode for 1T1R)
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
 		nvram_bufset(RT2860_NVRAM, "HT_LDPC", "0");
@@ -1781,7 +1782,7 @@ static int is5gh_support(int eid, webs_t wp, int argc, char_t **argv)
 
 static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP) || defined(CONFIG_MT7610_AP_MODULE)
+#if defined(CONFIG_MT7610_AP_MODULE)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
