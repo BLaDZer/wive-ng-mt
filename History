@@ -1486,35 +1486,36 @@
 11) xupnpd: move TTK-IPTV to feed and cleanup RTK-TV.<br>
 12) goahead: remove private copy of wireless.h, now allways use system header.<br>
 13) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
-14) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
-15) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
-16) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
-17) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
-18) kernel: ralink_wifi: xxxx: Mpdu Density all time must be > 0.<br>
-19) kernel: ralink_wifi: xxxx: HT green AP operation support all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
-20) kernel: ralink_wifi: 76x2: small fix WDS.<br>
-21) kernel: ralink_gpio: cleanup and small fixup.<br>
-22) kernel: exfat: upstream updates.<br>
-23) kernel: devres: fix a for loop bounds check.<br>
-24) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
-25) kernel: splice: sendfile() at once fails for big files.<br>
-26) kernel: vfs: avoid softlockups with sendfile(2).<br>
-27) kernel: vfs: make sendfile(2) killable even better.<br>
-28) kernel: usb: add new devives support to serial drivers.<br>
-29) kernel: usb: MT7621 xHCI: fix memory leak, add losted workarounds from MTK SDK.<br>
-30) kernel: usb: option: add support TS-UM6602 modem (aka MOTIV 4G).<br>
-31) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-32) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-33) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-34) kernel: mips: fix work highmem at 7621 samples.<br>
-35) kernel: mips: fix highmem crash in __update_cache.<br>
-36) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-37) kenrel: mips: allow long calls on highmem support builds.<br>
-38) kernel: net: increase conntrack size depend by ram_size.<br>
-39) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-40) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-41) kernel: net: ipv6: fix tunnel error handling.<br>
-42) kernel: net: neighbour: fix crash at dumping device-agnostic proxy entries.<br>
+14) init.d: do not disable logging in cooava chilli.<br>
+15) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
+16) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
+17) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
+18) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
+19) kernel: ralink_wifi: xxxx: Mpdu Density all time must be > 0.<br>
+20) kernel: ralink_wifi: xxxx: HT green AP operation support all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
+21) kernel: ralink_wifi: 76x2: small fix WDS.<br>
+22) kernel: ralink_gpio: cleanup and small fixup.<br>
+23) kernel: exfat: upstream updates.<br>
+24) kernel: devres: fix a for loop bounds check.<br>
+25) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
+26) kernel: splice: sendfile() at once fails for big files.<br>
+27) kernel: vfs: avoid softlockups with sendfile(2).<br>
+28) kernel: vfs: make sendfile(2) killable even better.<br>
+29) kernel: usb: add new devives support to serial drivers.<br>
+30) kernel: usb: MT7621 xHCI: fix memory leak, add losted workarounds from MTK SDK.<br>
+31) kernel: usb: option: add support TS-UM6602 modem (aka MOTIV 4G).<br>
+32) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+33) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+34) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+35) kernel: mips: fix work highmem at 7621 samples.<br>
+36) kernel: mips: fix highmem crash in __update_cache.<br>
+37) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+38) kenrel: mips: allow long calls on highmem support builds.<br>
+39) kernel: net: increase conntrack size depend by ram_size.<br>
+40) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+41) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+42) kernel: net: ipv6: fix tunnel error handling.<br>
+43) kernel: net: neighbour: fix crash at dumping device-agnostic proxy entries.<br>
 <br>
 <br>
 <b>TODO:</b><br>

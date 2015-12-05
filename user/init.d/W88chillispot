@@ -75,7 +75,7 @@ start() {
 	    chmod 777 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
-	chilli --kname=on $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
+	chilli --kname=chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
 	) & # send to background
 	# statistics
     fi
@@ -108,7 +108,7 @@ get_params() {
     if [ "$chilli_debug" = "1" ]; then
 	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
     else
-	DEBUG="-f -F --logfacility=0 --loglevel=0"
+	DEBUG="-f -F"
     fi
     if [ "$chilli_uamallowed" ]; then
 	uamallowed="--uamallowed=$chilli_uamallowed"
