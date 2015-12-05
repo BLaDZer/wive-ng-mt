@@ -18,7 +18,6 @@
 static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv);
@@ -178,7 +177,6 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
 	websAspDefine(T("get802_1XBuilt"), get802_1XBuilt);
 	websAspDefine(T("getWlanM2UBuilt"), getWlanM2UBuilt);
-	websAspDefine(T("getGreenAPBuilt"), getGreenAPBuilt);
 	websAspDefine(T("listCountryCodes"), listCountryCodes);
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
@@ -618,16 +616,6 @@ out5:
 static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
-// HT green AP operation supports all >=2T2R chips at not depend from GREENAP_SUPPORT config option (GREEAP is powersave code not operation mode)
-static int getGreenAPBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_AP_MODULE) || defined(CONFIG_MT76X2_AP_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

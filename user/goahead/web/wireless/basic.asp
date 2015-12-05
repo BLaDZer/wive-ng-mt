@@ -62,7 +62,6 @@ var is3t3r = '<% is3t3r(); %>';
 var is5gh_support = '<% is5gh_support(); %>';
 var is5gh_1t1r = '<% is5gh_1t1r(); %>';
 
-var green_on = '<% getGreenAPBuilt(); %>' == '1';
 var ids_built ='<% getIdsEnableBuilt(); %>' == '1';
 var txbf_built = '<% getTXBFBuilt(); %>';
 
@@ -564,7 +563,7 @@ function initValue()
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
-		displayElement('htOpModeRow', green_on);
+		displayElement('htOpModeRow', true);
 		showElementEx("div_ht_tx_stream", style_display_on());
 		showElementEx("div_ht_rx_stream", style_display_on());
 		show14channel(false);
@@ -715,13 +714,9 @@ function initValue()
 
 	show_abg_rate(form);
 
-	if (green_on)
-	{
-		if (ht_mode == "1")
-			form.n_mode.options.selectedIndex = 1;
-		else
-			form.n_mode.options.selectedIndex = 0;
-	} else
+	if (ht_mode == "1")
+		form.n_mode.options.selectedIndex = 1;
+	else
 		form.n_mode.options.selectedIndex = 0;
 
 	form.n_gi.options.selectedIndex = (ht_gi == "1") ? 1 : 0;
@@ -947,7 +942,7 @@ function wirelessModeChange(form)
 	if ((wmode*1) >= 5)
 	{
 		showElement("div_11n");
-		displayElement('htOpModeRow', green_on);
+		displayElement('htOpModeRow', true);
 
 		form.n_mode.disabled = false;
 		form.n_bandwidth.disabled = false;
