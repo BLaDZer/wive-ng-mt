@@ -145,7 +145,7 @@ helpers.o: helpers.c webs.h helpers.h
 
 form.o:  form.c webs.h wsIntrn.h ej.h ejIntrn.h uemf.h
 
-goahead.o: goahead.c uemf.h wsIntrn.h internet.h utils.h wireless.h firewall.h management.h qos.h $(CONF_H) $(UCONF_H) $(BUSYBOXCONF_H)
+goahead.o: goahead.c uemf.h wsIntrn.h internet.h utils.h firewall.h management.h qos.h $(CONF_H) $(UCONF_H) $(BUSYBOXCONF_H)
 
 h.o:  h.c uemf.h
 
@@ -207,6 +207,6 @@ websuemf.o:  websuemf.c webs.h wsIntrn.h ej.h ejIntrn.h uemf.h
 
 websSSL.o:  websSSL.c websSSL.h wsIntrn.h ej.h ejIntrn.h uemf.h
 
-wireless.o: wireless.c wireless.h internet.h utils.h webs.h $(CONF_H) $(UCONF_H)
+wireless.o: wireless.c internet.h utils.h webs.h $(CONF_H) $(UCONF_H)
 
 qos.o: qos.h utils.h $(CONF_H)

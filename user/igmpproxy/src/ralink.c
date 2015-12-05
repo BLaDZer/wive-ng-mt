@@ -40,13 +40,12 @@
 #include <linux/autoconf.h>
 
 #include "igmpproxy.h"
-#include "wireless.h"
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
+#include <linux/wireless.h>
 #include "src/oid.h"
-#include "src/wireless.h"
 #define RTWIFI_INTFS_MAX 8
 
 int  rtwifi_intf_count = 0;

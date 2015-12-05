@@ -65,12 +65,6 @@
 #define __user
 #endif
 
-#include <linux/types.h>		/* for "caddr_t" et al		*/
-
-/* Glibc systems headers are supposedly less problematic than kernel ones */
-#include <sys/socket.h>			/* for "struct sockaddr" et al	*/
-#include <net/if.h>			/* for IFNAMSIZ and co... */
-
 /* Private copy of Wireless extensions (in this directoty) */
 #include "wireless.h"
 

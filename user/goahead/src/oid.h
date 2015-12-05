@@ -1,7 +1,6 @@
 #include <linux/autoconf.h>
 #include <linux/if_ether.h>
-
-#include "wireless.h"
+#include <linux/wireless.h>
 
 #define RT_PRIV_IOCTL                           (SIOCIWFIRSTPRIV + 0x01)
 #define RTPRIV_IOCTL_SET                        (SIOCIWFIRSTPRIV + 0x02)

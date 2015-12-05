@@ -26,10 +26,6 @@
 #ifndef _LINUX_WIRELESS_H
 #define _LINUX_WIRELESS_H
 
-#ifndef IFNAMSIZ
-#define IFNAMSIZ 16
-#endif
-
 /************************** DOCUMENTATION **************************/
 /*
  * Initial APIs (1996 -> onward) :
@@ -93,10 +89,8 @@
  * for that purpose. Those includes are usually not compatible with glibc.
  * To know which includes to use in user-space, check iwlib.h. */
 #include <linux/types.h>		/* for "caddr_t" et al		*/
-#ifdef __KERNEL__
 #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
 #include <linux/if.h>			/* for IFNAMSIZ and co... */
-#endif	/* __KERNEL__ */
 
 /***************************** VERSION *****************************/
 /*

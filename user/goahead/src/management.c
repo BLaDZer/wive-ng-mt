@@ -14,7 +14,6 @@
 #include "um.h"
 #endif
 #include "internet.h"
-#include "wireless.h"
 #include "management.h"
 
 static unsigned long int prevTotal = 0, prevBusy = 0;
