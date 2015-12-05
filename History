@@ -1491,7 +1491,7 @@
 16) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
 17) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
 18) kernel: ralink_wifi: xxxx: Mpdu Density all time must be > 0.<br>
-19) kernel: ralink_wifi: xxxx: HT green AP operation supports all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
+19) kernel: ralink_wifi: xxxx: HT green AP operation support all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
 20) kernel: ralink_wifi: 76x2: small fix WDS.<br>
 21) kernel: ralink_gpio: cleanup and small fixup.<br>
 22) kernel: exfat: upstream updates.<br>

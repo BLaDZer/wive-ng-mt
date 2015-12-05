@@ -67,7 +67,7 @@
   <message msgid="basic wds invalid mac" msgstr="Пожалуйста, заполните правильно MAC адрес! (XX:XX:XX:XX:XX:XX)" />
   <message msgid="basic wds no mac" msgstr="MAC адрес не указан!" />
   <message msgid="basic ht phy mode" msgstr="Физический режим HT" />
-  <message msgid="basic ht op mode" msgstr="Сбережение энергии" />
+  <message msgid="basic ht op mode" msgstr="Разрешить чистый 802.11N" />
   <message msgid="basic ht op mixed" msgstr="Disabled" />
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />

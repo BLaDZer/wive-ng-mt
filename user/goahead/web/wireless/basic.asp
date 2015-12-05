@@ -1295,7 +1295,7 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="htOpModeRow" style="display: none;">
-            <td class="head" id="basicHTOPMode" width="50%">Green Filed Mode</td>
+            <td class="head" id="basicHTOPMode" width="50%">Greenfield Mode</td>
             <td width="50%"><select name="n_mode" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>

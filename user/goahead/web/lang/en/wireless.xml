@@ -67,7 +67,7 @@
   <message msgid="basic wds invalid mac" msgstr="Please fill WDS remote AP MAC Address in correct format! (XX:XX:XX:XX:XX:XX)" />
   <message msgid="basic wds no mac" msgstr="No remote AP MAC addresses specified!" />
   <message msgid="basic ht phy mode" msgstr="HT Physical Mode" />
-  <message msgid="basic ht op mode" msgstr="Green Filed Mode" />
+  <message msgid="basic ht op mode" msgstr="Greenfield Mode" />
   <message msgid="basic ht op mixed" msgstr="Disable" />
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Channel BandWidth" />
