@@ -10,9 +10,6 @@
 #include	<stdlib.h>
 #include	<sys/ioctl.h>
 #include	<arpa/inet.h>
-#include	<linux/types.h>
-#include	<linux/socket.h>
-#include	<linux/if.h>
 
 #include	"utils.h"
 #include	"internet.h"
