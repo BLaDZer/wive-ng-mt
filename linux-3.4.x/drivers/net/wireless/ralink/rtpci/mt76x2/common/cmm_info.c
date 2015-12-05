@@ -4141,7 +4141,7 @@ INT	Set_HtMpduDensity_Proc(
 	
 	Value = simple_strtol(arg, 0, 10);
 	
-	if (Value <=7)
+	if (Value <=7 && Value >= 0)
 		pAd->CommonCfg.BACapability.field.MpduDensity = Value;
 	else
 		pAd->CommonCfg.BACapability.field.MpduDensity = 4;
