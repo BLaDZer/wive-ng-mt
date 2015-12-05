@@ -5,6 +5,9 @@
  *
  *	$Id: utils.h,v 1.25 2008-03-17 09:28:40 yy Exp $
  */
+#ifndef _h_UTILS
+#define _h_UTILS 1
+
 #include        "sdk_version.h"				//version config
 #include        "config/autoconf.h"			//user config
 #include        "user/busybox/include/autoconf.h"	//busybox config
@@ -61,3 +64,5 @@ void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
 int OptRstDefault(int idx_nvram, int num, ...);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
+
+#endif
