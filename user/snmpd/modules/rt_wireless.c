@@ -1,6 +1,5 @@
 #include	<stdlib.h>
 #include	<sys/ioctl.h>
-#include	<net/if.h>
 #include	<sys/socket.h>
 #include        <sys/param.h>
 #include        <sys/types.h>
@@ -16,14 +15,11 @@
 #include        <unistd.h>
 #include        <sys/file.h>
 
-#include 	<stdlib.h>
 #include	<linux/autoconf.h>
-#include	<linux/types.h>
-#include	<linux/socket.h>
+#include	<linux/wireless.h>
 
 #include	<net/route.h>
 #include	<arpa/inet.h>
-#include	"oid.h"
 
 #include        "ctypes.h"
 #include        "local.h"
@@ -33,7 +29,6 @@
 #include        "mix.h"
 #include        "systm.h"
 #include        "src/oid.h"
-#include	"src/wireless.h"
 
 
 #define WIRELESS_DEVICE	"ra0"
