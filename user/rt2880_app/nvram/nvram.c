@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <net/if.h>
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
-#include "oid.h"
 #include "libnvram.h"
 
 #define DEFAULT_FLASH_ZONE_NAME "2860"
