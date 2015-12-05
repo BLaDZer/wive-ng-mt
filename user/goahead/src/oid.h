@@ -1,3 +1,6 @@
+#ifndef _OID_H
+#define _OID_H
+
 #include <linux/autoconf.h>
 #include <linux/if_ether.h>
 #include <linux/wireless.h>
@@ -701,3 +704,5 @@ typedef struct _PAIR_CHANNEL_FREQ_ENTRY
 	unsigned long   lChannel;
 	unsigned long   lFreq;
 } PAIR_CHANNEL_FREQ_ENTRY, *PPAIR_CHANNEL_FREQ_ENTRY;
+
+#endif
