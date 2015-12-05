@@ -1,4 +1,5 @@
 LDFLAGS	+= -lnvram
+CFLAGS += -I$(ROOTDIR)/user/goahead/src
 
 all: nvram
 

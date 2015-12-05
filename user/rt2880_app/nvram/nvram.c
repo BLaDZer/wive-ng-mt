@@ -4,6 +4,9 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
+// for max bssid num
+#include "oid.h"
+
 #include "libnvram.h"
 
 #define DEFAULT_FLASH_ZONE_NAME "2860"
