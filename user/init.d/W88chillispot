@@ -96,7 +96,7 @@ stop() {
 get_params() {
     modprobe -q tun
     eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
-    PARLINE="--dhcpif $lan_if --radiustimeout=20 --radiusretry=10"
+    PARLINE="--dhcpif $lan_if --radiustimeout=20 --radiusretry=10 --txqlen=1000"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
 	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
