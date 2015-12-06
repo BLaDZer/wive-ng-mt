@@ -1521,6 +1521,7 @@
 46) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
 47) kernel: net: ipv6: fix tunnel error handling.<br>
 48) kernel: net: packet: allow to transmit +4 byte in TX_RING slot for VLAN case.<br>
+49) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
 <br>
 <br>
 <b>TODO:</b><br>
