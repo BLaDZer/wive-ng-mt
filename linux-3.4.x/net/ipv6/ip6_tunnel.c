@@ -85,11 +85,12 @@ struct ip6_tnl_net {
 
 /* often modified stats are per cpu, other are shared (netdev->stats) */
 struct pcpu_tstats {
-	unsigned long	rx_packets;
-	unsigned long	rx_bytes;
-	unsigned long	tx_packets;
-	unsigned long	tx_bytes;
-} __attribute__((aligned(4*sizeof(unsigned long))));
+	u64	rx_packets;
+	u64	rx_bytes;
+	u64	tx_packets;
+	u64	tx_bytes;
+	struct u64_stats_sync	syncp;
+};
 
 static struct net_device_stats *ip6_get_stats(struct net_device *dev)
 {
