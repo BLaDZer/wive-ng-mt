@@ -1522,6 +1522,7 @@
 47) kernel: net: ipv6: fix tunnel error handling.<br>
 48) kernel: net: packet: allow to transmit +4 byte in TX_RING slot for VLAN case.<br>
 49) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
+50) kernel: net: packet: only allow extra vlan len on ethernet devices.<br>
 <br>
 <br>
 <b>TODO:</b><br>
