@@ -1523,6 +1523,7 @@
 48) kernel: net: packet: allow to transmit +4 byte in TX_RING slot for VLAN case.<br>
 49) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
 50) kernel: net: packet: only allow extra vlan len on ethernet devices.<br>
+51) kernel: net: packet: fix tpacket_snd max frame len.<br>
 <br>
 <br>
 <b>TODO:</b><br>
