@@ -776,6 +776,7 @@ static void prb_close_block(struct tpacket_kbdq_core *pkc1,
 
 	struct tpacket3_hdr *last_pkt;
 	struct tpacket_hdr_v1 *h1 = &pbd1->hdr.bh1;
+	struct sock *sk = &po->sk;
 
 	if (po->stats.tp_drops)
 		status |= TP_STATUS_LOSING;
@@ -799,6 +800,8 @@ static void prb_close_block(struct tpacket_kbdq_core *pkc1,
 
 	/* Flush the block */
 	prb_flush_block(pkc1, pbd1, status);
+
+	sk->sk_data_ready(sk);
 
 	pkc1->kactive_blk_num = GET_NEXT_PRB_BLK_NUM(pkc1);
 }
@@ -1925,10 +1928,12 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		smp_wmb();
 	}
 #endif
-	if (po->tp_version <= TPACKET_V2)
+	if (po->tp_version <= TPACKET_V2) {
 		__packet_set_status(po, h.raw, status);
-	else
+		sk->sk_data_ready(sk);
+	} else {
 		prb_clear_blk_fill_status(&po->rx_ring);
+	}
 
 	sk->sk_data_ready(sk, 0);
 

@@ -1524,6 +1524,7 @@
 49) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
 50) kernel: net: packet: only allow extra vlan len on ethernet devices.<br>
 51) kernel: net: packet: fix tpacket_snd max frame len.<br>
+52) kernel: net: packet: fixed TPACKET V3 to signal poll when block is closed rather than every packet.<br>
 <br>
 <br>
 <b>TODO:</b><br>
