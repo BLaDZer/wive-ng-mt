@@ -809,7 +809,7 @@ static void prb_close_block(struct tpacket_kbdq_core *pkc1,
 	/* Flush the block */
 	prb_flush_block(pkc1, pbd1, status);
 
-	sk->sk_data_ready(sk);
+	sk->sk_data_ready(sk, 0);
 
 	pkc1->kactive_blk_num = GET_NEXT_PRB_BLK_NUM(pkc1);
 }
@@ -1938,12 +1938,10 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 #endif
 	if (po->tp_version <= TPACKET_V2) {
 		__packet_set_status(po, h.raw, status);
-		sk->sk_data_ready(sk);
+		sk->sk_data_ready(sk, 0);
 	} else {
 		prb_clear_blk_fill_status(&po->rx_ring);
 	}
-
-	sk->sk_data_ready(sk, 0);
 
 drop_n_restore:
 	if (skb_head != skb->data && skb_shared(skb)) {
