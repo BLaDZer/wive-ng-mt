@@ -1488,7 +1488,7 @@
 13) goahead: remove private copy of wireless.h, now allways use system header.<br>
 14) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
 15) init.d: do not disable logging in cooava chilli.<br>
-16) init.d: chillispot - increase txqueuelen to 1000 (save ~2% cpu load).<br>
+16) init.d: chillispot - increase txqueuelen to 1000 and rcvbuf/sndbuf to 128Kb (save ~5% cpu load).<br>
 17) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
 18) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
 19) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
