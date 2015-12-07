@@ -1537,13 +1537,14 @@
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add LanWifiIsolate to wireless page page (default 0 - isolation disabled, allow only for router and apcli nonfullbridged modes).<br>
-2) need add ForwardSesLimit to Firewall page (default 0 - disabled).<br>
-3) need add subchannel select for 5GHz module.<br>
-4) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
-5) in very far future: need add in firewall support xt_time matches for parental control.<br>
-6) in very far future: need add perip shaper script and webui .<br>
-7) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-8) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+3) need add ForwardSesLimit to Firewall page (default 0 - disabled).<br>
+4) need add subchannel select for 5GHz module.<br>
+5) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
+6) in future: make LanWifiIsolate function work per bssid.<br>
+7) in very far future: need add in firewall support xt_time matches for parental control.<br>
+8) in very far future: need add perip shaper script and webui .<br>
+9) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
+10) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
 <br>
 <br>
 <br>
