@@ -191,6 +191,7 @@ nat_mode=0
 NoForwarding=0;0;0;0
 NoForwardingMBCast=0;0;0;0
 NoForwardingBTNBSSID=0
+LanWifiIsolate=0
 NTPEnabled=0
 NTPServerIP=ru.pool.ntp.org
 OperationMode=1
