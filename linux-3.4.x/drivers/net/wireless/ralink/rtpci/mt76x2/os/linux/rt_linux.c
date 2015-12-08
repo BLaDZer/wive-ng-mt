@@ -37,7 +37,10 @@
 #include "dot11i_wpa.h"
 
 #include <linux/rtnetlink.h>
+
+#ifndef BB_SOC
 #include <linux/firmware.h>
+#endif
 
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
 #include "../../../../../../../net/nat/hw_nat/ra_nat.h"

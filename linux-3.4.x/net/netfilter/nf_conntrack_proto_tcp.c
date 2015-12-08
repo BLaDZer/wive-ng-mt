@@ -533,9 +533,7 @@ static bool tcp_in_window(const struct nf_conn *ct,
 	if(ra_sw_nat_hook_rx != NULL)
 		return true;
 #else
-#if defined (CONFIG_RA_NAT_NONE)
 	struct net *net = nf_ct_net(ct);
-#endif
 #endif
 
 	if (nf_ct_tcp_no_window_check)
@@ -668,7 +666,9 @@ static bool tcp_in_window(const struct nf_conn *ct,
 		 before(sack, receiver->td_end + 1),
 		 after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1));
 
-#if defined (CONFIG_RA_NAT_NONE)
+#if IS_ENABLED(CONFIG_RA_HW_NAT)
+	res = true;
+#else
 	if (before(seq, sender->td_maxend + 1) &&
 	    after(end, sender->td_end - receiver->td_maxwin - 1) &&
 	    before(sack, receiver->td_end + 1) &&
@@ -747,8 +747,6 @@ static bool tcp_in_window(const struct nf_conn *ct,
 			: "SEQ is under the lower bound (already ACKed data retransmitted)"
 			: "SEQ is over the upper bound (over the window of the receiver)");
 	}
-#else
-	res = true;
 #endif
 
 	pr_debug("tcp_in_window: res=%u sender end=%u maxend=%u maxwin=%u "
