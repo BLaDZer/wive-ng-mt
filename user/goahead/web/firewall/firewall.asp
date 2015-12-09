@@ -535,31 +535,6 @@ function initTranslation()
 <table class="body">
   <tr>
     <td><!-- Port forwarding -->
-      <h1 id="FirewallTitle">Firewall Settings</h1>
-      <div style="display:none;" id="bridge_warning">
-      	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
-      </div>
-      <hr>
-      <form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
-        <table class="form">
-          <tr>
-            <td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
-          </tr>
-          <tr>
-            <td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
-            <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
-            <font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
-          </tr>
-        </table>
-        <table class="buttons">
-          <tr>
-            <td>
-              <input type="submit" class="normal" id="apply" value="Apply">
-              <input type="hidden" name="submit-url" value="/firewall/firewall.asp" >
-            </td>
-          </tr>
-        </table>
-      </form>
       <h1 id="forwardTitle">Port Forwarding Settings</h1>
       <p id="forwardIntroduction">Here you can setup port forwarding to provide services to the Internet.</p>
       <hr>
@@ -615,6 +590,32 @@ function initTranslation()
               <input type="hidden" name="defaultFirewallPolicy" value="">
               <input type="submit" class="normal" id="apply" value="Apply">
               <input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
+          </tr>
+        </table>
+      </form>
+      <!-- Others firewall settings -->
+      <h1 id="FirewallTitle">Firewall Settings</h1>
+      <div style="display:none;" id="bridge_warning">
+      	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
+      </div>
+      <hr>
+      <form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
+        <table class="form">
+          <tr>
+            <td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
+          </tr>
+          <tr>
+            <td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
+            <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
+            <font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
+          </tr>
+        </table>
+        <table class="buttons">
+          <tr>
+            <td>
+              <input type="submit" class="normal" id="apply" value="Apply">
+              <input type="hidden" name="submit-url" value="/firewall/firewall.asp" >
+            </td>
           </tr>
         </table>
       </form>

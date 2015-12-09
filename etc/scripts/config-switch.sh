@@ -92,63 +92,11 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
     ##########################################################################
     set_mac_wan_lan
     ##########################################################################
-    # full reinit switch ports and disable EEEE (workaround for old boots)
-    ##########################################################################
-    if [ ! -f /tmp/bootgood ]; then
-	config-vlan.sh $switchmode FFFFF > /dev/null 2>&1
-    fi
-    ##########################################################################
     # configure switch parts depended by operation mode
     ##########################################################################
     config-vlan.sh $switchmode $switchpart
     ##########################################################################
 fi
-}
-
-##########################################################################
-# Set speed and duplex modes per port
-##########################################################################
-set_perport_physmode() {
-    if [ -e /bin/ethtool ] && [ "$procdir" != "" ]; then
-	##################################
-	# start configure by ethtool
-	##################################
-	phys_portN=4
-	for num in `seq 1 5`; do
-	    # select switch port for tune
-	    echo "$phys_portN" > $procdir
-	    # get mode for current port
-	    port_swmode=`nvram_get 2860 port"$num"_swmode`
-	    if [ "$port_swmode" != "auto" ] && [ "$port_swmode" != "" ]; then
-		$LOG ">>> Port $phys_portN set mode $port_swmode <<<"
-		# first disable autoneg
-		ethtool -s eth2 autoneg off > /dev/null 2>&1
-		if [ "$port_swmode" = "1000f" ]; then
-		    #set 100Mbit full duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 1000 duplex full	> /dev/null 2>&1
-		elif [ "$port_swmode" = "1000h" ]; then
-		    #set 100Mbit half duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 1000 duplex half	> /dev/null 2>&1
-		elif [ "$port_swmode" = "100f" ]; then
-		    #set 100Mbit full duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 100 duplex full	> /dev/null 2>&1
-		elif [ "$port_swmode" = "100h" ]; then
-		    #set 100Mbit half duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 100 duplex half	> /dev/null 2>&1
-		elif [ "$port_swmode" = "10f" ]; then
-		    #set 10Mbit full duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 10 duplex full	> /dev/null 2>&1
-		elif [ "$port_swmode" = "10h" ]; then
-		    #set 10Mbit half duplex and start negotinate
-		    ethtool -s eth2 autoneg on speed 10 duplex half	> /dev/null 2>&1
-		fi
-	    elif [ "$port_swmode" = "auto" ]; then
-		# enable autoneg
-		ethtool -s eth2 autoneg on > /dev/null 2>&1
-	    fi
-	    let "phys_portN=$phys_portN-1"
-	done
-    fi
 }
 
 ##########################################################################
@@ -172,6 +120,5 @@ set_dhcptouch_portnum() {
 }
 ##########################################################################
 set_portmap
-set_perport_physmode
 set_dhcptouch_portnum
 ##########################################################################

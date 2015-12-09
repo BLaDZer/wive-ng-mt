@@ -282,17 +282,13 @@ set_vlan_map()
 
 get_switch_type() {
     if [ -f /proc/mt7620/gmac ]; then
-	procdir="/proc/mt7620/gmac"
 	switchmode=3
     elif [ -f /proc/mt7628/gmac ]; then
-	procdir="/proc/mt7628/gmac"
 	switchmode=3
     elif [ -f /proc/mt7621/gmac ]; then
-	procdir="/proc/mt7621/gmac"
 	switchmode=4
     else
 	$LOG "No switch in system!!!"
-	procdir=
 	switchmode=
     fi
 }
