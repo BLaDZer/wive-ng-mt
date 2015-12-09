@@ -261,6 +261,7 @@ function initTranslation()
 	_TR("basicIsolatedSSID1", "basic isolated");
 	_TR("basicClientsSSID", "basic clients");
 	_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
+	_TR("basicLanWifiIsolate", "basic lan wifi isolate");
 	_TR("basicMBSSIDMode", "basic mbssid mode");
 	_TR("basicWDSMode", "basic wds mode");
 	_TR("basicAPCLIMode", "basic apcli mode");
@@ -807,6 +808,11 @@ function initValue()
 	form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
 	form.FtSupport.options.selectedIndex = 1*ftArray[0];
 
+	var LanWifiIsolate = '<% getCfgZero(1, "LanWifiIsolate"); %>';
+	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+	form.LanWifiIsolate.options.selectedIndex = 1*LanWifiIsolate;
+	displayElement( 'div_LanWifiIsolate', (opmode != '0') || (opmode != '2') || (opmode != '3'));
+
 	wirelessOnChange(form);
 }
 
@@ -1183,6 +1189,13 @@ function CheckValue(form)
           <tr id="div_mbssidapisolated">
             <td class="head" colspan="1" id="basicMBSSIDApIsolated">SSID to SSID Isolation</td>
             <td colspan="5"><select name="mbssidapisolated" class="half">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="div_LanWifiIsolate">
+            <td class="head" colspan="1" id="basicLanWifiIsolate">Isolate the lan ports from wifi</td>
+            <td colspan="5"><select name="LanWifiIsolate" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>

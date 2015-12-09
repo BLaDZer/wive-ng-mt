@@ -25,6 +25,7 @@
   <message msgid="forward title" msgstr="Настройки проброса портов (Port forwarding)" />
   <message msgid="forward introduction" msgstr="Вы можете настроить правила проброса портов для открытия сервисов в Интернет." />
   <message msgid="forward virtual server" msgstr="Настройки проброса портов" />
+  <message msgid="forward session limit" msgstr="Ограничение количества сессий" />
   <message msgid="forward virtual server setting" msgstr="Настройки проброса портов" />
   <message msgid="forward interface" msgstr="Интерфейс" />
   <message msgid="forward protocol" msgstr="Протокол" />

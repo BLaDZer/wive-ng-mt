@@ -45,6 +45,7 @@
   <message msgid="basic clients" msgstr="Clients" />
   <message msgid="basic broadcast ssid" msgstr="Broadcast Network Name" />
   <message msgid="basic mbssidapisolated" msgstr="SSID to SSID Isolation" />
+  <message msgid="basic lan wifi isolate" msgstr="Isolate the LAN ports from WIFI" />
   <message msgid="basic bssid" msgstr="BSSID (2.4GHz)" />
   <message msgid="basic ac bssid" msgstr="BSSID (5GHz)" />
   <message msgid="basic frequency" msgstr="Channel (2.4GHz)" />

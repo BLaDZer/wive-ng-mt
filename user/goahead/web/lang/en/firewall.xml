@@ -25,6 +25,7 @@
   <message msgid="forward title" msgstr="Port Forwarding  Settings" />
   <message msgid="forward introduction" msgstr="You can set up port forwarding to provide services to the Internet." />
   <message msgid="forward virtual server" msgstr="Port Forwarding Settings" />
+  <message msgid="forward session limit" msgstr="Forwarding Session limit" />
   <message msgid="forward virtual server setting" msgstr="Port Forwarding Settings" />
   <message msgid="forward interface" msgstr="Interface" />
   <message msgid="forward protocol" msgstr="Protocol" />

@@ -1396,17 +1396,17 @@ static int showDMZIPAddressASP(int eid, webs_t wp, int argc, char_t **argv)
 
 static void portForward(webs_t wp, char_t *path, char_t *query)
 {
-	char *pfe               = websGetVar(wp, T("portForwardEnabled"), T(""));
-	char *PortForwardRules  = websGetVar(wp, T("portForwardRules"), T(""));
-	char_t *submitUrl;
+	char_t *fsl = websGetVar(wp, T("ForwardSesLimit"), T("0"));
+	char_t *pfe = websGetVar(wp, T("portForwardEnabled"), T("0"));
+	char_t *PortForwardRules = websGetVar(wp, T("portForwardRules"), T(""));
 
-	if ((pfe==NULL) || (strcmp(pfe, "1")!=0))
-		pfe = "0";
+	pfe = (CHK_IF_DIGIT(pfe, 1)) ? "1" : "0";
 
 	// Commit
 	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "ForwardSesLimit", fsl);
 	nvram_bufset(RT2860_NVRAM, "PortForwardEnable", pfe);
-	if (strcmp(pfe, "1") == 0)
+	if (CHK_IF_DIGIT(pfe, 1))
 		nvram_bufset(RT2860_NVRAM, "PortForwardRules", PortForwardRules);
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
@@ -1417,7 +1417,7 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 	websFooter(wp);
 	websDone(wp, 200);
 #else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
 
@@ -1427,19 +1427,16 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 
 static void portFiltering(webs_t wp, char_t *path, char_t *query)
 {
-	char *firewall_enable   = websGetVar(wp, T("portFilterEnabled"), T(""));
-	char *default_policy    = websGetVar(wp, T("defaultFirewallPolicy"), T("0"));
-	char *firewall_rules    = websGetVar(wp, T("portFilteringRules"), T(""));
-	char_t *submitUrl;
+	char_t *firewall_enable = websGetVar(wp, T("portFilterEnabled"), T("0"));
+	char_t *default_policy = websGetVar(wp, T("defaultFirewallPolicy"), T("0"));
+	char_t *firewall_rules = websGetVar(wp, T("portFilteringRules"), T(""));
 
-	if ((firewall_enable == NULL) || (strcmp(firewall_enable, "1") != 0))
-		firewall_enable = "0";
-	if ((default_policy == NULL) || (strcmp(default_policy, "1") != 0))
-		default_policy = "0";
+	firewall_enable = (CHK_IF_DIGIT(firewall_enable, 1)) ? "1" : "0";
+	default_policy = (CHK_IF_DIGIT(default_policy, 1)) ? "1" : "0";
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "IPPortFilterEnable", firewall_enable);
-	if (strcmp(firewall_enable, "1") == 0)
+	if (CHK_IF_DIGIT(firewall_enable, 1))
 	{
 		// Store default firewall policy & rules
 		nvram_bufset(RT2860_NVRAM, "DefaultFirewallPolicy", default_policy);
@@ -1456,7 +1453,7 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 	websFooter(wp);
 	websDone(wp, 200);
 #else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
 

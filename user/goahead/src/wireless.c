@@ -657,7 +657,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
-	char_t  *fastroaming, *token;
+	char_t  *fastroaming, *token, *LanWifiIsolate;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
 #endif
@@ -683,7 +683,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
 	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
-	char	*submitUrl;
+	char_t	*submitUrl;
 
 	// Get current mode & new mode
 	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
@@ -700,6 +700,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
+	LanWifiIsolate = websGetVar(wp, T("LanWifiIsolate"), T("0"));
 	mbcastisolated_ssid = websGetVar(wp, T("mbcastisolated_ssid"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
@@ -850,6 +851,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// SSID settings
 	nvram_bufset(RT2860_NVRAM, "BssidNum", bssid_num);
 	nvram_bufset(RT2860_NVRAM, "HideSSID", hidden_ssid);
+	nvram_bufset(RT2860_NVRAM, "LanWifiIsolate", LanWifiIsolate);
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);

@@ -434,6 +434,7 @@ function addFilteringItem(form)
 
 function submitForwardForm(form)
 {
+	form.ForwardSesLimit.value = defaultNumber(form.ForwardSesLimit.value, "0");
 	form.portForwardRules.value = genTableData(portForwardingRules, form);
 	return true;
 }
@@ -498,6 +499,7 @@ function initTranslation()
   _TR("forwardTitle", "forward title");
   _TR("forwardIntroduction", "forward introduction");
   _TR("forwardVirtualSrv", "forward virtual server");
+  _TR("ForwardSesLimit", "forward session limit");
   _TR("forwardVirtualSrvSet", "forward virtual server setting");
   _TR("forwardVirtualSrvDisable", "button disable");
   _TR("forwardVirtualSrvEnable", "button enable");
@@ -527,6 +529,10 @@ function initTranslation()
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
+          </tr>
+          <tr>
+            <td class="head" id="ForwardSesLimit">Forwarding Session limit</td>
+            <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
