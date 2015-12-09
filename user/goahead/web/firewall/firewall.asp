@@ -531,7 +531,7 @@ function initTranslation()
             <td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
           </tr>
           <tr>
-            <td class="head" id="ForwardSesLimit">Forwarding Session limit</td>
+            <td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
             <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>"></td>
           </tr>
           <tr>
