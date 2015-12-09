@@ -951,17 +951,6 @@ static int getRuleNums(char *rules)
 	return getNums(rules, ';');
 }
 
-static int checkIfUnderBridgeModeASP(int eid, webs_t wp, int argc, char_t **argv)
-{
-	char *mode = nvram_get(RT2860_NVRAM, "OperationMode");
-
-	if (!mode)
-		return -1;	// fatal error, make ASP engine complained.
-	if (atoi(mode) == 0)	// bridge mode
-		websWrite(wp, T(HTML_NO_FIREWALL_UNDER_BRIDGE_MODE));
-	return 0;
-}
-
 /*
  * ASP function
  */
@@ -1396,7 +1385,6 @@ static int showDMZIPAddressASP(int eid, webs_t wp, int argc, char_t **argv)
 
 static void portForward(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *fsl = websGetVar(wp, T("ForwardSesLimit"), T("0"));
 	char_t *pfe = websGetVar(wp, T("portForwardEnabled"), T("0"));
 	char_t *PortForwardRules = websGetVar(wp, T("portForwardRules"), T(""));
 
@@ -1404,7 +1392,6 @@ static void portForward(webs_t wp, char_t *path, char_t *query)
 
 	// Commit
 	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "ForwardSesLimit", fsl);
 	nvram_bufset(RT2860_NVRAM, "PortForwardEnable", pfe);
 	if (CHK_IF_DIGIT(pfe, 1))
 		nvram_bufset(RT2860_NVRAM, "PortForwardRules", PortForwardRules);
@@ -1585,6 +1572,25 @@ static void setFirewallAlg(webs_t wp, char_t *path, char_t *query)
 
 }
 
+/* goform/setFirewall */
+const parameter_fetch_t firewall_params[] =
+{
+	{ "ForwardSesLimit",		T("ForwardSesLimit"),			0,   T("0") },
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+
+static void setFirewall(webs_t wp, char_t *path, char_t *query)
+{
+	// Store firewall parameters
+	setupParameters(wp, firewall_params, 1);
+
+	//call iptables
+	firewall_rebuild();
+
+	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	websRedirect(wp, submitUrl);
+}
+
 void formDefineFirewall(void)
 {
 	websFormDefine(T("portFiltering"), portFiltering);
@@ -1604,5 +1610,5 @@ void formDefineFirewall(void)
 	websFormDefine(T("websSysFirewall"), websSysFirewall);
 	websFormDefine(T("webContentFilterSetup"), webContentFilterSetup);
 
-	websAspDefine(T("checkIfUnderBridgeModeASP"), checkIfUnderBridgeModeASP);
+	websFormDefine(T("setFirewall"), setFirewall);
 }

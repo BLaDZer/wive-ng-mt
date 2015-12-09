@@ -434,7 +434,6 @@ function addFilteringItem(form)
 
 function submitForwardForm(form)
 {
-	form.ForwardSesLimit.value = defaultNumber(form.ForwardSesLimit.value, "0");
 	form.portForwardRules.value = genTableData(portForwardingRules, form);
 	return true;
 }
@@ -446,10 +445,19 @@ function submitFilterForm(form)
 	return true;
 }
 
+function submitFirewallForm(form)
+{
+	form.ForwardSesLimit.value = defaultNumber(form.ForwardSesLimit.value, "0");
+	return true;
+}
+
 function initState()
 {
+	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
 	var pfwEnabled = '<% getCfgZero(1, "PortForwardEnable"); %>';
 	var filteringEnabled = '<% getCfgZero(1, "IPPortFilterEnable"); %>';
+
+	displayElement('bridge_warning', opmode == '0'); // bridge mode
 
 	document.portForward.portForwardEnabled.value = (pfwEnabled == '1') ? '1' : '0';
 	document.portFiltering.portFilterEnabled.value = (filteringEnabled == '1') ? '1' : '0';
@@ -496,6 +504,10 @@ function genTableData(rules, form)
 
 function initTranslation()
 {
+  _TR("FirewallTitle", "firewall title");
+  _TR("bridge_warning", "firewall bridge warning");
+  _TR("FirewallSet", "firewall title");
+  _TR("defSesLimit", "firewall defailt session limit");
   _TR("forwardTitle", "forward title");
   _TR("forwardIntroduction", "forward introduction");
   _TR("forwardVirtualSrv", "forward virtual server");
@@ -510,8 +522,10 @@ function initTranslation()
   _TR("portDisable", "button disable");
   _TR("portEnable", "button enable");
 
-  _TRV("forwardApply", "button apply");
-  _TRV("portApply", "button apply");
+  var elements = document.getElementsByTagName('input');
+  for (i = 0; i < elements.length; i++)
+  	if (elements[i].id == "apply")
+  		elements[i].value = _("button apply");
 }
 
 </script>
@@ -521,18 +535,38 @@ function initTranslation()
 <table class="body">
   <tr>
     <td><!-- Port forwarding -->
+      <h1 id="FirewallTitle">Firewall Settings</h1>
+      <div style="display:none;" id="bridge_warning">
+      	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
+      </div>
+      <hr>
+      <form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
+        <table class="form">
+          <tr>
+            <td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
+          </tr>
+          <tr>
+            <td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
+            <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
+            <font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
+          </tr>
+        </table>
+        <table class="buttons">
+          <tr>
+            <td>
+              <input type="submit" class="normal" id="apply" value="Apply">
+              <input type="hidden" name="submit-url" value="/firewall/firewall.asp" >
+            </td>
+          </tr>
+        </table>
+      </form>
       <h1 id="forwardTitle">Port Forwarding Settings</h1>
-      <% checkIfUnderBridgeModeASP(); %>
       <p id="forwardIntroduction">Here you can setup port forwarding to provide services to the Internet.</p>
       <hr>
       <form method="POST" name="portForward" action="/goform/portForward" onSubmit="return submitForwardForm(this);">
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
-          </tr>
-          <tr>
-            <td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
-            <td><input type="text" class="short" name="ForwardSesLimit" value="<% getCfgZero(1, "ForwardSesLimit"); %>"></td>
           </tr>
           <tr>
             <td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
@@ -549,14 +583,13 @@ function initTranslation()
         <table class="buttons">
           <tr>
             <td><input type="hidden" name="portForwardRules" value="">
-              <input type="submit" class="half" id="forwardApply" value="Apply">
+              <input type="submit" class="half" id="apply" value="Apply">
               <input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
           </tr>
         </table>
       </form>
       <!-- MAC / IP / Port Filtering -->
       <h1 id="portTitle">MAC/IP/Port Filtering Settings</h1>
-      <% checkIfUnderBridgeModeASP(); %>
       <p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
       <hr>
       <form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
@@ -580,11 +613,12 @@ function initTranslation()
           <tr>
             <td><input type="hidden" name="portFilteringRules" value="">
               <input type="hidden" name="defaultFirewallPolicy" value="">
-              <input type="submit" class="normal" id="portApply" value="Apply">
+              <input type="submit" class="normal" id="apply" value="Apply">
               <input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
           </tr>
         </table>
-      </form></td>
+      </form>
+    </td>
   </tr>
 </table>
 </body>
