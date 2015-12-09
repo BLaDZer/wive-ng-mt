@@ -281,12 +281,18 @@ set_vlan_map()
 }
 
 get_switch_type() {
+    # mode 3 - vlan particion
+    # mode 4 - dual rgmi mode
     if [ -f /proc/mt7620/gmac ]; then
 	switchmode=3
     elif [ -f /proc/mt7628/gmac ]; then
 	switchmode=3
     elif [ -f /proc/mt7621/gmac ]; then
-	switchmode=4
+	if [ "$CONFIG_RAETH_GMAC2" != "" ]; then
+	    switchmode=4
+	else
+	    switchmode=3
+	fi
     else
 	$LOG "No switch in system!!!"
 	switchmode=

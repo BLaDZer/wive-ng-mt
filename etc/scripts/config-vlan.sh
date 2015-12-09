@@ -25,7 +25,7 @@ usage() {
 	echo "  $0 3/4 FFFFF - ESW full reinit switch"
 	echo "  $0 3/4 xxxxx - ESW config free parts (x = W or x = L, W - WAN group, L - LAN group)"
 	echo "_________"
-	echo " 	devnum: 3 for MT7620/MT7628, 4 for MT7621"
+	echo " 	mode 3 for vlan parted, 4 for dual rgmii mode"
 	echo "_________"
 	exit 0
 }
@@ -216,7 +216,7 @@ igmpsnooping() {
 
 restore7620Esw()
 {
-        $LOG "Restore internal MT7620 switch mode to dumb mode"
+        $LOG "Restore internal switch mode to dumb mode"
 	for port in `seq 0 7`; do
 	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
@@ -261,7 +261,7 @@ config7620Esw()
 	done
 
 	if [ "$1" != "VLANS" ]; then
-	    $LOG "Config internal MT7620 switch mode $1"
+	    $LOG "Config internal vlan parts switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
 	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
 	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
