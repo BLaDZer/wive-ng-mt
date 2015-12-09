@@ -1,5 +1,10 @@
 #!/bin/sh
 
+export LANG=C
+export LC_COLLATE=C
+export LC_MESSAGES=C
+export LC_ALL=C
+
 VAR=$4
 DDR3=$(echo ${VAR##*DDR3})
 

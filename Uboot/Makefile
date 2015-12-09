@@ -37,7 +37,7 @@ CPPFLAGS	:=
 CXXFLAGS	:=
 
 
-HOSTARCH := $(shell export LC_ALL=C; uname -m | \
+HOSTARCH := $(shell export LC_ALL=C LANG=C; uname -m | \
 	sed -e s/i.86/i386/ \
 	    -e s/sun4u/sparc64/ \
 	    -e s/arm.*/arm/ \
@@ -45,7 +45,7 @@ HOSTARCH := $(shell export LC_ALL=C; uname -m | \
 	    -e s/powerpc/ppc/ \
 	    -e s/macppc/ppc/)
 
-HOSTOS := $(shell export LC_ALL=C; uname -s | tr A-Z a-z | \
+HOSTOS := $(shell export LC_ALL=C LANG=C; uname -s | tr A-Z a-z | \
 	    sed -e 's/\(cygwin\).*/cygwin/')
 
 export	HOSTARCH
@@ -55,7 +55,7 @@ VENDOR=
 
 #########################################################################
 
-TOPDIR := $(shell export LC_ALL=C; if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
+TOPDIR := $(shell export LC_ALL=C LANG=C; if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
 export	TOPDIR
 
 ifeq ($(MT7621_MP), y)
@@ -225,7 +225,7 @@ LIBS += common/libcommon.a
 .PHONY : $(LIBS)
 
 # Add GCC lib
-PLATFORM_LIBS += -L $(shell export LC_ALL=C; dirname `$(CC) $(CFLAGS)  -print-libgcc-file-name`)
+PLATFORM_LIBS += -L $(shell export LC_ALL=C LANG=C; dirname `$(CC) $(CFLAGS)  -print-libgcc-file-name`)
 
 # The "tools" are needed early, so put this first
 # Don't include stuff already done in $(LIBS)
@@ -276,31 +276,31 @@ endif
 		echo "0 $(MT7621_DDR_SPEED)"|xxd -r|dd bs=1 count=1 seek=39 of=uboot_a.bin conv=notrunc
 		echo "0 00c20100"|xxd -r|dd bs=1 seek=304 of=uboot_a.bin conv=notrunc
 		chmod 777 uboot_a.bin
-		dd if=uboot.bin of=uboot_a.bin bs=1 count=$(shell export LC_ALL=C; stat -c %s uboot.bin) \
-		seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s mt7621_stage_L2.bin)+4095)/4096)*4096-64" |bc) conv=notrunc
+		dd if=uboot.bin of=uboot_a.bin bs=1 count=$(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin) \
+		seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s mt7621_stage_L2.bin)+4095)/4096)*4096-64" |bc) conv=notrunc
 		cp uboot_a.bin uboot.bin
 else
 uboot_a.bin:	uboot.bin mt7621_stage_sram.bin
 		cp uboot.bin uboot_a.bin
 		chmod 777 uboot_a.bin
-		dd if=mt7621_stage_sram.bin of=uboot_a.bin bs=1 count=$(shell export LC_ALL=C; stat -c %s mt7621_stage_sram.bin) \
-		seek=$(shell export LC_ALL=C; stat -c %s uboot.bin)
+		dd if=mt7621_stage_sram.bin of=uboot_a.bin bs=1 count=$(shell export LC_ALL=C LANG=C; stat -c %s mt7621_stage_sram.bin) \
+		seek=$(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)
 ifeq ($(MT7621_CPU_800MHZ), y)
-		echo "0 725a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
+		echo "0 725a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
 endif
 ifeq ($(MT7621_CPU_900MHZ), y)
-		echo "0 c25a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
+		echo "0 c25a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
 endif
 ifeq ($(MT7621_CPU_875MHZ), y)
-		echo "0 224a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
+		echo "0 224a00c0"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+32))" |bc)  conv=notrunc
 
 endif
-		echo "0 $(MT7621_DDR_SPEED)"|xxd -r|dd bs=1 count=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+39))" |bc) conv=notrunc	
+		echo "0 $(MT7621_DDR_SPEED)"|xxd -r|dd bs=1 count=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+39))" |bc) conv=notrunc	
 ifeq ($(DDR_ACT_SETTING), y)	
 		./mt7621_ddr.sh uboot_a.bin uboot_a.bin mt7621_ddr_param.txt $(DDR_CHIP) $(CFG_ENV_IS)
-		echo "0 10"|xxd -r|dd bs=1 count=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+38))" |bc) conv=notrunc
+		echo "0 10"|xxd -r|dd bs=1 count=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+38))" |bc) conv=notrunc
 endif
-		echo "0 00c20100"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C; echo "(($(shell export LC_ALL=C; stat -c %s uboot.bin)+304))" |bc) conv=notrunc
+		echo "0 00c20100"|xxd -r|dd bs=1 of=uboot_a.bin seek=$(shell export LC_ALL=C LANG=C; echo "(($(shell export LC_ALL=C LANG=C; stat -c %s uboot.bin)+304))" |bc) conv=notrunc
 		mv uboot_a.bin uboot.bin
 endif
 endif
@@ -312,8 +312,8 @@ ifneq ($(MT7621_MP), y)
 uboot.img:	uboot.bin
 ifeq ($(CFG_ENV_IS), IN_SPI)
 		./tools/mkimage -A $(ARCH) -T standalone -C none \
-		-a $(TEXT_BASE) -e $(shell export LC_ALL=C; export LC_ALL=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
-		-n "$(shell export LC_ALL=C; export LC_ALL=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
+		-a $(TEXT_BASE) -e $(shell export LC_ALL=C LANG=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
+		-n "$(shell export LC_ALL=C LANG=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
 		-r $(DRAM_TYPE) -s $(DRAM_TOTAL_WIDTH) -t $(DRAM_SIZE) -u $(DRAM_WIDTH) \
 		-y $(DRAM_SYSCFG0) -z $(DRAM_SYSCFG1) -w $(CPU_PLL_CFG) -d $< $@
 endif
@@ -326,17 +326,17 @@ endif
 ifeq ($(CFG_ENV_IS), IN_NAND)
 ifneq ($(MT7621_MP), y)
 		./tools/mkimage -A $(ARCH) -T standalone -C none \
-		-a $(TEXT_BASE) -e $(shell export LC_ALL=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
-		-n "$(shell export LC_ALL=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
+		-a $(TEXT_BASE) -e $(shell export LC_ALL=C LANG=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
+		-n "$(shell export LC_ALL=C LANG=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
 		-r $(DRAM_TYPE) -s $(DRAM_TOTAL_WIDTH) -t $(DRAM_SIZE) -u $(DRAM_WIDTH) \
 		-y $(DRAM_SYSCFG0) -z $(DRAM_SYSCFG1) -d $< $@
 else
 		./tools/mkimage -A $(ARCH) -T standalone -C none \
-		-a $(TEXT_BASE) -e $(shell export LC_ALL=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
-		-n "$(shell export LC_ALL=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
+		-a $(TEXT_BASE) -e $(shell export LC_ALL=C LANG=C; readelf -h u-boot | grep "Entry" | awk '{print $$4}') \
+		-n "$(shell export LC_ALL=C LANG=C; echo $(CFG_ENV_IS) | sed -e 's/IN_//') Flash Image" \
 		-r $(DRAM_TYPE) -s $(DRAM_TOTAL_WIDTH) -t $(DRAM_SIZE) -u $(DRAM_WIDTH) \
-		-y $(shell export LC_ALL=C; echo "40") \
-		-z $(shell export LC_ALL=C; echo "obase=16;(($(shell export LC_ALL=C; stat -c %s mt7621_stage_L2.bin)+64+4095)/4096)*4096" |bc) -d $< $@
+		-y $(shell export LC_ALL=C LANG=C; echo "40") \
+		-z $(shell export LC_ALL=C LANG=C; echo "obase=16;(($(shell export LC_ALL=C LANG=C; stat -c %s mt7621_stage_L2.bin)+64+4095)/4096)*4096" |bc) -d $< $@
 #		@rm -fr uboot_a.bin
 endif
 endif
@@ -371,7 +371,7 @@ u-boot.dis:	u-boot
 #u-boot:		depend $(SUBDIRS) $(OBJS) $(LIBS) $(LDSCRIPT)
 #		UNDEF_SYM=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__u_boot_cmd_.*\)/-u\1/p'|sort|uniq`;\
 #		$(LD) $(LDFLAGS) $$UNDEF_SYM $(OBJS) \
-#			--start-group $(LIBS) --end-group -L $(shell export LC_ALL=C; export LC_ALL=C; export LC_ALL=C; dirname) $(CC) $(CFLAGS) -print-libgcc-file-name -lgcc \
+#			--start-group $(LIBS) --end-group -L $(shell export LC_ALL=C LANG=C; dirname) $(CC) $(CFLAGS) -print-libgcc-file-name -lgcc \
 #			-Map u-boot.map -o u-boot 
 			
 u-boot:		depend $(SUBDIRS) $(OBJS) $(LIBS) $(LDSCRIPT)
