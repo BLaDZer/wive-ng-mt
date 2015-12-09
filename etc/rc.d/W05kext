@@ -237,9 +237,9 @@ lanisolate() {
     LanWifiIsolate=`nvram_get 2860 LanIsolate`
     if [ "$LanWifiIsolate" = "1" ]; then
 	$LOG "Enable LAN2WIFI isolation mode."
-	echo 1 > devices/virtual/net/$phys_lan_if/brport/isolate_mode
+	echo 1 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
     else
-	echo 0 > devices/virtual/net/$phys_lan_if/brport/isolate_mode
+	echo 0 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
     fi
 }
 
