@@ -1492,7 +1492,7 @@
 17) init.d: chillispot - increase txqueuelen to 1000 and rcvbuf/sndbuf to 128Kb (save ~5% cpu load).<br>
 18) init.d: kext - add Lan2Wifi isolate mode, isolate LAN network resourses for WLAN user, allow only internet use.<br>
 19) init.d: fix ports physmode set regression.<br>
-20) init.d: add one rgmi mode support for MT7621.<br>
+20) init.d: add one rgmii mode support for MT7621.<br>
 21) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
 22) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
 23) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
