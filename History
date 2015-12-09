@@ -1476,65 +1476,66 @@
 1) uboot: add profile for ME2 7621 sample.<br>
 2) toolchain: rebuild with current kernel headers.<br>
 3) add 7621+7602+7612_USB_SD_SIM_16_512 metal sample support.<br>
-4) openssl up to 0.9.8zh version.<br>
-5) coovachilli: up to version 1.3.1.3 (commit: 10a04da2).<br>
-6) xl2tpd: sync with devel tree 26 Nov 2015.<br>
-7) dropbear: up to 2015.70 version.<br>
-8) irqbalance: update to 23.11.2015 git version.<br>
-9) butcheck: set dir per gpio instead of all.<br>
-10) dnsmasq: fix crash when empty address from DNS overlays A record from hosts.<br>
-11) nodogsplash: fixed segfault in httpd_thread.c under high load (commit 251e61db).<br>
-12) xupnpd: move TTK-IPTV to feed and cleanup RTK-TV.<br>
-13) goahead: remove private copy of wireless.h, now allways use system header.<br>
-14) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
-15) init.d: do not disable logging in cooava chilli.<br>
-16) init.d: chillispot - increase txqueuelen to 1000 and rcvbuf/sndbuf to 128Kb (save ~5% cpu load).<br>
-17) init.d: kext - add Lan2Wifi isolate mode, isolate LAN network resourses for WLAN user, allow only internet use.<br>
-18) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
-19) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
-20) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
-21) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
-22) kernel: ralink_wifi: xxxx: Mpdu Density all time must be > 0.<br>
-23) kernel: ralink_wifi: xxxx: HT green AP operation support all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
-24) kernel: ralink_wifi: 76x2: small fix WDS.<br>
-25) kernel: ralink_gpio: cleanup and small fixup.<br>
-26) kernel: div64.h: optimize divide operations.<br>
-27) kernel: exfat: upstream updates.<br>
-28) kernel: devres: fix a for loop bounds check.<br>
-29) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
-30) kernel: ipc,sem: fix use after free on IPC_RMID after a task using same semaphore set exits.<br>
-31) kernel: splice: sendfile() at once fails for big files.<br>
-32) kernel: vfs: avoid softlockups with sendfile(2).<br>
-33) kernel: vfs: make sendfile(2) killable even better.<br>
-34) kernel: usb: add new devives support to serial drivers.<br>
-35) kernel: usb: MT7621 xHCI: fix memory leak, add losted workarounds from MTK SDK.<br>
-36) kernel: usb: option: add support TS-UM6602 modem (aka MOTIV 4G).<br>
-37) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
-38) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
-39) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
-40) kernel: mips: fix work highmem at 7621 samples.<br>
-41) kernel: mips: fix highmem crash in __update_cache.<br>
-42) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
-43) kenrel: mips: allow long calls on highmem support builds.<br>
-44) kernel: net: add length argument to skb_copy_and_csum_datagram_iovec.<br>
-45) kernel: net: neighbour: fix crash at dumping device-agnostic proxy entries.<br>
-46) kernel: net: increase conntrack size depend by ram_size.<br>
-47) kernel: net: tunnel: implement 64 bits statistics.<br>
-48) kernel: net: fq_codel: fix cpu load with higher speed.<br>
-49) kernel: net: tcp: initialize tp->copied_seq in case of cross SYN connection.<br>
-50) kernel: net: tcp: connect() from bound sockets can be faster.<br>
-51) kernel: net: ipv4: igmp: allow removing groups from a removed interface.<br>
-52) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
-53) kernel: net: ipmr: fix possible race resulting from improper usage of IP_INC_STATS_BH() in preemptible context.<br>
-54) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
-55) kernel: net: ipv6: fix tunnel error handling.<br>
-56) kernel: net: ipv6: fix the use of pcpu_tstats in ip6_tunnel.<br>
-57) kernel: net: packet: allow to transmit +4 byte in TX_RING slot for VLAN case.<br>
-58) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
-59) kernel: net: packet: only allow extra vlan len on ethernet devices.<br>
-60) kernel: net: packet: fix tpacket_snd max frame len.<br>
-61) kernel: net: packet: fixed TPACKET V3 to signal poll when block is closed rather than every packet.<br>
-62) kernel: net: packet: don't pass empty blocks for PACKET_V3.<br>
+4) defaults: allow greenfield mode by default.<br>
+5) openssl up to 0.9.8zh version.<br>
+6) coovachilli: up to version 1.3.1.3 (commit: 10a04da2).<br>
+7) xl2tpd: sync with devel tree 26 Nov 2015.<br>
+8) dropbear: up to 2015.70 version.<br>
+9) irqbalance: update to 23.11.2015 git version.<br>
+10) butcheck: set dir per gpio instead of all.<br>
+11) dnsmasq: fix crash when empty address from DNS overlays A record from hosts.<br>
+12) nodogsplash: fixed segfault in httpd_thread.c under high load (commit 251e61db).<br>
+13) xupnpd: move TTK-IPTV to feed and cleanup RTK-TV.<br>
+14) goahead: remove private copy of wireless.h, now allways use system header.<br>
+15) init.d: netfilter add ForwardSesLimit (use for limit forward sessions per user).<br>
+16) init.d: do not disable logging in cooava chilli.<br>
+17) init.d: chillispot - increase txqueuelen to 1000 and rcvbuf/sndbuf to 128Kb (save ~5% cpu load).<br>
+18) init.d: kext - add Lan2Wifi isolate mode, isolate LAN network resourses for WLAN user, allow only internet use.<br>
+19) kernel: ralink_arch: i2c busses: add support MT7621 and MT7628.<br>
+20) kernel: ralink_ppe: allow dynamic set FoE 64/80b in runtime, use FoE 80b only IPv6 offload enabled.<br>
+21) kernel: ralink_wifi: xxxx: prevent little/big endian issue. and let asic_write_bcn_buf() handle it.<br>
+22) kernel: ralink_wifi: xxxx: fix potentional null pointer dereference.<br>
+23) kernel: ralink_wifi: xxxx: Mpdu Density all time must be > 0.<br>
+24) kernel: ralink_wifi: xxxx: HT green AP operation support all >=2T2R chips at not depend from GREENAP_SUPPORT config option.<br>
+25) kernel: ralink_wifi: 76x2: small fix WDS.<br>
+26) kernel: ralink_gpio: cleanup and small fixup.<br>
+27) kernel: div64.h: optimize divide operations.<br>
+28) kernel: exfat: upstream updates.<br>
+29) kernel: devres: fix a for loop bounds check.<br>
+30) kernel: mtd: blkdevs: fix potential deadlock + lockdep warnings.<br>
+31) kernel: ipc,sem: fix use after free on IPC_RMID after a task using same semaphore set exits.<br>
+32) kernel: splice: sendfile() at once fails for big files.<br>
+33) kernel: vfs: avoid softlockups with sendfile(2).<br>
+34) kernel: vfs: make sendfile(2) killable even better.<br>
+35) kernel: usb: add new devives support to serial drivers.<br>
+36) kernel: usb: MT7621 xHCI: fix memory leak, add losted workarounds from MTK SDK.<br>
+37) kernel: usb: option: add support TS-UM6602 modem (aka MOTIV 4G).<br>
+38) kernel: mips: revert: make CAC_ADDR and UNCAC_ADDR account for PHYS_OFFSET.<br>
+39) kernel: mips: revert: adjust mips highmem offset to avoid the need for -mlong-calls on systems with >256M RAM.<br>
+40) kernel: mips: revert: fix race condition in lazy cache flushing.<br>
+41) kernel: mips: fix work highmem at 7621 samples.<br>
+42) kernel: mips: fix highmem crash in __update_cache.<br>
+43) kernel: mips: autodetect memsize not support high memory (limit detect to 448Mb on mips boards).<br>
+44) kenrel: mips: allow long calls on highmem support builds.<br>
+45) kernel: net: add length argument to skb_copy_and_csum_datagram_iovec.<br>
+46) kernel: net: neighbour: fix crash at dumping device-agnostic proxy entries.<br>
+47) kernel: net: increase conntrack size depend by ram_size.<br>
+48) kernel: net: tunnel: implement 64 bits statistics.<br>
+49) kernel: net: fq_codel: fix cpu load with higher speed.<br>
+50) kernel: net: tcp: initialize tp->copied_seq in case of cross SYN connection.<br>
+51) kernel: net: tcp: connect() from bound sockets can be faster.<br>
+52) kernel: net: ipv4: igmp: allow removing groups from a removed interface.<br>
+53) kernel: net: ipmr: fix static mfc/dev leaks on table destruction.<br>
+54) kernel: net: ipmr: fix possible race resulting from improper usage of IP_INC_STATS_BH() in preemptible context.<br>
+55) kernel: net: ipmr, ip6mr: fix vif/tunnel failure race condition.<br>
+56) kernel: net: ipv6: fix tunnel error handling.<br>
+57) kernel: net: ipv6: fix the use of pcpu_tstats in ip6_tunnel.<br>
+58) kernel: net: packet: allow to transmit +4 byte in TX_RING slot for VLAN case.<br>
+59) kernel: net: packet: tpacket_snd(): fix signed/unsigned comparison.<br>
+60) kernel: net: packet: only allow extra vlan len on ethernet devices.<br>
+61) kernel: net: packet: fix tpacket_snd max frame len.<br>
+62) kernel: net: packet: fixed TPACKET V3 to signal poll when block is closed rather than every packet.<br>
+63) kernel: net: packet: don't pass empty blocks for PACKET_V3.<br>
 <br>
 <br>
 <b>TODO:</b><br>
