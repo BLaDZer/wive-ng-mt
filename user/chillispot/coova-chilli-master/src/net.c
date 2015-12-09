@@ -377,14 +377,14 @@ int net_select_rereg(select_ctx *sctx, int oldfd, int newfd) {
 	event.data.fd = oldfd;
 	event.events = EPOLLIN | EPOLLOUT;
 	if (epoll_ctl(sctx->efd, EPOLL_CTL_DEL, oldfd, &event))
-	  syslog(LOG_ERR, "%s: epoll fd %d not found", strerror(errno), oldfd);
+	  syslog(LOG_DEBUG, "%s: epoll fd %d not found", strerror(errno), oldfd);
 
 	memset(&event, 0, sizeof(event));
 	if (sctx->desc[i].evts & SELECT_READ) event.events |= EPOLLIN;
 	if (sctx->desc[i].evts & SELECT_WRITE) event.events |= EPOLLOUT;
 	event.data.ptr = &sctx->desc[i];
 	if (epoll_ctl(sctx->efd, EPOLL_CTL_ADD, newfd, &event))
-	  syslog(LOG_ERR, "%s: Failed to watch fd", strerror(errno));
+	  syslog(LOG_DEBUG, "%s: Failed to watch fd", strerror(errno));
       }
 #endif
       return 0;
@@ -940,7 +940,7 @@ ssize_t net_write_eth(net_interface *netif, void *d, size_t dlen, struct sockadd
   if (len < 0) {
     switch (errno) {
       case EWOULDBLOCK:
-        syslog(LOG_ERR, "%s: packet dropped due to congestion", strerror(errno));
+        syslog(LOG_DEBUG, "%s: packet dropped due to congestion", strerror(errno));
         if (!_options.uid)
           net_reopen(netif);
         break;
@@ -963,7 +963,7 @@ ssize_t net_write_eth(net_interface *netif, void *d, size_t dlen, struct sockadd
 #endif
     }
 
-    syslog(LOG_ERR, "%s: net_write_eth(fd=%d, len=%zu) failed", strerror(errno), netif->fd, dlen);
+    syslog(LOG_DEBUG, "%s: net_write_eth(fd=%d, len=%zu) failed", strerror(errno), netif->fd, dlen);
     return -1;
   }
 
