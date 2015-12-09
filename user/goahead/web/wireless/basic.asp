@@ -1194,7 +1194,7 @@ function CheckValue(form)
               </select></td>
           </tr>
           <tr id="div_LanWifiIsolate">
-            <td class="head" colspan="1" id="basicLanWifiIsolate">Isolate the lan ports from wifi</td>
+            <td class="head" colspan="1" id="basicLanWifiIsolate">LAN to WLAN Isolation</td>
             <td colspan="5"><select name="LanWifiIsolate" class="half">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>

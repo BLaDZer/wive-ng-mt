@@ -45,7 +45,7 @@
   <message msgid="basic clients" msgstr="Клиенты" />
   <message msgid="basic broadcast ssid" msgstr="Вещание SSID" />
   <message msgid="basic mbssidapisolated" msgstr="Изоляция SSID между собой" />
-  <message msgid="basic lan wifi isolate" msgstr="Изоляция LAN портов от WIFI" />
+  <message msgid="basic lan wifi isolate" msgstr="Изоляция между LAN и WLAN" />
   <message msgid="basic bssid" msgstr="BSSID (2,4ГГц)" />
   <message msgid="basic ac bssid" msgstr="BSSID (5.GHz)" />
   <message msgid="basic frequency" msgstr="Канал (2,4ГГц)" />
