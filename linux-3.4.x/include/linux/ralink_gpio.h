@@ -515,21 +515,25 @@
 // if you would like to enable GPIO mode for other pins, please modify this value
 // !! Warning: changing this value may make other features(MDIO, PCI, etc) lose efficacy
 #if defined (CONFIG_RALINK_MT7620)
-#if defined (CONFIG_RAETH_ESW)                /* if use internal phy - switch lines to phy mode else gpio mode */
-#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
+#if defined (CONFIG_RAETH_ESW)			/* if use internal phy - switch lines to phy mode else gpio mode */
+#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA)	/* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_PA_G)
 #else
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C)
 #endif
-#else                                         /* if use external phy - switch lines to gpio mode else phy mode */
-#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA) /* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
+#else						/* if use external phy - switch lines to gpio mode else phy mode */
+#if defined (CONFIG_INTERNAL_PA_INTERNAL_LNA)	/* if use ext PA for 2.4GHz swicth line from gpio to PA_G  else gpio mode */
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_EPHY | RALINK_GPIOMODE_PA_G)
 #else
 #define RALINK_GPIOMODE_DFT             (RALINK_GPIOMODE_UARTF | RALINK_GPIOMODE_SPI_REFCLK | RALINK_GPIOMODE_I2C | RALINK_GPIOMODE_EPHY)
 #endif
 #endif
 #elif defined (CONFIG_RALINK_MT7621)
-#define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3 | RALINK_GPIOMODE_WDT)
+#ifdef CONFIG_RAETH_GMAC2			/* dual RGMII mode */
+#define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3 | RALINK_GPIOMODE_WDT | RALINK_GPIOMODE_JTAG)
+#else						/* one RMGMII mode - vlan parted, two RGMII as GPIO mode */
+#define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3 | RALINK_GPIOMODE_WDT | RALINK_GPIOMODE_JTAG | RALINK_GPIOMODE_GE2)
+#endif
 #elif defined (CONFIG_RALINK_MT7628)
 #define RALINK_GPIOMODE_DFT		(RALINK_GPIOMODE_UART2 | RALINK_GPIOMODE_UART3) | (RALINK_GPIOMODE_SPI_CS1) | (RALINK_GPIOMODE_WDT)
 #else
