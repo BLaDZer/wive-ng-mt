@@ -1541,6 +1541,9 @@
 67) kernel: net: packet: don't pass empty blocks for PACKET_V3.<br>
 <br>
 <br>
+<b>3.8.x</b><br>
+<br>
+<br>
 <b>TODO:</b><br>
 1) full russian ui (work end ~99%).<br>
 2) need add subchannel select for 5GHz module.<br>
