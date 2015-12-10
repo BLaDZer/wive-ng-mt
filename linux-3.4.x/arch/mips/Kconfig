@@ -2244,6 +2244,10 @@ config HIGHMEM
 	bool "High Memory Support"
 	depends on 32BIT && CPU_SUPPORTS_HIGHMEM && SYS_SUPPORTS_HIGHMEM
 
+config LONG_CALLS
+	bool "gcc must use long call"
+	depends on 32BIT && CPU_SUPPORTS_HIGHMEM && SYS_SUPPORTS_HIGHMEM && (HIGHMEM || RAM_SIZE_AUTO)
+
 config CPU_SUPPORTS_HIGHMEM
 	bool
 

@@ -91,7 +91,7 @@ cflags-y			+= -G 0 -mno-abicalls -fno-pic -pipe -mno-branch-likely
 cflags-y			+= -msoft-float
 LDFLAGS_vmlinux			+= -G 0 -static -n -nostdlib
 
-ifdef CONFIG_HIGHMEM
+ifdef CONFIG_LONG_CALLS
 KBUILD_AFLAGS_MODULE		+= -mlong-calls
 KBUILD_CFLAGS_MODULE		+= -mlong-calls
 else
