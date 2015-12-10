@@ -99,7 +99,11 @@ link_up() {
 
 reset_all_phys() {
 	$LOG "Reset all phy port"
-	if [ "$OperationMode" = "1" ]; then
+	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
+	    # All ports down
+	    start=0
+	    end=4
+	else
 	    # Ports down skip WAN port
 	    if [ "$wan_portN" = "0" ]; then
 		start=0
@@ -108,18 +112,14 @@ reset_all_phys() {
 		start=1
 		end=4
 	    fi
-	else
-	    # All ports down
-	    start=0
-	    end=4
 	fi
 
 	# disable ports
 	for port in `seq $start $end`; do
     	    link_down $port
 	done
-	# wait clients renew dhcp
-	usleep 500000
+	# wait client detect link down for renew dhcp
+	usleep 100000
 	# enable ports
 	for port in `seq $start $end`; do
     	    link_up $port
@@ -175,14 +175,14 @@ set_physmode() {
 			ethtool -s eth2 autoneg on speed 100 duplex half	> /dev/null 2>&1
 		    elif [ "$port_swmode" = "10f" ]; then
 			#set 10Mbit full duplex and start negotinate
-			ethtool -s eth2 autoneg on speed 10 duplex full	> /dev/null 2>&1
+			ethtool -s eth2 autoneg on speed 10 duplex full		> /dev/null 2>&1
 		    elif [ "$port_swmode" = "10h" ]; then
 			#set 10Mbit half duplex and start negotinate
-			ethtool -s eth2 autoneg on speed 10 duplex half	> /dev/null 2>&1
+			ethtool -s eth2 autoneg on speed 10 duplex half		> /dev/null 2>&1
 		    fi
 		elif [ "$port_swmode" = "auto" ]; then
 		    # enable autoneg
-		    ethtool -s eth2 autoneg on > /dev/null 2>&1
+		    ethtool -s eth2 autoneg on					> /dev/null 2>&1
 		fi
 		let "phys_portN=$phys_portN-1"
 	    done
