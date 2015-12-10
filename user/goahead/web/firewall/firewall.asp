@@ -593,8 +593,8 @@ function initTranslation()
           </tr>
         </table>
       </form>
-      <!-- Others firewall settings -->
-      <h1 id="FirewallTitle">Firewall Settings</h1>
+      <!-- Other netfilter settings -->
+      <h1 id="FirewallTitle">Other Settings</h1>
       <div style="display:none;" id="bridge_warning">
       	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
       </div>

@@ -22,7 +22,7 @@
   <message msgid="port filter action drop" msgstr="Drop" />
   <message msgid="port filter action accept" msgstr="Accept" />
 
-  <message msgid="firewall title" msgstr="Firewall Settings" />
+  <message msgid="firewall title" msgstr="Other Settings" />
   <message msgid="firewall bridge warning" msgstr="Warning: The current operation mode is 'Bridge mode' and these settings may not be functional." />
   <message msgid="firewall defailt session limit" msgstr="(default 0 - disabled)" />
   <message msgid="forward title" msgstr="Port Forwarding  Settings" />

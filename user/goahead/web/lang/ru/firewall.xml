@@ -22,7 +22,7 @@
   <message msgid="port filter action drop" msgstr="Запретить" />
   <message msgid="port filter action accept" msgstr="Разрешить" />
 
-  <message msgid="firewall title" msgstr="Настройки сетевого экрана" />
+  <message msgid="firewall title" msgstr="Другие настройки" />
   <message msgid="firewall bridge warning" msgstr="Внимание: В текущем режиме 'Моста' данные настройки могут не функционировать." />
   <message msgid="firewall defailt session limit" msgstr="(по умолчанию 0 - неограничено)" />
   <message msgid="forward title" msgstr="Настройки проброса портов (Port forwarding)" />
