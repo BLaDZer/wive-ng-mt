@@ -70,6 +70,8 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -ay gperf --download-all --allow-force
 	urpmi --auto -ay gengetopt --download-all --allow-force
 	urpmi --auto -ay vim-enhanced --download-all --allow-force
+	urpmi --auto -ay zip --download-all --allow-force
+	urpmi --auto -ay pkg-config --download-all --allow-force
     elif [ "$ISMAGEIA" = "1" ]; then
 	urpmi --auto bc --download-all
 	urpmi --auto flex --download-all
@@ -96,6 +98,8 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto gperf --download-all
 	urpmi --auto gengetopt --download-all
 	urpmi --auto vim-enhanced --download-all
+	urpmi --auto zip --download-all
+	urpmi --auto pkg-config --download-all
     elif [ "$ISUBUNTU" = "1" ]; then
 	sudo apt-get update
 	sudo apt-get -y install build-essential
@@ -117,6 +121,8 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	sudo apt-get -y install autopoint	# for build davfs
 	sudo apt-get -y install gengetopt	# for build chillispot
 	sudo apt-get -y install vim-enhanced	# for build uboot
+	sudo apt-get -y install zip		# for build tools
+	sudo apt-get -y install pkg-config	# for build tools
     else
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
@@ -134,6 +140,8 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -a gperf- --download-all --allow-force
 	urpmi --auto -a gengetopt- --download-all --allow-force
 	urpmi --auto -a vim-enhanced- --download-all --allow-force
+	urpmi --auto -a zip- --download-all --allow-force
+	urpmi --auto -a pkg-config- --download-all --allow-force
     fi
 fi
 
