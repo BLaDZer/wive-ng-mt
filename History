@@ -1542,6 +1542,7 @@
 <br>
 <br>
 <b>3.8.x</b><br>
+1) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
 <br>
 <br>
 <b>TODO:</b><br>
