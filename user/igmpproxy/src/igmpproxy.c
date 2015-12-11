@@ -47,9 +47,10 @@ static const char Usage[] =
 #ifdef RALINK_ESW_SUPPORT
 "   --------------igmp_snooping_config------------------\n"
 "   -w	 Wan at port 0/4. Only in switch management mode\n"
-"   -f	 Force igmp_snooping enable (default auto)	\n"
 "   -n	 Force igmp_snooping disable (default auto)	\n"
+#ifdef WIFI_IGMPSNOOP_SUPPORT
 "   -a	 Auto enable wifi M2U by client request		\n"
+#endif
 "   ----------------------------------------------------\n"
 #endif
 "   -v   Be verbose. Give twice to see even debug messages.\n"
@@ -161,12 +162,10 @@ int main( int ArgCn, char *ArgVc[] ) {
         my_log(LOG_WARNING, 0, "Uncorrect wifi interface name.");
 #endif
 #ifdef RALINK_ESW_SUPPORT
-    if (auto_lan_snooping) {
-        if(auto_lan_snooping == 0)
-	    my_log(LOG_INFO, 0, "Force LAN igmp_snooping disable.");
-	else
-    	    my_log(LOG_INFO, 0, "Auto mode LAN igmp_snooping.");
-
+    if(!auto_lan_snooping) {
+	my_log(LOG_INFO, 0, "Force LAN igmp_snooping disable.");
+    } else {
+	my_log(LOG_INFO, 0, "Auto mode LAN igmp_snooping.");
 	rt_init();
     }
 #endif
