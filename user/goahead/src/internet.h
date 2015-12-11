@@ -6,16 +6,14 @@
  *	$Id: internet.h,v 1.8 2008-03-17 07:47:16 yy Exp $
  */
 
-#define ETH_SIG	"eth"
-#define BR_SIG	"br"
-#if defined(CONFIG_RAETH_ESW)				/* internal ralink esw */
-#define WAN_DEF "eth2.2"
-#elif defined(CONFIG_RAETH_GMAC2)			/* vetisse or rtl8367m dual phy */
+#ifdef CONFIG_RAETH_GMAC2		/* dual phy/rgmii mode */
 #define WAN_DEF "eth3"
 #else
-#define WAN_DEF "eth2.2"				/* this is stub support only switched devices */
+#define WAN_DEF "eth2.2"		/* internal ralink esw with vlan parted mode */
 #endif
 
+#define BR_SIG	"br"
+#define ETH_SIG	"eth"
 #define VPN_SIG	"ppp"
 #define VPN_DEF "ppp0"
 
