@@ -1545,19 +1545,7 @@
 1) miniupnpd: up to 1.9.20151212 version.<br>
 2) kernel: ralink_raeth: temp disable recive checksumm offload in MT7621 (break mroute).<br>
 3) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-4) kernel: net: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-<br>
-<br>
-<b>TODO:</b><br>
-1) full russian ui (work end ~99%).<br>
-2) need add subchannel select for 5GHz module.<br>
-3) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.<br>
-4) in future: make LanWifiIsolate function work per bssid.<br>
-5) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).<br>
-6) in very far future: need add in firewall support xt_time matches for parental control.<br>
-7) in very far future: need add perip shaper script and webui .<br>
-8) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.<br>
-9) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).<br>
+4) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
 <br>
 <br>
 <br>
