@@ -1,4 +1,4 @@
-/* $Id: upnpsoap.c,v 1.139 2015/11/05 10:57:40 nanard Exp $ */
+/* $Id: upnpsoap.c,v 1.140 2015/12/12 09:10:28 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2015 Thomas Bernard
@@ -1187,7 +1187,11 @@ GetDefaultConnectionService(struct upnphttp * h, const char * action, const char
 	static const char resp[] =
 		"<u:%sResponse "
 		"xmlns:u=\"%s\">"
+#ifdef IGD_V2
+		"<NewDefaultConnectionService>%s:WANConnectionDevice:2,"
+#else
 		"<NewDefaultConnectionService>%s:WANConnectionDevice:1,"
+#endif
 		SERVICE_ID_WANIPC "</NewDefaultConnectionService>"
 		"</u:%sResponse>";
 	/* example from UPnP_IGD_Layer3Forwarding 1.0.pdf :
@@ -1985,7 +1989,7 @@ SendSetupMessage(struct upnphttp * h, const char * action, const char * ns)
 	static const char resp[] =
 		"<u:%sResponse "
 		"xmlns:u=\"%s\">"
-		"<NewOutMessage>%s</NewOutMessage>"
+		"<OutMessage>%s</OutMessage>"
 		"</u:%sResponse>";
 	char body[1024];
 	int bodylen;
@@ -2026,7 +2030,7 @@ GetSupportedProtocols(struct upnphttp * h, const char * action, const char * ns)
 	static const char resp[] =
 		"<u:%sResponse "
 		"xmlns:u=\"%s\">"
-		"<NewProtocolList>%s</NewProtocolList>"
+		"<ProtocolList>%s</ProtocolList>"
 		"</u:%sResponse>";
 	char body[1024];
 	int bodylen;
@@ -2052,7 +2056,7 @@ GetAssignedRoles(struct upnphttp * h, const char * action, const char * ns)
 	static const char resp[] =
 		"<u:%sResponse "
 		"xmlns:u=\"%s\">"
-		"<NewRoleList>%s</NewRoleList>"
+		"<RoleList>%s</RoleList>"
 		"</u:%sResponse>";
 	char body[1024];
 	int bodylen;

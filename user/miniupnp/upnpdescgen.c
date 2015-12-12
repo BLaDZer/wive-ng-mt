@@ -1,4 +1,5 @@
-/* $Id: upnpdescgen.c,v 1.79 2015/09/22 10:07:13 nanard Exp $ */
+/* $Id: upnpdescgen.c,v 1.80 2015/12/12 09:10:29 nanard Exp $ */
+/* vim: tabstop=4 shiftwidth=4 noexpandtab */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2015 Thomas Bernard
@@ -109,13 +110,18 @@ static const int upnpallowedranges[] = {
 
 static const char * magicargname[] = {
 	0,
-	"StartPort",
-	"EndPort",
-	"RemoteHost",
-	"RemotePort",
-	"InternalClient",
-	"InternalPort",
-	"IsWorking"
+	"StartPort",		/* 1 */
+	"EndPort",			/* 2 */
+	"RemoteHost",		/* 3 */
+	"RemotePort",		/* 4 */
+	"InternalClient",	/* 5 */
+	"InternalPort",		/* 6 */
+	"IsWorking",		/* 7 */
+	"ProtocolType",		/* 8 */
+	"InMessage",		/* 9 */
+	"OutMessage",		/* 10 */
+	"ProtocolList",		/* 11 */
+	"RoleList"			/* 12 */
 };
 
 static const char xmlver[] =
@@ -261,7 +267,7 @@ static const struct XMLElt rootDesc[] =
 #ifdef ENABLE_6FC_SERVICE
 /* 58 */
 	{"/serviceType", "urn:schemas-upnp-org:service:WANIPv6FirewallControl:1"},
-	{"/serviceId", "urn:upnp-org:serviceId:WANIPv6FC1"},
+	{"/serviceId", "urn:upnp-org:serviceId:WANIPv6Firewall1"},
 	{"/controlURL", WANIP6FC_CONTROLURL},
 	{"/eventSubURL", WANIP6FC_EVENTURL},
 	{"/SCPDURL", WANIP6FC_PATH},
@@ -282,7 +288,7 @@ static const struct XMLElt rootDesc[] =
 #ifdef ENABLE_L3F_SERVICE
 /* 60 / 65 = SERVICES_OFFSET+2 */
 	{"/serviceType", "urn:schemas-upnp-org:service:Layer3Forwarding:1"},
-	{"/serviceId", "urn:upnp-org:serviceId:Layer3Forwarding1"},
+	{"/serviceId", "urn:upnp-org:serviceId:L3Forwarding1"},
 	{"/controlURL", L3F_CONTROLURL}, /* The Layer3Forwarding service is only */
 	{"/eventSubURL", L3F_EVENTURL}, /* recommended, not mandatory */
 	{"/SCPDURL", L3F_PATH},
@@ -743,11 +749,32 @@ static const struct serviceDesc scpd6FC =
 
 #ifdef ENABLE_DP_SERVICE
 /* UPnP-gw-DeviceProtection-v1-Service.pdf */
+
+static const struct argument SendSetupMessageArgs[] =
+{
+	{1|0x80|(8<<2), 6},	/* ProtocolType */
+	{1|0x80|(9<<2), 5},	/* InMessage */
+	{2|0x80|(10<<2), 5},	/* OutMessage */
+	{0, 0}
+};
+
+static const struct argument GetSupportedProtocolsArgs[] =
+{
+	{2|0x80|(11<<2), 1},	/* ProtocolList */
+	{0, 0}
+};
+
+static const struct argument GetAssignedRolesArgs[] =
+{
+	{2|0x80|(12<<2), 6},	/* RoleList */
+	{0, 0}
+};
+
 static const struct action DPActions[] =
 {
-	{"SendSetupMessage", 0},
-	{"GetSupportedProtocols", 0},
-	{"GetAssignedRoles", 0},
+	{"SendSetupMessage", SendSetupMessageArgs},
+	{"GetSupportedProtocols", GetSupportedProtocolsArgs},
+	{"GetAssignedRoles", GetAssignedRolesArgs},
 	{0, 0}
 };
 
