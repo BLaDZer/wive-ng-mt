@@ -3,7 +3,8 @@
 3) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.
 4) in future: make LanWifiIsolate function work per bssid.
 5) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
-6) in very far future: need add in firewall support xt_time matches for parental control.
-7) in very far future: need add perip shaper script and webui.
-8) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
-9) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
+6) add support VLAN isolated GW to APs infrastructure (isolated vlans for LAN at router and recive vlans for internet at AP with isolate pure LAN).
+7) in very far future: need add in firewall support xt_time matches for parental control.
+8) in very far future: need add perip shaper script and webui.
+9) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
+10) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
