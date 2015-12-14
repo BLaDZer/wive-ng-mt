@@ -238,12 +238,12 @@ lanisolate() {
     if [ "$LanIsolate" = "1" ]; then
 	$LOG "Enable LAN2WIFI isolation mode."
 	echo 1 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
-	wlifs=`ip -o -4 link show up | grep ra | awk {' print $2 '} | cut -f -1 -d :`
 	if [ "$NoForwardingBTNBSSID" = "1" ]; then
 	    $LOG "Full MBSSID isolation mode enabled."
 	else
 	    NoForwardingBTNBSSID="0"
 	fi
+	wlifs=`ip -o -4 link show up | grep ra | awk {' print $2 '} | cut -f -1 -d :`
 	for ifname in $wlifs; do
 	    echo "$NoForwardingBTNBSSID" > /sys/devices/virtual/net/$ifname/brport/isolate_mode
 	done
