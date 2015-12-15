@@ -2,7 +2,7 @@
 2) need add subchannel select for 5GHz module.
 3) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.
 4) in future: make LanWifiIsolate function work per bssid.
-5) need add IsolatedVlans (this list tag divided by space or ,) to switch managment.
+5) need add LANVlans (this list tag divided by space or ,) and LANVlansIsolate (this flag isolate or not isolate lan vlans) to switch managment.
 6) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
 7) in very far future: need add in firewall support xt_time matches for parental control.
 8) in very far future: need add perip shaper script and webui.

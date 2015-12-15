@@ -66,23 +66,26 @@ start() {
 	# LAN VLANS FOR ZONE ISOLATED NETWORKS
 	# EVERY TIME RECONFIGURE
 	############################################
-	IsolatedVlans=`nvram_get 2860 IsolatedVlans | awk '{ gsub(","," "); print }'`
-	if [ "$switchpart" = "LLLLL" ]; then
-	    phys_lan_if="eth2"
-	fi
-	if [ "$IsolatedVlans" != "" ] && [ "$lan_if" = "br0" ]; then
-	    for vid in $IsolatedVlans
+	LANVlans=`nvram_get 2860 LANVlans | awk '{ gsub(","," "); print }'`
+	if [ "$LANVlans" != "" ] && [ "$LANVlans" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    LANVlansIsolate=`nvram_get 2860 LANVlansIsolate`
+	    if [ "$switchpart" = "LLLLL" ]; then
+		phys_lan_if="eth2"
+	    fi
+	    for vid in $LANVlans
 	    do
-		$LOG "Add isolated network VLAN interface ${phys_lan_if}.${vid} to system"
+		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
 		vconfig add "$phys_lan_if" "$vid"
 		set_vlan_map "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
 		if [ "$switchpart" != "LLLLL" ]; then
-		    # in router mode isolate vlans
-		    echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
+		    if [ "$LANVlansIsolate" = "1" ]; then
+			# in router mode isolate vlans
+			echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
+		    fi
 		else
-		    # ap mode need remove root interface from bridge
+		    $LOG "AP mode need remove root interface from bridge to work vlan"
 		    brctl delif "$lan_if" "$phys_lan_if"
 		fi
 	    done
