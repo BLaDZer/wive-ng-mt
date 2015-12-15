@@ -1549,6 +1549,7 @@
 5) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
 6) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
 7) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+8) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
 <br>
 <br>
 <br>
