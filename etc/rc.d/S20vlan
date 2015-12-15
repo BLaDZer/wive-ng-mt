@@ -94,9 +94,10 @@ start() {
 }
 
 stop() {
-    oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`
-    if [ "$switchpart" = "LLLLL" ]; then
-	phys_lan_if="eth2"
+    if [ "$switchpart" = "LLLLL" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+	oldlanvlans=`ip -o -4 link show up | grep 'eth2\.' | awk {' print $2 '} | cut -f -1 -d @`
+    else
+	oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`
     fi
     for iface in $oldlanvlans
     do
