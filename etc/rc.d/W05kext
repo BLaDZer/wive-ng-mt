@@ -247,8 +247,6 @@ lanisolate() {
 	for ifname in $wlifs; do
 	    echo "$NoForwardingBTNBSSID" > /sys/devices/virtual/net/$ifname/brport/isolate_mode
 	done
-    else
-	echo 0 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
     fi
 }
 

@@ -179,6 +179,9 @@ service six restart
 # rebuild switch part for full renew
 config-vlan.sh $switchmode $switchpart
 
+# reconfigure external vlans
+service vlan restart
+
 # some daemons need restart
 services_restart.sh all
 

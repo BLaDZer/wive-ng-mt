@@ -6,60 +6,95 @@ LOG="logger -t vlan"
 . /etc/scripts/global.sh
 
 start() {
-    if [ "$VlanEnabled" = "1" ] && [ ! -f /tmp/bootgood ]; then
-	if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
-	    rootif="eth3"
-	else
-	    rootif="eth2"
-	fi
-	if [ "$tv_port" = "1" ]; then
-	    $LOG "Add bridge for TV/STB"
-	    brctl addbr "$vlantvif"
-	    vconfig add $rootif 3
-	    set_vlan_map "${rootif}.3"
-	    ip link set "${rootif}.3" up
-	    brctl addif "$vlantvif" "${rootif}.3"
-	    for vid in $tv_portVLAN; do
-		$LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
-		vconfig add "$phys_wan_if" "$vid"
-		set_vlan_map "${phys_wan_if}.${vid}"
-		brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
-		ip link set "${phys_wan_if}.${vid}" up
-	    done
-	    if [ "$tv_port_mcast" = "1" ]; then
-		# generate random ip from zeroconfig range end set need for igmpproxy work
-		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
-		ip -4 addr flush dev "$vlantvif"
-		ip -4 addr add "$rndip"/32 dev "$vlantvif"
+    if [ ! -f /tmp/bootgood ]; then
+	############################################
+	# WAN VLANS FOR IPTV/SIP/ETC USAGE
+	# ONLY ONE AT START!!!
+	############################################
+	if [ "$VlanEnabled" = "1" ]; then
+	    if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+		rootif="eth3"
+	    else
+		rootif="eth2"
 	    fi
-	    ip link set "$vlantvif" up
-	fi
-	if [ "$sip_port" = "1" ]; then
-	    $LOG "Add bridge for SIP/STB"
-	    brctl addbr "$vlansipif"
-	    vconfig add $rootif 4
-	    ip link set "${rootif}.4" up
-	    brctl addif "$vlansipif" eth2.4
-	    for vid in $sip_portVLAN; do
-		$LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
-		vconfig add "$phys_wan_if" "$vid"
-		set_vlan_map "${phys_wan_if}.${vid}"
-		brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
-		ip link set "${phys_wan_if}.${vid}" up
-	    done
-	    if [ "$sip_port_mcast" = "1" ]; then
-		# generate random ip from zeroconfig range end set need for igmpproxy work
-		rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
-		ip -4 addr flush dev "$vlansipif"
-		ip -4 addr add "$rndip"/32 dev "$vlansipif"
+	    if [ "$tv_port" = "1" ]; then
+		$LOG "Add bridge for TV/STB"
+		brctl addbr "$vlantvif"
+		vconfig add $rootif 3
+		set_vlan_map "${rootif}.3"
+		ip link set "${rootif}.3" up
+		brctl addif "$vlantvif" "${rootif}.3"
+		for vid in $tv_portVLAN; do
+		    $LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
+		    vconfig add "$phys_wan_if" "$vid"
+		    set_vlan_map "${phys_wan_if}.${vid}"
+		    brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
+		    ip link set "${phys_wan_if}.${vid}" up
+		done
+		if [ "$tv_port_mcast" = "1" ]; then
+		    # generate random ip from zeroconfig range end set need for igmpproxy work
+		    rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+		    ip -4 addr flush dev "$vlantvif"
+		    ip -4 addr add "$rndip"/32 dev "$vlantvif"
+		fi
+		ip link set "$vlantvif" up
 	    fi
-	    ip link set "$vlansipif" up
+	    if [ "$sip_port" = "1" ]; then
+		$LOG "Add bridge for SIP/STB"
+		brctl addbr "$vlansipif"
+		vconfig add $rootif 4
+		ip link set "${rootif}.4" up
+		brctl addif "$vlansipif" eth2.4
+		for vid in $sip_portVLAN; do
+		    $LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
+		    vconfig add "$phys_wan_if" "$vid"
+		    set_vlan_map "${phys_wan_if}.${vid}"
+		    brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
+		    ip link set "${phys_wan_if}.${vid}" up
+		done
+		if [ "$sip_port_mcast" = "1" ]; then
+		    # generate random ip from zeroconfig range end set need for igmpproxy work
+		    rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+		    ip -4 addr flush dev "$vlansipif"
+		    ip -4 addr add "$rndip"/32 dev "$vlansipif"
+		fi
+		ip link set "$vlansipif" up
+	    fi
+	fi
+    else
+	############################################
+	# LAN VLANS FOR ZONE ISOLATED NETWORKS
+	# EVERY TIME RECONFIGURE
+	############################################
+	IsolatedVlans=`nvram_get 2860 IsolatedVlans | awk '{ gsub(","," "); print }'`
+	if [ "$IsolatedVlans" != "" ] && [ "$lan_if" = "br0" ]; then
+	    for vid in $IsolatedVlans
+	    do
+		$LOG "Add isolated network VLAN interface ${phys_lan_if}.${vid} to system"
+		vconfig add "$phys_lan_if" "$vid"
+		set_vlan_map "${phys_lan_if}.${vid}"
+		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
+		ip link set "${phys_lan_if}.${vid}" up
+		if [ "$switchpart" != "LLLLL" ]; then
+		    # in router mode isolate vlans
+		    echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
+		fi
+		# isolate lan
+		echo 1 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
+	    done
 	fi
     fi
 }
 
 stop() {
-    :
+    oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`
+    for iface in $oldlanvlans
+    do
+	# remove isolated vlans network interfaces
+	ip link set "$iface" down	> /dev/null 2>&1
+	brctl delif "$lan_if" "$iface"	> /dev/null 2>&1
+	vconfig rem "$iface"		> /dev/null 2>&1
+    done
 }
 
 case "$1" in

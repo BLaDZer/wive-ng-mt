@@ -11,15 +11,15 @@
 LOG="logger -t ESW"
 
 # get need variables
-eval `nvram_buf_get 2860 vlanDoubleTag ForceRenewDHCP`
+eval `nvram_buf_get 2860 vlanDoubleTag IsolatedVlans ForceRenewDHCP`
 
 ##########################################################################
 # Call this functions only if VLAN as WAN need
 ##########################################################################
 doublevlantag() {
-    if [ -f /proc/sys/net/core/vlanDoubleTag ]; then
+    if [ -f /proc/sys/net/core/vlan_double_tag ]; then
 	# always disabled in modes with all lan ports in one bridge
-        if [ "$vlanDoubleTag" = "1" -o "$VlanEnabled" = "1" ] && [ "$OperationMode" != "0" -a "$OperationMode" != "2" -a "$OperationMode" != "3" ]; then
+        if [ "$vlanDoubleTag" = "1" ] || [ "$VlanEnabled" = "1" ] || [ "$IsolatedVlans" != "" ]; then
 	    $LOG "Double vlan tag enabled."
 	    DOUBLE_TAG=1
 	else

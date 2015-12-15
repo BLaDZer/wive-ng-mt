@@ -1544,12 +1544,14 @@
 <b>3.8.x</b><br>
 1) miniupnpd: up to 1.9.20151212 version.<br>
 2) coovachilli: up to version 1.3.1.3 (commit: 9905271a).<br>
-3) init.d: if Lan2Wifi isolate and MBSSID isolate mode - enable full isolate MBSSID interfaces in bridge.<br>
-4) kernel: ralink_raeth: temp disable recive checksumm offload in MT7621 (break mroute).<br>
-5) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-6) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-7) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
-8) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+3) init.d: fix double vlan tag support.<br>
+4) init.d: if Lan2Wifi isolate and MBSSID isolate mode - enable full isolate MBSSID interfaces in bridge.<br>
+5) init.d: add support VLAN isolated GW to AP`s/ZONE support (isolated vlans for LAN in router mode and recive vlans for internet in AP mode).<br>
+6) kernel: ralink_raeth: temp disable recive checksumm offload in MT7621 (break mroute).<br>
+7) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
+8) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+9) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+10) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
 <br>
 <br>
 <br>
