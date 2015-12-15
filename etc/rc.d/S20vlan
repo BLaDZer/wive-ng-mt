@@ -67,6 +67,9 @@ start() {
 	# EVERY TIME RECONFIGURE
 	############################################
 	IsolatedVlans=`nvram_get 2860 IsolatedVlans | awk '{ gsub(","," "); print }'`
+	if [ "$switchpart" = "LLLLL" ]; then
+	    phys_lan_if="eth2"
+	fi
 	if [ "$IsolatedVlans" != "" ] && [ "$lan_if" = "br0" ]; then
 	    for vid in $IsolatedVlans
 	    do
@@ -88,6 +91,9 @@ start() {
 
 stop() {
     oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`
+    if [ "$switchpart" = "LLLLL" ]; then
+	phys_lan_if="eth2"
+    fi
     for iface in $oldlanvlans
     do
 	# remove isolated vlans network interfaces
