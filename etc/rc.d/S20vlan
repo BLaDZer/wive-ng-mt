@@ -81,9 +81,10 @@ start() {
 		if [ "$switchpart" != "LLLLL" ]; then
 		    # in router mode isolate vlans
 		    echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
+		else
+		    # ap mode need remove root interface from bridge
+		    brctl delif "$lan_if" "$phys_lan_if"
 		fi
-		# isolate lan
-		echo 1 > /sys/devices/virtual/net/$phys_lan_if/brport/isolate_mode
 	    done
 	fi
     fi
