@@ -1552,8 +1552,9 @@
 8) kernel: net: add validation for the socket syscall protocol argument.<br>
 9) kernel: net: ppp: define "ppp" device type.<br>
 10) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-11) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-12) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+11) kernel: net: pppox: use standard module auto-loading feature.<br>
+12) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+13) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
