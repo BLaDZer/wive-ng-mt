@@ -23,7 +23,7 @@ PHY_INT32 u3phy_init(){
 #ifndef CONFIG_PROJECT_PHY
 	PHY_INT32 u3phy_version;
 #endif
-	
+
 	u3phy = malloc(sizeof(struct u3phy_info));
 	if (u3phy == NULL)
 		return PHY_FALSE;
