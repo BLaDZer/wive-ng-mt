@@ -1553,11 +1553,12 @@
 9) kernel: usblp: do not set TASK_INTERRUPTIBLE before lock.<br>
 10) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
 11) kernel: net: add validation for the socket syscall protocol argument.<br>
-12) kernel: net: ppp: define "ppp" device type.<br>
-13) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-14) kernel: net: pppox: use standard module auto-loading feature.<br>
-15) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-16) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+12) kernel: net: tunnel: improve implement 64 bits statistics.<br>
+13) kernel: net: ppp: define "ppp" device type.<br>
+14) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+15) kernel: net: pppox: use standard module auto-loading feature.<br>
+16) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+17) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
