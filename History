@@ -1554,13 +1554,14 @@
 10) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
 11) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
 12) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-13) kernel: net: add validation for the socket syscall protocol argument.<br>
-14) kernel: net: tunnel: improve implement 64 bits statistics.<br>
-15) kernel: net: ppp: define "ppp" device type.<br>
-16) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-17) kernel: net: pppox: use standard module auto-loading feature.<br>
-18) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-19) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+13) kernel: net: qmi_wwan: support "raw IP" mode.<br>
+14) kernel: net: add validation for the socket syscall protocol argument.<br>
+15) kernel: net: tunnel: improve implement 64 bits statistics.<br>
+16) kernel: net: ppp: define "ppp" device type.<br>
+17) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+18) kernel: net: pppox: use standard module auto-loading feature.<br>
+19) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+20) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
