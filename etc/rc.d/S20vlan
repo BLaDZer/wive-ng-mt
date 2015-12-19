@@ -80,7 +80,6 @@ start() {
 	#############################################
 	LANVlans=`nvram_get 2860 LANVlans | awk '{ gsub(","," "); print }'`
 	if [ "$LANVlans" != "" ] && [ "$LANVlans" != "0" ] && [ "$lan_if" = "br0" ]; then
-	    LANVlansIsolate=`nvram_get 2860 LANVlansIsolate`
 	    if [ "$switchpart" = "LLLLL" ]; then
 		phys_lan_if="eth2"
 	    fi
@@ -91,16 +90,19 @@ start() {
 		set_vlan_map "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
-		if [ "$switchpart" != "LLLLL" ]; then
-		    if [ "$LANVlansIsolate" = "1" ]; then
-			# in router mode isolate vlans
-			echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
-		    fi
-		else
-		    $LOG "AP mode need remove root interface from bridge to work vlan"
-		    brctl delif "$lan_if" "$phys_lan_if"
-		fi
 	    done
+	    # in router mode allow isolate vlans
+	    if [ "$switchpart" != "LLLLL" ]; then
+		LANVlansIsolate=`nvram_get 2860 LANVlansIsolate | awk '{ gsub(","," "); print }'`
+		for vid in $LANVlansIsolate
+		do
+		    $LOG "VLAN ${phys_lan_if}.${vid} isolate from others in bridge."
+		    echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
+		done
+	    else
+		$LOG "AP mode need remove root interface from bridge to work vlan"
+		brctl delif "$lan_if" "$phys_lan_if"
+	    fi
 	fi
     fi
 }
