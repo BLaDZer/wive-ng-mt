@@ -1548,21 +1548,22 @@
 4) init.d: fix double vlan tag support.<br>
 5) init.d: if Lan2Wifi isolate and MBSSID isolate mode - enable full isolate MBSSID interfaces in bridge.<br>
 6) init.d: add support VLAN isolated GW to AP`s/ZONE support (isolated vlans for LAN in router mode and recive vlans for internet in AP mode).<br>
-7) kernel: ralink_raeth: temp disable recive checksumm offload in MT7621 (break mroute).<br>
-8) kernel: devres: fix devres_get().<br>
-9) kernel: usblp: do not set TASK_INTERRUPTIBLE before lock.<br>
-10) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
-11) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
-12) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-13) kernel: net: qmi_wwan: support "raw IP" mode.<br>
-14) kernel: net: add validation for the socket syscall protocol argument.<br>
-15) kernel: net: tunnels: improve implement 64 bits statistics.<br>
-16) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
-17) kernel: net: ppp: define "ppp" device type.<br>
-18) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-19) kernel: net: pppox: use standard module auto-loading feature.<br>
-20) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-21) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+7) init.d: refactoring VLAN for TV/SIP ports (split linked to esw vlans, bridge create and WAN/LAN vlans).<br>
+8) kernel: ralink_raeth: temp disable recive checksumm offload in MT7621 (break mroute).<br>
+9) kernel: devres: fix devres_get().<br>
+10) kernel: usblp: do not set TASK_INTERRUPTIBLE before lock.<br>
+11) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
+12) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
+13) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
+14) kernel: net: qmi_wwan: support "raw IP" mode.<br>
+15) kernel: net: add validation for the socket syscall protocol argument.<br>
+16) kernel: net: tunnels: improve implement 64 bits statistics.<br>
+17) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
+18) kernel: net: ppp: define "ppp" device type.<br>
+19) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+20) kernel: net: pppox: use standard module auto-loading feature.<br>
+21) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+22) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
