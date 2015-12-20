@@ -1559,14 +1559,15 @@
 16) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
 17) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
 18) kernel: net: qmi_wwan: support "raw IP" mode.<br>
-19) kernel: net: add validation for the socket syscall protocol argument.<br>
-20) kernel: net: tunnels: improve implement 64 bits statistics.<br>
-21) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
-22) kernel: net: ppp: define "ppp" device type.<br>
-23) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-24) kernel: net: pppox: use standard module auto-loading feature.<br>
-25) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-26) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+19) kernel: net: qmi_wwan: ignore bogus CDC Union descriptors.<br>
+20) kernel: net: add validation for the socket syscall protocol argument.<br>
+21) kernel: net: tunnels: improve implement 64 bits statistics.<br>
+22) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
+23) kernel: net: ppp: define "ppp" device type.<br>
+24) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+25) kernel: net: pppox: use standard module auto-loading feature.<br>
+26) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+27) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
