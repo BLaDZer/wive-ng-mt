@@ -1556,20 +1556,21 @@
 13) kernel: devres: fix devres_get().<br>
 14) kernel: usblp: do not set TASK_INTERRUPTIBLE before lock.<br>
 15) kernel: UBI: fix use of "VID" vs. "EC" in header self-check.<br>
-16) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
-17) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
-18) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-19) kernel: net: qmi_wwan: support "raw IP" mode.<br>
-20) kernel: net: qmi_wwan: ignore bogus CDC Union descriptors.<br>
-21) kernel: net: add validation for the socket syscall protocol argument.<br>
-22) kernel: net: tunnels: improve implement 64 bits statistics.<br>
-23) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
-24) kernel: net: ppp: define "ppp" device type.<br>
-25) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-26) kernel: net: pppox: use standard module auto-loading feature.<br>
-27) kernel: net: pptp: verify sockaddr_len in pptp_bind() and pptp_connect().<br>
-28) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-29) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+16) kernel: UBI: fix return error code.<br>
+17) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
+18) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
+19) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
+20) kernel: net: qmi_wwan: support "raw IP" mode.<br>
+21) kernel: net: qmi_wwan: ignore bogus CDC Union descriptors.<br>
+22) kernel: net: add validation for the socket syscall protocol argument.<br>
+23) kernel: net: tunnels: improve implement 64 bits statistics.<br>
+24) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
+25) kernel: net: ppp: define "ppp" device type.<br>
+26) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+27) kernel: net: pppox: use standard module auto-loading feature.<br>
+28) kernel: net: pptp: verify sockaddr_len in pptp_bind() and pptp_connect().<br>
+29) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+30) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
