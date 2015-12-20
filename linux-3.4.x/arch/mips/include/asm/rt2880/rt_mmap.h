@@ -212,6 +212,7 @@
 #define RALINK_UART_RST			(1<<12)
 #define RALINK_PIO_RST			(1<<13)
 #define RALINK_DMA_RST			(1<<14)
+#define RALINK_NAND_RST			(1<<15)
 #define RALINK_I2C_RST			(1<<16)
 #define RALINK_I2S_RST			(1<<17)
 #define RALINK_SPI_RST			(1<<18)
@@ -358,6 +359,7 @@
 #define RALINK_UART_RST			(1<<12)
 #define RALINK_PIO_RST			(1<<13)
 #define RALINK_DMA_RST			(1<<14)
+#define RALINK_NAND_RST			(1<<15)
 #define RALINK_I2C_RST			(1<<16)
 #define RALINK_I2S_RST			(1<<17)
 #define RALINK_SPI_RST			(1<<18)
@@ -374,10 +376,14 @@
 #define RALINK_PPE_RST			(1<<31)
 
 // Clock Conf Register
+#define RALINK_PCM_CLK_EN		(1<<11)
+#define RALINK_NAND_CLK_EN		(1<<15)
+#define RALINK_I2S_CLK_EN		(1<<17)
 #define RALINK_UPHY0_CLK_EN		(1<<25)
 #define RALINK_UPHY1_CLK_EN		(1<<22)
 #define RALINK_PCIE0_CLK_EN		(1<<26)
 #define RALINK_PCIE1_CLK_EN		(1<<27)
+#define RALINK_SDXC_CLK_EN		(1<<30)
 
 // CPU PLL CFG Register
 #define CPLL_SW_CONFIG			(0x1UL << 31)
@@ -484,11 +490,15 @@
 #define RALINK_PPE_RST			(1<<31)
 
 // Clock Conf Register
+#define RALINK_SPDIF_CLK_EN		(1<<7)
+#define RALINK_PCM_CLK_EN		(1<<11)
+#define RALINK_NAND_CLK_EN		(1<<15)
+#define RALINK_I2S_CLK_EN		(1<<17)
 #define RALINK_PCIE0_CLK_EN		(1<<24)
 #define RALINK_PCIE1_CLK_EN		(1<<25)
 #define RALINK_PCIE2_CLK_EN		(1<<26)
-//#define RALINK_UPHY0_CLK_EN		(1<<27)
-//#define RALINK_UPHY1_CLK_EN		(1<<28)
+#define RALINK_CRYPTO_CLK_EN		(1<<29)
+#define RALINK_SDXC_CLK_EN		(1<<30)
 
 // CPU PLL CFG Register
 #define CPLL_SW_CONFIG			(0x1UL << 31)
@@ -576,12 +586,17 @@
 #define RALINK_PCIE1_RST		(1<<27)
 #define RALINK_MIPS_CNT_RST		(1<<28)
 #define RALINK_CRYPTO_RST		(1<<29)
+#define RALINK_SDXC_RST			(1<<30)
 
 // Clock Conf Register
+#define RALINK_PCM_CLK_EN		(1<<11)
+#define RALINK_I2S_CLK_EN		(1<<17)
 #define RALINK_UPHY0_CLK_EN		(1<<25)
 #define RALINK_UPHY1_CLK_EN		(1<<22)
 #define RALINK_PCIE0_CLK_EN		(1<<26)
 #define RALINK_PCIE1_CLK_EN		(1<<27)
+#define RALINK_CRYPTO_CLK_EN		(1<<29)
+#define RALINK_SDXC_CLK_EN		(1<<30)
 
 // CPU PLL CFG Register
 #define CPLL_SW_CONFIG			(0x1UL << 31)
