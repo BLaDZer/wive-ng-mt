@@ -437,7 +437,7 @@ static void msdc_set_mclk(struct msdc_host *host, int ddr, unsigned int hz)
     u32 hclk = host->hclk;
 
     if (!hz) { // set mmc system clock to 0 ?
-        ERR_MSG("set mclk to 0!!!");
+        N_MSG(FUC, "set mclk to 0!!!");
         msdc_reset();
         return;
     }
@@ -1334,7 +1334,7 @@ static int msdc_tune_cmdrsp(struct msdc_host*host, struct mmc_command *cmd)
                 }
             }
             result = msdc_do_command(host, cmd, 0, CMD_TIMEOUT); // not tune.
-            ERR_MSG("TUNE_CMD<%d> %s PAD_CMD_RESP_RXDLY[26:22]<%d> R_SMPL[1]<%d>", cmd->opcode,
+            N_MSG(OPS, "TUNE_CMD<%d> %s PAD_CMD_RESP_RXDLY[26:22]<%d> R_SMPL[1]<%d>", cmd->opcode,
                        (result == 0) ? "PASS" : "FAIL", cur_rrdly, cur_rsmpl);
 
             if (result == 0) {
@@ -1401,7 +1401,7 @@ static int msdc_tune_bread(struct mmc_host *mmc, struct mmc_request *mrq)
 
             sdr_get_field(SDC_DCRC_STS, SDC_DCRC_STS_POS|SDC_DCRC_STS_NEG, dcrc); /* RO */
             if (!ddr) dcrc &= ~SDC_DCRC_STS_NEG;
-            ERR_MSG("TUNE_BREAD<%s> dcrc<0x%x> DATRDDLY0/1<0x%x><0x%x> dsmpl<0x%x>",
+            N_MSG(OPS, "TUNE_BREAD<%s> dcrc<0x%x> DATRDDLY0/1<0x%x><0x%x> dsmpl<0x%x>",
                         (result == 0 && dcrc == 0) ? "PASS" : "FAIL", dcrc,
                         sdr_read32(MSDC_DAT_RDDLY0), sdr_read32(MSDC_DAT_RDDLY1), cur_dsmpl);
 
@@ -1411,7 +1411,7 @@ static int msdc_tune_bread(struct mmc_host *mmc, struct mmc_request *mrq)
             } else {
                 /* there is a case: command timeout, and data phase not processed */
                 if (mrq->data->error != 0 && mrq->data->error != (unsigned int)(-EIO)) {
-                    ERR_MSG("TUNE_READ: result<0x%x> cmd_error<%d> data_error<%d>", 
+                    ERR_MSG("TUNE_BREAD: result<0x%x> cmd_error<%d> data_error<%d>", 
                                result, mrq->cmd->error, mrq->data->error);
                     goto done;
                 }
@@ -1526,7 +1526,7 @@ static int msdc_tune_bwrite(struct mmc_host *mmc,struct mmc_request *mrq)
                 }
                 result = msdc_do_request(mmc,mrq);
 
-                ERR_MSG("TUNE_BWRITE<%s> DSPL<%d> DATWRDLY<%d> MSDC_DAT_RDDLY0<0x%x>", 
+                N_MSG(OPS, "TUNE_BWRITE<%s> DSPL<%d> DATWRDLY<%d> MSDC_DAT_RDDLY0<0x%x>", 
                           result == 0 ? "PASS" : "FAIL", 
                           cur_dsmpl, cur_wrrdly, cur_rxdly0);
 
@@ -1536,7 +1536,7 @@ static int msdc_tune_bwrite(struct mmc_host *mmc,struct mmc_request *mrq)
                 else {
                     /* there is a case: command timeout, and data phase not processed */
                     if (mrq->data->error != (unsigned int)(-EIO)) {
-                        ERR_MSG("TUNE_READ: result<0x%x> cmd_error<%d> data_error<%d>", 
+                        ERR_MSG("TUNE_BWRITE: result<0x%x> cmd_error<%d> data_error<%d>", 
                                    result, mrq->cmd->error, mrq->data->error);
                         goto done;
                     }
@@ -2246,6 +2246,9 @@ static int msdc_drv_probe(struct platform_device *pdev)
         return -EBUSY;
     }
 
+    if (hw->ext_power_on)
+        hw->ext_power_on();
+
     /* Set host parameters to mmc */
     mmc->ops        = &mt_msdc_ops;
     mmc->f_min      = HOST_MIN_MCLK;
@@ -2367,6 +2370,9 @@ release:
     if (mem)
         release_mem_region(mem->start, mem->end - mem->start + 1);
 
+    if (hw->ext_power_off)
+        hw->ext_power_off();
+
     mmc_free_host(mmc);
 
     return ret;
@@ -2376,6 +2382,7 @@ release:
 static int msdc_drv_remove(struct platform_device *pdev)
 {
     struct mmc_host *mmc;
+    struct msdc_hw *hw;
     struct msdc_host *host;
     struct resource *mem;
 
@@ -2384,6 +2391,8 @@ static int msdc_drv_remove(struct platform_device *pdev)
 
     host = mmc_priv(mmc);
     BUG_ON(!host);
+
+    hw = (struct msdc_hw*)pdev->dev.platform_data;
 
     INIT_MSG("removed !!!");
 
@@ -2401,6 +2410,9 @@ static int msdc_drv_remove(struct platform_device *pdev)
     mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
     if (mem)
         release_mem_region(mem->start, mem->end - mem->start + 1);
+
+    if (hw->ext_power_off)
+        hw->ext_power_off();
 
     mmc_free_host(host->mmc);
 
@@ -2466,7 +2478,7 @@ static int __init mt_msdc_init(void)
 
 #if defined (CONFIG_MTD_NAND_RALINK) || defined (CONFIG_MTD_NAND_MTK)
     printk("%s: SDXC not work concurrent with NAND flash!\n", __func__);
-    return 0;
+    return -EIO;
 #endif
 
     reg = sdr_read32((volatile u32*)(RALINK_SYSCTL_BASE + 0x60));
