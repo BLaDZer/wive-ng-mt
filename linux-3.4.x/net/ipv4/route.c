@@ -2279,7 +2279,7 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
 					  net->loopback_dev->ifindex,
 					  dev, &spec_dst, &itag);
 		if (err < 0)
-			goto martian_source_keep_err;
+			goto martian_source;
 		if (err)
 			flags |= RTCF_DIRECTSRC;
 		spec_dst = daddr;
@@ -2306,7 +2306,7 @@ brd_input:
 		err = fib_validate_source(skb, saddr, 0, tos, 0, dev, &spec_dst,
 					  &itag);
 		if (err < 0)
-			goto martian_source_keep_err;
+			goto martian_source;
 		if (err)
 			flags |= RTCF_DIRECTSRC;
 	}
@@ -2387,8 +2387,6 @@ e_nobufs:
 	goto out;
 
 martian_source:
-	err = -EINVAL;
-martian_source_keep_err:
 	ip_handle_martian_source(dev, in_dev, skb, daddr, saddr);
 	goto out;
 }
