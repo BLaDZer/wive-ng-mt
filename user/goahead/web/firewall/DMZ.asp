@@ -60,6 +60,7 @@ function initTranslation()
 	_TR("dmzDisable2", "button disable");
 	_TR("dmzEnable2", "button enable");
 	_TR("dmzIPAddr", "dmz ipaddr");
+  _TR("bridge_warning", "firewall bridge warning");
 
 	_TRV("dmzApply", "button apply");
 	_TRV("dmzReset", "button reset");
@@ -71,6 +72,9 @@ function pageInit()
 
 	initTranslation();
 	var dmz_loopback = "<% getCfgZero(1, "DMZNATLoopback"); %>";
+	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+
+	displayElement('bridge_warning', opmode == '0'); // bridge mode
 
 	form.dmzLoopback.value = dmz_loopback;
 	dmzEnableSwitch(form);
@@ -101,7 +105,9 @@ function resetClick(form) {
 <table class="body">
   <tr>
     <td><h1 id="dmzTitle"> DMZ Settings </h1>
-      <% checkIfUnderBridgeModeASP(); %>
+      <div style="display:none;" id="bridge_warning">
+        <p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
+      </div>
       <p id="dmzIntroduction"> Here you can setup the De-Militarized Zone (DMZ) to separate your external services from the rest of LAN.</p>
       <hr>
       <form method="POST" name="DMZ" action="/goform/DMZ">

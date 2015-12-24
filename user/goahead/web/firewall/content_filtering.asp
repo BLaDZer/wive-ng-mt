@@ -98,6 +98,9 @@ function initValues()
 
 	var urls = '<% getCfgGeneral(1, "websURLFilters"); %>';
 	var hosts = '<% getCfgGeneral(1, "websHostFilters"); %>';
+	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+
+	displayElement('bridge_warning', opmode == '0'); // bridge mode
 
 	addAllRules(urls, 'url');
 	addAllRules(hosts, 'host');
@@ -146,6 +149,7 @@ function initTranslation()
   	_TR("websFilter_java", "content filter webs content filter java");
   	_TR("websFilter_activex", "content filter webs content filter activex");
   	_TR("WebsBlockingRules", "content filter webs blocking rules");
+  	_TR("bridge_warning", "firewall bridge warning");
 
 	_TRV("ContentFilterApply", "button apply");
 }
@@ -156,7 +160,9 @@ function initTranslation()
 <table class="body">
   <tr>
     <td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
-      <% checkIfUnderBridgeModeASP(); %>
+      <div style="display:none;" id="bridge_warning">
+      	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
+      </div>
       <p id="ContentFilterIntrodution">Here you can setup Content Filter to restrict access to unwanted content.</p>
       <hr>
       <form action="/goform/webContentFilterSetup" method="POST" name="websContentFilterSetup" onSubmit="return submitForm(this);">
