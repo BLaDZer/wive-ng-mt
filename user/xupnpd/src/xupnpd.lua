@@ -83,7 +83,7 @@ feeds=
 }
 
 -- log ident, pid file end www root
-cfg.version='1.033'
+cfg.version='1.034'
 cfg.log_ident=arg[1] or 'xupnpd'
 cfg.pid_file='/var/run/'..cfg.log_ident..'.pid'
 cfg.tmp_path='/tmp/'
