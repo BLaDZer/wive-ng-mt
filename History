@@ -1560,19 +1560,20 @@
 17) kernel: usb: fix invalid memory access in hub_activate().<br>
 18) kernel: net: remove martian_source_keep_err goto label.<br>
 19) kernel: net: cdc_mbim: add "NDP to end" quirk for Huawei E3372.<br>
-20) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
-21) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
-22) kernel: net: qmi_wwan: support "raw IP" mode.<br>
-23) kernel: net: qmi_wwan: ignore bogus CDC Union descriptors.<br>
-24) kernel: net: add validation for the socket syscall protocol argument.<br>
-25) kernel: net: tunnels: improve implement 64 bits statistics.<br>
-26) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
-27) kernel: net: ppp: define "ppp" device type.<br>
-28) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
-29) kernel: net: pppox: use standard module auto-loading feature.<br>
-30) kernel: net: pptp: verify sockaddr_len in pptp_bind() and pptp_connect().<br>
-31) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
-32) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+20) kernel: net: usb: cdc_ncm: Adding Dell DW5812 LTE Verizon/DW5813 LTE AT&T Mobile Broadband Card.<br>
+21) kernel: net: qmi_wwan: MDM9x30 specific power management.<br>
+22) kernel: net: qmi_wwan: remove 1199:9070 device id.<br>
+23) kernel: net: qmi_wwan: support "raw IP" mode.<br>
+24) kernel: net: qmi_wwan: ignore bogus CDC Union descriptors.<br>
+25) kernel: net: add validation for the socket syscall protocol argument.<br>
+26) kernel: net: tunnels: improve implement 64 bits statistics.<br>
+27) kernel: net: tun: honor IFF_UP in tun_get_user().<br>
+28) kernel: net: ppp: define "ppp" device type.<br>
+29) kernel: net: pppoe: fix memory corruption in padt work structure.<br>
+30) kernel: net: pppox: use standard module auto-loading feature.<br>
+31) kernel: net: pptp: verify sockaddr_len in pptp_bind() and pptp_connect().<br>
+32) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
+33) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 <br>
 <br>
 <br>
