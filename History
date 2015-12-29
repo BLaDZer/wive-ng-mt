@@ -1579,6 +1579,7 @@
 35) kernel: net: af_packet: fix match_fanout_group().<br>
 36) kernel: net: fix __netdev_update_features return on ndo_set_features failure.<br>
 37) kernel: net: scm: fix PaX detected msg_controllen overflow in scm_detach_fds.<br>
+38) kernel: net: snmp: Remove duplicate OUTMCAST stat increment.<br>
 <br>
 <br>
 <br>
