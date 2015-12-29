@@ -1575,6 +1575,7 @@
 31) kernel: net: pptp: verify sockaddr_len in pptp_bind() and pptp_connect().<br>
 32) kernel: net: ipv6: restrict hop_limit sysctl setting to range [1; 255].<br>
 33) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
+34) kernel: net: af_unix: avoid use-after-free in ep_remove_wait_queue.<br>
 <br>
 <br>
 <br>
