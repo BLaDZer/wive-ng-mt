@@ -1577,6 +1577,7 @@
 33) kernel: net: ipv6: only act upon NETDEV_*_TYPE_CHANGE if we have ipv6 addresses.<br>
 34) kernel: net: af_unix: avoid use-after-free in ep_remove_wait_queue.<br>
 35) kernel: net: af_packet: fix match_fanout_group().<br>
+36) kernel: net: fix __netdev_update_features return on ndo_set_features failure.<br>
 <br>
 <br>
 <br>
