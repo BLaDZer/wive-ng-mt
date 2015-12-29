@@ -1582,6 +1582,7 @@
 38) kernel: net: snmp: Remove duplicate OUTMCAST stat increment.<br>
 39) kernel: net: ip6mr: call del_timer_sync() in ip6mr_free_table().<br>
 40) kernel: sched/core: remove false-positive warning from wake_up_process().<br>
+41) kernel: sched/core: clear the root_domain cpumasks in init_rootdomain().<br>
 <br>
 <br>
 <br>
