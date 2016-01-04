@@ -1584,9 +1584,12 @@
 40) kernel: net: scm: fix PaX detected msg_controllen overflow in scm_detach_fds.<br>
 41) kernel: net: snmp: Remove duplicate OUTMCAST stat increment.<br>
 42) kernel: net: ip6mr: call del_timer_sync() in ip6mr_free_table().<br>
-43) kernel: sched/core: remove false-positive warning from wake_up_process().<br>
-44) kernel: sched/core: clear the root_domain cpumasks in init_rootdomain().<br>
-45) kernel: fuse: break infinite loop in fuse_fill_write_pages().<br>
+43) kernel: net: fix regression in short UDP reads caused by "net: Fix skb csum races when peeking".<br>
+44) kernel: net: revert "net: add length argument to skb_copy_and_csum_datagram_iovec".<br>
+45) kernel: net: udp: properly support MSG_PEEK with truncated buffers.<br>
+46) kernel: sched/core: remove false-positive warning from wake_up_process().<br>
+47) kernel: sched/core: clear the root_domain cpumasks in init_rootdomain().<br>
+48) kernel: fuse: break infinite loop in fuse_fill_write_pages().<br>
 <br>
 <br>
 <br>
