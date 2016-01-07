@@ -124,13 +124,14 @@ comment 'Ralink RT288x Application'
 
 bool 'RT288x Application'		CONFIG_RT2880_APP
 if [ "$CONFIG_RT2880_APP" = "y" ]; then
-bool 'RT2880 Register R/W'		CONFIG_RT2880_REG_RW
-bool 'RT2880 MiiMgr '			CONFIG_RT2880_MII_MGR
-bool 'RT2880 NVRAM'			CONFIG_RT2880_NVRAM
-bool 'RT2880 MTD Application'		CONFIG_RT2880_MTD
-bool 'RT2880 eth_mac Tool'		CONFIG_ETHMAC_TOOL
-bool 'RT2880 GPIO Test'			CONFIG_RT2880_GPIO_TEST
-bool 'HW NAT'                   	CONFIG_RALINKAPP_HWNAT
+bool 'Register R/W'			CONFIG_RT2880_REG_RW
+bool 'MiiMgr'				CONFIG_RT2880_MII_MGR
+bool 'NVRAM'				CONFIG_RT2880_NVRAM
+bool 'MTD Application'			CONFIG_RT2880_MTD
+bool 'GPIO Test'			CONFIG_RT2880_GPIO_TEST
+bool 'eth_mac Tool'			CONFIG_ETHMAC_TOOL
+bool 'HW NAT'				CONFIG_RALINKAPP_HWNAT
+bool 'QDMA'				CONFIG_RALINKAPP_QDMA
 bool 'ATE Agent'			CONFIG_RALINKAPP_ATED
 if [ "$CONFIG_RALINKAPP_HWNAT" = "y" ]; then
     bool 'HW NAT Accounting'		CONFIG_RALINKAPP_HWNAT_AC

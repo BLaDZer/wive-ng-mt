@@ -43,6 +43,9 @@ ra_dir_$(CONFIG_RTESW_SWITCH)       += switch
 ra_dir_$(CONFIG_ETHMAC_TOOL)        += eth_mac
 ra_dir_$(CONFIG_RALINKAPP_HWNAT)    += hw_nat
 ra_dir_$(CONFIG_RALINKAPP_ATED)     += ated
+ifdef CONFIG_RAETH_QDMA
+ra_dir_$(CONFIG_RALINKAPP_QDMA)     += qdma
+endif
 
 #always install radio firmware
 ra_dir_y			    += rt_firmware

@@ -112,7 +112,6 @@ ifdef CONFIG_RALINK_MT7621
 dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
 
-
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \
