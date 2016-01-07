@@ -1596,10 +1596,11 @@
 <b>3.9.x</b><br>
 1) coovachilli: up to version 1.3.1.3 (commit: dd05c1b3).<br>
 2) dropbear: up to 2015.71 version.<br>
-3) ethtool: up to 4.2 version.<br>
-4) irqbalance: update to 16.12.2015 git version.<br>
-5) build_system: add qdma tool (need for hw_qos support in future).<br>
-6) kernel: ralink_raeth: switch to qdma for MT7621.<br>
+3) dropbear: small revert fix regression break work in inetd mode.<br>
+4) ethtool: up to 4.2 version.<br>
+5) irqbalance: update to 16.12.2015 git version.<br>
+6) build_system: add qdma tool (need for hw_qos support in future).<br>
+7) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 <br>
 <br>
 <br>
