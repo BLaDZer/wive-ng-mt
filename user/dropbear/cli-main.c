@@ -73,7 +73,8 @@ int main(int argc, char ** argv) {
 	} else
 #endif
 	{
-		progress = connect_remote(cli_opts.remotehost, cli_opts.remoteport, cli_connected, &ses);
+		progress = connect_remote(cli_opts.ipfamily, cli_opts.remotehost,
+				cli_opts.remoteport, cli_connected, &ses);
 		sock_in = sock_out = -1;
 	}
 

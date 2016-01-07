@@ -129,8 +129,8 @@ static void connect_try_next(struct dropbear_progress_connection *c) {
 }
 
 /* Connect via TCP to a host. */
-struct dropbear_progress_connection *connect_remote(const char* remotehost, const char* remoteport,
-	connect_callback cb, void* cb_data)
+struct dropbear_progress_connection *connect_remote(int family, const char* remotehost,
+	const char* remoteport, connect_callback cb, void* cb_data)
 {
 	struct dropbear_progress_connection *c = NULL;
 	int err;
@@ -147,7 +147,7 @@ struct dropbear_progress_connection *connect_remote(const char* remotehost, cons
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_family = AF_UNSPEC;
+	hints.ai_family = family;
 
 	err = getaddrinfo(remotehost, remoteport, &hints, &c->res);
 	if (err) {
@@ -354,7 +354,7 @@ void set_sock_priority(int sock, enum dropbear_prio prio) {
  * Returns the number of sockets bound on success, or -1 on failure. On
  * failure, if errstring wasn't NULL, it'll be a newly malloced error
  * string.*/
-int dropbear_listen(const char* address, const char* port,
+int dropbear_listen(int family, const char* address, const char* port,
 		int *socks, unsigned int sockcount, char **errstring, int *maxfd) {
 
 	struct addrinfo hints, *res = NULL, *res0 = NULL;
@@ -367,7 +367,7 @@ int dropbear_listen(const char* address, const char* port,
 	TRACE(("enter dropbear_listen"))
 	
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC; /* TODO: let them flag v4 only etc */
+	hints.ai_family = family;
 	hints.ai_socktype = SOCK_STREAM;
 
 	/* for calling getaddrinfo:

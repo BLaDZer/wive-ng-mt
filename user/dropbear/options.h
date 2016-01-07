@@ -96,8 +96,9 @@ much traffic. */
  * Including multiple keysize variants the same cipher 
  * (eg AES256 as well as AES128) will result in a minimal size increase.*/
 #define DROPBEAR_AES128
-/* #define DROPBEAR_3DES */
+#define DROPBEAR_3DES
 #define DROPBEAR_AES256
+/* Compiling in Blowfish will add ~6kB to runtime heap memory usage */
 /*#define DROPBEAR_BLOWFISH*/
 /*#define DROPBEAR_TWOFISH256*/
 /*#define DROPBEAR_TWOFISH128*/
@@ -149,13 +150,12 @@ If you test it please contact the Dropbear author */
  * for hostkey as well as for verifying signatures with pubkey auth.
  * Removing either of these won't save very much space.
  * SSH2 RFC Draft requires dss, recommends rsa */
-#undef DROPBEAR_RSA
+#define DROPBEAR_RSA
 #define DROPBEAR_DSS
-
 /* ECDSA is significantly faster than RSA or DSS. Compiling in ECC
  * code (either ECDSA or ECDH) increases binary size - around 30kB
  * on x86-64 */
-#undef DROPBEAR_ECDSA
+#define DROPBEAR_ECDSA
 
 /* Generate hostkeys as-needed when the first connection using that key type occurs.
    This avoids the need to otherwise run "dropbearkey" and avoids some problems
@@ -171,7 +171,7 @@ If you test it please contact the Dropbear author */
 
 /* Enable elliptic curve Diffie Hellman key exchange, see note about
  * ECDSA above */
-#undef DROPBEAR_ECDH
+#define DROPBEAR_ECDH
 
 /* Control the memory/performance/compression tradeoff for zlib.
  * Set windowBits=8 for least memory usage, see your system's

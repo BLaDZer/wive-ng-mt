@@ -80,6 +80,9 @@ static void printhelp(const char * progname) {
 					"-k		Disable remote port forwarding\n"
 					"-a		Allow connections to forwarded ports from any host\n"
 #endif
+#if defined AF_INET6 && AF_INET6 < AF_MAX
+					"-4,-6		Explicitly force IPv4 or IPv6 usage\n"
+#endif
 					"-p [address:]port\n"
 					"		Listen on specified tcp port (and optionally address),\n"
 					"		up to %d can be specified\n"
@@ -149,11 +152,7 @@ void svr_getopts(int argc, char ** argv) {
 	opts.compress_mode = DROPBEAR_COMPRESS_ON;
 #endif
 #endif 
-
-	/* not yet
-	opts.ipv4 = 1;
-	opts.ipv6 = 1;
-	*/
+	svr_opts.ipfamily = AF_UNSPEC;
 #ifdef DO_MOTD
 	svr_opts.domotd = 1;
 #endif
@@ -208,6 +207,14 @@ void svr_getopts(int argc, char ** argv) {
 #ifdef INETD_MODE
 				case 'i':
 					svr_opts.inetdmode = 1;
+					break;
+#endif
+#if defined AF_INET6 && AF_INET6 < AF_MAX
+				case '4':
+					svr_opts.ipfamily = AF_INET;
+					break;
+				case '6':
+					svr_opts.ipfamily = AF_INET6;
 					break;
 #endif
 				case 'p':

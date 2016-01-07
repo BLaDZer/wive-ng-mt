@@ -111,6 +111,6 @@ int curve25519_donna(unsigned char *out, const unsigned char *secret, const unsi
 #endif
 
 
-#define MAX_KEXHASHBUF 2000
+#define MAX_KEXHASHBUF 3000
 
 #endif /* DROPBEAR_KEX_H_ */

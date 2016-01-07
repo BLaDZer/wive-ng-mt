@@ -270,7 +270,8 @@ static int newtcpdirect(struct Channel * channel) {
 	}
 
 	snprintf(portstring, sizeof(portstring), "%d", destport);
-	channel->conn_pending = connect_remote(desthost, portstring, channel_connect_done, channel);
+	channel->conn_pending = connect_remote(AF_UNSPEC, desthost, portstring,
+					channel_connect_done, channel);
 
 	channel->prio = DROPBEAR_CHANNEL_PRIO_UNKNOWABLE;
 	
