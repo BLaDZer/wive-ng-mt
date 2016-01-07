@@ -375,6 +375,7 @@ fulldump
 /user/lldpd/osx/Makefile
 /user/lldpd/tests/Makefile
 /user/netcwmp/tests/src/Makefile
+/user/ethtool/ethtool-config.h.in~
 
 #
 # exclude enerated files from kernel
