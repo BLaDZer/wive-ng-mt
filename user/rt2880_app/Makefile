@@ -1,13 +1,11 @@
 .EXPORT_ALL_VARIABLES:
 
-SUBDIRS_APP := mii_mgr nvram reg switch gpio mtd hw_nat switch_rtl eth_mac
-ifdef CONFIG_RALINKAPP_ATED
-SUBDIRS_APP += ated
-endif
-
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
+
+#for all cleanap
+SUBDIRS_APP = $(shell LC_ALL=C; ls)
 
 #allways agressive optimize for size
 CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables -femit-struct-debug-baseonly -fno-var-tracking
@@ -54,4 +52,4 @@ all romfs:
 	for i in $(ra_dir_y) ; do make -C $$i $@ || exit $?; done
 
 clean:
-	for i in $(SUBDIRS_APP) ; do make -C $$i clean ; done
+	-for i in $(SUBDIRS_APP) ; do make -C $$i clean ; done
