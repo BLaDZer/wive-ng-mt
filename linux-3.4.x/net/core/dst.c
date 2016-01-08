@@ -273,7 +273,7 @@ void dst_release(struct dst_entry *dst)
 
 		newrefcnt = atomic_dec_return(&dst->__refcnt);
 		WARN_ON(newrefcnt < 0);
-		if (!newrefcnt && unlikely(nocache))
+		if (!newrefcnt && unlikely(nocache)) {
 			dst = dst_destroy(dst);
 			if (dst)
 				__dst_free(dst);
