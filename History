@@ -1606,8 +1606,9 @@
 10) build_system: add qdma tool (need for hw_qos support in future).<br>
 11) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 12) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
-13) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
-14) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+13) kernel: tty: Fix GPF in flush_to_ldisc().<br>
+14) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
+15) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
 <br>
 <br>
 <br>
