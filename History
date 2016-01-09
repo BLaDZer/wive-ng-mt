@@ -1607,15 +1607,16 @@
 12) build_system: add qdma tool (need for hw_qos support in future).<br>
 13) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 14) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-15) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
-16) kernel: tty: Fix GPF in flush_to_ldisc().<br>
-17) kernel: net: qmi_wwan: Add WeTelecom-WPD600N.<br>
-18) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-19) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
-20) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-21) kernel: net: possible use after free in dst_release.<br>
-22) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-23) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+15) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+16) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
+17) kernel: tty: Fix GPF in flush_to_ldisc().<br>
+18) kernel: net: qmi_wwan: Add WeTelecom-WPD600N.<br>
+19) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+20) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
+21) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+22) kernel: net: possible use after free in dst_release.<br>
+23) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+24) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
 <br>
 <br>
 <br>
