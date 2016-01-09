@@ -1613,6 +1613,7 @@
 18) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
 19) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
 20) kernel: net: possible use after free in dst_release.<br>
+21) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
 <br>
 <br>
 <br>
