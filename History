@@ -1600,16 +1600,17 @@
 4) dropbear: fix signature check.<br>
 5) dropbear: increase kex hash cache size.<br>
 6) dropbear: allow 3des,rsa,ecdsa,ecdh for compat.<br>
-7) coovachilli: up to version 1.3.1.3 (commit: dd05c1b3).<br>
-8) ethtool: up to 4.2 version.<br>
-9) irqbalance: update to 16.12.2015 git version.<br>
-10) build_system: add qdma tool (need for hw_qos support in future).<br>
-11) kernel: ralink_raeth: switch to qdma for MT7621.<br>
-12) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
-13) kernel: tty: Fix GPF in flush_to_ldisc().<br>
-14) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
-15) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-16) kernel: net: possible use after free in dst_release.<br>
+7) iptables: some upstream backports.<br>
+8) coovachilli: up to version 1.3.1.3 (commit: dd05c1b3).<br>
+9) ethtool: up to 4.2 version.<br>
+10) irqbalance: update to 16.12.2015 git version.<br>
+12) build_system: add qdma tool (need for hw_qos support in future).<br>
+13) kernel: ralink_raeth: switch to qdma for MT7621.<br>
+14) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
+15) kernel: tty: Fix GPF in flush_to_ldisc().<br>
+16) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
+17) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+18) kernel: net: possible use after free in dst_release.<br>
 <br>
 <br>
 <br>
