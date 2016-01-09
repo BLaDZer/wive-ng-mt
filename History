@@ -1608,9 +1608,10 @@
 13) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 14) kernel: crypto: skcipher - Copy iv from desc even for 0-len walks.<br>
 15) kernel: tty: Fix GPF in flush_to_ldisc().<br>
-16) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
-17) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-18) kernel: net: possible use after free in dst_release.<br>
+16) kernel: net: qmi_wwan: Add WeTelecom-WPD600N.<br>
+17) kernel: net/core: revert net: fix__netdev_update_features return.. and add comment.<br>
+18) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+19) kernel: net: possible use after free in dst_release.<br>
 <br>
 <br>
 <br>
