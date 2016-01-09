@@ -422,26 +422,6 @@ Numerical UID for ownership of /proc/net/xt_recent/* files.
 .TP
 \fBip_list_gid\fP=\fI0\fP
 Numerical GID for ownership of /proc/net/xt_recent/* files.
-.SS rt (IPv6-specific)
-Match on IPv6 routing header
-.TP
-[\fB!\fP] \fB\-\-rt\-type\fP \fItype\fP
-Match the type (numeric).
-.TP
-[\fB!\fP] \fB\-\-rt\-segsleft\fP \fInum\fP[\fB:\fP\fInum\fP]
-Match the `segments left' field (range).
-.TP
-[\fB!\fP] \fB\-\-rt\-len\fP \fIlength\fP
-Match the length of this header.
-.TP
-\fB\-\-rt\-0\-res\fP
-Match the reserved field, too (type=0)
-.TP
-\fB\-\-rt\-0\-addrs\fP \fIaddr\fP[\fB,\fP\fIaddr\fP...]
-Match type=0 addresses (list).
-.TP
-\fB\-\-rt\-0\-not\-strict\fP
-List of type=0 addresses is not a strict list.
 .SS state
 The "state" module is an obsolete version of "conntrack".
 "state" allows access to the connection tracking state for this packet.
