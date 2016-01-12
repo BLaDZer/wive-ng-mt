@@ -1609,18 +1609,19 @@
 14) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
 15) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 16) kernel: ralink_raeth: raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
-17) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-18) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-19) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-20) kernel: tty: fix GPF in flush_to_ldisc().<br>
-21) kernel: net: qmi_wwan: Add WeTelecom-WPD600N.<br>
-22) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-23) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
-24) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-25) kernel: net: possible use after free in dst_release.<br>
-26) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-27) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-28) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+17) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
+18) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+19) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+20) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+21) kernel: tty: fix GPF in flush_to_ldisc().<br>
+22) kernel: net: qmi_wwan: Add WeTelecom-WPD600N.<br>
+23) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+24) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
+25) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+26) kernel: net: possible use after free in dst_release.<br>
+27) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+28) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+29) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
 <br>
 <br>
 <br>
