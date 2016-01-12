@@ -1618,6 +1618,7 @@
 23) kernel: net: possible use after free in dst_release.<br>
 24) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
 25) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+26) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
 <br>
 <br>
 <br>
