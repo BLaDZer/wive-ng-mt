@@ -1617,15 +1617,16 @@
 21) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
 22) kernel: tty: fix GPF in flush_to_ldisc().<br>
 23) kernel: mmc: upstream updates.<br>
-24) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
-25) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-26) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-27) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-28) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-29) kernel: net: possible use after free in dst_release.<br>
-30) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-31) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-32) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+24) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+25) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
+26) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+27) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+28) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+29) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+30) kernel: net: possible use after free in dst_release.<br>
+31) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+32) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+33) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
 <br>
 <br>
 <br>
