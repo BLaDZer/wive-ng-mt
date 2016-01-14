@@ -1,14 +1,15 @@
 #! /bin/sh
-# $Id: genconfig.sh,v 1.85 2015/12/12 08:18:19 nanard Exp $
+# $Id: genconfig.sh,v 1.87 2016/01/01 11:16:29 nanard Exp $
 # miniupnp daemon
 # http://miniupnp.free.fr or http://miniupnp.tuxfamily.org/
 # (c) 2006-2015 Thomas Bernard
 # This software is subject to the conditions detailed in the
 # LICENCE file provided within the distribution
 
-# default to UPnP Device Architecture (UDA) v2.0
-UPNP_VERSION_MAJOR=1 # orig 2 workaround for Windown 10
-UPNP_VERSION_MINOR=1 # orig 0 workaround for Windown 10
+# default to UPnP Device Architecture (UDA) v1.1
+# some control points do not like UDA v2.0
+UPNP_VERSION_MAJOR=1
+UPNP_VERSION_MINOR=1
 
 for argv; do
 case "$argv" in
@@ -28,6 +29,7 @@ case "$argv" in
 			echo "UPnP Version invalid in option $argv"
 			exit 1
 		fi ;;
+	--disable-pppconn) DISABLEPPPCONN=1 ;;
 	--help|-h)
 		echo "Usage : $0 [options]"
 		echo " --ipv6      enable IPv6"
@@ -38,6 +40,7 @@ case "$argv" in
 		echo " --pcp-peer  enable PCP PEER operation"
 		echo " --portinuse enable port in use check"
 		echo " --uda-version=x.x  set advertised UPnP version (default to ${UPNP_VERSION_MAJOR}.${UPNP_VERSION_MINOR})"
+		echo " --disable-pppconn  disable WANPPPConnection"
 		exit 1
 		;;
 	*)
@@ -439,6 +442,15 @@ echo " * Enabling the Layer3Forwarding Service seems to be the more compatible" 
 echo " * option. */" >> ${CONFIGFILE}
 echo "/*#define HAS_DUMMY_SERVICE*/" >> ${CONFIGFILE}
 echo "#define ENABLE_L3F_SERVICE" >> ${CONFIGFILE}
+echo "" >> ${CONFIGFILE}
+
+echo "/* define ADVERTISE_WANPPPCONN to allow buggy Control Point to use" >> ${CONFIGFILE}
+echo " * WANPPPConnection instead of WANIPConnection. */" >>  ${CONFIGFILE}
+if [ -n "$STRICT" ] || [ -n "$DISABLEPPPCONN" ] ; then
+	echo "/*#define ADVERTISE_WANPPPCONN*/" >> ${CONFIGFILE}
+else
+	echo "#define ADVERTISE_WANPPPCONN" >> ${CONFIGFILE}
+fi
 echo "" >> ${CONFIGFILE}
 
 echo "/* Enable IP v6 support */" >> ${CONFIGFILE}

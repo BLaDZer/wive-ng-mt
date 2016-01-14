@@ -1,4 +1,4 @@
-/* $Id: upnpsoap.c,v 1.140 2015/12/12 09:10:28 nanard Exp $ */
+/* $Id: upnpsoap.c,v 1.142 2015/12/15 11:12:37 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2015 Thomas Bernard
@@ -1999,8 +1999,8 @@ SendSetupMessage(struct upnphttp * h, const char * action, const char * ns)
 	const char * OutMessage = "";	/* base64 */
 
 	ParseNameValue(h->req_buf + h->req_contentoff, h->req_contentlen, &data);
-	ProtocolType = GetValueFromNameValueList(&data, "NewProtocolType");	/* string */
-	InMessage = GetValueFromNameValueList(&data, "NewInMessage");	/* base64 */
+	ProtocolType = GetValueFromNameValueList(&data, "ProtocolType");	/* string */
+	InMessage = GetValueFromNameValueList(&data, "InMessage");	/* base64 */
 
 	if(ProtocolType == NULL || InMessage == NULL)
 	{
@@ -2030,7 +2030,7 @@ GetSupportedProtocols(struct upnphttp * h, const char * action, const char * ns)
 	static const char resp[] =
 		"<u:%sResponse "
 		"xmlns:u=\"%s\">"
-		"<ProtocolList>%s</ProtocolList>"
+		"<ProtocolList><![CDATA[%s]]></ProtocolList>"
 		"</u:%sResponse>";
 	char body[1024];
 	int bodylen;
@@ -2174,14 +2174,14 @@ ExecuteSoapAction(struct upnphttp * h, const char * action, int n)
 			len = strlen(soapMethods[i].methodName);
 			if((len == methodlen) && memcmp(p, soapMethods[i].methodName, len) == 0) {
 #ifdef DEBUG
-				syslog(LOG_DEBUG, "Remote Call of SoapMethod '%s'",
-				       soapMethods[i].methodName);
+				syslog(LOG_DEBUG, "Remote Call of SoapMethod '%s' %s",
+				       soapMethods[i].methodName, namespace);
 #endif /* DEBUG */
 				soapMethods[i].methodImpl(h, soapMethods[i].methodName, namespace);
 				return;
 			}
 		}
-		syslog(LOG_NOTICE, "SoapMethod: Unknown: %.*s", methodlen, p);
+		syslog(LOG_NOTICE, "SoapMethod: Unknown: %.*s %s", methodlen, p, namespace);
 	} else {
 		syslog(LOG_NOTICE, "cannot parse SoapAction");
 	}
