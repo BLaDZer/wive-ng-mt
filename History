@@ -1620,15 +1620,16 @@
 24) kernel: mmc: upstream updates.<br>
 25) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
 26) kernel: usb-storage: update unusual_devs from upstream.<br>
-27) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
-28) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-29) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-30) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-31) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-32) kernel: net: possible use after free in dst_release.<br>
-33) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-34) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-35) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+27) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+28) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
+29) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+30) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+31) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+32) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+33) kernel: net: possible use after free in dst_release.<br>
+34) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+35) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+36) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
 <br>
 <br>
 <br>
