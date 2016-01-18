@@ -1622,15 +1622,16 @@
 26) kernel: usb-storage: update unusual_devs from upstream.<br>
 27) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
 28) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-29) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
-30) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-31) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-32) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-33) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-34) kernel: net: possible use after free in dst_release.<br>
-35) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-36) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-37) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+29) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+30) kernel: net/core: revert net: fix__netdev_update_features return and add comment.<br>
+31) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+32) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+33) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+34) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+35) kernel: net: possible use after free in dst_release.<br>
+36) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+37) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+38) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
 <br>
 <br>
 <br>
