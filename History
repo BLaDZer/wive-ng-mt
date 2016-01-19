@@ -1634,6 +1634,7 @@
 38) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
 39) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
 40) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+41) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
 <br>
 <br>
 <br>
