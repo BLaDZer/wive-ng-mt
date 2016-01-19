@@ -571,13 +571,12 @@ server6_init()
 	freeaddrinfo(res);
 
 	/* set up control socket */
-	if (ctlkey == NULL)
+	if (ctlkey == NULL || ctlkey->secret == NULL || ctlkey->secretlen == 0)
 		debug_printf(LOG_NOTICE, FNAME, "skip opening control port");
 	else if (dhcp6_ctl_init(ctladdr, ctlport,
 	    DHCP6CTL_DEF_COMMANDQUEUELEN, &ctlsock)) {
-		debug_printf(LOG_ERR, FNAME,
+		debug_printf(LOG_WARNING, FNAME,
 		    "failed to initialize control channel");
-		//exit(1);
 	}
 
 	if (signal(SIGTERM, server6_signal) == SIG_ERR) {

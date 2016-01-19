@@ -165,14 +165,19 @@ dhcp6_ctl_authinit(keyfile, keyinfop, digestlenp)
 		    strerror(errno));
 		return (-1);
 	}
-	if (fgets(line, sizeof(line), fp) == NULL && ferror(fp)) {
-		debug_printf(LOG_ERR, FNAME, "failed to read key file: %s",
-		    strerror(errno));
+	if (fgets(line, sizeof(line), fp) == NULL) {
+		if (ferror(fp))
+			dprintf(LOG_WARNING, FNAME, "failed to read key file: %s", strerror(errno));
+		else
+			dprintf(LOG_INFO, FNAME, "no shared key. shared key file is empty. dhcp6s will not listen on a control port.");
 		goto fail;
 	}
-	if ((secretlen = base64_decodestring(line, secret, sizeof(secret)))
-	    < 0) {
+	if ((secretlen = base64_decodestring(line, secret, sizeof(secret))) < 0) {
 		debug_printf(LOG_ERR, FNAME, "failed to decode base64 string");
+		goto fail;
+	}
+	if (secretlen == 0) {
+		dprintf(LOG_INFO, FNAME, "no shared key found. dhcp6s will not listen on a control port.");
 		goto fail;
 	}
 	if ((ctlkey = malloc(sizeof(*ctlkey))) == NULL) {
