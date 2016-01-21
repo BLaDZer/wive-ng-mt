@@ -1637,6 +1637,7 @@
 41) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
 42) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
 43) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+44) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
 <br>
 <br>
 <br>
