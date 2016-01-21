@@ -1627,17 +1627,18 @@
 31) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
 32) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
 33) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-34) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-35) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-36) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-37) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-38) kernel: net: possible use after free in dst_release.<br>
-39) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-40) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-41) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-42) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-43) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-44) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+34) kernel: net: packet: don't check frames_per_block against negative values.<br>
+35) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+36) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+37) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+38) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+39) kernel: net: possible use after free in dst_release.<br>
+40) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+41) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+42) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+43) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+44) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+45) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
 <br>
 <br>
 <br>
