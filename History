@@ -1640,6 +1640,7 @@
 44) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
 45) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
 46) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+47) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
 <br>
 <br>
 <br>
