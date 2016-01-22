@@ -179,7 +179,7 @@ static void nf_nat_csum(struct sk_buff *skb, const struct iphdr *iph, void *data
 		}
 	} else
 		inet_proto_csum_replace2(check, skb,
-					 htons(oldlen), htons(datalen), 1);
+					 htons(oldlen), htons(datalen), true);
 }
 
 /* Generic function for mangling variable-length address changes inside
@@ -316,9 +316,9 @@ sack_adjust(struct sk_buff *skb,
 			 ntohl(sack->end_seq), new_end_seq);
 
 		inet_proto_csum_replace4(&tcph->check, skb,
-					 sack->start_seq, new_start_seq, 0);
+					 sack->start_seq, new_start_seq, false);
 		inet_proto_csum_replace4(&tcph->check, skb,
-					 sack->end_seq, new_end_seq, 0);
+					 sack->end_seq, new_end_seq, false);
 		sack->start_seq = new_start_seq;
 		sack->end_seq = new_end_seq;
 		sackoff += sizeof(*sack);
@@ -406,8 +406,8 @@ nf_nat_seq_adjust(struct sk_buff *skb,
 	newseq = htonl(ntohl(tcph->seq) + seqoff);
 	newack = htonl(ntohl(tcph->ack_seq) - ackoff);
 
-	inet_proto_csum_replace4(&tcph->check, skb, tcph->seq, newseq, 0);
-	inet_proto_csum_replace4(&tcph->check, skb, tcph->ack_seq, newack, 0);
+	inet_proto_csum_replace4(&tcph->check, skb, tcph->seq, newseq, false);
+	inet_proto_csum_replace4(&tcph->check, skb, tcph->ack_seq, newack, false);
 
 	pr_debug("Adjusting sequence number from %u->%u, ack from %u->%u\n",
 		 ntohl(tcph->seq), ntohl(newseq), ntohl(tcph->ack_seq),

@@ -75,8 +75,8 @@ tcp_manip_pkt(struct sk_buff *skb,
 	if (hdrsize < sizeof(*hdr))
 		return true;
 
-	inet_proto_csum_replace4(&hdr->check, skb, oldip, newip, 1);
-	inet_proto_csum_replace2(&hdr->check, skb, oldport, newport, 0);
+	inet_proto_csum_replace4(&hdr->check, skb, oldip, newip, true);
+	inet_proto_csum_replace2(&hdr->check, skb, oldport, newport, false);
 	return true;
 }
 
