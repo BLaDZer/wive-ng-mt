@@ -148,10 +148,6 @@
 #include "pthrough/pthrough.h"
 #endif
 
-#ifdef CONFIG_RAETH_ESW_CONTROL
-extern int esw_get_traffic_port_wan(struct rtnl_link_stats64 *stats);
-#endif
-
 #if defined(CONFIG_RALINK_TIMER_WDG) || defined(CONFIG_RALINK_TIMER_WDG_MODULE)
 extern void on_refresh_wdg_timer(unsigned long unused);
 extern int wdg_load_value;
@@ -4377,10 +4373,6 @@ static void dev_seq_printf_stats(struct seq_file *seq, struct net_device *dev)
 	struct rtnl_link_stats64 temp;
 	const struct rtnl_link_stats64 *stats = dev_get_stats(dev, &temp);
 
-#ifdef CONFIG_RAETH_ESW_CONTROL
-	if(strcmp(dev->name, "eth2.2") == 0)
-		esw_get_traffic_port_wan(&temp);
-#endif
 	seq_printf(seq, "%6s: %7llu %7llu %4llu %4llu %4llu %5llu %10llu %9llu "
 		   "%8llu %7llu %4llu %4llu %4llu %5llu %7llu %10llu\n",
 		   dev->name, stats->rx_bytes, stats->rx_packets,
