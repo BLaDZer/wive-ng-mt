@@ -21,7 +21,7 @@ void import(char *filename, int offset, int len)
 	}
 
 	if (fseek(src, offset, SEEK_SET) == -1)
-		printf("goahead: fseek error\n");
+		printf("goahead: fseek error, %s\n", __FUNCTION__);
 
 	while (len > 0)
 	{

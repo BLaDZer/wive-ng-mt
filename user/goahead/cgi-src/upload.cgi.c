@@ -131,12 +131,12 @@ static int mtd_write_firmware(char *filename, int offset, int len)
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
-    fprintf(stderr, "goahead: no CONFIG_RT2880_ROOTFS defined!");
+    fprintf(stderr, "goahead: no CONFIG_RT2880_ROOTFS defined, %s\n", __FUNCTION__);
 #endif
     if (err == 0)
         return 0;
 
-    fprintf(stderr, "mtd_write return error - image oversized or uncorrect!!!%d", len);
+    fprintf(stderr, "mtd_write return error - image oversized or uncorrect!!!%d, %s", len, __FUNCTION__);
     return -1;
 }
 
@@ -252,7 +252,7 @@ static int checkimage(char *imagefile, int offset, int len)
 	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel\"")){
 		munmap(ptr, len);
 		close(ifd);
-		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition.\n", len);
+		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition, %s\n", len, __FUNCTION__);
 		return 0;
 	}
 #else

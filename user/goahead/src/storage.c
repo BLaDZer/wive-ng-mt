@@ -102,7 +102,6 @@ static void storageDiskAdm(webs_t wp, char_t *path, char_t *query)
 
 		if (NULL == (fp_mount = fopen("/proc/mounts", "r")))
 		{
-			perror(__FUNCTION__);
         		websRedirect(wp, "storage/disk_admin.asp");
 			return;
 		}
@@ -129,10 +128,8 @@ static void storageDiskPart(webs_t wp, char_t *path, char_t *query)
 	char part[30];
 
 	if (NULL == (fp_mount = fopen("/proc/mounts", "r")))
-	{
-		perror(__FUNCTION__);
 		return;
-	}
+
 	while(EOF != fscanf(fp_mount, "%s %*s %*s %*s %*s %*s\n", part))
 	{
 		fprintf(stderr, "chhung part: %s\n", part);
@@ -264,10 +261,8 @@ static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv)
 	char dir_name[30];
 	int dir_len = 0;
 
-	if (NULL == fp_mount) {
-        perror(__FUNCTION__);
+	if (NULL == fp_mount)
 		return -1;
-	}
 
 	dir_count = 0;
 
@@ -322,10 +317,9 @@ static int ShowPartition(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp = fopen(MOUNT_INFO, "r");
 	char part[50], path[30];
 
-	if (NULL == fp) {
-    	    perror(__FUNCTION__);
-		return -1;
-	}
+	if (NULL == fp)
+	    return -1;
+
 	part_count = 0;
 
 	while(EOF != fscanf(fp, "%s %s %*s %*s %*s %*s\n", part, path))

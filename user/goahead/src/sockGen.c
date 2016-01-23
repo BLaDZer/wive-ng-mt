@@ -138,7 +138,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 
 	snprintf(portstr, sizeof(portstr), "%d", port);
 	if ((gaierr = getaddrinfo(host, portstr, &hints, &ai)) != 0) {
-		fprintf(stderr, "goahead: getaddrinfo - %s\n", gai_strerror(gaierr));
+		fprintf(stderr, "goahead: getaddrinfo - %s, %s\n", gai_strerror(gaierr), __FUNCTION__);
 		socketFree(sid);
 		return -1;
 	}
@@ -152,7 +152,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		}
 	}
 	if (aiv6 == NULL) {
-		fprintf(stderr, "goahead: cannot find IPv6 addrinfo\n");
+		fprintf(stderr, "goahead: cannot find IPv6 addrinfo, %s\n", __FUNCTION__);
 		socketFree(sid);
 		return -1;
 	}

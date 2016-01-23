@@ -257,7 +257,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaBSSIDList: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -726,7 +726,7 @@ static int getStaConnectedBSSID(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaConnectedBSSID: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -779,7 +779,7 @@ static int getStaExtraInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaExtraInfo: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -816,7 +816,7 @@ static int getLinkingMode(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getLinkingMode: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -849,7 +849,7 @@ static int getStaHT(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaHT: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -905,7 +905,7 @@ static int getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaLinkChannel: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -964,7 +964,7 @@ static int getStaLinkQuality(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaLinkQuality: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -1084,7 +1084,7 @@ static int getStaLinkRxRate(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaLinkRxRate: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -1107,7 +1107,7 @@ static int getStaLinkStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaLinkStatus: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -1170,7 +1170,7 @@ static int getStaLinkTxRate(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaLinkTxRate: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -1234,7 +1234,7 @@ static int getStaNoiseLevel(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaNoiseLevel: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -1688,14 +1688,14 @@ void initStaConnection(void)
 			return;
 	}
 
-	printf("goahead: Activate profile: %s\n", p->Profile);
+	printf("goahead: Activate profile: %s, %s\n", p->Profile, __FUNCTION__);
 
 	// Set-up current SSID
 	nvram_set(RT2860_NVRAM, "staCur_SSID", p->SSID);
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: initStaConnection: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -1703,7 +1703,7 @@ void initStaConnection(void)
 	unsigned long CurrentWirelessMode;
 	if (OidQueryInformation(RT_OID_802_11_PHY_MODE, s, "ra0", &CurrentWirelessMode, sizeof(unsigned char)) < 0 )
 	{
-		error(E_L, E_LOG, T("Query OID_802_11_QUERY_WirelessMode error!"));
+		printf("goahead: Query OID_802_11_QUERY_WirelessMode error!, %s\n", __FUNCTION__);
 		close(s);
 		return;
 	}
@@ -1712,7 +1712,7 @@ void initStaConnection(void)
 	// step 0: OID_802_11_INFRASTRUCTURE_MODE
 	ret = OidSetInformation(OID_802_11_INFRASTRUCTURE_MODE, s, "ra0", &p->NetworkType, sizeof(int));
 	if (ret < 0)
-		error(E_L, E_LOG, T("Set OID_802_11_INFRASTRUCTURE_MODE has error =%d, networktype=%d"), ret, p->NetworkType);
+		printf("goahead:Set OID_802_11_INFRASTRUCTURE_MODE has error =%d, networktype=%d, %s\n", __FUNCTION__);
 
 	// step 1:
 	// RTS Threshold
@@ -1728,7 +1728,6 @@ void initStaConnection(void)
 	// Network type
 	if (p->NetworkType == Ndis802_11Infrastructure)
 	{
-		printf("goahead: NetworkType is INFRASTRUCTURE\n");
 		OidSetInformation(OID_802_11_POWER_MODE, s, "ra0", &p->PSmode, sizeof(NDIS_802_11_POWER_MODE));
 		OidSetInformation(RT_OID_802_11_PREAMBLE, s, "ra0", &p->PreamType, sizeof(RT_802_11_PREAMBLE));
 	}
@@ -1832,7 +1831,6 @@ void initStaConnection(void)
 		(p->Authentication == Ndis802_11AuthModeWPA2PSK) ||
 		(p->Authentication == Ndis802_11AuthModeWPANone))
 	{
-		printf("goahead: Authentication is WPA\n");
 		int nKeyLen = 32;
 		int lBufLen = (sizeof(NDIS_802_11_KEY) + nKeyLen - 1);
 		unsigned char keyMaterial[40];
@@ -1927,7 +1925,7 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 	// Perform driver requests
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getActiveProfileStatus: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2044,7 +2042,7 @@ static int getStaRadioStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaRadioStatus: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2071,7 +2069,7 @@ static int getStaRxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaRxThroughput: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2104,7 +2102,7 @@ static int getStaTxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaTxThroughput: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2138,7 +2136,7 @@ static int getRSSI(webs_t wp, int antenna)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getRSSI: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2228,7 +2226,7 @@ static int getStaSNR(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaSNR: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2263,7 +2261,7 @@ static int getStaStatsRxCRCErr(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaStatsRxCRCErr: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2288,7 +2286,7 @@ static int getStaStatsRxDup(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaStatsRxDup: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2313,7 +2311,7 @@ static int getStaStatsRxOk(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaStatsRxOk: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2337,7 +2335,7 @@ static int getStaStatsRxNoBuf(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaStatsRxNoBuf: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2362,7 +2360,7 @@ static int getStaStatsTx(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getStaStatsTx: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2417,7 +2415,7 @@ static int myGetSuppAMode(void)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: myGetSuppAMode: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -2491,7 +2489,7 @@ static void resetStaCounters(webs_t wp, char_t *path, char_t *query)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: resetStaCounters: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -2534,7 +2532,7 @@ static void setSta11nCfg(webs_t wp, char_t *path, char_t *query)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: setSta11nCfg: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -2584,7 +2582,7 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	// Some other stuff
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: setStaAdvance: open socket failed\n");
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -2747,7 +2745,6 @@ static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query)
 		{
 			Bssid[i] = (unsigned char)strtoul(tok, (char **)NULL, 16);
 		}
-		printf("goahead: bssid %02X:%02X:%02X:%02X:%02X:%02X\n", Bssid[0], Bssid[1], Bssid[2], Bssid[3], Bssid[4], Bssid[5]);
 	}
 
 	//FIXME: selectedbssid, mac might be different
@@ -2758,7 +2755,7 @@ static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query)
 	{
 		if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
-		    printf("goahead: setStaOrgAdd: open socket failed\n");
+		    printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		    return;
 		}
 

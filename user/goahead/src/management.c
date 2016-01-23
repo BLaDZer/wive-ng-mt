@@ -281,14 +281,14 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 	if (fp == NULL)
 	{
-		printf("goahead: no proc?\n");
+		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
 	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		printf("goahead: getAllNICStatisticASP: open socket failed\n");
 		fclose(fp);
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -317,7 +317,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		strcpy(ifr.ifr_name, ifname);
 		if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0)
 		{
-			printf("goahead: ioctl() error\n");
+			printf("goahead: ioctl() error, %s\n", __FUNCTION__);
 			continue;
 		}
 
@@ -377,7 +377,7 @@ static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 	char buf[1024], *semiColon, *key, *value;
 	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
 	if(!fp){
-		websWrite(wp, T("no proc?\n"));
+		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -408,7 +408,7 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	char buf[1024], *semiColon, *key, *value;
 	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
 	if(!fp){
-		websWrite(wp, T("no proc?\n"));
+		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -444,7 +444,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	FILE *fp = fopen(PROC_CPU_STATISTIC, "r");
 	if(!fp){
-		websWrite(wp, T("no proc?\n"));
+		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -523,7 +523,6 @@ const parameter_fetch_t service_syslog_flags[] =
 
 static void clearlog(webs_t wp, char_t *path, char_t *query)
 {
-	printf("goahead: clear system log\n");
 	doSystem("service syslog stop");
 	truncate("/var/log/messages", 0);
 	doSystem("service syslog start");
@@ -603,7 +602,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RAETH_SNMPD
 	fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
-		printf("goahead: no snmp?\n");
+		printf("goahead: no snmp, %s\n", __FUNCTION__);
 		return -1;
 	}
 

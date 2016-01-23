@@ -323,15 +323,14 @@ static int gpioLedSet(int gpio, unsigned int on, unsigned int off,
 	led.times = times;
 
 	fd = open(GPIO_DEV, O_RDONLY | O_NONBLOCK);
-	if (fd < 0) {
-		perror(GPIO_DEV);
+	if (fd < 0)
 		return -1;
-	}
+
 	if (ioctl(fd, RALINK_GPIO_LED_SET, &led) < 0) {
-		perror("ioctl");
 		close(fd);
 		return -1;
 	}
+
 	close(fd);
 	return 0;
 }
@@ -407,7 +406,7 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	value = nvram_get(RT2860_NVRAM, field);
 
 	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    printf("goahead: Unknown lang %s. Set lang to en.\n", value);
+	    printf("goahead: Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
 	    value = "en";
 	}
 
@@ -445,7 +444,7 @@ static int getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((!value) && (strcmp(field, "Language") == 0))
 	{
-		printf("goahead: Unknown lang %s. Set lang to en.\n", value);
+		printf("goahead: Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
 		value = "en";
 	}
 
@@ -699,19 +698,24 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		int speed = 100;
 		char duplex = 'F';
 		FILE *proc_file = fopen(PROCREG_GMAC, "w");
-		if (!proc_file)
-			return 0;
-
+		if (!proc_file) {
+			printf("goahead: no proc, %s\n", __FUNCTION__);
+			return -1;
+		}
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
-		if ((fp = popen("ethtool eth2", "r")) == NULL)
-			return 0;
+		if ((fp = popen("ethtool eth2", "r")) == NULL) {
+			printf("goahead: no ethtool, %s\n", __FUNCTION__);
+			return -1;
+		}
 
 		rc = fread(buf, 1, 1024, fp);
 		pclose(fp);
-		if (rc != -1)
-		{
+		if (rc < 0) {
+			printf("goahead: no ethtool pipe read, %s\n", __FUNCTION__);
+			return -1;
+		} else {
 			/* get Link status */
 			if ((pos = strstr(buf, "Link detected: ")) != NULL)
 			{

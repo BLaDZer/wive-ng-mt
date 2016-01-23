@@ -1452,9 +1452,9 @@ void websRedirect(webs_t wp, char_t *url)
 
 	websStats.redirects++;
 	msgbuf = urlbuf = NULL;
-	
+
 	if (!url || !url[0]) {
-	    printf("goahead: not set redirect url - PLS fix it.");
+	    printf("goahead: not set redirect url - PLS fix it, %s\n", __FUNCTION__);
 	    return;
 	}
 
