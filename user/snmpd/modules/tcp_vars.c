@@ -48,8 +48,10 @@ struct tcp_mib tcpstat;
 	return 0;
 	}
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+      if ( line == NULL )
+	    continue;
       if (12 == sscanf (line, "Tcp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
 		&tcpstat.TcpRtoAlgorithm,&tcpstat.TcpRtoMin,&tcpstat.TcpRtoMax, &tcpstat.TcpMaxConn,
 	&tcpstat.TcpActiveOpens,&tcpstat.TcpPassiveOpens,&tcpstat.TcpAttemptFails,
@@ -210,8 +212,10 @@ in = fopen ("/proc/net/snmp", "r");
   if (! in)
     return;
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+     if ( line == NULL )
+	continue;
      if (12 == sscanf (line, "Tcp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
 	&tcpstat.TcpRtoAlgorithm,&tcpstat.TcpRtoMin,&tcpstat.TcpRtoMax, &tcpstat.TcpMaxConn,
 	&tcpstat.TcpActiveOpens,&tcpstat.TcpPassiveOpens,&tcpstat.TcpAttemptFails,

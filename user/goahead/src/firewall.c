@@ -1102,6 +1102,9 @@ static void getRulesPacketCount(webs_t wp, char_t *path, char_t *query)
 
 	while(fgets(buf, 1024, fp) && index < 128)
 	{
+		if (buf == NULL)
+			continue;
+
 		if (step_in_chains)
 		{
 			if(buf[0] == '\n')

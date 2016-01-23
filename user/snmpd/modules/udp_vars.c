@@ -42,8 +42,10 @@ struct udp_mib udpstat;
 	return 0;
 	}
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+    if ( line == NULL )
+	    continue;
       if (4 == sscanf (line, "Udp: %lu %lu %lu %lu\n",
 			&udpstat.UdpInDatagrams, &udpstat.UdpNoPorts,
 			&udpstat.UdpInErrors, &udpstat.UdpOutDatagrams))
@@ -178,8 +180,10 @@ in = fopen ("/proc/net/snmp", "r");
   if (! in)
     return;
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+       if ( line == NULL )
+	   continue;
        if (4 == sscanf (line, "Udp: %lu %lu %lu %lu\n",
 			&udpstat.UdpInDatagrams, &udpstat.UdpNoPorts,
 			&udpstat.UdpInErrors, &udpstat.UdpOutDatagrams))

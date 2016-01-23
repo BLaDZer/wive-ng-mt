@@ -49,7 +49,7 @@ static AsnIdType eswRetrieve(CIntfType item)
 	unsigned long 	result=0;
 	struct ralink_esw_mib esw_stat;
 	FILE 		*in;
-	char		line[1024];
+	char		line[2048];
 
 	in = fopen(PROCREG_SNMP, "r");
 
@@ -59,7 +59,9 @@ static AsnIdType eswRetrieve(CIntfType item)
 		return 0;
 	}
 
-	while ( line == fgets(line, 1024, in)) {
+	while (fgets(line, 2048, in)) {
+		if ( line == NULL )
+			continue;
 		if ( 6 == sscanf(line, "rx counters: %lu %lu %lu %lu %lu %lu\n", &esw_stat.port0_rx_counter, &esw_stat.port1_rx_counter, &esw_stat.port2_rx_counter, &esw_stat.port3_rx_counter, &esw_stat.port4_rx_counter, &esw_stat.port5_rx_counter))
 			continue;
 		if ( 6 == sscanf(line, "tx counters: %lu %lu %lu %lu %lu %lu\n", &esw_stat.port0_tx_counter, &esw_stat.port1_tx_counter, &esw_stat.port2_tx_counter, &esw_stat.port3_tx_counter, &esw_stat.port4_tx_counter, &esw_stat.port5_tx_counter))
@@ -201,7 +203,7 @@ CVoidType ralink_esw_init(void)
 	unsigned long	result;
 	FILE	*in;
 	struct 		ralink_esw_mib esw_stat;
-	char		line[1024];
+	char		line[2048];
 
 	in = fopen(PROCREG_SNMP,"r");
 
@@ -210,7 +212,9 @@ CVoidType ralink_esw_init(void)
 		return;
 	}
 
-	while ( line == fgets(line, 1024, in)) {
+	while (fgets(line, 2048, in)) {
+		if ( line == NULL )
+			continue;
 		if ( 6 == sscanf(line, "rx counters: %lu %lu %lu %lu %lu %lu\n", &esw_stat.port0_rx_counter, &esw_stat.port1_rx_counter, &esw_stat.port2_rx_counter, &esw_stat.port3_rx_counter, &esw_stat.port4_rx_counter, &esw_stat.port5_rx_counter))
 			continue;
 		if ( 6 == sscanf(line, "tx counters: %lu %lu %lu %lu %lu %lu\n", &esw_stat.port0_tx_counter, &esw_stat.port1_tx_counter, &esw_stat.port2_tx_counter, &esw_stat.port3_tx_counter, &esw_stat.port4_tx_counter, &esw_stat.port5_tx_counter))

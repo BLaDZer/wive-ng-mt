@@ -200,7 +200,9 @@ static int getIfLive(char *ifname)
 
 	fgets(buf, 256, fp);
 	fgets(buf, 256, fp);
-	while (NULL != fgets(buf, 256, fp)) {
+	while (fgets(buf, 256, fp)) {
+		if (buf == NULL)
+			continue;
 		i = 0;
 		while (isspace(buf[i++]))
 			;
@@ -347,7 +349,9 @@ char* getLanIfName(void)
 	fp = fopen("/tmp/lan_if_name", "r");
 	if (fp) {
 	    /* get first lan_if in file */
-	    while (fgets(lan_if, sizeof(lan_if), fp) != NULL) {
+	    while (fgets(lan_if, sizeof(lan_if), fp)) {
+		if (lan_if == NULL)
+			continue;
 		if ((strstr(lan_if, ETH_SIG) != NULL) || (strstr(lan_if, BR_SIG) != NULL)) {
 		    fclose(fp);
 		    return strip_space(lan_if);
@@ -381,7 +385,9 @@ char* getWanIfName(void)
 	fp = fopen("/tmp/wan_if_name", "r");
 	if (fp) {
 	    /* get first wan_if in file */
-	    while (fgets(wan_if, sizeof(wan_if), fp) != NULL) {
+	    while (fgets(wan_if, sizeof(wan_if), fp)) {
+		if (wan_if == NULL)
+			continue;
 		if ((strstr(wan_if, ETH_SIG) != NULL) || (strstr(wan_if, BR_SIG) != NULL)) {
 		    fclose(fp);
 		    return strip_space(wan_if);
@@ -422,7 +428,9 @@ static char* getPPPIfName(void)
 	fp = fopen("/tmp/vpn_if_name", "r");
 	if (fp) {
 	    /* get first ppp_if in file */
-	    while (fgets(ppp_if, sizeof(ppp_if), fp) != NULL) {
+	    while (fgets(ppp_if, sizeof(ppp_if), fp)) {
+		if (ppp_if == NULL)
+			continue;
 		if (strstr(ppp_if, VPN_SIG) != NULL) {
 		    fclose(fp);
 		    return strip_space(ppp_if);
@@ -614,7 +622,9 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 					char_t line[256];
 
 					// Read all ifaces and check match
-					while (fgets(line, 255, fd)!=NULL) {
+					while (fgets(line, 255, fd)) {
+						if (line == NULL)
+						    continue;
 						// Filter only 'pppXX'
 						if (sscanf(line, " ppp%d", &ppp_id)==1) {
 							// Check if ppp interface has number at least 8
@@ -766,8 +776,10 @@ static int getDns(int eid, webs_t wp, int argc, char_t **argv)
 	fp = fopen("/etc/resolv.conf", "r");
 	if (NULL == fp)
 		return websWrite(wp, T(""));
-	while (fgets(buf, sizeof(buf), fp) != NULL)
+	while (fgets(buf, sizeof(buf), fp))
 	{
+		if (buf == NULL)
+			continue;
 		if (sscanf(buf, "%s %s", ns_str, dns) != 2)
 			continue;
 		if (strcasecmp(ns_str, "nameserver") != 0)
@@ -1250,7 +1262,9 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 
 	FILE *fp = fopen("/proc/net/route", "r");
 
-	while (fgets(buff, sizeof(buff), fp) != NULL) {
+	while (fgets(buff, sizeof(buff), fp)) {
+		if (buff == NULL)
+			continue;
 		if (nl) {
 			int ifl = 0;
 			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0') {
@@ -1669,8 +1683,10 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 
 	// true_interface[0], destination[1], gateway[2], netmask[3], flags[4], ref[5], use[6],
 	// metric[7], category[8], interface[9], idle[10], comment[11], new[12]
-	while (fgets(buff, sizeof(buff), fp) != NULL)
+	while (fgets(buff, sizeof(buff), fp))
 	{
+		if (buff == NULL)
+			continue;
 		if (nl > 0)
 		{
 			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
@@ -2433,7 +2449,9 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 			strcpy(wanif, "sit0");
 		}
 	} else {
-		while (fgets(tmpif, sizeof(tmpif), fp) != NULL) {
+		while (fgets(tmpif, sizeof(tmpif), fp)) {
+			if (tmpif == NULL)
+			    continue;
 			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) || 
 				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
 				strcpy(wanif, strip_space(tmpif));

@@ -295,6 +295,8 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	while (fgets(buf, 1024, fp))
 	{
 		char *ifname, *semiColon;
+		if (buf == NULL)
+			continue;
 		if (skip_line != 0)
 		{
 			skip_line--;
@@ -381,6 +383,8 @@ static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	while(fgets(buf, 1024, fp))
 	{
+		if (buf == NULL)
+			continue;
 		if(! (semiColon = strchr(buf, ':'))  )
 			continue;
 		*semiColon = '\0';
@@ -409,6 +413,8 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	}
 
 	while(fgets(buf, 1024, fp)){
+		if (buf == NULL)
+			continue;
 		if(! (semiColon = strchr(buf, ':'))  )
 			continue;
 		*semiColon = '\0';
@@ -444,8 +450,12 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	if (fgets(buf, 1024, fp))
 	{
-		value = strtok(buf, " ");
+		if (buf == NULL) {
+			fclose(fp);
+			return -1;
+		}
 
+		value = strtok(buf, " ");
 		for (i = 0; i < 8; i++)
 		{
 			value = strtok(NULL, " ");
@@ -470,7 +480,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 		{
 			websWrite(wp, T("n/a"));
 			fclose(fp);
-			return 0;
+			return -1;
 		}
 
 		deltaBusy = (curBusy - prevBusy) * 100;
@@ -582,26 +592,30 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	int i;
 	char_t port_buf[32];
-	unsigned long long rx_count[6], tx_count[6];
+	static unsigned long long rx_count[6], tx_count[6];
+#ifdef CONFIG_RAETH_SNMPD
+	char buf[2048];
+	FILE *fp;
+#endif
+	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
+	tx_count[0] = tx_count[1] = tx_count[2] = tx_count[3] = tx_count[4] = tx_count[5] = 0;
 
 #ifdef CONFIG_RAETH_SNMPD
-	char buf[1024];
-	FILE *fp = fopen(PROCREG_SNMP, "r");
+	fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
 		printf("goahead: no snmp?\n");
 		return -1;
 	}
 
-	while (buf == fgets(buf, 1024, fp)) {
-		if ( 6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
-			continue;
-		if ( 6 == sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]))
-			break;
+	while (fgets(buf, 2048, fp)) {
+		if (buf == NULL)
+		    continue;
+		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
+		    continue;
+		if (6 == sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]))
+		    break;
 	}
 	fclose(fp);
-#else
-	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
-	tx_count[0] = tx_count[1] = tx_count[2] = tx_count[3] = tx_count[4] = tx_count[5] = 0;
 #endif
 
 	websWrite(wp, T("<tr>\n"));

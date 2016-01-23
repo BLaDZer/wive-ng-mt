@@ -54,8 +54,10 @@ struct ip_mib ipstat;
 	return 0;
 	}
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+       if ( line == NULL )
+	    continue;
        if ((IP_MAXTYPE+1) == sscanf (line,   
 	"Ip: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
      &ipstat.IpForwarding, &ipstat.IpDefaultTTL, &ipstat.IpInReceives, 
@@ -239,8 +241,10 @@ in = fopen ("/proc/net/snmp", "r");
   if (! in)
     return;
 
-  while (line == fgets (line, 1024, in))
+  while (fgets (line, 1024, in))
     {
+      if ( line == NULL )
+	    continue;
       if (19 == sscanf (line,   
 	"Ip: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
      &ipstat.IpForwarding, &ipstat.IpDefaultTTL, &ipstat.IpInReceives, 

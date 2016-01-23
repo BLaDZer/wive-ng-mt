@@ -104,29 +104,28 @@ struct icmp_mib icmpstat;
         char line [1024];
 
   in = fopen ("/proc/net/snmp", "r");
-  if (! in)
-	{
-    	printf("icmpRetrieve() Error opening /proc/net/snmp\n");	
+  if (! in) {
+    	printf("icmpRetrieve() Error opening /proc/net/snmp\n");
 	return 0;
-	}
+  }
 
-  while (line == fgets (line, 1024, in))
-    {
-      if (26 == sscanf (line,
-"Icmp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
-   &icmpstat.IcmpInMsgs, &icmpstat.IcmpInErrors, &icmpstat.IcmpInDestUnreachs, 
-   &icmpstat.IcmpInTimeExcds, &icmpstat.IcmpInParmProbs, &icmpstat.IcmpInSrcQuenchs,
-   &icmpstat.IcmpInRedirects, &icmpstat.IcmpInEchos, &icmpstat.IcmpInEchoReps, 
-   &icmpstat.IcmpInTimestamps, &icmpstat.IcmpInTimestampReps, &icmpstat.IcmpInAddrMasks,
-   &icmpstat.IcmpInAddrMaskReps, &icmpstat.IcmpOutMsgs, &icmpstat.IcmpOutErrors,
-   &icmpstat.IcmpOutDestUnreachs, &icmpstat.IcmpOutTimeExcds, 
-   &icmpstat.IcmpOutParmProbs, &icmpstat.IcmpOutSrcQuenchs, &icmpstat.IcmpOutRedirects,
-   &icmpstat.IcmpOutEchos, &icmpstat.IcmpOutEchoReps, &icmpstat.IcmpOutTimestamps, 
-   &icmpstat.IcmpOutTimestampReps, &icmpstat.IcmpOutAddrMasks,
-   &icmpstat.IcmpOutAddrMaskReps))
+  while (fgets (line, 1024, in)) {
+    if ( line == NULL )
+	    continue;
+    if (26 == sscanf (line, "Icmp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+	&icmpstat.IcmpInMsgs, &icmpstat.IcmpInErrors, &icmpstat.IcmpInDestUnreachs, 
+	&icmpstat.IcmpInTimeExcds, &icmpstat.IcmpInParmProbs, &icmpstat.IcmpInSrcQuenchs,
+	&icmpstat.IcmpInRedirects, &icmpstat.IcmpInEchos, &icmpstat.IcmpInEchoReps, 
+	&icmpstat.IcmpInTimestamps, &icmpstat.IcmpInTimestampReps, &icmpstat.IcmpInAddrMasks,
+	&icmpstat.IcmpInAddrMaskReps, &icmpstat.IcmpOutMsgs, &icmpstat.IcmpOutErrors,
+	&icmpstat.IcmpOutDestUnreachs, &icmpstat.IcmpOutTimeExcds, 
+	&icmpstat.IcmpOutParmProbs, &icmpstat.IcmpOutSrcQuenchs, &icmpstat.IcmpOutRedirects,
+	&icmpstat.IcmpOutEchos, &icmpstat.IcmpOutEchoReps, &icmpstat.IcmpOutTimestamps, 
+	&icmpstat.IcmpOutTimestampReps, &icmpstat.IcmpOutAddrMasks,
+	&icmpstat.IcmpOutAddrMaskReps))
 	break;
     }
-  fclose (in);
+    fclose (in);
 
   switch (item-1){
     case ICMPINMSGS: 
@@ -321,27 +320,26 @@ in = fopen ("/proc/net/snmp", "r");
   if (! in)
     return;
 
-  while (line == fgets (line, 1024, in))
-    {
-      if (26 == sscanf (line,
-"Icmp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
-   &icmpstat.IcmpInMsgs, &icmpstat.IcmpInErrors, &icmpstat.IcmpInDestUnreachs, 
-   &icmpstat.IcmpInTimeExcds, &icmpstat.IcmpInParmProbs, &icmpstat.IcmpInSrcQuenchs,
-   &icmpstat.IcmpInRedirects, &icmpstat.IcmpInEchos, &icmpstat.IcmpInEchoReps, 
-   &icmpstat.IcmpInTimestamps, &icmpstat.IcmpInTimestampReps, &icmpstat.IcmpInAddrMasks,
-   &icmpstat.IcmpInAddrMaskReps, &icmpstat.IcmpOutMsgs, &icmpstat.IcmpOutErrors,
-   &icmpstat.IcmpOutDestUnreachs, &icmpstat.IcmpOutTimeExcds, 
-   &icmpstat.IcmpOutParmProbs, &icmpstat.IcmpOutSrcQuenchs, &icmpstat.IcmpOutRedirects,
-   &icmpstat.IcmpOutEchos, &icmpstat.IcmpOutEchoReps, &icmpstat.IcmpOutTimestamps, 
-   &icmpstat.IcmpOutTimestampReps, &icmpstat.IcmpOutAddrMasks,
-   &icmpstat.IcmpOutAddrMaskReps))
+  while (fgets (line, 1024, in)) {
+      if ( line == NULL )
+	continue;
+      if (26 == sscanf (line, "Icmp: %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+	&icmpstat.IcmpInMsgs, &icmpstat.IcmpInErrors, &icmpstat.IcmpInDestUnreachs, 
+	&icmpstat.IcmpInTimeExcds, &icmpstat.IcmpInParmProbs, &icmpstat.IcmpInSrcQuenchs,
+	&icmpstat.IcmpInRedirects, &icmpstat.IcmpInEchos, &icmpstat.IcmpInEchoReps, 
+	&icmpstat.IcmpInTimestamps, &icmpstat.IcmpInTimestampReps, &icmpstat.IcmpInAddrMasks,
+	&icmpstat.IcmpInAddrMaskReps, &icmpstat.IcmpOutMsgs, &icmpstat.IcmpOutErrors,
+	&icmpstat.IcmpOutDestUnreachs, &icmpstat.IcmpOutTimeExcds, 
+	&icmpstat.IcmpOutParmProbs, &icmpstat.IcmpOutSrcQuenchs, &icmpstat.IcmpOutRedirects,
+	&icmpstat.IcmpOutEchos, &icmpstat.IcmpOutEchoReps, &icmpstat.IcmpOutTimestamps, 
+	&icmpstat.IcmpOutTimestampReps, &icmpstat.IcmpOutAddrMasks,
+	&icmpstat.IcmpOutAddrMaskReps))
 	break;
-    }
+  }
   fclose (in);
 
-	
 for(icmpcount = 0;icmpcount <= ICMPOUTADDRMASKREPS;icmpcount++)
-		{	
+		{
 switch (icmpcount)
 	{
      case ICMPINMSGS: 

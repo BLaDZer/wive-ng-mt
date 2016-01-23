@@ -53,15 +53,17 @@ void arplookup(char *ip, char *arp)
 {
     char buf[256];
     FILE *fp = fopen("/proc/net/arp", "r");
-    if(!fp){
+    if(!fp) {
         trace(0, T("no proc fs mounted!\n"));
         return;
     }
     strcpy(arp, "00:00:00:00:00:00");
-    while(fgets(buf, 256, fp)){
+    while(fgets(buf, 256, fp)) {
         char ip_entry[32], hw_type[8],flags[8], hw_address[32];
+	if (buf == NULL)
+		continue;
         sscanf(buf, "%s %s %s %s", ip_entry, hw_type, flags, hw_address);
-        if(!strcmp(ip, ip_entry)){
+        if(!strcmp(ip, ip_entry)) {
             strcpy(arp, hw_address);
             break;
         }
@@ -918,6 +920,8 @@ int OptRstDefault(int idx_nvram, int num, ...)
 		return -1;
 	}
 	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf == NULL)
+			continue;
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
 		if (!strncmp(buf, "Default\n", 8)) {
@@ -936,6 +940,8 @@ int OptRstDefault(int idx_nvram, int num, ...)
 		goto out;
 	}
 	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf == NULL)
+			continue;
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
 		if (!(p = strchr(buf, '='))) {
