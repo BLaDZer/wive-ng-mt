@@ -747,6 +747,7 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 		if (vlan_idx <= VLAN_ENTRY_ID_MAX && vlan_entry[vlan_idx].valid)
 			vlan_entry[vlan_idx].port_untag |= (1u << WAN_PORT_CPU);
 		pvlan_member_cpu_wan.pvid = cvid;
+		pvlan_member_cpu_wan.prio = prio[SWAPI_VLAN_RULE_WAN_IPTV];
 	} else if (!tagg[SWAPI_VLAN_RULE_WAN_INET] && !tagg[SWAPI_VLAN_RULE_WAN_IPTV]) {
 		/* update VID #2 untag members */
 		vlan_entry[1].port_untag |= (1u << WAN_PORT_CPU);
@@ -888,7 +889,7 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 	/* [MT7620 P4 -> MT7530 P5] or [MT7621 GE2 -> MT7530 P5] */
 	esw_vlan_pvid_set(WAN_PORT_CPU, pvlan_member_cpu_wan.pvid, pvlan_member_cpu_wan.prio);
 	esw_port_accept_set(WAN_PORT_CPU, PORT_ACCEPT_FRAMES_ALL);
-	esw_port_attrib_set(WAN_PORT_CPU, (pvlan_member_cpu_wan.pvid != 2 || pvlan_member_cpu_wan.tagg) ? PORT_ATTRIBUTE_USER : PORT_ATTRIBUTE_TRANSPARENT);
+	esw_port_attrib_set(WAN_PORT_CPU, (pvlan_member_cpu_wan.pvid != untg_vid || pvlan_member_cpu_wan.tagg) ? PORT_ATTRIBUTE_USER : PORT_ATTRIBUTE_TRANSPARENT);
 	esw_port_ingress_mode_set(WAN_PORT_CPU, PVLAN_INGRESS_MODE_SECURITY);
 #endif
 
