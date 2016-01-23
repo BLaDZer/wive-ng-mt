@@ -60,7 +60,7 @@ void arplookup(char *ip, char *arp)
     strcpy(arp, "00:00:00:00:00:00");
     while(fgets(buf, 256, fp)) {
         char ip_entry[32], hw_type[8],flags[8], hw_address[32];
-	if (buf == NULL)
+	if (buf == NULL || buf[0] == '\n')
 		continue;
         sscanf(buf, "%s %s %s %s", ip_entry, hw_type, flags, hw_address);
         if(!strcmp(ip, ip_entry)) {
@@ -920,9 +920,7 @@ int OptRstDefault(int idx_nvram, int num, ...)
 		return -1;
 	}
 	while(fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL)
-			continue;
-		if (buf[0] == '\n' || buf[0] == '#')
+		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
 			continue;
 		if (!strncmp(buf, "Default\n", 8)) {
 			found = 1;
@@ -940,9 +938,7 @@ int OptRstDefault(int idx_nvram, int num, ...)
 		goto out;
 	}
 	while(fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL)
-			continue;
-		if (buf[0] == '\n' || buf[0] == '#')
+		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
 			continue;
 		if (!(p = strchr(buf, '='))) {
 			trace(0, T("file format error!\n"));

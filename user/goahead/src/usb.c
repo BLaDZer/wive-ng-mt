@@ -174,7 +174,7 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 					// Read all ifaces and check match
 					while (fgets(line, 255, fd))
 					{
-						if (line == NULL)
+						if (line == NULL || line[0] == '\n')
 							continue;
 						if(strstr(line,"ppp_modem"))
 						{
