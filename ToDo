@@ -1,10 +1,11 @@
 1) full russian ui (work end ~99%).
-2) need add subchannel select for 5GHz module.
-3) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.
-4) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
-5) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
-6) in future: rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
-7) in very far future: need add in firewall support xt_time matches for parental control.
-8) in very far future: need add perip shaper script and webui.
-9) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
-10) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
+2) need rewrite get cpu usage in goahead, current code not safe for smp and only busy show (see wive-utils/cpu.c as example).<br>
+3) need add subchannel select for 5GHz module.
+4) need review, experiments with new roaming code in MT76x2 driver, need add multiif support in iappd daemon and implement to WebUI.
+5) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
+6) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
+7) in future: rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
+8) in very far future: need add in firewall support xt_time matches for parental control.
+9) in very far future: need add perip shaper script and webui.
+10) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
+11) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
