@@ -16,8 +16,6 @@
 #include "internet.h"
 #include "management.h"
 
-static unsigned long int prevTotal = 0, prevBusy = 0;
-
 static void scale(char_t * strBuf, long long data)
 {
     double p1;
@@ -432,9 +430,10 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
+static unsigned long long int prevTotal = 0, prevBusy = 0;
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[1024], *value;
+	char buf[2048], *value;
 	static unsigned int i;
 	static float outd;
 	static unsigned long long int curBusy, curTotal, deltaBusy, deltaTotal;
@@ -447,7 +446,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	if (fgets(buf, 1024, fp))
+	if (fgets(buf, 2048, fp))
 	{
 		if (buf == NULL || buf[0] == '\n') {
 			fclose(fp);
