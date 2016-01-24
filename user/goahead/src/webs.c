@@ -2566,23 +2566,23 @@ typedef enum { JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC } Mont
 typedef enum { SUN, MON, TUE, WED, THU, FRI, SAT } WeekdayEnumeration;
 
 /******************************************************************************/
-/*	
+/*
  *	Parse an N-digit value
  */
 
-static int parseNDIGIT(char_t *buf, int digits, int *index) 
+static int parseNDIGIT(char_t *buf, int digits, int *index)
 {
 	int tmpIndex, returnValue;
 
 	returnValue = 0;
 
 	for (tmpIndex = *index; tmpIndex < *index+digits; tmpIndex++) {
-		if (gisdigit(buf[tmpIndex])) {
+		if (buf[tmpIndex] != NULL && gisdigit(buf[tmpIndex])) {
 			returnValue = returnValue * 10 + (buf[tmpIndex] - T('0'));
 		}
 	}
 	*index = tmpIndex;
-	
+
 	return returnValue;
 }
 
@@ -2591,10 +2591,10 @@ static int parseNDIGIT(char_t *buf, int digits, int *index)
  *	Return an index into the month array
  */
 
-static int parseMonth(char_t *buf, int *index) 
+static int parseMonth(char_t *buf, int *index)
 {
-/*	
- *	"Jan" | "Feb" | "Mar" | "Apr" | "May" | "Jun" | 
+/*
+ *	"Jan" | "Feb" | "Mar" | "Apr" | "May" | "Jun" |
  *	"Jul" | "Aug" | "Sep" | "Oct" | "Nov" | "Dec"
  */
 	int tmpIndex, returnValue;
