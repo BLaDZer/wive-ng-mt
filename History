@@ -1614,7 +1614,7 @@
 18) goahead: fix crash at long time port status view.<br>
 19) goahead: fix error handle in read data from ethool oer pipe.<br>
 20) goahead: add show function name to all error messages.<br>
-21) goahead: fix potentional devision by zero in get cpu usage code.<br>
+21) goahead: fix potentional devision by zero in get cpu usage and put_ulong code.<br>
 22) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
 23) kernel: ralink_raeth: switch to qdma for MT7621.<br>
 24) kernel: ralink_raeth: raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>

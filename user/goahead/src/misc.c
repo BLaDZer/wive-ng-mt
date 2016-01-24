@@ -459,24 +459,24 @@ static void put_char(strbuf_t *buf, char_t c)
 static void put_string(strbuf_t *buf, char_t *s, int len, int width,
 		int prec, enum flag f)
 {
-	int		i;
+	int i;
 
-	if (len < 0) { 
-		len = gstrnlen(s, prec >= 0 ? prec : ULONG_MAX); 
-	} else if (prec >= 0 && prec < len) { 
+	if (len < 0) {
+		len = gstrnlen(s, prec >= 0 ? prec : ULONG_MAX);
+	} else if (prec >= 0 && prec < len) {
 		len = prec; 
 	}
 	if (width > len && !(f & flag_minus)) {
-		for (i = len; i < width; ++i) { 
-			put_char(buf, ' '); 
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
 		}
 	}
-	for (i = 0; i < len; ++i) { 
-		put_char(buf, s[i]); 
+	for (i = 0; i < len; ++i) {
+		put_char(buf, s[i]);
 	}
 	if (width > len && f & flag_minus) {
-		for (i = len; i < width; ++i) { 
-			put_char(buf, ' '); 
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
 		}
 	}
 }
@@ -489,36 +489,39 @@ static void put_string(strbuf_t *buf, char_t *s, int len, int width,
 static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
 		int upper, char_t *prefix, int width, int prec, enum flag f)
 {
-	unsigned long	x, x2;
-	int				len, zeros, i;
+	unsigned long x, x2;
+	int len, zeros, i;
+
+	if (base == 0)
+	    return;
 
 	for (len = 1, x = 1; x < ULONG_MAX / base; ++len, x = x2) {
 		x2 = x * base;
-		if (x2 > value) { 
-			break; 
+		if (x2 > value) {
+			break;
 		}
 	}
 	zeros = (prec > len) ? prec - len : 0;
 	width -= zeros + len;
-	if (prefix != NULL) { 
-		width -= gstrnlen(prefix, ULONG_MAX); 
+	if (prefix != NULL) {
+		width -= gstrnlen(prefix, ULONG_MAX);
 	}
 	if (!(f & flag_minus)) {
 		if (f & flag_zero) {
-			for (i = 0; i < width; ++i) { 
-				put_char(buf, '0'); 
+			for (i = 0; i < width; ++i) {
+				put_char(buf, '0');
 			}
 		} else {
-			for (i = 0; i < width; ++i) { 
-				put_char(buf, ' '); 
+			for (i = 0; i < width; ++i) {
+				put_char(buf, ' ');
 			}
 		}
 	}
-	if (prefix != NULL) { 
-		put_string(buf, prefix, -1, 0, -1, flag_none); 
+	if (prefix != NULL) {
+		put_string(buf, prefix, -1, 0, -1, flag_none);
 	}
-	for (i = 0; i < zeros; ++i) { 
-		put_char(buf, '0'); 
+	for (i = 0; i < zeros; ++i) {
+		put_char(buf, '0');
 	}
 	for ( ; x > 0; x /= base) {
 		int digit = (value / x) % base;
@@ -526,8 +529,8 @@ static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
 			digit));
 	}
 	if (f & flag_minus) {
-		for (i = 0; i < width; ++i) { 
-			put_char(buf, ' '); 
+		for (i = 0; i < width; ++i) {
+			put_char(buf, ' ');
 		}
 	}
 }
