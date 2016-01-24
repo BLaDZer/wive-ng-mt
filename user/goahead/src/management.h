@@ -13,21 +13,21 @@ void formDefineManagement(void);
 void management_init(void);
 char *setNthValueLong(int index, char *old_values, char *new_value);
 
-struct cpuStats
-{
-	unsigned long int user;    // 0 user (application) usage
-	unsigned long int nice;    // 1 user usage with "niced" priority
-	unsigned long int system;  // 2 system (kernel) level usage
-	unsigned long int idle;    // 3 CPU idle and no disk I/O outstanding
-	unsigned long int iowait;  // 4 CPU idle but with outstanding disk I/O
-	unsigned long int irq;     // 5 Interrupt requests
-	unsigned long int softirq; // 6 Soft interrupt requests
-	unsigned long int steal;   // 7 Invol wait, hypervisor svcing other virtual CPU
+struct cpuStats {
+	unsigned int	user;    // user (application) usage
+	unsigned int	nice;    // user usage with "niced" priority
+	unsigned int	system;  // system (kernel) level usage
+	unsigned int	idle;    // CPU idle and no disk I/O outstanding
+	unsigned int	iowait;  // CPU idle but with outstanding disk I/O
+	unsigned int	irq;     // Interrupt requests
+	unsigned int	softirq; // Soft interrupt requests
+	unsigned int	steal;   // Invol wait, hypervisor svcing other virtual CPU
+	unsigned int	total;
 };
 
 union uCpuStats
 {
-	unsigned long int arrData[8];
+	unsigned int arrData[8];
 	struct cpuStats sepData;
 };
 #endif

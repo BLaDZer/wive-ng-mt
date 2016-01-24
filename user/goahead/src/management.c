@@ -430,13 +430,12 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-static unsigned long long int prevTotal = 0, prevBusy = 0;
+static unsigned long int prevTotal, prevBusy;
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[2048], *value;
-	static unsigned int i;
+	char buf[1024], *value;
 	static float outd;
-	static unsigned long long int curBusy, curTotal, deltaBusy, deltaTotal;
+	static unsigned long int i, curBusy, curTotal, deltaBusy, deltaTotal;
 
 	union uCpuStats curCpuStats;
 
@@ -446,7 +445,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	if (fgets(buf, 2048, fp))
+	if (fgets(buf, 1024, fp))
 	{
 		if (buf == NULL || buf[0] == '\n') {
 			fclose(fp);
@@ -460,7 +459,6 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 			if (value && isdigit(*value))
 			{
 				curCpuStats.arrData[i] = strtol(value, NULL, 10);
-
 				curTotal += curCpuStats.arrData[i];
 			}
 			else
@@ -594,7 +592,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	char_t port_buf[32];
 	static unsigned long long rx_count[6], tx_count[6];
 #ifdef CONFIG_RAETH_SNMPD
-	char buf[2048];
+	char buf[1024];
 	FILE *fp;
 #endif
 	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
@@ -607,7 +605,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		return -1;
 	}
 
-	while (fgets(buf, 2048, fp)) {
+	while (fgets(buf, 1024, fp)) {
 		if (buf == NULL || buf[0] == '\n')
 		    continue;
 		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
