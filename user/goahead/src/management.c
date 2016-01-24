@@ -435,10 +435,9 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024], *value;
-	unsigned int i;
-
-	float outd = 0;
-	unsigned long int curBusy, curTotal = 0, deltaBusy, deltaTotal;
+	static unsigned int i;
+	static float outd;
+	static unsigned long int curBusy, curTotal, deltaBusy, deltaTotal;
 
 	union uCpuStats curCpuStats;
 
@@ -476,7 +475,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 		curBusy = curCpuStats.sepData.user + curCpuStats.sepData.nice + curCpuStats.sepData.system + curCpuStats.sepData.iowait + curCpuStats.sepData.irq + curCpuStats.sepData.softirq + curCpuStats.sepData.steal;
 
-		if (!(curTotal > prevTotal) || !(curBusy > prevBusy))
+		if (curTotal < prevTotal || curBusy < prevBusy)
 		{
 			websWrite(wp, T("n/a"));
 			fclose(fp);
@@ -486,10 +485,10 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 		deltaBusy = (curBusy - prevBusy) * 100;
 		deltaTotal = curTotal - prevTotal;
 
-		prevTotal = curTotal;
-		prevBusy = curBusy;
-
-		outd = (float)deltaBusy / (float)deltaTotal;
+		if (deltaBusy > 0 && deltaTotal > 0)
+		    outd = (float)deltaBusy / (float)deltaTotal;
+		else
+                    outd = 0;
 
 		snprintf(buf, 16, "%.1f", outd);
 		websWrite(wp, T("%s %%"), buf);
