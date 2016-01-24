@@ -437,7 +437,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 	char buf[1024], *value;
 	static unsigned int i;
 	static float outd;
-	static unsigned long int curBusy, curTotal, deltaBusy, deltaTotal;
+	static unsigned long long int curBusy, curTotal, deltaBusy, deltaTotal;
 
 	union uCpuStats curCpuStats;
 
@@ -484,6 +484,9 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 		deltaBusy = (curBusy - prevBusy) * 100;
 		deltaTotal = curTotal - prevTotal;
+
+		prevTotal = curTotal;
+		prevBusy = curBusy;
 
 		if (deltaBusy > 0 && deltaTotal > 0)
 		    outd = (float)deltaBusy / (float)deltaTotal;
