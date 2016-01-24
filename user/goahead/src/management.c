@@ -430,12 +430,13 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-static unsigned long int prevTotal, prevBusy;
+static unsigned long long prevTotal, prevBusy;
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024], *value;
+	static int i;
 	static float outd;
-	static unsigned long int i, curBusy, curTotal, deltaBusy, deltaTotal;
+	static unsigned long long curBusy, curTotal, deltaBusy, deltaTotal;
 
 	union uCpuStats curCpuStats;
 
