@@ -2577,7 +2577,7 @@ static int parseNDIGIT(char_t *buf, int digits, int *index)
 	returnValue = 0;
 
 	for (tmpIndex = *index; tmpIndex < *index+digits; tmpIndex++) {
-		if (buf[tmpIndex] != NULL && gisdigit(buf[tmpIndex])) {
+		if (buf != NULL && buf[tmpIndex] != NULL && gisdigit(buf[tmpIndex])) {
 			returnValue = returnValue * 10 + (buf[tmpIndex] - T('0'));
 		}
 	}
