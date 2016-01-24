@@ -472,7 +472,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 		curBusy = curCpuStats.sepData.user + curCpuStats.sepData.nice + curCpuStats.sepData.system + curCpuStats.sepData.iowait + curCpuStats.sepData.irq + curCpuStats.sepData.softirq + curCpuStats.sepData.steal;
 
-		if (curTotal < prevTotal || curBusy < prevBusy)
+		if (curTotal <= prevTotal || curBusy <= prevBusy)
 		{
 			websWrite(wp, T("n/a"));
 			fclose(fp);
