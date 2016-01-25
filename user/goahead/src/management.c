@@ -477,7 +477,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 	    snprintf(buf, 16, "%.1f", outd);
 	    websWrite(wp, T("%s %%"), buf);
 	} else {
-	    websWrite(wp, T("n/a"));
+	    websWrite(wp, T("0"));
 	}
 	prevbusy=cpu.busy;
 	prevtotal=cpu.total;
