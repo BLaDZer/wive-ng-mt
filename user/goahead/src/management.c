@@ -430,75 +430,59 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-static unsigned long long prevTotal, prevBusy;
+struct cpu_stats {
+	unsigned long long int user;    // user (application) usage
+	unsigned long long int nice;    // user usage with "niced" priority
+	unsigned long long int system;  // system (kernel) level usage
+	unsigned long long int idle;    // CPU idle and no disk I/O outstanding
+	unsigned long long int iowait;  // CPU idle but with outstanding disk I/O
+	unsigned long long int irq;     // Interrupt requests
+	unsigned long long int sirq;    // Soft interrupt requests
+	unsigned long long int steal;   // Invol wait, hypervisor svcing other virtual CPU
+	unsigned long long int busy;
+	unsigned long long int total;
+};
+
+static void getcpudata(struct cpu_stats *st)
+{
+	FILE *fp;
+	char line_buf[256];
+
+	fp = fopen(PROC_CPU_STATISTIC, "r");
+	if (fp)
+	{
+		if (fgets(line_buf, sizeof(line_buf), fp)) {
+			if (sscanf(line_buf, "cpu %llu %llu %llu %llu %llu %llu %llu %llu",
+				&st->user, &st->nice, &st->system, &st->idle, &st->iowait, &st->irq, &st->sirq, &st->steal) >= 4) {
+				/* calculate busy/total */
+				st->busy = st->user + st->nice + st->system + st->irq + st->sirq + st->steal + st->iowait;
+				st->total = st->busy + st->idle;
+			}
+		}
+		fclose(fp);
+	}
+}
+
+static unsigned long long int prevbusy, prevtotal;
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[1024], *value;
-	static int i;
-	static float outd;
-	static unsigned long long curBusy, curTotal, deltaBusy, deltaTotal;
+	struct cpu_stats cpu;
+	char buf[16];
+	float outd = 0;
 
-	union uCpuStats curCpuStats;
+	getcpudata(&cpu);
 
-	FILE *fp = fopen(PROC_CPU_STATISTIC, "r");
-	if(!fp){
-		printf("goahead: no proc, %s\n", __FUNCTION__);
-		return -1;
+	if (cpu.total-prevtotal > 0) {
+	    outd=((((float)cpu.busy-(float)prevbusy)/((float)cpu.total-(float)prevtotal))*100);
+	    snprintf(buf, 16, "%.1f", outd);
+	    websWrite(wp, T("%s %%"), buf);
+	} else {
+	    websWrite(wp, T("n/a"));
 	}
+	prevbusy=cpu.busy;
+	prevtotal=cpu.total;
 
-	if (fgets(buf, 1024, fp))
-	{
-		if (buf == NULL || buf[0] == '\n') {
-			fclose(fp);
-			return -1;
-		}
-
-		value = strtok(buf, " ");
-		for (i = 0; i < 8; i++)
-		{
-			value = strtok(NULL, " ");
-			if (value && isdigit(*value))
-			{
-				curCpuStats.arrData[i] = strtol(value, NULL, 10);
-				curTotal += curCpuStats.arrData[i];
-			}
-			else
-			{
-				websWrite(wp, T("n/a"));
-				fclose(fp);
-				return -1;
-			}
-
-		}
-
-		curBusy = curCpuStats.sepData.user + curCpuStats.sepData.nice + curCpuStats.sepData.system + curCpuStats.sepData.iowait + curCpuStats.sepData.irq + curCpuStats.sepData.softirq + curCpuStats.sepData.steal;
-
-		if (curTotal <= prevTotal || curBusy <= prevBusy)
-		{
-			websWrite(wp, T("n/a"));
-			fclose(fp);
-			return -1;
-		}
-
-		deltaBusy = (curBusy - prevBusy) * 100;
-		deltaTotal = curTotal - prevTotal;
-
-		prevTotal = curTotal;
-		prevBusy = curBusy;
-
-		if (deltaBusy > 0 && deltaTotal > 0)
-		    outd = (float)deltaBusy / (float)deltaTotal;
-		else
-                    outd = 0;
-
-		snprintf(buf, 16, "%.1f", outd);
-		websWrite(wp, T("%s %%"), buf);
-		fclose(fp);
-		return 0;
-	}
-	websWrite(wp, T(""));
-	fclose(fp);
-	return -1;
+	return 0;
 }
 
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
