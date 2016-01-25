@@ -1624,7 +1624,7 @@
 28) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
 29) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
 30) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
-31) kernel: mips: Fix bitrot in __get_user_unaligned().<br>
+31) kernel: mips: fix bitrot in __get_user_unaligned().<br>
 32) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
 33) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
 34) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
