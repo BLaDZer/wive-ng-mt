@@ -710,7 +710,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 			return -1;
 		}
 
-		rc = fread(buf, 1, 1024, fp);
+		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
 		if (rc < 0) {
 			printf("goahead: no ethtool pipe read, %s\n", __FUNCTION__);
