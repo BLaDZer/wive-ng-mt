@@ -198,9 +198,9 @@ static int getIfLive(char *ifname)
 		return -1;
 	}
 
-	fgets(buf, 256, fp);
-	fgets(buf, 256, fp);
-	while (fgets(buf, 256, fp)) {
+	fgets(buf, sizeof(buf), fp);
+	fgets(buf, sizeof(buf), fp);
+	while (fgets(buf, sizeof(buf), fp)) {
 		if (buf == NULL || buf[0] == '\n')
 			continue;
 		i = 0;
@@ -624,7 +624,7 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 					char_t line[256];
 
 					// Read all ifaces and check match
-					while (fgets(line, 255, fd)) {
+					while (fgets(line, sizeof(line), fd)) {
 						if (line == NULL || line[0] == '\n')
 						    continue;
 						// Filter only 'pppXX'

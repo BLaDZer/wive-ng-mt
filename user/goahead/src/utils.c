@@ -58,7 +58,7 @@ void arplookup(char *ip, char *arp)
         return;
     }
     strcpy(arp, "00:00:00:00:00:00");
-    while(fgets(buf, 256, fp)) {
+    while(fgets(buf, sizeof(buf), fp)) {
         char ip_entry[32], hw_type[8],flags[8], hw_address[32];
 	if (buf == NULL || buf[0] == '\n')
 		continue;

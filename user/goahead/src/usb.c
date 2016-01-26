@@ -172,7 +172,7 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 					char_t line[256];
 
 					// Read all ifaces and check match
-					while (fgets(line, 255, fd))
+					while (fgets(line, sizeof(line), fd))
 					{
 						if (line == NULL || line[0] == '\n')
 							continue;

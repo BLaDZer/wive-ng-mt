@@ -458,7 +458,7 @@ int nvram_renew(int mode, char *fname)
 	}
 
 	//find "Default" first
-	while (fgets(buf, BUFSZ, fp))
+	while (fgets(buf, sizeof(buf), fp))
 	{
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
@@ -482,7 +482,7 @@ int nvram_renew(int mode, char *fname)
 		return -1;
 	}
 
-	while (fgets(buf, BUFSZ, fp))
+	while (fgets(buf, sizeof(buf), fp))
 	{
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;

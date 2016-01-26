@@ -1100,7 +1100,7 @@ static void getRulesPacketCount(webs_t wp, char_t *path, char_t *query)
 		goto error;
 	}
 
-	while(fgets(buf, 1024, fp) && index < 128)
+	while(fgets(buf, sizeof(buf), fp) && index < 128)
 	{
 		if (buf == NULL)
 			continue;

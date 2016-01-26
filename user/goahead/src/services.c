@@ -569,7 +569,7 @@ int iptStatList(int eid, webs_t wp, int argc, char_t **argv)
 
 #endif /* IPT_SHORT_ACCOUNT */
 
-		while (fgets(line, 255, fd))
+		while (fgets(line, sizeof(line), fd))
 		{
 			if (line == NULL || line[0] == '\n')
 			    continue;

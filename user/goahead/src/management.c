@@ -290,7 +290,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	while (fgets(buf, 1024, fp))
+	while (fgets(buf, sizeof(buf), fp))
 	{
 		char *ifname, *semiColon;
 		if (buf == NULL || buf[0] == '\n')
@@ -379,7 +379,7 @@ static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	while(fgets(buf, 1024, fp))
+	while(fgets(buf, sizeof(buf), fp))
 	{
 		if (buf == NULL || buf[0] == '\n')
 			continue;
@@ -410,10 +410,10 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	while(fgets(buf, 1024, fp)){
+	while(fgets(buf, sizeof(buf), fp)){
 		if (buf == NULL || buf[0] == '\n')
 			continue;
-		if(! (semiColon = strchr(buf, ':'))  )
+		if(!(semiColon = strchr(buf, ':')))
 			continue;
 		*semiColon = '\0';
 		key = buf;
@@ -590,7 +590,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		return -1;
 	}
 
-	while (fgets(buf, 1024, fp)) {
+	while (fgets(buf, sizeof(buf), fp)) {
 		if (buf == NULL || buf[0] == '\n')
 		    continue;
 		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
