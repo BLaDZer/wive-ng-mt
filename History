@@ -1626,34 +1626,35 @@
 30) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
 31) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
 32) kernel: mips: fix bitrot in __get_user_unaligned().<br>
-33) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-34) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-35) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-36) kernel: tty: fix GPF in flush_to_ldisc().<br>
-37) kernel: mmc: upstream updates.<br>
-38) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
-39) kernel: usb-storage: update unusual_devs from upstream.<br>
-40) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
-41) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-42) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
-43) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-44) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-45) kernel: net: packet: don't check frames_per_block against negative values.<br>
-46) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-47) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-48) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-49) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-50) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-51) kernel: net: possible use after free in dst_release.<br>
-52) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-53) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-54) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-55) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-56) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-57) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-58) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-59) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-60) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+33) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
+34) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+35) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+36) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+37) kernel: tty: fix GPF in flush_to_ldisc().<br>
+38) kernel: mmc: upstream updates.<br>
+39) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+40) kernel: usb-storage: update unusual_devs from upstream.<br>
+41) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+42) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
+43) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+44) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+45) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
+46) kernel: net: packet: don't check frames_per_block against negative values.<br>
+47) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+48) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+49) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+50) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+51) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+52) kernel: net: possible use after free in dst_release.<br>
+53) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+54) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+55) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+56) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+57) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+58) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+59) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+60) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+61) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
 <br>
 <br>
 <br>
