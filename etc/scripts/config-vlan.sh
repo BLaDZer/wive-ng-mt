@@ -244,26 +244,22 @@ configonergmiiEsw()
 	# cleanup switch
 	restoreonergmiiEsw
 
-	# prepare switch
+	# prepare switch (skip port 5 - not used and link down)
 	for port in `seq 6 7`; do
 	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
 	    switch reg w 2${port}10 8100000	#ports 6-7 special tag disable
 	    switch reg w 2${port}10 81000000	#ports 6-7 is user port, admit all frames
 	done
 
-	for port in `seq 0 5`; do
-	    switch reg w 2${port}04 ff0003	#ports 0-5 as security mode
-	    switch reg w 2${port}10 810000c0	#ports 0-5 as transparent port
+	for port in `seq 0 4`; do
+	    switch reg w 2${port}04 ff0003	#ports 0-4 as security mode
+	    switch reg w 2${port}10 810000c0	#ports 0-4 as transparent port
 	done
 
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal vlan parts switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    if [ -f /proc/mt7621/gmac ]; then
-		mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
-	    else
-		mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
-	    fi
+	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
 	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
 	    # replace W/L to 2/1 and add space after symbols for set pvids mask
 	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
@@ -286,8 +282,8 @@ configonergmiiEsw()
 	    if [ "$wan_port" = "4" ]; then
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    #V LAN member port
-		    switch vlan set 0 1 00011111
+		    #VLAN member port
+		    switch vlan set 0 1 00011011
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
 		    switch vlan set 3 4 00100011
@@ -300,7 +296,7 @@ configonergmiiEsw()
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 00111111
+		    switch vlan set 0 1 00111011
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 3 01000011
 		    # set PVID
@@ -313,7 +309,7 @@ configonergmiiEsw()
 		elif [ "$sip_port" = "1" ]; then
 		# without bridget ports
 		    # VLAN member port
-		    switch vlan set 0 1 01011111
+		    switch vlan set 0 1 01011011
 		    switch vlan set 1 2 10000011
 		    switch vlan set 2 4 00100011
 		    # set PVID
@@ -327,7 +323,7 @@ configonergmiiEsw()
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 11000111
+		    switch vlan set 0 1 11000011
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
 		    switch vlan set 3 4 00100011
@@ -340,7 +336,7 @@ configonergmiiEsw()
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 11100111
+		    switch vlan set 0 1 11100011
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 3 00010011
 		    # set PVID
@@ -352,7 +348,7 @@ configonergmiiEsw()
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 11010111
+		    switch vlan set 0 1 11010011
 		    switch vlan set 1 2 00001011
 		    switch vlan set 2 4 00100011
 		    # set PVID
@@ -366,17 +362,6 @@ configonergmiiEsw()
 		fi
 	    fi
 	fi
-
-	# set cpu port pvid
-	switch pvid 5 1
-
-	# post config
-	switch reg w 3500 00008000		#port 5 link down
-	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
-	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
-
-	# config igmpsnoop
-	igmpsnooping
 
 	# clear mac table if vlan configuration changed
 	switch clear
@@ -452,12 +437,8 @@ configdualrgmiiEsw()
 	switch tag off 6
 	switch tag off 5
 
-	# config igmpsnoop
-	igmpsnooping
-
 	# clear mac table if vlan configuration changed
 	switch clear
-
 }
 
 eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
