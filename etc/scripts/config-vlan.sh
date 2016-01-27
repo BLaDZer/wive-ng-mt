@@ -42,8 +42,8 @@ enable_all_ports() {
 	done
 }
 
-# arg1:  phy address.
 link_down() {
+	# arg1:  phy address.
 	# get original register value
 	get_mii=`mii_mgr -g -p $1 -r 0`
 	orig=`echo $get_mii | sed 's/^.....................//'`
@@ -206,7 +206,7 @@ igmpsnooping() {
 	    done
 	else
 	    if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
-		switch igmpsnoop on 3 1111111
+		switch igmpsnoop on 100 1111111
     		for port in `seq 0 6`; do
 		    switch igmpsnoop enable $port
 		done
@@ -241,10 +241,6 @@ restoreonergmiiEsw()
 
 configonergmiiEsw()
 {
-	#####################################################################
-	# now config support only internal 100FDX ESW
-	#####################################################################
-
 	# cleanup switch
 	restoreonergmiiEsw
 
@@ -409,10 +405,6 @@ restoredualrgmiiEsw()
 
 configdualrgmiiEsw()
 {
-	#####################################################################
-	# internal 1000FDX 7530 GSW
-	#####################################################################
-
 	# cleanup swicth
 	restoredualrgmiiEsw
 
