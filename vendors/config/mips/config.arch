@@ -116,7 +116,7 @@ ifdef UCLINUX_BUILD_LIB
 ifdef CONFIG_LIB_DEBUG
 	CFLAGS  :=  $(if $(LOPT),$(LOPT),-O1) -g
 else
-	CFLAGS  :=  $(if $(LOPT),$(LOPT),-Os) -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking -fno-plt
+	CFLAGS  :=  $(if $(LOPT),$(LOPT),-Os) -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking
 endif
 ifdef CONFIG_LIB_SMALLSIZE
 	# Defeat .eh_frame bloat (~25% smaller binary)
@@ -141,7 +141,7 @@ ifdef UCLINUX_BUILD_USER
 ifdef CONFIG_USER_DEBUG
 	CFLAGS  :=  $(if $(UOPT),$(UOPT),-O1) $(WOPT) -g
 else
-	CFLAGS  :=  $(if $(UOPT),$(UOPT),-Os) $(WOPT) -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking -fno-plt
+	CFLAGS  :=  $(if $(UOPT),$(UOPT),-Os) $(WOPT) -fomit-frame-pointer -fno-stack-protector -femit-struct-debug-baseonly -fno-var-tracking
 endif
 ifdef CONFIG_USER_SMALLSIZE
 	# Defeat .eh_frame bloat (~25% smaller binary)
