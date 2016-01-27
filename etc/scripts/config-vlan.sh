@@ -214,7 +214,7 @@ igmpsnooping() {
 	fi
 }
 
-restore7620Esw()
+restoreonergmiiEsw()
 {
         $LOG "Restore internal switch mode to dumb mode"
 	for port in `seq 0 7`; do
@@ -239,14 +239,14 @@ restore7620Esw()
 	switch clear
 }
 
-config7620Esw()
+configonergmiiEsw()
 {
 	#####################################################################
 	# now config support only internal 100FDX ESW
 	#####################################################################
 
 	# cleanup switch
-	restore7620Esw
+	restoreonergmiiEsw
 
 	# prepare switch
 	for port in `seq 6 7`; do
@@ -263,7 +263,11 @@ config7620Esw()
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal vlan parts switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
+	    if [ -f /proc/mt7621/gmac ]; then
+		mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
+	    else
+		mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "111" '}`
+	    fi
 	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
 	    # replace W/L to 2/1 and add space after symbols for set pvids mask
 	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
@@ -382,7 +386,7 @@ config7620Esw()
 	switch clear
 }
 
-restore7530Esw()
+restoredualrgmiiEsw()
 {
         $LOG "Restore internal MT7621 switch mode to dumb mode"
 	for port in `seq 0 6`; do
@@ -403,14 +407,14 @@ restore7530Esw()
 	switch clear
 }
 
-config7530Esw()
+configdualrgmiiEsw()
 {
 	#####################################################################
 	# internal 1000FDX 7530 GSW
 	#####################################################################
 
 	# cleanup swicth
-	restore7530Esw
+	restoredualrgmiiEsw
 
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7621 switch mode $1"
@@ -439,7 +443,7 @@ config7530Esw()
 	    # 		config 7530 W0LLL command and add needed calls for bridge#
 	    ######################################################################
 	    $LOG "External vlan portmap not supported NOW!!!"
-	    config7530Esw LLLLW
+	    configdualrgmiiEsw LLLLW
 	fi
 
 	# post config
@@ -468,7 +472,7 @@ eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
-		restore7620Esw
+		restoreonergmiiEsw
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
@@ -480,13 +484,13 @@ if [ "$1" = "3" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "VLANS" ]; then
-		config7620Esw VLANS
+		configonergmiiEsw VLANS
 	else
-		config7620Esw $2
+		configonergmiiEsw $2
 	fi
 elif [ "$1" = "4" ]; then
 	if [ "$2" = "LLLLL" ]; then
-		restore7530Esw
+		restoredualrgmiiEsw
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
@@ -498,9 +502,9 @@ elif [ "$1" = "4" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "VLANS" ]; then
-		config7530Esw VLANS
+		configdualrgmiiEsw VLANS
 	else
-		config7530Esw $2
+		configdualrgmiiEsw $2
 	fi
 else
 	echo "unknown swith type $1"
