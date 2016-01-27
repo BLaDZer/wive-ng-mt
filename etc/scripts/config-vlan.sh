@@ -247,8 +247,7 @@ configonergmiiEsw()
 	# prepare switch (skip port 5 - not used and link down)
 	for port in `seq 6 7`; do
 	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
-	    switch reg w 2${port}10 8100000	#ports 6-7 special tag disable
-	    switch reg w 2${port}10 81000000	#ports 6-7 is user port, admit all frames
+	    switch reg w 2${port}10 81000000	#ports 6-7 special tag disable, is user port, admit all frames
 	done
 
 	for port in `seq 0 4`; do
@@ -371,7 +370,7 @@ restoredualrgmiiEsw()
 {
         $LOG "Restore internal MT7621 switch mode to dumb mode"
 	for port in `seq 0 6`; do
-	    switch reg w 2${port}04 ff0000		#ports 0-6 matrix mode
+	    switch reg w 2${port}04 ff0000	#ports 0-6 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
 	done
 
