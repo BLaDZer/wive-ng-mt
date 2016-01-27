@@ -1595,66 +1595,67 @@
 <br>
 <b>3.9.x</b><br>
 1) build_system: add qdma tool (need for hw_qos support in future).<br>
-2) uboot: add UART baud rate 115200/57600 configuration.<br>
-3) dropbear: up to 2015.71 version.<br>
-4) dropbear: small revert fix regression break work in inetd mode.<br>
-5) dropbear: add force proto famaly set (IPv4/6).<br>
-6) dropbear: fix signature check.<br>
-7) dropbear: increase kex hash cache size.<br>
-8) dropbear: allow 3des,rsa,ecdsa,ecdh for compat.<br>
-9) wide-dhcpv6: fix bind control socket error handle.<br>
-10) miniupnpd: up to 1.9.20160113 version.<br>
-11) iptables: some upstream backports.<br>
-12) coovachilli: up to version 1.3.1.3 (commit: dd05c1b3).<br>
-13) ethtool: up to 4.2 version.<br>
-14) irqbalance: update to 16.12.2015 git version.<br>
-15) xl2tpd: avoid problems with bad avp lengths.<br>
-16) usb-modeswitch: up to 2.3.0 version.<br>
-17) busybox: truncate: always set mode when opening file to avoid fortify errors.<br>
-18) goahead: add wifisystem.ru profile in hotspot page.<br>
-19) goahead: fix crash at long time port status view.<br>
-20) goahead: fix error handle in read data from ethool oer pipe.<br>
-21) goahead: add show function name to all error messages.<br>
-22) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
-23) goahead: fix potentional null pointer dereferens in isdigit use.<br>
-24) goahead: rewrite cpu usage code more safe and readable.<br>
-25) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
-26) kernel: ralink_raeth: switch to qdma for MT7621.<br>
-27) kernel: ralink_raeth: raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
-28) kernel: ralink_raeth: raeth: add MT7628 switch control API.<br>
-29) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
-30) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
-31) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
-32) kernel: mips: fix bitrot in __get_user_unaligned().<br>
-33) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
-34) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-35) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-36) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-37) kernel: tty: fix GPF in flush_to_ldisc().<br>
-38) kernel: mmc: upstream updates.<br>
-39) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
-40) kernel: usb-storage: update unusual_devs from upstream.<br>
-41) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
-42) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-43) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
-44) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-45) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-46) kernel: net: packet: don't check frames_per_block against negative values.<br>
-47) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-48) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-49) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-50) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-51) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-52) kernel: net: possible use after free in dst_release.<br>
-53) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-54) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-55) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-56) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-57) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-58) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-59) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-60) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-61) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+2) build_system: add -fno-plt to default cflags, it improves PIC code optimization.<br>
+3) uboot: add UART baud rate 115200/57600 configuration.<br>
+4) dropbear: up to 2015.71 version.<br>
+5) dropbear: small revert fix regression break work in inetd mode.<br>
+6) dropbear: add force proto famaly set (IPv4/6).<br>
+7) dropbear: fix signature check.<br>
+8) dropbear: increase kex hash cache size.<br>
+9) dropbear: allow 3des,rsa,ecdsa,ecdh for compat.<br>
+10) wide-dhcpv6: fix bind control socket error handle.<br>
+11) miniupnpd: up to 1.9.20160113 version.<br>
+12) iptables: some upstream backports.<br>
+13) coovachilli: up to version 1.3.1.3 (commit: dd05c1b3).<br>
+14) ethtool: up to 4.2 version.<br>
+15) irqbalance: update to 16.12.2015 git version.<br>
+16) xl2tpd: avoid problems with bad avp lengths.<br>
+17) usb-modeswitch: up to 2.3.0 version.<br>
+18) busybox: truncate: always set mode when opening file to avoid fortify errors.<br>
+19) goahead: add wifisystem.ru profile in hotspot page.<br>
+20) goahead: fix crash at long time port status view.<br>
+21) goahead: fix error handle in read data from ethool oer pipe.<br>
+22) goahead: add show function name to all error messages.<br>
+23) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
+24) goahead: fix potentional null pointer dereferens in isdigit use.<br>
+25) goahead: rewrite cpu usage code more safe and readable.<br>
+26) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
+27) kernel: ralink_raeth: switch to qdma for MT7621.<br>
+28) kernel: ralink_raeth: raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
+29) kernel: ralink_raeth: raeth: add MT7628 switch control API.<br>
+30) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
+31) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
+32) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
+33) kernel: mips: fix bitrot in __get_user_unaligned().<br>
+34) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
+35) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+36) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+37) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+38) kernel: tty: fix GPF in flush_to_ldisc().<br>
+39) kernel: mmc: upstream updates.<br>
+40) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+41) kernel: usb-storage: update unusual_devs from upstream.<br>
+42) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+43) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
+44) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+45) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+46) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
+47) kernel: net: packet: don't check frames_per_block against negative values.<br>
+48) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+49) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+50) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+51) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+52) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+53) kernel: net: possible use after free in dst_release.<br>
+54) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+55) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+56) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+57) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+58) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+59) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+60) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+61) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+62) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
 <br>
 <br>
 <br>
