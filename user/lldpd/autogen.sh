@@ -2,7 +2,7 @@
 
 set -e
 
-[ ! -e .gitmodules ] || {
+[ ! -e .gitmodules ] || [ ! -e .git ] || {
     echo "autogen.sh: updating git submodules"
     git submodule init
     git submodule update
@@ -72,7 +72,9 @@ ${AUTORECONF} -vif -I m4 || {
         [ -f "$dir"/configure.ac ] || [ -f "$dir"/configure.in ] || continue
 	echo "autogen.sh: configure `basename $dir`"
 	(cd "$dir" && ${ACLOCAL} -I m4 ${ACLOCAL_FLAGS})
+        if [ x"$dir" = x"$PWD" ]; then
         (cd "$dir" && check_pkg_config)
+        fi
 	(cd "$dir" && ${LIBTOOLIZE} --automake --copy --force)
 	(cd "$dir" && ${ACLOCAL} -I m4 ${ACLOCAL_FLAGS})
 	(cd "$dir" && ${AUTOCONF} --force)

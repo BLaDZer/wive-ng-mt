@@ -153,9 +153,10 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_gcc_func_attribute.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
-	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
+	$(top_srcdir)/m4/ax_prog_doxygen.m4 $(top_srcdir)/m4/ctors.m4 \
 	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -247,8 +248,8 @@ liblldpd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(liblldpd_la_CFLAGS) \
 	$(CFLAGS) $(liblldpd_la_LDFLAGS) $(LDFLAGS) -o $@
 am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)" \
-	"$(DESTDIR)$(systemdsystemunitdir)" "$(DESTDIR)$(sysusersdir)" \
-	"$(DESTDIR)$(tapsetdir)"
+	"$(DESTDIR)$(apparmordir)" "$(DESTDIR)$(systemdsystemunitdir)" \
+	"$(DESTDIR)$(sysusersdir)" "$(DESTDIR)$(tapsetdir)"
 PROGRAMS = $(sbin_PROGRAMS)
 am_lldpd_OBJECTS = main.$(OBJEXT)
 lldpd_OBJECTS = $(am_lldpd_OBJECTS)
@@ -329,7 +330,8 @@ am__uninstall_files_from_dir = { \
 man8dir = $(mandir)/man8
 NROFF = nroff
 MANS = $(man_MANS)
-DATA = $(systemdsystemunit_DATA) $(sysusers_DATA) $(tapset_DATA)
+DATA = $(apparmor_DATA) $(systemdsystemunit_DATA) $(sysusers_DATA) \
+	$(tapset_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -353,6 +355,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+APPARMORDIR = @APPARMORDIR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -486,6 +489,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+apparmordir = @apparmordir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -508,6 +512,8 @@ includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 launchddaemonsdir = @launchddaemonsdir@
+libbsd_CFLAGS = @libbsd_CFLAGS@
+libbsd_LIBS = @libbsd_LIBS@
 libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
@@ -560,15 +566,17 @@ lldpd_SOURCES = main.c
 lldpd_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 lldpd_LDADD = liblldpd.la -levent $(am__append_10) $(am__append_19)
 EXTRA_DIST = dtrace2systemtap.awk lldpd.8.in lldpd.service.in \
-	lldpd.sysusers.conf.in
+	lldpd.sysusers.conf.in usr.sbin.lldpd.in
 @ENABLE_SYSTEMTAP_TRUE@tapsetdir = $(datadir)/systemtap/tapset
 @ENABLE_SYSTEMTAP_TRUE@tapset_DATA = lldpd.stp
 @HAVE_SYSTEMDSYSTEMUNITDIR_TRUE@systemdsystemunit_DATA = lldpd.service
 @HAVE_SYSUSERSDIR_TRUE@sysusers_DATA = lldpd.sysusers.conf
-TEMPLATES = lldpd.8    lldpd.service    lldpd.sysusers.conf
+@HAVE_APPARMORDIR_TRUE@@HOST_OS_LINUX_TRUE@apparmor_DATA = usr.sbin.lldpd
+TEMPLATES = lldpd.8    lldpd.service    lldpd.sysusers.conf    usr.sbin.lldpd
 edit = $(SED) \
         -e 's|@bindir[@]|$(bindir)|g' \
         -e 's|@sbindir[@]|$(sbindir)|g' \
+        -e 's|@sysconfdir[@]|$(sysconfdir)|g' \
         -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
         -e 's|@libdir[@]|$(libdir)|g' \
         -e 's|@includedir[@]|$(includedir)|g' \
@@ -581,7 +589,9 @@ edit = $(SED) \
         -e 's|@PRIVSEP_USER[@]|$(PRIVSEP_USER)|g' \
         -e 's|@PRIVSEP_GROUP[@]|$(PRIVSEP_GROUP)|g' \
         -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g' \
-        -e 's|@LLDPD_CTL_SOCKET[@]|$(LLDPD_CTL_SOCKET)|g'
+        -e 's|@LLDPD_PID_FILE[@]|$(LLDPD_PID_FILE)|g' \
+        -e 's|@LLDPD_CTL_SOCKET[@]|$(LLDPD_CTL_SOCKET)|g' \
+        -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g'
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -1024,6 +1034,27 @@ uninstall-man8:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^8][0-9a-z]*$$,8,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man8dir)'; $(am__uninstall_files_from_dir)
+install-apparmorDATA: $(apparmor_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(apparmor_DATA)'; test -n "$(apparmordir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(apparmordir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(apparmordir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(apparmordir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(apparmordir)" || exit $$?; \
+	done
+
+uninstall-apparmorDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(apparmor_DATA)'; test -n "$(apparmordir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(apparmordir)'; $(am__uninstall_files_from_dir)
 install-systemdsystemunitDATA: $(systemdsystemunit_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(systemdsystemunit_DATA)'; test -n "$(systemdsystemunitdir)" || list=; \
@@ -1175,7 +1206,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(systemdsystemunitdir)" "$(DESTDIR)$(sysusersdir)" "$(DESTDIR)$(tapsetdir)"; do \
+	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(apparmordir)" "$(DESTDIR)$(systemdsystemunitdir)" "$(DESTDIR)$(sysusersdir)" "$(DESTDIR)$(tapsetdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1236,8 +1267,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man install-systemdsystemunitDATA \
-	install-sysusersDATA install-tapsetDATA
+install-data-am: install-apparmorDATA install-man \
+	install-systemdsystemunitDATA install-sysusersDATA \
+	install-tapsetDATA
 
 install-dvi: install-dvi-am
 
@@ -1283,9 +1315,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man uninstall-sbinPROGRAMS \
-	uninstall-systemdsystemunitDATA uninstall-sysusersDATA \
-	uninstall-tapsetDATA
+uninstall-am: uninstall-apparmorDATA uninstall-man \
+	uninstall-sbinPROGRAMS uninstall-systemdsystemunitDATA \
+	uninstall-sysusersDATA uninstall-tapsetDATA
 
 uninstall-man: uninstall-man8
 
@@ -1296,19 +1328,19 @@ uninstall-man: uninstall-man8
 	cscopelist-am ctags ctags-am distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-man8 \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-sbinPROGRAMS install-strip \
+	install-apparmorDATA install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-man8 install-pdf install-pdf-am install-ps \
+	install-ps-am install-sbinPROGRAMS install-strip \
 	install-systemdsystemunitDATA install-sysusersDATA \
 	install-tapsetDATA installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-man uninstall-man8 uninstall-sbinPROGRAMS \
-	uninstall-systemdsystemunitDATA uninstall-sysusersDATA \
-	uninstall-tapsetDATA
+	uninstall-apparmorDATA uninstall-man uninstall-man8 \
+	uninstall-sbinPROGRAMS uninstall-systemdsystemunitDATA \
+	uninstall-sysusersDATA uninstall-tapsetDATA
 
 @USE_SECCOMP_TRUE@syscall-names.h:
 @USE_SECCOMP_TRUE@	$(AM_V_GEN)
@@ -1328,6 +1360,7 @@ uninstall-man: uninstall-man8
 lldpd.8: lldpd.8.in
 lldpd.service: lldpd.service.in
 lldpd.sysusers.conf: lldpd.sysusers.conf.in
+usr.sbin.lldpd: usr.sbin.lldpd.in
 
 $(TEMPLATES): Makefile
 	$(AM_V_GEN)mkdir -p $(@D) && $(edit) $(srcdir)/$@.in > $@.tmp && mv $@.tmp $@

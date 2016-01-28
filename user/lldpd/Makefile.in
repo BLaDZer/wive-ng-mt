@@ -118,9 +118,10 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_gcc_func_attribute.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
-	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
+	$(top_srcdir)/m4/ax_prog_doxygen.m4 $(top_srcdir)/m4/ctors.m4 \
 	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -268,6 +269,7 @@ distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+APPARMORDIR = @APPARMORDIR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -404,6 +406,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+apparmordir = @apparmordir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -426,6 +429,8 @@ includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 launchddaemonsdir = @launchddaemonsdir@
+libbsd_CFLAGS = @libbsd_CFLAGS@
+libbsd_LIBS = @libbsd_LIBS@
 libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
@@ -488,9 +493,10 @@ MOSTLYCLEANFILES = $(DX_CLEANFILES)
 # systemd and launchd files are not installed in the prefix, don't
 # request them for distcheck
 DISTCHECK_CONFIGURE_FLAGS = $(CONFIGURE_ARGS) \
-        --with-sysusersdir=no \
-        --with-systemdsystemunitdir=no \
-	--with-launchddaemonsdir=no
+	--with-sysusersdir=no \
+	--with-systemdsystemunitdir=no \
+	--with-launchddaemonsdir=no \
+	--with-apparmordir=no
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

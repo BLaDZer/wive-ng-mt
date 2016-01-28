@@ -1,16 +1,33 @@
-lldpd (0.7.19)
+lldpd (0.9.0)
+  * Change:
+    + Don't rely on libnl3 for netlink. Reimplement a minimal,
+      API-compatible, version.
+
+lldpd (0.8.0, never released)
   * Fix:
     + Fix a buffer overflow when receiving a too large management
       address TLV. Unless hardening has been disabled, this overflow
       cannot be used for arbitrary code execution.
-
-lldpd (0.7.18)
-  * Fix:
-    + Restore ability to detect bridge and bonds without
-      netlink. Linux kernels prior to 2.6.39 don't have this
-      information available with netlink.
+    + Update LLDP-MED policy L2 priority values to match
+      802.1Q-2005. This may be a breaking change.
   * Change:
+    + PIE is now disabled by default. It's too difficult to reliably
+      detect if it works. Use --enable-pie to enable it.
+    + Retrieve the permanent MAC address of an interface through
+      ethtool for Linux if /proc/net/bonding is not available.
+    + Running lldpd with "-d" will keep the process in foreground but
+      logs will still go to syslog. To log to the console, add at
+      least one "-d".
+    + Fix minimal kernel version to 2.6.39. Add a runtime warning when
+      this is not the case.
     + Remove old bridge code (the one using ioctl).
+    + Don't discard down interfaces. Notably, this enables us to keep
+      their specific configuration if any.
+    + For Linux, switch to libnl3. Be aware of the licensing issues in
+      case of static linking.
+    + Introduce the notion of default local port. New interfaces will
+      use it as a base. This allows setting various MED stuff.
+    + Provide an apparmor profile (untested).
 
 lldpd (0.7.17)
   * Fix:

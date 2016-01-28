@@ -77,7 +77,7 @@ sync_recv(lldpctl_conn_t *lldpctl,
 
 	remain = length;
 	do {
-		if ((nb = read(conn->fd, (void*)data + offset, remain)) == -1) {
+		if ((nb = read(conn->fd, (unsigned char*)data + offset, remain)) == -1) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			return LLDPCTL_ERR_CALLBACK_FAILURE;
@@ -208,7 +208,7 @@ check_for_notification(lldpctl_conn_t *conn)
 		interface = _lldpctl_new_atom(conn, atom_interface,
 		    change->ifname);
 		if (interface == NULL) goto end;
-		neighbor = _lldpctl_new_atom(conn, atom_port,
+		neighbor = _lldpctl_new_atom(conn, atom_port, 0,
 		    NULL, change->neighbor, NULL);
 		if (neighbor == NULL) goto end;
 		conn->watch_cb(conn, type, interface, neighbor, conn->watch_data);

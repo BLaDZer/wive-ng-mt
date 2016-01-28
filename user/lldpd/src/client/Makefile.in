@@ -98,9 +98,10 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_gcc_func_attribute.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
-	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
+	$(top_srcdir)/m4/ax_prog_doxygen.m4 $(top_srcdir)/m4/ctors.m4 \
 	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -244,6 +245,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+APPARMORDIR = @APPARMORDIR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -377,6 +379,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+apparmordir = @apparmordir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -399,6 +402,8 @@ includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 launchddaemonsdir = @launchddaemonsdir@
+libbsd_CFLAGS = @libbsd_CFLAGS@
+libbsd_LIBS = @libbsd_LIBS@
 libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
@@ -453,6 +458,7 @@ CLEANFILES = $(TEMPLATES)
 edit = $(SED) \
         -e 's|@bindir[@]|$(bindir)|g' \
         -e 's|@sbindir[@]|$(sbindir)|g' \
+        -e 's|@sysconfdir[@]|$(sysconfdir)|g' \
         -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
         -e 's|@libdir[@]|$(libdir)|g' \
         -e 's|@includedir[@]|$(includedir)|g' \
@@ -465,7 +471,9 @@ edit = $(SED) \
         -e 's|@PRIVSEP_USER[@]|$(PRIVSEP_USER)|g' \
         -e 's|@PRIVSEP_GROUP[@]|$(PRIVSEP_GROUP)|g' \
         -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g' \
-        -e 's|@LLDPD_CTL_SOCKET[@]|$(LLDPD_CTL_SOCKET)|g'
+        -e 's|@LLDPD_PID_FILE[@]|$(LLDPD_PID_FILE)|g' \
+        -e 's|@LLDPD_CTL_SOCKET[@]|$(LLDPD_CTL_SOCKET)|g' \
+        -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g'
 
 all: all-am
 

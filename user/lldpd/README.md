@@ -126,6 +126,19 @@ EDP, CDP, FDP or SONMP frame on this interface. Informations collected
 through EDP/CDP/FDP/SONMP are integrated with other informations and
 can be queried with `lldpcli` or through SNMP.
 
+More information:
+ * http://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
+ * http://standards.ieee.org/getieee802/download/802.1AB-2005.pdf
+ * http://wiki.wireshark.org/LinkLayerDiscoveryProtocol
+
+Compatibility with older kernels
+--------------------------------
+
+If you have a kernel older than Linux 2.6.39, you need to compile
+lldpd with `--enable-oldies` to enable some compatibility functions:
+otherwise, lldpd will only rely on Netlink to receive bridge, bond and
+VLAN information.
+
 For bonding, you need 2.6.24 (in previous version, PACKET_ORIGDEV
 affected only non multicast packets). See:
 
@@ -133,7 +146,9 @@ affected only non multicast packets). See:
  * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=8032b46489e50ef8f3992159abd0349b5b8e476c
 
 Otherwise, a packet received on a bond will be affected to all
-interfaces of the bond.
+interfaces of the bond. In this case, lldpd will affect a received
+randomly to one of the interface (so a neighbor may be affected to the
+wrong interface).
 
 On 2.6.27, we are able to receive packets on real interface for bonded
 devices. This allows one to get neighbor information on active/backup
@@ -150,7 +165,7 @@ information:
 
  * http://www.freebsd.org/cgi/query-pr.cgi?pr=138620
 
-Some devices (notably Cisco IOS) send frames on tagged with the native
+Some devices (notably Cisco IOS) send frames tagged with the native
 VLAN while they should send them untagged. If your network card does
 not support accelerated VLAN, you will receive those frames as long as
 the corresponding interface exists (see below). However, if your
@@ -195,11 +210,6 @@ using the option `configure system interface promiscuous`.
 
 On modern networks, the performance impact should be nonexistent.
 
-More information:
- * http://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
- * http://standards.ieee.org/getieee802/download/802.1AB-2005.pdf
- * http://wiki.wireshark.org/LinkLayerDiscoveryProtocol
-
 Development
 -----------
 
@@ -212,6 +222,24 @@ to issue the following command:
 You can append any further arguments. If lldpd is unable to find
 `lldpcli` it will start in an unconfigured mode and won't send or
 accept LLDP frames.
+
+You can use [afl](http://lcamtuf.coredump.cx/afl/) to test some
+aspects of lldpd. To test frame decoding, you can do something like
+that:
+
+    export AFL_USE_ASAN=1 # only on 32bit arch
+    ./configure CC=afl-gcc
+    make clean check
+    cd tests
+    mkdir inputs
+    mv *.pcap inputs
+    afl-fuzz -i inputs -o outputs ./decode @@
+
+There is a general test suite with `make check`. It's also possible to
+run integration tests with `./tests/integration-tests`. Those are not
+very flexible and may or may not work depending on your platform. Also
+check the content of `tests/lldpcli.conf`. It's a configuration file
+that should cover all commands present in lldpcli.
 
 Embedding
 ---------

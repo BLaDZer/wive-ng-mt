@@ -351,7 +351,7 @@ ifbsd_blacklist(struct lldpd *cfg,
 		if (iface->name[i] == '\0') {
 			log_debug("interfaces", "skip %s: AirDrop interface",
 			    iface->name);
-			iface->flags = 0;
+			iface->ignore = 1;
 		}
 	}
 #endif
@@ -427,11 +427,6 @@ ifbsd_extract(struct lldpd *cfg,
 	struct interfaces_device *device = NULL;
 	if (!ifaddr->ifa_name) return;
 	if (!ifaddr->ifa_addr) return;
-	if (!((ifaddr->ifa_flags & IFF_UP) && (ifaddr->ifa_flags & IFF_RUNNING))) {
-		log_debug("interfaces",
-		    "skip %s: down", ifaddr->ifa_name);
-		return;
-	}
 	switch (ifaddr->ifa_addr->sa_family) {
 	case AF_LINK:
 		log_debug("interfaces",
@@ -684,4 +679,9 @@ end:
 	interfaces_free_devices(interfaces);
 	interfaces_free_addresses(addresses);
 	if (ifaddrs) freeifaddrs(ifaddrs);
+}
+
+void
+interfaces_cleanup(struct lldpd *cfg)
+{
 }

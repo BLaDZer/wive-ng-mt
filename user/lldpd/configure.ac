@@ -27,7 +27,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_SUBST([CONFIGURE_ARGS], [$ac_configure_args])
 
 # Configure automake
-AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror tar-ustar])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
 
@@ -82,12 +82,14 @@ AX_CFLAGS_GCC_OPTION([-Wcast-align], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wheader-guard], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wdocumentation], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Winline], [LLDP_CFLAGS])
+AX_CFLAGS_GCC_OPTION([-Wpointer-arith], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-fno-omit-frame-pointer], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-unused-parameter], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-missing-field-initializers], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-sign-compare], [LLDP_CFLAGS]) dnl Should be fixed later
 AX_LDFLAGS_OPTION([-Wl,-z,relro], [LLDP_LDFLAGS])
 AX_LDFLAGS_OPTION([-Wl,-z,now], [LLDP_LDFLAGS])
+lldp_CHECK_CTORS
 
 # Hardening
 AC_ARG_ENABLE([hardening],
@@ -95,6 +97,11 @@ AC_ARG_ENABLE([hardening],
     [Enable compiler and linker options to frustrate memory corruption exploits @<:@default=yes@:>@])],
   [hardening="$enableval"],
   [hardening="yes"])
+AC_ARG_ENABLE([pie],
+  [AS_HELP_STRING([--enable-pie],
+    [Enable PIE (position independant executable) @<:@default=no@:>@])],
+  [pie="$enableval"],
+  [pie="no"])
 
 if test x"$hardening" != x"no"; then
 #  AX_CFLAGS_GCC_OPTION([-fstack-protector], [LLDP_CFLAGS])
@@ -102,6 +109,8 @@ if test x"$hardening" != x"no"; then
 #  AX_CFLAGS_GCC_OPTION([-fstack-protector-strong], [LLDP_CFLAGS])
   AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2], [LLDP_CPPFLAGS])
   AX_CFLAGS_GCC_OPTION([-fPIE], [LLDP_CFLAGS])
+fi
+if test x"$pie" = x"yes"; then
   AX_LDFLAGS_OPTION([-fPIE -pie], [LLDP_BIN_LDFLAGS],
     [AX_LDFLAGS_OPTION([-fPIE -Wl,-pie], [LLDP_BIN_LDFLAGS])])
 fi
@@ -128,26 +137,41 @@ AC_CONFIG_LIBOBJ_DIR([src/compat])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_FORK
-# setproctitle (maybe through libbsd [until 0.5, it is only a stub function])
-AC_SEARCH_LIBS([setproctitle], [util bsd])
+
+# Some functions can be in libbsd
+PKG_CHECK_MODULES([libbsd], [libbsd-overlay], [], [:])
+_save_CFLAGS="$CFLAGS"
+_save_LIBS="$LIBS"
+CFLAGS="$CFLAGS $libbsd_CFLAGS"
+LIBS="$LIBS $libbsd_LIBS"
+AC_MSG_CHECKING([if libbsd can be linked correctly])
+AC_LINK_IFELSE([AC_LANG_SOURCE([[int main() { return 0; }]])],
+  [
+    AC_MSG_RESULT(yes)
+    LLDP_CFLAGS="$LLDP_CFLAGS $libbsd_CFLAGS"
+    LLDP_LDFLAGS="$LLDP_LDFLAGS $libbsd_LIBS"
+  ],[
+    AC_MSG_RESULT(no)
+    CFLAGS="$_save_CFLAGS"
+    LIBS="$_save_LIBS"
+  ])
+
+# setproctitle may have an _init function
 AC_REPLACE_FUNCS([setproctitle])
 AC_CHECK_FUNCS([setproctitle_init])
 # Other functions
 AC_REPLACE_FUNCS([strlcpy
                   strnlen
                   strndup
-                  fgetln
+                  getline
                   asprintf
                   vsyslog
                   daemon])
 # Optional functions
 AC_CHECK_FUNCS([setresuid setresgid])
 
-case " $LIBS " in
-     *\ -lbsd\ *)
-        AC_DEFINE(HAVE_LIBBSD, 1, [Define if libbsd is used])
-        ;;
-esac
+CFLAGS="$_save_CFLAGS"
+LIBS="$_save_LIBS"
 
 # Check for res_init. On OSX, res_init is a symbol in libsystem_info
 # and a macro in resolv.h. We need to ensure we test with resolv.h.
@@ -164,7 +188,7 @@ AC_CACHE_SAVE
 ## Unit tests wich check
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.4], [have_check=yes], [have_check=no])
 
-# Libevent
+# Third-party libraries
 #lldp_CHECK_LIBEVENT
 
 # Compatibility with pkg.m4 < 0.27
@@ -241,7 +265,7 @@ fi
 AC_ARG_WITH([seccomp],
   AS_HELP_STRING(
     [--with-seccomp],
-    [Enable seccomp support (with libseccomp) @<:@default=no@:>@]),
+    [Enable seccomp support (with libseccomp, experimental) @<:@default=no@:>@]),
   [],
   [with_seccomp=no])
 lldp_CHECK_SECCOMP
@@ -266,6 +290,13 @@ lldp_ARG_WITH([sysusersdir], [Directory for sysusers files],
 AC_SUBST([sysusersdir], [$with_sysusersdir])
 AM_CONDITIONAL(HAVE_SYSUSERSDIR,
     [test -n "$with_sysusersdir" -a "x$with_sysusersdir" != xno ])
+
+# AppArmor
+lldp_ARG_WITH([apparmordir], [Directory for AppArmor profiles (Linux)],
+                             [no])
+AC_SUBST([apparmordir], [$with_apparmordir])
+AM_CONDITIONAL(HAVE_APPARMORDIR,
+    [test -n "$with_apparmordir" -a "x$with_apprmordir" != xno ])
 
 # Systemtap/DTrace
 lldp_SYSTEMTAP
@@ -297,7 +328,15 @@ lldp_ARG_ENABLE([dot3], [Dot3 extension (PHY stuff)], [yes])
 lldp_ARG_ENABLE([custom], [Custom TLV support], [yes])
 
 # Oldies
-lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.32], [no])
+MIN_LINUX_KERNEL_VERSION=2.6.39
+lldp_ARG_ENABLE([oldies], [compatibility with Linux kernel older than 2.6.39], [no])
+if test x"$os" = x"Linux"; then
+    if test x"$enable_oldies" = x"no"; then
+      AC_DEFINE_UNQUOTED(MIN_LINUX_KERNEL_VERSION, "[$MIN_LINUX_KERNEL_VERSION]", [Minimal Linux kernel version required])
+    else
+      AC_DEFINE(MIN_LINUX_KERNEL_VERSION, "2.6.11", [Minimal kernel version required])
+    fi
+fi
 
 #######################
 # Output results

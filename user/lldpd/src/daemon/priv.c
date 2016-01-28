@@ -117,7 +117,7 @@ int
 priv_iface_init(int index, char *iface)
 {
 	int rc;
-	char dev[IFNAMSIZ];
+	char dev[IFNAMSIZ] = {};
 	enum priv_cmd cmd = PRIV_IFACE_INIT;
 	must_write(PRIV_UNPRIVILEGED, &cmd, sizeof(enum priv_cmd));
 	must_write(PRIV_UNPRIVILEGED, &index, sizeof(int));
@@ -388,6 +388,7 @@ static struct dispatch_actions actions[] = {
 #ifdef HOST_OS_LINUX
 	{PRIV_OPEN, asroot_open},
 	{PRIV_ETHTOOL, asroot_ethtool},
+	{PRIV_IFACE_MAC, asroot_iface_mac},
 #endif
 	{PRIV_IFACE_INIT, asroot_iface_init},
 	{PRIV_IFACE_MULTICAST, asroot_iface_multicast},

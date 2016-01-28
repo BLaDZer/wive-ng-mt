@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Directory for AppArmor profiles (Linux) */
+#undef APPARMORDIR
+
 /* Cisco Discovery Protocol */
 #undef ENABLE_CDP
 
@@ -24,7 +27,7 @@
 /* LLDP-MED extension */
 #undef ENABLE_LLDPMED
 
-/* compatibility with Linux kernel older than 2.6.32 */
+/* compatibility with Linux kernel older than 2.6.39 */
 #undef ENABLE_OLDIES
 
 /* Privilege separation */
@@ -48,20 +51,27 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define to 1 if you have the `fgetln' function. */
-#undef HAVE_FGETLN
-
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
+
+/* Define to 1 if the system has the `constructor' function attribute */
+#undef HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR
+
+/* Define to 1 if the system has the `constructor_priority' function attribute
+   */
+#undef HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR_PRIORITY
+
+/* Define to 1 if the system has the `destructor' function attribute */
+#undef HAVE_FUNC_ATTRIBUTE_DESTRUCTOR
+
+/* Define to 1 if you have the `getline' function. */
+#undef HAVE_GETLINE
 
 /* Define to 1 if you have the <history.h> header file. */
 #undef HAVE_HISTORY_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define if libbsd is used */
-#undef HAVE_LIBBSD
 
 /* Define if you have a readline compatible library */
 #undef HAVE_LIBREADLINE
@@ -122,6 +132,9 @@
 
 /* Define to 1 if you have the `setresuid' function. */
 #undef HAVE_SETRESUID
+
+/* Define to 1 if you have the `snmp_select_info2' function. */
+#undef HAVE_SNMP_SELECT_INFO2
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -213,6 +226,9 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* Minimal kernel version required */
+#undef MIN_LINUX_KERNEL_VERSION
 
 /* Name of package */
 #undef PACKAGE

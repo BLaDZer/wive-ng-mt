@@ -62,6 +62,21 @@ TAILQ_HEAD(ev_l, lldpd_events);
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include <net-snmp/agent/snmp_vars.h>
 
+/* Compatibility with older versions of NetSNMP */
+#ifndef HAVE_SNMP_SELECT_INFO2
+# define netsnmp_large_fd_set fd_set
+# define snmp_read2 snmp_read
+# define snmp_select_info2 snmp_select_info
+# define netsnmp_large_fd_set_init(...)
+# define netsnmp_large_fd_set_cleanup(...)
+# define NETSNMP_LARGE_FD_SET FD_SET
+# define NETSNMP_LARGE_FD_CLR FD_CLR
+# define NETSNMP_LARGE_FD_ZERO FD_ZERO
+# define NETSNMP_LARGE_FD_ISSET FD_ISSET
+#else
+# include <net-snmp/library/large_fd_set.h>
+#endif
+
 static void levent_snmp_update(struct lldpd *);
 
 /*
@@ -74,11 +89,12 @@ static void
 levent_snmp_read(evutil_socket_t fd, short what, void *arg)
 {
 	struct lldpd *cfg = arg;
-	fd_set fdset;
+	netsnmp_large_fd_set fdset;
 	(void)what;
-	FD_ZERO(&fdset);
-	FD_SET(fd, &fdset);
-	snmp_read(&fdset);
+	netsnmp_large_fd_set_init(&fdset, FD_SETSIZE);
+	NETSNMP_LARGE_FD_ZERO(&fdset);
+	NETSNMP_LARGE_FD_SET(fd, &fdset);
+	snmp_read2(&fdset);
 	levent_snmp_update(cfg);
 }
 
@@ -148,7 +164,6 @@ levent_snmp_update(struct lldpd *cfg)
 {
 	int maxfd = 0;
 	int block = 1;
-	fd_set fdset;
 	struct timeval timeout;
 	static int howmany = 0;
 	int added = 0, removed = 0, current = 0;
@@ -163,8 +178,10 @@ levent_snmp_update(struct lldpd *cfg)
 	   them become active, `snmp_read()` should be called on it.
 	*/
 	
-	FD_ZERO(&fdset);
-	snmp_select_info(&maxfd, &fdset, &timeout, &block);
+	netsnmp_large_fd_set fdset;
+	netsnmp_large_fd_set_init(&fdset, FD_SETSIZE);
+        NETSNMP_LARGE_FD_ZERO(&fdset);
+	snmp_select_info2(&maxfd, &fdset, &timeout, &block);
 	
 	/* We need to untrack any event whose FD is not in `fdset`
 	   anymore */
@@ -173,20 +190,20 @@ levent_snmp_update(struct lldpd *cfg)
 	     snmpfd = snmpfd_next) {
 		snmpfd_next = TAILQ_NEXT(snmpfd, next);
 		if (event_get_fd(snmpfd->ev) >= maxfd ||
-		    (!FD_ISSET(event_get_fd(snmpfd->ev), &fdset))) {
+		    (!NETSNMP_LARGE_FD_ISSET(event_get_fd(snmpfd->ev), &fdset))) {
 			event_free(snmpfd->ev);
 			TAILQ_REMOVE(levent_snmp_fds(cfg), snmpfd, next);
 			free(snmpfd);
 			removed++;
 		} else {
-			FD_CLR(event_get_fd(snmpfd->ev), &fdset);
+			NETSNMP_LARGE_FD_CLR(event_get_fd(snmpfd->ev), &fdset);
 			current++;
 		}
 	}
 	
 	/* Invariant: FD in `fdset` are not in list of FD */
 	for (int fd = 0; fd < maxfd; fd++) {
-		if (FD_ISSET(fd, &fdset)) {
+		if (NETSNMP_LARGE_FD_ISSET(fd, &fdset)) {
 			levent_snmp_add_fd(cfg, fd);
 			added++;
 		}
@@ -201,6 +218,8 @@ levent_snmp_update(struct lldpd *cfg)
 	/* If needed, handle timeout */
 	if (evtimer_add(cfg->g_snmp_timeout, block?NULL:&timeout) == -1)
 		log_warnx("event", "unable to schedule timeout function for SNMP");
+
+	netsnmp_large_fd_set_cleanup(&fdset);
 }
 #endif /* USE_SNMP */
 
@@ -464,8 +483,13 @@ void
 levent_send_now(struct lldpd *cfg)
 {
 	struct lldpd_hardware *hardware;
-	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries)
+	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries) {
+		if (hardware->h_timer)
 		event_active(hardware->h_timer, EV_TIMEOUT, 1);
+		else
+			log_warnx("event", "BUG: no timer present for interface %s",
+			    hardware->h_ifname);
+	}
 }
 
 static void
@@ -552,6 +576,9 @@ levent_loop(struct lldpd *cfg)
 		    event_base_got_exit(cfg->g_base))
 			break;
 	} while (event_base_loop(cfg->g_base, EVLOOP_ONCE) == 0);
+
+	if (cfg->g_iface_timer_event != NULL)
+		event_free(cfg->g_iface_timer_event);
 
 #ifdef USE_SNMP
 	if (cfg->g_snmp)
@@ -657,6 +684,7 @@ levent_iface_recv(evutil_socket_t fd, short what, void *arg)
 	char buffer[EVENT_BUFFER];
 	int n;
 
+	if (cfg->g_iface_cb == NULL) {
 	/* Discard the message */
 	while (1) {
 		n = read(fd, buffer, sizeof(buffer));
@@ -673,6 +701,9 @@ levent_iface_recv(evutil_socket_t fd, short what, void *arg)
 			    "end of file reached while getting interface change notification message");
 			return;
 		}
+	}
+	} else {
+		cfg->g_iface_cb(cfg);
 	}
 
 	/* Schedule local port update. We don't run it right away because we may
@@ -701,6 +732,7 @@ levent_iface_subscribe(struct lldpd *cfg, int socket)
 {
 	log_debug("event", "subscribe to interface changes from socket %d",
 	    socket);
+	if (cfg->g_iface_cb == NULL)
 	levent_make_socket_nonblocking(socket);
 	cfg->g_iface_event = event_new(cfg->g_base, socket,
 	    EV_READ | EV_PERSIST, levent_iface_recv, cfg);

@@ -49,11 +49,6 @@ ifsolaris_extract(struct lldpd *cfg,
 		return;
 	}
 	flags = lifrl.lifr_flags;
-	if (!((flags & IFF_UP) && (flags & IFF_RUNNING))) {
-		log_debug("interfaces",
-		    "skip %s: down", lifrl.lifr_name);
-		return;
-	}
 
 	/* Index */
 	if (ioctl(cfg->g_sock, SIOCGLIFINDEX, (caddr_t)&lifrl) < 0) {
@@ -183,4 +178,9 @@ end:
 	free(buffer);
 	interfaces_free_devices(interfaces);
 	interfaces_free_addresses(addresses);
+}
+
+void
+interfaces_cleanup(struct lldpd *cfg)
+{
 }

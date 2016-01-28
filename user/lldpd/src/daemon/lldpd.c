@@ -139,6 +139,61 @@ lldpd_get_hardware(struct lldpd *cfg, char *name, int index, struct lldpd_ops *o
 	return hardware;
 }
 
+/**
+ * Allocate the default local port. This port will be cloned each time we need a
+ * new local port.
+ */
+static void
+lldpd_alloc_default_local_port(struct lldpd *cfg)
+{
+	struct lldpd_port *port;
+
+	if ((port = (struct lldpd_port *)
+		calloc(1, sizeof(struct lldpd_port))) == NULL)
+		fatal("main", NULL);
+
+#ifdef ENABLE_DOT1
+	TAILQ_INIT(&port->p_vlans);
+	TAILQ_INIT(&port->p_ppvids);
+	TAILQ_INIT(&port->p_pids);
+#endif
+#ifdef ENABLE_CUSTOM
+	TAILQ_INIT(&port->p_custom_list);
+#endif
+	cfg->g_default_local_port = port;
+}
+
+/**
+ * Clone a given port. The destination needs to be already allocated.
+ */
+static int
+lldpd_clone_port(struct lldpd_port *destination, struct lldpd_port *source)
+{
+
+	u_int8_t *output = NULL;
+	ssize_t output_len;
+	struct lldpd_port *cloned = NULL;
+	output_len = lldpd_port_serialize(source, (void**)&output);
+	if (output_len == -1 ||
+	    lldpd_port_unserialize(output, output_len, &cloned) <= 0) {
+		log_warnx("alloc", "unable to clone default port");
+		free(output);
+		return -1;
+	}
+	memcpy(destination, cloned, sizeof(struct lldpd_port));
+	free(cloned);
+	free(output);
+#ifdef ENABLE_DOT1
+	marshal_repair_tailq(lldpd_vlan, &destination->p_vlans, v_entries);
+	marshal_repair_tailq(lldpd_ppvid, &destination->p_ppvids, p_entries);
+	marshal_repair_tailq(lldpd_pi, &destination->p_pids, p_entries);
+#endif
+#ifdef ENABLE_CUSTOM
+	marshal_repair_tailq(lldpd_custom, &destination->p_custom_list, next);
+#endif
+	return 0;
+}
+
 struct lldpd_hardware *
 lldpd_alloc_hardware(struct lldpd *cfg, char *name, int index)
 {
@@ -149,6 +204,13 @@ lldpd_alloc_hardware(struct lldpd *cfg, char *name, int index)
 	if ((hardware = (struct lldpd_hardware *)
 		calloc(1, sizeof(struct lldpd_hardware))) == NULL)
 		return NULL;
+
+	/* Clone default local port */
+	if (lldpd_clone_port(&hardware->h_lport, cfg->g_default_local_port) == -1) {
+		log_warnx("alloc", "unable to clone default port");
+		free(hardware);
+		return NULL;
+	}
 
 	hardware->h_cfg = cfg;
 	strlcpy(hardware->h_ifname, name, sizeof(hardware->h_ifname));
@@ -163,14 +225,6 @@ lldpd_alloc_hardware(struct lldpd *cfg, char *name, int index)
 		if (!cfg->g_config.c_noinventory)
 			hardware->h_lport.p_med_cap_enabled |= LLDP_MED_CAP_IV;
 	}
-#endif
-#ifdef ENABLE_DOT1
-	TAILQ_INIT(&hardware->h_lport.p_vlans);
-	TAILQ_INIT(&hardware->h_lport.p_ppvids);
-	TAILQ_INIT(&hardware->h_lport.p_pids);
-#endif
-#ifdef ENABLE_CUSTOM
-	TAILQ_INIT(&hardware->h_lport.p_custom_list);
 #endif
 
 	levent_hardware_init(hardware);
@@ -301,6 +355,8 @@ lldpd_reset_timer(struct lldpd *cfg)
 		 * change. To do this, we zero out fields that are not
 		 * significant, marshal the port, then restore. */
 		struct lldpd_port *port = &hardware->h_lport;
+		/* Take the current flags into account to detect a change. */
+		port->_p_hardware_flags = hardware->h_flags;
 		u_int8_t *output = NULL;
 		ssize_t output_len;
 		char save[LLDPD_PORT_START_MARKER];
@@ -338,11 +394,26 @@ lldpd_reset_timer(struct lldpd *cfg)
 	}
 }
 
+static void
+lldpd_all_chassis_cleanup(struct lldpd *cfg)
+{
+	struct lldpd_chassis *chassis, *chassis_next;
+	log_debug("localchassis", "cleanup all chassis");
+
+	for (chassis = TAILQ_FIRST(&cfg->g_chassis); chassis;
+	     chassis = chassis_next) {
+		chassis_next = TAILQ_NEXT(chassis, c_entries);
+		if (chassis->c_refcount == 0) {
+			TAILQ_REMOVE(&cfg->g_chassis, chassis, c_entries);
+			lldpd_chassis_cleanup(chassis, 1);
+		}
+	}
+}
+
 void
 lldpd_cleanup(struct lldpd *cfg)
 {
 	struct lldpd_hardware *hardware, *hardware_next;
-	struct lldpd_chassis *chassis, *chassis_next;
 
 	log_debug("localchassis", "cleanup all ports");
 
@@ -355,22 +426,13 @@ lldpd_cleanup(struct lldpd *cfg)
 			lldpd_remote_cleanup(hardware, notify_clients_deletion, 1);
 			lldpd_hardware_cleanup(cfg, hardware);
 		} else
-			lldpd_remote_cleanup(hardware, notify_clients_deletion, 0);
+			lldpd_remote_cleanup(hardware, notify_clients_deletion,
+			    !(hardware->h_flags & IFF_RUNNING));
 	}
 
-	log_debug("localchassis", "cleanup all chassis");
-
-	for (chassis = TAILQ_FIRST(&cfg->g_chassis); chassis;
-	     chassis = chassis_next) {
-		chassis_next = TAILQ_NEXT(chassis, c_entries);
-		if (chassis->c_refcount == 0) {
-			TAILQ_REMOVE(&cfg->g_chassis, chassis, c_entries);
-			lldpd_chassis_cleanup(chassis, 1);
-		}
-	}
-
-	lldpd_count_neighbors(cfg);
 	levent_schedule_cleanup(cfg);
+	lldpd_all_chassis_cleanup(cfg);
+	lldpd_count_neighbors(cfg);
 }
 
 /* Update chassis `ochassis' with values from `chassis'. The later one is not
@@ -892,6 +954,12 @@ lldpd_recv(struct lldpd *cfg, struct lldpd_hardware *hardware, int fd)
 		free(buffer);
 		return;
 	}
+	if (hardware->h_lport.p_disable_rx) {
+		log_debug("receive", "RX disabled, ignore the frame on %s",
+		    hardware->h_ifname);
+		free(buffer);
+		return;
+	}
 	if (cfg->g_config.c_paused) {
 		log_debug("receive", "paused, ignore the frame on %s",
 			hardware->h_ifname);
@@ -913,6 +981,7 @@ lldpd_send_shutdown(struct lldpd_hardware *hardware)
 {
 	struct lldpd *cfg = hardware->h_cfg;
 	if (cfg->g_config.c_receiveonly || cfg->g_config.c_paused) return;
+	if (hardware->h_lport.p_disable_tx) return;
 	if ((hardware->h_flags & IFF_RUNNING) == 0)
 		return;
 
@@ -931,6 +1000,7 @@ lldpd_send(struct lldpd_hardware *hardware)
 	int i, sent;
 
 	if (cfg->g_config.c_receiveonly || cfg->g_config.c_paused) return;
+	if (hardware->h_lport.p_disable_tx) return;
 	if ((hardware->h_flags & IFF_RUNNING) == 0)
 		return;
 
@@ -1153,6 +1223,11 @@ lldpd_exit(struct lldpd *cfg)
 		lldpd_remote_cleanup(hardware, NULL, 1);
 		lldpd_hardware_cleanup(cfg, hardware);
 	}
+	interfaces_cleanup(cfg);
+	lldpd_port_cleanup(cfg->g_default_local_port, 1);
+	lldpd_all_chassis_cleanup(cfg);
+	free(cfg->g_default_local_port);
+	free(cfg->g_config.c_platform);
 }
 
 /**
@@ -1161,15 +1236,22 @@ lldpd_exit(struct lldpd *cfg)
  * @return PID of running lldpcli or -1 if error.
  */
 static pid_t
-lldpd_configure(int debug, const char *path, const char *ctlname)
+lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname)
 {
 	pid_t lldpcli = vfork();
 	int devnull;
 
-	char sdebug[debug + 3];
-	memset(sdebug, 'd', debug + 3);
-	sdebug[debug + 2] = '\0';
+	char sdebug[debug + 4];
+	if (use_syslog)
+		strlcpy(sdebug, "-s", 3);
+	else {
+		/* debug = 0 -> -sd */
+		/* debug = 1 -> -sdd */
+		/* debug = 2 -> -sddd */
+		memset(sdebug, 'd', sizeof(sdebug));
+		sdebug[debug + 3] = '\0';
 	sdebug[0] = '-'; sdebug[1] = 's';
+	}
 	log_debug("main", "invoke %s %s", path, sdebug);
 
 	switch (lldpcli) {
@@ -1307,12 +1389,49 @@ lldpd_started_by_systemd()
 }
 #endif
 
+#ifdef HOST_OS_LINUX
+static void
+version_convert(const char *sversion, unsigned iversion[], size_t n)
+{
+	const char *p = sversion;
+	char *end;
+	for (size_t i = 0; i < n; i++) {
+		iversion[i] = strtol(p, &end, 10);
+		if (*end != '.') break;
+		p = end + 1;
+	}
+}
+
+static void
+version_check(void)
+{
+	struct utsname uts;
+	if (uname(&uts) == -1) return;
+	unsigned version_min[3] = {};
+	unsigned version_cur[3] = {};
+	version_convert(uts.release, version_cur, 3);
+	version_convert(MIN_LINUX_KERNEL_VERSION, version_min, 3);
+	if (version_min[0] > version_cur[0] ||
+	    (version_min[0] == version_cur[0] && version_min[1] > version_cur[1]) ||
+	    (version_min[1] == version_cur[1] && version_min[2] > version_cur[2])) {
+		log_warnx("lldpd", "minimal kernel version required is %s, got %s",
+		    MIN_LINUX_KERNEL_VERSION, uts.release);
+		log_warnx("lldpd", "lldpd may be unable to detect bonds and bridges correctly");
+#ifndef ENABLE_OLDIES
+		log_warnx("lldpd", "consider recompiling with --enable-oldies option");
+#endif
+	}
+}
+#else
+static void version_check(void) {}
+#endif
+
 int
 lldpd_main(int argc, char *argv[], char *envp[])
 {
 	struct lldpd *cfg;
 	struct lldpd_chassis *lchassis;
-	int ch, debug = 0;
+	int ch, debug = 0, use_syslog = 1, daemonize = 1;
 #ifdef USE_SNMP
 	int snmp = 0;
 	const char *agentx = NULL;	/* AgentX socket */
@@ -1373,6 +1492,11 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			exit(0);
 			break;
 		case 'd':
+			if (daemonize)
+				daemonize = 0;
+			else if (use_syslog)
+				use_syslog = 0;
+			else
 			debug++;
 			break;
 		case 'D':
@@ -1493,12 +1617,14 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	}
 	smart = filters[i].b;
 
-	log_init(debug, __progname);
+    	log_init(use_syslog, debug, __progname);
 	tzset();		/* Get timezone info before chroot */
 
 	log_debug("main", "lldpd " PACKAGE_VERSION " starting...");
-#ifdef ENABLE_PRIVSEP
+	version_check();
+
 	/* Grab uid and gid to use for priv sep */
+#ifdef ENABLE_PRIVSEP
 	if ((user = getpwnam(PRIVSEP_USER)) == NULL)
 		fatal("main", "no " PRIVSEP_USER " user for privilege separation");
 	uid = user->pw_uid;
@@ -1550,14 +1676,14 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	/* Configuration with lldpcli */
 	if (lldpcli) {
 		log_debug("main", "invoking lldpcli for configuration");
-		if (lldpd_configure(debug, lldpcli, ctlname) == -1)
+		if (lldpd_configure(use_syslog, debug, lldpcli, ctlname) == -1)
 			fatal("main", "unable to spawn lldpcli");
 	}
 
 	/* Daemonization, unless started by upstart, systemd or launchd or debug */
 #ifndef HOST_OS_OSX
-	if (!lldpd_started_by_upstart() && !lldpd_started_by_systemd() &&
-	    !debug) {
+	if (daemonize &&
+	    !lldpd_started_by_upstart() && !lldpd_started_by_systemd()) {
 		int pid;
 		char *spid;
 		log_debug("main", "daemonize");
@@ -1595,6 +1721,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	    calloc(1, sizeof(struct lldpd))) == NULL)
 		fatal("main", NULL);
 
+	lldpd_alloc_default_local_port(cfg);
 	cfg->g_ctlname = ctlname;
 	cfg->g_ctl = ctl;
 	cfg->g_config.c_mgmt_pattern = mgmtp;
@@ -1703,6 +1830,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	/* Main loop */
 	log_debug("main", "start main loop");
 	levent_loop(cfg);
+	lchassis->c_refcount--;
 	lldpd_exit(cfg);
 	free(cfg);
 

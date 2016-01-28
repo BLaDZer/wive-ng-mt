@@ -28,8 +28,8 @@ AC_DEFUN([lldp_CHECK_LIBEVENT], [
          AC_MSG_RESULT([yes])
        ], [
          if test x"$with_embedded_libevent" = x"auto"; then
-         AC_MSG_RESULT([no, using shipped libevent])
-         LIBEVENT_EMBEDDED=1
+           AC_MSG_RESULT([no, using shipped libevent])
+           LIBEVENT_EMBEDDED=1
          else
            AC_MSG_ERROR([*** unusable system libevent])
          fi
@@ -39,8 +39,8 @@ AC_DEFUN([lldp_CHECK_LIBEVENT], [
     ], [
       # No appropriate version, let's use the shipped copy if possible
       if test x"$with_embedded_libevent" = x"auto"; then
-      AC_MSG_NOTICE([using shipped libevent])
-      LIBEVENT_EMBEDDED=1
+        AC_MSG_NOTICE([using shipped libevent])
+        LIBEVENT_EMBEDDED=1
       else
         AC_MSG_ERROR([*** libevent not found])
       fi

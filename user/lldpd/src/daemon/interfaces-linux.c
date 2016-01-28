@@ -116,6 +116,7 @@ iflinux_is_bridge(struct lldpd *cfg,
     struct interfaces_device_list *interfaces,
     struct interfaces_device *iface)
 {
+#ifdef ENABLE_OLDIES
 	struct interfaces_device *port;
 	char path[SYSFS_PATH_MAX];
 	int f;
@@ -145,6 +146,9 @@ iflinux_is_bridge(struct lldpd *cfg,
 	}
 
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 static int
@@ -190,6 +194,7 @@ iflinux_is_bond(struct lldpd *cfg,
     struct interfaces_device_list *interfaces,
     struct interfaces_device *master)
 {
+#ifdef ENABLE_OLDIES
 	/* Shortcut if we detect the new team driver. Upper and lower links
 	 * should already be set with netlink in this case.  */
 	if (master->driver && !strcmp(master->driver, "team")) {
@@ -222,7 +227,49 @@ iflinux_is_bond(struct lldpd *cfg,
 		}
 		return 1;
 	}
+#endif
 	return 0;
+}
+
+/* Get the permanent MAC address using ethtool as a fallback There is a slight
+ * difference with /proc/net/bonding method. The /proc/net/bonding method will
+ * retrieve the MAC address of the interface before it was added to the
+ * bond. The ethtool method will retrieve the real permanent MAC address. For
+ * some devices, there is no such address (for example, virtual devices like
+ * veth). */
+static void
+iflinux_get_permanent_mac_ethtool(struct lldpd *cfg,
+    struct interfaces_device_list *interfaces,
+    struct interfaces_device *iface)
+{
+	struct interfaces_device *master;
+	u_int8_t mac[ETHER_ADDR_LEN];
+
+	/* We could do that for any interface, but let's do that only for
+	 * aggregates. */
+	if ((master = iface->upper) == NULL || master->type != IFACE_BOND_T)
+		return;
+
+	log_debug("interfaces", "get MAC address for %s",
+	    iface->name);
+
+	if (priv_iface_mac(iface->name, mac, ETHER_ADDR_LEN) != 0) {
+		log_warnx("interfaces",
+		    "unable to get permanent MAC address for %s",
+		    master->name);
+		return;
+	}
+	size_t i;
+	for (i = 0; i < ETHER_ADDR_LEN; i++)
+		if (mac[i] != 0) break;
+	if (i == ETHER_ADDR_LEN) {
+		log_warnx("interfaces",
+		    "no permanent MAC address found for %s",
+		    master->name);
+		return;
+	}
+	memcpy(iface->address, mac,
+	    ETHER_ADDR_LEN);
 }
 
 static void
@@ -242,9 +289,6 @@ iflinux_get_permanent_mac(struct lldpd *cfg,
 	if ((master = iface->upper) == NULL || master->type != IFACE_BOND_T)
 		return;
 
-	log_debug("interfaces", "get MAC address for %s",
-	    iface->name);
-
 	/* We have a bond, we need to query it to get real MAC addresses */
 	if (snprintf(path, SYSFS_PATH_MAX, "/proc/net/bonding/%s",
 		master->name) >= SYSFS_PATH_MAX) {
@@ -260,9 +304,7 @@ iflinux_get_permanent_mac(struct lldpd *cfg,
 		f = priv_open(path);
 	}
 	if (f < 0) {
-		log_warnx("interfaces",
-		    "unable to find %s in /proc/net/bonding or /proc/self/net/bonding",
-		    master->name);
+		iflinux_get_permanent_mac_ethtool(cfg, interfaces, iface);
 		return;
 	}
 	if ((netbond = fdopen(f, "r")) == NULL) {
@@ -497,7 +539,7 @@ iflinux_handle_bond(struct lldpd *cfg, struct interfaces_device_list *interfaces
 	struct bond_master *bmaster;
 	TAILQ_FOREACH(iface, interfaces, next) {
 		if (!(iface->type & IFACE_PHYSICAL_T)) continue;
-		if (!iface->flags) continue;
+		if (iface->ignore) continue;
 		if (!iface->upper || !(iface->upper->type & IFACE_BOND_T)) continue;
 
 		master = iface->upper;
@@ -541,7 +583,7 @@ iflinux_handle_bond(struct lldpd *cfg, struct interfaces_device_list *interfaces
 		}
 
 		hardware->h_flags = iface->flags;
-		iface->flags = 0;
+		iface->ignore = 1;
 
 		/* Get local address */
 		memcpy(&hardware->h_lladdr, iface->address, ETHER_ADDR_LEN);
@@ -730,11 +772,11 @@ interfaces_update(struct lldpd *cfg)
 	struct lldpd_hardware *hardware;
 	struct interfaces_device_list *interfaces;
 	struct interfaces_address_list *addresses;
-	interfaces = netlink_get_interfaces();
-	addresses = netlink_get_addresses();
+	interfaces = netlink_get_interfaces(cfg);
+	addresses = netlink_get_addresses(cfg);
 	if (interfaces == NULL || addresses == NULL) {
 		log_warnx("interfaces", "cannot update the list of local interfaces");
-		goto end;
+		return;
 	}
 
 	/* Add missing bits to list of interfaces */
@@ -764,22 +806,10 @@ interfaces_update(struct lldpd *cfg)
 		iflinux_macphy(hardware);
 		interfaces_helper_promisc(cfg, hardware);
 	}
+}
 
-	if (cfg->g_iface_event == NULL) {
-		int s;
-		log_debug("interfaces", "subscribe to netlink notifications");
-		s = netlink_subscribe_changes();
-		if (s == -1) {
-			log_warnx("interfaces", "unable to subscribe to netlink notifications");
-			goto end;
-		}
-		if (levent_iface_subscribe(cfg, s) == -1)
-			close(s);
-		/* coverity[leaked_handle]
-		   s has been saved by levent_iface_subscribe */
-	}
-
-end:
-	interfaces_free_devices(interfaces);
-	interfaces_free_addresses(addresses);
+void
+interfaces_cleanup(struct lldpd *cfg)
+{
+	netlink_cleanup(cfg);
 }

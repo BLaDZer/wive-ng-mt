@@ -164,13 +164,13 @@ client_handle_set_configuration(struct lldpd *cfg, enum hmsg_type *type,
 	}
 	if (CHANGED(c_cap_advertise)) {
 		log_debug("rpc", "%s chassis capabilities advertisement",
-		    config->c_promisc?"enable":"disable");
+		    config->c_cap_advertise?"enable":"disable");
 		cfg->g_config.c_cap_advertise = config->c_cap_advertise;
 		levent_update_now(cfg);
 	}
 	if (CHANGED(c_mgmt_advertise)) {
 		log_debug("rpc", "%s management addresses advertisement",
-		    config->c_promisc?"enable":"disable");
+		    config->c_mgmt_advertise?"enable":"disable");
 		cfg->g_config.c_mgmt_advertise = config->c_mgmt_advertise;
 		levent_update_now(cfg);
 	}
@@ -297,35 +297,30 @@ client_handle_get_interface(struct lldpd *cfg, enum hmsg_type *type,
 	return 0;
 }
 
-/* Set some port related settings (policy, location, power)
-   Input: name of the interface, policy/location/power setting to be modified
-   Output: nothing
+/* Return all available information related to an interface
+   Input:  name of the interface (serialized)
+   Output: Information about the interface (lldpd_hardware)
 */
 static ssize_t
-client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
+client_handle_get_default_port(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
-	int ret = 0;
-	struct lldpd_port_set *set = NULL;
-	struct lldpd_hardware *hardware = NULL;
-#ifdef ENABLE_LLDPMED
-	struct lldpd_med_loc *loc = NULL;
-#endif
-
-	if (lldpd_port_set_unserialize(input, input_len, &set) <= 0) {
+	log_debug("rpc", "client request the default local port");
+	ssize_t output_len = lldpd_port_serialize(cfg->g_default_local_port, output);
+	if (output_len <= 0) {
 		*type = NONE;
 		return 0;
 	}
-	if (!set->ifname) {
-		log_warnx("rpc", "no interface provided");
-		goto set_port_finished;
+	return output_len;
 	}
 
-	/* Search the appropriate hardware */
-	log_debug("rpc", "client request change to port %s", set->ifname);
-	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries)
-	    if (!strcmp(hardware->h_ifname, set->ifname)) {
-		    struct lldpd_port *port = &hardware->h_lport;
+static int
+_client_handle_set_port(struct lldpd *cfg,
+    struct lldpd_port *port, struct lldpd_port_set *set)
+{
+#ifdef ENABLE_LLDPMED
+	struct lldpd_med_loc *loc = NULL;
+#endif
 		    if (set->local_id) {
 			    log_debug("rpc", "requested change to Port ID");
 			    free(port->p_id);
@@ -338,13 +333,33 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 			    free(port->p_descr);
 			    port->p_descr = strdup(set->local_descr);
 		    }
+	switch (set->rxtx) {
+	case LLDPD_RXTX_TXONLY:
+		log_debug("rpc", "requested TX only mode");
+		port->p_disable_rx = 1;
+		port->p_disable_tx = 0;
+		break;
+	case LLDPD_RXTX_RXONLY:
+		log_debug("rpc", "requested RX only mode");
+		port->p_disable_rx = 0;
+		port->p_disable_tx = 1;
+		break;
+	case LLDPD_RXTX_BOTH:
+		log_debug("rpc", "requested RX/TX mode");
+		port->p_disable_rx = port->p_disable_tx = 0;
+		break;
+	case LLDPD_RXTX_DISABLED:
+		log_debug("rpc", "requested disabled mode");
+		port->p_disable_rx = port->p_disable_tx = 1;
+		break;
+	}
 #ifdef ENABLE_LLDPMED
 		    if (set->med_policy && set->med_policy->type > 0) {
 			    log_debug("rpc", "requested change to MED policy");
 			    if (set->med_policy->type > LLDP_MED_APPTYPE_LAST) {
 				    log_warnx("rpc", "invalid policy provided: %d",
 					set->med_policy->type);
-				    goto set_port_finished;
+			return -1;
 			    }
 			    memcpy(&port->p_med_policy[set->med_policy->type - 1],
 				set->med_policy, sizeof(struct lldpd_med_policy));
@@ -356,7 +371,7 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 			    if (set->med_location->format > LLDP_MED_LOCFORMAT_LAST) {
 				    log_warnx("rpc", "invalid location format provided: %d",
 					set->med_location->format);
-				    goto set_port_finished;
+			return -1;
 			    }
 			    loc = \
 				&port->p_med_location[set->med_location->format - 1];
@@ -394,7 +409,7 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 		    if (set->custom_list_clear) {
 			    log_debug("rpc", "requested custom TLVs clear");
 			    lldpd_custom_list_cleanup(port);
-		    } else 
+	} else {
 		    if (set->custom) {
 			    struct lldpd_custom *custom;
 			    log_debug("rpc", "requested custom TLV add");
@@ -410,11 +425,50 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 			    } else
 				    log_warn("rpc", "could not allocate memory for custom TLV");
 		    }
+	}
 #endif
+	return 0;
+}
 
+/* Set some port related settings (policy, location, power)
+   Input: name of the interface, policy/location/power setting to be modified
+   Output: nothing
+*/
+static ssize_t
+client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
+    void *input, int input_len, void **output, int *subscribed)
+{
+	int ret = 0;
+	struct lldpd_port_set *set = NULL;
+	struct lldpd_hardware *hardware = NULL;
+
+	if (lldpd_port_set_unserialize(input, input_len, &set) <= 0) {
+		*type = NONE;
+		return 0;
+	}
+	if (!set->ifname) {
+		log_warnx("rpc", "no interface provided");
+		goto set_port_finished;
+	}
+
+	/* Search the appropriate hardware */
+	if (strlen(set->ifname) == 0) {
+		log_debug("rpc", "client request change to default port");
+		if (_client_handle_set_port(cfg, cfg->g_default_local_port, set) == -1)
+			goto set_port_finished;
+		ret = 1;
+	} else {
+		log_debug("rpc", "client request change to port %s", set->ifname);
+		TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries) {
+		    if (!strcmp(hardware->h_ifname, set->ifname)) {
+			    struct lldpd_port *port = &hardware->h_lport;
+			    if (_client_handle_set_port(cfg, port, set) == -1)
+				    goto set_port_finished;
 		    ret = 1;
 		    break;
 	    }
+		}
+	}
 
 	if (ret == 0)
 		log_warn("rpc", "no interface %s found", set->ifname);
@@ -467,6 +521,7 @@ static struct client_handle client_handles[] = {
 	{ SET_CONFIG,		"Set configuration", client_handle_set_configuration },
 	{ GET_INTERFACES,	"Get interfaces",    client_handle_get_interfaces },
 	{ GET_INTERFACE,	"Get interface",     client_handle_get_interface },
+	{ GET_DEFAULT_PORT,	"Get default port",  client_handle_get_default_port },
 	{ GET_CHASSIS,		"Get local chassis", client_handle_get_local_chassis },
 	{ SET_PORT,		"Set port",          client_handle_set_port },
 	{ SUBSCRIBE,		"Subscribe",         client_handle_subscribe },

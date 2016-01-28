@@ -60,11 +60,12 @@ The options are as follows:
 Do not daemonize.
 If this option is specified,
 .Nm
-will run in the foreground and log to
-.Em stderr .
-This option can be specified many times to increase verbosity. When
-specified three times, debug logs will be enabled. They can be
-filtered with
+will run in the foreground. When specified one more time,
+.Nm will log to
+.Em stderr
+instead of using syslog. Then, this option can be specified many times
+to increase verbosity. When specified four times, debug logs will be
+enabled. They can be filtered with
 .Fl D
 flag.
 .It Fl D Ar debug
@@ -204,7 +205,7 @@ wildcards. Several interfaces can be specified separated by commas.
 It is also possible to blacklist an interface by suffixing it with an
 exclamation mark. It is possible to whitelist an interface by
 suffixing it with two exclamation marks. A whitelisted interface beats
-a blacklisted interfaces which beats a simple matched interface. For
+a blacklisted interface which beats a simple matched interface. For
 example, with
 .Em eth*,!eth1,!eth2
 .Nm

@@ -44,6 +44,17 @@ endif
 
 check_PROGRAMS = $(TESTS)
 
+noinst_PROGRAMS = decode
+decode_SOURCES = decode.c \
+	$(top_srcdir)/src/daemon/lldpd.h \
+	common.h common.c
+
 endif
 
-MOSTLYCLEANFILES = lldp_send_*.pcap cdp_send_*.pcap sonmp_send_*.pcap edp_send_*.pcap
+MOSTLYCLEANFILES = *.pcap
+
+TEMPLATES  = integration-tests
+EXTRA_DIST = integration-tests.in R1.expected
+CLEANFILES = $(TEMPLATES)
+integration-tests: integration-tests.in
+include $(top_srcdir)/edit.am

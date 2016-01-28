@@ -51,6 +51,19 @@ static lldpctl_map_t port_id_subtype_map[] = {
 	{ 0, NULL},
 };
 
+static struct atom_map port_status_map = {
+	.key = lldpctl_k_port_status,
+	.map = {
+		{ LLDPD_RXTX_TXONLY,   "TX only" },
+		{ LLDPD_RXTX_RXONLY,   "RX only" },
+		{ LLDPD_RXTX_DISABLED, "disabled" },
+		{ LLDPD_RXTX_BOTH,     "RX and TX" },
+		{ 0, NULL },
+	}
+};
+
+ATOM_MAP_REGISTER(port_status_map, 3);
+
 static lldpctl_map_t operational_mau_type_values[] = {
 	{ 1,	"AUI - no internal MAU, view from AUI" },
 	{ 2,	"10Base5 - thick coax MAU" },
@@ -127,7 +140,7 @@ static lldpctl_atom_t*
 _lldpctl_atom_value_ports_list(lldpctl_atom_t *atom, lldpctl_atom_iter_t *iter)
 {
 	struct lldpd_port *port = (struct lldpd_port *)iter;
-	return _lldpctl_new_atom(atom->conn, atom_port, NULL, port,
+	return _lldpctl_new_atom(atom->conn, atom_port, 0, NULL, port,
 	    ((struct _lldpctl_atom_any_list_t *)atom)->parent);
 }
 
@@ -136,6 +149,7 @@ _lldpctl_atom_new_port(lldpctl_atom_t *atom, va_list ap)
 {
 	struct _lldpctl_atom_port_t *port =
 	    (struct _lldpctl_atom_port_t *)atom;
+	port->local = va_arg(ap, int);
 	port->hardware = va_arg(ap, struct lldpd_hardware*);
 	port->port = va_arg(ap, struct lldpd_port*);
 	port->parent = va_arg(ap, struct _lldpctl_atom_port_t*);
@@ -186,8 +200,10 @@ _lldpctl_atom_free_port(lldpctl_atom_t *atom)
 	else if (!hardware) {
 		/* No parent, no hardware, we assume a single neighbor: one
 		 * port, one chassis. */
+		if (port->port->p_chassis) {
 		lldpd_chassis_cleanup(port->port->p_chassis, 1);
 		port->port->p_chassis = NULL;
+		}
 		lldpd_port_cleanup(port->port, 1);
 		free(port->port);
 	}
@@ -231,8 +247,12 @@ _lldpctl_atom_get_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 	/* Local and remote port */
 	switch (key) {
 	case lldpctl_k_port_chassis:
+		if (port->p_chassis) {
 		return _lldpctl_new_atom(atom->conn, atom_chassis,
 		    port->p_chassis, p, 0);
+		}
+		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
+		return NULL;
 #ifdef ENABLE_DOT3
 	case lldpctl_k_port_dot3_power:
 		return _lldpctl_new_atom(atom->conn, atom_dot3_power,
@@ -265,7 +285,10 @@ _lldpctl_atom_get_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 #endif
 	default:
 		/* Compatibility: query the associated chassis too */
+		if (port->p_chassis)
 		return lldpctl_atom_get(p->chassis, key);
+		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
+		return NULL;
 	}
 }
 
@@ -291,8 +314,8 @@ _lldpctl_atom_set_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key, lldpctl_ato
 	struct _lldpctl_atom_custom_t    *custom;
 #endif
 
-	/* Local port only */
-	if (hardware == NULL) {
+	/* Local and default port only */
+	if (!p->local) {
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 		return NULL;
 	}
@@ -303,6 +326,9 @@ _lldpctl_atom_set_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key, lldpctl_ato
 		break;
 	case lldpctl_k_port_descr:
 		set.local_descr = p->port->p_descr;
+		break;
+	case lldpctl_k_port_status:
+		set.rxtx = LLDPD_RXTX_FROM_PORT(p->port);
 		break;
 #ifdef ENABLE_DOT3
 	case lldpctl_k_port_dot3_power:
@@ -360,7 +386,7 @@ _lldpctl_atom_set_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key, lldpctl_ato
 		return NULL;
 	}
 
-	set.ifname = hardware->h_ifname;
+	set.ifname = hardware ? hardware->h_ifname : "";
 
 	if (asprintf(&canary, "%d%p%s", key, value, set.ifname) == -1) {
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOMEM);
@@ -386,13 +412,16 @@ _lldpctl_atom_get_str_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 	char *ipaddress = NULL; size_t len;
 
 	/* Local port only */
-	if (hardware != NULL) {
 		switch (key) {
 		case lldpctl_k_port_name:
-			return hardware->h_ifname;
+		if (hardware != NULL) return hardware->h_ifname;
+		break;
+	case lldpctl_k_port_status:
+		if (p->local) return map_lookup(port_status_map.map,
+		    LLDPD_RXTX_FROM_PORT(port));
+		break;
 		default: break;
 		}
-	}
 
 	/* Local and remote port */
 	switch (key) {
@@ -445,6 +474,32 @@ _lldpctl_atom_get_str_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 }
 
 static lldpctl_atom_t*
+_lldpctl_atom_set_int_port(lldpctl_atom_t *atom, lldpctl_key_t key,
+    long int value)
+{
+	struct _lldpctl_atom_port_t *p =
+	    (struct _lldpctl_atom_port_t *)atom;
+	struct lldpd_port     *port     = p->port;
+
+	if (p->local) {
+		switch (key) {
+		case lldpctl_k_port_status:
+			port->p_disable_rx = !LLDPD_RXTX_RXENABLED(value);
+			port->p_disable_tx = !LLDPD_RXTX_TXENABLED(value);
+			break;
+		default:
+			SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
+			return NULL;
+		}
+	} else {
+		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
+		return NULL;
+	}
+
+	return _lldpctl_atom_set_atom_port(atom, key, NULL);
+}
+
+static lldpctl_atom_t*
 _lldpctl_atom_set_str_port(lldpctl_atom_t *atom, lldpctl_key_t key,
     const char *value)
 {
@@ -454,6 +509,15 @@ _lldpctl_atom_set_str_port(lldpctl_atom_t *atom, lldpctl_key_t key,
 
 	if (!value || !strlen(value))
 		return NULL;
+
+	if (p->local) {
+		switch (key) {
+		case lldpctl_k_port_status:
+			return _lldpctl_atom_set_int_port(atom, key,
+			    map_reverse_lookup(port_status_map.map, value));
+		default: break;
+		}
+	}
 
 	switch (key) {
 	case lldpctl_k_port_id:
@@ -500,6 +564,13 @@ _lldpctl_atom_get_int_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 			return hardware->h_insert_cnt;
 		case lldpctl_k_delete_cnt:
 			return hardware->h_delete_cnt;
+		default: break;
+		}
+	}
+	if (p->local) {
+		switch (key) {
+		case lldpctl_k_port_status:
+			return LLDPD_RXTX_FROM_PORT(port);
 		default: break;
 		}
 	}
@@ -577,6 +648,7 @@ static struct atom_builder port =
 	  .get_str = _lldpctl_atom_get_str_port,
 	  .set_str = _lldpctl_atom_set_str_port,
 	  .get_int = _lldpctl_atom_get_int_port,
+	  .set_int = _lldpctl_atom_set_int_port,
 	  .get_buffer = _lldpctl_atom_get_buf_port };
 
 ATOM_BUILDER_REGISTER(ports_list, 4);

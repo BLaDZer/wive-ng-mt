@@ -40,11 +40,10 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdarg.h>
-#ifdef HAVE_LIBBSD
-# include <bsd/stdio.h>
-# include <bsd/string.h>
-# include <bsd/unistd.h>
-#endif
+#include <string.h>
+#include <unistd.h>
+
+#undef getopt
 
 #if !HAVE_ASPRINTF
 int vasprintf(char **, const char *, va_list) __attribute__ ((format (printf, 2, 0)));
@@ -71,8 +70,8 @@ size_t	strnlen(const char *, size_t);
 char	*strndup(const char *, size_t);
 #endif
 
-#if !HAVE_FGETLN
-char *fgetln(FILE *, size_t *);
+#if !HAVE_GETLINE
+ssize_t getline(char **, size_t *, FILE *);
 #endif
 
 #if !HAVE_SETPROCTITLE

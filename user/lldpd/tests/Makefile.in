@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -85,16 +86,19 @@ host_triplet = @host@
 @HAVE_CHECK_TRUE@@USE_SNMP_TRUE@am__append_2 = check_snmp
 @HAVE_CHECK_TRUE@@USE_SNMP_TRUE@am__append_3 = @NETSNMP_LIBS@
 @HAVE_CHECK_TRUE@check_PROGRAMS = $(am__EXEEXT_2)
+@HAVE_CHECK_TRUE@noinst_PROGRAMS = decode$(EXEEXT)
+DIST_COMMON = $(top_srcdir)/edit.am $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/depcomp \
+	$(top_srcdir)/test-driver
 subdir = tests
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/depcomp $(top_srcdir)/test-driver
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_gcc_func_attribute.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
-	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
+	$(top_srcdir)/m4/ax_prog_doxygen.m4 $(top_srcdir)/m4/ctors.m4 \
 	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -116,6 +120,7 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_CHECK_TRUE@	check_cdp$(EXEEXT) check_sonmp$(EXEEXT) \
 @HAVE_CHECK_TRUE@	check_edp$(EXEEXT) check_fixedpoint$(EXEEXT) \
 @HAVE_CHECK_TRUE@	$(am__EXEEXT_1)
+PROGRAMS = $(noinst_PROGRAMS)
 am__check_cdp_SOURCES_DIST = check_cdp.c \
 	$(top_srcdir)/src/daemon/lldpd.h common.h common.c \
 	check-compat.h
@@ -197,6 +202,14 @@ check_sonmp_LDADD = $(LDADD)
 @HAVE_CHECK_TRUE@check_sonmp_DEPENDENCIES =  \
 @HAVE_CHECK_TRUE@	$(top_builddir)/src/daemon/liblldpd.la \
 @HAVE_CHECK_TRUE@	$(am__DEPENDENCIES_1)
+am__decode_SOURCES_DIST = decode.c $(top_srcdir)/src/daemon/lldpd.h \
+	common.h common.c
+@HAVE_CHECK_TRUE@am_decode_OBJECTS = decode.$(OBJEXT) common.$(OBJEXT)
+decode_OBJECTS = $(am_decode_OBJECTS)
+decode_LDADD = $(LDADD)
+@HAVE_CHECK_TRUE@decode_DEPENDENCIES =  \
+@HAVE_CHECK_TRUE@	$(top_builddir)/src/daemon/liblldpd.la \
+@HAVE_CHECK_TRUE@	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -234,14 +247,15 @@ am__v_CCLD_1 =
 SOURCES = $(check_cdp_SOURCES) $(check_edp_SOURCES) \
 	$(check_fixedpoint_SOURCES) $(check_lldp_SOURCES) \
 	$(check_marshal_SOURCES) $(check_pattern_SOURCES) \
-	$(check_snmp_SOURCES) $(check_sonmp_SOURCES)
+	$(check_snmp_SOURCES) $(check_sonmp_SOURCES) $(decode_SOURCES)
 DIST_SOURCES = $(am__check_cdp_SOURCES_DIST) \
 	$(am__check_edp_SOURCES_DIST) \
 	$(am__check_fixedpoint_SOURCES_DIST) \
 	$(am__check_lldp_SOURCES_DIST) \
 	$(am__check_marshal_SOURCES_DIST) \
 	$(am__check_pattern_SOURCES_DIST) \
-	$(am__check_snmp_SOURCES_DIST) $(am__check_sonmp_SOURCES_DIST)
+	$(am__check_snmp_SOURCES_DIST) $(am__check_sonmp_SOURCES_DIST) \
+	$(am__decode_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -474,6 +488,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+APPARMORDIR = @APPARMORDIR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -607,6 +622,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+apparmordir = @apparmordir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -629,6 +645,8 @@ includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 launchddaemonsdir = @launchddaemonsdir@
+libbsd_CFLAGS = @libbsd_CFLAGS@
+libbsd_LIBS = @libbsd_LIBS@
 libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
@@ -686,12 +704,39 @@ AM_LDFLAGS = $(LLDP_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 @HAVE_CHECK_TRUE@@USE_SNMP_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
 @HAVE_CHECK_TRUE@@USE_SNMP_TRUE@	$(top_srcdir)/src/daemon/agent.h
 
-MOSTLYCLEANFILES = lldp_send_*.pcap cdp_send_*.pcap sonmp_send_*.pcap edp_send_*.pcap
+@HAVE_CHECK_TRUE@decode_SOURCES = decode.c \
+@HAVE_CHECK_TRUE@	$(top_srcdir)/src/daemon/lldpd.h \
+@HAVE_CHECK_TRUE@	common.h common.c
+
+MOSTLYCLEANFILES = *.pcap
+TEMPLATES = integration-tests
+EXTRA_DIST = integration-tests.in R1.expected
+CLEANFILES = $(TEMPLATES)
+edit = $(SED) \
+        -e 's|@bindir[@]|$(bindir)|g' \
+        -e 's|@sbindir[@]|$(sbindir)|g' \
+        -e 's|@sysconfdir[@]|$(sysconfdir)|g' \
+        -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+        -e 's|@libdir[@]|$(libdir)|g' \
+        -e 's|@includedir[@]|$(includedir)|g' \
+        -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
+        -e 's|@prefix[@]|$(prefix)|g' \
+        -e 's|@VERSION[@]|$(VERSION)|g' \
+        -e 's|@PACKAGE[@]|$(PACKAGE)|g' \
+        -e 's|@PACKAGE_NAME[@]|$(PACKAGE_NAME)|g' \
+        -e 's|@PACKAGE_URL[@]|$(PACKAGE_URL)|g' \
+        -e 's|@PRIVSEP_USER[@]|$(PRIVSEP_USER)|g' \
+        -e 's|@PRIVSEP_GROUP[@]|$(PRIVSEP_GROUP)|g' \
+        -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g' \
+        -e 's|@LLDPD_PID_FILE[@]|$(LLDPD_PID_FILE)|g' \
+        -e 's|@LLDPD_CTL_SOCKET[@]|$(LLDPD_CTL_SOCKET)|g' \
+        -e 's|@PRIVSEP_CHROOT[@]|$(PRIVSEP_CHROOT)|g'
+
 all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .log .o .obj .test .test$(EXEEXT) .trs
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/edit.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -712,6 +757,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/edit.am:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -724,6 +770,15 @@ $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -763,6 +818,10 @@ check_sonmp$(EXEEXT): $(check_sonmp_OBJECTS) $(check_sonmp_DEPENDENCIES) $(EXTRA
 	@rm -f check_sonmp$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(check_sonmp_OBJECTS) $(check_sonmp_LDADD) $(LIBS)
 
+decode$(EXEEXT): $(decode_OBJECTS) $(decode_DEPENDENCIES) $(EXTRA_decode_DEPENDENCIES) 
+	@rm -f decode$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(decode_OBJECTS) $(decode_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -778,6 +837,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_snmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_sonmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decode.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1107,7 +1167,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile
+all-am: Makefile $(PROGRAMS)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -1135,6 +1195,7 @@ mostlyclean-generic:
 	-test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -1146,7 +1207,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1217,19 +1278,24 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libtool cscopelist-am \
-	ctags ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	recheck tags tags-am uninstall uninstall-am
+	clean-checkPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
+	uninstall-am
 
+integration-tests: integration-tests.in
+
+$(TEMPLATES): Makefile
+	$(AM_V_GEN)mkdir -p $(@D) && $(edit) $(srcdir)/$@.in > $@.tmp && mv $@.tmp $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

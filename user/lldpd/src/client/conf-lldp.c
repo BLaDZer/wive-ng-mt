@@ -70,10 +70,36 @@ cmd_txhold(struct lldpctl_conn_t *conn, struct writer *w,
 }
 
 static int
+cmd_status(struct lldpctl_conn_t *conn, struct writer *w,
+    struct cmd_env *env, void *arg)
+{
+	lldpctl_atom_t *port;
+	const char *name;
+	const char *status = cmdenv_get(env, "status");
+
+	log_debug("lldpctl", "lldp administrative port status set to '%s'", status);
+
+	if (!status || !strlen(status)) {
+		log_warnx("lldpctl", "no status specified");
+		return 0;
+	}
+
+	while ((port = cmd_iterate_on_ports(conn, env, &name))) {
+		if (lldpctl_atom_set_str(port, lldpctl_k_port_status, status) == NULL) {
+			log_warnx("lldpctl", "unable to set LLDP status for %s."
+			    " %s", name, lldpctl_last_strerror(conn));
+		}
+	}
+
+	return 1;
+}
+
+static int
 cmd_portid_type_local(struct lldpctl_conn_t *conn, struct writer *w,
 		struct cmd_env *env, void *arg)
 {
-	lldpctl_atom_t *iface;
+	lldpctl_atom_t *port;
+	const char *name;
 	const char *id = cmdenv_get(env, "port-id");
 	const char *descr = cmdenv_get(env, "port-descr");
 
@@ -84,17 +110,15 @@ cmd_portid_type_local(struct lldpctl_conn_t *conn, struct writer *w,
 		return 0;
 	}
 
-	while ((iface = cmd_iterate_on_interfaces(conn, env))) {
-		lldpctl_atom_t *port = lldpctl_get_port(iface);
+	while ((port = cmd_iterate_on_ports(conn, env, &name))) {
 		if (lldpctl_atom_set_str(port, lldpctl_k_port_id, id) == NULL) {
-			log_warnx("lldpctl", "unable to set LLDP PortID."
-			  " %s", lldpctl_last_strerror(conn));
+			log_warnx("lldpctl", "unable to set LLDP PortID for %s."
+			    " %s", name, lldpctl_last_strerror(conn));
 		}
 		if (descr && lldpctl_atom_set_str(port, lldpctl_k_port_descr, descr) == NULL) {
-			log_warnx("lldpctl", "unable to set LLDP Port Description."
-			  " %s", lldpctl_last_strerror(conn));
+			log_warnx("lldpctl", "unable to set LLDP Port Description for %s."
+			    " %s", name, lldpctl_last_strerror(conn));
 		}
-		lldpctl_atom_dec_ref(port);
 	}
 
 	return 1;
@@ -207,8 +231,9 @@ static int
 cmd_custom_tlv_set(struct lldpctl_conn_t *conn, struct writer *w,
         struct cmd_env *env, void *arg)
 {
-	lldpctl_atom_t *iface;
+	lldpctl_atom_t *port;
 	const char *s;
+	const char *name;
 	uint8_t oui[LLDP_TLV_ORG_OUI_LEN];
 	uint8_t oui_info[LLDP_TLV_ORG_OUI_INFO_MAXLEN];
 	int oui_info_len = 0;
@@ -257,17 +282,17 @@ cmd_custom_tlv_set(struct lldpctl_conn_t *conn, struct writer *w,
 	}
 
 set:
-	while ((iface = cmd_iterate_on_interfaces(conn, env))) {
-		lldpctl_atom_t *port = lldpctl_get_port(iface);
+	while ((port = cmd_iterate_on_ports(conn, env, &name))) {
 		lldpctl_atom_t *custom_tlvs;
 		if (!arg) {
 			lldpctl_atom_set(port, lldpctl_k_custom_tlvs_clear, NULL);
 		} else if (!(custom_tlvs = lldpctl_atom_get(port, lldpctl_k_custom_tlvs))) {
-			log_warnx("lldpctl", "unable to get custom TLVs for port");
+			log_warnx("lldpctl", "unable to get custom TLVs for port %s", name);
 		} else {
 			lldpctl_atom_t *tlv = lldpctl_atom_create(custom_tlvs);
 			if (!tlv) {
-				log_warnx("lldpctl", "unable to create new custom TLV for port");
+				log_warnx("lldpctl", "unable to create new custom TLV for port %s",
+				    name);
 			} else {
 				/* Configure custom TLV */
 				lldpctl_atom_set_buffer(tlv, lldpctl_k_custom_tlv_oui, oui, sizeof(oui));
@@ -281,7 +306,6 @@ set:
 			}
 			lldpctl_atom_dec_ref(custom_tlvs);
 		}
-		lldpctl_atom_dec_ref(port);
 	}
 
 	return 1;
@@ -331,6 +355,13 @@ register_commands_configure_lldp_custom_tlvs(struct cmd_node *configure_lldp)
 }
 #endif /* ENABLE_CUSTOM */
 
+static int
+cmd_store_status_env_value(struct lldpctl_conn_t *conn, struct writer *w,
+    struct cmd_env *env, void *value)
+{
+	return cmd_store_something_env_value("status", env, value);
+}
+
 /**
  * Register `configure lldp` commands.
  *
@@ -370,6 +401,24 @@ register_commands_configure_lldp(struct cmd_node *configure,
 		NEWLINE, "Set LLDP transmit hold",
 		NULL, cmd_txhold, NULL);
 
+	struct cmd_node *status = commands_new(configure_lldp,
+	    "status", "Set administrative status",
+	    NULL, NULL, NULL);
+
+	for (lldpctl_map_t *status_map =
+		 lldpctl_key_get_map(lldpctl_k_port_status);
+	     status_map->string;
+	     status_map++) {
+		const char *tag = strdup(totag(status_map->string));
+		commands_new(
+			commands_new(status,
+			    tag,
+			    status_map->string,
+			    NULL, cmd_store_status_env_value, status_map->string),
+			NEWLINE, "Set port administrative status",
+			NULL, cmd_status, NULL);
+	}
+
 	/* Now handle the various portid subtypes we can configure. */
 	struct cmd_node *configure_lldp_portid_type = commands_new(
 		configure_lldp,
@@ -383,7 +432,7 @@ register_commands_configure_lldp(struct cmd_node *configure,
 			commands_new(
 				commands_new(configure_lldp_portid_type,
 					     b_map->string, "Interface Name",
-					     NULL, NULL, NULL),
+				    cmd_check_no_env, NULL, "ports"),
 				NEWLINE, NULL,
 				NULL, cmd_portid_type,
 				b_map->string);
@@ -412,7 +461,7 @@ register_commands_configure_lldp(struct cmd_node *configure,
 			commands_new(
 				commands_new(configure_lldp_portid_type,
 					     b_map->string, "MAC Address",
-					     NULL, NULL, NULL),
+				    cmd_check_no_env, NULL, "ports"),
 				NEWLINE, NULL,
 				NULL, cmd_portid_type,
 				b_map->string);
@@ -423,7 +472,7 @@ register_commands_configure_lldp(struct cmd_node *configure,
 		commands_new(configure_lldp,
 		    "capabilities-advertisements",
 		    "Enable chassis capabilities advertisement",
-		    NULL, NULL, NULL),
+		    cmd_check_no_env, NULL, "ports"),
 		NEWLINE, "Enable chassis capabilities advertisement",
 		NULL, cmd_chassis_cap_advertise, "enable");
 	commands_new(
