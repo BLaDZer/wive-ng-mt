@@ -214,7 +214,7 @@ igmpsnooping() {
 	fi
 }
 
-restoreonergmiiEsw()
+restore_onergmii()
 {
         $LOG "Restore internal switch mode to dumb mode"
 	for port in `seq 0 7`; do
@@ -239,10 +239,10 @@ restoreonergmiiEsw()
 	switch clear
 }
 
-configonergmiiEsw()
+config_onergmii()
 {
 	# cleanup switch
-	restoreonergmiiEsw
+	restore_onergmii
 
 	# prepare switch (skip port 5 - not used and link down)
 	for port in `seq 6 7`; do
@@ -366,7 +366,7 @@ configonergmiiEsw()
 	switch clear
 }
 
-restoredualrgmiiEsw()
+restore_dualrgmii()
 {
         $LOG "Restore internal MT7621 switch mode to dumb mode"
 	for port in `seq 0 6`; do
@@ -387,10 +387,10 @@ restoredualrgmiiEsw()
 	switch clear
 }
 
-configdualrgmiiEsw()
+config_dualrgmii()
 {
 	# cleanup swicth
-	restoredualrgmiiEsw
+	restore_dualrgmii
 
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7621 switch mode $1"
@@ -419,7 +419,7 @@ configdualrgmiiEsw()
 	    # 		config 7530 W0LLL command and add needed calls for bridge#
 	    ######################################################################
 	    $LOG "External vlan portmap not supported NOW!!!"
-	    configdualrgmiiEsw LLLLW
+	    config_dualrgmii LLLLW
 	fi
 
 	# post config
@@ -444,7 +444,7 @@ eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
-		restoreonergmiiEsw
+		restore_onergmii
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
@@ -456,13 +456,13 @@ if [ "$1" = "3" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "VLANS" ]; then
-		configonergmiiEsw VLANS
+		config_onergmii VLANS
 	else
-		configonergmiiEsw $2
+		config_onergmii $2
 	fi
 elif [ "$1" = "4" ]; then
 	if [ "$2" = "LLLLL" ]; then
-		restoredualrgmiiEsw
+		restore_dualrgmii
 	elif [ "$2" = "EEEEE" ]; then
 		enable_all_ports
 	elif [ "$2" = "DDDDD" ]; then
@@ -474,9 +474,9 @@ elif [ "$1" = "4" ]; then
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
 	elif [ "$2" = "VLANS" ]; then
-		configdualrgmiiEsw VLANS
+		config_dualrgmii VLANS
 	else
-		configdualrgmiiEsw $2
+		config_dualrgmii $2
 	fi
 else
 	echo "unknown swith type $1"
