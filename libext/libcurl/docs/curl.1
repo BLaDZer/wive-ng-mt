@@ -488,10 +488,10 @@ If this option is used several times, the last one will be used.
 (SSL) Tells curl to use the specified client certificate file when getting a
 file with HTTPS, FTPS or another SSL-based protocol. The certificate must be
 in PKCS#12 format if using Secure Transport, or PEM format if using any other
-engine.  If the optional password isn't specified, it will be queried
-for on the terminal. Note that this option assumes a \&"certificate" file that
-is the private key and the private certificate concatenated! See \fI--cert\fP
-and \fI--key\fP to specify them independently.
+engine.  If the optional password isn't specified, it will be queried for on
+the terminal. Note that this option assumes a \&"certificate" file that is the
+private key and the client certificate concatenated! See \fI--cert\fP and
+\fI--key\fP to specify them independently.
 
 If curl is built against the NSS SSL library then this option can tell
 curl the nickname of the certificate to use within the NSS database defined
@@ -523,6 +523,13 @@ after having run curl.
 (SSL) Specify the path name to the Entropy Gathering Daemon socket. The socket
 is used to seed the random engine for SSL connections. See also the
 \fI--random-file\fP option.
+.IP "--expect100-timeout <seconds>"
+(HTTP) Maximum time in seconds that you allow curl to wait for a 100-continue
+response when curl emits an Expects: 100-continue header in its request. By
+default curl will wait one second. This option accepts decimal values! When
+curl stops waiting, it will continue as if the response has been received.
+
+(Added in 7.47.0)
 .IP "--cert-type <type>"
 (SSL) Tells curl what certificate type the provided certificate is in. PEM,
 DER and ENG are recognized types.  If not specified, PEM is assumed.
@@ -789,10 +796,12 @@ This option can be used multiple times to add/replace/remove multiple headers.
 be the 128 bit MD5 checksum of the remote host's public key, curl will refuse
 the connection with the host unless the md5sums match. (Added in 7.17.1)
 .IP "--ignore-content-length"
-(HTTP)
-Ignore the Content-Length header. This is particularly useful for servers
-running Apache 1.x, which will report incorrect Content-Length for files
-larger than 2 gigabytes.
+For HTTP, Ignore the Content-Length header. This is particularly useful for
+servers running Apache 1.x, which will report incorrect Content-Length for
+files larger than 2 gigabytes.
+
+For FTP (since 7.46.0), skip the RETR command to figure out the size before
+downloading a file.
 .IP "-i, --include"
 (HTTP) Include the HTTP-header in the output. The HTTP-header includes things
 like server-name, date of the document, HTTP-version and more...
@@ -1472,13 +1481,10 @@ specifies the last 500 bytes
 specifies the bytes from offset 9500 and forward
 .TP
 .B 0-0,-1
-specifies the first and last byte only(*)(H)
-.TP
-.B 500-700,600-799
-specifies 300 bytes from offset 500(H)
+specifies the first and last byte only(*)(HTTP)
 .TP
 .B 100-199,500-599
-specifies two separate 100-byte ranges(*)(H)
+specifies two separate 100-byte ranges(*) (HTTP)
 .RE
 .IP
 (*) = NOTE that this will cause the server to reply with a multipart

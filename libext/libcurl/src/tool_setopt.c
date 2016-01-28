@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -70,6 +70,8 @@ const NameValue setopt_nv_CURL_HTTP_VERSION[] = {
   NV(CURL_HTTP_VERSION_NONE),
   NV(CURL_HTTP_VERSION_1_0),
   NV(CURL_HTTP_VERSION_1_1),
+  NV(CURL_HTTP_VERSION_2_0),
+  NV(CURL_HTTP_VERSION_2TLS),
   NVEND,
 };
 
@@ -392,11 +394,11 @@ CURLcode tool_setopt_httppost(CURL *curl, struct GlobalConfig *config,
           ret = CURLE_OUT_OF_MEMORY;
           goto nomem;
         }
-        if(pp->flags & HTTPPOST_FILENAME) {
+        if(pp->flags & CURL_HTTPPOST_FILENAME) {
           /* file upload as for -F @filename */
           DATA1("             CURLFORM_FILE, \"%s\",", escaped);
         }
-        else if(pp->flags & HTTPPOST_READFILE) {
+        else if(pp->flags & CURL_HTTPPOST_READFILE) {
           /* content from file as for -F <filename */
           DATA1("             CURLFORM_FILECONTENT, \"%s\",", escaped);
         }

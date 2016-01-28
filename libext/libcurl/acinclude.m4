@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -2837,7 +2837,6 @@ AC_DEFUN([CURL_CONFIGURE_CURL_OFF_T], [
   #
   x_LP64_long=""
   x_LP32_long=""
-  x_LP16_long=""
   #
   if test "$ac_cv_sizeof_long" -eq "8" &&
      test "$ac_cv_sizeof_voidp" -ge "8"; then
@@ -2845,9 +2844,6 @@ AC_DEFUN([CURL_CONFIGURE_CURL_OFF_T], [
   elif test "$ac_cv_sizeof_long" -eq "4" &&
        test "$ac_cv_sizeof_voidp" -ge "4"; then
     x_LP32_long="long"
-  elif test "$ac_cv_sizeof_long" -eq "2" &&
-       test "$ac_cv_sizeof_voidp" -ge "2"; then
-    x_LP16_long="long"
   fi
   #
   dnl DO_CURL_OFF_T_CHECK results are stored in next 3 vars
@@ -2878,17 +2874,6 @@ AC_DEFUN([CURL_CONFIGURE_CURL_OFF_T], [
       '__int32'        \
       'int'            ; do
       DO_CURL_OFF_T_CHECK([$t4], [4])
-    done
-    AC_MSG_RESULT([$curl_typeof_curl_off_t])
-  fi
-  if test "$curl_typeof_curl_off_t" = "unknown"; then
-    AC_MSG_CHECKING([for 16-bit curl_off_t data type])
-    for t2 in          \
-      "$x_LP16_long"   \
-      'int16_t'        \
-      '__int16'        \
-      'int'            ; do
-      DO_CURL_OFF_T_CHECK([$t2], [2])
     done
     AC_MSG_RESULT([$curl_typeof_curl_off_t])
   fi
@@ -3052,12 +3037,14 @@ dnl Optionally PKG_CONFIG_LIBDIR may be given as $pcdir.
 dnl
 
 AC_DEFUN([CURL_CHECK_PKGCONFIG], [
+    if test -n "$PKG_CONFIG"; then
+      PKGCONFIG="$PKG_CONFIG"
+    else
+      AC_PATH_TOOL([PKGCONFIG], [pkg-config], [no],
+        [$PATH:/usr/bin:/usr/local/bin])
+    fi
 
-    PKGCONFIG="no"
-
-    AC_PATH_TOOL( PKGCONFIG, pkg-config, no, $PATH:/usr/bin:/usr/local/bin)
-
-    if test x$PKGCONFIG != xno; then
+    if test "x$PKGCONFIG" != "xno"; then
       AC_MSG_CHECKING([for $1 options with pkg-config])
       dnl ask pkg-config about $1
       itexists=`CURL_EXPORT_PCDIR([$2]) dnl

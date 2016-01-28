@@ -2432,6 +2432,7 @@
     <ClCompile Include="..\..\..\..\lib\vtls\darwinssl.c" />
     <ClCompile Include="..\..\..\..\lib\vtls\gskit.c" />
     <ClCompile Include="..\..\..\..\lib\vtls\gtls.c" />
+    <ClCompile Include="..\..\..\..\lib\vtls\mbedtls.c" />
     <ClCompile Include="..\..\..\..\lib\vtls\nss.c" />
     <ClCompile Include="..\..\..\..\lib\vtls\openssl.c" />
     <ClCompile Include="..\..\..\..\lib\vtls\polarssl.c" />
@@ -2545,6 +2546,7 @@
     <ClInclude Include="..\..\..\..\lib\vtls\darwinssl.h" />
     <ClInclude Include="..\..\..\..\lib\vtls\gskit.h" />
     <ClInclude Include="..\..\..\..\lib\vtls\gtls.h" />
+    <ClInclude Include="..\..\..\..\lib\vtls\mbedtls.h" />
     <ClInclude Include="..\..\..\..\lib\vtls\nssg.h" />
     <ClInclude Include="..\..\..\..\lib\vtls\openssl.h" />
     <ClInclude Include="..\..\..\..\lib\vtls\polarssl.h" />

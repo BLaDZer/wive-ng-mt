@@ -1228,6 +1228,9 @@
 				RelativePath="..\..\..\..\lib\warnless.c">
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\slist_wc.c">
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\tool_binmode.c">
 			</File>
 			<File
@@ -1365,6 +1368,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\lib\warnless.h">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\slist_wc.h">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\tool_binmode.h">

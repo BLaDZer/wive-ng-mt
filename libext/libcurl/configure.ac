@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -39,6 +39,7 @@ AC_CONFIG_SRCDIR([lib/urldata.h])
 AC_CONFIG_HEADERS(lib/curl_config.h include/curl/curlbuild.h)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 CURL_CHECK_OPTION_DEBUG
 CURL_CHECK_OPTION_OPTIMIZE
@@ -148,7 +149,7 @@ AC_SUBST(PKGADD_VENDOR)
 
 dnl
 dnl initialize all the info variables
-    curl_ssl_msg="no      (--with-{ssl,gnutls,nss,polarssl,cyassl,axtls,winssl,darwinssl} )"
+    curl_ssl_msg="no      (--with-{ssl,gnutls,nss,polarssl,mbedtls,cyassl,axtls,winssl,darwinssl} )"
     curl_ssh_msg="no      (--with-libssh2)"
    curl_zlib_msg="no      (--with-zlib)"
     curl_gss_msg="no      (--with-gssapi)"
@@ -166,6 +167,7 @@ curl_verbose_msg="enabled (--disable-verbose)"
    curl_rtsp_msg="no      (--enable-rtsp)"
    curl_rtmp_msg="no      (--with-librtmp)"
   curl_mtlnk_msg="no      (--with-libmetalink)"
+    curl_psl_msg="no      (--with-libpsl)"
 
     init_ssl_msg=${curl_ssl_msg}
 
@@ -1081,7 +1083,11 @@ AC_HELP_STRING([--disable-ipv6],[Disable IPv6 support]),
 
   AC_TRY_RUN([ /* is AF_INET6 available? */
 #include <sys/types.h>
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#else
 #include <sys/socket.h>
+#endif
 #include <stdlib.h> /* for exit() */
 main()
 {
@@ -1095,8 +1101,8 @@ main()
   ipv6=yes,
   AC_MSG_RESULT(no)
   ipv6=no,
-  AC_MSG_RESULT(no)
-  ipv6=no
+  AC_MSG_RESULT(yes)
+  ipv6=yes
 ))
 
 if test "$ipv6" = "yes"; then
@@ -1108,7 +1114,12 @@ if test "$ipv6" = yes; then
   AC_MSG_CHECKING([if struct sockaddr_in6 has sin6_scope_id member])
   AC_TRY_COMPILE([
 #include <sys/types.h>
-#include <netinet/in.h>] ,
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
+#include <netinet/in.h>
+#endif] ,
   struct sockaddr_in6 s; s.sin6_scope_id = 0; , have_sin6_scope_id=yes)
   if test "$have_sin6_scope_id" = yes; then
     AC_MSG_RESULT([yes])
@@ -1397,6 +1408,24 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
   CLEANCPPFLAGS="$CPPFLAGS"
   CLEANLIBS="$LIBS"
 
+  dnl This is for Msys/Mingw
+  case $host in
+    *-*-msys* | *-*-mingw*)
+      AC_MSG_CHECKING([for gdi32])
+      my_ac_save_LIBS=$LIBS
+      LIBS="-lgdi32 $LIBS"
+      AC_TRY_LINK([#include <windef.h>
+                   #include <wingdi.h>],
+                   [GdiFlush();],
+                   [ dnl worked!
+                   AC_MSG_RESULT([yes])],
+                   [ dnl failed, restore LIBS
+                   LIBS=$my_ac_save_LIBS
+                   AC_MSG_RESULT(no)]
+                  )
+      ;;
+  esac
+
   case "$OPT_SSL" in
   yes)
     dnl --with-ssl (without path) used
@@ -1474,24 +1503,6 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
   dnl finally, set flags to use SSL
   CPPFLAGS="$CPPFLAGS $SSL_CPPFLAGS"
   LDFLAGS="$LDFLAGS $SSL_LDFLAGS"
-
-  dnl This is for Msys/Mingw
-  case $host in
-    *-*-msys* | *-*-mingw*)
-      AC_MSG_CHECKING([for gdi32])
-      my_ac_save_LIBS=$LIBS
-      LIBS="-lgdi32 $LIBS"
-      AC_TRY_LINK([#include <windef.h>
-                   #include <wingdi.h>],
-                   [GdiFlush();],
-                   [ dnl worked!
-                   AC_MSG_RESULT([yes])],
-                   [ dnl failed, restore LIBS
-                   LIBS=$my_ac_save_LIBS
-                   AC_MSG_RESULT(no)]
-                  )
-      ;;
-  esac
 
   AC_CHECK_LIB(crypto, HMAC_Update,[
      HAVECRYPTO="yes"
@@ -1975,6 +1986,93 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
 fi
 
 dnl ----------------------------------------------------
+dnl check for mbedTLS
+dnl ----------------------------------------------------
+
+OPT_MBEDTLS=no
+
+_cppflags=$CPPFLAGS
+_ldflags=$LDFLAGS
+AC_ARG_WITH(mbedtls,dnl
+AC_HELP_STRING([--with-mbedtls=PATH],[where to look for mbedTLS, PATH points to the installation root])
+AC_HELP_STRING([--without-mbedtls], [disable mbedTLS detection]),
+  OPT_MBEDTLS=$withval)
+
+if test "$curl_ssl_msg" = "$init_ssl_msg"; then
+
+  if test X"$OPT_MBEDTLS" != Xno; then
+
+    if test "$OPT_MBEDTLS" = "yes"; then
+      OPT_MBEDTLS=""
+    fi
+
+    if test -z "$OPT_MBEDTLS" ; then
+      dnl check for lib first without setting any new path
+
+      AC_CHECK_LIB(mbedtls, mbedtls_havege_init,
+      dnl libmbedtls found, set the variable
+       [
+         AC_DEFINE(USE_MBEDTLS, 1, [if mbedTLS is enabled])
+         AC_SUBST(USE_MBEDTLS, [1])
+         MBEDTLS_ENABLED=1
+         USE_MBEDTLS="yes"
+         curl_ssl_msg="enabled (mbedTLS)"
+        ], [], -lmbedx509 -lmbedcrypto)
+    fi
+
+    addld=""
+    addlib=""
+    addcflags=""
+    mbedtlslib=""
+
+    if test "x$USE_MBEDTLS" != "xyes"; then
+      dnl add the path and test again
+      addld=-L$OPT_MBEDTLS/lib$libsuff
+      addcflags=-I$OPT_MBEDTLS/include
+      mbedtlslib=$OPT_MBEDTLS/lib$libsuff
+
+      LDFLAGS="$LDFLAGS $addld"
+      if test "$addcflags" != "-I/usr/include"; then
+         CPPFLAGS="$CPPFLAGS $addcflags"
+      fi
+
+      AC_CHECK_LIB(mbedtls, mbedtls_ssl_init,
+       [
+       AC_DEFINE(USE_MBEDTLS, 1, [if mbedTLS is enabled])
+       AC_SUBST(USE_MBEDTLS, [1])
+       MBEDTLS_ENABLED=1
+       USE_MBEDTLS="yes"
+       curl_ssl_msg="enabled (mbedTLS)"
+       ],
+       [
+         CPPFLAGS=$_cppflags
+         LDFLAGS=$_ldflags
+       ], -lmbedx509 -lmbedcrypto)
+    fi
+
+    if test "x$USE_MBEDTLS" = "xyes"; then
+      AC_MSG_NOTICE([detected mbedTLS])
+
+      LIBS="-lmbedtls -lmbedx509 -lmbedcrypto $LIBS"
+
+      if test -n "$mbedtlslib"; then
+        dnl when shared libs were found in a path that the run-time
+        dnl linker doesn't search through, we need to add it to
+        dnl LD_LIBRARY_PATH to prevent further configure tests to fail
+        dnl due to this
+        if test "x$cross_compiling" != "xyes"; then
+          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$mbedtlslib"
+          export LD_LIBRARY_PATH
+          AC_MSG_NOTICE([Added $mbedtlslib to LD_LIBRARY_PATH])
+        fi
+      fi
+    fi
+
+  fi dnl mbedTLS not disabled
+
+fi
+
+dnl ----------------------------------------------------
 dnl check for CyaSSL
 dnl ----------------------------------------------------
 
@@ -2077,11 +2175,11 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
 	]])
       ],[
          AC_MSG_RESULT(yes)
-         AC_DEFINE(USE_CYASSL, 1, [if CyaSSL is enabled])
+         AC_DEFINE(USE_CYASSL, 1, [if CyaSSL/WolfSSL is enabled])
          AC_SUBST(USE_CYASSL, [1])
          CYASSL_ENABLED=1
          USE_CYASSL="yes"
-         curl_ssl_msg="enabled (CyaSSL)"
+         curl_ssl_msg="enabled (WolfSSL)"
        ],
        [
          AC_MSG_RESULT(no)
@@ -2093,7 +2191,7 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
     fi
 
     if test "x$USE_CYASSL" = "xyes"; then
-      AC_MSG_NOTICE([detected CyaSSL])
+      AC_MSG_NOTICE([detected $cyassllibname])
 
       dnl cyassl/ctaocrypt/types.h needs SIZEOF_LONG_LONG defined!
       AC_CHECK_SIZEOF(long long)
@@ -2105,6 +2203,16 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
       AC_CHECK_HEADERS(cyassl/error-ssl.h)
 
       LIBS="-l$cyassllibname -lm $LIBS"
+
+      if test "x$cyassllibname" = "xwolfssl"; then
+        dnl Recent WolfSSL versions build without SSLv3 by default
+        dnl WolfSSL needs configure --enable-opensslextra to have *get_peer*
+        AC_CHECK_FUNCS(wolfSSLv3_client_method \
+                       wolfSSL_get_peer_certificate)
+      else
+        dnl Cyassl needs configure --enable-opensslextra to have *get_peer*
+        AC_CHECK_FUNCS(CyaSSL_get_peer_certificate)
+      fi
 
       if test -n "$cyassllib"; then
         dnl when shared libs were found in a path that the run-time
@@ -2298,7 +2406,7 @@ if test "$curl_ssl_msg" = "$init_ssl_msg"; then
   fi
 fi
 
-if test "x$OPENSSL_ENABLED$GNUTLS_ENABLED$NSS_ENABLED$POLARSSL_ENABLED$AXTLS_ENABLED$CYASSL_ENABLED$WINSSL_ENABLED$DARWINSSL_ENABLED" = "x"; then
+if test "x$OPENSSL_ENABLED$GNUTLS_ENABLED$NSS_ENABLED$POLARSSL_ENABLED$MBEDTLS_ENABLED$AXTLS_ENABLED$CYASSL_ENABLED$WINSSL_ENABLED$DARWINSSL_ENABLED" = "x"; then
   AC_MSG_WARN([SSL disabled, you will not be able to use HTTPS, FTPS, NTLM and more.])
   AC_MSG_WARN([Use --with-ssl, --with-gnutls, --with-polarssl, --with-cyassl, --with-nss, --with-axtls, --with-winssl, or --with-darwinssl to address this.])
 else
@@ -2312,6 +2420,27 @@ dnl Check for the CA bundle
 dnl **********************************************************************
 
 CURL_CHECK_CA_BUNDLE
+
+dnl **********************************************************************
+dnl Check for libpsl
+dnl **********************************************************************
+
+AC_ARG_WITH(libpsl,
+           AS_HELP_STRING([--without-libpsl],
+           [disable support for libpsl cookie checking]),
+           with_libpsl=$withval,
+           with_libpsl=yes)
+if test $with_libpsl != "no"; then
+  AC_SEARCH_LIBS(psl_builtin, psl,
+    [curl_psl_msg="yes";
+     AC_DEFINE([USE_LIBPSL], [1], [PSL support enabled])
+     ],
+    [curl_psl_msg="no      (libpsl not found)";
+     AC_MSG_WARN([libpsl was not found])
+     ]
+  )
+fi
+AM_CONDITIONAL([USE_LIBPSL], [test "$curl_psl_msg" = "yes"])
 
 dnl **********************************************************************
 dnl Check for libmetalink
@@ -2919,6 +3048,31 @@ if test X"$want_h2" != Xno; then
   fi
 
 fi
+
+dnl **********************************************************************
+dnl Check for zsh completion path
+dnl **********************************************************************
+
+OPT_ZSH_FPATH=default
+AC_ARG_WITH(zsh-functions-dir,
+AC_HELP_STRING([--with-zsh-functions-dir=PATH],[Install zsh completions to PATH])
+AC_HELP_STRING([--without-zsh-functions-dir],[Do not install zsh completions]),
+  [OPT_ZSH_FPATH=$withval])
+case "$OPT_ZSH_FPATH" in
+  no)
+    dnl --without-zsh-functions-dir option used
+    ;;
+  default|yes)
+    dnl --with-zsh-functions-dir option used without path
+    ZSH_FUNCTIONS_DIR="$datarootdir/zsh/site-functions"
+    AC_SUBST(ZSH_FUNCTIONS_DIR)
+    ;;
+  *)
+    dnl --with-zsh-functions-dir option used with path
+    ZSH_FUNCTIONS_DIR="$withval"
+    AC_SUBST(ZSH_FUNCTIONS_DIR)
+    ;;
+esac
 
 dnl **********************************************************************
 dnl Back to "normal" configuring
@@ -3536,6 +3690,10 @@ if test "x$HAVE_GSSAPI" = "x1"; then
   SUPPORT_FEATURES="$SUPPORT_FEATURES GSS-API"
 fi
 
+if test "x$curl_psl_msg" = "xyes"; then
+  SUPPORT_FEATURES="$SUPPORT_FEATURES PSL"
+fi
+
 if test "x$CURL_DISABLE_CRYPTO_AUTH" != "x1" -a \
     \( "x$HAVE_GSSAPI" = "x1" -o "x$USE_WINDOWS_SSPI" = "x1" \); then
   SUPPORT_FEATURES="$SUPPORT_FEATURES SPNEGO"
@@ -3683,6 +3841,7 @@ AC_CONFIG_FILES([Makefile \
            include/curl/Makefile \
            src/Makefile \
            lib/Makefile \
+           scripts/Makefile \
            lib/libcurl.vers \
            tests/Makefile \
            tests/certs/Makefile \
@@ -3741,6 +3900,7 @@ AC_MSG_NOTICE([Configured to build curl/libcurl:
   RTSP support:     ${curl_rtsp_msg}
   RTMP support:     ${curl_rtmp_msg}
   metalink support: ${curl_mtlnk_msg}
+  PSL support:      ${curl_psl_msg}
   HTTP2 support:    ${curl_h2_msg}
   Protocols:        ${SUPPORT_PROTOCOLS}
 ])

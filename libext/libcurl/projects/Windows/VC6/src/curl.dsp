@@ -695,6 +695,10 @@ SOURCE=..\..\..\..\lib\warnless.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\slist_wc.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\tool_binmode.c
 # End Source File
 # Begin Source File
@@ -876,6 +880,10 @@ SOURCE=..\..\..\..\lib\strtoofft.h
 # Begin Source File
 
 SOURCE=..\..\..\..\lib\warnless.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\slist_wc.h
 # End Source File
 # Begin Source File
 

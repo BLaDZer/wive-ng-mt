@@ -225,7 +225,9 @@ FAQ
   implement it for you, that is not a very friendly attitude. We spend a
   considerable time already on maintaining and developing curl. In order to
   get more out of us, you should consider trading in some of your time and
-  efforts in return.
+  efforts in return. Simply go to the GitHub repo which resides at
+  https://github.com/bagder/curl, fork the project, and create pull requests
+  with your proposed changes.
 
   If you write the code, chances are bigger that it will get into curl faster.
 
@@ -251,9 +253,10 @@ FAQ
 
   We still get help from companies. Haxx provides web site, bandwidth, mailing
   lists etc, sourceforge.net hosts project services we take advantage from,
-  like the bug tracker and github hosts the primary git repository. Also
-  again, some companies have sponsored certain parts of the development in the
-  past and I hope some will continue to do so in the future.
+  like the bug tracker, and GitHub hosts the primary git repository at
+  https://github.com/bagder/curl. Also again, some companies have sponsored
+  certain parts of the development in the past and I hope some will continue to
+  do so in the future.
 
   If you want to support our project, consider a donation or a banner-program
   or even better: by helping us coding, documenting, testing etc.
@@ -352,13 +355,15 @@ FAQ
   cryptography. When doing so, the Export Control Classification Number (ECCN)
   is used to identify the level of export control etc.
 
-  ASF gives a good explanation at https://www.apache.org/dev/crypto.html
+  Apache Software Foundation gives a good explanation of ECCNs at
+  https://www.apache.org/dev/crypto.html
 
   We believe curl's number might be ECCN 5D002, another possibility is
-  5D992. It seems necessary to write them, asking to confirm.
+  5D992. It seems necessary to write them (the authority that administers ECCN
+  numbers), asking to confirm.
 
-  Comprehensible explanations of the meaning of such numbers and how to
-  obtain them (resp.) are here
+  Comprehensible explanations of the meaning of such numbers and how to obtain
+  them (resp.) are here
 
   http://www.bis.doc.gov/licensing/exportingbasics.htm
   http://www.bis.doc.gov/licensing/do_i_needaneccn.html
@@ -1087,7 +1092,7 @@ FAQ
 
   In such cases, the TCP/IP stack is responsible for detecting when the
   network connection is irrevocably lost. Since with some protocols it is
-  perfectly legal for the client wait indefinitely for data, the stack may
+  perfectly legal for the client to wait indefinitely for data, the stack may
   never report a problem, and even when it does, it can take up to 20 minutes
   for it to detect an issue.  The curl option --keepalive-time enables
   keep-alive support in the TCP/IP stack which makes it periodically probe the
@@ -1536,9 +1541,7 @@ FAQ
 
   7.2 Who wrote PHP/CURL?
 
-  PHP/CURL is a module that comes with the regular PHP package. It depends and
-  uses libcurl, so you need to have libcurl installed properly first before
-  PHP/CURL can be used. PHP/CURL was initially written by Sterling Hughes.
+  PHP/CURL was initially written by Sterling Hughes.
 
   7.3 Can I perform multiple requests using the same handle?
 
@@ -1547,4 +1550,10 @@ FAQ
   unknown to me).
 
   After a transfer, you just set new options in the handle and make another
-  transfer. This will make libcurl to re-use the same connection if it can.
+  transfer. This will make libcurl re-use the same connection if it can.
+
+  7.4 Does PHP/CURL have dependencies?
+
+  PHP/CURL is a module that comes with the regular PHP package. It depends on
+  and uses libcurl, so you need to have libcurl installed properly before
+  PHP/CURL can be used.

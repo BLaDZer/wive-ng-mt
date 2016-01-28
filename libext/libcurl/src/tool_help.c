@@ -83,6 +83,7 @@ static const char *const helptext[] = {
 #ifdef USE_ENVIRONMENT
   "     --environment   Write results to environment variables (RISC OS)",
 #endif
+  "     --expect100-timeout SECONDS How long to wait for 100-continue (H)",
   " -f, --fail          Fail silently (no output at all) on HTTP errors (H)",
   "     --false-start   Enable TLS False Start.",
   " -F, --form CONTENT  Specify HTTP multipart POST data (H)",
@@ -316,6 +317,9 @@ void tool_version_info(void)
     }
 #ifdef USE_METALINK
     printf("Metalink ");
+#endif
+#ifdef USE_LIBPSL
+    printf("PSL ");
 #endif
     puts(""); /* newline */
   }

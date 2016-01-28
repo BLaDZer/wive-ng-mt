@@ -547,8 +547,8 @@ static DWORD WINAPI select_ws_wait_thread(LPVOID lpParameter)
         * Approach: Loop till either the internal event is signalled
         *           or if the end of the file has already been reached.
         */
-      while(WaitForMultipleObjectsEx(2, handles, FALSE, INFINITE, FALSE)
-            == WAIT_OBJECT_0 + 1) {
+      while(WaitForMultipleObjectsEx(1, handles, FALSE, 0, FALSE)
+            == WAIT_TIMEOUT) {
         /* get total size of file */
         length = 0;
         size.QuadPart = 0;
@@ -558,7 +558,8 @@ static DWORD WINAPI select_ws_wait_thread(LPVOID lpParameter)
           size.HighPart = length;
           /* get the current position within the file */
           pos.QuadPart = 0;
-          pos.LowPart = SetFilePointer(handle, 0, &pos.HighPart, FILE_CURRENT);
+          pos.LowPart = SetFilePointer(handle, 0, &pos.HighPart,
+                                       FILE_CURRENT);
           if((pos.LowPart != INVALID_SET_FILE_POINTER) ||
              (GetLastError() == NO_ERROR)) {
             /* compare position with size, abort if not equal */
@@ -611,8 +612,8 @@ static DWORD WINAPI select_ws_wait_thread(LPVOID lpParameter)
         * Approach: Loop till either the internal event is signalled
         *           or there is data in the pipe available for reading.
         */
-      while(WaitForMultipleObjectsEx(2, handles, FALSE, INFINITE, FALSE)
-            == WAIT_OBJECT_0 + 1) {
+      while(WaitForMultipleObjectsEx(1, handles, FALSE, 0, FALSE)
+            == WAIT_TIMEOUT) {
         /* peek into the pipe and retrieve the amount of data available */
         length = 0;
         if(PeekNamedPipe(handle, NULL, 0, NULL, &length, NULL)) {
@@ -695,7 +696,7 @@ static int select_ws(int nfds, fd_set *readfds, fd_set *writefds,
 
   /* check if we got descriptors, sleep in case we got none */
   if(!nfds) {
-    Sleep((timeout->tv_sec * 1000) + (timeout->tv_usec / 1000));
+    Sleep((timeout->tv_sec*1000)+(DWORD)(((double)timeout->tv_usec)/1000.0));
     return 0;
   }
 
@@ -854,6 +855,17 @@ static int select_ws(int nfds, fd_set *readfds, fd_set *writefds,
       FD_CLR(sock, writefds);
       FD_CLR(sock, exceptfds);
     }
+  }
+
+  for(fds = 0; fds < nfds; fds++) {
+    if(FD_ISSET(fds, readfds))
+      logmsg("select_ws: %d is readable", fds);
+
+    if(FD_ISSET(fds, writefds))
+      logmsg("select_ws: %d is writable", fds);
+
+    if(FD_ISSET(fds, exceptfds))
+      logmsg("select_ws: %d is excepted", fds);
   }
 
   for(idx = 0; idx < wsa; idx++) {
