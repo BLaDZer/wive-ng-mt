@@ -1643,25 +1643,26 @@
 47) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
 48) kernel: usb: serial: option: adding support for Telit LE922.<br>
 49) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
-50) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-51) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-52) kernel: net: packet: don't check frames_per_block against negative values.<br>
-53) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-54) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
-55) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-56) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-57) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-58) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-59) kernel: net: possible use after free in dst_release.<br>
-60) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-61) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-62) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
-63) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-64) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-65) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-66) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-67) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-68) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+50) kernel: usb: serial: cdc-acm: Add support for Denso cradle CU-321.<br>
+51) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+52) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
+53) kernel: net: packet: don't check frames_per_block against negative values.<br>
+54) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+55) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
+56) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+57) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+58) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+59) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+60) kernel: net: possible use after free in dst_release.<br>
+61) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+62) kernel: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+63) kernel: net: ipv6/addrlabel: fix ip6addrlbl_get().<br>
+64) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+65) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+66) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+67) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+68) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+69) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
 <br>
 <br>
 <br>
