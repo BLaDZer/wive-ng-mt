@@ -2020,7 +2020,7 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
 break_out:
 	__set_current_state(TASK_RUNNING);
 	remove_wait_queue(&tty->write_wait, &wait);
-	if (b - buf != nr && tty->fasync)
+	if (nr && tty->fasync)
 		set_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 	return (b - buf) ? b - buf : retval;
 }
