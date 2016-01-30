@@ -1669,6 +1669,7 @@
 73) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
 74) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
 75) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+76) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
 <br>
 <br>
 <br>
