@@ -1670,6 +1670,7 @@
 74) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
 75) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
 76) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
+77) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
 <br>
 <br>
 <br>
