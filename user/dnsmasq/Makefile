@@ -1,4 +1,4 @@
-# dnsmasq is Copyright (c) 2000-2015 Simon Kelley
+# dnsmasq is Copyright (c) 2000-2016 Simon Kelley
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ BUILDDIR      = $(SRC)
 DESTDIR       =
 RPM_OPT_FLAGS =
 
-COPTS := -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+COPTS := -O2 -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
 COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT
 
 ifndef CONFIG_IPV6
@@ -83,7 +83,8 @@ objs = cache.o rfc1035.o util.o option.o forward.o network.o \
        dnsmasq.o dhcp.o lease.o rfc2131.o netlink.o dbus.o bpf.o \
        helper.o tftp.o log.o conntrack.o dhcp6.o rfc3315.o \
        dhcp-common.o outpacket.o radv.o slaac.o auth.o ipset.o \
-       domain.o dnssec.o blockdata.o tables.o loop.o inotify.o poll.o
+       domain.o dnssec.o blockdata.o tables.o loop.o inotify.o \
+       poll.o rrfilter.o edns0.o arp.o
 
 hdrs = dnsmasq.h config.h dhcp-protocol.h dhcp6-protocol.h \
        dns-protocol.h radv-protocol.h ip6addr.h

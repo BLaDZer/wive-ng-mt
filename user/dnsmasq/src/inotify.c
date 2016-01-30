@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2016 Simon Kelley
  
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -85,12 +85,14 @@ static char *my_readlink(char *path)
 void inotify_dnsmasq_init()
 {
   struct resolvc *res;
-
   inotify_buffer = safe_malloc(INOTIFY_SZ);
   daemon->inotifyfd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
   
   if (daemon->inotifyfd == -1)
     die(_("failed to create inotify: %s"), NULL, EC_MISC);
+
+  if (option_bool(OPT_NO_RESOLV))
+    return;
   
   for (res = daemon->resolv_files; res; res = res->next)
     {
@@ -98,7 +100,7 @@ void inotify_dnsmasq_init()
       int links = MAXSYMLINKS;
 
       strcpy(path, res->name);
-      
+
       /* Follow symlinks until we reach a non-symlink, or a non-existant file. */
       while ((new_path = my_readlink(path)))
 	{
@@ -107,7 +109,7 @@ void inotify_dnsmasq_init()
 	  free(path);
 	  path = new_path;
 	}
-      
+
       res->wd = -1;
 
       if ((d = strrchr(path, '/')))
@@ -121,9 +123,9 @@ void inotify_dnsmasq_init()
 	  if (res->wd == -1 && errno == ENOENT)
 	    die(_("directory %s for resolv-file is missing, cannot poll"), res->name, EC_MISC);
 	}	  
-	  
-	  if (res->wd == -1)
-	    die(_("failed to create inotify for %s: %s"), res->name, EC_MISC);
+	 
+      if (res->wd == -1)
+	die(_("failed to create inotify for %s: %s"), res->name, EC_MISC);
 	
     }
 }

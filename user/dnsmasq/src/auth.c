@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2016 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -81,7 +81,8 @@ int in_zone(struct auth_zone *zone, char *name, char **cut)
 }
 
 
-size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t now, union mysockaddr *peer_addr, int local_query) 
+size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t now, union mysockaddr *peer_addr, 
+		   int local_query, int do_bit, int have_pseudoheader) 
 {
   char *name = daemon->namebuff;
   unsigned char *p, *ansp;
@@ -134,21 +135,21 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
       if ((qtype == T_PTR || qtype == T_SOA || qtype == T_NS) &&
 	  (flag = in_arpa_name_2_addr(name, &addr)) &&
 	  !local_query)
+	{
+	  for (zone = daemon->auth_zones; zone; zone = zone->next)
+	    if ((subnet = find_subnet(zone, flag, &addr)))
+	      break;
+	  
+	  if (!zone)
 	    {
-	      for (zone = daemon->auth_zones; zone; zone = zone->next)
-		if ((subnet = find_subnet(zone, flag, &addr)))
-		  break;
-	      
-	      if (!zone)
-		{
-		  auth = 0;
-		  continue;
-		}
+	      auth = 0;
+	      continue;
+	    }
 	  else if (qtype == T_SOA)
 	    soa = 1, found = 1;
 	  else if (qtype == T_NS)
 	    ns = 1, found = 1;
-	    }
+	}
 
       if (qtype == T_PTR && flag)
 	{
@@ -213,8 +214,8 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 		  /* add  external domain */
 		  if (zone)
 		    {
-		  strcat(name, ".");
-		  strcat(name, zone->domain);
+		      strcat(name, ".");
+		      strcat(name, zone->domain);
 		    }
 		  log_query(flag | F_DHCP | F_REVERSE, name, &addr, record_source(crecp->uid));
 		  found = 1;
@@ -251,15 +252,15 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
 	cut = NULL;
       else
 	{
-      for (zone = daemon->auth_zones; zone; zone = zone->next)
-	if (in_zone(zone, name, &cut))
-	  break;
-      
-      if (!zone)
-	{
-	  auth = 0;
-	  continue;
-	}
+	  for (zone = daemon->auth_zones; zone; zone = zone->next)
+	    if (in_zone(zone, name, &cut))
+	      break;
+	  
+	  if (!zone)
+	    {
+	      auth = 0;
+	      continue;
+	    }
 	}
 
       for (rec = daemon->mxnames; rec; rec = rec->next)
@@ -820,6 +821,11 @@ size_t answer_auth(struct dns_header *header, char *limit, size_t qlen, time_t n
   header->ancount = htons(anscount);
   header->nscount = htons(authcount);
   header->arcount = htons(0);
+
+  /* Advertise our packet size limit in our reply */
+  if (have_pseudoheader)
+    return add_pseudoheader(header,  ansp - (unsigned char *)header, (unsigned char *)limit, daemon->edns_pktsz, 0, NULL, 0, do_bit);
+
   return ansp - (unsigned char *)header;
 }
   

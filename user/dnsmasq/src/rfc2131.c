@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2016 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -812,7 +812,7 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	  
 	  if (!service || !service->basename || !context)
 	    return 0;
-	  
+	  	  
 	  clear_packet(mess, end);
 	  
 	  mess->yiaddr = mess->ciaddr;
@@ -2258,7 +2258,7 @@ static void do_options(struct dhcp_context *context,
   /* rfc3011 says this doesn't need to be in the requested options list. */
   if (subnet_addr.s_addr)
     option_put(mess, end, OPTION_SUBNET_SELECT, INADDRSZ, ntohl(subnet_addr.s_addr));
-  
+   
   if (lease_time != 0xffffffff)
     { 
       unsigned int t1val = lease_time/2; 

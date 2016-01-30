@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2015 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2016 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -228,8 +228,8 @@ void icmp6_packet(time_t now)
       /* If the incoming interface wasn't an alias, send an RA using
 	 the context of the incoming interface. */
       if (!bridge)
-      /* source address may not be valid in solicit request. */
-      send_ra(now, if_index, interface, !IN6_IS_ADDR_UNSPECIFIED(&from.sin6_addr) ? &from.sin6_addr : NULL);
+	/* source address may not be valid in solicit request. */
+	send_ra(now, if_index, interface, !IN6_IS_ADDR_UNSPECIFIED(&from.sin6_addr) ? &from.sin6_addr : NULL);
     }
 }
 
@@ -781,7 +781,7 @@ time_t periodic_ra(time_t now)
 	      break;
 	  if (!tmp)
             {
-	    send_ra(now, param.iface, param.name, NULL); 
+              send_ra(now, param.iface, param.name, NULL); 
 
               /* Also send on all interfaces that are aliases of this
                  one. */
@@ -835,7 +835,7 @@ time_t periodic_ra(time_t now)
     }      
   return next_event;
 }
-  
+
 static int send_ra_to_aliases(int index, unsigned int type, char *mac, size_t maclen, void *parm)
 {
   struct alias_param *aparam = (struct alias_param *)parm;
