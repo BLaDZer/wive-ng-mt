@@ -11,7 +11,7 @@
 # This program may be distributed according to the terms of the GNU
 # General Public License, version 2 or (at your option) any later version.
 #
-# $Id: Makefile.linux,v 1.8 2008/06/09 08:34:23 paulus Exp $
+# $Id$
 #***********************************************************************
 
 DESTDIR = $(INSTROOT)@DESTDIR@
@@ -23,30 +23,26 @@ PPPDVERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
 INSTALL	= install
 
 # Version is set ONLY IN THE MAKEFILE!  Don't delete this!
-RP_VERSION=3.10p
+RP_VERSION=3.12
 
-CFLAGS += -I../../../include $(COPTS) '-DRP_VERSION="$(RP_VERSION)"' '-D_GNU_SOURCE="1"'
-
+CFLAGS += -I../../../include '-DRP_VERSION="$(RP_VERSION)"' -DPLUGIN=1
 all: rp-pppoe.so
 
-rp-pppoe.so: plugin.o discovery.o if.o common.o
-	$(CC) -o rp-pppoe.so -shared plugin.o discovery.o if.o common.o
+rp-pppoe.so: libplugin.a plugin.o
+	$(LD) -o rp-pppoe.so -shared plugin.o libplugin.a
 
 install: all
 	$(INSTALL) -d -m 755 $(LIBDIR)
-	$(INSTALL) -m 4750 rp-pppoe.so $(LIBDIR)
+	$(INSTALL) -m 4550 rp-pppoe.so $(LIBDIR)
 
 clean:
-	rm -f *.o *.so
+	rm -f *.o *.so *.a
 
 plugin.o: plugin.c
-	$(CC) $(CFLAGS) -I../../.. -c -o plugin.o -fPIC plugin.c
+	$(CC) $(CFLAGS) -I../../.. -c -o $@ -fPIC plugin.c
 
-discovery.o: discovery.c
-	$(CC) $(CFLAGS) -I../../.. -c -o discovery.o -fPIC discovery.c
+libplugin.a: discovery.o if.o common.o debug.o
+	$(AR) -rc $@ $^
 
-if.o: if.c
-	$(CC) $(CFLAGS) -I../../.. -c -o if.o -fPIC if.c
-
-common.o: common.c
-	$(CC) $(CFLAGS) -I../../.. -c -o common.o -fPIC common.c
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ -fPIC $^

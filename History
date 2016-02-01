@@ -1613,66 +1613,67 @@
 17) xl2tpd: avoid problems with bad avp lengths.<br>
 18) usb-modeswitch: up to 2.3.0 version.<br>
 19) dnsmasq: up to 2.76test8 version.<br>
-20) busybox: truncate: always set mode when opening file to avoid fortify errors.<br>
-21) goahead: add wifisystem.ru profile in hotspot page.<br>
-22) goahead: fix crash at long time port status view.<br>
-23) goahead: fix error handle in read data from ethool oer pipe.<br>
-24) goahead: add show function name to all error messages.<br>
-25) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
-26) goahead: fix potentional null pointer dereferens in isdigit use.<br>
-27) goahead: rewrite cpu usage code more safe and readable.<br>
-28) switch: add support egress tag/untag.<br>
-29) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
-30) init.d: config-vlan: fix portmap mask for esw in one RGMII mode.<br>
-31) init.d: config-vlan: skip port 5 from config not used and linkdown.<br>
-32) kernel: ralink_raeth: switch to qdma for MT7621.<br>
-33) kernel: ralink_raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
-34) kernel: ralink_raeth: add MT7628 switch control API.<br>
-35) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
-36) kernel: ralink_raeth: MT7620 rev 0204 has CDM bug too (workload tests FAILED).<br>
-37) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
-38) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
-39) kernel: mips: fix bitrot in __get_user_unaligned().<br>
-40) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
-41) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-42) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-43) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-44) kernel: mmc: upstream updates.<br>
-45) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
-46) kernel: tty: fix GPF in flush_to_ldisc().<br>
-47) kernel: tty: n_tty: fix SIGIO for output.<br>
-48) kernel: usb-storage: update unusual_devs from upstream.<br>
-49) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
-50) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-51) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
-52) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
-53) kernel: usb: serial: option: adding support for Telit LE922.<br>
-54) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
-55) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
-56) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
-57) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
-58) kernel: net: packet: don't check frames_per_block against negative values.<br>
-59) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-60) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
-61) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-62) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-63) kernel: net: possible use after free in dst_release.<br>
-64) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-65) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
-66) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-67) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-68) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-69) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-70) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-71) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
-72) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-73) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-74) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-75) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-76) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-77) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
-78) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
-79) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
+20) pppd: rp-pppoe: update to 3.12 version.<br>
+21) busybox: truncate: always set mode when opening file to avoid fortify errors.<br>
+22) goahead: add wifisystem.ru profile in hotspot page.<br>
+23) goahead: fix crash at long time port status view.<br>
+24) goahead: fix error handle in read data from ethool oer pipe.<br>
+25) goahead: add show function name to all error messages.<br>
+26) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
+27) goahead: fix potentional null pointer dereferens in isdigit use.<br>
+28) goahead: rewrite cpu usage code more safe and readable.<br>
+29) switch: add support egress tag/untag.<br>
+30) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
+31) init.d: config-vlan: fix portmap mask for esw in one RGMII mode.<br>
+32) init.d: config-vlan: skip port 5 from config not used and linkdown.<br>
+33) kernel: ralink_raeth: switch to qdma for MT7621.<br>
+34) kernel: ralink_raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
+35) kernel: ralink_raeth: add MT7628 switch control API.<br>
+36) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
+37) kernel: ralink_raeth: MT7620 rev 0204 has CDM bug too (workload tests FAILED).<br>
+38) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
+39) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
+40) kernel: mips: fix bitrot in __get_user_unaligned().<br>
+41) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
+42) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+43) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+44) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+45) kernel: mmc: upstream updates.<br>
+46) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+47) kernel: tty: fix GPF in flush_to_ldisc().<br>
+48) kernel: tty: n_tty: fix SIGIO for output.<br>
+49) kernel: usb-storage: update unusual_devs from upstream.<br>
+50) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+51) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
+52) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+53) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
+54) kernel: usb: serial: option: adding support for Telit LE922.<br>
+55) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
+56) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
+57) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
+58) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
+59) kernel: net: packet: don't check frames_per_block against negative values.<br>
+60) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+61) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
+62) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+63) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+64) kernel: net: possible use after free in dst_release.<br>
+65) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+66) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
+67) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+68) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+69) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+70) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+71) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
+72) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
+73) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+74) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+75) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+76) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+77) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+78) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+79) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
+80) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
 <br>
 <br>
 <br>
