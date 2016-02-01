@@ -1672,8 +1672,9 @@
 76) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
 77) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
 78) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
-79) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
-80) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
+79) kernel: net: ipv6: udp: use sticky pktinfo egress ifindex on connect() (RFC 3542 section 6.7).<br>
+80) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
+81) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
 <br>
 <br>
 <br>
