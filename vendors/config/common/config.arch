@@ -31,88 +31,55 @@ endif
 
 ifeq ($(UCLINUX_COMMON_LIB),1)
 	# Static versions of libraries
-	SLIBFLEX	=	-lfl
-	SLIBNVRAM	=	-lnvram
-	SLIBICONV	=	-liconv
 	SLIBC		=	-lc
 	SLIBM		=	-lm
 	SLIBINTL	=	-lintl
-	SLIBAES		=	-laes
-	SLIBDES		=	-ldes
-	SLIBNETOLD	=	-lnetold
-	SLIBPCAP	=	-lpcap
-	SLIBNET		=	-lnet
+	SLIBNVRAM	=	-lnvram
+	SLIBICONV	=	-liconv
 	SLIBNL		=	-lnl
 	SLIBSSL		=	-lssl
 	SLIBCRYPTO	=	-lcrypto
-	SLIBATM		=	-latm
 	SLIBCRYPT	=	-Wl,-Bstatic -Wl,-Bstatic -lcrypt
-	SLIBEXPAT	=	-lexpat
-	SLIBIXML	=	-lixml
-	SLIBJPEG	=	-ljpeg
-	SLIBPNG		=	-lpng
 	SLIBSTDCPP	=	-Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
 	SLIBTHREADUTIL	=	-lthreadutil
 	SLIBPTHREAD	=	-lpthread
 	SLIBCURL	=	-lcurl
 	SLIBPCAP	=	-lpcap
 	SLIBEVENT	=	-levent
-	SLIBUSB		=	-lusb
 	SLIBUSB_1_0	=	-lusb-1.0
 	SLIBNFNETLINK	=	-lnfnetlink
-	SLIBUPNP	=	-lupnp
 	SLIBZ		=	-lz
 	SLIBXML2	=	-lxml2
 	SLIBNEON	=	-lneon
 
 	# Dynamic versions
 	LIBDL		=	-ldl
-	LIBEXPAT	=	-lexpat
 	LIBGCC		=	-lgcc
 	LIBIBERTY	=	-liberty
 	LIBIO		=	-lio
 	LIBIOSTREAM	=	-liostream
-	LIBTCL		=	-ltcl
 	LIBCRYPT	=	-lcrypt
 	LIBRESOLV	=	-lresolv
 	LIBUTIL		=	-lutil
-	LIBNVRAM	=	$(SLIBNVRAM)
-	LIBFLEX		=	$(SLIBFLEX)
-	LIBICONV	=	$(SLIBICONV)
 	LIBC		=	$(SLIBC)
 	LIBM		=	$(SLIBM)
+	LIBNVRAM	=	$(SLIBNVRAM)
+	LIBICONV	=	$(SLIBICONV)
 	LIBINTL		=	$(SLIBINTL)
-	LIBAES		=	$(SLIBAES)
-	LIBDES		=	$(SLIBDES)
-	LIBNETOLD	=	$(SLIBNETOLD)
-	LIBPCAP		=	$(SLIBPCAP)
-	LIBNET		=	$(SLIBNET)
 	LIBNL		=	$(SLIBNL)
 	LIBSSL		=	$(SLIBSSL)
 	LIBCRYPTO	=	$(SLIBCRYPTO)
-	LIBATM		=	$(SLIBATM)
-	LIBIXML		=	$(SLIBIXML)
-	LIBJPEG		=	$(SLIBJPEG)
-	LIBPNG		=	$(SLIBPNG)
 	LIBSTDCPP	=	$(SLIBSTDCPP)
 	LIBTHREADUTIL	=	$(SLIBTHREADUTIL)
 	LIBPTHREAD	=	$(SLIBPTHREAD)
 	LIBEVENT	=	$(SLIBEVENT)
-	LIBUSB		=	$(SLIBUSB)
 	LIBUSB_1_0	=	$(SLIBUSB_1_0)
 	LIBCURL		=	$(SLIBCURL)
 	LIBPCAP		=	$(SLIBPCAP)
 	LIBNFNETLINK	=	$(SLIBNFNETLINK)
-	LIBUPNP		=	$(SLIBUPNP)
 	LIBZ		=	$(SLIBZ)
 	LIBXML2		=	$(SLIBXML2)
 	LIBNEON		=	$(SLIBNEON)
-
-	# STLPort
-	# Note that STL_INCDIR is not included by default since
-	# it can cause conflicts
-	STL_INCDIR=$(ROOTDIR)/include/STLport
-	STL_LIBDIR=$(ROOTDIR)/lib/STLport/lib
 
 	ifeq "$(shell export LC_ALL=C; $(LD) --fatal-warnings 2>&1 | grep 'unrecognized option')" ""
 		# Linker warnings are almost always a sign of badness

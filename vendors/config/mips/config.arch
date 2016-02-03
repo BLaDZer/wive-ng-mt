@@ -16,7 +16,6 @@
 ############################ BASE FLAGS ###################################
 PRODUCTID		?= "WN-MT"
 ROOTDIR			?= /opt/Wive-MT
-CONSOLE_BAUD_RATE	= 57600
 ########################## LIB/USER FLAGS #################################
 
 LOPT  =
