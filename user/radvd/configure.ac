@@ -13,7 +13,7 @@ dnl
 dnl
 
 dnl If adding rcX to version, be sure to separate with a '-' 
-AC_INIT(radvd, [2.11])
+AC_INIT(radvd, [2.12])
 AC_CONFIG_SRCDIR(radvd.c)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
@@ -156,6 +156,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS( \
 	getopt.h \
 	ifaddrs.h \
+	linux/if_arp.h \
 	machine/limits.h \
 	machine/param.h \
 	net/if_arp.h \

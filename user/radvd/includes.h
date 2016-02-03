@@ -100,3 +100,7 @@
 #include <ifaddrs.h>
 #endif
 
+#ifdef HAVE_LINUX_IF_ARP_H
+#include <linux/if_arp.h>
+#endif
+
