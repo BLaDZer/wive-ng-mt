@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/un.h>
@@ -39,6 +34,7 @@
 #include <net/if.h>
 #include <net/ethernet.h>
 #include <net/route.h>
+#include <linux/if_pppox.h>
 
 #include "pppd.h"
 #include "fsm.h"
@@ -48,7 +44,6 @@
 #include "util.h"
 #include "pathnames.h"
 #include "pptp_callmgr.h"
-#include "if_pppox.h"
 #include "inststr.h"
 
 #define PPTPC_VERSION "0.8.4"
@@ -57,8 +52,6 @@
 extern char** environ;
 
 char pppd_version[] = VERSION;
-extern int new_style_driver;
-
 
 char *pptp_server = NULL;
 char *pptp_client = NULL;
@@ -343,6 +336,13 @@ static int get_call_id(int sock, pid_t gre, pid_t pppd,
 
 void plugin_init(void)
 {
+#if defined(__linux__)
+    extern int new_style_driver;	/* From sys-linux.c */
+    if (!ppp_available() && !new_style_driver)
+	fatal("Kernel doesn't support ppp_generic - needed for PPTP");
+#else
+	fatal("No PPTP support on this OS");
+#endif
     add_options(Options);
 
     info("PPTP plugin version %s compiled for pppd-%s\n", PPTPC_VERSION, VERSION);

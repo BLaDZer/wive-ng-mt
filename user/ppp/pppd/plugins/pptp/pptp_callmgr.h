@@ -6,7 +6,6 @@
  */
 
 #define PPTP_SOCKET_PREFIX "/var/run/pptp/"
-#define USE_TCP_NODELAY    1
 
 int callmgr_main(int argc, char**argv, char**envp);
 void callmgr_name_unixsock(struct sockaddr_un *where,

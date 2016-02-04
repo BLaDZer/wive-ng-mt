@@ -8,13 +8,6 @@
 #ifndef INC_VECTOR_H
 #define INC_VECTOR_H
 
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-
 #include "pptp_ctrl.h" /* for definition of PPTP_CALL */
 
 typedef struct vector_struct VECTOR;

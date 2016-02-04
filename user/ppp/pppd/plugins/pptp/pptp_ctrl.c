@@ -272,9 +272,7 @@ static void ctrlp_rep( void * buffer, int size, int isbuff)
 PPTP_CONN * pptp_conn_open(int inet_sock, int isclient, pptp_conn_cb callback)
 {
     PPTP_CONN *conn;
-#ifdef USE_TCP_NODELAY
     int on = 1;
-#endif
     /* Allocate structure */
     if ((conn = malloc(sizeof(*conn))) == NULL) return NULL;
     if ((conn->call = vector_create()) == NULL) { free(conn); return NULL; }
@@ -302,9 +300,7 @@ PPTP_CONN * pptp_conn_open(int inet_sock, int isclient, pptp_conn_cb callback)
     fcntl(conn->inet_sock, F_SETFL, O_NONBLOCK);
 
     /* Disable nagle */
-#ifdef USE_TCP_NODELAY
     setsockopt(conn->inet_sock, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
-#endif
 
     /* Request connection from server, if this is a client */
     if (isclient) {

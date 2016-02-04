@@ -10,8 +10,13 @@
 #include <assert.h>
 #include "pptp_ctrl.h"
 #include "vector.h"
-
 /* #define VECTOR_DEBUG */
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
 
 struct vector_item {
     int key;
