@@ -14,26 +14,15 @@
 ############################################################################
 
 ############################ BASE FLAGS ###################################
+#
 PRODUCTID		?= "WN-MT"
 ROOTDIR			?= /opt/Wive-MT
+
 ########################## LIB/USER FLAGS #################################
+#
 
 LOPT  =
 UOPT  =
-
-ifndef VERSIONPKG
-  VERSIONPKG  := 1.0.0
-endif
-
-ifndef VERSIONSTR
-  VERSIONSTR = $(CONFIG_VENDOR) Version $(VERSIONPKG)
-endif
-
-ifndef RELFILES
-  RELFILES =	boot/boot.bin boot/boot.elf			\
-  		images/image.bin images/flash.bin \
-		$(LINUXDIR)/linux
-endif
 
 ############################################################################
 #

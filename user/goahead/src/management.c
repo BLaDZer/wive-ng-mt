@@ -448,19 +448,23 @@ static void getcpudata(struct cpu_stats *st)
 	FILE *fp;
 	char line_buf[256];
 
+	st->user = st->nice = st->system = st->idle = st->iowait = st->irq = st->sirq = st->steal = st->busy = st->total = 0;
+
 	fp = fopen(PROC_CPU_STATISTIC, "r");
-	if (fp)
-	{
-		if (fgets(line_buf, sizeof(line_buf), fp)) {
-			if (sscanf(line_buf, "cpu %llu %llu %llu %llu %llu %llu %llu %llu",
-				&st->user, &st->nice, &st->system, &st->idle, &st->iowait, &st->irq, &st->sirq, &st->steal) >= 4) {
-				/* calculate busy/total */
-				st->busy = st->user + st->nice + st->system + st->irq + st->sirq + st->steal + st->iowait;
-				st->total = st->busy + st->idle;
-			}
-		}
-		fclose(fp);
+	if(!fp){
+		printf("goahead: no proc, %s\n", __FUNCTION__);
+		return;
 	}
+
+	if (fgets(line_buf, sizeof(line_buf), fp)) {
+		if (sscanf(line_buf, "cpu %llu %llu %llu %llu %llu %llu %llu %llu",
+			&st->user, &st->nice, &st->system, &st->idle, &st->iowait, &st->irq, &st->sirq, &st->steal) >= 4) {
+			/* calculate busy/total */
+			st->busy = st->user + st->nice + st->system + st->irq + st->sirq + st->steal + st->iowait;
+			st->total = st->busy + st->idle;
+		}
+	}
+	fclose(fp);
 }
 
 static unsigned long long int prevbusy, prevtotal;
