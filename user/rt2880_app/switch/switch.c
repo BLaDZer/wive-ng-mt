@@ -2111,7 +2111,6 @@ int main(int argc, char *argv[])
 			table_dump();
 		else if (!strncmp(argv[1], "clear", 6)) {
 			table_clear();
-			printf("done.\n");
 		}
 		else if (!strncmp(argv[1], "phy", 4)) {
 			phy_dump(32); //dump all phy register
