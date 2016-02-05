@@ -4,6 +4,9 @@ SUBLEVEL = 1
 EXTRAVERSION =
 NAME = Unnamed
 
+# don't create a version string containing the actual timestamp
+export KCONFIG_NOTIMESTAMP=1
+
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
 # More info can be located in ./README
