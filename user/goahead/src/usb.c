@@ -147,7 +147,7 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	// Get value
 	char *modem_enabled = nvram_get(RT2860_NVRAM, "MODEMENABLED");
-	
+
 	// Do not perform other checks if modem is turned off
 	if (strcmp(modem_enabled, "1")==0)
 	{
@@ -157,7 +157,7 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 			// Try to find pppd
 			int found = procps_count("pppd");
-			
+
 			if (found>0)
 			{
 				// Now status is at least 'connecting'

@@ -656,17 +656,17 @@ static int getSdkVersion(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getSysUptime(int eid, webs_t wp, int argc, char_t **argv)
 {
-    struct sysinfo sinf;
+	struct sysinfo sinf;
 
 	if (sysinfo(&sinf) == 0)
-    {
-		return websWrite(wp, T("%d day%s, %d hour%s, %d min%s, %d sec%s"),
-				sinf.uptime/(unsigned)86400, ((sinf.uptime/(unsigned)86400) == 1)? "" : "s",
-                (sinf.uptime%(unsigned)86400)/(unsigned)3600, (((sinf.uptime%(unsigned)86400)/(unsigned)3600) == 1)? "" : "s",
-				(sinf.uptime%(unsigned)3600)/(unsigned)60, (((sinf.uptime%(unsigned)3600)/(unsigned)60) == 1)? "" : "s",
-				sinf.uptime%(unsigned)60, ((sinf.uptime%(unsigned)60) == 1)? "" : "s");
-    }
-    else return 0;
+	{
+	    return websWrite(wp, T("%d day%s, %d hour%s, %d min%s, %d sec%s"),
+			sinf.uptime/(unsigned)86400, ((sinf.uptime/(unsigned)86400) == 1)? "" : "s",
+    			(sinf.uptime%(unsigned)86400)/(unsigned)3600, (((sinf.uptime%(unsigned)86400)/(unsigned)3600) == 1)? "" : "s",
+			(sinf.uptime%(unsigned)3600)/(unsigned)60, (((sinf.uptime%(unsigned)3600)/(unsigned)60) == 1)? "" : "s",
+			sinf.uptime%(unsigned)60, ((sinf.uptime%(unsigned)60) == 1)? "" : "s");
+	} else
+	    return -1;
 }
 
 static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
@@ -676,6 +676,8 @@ static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
 
 	time(&usecs);
 	utime = localtime(&usecs);
+	if (utime == NULL)
+	    return -1;
 
 	return websWrite(wp, T("%02u:%02u:%02u %02u.%02u.%04u"),
 				utime->tm_hour, utime->tm_min, utime->tm_sec,

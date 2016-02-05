@@ -743,11 +743,11 @@ out_with_commit:
 
 out:
 	//kill helpers firt sigterm second sigkill
-	system("killall -q W60vpnhelper");
-	system("killall -q vpnhelper");
-	system("killall -q -SIGKILL W60vpnhelper");
-	system("killall -q -SIGKILL vpnhelper");
-	system("service vpnhelper restart > /dev/console 2>&1");
+	doSystem("killall -q W60vpnhelper");
+	doSystem("killall -q vpnhelper");
+	doSystem("killall -q -SIGKILL W60vpnhelper");
+	doSystem("killall -q -SIGKILL vpnhelper");
+	doSystem("service vpnhelper restart > /dev/console 2>&1");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
@@ -2064,7 +2064,7 @@ static void restoremac(webs_t wp, char_t *path, char_t *query)
 	/* Output timer for reloading */
 	outputTimerForReload(wp, "", 80000);
 
-	system("fs factory_mac > /dev/console 2>&1");
+	doSystem("fs factory_mac > /dev/console 2>&1");
 
 	/* Reboot */
 	reboot_now();
@@ -2204,7 +2204,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 	if (!flag) {
 		websError(wp, 200, "Invalid MAC Address, restore from factory!");
-		system("fs factory_mac > /dev/console 2>&1");
+		doSystem("fs factory_mac > /dev/console 2>&1");
 		return;
 	}
 
