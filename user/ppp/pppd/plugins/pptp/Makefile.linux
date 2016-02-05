@@ -48,12 +48,12 @@ pptp.so: libpptp.a
 %.so: %.c
 	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) $^
 
-clean: 
+clean:
 	rm -f *.o *.so *.a
 
 
 install: all
-	$(INSTALL) -m 4750 libpptp.so $(LIBDIR)
+	$(INSTALL) -m 4755 libpptp.so $(LIBDIR)
 
 depend:
 	$(CPP) -M $(CFLAGS) $(PLUGINSRCS) >.depend

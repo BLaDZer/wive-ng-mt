@@ -24,7 +24,7 @@ all: $(PLUGINS)
 
 install: all
 	$(INSTALL) -d -m 755 $(LIBDIR)
-	$(INSTALL) -c -m 755 $(PLUGINS) $(LIBDIR)
+	$(INSTALL) -c -m 4755 $(PLUGINS) $(LIBDIR)
 
 clean:
 	rm -f *.o *.so

@@ -33,7 +33,7 @@ rp-pppoe.so: libplugin.a plugin.o
 
 install: all
 	$(INSTALL) -d -m 755 $(LIBDIR)
-	$(INSTALL) -m 4550 rp-pppoe.so $(LIBDIR)
+	$(INSTALL) -m 4755 rp-pppoe.so $(LIBDIR)
 
 clean:
 	rm -f *.o *.so *.a
