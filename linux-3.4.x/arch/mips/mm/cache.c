@@ -78,10 +78,15 @@ SYSCALL_DEFINE3(cacheflush, unsigned long, addr, unsigned long, bytes,
 	return 0;
 }
 
+static void flush_highmem_page(struct page *page)
+{
+	void *addr = kmap_atomic(page);
+	flush_data_cache_page((unsigned long)addr);
+	kunmap_atomic(addr);
+}
+
 void __flush_dcache_page(struct page *page)
 {
-	void *addr;
-
 	if (page_mapping(page) && !page_mapped(page)) {
 		SetPageDcacheDirty(page);
 		return;
@@ -93,11 +98,9 @@ void __flush_dcache_page(struct page *page)
 	 * get faulted into the tlb (and thus flushed) anyways.
 	 */
 	if (PageHighMem(page)) {
-		addr = kmap_atomic(page);
-		flush_data_cache_page((unsigned long)addr);
-		kunmap_atomic(addr);
+		flush_highmem_page(page);
 	} else {
-		addr = (void *) page_address(page);
+		void *addr = (void *) page_address(page);
 		flush_data_cache_page((unsigned long)addr);
 	}
 	ClearPageDcacheDirty(page);
@@ -133,11 +136,7 @@ void __flush_anon_page(struct page *page, unsigned long vmaddr)
 				flush_data_cache_page((unsigned long)kaddr);
 				kunmap_coherent();
 			} else {
-				void *kaddr;
-
-				kaddr = kmap_atomic(page);
-				flush_data_cache_page((unsigned long)kaddr);
-				kunmap_atomic(kaddr);
+				flush_highmem_page(page);
 				ClearPageDcacheDirty(page);
 			}
 		}
@@ -150,8 +149,10 @@ void __flush_icache_page(struct vm_area_struct *vma, struct page *page)
 {
 	unsigned long addr;
 
-	if (PageHighMem(page))
+	if (PageHighMem(page)) {
+		flush_highmem_page(page);
 		return;
+	}
 
 	addr = (unsigned long) page_address(page);
 	flush_data_cache_page(addr);
@@ -172,24 +173,17 @@ void __update_cache(struct vm_area_struct *vma, unsigned long address,
 	}
 	page = pfn_to_page(pfn);
 
-	if (PageHighMem(page))
+	if (!Page_dcache_dirty(page))
 		return;
 
-	if (page_mapped(page) && Page_dcache_dirty(page)) {
-		void *kaddr = NULL;
-		if (PageHighMem(page)) {
-			addr = (unsigned long)kmap_atomic(page);
-			kaddr = (void *)addr;
-		} else
-			addr = (unsigned long) page_address(page);
-		if (exec || (cpu_has_dc_aliases &&
-		    pages_do_alias(addr, address & PAGE_MASK))) {
+	if (PageHighMem(page)) {
+		flush_highmem_page(page);
+	} else if (page_mapping(page)) {
+		addr = (unsigned long) page_address(page);
+		if (exec || (cpu_has_dc_aliases && pages_do_alias(addr, address & PAGE_MASK))) {
 			flush_data_cache_page(addr);
 			ClearPageDcacheDirty(page);
 		}
-
-		if (kaddr)
-			kunmap_atomic((void *)kaddr);
 	}
 	wmb();  /* finish any outstanding arch cache flushes before ret to user */
 }

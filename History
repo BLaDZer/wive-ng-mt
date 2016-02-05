@@ -1643,49 +1643,50 @@
 47) kernel: mips: spinlock: Adjust arch_spin_lock back-off time.<br>
 48) kernel: mips: fall back to generic implementation of cmpxchg64 on 32-bit platforms.<br>
 49) kernel: mips: remove a temporary hack for debugging cache flushes in SMTC configuration.<br>
-50) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-51) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-52) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-53) kernel: mmc: upstream updates.<br>
-54) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
-55) kernel: err.h: allow IS_ERR_VALUE to handle properly more types.<br>
-56) kernel: tty: fix GPF in flush_to_ldisc().<br>
-57) kernel: tty: n_tty: fix SIGIO for output.<br>
-58) kernel: usb-storage: update unusual_devs from upstream.<br>
-59) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
-60) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-61) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
-62) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
-63) kernel: usb: serial: option: adding support for Telit LE922.<br>
-64) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
-65) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
-66) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
-67) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
-68) kernel: net: packet: don't check frames_per_block against negative values.<br>
-69) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-70) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
-71) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-72) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-73) kernel: net: possible use after free in dst_release.<br>
-74) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-75) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
-76) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-77) kernel: net: sched: drr: check for NULL pointer in drr_dequeue.<br>
-78) kernel: net: inet: frag: always orphan skbs inside ip_defrag().<br>
-79) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-80) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-81) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-82) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
-83) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
-84) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-85) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-86) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-87) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-88) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-89) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
-90) kernel: net: ipv6: udp: use sticky pktinfo egress ifindex on connect() (RFC 3542 section 6.7).<br>
-91) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
-92) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
+50) kernel: mips: fix cache flushing for highmem pages.<br>
+51) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+52) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+53) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+54) kernel: mmc: upstream updates.<br>
+55) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+56) kernel: err.h: allow IS_ERR_VALUE to handle properly more types.<br>
+57) kernel: tty: fix GPF in flush_to_ldisc().<br>
+58) kernel: tty: n_tty: fix SIGIO for output.<br>
+59) kernel: usb-storage: update unusual_devs from upstream.<br>
+60) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+61) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
+62) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+63) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
+64) kernel: usb: serial: option: adding support for Telit LE922.<br>
+65) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
+66) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
+67) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
+68) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
+69) kernel: net: packet: don't check frames_per_block against negative values.<br>
+70) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+71) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
+72) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+73) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+74) kernel: net: possible use after free in dst_release.<br>
+75) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+76) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
+77) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+78) kernel: net: sched: drr: check for NULL pointer in drr_dequeue.<br>
+79) kernel: net: inet: frag: always orphan skbs inside ip_defrag().<br>
+80) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+81) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+82) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+83) kernel: net: core: 'ethtool' issue with querying phy settings.<br>
+84) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
+85) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+86) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+87) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+88) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+89) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+90) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+91) kernel: net: ipv6: udp: use sticky pktinfo egress ifindex on connect() (RFC 3542 section 6.7).<br>
+92) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
+93) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
 <br>
 <br>
 <br>
