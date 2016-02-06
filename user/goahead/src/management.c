@@ -377,65 +377,65 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
+struct mem_stats {
+	unsigned long int total;    // RAM total
+	unsigned long int free;     // RAM free
+	unsigned long int buffers;  // RAM buffers
+	unsigned long int cached;   // RAM cached
+	unsigned long int sw_total; // Swap total
+	unsigned long int sw_free;  // Swap free
+};
+
+static void get_memdata(struct mem_stats *st)
+{
+	FILE *fp;
+	char line_buf[64];
+
+	st->total = st->free = st->buffers = st->cached = st->sw_total = st->sw_free = 0;
+
+	fp = fopen("/proc/meminfo", "r");
+	if(!fp) {
+		printf("goahead: no proc, %s\n", __FUNCTION__);
+		return;
+	}
+
+	if (fgets(line_buf, sizeof(line_buf), fp) && sscanf(line_buf, "MemTotal: %lu %*s", &st->total) == 1) {
+		fgets(line_buf, sizeof(line_buf), fp);
+		sscanf(line_buf, "MemFree: %lu %*s", &st->free);
+
+		fgets(line_buf, sizeof(line_buf), fp);
+		sscanf(line_buf, "Buffers: %lu %*s", &st->buffers);
+
+		fgets(line_buf, sizeof(line_buf), fp);
+		sscanf(line_buf, "Cached: %lu %*s", &st->cached);
+	}
+	fclose(fp);
+}
 
 static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[1024], *semiColon, *key, *value;
-	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
-	if(!fp){
-		printf("goahead: no proc, %s\n", __FUNCTION__);
-		return -1;
-	}
+	struct mem_stats mem;
+	char buf[16];
 
-	while(fgets(buf, sizeof(buf), fp))
-	{
-		if (buf == NULL || buf[0] == '\n')
-			continue;
-		if(! (semiColon = strchr(buf, ':'))  )
-			continue;
-		*semiColon = '\0';
-		key = buf;
-		value = semiColon + 1;
-		if(!strcmp(key, "MemTotal")){
-			value = strip_space(value);
-			websWrite(wp, T("%s"), value);
-			fclose(fp);
-			return 0;
-		}
-	}
-	websWrite(wp, T(""));
-	fclose(fp);
+	get_memdata(&mem);
 
-	return -1;
+	snprintf(buf, sizeof(buf), "%lu", mem.total);
+	websWrite(wp, T("%s"), buf);
+
+	return 0;
 }
 
 static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[1024], *semiColon, *key, *value;
-	FILE *fp = fopen(PROC_MEM_STATISTIC, "r");
-	if(!fp){
-		printf("goahead: no proc, %s\n", __FUNCTION__);
-		return -1;
-	}
+	struct mem_stats mem;
+	char buf[16];
 
-	while(fgets(buf, sizeof(buf), fp)){
-		if (buf == NULL || buf[0] == '\n')
-			continue;
-		if(!(semiColon = strchr(buf, ':')))
-			continue;
-		*semiColon = '\0';
-		key = buf;
-		value = semiColon + 1;
-		if(!strcmp(key, "MemFree")){
-			value = strip_space(value);
-			websWrite(wp, T("%s"), value);
-			fclose(fp);
-			return 0;
-		}
-	}
-	websWrite(wp, T(""));
-	fclose(fp);
-	return -1;
+	get_memdata(&mem);
+
+	snprintf(buf, sizeof(buf), "%lu", mem.free);
+	websWrite(wp, T("%s"), buf);
+
+	return 0;
 }
 
 struct cpu_stats {
@@ -459,7 +459,7 @@ static void getcpudata(struct cpu_stats *st)
 	st->user = st->nice = st->system = st->idle = st->iowait = st->irq = st->sirq = st->steal = st->busy = st->total = 0;
 
 	fp = fopen(PROC_CPU_STATISTIC, "r");
-	if(!fp){
+	if(!fp) {
 		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return;
 	}
