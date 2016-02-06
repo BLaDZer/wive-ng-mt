@@ -424,10 +424,8 @@ void websReadEvent(webs_t wp)
 			if (wp->flags & WEBS_CGI_REQUEST) {
 					if (fd == -1) {
 						if(wp->flags & WEBS_CGI_FIRMWARE_UPLOAD && wp->has_firmware_upload_clean==0){
-#if (defined(CONFIG_RALINK_RAM_SIZE) && (CONFIG_RALINK_RAM_SIZE < 256)) || defined(CONFIG_RAM_SIZE_AUTO)
 							/* on low memory device need unload all services before update */
-							doSystem("wifi_unload.sh > /dev/null 2>&1"); /* always to dev null */
-#endif
+							doSystem("unload_all.sh > /dev/null 2>&1"); /* always to dev null */
 							wp->has_firmware_upload_clean = 1;
 						}
 						fd = gopen(wp->cgiStdin, O_CREAT | O_WRONLY | O_BINARY | O_APPEND, 0666);

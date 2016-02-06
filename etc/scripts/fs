@@ -103,7 +103,7 @@ fullreset() {
     killall -q goahead
     killall -q -SIGKILL goahead
     sys_led_blink
-    wifi_unload.sh
+    unload_all.sh
     echo "Erase rwfs,nvram,factory (rebuild after reboot)."
     mtd_write erase Factory
     mtd_write erase Config

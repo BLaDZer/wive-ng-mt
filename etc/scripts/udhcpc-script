@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Wive-NG  udhcpc script
+# Wive-NG udhcpc script
 
 # include global config
 . /etc/scripts/global.sh
