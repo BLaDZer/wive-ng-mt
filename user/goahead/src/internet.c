@@ -1630,20 +1630,6 @@ void staticRoutingInit(void)
 	rebuildVPNRoutes(rrs);
 }
 
-static int getNums(char *value, char delimit)
-{
-    char *pos = value;
-    int count = 1;
-    if (!pos || !(*pos))
-        return 0;
-
-    while ((pos = strchr(pos, delimit)) != NULL) {
-        ++pos;
-        ++count;
-    }
-    return count;
-}
-
 /*
  * description: get routing table
  */

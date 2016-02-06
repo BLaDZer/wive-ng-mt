@@ -55,6 +55,7 @@ char *getNthValue(int index, char *values);
 char *setNthValue(int index, char *old_values, char *new_value);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len);
+int getNums(char *value, char delimit);
 int ledAlways(int gpio, int on);
 unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);

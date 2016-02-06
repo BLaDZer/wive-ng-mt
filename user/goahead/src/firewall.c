@@ -147,19 +147,6 @@ static int getDMZEnableASP(int eid, webs_t wp, int argc, char_t **argv)
 	return -1;
 }
 
-static int getNums(char *value, char delimit)
-{
-	char *pos = value;
-    int count=1;
-    if(!pos)
-    	return 0;
-	while( (pos = strchr(pos, delimit))){
-		pos = pos+1;
-		count++;
-	}
-	return count;
-}
-
 /*
  *
  */

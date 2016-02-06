@@ -267,7 +267,19 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	return 0;
 }
 
+int getNums(char *value, char delimit)
+{
+    char *pos = value;
+    int count = 1;
+    if (!pos || !(*pos))
+        return 0;
 
+    while ((pos = strchr(pos, delimit)) != NULL) {
+        ++pos;
+        ++count;
+    }
+    return count;
+}
 
 /*
  * nanosleep(2) don't depend on signal SIGALRM and could cooperate with
