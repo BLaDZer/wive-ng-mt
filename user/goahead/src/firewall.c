@@ -1070,74 +1070,6 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-static void getRulesPacketCount(webs_t wp, char_t *path, char_t *query)
-{
-	FILE *fp;
-	int i, step_in_chains=0;
-	char buf[1024], *default_policy;
-	int default_drop_flag;
-	int index=0, pkt_count;
-	int *result;
-
-	// check if the default policy is "drop" 
-	default_policy = nvram_get(RT2860_NVRAM, "DefaultFirewallPolicy");
-	if(!default_policy)
-		default_policy = "0";
-	default_drop_flag = atoi(default_policy);
-
-	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
-	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
-	websWrite(wp, T("\n"));
-
-	result = (int *)malloc(sizeof(int) * 128);
-	if(!result)
-		goto error;
-
-	fp = popen("iptables -t filter -L -v", "r");
-	if(!fp)
-	{
-		free(result);
-		goto error;
-	}
-
-	while(fgets(buf, sizeof(buf), fp) && index < 128)
-	{
-		if (buf == NULL)
-			continue;
-
-		if (step_in_chains)
-		{
-			if(buf[0] == '\n')
-				break;
-			if(buf[0] == ' ' && buf[1] == 'p' && buf[2] == 'k' && buf[3] == 't' )
-				continue;
-			// Skip the first one rule if default policy is drop.
-			if(default_drop_flag)
-			{
-				default_drop_flag = 0;
-				continue;
-			}
-			sscanf(buf, "%d ", &pkt_count);
-			result[index++] = pkt_count;
-		}
-
-		if(strstr(buf, "Chain " IPPORT_FILTER_CHAIN))
-			step_in_chains = 1;
-	}
-	pclose(fp);
-
-	if(index > 0)
-		websWrite(wp, "%d", result[0]);
-	for(i=1; i<index; i++)
-		websWrite(wp, " %d", result[i]);
-
-	free(result);
-error:
-	websDone(wp, 200);
-	return;
-}
-
-
 /*
  * ASP function
  */
@@ -1599,7 +1531,6 @@ void formDefineFirewall(void)
 	websFormDefine(T("portFiltering"), portFiltering);
 
 	websAspDefine(T("getPortFilteringRules"), getPortFilteringRules);
-	websFormDefine(T("getRulesPacketCount"), getRulesPacketCount);
 
 	websFormDefine(T("DMZ"), DMZ);
 	websAspDefine(T("getDMZEnableASP"), getDMZEnableASP);
