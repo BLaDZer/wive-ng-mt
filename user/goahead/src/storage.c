@@ -344,6 +344,11 @@ static int getMaxVol(int eid, webs_t wp, int argc, char_t **argv)
 	char maxvol[5], unit[5];
 	double transfer, result=0;
 
+	if(!pp){
+		printf("goahead: no fdisk, %s\n", __FUNCTION__);
+		return -1;
+	}
+
 	fscanf(pp, "%*s %*s %s %s %*s %*s\n", maxvol, unit);
 	pclose(pp);
 

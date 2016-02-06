@@ -543,6 +543,10 @@ static int get_LANAUTHState()
 	int i,state;
 
 	fp = popen("ps|grep lanaut[h]", "r");
+	if(!fp){
+		printf("goahead: no ps util exist, %s\n", __FUNCTION__);
+		return -1;
+	{
 	fgets(result, sizeof(result), fp);
 	pclose(fp);
 	for (i=0, state=0, r=result; *r && i<sizeof(result) ;i++,r++)

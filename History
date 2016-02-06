@@ -1623,7 +1623,7 @@
 27) goahead: fix crash at long time port status view.<br>
 28) goahead: fix error handle in read data from ethool over pipe.<br>
 29) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
-30) goahead: fix potentional null pointer dereferens in isdigit use and in getSysDateTime.<br>
+30) goahead: fix potentional null pointer dereferens in isdigit, getSysDateTime, getMaxVol and get_LANAUTHState.<br>
 31) goahead: rewrite cpu and mem usage code more safe and readable.<br>
 32) goahead: allways use doSystem() instead off call system() in exec sh scripts.<br>
 33) goahead: fix notsafe coding issue in getAllNICStatisticASP.<br>

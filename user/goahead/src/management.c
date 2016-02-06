@@ -394,7 +394,7 @@ static void get_memdata(struct mem_stats *st)
 	st->total = st->free = st->buffers = st->cached = st->sw_total = st->sw_free = 0;
 
 	fp = fopen("/proc/meminfo", "r");
-	if(!fp) {
+	if(!fp){
 		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return;
 	}
@@ -459,7 +459,7 @@ static void getcpudata(struct cpu_stats *st)
 	st->user = st->nice = st->system = st->idle = st->iowait = st->irq = st->sirq = st->steal = st->busy = st->total = 0;
 
 	fp = fopen(PROC_CPU_STATISTIC, "r");
-	if(!fp) {
+	if(!fp){
 		printf("goahead: no proc, %s\n", __FUNCTION__);
 		return;
 	}
@@ -552,17 +552,17 @@ static void syslog(webs_t wp, char_t *path, char_t *query)
 
 	// LOG_MAX 32768 - 1
 	fp = popen("tail -c 32767 /var/log/messages", "r");
-
 	if(!fp){
-		websWrite(wp, "-1");
+		printf("goahead: no log exist, %s\n", __FUNCTION__);
 		goto error;
 	}
 
 	log = malloc(LOG_MAX * sizeof(char));
 	if(!log){
-		websWrite(wp, "-1");
+		printf("goahead: no memory left, %s\n", __FUNCTION__);
 		goto error;
 	}
+
 	memset(log, 0, LOG_MAX);
 	fread(log, 1, LOG_MAX, fp);
 	websLongWrite(wp, log);
@@ -570,7 +570,7 @@ static void syslog(webs_t wp, char_t *path, char_t *query)
 	free(log);
 error:
 	if(fp)
-		pclose(fp);
+	    pclose(fp);
 	websDone(wp, 200);
 }
 #endif
