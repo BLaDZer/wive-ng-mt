@@ -201,6 +201,7 @@ static int cache_idx(int index, char *name)
 	return -1;
 }
 
+/* buffered get variable with/without copy to new memory block */
 static char *__nvram_bufget(int index, char *name, int copy)
 {
 	int idx;
@@ -286,12 +287,6 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	RANV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
 	FREE(nvr.value);
 	return "";
-}
-
-/* buffered get variable without copy to new memory block */
-char *nvram_bufget(int index, char *name)
-{
-	__nvram_bufget(index, name, 0);
 }
 
 /* get variable with copy to new memory block */
@@ -442,6 +437,69 @@ int nvram_clear(int index)
 
 	fb[index].dirty = 0;
 	return 0;
+}
+
+/*
+ * read reqested options by defaults file and wirte to nvram
+ */
+int nvram_fromdef(int idx_nvram, int num, ...)
+{
+	va_list vargs;
+	char buf[BUFSZ];
+	char *p, *tmp;
+	int result = 0;
+	int found = 0;
+	int n = 0;
+
+	FILE *fp = fopen(DEFAULT_NVRAM, "r");
+	if(!fp) {
+		RANV_ERROR("error open default settings\n");
+		return -1;
+	}
+	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
+			continue;
+		if (!strncmp(buf, "Default\n", 8)) {
+			found = 1;
+			break;
+		}
+	}
+	if (!found) {
+		RANV_ERROR("file format error!\n");
+		result = -1;
+		goto out;
+	}
+	if (nvram_init(idx_nvram) == -1) {
+		RANV_ERROR("cant init nvram\n");
+		result = -1;
+		goto out;
+	}
+	while(fgets(buf, sizeof(buf), fp)) {
+		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
+			continue;
+		if (!(p = strchr(buf, '='))) {
+			RANV_ERROR("file format error!\n");
+			goto out_with_commit;
+		}
+		buf[strlen(buf) - 1] = '\0';
+		*p++ = '\0';
+
+		va_start(vargs, num);
+		for(n = num; n > 0; n--) {
+			tmp = va_arg(vargs, char *);
+			if (!strncmp(buf, tmp, strlen(buf))) {
+				nvram_bufset(idx_nvram, buf, p);
+				break;
+			}
+		}
+		va_end(vargs);
+	}
+out_with_commit:
+	nvram_commit(idx_nvram);
+	nvram_close(idx_nvram);
+out:
+	fclose(fp);
+	return result;
 }
 
 int nvram_renew(int mode, char *fname)

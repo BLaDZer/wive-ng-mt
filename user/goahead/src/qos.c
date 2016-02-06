@@ -30,7 +30,7 @@ static void QoSSetup(webs_t wp, char_t *path, char_t *query)
 
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	if (CHK_IF_DIGIT(reset, 1)) {
-		OptRstDefault(RT2860_NVRAM, 12, "QoSEnable", "QoSMode", "QoS_rate_up", "QoS_rate_limit_up",
+		nvram_fromdef(RT2860_NVRAM, 12, "QoSEnable", "QoSMode", "QoS_rate_up", "QoS_rate_limit_up",
 			"QoS_rate_down", "QoS_rate_limit_down", "QoS_rate_vpn_up", "QoS_rate_vpn_limit_up",
 			"QoS_high_pp", "QoS_low_pp", "QoS_high_dscp", "QoS_low_dscp");
 		goto out;

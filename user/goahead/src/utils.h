@@ -46,8 +46,6 @@
 #endif
 #define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
-#define DEFAULT_NVRAM			"/etc/default/nvram_default"
-
 void formDefineUtilities(void);
 void outputTimerForReload(webs_t wp, char_t *url, long delay);
 void reboot_now(void);
@@ -62,7 +60,6 @@ unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
-int OptRstDefault(int idx_nvram, int num, ...);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
 
 #endif

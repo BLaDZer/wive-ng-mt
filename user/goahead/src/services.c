@@ -236,7 +236,7 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "1");
 		setupParameters(wp, dhcp_args, 0);
 
-		char *dns_proxy = nvram_bufget(RT2860_NVRAM, "dnsPEnabled");
+		char *dns_proxy = nvram_get(RT2860_NVRAM, "dnsPEnabled");
 		if (CHK_IF_DIGIT(dns_proxy, 1))
 		{
 			nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
@@ -396,7 +396,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 	setupParameters(wp, service_misc_flags, 0);
 
-	char_t *nat_fp = nvram_bufget(RT2860_NVRAM, "offloadMode");
+	char_t *nat_fp = nvram_get(RT2860_NVRAM, "offloadMode");
 	if (CHK_IF_DIGIT(nat_fp, 2) || CHK_IF_DIGIT(nat_fp, 3))
 	{
 		char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
@@ -404,7 +404,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "hw_nat_bind", nat_th);
 	}
 
-	char_t *dns_proxy = nvram_bufget(RT2860_NVRAM, "dnsPEnabled");
+	char_t *dns_proxy = nvram_get(RT2860_NVRAM, "dnsPEnabled");
 	if (CHK_IF_DIGIT(dns_proxy, 1))
 	{
 		nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
@@ -689,7 +689,7 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	if (CHK_IF_DIGIT(reset, 1)) {
-		OptRstDefault(RT2860_NVRAM, 30, "l2tp_srv_enabled", "l2tp_srv_ip_range", "l2tp_srv_ip_local",
+		nvram_fromdef(RT2860_NVRAM, 30, "l2tp_srv_enabled", "l2tp_srv_ip_range", "l2tp_srv_ip_local",
 			"l2tp_srv_lcp_adapt", "l2tp_srv_debug", "l2tp_srv_nat_enabled", "l2tp_srv_mppe_enabled",
 			"l2tp_srv_proxyarp", "l2tp_srv_mtu_size", "l2tp_srv_mru_size", "l2tp_srv_user0",
 			"l2tp_srv_user1", "l2tp_srv_user2", "l2tp_srv_user3", "l2tp_srv_user4", "l2tp_srv_user5",
@@ -756,8 +756,8 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 	nvram_init(RT2860_NVRAM);
 	for (; i < 10; i++)
 	{
-		char *user = nvram_bufget(RT2860_NVRAM, user_var);
-		char *pass = nvram_bufget(RT2860_NVRAM, pass_var);
+		char *user = nvram_get(RT2860_NVRAM, user_var);
+		char *pass = nvram_get(RT2860_NVRAM, pass_var);
 
 		if (CHK_IF_SET(user) || CHK_IF_SET(pass))
 			websWrite(wp, T("%s[ '%s', '%s' ]"), ((output++) > 0) ? ",\n\t" : "\t", user, pass);

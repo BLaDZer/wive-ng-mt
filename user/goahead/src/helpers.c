@@ -193,7 +193,7 @@ int freeSplitter(string_split_t *buf)
 void STFs(int nvram, int index, char *flash_key, char *value)
 {
 	char *result;
-	char *tmp = nvram_bufget(nvram, flash_key);
+	char *tmp = nvram_get(nvram, flash_key);
 	if(!tmp)
 		tmp = "";
 	result = setNthValue(index, tmp, value);

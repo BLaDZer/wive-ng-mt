@@ -132,7 +132,7 @@ static int ra_nv_buf_get(int argc, char *argv[])
 	}
 
 	for (i = 2; i < argc; i++) {
-	    rc = nvram_bufget(index, argv[i]);
+	    rc = nvram_get(index, argv[i]);
 	    if (rc) {
 		printf("%s=\"%s\"\n",argv[i], rc);
 	    } else {
@@ -264,17 +264,17 @@ static int gen_wifi_config(int mode, int genmode)
 	fprintf(fp, "#The word of \"Default\" must not be removed\n");
 	fprintf(fp, "Default\n");
 
-#define FPRINT_NUM(x) fprintf(fp, #x"=%d\n", atoi(nvram_bufget(mode, #x)));
-#define FPRINT_STR(x) fprintf(fp, #x"=%s\n", nvram_bufget(mode, #x));
+#define FPRINT_NUM(x) fprintf(fp, #x"=%d\n", atoi(nvram_get(mode, #x)));
+#define FPRINT_STR(x) fprintf(fp, #x"=%s\n", nvram_get(mode, #x));
 
 	// MAC adresses per devices
 	if (genmode == RT2860_NVRAM)
-	    fprintf(fp, "MacAddress=%s\n", nvram_bufget(mode, "WLAN_MAC_ADDR"));
+	    fprintf(fp, "MacAddress=%s\n", nvram_get(mode, "WLAN_MAC_ADDR"));
 	else if (genmode == RTINIC_NVRAM)
-	    fprintf(fp, "MacAddress=%s\n", nvram_bufget(mode, "WLAN2_MAC_ADDR"));
+	    fprintf(fp, "MacAddress=%s\n", nvram_get(mode, "WLAN2_MAC_ADDR"));
 
 	// Limit numbers ssid
-	ssid_num = atoi(nvram_bufget(mode, "BssidNum"));
+	ssid_num = atoi(nvram_get(mode, "BssidNum"));
 	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
 		ssid_num = MAX_NUMBER_OF_BSSID;
 
@@ -283,9 +283,9 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 	    // WirelessMode -> need move per ssid to goahead
 	    bzero(w_mode, sizeof(w_mode));
-	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessMode"));
+	    sprintf(w_mode, "%s", nvram_get(mode, "WirelessMode"));
 	    for (i = 1; i < ssid_num; i++)
-		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessMode"));
+		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessMode"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
 	    FPRINT_NUM(RadioOn);
@@ -300,19 +300,19 @@ static int gen_wifi_config(int mode, int genmode)
 	} else {
 	    // WirelessMode -> need move per ssid to goahead
 	    bzero(w_mode, sizeof(w_mode));
-	    sprintf(w_mode, "%s", nvram_bufget(mode, "WirelessModeINIC"));
+	    sprintf(w_mode, "%s", nvram_get(mode, "WirelessModeINIC"));
 	    for (i = 1; i < ssid_num; i++)
-		sprintf(w_mode+strlen(w_mode), ";%s", nvram_bufget(mode, "WirelessModeINIC"));
+		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessModeINIC"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
-	    fprintf(fp, "RadioOn=%d\n", atoi(nvram_bufget(mode, "RadioOnINIC")));
-	    fprintf(fp, "TxPower=%d\n", atoi(nvram_bufget(mode, "TxPowerINIC")));
-	    fprintf(fp, "Channel=%d\n", atoi(nvram_bufget(mode, "ChannelINIC")));
-	    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_bufget(mode, "AutoChannelSelectINIC")));
-	    fprintf(fp, "AutoChannelSkipList=%d\n", atoi(nvram_bufget(mode, "AutoChannelSkipListINIC")));
-	    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_bufget(mode, "ACSCheckTimeINIC")));
-	    fprintf(fp, "BasicRate=%d\n", atoi(nvram_bufget(mode, "BasicRateINIC")));
-	    fprintf(fp, "SSID1=%s\n", nvram_bufget(mode, "SSID1INIC"));
+	    fprintf(fp, "RadioOn=%d\n", atoi(nvram_get(mode, "RadioOnINIC")));
+	    fprintf(fp, "TxPower=%d\n", atoi(nvram_get(mode, "TxPowerINIC")));
+	    fprintf(fp, "Channel=%d\n", atoi(nvram_get(mode, "ChannelINIC")));
+	    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_get(mode, "AutoChannelSelectINIC")));
+	    fprintf(fp, "AutoChannelSkipList=%d\n", atoi(nvram_get(mode, "AutoChannelSkipListINIC")));
+	    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_get(mode, "ACSCheckTimeINIC")));
+	    fprintf(fp, "BasicRate=%d\n", atoi(nvram_get(mode, "BasicRateINIC")));
+	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
 	}
 #endif
 	// Stub
@@ -320,9 +320,9 @@ static int gen_wifi_config(int mode, int genmode)
 
 	// WmmCapable -> need move per ssid to goahead
 	bzero(wmm_enable, sizeof(wmm_enable));
-	sprintf(wmm_enable, "%s", nvram_bufget(mode, "WmmCapable"));
+	sprintf(wmm_enable, "%s", nvram_get(mode, "WmmCapable"));
 	for (i = 1; i < ssid_num; i++)
-		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_bufget(mode, "WmmCapable"));
+		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_get(mode, "WmmCapable"));
 	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
 	FPRINT_NUM(CountryRegion);
@@ -456,9 +456,9 @@ static int gen_wifi_config(int mode, int genmode)
 	    FPRINT_NUM(HT_EXTCHA);
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
-	    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_bufget(mode, "HT_EXTCHAINIC")));
-	    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_bufget(mode, "HT_TxStreamINIC")));
-	    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_bufget(mode, "HT_RxStreamINIC")));
+	    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_get(mode, "HT_EXTCHAINIC")));
+	    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_get(mode, "HT_TxStreamINIC")));
+	    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_get(mode, "HT_RxStreamINIC")));
 	}
 #endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -643,7 +643,7 @@ static int gen_wifi_config(int mode, int genmode)
 	if (!inic) {
 	    FPRINT_STR(RegulatoryClass);
 	} else {
-	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_bufget(mode, "RegulatoryClassINIC")));
+	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_get(mode, "RegulatoryClassINIC")));
 	}
 #else
 	FPRINT_STR(RegulatoryClass);

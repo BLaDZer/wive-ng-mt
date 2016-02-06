@@ -1604,35 +1604,35 @@ extern int dmfRichError(webs_t wp, int code, char_t* userMsg);
 #endif
 void websError(webs_t wp, int code, char_t *fmt, ...)
 {
-	va_list		args;
-	char_t		*msg, *userMsg, *buf;
-   char_t*     safeUrl = NULL;
-   char_t*     safeMsg = NULL;
+    va_list	args;
+    char_t	*msg, *userMsg, *buf;
+    char_t*     safeUrl = NULL;
+    char_t*     safeMsg = NULL;
 #ifdef qRichErrorPage
    static int reEntry = 0;
    int errorOk;
 #endif
 
-	a_assert(websValid(wp));
-	a_assert(fmt);
+    a_assert(websValid(wp));
+    a_assert(fmt);
 
-	websStats.errors++;
+    websStats.errors++;
 
    /* remove any dangerous characters in the url, and replace the string in the 
     * wp structure. The webs_t cleanup code will free this memory for us.
     */
-   safeUrl = websSafeUrl(wp->url);
-   bfreeSafe(B_L, wp->url);
-   wp->url = safeUrl;
+    safeUrl = websSafeUrl(wp->url);
+    bfreeSafe(B_L, wp->url);
+    wp->url = safeUrl;
 
-	va_start(args, fmt);
-	userMsg = NULL;
-	fmtValloc(&userMsg, WEBS_BUFSIZE, fmt, args);
-	va_end(args);
-   safeMsg = websSafeUrl(userMsg);
-   bfreeSafe(B_L, userMsg);
-   userMsg = safeMsg;
-   safeMsg  = NULL;
+    va_start(args, fmt);
+    userMsg = NULL;
+    fmtValloc(&userMsg, WEBS_BUFSIZE, fmt, args);
+    va_end(args);
+    safeMsg = websSafeUrl(userMsg);
+    bfreeSafe(B_L, userMsg);
+    userMsg = safeMsg;
+    safeMsg  = NULL;
 
 
 

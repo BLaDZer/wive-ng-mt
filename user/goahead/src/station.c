@@ -1298,7 +1298,7 @@ void initStaProfile(void)
 	nvram_init(RT2860_NVRAM);
 
 	// Try to fetch profile names & determine number of profiles
-	splitString(&split, nvram_bufget(RT2860_NVRAM, "staProfile"), ';');
+	splitString(&split, nvram_get(RT2860_NVRAM, "staProfile"), ';');
 	PRT_PROFILE_SETTING *p_new = &headerProfileSetting;
 
 	for (i=0; i<split.found; i++)
@@ -1336,7 +1336,7 @@ void initStaProfile(void)
 	PRT_PROFILE_SETTING p = headerProfileSetting;
 
 #define PARSE_STR(var, p_var) \
-	splitString(&split, nvram_bufget(RT2860_NVRAM, var), ';'); \
+	splitString(&split, nvram_get(RT2860_NVRAM, var), ';'); \
 	for (i=0, p=headerProfileSetting ; (i < split.found) && (p != NULL); i++, p=p->Next) \
 	{ \
 		strcpy((char *)(p_var), split.items[i]); \
@@ -1344,7 +1344,7 @@ void initStaProfile(void)
 	}
 
 #define PARSE_INT(var, p_var) \
-	splitString(&split, nvram_bufget(RT2860_NVRAM, var), ';'); \
+	splitString(&split, nvram_get(RT2860_NVRAM, var), ';'); \
 	for (i=0, p=headerProfileSetting; (i < split.found) && (p != NULL); i++, p=p->Next) \
 	{ \
 		p_var = atoi(split.items[i]); \

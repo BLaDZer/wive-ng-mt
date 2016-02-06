@@ -80,7 +80,7 @@ int main (int argc, char *argv[])
 	}
 
 	semicolon = line + strlen("content-disposition: form-data;") + 1;
-	if (! (semicolon = strchr(semicolon, ';')))
+	if (!(semicolon = strchr(semicolon, ';')))
 	{
 		html_error("dont support multi-field upload.\n");
 		goto err;

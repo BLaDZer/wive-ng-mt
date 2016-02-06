@@ -57,6 +57,7 @@ void arplookup(char *ip, char *arp)
         trace(0, T("no proc fs mounted!\n"));
         return;
     }
+
     strcpy(arp, "00:00:00:00:00:00");
     while(fgets(buf, sizeof(buf), fp)) {
         char ip_entry[32], hw_type[8],flags[8], hw_address[32];
@@ -190,8 +191,7 @@ int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
 
     begin = value;
     end = strchr(begin, delimit);
-
-    while(i<index && end){
+    while(i < index && end != NULL){
         begin = end + 1;
         end = strchr(begin, delimit);
         i++;
@@ -229,7 +229,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	begin = buf;
 
 	end = strchr(begin, delimit);
-	while(end){
+	while(end != NULL){
 		if(i == index[j]){
 			memset(begin, 0, end - begin );
 			if(index[j] == 0)
@@ -239,7 +239,6 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 				break;
 		}
 		begin = end;
-
 		end = strchr(begin+1, delimit);
 		i++;
 	}
@@ -775,7 +774,7 @@ void outputTimerForReload(webs_t wp, char_t *url, long delay)
 			lan_if_ip = "192.168.1.1";
 	}
 
-	char_t *http_port = nvram_bufget(RT2860_NVRAM, "RemoteManagementPort");
+	char_t *http_port = nvram_get(RT2860_NVRAM, "RemoteManagementPort");
 
 	websHeader(wp);
 	if (strcmp(http_port, "80") == 0)
@@ -807,13 +806,13 @@ void outputTimerForReload(webs_t wp, char_t *url, long delay)
 /* goform/setOpMode */
 static void setOpMode(webs_t wp, char_t *path, char_t *query)
 {
-	char	*mode, *old_mode;
+	char *mode, *old_mode;
 
 	nvram_init(RT2860_NVRAM);
 
 	/* get modes */
 	mode = websGetVar(wp, T("opMode"), T("0"));
-	old_mode = nvram_bufget(RT2860_NVRAM, "OperationMode");
+	old_mode = nvram_get(RT2860_NVRAM, "OperationMode");
 
 	/* new OperationMode */
 	if (strncmp(mode, old_mode, 2))
@@ -908,67 +907,6 @@ static void reboot_web(webs_t wp, char_t *path, char_t *query)
 
 	/* Reboot */
 	reboot_now();
-}
-
-/* read reqested options by defaults file and wirte to nvram */
-int OptRstDefault(int idx_nvram, int num, ...)
-{
-	va_list vargs;
-	char buf[BUFSZ];
-	char_t *p, *tmp;
-	int result = 0;
-	int found = 0;
-	int n = 0;
-
-	FILE *fp = fopen(DEFAULT_NVRAM, "r");
-	if(!fp) {
-		trace(0, T("error open default settings\n"));
-		return -1;
-	}
-	while(fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
-			continue;
-		if (!strncmp(buf, "Default\n", 8)) {
-			found = 1;
-			break;
-		}
-	}
-	if (!found) {
-		trace(0, T("file format error!\n"));
-		result = -1;
-		goto out;
-	}
-	if (nvram_init(idx_nvram) == -1) {
-		trace(0, T("cant init nvram\n"));
-		result = -1;
-		goto out;
-	}
-	while(fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL || buf[0] == '\n' || buf[0] == '#')
-			continue;
-		if (!(p = strchr(buf, '='))) {
-			trace(0, T("file format error!\n"));
-			goto out_with_commit;
-		}
-		buf[strlen(buf) - 1] = '\0';
-		*p++ = '\0';
-
-		va_start(vargs, num);
-		for(n = num; n > 0; n--) {
-			tmp = va_arg(vargs, char_t *);
-			if (!strncmp(buf, tmp, strlen(buf))) {
-				nvram_bufset(idx_nvram, buf, p);
-				break;
-			}
-		}
-		va_end(vargs);
-	}
-out_with_commit:
-	nvram_commit(idx_nvram);
-	nvram_close(idx_nvram);
-out:
-	fclose(fp);
-	return result;
 }
 
 unsigned int ConvertRssiToSignalQuality(long RSSI)

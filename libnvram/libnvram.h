@@ -4,14 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/types.h>
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
-#define NV_DEV "/dev/nvram"
+#define NV_DEV				"/dev/nvram"
+#define DEFAULT_NVRAM                   "/etc/default/nvram_default"
 
 #define BUFSZ				1024
 #define ENV_BLK_SIZE			0x1000
@@ -78,10 +81,10 @@ int nvram_set(int index, char *name, char *value);
 int nvram_bufset(int index, char *name, char *value);
 char *nvram_get(int index, char *name);
 char *nvram_get_copy(int index, char *name);
-char *nvram_bufget(int index, char *name);
 
 int nvram_commit(int index);
 int nvram_clear(int index);
 int nvram_renew(int mode, char *fname);
 int nvram_show(int mode);
+int nvram_fromdef(int idx_nvram, int num, ...);
 #endif

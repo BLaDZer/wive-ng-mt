@@ -242,8 +242,8 @@ static int listCountryCodes(int eid, webs_t wp, int argc, char_t **argv)
 static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int  idx = 0, channel;
-	const char *value = nvram_bufget(RT2860_NVRAM,"CountryRegionABand");
-	const char *channel_s = nvram_bufget(RT2860_NVRAM, "ChannelINIC");
+	const char *value = nvram_get(RT2860_NVRAM, "CountryRegionABand");
+	const char *channel_s = nvram_get(RT2860_NVRAM, "ChannelINIC");
 
 	channel = (channel_s == NULL)? 0 : atoi(channel_s);
 	if ((value == NULL) || (strcmp(value, "") == 0) || (strcmp(value, "0") == 0) || (strcmp(value, "7") == 0)) {

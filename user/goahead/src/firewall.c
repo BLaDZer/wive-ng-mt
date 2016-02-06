@@ -1391,7 +1391,7 @@ static void DMZ(webs_t wp, char_t *path, char_t *query)
 
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	if (CHK_IF_DIGIT(reset, 1)) {
-		OptRstDefault(RT2860_NVRAM, 3, "DMZEnable", "DMZIPAddress", "DMZNATLoopback");
+		nvram_fromdef(RT2860_NVRAM, 3, "DMZEnable", "DMZIPAddress", "DMZNATLoopback");
 		goto out;
 	}
 
