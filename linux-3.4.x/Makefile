@@ -1,7 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 4
 SUBLEVEL = 110
-EXTRAVERSION = .92
+EXTRAVERSION = .93
 NAME = Saber-toothed Squirrel
 
 # don't create a version string containing the actual timestamp
