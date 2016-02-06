@@ -250,12 +250,12 @@ static char* getField(char *a_line, char *delim, int count)
 {
 	int i=0;
 	char *tok;
-	tok = strtok(a_line, delim);
 
-	while (tok)
+	tok = strtok(a_line, delim);
+	while (tok != NULL)
 	{
 		if (i == count)
-			break;
+		    break;
 		i++;
 		tok = strtok(NULL, delim);
 	}
@@ -293,22 +293,27 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	while (fgets(buf, sizeof(buf), fp))
 	{
 		char *ifname, *semiColon;
+
 		if (buf == NULL || buf[0] == '\n')
 			continue;
+
 		if (skip_line != 0)
 		{
 			skip_line--;
 			continue;
 		}
-		if (!(semiColon = strchr(buf, ':')))
+
+		semiColon = strchr(buf, ':');
+		if (semiColon == NULL)
 			continue;
+
 		*(semiColon++) = '\0';
 
 		ifname = buf;
 		ifname = strip_space(ifname);
 
 		// Filter 'lo' interface
-		if (strcmp(ifname, "lo")==0)
+		if (strcmp(ifname, "lo") == 0)
 			continue;
 
 		// Check that interface is up
@@ -329,35 +334,38 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		// strtok causes string to rewrite with '\0', perform temporary buffer
 		//RX P
 		strcpy(tmp, semiColon);
-		websWrite(wp, T("<td>%s</td>"),
-			(field = getField(tmp, " ", 1)) ? field : "n/a");
+		field = getField(tmp, " ", 1);
+		if (field != NULL)
+			strcpy(result, field);
+		else
+			strcpy(result, "n/a");
+		websWrite(wp, T("<td>%s</td>"), result);
+
 		//RX B
 		strcpy(tmp, semiColon);
 		field = getField(tmp, " ", 0);
 		if (field != NULL)
-		{
 			scale(result, strtoll(field, NULL, 10));
-		}
 		else
-		{
 			strcpy(result, "n/a");
-		}
 		websWrite(wp, T("<td>%s</td>"), result);
+
 		//TX P
 		strcpy(tmp, semiColon);
-		websWrite(wp, T("<td>%s</td>"),
-			(field = getField(tmp, " ", 9)) ? field : "n/a");
+		field = getField(tmp, " ", 9);
+		if (field != NULL)
+			strcpy(result, field);
+		else
+			strcpy(result, "n/a");
+		websWrite(wp, T("<td>%s</td>"), result);
+
 		//TX B
 		strcpy(tmp, semiColon);
 		field = getField(tmp, " ", 8);
 		if (field != NULL)
-		{
 			scale(result, strtoll(field, NULL, 10));
-		}
 		else
-		{
 			strcpy(result, "n/a");
-		}
 		websWrite(wp, T("<td>%s</td>"), result);
 
 		websWrite(wp, T("</tr>\n"));
