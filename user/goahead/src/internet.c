@@ -1637,7 +1637,7 @@ static int getNums(char *value, char delimit)
     if (!pos || !(*pos))
         return 0;
 
-    while (pos = strchr(pos, delimit)) {
+    while ((pos = strchr(pos, delimit)) != NULL) {
         ++pos;
         ++count;
     }
