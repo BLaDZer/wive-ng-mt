@@ -31,10 +31,6 @@
 #define _PATH_MACIP_FILE		_PATH_PFW "/macipfilter"
 #define _PATH_WEBS_FILE			_PATH_PFW "/websfilter"
 
-#ifndef IF_NAMESIZE
-#define IF_NAMESIZE IFNAMSIZ
-#endif
-
 #ifdef CONFIG_IPV6
 #define _PATH_PROCNET_IPV6		"/proc/net/if_inet6"
 

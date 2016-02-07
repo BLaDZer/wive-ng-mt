@@ -58,11 +58,8 @@ static int  getIPv66rdBuilt(int eid, webs_t wp, int argc, char_t **argv);
 static int  getIP6to4Built(int eid, webs_t wp, int argc, char_t **argv);
 static int  getDns(int eid, webs_t wp, int argc, char_t **argv);
 static int  getHostSupp(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIfLiveWeb(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIfIsUpWeb(int eid, webs_t wp, int argc, char_t **argv);
 static int  getLanIp(int eid, webs_t wp, int argc, char_t **argv);
 static int  getLanMac(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLanIfNameWeb(int eid, webs_t wp, int argc, char_t **argv);
 static int  getLanNetmask(int eid, webs_t wp, int argc, char_t **argv);
 static int  getIntIp(int eid, webs_t wp, int argc, char_t **argv);
 static int  getWanIp(int eid, webs_t wp, int argc, char_t **argv);
@@ -106,13 +103,10 @@ typedef struct vpn_status_t
 void formDefineInternet(void) {
 	websAspDefine(T("getDns"), getDns);
 	websAspDefine(T("getHostSupp"), getHostSupp);
-	websAspDefine(T("getIfLiveWeb"), getIfLiveWeb);
-	websAspDefine(T("getIfIsUpWeb"), getIfIsUpWeb);
 	websAspDefine(T("getIgmpProxyBuilt"), getIgmpProxyBuilt);
 	websAspDefine(T("getVPNBuilt"), getVPNBuilt);
 	websAspDefine(T("getLanIp"), getLanIp);
 	websAspDefine(T("getLanMac"), getLanMac);
-	websAspDefine(T("getLanIfNameWeb"), getLanIfNameWeb);
 	websAspDefine(T("getLanNetmask"), getLanNetmask);
 	websAspDefine(T("getDnsmasqBuilt"), getDnsmasqBuilt);
 	websAspDefine(T("getGWBuilt"), getGWBuilt);
@@ -184,44 +178,6 @@ void formDefineInternet(void) {
 
 /*
  * arguments: ifname  - interface name
- * description: test the existence of interface through /proc/net/dev
- * return: -1 = fopen error, 1 = not found, 0 = found
- */
-static int getIfLive(char *ifname)
-{
-	FILE *fp;
-	char buf[256], *p;
-	int i;
-
-	if (NULL == (fp = fopen(_PATH_PROCNET_DEV, "r"))) {
-		error(E_L, E_LOG, T("getIfLive: open /proc/net/dev error"));
-		return -1;
-	}
-
-	fgets(buf, sizeof(buf), fp);
-	fgets(buf, sizeof(buf), fp);
-	while (fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL || buf[0] == '\n')
-			continue;
-		i = 0;
-		while (isspace(buf[i++]))
-			;
-		p = buf + i - 1;
-		while (':' != buf[i++])
-			;
-		buf[i-1] = '\0';
-		if (!strcmp(p, ifname)) {
-			fclose(fp);
-			return 0;
-		}
-	}
-	fclose(fp);
-	error(E_L, E_LOG, T("getIfLive: device %s not found"), ifname);
-	return 1;
-}
-
-/*
- * arguments: ifname  - interface name
  *            if_addr - a 18-byte buffer to store mac address
  * description: fetch mac address according to given interface name
  */
@@ -236,7 +192,7 @@ int getIfMac(char *ifname, char *if_hw)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IF_NAMESIZE);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
 		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
@@ -267,7 +223,7 @@ int getIfIp(char *ifname, char *if_addr)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IF_NAMESIZE);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
 		close(skfd);
 		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
@@ -277,34 +233,6 @@ int getIfIp(char *ifname, char *if_addr)
 
 	close(skfd);
 	return 0;
-}
-
-/*
- * arguments: ifname - interface name
- * description: return 1 if interface is up
- *              return 0 if interface is down
- */
-static int getIfIsUp(char *ifname)
-{
-	struct ifreq ifr;
-	int skfd;
-
-	skfd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (skfd == -1) {
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
-		close(skfd);
-		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-	close(skfd);
-	if (ifr.ifr_flags & IFF_UP)
-		return 1;
-	else
-		return 0;
 }
 
 /*
@@ -322,7 +250,7 @@ static int getIfNetmask(char *ifname, char *if_net)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IF_NAMESIZE);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
 		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
@@ -813,42 +741,6 @@ static int getHostSupp(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-/*
- * arguments: name - interface name (ex. eth0, rax ..etc)
- * description: write the existence of given interface,
- *              0 = ifc dosen't exist, 1 = ifc exists
- */
-static int getIfLiveWeb(int eid, webs_t wp, int argc, char_t **argv)
-{
-	char_t *name;
-	char exist[2] = "0";
-
-	if (ejArgs(argc, argv, T("%s"), &name) < 1) {
-		websError(wp, 400, T("Insufficient args\n"));
-		return -1;
-	}
-	exist[0] = (getIfLive(name) == 0)? '1' : '0';
-	return websWrite(wp, T("%s"), exist);
-}
-
-/*
- * arguments: name - interface name (ex. eth0, rax ..etc)
- * description: write the existence of given interface,
- *              0 = ifc is down, 1 = ifc is up
- */
-static int getIfIsUpWeb(int eid, webs_t wp, int argc, char_t **argv)
-{
-	char_t *name;
-	char up[2] = "1";
-
-	if (ejArgs(argc, argv, T("%s"), &name) < 1) {
-		websError(wp, 400, T("Insufficient args\n"));
-		return -1;
-	}
-	up[0] = (getIfIsUp(name) == 1)? '1' : '0';
-	return websWrite(wp, T("%s"), up);
-}
-
 static int getIgmpProxyBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_USER_IGMP_PROXY
@@ -1065,25 +957,6 @@ static int getLanMac(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp, T(""));
 	}
 	return websWrite(wp, T("%s"), if_mac);
-}
-
-/*
- * arguments: type - 0 = return LAN interface name (default)
- *                   1 = write LAN interface name
- * description: return or write LAN interface name accordingly
- */
-static int getLanIfNameWeb(int eid, webs_t wp, int argc, char_t **argv)
-{
-	int type;
-	char *name = getLanIfName();
-
-	if (ejArgs(argc, argv, T("%d"), &type) == 1) {
-		if (1 == type) {
-			return websWrite(wp, T("%s"), name);
-		}
-	}
-	ejSetResult(eid, name);
-	return 0;
 }
 
 /*
@@ -2365,7 +2238,7 @@ int getIfIPv6(char *ifname, char *if_addr, char *netmask)
 	unsigned char ipv6[16];
 	int scope, prefix;
 	char address[INET6_ADDRSTRLEN] = "";
-	char dname[IF_NAMESIZE] = "";
+	char dname[IFNAMSIZ] = "";
 
 	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
 
@@ -2418,7 +2291,7 @@ static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
 
 static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char address[INET6_ADDRSTRLEN] = "";
-	char tmpif[IF_NAMESIZE] = "";
+	char tmpif[IFNAMSIZ] = "";
 	char wanif[32] = "";
 	char mask[16] = "";
 	FILE *fp;

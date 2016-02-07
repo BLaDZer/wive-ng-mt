@@ -62,5 +62,4 @@ char *racat(char *s, int i);
 void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
-
 #endif

@@ -1696,6 +1696,8 @@
 <br>
 <br>
 <b>4.0.x</b><br>
+1) goahead: use more safe strncpy instead of strcpy in ioctl reqests.<br>
+2) goahead: remove dead getIfLive, getIfLiveWeb, getIfIsUpWeb and getLanIfNameWeb.<br>
 <br>
 <br>
 <br>

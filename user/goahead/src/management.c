@@ -266,6 +266,34 @@ static char* getField(char *a_line, char *delim, int count)
 	return NULL;
 }
 
+/*
+ * arguments: ifname - interface name
+ * description: return 1 if interface is up
+ *              return 0 if interface is down
+ */
+static int getIfIsUp(char *ifname)
+{
+	struct ifreq ifr;
+	int skfd;
+
+	skfd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (skfd == -1) {
+		printf("goahead: open socket failed, %s\n", __FUNCTION__);
+		return -1;
+	}
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
+		close(skfd);
+		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
+		return -1;
+	}
+	close(skfd);
+	if (ifr.ifr_flags & IFF_UP)
+		return 1;
+	else
+		return 0;
+}
+
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[1024];
@@ -273,20 +301,11 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	char_t result[32];
 	int skip_line = 2;
 	const char *field;
-	struct ifreq ifr;
-	int skfd;
 
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 	if (fp == NULL)
 	{
 		printf("goahead: no proc, %s\n", __FUNCTION__);
-		return -1;
-	}
-
-	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-	{
-		fclose(fp);
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -317,14 +336,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			continue;
 
 		// Check that interface is up
-		strcpy(ifr.ifr_name, ifname);
-		if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0)
-		{
-			printf("goahead: ioctl() error, %s\n", __FUNCTION__);
-			continue;
-		}
-
-		if ((ifr.ifr_flags & IFF_UP) == 0) // Interface is down?
+		if (getIfIsUp(ifname) != 1)
 			continue;
 
 		// Now output statistics
@@ -370,8 +382,6 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 
 		websWrite(wp, T("</tr>\n"));
 	}
-
-	close(skfd);
 	fclose(fp);
 
 	return 0;
