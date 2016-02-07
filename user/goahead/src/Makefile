@@ -50,8 +50,8 @@ SSLLIB = $(MATRIXDIR)/src/libmatrixsslstatic.a
 SSLSW = -DWEBS_SSL_SUPPORT -DMATRIX_SSL -I$(SSLINC)
 endif
 
-# If-Modified and Keepalive Support switches (requires math library, libm.a)
-IFMODSW = -DWEBS_IF_MODIFIED_SUPPORT -DWEBS_KEEP_ALIVE_SUPPORT
+# If-Modified-Support switches (requires math library, libm.a)
+IFMODSW = -DWEBS_IF_MODIFIED_SUPPORT
 IFMODLIB = $(ROOTDIR)/lib/lib/libm.a
 
 # Dependencies
