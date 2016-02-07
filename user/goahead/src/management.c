@@ -296,8 +296,8 @@ static int getIfIsUp(char *ifname)
 
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[1024];
-	char tmp[1024];
+	char buf[256];
+	char tmp[256];
 	char_t result[32];
 	int skip_line = 2;
 	const char *field;

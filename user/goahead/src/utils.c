@@ -367,7 +367,7 @@ char *racat(char *s, int i)
 
 char *strip_space(char *str)
 {
-	while( *str == ' ')
+	while (isspace(*str))
 		str++;
 	return str;
 }
