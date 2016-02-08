@@ -60,7 +60,15 @@ int getNums(char *value, char delimit);
 int ledAlways(int gpio, int on);
 unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
-void arplookup(char *ip, char *arp);
 char *strip_space(char *str);
+void arplookup(char *ip, char *arp);
+char* getLanIfName(void);
+char* getWanIfName(void);
+char* getPPPIfName(void);
+char *getLanWanNamebyIf(char *ifname);
+int getIfIp(char *ifname, char *if_addr);
+int getIfMac(char *ifname, char *if_hw);
+int getIfNetmask(char *ifname, char *if_net);
+int vpn_mode_enabled(void);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
 #endif
