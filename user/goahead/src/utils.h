@@ -17,6 +17,7 @@
 
 #include	<linux/reboot.h>
 #include	<sys/reboot.h>
+#include	<syslog.h>
 
 #include 	"webs.h"
 #include	"uemf.h"

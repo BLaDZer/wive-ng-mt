@@ -1456,7 +1456,7 @@ void websRedirect(webs_t wp, char_t *url)
 	msgbuf = urlbuf = NULL;
 
 	if (!url || !url[0]) {
-	    printf("goahead: not set redirect url - PLS fix it, %s\n", __FUNCTION__);
+	    syslog(LOG_ERR, "not set redirect url - PLS fix it, %s\n", __FUNCTION__);
 	    return;
 	}
 

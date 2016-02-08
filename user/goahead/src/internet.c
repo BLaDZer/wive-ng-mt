@@ -188,14 +188,14 @@ int getIfMac(char *ifname, char *if_hw)
 	int skfd;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
-		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -219,14 +219,14 @@ int getIfIp(char *ifname, char *if_addr)
 	int skfd = 0;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
 		close(skfd);
-		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 	strcpy(if_addr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
@@ -246,14 +246,14 @@ static int getIfNetmask(char *ifname, char *if_net)
 	int skfd = 0;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
-		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 	strcpy(if_net, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
@@ -472,7 +472,7 @@ static int get_LANAUTHState()
 
 	fp = popen("ps|grep lanaut[h]", "r");
 	if(!fp){
-		printf("goahead: no ps util exist, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no ps util exist, %s\n", __FUNCTION__);
 		return -1;
 	}
 	fgets(result, sizeof(result), fp);
@@ -651,7 +651,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 
 	if (nvram_bufset(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
 	{
-		printf("goahead: Set vpnEnabled error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "Set vpnEnabled error, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -1370,7 +1370,7 @@ static void rebuildVPNRoutes(char *src_rrs)
 	FILE *fd = fopen(_PATH_PPP_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("goahead: open %s failed, %s\n", _PATH_PPP_ROUTES, __FUNCTION__);
+		syslog(LOG_ERR, "open %s failed, %s\n", _PATH_PPP_ROUTES, __FUNCTION__);
 		return;
 	}
 
@@ -1426,7 +1426,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 	FILE *fd = fopen(_PATH_LANWAN_ROUTES, "w");
 	if (fd == NULL)
 	{
-		printf("goahead: open %s failed, %s\n", _PATH_LANWAN_ROUTES, __FUNCTION__);
+		syslog(LOG_ERR, "open %s failed, %s\n", _PATH_LANWAN_ROUTES, __FUNCTION__);
 		return;
 	}
 
@@ -1441,7 +1441,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 			continue;
 		else if ((strcmp(iface, "WAN")==0) && isBridgeMode)
 		{
-			printf("goahead: Skip WAN routing rule in the non-Gateway mode: %s,%s\n", one_rule, __FUNCTION__);
+			syslog(LOG_ERR, "Skip WAN routing rule in the non-Gateway mode: %s,%s\n", one_rule, __FUNCTION__);
 			continue;
 		}
 
@@ -1553,7 +1553,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 		{
 			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
 			{
-				printf("goahead: format error, %s\n", __FUNCTION__);
+				syslog(LOG_ERR, "format error, %s\n", __FUNCTION__);
 				free(running_rules);
 				fclose(fp);
 				return 0;
@@ -1580,7 +1580,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 				if (index < rule_count)
 					running_rules[index] = 1;
 				else
-					printf("goahead: fatal error in %s\n", __FUNCTION__);
+					syslog(LOG_ERR, "fatal error in %s\n", __FUNCTION__);
 
 				websWrite(wp, T(", %d, "), index); // 8
 				if (getNthValueSafe(3, one_rule, ',', interface, sizeof(interface)) != -1)
@@ -2472,7 +2472,7 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	if(CHK_IF_DIGIT(enabled, 1)) {
 		setupParameters(wp, chilli_vars, 0);
 		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-			printf("goahead: Set chilli_net nvram error, %s\n", __FUNCTION__);
+			syslog(LOG_ERR, "set chilli_net nvram error, %s\n", __FUNCTION__);
 	}
 	else
 #endif

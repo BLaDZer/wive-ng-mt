@@ -30,31 +30,31 @@ function uploadLogField(str)
 
 function updateLog()
 {
-	ajaxPerformRequest("/goform/syslog", uploadLogField);
+	ajaxPerformRequest("/goform/getsyslog", uploadLogField);
 }
 
 function initTranslation()
 {
-	_TR("syslogTitle", "syslog title");
-  _TR("syslogIntroduction", "syslog introduction");
-  _TR("syslogSetup", "syslog setup");
-  _TR("syslogEnabled", "syslog enabled");
-  _TR("syslogKernel", "syslog kernel");
-  _TR("syslogRemoteIP", "syslog remote ip");
-	_TR("syslogSysLog", "syslog system log");
+    _TR("syslogTitle", "syslog title");
+    _TR("syslogIntroduction", "syslog introduction");
+    _TR("syslogSetup", "syslog setup");
+    _TR("syslogEnabled", "syslog enabled");
+    _TR("syslogKernel", "syslog kernel");
+    _TR("syslogRemoteIP", "syslog remote ip");
+    _TR("syslogSysLog", "syslog system log");
 
-  _TRV("syslogApply", "button apply");
-	_TRV("syslogClear", "button clear");
-	_TRV("syslogRefresh", "button refresh");
-  _TRV("syslogClear2", "button clear");
-  _TRV("syslogRefresh2", "button refresh");
+    _TRV("syslogApply", "button apply");
+    _TRV("syslogClear", "button clear");
+    _TRV("syslogRefresh", "button refresh");
+    _TRV("syslogClear2", "button clear");
+    _TRV("syslogRefresh2", "button refresh");
 
-  var elements = document.getElementsByTagName('option');
+    var elements = document.getElementsByTagName('option');
     for (var i = 0; i < elements.length; i++)
-      if (elements[i].id == "disable")
-        elements[i].innerHTML = _("button disable");
-      else if (elements[i].id == "enable")
-        elements[i].innerHTML = _("button enable");
+    if (elements[i].id == "disable")
+	elements[i].innerHTML = _("button disable");
+    else if (elements[i].id == "enable")
+	elements[i].innerHTML = _("button enable");
 }
 
 function pageInit()

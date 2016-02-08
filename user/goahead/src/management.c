@@ -278,13 +278,13 @@ static int getIfIsUp(char *ifname)
 
 	skfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (skfd == -1) {
-		printf("goahead: open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
-		printf("goahead: ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
 		return -1;
 	}
 	close(skfd);
@@ -305,7 +305,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 	if (fp == NULL)
 	{
-		printf("goahead: no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -405,7 +405,7 @@ static void get_memdata(struct mem_stats *st)
 
 	fp = fopen("/proc/meminfo", "r");
 	if(!fp){
-		printf("goahead: no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -470,7 +470,7 @@ static void getcpudata(struct cpu_stats *st)
 
 	fp = fopen(PROC_CPU_STATISTIC, "r");
 	if(!fp){
-		printf("goahead: no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -551,7 +551,7 @@ static void setuplog(webs_t wp, char_t *path, char_t *query)
 }
 
 #define LOG_MAX 32768
-static void syslog(webs_t wp, char_t *path, char_t *query)
+static void getsyslog(webs_t wp, char_t *path, char_t *query)
 {
 	FILE *fp = NULL;
 	char *log;
@@ -563,13 +563,13 @@ static void syslog(webs_t wp, char_t *path, char_t *query)
 	// LOG_MAX 32768 - 1
 	fp = popen("tail -c 32767 /var/log/messages", "r");
 	if(!fp){
-		printf("goahead: no log exist, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no log exist, %s\n", __FUNCTION__);
 		goto error;
 	}
 
 	log = malloc(LOG_MAX * sizeof(char));
 	if(!log){
-		printf("goahead: no memory left, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no memory left, %s\n", __FUNCTION__);
 		goto error;
 	}
 
@@ -607,7 +607,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RAETH_SNMPD
 	fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
-		printf("goahead: no snmp, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no snmp, %s\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -660,7 +660,7 @@ void formDefineManagement(void)
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
 	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
 #ifdef CONFIG_SYSLOGD
-	websFormDefine(T("syslog"), syslog);
+	websFormDefine(T("getsyslog"), getsyslog);
 	websFormDefine(T("clearlog"), clearlog);
 	websFormDefine(T("setuplog"), setuplog);
 #endif

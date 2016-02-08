@@ -417,7 +417,7 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	value = nvram_get(RT2860_NVRAM, field);
 
 	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    printf("goahead: Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
+	    syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
 	    value = "en";
 	}
 
@@ -455,7 +455,7 @@ static int getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((!value) && (strcmp(field, "Language") == 0))
 	{
-		printf("goahead: Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
+		syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
 		value = "en";
 	}
 
@@ -712,21 +712,21 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		char duplex = 'F';
 		FILE *proc_file = fopen(PROCREG_GMAC, "w");
 		if (!proc_file) {
-			printf("goahead: no proc, %s\n", __FUNCTION__);
+			syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 			return -1;
 		}
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
 		if ((fp = popen("ethtool eth2", "r")) == NULL) {
-			printf("goahead: no ethtool, %s\n", __FUNCTION__);
+			syslog(LOG_ERR, "no ethtool, %s\n", __FUNCTION__);
 			return -1;
 		}
 
 		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
 		if (rc < 0) {
-			printf("goahead: no ethtool pipe read, %s\n", __FUNCTION__);
+			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
 			return -1;
 		} else {
 			/* get Link status */

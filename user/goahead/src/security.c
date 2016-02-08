@@ -15,14 +15,12 @@
  */
 
 /********************************* Includes ***********************************/
-
-#include <syslog.h>
-
 #include	"wsIntrn.h"
 #include	"um.h"
 #ifdef DIGEST_ACCESS_SUPPORT
 #include	"websda.h"
 #endif
+#include	"utils.h"
 
 /********************************** Defines ***********************************/
 /*

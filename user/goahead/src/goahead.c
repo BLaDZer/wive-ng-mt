@@ -23,7 +23,6 @@
 #include	<sys/types.h>
 #include	<sys/wait.h>
 #include        <sys/ioctl.h>
-#include	<syslog.h>
 
 #include	"utils.h"
 #include	"uemf.h"
@@ -234,7 +233,12 @@ int main(int argc, char** argv)
 	 */
 
 	bopen(NULL, (60 * 1024), B_USE_MALLOC);
+
+	/* ignore some signals */
 	signal(SIGPIPE, SIG_IGN);
+	signal(SIGHUP, SIG_IGN);
+	signal(SIGUSR1, SIG_IGN);
+	signal(SIGUSR2, SIG_IGN);
 
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 	syslog(LOG_INFO, "version %s started", WEBS_VERSION);
