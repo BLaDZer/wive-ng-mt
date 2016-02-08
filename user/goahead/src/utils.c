@@ -947,7 +947,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
-		if (rc < 0) {
+		if (rc < 1) {
 			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
 			return -1;
 		} else {
