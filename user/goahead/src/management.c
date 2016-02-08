@@ -329,6 +329,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("<td>%s</td>"), result);
 			websWrite(wp, T("<td>%s</td>"), result);
 			websWrite(wp, T("<td>%s</td>"), result);
+			websWrite(wp, T("</tr>\n"));
 			continue;
 		} else {
 			// scale and print result
