@@ -16,7 +16,7 @@
 #include "internet.h"
 #include "management.h"
 
-static void scale(char_t * strBuf, long long data)
+static void scale(char_t * strBuf, unsigned long long data)
 {
     double p1;
 
@@ -246,26 +246,6 @@ invalid_values:
 }
 #endif
 
-static char* getField(char *a_line, char *delim, int count)
-{
-	int i=0;
-	char *tok;
-
-	tok = strtok(a_line, delim);
-	while (tok != NULL)
-	{
-		if (i == count)
-		    break;
-		i++;
-		tok = strtok(NULL, delim);
-	}
-
-	if(tok && isdigit(*tok))
-		return tok;
-
-	return NULL;
-}
-
 /*
  * arguments: ifname - interface name
  * description: return 1 if interface is up
@@ -296,90 +276,71 @@ static int getIfIsUp(char *ifname)
 
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[256];
-	char tmp[256];
-	char_t result[32];
-	int skip_line = 2;
-	const char *field;
-
+	char buf[512];
+	char_t result[64];
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
+
 	if (fp == NULL)
 	{
 		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 		return -1;
 	}
 
-	while (fgets(buf, sizeof(buf), fp))
+	// skip headers
+	fgets(buf, sizeof(buf), fp);
+	fgets(buf, sizeof(buf), fp);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL)
 	{
-		char *ifname, *semiColon;
+		char *semiColon;
+		char ifname[IFNAMSIZ];
+		unsigned long long int rx_bytes = 0, rx_packets = 0, rx_errs = 0, rx_drops = 0, rx_fifo = 0, rx_frame = 0,
+			tx_bytes = 0, tx_packets = 0, tx_errs = 0, tx_drops = 0, tx_fifo = 0, tx_colls = 0, tx_carrier = 0, rx_multi = 0;
 
 		if (buf == NULL || buf[0] == '\n')
 			continue;
 
-		if (skip_line != 0)
-		{
-			skip_line--;
+		// find : , extract ifname, move pointer to next block semicolon
+		semiColon = strchr(buf, ':');
+		if (semiColon == NULL || (*semiColon++ = 0, sscanf(buf, "%s", ifname) != 1)) {
+			syslog(LOG_ERR, "wrong format string in /proc/net/dev");
 			continue;
 		}
 
-		semiColon = strchr(buf, ':');
-		if (semiColon == NULL)
-			continue;
-
-		*(semiColon++) = '\0';
-
-		ifname = buf;
-		ifname = strip_space(ifname);
-
-		// Filter 'lo' interface
+		// filter 'lo' interface
 		if (strcmp(ifname, "lo") == 0)
 			continue;
 
-		// Check that interface is up
+		// check that interface is up
 		if (getIfIsUp(ifname) != 1)
 			continue;
 
-		// Now output statistics
+		// now output statistics
 		websWrite(wp, T("<tr>"));
 		websWrite(wp, T("<td class=\"head\" colspan=\"2\">%s</td>"), ifname);
 
-		// strtok causes string to rewrite with '\0', perform temporary buffer
-		//RX P
-		strcpy(tmp, semiColon);
-		field = getField(tmp, " ", 1);
-		if (field != NULL)
-			strcpy(result, field);
-		else
+		// extract scale and print statistic
+		if (sscanf(semiColon, "%llu%llu%llu%llu%llu%llu%llu%*d%llu%llu%llu%llu%llu%llu%llu",
+			   &rx_bytes, &rx_packets, &rx_errs, &rx_drops, &rx_fifo, &rx_frame, &rx_multi,
+			    &tx_bytes, &tx_packets, &tx_errs, &tx_drops, &tx_fifo, &tx_colls, &tx_carrier) != 14) {
+			// not extracted - print n/a
 			strcpy(result, "n/a");
-		websWrite(wp, T("<td>%s</td>"), result);
-
-		//RX B
-		strcpy(tmp, semiColon);
-		field = getField(tmp, " ", 0);
-		if (field != NULL)
-			scale(result, strtoll(field, NULL, 10));
-		else
-			strcpy(result, "n/a");
-		websWrite(wp, T("<td>%s</td>"), result);
-
-		//TX P
-		strcpy(tmp, semiColon);
-		field = getField(tmp, " ", 9);
-		if (field != NULL)
-			strcpy(result, field);
-		else
-			strcpy(result, "n/a");
-		websWrite(wp, T("<td>%s</td>"), result);
-
-		//TX B
-		strcpy(tmp, semiColon);
-		field = getField(tmp, " ", 8);
-		if (field != NULL)
-			scale(result, strtoll(field, NULL, 10));
-		else
-			strcpy(result, "n/a");
-		websWrite(wp, T("<td>%s</td>"), result);
-
+			websWrite(wp, T("<td>%s</td>"), result);
+			websWrite(wp, T("<td>%s</td>"), result);
+			websWrite(wp, T("<td>%s</td>"), result);
+			websWrite(wp, T("<td>%s</td>"), result);
+			continue;
+		} else {
+			// scale and print result
+			scale(result, rx_packets);
+			websWrite(wp, T("<td>%s</td>"), result);
+			scale(result, rx_bytes);
+			websWrite(wp, T("<td>%s</td>"), result);
+			scale(result, tx_packets);
+			websWrite(wp, T("<td>%s</td>"), result);
+			scale(result, tx_bytes);
+			websWrite(wp, T("<td>%s</td>"), result);
+		}
 		websWrite(wp, T("</tr>\n"));
 	}
 	fclose(fp);

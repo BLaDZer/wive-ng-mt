@@ -1624,11 +1624,11 @@
 28) goahead: fix error handle in read data from ethool over pipe.<br>
 29) goahead: fix potentional division by zero in get cpu usage and put_ulong code.<br>
 30) goahead: fix potentional null pointer dereferens in isdigit, getSysDateTime, getMaxVol and get_LANAUTHState.<br>
-31) goahead: rewrite cpu and mem usage code more safe and readable.<br>
+31) goahead: rewrite get cpu, mem usage code more safe and readable.<br>
 32) goahead: allways use doSystem() instead off call system() in exec sh scripts.<br>
-33) goahead: fix notsafe coding issue in getAllNICStatisticASP.<br>
+33) goahead: rewrite getAllNICStatisticASP for safe and readable.<br>
 34) goahead: use more safe strncpy instead of strcpy in ioctl reqests.<br>
-35) goahead: remove dead getIfLive, getIfLiveWeb, getIfIsUpWeb and getLanIfNameWeb.<br>
+35) goahead: remove dead getIfLive, getIfLiveWeb, getIfIsUpWeb and getLanIfNameWeb, getField.<br>
 36) goahead: log errors to syslog for easy debug.<br>
 37) goahead: fix system and internal syslog functions conflict.<br>
 38) goahead: ignore USR1,USR2,HUP signals.<br>
