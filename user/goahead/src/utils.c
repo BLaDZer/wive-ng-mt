@@ -921,58 +921,67 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_USER_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	int port, rc;
 	FILE *fp;
-	char buf[1024];
-	int first = 1;
+	int port, first = 1;
+	char *pos;
+	char buf[2048];
 
-	for (port=4; port>-1; port--)
+	for (port=4; port >- 1; port--)
 	{
-		char *pos;
-		char link = '0';
-		int speed = 100;
-		char duplex = 'F';
 		FILE *proc_file = fopen(PROCREG_GMAC, "w");
+		int rc;
+
 		if (!proc_file) {
 			syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
 			return -1;
 		}
+		/* switch phy to needed port */
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
+		/* read status from ethtool */
 		if ((fp = popen("ethtool eth2", "r")) == NULL) {
 			syslog(LOG_ERR, "no ethtool, %s\n", __FUNCTION__);
 			return -1;
 		}
-
 		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
-		if (rc < 1) {
+
+		/* if read < 100 chars = read not correct */
+		if (rc < 100) {
 			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
 			return -1;
 		} else {
+			char link = '0', duplex = 'H';
+			int speed = 10;
+
 			/* get Link status */
-			if ((pos = strstr(buf, "Link detected: ")) != NULL)
-			{
+			if ((pos = strstr(buf, "Link detected: ")) != NULL) {
 				pos += strlen("Link detected: ");
 				if(*pos == 'y')
-					link = '1';
+				    link = '1';
 			}
+
 			/* get speed */
-			if ((pos = strstr(buf, "Speed: ")) != NULL)
-			{
+			if ((link != '0') && (pos = strstr(buf, "Speed: ")) != NULL) {
 				pos += strlen("Speed: ");
 				if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == 'M')
 					speed = 10;
-				if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == '0' && *(pos+3) == '0' && *(pos+4) == 'M')
+				else if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == '0' && *(pos+3) == 'M')
+					speed = 100;
+				else if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == '0' && *(pos+3) == '0' && *(pos+4) == 'M') {
 					speed = 1000;
+					duplex = 'F'; /* gigabit link support only full duplex */
+				}
 			}
+
 			/* get duplex */
-			if ((pos = strstr(buf, "Duplex: ")) != NULL)
-			{
+			if ((link != '0') && (speed != 1000) && (pos = strstr(buf, "Duplex: ")) != NULL) {
 				pos += strlen("Duplex: ");
-				if(*pos == 'H')
-					duplex = 'H';
+				if(*pos == 'F')
+				    duplex = 'F';
+				else
+				    duplex = 'H';
 			}
 
 			websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
