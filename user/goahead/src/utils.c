@@ -924,9 +924,9 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp;
 	int port, first = 1;
 	char *pos;
-	char buf[2048];
+	char buf[1536];
 
-	for (port=4; port >- 1; port--)
+	for (port=4; port>-1; port--)
 	{
 		FILE *proc_file = fopen(PROCREG_GMAC, "w");
 		int rc;
@@ -947,9 +947,10 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
 
-		/* if read < 100 chars = read not correct */
-		if (rc < 100) {
+		/* if read < 650 chars = read not correct */
+		if (rc < 650 || buf == NULL) {
 			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
+			websWrite(wp, T(" "));
 			return -1;
 		} else {
 			char link = '0', duplex = 'H';
@@ -984,6 +985,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 				    duplex = 'H';
 			}
 
+			/* write to web */
 			websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
 			first = 0;
 		}
