@@ -1,4 +1,4 @@
-/* $Id: miniupnpd.c,v 1.214 2016/01/01 11:15:56 nanard Exp $ */
+/* $Id: miniupnpd.c,v 1.215 2016/02/09 09:37:43 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2015 Thomas Bernard
@@ -1193,6 +1193,9 @@ init(int argc, char * * argv, struct runtime_vars * v)
 			case UPNPNATCHAIN:
 				miniupnpd_nat_chain = ary_options[i].value;
 				break;
+			case UPNPNATPOSTCHAIN:
+				miniupnpd_nat_postrouting_chain = ary_options[i].value;
+				break;
 #endif	/* USE_NETFILTER */
 			case UPNPNOTIFY_INTERVAL:
 				v->notify_interval = atoi(ary_options[i].value);
@@ -1893,7 +1896,7 @@ main(int argc, char * * argv)
 			shttpl_v4 =  OpenAndConfHTTPSocket(&listen_port, 0);
 		if(shttpl_v4 < 0)
 		{
-			syslog(LOG_ERR, "Failed to open socket for HTTP on port %hu (IPv4). EXITING", v.port);
+			syslog(LOG_ERR, "Failed to open socket for HTTP on port %d (IPv4). EXITING", v.port);
 			return 1;
 		}
 		}
@@ -1917,7 +1920,7 @@ main(int argc, char * * argv)
 		shttpsl_v4 =  OpenAndConfHTTPSocket(&listen_port, 0);
 		if(shttpsl_v4 < 0)
 		{
-			syslog(LOG_ERR, "Failed to open socket for HTTPS on port %hu (IPv4). EXITING", v.https_port);
+			syslog(LOG_ERR, "Failed to open socket for HTTPS on port %d (IPv4). EXITING", v.https_port);
 			return 1;
 		}
 #endif /* V6SOCKETS_ARE_V6ONLY */

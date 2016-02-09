@@ -1,4 +1,4 @@
-/* $Id: upnphttp.c,v 1.103 2015/12/16 10:21:49 nanard Exp $ */
+/* $Id: upnphttp.c,v 1.104 2016/02/09 09:35:17 nanard Exp $ */
 /* vim: tabstop=4 shiftwidth=4 noexpandtab */
 /* Project :  miniupnp
  * Website :  http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
@@ -664,8 +664,8 @@ with HTTP error 412 Precondition Failed. */
 			if(h->req_NTOff > 0) {
 				syslog(LOG_WARNING, "Both NT: and SID: in SUBSCRIBE");
 				BuildResp2_upnphttp(h, 400, "Incompatible header fields", 0, 0);
-			} else
-#endif
+			} else {
+#endif /* UPNP_STRICT */
 			sid = upnpevents_renewSubscription(h->req_buf + h->req_SIDOff,
 			                                   h->req_SIDLen, h->req_Timeout);
 			if(!sid) {
@@ -675,6 +675,9 @@ with HTTP error 412 Precondition Failed. */
 				h->res_SID = sid;
 				BuildResp_upnphttp(h, 0, 0);
 			}
+#ifdef UPNP_STRICT
+			}
+#endif /* UPNP_STRICT */
 		}
 		SendRespAndClose_upnphttp(h);
 	}

@@ -1,7 +1,7 @@
-/* $Id: iptcrdr.c,v 1.54 2015/03/09 10:02:54 nanard Exp $ */
+/* $Id: iptcrdr.c,v 1.55 2016/02/09 09:37:44 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
- * (c) 2006-2015 Thomas Bernard
+ * (c) 2006-2016 Thomas Bernard
  * This software is subject to the conditions detailed
  * in the LICENCE file provided within the distribution */
 #include <stdio.h>
@@ -62,6 +62,14 @@ addnatrule(int proto, unsigned short eport,
 static int
 add_filter_rule(int proto, const char * rhost,
                 const char * iaddr, unsigned short iport);
+
+#ifdef ENABLE_PORT_TRIGGERING
+static int
+addmasqueraderule(int proto,
+           unsigned short eport,
+           const char * iaddr, unsigned short iport,
+           const char * rhost/*, const char * extif*/);
+#endif /* ENABLE_PORT_TRIGGERING */
 
 static int
 addpeernatrule(int proto,
@@ -213,12 +221,20 @@ add_redirect_rule2(const char * ifname,
 	UNUSED(ifname);
 
 	r = addnatrule(proto, eport, iaddr, iport, rhost);
-	if(r >= 0)
+	if(r >= 0) {
 		add_redirect_desc(eport, proto, desc, timestamp);
+#ifdef ENABLE_PORT_TRIGGERING
+		/* TODO : check if this should be done only with UDP */
+		r = addmasqueraderule(proto, eport, iaddr, iport, rhost/*, ifname*/);
+		if(r < 0) {
+			syslog(LOG_NOTICE, "add_redirect_rule2(): addmasqueraderule returned %d", r);
+		}
+#endif /* ENABLE_PORT_TRIGGERING */
+	}
 	return r;
 }
 
-/* add_redirect_rule2() */
+/* add_peer_redirect_rule2() */
 int
 add_peer_redirect_rule2(const char * ifname,
                    const char * rhost, unsigned short rport,
@@ -508,18 +524,18 @@ get_peer_rule_by_index(int index,
 		       iptc_strerror(errno));
 		return -1;
 	}
-	if(!iptc_is_chain(miniupnpd_peer_chain, h))
+	if(!iptc_is_chain(miniupnpd_nat_postrouting_chain, h))
 	{
-		syslog(LOG_ERR, "chain %s not found", miniupnpd_peer_chain);
+		syslog(LOG_ERR, "chain %s not found", miniupnpd_nat_postrouting_chain);
 	}
 	else
 	{
 #ifdef IPTABLES_143
-		for(e = iptc_first_rule(miniupnpd_peer_chain, h);
+		for(e = iptc_first_rule(miniupnpd_nat_postrouting_chain, h);
 		    e;
 			e = iptc_next_rule(e, h))
 #else
-		for(e = iptc_first_rule(miniupnpd_peer_chain, &h);
+		for(e = iptc_first_rule(miniupnpd_nat_postrouting_chain, &h);
 		    e;
 			e = iptc_next_rule(e, &h))
 #endif
@@ -765,11 +781,11 @@ delete_redirect_and_filter_rules(unsigned short eport, int proto)
 		i = 0;
 		/* we must find the right index for the filter rule */
 #ifdef IPTABLES_143
-		for(e = iptc_first_rule(miniupnpd_peer_chain, h);
+		for(e = iptc_first_rule(miniupnpd_nat_postrouting_chain, h);
 		    e;
 			e = iptc_next_rule(e, h), i++)
 #else
-		for(e = iptc_first_rule(miniupnpd_peer_chain, &h);
+		for(e = iptc_first_rule(miniupnpd_nat_postrouting_chain, &h);
 		    e;
 			e = iptc_next_rule(e, &h), i++)
 #endif
@@ -778,6 +794,9 @@ delete_redirect_and_filter_rules(unsigned short eport, int proto)
 			{
 				target = (void *)e + e->target_offset;
 				mr = (const struct ip_nat_multi_range *)&target->data[0];
+				syslog(LOG_DEBUG, "postrouting rule #%u: %s %s %hu",
+				       i, target->u.user.name, inet_ntoa(e->ip.src), ntohs(mr->range[0].min.all));
+				/* target->u.user.name SNAT / MASQUERADE */
 				if (eport != ntohs(mr->range[0].min.all)) {
 					continue;
 				}
@@ -798,7 +817,7 @@ delete_redirect_and_filter_rules(unsigned short eport, int proto)
 
 				index = i;
 				syslog(LOG_INFO, "Trying to delete peer rule at index %u", index);
-				r2 = delete_rule_and_commit(index, h, miniupnpd_peer_chain, "delete_peer_rule");
+				r2 = delete_rule_and_commit(index, h, miniupnpd_nat_postrouting_chain, "delete_peer_rule");
 				h = NULL;
 				break;
 			}
@@ -994,6 +1013,31 @@ get_dscp_target(unsigned char dscp)
 	return target;
 }
 
+#ifdef ENABLE_PORT_TRIGGERING
+static struct ipt_entry_target *
+get_masquerade_target(unsigned short port)
+{
+	struct ipt_entry_target * target;
+	struct ip_nat_multi_range * mr;
+	struct ip_nat_range * range;
+	size_t size;
+
+	size =   IPT_ALIGN(sizeof(struct ipt_entry_target))
+	       + IPT_ALIGN(sizeof(struct ip_nat_multi_range));
+	target = calloc(1, size);
+	target->u.target_size = size;
+	strncpy(target->u.user.name, "MASQUERADE", sizeof(target->u.user.name));
+	/* one ip_nat_range already included in ip_nat_multi_range */
+	mr = (struct ip_nat_multi_range *)&target->data[0];
+	mr->rangesize = 1;
+	range = &mr->range[0];
+	range->min.tcp.port = range->max.tcp.port = htons(port);
+	/*range->min.all = range->max.all = htons(port);*/
+	range->flags |= IP_NAT_RANGE_PROTO_SPECIFIED;
+	return target;
+}
+#endif /* ENABLE_PORT_TRIGGERING */
+
 /* iptc_init_verify_and_append()
  * return 0 on success, -1 on failure */
 static int
@@ -1006,13 +1050,13 @@ iptc_init_verify_and_append(const char * table,
 	h = iptc_init(table);
 	if(!h)
 	{
-		syslog(LOG_ERR, "%s : iptc_init() error : %s\n",
+		syslog(LOG_ERR, "%s() : iptc_init() error : %s\n",
 		       logcaller, iptc_strerror(errno));
 		return -1;
 	}
 	if(!iptc_is_chain(miniupnpd_chain, h))
 	{
-		syslog(LOG_ERR, "%s : chain %s not found",
+		syslog(LOG_ERR, "%s() : chain %s not found",
 		       logcaller, miniupnpd_chain);
 		if(h)
 #ifdef IPTABLES_143
@@ -1029,7 +1073,7 @@ iptc_init_verify_and_append(const char * table,
 	if(!iptc_append_entry(miniupnpd_chain, e, &h))
 #endif
 	{
-		syslog(LOG_ERR, "%s : iptc_append_entry() error : %s\n",
+		syslog(LOG_ERR, "%s() : iptc_append_entry() error : %s\n",
 		       logcaller, iptc_strerror(errno));
 		if(h)
 #ifdef IPTABLES_143
@@ -1045,7 +1089,7 @@ iptc_init_verify_and_append(const char * table,
 	if(!iptc_commit(&h))
 #endif
 	{
-		syslog(LOG_ERR, "%s : iptc_commit() error : %s\n",
+		syslog(LOG_ERR, "%s() : iptc_commit() error : %s\n",
 		       logcaller, iptc_strerror(errno));
 		if(h)
 #ifdef IPTABLES_143
@@ -1065,7 +1109,7 @@ iptc_init_verify_and_append(const char * table,
 }
 
 /* add nat rule
- * iptables -t nat -A MINIUPNPD -p proto --dport eport -j DNAT --to iaddr:iport
+ * iptables -t nat -A MINIUPNPD -p <proto> [-s <rhost>] --dport <eport> -j DNAT --to <iaddr>:<iport>
  * */
 static int
 addnatrule(int proto, unsigned short eport,
@@ -1118,16 +1162,103 @@ addnatrule(int proto, unsigned short eport,
 		e->ip.smsk.s_addr = INADDR_NONE;
 	}
 
-	r = iptc_init_verify_and_append("nat", miniupnpd_nat_chain, e, "addnatrule()");
+	r = iptc_init_verify_and_append("nat", miniupnpd_nat_chain, e, "addnatrule");
 	free(target);
 	free(match);
 	free(e);
 	return r;
 }
 
-/* iptables -t nat -A MINIUPNPD-PCP-PEER -s iaddr -d rhost
- *    -p proto --sport iport --dport rport -j SNAT
- *    --to-source ext_ip:eport */
+/* for "Port Triggering"
+ * Section 2.5.16 figure 2.2 in UPnP-gw-WANIPConnection-v2-Service.pdf
+ *
+ *   When a control point creates a port forwarding rule with AddPortMapping()
+ *   action for inbound traffic , this rule MUST also be applied when NAT port
+ *   triggering occurs for outbound traffic.
+ *
+ * iptables -t nat -A MINIUPNPD-POSTROUTING {-o <extif>} -s <iaddr>
+ *          -p <proto> [-d <rhost>] --sport <iport> -j MASQUERADE --to-ports <eport>
+ */
+#ifdef ENABLE_PORT_TRIGGERING
+static int
+addmasqueraderule(int proto,
+           unsigned short eport,
+           const char * iaddr, unsigned short iport,
+           const char * rhost/*, const char * extif*/)
+{
+	int r = 0;
+	struct ipt_entry * e;
+	struct ipt_entry * tmp;
+	struct ipt_entry_match *match = NULL;
+	struct ipt_entry_target *target = NULL;
+
+	e = calloc(1, sizeof(struct ipt_entry));
+	if(!e) {
+		syslog(LOG_ERR, "%s: calloc(%d) error", "addmasqueraderule",
+		       (int)sizeof(struct ipt_entry));
+		return -1;
+	}
+	e->ip.proto = proto;
+	if(proto == IPPROTO_TCP) {
+		match = get_tcp_match(0, iport);
+	} else {
+		match = get_udp_match(0, iport);
+	}
+	e->nfcache = NFC_IP_DST_PT;
+	target = get_masquerade_target(eport);
+	e->nfcache |= NFC_UNKNOWN;
+	tmp = realloc(e, sizeof(struct ipt_entry)
+	               + match->u.match_size
+				   + target->u.target_size);
+	if(!tmp) {
+		syslog(LOG_ERR, "%s: realloc(%d) error", "addmasqueraderule",
+		       (int)(sizeof(struct ipt_entry) + match->u.match_size + target->u.target_size));
+		free(e);
+		free(match);
+		free(target);
+		return -1;
+	}
+	e = tmp;
+	memcpy(e->elems, match, match->u.match_size);
+	memcpy(e->elems + match->u.match_size, target, target->u.target_size);
+	e->target_offset = sizeof(struct ipt_entry)
+	                   + match->u.match_size;
+	e->next_offset = sizeof(struct ipt_entry)
+	                 + match->u.match_size
+					 + target->u.target_size;
+#if 0
+	/* do not add outiface (-o) to rule, as the MINIUPNPD-POSTROUTING chain
+	 * should already have matched it */
+	if(extif != NULL) {
+		strncpy(e->ip.outiface, extif, sizeof(e->ip.outiface));
+		memset(e->ip.outiface_mask, 0xff, strlen(e->ip.outiface) + 1);/* Include nul-terminator in match */
+	}
+#endif
+	/* internal host */
+	if(iaddr && (iaddr[0] != '\0') && (0 != strcmp(iaddr, "*")))
+	{
+		e->ip.src.s_addr = inet_addr(iaddr);
+		e->ip.smsk.s_addr = INADDR_NONE;
+	}
+	/* remote host */
+	if(rhost && (rhost[0] != '\0') && (0 != strcmp(rhost, "*"))) {
+		e->ip.dst.s_addr = inet_addr(rhost);
+		e->ip.dmsk.s_addr = INADDR_NONE;
+	}
+
+	r = iptc_init_verify_and_append("nat", miniupnpd_nat_postrouting_chain, e, "addmasqueraderule");
+	free(target);
+	free(match);
+	free(e);
+	return r;
+}
+#endif /* ENABLE_PORT_TRIGGERING */
+
+/* called by add_peer_redirect_rule2()
+ *
+ * iptables -t nat -A MINIUPNPD-POSTROUTING -s <iaddr> -d <rhost>
+ *    -p <proto> --sport <iport> --dport <rport> -j SNAT
+ *    --to-source <eaddr>:<eport> */
 static int
 addpeernatrule(int proto,
            const char * eaddr, unsigned short eport,
@@ -1189,15 +1320,16 @@ addpeernatrule(int proto,
 		e->ip.dmsk.s_addr = INADDR_NONE;
 	}
 
-	r = iptc_init_verify_and_append("nat", miniupnpd_peer_chain, e, "addpeernatrule()");
+	r = iptc_init_verify_and_append("nat", miniupnpd_nat_postrouting_chain, e, "addpeernatrule");
 	free(target);
 	free(match);
 	free(e);
 	return r;
 }
 
-/* iptables -t mangle -A MINIUPNPD -s iaddr -d rhost
- *    -p proto --sport iport --dport rport -j DSCP
+/* called by add_peer_dscp_rule2()
+ * iptables -t mangle -A MINIUPNPD -s <iaddr> -d <rhost>
+ *    -p <proto> --sport <iport> --dport <rport> -j DSCP
  *    --set-dscp 0xXXXX                   */
 static int
 addpeerdscprule(int proto, unsigned char dscp,
@@ -1260,7 +1392,7 @@ addpeerdscprule(int proto, unsigned char dscp,
 	}
 
 	r = iptc_init_verify_and_append("mangle", miniupnpd_nat_chain, e,
-	                                "addpeerDSCPrule()");
+	                                "addpeerDSCPrule");
 	free(target);
 	free(match);
 	free(e);
@@ -1283,7 +1415,7 @@ get_accept_target(void)
 }
 
 /* add_filter_rule()
- * */
+ * iptables -t filter -A MINIUPNPD [-s <rhost>] -p <proto> -d <iaddr> --dport <iport> -j ACCEPT */
 static int
 add_filter_rule(int proto, const char * rhost,
                 const char * iaddr, unsigned short iport)
@@ -1337,7 +1469,7 @@ add_filter_rule(int proto, const char * rhost,
 		e->ip.smsk.s_addr = INADDR_NONE;
 	}
 
-	r = iptc_init_verify_and_append("filter", miniupnpd_forward_chain, e, "add_filter_rule()");
+	r = iptc_init_verify_and_append("filter", miniupnpd_forward_chain, e, "add_filter_rule");
 	free(target);
 	free(match);
 	free(e);
