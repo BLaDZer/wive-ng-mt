@@ -186,12 +186,13 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 				}
 				else
 				{
-					syslog(LOG_ERR, "Warning: cannot open %s (%s).\n", _PATH_PROCNET_DEV, strerror(errno));
+					syslog(LOG_WARNING, "cannot open %s (%s).\n", _PATH_PROCNET_DEV, strerror(errno));
 				}
 			}
 			else if (found<0)
 			{
-				syslog(LOG_ERR, "Warning: cannot serach process 'pppd': %s\n", strerror(-found));
+				//syslog(LOG_WARNING, "cannot serach process 'pppd': %s\n", strerror(-found));
+				;
 			}
 	}
 

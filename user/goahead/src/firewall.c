@@ -541,7 +541,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
 	if (firewall_enable == NULL)
 	{
-		syslog(LOG_ERR, "Warning: can't find \"IPPortFilterEnable\" in nvram, %s\n", __FUNCTION__);
+		syslog(LOG_WARNING, "can't find \"IPPortFilterEnable\" in nvram, %s\n", __FUNCTION__);
 		return;
 	}
 	mode = atoi(firewall_enable);
@@ -551,7 +551,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	rule = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
 	if (rule == NULL)
 	{
-		syslog(LOG_ERR, "Warning: can't find \"IPPortFilterRules\" in nvram, %s\n", __FUNCTION__);
+		syslog(LOG_WARNING, "can't find \"IPPortFilterRules\" in nvram, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -728,7 +728,7 @@ static void iptablesPortForwardBuildScript(void)
 	firewall_enable = nvram_get(RT2860_NVRAM, "PortForwardEnable");
 	if (!firewall_enable)
 	{
-		syslog(LOG_ERR, "Warning: can't find \"PortForwardEnable\" in flash, %s\n", __FUNCTION__);
+		syslog(LOG_WARNING, "can't find \"PortForwardEnable\" in flash, %s\n", __FUNCTION__);
 		return;
 	}
 
@@ -737,7 +737,7 @@ static void iptablesPortForwardBuildScript(void)
 		rule = nvram_get(RT2860_NVRAM, "PortForwardRules");
 		if(!rule)
 		{
-			syslog(LOG_ERR, "Warning: can't find \"PortForwardRules\" in flash, %s\n", __FUNCTION__);
+			syslog(LOG_WARNING, "can't find \"PortForwardRules\" in flash, %s\n", __FUNCTION__);
 			return;
 		}
 	}
