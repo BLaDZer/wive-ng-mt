@@ -18,16 +18,7 @@
     </tr>
   </tbody>
 </table>
-<table class="form" id="statisticHWStats">
-  <tr>
-    <td class="title" colspan="6" id="statisPorts">Physical ports</td>
-  </tr>
-  <tr id="statisticPorts">
-  </tr>
-  <% getHWStatistic(); %>
-</table>
-<input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
-    <!-- =================  ALL  ================= -->
+    <!-- =================  SOFT NETORK  ================= -->
 <table class="form">
   <tbody>
     <tr>
@@ -43,3 +34,13 @@
     <% getAllNICStatisticASP(); %>
   </tbody>
 </table>
+    <!-- =================  PHYS NETWORK  ================= -->
+<table class="form" id="statisticHWStats">
+  <tr>
+    <td class="title" colspan="6" id="statisPorts">Physical ports</td>
+  </tr>
+  <tr id="statisticPorts">
+  </tr>
+  <% getHWStatistic(); %>
+</table>
+<input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
