@@ -933,6 +933,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 		if (!proc_file) {
 			syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+			websWrite(wp, T(" "));
 			return -1;
 		}
 		/* switch phy to needed port */
@@ -942,6 +943,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		/* read status from ethtool */
 		if ((fp = popen("ethtool eth2", "r")) == NULL) {
 			syslog(LOG_ERR, "no ethtool, %s\n", __FUNCTION__);
+			websWrite(wp, T(" "));
 			return -1;
 		}
 		rc = fread(buf, 1, sizeof(buf), fp);
