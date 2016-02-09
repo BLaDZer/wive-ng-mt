@@ -345,10 +345,10 @@ upnprules() {
 	    iptables -t nat -F MINIUPNPD
 	    iptables -t nat -N MINIUPNPD-POSTROUTING
 	    iptables -t nat -F MINIUPNPD-POSTROUTING
-	    # packets join to UPNP, multicast no need forward to upnp chain
+	    # packets join to UPNP (multicast no need join to upnp chain)
 	    iptables -t nat -A PREROUTING -i $wan_if ! -s $mcast_net -j MINIUPNPD
 	    iptables -t nat -A POSTROUTING -o $wan_if ! -d $mcast_net -j MINIUPNPD-POSTROUTING
-	    # all packets from VPN join redirect to UPNP
+	    # all packets from VPN join to UPNP
 	    if [ "$vpnNAT" != "off" ] && [ "$real_wan_if" != "" ]; then
 		iptables -t nat -A PREROUTING -i $real_wan_if -j MINIUPNPD
 		iptables -t nat -A POSTROUTING -o $real_wan_if -j MINIUPNPD-POSTROUTING
