@@ -921,22 +921,25 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_USER_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	FILE *fp;
 	int port, first = 1;
-	char *pos;
-	char buf[1536];
 
 	for (port=4; port>-1; port--)
 	{
-		FILE *proc_file = fopen(PROCREG_GMAC, "w");
 		int rc;
+		char *pos;
+		char buf[1536];
+		FILE *fp, *proc_file;
 
-		if (!proc_file) {
-			syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
-			websWrite(wp, T(" "));
-			return -1;
-		}
+		/* clear and init buffer */
+		memset(buf, ' ', sizeof(char)*1536);
+
 		/* switch phy to needed port */
+		proc_file = fopen(PROCREG_GMAC, "w");
+		if (!proc_file) {
+		    syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		    websWrite(wp, T(" "));
+		    return -1;
+		}
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
