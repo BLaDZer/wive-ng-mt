@@ -347,12 +347,10 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 					fclose(fd);
 				} else {
-					fprintf(stderr, "Warning: cannot open %s (%s).\n",
-						_PATH_PROCNET_DEV, strerror(errno));
+					syslog(LOG_WARNING, "cannot open %s (%s).\n", _PATH_PROCNET_DEV, strerror(errno));
 				}
 			} else if (found<0) {
-				fprintf(stderr, "Warning: cannot serach process 'pppd' or 'xl2tpd': %s\n",
-						strerror(-found));
+				syslog(LOG_WARNING, "cannot serach process 'pppd' or 'xl2tpd': %s\n", strerror(-found));
 			}
 #ifdef CONFIG_USER_KABINET
 		}
@@ -2023,7 +2021,7 @@ int getIfIPv6(char *ifname, char *if_addr, char *netmask)
 	}
 
 	if (NULL == (fp = fopen(_PATH_PROCNET_IPV6, "r"))) {
-		error(E_L, E_LOG, T("getIPv6IntAddr: open /proc/net/if_inet6 error"));
+		syslog(LOG_ERR, "getIPv6IntAddr: open /proc/net/if_inet6 error");
 		return -1;
 	}
 

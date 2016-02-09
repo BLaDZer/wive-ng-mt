@@ -71,7 +71,7 @@ static int writeGoPid(void)
 
 	fp = fopen(gopid, "w+");
 	if (NULL == fp) {
-		error(E_L, E_LOG, T("goahead.c: cannot open pid file"));
+		syslog(LOG_ERR, "cannot open pid file");
 		return (-1);
 	}
 	fprintf(fp, "%d", getpid());
@@ -131,20 +131,19 @@ static int initWebs(void)
 		umAddAccessLimit(T("/"), AM_DIGEST, FALSE, T("adm"));
 	}
 	else
-		error(E_L, E_LOG, T("gohead.c: Warning: empty administrator account or password"));
+		syslog(LOG_WARNING, "empty administrator account or password");
 #endif
 
 	/*
 	 * get ip address from nvram configuration (we executed initInternet)
 	 */
 	if (NULL == lan_ip) {
-		error(E_L, E_LOG, T("initWebs: cannot find lan_ip in NVRAM"));
+		syslog(LOG_ERR, "cannot find lan_ip in NVRAM");
 		return -1;
 	}
 	intaddr.s_addr = inet_addr(lan_ip);
 	if (intaddr.s_addr == INADDR_NONE) {
-		error(E_L, E_LOG, T("initWebs: failed to convert %s to binary ip data"),
-				lan_ip);
+		syslog(LOG_ERR, "failed to convert %s to binary ip data", lan_ip);
 		return -1;
 	}
 

@@ -210,10 +210,9 @@ int websOpenListen(int port, int retries)
 		port++;
 	}
 	if (i > retries) {
-		error(E_L, E_USER, T("Couldn't open a socket on ports %d - %d"),
-			orig, port - 1);
+		syslog(LOG_ERR, "Couldn't open a socket on ports %d - %d", orig, port - 1);
 		return -1;
-	} 
+	}
 
 /*
  *	Determine the full URL address to access the home page for this web server
@@ -228,7 +227,7 @@ int websOpenListen(int port, int retries)
 		websIpaddrUrl = bstrdup(B_L, websIpaddr);
 	} else {
 		fmtAlloc(&websHostUrl, WEBS_MAX_URL + 80, T("%s:%d"), websHost, port);
-		fmtAlloc(&websIpaddrUrl, WEBS_MAX_URL + 80, T("%s:%d"), 
+		fmtAlloc(&websIpaddrUrl, WEBS_MAX_URL + 80, T("%s:%d"),
 			websIpaddr, port);
 	}
 	trace(0, T("webs: Listening for HTTP requests at address %s\n"),

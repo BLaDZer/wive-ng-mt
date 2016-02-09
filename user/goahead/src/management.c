@@ -57,11 +57,11 @@ static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 	admpass = websGetVar(wp, T("admpass"), T(""));
 
 	if (!strlen(admuser)) {
-		error(E_L, E_LOG, T("setSysAdm: account empty, leave it unchanged"));
+		syslog(LOG_WARNING, "setSysAdm: account empty, leave it unchanged");
 		return;
 	}
 	if (!strlen(admpass)) {
-		error(E_L, E_LOG, T("setSysAdm: password empty, leave it unchanged"));
+		syslog(LOG_WARNING, "setSysAdm: password empty, leave it unchanged");
 		return;
 	}
 

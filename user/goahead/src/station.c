@@ -1290,7 +1290,7 @@ void initStaProfile(void)
 	string_split_t split;
 	if (initSplitter(&split) != 0)
 	{
-		error(E_L, E_LOG, T("Error while trying to acqiure resources for profile parsing"));
+		syslog(LOG_ERR, "Error while trying to acqiure resources for profile parsing"));
 		return;
 	}
 
@@ -1306,7 +1306,7 @@ void initStaProfile(void)
 		// String is empty?
 		if (CHK_IF_EMPTYSTR(split.items[i]) && (i <= 0))
 		{
-			error(E_L, E_LOG, T("no previous profiles defined"));
+			syslog(LOG_WARNING, "no previous profiles defined"));
 			freeSplitter(&split);
 			nvram_close(RT2860_NVRAM);
 			return;
@@ -1315,7 +1315,7 @@ void initStaProfile(void)
 		PRT_PROFILE_SETTING p = (PRT_PROFILE_SETTING)malloc(sizeof(RT_PROFILE_SETTING));
 		if (p == NULL)
 		{
-			error(E_L, E_LOG, T("Not enough memory"));
+			syslog(LOG_ERR, "Not enough memory"));
 			freeSplitter(&split);
 			freeHeaderProfileSettings();
 			nvram_close(RT2860_NVRAM);
@@ -1750,7 +1750,7 @@ void initStaConnection(void)
 			Configuration.DSConfig = lFreq/1000;
 			ret = OidSetInformation(OID_802_11_CONFIGURATION, s, "ra0", &Configuration, sizeof(Configuration));
 			if (ret < 0)
-				error(E_L, E_LOG, T("Set OID_802_11_CONFIGURATION has error=%d"),ret);
+				syslog(LOG_ERR, "Set OID_802_11_CONFIGURATION has error=%d"),ret);
 		}
 	}
 
@@ -1758,12 +1758,12 @@ void initStaConnection(void)
 	// Authentication
 	ret = OidSetInformation(OID_802_11_AUTHENTICATION_MODE, s, "ra0", &p->Authentication, sizeof(p->Authentication));
 	if (ret < 0)
-		error(E_L, E_LOG, T("Set OID_802_11_AUTHENTICATION_MODE has error =%d, auth=%d"), ret, p->Authentication);
+		syslog(LOG_ERR, "Set OID_802_11_AUTHENTICATION_MODE has error =%d, auth=%d"), ret, p->Authentication);
 
 	// Encryption
 	ret = OidSetInformation(OID_802_11_ENCRYPTION_STATUS, s, "ra0", &p->Encryption, sizeof(p->Encryption));
 	if (ret < 0)
-		error(E_L, E_LOG, T("Set OID_802_11_ENCRYPTION_STATUS has error =%d, encry=%d"), ret, p->Encryption);
+		syslog(LOG_ERR, "Set OID_802_11_ENCRYPTION_STATUS has error =%d, encry=%d"), ret, p->Encryption);
 
 	// WEP
 	if (p->Authentication == Ndis802_11AuthModeOpen)
@@ -1791,7 +1791,7 @@ void initStaConnection(void)
 						removeKey.BSSID[j] = 0xff;
 					ret = OidSetInformation(OID_802_11_REMOVE_KEY, s, "ra0", &removeKey, removeKey.Length);
 					if (ret < 0)
-						error(E_L, E_LOG, T("Set OID_802_11_REMOVE_KEY has error =%d"), ret);
+						syslog(LOG_ERR, "Set OID_802_11_REMOVE_KEY has error =%d"), ret);
 				}
 				else if (strcmp(wep_keys[i], "0") != 0)
 				{
@@ -1871,7 +1871,7 @@ void initStaConnection(void)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &Ssid, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			error(E_L, E_LOG, T("Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s"), ret, Ssid.Ssid);
+			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s"), ret, Ssid.Ssid);
 		else
 			memcpy(&G_SSID, &Ssid, sizeof(NDIS_802_11_SSID));
 	}
@@ -1879,7 +1879,7 @@ void initStaConnection(void)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &Ssid, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			error(E_L, E_LOG, T("Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s"), ret, Ssid.Ssid);
+			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s"), ret, Ssid.Ssid);
 		else
 			memcpy(&G_SSID, &Ssid, sizeof(NDIS_802_11_SSID));
 
@@ -1889,11 +1889,7 @@ void initStaConnection(void)
 			memset(Bssid, 0x00, sizeof(Bssid));
 			AtoH(p->SSID, Bssid, sizeof(Bssid));
 
-			/*ret = OidSetInformation(OID_802_11_BSSID, s, "ra0", Bssid, sizeof(Bssid));
-			if (ret < 0)
-				error(E_L, E_LOG, "Set OID_802_11_BSSID has error=%d\n", ret);
-			else*/
-				memcpy(G_Bssid, Bssid, sizeof(Bssid));
+			memcpy(G_Bssid, Bssid, sizeof(Bssid));
 		}
 		Sleep(1);
 	}
@@ -1932,7 +1928,7 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 	//step 1
 	if (OidQueryInformation(OID_GEN_MEDIA_CONNECT_STATUS, s, "ra0", &ConnectStatus, sizeof(ConnectStatus)) < 0)
 	{
-		error(E_L, E_LOG, T("Query OID_GEN_MEDIA_CONNECT_STATUS error!"));
+		syslog(LOG_ERR, "Query OID_GEN_MEDIA_CONNECT_STATUS error!"));
 		close(s);
 		return 0;
 	}
@@ -1940,7 +1936,7 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 	//step 2
 	if (OidQueryInformation(RT_OID_802_11_RADIO, s, "ra0", &G_bRadio, sizeof(G_bRadio)) < 0)
 	{
-		error(E_L, E_LOG, T("Query RT_OID_802_11_RADIO error!"));
+		syslog(LOG_ERR, "Query RT_OID_802_11_RADIO error!"));
 		close(s);
 		return 0;
 	}
@@ -2048,7 +2044,7 @@ static int getStaRadioStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	ret = OidQueryInformation(RT_OID_802_11_RADIO, s, "ra0", &RadioStatus, sizeof(RadioStatus));
 	if (ret < 0)
-		error(E_L, E_LOG, T("getStaRadioStatus: Query RT_OID_802_11_RADIO failed!"));
+		syslog(LOG_ERR, "getStaRadioStatus: Query RT_OID_802_11_RADIO failed!"));
 	close(s);
 
 	ejSetResult(eid, (RadioStatus == 1) ? "1" : "0");
@@ -2589,14 +2585,14 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	OidSetInformation(RT_OID_802_11_RADIO, s, "ra0", &radio_status, sizeof(radio_status));
 	ret = OidSetInformation(OID_802_11_BSSID_LIST_SCAN, s, "ra0", 0, 0);
 	if (ret < 0)
-		error(E_L, E_LOG, T("Set OID_802_11_BSSID_LIST_SCAN error = %d"), ret);
+		syslog(LOG_ERR, "Set OID_802_11_BSSID_LIST_SCAN error = %d"), ret);
 
 	Sleep(3);
 	if (G_SSID.SsidLength > 0)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &G_SSID, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			error(E_L, E_LOG, T("Set OID_802_11_SSID error = %d"), ret);
+			syslog(LOG_ERR, "Set OID_802_11_SSID error = %d"), ret);
 	}
 	close(s);
 
