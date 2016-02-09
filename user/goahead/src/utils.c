@@ -952,8 +952,8 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		rc = fread(buf, 1, sizeof(buf), fp);
 		pclose(fp);
 
-		/* if read < 650 chars = read not correct */
-		if (rc < 650 || buf == NULL) {
+		/* if read < 200 chars = read not correct */
+		if (rc < 200 || buf == NULL) {
 			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
 			websWrite(wp, T(" "));
 			return -1;
