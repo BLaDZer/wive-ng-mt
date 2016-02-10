@@ -278,18 +278,18 @@ static int getIfIsUp(char *ifname)
 
 #if defined(CONFIG_ETHTOOL)
 /*
- * description: get link info from ethtool
+ * description: get link info from ethtool (return defaults values in error path for compat with webswrite)
  */
 static int linkspeed(const char *ifname) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
-	int sd, iocret, speed = 10;
+	int sd, iocret, speed = SPEED_10;
 	struct ifreq ifr;
 
 	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
+		return SPEED_10;
 
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
+		return SPEED_10;
 
 	memset(&ifr,0,sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
@@ -312,7 +312,7 @@ static int linkspeed(const char *ifname) {
 	    return speed;
 	}
 
-	return 10;
+	return SPEED_10;
 }
 
 static int linkduplex(const char *ifname) {
@@ -321,10 +321,10 @@ static int linkduplex(const char *ifname) {
 	struct ifreq ifr;
 
 	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
+		return DUPLEX_HALF;
 
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
+		return DUPLEX_HALF;
 
 	memset(&ifr,0,sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
@@ -353,10 +353,10 @@ static int linkstatus(const char *ifname) {
 	struct ifreq ifr;
 
 	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
+		return 0;
 
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
+		return 0;
 
 	memset(&ifr,0,sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
