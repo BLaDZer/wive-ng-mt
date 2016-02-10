@@ -17,95 +17,6 @@
 #include	"helpers.h"
 #include	"station.h"
 
-static int	getCACLCertList(int eid, webs_t wp, int argc, char_t **argv);
-static int	getKeyCertList(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaAdhocChannel(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaConnectedBSSID(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaDbm(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaExtraInfo(int eid, webs_t wp, int argc, char_t **argv);
-static int	getLinkingMode(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaHT(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaLinkQuality(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaLinkRxRate(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaLinkStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaLinkTxRate(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaNewProfileName(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaNoiseLevel(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaAuthModes(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaEncryptModes(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaRadioStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaRxThroughput(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaTxThroughput(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaSignalStrength(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaSignalStrength_1(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaSignalStrength_2(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaSNR(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaStatsRxCRCErr(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaStatsRxDup(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaStatsRxOk(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaStatsRxNoBuf(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaStatsTx(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaSuppAMode(int eid, webs_t wp, int argc, char_t **argv);
-static int	getStaWirelessMode(int eid, webs_t wp, int argc, char_t **argv);
-
-static int	getStaTrModes(int eid, webs_t wp, int argc, char_t **argv);
-
-static void resetStaCounters(webs_t wp, char_t *path, char_t *query);
-static void setSta11nCfg(webs_t wp, char_t *path, char_t *query);
-static void setStaAdvance(webs_t wp, char_t *path, char_t *query);
-static void setStaDbm(webs_t wp, char_t *path, char_t *query);
-static void setStaProfile(webs_t wp, char_t *path, char_t *query);
-static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query);
-static void setStaOrgDel(webs_t wp, char_t *path, char_t *query);
-static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv);
-
-void formDefineStation(void)
-{
-	websAspDefine(T("getCACLCertList"), getCACLCertList);
-	websAspDefine(T("getKeyCertList"), getKeyCertList);
-	websAspDefine(T("getStaAdhocChannel"), getStaAdhocChannel);
-	websAspDefine(T("getStaBSSIDList"), getStaBSSIDList);
-	websAspDefine(T("getStaConnectedBSSID"), getStaConnectedBSSID);
-	websAspDefine(T("getStaDbm"), getStaDbm);
-	websAspDefine(T("getStaExtraInfo"), getStaExtraInfo);
-	websAspDefine(T("getLinkingMode"), getLinkingMode);
-	websAspDefine(T("getStaHT"), getStaHT);
-	websAspDefine(T("getStaLinkChannel"), getStaLinkChannel);
-	websAspDefine(T("getStaLinkQuality"), getStaLinkQuality);
-	websAspDefine(T("getStaLinkRxRate"), getStaLinkRxRate);
-	websAspDefine(T("getStaLinkStatus"), getStaLinkStatus);
-	websAspDefine(T("getStaLinkTxRate"), getStaLinkTxRate);
-	websAspDefine(T("getStaNewProfileName"), getStaNewProfileName);
-	websAspDefine(T("getStaNoiseLevel"), getStaNoiseLevel);
-	websAspDefine(T("getActiveProfileStatus"), getActiveProfileStatus);
-	websAspDefine(T("getStaAuthModes"), getStaAuthModes);
-	websAspDefine(T("getStaEncryptModes"), getStaEncryptModes);
-	websAspDefine(T("getStaRadioStatus"), getStaRadioStatus);
-	websAspDefine(T("getStaRxThroughput"), getStaRxThroughput);
-	websAspDefine(T("getStaTxThroughput"), getStaTxThroughput);
-	websAspDefine(T("getStaSignalStrength"), getStaSignalStrength);
-	websAspDefine(T("getStaSignalStrength_1"), getStaSignalStrength_1);
-	websAspDefine(T("getStaSignalStrength_2"), getStaSignalStrength_2);
-	websAspDefine(T("getStaSNR"), getStaSNR);
-	websAspDefine(T("getStaStatsRxCRCErr"), getStaStatsRxCRCErr);
-	websAspDefine(T("getStaStatsRxDup"), getStaStatsRxDup);
-	websAspDefine(T("getStaStatsRxOk"), getStaStatsRxOk);
-	websAspDefine(T("getStaStatsRxNoBuf"), getStaStatsRxNoBuf);
-	websAspDefine(T("getStaStatsTx"), getStaStatsTx);
-	websAspDefine(T("getStaSuppAMode"), getStaSuppAMode);
-	websAspDefine(T("getStaWirelessMode"), getStaWirelessMode);
-	websAspDefine(T("getStaTrModes"), getStaTrModes);
-
-	websFormDefine(T("resetStaCounters"), resetStaCounters);
-	websFormDefine(T("setStaAdvance"), setStaAdvance);
-	websFormDefine(T("setStaDbm"), setStaDbm);
-	websFormDefine(T("setStaProfile"), setStaProfile);
-	websFormDefine(T("setStaOrgAdd"), setStaOrgAdd);
-	websFormDefine(T("setStaOrgDel"), setStaOrgDel);
-}
-
 
 PRT_PROFILE_SETTING headerProfileSetting = NULL; //selectedProfileSetting = NULL, headerProfileSetting = NULL, currentProfileSetting = NULL;
 
@@ -2790,4 +2701,49 @@ static int getStaTrModes(int eid, webs_t wp, int argc, char_t **argv)
 	result = "1";
 #endif
 	return websWrite(wp, T("%s"), result);
+}
+
+void formDefineStation(void)
+{
+	websAspDefine(T("getCACLCertList"), getCACLCertList);
+	websAspDefine(T("getKeyCertList"), getKeyCertList);
+	websAspDefine(T("getStaAdhocChannel"), getStaAdhocChannel);
+	websAspDefine(T("getStaBSSIDList"), getStaBSSIDList);
+	websAspDefine(T("getStaConnectedBSSID"), getStaConnectedBSSID);
+	websAspDefine(T("getStaDbm"), getStaDbm);
+	websAspDefine(T("getStaExtraInfo"), getStaExtraInfo);
+	websAspDefine(T("getLinkingMode"), getLinkingMode);
+	websAspDefine(T("getStaHT"), getStaHT);
+	websAspDefine(T("getStaLinkChannel"), getStaLinkChannel);
+	websAspDefine(T("getStaLinkQuality"), getStaLinkQuality);
+	websAspDefine(T("getStaLinkRxRate"), getStaLinkRxRate);
+	websAspDefine(T("getStaLinkStatus"), getStaLinkStatus);
+	websAspDefine(T("getStaLinkTxRate"), getStaLinkTxRate);
+	websAspDefine(T("getStaNewProfileName"), getStaNewProfileName);
+	websAspDefine(T("getStaNoiseLevel"), getStaNoiseLevel);
+	websAspDefine(T("getActiveProfileStatus"), getActiveProfileStatus);
+	websAspDefine(T("getStaAuthModes"), getStaAuthModes);
+	websAspDefine(T("getStaEncryptModes"), getStaEncryptModes);
+	websAspDefine(T("getStaRadioStatus"), getStaRadioStatus);
+	websAspDefine(T("getStaRxThroughput"), getStaRxThroughput);
+	websAspDefine(T("getStaTxThroughput"), getStaTxThroughput);
+	websAspDefine(T("getStaSignalStrength"), getStaSignalStrength);
+	websAspDefine(T("getStaSignalStrength_1"), getStaSignalStrength_1);
+	websAspDefine(T("getStaSignalStrength_2"), getStaSignalStrength_2);
+	websAspDefine(T("getStaSNR"), getStaSNR);
+	websAspDefine(T("getStaStatsRxCRCErr"), getStaStatsRxCRCErr);
+	websAspDefine(T("getStaStatsRxDup"), getStaStatsRxDup);
+	websAspDefine(T("getStaStatsRxOk"), getStaStatsRxOk);
+	websAspDefine(T("getStaStatsRxNoBuf"), getStaStatsRxNoBuf);
+	websAspDefine(T("getStaStatsTx"), getStaStatsTx);
+	websAspDefine(T("getStaSuppAMode"), getStaSuppAMode);
+	websAspDefine(T("getStaWirelessMode"), getStaWirelessMode);
+	websAspDefine(T("getStaTrModes"), getStaTrModes);
+
+	websFormDefine(T("resetStaCounters"), resetStaCounters);
+	websFormDefine(T("setStaAdvance"), setStaAdvance);
+	websFormDefine(T("setStaDbm"), setStaDbm);
+	websFormDefine(T("setStaProfile"), setStaProfile);
+	websFormDefine(T("setStaOrgAdd"), setStaOrgAdd);
+	websFormDefine(T("setStaOrgDel"), setStaOrgDel);
 }

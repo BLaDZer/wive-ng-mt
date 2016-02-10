@@ -20,23 +20,6 @@
 #include	"helpers.h"
 #include	"procps.h"
 
-static int  getFastPathBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getARPptBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getTelnetdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSNMPDBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIPTAccountBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv);
-static int  iptStatList(int eid, webs_t wp, int argc, char_t **argv);
-static int  getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv);
-static int  getProcessList(int eid, webs_t wp, int argc, char_t **argv);
-static void setDhcp(webs_t wp, char_t *path, char_t *query);
-static void setSamba(webs_t wp, char_t *path, char_t *query);
-static void setMiscServices(webs_t wp, char_t *path, char_t *query);
-static void formIptAccounting(webs_t wp, char_t *path, char_t *query);
-static void l2tpConfig(webs_t wp, char_t *path, char_t *query);
-static int  isSMP(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSmbFPBuilt(int eid, webs_t wp, int argc, char_t **argv);
-
 /*** Busybox leases.h ***/
 static uint64_t hton64(uint64_t v)
 {
@@ -65,28 +48,6 @@ struct dyn_lease {
 	/* total size is a multiply of 4 */
 } __attribute__((__packed__));
 
-void formDefineServices(void)
-{
-	// Define forms
-	websFormDefine(T("setDhcp"), setDhcp);
-	websFormDefine(T("formSamba"), setSamba);
-	websFormDefine(T("setMiscServices"), setMiscServices);
-	websFormDefine(T("formIptAccounting"), formIptAccounting);
-	websFormDefine(T("l2tpConfig"), l2tpConfig);
-
-	// Define functions
-	websAspDefine(T("getL2TPUserList"), getL2TPUserList);
-	websAspDefine(T("getDhcpCliList"), getDhcpCliList);
-	websAspDefine(T("iptStatList"), iptStatList);
-	websAspDefine(T("getARPptBuilt"), getARPptBuilt);
-	websAspDefine(T("getFastPathBuilt"), getFastPathBuilt);
-	websAspDefine(T("getTelnetdBuilt"), getTelnetdBuilt);
-	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
-	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
-	websAspDefine(T("getProcessList"), getProcessList);
-	websAspDefine(T("isSMP"), isSMP);
-	websAspDefine(T("getSmbFPBuilt"), getSmbFPBuilt);
-}
 
 static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -783,4 +744,27 @@ static int getSmbFPBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #else
 	return websWrite(wp, T("0"));
 #endif
+}
+
+void formDefineServices(void)
+{
+	// Define forms
+	websFormDefine(T("setDhcp"), setDhcp);
+	websFormDefine(T("formSamba"), setSamba);
+	websFormDefine(T("setMiscServices"), setMiscServices);
+	websFormDefine(T("formIptAccounting"), formIptAccounting);
+	websFormDefine(T("l2tpConfig"), l2tpConfig);
+
+	// Define functions
+	websAspDefine(T("getL2TPUserList"), getL2TPUserList);
+	websAspDefine(T("getDhcpCliList"), getDhcpCliList);
+	websAspDefine(T("iptStatList"), iptStatList);
+	websAspDefine(T("getARPptBuilt"), getARPptBuilt);
+	websAspDefine(T("getFastPathBuilt"), getFastPathBuilt);
+	websAspDefine(T("getTelnetdBuilt"), getTelnetdBuilt);
+	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
+	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
+	websAspDefine(T("getProcessList"), getProcessList);
+	websAspDefine(T("isSMP"), isSMP);
+	websAspDefine(T("getSmbFPBuilt"), getSmbFPBuilt);
 }

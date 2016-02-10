@@ -27,16 +27,6 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv);
 
 #define DEBUG(x) do{fprintf(stderr, #x); fprintf(stderr, ": %s\n", x); }while(0)
 
-void formDefineUSB(void) {
-#ifdef CONFIG_USER_P910ND
-	websFormDefine(T("printersrv"), printersrv);
-#endif
-#ifdef CONFIG_USB_MODESWITCH
-	websFormDefine(T("usbmodem"), usbmodem);
-	websAspDefine(T("modemShowStatus"), modemShowStatus);
-#endif
-}
-
 #ifdef CONFIG_USER_P910ND
 static void printersrv(webs_t wp, char_t *path, char_t *query)
 {
@@ -211,4 +201,14 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 int initUSB(void)
 {
 	return 0;
+}
+
+void formDefineUSB(void) {
+#ifdef CONFIG_USER_P910ND
+	websFormDefine(T("printersrv"), printersrv);
+#endif
+#ifdef CONFIG_USB_MODESWITCH
+	websFormDefine(T("usbmodem"), usbmodem);
+	websAspDefine(T("modemShowStatus"), modemShowStatus);
+#endif
 }

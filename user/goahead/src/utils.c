@@ -9,8 +9,6 @@
 #include	<time.h>
 #include	<signal.h>
 #include	<sys/ioctl.h>
-#include	<linux/ethtool.h>
-#include	<linux/sockios.h>
 #include	<arpa/inet.h>
 #include	<asm/types.h>
 #include	<linux/if.h>
@@ -25,23 +23,6 @@
 #include	"internet.h"
 #include	"station.h"
 #include	"helpers.h"
-
-static int  getLangBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getStationBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCfgNthGeneral(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCfgZero(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCfgNthZero(int eid, webs_t wp, int argc, char_t **argv);
-static int  getPlatform(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSdkVersion(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSysUptime(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSysDateTime(int eid, webs_t wp, int argc, char_t **argv);
-static int  getPortStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int  gigaphy(int eid, webs_t wp, int argc, char_t **argv);
-static void setOpMode(webs_t wp, char_t *path, char_t *query);
-static void setWanPort(webs_t wp, char_t *path, char_t *query);
-static void reboot_web(webs_t wp, char_t *path, char_t *query);
 
 /*********************************************************************
  * System Utilities
@@ -598,30 +579,6 @@ char *getLanWanNamebyIf(char *ifname)
 	return "LAN";
 }
 
-/*********************************************************************
- * Web Related Utilities
- */
-void formDefineUtilities(void)
-{
-	websAspDefine(T("getCfgGeneral"), getCfgGeneral);
-	websAspDefine(T("getCfgGeneralHTML"), getCfgGeneralHTML);
-	websAspDefine(T("getCfgNthGeneral"), getCfgNthGeneral);
-	websAspDefine(T("getCfgZero"), getCfgZero);
-	websAspDefine(T("getCfgNthZero"), getCfgNthZero);
-	websAspDefine(T("getLangBuilt"), getLangBuilt);
-	websAspDefine(T("getPlatform"), getPlatform);
-	websAspDefine(T("getStationBuilt"), getStationBuilt);
-	websAspDefine(T("getSdkVersion"), getSdkVersion);
-	websAspDefine(T("getSysUptime"), getSysUptime);
-	websAspDefine(T("getSysDateTime"), getSysDateTime);
-	websAspDefine(T("getPortStatus"), getPortStatus);
-	websFormDefine(T("setOpMode"), setOpMode);
-	websFormDefine(T("setWanPort"), setWanPort);
-	websFormDefine(T("reboot"), reboot_web);
-	websAspDefine(T("gigaphy"), gigaphy);
-}
-
-
 /*
  * arguments: type - 0 = return the configuration of 'field' (default)
  *                   1 = write the configuration of 'field'
@@ -922,124 +879,6 @@ static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
                 utime->tm_mday, (utime->tm_mon + 1), (1900 + utime->tm_year));
 }
 
-#if defined(CONFIG_ETHTOOL)
-/*
- * description: get link info from ethtool
- */
-static int linkspeed(const char *ifname) {
-	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
-	int sd, iocret, speed = 10;
-	struct ifreq ifr;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
-
-	memset(&ifr,0,sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
-	ifr.ifr_data = (caddr_t)&ecmd;
-	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
-		speed = ecmd.speed;
-	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
-	close(sd);
-	return speed;
-}
-
-static int linkduplex(const char *ifname) {
-	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
-	int sd, iocret, duplex = DUPLEX_HALF;
-	struct ifreq ifr;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
-
-	memset(&ifr,0,sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
-	ifr.ifr_data = (caddr_t)&ecmd;
-	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
-		duplex = ecmd.duplex;
-	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
-
-	if (duplex == DUPLEX_UNKNOWN)
-	    duplex = DUPLEX_HALF;
-
-	close(sd);
-	return duplex;
-}
-
-static int linkstatus(const char *ifname) {
-	struct ethtool_value ethval = { .cmd = ETHTOOL_GLINK, };
-	int sd, iocret, ret = 0;
-	struct ifreq ifr;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return -1;
-
-	memset(&ifr,0,sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
-	ifr.ifr_data = (caddr_t)&ethval;
-	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
-		ret = ethval.data;
-	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
-	close(sd);
-	return ret;
-}
-#endif
-
-static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_ETHTOOL)
-#if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	int port, first = 1;
-
-	for (port=4; port>-1; port--)
-	{
-		FILE *proc_file;
-		char link = '1', duplex = 'H';
-		int speed = 10;
-
-		/* switch phy to needed port */
-		proc_file = fopen(PROCREG_GMAC, "w");
-		if (!proc_file) {
-		    syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
-		    websWrite(wp, T(" "));
-		    return -1;
-		}
-		fprintf(proc_file, "%d", port);
-		fclose(proc_file);
-
-		if (linkstatus("eth2"))
-			link = '1';
-		else
-			link = '0';
-
-		if (linkduplex("eth2"))
-			duplex = 'F';
-		else
-			duplex = 'H';
-
-		speed = linkspeed("eth2");
-
-		/* write to web */
-		websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
-		first = 0;
-	}
-#endif
-#endif
-	return 0;
-}
-
 void redirect_wholepage(webs_t wp, const char *url)
 {
 	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/html\n"));
@@ -1212,4 +1051,26 @@ unsigned int ConvertRssiToSignalQuality(long RSSI)
 		signal_quality = 0;
 
 	return signal_quality;
+}
+
+/*********************************************************************
+ * Web Related Utilities
+ */
+void formDefineUtilities(void)
+{
+	websAspDefine(T("getCfgGeneral"), getCfgGeneral);
+	websAspDefine(T("getCfgGeneralHTML"), getCfgGeneralHTML);
+	websAspDefine(T("getCfgNthGeneral"), getCfgNthGeneral);
+	websAspDefine(T("getCfgZero"), getCfgZero);
+	websAspDefine(T("getCfgNthZero"), getCfgNthZero);
+	websAspDefine(T("getLangBuilt"), getLangBuilt);
+	websAspDefine(T("getPlatform"), getPlatform);
+	websAspDefine(T("getStationBuilt"), getStationBuilt);
+	websAspDefine(T("getSdkVersion"), getSdkVersion);
+	websAspDefine(T("getSysUptime"), getSysUptime);
+	websAspDefine(T("getSysDateTime"), getSysDateTime);
+	websFormDefine(T("setOpMode"), setOpMode);
+	websFormDefine(T("setWanPort"), setWanPort);
+	websFormDefine(T("reboot"), reboot_web);
+	websAspDefine(T("gigaphy"), gigaphy);
 }

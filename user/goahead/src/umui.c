@@ -59,26 +59,6 @@ static void		websMsgEnd(webs_t wp);
  *	Set up the User Management form handlers
  */
 
-void formDefineUserMgmt(void)
-{
-	websAspDefine(T("MakeGroupList"), aspGenerateGroupList);
-	websAspDefine(T("MakeUserList"), aspGenerateUserList);
-	websAspDefine(T("MakeAccessLimitList"), aspGenerateAccessLimitList);
-	websAspDefine(T("MakeAccessMethodList"), aspGenerateAccessMethodList);
-	websAspDefine(T("MakePrivilegeList"), aspGeneratePrivilegeList);
-
-	websFormDefine(T("AddUser"), formAddUser);
-	websFormDefine(T("DeleteUser"), formDeleteUser);
-	websFormDefine(T("DisplayUser"), formDisplayUser);
-	websFormDefine(T("AddGroup"), formAddGroup);
-	websFormDefine(T("DeleteGroup"), formDeleteGroup);
-	websFormDefine(T("AddAccessLimit"), formAddAccessLimit);
-	websFormDefine(T("DeleteAccessLimit"), formDeleteAccessLimit);
-
-	websFormDefine(T("SaveUserManagement"), formSaveUserManagement);
-	websFormDefine(T("LoadUserManagement"), formLoadUserManagement);
-}
-
 /******************************************************************************/
 /*
  *  Add a user
@@ -636,4 +616,24 @@ static void	websMsgStart(webs_t wp)
 static void	websMsgEnd(webs_t wp)
 {
 	websWrite(wp, MSG_END);
+}
+
+void formDefineUserMgmt(void)
+{
+	websAspDefine(T("MakeGroupList"), aspGenerateGroupList);
+	websAspDefine(T("MakeUserList"), aspGenerateUserList);
+	websAspDefine(T("MakeAccessLimitList"), aspGenerateAccessLimitList);
+	websAspDefine(T("MakeAccessMethodList"), aspGenerateAccessMethodList);
+	websAspDefine(T("MakePrivilegeList"), aspGeneratePrivilegeList);
+
+	websFormDefine(T("AddUser"), formAddUser);
+	websFormDefine(T("DeleteUser"), formDeleteUser);
+	websFormDefine(T("DisplayUser"), formDisplayUser);
+	websFormDefine(T("AddGroup"), formAddGroup);
+	websFormDefine(T("DeleteGroup"), formDeleteGroup);
+	websFormDefine(T("AddAccessLimit"), formAddAccessLimit);
+	websFormDefine(T("DeleteAccessLimit"), formDeleteAccessLimit);
+
+	websFormDefine(T("SaveUserManagement"), formSaveUserManagement);
+	websFormDefine(T("LoadUserManagement"), formLoadUserManagement);
 }

@@ -33,19 +33,6 @@
 #include        "firewall.h"
 #include	"helpers.h"
 
-static void storageDiskAdm(webs_t wp, char_t *path, char_t *query);
-static void storageDiskPart(webs_t wp, char_t *path, char_t *query);
-static int ShowPartition(int eid, webs_t wp, int argc, char_t **argv);
-static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv);
-static int getCount(int eid, webs_t wp, int argc, char_t **argv);
-static int getMaxVol(int eid, webs_t wp, int argc, char_t **argv);
-#ifdef CONFIG_FTPD
-static void storageFtpSrv(webs_t wp, char_t *path, char_t *query);
-#endif
-#ifdef CONFIG_USER_TRANSMISSION
-static void transmission(webs_t wp, char_t *path, char_t *query);
-#endif
-
 #define	LSDIR_INFO	"/tmp/lsdir"
 #define	MOUNT_INFO	"/proc/mounts"
 
@@ -53,21 +40,6 @@ static void transmission(webs_t wp, char_t *path, char_t *query);
 #define STORAGE_SIGN	"/media/sd"
 
 #define DEBUG(x) do{fprintf(stderr, #x); fprintf(stderr, ": %s\n", x); }while(0)
-
-void formDefineSTORAGE(void) {
-	websAspDefine(T("ShowPartition"), ShowPartition);
-	websAspDefine(T("ShowAllDir"), ShowAllDir);
-	websAspDefine(T("getCount"), getCount);
-	websAspDefine(T("getMaxVol"), getMaxVol);
-	websFormDefine(T("storageDiskAdm"), storageDiskAdm);
-	websFormDefine(T("storageDiskPart"), storageDiskPart);
-#ifdef CONFIG_FTPD
-	websFormDefine(T("storageFtpSrv"), storageFtpSrv);
-#endif
-#ifdef CONFIG_USER_TRANSMISSION
-	websFormDefine(T("formTrans"), transmission);
-#endif
-}
 
 static int dir_count;
 static int part_count;
@@ -359,4 +331,19 @@ static int getMaxVol(int eid, webs_t wp, int argc, char_t **argv)
 		result = transfer;
 
 	return websWrite(wp, T("%d"), result);
+}
+
+void formDefineSTORAGE(void) {
+	websAspDefine(T("ShowPartition"), ShowPartition);
+	websAspDefine(T("ShowAllDir"), ShowAllDir);
+	websAspDefine(T("getCount"), getCount);
+	websAspDefine(T("getMaxVol"), getMaxVol);
+	websFormDefine(T("storageDiskAdm"), storageDiskAdm);
+	websFormDefine(T("storageDiskPart"), storageDiskPart);
+#ifdef CONFIG_FTPD
+	websFormDefine(T("storageFtpSrv"), storageFtpSrv);
+#endif
+#ifdef CONFIG_USER_TRANSMISSION
+	websFormDefine(T("formTrans"), transmission);
+#endif
 }

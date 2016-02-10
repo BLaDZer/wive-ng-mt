@@ -25,74 +25,6 @@
 #include	"station.h"
 #include	"helpers.h"
 
-static int  getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getUSBBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getStorageBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getFtpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSmbBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getPrinterSrvBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getUSBModemBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getTransmissionBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIgmpProxyBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDnsmasqBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getGWBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getCdpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLltdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLldpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getUpnpBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getXupnpdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDynamicRoutingBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSWQoSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDATEBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDDNSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSpotBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getSysLogBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getETHTOOLBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLANAUTHBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getRadvdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDhcpv6Built(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIPv6Built(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIPv66rdBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIP6to4Built(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDns(int eid, webs_t wp, int argc, char_t **argv);
-static int  getHostSupp(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLanIp(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLanMac(int eid, webs_t wp, int argc, char_t **argv);
-static int  getLanNetmask(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIntIp(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWanIp(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWanMac(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWanNetmask(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWanGateway(int eid, webs_t wp, int argc, char_t **argv);
-static int  getRoutingTable(int eid, webs_t wp, int argc, char_t **argv);
-static int  vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv);
-static int  vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv);
-static void formVPNSetup(webs_t wp, char_t *path, char_t *query);
-static void setLan(webs_t wp, char_t *path, char_t *query);
-static void setWan(webs_t wp, char_t *path, char_t *query);
-#ifdef CONFIG_IPV6
-static void setIPv6(webs_t wp, char_t *path, char_t *query);
-static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv);
-#endif
-static void getMyMAC(webs_t wp, char_t *path, char_t *query);
-static void editRouting(webs_t wp, char_t *path, char_t *query);
-static void restoremac(webs_t wp, char_t *path, char_t *query);
-#ifdef CONFIG_USER_ZEBRA
-static void dynamicRouting(webs_t wp, char_t *path, char_t *query);
-#endif
-#ifdef CONFIG_USER_CHILLISPOT
-static int getSpotIp(int eid, webs_t wp, int argc, char_t **argv);
-static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv);
-#endif
-#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
-static void setHotspot(webs_t wp, char_t *path, char_t *query);
-#endif
-static int  getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv);
-
 /*** VPN statuses ***/
 typedef struct vpn_status_t
 {
@@ -100,81 +32,6 @@ typedef struct vpn_status_t
 	long          color;
 } vpn_status_t;
 
-void formDefineInternet(void) {
-	websAspDefine(T("getDns"), getDns);
-	websAspDefine(T("getHostSupp"), getHostSupp);
-	websAspDefine(T("getIgmpProxyBuilt"), getIgmpProxyBuilt);
-	websAspDefine(T("getVPNBuilt"), getVPNBuilt);
-	websAspDefine(T("getLanIp"), getLanIp);
-	websAspDefine(T("getLanMac"), getLanMac);
-	websAspDefine(T("getLanNetmask"), getLanNetmask);
-	websAspDefine(T("getDnsmasqBuilt"), getDnsmasqBuilt);
-	websAspDefine(T("getGWBuilt"), getGWBuilt);
-	websAspDefine(T("getCdpBuilt"), getCdpBuilt);
-	websAspDefine(T("getLltdBuilt"), getLltdBuilt);
-	websAspDefine(T("getLldpdBuilt"), getLldpdBuilt);
-	websAspDefine(T("getUpnpBuilt"), getUpnpBuilt);
-	websAspDefine(T("getXupnpdBuilt"), getXupnpdBuilt);
-	websAspDefine(T("getIntIp"), getIntIp);
-	websAspDefine(T("getWanIp"), getWanIp);
-	websAspDefine(T("getWanMac"), getWanMac);
-	websAspDefine(T("getWanNetmask"), getWanNetmask);
-	websAspDefine(T("getWanGateway"), getWanGateway);
-	websAspDefine(T("getRoutingTable"), getRoutingTable);
-	websAspDefine(T("getWDSBuilt"), getWDSBuilt);
-	websAspDefine(T("getMBSSIDBuilt"), getMBSSIDBuilt);
-	websAspDefine(T("getUSBBuilt"), getUSBBuilt);
-	websAspDefine(T("getStorageBuilt"), getStorageBuilt);
-	websAspDefine(T("getFtpBuilt"), getFtpBuilt);
-	websAspDefine(T("getSmbBuilt"), getSmbBuilt);
-	websAspDefine(T("getPrinterSrvBuilt"), getPrinterSrvBuilt);
-	websAspDefine(T("getUSBModemBuilt"), getUSBModemBuilt);
-	websFormDefine(T("setLan"), setLan);
-	websFormDefine(T("setWan"), setWan);
-	websAspDefine(T("getRadvdBuilt"), getRadvdBuilt);
-	websAspDefine(T("getDhcpv6Built"), getDhcpv6Built);
-	websAspDefine(T("getIPv6Built"), getIPv6Built);
-	websAspDefine(T("getIPv66rdBuilt"), getIPv66rdBuilt);
-	websAspDefine(T("getIP6to4Built"), getIP6to4Built);
-#ifdef CONFIG_IPV6
-	websFormDefine(T("setIPv6"), setIPv6);
-	websAspDefine(T("getIPv6IntAddr"), getIPv6IntAddr);
-	websAspDefine(T("getIPv6ExtAddr"), getIPv6ExtAddr);
-#endif
-	websFormDefine(T("getMyMAC"), getMyMAC);
-	websFormDefine(T("editRouting"), editRouting);
-	websAspDefine(T("getTransmissionBuilt"), getTransmissionBuilt);
-
-#ifdef CONFIG_USER_ZEBRA
-	websFormDefine(T("dynamicRouting"), dynamicRouting);
-#endif
-	websAspDefine(T("getDynamicRoutingBuilt"), getDynamicRoutingBuilt);
-	websAspDefine(T("getSWQoSBuilt"), getSWQoSBuilt);
-	websAspDefine(T("getDATEBuilt"), getDATEBuilt);
-	websAspDefine(T("getDDNSBuilt"), getDDNSBuilt);
-	websAspDefine(T("getSpotBuilt"), getSpotBuilt);
-
-	websAspDefine(T("getLANAUTHBuilt"), getLANAUTHBuilt);
-
-	websAspDefine(T("getSysLogBuilt"), getSysLogBuilt);
-	websAspDefine(T("getETHTOOLBuilt"), getETHTOOLBuilt);
-
-	websAspDefine(T("vpnShowVPNStatus"), vpnShowVPNStatus);
-	websAspDefine(T("vpnIfaceList"), vpnIfaceList);
-	websFormDefine(T("formVPNSetup"), formVPNSetup);
-
-	websFormDefine(T("restoremac"), restoremac);
-
-#ifdef CONFIG_USER_CHILLISPOT
-	websAspDefine(T("getSpotIp"), getSpotIp);
-	websAspDefine(T("getSpotNetmask"), getSpotNetmask);
-#endif
-#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
-	websFormDefine(T("setHotspot"), setHotspot);
-#endif
-	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
-	websAspDefine(T("getNoDogBuilt"), getNoDogBuilt);
-}
 
 const parameter_fetch_t vpn_args[] =
 {
@@ -2299,4 +2156,80 @@ static int getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #else
 	return websWrite(wp, T("0"));
 #endif
+}
+
+void formDefineInternet(void) {
+	websAspDefine(T("getDns"), getDns);
+	websAspDefine(T("getHostSupp"), getHostSupp);
+	websAspDefine(T("getIgmpProxyBuilt"), getIgmpProxyBuilt);
+	websAspDefine(T("getVPNBuilt"), getVPNBuilt);
+	websAspDefine(T("getLanIp"), getLanIp);
+	websAspDefine(T("getLanMac"), getLanMac);
+	websAspDefine(T("getLanNetmask"), getLanNetmask);
+	websAspDefine(T("getDnsmasqBuilt"), getDnsmasqBuilt);
+	websAspDefine(T("getGWBuilt"), getGWBuilt);
+	websAspDefine(T("getCdpBuilt"), getCdpBuilt);
+	websAspDefine(T("getLltdBuilt"), getLltdBuilt);
+	websAspDefine(T("getLldpdBuilt"), getLldpdBuilt);
+	websAspDefine(T("getUpnpBuilt"), getUpnpBuilt);
+	websAspDefine(T("getXupnpdBuilt"), getXupnpdBuilt);
+	websAspDefine(T("getIntIp"), getIntIp);
+	websAspDefine(T("getWanIp"), getWanIp);
+	websAspDefine(T("getWanMac"), getWanMac);
+	websAspDefine(T("getWanNetmask"), getWanNetmask);
+	websAspDefine(T("getWanGateway"), getWanGateway);
+	websAspDefine(T("getRoutingTable"), getRoutingTable);
+	websAspDefine(T("getWDSBuilt"), getWDSBuilt);
+	websAspDefine(T("getMBSSIDBuilt"), getMBSSIDBuilt);
+	websAspDefine(T("getUSBBuilt"), getUSBBuilt);
+	websAspDefine(T("getStorageBuilt"), getStorageBuilt);
+	websAspDefine(T("getFtpBuilt"), getFtpBuilt);
+	websAspDefine(T("getSmbBuilt"), getSmbBuilt);
+	websAspDefine(T("getPrinterSrvBuilt"), getPrinterSrvBuilt);
+	websAspDefine(T("getUSBModemBuilt"), getUSBModemBuilt);
+	websFormDefine(T("setLan"), setLan);
+	websFormDefine(T("setWan"), setWan);
+	websAspDefine(T("getRadvdBuilt"), getRadvdBuilt);
+	websAspDefine(T("getDhcpv6Built"), getDhcpv6Built);
+	websAspDefine(T("getIPv6Built"), getIPv6Built);
+	websAspDefine(T("getIPv66rdBuilt"), getIPv66rdBuilt);
+	websAspDefine(T("getIP6to4Built"), getIP6to4Built);
+#ifdef CONFIG_IPV6
+	websFormDefine(T("setIPv6"), setIPv6);
+	websAspDefine(T("getIPv6IntAddr"), getIPv6IntAddr);
+	websAspDefine(T("getIPv6ExtAddr"), getIPv6ExtAddr);
+#endif
+	websFormDefine(T("getMyMAC"), getMyMAC);
+	websFormDefine(T("editRouting"), editRouting);
+	websAspDefine(T("getTransmissionBuilt"), getTransmissionBuilt);
+
+#ifdef CONFIG_USER_ZEBRA
+	websFormDefine(T("dynamicRouting"), dynamicRouting);
+#endif
+	websAspDefine(T("getDynamicRoutingBuilt"), getDynamicRoutingBuilt);
+	websAspDefine(T("getSWQoSBuilt"), getSWQoSBuilt);
+	websAspDefine(T("getDATEBuilt"), getDATEBuilt);
+	websAspDefine(T("getDDNSBuilt"), getDDNSBuilt);
+	websAspDefine(T("getSpotBuilt"), getSpotBuilt);
+
+	websAspDefine(T("getLANAUTHBuilt"), getLANAUTHBuilt);
+
+	websAspDefine(T("getSysLogBuilt"), getSysLogBuilt);
+	websAspDefine(T("getETHTOOLBuilt"), getETHTOOLBuilt);
+
+	websAspDefine(T("vpnShowVPNStatus"), vpnShowVPNStatus);
+	websAspDefine(T("vpnIfaceList"), vpnIfaceList);
+	websFormDefine(T("formVPNSetup"), formVPNSetup);
+
+	websFormDefine(T("restoremac"), restoremac);
+
+#ifdef CONFIG_USER_CHILLISPOT
+	websAspDefine(T("getSpotIp"), getSpotIp);
+	websAspDefine(T("getSpotNetmask"), getSpotNetmask);
+#endif
+#if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
+	websFormDefine(T("setHotspot"), setHotspot);
+#endif
+	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
+	websAspDefine(T("getNoDogBuilt"), getNoDogBuilt);
 }

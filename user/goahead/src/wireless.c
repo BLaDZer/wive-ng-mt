@@ -15,40 +15,6 @@
 #include	"internet.h"
 #include 	"helpers.h"
 
-static int  getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanChannel(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv);
-static int  getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv);
-static int  listCountryCodes(int eid, webs_t wp, int argc, char_t **argv);
-static int  is3t3r(int eid, webs_t wp, int argc, char_t **argv);
-static int  is5gh_support(int eid, webs_t wp, int argc, char_t **argv);
-static int  is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv);
-static int  getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv);
-static int  getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv);
-static int  getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getFTBuilt(int eid, webs_t wp, int argc, char_t **argv);
-static int  getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv);
-static void wirelessBasic(webs_t wp, char_t *path, char_t *query);
-static void disconnectSta(webs_t wp, char_t *path, char_t *query);
-static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query);
-static void wirelessWds(webs_t wp, char_t *path, char_t *query);
-static void wirelessApcli(webs_t wp, char_t *path, char_t *query);
-static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query);
-static void APSecurity(webs_t wp, char_t *path, char_t *query);
-static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query);
-
 static int default_shown_mbssid[3]  = {0,0,0};
 
 typedef struct country_code_t
@@ -161,43 +127,6 @@ const country_code_t country_codes[] =
 	{ "ZW", "ZIMBABWE" },
 	{ NULL, NULL }
 };
-
-void formDefineWireless(void)
-{
-	websAspDefine(T("getVideoTurbineBuilt"), getVideoTurbineBuilt);
-	websAspDefine(T("getIdsEnableBuilt"), getIdsEnableBuilt);
-	websAspDefine(T("getWlan11aChannels"), getWlan11aChannels);
-	websAspDefine(T("getWlan11gChannels"), getWlan11gChannels);
-	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
-	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
-	websAspDefine(T("getWlanChannel"), getWlanChannel);
-	websAspDefine(T("getWlanChannelAC"), getWlanChannelAC);
-	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
-	websAspDefine(T("getWlanCurrentMacAC"), getWlanCurrentMacAC);
-	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
-	websAspDefine(T("get802_1XBuilt"), get802_1XBuilt);
-	websAspDefine(T("getWlanM2UBuilt"), getWlanM2UBuilt);
-	websAspDefine(T("listCountryCodes"), listCountryCodes);
-	websAspDefine(T("is3t3r"), is3t3r);
-	websAspDefine(T("is5gh_support"), is5gh_support);
-	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
-	websAspDefine(T("getTXBFBuilt"), getTXBFBuilt);
-	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
-	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
-	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
-	websAspDefine(T("getDFSBuilt"), getDFSBuilt);
-	websAspDefine(T("getRRMBuilt"), getRRMBuilt);
-	websAspDefine(T("getFTBuilt"), getFTBuilt);
-	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
-	websFormDefine(T("wirelessBasic"), wirelessBasic);
-	websFormDefine(T("disconnectSta"), disconnectSta);
-	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
-	websFormDefine(T("wirelessWds"), wirelessWds);
-	websFormDefine(T("wirelessApcli"), wirelessApcli);
-	websFormDefine(T("wirelessGetSecurity"), wirelessGetSecurity);
-	websFormDefine(T("APSecurity"), APSecurity);
-	websFormDefine(T("APDeleteAccessPolicyList"), APDeleteAccessPolicyList);
-}
 
 static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -1849,7 +1778,7 @@ static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
-#endif	
+#endif
 #else
 	return websWrite(wp, T("0"));
 #endif
@@ -1876,5 +1805,42 @@ static int getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv) {
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
-#endif	
+#endif
+}
+
+void formDefineWireless(void)
+{
+	websAspDefine(T("getVideoTurbineBuilt"), getVideoTurbineBuilt);
+	websAspDefine(T("getIdsEnableBuilt"), getIdsEnableBuilt);
+	websAspDefine(T("getWlan11aChannels"), getWlan11aChannels);
+	websAspDefine(T("getWlan11gChannels"), getWlan11gChannels);
+	websAspDefine(T("getWlanApcliBuilt"), getWlanApcliBuilt);
+	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
+	websAspDefine(T("getWlanChannel"), getWlanChannel);
+	websAspDefine(T("getWlanChannelAC"), getWlanChannelAC);
+	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
+	websAspDefine(T("getWlanCurrentMacAC"), getWlanCurrentMacAC);
+	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
+	websAspDefine(T("get802_1XBuilt"), get802_1XBuilt);
+	websAspDefine(T("getWlanM2UBuilt"), getWlanM2UBuilt);
+	websAspDefine(T("listCountryCodes"), listCountryCodes);
+	websAspDefine(T("is3t3r"), is3t3r);
+	websAspDefine(T("is5gh_support"), is5gh_support);
+	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
+	websAspDefine(T("getTXBFBuilt"), getTXBFBuilt);
+	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
+	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
+	websAspDefine(T("getBandSteeringBuilt"), getBandSteeringBuilt);
+	websAspDefine(T("getDFSBuilt"), getDFSBuilt);
+	websAspDefine(T("getRRMBuilt"), getRRMBuilt);
+	websAspDefine(T("getFTBuilt"), getFTBuilt);
+	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
+	websFormDefine(T("wirelessBasic"), wirelessBasic);
+	websFormDefine(T("disconnectSta"), disconnectSta);
+	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
+	websFormDefine(T("wirelessWds"), wirelessWds);
+	websFormDefine(T("wirelessApcli"), wirelessApcli);
+	websFormDefine(T("wirelessGetSecurity"), wirelessGetSecurity);
+	websFormDefine(T("APSecurity"), APSecurity);
+	websFormDefine(T("APDeleteAccessPolicyList"), APDeleteAccessPolicyList);
 }

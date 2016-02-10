@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <linux/ethtool.h>
+#include <linux/sockios.h>
 #include <arpa/inet.h>
 #include <asm/types.h>
 #include <linux/if.h>
@@ -274,10 +276,152 @@ static int getIfIsUp(char *ifname)
 		return 0;
 }
 
+#if defined(CONFIG_ETHTOOL)
+/*
+ * description: get link info from ethtool
+ */
+static int linkspeed(const char *ifname) {
+	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
+	int sd, iocret, speed = 10;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ecmd;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		speed = ecmd.speed;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+
+	close(sd);
+
+	/* validate nic link speed */
+	switch (speed) {
+	    case SPEED_10:
+	    case SPEED_100:
+#ifdef CONFIG_RALINK_MT7621
+	    case SPEED_1000:
+#endif
+
+	    return speed;
+	}
+
+	return 10;
+}
+
+static int linkduplex(const char *ifname) {
+	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
+	int sd, iocret, duplex = DUPLEX_HALF;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ecmd;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		duplex = ecmd.duplex;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+
+	close(sd);
+
+	/* validate duplex mode */
+	switch (duplex) {
+	    case DUPLEX_HALF:
+	    case DUPLEX_FULL:
+
+	    return duplex;
+	}
+
+	return DUPLEX_HALF;
+}
+
+static int linkstatus(const char *ifname) {
+	struct ethtool_value ethval = { .cmd = ETHTOOL_GLINK, };
+	int sd, iocret, ret = 0;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ethval;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		ret = ethval.data;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+
+	close(sd);
+
+	/* validate link status */
+	if (ret)
+	    return 1;
+	else
+	    return 0;
+}
+#endif
+
+static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_ETHTOOL)
+#if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
+	int port, first = 1;
+
+	for (port=4; port>-1; port--)
+	{
+		FILE *proc_file;
+		char link = '1', duplex = 'H';
+		int speed = 10;
+
+		/* switch phy to needed port */
+		proc_file = fopen(PROCREG_GMAC, "w");
+		if (!proc_file) {
+		    syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		    websWrite(wp, T(" "));
+		    return -1;
+		}
+		fprintf(proc_file, "%d", port);
+		fclose(proc_file);
+
+		if (linkstatus("eth2"))
+			link = '1';
+		else
+			link = '0';
+
+		if (linkduplex("eth2"))
+			duplex = 'F';
+		else
+			duplex = 'H';
+
+		speed = linkspeed("eth2");
+
+		/* write to web */
+		websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
+		first = 0;
+	}
+#endif
+#endif
+	return 0;
+}
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[512];
-	char_t result[64];
+	char_t result[32];
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 
 	if (fp == NULL)
@@ -560,7 +704,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	char_t port_buf[32];
 	static unsigned long long rx_count[6], tx_count[6];
 #ifdef CONFIG_RAETH_SNMPD
-	char buf[1024];
+	char buf[256];
 	FILE *fp;
 #endif
 	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
@@ -573,7 +717,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		return -1;
 	}
 
-	while (fgets(buf, sizeof(buf), fp)) {
+	while ((fgets(buf, sizeof(buf), fp)) != NULL) {
 		if (buf == NULL || buf[0] == '\n')
 		    continue;
 		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
@@ -586,17 +730,17 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 
 	websWrite(wp, T("<tr>\n"));
 	websWrite(wp, T("<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
-	for (i = 0; i < 5; i++)
+	for (i = 4; i >= 0; i--)
 	{
-		scale(port_buf, rx_count[4-i]);
+		scale(port_buf, rx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), port_buf);
 	}
 	websWrite(wp, T("</tr>\n"));
 	websWrite(wp, T("<tr>\n"));
 	websWrite(wp, T("<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
-	for (i = 0; i < 5; i++)
+	for (i = 4; i >= 0; i--)
 	{
-		scale(port_buf, tx_count[4-i]);
+		scale(port_buf, tx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), port_buf);
 	}
 	websWrite(wp, T("</tr>\n"));
@@ -620,6 +764,7 @@ void formDefineManagement(void)
 	websAspDefine(T("getAllNICStatisticASP"), getAllNICStatisticASP);
 	websAspDefine(T("getHWStatsBuilt"), getHWStatsBuilt);
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
+	websAspDefine(T("getPortStatus"), getPortStatus);
 	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
 #ifdef CONFIG_SYSLOGD
 	websFormDefine(T("getsyslog"), getsyslog);
