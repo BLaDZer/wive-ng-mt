@@ -109,6 +109,7 @@ static int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *
 {
 	struct iwreq wrq;
 
+	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ);
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
@@ -124,6 +125,7 @@ static int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *De
 {
 	struct iwreq wrq;
 
+	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ);
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t) ptr;

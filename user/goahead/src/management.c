@@ -263,6 +263,8 @@ static int getIfIsUp(char *ifname)
 		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
 		return -1;
 	}
+
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
@@ -270,6 +272,7 @@ static int getIfIsUp(char *ifname)
 		return -1;
 	}
 	close(skfd);
+
 	if (ifr.ifr_flags & IFF_UP)
 		return 1;
 	else
@@ -291,7 +294,7 @@ static int linkspeed(const char *ifname) {
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
 		return SPEED_10;
 
-	memset(&ifr,0,sizeof(ifr));
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
@@ -326,7 +329,7 @@ static int linkduplex(const char *ifname) {
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
 		return DUPLEX_HALF;
 
-	memset(&ifr,0,sizeof(ifr));
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
@@ -358,7 +361,7 @@ static int linkstatus(const char *ifname) {
 	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
 		return 0;
 
-	memset(&ifr,0,sizeof(ifr));
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	ifr.ifr_data = (caddr_t)&ethval;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
@@ -382,6 +385,11 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port, first = 1;
 
+	if (!getIfIsUp(IOCTL_IF)) {
+	    syslog(LOG_ERR, "ioctl iface down, %s\n", __FUNCTION__);
+	    return -1;
+	}
+
 	for (port=4; port>-1; port--)
 	{
 		char duplex;
@@ -398,10 +406,10 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
-		link = linkstatus("eth2");
-		speed = linkspeed("eth2");
+		link = linkstatus(IOCTL_IF);
+		speed = linkspeed(IOCTL_IF);
 
-		if (linkduplex("eth2"))
+		if (linkduplex(IOCTL_IF))
 			duplex = 'F';
 		else
 			duplex = 'H';

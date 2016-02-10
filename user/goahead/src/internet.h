@@ -12,6 +12,8 @@
 #define WAN_DEF "eth2.2"		/* internal ralink esw with vlan parted mode */
 #endif
 
+#define IOCTL_IF "eth2"
+
 #define BR_SIG	"br"
 #define ETH_SIG	"eth"
 #define VPN_SIG	"ppp"

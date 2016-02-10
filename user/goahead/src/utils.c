@@ -456,6 +456,7 @@ int getIfIp(char *ifname, char *if_addr)
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
 		close(skfd);
@@ -484,6 +485,7 @@ int getIfMac(char *ifname, char *if_hw)
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
@@ -515,6 +517,7 @@ int getIfNetmask(char *ifname, char *if_net)
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
