@@ -9,6 +9,8 @@
 #include	<time.h>
 #include	<signal.h>
 #include	<sys/ioctl.h>
+#include	<linux/ethtool.h>
+#include	<linux/sockios.h>
 #include	<arpa/inet.h>
 #include	<asm/types.h>
 #include	<linux/if.h>
@@ -902,6 +904,9 @@ static int getSysUptime(int eid, webs_t wp, int argc, char_t **argv)
 	    return -1;
 }
 
+/*
+ * description: write Current date, time
+ */
 static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
 {
 	struct tm *utime;
@@ -917,6 +922,81 @@ static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
                 utime->tm_mday, (utime->tm_mon + 1), (1900 + utime->tm_year));
 }
 
+#if defined(CONFIG_USER_ETHTOOL)
+/*
+ * description: get link info from ethtool
+ */
+static int linkspeed(const char *ifname) {
+	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
+	int sd, iocret, speed = 10;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ecmd;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		speed = ecmd.speed;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+	close(sd);
+	return speed;
+}
+
+static int linkduplex(const char *ifname) {
+	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
+	int sd, iocret, duplex = DUPLEX_HALF;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ecmd;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		duplex = ecmd.duplex;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+
+	if (duplex == DUPLEX_UNKNOWN)
+	    duplex = DUPLEX_HALF;
+
+	close(sd);
+	return duplex;
+}
+
+static int linkstatus(const char *ifname) {
+	struct ethtool_value ethval = { .cmd = ETHTOOL_GLINK, };
+	int sd, iocret, ret = 0;
+	struct ifreq ifr;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
+
+	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
+		return -1;
+
+	memset(&ifr,0,sizeof(ifr));
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	ifr.ifr_data = (caddr_t)&ethval;
+	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
+		ret = ethval.data;
+	else
+		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+	close(sd);
+	return ret;
+}
+#endif
+
 static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_USER_ETHTOOL)
@@ -925,13 +1005,9 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	for (port=4; port>-1; port--)
 	{
-		int rc;
-		char *pos;
-		char buf[1536];
-		FILE *fp, *proc_file;
-
-		/* clear and init buffer */
-		memset(buf, ' ', sizeof(char)*1536);
+		FILE *proc_file;
+		char link = '1', duplex = 'H';
+		int speed = 10;
 
 		/* switch phy to needed port */
 		proc_file = fopen(PROCREG_GMAC, "w");
@@ -943,57 +1019,21 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
-		/* read status from ethtool */
-		if ((fp = popen("ethtool eth2", "r")) == NULL) {
-			syslog(LOG_ERR, "no ethtool, %s\n", __FUNCTION__);
-			websWrite(wp, T(" "));
-			return -1;
-		}
-		rc = fread(buf, 1, sizeof(buf), fp);
-		pclose(fp);
+		if (linkstatus("eth2"))
+			link = '1';
+		else
+			link = '0';
 
-		/* if read < 200 chars = read not correct */
-		if (rc < 200 || buf == NULL) {
-			syslog(LOG_ERR, "no ethtool pipe read, %s\n", __FUNCTION__);
-			websWrite(wp, T(" "));
-			return -1;
-		} else {
-			char link = '0', duplex = 'H';
-			int speed = 10;
+		if (linkduplex("eth2"))
+			duplex = 'F';
+		else
+			duplex = 'H';
 
-			/* get Link status */
-			if ((pos = strstr(buf, "Link detected: ")) != NULL) {
-				pos += strlen("Link detected: ");
-				if(*pos == 'y')
-				    link = '1';
-			}
+		speed = linkspeed("eth2");
 
-			/* get speed */
-			if ((link != '0') && (pos = strstr(buf, "Speed: ")) != NULL) {
-				pos += strlen("Speed: ");
-				if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == 'M')
-					speed = 10;
-				else if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == '0' && *(pos+3) == 'M')
-					speed = 100;
-				else if(*pos == '1' && *(pos+1) == '0' && *(pos+2) == '0' && *(pos+3) == '0' && *(pos+4) == 'M') {
-					speed = 1000;
-					duplex = 'F'; /* gigabit link support only full duplex */
-				}
-			}
-
-			/* get duplex */
-			if ((link != '0') && (speed != 1000) && (pos = strstr(buf, "Duplex: ")) != NULL) {
-				pos += strlen("Duplex: ");
-				if(*pos == 'F')
-				    duplex = 'F';
-				else
-				    duplex = 'H';
-			}
-
-			/* write to web */
-			websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
-			first = 0;
-		}
+		/* write to web */
+		websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
+		first = 0;
 	}
 #endif
 #endif

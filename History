@@ -1632,7 +1632,7 @@
 36) goahead: log errors to syslog for easy debug.<br>
 37) goahead: fix system and internal syslog functions conflict.<br>
 38) goahead: ignore USR1,USR2,HUP signals.<br>
-39) goahead: optimize getPortStatus function.<br>
+39) goahead: rewrite getPortStatus function for direct get data from kernel ethtool via ioctl.<br>
 40) switch: add support egress tag/untag.<br>
 41) libnvram: add nvram_fromdef function for load selected value from defaults to nvram.<br>
 42) libnvram: remove nvram_buf_get function, allways read from nvram_get allrady buffered.<br>
