@@ -386,7 +386,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	{
 		FILE *proc_file;
 		char link = '1', duplex = 'H';
-		int speed = 10;
+		int link = 0; speed = 10;
 
 		/* switch phy to needed port */
 		proc_file = fopen(PROCREG_GMAC, "w");
@@ -398,20 +398,17 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		fprintf(proc_file, "%d", port);
 		fclose(proc_file);
 
-		if (linkstatus("eth2"))
-			link = '1';
-		else
-			link = '0';
+		link = linkstatus("eth2");
+		speed = linkspeed("eth2");
 
 		if (linkduplex("eth2"))
 			duplex = 'F';
 		else
 			duplex = 'H';
 
-		speed = linkspeed("eth2");
 
 		/* write to web */
-		websWrite(wp, T("%s%c,%d,%c"), (first) ? "" : ";", link, speed, duplex);
+		websWrite(wp, T("%s%d,%d,%c"), (first) ? "" : ";", link, speed, duplex);
 		first = 0;
 	}
 #endif
