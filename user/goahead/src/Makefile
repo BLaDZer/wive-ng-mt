@@ -13,8 +13,6 @@ CONF_H	= $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 UCONF_H	= $(ROOTDIR)/config/autoconf.h
 BUSYCONF_H = $(ROOTDIR)/user/busybox/include/autoconf.h
 
-CFLAGS  += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
-
 ifdef CONFIG_RALINK_MT7620
 ifdef CONFIG_RAETH_ESW
 CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
