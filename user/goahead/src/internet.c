@@ -1912,7 +1912,7 @@ static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char lanif[IFNAMSIZ] = "";
 	char mask[16] = "";
 
-	strncpy(lanif, getLanIfName(), IFNAMSIZ);
+	strcpy(lanif, getLanIfName());
 
 	if (getIfIPv6(lanif, address, mask) != 0)
 		return websWrite(wp, T(""));
@@ -1932,13 +1932,13 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
 		if (!strcmp(opmode, "1")) {
 			if (vpn_mode_enabled() == 1)
-				strncpy(wanif, getPPPIfName(), IFNAMSIZ);
+				strcpy(wanif, getPPPIfName());
 			else
-				strncpy(wanif, getWanIfName(), IFNAMSIZ);
+				strcpy(wanif, getWanIfName());
 		} else if (!strcmp(opmode, "2")) {
-			strncpy(wanif, "6rd", IFNAMSIZ);
+			strcpy(wanif, "6rd");
 		} else if (!strcmp(opmode, "3")) {
-			strncpy(wanif, "sit0", IFNAMSIZ);
+			strcpy(wanif, "sit0");
 		}
 	} else {
 		while (fgets(tmpif, sizeof(tmpif), fp)) {
@@ -1946,7 +1946,7 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 			    continue;
 			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) ||
 				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
-				strncpy(wanif, strip_space(tmpif), IFNAMSIZ);
+				strcpy(wanif, strip_space(tmpif));
 				break;
 			}
 		}

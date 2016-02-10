@@ -377,7 +377,8 @@ static int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *Dev
 	struct iwreq wrq;
 
 	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ);
+	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 

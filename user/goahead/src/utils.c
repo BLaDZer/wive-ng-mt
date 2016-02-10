@@ -456,8 +456,9 @@ int getIfIp(char *ifname, char *if_addr)
 		return -1;
 	}
 
-	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	ifr.ifr_addr.sa_family = AF_INET;
 	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
@@ -485,8 +486,9 @@ int getIfMac(char *ifname, char *if_hw)
 		return -1;
 	}
 
-	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	ifr.ifr_addr.sa_family = AF_INET;
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
@@ -517,8 +519,9 @@ int getIfNetmask(char *ifname, char *if_net)
 		return -1;
 	}
 
-	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	ifr.ifr_addr.sa_family = AF_INET;
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);

@@ -265,7 +265,8 @@ static int getIfIsUp(char *ifname)
 	}
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
@@ -295,7 +296,8 @@ static int linkspeed(const char *ifname) {
 		return SPEED_10;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		speed = ecmd.speed;
@@ -330,7 +332,8 @@ static int linkduplex(const char *ifname) {
 		return DUPLEX_HALF;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		duplex = ecmd.duplex;
@@ -362,7 +365,8 @@ static int linkstatus(const char *ifname) {
 		return 0;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 	ifr.ifr_data = (caddr_t)&ethval;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		ret = ethval.data;

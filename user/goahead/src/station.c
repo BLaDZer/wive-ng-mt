@@ -109,8 +109,9 @@ static int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *
 {
 	struct iwreq wrq;
 
-	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ);
+	memset(&wrq, 0, sizeof(ifr));
+	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 	wrq.u.data.flags = OidQueryCode;
@@ -126,7 +127,8 @@ static int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *De
 	struct iwreq wrq;
 
 	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ);
+	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t) ptr;
 	wrq.u.data.flags = OidQueryCode | OID_GET_SET_TOGGLE;
