@@ -20,6 +20,8 @@ endif
 endif
 
 ifdef CONFIG_RALINK_MT7621
+# balloc not multithread safe, disable for 7621 and 7623
+CFLAGS += -DNO_BALLOC
 ifdef CONFIG_MT7530_GSW
 CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
 endif

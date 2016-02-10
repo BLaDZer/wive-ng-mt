@@ -863,8 +863,8 @@ typedef struct {
  *
  */
 
-extern void 	 bclose();
-extern int 		 bopen(void *buf, int bufsize, int flags);
+extern void bclose();
+extern int bopen(void *buf, int bufsize, int flags);
 
 /*
  *	Define NO_BALLOC to turn off our balloc module altogether

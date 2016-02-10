@@ -25,7 +25,6 @@
  */  
 
 /********************************* Includes ***********************************/
-#define IN_BALLOC
 
 #include	<stdarg.h>
 #include	<stdlib.h>
