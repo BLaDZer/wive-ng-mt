@@ -36,6 +36,7 @@
 </table>
     <!-- =================  PHYS NETWORK  ================= -->
 <table class="form" id="statisticHWStats">
+  <tbody>
   <tr>
     <td class="title" colspan="6" id="statisPorts">Physical ports</td>
   </tr>
@@ -43,4 +44,5 @@
     <input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
   </tr>
   <% getHWStatistic(); %>
+  </tbody>
 </table>
