@@ -384,9 +384,9 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	for (port=4; port>-1; port--)
 	{
+		char duplex;
+		int link, speed;
 		FILE *proc_file;
-		char duplex = 'H';
-		int link = 0; speed = 10;
 
 		/* switch phy to needed port */
 		proc_file = fopen(PROCREG_GMAC, "w");
