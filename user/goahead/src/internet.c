@@ -699,7 +699,7 @@ static int getSysLogBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getETHTOOLBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_USER_ETHTOOL
+#ifdef CONFIG_ETHTOOL
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

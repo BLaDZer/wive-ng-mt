@@ -922,7 +922,7 @@ static int getSysDateTime(int eid, webs_t wp, int argc, char_t **argv)
                 utime->tm_mday, (utime->tm_mon + 1), (1900 + utime->tm_year));
 }
 
-#if defined(CONFIG_USER_ETHTOOL)
+#if defined(CONFIG_ETHTOOL)
 /*
  * description: get link info from ethtool
  */
@@ -999,7 +999,7 @@ static int linkstatus(const char *ifname) {
 
 static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_USER_ETHTOOL)
+#if defined(CONFIG_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port, first = 1;
 
