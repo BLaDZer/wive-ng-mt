@@ -1,7 +1,7 @@
 PROG        = usb_modeswitch
 VERS        = 2.3.0
 LIBUSB      = $(ROOTDIR)/lib/libusb
-CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
+CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections
 LDFLAGS	    += -Wl,--gc-sections
 LIBS        = -l usb-1.0
 OBJS        = usb_modeswitch.c

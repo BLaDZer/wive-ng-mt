@@ -68,7 +68,6 @@ CFLAG= -DOPENSSL_NO_ERR -Os -DL_ENDIAN -mips32r2 -mno-branch-likely -G 0 -fno-bu
 CFLAG+= -fPIC
 CFLAG+=-ffunction-sections -fdata-sections -fno-tree-slsr -fno-delete-null-pointer-checks -fno-var-tracking-assignments -fno-strict-overflow
 CFLAG+=-funit-at-a-time -ffast-math -fforce-addr -fconserve-stack
-CFLAG+=-fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAG+= -Wl,--gc-sections
 DEPFLAG= -DOPENSSL_NO_ANS1 -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CAST -DOPENSSL_NO_CMS -DOPENSSL_NO_EC -DOPENSSL_NO_EC2M -DOPENSSL_NO_ECDH -DOPENSSL_NO_ECDSA -DOPENSSL_NO_GMP -DOPENSSL_NO_IDEA -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_RMD160 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SEED -DOPENSSL_NO_SHA0 -DOPENSSL_NO_SMIME -DOPENSSL_NO_SPEED -DOPENSSL_NO_SRP -DOPENSSL_NO_SSL2 -DOPENSSL_NO_SSL3 -DOPENSSL_NO_TS -DOPENSSL_NO_WHIRLPOOL
 PEX_LIBS= 

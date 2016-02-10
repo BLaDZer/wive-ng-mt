@@ -1,6 +1,6 @@
 STRIP = $(CROSS)strip
 
-CFLAGS += -Os -Wall -ffunction-sections -fdata-sections -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
+CFLAGS += -Wall -ffunction-sections -fdata-sections
 LDFLAGS	+= -Wl,--gc-sections
 
 ifneq ("$(LIBWRAP)", "")

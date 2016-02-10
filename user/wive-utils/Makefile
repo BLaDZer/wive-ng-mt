@@ -6,7 +6,6 @@
 UTILSLIST = cpu mcprobe ipget
 
 #allways agressive optimize for size
-CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables -femit-struct-debug-baseonly -fno-var-tracking
 CFLAGS	+= -ffunction-sections -fdata-sections
 LDFLAGS	+= -Wl,--gc-sections
 
