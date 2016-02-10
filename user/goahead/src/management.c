@@ -380,9 +380,9 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	unsigned int port, first = 1;
+	int port, first = 1;
 
-	for (port=4; port>=0; port--)
+	for (port=4; port>-1; port--)
 	{
 		char duplex;
 		int link, speed;
