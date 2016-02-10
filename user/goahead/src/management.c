@@ -438,7 +438,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 	{
 		char *semiColon;
 		char ifname[IFNAMSIZ];
-		unsigned long long int rx_bytes = 0, rx_packets = 0, rx_errs = 0, rx_drops = 0, rx_fifo = 0, rx_frame = 0,
+		unsigned long long rx_bytes = 0, rx_packets = 0, rx_errs = 0, rx_drops = 0, rx_fifo = 0, rx_frame = 0,
 			tx_bytes = 0, tx_packets = 0, tx_errs = 0, tx_drops = 0, tx_fifo = 0, tx_colls = 0, tx_carrier = 0, rx_multi = 0;
 
 		if (buf == NULL || buf[0] == '\n')
@@ -555,16 +555,16 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 struct cpu_stats {
-	unsigned long long int user;    // user (application) usage
-	unsigned long long int nice;    // user usage with "niced" priority
-	unsigned long long int system;  // system (kernel) level usage
-	unsigned long long int idle;    // CPU idle and no disk I/O outstanding
-	unsigned long long int iowait;  // CPU idle but with outstanding disk I/O
-	unsigned long long int irq;     // Interrupt requests
-	unsigned long long int sirq;    // Soft interrupt requests
-	unsigned long long int steal;   // Invol wait, hypervisor svcing other virtual CPU
-	unsigned long long int busy;
-	unsigned long long int total;
+	unsigned long long user;    // user (application) usage
+	unsigned long long nice;    // user usage with "niced" priority
+	unsigned long long system;  // system (kernel) level usage
+	unsigned long long idle;    // CPU idle and no disk I/O outstanding
+	unsigned long long iowait;  // CPU idle but with outstanding disk I/O
+	unsigned long long irq;     // Interrupt requests
+	unsigned long long sirq;    // Soft interrupt requests
+	unsigned long long steal;   // Invol wait, hypervisor svcing other virtual CPU
+	unsigned long long busy;
+	unsigned long long total;
 };
 
 static void getcpudata(struct cpu_stats *st)
@@ -591,7 +591,7 @@ static void getcpudata(struct cpu_stats *st)
 	fclose(fp);
 }
 
-static unsigned long long int prevbusy, prevtotal;
+static unsigned long long prevbusy, prevtotal;
 static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	struct cpu_stats cpu;
