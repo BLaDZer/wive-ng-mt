@@ -40,7 +40,7 @@
     <td class="title" colspan="6" id="statisPorts">Physical ports</td>
   </tr>
   <tr id="statisticPorts">
+    <input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
   </tr>
   <% getHWStatistic(); %>
 </table>
-<input type="hidden" id="inpWanPort" value='<% getPortStatus(); %>'>
