@@ -129,6 +129,16 @@ td.head_filter {
 	color: #333333;
 }
 
+td.port_status {
+	background-position: center center;
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 15%;
+	text-align: center;
+	vertical-align: middle;
+	cursor: default;
+}
+
 td {
 	font-size: 9pt; 
 	font-family: Arial, Helvetica, sans-serif;

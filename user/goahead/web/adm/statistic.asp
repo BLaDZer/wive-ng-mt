@@ -10,17 +10,6 @@
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
-<style type="text/css">
-td.port_status {
-	background-position: center center;
-	background-repeat: no-repeat;
-	height: 24px;
-	width: 15%;
-	text-align: center;
-	vertical-align: middle;
-	cursor: default;
-}
-</style>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
