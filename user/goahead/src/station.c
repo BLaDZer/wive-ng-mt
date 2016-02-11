@@ -109,7 +109,7 @@ static int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *
 {
 	struct iwreq wrq;
 
-	memset(&wrq, 0, sizeof(ifr));
+	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
 	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
