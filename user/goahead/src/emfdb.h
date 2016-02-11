@@ -46,7 +46,7 @@ typedef struct dbTable_s {
 	char_t	**columnNames;
 	int		*columnTypes;
 	int		nRows;
-	int		**rows;
+	intptr_t	**rows;
 } dbTable_t;
 
 /********************************** Prototypes ********************************/

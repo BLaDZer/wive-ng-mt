@@ -706,21 +706,12 @@ int socketSelect(int sid, int timeout)
 {
 	socket_t		*sp;
 	struct timeval	tv;
-	fd_mask 		*readFds, *writeFds, *exceptFds;
-	int 			all, len, nwords, index, bit, nEvents;
+	fd_set			readFds, writeFds, exceptFds;
+	int 			all, nEvents;
 
-/*
- *	Allocate and zero the select masks
- */
-	nwords = (socketHighestFd + NFDBITS) / NFDBITS;
-	len = nwords * sizeof(int);
-
-	readFds = balloc(B_L, len);
-	memset(readFds, 0, len);
-	writeFds = balloc(B_L, len);
-	memset(writeFds, 0, len);
-	exceptFds = balloc(B_L, len);
-	memset(exceptFds, 0, len);
+	FD_ZERO(&readFds);
+	FD_ZERO(&writeFds);
+	FD_ZERO(&exceptFds);
 
 	tv.tv_sec = timeout / 1000;
 	tv.tv_usec = (timeout % 1000) * 1000;
@@ -744,18 +735,11 @@ int socketSelect(int sid, int timeout)
 			}
 		}
 		a_assert(sp);
-
-/*
- * 		Initialize the ready masks and compute the mask offsets.
- */
-		index = sp->sock / (NBBY * sizeof(fd_mask));
-		bit = 1 << (sp->sock % (NBBY * sizeof(fd_mask)));
-
 /*
  * 		Set the appropriate bit in the ready masks for the sp->sock.
  */
 		if (sp->handlerMask & SOCKET_READABLE) {
-			readFds[index] |= bit;
+			FD_SET(sp->sock, &readFds);
 			nEvents++;
 			if (socketInputBuffered(sid) > 0) {
 				tv.tv_sec = 0;
@@ -763,11 +747,11 @@ int socketSelect(int sid, int timeout)
 			}
 		}
 		if (sp->handlerMask & SOCKET_WRITABLE) {
-			writeFds[index] |= bit;
+			FD_SET(sp->sock, &writeFds);
 			nEvents++;
 		}
 		if (sp->handlerMask & SOCKET_EXCEPTION) {
-			exceptFds[index] |= bit;
+			FD_SET(sp->sock, &exceptFds);		
 			nEvents++;
 		}
 		if (! all) {
@@ -779,8 +763,8 @@ int socketSelect(int sid, int timeout)
  * 	Wait for the event or a timeout. Reset nEvents to be the number of actual
  *	events now.
  */
-	nEvents = select(socketHighestFd + 1, (fd_set *) readFds,
-		(fd_set *) writeFds, (fd_set *) exceptFds, &tv);
+	nEvents = select(socketHighestFd + 1, &readFds,
+		&writeFds, &exceptFds, &tv);
 
 	if (nEvents > 0) {
 		if (all) {
@@ -795,16 +779,13 @@ int socketSelect(int sid, int timeout)
 				}
 			}
 
-			index = sp->sock / (NBBY * sizeof(fd_mask));
-			bit = 1 << (sp->sock % (NBBY * sizeof(fd_mask)));
-
-			if (readFds[index] & bit || socketInputBuffered(sid) > 0) {
+			if (FD_ISSET(sp->sock, &readFds) || socketInputBuffered(sid) > 0) {
 				sp->currentEvents |= SOCKET_READABLE;
 			}
-			if (writeFds[index] & bit) {
+			if (FD_ISSET(sp->sock, &writeFds)) {
 				sp->currentEvents |= SOCKET_WRITABLE;
 			}
-			if (exceptFds[index] & bit) {
+			if (FD_ISSET(sp->sock, &exceptFds)) {
 				sp->currentEvents |= SOCKET_EXCEPTION;
 			}
 			if (! all) {
@@ -812,10 +793,6 @@ int socketSelect(int sid, int timeout)
 			}
 		}
 	}
-
-	bfree(B_L, readFds);
-	bfree(B_L, writeFds);
-	bfree(B_L, exceptFds);
 
 	return nEvents;
 }

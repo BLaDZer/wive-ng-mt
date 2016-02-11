@@ -41,12 +41,12 @@ static int			schedMax;
  *	Evaluate a script
  */
 
-int scriptEval(int engine, char_t *cmd, char_t **result, int chan)
+int scriptEval(int engine, char_t *cmd, char_t **result, void* chan)
 {
-	int		ejid;
+	intptr_t	ejid;
 
 	if (engine == EMF_SCRIPT_EJSCRIPT) {
-		ejid = (int) chan;
+		ejid = (intptr_t) chan;
       /*
        * NOTE -- to disable better reporting of ASP errors, change the
        * following line of code to

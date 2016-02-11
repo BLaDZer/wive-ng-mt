@@ -191,7 +191,7 @@ void dbClose(int did)
 void dbZero(int did)
 {
 	int			table, row, column, nRows, nColumns;
-	int			*pRow;
+	intptr_t		*pRow;
 	dbTable_t	*pTable;
 
 /*
@@ -214,7 +214,7 @@ void dbZero(int did)
 					for (column = 0; column < nColumns; column++) {
 						if (pTable->columnTypes[column] == T_STRING) {
 							bfreeSafe(B_L, (char_t *)(pRow[column]));
-							pRow[column] = (int)NULL;
+							pRow[column] = 0;
 						}
 					}
 
@@ -261,7 +261,7 @@ int dbSearchStr(int did, char_t *tablename,
 
 	if (column >= 0) {
 		char_t	*compareVal;
-		int		row, *pRow;
+		intptr_t row, *pRow;
 /*
  *		Scan through rows until we find a match.
  *		Note that some of these rows may be deleted!
@@ -358,7 +358,7 @@ int dbDeleteRow(int did, char_t *tablename, int row)
 	nRows = pTable->nRows;
 
 	if ((row >= 0) && (row < nRows)) {
-		int *pRow = pTable->rows[row];
+		intptr_t *pRow = pTable->rows[row];
 
 		if (pRow) {
 			int	column = 0;
@@ -466,7 +466,8 @@ int dbGetTableNrow(int did, char_t *tablename)
 
 int dbReadInt(int did, char_t *table, char_t *column, int row, int *returnValue)
 {
-	int			colIndex, *pRow, tid;
+	int			colIndex, tid;
+	intptr_t		*pRow;
 	dbTable_t	*pTable;
 
 	a_assert(table);
@@ -531,7 +532,8 @@ int dbReadStr(int did, char_t *table, char_t *column, int row,
 
 int dbWriteInt(int did, char_t *table, char_t *column, int row, int iData)
 {
-	int			tid, colIndex, *pRow;
+	int			tid, colIndex;
+	intptr_t	*pRow;
 	dbTable_t	*pTable;
 
 	a_assert(table);
@@ -587,7 +589,7 @@ int dbWriteInt(int did, char_t *table, char_t *column, int row, int iData)
 int dbWriteStr(int did, char_t *table, char_t *column, int row, char_t *s)
 {
 	int			tid, colIndex;
-	int			*pRow;
+	intptr_t		*pRow;
 	char_t		*ptr;
 	dbTable_t	*pTable;
 
@@ -652,7 +654,7 @@ int dbWriteStr(int did, char_t *table, char_t *column, int row, char_t *s)
  *	This allocated string will be deleted when the row is deleted.
  */
 	ptr = bstrdup(B_L, s);
-	pRow[colIndex] = (int)ptr;
+	pRow[colIndex] = (intptr_t) ptr;
 
 	return 0;
 }
@@ -696,7 +698,8 @@ static int dbWriteKeyValue(int fd, char_t *key, char_t *value)
 int dbSave(int did, char_t *filename, int flags)
 {
 	int			row, column, nColumns, nRows, fd, rc;
-	int			*colTypes, *pRow, nRet, tid;
+	int			*colTypes, nRet, tid;
+	intptr_t		*pRow;
 	char_t		*path, *tmpFile, *tmpNum;
 	char_t		**colNames;
 	dbTable_t	*pTable;
