@@ -471,8 +471,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			continue;
 
 		// now output statistics
-		websWrite(wp, T("<tr>"));
-		websWrite(wp, T("<td class=\"head\" colspan=\"2\">%s</td>"), ifname);
+		websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">%s</td>"), ifname);
 
 		// extract scale and print statistic
 		if (sscanf(semiColon, "%llu%llu%llu%llu%llu%llu%llu%*d%llu%llu%llu%llu%llu%llu%llu",
@@ -491,9 +490,8 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			scale(result, tx_packets);
 			websWrite(wp, T("<td>%s</td>"), result);
 			scale(result, tx_bytes);
-			websWrite(wp, T("<td>%s</td>"), result);
+			websWrite(wp, T("<td>%s</td>\n</tr>\n"), result);
 		}
-		websWrite(wp, T("</tr>\n"));
 	}
 	fclose(fp);
 
