@@ -162,8 +162,6 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 					// Read all ifaces and check match
 					while (fgets(line, sizeof(line), fd))
 					{
-						if (line == NULL || line[0] == '\n')
-							continue;
 						if(strstr(line,"ppp_modem"))
 						{
 							status++; // Status is set to 'connected'

@@ -445,9 +445,6 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		unsigned long long rx_bytes = 0, rx_packets = 0, rx_errs = 0, rx_drops = 0, rx_fifo = 0, rx_frame = 0,
 			tx_bytes = 0, tx_packets = 0, tx_errs = 0, tx_drops = 0, tx_fifo = 0, tx_colls = 0, tx_carrier = 0, rx_multi = 0;
 
-		if (buf == NULL || buf[0] == '\n')
-			continue;
-
 		// find : , extract ifname, move pointer to next block semicolon
 		semiColon = strchr(buf, ':');
 		if (semiColon == NULL || (*semiColon++ = 0, sscanf(buf, "%s", ifname) != 1)) {
@@ -709,9 +706,11 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		return -1;
 	}
 
+	// skip 32bit counters
+	fgets(buf, sizeof(buf), fp);
+	fgets(buf, sizeof(buf), fp);
+
 	while ((fgets(buf, sizeof(buf), fp)) != NULL) {
-		if (buf == NULL || buf[0] == '\n')
-		    continue;
 		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
 		    continue;
 		if (6 == sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]))

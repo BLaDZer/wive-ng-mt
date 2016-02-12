@@ -532,8 +532,6 @@ int iptStatList(int eid, webs_t wp, int argc, char_t **argv)
 
 		while (fgets(line, sizeof(line), fd))
 		{
-			if (line == NULL || line[0] == '\n')
-			    continue;
 			lines++;
 #ifdef IPT_SHORT_ACCOUNT
 			sscanf(line,

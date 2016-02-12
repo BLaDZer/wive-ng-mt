@@ -190,8 +190,6 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 					// Read all ifaces and check match
 					while (fgets(line, sizeof(line), fd)) {
-						if (line == NULL || line[0] == '\n')
-						    continue;
 						// Filter only 'pppXX'
 						if (sscanf(line, " ppp%d", &ppp_id)==1) {
 							// Check if ppp interface has number at least 8
@@ -342,8 +340,6 @@ static int getDns(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp, T(""));
 	while (fgets(buf, sizeof(buf), fp))
 	{
-		if (buf == NULL || buf[0] == '\n')
-			continue;
 		if (sscanf(buf, "%s %s", ns_str, dns) != 2)
 			continue;
 		if (strcasecmp(ns_str, "nameserver") != 0)
@@ -772,8 +768,6 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 	FILE *fp = fopen("/proc/net/route", "r");
 
 	while (fgets(buff, sizeof(buff), fp)) {
-		if (buff == NULL || buff[0] == '\n')
-			continue;
 		if (nl) {
 			int ifl = 0;
 			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0') {
@@ -1179,8 +1173,6 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 	// metric[7], category[8], interface[9], idle[10], comment[11], new[12]
 	while (fgets(buff, sizeof(buff), fp))
 	{
-		if (buff == NULL || buff[0] == '\n')
-			continue;
 		if (nl > 0)
 		{
 			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
@@ -1942,8 +1934,6 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 		}
 	} else {
 		while (fgets(tmpif, sizeof(tmpif), fp)) {
-			if (tmpif == NULL || tmpif[0] == '\n')
-			    continue;
 			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) ||
 				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
 				strcpy(wanif, strip_space(tmpif));
