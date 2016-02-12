@@ -666,7 +666,7 @@ int socketSelect(int sid, int timeout)
  *	like other, nice select() calls. So, if WIN, sleep.
  */
 	if (nEvents == 0) {
-		Sleep(timeout);
+		sleep(timeout);
 		return 0;
 	}
 

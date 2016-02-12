@@ -313,15 +313,6 @@ void websCgiCleanup()
  */
 				while ((cgip->fplacemark == 0) && (nTries < 100)) {
 					websCgiGatherOutput(cgip);
-/*
- *					There are some cases when we detect app exit 
- *					before the file is ready. 
- */
-					if (cgip->fplacemark == 0) {
-#ifdef WIN
-						Sleep(10);
-#endif /* WIN*/
-					}
 					nTries++;
 				}
 				if (cgip->fplacemark == 0) {

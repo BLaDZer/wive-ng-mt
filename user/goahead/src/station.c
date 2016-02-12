@@ -189,7 +189,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 			close(s);
 			return -1;
 		}
-		Sleep(2);
+		sleep(2);
 		QueryCount++;
 	}
 
@@ -219,7 +219,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 	// wait a few seconds to get all AP.
-	Sleep(2);
+	sleep(2);
 
 	//step 4
 	ret = OidQueryInformation(RT_OID_WE_VERSION_COMPILED, s, "ra0", &we_version, sizeof(we_version));
@@ -243,7 +243,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 		ret = OidQueryInformation(OID_802_11_BSSID_LIST, s, "ra0", pBssidList, lBufLen);
 		if (errno == EAGAIN)
 		{
-			Sleep(1);
+			sleep(1);
 			// fprintf(stderr, "errno == EAGAIN\n");
 			EAGAIN_Count++;
 			if (EAGAIN_Count>25)
@@ -1806,7 +1806,7 @@ void initStaConnection(void)
 
 			memcpy(G_Bssid, Bssid, sizeof(Bssid));
 		}
-		Sleep(1);
+		sleep(1);
 	}
 	close(s);
 
@@ -2502,7 +2502,7 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	if (ret < 0)
 		syslog(LOG_ERR, "Set OID_802_11_BSSID_LIST_SCAN error = %d", ret);
 
-	Sleep(3);
+	sleep(3);
 	if (G_SSID.SsidLength > 0)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &G_SSID, sizeof(NDIS_802_11_SSID));

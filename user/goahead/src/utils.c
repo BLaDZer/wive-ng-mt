@@ -265,27 +265,6 @@ int getNums(char *value, char delimit)
 }
 
 /*
- * nanosleep(2) don't depend on signal SIGALRM and could cooperate with
- * other SIGALRM-related functions(ex. setitimer(2))
- */
-unsigned int Sleep(unsigned int secs)
-{
-	int rc;
-	struct timespec ts, remain;
-	ts.tv_sec  = secs;
-	ts.tv_nsec = 0;
-
-sleep_again:
-	rc = nanosleep(&ts, &remain);
-	if(rc == -1 && errno == EINTR){
-		ts.tv_sec = remain.tv_sec;
-		ts.tv_nsec = remain.tv_nsec;
-		goto sleep_again;
-	}
-	return 0;
-}
-
-/*
  * configure LED blinking with proper frequency (privatly use only)
  *   on: number of ticks that LED is on
  *   off: number of ticks that LED is off

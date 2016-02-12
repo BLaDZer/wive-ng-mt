@@ -255,7 +255,6 @@
 #ifdef NW
 	#define fd_mask			fd_set
 	#define INADDR_NONE		-1l
-	#define Sleep			delay
 
 	#define __NO_FCNTL		1
 

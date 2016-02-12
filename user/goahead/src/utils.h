@@ -58,7 +58,6 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit);
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len);
 int getNums(char *value, char delimit);
 int ledAlways(int gpio, int on);
-unsigned int Sleep(unsigned int secs);
 char *racat(char *s, int i);
 char *strip_space(char *str);
 void arplookup(char *ip, char *arp);
