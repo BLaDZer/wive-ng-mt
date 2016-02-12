@@ -480,11 +480,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			    &tx_bytes, &tx_packets, &tx_errs, &tx_drops, &tx_fifo, &tx_colls, &tx_carrier) != 14) {
 			// not extracted - print n/a
 			strcpy(result, "n/a");
-			websWrite(wp, T("<td>%s</td>"), result);
-			websWrite(wp, T("<td>%s</td>"), result);
-			websWrite(wp, T("<td>%s</td>"), result);
-			websWrite(wp, T("<td>%s</td>"), result);
-			websWrite(wp, T("</tr>\n"));
+			websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n"), result, result, result, result);
 			continue;
 		} else {
 			// scale and print result
