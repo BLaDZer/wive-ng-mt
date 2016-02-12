@@ -39,8 +39,6 @@
 #define STORAGE_PATH	"/media"
 #define STORAGE_SIGN	"/media/sd"
 
-#define DEBUG(x) do{fprintf(stderr, #x); fprintf(stderr, ": %s\n", x); }while(0)
-
 static int dir_count;
 static int part_count;
 static int media_dir_count;

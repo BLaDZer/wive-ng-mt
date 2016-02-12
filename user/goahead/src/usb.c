@@ -25,8 +25,6 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query);
 static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv);
 #endif
 
-#define DEBUG(x) do{fprintf(stderr, #x); fprintf(stderr, ": %s\n", x); }while(0)
-
 #ifdef CONFIG_USER_P910ND
 static void printersrv(webs_t wp, char_t *path, char_t *query)
 {
