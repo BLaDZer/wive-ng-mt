@@ -387,7 +387,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	int port, first = 1;
+	int port;
 
 	if (!getIfIsUp(IOCTL_IF)) {
 	    syslog(LOG_ERR, "ioctl iface down, %s\n", __FUNCTION__);
@@ -397,8 +397,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	for (port=4; port>-1; port--)
 	{
 		char buf[16];
-		char duplex;
-		int link, speed;
+		int link, speed, duplex;
 		FILE *proc_file;
 
 		/* switch phy to needed port */
@@ -408,22 +407,16 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		    websWrite(wp, T(" "));
 		    return -1;
 		}
-		fprintf(proc_file, "%d", port);
+		fprintf(proc_file, "%d\n", port);
 		fclose(proc_file);
 
 		link = linkstatus(IOCTL_IF);
 		speed = linkspeed(IOCTL_IF);
-
-		if (linkduplex(IOCTL_IF))
-			duplex = 'F';
-		else
-			duplex = 'H';
+		duplex = linkduplex(IOCTL_IF);
 
 		/* create string in new buffer and write to web (this more safe of direct write) */
-		snprintf(buf, sizeof(buf), ("%s%d,%d,%c"), (first) ? "" : ";", link, speed, duplex);
+		snprintf(buf, sizeof(buf), ("%s%d,%d,%s"), (port == 4) ? "" : ";", link, speed, (duplex == 1) ? "F" : "H");
 		websWrite(wp, T("%s"), buf);
-
-		first = 0;
 	}
 #endif
 #endif
