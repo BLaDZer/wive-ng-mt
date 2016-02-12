@@ -396,6 +396,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	for (port=4; port>-1; port--)
 	{
+		char buf[16];
 		char duplex;
 		int link, speed;
 		FILE *proc_file;
@@ -418,9 +419,10 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		else
 			duplex = 'H';
 
+		/* create string in new buffer and write to web (this more safe of direct write) */
+		snprintf(buf, sizeof(buf), ("%s%d,%d,%c"), (first) ? "" : ";", link, speed, duplex);
+		websWrite(wp, T("%s"), buf);
 
-		/* write to web */
-		websWrite(wp, T("%s%d,%d,%c"), (first) ? "" : ";", link, speed, duplex);
 		first = 0;
 	}
 #endif
@@ -545,9 +547,7 @@ static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 	get_memdata(&mem);
 
 	snprintf(buf, sizeof(buf), "%lu", mem.total);
-	websWrite(wp, T("%s"), buf);
-
-	return 0;
+	return websWrite(wp, T("%s"), buf);
 }
 
 static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
@@ -558,9 +558,7 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	get_memdata(&mem);
 
 	snprintf(buf, sizeof(buf), "%lu", mem.free);
-	websWrite(wp, T("%s"), buf);
-
-	return 0;
+	return websWrite(wp, T("%s"), buf);
 }
 
 struct cpu_stats {
@@ -612,13 +610,11 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 	if (cpu.total-prevtotal > 0)
 	    outd=((((float)cpu.busy-(float)prevbusy)/((float)cpu.total-(float)prevtotal))*100);
 
-	snprintf(buf, sizeof(buf), "%.1f", outd);
-	websWrite(wp, T("%s %%"), buf);
-
 	prevbusy=cpu.busy;
 	prevtotal=cpu.total;
 
-	return 0;
+	snprintf(buf, sizeof(buf), "%.1f", outd);
+	return websWrite(wp, T("%s %%"), buf);
 }
 
 static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
