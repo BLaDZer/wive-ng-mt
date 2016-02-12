@@ -729,16 +729,13 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	fclose(fp);
 #endif
 
-	websWrite(wp, T("<tr>\n"));
-	websWrite(wp, T("<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
+	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
 	for (i = 4; i >= 0; i--)
 	{
 		scale(port_buf, rx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), port_buf);
 	}
-	websWrite(wp, T("</tr>\n"));
-	websWrite(wp, T("<tr>\n"));
-	websWrite(wp, T("<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
+	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
 	for (i = 4; i >= 0; i--)
 	{
 		scale(port_buf, tx_count[i]);
@@ -750,15 +747,6 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 
 void formDefineManagement(void)
 {
-	websFormDefine(T("setSysAdm"), setSysAdm);
-	websFormDefine(T("setSysLang"), setSysLang);
-	websFormDefine(T("NTP"), NTP);
-#ifdef CONFIG_DATE
-	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost);
-#endif
-#ifdef CONFIG_USER_INADYN
-	websFormDefine(T("DDNS"), DDNS);
-#endif
 	websAspDefine(T("getMemLeftASP"), getMemLeftASP);
 	websAspDefine(T("getMemTotalASP"), getMemTotalASP);
 	websAspDefine(T("getCpuUsageASP"), getCpuUsageASP);
@@ -766,10 +754,19 @@ void formDefineManagement(void)
 	websAspDefine(T("getHWStatsBuilt"), getHWStatsBuilt);
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
 	websAspDefine(T("getPortStatus"), getPortStatus);
-	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
+#ifdef CONFIG_DATE
+	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost);
+#endif
+#ifdef CONFIG_USER_INADYN
+	websFormDefine(T("DDNS"), DDNS);
+#endif
 #ifdef CONFIG_SYSLOGD
 	websFormDefine(T("getsyslog"), getsyslog);
 	websFormDefine(T("clearlog"), clearlog);
 	websFormDefine(T("setuplog"), setuplog);
 #endif
+	websFormDefine(T("setSysAdm"), setSysAdm);
+	websFormDefine(T("setSysLang"), setSysLang);
+	websFormDefine(T("NTP"), NTP);
+	websFormDefine(T("LoadDefaultSettings"), LoadDefaultSettings);
 }
