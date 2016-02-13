@@ -419,7 +419,7 @@ char* getWanIfName(void)
  *            if_addr - a 16-byte buffer to store ip address
  * description: fetch ip address, netmask associated to given interface name
  */
-int getIfIp(char *ifname, char *if_addr)
+int getIfIp(const char *ifname, char *if_addr)
 {
 	struct ifreq ifr;
 	int skfd = 0;
@@ -448,7 +448,7 @@ int getIfIp(char *ifname, char *if_addr)
  *            if_addr - a 18-byte buffer to store mac address
  * description: fetch mac address according to given interface name
  */
-int getIfMac(char *ifname, char *if_hw)
+int getIfMac(const char *ifname, char *if_hw)
 {
 	struct ifreq ifr;
 	char *ptr;
@@ -482,7 +482,7 @@ int getIfMac(char *ifname, char *if_hw)
  *            if_net - a 16-byte buffer to store subnet mask
  * description: fetch subnet mask associated to given interface name
  */
-int getIfNetmask(char *ifname, char *if_net)
+int getIfNetmask(const char *ifname, char *if_net)
 {
 	struct ifreq ifr;
 	int skfd = 0;
@@ -544,7 +544,7 @@ int vpn_mode_enabled(void)
 /*
  * description: get the value "WAN" or "LAN" the interface is belong to.
  */
-char *getLanWanNamebyIf(char *ifname)
+char *getLanWanNamebyIf(const char *ifname)
 {
 	if(!strcmp(ifname, getLanIfName()))
 		return "LAN";

@@ -64,10 +64,10 @@ void arplookup(char *ip, char *arp);
 char* getLanIfName(void);
 char* getWanIfName(void);
 char* getPPPIfName(void);
-char *getLanWanNamebyIf(char *ifname);
-int getIfIp(char *ifname, char *if_addr);
-int getIfMac(char *ifname, char *if_hw);
-int getIfNetmask(char *ifname, char *if_net);
+char *getLanWanNamebyIf(const char *ifname);
+int getIfIp(const char *ifname, char *if_addr);
+int getIfMac(const char *ifname, char *if_hw);
+int getIfNetmask(const char *ifname, char *if_net);
 int vpn_mode_enabled(void);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
 #endif

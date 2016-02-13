@@ -1856,7 +1856,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
  *            netmask - buffer to store prefix
  * description: fetch ipv6 address
  */
-int getIfIPv6(char *ifname, char *if_addr, char *netmask)
+int getIfIPv6(const char *ifname, char *if_addr, char *netmask)
 {
 	FILE *fp;
 	unsigned char ipv6[16];
