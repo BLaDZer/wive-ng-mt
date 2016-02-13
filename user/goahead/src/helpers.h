@@ -14,6 +14,7 @@
 #include <sys/reboot.h>
 #include <sys/types.h>
 #include <syslog.h>
+#include <inttypes.h>
 
 #include "libnvram.h"
 
@@ -195,6 +196,7 @@ int freeSplitter(string_split_t *buf);
 char *strip_space(char *str);
 char *racat(char *s, int i);
 int checkSemicolon(char *str);
+char *scale(uint64_t size);
 
 void STFs(int nvram, int index, char *flash_key, char *value);
 void outputTimerForReload(webs_t wp, char_t *url, long delay);

@@ -16,33 +16,6 @@
 #include "internet.h"
 #include "management.h"
 
-static void scale(char_t * strBuf, unsigned long long data)
-{
-    double p1;
-
-    if (data > (unsigned long long)1099511627775) {
-	p1=(double)data / (double)1099511627776;
-	snprintf(strBuf, 32, "%.2f T", p1);
-    } else {
-	if (data > (unsigned long long)1073741823) {
-	    p1=(double)data / (double)1073741824;
-	    snprintf(strBuf, 32, "%.2f G", p1);
-	} else {
-	    if (data > (unsigned long long)1048575) {
-		p1=(double)data / (double)1048576;
-		snprintf(strBuf, 32, "%.2f M", p1);
-	    } else {
-		if (data > 1023) {
-		    p1=(double)data / (double)1024;
-		    snprintf(strBuf, 32, "%.2f k", p1);
-		} else {
-		    snprintf(strBuf, 32, "%lld", data);
-		}
-	    }
-	}
-    }
-}
-
 /*
  * goform/setSysAdm
  */
@@ -438,7 +411,6 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char buf[512];
-	char_t result[32];
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 
 	if (fp == NULL)
@@ -481,19 +453,26 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			   &rx_bytes, &rx_packets, &rx_errs, &rx_drops, &rx_fifo, &rx_frame, &rx_multi,
 			    &tx_bytes, &tx_packets, &tx_errs, &tx_drops, &tx_fifo, &tx_colls, &tx_carrier) != 14) {
 			// not extracted - print n/a
-			strcpy(result, "n/a");
-			websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n"), result, result, result, result);
+			websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
 			continue;
 		} else {
-			// scale and print result
-			scale(result, rx_packets);
-			websWrite(wp, T("<td>%s</td>"), result);
-			scale(result, rx_bytes);
-			websWrite(wp, T("<td>%s</td>"), result);
-			scale(result, tx_packets);
-			websWrite(wp, T("<td>%s</td>"), result);
-			scale(result, tx_bytes);
-			websWrite(wp, T("<td>%s</td>\n</tr>\n"), result);
+			char buf[64];
+			char *tmpstr;
+
+			// scale and print result (packets do not need scale)
+			snprintf(buf, sizeof(buf), "<td>%llu</td>", rx_packets);
+			websWrite(wp, T("%s"), buf);
+
+			tmpstr = scale((uint64_t)rx_bytes);
+			websWrite(wp, T("<td>%s</td>"), tmpstr);
+			free(tmpstr);
+
+			snprintf(buf, sizeof(buf), "<td>%llu</td>", tx_packets);
+			websWrite(wp, T("%s"), buf);
+
+			tmpstr = scale((uint64_t)tx_bytes);
+			websWrite(wp, T("<td>%s</td>\n</tr>\n"), tmpstr);
+			free(tmpstr);
 		}
 	}
 	fclose(fp);
@@ -703,7 +682,6 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	int i;
-	char_t port_buf[32];
 	unsigned long long rx_count[6], tx_count[6];
 #ifdef CONFIG_RAETH_SNMPD
 	char buf[256];
@@ -744,14 +722,16 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
 	for (i = 4; i >= 0; i--)
 	{
-		scale(port_buf, rx_count[i]);
-		websWrite(wp, T("<td>%s</td>\n"), port_buf);
+		char *tmpstr = scale((uint64_t)rx_count[i]);
+		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
+		free(tmpstr);
 	}
 	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
 	for (i = 4; i >= 0; i--)
 	{
-		scale(port_buf, tx_count[i]);
-		websWrite(wp, T("<td>%s</td>\n"), port_buf);
+		char *tmpstr = scale((uint64_t)tx_count[i]);
+		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
+		free(tmpstr);
 	}
 	websWrite(wp, T("</tr>\n"));
 	return 0;
