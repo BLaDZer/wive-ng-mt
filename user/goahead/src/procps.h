@@ -16,7 +16,7 @@ typedef struct cmdline_t
 
 	int     argc;   // arguments count
 	char  **argv;   // pointer to arguments
-	
+
 	int     dynamic; // dynamic flag
 	struct cmdline_t *next; // pointer to next cmd line
 } cmdline_t;

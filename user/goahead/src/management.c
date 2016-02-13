@@ -9,12 +9,10 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "utils.h"
-#include "helpers.h"
-
 #ifdef USER_MANAGEMENT_SUPPORT
 #include "um.h"
 #endif
+#include "helpers.h"
 #include "internet.h"
 #include "management.h"
 

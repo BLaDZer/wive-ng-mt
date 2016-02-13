@@ -11,9 +11,8 @@
 #include	<sys/ioctl.h>
 #include	<arpa/inet.h>
 
-#include	"utils.h"
-#include	"internet.h"
-#include 	"helpers.h"
+#include	"helpers.h"
+#include	"oid.h"
 
 static int default_shown_mbssid[3]  = {0,0,0};
 

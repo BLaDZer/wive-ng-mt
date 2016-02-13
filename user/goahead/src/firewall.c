@@ -16,10 +16,8 @@
 #include <ctype.h>
 #include <dirent.h>
 
-#include "utils.h"
-#include "firewall.h"
-#include "internet.h"
 #include "helpers.h"
+#include "firewall.h"
 
 static int isMacValid(char *str)
 {

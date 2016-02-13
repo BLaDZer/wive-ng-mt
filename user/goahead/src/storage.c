@@ -27,11 +27,9 @@
 #include	<dirent.h>
 #include	<arpa/inet.h>
 
-#include 	"utils.h"
-#include	"usb.h"
-#include 	"internet.h"
-#include        "firewall.h"
 #include	"helpers.h"
+#include        "firewall.h"
+#include	"usb.h"
 
 #define	LSDIR_INFO	"/tmp/lsdir"
 #define	MOUNT_INFO	"/proc/mounts"

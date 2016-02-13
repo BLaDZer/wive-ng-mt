@@ -17,13 +17,12 @@
 #include	<string.h>
 #include	<dirent.h>
 
-#include	"utils.h"
+#include	"helpers.h"
 #include	"internet.h"
 #include	"procps.h"
 #include 	"firewall.h"
 #include	"management.h"
 #include	"station.h"
-#include	"helpers.h"
 
 /*** VPN statuses ***/
 typedef struct vpn_status_t

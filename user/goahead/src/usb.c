@@ -11,11 +11,9 @@
 #include	<dirent.h>
 #include	<arpa/inet.h>
 
-#include 	"utils.h"
-#include	"usb.h"
-#include        "procps.h"
-#include 	"internet.h"
 #include	"helpers.h"
+#include        "procps.h"
+#include	"usb.h"
 
 #ifdef CONFIG_USER_P910ND
 static void printersrv(webs_t wp, char_t *path, char_t *query);

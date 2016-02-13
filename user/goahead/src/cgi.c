@@ -23,8 +23,8 @@
 #include	<sys/wait.h>
 
 #include	"wsIntrn.h"
-#include	"utils.h"
 #include	"uemf.h"
+#include	"helpers.h"
 
 /************************************ Locals **********************************/
 typedef struct {				/* Struct for CGI tasks which have completed */

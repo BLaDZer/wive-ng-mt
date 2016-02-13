@@ -24,7 +24,7 @@
 #ifdef WEBS_SSL_SUPPORT
 	#include	"websSSL.h"
 #endif
-#include        "utils.h"
+#include	"helpers.h"
 
 extern socket_t **socketList;
 

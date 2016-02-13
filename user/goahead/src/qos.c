@@ -3,9 +3,6 @@
 #include    <string.h>
 #include    <dirent.h>
 
-#include    "utils.h"
-#include    "internet.h"
-#include    "firewall.h"
 #include    "helpers.h"
 
 const parameter_fetch_t QoS_args[] =

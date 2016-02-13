@@ -25,6 +25,7 @@
 #include        <sys/ioctl.h>
 
 #include	"utils.h"
+#include	"helpers.h"
 #include	"uemf.h"
 #include	"wsIntrn.h"
 #include	"internet.h"

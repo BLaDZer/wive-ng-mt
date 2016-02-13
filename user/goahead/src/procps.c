@@ -6,7 +6,21 @@
 #include <errno.h>
 
 #include "procps.h"
-#include "helpers.h"
+
+// Read unsigned number
+// Returns -1 on error
+static long readUnsigned(const char *str)
+{
+	long result = 0;
+	while ((*str)!='\0')
+	{
+		char ch = *(str++);
+		if ((ch<'0') || (ch>'9'))
+			return -1;
+		result = (result*10) + (ch-'0');
+	}
+	return result;
+}
 
 // Initialize command-line buffer
 void procps_init(cmdline_t *src)

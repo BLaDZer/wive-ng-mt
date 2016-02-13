@@ -20,7 +20,7 @@
 #ifdef DIGEST_ACCESS_SUPPORT
 #include	"websda.h"
 #endif
-#include	"utils.h"
+#include	"helpers.h"
 
 /********************************** Defines ***********************************/
 /*
