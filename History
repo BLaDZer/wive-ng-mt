@@ -1704,6 +1704,7 @@
 108) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
 109) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
 110) kernel: proc: return -ENOMEM when inode allocation failed.<br>
+111) kernel: proc: no need to initialize proc_inode->fd in proc_get_inode().<br>
 <br>
 <br>
 <br>
