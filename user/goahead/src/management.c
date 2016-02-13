@@ -252,11 +252,18 @@ invalid_values:
  * arguments: ifname - interface name
  * description: return 1 if interface is up
  *              return 0 if interface is down
+ *              return -1 if error
  */
-static int getIfIsUp(char *ifname)
+static int getIfIsUp(const char *ifname)
 {
 	struct ifreq ifr;
 	int skfd;
+
+	if(!ifname || ifname[0]=='\0')
+		return -1;
+
+	if(strlen(ifname) > IFNAMSIZ)
+		return -1;
 
 	skfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (skfd == -1) {
@@ -288,6 +295,9 @@ static int linkspeed(const char *ifname) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
 	int sd, iocret, speed = SPEED_10;
 	struct ifreq ifr;
+
+	if(!ifname || ifname[0]=='\0')
+		return SPEED_10;
 
 	if(strlen(ifname) > IFNAMSIZ)
 		return SPEED_10;
@@ -325,6 +335,9 @@ static int linkduplex(const char *ifname) {
 	int sd, iocret, duplex = DUPLEX_HALF;
 	struct ifreq ifr;
 
+	if(!ifname || ifname[0]=='\0')
+		return DUPLEX_HALF;
+
 	if(strlen(ifname) > IFNAMSIZ)
 		return DUPLEX_HALF;
 
@@ -358,6 +371,9 @@ static int linkstatus(const char *ifname) {
 	int sd, iocret, ret = 0;
 	struct ifreq ifr;
 
+	if(!ifname || ifname[0]=='\0')
+		return 0;
+
 	if(strlen(ifname) > IFNAMSIZ)
 		return 0;
 
@@ -389,7 +405,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port;
 
-	if (!getIfIsUp(IOCTL_IF)) {
+	if (getIfIsUp(IOCTL_IF) != 1) {
 	    syslog(LOG_ERR, "ioctl iface down, %s\n", __FUNCTION__);
 	    return -1;
 	}
