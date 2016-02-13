@@ -42,7 +42,7 @@ void arplookup(char *ip, char *arp)
     }
 
     strcpy(arp, "00:00:00:00:00:00");
-    while(fgets(buf, sizeof(buf), fp)) {
+    while((fgets(buf, sizeof(buf), fp)) != NULL) {
         char ip_entry[32], hw_type[8],flags[8], hw_address[32];
         sscanf(buf, "%s %s %s %s", ip_entry, hw_type, flags, hw_address);
         if(!strcmp(ip, ip_entry)) {
@@ -350,7 +350,7 @@ char* getLanIfName(void)
 	fp = fopen("/tmp/lan_if_name", "r");
 	if (fp) {
 	    /* get first lan_if in file */
-	    while (fgets(lan_if, sizeof(lan_if), fp)) {
+	    while ((fgets(lan_if, sizeof(lan_if), fp)) != NULL) {
 		if ((strstr(lan_if, ETH_SIG) != NULL) || (strstr(lan_if, BR_SIG) != NULL)) {
 		    fclose(fp);
 		    return strip_space(lan_if);
@@ -384,7 +384,7 @@ char* getWanIfName(void)
 	fp = fopen("/tmp/wan_if_name", "r");
 	if (fp) {
 	    /* get first wan_if in file */
-	    while (fgets(wan_if, sizeof(wan_if), fp)) {
+	    while ((fgets(wan_if, sizeof(wan_if), fp)) != NULL) {
 		if ((strstr(wan_if, ETH_SIG) != NULL) || (strstr(wan_if, BR_SIG) != NULL)) {
 		    fclose(fp);
 		    return strip_space(wan_if);
@@ -516,7 +516,7 @@ char* getPPPIfName(void)
 	fp = fopen("/tmp/vpn_if_name", "r");
 	if (fp) {
 	    /* get first ppp_if in file */
-	    while (fgets(ppp_if, sizeof(ppp_if), fp)) {
+	    while ((fgets(ppp_if, sizeof(ppp_if), fp)) != NULL) {
 		if (strstr(ppp_if, VPN_SIG) != NULL) {
 		    fclose(fp);
 		    return strip_space(ppp_if);

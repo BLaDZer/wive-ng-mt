@@ -90,7 +90,7 @@ static unsigned int getMTDPartSize(char *part)
 		fprintf(stderr, "mtd support not enable?");
 		return 0;
 	}
-	while(fgets(buf, sizeof(buf), fp)){
+	while((fgets(buf, sizeof(buf), fp)) != NULL){
 		sscanf(buf, "%s %s %s %s", dev, size, erase, name);
 		if(!strcmp(name, part)){
 			result = strtol(size, NULL, 16);

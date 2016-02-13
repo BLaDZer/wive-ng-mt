@@ -145,11 +145,8 @@ void websHeader(webs_t wp)
 	// Copy /style/normal_ws.css
 	if ((fd = fopen("/web/style/normal_ws.css", "r")) != NULL) {
 		websWrite(wp, T("<style type=\"text/css\">\n"));
-		while (fgets(line, sizeof(line), fd)) {
-			if (line == NULL)
-			    continue;
+		while ((fgets(line, sizeof(line), fd)) != NULL)
 			websWrite(wp, T("%s\n"), line);
-		}
 		websWrite(wp, T("</style>\n"));
 	} else {
 		websWrite(wp, T("<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"));
@@ -159,11 +156,8 @@ void websHeader(webs_t wp)
 	if ((fd = fopen("/web/js/ajax.js", "r")) != NULL) {
 		websWrite(wp, T("<script type=\"text/javascript\">\n"));
 		websWrite(wp, T("// Here is script copied from file /js/ajax.js\n"));
-		while (fgets(line, sizeof(line), fd)) {
-			if (line == NULL)
-			    continue;
+		while ((fgets(line, sizeof(line), fd)) != NULL)
 			websWrite(wp, T("%s\n"), line);
-		}
 	} else {
 		websWrite(wp, T("<script type=\"text/javascript\" src=\"/js/ajax.js\">\n"));
 	}

@@ -229,7 +229,7 @@ CFLAGS += -fno-aggressive-loop-optimizations
 CFLAGS += -fno-var-tracking-assignments
 
 # fix ~10% performance regression at 4.8.x and 4.7.x gcc
-CFLAGS += -fno-tree-slsr
+CFLAGS += -fno-tree-slsr -fno-tree-partial-pre
 
 # more safe codegeneration
 CFLAGS += -fno-delete-null-pointer-checks

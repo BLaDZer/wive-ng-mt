@@ -404,7 +404,6 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		proc_file = fopen(PROCREG_GMAC, "w");
 		if (!proc_file) {
 		    syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
-		    websWrite(wp, T(" "));
 		    return -1;
 		}
 		fprintf(proc_file, "%d\n", port);
@@ -510,7 +509,7 @@ static void get_memdata(struct mem_stats *st)
 		return;
 	}
 
-	if (fgets(line_buf, sizeof(line_buf), fp) && sscanf(line_buf, "MemTotal: %lu %*s", &st->total) == 1) {
+	if ((fgets(line_buf, sizeof(line_buf), fp) != NULL) && sscanf(line_buf, "MemTotal: %lu %*s", &st->total) == 1) {
 		fgets(line_buf, sizeof(line_buf), fp);
 		sscanf(line_buf, "MemFree: %lu %*s", &st->free);
 
@@ -571,7 +570,7 @@ static void getcpudata(struct cpu_stats *st)
 		return;
 	}
 
-	if (fgets(line_buf, sizeof(line_buf), fp)) {
+	if ((fgets(line_buf, sizeof(line_buf), fp)) != NULL) {
 		if (sscanf(line_buf, "cpu %llu %llu %llu %llu %llu %llu %llu %llu",
 			&st->user, &st->nice, &st->system, &st->idle, &st->iowait, &st->irq, &st->sirq, &st->steal) >= 4) {
 			/* calculate busy/total */
@@ -691,7 +690,7 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	int i;
 	char_t port_buf[32];
-	static unsigned long long rx_count[6], tx_count[6];
+	unsigned long long rx_count[6], tx_count[6];
 #ifdef CONFIG_RAETH_SNMPD
 	char buf[256];
 	FILE *fp;
@@ -710,11 +709,20 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	fgets(buf, sizeof(buf), fp);
 	fgets(buf, sizeof(buf), fp);
 
-	while ((fgets(buf, sizeof(buf), fp)) != NULL) {
-		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]))
-		    continue;
-		if (6 == sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]))
-		    break;
+	// get rx 64 bit counter
+	if((fgets(buf, sizeof(buf), fp) == NULL) ||
+	    (sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]) != 6)) {
+		syslog(LOG_ERR, "rx64 format string error, %s\n", __FUNCTION__);
+		fclose(fp);
+		return -1;
+	}
+
+	// get tx 64 bit counter
+	if((fgets(buf, sizeof(buf), fp) == NULL ) ||
+	    (sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]) != 6)) {
+		syslog(LOG_ERR, "tx64 format string error, %s\n", __FUNCTION__);
+		fclose(fp);
+		return -1;
 	}
 	fclose(fp);
 #endif

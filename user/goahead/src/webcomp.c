@@ -100,7 +100,7 @@ static int compile(char_t *fileList, char_t *prefix)
  *	Open each input file and compile each web page
  */
 	nFile = 0;
-	while (fgets(file, sizeof(file), lp)) {
+	while ((fgets(file, sizeof(file), lp)) != NULL) {
 		if (file == NULL)
 			continue;
 		if ((p = strchr(file, '\n')) || (p = strchr(file, '\r'))) {
@@ -146,7 +146,7 @@ static int compile(char_t *fileList, char_t *prefix)
 		return -1;
 	}
 	nFile = 0;
-	while (fgets(file, sizeof(file), lp)) {
+	while ((fgets(file, sizeof(file), lp)) != NULL) {
 		if (file == NULL)
 			continue;
 		if ((p = strchr(file, '\n')) || (p = strchr(file, '\r'))) {
