@@ -2182,7 +2182,8 @@ static struct dentry *proc_map_files_lookup(struct inode *dir,
 	if (!vma)
 		goto out_no_vma;
 
-	result = proc_map_files_instantiate(dir, dentry, task, vma->vm_file);
+	if (vma->vm_file)
+		result = proc_map_files_instantiate(dir, dentry, task, vma->vm_file);
 
 out_no_vma:
 	up_read(&mm->mmap_sem);
