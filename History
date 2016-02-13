@@ -1709,6 +1709,7 @@
 113) kernel: proc: don't show nonexistent capabilities.<br>
 114) kernel: proc: fix inconsistent lock state.<br>
 115) kernel: proc: allow proc_free_inum to be called from any context.<br>
+116) kernel: proc: make proc_fd_permission() thread-friendly.<br>
 <br>
 <br>
 <br>
