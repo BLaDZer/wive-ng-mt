@@ -273,12 +273,12 @@
  *	Constants and limits. Also FNAMESIZE and PATHSIZE are currently defined 
  *	in param.h to be 128 and 512
  */
-#define TRACE_MAX			(4096 - 48)
+#define TRACE_MAX		(4096 - 48)
 #define VALUE_MAX_STRING	(4096 - 48)
-#define SYM_MAX				(512)
-#define XML_MAX				4096			/* Maximum size for tags/tokens */
-#define BUF_MAX				4096			/* General sanity check for bufs */
-#define FMT_STATIC_MAX		256				/* Maximum for fmtStatic calls */
+#define SYM_MAX			(512)
+#define XML_MAX			4096			/* Maximum size for tags/tokens */
+#define BUF_MAX			4096			/* General sanity check for bufs */
+#define FMT_STATIC_MAX		256			/* Maximum for fmtStatic calls */
 
 #if (defined (LITTLEFOOT) || defined (WEBS))
 #define LF_BUF_MAX		(510)
@@ -597,6 +597,7 @@ typedef enum {
 #pragma pack(2)
 #endif /* _NO_PACK */
 
+#define FLOATING_POINT_SUPPORT
 typedef struct {
 
 	union {
@@ -627,7 +628,7 @@ typedef struct {
 #endif /* __NO_PACK */
 
 /*
- *	Allocation flags 
+ *	Allocation flags
  */
 #define VALUE_ALLOCATE		0x1
 
@@ -684,9 +685,9 @@ typedef struct {
 	unsigned char	*servp;				/* Pointer to start of data */
 	unsigned char	*endp;				/* Pointer to end of data */
 	unsigned char	*endbuf;			/* Pointer to end of buffer */
-	int				buflen;				/* Length of ring queue */
-	int				maxsize;			/* Maximum size */
-	int				increment;			/* Growth increment */
+	int		buflen;				/* Length of ring queue */
+	int		maxsize;			/* Maximum size */
+	int		increment;			/* Growth increment */
 } ringq_t;
 
 /*
@@ -694,7 +695,7 @@ typedef struct {
  */
 #ifdef	B_STATS
 #ifndef B_L
-#define B_L				T(__FILE__), __LINE__
+#define B_L			T(__FILE__), __LINE__
 #define B_ARGS_DEC		char_t *file, int line
 #define B_ARGS			file, line
 #endif /* B_L */
@@ -707,9 +708,9 @@ typedef struct {
 typedef struct {
 	union {
 		void	*next;							/* Pointer to next in q */
-		int		size;							/* Actual requested size */
+		int	size;							/* Actual requested size */
 	} u;
-	int			flags;							/* Per block allocation flags */
+	int		flags;							/* Per block allocation flags */
 } bType;
 
 #define B_SHIFT			4					/* Convert size to class */
