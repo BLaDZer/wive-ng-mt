@@ -872,7 +872,7 @@ static int websParseFirst(webs_t wp, char_t *text)
 
 static void websParseRequest(webs_t wp)
 {
-	char_t	*authType, *upperKey, *cp, *browser, *lp, *key, *value;
+	char_t	*authType, *upperKey, *cp, *lp, *key, *value;
 
 	a_assert(websValid(wp));
 
@@ -886,7 +886,6 @@ static void websParseRequest(webs_t wp)
  *	We rewrite the header as we go for non-local requests.  NOTE: this
  * 	modifies the header string directly and tokenizes each line with '\0'.
  */
-	browser = NULL;
 	for (lp = (char_t*) wp->header.servp; lp && *lp; ) {
 		cp = lp;
 		if ((lp = gstrchr(lp, '\n')) != NULL) {

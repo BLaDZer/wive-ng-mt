@@ -59,7 +59,7 @@ static void *memmem(const void *buf, size_t buf_len, const void *byte_line, size
 	return NULL;
 }
 
-int findStrInFile(char *filename, int offset, unsigned char *str, int str_len)
+int findStrInFile(char *filename, int offset, char *str, int str_len)
 {
 	int pos = 0, rc;
 	FILE *fp;

@@ -237,7 +237,7 @@ void dbZero(int did)
 int dbSearchStr(int did, char_t *tablename, 
 	char_t *colName, char_t *value, int flags)
 {
-	int			tid, nRows, nColumns, column;
+	int			tid, nRows, column;
    int match = 0;
 	dbTable_t	*pTable;
 
@@ -254,7 +254,6 @@ int dbSearchStr(int did, char_t *tablename,
 		return DB_ERR_TABLE_NOT_FOUND;
 	}
 
-	nColumns = pTable->nColumns;
 	nRows = pTable->nRows;
 	column = GetColumnIndex(tid, colName);
 	a_assert (column >= 0);
@@ -399,7 +398,7 @@ int dbDeleteRow(int did, char_t *tablename, int row)
 
 int dbSetTableNrow(int did, char_t *tablename, int nNewRows)
 {
-	int			nRet, tid, nRows, nColumns;
+	int		nRet, tid, nRows;
 	dbTable_t	*pTable;
 
 	a_assert(tablename);
@@ -416,7 +415,6 @@ int dbSetTableNrow(int did, char_t *tablename, int nNewRows)
 
 	a_assert(pTable);
 	if (pTable) {
-		nColumns = pTable->nColumns;
 		nRows = pTable->nRows;
 		nRet = 0;
 

@@ -387,7 +387,7 @@ static void socketAccept(socket_t *sp)
 {
 	struct sockaddr_in	addr;
 	socket_t 			*nsp;
-	size_t				len;
+	unsigned int			len;
 	char				*pString;
 	int 				newSock, nid;
 
@@ -402,7 +402,7 @@ static void socketAccept(socket_t *sp)
  *	Accept the connection and prevent inheriting by children (F_SETFD)
  */
 	len = sizeof(struct sockaddr_in);
-	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr, (int *) &len)) < 0) {
+	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0) {
 		return;
 	}
 #ifndef __NO_FCNTL
@@ -452,8 +452,9 @@ static void socketAccept(socket_t *sp)
 int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 {
 	struct sockaddr_in 	server;
-	socket_t			*sp;
-	int 				len, bytesRead;
+	socket_t		*sp;
+	unsigned int 		len;
+	int 			bytesRead;
 
 	a_assert(buf);
 	a_assert(errCode);
@@ -903,12 +904,13 @@ static int socketDoEvent(socket_t *sp)
 int socketSetBlock(int sid, int on)
 {
 	socket_t		*sp;
-	unsigned long	flag;
-	int				iflag;
 	int				oldBlock;
+#if (defined (CE) || defined (WIN))
+	unsigned long	flag;
+	int iflag;
 
 	flag = iflag = !on;
-
+#endif
 	if ((sp = socketPtr(sid)) == NULL) {
 		a_assert(0);
 		return 0;

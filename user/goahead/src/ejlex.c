@@ -206,15 +206,14 @@ int ejLexGetToken(ej_t* ep, int state)
 
 static int getLexicalToken(ej_t* ep, int state)
 {
-	ringq_t		*inq, *tokq;
+	ringq_t		*tokq;
 	ejinput_t*	ip;
-	int			done, tid, c, quote, style;
+	int		done, tid, c, quote, style;
 
 	a_assert(ep);
 	ip = ep->input;
 	a_assert(ip);
 
-	inq = &ip->script;
 	tokq = &ip->tokbuf;
 
 	ep->tid = -1;

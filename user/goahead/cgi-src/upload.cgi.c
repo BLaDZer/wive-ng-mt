@@ -148,7 +148,7 @@ static int checkimage(char *imagefile, int offset, int len)
 	struct stat sbuf;
 
 	int  data_len;
-	char *data;
+	unsigned char *data;
 	unsigned char *ptr;
 	unsigned long checksum;
 
@@ -195,7 +195,7 @@ static int checkimage(char *imagefile, int offset, int len)
 		return 0;
 	}
 
-	data = (char *)hdr;
+	data = (unsigned char *)hdr;
 
 	checksum = ntohl(hdr->ih_hcrc);
 	hdr->ih_hcrc = htonl(0);	/* clear for re-calculation */
@@ -211,7 +211,7 @@ static int checkimage(char *imagefile, int offset, int len)
 	/*
 	 *  handle Data CRC32
 	 */
-	data = (char *)(ptr + sizeof(image_header_t));
+	data = (unsigned char *)(ptr + sizeof(image_header_t));
 	data_len  = len - sizeof(image_header_t) ;
 
 	if (crc32 (0, data, data_len) != ntohl(hdr->ih_dcrc))

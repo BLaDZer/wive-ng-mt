@@ -210,13 +210,12 @@ static void formDisplayUser(webs_t wp, char_t *path, char_t *query)
 static int aspGenerateUserList(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*userid;
-	int		row, nBytesSent, nBytes;
+	int	nBytesSent, nBytes;
 
 	a_assert(wp);
 
 	nBytes = websWrite(wp, 
 		T("<SELECT NAME=\"user\" SIZE=\"3\" TITLE=\"Select a User\">"));
-	row = 0;
 	userid = umGetFirstUser();
 	nBytesSent = 0;
 
@@ -353,11 +352,10 @@ static void formDeleteGroup(webs_t wp, char_t *path, char_t *query)
 static int aspGenerateGroupList(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*group;
-	int		row, nBytesSent, nBytes;
+	int	nBytesSent, nBytes;
 
 	a_assert(wp);
 
-	row = 0;
 	nBytesSent = 0;
 	nBytes = websWrite(wp, 
 		T("<SELECT NAME=\"group\" SIZE=\"3\" TITLE=\"Select a Group\">"));
@@ -476,11 +474,11 @@ static int aspGenerateAccessLimitList(int eid, webs_t wp,
 									  int argc, char_t **argv)
 {
 	char_t	*url;
-	int		row, nBytesSent, nBytes;
+	int	nBytesSent, nBytes;
 
 	a_assert(wp);
 
-	row = nBytesSent = 0;
+	nBytesSent = 0;
 	url = umGetFirstAccessLimit();
 	nBytes = websWrite(wp, 
 		T("<SELECT NAME=\"url\" SIZE=\"3\" TITLE=\"Select a URL\">"));

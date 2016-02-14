@@ -114,7 +114,7 @@ void websEncode64(char_t *outbuf, char_t *string, int outlen)
 {
 	unsigned long	shiftbuf;
 	char_t			*cp, *op;
-	int				x, i, j, shift;
+	int			i, j, shift;
 
 	op = outbuf;
 	*op = '\0';
@@ -133,7 +133,6 @@ void websEncode64(char_t *outbuf, char_t *string, int outlen)
  */
 		shift = 18;
 		for (i = ++j; i < 4 && op < &outbuf[outlen] ; i++) {
-			x = (shiftbuf >> shift) & 0x3f;
 			*op++ = alphabet64[(shiftbuf >> shift) & 0x3f];
 			shift -= 6;
 		}
