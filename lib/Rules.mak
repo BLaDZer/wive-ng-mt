@@ -15,6 +15,7 @@
 #               (behaves as =, not :=).
 # FOO += bar -- append; if FOO is not defined, acts like = (not :=).
 
+-include $(LINUX_CONFIG)
 
 # check for proper make version
 ifneq ($(findstring x3.7,x$(MAKE_VERSION)),)
@@ -407,7 +408,11 @@ ifeq ($(TARGET_ARCH),mips)
 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_3)+=-mips3 -mtune=mips3
 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_4)+=-mips4 -mtune=mips4
 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32)+=-mips32 -mtune=mips32
+ifdef CONFIG_RALINK_MT7621
+	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32R2)+=-march=mips32r2 -mtune=1004kc
+else
 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32R2)+=-march=mips32r2 -mtune=mips32r2
+endif
 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS64)+=-mips64 -mtune=mips32
 	ifeq ($(strip $(ARCH_BIG_ENDIAN)),y)
 		CPU_LDFLAGS-$(CONFIG_MIPS_N64_ABI)+=-Wl,-melf64btsmip
