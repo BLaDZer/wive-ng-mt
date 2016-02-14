@@ -1714,6 +1714,7 @@
 118) kernel: proc: allow proc_free_inum to be called from any context.<br>
 119) kernel: proc: make proc_fd_permission() thread-friendly.<br>
 120) kernel: proc: fix the potential use-after-free in first_tid().<br>
+121) kernel: arch: mm: do not invoke OOM killer on kernel fault OOM.<br>
 <br>
 <br>
 <br>
