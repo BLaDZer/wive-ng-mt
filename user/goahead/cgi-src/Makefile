@@ -7,6 +7,10 @@
 # $Id: Makefile,v 1.21.2.2 2009-04-17 03:40:21 chhung Exp $
 #
 
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
+
 # system cgi scripts must be static
 LDFLAGS += -static
 

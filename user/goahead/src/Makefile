@@ -8,6 +8,8 @@
 #
 
 -include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
 
 CONF_H	= $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 UCONF_H	= $(ROOTDIR)/config/autoconf.h
