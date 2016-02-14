@@ -33,6 +33,9 @@ CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7628
 endif
 endif
 
+# use softfloat (avoid FPU-EMU bug at 7621)
+CFLAGS += -msoft-float
+
 NAME	= goahead
 
 # User Management switch

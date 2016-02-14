@@ -66,7 +66,8 @@ MACH_DIR  			:= $(shell export LC_ALL=C; $(CC) -print-multi-directory)
 UCLINUX_BUILD_SET 		:= 0 # have we set a special config below
 
 # Pull in common definitions
-include $(ROOTDIR)/vendors/config/common/config.arch
+-include $(ROOTDIR)/vendors/config/common/config.arch
+-include $(LINUX_CONFIG)
 
 #############################################################################################
 #
@@ -75,10 +76,16 @@ include $(ROOTDIR)/vendors/config/common/config.arch
 #
 
 ############################ PLATFORM FLAGS #################################################
-POPT	:= -mips32r2 -march=mips32r2 -mtune=mips32r2
-POPT	+= -Os -pipe -fno-builtin -mno-branch-likely -mno-long-calls
+POPT	:= -Os -pipe -fno-builtin -mno-branch-likely -mno-long-calls
 POPT	+= -Dlinux -Dunix -DEMBED -DMIPSEL
 POPT	+= -D__linux__ -D__unix__ -D__EMBED__ -D__MIPSEL__
+ifdef CONFIG_RALINK_MT7621
+POPT	+= -mips32r2 -march=mips32r2 -mtune=1004kc
+# avoid kernel fpu-emu bug on smp
+POPT	+= -msoft-float
+else
+POPT	+= -mips32r2 -march=mips32r2 -mtune=mips32r2
+endif
 
 ############################ WARN/ERROR FLAGS ###############################################
 # base flags for warnings
