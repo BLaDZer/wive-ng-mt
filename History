@@ -1729,6 +1729,7 @@
 133) kernel: mm: count the number of pages affected in change_protection().<br>
 134) kernel: mm: optimize the TLB flush of sys_mprotect() and change_protection() users.<br>
 135) kernel: mm: account for a THP NUMA hinting update as one PTE update.<br>
+136) kernel: mm: do not flush TLB during protection change if !pte_present && !migration_entry.<br>
 <br>
 <br>
 <br>
