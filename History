@@ -1720,4 +1720,8 @@
 124) kernel: arch: mm: do not invoke OOM killer on kernel fault OOM.<br>
 <br>
 <br>
+<b>4.0.x</b><br>
+1) init.d: remove unneded chilli_dynip param (fix chilli dhcp ip pool range).<br>
+<br>
+<br>
 <br>

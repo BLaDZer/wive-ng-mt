@@ -424,7 +424,6 @@ chilli_debug=0
 chilli_net=192.168.182.0/24
 chilli_dhcpstart=100
 chilli_dhcpend=200
-chilli_dynip=192.168.182.0/24
 chilli_dns1=192.168.182.1
 chilli_dns2=192.168.182.1
 chilli_domain=Wive-NG-MT.lo
