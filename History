@@ -1724,6 +1724,7 @@
 1) toolchain: sync uclibc patches and kernel headers.<br>
 2) init.d: remove unneded chilli_dynip param (fix chilli dhcp ip pool range).<br>
 3) init.d: allow print some minimal information about userspace segfaults to the kernel console.<br>
+4) kernel: mips: math-emu: fix instruction decoding.<br>
 <br>
 <br>
 <br>

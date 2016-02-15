@@ -473,7 +473,7 @@ static int cop1Emulate(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
 				return SIGILL;
 
 #if __mips >= 4
-			cond = ctx->fcr31 & fpucondbit[MIPSInst_RT(ir) >> 2];
+			cond = ctx->fcr31 & fpucondbit[MIPSInst_FT(ir) >> 2];
 #else
 			cond = ctx->fcr31 & FPU_CSR_COND;
 #endif
