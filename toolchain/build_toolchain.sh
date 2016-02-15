@@ -161,7 +161,7 @@ fi
 export CFLAGS="-O2 $GCC_OPTS $WARN_OPTS"
 # configure toolchain
 EXT_OPT="--disable-lto --disable-gold --enable-ld=yes --enable-gold=no --disable-sanity-checks --disable-werror --disable-nls"
-EXT_OPT="$EXT_OPT --disable-biendian --disable-softfloat --disable-libquadmath --disable-libquadmath-support --disable-libmudflap"
+EXT_OPT="$EXT_OPT --disable-biendian --disable-libquadmath --disable-libquadmath-support --disable-libmudflap"
 EXT_OPT="$EXT_OPT --disable-libssp --disable-libgomp --disable-threads --with-gnu-ld --with-gnu-as"
 if [ "$GCCVER" = "gcc-4.8.5" ] || [ "$GCCVER" = "gcc-4.9.2" ]; then
     EXT_OPT="$EXT_OPT --disable-libatomic --with-pic"
