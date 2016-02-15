@@ -1722,6 +1722,7 @@
 <br>
 <b>4.0.x</b><br>
 1) init.d: remove unneded chilli_dynip param (fix chilli dhcp ip pool range).<br>
+2) init.d: allow print some minimal information about userspace segfaults to the kernel console.<br>
 <br>
 <br>
 <br>
