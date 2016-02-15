@@ -234,23 +234,31 @@ int main(int argc, char** argv)
 
 	bopen(NULL, (60 * 1024), B_USE_MALLOC);
 
-	/* ignore some signals */
-	signal(SIGPIPE, SIG_IGN);
-	signal(SIGHUP, SIG_IGN);
-	signal(SIGUSR1, SIG_IGN);
-	signal(SIGUSR2, SIG_IGN);
-
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 	syslog(LOG_INFO, "version %s started", WEBS_VERSION);
 
-	/* Set flag goahead run to scripts */
-	if (writeGoPid() < 0)
+	/* Write pidfile */
+	if (writeGoPid() < 0) {
+		syslog(LOG_ERR, "cannot write pid - exit!");
 		return -1;
+	}
+
+	/* Daemonize */
+	if (daemon(0,0)) {
+	    syslog(LOG_ERR, "cannot daemnize - exit!");
+	    return -1;
+	}
+
+	/* ignore some signals */
+	signal(SIGHUP,  SIG_IGN);
+	signal(SIGUSR1, SIG_IGN);
+	signal(SIGUSR2, SIG_IGN);
+	signal(SIGPIPE, SIG_IGN);
 
 	/* Initialize the web server */
 	if (initWebs() < 0) {
 		/* Clean-up and exit */
-		printf("GOAHEAD NOT STARTED. CHECK WEB PAGES EXIST.");
+		syslog(LOG_ERR, "GOAHEAD NOT STARTED. CHECK WEB PAGES EXIST.");
 		return -1;
 	} else {
 #ifdef WEBS_SSL_SUPPORT
