@@ -33,4 +33,5 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    LIBCURL_LIBS="-L$FIRMROOT/lib/shared/lib -lcurl" \
 	    LIBEVENT_CFLAGS="-I$FIRMROOT/lib/shared/include" \
 	    LIBEVENT_LIBS="-L$FIRMROOT/lib/shared/lib -levent" \
+	    --with-systemd-daemon=no \
 	    --disable-dependency-tracking
