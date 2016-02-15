@@ -22,7 +22,7 @@
  *	If it is not, it will be called with default values on the first call to 
  *	balloc(). Note that this code is not designed for multi-threading purposes
  *	and it depends on newly declared variables being initialized to zero.
- */  
+ */
 
 /********************************* Includes ***********************************/
 

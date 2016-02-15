@@ -1,5 +1,9 @@
 .EXPORT_ALL_VARIABLES:
 
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
+
 DIRS = src cgi-src
 ROOT_DIRECTORY = /web
 

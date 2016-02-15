@@ -1642,94 +1642,95 @@
 46) goahead: fix varios crashes.<br>
 47) goahead: rewrite scale bytes to multipliers names (more safe and standart strong output).<br>
 48) goahead: add auto daemonize at start support.<br>
-49) switch: add support egress tag/untag.<br>
-50) libnvram: add nvram_fromdef function for load selected value from defaults to nvram.<br>
-51) libnvram: remove nvram_buf_get function, allways read from nvram_get allrady buffered.<br>
-52) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
-53) init.d: config-vlan: fix portmap mask for esw in one RGMII mode.<br>
-54) init.d: config-vlan: skip port 5 from config not used and linkdown.<br>
-55) init.d: do not turn off vpn client in irmware update case.<br>
-56) init.d: rename wifi_unload.sh to unload_all.sh, review and cleanup.<br>
-57) init.d: remove unneded chilli_dynip param (fix chilli dhcp ip pool range).<br>
-58) init.d: allow print some minimal information about userspace segfaults to the kernel console.<br>
-59) kernel: ralink_raeth: switch to qdma for MT7621.<br>
-60) kernel: ralink_raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
-61) kernel: ralink_raeth: add MT7628 switch control API.<br>
-62) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
-63) kernel: ralink_raeth: MT7620 rev 0204 has CDM bug too (workload tests FAILED).<br>
-64) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
-65) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
-66) kernel: mips: fix bitrot in __get_user_unaligned().<br>
-67) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
-68) kernel: mips: rewrite csum_fold to plain C.<br>
-69) kernel: mips: changed current_thread_info() to an equivalent supported by both clang and GCC.<br>
-70) kernel: mips: spinlock: Adjust arch_spin_lock back-off time.<br>
-71) kernel: mips: fall back to generic implementation of cmpxchg64 on 32-bit platforms.<br>
-72) kernel: mips: remove a temporary hack for debugging cache flushes in SMTC configuration.<br>
-73) kernel: mips: fix cache flushing for highmem pages.<br>
-74) kernel: mips: call find_vma with the mmap_sem held.<br>
-75) kernel: mips: ensure FCSR cause bits are clear after invoking FPU emulator.<br>
-76) kernel: mips: mm: add debug information for userland SIGSEGV signals.<br>
-77) kernel: mips: math-emu: fix instruction decoding.<br>
-78) kernel: mips: fix race condition in lazy cache flushing.<br>
-79) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
-80) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
-81) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
-82) kernel: mmc: upstream updates.<br>
-83) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
-84) kernel: err.h: allow IS_ERR_VALUE to handle properly more types.<br>
-85) kernel: tty: fix GPF in flush_to_ldisc().<br>
-86) kernel: tty: n_tty: fix SIGIO for output.<br>
-87) kernel: usb-storage: update unusual_devs from upstream.<br>
-88) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
-89) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
-90) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
-91) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
-92) kernel: usb: serial: option: adding support for Telit LE922.<br>
-93) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
-94) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
-95) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
-96) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
-97) kernel: net: packet: don't check frames_per_block against negative values.<br>
-98) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
-99) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
-100) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
-101) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
-102) kernel: net: possible use after free in dst_release.<br>
-103) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
-104) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
-105) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
-106) kernel: net: sched: drr: check for NULL pointer in drr_dequeue.<br>
-107) kernel: net: inet: frag: always orphan skbs inside ip_defrag().<br>
-108) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
-109) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
-110) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
-111) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
-112) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
-113) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
-114) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
-115) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
-116) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
-117) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
-118) kernel: net: ipv6: udp: use sticky pktinfo egress ifindex on connect() (RFC 3542 section 6.7).<br>
-119) kernel: net: ipv6: proc: fix error handling.<br>
-120) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
-121) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
-122) kernel: proc: return -ENOMEM when inode allocation failed.<br>
-123) kernel: proc: no need to initialize proc_inode->fd in proc_get_inode().<br>
-124) kernel: proc: check vma->vm_file before dereferencing.<br>
-125) kernel: proc: don't show nonexistent capabilities.<br>
-126) kernel: proc: fix inconsistent lock state.<br>
-127) kernel: proc: allow proc_free_inum to be called from any context.<br>
-128) kernel: proc: make proc_fd_permission() thread-friendly.<br>
-129) kernel: proc: fix the potential use-after-free in first_tid().<br>
-130) kernel: mm: do not invoke OOM killer on kernel fault OOM.<br>
-131) kernel: mm: account the total_vm in the vm_stat_account().<br>
-132) kernel: mm: fix potential anon_vma locking issue in mprotect().<br>
-133) kernel: mm: count the number of pages affected in change_protection().<br>
-134) kernel: mm: optimize the TLB flush of sys_mprotect() and change_protection() users.<br>
-135) kernel: mm: account for a THP NUMA hinting update as one PTE update.<br>
-136) kernel: mm: do not flush TLB during protection change if !pte_present && !migration_entry.<br>
+49) goahead: add restore mode without call full reinit if pid file exist (need for quiet restart).<br>
+50) switch: add support egress tag/untag.<br>
+51) libnvram: add nvram_fromdef function for load selected value from defaults to nvram.<br>
+52) libnvram: remove nvram_buf_get function, allways read from nvram_get allrady buffered.<br>
+53) init.d: vpnserver: remove unneded second dgw to clients network (unused).<br>
+54) init.d: config-vlan: fix portmap mask for esw in one RGMII mode.<br>
+55) init.d: config-vlan: skip port 5 from config not used and linkdown.<br>
+56) init.d: do not turn off vpn client in irmware update case.<br>
+57) init.d: rename wifi_unload.sh to unload_all.sh, review and cleanup.<br>
+58) init.d: remove unneded chilli_dynip param (fix chilli dhcp ip pool range).<br>
+59) init.d: allow print some minimal information about userspace segfaults to the kernel console.<br>
+60) kernel: ralink_raeth: switch to qdma for MT7621.<br>
+61) kernel: ralink_raeth: fetch MT7621/MT7530 PauseFrame MIB counters.<br>
+62) kernel: ralink_raeth: add MT7628 switch control API.<br>
+63) kernel: ralink_raeth: add support MT762x/MT7530 per-VLAN untag.<br>
+64) kernel: ralink_raeth: MT7620 rev 0204 has CDM bug too (workload tests FAILED).<br>
+65) kernel: ralink_sdxc: fix MT7621 unstable write issue and cleanup.<br>
+66) kernel: ralink_sdxc: set sample crc by clock falling edge.<br>
+67) kernel: mips: fix bitrot in __get_user_unaligned().<br>
+68) kernel: mips: sync-r4k: reduce skew while synchronization.<br>
+69) kernel: mips: rewrite csum_fold to plain C.<br>
+70) kernel: mips: changed current_thread_info() to an equivalent supported by both clang and GCC.<br>
+71) kernel: mips: spinlock: Adjust arch_spin_lock back-off time.<br>
+72) kernel: mips: fall back to generic implementation of cmpxchg64 on 32-bit platforms.<br>
+73) kernel: mips: remove a temporary hack for debugging cache flushes in SMTC configuration.<br>
+74) kernel: mips: fix cache flushing for highmem pages.<br>
+75) kernel: mips: call find_vma with the mmap_sem held.<br>
+76) kernel: mips: ensure FCSR cause bits are clear after invoking FPU emulator.<br>
+77) kernel: mips: mm: add debug information for userland SIGSEGV signals.<br>
+78) kernel: mips: math-emu: fix instruction decoding.<br>
+79) kernel: mips: fix race condition in lazy cache flushing.<br>
+80) kernel: driver-core: move kobj_to_dev from genhd.h to device.h.<br>
+81) kernel: driver-core: use kobj_to_dev instead of re-implementing it.<br>
+82) kernel: crypto: skcipher - copy iv from desc even for 0-len walks.<br>
+83) kernel: mmc: upstream updates.<br>
+84) kernel: err.h: add (missing) unlikely() to IS_ERR_OR_NULL().<br>
+85) kernel: err.h: allow IS_ERR_VALUE to handle properly more types.<br>
+86) kernel: tty: fix GPF in flush_to_ldisc().<br>
+87) kernel: tty: n_tty: fix SIGIO for output.<br>
+88) kernel: usb-storage: update unusual_devs from upstream.<br>
+89) kernel: usb-storage: add quirk for mandatory READ_CAPACITY_16.<br>
+90) kernel: usb_usual: fix US_FL_BROKEN_FUA flag before upstream commit 'usb: remove libusual', it masked by USB_US_ORIG_FLAGS.<br>
+91) kernel: usb_usual: expand JMicron quirk US_FL_BROKEN_FUA to rev 1.17.<br>
+92) kernel: usb: serial: option: fix Cinterion AHxx enumeration.<br>
+93) kernel: usb: serial: option: adding support for Telit LE922.<br>
+94) kernel: usb: serial: cdc_acm: ignore Infineon Flash Loader utility, exclude Samsung phone 04e8:685d.<br>
+95) kernel: usb: serial: cdc-acm: add support for Denso cradle CU-321.<br>
+96) kernel: usb: serial: cdc-acm: send zero packet for intel 7260 modem.<br>
+97) kernel: usb: serial: cdc-acm: kill unnecessary messages.<br>
+98) kernel: net: packet: don't check frames_per_block against negative values.<br>
+99) kernel: net: change pseudohdr argument of inet_proto_csum_replace* to be a bool.<br>
+100) kernel: net: simplify napi_synchronize() to avoid warnings.<br>
+101) kernel: net: cdc_ncm: avoid changing RX/TX buffers on MTU changes.<br>
+102) kernel: net: add scheduling point in recvmmsg/sendmmsg.<br>
+103) kernel: net: possible use after free in dst_release.<br>
+104) kernel: net: bridge: use kobj_to_dev instead of to_dev.<br>
+105) kernel: net: pptp: fix illegal memory access caused by multiple bind()s.<br>
+106) kernel: net: netfilter: xt_TCPMSS: handle CHECKSUM_COMPLETE in tcpmss_tg6().<br>
+107) kernel: net: sched: drr: check for NULL pointer in drr_dequeue.<br>
+108) kernel: net: inet: frag: always orphan skbs inside ip_defrag().<br>
+109) kernel: net: qmi_wwan: add WeTelecom-WPD600N.<br>
+110) kernel: net: qmi_wwan: add SIMCom 7230E.<br>
+111) kernel: net: core: revert net: fix__netdev_update_features return and add comment.<br>
+112) kernel: net: ipv6: addrlabel: fix ip6addrlbl_get().<br>
+113) kernel: net: ipv6: honor ifindex in case we receive ll addresses in router advertisements.<br>
+114) kernel: net: ipv6: update skb->csum when CE mark is propagated.<br>
+115) kernel: net: ipv6: always add flag an address that failed DAD with DADFAILED.<br>
+116) kernel: net: ipv6: keep existing flags when setting IFA_F_OPTIMISTIC.<br>
+117) kernel: net: ipv6: fib6: install fib6 ops in the last step.<br>
+118) kernel: net: ipv6: fix the incorrect return value of throw route.<br>
+119) kernel: net: ipv6: udp: use sticky pktinfo egress ifindex on connect() (RFC 3542 section 6.7).<br>
+120) kernel: net: ipv6: proc: fix error handling.<br>
+121) kernel: net: ipv4: no CHECKSUM_PARTIAL on MSG_MORE corked sockets.<br>
+122) kernel: net: ipv4: revert 'ipv4/icmp: redirect messages can use the ingress daddr as source'.<br>
+123) kernel: proc: return -ENOMEM when inode allocation failed.<br>
+124) kernel: proc: no need to initialize proc_inode->fd in proc_get_inode().<br>
+125) kernel: proc: check vma->vm_file before dereferencing.<br>
+126) kernel: proc: don't show nonexistent capabilities.<br>
+127) kernel: proc: fix inconsistent lock state.<br>
+128) kernel: proc: allow proc_free_inum to be called from any context.<br>
+129) kernel: proc: make proc_fd_permission() thread-friendly.<br>
+130) kernel: proc: fix the potential use-after-free in first_tid().<br>
+131) kernel: mm: do not invoke OOM killer on kernel fault OOM.<br>
+132) kernel: mm: account the total_vm in the vm_stat_account().<br>
+133) kernel: mm: fix potential anon_vma locking issue in mprotect().<br>
+134) kernel: mm: count the number of pages affected in change_protection().<br>
+135) kernel: mm: optimize the TLB flush of sys_mprotect() and change_protection() users.<br>
+136) kernel: mm: account for a THP NUMA hinting update as one PTE update.<br>
+137) kernel: mm: do not flush TLB during protection change if !pte_present && !migration_entry.<br>
 <br>
 <br>
 <br>

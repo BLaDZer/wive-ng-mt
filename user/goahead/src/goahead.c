@@ -225,12 +225,21 @@ static int initWebs(void)
 
 int main(int argc, char** argv)
 {
+	int firstboot = 1;
+
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 
 	/* Daemonize */
 	if (daemon(0,0)) {
 	    syslog(LOG_ERR, "cannot daemonize - exit!");
 	    return -1;
+	}
+
+	/* check pid file allready exist */
+	if(!access(gopid, F_OK )){
+		syslog(LOG_INFO, "pid file exist, remove old pidfile and start in restore mode.");
+		firstboot = 0;
+		unlink(gopid);
 	}
 
 	/* Write pidfile */
@@ -246,7 +255,7 @@ int main(int argc, char** argv)
 	signal(SIGPIPE, SIG_IGN);
 
 	/*
-	 *	Initialize the memory allocator. Allow use of malloc and start 
+	 *	Initialize the memory allocator. Allow use of malloc and start
 	 *	with a 60K heap.  For each page request approx 8KB is allocated.
 	 *	60KB allows for several concurrent page requests.  If more space
 	 *	is required, malloc will be used for the overflow.
@@ -263,12 +272,14 @@ int main(int argc, char** argv)
 	    websSSLOpen();
 #endif
     	    /* Start needed services */
-	    initInternet();
+	    if (firstboot) {
+		initInternet();
 #ifdef CONFIG_USB
-	    /* Rescan usb devices after start */
-	    doSystem("service hotplug rescan");
+		/* Rescan usb devices after start */
+		doSystem("service hotplug rescan");
 #endif
-	    ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);		//Turn on power LED
+		ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);		//Turn on power LED
+	    }
 	    syslog(LOG_INFO, "version %s started", WEBS_VERSION);
 	}
 
