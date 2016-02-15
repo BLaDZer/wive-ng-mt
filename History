@@ -1728,6 +1728,7 @@
 132) kernel: mm: fix potential anon_vma locking issue in mprotect().<br>
 133) kernel: mm: count the number of pages affected in change_protection().<br>
 134) kernel: mm: optimize the TLB flush of sys_mprotect() and change_protection() users.<br>
+135) kernel: mm: account for a THP NUMA hinting update as one PTE update.<br>
 <br>
 <br>
 <br>
