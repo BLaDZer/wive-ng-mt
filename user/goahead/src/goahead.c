@@ -225,13 +225,6 @@ static int initWebs(void)
 
 int main(int argc, char** argv)
 {
-	/*
-	 *	Initialize the memory allocator. Allow use of malloc and start 
-	 *	with a 60K heap.  For each page request approx 8KB is allocated.
-	 *	60KB allows for several concurrent page requests.  If more space
-	 *	is required, malloc will be used for the overflow.
-	 */
-
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 
 	/* Daemonize */
@@ -252,6 +245,12 @@ int main(int argc, char** argv)
 	signal(SIGUSR2, SIG_IGN);
 	signal(SIGPIPE, SIG_IGN);
 
+	/*
+	 *	Initialize the memory allocator. Allow use of malloc and start 
+	 *	with a 60K heap.  For each page request approx 8KB is allocated.
+	 *	60KB allows for several concurrent page requests.  If more space
+	 *	is required, malloc will be used for the overflow.
+	 */
 	bopen(NULL, (60 * 1024), B_USE_MALLOC);
 
 	/* Initialize the web server */
