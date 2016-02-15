@@ -45,12 +45,13 @@ void	formDefineUserMgmt(void);
 #endif
 
 /*********************************** Locals ***********************************/
-static char_t		*rootWeb = T("/tmp/web");		/* Root web directory */
-static char_t		*password = T("");			/* Security password */
-static char_t		*gopid = T("/var/run/goahead.pid");	/* pid file */
-static int		port = 80;				/* Server port */
-static int		retries = 5;				/* Server port retries */
-static int		finished;				/* Finished flag */
+static char_t	*rootWeb = T("/tmp/web");		/* Root web directory */
+static char_t	*password = T("");			/* Security password */
+static char_t	*gopid = T("/var/run/goahead.pid");	/* pid file */
+static int	port = 80;				/* Server port */
+static int	retries = 5;				/* Server port retries */
+static int	finished = 0;				/* Finished flag */
+static int	firstboot = 1;				/* First boot flag */
 
 #ifdef B_STATS
 static void printMemStats(int handle, char_t *fmt, ...);
@@ -174,7 +175,7 @@ static int initWebs(void)
 	 *	the next sequential port for up to "retries" attempts.
 	 */
 	web_port = atoi(nvram_get(RT2860_NVRAM, "RemoteManagementPort"));
-	if ((web_port) && (web_port != 80))
+	if (web_port && web_port != 80)
 	    port=web_port;
 
 	websOpenServer(port, retries);
@@ -225,8 +226,6 @@ static int initWebs(void)
 
 int main(int argc, char** argv)
 {
-	int firstboot = 1;
-
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 
 	/* Daemonize */
