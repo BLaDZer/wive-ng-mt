@@ -232,21 +232,18 @@ int main(int argc, char** argv)
 	 *	is required, malloc will be used for the overflow.
 	 */
 
-	bopen(NULL, (60 * 1024), B_USE_MALLOC);
-
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
-	syslog(LOG_INFO, "version %s started", WEBS_VERSION);
+
+	/* Daemonize */
+	if (daemon(0,0)) {
+	    syslog(LOG_ERR, "cannot daemonize - exit!");
+	    return -1;
+	}
 
 	/* Write pidfile */
 	if (writeGoPid() < 0) {
 		syslog(LOG_ERR, "cannot write pid - exit!");
 		return -1;
-	}
-
-	/* Daemonize */
-	if (daemon(0,0)) {
-	    syslog(LOG_ERR, "cannot daemnize - exit!");
-	    return -1;
 	}
 
 	/* ignore some signals */
@@ -255,10 +252,12 @@ int main(int argc, char** argv)
 	signal(SIGUSR2, SIG_IGN);
 	signal(SIGPIPE, SIG_IGN);
 
+	bopen(NULL, (60 * 1024), B_USE_MALLOC);
+
 	/* Initialize the web server */
 	if (initWebs() < 0) {
 		/* Clean-up and exit */
-		syslog(LOG_ERR, "GOAHEAD NOT STARTED. CHECK WEB PAGES EXIST.");
+		syslog(LOG_ERR, "web pages not exists - exit!");
 		return -1;
 	} else {
 #ifdef WEBS_SSL_SUPPORT
@@ -271,6 +270,7 @@ int main(int argc, char** argv)
 	    doSystem("service hotplug rescan");
 #endif
 	    ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);		//Turn on power LED
+	    syslog(LOG_INFO, "version %s started", WEBS_VERSION);
 	}
 
 	/*
