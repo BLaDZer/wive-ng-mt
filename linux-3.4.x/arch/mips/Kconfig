@@ -2078,7 +2078,7 @@ config SYS_SUPPORTS_MULTITHREADING
 
 config MIPS_MT_FPAFF
 	bool "Dynamic FPU affinity for FP-intensive threads"
-	default y
+	default n
 	depends on MIPS_MT_SMP || MIPS_MT_SMTC
 
 config MIPS_VPE_LOADER
