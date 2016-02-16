@@ -405,10 +405,8 @@ static void socketAccept(socket_t *sp)
  *	Accept the connection and prevent inheriting by children (F_SETFD)
  */
 	len = sizeof(struct sockaddr_in);
-	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0) {
+	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0)
 		return;
-	}
-
 /*
 	Make sure the socket is not inherited by exec'd processes
 	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
@@ -433,14 +431,8 @@ static void socketAccept(socket_t *sp)
 	nsp->flags &= ~SOCKET_LISTENING;
 
 /*
- *	Make sure the socket is not inherited by exec'd processes
- *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
  *	Set the blocking mode before calling the accept callback.
 */
-#ifndef __NO_FCNTL
-	fcntl(nid, F_SETFD, FD_CLOEXEC);
-#endif
-	setSocketNodelayReuse(nid);
 	socketSetBlock(nid, (nsp->flags & SOCKET_BLOCK) ? 1: 0);
 /*
  *	Call the user accept callback. The user must call socketCreateHandler
@@ -451,6 +443,14 @@ static void socketAccept(socket_t *sp)
 		if ((sp->accept)(nid, pString, ntohs(addr.sin_port), sp->sid) < 0) {
 			socketFree(nid);
 		}
+		/*
+		 *	Make sure the socket is not inherited by exec'd processes
+		 *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+		*/
+#ifndef __NO_FCNTL
+		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
+		setSocketNodelayReuse(sp->sock);
 #ifdef VXWORKS
 		free(pString);
 #endif
