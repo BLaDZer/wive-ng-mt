@@ -22,7 +22,9 @@ endif
 endif
 endif
 ifeq ("$(CONFIG_USER_CHILLISPOT)", "")
+ifeq ("$(CONFIG_USER_NODOGSPLASH)", "")
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/internet/hotspot.asp
+endif
 endif
 ifeq ("$(CONFIG_USB)", "")
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/usb
