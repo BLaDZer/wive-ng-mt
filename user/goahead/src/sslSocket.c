@@ -86,8 +86,8 @@ SOCKET socketListen(short port, int *err)
 SOCKET socketAccept(SOCKET listenfd, int *err)
 {
 	struct sockaddr_in	addr;
-	SOCKET				fd;
-	int					len;
+	SOCKET			fd;
+	int			len;
 /*
 	Wait(blocking)/poll(non-blocking) for an incoming connection
 */
@@ -110,7 +110,7 @@ SOCKET socketAccept(SOCKET listenfd, int *err)
 		addr.sin_addr.S_un.S_un_b.s_b3,
 		addr.sin_addr.S_un.S_un_b.s_b4);
 */
-	setSocketNodelay(fd);
+	setSocketNodelayReuse(fd);
 	setSocketBlock(fd);
 	return fd;
 }
@@ -123,8 +123,8 @@ SOCKET socketAccept(SOCKET listenfd, int *err)
 SOCKET socketConnect(char *ip, short port, int *err)
 {
 	struct sockaddr_in	addr;
-	SOCKET				fd;
-	int					rc;
+	SOCKET			fd;
+	int			rc;
 
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		fprintf(stderr, "Error creating socket\n");
@@ -136,9 +136,7 @@ SOCKET socketConnect(char *ip, short port, int *err)
 	Set the REUSEADDR flag to minimize the number of sockets in TIME_WAIT
 */
 	fcntl(fd, F_SETFD, FD_CLOEXEC);
-	rc = 1;
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&rc, sizeof(rc));
-	setSocketNodelay(fd);
+	setSocketNodelayReuse(fd);
 /*
 	Turn on blocking mode for the connecting socket
 */
@@ -829,22 +827,6 @@ void setSocketNonblock(SOCKET sock)
 #elif LINUX
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL) | O_NONBLOCK);
 #endif
-}
-
-/******************************************************************************/
-/*
-	Disable the Nagle algorithm for less latency in RPC
-	http://www.faqs.org/rfcs/rfc896.html
-	http://www.w3.org/Protocols/HTTP/Performance/Nagle/
-*/
-void setSocketNodelay(SOCKET sock)
-{
-#if _WIN32
-	BOOL	tmp = TRUE;
-#else
-	int		tmp = 1;
-#endif /* WIN32 */
-	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&tmp, sizeof(tmp));
 }
 
 /******************************************************************************/

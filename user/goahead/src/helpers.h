@@ -159,7 +159,6 @@
 #define LFW(x, y) do{ if(! ( x = websGetVar(wp, T(#y), T("")))) return;	}while(0)
 
 //----------------------------------------------
-
 /* Special functions */
 typedef struct replacement_t
 {
@@ -221,4 +220,5 @@ int getIfNetmask(const char *ifname, char *if_net);
 
 int vpn_mode_enabled(void);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
+void setSocketNodelayReuse(int sock);
 #endif /* HELPERS_H_ */

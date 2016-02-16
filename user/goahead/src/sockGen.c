@@ -29,7 +29,7 @@
 #endif
 
 #include	"uemf.h"
-
+#include	"helpers.h"
 /************************************ Locals **********************************/
 
 extern socket_t	**socketList;		/* List of open sockets */
@@ -304,9 +304,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 /*
  *		Bind to the socket endpoint and the call listen() to start listening
  */
-		rc = 1;
-		setsockopt(sp->sock, SOL_SOCKET, SO_REUSEADDR, (char *)&rc, sizeof(rc));
-		setsockopt(sp->sock, IPPROTO_TCP, TCP_NODELAY, (char *)&rc, sizeof(rc));
+		setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
 				sizeof(sockaddr6)) < 0) {
@@ -386,10 +384,10 @@ void socketCloseConnection(int sid)
 static void socketAccept(socket_t *sp)
 {
 	struct sockaddr_in	addr;
-	socket_t 			*nsp;
-	unsigned int			len;
-	char				*pString;
-	int 				newSock, nid;
+	socket_t 		*nsp;
+	unsigned int		len;
+	char			*pString;
+	int 			newSock, nid;
 
 
 #ifdef NW
@@ -427,6 +425,7 @@ static void socketAccept(socket_t *sp)
  *	Set the blocking mode before calling the accept callback.
  */
 
+	setSocketNodelayReuse(nid);
 	socketSetBlock(nid, (nsp->flags & SOCKET_BLOCK) ? 1: 0);
 /*
  *	Call the user accept callback. The user must call socketCreateHandler

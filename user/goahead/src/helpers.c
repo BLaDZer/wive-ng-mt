@@ -794,3 +794,16 @@ unsigned int ConvertRssiToSignalQuality(long RSSI)
 
 	return signal_quality;
 }
+
+/******************************************************************************/
+/*
+	Disable the Nagle algorithm for less latency in RPC
+	http://www.faqs.org/rfcs/rfc896.html
+	http://www.w3.org/Protocols/HTTP/Performance/Nagle/
+*/
+void setSocketNodelayReuse(int sock)
+{
+	int tmp = 1;
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&tmp, sizeof(tmp));
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&tmp, sizeof(tmp));
+}

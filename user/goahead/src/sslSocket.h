@@ -45,6 +45,8 @@
 #include	<unistd.h>
 #include	<string.h>
 #include	<errno.h>
+#include	"helpers.h"
+
 #define		SOCKET_ERROR -1
 #define		getSocketError() errno 
 #define		WOULD_BLOCK	EAGAIN
@@ -53,8 +55,9 @@
 #define		WSAStartup(A, B)
 #define		WSACleanup()
 #define		INVALID_SOCKET -1
+
+typedef int     SOCKET;
 typedef int	WSADATA;
-typedef int	SOCKET;
 
 extern void breakpoint();
 #define socketAssert(C) if (C) ; else {printf("%s:%d sslAssert(%s)\n",\
@@ -111,5 +114,4 @@ extern int psSocketWrite(SOCKET sock, sslBuf_t *out);
 
 extern void setSocketBlock(SOCKET sock);
 extern void setSocketNonblock(SOCKET sock);
-extern void setSocketNodelay(SOCKET sock);
 #endif /* _h_SSLSOCKET */
