@@ -596,7 +596,7 @@ int getIfIp(const char *ifname, char *if_addr)
 	int skfd = 0;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -605,7 +605,7 @@ int getIfIp(const char *ifname, char *if_addr)
 	ifr.ifr_addr.sa_family = AF_INET;
 	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
 		return -1;
 	}
 	strcpy(if_addr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
@@ -626,7 +626,7 @@ int getIfMac(const char *ifname, char *if_hw)
 	int skfd;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -635,7 +635,7 @@ int getIfMac(const char *ifname, char *if_hw)
 	ifr.ifr_addr.sa_family = AF_INET;
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -659,7 +659,7 @@ int getIfNetmask(const char *ifname, char *if_net)
 	int skfd = 0;
 
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -668,7 +668,7 @@ int getIfNetmask(const char *ifname, char *if_net)
 	ifr.ifr_addr.sa_family = AF_INET;
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
 		return -1;
 	}
 	strcpy(if_net, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));

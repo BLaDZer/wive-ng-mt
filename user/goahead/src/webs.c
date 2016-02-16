@@ -230,8 +230,8 @@ int websOpenListen(int port, int retries)
 		fmtAlloc(&websIpaddrUrl, WEBS_MAX_URL + 80, T("%s:%d"),
 			websIpaddr, port);
 	}
-	trace(0, T("webs: Listening for HTTP requests at address %s\n"),
-		websIpaddrUrl);
+
+	syslog(LOG_INFO, "Listening for HTTP requests at address %s", websIpaddrUrl);
 
 	return port;
 }
@@ -1454,7 +1454,7 @@ void websRedirect(webs_t wp, char_t *url)
 	msgbuf = urlbuf = NULL;
 
 	if (!url || !url[0]) {
-	    syslog(LOG_ERR, "not set redirect url - PLS fix it, %s\n", __FUNCTION__);
+	    syslog(LOG_ERR, "not set redirect url - PLS fix it, %s", __FUNCTION__);
 	    return;
 	}
 

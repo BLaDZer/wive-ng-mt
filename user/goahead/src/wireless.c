@@ -391,14 +391,14 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0) {
-		syslog(LOG_ERR, "first wlan: ioctl sock failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "first wlan: ioctl sock failed, %s", __FUNCTION__);
 		err = -1;
 		goto out24;
 	}
 
 	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "ra0", &table, sizeof(table)) < 0)
 	{
-		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
 		goto out24;
 	}
@@ -467,14 +467,14 @@ out24:
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0) {
-		syslog(LOG_ERR, "second wlan: ioctl sock failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "second wlan: ioctl sock failed, %s", __FUNCTION__);
 		err = -1;
 		goto out5;
 	}
 
 	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "rai0", &table, sizeof(table)) < 0)
 	{
-		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
 		goto out5;
 	}
@@ -1375,7 +1375,7 @@ static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 	sprintf(str, "apselect_%d", mbssid);	// UI on web page
 	apselect = websGetVar(wp, str, T(""));
 	if(!apselect){
-		syslog(LOG_ERR, "cant find %s, %s\n", apselect, __FUNCTION__);
+		syslog(LOG_ERR, "cant find %s, %s", apselect, __FUNCTION__);
 		return -1;
 	}
 

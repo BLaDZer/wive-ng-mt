@@ -170,7 +170,7 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 				}
 				else
 				{
-					syslog(LOG_WARNING, "cannot open %s (%s).\n", _PATH_PROCNET_DEV, strerror(errno));
+					syslog(LOG_WARNING, "cannot open %s (%s).", _PATH_PROCNET_DEV, strerror(errno));
 				}
 			}
 			else if (found<0)

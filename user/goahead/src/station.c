@@ -172,7 +172,7 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -641,7 +641,7 @@ static int getStaConnectedBSSID(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -694,7 +694,7 @@ static int getStaExtraInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -731,7 +731,7 @@ static int getLinkingMode(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -764,7 +764,7 @@ static int getStaHT(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -820,7 +820,7 @@ static int getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -879,7 +879,7 @@ static int getStaLinkQuality(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -999,7 +999,7 @@ static int getStaLinkRxRate(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -1022,7 +1022,7 @@ static int getStaLinkStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -1085,7 +1085,7 @@ static int getStaLinkTxRate(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -1149,7 +1149,7 @@ static int getStaNoiseLevel(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -1205,7 +1205,7 @@ void initStaProfile(void)
 	string_split_t split;
 	if (initSplitter(&split) != 0)
 	{
-		syslog(LOG_ERR, "Error while trying to acqiure resources for profile parsing");
+		syslog(LOG_ERR, "Error while trying to acqiure resources for profile parsing, %s", __FUNCTION__);
 		return;
 	}
 
@@ -1221,7 +1221,7 @@ void initStaProfile(void)
 		// String is empty?
 		if (CHK_IF_EMPTYSTR(split.items[i]) && (i <= 0))
 		{
-			syslog(LOG_WARNING, "no previous profiles defined");
+			syslog(LOG_WARNING, "no previous profiles defined, %s", __FUNCTION__);
 			freeSplitter(&split);
 			nvram_close(RT2860_NVRAM);
 			return;
@@ -1230,7 +1230,7 @@ void initStaProfile(void)
 		PRT_PROFILE_SETTING p = (PRT_PROFILE_SETTING)malloc(sizeof(RT_PROFILE_SETTING));
 		if (p == NULL)
 		{
-			syslog(LOG_ERR, "Not enough memory");
+			syslog(LOG_ERR, "Not enough memory, %s", __FUNCTION__);
 			freeSplitter(&split);
 			freeHeaderProfileSettings();
 			nvram_close(RT2860_NVRAM);
@@ -1603,14 +1603,14 @@ void initStaConnection(void)
 			return;
 	}
 
-	syslog(LOG_ERR, "Activate profile: %s, %s\n", p->Profile, __FUNCTION__);
+	syslog(LOG_ERR, "Activate profile: %s, %s", p->Profile, __FUNCTION__);
 
 	// Set-up current SSID
 	nvram_set(RT2860_NVRAM, "staCur_SSID", p->SSID);
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return;
 	}
 
@@ -1618,7 +1618,7 @@ void initStaConnection(void)
 	unsigned long CurrentWirelessMode;
 	if (OidQueryInformation(RT_OID_802_11_PHY_MODE, s, "ra0", &CurrentWirelessMode, sizeof(unsigned char)) < 0 )
 	{
-		syslog(LOG_ERR, "Query OID_802_11_QUERY_WirelessMode error!, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "Query OID_802_11_QUERY_WirelessMode error!, %s", __FUNCTION__);
 		close(s);
 		return;
 	}
@@ -1665,7 +1665,7 @@ void initStaConnection(void)
 			Configuration.DSConfig = lFreq/1000;
 			ret = OidSetInformation(OID_802_11_CONFIGURATION, s, "ra0", &Configuration, sizeof(Configuration));
 			if (ret < 0)
-				syslog(LOG_ERR, "Set OID_802_11_CONFIGURATION has error=%d", ret);
+				syslog(LOG_ERR, "Set OID_802_11_CONFIGURATION has error=%d, %s", ret, __FUNCTION__);
 		}
 	}
 
@@ -1673,12 +1673,12 @@ void initStaConnection(void)
 	// Authentication
 	ret = OidSetInformation(OID_802_11_AUTHENTICATION_MODE, s, "ra0", &p->Authentication, sizeof(p->Authentication));
 	if (ret < 0)
-		syslog(LOG_ERR, "Set OID_802_11_AUTHENTICATION_MODE has error =%d, auth=%d", ret, p->Authentication);
+		syslog(LOG_ERR, "Set OID_802_11_AUTHENTICATION_MODE has error =%d, auth=%d, %s", ret, p->Authentication, __FUNCTION__);
 
 	// Encryption
 	ret = OidSetInformation(OID_802_11_ENCRYPTION_STATUS, s, "ra0", &p->Encryption, sizeof(p->Encryption));
 	if (ret < 0)
-		syslog(LOG_ERR, "Set OID_802_11_ENCRYPTION_STATUS has error =%d, encry=%d", ret, p->Encryption);
+		syslog(LOG_ERR, "Set OID_802_11_ENCRYPTION_STATUS has error =%d, encry=%d, %s", ret, p->Encryption, __FUNCTION__);
 
 	// WEP
 	if (p->Authentication == Ndis802_11AuthModeOpen)
@@ -1706,7 +1706,7 @@ void initStaConnection(void)
 						removeKey.BSSID[j] = 0xff;
 					ret = OidSetInformation(OID_802_11_REMOVE_KEY, s, "ra0", &removeKey, removeKey.Length);
 					if (ret < 0)
-						syslog(LOG_ERR, "Set OID_802_11_REMOVE_KEY has error =%d", ret);
+						syslog(LOG_ERR, "Set OID_802_11_REMOVE_KEY has error =%d, %s", ret, __FUNCTION__);
 				}
 				else if (strcmp(wep_keys[i], "0") != 0)
 				{
@@ -1786,7 +1786,7 @@ void initStaConnection(void)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &Ssid, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s", ret, Ssid.Ssid);
+			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s, %s", ret, Ssid.Ssid, __FUNCTION__);
 		else
 			memcpy(&G_SSID, &Ssid, sizeof(NDIS_802_11_SSID));
 	}
@@ -1794,7 +1794,7 @@ void initStaConnection(void)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &Ssid, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s", ret, Ssid.Ssid);
+			syslog(LOG_ERR, "Set OID_802_11_SSID has error =%d, Ssid.Ssid=%s, %s", ret, Ssid.Ssid, __FUNCTION__);
 		else
 			memcpy(&G_SSID, &Ssid, sizeof(NDIS_802_11_SSID));
 
@@ -1836,14 +1836,14 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 	// Perform driver requests
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
 	//step 1
 	if (OidQueryInformation(OID_GEN_MEDIA_CONNECT_STATUS, s, "ra0", &ConnectStatus, sizeof(ConnectStatus)) < 0)
 	{
-		syslog(LOG_ERR, "Query OID_GEN_MEDIA_CONNECT_STATUS error!");
+		syslog(LOG_ERR, "Query OID_GEN_MEDIA_CONNECT_STATUS error!, %s", __FUNCTION__);
 		close(s);
 		return 0;
 	}
@@ -1851,7 +1851,7 @@ static int getActiveProfileStatus(int eid, webs_t wp, int argc, char_t **argv)
 	//step 2
 	if (OidQueryInformation(RT_OID_802_11_RADIO, s, "ra0", &G_bRadio, sizeof(G_bRadio)) < 0)
 	{
-		syslog(LOG_ERR, "Query RT_OID_802_11_RADIO error!");
+		syslog(LOG_ERR, "Query RT_OID_802_11_RADIO error!, %s", __FUNCTION__);
 		close(s);
 		return 0;
 	}
@@ -1953,13 +1953,13 @@ static int getStaRadioStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
 	ret = OidQueryInformation(RT_OID_802_11_RADIO, s, "ra0", &RadioStatus, sizeof(RadioStatus));
 	if (ret < 0)
-		syslog(LOG_ERR, "getStaRadioStatus: Query RT_OID_802_11_RADIO failed!");
+		syslog(LOG_ERR, "getStaRadioStatus: Query RT_OID_802_11_RADIO failed!, %s", __FUNCTION__);
 	close(s);
 
 	ejSetResult(eid, (RadioStatus == 1) ? "1" : "0");
@@ -1980,7 +1980,7 @@ static int getStaRxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2013,7 +2013,7 @@ static int getStaTxThroughput(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2047,7 +2047,7 @@ static int getRSSI(webs_t wp, int antenna)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2137,7 +2137,7 @@ static int getStaSNR(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2172,7 +2172,7 @@ static int getStaStatsRxCRCErr(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2197,7 +2197,7 @@ static int getStaStatsRxDup(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2222,7 +2222,7 @@ static int getStaStatsRxOk(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2246,7 +2246,7 @@ static int getStaStatsRxNoBuf(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2271,7 +2271,7 @@ static int getStaStatsTx(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2326,7 +2326,7 @@ static int myGetSuppAMode(void)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2400,7 +2400,7 @@ static void resetStaCounters(webs_t wp, char_t *path, char_t *query)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return;
 	}
 
@@ -2443,7 +2443,7 @@ static void setSta11nCfg(webs_t wp, char_t *path, char_t *query)
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return;
 	}
 
@@ -2493,21 +2493,21 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	// Some other stuff
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return;
 	}
 
 	OidSetInformation(RT_OID_802_11_RADIO, s, "ra0", &radio_status, sizeof(radio_status));
 	ret = OidSetInformation(OID_802_11_BSSID_LIST_SCAN, s, "ra0", 0, 0);
 	if (ret < 0)
-		syslog(LOG_ERR, "Set OID_802_11_BSSID_LIST_SCAN error = %d", ret);
+		syslog(LOG_ERR, "Set OID_802_11_BSSID_LIST_SCAN error = %d, %s", ret, __FUNCTION__);
 
 	sleep(3);
 	if (G_SSID.SsidLength > 0)
 	{
 		ret = OidSetInformation(OID_802_11_SSID, s, "ra0", &G_SSID, sizeof(NDIS_802_11_SSID));
 		if (ret < 0)
-			syslog(LOG_ERR, "Set OID_802_11_SSID error = %d", ret);
+			syslog(LOG_ERR, "Set OID_802_11_SSID error = %d, %s", ret, __FUNCTION__);
 	}
 	close(s);
 
@@ -2666,7 +2666,7 @@ static void setStaOrgAdd(webs_t wp, char_t *path, char_t *query)
 	{
 		if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
-		    syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		    syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		    return;
 		}
 

@@ -313,7 +313,7 @@ static int getMaxVol(int eid, webs_t wp, int argc, char_t **argv)
 	double transfer, result=0;
 
 	if(!pp){
-		syslog(LOG_ERR, "no fdisk, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no fdisk, %s", __FUNCTION__);
 		return -1;
 	}
 

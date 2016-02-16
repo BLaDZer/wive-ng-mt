@@ -104,7 +104,7 @@ static int get_LANAUTHState()
 
 	fp = popen("ps|grep lanaut[h]", "r");
 	if(!fp){
-		syslog(LOG_ERR, "no ps util exist, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no ps util exist, %s", __FUNCTION__);
 		return -1;
 	}
 	fgets(result, sizeof(result), fp);
@@ -280,7 +280,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 
 	if (nvram_bufset(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
 	{
-		syslog(LOG_ERR, "Set vpnEnabled error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "Set vpnEnabled error, %s", __FUNCTION__);
 		return;
 	}
 
@@ -995,7 +995,7 @@ static void rebuildVPNRoutes(char *src_rrs)
 	FILE *fd = fopen(_PATH_PPP_ROUTES, "w");
 	if (fd == NULL)
 	{
-		syslog(LOG_ERR, "open %s failed, %s\n", _PATH_PPP_ROUTES, __FUNCTION__);
+		syslog(LOG_ERR, "open %s failed, %s", _PATH_PPP_ROUTES, __FUNCTION__);
 		return;
 	}
 
@@ -1051,7 +1051,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 	FILE *fd = fopen(_PATH_LANWAN_ROUTES, "w");
 	if (fd == NULL)
 	{
-		syslog(LOG_ERR, "open %s failed, %s\n", _PATH_LANWAN_ROUTES, __FUNCTION__);
+		syslog(LOG_ERR, "open %s failed, %s", _PATH_LANWAN_ROUTES, __FUNCTION__);
 		return;
 	}
 
@@ -1066,7 +1066,7 @@ static void rebuildLANWANRoutes(char *src_rrs)
 			continue;
 		else if ((strcmp(iface, "WAN")==0) && isBridgeMode)
 		{
-			syslog(LOG_ERR, "Skip WAN routing rule in the non-Gateway mode: %s,%s\n", one_rule, __FUNCTION__);
+			syslog(LOG_ERR, "Skip WAN routing rule in the non-Gateway mode: %s,%s", one_rule, __FUNCTION__);
 			continue;
 		}
 
@@ -1176,7 +1176,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 		{
 			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
 			{
-				syslog(LOG_ERR, "format error, %s\n", __FUNCTION__);
+				syslog(LOG_ERR, "format error, %s", __FUNCTION__);
 				free(running_rules);
 				fclose(fp);
 				return 0;
@@ -1203,7 +1203,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 				if (index < rule_count)
 					running_rules[index] = 1;
 				else
-					syslog(LOG_ERR, "fatal error in %s\n", __FUNCTION__);
+					syslog(LOG_ERR, "fatal error in %s", __FUNCTION__);
 
 				websWrite(wp, T(", %d, "), index); // 8
 				if (getNthValueSafe(3, one_rule, ',', interface, sizeof(interface)) != -1)
@@ -1870,7 +1870,7 @@ int getIfIPv6(const char *ifname, char *if_addr, char *netmask)
 	}
 
 	if (NULL == (fp = fopen(_PATH_PROCNET_IPV6, "r"))) {
-		syslog(LOG_ERR, "getIPv6IntAddr: open /proc/net/if_inet6 error");
+		syslog(LOG_ERR, "getIPv6IntAddr: open /proc/net/if_inet6 error, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -2093,7 +2093,7 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	if(CHK_IF_DIGIT(enabled, 1)) {
 		setupParameters(wp, chilli_vars, 0);
 		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-			syslog(LOG_ERR, "set chilli_net nvram error, %s\n", __FUNCTION__);
+			syslog(LOG_ERR, "set chilli_net nvram error, %s", __FUNCTION__);
 	}
 	else
 #endif

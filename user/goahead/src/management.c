@@ -238,7 +238,7 @@ static int getIfIsUp(const char *ifname)
 
 	skfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (skfd == -1) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -247,7 +247,7 @@ static int getIfIsUp(const char *ifname)
 	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
 		return -1;
 	}
 	close(skfd);
@@ -283,7 +283,7 @@ static int linkspeed(const char *ifname) {
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		speed = ecmd.speed;
 	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
 
 	close(sd);
 
@@ -322,7 +322,7 @@ static int linkduplex(const char *ifname) {
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		duplex = ecmd.duplex;
 	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
 
 	close(sd);
 
@@ -358,7 +358,7 @@ static int linkstatus(const char *ifname) {
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		ret = ethval.data;
 	else
-		syslog(LOG_ERR, "ioctl error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
 
 	close(sd);
 
@@ -377,7 +377,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	int port;
 
 	if (getIfIsUp(IOCTL_IF) != 1) {
-	    syslog(LOG_ERR, "ioctl iface down, %s\n", __FUNCTION__);
+	    syslog(LOG_ERR, "ioctl iface down, %s", __FUNCTION__);
 	    return -1;
 	}
 
@@ -390,7 +390,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		/* switch phy to needed port */
 		proc_file = fopen(PROCREG_GMAC, "w");
 		if (!proc_file) {
-		    syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		    syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
 		    return -1;
 		}
 		fprintf(proc_file, "%d\n", port);
@@ -415,7 +415,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	if (fp == NULL)
 	{
-		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -433,7 +433,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		// find : , extract ifname, move pointer to next block semicolon
 		semiColon = strchr(buf, ':');
 		if (semiColon == NULL || (*semiColon++ = 0, sscanf(buf, "%s", ifname) != 1)) {
-			syslog(LOG_ERR, "wrong format string in /proc/net/dev");
+			syslog(LOG_ERR, "wrong format string in /proc/net/dev, %s", __FUNCTION__);
 			continue;
 		}
 
@@ -498,7 +498,7 @@ static void get_memdata(struct mem_stats *st)
 
 	fp = fopen("/proc/meminfo", "r");
 	if(!fp){
-		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
 		return;
 	}
 
@@ -559,7 +559,7 @@ static void getcpudata(struct cpu_stats *st)
 
 	fp = fopen(PROC_CPU_STATISTIC, "r");
 	if(!fp){
-		syslog(LOG_ERR, "no proc, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
 		return;
 	}
 
@@ -650,13 +650,13 @@ static void getsyslog(webs_t wp, char_t *path, char_t *query)
 	// LOG_MAX 32768 - 1
 	fp = popen("tail -c 32767 /var/log/messages", "r");
 	if(!fp){
-		syslog(LOG_ERR, "no log exist, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no log exist, %s", __FUNCTION__);
 		goto error;
 	}
 
 	log = malloc(LOG_MAX * sizeof(char));
 	if(!log){
-		syslog(LOG_ERR, "no memory left, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no memory left, %s", __FUNCTION__);
 		goto error;
 	}
 
@@ -693,7 +693,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RAETH_SNMPD
 	fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
-		syslog(LOG_ERR, "no snmp, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "no snmp, %s", __FUNCTION__);
 		return -1;
 	}
 
@@ -704,7 +704,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	// get rx 64 bit counter
 	if((fgets(buf, sizeof(buf), fp) == NULL) ||
 	    (sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]) != 6)) {
-		syslog(LOG_ERR, "rx64 format string error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "rx64 format string error, %s", __FUNCTION__);
 		fclose(fp);
 		return -1;
 	}
@@ -712,7 +712,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	// get tx 64 bit counter
 	if((fgets(buf, sizeof(buf), fp) == NULL ) ||
 	    (sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]) != 6)) {
-		syslog(LOG_ERR, "tx64 format string error, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "tx64 format string error, %s", __FUNCTION__);
 		fclose(fp);
 		return -1;
 	}

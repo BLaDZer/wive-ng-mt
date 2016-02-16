@@ -41,7 +41,7 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	value = nvram_get(RT2860_NVRAM, field);
 
 	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
+	    syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s", value, __FUNCTION__);
 	    value = "en";
 	}
 
@@ -79,7 +79,7 @@ static int getCfgGeneralHTML(int eid, webs_t wp, int argc, char_t **argv)
 
 	if ((!value) && (strcmp(field, "Language") == 0))
 	{
-		syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s\n", value, __FUNCTION__);
+		syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s", value, __FUNCTION__);
 		value = "en";
 	}
 

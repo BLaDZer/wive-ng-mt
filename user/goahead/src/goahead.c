@@ -73,7 +73,7 @@ static int writeGoPid(void)
 
 	fp = fopen(gopid, "w+");
 	if (NULL == fp) {
-		syslog(LOG_ERR, "cannot open pid file");
+		syslog(LOG_ERR, "cannot open pid file, %s", __FUNCTION__);
 		return (-1);
 	}
 	fprintf(fp, "%d", getpid());
@@ -133,19 +133,19 @@ static int initWebs(void)
 		umAddAccessLimit(T("/"), AM_DIGEST, FALSE, T("adm"));
 	}
 	else
-		syslog(LOG_WARNING, "empty administrator account or password");
+		syslog(LOG_WARNING, "empty administrator account or password, %s", __FUNCTION__);
 #endif
 
 	/*
 	 * get ip address from nvram configuration (we executed initInternet)
 	 */
 	if (NULL == lan_ip) {
-		syslog(LOG_ERR, "cannot find lan_ip in NVRAM");
+		syslog(LOG_ERR, "cannot find lan_ip in NVRAM, %s", __FUNCTION__);
 		return -1;
 	}
 	intaddr.s_addr = inet_addr(lan_ip);
 	if (intaddr.s_addr == INADDR_NONE) {
-		syslog(LOG_ERR, "failed to convert %s to binary ip data", lan_ip);
+		syslog(LOG_ERR, "failed to convert %s to binary ip data, %s", lan_ip, __FUNCTION__);
 		return -1;
 	}
 
@@ -224,14 +224,43 @@ static int initWebs(void)
  *	Main -- entry point from LINUX
  */
 
-int main(int argc, char** argv)
+static const char Usage[] =
+"Usage: goahead [-h] [-f] [-r]\n"
+"\n"
+"   -h   Display this help screen\n"
+"   -f   Start foreground\n"
+"   -r   Force restore mode without full reinit\n"
+"\n";
+
+int main(int argcn, char *argvc[])
 {
+	int c, foreground=0, restore=0;
+
+	while ((c = getopt(argcn, argvc, "frh")) != -1) {
+    	    switch (c) {
+    	    case 'f':
+		foreground=1;
+		break;
+    	    case 'r':
+		restore=1;
+		break;
+    	    case 'h':
+        	fputs(Usage, stderr);
+        	exit(0);
+        	break;
+    	    default:
+        	break;
+    	    }
+	}
+
 	openlog("goahead", LOG_PID|LOG_NDELAY, LOG_USER);
 
 	/* Daemonize */
-	if (daemon(0,0)) {
-	    syslog(LOG_ERR, "cannot daemonize - exit!");
-	    return -1;
+	if (!foreground) {
+	    if (daemon(0,0)) {
+		syslog(LOG_ERR, "cannot daemonize - exit!");
+		return -1;
+	    }
 	}
 
 	/* check pid file allready exist */
@@ -271,7 +300,7 @@ int main(int argc, char** argv)
 	    websSSLOpen();
 #endif
     	    /* Start needed services */
-	    if (firstboot) {
+	    if (firstboot && !restore) {
 		initInternet();
 #ifdef CONFIG_USB
 		/* Rescan usb devices after start */
