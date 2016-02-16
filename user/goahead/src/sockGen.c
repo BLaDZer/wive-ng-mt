@@ -307,11 +307,12 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  */
 		rc = 1;
 		setsockopt(sp->sock, SOL_SOCKET, SO_REUSEADDR, (char *)&rc, sizeof(rc));
+		setsockopt(sp->sock, IPPROTO_TCP, TCP_NODELAY, (char *)&rc, sizeof(rc));
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
 				sizeof(sockaddr6)) < 0) {
 #else
-		if (bind(sp->sock, (struct sockaddr *) &sockaddr, 
+		if (bind(sp->sock, (struct sockaddr *) &sockaddr,
 				sizeof(sockaddr)) < 0) {
 #endif
 			socketFree(sid);
