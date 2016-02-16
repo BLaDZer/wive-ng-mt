@@ -60,7 +60,9 @@ SOCKET socketListen(short port, int *err)
 	Make sure the socket is not inherited by exec'd processes
 	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 */
+#ifdef LINUX
 	fcntl(fd, F_SETFD, FD_CLOEXEC);
+#endif
 	setSocketNodelayReuse(fd);
 
 	if (bind(fd, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
@@ -134,7 +136,9 @@ SOCKET socketConnect(char *ip, short port, int *err)
 	Make sure the socket is not inherited by exec'd processes
 	Set the REUSEADDR flag to minimize the number of sockets in TIME_WAIT
 */
+#ifdef LINUX
 	fcntl(fd, F_SETFD, FD_CLOEXEC);
+#endif
 	setSocketNodelayReuse(fd);
 /*
 	Turn on blocking mode for the connecting socket

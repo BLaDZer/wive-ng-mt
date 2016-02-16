@@ -306,7 +306,9 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		 * Make sure the socket is not inherited by exec'd processes
 		 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 		 */
+#ifndef __NO_FCNTL
 		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
 		setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
@@ -411,7 +413,9 @@ static void socketAccept(socket_t *sp)
 	Make sure the socket is not inherited by exec'd processes
 	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 */
+#ifndef __NO_FCNTL
 	fcntl(newSock, F_SETFD, FD_CLOEXEC);
+#endif
 	setSocketNodelayReuse(newSock);
 	socketHighestFd = max(socketHighestFd, newSock);
 
@@ -433,7 +437,9 @@ static void socketAccept(socket_t *sp)
  *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
  *	Set the blocking mode before calling the accept callback.
 */
+#ifndef __NO_FCNTL
 	fcntl(nid, F_SETFD, FD_CLOEXEC);
+#endif
 	setSocketNodelayReuse(nid);
 	socketSetBlock(nid, (nsp->flags & SOCKET_BLOCK) ? 1: 0);
 /*
@@ -942,7 +948,9 @@ int socketSetBlock(int sid, int on)
 #elif (defined (VXWORKS) || defined (NW))
 		ioctl(sp->sock, FIONBIO, (int)&iflag);
 #else
+#ifndef __NO_FCNTL
 		fcntl(sp->sock, F_SETFL, fcntl(sp->sock, F_GETFL) & ~O_NONBLOCK);
+#endif
 #endif
 
 	} else {
@@ -955,7 +963,9 @@ int socketSetBlock(int sid, int on)
 #elif (defined (VXWORKS) || defined (NW))
 		ioctl(sp->sock, FIONBIO, (int)&iflag);
 #else
+#ifndef __NO_FCNTL
 		fcntl(sp->sock, F_SETFL, fcntl(sp->sock, F_GETFL) | O_NONBLOCK);
+#endif
 #endif
 	}
 	return oldBlock;
