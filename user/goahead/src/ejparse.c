@@ -1505,9 +1505,8 @@ int ejArgs(int argc, char_t **argv, char_t *fmt, ...)
 
 	va_start(vargs, fmt);
 
-	if (argv == NULL) {
+	if (argv == NULL)
 		return 0;
-	}
 
 	for (argn = 0, cp = fmt; cp && *cp && argv[argn]; ) {
 		if (*cp++ != '%') {

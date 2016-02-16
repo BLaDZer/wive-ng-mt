@@ -285,9 +285,7 @@ int websUrlHandlerRequest(webs_t wp)
 				return 1;
 			}
 			if (!websValid(wp)) {
-				trace(0, 
-				T("webs: handler %s called websDone, but didn't return 1\n"),
-					sp->urlPrefix);
+				trace(0, T("webs: handler %s called websDone, but didn't return 1\n"), sp->urlPrefix);
 				return 1;
 			}
 		}

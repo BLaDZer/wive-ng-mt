@@ -1712,9 +1712,8 @@ int websWrite(webs_t wp, char_t *fmt, ...)
 	buf = NULL;
 	rc = 0;
 
-	if (fmtValloc(&buf, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
-		trace(0, T("webs: websWrite lost data, buffer overflow\n"));
-	}
+	if (fmtValloc(&buf, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE)
+		syslog(LOG_ERR, "websWritelost data, buffer overflow , %s", __FUNCTION__);
 
 	va_end(vargs);
 	a_assert(buf);

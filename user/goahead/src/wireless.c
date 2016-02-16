@@ -1625,8 +1625,7 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	// Access Policy
 	if(AccessPolicyHandle(nvram, wp, mbssid) == -1)
-		trace(0, "** error in AccessPolicyHandle()\n");
-
+		syslog(LOG_ERR, "** error in AccessPolicyHandle(), %s", __FUNCTION__);
 out:
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);

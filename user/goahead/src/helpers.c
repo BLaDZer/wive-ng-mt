@@ -237,7 +237,7 @@ void arplookup(char *ip, char *arp)
     char buf[256];
     FILE *fp = fopen("/proc/net/arp", "r");
     if(!fp) {
-        trace(0, T("no proc fs mounted!\n"));
+	syslog(LOG_ERR, "no proc , %s", __FUNCTION__);
         return;
     }
 
@@ -265,16 +265,16 @@ int doSystem(char_t *fmt, ...)
 	int			rc = 0;
 
 	va_start(vargs, fmt);
-	if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
-		trace(0, T("doSystem: lost data, buffer overflow\n"));
-	}
+	if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE)
+		syslog(LOG_ERR, "lost data, buffer overflow , %s", __FUNCTION__);
+
 	va_end(vargs);
 
 	if (cmd) {
-		trace(0, T("%s\n"), cmd);
 		rc = system(cmd);
 		bfree(B_L, cmd);
 	}
+
 	return rc;
 }
 
