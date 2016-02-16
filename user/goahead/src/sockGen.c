@@ -193,7 +193,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #else
 			hostent = gethostbyname(host);
 			if (hostent != NULL) {
-				memcpy((char *) &sockaddr.sin_addr, 
+				memcpy((char *) &sockaddr.sin_addr,
 					(char *) hostent->h_addr_list[0],
 					(size_t) hostent->h_length);
 			} else {
@@ -216,9 +216,8 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #endif /* WF_USE_IPV6 */
 
 	bcast = sp->flags & SOCKET_BROADCAST;
-	if (bcast) {
+	if (bcast)
 		sp->flags |= SOCKET_DATAGRAM;
-	}
 	dgram = sp->flags & SOCKET_DATAGRAM;
 
 /*
@@ -285,7 +284,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 
 			}
 			if ((rc = connect(sp->sock, (struct sockaddr *) &sockaddr,
-				sizeof(sockaddr))) < 0 && 
+				sizeof(sockaddr))) < 0 &&
 				(rc = tryAlternateConnect(sp->sock,
 				(struct sockaddr *) &sockaddr)) < 0) {
 #if (defined (WIN) || defined (CE))
