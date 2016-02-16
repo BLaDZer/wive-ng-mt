@@ -301,9 +301,12 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 			}
 		}
 	} else {
-/*
- *		Bind to the socket endpoint and the call listen() to start listening
- */
+		/*
+		 * Bind to the socket endpoint and the call listen() to start listening
+		 * Make sure the socket is not inherited by exec'd processes
+		 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+		 */
+		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
 		setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
@@ -403,9 +406,13 @@ static void socketAccept(socket_t *sp)
 	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0) {
 		return;
 	}
-#ifndef __NO_FCNTL
+
+/*
+	Make sure the socket is not inherited by exec'd processes
+	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+*/
 	fcntl(newSock, F_SETFD, FD_CLOEXEC);
-#endif
+	setSocketNodelayReuse(newSock);
 	socketHighestFd = max(socketHighestFd, newSock);
 
 /*
@@ -422,9 +429,11 @@ static void socketAccept(socket_t *sp)
 	nsp->flags &= ~SOCKET_LISTENING;
 
 /*
+ *	Make sure the socket is not inherited by exec'd processes
+ *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
  *	Set the blocking mode before calling the accept callback.
- */
-
+*/
+	fcntl(nid, F_SETFD, FD_CLOEXEC);
 	setSocketNodelayReuse(nid);
 	socketSetBlock(nid, (nsp->flags & SOCKET_BLOCK) ? 1: 0);
 /*

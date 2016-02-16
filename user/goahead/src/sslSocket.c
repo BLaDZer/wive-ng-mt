@@ -61,8 +61,7 @@ SOCKET socketListen(short port, int *err)
 	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 */
 	fcntl(fd, F_SETFD, FD_CLOEXEC);
-	rc = 1;
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&rc, sizeof(rc));
+	setSocketNodelayReuse(fd);
 
 	if (bind(fd, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
 		fprintf(stderr, 
