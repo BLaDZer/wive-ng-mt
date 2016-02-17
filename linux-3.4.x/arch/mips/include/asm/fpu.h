@@ -102,6 +102,10 @@ static inline void lose_fpu(int save)
 		KSTK_STATUS(current) &= ~ST0_CU1;
 		clear_thread_flag(TIF_USEDFPU);
 		__disable_fpu();
+	} else {
+		/* FPU should not have been left enabled with no owner */
+		WARN(read_c0_status() & ST0_CU1,
+		     "Orphaned FPU left enabled");
 	}
 	preempt_enable();
 }
