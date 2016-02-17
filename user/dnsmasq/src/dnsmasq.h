@@ -237,7 +237,8 @@ struct event_desc {
 #define OPT_TFTP_NO_FAIL   52
 #define OPT_SCRIPT_ARP     53
 #define OPT_MAC_B64        54
-#define OPT_LAST           55
+#define OPT_MAC_HEX        55
+#define OPT_LAST           56
 
 /* extra flags for my_syslog, we use a couple of facilities since they are known 
    not to occupy the same bits as priorities, no matter how syslog.h is set up. */
@@ -637,7 +638,7 @@ struct frec {
 #define ACTION_ADD           4
 #define ACTION_TFTP          5
 #define ACTION_ARP           6
-#define ACTION_ARP_OLD       7
+#define ACTION_ARP_DEL       7
 
 #define LEASE_NEW            1  /* newly created */
 #define LEASE_CHANGED        2  /* modified */

@@ -2172,7 +2172,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  unhide_metas(arg);
 	  if (strcmp(arg, "base64") == 0)
 	    set_option_bool(OPT_MAC_B64);
-	  else
+	  else if (strcmp(arg, "text") == 0)
+	    set_option_bool(OPT_MAC_HEX);
 	    ret_err(gen_err);
 	}
       break;

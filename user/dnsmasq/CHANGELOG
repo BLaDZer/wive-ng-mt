@@ -43,7 +43,10 @@ version 2.76
 
 	    Add --add-cpe-id option.
 
-	
+            Don't crash with divide-by-zero if an IPv6 dhcp-range
+	    is declared as a whole /64.
+	    (ie xx::0 to xx::ffff:ffff:ffff:ffff) 
+	    Thanks to Laurent Bendel for spotting this problem.
 	    
 	
 version 2.75
