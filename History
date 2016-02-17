@@ -1740,8 +1740,9 @@
 <b>4.0.x</b><br>
 1) build_system: add strace v4.11 for easy debug.<br>
 2) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-3) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-4) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+3) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+4) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+5) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
 <br>
 <br>
 <br>
