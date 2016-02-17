@@ -588,38 +588,37 @@ typedef enum {
 	big		= 7,
 	flag		= 8,
 	floating	= 9,
-	string 		= 10,
-	bytes 		= 11,
-	symbol 		= 12,
-	errmsg 		= 13
+	doublefloating	= 10,
+	string 		= 11,
+	bytes 		= 12,
+	symbol 		= 13,
+	errmsg 		= 14
 } vtype_t;
 
 #ifndef __NO_PACK
 #pragma pack(2)
 #endif /* _NO_PACK */
 
-#define FLOATING_POINT_SUPPORT
 typedef struct {
 
 	union {
-		char	flag;
+		int	undefined;
 		char	byteint;
 		short	shortint;
-		char	percent;
 		long	integer;
 		long	hex;
+		char	percent;
 		long	octal;
 		long	big[2];
-#ifdef FLOATING_POINT_SUPPORT
-		double	floating;
-#endif /* FLOATING_POINT_SUPPORT */
+		char	flag;
+		float	floating;
+		double	doublefloating;
 		char_t	*string;
 		char	*bytes;
-		char_t	*errmsg;
 		void	*symbol;
+		char_t	*errmsg;
 	} value;
-
-	vtype_t			type;
+	vtype_t		type;
 	unsigned int	valid		: 8;
 	unsigned int	allocated	: 8;		/* String was balloced */
 } value_t;
@@ -738,9 +737,9 @@ typedef struct {
 
 typedef struct sym_t {
 	struct sym_t	*forw;					/* Pointer to next hash list */
-	value_t			name;					/* Name of symbol */
-	value_t			content;				/* Value of symbol */
-	int				arg;					/* Parameter value */
+	value_t		name;					/* Name of symbol */
+	value_t		content;				/* Value of symbol */
+	int		arg;					/* Parameter value */
 } sym_t;
 
 typedef int sym_fd_t;						/* Returned by symOpen */
