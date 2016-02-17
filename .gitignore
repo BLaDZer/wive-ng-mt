@@ -376,6 +376,9 @@ fulldump
 /user/lldpd/tests/Makefile
 /user/netcwmp/tests/src/Makefile
 /user/ethtool/ethtool-config.h.in~
+/user/strace/Makefile
+/user/strace/Mkaefile.in
+/user/strace/configure
 
 #
 # exclude enerated files from kernel

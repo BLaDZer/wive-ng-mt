@@ -106,15 +106,17 @@ dir_$(CONFIG_USB_QMI)			    += uqmi
 #only ralink apps and scripts
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 
-#need last busybox and goahead
-dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
-dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
-
 # multicore tools
 ifdef CONFIG_RALINK_MT7621
 dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
 
+# development tools
+dir_$(CONFIG_USER_STRACE)		    += strace
+
+#need last busybox and goahead
+dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
+dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"

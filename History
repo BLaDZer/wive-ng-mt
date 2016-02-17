@@ -1737,4 +1737,8 @@
 141) kernel: mm: do not flush TLB during protection change if !pte_present && !migration_entry.<br>
 <br>
 <br>
+<b>4.0.x</b><br>
+1) build_system: add strace v4.11 for easy debug.<br>
+<br>
+<br>
 <br>

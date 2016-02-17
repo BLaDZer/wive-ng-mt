@@ -94,6 +94,7 @@ bool '802.1x Authenticator'			CONFIG_USER_802_1X
 bool 'iw wireless_tool support'			CONFIG_USER_WIRELESS_IW_TOOL
 bool 'Chillispot captive portal'		CONFIG_USER_CHILLISPOT
 bool 'Nodogsplash simple captive portal'	CONFIG_USER_NODOGSPLASH
+bool 'Strace debuggibg tool'			CONFIG_USER_STRACE
 
 if [ "$CONFIG_USER_WIRELESS_IW_TOOL" = "y" ]; then
 	define_bool CONFIG_LIB_NL y
