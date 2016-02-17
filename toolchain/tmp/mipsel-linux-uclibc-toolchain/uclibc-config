@@ -235,9 +235,9 @@ MULTILIB_DIR="lib"
 # UCLIBC_BUILD_PIE is not set
 # UCLIBC_HAS_ARC4RANDOM is not set
 # UCLIBC_HAS_SSP is not set
-# UCLIBC_BUILD_RELRO is not set
-# UCLIBC_BUILD_NOW is not set
-# UCLIBC_BUILD_NOEXECSTACK is not set
+UCLIBC_BUILD_RELRO=y
+UCLIBC_BUILD_NOW=y
+UCLIBC_BUILD_NOEXECSTACK=y
 
 #
 # Development/debugging options

@@ -265,7 +265,6 @@ clean:
 	################PREPARE FOR CLEANUP############################
 	touch $(ROOTDIR)/lib/.config
 	touch $(ROOTDIR)/linux/.config
-	touch $(ROOTDIR)/.config
 	touch $(ROOTDIR)/config/autoconf.h
 	################CLEAN ALL SUBDIRS 1############################
 	-for dir in $(DIRS) $(LINUXDIR) Uboot ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir clean ; done
