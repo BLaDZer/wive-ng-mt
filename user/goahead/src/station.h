@@ -7,9 +7,13 @@
  * $Id: station.h,v 1.3 2007-08-02 09:23:29 yy Exp $
  */
 
+#ifndef _h_STATION
+#define _h_STATION 1
+
 #define Ndis802_11AuthMode8021x 20
 
 void formDefineStation(void);
 void initStaProfile(void);
 void initStaConnection(void);
 void freeHeaderProfileSettings(void);
+#endif

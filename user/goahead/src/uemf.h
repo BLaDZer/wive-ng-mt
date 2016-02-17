@@ -178,10 +178,10 @@
 	#include	<netinet/in.h>
 	#include 	<arpa/inet.h>
 	#include 	<netdb.h>
-    #include    <stdlib.h>
-    #include    <unistd.h>
-    #include    <sys/uio.h>
-    #include    <sys/wait.h>
+        #include    	<stdlib.h>
+        #include    	<unistd.h>
+        #include    	<sys/uio.h>
+        #include    	<sys/wait.h>
 #endif /* QNX4 */
 
 #ifdef ECOS
@@ -297,27 +297,27 @@
  *	To convert strings to UNICODE. We have a level of indirection so things
  *	like T(__FILE__) will expand properly.
  */
-#define	T(x)				__TXT(x)
-#define	__TXT(s)			L ## s
+#define	T(x)			__TXT(x)
+#define	__TXT(s)		L ## s
 typedef unsigned short 		char_t;
 typedef unsigned short		uchar_t;
 
 /*
- *	Text size of buffer macro. A buffer bytes will hold (size / char size) 
- *	characters. 
+ *	Text size of buffer macro. A buffer bytes will hold (size / char size)
+ *	characters.
  */
-#define	TSZ(x)				(sizeof(x) / sizeof(char_t))
+#define	TSZ(x)			(sizeof(x) / sizeof(char_t))
 
 /*
  *	How many ASCII bytes are required to represent this UNICODE string?
  */
-#define	TASTRL(x)			((wcslen(x) + 1) * sizeof(char_t))
+#define	TASTRL(x)		((wcslen(x) + 1) * sizeof(char_t))
 
 #else
-#define	T(s) 				s
-typedef char				char_t;
-#define	TSZ(x)				(sizeof(x))
-#define	TASTRL(x)			(strlen(x) + 1)
+#define	T(s) 			s
+typedef char			char_t;
+#define	TSZ(x)			(sizeof(x))
+#define	TASTRL(x)		(strlen(x) + 1)
 #ifdef WIN
 typedef unsigned char		uchar_t;
 #endif /* WIN */
@@ -707,29 +707,29 @@ typedef struct {
  */
 typedef struct {
 	union {
-		void	*next;							/* Pointer to next in q */
-		int	size;							/* Actual requested size */
+		void	*next;						/* Pointer to next in q */
+		int	size;						/* Actual requested size */
 	} u;
-	int		flags;							/* Per block allocation flags */
+	int	flags;							/* Per block allocation flags */
 } bType;
 
-#define B_SHIFT			4					/* Convert size to class */
-#define B_ROUND			((1 << (B_SHIFT)) - 1)
-#define B_MAX_CLASS		13					/* Maximum class number + 1 */
-#define B_MALLOCED		0x80000000			/* Block was malloced */
+#define B_SHIFT		4				/* Convert size to class */
+#define B_ROUND		((1 << (B_SHIFT)) - 1)
+#define B_MAX_CLASS	13				/* Maximum class number + 1 */
+#define B_MALLOCED	0x80000000			/* Block was malloced */
 #define B_DEFAULT_MEM	(64 * 1024)			/* Default memory allocation */
-#define B_MAX_FILES		(512)				/* Maximum number of files */
-#define B_FILL_CHAR		(0x77)				/* Fill byte for buffers */
-#define B_FILL_WORD		(0x77777777)		/* Fill word for buffers */
+#define B_MAX_FILES	(512)				/* Maximum number of files */
+#define B_FILL_CHAR	(0x77)				/* Fill byte for buffers */
+#define B_FILL_WORD	(0x77777777)			/* Fill word for buffers */
 #define B_MAX_BLOCKS	(64 * 1024)			/* Maximum allocated blocks */
 
 /*
  *	Flags. The integrity value is used as an arbitrary value to fill the flags.
  */
-#define B_INTEGRITY			0x8124000		/* Integrity value */
+#define B_INTEGRITY		0x8124000		/* Integrity value */
 #define B_INTEGRITY_MASK	0xFFFF000		/* Integrity mask */
-#define B_USE_MALLOC		0x1				/* Okay to use malloc if required */
-#define B_USER_BUF			0x2				/* User supplied buffer for mem */
+#define B_USE_MALLOC		0x1			/* Okay to use malloc if required */
+#define B_USER_BUF		0x2			/* User supplied buffer for mem */
 
 /*
  *	The symbol table record for each symbol entry
@@ -747,23 +747,32 @@ typedef int sym_fd_t;						/* Returned by symOpen */
 /*
  *	Script engines
  */
-#define EMF_SCRIPT_JSCRIPT			0		/* javascript */
-#define EMF_SCRIPT_TCL	 			1		/* tcl */
+#define EMF_SCRIPT_JSCRIPT		0		/* javascript */
+#define EMF_SCRIPT_TCL	 		1		/* tcl */
 #define EMF_SCRIPT_EJSCRIPT 		2		/* Ejscript */
-#define EMF_SCRIPT_MAX	 			3
+#define EMF_SCRIPT_MAX	 		3
 
 #define	MAXINT		INT_MAX
 #define BITSPERBYTE 8
 #define BITS(type)	(BITSPERBYTE * (int) sizeof(type))
 #define	STRSPACE	T("\t \n\r\t")
 
-#ifndef max
-#define max(a,b)  (((a) > (b)) ? (a) : (b))
-#endif /* max */
+/*
+ * min()/max() macros that also do
+ * strict type-checking.. See the
+ * "unnecessary" pointer comparison.
+ */
+#define min(x, y) ({				\
+	typeof(x) _min1 = (x);			\
+	typeof(y) _min2 = (y);			\
+	(void) (&_min1 == &_min2);		\
+	_min1 < _min2 ? _min1 : _min2; })
 
-#ifndef min
-#define min(a,b)  (((a) < (b)) ? (a) : (b))
-#endif /* min */
+#define max(x, y) ({				\
+	typeof(x) _max1 = (x);			\
+	typeof(y) _max2 = (y);			\
+	(void) (&_max1 == &_max2);		\
+	_max1 > _max2 ? _max1 : _max2; })
 
 /******************************************************************************/
 /*                                  CRON                                      */
@@ -777,15 +786,15 @@ typedef struct {
 	char_t	*dayofweek;
 } cron_t;
 
-extern long		cronUntil(cron_t *cp, int period, time_t testTime);
-extern int		cronAlloc(cron_t *cp, char_t *str);
-extern int		cronFree(cron_t *cp);
+extern long	cronUntil(cron_t *cp, int period, time_t testTime);
+extern int	cronAlloc(cron_t *cp, char_t *str);
+extern int	cronFree(cron_t *cp);
 
 /******************************************************************************/
 /*                                 SOCKET                                     */
 /******************************************************************************/
 /*
- *	Socket flags 
+ *	Socket flags
  */
 
 #if ((defined (WIN) || defined (CE)) && defined (WEBS))
@@ -794,7 +803,7 @@ extern int		cronFree(cron_t *cp);
 #define ECONNRESET              WSAECONNRESET
 #endif /* (WIN || CE) && WEBS) */
 
-#define SOCKET_EOF				0x1		/* Seen end of file */
+#define SOCKET_EOF			0x1		/* Seen end of file */
 #define SOCKET_CONNECTING		0x2		/* Connect in progress */
 #define SOCKET_BROADCAST		0x4		/* Broadcast mode */
 #define SOCKET_PENDING			0x8		/* Message pending on this socket */
@@ -816,7 +825,7 @@ extern int		cronFree(cron_t *cp);
 #define SOCKET_RESET			2		/* Socket has been reset */
 #define SOCKET_NETDOWN			3		/* Network is down */
 #define SOCKET_AGAIN			4		/* Issue the request again */
-#define SOCKET_INTR				5		/* Call was interrupted */
+#define SOCKET_INTR			5		/* Call was interrupted */
 #define SOCKET_INVAL			6		/* Invalid */
 
 /*
@@ -834,27 +843,27 @@ extern int		cronFree(cron_t *cp);
 #endif /* LITTLEFOOT */
 
 typedef void 	(*socketHandler_t)(int sid, int mask, void* data);
-typedef int		(*socketAccept_t)(int sid, char *ipaddr, int port, 
-					int listenSid);
+typedef int	(*socketAccept_t)(int sid, char *ipaddr, int port, int listenSid);
+
 typedef struct {
-	char			host[64];				/* Host name */
-	ringq_t			inBuf;					/* Input ring queue */
-	ringq_t			outBuf;					/* Output ring queue */
-	ringq_t			lineBuf;				/* Line ring queue */
-	socketAccept_t	accept;					/* Accept handler */
-	socketHandler_t	handler;				/* User I/O handler */
-	void*				handler_data;			/* User handler data */
-	int				handlerMask;			/* Handler events of interest */
-	int				sid;					/* Index into socket[] */
-	int				port;					/* Port to listen on */
-	int				flags;					/* Current state flags */
-	int				sock;					/* Actual socket handle */
-	int				fileHandle;				/* ID of the file handler */
-	int				interestEvents;			/* Mask of events to watch for */
-	int				currentEvents;			/* Mask of ready events (FD_xx) */
-	int				selectEvents;			/* Events being selected */
-	int				saveMask;				/* saved Mask for socketFlush */
-	int				error;					/* Last error */
+	char		host[64];			/* Host name */
+	ringq_t		inBuf;				/* Input ring queue */
+	ringq_t		outBuf;				/* Output ring queue */
+	ringq_t		lineBuf;			/* Line ring queue */
+	socketAccept_t	accept;				/* Accept handler */
+	socketHandler_t	handler;			/* User I/O handler */
+	void*		handler_data;			/* User handler data */
+	int		handlerMask;			/* Handler events of interest */
+	int		sid;				/* Index into socket[] */
+	int		port;				/* Port to listen on */
+	int		flags;				/* Current state flags */
+	int		sock;				/* Actual socket handle */
+	int		fileHandle;			/* ID of the file handler */
+	int		interestEvents;			/* Mask of events to watch for */
+	int		currentEvents;			/* Mask of ready events (FD_xx) */
+	int		selectEvents;			/* Events being selected */
+	int		saveMask;			/* saved Mask for socketFlush */
+	int		error;				/* Last error */
 } socket_t;
 
 /********************************* Prototypes *********************************/
@@ -920,7 +929,7 @@ extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
  *	Flags. The integrity value is used as an arbitrary value to fill the flags.
  */
 #define B_USE_MALLOC		0x1				/* Okay to use malloc if required */
-#define B_USER_BUF			0x2				/* User supplied buffer for mem */
+#define B_USER_BUF		0x2				/* User supplied buffer for mem */
 
 
 #ifndef LINUX
@@ -1052,7 +1061,7 @@ extern void		trace(int lev, char_t *fmt, ...);
 extern void		traceRaw(char_t *buf);
 extern void		(*traceSetHandler(void (*function)(int level, char_t *buf))) 
 					(int level, char_t *buf);
- 
+
 extern value_t 	valueInteger(long value);
 extern value_t	valueString(char_t *value, int flags);
 extern value_t	valueErrmsg(char_t *value);
