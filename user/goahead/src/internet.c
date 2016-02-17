@@ -264,9 +264,9 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 19, "vpnEnabled", "vpnType", "vpnServer", "vpnMPPE", "vpnPeerDNS", "vpnDebug",
+		nvram_fromdef(RT2860_NVRAM, 20, "vpnEnabled", "vpnType", "vpnServer", "vpnMPPE", "vpnPeerDNS", "vpnDebug",
 			"vpnNAT", "vpnDGW", "vpnAuthProtocol", "vpnEnableLCP", "vpnPurePPPOE", "vpnLCPFailure", "vpnLCPInterval",
-			"vpnTestReachable", "LANAUTH_LVL", "vpnMTU", "vpnUser", "vpnPassword", "vpnService");
+			"vpnTestReachable", "LANAUTH_LVL", "vpnMTU", "vpnUser", "vpnPassword", "vpnInterface", "vpnService");
 		goto out;
 	}
 
@@ -1777,6 +1777,15 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr;
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
 
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 12, "IPv6OpMode", "IPv6IPAddr",
+			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
+			"IPv6GWAddr", "IPv6SrvAddr", "IPv6Dhcpc", "IPv6AllowForward",
+			"Ipv6InVPN", "radvdEnabled", "dhcpv6Enabled");
+		goto out;
+	}
+
 	opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
@@ -1813,7 +1822,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
-
+out:
 #ifdef PRINT_DEBUG
 	//debug print
 	websHeader(wp);

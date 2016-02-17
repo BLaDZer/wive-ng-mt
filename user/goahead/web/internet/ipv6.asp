@@ -237,6 +237,7 @@ function initTranslation()
 
 	_TRV("v6Apply", "button apply");
 	_TRV("v6Cancel", "button cancel");
+	_TRV("vReset", "button reset");
 }
 
 function displayServiceHandler(response)
@@ -287,6 +288,10 @@ function displayServiceStatus()
 	ajaxPerformRequest('/internet/services-stat.asp', displayServiceHandler);
 }
 
+function resetClick(form) {
+    form.reset.value = "1";
+    form.submit();
+}
 </script>
 </head>
 
@@ -397,8 +402,10 @@ function displayServiceStatus()
 				<table class="buttons">
 					<tr align="center">
   						<td>
-    						<input type=submit class="normal" value="Apply" id="v6Apply">
-    						<input type=reset  class="normal" value="Cancel" id="v6Cancel">
+    						<input type="submit" class="normal" value="Apply" id="v6Apply">
+    					<!--<input type="reset"  class="normal" value="Cancel" id="v6Cancel"> -->
+    						<input type="button"  class="normal" value="Reset" id="vReset" onClick="resetClick(this.form);">
+    						<input type="hidden" name="reset" value="0">
     						<input type="hidden" value="/internet/ipv6.asp" name="submit-url">
 						</td>
 					</tr>
