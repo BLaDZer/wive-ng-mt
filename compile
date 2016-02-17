@@ -65,10 +65,6 @@ case "$MODE" in
 	    # white oneband release
 	    DEVNAME="SNR-CPE-W4N-MT"
 	    ;;
-	"MT7620-2T2R-4M")
-	    # white trash sample
-	    DEVNAME="SNR-CPE-W4N-MT"
-	    ;;
 	*)
 	    echo "Not supported (unknown) mode or mode not set."
 	    exit 1
@@ -132,7 +128,7 @@ if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-16M-USB" ]; then
 elif [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-8M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7602-MT7612-2T2R-8M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-8M-USB					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB	$ROOTDIR/linux/.config
@@ -151,8 +147,8 @@ elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M		$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-8M					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-8M					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB			$ROOTDIR/linux/.config
@@ -161,18 +157,13 @@ elif [ "$MODE" = "MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-MT7610-1T1R-5GHZ-8M			$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-8M					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-8M					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-8M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-8M					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-8M					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-4M" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-4M					$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-4M					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-4M					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 else
     echo "Config files not found."
