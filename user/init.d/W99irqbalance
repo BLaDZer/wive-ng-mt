@@ -122,7 +122,7 @@ start() {
     fi
     if [ "$IRQBalance" = "auto" ]; then
 	$LOG "Start irqbalance auto mode"
-	irqbalance
+	irqbalance $banirq
     fi
 }
 
@@ -138,6 +138,7 @@ stop() {
 get_param() {
     eval `nvram_buf_get 2860 IRQBalance`
     cpunum=`grep -c processor /proc/cpuinfo`
+    banirq=`grep ipi_ /proc/interrupts | cut -f1 -d":" | awk {' print "--banirq="$1 '}`
 }
 
 case "$1" in

@@ -1740,11 +1740,12 @@
 <b>4.0.x</b><br>
 1) build_system: add strace v4.11 for easy debug.<br>
 2) goahead: fix types convert in value.<br>
-3) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-4) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-5) kernel: mips: fix FPU disable with preemption.<br>
-6) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-7) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+3) init.d: irqbalance skip ipi irq`s.<br>
+4) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+5) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+6) kernel: mips: fix FPU disable with preemption.<br>
+7) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+8) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
 <br>
 <br>
 <br>
