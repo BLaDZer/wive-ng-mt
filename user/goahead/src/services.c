@@ -643,8 +643,8 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 	char pass_var[16] = "l2tp_srv_pass0";
 	char_t *submitUrl;
 	int i=0;
-
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 30, "l2tp_srv_enabled", "l2tp_srv_ip_range", "l2tp_srv_ip_local",
 			"l2tp_srv_lcp_adapt", "l2tp_srv_debug", "l2tp_srv_nat_enabled", "l2tp_srv_mppe_enabled",

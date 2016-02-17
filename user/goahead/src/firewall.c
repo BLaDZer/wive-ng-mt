@@ -1373,8 +1373,8 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 static void DMZ(webs_t wp, char_t *path, char_t *query)
 {
 	char *dmzE, *ip_address, *dmzLoopback;
-
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 3, "DMZEnable", "DMZIPAddress", "DMZNATLoopback");
 		goto out;

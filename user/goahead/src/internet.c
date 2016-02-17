@@ -260,9 +260,9 @@ static int vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv)
 
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 {
-	char_t  *vpn_enabled, *submitUrl, *vpn_type;
-
+	char_t *vpn_enabled, *submitUrl, *vpn_type;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 20, "vpnEnabled", "vpnType", "vpnServer", "vpnMPPE", "vpnPeerDNS", "vpnDebug",
 			"vpnNAT", "vpnDGW", "vpnAuthProtocol", "vpnEnableLCP", "vpnPurePPPOE", "vpnLCPFailure", "vpnLCPInterval",
@@ -1773,11 +1773,12 @@ const parameter_fetch_t service_ipv6_flags[] =
 /* goform/setIPv6 */
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*opmode, *submitUrl;
-	char_t  *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr;
+	char_t *opmode, *submitUrl;
+	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr;
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
 
-	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 12, "IPv6OpMode", "IPv6IPAddr",
 			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
@@ -2058,8 +2059,8 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *enabled = websGetVar(wp, T("spotEnable"), T("0"));
 	char_t *submitUrl;
-
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 39, "chilli_enable", "chilli_profile", "chilli_dns1",
 			"chilli_dns2", "chilli_domain", "chilli_dhcpstart", "chilli_dhcpend",
