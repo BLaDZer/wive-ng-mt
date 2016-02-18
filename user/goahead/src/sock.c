@@ -480,6 +480,9 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 	if (buf == 0)
 		return -1;
 
+	if (toWrite <= 0)
+		return -1;
+
 	if (sp->flags & SOCKET_EOF)
     		return -1;
 
@@ -510,8 +513,6 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 			(struct sockaddr *) &server, sizeof(server));
 
 	} else {
-		if (toWrite <= 0)
-		    return -1;
 		bytes = send(sp->sock, buf, toWrite, MSG_NOSIGNAL);
 	}
 
