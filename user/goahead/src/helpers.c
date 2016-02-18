@@ -260,9 +260,9 @@ void arplookup(char *ip, char *arp)
  */
 int doSystem(char_t *fmt, ...)
 {
-	va_list		vargs;
-	char_t		*cmd = NULL;
-	int			rc = 0;
+	va_list	vargs;
+	char_t	*cmd = NULL;
+	int	rc = 0;
 
 	va_start(vargs, fmt);
 	if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE)

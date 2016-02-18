@@ -1627,7 +1627,7 @@ void initStaConnection(void)
 	// step 0: OID_802_11_INFRASTRUCTURE_MODE
 	ret = OidSetInformation(OID_802_11_INFRASTRUCTURE_MODE, s, "ra0", &p->NetworkType, sizeof(int));
 	if (ret < 0)
-		printf("goahead:Set OID_802_11_INFRASTRUCTURE_MODE has error =%d, networktype=%d, %s\n", __FUNCTION__);
+		syslog(LOG_ERR, "Set OID_802_11_INFRASTRUCTURE_MODE has error!, %s\n", __FUNCTION__);
 
 	// step 1:
 	// RTS Threshold

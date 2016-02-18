@@ -127,7 +127,7 @@ int hFree(void ***map, int handle)
 		handle = -1;
 	} else {
 		len = mp[H_LEN];
-		if (mp[H_USED] < mp[H_LEN]) {
+		if (mp[H_USED] < len) {
 			for (handle = len - 1; handle >= 0; handle--) {
 				if (mp[handle + H_OFFSET])
 					break;

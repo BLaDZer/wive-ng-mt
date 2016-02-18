@@ -1136,11 +1136,14 @@ static int parseExpr(ej_t *ep, int state, int flags)
 static int evalCond(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 {
 	char_t	buf[16];
-	int		l, r, lval;
+	int	l, r, lval;
 
 	a_assert(lhs);
 	a_assert(rhs);
 	a_assert(rel > 0);
+
+	if (lhs == NULL || rhs == NULL)
+		return 0;
 
 	lval = 0;
 	if (gisdigit((int)*lhs) && gisdigit((int)*rhs)) {
@@ -1356,7 +1359,7 @@ void ejError(ej_t* ep, char_t* fmt, ...)
 	fmtValloc(&msgbuf, E_MAX_ERROR, fmt, args);
 	va_end(args);
 
-	if (ep && ip) {
+	if (ep != NULL && ip != NULL) {
 		fmtAlloc(&errbuf, E_MAX_ERROR, T("%s\n At line %d, line => \n\n%s\n"),
 			msgbuf, ip->lineNumber, ip->line);
 		bfreeSafe(B_L, ep->error);
@@ -1503,10 +1506,10 @@ int ejArgs(int argc, char_t **argv, char_t *fmt, ...)
 	int		*ip;
 	int		argn;
 
-	va_start(vargs, fmt);
-
 	if (argv == NULL)
 		return 0;
+
+	va_start(vargs, fmt);
 
 	for (argn = 0, cp = fmt; cp && *cp && argv[argn]; ) {
 		if (*cp++ != '%') {
