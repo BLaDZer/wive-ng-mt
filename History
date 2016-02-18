@@ -1746,8 +1746,9 @@
 6) goahead: replace min/max macros to new with type check.<br>
 7) goahead: stick to cpu0.<br>
 8) goahead: fix potentional data corrupt in socketWrite/Read.<br>
-9) init.d: irqbalance skip ipi irq`s.<br>
-10) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+9) goahead: fix 64-bit js functions.<br>
+10) init.d: irqbalance skip ipi irq`s.<br>
+11) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
 12) kernel: mips: fix 64k page support for 32 bit kernels.<br>
 13) kernel: mips: fix FPU disable with preemption.<br>
 14) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>

@@ -79,7 +79,7 @@ int websAspRequest(webs_t wp, char_t *lpath)
 	char			*rbuf;
 	char_t			*token, *lang, *result, *path, *ep, *cp, *buf, *nextp;
 	char_t			*last;
-	int				rc, engine, len;
+	int			rc, engine, len;
 	intptr_t 		ejid;
 
 	a_assert(websValid(wp));
