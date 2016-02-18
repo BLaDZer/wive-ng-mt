@@ -504,6 +504,8 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 			(struct sockaddr *) &server, sizeof(server));
 
 	} else {
+		if (toWrite <= 0)
+		    return -1;
 		bytes = send(sp->sock, buf, toWrite, 0);
 	}
 
