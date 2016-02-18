@@ -268,11 +268,14 @@ int socketFlush(int sid)
 {
 	socket_t	*sp;
 	ringq_t		*rq;
-	int			len, bytesWritten, errCode;
+	int		len, bytesWritten, errCode;
 
-	if ((sp = socketPtr(sid)) == NULL) {
+	if (sp = socketPtr(sid) == NULL)
 		return -1;
-	}
+
+	if (sp->flags & SOCKET_EOF)
+    		return -1;
+
 	rq = &sp->outBuf;
 
 /*
