@@ -522,7 +522,6 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	FPRINT_NUM(M2UEnabled);
-	FPRINT_NUM(IgmpSnEnable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	FPRINT_NUM(McastPhyMode);

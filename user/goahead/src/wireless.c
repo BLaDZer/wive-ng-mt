@@ -1130,7 +1130,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
 	nvram_bufset(RT2860_NVRAM, "M2UEnabled", m2u_enable);
-	nvram_bufset(RT2860_NVRAM, "IgmpSnEnable", m2u_enable);
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
