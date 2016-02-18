@@ -115,7 +115,7 @@ config FEATURE_PS_TIME
 config FEATURE_PS_ADDITIONAL_COLUMNS
 	bool "Enable additional ps columns"
 	default y
-	depends on PS && DESKTOP
+	depends on PS
 	help
 	  Support -o rgroup, -o ruser, -o nice output specifiers.
 

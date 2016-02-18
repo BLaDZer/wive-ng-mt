@@ -2,12 +2,23 @@
 
 LOG="logger -t goahead"
 
+# include kernel config
+. /etc/scripts/config.sh
+
+WAITBOOTCOMPLETE="20"
+
 start() {
  $LOG "Start goahead"
     #set bootcomplite flag
     touch /tmp/bootgood
 
     if [ -f /bin/goahead ]; then
+	#blink only sys led limit blink time 20 sec after goahead start
+	if [ -f /bin/gpio ]; then
+	    if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
+		gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 $WAITBOOTCOMPLETE
+	    fi
+	fi
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
 	cp -rpf /web/* /tmp/web
@@ -15,20 +26,15 @@ start() {
 	    $LOG "Copy user web pages to tmpfs."
     	    cp -rpf /etc/web/* /tmp/web
 	fi
-	#blink only sys led limit blink time 10 sec after goahead start
-	if [ -f /bin/gpio ]; then
-	    # include kernel config
-	    . /etc/scripts/config.sh
-
-	    if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
-		gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 10
-	    fi
-	fi
 	$LOG "Start WEB Managment Server."
-	goahead &
+	if [ "$CONFIG_SMP" = "y" ]; then
+	    taskset 0x1 goahead &
+	else
+	    goahead &
+	fi
 	if [ -f /tmp/needrwfssave ]; then
 	    $LOG "Wait 20sec for rwfs changes save"
-	    sh `(sleep 20 && fs save > /dev/console)` &
+	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
 	    rm -f /tmp/needrwfssave
 	fi
     else

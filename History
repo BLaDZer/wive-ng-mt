@@ -1740,17 +1740,19 @@
 <b>4.0.x</b><br>
 1) build_system: add strace v4.11 for easy debug.<br>
 2) uclibc: enable relro,now,noexecstack options.<br>
-3) dnsmasq: up to 2.76test9 version.<br>
-4) goahead: fix types convert in value.<br>
-5) goahead: replace min/max macros to new with type check.<br>
-6) init.d: irqbalance skip ipi irq`s.<br>
-7) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-8) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-9) kernel: mips: fix FPU disable with preemption.<br>
-10) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-11) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-12) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-13) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+3) busybox: add taskset and chrt applets.<br>
+4) dnsmasq: up to 2.76test9 version.<br>
+5) goahead: fix types convert in value.<br>
+6) goahead: replace min/max macros to new with type check.<br>
+7) goahead: stick to cpu0.<br>
+8) init.d: irqbalance skip ipi irq`s.<br>
+9) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+10) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+11) kernel: mips: fix FPU disable with preemption.<br>
+12) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+13) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+14) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+15) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
 <br>
 <br>
 <br>
