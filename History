@@ -1756,8 +1756,9 @@
 16) kernel: math-emu: fix floating-point to integer overflow detection.<br>
 17) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
 18) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-19) kernel: net: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-20) kernel: net: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+19) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+20) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+21) kernel: net: socket: sockfd_lookup_light(): switch to fdget^W^Waway from fget_light.<br>
 <br>
 <br>
 <br>
