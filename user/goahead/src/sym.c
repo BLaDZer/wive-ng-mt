@@ -21,25 +21,25 @@
 /********************************* Defines ************************************/
 
 typedef struct {						/* Symbol table descriptor */
-	int		inuse;						/* Is this entry in use */
-	int		hash_size;					/* Size of the table below */
+	int	inuse;						/* Is this entry in use */
+	int	hash_size;					/* Size of the table below */
 	sym_t	**hash_table;				/* Allocated at run time */
 } sym_tabent_t;
 
 /********************************* Globals ************************************/
 
 static sym_tabent_t	**sym;				/* List of symbol tables */
-static int			symMax;				/* One past the max symbol table */
-static int			symOpenCount = 0;	/* Count of apps using sym */
+static int		symMax = 0;			/* One past the max symbol table */
+static int		symOpenCount = 0;		/* Count of apps using sym */
 
-static int			htIndex;			/* Current location in table */
+static int		htIndex;			/* Current location in table */
 static sym_t*		next;				/* Next symbol in iteration */
 
 /**************************** Forward Declarations ****************************/
 
-static int		hashIndex(sym_tabent_t *tp, char_t *name);
+static int	hashIndex(sym_tabent_t *tp, char_t *name);
 static sym_t	*hash(sym_tabent_t *tp, char_t *name);
-static int		calcPrime(int size);
+static int	calcPrime(int size);
 
 /*********************************** Code *************************************/
 /*

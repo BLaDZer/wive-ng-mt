@@ -2274,9 +2274,8 @@ char_t *websGetRequestPath(webs_t wp)
 {
 	a_assert(websValid(wp));
 
-	if (wp->path == NULL) {
+	if (wp->path == NULL)
 		return T("");
-	}
 
 	return wp->path;
 }

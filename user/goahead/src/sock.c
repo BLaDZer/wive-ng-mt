@@ -71,7 +71,7 @@ int	socketWrite(int sid, char *buf, int bufsize)
 		}
 
 		if (room == 0)
-			break
+		    break;
 
 		len = min(room, bufsize);
 		ringqPutBlk(rq, (unsigned char *) buf, len);
