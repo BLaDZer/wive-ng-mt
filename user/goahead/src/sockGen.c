@@ -485,6 +485,7 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 	if (sp->flags & SOCKET_EOF) {
 		return 0;
 	}
+
 #if ((defined (WIN) || defined (CE)) && (!defined (LITTLEFOOT) && !defined  (WEBS)))
 	if ( !(sp->flags & SOCKET_BLOCK)
 			&& ! socketWaitForEvent(sp,  FD_CONNECT, errCode)) {

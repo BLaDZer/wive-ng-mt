@@ -194,6 +194,9 @@ sym_t* symNext(sym_fd_t sd)
 	int				i;
 
 	a_assert(0 <= sd && sd < symMax);
+	if (sd < 0) {
+	    return 0;
+	}
 	tp = sym[sd];
 	a_assert(tp);
 

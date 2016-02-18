@@ -40,41 +40,39 @@ int	socketWrite(int sid, char *buf, int bufsize)
 {
 	socket_t	*sp;
 	ringq_t		*rq;
-	int			len, bytesWritten, room;
+	int		len, bytesWritten, room;
 
 	a_assert(buf);
 	a_assert(bufsize >= 0);
 
-	if ((sp = socketPtr(sid)) == NULL) {
+	if (buf == 0 || (sp = socketPtr(sid)) == NULL)
 		return -1;
-	}
 
+	if (sp->flags & SOCKET_EOF)
+    		return -1;
 /*
  *	Loop adding as much data to the output ringq as we can absorb. Initiate a 
  *	flush when the ringq is too full and continue. Block in socketFlush if the
  *	socket is in blocking mode.
  */
 	rq = &sp->outBuf;
-	for (bytesWritten = 0; bufsize > 0; ) {
+	bytesWritten = 0;
+	while (bufsize > 0) {
 		if ((room = ringqPutBlkMax(rq)) == 0) {
-			if (socketFlush(sid) < 0) {
+			if (socketFlush(sid) < 0)
 				return -1;
-			}
+
 			if ((room = ringqPutBlkMax(rq)) == 0) {
-				if (sp->flags & SOCKET_BLOCK) {
-#if (defined (WIN) || defined (CE))
-					int		errCode;
-					if (! socketWaitForEvent(sp,  FD_WRITE | SOCKET_WRITABLE,
-						&errCode)) {
-						return -1;
-					}
-#endif
+				if (sp->flags & SOCKET_BLOCK)
 					continue;
-				}
 				break;
 			}
 			continue;
 		}
+
+		if (room == 0)
+			break
+
 		len = min(room, bufsize);
 		ringqPutBlk(rq, (unsigned char *) buf, len);
 		bytesWritten += len;
@@ -128,38 +126,35 @@ int	socketRead(int sid, char *buf, int bufsize)
 	a_assert(buf);
 	a_assert(bufsize > 0);
 
-	if ((sp = socketPtr(sid)) == NULL) {
+	if ((sp = socketPtr(sid)) == NULL)
 		return -1;
-	}
 
-	if (sp->flags & SOCKET_EOF) {
-		return 0;
-	}
+	if (sp->flags & SOCKET_EOF)
+		return -1;
 
 	rq = &sp->inBuf;
-	for (bytesRead = 0; bufsize > 0; ) {
+	bytesRead = 0;
+	while (bufsize > 0) {
 		len = min(ringqLen(rq), bufsize);
 		if (len <= 0) {
 /*
  *			if blocking mode and already have data, exit now or it may block
  *			forever.
  */
-			if ((sp->flags & SOCKET_BLOCK) &&
-				(bytesRead > 0)) {
+			if ((sp->flags & SOCKET_BLOCK) && (bytesRead > 0)) {
 				break;
 			}
 /*
  *			This flush is critical for readers of datagram packets. If the
  *			buffer is not big enough to read the whole datagram in one hit,
- *			the recvfrom call will fail. 
+ *			the recvfrom call will fail.
  */
 			ringqFlush(rq);
 			room = ringqPutBlkMax(rq);
 			len = socketGetInput(sid, (char *) rq->endp, room, &errCode);
 			if (len < 0) {
 				if (errCode == EWOULDBLOCK) {
-					if ((sp->flags & SOCKET_BLOCK) &&
-						(bytesRead ==  0)) {
+					if ((sp->flags & SOCKET_BLOCK) && (bytesRead ==  0)) {
 						continue;
 					}
 					if (bytesRead >= 0) {
@@ -211,9 +206,12 @@ int	socketGets(int sid, char_t **buf)
 	a_assert(buf);
 	*buf = NULL;
 
-	if ((sp = socketPtr(sid)) == NULL) {
+	if ((sp = socketPtr(sid)) == NULL)
 		return -1;
-	}
+
+	if (sp->flags & SOCKET_EOF)
+		return -1;
+
 	lq = &sp->lineBuf;
 
 	while (1) {
@@ -221,7 +219,7 @@ int	socketGets(int sid, char_t **buf)
 		if ((rc = socketRead(sid, &c, 1)) < 0) {
 			return rc;
 		}
-		
+
 		if (rc == 0) {
 /*
  *			If there is a partial line and we are at EOF, pretend we saw a '\n'

@@ -116,13 +116,13 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		websError(wp, 400, T("Cannot stat page for URL"));
 		return 1;
 	}
+	websStats.localHits++;
 
 /*
  *	If the page has not been modified since the user last received it and it
  *	is not dynamically generated each time (ASP), then optimize request by
  *	sending a 304 Use local copy response
  */
-	websStats.localHits++;
 #ifdef WEBS_IF_MODIFIED_SUPPORT
 	if (flags & WEBS_IF_MODIFIED && !(flags & WEBS_ASP)) {
 		if (sbuf.mtime <= wp->since) {
