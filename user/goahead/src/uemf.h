@@ -279,16 +279,6 @@
 #define SYM_MAX			(512)
 #define XML_MAX			4096			/* Maximum size for tags/tokens */
 #define BUF_MAX			4096			/* General sanity check for bufs */
-#define FMT_STATIC_MAX		256			/* Maximum for fmtStatic calls */
-
-#if (defined (LITTLEFOOT) || defined (WEBS))
-#define LF_BUF_MAX		(510)
-#define LF_PATHSIZE		LF_BUF_MAX
-#else
-#define	LF_BUF_MAX		BUF_MAX
-#define LF_PATHSIZE		PATHSIZE
-#define UPPATHSIZE		PATHSIZE
-#endif /* LITTLEFOOT || WEBS */
 
 #ifndef CHAR_T_DEFINED
 #define CHAR_T_DEFINED 1
