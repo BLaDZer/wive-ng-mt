@@ -27,11 +27,7 @@ start() {
     	    cp -rpf /etc/web/* /tmp/web
 	fi
 	$LOG "Start WEB Managment Server."
-	if [ "$CONFIG_SMP" = "y" ]; then
-	    taskset 0x1 goahead &
-	else
-	    goahead &
-	fi
+	goahead &
 	if [ -f /tmp/needrwfssave ]; then
 	    $LOG "Wait 20sec for rwfs changes save"
 	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
