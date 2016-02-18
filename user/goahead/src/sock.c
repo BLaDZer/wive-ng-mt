@@ -270,7 +270,7 @@ int socketFlush(int sid)
 	ringq_t		*rq;
 	int		len, bytesWritten, errCode;
 
-	if (sp = socketPtr(sid) == NULL)
+	if ((sp = socketPtr(sid)) == NULL)
 		return -1;
 
 	if (sp->flags & SOCKET_EOF)
