@@ -554,7 +554,7 @@ typedef struct stat gstat_t;
 #define E_ARGS_DEC			char_t *file, int line
 #define E_ARGS				file, line
 
-#if (defined (ASSERT) || defined (ASSERT_CE))
+#ifdef ASSERT
 	#define a_assert(C)		if (C) ; else error(E_L, E_ASSERT, T("%s"), T(#C))
 #else
 	#define a_assert(C)		if (1) ; else
