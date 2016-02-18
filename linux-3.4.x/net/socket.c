@@ -440,17 +440,16 @@ EXPORT_SYMBOL(sockfd_lookup);
 
 static struct socket *sockfd_lookup_light(int fd, int *err, int *fput_needed)
 {
-	struct fd f = fdget(fd);
+	struct file *file;
 	struct socket *sock;
 
 	*err = -EBADF;
-	if (f.file) {
-		sock = sock_from_file(f.file, err);
-		if (likely(sock)) {
-			*fput_needed = f.flags;
+	file = fget_light(fd, fput_needed);
+	if (file) {
+		sock = sock_from_file(file, err);
+		if (sock)
 			return sock;
-		}
-		fdput(f);
+		fput_light(file, *fput_needed);
 	}
 	return NULL;
 }
