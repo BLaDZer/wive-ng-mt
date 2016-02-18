@@ -506,7 +506,7 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 	} else {
 		if (toWrite <= 0)
 		    return -1;
-		bytes = send(sp->sock, buf, toWrite, 0);
+		bytes = send(sp->sock, buf, toWrite, MSG_NOSIGNAL);
 	}
 
 	if (bytes < 0) {
