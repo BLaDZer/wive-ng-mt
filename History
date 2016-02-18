@@ -1748,8 +1748,9 @@
 8) kernel: mips: fix 64k page support for 32 bit kernels.<br>
 9) kernel: mips: fix FPU disable with preemption.<br>
 10) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-11) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-12) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+11) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+12) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+13) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
 <br>
 <br>
 <br>
