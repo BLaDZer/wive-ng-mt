@@ -477,6 +477,12 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 
 	*errCode = 0;
 
+	if (buf == 0)
+		return -1;
+
+	if (sp->flags & SOCKET_EOF)
+    		return -1;
+
 #if (defined (WIN) || defined (CE))
 	if ((sp->flags & SOCKET_ASYNC)
 			&& ! socketWaitForEvent(sp,  FD_CONNECT, errCode)) {
