@@ -54,8 +54,8 @@ SSLSW = -DWEBS_SSL_SUPPORT -DMATRIX_SSL -I$(SSLINC)
 endif
 
 # If-Modified-Support switches (requires math library, libm.a)
-IFMODSW = -DWEBS_IF_MODIFIED_SUPPORT
-IFMODLIB = $(ROOTDIR)/lib/lib/libm.a
+#IFMODSW = -DWEBS_IF_MODIFIED_SUPPORT
+#IFMODLIB = $(ROOTDIR)/lib/lib/libm.a
 
 # Dependencies
 DEPEND_FILES	= asp.o balloc.o base64.o cgi.o default.o  \
