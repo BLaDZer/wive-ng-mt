@@ -501,7 +501,7 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 		bytesRead = recvfrom(sp->sock, buf, toRead, 0,
 			(struct sockaddr *) &server, &len);
 	} else {
-		bytesRead = recv(sp->sock, buf, toRead, 0);
+		bytesRead = recv(sp->sock, buf, toRead, MSG_NOSIGNAL);
 	}
 
    /*
