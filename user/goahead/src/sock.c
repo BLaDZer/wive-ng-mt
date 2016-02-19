@@ -630,9 +630,8 @@ void socketFree(int sid)
 	socketRegisterInterest(sp, 0);
 	if (sp->sock >= 0) {
 		socketSetBlock(sid, 0);
-		if (shutdown(sp->sock, 1) >= 0) {
-			recv(sp->sock, buf, sizeof(buf), 0);
-		}
+		if (shutdown(sp->sock, 1) >= 0)
+			recv(sp->sock, buf, sizeof(buf), MSG_NOSIGNAL);
 #if (defined (WIN) || defined (CE))
 		closesocket(sp->sock);
 #else
