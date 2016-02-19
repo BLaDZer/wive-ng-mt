@@ -33,15 +33,15 @@
  *	code must not be modified.
  */
 #define WEBS_NAME			T("WebServer")
-#define WEBS_VERSION			T("2.1.9")
+#define WEBS_VERSION			T("2.1.10")
 
 #define WEBS_HEADER_BUFINC 		512			/* Header buffer size */
 #define WEBS_ASP_BUFINC			512			/* Asp expansion increment */
 #define WEBS_MAX_PASS			32			/* Size of password */
-#define WEBS_BUFSIZE			8192			/* websWrite max output string */
-#define WEBS_MAX_HEADER			(4 * 1024)		/* Sanity check header */
+#define WEBS_BUFSIZE			5000			/* websWrite max output string */
+#define WEBS_MAX_HEADER			(5*1024)		/* Sanity check header */
 #define WEBS_MAX_URL			4096			/* Maximum URL size for sanity */
-#define WEBS_SOCKET_BUFSIZ		1024			/* Bytes read from socket */
+#define WEBS_SOCKET_BUFSIZ		(SOCKET_BUFSIZ / 4)	/* Bytes read from socket */
 
 #define WEBS_HTTP_PORT			T("httpPort")
 #define CGI_BIN				T("cgi-bin")
@@ -49,29 +49,29 @@
 /*
  *	Request flags. Also returned by websGetRequestFlags().
  */
-#define WEBS_LOCAL_PAGE			0x1			/* Request for local webs page */ 
-#define WEBS_KEEP_ALIVE			0x2			/* HTTP/1.1 keep alive */
-#define WEBS_DONT_USE_CACHE		0x4			/* Not implemented cache support */
-#define WEBS_COOKIE				0x8			/* Cookie supplied in request */
+#define WEBS_LOCAL_PAGE			0x1		/* Request for local webs page */
+#define WEBS_KEEP_ALIVE			0x2		/* HTTP/1.1 keep alive */
+#define WEBS_DONT_USE_CACHE		0x4		/* Not implemented cache support */
+#define WEBS_COOKIE			0x8		/* Cookie supplied in request */
 #define WEBS_IF_MODIFIED		0x10		/* If-modified-since in request */
 #define WEBS_POST_REQUEST		0x20		/* Post request operation */
 #define WEBS_LOCAL_REQUEST		0x40		/* Request from this system */
-#define WEBS_HOME_PAGE			0x80		/* Request for the home page */ 
-#define WEBS_ASP				0x100		/* ASP request */ 
+#define WEBS_HOME_PAGE			0x80		/* Request for the home page */
+#define WEBS_ASP			0x100		/* ASP request */
 #define WEBS_HEAD_REQUEST		0x200		/* Head request */
-#define WEBS_CLEN				0x400		/* Request had a content length */
-#define WEBS_FORM				0x800		/* Request is a form */
+#define WEBS_CLEN			0x400		/* Request had a content length */
+#define WEBS_FORM			0x800		/* Request is a form */
 #define WEBS_REQUEST_DONE		0x1000		/* Request complete */
 #define WEBS_POST_DATA			0x2000		/* Already appended post data */
 #define WEBS_CGI_REQUEST		0x4000		/* cgi-bin request */
-#define WEBS_SECURE				0x8000		/* connection uses SSL */
+#define WEBS_SECURE			0x8000		/* connection uses SSL */
 #define WEBS_AUTH_BASIC			0x10000		/* Basic authentication request */
 #define WEBS_AUTH_DIGEST		0x20000		/* Digest authentication request */
 #define WEBS_HEADER_DONE		0x40000		/* Already output the HTTP header */
 #define WEBS_CGI_UPLOAD			0x80000		/* */
-#define WEBS_CGI_FIRMWARE_UPLOAD 0x100000	/* */
+#define WEBS_CGI_FIRMWARE_UPLOAD	0x100000	/* */
 
-#define CGI_UPLOAD				T("upload")
+#define CGI_UPLOAD			T("upload")
 #define CGI_FIRMWARE_UPLOAD		T("upload.cgi")
 
 #define WEBS_CACHE_CONTROL_STRING	T("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0\r\nPragma: no-cache\r\n")

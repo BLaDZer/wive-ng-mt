@@ -540,7 +540,7 @@ typedef struct stat gstat_t;
 #endif /* FNAMESIZE */
 
 #define E_MAX_ERROR			4096
-#define E_MAX_REQUEST			4096			/* Request safeguard max */
+#define E_MAX_REQUEST			2048			/* Request safeguard max */
 #define URL_MAX				4096
 
 /*
