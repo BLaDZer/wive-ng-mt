@@ -288,7 +288,7 @@ int main(int argcn, char *argvc[])
 	 *	60KB allows for several concurrent page requests.  If more space
 	 *	is required, malloc will be used for the overflow.
 	 */
-	bopen(NULL, (60 * 1024), B_USE_MALLOC);
+	bopen(NULL, (512 * 1024), B_USE_MALLOC);
 
 	/* Initialize the web server */
 	if (initWebs() < 0) {
