@@ -6,6 +6,7 @@
 #include <errno.h>
 
 #include "procps.h"
+#include "uemf.h"
 
 // Read unsigned number
 // Returns -1 on error
