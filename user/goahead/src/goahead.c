@@ -284,8 +284,8 @@ int main(int argcn, char *argvc[])
 
 	/*
 	 *	Initialize the memory allocator. Allow use of malloc and start
-	 *	with a 60K heap.  For each page request approx 8KB is allocated.
-	 *	60KB allows for several concurrent page requests.  If more space
+	 *	with a 512K heap.  For each page request approx 64KB is allocated.
+	 *	512KB allows for several concurrent page requests.  If more space
 	 *	is required, malloc will be used for the overflow.
 	 */
 	bopen(NULL, (512 * 1024), B_USE_MALLOC);
