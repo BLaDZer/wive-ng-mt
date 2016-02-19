@@ -270,6 +270,7 @@ hash_table_add(table, val, size)
 	memset(entry, 0, sizeof(*entry));
 
 	if ((entry->val = malloc(size)) == NULL) {
+		free(entry);
 		return (-1);
 	}
 	memcpy(entry->val, val, size);

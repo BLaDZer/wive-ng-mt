@@ -3247,6 +3247,7 @@ debug_printf(int level, const char *fname, const char *fmt, ...)
 		    logbuf);
 	} else
 		syslog(level, "%s%s%s", fname, printfname ? ": " : "", logbuf);
+	va_end(ap);
 }
 
 int

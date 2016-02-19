@@ -1255,7 +1255,7 @@ get_default_ifid(pif)
 	}
 
 	for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
-		char *cp;
+		char *cp = NULL;
 
 		if (strcmp(ifa->ifa_name, pif->ifname) != 0)
 			continue;
@@ -1293,15 +1293,17 @@ get_default_ifid(pif)
 		memset(pif->ifid, 0, sizeof(pif->ifid));
 		cp = (char *)(sll->sll_addr);
 #endif
-		pif->ifid[8] = cp[0];
-		pif->ifid[8] ^= 0x02; /* reverse the u/l bit*/
-		pif->ifid[9] = cp[1];
-		pif->ifid[10] = cp[2];
-		pif->ifid[11] = 0xff;
-		pif->ifid[12] = 0xfe;
-		pif->ifid[13] = cp[3];
-		pif->ifid[14] = cp[4];
-		pif->ifid[15] = cp[5];
+		if (cp != NULL) {
+		    pif->ifid[8] = cp[0];
+		    pif->ifid[8] ^= 0x02; /* reverse the u/l bit*/
+		    pif->ifid[9] = cp[1];
+		    pif->ifid[10] = cp[2];
+		    pif->ifid[11] = 0xff;
+		    pif->ifid[12] = 0xfe;
+		    pif->ifid[13] = cp[3];
+		    pif->ifid[14] = cp[4];
+		    pif->ifid[15] = cp[5];
+		}
 
 		break;
 	}

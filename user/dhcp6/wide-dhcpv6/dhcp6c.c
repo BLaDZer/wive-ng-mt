@@ -2229,6 +2229,6 @@ info_printf(const char *fmt, ...)
 	debug_printf(LOG_DEBUG, FNAME, "%s", logbuf);
 	if (infreq_mode)
 		printf("%s\n", logbuf);
-
+	va_end(ap);
 	return;
 }
