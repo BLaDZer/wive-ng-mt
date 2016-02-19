@@ -28,10 +28,10 @@ void procps_init(cmdline_t *src)
 	src->pid        = -1;
 	src->cap        = CMDLINE_EXT;
 	src->size       = 0;
-	src->buffer     = (char *)malloc(CMDLINE_EXT);
+	src->buffer     = (char *)balloc(B_L, CMDLINE_EXT);
 	src->acap       = CMDLINE_AEXT;
 	src->argc       = 0;
-	src->argv       = (char **)malloc(CMDLINE_AEXT * sizeof(char *));
+	src->argv       = (char **)balloc(B_L, CMDLINE_AEXT * sizeof(char *));
 	src->dynamic    = 0;
 	src->next       = NULL;
 }
@@ -44,11 +44,11 @@ void procps_free(cmdline_t *src)
 		cmdline_t *next = src->next;
 
 		if (src->argv!=NULL)
-			free(src->argv);
+			bfreeSafe(B_L, src->argv);
 		if (src->buffer!=NULL)
-			free(src->buffer);
+			bfreeSafe(B_L, src->buffer);
 		if (src->dynamic)
-			free(src);
+			bfreeSafe(B_L, src);
 		src = next;
 	}
 }
@@ -222,7 +222,7 @@ cmdline_t *procps_list()
 			// Allocate new entry if needed
 			if (cmdline == NULL)
 			{
-				cmdline = (cmdline_t *)malloc(sizeof(cmdline_t));
+				cmdline = (cmdline_t *)balloc(B_L, sizeof(cmdline_t));
 				if (cmdline == NULL) // Allocation failed?
 				{
 					// Free previously allocated data & return

@@ -87,10 +87,10 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		websStats.access++;
 		websError(wp, 405, T("Access Denied\nSecure access is required."));
 		trace(3, T("SEC: Non-secure access attempted on <%s>\n"), path);
-      /* bugfix 5/24/02 -- we were leaking the memory pointed to by
-       * 'accessLimit'. Thanks to Simon Byholm.
-       */
-      bfree(B_L, accessLimit);
+    		/* bugfix 5/24/02 -- we were leaking the memory pointed to by
+    		 * 'accessLimit'. Thanks to Simon Byholm.
+    		*/
+    		bfree(B_L, accessLimit);
 		return 1;
 	}
 #endif

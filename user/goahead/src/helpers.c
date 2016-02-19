@@ -91,13 +91,13 @@ void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 // String splitting tools
 int initSplitter(string_split_t *buf)
 {
-	buf->buf = (char *)malloc(SPLITTER_BUFFER_QUANTITY);
+	buf->buf = (char *)balloc(B_L, SPLITTER_BUFFER_QUANTITY);
 	if (buf->buf == NULL)
 		return errno;
-	buf->items = (char **)malloc(SPLITTER_TOKEN_QUANTITY * sizeof(char *));
+	buf->items = (char **)balloc(B_L, SPLITTER_TOKEN_QUANTITY * sizeof(char *));
 	if (buf->items == NULL)
 	{
-		free(buf->buf);
+		bfreeSafe(B_L, buf->buf);
 		buf->buf = NULL;
 		return errno;
 	}
@@ -122,9 +122,9 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 	// Check if need to realloc buffer
 	if (buf->buf_size < size)
 	{
-		free(buf->buf);
+		bfreeSafe(B_L, buf->buf);
 		size_t amount = size + (SPLITTER_BUFFER_QUANTITY - size%SPLITTER_BUFFER_QUANTITY);
-		buf->buf = (char *)malloc(amount);
+		buf->buf = (char *)balloc(B_L, amount);
 		if (buf->buf == NULL)
 			return errno;
 		buf->buf_size = amount;
@@ -145,9 +145,9 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 	// Check if need to realloc pointers
 	if (buf->pointers < buf->found)
 	{
-		free(buf->items);
+		bfreeSafe(B_L, buf->items);
 		size_t amount = buf->found + (SPLITTER_TOKEN_QUANTITY - buf->found%SPLITTER_TOKEN_QUANTITY);
-		buf->items = (char **)malloc(amount * sizeof(char *));
+		buf->items = (char **)balloc(B_L, amount * sizeof(char *));
 		if (buf->items == NULL)
 			return errno;
 		buf->pointers = amount;
@@ -176,12 +176,12 @@ int freeSplitter(string_split_t *buf)
 {
 	if (buf->buf != NULL)
 	{
-		free(buf->buf);
+		bfreeSafe(B_L, buf->buf);
 		buf->buf = NULL;
 	}
 	if (buf->items != NULL)
 	{
-		free(buf->items);
+		bfreeSafe(B_L, buf->items);
 		buf->items = NULL;
 	}
 	return 0;
@@ -394,7 +394,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	char *begin, *end;
 	int i=0,j=0;
 	int need_check_flag=0;
-	char *buf = strdup(value);
+	char *buf = bstrdup(B_L, value);
 
 	begin = buf;
 
@@ -433,7 +433,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	}
 	value[j] = '\0';
 
-	free(buf);
+	bfreeSafe(B_L, buf);
 	return 0;
 }
 
