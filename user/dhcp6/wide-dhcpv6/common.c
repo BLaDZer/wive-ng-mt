@@ -1239,7 +1239,7 @@ gethwid(buf, len, ifname, hwtypep)
 #ifdef __linux__
 	struct sockaddr_ll *sll;
 #endif
-	ssize_t l;
+	ssize_t l = 0;
 
 #ifdef __sun__
 	if (ifname == NULL) {

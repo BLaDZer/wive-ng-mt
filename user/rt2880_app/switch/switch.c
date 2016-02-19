@@ -1717,7 +1717,7 @@ void vlan_dump(int max_vid)
 #else
 void vlan_dump(void)
 {
-	int i, j, k, vid, mask, mask2, value, value2;
+	unsigned int i, j, k, vid, mask, mask2, value, value2;
 
 	printf("idx  vid  portmap   eg-tag  eg-con  stag  ivl  fid\n");
 //                0    1  --------  --------     1     1    1    7
@@ -1782,8 +1782,7 @@ void vlan_dump(void)
 
 void vlan_clear(int argc, char *argv[])
 {
-	unsigned int value;
-	int vid;
+	unsigned int value, vid;
 
 	for (vid = 0; vid < 16; vid++) {
 
