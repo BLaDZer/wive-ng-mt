@@ -445,34 +445,33 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 		if (getIfIsUp(ifname) != 1)
 			continue;
 
-		// now output statistics
-		websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">%s</td>"), ifname);
-
 		// extract scale and print statistic
 		if (sscanf(semiColon, "%llu%llu%llu%llu%llu%llu%llu%*d%llu%llu%llu%llu%llu%llu%llu",
 			   &rx_bytes, &rx_packets, &rx_errs, &rx_drops, &rx_fifo, &rx_frame, &rx_multi,
 			    &tx_bytes, &tx_packets, &tx_errs, &tx_drops, &tx_fifo, &tx_colls, &tx_carrier) != 14) {
 			// not extracted - print n/a
-			websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
+			websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
 			continue;
 		} else {
-			char buf[64];
-			char *tmpstr;
+			char strbuf[512];
+			char *rx_tmpstr, *tx_tmpstr;
 
-			// scale and print result (packets do not need scale)
-			snprintf(buf, sizeof(buf), "<td>%llu</td>", rx_packets);
-			websWrite(wp, T("%s"), buf);
+			// scale bytes to K/M/G/Tb
+			rx_tmpstr = scale((uint64_t)rx_bytes);
+			tx_tmpstr = scale((uint64_t)tx_bytes);
 
-			tmpstr = scale((uint64_t)rx_bytes);
-			websWrite(wp, T("<td>%s</td>"), tmpstr);
-			free(tmpstr);
+			if (rx_tmpstr && tx_tmpstr) {
+			    // format and write to web
+			    snprintf(strbuf, sizeof(strbuf),
+					"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
+											    ifname, rx_packets, rx_tmpstr, tx_packets, tx_tmpstr);
+			    websWrite(wp, T("%s"), strbuf);
 
-			snprintf(buf, sizeof(buf), "<td>%llu</td>", tx_packets);
-			websWrite(wp, T("%s"), buf);
-
-			tmpstr = scale((uint64_t)tx_bytes);
-			websWrite(wp, T("<td>%s</td>\n</tr>\n"), tmpstr);
-			free(tmpstr);
+			    free(rx_tmpstr);
+			    free(tx_tmpstr);
+			} else {
+			    websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
+			}
 		}
 	}
 	fclose(fp);
