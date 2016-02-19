@@ -150,7 +150,6 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  */
 	if ((date = websGetDateString(NULL)) != NULL) {
 		websWrite(wp, T("HTTP/1.0 200 OK\r\nDate: %s\r\n"), date);
-		websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 /*
  *		By license terms the following line of code must not be modified.
  */
