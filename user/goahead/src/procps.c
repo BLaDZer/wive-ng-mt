@@ -74,7 +74,7 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 			{
 				size_t newcap   = pcmdline->cap + CMDLINE_EXT;
 
-				char *newbuf    = (char *)realloc(pcmdline->buffer, newcap);
+				char *newbuf    = (char *)brealloc(B_L, pcmdline->buffer, newcap);
 				if (newbuf == NULL) // cmdline_free has to free resouce
 				{
 					fclose(fd); // close file
@@ -108,7 +108,7 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 		{
 			size_t newcap = argc + CMDLINE_AEXT - (argc % CMDLINE_AEXT); // Calculate new capacity
 
-			char **new_argv = (char **)realloc(pcmdline->argv, (newcap*sizeof(char *))); // resize
+			char **new_argv = (char **)brealloc(B_L, pcmdline->argv, (newcap*sizeof(char *))); // resize
 			if (new_argv == NULL) // cmdline_free has to free resouce
 			{
 				fclose(fd);
