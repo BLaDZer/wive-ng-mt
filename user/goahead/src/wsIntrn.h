@@ -124,8 +124,8 @@
 #define WEBS_HEADER		0x2			/* Ready to read first line */
 #define WEBS_POST		0x4			/* POST without content */
 #define WEBS_POST_CLEN		0x8			/* Ready to read content for POST */
-#define WEBS_PROCESSING		0x10		/* Processing request */
-#define WEBS_TIMEOUT		60000		/* General request timeout (60) */
+#define WEBS_PROCESSING		0x10			/* Processing request */
+#define WEBS_TIMEOUT		10000			/* General request timeout (10) */
 
 #define PAGE_READ_BUFSIZE	1024			/* bytes read from page files */
 #define MAX_PORT_LEN		16			/* max digits in port number */
