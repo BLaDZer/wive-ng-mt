@@ -913,8 +913,10 @@ static int lua_core_touchpid(lua_State* L)
         return 0;
 
     FILE* fp=fopen(s,"r");
-    if(fp)
+    if(fp) {
+	fclose(fp);
         return luaL_error(L,"pid file already is exist");
+    }
 
     fp=fopen(s,"w");
     if(fp)
