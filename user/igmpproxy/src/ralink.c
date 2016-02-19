@@ -778,10 +778,12 @@ int WiFiSTALookUPByMac(char *mac)
 	unsigned long long int  mac1, mac2;
 	char mac_entry1[16], mac_entry2[16];
 
-	mac1 = strtoll(mac_entry1, 0, 16);
-	mac2 = strtol(mac_entry2, 0, 16);
 	memset(mac_entry1, 0, sizeof(mac_entry1));
 	memset(mac_entry2, 0, sizeof(mac_entry2));
+
+	mac1 = strtoll(mac_entry1, 0, 16);
+	mac2 = strtoll(mac_entry2, 0, 16);
+
 	strncpy(mac_entry1, mac, 8);
 	strncpy(mac_entry2, &mac[8], 4);
 
