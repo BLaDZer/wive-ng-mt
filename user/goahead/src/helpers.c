@@ -272,7 +272,7 @@ int doSystem(char_t *fmt, ...)
 
 	if (cmd) {
 		rc = system(cmd);
-		bfree(B_L, cmd);
+		bfreeSafe(B_L, cmd);
 	}
 
 	return rc;

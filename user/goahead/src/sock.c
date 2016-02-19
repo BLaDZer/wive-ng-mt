@@ -646,7 +646,7 @@ void socketFree(int sid)
 	}
 	ringqClose(&sp->lineBuf);
 
-	bfree(B_L, sp);
+	bfreeSafe(B_L, sp);
 	socketMax = hFree((void***) &socketList, sid);
 
 /*

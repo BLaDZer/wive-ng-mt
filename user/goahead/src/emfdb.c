@@ -1033,9 +1033,8 @@ void basicSetProductDir(char_t *proddir)
 {
 	int len;
 
-	if (basicProdDir != NULL) {
-      bfree(B_L, basicProdDir);
-	}
+	if (basicProdDir != NULL)
+    	    bfreeSafe(B_L, basicProdDir);
 
 	basicProdDir = bstrdup(B_L, proddir);
 /*

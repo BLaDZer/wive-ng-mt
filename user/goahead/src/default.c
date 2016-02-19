@@ -155,7 +155,7 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *		By license terms the following line of code must not be modified.
  */
 		websWrite(wp, T("Server: %s\r\n"), WEBS_NAME);
-		bfree(B_L, date);
+		bfreeSafe(B_L, date);
 	}
 	flags |= WEBS_HEADER_DONE;
 
@@ -168,7 +168,7 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	} else {
 		if ((date = websGetDateString(&sbuf)) != NULL) {
 			websWrite(wp, T("Last-modified: %s\r\n"), date);
-			bfree(B_L, date);
+			bfreeSafe(B_L, date);
 		}
 		bytes = sbuf.size;
 	}
@@ -409,7 +409,7 @@ int websValidateUrl(webs_t wp, char_t *path)
 	    /*
 	     * malformed URL -- too many parts for us to process.
 	    */
-	    bfree(B_L, path);
+	    bfreeSafe(B_L, path);
 	    return -1;
 	}
 	if (gstrcmp(token, T("..")) == 0) {
