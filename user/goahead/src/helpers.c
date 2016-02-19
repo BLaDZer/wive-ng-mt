@@ -13,7 +13,7 @@ static const uint64_t  exbibytes = 1024ULL * 1024ULL * 1024ULL * 1024ULL * 1024U
 
 char *scale(uint64_t size)
 {
-    char *result = (char *) malloc(sizeof(char) * 20);
+    char *result = (char *)balloc(B_L, sizeof(char) * 20);
     uint64_t  multiplier = exbibytes;
     int i;
 

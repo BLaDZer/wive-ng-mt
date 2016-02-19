@@ -465,8 +465,8 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			    snprintf(strbuf, sizeof(strbuf),
 					"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
 											    ifname, rx_packets, rx_tmpstr, tx_packets, tx_tmpstr);
-			    free(rx_tmpstr);
-			    free(tx_tmpstr);
+			    bfreeSafe(B_L, rx_tmpstr);
+			    bfreeSafe(B_L, tx_tmpstr);
 
 			    // write to web
 			    websWrite(wp, T("%s"), strbuf);
@@ -654,7 +654,7 @@ static void getsyslog(webs_t wp, char_t *path, char_t *query)
 		goto error;
 	}
 
-	log = malloc(LOG_MAX * sizeof(char));
+	log = balloc(B_L, LOG_MAX * sizeof(char));
 	if(!log){
 		syslog(LOG_ERR, "no memory left, %s", __FUNCTION__);
 		goto error;
@@ -664,7 +664,7 @@ static void getsyslog(webs_t wp, char_t *path, char_t *query)
 	fread(log, 1, LOG_MAX, fp);
 	websLongWrite(wp, log);
 
-	free(log);
+	bfreeSafe(B_L, log);
 error:
 	if(fp)
 	    pclose(fp);
@@ -724,14 +724,14 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	{
 		char *tmpstr = scale((uint64_t)rx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
-		free(tmpstr);
+		bfreeSafe(B_L, tmpstr);
 	}
 	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
 	for (i = 4; i >= 0; i--)
 	{
 		char *tmpstr = scale((uint64_t)tx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
-		free(tmpstr);
+		bfreeSafe(B_L, tmpstr);
 	}
 	websWrite(wp, T("</tr>\n"));
 	return 0;
