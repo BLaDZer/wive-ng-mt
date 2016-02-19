@@ -461,14 +461,15 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			tx_tmpstr = scale((uint64_t)tx_bytes);
 
 			if (rx_tmpstr && tx_tmpstr) {
-			    // format and write to web
+			    // format string in buffer
 			    snprintf(strbuf, sizeof(strbuf),
 					"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
 											    ifname, rx_packets, rx_tmpstr, tx_packets, tx_tmpstr);
-			    websWrite(wp, T("%s"), strbuf);
-
 			    free(rx_tmpstr);
 			    free(tx_tmpstr);
+
+			    // write to web
+			    websWrite(wp, T("%s"), strbuf);
 			} else {
 			    websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
 			}
