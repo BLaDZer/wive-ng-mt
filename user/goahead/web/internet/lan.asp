@@ -141,9 +141,12 @@ function CheckValue()
 				ip_start[i] = ip[i] & mask[i];
 				ip_end[i] = ip[i] | (~ mask[i] & 0xff);
 			}
-			form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + ip_start[3];
-			form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + ip_end[3];
-			form.dhcpGateway.value = form.lanIp.value;
+			ip_start[3] = ((ip_end[3] - ip[3]) > ip[3]) ? ip[3] : ip_start[3];
+			ip_end[3] = ((ip_end[3] - ip[3]) > ip[3]) ? ip_end[3] : ip[3];
+			form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + (ip_start[3] * 1 + 1);
+			form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + (ip_end[3] - 1);
+			if (form.dhcpGateway.value == lanip)
+				form.dhcpGateway.value = form.lanIp.value;
 		}
 	}
 	return true;
