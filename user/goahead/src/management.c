@@ -221,11 +221,11 @@ invalid_values:
 
 /*
  * arguments: ifname - interface name
- * description: return 1 if interface is up
- *              return 0 if interface is down
+ * description: return 1 if interface is up and ready
+ *              return 0 if interface is down or no carrier
  *              return -1 if error
  */
-static int getIfIsUp(const char *ifname)
+static int getIfIsReady(const char *ifname)
 {
 	struct ifreq ifr;
 	int skfd;
@@ -252,7 +252,7 @@ static int getIfIsUp(const char *ifname)
 	}
 	close(skfd);
 
-	if (ifr.ifr_flags & IFF_UP)
+	if ((ifr.ifr_flags & IFF_UP) && (ifr.ifr_flags & IFF_RUNNING))
 		return 1;
 	else
 		return 0;
@@ -376,7 +376,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port;
 
-	if (getIfIsUp(IOCTL_IF) != 1) {
+	if (getIfIsReady(IOCTL_IF) != 1) {
 	    syslog(LOG_ERR, "ioctl iface down, %s", __FUNCTION__);
 	    return -1;
 	}
@@ -442,7 +442,7 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			continue;
 
 		// check that interface is up
-		if (getIfIsUp(ifname) != 1)
+		if (getIfIsReady(ifname) != 1)
 			continue;
 
 		// extract scale and print statistic
