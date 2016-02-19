@@ -4,8 +4,9 @@
 4) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
 5) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
 6) rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
-7) add change nvram settings without apply mode.<br>
-8) in very far future: need add in firewall support xt_time matches for parental control.
-9) in very far future: need add perip shaper script and webui.
-10) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
-11) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
+7) add vlan bridges ra(i)X to vlan wan/lan support.
+8) add change nvram settings without apply mode.
+9) in very far future: need add in firewall support xt_time matches for parental control.
+10) in very far future: need add perip shaper script and webui.
+11) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
+12) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
