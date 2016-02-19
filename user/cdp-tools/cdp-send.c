@@ -113,6 +113,7 @@ struct mndp_interface* mndp_interface_add(struct mndp_interface** head, char* if
     if (ioctl(fd, SIOCGIFHWADDR, &ifr) < 0)
     {
 	perror("SIOCGIFHWADDR");
+	free(mndp);
 	return NULL;
     }
     memcpy(mndp->eaddr, ifr.ifr_hwaddr.sa_data, 6);
@@ -126,6 +127,7 @@ struct mndp_interface* mndp_interface_add(struct mndp_interface** head, char* if
     if (ioctl(fd, SIOCGIFINDEX, &ifr) < 0)
     {
 	perror("SIOCGIFINDEX");
+	free(mndp);
 	return NULL;
     }
     mndp->index = ifr.ifr_ifindex;
