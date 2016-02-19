@@ -1344,10 +1344,12 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 
 	a_assert(websValid(wp));
 
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
 /*
  *	IE3.0 needs no Keep Alive for some return codes.
  */
 	wp->flags &= ~WEBS_KEEP_ALIVE;
+#endif
 
 /*
  *	Only output the header if a header has not already been output.
@@ -1365,12 +1367,12 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 			websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 		}
 
-/*		
+/*
  *		By license terms the following line of code must not be modified.
  */
 		websWrite(wp, T("Server: %s\r\n"), WEBS_NAME);
 
-/*		
+/*
  *		Timestamp/Date is usually the next to go
  */
 		if ((date = websGetDateString(NULL)) != NULL) {
@@ -1395,10 +1397,10 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 				nonce = websCalcNonce(wp);
 				opaque = websCalcOpaque(wp); 
             /* ...$$$ end */
-				websWrite(wp, 
+				websWrite(wp,
 					T("WWW-Authenticate: Digest realm=\"%s\", domain=\"%s\",")
 					T("qop=\"%s\", nonce=\"%s\", opaque=\"%s\",")
-					T("algorithm=\"%s\", stale=\"%s\"\r\n"), 
+					T("algorithm=\"%s\", stale=\"%s\"\r\n"),
 					websGetRealm(),
 					websGetHostUrl(),
 					T("auth"),
@@ -1409,23 +1411,22 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 #endif
 			}
 		}
-
-		if (wp->flags & WEBS_KEEP_ALIVE) {
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
+		if (wp->flags & WEBS_KEEP_ALIVE)
 			websWrite(wp, T("Connection: keep-alive\r\n"));
-		}
-
+#endif
 		websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 		websWrite(wp, T("Content-Type: text/html\r\n"));
 /*
- *		We don't do a string length here as the message may be multi-line. 
- *		Ie. <CR><LF> will count as only one and we will have a content-length 
+ *		We don't do a string length here as the message may be multi-line.
+ *		Ie. <CR><LF> will count as only one and we will have a content-length
  *		that is too short.
  *
  *		websWrite(wp, T("Content-Length: %s\r\n"), message);
  */
-		if (redirect) {
+		if (redirect)
 			websWrite(wp, T("Location: %s\r\n"), redirect);
-		}
+
 		websWrite(wp, T("\r\n"));
 	}
 
@@ -1965,20 +1966,18 @@ void websDone(webs_t wp, int code)
  */
 	socketDeleteHandler(wp->sid);
 
-	if (code != 200) {
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
+	if (code != 200)
 		wp->flags &= ~WEBS_KEEP_ALIVE;
-	}
-
+#endif
 #ifdef WEBS_PROXY_SUPPORT
-	if (! (wp->flags & WEBS_LOCAL_PAGE)) {
+	if (! (wp->flags & WEBS_LOCAL_PAGE))
 		websStats.activeNetRequests--;
-	}
 #endif
 
 #ifdef WEBS_LOG_SUPPORT
-	if (! (wp->flags & WEBS_REQUEST_DONE)) {
+	if (! (wp->flags & WEBS_REQUEST_DONE))
 		websLog(wp, code);
-	}
 #endif
 
 /*
@@ -2003,6 +2002,7 @@ void websDone(webs_t wp, int code)
  *	If using Keep Alive (HTTP/1.1) we keep the socket open for a period
  *	while waiting for another request on the socket. 
  */
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
 	if (wp->flags & WEBS_KEEP_ALIVE) {
 		if (socketFlush(wp->sid) == 0) {
 			wp->state = WEBS_BEGIN;
@@ -2017,7 +2017,9 @@ void websDone(webs_t wp, int code)
 				(void *) wp);
 			return;
 		}
-	} else {
+	} else
+#endif
+	{
 		websTimeoutCancel(wp);
 		socketSetBlock(wp->sid, 1);
 		socketFlush(wp->sid);

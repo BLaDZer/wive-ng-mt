@@ -133,9 +133,10 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *			not be modified.
  */
 			websWrite(wp, T("Server: %s\r\n"), WEBS_NAME);
-			if (flags & WEBS_KEEP_ALIVE) {
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
+			if (flags & WEBS_KEEP_ALIVE)
 				websWrite(wp, T("Connection: keep-alive\r\n"));
-			}
+#endif
 			websWrite(wp, T("\r\n"));
 			websSetRequestFlags(wp, flags |= WEBS_HEADER_DONE);
 			websDone(wp, 304);
@@ -177,11 +178,10 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		websSetRequestBytes(wp, bytes);
 	}
 	websWrite(wp, T("Content-type: %s\r\n"), websGetRequestType(wp));
-
-	if ((flags & WEBS_KEEP_ALIVE) && !(flags & WEBS_ASP)) {
+#ifdef WEBS_KEEP_ALIVE_SUPPORT
+	if ((flags & WEBS_KEEP_ALIVE) && !(flags & WEBS_ASP))
 		websWrite(wp, T("Connection: keep-alive\r\n"));
-	}
-
+#endif
 	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 	websWrite(wp, T("\r\n"));
 
