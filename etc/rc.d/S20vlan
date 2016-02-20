@@ -5,6 +5,32 @@ LOG="logger -t vlan"
 # get params
 . /etc/scripts/global.sh
 
+bridgewlvlan() {
+    count=0
+    for vid in $1
+    do
+	if [ "$vid" != "0" ] && [ -d /proc/sys/net/ipv4/conf/$3${count} ]; then
+	    # add and configure vlan bridges only one time
+	    if [ ! -d /proc/sys/net/ipv4/conf/$2.$vid ]; then
+		$LOG "Add VLAN interface $2.${vid} to system"
+		vconfig add "$2" "${vid}"
+		set_vlan_map "$2.${vid}"
+		$LOG "Add BRIDGE brvl${vid}wl${count} to system"
+		brctl addbr "brvl${vid}wl${count}"
+		ip link set "brvl${vid}wl${count}" up
+		$LOG "Add VLAN interface $2.${vid} to bridge brvl${vid}wl${count}"
+		brctl addif "brvl${vid}wl${count}" "$2.${vid}"
+		ip link set "$2.${vid}" up
+	    fi
+	    $LOG "Move interface $3${count} from br0 and to new bridge brvl${vid}wl${count}"
+	    delif_from_br "$3${count}"
+	    brctl addif "brvl${vid}wl${count}" "$3${count}"
+	    ip link set "$3${count}" up
+	fi
+	count="$(($count+1))"
+    done
+}
+
 start() {
     if [ ! -f /tmp/bootgood ]; then
 	##############################################
@@ -76,13 +102,16 @@ start() {
 	    fi
 	fi
 	#############################################
+	# correct lan ifname for add vlans
+	#############################################
+	if [ "$switchpart" = "LLLLL" ]; then
+	    phys_lan_if="eth2"
+	fi
+	#############################################
 	# ADD LAN VLANS FOR ZONE ISOLATED NETWORKS
 	#############################################
 	LANVlans=`nvram_get 2860 LANVlans | awk '{ gsub(","," "); print }'`
 	if [ "$LANVlans" != "" ] && [ "$LANVlans" != "0" ] && [ "$lan_if" = "br0" ]; then
-	    if [ "$switchpart" = "LLLLL" ]; then
-		phys_lan_if="eth2"
-	    fi
 	    for vid in $LANVlans
 	    do
 		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
@@ -103,6 +132,34 @@ start() {
 		$LOG "AP mode need remove root interface from bridge to work vlan"
 		brctl delif "$lan_if" "$phys_lan_if"
 	    fi
+	fi
+	#############################################
+	# ADD VLAN TO WLAN BRIDGES
+	#############################################
+	VlanWifiLan=`nvram_get 2860 VlanWifiLan | awk '{ gsub(","," "); print }'`
+	if [ "$VlanWifiLan" != "" ] && [ "$VlanWifiLan" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    bridgewlvlan "$VlanWifiLan" "${phys_lan_if}" "$first_wlan_mbss"
+	fi
+	VlanWifiLanINIC=`nvram_get 2860 VlanWifiLanINIC | awk '{ gsub(","," "); print }'`
+	if [ "$VlanWifiLanINIC" != "" ] && [ "$VlanWifiLanINIC" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    bridgewlvlan "$VlanWifiLanINIC" "${phys_lan_if}" "$second_wlan_mbss"
+	fi
+	if [ "$switchpart" != "LLLLL" ]; then
+	    VlanWifiWan=`nvram_get 2860 VlanWifiWan | awk '{ gsub(","," "); print }'`
+	    if [ "$VlanWifiWan" != "" ] && [ "$VlanWifiWan" != "0" ] && [ "$lan_if" = "br0" ]; then
+		bridgewlvlan "$VlanWifiWan" "${phys_wan_if}" "$first_wlan_mbss"
+	    fi
+	    VlanWifiWanINIC=`nvram_get 2860 VlanWifiWanINIC | awk '{ gsub(","," "); print }'`
+	    if [ "$VlanWifiWanINIC" != "" ] && [ "$VlanWifiWanINIC" != "0" ] && [ "$lan_if" = "br0" ]; then
+		bridgewlvlan "$VlanWifiWanINIC" "${phys_wan_if}" "$second_wlan_mbss"
+	    fi
+	fi
+	#############################################
+	# CALL USER SCRIPTS AFTER VLAN CONFIG
+	#############################################
+	if [ -d /etc/vlan.d -a -x /bin/run-parts ]; then
+	    $LOG "Run scripts from /etc/vlan.d"
+	    run-parts /etc/vlan.d
 	fi
     fi
 }
@@ -138,6 +195,19 @@ stop() {
 	ip link set "$iface" down		> /dev/null 2>&1
 	brctl delif "$lan_if" "$iface"		> /dev/null 2>&1
 	vconfig rem "$iface"			> /dev/null 2>&1
+    done
+    ##############################################
+    # REMOVE BRIDGE INTERFACES FOR VLAN BRIDGES
+    ##############################################
+    bridgenames=`brctl show | grep brvl | awk {' print $1 '}`
+    for bridge in $bridgenames
+    do
+	for num in `seq 0 4`; do
+	    brctl delif "$bridge" "ra$num"	> /dev/null 2>&1
+	    brctl delif "$bridge" "rai$num"	> /dev/null 2>&1
+	done
+	ip link set "$bridge" down		> /dev/null 2>&1
+	brctl delbr "$bridge"			> /dev/null 2>&1
     done
 }
 
