@@ -27,7 +27,7 @@ start() {
     	    cp -rpf /etc/web/* /tmp/web
 	fi
 	$LOG "Start WEB Managment Server."
-	goahead &
+	goahead -f &
 	if [ -f /tmp/needrwfssave ]; then
 	    $LOG "Wait 20sec for rwfs changes save"
 	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
