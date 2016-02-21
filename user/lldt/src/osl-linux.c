@@ -751,7 +751,7 @@ get_ipv6addr(void *data)
 #else
     netinet6 = g_procnetinet6;
 #endif
-    if (netinet6 <= 0) {
+    if (netinet6 == NULL) {
 #if CAN_FOPEN_IN_SELECT_LOOP
 	fclose(netinet6);
 #endif

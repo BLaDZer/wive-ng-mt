@@ -1741,7 +1741,7 @@
 1) build_system: add strace v4.11 for easy debug.<br>
 2) uclibc: enable relro,now,noexecstack options.<br>
 3) switch: fix signed integer overflow for expressions.<br>
-4) cppcheck: wide-dhcpv6, cpdtool, igmpproxy, lldt, pppd, xupnpd fix some issues found by cppcheck.<br>
+4) wide-dhcpv6, cpdtool, igmpproxy, lldt, pppd, xupnpd, udpxy, samba, p910nd fix some issues found by cppcheck.<br>
 5) dnsmasq: up to 2.76test10 version.<br>
 6) goahead: fix types convert in value.<br>
 7) goahead: replace min/max macros to new with type check.<br>
