@@ -44,8 +44,6 @@
 #define __EVAFY(insn, reg, addr) __BUILD_EVA_INSN(insn##e, reg, addr)
 #define ___BUILD_EVA_INSN(insn, reg, addr) __EVAFY(insn, reg, addr)
 
-#include "prefetch.h"
-
 #define EX(insn,reg,addr,handler)			\
 	.if \mode == LEGACY_MODE;			\
 9:		insn	reg, addr;			\
@@ -97,8 +95,6 @@
 	sltiu		t0, a2, STORSIZE	/* very small region? */
 	bnez		t0, .Lsmall_memset\@
 	andi		t0, a0, STORMASK	/* aligned? */
-
-	prefetch_store a0, a2, t2, t3, t4
 
 #ifdef CONFIG_CPU_MICROMIPS
 	move		t8, a1			/* used by 'swp' instruction */

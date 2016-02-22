@@ -185,8 +185,6 @@
 	.set	at=v1
 #endif
 
-#include "prefetch.h"
-
 /*
  * t6 is used as a flag to note inatomic mode.
  */
@@ -213,8 +211,6 @@ __copy_user_common:
 	 * Temps
 	 */
 #define rem t8
-
-	prefetch_store a0, a2, t0, t1, t2
 
 	R10KCBARRIER(0(ra))
 	/*
