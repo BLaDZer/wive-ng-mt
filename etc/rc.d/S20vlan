@@ -110,9 +110,9 @@ start() {
 	#############################################
 	# ADD LAN VLANS FOR ZONE ISOLATED NETWORKS
 	#############################################
-	LANVlans=`nvram_get 2860 LANVlans | awk '{ gsub(","," "); print }'`
-	if [ "$LANVlans" != "" ] && [ "$LANVlans" != "0" ] && [ "$lan_if" = "br0" ]; then
-	    for vid in $LANVlans
+	VlanLan=`nvram_get 2860 VlanLan | awk '{ gsub(","," "); print }'`
+	if [ "$VlanLan" != "" ] && [ "$VlanLan" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    for vid in $VlanLan
 	    do
 		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
 		vconfig add "$phys_lan_if" "$vid"
@@ -122,8 +122,8 @@ start() {
 	    done
 	    # in router mode allow isolate vlans
 	    if [ "$switchpart" != "LLLLL" ]; then
-		LANVlansIsolate=`nvram_get 2860 LANVlansIsolate | awk '{ gsub(","," "); print }'`
-		for vid in $LANVlansIsolate
+		VlanLanIsolate=`nvram_get 2860 VlanLanIsolate | awk '{ gsub(","," "); print }'`
+		for vid in $VlanLanIsolate
 		do
 		    $LOG "VLAN ${phys_lan_if}.${vid} isolate from others in bridge."
 		    echo 1 > /sys/devices/virtual/net/${phys_lan_if}.${vid}/brport/isolate_mode
