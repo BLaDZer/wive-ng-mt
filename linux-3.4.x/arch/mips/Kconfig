@@ -2078,7 +2078,7 @@ config SYS_SUPPORTS_MULTITHREADING
 
 config MIPS_MT_FPAFF
 	bool "Dynamic FPU affinity for FP-intensive threads"
-	default n
+	default y
 	depends on MIPS_MT_SMP || MIPS_MT_SMTC
 
 config MIPS_VPE_LOADER
@@ -2243,6 +2243,11 @@ config CPU_R4400_WORKAROUNDS
 config HIGHMEM
 	bool "High Memory Support"
 	depends on 32BIT && CPU_SUPPORTS_HIGHMEM && SYS_SUPPORTS_HIGHMEM
+
+config HIGHMEM_BOOT_RESERVE
+	bool "MT7621 higmem support workaround"
+	depends on HIGHMEM && !RAM_SIZE_AUTO && RALINK_MT7621
+	default y
 
 config LONG_CALLS
 	bool "gcc must use long call"
