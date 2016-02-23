@@ -362,6 +362,8 @@ static int ra_nvram_close(int index)
 	}
 	up(nvram_sem);
 
+	kfree(nvram_sem);
+
 	return 0;
 }
 
