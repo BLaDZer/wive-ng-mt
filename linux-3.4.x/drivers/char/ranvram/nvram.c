@@ -560,7 +560,7 @@ static char const *nvram_get(int index, char *name)
 
 	if (down_interruptible(nvram_sem)) {
 		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
-		return -1;
+		return NULL;
 	}
 
 	RANV_CHECK_VALID();
