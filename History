@@ -1759,13 +1759,14 @@
 19) kernel: mips: fix 64k page support for 32 bit kernels.<br>
 20) kernel: mips: fix FPU disable with preemption.<br>
 21) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-22) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-23) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-24) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-25) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-26) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-27) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-28) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+22) kernel: mips: mt: core_nvpes function to retrieve VPE count.<br>
+23) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+24) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+25) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+26) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+27) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+28) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+29) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 <br>
 <br>
 <br>
