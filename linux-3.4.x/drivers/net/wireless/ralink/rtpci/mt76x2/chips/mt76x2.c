@@ -4991,6 +4991,52 @@ void dynamic_cck_mrc(RTMP_ADAPTER * pAd)
 	}
 }
 
+static void mt76x2_long_range_dync_vga(RTMP_ADAPTER * pAd)
+{
+	UCHAR val1;
+	UINT32 bbp_val1;
+	static UCHAR long_range_compensate_level = 0;
+	
+	RTMP_BBP_IO_READ32(pAd, AGC1_R8, &bbp_val1); /* start with initial gain in this phase */
+	val1 = pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - long_range_compensate_level;
+		
+	if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.lna_vga_ctl.nFalseCCATh) {
+		if (val1 > (pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - 0x04)) {
+			val1 -= 0x02;
+			if(long_range_compensate_level + 0x02 <= 0x04)
+				long_range_compensate_level += 0x02;
+			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
+			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
+			if (pAd->CommonCfg.RxStream >= 2) { 			
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, bbp_val1);				
+			}
+#ifdef DFS_SUPPORT
+			pAd->CommonCfg.RadarDetect.bAdjustDfsAgc = TRUE;
+#endif
+		}			
+	} else if (pAd->RalinkCounters.OneSecFalseCCACnt < 
+				pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh) {
+		if (val1 < pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0) {
+			val1 += 0x02;				
+			long_range_compensate_level -= 0x02;
+			if(long_range_compensate_level < 0)
+				long_range_compensate_level = 0;				
+			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
+			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
+			if (pAd->CommonCfg.RxStream >= 2) { 				
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, bbp_val1);				
+			}
+#ifdef DFS_SUPPORT
+			pAd->CommonCfg.RadarDetect.bAdjustDfsAgc = TRUE;
+#endif
+		}			
+	}		
+	DBGPRINT(RT_DEBUG_TRACE,
+		("MT76x2 long range one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n"
+		, pAd->RalinkCounters.OneSecFalseCCACnt, bbp_val1, bbp_val1));
+
+}
+
 #define shift_left16(x)			((x) << 16)
 #define shift_left8(x)			((x) << 8)
 
@@ -5108,9 +5154,19 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
 		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
-		no_dynamic_vga = TRUE;
+		{
+			no_dynamic_vga = TRUE;
+			if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
+			{
+				mt76x2_long_range_dync_vga(pAd);
+			}
+			else
+			{
+				pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
+			}
+		}
 	
-	if (((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) || no_dynamic_vga) {
+	if ((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode ) {
 		pAd->chipCap.dynamic_chE_trigger = TRUE;
 		default_init_vga = pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0;
 		eLNA_lower_init_vga = pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - 10;
@@ -5496,6 +5552,7 @@ static const RTMP_CHIP_CAP MT76x2_ChipCap = {
 	.avg_rssi_all = -90,
 	.avg_rssi_0 = -90,
 	.avg_rssi_1 = -90,
+	.skip_long_range_dync_vga = FALSE,
 #ifdef CONFIG_AP_SUPPORT
 	.dynamic_lna_trigger_timer = 1,
 	.microwave_enable = TRUE,

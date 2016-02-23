@@ -739,6 +739,10 @@ INT	Set_PowerSaveLifeTime_Proc(
 
 
 #ifdef DYNAMIC_VGA_SUPPORT
+INT Set_SkipLongRangeVga_Proc(
+		IN	PRTMP_ADAPTER	pAd, 
+		IN	PSTRING 	arg);
+
 INT	Set_AP_DyncVgaEnable_Proc(
 	IN RTMP_ADAPTER		*pAd, 
 	IN	PSTRING			arg);
@@ -1448,6 +1452,7 @@ static struct {
 
 #ifdef DYNAMIC_VGA_SUPPORT
 	{"DyncVgaEnable", Set_AP_DyncVgaEnable_Proc},
+	{"SkipLongRangeVga", Set_SkipLongRangeVga_Proc},
 	{"VgaClamp", set_agc_vga_clamp_proc},
 	{"lna_timer", set_dynamic_lna_trigger_timer_proc},
 	{"fc_hth", set_false_cca_hi_th},
@@ -14782,6 +14787,21 @@ INT Set_MO_FalseCCATh_Proc(
 }
 
 #ifdef DYNAMIC_VGA_SUPPORT
+INT Set_SkipLongRangeVga_Proc(
+		IN	PRTMP_ADAPTER	pAd, 
+		IN	PSTRING 	arg)
+{
+	UINT Enable;	
+
+	Enable = simple_strtol(arg, 0, 10);
+
+	pAd->chipCap.skip_long_range_dync_vga = (Enable != 0)?TRUE:FALSE;
+	
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_SkipLongRangeVga_Proc::(skip = %d)\n", pAd->chipCap.skip_long_range_dync_vga));
+
+	return TRUE;
+}
+
 INT Set_AP_DyncVgaEnable_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING		arg)

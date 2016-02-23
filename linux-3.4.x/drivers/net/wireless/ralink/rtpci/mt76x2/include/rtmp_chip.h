@@ -692,6 +692,7 @@ struct _RTMP_CHIP_CAP_ {
 	INT32 avg_rssi_all;
 	UCHAR dynamic_chE_mode;
 	BOOLEAN dynamic_chE_trigger;
+	BOOLEAN skip_long_range_dync_vga; /* for 76x2 runtime turn long_range_dync_vga on/off , default do long_range_dync_vga */
 #ifdef CONFIG_AP_SUPPORT
 	INT32 dynamic_lna_trigger_timer;
 	BOOLEAN microwave_enable;
