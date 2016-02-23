@@ -1743,32 +1743,33 @@
 3) switch: fix signed integer overflow for expressions.<br>
 4) wide-dhcpv6, cpdtool, igmpproxy, lldt, pppd, xupnpd, udpxy, samba, p910nd fix some issues found by cppcheck.<br>
 5) dnsmasq: up to 2.76test10 version.<br>
-6) goahead: fix types convert in value.<br>
-7) goahead: replace min/max macros to new with type check.<br>
-8) goahead: fix potentional data corrupt in socketWrite/Read.<br>
-9) goahead: fix 64-bit js functions.<br>
-10) goahead: fix sanity buffsizes.<br>
-11) goahead: check data size before send.<br>
-12) goahead: fix some errore find by cppcheck analizer.<br>
-13) goahead: fix dhcp ip range calc on lan ip change.<br>
-14) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
-15) init.d: irqbalance skip ipi irq`s.<br>
-16) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
-17) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
-18) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-19) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-20) kernel: mips: fix FPU disable with preemption.<br>
-21) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-22) kernel: mips: mt: core_nvpes function to retrieve VPE count.<br>
-23) kernel: mips: fix core number detection for MT cores.<br>
-24) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-25) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-26) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-27) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-28) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-29) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-30) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-31) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+6) miniupnpd: up to 1.9.20160222 version.<br>
+7) goahead: fix types convert in value.<br>
+8) goahead: replace min/max macros to new with type check.<br>
+9) goahead: fix potentional data corrupt in socketWrite/Read.<br>
+10) goahead: fix 64-bit js functions.<br>
+11) goahead: fix sanity buffsizes.<br>
+12) goahead: check data size before send.<br>
+13) goahead: fix some errore find by cppcheck analizer.<br>
+14) goahead: fix dhcp ip range calc on lan ip change.<br>
+15) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
+16) init.d: irqbalance skip ipi irq`s.<br>
+17) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
+18) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
+19) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+20) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+21) kernel: mips: fix FPU disable with preemption.<br>
+22) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
+23) kernel: mips: mt: core_nvpes function to retrieve VPE count.<br>
+24) kernel: mips: fix core number detection for MT cores.<br>
+25) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+26) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+27) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+28) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+29) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+30) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+31) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+32) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 <br>
 <br>
 <br>

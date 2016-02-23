@@ -1,7 +1,7 @@
-/* $Id: testiptcrdr.c,v 1.20 2016/02/09 09:37:47 nanard Exp $ */
+/* $Id: testiptcrdr.c,v 1.21 2016/02/12 12:35:50 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
- * (c) 2006-2015 Thomas Bernard
+ * (c) 2006-2016 Thomas Bernard
  * This software is subject to the conditions detailed
  * in the LICENCE file provided within the distribution */
 
@@ -29,6 +29,8 @@ main(int argc, char ** argv)
 	if(argc<4)
 		return -1;
 	openlog("testiptcrdr", LOG_PERROR|LOG_CONS, LOG_LOCAL0);
+	if(init_redirect() < 0)
+		return -1;
 	eport = (unsigned short)atoi(argv[1]);
 	iaddr = argv[2];
 	iport = (unsigned short)atoi(argv[3]);
@@ -51,6 +53,8 @@ main(int argc, char ** argv)
 			fprintf(stderr, "addpeenatrule failed\n");
 	}
 #endif
+	/*update_portmapping_desc_timestamp(NULL, eport, proto, "updated desc", time(NULL)+42);*/
+	update_portmapping(NULL, eport, proto, iport+1, "updated rule", time(NULL)+42);
 	/* test */
 	{
 		unsigned short p1, p2;
@@ -73,14 +77,15 @@ main(int argc, char ** argv)
 		}
 		else
 		{
-			printf("redirected port %hu to %s:%hu proto %d   packets=%" PRIu64 " bytes=%" PRIu64 "\n",
-			       p1, addr, p2, proto2, packets, bytes);
+			printf("redirected port %hu to %s:%hu proto %d   packets=%" PRIu64 " bytes=%" PRIu64 " ts=%u desc='%s'\n",
+			       p1, addr, p2, proto2, packets, bytes, timestamp, desc);
 		}
 	}
 	printf("trying to list nat rules :\n");
-	list_redirect_rule(argv[1]);
+	list_redirect_rule(NULL);
 	printf("deleting\n");
 	delete_redirect_and_filter_rules(eport, proto);
+	shutdown_redirect();
 	return 0;
 }
 

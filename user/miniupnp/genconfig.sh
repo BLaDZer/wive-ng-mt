@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: genconfig.sh,v 1.88 2016/02/09 09:37:43 nanard Exp $
+# $Id: genconfig.sh,v 1.90 2016/02/11 10:35:12 nanard Exp $
 # miniupnp daemon
 # http://miniupnp.free.fr or http://miniupnp.tuxfamily.org/
 # (c) 2006-2016 Thomas Bernard
@@ -240,6 +240,12 @@ case $OS_NAME in
 			OS_VERSION=`cat /etc/gentoo-release`
 			OS_URL=http://www.gentoo.org/
 		fi
+		# ClearOS special case
+		if [ -f /etc/clearos-release ]; then
+			OS_NAME=ClearOS
+			OS_VERSION=`grep ^base_version /etc/product | awk '{ print $3 }'`
+			OS_URL=https://www.clearos.com/
+		fi
 		# use lsb_release (Linux Standard Base) when available
 		LSB_RELEASE=`which lsb_release`
 		if [ 0 -eq $? ]; then
@@ -348,7 +354,15 @@ case $FW in
 		;;
 esac
 
-# set V6SOCKETS_ARE_V6ONLY to 0 if it was not set above
+# UUID API
+#if grep uuid_create /usr/include/uuid.h > /dev/null 2>&1 ; then
+#	echo "#define BSD_UUID" >> ${CONFIGFILE}
+#fi
+#if grep uuid_generate /usr/include/uuid/uuid.h > /dev/null 2>&1 ; then
+#	echo "#define LIB_UUID" >> ${CONFIGFILE}
+#fi
+
+# set V6SOCKETS_ARE_V6ONLY to 0 if it was not set above
 if [ -z "$V6SOCKETS_ARE_V6ONLY" ] ; then
 	V6SOCKETS_ARE_V6ONLY=0
 fi
