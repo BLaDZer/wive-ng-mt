@@ -1756,21 +1756,22 @@
 16) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
 17) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
 18) kernel: ralink_nvram: make nvram driver SMP safe.<br>
-19) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
-20) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-21) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-22) kernel: mips: fix FPU disable with preemption.<br>
-23) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-24) kernel: mips: mt: core_nvpes function to retrieve VPE count.<br>
-25) kernel: mips: fix core number detection for MT cores.<br>
-26) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-27) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-28) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-29) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-30) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-31) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-32) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-33) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+19) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
+20) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
+21) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+22) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+23) kernel: mips: fix FPU disable with preemption.<br>
+24) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
+25) kernel: mips: mt: core_nvpes function to retrieve VPE count.<br>
+26) kernel: mips: fix core number detection for MT cores.<br>
+27) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+28) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+29) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+30) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+31) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+32) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+33) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+34) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 <br>
 <br>
 <br>
