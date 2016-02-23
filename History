@@ -1763,11 +1763,12 @@
 23) kernel: mips: fix core number detection for MT cores.<br>
 24) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
 25) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-26) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-27) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-28) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-29) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-30) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+26) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+27) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+28) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+29) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+30) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+31) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 <br>
 <br>
 <br>
