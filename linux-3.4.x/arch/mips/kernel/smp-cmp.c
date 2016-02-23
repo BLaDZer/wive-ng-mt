@@ -46,7 +46,10 @@ static void cmp_init_secondary(void)
 	/* Assume GIC is present */
 	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
 				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
-
+#if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)
+	/* correct core numbers in MT_SMP modes */
+	c->core = (read_c0_ebase() >> 1) & 0x1ff;
+#endif
 	/* Enable per-cpu interrupts: platform specific */
 
 #if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)

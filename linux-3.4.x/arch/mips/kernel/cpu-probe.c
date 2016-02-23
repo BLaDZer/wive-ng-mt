@@ -22,7 +22,6 @@
 #include <asm/cpu.h>
 #include <asm/fpu.h>
 #include <asm/mipsregs.h>
-#include <asm/mipsmtregs.h>
 #include <asm/watch.h>
 #include <asm/elf.h>
 #include <asm/spram.h>
@@ -785,13 +784,8 @@ static void __cpuinit decode_configs(struct cpuinfo_mips *c)
 
 	mips_probe_watch_registers(c);
 
-	if (cpu_has_mips_r2) {
+	if (cpu_has_mips_r2)
 		c->core = read_c0_ebase() & 0x3ff;
-#ifdef CONFIG_MIPS_MT_SMP
-		if (cpu_has_mipsmt)
-			c->core >>= fls(core_nvpes()) - 1;
-#endif
-	}
 }
 
 static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
