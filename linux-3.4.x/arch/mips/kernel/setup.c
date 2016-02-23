@@ -263,9 +263,6 @@ static unsigned long __init init_initrd(void)
 
 static void __init bootmem_init(void)
 {
-#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RT2880_DRAM_512M) && defined(CONFIG_HIGHMEM) && defined(CONFIG_HIGHMEM_BOOT_RESERVE)
-	reserve_bootmem(0x1C000000, 64*1024*1024, BOOTMEM_DEFAULT);
-#endif
 	init_initrd();
 	finalize_initrd();
 }
@@ -440,7 +437,9 @@ static void __init bootmem_init(void)
 	 * Reserve the bootmap memory.
 	 */
 	reserve_bootmem(PFN_PHYS(mapstart), bootmap_size, BOOTMEM_DEFAULT);
-
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RT2880_DRAM_512M) && defined(CONFIG_HIGHMEM) && defined(CONFIG_HIGHMEM_BOOT_RESERVE)
+	reserve_bootmem(0x1C000000, 64*1024*1024, BOOTMEM_DEFAULT);
+#endif
 	/*
 	 * Reserve initrd memory if needed.
 	 */
