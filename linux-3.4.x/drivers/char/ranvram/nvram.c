@@ -226,6 +226,9 @@ static int ra_nvram_init(void)
 		printk(KERN_DEBUG "NVRAM: got dynamic major %d\n", r);
 	}
 
+	nvram_sem = kmalloc(sizeof(struct semaphore), GFP_KERNEL);
+	sema_init(nvram_sem, 1);
+
 	if (down_interruptible(nvram_sem)) {
 		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
 		return -1;
