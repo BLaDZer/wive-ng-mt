@@ -226,7 +226,7 @@ static int ra_nvram_init(void)
 		printk(KERN_DEBUG "NVRAM: got dynamic major %d\n", r);
 	}
 
-	nvram_sem = kmalloc(sizeof(struct semaphore), GFP_KERNEL);
+	nvram_sem = kzalloc(sizeof(struct semaphore), GFP_KERNEL);
 	sema_init(nvram_sem, 1);
 
 	if (down_interruptible(nvram_sem)) {
@@ -405,7 +405,7 @@ static int nvram_clear(int index)
 	/* construct all 1s env block */
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
+		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(nvram_sem);
 			return -ENOMEM;
@@ -460,7 +460,7 @@ static int nvram_commit(int index)
 	/* construct env block */
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
+		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(nvram_sem);
 			return -ENOMEM;
@@ -595,7 +595,7 @@ static int const nvram_getall(int index, char *buf)
 
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
+		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(nvram_sem);
 			return -ENOMEM;
