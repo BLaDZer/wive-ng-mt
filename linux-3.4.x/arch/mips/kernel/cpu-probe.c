@@ -787,8 +787,10 @@ static void __cpuinit decode_configs(struct cpuinfo_mips *c)
 
 	if (cpu_has_mips_r2) {
 		c->core = read_c0_ebase() & 0x3ff;
+#ifdef CONFIG_MIPS_MT_SMP
 		if (cpu_has_mipsmt)
 			c->core >>= fls(core_nvpes()) - 1;
+#endif
 	}
 }
 
