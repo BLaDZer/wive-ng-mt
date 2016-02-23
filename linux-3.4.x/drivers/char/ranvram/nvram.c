@@ -43,7 +43,7 @@ static int ralink_nvram_major = 251;
 /* eneable debug */
 static char ra_nvram_debug;
 
-static DEFINE_SEMAPHORE(nvram_sem);
+static struct semaphore *nvram_sem = NULL;
 
 /* ========================================================================
  * Table of CRC-32's of all single-byte values (made by make_crc_table)
@@ -226,15 +226,17 @@ static int ra_nvram_init(void)
 		printk(KERN_DEBUG "NVRAM: got dynamic major %d\n", r);
 	}
 
-	sema_init(&nvram_sem, 1);
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
 reinit:
 	for (i = 0; i < FLASH_BLOCK_NUM; i++)
 		ret=init_nvram_block(i);
 		if (ret == NEED_REINIT) {  /* try flash cleanup */
 		    goto reinit;
 		}
-	up(&nvram_sem);
+	up(nvram_sem);
 	return 0;
 }
 
@@ -272,7 +274,7 @@ static int init_nvram_block(int index)
 			memset(fb[index].env.data, 0, len);
 			fb[i].valid = 0;
 			fb[i].dirty = 1;
-			up(&nvram_sem); /* unlock before clear */
+			up(nvram_sem); /* unlock before clear */
 			nvram_clear(i);
 			printk("NVRAM: Particion %x cleanup OK. Reinit.\n", i);
 			return NEED_REINIT;
@@ -340,7 +342,11 @@ static int ra_nvram_close(int index)
 	if (!fb[index].valid)
 		return 0;
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
+
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
 		if (fb[index].cache[i].name) {
 			KFREE(fb[index].cache[i].name);
@@ -351,7 +357,7 @@ static int ra_nvram_close(int index)
 			fb[index].cache[i].value = NULL;
 		}
 	}
-	up(&nvram_sem);
+	up(nvram_sem);
 
 	return 0;
 }
@@ -386,14 +392,17 @@ static int nvram_clear(int index)
 
 	ra_nvram_close(index);
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
 
 	/* construct all 1s env block */
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -ENOMEM;
 		}
 	}
@@ -401,8 +410,6 @@ static int nvram_clear(int index)
 
 	/* calculate crc */
 	fb[index].env.crc = (unsigned long)nv_crc32(0, (unsigned char *)fb[index].env.data, len);
-
-	up(&nvram_sem);
 
         /* write crc to flash */
 	to = fb[index].flash_offset;
@@ -419,6 +426,7 @@ static int nvram_clear(int index)
 	fb[index].dirty = 0;
 	fb[index].valid = 1;
 
+	up(nvram_sem);
 
 	return 0;
 }
@@ -431,12 +439,16 @@ static int nvram_commit(int index)
 
 	RANV_CHECK_INDEX(-1);
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
+
 	RANV_CHECK_VALID();
 
 	if (!fb[index].dirty) {
 		RANV_PRINT("nothing to be committed\n");
-		up(&nvram_sem);
+		up(nvram_sem);
 		return 0;
 	}
 
@@ -445,7 +457,7 @@ static int nvram_commit(int index)
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -ENOMEM;
 		}
 	}
@@ -459,7 +471,7 @@ static int nvram_commit(int index)
 		l = strlen(fb[index].cache[i].name) + strlen(fb[index].cache[i].value) + 2;
 		if (p - fb[index].env.data + 2 >= len) {
 			RANV_ERROR("ENV_BLK_SIZE 0x%x is not enough!", ENV_BLK_SIZE);
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -1;
 		}
 		snprintf(p, l, "%s=%s", fb[index].cache[i].name, fb[index].cache[i].value);
@@ -483,7 +495,7 @@ static int nvram_commit(int index)
 
 	fb[index].dirty = 0;
 
-	up(&nvram_sem);
+	up(nvram_sem);
 
 	return 0;
 }
@@ -496,7 +508,11 @@ static int nvram_set(int index, char *name, char *value)
 
 	RANV_CHECK_INDEX(-1);
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
+
 	RANV_CHECK_VALID();
 
 	idx = cache_idx(index, name);
@@ -511,7 +527,7 @@ static int nvram_set(int index, char *name, char *value)
 		/* no any empty room */
 		if (idx == MAX_CACHE_ENTRY) {
 			RANV_ERROR("run out of env cache, please increase MAX_CACHE_ENTRY\n");
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -1;
 		}
 		fb[index].cache[idx].name = kstrdup(name, GFP_KERNEL);
@@ -523,7 +539,7 @@ static int nvram_set(int index, char *name, char *value)
 	}
 
 	fb[index].dirty = 1;
-	up(&nvram_sem);
+	up(nvram_sem);
 
 	return 0;
 }
@@ -537,7 +553,11 @@ static char const *nvram_get(int index, char *name)
 
 	RANV_CHECK_INDEX(NULL);
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
+
 	RANV_CHECK_VALID();
 
 	idx = cache_idx(index, name);
@@ -545,12 +565,12 @@ static char const *nvram_get(int index, char *name)
 		if (fb[index].cache[idx].value) {
 			/* duplicate the value in case caller modify it */
 			ret = fb[index].cache[idx].value;
-			up(&nvram_sem);
+			up(nvram_sem);
 			return ret;
 		}
 	}
 
-	up(&nvram_sem);
+	up(nvram_sem);
 	return NULL;
 }
 
@@ -561,14 +581,18 @@ static int const nvram_getall(int index, char *buf)
 
 	RANV_CHECK_INDEX(-1);
 
-	down(&nvram_sem);
+	if (down_interruptible(nvram_sem)) {
+		printk("%s(%d): get nvram_sem fail\n", __func__, __LINE__);
+		return -1;
+	}
+
 	RANV_CHECK_VALID();
 
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
 		fb[index].env.data = (char *)kmalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -ENOMEM;
 		}
 	}
@@ -582,7 +606,7 @@ static int const nvram_getall(int index, char *buf)
 		l = strlen(fb[index].cache[i].name) + strlen(fb[index].cache[i].value) + 2;
 		if (p - fb[index].env.data + 2 >= fb[index].flash_max_len) {
 			RANV_ERROR("ENV_BLK_SIZE 0x%x is not enough!", ENV_BLK_SIZE);
-			up(&nvram_sem);
+			up(nvram_sem);
 			return -1;
 		}
 		snprintf(p, l, "%s=%s", fb[index].cache[i].name, fb[index].cache[i].value);
@@ -590,7 +614,7 @@ static int const nvram_getall(int index, char *buf)
 	}
 	*p = '\0'; /* ending null */
 
-	up(&nvram_sem);
+	up(nvram_sem);
 
 	return 0;
 }
