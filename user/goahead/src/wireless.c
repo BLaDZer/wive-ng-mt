@@ -1046,6 +1046,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
 #endif
+#if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
+	char_t *bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
+#endif
 	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
 	keepalive = websGetVar(wp, T("keepalive"), T("0"));
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
@@ -1134,6 +1137,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
 #endif
+#if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
+	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
+#endif
 	nvram_bufset(RT2860_NVRAM, "CountryCode", countrycode);
 	if (!strncmp(countrycode, "US", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "0");
@@ -1160,12 +1166,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	// Set-up country region
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", country_region);
-
-#ifdef CONFIG_USER_BNDSTR
-	char_t *bandsteering;
-	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
-	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
-#endif
 
 	nvram_bufset(RT2860_NVRAM, "ED_MODE", ed_mode);
 
@@ -1764,7 +1764,7 @@ static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#ifdef CONFIG_USER_BNDSTR
+#if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
