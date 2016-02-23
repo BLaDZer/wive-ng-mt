@@ -149,6 +149,13 @@ if [ -e /bin/rt2860apd ]; then
 fi
 
 ##########################################################
+# restart bandsteering wireless daemon			 #
+##########################################################
+if [ -e /bin/bndstrg ]; then
+    service bndstr restart
+fi
+
+##########################################################
 # restart 802.1f wireless daemon			 #
 ##########################################################
 if [ -e /bin/ralinkiappd ]; then

@@ -65,6 +65,9 @@ dir_$(CONFIG_USER_INADYN)                   += inadyn
 ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
 dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
 endif
+ifdef CONFIG_BAND_STEERING
+dir_$(CONFIG_USER_BNDSTR)                   += bndstrg
+endif
 dir_$(CONFIG_USER_WPA_SUPPLICANT)	    += wpa_supplicant
 dir_$(CONFIG_USER_DNSMASQ)                  += dnsmasq
 dir_$(CONFIG_USER_DROPBEAR)                 += dropbear

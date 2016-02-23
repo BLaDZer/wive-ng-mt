@@ -87,7 +87,8 @@ dep_bool '  dhcp6 client'			CONFIG_USER_DHCP6_CLIENT $CONFIG_USER_DHCP6
 bool 'Cisco Discovery Protocol'			CONFIG_USER_CDP
 bool 'Link Layer Topology Discovery Protocol'	CONFIG_USER_LLTD
 bool 'Link Layer Discovery Protocol'		CONFIG_USER_LLDPD
-bool 'iappd daemin 802.11f/r/k support'		CONFIG_USER_IAPPD
+bool 'iappd daemon 802.11f/r/k support'		CONFIG_USER_IAPPD
+bool 'bndstr daemon support'			CONFIG_USER_BNDSTR
 bool 'wpa-supplicant'				CONFIG_USER_WPA_SUPPLICANT
 bool 'wireless_tools support'			CONFIG_USER_WIRELESS_TOOLS
 bool '802.1x Authenticator'			CONFIG_USER_802_1X

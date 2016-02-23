@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/bndstrg ]; then
+    exit 0
+fi
+
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t apd"
+
+start() {
+    get_param
+    if [ "$BandSteering" != "" ] && [ "$BandSteering" != "0" ] ; then
+	$LOG "Starting bandsteering daemon"
+	bndstrg &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 BandSteering`
+}
+
+stop() {
+    pid=`pidof bndstrg`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping bandsteering roaming daemon"
+	killall -q bndstrg
+	killall -q -SIGKILL bndstrg
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

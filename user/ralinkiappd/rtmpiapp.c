@@ -3247,11 +3247,15 @@ STATUS IAPP_Init(INT32 Argc, CHAR *pArgv[])
 		exit(0); /* end up parent process */
 	/* End of if */
 
+#ifdef SYSLOG
+	openlog("iappd", LOG_PID|LOG_NDELAY, LOG_USER);
+#endif
+
 	IAPP_Task((VOID *)pCtrlBK);
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-    pCtrlBK->PID = taskSpawn ("tIappFt", 100, 0, 5000,
+	 pCtrlBK->PID = taskSpawn ("tIappFt", 100, 0, 5000,
 									(FUNCPTR) IAPP_Task, (INT32)pCtrlBK,
 									0, 0, 0, 0, 0, 0, 0, 0, 0);
 	if (pCtrlBK->PID == ERROR)

@@ -1161,7 +1161,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	// Set-up country region
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", country_region);
 
-#ifdef CONFIG_BAND_STEERING
+#ifdef CONFIG_USER_BNDSTR
 	char_t *bandsteering;
 	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
 	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
@@ -1764,7 +1764,7 @@ static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#ifdef CONFIG_BAND_STEERING
+#ifdef CONFIG_USER_BNDSTR
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
