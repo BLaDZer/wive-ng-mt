@@ -1308,6 +1308,16 @@ VOID MacTableMaintenance(
 			}
 		}
 
+#ifdef BAND_STEERING
+		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
+		{
+			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
+			{
+				bDisconnectSta = TRUE;
+			}
+		}
+#endif /* BAND_STEERING */
+
 		/* kickout low RSSI clients */
 		if (pMbss->RssiLowForStaKickOut != 0 && IS_ENTRY_CLIENT(pEntry))
 		{

@@ -1371,10 +1371,13 @@ static struct {
 #endif /* THERMAL_PROTECT_SUPPORT */
 #ifdef BAND_STEERING
 	{"BndStrgEnable", 		Set_BndStrg_Enable},
-	{"BndStrgRssiCheck", 	Set_BndStrg_RssiCheck},
+	{"BndStrgRssiDiff", 	Set_BndStrg_RssiDiff},
+	{"BndStrgRssiLow", 		Set_BndStrg_RssiLow},
 	{"BndStrgAge", 		Set_BndStrg_Age},
 	{"BndStrgHoldTime", 	Set_BndStrg_HoldTime},
 	{"BndStrgCheckTime", 	Set_BndStrg_CheckTime5G},
+	{"BndStrgCndChk", 	Set_BndStrg_CndChkFlag},
+	{"BndStrgFrmChk", 	Set_BndStrg_FrmChkFlag},
 #ifdef BND_STRG_DBG
 	{"BndStrgMntAddr", 	Set_BndStrg_MonitorAddr},
 #endif /* BND_STRG_DBG */

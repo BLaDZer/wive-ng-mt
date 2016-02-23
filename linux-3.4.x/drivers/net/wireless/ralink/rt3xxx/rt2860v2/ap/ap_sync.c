@@ -115,6 +115,9 @@ VOID APPeerProbeReqAction(
 	CHAR	idx = 0;
 	UCHAR   RSNIe=IE_WPA, RSNIe2=IE_WPA2;/*, RSN_Len=22; */
 	BOOLEAN		bRequestRssi=FALSE;
+#ifdef BAND_STEERING
+	BOOLEAN bBndStrgCheck = TRUE;
+#endif /* BAND_STEERING */
 
 #ifdef WSC_AP_SUPPORT
 	UCHAR		  Addr3[MAC_ADDR_LEN];
@@ -184,7 +187,9 @@ VOID APPeerProbeReqAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
-										NULL);
+										&bBndStrgCheck);
+		if (bBndStrgCheck == FALSE)
+			return;
 #endif /* BAND_STEERING */
 
 		/* allocate and send out ProbeRsp frame */

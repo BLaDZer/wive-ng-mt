@@ -247,7 +247,7 @@ static VOID APPeerAuthReqAtIdleAction(
 	MULTISSID_STRUCT *pMbss;
 	CHAR rssi;
 #ifdef BAND_STEERING
-	BOOLEAN bAuthCheck = TRUE;
+	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
 
 	if (pAd == NULL)
@@ -383,8 +383,8 @@ static VOID APPeerAuthReqAtIdleAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
-										&bAuthCheck);
-	if (bAuthCheck == FALSE)
+										&bBndStrgCheck);
+	if (bBndStrgCheck == FALSE)
 		return;
 #endif /* BAND_STEERING */
 
