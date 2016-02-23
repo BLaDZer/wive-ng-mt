@@ -32,7 +32,7 @@
 #define BND_STRG_CHECK_TIME_5G		3000	/* orig 30000 */
 #define BND_STRG_RSSI_DIFF		30
 #define BND_STRG_RSSI_LOW		-70
-
+#define BND_STRG_RSSI_CHECK		30
 
 #define BND_STRG_AUTO_ONOFF_THRD 	4000
 #define P_BND_STRG_TABLE	(&pAd->ApCfg.BndStrgTable)
