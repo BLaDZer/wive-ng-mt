@@ -2246,8 +2246,7 @@ config HIGHMEM
 
 config HIGHMEM_BOOT_RESERVE
 	bool "MT7621 higmem support workaround"
-	depends on HIGHMEM && !RAM_SIZE_AUTO && RALINK_MT7621
-	default y
+	depends on RALINK_MT7621 && HIGHMEM && !RAM_SIZE_AUTO && RT2880_DRAM_512M
 
 config LONG_CALLS
 	bool "gcc must use long call"
