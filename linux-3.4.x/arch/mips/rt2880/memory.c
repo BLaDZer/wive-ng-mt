@@ -168,7 +168,7 @@ void __init prom_meminit(void)
 	if (ramsize > 0x1c000000) {
 		/* 1. Normal 0..448MB */
 		add_memory_region(RAM_BASE, 0x1c000000, BOOT_MEM_RAM);
-#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RT2880_DRAM_512M) && defined(CONFIG_HIGHMEM) && defined(HIGHMEM_BOOT_RESERVE)
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RT2880_DRAM_512M) && defined(CONFIG_HIGHMEM) && defined(CONFIG_HIGHMEM_BOOT_RESERVE)
 		/* 2. Highmem (reserved yet, need highmem patch from MTI) */
 		add_memory_region(0x20000000, (ramsize - 0x1c000000), BOOT_MEM_RAM);
 #endif
