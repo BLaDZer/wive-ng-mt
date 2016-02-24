@@ -119,6 +119,7 @@ static unsigned int __init prom_get_ramsize(void)
 
 void __init prom_meminit(void)
 {
+	phys_t ramsize = 0;
 #ifdef CONFIG_RAM_SIZE_AUTO
 	unsigned long mem, reg_mem;
 	unsigned long before, offset;
@@ -154,16 +155,15 @@ void __init prom_meminit(void)
 	spin_unlock_irq(&testmem_lock);
 
 	/* Set ram size */
-	add_memory_region(RAM_BASE, mem, BOOT_MEM_RAM);
+	ramsize = (phys_t)mem;
 #else	/* Fixed mesize */
-	phys_t ramsize = 0;
-
 #ifdef CONFIG_UBOOT_CMDLINE
 	ramsize = (phys_t)prom_get_ramsize();
 #endif
 	if (ramsize < MIN_RAM_SIZE || ramsize > MAX_RAM_SIZE)
 		ramsize = RAM_SIZE;
 
+#endif	/* CONFIG_RAM_SIZE_AUTO */
 #if defined(CONFIG_RALINK_MT7621)
 	if (ramsize > 0x1c000000) {
 		/* 1. Normal 0..448MB */
@@ -175,7 +175,6 @@ void __init prom_meminit(void)
 	} else
 #endif
 	add_memory_region(RAM_BASE, ramsize, BOOT_MEM_RAM);
-#endif	/* CONFIG_RAM_SIZE_AUTO */
 }
 
 void __init prom_free_prom_memory(void)
