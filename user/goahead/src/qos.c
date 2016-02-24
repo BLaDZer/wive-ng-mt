@@ -1,6 +1,6 @@
 #include    "helpers.h"
 
-const parameter_fetch_t QoS_args[] =
+parameter_fetch_t QoS_args[] =
 	{
 	{ T("QoSMode"), "QoSMode", 0, T("0") },
 	{ T("UpBW"), "QoS_rate_up", 0, T("") },

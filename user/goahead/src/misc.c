@@ -462,7 +462,7 @@ static void put_string(strbuf_t *buf, char_t *s, int len, int width,
 	int i;
 
 	if (len < 0) {
-		len = gstrnlen(s, prec >= 0 ? prec : ULONG_MAX);
+		len = gstrnlen(s, prec >= 0 ? prec : (int)ULONG_MAX);
 	} else if (prec >= 0 && prec < len) {
 		len = prec; 
 	}

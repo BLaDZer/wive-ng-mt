@@ -62,20 +62,20 @@ static void storageDiskAdm(webs_t wp, char_t *path, char_t *query)
 	{
 		char_t *disk_part = websGetVar(wp, T("disk_part"), T(""));
 		FILE *fp_mount = NULL;
-		char part[30], path[30];
+		char part[30], mpath[30];
 
 		if (NULL == (fp_mount = fopen("/proc/mounts", "r")))
 		{
         		websRedirect(wp, "storage/disk_admin.asp");
 			return;
 		}
-		while(EOF != fscanf(fp_mount, "%s %s %*s %*s %*s %*s\n", part, path))
+		while(EOF != fscanf(fp_mount, "%s %s %*s %*s %*s %*s\n", part, mpath))
 		{
-			if (0 == strcmp(path, disk_part))
+			if (0 == strcmp(mpath, disk_part))
 				break;
 		}
 		fclose(fp_mount);
-		doSystem("storage.sh %s %s %s",submit, part, path);
+		doSystem("storage.sh %s %s %s",submit, part, mpath);
 		websRedirect(wp, "storage/disk_admin.asp");
 	}
 	else if (0 == strcmp(submit, "remove"))
@@ -85,7 +85,7 @@ static void storageDiskAdm(webs_t wp, char_t *path, char_t *query)
 	}
 }
 
-static void storageDiskPart(webs_t wp, char_t *path, char_t *query)
+static void storageDiskPart(webs_t wp, char_t *mpath, char_t *query)
 {
 	char_t *part1_vol, *part2_vol, *part3_vol, *part4_vol;
 	FILE *fp_mount = NULL;
@@ -110,7 +110,7 @@ static void storageDiskPart(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_FTPD
-const parameter_fetch_t ftp_server_args[] =
+parameter_fetch_t ftp_server_args[] =
 {
 	{ T("ftp_port"), "FtpPort", 0, T("") },
 	{ T("ftp_rootdir"), "FtpRootDir", 0, T("") },
@@ -118,7 +118,7 @@ const parameter_fetch_t ftp_server_args[] =
 	{ NULL, NULL, 0, NULL }
 };
 
-static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
+static void storageFtpSrv(webs_t wp, char_t *mpath, char_t *query)
 {
 	char_t *ftp_enable = websGetVar(wp, T("ftp_enabled"), T("0"));
 	char_t *submitUrl;
@@ -143,7 +143,7 @@ static void storageFtpSrv(webs_t wp, char_t *path, char_t *query)
 #endif
 
 #ifdef CONFIG_USER_TRANSMISSION
-const parameter_fetch_t transmission_args[] =
+parameter_fetch_t transmission_args[] =
 {
 	{ T("transRPCPort"), "TransRPCPort", 0, T("") },
 	{ T("transAccess"), "TransAccess", 0, T("") },
@@ -154,7 +154,7 @@ const parameter_fetch_t transmission_args[] =
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
-static void transmission(webs_t wp, char_t *path, char_t *query)
+static void transmission(webs_t wp, char_t *mpath, char_t *query)
 {
 	char_t *submitUrl;
 	char_t *submit;
@@ -221,7 +221,7 @@ static int getCount(int eid, webs_t wp, int argc, char_t **argv)
 static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv)
 {
 	FILE *fp_mount = fopen(MOUNT_INFO, "r");
-	char part[50], path[30];
+	char part[50], mpath[30];
 	char dir_name[30];
 	int dir_len = 0;
 
@@ -230,22 +230,22 @@ static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv)
 
 	dir_count = 0;
 
-	while(EOF != fscanf(fp_mount, "%s %s %*s %*s %*s %*s\n", part, path))
+	while(EOF != fscanf(fp_mount, "%s %s %*s %*s %*s %*s\n", part, mpath))
 	{
 		DIR *dp;
 		struct dirent *dirp;
 		struct stat statbuf;
 
-		if (0 != strncmp(path, "/media/sd", 9))
+		if (0 != strncmp(mpath, "/media/sd", 9))
 		{
 			continue;
 		}
-		if (NULL == (dp = opendir(path)))
+		if (NULL == (dp = opendir(mpath)))
 		{
-			fprintf(stderr, "open %s error\n", path);
+			fprintf(stderr, "open %s error\n", mpath);
 			return -1;
 		}
-		chdir(path);
+		chdir(mpath);
 		while(NULL != (dirp = readdir(dp)))
 		{
 			lstat(dirp->d_name, &statbuf);
@@ -258,11 +258,9 @@ static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv)
 				dir_len = strlen(dir_name);
 				if (dir_len < 30 && dir_len > 0)
 				{
-					websWrite(wp, T("<tr><td><input type=\"radio\" name=\"dir_path\" value=\"%s/%s\"></td>"), 
-							  path, dir_name);
-					websWrite(wp, T("<td>%s/%s</td>"), path, dir_name);
-					websWrite(wp, T("<input type=\"hidden\" name=\"dir_part\" value=\"%s\">"), 
-							  part);
+					websWrite(wp, T("<tr><td><input type=\"radio\" name=\"dir_path\" value=\"%s/%s\"></td>"), mpath, dir_name);
+					websWrite(wp, T("<td>%s/%s</td>"), mpath, dir_name);
+					websWrite(wp, T("<input type=\"hidden\" name=\"dir_part\" value=\"%s\">"), part);
 					websWrite(wp, T("<td>%s</td>"), part);
 					websWrite(wp, T("</tr>"));
 					dir_count++;
@@ -279,22 +277,21 @@ static int ShowAllDir(int eid, webs_t wp, int argc, char_t **argv)
 static int ShowPartition(int eid, webs_t wp, int argc, char_t **argv)
 {
 	FILE *fp = fopen(MOUNT_INFO, "r");
-	char part[50], path[30];
+	char part[50], mpath[30];
 
 	if (NULL == fp)
 	    return -1;
 
 	part_count = 0;
 
-	while(EOF != fscanf(fp, "%s %s %*s %*s %*s %*s\n", part, path))
+	while(EOF != fscanf(fp, "%s %s %*s %*s %*s %*s\n", part, mpath))
 	{
-		if (0 != strncmp(path, "/media/sd", 9))
+		if (0 != strncmp(mpath, "/media/sd", 9))
 			continue;
 		websWrite(wp, T("<tr align=center>"));
-		websWrite(wp, T("<td><input type=\"radio\" name=\"disk_part\" value=\"%s\"></td>"), 
-				  path);
+		websWrite(wp, T("<td><input type=\"radio\" name=\"disk_part\" value=\"%s\"></td>"), mpath);
 		websWrite(wp, T("<td>%s</td>"), part);
-		websWrite(wp, T("<td>%s</td>"), path);
+		websWrite(wp, T("<td>%s</td>"), mpath);
 		websWrite(wp, T("</tr>"));
 		part_count++;
 	}

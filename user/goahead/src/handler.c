@@ -83,8 +83,8 @@ int websUrlHandlerDefine(char_t *urlPrefix, char_t *webDir, int arg,
 		int (*handler)(webs_t wp, char_t *urlPrefix, char_t *webdir, int arg, 
 		char_t *url, char_t *path, char_t *query), int flags)
 {
-	websUrlHandlerType	*sp;
-	int					len;
+	websUrlHandlerType *sp;
+	int len;
 
 	a_assert(urlPrefix);
 	a_assert(handler);
@@ -113,8 +113,7 @@ int websUrlHandlerDefine(char_t *urlPrefix, char_t *webDir, int arg,
 /*
  *	Sort in decreasing URL length order observing the flags for first and last
  */
-	qsort(websUrlHandler, websUrlHandlerMax, sizeof(websUrlHandlerType), 
-		websUrlHandlerSort);
+	qsort(websUrlHandler, websUrlHandlerMax, sizeof(websUrlHandlerType), websUrlHandlerSort);
 	return 0;
 }
 
@@ -147,14 +146,14 @@ int websUrlHandlerDelete(int (*handler)(webs_t wp, char_t *urlPrefix,
 
 static int websUrlHandlerSort(const void *p1, const void *p2)
 {
-	websUrlHandlerType	*s1, *s2;
-	int					rc;
+	const websUrlHandlerType *s1, *s2;
+	int rc;
 
 	a_assert(p1);
 	a_assert(p2);
 
-	s1 = (websUrlHandlerType*) p1;
-	s2 = (websUrlHandlerType*) p2;
+	s1 = (const websUrlHandlerType*) p1;
+	s2 = (const websUrlHandlerType*) p2;
 
 	if ((s1->flags & WEBS_HANDLER_FIRST) || (s2->flags & WEBS_HANDLER_LAST)) {
 		return -1;
@@ -191,8 +190,8 @@ int websPublish(char_t *urlPrefix, char_t *path)
 
 char_t *websGetPublishDir(char_t *path, char_t **urlPrefix)
 {
-	websUrlHandlerType	*sp;
-	int					i;
+	websUrlHandlerType *sp;
+	int i;
 
 	for (i = 0; i < websUrlHandlerMax; i++) {
 		sp = &websUrlHandler[i];
@@ -254,7 +253,7 @@ int websUrlHandlerRequest(webs_t wp)
 	socketDeleteHandler(wp->sid);
 	wp->state = WEBS_PROCESSING;
 	websStats.handlerHits++;
-	
+
 	websSetRequestPath(wp, websGetDefaultDir(), NULL);
 
 /*
@@ -331,7 +330,7 @@ static char_t *websCondenseMultipleChars(char_t *strToCondense, char_t cCondense
 			if (pStr != pScan) {
 				*pStr = *pScan;
 			}
-			
+
 			pScan++;
 			pStr++;
 		}

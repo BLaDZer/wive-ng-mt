@@ -26,8 +26,8 @@ value_t valueInteger(long value)
 
 	memset(&v, 0x0, sizeof(v));
 	v.valid = 1;
-	v.type = integer;
-	v.value.integer = value;
+	v.type = tinteger;
+	v.value.tinteger = value;
 	return v;
 }
 
@@ -42,13 +42,13 @@ value_t valueString(char_t* value, int flags)
 
 	memset(&v, 0x0, sizeof(v));
 	v.valid = 1;
-	v.type = string;
+	v.type = tstring;
 	if (flags & VALUE_ALLOCATE) {
 		v.allocated = 1;
-		v.value.string = gstrdup(B_L, value);
+		v.value.tstring = gstrdup(B_L, value);
 	} else {
 		v.allocated = 0;
-		v.value.string = value;
+		v.value.tstring = value;
 	}
 	return v;
 }
@@ -60,11 +60,11 @@ value_t valueString(char_t* value, int flags)
 
 void valueFree(value_t* v)
 {
-	if (v->valid && v->allocated && v->type == string &&
-			v->value.string != NULL) {
-		bfree(B_L, v->value.string);
+	if (v->valid && v->allocated && v->type == tstring &&
+			v->value.tstring != NULL) {
+		bfree(B_L, v->value.tstring);
 	}
-	v->type = undefined;
+	v->type = tundefined;
 	v->valid = 0;
 	v->allocated = 0;
 }

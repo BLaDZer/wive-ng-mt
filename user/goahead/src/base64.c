@@ -51,7 +51,7 @@ static char_t	map64[] = {
  *	Decode a buffer from "string" and into "outbuf"
  */
 
-int websDecode64(char_t *outbuf, char_t *string, int outlen)
+int websDecode64(char_t *outbuf, char_t *inpstring, int outlen)
 {
 	unsigned long	shiftbuf;
 	char_t	*cp, *op;
@@ -59,7 +59,7 @@ int websDecode64(char_t *outbuf, char_t *string, int outlen)
 
 	op = outbuf;
 	*op = '\0';
-	cp = string;
+	cp = inpstring;
 	while (*cp && *cp != '=') {
 /*
  *		Map 4 (6bit) input bytes and store in a single long (shiftbuf)
@@ -69,7 +69,7 @@ int websDecode64(char_t *outbuf, char_t *string, int outlen)
 		for (i = 0; i < 4 && *cp && *cp != '='; i++, cp++) {
 			c = map64[*cp & 0xff];
 			if (c == -1) {
-				error(E_L, E_LOG, T("Bad string: %s at %c index %d"), string, c, i);
+				error(E_L, E_LOG, T("Bad inpstring: %s at %c index %d"), inpstring, c, i);
 				return -1;
 			}
 			shiftbuf = shiftbuf | (c << shift);
@@ -81,7 +81,7 @@ int websDecode64(char_t *outbuf, char_t *string, int outlen)
  */
 		--i;
 		if ((op + i) >= &outbuf[outlen]) {
-			gstrcpy(outbuf, T("String too big"));
+			gstrcpy(outbuf, T("inpstring too big"));
 			return -1;
 		}
 		for (j = 0; j < i; j++) {

@@ -557,7 +557,7 @@ typedef struct stat gstat_t;
 #ifdef ASSERT
 	#define a_assert(C)		if (C) ; else error(E_L, E_ASSERT, T("%s"), T(#C))
 #else
-	#define a_assert(C)		if (1) ; else
+	#define a_assert(C)		do{} while(0)
 #endif /* ASSERT || ASSERT_CE */
 
 /******************************************************************************/
@@ -566,53 +566,50 @@ typedef struct stat gstat_t;
 /*
  *	These values are not prefixed so as to aid code readability
  */
-
 typedef enum {
-	undefined	= 0,
-	byteint		= 1,
-	shortint	= 2,
-	integer		= 3,
-	hex		= 4,
-	percent 	= 5,
-	octal		= 6,
-	big		= 7,
-	flag		= 8,
-	floating	= 9,
-	doublefloating	= 10,
-	string 		= 11,
-	bytes 		= 12,
-	symbol 		= 13,
-	errmsg 		= 14
+	tundefined	= 0,
+	tbyteint	= 1,
+	tshortint	= 2,
+	tinteger	= 3,
+	thex		= 4,
+	tpercent 	= 5,
+	toctal		= 6,
+	tbig		= 7,
+	tflag		= 8,
+	tfloating	= 9,
+	tdoublefloating	= 10,
+	tstring 	= 11,
+	tbytes 		= 12,
+	tsymbol 	= 13,
+	terrmsg 	= 14
 } vtype_t;
 
 #ifndef __NO_PACK
 #pragma pack(2)
 #endif /* _NO_PACK */
-
 typedef struct {
 
 	union {
-		int	undefined;
-		char	byteint;
-		short	shortint;
-		long	integer;
-		long	hex;
-		char	percent;
-		long	octal;
-		long	big[2];
-		char	flag;
-		float	floating;
-		double	doublefloating;
-		char_t	*string;
-		char	*bytes;
-		void	*symbol;
-		char_t	*errmsg;
+		int	tundefined;
+		char	tbyteint;
+		short	tshortint;
+		long	tinteger;
+		long	thex;
+		char	tpercent;
+		long	toctal;
+		long	tbig[2];
+		char	tflag;
+		float	tfloating;
+		double	tdoublefloating;
+		char_t	*tstring;
+		char	*tbytes;
+		void	*tsymbol;
+		char_t	*terrmsg;
 	} value;
 	vtype_t		type;
 	unsigned int	valid		: 8;
 	unsigned int	allocated	: 8;		/* String was balloced */
 } value_t;
-
 #ifndef __NO_PACK
 #pragma pack()
 #endif /* __NO_PACK */

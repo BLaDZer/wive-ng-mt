@@ -2566,7 +2566,7 @@ static void setStaDbm(webs_t wp, char_t *path, char_t *query)
 	return;
 }
 
-const parameter_fetch_t sta_profile_args[] =
+parameter_fetch_t sta_profile_args[] =
 {
 	{ T("staProfile"),              "staProfile",           0,      T("") },
 	{ T("staSSID"),                 "staSSID",              0,      T("") },

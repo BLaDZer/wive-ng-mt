@@ -22,7 +22,7 @@ typedef struct vpn_status_t
 } vpn_status_t;
 
 
-const parameter_fetch_t vpn_args[] =
+parameter_fetch_t vpn_args[] =
 {
 	{ T("vpn_server"),             "vpnServer",            0,       T("") },
 	{ T("vpn_range"),              "vpnRange",             0,       T("") },
@@ -46,7 +46,7 @@ const parameter_fetch_t vpn_args[] =
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
-const parameter_fetch_t lanauth_args[] =
+parameter_fetch_t lanauth_args[] =
 {
 	{ T("vpn_type"),               "vpnType",              0,       T("") },
 	{ T("vpn_pass"),               "vpnPassword",          0,       T("") },
@@ -89,8 +89,8 @@ const vpn_status_t lanauth_statuses[] =
 static int get_LANAUTHState()
 {
 	FILE *fp;
-	char	result[96],*r;
-	int i,state;
+	char result[96],*r;
+	unsigned int i, state;
 
 	fp = popen("ps|grep lanaut[h]", "r");
 	if(!fp){
@@ -280,7 +280,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 	if (strncmp(vpn_enabled, "on", 3))
 		goto out_with_commit;
 
-	const parameter_fetch_t *fetch = vpn_args;
+	parameter_fetch_t *fetch = vpn_args;
 
 #ifdef CONFIG_USER_KABINET
 	if (CHK_IF_DIGIT(vpn_type, 3))
@@ -1558,7 +1558,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	char_t *wan_mtu;
 	char_t *submitUrl;
 	char_t *st_en, *pd, *sd;
-	int     i, flag = 1;
+	unsigned int i, flag = 1;
 
 	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	char	*lan_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
@@ -1580,7 +1580,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		gw = websGetVar(wp, T("staticGateway"), T(""));
 
 		nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
-		if (inet_addr(ip) == -1)
+		if (inet_addr(ip) == INADDR_NONE)
 		{
 			websError(wp, 200, "invalid IP Address");
 			return;
@@ -1603,7 +1603,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 			}
 		}
 
-		if (inet_addr(nm) == -1)
+		if (inet_addr(nm) == INADDR_NONE)
 		{
 			websError(wp, 200, "invalid Subnet Mask");
 			return;
@@ -1746,7 +1746,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_IPV6
-const parameter_fetch_t service_ipv6_flags[] = 
+parameter_fetch_t service_ipv6_flags[] = 
 {
 	{ T("dhcp6c_enable"), "IPv6Dhcpc", 2, T("off") },
 	{ T("ipv6_allow_forward"), "IPv6AllowForward", 2, T("off") },
@@ -1953,7 +1953,7 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 #if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 #ifdef CONFIG_USER_CHILLISPOT
 // ChilliSpot variables
-const parameter_fetch_t chilli_vars[] =
+parameter_fetch_t chilli_vars[] =
 {
 	{ T("chilliEnable"),			"chilli_enable",			0,       T("") },
 	{ T("spotProfile"),			"chilli_profile",			0,       T("manual") },
@@ -1984,7 +1984,7 @@ const parameter_fetch_t chilli_vars[] =
 
 #ifdef CONFIG_USER_NODOGSPLASH
 // NoDogSplash variables
-const parameter_fetch_t nodog_vars[] =
+parameter_fetch_t nodog_vars[] =
 {
 	{ T("nodogEnable"),			"nodogsplash_enable",			0,       T("") },
 	{ T("GatewayIPRange"),			"nodog_GatewayIPRange",			0,       T("0.0.0.0/0") },

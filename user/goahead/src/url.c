@@ -58,7 +58,7 @@ char_t *websUrlType(char_t *url, char_t *buf, int charCnt)
  *	Lookup the mime type symbol table to find the relevant content type
  */
 	if ((sp = symLookup(websMime, ext)) != NULL) {
-		gstrncpy(buf, sp->content.value.string, charCnt);
+		gstrncpy(buf, sp->content.value.tstring, charCnt);
 	} else {
 		gstrcpy(buf, T("text/plain"));
 	}

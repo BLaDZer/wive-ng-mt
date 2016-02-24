@@ -151,7 +151,7 @@ int procps_find(const char *procname, size_t elems, pid_t *pids)
 	cmdline_t cmd_line;
 
 	// Try to open /proc
-	int result= 0;
+	unsigned int result = 0;
 	DIR *proc = opendir("/proc");
 
 	if (proc!=NULL)

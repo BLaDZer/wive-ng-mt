@@ -106,7 +106,7 @@ static int				bopenCount = 0;			/* Num tasks using balloc */
 static void bStatsAlloc(B_ARGS_DEC, void *ptr, int q, int size);
 static void bStatsFree(B_ARGS_DEC, void *ptr, int q, int size);
 static void bstatsWrite(int handle, char_t *fmt, ...);
-static int 	bStatsFileSort(const void *cp1, const void *cp2);
+static int  bStatsFileSort(const void *cp1,const void *cp2);
 #endif /* B_STATS */
 
 #if (defined (B_FILL) || defined (B_VERIFY_CAUSES_SEVERE_OVERHEAD))
@@ -352,7 +352,7 @@ void *balloc(B_ARGS_DEC, int size)
 void bfree(B_ARGS_DEC, void *mp)
 {
 	bType	*bp;
-	int	q;
+	int	q = 0;
 #ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
 	int  memSize;
 
@@ -524,9 +524,9 @@ void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 {
 	bStatsFileType	*fp, *files;
 	bStatsBlkType	*blkp;
-	bType			*bp;
-	char_t			*cp;
-	int				q, count, mem, total, len;
+	bType		*bp;
+	char_t		*cp;
+	int		q, count, mem, total, len;
 	static	int 	recurseProtect = 0;
 
 	if (recurseProtect++ > 0) {

@@ -1330,7 +1330,7 @@ static int evalFunction(ej_t *ep)
 		return -1;
 	}
 
-	fn = (int (*)(int, void*, int, char_t**)) sp->content.value.symbol;
+	fn = (int (*)(int, void*, int, char_t**)) sp->content.value.tsymbol;
 	if (fn == NULL) {
 		ejError(ep, T("Undefined procedure %s"), ep->func->fname);
 		return -1;
@@ -1480,7 +1480,7 @@ void *ejGetGlobalFunction(int eid, char_t *name)
 	}
 
 	if ((sp = symLookup(ep->functions, name)) != NULL) {
-		fn = (int (*)(int, void*, int, char_t**)) sp->content.value.symbol;
+		fn = (int (*)(int, void*, int, char_t**)) sp->content.value.tsymbol;
 		return (void*) fn;
 	}
 	return NULL;
@@ -1716,7 +1716,7 @@ int ejGetVar(int eid, char_t *var, char_t **value)
 		}
 	}
 	a_assert(sp->content.type == string);
-	*value = sp->content.value.string;
+	*value = sp->content.value.tstring;
 	return i;
 }
 

@@ -81,7 +81,7 @@ int websRomPageOpen(webs_t wp, char_t *path, int mode, int perm)
 	if ((sp = symLookup(romTab, path)) == NULL) {
 		return -1;
 	}
-	wip = (websRomPageIndexType*) sp->content.value.integer;
+	wip = (websRomPageIndexType*) sp->content.value.tinteger;
 	wip->pos = 0;
 	return (wp->docfd = wip - websRomPageIndex);
 }
@@ -110,7 +110,7 @@ int websRomPageStat(char_t *path, websStatType *sbuf)
 	if ((sp = symLookup(romTab, path)) == NULL) {
 		return -1;
 	}
-	wip = (websRomPageIndexType*) sp->content.value.integer;
+	wip = (websRomPageIndexType*) sp->content.value.tinteger;
 
 	memset(sbuf, 0, sizeof(websStatType));
 	sbuf->size = wip->size;

@@ -52,7 +52,7 @@ static void printersrv(webs_t wp, char_t *path, char_t *query)
 
 #ifdef CONFIG_USB_MODESWITCH
 
-const parameter_fetch_t usb_modem_args[] =
+parameter_fetch_t usb_modem_args[] =
 {
 	{ T("modem_type"), "MODEMTYPE", 0, T("0") },
 	{ T("modem_port"), "WMODEMPORT", 0, T("AUTO") },

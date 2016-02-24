@@ -171,11 +171,10 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	n++;
 	for (s = symFirst(wp->cgiVars); s != NULL; s = symNext(wp->cgiVars)) {
 
-		if (s->content.valid && s->content.type == string &&
-			gstrcmp(s->name.value.string, T("REMOTE_HOST")) != 0 &&
-			gstrcmp(s->name.value.string, T("HTTP_AUTHORIZATION")) != 0) {
-			fmtAlloc(envp+n, FNAMESIZE, T("%s=%s"), s->name.value.string,
-				s->content.value.string);
+		if (s->content.valid && s->content.type == tstring &&
+			gstrcmp(s->name.value.tstring, T("REMOTE_HOST")) != 0 &&
+			gstrcmp(s->name.value.tstring, T("HTTP_AUTHORIZATION")) != 0) {
+			fmtAlloc(envp+n, FNAMESIZE, T("%s=%s"), s->name.value.tstring, s->content.value.tstring);
 
 			n++;
 			if (n >= envpsize) {

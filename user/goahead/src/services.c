@@ -152,7 +152,7 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-const parameter_fetch_t dhcp_args[] =
+parameter_fetch_t dhcp_args[] =
 {
 	{ T("dhcpStart"),               "dhcpStart",            0,       T("") },
 	{ T("dhcpEnd"),                 "dhcpEnd",              0,       T("") },
@@ -164,7 +164,7 @@ const parameter_fetch_t dhcp_args[] =
 	{ NULL, NULL, 0, NULL }
 };
 
-const parameter_fetch_t dhcp_args_dns[] =
+parameter_fetch_t dhcp_args_dns[] =
 {
 	{ T("dhcpPriDns"),              "dhcpPriDns",           0,       T("") },
 	{ T("dhcpSecDns"),              "dhcpSecDns",           0,       T("") },
@@ -267,7 +267,7 @@ static int getIPTAccountBuilt(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-const parameter_fetch_t service_misc_flags[] =
+parameter_fetch_t service_misc_flags[] =
 {
 	{ T("stpEnbl"), "stpEnabled", 0, T("0") },
 #ifdef CONFIG_USER_CDP
@@ -391,7 +391,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 //------------------------------------------------------------------------------
 // Samba/Wins setup
-const parameter_fetch_t service_samba_flags[] =
+parameter_fetch_t service_samba_flags[] =
 {
 	{ T("WorkGroup"), "WorkGroup", 0, T("") },
 	{ T("SmbNetBIOS"), "SmbNetBIOS", 0, T("") },
@@ -618,7 +618,7 @@ int iptStatList(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-const parameter_fetch_t service_l2tp_flags[] =
+parameter_fetch_t service_l2tp_flags[] =
 {
 	{ T("l2tp_srv_ip_range"), "l2tp_srv_ip_range", 0, T("") },
 	{ T("l2tp_srv_ip_local"), "l2tp_srv_ip_local", 0, T("") },

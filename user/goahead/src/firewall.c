@@ -824,7 +824,7 @@ static void iptablesPortForwardBuildScript(void)
 		if ((getNthValueSafe(3, rec, ',', prt, sizeof(prt)) == -1))
 			continue;
 
-		if (prt > 0)
+		if (strlen(prt) > 0)
 		{
 			if ((prt_int = atoi(prt)) > 65535)
 				continue;
@@ -984,7 +984,7 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 		if ((getNthValueSafe(3, rec, ',', prt, sizeof(prt)) == -1))
 			continue;
 
-		if (prt > 0)
+		if (strlen(prt) > 0)
 		{
 			if ((prt_int = atoi(prt)) > 65535)
 				continue;
@@ -1011,7 +1011,7 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 		if ((getNthValueSafe(6, rec, ',', rprt, sizeof(rprt)) == -1))
 			continue;
 
-		if (rprt > 0)
+		if (strlen(rprt) > 0)
 		{
 			if ((rprt_int = atoi(rprt)) > 65535)
 				continue;
@@ -1432,7 +1432,7 @@ static void websSysFirewall(webs_t wp, char_t *path, char_t *query)
 }
 
 
-const parameter_fetch_t content_filtering_args[] =
+parameter_fetch_t content_filtering_args[] =
 {
 	{ T("urlFiltering"),           "websURLFilters",       0,   T("") },
 	{ T("hostFiltering"),          "websHostFilters",      0,   T("") },
@@ -1460,7 +1460,7 @@ static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
 }
 
 /* goform/setFirewallAlg */
-const parameter_fetch_t alg_params[] =
+parameter_fetch_t alg_params[] =
 {
 	{ "alg_ftp",		T("fwAlgFTP"),			2,   T("") },
 	{ "alg_gre",		T("fwAlgGRE"),			2,   T("") },
@@ -1487,7 +1487,7 @@ static void setFirewallAlg(webs_t wp, char_t *path, char_t *query)
 }
 
 /* goform/setFirewall */
-const parameter_fetch_t firewall_params[] =
+parameter_fetch_t firewall_params[] =
 {
 	{ "ForwardSesLimit",		T("ForwardSesLimit"),			0,   T("0") },
 	{ NULL, NULL, 0, NULL } // Terminator

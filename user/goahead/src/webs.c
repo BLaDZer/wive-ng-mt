@@ -1289,11 +1289,11 @@ char_t *websGetVar(webs_t wp, char_t *var, char_t *defaultGetValue)
 
 	a_assert(websValid(wp));
 	a_assert(var && *var);
- 
+
 	if ((sp = symLookup(wp->cgiVars, var)) != NULL) {
-		a_assert(sp->content.type == string);
-		if (sp->content.value.string) {
-			return sp->content.value.string;
+		a_assert(sp->content.type == tstring);
+		if (sp->content.value.tstring) {
+			return sp->content.value.tstring;
 		} else {
 			return T("");
 		}
@@ -1509,14 +1509,11 @@ void websRedirect(webs_t wp, char_t *url)
 #define kGt '>'
 #define kGreaterThan T("&gt;")
 
-
-
-
 static int charCount(const char_t* str, char_t ch)
 {
    int count = 0;
-   char_t* p = (char_t*) str;
-   
+   const char_t* p = str;
+
    if (NULL == str)
    {
       return 0;
@@ -1538,7 +1535,7 @@ static int charCount(const char_t* str, char_t ch)
    return count;
 }
 
-static char_t* websSafeUrl(const char_t* url)
+static char_t* websSafeUrl(char_t* url)
 {
 
    int ltCount = charCount(url, kLt);
@@ -1553,7 +1550,7 @@ static char_t* websSafeUrl(const char_t* url)
       safeLen = gstrlen(url);
       if (ltCount == 0 && gtCount == 0)
       {
-         safeUrl = bstrdup(B_L, (char_t*) url);
+         safeUrl = bstrdup(B_L, url);
       }
       else
       {

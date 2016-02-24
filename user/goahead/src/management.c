@@ -594,7 +594,7 @@ static void LoadDefaultSettings(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_SYSLOGD
-const parameter_fetch_t service_syslog_flags[] =
+parameter_fetch_t service_syslog_flags[] =
 {
 	{ T("KLogd"), "KLogd", 0, T("0") },
 	{ T("SysLogd"), "SysLogd", 0, T("0") },

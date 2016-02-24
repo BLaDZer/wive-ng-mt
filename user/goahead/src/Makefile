@@ -66,9 +66,6 @@ DEPEND_FILES	= asp.o balloc.o base64.o cgi.o default.o  \
 				  internet.o services.o utils.o wireless.o \
 				  firewall.o management.o helpers.o procps.o $(NAME).o
 
-# Enable web print debug commit nvram values
-# CFLAGS += PRINT_DEBUG
-
 # gahead flags
 ifeq ("$(CONFIG_USER_GOAHEAD_IPV6)", "y")
 CFLAGS += -DWF_USE_IPV6
@@ -93,7 +90,13 @@ ifeq ("$(CONFIG_USER_STORAGE)", "y")
 DEPEND_FILES += storage.o
 endif
 
-CFLAGS	+= -DWEBS -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW) -O2
+# debug flags
+CFLAGS	+= -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter
+
+# Enable web print debug commit nvram values
+# CFLAGS += PRINT_DEBUG
+
+CFLAGS	+=  -DWEBS -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
 
 LDFLAGS	+= $(SSLLIB) $(IFMODLIB)
 LDLIBS	+= -lnvram

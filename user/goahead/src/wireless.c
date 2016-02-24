@@ -382,7 +382,9 @@ static int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *Dev
 
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int i, s, err = 0;
+	unsigned int i;
+	int s, err = 0;
+
 	RT_802_11_MAC_TABLE table = {0};
 
 	s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -549,7 +551,7 @@ static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 // Fast roaming parametrs
-const parameter_fetch_t fast_roaming_flags[] =
+parameter_fetch_t fast_roaming_flags[] =
 {
 	{ T("ApProbeRspTimes"), "ApProbeRspTimes", 0, T("3") },
 	{ T("AuthRspFail"), "AuthRspFail", 0, T("0") },
@@ -564,7 +566,7 @@ const parameter_fetch_t fast_roaming_flags[] =
 
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 // IDS parametrs
-const parameter_fetch_t ids_flags[] =
+parameter_fetch_t ids_flags[] =
 {
 	{ T("AuthFloodThreshold"), "AuthFloodThreshold", 0, T("64") },
 	{ T("AssocReqFloodThreshold"), "AssocReqFloodThreshold", 0, T("64") },
@@ -1202,7 +1204,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 }
 
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
-const parameter_fetch_t wds_args[] =
+parameter_fetch_t wds_args[] =
 {
 	{ T("wds_phy_mode"), "WdsPhyMode", 0, T("") },
 	{ T("wds_encryp_type"), "WdsEncrypType", 0,       T("") },
@@ -1246,7 +1248,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 #endif
 
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
-const parameter_fetch_t apcli_args[] =
+parameter_fetch_t apcli_args[] =
 {
 	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("") },
 	{ T("apcli_bssid"),             "ApCliBssid",           0,       T("") },

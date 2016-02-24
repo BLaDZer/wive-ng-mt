@@ -256,6 +256,7 @@ extern void		 websPageSeek(webs_t wp, long offset);
 extern int 	 	 websPageStat(webs_t wp, char_t *lpath, char_t *path,
 					websStatType *sbuf);
 extern int		 websPageIsDirectory(char_t *lpath);
+#ifdef WEBS_PAGE_ROM
 extern int 		 websRomOpen();
 extern void		 websRomClose();
 extern int 		 websRomPageOpen(webs_t wp, char_t *path, int mode, int perm);
@@ -263,6 +264,7 @@ extern void 	 websRomPageClose(int fd);
 extern int 		 websRomPageReadData(webs_t wp, char *buf, int len);
 extern int 	 	 websRomPageStat(char_t *path, websStatType *sbuf);
 extern long		 websRomPageSeek(webs_t wp, long offset, int origin);
+#endif
 extern void 	 websSetRequestSocketHandler(webs_t wp, int mask, 
 					void (*fn)(webs_t wp));
 extern int 		 websSolutionHandler(webs_t wp, char_t *urlPrefix,

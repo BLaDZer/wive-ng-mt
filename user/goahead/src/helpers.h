@@ -184,10 +184,10 @@ typedef struct replacement_t
 
 typedef struct parameter_fetch_t
 {
-	const char *web_param;
-	const char *nvram_param;
+	char *web_param;
+	char *nvram_param;
 	int is_switch;
-	const char *dfl_param;
+	char *dfl_param;
 } parameter_fetch_t;
 
 typedef struct string_split_t
@@ -202,7 +202,7 @@ typedef struct string_split_t
 const char *normalizeSize(long long *size);
 
 // Set-up parameters in NVRAM
-void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction);
+void setupParameters(webs_t wp, parameter_fetch_t *fetch, int transaction);
 
 // String splitting tools
 int initSplitter(string_split_t *buf);

@@ -7,9 +7,10 @@
  *
  * $Id: webrom.c,v 1.3 2007-02-01 07:41:01 winfred Exp $
  */
-
 #include "wsIntrn.h"
 
+#ifdef WEBS_PAGE_ROM
 websRomPageIndexType websRomPageIndex[] = {
   { 0, 0, 0 },
 };
+#endif

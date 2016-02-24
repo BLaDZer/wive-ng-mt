@@ -246,7 +246,7 @@ sym_t *symLookup(sym_fd_t sd, char_t *name)
  *	Do an initial hash and then follow the link chain to find the right entry
  */
 	for (sp = hash(tp, name); sp; sp = sp->forw) {
-		cp = sp->name.value.string;
+		cp = sp->name.value.tstring;
 		if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
 			break;
 		}
@@ -282,7 +282,7 @@ sym_t *symEnter(sym_fd_t sd, char_t *name, value_t v, int arg)
 	hindex = hashIndex(tp, name);
 	if ((sp = tp->hash_table[hindex]) != NULL) {
 		for (; sp; sp = sp->forw) {
-			cp = sp->name.value.string;
+			cp = sp->name.value.tstring;
 			if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
 				break;
 			}
@@ -362,7 +362,7 @@ int symDelete(sym_fd_t sd, char_t *name)
 	hindex = hashIndex(tp, name);
 	if ((sp = tp->hash_table[hindex]) != NULL) {
 		for ( ; sp; sp = sp->forw) {
-			cp = sp->name.value.string;
+			cp = sp->name.value.tstring;
 			if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
 				break;
 			}

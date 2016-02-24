@@ -15,7 +15,7 @@ char *scale(uint64_t size)
 {
     char *result = (char *)balloc(B_L, sizeof(char) * 20);
     uint64_t  multiplier = exbibytes;
-    int i;
+    unsigned int i;
 
     for (i = 0; i < DIM(sizes); i++, multiplier /= 1024)
     {
@@ -56,7 +56,7 @@ const char *normalizeSize(long long *size)
 	return *result;
 }
 
-void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
+void setupParameters(webs_t wp, parameter_fetch_t *fetch, int transaction)
 {
 	if (transaction)
 		nvram_init(RT2860_NVRAM);
@@ -64,7 +64,7 @@ void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 	while (fetch->web_param != NULL)
 	{
 		// Get variable
-		char_t *str = websGetVar(wp, (char_t *)fetch->web_param, (char_t *)fetch->dfl_param);
+		char_t *str = websGetVar(wp, fetch->web_param, fetch->dfl_param);
 		if (fetch->is_switch) // Check if need update a switch
 		{
 			if (strcmp(str, "on") != 0)
@@ -73,7 +73,7 @@ void setupParameters(webs_t wp, const parameter_fetch_t *fetch, int transaction)
 				str = (strcmp(str, "on") == 0) ? "1" : "0";
 		}
 
-		if (nvram_bufset(RT2860_NVRAM, (char_t *)fetch->nvram_param, (void *)str)!=0) //!!!
+		if (nvram_bufset(RT2860_NVRAM, fetch->nvram_param, (void *)str)!=0) //!!!
 			syslog(LOG_ERR, "set %s nvram error, %s", fetch->nvram_param, __FUNCTION__);
 #ifdef PRINT_DEBUG
 		printf("%s value : %s\n", fetch->nvram_param, str);
@@ -392,7 +392,7 @@ int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
 int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 {
 	char *begin, *end;
-	int i=0,j=0;
+	int i=0, j=0;
 	int need_check_flag=0;
 	char *buf = bstrdup(B_L, value);
 
@@ -417,7 +417,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 		memset(begin, 0, strlen(begin));
 
 	if(need_check_flag){
-		for(i=0; i<strlen(value); i++){
+		for(i=0; i < (int)strlen(value); i++){
 			if(buf[i] == '\0')
 				continue;
 			if(buf[i] == ';')
@@ -426,7 +426,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 		}
 	}
 
-	for(i=0, j=0; i<strlen(value); i++){
+	for(i=0, j=0; i < (int)strlen(value); i++){
 		if(buf[i] != '\0'){
 			value[j++] = buf[i];
 		}
