@@ -5,19 +5,6 @@
  *	Copyright (c) Ralink Technology Corporation All Rights Reserved.
  *
  */
-#include	<time.h>
-#include	<signal.h>
-#include	<sys/ioctl.h>
-#include	<arpa/inet.h>
-#include	<asm/types.h>
-#include	<linux/if.h>
-#include	<sys/ioctl.h>
-#include	<sys/time.h>
-#include	<sys/socket.h>
-#include	<sys/sysinfo.h>
-#include	<netinet/in.h>
-#include	<arpa/inet.h>
-
 #include	"utils.h"
 #include	"helpers.h"
 #include	"station.h"

@@ -37,14 +37,6 @@
 /*
 	OS specific macros
 */
-#include	<sys/socket.h>
-#include	<netinet/in.h>
-#include	<netinet/tcp.h>
-#include	<arpa/inet.h>
-#include	<fcntl.h>
-#include	<unistd.h>
-#include	<string.h>
-#include	<errno.h>
 #include	"helpers.h"
 
 #define		SOCKET_ERROR -1

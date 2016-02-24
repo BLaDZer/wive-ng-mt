@@ -7,11 +7,6 @@
  *	$Id: services.c,v 1.167.2.8 2009-04-22 01:31:35 chhung Exp $
  */
 
-#include	<stdlib.h>
-#include	<sys/ioctl.h>
-#include	<string.h>
-#include	<dirent.h>
-
 #include	"helpers.h"
 #include	"management.h"
 #include	"station.h"

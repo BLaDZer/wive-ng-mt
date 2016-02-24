@@ -6,15 +6,31 @@
 #include "user/busybox/include/autoconf.h"	//busybox config
 
 #include <linux/autoconf.h>			//kernel config
-#include <linux/reboot.h>
-#include <netinet/in.h>
+#include <asm/types.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <time.h>
+#include <signal.h>
+#include <ctype.h>
+#include <errno.h>
+#include <inttypes.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/sysinfo.h>
+#include <sys/reboot.h>
+#include <linux/reboot.h>
+#include <linux/sockios.h>
+#include <linux/ethtool.h>
 #include <linux/if.h>
 #include <linux/route.h>
-#include <sys/reboot.h>
-#include <sys/types.h>
+#include <linux/sockios.h>
+#include <dirent.h>
 #include <syslog.h>
-#include <inttypes.h>
 
 #include "libnvram.h"
 

@@ -7,16 +7,6 @@
  *	$Id: internet.c,v 1.167.2.8 2009-04-22 01:31:35 chhung Exp $
  */
 
-#include	<stdlib.h>
-#include	<sys/ioctl.h>
-#include	<sys/socket.h>
-#include	<netinet/in.h>
-#include	<arpa/inet.h>
-#include	<linux/if.h>
-#include	<linux/route.h>
-#include	<string.h>
-#include	<dirent.h>
-
 #include	"helpers.h"
 #include	"internet.h"
 #include	"procps.h"

@@ -7,10 +7,6 @@
  *	$Id: wireless.c,v 1.113.2.3 2009-04-17 03:37:53 chhung Exp $
  */
 
-#include	<stdlib.h>
-#include	<sys/ioctl.h>
-#include	<arpa/inet.h>
-
 #include	"helpers.h"
 #include	"oid.h"
 

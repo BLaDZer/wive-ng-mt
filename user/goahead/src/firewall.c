@@ -9,12 +9,6 @@
 /*
  *	if  WAN or LAN ip changed, we must restart firewall.
  */
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <dirent.h>
 
 #include "helpers.h"
 #include "firewall.h"

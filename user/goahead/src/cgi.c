@@ -19,9 +19,6 @@
  */
 
 /*********************************** Includes *********************************/
-#include	<sys/types.h>
-#include	<sys/wait.h>
-
 #include	"wsIntrn.h"
 #include	"uemf.h"
 #include	"helpers.h"

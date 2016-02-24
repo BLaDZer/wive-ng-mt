@@ -1,14 +1,3 @@
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <linux/ethtool.h>
-#include <linux/sockios.h>
-#include <arpa/inet.h>
-#include <asm/types.h>
-#include <linux/if.h>
-#include <ctype.h>
-#include <errno.h>
-
 #ifdef USER_MANAGEMENT_SUPPORT
 #include "um.h"
 #endif

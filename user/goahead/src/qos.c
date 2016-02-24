@@ -1,8 +1,3 @@
-#include    <stdlib.h>
-#include    <sys/ioctl.h>
-#include    <string.h>
-#include    <dirent.h>
-
 #include    "helpers.h"
 
 const parameter_fetch_t QoS_args[] =

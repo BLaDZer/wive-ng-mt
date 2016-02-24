@@ -6,17 +6,10 @@
  *  $Id: station.c,v 1.67.2.2 2010-03-04 09:13:33 chhung Exp $
  */
 
-#include	<sys/ioctl.h>
-#include	<arpa/inet.h>
-#include	<asm/types.h>
-#include	<linux/if.h>
-#include	<dirent.h>
-
 #include	"helpers.h"
 #include	"internet.h"
 #include	"station.h"
 #include	"oid.h"
-
 
 PRT_PROFILE_SETTING headerProfileSetting = NULL; //selectedProfileSetting = NULL, headerProfileSetting = NULL, currentProfileSetting = NULL;
 

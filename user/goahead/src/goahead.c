@@ -18,12 +18,6 @@
 
 /********************************* Includes ***********************************/
 
-#include	<signal.h>
-#include	<unistd.h>
-#include	<sys/types.h>
-#include	<sys/wait.h>
-#include        <sys/ioctl.h>
-
 #include	"utils.h"
 #include	"helpers.h"
 #include	"uemf.h"

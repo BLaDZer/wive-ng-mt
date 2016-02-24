@@ -7,10 +7,6 @@
  *	$Id: usb.c,v 1.7.2.1 2009-04-08 11:27:39 chhung Exp $
  */
 
-#include	<stdlib.h>
-#include	<dirent.h>
-#include	<arpa/inet.h>
-
 #include	"helpers.h"
 #include        "procps.h"
 #include	"usb.h"

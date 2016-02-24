@@ -23,10 +23,6 @@
  *	$Id: storage.c,v 1.10 2008-03-19 11:11:05 chhung Exp $
  */
 
-#include	<stdlib.h>
-#include	<dirent.h>
-#include	<arpa/inet.h>
-
 #include	"helpers.h"
 #include        "firewall.h"
 #include	"usb.h"
