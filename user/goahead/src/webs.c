@@ -932,7 +932,7 @@ static void websParseRequest(webs_t wp)
  */
 			authType = bstrdup (B_L, value);
 			a_assert (authType);
-/*			
+/*
  *			Truncate authType at the next non-alpha character
  */
 			cp = authType;
@@ -951,12 +951,12 @@ static void websParseRequest(webs_t wp)
  */
 				if ((cp = gstrchr(value, ' ')) != NULL) {
 					*cp = '\0';
-               /*
-                * bugfix 5/24/02 -- we were leaking the memory pointed to by
-                * wp->authType that was allocated just before the if()
-                * statement that we are currently in. Thanks to Simon Byholm.
-                */
-               bfree(B_L, wp->authType);
+            			/*
+            			* bugfix 5/24/02 -- we were leaking the memory pointed to by
+            			* wp->authType that was allocated just before the if()
+            			* statement that we are currently in. Thanks to Simon Byholm.
+            			*/
+            				bfree(B_L, wp->authType);
 					wp->authType = bstrdup(B_L, value);
 					websDecode64(userAuth, ++cp, sizeof(userAuth));
 				} else {
@@ -1836,44 +1836,45 @@ int websWriteDataNonBlock(webs_t wp, char *buf, int nChars)
 
 /******************************************************************************/
 /*
- *	Decode a URL (or part thereof). Allows insitu decoding.
+    Decode a URL (or part thereof). Allows insitu decoding.
  */
-
-void websDecodeUrl(char_t *decoded, char_t *token, int len)
+void websDecodeUrl(char_t *decoded, char_t *input, int len)
 {
-	char_t	*ip,  *op;
-	int		num, i, c;
-	
-	a_assert(decoded);
-	a_assert(token);
+    char    *ip,  *op;
+    int     num, i, c;
 
-	op = decoded;
-	for (ip = token; *ip && len > 0; ip++, op++) {
-		if (*ip == '+') {
-			*op = ' ';
-		} else if (*ip == '%' && gisxdigit(ip[1]) && gisxdigit(ip[2])) {
+    a_assert(decoded);
+    a_assert(input);
 
-/*
- *			Convert %nn to a single character
- */
-			ip++;
-			for (i = 0, num = 0; i < 2; i++, ip++) {
-				c = tolower(*ip);
-				if (c >= 'a' && c <= 'f') {
-					num = (num * 16) + 10 + c - 'a';
-				} else {
-					num = (num * 16) + c - '0';
-				}
-			}
-			*op = (char_t) num;
-			ip--;
+    if (len < 0)
+        len = strlen(input);
 
-		} else {
-			*op = *ip;
-		}
-		len--;
-	}
-	*op = '\0';
+    op = decoded;
+    for (ip = input; *ip && len > 0; ip++, op++) {
+        if (*ip == '+') {
+            *op = ' ';
+        } else if (*ip == '%' && isxdigit((unsigned char) ip[1]) && isxdigit((unsigned char) ip[2])) {
+            /*
+                Convert %nn to a single character
+             */
+            ip++;
+            for (i = 0, num = 0; i < 2; i++, ip++) {
+                c = tolower((unsigned char) *ip);
+                if (c >= 'a' && c <= 'f') {
+                    num = (num * 16) + 10 + c - 'a';
+                } else {
+                    num = (num * 16) + c - '0';
+                }
+            }
+            *op = (char) num;
+            ip--;
+
+        } else {
+            *op = *ip;
+        }
+        len--;
+    }
+    *op = '\0';
 }
 
 /******************************************************************************/

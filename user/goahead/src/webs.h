@@ -149,7 +149,6 @@ extern void	 websCloseListen();
 extern int 	 websDecode64(char_t *outbuf, char_t *string, int buflen);
 extern void	 websDecodeUrl(char_t *token, char_t *decoded, int len);
 extern void  	 websDone(webs_t wp, int code);
-extern void 	 websEncode64(char_t *outbuf, char_t *string, int buflen);
 extern void  	 websError(webs_t wp, int code, char_t *msg, ...);
 /* function websErrorMsg() made extern 03 Jun 02 BgP */
 extern char_t 	*websErrorMsg(int code);

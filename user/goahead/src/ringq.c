@@ -79,6 +79,9 @@ int ringqOpen(ringq_t *rq, int initSize, int maxsize)
 {
 	int	increment;
 
+	if (rq == NULL)
+	    return -1;
+
 	a_assert(rq);
 	a_assert(initSize >= 0);
 
@@ -103,12 +106,11 @@ int ringqOpen(ringq_t *rq, int initSize, int maxsize)
 
 void ringqClose(ringq_t *rq)
 {
+	if (rq == NULL)
+	    return;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-
-	if (rq == NULL) {
-		return;
-	}
 
 	ringqFlush(rq);
 	bfree(B_L, (char*) rq->buf);
@@ -123,6 +125,9 @@ void ringqClose(ringq_t *rq)
 
 int ringqLen(ringq_t *rq)
 {
+	if (rq == NULL)
+	    return 0;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -142,6 +147,9 @@ int ringqGetc(ringq_t *rq)
 {
 	char_t	c;
 	char_t*	cp;
+
+	if (rq == NULL)
+	    return -1;
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -179,6 +187,9 @@ int ringqPutc(ringq_t *rq, char_t c)
 {
 	char_t *cp;
 
+	if (rq == NULL)
+	    return -1;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -204,6 +215,9 @@ int ringqInsertc(ringq_t *rq, char_t c)
 {
 	char_t *cp;
 
+	if (rq == NULL)
+	    return -1;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -228,6 +242,9 @@ int ringqPutStr(ringq_t *rq, char_t *str)
 {
 	int		rc;
 
+	if (rq == NULL || str == NULL)
+	    return 0;
+
 	a_assert(rq);
 	a_assert(str);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -244,6 +261,9 @@ int ringqPutStr(ringq_t *rq, char_t *str)
 
 void ringqAddNull(ringq_t *rq)
 {
+	if (rq == NULL)
+	    return;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -259,6 +279,9 @@ void ringqAddNull(ringq_t *rq)
 int ringqGetcA(ringq_t *rq)
 {
 	unsigned char	c;
+
+	if (rq == NULL)
+	    return -1;
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -282,6 +305,9 @@ int ringqGetcA(ringq_t *rq)
 
 int ringqPutcA(ringq_t *rq, char c)
 {
+	if (rq == NULL)
+	    return -1;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -303,6 +329,9 @@ int ringqPutcA(ringq_t *rq, char c)
 
 int ringqInsertcA(ringq_t *rq, char c)
 {
+	if (rq == NULL)
+	    return -1;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
@@ -326,6 +355,9 @@ int ringqPutStrA(ringq_t *rq, char *str)
 {
 	int		rc;
 
+	if (rq == NULL || str == NULL)
+	    return 0;
+
 	a_assert(rq);
 	a_assert(str);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -344,7 +376,10 @@ int ringqPutStrA(ringq_t *rq, char *str)
 
 int ringqPutBlk(ringq_t *rq, unsigned char *buf, int size)
 {
-	int		this, bytes_put;
+	int this, bytes_put;
+
+	if (rq == NULL || buf == NULL)
+	    return 0;
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -386,6 +421,9 @@ int ringqGetBlk(ringq_t *rq, unsigned char *buf, int size)
 {
 	int		this, bytes_read;
 
+	if (rq == NULL || buf == NULL)
+	    return 0;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 	a_assert(buf);
@@ -423,7 +461,10 @@ int ringqGetBlk(ringq_t *rq, unsigned char *buf, int size)
 
 int ringqPutBlkMax(ringq_t *rq)
 {
-	int		space, in_a_line;
+	int space, in_a_line;
+
+	if (rq == NULL)
+	    return 0;
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -442,7 +483,10 @@ int ringqPutBlkMax(ringq_t *rq)
 
 int ringqGetBlkMax(ringq_t *rq)
 {
-	int		len, in_a_line;
+	int len, in_a_line;
+
+	if (rq == NULL)
+	    return 0;
 
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
@@ -460,6 +504,9 @@ int ringqGetBlkMax(ringq_t *rq)
 
 void ringqPutBlkAdj(ringq_t *rq, int size)
 {
+	if (rq == NULL)
+	    return;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 	a_assert(0 <= size && size < rq->buflen);
@@ -484,6 +531,9 @@ void ringqPutBlkAdj(ringq_t *rq, int size)
 
 void ringqGetBlkAdj(ringq_t *rq, int size)
 {
+	if (rq == NULL)
+	    return;
+
 	a_assert(rq);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 	a_assert(0 < size && size < rq->buflen);
@@ -508,6 +558,9 @@ void ringqGetBlkAdj(ringq_t *rq, int size)
 
 void ringqFlush(ringq_t *rq)
 {
+	if (rq == NULL)
+	    return;
+
 	a_assert(rq);
 	a_assert(rq->servp);
 
@@ -528,7 +581,10 @@ void ringqFlush(ringq_t *rq)
 static int ringqGrow(ringq_t *rq)
 {
 	unsigned char	*newbuf;
-	int 			len;
+	int len;
+
+	if (rq == NULL)
+	    return 0;
 
 	a_assert(rq);
 

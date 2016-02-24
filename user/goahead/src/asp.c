@@ -23,7 +23,7 @@
 /********************************** Locals ************************************/
 
 static sym_fd_t	websAspFunctions = -1;	/* Symbol table of functions */
-static int		aspOpenCount = 0;		/* count of apps using this module */
+static int	aspOpenCount = 0;	/* count of apps using this module */
 
 /***************************** Forward Declarations ***************************/
 
