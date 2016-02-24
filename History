@@ -1755,31 +1755,32 @@
 15) goahead: fix some errore find by cppcheck analizer.<br>
 16) goahead: fix dhcp ip range calc on lan ip change.<br>
 17) goahead: fix potentional crash at url decode.<br>
-18) init.d: irqbalance skip ipi irq`s.<br>
-19) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
-20) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
-21) kernel: ralink_arch: rework memautodetect in mt7621 case.<br>
-22) kernel: ralink_nvram: make nvram driver SMP safe.<br>
-23) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
-24) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
-25) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
-26) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
-27) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
-28) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-29) kernel: mips: fix use highmem without long calls.<br>
-30) kernel: mips: rework core number correction.<br>
-31) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-32) kernel: mips: fix FPU disable with preemption.<br>
-33) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-34) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-35) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-36) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-37) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-38) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-39) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-40) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-41) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-42) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+18) goahead: fix potentional use after free.<br>
+19) init.d: irqbalance skip ipi irq`s.<br>
+20) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
+21) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
+22) kernel: ralink_arch: rework memautodetect in mt7621 case.<br>
+23) kernel: ralink_nvram: make nvram driver SMP safe.<br>
+24) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
+25) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
+26) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
+27) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
+28) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
+29) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+30) kernel: mips: fix use highmem without long calls.<br>
+31) kernel: mips: rework core number correction.<br>
+32) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+33) kernel: mips: fix FPU disable with preemption.<br>
+34) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
+35) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+36) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+37) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+38) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+39) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+40) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+41) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+42) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+43) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
 <br>
 <br>
 <br>

@@ -1708,20 +1708,27 @@ int websWrite(webs_t wp, char_t *fmt, ...)
 
 	a_assert(websValid(wp));
 
-	va_start(vargs, fmt);
-
 	buf = NULL;
 	rc = 0;
 
-	if (fmtValloc(&buf, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE)
+	va_start(vargs, fmt);
+	if (fmtValloc(&buf, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
 		syslog(LOG_ERR, "websWritelost data, buffer overflow , %s", __FUNCTION__);
-
-	va_end(vargs);
-	a_assert(buf);
-	if (buf) {
-		rc = websWriteBlock(wp, buf, gstrlen(buf));
-		bfree(B_L, buf);
+		va_end(vargs);
+		return -1;
 	}
+
+	a_assert(buf);
+	if (buf == NULL) {
+		syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
+		va_end(vargs);
+		return -1;
+	}
+	va_end(vargs);
+
+	rc = websWriteBlock(wp, buf, gstrlen(buf));
+	bfree(B_L, buf);
+
 	return rc;
 }
 
@@ -1752,7 +1759,7 @@ void websLongWrite(webs_t wp, char *longstr)
 
 int websWriteBlock(webs_t wp, char_t *buf, int nChars)
 {
-	int		len, done;
+	int	len = 0, done = 0;
 	char	*asciiBuf, *pBuf;
 
 	a_assert(wp);
@@ -1760,7 +1767,8 @@ int websWriteBlock(webs_t wp, char_t *buf, int nChars)
 	a_assert(buf);
 	a_assert(nChars >= 0);
 
-	done = len = 0;
+	if (buf == NULL)
+	    return -1;
 
 /*
  *	ballocUniToAsc will convert Unicode to strings to Ascii.  If Unicode is
@@ -1768,7 +1776,10 @@ int websWriteBlock(webs_t wp, char_t *buf, int nChars)
  */
 	pBuf = asciiBuf = ballocUniToAsc(buf, nChars);
 
-	while (nChars > 0) {  
+	if (pBuf == NULL)
+	    return -1;
+
+	while (nChars > 0) {
 #ifdef WEBS_SSL_SUPPORT
 		if (wp->flags & WEBS_SECURE) {
 			if ((len = websSSLWrite(wp->wsp, pBuf, nChars)) < 0) {
