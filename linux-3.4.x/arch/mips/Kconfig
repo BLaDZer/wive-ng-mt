@@ -151,6 +151,7 @@ config RALINK_MT7621
 	select CSRC_R4K
 	select CEVT_R4K
 	select MIPS_CPU_SCACHE
+	select MIPS_L1_CACHE_SHIFT_6
 	select SYS_SUPPORTS_MULTITHREADING
 	select SYS_SUPPORTS_SMP
 	select SYS_SUPPORTS_MIPS_CMP
@@ -2243,10 +2244,6 @@ config CPU_R4400_WORKAROUNDS
 config HIGHMEM
 	bool "High Memory Support"
 	depends on 32BIT && CPU_SUPPORTS_HIGHMEM && SYS_SUPPORTS_HIGHMEM
-
-config HIGHMEM_BOOT_RESERVE
-	bool "MT7621 higmem support workaround"
-	depends on RALINK_MT7621 && HIGHMEM && !RAM_SIZE_AUTO && RT2880_DRAM_512M
 
 config LONG_CALLS
 	bool "gcc must use long call"

@@ -1757,14 +1757,14 @@
 17) init.d: irqbalance skip ipi irq`s.<br>
 18) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
 19) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
-20) kernel: ralink_nvram: make nvram driver SMP safe.<br>
-21) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
-22) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
-23) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
-24) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
-25) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
-26) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-27) kernel: mips: highmem: add workaround from 5.0.10SDK (second memblock add as boot reserved).<br>
+20) kernel: ralink_arch: mt7621: set cache_shift to 6 (workaround crashes userspace with SEGV_ACCERR).<br>
+21) kernel: ralink_nvram: make nvram driver SMP safe.<br>
+22) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
+23) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
+24) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
+25) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
+26) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
+27) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
 28) kernel: mips: fix use highmem without long calls.<br>
 29) kernel: mips: rework core number correction.<br>
 30) kernel: mips: fix 64k page support for 32 bit kernels.<br>
