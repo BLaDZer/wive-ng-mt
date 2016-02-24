@@ -122,12 +122,11 @@ function showLoadedElements() {
 
 function loadStatistics() {
 	var reloader = function(element) {
+		initTranslation();
 		showLoadedElements();
 		showPortStatistics();
-		initTranslation();
-		self.setTimeout(loadStatistics, 5000);
+		self.setTimeout(loadStatistics, 15000);
 	}
-
 	ajaxLoadElement("statistics_table", "/adm/statistic_table.asp", reloader);
 }
 

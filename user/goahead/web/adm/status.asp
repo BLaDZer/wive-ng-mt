@@ -162,7 +162,7 @@ function reloadPage()
 		displayElement('statusIPv6Ext', (ipv6b == "1") && (IPv6Ext != ""));
 		initTranslation();
 		showOpMode();
-		timer = self.setTimeout('reloadPage();', 3000);
+		timer = self.setTimeout('reloadPage();', 15000);
 	}
 
 	ajaxLoadElement("sysinfoTable", "/adm/sysinfo.asp", reloader);
