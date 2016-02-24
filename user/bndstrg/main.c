@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
 	if (child_pid == 0) {
 #ifdef SYSLOG
-		openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_USER);
+		openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_DAEMON);
 #endif
 		DBGPRINT(DEBUG_OFF, "Initialize bndstrg\n");
 		ret = bndstrg_init(&bndstrg, &bndstrg_event_ops, drv_mode, opmode, version);

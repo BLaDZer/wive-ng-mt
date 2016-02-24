@@ -3248,7 +3248,7 @@ STATUS IAPP_Init(INT32 Argc, CHAR *pArgv[])
 	/* End of if */
 
 #ifdef SYSLOG
-	openlog("iappd", LOG_PID|LOG_NDELAY, LOG_USER);
+	openlog("iappd", LOG_PID|LOG_NDELAY, LOG_DAEMON);
 #endif
 
 	IAPP_Task((VOID *)pCtrlBK);

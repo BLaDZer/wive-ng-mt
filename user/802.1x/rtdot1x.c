@@ -809,7 +809,7 @@ int main(int argc, char *argv[])
 		auth_pid = getpid();
 		DBGPRINT(RT_DEBUG_TRACE, "Porcess ID = %d\n",auth_pid);
         
-        openlog("rtdot1xd",0,LOG_DAEMON);
+        openlog("rtdot1xd", LOG_PID|LOG_NDELAY, LOG_DAEMON);
         // set number of configuration file 1
         interfaces.count = 1;
         interfaces.rtapd = malloc(sizeof(rtapd *));
