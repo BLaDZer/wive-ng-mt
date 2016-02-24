@@ -619,21 +619,16 @@ int socketReady(int sid)
  * 	Wait for a handle to become readable or writable and return a number of 
  *	noticed events. Timeout is in milliseconds.
  */
-
-#if (defined (WIN) || defined (CE) || defined (NW))
-
 int socketSelect(int sid, int timeout)
 {
+	socket_t *sp;
 	struct timeval	tv;
-	socket_t		*sp;
-	fd_set		 	readFds, writeFds, exceptFds;
-	int 			nEvents;
-	int				all, socketHighestFd;	/* Highest socket fd opened */
+	fd_set readFds, writeFds, exceptFds;
+	int all, nEvents;
 
 	FD_ZERO(&readFds);
 	FD_ZERO(&writeFds);
 	FD_ZERO(&exceptFds);
-	socketHighestFd = -1;
 
 	tv.tv_sec = timeout / 1000;
 	tv.tv_usec = (timeout % 1000) * 1000;
@@ -644,12 +639,16 @@ int socketSelect(int sid, int timeout)
 	all = nEvents = 0;
 
 	if (sid < 0) {
-		all++;
-		sid = 0;
+	    all++;
+	    sid = 0;
 	}
 
 	for (; sid < socketMax; sid++) {
+
 		if ((sp = socketList[sid]) == NULL) {
+		    if (all == 0)
+			break;
+		    else
 			continue;
 		}
 		a_assert(sp);
@@ -658,161 +657,50 @@ int socketSelect(int sid, int timeout)
  */
 		if (sp->handlerMask & SOCKET_READABLE) {
 			FD_SET(sp->sock, &readFds);
-			nEvents++;
 			if (socketInputBuffered(sid) > 0) {
 				tv.tv_sec = 0;
 				tv.tv_usec = 0;
 			}
 		}
-		if (sp->handlerMask & SOCKET_WRITABLE) {
+		if (sp->handlerMask & SOCKET_WRITABLE)
 			FD_SET(sp->sock, &writeFds);
-			nEvents++;
-		}
-		if (sp->handlerMask & SOCKET_EXCEPTION) {
+		if (sp->handlerMask & SOCKET_EXCEPTION)
 			FD_SET(sp->sock, &exceptFds);
-			nEvents++;
-		}
-		if (! all) {
-			break;
-		}
-	}
-
-/*
- *	Windows select() fails if no descriptors are set, instead of just sleeping
- *	like other, nice select() calls. So, if WIN, sleep.
- */
-	if (nEvents == 0) {
-		sleep(timeout);
-		return 0;
-	}
-
-/*
- * 	Wait for the event or a timeout.
- */
-	nEvents = select(socketHighestFd+1, &readFds, &writeFds, &exceptFds, &tv);
-
-	if (all) {
-		sid = 0;
-	}
-	for (; sid < socketMax; sid++) {
-		if ((sp = socketList[sid]) == NULL) {
-			continue;
-		}
-
-		if (FD_ISSET(sp->sock, &readFds) || socketInputBuffered(sid) > 0) {
-				sp->currentEvents |= SOCKET_READABLE;
-		}
-		if (FD_ISSET(sp->sock, &writeFds)) {
-				sp->currentEvents |= SOCKET_WRITABLE;
-		}
-		if (FD_ISSET(sp->sock, &exceptFds)) {
-				sp->currentEvents |= SOCKET_EXCEPTION;
-		}
-		if (! all) {
-			break;
-		}
-	}
-
-	return nEvents;
-}
-
-#else /* not WIN || CE || NW */
-
-int socketSelect(int sid, int timeout)
-{
-	socket_t		*sp;
-	struct timeval	tv;
-	fd_set			readFds, writeFds, exceptFds;
-	int 			all, nEvents;
-
-	FD_ZERO(&readFds);
-	FD_ZERO(&writeFds);
-	FD_ZERO(&exceptFds);
-
-	tv.tv_sec = timeout / 1000;
-	tv.tv_usec = (timeout % 1000) * 1000;
-
-/*
- *	Set the select event masks for events to watch
- */
-	all = nEvents = 0;
-
-	if (sid < 0) {
-		all++;
-		sid = 0;
-	}
-
-	for (; sid < socketMax; sid++) {
-		if ((sp = socketList[sid]) == NULL) {
-			if (all == 0) {
-				break;
-			} else {
-				continue;
-			}
-		}
-		a_assert(sp);
-/*
- * 		Set the appropriate bit in the ready masks for the sp->sock.
- */
-		if (sp->handlerMask & SOCKET_READABLE) {
-			FD_SET(sp->sock, &readFds);
-			nEvents++;
-			if (socketInputBuffered(sid) > 0) {
-				tv.tv_sec = 0;
-				tv.tv_usec = 0;
-			}
-		}
-		if (sp->handlerMask & SOCKET_WRITABLE) {
-			FD_SET(sp->sock, &writeFds);
-			nEvents++;
-		}
-		if (sp->handlerMask & SOCKET_EXCEPTION) {
-			FD_SET(sp->sock, &exceptFds);		
-			nEvents++;
-		}
-		if (! all) {
-			break;
-		}
+		if (!all)
+		    break;
 	}
 
 /*
  * 	Wait for the event or a timeout. Reset nEvents to be the number of actual
  *	events now.
  */
-	nEvents = select(socketHighestFd + 1, &readFds,
-		&writeFds, &exceptFds, &tv);
+	nEvents = select(socketHighestFd + 1, &readFds, &writeFds, &exceptFds, &tv);
 
-	if (nEvents > 0) {
-		if (all) {
-			sid = 0;
-		}
-		for (; sid < socketMax; sid++) {
-			if ((sp = socketList[sid]) == NULL) {
-				if (all == 0) {
-					break;
-				} else {
-					continue;
-				}
-			}
+	if (all)
+	    sid = 0;
 
-			if (FD_ISSET(sp->sock, &readFds) || socketInputBuffered(sid) > 0) {
-				sp->currentEvents |= SOCKET_READABLE;
-			}
-			if (FD_ISSET(sp->sock, &writeFds)) {
-				sp->currentEvents |= SOCKET_WRITABLE;
-			}
-			if (FD_ISSET(sp->sock, &exceptFds)) {
-				sp->currentEvents |= SOCKET_EXCEPTION;
-			}
-			if (! all) {
-				break;
-			}
+	for (; sid < socketMax; sid++) {
+		if ((sp = socketList[sid]) == NULL) {
+		    if (all == 0)
+			break;
+		    else
+			continue;
 		}
+		if (FD_ISSET(sp->sock, &readFds)) {
+			sp->currentEvents |= SOCKET_READABLE;
+			if (socketInputBuffered(sid) > 0) /* reuse current socket */
+				nEvents++;
+		}
+		if (FD_ISSET(sp->sock, &writeFds))
+			sp->currentEvents |= SOCKET_WRITABLE;
+		if (FD_ISSET(sp->sock, &exceptFds))
+			sp->currentEvents |= SOCKET_EXCEPTION;
+		if (!all)
+		    break;
 	}
 
 	return nEvents;
 }
-#endif /* WIN || CE */
 
 /******************************************************************************/
 /*
