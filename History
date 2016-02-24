@@ -1778,6 +1778,7 @@
 38) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
 39) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
 40) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+41) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
 <br>
 <br>
 <br>
