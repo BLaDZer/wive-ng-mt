@@ -131,10 +131,11 @@
     !defined (CONFIG_RALINK_RT3052) && \
     !defined (CONFIG_RALINK_RT6855) && \
     !defined (CONFIG_RALINK_RT5350) && \
+    !defined (CONFIG_RALINK_MT7621) && \
     !defined (CONFIG_RALINK_MT7620)
 	.fill   0x400
 #else
-	/* workaround for 4Mb SPI flash boot */
+	/* workaround for some SPI flash boot */
 	j       kernel_entry
 	nop
 	.fill   0x3f4
