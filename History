@@ -1754,7 +1754,7 @@
 14) goahead: check data size before send.<br>
 15) goahead: fix some errore find by cppcheck analizer.<br>
 16) goahead: fix dhcp ip range calc on lan ip change.<br>
-17) goahead: fix potentional crash at usr decode.<br>
+17) goahead: fix potentional crash at url decode.<br>
 18) init.d: irqbalance skip ipi irq`s.<br>
 19) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
 20) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
