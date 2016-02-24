@@ -352,9 +352,10 @@ void *balloc(B_ARGS_DEC, int size)
 void bfree(B_ARGS_DEC, void *mp)
 {
 	bType	*bp;
-	int		q, memSize;
-
+	int	q;
 #ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
+	int  memSize;
+
 	verifyBallocSpace();
 #endif
 	bp = (bType*) ((char*) mp - sizeof(bType));
@@ -365,7 +366,9 @@ void bfree(B_ARGS_DEC, void *mp)
 		return;
 	}
 
+#ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
 	memSize = ballocGetSize(bp->u.size, &q);
+#endif
 
 #ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
 	verifyUsedBlock(bp,q);

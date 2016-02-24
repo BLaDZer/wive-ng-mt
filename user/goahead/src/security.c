@@ -56,9 +56,9 @@ static int		debugSecurity = 0;
 int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, 
 						char_t *url, char_t *path, char_t *query)
 {
-	char_t			*type, *userid, *password, *accessLimit;
-	int				flags, nRet;
-	accessMeth_t	am;
+	char_t	*userid, *password, *accessLimit;
+	int	flags, nRet;
+	accessMeth_t am;
 
 	a_assert(websValid(wp));
 	a_assert(url && *url);
@@ -66,7 +66,6 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 /*
  *	Get the critical request details
  */
-	type = websGetRequestType(wp);
 	password = websGetRequestPassword(wp);
 	userid = websGetRequestUserName(wp);
 	flags = websGetRequestFlags(wp);

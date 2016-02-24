@@ -76,7 +76,7 @@ UCLINUX_BUILD_SET 		:= 0 # have we set a special config below
 #
 
 ############################ PLATFORM FLAGS #################################################
-POPT	:= -Os -pipe -fno-builtin -mno-branch-likely -mno-long-calls
+POPT	:= -Os -pipe -fno-builtin
 POPT	+= -Dlinux -Dunix -DEMBED -DMIPSEL
 POPT	+= -D__linux__ -D__unix__ -D__EMBED__ -D__MIPSEL__
 ifdef CONFIG_RALINK_MT7621
