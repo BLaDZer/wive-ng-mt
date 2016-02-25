@@ -1784,6 +1784,7 @@
 44) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
 45) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 46) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
+47) kernel: net/compat: Fix minor information leak in siocdevprivate_ioctl().<br>
 <br>
 <br>
 <br>
