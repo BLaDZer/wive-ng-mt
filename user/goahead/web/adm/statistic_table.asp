@@ -1,6 +1,6 @@
-<table class="form">
-  <tbody>
     <!-- ==============  MEMORY and CPU  =============== -->
+<table class="form" id="statisticRSStats">
+  <tbody>
     <tr>
       <td class="title" colspan="6" id="statisticMMCPU">Memory and CPU</td>
     </tr>
@@ -19,7 +19,7 @@
   </tbody>
 </table>
     <!-- =================  SOFT NETORK  ================= -->
-<table class="form">
+<table class="form" id="statisticSWStats">
   <tbody>
     <tr>
       <td class="title" colspan="6" id="statisticAllIF">All interfaces</td>
