@@ -1782,6 +1782,7 @@
 42) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
 43) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 44) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+45) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
 <br>
