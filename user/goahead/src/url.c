@@ -72,16 +72,17 @@ char_t *websUrlType(char_t *url, char_t *buf, int charCnt)
  *	This must be freed by the caller. NOTE: tag is not yet fully supported.
  */
 
-int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath, 
-	char_t **pport, char_t **pquery, char_t **pproto, char_t **ptag, 
+int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
+	char_t **pport, char_t **pquery, char_t **pproto, char_t **ptag,
 	char_t **pext)
 {
 	char_t		*tok, *cp, *host, *path, *port, *proto, *tag, *query, *ext;
 	char_t		*hostbuf, *portbuf, *buf;
-	int			c, len, ulen;
+	int		c, len, ulen;
 
-	a_assert(url);
 	a_assert(pbuf);
+	if (url == 0)
+	    url = "";
 
 	ulen = gstrlen(url);
 /*
@@ -160,7 +161,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 		query = cp;
 		path = tok;
 		tok = query;
-	} 
+	}
 
 /*
  *	Parse the fragment identifier
@@ -191,7 +192,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 			if (ok) {
 				cp[length] = '\0';
 #ifdef WIN
-				strlower(cp);            
+				strlower(cp);
 #endif
 				ext = cp;
 			}
@@ -201,14 +202,26 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 /*
  *	Pass back the fields requested (if not NULL)
  */
-	if (phost)
-		*phost = host;
-	if (ppath)
-		*ppath = path;
-	if (pport)
-		*pport = port;
-	if (pproto)
-		*pproto = proto;
+	if (phost) {
+	    if (host == 0)
+		host = T("localhost");
+	    *phost = host;
+	}
+	if (ppath) {
+	    if (path == 0)
+		path = T("/");
+	    *ppath = path;
+	}
+	if (pport) {
+	    if (port == 0)
+		port = T("80");
+	    *pport = port;
+	}
+	if (pproto) {
+	    if (proto == 0)
+		proto = T("http");
+	    *pproto = proto;
+	}
 	if (pquery)
 		*pquery = query;
 	if (ptag)
