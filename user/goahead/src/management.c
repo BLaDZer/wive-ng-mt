@@ -219,12 +219,6 @@ static int getIfIsReady(const char *ifname)
 	struct ifreq ifr;
 	int skfd;
 
-	if(!ifname || ifname[0]=='\0')
-		return -1;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return -1;
-
 	skfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (skfd == -1) {
 		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
@@ -251,19 +245,10 @@ static int getIfIsReady(const char *ifname)
 /*
  * description: get link info from ethtool (return defaults values in error path for compat with webswrite)
  */
-static int linkspeed(const char *ifname) {
+static int linkspeed(const char *ifname, int sd) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
-	int sd, iocret, speed = SPEED_10;
+	int iocret, speed = SPEED_10;
 	struct ifreq ifr;
-
-	if(!ifname || ifname[0]=='\0')
-		return SPEED_10;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return SPEED_10;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return SPEED_10;
 
 	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
@@ -273,8 +258,6 @@ static int linkspeed(const char *ifname) {
 		speed = ecmd.speed;
 	else
 		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
-
-	close(sd);
 
 	/* validate nic link speed */
 	switch (speed) {
@@ -290,19 +273,10 @@ static int linkspeed(const char *ifname) {
 	return SPEED_10;
 }
 
-static int linkduplex(const char *ifname) {
+static int linkduplex(const char *ifname, int sd) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
-	int sd, iocret, duplex = DUPLEX_HALF;
+	int iocret, duplex = DUPLEX_HALF;
 	struct ifreq ifr;
-
-	if(!ifname || ifname[0]=='\0')
-		return DUPLEX_HALF;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return DUPLEX_HALF;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return DUPLEX_HALF;
 
 	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
@@ -312,8 +286,6 @@ static int linkduplex(const char *ifname) {
 		duplex = ecmd.duplex;
 	else
 		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
-
-	close(sd);
 
 	/* validate duplex mode */
 	switch (duplex) {
@@ -326,19 +298,10 @@ static int linkduplex(const char *ifname) {
 	return DUPLEX_HALF;
 }
 
-static int linkstatus(const char *ifname) {
+static int linkstatus(const char *ifname, int sd) {
 	struct ethtool_value ethval = { .cmd = ETHTOOL_GLINK, };
-	int sd, iocret, ret = 0;
+	int iocret, ret = 0;
 	struct ifreq ifr;
-
-	if(!ifname || ifname[0]=='\0')
-		return 0;
-
-	if(strlen(ifname) > IFNAMSIZ)
-		return 0;
-
-	if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
-		return 0;
 
 	memset(&ifr, 0, sizeof(ifr));
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
@@ -349,7 +312,6 @@ static int linkstatus(const char *ifname) {
 	else
 		syslog(LOG_ERR, "ioctl error, %s", __FUNCTION__);
 
-	close(sd);
 
 	/* validate link status */
 	if (ret)
@@ -373,7 +335,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	for (port=4; port>-1; port--)
 	{
 		char buf[16];
-		int link, speed, duplex;
+		int sd, link, speed, duplex;
 		FILE *proc_file;
 
 		/* switch phy to needed port */
@@ -385,9 +347,16 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		fprintf(proc_file, "%d\n", port);
 		fclose(proc_file);
 
-		link = linkstatus(IOCTL_IF);
-		speed = linkspeed(IOCTL_IF);
-		duplex = linkduplex(IOCTL_IF);
+		if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0) {
+			syslog(LOG_ERR, "error ethtool socket open, %s", __FUNCTION__);
+			return -1;
+		}
+
+		link = linkstatus(IOCTL_IF, sd);
+		speed = linkspeed(IOCTL_IF, sd);
+		duplex = linkduplex(IOCTL_IF, sd);
+
+		close(sd);
 
 		/* create string in new buffer and write to web (this more safe of direct write) */
 		snprintf(buf, sizeof(buf), ("%s%d,%d,%s"), (port == 4) ? "" : ";", link, speed, (duplex == 1) ? "F" : "H");
@@ -425,6 +394,14 @@ static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 			syslog(LOG_ERR, "wrong format string in /proc/net/dev, %s", __FUNCTION__);
 			continue;
 		}
+
+		// not correct parse
+		if(ifname[0]=='\0')
+			continue;
+
+		// long ifname
+		if(strlen(ifname) > IFNAMSIZ)
+			continue;
 
 		// filter 'lo' interface
 		if (strcmp(ifname, "lo") == 0)
