@@ -386,9 +386,9 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 		case 1: set32.sig[1] = (old_ka.sa.sa_mask.sig[0] >> 32); set32.sig[0] = old_ka.sa.sa_mask.sig[0];
 		}
 		ret = put_user(ptr_to_compat(old_ka.sa.sa_handler), &oact->sa_handler);
-		ret |= __copy_to_user(&oact->sa_mask, &set32, sizeof(compat_sigset_t));
-		ret |= __put_user(old_ka.sa.sa_flags, &oact->sa_flags);
-		ret |= __put_user(ptr_to_compat(old_ka.sa.sa_restorer), &oact->sa_restorer);
+		ret |= copy_to_user(&oact->sa_mask, &set32, sizeof(compat_sigset_t));
+		ret |= put_user(old_ka.sa.sa_flags, &oact->sa_flags);
+		ret |= put_user(ptr_to_compat(old_ka.sa.sa_restorer), &oact->sa_restorer);
 		if (ret)
 			ret = -EFAULT;
         }
