@@ -32,6 +32,15 @@
 #define PHY_Cap_100_Full	0x0100
 #define PHY_Cap_Pause		0x0400
 
+static struct {
+	const char str[ETH_GSTRING_LEN];
+} ethtool_stats_keys[] = {
+	{ "statistic1" },
+	{ "statistic2" },
+	{ "statistic3" },
+	{ "statistic4" },
+};
+
 unsigned char get_current_phy_address(void)
 {
 	struct net_device *cur_dev_p;
@@ -46,39 +55,6 @@ unsigned char get_current_phy_address(void)
 	ei_local = netdev_priv(cur_dev_p);
 	return ei_local->mii_info.phy_id;
 }
-
-static void et_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
-{
-	//END_DEVICE *ei_local = netdev_priv(dev);
-	strcpy(info->driver, RAETH_DEV_NAME);
-	strcpy(info->version, RAETH_VERSION);
-	strcpy(info->bus_info, "n/a");
-	info->n_stats = RA_NUM_STATS;
-	info->eedump_len = 0;
-	info->regdump_len = 0;
-}
-
-static u32 et_get_link(struct net_device *dev)
-{
-	END_DEVICE *ei_local = netdev_priv(dev);
-	return mii_link_ok(&ei_local->mii_info);
-}
-
-static int et_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-{
-	END_DEVICE *ei_local = netdev_priv(dev);
-	mii_ethtool_gset(&ei_local->mii_info, cmd);
-	return 0;
-}
-
-static int et_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-{
-	END_DEVICE *ei_local = netdev_priv(dev);
-	int rc;
-	rc = mii_ethtool_sset(&ei_local->mii_info, cmd);
-	return rc;
-}
-
 #if 0
 static u32 et_get_tx_csum(struct net_device *dev)
 {
@@ -117,6 +93,7 @@ static int et_set_rx_csum(struct net_device *dev, u32 data)
 	sysRegWrite(GDMA1_FWD_CFG, value);
 	return 0;
 }
+#endif
 
 static void et_get_pauseparam(struct net_device *dev, struct ethtool_pauseparam *epause)
 {
@@ -210,6 +187,47 @@ static int et_nway_reset(struct net_device *dev)
 	return mii_nway_restart(&ei_local->mii_info);
 }
 
+static u32 et_get_link(struct net_device *dev)
+{
+	END_DEVICE *ei_local = netdev_priv(dev);
+	return mii_link_ok(&ei_local->mii_info);
+}
+
+static int et_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+{
+	END_DEVICE *ei_local = netdev_priv(dev);
+	int rc;
+	rc = mii_ethtool_sset(&ei_local->mii_info, cmd);
+	return rc;
+}
+
+static int et_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+{
+	END_DEVICE *ei_local = netdev_priv(dev);
+	mii_ethtool_gset(&ei_local->mii_info, cmd);
+	return 0;
+}
+
+static u32 et_get_msglevel(struct net_device *dev)
+{
+	return 0;
+}
+
+static void et_set_msglevel(struct net_device *dev, u32 datum)
+{
+}
+
+static void et_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+{
+	//END_DEVICE *ei_local = netdev_priv(dev);
+	strcpy(info->driver, RAETH_DEV_NAME);
+	strcpy(info->version, RAETH_VERSION);
+	strcpy(info->bus_info, "n/a");
+	info->n_stats = RA_NUM_STATS;
+	info->eedump_len = 0;
+	info->regdump_len = 0;
+}
+
 static int et_get_sset_count(struct net_device *dev, int string_set)
 {
 	switch (string_set) {
@@ -220,20 +238,19 @@ static int et_get_sset_count(struct net_device *dev, int string_set)
 	}
 }
 
-static struct {
-	const char str[ETH_GSTRING_LEN];
-} ethtool_stats_keys[] = {
-	{ "statistic1" },
-	{ "statistic2" },
-	{ "statistic3" },
-	{ "statistic4" },
-};
+static void et_get_ethtool_stats(struct net_device *dev, struct ethtool_stats *stats, u64 *data)
+{
+//	END_DEVICE *ei_local = netdev_priv(dev);
+	data[0] = 0;//np->xstats.early_rx;
+	data[1] = 0;//np->xstats.tx_buf_mapped;
+	data[2] = 0;//np->xstats.tx_timeouts;
+	data[3] = 0;//np->xstats.rx_lost_in_ring;
+}
 
 static void et_get_strings(struct net_device *dev, u32 stringset, u8 *data)
 {
 	memcpy(data, ethtool_stats_keys, sizeof(ethtool_stats_keys));
 }
-#endif
 
 /*
  *	mii_mgr_read wrapper for mii.o ethtool
@@ -260,19 +277,24 @@ void mdio_write(struct net_device *dev, int phy_id, int location, int value)
 
 struct ethtool_ops ra_ethtool_ops = {
 	.get_drvinfo		= et_get_drvinfo,
-	.get_link		= et_get_link,
 	.get_settings		= et_get_settings,
 	.set_settings		= et_set_settings,
-#if 0
-	.get_strings		= et_get_strings,
 	.get_pauseparam		= et_get_pauseparam,
 	.set_pauseparam		= et_set_pauseparam,
+#if 0
 	.get_rx_csum		= et_get_rx_csum,
 	.set_rx_csum		= et_set_rx_csum,
 	.get_tx_csum		= et_get_tx_csum,
 	.set_tx_csum		= et_set_tx_csum,
+#endif
 	.nway_reset		= et_nway_reset,
+	.get_link		= et_get_link,
+	.get_msglevel		= et_get_msglevel,
+	.set_msglevel		= et_set_msglevel,
+	.get_strings		= et_get_strings,
 	.get_sset_count		= et_get_sset_count,
+	.get_ethtool_stats	= et_get_ethtool_stats,
+#if 0
 	.get_regs_len		= et_get_regs_len,
 	.get_regs		= et_get_regs,
 #endif
@@ -291,27 +313,6 @@ static void et_virt_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *
 	return et_get_drvinfo(dev, info);
 }
 
-static u32 et_virt_get_link(struct net_device *dev)
-{
-	PSEUDO_ADAPTER *pseudo  = netdev_priv(dev);
-	return mii_link_ok(&pseudo->mii_info);
-}
-
-static int et_virt_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-{
-	PSEUDO_ADAPTER *pseudo  = netdev_priv(dev);
-	mii_ethtool_gset(&pseudo->mii_info, cmd);
-	return 0;
-}
-
-static int et_virt_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-{
-	PSEUDO_ADAPTER *pseudo = netdev_priv(dev);
-	int rc = mii_ethtool_sset(&pseudo->mii_info, cmd);
-	return rc;
-}
-
-#if 0
 static void et_virt_get_pauseparam(struct net_device *dev, struct ethtool_pauseparam *epause)
 {
 	u32 __maybe_unused mii_an_reg = 0, mdio_cfg_reg = 0;
@@ -375,6 +376,7 @@ static int et_virt_set_pauseparam(struct net_device *dev, struct ethtool_pausepa
 	return 0;
 }
 
+#if 0
 static u32 et_virt_get_tx_csum(struct net_device *dev)
 {
 	return (sysRegRead(GDMA2_FWD_CFG) & GDM1_DISCRC) ? 0 : 1;	// a pitfall here, "0" means to enable.
@@ -411,11 +413,50 @@ static int et_virt_set_rx_csum(struct net_device *dev, u32 data)
 	sysRegWrite(GDMA1_FWD_CFG, value);
 	return 0;
 }
+#endif
 
 static int et_virt_nway_reset(struct net_device *dev)
 {
 	PSEUDO_ADAPTER *pseudo  = netdev_priv(dev);
 	return mii_nway_restart(&pseudo->mii_info);
+}
+
+static u32 et_virt_get_link(struct net_device *dev)
+{
+	PSEUDO_ADAPTER *pseudo  = netdev_priv(dev);
+	return mii_link_ok(&pseudo->mii_info);
+}
+
+static int et_virt_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+{
+	PSEUDO_ADAPTER *pseudo = netdev_priv(dev);
+	int rc = mii_ethtool_sset(&pseudo->mii_info, cmd);
+	return rc;
+}
+
+static int et_virt_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+{
+	PSEUDO_ADAPTER *pseudo  = netdev_priv(dev);
+	mii_ethtool_gset(&pseudo->mii_info, cmd);
+	return 0;
+}
+
+static u32 et_virt_get_msglevel(struct net_device *dev)
+{
+	return 0;
+}
+
+static void et_virt_set_msglevel(struct net_device *dev, u32 datum)
+{
+}
+
+static void et_virt_get_ethtool_stats(struct net_device *dev, struct ethtool_stats *stats, u64 *data)
+{
+//	PSEUDO_ADAPTER *pseudo = netdev_priv(dev);
+	data[0] = 0;//np->xstats.early_rx;
+	data[1] = 0;//np->xstats.tx_buf_mapped;
+	data[2] = 0;//np->xstats.tx_timeouts;
+	data[3] = 0;//np->xstats.rx_lost_in_ring;
 }
 
 /* for virtual interface dedicated */
@@ -443,23 +484,27 @@ static void et_virt_get_strings(struct net_device *dev, u32 stringset, u8 *data)
 {
 	memcpy(data, ethtool_stats_keys_2, sizeof(ethtool_stats_keys_2));
 }
-#endif
 
 struct ethtool_ops ra_virt_ethtool_ops = {
 	.get_drvinfo		= et_virt_get_drvinfo,
-	.get_link		= et_virt_get_link,
 	.get_settings		= et_virt_get_settings,
 	.set_settings		= et_virt_set_settings,
-#if 0
 	.get_pauseparam		= et_virt_get_pauseparam,
 	.set_pauseparam		= et_virt_set_pauseparam,
+#if 0
 	.get_rx_csum		= et_virt_get_rx_csum,
 	.set_rx_csum		= et_virt_set_rx_csum,
 	.get_tx_csum		= et_virt_get_tx_csum,
 	.set_tx_csum		= et_virt_set_tx_csum,
+#endif
 	.nway_reset		= et_virt_nway_reset,
+	.get_link		= et_virt_get_link,
+	.get_msglevel		= et_virt_get_msglevel,
+	.set_msglevel		= et_virt_set_msglevel,
 	.get_strings		= et_virt_get_strings,
 	.get_sset_count		= et_virt_get_sset_count,
+	.get_ethtool_stats	= et_virt_get_ethtool_stats,
+#if 0
 	.get_regs_len		= et_virt_get_regs_len,
 	.get_regs		= et_virt_get_regs,
 #endif
