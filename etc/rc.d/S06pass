@@ -24,6 +24,12 @@ get_param() {
     # do not use eval + bufget
     Login=`nvram_get 2860 Login`
     Password=`nvram_get 2860 Password`
+    if [ "$Login" = "" ]; then
+	Login="Admin"
+    fi
+    if [ "$Password" = "" ]; then
+	Password="Admin"
+    fi
 }
 
 stop() {
