@@ -1784,8 +1784,9 @@
 44) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
 45) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
 46) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
-47) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
-48) kernel: net/compat: Fix minor information leak in siocdevprivate_ioctl().<br>
+47) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+48) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
+49) kernel: net/compat: Fix minor information leak in siocdevprivate_ioctl().<br>
 <br>
 <br>
 <br>
