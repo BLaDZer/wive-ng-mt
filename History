@@ -1778,19 +1778,20 @@
 38) kernel: mips: fix get_user_page_fast() for mips with cache alias.<br>
 39) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
 40) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
-41) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-42) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-43) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-44) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-45) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-46) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-47) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-48) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-49) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
-50) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
-51) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
-52) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
-53) kernel: net/compat: Fix minor information leak in siocdevprivate_ioctl().<br>
+41) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
+42) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+43) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+44) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+45) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+46) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+47) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+48) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+49) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+50) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+51) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
+52) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+53) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
+54) kernel: net/compat: Fix minor information leak in siocdevprivate_ioctl().<br>
 <br>
 <br>
 <br>
