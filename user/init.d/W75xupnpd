@@ -24,7 +24,7 @@ start() {
 
     	    $LOG "Start"
 	    export XUPNPDROOTDIR=/etc/xupnpd
-	    nice -n -SIGKILL xupnpd
+	    nice -n -8 xupnpd
 	) & # send to background
     fi
 }

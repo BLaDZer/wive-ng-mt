@@ -83,7 +83,7 @@ if [ "$SmbEnabled" = "1" ]; then
 
     $LOG "Starting WINS/SMB SERVER."
     nmbd -s /etc/smb.conf -d0 -D &
-    nice -n 10 smbd -s /etc/smb.conf -d0 -D &
+    nice -n 8 smbd -s /etc/smb.conf -d0 -D &
 fi
 }
 
