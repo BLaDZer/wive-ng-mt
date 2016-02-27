@@ -33,6 +33,7 @@
 #include "../log.h"
 
 struct xml_writer_private {
+	FILE *fh;
 	xmlTextWriterPtr xw;
 	xmlDocPtr doc;
 };
@@ -83,7 +84,7 @@ void xml_finish(struct writer * w) {
 	xmlFreeTextWriter(p->xw);
 	
 	if ( ! failed )
-		xmlSaveFileEnc("-", p->doc, MY_ENCODING);
+		xmlDocDump(p->fh, p->doc);
 
 	xmlFreeDoc(p->doc);
 
@@ -97,6 +98,7 @@ struct writer * xml_init(FILE * fh) {
 	struct xml_writer_private * priv;
 
 	priv = malloc( sizeof( *priv ) );
+	priv->fh = fh;
 	if ( ! priv ) {
 		fatalx("lldpctl", "out of memory");
 		return NULL;

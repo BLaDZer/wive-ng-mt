@@ -705,13 +705,6 @@ iflinux_add_physical(struct lldpd *cfg,
     struct interfaces_device_list *interfaces)
 {
 	struct interfaces_device *iface;
-	/* White-list some drivers */
-	const char * const *rif;
-	const char * const regular_interfaces[] = {
-		"dsa",
-		"veth",
-		NULL
-	};
 
 	TAILQ_FOREACH(iface, interfaces, next) {
 		if (iface->type & (IFACE_VLAN_T|
@@ -728,31 +721,10 @@ iflinux_add_physical(struct lldpd *cfg,
 			continue;
 		}
 
-		/* Check if the driver is whitelisted */
-		if (iface->driver) {
-			for (rif = regular_interfaces; *rif; rif++) {
-				if (strcmp(iface->driver, *rif) == 0) {
-					/* White listed! */
-					log_debug("interfaces", "accept %s: whitelisted",
-					    iface->name);
-					iface->type |= IFACE_PHYSICAL_T;
-					continue;
-				}
-			}
-		}
-
 		/* If the interface is linked to another one, skip it too. */
 		if (iface->lower) {
 			log_debug("interfaces", "skip %s: there is a lower interface (%s)",
 			    iface->name, iface->lower->name);
-			continue;
-		}
-
-		/* Check queue len. If no queue, this usually means that this
-		   is not a "real" interface. */
-		if (iface->txqueue == 0) {
-			log_debug("interfaces", "skip %s: no queue",
-			    iface->name);
 			continue;
 		}
 

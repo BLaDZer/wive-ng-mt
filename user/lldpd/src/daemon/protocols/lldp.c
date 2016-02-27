@@ -25,6 +25,10 @@
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 
+#ifndef ETHERTYPE_LLDP
+#define ETHERTYPE_LLDP          0x88CC  /* Link Layer Discovery Protocol */
+#endif
+
 inline static int
 lldpd_af_to_lldp_proto(int af)
 {

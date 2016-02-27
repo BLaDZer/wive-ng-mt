@@ -1,5 +1,5 @@
-AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS)
-AM_CPPFLAGS = $(LLDP_CPPFLAGS)
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS)
+AM_CPPFLAGS = $(LLDP_CPPFLAGS) $(LIBEVENT_CFLAGS)
 AM_LDFLAGS = $(LLDP_LDFLAGS)
 BUILT_SOURCES =
 CLEANFILES =
@@ -28,7 +28,7 @@ liblldpd_la_SOURCES  = \
 	protocols/edp.c \
 	protocols/edp.h
 liblldpd_la_CFLAGS   = $(AM_CFLAGS) $(LIBEVENT_CFLAGS)
-liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
+liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"' $(LIBEVENT_CFLAGS)
 liblldpd_la_LIBADD   = \
 	$(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la $(LIBEVENT_LIBS)

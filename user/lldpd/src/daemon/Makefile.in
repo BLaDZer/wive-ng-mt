@@ -537,8 +537,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS)
-AM_CPPFLAGS = $(LLDP_CPPFLAGS)
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS)
+AM_CPPFLAGS = $(LLDP_CPPFLAGS) $(LIBEVENT_CFLAGS)
 AM_LDFLAGS = $(LLDP_LDFLAGS)
 BUILT_SOURCES = $(am__append_11) $(am__append_17)
 CLEANFILES = $(am__append_12) $(am__append_18) $(TEMPLATES)
@@ -555,7 +555,7 @@ liblldpd_la_SOURCES = frame.h frame.c lldp-tlv.h client.c priv.c \
 	$(am__append_14)
 liblldpd_la_CFLAGS = $(AM_CFLAGS) $(LIBEVENT_CFLAGS) $(am__append_9) \
 	$(am__append_15)
-liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"'
+liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"' $(LIBEVENT_CFLAGS)
 liblldpd_la_LIBADD = $(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la $(LIBEVENT_LIBS) \
 	$(am__append_16)
@@ -579,6 +579,8 @@ edit = $(SED) \
         -e 's|@sysconfdir[@]|$(sysconfdir)|g' \
         -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
         -e 's|@libdir[@]|$(libdir)|g' \
+        -e 's|@srcdir[@]|$(srcdir)|g' \
+        -e 's|@top_builddir[@]|$(top_builddir)|g' \
         -e 's|@includedir[@]|$(includedir)|g' \
         -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
         -e 's|@prefix[@]|$(prefix)|g' \

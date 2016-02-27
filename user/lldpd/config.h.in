@@ -208,7 +208,7 @@
 /* Host operating system is OpenBSD */
 #undef HOST_OS_OPENBSD
 
-/* Host operating system is Mac OS X */
+/* Host operating system is OS X */
 #undef HOST_OS_OSX
 
 /* Host operating system is Solaris */

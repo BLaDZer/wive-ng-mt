@@ -1,3 +1,7 @@
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
+
 include doxygen.am
 
 ACLOCAL_AMFLAGS = -I m4

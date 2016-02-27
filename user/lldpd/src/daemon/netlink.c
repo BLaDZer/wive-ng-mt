@@ -29,8 +29,8 @@
 #define NETLINK_BUFFER 4096
 
 struct netlink_req {
-    struct nlmsghdr hdr;
-    struct rtgenmsg gen;
+	struct nlmsghdr hdr;
+	struct rtgenmsg gen;
 };
 
 struct lldpd_netlink {
@@ -52,26 +52,26 @@ struct lldpd_netlink {
 static int
 netlink_connect(int protocol, unsigned groups)
 {
-    int s;
-    struct sockaddr_nl local = {
-        .nl_family = AF_NETLINK,
-        .nl_pid = getpid(),
-        .nl_groups = groups
-    };
+	int s;
+	struct sockaddr_nl local = {
+		.nl_family = AF_NETLINK,
+		.nl_pid = getpid(),
+		.nl_groups = groups
+	};
 
-    /* Open Netlink socket */
-    log_debug("netlink", "opening netlink socket");
-    s = socket(AF_NETLINK, SOCK_RAW, protocol);
-    if (s == -1) {
-        log_warn("netlink", "unable to open netlink socket");
-        return -1;
-    }
-    if (groups && bind(s, (struct sockaddr *)&local, sizeof(struct sockaddr_nl)) < 0) {
-        log_warn("netlink", "unable to bind netlink socket");
-        close(s);
-        return -1;
-    }
-    return s;
+	/* Open Netlink socket */
+	log_debug("netlink", "opening netlink socket");
+	s = socket(AF_NETLINK, SOCK_RAW, protocol);
+	if (s == -1) {
+		log_warn("netlink", "unable to open netlink socket");
+		return -1;
+	}
+	if (groups && bind(s, (struct sockaddr *)&local, sizeof(struct sockaddr_nl)) < 0) {
+		log_warn("netlink", "unable to bind netlink socket");
+		close(s);
+		return -1;
+	}
+	return s;
 }
 
 /**
@@ -88,36 +88,36 @@ netlink_connect(int protocol, unsigned groups)
 static int
 netlink_send(int s, int type, int family, int seq)
 {
-    struct netlink_req req = {
-        .hdr = {
-            .nlmsg_len = NLMSG_LENGTH(sizeof(struct rtgenmsg)),
-            .nlmsg_type = type,
-            .nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP,
+	struct netlink_req req = {
+		.hdr = {
+			.nlmsg_len = NLMSG_LENGTH(sizeof(struct rtgenmsg)),
+			.nlmsg_type = type,
+			.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP,
 			.nlmsg_seq = seq,
-            .nlmsg_pid = getpid() },
-        .gen = { .rtgen_family = family }
-    };
-    struct iovec iov = {
-        .iov_base = &req,
-        .iov_len = req.hdr.nlmsg_len
-    };
-    struct sockaddr_nl peer = { .nl_family = AF_NETLINK };
-    struct msghdr rtnl_msg = {
-        .msg_iov = &iov,
-        .msg_iovlen = 1,
-        .msg_name = &peer,
-        .msg_namelen = sizeof(struct sockaddr_nl)
-    };
+			.nlmsg_pid = getpid() },
+		.gen = { .rtgen_family = family }
+	};
+	struct iovec iov = {
+		.iov_base = &req,
+		.iov_len = req.hdr.nlmsg_len
+	};
+	struct sockaddr_nl peer = { .nl_family = AF_NETLINK };
+	struct msghdr rtnl_msg = {
+		.msg_iov = &iov,
+		.msg_iovlen = 1,
+		.msg_name = &peer,
+		.msg_namelen = sizeof(struct sockaddr_nl)
+	};
 
-    /* Send netlink message. This is synchronous but we are guaranteed
-     * to not block. */
-    log_debug("netlink", "sending netlink message");
-    if (sendmsg(s, (struct msghdr *)&rtnl_msg, 0) == -1) {
-        log_warn("netlink", "unable to send netlink message");
-        return -1;
-    }
+	/* Send netlink message. This is synchronous but we are guaranteed
+	 * to not block. */
+	log_debug("netlink", "sending netlink message");
+	if (sendmsg(s, (struct msghdr *)&rtnl_msg, 0) == -1) {
+		log_warn("netlink", "unable to send netlink message");
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 
 static void
@@ -191,75 +191,71 @@ static int
 netlink_parse_link(struct nlmsghdr *msg,
     struct interfaces_device *iff)
 {
-    struct ifinfomsg *ifi;
-    struct rtattr *attribute;
-    int len;
-    ifi = NLMSG_DATA(msg);
-    len = msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifinfomsg));
+	struct ifinfomsg *ifi;
+	struct rtattr *attribute;
+	int len;
+	ifi = NLMSG_DATA(msg);
+	len = msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifinfomsg));
 
-    if (ifi->ifi_type != ARPHRD_ETHER) {
-        log_debug("netlink", "skip non Ethernet interface at index %d",
-          ifi->ifi_index);
-        return -1;
-    }
+	if (ifi->ifi_type != ARPHRD_ETHER) {
+		log_debug("netlink", "skip non Ethernet interface at index %d",
+		    ifi->ifi_index);
+		return -1;
+	}
 
-    iff->index = ifi->ifi_index;
-    iff->flags = ifi->ifi_flags;
-    iff->lower_idx = -1;
-    iff->upper_idx = -1;
+	iff->index = ifi->ifi_index;
+	iff->flags = ifi->ifi_flags;
+	iff->lower_idx = -1;
+	iff->upper_idx = -1;
 
-    for (attribute = IFLA_RTA(ifi);
-         RTA_OK(attribute, len);
-         attribute = RTA_NEXT(attribute, len)) {
-        switch(attribute->rta_type) {
-        case IFLA_IFNAME:
-            /* Interface name */
-            iff->name = strdup(RTA_DATA(attribute));
-            break;
-        case IFLA_IFALIAS:
-            /* Interface alias */
-            iff->alias = strdup(RTA_DATA(attribute));
-            break;
-        case IFLA_ADDRESS:
-            /* Interface MAC address */
-            iff->address = malloc(RTA_PAYLOAD(attribute));
-            if (iff->address)
-                memcpy(iff->address, RTA_DATA(attribute), RTA_PAYLOAD(attribute));
-            break;
-        case IFLA_LINK:
-            /* Index of "lower" interface */
-            iff->lower_idx = *(int*)RTA_DATA(attribute);
-            break;
-        case IFLA_MASTER:
-            /* Index of master interface */
-            iff->upper_idx = *(int*)RTA_DATA(attribute);
-            break;
-        case IFLA_TXQLEN:
-            /* Transmit queue length */
-            iff->txqueue = *(int*)RTA_DATA(attribute);
-            break;
-        case IFLA_MTU:
-            /* Maximum Transmission Unit */
-            iff->mtu = *(int*)RTA_DATA(attribute);
-            break;
-        case IFLA_LINKINFO:
-            netlink_parse_linkinfo(iff, RTA_DATA(attribute), RTA_PAYLOAD(attribute));
-            break;
-        default:
-            log_debug("netlink", "unhandled link attribute type %d for iface %s",
-                      attribute->rta_type, iff->name ? iff->name : "(unknown)");
-            break;
-        }
-    }
-    if (!iff->name || !iff->address) {
-        log_debug("netlink", "interface %d does not have a name or an address, skip",
-          iff->index);
-        return -1;
-    }
+	for (attribute = IFLA_RTA(ifi);
+	     RTA_OK(attribute, len);
+	     attribute = RTA_NEXT(attribute, len)) {
+		switch(attribute->rta_type) {
+		case IFLA_IFNAME:
+			/* Interface name */
+			iff->name = strdup(RTA_DATA(attribute));
+			break;
+		case IFLA_IFALIAS:
+			/* Interface alias */
+			iff->alias = strdup(RTA_DATA(attribute));
+			break;
+		case IFLA_ADDRESS:
+			/* Interface MAC address */
+			iff->address = malloc(RTA_PAYLOAD(attribute));
+			if (iff->address)
+				memcpy(iff->address, RTA_DATA(attribute), RTA_PAYLOAD(attribute));
+			break;
+		case IFLA_LINK:
+			/* Index of "lower" interface */
+			iff->lower_idx = *(int*)RTA_DATA(attribute);
+			break;
+		case IFLA_MASTER:
+			/* Index of master interface */
+			iff->upper_idx = *(int*)RTA_DATA(attribute);
+			break;
+		case IFLA_MTU:
+			/* Maximum Transmission Unit */
+			iff->mtu = *(int*)RTA_DATA(attribute);
+			break;
+		case IFLA_LINKINFO:
+			netlink_parse_linkinfo(iff, RTA_DATA(attribute), RTA_PAYLOAD(attribute));
+			break;
+		default:
+			log_debug("netlink", "unhandled link attribute type %d for iface %s",
+			    attribute->rta_type, iff->name ? iff->name : "(unknown)");
+			break;
+		}
+	}
+	if (!iff->name || !iff->address) {
+		log_debug("netlink", "interface %d does not have a name or an address, skip",
+		    iff->index);
+		return -1;
+	}
 
 	log_debug("netlink", "parsed link %d (%s, flags: %d)",
 	    iff->index, iff->name, iff->flags);
-    return 0;
+	return 0;
 }
 
 /**
@@ -273,57 +269,82 @@ static int
 netlink_parse_address(struct nlmsghdr *msg,
     struct interfaces_address *ifa)
 {
-    struct ifaddrmsg *ifi;
-    struct rtattr *attribute;
-    int len;
-    ifi = NLMSG_DATA(msg);
-    len = msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+	struct ifaddrmsg *ifi;
+	struct rtattr *attribute;
+	int len;
+	ifi = NLMSG_DATA(msg);
+	len = msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 
-    ifa->index = ifi->ifa_index;
-    ifa->flags = ifi->ifa_flags;
-    switch (ifi->ifa_family) {
-    case AF_INET:
-    case AF_INET6: break;
-    default:
-        log_debug("netlink", "got a non IP address on if %d (family: %d)",
-          ifa->index, ifi->ifa_family);
-        return -1;
-    }
+	ifa->index = ifi->ifa_index;
+	ifa->flags = ifi->ifa_flags;
+	switch (ifi->ifa_family) {
+	case AF_INET:
+	case AF_INET6: break;
+	default:
+		log_debug("netlink", "got a non IP address on if %d (family: %d)",
+		    ifa->index, ifi->ifa_family);
+		return -1;
+	}
 
-    for (attribute = IFA_RTA(ifi);
-         RTA_OK(attribute, len);
-         attribute = RTA_NEXT(attribute, len)) {
-        switch(attribute->rta_type) {
-        case IFA_ADDRESS:
-            /* Address */
-            if (ifi->ifa_family == AF_INET) {
+	for (attribute = IFA_RTA(ifi);
+	     RTA_OK(attribute, len);
+	     attribute = RTA_NEXT(attribute, len)) {
+		switch(attribute->rta_type) {
+		case IFA_ADDRESS:
+			/* Address */
+			if (ifi->ifa_family == AF_INET) {
 				struct sockaddr_in ip;
 				memset(&ip, 0, sizeof(struct sockaddr_in));
 				ip.sin_family = AF_INET;
-                memcpy(&ip.sin_addr, RTA_DATA(attribute),
-                  sizeof(struct in_addr));
-                memcpy(&ifa->address, &ip, sizeof(struct sockaddr_in));
-            } else {
+				memcpy(&ip.sin_addr, RTA_DATA(attribute),
+				    sizeof(struct in_addr));
+				memcpy(&ifa->address, &ip, sizeof(struct sockaddr_in));
+			} else {
 				struct sockaddr_in6 ip6;
 				memset(&ip6, 0, sizeof(struct sockaddr_in6));
 				ip6.sin6_family = AF_INET6;
-                memcpy(&ip6.sin6_addr, RTA_DATA(attribute),
-                  sizeof(struct in6_addr));
-                memcpy(&ifa->address, &ip6, sizeof(struct sockaddr_in6));
-            }
-            break;
-        default:
-            log_debug("netlink", "unhandled address attribute type %d for iface %d",
-                      attribute->rta_type, ifa->index);
-            break;
-        }
-    }
-    if (ifa->address.ss_family == AF_UNSPEC) {
-        log_debug("netlink", "no IP for interface %d",
-          ifa->index);
-        return -1;
-    }
-    return 0;
+				memcpy(&ip6.sin6_addr, RTA_DATA(attribute),
+				    sizeof(struct in6_addr));
+				memcpy(&ifa->address, &ip6, sizeof(struct sockaddr_in6));
+			}
+			break;
+		default:
+			log_debug("netlink", "unhandled address attribute type %d for iface %d",
+			    attribute->rta_type, ifa->index);
+			break;
+		}
+	}
+	if (ifa->address.ss_family == AF_UNSPEC) {
+		log_debug("netlink", "no IP for interface %d",
+		    ifa->index);
+		return -1;
+	}
+	return 0;
+}
+
+/**
+ * Merge an old interface with a new one.
+ *
+ * Some properties may be absent in the new interface that should be copied over
+ * from the old one.
+ */
+void
+netlink_merge(struct interfaces_device *old, struct interfaces_device *new)
+{
+	if (new->alias == NULL) {
+		new->alias = old->alias;
+		old->alias = NULL;
+	}
+	if (new->address == NULL) {
+		new->address = old->address;
+		old->address = NULL;
+	}
+	if (new->mtu == 0)
+		new->mtu = old->mtu;
+	if (new->type == 0)
+		new->type = old->type;
+	if (new->vlanid == 0)
+		new->vlanid = old->vlanid;
 }
 
 /**
@@ -336,11 +357,12 @@ netlink_parse_address(struct nlmsghdr *msg,
  */
 static int
 netlink_recv(int s,
-  struct interfaces_device_list *ifs,
-  struct interfaces_address_list *ifas)
+    struct interfaces_device_list *ifs,
+    struct interfaces_address_list *ifas)
 {
-    char reply[NETLINK_BUFFER] __attribute__ ((aligned));
-    int  end = 0;
+	int end = 0, ret = 0;
+	int flags = MSG_PEEK | MSG_TRUNC;
+	struct iovec iov;
 	int link_update = 0;
 
 	struct interfaces_device *ifdold;
@@ -349,45 +371,80 @@ netlink_recv(int s,
 	struct interfaces_address *ifanew;
 	char addr[INET6_ADDRSTRLEN + 1];
 
-    while (!end) {
-		ssize_t len;
-        struct nlmsghdr *msg;
-        struct iovec iov = {
-            .iov_base = reply,
-            .iov_len = NETLINK_BUFFER
-        };
-        struct sockaddr_nl peer = { .nl_family = AF_NETLINK };
-        struct msghdr rtnl_reply = {
-            .msg_iov = &iov,
-            .msg_iovlen = 1,
-            .msg_name = &peer,
-            .msg_namelen = sizeof(struct sockaddr_nl)
-        };
+	iov.iov_len = NETLINK_BUFFER;
+	iov.iov_base = malloc(iov.iov_len);
+	if (!iov.iov_base) {
+		log_warn("netlink", "not enough memory");
+		return -1;
+	}
 
-        len = recvmsg(s, &rtnl_reply, 0);
-        if (len == -1) {
+	while (!end) {
+		ssize_t len;
+		struct nlmsghdr *msg;
+		struct sockaddr_nl peer = { .nl_family = AF_NETLINK };
+		struct msghdr rtnl_reply = {
+			.msg_iov = &iov,
+			.msg_iovlen = 1,
+			.msg_name = &peer,
+			.msg_namelen = sizeof(struct sockaddr_nl)
+		};
+
+retry:
+		len = recvmsg(s, &rtnl_reply, flags);
+		if (len == -1) {
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
 				log_debug("netlink", "should have received something, but didn't");
-				return 0;
+				ret = 0;
+				goto out;
 			}
-            log_warnx("netlink", "unable to receive netlink answer");
-            return -1;
-        }
-        if (!len) return 0;
-        for (msg = (struct nlmsghdr*)(void*)reply;
-             NLMSG_OK(msg, len);
-             msg = NLMSG_NEXT(msg, len)) {
+			log_warn("netlink", "unable to receive netlink answer");
+			ret = -1;
+			goto out;
+		}
+		if (!len) {
+			ret = 0;
+			goto out;
+		}
+
+		if (iov.iov_len < len || (rtnl_reply.msg_flags & MSG_TRUNC)) {
+			void *tmp;
+
+			/* Provided buffer is not large enough, enlarge it
+			 * to size of len (which should be total length of the message)
+			 * and try again. */
+			iov.iov_len = len;
+			tmp = realloc(iov.iov_base, iov.iov_len);
+			if (!tmp) {
+				log_warn("netlink", "not enough memory");
+				ret = -1;
+				goto out;
+			}
+			log_debug("netlink", "enlarge message size to %zu bytes", len);
+			iov.iov_base = tmp;
+			flags = 0;
+			goto retry;
+		}
+
+		if (flags != 0) {
+			/* Buffer is big enough, do the actual reading */
+			flags = 0;
+			goto retry;
+		}
+
+		for (msg = (struct nlmsghdr*)(void*)(iov.iov_base);
+		     NLMSG_OK(msg, len);
+		     msg = NLMSG_NEXT(msg, len)) {
 			if (!(msg->nlmsg_flags & NLM_F_MULTI))
 				end = 1;
-            switch (msg->nlmsg_type) {
-            case NLMSG_DONE:
+			switch (msg->nlmsg_type) {
+			case NLMSG_DONE:
 				log_debug("netlink", "received done message");
-                end = 1;
-                break;
-            case RTM_NEWLINK:
+				end = 1;
+				break;
+			case RTM_NEWLINK:
 			case RTM_DELLINK:
-                if (!ifs) break;
-                log_debug("netlink", "received link information");
+				if (!ifs) break;
+				log_debug("netlink", "received link information");
 				ifdnew = calloc(1, sizeof(struct interfaces_device));
 				if (ifdnew == NULL) {
 					log_warn("netlink", "not enough memory for another interface, give up what we have");
@@ -406,6 +463,7 @@ netlink_recv(int s,
 						} else {
 							log_debug("netlink", "interface %s/%s is updated",
 							    ifdold->name, ifdnew->name);
+							netlink_merge(ifdold, ifdnew);
 							TAILQ_INSERT_AFTER(ifs, ifdold, ifdnew, next);
 							TAILQ_REMOVE(ifs, ifdold, next);
 							interfaces_free_device(ifdold);
@@ -426,15 +484,15 @@ netlink_recv(int s,
 					link_update = 1;
 				} else {
 					interfaces_free_device(ifdnew);
-                }
-                break;
-            case RTM_NEWADDR:
+				}
+				break;
+			case RTM_NEWADDR:
 			case RTM_DELADDR:
-                if (!ifas) break;
-                log_debug("netlink", "received address information");
+				if (!ifas) break;
+				log_debug("netlink", "received address information");
 				ifanew = calloc(1, sizeof(struct interfaces_address));
 				if (ifanew == NULL) {
-                    log_warn("netlink", "not enough memory for another address, give what we have");
+					log_warn("netlink", "not enough memory for another address, give what we have");
 					goto end;
 				}
 				if (netlink_parse_address(msg, ifanew) == 0) {
@@ -477,35 +535,36 @@ netlink_recv(int s,
 					}
 				} else {
 					interfaces_free_address(ifanew);
-                }
-                break;
-            default:
-                log_debug("netlink",
-                          "received unhandled message type %d (len: %d)",
-                          msg->nlmsg_type, msg->nlmsg_len);
-            }
-        }
-    }
+				}
+				break;
+			default:
+				log_debug("netlink",
+				    "received unhandled message type %d (len: %d)",
+				    msg->nlmsg_type, msg->nlmsg_len);
+			}
+		}
+		flags = MSG_PEEK | MSG_TRUNC;
+	}
 end:
 	if (link_update) {
-    /* Fill out lower/upper */
+		/* Fill out lower/upper */
 		struct interfaces_device *iface1, *iface2;
-    TAILQ_FOREACH(iface1, ifs, next) {
+		TAILQ_FOREACH(iface1, ifs, next) {
 			if (iface1->upper_idx != -1 && iface1->upper_idx != iface1->index) {
-            TAILQ_FOREACH(iface2, ifs, next) {
-                if (iface1->upper_idx == iface2->index) {
-                    iface1->upper = iface2;
-                    break;
-                }
-            }
+				TAILQ_FOREACH(iface2, ifs, next) {
+					if (iface1->upper_idx == iface2->index) {
+						iface1->upper = iface2;
+						break;
+					}
+				}
 				if (iface2 == NULL)
 					iface1->upper = NULL;
 			} else {
 				iface1->upper = NULL;
 			}
 			if (iface1->lower_idx != -1 && iface1->lower_idx != iface1->index) {
-            TAILQ_FOREACH(iface2, ifs, next) {
-                if (iface1->lower_idx == iface2->index) {
+				TAILQ_FOREACH(iface2, ifs, next) {
+					if (iface1->lower_idx == iface2->index) {
 						/* Workaround a bug introduced
 						 * in Linux 4.1: a pair of veth
 						 * will be lower interface of
@@ -514,20 +573,23 @@ end:
 						 * updated, we will loose the
 						 * information about the
 						 * loop. */
-                    if (iface2->lower_idx == iface1->index) {
+						if (iface2->lower_idx == iface1->index) {
 							iface1->lower = NULL;
-                    } else iface1->lower = iface2;
-                    break;
-                }
+						} else iface1->lower = iface2;
+						break;
+					}
 					if (iface2 == NULL)
 						iface1->lower = NULL;
-            }
+				}
 			} else {
 				iface1->lower = NULL;
-    }
-}
-    }
-	return 0;
+			}
+		}
+	}
+
+out:
+	free(iov.iov_base);
+	return ret;
 }
 
 static int
@@ -544,15 +606,15 @@ netlink_group_mask(int group)
 int
 netlink_subscribe_changes()
 {
-    unsigned int groups;
+	unsigned int groups;
 
-    log_debug("netlink", "listening on interface changes");
+	log_debug("netlink", "listening on interface changes");
 
-    groups = netlink_group_mask(RTNLGRP_LINK) |
-		netlink_group_mask(RTNLGRP_IPV4_IFADDR) |
-		netlink_group_mask(RTNLGRP_IPV6_IFADDR);
+	groups = netlink_group_mask(RTNLGRP_LINK) |
+	    netlink_group_mask(RTNLGRP_IPV4_IFADDR) |
+	    netlink_group_mask(RTNLGRP_IPV6_IFADDR);
 
-    return netlink_connect(NETLINK_ROUTE, groups);
+	return netlink_connect(NETLINK_ROUTE, groups);
 }
 
 /**

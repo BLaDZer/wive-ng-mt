@@ -1031,6 +1031,9 @@ uninstall-am: uninstall-dist_docDATA uninstall-docDATA
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am uninstall-dist_docDATA uninstall-docDATA
 
+-include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
+-include $(ARCH_CONFIG)
 
 @DX_COND_doc_TRUE@@DX_COND_ps_TRUE@doxygen-ps: @DX_DOCDIR@/@PACKAGE@.ps
 

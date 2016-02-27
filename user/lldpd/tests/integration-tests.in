@@ -97,9 +97,9 @@ check_dependencies() {
     for exec in \
         busybox \
         qemu-system-x86_64 \
-        tmux vde_switch \
-        start-stop-daemon \
-        $DEPS; do
+        vde_switch \
+        ip \
+        brctl; do
         which $exec 2> /dev/null > /dev/null || log_error_msg "$exec is not installed"
     done
     log_ok_msg "All dependencies are met"
@@ -109,19 +109,6 @@ setup_tmp () {
     TMP=$(mktemp -d)
     trap "ret=$? ; cleanup" EXIT
     log_info_msg "TMP is $TMP"
-}
-
-# Run our lab in tmux
-setup_screen() {
-    if [ -z "$TMUX" ] || [ x"$(tmux list-panes -F '#{session_name}')" != x"$LABNAME" ]; then
-        unset TMUX
-        exec tmux new-session -s "$LABNAME" -n main \
-            "env ROOT=$ROOT VERSION=$VERSION LINUX=$LINUX $PROGNAME $PROGARGS || read"
-    fi
-    sleep 1
-    tmux set-option -q prefix C-b
-    tmux set-option -q set-remain-on-exit on
-    tmux bind-key r respawn-window
 }
 
 # Setup a VDE switch
@@ -134,10 +121,9 @@ pdump/filename $TMP/switch-$nb.pcap
 pdump/buffered 0
 pdump/active 1
 EOF
-    start-stop-daemon -b --no-close --make-pidfile --pidfile "$TMP/switch-$nb.pid" \
-        --start --startas $(which vde_switch) -- \
+    vde_switch \
         --sock "$TMP/switch-$nb.sock" --mgmt "$TMP/switch-management-$nb.sock" \
-        --rcfile "$TMP/switch-$nb.conf" --hub
+        --rcfile "$TMP/switch-$nb.conf" --hub --daemon --pidfile "$TMP/switch-$nb.pid"
     # Management socket can be used with:
     #    socat - UNIX-CONNECT:"$TMP/switch-management-$nb.sock"
     log_ok_msg "Switch $nb started"
@@ -227,61 +213,31 @@ start_vm () {
     # /root is mounted with version 9p2000.u to allow access to /dev,
     # /sys and to mount new partitions over them. This is not the case
     # for 9p2000.L.
-    cat <<EOF > "$TMP/vm-$name.exec"
-#!/bin/sh
-        echo
-        exec start-stop-daemon --make-pidfile --pidfile "$TMP/vm-$name.pid" \
-        --start --startas $(which qemu-system-x86_64) -- \
+    qemu-system-x86_64 \
         -enable-kvm \
         -nodefconfig -nodefaults \
         -display none \
         -m ${MEM:-128M} \
         \
-        -chardev stdio,id=charserial0,signal=off \
+        -chardev file,id=charserial0,path=$name.console \
         -device isa-serial,chardev=charserial0,id=serial0 \
-        -chardev socket,id=charserial1,path=$TMP/vm-$name-serial.pipe,server,nowait \
-        -device isa-serial,chardev=charserial1,id=serial1 \
-        \
-        -chardev socket,id=con0,path=$TMP/vm-$name-console.pipe,server,nowait \
-        -mon chardev=con0,mode=readline,default \
         \
         -fsdev local,security_model=passthrough,id=fsdev-root,path=${ROOT} \
         -device virtio-9p-pci,id=fs-root,fsdev=fsdev-root,mount_tag=rootshare \
-        -fsdev local,security_model=none,id=fsdev-lab,path=${PWD} \
+        -fsdev local,security_model=none,id=fsdev-lab,path=@top_builddir@ \
         -device virtio-9p-pci,id=fs-lab,fsdev=fsdev-lab,mount_tag=labshare \
         -fsdev local,security_model=none,id=fsdev-tmp,path=${TMP} \
         -device virtio-9p-pci,id=fs-tmp,fsdev=fsdev-tmp,mount_tag=tmpshare \
         -fsdev local,security_model=none,id=fsdev-modules,path=${MODULES}/..,readonly \
         -device virtio-9p-pci,id=fs-modules,fsdev=fsdev-modules,mount_tag=moduleshare \
         \
-        -gdb unix:$TMP/vm-$name-gdb.pipe,server,nowait \
         -kernel $KERNEL \
         -no-reboot \
         -initrd $TMP/initrd.gz \
         -append "uts=$name console=ttyS0 panic=1 TERM=$TERM quiet" \
         $netargs \
-        $@
-EOF
-    log_info_msg "GDB server listening on $TMP/vm-$name-gdb.pipe"
-    log_info_msg "monitor listening on    $TMP/vm-$name-console.pipe"
-    log_info_msg "ttyS1 listening on      $TMP/vm-$name-serial.pipe"
-    chmod +x "$TMP/vm-$name.exec"
-    tmux new-window -n $name "$TMP/vm-$name.exec"
-    tmux select-window -t ":^"
-}
-
-display_help() {
-    cat <<EOF
-
-Some tmux commands (assuming default keybindings) :
- C-b d     - Detach the lab (resume with "tmux attach -t $LABNAME")
- C-b w     - Select a window
- C-b n     - Next window
- C-b p     - Previous window
- C-b l     - Last window
- C-b ?     - Get help
-
-EOF
+        $@ &
+    echo $! > "$TMP/vm-$name.pid"
 }
 
 run() {
@@ -291,9 +247,9 @@ run() {
     printf "%s\n" "$*" > $TMP/${r}.command
     n=0
     while [ -f $TMP/${r}.command ]; do
-        sleep 1
+        sleep 0.1
         n=$((n + 1))
-        [ $n -le 15 ] || {
+        [ $n -le 150 ] || {
             log_error_msg "Timeout while executing command on $r"
         }
     done
@@ -316,15 +272,17 @@ process_commands() {
 }
 
 start_tests() {
+    # Set the environment
+    run R2 ip link set dev iface2 alias "SecondInterface"
     # Start lldpd on each VM
-    run R1 libtool execute src/daemon/lldpd -M 1 -L \$PWD/src/client/lldpcli
-    run R2 libtool execute src/daemon/lldpd -M 2 -L \$PWD/src/client/lldpcli
-    run R3 libtool execute src/daemon/lldpd -M 3 -L \$PWD/src/client/lldpcli
+    run R1 ./libtool execute src/daemon/lldpd -M 1 -L \$PWD/src/client/lldpcli
+    run R2 ./libtool execute src/daemon/lldpd -M 2 -L \$PWD/src/client/lldpcli
+    run R3 ./libtool execute src/daemon/lldpd -M 3 -L \$PWD/src/client/lldpcli
     sleep 2
     # Query neighbors
-    run R1 libtool execute src/client/lldpcli show neighbor detail
-    run R2 libtool execute src/client/lldpcli show neighbor detail
-    run R3 libtool execute src/client/lldpcli show neighbor detail
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail
+    run R2 ./libtool execute src/client/lldpcli show neighbor detail
+    run R3 ./libtool execute src/client/lldpcli show neighbor detail
     # Add some VLAN
     run R2 ip link add link iface2 name iface2.450 type vlan id 450
     run R2 ip link set up dev iface2.450
@@ -333,11 +291,11 @@ start_tests() {
     run R2 ip link add link iface2 name iface2.452 type vlan id 452
     run R2 ip link set up dev iface2.452
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface2
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface2
     # Remove one
     run R2 ip link del iface2.451
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface2
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface2
     # Add a bond
     run R3 ip link set down dev iface2
     run R3 ip link set down dev iface3
@@ -345,34 +303,34 @@ start_tests() {
     run R3 ip link set iface3 master bond0
     run R3 ip link set up dev bond0
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface4
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface5
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface4
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface5
     # Add a VLAN on top of bond
     run R3 ip link add link bond0 name bond0.453 type vlan id 453
     run R3 ip link set up dev bond0.453
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface4
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface4
     # Add a bridge
     run R2 brctl addbr br0
     run R2 brctl addif br0 iface3
     run R2 ip link set up dev br0
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface3
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface3
     # Modify some TLV
-    conf="libtool execute src/client/lldpcli configure ports iface2"
+    conf="./libtool execute src/client/lldpcli configure ports iface2"
     run R2 $conf lldp custom-tlv oui 33,44,55 subtype 44 oui-info 45,45,45,45,45
     run R2 $conf med location elin 911
     run R2 $conf med location coordinate latitude 48.58667N longitude 2.2014E altitude 117.47 m datum WGS84
     run R2 $conf med power pd source pse priority high value 5000
     run R2 $conf dot3 power pse supported enabled paircontrol powerpairs spare class class-3
     sleep 2
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface2
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface2
     # Configuration should stay when port go down and up
     run R2 ip link set down dev iface2
     sleep 2
     run R2 ip link set up dev iface2
     sleep 5
-    run R1 libtool execute src/client/lldpcli show neighbor detail ports iface2
+    run R1 ./libtool execute src/client/lldpcli show neighbor detail ports iface2
 }
 
 cleanup() {
@@ -385,7 +343,6 @@ cleanup() {
         kill -9 -$(cat $pid) 2> /dev/null || true
     done
     rm -rf $TMP
-    tmux kill-session -t $LABNAME
 }
 
 # FSM
@@ -440,7 +397,7 @@ case $$,$STATE in
 
         log_info_msg "Change root"
         export STATE=CHROOTED
-        exec chroot /tmp/target/overlay /mnt/lab/integration-tests
+        exec chroot /tmp/target/overlay /mnt/lab/tests/integration-tests
         ;;
 
     1,CHROOTED)
@@ -489,7 +446,8 @@ case $$,$STATE in
                 ip -6 addr add 2001:db8::cafe:17/64 dev iface1
                 ;;
         esac
-        process_commands 2>&1 | tee /mnt/lab/${uts}.output
+        rtmon file /mnt/lab/tests/${uts}.rtmon &
+        process_commands 2>&1 | tee /mnt/lab/tests/${uts}.output
         ;;
 
     *,BEGIN)
@@ -504,10 +462,10 @@ case $$,$STATE in
         KERNEL="$(readlink -f "${1:-/boot/vmlinuz-$(uname -r)}")" # Kernel
         PATH="$PATH":/usr/local/sbin:/usr/sbin:/sbin
         [ $# -lt 1 ] || shift
+        chmod +x "$PROGNAME"
 
         check_kernel
         check_dependencies
-        setup_screen
         setup_tmp
         setup_initrd
 
@@ -522,7 +480,6 @@ case $$,$STATE in
         NET=1,2,3     start_vm  R2
         NET=1,4,5     start_vm  R3
 
-        display_help
         start_tests
 
         sed \
@@ -531,12 +488,12 @@ case $$,$STATE in
             -e 's/^\(      Hardware Revision: pc-i440fx\).*/\1/' \
             -e 's/^\(      Software Revision: \).*/\1/' \
             -e 's/^\(      Firmware Revision: \).*/\1/' \
+            -e 's/command \.\/libtool /command libtool /' \
             R1.output > R1.output.redacted
-        diff -u ../tests/R1.expected R1.output.redacted || \
-            log_warn_msg "Unexpected differences"
+        diff -u @srcdir@/R1.expected R1.output.redacted || \
+            log_error_msg "Unexpected differences"
 
-        log_info_msg "End of tests, press enter to exit."
-        read a
+        log_info_msg "End of tests"
         ;;
 esac
 

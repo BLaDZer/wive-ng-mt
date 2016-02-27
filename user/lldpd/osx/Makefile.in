@@ -339,9 +339,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = resources lipo distribution.xml.in \
-	im.bernat.lldpd.plist.in scripts/postinstall.in \
-	scripts/preinstall.in
+EXTRA_DIST = resources distribution.xml.in im.bernat.lldpd.plist.in \
+	scripts/postinstall.in scripts/preinstall.in
 TEMPLATES = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    scripts/preinstall
 
 # What we need to build the package
@@ -350,8 +349,6 @@ TEMPLATES = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    
 @HOST_OS_OSX_TRUE@PKG_NAME = @PACKAGE@-@VERSION@.pkg
 @HOST_OS_OSX_TRUE@PKG_TITLE = @PACKAGE@ @VERSION@
 @HOST_OS_OSX_TRUE@PKG_DIR = @PACKAGE@-@VERSION@
-@HOST_OS_OSX_TRUE@ARCHS = @host_cpu@
-@HOST_OS_OSX_TRUE@pkg_curarch = $(@:stamp-%=%)
 
 # Install launchd plist
 @HAVE_LAUNCHDDAEMONSDIR_TRUE@@HOST_OS_OSX_TRUE@launchddaemons_DATA = im.bernat.lldpd.plist
@@ -362,6 +359,8 @@ TEMPLATES = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    
 @HOST_OS_OSX_TRUE@        -e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@libdir[@]|$(libdir)|g' \
+@HOST_OS_OSX_TRUE@        -e 's|@srcdir[@]|$(srcdir)|g' \
+@HOST_OS_OSX_TRUE@        -e 's|@top_builddir[@]|$(top_builddir)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@includedir[@]|$(includedir)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@prefix[@]|$(prefix)|g' \
@@ -624,18 +623,8 @@ uninstall-am: uninstall-launchddaemonsDATA
 @HOST_OS_OSX_TRUE@		$@
 
 @HOST_OS_OSX_TRUE@$(PKG_DIR): stamp-$(PKG_DIR)
-@HOST_OS_OSX_TRUE@stamp-$(PKG_DIR): $(ARCHS:%=%/$(PKG_DIR))
-@HOST_OS_OSX_TRUE@	$(srcdir)/lipo $(PKG_DIR) $^
-@HOST_OS_OSX_TRUE@	touch $@
-@HOST_OS_OSX_TRUE@$(ARCHS:%=%/$(PKG_DIR)): %/$(PKG_DIR): stamp-%
-@HOST_OS_OSX_TRUE@$(ARCHS:%=stamp-%): stamp-%: im.bernat.lldpd.plist
-@HOST_OS_OSX_TRUE@	[ -d $(pkg_curarch) ] || mkdir -p $(pkg_curarch)
-@HOST_OS_OSX_TRUE@	(cd $(pkg_curarch) && \
-@HOST_OS_OSX_TRUE@		$(abs_top_srcdir)/configure @CONFIGURE_ARGS@ \
-@HOST_OS_OSX_TRUE@			CC="@CC@ -arch $(pkg_curarch)" \
-@HOST_OS_OSX_TRUE@			CPP="@CPP@")
-@HOST_OS_OSX_TRUE@	(cd $(pkg_curarch) && \
-@HOST_OS_OSX_TRUE@		$(MAKE) install DESTDIR=$(abs_builddir)/$(pkg_curarch)/$(PKG_DIR))
+@HOST_OS_OSX_TRUE@stamp-$(PKG_DIR): im.bernat.lldpd.plist
+@HOST_OS_OSX_TRUE@	$(MAKE) -C .. install DESTDIR=$(abs_builddir)/$(PKG_DIR)
 @HOST_OS_OSX_TRUE@	touch $@
 @HOST_OS_OSX_TRUE@distribution.xml: distribution.xml.in
 @HOST_OS_OSX_TRUE@im.bernat.lldpd.plist: im.bernat.lldpd.plist.in

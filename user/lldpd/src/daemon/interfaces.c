@@ -370,14 +370,14 @@ interfaces_helper_mgmt_for_af(struct lldpd *cfg,
 	void *sin_addr_ptr;
 	size_t sin_addr_size;
 
-		TAILQ_FOREACH(addr, addrs, next) {
-			if (addr->address.ss_family != lldpd_af(af))
-				continue;
+	TAILQ_FOREACH(addr, addrs, next) {
+		if (addr->address.ss_family != lldpd_af(af))
+			continue;
 
-			switch (af) {
-			case LLDPD_AF_IPV4:
-				sin_addr_ptr = &((struct sockaddr_in *)&addr->address)->sin_addr;
-				sin_addr_size = sizeof(struct in_addr);
+		switch (af) {
+		case LLDPD_AF_IPV4:
+			sin_addr_ptr = &((struct sockaddr_in *)&addr->address)->sin_addr;
+			sin_addr_size = sizeof(struct in_addr);
 			if (global) {
 				if (!IN_IS_ADDR_GLOBAL((struct in_addr *)sin_addr_ptr))
 					continue;
@@ -385,10 +385,10 @@ interfaces_helper_mgmt_for_af(struct lldpd *cfg,
 				if (!IN_IS_ADDR_LINKLOCAL((struct in_addr *)sin_addr_ptr))
 					continue;
 			}
-				break;
-			case LLDPD_AF_IPV6:
-				sin_addr_ptr = &((struct sockaddr_in6 *)&addr->address)->sin6_addr;
-				sin_addr_size = sizeof(struct in6_addr);
+			break;
+		case LLDPD_AF_IPV6:
+			sin_addr_ptr = &((struct sockaddr_in6 *)&addr->address)->sin6_addr;
+			sin_addr_size = sizeof(struct in6_addr);
 			if (global) {
 				if (!IN6_IS_ADDR_GLOBAL((struct in6_addr *)sin_addr_ptr))
 					continue;
@@ -396,33 +396,33 @@ interfaces_helper_mgmt_for_af(struct lldpd *cfg,
 				if (!IN6_IS_ADDR_LINKLOCAL((struct in6_addr *)sin_addr_ptr))
 					continue;
 			}
-				break;
-			default:
-				assert(0);
-				continue;
-			}
-			if (inet_ntop(lldpd_af(af), sin_addr_ptr,
-				addrstrbuf, sizeof(addrstrbuf)) == NULL) {
-				log_warn("interfaces", "unable to convert IP address to a string");
-				continue;
-			}
-			if (cfg->g_config.c_mgmt_pattern == NULL ||
-			    pattern_match(addrstrbuf, cfg->g_config.c_mgmt_pattern, allnegative)) {
-				mgmt = lldpd_alloc_mgmt(af, sin_addr_ptr, sin_addr_size,
-							addr->index);
-				if (mgmt == NULL) {
-					assert(errno == ENOMEM); /* anything else is a bug */
-					log_warn("interfaces", "out of memory error");
+			break;
+		default:
+			assert(0);
+			continue;
+		}
+		if (inet_ntop(lldpd_af(af), sin_addr_ptr,
+			addrstrbuf, sizeof(addrstrbuf)) == NULL) {
+			log_warn("interfaces", "unable to convert IP address to a string");
+			continue;
+		}
+		if (cfg->g_config.c_mgmt_pattern == NULL ||
+		    pattern_match(addrstrbuf, cfg->g_config.c_mgmt_pattern, allnegative)) {
+			mgmt = lldpd_alloc_mgmt(af, sin_addr_ptr, sin_addr_size,
+			    addr->index);
+			if (mgmt == NULL) {
+				assert(errno == ENOMEM); /* anything else is a bug */
+				log_warn("interfaces", "out of memory error");
 				return found;
-				}
-				log_debug("interfaces", "add management address %s", addrstrbuf);
-				TAILQ_INSERT_TAIL(&LOCAL_CHASSIS(cfg)->c_mgmt, mgmt, m_entries);
+			}
+			log_debug("interfaces", "add management address %s", addrstrbuf);
+			TAILQ_INSERT_TAIL(&LOCAL_CHASSIS(cfg)->c_mgmt, mgmt, m_entries);
 			found = 1;
 
-				/* Don't take additional address if the pattern is all negative. */
-				if (allnegative) break;
-			}
+			/* Don't take additional address if the pattern is all negative. */
+			if (allnegative) break;
 		}
+	}
 	return found;
 }
 
@@ -499,47 +499,52 @@ interfaces_helper_port_name_desc(struct lldpd *cfg,
 {
 	struct lldpd_port *port = &hardware->h_lport;
 
-	if (port->p_id_subtype == LLDP_PORTID_SUBTYPE_LOCAL)
-		return;
-
 	/* We need to set the portid to what the client configured.
 	   This can be done from the CLI.
 	*/
-	switch (cfg->g_config.c_lldp_portid_type) {
-	case LLDP_PORTID_SUBTYPE_IFNAME:
-		log_debug("interfaces", "use ifname for %s",
-			  hardware->h_ifname);
-		port->p_id_subtype = LLDP_PORTID_SUBTYPE_IFNAME;
-		port->p_id_len = strlen(hardware->h_ifname);
+	int has_alias = (iface->alias != NULL && strlen(iface->alias) != 0);
+	int portid_type = cfg->g_config.c_lldp_portid_type;
+	if (portid_type == LLDP_PORTID_SUBTYPE_IFNAME ||
+	    (portid_type == LLDP_PORTID_SUBTYPE_UNKNOWN && has_alias) ||
+	    (portid_type == LLDP_PORTID_SUBTYPE_LOCAL && has_alias)) {
+		if (portid_type != LLDP_PORTID_SUBTYPE_LOCAL) {
+			log_debug("interfaces", "use ifname for %s",
+			    hardware->h_ifname);
+			port->p_id_subtype = LLDP_PORTID_SUBTYPE_IFNAME;
+			port->p_id_len = strlen(hardware->h_ifname);
 			free(port->p_id);
-		if ((port->p_id = calloc(1, port->p_id_len)) == NULL)
-			fatal("interfaces", NULL);
-		memcpy(port->p_id, hardware->h_ifname, port->p_id_len);
-		break;
-	case LLDP_PORTID_SUBTYPE_LLADDR:
-		/* fall through so we use the mac address */
-	default:
-		log_debug("interfaces", "use MAC address for %s",
-			  hardware->h_ifname);
-		port->p_id_subtype = LLDP_PORTID_SUBTYPE_LLADDR;
-			free(port->p_id);
-		if ((port->p_id = calloc(1, ETHER_ADDR_LEN)) == NULL)
-			fatal("interfaces", NULL);
-		memcpy(port->p_id, hardware->h_lladdr, ETHER_ADDR_LEN);
-		port->p_id_len = ETHER_ADDR_LEN;
-	}
+			if ((port->p_id = calloc(1, port->p_id_len)) == NULL)
+				fatal("interfaces", NULL);
+			memcpy(port->p_id, hardware->h_ifname, port->p_id_len);
+		}
 
-	if (iface->alias != NULL && strlen(iface->alias) != 0) {
 		/* use the actual alias in the port description */
 		log_debug("interfaces", "using alias in description for %s",
 			  hardware->h_ifname);
-			free(port->p_descr);
-		port->p_descr = strdup(iface->alias);
+		free(port->p_descr);
+		if (has_alias) {
+			port->p_descr = strdup(iface->alias);
+		} else {
+			/* We don't have anything else to put here and for CDP
+			 * with need something non-NULL */
+			port->p_descr = strdup(hardware->h_ifname);
+		}
 	} else {
+		if (portid_type != LLDP_PORTID_SUBTYPE_LOCAL) {
+			log_debug("interfaces", "use MAC address for %s",
+			    hardware->h_ifname);
+			port->p_id_subtype = LLDP_PORTID_SUBTYPE_LLADDR;
+			free(port->p_id);
+			if ((port->p_id = calloc(1, ETHER_ADDR_LEN)) == NULL)
+				fatal("interfaces", NULL);
+			memcpy(port->p_id, hardware->h_lladdr, ETHER_ADDR_LEN);
+			port->p_id_len = ETHER_ADDR_LEN;
+		}
+
 		/* use the ifname in the port description until alias is set */
 		log_debug("interfaces", "using ifname in description for %s",
 			  hardware->h_ifname);
-			free(port->p_descr);
+		free(port->p_descr);
 		port->p_descr = strdup(hardware->h_ifname);
 	}
 }

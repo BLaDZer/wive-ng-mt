@@ -26,7 +26,7 @@ The following OS are supported:
 
  * FreeBSD
  * GNU/Linux
- * Mac OS X
+ * OS X
  * NetBSD
  * OpenBSD
  * Solaris
@@ -56,10 +56,10 @@ syslog, copy `/etc/locatime` into the chroot.
 line. If you don't want to run it as root, just install it setuid or
 setgid `_lldpd`.
 
-Installation (Mac OS X)
+Installation (OS X)
 -----------------------
 
-The same procedure as above applies for Mac OS X. However, there are
+The same procedure as above applies for OS X. However, there are
 simpler alternatives:
 
  1. Use [Homebrew](http://mxcl.github.io/homebrew/):
@@ -68,25 +68,24 @@ simpler alternatives:
         # Or, for the latest version:
         brew install https://raw.github.com/vincentbernat/lldpd/master/osx/lldpd.rb
 
- 2. Build an OSX installer package which should work on the same
-    version of OS X (it is important to use a separate build
-    directory):
+ 2. Build an OS X installer package which should work on the same
+    version of OS X:
  
         mkdir build && cd build
-        ../configure --prefix=/usr --localstatedir=/var --sysconfdir=/private/etc --with-embedded-libevent \
+        ../configure --prefix=/usr/local --localstatedir=/var --sysconfdir=/private/etc --with-embedded-libevent \
             --without-json --without-snmp
-        make -C osx pkg ARCHS="i386 x86_64"
+        make -C osx pkg
 
-    If you want to compile for an older version of Mac OS X, you need
+    If you want to compile for an older version of OS X, you need
     to find the right SDK and issues commands like those:
 
         SDK=/Developer/SDKs/MacOSX10.6.sdk
         mkdir build && cd build
-        ../configure --prefix=/usr --localstatedir=/var --sysconfdir=/private/etc --with-embedded-libevent \
+        ../configure --prefix=/usr/local --localstatedir=/var --sysconfdir=/private/etc --with-embedded-libevent \
            --without-json --without-snmp \
            CFLAGS="-mmacosx-version-min=10.6 -isysroot $SDK" \
            LDFLAGS="-mmacosx-version-min=10.6 -isysroot $SDK"
-        make -C osx pkg ARCHS="i386 x86_64"
+        make -C osx pkg
 
 If you don't follow the above procedures, you will have to create the
 user/group `_lldpd`. Have a look at how this is done in
@@ -236,10 +235,11 @@ that:
     afl-fuzz -i inputs -o outputs ./decode @@
 
 There is a general test suite with `make check`. It's also possible to
-run integration tests with `./tests/integration-tests`. Those are not
-very flexible and may or may not work depending on your platform. Also
-check the content of `tests/lldpcli.conf`. It's a configuration file
-that should cover all commands present in lldpcli.
+run integration tests with `make integration-tests && sh
+./integration-tests`. Those are not very flexible and may or may not
+work depending on your platform. Also check the content of
+`tests/lldpcli.conf`. It's a configuration file that should cover all
+commands present in lldpcli.
 
 Embedding
 ---------

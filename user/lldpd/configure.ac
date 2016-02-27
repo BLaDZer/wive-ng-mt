@@ -139,7 +139,7 @@ AC_FUNC_REALLOC
 AC_FUNC_FORK
 
 # Some functions can be in libbsd
-PKG_CHECK_MODULES([libbsd], [libbsd-overlay], [], [:])
+PKG_CHECK_MODULES([libbsd], [libbsd-overlay], [
 _save_CFLAGS="$CFLAGS"
 _save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $libbsd_CFLAGS"
@@ -155,6 +155,7 @@ AC_LINK_IFELSE([AC_LANG_SOURCE([[int main() { return 0; }]])],
     CFLAGS="$_save_CFLAGS"
     LIBS="$_save_LIBS"
   ])
+], [:])
 
 # setproctitle may have an _init function
 AC_REPLACE_FUNCS([setproctitle])
