@@ -378,13 +378,13 @@ static void esw_igmp_mld_snooping(u32 enable_igmp, u32 enable_mld)
 static void esw_mac_table_clear(void)
 {
 #if defined (CONFIG_MT7530_GSW)
-	mt7530_gsw_mac_table_clear();
+	mt7530_gsw_mac_table_clear(0);
 #if defined (CONFIG_P4_MAC_TO_MT7530_GPHY_P0) || defined (CONFIG_P4_MAC_TO_MT7530_GPHY_P4) || \
     defined (CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
-	mt7620_esw_mac_table_clear();
+	mt7620_esw_mac_table_clear(0);
 #endif
 #else
-	mt7620_esw_mac_table_clear();
+	mt7620_esw_mac_table_clear(0);
 #endif
 }
 
@@ -581,6 +581,23 @@ static u32 find_free_min_pvid(u32 *pvid_list, u32 vid)
 	return vid_new;
 }
 
+static int is_vlan_rule_included(u32 wan_bridge_mode, u32 rule_id)
+{
+	u32 i;
+
+	if (rule_id == SWAPI_VLAN_RULE_WAN_INET ||
+	    rule_id == SWAPI_VLAN_RULE_WAN_IPTV)
+		return 1;
+
+	for (i = 0; i <= ESW_MAC_ID_MAX; i++) {
+		if (g_bwan_member[wan_bridge_mode][i].bwan &&
+		    g_bwan_member[wan_bridge_mode][i].rule == (u8)rule_id)
+			return 1;
+	}
+
+	return 0;
+}
+
 static int is_wan_vid_valid(u32 vid)
 {
 	return (vid == 2 || vid >= MIN_EXT_VLAN_VID) ? 1 : 0;
@@ -590,16 +607,18 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 {
 	vlan_entry_t vlan_entry[VLAN_ENTRY_ID_MAX+1];
 	pvlan_member_t pvlan_member[ESW_MAC_ID_MAX+1];
-	u32 pvid[SWAPI_VLAN_RULE_NUM];
-	u32 prio[SWAPI_VLAN_RULE_NUM];
-	u32 tagg[SWAPI_VLAN_RULE_NUM];
-	u32 i, cvid, next_fid, next_vid, untg_vid, vlan_idx, vlan_filter_on;
+	u32 pvid[SWAPI_VLAN_RULE_NUM] = {0};
+	u32 prio[SWAPI_VLAN_RULE_NUM] = {0};
+	u32 tagg[SWAPI_VLAN_RULE_NUM] = {0};
+	u32 i, cvid, next_fid, untg_vid, vlan_idx, vlan_filter_on;
+#if !defined (CONFIG_MT7530_GSW)
+	u32 next_vid = 3;
+#endif
 #if defined (CONFIG_P4_RGMII_TO_MT7530_GMAC_P5) || defined (CONFIG_GE2_INTERNAL_GMAC_P5)
 	pvlan_member_t pvlan_member_cpu_wan;
 #endif
 
 	untg_vid = 2;	// default PVID for untagged WAN traffic
-	next_vid = 3;
 	next_fid = 3;
 	vlan_filter_on = 0;
 
@@ -607,6 +626,8 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 	memset(pvlan_member, 0, sizeof(pvlan_member));
 
 	for (i = 0; i < SWAPI_VLAN_RULE_NUM; i++) {
+		if (!is_vlan_rule_included(wan_bridge_mode, i))
+			continue;
 		pvid[i] =  (g_vlan_rule_user[i] & 0xFFF);
 		prio[i] = ((g_vlan_rule_user[i] >> 16) & 0x7);
 		tagg[i] = ((g_vlan_rule_user[i] >> 24) & 0x1);
@@ -617,7 +638,13 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 	/* find minimal unused VID, when VID=2 is used */
 	if (vlan_filter_on) {
 		untg_vid = find_free_min_pvid(pvid, 2);
+#if !defined (CONFIG_MT7530_GSW)
 		next_vid = find_free_min_pvid(pvid, untg_vid+1);
+		
+		/* this isolation mode possible only via MT7530 PORT_MATRIX */
+		if (wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN)
+			wan_bwan_isolation = SWAPI_WAN_BWAN_ISOLATION_NONE;
+#endif
 	}
 
 	g_vlan_pvid_wan_untagged = untg_vid;
@@ -666,7 +693,7 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 
 #if !defined (CONFIG_MT7530_GSW)
 	/* MT7620 not support PORT_MATRIX in security mode */
-	if (!vlan_filter_on && wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN) {
+	if (wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN) {
 		pvlan_member[WAN_PORT_MAC].pvid = next_vid;
 		
 		/* VID #3 */
@@ -796,7 +823,7 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 					vlan_entry[vlan_idx].fid = next_fid;
 					vlan_entry[vlan_idx].cvid = next_vid;
 					
-					if (!vlan_filter_on && wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN) {
+					if (wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN) {
 						vlan_entry[vlan_idx].svid = 2;	/* used under etag_ctrl=SWAP (CVID<->SVID) */
 						vlan_entry[vlan_idx].port_member |= ((1u << i) | (1u << WAN_PORT_CPU));
 						vlan_entry[vlan_idx].port_untag  |=  (1u << i);
@@ -820,6 +847,13 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 					vlan_entry[vlan_idx].cvid = cvid;
 				}
 				vlan_entry[vlan_idx].port_member |= ((1u << i) | (1u << WAN_PORT_MAC));
+				if (wan_bwan_isolation != SWAPI_WAN_BWAN_ISOLATION_FROM_CPU) {
+					vlan_entry[vlan_idx].port_member |= (1u << WAN_PORT_CPU);
+#if defined (CONFIG_P4_RGMII_TO_MT7530_GMAC_P5) || defined (CONFIG_GE2_INTERNAL_GMAC_P5)
+					/* mark CPU WAN as tagged */
+					pvlan_member_cpu_wan.tagg = 1;
+#endif
+				}
 				if (!tagg[rule_id])
 					vlan_entry[vlan_idx].port_untag |= (1u << i);
 				
@@ -1459,9 +1493,16 @@ static int esw_status_port_bytes(u32 port_mask, port_bytes_t *pb)
 
 static void esw_status_mib_reset(void)
 {
+	u32 mib_val;
 #if defined (CONFIG_MT7530_GSW)
-	esw_reg_set(0x4fe0, 0x000000f0);
-	esw_reg_set(0x4fe0, 0x800000f0);
+	mib_val = esw_reg_get(0x4fe0);
+	esw_reg_set(0x4fe0, mib_val & ~BIT(31));
+	esw_reg_set(0x4fe0, mib_val |  BIT(31));
+#else
+	mib_val = esw_reg_get(REG_ESW_MIB_MIBCNTEN);
+	esw_reg_set(REG_ESW_MIB_MIBCNTEN, mib_val & ~(0xff << 24));
+	esw_reg_set(REG_ESW_MIB_MIBCNTEN, mib_val |  (0xff << 24));
+	esw_mib_init();
 #endif
 }
 

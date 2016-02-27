@@ -301,55 +301,9 @@ static void esw_vlan_pvid_set(u32 port_id, u32 pvid, u32 prio)
 	esw_reg_set(REG_ESW_PFC1, reg_pfc1);
 }
 
-static int esw_wait_wt_mac(void)
-{
-	int i;
-	u32 value;
-
-	for (i = 0; i < 200; i++) {
-		value = esw_reg_get(REG_ESW_WT_MAC_AD0);
-		if (value & 0x2)
-			return 0;
-		udelay(100);
-	}
-
-	return -1;
-}
-
 static void esw_mac_table_clear(void)
 {
-	int i, j;
-	u32 value, mac;
-
-	esw_reg_set(REG_ESW_TABLE_SEARCH, 0x1);
-	for (i = 0; i < 0x400; i++) {
-		for (j = 0; j < 1000; j++) {
-			value = esw_reg_get(REG_ESW_TABLE_STATUS0);
-			if (value & 0x1) {
-				if ((value & 0x70) == 0)
-					return;
-				mac = esw_reg_get(REG_ESW_TABLE_STATUS2);
-				esw_reg_set(REG_ESW_WT_MAC_AD2, mac);
-				mac = esw_reg_get(REG_ESW_TABLE_STATUS1);
-				esw_reg_set(REG_ESW_WT_MAC_AD1, mac & 0xffff);
-				esw_reg_set(REG_ESW_WT_MAC_AD0, (value & 0x780) | 0x01);
-				
-				esw_wait_wt_mac();
-				
-				if (value & 0x2) {
-					/* end of table */
-					return;
-				}
-				break;
-			}
-			else if (value & 0x2) {
-				/* end of table */
-				return;
-			}
-			udelay(100);
-		}
-		esw_reg_set(REG_ESW_TABLE_SEARCH, 0x2);
-	}
+	rt305x_esw_mac_table_clear(0);
 }
 
 static u32 esw_get_vlan_slot(u32 idx)
@@ -490,6 +444,23 @@ static u32 find_free_min_pvid(u32 *pvid_list, u32 vid)
 	return vid_new;
 }
 
+static int is_vlan_rule_included(u32 wan_bridge_mode, u32 rule_id)
+{
+	u32 i;
+
+	if (rule_id == SWAPI_VLAN_RULE_WAN_INET ||
+	    rule_id == SWAPI_VLAN_RULE_WAN_IPTV)
+		return 1;
+
+	for (i = 0; i <= ESW_MAC_ID_MAX; i++) {
+		if (g_bwan_member[wan_bridge_mode][i].bwan &&
+		    g_bwan_member[wan_bridge_mode][i].rule == (u8)rule_id)
+			return 1;
+	}
+
+	return 0;
+}
+
 static int is_wan_vid_valid(u32 vid)
 {
 	return (vid == 2 || vid >= MIN_EXT_VLAN_VID) ? 1 : 0;
@@ -499,9 +470,9 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 {
 	vlan_entry_t vlan_entry[VLAN_ENTRY_ID_MAX+1];
 	pvlan_member_t pvlan_member[ESW_MAC_ID_MAX+1];
-	u32 pvid[SWAPI_VLAN_RULE_NUM];
-	u32 prio[SWAPI_VLAN_RULE_NUM];
-	u32 tagg[SWAPI_VLAN_RULE_NUM];
+	u32 pvid[SWAPI_VLAN_RULE_NUM] = {0};
+	u32 prio[SWAPI_VLAN_RULE_NUM] = {0};
+	u32 tagg[SWAPI_VLAN_RULE_NUM] = {0};
 	u32 i, cvid, next_vid, untg_vid, vlan_idx, vlan_filter_on;
 
 	untg_vid = 2;	// default PVID for untagged WAN traffic
@@ -512,6 +483,8 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 	memset(pvlan_member, 0, sizeof(pvlan_member));
 
 	for (i = 0; i < SWAPI_VLAN_RULE_NUM; i++) {
+		if (!is_vlan_rule_included(wan_bridge_mode, i))
+			continue;
 		pvid[i] =  (g_vlan_rule_user[i] & 0xFFF);
 		prio[i] = ((g_vlan_rule_user[i] >> 16) & 0x7);
 		tagg[i] = ((g_vlan_rule_user[i] >> 24) & 0x1);
@@ -627,6 +600,8 @@ static void esw_vlan_apply_rules(u32 wan_bridge_mode, u32 wan_bwan_isolation)
 				vlan_entry[vlan_idx].valid = 1;
 				vlan_entry[vlan_idx].cvid = cvid;
 				vlan_entry[vlan_idx].port_member |= ((1u << i) | (1u << WAN_PORT_1));
+				if (wan_bwan_isolation != SWAPI_WAN_BWAN_ISOLATION_FROM_CPU)
+					vlan_entry[vlan_idx].port_member |= (1u << WAN_PORT_CPU);
 				if (!tagg[rule_id])
 					vlan_entry[vlan_idx].port_untag |= (1u << i);
 				
@@ -960,6 +935,14 @@ static void esw_status_mib_port(u32 port_id, esw_mib_counters_t *mibc)
 	mibc->RxBadFrames	= esw_get_port_mib_rbpc(port_id);
 }
 
+static void esw_status_mib_reset(void)
+{
+#if !defined (CONFIG_RALINK_RT3052)
+	esw_reg_set(0x14c, 0xff7f7f7f);
+	esw_mib_init();
+#endif
+}
+
 static void change_ports_power(u32 power_on, u32 ports_mask)
 {
 	u32 i;
@@ -999,6 +982,10 @@ static int change_bridge_mode(u32 wan_bwan_isolation, u32 wan_bridge_mode)
 
 	if (wan_bwan_isolation > SWAPI_WAN_BWAN_ISOLATION_BETWEEN)
 		return -EINVAL;
+
+	/* this isolation mode not possible for this switch */
+	if (wan_bwan_isolation == SWAPI_WAN_BWAN_ISOLATION_BETWEEN)
+		wan_bwan_isolation = SWAPI_WAN_BWAN_ISOLATION_NONE;
 
 	if (wan_bridge_mode == SWAPI_WAN_BRIDGE_DISABLE)
 		wan_bwan_isolation = SWAPI_WAN_BWAN_ISOLATION_NONE;
@@ -1482,6 +1469,9 @@ long mtk_esw_ioctl(struct file *file, unsigned int req, unsigned long arg)
 	case MTK_ESW_IOCTL_STATUS_CNT_PORT_LAN4:
 		esw_status_mib_port(LAN_PORT_4, &port_counters);
 		copy_to_user((esw_mib_counters_t __user *)arg, &port_counters, sizeof(esw_mib_counters_t));
+		break;
+	case MTK_ESW_IOCTL_STATUS_CNT_RESET_ALL:
+		esw_status_mib_reset();
 		break;
 
 	case MTK_ESW_IOCTL_RESET_SWITCH:
