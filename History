@@ -1776,31 +1776,32 @@
 36) kernel: ralink_raeth: improve external GPHY support, add support Realtek RTL8211 GPHY family.<br>
 37) kernel: ralink_raeth: fix MT7621 with GE2 to external GPHY case.<br>
 38) kernel: ralink_raeth: fix MT7620 with P5 to external GPHY case.<br>
-39) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
-40) kernel: smp: make smp_call_function_many() use logic similar to smp_call_function_single().<br>
-41) kernel: smp: remove cpumask_ipi.<br>
-42) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-43) kernel: mips: fix use highmem without long calls.<br>
-44) kernel: mips: rework core number correction.<br>
-45) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-46) kernel: mips: fix FPU disable with preemption.<br>
-47) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-48) kernel: mips: fix get_user_page_fast() for mips with cache alias.<br>
-49) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
-50) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
-51) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
-52) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-53) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-54) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
-55) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
-56) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-57) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-58) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-59) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-60) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-61) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-62) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
-63) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
+39) kernel: ralink_raeth: use special hook to notify ESW/GSW port link changed.<br>
+40) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
+41) kernel: smp: make smp_call_function_many() use logic similar to smp_call_function_single().<br>
+42) kernel: smp: remove cpumask_ipi.<br>
+43) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+44) kernel: mips: fix use highmem without long calls.<br>
+45) kernel: mips: rework core number correction.<br>
+46) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+47) kernel: mips: fix FPU disable with preemption.<br>
+48) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
+49) kernel: mips: fix get_user_page_fast() for mips with cache alias.<br>
+50) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
+51) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
+52) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
+53) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+54) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+55) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
+56) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+57) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+58) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+59) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+60) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+61) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+62) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+63) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+64) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
 <br>
