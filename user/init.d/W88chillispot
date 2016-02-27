@@ -71,8 +71,8 @@ start() {
 	# status location
 	if [ -e /tmp/chilli_stat ]; then
 	    killall -q chilli_stat
-	    killall -q -9 chilli_stat
-	    chmod 777 /tmp/chilli_stat
+	    killall -q -SIGKILL chilli_stat
+	    chmod 555 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
 	chilli --kname=chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &

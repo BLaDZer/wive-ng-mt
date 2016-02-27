@@ -27,7 +27,18 @@ start() {
     	    cp -rpf /etc/web/* /tmp/web
 	fi
 	$LOG "Start WEB Managment Server."
-	goahead -f &
+	echo "#!/bin/sh"							>  /tmp/webmon
+        echo "while true; do"							>> /tmp/webmon
+	echo "goahead -f"							>> /tmp/webmon
+	echo "logger -t webmon web server unexpectedly stopped - restart."	>> /tmp/webmon
+	echo "sleep 1"								>> /tmp/webmon
+	echo "done"								>> /tmp/webmon
+	if [ -e /tmp/webmon ]; then
+	    killall -q webmon
+	    killall -q -SIGKILL webmon
+	    chmod 555 /tmp/webmon
+	    /tmp/webmon &
+	fi
 	if [ -f /tmp/needrwfssave ]; then
 	    $LOG "Wait 20sec for rwfs changes save"
 	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
@@ -42,6 +53,8 @@ start() {
 stop() {
     if [ -f /var/run/goahead.pid ]; then
 	$LOG "Stop goahead"
+	killall -q webmon
+	killall -q -SIGKILL webmon
 	killall -q goahead
 	killall -q -SIGKILL goahead
     fi
