@@ -79,7 +79,7 @@ getSecWlanIfName() {
 # DEF pysical interface name -> $phys_*_if
 getPhysIfName() {
     # physical names
-    if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 	# external switch support
 	phys_lan_if="eth2"
 	phys_wan_if="eth3"
@@ -288,7 +288,7 @@ get_switch_type() {
     elif [ -f /proc/mt7628/gmac ]; then
 	switchmode=3
     elif [ -f /proc/mt7621/gmac ]; then
-	if [ "$CONFIG_RAETH_GMAC2" != "" ]; then
+	if [ "$CONFIG_RAETH_BOTH_GMAC" != "" ]; then
 	    switchmode=4
 	else
 	    switchmode=3

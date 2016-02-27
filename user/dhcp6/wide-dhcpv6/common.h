@@ -31,7 +31,7 @@
 #include <linux/autoconf.h>
 #if defined(CONFIG_RAETH_ESW)		/* internal ralink esw */
 #define WAN_DEF "eth2.2"
-#elif defined(CONFIG_RAETH_GMAC2)	/* vetisse or rtl8367m dual phy */
+#elif defined(CONFIG_RAETH_BOTH_GMAC)	/* vetisse or rtl8367m dual phy */
 #define WAN_DEF "eth3"
 #else
 #define WAN_DEF "eth2.2"		/* this is stub support only switched devices */

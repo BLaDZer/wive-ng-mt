@@ -58,7 +58,7 @@ set_mac_wan_lan() {
     # set MAC adresses LAN for phys iface (always set for physycal external switch one or dual phy mode)
     # set MAC adresses LAN/WAN if not bridge and not ethernet converter modes
     # in gw mode set mac to wan (always set for physycal external dual phy mode swicth)
-    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 	# LAN mac config
 	$LOG "$phys_lan_if MACADDR $LAN_MAC_ADDR"
 	ifconfig "$phys_lan_if" down
@@ -82,7 +82,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
     ##########################################################################
     # add mac to root interface if vlan part used
     ##########################################################################
-    if [ "$CONFIG_RAETH_GMAC2" = "" ]; then
+    if [ "$CONFIG_RAETH_BOTH_GMAC" = "" ]; then
 	$LOG "ROOT_MACADDR $LAN_MAC_ADDR"
 	ifconfig eth2 hw ether "$LAN_MAC_ADDR"
 	ip link set eth2 up

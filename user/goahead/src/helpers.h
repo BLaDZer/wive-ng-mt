@@ -67,7 +67,7 @@
 #endif
 #define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
-#ifdef CONFIG_RAETH_GMAC2		/* dual phy/rgmii mode */
+#ifdef CONFIG_RAETH_BOTH_GMAC		/* dual phy/rgmii mode */
 #define WAN_DEF "eth3"
 #else
 #define WAN_DEF "eth2.2"		/* internal ralink esw with vlan parted mode */

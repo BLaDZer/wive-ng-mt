@@ -63,7 +63,7 @@ void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
 #define IP_MULTICAST_A1(a0, a1)		(((a0 & 0x1) << 7) | a1)
 
 #if defined(CONFIG_PPE_MCAST)
-#if defined(CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_RAETH_BOTH_GMAC)
 #define HNAT_VID	0
 #else
 #define HNAT_VID	2

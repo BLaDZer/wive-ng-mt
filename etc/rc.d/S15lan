@@ -29,7 +29,7 @@ start() {
 	ip link set br0 up
     fi
 
-    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 	# always up lan iface
 	ip link set "$phys_lan_if" up
     fi

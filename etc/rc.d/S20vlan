@@ -39,7 +39,7 @@ start() {
 	# ONLY ONE TIME AT START!!!
 	##############################################
 	if [ "$VlanEnabled" = "1" ]; then
-	    if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+	    if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 		rootif="eth3"
 	    else
 		rootif="eth2"
@@ -168,7 +168,7 @@ stop() {
     ##############################################
     # REMOVE WAN VLANS FOR IPTV/SIP/ETC USAGE
     ##############################################
-    if [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 	oldwanvlans=`ip -o -4 link show up | grep 'eth3\.' | awk {' print $2 '} | cut -f -1 -d @`
     else
 	oldwanvlans=`ip -o -4 link show up | grep 'eth2.2\.' | awk {' print $2 '} | cut -f -1 -d @`
@@ -184,7 +184,7 @@ stop() {
     ##############################################
     # REMOVE LAN VLANS FOR ZONE ISOLATED NETWORKS
     ##############################################
-    if [ "$switchpart" = "LLLLL" ] || [ "$CONFIG_RAETH_GMAC2" = "y" ]; then
+    if [ "$switchpart" = "LLLLL" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 	oldlanvlans=`ip -o -4 link show up | grep 'eth2\.' | awk {' print $2 '} | cut -f -1 -d @`
     else
 	oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`

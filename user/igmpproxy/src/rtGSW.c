@@ -303,7 +303,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value = (value << 16);
 	value |= (1 << 15);//IVL=1
 
-#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_BOTH_GMAC)
 #elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 #elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
@@ -340,7 +340,7 @@ void updateMacTable(struct group *entry, int delay_delete)
 		if(WanPort){
 		        value = value1;
 			value = (value & 0xffffff00);
-#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_GMAC2)
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_BOTH_GMAC)
 #elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 #elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
