@@ -153,7 +153,7 @@ static int initWebs(void)
 	 */
 	websSetDefaultDir(webdir);
 	cp = inet_ntoa(intaddr);
-	strncpy(wbuf, cp, min(strlen(cp) + 1, sizeof(wbuf)));
+	ascToUni(wbuf, cp, min(strlen(cp) + 1, sizeof(wbuf)));
 	websSetIpaddr(wbuf);
 	/* use ip address (already in wbuf) as host */
 	websSetHost(wbuf);

@@ -407,10 +407,32 @@ void bfreeSafe(B_ARGS_DEC, void *mp)
 }
 
 /******************************************************************************/
+#ifdef UNICODE
+/*
+ *	Duplicate a string, allow NULL pointers and then dup an empty string.
+ */
+
+char *bstrdupA(B_ARGS_DEC, char *s)
+{
+	char	*cp;
+	int		len;
+
+	if (s == NULL) {
+		s = "";
+	}
+	len = strlen(s) + 1;
+	if (cp = balloc(B_ARGS, len)) {
+		strcpy(cp, s);
+	}
+	return cp;
+}
+
+#endif /* UNICODE */
+/******************************************************************************/
 /*
  *	Duplicate an ascii string, allow NULL pointers and then dup an empty string.
  *	If UNICODE, bstrdup above works with wide chars, so we need this routine
- *	for ascii strings.
+ *	for ascii strings. 
  */
 
 char_t *bstrdup(B_ARGS_DEC, char_t *s)
@@ -906,7 +928,15 @@ void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 
 char_t *bstrdupNoBalloc(char_t *s)
 {
+#ifdef UNICODE
+	if (s) {
+		return wcsdup(s);
+	} else {
+		return wcsdup(T(""));
+	}
+#else
 	return bstrdupANoBalloc(s);
+#endif
 }
 
 /******************************************************************************/

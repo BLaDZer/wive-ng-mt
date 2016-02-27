@@ -14,7 +14,8 @@
  */
 
 /********************************** Includes **********************************/
-#include	"helpers.h"
+#include	<string.h>
+#include	<stdlib.h>
 #include	"uemf.h"
 /************************************ Locals **********************************/
 
@@ -88,7 +89,18 @@ int	socketWrite(int sid, char *buf, int bufsize)
 
 int	socketWriteString(int sid, char_t *buf)
 {
+ #ifdef UNICODE
+ 	char	*byteBuf;
+ 	int		r, len;
+ 
+ 	len = gstrlen(buf);
+ 	byteBuf = ballocUniToAsc(buf, len);
+ 	r = socketWrite(sid, byteBuf, len);
+ 	bfreeSafe(B_L, byteBuf);
+ 	return r;
+ #else
  	return socketWrite(sid, buf, strlen(buf));
+ #endif /* UNICODE */
 }
 
 /******************************************************************************/
@@ -232,10 +244,6 @@ int	socketGets(int sid, char_t **buf)
 			len = ringqLen(lq);
 			if (len > 0) {
 				*buf = ballocAscToUni((char *)lq->servp, len);
-				if (*buf == NULL) {
-				    syslog(LOG_ERR, "alloc memory for buffer fail, %s", __FUNCTION__);
-				    return -1;
-				}
 			} else {
 				*buf = NULL;
 			}

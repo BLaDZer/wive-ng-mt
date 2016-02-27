@@ -51,7 +51,7 @@ static int  tryAlternateConnect(int sock, struct sockaddr *sockaddr);
 int socketOpen()
 {
 #if (defined (CE) || defined (WIN))
-	WSADATA 	wsaData;
+    WSADATA 	wsaData;
 #endif
 
 	if (++socketOpenCount > 1) {

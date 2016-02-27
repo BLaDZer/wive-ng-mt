@@ -114,7 +114,8 @@ int websSSLAccept(int sid, char *ipaddr, int port, int listenSid)
 	wp = webs[wid];
 	a_assert(wp);
 	wp->listenSid = listenSid;
-	strncpy(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr)+1));
+
+	ascToUni(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr)+1));
 
 	/*
 	 *    Check if this is a request from a browser on this system. This is useful
@@ -233,10 +234,6 @@ int    websSSLGets(websSSL_t *wsp, char_t **buf)
 			len = ringqLen(lq);
 			if (len > 0) {
 				*buf = ballocAscToUni((char *)lq->servp, len);
-				if (*buf == NULL) {
-				    syslog(LOG_ERR, "alloc memory for buffer fail, %s", __FUNCTION__);
-				    return -1;
-				}
 			} else {
 				*buf = NULL;
 			}

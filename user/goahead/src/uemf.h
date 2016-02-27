@@ -282,6 +282,28 @@
 
 #ifndef CHAR_T_DEFINED
 #define CHAR_T_DEFINED 1
+#ifdef UNICODE
+/*
+ *	To convert strings to UNICODE. We have a level of indirection so things
+ *	like T(__FILE__) will expand properly.
+ */
+#define	T(x)			__TXT(x)
+#define	__TXT(s)		L ## s
+typedef unsigned short 		char_t;
+typedef unsigned short		uchar_t;
+
+/*
+ *	Text size of buffer macro. A buffer bytes will hold (size / char size)
+ *	characters.
+ */
+#define	TSZ(x)			(sizeof(x) / sizeof(char_t))
+
+/*
+ *	How many ASCII bytes are required to represent this UNICODE string?
+ */
+#define	TASTRL(x)		((wcslen(x) + 1) * sizeof(char_t))
+
+#else
 #define	T(s) 			s
 typedef char			char_t;
 #define	TSZ(x)			(sizeof(x))
@@ -289,6 +311,9 @@ typedef char			char_t;
 #ifdef WIN
 typedef unsigned char		uchar_t;
 #endif /* WIN */
+
+#endif /* UNICODE */
+
 #endif /* ! CHAR_T_DEFINED */
 
 /*
@@ -310,8 +335,101 @@ typedef unsigned char		uchar_t;
 	T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
 
 /*
- *	Type for systems
+ *	The following include has to be after the unicode defines.  By putting it
+ *	here, many modules in various parts of the tree are cleaner.
  */
+#if (defined (LITTLEFOOT) && defined (INMEM))
+	#include	"lf/inmem.h"
+#endif /* LITTLEFOOT && INMEM */
+
+/*
+ *	Type for unicode systems
+ */
+#ifdef UNICODE
+
+#define gmain		wmain
+
+#define gasctime	_wasctime
+#define gsprintf	swprintf
+#define gprintf		wprintf
+#define gfprintf	fwprintf
+#define gsscanf		swscanf
+#define gvsprintf	vswprintf
+
+#define gstrcpy		wcscpy
+#define gstrncpy	wcsncpy
+#define gstrncat	wcsncat
+#define gstrlen		wcslen
+#define gstrcat		wcscat
+#define gstrcmp		wcscmp
+#define gstrncmp	wcsncmp
+#define gstricmp	wcsicmp
+#define gstrchr		wcschr
+#define gstrrchr	wcsrchr
+#define gstrtok		wcstok
+#define gstrnset	wcsnset
+#define gstrrchr	wcsrchr
+#define gstrspn	wcsspn
+#define gstrcspn	wcscspn
+#define gstrstr		wcsstr
+#define gstrtol		wcstol
+
+#define gfopen		_wfopen
+#define gopen		_wopen
+#define gclose		close
+#define gcreat		_wcreat
+#define gfgets		fgetws
+#define gfputs		fputws
+#define gfscanf		fwscanf
+#define ggets		_getws
+#define glseek		lseek
+#define gunlink		_wunlink
+#define gread		read
+#define grename		_wrename
+#define gwrite		write
+#define gtmpnam		_wtmpnam
+#define gtempnam	_wtempnam
+#define gfindfirst	_wfindfirst
+#define gfinddata_t	_wfinddata_t
+#define gfindnext	_wfindnext
+#define gfindclose	_findclose
+#define gstat		_wstat
+#define gaccess		_waccess
+#define gchmod		_wchmod
+
+typedef struct _stat gstat_t;
+
+#define gmkdir		_wmkdir
+#define gchdir		_wchdir
+#define grmdir		_wrmdir
+#define ggetcwd		_wgetcwd
+
+#define gtolower	towlower
+#define gtoupper	towupper
+#ifdef CE
+#define gisspace	isspace
+#define gisdigit	isdigit
+#define gisxdigit	isxdigit
+#define gisupper	isupper
+#define gislower	islower
+#define gisprint	isprint
+#else
+#define gremove		_wremove
+#define gisspace	iswspace
+#define gisdigit	iswdigit
+#define gisxdigit	iswxdigit
+#define gisupper	iswupper
+#define gislower	iswlower
+#endif	/* if CE */
+#define gisalnum	iswalnum
+#define gisalpha	iswalpha
+#define gatoi(s)	wcstol(s, NULL, 10)
+
+#define gctime		_wctime
+#define ggetenv		_wgetenv
+#define gexecvp		_wexecvp
+
+#else /* ! UNICODE */
 
 #ifdef VXWORKS
 #define gchdir		vxchdir
@@ -405,6 +523,15 @@ typedef struct stat gstat_t;
 #ifdef VXWORKS
 #define	fcntl(a, b, c)
 #endif /* VXWORKS */
+#endif /* ! UNICODE */
+
+/*
+ *	Include inmem.h here because it redefines many of the file access fucntions.
+ *	Otherwise there would be lots more #if-#elif-#else-#endif ugliness.
+ */
+#ifdef INMEM
+	#include	"lf/inmem.h"
+#endif
 
 /********************************** Defines ***********************************/
 
