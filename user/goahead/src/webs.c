@@ -279,9 +279,7 @@ int websAccept(int sid, char *ipaddr, int port, int listenSid)
 	wp = webs[wid];
 	a_assert(wp);
 	wp->listenSid = listenSid;
-
-	ascToUni(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr) + 1));
-
+	strncpy(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr) + 1));
 /*
  * Get the ip address of the interface that acept the connection.
  */

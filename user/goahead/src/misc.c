@@ -537,56 +537,6 @@ static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
 
 /******************************************************************************/
 /*
- *	Convert an ansi string to a unicode string. On an error, we return the
- * 	original ansi string which is better than returning NULL. nBytes is the
- *	size of the destination buffer (ubuf) in _bytes_.
- */
-
-char_t *ascToUni(char_t *ubuf, char *str, int nBytes)
-{
-#ifdef UNICODE
-	if (MultiByteToWideChar(CP_ACP, 0, str, nBytes / sizeof(char_t), ubuf,
-			nBytes / sizeof(char_t)) < 0) {
-		return (char_t*) str;
-	}
-#else
-
-#ifdef kUseMemcopy
-   memcpy(ubuf, str, nBytes);
-#else
-	strncpy(ubuf, str, nBytes);
-#endif /*kUseMemcopy*/
-#endif
-	return ubuf;
-}
-
-/******************************************************************************/
-/*
- *	Convert a unicode string to an ansi string. On an error, return the
- *	original unicode string which is better than returning NULL.
- *	N.B. nBytes is the number of _bytes_ in the destination buffer, buf.
- */
-
-char *uniToAsc(char *buf, char_t *ustr, int nBytes)
-{
-#ifdef UNICODE
-   if (WideCharToMultiByte(CP_ACP, 0, ustr, nBytes, buf, nBytes, 
-    NULL, NULL) < 0) 
-   {
-      return (char*) ustr;
-   }
-#else
-#ifdef kUseMemcopy
-   memcpy(buf, ustr, nBytes);
-#else
-   strncpy(buf, ustr, nBytes);
-#endif /* kUseMemcopy */
-#endif
-   return (char*) buf;
-}
-
-/******************************************************************************/
-/*
  *	allocate (balloc) a buffer and do ascii to unicode conversion into it.
  *	cp points to the ascii buffer.  alen is the length of the buffer to be
  *	converted not including a terminating NULL.  Return a pointer to the
@@ -603,7 +553,7 @@ char_t *ballocAscToUni(char *cp, int alen)
 	if ((unip = balloc(B_L, ulen)) == NULL) {
 		return NULL;
 	}
-	ascToUni(unip, cp, ulen);
+	strncpy(unip, cp, ulen);
 	unip[alen] = 0;
 	return unip;
 }
@@ -624,7 +574,7 @@ char *ballocUniToAsc(char_t *unip, int ulen)
 	if ((cp = balloc(B_L, ulen+1)) == NULL) {
 		return NULL;
 	}
-	uniToAsc(cp, unip, ulen);
+	strncpy(cp, unip, ulen);
 	cp[ulen] = '\0';
 	return cp;
 }
