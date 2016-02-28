@@ -106,7 +106,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #endif /* ! (NO_GETHOSTBYNAME || VXWORKS) */
 	socket_t			*sp;
 	struct sockaddr_in	sockaddr;
-	int					sid, bcast, dgram, rc;
+	int					sid, rc;
 #ifdef WF_USE_IPV6
 	int					gaierr;
 	char				portstr[10];
@@ -215,11 +215,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 	}
 #endif /* WF_USE_IPV6 */
 
-	bcast = sp->flags & SOCKET_BROADCAST;
-	if (bcast)
-		sp->flags |= SOCKET_DATAGRAM;
-	dgram = sp->flags & SOCKET_DATAGRAM;
-
 /*
  *	Create the socket. Support for datagram sockets. Set the close on
  *	exec flag so children don't inherit the socket.
@@ -227,7 +222,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #ifdef WF_USE_IPV6
 	sp->sock = socket(AF_INET6, SOCK_STREAM, 0);
 #else
-	sp->sock = socket(AF_INET, dgram ? SOCK_DGRAM: SOCK_STREAM, 0);
+	sp->sock = socket(AF_INET, SOCK_STREAM, 0);
 #endif
 	if (sp->sock < 0) {
 		socketFree(sid);
@@ -238,17 +233,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #endif
 	socketHighestFd = max(socketHighestFd, sp->sock);
 
-/*
- *	If broadcast, we need to turn on broadcast capability.
- */
-	if (bcast) {
-		int broadcastFlag = 1;
-		if (setsockopt(sp->sock, SOL_SOCKET, SO_BROADCAST,
-				(char *) &broadcastFlag, sizeof(broadcastFlag)) < 0) {
-			socketFree(sid);
-			return -1;
-		}
-	}
 
 /*
  *	Host is set if we are the client
@@ -258,7 +242,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  *		Connect to the remote server in blocking mode, then go into 
  *		non-blocking mode if desired.
  */
-		if (!dgram) {
 			if (! (sp->flags & SOCKET_BLOCK)) {
 /*
  *				sockGen.c is only used for Windows products when blocking
@@ -299,7 +282,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 #endif /* WIN || CE */
 
 			}
-		}
 	} else {
 		/*
 		 * Bind to the socket endpoint and the call listen() to start listening
@@ -321,13 +303,11 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 			return -1;
 		}
 
-		if (! dgram) {
-			if (listen(sp->sock, SOMAXCONN) < 0) {
-				socketFree(sid);
-				return -1;
-			}
-			sp->flags |= SOCKET_LISTENING;
+		if (listen(sp->sock, SOMAXCONN) < 0) {
+			socketFree(sid);
+			return -1;
 		}
+		sp->flags |= SOCKET_LISTENING;
 		sp->handlerMask |= SOCKET_READABLE;
 	}
 
@@ -465,9 +445,7 @@ static void socketAccept(socket_t *sp)
 
 int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 {
-	struct sockaddr_in 	server;
 	socket_t		*sp;
-	unsigned int 		len;
 	int 			bytesRead;
 
 	a_assert(buf);
@@ -496,27 +474,21 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 /*
  *	Read the data
  */
-	if (sp->flags & SOCKET_DATAGRAM) {
-		len = sizeof(server);
-		bytesRead = recvfrom(sp->sock, buf, toRead, 0,
-			(struct sockaddr *) &server, &len);
-	} else {
-		bytesRead = recv(sp->sock, buf, toRead, MSG_NOSIGNAL);
-	}
+	bytesRead = recv(sp->sock, buf, toRead, MSG_NOSIGNAL);
 
    /*
-    * BUG 01865 -- CPU utilization hangs on Windows. The original code used 
+    * BUG 01865 -- CPU utilization hangs on Windows. The original code used
     * the 'errno' global variable, which is not set by the winsock functions
     * as it is under *nix platforms. We use the platform independent
-    * socketGetError() function instead, which does handle Windows correctly. 
+    * socketGetError() function instead, which does handle Windows correctly.
     * Other, *nix compatible platforms should work as well, since on those
     * platforms, socketGetError() just returns the value of errno.
     * Thanks to Jonathan Burgoyne for the fix.
     */
-   if (bytesRead < 0) 
+   if (bytesRead < 0)
    {
       *errCode = socketGetError();
-      if (*errCode == ECONNRESET) 
+      if (*errCode == ECONNRESET)
       {
          sp->flags |= SOCKET_CONNRESET;
          return 0;

@@ -26,9 +26,6 @@ int			socketHighestFd = -1;	/* Highest socket fd opened */
 /***************************** Forward Declarations ***************************/
 
 static int	socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode);
-static int	tryAlternateSendTo(int sock, char *buf, int toWrite, int i,
-			struct sockaddr *server);
-
 /*********************************** Code *************************************/
 /*
  *	Write to a socket. Absorb as much data as the socket can buffer. Block if 
@@ -467,8 +464,7 @@ void socketDeleteHandler(int sid)
 
 static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 {
-	struct sockaddr_in	server;
-	int					bytes;
+	int bytes;
 
 	a_assert(sp);
 	a_assert(buf);
@@ -496,25 +492,7 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 /*
  *	Write the data
  */
-	if (sp->flags & SOCKET_BROADCAST) {
-		server.sin_family = AF_INET;
-		server.sin_addr.s_addr = INADDR_BROADCAST;
-		server.sin_port = htons((short)(sp->port & 0xFFFF));
-		if ((bytes = sendto(sp->sock, buf, toWrite, 0,
-			(struct sockaddr *) &server, sizeof(server))) < 0) {
-			bytes = tryAlternateSendTo(sp->sock, buf, toWrite, 0,
-			(struct sockaddr *) &server);
-		}
-	} else if (sp->flags & SOCKET_DATAGRAM) {
-		server.sin_family = AF_INET;
-		server.sin_addr.s_addr = inet_addr(sp->host);
-		server.sin_port = htons((short)(sp->port & 0xFFFF));
-		bytes = sendto(sp->sock, buf, toWrite, 0,
-			(struct sockaddr *) &server, sizeof(server));
-
-	} else {
-		bytes = send(sp->sock, buf, toWrite, MSG_NOSIGNAL);
-	}
+	bytes = send(sp->sock, buf, toWrite, MSG_NOSIGNAL);
 
 	if (bytes < 0) {
 		*errCode = socketGetError();
@@ -533,28 +511,6 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 	}
 
 	return bytes;
-}
-
-/******************************************************************************/
-/*
- *		If the sendto failed, swap the first two bytes in the 
- *		sockaddr structure.  This is a kludge due to a change in
- *		VxWorks between versions 5.3 and 5.4, but we want the 
- *		product to run on either.
- */
-static int tryAlternateSendTo(int sock, char *buf, int toWrite, int i,
-			struct sockaddr *server)
-{
-#ifdef VXWORKS
-	char *ptr;
-
-	ptr = (char *)server;
-	*ptr = *(ptr+1);
-	*(ptr+1) = 0;
-	return sendto(sock, buf, toWrite, i, server, sizeof(struct sockaddr));
-#else
-	return -1;
-#endif /* VXWORKS */
 }
 
 /******************************************************************************/
@@ -586,20 +542,15 @@ int socketAlloc(char *host, int port, socketAccept_t accept, int flags)
 /*
  *	Preserve only specified flags from the callers open
  */
-	a_assert((flags & ~(SOCKET_BROADCAST | SOCKET_DATAGRAM | SOCKET_BLOCK | SOCKET_LISTENING)) == 0);
-	sp->flags = flags & (SOCKET_BROADCAST | SOCKET_DATAGRAM | SOCKET_BLOCK | SOCKET_LISTENING | SOCKET_MYOWNBUFFERS);
+	a_assert((flags & ~(SOCKET_BLOCK | SOCKET_LISTENING)) == 0);
+	sp->flags = flags & (SOCKET_BLOCK | SOCKET_LISTENING);
 
-	if (!(flags & SOCKET_MYOWNBUFFERS)) { 
 /*
  *		Add one to allow the user to write exactly SOCKET_BUFSIZ
  */
-		ringqOpen(&sp->inBuf, SOCKET_BUFSIZ, SOCKET_BUFSIZ);
-		ringqOpen(&sp->outBuf, SOCKET_BUFSIZ + 1, SOCKET_BUFSIZ + 1);
-	} else {
-		memset(&sp->inBuf, 0x0, sizeof(ringq_t));
-		memset(&sp->outBuf, 0x0, sizeof(ringq_t));
-	}
-	ringqOpen(&sp->lineBuf, SOCKET_BUFSIZ, -1);
+	ringqOpen(&sp->inBuf, SOCKET_BUFSIZ, SOCKET_BUFSIZ);
+	ringqOpen(&sp->outBuf, SOCKET_BUFSIZ + 1, SOCKET_BUFSIZ + 1);
+	ringqOpen(&sp->lineBuf, SOCKET_BUFSIZ, SOCKET_BUFSIZ * 2);
 
 	return sid;
 }
@@ -639,10 +590,8 @@ void socketFree(int sid)
 #endif
 	}
 
-	if (!(sp->flags & SOCKET_MYOWNBUFFERS)) { 
-		ringqClose(&sp->inBuf);
-		ringqClose(&sp->outBuf);
-	}
+	ringqClose(&sp->inBuf);
+	ringqClose(&sp->outBuf);
 	ringqClose(&sp->lineBuf);
 
 	bfreeSafe(B_L, sp);

@@ -790,20 +790,22 @@ extern int	cronFree(cron_t *cp);
 #define ECONNRESET              WSAECONNRESET
 #endif /* (WIN || CE) && WEBS) */
 
-#define SOCKET_EOF			0x1		/* Seen end of file */
-#define SOCKET_CONNECTING		0x2		/* Connect in progress */
-#define SOCKET_BROADCAST		0x4		/* Broadcast mode */
-#define SOCKET_PENDING			0x8		/* Message pending on this socket */
-#define SOCKET_FLUSHING			0x10	/* Background flushing */
-#define SOCKET_DATAGRAM			0x20	/* Use datagrams */
-#define SOCKET_ASYNC			0x40	/* Use async connect */
-#define SOCKET_BLOCK			0x80	/* Use blocking I/O */
-#define SOCKET_LISTENING		0x100	/* Socket is server listener */
-#define SOCKET_CLOSING			0x200	/* Socket is closing */
-#define SOCKET_CONNRESET		0x400	/* Socket connection was reset */
-#define SOCKET_MYOWNBUFFERS		0x800	/* Not using inBuf/outBuf ringq */
+#define SOCKET_EOF              	0x1     /*  Seen end of file */
+#define SOCKET_CONNECTING       	0x2     /*  Connect in progress */
+#define SOCKET_RESERVICE        	0x4     /*  Socket needs re-servicing */
+#define SOCKET_ASYNC            	0x8     /*  Use async connect */
+#define SOCKET_BLOCK            	0x10    /*  Use blocking I/O */
+#define SOCKET_LISTENING        	0x20    /*  Socket is server listener */
+#define SOCKET_CLOSING          	0x40    /*  Socket is closing */
+#define SOCKET_CONNRESET        	0x80    /*  Socket connection was reset */
+#define SOCKET_HANDSHAKING      	0x100   /*  Doing SSL handshake */
+#define SOCKET_BUFFERED_READ    	0x200   /*  Message pending on this socket */
+#define SOCKET_BUFFERED_WRITE   	0x400   /*  Message pending on this socket */
+#define SOCKET_NODELAY          	0x800   /*  Disable Nagle algorithm */
+#define SOCKET_FLUSHING			0x900	/* Background flushing */
 
 #define SOCKET_PORT_MAX			0xffff	/* Max Port size */
+
 
 /*
  *	Socket error values
@@ -865,8 +867,7 @@ extern int bopen(void *buf, int bufsize, int flags);
 #ifdef NO_BALLOC
 #define balloc(B_ARGS, num) malloc(num)
 #define bfree(B_ARGS, p) free(p)
-#define bfreeSafe(B_ARGS, p) \
-	if (p) { free(p); } else
+#define bfreeSafe(B_ARGS, p) if (p) { free(p); }
 #define brealloc(B_ARGS, p, num) realloc(p, num)
 extern char_t *bstrdupNoBalloc(char_t *s);
 extern char *bstrdupANoBalloc(char *s);
