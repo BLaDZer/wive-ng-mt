@@ -118,14 +118,6 @@ typedef char			char_t;
 	T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
 
 /*
- *	The following include has to be after the unicode defines.  By putting it
- *	here, many modules in various parts of the tree are cleaner.
- */
-#if (defined (LITTLEFOOT) && defined (INMEM))
-	#include	"lf/inmem.h"
-#endif /* LITTLEFOOT && INMEM */
-
-/*
  *	Type for unicode systems
  */
 #ifdef UNICODE
@@ -189,21 +181,12 @@ typedef struct _stat gstat_t;
 
 #define gtolower	towlower
 #define gtoupper	towupper
-#ifdef CE
-#define gisspace	isspace
-#define gisdigit	isdigit
-#define gisxdigit	isxdigit
-#define gisupper	isupper
-#define gislower	islower
-#define gisprint	isprint
-#else
 #define gremove		_wremove
 #define gisspace	iswspace
 #define gisdigit	iswdigit
 #define gisxdigit	iswxdigit
 #define gisupper	iswupper
 #define gislower	iswlower
-#endif	/* if CE */
 #define gisalnum	iswalnum
 #define gisalpha	iswalpha
 #define gatoi(s)	wcstol(s, NULL, 10)
@@ -214,19 +197,9 @@ typedef struct _stat gstat_t;
 
 #else /* ! UNICODE */
 
-#ifdef VXWORKS
-#define gchdir		vxchdir
-#define gmkdir		vxmkdir
-#define grmdir		vxrmdir
-#elif (defined (LYNX) || defined (LINUX) || defined (MACOSX) || defined (SOLARIS))
 #define gchdir		chdir
 #define gmkdir(s)	mkdir(s,0755)
 #define grmdir		rmdir
-#else
-#define gchdir		chdir
-#define gmkdir		mkdir
-#define grmdir		rmdir
-#endif /* VXWORKS #elif LYNX || LINUX || MACOSX || SOLARIS*/
 
 #define gclose		close
 #define gclosedir	closedir
@@ -300,21 +273,8 @@ typedef struct stat gstat_t;
 #define gctime		ctime
 #define ggetenv		getenv
 #define gexecvp		execvp
-#ifndef VXWORKS
 #define gmain		main
-#endif /* ! VXWORKS */
-#ifdef VXWORKS
-#define	fcntl(a, b, c)
-#endif /* VXWORKS */
 #endif /* ! UNICODE */
-
-/*
- *	Include inmem.h here because it redefines many of the file access fucntions.
- *	Otherwise there would be lots more #if-#elif-#else-#endif ugliness.
- */
-#ifdef INMEM
-	#include	"lf/inmem.h"
-#endif
 
 /********************************** Defines ***********************************/
 

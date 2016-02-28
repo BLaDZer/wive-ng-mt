@@ -17,9 +17,7 @@
 
 /********************************* Includes ***********************************/
 
-#ifndef CE
 #include	<time.h>
-#endif
 #include	"websda.h"
 #include	"md5.h"
 
@@ -27,7 +25,7 @@
 
 #define RANDOMKEY	T("onceuponatimeinparadise")
 #define NONCE_SIZE	34
-#define HASH_SIZE   16
+#define HASH_SIZE	16
 
 /*********************************** Code *************************************/
 /*

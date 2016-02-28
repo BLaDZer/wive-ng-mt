@@ -144,13 +144,8 @@ typedef struct {
 /*
  *	Defines for file open.
  */
-#ifndef CE
 #define	SOCKET_RDONLY	O_RDONLY
 #define	SOCKET_BINARY	O_BINARY
-#else /* CE */
-#define	SOCKET_RDONLY	0x1
-#define	SOCKET_BINARY	0x2
-#endif /* CE */
 
 extern websRomPageIndexType	websRomPageIndex[];
 extern websMimeType		websMimeList[];		/* List of mime types */
@@ -226,10 +221,5 @@ extern int		strcmpci(char_t* s1, char_t* s2);
 extern int 		 websEmfOpen();
 extern void 	 websEmfClose();
 extern void 	 websSetEmfEnvironment(webs_t wp);
-#endif
-
-#ifdef CE
-extern int writeUniToAsc(int fid, void *buf, unsigned int len);
-extern int readAscToUni(int fid, void **buf, unsigned int len);
 #endif
 #endif /* _h_WEBS_INTERNAL */

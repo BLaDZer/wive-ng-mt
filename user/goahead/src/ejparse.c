@@ -19,14 +19,10 @@
 
 #include	"ejIntrn.h"
 
-#ifdef CE
-	#include	"CE/wincompat.h"
-#endif
-
 /********************************** Local Data ********************************/
 
-ej_t			**ejHandles;							/* List of ej handles */
-int				ejMax = -1;								/* Maximum size of	*/
+ej_t	**ejHandles;	/* List of ej handles */
+int	ejMax = -1;	/* Maximum size of	*/
 
 /****************************** Forward Declarations **************************/
 

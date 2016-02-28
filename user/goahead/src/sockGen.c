@@ -82,9 +82,9 @@ void socketReservice(int sid)
 
 int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 {
-#if (!defined (NO_GETHOSTBYNAME) && !defined (VXWORKS))
+#ifndef NO_GETHOSTBYNAME
 	struct hostent		*hostent;					/* Host database entry */
-#endif /* ! (NO_GETHOSTBYNAME || VXWORKS) */
+#endif /* ! (NO_GETHOSTBYNAME) */
 	socket_t			*sp;
 	struct sockaddr_in	sockaddr;
 	int					sid, rc;
@@ -164,13 +164,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 				socketFree(sid);
 				return -1;
 			}
-#elif (defined (VXWORKS))
-			sockaddr.sin_addr.s_addr = (unsigned long) hostGetByName(host);
-			if (sockaddr.sin_addr.s_addr == NULL) {
-				errno = ENXIO;
-				socketFree(sid);
-				return -1;
-			}
 #else
 			hostent = gethostbyname(host);
 			if (hostent != NULL) {
@@ -191,7 +184,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 					return -1;
 				}
 			}
-#endif /* (NO_GETHOSTBYNAME || VXWORKS) */
+#endif /* (NO_GETHOSTBYNAME) */
 		}
 	}
 #endif /* WF_USE_IPV6 */

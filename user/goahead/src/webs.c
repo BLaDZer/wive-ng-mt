@@ -227,8 +227,7 @@ int websOpenListen(int port, int retries)
 		websIpaddrUrl = bstrdup(B_L, websIpaddr);
 	} else {
 		fmtAlloc(&websHostUrl, WEBS_MAX_URL + 80, T("%s:%d"), websHost, port);
-		fmtAlloc(&websIpaddrUrl, WEBS_MAX_URL + 80, T("%s:%d"),
-			websIpaddr, port);
+		fmtAlloc(&websIpaddrUrl, WEBS_MAX_URL + 80, T("%s:%d"), websIpaddr, port);
 	}
 
 	syslog(LOG_INFO, "Listening for HTTP requests at address %s", websIpaddrUrl);
@@ -401,7 +400,7 @@ void websReadEvent(webs_t wp)
 			}
 			wp->state = WEBS_HEADER;
 			break;
-		
+
 		case WEBS_HEADER:
 /*
  *			Store more of the HTTP header. As we are doing line reads, we
@@ -676,30 +675,8 @@ static int websGetInput(webs_t wp, char_t **ptext, int *pnbytes)
 			} else {
 /*
  *				If an error occurred and it wasn't an eof, close the connection
- */
-#ifdef HP_FIX
-				websDone(wp, 0);
-#endif /*HP_FIX*/
-
+ */				websDone(wp, 0);
 			}
-/*
- *			If state is WEBS_HEADER and the ringq is empty, then this is a
- *			simple request with no additional header fields to process and
- *			no empty line terminator.
- */
-/*
- *			NOTE: this fix for earlier versions of browsers is troublesome
- *			because if we don't receive the entire header in the first pass
- *			this code assumes we were only expecting a one line header, which
- *			is not necessarily the case. So we weren't processing the whole
- *			header and weren't fufilling requests properly. 
- */
-#ifdef UNUSED
-			if (wp->state == WEBS_HEADER && ringqLen(&wp->header) <= 0) {
-				websParseRequest(wp);
-				websUrlHandlerRequest(wp);
-			}
-#endif
 			return -1;
 
 		} else if (nbytes == 0) {
@@ -1897,16 +1874,16 @@ static void websLog(webs_t wp, int code)
 	char	*abuf;
 	int		len;
 #define qAnlLog 1
-#if (defined(qAnlLog) && !defined(CE))
+#if defined(qAnlLog)
    time_t timer;
    char_t* newLine = NULL;
    char_t* timeStr = NULL;
 #endif
-	a_assert(websValid(wp));
+    a_assert(websValid(wp));
 
-	buf = NULL;
+    buf = NULL;
 
-#if (defined(qAnlLog) && !defined(CE))
+#if defined(qAnlLog)
    time(&timer);
    timeStr = ctime(&timer);
    newLine = gstrchr(timeStr, '\n');
