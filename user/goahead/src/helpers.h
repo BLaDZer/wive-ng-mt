@@ -236,5 +236,4 @@ int getIfNetmask(const char *ifname, char *if_net);
 
 int vpn_mode_enabled(void);
 unsigned int ConvertRssiToSignalQuality(long RSSI);
-void setSocketNodelayReuse(int sock);
 #endif /* HELPERS_H_ */

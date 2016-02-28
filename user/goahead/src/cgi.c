@@ -69,7 +69,6 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	}
 	fmtAlloc(&cgiPath, FNAMESIZE, T("%s/%s/%s"), websGetDefaultDir(),
 		CGI_BIN, cgiName);
-#ifndef VXWORKS
 /*
  *	See if the file exists and is executable.  If not error out.
  *	Don't do this step for VxWorks, since the module may already
@@ -82,20 +81,12 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			bfree(B_L, cgiPath);
 			return 1;
 		}
-#if (defined (WIN) || defined (CE))
-		if (gstrstr(cgiPath, T(".exe")) == NULL &&
-			gstrstr(cgiPath, T(".bat")) == NULL) {
-#elif (defined (NW))
-			if (gstrstr(cgiPath, T(".nlm")) == NULL) {
-#else
 		if (gaccess(cgiPath, X_OK) != 0) {
-#endif /* WIN || CE */
 			websError(wp, 200, T("CGI process file is not executable"));
 			bfree(B_L, cgiPath);
 			return 1;
 		}
 	}
-#endif /* ! VXWORKS */
 
 /*
  *	Get the CWD for resetting after launching the child process CGI

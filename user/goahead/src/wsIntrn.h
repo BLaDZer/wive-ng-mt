@@ -47,77 +47,17 @@
 #include	<stdlib.h>
 #include	<string.h>
 #include	<stdarg.h>
-
-#ifdef NETWARE
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<io.h>
-#endif
-
-#ifdef WIN
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<io.h>
-#endif
-
-#ifdef NW
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-#endif
-
-#ifdef SCOV5
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
-#endif
-
-#ifdef LYNX
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
-#endif
-
-#ifdef UNIX
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
-#endif
-
-#ifdef QNX4
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
-	#include	<unix.h>
-#endif
-
-#ifdef UW
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-#endif
-
-#ifdef VXWORKS
-	#include	<vxWorks.h>
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-#endif
-
-#ifdef SOLARIS
-	#include	<macros.h>
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-#endif
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<unistd.h>
 
 #include	"uemf.h"
 #include	"ejIntrn.h"
 #include	"webs.h"
 
 /********************************** Defines ***********************************/
-/* 
+/*
  *	Read handler flags and state
  */
 #define WEBS_BEGIN		0x1			/* Beginning state */

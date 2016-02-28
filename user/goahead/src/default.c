@@ -218,119 +218,6 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	return 1;
 }
 
-
-#ifdef WIN
-
-static int badPath(char_t* path, char_t* badPath, int badLen)
-{
-   int retval = 0;
-   int len = gstrlen(path);
-   int i = 0;
-
-   if (len <= badLen +1)
-   {
-      for (i = 0; i < badLen; ++i)
-      {
-         if (badPath[i] != gtolower(path[i]))
-         {
-            return 0;
-         }
-      }
-      /* if we get here, the first 'badLen' characters match.
-       * If 'path' is 1 character larger than 'badPath' and that extra 
-       * character is NOT a letter or a number, we have a bad path.
-       */
-      retval = 1;
-      if (badLen + 1 == len)
-      {
-         /* e.g. path == "aux:" */
-         if (gisalnum(path[len-1]))
-         {
-            /* the last character is alphanumeric, so we let this path go 
-             * through. 
-             */
-            retval = 0;
-         }
-      }
-   }
-
-   return retval;
-}
-
-
-static int isBadWindowsPath(char_t** parts, int partCount)
-{
-   /*
-    * If we're running on Windows 95/98/ME, malicious users can crash the 
-    * OS by requesting an URL with any of several reserved DOS device names 
-    * in them (AUX, NUL, etc.).
-    * If we're running on any of those OS versions, we scan the URL 
-    * for paths with any of these elements before 
-    * trying to access them. If any of the subdirectory names match one
-    * of our prohibited links, we declare this to be a 'bad' path, and return 
-    * 1 to indicate this. This may be an overly heavy-handed approach, but should 
-    * prevent the DOS attack.
-    * NOTE that this function is only compiled in when we are running on Win32, 
-    * and only has an effect when we are running on Win95/98, or ME. On all other 
-    * versions of Windows, we check the version info, and return 0 immediately.
-    *
-    * According to http://packetstormsecurity.nl/0003-exploits/SCX-SA-01.txt:
-
-    *  II.  Problem Description
-    *   When the Microsoft Windows operating system is parsing a path that 
-    *   is being crafted like "c:\[device]\[device]" it will halt, and crash 
-    *   the entire operating system.  
-    *   Four device drivers have been found to crash the system.  The CON,
-    *   NUL, AUX, CLOCK$ and CONFIG$ are the two device drivers which are 
-    *   known to crash.  Other devices as LPT[x]:, COM[x]: and PRN have not 
-    *   been found to crash the system.  
-    *   Making combinations as CON\NUL, NUL\CON, AUX\NUL, ... seems to 
-    *   crash Ms Windows as well.
-    *   Calling a path such as "C:\CON\[filename]" won't result in a crash
-    *   but in an error-message.  Creating the map "CON", "CLOCK$", "AUX"
-    *   "NUL" or "CONFIG$" will also result in a simple error-message 
-    *   saying: ''creating that map isn't allowed''.
-    *
-    * returns 1 if it finds a bad path element.
-    */
-   OSVERSIONINFO version;
-   int i;
-   version.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-   if (GetVersionEx(&version))
-   {
-      if (VER_PLATFORM_WIN32_NT != version.dwPlatformId)
-      {
-         /*
-          * we are currently running on 95/98/ME.
-          */
-         for (i = 0; i < partCount; ++i)
-         {
-            /*
-             * check against the prohibited names. If any of our requested 
-             * subdirectories match any of these, return '1' immediately.
-             */
-
-            if ( 
-             (badPath(parts[i], T("con"), 3)) ||
-             (badPath(parts[i], T("nul"), 3)) ||
-             (badPath(parts[i], T("aux"), 3)) ||
-             (badPath(parts[i], T("clock$"), 6)) ||
-             (badPath(parts[i], T("config$"), 7)) )
-            {
-               return 1;
-            }
-         }
-      }
-   }
-   /*
-    * either we're not on one of the bad OS versions, or the request has 
-    * no problems.
-    */
-   return 0;
-}
-#endif
-
-
 /******************************************************************************/
 /*
  *	Validate the URL path and process ".." path segments. Return -1 if the URL
@@ -421,14 +308,6 @@ int websValidateUrl(webs_t wp, char_t *path)
 		}
 		token = gstrtok(NULL, T("/"));
 	}
-#ifdef WIN
-   if (isBadWindowsPath(parts, npart))
-   {
-      bfree(B_L, path);
-      return -1;
-   }
-
-#endif
 
     /*
      *	Create local path for document. Need extra space all "/" and null.

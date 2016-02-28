@@ -52,35 +52,6 @@ static void put_char(strbuf_t *buf, char_t c);
 static void put_string(strbuf_t *buf, char_t *s, int len, int width, int prec, enum flag f);
 static void put_ulong(strbuf_t *buf, unsigned long int value, int base, int upper, char_t *prefix, int width, int prec, enum flag f);
 
-/************************************ Code ************************************/
-/*
- *	"basename" returns a pointer to the last component of a pathname
- *  LINUX, LynxOS and Mac OS X have their own basename function
- */
-
-#if (!defined (LINUX) && !defined (LYNX) && !defined (MACOSX))
-char_t *basename(char_t *name)
-{
-	char_t	*cp;
-
-#if (defined (NW) || defined (WIN))
-	if (((cp = gstrrchr(name, '\\')) == NULL) &&
-			((cp = gstrrchr(name, '/')) == NULL)) {
-		return name;
-#else
-	if ((cp = gstrrchr(name, '/')) == NULL) {
-		return name;
-#endif
-	} else if (*(cp + 1) == '\0' && cp == name) {
-		return name;
-	} else if (*(cp + 1) == '\0' && cp != name) {
-		return T("");
-	} else {
-		return ++cp;
-	}
-}
-#endif /* ! LINUX & ! LYNX & ! MACOSX */
-
 /******************************************************************************/
 /*
  *	Returns a pointer to the directory component of a pathname. bufsize is
@@ -96,12 +67,7 @@ char_t *dirname(char_t *buf, char_t *name, int bufsize)
 	a_assert(buf);
 	a_assert(bufsize > 0);
 
-#if (defined (WIN) || defined (NW))
-	if ((cp = gstrrchr(name, '/')) == NULL && 
-		(cp = gstrrchr(name, '\\')) == NULL)
-#else
 	if ((cp = gstrrchr(name, '/')) == NULL)
-#endif
 	{
 		gstrcpy(buf, T("."));
 		return buf;
@@ -552,7 +518,7 @@ char_t *ascToUni(char_t *ubuf, char *str, int nBytes)
 #else
 
 #ifdef kUseMemcopy
-   memcpy(ubuf, str, nBytes);
+	memcpy(ubuf, str, nBytes);
 #else
 	strncpy(ubuf, str, nBytes);
 #endif /*kUseMemcopy*/
@@ -570,8 +536,7 @@ char_t *ascToUni(char_t *ubuf, char *str, int nBytes)
 char *uniToAsc(char *buf, char_t *ustr, int nBytes)
 {
 #ifdef UNICODE
-   if (WideCharToMultiByte(CP_ACP, 0, ustr, nBytes, buf, nBytes, 
-    NULL, NULL) < 0) 
+   if (WideCharToMultiByte(CP_ACP, 0, ustr, nBytes, buf, nBytes, NULL, NULL) < 0)
    {
       return (char*) ustr;
    }

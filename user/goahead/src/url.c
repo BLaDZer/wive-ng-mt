@@ -191,9 +191,6 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 
 			if (ok) {
 				cp[length] = '\0';
-#ifdef WIN
-				strlower(cp);
-#endif
 				ext = cp;
 			}
 		}

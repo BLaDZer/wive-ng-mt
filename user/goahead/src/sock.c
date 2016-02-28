@@ -294,16 +294,6 @@ int socketFlush(int sid)
 			if (errCode == EINTR) {
 				continue;
 			} else if (errCode == EWOULDBLOCK || errCode == EAGAIN) {
-#if (defined (WIN) || defined (CE))
-				if (sp->flags & SOCKET_BLOCK) {
-					int		errCode;
-					if (! socketWaitForEvent(sp,  FD_WRITE | SOCKET_WRITABLE,
-						&errCode)) {
-						return -1;
-					}
-					continue;
-				} 
-#endif
 /*
  *				Ensure we get a FD_WRITE message when the socket can absorb
  *				more data (non-blocking only.) Store the user's mask if we
@@ -372,16 +362,6 @@ int socketEof(int sid)
 		return -1;
 	}
 	return sp->flags & SOCKET_EOF;
-}
-
-void socketReservice(int sid)
-{
-    socket_t *sp;
-
-    if ((sp = socketPtr(sid)) == NULL) {
-        return;
-    }
-    sp->flags |= SOCKET_RESERVICE;
 }
 
 /******************************************************************************/
@@ -492,31 +472,17 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 	if (sp->flags & SOCKET_EOF)
     		return -1;
 
-#if (defined (WIN) || defined (CE))
-	if ((sp->flags & SOCKET_ASYNC)
-			&& ! socketWaitForEvent(sp,  FD_CONNECT, errCode)) {
-		return -1;
-	}
-#endif
-
 /*
  *	Write the data
  */
 	bytes = send(sp->sock, buf, toWrite, MSG_NOSIGNAL);
 
 	if (bytes < 0) {
-		*errCode = socketGetError();
-#if (defined (WIN) || defined (CE))
-		sp->currentEvents &= ~FD_WRITE;
-#endif
-
+		*errCode = errno;
 		return -1;
 
 	} else if (bytes == 0 && bytes != toWrite) {
 		*errCode = EWOULDBLOCK;
-#if (defined (WIN) || defined (CE))
-		sp->currentEvents &= ~FD_WRITE;
-#endif
 		return -1;
 	}
 
@@ -593,11 +559,7 @@ void socketFree(int sid)
 		socketSetBlock(sid, 0);
 		if (shutdown(sp->sock, 1) >= 0)
 			recv(sp->sock, buf, sizeof(buf), MSG_NOSIGNAL);
-#if (defined (WIN) || defined (CE))
-		closesocket(sp->sock);
-#else
 		close(sp->sock);
-#endif
 	}
 
 	ringqClose(&sp->inBuf);
@@ -634,33 +596,6 @@ socket_t *socketPtr(int sid)
 
 	a_assert(socketList[sid]);
 	return socketList[sid];
-}
-
-/******************************************************************************/
-/*
- *	Get the operating system error code
- */
-
-int socketGetError()
-{
-#if (defined (WIN) || defined (CE))
-	switch (WSAGetLastError()) {
-	case WSAEWOULDBLOCK:
-		return EWOULDBLOCK;
-	case WSAECONNRESET:
-		return ECONNRESET;
-	case WSAENETDOWN:
-		return ENETDOWN;
-	case WSAEPROCLIM:
-		return EAGAIN;
-	case WSAEINTR:
-		return EINTR;
-	default:
-		return EINVAL;
-	}
-#else
-	return errno;
-#endif
 }
 
 /******************************************************************************/
@@ -739,4 +674,17 @@ int socketGetPort(int sid)
 		return -1;
 	}
 	return sp->port;
+}
+
+/******************************************************************************/
+/*
+	Disable the Nagle algorithm for less latency in RPC
+	http://www.faqs.org/rfcs/rfc896.html
+	http://www.w3.org/Protocols/HTTP/Performance/Nagle/
+*/
+void setSocketNodelayReuse(int sock)
+{
+	int tmp = 1;
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&tmp, sizeof(tmp));
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&tmp, sizeof(tmp));
 }

@@ -150,11 +150,7 @@ SOCKET socketConnect(char *ip, short port, int *err)
 	addr.sin_port = htons(port);
 	addr.sin_addr.s_addr = inet_addr(ip);
 	rc = connect(fd, (struct sockaddr *)&addr, sizeof(addr));
-#if WIN
-	if (rc != 0) {
-#else
 	if (rc < 0) {
-#endif
 		*err = getSocketError();
 		return INVALID_SOCKET;
 	}
@@ -809,13 +805,8 @@ int psSocketRead(SOCKET sock, sslBuf_t **out, int *status)
 */
 void setSocketBlock(SOCKET sock)
 {
-#if _WIN32
-	int		block = 0;
-	ioctlsocket(sock, FIONBIO, &block);
-#elif LINUX
-	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL) & ~O_NONBLOCK);
 	fcntl(sock, F_SETFD, FD_CLOEXEC);
-#endif
+	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL) & ~O_NONBLOCK);
 }
 
 /******************************************************************************/
@@ -824,12 +815,7 @@ void setSocketBlock(SOCKET sock)
 */
 void setSocketNonblock(SOCKET sock)
 {
-#if _WIN32
-	int		block = 1;
-	ioctlsocket(sock, FIONBIO, &block);
-#elif LINUX
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL) | O_NONBLOCK);
-#endif
 }
 
 /******************************************************************************/
@@ -842,11 +828,7 @@ void setSocketNonblock(SOCKET sock)
 void breakpoint()
 {
 	static int preventInline = 0;
-#if _WIN32
-	DebugBreak();
-#elif LINUX
 	abort();
-#endif
 }
 
 
@@ -862,143 +844,3 @@ void breakpoint()
  		not thread safe, so should be called b4 any thread creation
  		we currently hardcode argv[0] cause none of our apps need it
  */
-
-#if WINCE || VXWORKS
-
-void parseCmdLineArgs(char *args, int *pargc, char ***pargv)
-{
-	char			**argv;
-	char			*ptr;
-	int				size, i;
-
-/*
- *	Figure out the number of elements in our argv array.  
- *	We know we need an argv array of at least 3, since we have the
- *	program name, an argument, and a NULL in the array.
- */
-	for (size = 3, ptr = args; ptr && *ptr != '\0'; ptr++) {
-		if (isspace(*ptr)) {
-			size++;
-			while (isspace(*ptr)) {
-				ptr++;
-			}
-			if (*ptr == '\0') {
-				break;
-			}
-		}
-	}
-/*
- *	This is called from main, so don't use psMalloc here or
- *	all the stats will be wrong.
- */
-	argv = (char**) malloc(size * sizeof(char*));
-	*pargv = argv;
-
-	for (i = 1, ptr = args; ptr && *ptr != '\0'; i++) {
-		while (isspace(*ptr)) {
-			ptr++;
-		}
-		if (*ptr == '\0')  {
-			break;
-		}
-/*
- *		Handle double quoted arguments.  Treat everything within
- *		the double quote as one arg.
- */
-		if (*ptr == '"') {
-			ptr++;
-			argv[i] = ptr;
-			while ((*ptr != '\0') && (*ptr != '"')) {
-				ptr++;
-			}
-		} else {
-			argv[i] = ptr;
-			while (*ptr != '\0' && !isspace(*ptr)) {
-				ptr++;
-			}
-		}
-		if (*ptr != '\0') {
-			*ptr = '\0';
-			ptr++;
-		}
-	}
-	argv[i] = NULL;
-	*pargc = i ;
-
-	argv[0] = "PeerSec";
-	for (ptr = argv[0]; *ptr; ptr++) {
-		if (*ptr == '\\') {
-			*ptr = '/';
-		}
-	}
-}
-#endif /* WINCE || VXWORKS */
-
-#ifdef WINCE
-
-/******************************************************************************/
-/*
- 	The following functions implement a unixlike time() function for WINCE.
-
-	NOTE: this code is copied from the os layer in win.c to expose it for use
-	in example applications.
- */
-
-static FILETIME YearToFileTime(WORD wYear)
-{	
-	SYSTEMTIME sbase;
-	FILETIME fbase;
-
-	sbase.wYear         = wYear;
-	sbase.wMonth        = 1;
-	sbase.wDayOfWeek    = 1; //assumed
-	sbase.wDay          = 1;
-	sbase.wHour         = 0;
-	sbase.wMinute       = 0;
-	sbase.wSecond       = 0;
-	sbase.wMilliseconds = 0;
-
-	SystemTimeToFileTime( &sbase, &fbase );
-
-	return fbase;
-}
-
-time_t time() {
-
-	__int64 time1, time2, iTimeDiff;
-	FILETIME fileTime1, fileTime2;
-	SYSTEMTIME  sysTime;
-
-/*
-	Get 1970's filetime.
-*/
-	fileTime1 = YearToFileTime(1970);
-
-/*
-	Get the current filetime time.
-*/
-	GetSystemTime(&sysTime);
-	SystemTimeToFileTime(&sysTime, &fileTime2);
-
-
-/* 
-	Stuff the 2 FILETIMEs into their own __int64s.
-*/	
-	time1 = fileTime1.dwHighDateTime;
-	time1 <<= 32;				
-	time1 |= fileTime1.dwLowDateTime;
-
-	time2 = fileTime2.dwHighDateTime;
-	time2 <<= 32;				
-	time2 |= fileTime2.dwLowDateTime;
-
-/*
-	Get the difference of the two64-bit ints.
-
-	This is he number of 100-nanosecond intervals since Jan. 1970.  So
-	we divide by 10000 to get seconds.
- */
-	iTimeDiff = (time2 - time1) / 10000000;
-	return (int)iTimeDiff;
-}
-#endif /* WINCE */

@@ -19,73 +19,7 @@
 
 /******************************* Per O/S Includes *****************************/
 
-#ifdef WIN
-	#include	<direct.h>
-	#include	<io.h>
-	#include	<sys/stat.h>
-	#include	<limits.h>
-	#include	<tchar.h>
-	#include	<windows.h>
-	#include	<winnls.h>
-	#include	<time.h>
-	#include	<sys/types.h>
 	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-#endif /* WIN */
-
-#ifdef CE
-	/*#include	<errno.h>*/
-	#include	<limits.h>
-	#include	<tchar.h>
-	#include	<windows.h>
-	#include	<winsock.h>
-	#include	<winnls.h>
-	#include	"CE/wincompat.h"
-	#include	<winsock.h>
-#endif /* CE */
-
-#ifdef NW
-	#include	<direct.h>
-	#include	<io.h>
-	#include	<sys/stat.h>
-	#include	<time.h>
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-	#include	<niterror.h>
-	#define		EINTR EINUSE
-	#define		 WEBS	1
-	#include	<limits.h>
-	#include	<netdb.h>
-	#include	<process.h>
-	#include	<tiuser.h>
-	#include	<sys/time.h>
-	#include	<arpa/inet.h>
-	#include	<sys/types.h>
-	#include	<sys/socket.h>
-	#include	<sys/filio.h>
-	#include	<netinet/in.h>
-#endif /* NW */
-
-#ifdef SCOV5 
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	"sys/socket.h"
-	#include	"sys/select.h"
-	#include	"netinet/in.h"
-	#include 	"arpa/inet.h"
-	#include 	"netdb.h"
-#endif /* SCOV5 */
-
-#ifdef UNIX
-	#include	<stdio.h>
-#endif /* UNIX */
-
-#ifdef LINUX
 	#include	<sys/types.h>
 	#include	<sys/stat.h>
 	#include	<sys/param.h>
@@ -102,96 +36,6 @@
 	#include	<time.h>
 	#include	<fcntl.h>
 	#include	<errno.h>
-#endif /* LINUX */
-
-#ifdef LYNX
-	#include	<limits.h>
-	#include	<stdarg.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<socket.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-#endif /* LYNX */
-
-#ifdef MACOSX
-	#include	<sys/stat.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<sys/socket.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-#endif /* MACOSX */
-
-#ifdef UW
-	#include	<stdio.h>
-#endif /* UW */
-
-#ifdef VXWORKS
-	#include	<vxWorks.h>
-	#include	<sockLib.h>
-	#include	<selectLib.h>
-	#include	<inetLib.h>
-	#include	<ioLib.h>
-	#include	<stdio.h>
-	#include	<stat.h>
-	#include	<time.h>
-	#include	<usrLib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-#endif /* VXWORKS */
-
-#ifdef sparc
-# define __NO_PACK
-#endif /* sparc */
-
-#ifdef SOLARIS
-	#include	<sys/types.h>
-	#include	<limits.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-#endif /* SOLARIS */
-
-#ifdef QNX4
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	<sys/socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-        #include    	<stdlib.h>
-        #include    	<unistd.h>
-        #include    	<sys/uio.h>
-        #include    	<sys/wait.h>
-#endif /* QNX4 */
-
-#ifdef ECOS
-	#include	<limits.h>
-	#include	<cyg/infra/cyg_type.h>
-	#include	<cyg/kernel/kapi.h>
-	#include	<time.h>
-	#include	<network.h>
-	#include	<errno.h>
-#endif /* ECOS */
 
 /********************************** Includes **********************************/
 
@@ -205,72 +49,14 @@
 
 /******************************* Per O/S Defines *****************************/
 
-#ifdef UW
-	#define		__NO_PACK		1
-#endif /* UW */
-
-#if (defined (SCOV5) || defined (VXWORKS) || defined (LINUX) || defined (LYNX) || defined (MACOSX))
 #ifndef O_BINARY
-#define O_BINARY 		0
+#define O_BINARY 	0
 #endif /* O_BINARY */
 #define	SOCKET_ERROR	-1
-#endif /* SCOV5 || VXWORKS || LINUX || LYNX || MACOSX */
 
-#if (defined (WIN) || defined (CE))
-/*
- *	__NO_FCNTL means can't access fcntl function.  Fcntl.h is still available.
- */
-#define		__NO_FCNTL		1
-
-#undef R_OK
-#define R_OK	4
-#undef W_OK
-#define W_OK	2
-#undef X_OK
-#define X_OK	1
-#undef F_OK
-#define F_OK	0
-#endif /* WIN || CE */
-
-#ifdef ECOS
-	#define		O_RDONLY		1
-	#define		O_BINARY		2
-
-	#define		__NO_PACK		1
-	#define		__NO_EJ_FILE	1
-	#define		__NO_CGI_BIN	1
-	#define		__NO_FCNTL		1
-
-/*
- *	#define LIBKERN_INLINE to avoid kernel inline functions
- */
-	#define		LIBKERN_INLINE
-
-#endif /* ECOS */
-
-#ifdef QNX4
-    typedef long        fd_mask;
-    #define NFDBITS (sizeof (fd_mask) * NBBY)   /* bits per mask */
-#endif /* QNX4 */
-
-#ifdef NW
-	#define fd_mask			fd_set
-	#define INADDR_NONE		-1l
-
-	#define __NO_FCNTL		1
-
-	#undef R_OK
-	#define R_OK    4
-	#undef W_OK
-	#define W_OK    2
-	#undef X_OK
-	#define X_OK    1
-	#undef F_OK
-	#define F_OK    0
-#endif /* NW */
 
 /********************************** Unicode ***********************************/
-/* 
+/*
  *	Constants and limits. Also FNAMESIZE and PATHSIZE are currently defined 
  *	in param.h to be 128 and 512
  */
@@ -308,9 +94,6 @@ typedef unsigned short		uchar_t;
 typedef char			char_t;
 #define	TSZ(x)			(sizeof(x))
 #define	TASTRL(x)		(strlen(x) + 1)
-#ifdef WIN
-typedef unsigned char		uchar_t;
-#endif /* WIN */
 
 #endif /* UNICODE */
 
@@ -784,12 +567,6 @@ extern int	cronFree(cron_t *cp);
  *	Socket flags
  */
 
-#if ((defined (WIN) || defined (CE)) && defined (WEBS))
-#define EWOULDBLOCK             WSAEWOULDBLOCK
-#define ENETDOWN                WSAENETDOWN
-#define ECONNRESET              WSAECONNRESET
-#endif /* (WIN || CE) && WEBS) */
-
 #define SOCKET_EOF              	0x1     /*  Seen end of file */
 #define SOCKET_CONNECTING       	0x2     /*  Connect in progress */
 #define SOCKET_RESERVICE        	0x4     /*  Socket needs re-servicing */
@@ -914,11 +691,6 @@ extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 #define B_USE_MALLOC		0x1				/* Okay to use malloc if required */
 #define B_USER_BUF		0x2				/* User supplied buffer for mem */
 
-
-#ifndef LINUX
-extern char_t	*basename(char_t *name);
-#endif /* !LINUX */
-
 #if defined (WEBS)
 /*
  *	The open source webserver uses a different callback/timer mechanism
@@ -990,7 +762,6 @@ extern void 	ringqAddNull(ringq_t *rq);
 
 extern int		scriptSetVar(int engine, char_t *var, char_t *value);
 extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
-
 extern void		socketClose();
 extern void		socketCloseConnection(int sid);
 extern void		socketCreateHandler(int sid, int mask, socketHandler_t 
@@ -1017,12 +788,13 @@ extern int 		socketSetBlock(int sid, int flags);
 extern int 		socketGetBlock(int sid);
 extern int 		socketAlloc(char *host, int port, socketAccept_t accept, 
 					int flags);
-extern void 	socketFree(int sid);
+extern void 		socketFree(int sid);
 extern int		socketGetError();
-extern socket_t *socketPtr(int sid);
+extern 			socket_t *socketPtr(int sid);
 extern int 		socketWaitForEvent(socket_t *sp, int events, int *errCode);
-extern void 	socketRegisterInterest(socket_t *sp, int handlerMask);
+extern void 		socketRegisterInterest(socket_t *sp, int handlerMask);
 extern int 		socketGetInput(int sid, char *buf, int toRead, int *errCode);
+extern void		setSocketNodelayReuse(int sock);
 
 extern char_t	*strlower(char_t *string);
 extern char_t	*strupper(char_t *string);

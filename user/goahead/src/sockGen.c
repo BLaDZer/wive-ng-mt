@@ -14,20 +14,7 @@
  *	socket I/O.
  */
 
-#if (!defined (WIN) || defined (LITTLEFOOT) || defined (WEBS))
-
 /********************************** Includes **********************************/
-#ifndef CE
-#include	<errno.h>
-#include	<fcntl.h>
-#include	<string.h>
-#include	<stdlib.h>
-#endif
-
-#ifdef VXWORKS
-#include	<hostLib.h>
-#endif
-
 #include	"uemf.h"
 #include	"helpers.h"
 /************************************ Locals **********************************/
@@ -41,7 +28,6 @@ static int socketOpenCount = 0;		/* Number of task using sockets */
 
 static void socketAccept(socket_t *sp);
 static int  socketDoEvent(socket_t *sp);
-static int  tryAlternateConnect(int sock, struct sockaddr *sockaddr);
 
 /*********************************** Code *************************************/
 /*
@@ -50,23 +36,8 @@ static int  tryAlternateConnect(int sock, struct sockaddr *sockaddr);
 
 int socketOpen()
 {
-#if (defined (CE) || defined (WIN))
-    WSADATA 	wsaData;
-#endif
-
-	if (++socketOpenCount > 1) {
+	if (++socketOpenCount > 1)
 		return 0;
-	}
-
-#if (defined (CE) || defined (WIN))
-	if (WSAStartup(MAKEWORD(1,1), &wsaData) != 0) {
-		return -1;
-	}
-	if (wsaData.wVersion != MAKEWORD(1,1)) {
-		WSACleanup();
-		return -1;
-	}
-#endif
 
 	socketList = NULL;
 	socketMax = 0;
@@ -82,7 +53,7 @@ int socketOpen()
 
 void socketClose()
 {
-	int		i;
+	int i;
 
 	if (--socketOpenCount <= 0) {
 		for (i = socketMax; i >= 0; i--) {
@@ -92,6 +63,16 @@ void socketClose()
 		}
 		socketOpenCount = 0;
 	}
+}
+
+void socketReservice(int sid)
+{
+    socket_t *sp;
+
+    if ((sp = socketPtr(sid)) == NULL) {
+        return;
+    }
+    sp->flags |= SOCKET_RESERVICE;
 }
 
 /******************************************************************************/
@@ -228,9 +209,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		socketFree(sid);
 		return -1;
 	}
-#ifndef __NO_FCNTL
-	fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
-#endif
 	socketHighestFd = max(socketHighestFd, sp->sock);
 
 
@@ -242,6 +220,10 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  *		Connect to the remote server in blocking mode, then go into 
  *		non-blocking mode if desired.
  */
+
+#ifndef __NO_FCNTL
+			fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
 			if (! (sp->flags & SOCKET_BLOCK)) {
 /*
  *				sockGen.c is only used for Windows products when blocking
@@ -249,38 +231,11 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  *				agents and open source webserver connectws.  Therefore the
  *				asynchronous connect code here is not compiled.
  */
-#if (defined (WIN) || defined (CE)) && (!defined (LITTLEFOOT) && !defined (WEBS))
-				int flag;
-
-				sp->flags |= SOCKET_ASYNC;
-/*
- *				Set to non-blocking for an async connect
- */
-				flag = 1;
-				if (ioctlsocket(sp->sock, FIONBIO, &flag) == SOCKET_ERROR) {
-					socketFree(sid);
-					return -1;
-				}
-#else
 				socketSetBlock(sid, 1);
-#endif /* #if (WIN || CE) && !(LITTLEFOOT || WEBS) */
-
 			}
-			if ((rc = connect(sp->sock, (struct sockaddr *) &sockaddr,
-				sizeof(sockaddr))) < 0 &&
-				(rc = tryAlternateConnect(sp->sock,
-				(struct sockaddr *) &sockaddr)) < 0) {
-#if (defined (WIN) || defined (CE))
-				if (socketGetError() != EWOULDBLOCK) {
-					socketFree(sid);
-					return -1;
-				}
-#else
+			if ((rc = connect(sp->sock, (struct sockaddr *)&sockaddr, sizeof(sockaddr))) < 0) {
 				socketFree(sid);
 				return -1;
-
-#endif /* WIN || CE */
-
 			}
 	} else {
 		/*
@@ -315,35 +270,12 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  *	Set the blocking mode
  */
 
-	if (flags & SOCKET_BLOCK) {
+	if (flags & SOCKET_BLOCK)
 		socketSetBlock(sid, 1);
-	} else {
+	else
 		socketSetBlock(sid, 0);
-	}
+
 	return sid;
-}
-
-
-/******************************************************************************/
-/*
- *	If the connection failed, swap the first two bytes in the 
- *	sockaddr structure.  This is a kludge due to a change in
- *	VxWorks between versions 5.3 and 5.4, but we want the 
- *	product to run on either.
- */
-
-static int tryAlternateConnect(int sock, struct sockaddr *sockaddr)
-{
-#ifdef VXWORKS
-	char *ptr;
-
-	ptr = (char *)sockaddr;
-	*ptr = *(ptr+1);
-	*(ptr+1) = 0;
-	return connect(sock, sockaddr, sizeof(struct sockaddr));
-#else
-	return -1;
-#endif /* VXWORKS */
 }
 
 /******************************************************************************/
@@ -464,13 +396,6 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
 		return 0;
 	}
 
-#if ((defined (WIN) || defined (CE)) && (!defined (LITTLEFOOT) && !defined  (WEBS)))
-	if ( !(sp->flags & SOCKET_BLOCK)
-			&& ! socketWaitForEvent(sp,  FD_CONNECT, errCode)) {
-		return -1;
-	}
-#endif
-
 /*
  *	Read the data
  */
@@ -487,7 +412,7 @@ int socketGetInput(int sid, char *buf, int toRead, int *errCode)
     */
    if (bytesRead < 0)
    {
-      *errCode = socketGetError();
+      *errCode = errno;
       if (*errCode == ECONNRESET)
       {
          sp->flags |= SOCKET_CONNRESET;
@@ -789,55 +714,30 @@ static int socketDoEvent(socket_t *sp)
 
 int socketSetBlock(int sid, int on)
 {
-	socket_t		*sp;
-	int				oldBlock;
-#if (defined (CE) || defined (WIN))
-	unsigned long	flag;
-	int iflag;
+	socket_t *sp;
+	int oldBlock;
 
-	flag = iflag = !on;
-#endif
 	if ((sp = socketPtr(sid)) == NULL) {
 		a_assert(0);
 		return 0;
 	}
+
 	oldBlock = (sp->flags & SOCKET_BLOCK);
 	sp->flags &= ~(SOCKET_BLOCK);
-	if (on) {
+	if (on)
 		sp->flags |= SOCKET_BLOCK;
-	}
 
 /*
  *	Put the socket into block / non-blocking mode
  */
 	if (sp->flags & SOCKET_BLOCK) {
-#if (defined (CE) || defined (WIN))
-		ioctlsocket(sp->sock, FIONBIO, &flag);
-#elif (defined (ECOS))
-		int off;
-		off = 0;
-		ioctl(sp->sock, FIONBIO, &off);
-#elif (defined (VXWORKS) || defined (NW))
-		ioctl(sp->sock, FIONBIO, (int)&iflag);
-#else
 #ifndef __NO_FCNTL
 		fcntl(sp->sock, F_SETFL, fcntl(sp->sock, F_GETFL) & ~O_NONBLOCK);
 #endif
-#endif
 
 	} else {
-#if (defined (CE) || defined (WIN))
-		ioctlsocket(sp->sock, FIONBIO, &flag);
-#elif (defined (ECOS))
-		int on;
-		on = 1;
-		ioctl(sp->sock, FIONBIO, &on);
-#elif (defined (VXWORKS) || defined (NW))
-		ioctl(sp->sock, FIONBIO, (int)&iflag);
-#else
 #ifndef __NO_FCNTL
 		fcntl(sp->sock, F_SETFL, fcntl(sp->sock, F_GETFL) | O_NONBLOCK);
-#endif
 #endif
 	}
 	return oldBlock;
@@ -854,7 +754,7 @@ int socketDontBlock()
 	int			i;
 
 	for (i = 0; i < socketMax; i++) {
-		if ((sp = socketList[i]) == NULL || 
+		if ((sp = socketList[i]) == NULL ||
 				(sp->handlerMask & SOCKET_READABLE) == 0) {
 			continue;
 		}
@@ -883,4 +783,3 @@ int socketSockBuffered(int sock)
 	}
 	return 0;
 }
-#endif /* (!WIN) | LITTLEFOOT | WEBS */
