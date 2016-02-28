@@ -374,6 +374,16 @@ int socketEof(int sid)
 	return sp->flags & SOCKET_EOF;
 }
 
+void socketReservice(int sid)
+{
+    socket_t *sp;
+
+    if ((sp = socketPtr(sid)) == NULL) {
+        return;
+    }
+    sp->flags |= SOCKET_RESERVICE;
+}
+
 /******************************************************************************/
 /*
  *	Return the number of bytes the socket can absorb without blocking

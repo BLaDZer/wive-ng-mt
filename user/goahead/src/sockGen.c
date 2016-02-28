@@ -548,8 +548,8 @@ int socketWaitForEvent(socket_t *sp, int handlerMask, int *errCode)
 
 int socketReady(int sid)
 {
-	socket_t 	*sp;
-	int			all;
+	socket_t *sp;
+	int all;
 
 	all = 0;
 	if (sid < 0) {
@@ -559,12 +559,12 @@ int socketReady(int sid)
 
 	for (; sid < socketMax; sid++) {
 		if ((sp = socketList[sid]) == NULL) {
-			if (! all) {
+			if (!all) {
 				break;
 			} else {
 				continue;
 			}
-		} 
+		}
 		if (sp->flags & SOCKET_CONNRESET) {
 			socketCloseConnection(sid);
 			return 0;
@@ -576,11 +576,12 @@ int socketReady(int sid)
  *		If there is input data, also call select to test for new events
  */
 		if (sp->handlerMask & SOCKET_READABLE && socketInputBuffered(sid) > 0) {
+			socketReservice(sid);
 			socketSelect(sid, 0);
 			return 1;
 		}
-		if (! all) {
-			break;
+		if (!all) {
+		    break;
 		}
 	}
 	return 0;
@@ -627,17 +628,17 @@ int socketSelect(int sid, int timeout)
 /*
  * 		Set the appropriate bit in the ready masks for the sp->sock.
  */
-		if (sp->handlerMask & SOCKET_READABLE) {
+		if (sp->handlerMask & SOCKET_READABLE)
 			FD_SET(sp->sock, &readFds);
-			if (socketInputBuffered(sid) > 0) {
-				tv.tv_sec = 0;
-				tv.tv_usec = 0;
-			}
-		}
 		if (sp->handlerMask & SOCKET_WRITABLE)
 			FD_SET(sp->sock, &writeFds);
 		if (sp->handlerMask & SOCKET_EXCEPTION)
 			FD_SET(sp->sock, &exceptFds);
+		if (sp->flags & SOCKET_RESERVICE) {
+			tv.tv_sec = 0;
+			tv.tv_usec = 0;
+		}
+
 		if (!all)
 		    break;
 	}
@@ -658,11 +659,20 @@ int socketSelect(int sid, int timeout)
 		    else
 			continue;
 		}
-		if (FD_ISSET(sp->sock, &readFds)) {
+
+		if (sp->flags & SOCKET_RESERVICE) {
+		    if (sp->handlerMask & SOCKET_READABLE) {
 			sp->currentEvents |= SOCKET_READABLE;
-			if (socketInputBuffered(sid) > 0) /* reuse current socket */
-				nEvents++;
-		}
+		    }
+		    if (sp->handlerMask & SOCKET_WRITABLE) {
+			sp->currentEvents |= SOCKET_WRITABLE;
+		    }
+		    sp->flags &= ~SOCKET_RESERVICE;
+        	    nEvents++;
+    		}
+
+		if (FD_ISSET(sp->sock, &readFds))
+			sp->currentEvents |= SOCKET_READABLE;
 		if (FD_ISSET(sp->sock, &writeFds))
 			sp->currentEvents |= SOCKET_WRITABLE;
 		if (FD_ISSET(sp->sock, &exceptFds))
@@ -735,6 +745,7 @@ static int socketDoEvent(socket_t *sp)
  *		NOTE: this may busy spin if the read handler doesn't read the data
  */
 		if (sp->handlerMask & SOCKET_READABLE && socketInputBuffered(sid) > 0) {
+			socketReservice(sid);
 			sp->currentEvents |= SOCKET_READABLE;
 		}
 	}
