@@ -5,6 +5,30 @@ LOG="logger -t vlan"
 # get params
 . /etc/scripts/global.sh
 
+idx=6
+hw_tx_vlan_map()
+{
+    if [ "$CONFIG_RALINK_MT7620" != "" ] && [ "$CONFIG_RAETH_HW_VLAN_TX" != "" ]; then
+	# use slots 6..10 for custom VID
+	# NOTE: slots 11..15 used by hw_nat WiFi/USB offload
+	if [ "$offloadMode" = "2" ] || [ "$offloadMode" = "3" ]; then
+	    maxslots="11"
+	else
+	    maxslots="15"
+	fi
+	# VIDs < 6 not need map
+	if [ "$vid" -lt "6" ]; then
+	    return
+	fi
+	if [ "$idx" = "$maxslots" ]; then
+	    $LOG "Overflow number of max supported vlans $maxslots"
+	    return
+	fi
+	echo "$idx:$1" > /proc/mt7620/vlan_tx
+	idx="$(($idx+1))"
+    fi
+}
+
 bridgewlvlan() {
     count=0
     for vid in $1
@@ -14,6 +38,7 @@ bridgewlvlan() {
 	    if [ ! -d /proc/sys/net/ipv4/conf/$2.$vid ]; then
 		$LOG "Add VLAN interface $2.${vid} to system"
 		vconfig add "$2" "${vid}"
+		hw_tx_vlan_map "${vid}"
 		set_vlan_map "$2.${vid}"
 		$LOG "Add BRIDGE brvl${vid}wl${count} to system"
 		brctl addbr "brvl${vid}wl${count}"
@@ -32,6 +57,9 @@ bridgewlvlan() {
 }
 
 start() {
+    # need get offlad mode for limit hw_vlan_tx slot use
+    offloadMode=`nvram_get 2860 offloadMode`
+
     if [ ! -f /tmp/bootgood ]; then
 	##############################################
 	# ADD BRIDGES FOR VLAN PARTS USED
@@ -56,6 +84,7 @@ start() {
 		ip link set "$vlantvif" up
 		$LOG "Add vlan to esw for TV/STB"
 		vconfig add $rootif 3
+		hw_tx_vlan_map "3"
 		set_vlan_map "${rootif}.3"
 		brctl addif "$vlantvif" "${rootif}.3"
 		ip link set "${rootif}.3" up
@@ -72,6 +101,7 @@ start() {
 		ip link set "$vlansipif" up
 		$LOG "Add vlan to esw for SIP/STB"
 		vconfig add $rootif 4
+		hw_tx_vlan_map "4"
 		set_vlan_map "${rootif}.4"
 		brctl addif "$vlansipif" "${rootif}.4"
 		ip link set "${rootif}.4" up
@@ -86,6 +116,7 @@ start() {
 		for vid in $tv_portVLAN; do
 		    $LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
 		    vconfig add "$phys_wan_if" "$vid"
+		    hw_tx_vlan_map "$vid"
 		    set_vlan_map "${phys_wan_if}.${vid}"
 		    brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
 		    ip link set "${phys_wan_if}.${vid}" up
@@ -95,6 +126,7 @@ start() {
 		for vid in $sip_portVLAN; do
 		    $LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
 		    vconfig add "$phys_wan_if" "$vid"
+		    hw_tx_vlan_map "$vid"
 		    set_vlan_map "${phys_wan_if}.${vid}"
 		    brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
 		    ip link set "${phys_wan_if}.${vid}" up
@@ -116,6 +148,7 @@ start() {
 	    do
 		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
 		vconfig add "$phys_lan_if" "$vid"
+		hw_tx_vlan_map "$vid"
 		set_vlan_map "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
