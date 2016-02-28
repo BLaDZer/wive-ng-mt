@@ -217,13 +217,9 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  */
 	if (host) {
 /*
- *		Connect to the remote server in blocking mode, then go into 
+ *		Connect to the remote server in blocking mode, then go into
  *		non-blocking mode if desired.
  */
-
-#ifndef __NO_FCNTL
-			fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
-#endif
 			if (! (sp->flags & SOCKET_BLOCK)) {
 /*
  *				sockGen.c is only used for Windows products when blocking
@@ -243,10 +239,6 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		 * Make sure the socket is not inherited by exec'd processes
 		 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 		 */
-#ifndef __NO_FCNTL
-		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
-#endif
-		setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
 				sizeof(sockaddr6)) < 0) {
@@ -274,6 +266,8 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		socketSetBlock(sid, 1);
 	else
 		socketSetBlock(sid, 0);
+
+	setSocketNodelayReuse(sp->sock);
 
 	return sid;
 }
@@ -306,12 +300,8 @@ static void socketAccept(socket_t *sp)
 	char			*pString;
 	int 			newSock, nid;
 
-
-#ifdef NW
-	NETINET_DEFINE_CONTEXT;
-#endif
-
-	a_assert(sp);
+	if (sp == NULL)
+		return;
 
 /*
  *	Accept the connection and prevent inheriting by children (F_SETFD)
@@ -319,14 +309,7 @@ static void socketAccept(socket_t *sp)
 	len = sizeof(struct sockaddr_in);
 	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0)
 		return;
-/*
-	Make sure the socket is not inherited by exec'd processes
-	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
-*/
-#ifndef __NO_FCNTL
-	fcntl(newSock, F_SETFD, FD_CLOEXEC);
-#endif
-	setSocketNodelayReuse(newSock);
+
 	socketHighestFd = max(socketHighestFd, newSock);
 
 /*
@@ -335,7 +318,6 @@ static void socketAccept(socket_t *sp)
 	nid = socketAlloc(sp->host, sp->port, sp->accept, sp->flags);
 	nsp = socketList[nid];
 
-	a_assert(nsp);
 	if (nsp == NULL)
 		return;
 
@@ -346,6 +328,7 @@ static void socketAccept(socket_t *sp)
  *	Set the blocking mode before calling the accept callback.
 */
 	socketSetBlock(nid, (nsp->flags & SOCKET_BLOCK) ? 1: 0);
+	setSocketNodelayReuse(nsp->sock);
 /*
  *	Call the user accept callback. The user must call socketCreateHandler
  *	to register for further events of interest.
@@ -355,17 +338,6 @@ static void socketAccept(socket_t *sp)
 		if ((sp->accept)(nid, pString, ntohs(addr.sin_port), sp->sid) < 0) {
 			socketFree(nid);
 		}
-		/*
-		 *	Make sure the socket is not inherited by exec'd processes
-		 *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
-		*/
-#ifndef __NO_FCNTL
-		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
-#endif
-		setSocketNodelayReuse(sp->sock);
-#ifdef VXWORKS
-		free(pString);
-#endif
 	}
 }
 
@@ -721,6 +693,10 @@ int socketSetBlock(int sid, int on)
 		a_assert(0);
 		return 0;
 	}
+
+#ifndef __NO_FCNTL
+	fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
 
 	oldBlock = (sp->flags & SOCKET_BLOCK);
 	sp->flags &= ~(SOCKET_BLOCK);
