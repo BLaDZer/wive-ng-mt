@@ -213,6 +213,10 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
  *		Connect to the remote server in blocking mode, then go into
  *		non-blocking mode if desired.
  */
+
+#ifndef __NO_FCNTL
+			fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
 			if (! (sp->flags & SOCKET_BLOCK)) {
 /*
  *				sockGen.c is only used for Windows products when blocking
@@ -232,6 +236,10 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 		 * Make sure the socket is not inherited by exec'd processes
 		 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
 		 */
+#ifndef __NO_FCNTL
+		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
+		setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
 		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
 				sizeof(sockaddr6)) < 0) {
@@ -302,7 +310,14 @@ static void socketAccept(socket_t *sp)
 	len = sizeof(struct sockaddr_in);
 	if ((newSock = accept(sp->sock, (struct sockaddr *) &addr,  &len)) < 0)
 		return;
-
+/*
+	Make sure the socket is not inherited by exec'd processes
+	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+*/
+#ifndef __NO_FCNTL
+	fcntl(newSock, F_SETFD, FD_CLOEXEC);
+#endif
+	setSocketNodelayReuse(newSock);
 	socketHighestFd = max(socketHighestFd, newSock);
 
 /*
@@ -331,6 +346,17 @@ static void socketAccept(socket_t *sp)
 		if ((sp->accept)(nid, pString, ntohs(addr.sin_port), sp->sid) < 0) {
 			socketFree(nid);
 		}
+		/*
+		 *	Make sure the socket is not inherited by exec'd processes
+		 *	Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+		*/
+#ifndef __NO_FCNTL
+		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+#endif
+		setSocketNodelayReuse(sp->sock);
+#ifdef VXWORKS
+		free(pString);
+#endif
 	}
 }
 

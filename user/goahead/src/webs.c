@@ -203,7 +203,7 @@ int websOpenListen(int port, int retries)
  *	Open the webs webs listen port. If we fail, try the next port.
  */
 	for (i = 0; i <= retries; i++) {
-		websListenSock = socketOpenConnection(NULL, port, websAccept, 0);
+		websListenSock = socketOpenConnection(NULL, port, websAccept, SOCKET_BLOCK);
 		if (websListenSock >= 0) {
 			break;
 		}
