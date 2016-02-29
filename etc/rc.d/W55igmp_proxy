@@ -64,7 +64,7 @@ get_param() {
     ####################################
     # remap wan if to vlan bridge
     ####################################
-    if [ "$VlanEnabled" = "1" ]; then
+    if [ "$PortVlanEnabled" = "1" ]; then
 	if [ "$tv_port_mcast" = "1" ]; then
 	    wan_if="$vlantvif"
 	fi

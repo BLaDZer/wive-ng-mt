@@ -306,7 +306,7 @@ get_switch_part() {
 	sip_portVLAN=`nvram_get 2860 sip_portVLAN | awk '{ gsub(","," "); print }'`
 	# manual vlan configured
 	if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [  "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
-	    VlanEnabled="1"
+	    PortVlanEnabled="1"
 	    vlantvif="vlantv"
 	    vlansipif="vlansip"
 	    switchpart="VLANS"

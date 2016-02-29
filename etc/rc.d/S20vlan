@@ -8,7 +8,7 @@ LOG="logger -t vlan"
 idx=6
 hw_tx_vlan_map()
 {
-    if [ "$CONFIG_RALINK_MT7620" != "" ] && [ "$CONFIG_RAETH_HW_VLAN_TX" != "" ]; then
+    if [ -e /proc/mt7620/vlan_tx ]; then
 	# VIDs < 6 not need map
 	if [ "$vid" -lt "6" ]; then
 	    return
@@ -21,7 +21,9 @@ hw_tx_vlan_map()
 	    maxslots="16"
 	fi
 	if [ "$idx" = "$maxslots" ]; then
-	    $LOG "Overflow number of max supported vlans $maxslots"
+	    if [ "$vlanDoubleTag" != "1" ]; then
+		$LOG "Overflow number of max supported vlans $maxslots, please enable vlan doble tag support for switch to software vlan_tx mode."
+	    fi
 	    return
 	fi
 	echo "$idx:$1" > /proc/mt7620/vlan_tx
@@ -57,8 +59,7 @@ bridgewlvlan() {
 }
 
 start() {
-    # need get offlad mode for limit hw_vlan_tx slot use
-    offloadMode=`nvram_get 2860 offloadMode`
+    get_param
 
     if [ ! -f /tmp/bootgood ]; then
 	##############################################
@@ -66,7 +67,7 @@ start() {
 	# ADD VLAN LINKS FORM KERNEL TO ESW PORST
 	# ONLY ONE TIME AT START!!!
 	##############################################
-	if [ "$VlanEnabled" = "1" ]; then
+	if [ "$PortVlanEnabled" = "1" ]; then
 	    if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
 		rootif="eth3"
 	    else
@@ -111,7 +112,7 @@ start() {
 	##############################################
 	# ADD WAN VLANS FOR IPTV/SIP/ETC USAGE
 	##############################################
-	if [ "$VlanEnabled" = "1" ]; then
+	if [ "$PortVlanEnabled" = "1" ]; then
 	    if [ "$tv_port" = "1" ]; then
 		for vid in $tv_portVLAN; do
 		    $LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
@@ -242,6 +243,15 @@ stop() {
 	ip link set "$bridge" down		> /dev/null 2>&1
 	brctl delbr "$bridge"			> /dev/null 2>&1
     done
+}
+
+get_param() {
+    # need get offlad mode for limit hw_vlan_tx slot use
+    eval `nvram_buf_get 2860 vlanDoubleTag offloadMode`
+    if [ -e /proc/sys/net/core/vlan_double_tag ]; then
+	# get currecnt double vlan tag mode if present
+	vlanDoubleTag=`cat /proc/sys/net/core/vlan_double_tag`
+    fi
 }
 
 case "$1" in

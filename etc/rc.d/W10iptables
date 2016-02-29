@@ -39,7 +39,7 @@ servicelimit() {
 	    iptables -A servicelimit -p igmp -i $lan_if -j ACCEPT
 	    iptables -A servicelimit -d $mcast_net -i $wan_if -j ACCEPT
 	    iptables -A servicelimit -s $mcast_net -i $wan_if -j ACCEPT
-	    if [ "$VlanEnabled" = "1" ]; then
+	    if [ "$PortVlanEnabled" = "1" ]; then
 		if [ "$tv_port_mcast" = "1" ]; then
 		    iptables -A servicelimit -d $mcast_net -i $vlantvif -j ACCEPT
 		    iptables -A servicelimit -s $mcast_net -i $vlantvif -j ACCEPT
@@ -221,7 +221,7 @@ forwardlimit() {
 	    $LOG "Set igmp forward rules"
 	    iptables -A FORWARD -d $mcast_net -o $lan_if -j ACCEPT
 	    iptables -A FORWARD -s $mcast_net -i $lan_if -j ACCEPT
-	    if [ "$VlanEnabled" = "1" ]; then
+	    if [ "$PortVlanEnabled" = "1" ]; then
 		if [ "$tv_port_mcast" = "1" ]; then
 		    iptables -A FORWARD -d $mcast_net -o $vlantvif -j ACCEPT
 		    iptables -A FORWARD -s $mcast_net -i $vlantvif -j ACCEPT
