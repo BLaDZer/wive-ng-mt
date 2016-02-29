@@ -354,9 +354,6 @@ static void socketAccept(socket_t *sp)
 		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
 #endif
 		setSocketNodelayReuse(sp->sock);
-#ifdef VXWORKS
-		free(pString);
-#endif
 	}
 }
 
