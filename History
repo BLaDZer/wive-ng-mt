@@ -1738,7 +1738,7 @@
 <br>
 <br>
 <b>4.0.x</b><br>
-1) project: start sync with 5.0.1.0 SDK.<br>
+1) project: sync with 5.0.1.0 SDK.<br>
 2) uboot: up to 5.0.0.5 version.<br>
 3) build_system: add strace v4.11 for easy debug.<br>
 4) lldpd: up to 0.9.1 version.<br>
