@@ -157,6 +157,8 @@ struct myoption {
 #define LOPT_MAXPORT       345
 #define LOPT_CPE_ID        346
 #define LOPT_SCRIPT_ARP    347
+#define LOPT_DHCPTTL       348
+#define LOPT_TFTP_MTU      349
 
 #ifdef HAVE_GETOPT_LONG
 static const struct option opts[] =  
@@ -243,6 +245,7 @@ static const struct myoption opts[] =
     { "tftp-unique-root", 0, 0, LOPT_APREF },
     { "tftp-root", 1, 0, LOPT_PREFIX },
     { "tftp-max", 1, 0, LOPT_TFTP_MAX },
+    { "tftp-mtu", 1, 0, LOPT_TFTP_MTU },
     { "tftp-lowercase", 0, 0, LOPT_TFTP_LC },
     { "ptr-record", 1, 0, LOPT_PTR },
     { "naptr-record", 1, 0, LOPT_NAPTR },
@@ -319,6 +322,7 @@ static const struct myoption opts[] =
     { "quiet-ra", 0, 0, LOPT_QUIET_RA },
     { "dns-loop-detect", 0, 0, LOPT_LOOP_DETECT },
     { "script-arp", 0, 0, LOPT_SCRIPT_ARP },
+    { "dhcp-ttl", 1, 0 , LOPT_DHCPTTL },
     { NULL, 0, 0, 0 }
   };
 
@@ -430,6 +434,7 @@ static struct {
   { LOPT_SECURE, OPT_TFTP_SECURE, NULL, gettext_noop("Allow access only to files owned by the user running dnsmasq."), NULL },
   { LOPT_TFTP_NO_FAIL, OPT_TFTP_NO_FAIL, NULL, gettext_noop("Do not terminate the service if TFTP directories are inaccessible."), NULL },
   { LOPT_TFTP_MAX, ARG_ONE, "<integer>", gettext_noop("Maximum number of conncurrent TFTP transfers (defaults to %s)."), "#" },
+  { LOPT_TFTP_MTU, ARG_ONE, "<integer>", gettext_noop("Maximum MTU to use for TFTP transfers."), NULL },
   { LOPT_NOBLOCK, OPT_TFTP_NOBLOCK, NULL, gettext_noop("Disable the TFTP blocksize extension."), NULL },
   { LOPT_TFTP_LC, OPT_TFTP_LC, NULL, gettext_noop("Convert TFTP filenames to lowercase"), NULL },
   { LOPT_TFTPPORTS, ARG_ONE, "<start>,<end>", gettext_noop("Ephemeral port range for use by TFTP transfers."), NULL },
@@ -448,7 +453,7 @@ static struct {
   { LOPT_GEN_NAMES, ARG_DUP, "[=tag:<tag>]", gettext_noop("Generate hostnames based on MAC address for nameless clients."), NULL},
   { LOPT_PROXY, ARG_DUP, "[=<ipaddr>]...", gettext_noop("Use these DHCP relays as full proxies."), NULL },
   { LOPT_RELAY, ARG_DUP, "<local-addr>,<server>[,<interface>]", gettext_noop("Relay DHCP requests to a remote server"), NULL},
-  { LOPT_CNAME, ARG_DUP, "<alias>,<target>", gettext_noop("Specify alias name for LOCAL DNS name."), NULL },
+  { LOPT_CNAME, ARG_DUP, "<alias>,<target>[,<ttl>]", gettext_noop("Specify alias name for LOCAL DNS name."), NULL },
   { LOPT_PXE_PROMT, ARG_DUP, "<prompt>,[<timeout>]", gettext_noop("Prompt to send to PXE clients."), NULL },
   { LOPT_PXE_SERV, ARG_DUP, "<service>", gettext_noop("Boot service for PXE menu."), NULL },
   { LOPT_TEST, 0, NULL, gettext_noop("Check configuration syntax."), NULL },
@@ -461,7 +466,7 @@ static struct {
   { LOPT_FQDN, OPT_FQDN_UPDATE, NULL, gettext_noop("Allow DHCP clients to do their own DDNS updates."), NULL },
   { LOPT_RA, OPT_RA, NULL, gettext_noop("Send router-advertisements for interfaces doing DHCPv6"), NULL },
   { LOPT_DUID, ARG_ONE, "<enterprise>,<duid>", gettext_noop("Specify DUID_EN-type DHCPv6 server DUID"), NULL },
-  { LOPT_HOST_REC, ARG_DUP, "<name>,<address>", gettext_noop("Specify host (A/AAAA and PTR) records"), NULL },
+  { LOPT_HOST_REC, ARG_DUP, "<name>,<address>[,<ttl>]", gettext_noop("Specify host (A/AAAA and PTR) records"), NULL },
   { LOPT_RR, ARG_DUP, "<name>,<RR-number>,[<data>]", gettext_noop("Specify arbitrary DNS resource record"), NULL },
   { LOPT_CLVERBIND, OPT_CLEVERBIND, NULL, gettext_noop("Bind to interfaces in use - check for new interfaces"), NULL },
   { LOPT_AUTHSERV, ARG_ONE, "<NS>,<interface>", gettext_noop("Export local names to global DNS"), NULL },
@@ -485,9 +490,10 @@ static struct {
   { LOPT_QUIET_DHCP, OPT_QUIET_DHCP, NULL, gettext_noop("Do not log routine DHCP."), NULL },
   { LOPT_QUIET_DHCP6, OPT_QUIET_DHCP6, NULL, gettext_noop("Do not log routine DHCPv6."), NULL },
   { LOPT_QUIET_RA, OPT_QUIET_RA, NULL, gettext_noop("Do not log RA."), NULL },
-  { LOPT_LOCAL_SERVICE, OPT_LOCAL_SERVICE, NULL, gettext_noop("Accept queries only from directly-connected networks"), NULL },
-  { LOPT_LOOP_DETECT, OPT_LOOP_DETECT, NULL, gettext_noop("Detect and remove DNS forwarding loops"), NULL },
+  { LOPT_LOCAL_SERVICE, OPT_LOCAL_SERVICE, NULL, gettext_noop("Accept queries only from directly-connected networks."), NULL },
+  { LOPT_LOOP_DETECT, OPT_LOOP_DETECT, NULL, gettext_noop("Detect and remove DNS forwarding loops."), NULL },
   { LOPT_IGNORE_ADDR, ARG_DUP, "<ipaddr>", gettext_noop("Ignore DNS responses containing ipaddr."), NULL }, 
+  { LOPT_DHCPTTL, ARG_ONE, "<ttl>", gettext_noop("Set TTL in DNS responses with DHCP-derived addresses."), NULL }, 
   { 0, 0, NULL, NULL, NULL }
 }; 
 
@@ -1641,9 +1647,9 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    
           daemon->add_subnet4 = new;
 
-          new = opt_malloc(sizeof(struct mysubnet));
           if (comma)
             {
+	      new = opt_malloc(sizeof(struct mysubnet));
               if ((end = split_chr(comma, '/')))
                 {
                   /* has subnet+len */
@@ -1659,8 +1665,9 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
                   if (!atoi_check(comma, &new->mask))
                     ret_err(gen_err);
                 }
-            }
+          
           daemon->add_subnet6 = new;
+	}
 	}
       break;
 
@@ -2164,7 +2171,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	daemon->dns_client_id = opt_string_alloc(arg);
       break;
 
-    case LOPT_ADD_MAC:
+    case LOPT_ADD_MAC: /* --add-mac */
       if (!arg)
 	set_option_bool(OPT_ADD_MAC);
       else
@@ -2580,6 +2587,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case LOPT_MINCTTL: /* --min-cache-ttl */
     case LOPT_MAXCTTL: /* --max-cache-ttl */
     case LOPT_AUTHTTL: /* --auth-ttl */
+    case LOPT_DHCPTTL: /* --dhcp-ttl */
       {
 	int ttl;
 	if (!atoi_check(arg, &ttl))
@@ -2598,6 +2606,11 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  daemon->max_cache_ttl = (unsigned long)ttl;
 	else if (option == LOPT_AUTHTTL)
 	  daemon->auth_ttl = (unsigned long)ttl;
+	else if (option == LOPT_DHCPTTL)
+	  {
+	    daemon->dhcp_ttl = (unsigned long)ttl;
+	    daemon->use_dhcp_ttl = 1;
+	  }
 	else
 	  daemon->local_ttl = (unsigned long)ttl;
 	break;
@@ -2615,6 +2628,11 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       if (!atoi_check(arg, &daemon->tftp_max))
 	ret_err(gen_err);
       break;  
+
+    case LOPT_TFTP_MTU:  /*  --tftp-mtu */
+      if (!atoi_check(arg, &daemon->tftp_mtu))
+	ret_err(gen_err);
+      break;
 
     case LOPT_PREFIX: /* --tftp-prefix */
       comma = split(arg);
@@ -3692,11 +3710,14 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case LOPT_CNAME: /* --cname */
       {
 	struct cname *new;
-	char *alias;
-	char *target;
+	char *alias, *target, *ttls;
+	int ttl = -1;
 
 	if (!(comma = split(arg)))
 	  ret_err(gen_err);
+	
+	if ((ttls = split(comma)) && !atoi_check(ttls, &ttl))
+	  ret_err(_("bad TTL"));
 	
 	alias = canonicalise_opt(arg);
 	target = canonicalise_opt(comma);
@@ -3713,6 +3734,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    daemon->cnames = new;
 	    new->alias = alias;
 	    new->target = target;
+	    new->ttl = ttl;
 	  }
       
 	break;
@@ -3913,6 +3935,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       {
 	struct host_record *new = opt_malloc(sizeof(struct host_record));
 	memset(new, 0, sizeof(struct host_record));
+	new->ttl = -1;
 	
 	if (!arg || !(comma = split(arg)))
 	  ret_err(_("Bad host-record"));
@@ -3920,7 +3943,14 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	while (arg)
 	  {
 	    struct all_addr addr;
-	    if (inet_pton(AF_INET, arg, &addr))
+	    char *dig;
+
+	    for (dig = arg; *dig != 0; dig++)
+	      if (*dig < '0' || *dig > '9')
+		break;
+	    if (*dig == 0)
+	      new->ttl = atoi(arg);
+	    else if (inet_pton(AF_INET, arg, &addr))
 	      new->addr = addr.addr.addr4;
 #ifdef HAVE_IPV6
 	    else if (inet_pton(AF_INET6, arg, &addr))
@@ -4602,6 +4632,24 @@ void read_opts(int argc, char **argv, char *compile_opts)
 	} 
     }
   
+  if (daemon->host_records)
+    {
+      struct host_record *hr;
+      
+      for (hr = daemon->host_records; hr; hr = hr->next)
+	if (hr->ttl == -1)
+	  hr->ttl = daemon->local_ttl;
+    }
+
+  if (daemon->cnames)
+    {
+      struct cname *cn;
+      
+      for (cn = daemon->cnames; cn; cn = cn->next)
+	if (cn->ttl == -1)
+	  cn->ttl = daemon->local_ttl;
+    }
+
   if (daemon->if_addrs)
     {  
       struct iname *tmp;

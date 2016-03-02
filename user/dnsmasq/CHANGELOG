@@ -248,6 +248,14 @@ version 2.72
             Fix problem with --local-service option on big-endian platforms
 	    Thanks to Richard Genoud for the patch.
 
+	    Add support for a TTL parameter in --host-record and
+	    --cname.
+
+	    Add --dhcp-ttl option.
+
+	    Add --tftp-mtu option. Thanks to Patrick McLean for the 
+	    initial patch.
+
 
 version 2.71
             Subtle change to error handling to help DNSSEC validation 
