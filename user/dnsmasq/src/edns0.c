@@ -145,7 +145,6 @@ size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *l
 	  if (i + len > rdlen)
 	    {
 	      rdlen = 0;
-	      islast = 0;
 	      break;
 	    }
 	  
