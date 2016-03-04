@@ -14867,11 +14867,7 @@ INT set_agc_vga_clamp_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 #ifdef MT76x2
 	INT32 val = simple_strtol(arg, 0, 10);
-#endif
-	if (pAd->CommonCfg.Channel > 14)
-		return FALSE;
 
-#ifdef MT76x2
 	if (IS_MT76x2(pAd)) {
 		UCHAR agc_vga_ori = 0x48;	// default value for most fw
 
