@@ -51,7 +51,7 @@
 typedef int     SOCKET;
 typedef int	WSADATA;
 
-extern void breakpoint();
+void breakpoint();
 #define socketAssert(C) if (C) ; else {printf("%s:%d sslAssert(%s)\n",\
 						__FILE__, __LINE__, #C); breakpoint(); }
 #ifndef min
@@ -79,31 +79,31 @@ typedef struct {
 /*
 	Secure Socket apis
 */
-extern int			sslConnect(sslConn_t **cp, SOCKET fd, sslKeys_t *keys,
+int			sslConnect(sslConn_t **cp, SOCKET fd, sslKeys_t *keys,
 						sslSessionId_t *id, short cipherSuite,
 						int (*certValidator)(sslCertInfo_t *t, void *arg));
-extern int			sslAccept(sslConn_t **cp, SOCKET fd, sslKeys_t *keys,
+int			sslAccept(sslConn_t **cp, SOCKET fd, sslKeys_t *keys,
 						int (*certValidator)(sslCertInfo_t *t, void *arg), int flags);
-extern void			sslRehandshake(sslConn_t *cp);
-extern sslConn_t	*sslDoHandshake(sslConn_t *conn, short cipherSuite);
-extern void			sslFreeConnection(sslConn_t **cp);
-extern void			sslFreeConnectionBuffers(sslConn_t **cpp);
+void			sslRehandshake(sslConn_t *cp);
+sslConn_t	*sslDoHandshake(sslConn_t *conn, short cipherSuite);
+void			sslFreeConnection(sslConn_t **cp);
+void			sslFreeConnectionBuffers(sslConn_t **cpp);
 
-extern int	sslRead(sslConn_t *cp, char *buf, int len, int *status);
-extern int	sslWrite(sslConn_t *cp, char *buf, int len, int *status);
-extern void	sslWriteClosureAlert(sslConn_t *cp);
+int	sslRead(sslConn_t *cp, char *buf, int len, int *status);
+int	sslWrite(sslConn_t *cp, char *buf, int len, int *status);
+void	sslWriteClosureAlert(sslConn_t *cp);
 
 /*
 	Socket apis
 */
-extern SOCKET	socketListen(short port, int *err);
-extern SOCKET	socketAccept(SOCKET listenfd, int *err);
-extern SOCKET	socketConnect(char *ip, short port, int *err);
-extern void		socketShutdown(SOCKET sock);
+SOCKET	socketListen(short port, int *err);
+SOCKET	socketAccept(SOCKET listenfd, int *err);
+SOCKET	socketConnect(char *ip, short port, int *err);
+void		socketShutdown(SOCKET sock);
 
-extern int psSocketRead(SOCKET sock, sslBuf_t **out, int *status);
-extern int psSocketWrite(SOCKET sock, sslBuf_t *out);
+int psSocketRead(SOCKET sock, sslBuf_t **out, int *status);
+int psSocketWrite(SOCKET sock, sslBuf_t *out);
 
-extern void setSocketBlock(SOCKET sock);
-extern void setSocketNonblock(SOCKET sock);
+void setSocketBlock(SOCKET sock);
+void setSocketNonblock(SOCKET sock);
 #endif /* _h_SSLSOCKET */

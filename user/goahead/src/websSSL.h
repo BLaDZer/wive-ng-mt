@@ -63,19 +63,19 @@ typedef struct {
 
 /******************************** Prototypes **********************************/
 
-extern int	websSSLOpen();
-extern int	websSSLIsOpen();
-extern void websSSLClose();
+int	websSSLOpen();
+int	websSSLIsOpen();
+void websSSLClose();
 
-extern int	websSSLWrite(websSSL_t *wsp, char_t *buf, int nChars);
-extern int	websSSLGets(websSSL_t *wsp, char_t **buf);
-extern int	websSSLRead(websSSL_t *wsp, char_t *buf, int nChars);
-extern int	websSSLEof(websSSL_t *wsp);
+int	websSSLWrite(websSSL_t *wsp, char_t *buf, int nChars);
+int	websSSLGets(websSSL_t *wsp, char_t **buf);
+int	websSSLRead(websSSL_t *wsp, char_t *buf, int nChars);
+int	websSSLEof(websSSL_t *wsp);
 
-extern int	websSSLFree(websSSL_t *wsp);
-extern int	websSSLFlush(websSSL_t *wsp);
+int	websSSLFree(websSSL_t *wsp);
+int	websSSLFlush(websSSL_t *wsp);
 
-extern int	websSSLSetKeyFile(char_t *keyFile);
-extern int	websSSLSetCertFile(char_t *certFile);
+int	websSSLSetKeyFile(char_t *keyFile);
+int	websSSLSetCertFile(char_t *certFile);
 #endif /* WEBS_SSL_SUPPORT */
 #endif /* _h_websSSL */

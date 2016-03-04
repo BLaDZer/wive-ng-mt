@@ -69,105 +69,105 @@ typedef enum {
 /*
  *	umOpen() must be called before accessing User Management functions
  */
-extern int				umOpen();
+int				umOpen();
 
 /*
  *	umClose() should be called before shutdown to free memory
  */
-extern void				umClose();
+void				umClose();
 
 /*
  *	umCommit() persists the user management database
  */
-extern int				umCommit(char_t *filename);
+int				umCommit(char_t *filename);
 
 /*
  *	umRestore() loads the user management database
  */
-extern int				umRestore(char_t *filename);
+int				umRestore(char_t *filename);
 
 /*
  *	umUser functions use a user ID for a key
  */
-extern int				umAddUser(char_t *user, char_t *password,
+int				umAddUser(char_t *user, char_t *password,
 							char_t *group, bool_t protect, bool_t disabled);
 
-extern int				umDeleteUser(char_t *user);
+int				umDeleteUser(char_t *user);
 
-extern char_t			*umGetFirstUser();
-extern char_t			*umGetNextUser(char_t *lastUser);
+char_t			*umGetFirstUser();
+char_t			*umGetNextUser(char_t *lastUser);
 
-extern bool_t			umUserExists(char_t *user);
+bool_t			umUserExists(char_t *user);
 
-extern char_t			*umGetUserPassword(char_t *user);
-extern int				umSetUserPassword(char_t *user, char_t *password);
+char_t			*umGetUserPassword(char_t *user);
+int				umSetUserPassword(char_t *user, char_t *password);
 
-extern char_t			*umGetUserGroup(char_t *user);
-extern int				umSetUserGroup(char_t *user, char_t *password);
+char_t			*umGetUserGroup(char_t *user);
+int				umSetUserGroup(char_t *user, char_t *password);
 
-extern bool_t			umGetUserEnabled(char_t *user);
-extern int				umSetUserEnabled(char_t *user, bool_t enabled);
+bool_t			umGetUserEnabled(char_t *user);
+int				umSetUserEnabled(char_t *user, bool_t enabled);
 
-extern bool_t			umGetUserProtected(char_t *user);
-extern int				umSetUserProtected(char_t *user, bool_t protect);
+bool_t			umGetUserProtected(char_t *user);
+int				umSetUserProtected(char_t *user, bool_t protect);
 
 /*
  *	umGroup functions use a group name for a key
  */
-extern int				umAddGroup(char_t *group, short privilege,
+int				umAddGroup(char_t *group, short privilege,
 							accessMeth_t am, bool_t protect, bool_t disabled);
 
-extern int				umDeleteGroup(char_t *group);
+int				umDeleteGroup(char_t *group);
 
-extern char_t 			*umGetFirstGroup();
-extern char_t			*umGetNextGroup(char_t *lastUser);
+char_t 			*umGetFirstGroup();
+char_t			*umGetNextGroup(char_t *lastUser);
 
-extern bool_t			umGroupExists(char_t *group);
-extern bool_t			umGetGroupInUse(char_t *group);
+bool_t			umGroupExists(char_t *group);
+bool_t			umGetGroupInUse(char_t *group);
 
-extern accessMeth_t		umGetGroupAccessMethod(char_t *group);
-extern int				umSetGroupAccessMethod(char_t *group, accessMeth_t am);
+accessMeth_t		umGetGroupAccessMethod(char_t *group);
+int				umSetGroupAccessMethod(char_t *group, accessMeth_t am);
 
-extern bool_t			umGetGroupEnabled(char_t *group);
-extern int				umSetGroupEnabled(char_t *group, bool_t enabled);
+bool_t			umGetGroupEnabled(char_t *group);
+int				umSetGroupEnabled(char_t *group, bool_t enabled);
 
-extern short			umGetGroupPrivilege(char_t *group);
-extern int				umSetGroupPrivilege(char_t *group, short privileges);
+short			umGetGroupPrivilege(char_t *group);
+int				umSetGroupPrivilege(char_t *group, short privileges);
 
-extern bool_t			umGetGroupProtected(char_t *group);
-extern int				umSetGroupProtected(char_t *group, bool_t protect);
+bool_t			umGetGroupProtected(char_t *group);
+int				umSetGroupProtected(char_t *group, bool_t protect);
 
 /*
  *	umAccessLimit functions use a URL as a key
  */
-extern int			umAddAccessLimit(char_t *url, accessMeth_t am,
+int			umAddAccessLimit(char_t *url, accessMeth_t am,
 						short secure, char_t *group);
 
-extern int			umDeleteAccessLimit(char_t *url);
+int			umDeleteAccessLimit(char_t *url);
 
-extern char_t		*umGetFirstAccessLimit();
-extern char_t		*umGetNextAccessLimit(char_t *lastUser);
+char_t		*umGetFirstAccessLimit();
+char_t		*umGetNextAccessLimit(char_t *lastUser);
 
 /*
  *	Returns the name of an ancestor access limit if
  */
-extern char_t		*umGetAccessLimit(char_t *url);
+char_t		*umGetAccessLimit(char_t *url);
 
-extern bool_t		umAccessLimitExists(char_t *url);
+bool_t		umAccessLimitExists(char_t *url);
 
-extern accessMeth_t	umGetAccessLimitMethod(char_t *url);
-extern int			umSetAccessLimitMethod(char_t *url, accessMeth_t am);
+accessMeth_t	umGetAccessLimitMethod(char_t *url);
+int			umSetAccessLimitMethod(char_t *url, accessMeth_t am);
 
-extern short		umGetAccessLimitSecure(char_t *url);
-extern int			umSetAccessLimitSecure(char_t *url, short secure);
+short		umGetAccessLimitSecure(char_t *url);
+int			umSetAccessLimitSecure(char_t *url, short secure);
 
-extern char_t		*umGetAccessLimitGroup(char_t *url);
-extern int			umSetAccessLimitGroup(char_t *url, char_t *group);
+char_t		*umGetAccessLimitGroup(char_t *url);
+int			umSetAccessLimitGroup(char_t *url, char_t *group);
 
 /*
  *	Convenience Functions
  */
 
-extern accessMeth_t	umGetAccessMethodForURL(char_t *url);
-extern bool_t		umUserCanAccessURL(char_t *user, char_t *url);
+accessMeth_t	umGetAccessMethodForURL(char_t *url);
+bool_t		umUserCanAccessURL(char_t *user, char_t *url);
 #endif /* _h_UM */

@@ -22,12 +22,12 @@
 #include	"uemf.h"
 /******************************** Prototypes **********************************/
 
-extern int  ejArgs(int argc, char_t **argv, char_t *fmt, ...);
-extern int  ejOpenEngine(sym_fd_t variables, sym_fd_t functions);
-extern int  ejSetGlobalFunction(int eid, char_t *name, int (*fn)(int eid, void *handle, int argc, char_t **argv));
-extern int  ejGetVar(int eid, char_t *var, char_t **value);
-extern void ejSetResult(int eid, char_t *s);
-extern void ejCloseEngine(int eid);
-extern void ejSetVar(int eid, char_t *var, char_t *value);
-extern char_t *ejEval(int eid, char_t *script, char_t **emsg);
+int  ejArgs(int argc, char_t **argv, char_t *fmt, ...);
+int  ejOpenEngine(sym_fd_t variables, sym_fd_t functions);
+int  ejSetGlobalFunction(int eid, char_t *name, int (*fn)(int eid, void *handle, int argc, char_t **argv));
+int  ejGetVar(int eid, char_t *var, char_t **value);
+void ejSetResult(int eid, char_t *s);
+void ejCloseEngine(int eid);
+void ejSetVar(int eid, char_t *var, char_t *value);
+char_t *ejEval(int eid, char_t *script, char_t **emsg);
 #endif /* _h_EJ */

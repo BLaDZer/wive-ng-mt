@@ -171,45 +171,45 @@ typedef struct ej {
 
 /******************************** Prototypes **********************************/
 
-extern int		ejOpenBlock(int eid);
-extern int		ejCloseBlock(int eid, int vid);
-extern char_t	*ejEvalBlock(int eid, char_t *script, char_t **emsg);
+int		ejOpenBlock(int eid);
+int		ejCloseBlock(int eid, int vid);
+char_t	*ejEvalBlock(int eid, char_t *script, char_t **emsg);
 #ifndef __NO_EJ_FILE
-extern char_t	*ejEvalFile(int eid, char_t *path, char_t **emsg);
+char_t	*ejEvalFile(int eid, char_t *path, char_t **emsg);
 #endif
-extern int		ejRemoveGlobalFunction(int eid, char_t *name);
-extern void		*ejGetGlobalFunction(int eid, char_t *name);
-extern int 		ejSetGlobalFunctionDirect(sym_fd_t functions, char_t *name, 
+int		ejRemoveGlobalFunction(int eid, char_t *name);
+void		*ejGetGlobalFunction(int eid, char_t *name);
+int 		ejSetGlobalFunctionDirect(sym_fd_t functions, char_t *name, 
 					int (*fn)(int eid, void *handle, int argc, char_t **argv));
-extern void 	ejError(ej_t* ep, char_t* fmt, ...);
-extern void		ejSetUserHandle(int eid, void* handle);
-extern void*		ejGetUserHandle(int eid);
-extern int		ejGetLineNumber(int eid);
-extern char_t	*ejGetResult(int eid);
-extern void		ejSetLocalVar(int eid, char_t *var, char_t *value);
-extern void		ejSetGlobalVar(int eid, char_t *var, char_t *value);
+void 	ejError(ej_t* ep, char_t* fmt, ...);
+void		ejSetUserHandle(int eid, void* handle);
+void*		ejGetUserHandle(int eid);
+int		ejGetLineNumber(int eid);
+char_t	*ejGetResult(int eid);
+void		ejSetLocalVar(int eid, char_t *var, char_t *value);
+void		ejSetGlobalVar(int eid, char_t *var, char_t *value);
 
-extern int 		ejLexOpen(ej_t* ep);
-extern void 	ejLexClose(ej_t* ep);
-extern int	 	ejLexOpenScript(ej_t* ep, char_t *script);
-extern void 	ejLexCloseScript(ej_t* ep);
-extern void 	ejLexSaveInputState(ej_t* ep, ejinput_t* state);
-extern void 	ejLexFreeInputState(ej_t* ep, ejinput_t* state);
-extern void 	ejLexRestoreInputState(ej_t* ep, ejinput_t* state);
-extern int		ejLexGetToken(ej_t* ep, int state);
-extern void		ejLexPutbackToken(ej_t* ep, int tid, char_t *string);
+int 		ejLexOpen(ej_t* ep);
+void 	ejLexClose(ej_t* ep);
+int	 	ejLexOpenScript(ej_t* ep, char_t *script);
+void 	ejLexCloseScript(ej_t* ep);
+void 	ejLexSaveInputState(ej_t* ep, ejinput_t* state);
+void 	ejLexFreeInputState(ej_t* ep, ejinput_t* state);
+void 	ejLexRestoreInputState(ej_t* ep, ejinput_t* state);
+int		ejLexGetToken(ej_t* ep, int state);
+void		ejLexPutbackToken(ej_t* ep, int tid, char_t *string);
 
-extern sym_fd_t	ejGetVariableTable(int eid);
-extern sym_fd_t	ejGetFunctionTable(int eid);
+sym_fd_t	ejGetVariableTable(int eid);
+sym_fd_t	ejGetFunctionTable(int eid);
 
-extern int		ejEmfOpen(int eid);
-extern void		ejEmfClose(int eid);
+int		ejEmfOpen(int eid);
+void		ejEmfClose(int eid);
 
-extern int ejEmfDbRead(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfDbReadKeyed(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfDbTableGetNrow(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfDbDeleteRow(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfTrace(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfDbWrite(int eid, void *handle, int argc, char_t **argv);
-extern int ejEmfDbCollectTable(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbRead(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbReadKeyed(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbTableGetNrow(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbDeleteRow(int eid, void *handle, int argc, char_t **argv);
+int ejEmfTrace(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbWrite(int eid, void *handle, int argc, char_t **argv);
+int ejEmfDbCollectTable(int eid, void *handle, int argc, char_t **argv);
 #endif /* _h_EJINTERNAL */

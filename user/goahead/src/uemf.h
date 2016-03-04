@@ -407,9 +407,9 @@ typedef struct {
 	char_t	*dayofweek;
 } cron_t;
 
-extern long	cronUntil(cron_t *cp, int period, time_t testTime);
-extern int	cronAlloc(cron_t *cp, char_t *str);
-extern int	cronFree(cron_t *cp);
+long	cronUntil(cron_t *cp, int period, time_t testTime);
+int	cronAlloc(cron_t *cp, char_t *str);
+int	cronFree(cron_t *cp);
 
 /******************************************************************************/
 /*                                 SOCKET                                     */
@@ -493,8 +493,8 @@ typedef struct {
 #define bfree(B_ARGS, p) free(p)
 #define bfreeSafe(B_ARGS, p) if (p) { free(p); }
 #define brealloc(B_ARGS, p, num) realloc(p, num)
-extern char_t *bstrdupNoBalloc(char_t *s);
-extern char *bstrdupANoBalloc(char *s);
+char_t *bstrdupNoBalloc(char_t *s);
+char *bstrdupANoBalloc(char *s);
 #define bstrdup(B_ARGS, s) bstrdupNoBalloc(s)
 #define gstrdup(B_ARGS, s) bstrdupNoBalloc(s)
 #else /* BALLOC */
@@ -507,17 +507,17 @@ extern char *bstrdupANoBalloc(char *s);
 #define gstrdup	bstrdup
 #endif /* B_STATS */
 
-extern void bclose();
-extern int bopen(void *buf, int bufsize, int flags);
-extern void *balloc(B_ARGS_DEC, int size);
-extern void bfree(B_ARGS_DEC, void *mp);
-extern void bfreeSafe(B_ARGS_DEC, void *mp);
-extern void *brealloc(B_ARGS_DEC, void *buf, int newsize);
-extern char_t *bstrdup(B_ARGS_DEC, char_t *s);
+void bclose();
+int bopen(void *buf, int bufsize, int flags);
+void *balloc(B_ARGS_DEC, int size);
+void bfree(B_ARGS_DEC, void *mp);
+void bfreeSafe(B_ARGS_DEC, void *mp);
+void *brealloc(B_ARGS_DEC, void *buf, int newsize);
+char_t *bstrdup(B_ARGS_DEC, char_t *s);
 
 #endif /* BALLOC */
 
-extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
+void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 
 /*
  *	Flags. The integrity value is used as an arbitrary value to fill the flags.
@@ -538,127 +538,127 @@ extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 #endif /* WEBS */
 
 typedef void	(emfSchedProc)(void *data, int id);
-extern int		emfSchedCallback(int delay, emfSchedProc *proc, void *arg);
-extern void 	emfUnschedCallback(int id);
-extern void 	emfReschedCallback(int id, int delay);
-extern void		emfSchedProcess();
-extern int		emfInstGet();
-extern void		emfInstSet(int inst);
-extern void		error(E_ARGS_DEC, int flags, char_t *fmt, ...);
-extern void		(*errorSetHandler(void (*function)(int etype, char_t *msg))) \
+int		emfSchedCallback(int delay, emfSchedProc *proc, void *arg);
+void 	emfUnschedCallback(int id);
+void 	emfReschedCallback(int id, int delay);
+void		emfSchedProcess();
+int		emfInstGet();
+void		emfInstSet(int inst);
+void		error(E_ARGS_DEC, int flags, char_t *fmt, ...);
+void		(*errorSetHandler(void (*function)(int etype, char_t *msg))) \
 					(int etype, char_t *msg);
 
 #ifdef B_STATS
 #define 		hAlloc(x) 				HALLOC(B_L, x)
 #define			hAllocEntry(x, y, z)	HALLOCENTRY(B_L, x, y, z)
-extern int		HALLOC(B_ARGS_DEC, void ***map);
-extern int 		HALLOCENTRY(B_ARGS_DEC, void ***list, int *max, int size);
+int		HALLOC(B_ARGS_DEC, void ***map);
+int 		HALLOCENTRY(B_ARGS_DEC, void ***list, int *max, int size);
 #else
-extern int		hAlloc(void ***map);
-extern int 		hAllocEntry(void ***list, int *max, int size);
+int		hAlloc(void ***map);
+int 		hAllocEntry(void ***list, int *max, int size);
 #endif /* B_STATS */
 
-extern int		hFree(void ***map, int handle);
+int		hFree(void ***map, int handle);
 
-extern int	 	ringqOpen(ringq_t *rq, int increment, int maxsize);
-extern void 		ringqClose(ringq_t *rq);
-extern int 		ringqLen(ringq_t *rq);
+int	 	ringqOpen(ringq_t *rq, int increment, int maxsize);
+void 		ringqClose(ringq_t *rq);
+int 		ringqLen(ringq_t *rq);
 
-extern int 		ringqPutc(ringq_t *rq, char_t c);
-extern int	 	ringqInsertc(ringq_t *rq, char_t c);
-extern int	 	ringqPutStr(ringq_t *rq, char_t *str);
-extern int 		ringqGetc(ringq_t *rq);
+int 		ringqPutc(ringq_t *rq, char_t c);
+int	 	ringqInsertc(ringq_t *rq, char_t c);
+int	 	ringqPutStr(ringq_t *rq, char_t *str);
+int 		ringqGetc(ringq_t *rq);
 
-extern int		fmtValloc(char_t **s, int n, char_t *fmt, va_list arg);
-extern int		fmtAlloc(char_t **s, int n, char_t *fmt, ...);
-extern int		fmtStatic(char_t *s, int n, char_t *fmt, ...);
+int		fmtValloc(char_t **s, int n, char_t *fmt, va_list arg);
+int		fmtAlloc(char_t **s, int n, char_t *fmt, ...);
+int		fmtStatic(char_t *s, int n, char_t *fmt, ...);
 
-extern int 		ringqPutBlk(ringq_t *rq, unsigned char *buf, int len);
-extern int 		ringqPutBlkMax(ringq_t *rq);
-extern void 		ringqPutBlkAdj(ringq_t *rq, int size);
-extern int 		ringqGetBlk(ringq_t *rq, unsigned char *buf, int len);
-extern int 		ringqGetBlkMax(ringq_t *rq);
-extern void 		ringqGetBlkAdj(ringq_t *rq, int size);
-extern void 		ringqFlush(ringq_t *rq);
-extern void 		ringqAddNull(ringq_t *rq);
+int 		ringqPutBlk(ringq_t *rq, unsigned char *buf, int len);
+int 		ringqPutBlkMax(ringq_t *rq);
+void 		ringqPutBlkAdj(ringq_t *rq, int size);
+int 		ringqGetBlk(ringq_t *rq, unsigned char *buf, int len);
+int 		ringqGetBlkMax(ringq_t *rq);
+void 		ringqGetBlkAdj(ringq_t *rq, int size);
+void 		ringqFlush(ringq_t *rq);
+void 		ringqAddNull(ringq_t *rq);
 
-extern int		scriptSetVar(int engine, char_t *var, char_t *value);
-extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
-extern void		socketClose();
-extern void		socketCloseConnection(int sid);
-extern void		socketCreateHandler(int sid, int mask, socketHandler_t 
+int		scriptSetVar(int engine, char_t *var, char_t *value);
+int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
+void		socketClose();
+void		socketCloseConnection(int sid);
+void		socketCreateHandler(int sid, int mask, socketHandler_t 
 					handler, void* arg);
-extern void		socketDeleteHandler(int sid);
-extern int		socketEof(int sid);
-extern int 		socketCanWrite(int sid);
-extern void 		socketSetBufferSize(int sid, int in, int line, int out);
-extern int		socketFlush(int sid);
-extern int		socketGets(int sid, char_t **buf);
-extern int		socketGetPort(int sid);
-extern int		socketInputBuffered(int sid);
-extern int		socketOpen();
-extern int 		socketOpenConnection(int port, socketAccept_t accept, int flags);
-extern void		socketProcess(int hid);
-extern int		socketRead(int sid, char *buf, int len);
-extern int 		socketReady(int hid);
-extern int		socketWrite(int sid, char *buf, int len);
-extern int 		socketSelect(int hid, int timeout);
-extern int 		socketGetHandle(int sid);
-extern int 		socketSetBlock(int sid, int flags);
-extern int 		socketGetBlock(int sid);
-extern int 		socketAlloc(int port, socketAccept_t accept, int flags);
-extern void 		socketFree(int sid);
-extern int		socketGetError();
-extern 			socket_t *socketPtr(int sid);
-extern int 		socketWaitForEvent(socket_t *sp, int events, int *errCode);
-extern void 		socketRegisterInterest(socket_t *sp, int handlerMask);
-extern int 		socketGetInput(int sid, char *buf, int toRead, int *errCode);
-extern void		setSocketNodelayReuse(int sock);
+void		socketDeleteHandler(int sid);
+int		socketEof(int sid);
+int 		socketCanWrite(int sid);
+void 		socketSetBufferSize(int sid, int in, int line, int out);
+int		socketFlush(int sid);
+int		socketGets(int sid, char_t **buf);
+int		socketGetPort(int sid);
+int		socketInputBuffered(int sid);
+int		socketOpen();
+int 		socketOpenConnection(int port, socketAccept_t accept, int flags);
+void		socketProcess(int hid);
+int		socketRead(int sid, char *buf, int len);
+int 		socketReady(int hid);
+int		socketWrite(int sid, char *buf, int len);
+int 		socketSelect(int hid, int timeout);
+int 		socketGetHandle(int sid);
+int 		socketSetBlock(int sid, int flags);
+int 		socketGetBlock(int sid);
+int 		socketAlloc(int port, socketAccept_t accept, int flags);
+void 		socketFree(int sid);
+int		socketGetError();
+			socket_t *socketPtr(int sid);
+int 		socketWaitForEvent(socket_t *sp, int events, int *errCode);
+void 		socketRegisterInterest(socket_t *sp, int handlerMask);
+int 		socketGetInput(int sid, char *buf, int toRead, int *errCode);
+void		setSocketNodelayReuse(int sock);
 
-extern char_t	*strlower(char_t *string);
-extern char_t	*strupper(char_t *string);
+char_t	*strlower(char_t *string);
+char_t	*strupper(char_t *string);
 
-extern char_t	*stritoa(int n, char_t *string, int width);
+char_t	*stritoa(int n, char_t *string, int width);
 
-extern sym_fd_t	symOpen(int hash_size);
-extern void		symClose(sym_fd_t sd);
-extern sym_t	*symLookup(sym_fd_t sd, char_t *name);
-extern sym_t	*symEnter(sym_fd_t sd, char_t *name, value_t v, int arg);
-extern int		symDelete(sym_fd_t sd, char_t *name);
-extern void 	symWalk(sym_fd_t sd, void (*fn)(sym_t *symp));
-extern sym_t	*symFirst(sym_fd_t sd);
-extern sym_t	*symNext(sym_fd_t sd);
-extern int		symSubOpen();
-extern void 	symSubClose();
+sym_fd_t	symOpen(int hash_size);
+void		symClose(sym_fd_t sd);
+sym_t	*symLookup(sym_fd_t sd, char_t *name);
+sym_t	*symEnter(sym_fd_t sd, char_t *name, value_t v, int arg);
+int		symDelete(sym_fd_t sd, char_t *name);
+void 	symWalk(sym_fd_t sd, void (*fn)(sym_t *symp));
+sym_t	*symFirst(sym_fd_t sd);
+sym_t	*symNext(sym_fd_t sd);
+int		symSubOpen();
+void 	symSubClose();
 
-extern void		trace(int lev, char_t *fmt, ...);
-extern void		traceRaw(char_t *buf);
-extern void		(*traceSetHandler(void (*function)(int level, char_t *buf))) 
+void		trace(int lev, char_t *fmt, ...);
+void		traceRaw(char_t *buf);
+void		(*traceSetHandler(void (*function)(int level, char_t *buf))) 
 					(int level, char_t *buf);
 
-extern value_t 	valueInteger(long value);
-extern value_t	valueString(char_t *value, int flags);
-extern value_t	valueErrmsg(char_t *value);
-extern void 	valueFree(value_t *v);
-extern int		vxchdir(char *dirname);
+value_t 	valueInteger(long value);
+value_t	valueString(char_t *value, int flags);
+value_t	valueErrmsg(char_t *value);
+void 	valueFree(value_t *v);
+int		vxchdir(char *dirname);
 
-extern unsigned int hextoi(char_t *hexstring);
-extern unsigned int gstrtoi(char_t *s);
+unsigned int hextoi(char_t *hexstring);
+unsigned int gstrtoi(char_t *s);
 extern				time_t	timeMsec();
 
-extern char_t	*ballocAscToUni(char  *cp, int alen);
-extern char		*ballocUniToAsc(char_t *unip, int ulen);
+char_t	*ballocAscToUni(char  *cp, int alen);
+char		*ballocUniToAsc(char_t *unip, int ulen);
 
-extern char_t	*basicGetHost();
-extern char_t	*basicGetAddress();
-extern char_t	*basicGetProduct();
-extern void		basicSetHost(char_t *host);
-extern void		basicSetAddress(char_t *addr);
+char_t	*basicGetHost();
+char_t	*basicGetAddress();
+char_t	*basicGetProduct();
+void		basicSetHost(char_t *host);
+void		basicSetAddress(char_t *addr);
 
-extern int		harnessOpen(char_t **argv);
-extern void		harnessClose(int status);
-extern void		harnessTesting(char_t *msg, ...);
-extern void		harnessPassed();
-extern void		harnessFailed(int line);
-extern int		harnessLevel();
+int		harnessOpen(char_t **argv);
+void		harnessClose(int status);
+void		harnessTesting(char_t *msg, ...);
+void		harnessPassed();
+void		harnessFailed(int line);
+int		harnessLevel();
 #endif /* _h_UEMF */

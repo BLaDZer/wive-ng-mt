@@ -21,10 +21,10 @@ typedef struct cmdline_t
 	struct cmdline_t *next; // pointer to next cmd line
 } cmdline_t;
 
-extern void procps_init(cmdline_t *src);
-extern void procps_free(cmdline_t *src);
-extern int  procps_read_args(pid_t procnum, cmdline_t *pcmdline);
-extern int  procps_find(const char *procname, size_t elems, pid_t *pids);
-extern int  procps_count(const char *procname);
-extern cmdline_t *procps_list();
+void procps_init(cmdline_t *src);
+void procps_free(cmdline_t *src);
+int  procps_read_args(pid_t procnum, cmdline_t *pcmdline);
+int  procps_find(const char *procname, size_t elems, pid_t *pids);
+int  procps_count(const char *procname);
+cmdline_t *procps_list();
 #endif /* _PROCPS_H */

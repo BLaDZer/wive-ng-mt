@@ -142,87 +142,87 @@ typedef websRec	*webs_t;
 typedef websRec websType;
 
 /******************************** Prototypes **********************************/
-extern int	 websAccept(int sid, char *ipaddr, int port, int listenSid);
-extern int 	 websAspDefine(char_t *name, int (*fn)(int ejid, webs_t wp, int argc, char_t **argv));
-extern int	 websAspRequest(webs_t wp, char_t *lpath);
-extern void	 websCloseListen();
-extern int 	 websDecode64(char_t *outbuf, char_t *string, int buflen);
-extern void	 websDecodeUrl(char_t *token, char_t *decoded, int len);
-extern void  	 websDone(webs_t wp, int code);
-extern void  	 websError(webs_t wp, int code, char_t *msg, ...);
-/* function websErrorMsg() made extern 03 Jun 02 BgP */
-extern char_t 	*websErrorMsg(int code);
-extern void  	 websFooter(webs_t wp);
-extern int 	 websFormDefine(char_t *name, void (*fn)(webs_t wp, char_t *path, char_t *query));
-extern char_t 	*websGetDefaultDir();
-extern char_t 	*websGetDefaultPage();
-extern char_t 	*websGetHostUrl();
-extern char_t 	*websGetIpaddrUrl();
-extern char_t 	*websGetPassword();
-extern int	 websGetPort();
-extern char_t 	*websGetPublishDir(char_t *path, char_t **urlPrefix);
-extern char_t 	*websGetRealm();
-extern int 	 websGetRequestBytes(webs_t wp);
-extern char_t	*websGetRequestDir(webs_t wp);
-extern int	 websGetRequestFlags(webs_t wp);
-extern char_t	*websGetRequestIpaddr(webs_t wp);
-extern char_t 	*websGetRequestLpath(webs_t wp);
-extern char_t	*websGetRequestPath(webs_t wp);
-extern char_t	*websGetRequestPassword(webs_t wp);
-extern char_t	*websGetRequestType(webs_t wp);
-extern int 	 websGetRequestWritten(webs_t wp);
-extern char_t 	*websGetVar(webs_t wp, char_t *var, char_t *def);
-extern int 	 websCompareVar(webs_t wp, char_t *var, char_t *value);
-extern void 	 websHeader(webs_t wp);
-extern int	 websOpenListen(int port, int retries);
-extern int 	 websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode, int perm);
-extern void 	 websPageClose(webs_t wp);
-extern int	 websPublish(char_t *urlPrefix, char_t *path);
-extern void	 websRedirect(webs_t wp, char_t *url);
-extern void 	 websSecurityDelete();
-extern int 	 websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query);
-extern void 	 websSetDefaultDir(char_t *dir);
-extern void 	 websSetDefaultPage(char_t *page);
-extern void 	 websSetEnv(webs_t wp);
-extern void 	 websSetHost(char_t *host);
-extern void 	 websSetIpaddr(char_t *ipaddr);
-extern void 	 websSetPassword(char_t *password);
-extern void 	 websSetRealm(char_t *realmName);
-extern void 	 websSetRequestBytes(webs_t wp, int bytes);
-extern void	 websSetRequestFlags(webs_t wp, int flags);
-extern void 	 websSetRequestLpath(webs_t wp, char_t *lpath);
-extern void 	 websSetRequestPath(webs_t wp, char_t *dir, char_t *path);
-extern char_t	*websGetRequestUserName(webs_t wp);
-extern void 	 websSetRequestWritten(webs_t wp, int written);
-extern void 	 websSetVar(webs_t wp, char_t *var, char_t *value);
-extern int 	 websTestVar(webs_t wp, char_t *var);
-extern void	 websTimeoutCancel(webs_t wp);
-extern int 	 websUrlHandlerDefine(char_t *urlPrefix, char_t *webDir, int arg, int (*fn)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query), int flags);
-extern int 	websUrlHandlerDelete(int (*fn)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query));
-extern int	websUrlHandlerRequest(webs_t wp);
-extern int 	websUrlParse(char_t *url, char_t **buf, char_t **host, char_t **path, char_t **port, char_t **query, char_t **proto, char_t **tag, char_t **ext);
-extern char_t 	*websUrlType(char_t *webs, char_t *buf, int charCnt);
-extern int 	websWrite(webs_t wp, char_t* fmt, ...);
-extern void	websLongWrite(webs_t wp, char *longstr);
-extern int 	websWriteBlock(webs_t wp, char_t *buf, int nChars);
-extern int 	websWriteDataNonBlock(webs_t wp, char *buf, int nChars);
-extern int 	websValid(webs_t wp);
-extern int 	websValidateUrl(webs_t wp, char_t *path);
-extern void	websSetTimeMark(webs_t wp);
+int	 websAccept(int sid, char *ipaddr, int port, int listenSid);
+int 	 websAspDefine(char_t *name, int (*fn)(int ejid, webs_t wp, int argc, char_t **argv));
+int	 websAspRequest(webs_t wp, char_t *lpath);
+void	 websCloseListen();
+int 	 websDecode64(char_t *outbuf, char_t *string, int buflen);
+void	 websDecodeUrl(char_t *token, char_t *decoded, int len);
+void  	 websDone(webs_t wp, int code);
+void  	 websError(webs_t wp, int code, char_t *msg, ...);
+/* function websErrorMsg() made 03 Jun 02 BgP */
+char_t 	*websErrorMsg(int code);
+void  	 websFooter(webs_t wp);
+int 	 websFormDefine(char_t *name, void (*fn)(webs_t wp, char_t *path, char_t *query));
+char_t 	*websGetDefaultDir();
+char_t 	*websGetDefaultPage();
+char_t 	*websGetHostUrl();
+char_t 	*websGetIpaddrUrl();
+char_t 	*websGetPassword();
+int	 websGetPort();
+char_t 	*websGetPublishDir(char_t *path, char_t **urlPrefix);
+char_t 	*websGetRealm();
+int 	 websGetRequestBytes(webs_t wp);
+char_t	*websGetRequestDir(webs_t wp);
+int	 websGetRequestFlags(webs_t wp);
+char_t	*websGetRequestIpaddr(webs_t wp);
+char_t 	*websGetRequestLpath(webs_t wp);
+char_t	*websGetRequestPath(webs_t wp);
+char_t	*websGetRequestPassword(webs_t wp);
+char_t	*websGetRequestType(webs_t wp);
+int 	 websGetRequestWritten(webs_t wp);
+char_t 	*websGetVar(webs_t wp, char_t *var, char_t *def);
+int 	 websCompareVar(webs_t wp, char_t *var, char_t *value);
+void 	 websHeader(webs_t wp);
+int	 websOpenListen(int port, int retries);
+int 	 websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode, int perm);
+void 	 websPageClose(webs_t wp);
+int	 websPublish(char_t *urlPrefix, char_t *path);
+void	 websRedirect(webs_t wp, char_t *url);
+void 	 websSecurityDelete();
+int 	 websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query);
+void 	 websSetDefaultDir(char_t *dir);
+void 	 websSetDefaultPage(char_t *page);
+void 	 websSetEnv(webs_t wp);
+void 	 websSetHost(char_t *host);
+void 	 websSetIpaddr(char_t *ipaddr);
+void 	 websSetPassword(char_t *password);
+void 	 websSetRealm(char_t *realmName);
+void 	 websSetRequestBytes(webs_t wp, int bytes);
+void	 websSetRequestFlags(webs_t wp, int flags);
+void 	 websSetRequestLpath(webs_t wp, char_t *lpath);
+void 	 websSetRequestPath(webs_t wp, char_t *dir, char_t *path);
+char_t	*websGetRequestUserName(webs_t wp);
+void 	 websSetRequestWritten(webs_t wp, int written);
+void 	 websSetVar(webs_t wp, char_t *var, char_t *value);
+int 	 websTestVar(webs_t wp, char_t *var);
+void	 websTimeoutCancel(webs_t wp);
+int 	 websUrlHandlerDefine(char_t *urlPrefix, char_t *webDir, int arg, int (*fn)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query), int flags);
+int 	websUrlHandlerDelete(int (*fn)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query));
+int	websUrlHandlerRequest(webs_t wp);
+int 	websUrlParse(char_t *url, char_t **buf, char_t **host, char_t **path, char_t **port, char_t **query, char_t **proto, char_t **tag, char_t **ext);
+char_t 	*websUrlType(char_t *webs, char_t *buf, int charCnt);
+int 	websWrite(webs_t wp, char_t* fmt, ...);
+void	websLongWrite(webs_t wp, char *longstr);
+int 	websWriteBlock(webs_t wp, char_t *buf, int nChars);
+int 	websWriteDataNonBlock(webs_t wp, char *buf, int nChars);
+int 	websValid(webs_t wp);
+int 	websValidateUrl(webs_t wp, char_t *path);
+void	websSetTimeMark(webs_t wp);
 
 /*
  *	The following prototypes are used by the SSL patch found in websSSL.c
  */
-extern int 	websAlloc(int sid);
-extern void 	websFree(webs_t wp);
-extern void 	websTimeout(void *arg, int id);
-extern void 	websReadEvent(webs_t wp);
+int 	websAlloc(int sid);
+void 	websFree(webs_t wp);
+void 	websTimeout(void *arg, int id);
+void 	websReadEvent(webs_t wp);
 
 /*
  *	Prototypes for functions available when running as part of the 
  *	GoAhead Embedded Management Framework (EMF)
  */
 #ifdef EMF
-extern void 	 websFormExplain(webs_t wp, char_t *path, char_t *query);
+void 	 websFormExplain(webs_t wp, char_t *path, char_t *query);
 #endif
 #endif /* _h_WEBS */

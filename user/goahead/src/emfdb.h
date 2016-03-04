@@ -54,46 +54,46 @@ typedef struct dbTable_s {
 /*
  *	Add a schema to the module-internal schema database
  */
-extern int		dbRegisterDBSchema(dbTable_t *sTable);
+int		dbRegisterDBSchema(dbTable_t *sTable);
 
-extern int		dbOpen(char_t *databasename, char_t *filename,
+int		dbOpen(char_t *databasename, char_t *filename,
 					int (*gettime)(int did), int flags);
-extern void		dbClose(int did);
-extern int		dbGetTableId(int did, char_t *tname);
-extern char_t	*dbGetTableName(int did, int tid);
-extern int		dbReadInt(int did, char_t *table, char_t *column, int row,
+void		dbClose(int did);
+int		dbGetTableId(int did, char_t *tname);
+char_t	*dbGetTableName(int did, int tid);
+int		dbReadInt(int did, char_t *table, char_t *column, int row,
 					int *returnValue);
-extern int		dbReadStr(int did, char_t *table, char_t *column, int row,
+int		dbReadStr(int did, char_t *table, char_t *column, int row,
 					char_t **returnValue);
-extern int		dbWriteInt(int did, char_t *table, char_t *column, int row,
+int		dbWriteInt(int did, char_t *table, char_t *column, int row,
 					int idata);
-extern int		dbWriteStr(int did, char_t *table, char_t *column, int row,
+int		dbWriteStr(int did, char_t *table, char_t *column, int row,
 					char_t *s);
-extern int		dbAddRow(int did, char_t *table);
-extern int		dbDeleteRow(int did, char_t *table, int rid);
-extern int		dbSetTableNrow(int did, char_t *table, int nNewRows);
-extern int		dbGetTableNrow(int did, char_t *table);
+int		dbAddRow(int did, char_t *table);
+int		dbDeleteRow(int did, char_t *table, int rid);
+int		dbSetTableNrow(int did, char_t *table, int nNewRows);
+int		dbGetTableNrow(int did, char_t *table);
 
 /*
  *	Dump the contents of a database to file
  */
-extern int		dbSave(int did, char_t *filename, int flags);
+int		dbSave(int did, char_t *filename, int flags);
 
 /*
  *	Load the contents of a database to file
  */
-extern int		dbLoad(int did, char_t *filename, int flags);
+int		dbLoad(int did, char_t *filename, int flags);
 
 /*
  *	Search for a data in a given column
  *	30 Jun 03 BgP: If the value of 'flags' is DB_CASE_INSENSITIVE, use a
  *	case-insensitive string compare when searching.
  */
-extern int		dbSearchStr(int did, char_t *table, char_t *column,
+int		dbSearchStr(int did, char_t *table, char_t *column,
 					char_t *value, int flags);
 
-extern void		dbZero(int did);
+void		dbZero(int did);
 
-extern char_t	*basicGetProductDir();
-extern void		basicSetProductDir(char_t *proddir);
+char_t	*basicGetProductDir();
+void		basicSetProductDir(char_t *proddir);
 #endif /* _h_EMFDB */

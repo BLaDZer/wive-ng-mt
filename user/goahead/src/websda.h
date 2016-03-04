@@ -24,7 +24,7 @@
 #include "webs.h"
 /****************************** Definitions ***********************************/
 
-extern char_t 	*websCalcNonce(webs_t wp);
-extern char_t 	*websCalcOpaque(webs_t wp);
-extern char_t 	*websCalcDigest(webs_t wp);
+char_t 	*websCalcNonce(webs_t wp);
+char_t 	*websCalcOpaque(webs_t wp);
+char_t 	*websCalcDigest(webs_t wp);
 #endif /* _h_WEBSDA */

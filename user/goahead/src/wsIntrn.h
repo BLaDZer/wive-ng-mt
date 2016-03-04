@@ -104,7 +104,7 @@ typedef struct {
 	long 			handlerHits;
 } websStatsType;
 
-extern websStatsType websStats;				/* Web access stats */
+websStatsType websStats;				/* Web access stats */
 
 /* 
  *	Error code list
@@ -148,78 +148,79 @@ typedef struct {
 #define	SOCKET_BINARY	O_BINARY
 
 extern websRomPageIndexType	websRomPageIndex[];
-extern websMimeType		websMimeList[];		/* List of mime types */
-extern sym_fd_t			websMime;			/* Set of mime types */
-extern webs_t*			webs;				/* Session list head */
-extern int				websMax;			/* List size */
-extern char_t			websHost[64];		/* Name of this host */
-extern char_t			websIpaddr[64];		/* IP address of this host */
-extern char_t			*websHostUrl;		/* URL for this host */
-extern char_t			*websIpaddrUrl;		/* URL for this host */
-extern int				websPort;			/* Port number */
+extern websMimeType		websMimeList[];	/* List of mime types */
+
+sym_fd_t		websMime;		/* Set of mime types */
+webs_t*			webs;			/* Session list head */
+int			websMax;		/* List size */
+char_t			websHost[64];		/* Name of this host */
+char_t			websIpaddr[64];		/* IP address of this host */
+char_t			*websHostUrl;		/* URL for this host */
+char_t			*websIpaddrUrl;		/* URL for this host */
+int			websPort;		/* Port number */
 
 /******************************** Prototypes **********************************/
 
-extern int		 websAspOpen();
-extern void		 websAspClose();
-extern void		 websFormOpen();
-extern void		 websFormClose();
-extern int		 websAspWrite(int ejid, webs_t wp, int argc, char_t **argv);
-extern void  	 websDefaultClose();
-extern int 		 websDefaultHandler(webs_t wp, char_t *urlPrefix, 
+int		 websAspOpen();
+void		 websAspClose();
+void		 websFormOpen();
+void		 websFormClose();
+int		 websAspWrite(int ejid, webs_t wp, int argc, char_t **argv);
+void  	 websDefaultClose();
+int 		 websDefaultHandler(webs_t wp, char_t *urlPrefix, 
 					char_t *webDir, int arg, char_t *url, char_t *path, 
 					char_t *query);
-extern int 		 websFormHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
+int 		 websFormHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 					int arg, char_t *url, char_t *path, char_t *query);
-extern int 		 websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
+int 		 websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 					int arg, char_t *url, char_t *path, char_t *query);
-extern void		 websCgiCleanup();
-extern int		 websCheckCgiProc(int handle, int *status);
-extern char_t	 *websGetCgiCommName();
+void		 websCgiCleanup();
+int		 websCheckCgiProc(int handle, int *status);
+char_t	 *websGetCgiCommName();
 
-extern int		 websLaunchCgiProc(char_t *cgiPath, char_t **argp,
+int		 websLaunchCgiProc(char_t *cgiPath, char_t **argp,
 					char_t **envp, char_t *stdIn, char_t *stdOut);
-extern int 		 websOpen(int sid);
-extern void 	 websResponse(webs_t wp, int code, char_t *msg, 
+int 		 websOpen(int sid);
+void 	 websResponse(webs_t wp, int code, char_t *msg, 
 					char_t *redirect);
-extern int 		 websJavaScriptEval(webs_t wp, char_t *script);
-extern int 		 websPageReadData(webs_t wp, char *buf, int nBytes);
-extern int		 websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode,
+int 		 websJavaScriptEval(webs_t wp, char_t *script);
+int 		 websPageReadData(webs_t wp, char *buf, int nBytes);
+int		 websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode,
 					int perm);
-extern void		 websPageClose(webs_t wp);
-extern void		 websPageSeek(webs_t wp, long offset);
-extern int 	 	 websPageStat(webs_t wp, char_t *lpath, char_t *path,
+void		 websPageClose(webs_t wp);
+void		 websPageSeek(webs_t wp, long offset);
+int 	 	 websPageStat(webs_t wp, char_t *lpath, char_t *path,
 					websStatType *sbuf);
-extern int		 websPageIsDirectory(char_t *lpath);
+int		 websPageIsDirectory(char_t *lpath);
 #ifdef WEBS_PAGE_ROM
-extern int 		 websRomOpen();
-extern void		 websRomClose();
-extern int 		 websRomPageOpen(webs_t wp, char_t *path, int mode, int perm);
-extern void 	 websRomPageClose(int fd);
-extern int 		 websRomPageReadData(webs_t wp, char *buf, int len);
-extern int 	 	 websRomPageStat(char_t *path, websStatType *sbuf);
-extern long		 websRomPageSeek(webs_t wp, long offset, int origin);
+int 		 websRomOpen();
+void		 websRomClose();
+int 		 websRomPageOpen(webs_t wp, char_t *path, int mode, int perm);
+void 	 websRomPageClose(int fd);
+int 		 websRomPageReadData(webs_t wp, char *buf, int len);
+int 	 	 websRomPageStat(char_t *path, websStatType *sbuf);
+long		 websRomPageSeek(webs_t wp, long offset, int origin);
 #endif
-extern void 	 websSetRequestSocketHandler(webs_t wp, int mask, 
+void 	 websSetRequestSocketHandler(webs_t wp, int mask, 
 					void (*fn)(webs_t wp));
-extern int 		 websSolutionHandler(webs_t wp, char_t *urlPrefix,
+int 		 websSolutionHandler(webs_t wp, char_t *urlPrefix,
 					char_t *webDir, int arg, char_t *url, char_t *path, 
 					char_t *query);
-extern void 	 websUrlHandlerClose();
-extern int 		 websUrlHandlerOpen();
-extern int 		 websOpenServer(int port, int retries);
-extern void 	 websCloseServer();
-extern char_t*	 websGetDateString(websStatType* sbuf);
+void 	 websUrlHandlerClose();
+int 		 websUrlHandlerOpen();
+int 		 websOpenServer(int port, int retries);
+void 	 websCloseServer();
+char_t*	 websGetDateString(websStatType* sbuf);
 
-extern int		strcmpci(char_t* s1, char_t* s2);
+int		strcmpci(char_t* s1, char_t* s2);
 
 /*
  *	Prototypes for functions available when running as part of the 
  *	GoAhead Embedded Management Framework (EMF)
  */
 #ifdef EMF
-extern int 		 websEmfOpen();
-extern void 	 websEmfClose();
-extern void 	 websSetEmfEnvironment(webs_t wp);
+int 		 websEmfOpen();
+void 	 websEmfClose();
+void 	 websSetEmfEnvironment(webs_t wp);
 #endif
 #endif /* _h_WEBS_INTERNAL */
