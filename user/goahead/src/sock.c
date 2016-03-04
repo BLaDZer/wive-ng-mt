@@ -494,10 +494,10 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
  *	Allocate a new socket structure
  */
 
-int socketAlloc(char *host, int port, socketAccept_t accept, int flags)
+int socketAlloc(int port, socketAccept_t accept, int flags)
 {
-	socket_t	*sp;
-	int			sid;
+	socket_t *sp;
+	int sid;
 
 	if ((sid = hAllocEntry((void***) &socketList, &socketMax,
 			sizeof(socket_t))) < 0) {
@@ -510,10 +510,6 @@ int socketAlloc(char *host, int port, socketAccept_t accept, int flags)
 	sp->port = port;
 	sp->fileHandle = -1;
 	sp->saveMask = -1;
-
-	if (host) {
-		strncpy(sp->host, host, sizeof(sp->host));
-	}
 
 /*
  *	Preserve only specified flags from the callers open

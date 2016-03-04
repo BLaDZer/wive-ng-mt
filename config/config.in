@@ -35,7 +35,6 @@ comment 'Network Applications'
 bool 'go-ahead webserver'				CONFIG_USER_GOAHEAD_HTTPD
 dep_bool '  enable IPv6 support'			CONFIG_USER_GOAHEAD_IPV6 $CONFIG_USER_GOAHEAD_HTTPD
 dep_bool '  enable SSL support'				CONFIG_USER_GOAHEAD_SSL $CONFIG_USER_GOAHEAD_HTTPD
-dep_bool '  enable hostname support'			CONFIG_USER_GOAHEAD_HOSTNAME $CONFIG_USER_GOAHEAD_HTTPD
 dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_GOAHEAD_HTTPD
 
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE

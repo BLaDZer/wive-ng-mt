@@ -171,8 +171,7 @@ function lan2_enable_switch(form)
           <tr>
             <td class="title" colspan="2" id="lSetup">LAN Interface Setup</td>
           </tr>
-          <tr <% var hashost = getHostSupp();
-	if (hashost != "1") write("style=\"visibility:hidden;display:none\""); %>>
+          <tr>
             <td class="head" id="lHostname">Hostname</td>
             <td><input name="hostname" class="mid" value=""></td>
           </tr>

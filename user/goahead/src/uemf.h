@@ -567,7 +567,6 @@ typedef void 	(*socketHandler_t)(int sid, int mask, void* data);
 typedef int	(*socketAccept_t)(int sid, char *ipaddr, int port, int listenSid);
 
 typedef struct {
-	char		host[64];			/* Host name */
 	ringq_t		inBuf;				/* Input ring queue */
 	ringq_t		outBuf;				/* Output ring queue */
 	ringq_t		lineBuf;			/* Line ring queue */
@@ -735,9 +734,8 @@ extern int		socketGets(int sid, char_t **buf);
 extern int		socketGetPort(int sid);
 extern int		socketInputBuffered(int sid);
 extern int		socketOpen();
-extern int 		socketOpenConnection(char *host, int port, 
-					socketAccept_t accept, int flags);
-extern void 	socketProcess(int hid);
+extern int 		socketOpenConnection(int port, socketAccept_t accept, int flags);
+extern void		socketProcess(int hid);
 extern int		socketRead(int sid, char *buf, int len);
 extern int 		socketReady(int hid);
 extern int		socketWrite(int sid, char *buf, int len);
@@ -746,8 +744,7 @@ extern int 		socketSelect(int hid, int timeout);
 extern int 		socketGetHandle(int sid);
 extern int 		socketSetBlock(int sid, int flags);
 extern int 		socketGetBlock(int sid);
-extern int 		socketAlloc(char *host, int port, socketAccept_t accept, 
-					int flags);
+extern int 		socketAlloc(int port, socketAccept_t accept, int flags);
 extern void 		socketFree(int sid);
 extern int		socketGetError();
 extern 			socket_t *socketPtr(int sid);

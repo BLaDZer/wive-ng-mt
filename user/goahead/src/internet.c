@@ -344,20 +344,6 @@ static int getDns(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-/*
- * arguments:
- * description: return 1 if hostname is supported
- */
-static int getHostSupp(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef GA_HOSTNAME_SUPPORT
-	ejSetResult(eid, "1");
-#else
-	ejSetResult(eid, "0");
-#endif
-	return 0;
-}
-
 static int getIgmpProxyBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_USER_IGMP_PROXY
@@ -1423,9 +1409,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	char_t	*gw = NULL, *pd = NULL, *sd = NULL;
 	char_t *lan2enabled, *lan2_ip, *lan2_nm;
 	char_t *submitUrl;
-#ifdef GA_HOSTNAME_SUPPORT
 	char_t	*host;
-#endif
+
 	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	char	*wan_ip = nvram_get(RT2860_NVRAM, "wan_ipaddr");
 	char	*ctype = nvram_get(RT2860_NVRAM, "connectionType");
@@ -1443,9 +1428,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	start_ip = websGetVar(wp, T("dhcpStart"), T(""));
 	end_ip = websGetVar(wp, T("dhcpEnd"), T(""));
 	dgw = websGetVar(wp, T("dhcpGateway"), T(""));
-#ifdef GA_HOSTNAME_SUPPORT
 	host = websGetVar(wp, T("hostname"), T("0"));
-#endif
+
 	/*
 	 * check static ip address:
 	 * lan and wan ip should not be the same except in bridge mode
@@ -1488,9 +1472,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "Lan2Enabled", lan2enabled);
 	nvram_bufset(RT2860_NVRAM, "lan2_ipaddr", lan2_ip);
 	nvram_bufset(RT2860_NVRAM, "lan2_netmask", lan2_nm);
-#ifdef GA_HOSTNAME_SUPPORT
 	nvram_bufset(RT2860_NVRAM, "HostName", host);
-#endif
+
 	if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
 		if (strncmp(old_start_ip, start_ip, 15))
 			nvram_bufset(RT2860_NVRAM, "dhcpStart", start_ip);
@@ -1508,9 +1491,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h3>LAN Interface Setup</h3><br>\n"));
-#ifdef GA_HOSTNAME_SUPPORT
 	websWrite(wp, T("Hostname: %s<br>\n"), host);
-#endif
 	websWrite(wp, T("IP: %s<br>\n"), ip);
 	websWrite(wp, T("Netmask: %s<br>\n"), nm);
 	websWrite(wp, T("LAN2 Enabled: %s<br>\n"), lan2enabled);
@@ -2149,7 +2130,6 @@ static int getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 void formDefineInternet(void) {
 	websAspDefine(T("getDns"), getDns);
-	websAspDefine(T("getHostSupp"), getHostSupp);
 	websAspDefine(T("getIgmpProxyBuilt"), getIgmpProxyBuilt);
 	websAspDefine(T("getVPNBuilt"), getVPNBuilt);
 	websAspDefine(T("getLanIp"), getLanIp);

@@ -78,7 +78,7 @@ int websSSLOpen(void)
 	free(privFile);
 
 	/* lumentis */
-	sslListenSock = socketOpenConnection(NULL, SSL_PORT, websSSLAccept, SOCKET_BLOCK); 
+	sslListenSock = socketOpenConnection(SSL_PORT, websSSLAccept, SOCKET_BLOCK); 
 
 	if (sslListenSock < 0) {
 		/* trace(2, T("SSL: Unable to open SSL socket on port <%d>!\n"), sslPort); */

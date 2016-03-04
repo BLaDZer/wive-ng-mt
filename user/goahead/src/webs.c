@@ -203,7 +203,7 @@ int websOpenListen(int port, int retries)
  *	Open the webs webs listen port. If we fail, try the next port.
  */
 	for (i = 0; i <= retries; i++) {
-		websListenSock = socketOpenConnection(NULL, port, websAccept, SOCKET_BLOCK);
+		websListenSock = socketOpenConnection(port, websAccept, SOCKET_BLOCK);
 		if (websListenSock >= 0) {
 			break;
 		}
@@ -801,7 +801,7 @@ static int websParseFirst(webs_t wp, char_t *text)
 	wp->path = bstrdup(B_L, path);
 	wp->protocol = bstrdup(B_L, proto);
 	wp->protoVersion = bstrdup(B_L, protoVer);
-	
+
 	if ((testPort = socketGetPort(wp->listenSid)) >= 0) {
 		wp->port = testPort;
 	} else {
@@ -825,8 +825,8 @@ static int websParseFirst(webs_t wp, char_t *text)
  *	we assume it must be talking to us directly for local webs data.
  *	Note: not fully implemented yet.
  */
-	if (gstrstr(wp->url, T("http://")) == NULL || 
-		((gstrcmp(wp->host, T("localhost")) == 0 || 
+	if (gstrstr(wp->url, T("http://")) == NULL ||
+		((gstrcmp(wp->host, T("localhost")) == 0 ||
 			gstrcmp(wp->host, websHost) == 0) && (wp->port == websPort))) {
 		wp->flags |= WEBS_LOCAL_PAGE;
 		if (gstrcmp(wp->path, T("/")) == 0) {

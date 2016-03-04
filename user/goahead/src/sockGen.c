@@ -80,17 +80,14 @@ void socketReservice(int sid)
  *	Open a client or server socket. Host is NULL if we want server capability.
  */
 
-int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
+int socketOpenConnection(int port, socketAccept_t accept, int flags)
 {
-#ifndef NO_GETHOSTBYNAME
-	struct hostent		*hostent;					/* Host database entry */
-#endif /* ! (NO_GETHOSTBYNAME) */
-	socket_t			*sp;
+	socket_t		*sp;
 	struct sockaddr_in	sockaddr;
-	int					sid, rc;
+	int			sid;
 #ifdef WF_USE_IPV6
-	int					gaierr;
-	char				portstr[10];
+	int			gaierr;
+	char			portstr[10];
 	struct addrinfo		hints;
 	struct addrinfo		*ai, *ai2, *aiv6 = NULL;
 	struct sockaddr_in6	sockaddr6;
@@ -102,7 +99,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 /*
  *	Allocate a socket structure
  */
-	if ((sid = socketAlloc(host, port, accept, flags)) < 0) {
+	if ((sid = socketAlloc(port, accept, flags)) < 0) {
 		return -1;
 	}
 	sp = socketList[sid];
@@ -118,7 +115,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 	hints.ai_socktype = SOCK_STREAM;
 
 	snprintf(portstr, sizeof(portstr), "%d", port);
-	if ((gaierr = getaddrinfo(host, portstr, &hints, &ai)) != 0) {
+	if ((gaierr = getaddrinfo(NULL, portstr, &hints, &ai)) != 0) {
 		syslog(LOG_ERR, "getaddrinfo - %s, %s", gai_strerror(gaierr), __FUNCTION__);
 		socketFree(sid);
 		return -1;
@@ -144,49 +141,7 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 	sockaddr.sin_family = AF_INET;
 	sockaddr.sin_port = htons((short) (port & 0xFFFF));
 
-	if (host == NULL) {
-		sockaddr.sin_addr.s_addr = INADDR_ANY;
-	} else {
-		sockaddr.sin_addr.s_addr = inet_addr(host);
-		if (sockaddr.sin_addr.s_addr == INADDR_NONE) {
-/*
- *			If the OS does not support gethostbyname functionality, the macro:
- *			NO_GETHOSTBYNAME should be defined to skip the use of gethostbyname.
- *			Unfortunatly there is no easy way to recover, the following code
- *			simply uses the basicGetHost IP for the sockaddr.
- */
-
-#ifdef NO_GETHOSTBYNAME
-			if (strcmp(host, basicGetHost()) == 0) {
-				sockaddr.sin_addr.s_addr = inet_addr(basicGetAddress());
-			}
-			if (sockaddr.sin_addr.s_addr == INADDR_NONE) {
-				socketFree(sid);
-				return -1;
-			}
-#else
-			hostent = gethostbyname(host);
-			if (hostent != NULL) {
-				memcpy((char *) &sockaddr.sin_addr,
-					(char *) hostent->h_addr_list[0],
-					(size_t) hostent->h_length);
-			} else {
-				char	*asciiAddress;
-				char_t	*address;
-
-				address = basicGetAddress();
-				asciiAddress = ballocUniToAsc(address, gstrlen(address));
-				sockaddr.sin_addr.s_addr = inet_addr(asciiAddress);
-				bfree(B_L, asciiAddress);
-				if (sockaddr.sin_addr.s_addr == INADDR_NONE) {
-					errno = ENXIO;
-					socketFree(sid);
-					return -1;
-				}
-			}
-#endif /* (NO_GETHOSTBYNAME) */
-		}
-	}
+	sockaddr.sin_addr.s_addr = INADDR_ANY;
 #endif /* WF_USE_IPV6 */
 
 /*
@@ -204,60 +159,30 @@ int socketOpenConnection(char *host, int port, socketAccept_t accept, int flags)
 	}
 	socketHighestFd = max(socketHighestFd, sp->sock);
 
-
-/*
- *	Host is set if we are the client
- */
-	if (host) {
-/*
- *		Connect to the remote server in blocking mode, then go into
- *		non-blocking mode if desired.
- */
-
+	/*
+	 * Bind to the socket endpoint and the call listen() to start listening
+	 * Make sure the socket is not inherited by exec'd processes
+	 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
+	 */
 #ifndef __NO_FCNTL
-			fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
+	fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
 #endif
-			if (! (sp->flags & SOCKET_BLOCK)) {
-/*
- *				sockGen.c is only used for Windows products when blocking
- *				connects are expected.  This applies to FieldUpgrader
- *				agents and open source webserver connectws.  Therefore the
- *				asynchronous connect code here is not compiled.
- */
-				socketSetBlock(sid, 1);
-			}
-			if ((rc = connect(sp->sock, (struct sockaddr *)&sockaddr, sizeof(sockaddr))) < 0) {
-				socketFree(sid);
-				return -1;
-			}
-	} else {
-		/*
-		 * Bind to the socket endpoint and the call listen() to start listening
-		 * Make sure the socket is not inherited by exec'd processes
-		 * Set the REUSE flag to minimize the number of sockets in TIME_WAIT
-		 */
-#ifndef __NO_FCNTL
-		fcntl(sp->sock, F_SETFD, FD_CLOEXEC);
-#endif
-		setSocketNodelayReuse(sp->sock);
+	setSocketNodelayReuse(sp->sock);
 #ifdef WF_USE_IPV6
-		if (bind(sp->sock, (struct sockaddr *) &sockaddr6,
-				sizeof(sockaddr6)) < 0) {
+	if (bind(sp->sock, (struct sockaddr *) &sockaddr6, sizeof(sockaddr6)) < 0) {
 #else
-		if (bind(sp->sock, (struct sockaddr *) &sockaddr,
-				sizeof(sockaddr)) < 0) {
+	if (bind(sp->sock, (struct sockaddr *) &sockaddr, sizeof(sockaddr)) < 0) {
 #endif
-			socketFree(sid);
-			return -1;
-		}
-
-		if (listen(sp->sock, SOMAXCONN) < 0) {
-			socketFree(sid);
-			return -1;
-		}
-		sp->flags |= SOCKET_LISTENING;
-		sp->handlerMask |= SOCKET_READABLE;
+		socketFree(sid);
+		return -1;
 	}
+
+	if (listen(sp->sock, SOMAXCONN) < 0) {
+		socketFree(sid);
+		return -1;
+	}
+	sp->flags |= SOCKET_LISTENING;
+	sp->handlerMask |= SOCKET_READABLE;
 
 /*
  *	Set the blocking mode
@@ -323,7 +248,7 @@ static void socketAccept(socket_t *sp)
 /*
  *	Create a socket structure and insert into the socket list
  */
-	nid = socketAlloc(sp->host, sp->port, sp->accept, sp->flags);
+	nid = socketAlloc(sp->port, sp->accept, sp->flags);
 	nsp = socketList[nid];
 
 	if (nsp == NULL)

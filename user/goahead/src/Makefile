@@ -72,9 +72,6 @@ DEPEND_FILES	= asp.o balloc.o base64.o cgi.o default.o  \
 ifeq ("$(CONFIG_USER_GOAHEAD_IPV6)", "y")
 CFLAGS += -DWF_USE_IPV6
 endif
-ifeq ("$(CONFIG_USER_GOAHEAD_HOSTNAME)", "y")
-CFLAGS += -DGA_HOSTNAME_SUPPORT
-endif
 
 # external apps flags
 ifneq ("$(CONFIG_RT2860V2_STA)", "")

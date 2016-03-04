@@ -1762,70 +1762,71 @@
 22) goahead: fix uncorecrt socket reuse in socketSelect.<br>
 23) goahead: cleanup socket code, remove unused flags and type of sockets.<br>
 24) goahead: implement socket reservice for correct connection reuse.<br>
-25) init.d: irqbalance skip ipi irq`s.<br>
-26) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
-27) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
-28) init.d: add restart goahead if unexpected stopped (temp workaround for MIPS_MT_SMP).<br>
-29) init.d: fix vlan with vid > 6 issue, add vlan map to 7620.<br>
-30) init.d: fix vlan hw2sw mode switch.<br>
-31) kernel: ralink_arch: rework memautodetect in mt7621 case.<br>
-32) kernel: ralink_arch: more power save on unused MT7621 PCIe PHY.<br>
-33) kernel: ralink_arch: tune MT7621 PCIe PHY SSC (Spread Spectrum) to reduce interference.<br>
-34) kernel: ralink_arch: hardcode MT7621 GIC IPI offsets as U-Boot. VPE0 always 56 and 60 (for MT7621S too).<br>
-35) kernel: ralink_nvram: make nvram driver SMP safe.<br>
-36) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
-37) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
-38) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
-39) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
-40) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
-41) kernel: ralink_wifi: mt76x2 allow VgaClamp control to 5GHz.<br>
-42) kernel: ralink_raeth: switch_control: fix calculate untag VID from unused rules.<br>
-43) kernel: ralink_raeth: switch_control: allow set isolation mode concurrent with vlan filtering.<br>
-44) kernel: ralink_raeth: switch_control: support reset MIB couters for MT7620/MT7628 ESW.<br>
-45) kernel: ralink_raeth: switch_control: move MAC control functions to appropriate modules.<br>
-46) kernel: ralink_raeth: switch_control: add support software mode IGMP/MLD snooping, add configure selector.<br>
-47) kernel: ralink_raeth: switch_control: add support up to 6 Eth ports, code refactoring, update IOCTL table.<br>
-48) kernel: ralink_raeth: switch_control: add support control concurrent with MT7621 MCM.<br>
-49) kernel: ralink_raeth: improve external GPHY support, add support Realtek RTL8211 GPHY family.<br>
-50) kernel: ralink_raeth: fix MT7621 with GE2 to external GPHY case.<br>
-51) kernel: ralink_raeth: fix MT7620 with P5 to external GPHY case.<br>
-52) kernel: ralink_raeth: use special hook to notify ESW/GSW port link changed.<br>
-53) kernel: ralink_raeth: add support swap GDMA1<->GDMA2 ports on RT3883/MT7621.<br>
-54) kernel: ralink_raeth: fix update VLAN dev features.<br>
-55) kernel: ralink_raeth: fix autopoll external EPHY on MT7620.<br>
-56) kernel: ralink_raeth: fix coherentio (corrupt last 2 bytes on 1536 bytes real data received) on MT7620/MT7621.<br>
-57) kernel: ralink_raeth: QDMA: add 4 reserved buffers for all QDMA pipes, increase QDMA SW pool.<br>
-58) kernel: mm/highmem: reimplement make kmap cache coloring aware.<br>
-59) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
-60) kernel: usb: qmi_wwan: add 4G LTE usb-modem U901, add Dell Wireless 5809e Gobi 4G HSPA+ Mobile Broadband Card (rev3).<br>
-61) kernel: usb: serial: option: add support for Telit LE922 PID 0x1045, add support for Quectel UC20.<br>
-62) kernel: usb: xhci: fix list corruption in urb dequeue at host removal.<br>
-63) kernel: smp: make smp_call_function_many() use logic similar to smp_call_function_single().<br>
-64) kernel: smp: remove cpumask_ipi.<br>
-65) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
-66) kernel: mips: fix use highmem without long calls.<br>
-67) kernel: mips: rework core number correction.<br>
-68) kernel: mips: fix 64k page support for 32 bit kernels.<br>
-69) kernel: mips: fix FPU disable with preemption.<br>
-70) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
-71) kernel: mips: fix get_user_page_fast() for mips with cache alias.<br>
-72) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
-73) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
-74) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
-75) kernel: mips: Revert ensure FCSR cause bits are clear after invoking FPU emulator.<br>
-76) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-77) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-78) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
-79) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
-80) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
-81) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-82) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-83) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-84) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-85) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-86) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-87) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
-88) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
+25) goahead: cleanup and refactoring sockets alloc logic.<br>
+26) init.d: irqbalance skip ipi irq`s.<br>
+27) init.d: add support wlan2vlan over LAN/WAN bridges.<br>
+28) init.d: rename LANVlans to VlanLan and LANVlansIsolate to VlanLanIsolate variables, for name consistent.<br>
+29) init.d: add restart goahead if unexpected stopped (temp workaround for MIPS_MT_SMP).<br>
+30) init.d: fix vlan with vid > 6 issue, add vlan map to 7620.<br>
+31) init.d: fix vlan hw2sw mode switch.<br>
+32) kernel: ralink_arch: rework memautodetect in mt7621 case.<br>
+33) kernel: ralink_arch: more power save on unused MT7621 PCIe PHY.<br>
+34) kernel: ralink_arch: tune MT7621 PCIe PHY SSC (Spread Spectrum) to reduce interference.<br>
+35) kernel: ralink_arch: hardcode MT7621 GIC IPI offsets as U-Boot. VPE0 always 56 and 60 (for MT7621S too).<br>
+36) kernel: ralink_nvram: make nvram driver SMP safe.<br>
+37) kernel: ralink_gpio: fix mt7621 gpio disable interrupts.<br>
+38) kernel: ralink_wifi: sync with mt7612e_20160219 version driver.<br>
+39) kernel: ralink_wifi: tune band steering timeouts (fix very long time wait connect at one band clients).<br>
+40) kernel: ralink_wifi: mt7620 driver fix build band steering support.<br>
+41) kernel: ralink_wifi: backport band_steering support from mt76x2 driver to mt7620 and mt7610 drivers.<br>
+42) kernel: ralink_wifi: mt76x2 allow VgaClamp control to 5GHz.<br>
+43) kernel: ralink_raeth: switch_control: fix calculate untag VID from unused rules.<br>
+44) kernel: ralink_raeth: switch_control: allow set isolation mode concurrent with vlan filtering.<br>
+45) kernel: ralink_raeth: switch_control: support reset MIB couters for MT7620/MT7628 ESW.<br>
+46) kernel: ralink_raeth: switch_control: move MAC control functions to appropriate modules.<br>
+47) kernel: ralink_raeth: switch_control: add support software mode IGMP/MLD snooping, add configure selector.<br>
+48) kernel: ralink_raeth: switch_control: add support up to 6 Eth ports, code refactoring, update IOCTL table.<br>
+49) kernel: ralink_raeth: switch_control: add support control concurrent with MT7621 MCM.<br>
+50) kernel: ralink_raeth: improve external GPHY support, add support Realtek RTL8211 GPHY family.<br>
+51) kernel: ralink_raeth: fix MT7621 with GE2 to external GPHY case.<br>
+52) kernel: ralink_raeth: fix MT7620 with P5 to external GPHY case.<br>
+53) kernel: ralink_raeth: use special hook to notify ESW/GSW port link changed.<br>
+54) kernel: ralink_raeth: add support swap GDMA1<->GDMA2 ports on RT3883/MT7621.<br>
+55) kernel: ralink_raeth: fix update VLAN dev features.<br>
+56) kernel: ralink_raeth: fix autopoll external EPHY on MT7620.<br>
+57) kernel: ralink_raeth: fix coherentio (corrupt last 2 bytes on 1536 bytes real data received) on MT7620/MT7621.<br>
+58) kernel: ralink_raeth: QDMA: add 4 reserved buffers for all QDMA pipes, increase QDMA SW pool.<br>
+59) kernel: mm/highmem: reimplement make kmap cache coloring aware.<br>
+60) kernel: kernel-wide: fix missing validations on __get/__put/__copy_to/__copy_from_user().<br>
+61) kernel: usb: qmi_wwan: add 4G LTE usb-modem U901, add Dell Wireless 5809e Gobi 4G HSPA+ Mobile Broadband Card (rev3).<br>
+62) kernel: usb: serial: option: add support for Telit LE922 PID 0x1045, add support for Quectel UC20.<br>
+63) kernel: usb: xhci: fix list corruption in urb dequeue at host removal.<br>
+64) kernel: smp: make smp_call_function_many() use logic similar to smp_call_function_single().<br>
+65) kernel: smp: remove cpumask_ipi.<br>
+66) kernel: mips: highmem: turn flush_cache_kmaps into a no-op.<br>
+67) kernel: mips: fix use highmem without long calls.<br>
+68) kernel: mips: rework core number correction.<br>
+69) kernel: mips: fix 64k page support for 32 bit kernels.<br>
+70) kernel: mips: fix FPU disable with preemption.<br>
+71) kernel: mips: remove memset/memcpy prefetch hack (may be not safe in SMP).<br>
+73) kernel: mips: fix get_user_page_fast() for mips with cache alias.<br>
+74) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
+75) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
+76) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
+77) kernel: mips: Revert ensure FCSR cause bits are clear after invoking FPU emulator.<br>
+78) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+79) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+80) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
+81) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
+82) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+83) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+84) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+85) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+86) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+87) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+88) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+89) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+90) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
 <br>
