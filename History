@@ -1811,19 +1811,20 @@
 71) kernel: mips: smp: remove call to ipi_call_lock()/ipi_call_unlock().<br>
 72) kernel: mips: smp: kill redundant call of generic_smp_call_function_single_interrupt().<br>
 73) kernel: mips: smp: don't increment irq_count multiple times for call function IPIs.<br>
-74) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-75) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-76) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
-77) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
-78) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
-79) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-80) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-81) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-82) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-83) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-84) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-85) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
-86) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
+74) kernel: mips: Revert ensure FCSR cause bits are clear after invoking FPU emulator.<br>
+75) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+76) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+77) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
+78) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
+79) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+80) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+81) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+82) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+83) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+84) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+85) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+86) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+87) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
 <br>
