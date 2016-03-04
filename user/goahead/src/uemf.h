@@ -66,38 +66,10 @@
 #define XML_MAX			4096			/* Maximum size for tags/tokens */
 #define BUF_MAX			4096			/* General sanity check for bufs */
 
-#ifndef CHAR_T_DEFINED
-#define CHAR_T_DEFINED 1
-#ifdef UNICODE
-/*
- *	To convert strings to UNICODE. We have a level of indirection so things
- *	like T(__FILE__) will expand properly.
- */
-#define	T(x)			__TXT(x)
-#define	__TXT(s)		L ## s
-typedef unsigned short 		char_t;
-typedef unsigned short		uchar_t;
-
-/*
- *	Text size of buffer macro. A buffer bytes will hold (size / char size)
- *	characters.
- */
-#define	TSZ(x)			(sizeof(x) / sizeof(char_t))
-
-/*
- *	How many ASCII bytes are required to represent this UNICODE string?
- */
-#define	TASTRL(x)		((wcslen(x) + 1) * sizeof(char_t))
-
-#else
 #define	T(s) 			s
 typedef char			char_t;
 #define	TSZ(x)			(sizeof(x))
 #define	TASTRL(x)		(strlen(x) + 1)
-
-#endif /* UNICODE */
-
-#endif /* ! CHAR_T_DEFINED */
 
 /*
  *	"Boolean" constants
@@ -116,86 +88,6 @@ typedef char			char_t;
  */
 #define GOAHEAD_COPYRIGHT \
 	T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
-
-/*
- *	Type for unicode systems
- */
-#ifdef UNICODE
-
-#define gmain		wmain
-
-#define gasctime	_wasctime
-#define gsprintf	swprintf
-#define gprintf		wprintf
-#define gfprintf	fwprintf
-#define gsscanf		swscanf
-#define gvsprintf	vswprintf
-
-#define gstrcpy		wcscpy
-#define gstrncpy	wcsncpy
-#define gstrncat	wcsncat
-#define gstrlen		wcslen
-#define gstrcat		wcscat
-#define gstrcmp		wcscmp
-#define gstrncmp	wcsncmp
-#define gstricmp	wcsicmp
-#define gstrchr		wcschr
-#define gstrrchr	wcsrchr
-#define gstrtok		wcstok
-#define gstrnset	wcsnset
-#define gstrrchr	wcsrchr
-#define gstrspn	wcsspn
-#define gstrcspn	wcscspn
-#define gstrstr		wcsstr
-#define gstrtol		wcstol
-
-#define gfopen		_wfopen
-#define gopen		_wopen
-#define gclose		close
-#define gcreat		_wcreat
-#define gfgets		fgetws
-#define gfputs		fputws
-#define gfscanf		fwscanf
-#define ggets		_getws
-#define glseek		lseek
-#define gunlink		_wunlink
-#define gread		read
-#define grename		_wrename
-#define gwrite		write
-#define gtmpnam		_wtmpnam
-#define gtempnam	_wtempnam
-#define gfindfirst	_wfindfirst
-#define gfinddata_t	_wfinddata_t
-#define gfindnext	_wfindnext
-#define gfindclose	_findclose
-#define gstat		_wstat
-#define gaccess		_waccess
-#define gchmod		_wchmod
-
-typedef struct _stat gstat_t;
-
-#define gmkdir		_wmkdir
-#define gchdir		_wchdir
-#define grmdir		_wrmdir
-#define ggetcwd		_wgetcwd
-
-#define gtolower	towlower
-#define gtoupper	towupper
-#define gremove		_wremove
-#define gisspace	iswspace
-#define gisdigit	iswdigit
-#define gisxdigit	iswxdigit
-#define gisupper	iswupper
-#define gislower	iswlower
-#define gisalnum	iswalnum
-#define gisalpha	iswalpha
-#define gatoi(s)	wcstol(s, NULL, 10)
-
-#define gctime		_wctime
-#define ggetenv		_wgetenv
-#define gexecvp		_wexecvp
-
-#else /* ! UNICODE */
 
 #define gchdir		chdir
 #define gmkdir(s)	mkdir(s,0755)
@@ -274,7 +166,6 @@ typedef struct stat gstat_t;
 #define ggetenv		getenv
 #define gexecvp		execvp
 #define gmain		main
-#endif /* ! UNICODE */
 
 /********************************** Defines ***********************************/
 
@@ -592,9 +483,6 @@ typedef struct {
  *
  */
 
-extern void bclose();
-extern int bopen(void *buf, int bufsize, int flags);
-
 /*
  *	Define NO_BALLOC to turn off our balloc module altogether
  *		#define NO_BALLOC 1
@@ -608,38 +496,25 @@ extern int bopen(void *buf, int bufsize, int flags);
 extern char_t *bstrdupNoBalloc(char_t *s);
 extern char *bstrdupANoBalloc(char *s);
 #define bstrdup(B_ARGS, s) bstrdupNoBalloc(s)
-#define bstrdupA(B_ARGS, s) bstrdupANoBalloc(s)
 #define gstrdup(B_ARGS, s) bstrdupNoBalloc(s)
-
 #else /* BALLOC */
-
 #ifndef B_STATS
 #define balloc(B_ARGS, num) balloc(num)
 #define bfree(B_ARGS, p) bfree(p)
 #define bfreeSafe(B_ARGS, p) bfreeSafe(p)
 #define brealloc(B_ARGS, p, size) brealloc(p, size)
 #define bstrdup(B_ARGS, p) bstrdup(p)
-
-#ifdef UNICODE
-#define bstrdupA(B_ARGS, p) bstrdupA(p)
-#else /* UNICODE */
-#define bstrdupA bstrdup
-#endif /* UNICODE */
-
+#define gstrdup	bstrdup
 #endif /* B_STATS */
 
-#define gstrdup	bstrdup
-extern void		*balloc(B_ARGS_DEC, int size);
-extern void		bfree(B_ARGS_DEC, void *mp);
-extern void		bfreeSafe(B_ARGS_DEC, void *mp);
-extern void		*brealloc(B_ARGS_DEC, void *buf, int newsize);
-extern char_t	*bstrdup(B_ARGS_DEC, char_t *s);
+extern void bclose();
+extern int bopen(void *buf, int bufsize, int flags);
+extern void *balloc(B_ARGS_DEC, int size);
+extern void bfree(B_ARGS_DEC, void *mp);
+extern void bfreeSafe(B_ARGS_DEC, void *mp);
+extern void *brealloc(B_ARGS_DEC, void *buf, int newsize);
+extern char_t *bstrdup(B_ARGS_DEC, char_t *s);
 
-#ifdef UNICODE
-extern char *bstrdupA(B_ARGS_DEC, char *s);
-#else /* UNICODE */
-#define bstrdupA bstrdup
-#endif /* UNICODE */
 #endif /* BALLOC */
 
 extern void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
@@ -686,7 +561,7 @@ extern int 		hAllocEntry(void ***list, int *max, int size);
 extern int		hFree(void ***map, int handle);
 
 extern int	 	ringqOpen(ringq_t *rq, int increment, int maxsize);
-extern void 	ringqClose(ringq_t *rq);
+extern void 		ringqClose(ringq_t *rq);
 extern int 		ringqLen(ringq_t *rq);
 
 extern int 		ringqPutc(ringq_t *rq, char_t c);
@@ -698,26 +573,14 @@ extern int		fmtValloc(char_t **s, int n, char_t *fmt, va_list arg);
 extern int		fmtAlloc(char_t **s, int n, char_t *fmt, ...);
 extern int		fmtStatic(char_t *s, int n, char_t *fmt, ...);
 
-#ifdef UNICODE
-extern int 		ringqPutcA(ringq_t *rq, char c);
-extern int	 	ringqInsertcA(ringq_t *rq, char c);
-extern int	 	ringqPutStrA(ringq_t *rq, char *str);
-extern int 		ringqGetcA(ringq_t *rq);
-#else
-#define ringqPutcA ringqPutc
-#define ringqInsertcA ringqInsertc
-#define ringqPutStrA ringqPutStr
-#define ringqGetcA ringqGetc
-#endif /* UNICODE */
-
 extern int 		ringqPutBlk(ringq_t *rq, unsigned char *buf, int len);
 extern int 		ringqPutBlkMax(ringq_t *rq);
-extern void 	ringqPutBlkAdj(ringq_t *rq, int size);
+extern void 		ringqPutBlkAdj(ringq_t *rq, int size);
 extern int 		ringqGetBlk(ringq_t *rq, unsigned char *buf, int len);
 extern int 		ringqGetBlkMax(ringq_t *rq);
-extern void 	ringqGetBlkAdj(ringq_t *rq, int size);
-extern void 	ringqFlush(ringq_t *rq);
-extern void 	ringqAddNull(ringq_t *rq);
+extern void 		ringqGetBlkAdj(ringq_t *rq, int size);
+extern void 		ringqFlush(ringq_t *rq);
+extern void 		ringqAddNull(ringq_t *rq);
 
 extern int		scriptSetVar(int engine, char_t *var, char_t *value);
 extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
@@ -728,7 +591,7 @@ extern void		socketCreateHandler(int sid, int mask, socketHandler_t
 extern void		socketDeleteHandler(int sid);
 extern int		socketEof(int sid);
 extern int 		socketCanWrite(int sid);
-extern void 	socketSetBufferSize(int sid, int in, int line, int out);
+extern void 		socketSetBufferSize(int sid, int in, int line, int out);
 extern int		socketFlush(int sid);
 extern int		socketGets(int sid, char_t **buf);
 extern int		socketGetPort(int sid);
@@ -739,7 +602,6 @@ extern void		socketProcess(int hid);
 extern int		socketRead(int sid, char *buf, int len);
 extern int 		socketReady(int hid);
 extern int		socketWrite(int sid, char *buf, int len);
-extern int		socketWriteString(int sid, char_t *buf);
 extern int 		socketSelect(int hid, int timeout);
 extern int 		socketGetHandle(int sid);
 extern int 		socketSetBlock(int sid, int flags);
@@ -784,8 +646,6 @@ extern unsigned int hextoi(char_t *hexstring);
 extern unsigned int gstrtoi(char_t *s);
 extern				time_t	timeMsec();
 
-extern char_t 	*ascToUni(char_t *ubuf, char *str, int nBytes);
-extern char 	*uniToAsc(char *buf, char_t *ustr, int nBytes);
 extern char_t	*ballocAscToUni(char  *cp, int alen);
 extern char		*ballocUniToAsc(char_t *unip, int ulen);
 

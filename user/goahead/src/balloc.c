@@ -52,53 +52,43 @@ typedef struct {
 	long	count;								/* Current block count */
 	long	times;								/* Count of alloc attempts */
 	long	largest;							/* largest allocated here */
-	int		q;
+	int	q;
 } bStatsFileType;
 
 /*
  *	This one is very expensive but great stats
  */
 typedef struct {
-	void			*ptr;						/* Pointer to memory */
-	bStatsFileType	*who;						/* Who allocated the memory */
+	void *ptr;		/* Pointer to memory */
+	bStatsFileType *who;	/* Who allocated the memory */
 } bStatsBlkType;
 
-static bStatsType		bStats[B_MAX_CLASS];	/* Per class stats */
-static bStatsFileType 	bStatsFiles[B_MAX_FILES];/* Per file stats */
-static bStatsBlkType 	bStatsBlks[B_MAX_BLOCKS];/* Per block stats */
-static int			 	bStatsBlksMax = 0;		/* Max block entry */
-static int			 	bStatsFilesMax = 0;		/* Max file entry */
-static int 				bStatsMemInUse = 0;		/* Memory currently in use */
-static int 				bStatsBallocInUse = 0;	/* Memory currently balloced */
-static int 				bStatsMemMax = 0;		/* Max memory ever used */
-static int 				bStatsBallocMax = 0;	/* Max memory ever balloced */
-static void				*bStackMin = (void*) -1;/* Miniumum stack position */
-static void				*bStackStart;			/* Starting stack position */
-static int 				bStatsMemMalloc = 0;	/* Malloced memory */
+static bStatsType       bStats[B_MAX_CLASS];		/* Per class stats */
+static bStatsFileType   bStatsFiles[B_MAX_FILES];	/* Per file stats */
+static bStatsBlkType    bStatsBlks[B_MAX_BLOCKS];	/* Per block stats */
+static int              bStatsBlksMax = 0;		/* Max block entry */
+static int              bStatsFilesMax = 0;		/* Max file entry */
+static int              bStatsMemInUse = 0;		/* Memory currently in use */
+static int              bStatsBallocInUse = 0;		/* Memory currently balloced */
+static int              bStatsMemMax = 0;		/* Max memory ever used */
+static int              bStatsBallocMax = 0;		/* Max memory ever balloced */
+static void             *bStackMin = (void*) -1;	/* Miniumum stack position */
+static void             *bStackStart;			/* Starting stack position */
+static int              bStatsMemMalloc = 0;		/* Malloced memory */
 #endif /* B_STATS */
-
-/*
- *	ROUNDUP4(size) returns the next higher integer value of size that is 
- *	divisible by 4, or the value of size if size is divisible by 4.
- *	ROUNDUP4() is used in aligning memory allocations on 4-byte boundaries.
- *
- *	Note:  ROUNDUP4() is only required on some operating systems (IRIX).
- */
-
-#define ROUNDUP4(size) ((size) % 4) ? (size) + (4 - ((size) % 4)) : (size)
 
 /********************************** Locals ************************************/
 /*
  *	bQhead blocks are created as the original memory allocation is freed up.
  *	See bfree.
  */
-static bType			*bQhead[B_MAX_CLASS];	/* Per class block q head */
-static char				*bFreeBuf;				/* Pointer to free memory */
-static char				*bFreeNext;				/* Pointer to next free mem */
-static int				bFreeSize;				/* Size of free memory */
-static int				bFreeLeft;				/* Size of free left for use */
-static int				bFlags = B_USE_MALLOC;	/* Default to auto-malloc */
-static int				bopenCount = 0;			/* Num tasks using balloc */
+static bType *bQhead[B_MAX_CLASS];	/* Per class block q head */
+static char  *bFreeBuf;			/* Pointer to free memory */
+static char  *bFreeNext;		/* Pointer to next free mem */
+static int   bFreeSize;			/* Size of free memory */
+static int   bFreeLeft;			/* Size of free left for use */
+static int   bFlags = B_USE_MALLOC;	/* Default to auto-malloc */
+static int   bopenCount = 0;		/* Num tasks using balloc */
 
 /*************************** Forward Declarations *****************************/
 
@@ -152,16 +142,14 @@ int bopen(void *buf, int bufsize, int flags)
 		if (bufsize == 0) {
 			bufsize = B_DEFAULT_MEM;
 		}
-#ifdef IRIX
-		bufsize = ROUNDUP4(bufsize);
-#endif
+
 		if ((buf = malloc(bufsize)) == NULL) {
-         /* resetting bopenCount lets client code decide to attempt to call
-          * bopen() again with a smaller memory request, should it desire to.
-          * Fix suggested by Simon Byholm.
-          */
-         --bopenCount;
-			return -1;
+		    /* resetting bopenCount lets client code decide to attempt to call
+		    * bopen() again with a smaller memory request, should it desire to.
+		    * Fix suggested by Simon Byholm.
+		    */
+		    --bopenCount;
+		    return -1;
 		}
 #ifdef B_STATS
 		bStatsMemMalloc += bufsize;
@@ -173,9 +161,7 @@ int bopen(void *buf, int bufsize, int flags)
 	bFreeSize = bFreeLeft = bufsize;
 	bFreeBuf = bFreeNext = buf;
 	memset(bQhead, 0, sizeof(bQhead));
-#if (defined (B_FILL) || defined (B_VERIFY_CAUSES_SEVERE_OVERHEAD))
-	bFillBlock(buf, bufsize);
-#endif
+	memset(buf, 0, bufsize);
 #ifdef B_STATS
 	bStackStart = &buf;
 #endif
@@ -244,9 +230,6 @@ void *balloc(B_ARGS_DEC, int size)
 #ifdef B_STATS
 			bstats(0, NULL);
 #endif
-#ifdef IRIX
-			memSize = ROUNDUP4(memSize);
-#endif
 			bp = (bType*) malloc(memSize);
 			if (bp == NULL) {
 				traceRaw(T("B: malloc failed\n"));
@@ -312,9 +295,6 @@ void *balloc(B_ARGS_DEC, int size)
 /*
  *			Nothing left on the primary free list, so malloc a new block
  */
-#ifdef IRIX
-			memSize = ROUNDUP4(memSize);
-#endif
 			if ((bp = (bType*) malloc(memSize)) == NULL) {
 				traceRaw(T("B: malloc failed\n"));
 				return NULL;
@@ -407,28 +387,6 @@ void bfreeSafe(B_ARGS_DEC, void *mp)
 }
 
 /******************************************************************************/
-#ifdef UNICODE
-/*
- *	Duplicate a string, allow NULL pointers and then dup an empty string.
- */
-
-char *bstrdupA(B_ARGS_DEC, char *s)
-{
-	char	*cp;
-	int		len;
-
-	if (s == NULL) {
-		s = "";
-	}
-	len = strlen(s) + 1;
-	if (cp = balloc(B_ARGS, len)) {
-		strcpy(cp, s);
-	}
-	return cp;
-}
-
-#endif /* UNICODE */
-/******************************************************************************/
 /*
  *	Duplicate an ascii string, allow NULL pointers and then dup an empty string.
  *	If UNICODE, bstrdup above works with wide chars, so we need this routine
@@ -492,7 +450,7 @@ void *brealloc(B_ARGS_DEC, void *mp, int newsize)
 
 static int ballocGetSize(int size, int *q)
 {
-	int	mask;
+	int mask;
 
 	mask = (size == 0) ? 0 : (size-1) >> B_SHIFT;
 	for (*q = 0; mask; mask >>= 1) {
@@ -925,23 +883,7 @@ void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 }
 
 /******************************************************************************/
-
 char_t *bstrdupNoBalloc(char_t *s)
-{
-#ifdef UNICODE
-	if (s) {
-		return wcsdup(s);
-	} else {
-		return wcsdup(T(""));
-	}
-#else
-	return bstrdupANoBalloc(s);
-#endif
-}
-
-/******************************************************************************/
-
-char *bstrdupANoBalloc(char *s)
 {
 	char*	buf;
 

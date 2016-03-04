@@ -115,7 +115,7 @@ int websSSLAccept(int sid, char *ipaddr, int port, int listenSid)
 	a_assert(wp);
 	wp->listenSid = listenSid;
 
-	ascToUni(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr)+1));
+	memcpy(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr)+1));
 
 	/*
 	 *    Check if this is a request from a browser on this system. This is useful
@@ -243,7 +243,7 @@ int    websSSLGets(websSSL_t *wsp, char_t **buf)
 		} else if (c == '\r') {
 			continue;
 		}
-		ringqPutcA(lq, c);
+		ringqPutc(lq, c);
 	}
 	return 0;
 }

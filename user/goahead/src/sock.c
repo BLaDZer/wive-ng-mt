@@ -81,27 +81,6 @@ int	socketWrite(int sid, char *buf, int bufsize)
 
 /******************************************************************************/
 /*
- *	Write a string to a socket
- */
-
-int	socketWriteString(int sid, char_t *buf)
-{
- #ifdef UNICODE
- 	char	*byteBuf;
- 	int		r, len;
- 
- 	len = gstrlen(buf);
- 	byteBuf = ballocUniToAsc(buf, len);
- 	r = socketWrite(sid, byteBuf, len);
- 	bfreeSafe(B_L, byteBuf);
- 	return r;
- #else
- 	return socketWrite(sid, buf, strlen(buf));
- #endif /* UNICODE */
-}
-
-/******************************************************************************/
-/*
  *	Read from a socket. Return the number of bytes read if successful. This
  *	may be less than the requested "bufsize" and may be zero. Return -1 for
  *	errors. Return 0 for EOF. Otherwise return the number of bytes read. 
@@ -250,7 +229,7 @@ int	socketGets(int sid, char_t **buf)
 		} else if (c == '\r') {
 			continue;
 		}
-		ringqPutcA(lq, c);
+		ringqPutc(lq, c);
 	}
 	return 0;
 }

@@ -279,7 +279,7 @@ int websAccept(int sid, char *ipaddr, int port, int listenSid)
 	a_assert(wp);
 	wp->listenSid = listenSid;
 
-	ascToUni(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr) + 1));
+	memcpy(wp->ipaddr, ipaddr, min(sizeof(wp->ipaddr), strlen(ipaddr) + 1));
 
 /*
  * Get the ip address of the interface that acept the connection.
@@ -1718,6 +1718,27 @@ void websLongWrite(webs_t wp, char *longstr)
         longstr += 512;
     }
     return;
+}
+
+/******************************************************************************/
+/*
+ *	allocate (balloc) a buffer and do unicode to ascii conversion into it.
+ *	unip points to the unicoded string. ulen is the number of characters
+ *	in the unicode string not including a teminating null.  Return a pointer
+ *	to the ascii buffer which must be bfree'd later.  Return NULL on failure
+ *	to get buffer.  The buffer returned is NULL terminated.
+ */
+
+char *ballocUniToAsc(char_t *unip, int ulen)
+{
+	char *cp;
+
+	if ((cp = balloc(B_L, ulen+1)) == NULL) {
+		return NULL;
+	}
+	memcpy(cp, unip, ulen);
+	cp[ulen] = '\0';
+	return cp;
 }
 
 /******************************************************************************/
