@@ -1990,11 +1990,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		  comma = split(arg); 
 		  daemon->soa_retry = (u32)atoi(arg);
 		  if (comma)
-		    {
-		      arg = comma;
-		      comma = split(arg); 
-		      daemon->soa_expiry = (u32)atoi(arg);
-		    }
+		    daemon->soa_expiry = (u32)atoi(comma);
 		}
 	    }
 	}
@@ -2776,7 +2772,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		leasepos = 3;
 		if (!is_same_net(new->start, new->end, new->netmask))
 		  ret_err(_("inconsistent DHCP range"));
-	      }
+		
 	    
 	    if (k >= 4 && strchr(a[3], '.') &&  
 		(inet_pton(AF_INET, a[3], &new->broadcast) > 0))
@@ -2784,6 +2780,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		new->flags |= CONTEXT_BRDCAST;
 		leasepos = 4;
 	      }
+	  }
 	  }
 #ifdef HAVE_DHCP6
 	else if (inet_pton(AF_INET6, a[0], &new->start6))
@@ -2872,6 +2869,9 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	
 	if (leasepos < k)
 	  {
+	    if (leasepos != k-1)
+	      ret_err(_("bad dhcp-range"));
+	    
 	    if (strcmp(a[leasepos], "infinite") == 0)
 	      new->lease_time = 0xffffffff;
 	    else if (strcmp(a[leasepos], "deprecated") == 0)
@@ -3908,16 +3908,11 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		    if (!atoi_check16(arg, &priority))
 		      ret_err(_("invalid priority"));
 			
-		    if (comma)
-		      {
-			arg = comma;
-			comma = split(arg);
-			if (!atoi_check16(arg, &weight))
+		    if (comma && !atoi_check16(comma, &weight))
 			  ret_err(_("invalid weight"));
 		      }
 		  }
 	      }
-	  }
 	
 	new = opt_malloc(sizeof(struct mx_srv_record));
 	new->next = daemon->mxnames;

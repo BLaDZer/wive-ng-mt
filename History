@@ -1745,7 +1745,7 @@
 5) uclibc: enable relro,now,noexecstack options.<br>
 6) switch: fix signed integer overflow for expressions.<br>
 7) wide-dhcpv6, cpdtool, igmpproxy, lldt, pppd, xupnpd, udpxy, samba, p910nd fix some issues found by cppcheck.<br>
-8) dnsmasq: up to 2.76test11 version.<br>
+8) dnsmasq: up to 2.76test12 version.<br>
 9) miniupnpd: up to 1.9.20160222 version.<br>
 10) bndstrg: add daemon and init for support bandsteering.<br>
 11) utils: switch: show ports PVID and matrix.<br>
