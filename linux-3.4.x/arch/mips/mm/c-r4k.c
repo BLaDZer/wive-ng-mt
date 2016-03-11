@@ -34,6 +34,7 @@
 #include <asm/cacheflush.h> /* for run_uncached() */
 #include <asm/traps.h>
 #include <asm/dma-coherence.h>
+#include <asm/mips-cm.h>
 
 /*
  * Special Variant of smp_call_function for use by cache functions:
@@ -49,7 +50,7 @@ static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
 	preempt_disable();
 
 #if !defined(CONFIG_MIPS_MT_SMP) && !defined(CONFIG_MIPS_MT_SMTC)
-	smp_call_function(func, info, 1);
+	smp_call_function_many(&cpu_foreign_map, func, info, 1);
 #endif
 	func(info);
 	preempt_enable();
