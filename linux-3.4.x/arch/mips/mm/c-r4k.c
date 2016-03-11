@@ -48,7 +48,6 @@ static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
 {
 	preempt_disable();
 
-#if !defined(CONFIG_MIPS_MT_SMP) && !defined(CONFIG_MIPS_MT_SMTC)
 	/*
 	 * The Coherent Manager propagates address-based cache ops to other
 	 * cores but not index-based ops. However, r4k_on_each_cpu is used
@@ -58,7 +57,7 @@ static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
 	 * CM-based SMP protocols (CMP & CPS) restrict index-based cache ops.
 	 */
 	smp_call_function_many(&cpu_foreign_map, func, info, 1);
-#endif
+
 	func(info);
 	preempt_enable();
 }
