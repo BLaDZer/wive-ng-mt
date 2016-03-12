@@ -1822,20 +1822,21 @@
 82) kernel: mips: fix obsolete cpumask_of_cpu usage.<br>
 83) kernel: mips: support CPU topology files in sysfs.<br>
 84) kernel: mips: c-r4k: fix cache flushing for MT cores.<br>
-85) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
-86) kernel: math-emu: fix floating-point to integer overflow detection.<br>
-87) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
-88) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
-89) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
-90) kernel: net: ppp: release rtnl mutex when interface creation fails.<br>
-91) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
-92) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
-93) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
-94) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
-95) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
-96) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
-97) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
-98) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
+85) kernel: mips: scache: fix scache init with invalid line size.<br>
+86) kernel: math-emu: fix floating-point to integer unsigned saturation.<br>
+87) kernel: math-emu: fix floating-point to integer overflow detection.<br>
+88) kernel: net: use new condition when both GMAC's of RT3883/MT7621 is really used.<br>
+89) kernel: net: compat: fix minor information leak in siocdevprivate_ioctl().<br>
+90) kernel: net: ppp: clarify parsing of user supplied data in ppp_set_compress().<br>
+91) kernel: net: ppp: release rtnl mutex when interface creation fails.<br>
+92) kernel: net: pppoe: fix reference counting in PPPoE proxy.<br>
+93) kernel: net: af_unix: don't set err in unix_stream_read_generic unless there was an error.<br>
+94) kernel: net: af_unix: guard against other == sk in unix_dgram_sendmsg.<br>
+95) kernel: net: socket: get_empty_filp()/alloc_file() leave both ->f_pos and ->f_version zero.<br>
+96) kernel: net: socket: sock_close() couldn't have been called with NULL inode since at least 2.1.early.<br>
+97) kernel: net: socket: use SYSCALL_DEFINEx for sys_recv.<br>
+98) kernel: net: vlan: turn on unicast filtering on vlan device.<br>
+99) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
 <br>
