@@ -14,13 +14,17 @@ LOG="logger -t apd"
 start() {
     get_param
     if [ "$BandSteering" != "" ] && [ "$BandSteering" != "0" ] ; then
-	$LOG "Starting bandsteering daemon"
-	bndstrg &
+	if [ "$SSID1" = "$SSID1INIC" ]; then
+	    $LOG "Starting bandsteering daemon"
+	    bndstrg &
+	else
+	    $LOG "For bandsteering work are required identical SSID for 2.4GHz and 5GHz modules. Please change it and restart."
+	fi
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 BandSteering`
+    eval `nvram_buf_get 2860 BandSteering SSID1 SSID1INIC`
 }
 
 stop() {
