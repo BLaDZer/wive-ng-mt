@@ -1,5 +1,10 @@
 #The word of "Default" must not be removed
 Default
+Login=Admin
+Password=Admin
+MngmtLogin=
+MngmtPassword=
+MngmtStoreSettings=0
 AccessControlList0=
 AccessControlList1=
 AccessControlList2=
@@ -178,7 +183,6 @@ Lan2Enabled=0
 Language=en
 lan_ipaddr=192.168.1.1
 lan_netmask=255.255.255.0
-Login=Admin
 macCloneEnabled=0
 McastMcs=3
 McastPhyMode=2
@@ -194,7 +198,6 @@ NTPEnabled=0
 NTPServerIP=ru.pool.ntp.org
 OperationMode=1
 parproutedEnabled=0
-Password=Admin
 ping_check_interval=30
 ping_check_time=300
 pinger_check_on=0

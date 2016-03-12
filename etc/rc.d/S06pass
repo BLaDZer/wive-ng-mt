@@ -7,21 +7,49 @@ start() {
     # get user/password
     get_param
 
+    if [ "$Login" = "Admin" ] && [ "$Password" = "Admin" ]; then
+	$LOG "WARNING!!! You use default Login and Password!!! Please change it."
+    fi
+
     # generate pass file
-    printf "$Login::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n" > /etc/passwd
+    printf "$Login::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n"		> /etc/passwd
+    if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
+	printf "$MngmtLogin::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n"	>> /etc/passwd
+    fi
 
     # generate group file
-    printf "$Login:x:0:$Login\nnobody:x:99:\n"		>  /etc/group
-    printf "$Login:x:0:$Login\nnogroup:x:65534:\n"	>> /etc/group
+    printf "$Login:x:0:$Login\nnobody:x:99:\n"								>  /etc/group
+    printf "$Login:x:0:$Login\nnogroup:x:65534:\n"							>> /etc/group
+    if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
+	printf "$MngmtLogin:x:0:$MngmtLogin\nnobody:x:99:\n"						>> /etc/group
+	printf "$MngmtLogin:x:0:$MngmtLogin\nnogroup:x:65534:\n"					>> /etc/group
+    fi
 
-    # set new password
+    # set passwords
     echo "$Login:$Password" > /tmp/tmpchpw
     chpasswd -m < /tmp/tmpchpw
+    if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
+	echo "$MngmtLogin:$MngmtPassword" > /tmp/tmpchpw
+	chpasswd -m < /tmp/tmpchpw
+    fi
     rm -f /tmp/tmpchpw
+
+    #####################################################################
+    # Please do not remove this warning !!!
+    # Don't violate the right of users and you don't track them.
+    # User has the right to know that you can control its equipment.
+    #####################################################################
+    if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
+	$LOG "WARNING!!! Remote managment user enabled. You can disable this over ssh if not have helps from ISP admins."
+    fi
 }
 
 get_param() {
-    # do not use eval + bufget
+    # do not use eval + bufget !!!
+
+    #####################################################################
+    # user managment login/password
+    #####################################################################
     Login=`nvram_get 2860 Login`
     Password=`nvram_get 2860 Password`
     if [ "$Login" = "" ]; then
@@ -30,6 +58,13 @@ get_param() {
     if [ "$Password" = "" ]; then
 	Password="Admin"
     fi
+
+    #####################################################################
+    # operator managment login/password
+    # WARNING!!! Please use this only for help you users!!!
+    #####################################################################
+    MngmtLogin=`nvram_get 2860 MngmtLogin`
+    MngmtPassword=`nvram_get 2860 MngmtPassword`
 }
 
 stop() {

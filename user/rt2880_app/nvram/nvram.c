@@ -163,7 +163,16 @@ static int nvram_load_default(void)
 {
 	/* default macs is OK */
 	int mac_err = 0;
-        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC;
+        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC, *MngmtLogin, *MngmtPassword, *MngmtStoreSettings;
+
+	/* copy old remotemanagment settings if enabled */
+	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
+	if (atoi(MngmtStoreSettings) == 1) {
+	    MngmtLogin		= nvram_get_copy(RT2860_NVRAM, "MngmtLogin");
+	    MngmtPassword	= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
+
+	    printf("Store remote managment user settings.\n");
+	}
 
 	/* copy old values to new memory block */
 	WLAN2_MAC_ADDR	= nvram_get_copy(RT2860_NVRAM, "WLAN2_MAC_ADDR");
@@ -206,7 +215,7 @@ static int nvram_load_default(void)
 	else
 	    mac_err++;
 
-	/* all restore ok ? */
+	/* mac restore ok ? */
 	if (mac_err == 0) {
 	    printf("MAC adresses restored OK, restore checkmac flag.\n");
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", CHECKMAC);
@@ -215,8 +224,21 @@ static int nvram_load_default(void)
     	    nvram_bufset(RT2860_NVRAM, "CHECKMAC", "YES");
 	}
 
+	/* restore remotemanagment */
+	if ((atoi(MngmtStoreSettings) == 1) && (strlen(MngmtLogin) > 0) && (strlen(MngmtPassword) > 0)) {
+	    printf("Restore remote managment user settings.\n");
+	    nvram_bufset(RT2860_NVRAM, "MngmtLogin", MngmtLogin);
+	    nvram_bufset(RT2860_NVRAM, "MngmtPassword", MngmtPassword);
+
+	    /* set keep remote managment flag */
+	    nvram_bufset(RT2860_NVRAM, "MngmtStoreSettings", "1");
+
+	    /* allow remote ssh from WAN */
+	    nvram_bufset(RT2860_NVRAM, "RemoteSSH", "2");
+	}
+
 	/* set wive flag */
-        nvram_bufset(RT2860_NVRAM, "IS_WIVE", "YES");
+	nvram_bufset(RT2860_NVRAM, "IS_WIVE", "YES");
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
