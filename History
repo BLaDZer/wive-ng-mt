@@ -1841,9 +1841,10 @@
 101) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
-<b>4.0.x</b><br>
+<b>4.1.x</b><br>
 1) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
 2) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+3) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
 <br>
 <br>
 <br>
