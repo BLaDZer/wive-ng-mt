@@ -1841,4 +1841,8 @@
 101) kernel: net: ipv4: only create late gso-skb if skb is already set up with CHECKSUM_PARTIAL.<br>
 <br>
 <br>
+<b>4.0.x</b><br>
+1) add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+<br>
+<br>
 <br>
