@@ -1842,7 +1842,8 @@
 <br>
 <br>
 <b>4.0.x</b><br>
-1) add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+1) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+2) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
 <br>
 <br>
 <br>
