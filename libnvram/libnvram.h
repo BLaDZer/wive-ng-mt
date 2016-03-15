@@ -26,7 +26,7 @@
 #define RALINK_NVRAM_IOCTL_COMMIT	RALINK_NVRAM_IOCTL + 0x04
 #define RALINK_NVRAM_IOCTL_CLEAR	RALINK_NVRAM_IOCTL + 0x05
 
-#define FREE(x) do { if (x != NULL) {free(x); x=NULL;} } while(0)
+#define NVFREE(x) do { if (x != NULL) {free(x); x=NULL;} } while(0)
 
 /* split 2860 and RTDEV configs by offset */
 #if !defined(CONFIG_RT_SECOND_IF_NONE) && defined(CONFIG_KERNEL_NVRAM_SPLIT_INIC)

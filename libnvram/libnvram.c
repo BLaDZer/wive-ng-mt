@@ -102,7 +102,7 @@ int nvram_init(int index)
 	if ( fd < 0 )
 	{
 		perror(NV_DEV);
-		free(fb[index].env.data);
+		NVFREE(fb[index].env.data);
 		return -1;
 	}
 
@@ -111,7 +111,7 @@ int nvram_init(int index)
 		perror("ioctl");
     		if(fd)
 		    close(fd);
-		free(fb[index].env.data);
+		NVFREE(fb[index].env.data);
 		return -1;
 	}
 
@@ -137,7 +137,7 @@ int nvram_init(int index)
 		if (NULL == (q = strchr(p, '\0')))
 		{
 			RANV_PRINT("parsed failed - cannot find '\\0'\n");
-			FREE(fb[index].cache[i].name);
+			NVFREE(fb[index].cache[i].name);
 			break;
 		}
 		fb[index].cache[i].value = strdup(p);
@@ -172,12 +172,12 @@ void nvram_close(int index)
 		nvram_commit(index);
 
 	//free env
-	FREE(fb[index].env.data);
+	NVFREE(fb[index].env.data);
 
 	//free cache
 	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
-		FREE(fb[index].cache[i].name);
-		FREE(fb[index].cache[i].value);
+		NVFREE(fb[index].cache[i].name);
+		NVFREE(fb[index].cache[i].value);
 	}
 
 	fb[index].valid = 0;
@@ -221,7 +221,7 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	if ( fd < 0 )
 	{
 		perror(NV_DEV);
-		free(nvr.value);
+		NVFREE(nvr.value);
 		return "";
 	}
 
@@ -243,18 +243,18 @@ static char *__nvram_bufget(int index, char *name, int copy)
 		if (errno != EOVERFLOW) // Error is not caused by not-enough-space?
 		{
 			perror("ioctl");
-			free(nvr.value);
+			NVFREE(nvr.value);
 			close(fd);
 			return "";
 		}
 
 		// Calculate new buffer size
-		free(nvr.value);
+		NVFREE(nvr.value);
 		nvr.size += ((MAX_VALUE_LEN - nvr.size % MAX_VALUE_LEN) % MAX_VALUE_LEN);
 		if (nvr.size >= MAX_PERMITTED_VALUE_LEN)
 		{
 			perror("nvram_bufget overflow");
-			free(nvr.value);
+			NVFREE(nvr.value);
 			close(fd);
 			return "";
 		}
@@ -266,9 +266,9 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	if (-1 != idx) {
 		if (fb[index].cache[idx].value) {
 			//duplicate the value in case caller modify it
-			FREE(fb[index].cache[idx].value);
+			NVFREE(fb[index].cache[idx].value);
 			fb[index].cache[idx].value = strdup(nvr.value);
-			FREE(nvr.value);
+			NVFREE(nvr.value);
 			if (!copy)
 			    ret = fb[index].cache[idx].value;
 			else
@@ -285,7 +285,7 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	//no default value set?
 	//btw, we don't return NULL anymore!
 	RANV_PRINT("bufget %d '%s'->''(empty) Warning!\n", index, name);
-	FREE(nvr.value);
+	NVFREE(nvr.value);
 	return "";
 }
 
@@ -367,7 +367,7 @@ int nvram_bufset(int index, char *name, char *value)
 		fb[index].cache[idx].value = strdup(value);
 	} else {
 		//abandon the previous value
-		FREE(fb[index].cache[idx].value);
+		NVFREE(fb[index].cache[idx].value);
 		fb[index].cache[idx].value = strdup(value);
 	}
 
