@@ -80,14 +80,18 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/config.h.in build/compile build/config.guess \
-	build/config.sub build/depcomp build/install-sh build/missing \
-	build/ltmain.sh $(top_srcdir)/build/compile \
+	$(srcdir)/config.h.in build/ar-lib build/compile \
+	build/config.guess build/config.sub build/depcomp \
+	build/install-sh build/missing build/ltmain.sh \
+	$(top_srcdir)/build/ar-lib $(top_srcdir)/build/compile \
 	$(top_srcdir)/build/config.guess \
 	$(top_srcdir)/build/config.sub $(top_srcdir)/build/install-sh \
 	$(top_srcdir)/build/ltmain.sh $(top_srcdir)/build/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -323,6 +327,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = libpool/src libxmlet/src libcwmp/src cwmpd/src
+ACLOCAL_AMFLAGS = -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -804,14 +809,19 @@ uninstall-am:
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am
 
+
 install-data-local:
 	-install conf/cwmp.conf  $(prefix)/etc/cwmp.conf;
 	-install conf/device.xml  $(prefix)/etc/device.xml;
 
 romfs:
 	$(ROMFSINST) -S conf/cwmp.conf /etc/cwmp.conf
-	$(ROMFSINST) -S conf/device.xml /etc/device.xml;
+	$(ROMFSINST) -S conf/device.xml /etc/device.xml
 	$(ROMFSINST) -S cwmpd/src/cwmpd /bin/cwmpd
+
+	$(ROMFSINST) -S ../init.d/W86cwmpd /etc/rc.d/W86cwmpd
+	$(ROMFSINST) -s /etc/rc.d/W86cwmpd /etc/init.d/cwmpd
+
 	rm -rf filesystem
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

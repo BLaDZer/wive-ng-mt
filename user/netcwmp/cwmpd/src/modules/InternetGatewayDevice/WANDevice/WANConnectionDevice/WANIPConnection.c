@@ -1,3 +1,79 @@
+//int getHWStatistic(unsigned long long* rxtx_count)
+
+int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool) {
+    unsigned long long rxtx[12];
+    getHWStatistic(&rxtx);
+
+    int i;
+    for (i=0;i<12;i++) cwmp_log_error("wan RX/TX Count %i : %llu", i, rxtx[i]);
+
+
+    int wan_port = cwmp_nvram_get_int("wan_port",0);
+    if (wan_port>5) return FAULT_CODE_9002;
+
+    char buf[24] = {0};
+
+    if (args[0] == 'r')
+    {
+	snprintf(buf,1024,"%llu",rxtx[4-wan_port]);
+    }
+    else
+    {
+	snprintf(buf,1024,"%llu",rxtx[(4-wan_port)+6]);
+    }
+
+
+    *value = pool_pstrdup(pool, buf);
+    return FAULT_CODE_OK;
+}
+
+
+
+
+
+
+int cpe_get_igd_wan_ip_addrtype(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+
+   const char* authType = cwmp_nvram_pool_get(pool, "wanConnectionMode");
+    if (authType == NULL) {
+	cwmp_log_error("cpe_get_igd_wan_ip_addrtype: undefined wanConnectionMode param!");
+	return FAULT_CODE_9002;
+    }
+
+    char* tpstr = "Static";
+
+    if (strcmp(authType,"STATIC") == 0) tpstr = "Static"; else
+    if (strcmp(authType,"DHCP") == 0) tpstr = "DHCP"; else
+    if (strcmp(authType,"ZERO") == 0) tpstr = "AutoIP";
+    
+    *value = pool_pstrdup(pool, tpstr);
+
+    return FAULT_CODE_OK;
+}
+
+int cpe_set_igd_wan_ip_addrtype(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+{
+    FUNCTION_TRACE();
+
+    char* valStr;
+    cwmp_log_error("DEBUG3: cpe_set_igd_wan_ip_addrtype: value is %s \n",value);
+
+    switch (value[0]) {
+	case 'S': valStr = "STATIC"; break;
+	case 'D': valStr = "DHCP"; break;
+	case 'A': valStr = "ZERO"; break;
+	default: valStr = "STATIC";
+    }
+
+/*    if (strcmp(value,"Static") == 0) valStr = "STATIC"; else
+    if (strcmp(value,"DHCP") == 0) valStr = "DHCP"; else
+    if (strcmp(value,"AutoIP") == 0) valStr = "ZERO";
+*/
+    cwmp_nvram_set("wanConnectionMode", valStr);
+
+    return FAULT_CODE_OK;
+}
 
 
 
@@ -16,7 +92,7 @@ int  cpe_refresh_igd_wanipconnection(cwmp_t * cwmp, parameter_node_t * param_nod
     {
         for(tmp_param=child_param->next_sibling; tmp_param; )
         {
-            cwmp_log_info("refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
+            cwmp_log_info("IP:refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
             tmp_node = tmp_param->next_sibling;
             cwmp_model_delete_parameter(tmp_param);
             tmp_param = tmp_node;

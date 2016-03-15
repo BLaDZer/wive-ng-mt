@@ -187,6 +187,11 @@ if [ "$MODE" = "all" ]; then
 fi
 
 ##########################################################
+# last stage after apply all changes restart cwmp client
+##########################################################
+service cwmpd restart
+
+##########################################################
 # Always rebalance irq by cpus				 #
 ##########################################################
 if [ -e /bin/irqbalance ]; then

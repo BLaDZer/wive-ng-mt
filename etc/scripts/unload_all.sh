@@ -3,7 +3,7 @@
 # Description: Wive-NG Megakill script..
 
 stop_serv="chillispot transmission samba xupnp radvd dynroute shaper crontab ddns udpxy miniupnpd \
-	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cdp iappd syslog watchdog"
+	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd syslog watchdog"
 
 kill_apps="chilli_stat chilli transmission-daemon smbd nmbd xupnpd udhcpd udhcpc dhcp6c dhcp6s radvd zebra ripd crond igmpproxy \
 	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd syslogd klogd"

@@ -115,6 +115,7 @@
   <message msgid="services misc cron" msgstr="Cron daemon" />
   <message msgid="services misc lltd" msgstr="LLTD daemon" />
   <message msgid="services misc lldpd" msgstr="LLDP daemon" />
+  <message msgid="services misc cwmpd" msgstr="CWMP (TR-069) agent" />
   <message msgid="services misc cdp" msgstr="CDP daemon" />
   <message msgid="services misc iptv" msgstr="Services IPTV" />
   <message msgid="services misc dinf" msgstr="Device info services" />

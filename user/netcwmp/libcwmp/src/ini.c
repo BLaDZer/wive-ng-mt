@@ -461,8 +461,8 @@ int ini_puts(const tchar_t *section, const tchar_t *key, const tchar_t *value, c
         ep = _tcschr(sp, '='); /* Parse out the equal sign */
         if (ep == NULL)
             ep = _tcschr(sp, ':');
-        match = (ep != NULL && (int)(ep-sp) == len && _tcsnicmp(sp,key,len) == 0);
-        if ((key!=NULL && match) || *sp == '[')
+        match = (ep != NULL && key != NULL && (int)(ep-sp) == len && _tcsnicmp(sp,key,len) == 0);
+        if (match || *sp == '[')
             break;  /* found the key, or found a new section */
         /* in the section that we re-write, do not copy empty lines */
         if (key!=NULL && _tcslen(sp) > 0)

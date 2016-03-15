@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -f /bin/cwmpd ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t cwmpd"
+
+start() {
+    get_param
+    if [ "$cwmpdEnabled" = "1" ]; then
+	( # send to background
+	$LOG "Starting CWMPD"
+	DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	cwmpd
+	) & # send to background
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 cwmpdEnabled`
+}
+
+stop() {
+    pid=`pidof cwmpd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping CWMPD"
+	killall -q cwmpd
+	killall -q -SIGKILL cwmpd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+esac

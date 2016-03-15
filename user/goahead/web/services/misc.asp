@@ -161,6 +161,7 @@ function initValue()
 	var cdp = "<% getCfgZero(1, "cdpEnabled"); %>";
 	var lltd = "<% getCfgZero(1, "lltdEnabled"); %>";
 	var lldpd = "<% getCfgZero(1, "lldpdEnabled"); %>";
+        var cwmpd = "<% getCfgZero(1, "cwmpdEnabled"); %>";
 	var wpf = "<% getCfgGeneral(1, "WANPingFilter"); %>";
 	var arp_pt = "<% getCfgZero(1, "parproutedEnabled"); %>";
 	var arpptb = "<% getARPptBuilt(); %>";
@@ -200,6 +201,7 @@ function initValue()
 	form.cdpEnbl.options.selectedIndex = 1*cdp;
 	form.lltdEnbl.options.selectedIndex = 1*lltd;
 	form.lldpdEnbl.options.selectedIndex = 1*lldpd;
+        form.cwmpdEnbl.options.selectedIndex = 1*cwmpd;
 	form.krnlPppoePass.options.selectedIndex = 1*krnl_pppoe;
 	form.krnlIpv6Pass.options.selectedIndex = 1*krnl_ipv6;
 	form.pingWANEnbl.options.selectedIndex = (wpf == '1') ? 1 : 0;
@@ -253,6 +255,7 @@ function initValue()
 	igmpSelect(form);
 	httpRmtSelect(form);
 	sshRmtSelect(form);
+	cwmpRmtSelect(form);
 	pingerSelect(form);
 	udpxySelect(form);
 	snmpdRmtSelect(form);
@@ -337,6 +340,11 @@ function sshRmtSelect(form)
 	displayElement( 'ssh_rmt_port', form.rmtSSH.value != '0');
 }
 
+function cwmpRmtSelect(form)
+{
+	displayElement( 'cwmp_acs_url', form.cwmpdEnbl.value != '0');
+}
+
 function udpxySelect(form)
 {
 	displayElement( 'udpxy_port_row', form.udpxyMode.value != '0');
@@ -359,7 +367,8 @@ function displayServiceHandler(response)
 		[ '<% getCfgGeneral(1, "snmpd"); %>', 'snmpd', 'snmpd', null, 'www.net-snmp.org/docs/man/snmpd.html' ],
 		[ '<% getCfgGeneral(1, "igmpEnabled"); %>', 'igmpProxy', 'igmpproxy', null, 'sourceforge.net/projects/igmpproxy' ],
 		[ '<% getCfgGeneral(1, "lltdEnabled"); %>', 'lltd', 'lld2d', null, 'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
-		[ '<% getCfgGeneral(1, "lldpdEnabled"); %>', 'lldpd', 'lldpd', null, 'http://vincentbernat.github.io/lldpd' ],
+		[ '<% getCfgGeneral(1, "cwmpdEnabled"); %>', 'cwmpd', 'cwmpd', null, 'www.broadband-forum.org/technical/trlist.php' ],
+		[ '<% getCfgGeneral(1, "lldpdEnabled"); %>', 'lldpd', 'lldpd', null, 'vincentbernat.github.io/lldpd' ],
 		[ '<% getCfgGeneral(1, "upnpEnabled"); %>', 'upnp', 'miniupnpd', null, 'miniupnp.free.fr/' ],
 		[ '<% getCfgGeneral(1, "cdpEnabled"); %>', 'cdp', 'cdp-send', null, 'freecode.com/projects/cdp-tools' ],
 		[ '<% getCfgGeneral(1, "dnsPEnabled"); %>', 'dnsproxy', 'dnsmasq', null, 'thekelleys.org.uk/dnsmasq/doc.html' ],
@@ -540,6 +549,20 @@ function submitForm(form) {
           <tr id="ssh_rmt_port" style="display: none;">
             <td class="head" id="miscSSHPort">Remote SSH port</td>
             <td colspan="4"><input class="half" name="RemoteSSHPort" value="<% getCfgZero(1, "RemoteSSHPort"); %>"></td>
+          </tr>
+          <tr id="cwmpd">
+            <td class="head" id="lCwmpd">CWMP (TR-069) agent</td>
+            <td><select name="cwmpdEnbl" class="half" onchange="cwmpRmtSelect(this.form);">
+                <option value="0" id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr id="cwmp_acs_url" style="display: none;">
+            <td class="head" id="miscCwmpACSUrl">CWMP ACS address</td>
+            <td colspan="4"><input class="superwide" name="cwmpACSUrl" value="<% getCfgGeneral(1, "cwmp_acs_url"); %>"></td>
           </tr>
           <tr id="rmt_telnetd">
             <td class="head" id="miscTelnetRemote">Remote Telnet</td>

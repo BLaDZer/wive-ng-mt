@@ -18,7 +18,7 @@ build netcwmp:
 3) make install
 
 #copy conf/cwmp.conf to /etc
-4) cp conf/cwmp.conf /etc   
+4) cp conf/cwmp.conf /etc
 
 5) run# cwmpd
 
@@ -73,5 +73,3 @@ Config File:
 
 
 Apache License !
-
-

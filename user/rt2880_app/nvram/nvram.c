@@ -76,7 +76,8 @@ static int ra_nv_set(int argc,char **argv)
 	}
 
 	rc = nvram_set(index, key, value);
-    return rc;
+
+	return rc;
 }
 
 static int ra_nv_get(int argc, char *argv[])
@@ -112,7 +113,7 @@ static int ra_nv_get(int argc, char *argv[])
 	    ret = -1;
 	}
 
-    return (ret);
+	return (ret);
 }
 
 static int ra_nv_buf_get(int argc, char *argv[])
@@ -142,7 +143,7 @@ static int ra_nv_buf_get(int argc, char *argv[])
 	    }
 	}
 
-    return (ret);
+	return (ret);
 }
 
 static int isMacValid(char *str)
@@ -156,6 +157,7 @@ static int isMacValid(char *str)
 		if( (!isxdigit( str[i*3])) || (!isxdigit( str[i*3+1])) || (str[i*3+2] != ':') )
 			return 0;
 	}
+
 	return (isxdigit(str[15]) && isxdigit(str[16])) ? 1: 0;
 }
 
@@ -163,13 +165,14 @@ static int nvram_load_default(void)
 {
 	/* default macs is OK */
 	int mac_err = 0;
-        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC, *MngmtLogin, *MngmtPassword, *MngmtStoreSettings;
+        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC, *MngmtLogin, *MngmtPassword, *MngmtStoreSettings, *cwmpdEnabled;
 
 	/* copy old remotemanagment settings if enabled */
 	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
 	if (atoi(MngmtStoreSettings) == 1) {
 	    MngmtLogin		= nvram_get_copy(RT2860_NVRAM, "MngmtLogin");
 	    MngmtPassword	= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
+	    cwmpdEnabled	= nvram_get_copy(RT2860_NVRAM, "cwmpdEnabled");
 
 	    printf("Store remote managment user settings.\n");
 	}
@@ -225,16 +228,21 @@ static int nvram_load_default(void)
 	}
 
 	/* restore remotemanagment */
-	if ((atoi(MngmtStoreSettings) == 1) && (strlen(MngmtLogin) > 0) && (strlen(MngmtPassword) > 0)) {
+	if (atoi(MngmtStoreSettings) == 1) {
 	    printf("Restore remote managment user settings.\n");
-	    nvram_bufset(RT2860_NVRAM, "MngmtLogin", MngmtLogin);
-	    nvram_bufset(RT2860_NVRAM, "MngmtPassword", MngmtPassword);
+	    if  (strlen(MngmtLogin) > 0 && strlen(MngmtPassword) > 0) {
+		nvram_bufset(RT2860_NVRAM, "MngmtLogin", MngmtLogin);
+		nvram_bufset(RT2860_NVRAM, "MngmtPassword", MngmtPassword);
+
+		/* allow remote ssh from WAN */
+		nvram_bufset(RT2860_NVRAM, "RemoteSSH", "2");
+	    }
+
+	    /* restore cwmpd settings */
+	    nvram_bufset(RT2860_NVRAM, "cwmpdEnabled", cwmpdEnabled);
 
 	    /* set keep remote managment flag */
 	    nvram_bufset(RT2860_NVRAM, "MngmtStoreSettings", "1");
-
-	    /* allow remote ssh from WAN */
-	    nvram_bufset(RT2860_NVRAM, "RemoteSSH", "2");
 	}
 
 	/* set wive flag */

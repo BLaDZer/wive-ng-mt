@@ -152,10 +152,10 @@ int cwmp_event_file_save(cwmp_t * cwmp)
 //设备启动以后，一些事件需要上报
 int cwmp_event_init(cwmp_t *cwmp)
 {
-    int     bootstrap_flag = 0;
-    int     upgrade_flag = 0;
-    char    val[64] = {0};
-    
+//    int     bootstrap_flag = 0;
+//    int     upgrade_flag = 0;
+//    char    val[64] = {0};
+
     if(!cwmp)
     {
         cwmp_log_error("param cwmp is NULL\n");
@@ -172,12 +172,12 @@ int cwmp_event_init(cwmp_t *cwmp)
 
     if(cwmp->event_global.event_flag == EVENT_REBOOT_NONE_FLAG || cwmp->event_global.event_flag & EVENT_REBOOT_BOOTSTRAP_FLAG)
     {
-	cwmp->event_global.event_flag = EVENT_REBOOT_BOOTSTRAP_FLAG;    
+	cwmp->event_global.event_flag = EVENT_REBOOT_BOOTSTRAP_FLAG;
 	cwmp_event_set_value(cwmp, INFORM_BOOTSTRAP, 1, NULL, 0, 0, 0);
-    }    
+    }
     else    //reboot
     {
-        cwmp_log_info("reboot_flag=%d, key=%s\n", cwmp->event_global.event_flag,
+	cwmp_log_info("reboot_flag=%d, key=%s\n", cwmp->event_global.event_flag,
                                                                cwmp->event_global.event_key);
 
 	cwmp_event_set_value(cwmp, INFORM_BOOT, 1, NULL, 0, 0, 0);
@@ -243,7 +243,7 @@ int cwmp_event_set_value(cwmp_t *cwmp,  int event,   int value, const char * cmd
     }
     int count = cwmp->el->count;
 	
-    int max = cwmp->el->size;
+//    int max = cwmp->el->size;
 
      if(count  >= cwmp->el->size)
      {
@@ -396,7 +396,7 @@ int cwmp_event_get_index(cwmp_t *cwmp,const char *name)
     {
         goto finish;
     }
-    int size = cwmp->el->size;
+//    int size = cwmp->el->size;
 	
     for(i=0; i<INFORM_MAX; i++)
     {
@@ -440,16 +440,14 @@ size_t cwmp_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 int cwmp_event_clear_active(cwmp_t *cwmp)
 {
     int     i;
-    int     j;
-    int     notify_flag = 0;
+//    int     notify_flag = 0;
 
-     
-	
-    assert(cwmp != NULL);	
-  
+
+    assert(cwmp != NULL);
+
 
     pthread_mutex_lock(&cwmp->event_mutex);
- 
+
     event_code_t ** pec = cwmp->el->events;
     int evsize = cwmp->el->count;
     for(i=0; i<evsize; i++)
@@ -460,8 +458,8 @@ int cwmp_event_clear_active(cwmp_t *cwmp)
         }
 
 
-	switch(pec[i]->event)
-	{
+    switch(pec[i]->event)
+    {
 		case INFORM_BOOTSTRAP:
 			
 		        {
@@ -479,13 +477,13 @@ int cwmp_event_clear_active(cwmp_t *cwmp)
 		break;
 
 		case INFORM_VALUECHANGE:
-			notify_flag = 1;
+//			notify_flag = 1;
 
 		break;
 
 		case INFORM_TRANSFERCOMPLETE:
 			cwmp->event_global.event_flag |= EVENT_REBOOT_TRANSFERCOMPLETE_FLAG;
-            		memset(cwmp->event_global.event_key, 0, COMMAND_KEY_LEN+1);
+			memset(cwmp->event_global.event_key, 0, COMMAND_KEY_LEN+1);
 			strcpy(cwmp->event_global.event_key, pec[i]->command_key);
 			cwmp->event_global.fault_code = pec[i]->fault_code;
 			cwmp->event_global.start = pec[i]->start;
@@ -497,7 +495,7 @@ int cwmp_event_clear_active(cwmp_t *cwmp)
 	}
 
 	pec[i]->ref = 0; //clear
-	
+
 
     }
 

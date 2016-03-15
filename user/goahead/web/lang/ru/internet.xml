@@ -56,6 +56,7 @@
   <message msgid="lan cdp" msgstr="Link Layer Cisco Discovery (cdp)" />
   <message msgid="lan lltd" msgstr="Link Layer Topology Discovery (lltd)" />
   <message msgid="lan lldpd" msgstr="Link Layer Discovery Daemon (lldpd)" />
+
   <message msgid="lan snmp" msgstr="Сервер статистики (snmpd)" />
   <message msgid="lan igmpp" msgstr="Маршрутизация мультикаста (igmpproxy)" />
   <message msgid="lan upnp" msgstr="Автоматический проброс портов (miniupnpd)" />

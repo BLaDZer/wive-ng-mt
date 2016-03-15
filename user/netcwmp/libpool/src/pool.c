@@ -394,18 +394,19 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
 	return p;
 }
 
-
+/*
 	void *
 pool_pmemalign(pool_t *pool, size_t size, size_t alignment)
 {
+    //FIX-ME
 	void              *p;
 	pool_large_t  *large;
 
-	/*p = pool_memalign(alignment, size);
-	  if (p == NULL) {
-	  return NULL;
-	  }
-	 */
+//	p = pool_memalign(alignment, size);
+//	  if (p == NULL) {
+//	  return NULL;
+//	  }
+	 
 	//FUNCTION_TRACE();
 
 	large = pool_palloc(pool, sizeof(pool_large_t));
@@ -421,7 +422,7 @@ pool_pmemalign(pool_t *pool, size_t size, size_t alignment)
 
 	return p;
 }
-
+*/
 
 	int
 pool_pfree(pool_t *pool, void *p)
@@ -536,7 +537,7 @@ pool_delete_file(void *data)
 
 
 
-	if (unlink(c->name) == -1)
+	if (unlink((char*)c->name) == -1)
 	{
 		err = errno;
 
@@ -610,10 +611,38 @@ void * pool_pmemdup(pool_t * pool, const  void * ptr, size_t size)
 }
 
 
+//FIXME
+char * pool_sprintf(pool_t * pool, const char * fmt, va_list ap)
+{
+    int i = 0;
+    int res = -1;
+    int lastres = -2;
+    char * p = (char*) pool_palloc(pool,1024);
+
+    for(i=1;res!=lastres;i++)
+    {
+	printf("%i\n",i);
+	lastres = res;
+	if (i>1) {
+	    p = pool_prealloc(pool,p,1024*(i-1),1024*i);
+	}
+
+	if (!p) return -1;
+
+	res = snprintf(p,1024*i,fmt,ap);
+	if (res < 0) return res;
+
+	res = strlen(p);
+    }
+
+    return p;
+}
+
+
 char * pool_pstrdup(pool_t * pool, const  void * ptr)
 {
 	size_t s;
-	if (!ptr || ptr == "")
+	if (!ptr || strlen(ptr) == 0)
 	{
 		return NULL;
 	}

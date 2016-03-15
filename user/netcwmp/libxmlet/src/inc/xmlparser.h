@@ -44,6 +44,8 @@
 #define ESC_HEX     "&#x"
 #define ESC_DEC     "&#"
 
+#define XML_VALUE_SIZE_MAX	32768
+
 typedef struct XmlNameSpaceURI
 {
     char                        *nsURI;
@@ -154,7 +156,7 @@ int     XmlNodeListAddToNodeList(
 
 static char * XmlStrduptrim(Pool * pool, const char * data)
 {
-    char buffer[1024] ;
+    char buffer[XML_VALUE_SIZE_MAX] ;
     char * p;
     char * q;
     if (!data)
@@ -162,8 +164,8 @@ static char * XmlStrduptrim(Pool * pool, const char * data)
         return NULL;
     }
 
-    memset(buffer, 0, 1024);
-    strncpy(buffer, data, 1024);
+    memset(buffer, 0, XML_VALUE_SIZE_MAX);
+    strncpy(buffer, data, XML_VALUE_SIZE_MAX);
     p =  buffer;
     while ((*p <= ' ')  && (*p != '\n'))
     {

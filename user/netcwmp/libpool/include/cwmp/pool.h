@@ -15,6 +15,7 @@
 #define __CWMPPOOL_H__
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include <errno.h>
 
@@ -59,7 +60,7 @@ void pool_clear(pool_t *pool);
 void *pool_palloc(pool_t *pool, size_t size);
 void *pool_pnalloc(pool_t *pool, size_t size);
 void *pool_pcalloc(pool_t *pool, size_t size);
-void *pool_pmemalign(pool_t *pool, size_t size, size_t alignment);
+//void *pool_pmemalign(pool_t *pool, size_t size, size_t alignment);
 int   pool_pfree(pool_t *pool, void *p);
 void *pool_prealloc(pool_t * pool, void * ptr, size_t oldsize, size_t newsize);
 void *pool_pmemdup(pool_t * pool, const void * ptr, size_t size);

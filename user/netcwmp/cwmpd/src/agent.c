@@ -24,6 +24,8 @@
  *                                                                      *
  ***********************************************************************/
 
+#include <cwmp/upload.h>
+
 #include "cwmp_module.h"
 #include "cwmp_agent.h"
 #include <cwmp/session.h>
@@ -169,22 +171,38 @@ int cwmp_agent_recv_response(cwmp_session_t * session)
 void cwmp_agent_start_session(cwmp_t * cwmp)
 {
     int rv;
+    unsigned int periodic = 0;
     cwmp_session_t * session;
     int session_close = CWMP_NO;
     xmldoc_t * newdoc;
     FUNCTION_TRACE();
     event_list_t  *evtlist;
+
     while (TRUE)
     {
         if (cwmp->new_request == CWMP_NO)
         {
             cwmp_log_debug("No new request from ACS\n");
             sleep(2);
+	    periodic++;
             //cwmp->new_request = CWMP_YES;
-            continue;
 
+	    if (periodic<2000) 
+	    {
+        	continue;
+	    }
+	    else
+	    {
+	        cwmp_log_error("Periodic response\n");
+		periodic = 0;
+	    }
         }
-        cwmp_log_debug("New request from ACS\n");
+	else
+	{
+            cwmp_log_error("### ### ### New request from ACS ### ### ###\n");
+	}
+
+
         cwmp->new_request = CWMP_NO;
         session = cwmp_session_create(cwmp);
         session_close  = CWMP_NO;
@@ -195,13 +213,13 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
 
         while (!session_close)
         {
-            //cwmp_log_debug("session status: %d", session->status);
+            cwmp_log_info("session status: %d", session->status);
 
             switch (session->status)
             {
             case CWMP_ST_START:
                 //create a new connection to acs
-                cwmp_log_debug("session stutus: New START\n");
+                cwmp_log_debug("session status: New START\n");
 
                 if (cwmp_session_connect(session, cwmp->acs_url) != CWMP_OK)
                 {
@@ -263,7 +281,7 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
 
                 rv = cwmp_agent_recv_response(session);
 
-                if (rv == CWMP_OK)
+                if (rv == HTTP_200 || rv == CWMP_OK)
                 {
                     session->status = CWMP_ST_ANSLYSE;
                 }
@@ -331,7 +349,7 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
             }//end switch
         }//end while(!session_close)
 
-        cwmp_log_debug("session stutus: EXIT");
+        cwmp_log_error("session stutus: EXIT");
         cwmp_session_free(session);
         session = NULL;
 
@@ -345,6 +363,7 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
 
 int cwmp_agent_analyse_session(cwmp_session_t * session)
 {
+    cwmp_log_error("DEBUG: cwmp_agent_analyse_session");
     pool_t * doctmppool  = NULL;
     char * xmlbuf;
     cwmp_uint32_t len;
@@ -361,6 +380,7 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     {
         session->newdata = CWMP_NO;
         cwmp_log_debug("analyse receive length is 0");
+	cwmp_log_error("DEBUG: cwmp_agent_analyse_session ERROR 1");
 	goto eventcheck;
     }
 
@@ -379,12 +399,14 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     {
         cwmp_log_debug("analyse create doc null\n");
         cwmp_chunk_write_string(session->writers, xml_fault, TRstrlen(xml_fault), session->envpool);
+	cwmp_log_error("DEBUG: cwmp_agent_analyse_session ERROR 2");
         goto finished;
 
     }
 
     method = cwmp_get_rpc_method_name(doc);
-    cwmp_log_debug("analyse method is: %s\n", method);
+//    cwmp_log_debug("analyse method is: %s\n", method);
+    cwmp_log_error("analyse method is: %s\n", method);
 
     cwmp_chunk_clear(session->writers);
     pool_clear(session->envpool);
@@ -409,6 +431,13 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     {
         newdoc = cwmp_session_create_setparametervalues_response_message(session, doc, doctmppool);
     }
+
+    else if (TRstrcmp(method, CWMP_RPC_SETPARAMETERATTRIBUTES) == 0)
+    {
+        newdoc = cwmp_session_create_setparameterattributes_response_message(session, doc, doctmppool);
+    }
+
+
     else if (TRstrcmp(method, CWMP_RPC_DOWNLOAD) == 0)
     {
         newdoc = cwmp_session_create_download_response_message(session, doc, doctmppool);
@@ -423,6 +452,7 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     }
     else if (TRstrcmp(method, CWMP_RPC_REBOOT) == 0)
     {
+	cwmp_log_error("DEBUG: cwmp_agent_analyse_session REBOOT");
         newdoc = cwmp_session_create_reboot_response_message(session, doc, doctmppool);
     }
     else if (TRstrcmp(method, CWMP_RPC_ADDOBJECT) == 0)
@@ -441,12 +471,13 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     {
     	//check event queue
     	//newdoc = cwmp_session_create_event_response_message(session, doc, doctmppool);
+	cwmp_log_error("DEBUG: cwmp_agent_analyse_session UNKNOWN METHOD: %s", method);
     }
 
     cwmp_t * cwmp = session->cwmp;
     if(newdoc == NULL)
     {
-        cwmp_log_debug("agent analyse newdoc is null. ");
+        cwmp_log_error("agent analyse newdoc is null. ");
 eventcheck:
 	{
 		cwmp_log_debug("agent analyse begin check global event, %d", cwmp->event_global.event_flag);
@@ -470,16 +501,19 @@ eventcheck:
 
     }
 
-    cwmp_log_debug("newdoc %p, msglength: %d", newdoc, msglength );
+
+    cwmp_log_error("newdoc %p, msglength: %d", newdoc, msglength );
     if((newdoc != NULL) || (newdoc == NULL && msglength != 0)) // || (newdoc == NULL && msglength == 0 && session->retry_count < 2))
     {
         session->newdata = CWMP_YES;
         cwmp_write_doc_to_chunk(newdoc, session->writers,  session->envpool);
 	rc = CWMP_OK;
+        cwmp_log_error("DEBUG: cwmp_agent_analyse_session OK");
     }
     else
     {
 	rc = CWMP_ERROR;
+        cwmp_log_error("DEBUG: cwmp_agent_analyse_session ERR");
     }
 
 finished:
@@ -498,7 +532,7 @@ static void print_param(parameter_node_t * param, int level)
   parameter_node_t * child;
   char fmt[64];
   //cwmp_log_debug("name: %s, type: %s, level: %d\n", param->name, cwmp_get_type_string(param->type), level);
-  int i=0;
+//  int i=0;
 
   sprintf(fmt, "|%%-%ds%%s,  get:%%p set:%%p refresh:%%p", level*4);
 
@@ -528,8 +562,8 @@ void cwmp_agent_session(cwmp_t * cwmp)
     char * envstr;
     char * encstr;
 
-    envstr = "SOAP-ENV"; //cwmp_conf_get("cwmp:soap_env");
-    encstr = "SOAP-ENC"; // cwmp_conf_get("cwmp:soap_enc");
+    envstr = cwmp_conf_pool_get(cwmp->pool,"cwmp:soap_env");
+    encstr = cwmp_conf_pool_get(cwmp->pool,"cwmp:soap_enc");
 
     cwmp_set_envelope_ns(envstr, encstr);
 
@@ -571,6 +605,7 @@ int cwmp_agent_download_file(download_arg_t * dlarg)
     char * fromurl = dlarg->url;
     char * tofile = "/tmp/download.img";
 
+    cwmp_log_error("DEBUG: cwmp_agent_download_file");
     FUNCTION_TRACE();
 
     if(dlarg->url && TRstrncasecmp("ftp://", dlarg->url, 6) == 0)
@@ -578,41 +613,142 @@ int cwmp_agent_download_file(download_arg_t * dlarg)
 	    return 9001;
     }
 
-    faultcode = http_receive_file(fromurl, tofile);
+    faultcode = (http_receive_file(fromurl, tofile) == HTTP_200) ? CWMP_OK : 9001 ;
 
     if(faultcode != CWMP_OK)
     {
-	     faultcode = 9001;
+        cwmp_log_error("ERROR: cwmp_agent_download_file FAULT %i", faultcode);
+	return 9001;
+	    
     }
+
+    cwmp_log_error("FILETYPE: %s \n", dlarg->filetype);
+
+    if(strcmp(dlarg->filetype, "1 Firmware Upgrade Image") == 0)
+    {
+        cwmp_log_error("INFO: ### FIRMWARE UPGRADE ### \n");
+
+//	setenv("UPLOAD_FILENAME", "/tmp/download.img", 1);
+//	system("cat /tmp/download.img | /web/cgi-bin/upload.cgi");
+	if (access("/tmp/download.img", F_OK) != -1)
+	{
+        	firmware_upgrade("/tmp/download.img");
+		system("rm /tmp/download.img");
+		system("( sleep 10 && reboot ) &");
+	}
+	else
+	{
+            cwmp_log_error("ERROR: downloaded firmware does not exist! \n");
+	}
+
+    }
+    else
+    if(strcmp(dlarg->filetype, "3 Vendor Configuration File") == 0)
+    {
+        cwmp_log_error("INFO: ### CONFIG UPGRADE ### \n");
+
+	system("rm /tmp/mysystem.cfg");
+	system("tar -C / -xf /tmp/download.img");
+
+	if (access("/tmp/mysystem.cfg", F_OK) != -1)
+	{
+	    system("nvram_clear 2860");
+    	    system("nvram_renew 2860 /tmp/mysystem.cfg");
+	}
+	else
+	{
+            cwmp_log_error("ERROR: downloaded config does not exist! \n");
+	}
+	
+    }
+    else
+    {
+        cwmp_log_error("ERROR! Unknown DOWNLOAD FILETYPE: %s.\n",dlarg->filetype);	
+    }
+
 
     return faultcode;
 }
 
-int cwmp_agent_upload_file(upload_arg_t * ularg)
+int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 {
     int faultcode = 0;
     FUNCTION_TRACE();
     char * fromfile;
 
-    if(strcpy(ularg->filetype, "1 Vendor Configuration File") == 0)
+    char * tourl = ularg->url;
+
+    if(strcmp(ularg->filetype, "1 Vendor Configuration File") == 0)
     {
 	// send currect config to acs
-	system("nvram_show 2860 > /tmp/mysystem.cfg");
-	fromfile = "/tmp/mysystem.cfg";
+    	system("echo \"#The following line must not be removed.\" > /tmp/mysystem.cfg");
+	system("echo \"Default\" >> /tmp/mysystem.cfg");
+
+	system("nvram_show 2860 >> /tmp/mysystem.cfg");
+	system("tar -zcvf /tmp/mysystem.tar.gz /tmp/mysystem.cfg");
+	fromfile = "/tmp/mysystem.tar.gz";
+	//fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
+
+	//FIXME !
+	char tourl_part2[1024];
+	cwmp_log_error("DEBUG: cwmp_agent_upload_file: before check %s",tourl);
+	if (sscanf(tourl, "http://0.0.0.0/%s", tourl_part2) > 0) 
+	{
+    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: part 2 %s",tourl_part2);
+
+	    char* acs_url = cwmp_nvram_pool_get(cwmp->pool, "cwmp_acs_url");
+//	    char acs_url_part1[1024];
+//    	    char acs_url_part2[1024];
+    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: acs_url %s",acs_url);
+	    
+	    char* acs_url_part1 = strtok(acs_url, "/");
+	    char* acs_url_part2 = strtok(NULL, "/");
+
+	    if (acs_url_part2 != NULL)
+	    {
+		    char* acs_url_part2_host = strtok(acs_url_part2, ":");
+
+		    if (acs_url_part2_host != NULL)
+		    {
+
+    			    char tourl_over[1024];
+			    snprintf(tourl_over, 1024, "http://%s/%s", acs_url_part2_host, tourl_part2);
+		    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_over %s",tourl_over);
+			    tourl = pool_pstrdup(cwmp->pool, tourl_over);
+		    }
+		
+	    }
+/*
+	    if (sscanf(acs_url, "http://%s/%s", acs_url_part1, acs_url_part2) >= 2)
+	    {
+	    }*/
+	}
+
+    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_result %s",tourl);
+
+/*	char * tourl_override = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_url_override");
+	if (tourl_override && strlen(tourl_override)>0) 
+	{
+	    tourl = tourl_override;
+	}*/
     }
-    else if(strcpy(ularg->filetype, "2 Vendor Log File") == 0)
+    else if(strcmp(ularg->filetype, "2 Vendor Log File") == 0)
     {
 	// send currect log to acs
-	system("cat /var/log/messages > /tmp/mysystem.log");
-	fromfile = "/tmp/mysystem.log";
+//	system("cat /var/log/messages > /tmp/mysystem.log");
+//	fromfile = "/tmp/mysystem.log";
+
+	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:devicelog_filename");
+
     }
     else
     {
-	system("nvram_show 2860 > /tmp/mysystem.cfg");
-	fromfile = "/tmp/mysystem.cfg";
+//	system("nvram_show 2860 > /tmp/mysystem.cfg");
+//	fromfile = "/tmp/mysystem.cfg";
+	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
     }
 
-    faultcode = http_send_file(fromfile, ularg->url);
+    faultcode = http_send_file(fromfile, tourl);
 
     if(faultcode != CWMP_OK)
     {
@@ -664,7 +800,7 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
 					time_t starttime = time(NULL);
 					int faultcode = 0;
 
-					faultcode = cwmp_agent_upload_file(ularg);
+					faultcode = cwmp_agent_upload_file(cwmp, ularg);
 
 					time_t endtime = time(NULL);
 					cwmp_event_set_value(cwmp, INFORM_TRANSFERCOMPLETE, 1,ularg->cmdkey, faultcode, starttime, endtime);
@@ -693,7 +829,7 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
 				break;
 
 			default:
-
+					cwmp_log_error("!!! ERROR !!! Unknown task tag: %s \n", tasktype);
 				break;
 
 		}

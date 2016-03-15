@@ -2,6 +2,7 @@
 /* Ulopoihsh sunarthsewn ouras */
 
 #include <cwmp/cwmp.h>
+#include <cwmp/log.h>
 #include "cwmp/queue.h"
 
 

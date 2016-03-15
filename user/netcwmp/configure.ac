@@ -1,18 +1,20 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.69)
 AC_INIT(library, 1.0, support@itibia.com)
 AC_CONFIG_AUX_DIR([build])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AC_CONFIG_SRCDIR([])
 AC_CONFIG_HEADER([config.h])
+AM_PROG_AR([ar])
+AC_CONFIG_MACRO_DIR([m4])
 
 #AC_PREFIX_DEFAULT([])
 
 # Checks for programs.
 AC_PROG_CXX(g++)
-AC_PROG_CC(gcc g++)
+AC_PROG_CC(gcc colorgcc g++)
 AC_PROG_MAKE_SET
 AC_PROG_CPP
 AC_PROG_LIBTOOL
@@ -48,6 +50,18 @@ AC_PROG_GCC_TRADITIONAL
 #AC_FUNC_MKTIME
 #AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
+AC_DIAGNOSE([obsolete],[your code may safely assume C89 semantics that RETSIGTYPE is void.
+Remove this warning and the `AC_CACHE_CHECK' when you adjust the code.])dnl
+AC_CACHE_CHECK([return type of signal handlers],[ac_cv_type_signal],[AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([#include <sys/types.h>
+#include <signal.h>
+],
+		 [return *(signal (0, 0)) (0) == 1;])],
+		   [ac_cv_type_signal=int],
+		   [ac_cv_type_signal=void])])
+AC_DEFINE_UNQUOTED([RETSIGTYPE],[$ac_cv_type_signal],[Define as the return type of signal handlers
+		    (`int' or `void').])
+
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
@@ -64,12 +78,7 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
 AC_CHECK_FUNCS([alarm bzero endgrent endpwent getcwd gethostbyname inet_ntoa isascii localtime_r memmove memset mkdir regcomp select socket strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr])
-
-AC_CONFIG_FILES([Makefile
-libpool/src/Makefile libxmlet/src/Makefile libcwmp/src/Makefile
-	cwmpd/src/Makefile  tests/src/Makefile
-		])
-
+AC_CONFIG_FILES([Makefile libpool/src/Makefile libxmlet/src/Makefile libcwmp/src/Makefile cwmpd/src/Makefile tests/src/Makefile])
 
 
 #save user-provided flags
@@ -100,9 +109,6 @@ AC_SUBST(OPENSSL_DIR)
 
 #LIBS will be appended to gcc command, so it must be cleared to prevent unnecessary linking
 #LIBS=""
-
-
-
 
 #AC_CANONICAL_BUILD
 #AC_CANONICAL_HOST

@@ -157,7 +157,7 @@ int httpd_build_server(cwmp_t * cwmp)
         if ((nready = select(maxfd + 1, &rdset, NULL, NULL, &timeout)) <= 0)
         {
             sleep(1);
-            cwmp_log_info("select new connection timeout. no new request.\n");
+            cwmp_log_debug("select new connection timeout. no new request.\n");
             now = time(NULL);
             for (i=0; i<MAX_CLIENT_NUMS; i++)
             {

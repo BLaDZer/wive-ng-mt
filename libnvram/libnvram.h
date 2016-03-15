@@ -41,7 +41,7 @@
 typedef struct environment_s {
 	unsigned long crc;		//CRC32 over data bytes
 	char *data;
-} env_t;
+} environment_t;
 
 typedef struct cache_environment_s {
 	char *name;
@@ -51,7 +51,7 @@ typedef struct cache_environment_s {
 #define MAX_CACHE_ENTRY 1000
 typedef struct block_s {
 	char *name;
-	env_t env;			//env block
+	environment_t env;			//env block
 	cache_t	cache[MAX_CACHE_ENTRY];	//env cache entry by entry
 	unsigned long flash_offset;
 	unsigned long flash_max_len;	//ENV_BLK_SIZE

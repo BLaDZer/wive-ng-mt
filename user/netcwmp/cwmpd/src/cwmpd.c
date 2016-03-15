@@ -25,6 +25,8 @@
  ***********************************************************************/
 
 #include "cwmpd.h"
+#include "modules/data_model.h"
+
 
 #define CWMP_VALUE_UNSET -1
 
@@ -41,14 +43,14 @@ void cwmp_daemon()
 void cwmp_getopt(int argc, char **argv)
 {
 }
-
+/*
 static int cwmp_save_argv( int argc, char *const *argv)
 {
     cwmp_argv = (char **) argv;
     cwmp_argc = argc;
 
     return 0;
-}
+}*/
 
 int cwmp_set_var(cwmp_t * cwmp)
 {
@@ -82,7 +84,9 @@ int main(int argc, char **argv)
     cwmp_pid_t pid;
     cwmp_t * cwmp;
 
-    int syslog_enable = 0;
+//    nvram_init(RT2860_NVRAM);
+
+//    int syslog_enable = 0;
     int cwmp_enable = 0;
 
 #ifdef WIN32

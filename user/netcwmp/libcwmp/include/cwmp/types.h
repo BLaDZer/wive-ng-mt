@@ -39,6 +39,7 @@
 #include <stdint.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <syslog.h>
 #include <unistd.h>
@@ -103,6 +104,7 @@
 
 typedef enum  TRBOOLEAN
 { TRFalse = 0, TRTrue = !TRFalse } TRBOOLEAN;
+
 
 #ifndef TRUE
 #define TRUE TRTrue
@@ -233,9 +235,9 @@ typedef struct model_func_st model_func_t;
 typedef int (*callback_func_t)(void *arg1, void *arg2);
 typedef int (*callback_register_func_t)(cwmp_t * cwmp, callback_func_t, void * arg1, void *arg2);
 
-typedef int   	(*parameter_get_handler_pt)(cwmp_t * cwmp, const char * param_name, char ** value, pool_t * pool);
+typedef int   	(*parameter_get_handler_pt)(cwmp_t * cwmp, const char * param_name, char ** value, char * args, pool_t * pool);
 
-typedef int     (*parameter_set_handler_pt)(cwmp_t * cwmp, const char * param_name, const char * value, int length, callback_register_func_t callback_reg);
+typedef int     (*parameter_set_handler_pt)(cwmp_t * cwmp, const char * param_name, const char * value, int length, char * args, callback_register_func_t callback_reg);
 
 typedef int     (*parameter_notify_handler_pt)(cwmp_t * cwmp, const char * param_name, const char * value, int length, callback_register_func_t callback_reg);
 

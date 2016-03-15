@@ -5,7 +5,7 @@ int cpe_get_localip(const char * eth_name, char *hostip)
     struct ifconf ifc;
     char domain_host[100] = {0};
     char local_ip_addr[20] = {0};
-    char local_mac[20] = {0};
+//    char local_mac[20] = {0};
     //Get Domain Name --------------------------------------------------
     strcpy(local_ip_addr, "127.0.0.1");
     if (!hostip)
@@ -57,52 +57,67 @@ int cpe_get_localip(const char * eth_name, char *hostip)
 }
 
 //InternetGatewayDevice.ManagementServer.Username
-int cpe_get_igd_ms_username(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_username(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
 	  *value = cwmp_conf_pool_get(pool, "cwmp:acs_username");
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.Username
-int cpe_set_igd_ms_username(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+int cpe_set_igd_ms_username(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
     //save password to database or config file
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.Password
-int cpe_get_igd_ms_password(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_password(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
 	  *value = cwmp_conf_pool_get(pool, "cwmp:acs_password");
 	  return FAULT_CODE_OK;
 }
 
-int cpe_set_igd_ms_password(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+int cpe_set_igd_ms_password(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
     //save password to database or config file
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.URL
-int cpe_get_igd_ms_url(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_url(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
 	  *value = cwmp_conf_pool_get(pool, "cwmp:acs_url");
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.URL
-int cpe_set_igd_ms_url(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+int cpe_set_igd_ms_url(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
     //save password to database or config file
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.ConnectionRequestURL
-int cpe_get_igd_ms_connectionrequesturl(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_connectionrequesturl(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     char buf[256]={0};
-    char local_ip[32]={0};
-    cpe_get_localip("br0", local_ip);
+//    char local_ip[32]={0};
+    char* local_ip = getIntIp(pool);
+
+    cwmp_log_error("Wan ip is %s",local_ip);
+
+    if (local_ip == 0) 
+    {
+	cpe_get_localip("br0", local_ip);
+	cwmp_log_error("Local ip is %s",local_ip);
+    }
+
+    if (local_ip == 0) 
+    {
+	cwmp_log_error("Incorrect local ip");
+	return FAULT_CODE_9002;
+    }
+
     int port = cwmp_conf_get_int("cwmpd:httpd_port");
     snprintf(buf, 256, "http://%s:%d", local_ip, port);
     *value = PSTRDUP(buf);
@@ -110,24 +125,24 @@ int cpe_get_igd_ms_connectionrequesturl(cwmp_t * cwmp, const char * name, char *
 }
 
 //InternetGatewayDevice.ManagementServer.ConnectionRequestUsername
-int cpe_get_igd_ms_connectionrequestusername(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_connectionrequestusername(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_username");
     return FAULT_CODE_OK;
 }
-int cpe_set_igd_ms_connectionrequestusername(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+int cpe_set_igd_ms_connectionrequestusername(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
 
     return FAULT_CODE_OK;
 }
 
 //InternetGatewayDevice.ManagementServer.ConnectionRequestPassword
-int cpe_get_igd_ms_connectionrequestpassword(cwmp_t * cwmp, const char * name, char ** value, pool_t * pool)
+int cpe_get_igd_ms_connectionrequestpassword(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_password");
     return FAULT_CODE_OK;
 }
-int cpe_set_igd_ms_connectionrequestpassword(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+int cpe_set_igd_ms_connectionrequestpassword(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
 	cwmp_conf_set("cwmp:cpe_password", value);
     return FAULT_CODE_OK;

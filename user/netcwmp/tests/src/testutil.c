@@ -51,6 +51,7 @@ void  assert_success(abts_case* tc, const char* context, int rv,
 void initialize(void) {
 
 	cwmp_log_init(NULL, CWMP_LOG_DEBUG);
+	cwmp_conf_open("/etc/cwmp.conf");
 
 	gpool = (pool_t*)pool_create(POOL_DEFAULT_SIZE);
 	gcwmp = (cwmp_t*)pool_palloc(gpool, sizeof(cwmp_t));
@@ -71,9 +72,18 @@ void initialize(void) {
 	char * envstr;
 	char * encstr;
 
-	envstr = "SOAP-ENV"; //cwmp_conf_get("cwmp:soap_env");
-	encstr = "SOAP-ENC"; // cwmp_conf_get("cwmp:soap_enc");
+//	envstr = cwmp_conf_get("cwmp:soap_env");
+//	encstr = cwmp_conf_get("cwmp:soap_enc");
+	envstr = cwmp_conf_pool_get(gcwmp->pool,"cwmp:soap_env");
+	encstr = cwmp_conf_pool_get(gcwmp->pool,"cwmp:soap_enc");
 
 	cwmp_set_envelope_ns(envstr, encstr);
+
+       char if_hw[18] = {0};
+
+        if (getIfMac("rai0", if_hw) == -1) { cwmp_log_error("BSSID: 0 \n");}
+	else cwmp_log_error("BSSID: %s \n",if_hw);
+
+
 
 }

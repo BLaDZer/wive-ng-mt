@@ -15,7 +15,7 @@
 
 #include <cwmp/types.h>
 #include <cwmp/md5.h>
-
+#include <cwmp/upload.h>
 
 
 #define Public		/* Accessible outside this module     */
@@ -35,6 +35,50 @@
 #else
 #define TRsnprintf snprintf
 #endif
+
+// FIXME split to lib ///////////////
+
+#include        "sdk_version.h"
+
+#include <linux/autoconf.h>
+
+#if defined(CONFIG_RALINK_RT3052)
+#define PROCREG_SNMP	"/proc/rt3052/snmp"
+#elif defined(CONFIG_RALINK_RT3352)
+#define PROCREG_SNMP	"/proc/rt3352/snmp"
+#elif defined (CONFIG_RALINK_RT5350)
+#define PROCREG_SNMP	"/proc/rt5350/snmp"
+#elif defined(CONFIG_RALINK_RT3883)
+#define PROCREG_SNMP	"/proc/rt3883/snmp"
+#elif defined (CONFIG_RALINK_MT7620)
+#define PROCREG_SNMP	"/proc/mt7620/snmp"
+#elif defined (CONFIG_RALINK_MT7621)
+#define PROCREG_SNMP	"/proc/mt7621/snmp"
+#elif defined (CONFIG_RALINK_MT7628)
+#define PROCREG_SNMP	"/proc/mt7628/snmp"
+#else
+#define PROCREG_SNMP	"/proc/mt7620/snmp"
+#endif
+
+#ifdef CONFIG_RAETH_GMAC2		/* dual phy/rgmii mode */
+#define WAN_DEF "eth3"
+#else
+#define WAN_DEF "eth2.2"		/* internal ralink esw with vlan parted mode */
+#endif
+
+#define BR_SIG	"br"
+#define ETH_SIG	"eth"
+#define VPN_SIG	"ppp"
+#define VPN_DEF "ppp0"
+
+
+int getHWStatistic(unsigned long long* rxtx_count);
+char* getIntIp(pool_t * pool);
+int getIfMac(char *ifname, char *if_hw);
+int firmware_upgrade(char* filename);
+
+
+//////////////////////////
 
 void MD5(char *buf, ...);
 
@@ -179,7 +223,7 @@ static INLINE int TRatoi(const char * string)
     return atoi(string);
 }
 
-static INLINE int TRstrncpy(char * dst, const char * src, size_t maxlen)
+static INLINE cwmp_errcode_t TRstrncpy(char * dst, const char * src, size_t maxlen)
 {
     if (!dst || !src)
         return CWMP_ERROR;

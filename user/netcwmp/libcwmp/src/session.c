@@ -206,7 +206,7 @@ int cwmp_data_set_parameter_value(cwmp_t * cwmp, parameter_node_t * root, const 
 char * cwmp_session_get_sequence(pool_t * pool)
  {
     g_cwmp_session_sequence++;
-    TRsnprintf(g_cwmp_session_sequence_buffer, 63, "%d", g_cwmp_session_sequence);
+    TRsnprintf(g_cwmp_session_sequence_buffer, 63, "%u", g_cwmp_session_sequence);
     return g_cwmp_session_sequence_buffer;
 }
 
@@ -295,7 +295,7 @@ int cwmp_session_get_localip(char *hostip)
     struct ifconf ifc;
     char domain_host[100] = {0};
     char local_ip_addr[20] = {0};
-    char local_mac[20] = {0};
+//    char local_mac[20] = {0};
     //Get Domain Name --------------------------------------------------
     if (!hostip)
         return -1;
@@ -447,13 +447,14 @@ int cwmp_session_connect(cwmp_session_t * session, const char * url)
 
     http_dest_create(&dest, url, session->connpool);
     session->dest = dest;
-    cwmp_log_debug("session connect: dest url is %s, acs url is %s", dest->url, url);
     rv = cwmp_session_create_connection(session);
     if(rv != CWMP_OK)
     {
+	cwmp_log_error("ACS session connect error: %i", rv);
         return rv;
     }
     cwmp_session_set_headers(session, 0);
+    cwmp_log_info("ACS session connect url: %s", url);
 
     return CWMP_OK;
 }
@@ -482,7 +483,7 @@ int cwmp_session_set_headers(cwmp_session_t * session, int postempty)
 int cwmp_session_create_connection(cwmp_session_t * session)
 {
 
-    cwmp_t * cwmp = session->cwmp;
+//    cwmp_t * cwmp = session->cwmp;
     http_socket_t * sock;
     int use_ssl = 0;
     http_dest_t *  dest = session->dest;
@@ -557,16 +558,36 @@ header_t * cwmp_session_create_header(cwmp_session_t * session, pool_t * pool)
 device_id_t * cwmp_session_create_inform_device(cwmp_session_t * session, pool_t * pool)
 {
     device_id_t * device;
+    char * name;
+//    char * value;
 
     FUNCTION_TRACE();
 
 
     device = pool_palloc(pool, sizeof(device_id_t));
-
+/*
     device->manufactorer = session->cwmp->cpe_mf;  //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule,ManufacturerModule);
     device->oui          = session->cwmp->cpe_oui; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerOUIModule);
     device->product_class = session->cwmp->cpe_pc; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, ProductClassModule);
     device->serial_number = session->cwmp->cpe_sn; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, SerialNumberModule);
+    device->device_log = session->cwmp->cpe_mf; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, SerialNumberModule);
+*/
+
+    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,ManufacturerModule);
+    device->manufactorer = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
+
+    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,ManufacturerOUIModule);
+    device->oui = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
+
+    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,ProductClassModule);
+    device->product_class = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
+
+    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,SerialNumberModule);
+    device->serial_number = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
+
+//    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,DeviceLogModule);
+//    device->device_log = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
+
     device->name = session->cwmp->cpe_name;
 
     return device;
@@ -591,7 +612,7 @@ parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * sessio
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
 
-    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerModule);
+/*    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerModule);
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
@@ -610,13 +631,13 @@ parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * sessio
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
-
+*/
     name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule, SpecVersionModule);
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
 
-    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule, HardwareVersionModule);
+/*    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule, HardwareVersionModule);
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
@@ -635,6 +656,7 @@ parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * sessio
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name,	value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
+*/
 
     name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, ManagementServerModule, ParameterKeyModule);
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
@@ -666,7 +688,9 @@ parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * sessio
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
 
-    name    = cwmp_conf_pool_get(pool, "cwmp:wan_interface");
+
+
+/*    name    = cwmp_conf_pool_get(pool, "cwmp:wan_interface");
     if (name == NULL || TRstrcmp(name, "") == 0 )
     {
         cwmp_log_debug("cwmp:wan_interface name is: [%s]\n", name);
@@ -676,7 +700,7 @@ parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * sessio
     value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
     parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
     cwmp_add_parameter_to_list(session->env,  pl, parameter);
-
+*/
     return pl;
 }
 
@@ -684,7 +708,7 @@ event_list_t * cwmp_session_create_inform_events(cwmp_session_t * session, pool_
 {
     event_list_t * el;
     event_code_t * ev;
-    int i=0;
+//    int i=0;
 
     FUNCTION_TRACE();
 
@@ -735,7 +759,7 @@ xmldoc_t *  cwmp_session_create_inform_message(cwmp_session_t * session, event_l
 
     header_t * header;
     device_id_t * device;
-    event_list_t * el;
+//    event_list_t * el;
     datatime_t *now;
     parameter_list_t * pl;
 
@@ -743,11 +767,11 @@ xmldoc_t *  cwmp_session_create_inform_message(cwmp_session_t * session, event_l
 
     header = cwmp_session_create_header(session, pool);
     device  = cwmp_session_create_inform_device(session, pool);
-    pl      	= cwmp_session_create_inform_parameters(session, pool);
+    pl      = cwmp_session_create_inform_parameters(session, pool);
 
     now     = cwmp_session_create_inform_datetimes(session, pool);
 
-    return  cwmp_create_inform_message(session->env, header, device, evtlist, now, 1, session->retry_count, pl);
+    return  cwmp_create_inform_message(session->env, header, device, evtlist, now, 1, session->retry_count, pl, session->root);
 
 #if 0
     xml = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\"><SOAP-ENV:Header><cwmp:ID SOAP-ENV:mustUnderstand=\"1\">1</cwmp:ID></SOAP-ENV:Header><SOAP-ENV:Body><cwmp:Inform> <DeviceId xsi:type=\"cwmp:DeviceIdStruct\"> <Manufacturer xsi:type=\"xsd:string\">ZTE</Manufacturer> <OUI xsi:type=\"xsd:string\">00AA11</OUI> <ProductClass xsi:type=\"xsd:string\">ZXECS EBG2100</ProductClass> <SerialNumber xsi:type=\"xsd:string\">0410400AA11AA2255</SerialNumber> </DeviceId> <Event SOAP-ENC:arrayType=\"cwmp:EventStruct[1]\"> <EventStruct><EventCode xsi:type=\"xsd:string\">1 BOOT</EventCode><CommandKey></CommandKey> </EventStruct> </Event> <MaxEnvelopes xsi:type=\"xsd:unsignedInt\">1</MaxEnvelopes> <CurrentTime xsi:type=\"xsd:dateTime\">2009-05-14T14:05:00</CurrentTime> <RetryCount xsi:type=\"xsd:unsignedInt\">0</RetryCount> <ParameterList SOAP-ENC:arrayType=\"cwmp:ParameterValueStruct[13]\"> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.DeviceSummary</Name><Value xsi:type=\"xsd:string(1024)\">InternetGatewayDevice:1.0[](Baseline:1, EthernetLAN:1, WiFiLAN:1, EthernetWAN:1, Time:1, IPPing:1)</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.DeviceInfo.SpecVersion</Name><Value xsi:type=\"xsd:string(16)\">1.0</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.DeviceInfo.HardwareVersion</Name><Value xsi:type=\"xsd:string(64)\">2.2.0</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.DeviceInfo.SoftwareVersion</Name><Value xsi:type=\"xsd:string(64)\">2.2.0.4</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.DeviceInfo.ProvisioningCode</Name><Value xsi:type=\"xsd:string(64)\">cpea</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.ConnectionRequestURL</Name><Value xsi:type=\"xsd:string(256)\">http://58.211.149.43:25100</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.ParameterKey</Name><Value xsi:type=\"xsd:string(32)\">parameterkey</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANIPConnection.1.ExternalIPAddress</Name><Value xsi:type=\"xsd:string\">58.211.149.43</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.Username</Name><Value xsi:type=\"xsd:string(256)\">Navigator</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.Password</Name><Value xsi:type=\"xsd:string(256)\">navigator</Value> </ParameterValueStruct>  <ParameterValueStruct>  <Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.ConnectionRequestUsername</Name><Value xsi:type=\"xsd:string(256)\">bbms</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.ConnectionRequestPassword</Name><Value xsi:type=\"xsd:string(256)\">bbms</Value> </ParameterValueStruct> <ParameterValueStruct><Name xsi:type=\"xsd:string\">InternetGatewayDevice.ManagementServer.URL</Name><Value xsi:type=\"xsd:string(256)\">http://192.168.0.69:8000/otnms/acs/webservice.action</Value> </ParameterValueStruct> </ParameterList> </cwmp:Inform></SOAP-ENV:Body> </SOAP-ENV:Envelope>";
@@ -760,10 +784,10 @@ xmldoc_t *  cwmp_session_create_transfercomplete_message(cwmp_session_t * sessio
 {
 
     header_t * header;
-    device_id_t * device;
-    event_list_t * el;
-    datatime_t *now;
-    parameter_list_t * pl;
+//    device_id_t * device;
+//    event_list_t * el;
+//    datatime_t *now;
+//    parameter_list_t * pl;
 
     FUNCTION_TRACE();
 
@@ -827,6 +851,7 @@ xmldoc_t *  cwmp_session_create_getparameternames_response_message(cwmp_session_
 
 xmldoc_t *  cwmp_session_create_getparametervalues_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
+    cwmp_log_error("DEBUG: cwmp_session_create_getparametervalues_response_message");
     header_t * header;
     int rv;
     parameter_list_t * pl;
@@ -851,6 +876,13 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
     int rv;
     parameter_list_t * pl;
     fault_code_t fault;
+
+
+    parameter_t * parameter;
+    char * name;
+    char * value;
+
+
     FUNCTION_TRACE();
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
     if (rv != CWMP_OK)
@@ -860,20 +892,63 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
 
     rv = cwmp_parse_setparametervalues_message(session->env, doc, session->root, &pl, &fault);
 
+
     if(rv != CWMP_OK)
     {
         return cwmp_create_faultcode_setparametervalues_response_message(session->env, header, pl, &fault);
     }
 
+    xmldoc_t * resdoc = cwmp_create_setparametervalues_response_message(session->env, header, 0, pl);
+    //FIXME: D-Link refresh
+    //session->cwmp->new_request = CWMP_YES;
 
-    return cwmp_create_setparametervalues_response_message(session->env, header, 0);
+    return resdoc;
 }
+
+xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
+{
+    header_t * header;
+    int rv;
+    parameter_list_t * pl;
+    fault_code_t fault;
+
+
+    parameter_t * parameter;
+    char * name;
+    char * value;
+
+    // FIXME: STUB!!!
+
+    FUNCTION_TRACE();
+    rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
+    if (rv != CWMP_OK)
+    {
+        cwmp_log_error("no header node \n");
+    }
+
+/*    rv = cwmp_parse_setparametervalues_message(session->env, doc, session->root, &pl, &fault);
+
+
+    if(rv != CWMP_OK)
+    {
+        return cwmp_create_faultcode_setparametervalues_response_message(session->env, header, pl, &fault);
+    }
+*/
+    xmldoc_t * resdoc = cwmp_create_setparameterattributes_response_message(session->env, header, 0, pl);
+    //FIXME: D-Link refresh
+    //session->cwmp->new_request = CWMP_YES;
+
+    return resdoc;
+}
+
+
+
 
 xmldoc_t *  cwmp_session_create_download_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
     header_t * header;
     int rv;
-    char * key;
+//    char * key;
     fault_code_t fault;
     FUNCTION_TRACE();
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
@@ -911,7 +986,7 @@ xmldoc_t *  cwmp_session_create_upload_response_message(cwmp_session_t * session
 {
     header_t * header;
     int rv;
-    char * key;
+//    char * key;
     fault_code_t fault;
     FUNCTION_TRACE();
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
@@ -983,8 +1058,10 @@ xmldoc_t *  cwmp_session_create_deleteobject_response_message(cwmp_session_t * s
     return cwmp_create_deleteobject_response_message(session->env, header, status);
 }
 
+
 xmldoc_t *  cwmp_session_create_reboot_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
+    cwmp_log_error("DEBUG cwmp_session_create_reboot_response_message\n");
     header_t * header;
     int rv;
     char * key;
@@ -1008,8 +1085,8 @@ xmldoc_t *  cwmp_session_create_factoryreset_response_message(cwmp_session_t * s
 {
     header_t * header;
     int rv;
-    char * key;
-    fault_code_t fault;
+//    char * key;
+//    fault_code_t fault;
     FUNCTION_TRACE();
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
     if (rv != CWMP_OK)
@@ -1025,7 +1102,8 @@ xmldoc_t *  cwmp_session_create_factoryreset_response_message(cwmp_session_t * s
 
 int cwmp_session_send_request(cwmp_session_t * session)
 {
-    //    size_t length = cwmp_chunk_length(session->writers);
+    size_t alength = cwmp_chunk_length(session->writers);
+    cwmp_log_error("DEBUG: cwmp_session_send_request len: %u",alength);
     //    http_request_t * request;
     //    http_request_create(&request, session->env->pool);
     //    request->dest = session->dest;
@@ -1037,11 +1115,12 @@ int cwmp_session_send_request(cwmp_session_t * session)
     http_request_t * request;
     FUNCTION_TRACE();
 
-    cwmp_log_debug("session dest url: %s", session->dest->url);
+//    cwmp_log_error("session dest url: %s", session->dest->url);
 
 
     http_request_create(&request, session->envpool);
     request->dest = session->dest;
+
 
     if(session->dest->auth_type == HTTP_DIGEST_AUTH)
     {
@@ -1055,15 +1134,17 @@ int cwmp_session_send_request(cwmp_session_t * session)
         }
     }
 
-    rv = http_post(session->sock, request, session->writers, session->envpool);
 
+    rv = http_post(session->sock, request, session->writers, session->envpool);
 
     if (rv <= 0)
     {
+        cwmp_log_error("DEBUG: cwmp_session_send_request ERR");
         return CWMP_ERROR;
     }
     else
     {
+        cwmp_log_error("DEBUG: cwmp_session_send_request OK");
         return CWMP_OK;
     }
 
@@ -1074,6 +1155,7 @@ int cwmp_session_send_request(cwmp_session_t * session)
 
 int cwmp_session_recv_response(cwmp_session_t * session)
 {
+    cwmp_log_error("DEBUG: cwmp_session_recv_response");
     int respcode;
     http_response_t * response;
     char * auth;
@@ -1087,7 +1169,7 @@ int cwmp_session_recv_response(cwmp_session_t * session)
 
     session->last_code = response->status;
 
-    if(respcode != HTTP_200)
+    if(respcode != HTTP_200 && respcode != HTTP_204)
     {
         cwmp_log_error("http read response failed. return code is %d, %d", respcode, response->status);
 
@@ -1117,12 +1199,14 @@ int cwmp_session_recv_response(cwmp_session_t * session)
         }
     }
 
-    if(respcode == HTTP_200)
+    if(respcode == HTTP_200 || respcode == HTTP_204)
     	{
-		return CWMP_OK;
+//	    cwmp_log_error("DEBUG: cwmp_session_recv_response OK");
+		return respcode;
     	}
     else
     	{
+	    cwmp_log_error("DEBUG: cwmp_session_recv_response ERR");
 		return CWMP_ERROR;
     	}
 

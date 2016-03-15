@@ -21,6 +21,8 @@
 #include <cwmp/event.h>
 #include <cwmp/queue.h>
 
+#include <libnvram.h>
+
 
 #define ASSERT assert
 #define XMLCAST(x)  ((XmlChar *)(x))
@@ -36,14 +38,14 @@
 
 #define SOAP_ENV_NS  "http://schemas.xmlsoap.org/soap/envelope/"
 #define SOAP_ENC_NS "http://schemas.xmlsoap.org/soap/encoding/"
-#define SOAP_XSI_NS  "http://www.w3.org/1999/XMLSchema-instance"
-#define SOAP_XSD_NS  "http://www.w3.org/1999/XMLSchema"
+#define SOAP_XSI_NS  "http://www.w3.org/2001/XMLSchema-instance"
+#define SOAP_XSD_NS  "http://www.w3.org/2001/XMLSchema"
 #define SOAP_CWMP_NS "urn:dslforum-org:cwmp-1-0"
 
 
 
-#define SOAP_ENV_DEFAULT		"SOAP-ENV"
-#define SOAP_ENC_DEFAULT		"SOAP-ENC"
+#define SOAP_ENV_DEFAULT		"soap-env"
+#define SOAP_ENC_DEFAULT		"soap-enc"
 #define SOAP_XML_HEADER			"Header"
 #define SOAP_XML_BODY	  		"Body"
 #define SOAP_XML_ENVELOPE  		"Envelope"
@@ -82,6 +84,12 @@
 #define CWMP_RPC_GETPARAMETERVALUESRESPONSE         "cwmp:GetParameterValuesResponse"
 #define CWMP_RPC_SETPARAMETERVALUES  				"cwmp:SetParameterValues"
 #define CWMP_RPC_SETPARAMETERVALUESRESPONSE         "cwmp:SetParameterValuesResponse"
+
+#define CWMP_RPC_SETPARAMETERATTRIBUTES  				"cwmp:SetParameterAttributes"
+#define CWMP_RPC_SETPARAMETERATTRIBUTESRESPONSE         "cwmp:SetParameterAttributesResponse"
+
+
+
 #define CWMP_RPC_GETRPCMETHODS  					"cwmp:GetRPCMethods"
 #define CWMP_RPC_GETRPCMETHODSRESPONSE  		    "cwmp:GetRPCMethodsResponse"
 #define CWMP_RPC_DOWNLOAD	 						"cwmp:Download"
@@ -279,6 +287,7 @@ enum cwmp_type_t
 	TYPE_STRING128,	//s128
 	TYPE_STRING256,	//s256
 	TYPE_STRING1024, //s1024
+	TYPE_STRING32768,//s32768
 	TYPE_DATETIME,	//dt
 	TYPE_BOOLEAN,	//bool
 	TYPE_BASE64,	//base
@@ -373,6 +382,7 @@ struct parameter_node_st
 	char *    name;
 	cwmp_byte_t	rw;	//read / writable
 	cwmp_byte_t     type;
+	cwmp_byte_t	inform;	//informable parameter
 	
 	size_t		value_length;
 	char *          value;
@@ -390,6 +400,7 @@ struct parameter_node_st
 	parameter_del_handler_pt	del;
 	parameter_refresh_handler_pt	refresh;
 
+	char * args;
 
 
 	cwmp_uint32_t	max;
@@ -457,6 +468,7 @@ char * cwmp_xml_get_node_attribute(xmlnode_t * node, const char * name);
 
 
 parameter_list_t* cwmp_create_parameter_list(env_t * env );
+parameter_t*  cwmp_parameter_list_add_parameter(env_t * env, pool_t * pool , parameter_list_t ** ppl, parameter_node_t * root, const char * name, const char * value, BOOL exec_get, BOOL exec_set);
 
 parameter_t* cwmp_create_parameter(env_t * env ,  const char * name, const char * value, size_t value_length, int type);
 
@@ -471,7 +483,8 @@ xmldoc_t* cwmp_create_inform_message(env_t * env ,  header_t * header,
 		datatime_t * currentt,
 		unsigned int max_envelope,
 		unsigned int retry_count,
-		parameter_list_t * pl);
+		parameter_list_t * pl,
+		parameter_node_t * root);
 
 xmldoc_t* cwmp_create_getparameternames_response_message(env_t * env ,
 		header_t * header,
@@ -486,7 +499,8 @@ xmldoc_t *  cwmp_create_getparametervalues_response_message(env_t * env ,
 
 xmldoc_t *  cwmp_create_setparametervalues_response_message(env_t * env ,
     header_t * header,
-    unsigned int status);
+    unsigned int status,
+    parameter_list_t * pl);
 
 xmldoc_t *  cwmp_create_getrpcmethods_response_message(env_t * env ,
     header_t * header,
@@ -495,6 +509,8 @@ xmldoc_t *  cwmp_create_getrpcmethods_response_message(env_t * env ,
 
 xmldoc_t *  cwmp_create_reboot_response_message(env_t * env ,
     header_t * header);
+
+xmldoc_t * cwmp_create_setparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl);
 
 xmldoc_t * cwmp_create_download_response_message(env_t * env , header_t * header, int status);
 xmldoc_t * cwmp_create_upload_response_message(env_t * env , header_t * header, int status);
@@ -510,6 +526,9 @@ event_list_t * cwmp_create_event_list(env_t * env, int  size );
 
 int     cwmp_add_parameter_to_list(env_t * env ,  parameter_list_t * pl, parameter_t * parameter);
 void    cwmp_add_event_to_list(env_t * env ,  event_list_t * eventlist, event_code_t * event);
+
+int cwmp_parse_download_message(env_t * env , xmldoc_t *doc, download_arg_t ** pdlarg, fault_code_t *fault);
+int cwmp_parse_upload_message(env_t * env , xmldoc_t *doc, upload_arg_t ** pularg, fault_code_t *fault);
 
 int     cwmp_parse_getparameternames_message(env_t * env, xmldoc_t * doc, char ** path_name, unsigned int * next_level, fault_code_t *fault);
 int     cwmp_parse_getparametervalues_message(env_t * env ,   xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);

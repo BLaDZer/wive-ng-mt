@@ -15,7 +15,7 @@
 
 
 
-
+/*
 #define CWMP_OK  0
 #define CWMP_ERROR -1
 #define CWMP_SOCKCLOSEERR  (CWMP_ERROR -1)
@@ -23,6 +23,10 @@
 #define CWMP_ENOMEM		(CWMP_ERROR -3)
 #define CWMP_COULDNOT_CONNECT   (CWMP_ERROR -4)
 #define CWMP_TIMEOUT		(CWMP_ERROR -5)
+*/
+
+
+typedef enum { CWMP_OK=0, CWMP_ERROR=-1, CWMP_SOCKCLOSEERR=-2, CWMP_BADFUNCARG=-3, CWMP_ENOMEM=-4, CWMP_COULDNOT_CONNECT=-5, CWMP_TIMEOUT=-6 } cwmp_errcode_t;
 
 
 

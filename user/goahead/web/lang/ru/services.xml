@@ -116,6 +116,7 @@
   <message msgid="services misc cron" msgstr="Планировщик" />
   <message msgid="services misc lltd" msgstr="Поддержка LLTD" />
   <message msgid="services misc lldpd" msgstr="Поддержка LLDP" />
+  <message msgid="services misc cwmpd" msgstr="Поддержка CWMP (TR-069)" />
   <message msgid="services misc cdp" msgstr="Поддержка CDP" />
   <message msgid="services misc iptv" msgstr="Сервисы IPTV" />
   <message msgid="services misc dinf" msgstr="Сервисы информации и статистики" />

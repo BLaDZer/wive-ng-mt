@@ -273,6 +273,10 @@ parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_USER_CDP
 	{ T("cdpEnbl"), "cdpEnabled", 0, T("0") },
 #endif
+#ifdef CONFIG_USER_CWMPD
+	{ T("cwmpdEnbl"), "cwmpdEnabled", 0, T("0") },
+	{ T("cwmpACSUrl"), "cwmp_acs_url", 0, T("") },
+#endif
 #ifdef CONFIG_USER_LLTD
 	{ T("lltdEnbl"), "lltdEnabled", 0, T("0") },
 #endif

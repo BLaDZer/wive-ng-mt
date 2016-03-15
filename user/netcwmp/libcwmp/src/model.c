@@ -58,11 +58,12 @@ int cwmp_model_copy_parameter_object(parameter_node_t * object_param, parameter_
     return CWMP_OK;
 }
 
-int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_param, int instance_number)
-{
+int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_param, int instance_number){
+
     int rv;
     if(!param)
         return CWMP_OK;
+
 
     parameter_node_t * object_param = param->child; //object param like InternetGatewayDevice.WANDevice.{i}
 
@@ -76,6 +77,7 @@ int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_
 
     new_node->name = NULL;
     new_node->rw = 0;
+    new_node->inform = 0;
     new_node->type = 0;
     new_node->value = NULL;
     new_node->parent = param;
@@ -88,6 +90,7 @@ int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_
         cwmp_model_free_parameter(new_node);
         *new_param = NULL;
     }
+
     return rv;
 }
 
@@ -116,7 +119,6 @@ int cwmp_model_free_parameter(parameter_node_t * param)
 int cwmp_model_delete_parameter(parameter_node_t * param)
 {
     parameter_node_t     *tmp_param = NULL;
-    parameter_node_t     *next_param = NULL;
     parameter_node_t     *parent = NULL;
     if(!param)
     {
@@ -165,6 +167,7 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
     param->add = NULL;
     param->del = NULL;
     param->refresh = NULL;
+    param->args = NULL;
 
     if(!node)
     {
@@ -203,6 +206,15 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
     {
         param->rw = TRatoi(value);
     }
+
+    value = cwmp_xml_get_node_attribute(node, "inform");
+    if(value)
+    {
+        param->inform = TRatoi(value);
+    }
+
+
+
 
     if(param->type == TYPE_OBJECT)
     {
@@ -244,6 +256,13 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
         if(value)
         {
             param->notify = (parameter_notify_handler_pt)cwmp_model_find_func(func_list, func_count, value);//dlsym(cwmp->dev_lib, value);;
+        }
+
+        value = cwmp_xml_get_node_attribute(node, "args");
+        if(value)
+        {
+	    //FIXME
+            param->args = pool_pstrdup(pool,value);
         }
     }
 
@@ -298,6 +317,7 @@ int cwmp_model_create_parameter(parameter_node_t * param, xmlnode_t * node, mode
 
 static int cwmp_model_init_object(cwmp_t * cwmp, parameter_node_t *param)
 {
+//    cwmp_log_error("DEBUG: cwmp_model_init_object \n");
     parameter_node_t     *node = NULL;
 
     if(!param)
@@ -352,6 +372,7 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
 
 int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func_list, int func_count)
 {
+    cwmp_log_error("DEBUG: cwmp_model_load_parameter \n");
     pool_t * pool = cwmp->pool;
     xmlnode_t *  root_node;
     xmlnode_t *  model_node;
@@ -379,6 +400,8 @@ int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func
     cwmp->root = root_param->child;
 
     cwmp_model_init_object(cwmp, cwmp->root);
+    cwmp_log_error("DEBUG: cwmp_model_load_parameter OK\n");
+    return CWMP_OK;
 }
 
 int cwmp_model_load_xml(cwmp_t * cwmp, const char * xmlfile, model_func_t * func_list, int func_count)
@@ -421,4 +444,5 @@ finish:
     FREE(buf);
     fclose(fp);
     pool_destroy(pool);
+    return CWMP_OK;
 }

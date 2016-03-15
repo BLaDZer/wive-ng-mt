@@ -1,2 +1,10 @@
-*.doc
+.deps
+.libs
 .git
+*.doc
+*.o
+*.Po
+*.lo
+*.so
+cwmpd/src/cwmpd
+autom4te.cache

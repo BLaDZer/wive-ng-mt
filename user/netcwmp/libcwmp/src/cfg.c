@@ -63,13 +63,19 @@ int cwmp_conf_get(const char * key, char *value)
     FUNCTION_TRACE();
     if(key == NULL)
     {
-        return -1;
+        return CWMP_ERROR;
     }
+    if (cwmp_conf_handle == NULL)
+    {
+	cwmp_log_error("cwmp_conf_get: config file handle is not initialized!");
+	return CWMP_ERROR;
+    }
+
     TRstrncpy(name, key, INI_BUFFERSIZE);
     cwmp_conf_split(name, &s, &k);
 
     ini_gets(s,k,NULL,value,INI_BUFFERSIZE, cwmp_conf_handle->filename);
-    return 0;
+    return CWMP_OK;
 }
 
 int cwmp_conf_set(const char * key, const char * value)
@@ -81,6 +87,12 @@ int cwmp_conf_set(const char * key, const char * value)
     {
         return CWMP_ERROR;
     }
+    if (cwmp_conf_handle == NULL)
+    {
+	cwmp_log_error("cwmp_conf_get: config file handle is not initialized!");
+	return CWMP_ERROR;
+    }
+
     TRstrncpy(name, key, INI_BUFFERSIZE);
     cwmp_conf_split(name, &s, &k);
 
@@ -123,11 +135,70 @@ int cwmp_conf_get_int(const char * key)
 }
 
 
+int cwmp_nvram_set(const char * key, const char * value)
+{
+//    char keybuf[1024];
+//    sprintf(keybuf,"nvram:%s",key);
+//    return cwmp_conf_set(keybuf, value);
+    cwmp_log_error("DEBUG2: cwmp_nvram_set: %s=%s \n", key, value);
+    return nvram_set(RT2860_NVRAM, key, value);
+}
 
 
 
+int cwmp_nvram_get(const char * key, char *value) 
+{
+    char* nvval;
+    //char keybuf[1024];
+    //sprintf(keybuf,"nvram:%s",key);
+
+//    return cwmp_conf_get(keybuf, value);
+    nvval = nvram_get(RT2860_NVRAM, key);
+    cwmp_log_error("DEBUG2: cwmp_nvram_get: %s=%s (%i) \n", key, nvval, nvval);
+
+    strcpy(value, nvval);
+    return CWMP_OK;//strlen(nvval);
+}
+
+char * cwmp_nvram_pool_get(pool_t * pool, const char * key) 
+{
+//    char keybuf[1024];
+//    sprintf(keybuf,"nvram:%s",key);
+//    return cwmp_conf_pool_get(pool, keybuf);
+    char* val = nvram_get(RT2860_NVRAM, key);
+    cwmp_log_error("DEBUG2: cwmp_nvram_pool_get: %s=%s (%i) \n",key,val, val);
+
+    return pool_pstrdup(pool,val);
+}
 
 
 
+int cwmp_nvram_get_int(const char * key, int def)
+{
+    char valbuf[256];
+    cwmp_nvram_get(key,&valbuf);
 
+    if (strlen(valbuf) == 0) {
+	return def;
+    }
+
+    return strtol(&valbuf, NULL, 10);
+    
+}
+
+int cwmp_nvram_get_bool_onoff(const char * key, int def)
+{
+    char valbuf[256];
+    cwmp_nvram_get(key,&valbuf);
+
+    if (strlen(valbuf) == 0) {
+	return def;
+    }
+
+    if (strcmp(valbuf,"on") == 0) return 1;
+    else if (strcmp(valbuf,"off") == 0) return 0;
+
+    return def;
+    
+}
 

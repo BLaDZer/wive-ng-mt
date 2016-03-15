@@ -29,6 +29,6 @@
 #include "cwmp_type.h"
 
 void    cwmp_worker_thread_start(cwmp_t * cwmp);
-
+void    cwmp_process_start_master(cwmp_t * cwmp);
 
 #endif

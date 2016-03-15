@@ -27,7 +27,7 @@ struct cwmp_buffer_t
     size_t writed;
     size_t readed;
     size_t size;
-    char * offset;
+    unsigned char * offset;
     cwmp_byte_t string[DEFAULT_BUFFER_SIZE + 1];
     cwmp_buffer_t * next;
 };

@@ -1843,10 +1843,11 @@
 <br>
 <b>4.1.x</b><br>
 1) coovachilli: bstring: sync with git 13.03.2016 (commit ec15981d).<br>
-2) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-3) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-4) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-5) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+2) netcwnmp: rewrite for support cwmp 1.0.0.0 (tested with acs-test_1.0.14.01_amd64).<br>
+3) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+4) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+5) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+6) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
 <br>
 <br>
 <br>

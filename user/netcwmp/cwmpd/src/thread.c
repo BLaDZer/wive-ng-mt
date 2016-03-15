@@ -64,7 +64,7 @@ cwmp_worker_thread_init(cwmp_t * cwmp, int num, size_t size)
     return CWMP_OK;
 }
 #endif
-
+/*
 static void * cwmp_worker_thread_agent(cwmp_t * cwmp)
 {
     cwmp_agent_session(cwmp);
@@ -77,7 +77,7 @@ static void * cwmp_worker_thread_udpd(cwmp_t * cwmp)
 
     return NULL;
 }
-
+*/
 #ifdef WIN32
 static unsigned int __stdcall cwmp_worker_thread_httpd(cwmp_t * cwmp)
 #else
@@ -103,7 +103,7 @@ void cwmp_worker_thread_start(cwmp_t * cwmp)
     unsigned tid1, tid2;
     CreateThread(NULL, 0, cwmp_worker_thread_httpd, cwmp, 0, &tid1);
 #else
-    pthread_t th1, th2, th3;
+    pthread_t th1;
     pthread_create(&th1, NULL, (void*)cwmp_worker_thread_httpd, cwmp);
 #endif
     cwmp_agent_session(cwmp);

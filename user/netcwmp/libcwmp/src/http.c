@@ -336,6 +336,22 @@ int http_socket_read (http_socket_t * sock, char *buf, int bufsize)
             res = recv (sock->sockdes, buf, bufsize, 0);
         }
         while (res == -1 && errno == EINTR);
+
+	if (res == -1 && errno != 0) {
+            cwmp_log_error("http_socket_read ERRNO: %d, res %d, buf %d, bufsize %d", errno, res, buf, bufsize);
+	}
+
+//        cwmp_log_error("http_socket_read ERRNO: %d, res %d, buf %d, bufsize %d", errno, res, buf, bufsize);
+/*	if (res == 1) {
+	    buf[1] = 0;
+            cwmp_log_error("%s\n", buf);	    
+	}
+	else
+	{
+            cwmp_log_error("http_socket_read ERRNO: %d, res %d, buf %d, bufsize %d", errno, res, buf, bufsize);
+	}
+*/
+
         return res;
         
     }
@@ -430,10 +446,10 @@ int http_response_create(http_response_t ** response, pool_t * pool)
 
 int http_parse_cookie(const char * cookie, char * dest_cookie)
 {
-    char data[MIN_BUFFER_LEN+1] = {0};
+//    char data[MIN_BUFFER_LEN+1] = {0};
     char * s ;
-    char buffer[128];
-    char * end;
+//    char buffer[128];
+//    char * end;
 
     FUNCTION_TRACE();
 
@@ -670,7 +686,7 @@ static int http_split_headers(char *data, unsigned long len, char **line)
 static void http_parse_headers(http_parser_t * parser, char **line, int lines, pool_t * pool)
 {
     int i,l;
-    int whitespace, where, slen;
+    int whitespace, slen;
     char *name = NULL;
     char *value = NULL;
 
@@ -679,7 +695,7 @@ static void http_parse_headers(http_parser_t * parser, char **line, int lines, p
     /* parse the name: value lines. */
     for (l = 1; l < lines; l++)
     {
-        where = 0;
+
         whitespace = 0;
         name = line[l];
         value = NULL;
@@ -718,17 +734,24 @@ static void http_parse_headers(http_parser_t * parser, char **line, int lines, p
 
 int http_read_line(http_socket_t * sock, char * buffer, int max)
 {
+//    cwmp_log_error("DEBUG: http_read_line");
     char c;
+    int readnum;
 
     int i=0;
     while (i < max)
     {
+	readnum = http_socket_read(sock, &c, 1);
 
-        if ( http_socket_read(sock, &c, 1) <= 0 )
+        if (readnum < 0)
         {
             cwmp_log_error("recv, CANNOT READ 1 char");
             return CWMP_ERROR;
         };
+
+	//FIXME
+	if (readnum == 0) break;
+
 
         buffer[i++]=c;
 
@@ -736,22 +759,32 @@ int http_read_line(http_socket_t * sock, char * buffer, int max)
         {
             if ( http_socket_read(sock, &c, 1) < 0 )
             {
+                cwmp_log_error("DEBUG: http_read_line ERROR 2");
                 return CWMP_ERROR;
             };
 
             buffer[i++]=c;
             break ;
         }
+	else if (c=='\n')
+	{
+	    break;
+	}
     }
     if (i >= max)
+    {
+        cwmp_log_error("DEBUG: http_read_line ERROR 1");
         return CWMP_ERROR;
+    }
 
     buffer[i] = 0;
+//    cwmp_log_error("DEBUG: http_read_line OK");
     return i;
 }
 
 int http_read_header(http_socket_t * sock, cwmp_chunk_t * header, pool_t * pool)
 {
+//    cwmp_log_debug("DEBUG: http_read_header");
     char buffer[1024];
     int rc, bytes;
 
@@ -760,18 +793,34 @@ int http_read_header(http_socket_t * sock, cwmp_chunk_t * header, pool_t * pool)
     for (;;)
     {
         rc = http_read_line(sock, buffer, 1023);
-        if (rc <= 0)
-            return rc;
-        buffer[rc] = 0;       
+        if (rc < 0) return rc;
+	if (rc == 0) break; 
+
+        buffer[rc] = 0;
+
+	if (buffer[1] == '\0')
+	{
+    	    if (buffer[0] == '\n' || buffer[0] == '\r') break;
+	}
+	else
+	{
+	    if (buffer[0] == '\r' && buffer[1] == '\n' && buffer[2] == '\0') break;
+	}
+
+        cwmp_log_debug("header : %s",buffer);
+	
 	//cwmp_log_debug("%s", buffer);
         cwmp_chunk_write_string(header, buffer, rc, pool);
         bytes += rc;
-        if (buffer[0] == '\r' && buffer[1] == '\n')
-        {
-            break;
-        }
+//        if (buffer[0] == '\r' && buffer[1] == '\n')
+//	cwmp_log_error("%i %i",buffer[0], buffer[1]);
+
+	
+
+        
     }
 
+    cwmp_log_debug("DEBUG: http_read_header READ %i",bytes);
     return bytes;
 
 }
@@ -821,7 +870,7 @@ int http_read_body(http_socket_t * sock, int max)//, cwmp_chunk_t * body, pool_t
 }
 
 int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * pool)
-{
+{    
     int rc;
     cwmp_chunk_t * header;
     char *line[MAX_HEADERS]; /* limited to 64 lines, should be more than enough */
@@ -836,6 +885,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
     http_parser_t * parser;
     char data[2048];
 
+    cwmp_log_error("DEBUG: http_read_request");
 
     FUNCTION_TRACE();
     bytes = 0;
@@ -845,13 +895,14 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
     rc = http_read_header(sock, header, pool);
     if (rc <= 0)
     {
+	cwmp_log_error("DEBUG: http_read_request ERR %i",rc);
         return rc;
     }
 
 
 
     len = cwmp_chunk_copy(data, header, 2047);
-    cwmp_log_debug("http read request: %s\n", data);
+    cwmp_log_error("http read request: %s\n", data);
     bytes += len;
     lines = http_split_headers(data, len, line);
 
@@ -860,6 +911,8 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
     whitespace = 0;
     slen = strlen(line[0]);
     req_type = line[0];
+    
+
     for (i = 0; i < slen; i++)
     {
         if (line[0][i] == ' ')
@@ -869,7 +922,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
         }
         else
         {
-            /* we're just past the whitespace boundry */
+            // we're just past the whitespace boundry
             if (whitespace)
             {
                 whitespace = 0;
@@ -886,6 +939,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
             }
         }
     }
+
 
     if (TRstrcasecmp("GET", req_type) == 0)
     {
@@ -972,7 +1026,6 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
 {
     char *line[MAX_HEADERS]; /* limited to 32 lines, should be more than enough */
     int i;
-    int lines;
     char *req_type = NULL;
     char *uri = NULL;
     char *version = NULL;
@@ -981,13 +1034,14 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
     if (data == NULL)
         return 0;
 
+    return 1;
+
     /* make a local copy of the data, including 0 terminator */
     //data = (char *)malloc(len+1);
     //if (data == NULL) return 0;
     //memcpy(data, http_data, len);
     //data[len] = 0;
 
-    lines = http_split_headers(data, len, line);
 
     /* parse the first line special
     ** the format is:
@@ -1008,7 +1062,7 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
         }
         else
         {
-            /* we're just past the whitespace boundry */
+            // we're just past the whitespace boundry
             if (whitespace)
             {
                 whitespace = 0;
@@ -1027,6 +1081,9 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
     }
 
 #if 0
+    int lines;
+    lines = http_split_headers(data, len, line);
+
     if (strcasecmp("GET", req_type) == 0)
     {
         parser->req_type = httpp_req_get;
@@ -1140,13 +1197,15 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
     parse_headers(parser, line, lines);
 
     free(data);
-#endif
 
     return 1;
+#endif
+
 }
 
 int http_read_response(http_socket_t * sock, http_response_t * response, pool_t * pool)
 {
+    cwmp_log_error("DEBUG: http_read_response");
     char *line[MAX_HEADERS];
     int lines, slen,i, whitespace=0, where=0,code;
     char *version=NULL, *resp_code=NULL, *message=NULL;
@@ -1164,7 +1223,8 @@ int http_read_response(http_socket_t * sock, http_response_t * response, pool_t 
     rc = http_read_header(sock, header, pool);
     if (rc <= 0)
     {
-        return CWMP_ERROR;
+	cwmp_log_info("DEBUG: http_read_response ERROR 1");
+        return -1;
     }
 
     len = cwmp_chunk_length(header);
@@ -1204,13 +1264,11 @@ int http_read_response(http_socket_t * sock, http_response_t * response, pool_t 
         }
     }
 
-
     if (version == NULL || resp_code == NULL || message == NULL)
     {
-        return CWMP_ERROR;
+	cwmp_log_info("DEBUG: http_read_response ERROR 2");
+        return -2;
     }
-
-
 
     http_set_variable(response->parser, HTTPP_VAR_ERROR_CODE, resp_code, pool);
     code = TRatoi(resp_code);
@@ -1232,11 +1290,12 @@ int http_read_response(http_socket_t * sock, http_response_t * response, pool_t 
         cont_len = TRatoi(ctxlen);
     }
     rc = http_read_body(sock, cont_len);//, &body, pool);
-    if (rc < 0 || code != 200)
+    if (rc < 0 || (code != 200 && code != 204))
     {
-        cwmp_log_info("Http read response code is (%d)\n", code);        
+        cwmp_log_info("Http read response code is (%d)\n", code);
     }
    
+	cwmp_log_info("DEBUG: http_read_response OK");
      return code;
     
 }
@@ -1334,7 +1393,7 @@ int http_check_digest_auth(const char * auth_realm, const char * auth, char * cp
     for (s += 6;  isspace(*s); s++);
 
     end = s + strlen(s);
-    memset(buffer, 128, 0);
+    memset(buffer, 0, 128);
     while (s<end)
     {
         if (!strncmp(s, "username=", 9))
@@ -1433,7 +1492,7 @@ int http_parse_digest_auth(const char * auth, http_digest_auth_t * digest_auth)
     for (s += 6;  isspace(*s); s++);
 
     end = s + strlen(s);
-    memset(buffer, 128, 0);
+    memset(buffer, 0, 128);
     while (s<end)
     {
         if (!strncmp(s, "realm=", 6))
@@ -1478,8 +1537,9 @@ int http_write_request(http_socket_t * sock , http_request_t * request, cwmp_chu
     char buffer[HTTP_DEFAULT_LEN+1];
     char * data;
 
-    size_t len1, len2, totallen;
+    size_t len1, len2;
 
+    cwmp_log_error("DEBUG: http_write_request");
 
     const char * header_fmt =
         "%s %s HTTP/1.1\r\n"
@@ -1587,8 +1647,9 @@ size_t http_receive_file_callback(char *data, size_t size, size_t nmemb, void * 
 
 int http_send_file_request(http_socket_t * sock , http_request_t * request, const char  * fromfile, pool_t * pool)
 {
+    cwmp_log_error("DEBUG: http_send_file_request");
     char buffer[HTTP_DEFAULT_LEN+1];
-    char * data;
+//    char * data;
 
     size_t len1, len2, totallen;
 
@@ -1597,19 +1658,20 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
         "%s %s HTTP/1.1\r\n"
         "Authorization: Basic ZnRwdXNlcjpmdHB1c2Vy\r\n"
         "Host: %s:%d\r\n"
-        //"User-Agent: %s\r\n"
+        // "User-Agent: %s\r\n"
         "Accept: */*\r\n"
-       // "Content-Type: multipart/form-data\r\n"
-        //"Connection: Keep-Alive\r\n"
-        "Content-Length: %d\r\n"
+        // "Content-Type: multipart/form-data\r\n"
+	// "Connection: Keep-Alive\r\n"
+        "Content-Length: %lu\r\n"
         "Expect: 100-continue\r\n"
+	"\r\n"
         ;
-    const char * auth_fmt = "Authorization: Digest username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", response=\"%s\"\r\n";
+//    const char * auth_fmt = "Authorization: Digest username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", response=\"%s\"\r\n";
     //qop=%s, nc=%s, cnonce=\"%s\"
 
     http_dest_t * dest = request->dest;
 
-    struct stat buf;
+/*    struct stat buf;
 	if(stat(fromfile, &buf)<0)
 	{
 		len2 = 0;
@@ -1618,14 +1680,19 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 	{
 		 len2 = buf.st_size;
 	}
-
+*/
     FILE *tf = fopen(fromfile, "rb");
+
     if(!tf)
     {
+        cwmp_log_error("DEBUG: http_send_file_request ERR 1");
 	return CWMP_ERROR;
     }
 
-	
+    fseek(tf,0L,SEEK_END);
+    len2 = ftell(tf);
+    fseek(tf,0L,SEEK_SET);
+    cwmp_log_error("DEBUG: http_send_file_request FILE LEN %lu",len2);
 
 
     len1 = TRsnprintf(buffer, HTTP_DEFAULT_LEN, header_fmt,
@@ -1633,12 +1700,12 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
                     dest->uri,
                     dest->host,
                     dest->port,
-                    "CPE Netcwmp Agent",
+//                    "CPE Netcwmp Agent",
                     len2);
 
-    len1 += TRsnprintf(buffer + len1, HTTP_DEFAULT_LEN - len1, "\r\n");
+//    len1 += TRsnprintf(buffer + len1, HTTP_DEFAULT_LEN - len1, "\r\n");
 
-    cwmp_log_debug("SEND: %d[\n%s\n]", len1, buffer);
+    cwmp_log_error("SEND: %d[\n%s\n]", len1, buffer);
 
     http_socket_write(sock, buffer, (int)len1);
 
@@ -1648,6 +1715,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     int rc = http_read_response(sock, response, pool);
     if(rc != HTTP_100)
     {
+        cwmp_log_error("DEBUG: http_send_file_request ERR 2 %i",rc);
 	if(tf != NULL)
 	{
 		fclose(tf);
@@ -1660,12 +1728,15 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 
     while(1)
     {
-	len2 = fread(buffer, HTTP_DEFAULT_LEN, 1, tf);
+	len2 = fread(buffer, 1, HTTP_DEFAULT_LEN, tf);
+	cwmp_log_error("http_send_file_request TO SEND %lu",len2);
 	if(len2 <= 0)
 	{
 		break;
 	}
+	buffer[len2] = '\0';
 	len2 = http_socket_write(sock, buffer, (int)len2);
+	cwmp_log_error("http_send_file_request SENT %lu, ERRNO %i",len2, errno);
 	if(len2 <= 0)
 	{
 		break;
@@ -1678,6 +1749,8 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 	fclose(tf);
     }
 
+
+    cwmp_log_error("DEBUG: http_send_file_request OK %i",totallen);
     return totallen;
 }
 
@@ -1691,6 +1764,8 @@ int http_send_file(const char * fromfile, const char *tourl )
 
 	http_response_t * response;
 
+        cwmp_log_error("DEBUG: http_send_file: from %s to %s",fromfile, tourl);
+	
 	
 	pool = pool_create(POOL_DEFAULT_SIZE);
 	http_dest_create(&dest, tourl, pool);
@@ -1701,6 +1776,10 @@ int http_send_file(const char * fromfile, const char *tourl )
             cwmp_log_error("http send file: create socket error.");
             goto out;
         }
+
+	int one = 1;
+	//FIXME: find a proper way to wait sock after write instead of TCP_NODELAY
+	setsockopt (sock->sockdes, IPPROTO_TCP, TCP_NODELAY, (void *)&one, sizeof(one));
 
         rc = http_socket_connect(sock, AF_INET, dest->host, dest->port);
         if(rc != CWMP_OK)
@@ -1722,33 +1801,34 @@ int http_send_file(const char * fromfile, const char *tourl )
             goto out;
         }
 
+	fsync(sock); //FIXME: check result
 
+	sleep(1);
         http_response_create(&response, pool);
-
 	rc = http_read_response(sock, response, pool);
-
-
 	
 out:
+
+	close(sock);//FIXME: check result
 
 	pool_destroy(pool);
 
 	if(rc != HTTP_200)
+	{
+    	        cwmp_log_error("DEBUG: http_send_file ERR %i",rc);
 		return CWMP_ERROR;
+	}
 	else
+	{
+    	        cwmp_log_error("DEBUG: http_send_file OK");
 		return CWMP_OK;
-
-
-		
-
-	
-	
-
+	}
 
 }
 
 int http_receive_file(const char *fromurl, const char * tofile)
 {
+        cwmp_log_error("DEBUG: http_receive_file: from %s to %s",fromurl, tofile);
 	pool_t * pool;
 	http_dest_t *  dest;
 	http_socket_t * sock;
