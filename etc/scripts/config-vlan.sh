@@ -140,11 +140,11 @@ reset_wan_phys() {
 }
 
 set_physmode() {
-        if [ -f /proc/mt7620/gmac ]; then
+        if [ -e /proc/mt7620/gmac ]; then
 	    procdir="/proc/mt7620/gmac"
-	elif [ -f /proc/mt7628/gmac ]; then
+	elif [ -e /proc/mt7628/gmac ]; then
 	    procdir="/proc/mt7628/gmac"
-	elif [ -f /proc/mt7621/gmac ]; then
+	elif [ -e /proc/mt7621/gmac ]; then
 	    procdir="/proc/mt7621/gmac"
 	else
 	    $LOG "No switch in system!!!"

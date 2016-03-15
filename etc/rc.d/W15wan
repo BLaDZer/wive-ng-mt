@@ -44,7 +44,7 @@ static_conf() {
 	ip -4 route replace default via "$wan_gateway"
     fi
     # add routes configured in web
-    if [ -f /etc/routes_replace ]; then
+    if [ -e /etc/routes_replace ]; then
 	$LOG "Add user routes."
 	/etc/routes_replace replace "$phys_lan_if" "$wan_if"
     fi

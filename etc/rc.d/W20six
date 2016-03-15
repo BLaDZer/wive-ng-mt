@@ -129,7 +129,7 @@ dhcpradvdreconf() {
 	fi
 
 	# read dnsservers reciverd from dhcp
-	if [ -f /etc/resolvipv6.conf ]; then
+	if [ -e /etc/resolvipv6.conf ]; then
 	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
 	    $LOG "Use DNS recived from ISP $DNSADRESSES"
 	fi
@@ -227,7 +227,7 @@ dhcpradvdstop() {
 }
 
 dhcpcreconf() {
-    if [ -f /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
+    if [ -e /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
 	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if and forward enable."
 	# ipv6 mode preconfig for wan
 	sysctl -wq net.ipv6.conf.$six_wan_if.disable_ipv6=0
@@ -347,7 +347,7 @@ get_param() {
 }
 
 stop() {
-    if [ -f /var/run/radvd.pid ] || [ -f /var/run/dhcp6s.pid ]; then
+    if [ -e /var/run/radvd.pid ] || [ -e /var/run/dhcp6s.pid ]; then
 	$LOG  "Deconfigure ipv6 interfaces/route."
 
 	# always clear conntrack and routes tables/caches

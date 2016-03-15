@@ -3,7 +3,7 @@
 LOG="logger -t genkey"
 
 start() {
-    if [ ! -f /etc/miniupnpd.conf.uuid ] && [ -f /bin/miniupnpd ]; then
+    if [ ! -e /etc/miniupnpd.conf.uuid ] && [ -e /bin/miniupnpd ]; then
        $LOG "No UPNP UUID found. Generate new UUID."
        num=0
         for uuidn in `seq 1 36`; do
@@ -20,7 +20,7 @@ start() {
 	needrwfssave=1
     fi
 
-    if [ -f /bin/dhcp6s ] && [ ! -e /etc/dhcp6cctlkey -o ! -e /etc/dhcp6sctlkey ]; then
+    if [ -e /bin/dhcp6s ] && [ ! -e /etc/dhcp6cctlkey -o ! -e /etc/dhcp6sctlkey ]; then
 	$LOG "DHCP6 ctl keys generate."
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6cctlkey
 	dd if=/dev/urandom count=1 2> /dev/null | md5sum | cut -d" " -f1 > /etc/dhcp6sctlkey

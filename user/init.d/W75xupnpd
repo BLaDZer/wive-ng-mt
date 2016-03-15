@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/xupnpd ]; then
+if [ ! -e /bin/xupnpd ]; then
     exit 0
 fi
 
@@ -62,7 +62,7 @@ cfg.name='$HostName'
 }
 
 stop() {
-    if [ -f /var/run/xupnpd.pid ]; then
+    if [ -e /var/run/xupnpd.pid ]; then
 	$LOG "Stop xupnpd."
 	killall -q xupnpd
 	killall -q -SIGKILL xupnpd

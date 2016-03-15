@@ -11,7 +11,7 @@ LOG="logger -t modules"
 start() {
     get_param
     # generate modules dep if need
-    if [ ! -f /etc/modules.dep ]; then
+    if [ ! -e /etc/modules.dep ]; then
         $LOG "Start modules.dep generate."
         depmod -a -n > /etc/modules.dep
     fi

@@ -25,7 +25,7 @@ get_param() {
 }
 
 stop() {
-    if [ -f /var/run/klogd.pid ] || [ -f /var/run/syslogd.pid ]; then
+    if [ -e /var/run/klogd.pid ] || [ -e /var/run/syslogd.pid ]; then
 	$LOG "Stop syslog and klog"
 	killall -q klogd
 	killall -q -SIGKILL klogd

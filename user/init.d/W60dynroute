@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/zebra ] || [ ! -f /bin/ripd ]; then
+if [ ! -e /bin/zebra ] || [ ! -e /bin/ripd ]; then
     exit 0
 fi
 
@@ -19,7 +19,7 @@ start() {
     if [ "$SysLogd" = "1" ]; then
 	logto="log syslog"
     fi
-    if [ "$RIPEnable" = "1" ] && [ -f /bin/zebra ]; then
+    if [ "$RIPEnable" = "1" ] && [ -e /bin/zebra ]; then
 	# confog and start zebra
 	printf "hostname $HostName
     		password $Password
@@ -28,7 +28,7 @@ start() {
 	$LOG "Starting ZEBRA"
 	zebra -u $Login -g $Login -d -f /etc/zebra.conf
     fi
-    if [ "$RIPEnable" = "1" ] && [ -f /bin/ripd ]; then
+    if [ "$RIPEnable" = "1" ] && [ -e /bin/ripd ]; then
 	# confog and start ripd
 	printf "hostname $HostName
     		password $Password

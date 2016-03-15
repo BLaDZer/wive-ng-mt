@@ -14,7 +14,7 @@ LOG="logger -t pppd_v6"
 if [ "$Ipv6InVPN" = "1" ]; then
     $LOG "Replace IPv6 dgw to $PPP_IFACE"
     ip -6 route replace default dev $PPP_IFACE
-    if [ -f /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
+    if [ -e /bin/dhcp6c ] && [ "$IPv6Dhcpc" = "1" ]; then
 	# call restart dhcp v6 client
 	service six dhcpcreconf
     fi

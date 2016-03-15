@@ -31,7 +31,7 @@ REPLACE_DGW=1
 REPLACE_DNS=1
 
 # If mode = pppoe, dgw need in pppoe, dns get from pppoe and pppoe is up - no need replace default gw and dns at lease renew
-if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ -f /tmp/vpn_if_name ]; then
+if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ -e /tmp/vpn_if_name ]; then
     if  [ "$vpnDGW" = "1" ]; then
 	REPLACE_DGW=0
     fi
@@ -247,7 +247,7 @@ case "$1" in
 		ip -4 route replace "$mcast_net" dev "$interface"
 	    fi
 	    # add routes configured in web
-	    if [ -f /etc/routes_replace ]; then
+	    if [ -e /etc/routes_replace ]; then
 		$LOG "Apply user routes."
 		/etc/routes_replace replace $lan_if $interface
 	    fi
@@ -290,7 +290,7 @@ case "$1" in
 	    		echo "nameserver 8.8.4.4" >> $RESOLV_CONF
 		    fi
 		    if [ "$IPv6OpMode" != "0" ]; then
-			if [ -f /etc/resolvipv6.conf ]; then
+			if [ -e /etc/resolvipv6.conf ]; then
 			    $LOG "Add ISP ipv6 servers for local resolv"
 			    cat /etc/resolvipv6.conf | grep "nameserver" >> $RESOLV_CONF
 			else

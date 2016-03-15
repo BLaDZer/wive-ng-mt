@@ -117,7 +117,7 @@ fi
 # Reconfigure and restart samba:			 #
 # 1) if recive wins server adress from dhcp		 #
 ##########################################################
-if [ "$MODE" = "dhcp" ] && [ -f /tmp/wins.dhcp ]; then
+if [ "$MODE" = "dhcp" ] && [ -e /tmp/wins.dhcp ]; then
     service samba restart
 fi
 
@@ -189,7 +189,9 @@ fi
 ##########################################################
 # last stage after apply all changes restart cwmp client
 ##########################################################
-service cwmpd restart
+if [ -e /bin/cwmpd ]; then
+    service cwmpd restart
+fi
 
 ##########################################################
 # Always rebalance irq by cpus				 #

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/dnsmasq ]; then
+if [ ! -e /bin/dnsmasq ]; then
     exit 0
 fi
 
@@ -13,7 +13,7 @@ LOG="logger -t dnsserver"
 start() {
   get_param
   gen_hosts
-    if [ "$dnsPEnabled" = "1" ] && [ -f $cname ]; then
+    if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
 	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
@@ -87,7 +87,7 @@ reload() {
 }
 
 stop() {
-    if [ -f /var/run/dnsmasq.pid ]; then
+    if [ -e /var/run/dnsmasq.pid ]; then
 	$LOG "Stopping DNSMASQ"
 	pid=`pidof dnsmasq`
 	count=0
@@ -103,7 +103,7 @@ stop() {
 	# if not correct terminate need kill
 	if [ "$pid" != "" ]; then
 	    kill -SIGKILL "$pid" > /dev/null 2>&1
-	    if [ -f /var/run/dnsmasq.pid ]; then
+	    if [ -e /var/run/dnsmasq.pid ]; then
 		rm -f /var/run/dnsmasq.pid
 	    fi
 	fi

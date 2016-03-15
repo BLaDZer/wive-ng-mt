@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/cwmpd ]; then
+if [ ! -e /bin/cwmpd ]; then
     exit 0
 fi
 

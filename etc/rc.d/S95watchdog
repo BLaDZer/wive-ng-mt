@@ -21,7 +21,7 @@ get_param() {
 }
 
 stop() {
-    if [ -f /var/run/watchdog.pid ]; then
+    if [ -e /var/run/watchdog.pid ]; then
 	$LOG "Stop watchdog"
 	killall -q watchdog
 	killall -q -SIGKILL watchdog

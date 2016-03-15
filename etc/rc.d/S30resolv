@@ -4,7 +4,7 @@ LOG="logger -t resolv"
 
 start() {
 get_param
-if [ ! -f /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
+if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
     # drop current
     rm -f $fname
     touch $fname
@@ -32,7 +32,7 @@ if [ ! -f /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 	echo "nameserver 8.8.4.4" >> $fname
     fi
     if [ "$IPv6OpMode" != "0" ]; then
-	if [ -f /etc/resolvipv6.conf ]; then
+	if [ -e /etc/resolvipv6.conf ]; then
 	    $LOG "Add ISP ipv6 servers for local resolv"
 	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
 	else
@@ -51,7 +51,7 @@ get_param() {
     fname="/etc/resolv.conf"
 
     #if no file create
-    if [ -f $fname ]; then
+    if [ ! -e $fname ]; then
         touch $fname
     fi
 }

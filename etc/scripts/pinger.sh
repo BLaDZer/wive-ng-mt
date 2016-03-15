@@ -27,7 +27,7 @@ while "true"; do
 
 	sleep $ping_check_interval
 
-	if [ -f /var/udhcpd.leases ]; then
+	if [ -e /var/udhcpd.leases ]; then
 	    size=`stat /var/udhcpd.leases | grep "Size" | awk {' print $2 '}`
 	    if [ "$size" != "0" ]; then
 		# arping for client wakeup - from dhcp lease table

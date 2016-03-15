@@ -20,7 +20,7 @@ start() {
     sysctl -wq kernel.domainname="$krn_domain"
 
     # only at boot time
-    if [ ! -f /tmp/bootgood ]; then
+    if [ ! -e /tmp/bootgood ]; then
         # disable forward at boot
 	sysctl -wq net.ipv4.conf.all.forwarding=0
 	sysctl -wq net.ipv4.conf.default.forwarding=0

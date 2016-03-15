@@ -38,7 +38,7 @@ config)
 	ip -4 addr replace dev "$interface" scope link local "$ip/$netmask" broadcast +
 	ip link set $interface up
 	# add routes configured in web
-	if [ -f /etc/routes_replace ]; then
+	if [ -e /etc/routes_replace ]; then
 	    $LOG "Add user routes for $lan_if $wan_if interfaces."
 	    /etc/routes_replace replace "$lan_if" "$interface"
 	fi

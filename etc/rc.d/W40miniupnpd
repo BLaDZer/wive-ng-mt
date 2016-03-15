@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/miniupnpd ]; then
+if [ ! -e /bin/miniupnpd ]; then
     exit 0
 fi
 
@@ -18,7 +18,7 @@ start() {
  get_param
     if [ "$upnpEnabled" = "1" -a "$real_wan_ipaddr" != "" ] && [ "$OperationMode" != "0" -o "$vpnEnabled" = "on" ]; then
 	$LOG "Starting UPNP at $real_wan_ipaddr"
-	if [ ! -f /var/upnp_leases ]; then
+	if [ ! -e /var/upnp_leases ]; then
 	    touch /var/upnp_leases
 	fi
 	gen_config
@@ -64,7 +64,7 @@ get_param() {
 }
 
 stop() {
-    if [ -f /var/run/miniupnpd.pid ]; then
+    if [ -e /var/run/miniupnpd.pid ]; then
 	$LOG "Stoping UPNP"
 	count=0
 	# try 3 times for correct shutdown
@@ -79,7 +79,7 @@ stop() {
 	# if not correct terminate need kill
 	if [ "$pid" != "" ]; then
 	    kill -SIGKILL "$pid" > /dev/null 2>&1
-	    if [ -f /var/run/miniupnpd.pid ]; then
+	    if [ -e /var/run/miniupnpd.pid ]; then
 		rm -f /var/run/miniupnpd.pid
 	    fi
 	fi

@@ -19,7 +19,7 @@ start() {
     get_param
 
     if [ "$MODEMENABLED" = "1" ]; then
-	if [ -f /var/run/ppp-$MDEFIFN.pid -o -f /var/run/$MDEFIFN.pid ]; then
+	if [ -e /var/run/ppp-$MDEFIFN.pid -o -e /var/run/$MDEFIFN.pid ]; then
     	    rm -f /tmp/modem_helper
 	    echo "pppd: already started!"
 	    RETURN=1
@@ -129,7 +129,7 @@ stop() {
     # first send HUP for terminate connections and try some times
     # second send TERM for exit pppd process
     # if process not terminated send KILL
-    if [ -f /var/run/ppp-$MDEFIFN.pid ]; then
+    if [ -e /var/run/ppp-$MDEFIFN.pid ]; then
 	pid=`grep '^[0-9]\{1,\}$' /var/run/ppp-$MDEFIFN.pid`
     else
         pid=`ps w| awk '/pppd call dialup.*ppp_modem/ && !/awk/ { print $1; }'`

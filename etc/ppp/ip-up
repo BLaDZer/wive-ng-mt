@@ -56,7 +56,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
 	#Remove auto route in VPN
 	ip -4 route del $PPP_REMOTE  > /dev/null 2>&1
         ip -4 route del dev $PPP_IFACE  > /dev/null 2>&1
-	if [ -f /tmp/default.gw ] && [ -f /tmp/vpnip ]; then
+	if [ -e /tmp/default.gw ] && [ -e /tmp/vpnip ]; then
 	    newdgw=`tail -qn1 /tmp/default.gw`
 	    vpnServerIP=`tail -qn1 /tmp/vpnip`
 	    if [ "$vpnServerIP" != "" ] && [ "$newdgw" != "" ] && [ "$vpnServerIP" = "$PPP_REMOTE" ]; then
@@ -76,13 +76,13 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
     fi
 
     #user route add
-    if [ -f /etc/routes_ppp_replace ]; then
+    if [ -e /etc/routes_ppp_replace ]; then
         $LOG "Add user routes from ip-up for $PPP_IFACE"
         /etc/routes_ppp_replace replace $PPP_IFACE
     fi
 
     #replace dns from pppd
-    if [ "$vpnPeerDNS" = "on" ] && [ -f /etc/ppp/resolv.conf ]; then
+    if [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ]; then
 	$LOG "Replace DNS from pppd"
 	cp -f /etc/resolv.conf /tmp/resolv.conf.tmp.$PPP_IFACE
 	cat /etc/ppp/resolv.conf /etc/resolv.conf  > /tmp/resolv.$PPP_IFACE
@@ -121,7 +121,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j MASQUERADE" >> $PPP_FIREWALL
 	    fi
 	fi
-	if [ -f /etc/portforward_vpn ] && [ -f $PPP_FIREWALL ] && [ "$PortForwardEnable" = "1" ]; then
+	if [ -e /etc/portforward_vpn ] && [ -e $PPP_FIREWALL ] && [ "$PortForwardEnable" = "1" ]; then
 	    echo "/etc/portforward_vpn A $PPP_IFACE $PPP_LOCAL" >> $PPP_FIREWALL
         fi
     fi

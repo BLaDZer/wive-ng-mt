@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/chilli ]; then
+if [ ! -e /bin/chilli ]; then
     exit 0
 fi
 

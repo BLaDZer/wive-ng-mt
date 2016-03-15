@@ -97,7 +97,7 @@ butcheck &
 
 $LOG "Init RW particion"
 bzcat $RWFSDEVICE | tar xf - -C / > /dev/null 2>&1
-if [ -f /etc/filesystem.ok ]; then
+if [ -e /etc/filesystem.ok ]; then
     $LOG "RW File system is ok - preparing."
   else
     $LOG "File system is clear or poor. Restore."

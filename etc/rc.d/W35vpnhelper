@@ -76,7 +76,7 @@ stop() {
 	flush_net_caches
 
         # if xl2tp configured correct terminate xl2tpd daemon
-	if [ -f /etc/ppp/l2tpd.conf ] && [ "$xl2tpdpid" != "" ]; then
+	if [ -e /etc/ppp/l2tpd.conf ] && [ "$xl2tpdpid" != "" ]; then
 	    # first disconnect
 	    if [ -e /var/run/xl2tpd/l2tp-control ]; then
 		lac=`cat /etc/ppp/l2tpd.conf | grep lns | cut -f 2- -d =`
@@ -101,7 +101,7 @@ stop() {
 	    # second send TERM for exit pppd process
 	    # if process not terminated send KILL
 	    # vpn client always use $vpn_if
-    	    if [ -f /var/run/$vpn_if.pid ]; then
+    	    if [ -e /var/run/$vpn_if.pid ]; then
 		pppdpid=`cat /var/run/$vpn_if.pid`
 		if [ "$pppdpid" != "" ]; then
 		    $LOG "pppd: close connection for pid $pppdpid."

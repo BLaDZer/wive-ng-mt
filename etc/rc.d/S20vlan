@@ -61,7 +61,7 @@ bridgewlvlan() {
 start() {
     get_param
 
-    if [ ! -f /tmp/bootgood ]; then
+    if [ ! -e /tmp/bootgood ]; then
 	##############################################
 	# ADD BRIDGES FOR VLAN PARTS USED
 	# ADD VLAN LINKS FORM KERNEL TO ESW PORST

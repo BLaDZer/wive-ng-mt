@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/inadyn ]; then
+if [ ! -e /bin/inadyn ]; then
     exit 0
 fi
 

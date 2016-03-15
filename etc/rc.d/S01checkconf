@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # only clean load start this
-if [ -f /tmp/nvram_checked ] && [ "$1" != "genmac" ]; then
+if [ -e /tmp/nvram_checked ] && [ "$1" != "genmac" ]; then
     exit 0
 fi
 
@@ -224,7 +224,7 @@ checkmacandfactory() {
 
 start() {
     # blink sys/vpn leds
-    if [ -f /bin/gpio ]; then
+    if [ -e /bin/gpio ]; then
 	if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
 	    gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 1000
 	fi

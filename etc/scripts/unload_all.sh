@@ -49,13 +49,13 @@ free_mem_cahce() {
 }
 
 disable_hotplug() {
-    if [ -f /proc/sys/kernel/hotplug ]; then
+    if [ -e /proc/sys/kernel/hotplug ]; then
 	echo "" > /proc/sys/kernel/hotplug
     fi
 }
 
 umount_all() {
-    if [ -f /etc/scripts/umount_all.sh ]; then
+    if [ -e /etc/scripts/umount_all.sh ]; then
 	/etc/scripts/umount_all.sh
     fi
 }

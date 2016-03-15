@@ -1,14 +1,14 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/mdev ] || [ ! -f /proc/sys/kernel/hotplug ]; then
+if [ ! -e /bin/mdev ] || [ ! -e /proc/sys/kernel/hotplug ]; then
     exit 0
 fi
 
 LOG="logger -t hotplug"
 
 start() {
-    if [ ! -f /etc/mdev.conf ]; then
+    if [ ! -e /etc/mdev.conf ]; then
 	$LOG "Generate config file."
 	printf "
 	    # <device regex> <uid>:<gid> <octal permissions> [<@|$|*> <command>]
@@ -20,25 +20,25 @@ start() {
 		echo "# usb device" >> /etc/mdev.conf
 		echo "usbdev([0-9]+).([0-9])    0:0     0660  =bus/usb/00%1/00%2" >> /etc/mdev.conf
 		echo "usbdev([0-9]+).([0-9]{2}) 0:0     0660  =bus/usb/00%1/0%2" >> /etc/mdev.conf
-		echo "usbdev([0-9]+).([0-9]{3}) 0:0     0660  =bus/usb/00%1/%2" >> /etc/mdev.conf 
-	    if [ -f /etc/scripts/automount.sh ] && [ -f /bin/blkid ]; then
+		echo "usbdev([0-9]+).([0-9]{3}) 0:0     0660  =bus/usb/00%1/%2" >> /etc/mdev.conf
+	    if [ -e /etc/scripts/automount.sh ] && [ -e /bin/blkid ]; then
 		echo "sd[a-z]([0-9]+) 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	    fi
-	    if [ -f /etc/scripts/usbctrl.sh ] && [ -f /bin/usb_modeswitch ]; then
+	    if [ -e /etc/scripts/usbctrl.sh ] && [ -e /bin/usb_modeswitch ]; then
 		echo "1-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
 		echo "2-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
 	    fi
-	    if [ -f /etc/scripts/prnctrl.sh ] && [ -f /bin/p910nd ]; then
+	    if [ -e /etc/scripts/prnctrl.sh ] && [ -e /bin/p910nd ]; then
 		echo "lp([0-9]+) 0:0 0660 */etc/scripts/prnctrl.sh" >> /etc/mdev.conf
 	    fi
-	    if [ -f /etc/scripts/modem.sh ]; then
+	    if [ -e /etc/scripts/modem.sh ]; then
 		echo "ttyUSB([0-9]+) 0:0 0660 */etc/scripts/modem.sh $MDEV" >> /etc/mdev.conf
 		echo "ttyACM([0-9]+) 0:0 0660 */etc/scripts/modem.sh $MDEV" >> /etc/mdev.conf
 	    fi
 	fi
     fi
     if [ -d /sys/bus/platform/drivers/mtk-sd ]; then
-	if [ -f /etc/scripts/automount.sh ] && [ -f /bin/blkid ]; then
+	if [ -e /etc/scripts/automount.sh ] && [ -e /bin/blkid ]; then
 	    echo "mmcblk[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	    echo "mmcblk[0-9]p[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	fi
@@ -54,7 +54,7 @@ rescan() {
     if [ -d /proc/bus/usb ]; then
 	$LOG "Rescan connected devices"
 	# enable drivers autoprobe for all usb devices
-	if [ -f /sys/bus/usb/drivers_autoprobe ]; then
+	if [ -e /sys/bus/usb/drivers_autoprobe ]; then
 	    echo 1 > /sys/bus/usb/drivers_autoprobe
 	fi
 

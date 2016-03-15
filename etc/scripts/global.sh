@@ -107,7 +107,7 @@ getLanIfName() {
 
 # VPN interface name -> $vpn_if
 getVpnIfName() {
-    if [ -f /tmp/vpn_if_name ]; then
+    if [ -e /tmp/vpn_if_name ]; then
 	if_tmp=`grep -v "^$" < /tmp/vpn_if_name`
 	if [ "$if_tmp" != "" ]; then
 	    vpn_if="$if_tmp"
@@ -283,11 +283,11 @@ set_vlan_map()
 get_switch_type() {
     # mode 3 - vlan particion
     # mode 4 - dual rgmi mode
-    if [ -f /proc/mt7620/gmac ]; then
+    if [ -e /proc/mt7620/gmac ]; then
 	switchmode=3
-    elif [ -f /proc/mt7628/gmac ]; then
+    elif [ -e /proc/mt7628/gmac ]; then
 	switchmode=3
-    elif [ -f /proc/mt7621/gmac ]; then
+    elif [ -e /proc/mt7621/gmac ]; then
 	if [ "$CONFIG_RAETH_BOTH_GMAC" != "" ]; then
 	    switchmode=4
 	else

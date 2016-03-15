@@ -12,9 +12,9 @@ start() {
     #set bootcomplite flag
     touch /tmp/bootgood
 
-    if [ -f /bin/goahead ]; then
+    if [ -e /bin/goahead ]; then
 	#blink only sys led limit blink time 20 sec after goahead start
-	if [ -f /bin/gpio ]; then
+	if [ -e /bin/gpio ]; then
 	    if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
 		gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 $WAITBOOTCOMPLETE
 	    fi
@@ -39,7 +39,7 @@ start() {
 	    chmod 555 /tmp/webmon
 	    /tmp/webmon &
 	fi
-	if [ -f /tmp/needrwfssave ]; then
+	if [ -e /tmp/needrwfssave ]; then
 	    $LOG "Wait 20sec for rwfs changes save"
 	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
 	    rm -f /tmp/needrwfssave
@@ -51,7 +51,7 @@ start() {
 }
 
 stop() {
-    if [ -f /var/run/goahead.pid ]; then
+    if [ -e /var/run/goahead.pid ]; then
 	$LOG "Stop goahead"
 	killall -q webmon
 	killall -q -SIGKILL webmon

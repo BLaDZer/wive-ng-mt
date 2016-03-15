@@ -11,7 +11,7 @@ start() {
     addr_flush
 
     # lan/wan particions and hardware adresses preconfigure
-    if [ ! -f /tmp/bootgood ]; then
+    if [ ! -e /tmp/bootgood ]; then
 	config-switch.sh
     fi
 

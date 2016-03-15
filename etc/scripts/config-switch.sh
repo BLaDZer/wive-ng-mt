@@ -17,7 +17,7 @@ eval `nvram_buf_get 2860 vlanDoubleTag`
 # Call this functions only if VLAN as WAN need
 ##########################################################################
 doublevlantag() {
-    if [ -f /proc/sys/net/core/vlan_double_tag ]; then
+    if [ -e /proc/sys/net/core/vlan_double_tag ]; then
 	# always disabled in modes with all lan ports in one bridge
         if [ "$vlanDoubleTag" = "1" ]; then
 	    $LOG "Double vlan tag enabled."
@@ -34,7 +34,7 @@ doublevlantag() {
 # Configure vlans in kernel. Only one per start
 ##########################################################################
 configs_system_vlans() {
-    if [ ! -f /tmp/bootgood ]; then
+    if [ ! -e /tmp/bootgood ]; then
 	# not need wan/lan vlans in modes with all lan ports in one bridge
 	if [ "$switchpart" != "LLLLL" ]; then
 	    $LOG "Add vlans interfaces"

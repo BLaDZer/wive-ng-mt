@@ -18,7 +18,7 @@ TZ_generate() {
     rm -rf /etc/tmpTZ
     rm -rf /etc/tmpTZ2
 
-    if [ -f /etc/compile-date ] && [ ! -f /tmp/time_restored ]; then
+    if [ -e /etc/compile-date ] && [ ! -e /tmp/time_restored ]; then
         echo "Restore time to build time or save time."
 	BUILDDATE=`cat /etc/compile-date`
         if [ "$BUILDDATE" != "" ]; then
@@ -30,7 +30,7 @@ TZ_generate() {
 
 ntp_start() {
     # if app not exist
-    if [ ! -f /bin/ntpd ]; then
+    if [ ! -e /bin/ntpd ]; then
 	exit 0
     fi
 
@@ -42,7 +42,7 @@ ntp_start() {
 }
 
 stop() {
-    if [ -f /var/run/ntpd.pid ]; then
+    if [ -e /var/run/ntpd.pid ]; then
 	$LOG "Stopping NTPD"
 	killall -q ntpd
 	killall -q -SIGKILL ntpd

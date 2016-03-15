@@ -51,7 +51,7 @@ start() {
 		# nothing
 		:
 	    else
-		if [ -f /etc/resolv.conf ]; then
+		if [ -e /etc/resolv.conf ]; then
 		    # parse resolv.conf file
 		    servers=`grep nameserver < /etc/resolv.conf | grep -v "::" | uniq | tail -q -n2 | awk {' print $2 '}`
 		    dhcpPriDns=""
@@ -71,8 +71,8 @@ start() {
 	fi
 	set_dns
 	# wins servers for clients
-	if [ "$SmbEnabled" = "1" ] || [ -f /tmp/wins.dhcp ]; then
-		if [ -f /tmp/wins.dhcp ]; then
+	if [ "$SmbEnabled" = "1" ] || [ -e /tmp/wins.dhcp ]; then
+		if [ -e /tmp/wins.dhcp ]; then
 		    # use uplink wins if adress recived by uplink dhcp
 		    wins_srvs=`cat /tmp/wins.dhcp | tail -n1`
 		    config-udhcpd.sh -w "$wins_srvs"
@@ -144,7 +144,7 @@ get_param() {
 }
 
 stop() {
-    if [ -f /var/run/udhcpd.pid ]; then
+    if [ -e /var/run/udhcpd.pid ]; then
 	$LOG "Stop dhcpserver "
 	killall -q udhcpd
 	killall -q dhcprelay

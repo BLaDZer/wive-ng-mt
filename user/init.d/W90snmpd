@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/snmpd ]; then
+if [ ! -e /bin/snmpd ]; then
     exit 0
 fi
 

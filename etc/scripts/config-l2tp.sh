@@ -64,7 +64,7 @@ get_vpn_ip() {
 set_routest_to_server() {
     $LOG "Set routes to vpn servers."
     if [ "$wanConnectionMode" != "STATIC" ]; then
-	if [ -f /tmp/default.gw ]; then
+	if [ -e /tmp/default.gw ]; then
 	    newdgw=`cat /tmp/default.gw`
 	else
 	    newdgw=""

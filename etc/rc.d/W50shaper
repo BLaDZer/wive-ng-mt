@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # if app not exist
-if [ ! -f /bin/tc ]; then
+if [ ! -e /bin/tc ]; then
     exit 0
 fi
 
@@ -31,7 +31,7 @@ start() {
 	######################################
 
 	# set execute bits for all
-	if [ -f $IPTSCR ]; then
+	if [ -e $IPTSCR ]; then
 	    chmod 755 $IPTSCR
 	fi
 
