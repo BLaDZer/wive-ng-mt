@@ -1843,15 +1843,16 @@
 <br>
 <b>4.1.x</b><br>
 1) coovachilli: bstring: sync with git 13.03.2016 (commit ec15981d).<br>
-2) netcwnmp: rewrite for support cwmp 1.0.0 (tested with acs-test_1.0.14.01_amd64).<br>
-3) libnvram: always use safe version of free.<br>
-4) busybox: udhcpd: keep expired leases at startup.<br>
-5) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
-6) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-7) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-8) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-9) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-10) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+2) dropbear: up to 2016.72 version.<br>
+3) netcwnmp: rewrite for support cwmp 1.0.0 (tested with acs-test_1.0.14.01_amd64).<br>
+4) libnvram: always use safe version of free.<br>
+5) busybox: udhcpd: keep expired leases at startup.<br>
+6) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
+7) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+8) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+9) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+10) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+11) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
 <br>
 <br>
 <br>
