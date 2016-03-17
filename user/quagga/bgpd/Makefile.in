@@ -83,6 +83,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 sbin_PROGRAMS = bgpd$(EXEEXT)
+bin_PROGRAMS = bgp_btoa$(EXEEXT)
 subdir = bgpd
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(dist_examples_DATA) $(noinst_HEADERS)
@@ -114,17 +115,22 @@ am_libbgp_a_OBJECTS = bgpd.$(OBJEXT) bgp_fsm.$(OBJEXT) \
 	bgp_dump.$(OBJEXT) bgp_snmp.$(OBJEXT) bgp_ecommunity.$(OBJEXT) \
 	bgp_mplsvpn.$(OBJEXT) bgp_nexthop.$(OBJEXT) bgp_damp.$(OBJEXT) \
 	bgp_table.$(OBJEXT) bgp_advertise.$(OBJEXT) bgp_vty.$(OBJEXT) \
-	bgp_mpath.$(OBJEXT)
+	bgp_mpath.$(OBJEXT) bgp_encap.$(OBJEXT) \
+	bgp_encap_tlv.$(OBJEXT)
 libbgp_a_OBJECTS = $(am_libbgp_a_OBJECTS)
-am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(examplesdir)"
-PROGRAMS = $(sbin_PROGRAMS)
-am_bgpd_OBJECTS = bgp_main.$(OBJEXT)
-bgpd_OBJECTS = $(am_bgpd_OBJECTS)
-bgpd_DEPENDENCIES = libbgp.a ../lib/libzebra.la
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" \
+	"$(DESTDIR)$(examplesdir)"
+PROGRAMS = $(bin_PROGRAMS) $(sbin_PROGRAMS)
+am_bgp_btoa_OBJECTS = bgp_btoa.$(OBJEXT)
+bgp_btoa_OBJECTS = $(am_bgp_btoa_OBJECTS)
+bgp_btoa_DEPENDENCIES = libbgp.a ../lib/libzebra.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am_bgpd_OBJECTS = bgp_main.$(OBJEXT)
+bgpd_OBJECTS = $(am_bgpd_OBJECTS)
+bgpd_DEPENDENCIES = libbgp.a ../lib/libzebra.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -159,8 +165,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libbgp_a_SOURCES) $(bgpd_SOURCES)
-DIST_SOURCES = $(libbgp_a_SOURCES) $(bgpd_SOURCES)
+SOURCES = $(libbgp_a_SOURCES) $(bgp_btoa_SOURCES) $(bgpd_SOURCES)
+DIST_SOURCES = $(libbgp_a_SOURCES) $(bgp_btoa_SOURCES) $(bgpd_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -223,7 +229,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -280,7 +285,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -302,8 +306,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -321,6 +323,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -387,25 +390,28 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I.. -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib
 INSTALL_SDATA = @INSTALL@ -m 600
-AM_CFLAGS = $(PICFLAGS)
-AM_LDFLAGS = $(PILDFLAGS)
+AM_CFLAGS = $(WERROR)
 noinst_LIBRARIES = libbgp.a
 libbgp_a_SOURCES = \
 	bgpd.c bgp_fsm.c bgp_aspath.c bgp_community.c bgp_attr.c \
 	bgp_debug.c bgp_route.c bgp_zebra.c bgp_open.c bgp_routemap.c \
 	bgp_packet.c bgp_network.c bgp_filter.c bgp_regex.c bgp_clist.c \
 	bgp_dump.c bgp_snmp.c bgp_ecommunity.c bgp_mplsvpn.c bgp_nexthop.c \
-	bgp_damp.c bgp_table.c bgp_advertise.c bgp_vty.c bgp_mpath.c
+	bgp_damp.c bgp_table.c bgp_advertise.c bgp_vty.c bgp_mpath.c \
+	bgp_encap.c bgp_encap_tlv.c
 
 noinst_HEADERS = \
 	bgp_aspath.h bgp_attr.h bgp_community.h bgp_debug.h bgp_fsm.h \
 	bgp_network.h bgp_open.h bgp_packet.h bgp_regex.h bgp_route.h \
 	bgpd.h bgp_filter.h bgp_clist.h bgp_dump.h bgp_zebra.h \
 	bgp_ecommunity.h bgp_mplsvpn.h bgp_nexthop.h bgp_damp.h bgp_table.h \
-	bgp_advertise.h bgp_snmp.h bgp_vty.h bgp_mpath.h
+	bgp_advertise.h bgp_snmp.h bgp_vty.h bgp_mpath.h \
+	bgp_encap.h bgp_encap_tlv.h bgp_encap_types.h
 
 bgpd_SOURCES = bgp_main.c
 bgpd_LDADD = libbgp.a ../lib/libzebra.la @LIBCAP@ @LIBM@
+bgp_btoa_SOURCES = bgp_btoa.c
+bgp_btoa_LDADD = libbgp.a ../lib/libzebra.la @LIBCAP@ @LIBM@
 examplesdir = $(exampledir)
 dist_examples_DATA = bgpd.conf.sample bgpd.conf.sample2
 EXTRA_DIST = BGP4-MIB.txt
@@ -451,6 +457,55 @@ libbgp.a: $(libbgp_a_OBJECTS) $(libbgp_a_DEPENDENCIES) $(EXTRA_libbgp_a_DEPENDEN
 	$(AM_V_at)-rm -f libbgp.a
 	$(AM_V_AR)$(libbgp_a_AR) libbgp.a $(libbgp_a_OBJECTS) $(libbgp_a_LIBADD)
 	$(AM_V_at)$(RANLIB) libbgp.a
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
+	fi; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p \
+	 || test -f $$p1 \
+	  ; then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' \
+	    -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' \
+	`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
+
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 install-sbinPROGRAMS: $(sbin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(sbin_PROGRAMS)'; test -n "$(sbindir)" || list=; \
@@ -501,6 +556,10 @@ clean-sbinPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+bgp_btoa$(EXEEXT): $(bgp_btoa_OBJECTS) $(bgp_btoa_DEPENDENCIES) $(EXTRA_bgp_btoa_DEPENDENCIES) 
+	@rm -f bgp_btoa$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(bgp_btoa_OBJECTS) $(bgp_btoa_LDADD) $(LIBS)
+
 bgpd$(EXEEXT): $(bgpd_OBJECTS) $(bgpd_DEPENDENCIES) $(EXTRA_bgpd_DEPENDENCIES) 
 	@rm -f bgpd$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(bgpd_OBJECTS) $(bgpd_LDADD) $(LIBS)
@@ -514,12 +573,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_advertise.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_aspath.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_attr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_btoa.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_clist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_community.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_damp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_dump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_ecommunity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_encap.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_encap_tlv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_fsm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_main.Po@am__quote@
@@ -672,7 +734,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(examplesdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(examplesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -707,8 +769,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-	clean-sbinPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstLIBRARIES clean-sbinPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -734,7 +796,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-sbinPROGRAMS
+install-exec-am: install-binPROGRAMS install-sbinPROGRAMS
 
 install-html: install-html-am
 
@@ -774,15 +836,17 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_examplesDATA uninstall-sbinPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-dist_examplesDATA \
+	uninstall-sbinPROGRAMS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES clean-sbinPROGRAMS \
-	cscopelist-am ctags ctags-am distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
+	clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstLIBRARIES clean-sbinPROGRAMS cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
 	install-data install-data-am install-dist_examplesDATA \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
@@ -791,7 +855,7 @@ uninstall-am: uninstall-dist_examplesDATA uninstall-sbinPROGRAMS
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-dist_examplesDATA uninstall-sbinPROGRAMS
 
 

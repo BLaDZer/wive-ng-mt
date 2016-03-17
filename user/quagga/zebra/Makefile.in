@@ -225,7 +225,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -236,7 +235,7 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CURSES = @CURSES@
 CYGPATH_W = @CYGPATH_W@
-DEFS = @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)/\" -DMULTIPATH_NUM=@MULTIPATH_NUM@
+DEFS = @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)/\"
 DEJAGNU = @DEJAGNU@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -282,7 +281,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -304,8 +302,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -323,6 +319,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -399,8 +396,7 @@ otherobj = $(ioctl_method) $(ipforward) $(if_method) \
 	$(rt_method) $(rtread_method) $(kernel_method)
 
 @HAVE_NETLINK_TRUE@othersrc = zebra_fpm_netlink.c
-AM_CFLAGS = $(PICFLAGS)
-AM_LDFLAGS = $(PILDFLAGS)
+AM_CFLAGS = $(WERROR)
 zebra_SOURCES = \
 	zserv.c main.c interface.c connected.c zebra_rib.c zebra_routemap.c \
 	redistribute.c debug.c rtadv.c zebra_snmp.c zebra_vty.c \
@@ -414,7 +410,8 @@ testzebra_SOURCES = test_main.c zebra_rib.c interface.c connected.c debug.c \
 noinst_HEADERS = \
 	connected.h ioctl.h rib.h rt.h zserv.h redistribute.h debug.h rtadv.h \
 	interface.h ipforward.h irdp.h router-id.h kernel_socket.h \
-	rt_netlink.h zebra_fpm.h zebra_fpm_private.h
+	rt_netlink.h zebra_fpm.h zebra_fpm_private.h \
+	ioctl_solaris.h
 
 zebra_LDADD = $(otherobj) ../lib/libzebra.la $(LIBCAP)
 testzebra_LDADD = ../lib/libzebra.la $(LIBCAP)

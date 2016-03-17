@@ -23,7 +23,7 @@ start() {
 	# confog and start zebra
 	printf "hostname $HostName
     		password $Password
-    		enable password Admin
+    		enable password $Password
     		$logto" > /etc/zebra.conf
 	$LOG "Starting ZEBRA"
 	zebra -u $Login -g $Login -d -f /etc/zebra.conf
@@ -32,10 +32,18 @@ start() {
 	# confog and start ripd
 	printf "hostname $HostName
     		password $Password
-    		enable password Admin
+    		enable password $Password
     		router rip
     		version 2
-    		$logto" > /etc/ripd.conf
+		network $wan_if
+		network $lan_if
+		" > /etc/ripd.conf
+	if [ "$wan_if" != "$real_wan_if" ]; then
+	printf "network $real_wan_if
+		" >> /etc/ripd.conf
+	fi
+    	printf "$logto
+		" >> /etc/ripd.conf
 	$LOG "Starting RIPD"
 	ripd -u $Login -g $Login -f /etc/ripd.conf -d
     fi

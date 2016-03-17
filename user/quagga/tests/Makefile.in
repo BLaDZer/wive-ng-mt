@@ -86,7 +86,8 @@ check_PROGRAMS = testsig$(EXEEXT) testsegv$(EXEEXT) \
 	teststream$(EXEEXT) testchecksum$(EXEEXT) tabletest$(EXEEXT) \
 	testnexthopiter$(EXEEXT) testcommands$(EXEEXT) \
 	test-timer-correctness$(EXEEXT) \
-	test-timer-performance$(EXEEXT) $(am__EXEEXT_1)
+	test-timer-performance$(EXEEXT) testcli$(EXEEXT) \
+	$(am__EXEEXT_1)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(noinst_HEADERS)
@@ -149,6 +150,9 @@ testbuffer_DEPENDENCIES = ../lib/libzebra.la
 am_testchecksum_OBJECTS = test-checksum.$(OBJEXT)
 testchecksum_OBJECTS = $(am_testchecksum_OBJECTS)
 testchecksum_DEPENDENCIES = ../lib/libzebra.la
+am_testcli_OBJECTS = test-cli.$(OBJEXT) common-cli.$(OBJEXT)
+testcli_OBJECTS = $(am_testcli_OBJECTS)
+testcli_DEPENDENCIES = ../lib/libzebra.la
 am_testcommands_OBJECTS = test-commands-defun.$(OBJEXT) \
 	test-commands.$(OBJEXT) prng.$(OBJEXT)
 testcommands_OBJECTS = $(am_testcommands_OBJECTS)
@@ -212,18 +216,20 @@ SOURCES = $(aspathtest_SOURCES) $(ecommtest_SOURCES) $(heavy_SOURCES) \
 	$(test_timer_performance_SOURCES) $(testbgpcap_SOURCES) \
 	$(testbgpmpath_SOURCES) $(testbgpmpattr_SOURCES) \
 	$(testbuffer_SOURCES) $(testchecksum_SOURCES) \
-	$(testcommands_SOURCES) $(testmemory_SOURCES) \
-	$(testnexthopiter_SOURCES) $(testprivs_SOURCES) \
-	$(testsegv_SOURCES) $(testsig_SOURCES) $(teststream_SOURCES)
+	$(testcli_SOURCES) $(testcommands_SOURCES) \
+	$(testmemory_SOURCES) $(testnexthopiter_SOURCES) \
+	$(testprivs_SOURCES) $(testsegv_SOURCES) $(testsig_SOURCES) \
+	$(teststream_SOURCES)
 DIST_SOURCES = $(aspathtest_SOURCES) $(ecommtest_SOURCES) \
 	$(heavy_SOURCES) $(heavythread_SOURCES) $(heavywq_SOURCES) \
 	$(tabletest_SOURCES) $(test_timer_correctness_SOURCES) \
 	$(test_timer_performance_SOURCES) $(testbgpcap_SOURCES) \
 	$(testbgpmpath_SOURCES) $(testbgpmpattr_SOURCES) \
 	$(testbuffer_SOURCES) $(testchecksum_SOURCES) \
-	$(testcommands_SOURCES) $(testmemory_SOURCES) \
-	$(testnexthopiter_SOURCES) $(testprivs_SOURCES) \
-	$(testsegv_SOURCES) $(testsig_SOURCES) $(teststream_SOURCES)
+	$(testcli_SOURCES) $(testcommands_SOURCES) \
+	$(testmemory_SOURCES) $(testnexthopiter_SOURCES) \
+	$(testprivs_SOURCES) $(testsegv_SOURCES) $(testsig_SOURCES) \
+	$(teststream_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -302,7 +308,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -359,7 +364,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -381,8 +385,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -400,6 +402,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -476,15 +479,16 @@ EXTRA_DIST = \
 	lib/libzebra.exp \
 	global-conf.exp \
 	testcommands.in \
-	testcommands.refout
+	testcommands.refout \
+	testcli.in \
+	testcli.refout
 
 AM_CPPFLAGS = -I.. -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib
-AM_CFLAGS = $(PICFLAGS)
-AM_LDFLAGS = $(PILDFLAGS)
 @BGPD_FALSE@TESTS_BGPD = 
 @BGPD_TRUE@TESTS_BGPD = aspathtest testbgpcap ecommtest testbgpmpattr testbgpmpath
 BUILT_SOURCES = test-commands-defun.c
-noinst_HEADERS = prng.h
+noinst_HEADERS = prng.h tests.h common-cli.h
+testcli_SOURCES = test-cli.c common-cli.c
 testsig_SOURCES = test-sig.c
 testsegv_SOURCES = test-segv.c
 testbuffer_SOURCES = test-buffer.c
@@ -505,6 +509,7 @@ testnexthopiter_SOURCES = test-nexthop-iter.c prng.c
 testcommands_SOURCES = test-commands-defun.c test-commands.c prng.c
 test_timer_correctness_SOURCES = test-timer-correctness.c prng.c
 test_timer_performance_SOURCES = test-timer-performance.c prng.c
+testcli_LDADD = ../lib/libzebra.la @LIBCAP@
 testsig_LDADD = ../lib/libzebra.la @LIBCAP@
 testsegv_LDADD = ../lib/libzebra.la @LIBCAP@
 testbuffer_LDADD = ../lib/libzebra.la @LIBCAP@
@@ -622,6 +627,10 @@ testchecksum$(EXEEXT): $(testchecksum_OBJECTS) $(testchecksum_DEPENDENCIES) $(EX
 	@rm -f testchecksum$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(testchecksum_OBJECTS) $(testchecksum_LDADD) $(LIBS)
 
+testcli$(EXEEXT): $(testcli_OBJECTS) $(testcli_DEPENDENCIES) $(EXTRA_testcli_DEPENDENCIES) 
+	@rm -f testcli$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(testcli_OBJECTS) $(testcli_LDADD) $(LIBS)
+
 testcommands$(EXEEXT): $(testcommands_OBJECTS) $(testcommands_DEPENDENCIES) $(EXTRA_testcommands_DEPENDENCIES) 
 	@rm -f testcommands$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(testcommands_OBJECTS) $(testcommands_LDADD) $(LIBS)
@@ -660,6 +669,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_capability_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_mp_attr_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bgp_mpath_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common-cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ecommunity_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/heavy-thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/heavy-wq.Po@am__quote@
@@ -669,6 +679,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/table_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-buffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-checksum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-commands-defun.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-commands.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-memory.Po@am__quote@
@@ -1040,7 +1051,7 @@ uninstall-am:
 
 test-commands-defun.c: ../vtysh/vtysh_cmd.c
 	sed \
-		-e '/"vtysh.h"/d' \
+		-e 's/"vtysh\.h"/"tests.h"/' \
 		-e 's/vtysh_init_cmd/test_init_cmd/' \
 		-e 's/VTYSH_[A-Z][A-Z_0-9]*/0/g' \
 		< ../vtysh/vtysh_cmd.c \

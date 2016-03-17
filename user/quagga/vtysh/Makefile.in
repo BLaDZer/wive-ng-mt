@@ -206,7 +206,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -263,7 +262,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -285,8 +283,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -304,6 +300,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -369,8 +366,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib
-AM_CFLAGS = $(PICFLAGS)
-AM_LDFLAGS = $(PILDFLAGS)
+AM_CFLAGS = $(WERROR)
 vtysh_SOURCES = vtysh_main.c vtysh.c vtysh_user.c vtysh_config.c
 nodist_vtysh_SOURCES = vtysh_cmd.c
 CLEANFILES = vtysh_cmd.c
@@ -382,11 +378,11 @@ EXTRA_DIST = extract.pl
 vtysh_cmd_FILES = $(top_srcdir)/bgpd/*.c $(top_srcdir)/isisd/*.c \
 		  $(top_srcdir)/ospfd/*.c $(top_srcdir)/ospf6d/*.c \
 		  $(top_srcdir)/ripd/*.c $(top_srcdir)/ripngd/*.c \
-		  $(top_srcdir)/babeld/*.c \
 		  $(top_srcdir)/pimd/pim_cmd.c \
 		  $(top_srcdir)/lib/keychain.c $(top_srcdir)/lib/routemap.c \
 		  $(top_srcdir)/lib/filter.c $(top_srcdir)/lib/plist.c \
 		  $(top_srcdir)/lib/distribute.c $(top_srcdir)/lib/if_rmap.c \
+		  $(top_srcdir)/lib/vrf.c \
 		  $(top_srcdir)/lib/vty.c $(top_srcdir)/zebra/debug.c \
 		  $(top_srcdir)/zebra/interface.c \
 		  $(top_srcdir)/zebra/irdp_interface.c \

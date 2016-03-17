@@ -203,7 +203,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -260,7 +259,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -282,8 +280,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -301,6 +297,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -365,11 +362,11 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ @BABELD@ \
+SUBDIRS = lib @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ \
          @ISISD@ @PIMD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@ @DOC@ m4 @pkgsrcdir@ \
          redhat @SOLARIS@ tests
 
-DIST_SUBDIRS = lib zebra bgpd ripd ripngd ospfd ospf6d babeld \
+DIST_SUBDIRS = lib zebra bgpd ripd ripngd ospfd ospf6d \
 	  isisd watchquagga vtysh ospfclient doc m4 pkgsrc redhat tests \
 	  solaris pimd
 

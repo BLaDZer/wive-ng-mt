@@ -111,8 +111,8 @@ am_libisis_a_OBJECTS = isis_adjacency.$(OBJEXT) isis_lsp.$(OBJEXT) \
 	isis_tlv.$(OBJEXT) isisd.$(OBJEXT) isis_misc.$(OBJEXT) \
 	isis_zebra.$(OBJEXT) isis_dr.$(OBJEXT) isis_flags.$(OBJEXT) \
 	isis_dynhn.$(OBJEXT) iso_checksum.$(OBJEXT) isis_csm.$(OBJEXT) \
-	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_route.$(OBJEXT) \
-	isis_routemap.$(OBJEXT)
+	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_redist.$(OBJEXT) \
+	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT)
 libisis_a_OBJECTS = $(am_libisis_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(examplesdir)"
 PROGRAMS = $(sbin_PROGRAMS)
@@ -121,8 +121,8 @@ am__objects_1 = isis_adjacency.$(OBJEXT) isis_lsp.$(OBJEXT) \
 	isis_tlv.$(OBJEXT) isisd.$(OBJEXT) isis_misc.$(OBJEXT) \
 	isis_zebra.$(OBJEXT) isis_dr.$(OBJEXT) isis_flags.$(OBJEXT) \
 	isis_dynhn.$(OBJEXT) iso_checksum.$(OBJEXT) isis_csm.$(OBJEXT) \
-	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_route.$(OBJEXT) \
-	isis_routemap.$(OBJEXT)
+	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_redist.$(OBJEXT) \
+	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT)
 am_isisd_OBJECTS = isis_main.$(OBJEXT) $(am__objects_1) \
 	isis_bpf.$(OBJEXT) isis_dlpi.$(OBJEXT) isis_pfpacket.$(OBJEXT)
 isisd_OBJECTS = $(am_isisd_OBJECTS)
@@ -271,7 +271,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BABELD = @BABELD@
 BGPD = @BGPD@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -328,7 +327,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MULTIPATH_NUM = @MULTIPATH_NUM@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -350,8 +348,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
-PICFLAGS = @PICFLAGS@
-PILDFLAGS = @PILDFLAGS@
 PIMD = @PIMD@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
@@ -369,6 +365,7 @@ VTYSH = @VTYSH@
 WATCHQUAGGA = @WATCHQUAGGA@
 WEAK_ALIAS = @WEAK_ALIAS@
 WEAK_ALIAS_CROSSFILE = @WEAK_ALIAS_CROSSFILE@
+WERROR = @WERROR@
 ZEBRA = @ZEBRA@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -437,21 +434,21 @@ AM_CPPFLAGS = -I.. -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib \
 	   @ISIS_TOPOLOGY_INCLUDES@
 
 INSTALL_SDATA = @INSTALL@ -m 600
-AM_CFLAGS = $(PICFLAGS)
-AM_LDFLAGS = $(PILDFLAGS)
+AM_CFLAGS = $(WERROR)
 noinst_LIBRARIES = libisis.a
 SUBDIRS = topology
 libisis_a_SOURCES = \
 	isis_adjacency.c isis_lsp.c dict.c isis_circuit.c isis_pdu.c \
 	isis_tlv.c isisd.c isis_misc.c isis_zebra.c isis_dr.c \
 	isis_flags.c isis_dynhn.c iso_checksum.c isis_csm.c isis_events.c \
-	isis_spf.c isis_route.c isis_routemap.c
+	isis_spf.c isis_redist.c isis_route.c isis_routemap.c
 
 noinst_HEADERS = \
 	isisd.h isis_pdu.h isis_tlv.h isis_adjacency.h isis_constants.h \
 	isis_lsp.h dict.h isis_circuit.h isis_misc.h isis_network.h \
 	isis_zebra.h isis_dr.h isis_flags.h isis_dynhn.h isis_common.h \
-	iso_checksum.h isis_csm.h isis_events.h isis_spf.h isis_route.h \
+	iso_checksum.h isis_csm.h isis_events.h isis_spf.h isis_redist.h \
+	isis_route.h isis_routemap.h \
 	include-netbsd/clnp.h include-netbsd/esis.h include-netbsd/iso.h
 
 isisd_SOURCES = \
@@ -578,6 +575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_pdu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_pfpacket.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_redist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_route.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_routemap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_spf.Po@am__quote@

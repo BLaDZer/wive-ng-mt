@@ -1,4 +1,5 @@
 SUBDIRS = libpool/src libxmlet/src libcwmp/src cwmpd/src
+DIST_SUBDIRS = libpool/src libxmlet/src libcwmp/src cwmpd/src
 ACLOCAL_AMFLAGS = -I m4
 
 install-data-local:
