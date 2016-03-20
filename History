@@ -1856,6 +1856,7 @@
 12) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
 13) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
 14) kernel: net: vlan: propagate gso_max_segs.<br>
+15) kernel: net: gro: selective flush of packets.<br>
 <br>
 <br>
 <br>
