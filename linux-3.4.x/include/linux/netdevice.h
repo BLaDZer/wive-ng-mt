@@ -1471,20 +1471,16 @@ struct napi_gro_cb {
 	/* This indicates where we are processing relative to skb->data. */
 	int data_offset;
 
+	/* This is non-zero if the packet may be of the same flow. */
+	int same_flow;
+
 	/* This is non-zero if the packet cannot be merged with the new skb. */
 	int flush;
 
-	/* Number of segments aggregated. */
-	u16	count;
-
-	/* This is non-zero if the packet may be of the same flow. */
-	u8	same_flow;
+	int	count;
 
 	/* Free the skb? */
-	u8	free;
-
-	/* jiffies when first packet was created/queued */
-	unsigned long age;
+	int	free;
 
 	/* Used in ipv6_gro_receive() */
 	int	proto;
@@ -2124,7 +2120,7 @@ extern int		netif_rx_ni(struct sk_buff *skb);
 extern int		netif_receive_skb(struct sk_buff *skb);
 extern gro_result_t	napi_gro_receive(struct napi_struct *napi,
 					 struct sk_buff *skb);
-extern void		napi_gro_flush(struct napi_struct *napi, bool flush_old);
+extern void		napi_gro_flush(struct napi_struct *napi);
 extern struct sk_buff *	napi_get_frags(struct napi_struct *napi);
 extern gro_result_t	napi_gro_frags(struct napi_struct *napi);
 
