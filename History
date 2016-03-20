@@ -1852,11 +1852,12 @@
 8) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
 9) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
 10) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-11) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-12) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-13) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-14) kernel: net: vlan: propagate gso_max_segs.<br>
-15) kernel: net: gro: selective flush of packets.<br>
+11) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+12) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+13) kernel: net: vlan: propagate gso_max_segs.<br>
+14) kernel: net: gro: selective flush of packets.<br>
+15) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+16) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
 <br>
 <br>
 <br>
