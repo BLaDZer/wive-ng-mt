@@ -1853,16 +1853,17 @@
 9) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
 10) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
 11) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-12) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-13) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-14) kernel: net: vlan: propagate gso_max_segs.<br>
-15) kernel: net: gro: selective flush of packets.<br>
-16) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-17) kernel: net: gro: add checksuming helpers.<br>
-18) kernel: net: gro: only verify TCP checksums for candidates.<br>
-19) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-20) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-21) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+12) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+13) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+14) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+15) kernel: net: vlan: propagate gso_max_segs.<br>
+16) kernel: net: gro: selective flush of packets.<br>
+17) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+18) kernel: net: gro: add checksuming helpers.<br>
+19) kernel: net: gro: only verify TCP checksums for candidates.<br>
+20) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+21) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+22) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
 <br>
 <br>
 <br>
