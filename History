@@ -1857,8 +1857,9 @@
 13) kernel: net: vlan: propagate gso_max_segs.<br>
 14) kernel: net: gro: selective flush of packets.<br>
 15) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-16) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-17) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+16) kernel: net: gro: add checksuming helpers.<br>
+17) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+18) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
 <br>
 <br>
 <br>
