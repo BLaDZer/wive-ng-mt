@@ -579,6 +579,7 @@ static int vlan_dev_init(struct net_device *dev)
 
 	dev->features |= real_dev->vlan_features | NETIF_F_LLTX;
 	dev->gso_max_size = real_dev->gso_max_size;
+	dev->gso_max_segs = real_dev->gso_max_segs;
 
 	/* ipv6 shared card related stuff */
 	dev->dev_id = real_dev->dev_id;

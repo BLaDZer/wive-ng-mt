@@ -288,6 +288,7 @@ static void vlan_transfer_features(struct net_device *dev,
 				   struct net_device *vlandev)
 {
 	vlandev->gso_max_size = dev->gso_max_size;
+	vlandev->gso_max_segs = dev->gso_max_segs;
 
 	if (dev->features & NETIF_F_HW_VLAN_TX)
 		vlandev->hard_header_len = dev->hard_header_len;

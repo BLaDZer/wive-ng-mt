@@ -457,6 +457,7 @@ static int macvlan_init(struct net_device *dev)
 	dev->features		|= NETIF_F_LLTX;
 	dev->vlan_features	= lowerdev->vlan_features & MACVLAN_FEATURES;
 	dev->gso_max_size	= lowerdev->gso_max_size;
+	dev->gso_max_segs       = lowerdev->gso_max_segs;
 	dev->iflink		= lowerdev->ifindex;
 	dev->hard_header_len	= lowerdev->hard_header_len;
 
@@ -830,6 +831,7 @@ static int macvlan_device_event(struct notifier_block *unused,
 		list_for_each_entry(vlan, &port->vlans, list) {
 			vlan->dev->features = dev->features & MACVLAN_FEATURES;
 			vlan->dev->gso_max_size = dev->gso_max_size;
+			vlan->dev->gso_max_segs = dev->gso_max_segs;
 			netdev_features_change(vlan->dev);
 		}
 		break;

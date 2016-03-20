@@ -1855,6 +1855,7 @@
 11) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
 12) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
 13) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+14) kernel: net: vlan: propagate gso_max_segs.<br>
 <br>
 <br>
 <br>
