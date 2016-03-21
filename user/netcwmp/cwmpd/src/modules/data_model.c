@@ -35,6 +35,9 @@ model_func_t ModelFunction[] =
     {"cpe_get_igd_lan_wlan_standard", cpe_get_igd_lan_wlan_standard},
     {"cpe_set_igd_lan_wlan_standard", cpe_set_igd_lan_wlan_standard},
 
+    {"cpe_get_igd_lan_wlan_channel", cpe_get_igd_lan_wlan_channel},
+    {"cpe_set_igd_lan_wlan_channel", cpe_set_igd_lan_wlan_channel},
+
     {"cpe_get_igd_lan_wlan_autochannel", cpe_get_igd_lan_wlan_autochannel},
     {"cpe_set_igd_lan_wlan_autochannel", cpe_set_igd_lan_wlan_autochannel},
 
@@ -57,8 +60,8 @@ model_func_t ModelFunction[] =
 
     {"cpe_get_igd_wan_ppp_servicename", cpe_get_igd_wan_ppp_servicename},
 
-    {"cpe_get_igd_services_iptv_igmpversion", cpe_get_igd_services_iptv_igmpversion},
-    {"cpe_set_igd_services_iptv_igmpversion", cpe_set_igd_services_iptv_igmpversion},
+//    {"cpe_get_igd_services_iptv_igmpversion", cpe_get_igd_services_iptv_igmpversion},
+//    {"cpe_set_igd_services_iptv_igmpversion", cpe_set_igd_services_iptv_igmpversion},
 
     {"cpe_refresh_igd_wandevice", cpe_refresh_igd_wandevice},
     {"cpe_refresh_igd_wanconnectiondevice", cpe_refresh_igd_wanconnectiondevice},
@@ -130,8 +133,8 @@ int cpe_get_const_string(cwmp_t * cwmp, const char * name, char ** value, char *
 int cpe_get_conf_string(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     FUNCTION_TRACE();
-    //FIXME
-    const char* nvval = cwmp_conf_pool_get(pool, args);
+
+    char* nvval = cwmp_conf_pool_get(pool, args);
     if (nvval == NULL) {
         cwmp_log_error("cpe_get_conf_string: undefined param (%s)!",args);
 	return FAULT_CODE_9002;
@@ -162,8 +165,8 @@ int cpe_set_conf_string(cwmp_t * cwmp, const char * name, const char * value, in
 int cpe_get_nvram_string(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     FUNCTION_TRACE();
-    //FIXME
-    const char* nvval = cwmp_nvram_pool_get(pool, args);
+
+    char* nvval = cwmp_nvram_pool_get(pool, args);
     if (nvval == NULL) {
         cwmp_log_error("cpe_get_nvram_string: undefined param (%s)!",args);
 	return FAULT_CODE_9002;
@@ -177,9 +180,8 @@ int cpe_get_nvram_string(cwmp_t * cwmp, const char * name, char ** value, char *
 //nvram bool getter
 int cpe_get_nvram_bool(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-
     FUNCTION_TRACE();
-    //FIXME
+
     const char* nvval = cwmp_nvram_pool_get(pool, args);
     if (nvval == NULL) {
     cwmp_log_error("cpe_get_nvram_bool: undefined param (%s)!",args);
@@ -201,7 +203,7 @@ int cpe_get_nvram_bool_onoff(cwmp_t * cwmp, const char * name, char ** value, ch
 {
 
     FUNCTION_TRACE();
-    //FIXME
+
     const char* nvval = cwmp_nvram_pool_get(pool, args);
     if (nvval == NULL) {
 	cwmp_log_error("cpe_get_nvram_bool: undefined param (%s)!",args);
@@ -229,9 +231,8 @@ int cpe_get_nvram_bool_onoff(cwmp_t * cwmp, const char * name, char ** value, ch
 //nvram bool getter
 int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-
     FUNCTION_TRACE();
-    //FIXME
+
     const char* nvval = cwmp_nvram_pool_get(pool, args);
     if (nvval == NULL) 
     {
@@ -240,8 +241,8 @@ int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * ar
     }
 
     long val = strtol(nvval, NULL, 10);
-    const char valStr[256];// = pool_palloc(pool, strlen(val));
-    snprintf(&valStr, 256, "%li",val);
+    char valStr[256];// = pool_palloc(pool, strlen(val));
+    snprintf(&valStr[0], 256, "%li",val);
     
 
     *value = pool_pstrdup(pool, &valStr);
@@ -279,8 +280,8 @@ int cpe_set_nvram_int(cwmp_t * cwmp, const char * name, const char * value, int 
     }
 
     long val = strtol(value, NULL, 10);
-    const char valStr[256];
-    snprintf(&valStr, 256, "%li",val);
+    char valStr[256];
+    snprintf(&valStr[0], 256, "%li",val);
 
     cwmp_nvram_set(args,valStr);
     return FAULT_CODE_OK;
@@ -315,9 +316,9 @@ int cpe_set_nvram_bool_onoff(cwmp_t * cwmp, const char * name, const char * valu
     long val = strtol(value, NULL, 10);
     if (val > 1) val = 1;
     if (val < 0) val = 0;
-    const char valStr[8];
+    char valStr[4] = {0};
 
-    strcpy(&valStr,val?"on":"off");
+    strcpy(&valStr[0], val?"on":"off");
 //    snprintf(&valStr, 256, "%li",val);
 
     cwmp_nvram_set(args,valStr);

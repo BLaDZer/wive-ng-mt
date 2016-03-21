@@ -20,8 +20,6 @@
 #include <errno.h>
 
 #define MALLOC(size)					malloc(size)
-#define FREE(x)							free(x)
-
 
 #define XMALLOC(size)                   pool_pcalloc(env->pool, size)
 #define XREALLOC(p,olds,news)           pool_prealloc(env->pool, p, olds, news)

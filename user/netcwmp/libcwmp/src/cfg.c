@@ -141,7 +141,8 @@ int cwmp_nvram_set(const char * key, const char * value)
 //    sprintf(keybuf,"nvram:%s",key);
 //    return cwmp_conf_set(keybuf, value);
     cwmp_log_error("DEBUG2: cwmp_nvram_set: %s=%s \n", key, value);
-    return nvram_set(RT2860_NVRAM, key, value);
+    //FIXME: libnvram check const!
+    return nvram_set(RT2860_NVRAM, (char*) key, (char*) value);
 }
 
 
@@ -153,7 +154,9 @@ int cwmp_nvram_get(const char * key, char *value)
     //sprintf(keybuf,"nvram:%s",key);
 
 //    return cwmp_conf_get(keybuf, value);
-    nvval = nvram_get(RT2860_NVRAM, key);
+
+    //FIXME: libnvram check const!
+    nvval = nvram_get(RT2860_NVRAM, (char*) key);
     cwmp_log_error("DEBUG2: cwmp_nvram_get: %s=%s (%i) \n", key, nvval, nvval);
 
     strcpy(value, nvval);
@@ -165,7 +168,8 @@ char * cwmp_nvram_pool_get(pool_t * pool, const char * key)
 //    char keybuf[1024];
 //    sprintf(keybuf,"nvram:%s",key);
 //    return cwmp_conf_pool_get(pool, keybuf);
-    char* val = nvram_get(RT2860_NVRAM, key);
+    //FIXME: libnvram check const!
+    char* val = nvram_get(RT2860_NVRAM, (char*)key);
     cwmp_log_error("DEBUG2: cwmp_nvram_pool_get: %s=%s (%i) \n",key,val, val);
 
     return pool_pstrdup(pool,val);
@@ -176,20 +180,20 @@ char * cwmp_nvram_pool_get(pool_t * pool, const char * key)
 int cwmp_nvram_get_int(const char * key, int def)
 {
     char valbuf[256];
-    cwmp_nvram_get(key,&valbuf);
+    cwmp_nvram_get(key,&valbuf[0]);
 
     if (strlen(valbuf) == 0) {
 	return def;
     }
 
-    return strtol(&valbuf, NULL, 10);
+    return strtol(&valbuf[0], NULL, 10);
     
 }
 
 int cwmp_nvram_get_bool_onoff(const char * key, int def)
 {
     char valbuf[256];
-    cwmp_nvram_get(key,&valbuf);
+    cwmp_nvram_get(key,&valbuf[0]);
 
     if (strlen(valbuf) == 0) {
 	return def;

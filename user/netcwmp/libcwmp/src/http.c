@@ -878,8 +878,8 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
     int lines, len;
     size_t	bytes;
     char *req_type = NULL;
-    char *uri = NULL;
-    char *version = NULL;
+//    char *uri = NULL;
+//    char *version = NULL;
     int whitespace, wheres, slen;
     int i;
     http_parser_t * parser;
@@ -927,7 +927,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
             {
                 whitespace = 0;
                 wheres++;
-                switch (wheres)
+/*                switch (wheres)
                 {
                 case 1:
                     uri = &line[0][i];
@@ -936,6 +936,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
                     version = &line[0][i];
                     break;
                 }
+*/
             }
         }
     }
@@ -1022,6 +1023,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
 
 }
 
+#if 0
 int http_parse_request(http_request_t * request, char *data, unsigned long len)
 {
     char *line[MAX_HEADERS]; /* limited to 32 lines, should be more than enough */
@@ -1080,7 +1082,6 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
         }
     }
 
-#if 0
     int lines;
     lines = http_split_headers(data, len, line);
 
@@ -1199,9 +1200,9 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
     free(data);
 
     return 1;
-#endif
 
 }
+#endif
 
 int http_read_response(http_socket_t * sock, http_response_t * response, pool_t * pool)
 {
@@ -1801,15 +1802,13 @@ int http_send_file(const char * fromfile, const char *tourl )
             goto out;
         }
 
-	fsync(sock); //FIXME: check result
-
 	sleep(1);
         http_response_create(&response, pool);
 	rc = http_read_response(sock, response, pool);
 	
 out:
 
-	close(sock);//FIXME: check result
+	close(sock->sockdes);//FIXME: check result
 
 	pool_destroy(pool);
 

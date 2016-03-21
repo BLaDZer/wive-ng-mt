@@ -2,7 +2,6 @@
 //InternetGatewayDevice.LANDevice.X_COM_IgmpSnoopingConfig.Enabled
 int cpe_get_igd_lan_igmp_enabled(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-
     FUNCTION_TRACE();
     int igmp_enabled = cwmp_nvram_get_int("igmpEnabled", 0);
 
@@ -15,7 +14,7 @@ int cpe_set_igd_lan_igmp_enabled(cwmp_t * cwmp, const char * name, const char * 
     FUNCTION_TRACE();
 
     cwmp_nvram_set("igmpEnabled", (value[0]=='0')?"0":"1");
-    //FIXME
+
     return FAULT_CODE_OK;
 }
 
@@ -32,7 +31,7 @@ int cpe_get_igd_lan_igmp_version(cwmp_t * cwmp, const char * name, char ** value
 int cpe_set_igd_lan_igmp_version(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
     FUNCTION_TRACE();
-    //FIXME
+
     cwmp_nvram_set("igmpEnabled", (value[0]=='0')?"0":"1");
     return FAULT_CODE_OK;
 }

@@ -3277,3 +3277,32 @@ ErrorHandler:
     return XML_SYNTAX_ERR;
 
 }
+
+char * XmlStrduptrim(Pool * pool, const char * data)
+{
+    char buffer[XML_VALUE_SIZE_MAX] ;
+    char * p;
+    char * q;
+    if (!data)
+    {
+        return NULL;
+    }
+
+    memset(buffer, 0, XML_VALUE_SIZE_MAX);
+    strncpy(buffer, data, XML_VALUE_SIZE_MAX);
+    p =  buffer;
+    while ((*p <= ' ')  && (*p != '\n'))
+    {
+        p ++;
+    }
+
+    q = buffer + strlen(data);
+    if ((*q == 0) && (q != p))
+        q --;
+    while ((*p <= ' ')  && (q != p) )
+    {
+        q --;
+    }
+    *(q+1) = 0;
+    return PSTRDUP(p);
+}

@@ -153,7 +153,8 @@ int     XmlNodeListAddToNodeList(
     XmlNodeList **nList, XmlNode *  add);
 
 
-
+char * XmlStrduptrim(Pool * pool, const char * data);
+/*
 static char * XmlStrduptrim(Pool * pool, const char * data)
 {
     char buffer[XML_VALUE_SIZE_MAX] ;
@@ -183,6 +184,6 @@ static char * XmlStrduptrim(Pool * pool, const char * data)
     return PSTRDUP(p);
 
 }
-
+*/
 #endif  // _IXMLPARSER_H
 

@@ -175,12 +175,8 @@ void pool_destroy(pool_t *pool)
 
 	for (l = pool->large; l; l = l->next)
 	{
-
-		if (l->alloc)
-		{
-			//            cwmp_log_debug("destroy large alloc %p\n", l->alloc);
-			FREE(l->alloc);
-		}
+//            cwmp_log_debug("destroy large alloc %p\n", l->alloc);
+		free(l->alloc);
 	}
 
 #if (POOL_DEBUG)
@@ -204,7 +200,7 @@ void pool_destroy(pool_t *pool)
 
 	for (p = pool, n = pool->d.next; /* void */; p = n, n = n->d.next)
 	{
-		FREE(p);
+		free(p);
 
 		if (n == NULL)
 		{
@@ -232,17 +228,14 @@ void pool_clear(pool_t *pool)
 	for (l = pool->large; l; l = l->next)
 	{
 		//        cwmp_log_debug("clear large alloc %p\n", l->alloc);
-		if (l->alloc)
-		{
-			FREE(l->alloc);
-		}
+		free(l->alloc);
 	}
 
 	for (p = pool->d.next; p; p = n, n = n->d.next)
 	{
 		n = p->d.next;
 		//p->d.last = (unsigned char *)p + sizeof(pool_data_t);
-		FREE(p);
+		free(p);
 		if (n == NULL)
 		{
 			break;
@@ -383,7 +376,7 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
 	if (large == NULL)
 	{
 		//        cwmp_log_debug("large is null, free p %p\n", p);
-		FREE(p);
+		free(p);
 		return NULL;
 	}
 
@@ -412,7 +405,7 @@ pool_pmemalign(pool_t *pool, size_t size, size_t alignment)
 	large = pool_palloc(pool, sizeof(pool_large_t));
 	if (large == NULL)
 	{
-		FREE(p);
+		free(p);
 		return NULL;
 	}
 
@@ -434,7 +427,7 @@ pool_pfree(pool_t *pool, void *p)
 		if (p == l->alloc)
 		{
 
-			FREE(l->alloc);
+			free(l->alloc);
 			l->alloc = NULL;
 
 			return 0;
@@ -610,39 +603,10 @@ void * pool_pmemdup(pool_t * pool, const  void * ptr, size_t size)
 	return p;
 }
 
-
-//FIXME
-char * pool_sprintf(pool_t * pool, const char * fmt, va_list ap)
-{
-    int i = 0;
-    int res = -1;
-    int lastres = -2;
-    char * p = (char*) pool_palloc(pool,1024);
-
-    for(i=1;res!=lastres;i++)
-    {
-	printf("%i\n",i);
-	lastres = res;
-	if (i>1) {
-	    p = pool_prealloc(pool,p,1024*(i-1),1024*i);
-	}
-
-	if (!p) return -1;
-
-	res = snprintf(p,1024*i,fmt,ap);
-	if (res < 0) return res;
-
-	res = strlen(p);
-    }
-
-    return p;
-}
-
-
 char * pool_pstrdup(pool_t * pool, const  void * ptr)
 {
 	size_t s;
-	if (!ptr || strlen(ptr) == 0)
+	if (!ptr || ((char*)ptr)[0] == '\0')
 	{
 		return NULL;
 	}

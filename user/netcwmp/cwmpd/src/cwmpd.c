@@ -81,8 +81,9 @@ void cwmp_init_ssl(cwmp_t * cwmp)
 
 int main(int argc, char **argv)
 {
-    cwmp_pid_t pid;
+//    cwmp_pid_t pid;
     cwmp_t * cwmp;
+
 
 //    nvram_init(RT2860_NVRAM);
 
@@ -93,13 +94,27 @@ int main(int argc, char **argv)
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
-    pid = getpid();
+//    pid = getpid();
 
-    cwmp_log_init(NULL, CWMP_LOG_INFO);
     cwmp_global_pool = pool_create(POOL_DEFAULT_SIZE);
     cwmp = pool_palloc(cwmp_global_pool, sizeof(cwmp_t));
 
     cwmp_conf_open("/etc/cwmp.conf");
+
+    char* loglevel = cwmp_conf_pool_get(cwmp_global_pool,"cwmpd:log_level");
+    int level = CWMP_LOG_INFO;
+
+    if (loglevel != NULL) 
+    {
+	if (strcasecmp(loglevel,"error") == 0) level = CWMP_LOG_ERROR;
+        else if (strcasecmp(loglevel,"warn") == 0) level = CWMP_LOG_WARN;
+        else if (strcasecmp(loglevel,"info") == 0) level = CWMP_LOG_INFO;
+        else if (strcasecmp(loglevel,"debug") == 0) level = CWMP_LOG_DEBUG;
+        else if (strcasecmp(loglevel,"trace") == 0) level = CWMP_LOG_TRACE;
+    }
+
+    cwmp_log_init(NULL, level);
+
     cwmp_enable=cwmp_conf_get_int("cwmp:enable");
     if(!cwmp_enable)
     {
@@ -110,6 +125,11 @@ int main(int argc, char **argv)
     cwmp_set_var(cwmp);
     cwmp_daemon();
     cwmp_conf_init(cwmp);
+
+    char* envDevName = getenv("DEVNAME");
+    char* envVersion = getenv("VERSIONPKG");
+    if (envDevName != NULL) cwmp_conf_set("env:DEVNAME", envDevName);
+    if (envVersion != NULL) cwmp_conf_set("env:VERSIONPKG", envVersion);
 
 #ifdef USE_CWMP_OPENSSL
     cwmp_init_ssl(cwmp);

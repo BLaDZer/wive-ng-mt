@@ -45,7 +45,7 @@ struct cwmp_chunk_t
 
 
 
-char * cwmp_buffer_current(cwmp_buffer_t * b);
+cwmp_byte_t * cwmp_buffer_current(cwmp_buffer_t * b);
 char * cwmp_buffer_string(cwmp_buffer_t * b);
 size_t cwmp_buffer_length(cwmp_buffer_t * b);
 size_t cwmp_buffer_size(cwmp_buffer_t * b);

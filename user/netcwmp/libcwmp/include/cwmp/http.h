@@ -83,6 +83,45 @@ typedef struct http_digest_auth_t   http_digest_auth_t;
 
 typedef size_t (*http_write_callback_pt)(char *data, size_t size, size_t nmemb, void * calldata);
 
+struct http_digest_auth_t
+{
+	int		active; //digest auth
+	char 	realm[MIN_DEFAULT_LEN+1];
+	char 	nonce[MIN_DEFAULT_LEN+1];
+	char 	cnonce[MIN_DEFAULT_LEN+1];
+	char    response[MIN_DEFAULT_LEN+1];
+	char    qop[MIN_DEFAULT_LEN+1];
+	char    nc[MIN_DEFAULT_LEN+1];
+    char    uri[MIN_DEFAULT_LEN*4+1];
+};
+
+
+struct http_dest_t
+{
+    char	scheme[URL_SCHEME_LEN+1];
+    char	host[MAX_HOST_NAME_LEN+1];
+    char    uri[MAX_URI_LEN + 1];
+
+    int     port;
+    char*   url;
+
+
+    char    user[URL_USER_LEN+1];
+    char    password[URL_PWD_LEN+1];
+
+    const char *    proxy_name;
+    const char *    proxy_auth;
+    const char *	user_agent;
+    int             proxy_port;
+
+    int             auth_type;
+    char    cookie[MIN_BUFFER_LEN+1];
+    http_digest_auth_t auth;
+
+
+};
+
+
 
 
 struct http_request_t

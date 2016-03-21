@@ -1298,7 +1298,7 @@ int cwmp_parse_getparameternames_message(env_t * env, xmldoc_t * doc, char ** pa
     return CWMP_OK;
 }
 
-int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parameter_list_t ** ppl, xmlnode_t * root, parameter_node_t * upperLevelNode, char* nodePath, pool_t * pool)
+int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parameter_list_t ** ppl, parameter_node_t * root, parameter_node_t * upperLevelNode, char* nodePath, pool_t * pool)
 {
 
     int rc = CWMP_OK;
@@ -1309,7 +1309,7 @@ int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parame
         parameterNode = parameterNode->next_sibling;
 
 	char cname[1024];
-        char * name = &cname;
+        char * name = &cname[0];
 
 	if (nodePath != NULL)
 	{
@@ -1324,6 +1324,7 @@ int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parame
 
 
 //	cwmp_log_debug("cwmp_parameter_list_add_parameter: param name %s .", name);
+
 	parameter_t * parameter = cwmp_parameter_list_add_parameter(env, pool, ppl, root, name, NULL, 1, 0);//Add with getter exec
 
        if(!parameter || parameter->fault_code != FAULT_CODE_OK)
@@ -1346,7 +1347,7 @@ int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parame
 	
     }
 
-    return CWMP_OK;
+    return rc;
     
 }
 
@@ -1357,7 +1358,7 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
     xmlnode_t * parameterListNode;
     xmlnode_t * parameterNode;
 //    parameter_t ** nextpv;
-    int rc;
+//    int rc;
 
     nvram_init(RT2860_NVRAM);
 
@@ -1378,8 +1379,8 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
     pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
 
     const char * name;
-    const char * value;
-    parameter_t * parameter;
+//    const char * value;
+//    parameter_t * parameter;
 
     
 
@@ -1410,7 +1411,7 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
 	    }
 	    else
 	    {
-		parameter_t * parameter = cwmp_parameter_list_add_parameter(env, pool, ppl, root, name, NULL, 1, 0);//Add with getter exec
+		/*parameter_t * parameter =*/ cwmp_parameter_list_add_parameter(env, pool, ppl, root, name, NULL, 1, 0);//Add with getter exec
 		
 	    }
 
@@ -1506,21 +1507,19 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
 
 parameter_t*  cwmp_parameter_list_add_parameter(env_t * env, pool_t * pool , parameter_list_t ** ppl, parameter_node_t * root, const char * name, const char * value, BOOL exec_get, BOOL exec_set)
 {
-//	    cwmp_log_error("DEBUG: (%s)", name);
-
-	//FIXME: dlink ACS fix, be careful with strcpy(name,...);
+	//dlink ACS fix
 	if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.AddressingType") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType";
 	else if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.Name") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name";
 	else if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.MACAddress") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MACAddress");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MACAddress";
 	else if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.DNSServers") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers";
 	else if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.";
 	else if (strcmp(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.%d.Enable") == 0) 
-	    strcpy(name,"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable");
+	    name = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable";
 
 	
 	parameter_t* parameter = cwmp_create_parameter(env ,  name, value, TRstrlen(value), 0);
@@ -1652,13 +1651,6 @@ int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, paramet
 
     parameterNode = XmlNodeGetFirstChild(parameterListNode);
 
-    //FIXME
-    //Strange behaviour of D-Link ACS
-/*    name    = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType";//CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, ManagementServerModule, URLModule);
-    value   = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
-    parameter = cwmp_create_parameter(session->env,  name, value, 0, TYPE_STRING);
-    cwmp_add_parameter_to_list(session->env,  pl, parameter);
-*/
 ///////////////////////////////////////////////////////
 
     const char * name;
@@ -1780,7 +1772,7 @@ int cwmp_parse_addobject_message(env_t * env , xmldoc_t *doc, parameter_node_t *
         cwmp_set_faultcode(fault, FAULT_CODE_9005);
         return CWMP_ERROR;
     }
-    parameter_node_t * child_param = param->child;
+//    parameter_node_t * child_param = param->child;
     if( (param->type != TYPE_OBJECT) || (param->rw  != 1))// || (TRstrcmp(child_param->name, "{i}") != 0))
     {
         cwmp_log_error("AddObject parameter ObjectName %s is invalid or not writable\n", object_name);
@@ -2229,7 +2221,7 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
         parameterNode = parameterNode->next_sibling;
 
 	char cname[1024];
-        char * name = &cname;
+        char * name = &cname[0];
 
 	if (nodePath != NULL)
 	{
@@ -2266,7 +2258,7 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
 	}
     }
 
-    return CWMP_OK;
+    return rc;
     
 }
 
@@ -2572,8 +2564,8 @@ xmldoc_t * cwmp_create_setparametervalues_response_message(env_t * env ,  header
 //    xmlnode_t * parameterValueStructNode;
 //    xmlnode_t * nameStructNode;
 //    xmlnode_t * valueStructNode;
-    int  count;
-    parameter_t ** pv;
+//    int  count;
+//    parameter_t ** pv;
 
 
     xmldoc_t * doc = XmlDocCreateDocument(env->pool );

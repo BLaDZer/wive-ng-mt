@@ -29,6 +29,7 @@
 #include "cwmp_module.h"
 #include "cwmp_agent.h"
 #include <cwmp/session.h>
+#include <cwmp/http.h>
 #include "modules/data_model.h"
 
 #define CWMP_TRUE   1
@@ -689,7 +690,48 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 	fromfile = "/tmp/mysystem.tar.gz";
 	//fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
 
-	//FIXME !
+	cwmp_log_error("DEBUG: cwmp_agent_upload_file: try 1 %s",tourl);
+
+	//Send 1
+	if (http_send_file(fromfile, tourl) == CWMP_OK) return CWMP_OK;
+
+	http_dest_t* tourl_dest;
+	http_dest_create(&tourl_dest, tourl, cwmp->pool);
+
+	char* acs_url = cwmp_nvram_pool_get(cwmp->pool, "cwmp_acs_url");
+	http_dest_t* acsurl_dest;
+	http_dest_create(&acsurl_dest, acs_url, cwmp->pool);
+
+	char tourl2[1024];
+	strncpy(tourl_dest->host,acsurl_dest->host,MAX_HOST_NAME_LEN);
+	snprintf(&tourl2[0],1024,"%s://%s:%i/%s",tourl_dest->scheme,tourl_dest->host,tourl_dest->port,tourl_dest->uri);
+
+        tourl = pool_pstrdup(cwmp->pool, tourl2);
+	cwmp_log_error("DEBUG: cwmp_agent_upload_file: try 2 %s",tourl);
+
+	//Send 2
+	if (http_send_file(fromfile, tourl) == CWMP_OK) return CWMP_OK;
+
+	tourl_dest->port = acsurl_dest->port;
+	snprintf(&tourl2[0],1024,"%s://%s:%i/%s",tourl_dest->scheme,tourl_dest->host,tourl_dest->port,tourl_dest->uri);
+
+        tourl = pool_pstrdup(cwmp->pool, tourl2);
+	cwmp_log_error("DEBUG: cwmp_agent_upload_file: try 3 %s",tourl);
+
+	//Send 3
+	if (http_send_file(fromfile, tourl) == CWMP_OK) return CWMP_OK;
+
+
+
+/*
+
+	if (strcmp(tourl_host,"0.0.0.0") == 0) 
+	{
+	    tourl_dest->host = acsurl_dest->host;
+	}
+	tourl_dest->port = acsurl_dest->port;
+
+	//FIXME Correct url parsing!
 	char tourl_part2[1024];
 	cwmp_log_error("DEBUG: cwmp_agent_upload_file: before check %s",tourl);
 	if (sscanf(tourl, "http://0.0.0.0/%s", tourl_part2) > 0) 
@@ -697,16 +739,19 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
     	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: part 2 %s",tourl_part2);
 
 	    char* acs_url = cwmp_nvram_pool_get(cwmp->pool, "cwmp_acs_url");
-//	    char acs_url_part1[1024];
-//    	    char acs_url_part2[1024];
     	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: acs_url %s",acs_url);
 	    
-	    char* acs_url_part1 = strtok(acs_url, "/");
+	    
 	    char* acs_url_part2 = strtok(NULL, "/");
 
 	    if (acs_url_part2 != NULL)
 	    {
+		    char tourl_over[1024];
 		    char* acs_url_part2_host = strtok(acs_url_part2, ":");
+		    snprintf(tourl_over, 1024, "http://%s/%s", acs_url_part2, tourl_part2);
+	    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_over %s",tourl_over);
+		    tourl = pool_pstrdup(cwmp->pool, tourl_over);
+		    if (http_send_file(fromfile, tourl) == CWMP_OK) return CWMP_OK;
 
 		    if (acs_url_part2_host != NULL)
 		    {
@@ -716,38 +761,24 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 		    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_over %s",tourl_over);
 			    tourl = pool_pstrdup(cwmp->pool, tourl_over);
 		    }
-		
+
 	    }
-/*
-	    if (sscanf(acs_url, "http://%s/%s", acs_url_part1, acs_url_part2) >= 2)
-	    {
-	    }*/
 	}
+*/
 
-    	    cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_result %s",tourl);
-
-/*	char * tourl_override = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_url_override");
-	if (tourl_override && strlen(tourl_override)>0) 
-	{
-	    tourl = tourl_override;
-	}*/
+    	cwmp_log_error("DEBUG: cwmp_agent_upload_file: tourl_result %s",tourl);
     }
     else if(strcmp(ularg->filetype, "2 Vendor Log File") == 0)
     {
 	// send currect log to acs
-//	system("cat /var/log/messages > /tmp/mysystem.log");
-//	fromfile = "/tmp/mysystem.log";
-
 	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:devicelog_filename");
 
     }
-    else
+/*    else
     {
-//	system("nvram_show 2860 > /tmp/mysystem.cfg");
-//	fromfile = "/tmp/mysystem.cfg";
 	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
     }
-
+*/
     faultcode = http_send_file(fromfile, tourl);
 
     if(faultcode != CWMP_OK)

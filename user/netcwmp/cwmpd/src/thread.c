@@ -87,6 +87,7 @@ static unsigned int cwmp_worker_thread_httpd(cwmp_t * cwmp)
     return httpd_build_server(cwmp);
 }
 
+/*
 #ifdef WIN32
 static unsigned int __stdcall cwmp_worker_thread_tasks(cwmp_t * cwmp)
 #else
@@ -96,7 +97,7 @@ static unsigned int cwmp_worker_thread_tasks(cwmp_t * cwmp)
     pthread_exit(0);
     return 0;
 }
-
+*/
 void cwmp_worker_thread_start(cwmp_t * cwmp)
 {
 #ifdef WIN32

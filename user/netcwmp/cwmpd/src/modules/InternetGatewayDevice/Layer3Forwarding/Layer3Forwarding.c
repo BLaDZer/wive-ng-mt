@@ -16,7 +16,9 @@ int cpe_set_igd_l3f_defaultconnection(cwmp_t * cwmp, const char * name, const ch
 {
     FUNCTION_TRACE();
 
-    int isvpn = (strcmp(value, "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.2") == 0);
+    int isvpn = 0;
+    isvpn |= strcmp(value, "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.2") == 0;
+    isvpn |= strcmp(value, "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.2.") == 0;
     cwmp_nvram_set("vpnDGW", isvpn?"1":"0");
 
     return FAULT_CODE_OK;

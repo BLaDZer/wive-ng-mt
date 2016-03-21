@@ -1,6 +1,5 @@
 BOOL prefix(const char *str, const char *pre)
 {
-    cwmp_log_error("DEBUG3: prefix\n");
     return strncmp(pre, str, strlen(pre)) == 0;
 }
 
@@ -27,8 +26,9 @@ int cpe_get_igd_lan_wlan_autochannel(cwmp_t * cwmp, const char * name, char ** v
 {
     cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_autochannel\n");
     int chan =  cwmp_nvram_get_int("Channel", 0);
+    int autoselect = cwmp_nvram_get_int("AutoChannelSelect",1);
     
-    *value = pool_pstrdup(pool, chan==0?"1":"0");
+    *value = pool_pstrdup(pool, ((chan==0) || autoselect)?"1":"0");
 
     return FAULT_CODE_OK;
 
@@ -44,14 +44,67 @@ int cpe_set_igd_lan_wlan_autochannel(cwmp_t * cwmp, const char * name, const cha
 
     if (value[0] == '1') {
 	cwmp_nvram_set("Channel","0");
+	cwmp_nvram_set("AutoChannelSelect","1");
     }
     else
     {
-        //FIXME: if zero?
+        int chan =  cwmp_nvram_get_int("Channel", 0);
+	cwmp_nvram_set("AutoChannelSelect","0");
+	if (chan == 0) cwmp_nvram_set("Channel", "9");
     }
 
     return FAULT_CODE_OK;
 }
+
+int cpe_get_igd_lan_wlan_channel(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+    cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_channel\n");
+    char* chan =  cwmp_nvram_pool_get(pool, "Channel");
+    if (chan == NULL) 
+    {
+	chan = "0";
+    }
+
+    int autoselect = cwmp_nvram_get_int("AutoChannelSelect",1);
+
+    if (autoselect) 
+    {
+	*value = pool_pstrdup(pool, "0");
+    }
+    else
+    {
+	*value = pool_pstrdup(pool, chan);
+    }
+    
+
+    return FAULT_CODE_OK;
+
+}
+
+int cpe_set_igd_lan_wlan_channel(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+{
+    cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_channel\n");
+
+    if (value == NULL) {
+	cwmp_log_error("cpe_get_igd_lan_wlan_channel: undefined value!");
+	return FAULT_CODE_9002;
+    }
+
+    cwmp_nvram_set("Channel",value);
+
+    if (value[0] == '0' && value[1] == '\0') {
+	cwmp_nvram_set("AutoChannelSelect", "1");
+    }
+    else
+    {
+	cwmp_nvram_set("AutoChannelSelect", "0");
+    }
+
+    return FAULT_CODE_OK;
+}
+
+
+
 
 
 
@@ -103,7 +156,7 @@ int cpe_set_igd_lan_wlan_standard(cwmp_t * cwmp, const char * name, const char *
 int cpe_get_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     FUNCTION_TRACE();
-    //FIXME
+
     cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_basicauthmode\n");
 
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
@@ -123,11 +176,10 @@ int cpe_get_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, char **
 
 int cpe_set_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
-//FIXME
     FUNCTION_TRACE();
     cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_basicauthmode\n");
 
-    if (strcmp(value,"None")) cwmp_nvram_set("AuthMode", "Disable;Disable;Disable");
+    if (strcmp(value,"None") == 0 ) cwmp_nvram_set("AuthMode", "Disable;Disable;Disable");
 
     return FAULT_CODE_OK;
 }
@@ -137,7 +189,6 @@ int cpe_get_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, char ** v
 {
     cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_wpaauthmode\n");
     FUNCTION_TRACE();
-    //FIXME
 
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
     if (authMode == NULL) {
@@ -145,7 +196,7 @@ int cpe_get_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, char ** v
 	return FAULT_CODE_9002;
     }
     
-
+    
     char* valStr = "EAPAuthentication";//prefix(authMode,"Disable;")?"None":"EAPAuthentication";
     if (prefix(authMode,"WPAPSK;")) valStr = "PSKAuthentication"; else
     if (prefix(authMode,"WPA2PSK;")) valStr = "PSKAuthentication"; else
@@ -159,8 +210,8 @@ int cpe_get_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, char ** v
 
 int cpe_set_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
-//FIXME
     FUNCTION_TRACE();
+    //FIXME
     cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_wpaauthmode\n");
     return FAULT_CODE_OK;
 }
@@ -176,7 +227,6 @@ int cpe_get_igd_lan_wlan_ieeeauthmode(cwmp_t * cwmp, const char * name, char ** 
 	cwmp_log_error("cpe_get_igd_lan_wlan_ieeeauthmode: undefined AuthMode param!");
 	return FAULT_CODE_9002;
     }
-    
 
     char* valStr = "EAPAuthentication";//prefix(authMode,"Disable;")?"None":"EAPAuthentication";
     if (prefix(authMode,"WPAPSK;")) valStr = "PSKAuthentication";

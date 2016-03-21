@@ -15,8 +15,8 @@ start() {
     if [ "$cwmpdEnabled" = "1" ]; then
 	( # send to background
 	$LOG "Starting CWMPD"
-	DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
-	VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	export DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	export VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
 	cwmpd
 	) & # send to background
     fi

@@ -11,8 +11,10 @@
 
  
 #include "cwmp/util.h"
+#include "cwmp/log.h"
+#include "cwmp/cfg.h"
 #include "cwmp/md5.h"
-
+/*
 static const char base64[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
@@ -69,7 +71,7 @@ static char * base64_encode(const char *src)
     *dst = 0;
     return (str);
 }
-
+*/
 static void cwmp_hex_to_string(char *to, const unsigned char *p, size_t len)
 {
     const char  *hex = "0123456789abcdef";
@@ -551,7 +553,7 @@ static int checkimage(char *imagefile, int offset, int len)
 	checksum = ntohl(hdr->ih_hcrc);
 	hdr->ih_hcrc = htonl(0);	/* clear for re-calculation */
 
-	if (crc32 (0, data, sizeof(image_header_t)) != checksum)
+	if (crc32 (0u, (unsigned char*) data, sizeof(image_header_t)) != checksum)
 	{
 		munmap(ptr, len);
 		close(ifd);
@@ -565,7 +567,7 @@ static int checkimage(char *imagefile, int offset, int len)
 	data = (char *)(ptr + sizeof(image_header_t));
 	data_len  = len - sizeof(image_header_t) ;
 
-	if (crc32 (0, data, data_len) != ntohl(hdr->ih_dcrc))
+	if (crc32 (0, (unsigned char *)data, data_len) != ntohl(hdr->ih_dcrc))
 	{
 		munmap(ptr, len);
 		close(ifd);
@@ -617,14 +619,7 @@ static int checkimage(char *imagefile, int offset, int len)
 
 int firmware_upgrade(char* filename)
 {
-
-	char err_msg[512];
-//	char *filename;
 	unsigned long file_size = 0;
-	int tries = 0, reset_rwfs = 0;
-
-	// Get multipart file data separator
-//	char separator[MAX_SEPARATOR_LEN];
 
 	char* buffer = ReadFile(filename, &file_size);
 	if (buffer == NULL) 

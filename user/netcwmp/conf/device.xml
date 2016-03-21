@@ -5,8 +5,8 @@
 
 
 			<object name="DeviceInfo">
-				<param name="HardwareVersion" inform="1" get_func="cpe_get_nvram_string" args="DEVNAME" set_func="cpe_set_nvram_string" />
-				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_nvram_string" args="VERSIONPKG" set_func="cpe_set_nvram_string"/>
+				<param name="HardwareVersion" inform="1" get_func="cpe_get_conf_string" args="env:DEVNAME" set_func="cpe_set_conf_string" />
+				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string"/>
 				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
 				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
 				<param name="ProductClass" inform="1" get_func="cpe_get_igd_di_productclass"/>
@@ -113,7 +113,7 @@
 					<param name="Enable" noti_rw="1" rw="1" get_func="cpe_get_nvram_bool" args="RadioOn" set_func="cpe_set_nvram_bool"/>
 					<param name="BSSID" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_bssid" args="1" set_func="cpe_set_null"/>
 					<param name="SSID" noti_rw="1" rw="1" get_func="cpe_get_nvram_string" args="SSID1" set_func="cpe_set_nvram_string"/>
-					<param name="Channel" noti_rw="1" rw="1" get_func="cpe_get_nvram_int" args="Channel" set_func="cpe_set_nvram_string"/>
+					<param name="Channel" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_channel" args="Channel" set_func="cpe_set_igd_lan_wlan_channel"/>
 					<param name="AutoChannelEnable" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_autochannel" args="" set_func="cpe_set_igd_lan_wlan_autochannel"/>
 					<param name="Standard" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_standard" set_func="cpe_set_igd_lan_wlan_standard"/>
 					<param name="BeaconType" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_beacontype" set_func="cpe_set_igd_lan_wlan_beacontype"/>

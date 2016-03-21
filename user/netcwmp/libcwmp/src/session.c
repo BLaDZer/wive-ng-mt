@@ -878,9 +878,9 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
     fault_code_t fault;
 
 
-    parameter_t * parameter;
-    char * name;
-    char * value;
+//    parameter_t * parameter;
+//    char * name;
+//    char * value;
 
 
     FUNCTION_TRACE();
@@ -909,13 +909,13 @@ xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_ses
 {
     header_t * header;
     int rv;
-    parameter_list_t * pl;
-    fault_code_t fault;
+    parameter_list_t * pl = NULL;
+//    fault_code_t fault;
 
 
-    parameter_t * parameter;
-    char * name;
-    char * value;
+//    parameter_t * parameter;
+//    char * name;
+//    char * value;
 
     // FIXME: STUB!!!
 

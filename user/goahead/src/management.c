@@ -549,7 +549,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 
 	getcpudata(&cpu);
 
-	if (cpu.total-prevtotal > 0)
+	if (cpu.total != prevtotal)
 	    outd=((((float)cpu.busy-(float)prevbusy)/((float)cpu.total-(float)prevtotal))*100);
 
 	prevbusy=cpu.busy;

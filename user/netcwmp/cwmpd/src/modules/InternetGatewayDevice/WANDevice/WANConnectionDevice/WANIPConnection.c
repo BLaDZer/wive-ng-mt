@@ -1,8 +1,7 @@
-//int getHWStatistic(unsigned long long* rxtx_count)
 
 int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool) {
     unsigned long long rxtx[12];
-    getHWStatistic(&rxtx);
+    getHWStatistic(&rxtx[0]);
 
     int i;
     for (i=0;i<12;i++) cwmp_log_error("wan RX/TX Count %i : %llu", i, rxtx[i]);

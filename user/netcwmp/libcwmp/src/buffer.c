@@ -71,14 +71,14 @@ void  cwmp_buffer_free(cwmp_buffer_t * b, pool_t * pool)
 }
 
 
-char * cwmp_buffer_current(cwmp_buffer_t * b)
+cwmp_byte_t * cwmp_buffer_current(cwmp_buffer_t * b)
 {
     return b->string + b->writed;
 }
 
 char * cwmp_buffer_string(cwmp_buffer_t * b)
 {
-    return b->string;
+    return (char*) b->string;
 }
 
 size_t cwmp_buffer_length(cwmp_buffer_t * b)
@@ -148,9 +148,9 @@ void  cwmp_buffer_write_format_string(cwmp_buffer_t * b, const char * fmt, ...)
     int len;
     va_start(ap, fmt);
 #ifdef WIN32
-    len = _vsnprintf(cwmp_buffer_current(b), b->size - b->writed, fmt, ap);
+    len = _vsnprintf((char*)cwmp_buffer_current(b), b->size - b->writed, fmt, ap);
 #else
-    len =vsnprintf(cwmp_buffer_current(b), b->size - b->writed, fmt, ap);
+    len = vsnprintf((char*)cwmp_buffer_current(b), b->size - b->writed, fmt, ap);
 #endif
     b->offset += len;
     b->writed += len;
