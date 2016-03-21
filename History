@@ -1863,8 +1863,9 @@
 19) kernel: net: gro: add checksuming helpers.<br>
 20) kernel: net: gro: only verify TCP checksums for candidates.<br>
 21) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-22) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-23) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+22) kernel: net: gro: change GRO overflow strategy.<br>
+23) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+24) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
 <br>
 <br>
 <br>
