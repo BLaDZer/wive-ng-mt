@@ -401,7 +401,8 @@ struct sk_buff {
 	 * want to keep them across layers you have to do a skb_clone()
 	 * first. This is owned by whoever has the skb queued ATM.
 	 */
-	char			cb[48] __aligned(8);
+#define MAX_CB_OFFSET           48
+	char			cb[MAX_CB_OFFSET] __aligned(8);
 #if IS_ENABLED(CONFIG_IMQ)
 	void			*cb_next;
 #endif

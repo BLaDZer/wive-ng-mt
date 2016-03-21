@@ -84,7 +84,7 @@ static struct kmem_cache *skbuff_cb_store_cache __read_mostly;
 #if IS_ENABLED(CONFIG_IMQ)
 /* Control buffer save/restore for IMQ devices */
 struct skb_cb_table {
-	char			cb[48] __aligned(8);
+	char			cb[MAX_CB_OFFSET] __aligned(8);
 	void			*cb_next;
 	atomic_t		refcnt;
 };

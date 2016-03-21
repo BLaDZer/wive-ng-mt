@@ -468,13 +468,6 @@ int __fastpathnet ip_rcv(struct sk_buff *skb, struct net_device *dev, struct pac
 		goto drop;
 	}
 
-#if defined(CONFIG_BCM_NAT)
-	/*
-	 * clear CB only for loopback packets, this compat with original logic
-	 * and not break fastpaths logic uses cb for save allow/deny flags
-	 */
-	if (skb->pkt_type == PACKET_LOOPBACK)
-#endif
 	/* Remove any debris in the socket control block */
 	memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));
 

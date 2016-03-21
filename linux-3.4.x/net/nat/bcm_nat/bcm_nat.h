@@ -15,12 +15,14 @@
 
 /*
  * cb fastforward flag
- * offcet do not be replaced in any code (as hw_nat, strongly check this, now find max cb offset in wifi drivers = 41)
+ * offset do not be replaced in any code (as hw_nat, strongly check this, now find max cb offset in wifi drivers = 41 max, default max cb offset is 48 see skbuf.h)
+ * for safe use end of cb
  */
-#define CB_FAST_ROUTE		42
+
+#define CB_FAST_ROUTE		(MAX_CB_OFFSET-1)
 #define FASTROUTE(skb)		(skb->cb[CB_FAST_ROUTE])
 
-#define CB_FAST_NAT		43
+#define CB_FAST_NAT		(MAX_CB_OFFSET-2)
 #define FASTNAT_DENY(skb)	(skb->cb[CB_FAST_NAT])
 
 /*
