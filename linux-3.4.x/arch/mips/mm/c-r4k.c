@@ -43,6 +43,8 @@
  *  o collapses to normal function call on systems with a single shared
  *    primary cache.
  *  o doesn't disable interrupts on the local CPU
+ *
+ *  Note: this function is used now for address cacheops only
  */
 static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
 {
@@ -55,11 +57,65 @@ static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
 	preempt_enable();
 }
 
-#if defined(CONFIG_MIPS_CMP)
+#if defined(CONFIG_MIPS_CMP) && defined(CONFIG_SMP)
 #define cpu_has_safe_index_cacheops 0
 #else
 #define cpu_has_safe_index_cacheops 1
 #endif
+
+/*
+ * This variant of smp_call_function is used for index cacheops only.
+ */
+static inline void r4k_indexop_on_each_cpu(void (*func) (void *info), void *info)
+{
+	preempt_disable();
+
+#ifdef CONFIG_SMP
+	if (!cpu_has_safe_index_cacheops) {
+
+		if (smp_num_siblings > 1) {
+			cpumask_t tmp_mask = INIT_CPUMASK;
+			int cpu, this_cpu, n = 0;
+
+			/* If processor hasn't safe index cachops (likely)
+			   then run cache flush on other CPUs.
+			   But I assume that siblings have common L1 cache, so -
+			   - run cache flush only once per sibling group. LY22 */
+
+			this_cpu = smp_processor_id();
+			for_each_online_cpu(cpu) {
+
+				if (cpumask_test_cpu(cpu, (&cpu_sibling_map[this_cpu])))
+					continue;
+
+				if (cpumask_intersects(&tmp_mask, (&cpu_sibling_map[cpu])))
+					continue;
+				cpu_set(cpu, tmp_mask);
+				n++;
+			}
+			if (n)
+				smp_call_function_many(&tmp_mask, func, info, 1);
+		} else
+			smp_call_function(func, info, 1);
+	}
+#endif
+	func(info);
+	preempt_enable();
+}
+
+/*  Define a rough size where address cacheops are still more optimal than
+ *  index cacheops on whole cache (in D/I-cache size terms).
+ *  Value "2" reflects an expense of smp_call_function() on top of
+ *  whole cache flush via index cacheops.
+ */
+#ifndef CACHE_CPU_LATENCY
+#ifdef CONFIG_SMP
+#define CACHE_CPU_LATENCY   (2)
+#else
+#define CACHE_CPU_LATENCY   (1)
+#endif
+#endif
+
 
 /*
  * Must die.
@@ -363,7 +419,7 @@ static inline void local_r4k___flush_cache_all(void * args)
 
 static void r4k___flush_cache_all(void)
 {
-	r4k_on_each_cpu(local_r4k___flush_cache_all, NULL);
+	r4k_indexop_on_each_cpu(local_r4k___flush_cache_all, NULL);
 }
 
 static inline int has_valid_asid(const struct mm_struct *mm)
@@ -381,15 +437,60 @@ static inline int has_valid_asid(const struct mm_struct *mm)
 #endif
 }
 
-static void r4k__flush_cache_vmap(void)
+
+static inline void local_r4__flush_dcache(void *args)
 {
 	r4k_blast_dcache();
 }
 
-static void r4k__flush_cache_vunmap(void)
+struct vmap_args {
+	unsigned long start;
+	unsigned long end;
+};
+
+static inline void local_r4__flush_cache_vmap(void *args)
 {
-	r4k_blast_dcache();
+	blast_dcache_range(((struct vmap_args *)args)->start,((struct vmap_args *)args)->end);
 }
+
+static void r4k__flush_cache_vmap(unsigned long start, unsigned long end)
+{
+	unsigned long size = end - start;
+
+	if (cpu_has_safe_index_cacheops && size >= dcache_size) {
+		r4k_blast_dcache();
+	} else {
+		if (size >= (dcache_size * CACHE_CPU_LATENCY))
+			r4k_indexop_on_each_cpu(local_r4__flush_dcache, NULL);
+		else {
+			struct vmap_args args;
+
+			args.start = start;
+			args.end = end;
+			r4k_on_each_cpu(local_r4__flush_cache_vmap, (void *)&args);
+		}
+	}
+}
+
+static void r4k__flush_cache_vunmap(unsigned long start, unsigned long end)
+{
+	unsigned long size = end - start;
+
+	if (cpu_has_safe_index_cacheops && size >= dcache_size)
+		r4k_blast_dcache();
+	else {
+		if (size >= (dcache_size * CACHE_CPU_LATENCY))
+			r4k_indexop_on_each_cpu(local_r4__flush_dcache, NULL);
+		else {
+			struct vmap_args args;
+
+			args.start = start;
+			args.end = end;
+			r4k_on_each_cpu(local_r4__flush_cache_vmap, (void *)&args);
+		}
+	}
+}
+
 
 static inline void local_r4k_flush_cache_range(void * args)
 {
@@ -410,7 +511,7 @@ static void r4k_flush_cache_range(struct vm_area_struct *vma,
 	int exec = vma->vm_flags & VM_EXEC;
 
 	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc))
-		r4k_on_each_cpu(local_r4k_flush_cache_range, vma);
+		r4k_indexop_on_each_cpu(local_r4k_flush_cache_range, vma);
 }
 
 static inline void local_r4k_flush_cache_mm(void * args)
@@ -442,7 +543,7 @@ static void r4k_flush_cache_mm(struct mm_struct *mm)
 	if (!cpu_has_dc_aliases)
 		return;
 
-	r4k_on_each_cpu(local_r4k_flush_cache_mm, mm);
+	r4k_indexop_on_each_cpu(local_r4k_flush_cache_mm, mm);
 }
 
 struct flush_cache_page_args {
@@ -550,11 +651,40 @@ static void r4k_flush_data_cache_page(unsigned long addr)
 		r4k_on_each_cpu(local_r4k_flush_data_cache_page, (void *) addr);
 }
 
+
 struct flush_icache_range_args {
 	unsigned long start;
 	unsigned long end;
 };
 
+static inline void local_r4k_flush_icache(void *args)
+{
+	if (!cpu_has_ic_fills_f_dc)
+			r4k_blast_dcache();
+
+	wmb();
+
+	r4k_blast_icache();
+}
+
+static inline void local_r4k_flush_icache_range_ipi(void *args)
+{
+	struct flush_icache_range_args *fir_args = args;
+	unsigned long start = fir_args->start;
+	unsigned long end = fir_args->end;
+
+	if (!cpu_has_ic_fills_f_dc) {
+		R4600_HIT_CACHEOP_WAR_IMPL;
+		protected_blast_dcache_range(start, end);
+	}
+
+	wmb();
+
+	protected_blast_icache_range(start, end);
+
+}
+
+/* This function is used only for local CPU only while boot etc */
 static inline void local_r4k_flush_icache_range(unsigned long start, unsigned long end)
 {
 	if (!cpu_has_ic_fills_f_dc) {
@@ -572,25 +702,30 @@ static inline void local_r4k_flush_icache_range(unsigned long start, unsigned lo
 		protected_blast_icache_range(start, end);
 }
 
-static inline void local_r4k_flush_icache_range_ipi(void *args)
-{
-	struct flush_icache_range_args *fir_args = args;
-	unsigned long start = fir_args->start;
-	unsigned long end = fir_args->end;
-
-	local_r4k_flush_icache_range(start, end);
-}
-
 static void r4k_flush_icache_range(unsigned long start, unsigned long end)
 {
 	struct flush_icache_range_args args;
+	unsigned long size = end - start;
 
 	args.start = start;
 	args.end = end;
 
-	r4k_on_each_cpu(local_r4k_flush_icache_range_ipi, &args);
+	if (cpu_has_safe_index_cacheops &&
+	    (((size >= icache_size) && !cpu_has_ic_fills_f_dc) ||
+	     (size >= dcache_size)))
+		local_r4k_flush_icache((void *)&args);
+	else if (((size < (icache_size * CACHE_CPU_LATENCY)) && !cpu_has_ic_fills_f_dc) ||
+		 (size < (dcache_size * CACHE_CPU_LATENCY))) {
+		struct flush_icache_range_args args;
+
+		args.start = start;
+		args.end = end;
+		r4k_on_each_cpu(local_r4k_flush_icache_range_ipi, (void *)&args);
+	} else
+		r4k_indexop_on_each_cpu(local_r4k_flush_icache, NULL);
 	instruction_hazard();
 }
+
 
 #ifdef CONFIG_DMA_NONCOHERENT
 
@@ -741,7 +876,10 @@ static void r4k_flush_kernel_vmap_range(unsigned long vaddr, int size)
 	args.vaddr = (unsigned long) vaddr;
 	args.size = size;
 
-	r4k_on_each_cpu(local_r4k_flush_kernel_vmap_range, &args);
+	if (cpu_has_safe_index_cacheops && size >= dcache_size)
+		r4k_indexop_on_each_cpu(local_r4k_flush_kernel_vmap_range, &args);
+	else
+		r4k_on_each_cpu(local_r4k_flush_kernel_vmap_range, &args);
 }
 
 static inline void rm7k_erratum31(void)
