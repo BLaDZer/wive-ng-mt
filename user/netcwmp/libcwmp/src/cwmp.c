@@ -1175,7 +1175,7 @@ int cwmp_set_parameter_node_value(cwmp_t * cwmp, parameter_node_t * node, const 
     {
         if (node->value)
         {
-            FREE(node->value);
+            free(node->value);
         }
 
 	      //it's ok, no memory loss

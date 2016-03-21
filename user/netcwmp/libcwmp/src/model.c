@@ -110,8 +110,8 @@ int cwmp_model_free_parameter(parameter_node_t * param)
         cwmp_model_delete_parameter(tmp_param);
     }
 
-    FREE(param->name);
-    FREE(param);
+    free(param->name);
+    free(param);
 
     return CWMP_OK;
 }
@@ -441,7 +441,7 @@ int cwmp_model_load_xml(cwmp_t * cwmp, const char * xmlfile, model_func_t * func
     cwmp_model_load_parameter(cwmp, doc, func_list, func_count);
 
 finish:
-    FREE(buf);
+    free(buf);
     fclose(fp);
     pool_destroy(pool);
     return CWMP_OK;
