@@ -32,10 +32,8 @@ inline int __fastpathnet nf_ct_ipv4_gather_frags(struct sk_buff *skb, u_int32_t 
 	err = ip_defrag(skb, user);
 	local_bh_enable();
 
-	if (!err) {
-		ip_send_check(ip_hdr(skb));
+	if (!err)
 		skb->local_df = 1;
-	}
 
 	return err;
 }
