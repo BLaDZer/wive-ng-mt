@@ -50,6 +50,7 @@
 #include <asm/gcmpregs.h>
 
 #include <asm/irq.h>
+#include <asm/setup.h>
 
 #include <asm/rt2880/surfboard.h>
 #include <asm/rt2880/surfboardint.h>
@@ -336,7 +337,7 @@ asmlinkage __fastpathsys void plat_irq_dispatch(void)
 	}
 
 	if (pending & CAUSEF_IP7)
-		do_IRQ(MIPS_CPU_IRQ_BASE + cp0_compare_irq);	// MIPS Timer
+		mips_timer_dispatch();
 
 	if (pending & (CAUSEF_IP6 | CAUSEF_IP5 | CAUSEF_IP4 | CAUSEF_IP3 | CAUSEF_IP2))
 		gic_irq_dispatch();
