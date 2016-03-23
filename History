@@ -1862,7 +1862,7 @@
 18) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
 19) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
 20) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-21) kernel: mips: c-r4k: revert fix cache flushing for MT cores (prepare for apply reworked version).<br>
+21) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
 22) kernel: mips: cache flush functions are reworked.<br>
 23) kernel: mips: fix bug in using flush_cache_vunmap.<br>
 24) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
