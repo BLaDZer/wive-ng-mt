@@ -1852,31 +1852,32 @@
 8) system: enable ripd support (fixed in last quagga).<br>
 9) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
 10) kernel: ralink_arch: move MT7621 GIC interrupts to base 8 (do not overlap with MIPS 0..7). Prepare to GIC timer support.<br>
-11) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
-12) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-13) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-14) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-15) kernel: mips: c-r4k: revert fix cache flushing for MT cores (prepare for apply reworked version).<br>
-16) kernel: mips: cache flush functions are reworked.<br>
-17) kernel: mips: fix bug in using flush_cache_vunmap.<br>
-18) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
-19) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-20) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-21) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-22) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-23) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-24) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-25) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-26) kernel: net: vlan: propagate gso_max_segs.<br>
-27) kernel: net: gro: selective flush of packets.<br>
-28) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-29) kernel: net: gro: add checksuming helpers.<br>
-30) kernel: net: gro: only verify TCP checksums for candidates.<br>
-31) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-32) kernel: net: gro: change GRO overflow strategy.<br>
-33) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-34) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-35) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+11) kernel: ralink_arch: MT7621: add support vectored interrupts.<br>
+12) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
+13) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+14) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+15) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+16) kernel: mips: c-r4k: revert fix cache flushing for MT cores (prepare for apply reworked version).<br>
+17) kernel: mips: cache flush functions are reworked.<br>
+18) kernel: mips: fix bug in using flush_cache_vunmap.<br>
+19) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
+20) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+21) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+22) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+23) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+24) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+25) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+26) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+27) kernel: net: vlan: propagate gso_max_segs.<br>
+28) kernel: net: gro: selective flush of packets.<br>
+29) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+30) kernel: net: gro: add checksuming helpers.<br>
+31) kernel: net: gro: only verify TCP checksums for candidates.<br>
+32) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+33) kernel: net: gro: change GRO overflow strategy.<br>
+34) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+35) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+36) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
 <br>
 <br>
 <br>
