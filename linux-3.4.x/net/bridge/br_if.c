@@ -409,10 +409,11 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	if (changed_addr)
 		call_netdevice_notifiers(NETDEV_CHANGEADDR, br->dev);
 
-	dev_set_mtu(br->dev, br_min_mtu(br));
-
 	if (br_fdb_insert(br, p, dev->dev_addr))
 		netdev_err(dev, "failed insert local address bridge forwarding table\n");
+
+	dev_set_mtu(br->dev, br_min_mtu(br));
+	br_set_gso_limits(br);
 
 	kobject_uevent(&p->kobj, KOBJ_ADD);
 
@@ -450,7 +451,6 @@ int br_del_if(struct net_bridge *br, struct net_device *dev)
 	del_nbp(p);
 
 	dev_set_mtu(br->dev, br_min_mtu(br));
-	br_set_gso_limits(br);
 	br_set_gso_limits(br);
 
 	spin_lock_bh(&br->lock);
