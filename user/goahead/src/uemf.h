@@ -314,13 +314,11 @@ typedef struct {
 /*
  *	Block allocation (balloc) definitions
  */
-#ifdef	B_STATS
-#ifndef B_L
+#ifdef  B_STATS
 #define B_L			T(__FILE__), __LINE__
 #define B_ARGS_DEC		char_t *file, int line
 #define B_ARGS			file, line
-#endif /* B_L */
-#endif /* B_STATS */
+#endif
 
 /*
  *	Block classes are: 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 
@@ -480,44 +478,24 @@ typedef struct {
 /********************************* Prototypes *********************************/
 /*
  *	Balloc module
- *
- */
-
-/*
  *	Define NO_BALLOC to turn off our balloc module altogether
  *		#define NO_BALLOC 1
  */
 
-#ifdef NO_BALLOC
-#define balloc(B_ARGS, num) malloc(num)
-#define bfree(B_ARGS, p) free(p)
-#define bfreeSafe(B_ARGS, p) if (p) { free(p); }
-#define brealloc(B_ARGS, p, num) realloc(p, num)
-char_t *bstrdupNoBalloc(char_t *s);
-char *bstrdupANoBalloc(char *s);
-#define bstrdup(B_ARGS, s) bstrdupNoBalloc(s)
-#define gstrdup(B_ARGS, s) bstrdupNoBalloc(s)
-#else /* BALLOC */
 #ifndef B_STATS
+#define bstrdup(B_ARGS, p) bstrdup(p)
 #define balloc(B_ARGS, num) balloc(num)
 #define bfree(B_ARGS, p) bfree(p)
-#define bfreeSafe(B_ARGS, p) bfreeSafe(p)
 #define brealloc(B_ARGS, p, size) brealloc(p, size)
-#define bstrdup(B_ARGS, p) bstrdup(p)
-#define gstrdup	bstrdup
 #endif /* B_STATS */
 
-void bclose();
 int bopen(void *buf, int bufsize, int flags);
+void bclose();
+void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 void *balloc(B_ARGS_DEC, int size);
 void bfree(B_ARGS_DEC, void *mp);
-void bfreeSafe(B_ARGS_DEC, void *mp);
 void *brealloc(B_ARGS_DEC, void *buf, int newsize);
 char_t *bstrdup(B_ARGS_DEC, char_t *s);
-
-#endif /* BALLOC */
-
-void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...));
 
 /*
  *	Flags. The integrity value is used as an arbitrary value to fill the flags.

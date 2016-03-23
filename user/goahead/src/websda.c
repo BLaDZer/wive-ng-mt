@@ -152,7 +152,7 @@ char_t *websCalcNonce(webs_t wp)
 /*
  *	Cleanup
  */
-	bfreeSafe(B_L, prenonce);
+	bfree(B_L, prenonce);
 
 	return nonce;
 }
@@ -194,7 +194,7 @@ char_t *websCalcDigest(webs_t wp)
 	fmtAlloc(&a1, 255, T("%s:%s:%s"), wp->userName, wp->realm, wp->password);
 	a_assert(a1);
 	a1prime = websMD5(a1);
-	bfreeSafe(B_L, a1);
+	bfree(B_L, a1);
 /*
  *	Calculate second portion of digest H(A2)
  */
@@ -204,7 +204,7 @@ char_t *websCalcDigest(webs_t wp)
 	fmtAlloc(&a2, 255, T("%s:%s"), method, wp->uri);
 	a_assert(a2);
 	a2prime = websMD5(a2);
-	bfreeSafe(B_L, a2);
+	bfree(B_L, a2);
 /*
  *	Construct final digest KD(H(A1):nonce:H(A2))
  */
@@ -230,9 +230,9 @@ char_t *websCalcDigest(webs_t wp)
 /*
  *	Now clean up
  */
-	bfreeSafe(B_L, a1prime);
-	bfreeSafe(B_L, a2prime);
-	bfreeSafe(B_L, preDigest);
+	bfree(B_L, a1prime);
+	bfree(B_L, a2prime);
+	bfree(B_L, preDigest);
 	return digest;
 #else
 	return NULL;

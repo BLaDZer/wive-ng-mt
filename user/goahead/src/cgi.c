@@ -204,12 +204,12 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		== -1) {
 		websError(wp, 200, T("failed to spawn CGI task"));
 		for (ep = envp; *ep != NULL; ep++) {
-			bfreeSafe(B_L, *ep);
+			bfree(B_L, *ep);
 		}
-		bfreeSafe(B_L, cgiPath);
-		bfreeSafe(B_L, argp);
-		bfreeSafe(B_L, envp);
-		bfreeSafe(B_L, stdOut);
+		bfree(B_L, cgiPath);
+		bfree(B_L, argp);
+		bfree(B_L, envp);
+		bfree(B_L, stdOut);
 	} else {
 /*
  *		If the spawn was successful, put this wp on a queue to be
@@ -319,13 +319,13 @@ void websCgiCleanup()
  */
 				cgiMax = hFree((void***) &cgiList, cid);
 				for (ep = cgip->envp; ep != NULL && *ep != NULL; ep++) {
-					bfreeSafe(B_L, *ep);
+					bfree(B_L, *ep);
 				}
-				bfreeSafe(B_L, cgip->cgiPath);
-				bfreeSafe(B_L, cgip->argp);
-				bfreeSafe(B_L, cgip->envp);
-				bfreeSafe(B_L, cgip->stdOut);
-				bfreeSafe(B_L, cgip);
+				bfree(B_L, cgip->cgiPath);
+				bfree(B_L, cgip->argp);
+				bfree(B_L, cgip->envp);
+				bfree(B_L, cgip->stdOut);
+				bfree(B_L, cgip);
 
 				if(wp->has_firmware_upload_clean)
 					reboot_now();

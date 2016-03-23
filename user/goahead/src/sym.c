@@ -135,14 +135,14 @@ void symClose(sym_fd_t sd)
 			forw = sp->forw;
 			valueFree(&sp->name);
 			valueFree(&sp->content);
-			bfree(B_L, (void*) sp);
+			bfree(B_L, sp);
 			sp = forw;
 		}
 	}
-	bfree(B_L, (void*) tp->hash_table);
+	bfree(B_L, tp->hash_table);
 
 	symMax = hFree((void***) &sym, sd);
-	bfree(B_L, (void*) tp);
+	bfree(B_L, tp);
 }
 
 /******************************************************************************/
@@ -384,7 +384,7 @@ int symDelete(sym_fd_t sd, char_t *name)
 	}
 	valueFree(&sp->name);
 	valueFree(&sp->content);
-	bfree(B_L, (void*) sp);
+	bfree(B_L, sp);
 
 	return 0;
 }

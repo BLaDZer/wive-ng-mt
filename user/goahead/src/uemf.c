@@ -56,7 +56,7 @@ void error(E_ARGS_DEC, int etype, char_t *fmt, ...)
 	} else {
    /*
     * bugfix -- if etype is not E_LOG, E_ASSERT, or E_USER, the call to
-    * bfreeSafe(B_L, buf) below will fail, because 'buf' is randomly
+    * bfree(B_L, buf) below will fail, because 'buf' is randomly
     * initialized. To be nice, we format a message saying that this is an
     * unknown message type, and in doing so give buf a valid value. Thanks 
     * to Simon Byholm.
@@ -71,7 +71,7 @@ void error(E_ARGS_DEC, int etype, char_t *fmt, ...)
 		errorHandler(etype, buf);
 	}
 
-	bfreeSafe(B_L, buf);
+	bfree(B_L, buf);
 }
 
 /******************************************************************************/
@@ -105,7 +105,7 @@ void trace(int level, char_t *fmt, ...)
 	if (traceHandler) {
 		traceHandler(level, buf);
 	}
-	bfreeSafe(B_L, buf);
+	bfree(B_L, buf);
 	va_end(args);
 }
 

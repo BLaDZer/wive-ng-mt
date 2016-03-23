@@ -45,11 +45,11 @@ void procps_free(cmdline_t *src)
 		cmdline_t *next = src->next;
 
 		if (src->argv!=NULL)
-			bfreeSafe(B_L, src->argv);
+			bfree(B_L, src->argv);
 		if (src->buffer!=NULL)
-			bfreeSafe(B_L, src->buffer);
+			bfree(B_L, src->buffer);
 		if (src->dynamic)
-			bfreeSafe(B_L, src);
+			bfree(B_L, src);
 		src = next;
 	}
 }

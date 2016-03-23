@@ -120,9 +120,9 @@ void ejCloseEngine(int eid)
 	ejEmfClose(eid);
 #endif
 
-	bfreeSafe(B_L, ep->error);
+	bfree(B_L, ep->error);
 	ep->error = NULL;
-	bfreeSafe(B_L, ep->result);
+	bfree(B_L, ep->result);
 	ep->result = NULL;
 
 	ejLexClose(ep);
@@ -1358,10 +1358,10 @@ void ejError(ej_t* ep, char_t* fmt, ...)
 	if (ep != NULL && ip != NULL) {
 		fmtAlloc(&errbuf, E_MAX_ERROR, T("%s\n At line %d, line => \n\n%s\n"),
 			msgbuf, ip->lineNumber, ip->line);
-		bfreeSafe(B_L, ep->error);
+		bfree(B_L, ep->error);
 		ep->error = errbuf;
 	}
-	bfreeSafe(B_L, msgbuf);
+	bfree(B_L, msgbuf);
 }
 
 /******************************************************************************/

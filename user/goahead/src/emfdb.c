@@ -154,19 +154,19 @@ void dbClose(int did)
  */
 			if (pTable->nColumns) {
 				for (column = 0; column < pTable->nColumns; column++) {
-					bfreeSafe(B_L, pTable->columnNames[column]);
+					bfree(B_L, pTable->columnNames[column]);
 				}
-				bfreeSafe(B_L, pTable->columnNames);
-				bfreeSafe(B_L, pTable->columnTypes);
+				bfree(B_L, pTable->columnNames);
+				bfree(B_L, pTable->columnTypes);
 			}
 /*
  *			Delete the table name
  */
-			bfreeSafe(B_L, pTable->name);
+			bfree(B_L, pTable->name);
 /*
  *			Free the table
  */
-			bfreeSafe(B_L, pTable);
+			bfree(B_L, pTable);
 			hFree((void ***) &dbListTables, table);
 		}
 	}
@@ -213,12 +213,12 @@ void dbZero(int did)
  */
 					for (column = 0; column < nColumns; column++) {
 						if (pTable->columnTypes[column] == T_STRING) {
-							bfreeSafe(B_L, (char_t *)(pRow[column]));
+							bfree(B_L, (char_t *)(pRow[column]));
 							pRow[column] = 0;
 						}
 					}
 
-					bfreeSafe(B_L, pRow);
+					bfree(B_L, pRow);
 					hFree((void ***) &pTable->rows, row);
 				}
 			}
@@ -377,7 +377,7 @@ int dbDeleteRow(int did, char_t *tablename, int row)
  */
 			memset(pRow, 0, nColumns * max(sizeof(int), sizeof(char_t *)));
 
-			bfreeSafe(B_L, pRow);
+			bfree(B_L, pRow);
 			pTable->nRows = hFree((void ***)&pTable->rows, row);
 			trace(5, T("DB: Deleted row <%d> from table <%s>\n"), 
 				row, tablename);
@@ -742,7 +742,7 @@ int dbSave(int did, char_t *filename, int flags)
  */
 				fmtAlloc(&tmpNum, 20, T("%d"), row);
 				rc = dbWriteKeyValue(fd, KEYWORD_ROW, tmpNum);
-				bfreeSafe(B_L, tmpNum);
+				bfree(B_L, tmpNum);
 
 				colNames = pTable->columnNames;
 				colTypes = pTable->columnTypes;
@@ -757,7 +757,7 @@ int dbSave(int did, char_t *filename, int flags)
 					} else {
 						fmtAlloc(&tmpNum, 20, T("%d"), pRow[column]);
 						rc = dbWriteKeyValue(fd, *colNames, tmpNum);
-						bfreeSafe(B_L, tmpNum);
+						bfree(B_L, tmpNum);
 					}
 				}
 
@@ -1026,7 +1026,7 @@ void basicSetProductDir(char_t *proddir)
 	int len;
 
 	if (basicProdDir != NULL)
-    	    bfreeSafe(B_L, basicProdDir);
+    	    bfree(B_L, basicProdDir);
 
 	basicProdDir = bstrdup(B_L, proddir);
 /*

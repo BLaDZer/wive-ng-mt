@@ -113,7 +113,7 @@ void ringqClose(ringq_t *rq)
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
 	ringqFlush(rq);
-	bfree(B_L, (char*) rq->buf);
+	bfree(B_L, rq->buf);
 	rq->buf = NULL;
 }
 
@@ -500,7 +500,7 @@ static int ringqGrow(ringq_t *rq)
 		return 0;
 	}
 	ringqGetBlk(rq, newbuf, ringqLen(rq));
-	bfree(B_L, (char*) rq->buf);
+	bfree(B_L, rq->buf);
 
 #ifdef OLD
 	rq->endp = &newbuf[endp];

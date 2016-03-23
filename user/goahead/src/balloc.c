@@ -96,7 +96,7 @@ static int   bopenCount = 0;		/* Num tasks using balloc */
 static void bStatsAlloc(B_ARGS_DEC, void *ptr, int q, int size);
 static void bStatsFree(B_ARGS_DEC, void *ptr, int q, int size);
 static void bstatsWrite(int handle, char_t *fmt, ...);
-static int  bStatsFileSort(const void *cp1,const void *cp2);
+static int  bStatsFileSort(const void *cp1, const void *cp2);
 #endif /* B_STATS */
 
 #if (defined (B_FILL) || defined (B_VERIFY_CAUSES_SEVERE_OVERHEAD))
@@ -336,6 +336,12 @@ void bfree(B_ARGS_DEC, void *mp)
 #ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
 	int  memSize;
 
+#endif
+	/* prevent double free */
+	if (!mp)
+	    return;
+
+#ifdef B_VERIFY_CAUSES_SEVERE_OVERHEAD
 	verifyBallocSpace();
 #endif
 	bp = (bType*) ((char*) mp - sizeof(bType));
@@ -372,18 +378,6 @@ void bfree(B_ARGS_DEC, void *mp)
 	bQhead[q] = bp;
 
 	bp->flags = B_FILL_WORD;
-}
-
-/******************************************************************************/
-/*
- *	Safe free
- */
-
-void bfreeSafe(B_ARGS_DEC, void *mp)
-{
-	if (mp) {
-		bfree(B_ARGS, mp);
-	}
 }
 
 /******************************************************************************/
@@ -871,19 +865,38 @@ int bopen(void *buf, int bufsize, int flags)
 }
 
 /******************************************************************************/
-
 void bclose()
 {
 }
 
 /******************************************************************************/
+void bfree(B_ARGS_DEC, void *mp)
+{
+	if (mp) {
+	    free(mp);
+	    mp=NULL;
+	}
+}
 
+/******************************************************************************/
+void *balloc(B_ARGS_DEC, int size)
+{
+	return malloc(size);
+}
+
+/******************************************************************************/
+void *brealloc(B_ARGS_DEC, void *mp, int newsize)
+{
+	return realloc(mp, newsize);
+}
+
+/******************************************************************************/
 void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 {
 }
 
 /******************************************************************************/
-char_t *bstrdupNoBalloc(char_t *s)
+char_t *bstrdup(B_ARGS_DEC, char_t *s)
 {
 	char*	buf;
 

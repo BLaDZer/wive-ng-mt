@@ -198,7 +198,7 @@ int websAspRequest(webs_t wp, char_t *lpath)
 							websWrite(wp, T("<h2><b>ASP Error: %s</b></h2>\n"), 
 								result);
 							websWrite(wp, T("<pre>%s</pre>"), nextp);
-							bfreeSafe(B_L, result);
+							bfree(B_L, result);
 						} else {
 							websWrite(wp, T("<h2><b>ASP Error</b></h2>\n%s\n"),
 								nextp);
@@ -234,8 +234,8 @@ done:
 			ejCloseEngine(ejid);
 		}
 	}
-	bfreeSafe(B_L, buf);
-	bfreeSafe(B_L, rbuf);
+	bfree(B_L, buf);
+	bfree(B_L, rbuf);
 	return rc;
 }
 

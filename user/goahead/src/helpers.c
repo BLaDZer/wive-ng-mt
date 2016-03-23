@@ -97,7 +97,7 @@ int initSplitter(string_split_t *buf)
 	buf->items = (char **)balloc(B_L, SPLITTER_TOKEN_QUANTITY * sizeof(char *));
 	if (buf->items == NULL)
 	{
-		bfreeSafe(B_L, buf->buf);
+		bfree(B_L, buf->buf);
 		buf->buf = NULL;
 		return errno;
 	}
@@ -122,7 +122,7 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 	// Check if need to realloc buffer
 	if (buf->buf_size < size)
 	{
-		bfreeSafe(B_L, buf->buf);
+		bfree(B_L, buf->buf);
 		size_t amount = size + (SPLITTER_BUFFER_QUANTITY - size%SPLITTER_BUFFER_QUANTITY);
 		buf->buf = (char *)balloc(B_L, amount);
 		if (buf->buf == NULL)
@@ -145,7 +145,7 @@ int splitString(string_split_t *buf, const char *string, char splitter)
 	// Check if need to realloc pointers
 	if (buf->pointers < buf->found)
 	{
-		bfreeSafe(B_L, buf->items);
+		bfree(B_L, buf->items);
 		size_t amount = buf->found + (SPLITTER_TOKEN_QUANTITY - buf->found%SPLITTER_TOKEN_QUANTITY);
 		buf->items = (char **)balloc(B_L, amount * sizeof(char *));
 		if (buf->items == NULL)
@@ -176,12 +176,12 @@ int freeSplitter(string_split_t *buf)
 {
 	if (buf->buf != NULL)
 	{
-		bfreeSafe(B_L, buf->buf);
+		bfree(B_L, buf->buf);
 		buf->buf = NULL;
 	}
 	if (buf->items != NULL)
 	{
-		bfreeSafe(B_L, buf->items);
+		bfree(B_L, buf->items);
 		buf->items = NULL;
 	}
 	return 0;
@@ -272,7 +272,7 @@ int doSystem(char_t *fmt, ...)
 
 	if (cmd) {
 		rc = system(cmd);
-		bfreeSafe(B_L, cmd);
+		bfree(B_L, cmd);
 	}
 
 	return rc;
@@ -433,7 +433,7 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	}
 	value[j] = '\0';
 
-	bfreeSafe(B_L, buf);
+	bfree(B_L, buf);
 	return 0;
 }
 

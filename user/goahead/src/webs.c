@@ -218,8 +218,8 @@ int websOpenListen(int port, int retries)
  *	Determine the full URL address to access the home page for this web server
  */
 	websPort = port;
-	bfreeSafe(B_L, websHostUrl);
-	bfreeSafe(B_L, websIpaddrUrl);
+	bfree(B_L, websHostUrl);
+	bfree(B_L, websIpaddrUrl);
 	websIpaddrUrl = websHostUrl = NULL;
 
 	if (port == 80) {
@@ -246,8 +246,8 @@ void websCloseListen()
 		socketCloseConnection(websListenSock);
 		websListenSock = -1;
 	}
-	bfreeSafe(B_L, websHostUrl);
-	bfreeSafe(B_L, websIpaddrUrl);
+	bfree(B_L, websHostUrl);
+	bfree(B_L, websIpaddrUrl);
 	websIpaddrUrl = websHostUrl = NULL;
 }
 
@@ -1133,7 +1133,7 @@ static void websParseRequest(webs_t wp)
 				wp->flags |= WEBS_IF_MODIFIED;
 			}
 
-			bfreeSafe(B_L, cmd);
+			bfree(B_L, cmd);
 #endif /* WEBS_IF_MODIFIED_SUPPORT */
 		}
 	}
@@ -1166,7 +1166,7 @@ void websSetEnv(webs_t wp)
 	websSetVar(wp, T("SERVER_ADDR"), wp->ifaddr);
 	fmtAlloc(&value, FNAMESIZE, T("%s/%s"), WEBS_NAME, WEBS_VERSION);
 	websSetVar(wp, T("SERVER_SOFTWARE"), value);
-	bfreeSafe(B_L, value);
+	bfree(B_L, value);
 	websSetVar(wp, T("SERVER_PROTOCOL"), wp->protoVersion);
 
 /*
@@ -1194,7 +1194,7 @@ void websSetEnv(webs_t wp)
 			if ((valCheck = websGetVar(wp, keyword, NULL)) != 0) {
 				fmtAlloc(&valNew, 256, T("%s %s"), valCheck, value);
 				websSetVar(wp, keyword, valNew);
-				bfreeSafe(B_L, valNew);
+				bfree(B_L, valNew);
 			} else {
 				websSetVar(wp, keyword, value);
 			}
@@ -1468,8 +1468,8 @@ void websRedirect(webs_t wp, char_t *url)
 
 	websResponse(wp, 302, msgbuf, url);
 
-	bfreeSafe(B_L, msgbuf);
-	bfreeSafe(B_L, urlbuf);
+	bfree(B_L, msgbuf);
+	bfree(B_L, urlbuf);
 }
 
 
@@ -1594,7 +1594,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
     * wp structure. The webs_t cleanup code will free this memory for us.
     */
     safeUrl = websSafeUrl(wp->url);
-    bfreeSafe(B_L, wp->url);
+    bfree(B_L, wp->url);
     wp->url = safeUrl;
 
     va_start(args, fmt);
@@ -1602,7 +1602,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
     fmtValloc(&userMsg, WEBS_BUFSIZE, fmt, args);
     va_end(args);
     safeMsg = websSafeUrl(userMsg);
-    bfreeSafe(B_L, userMsg);
+    bfree(B_L, userMsg);
     userMsg = safeMsg;
     safeMsg  = NULL;
 
@@ -1625,7 +1625,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
       reEntry = 0;
       if (errorOk)
       {
-         bfreeSafe(B_L, userMsg);
+         bfree(B_L, userMsg);
          return;
       }
       /* ...else we need to fall through and execute the simple error page. */
@@ -1645,8 +1645,8 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
 		websErrorMsg(code), userMsg);
 
 	websResponse(wp, code, buf, NULL);
-	bfreeSafe(B_L, buf);
-	bfreeSafe(B_L, userMsg);
+	bfree(B_L, buf);
+	bfree(B_L, userMsg);
 }
 
 /******************************************************************************/
@@ -1921,8 +1921,8 @@ static void websLog(webs_t wp, int code)
 	len = gstrlen(buf);
 	abuf = ballocUniToAsc(buf, len+1);
 	write(websLogFd, abuf, len);
-	bfreeSafe(B_L, buf);
-	bfreeSafe(B_L, abuf);
+	bfree(B_L, buf);
+	bfree(B_L, abuf);
 }
 
 #endif /* WEBS_LOG_SUPPORT */
@@ -2356,8 +2356,8 @@ void websSetHostUrl(char_t *url)
 {
 	a_assert(url && *url);
 
-	bfreeSafe(B_L, websHostUrl);
-	websHostUrl = gstrdup(B_L, url);
+	bfree(B_L, websHostUrl);
+	websHostUrl = bstrdup(B_L, url);
 }
 
 /******************************************************************************/

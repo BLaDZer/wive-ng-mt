@@ -45,7 +45,7 @@ value_t valueString(char_t* value, int flags)
 	v.type = tstring;
 	if (flags & VALUE_ALLOCATE) {
 		v.allocated = 1;
-		v.value.tstring = gstrdup(B_L, value);
+		v.value.tstring = bstrdup(B_L, value);
 	} else {
 		v.allocated = 0;
 		v.value.tstring = value;
