@@ -116,7 +116,7 @@ int hFree(void ***map, int handle)
 	a_assert(mp[H_USED]);
 	mp[handle + H_OFFSET] = 0;
 	if (--(mp[H_USED]) == 0) {
-		bfree(B_L, mp);
+		bfree(B_L, (void*) mp);
 		*map = NULL;
 	}
 
