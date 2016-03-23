@@ -1874,6 +1874,7 @@
 30) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
 31) kernel: usb: usbnet: cleanup after bind() in probe().<br>
 32) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+33) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
 <br>
 <br>
 <br>
