@@ -222,7 +222,4 @@ void 	websReadEvent(webs_t wp);
  *	Prototypes for functions available when running as part of the 
  *	GoAhead Embedded Management Framework (EMF)
  */
-#ifdef EMF
-void 	 websFormExplain(webs_t wp, char_t *path, char_t *query);
-#endif
 #endif /* _h_WEBS */

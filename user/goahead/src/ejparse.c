@@ -96,9 +96,6 @@ int ejOpenEngine(sym_fd_t variables, sym_fd_t functions)
  */
 	ejSetGlobalVar(ep->eid, T("null"), NULL);
 
-#ifdef EMF
-	ejEmfOpen(ep->eid);
-#endif
 	return ep->eid;
 }
 
@@ -115,10 +112,6 @@ void ejCloseEngine(int eid)
 	if ((ep = ejPtr(eid)) == NULL) {
 		return;
 	}
-
-#ifdef EMF
-	ejEmfClose(eid);
-#endif
 
 	bfree(B_L, ep->error);
 	ep->error = NULL;

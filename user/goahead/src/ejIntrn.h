@@ -202,9 +202,6 @@ void		ejLexPutbackToken(ej_t* ep, int tid, char_t *string);
 sym_fd_t	ejGetVariableTable(int eid);
 sym_fd_t	ejGetFunctionTable(int eid);
 
-int		ejEmfOpen(int eid);
-void		ejEmfClose(int eid);
-
 int ejEmfDbRead(int eid, void *handle, int argc, char_t **argv);
 int ejEmfDbReadKeyed(int eid, void *handle, int argc, char_t **argv);
 int ejEmfDbTableGetNrow(int eid, void *handle, int argc, char_t **argv);

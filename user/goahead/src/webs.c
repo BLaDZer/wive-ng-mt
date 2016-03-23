@@ -1199,13 +1199,6 @@ void websSetEnv(webs_t wp)
 		}
 		keyword = strtok(NULL, T("&"));
 	}
-
-#ifdef EMF
-/*
- *	Add GoAhead Embedded Management Framework defines
- */
-	websSetEmfEnvironment(wp);
-#endif
 }
 
 /******************************************************************************/

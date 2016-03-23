@@ -213,14 +213,4 @@ void 	 websCloseServer();
 char_t*	 websGetDateString(websStatType* sbuf);
 
 int		strcmpci(char_t* s1, char_t* s2);
-
-/*
- *	Prototypes for functions available when running as part of the 
- *	GoAhead Embedded Management Framework (EMF)
- */
-#ifdef EMF
-int 		 websEmfOpen();
-void 	 websEmfClose();
-void 	 websSetEmfEnvironment(webs_t wp);
-#endif
 #endif /* _h_WEBS_INTERNAL */
