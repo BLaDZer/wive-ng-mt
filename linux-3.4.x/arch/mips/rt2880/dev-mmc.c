@@ -8,6 +8,7 @@
 
 #include <linux/mmc/mmc_mtk.h>
 
+#include <asm/irq.h>
 #include <asm/rt2880/surfboardint.h>
 #include <asm/rt2880/rt_mmap.h>
 
