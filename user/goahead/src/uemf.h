@@ -13,32 +13,28 @@
 
 /******************************** Description *********************************/
 
-/* 
+/*
  *	GoAhead Web Server header. This defines the Web public APIs
  */
 
-/******************************* Per O/S Includes *****************************/
-
-	#include	<stdio.h>
-	#include	<sys/types.h>
-	#include	<sys/stat.h>
-	#include	<sys/param.h>
-	#include	<limits.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<sys/socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include        <netinet/tcp.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-
 /********************************** Includes **********************************/
-
+#include	<stdio.h>
+#include	<sys/types.h>
+#include	<sys/stat.h>
+#include	<sys/param.h>
+#include	<limits.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<unistd.h>
+#include	<sys/socket.h>
+#include	<sys/select.h>
+#include	<netinet/in.h>
+#include        <netinet/tcp.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include	<time.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #include	<ctype.h>
 #include	<stdarg.h>
 #include	<string.h>
@@ -86,8 +82,7 @@ typedef char			char_t;
 /*
  *	GoAhead Copyright.
  */
-#define GOAHEAD_COPYRIGHT \
-	T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
+#define GOAHEAD_COPYRIGHT T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
 
 /********************************** Defines ***********************************/
 
@@ -142,9 +137,6 @@ typedef enum {
 	terrmsg 	= 14
 } vtype_t;
 
-#ifndef __NO_PACK
-#pragma pack(2)
-#endif /* _NO_PACK */
 typedef struct {
 
 	union {
@@ -168,9 +160,6 @@ typedef struct {
 	unsigned int	valid		: 8;
 	unsigned int	allocated	: 8;		/* String was balloced */
 } value_t;
-#ifndef __NO_PACK
-#pragma pack()
-#endif /* __NO_PACK */
 
 /*
  *	Allocation flags
@@ -211,7 +200,7 @@ typedef struct {
  *    ^                           ^                       ^               ^
  *    |                           |                       |               |
  *  rq->buf                    rq->servp               rq->endp      rq->enduf
- *     
+ *
  *	The queue is empty when servp == endp.  This means that the queue will hold
  *	at most rq->buflen -1 bytes.  It is the fillers responsibility to ensure
  *	the ringq is never filled such that servp == endp.
@@ -439,128 +428,125 @@ char_t *bstrdup(B_ARGS_DEC, char_t *s);
 #define emfReschedCallback	websReschedCallBack
 #endif /* WEBS */
 
-typedef void	(emfSchedProc)(void *data, int id);
-int		emfSchedCallback(int delay, emfSchedProc *proc, void *arg);
-void 	emfUnschedCallback(int id);
-void 	emfReschedCallback(int id, int delay);
-void		emfSchedProcess();
-int		emfInstGet();
-void		emfInstSet(int inst);
-void		error(E_ARGS_DEC, int flags, char_t *fmt, ...);
-void		(*errorSetHandler(void (*function)(int etype, char_t *msg))) \
+typedef void (emfSchedProc)(void *data, int id);
+int emfSchedCallback(int delay, emfSchedProc *proc, void *arg);
+void emfUnschedCallback(int id);
+void emfReschedCallback(int id, int delay);
+void emfSchedProcess();
+int emfInstGet();
+void emfInstSet(int inst);
+void error(E_ARGS_DEC, int flags, char_t *fmt, ...);
+void (*errorSetHandler(void (*function)(int etype, char_t *msg))) \
 					(int etype, char_t *msg);
 
 #ifdef B_STATS
-#define 		hAlloc(x) 				HALLOC(B_L, x)
-#define			hAllocEntry(x, y, z)	HALLOCENTRY(B_L, x, y, z)
-int		HALLOC(B_ARGS_DEC, void ***map);
-int 		HALLOCENTRY(B_ARGS_DEC, void ***list, int *max, int size);
+#define hAlloc(x) 				HALLOC(B_L, x)
+#define hAllocEntry(x, y, z)	HALLOCENTRY(B_L, x, y, z)
+int HALLOC(B_ARGS_DEC, void ***map);
+int HALLOCENTRY(B_ARGS_DEC, void ***list, int *max, int size);
 #else
-int		hAlloc(void ***map);
-int 		hAllocEntry(void ***list, int *max, int size);
+int hAlloc(void ***map);
+int hAllocEntry(void ***list, int *max, int size);
 #endif /* B_STATS */
 
-int		hFree(void ***map, int handle);
+int hFree(void ***map, int handle);
 
-int	 	ringqOpen(ringq_t *rq, int increment, int maxsize);
-void 		ringqClose(ringq_t *rq);
-int 		ringqLen(ringq_t *rq);
+int ringqOpen(ringq_t *rq, int increment, int maxsize);
+void ringqClose(ringq_t *rq);
+int ringqLen(ringq_t *rq);
+int ringqPutc(ringq_t *rq, char_t c);
+int ringqInsertc(ringq_t *rq, char_t c);
+int ringqPutStr(ringq_t *rq, char_t *str);
+int ringqGetc(ringq_t *rq);
+int ringqPutBlk(ringq_t *rq, unsigned char *buf, int len);
+int ringqPutBlkMax(ringq_t *rq);
+void ringqPutBlkAdj(ringq_t *rq, int size);
+int ringqGetBlk(ringq_t *rq, unsigned char *buf, int len);
+int ringqGetBlkMax(ringq_t *rq);
+void ringqGetBlkAdj(ringq_t *rq, int size);
+void ringqFlush(ringq_t *rq);
+void ringqAddNull(ringq_t *rq);
 
-int 		ringqPutc(ringq_t *rq, char_t c);
-int	 	ringqInsertc(ringq_t *rq, char_t c);
-int	 	ringqPutStr(ringq_t *rq, char_t *str);
-int 		ringqGetc(ringq_t *rq);
+int fmtValloc(char_t **s, int n, char_t *fmt, va_list arg);
+int fmtAlloc(char_t **s, int n, char_t *fmt, ...);
+int fmtStatic(char_t *s, int n, char_t *fmt, ...);
 
-int		fmtValloc(char_t **s, int n, char_t *fmt, va_list arg);
-int		fmtAlloc(char_t **s, int n, char_t *fmt, ...);
-int		fmtStatic(char_t *s, int n, char_t *fmt, ...);
 
-int 		ringqPutBlk(ringq_t *rq, unsigned char *buf, int len);
-int 		ringqPutBlkMax(ringq_t *rq);
-void 		ringqPutBlkAdj(ringq_t *rq, int size);
-int 		ringqGetBlk(ringq_t *rq, unsigned char *buf, int len);
-int 		ringqGetBlkMax(ringq_t *rq);
-void 		ringqGetBlkAdj(ringq_t *rq, int size);
-void 		ringqFlush(ringq_t *rq);
-void 		ringqAddNull(ringq_t *rq);
+int scriptSetVar(int engine, char_t *var, char_t *value);
+int scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
+void socketClose();
+void socketCloseConnection(int sid);
+void socketCreateHandler(int sid, int mask, socketHandler_t handler, void* arg);
+void socketDeleteHandler(int sid);
+int socketEof(int sid);
+int socketCanWrite(int sid);
+void socketSetBufferSize(int sid, int in, int line, int out);
+int socketFlush(int sid);
+int socketGets(int sid, char_t **buf);
+int socketGetPort(int sid);
+int socketInputBuffered(int sid);
+int socketOpen();
+int socketOpenConnection(int port, socketAccept_t accept, int flags);
+void socketProcess(int hid);
+int socketRead(int sid, char *buf, int len);
+int socketReady(int hid);
+int socketWrite(int sid, char *buf, int len);
+int socketSelect(int hid, int timeout);
+int socketGetHandle(int sid);
+int socketSetBlock(int sid, int flags);
+int socketGetBlock(int sid);
+int socketAlloc(int port, socketAccept_t accept, int flags);
+void socketFree(int sid);
+int socketGetError();
+socket_t *socketPtr(int sid);
+int socketWaitForEvent(socket_t *sp, int events, int *errCode);
+void socketRegisterInterest(socket_t *sp, int handlerMask);
+int socketGetInput(int sid, char *buf, int toRead, int *errCode);
+void setSocketNodelayReuse(int sock);
 
-int		scriptSetVar(int engine, char_t *var, char_t *value);
-int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
-void		socketClose();
-void		socketCloseConnection(int sid);
-void		socketCreateHandler(int sid, int mask, socketHandler_t 
-					handler, void* arg);
-void		socketDeleteHandler(int sid);
-int		socketEof(int sid);
-int 		socketCanWrite(int sid);
-void 		socketSetBufferSize(int sid, int in, int line, int out);
-int		socketFlush(int sid);
-int		socketGets(int sid, char_t **buf);
-int		socketGetPort(int sid);
-int		socketInputBuffered(int sid);
-int		socketOpen();
-int 		socketOpenConnection(int port, socketAccept_t accept, int flags);
-void		socketProcess(int hid);
-int		socketRead(int sid, char *buf, int len);
-int 		socketReady(int hid);
-int		socketWrite(int sid, char *buf, int len);
-int 		socketSelect(int hid, int timeout);
-int 		socketGetHandle(int sid);
-int 		socketSetBlock(int sid, int flags);
-int 		socketGetBlock(int sid);
-int 		socketAlloc(int port, socketAccept_t accept, int flags);
-void 		socketFree(int sid);
-int		socketGetError();
-			socket_t *socketPtr(int sid);
-int 		socketWaitForEvent(socket_t *sp, int events, int *errCode);
-void 		socketRegisterInterest(socket_t *sp, int handlerMask);
-int 		socketGetInput(int sid, char *buf, int toRead, int *errCode);
-void		setSocketNodelayReuse(int sock);
+char_t *strlower(char_t *string);
+char_t *strupper(char_t *string);
+char_t *stritoa(int n, char_t *string, int width);
 
-char_t	*strlower(char_t *string);
-char_t	*strupper(char_t *string);
+sym_fd_t symOpen(int hash_size);
+void symClose(sym_fd_t sd);
+sym_t *symLookup(sym_fd_t sd, char_t *name);
+sym_t *symEnter(sym_fd_t sd, char_t *name, value_t v, int arg);
+int symDelete(sym_fd_t sd, char_t *name);
+void symWalk(sym_fd_t sd, void (*fn)(sym_t *symp));
+sym_t *symFirst(sym_fd_t sd);
+sym_t *symNext(sym_fd_t sd);
+int symSubOpen();
+void symSubClose();
 
-char_t	*stritoa(int n, char_t *string, int width);
+void trace(int lev, char_t *fmt, ...);
+void traceRaw(char_t *buf);
+void (*traceSetHandler(void (*function)(int level, char_t *buf))) (int level, char_t *buf);
 
-sym_fd_t	symOpen(int hash_size);
-void		symClose(sym_fd_t sd);
-sym_t	*symLookup(sym_fd_t sd, char_t *name);
-sym_t	*symEnter(sym_fd_t sd, char_t *name, value_t v, int arg);
-int		symDelete(sym_fd_t sd, char_t *name);
-void 	symWalk(sym_fd_t sd, void (*fn)(sym_t *symp));
-sym_t	*symFirst(sym_fd_t sd);
-sym_t	*symNext(sym_fd_t sd);
-int		symSubOpen();
-void 	symSubClose();
-
-void		trace(int lev, char_t *fmt, ...);
-void		traceRaw(char_t *buf);
-void		(*traceSetHandler(void (*function)(int level, char_t *buf))) 
-					(int level, char_t *buf);
-
-value_t 	valueInteger(long value);
-value_t	valueString(char_t *value, int flags);
-value_t	valueErrmsg(char_t *value);
-void 	valueFree(value_t *v);
-int		vxchdir(char *dirname);
+value_t valueInteger(long value);
+value_t valueString(char_t *value, int flags);
+value_t valueErrmsg(char_t *value);
+void valueFree(value_t *v);
+int vxchdir(char *dirname);
 
 unsigned int hextoi(char_t *hexstring);
 unsigned int strtoi(char_t *s);
-time_t	timeMsec();
 
-char_t	*ballocAscToUni(char  *cp, int alen);
-char	*ballocUniToAsc(char_t *unip, int ulen);
+time_t timeMsec();
 
-char_t	*basicGetHost();
-char_t	*basicGetAddress();
-char_t	*basicGetProduct();
-void	basicSetHost(char_t *host);
-void	basicSetAddress(char_t *addr);
+char_t *ballocAscToUni(char  *cp, int alen);
+char *ballocUniToAsc(char_t *unip, int ulen);
 
-int	harnessOpen(char_t **argv);
-void	harnessClose(int status);
-void	harnessTesting(char_t *msg, ...);
-void	harnessPassed();
-void	harnessFailed(int line);
-int	harnessLevel();
+char_t *basicGetHost();
+char_t *basicGetAddress();
+char_t *basicGetProduct();
+void basicSetHost(char_t *host);
+void basicSetAddress(char_t *addr);
+
+int harnessOpen(char_t **argv);
+void harnessClose(int status);
+void harnessTesting(char_t *msg, ...);
+void harnessPassed();
+void harnessFailed(int line);
+int harnessLevel();
 #endif /* _h_UEMF */
