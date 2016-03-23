@@ -32,7 +32,7 @@ static void usage();
  *	Main program for webpack test harness
  */
 
-int gmain(int argc, char_t* argv[])
+int main(int argc, char_t* argv[])
 {
 	char_t		*fileList, *prefix;
 
@@ -69,7 +69,7 @@ static void usage()
 
 static int compile(char_t *fileList, char_t *prefix)
 {
-	gstat_t			sbuf;
+	stat_t			sbuf;
 	FILE			*lp;
 	time_t			now;
 	char_t			file[FNAMESIZE];
@@ -88,8 +88,7 @@ static int compile(char_t *fileList, char_t *prefix)
 
 	time(&now);
 	fprintf(stdout, "/*\n * webrom.c -- Compiled Web Pages\n *\n");
-	fprintf(stdout, " * Compiled by GoAhead WebCompile: %s */\n\n", 
-		gctime(&now));
+	fprintf(stdout, " * Compiled by GoAhead WebCompile: %s */\n\n", ctime(&now));
 	fprintf(stdout, "#include \"wsIntrn.h\"\n\n");
 	fprintf(stdout, "#ifndef WEBS_PAGE_ROM\n");
 	fprintf(stdout, "websRomPageIndexType websRomPageIndex[] = {\n");
@@ -109,10 +108,10 @@ static int compile(char_t *fileList, char_t *prefix)
 		if (*file == '\0') {
 			continue;
 		}
-		if (gstat(file, &sbuf) == 0 && sbuf.st_mode & S_IFDIR) {
+		if (stat(file, &sbuf) == 0 && sbuf.st_mode & S_IFDIR) {
 			continue;
 		} 
-		if ((fd = gopen(file, O_RDONLY | O_BINARY)) < 0) {
+		if ((fd = open(file, O_RDONLY | O_BINARY)) < 0) {
 			fprintf(stderr, "Can't open file %s\n", file);
 			return -1;
 		}
@@ -158,8 +157,8 @@ static int compile(char_t *fileList, char_t *prefix)
 /*
  *		Remove the prefix and add a leading "/" when we print the path
  */
-		if (strncmp(file, prefix, gstrlen(prefix)) == 0) {
-			cp = &file[gstrlen(prefix)];
+		if (strncmp(file, prefix, strlen(prefix)) == 0) {
+			cp = &file[strlen(prefix)];
 		} else {
 			cp = file;
 		}
@@ -170,7 +169,7 @@ static int compile(char_t *fileList, char_t *prefix)
 			cp++;
 		}
 
-		if (gstat(file, &sbuf) == 0 && sbuf.st_mode & S_IFDIR) {
+		if (stat(file, &sbuf) == 0 && sbuf.st_mode & S_IFDIR) {
 			fprintf(stdout, "    { T(\"/%s\"), 0, 0 },\n", cp);
 			continue;
 		}

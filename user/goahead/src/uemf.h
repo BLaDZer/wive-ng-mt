@@ -89,84 +89,6 @@ typedef char			char_t;
 #define GOAHEAD_COPYRIGHT \
 	T("Copyright (c) GoAhead Software Inc., 1995-2000. All Rights Reserved.")
 
-#define gchdir		chdir
-#define gmkdir(s)	mkdir(s,0755)
-#define grmdir		rmdir
-
-#define gclose		close
-#define gclosedir	closedir
-#define gchmod		chmod
-#define ggetcwd		getcwd
-#define glseek		lseek
-#define gloadModule	loadModule
-#define gopen		open
-#define gopendir	opendir
-#define gread		read
-#define greaddir	readdir
-#define grename		rename
-#define gstat		stat
-#define gunlink		unlink
-#define gwrite		write
-
-#define gasctime	asctime
-#define gsprintf	sprintf
-#define gprintf		printf
-#define gfprintf	fprintf
-#define gsscanf		sscanf
-#define gvsprintf	vsprintf
-
-#define gstrcpy		strcpy
-#define gstrncpy	strncpy
-#define gstrncat	strncat
-#define gstrlen		strlen
-#define gstrcat		strcat
-#define gstrcmp		strcmp
-#define gstrncmp	strncmp
-#define gstricmp	strcmpci
-#define gstrchr		strchr
-#define gstrrchr	strrchr
-#define gstrtok		strtok
-#define gstrnset	strnset
-#define gstrrchr	strrchr
-#define gstrspn	strspn
-#define gstrcspn	strcspn
-#define gstrstr		strstr
-#define gstrtol		strtol
-
-#define gfopen		fopen
-#define gcreat		creat
-#define gfgets		fgets
-#define gfputs		fputs
-#define gfscanf		fscanf
-#define ggets		gets
-#define gtmpnam		tmpnam
-#define gtempnam	tempnam
-#define gfindfirst	_findfirst
-#define gfinddata_t	_finddata_t
-#define gfindnext	_findnext
-#define gfindclose	_findclose
-#define gaccess		access
-
-typedef struct stat gstat_t;
-
-#define gremove		remove
-
-#define gtolower	tolower
-#define gtoupper	toupper
-#define gisspace	isspace
-#define gisdigit	isdigit
-#define gisxdigit	isxdigit
-#define gisalnum	isalnum
-#define gisalpha	isalpha
-#define gisupper	isupper
-#define gislower	islower
-#define gatoi		atoi
-
-#define gctime		ctime
-#define ggetenv		getenv
-#define gexecvp		execvp
-#define gmain		main
-
 /********************************** Defines ***********************************/
 
 #ifndef FNAMESIZE
@@ -200,6 +122,8 @@ typedef struct stat gstat_t;
 /*
  *	These values are not prefixed so as to aid code readability
  */
+typedef struct stat stat_t;
+
 typedef enum {
 	tundefined	= 0,
 	tbyteint	= 1,
@@ -621,22 +545,22 @@ void 	valueFree(value_t *v);
 int		vxchdir(char *dirname);
 
 unsigned int hextoi(char_t *hexstring);
-unsigned int gstrtoi(char_t *s);
-extern				time_t	timeMsec();
+unsigned int strtoi(char_t *s);
+time_t	timeMsec();
 
 char_t	*ballocAscToUni(char  *cp, int alen);
-char		*ballocUniToAsc(char_t *unip, int ulen);
+char	*ballocUniToAsc(char_t *unip, int ulen);
 
 char_t	*basicGetHost();
 char_t	*basicGetAddress();
 char_t	*basicGetProduct();
-void		basicSetHost(char_t *host);
-void		basicSetAddress(char_t *addr);
+void	basicSetHost(char_t *host);
+void	basicSetAddress(char_t *addr);
 
-int		harnessOpen(char_t **argv);
-void		harnessClose(int status);
-void		harnessTesting(char_t *msg, ...);
-void		harnessPassed();
-void		harnessFailed(int line);
-int		harnessLevel();
+int	harnessOpen(char_t **argv);
+void	harnessClose(int status);
+void	harnessTesting(char_t *msg, ...);
+void	harnessPassed();
+void	harnessFailed(int line);
+int	harnessLevel();
 #endif /* _h_UEMF */

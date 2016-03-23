@@ -88,7 +88,7 @@ char_t *websMD5(char_t *string)
 /*
  *		Convert input char_t string to char string
  */
-		nLen = gstrlen(string);
+		nLen = strlen(string);
 		strTemp = ballocUniToAsc(string, nLen + 1);
 /*
  *		Execute the digest calculation
@@ -138,11 +138,9 @@ char_t *websCalcNonce(webs_t wp)
  */
 	prenonce = NULL;
 #ifdef DIGEST_ACCESS_SUPPORT
-	fmtAlloc(&prenonce, 256, T("%s:%s:%s"), RANDOMKEY, gasctime(newtime),
-		wp->realm); 
+	fmtAlloc(&prenonce, 256, T("%s:%s:%s"), RANDOMKEY, asctime(newtime), wp->realm);
 #else
-	fmtAlloc(&prenonce, 256, T("%s:%s:%s"), RANDOMKEY, gasctime(newtime), 
-		RANDOMKEY); 
+	fmtAlloc(&prenonce, 256, T("%s:%s:%s"), RANDOMKEY, asctime(newtime), RANDOMKEY);
 #endif
 	a_assert(prenonce);
 /*

@@ -249,7 +249,7 @@ int ringqPutStr(ringq_t *rq, char_t *str)
 	a_assert(str);
 	a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	rc = ringqPutBlk(rq, (unsigned char*) str, gstrlen(str) * sizeof(char_t));
+	rc = ringqPutBlk(rq, (unsigned char*) str, strlen(str) * sizeof(char_t));
 	*((char_t*) rq->endp) = (char_t) '\0';
 	return rc;
 }

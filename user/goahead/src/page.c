@@ -32,7 +32,7 @@ int websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode, int perm)
 #ifdef WEBS_PAGE_ROM
 	return websRomPageOpen(wp, path, mode, perm);
 #else
-	return (wp->docfd = gopen(lpath, mode, perm));
+	return (wp->docfd = open(lpath, mode, perm));
 #endif /* WEBS_PAGE_ROM */
 }
 
@@ -65,9 +65,9 @@ int websPageStat(webs_t wp, char_t *lpath, char_t *path, websStatType* sbuf)
 #ifdef WEBS_PAGE_ROM
 	return websRomPageStat(path, sbuf);
 #else
-	gstat_t	s;
+	stat_t	s;
 
-	if (gstat(lpath, &s) < 0) {
+	if (stat(lpath, &s) < 0) {
 		return -1;
 	}
 	sbuf->size = s.st_size;
@@ -93,9 +93,9 @@ int websPageIsDirectory(char_t *lpath)
 		return 0;
 	}
 #else
-	gstat_t sbuf;
+	stat_t sbuf;
 
-	if (gstat(lpath, &sbuf) >= 0) {
+	if (stat(lpath, &sbuf) >= 0) {
 		return(sbuf.st_mode & S_IFDIR);
 	} else {
 		return 0;

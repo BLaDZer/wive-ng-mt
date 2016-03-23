@@ -442,7 +442,7 @@ static int getLexicalToken(ej_t* ep, int state)
 				if (c == '\\') {
 					c = inputGetc(ep);
 
-					if (gisdigit(c)) {
+					if (isdigit(c)) {
 /*
  *						octal support, \101 maps to 65 = 'A'. put first char
  *						back so converter will work properly.
@@ -508,7 +508,7 @@ static int getLexicalToken(ej_t* ep, int state)
 				}
 				if ((c = inputGetc(ep)) < 0)
 					break;
-			} while (gisdigit(c));
+			} while (isdigit(c));
 			inputPutback(ep, c);
 			return TOK_LITERAL;
 
@@ -527,12 +527,12 @@ static int getLexicalToken(ej_t* ep, int state)
 				if ((c = inputGetc(ep)) < 0) {
 					break;
 				}
-				if (!gisalnum(c) && c != '$' && c != '_' &&
+				if (!isalnum(c) && c != '$' && c != '_' &&
 					c != '\\') {
 					break;
 				}
 			}
-			if (! gisalpha(*tokq->servp) && *tokq->servp != '$' && 
+			if (!isalpha(*tokq->servp) && *tokq->servp != '$' &&
 					*tokq->servp != '_') {
 				ejError(ep, T("Invalid identifier %s"), tokq->servp);
 				return TOK_ERR;
@@ -542,15 +542,15 @@ static int getLexicalToken(ej_t* ep, int state)
  *			and "return" at the moment)
  */
 			if (state == STATE_STMT) {
-				if (gstrcmp(ep->token, T("if")) == 0) {
+				if (strcmp(ep->token, T("if")) == 0) {
 					return TOK_IF;
-				} else if (gstrcmp(ep->token, T("else")) == 0) {
+				} else if (strcmp(ep->token, T("else")) == 0) {
 					return TOK_ELSE;
-				} else if (gstrcmp(ep->token, T("var")) == 0) {
+				} else if (strcmp(ep->token, T("var")) == 0) {
 					return TOK_VAR;
-				} else if (gstrcmp(ep->token, T("for")) == 0) {
+				} else if (strcmp(ep->token, T("for")) == 0) {
 					return TOK_FOR;
-				} else if (gstrcmp(ep->token, T("return")) == 0) {
+				} else if (strcmp(ep->token, T("return")) == 0) {
 					if ((c == ';') || (c == '(')) {
 						inputPutback(ep, c);
 					}
@@ -693,7 +693,7 @@ static int charConvert(ej_t* ep, int base, int maxDig)
  *		Initialize to out of range value
  */
 		convChar = base;
-		if (gisdigit(c)) {
+		if (isdigit(c)) {
 			convChar = c - '0';
 		} else if (c >= 'a' && c <= 'f') {
 			convChar = c - 'a' + 10;

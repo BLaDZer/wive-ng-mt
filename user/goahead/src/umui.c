@@ -82,12 +82,12 @@ static void formAddUser(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Add User Cancelled"));
-	} else if (gstrcmp(pass1, pass2) != 0) {
+	} else if (strcmp(pass1, pass2) != 0) {
 		websWrite(wp, T("Confirmation Password did not match."));
 	} else {
-		if (enabled && *enabled && (gstrcmp(enabled, T("on")) == 0)) {
+		if (enabled && *enabled && (strcmp(enabled, T("on")) == 0)) {
 			bDisable = FALSE;
 		} else {
 			bDisable = TRUE;
@@ -149,7 +149,7 @@ static void formDeleteUser(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Delete User Cancelled"));
 	} else if (umUserExists(userid) == FALSE) {
 		websWrite(wp, T("ERROR: User \"%s\" not found"), userid);
@@ -184,7 +184,7 @@ static void formDisplayUser(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websWrite(wp, T("<body>"));
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Display User Cancelled"));
 	} else if (umUserExists(userid) == FALSE) {
 		websWrite(wp, T("ERROR: User <b>%s</b> not found.\n"), userid);
@@ -255,7 +255,7 @@ static void formAddGroup(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Add Group Cancelled."));
 	} else if ((group == NULL) || (*group == 0)) {
 		websWrite(wp, T("No Group Name was entered."));
@@ -271,23 +271,23 @@ static void formAddGroup(webs_t wp, char_t *path, char_t *query)
 			for (pChar = privilege; *pChar; pChar++) {
 				if (*pChar == ' ') {
 					*pChar = '\0';
-					priv |= gatoi(privilege);
+					priv |= atoi(privilege);
 					*pChar = ' ';
 					privilege = pChar + 1;
 				}
 			}
-			priv |= gatoi(privilege);
+			priv |= atoi(privilege);
 		} else {
 			priv = 0;
 		}
 
 		if (method && *method) {
-			am = (accessMeth_t) gatoi(method);
+			am = (accessMeth_t) atoi(method);
 		} else {
 			am = AM_FULL;
 		}
 
-		if (enabled && *enabled && (gstrcmp(enabled, T("on")) == 0)) {
+		if (enabled && *enabled && (strcmp(enabled, T("on")) == 0)) {
 			bDisable = FALSE;
 		} else {
 			bDisable = TRUE;
@@ -325,7 +325,7 @@ static void formDeleteGroup(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Delete Group Cancelled."));
 	} else if ((group == NULL) || (*group == '\0')) {
 		websWrite(wp, T("ERROR: No group was selected."));
@@ -399,7 +399,7 @@ static void formAddAccessLimit(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Add Access Limit Cancelled."));
 	} else if ((url == NULL) || (*url == 0)) {
 		websWrite(wp, T("ERROR:  No URL was entered."));
@@ -408,13 +408,13 @@ static void formAddAccessLimit(webs_t wp, char_t *path, char_t *query)
 			url);
 	} else {
 		if (method && *method) {
-			am = (accessMeth_t) gatoi(method);
+			am = (accessMeth_t) atoi(method);
 		} else {
 			am = AM_FULL;
 		}
 
 		if (secure && *secure) {
-			nSecure = (short) gatoi(secure);
+			nSecure = (short) atoi(secure);
 		} else {
 			nSecure = 0;
 		}
@@ -450,7 +450,7 @@ static void formDeleteAccessLimit(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Delete Access Limit Cancelled"));
 	} else if (umDeleteAccessLimit(url) != 0) {
 		websWrite(wp, T("ERROR: Unable to delete Access Limit for [%s]"), 
@@ -559,7 +559,7 @@ static void formSaveUserManagement(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Save Cancelled."));
 	} else if (umCommit(NULL) != 0) {
 		websWrite(wp, T("ERROR: Unable to save user configuration."));
@@ -588,7 +588,7 @@ static void formLoadUserManagement(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websMsgStart(wp);
 
-	if (gstricmp(ok, T("ok")) != 0) {
+	if (strcmpci(ok, T("ok")) != 0) {
 		websWrite(wp, T("Load Cancelled."));
 	} else if (umRestore(NULL) != 0) {
 		websWrite(wp, T("ERROR: Unable to load user configuration."));

@@ -1308,26 +1308,26 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 
 	if (RT2860_NVRAM == nvram) {
 		for(i=0; i<num_ssid; i++) {
-			gstrncat(result, nvram_get(nvram, racat("SSID", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("SSID", i+1)), 4096);
+			strncat(result, "\r", 4096);
 			LFF(result, nvram, PreAuth, i);
 			LFF(result, nvram, AuthMode, i);
 			LFF(result, nvram, EncrypType, i);
 			LFF(result, nvram, DefaultKeyID, i);
 			LFF(result, nvram, Key1Type, i);
-			gstrncat(result, nvram_get(nvram, racat("Key1Str", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("Key1Str", i+1)), 4096);
+			strncat(result, "\r", 4096);
 			LFF(result, nvram, Key2Type, i);
-			gstrncat(result, nvram_get(nvram, racat("Key2Str", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("Key2Str", i+1)), 4096);
+			strncat(result, "\r", 4096);
 			LFF(result, nvram, Key3Type, i);
-			gstrncat(result, nvram_get(nvram, racat("Key3Str", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("Key3Str", i+1)), 4096);
+			strncat(result, "\r", 4096);
 			LFF(result, nvram, Key4Type, i);
-			gstrncat(result, nvram_get(nvram, racat("Key4Str", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
-			gstrncat(result, nvram_get(nvram, racat("WPAPSK", i+1)), 4096);
-			gstrncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("Key4Str", i+1)), 4096);
+			strncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("WPAPSK", i+1)), 4096);
+			strncat(result, "\r", 4096);
 
 			LFF(result, nvram, RekeyMethod, i);
 			LFF(result, nvram, RekeyInterval, i);
@@ -1339,11 +1339,11 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			LFF(result, nvram, session_timeout_interval, i);
 
 			// access control related.
-			gstrncat(result, nvram_get(nvram, racat("AccessPolicy", i)), 4096);
-			gstrncat(result, "\r", 4096);
-			gstrncat(result, nvram_get(nvram, racat("AccessControlList", i)), 4096);
-			gstrncat(result, "\r", 4096);
-			gstrncat(result, "\n", 4096);
+			strncat(result, nvram_get(nvram, racat("AccessPolicy", i)), 4096);
+			strncat(result, "\r", 4096);
+			strncat(result, nvram_get(nvram, racat("AccessControlList", i)), 4096);
+			strncat(result, "\r", 4096);
+			strncat(result, "\n", 4096);
 		}
 	}
 
@@ -1385,7 +1385,7 @@ static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 	if(!newap_list)
 		return -1;
 
-	if(!gstrlen(newap_list))
+	if(!strlen(newap_list))
 		return 0;
 
 	sprintf(str, "AccessControlList%d", mbssid);
@@ -1432,10 +1432,10 @@ static void conf8021x(int nvram, webs_t wp, int mbssid)
 	LFW(RadiusServerPort, RadiusServerPort);
 	LFW(RadiusServerSecret, RadiusServerSecret);
 	LFW(RadiusServerSessionTimeout, RadiusServerSessionTimeout);
-	if(!gstrlen(RadiusServerSessionTimeout))
+	if(!strlen(RadiusServerSessionTimeout))
 		RadiusServerSessionTimeout = "0";
 
-	if(gstrlen(RadiusServerIP)) {
+	if(strlen(RadiusServerIP)) {
 	    STFs(nvram, mbssid, "RADIUS_Server", RadiusServerIP);
 	    STFs(nvram, mbssid, "RADIUS_Port", RadiusServerPort);
 	    STFs(nvram, mbssid, "RADIUS_Key", RadiusServerSecret);

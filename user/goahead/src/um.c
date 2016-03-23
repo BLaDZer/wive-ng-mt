@@ -266,7 +266,7 @@ static int umEncryptString(char_t *textString)
  *		Do not produce encrypted text with embedded linefeeds or tabs.
  *			Simply use existing character.
  */
-		if (enChar && !gisspace(enChar)) 
+		if (enChar && !isspace(enChar)) 
 			*textString = enChar;
 /*
  *		Increment all pointers.
@@ -340,12 +340,12 @@ static char_t *umGetNextRowData(char_t *tableName, char_t *columnName,
 
 	while ((((check = dbReadStr(didUM, tableName, columnName, row++, 
 		&key)) == 0) || (check == DB_ERR_ROW_DELETED)) &&
-		((key == NULL) || (gstrcmp(key, keyLast) != 0))) {
+		((key == NULL) || (strcmp(key, keyLast) != 0))) {
 	}
 /*
  *	If the last key value was not found, return NULL
  */
-	if (!key || gstrcmp(key, keyLast) != 0) {
+	if (!key || strcmp(key, keyLast) != 0) {
 		return NULL;
 	}
 /*
@@ -353,7 +353,7 @@ static char_t *umGetNextRowData(char_t *tableName, char_t *columnName,
  */
 	while (((check = dbReadStr(didUM, tableName, columnName, row++, &key)) 
 		== 0) || (check == DB_ERR_ROW_DELETED)) {
-		if (key && *key && (gstrcmp(key, keyLast) != 0)) {
+		if (key && *key && (strcmp(key, keyLast) != 0)) {
 			return key;
 		}
 	}
@@ -1243,7 +1243,7 @@ char_t *umGetAccessLimit(char_t *url)
 	urlRet = NULL;
 	urlCheck = bstrdup(B_L, url);
 	a_assert(urlCheck);
-	len = gstrlen(urlCheck);
+	len = strlen(urlCheck);
 /*
  *	Scan back through URL to see if there is a "parent" access limit
  */
@@ -1269,7 +1269,7 @@ char_t *umGetAccessLimit(char_t *url)
 				lastChar--;
 			}
 
-			len = gstrlen(urlCheck);
+			len = strlen(urlCheck);
 		}
 	}
 	bfree (B_L, urlCheck);
@@ -1394,7 +1394,7 @@ bool_t umUserCanAccessURL(char_t *user, char_t *url)
       return dmfCanAccess(usergroup, group);
 
 #else
-		if (usergroup && (gstrcmp(group, usergroup) != 0)) {
+		if (usergroup && (strcmp(group, usergroup) != 0)) {
 			return FALSE;
 
 		}
@@ -1419,7 +1419,7 @@ static bool_t umCheckName(char_t *name)
 
 	if (name && *name) {
 		while (*name) {
-			if (gisspace(*name)) {
+			if (isspace(*name)) {
 				return FALSE;
 			}
 

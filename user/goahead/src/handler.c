@@ -100,7 +100,7 @@ int websUrlHandlerDefine(char_t *urlPrefix, char_t *webDir, int arg,
 	memset(sp, 0, sizeof(websUrlHandlerType));
 
 	sp->urlPrefix = bstrdup(B_L, urlPrefix);
-	sp->len = gstrlen(sp->urlPrefix);
+	sp->len = strlen(sp->urlPrefix);
 	if (webDir) {
 		sp->webDir = bstrdup(B_L, webDir);
 	} else {
@@ -163,7 +163,7 @@ static int websUrlHandlerSort(const void *p1, const void *p2)
 		return 1;
 	}
 
-	if ((rc = gstrcmp(s1->urlPrefix, s2->urlPrefix)) == 0) {
+	if ((rc = strcmp(s1->urlPrefix, s2->urlPrefix)) == 0) {
 		if (s1->len < s2->len) {
 			return 1;
 		} else if (s1->len > s2->len) {
@@ -198,7 +198,7 @@ char_t *websGetPublishDir(char_t *path, char_t **urlPrefix)
 		if (sp->urlPrefix[0] == '\0') {
 			continue;
 		}
-		if (sp->handler && gstrncmp(sp->urlPrefix, path, sp->len) == 0) {
+		if (sp->handler && strncmp(sp->urlPrefix, path, sp->len) == 0) {
 			if (urlPrefix) {
 				*urlPrefix = sp->urlPrefix;
 			}
@@ -226,7 +226,7 @@ static int websPublishHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
  *	Trim the urlPrefix off the path and set the webdirectory. Add one to step 
  *	over the trailing '/'
  */
-	len = gstrlen(urlPrefix) + 1;
+	len = strlen(urlPrefix) + 1;
 	websSetRequestPath(wp, webDir, &path[len]);
 	return 0;
 }
@@ -274,7 +274,7 @@ int websUrlHandlerRequest(webs_t wp)
 	first = 1;
 	for (i = 0; i < websUrlHandlerMax; i++) {
 		sp = &websUrlHandler[i];
-		if (sp->handler && gstrncmp(sp->urlPrefix, wp->path, sp->len) == 0) {
+		if (sp->handler && strncmp(sp->urlPrefix, wp->path, sp->len) == 0) {
 			if (first) {
 				websSetEnv(wp);
 				first = 0;

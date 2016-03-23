@@ -125,7 +125,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		} else if (password && * password) {
 			char_t * userpass = umGetUserPassword(userid);
 			if (userpass) {
-				if (gstrcmp(password, userpass) != 0) {
+				if (strcmp(password, userpass) != 0) {
 					websStats.access++;
 					websError(wp, 401, T("Access Denied\nWrong Password"));
 					syslog(LOG_WARNING, T("Access Denied - Wrong Password: %s-%s from %s:%s"), userid, password, wp->ipaddr, wp->userAgent);
@@ -151,7 +151,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			digestCalc = websCalcDigest(wp);
 			a_assert(digestCalc);
 
-			if (gstrcmp(wp->digest, digestCalc) != 0) {
+			if (strcmp(wp->digest, digestCalc) != 0) {
 				websStats.access++;
             /* 16 Jun 03 -- error code changed from 405 to 401 -- thanks to
              * Jay Chalfant.
@@ -218,7 +218,7 @@ void websSetPassword(char_t *password)
 {
 	a_assert(password);
 
-	gstrncpy(websPassword, password, TSZ(websPassword));
+	strncpy(websPassword, password, TSZ(websPassword));
 }
 
 /******************************************************************************/

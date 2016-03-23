@@ -121,9 +121,9 @@ int websSSLAccept(int sid, char *ipaddr, int port, int listenSid)
 	 *    Check if this is a request from a browser on this system. This is useful
 	 *    to know for permitting administrative operations only for local access
 	 */
-	if (gstrcmp(wp->ipaddr, T("127.0.0.1")) == 0 ||
-			gstrcmp(wp->ipaddr, websIpaddr) == 0 ||
-			gstrcmp(wp->ipaddr, websHost) == 0) {
+	if (strcmp(wp->ipaddr, T("127.0.0.1")) == 0 ||
+			strcmp(wp->ipaddr, websIpaddr) == 0 ||
+			strcmp(wp->ipaddr, websHost) == 0) {
 		wp->flags |= WEBS_LOCAL_REQUEST;
 	}
 	/*

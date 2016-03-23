@@ -44,12 +44,12 @@ char_t *websUrlType(char_t *url, char_t *buf, int charCnt)
 	a_assert(buf && charCnt > 0);
 
 	if (url == NULL || *url == '\0') {
-		gstrcpy(buf, T("text/plain"));
+		strcpy(buf, T("text/plain"));
 		return buf;
 	}
 	if (websUrlParse(url, &parsebuf, NULL, NULL, NULL, NULL, NULL, 
 			NULL, &ext) < 0) {
-		gstrcpy(buf, T("text/plain"));
+		strcpy(buf, T("text/plain"));
 		return buf;
 	}
 	strlower(ext);
@@ -58,9 +58,9 @@ char_t *websUrlType(char_t *url, char_t *buf, int charCnt)
  *	Lookup the mime type symbol table to find the relevant content type
  */
 	if ((sp = symLookup(websMime, ext)) != NULL) {
-		gstrncpy(buf, sp->content.value.tstring, charCnt);
+		strncpy(buf, sp->content.value.tstring, charCnt);
 	} else {
-		gstrcpy(buf, T("text/plain"));
+		strcpy(buf, T("text/plain"));
 	}
 	bfree(B_L, parsebuf);
 	return buf;
@@ -84,7 +84,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 	if (url == 0)
 	    url = "";
 
-	ulen = gstrlen(url);
+	ulen = strlen(url);
 /*
  *	We allocate enough to store separate hostname and port number fields.
  *	As there are 3 strings in the one buffer, we need room for 3 null chars.
@@ -117,7 +117,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 	ext = htmExt;
 	tag = T("");
 
-	if (gstrncmp(url, T("http://"), 7) == 0) {
+	if (strncmp(url, T("http://"), 7) == 0) {
 		tok = &url[7];
 		tok[-3] = '\0';
 		proto = url;
@@ -132,15 +132,15 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 				tok = cp;
 			}
 		}
-		if ((cp = gstrchr(tok, '/')) != NULL) {
+		if ((cp = strchr(tok, '/')) != NULL) {
 /*
  *			If a full URL is supplied, we need to copy the host and port 
  *			portions into static buffers.
  */
 			c = *cp;
 			*cp = '\0';
-			gstrncpy(hostbuf, host, ulen);
-			gstrncpy(portbuf, port, MAX_PORT_LEN);
+			strncpy(hostbuf, host, ulen);
+			strncpy(portbuf, port, MAX_PORT_LEN);
 			*cp = c;
 			host = hostbuf;
 			port = portbuf;
@@ -156,7 +156,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 /*
  *	Parse the query string
  */
-	if ((cp = gstrchr(tok, '?')) != NULL) {
+	if ((cp = strchr(tok, '?')) != NULL) {
 		*cp++ = '\0';
 		query = cp;
 		path = tok;
@@ -166,7 +166,7 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 /*
  *	Parse the fragment identifier
  */
-	if ((cp = gstrchr(tok, '#')) != NULL) {
+	if ((cp = strchr(tok, '#')) != NULL) {
 		*cp++ = '\0';
 		if (*query == 0) {
 			path = tok;
@@ -183,11 +183,11 @@ int websUrlParse(char_t *url, char_t **pbuf, char_t **phost, char_t **ppath,
 		Otherwise a URL ending in "asp/" or "asP" sends Ejscript source
 		to the browser.
 		*/
-		if ((cp = gstrrchr(path, '.')) != NULL) {
+		if ((cp = strrchr(path, '.')) != NULL) {
 			const char_t* garbage = T("/\\");
-			int length = gstrcspn(cp, garbage);
-			int garbageLength = gstrspn(cp + length, garbage);
-			int ok = (length + garbageLength == (int) gstrlen(cp));
+			int length = strcspn(cp, garbage);
+			int garbageLength = strspn(cp + length, garbage);
+			int ok = (length + garbageLength == (int) strlen(cp));
 
 			if (ok) {
 				cp[length] = '\0';

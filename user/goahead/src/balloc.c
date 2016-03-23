@@ -392,13 +392,13 @@ char_t *bstrdup(B_ARGS_DEC, char_t *s)
 	char_t	*cp;
 	int		len;
 
-	if (s == NULL) {
-		s = T("");
-	}
-	len = gstrlen(s) + 1;
-	if ((cp = balloc(B_ARGS, len * sizeof(char_t))) != NULL) {
-		gstrncpy(cp, s, len * sizeof(char_t));
-	}
+	if (s == NULL)
+	    s = T("");
+
+	len = strlen(s) + 1;
+	if ((cp = balloc(B_ARGS, len * sizeof(char_t))) != NULL)
+		strncpy(cp, s, len * sizeof(char_t));
+
 	return cp;
 }
 
@@ -585,7 +585,7 @@ void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 		if (blkp->ptr) {
 			cp = (char_t*) ((char*) blkp->ptr + sizeof(bType));
 			fp = blkp->who;
-			if (gisalnum(*cp)) {
+			if (isalnum(*cp)) {
 				(*writefn)(handle, T("%-50s allocated by %s\n"), cp, 
 					fp->file);
 			}
@@ -626,7 +626,7 @@ static void bStatsAlloc(B_ARGS_DEC, void *ptr, int q, int size)
 	bStatsBlkType	*bp;
 	char_t			name[FNAMESIZE + 10];
 
-	gsprintf(name, T("%s:%d"), B_ARGS);
+	sprintf(name, T("%s:%d"), B_ARGS);
 
 	bStats[q].alloc++;
 	bStats[q].inuse++;
@@ -652,7 +652,7 @@ static void bStatsAlloc(B_ARGS_DEC, void *ptr, int q, int size)
  *	Find the file and adjust the stats for this file
  */
 	for (fp = bStatsFiles; fp < &bStatsFiles[bStatsFilesMax]; fp++) {
-		if (fp->file[0] == file[0] && gstrcmp(fp->file, name) == 0) {
+		if (fp->file[0] == file[0] && strcmp(fp->file, name) == 0) {
 			fp->allocated += size;
 			fp->count++;
 			fp->times++;
@@ -670,7 +670,7 @@ static void bStatsAlloc(B_ARGS_DEC, void *ptr, int q, int size)
 	if (fp >= &bStatsFiles[bStatsFilesMax]) {
 		for (fp = bStatsFiles; fp < &bStatsFiles[B_MAX_FILES]; fp++) {
 			if (fp->file[0] == '\0') {
-				gstrncpy(fp->file, name, TSZ(fp->file));
+				strncpy(fp->file, name, TSZ(fp->file));
 				fp->allocated += size;
 				fp->count++;
 				fp->times++;
@@ -898,13 +898,16 @@ void bstats(int handle, void (*writefn)(int handle, char_t *fmt, ...))
 /******************************************************************************/
 char_t *bstrdup(B_ARGS_DEC, char_t *s)
 {
-	char*	buf;
+	char_t	*cp;
+	int	len;
 
-	if (s == NULL) {
-		s = "";
-	}
-	buf = malloc(strlen(s)+1);
-	strcpy(buf, s);
-	return buf;
+	if (s == NULL)
+	    s = T("");
+
+	len = strlen(s) + 1;
+	if ((cp = malloc(len * sizeof(char_t))) != NULL)
+		strncpy(cp, s, len * sizeof(char_t));
+
+	return cp;
 }
 #endif /* NO_BALLOC */

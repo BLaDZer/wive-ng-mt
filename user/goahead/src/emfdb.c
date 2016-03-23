@@ -274,11 +274,11 @@ int dbSearchStr(int did, char_t *tablename,
             {
               if (DB_CASE_INSENSITIVE == flags)
               {
-                 match = gstricmp(compareVal, value);
+                 match = strcmpci(compareVal, value);
               }
               else
               {
-                 match = gstrcmp(compareVal, value);
+                 match = strcmp(compareVal, value);
               }
               if (0 == match)
               {
@@ -674,8 +674,8 @@ static int dbWriteKeyValue(int fd, char_t *key, char_t *value)
 	fmtAlloc(&pLineOut, BUF_MAX, T("%s=%s\n"), key, value);
 
 	if (pLineOut) {
-		len = gstrlen(pLineOut);
-		rc = gwrite(fd, pLineOut, len);
+		len = strlen(pLineOut);
+		rc = write(fd, pLineOut, len);
 		bfree(B_L, pLineOut);
 	} else {
 		rc = -1;
@@ -706,7 +706,7 @@ int dbSave(int did, char_t *filename, int flags)
  *	First write to a temporary file, then switch around later.
  */
 	fmtAlloc(&tmpFile, FNAMESIZE, T("%s/data.tmp"), basicGetProductDir());
-	if ((fd = gopen(tmpFile, 
+	if ((fd = open(tmpFile, 
 		O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) < 0) {
 		trace(1, T("WARNING: Failed to open file %s\n"), tmpFile);
 		bfree(B_L, tmpFile);
@@ -770,7 +770,7 @@ int dbSave(int did, char_t *filename, int flags)
 		}
 	}
 
-	gclose(fd);
+	close(fd);
 
 /*
  *	Replace the existing file with the temporary file, if no errors
@@ -778,8 +778,8 @@ int dbSave(int did, char_t *filename, int flags)
 	if (nRet == 0) {
 		fmtAlloc(&path, FNAMESIZE, T("%s/%s"), basicGetProductDir(), filename);
 
-		gunlink(path);
-		if (grename(tmpFile, path) != 0) {
+		unlink(path);
+		if (rename(tmpFile, path) != 0) {
 			trace(1, T("WARNING: Failed to rename %s to %s\n"), tmpFile, path);
 			nRet = -1;
 		}
@@ -801,15 +801,15 @@ static int crack(char_t *buf, char_t **key, char_t **val)
 {
 	char_t	*ptr;
 
-	if ((ptr = gstrrchr(buf, '\n')) != NULL ||
-			(ptr = gstrrchr(buf, '\r')) != NULL) {
+	if ((ptr = strrchr(buf, '\n')) != NULL ||
+			(ptr = strrchr(buf, '\r')) != NULL) {
 		*ptr = '\0';
 	}
 
 /*
  *	Find the = sign. It must exist.
  */
-	if ((ptr = gstrstr(buf, T("="))) == NULL) {
+	if ((ptr = strstr(buf, T("="))) == NULL) {
 		return -1;
 	}
 
@@ -829,7 +829,7 @@ static int crack(char_t *buf, char_t **key, char_t **val)
 
 int dbLoad(int did, char_t *filename, int flags)
 {
-	gstat_t		sbuf;
+	stat_t		sbuf;
 	char_t		*buf, *keyword, *value, *path, *ptr;
 	char_t		*tablename;
 	int			fd, tid, row;
@@ -840,13 +840,13 @@ int dbLoad(int did, char_t *filename, int flags)
 	fmtAlloc(&path, FNAMESIZE, T("%s/%s"), basicGetProductDir(), filename);
 	trace(4, T("DB: About to read data file <%s>\n"), path);
 
-	if (gstat(path, &sbuf) < 0) {
+	if (stat(path, &sbuf) < 0) {
 		trace(3, T("DB: Failed to stat persistent data file.\n"));
 		bfree(B_L, path);
 		return -1;
 	}
 
-	fd = gopen(path, O_RDONLY | O_BINARY, 0666);
+	fd = open(path, O_RDONLY | O_BINARY, 0666);
 	bfree(B_L, path);
 
 	if (fd < 0) {
@@ -856,27 +856,27 @@ int dbLoad(int did, char_t *filename, int flags)
 
 	if (sbuf.st_size <= 0) {
 		trace(3, T("DB: Persistent data file is empty.\n"));
-		gclose(fd);
+		close(fd);
 		return -1;
 	}
 /*
  *	Read entire file into temporary buffer
  */
 	buf = balloc(B_L, sbuf.st_size + 1);
-	if (gread(fd, buf, sbuf.st_size) != (int)sbuf.st_size) {
+	if (read(fd, buf, sbuf.st_size) != (int)sbuf.st_size) {
 		trace(3, T("DB: Persistent data read failed.\n"));
 		bfree(B_L, buf);
-		gclose(fd);
+		close(fd);
 		return -1;
 	}
 
-	gclose(fd);
+	close(fd);
 	*(buf + sbuf.st_size) = '\0';
 
 	row = -1;
 	tid = -1;
 	pTable = NULL;
-	ptr = gstrtok(buf, T("\n"));
+	ptr = strtok(buf, T("\n"));
 	tablename = NULL;
 
 	do {
@@ -887,7 +887,7 @@ int dbLoad(int did, char_t *filename, int flags)
 
 		a_assert(keyword && *keyword);
 
-		if (gstrcmp(keyword, KEYWORD_TABLE) == 0) {
+		if (strcmp(keyword, KEYWORD_TABLE) == 0) {
 /*
  *			Table name found, check to see if it's registered
  */
@@ -904,7 +904,7 @@ int dbLoad(int did, char_t *filename, int flags)
 				pTable = NULL;
 			}
 
-		} else if (gstrcmp(keyword, KEYWORD_ROW) == 0) {
+		} else if (strcmp(keyword, KEYWORD_ROW) == 0) {
 /*
  *			Row/Record indicator found, add a new row to table
  */
@@ -927,11 +927,11 @@ int dbLoad(int did, char_t *filename, int flags)
 				if (nColumnType == T_STRING) {
 					dbWriteStr(did, tablename, keyword, row, value);
 				} else {
-					dbWriteInt(did, tablename, keyword, row, gstrtoi(value));
+					dbWriteInt(did, tablename, keyword, row, strtoi(value));
 				}
 			}
 		}
-	} while ((ptr = gstrtok(NULL, T("\n"))) != NULL);
+	} while ((ptr = strtok(NULL, T("\n"))) != NULL);
 
 	if (tablename) {
 		bfree(B_L, tablename);
@@ -956,7 +956,7 @@ int dbGetTableId(int did, char_t *tablename)
 
 	for (tid = 0; (tid < dbMaxTables); tid++) {
 		if ((pTable = dbListTables[tid]) != NULL) {
-			if (gstrcmp(tablename, pTable->name) == 0) {
+			if (strcmp(tablename, pTable->name) == 0) {
 				return tid;
 			}
 		}
@@ -1008,7 +1008,7 @@ static int GetColumnIndex(int tid, char_t *colName)
 		pTable = dbListTables[tid];
 
 		for (column = 0; (column < pTable->nColumns); column++) {
-			if (gstrcmp(colName, pTable->columnNames[column]) == 0)
+			if (strcmp(colName, pTable->columnNames[column]) == 0)
 				return column;
 		}
 	}
@@ -1032,7 +1032,7 @@ void basicSetProductDir(char_t *proddir)
 /*
  *	Make sure that prefix-directory doesn't end with a '/'
  */
-	len = gstrlen(basicProdDir);
+	len = strlen(basicProdDir);
 	if ((len > 0) && *(basicProdDir + len - 1) == '/') {
 		*(basicProdDir+len-1) = '\0';
 	}

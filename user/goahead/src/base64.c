@@ -81,7 +81,7 @@ int websDecode64(char_t *outbuf, char_t *inpstring, int outlen)
  */
 		--i;
 		if ((op + i) >= &outbuf[outlen]) {
-			gstrcpy(outbuf, T("inpstring too big"));
+			strcpy(outbuf, T("inpstring too big"));
 			return -1;
 		}
 		for (j = 0; j < i; j++) {

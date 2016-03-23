@@ -67,7 +67,7 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		return 1;
 	}
 	lpath = websGetRequestLpath(wp);
-	nchars = gstrlen(lpath) - 1;
+	nchars = strlen(lpath) - 1;
 	if (lpath[nchars] == '/' || lpath[nchars] == '\\') {
 		lpath[nchars] = '\0';
 	}
@@ -76,11 +76,11 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *	If the file is a directory, redirect using the nominated default page
  */
 	if (websPageIsDirectory(lpath)) {
-		nchars = gstrlen(path);
+		nchars = strlen(path);
 		if (path[nchars-1] == '/' || path[nchars-1] == '\\') {
 			path[--nchars] = '\0';
 		}
-		nchars += gstrlen(websDefaultPage) + 2;
+		nchars += strlen(websDefaultPage) + 2;
 		fmtAlloc(&tmp, nchars, T("%s/%s"), path, websDefaultPage);
 		websRedirect(wp, tmp);
 		bfree(B_L, tmp);
@@ -250,7 +250,7 @@ int websValidateUrl(webs_t wp, char_t *path)
  *	Copy the string so we don't destroy the original
  */
 	path = bstrdup(B_L, path);
-	websDecodeUrl(path, path, gstrlen(path));
+	websDecodeUrl(path, path, strlen(path));
 
 	len = npart = 0;
 	parts[0] = NULL;
@@ -279,12 +279,12 @@ int websValidateUrl(webs_t wp, char_t *path)
     * slashes for backslashes before attempting to validate that there are no
     * unauthorized paths being accessed.
     */
-    token = gstrchr(path, '\\');
+    token = strchr(path, '\\');
     while (token != NULL) {
 	*token = '/';
-	token = gstrchr(token, '\\');
+	token = strchr(token, '\\');
     }
-    token = gstrtok(path, T("/"));
+    token = strtok(path, T("/"));
 
 /*
  *	Look at each directory segment and process "." and ".." segments
@@ -298,27 +298,27 @@ int websValidateUrl(webs_t wp, char_t *path)
 	    bfree(B_L, path);
 	    return -1;
 	}
-	if (gstrcmp(token, T("..")) == 0) {
+	if (strcmp(token, T("..")) == 0) {
 	    if (npart > 0)
 		npart--;
-	} else if (gstrcmp(token, T(".")) != 0) {
+	} else if (strcmp(token, T(".")) != 0) {
 			parts[npart] = token;
-			len += gstrlen(token) + 1;
+			len += strlen(token) + 1;
 			npart++;
 		}
-		token = gstrtok(NULL, T("/"));
+		token = strtok(NULL, T("/"));
 	}
 
     /*
      *	Create local path for document. Need extra space all "/" and null.
     */
-    if (npart || (gstrcmp(path, T("/")) == 0) || (path[0] == '\0')) {
-		lpath = balloc(B_L, (gstrlen(dir) + 1 + len + 1) * sizeof(char_t));
-		gstrcpy(lpath, dir);
+    if (npart || (strcmp(path, T("/")) == 0) || (path[0] == '\0')) {
+		lpath = balloc(B_L, (strlen(dir) + 1 + len + 1) * sizeof(char_t));
+		strcpy(lpath, dir);
 
 		for (i = 0; i < npart; i++) {
-			gstrcat(lpath, T("/"));
-			gstrcat(lpath, parts[i]);
+			strcat(lpath, T("/"));
+			strcat(lpath, parts[i]);
 		}
 		websSetRequestLpath(wp, lpath);
 		bfree(B_L, path);

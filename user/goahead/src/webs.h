@@ -203,7 +203,7 @@ int	websUrlHandlerRequest(webs_t wp);
 int 	websUrlParse(char_t *url, char_t **buf, char_t **host, char_t **path, char_t **port, char_t **query, char_t **proto, char_t **tag, char_t **ext);
 char_t 	*websUrlType(char_t *webs, char_t *buf, int charCnt);
 int 	websWrite(webs_t wp, char_t* fmt, ...);
-void	websLongWrite(webs_t wp, char *longstr);
+void	websLongWrite(webs_t wp, char *lonstr);
 int 	websWriteBlock(webs_t wp, char_t *buf, int nChars);
 int 	websWriteDataNonBlock(webs_t wp, char *buf, int nChars);
 int 	websValid(webs_t wp);

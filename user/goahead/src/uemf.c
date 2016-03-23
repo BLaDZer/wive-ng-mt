@@ -175,8 +175,8 @@ char_t *strlower(char_t *string)
 
 	s = string;
 	while (*s) {
-		if (gisupper(*s)) {
-			*s = (char_t) gtolower(*s);
+		if (isupper(*s)) {
+			*s = (char_t) tolower(*s);
 		}
 		s++;
 	}
@@ -200,8 +200,8 @@ char_t *strupper(char_t *string)
 
 	s = string;
 	while (*s) {
-		if (gislower(*s)) {
-			*s = (char_t) gtoupper(*s);
+		if (islower(*s)) {
+			*s = (char_t) toupper(*s);
 		}
 		s++;
 	}

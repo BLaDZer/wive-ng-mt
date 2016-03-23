@@ -150,7 +150,7 @@ void ejCloseEngine(int eid)
 
 char_t *ejEvalFile(int eid, char_t *path, char_t **emsg)
 {
-	gstat_t sbuf;
+	stat_t sbuf;
 	ej_t	*ep;
 	char_t	*script, *rs;
 	char	*fileBuf;
@@ -166,32 +166,32 @@ char_t *ejEvalFile(int eid, char_t *path, char_t **emsg)
 		return NULL;
 	}
 
-	if ((fd = gopen(path, O_RDONLY | O_BINARY, 0666)) < 0) {
+	if ((fd = open(path, O_RDONLY | O_BINARY, 0666)) < 0) {
 		ejError(ep, T("Bad handle %d"), eid);
 		return NULL;
 	}
 
-	if (gstat(path, &sbuf) < 0) {
-		gclose(fd);
+	if (stat(path, &sbuf) < 0) {
+		close(fd);
 		ejError(ep, T("Cant stat %s"), path);
 		return NULL;
 	}
 
 	if ((fileBuf = balloc(B_L, sbuf.st_size + 1)) == NULL) {
-		gclose(fd);
+		close(fd);
 		ejError(ep, T("Cant malloc %d"), sbuf.st_size);
 		return NULL;
 	}
 
-	if (gread(fd, fileBuf, sbuf.st_size) != (int)sbuf.st_size) {
-		gclose(fd);
+	if (read(fd, fileBuf, sbuf.st_size) != (int)sbuf.st_size) {
+		close(fd);
 		bfree(B_L, fileBuf);
 		ejError(ep, T("Error reading %s"), path);
 		return NULL;
 	}
 
 	fileBuf[sbuf.st_size] = '\0';
-	gclose(fd);
+	close(fd);
 
 	if ((script = ballocAscToUni(fileBuf, sbuf.st_size)) == NULL) {
 		bfree(B_L, fileBuf);
@@ -1142,9 +1142,9 @@ static int evalCond(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 		return 0;
 
 	lval = 0;
-	if (gisdigit((int)*lhs) && gisdigit((int)*rhs)) {
-		l = gatoi(lhs);
-		r = gatoi(rhs);
+	if (isdigit((int)*lhs) && isdigit((int)*rhs)) {
+		l = atoi(lhs);
+		r = atoi(rhs);
 		switch (rel) {
 		case COND_AND:
 			lval = l && r;
@@ -1157,7 +1157,7 @@ static int evalCond(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 			return -1;
 		}
 	} else {
-		if (!gisdigit((int)*lhs)) {
+		if (!isdigit((int)*lhs)) {
 			ejError(ep, T("Conditional must be numeric"), lhs);
 		} else {
 			ejError(ep, T("Conditional must be numeric"), rhs);
@@ -1188,7 +1188,7 @@ static int evalExpr(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
  */
 	numeric = 1;
 	for (cp = lhs; *cp; cp++) {
-		if (!gisdigit((int)*cp)) {
+		if (!isdigit((int)*cp)) {
 			numeric = 0;
 			break;
 		}
@@ -1196,7 +1196,7 @@ static int evalExpr(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 
 	if (numeric) {
 		for (cp = rhs; *cp; cp++) {
-			if (!gisdigit((int)*cp)) {
+			if (!isdigit((int)*cp)) {
 				numeric = 0;
 				break;
 			}
@@ -1204,8 +1204,8 @@ static int evalExpr(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 	}
 
 	if (numeric) {
-		l = gatoi(lhs);
-		r = gatoi(rhs);
+		l = atoi(lhs);
+		r = atoi(rhs);
 		switch (rel) {
 		case EXPR_PLUS:
 			lval = l + r;
@@ -1276,22 +1276,22 @@ static int evalExpr(ej_t *ep, char_t *lhs, int rel, char_t *rhs)
 			appendString(&ep->result, rhs);
 			return 0;
 		case EXPR_LESS:
-			lval = gstrcmp(lhs, rhs) < 0;
+			lval = strcmp(lhs, rhs) < 0;
 			break;
 		case EXPR_LESSEQ:
-			lval = gstrcmp(lhs, rhs) <= 0;
+			lval = strcmp(lhs, rhs) <= 0;
 			break;
 		case EXPR_GREATER:
-			lval = gstrcmp(lhs, rhs) > 0;
+			lval = strcmp(lhs, rhs) > 0;
 			break;
 		case EXPR_GREATEREQ:
-			lval = gstrcmp(lhs, rhs) >= 0;
+			lval = strcmp(lhs, rhs) >= 0;
 			break;
 		case EXPR_EQ:
-			lval = gstrcmp(lhs, rhs) == 0;
+			lval = strcmp(lhs, rhs) == 0;
 			break;
 		case EXPR_NOTEQ:
-			lval = gstrcmp(lhs, rhs) != 0;
+			lval = strcmp(lhs, rhs) != 0;
 			break;
 		case EXPR_INC:
 		case EXPR_DEC:
@@ -1406,10 +1406,10 @@ static void appendString(char_t **ptr, char_t *s)
 	a_assert(ptr);
 
 	if (*ptr) {
-		len = gstrlen(s);
-		oldlen = gstrlen(*ptr);
+		len = strlen(s);
+		oldlen = strlen(*ptr);
 		*ptr = brealloc(B_L, *ptr, (len + oldlen + 1) * sizeof(char_t));
-		gstrcpy(&(*ptr)[oldlen], s);
+		strcpy(&(*ptr)[oldlen], s);
 	} else {
 		*ptr = bstrdup(B_L, s);
 	}
@@ -1515,7 +1515,7 @@ int ejArgs(int argc, char_t **argv, char_t *fmt, ...)
 		switch (*cp) {
 		case 'd':
 			ip = va_arg(vargs, int*);
-			*ip = gatoi(argv[argn]);
+			*ip = atoi(argv[argn]);
 			break;
 
 		case 's':

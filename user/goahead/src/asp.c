@@ -136,7 +136,7 @@ int websAspRequest(webs_t wp, char_t *lpath)
  */
 	last = buf;
 	rc = 0;
-	while (rc == 0 && *last && ((nextp = gstrstr(last, T("<%"))) != NULL)) {
+	while (rc == 0 && *last && ((nextp = strstr(last, T("<%"))) != NULL)) {
 		websWriteBlock(wp, last, (nextp - last));
 		nextp = skipWhite(nextp + 2);
 
@@ -157,7 +157,7 @@ int websAspRequest(webs_t wp, char_t *lpath)
 /*
  *		Find tailing bracket and then evaluate the script
  */
-		if ((ep = gstrstr(nextp, T("%>"))) != NULL) {
+		if ((ep = strstr(nextp, T("%>"))) != NULL) {
 
 			*ep = '\0';
 			last = ep + 2;
@@ -220,7 +220,7 @@ int websAspRequest(webs_t wp, char_t *lpath)
  *	Output any trailing HTML page text
  */
 	if (last && *last && rc == 0) {
-		websWriteBlock(wp, last, gstrlen(last));
+		websWriteBlock(wp, last, strlen(last));
 	}
 	rc = 0;
 
@@ -264,7 +264,7 @@ int websAspWrite(int ejid, webs_t wp, int argc, char_t **argv)
 
 	for (i = 0; i < argc; ) {
 		a_assert(argv);
-		if (websWriteBlock(wp, argv[i], gstrlen(argv[i])) < 0) {
+		if (websWriteBlock(wp, argv[i], strlen(argv[i])) < 0) {
 			return -1;
 		}
 		if (++i < argc) {
@@ -287,8 +287,8 @@ static char_t *strtokcmp(char_t *s1, char_t *s2)
 	int		len;
 
 	s1 = skipWhite(s1);
-	len = gstrlen(s2);
-	for (len = gstrlen(s2); len > 0 && (tolower(*s1) == tolower(*s2)); len--) {
+	len = strlen(s2);
+	for (len = strlen(s2); len > 0 && (tolower(*s1) == tolower(*s2)); len--) {
 		if (*s2 == '\0') {
 			return s1;
 		}
@@ -313,7 +313,7 @@ static char_t *skipWhite(char_t *s)
 	if (s == NULL) {
 		return s;
 	}
-	while (*s && gisspace(*s)) {
+	while (*s && isspace(*s)) {
 		s++;
 	}
 	return s;

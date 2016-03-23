@@ -1342,9 +1342,9 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 	if(!RIPEnable || !strlen(RIPEnable))
 		RIPEnable = "0";
 
-	if(!gstrcmp(rip, "0") && !strcmp(RIPEnable, "1"))
+	if(!strcmp(rip, "0") && !strcmp(RIPEnable, "1"))
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
-	else if(!gstrcmp(rip, "1") && !strcmp(RIPEnable, "0"))
+	else if(!strcmp(rip, "1") && !strcmp(RIPEnable, "0"))
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
 
 	doSystem("service dynroute restart");

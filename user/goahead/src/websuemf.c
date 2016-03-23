@@ -84,7 +84,7 @@ int strcmpci(char_t *s1, char_t *s2)
 	}
 
 	do {
-		rc = gtolower(*s1) - gtolower(*s2);
+		rc = tolower(*s1) - tolower(*s2);
 		if (*s1 == '\0') {
 			break;
 		}

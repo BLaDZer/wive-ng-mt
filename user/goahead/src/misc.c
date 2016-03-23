@@ -43,14 +43,6 @@ enum flag {
 	flag_long = 64
 };
 
-/************************** Forward Declarations ******************************/
-
-static int  dsnprintf(char_t **s, int size, char_t *fmt, va_list arg, int msize);
-static int  gstrnlen(char_t *s, unsigned int n);
-static void put_char(strbuf_t *buf, char_t c);
-static void put_string(strbuf_t *buf, char_t *s, int len, int width, int prec, enum flag f);
-static void put_ulong(strbuf_t *buf, unsigned long int value, int base, int upper, char_t *prefix, int width, int prec, enum flag f);
-
 /******************************************************************************/
 /*
  *	Returns a pointer to the directory component of a pathname. bufsize is
@@ -66,112 +58,157 @@ char_t *dirname(char_t *buf, char_t *name, int bufsize)
 	a_assert(buf);
 	a_assert(bufsize > 0);
 
-	if ((cp = gstrrchr(name, '/')) == NULL)
+	if ((cp = strrchr(name, '/')) == NULL)
 	{
-		gstrcpy(buf, T("."));
+		strcpy(buf, T("."));
 		return buf;
 	}
 
 	if ((*(cp + 1) == '\0' && cp == name)) {
-		gstrncpy(buf, T("."), TSZ(bufsize));
-		gstrcpy(buf, T("."));
+		strncpy(buf, T("."), TSZ(bufsize));
+		strcpy(buf, T("."));
 		return buf;
 	}
 
 	len = cp - name;
 
 	if (len < bufsize) {
-		gstrncpy(buf, name, len);
+		strncpy(buf, name, len);
 		buf[len] = '\0';
 	} else {
-		gstrncpy(buf, name, TSZ(bufsize));
+		strncpy(buf, name, TSZ(bufsize));
 		buf[bufsize - 1] = '\0';
 	}
 
 	return buf;
 }
 
-
 /******************************************************************************/
 /*
- *	sprintf and vsprintf are bad, ok. You can easily clobber memory. Use
- *	fmtAlloc and fmtValloc instead! These functions do _not_ support floating
- *	point, like %e, %f, %g...
+ *	Return the length of a string limited by a given length
  */
 
-int fmtAlloc(char_t **s, int n, char_t *fmt, ...)
+static int strnlen(char_t *s, unsigned int n)
 {
-	va_list	ap;
-	int		result;
+	unsigned int 	len;
 
-	a_assert(s);
-	a_assert(fmt);
-
-	*s = NULL;
-	va_start(ap, fmt);
-	result = dsnprintf(s, n, fmt, ap, 0);
-	va_end(ap);
-	return result;
+	len = strlen(s);
+	return min(len, n);
 }
 
 /******************************************************************************/
 /*
- *	Support a static buffer version for small buffers only!
+ *	Add a character to a string buffer
  */
 
-int fmtStatic(char_t *s, int n, char_t *fmt, ...)
+static void put_char(strbuf_t *buf, char_t c)
 {
-	va_list	ap;
-	int		result;
-
-	a_assert(s);
-	a_assert(fmt);
-	a_assert(n <= 256);
-
-	if (n <= 0) {
-		return -1;
+	if (buf->count >= (buf->size - 1)) {
+		if (! (buf->flags & STR_REALLOC)) {
+			return;
+		}
+		buf->size += STR_INC;
+		if (buf->size > buf->max && buf->size > STR_INC) {
+/*
+ *			Caller should increase the size of the calling buffer
+ */
+			buf->size -= STR_INC;
+			return;
+		}
+		if (buf->s == NULL) {
+			buf->s = balloc(B_L, buf->size * sizeof(char_t));
+		} else {
+			buf->s = brealloc(B_L, buf->s, buf->size * sizeof(char_t));
+		}
 	}
-	va_start(ap, fmt);
-	result = dsnprintf(&s, n, fmt, ap, 0);
-	va_end(ap);
-	return result;
-}
-
-/******************************************************************************/
-/*
- *	This function appends the formatted string to the supplied string,
- *	reallocing if required.
- */
-
-int fmtRealloc(char_t **s, int n, int msize, char_t *fmt, ...)
-{
-	va_list	ap;
-	int		result;
-
-	a_assert(s);
-	a_assert(fmt);
-
-	if (msize == -1) {
-		*s = NULL;
+	buf->s[buf->count] = c;
+	if (c != '\0') {
+		++buf->count;
 	}
-	va_start(ap, fmt);
-	result = dsnprintf(s, n, fmt, ap, msize);
-	va_end(ap);
-	return result;
 }
 
 /******************************************************************************/
 /*
- *	A vsprintf replacement.
+ *	Add a string to a string buffer
  */
 
-int fmtValloc(char_t **s, int n, char_t *fmt, va_list arg)
+static void put_string(strbuf_t *buf, char_t *s, int len, int width,
+		int prec, enum flag f)
 {
-	a_assert(s);
-	a_assert(fmt);
+	int i;
 
-	*s = NULL;
-	return dsnprintf(s, n, fmt, arg, 0);
+	if (len < 0) {
+		len = strnlen(s, prec >= 0 ? prec : (int)ULONG_MAX);
+	} else if (prec >= 0 && prec < len) {
+		len = prec; 
+	}
+	if (width > len && !(f & flag_minus)) {
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
+	for (i = 0; i < len; ++i) {
+		put_char(buf, s[i]);
+	}
+	if (width > len && f & flag_minus) {
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
+}
+
+/******************************************************************************/
+/*
+ *	Add a long to a string buffer
+ */
+
+static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
+		int upper, char_t *prefix, int width, int prec, enum flag f)
+{
+	unsigned long x, x2;
+	int len, zeros, i;
+
+	if (base == 0)
+	    return;
+
+	for (len = 1, x = 1; x < ULONG_MAX / base; ++len, x = x2) {
+		x2 = x * base;
+		if (x2 > value) {
+			break;
+		}
+	}
+	zeros = (prec > len) ? prec - len : 0;
+	width -= zeros + len;
+	if (prefix != NULL) {
+		width -= strnlen(prefix, ULONG_MAX);
+	}
+	if (!(f & flag_minus)) {
+		if (f & flag_zero) {
+			for (i = 0; i < width; ++i) {
+				put_char(buf, '0');
+			}
+		} else {
+			for (i = 0; i < width; ++i) {
+				put_char(buf, ' ');
+			}
+		}
+	}
+	if (prefix != NULL) {
+		put_string(buf, prefix, -1, 0, -1, flag_none);
+	}
+	for (i = 0; i < zeros; ++i) {
+		put_char(buf, '0');
+	}
+	for ( ; x > 0; x /= base) {
+		int digit = (value / x) % base;
+		put_char(buf, (char) ((digit < 10 ? '0' : (upper ? 'A' : 'a') - 10) +
+			digit));
+	}
+	if (f & flag_minus) {
+		for (i = 0; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
 }
 
 /******************************************************************************/
@@ -202,7 +239,7 @@ static int dsnprintf(char_t **s, int size, char_t *fmt, va_list arg, int msize)
 			buf.size = max(msize, 0);
 		}
 		if (*s != NULL && msize != 0) {
-			buf.count = gstrlen(*s);
+			buf.count = strlen(*s);
 		}
 	} else {
 		buf.size = size;
@@ -238,7 +275,7 @@ static int dsnprintf(char_t **s, int size, char_t *fmt, va_list arg, int msize)
 				}
 				c = *fmt++;
 			} else {
-				for ( ; gisdigit((int)c); c = *fmt++) {
+				for ( ; isdigit((int)c); c = *fmt++) {
 					width = width * 10 + (c - '0');
 				}
 			}
@@ -249,7 +286,7 @@ static int dsnprintf(char_t **s, int size, char_t *fmt, va_list arg, int msize)
 					prec = va_arg(arg, int);
 					c = *fmt++;
 				} else {
-					for (prec = 0; gisdigit((int)c); c = *fmt++) {
+					for (prec = 0; isdigit((int)c); c = *fmt++) {
 						prec = prec * 10 + (c - '0');
 					}
 				}
@@ -374,130 +411,84 @@ static int dsnprintf(char_t **s, int size, char_t *fmt, va_list arg, int msize)
 
 /******************************************************************************/
 /*
- *	Return the length of a string limited by a given length
+ *	sprintf and vsprintf are bad, ok. You can easily clobber memory. Use
+ *	fmtAlloc and fmtValloc instead! These functions do _not_ support floating
+ *	point, like %e, %f, %g...
  */
 
-static int gstrnlen(char_t *s, unsigned int n)
+int fmtAlloc(char_t **s, int n, char_t *fmt, ...)
 {
-	unsigned int 	len;
+	va_list	ap;
+	int		result;
 
-	len = gstrlen(s);
-	return min(len, n);
+	a_assert(s);
+	a_assert(fmt);
+
+	*s = NULL;
+	va_start(ap, fmt);
+	result = dsnprintf(s, n, fmt, ap, 0);
+	va_end(ap);
+	return result;
 }
 
 /******************************************************************************/
 /*
- *	Add a character to a string buffer
+ *	Support a static buffer version for small buffers only!
  */
 
-static void put_char(strbuf_t *buf, char_t c)
+int fmtStatic(char_t *s, int n, char_t *fmt, ...)
 {
-	if (buf->count >= (buf->size - 1)) {
-		if (! (buf->flags & STR_REALLOC)) {
-			return;
-		}
-		buf->size += STR_INC;
-		if (buf->size > buf->max && buf->size > STR_INC) {
-/*
- *			Caller should increase the size of the calling buffer
- */
-			buf->size -= STR_INC;
-			return;
-		}
-		if (buf->s == NULL) {
-			buf->s = balloc(B_L, buf->size * sizeof(char_t));
-		} else {
-			buf->s = brealloc(B_L, buf->s, buf->size * sizeof(char_t));
-		}
+	va_list	ap;
+	int		result;
+
+	a_assert(s);
+	a_assert(fmt);
+	a_assert(n <= 256);
+
+	if (n <= 0) {
+		return -1;
 	}
-	buf->s[buf->count] = c;
-	if (c != '\0') {
-		++buf->count;
-	}
+	va_start(ap, fmt);
+	result = dsnprintf(&s, n, fmt, ap, 0);
+	va_end(ap);
+	return result;
 }
 
 /******************************************************************************/
 /*
- *	Add a string to a string buffer
+ *	This function appends the formatted string to the supplied string,
+ *	reallocing if required.
  */
 
-static void put_string(strbuf_t *buf, char_t *s, int len, int width,
-		int prec, enum flag f)
+int fmtRealloc(char_t **s, int n, int msize, char_t *fmt, ...)
 {
-	int i;
+	va_list	ap;
+	int		result;
 
-	if (len < 0) {
-		len = gstrnlen(s, prec >= 0 ? prec : (int)ULONG_MAX);
-	} else if (prec >= 0 && prec < len) {
-		len = prec; 
+	a_assert(s);
+	a_assert(fmt);
+
+	if (msize == -1) {
+		*s = NULL;
 	}
-	if (width > len && !(f & flag_minus)) {
-		for (i = len; i < width; ++i) {
-			put_char(buf, ' ');
-		}
-	}
-	for (i = 0; i < len; ++i) {
-		put_char(buf, s[i]);
-	}
-	if (width > len && f & flag_minus) {
-		for (i = len; i < width; ++i) {
-			put_char(buf, ' ');
-		}
-	}
+	va_start(ap, fmt);
+	result = dsnprintf(s, n, fmt, ap, msize);
+	va_end(ap);
+	return result;
 }
 
 /******************************************************************************/
 /*
- *	Add a long to a string buffer
+ *	A vsprintf replacement.
  */
 
-static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
-		int upper, char_t *prefix, int width, int prec, enum flag f)
+int fmtValloc(char_t **s, int n, char_t *fmt, va_list arg)
 {
-	unsigned long x, x2;
-	int len, zeros, i;
+	a_assert(s);
+	a_assert(fmt);
 
-	if (base == 0)
-	    return;
-
-	for (len = 1, x = 1; x < ULONG_MAX / base; ++len, x = x2) {
-		x2 = x * base;
-		if (x2 > value) {
-			break;
-		}
-	}
-	zeros = (prec > len) ? prec - len : 0;
-	width -= zeros + len;
-	if (prefix != NULL) {
-		width -= gstrnlen(prefix, ULONG_MAX);
-	}
-	if (!(f & flag_minus)) {
-		if (f & flag_zero) {
-			for (i = 0; i < width; ++i) {
-				put_char(buf, '0');
-			}
-		} else {
-			for (i = 0; i < width; ++i) {
-				put_char(buf, ' ');
-			}
-		}
-	}
-	if (prefix != NULL) {
-		put_string(buf, prefix, -1, 0, -1, flag_none);
-	}
-	for (i = 0; i < zeros; ++i) {
-		put_char(buf, '0');
-	}
-	for ( ; x > 0; x /= base) {
-		int digit = (value / x) % base;
-		put_char(buf, (char) ((digit < 10 ? '0' : (upper ? 'A' : 'a') - 10) +
-			digit));
-	}
-	if (f & flag_minus) {
-		for (i = 0; i < width; ++i) {
-			put_char(buf, ' ');
-		}
-	}
+	*s = NULL;
+	return dsnprintf(s, n, fmt, arg, 0);
 }
 
 /******************************************************************************/
@@ -560,11 +551,11 @@ unsigned int hextoi(char_t *hexstring)
  *	a hexidecimal conversion is done.
  */
 
-unsigned int gstrtoi(char_t *s)
+unsigned int strtoi(char_t *s)
 {
 	if (*s == '0' && (*(s+1) == 'x' || *(s+1) == 'X')) {
 		s += 2;
 		return hextoi(s);
 	}
-	return gatoi(s);
+	return atoi(s);
 }

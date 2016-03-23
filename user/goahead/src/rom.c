@@ -44,8 +44,8 @@ int websRomOpen()
 	romTab = symOpen(WEBS_SYM_INIT);
 
 	for (wip = websRomPageIndex; wip->path; wip++) {
-		gstrncpy(name, wip->path, SYM_MAX);
-		nchars = gstrlen(name) - 1;
+		strncpy(name, wip->path, SYM_MAX);
+		nchars = strlen(name) - 1;
 		if (nchars > 0 &&
 			(name[nchars] == '/' || name[nchars] == '\\')) {
 			name[nchars] = '\0';

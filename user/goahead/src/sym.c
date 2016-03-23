@@ -247,7 +247,7 @@ sym_t *symLookup(sym_fd_t sd, char_t *name)
  */
 	for (sp = hash(tp, name); sp; sp = sp->forw) {
 		cp = sp->name.value.tstring;
-		if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
+		if (cp[0] == name[0] && strcmp(cp, name) == 0) {
 			break;
 		}
 	}
@@ -283,7 +283,7 @@ sym_t *symEnter(sym_fd_t sd, char_t *name, value_t v, int arg)
 	if ((sp = tp->hash_table[hindex]) != NULL) {
 		for (; sp; sp = sp->forw) {
 			cp = sp->name.value.tstring;
-			if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
+			if (cp[0] == name[0] && strcmp(cp, name) == 0) {
 				break;
 			}
 			last = sp;
@@ -363,7 +363,7 @@ int symDelete(sym_fd_t sd, char_t *name)
 	if ((sp = tp->hash_table[hindex]) != NULL) {
 		for ( ; sp; sp = sp->forw) {
 			cp = sp->name.value.tstring;
-			if (cp[0] == name[0] && gstrcmp(cp, name) == 0) {
+			if (cp[0] == name[0] && strcmp(cp, name) == 0) {
 				break;
 			}
 			last = sp;

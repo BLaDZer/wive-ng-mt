@@ -86,7 +86,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 	/*
 	 *	If the empty or "/" URL is invoked, redirect default URLs to the home page
 	 */
-	if (*url == '\0' || gstrcmp(url, T("/")) == 0) {
+	if (*url == '\0' || strcmp(url, T("/")) == 0) {
 		websRedirect(wp, T("home.asp"));
 		return 1;
 	}
@@ -347,7 +347,7 @@ int main(int argcn, char *argvc[])
  */
 void defaultErrorHandler(int etype, char_t *msg)
 {
-	write(1, msg, gstrlen(msg));
+	write(1, msg, strlen(msg));
 }
 
 /******************************************************************************/
@@ -362,7 +362,7 @@ void defaultTraceHandler(int level, char_t *buf)
 	 */
 	if (buf) {
 		if (0 == level)
-			write(1, buf, gstrlen(buf));
+			write(1, buf, strlen(buf));
 	}
 }
 
@@ -452,7 +452,7 @@ static void memLeaks()
 {
 	int		fd;
 
-	if ((fd = gopen(T("leak.txt"), O_CREAT | O_TRUNC | O_WRONLY, 0666)) >= 0) {
+	if ((fd = open(T("leak.txt"), O_CREAT | O_TRUNC | O_WRONLY, 0666)) >= 0) {
 		bstats(fd, printMemStats);
 		close(fd);
 	}

@@ -166,9 +166,9 @@
 					tmp[0] = '\0';						\
 				    else{							\
 					if( getNthValueSafe(n, x, ';', tmp, 128) != -1){	\
-					    gstrncat(result, tmp, 4096);			\
+					    strncat(result, tmp, 4096);			\
 					}							\
-				    }gstrncat(result, "\r", 4096);				\
+				    }strncat(result, "\r", 4096);				\
 				}while(0)
 
 /* Load from Web */

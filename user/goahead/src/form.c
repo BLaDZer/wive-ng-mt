@@ -47,13 +47,13 @@ int websFormHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 /*
  *	Extract the form name
  */
-	gstrncpy(formBuf, path, TSZ(formBuf));
-	if ((formName = gstrchr(&formBuf[1], '/')) == NULL) {
+	strncpy(formBuf, path, TSZ(formBuf));
+	if ((formName = strchr(&formBuf[1], '/')) == NULL) {
 		websError(wp, 200, T("Missing form name"));
 		return 1;
 	}
 	formName++;
-	if ((cp = gstrchr(formName, '/')) != NULL) {
+	if ((cp = strchr(formName, '/')) != NULL) {
 		*cp = '\0';
 	}
 

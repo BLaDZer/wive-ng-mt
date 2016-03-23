@@ -58,13 +58,13 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *	Extract the form name and then build the full path name.  The form
  *	name will follow the first '/' in path.
  */
-	gstrncpy(cgiBuf, path, TSZ(cgiBuf));
-	if ((cgiName = gstrchr(&cgiBuf[1], '/')) == NULL) {
+	strncpy(cgiBuf, path, TSZ(cgiBuf));
+	if ((cgiName = strchr(&cgiBuf[1], '/')) == NULL) {
 		websError(wp, 200, T("Missing CGI name"));
 		return 1;
 	}
 	cgiName++;
-	if ((cp = gstrchr(cgiName, '/')) != NULL) {
+	if ((cp = strchr(cgiName, '/')) != NULL) {
 		*cp = '\0';
 	}
 	fmtAlloc(&cgiPath, FNAMESIZE, T("%s/%s/%s"), websGetDefaultDir(),
@@ -75,13 +75,13 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *	be part of the OS image, rather than in the file system.
  */
 	{
-		gstat_t		sbuf;
-		if (gstat(cgiPath, &sbuf) != 0 || (sbuf.st_mode & S_IFREG) == 0) {
+		stat_t	sbuf;
+		if (stat(cgiPath, &sbuf) != 0 || (sbuf.st_mode & S_IFREG) == 0) {
 			websError(wp, 404, T("CGI process file does not exist"));
 			bfree(B_L, cgiPath);
 			return 1;
 		}
-		if (gaccess(cgiPath, X_OK) != 0) {
+		if (access(cgiPath, X_OK) != 0) {
 			websError(wp, 200, T("CGI process file is not executable"));
 			bfree(B_L, cgiPath);
 			return 1;
@@ -91,13 +91,13 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 /*
  *	Get the CWD for resetting after launching the child process CGI
  */
-	ggetcwd(cwd, FNAMESIZE);
+	getcwd(cwd, FNAMESIZE);
 /*
  *	Retrieve the directory of the child process CGI
  */
-	if ((cp = gstrrchr(cgiPath, '/')) != NULL) {
+	if ((cp = strrchr(cgiPath, '/')) != NULL) {
 		*cp = '\0';
-		gchdir(cgiPath);
+		chdir(cgiPath);
 		*cp = '/';
 	}
 
@@ -118,10 +118,10 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	*argp = cgiPath;
 
 	n = 1;
-	if (gstrchr(query, '=') == NULL) {
+	if (strchr(query, '=') == NULL) {
 
-		websDecodeUrl(query, query, gstrlen(query));
-		for (cp = gstrtok(query, T(" ")); cp != NULL; ) {
+		websDecodeUrl(query, query, strlen(query));
+		for (cp = strtok(query, T(" ")); cp != NULL; ) {
 			*(argp+n) = cp;
 			n++;
 
@@ -130,7 +130,7 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 				argp = brealloc(B_L, argp, argpsize * sizeof(char_t *));
 
 			}
-			cp = gstrtok(NULL, T(" "));
+			cp = strtok(NULL, T(" "));
 
 		}
 	}
@@ -163,8 +163,8 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	for (s = symFirst(wp->cgiVars); s != NULL; s = symNext(wp->cgiVars)) {
 
 		if (s->content.valid && s->content.type == tstring &&
-			gstrcmp(s->name.value.tstring, T("REMOTE_HOST")) != 0 &&
-			gstrcmp(s->name.value.tstring, T("HTTP_AUTHORIZATION")) != 0) {
+			strcmp(s->name.value.tstring, T("REMOTE_HOST")) != 0 &&
+			strcmp(s->name.value.tstring, T("HTTP_AUTHORIZATION")) != 0) {
 			fmtAlloc(envp+n, FNAMESIZE, T("%s=%s"), s->name.value.tstring, s->content.value.tstring);
 
 			n++;
@@ -230,7 +230,7 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 /*
  *	Restore the current working directory after spawning child CGI
  */
- 	gchdir(cwd);
+ 	chdir(cwd);
 	return 1;
 }
 
@@ -242,12 +242,12 @@ int websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  */
 void websCgiGatherOutput (cgiRec *cgip)
 {
-	gstat_t	sbuf;
+	stat_t	sbuf;
 	char_t	cgiBuf[FNAMESIZE];
-	if ((gstat(cgip->stdOut, &sbuf) == 0) && 
+	if ((stat(cgip->stdOut, &sbuf) == 0) && 
 		(sbuf.st_size > cgip->fplacemark)) {
 		int fdout;
-		fdout = gopen(cgip->stdOut, O_RDONLY | O_BINARY, 0444 );
+		fdout = open(cgip->stdOut, O_RDONLY | O_BINARY, 0444 );
 /*
  *		Check to see if any data is available in the
  *		output file and send its contents to the socket.
@@ -262,12 +262,12 @@ void websCgiGatherOutput (cgiRec *cgip)
 				websWrite(wp, T("HTTP/1.0 200 OK\r\n"));
 				websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 			}
-			glseek(fdout, cgip->fplacemark, SEEK_SET);
-			while ((nRead = gread(fdout, cgiBuf, FNAMESIZE)) > 0) {
+			lseek(fdout, cgip->fplacemark, SEEK_SET);
+			while ((nRead = read(fdout, cgiBuf, FNAMESIZE)) > 0) {
 				websWriteBlock(wp, cgiBuf, nRead);
 				cgip->fplacemark += nRead;
 			}
-			gclose(fdout);
+			close(fdout);
 		}
 	}
 }
@@ -310,8 +310,8 @@ void websCgiCleanup()
 /*
  *				Remove the temporary re-direction files
  */
-				gunlink(cgip->stdIn);
-				gunlink(cgip->stdOut);
+				unlink(cgip->stdIn);
+				unlink(cgip->stdOut);
 /*
  *				Free all the memory buffers pointed to by cgip.
  *				The stdin file name (wp->cgiStdin) gets freed as
