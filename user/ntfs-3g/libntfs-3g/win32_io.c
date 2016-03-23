@@ -1881,6 +1881,10 @@ static int ntfs_device_win32_ioctl(struct ntfs_device *dev, int request,
 #ifdef BLKSSZGET
 	case BLKSSZGET:
 		ntfs_log_debug("BLKSSZGET detected.\n");
+		if (fd && !fd->ntdll) {
+			*(int*)argp = fd->geo_sector_size;
+			return (0);
+		} else
 		return ntfs_win32_blksszget(dev, (int *)argp);
 #endif
 #ifdef BLKBSZSET
