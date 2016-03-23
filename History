@@ -1871,6 +1871,7 @@
 27) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
 28) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
 29) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+30) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
 <br>
 <br>
 <br>
