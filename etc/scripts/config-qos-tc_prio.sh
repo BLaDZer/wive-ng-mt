@@ -10,7 +10,7 @@
 LOG="logger -t Simple Prio port based QoS"
 
     $LOG "Load netsched  modules."
-    mod="sch_esfq sch_sfq cls_u32 em_u32"
+    mod="sch_sfq sch_prio cls_flow cls_u32"
     for module in $mod
     do
 	modprobe -q $module
