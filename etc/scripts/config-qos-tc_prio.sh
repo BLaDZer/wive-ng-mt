@@ -21,9 +21,6 @@ LOG="logger -t Simple Prio port based QoS"
     tc qdisc add dev $lan_if parent 1:1 handle 10: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:2 handle 20: sfq perturb 10 quantum 1500
     tc qdisc add dev $lan_if parent 1:3 handle 30: sfq perturb 10 quantum 1500
-    tc filter add dev $lan_if protocol ip pref 1 parent 10: handle 10 flow hash keys dst divisor 1024
-    tc filter add dev $lan_if protocol ip pref 1 parent 20: handle 20 flow hash keys dst divisor 1024
-    tc filter add dev $lan_if protocol ip pref 1 parent 30: handle 30 flow hash keys dst divisor 1024
 
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	# PRIOMAP+SFQ2WAN
