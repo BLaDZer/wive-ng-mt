@@ -270,7 +270,7 @@ forwardlimit() {
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	fi
 	if [ "$parproutedEnabled" != "1" ]; then
-	    # enable forward only from local network to wan/ppp
+	    # enable forward only from local network to any
 	    iptables -A FORWARD -i $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
 	    # second lan
 	    if [ "$Lan2Enabled" = "1" ]; then
