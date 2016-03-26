@@ -269,15 +269,13 @@ forwardlimit() {
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	fi
-	# second lan
-	if [ "$Lan2Enabled" = "1" ]; then
-    	    iptables -A FORWARD ! -o $lan_if -s $lan2_ipaddr/$lan2_netmask -j ACCEPT
-	fi
 	if [ "$parproutedEnabled" != "1" ]; then
 	    # enable forward only from local network to wan/ppp
 	    iptables -A FORWARD -i $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
-	    iptables -A FORWARD -o $wan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
-	    iptables -A FORWARD ! -o $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
+	    # second lan
+	    if [ "$Lan2Enabled" = "1" ]; then
+    		iptables -A FORWARD ! -o $lan_if -s $lan2_ipaddr/$lan2_netmask -j ACCEPT
+	    fi
 	else
 	    # in proxy arp mode need all forward packets to acepted
 	    iptables -I FORWARD -j ACCEPT
