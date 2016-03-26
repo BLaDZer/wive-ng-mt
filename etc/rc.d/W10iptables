@@ -64,11 +64,11 @@ servicelimit() {
 	    iptables -A servicelimit -i $lan_if -p udp --dport 53 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 53 -j ACCEPT
 	fi
-	if [ "$cwmpdEnabled" != "0" ]; then
+	if [ "$cwmpdEnabled" = "1" ]; then
 	    $LOG "CWMP allow to callback connections (from all interfaces)."
 	    iptables -A servicelimit $STATE_NEW -p tcp -m multiport --dport 8080,54000 -j ACCEPT
 	fi
-	if [ "$RIPEnable" != "0" ]; then
+	if [ "$RIPEnable" = "1" ]; then
 	    $LOG "Quagga allow to connections (from all interfaces)."
 	    iptables -A servicelimit $STATE_NEW -p tcp --dport 2601:2602 -j ACCEPT
 	fi
