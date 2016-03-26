@@ -34,7 +34,7 @@ start() {
 	    # set not first time flag
 	    touch /tmp/modem_ready
 	    # wait goahead start and ready
-    	    while [ ! -f /tmp/bootgood ]; do
+    	    while [ ! -e /tmp/bootgood ]; do
 		# Sleep until file does exists/is created
 		sleep 3
 	    done

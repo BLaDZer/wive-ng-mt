@@ -157,7 +157,7 @@ case "$1" in
 	# update routes if first exec script or new ip selected
 	# default route with metric 0 is through $iface?
 	#
-	if [ "$FULL_RENEW" = "1" ] || [ ! -f /tmp/routes_applied ]; then
+	if [ "$FULL_RENEW" = "1" ] || [ ! -e /tmp/routes_applied ]; then
 	    # Get default gateway
 	    if [ "$router" != "" ]; then
 		# if ip not changed not need delete old default route
@@ -321,7 +321,7 @@ case "$1" in
 	    services_restart.sh dhcp
 	    # restart vpn if ip changed and vpn != pppoe
 	    # or vpn enabled and not started
-	    if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" -o ! -f /var/run/$vpn_if.pid ]; then
+	    if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" -o ! -e /var/run/$vpn_if.pid ]; then
 		$LOG "Restart vpnhelper."
 		service vpnhelper restart
 	    fi

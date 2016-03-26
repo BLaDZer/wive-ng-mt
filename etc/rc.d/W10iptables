@@ -249,7 +249,7 @@ forwardlimit() {
 		iptables -A FORWARD -o $real_wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
 	    fi
 	fi
-	if [ -e /etc/macipfilter ] && [ "$IPPortFilterEnable" = "1" ]; then
+	if [ "$IPPortFilterEnable" = "1" ] && [ -e /etc/macipfilter ]; then
 	    $LOG "Set macipport_filter rules"
 	    /etc/macipfilter
 	fi
@@ -283,7 +283,7 @@ forwardlimit() {
 	    iptables -I FORWARD -j ACCEPT
 	fi
 	# allow forward packets for portfw rules
-	if [ "$IPPortFilterEnable" != "1" ] || [ ! -f /etc/macipfilter ]; then
+	if [ "$IPPortFilterEnable" != "1" ]; then
 	    if [ "$natEnabled" = "1" ]; then
 		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
@@ -296,7 +296,7 @@ forwardlimit() {
 }
 
 simpleqos() {
-	if [ -e /etc/qos_firewall ] && [ "$QoSEnable" != "0" ]; then
+	if [ "$QoSEnable" != "0" ] && [ -e /etc/qos_firewall ]; then
 	    $LOG "Add QoS rules"
 	    /etc/qos_firewall
 	fi
@@ -304,7 +304,7 @@ simpleqos() {
 
 natrules() {
 	####################PORTFORWARD#############################
-	if [ -e /etc/portforward ] && [ "$PortForwardEnable" = "1" ]; then
+	if [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ]; then
 	    if  [ "$wan_ipaddr" != "" ]; then
 		$LOG "Add portforward rules"
 		/etc/portforward "$wan_ipaddr"

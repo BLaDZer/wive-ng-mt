@@ -17,7 +17,7 @@ start() {
     fi
 
     # wifi reconfigure and modules load only after full boot good
-    if [  -f /tmp/bootgood ]; then
+    if [  -e /tmp/bootgood ]; then
 	$LOG "Load conntrack helpers modules."
 	load_nat_helpers
 
