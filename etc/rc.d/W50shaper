@@ -15,25 +15,12 @@ if [ "$wan_up" = "0" ]; then
 fi
 
 LOG="logger -t QoS"
-IPTSCR="/etc/qos_firewall"
 
 start() {
     eval `nvram_buf_get 2860 QoSEnable`
     if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ]; then
 	$LOG "Set default rules."
 	set_def
-
-	# create iptables stub
-	printf "#!/bin/sh\n\n" > $IPTSCR
-
-	######################################
-	# netfilter script generate
-	######################################
-
-	# set execute bits for all
-	if [ -e $IPTSCR ]; then
-	    chmod 755 $IPTSCR
-	fi
 
 	######################################
 	# call shaper helpers
@@ -93,7 +80,7 @@ stop() {
     $LOG "Stopping SHAPER"
     # Drop all QoS rules
     set_def
-    rm -f $IPTSCR
+    rm -f /etc/qos_firewall
 }
 
 case "$1" in
