@@ -268,7 +268,6 @@ forwardlimit() {
 		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
-	    iptables -t nat -A PREROUTING -i tun0 -d $chilli_net -j ACCEPT
 	fi
 	# second lan
 	if [ "$Lan2Enabled" = "1" ]; then
@@ -285,9 +284,11 @@ forwardlimit() {
 	fi
 	# allow forward packets for portfw rules
 	if [ "$IPPortFilterEnable" != "1" ] || [ ! -f /etc/macipfilter ]; then
-	    $LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
-	    iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+	    if [ "$natEnabled" = "1" ]; then
+		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
+		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
+	    fi
+	    if [ "$PPP_CONNECT" = "on" ] && [ "$vpnNAT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		$LOG "Allow forward from $realwan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $real_wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 	    fi
