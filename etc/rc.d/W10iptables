@@ -284,7 +284,7 @@ forwardlimit() {
 	    iptables -I FORWARD -j ACCEPT
 	fi
 	# allow forward packets for portfw rules only if nat enabled and portforward rules really generate
-	if [ "$IPPortFilterEnable" != "1" ] && [ "$PortForwardEnable" = "1" ] && [ -f /etc/portforward ]; then
+	if [ "$IPPortFilterEnable" != "1" ] && [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ]; then
 	    if [ "$natEnabled" = "1" ]; then
 		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
