@@ -7,7 +7,6 @@
 
 #include <asm/irq.h>
 #include <asm/rt2880/rt_mmap.h>
-#include <asm/rt2880/surfboardint.h>
 
 #include <linux/mtd/mtk_nand_dev.h>
 
