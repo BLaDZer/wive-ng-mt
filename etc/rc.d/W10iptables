@@ -274,7 +274,7 @@ forwardlimit() {
 	    fi
 	fi
 	# enable forward only from local network to any in normal mode
-	# in proxy arp mode need all forward packets to acepted
+	# in proxy arp mode need all forward packets to accepted
 	if [ "$parproutedEnabled" != "1" ]; then
 	    iptables -A FORWARD -i $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
 	    # second lan
@@ -284,7 +284,7 @@ forwardlimit() {
 	else
 	    iptables -I FORWARD -j ACCEPT
 	fi
-	# allow forward packets for portfw rules only if nat enabled and portforward rules really generate
+	# allow forward packets for portfw rules only if nat enabled, port filter disabled and portforward rules really generate
 	if [ "$IPPortFilterEnable" != "1" ] && [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ]; then
 	    if [ "$natEnabled" = "1" ]; then
 		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
