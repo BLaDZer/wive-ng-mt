@@ -38,14 +38,14 @@ static inline void atomic_long_set(atomic_long_t *l, long i)
 	atomic64_set(v, i);
 }
 
-static inline void atomic_long_inc(atomic_long_t *l)
+static __always_inline void atomic_long_inc(atomic_long_t *l)
 {
 	atomic64_t *v = (atomic64_t *)l;
 
 	atomic64_inc(v);
 }
 
-static inline void atomic_long_dec(atomic_long_t *l)
+static __always_inline void atomic_long_dec(atomic_long_t *l)
 {
 	atomic64_t *v = (atomic64_t *)l;
 
