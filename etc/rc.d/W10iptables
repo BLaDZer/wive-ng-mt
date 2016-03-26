@@ -259,11 +259,13 @@ forwardlimit() {
 	fi
 	# add forward chain for vpn server
 	if [ "$l2tp_srv_enabled" = "1" ]; then
+    	    $LOG "Add chain for vpnserver"
 	    iptables -N l2tpsrvfwd
 	    iptables -A FORWARD -j l2tpsrvfwd
 	fi
 	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
+    	    $LOG "Add rules for chillispot"
 	    if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
 		iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
 		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
@@ -276,12 +278,14 @@ forwardlimit() {
 	# enable forward only from local network to any in normal mode
 	# in proxy arp mode need all forward packets to accepted
 	if [ "$parproutedEnabled" != "1" ]; then
+    	    $LOG "Allow forward from LAN to any"
 	    iptables -A FORWARD -i $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
 	    # second lan
 	    if [ "$Lan2Enabled" = "1" ]; then
     		iptables -A FORWARD ! -o $lan_if -s $lan2_ipaddr/$lan2_netmask -j ACCEPT
 	    fi
 	else
+    	    $LOG "Parprouted enabled - allow forward any to any"
 	    iptables -I FORWARD -j ACCEPT
 	fi
 	# allow forward packets for portfw rules only if nat enabled, port filter disabled and portforward rules really generate
