@@ -268,6 +268,9 @@ forwardlimit() {
 		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
+	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
+	    fi
 	fi
 	if [ "$parproutedEnabled" != "1" ]; then
 	    # enable forward only from local network to any
@@ -280,14 +283,14 @@ forwardlimit() {
 	    # in proxy arp mode need all forward packets to acepted
 	    iptables -I FORWARD -j ACCEPT
 	fi
-	# allow forward packets for portfw rules
-	if [ "$IPPortFilterEnable" != "1" ]; then
+	# allow forward packets for portfw rules only if nat enabled and portforward rules really generate
+	if [ "$IPPortFilterEnable" != "1" ] && [ "$PortForwardEnable" = "1" ] && [ -f /etc/portforward ]; then
 	    if [ "$natEnabled" = "1" ]; then
 		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 	    fi
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$vpnNAT" = "on" ] && [ "$real_wan_if" != "" ]; then
-		$LOG "Allow forward from $realwan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
+		$LOG "Allow forward from $real_wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward."
 		iptables -A FORWARD -i $real_wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
 	    fi
 	fi
