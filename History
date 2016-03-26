@@ -1865,35 +1865,36 @@
 21) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
 22) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
 23) kernel: bitops: Do not default to __clear_bit() for __clear_bit_unlock().<br>
-24) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-25) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-26) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-27) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
-28) kernel: mips: cache flush functions are reworked.<br>
-29) kernel: mips: fix bug in using flush_cache_vunmap.<br>
-30) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
-31) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
-32) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
-33) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-34) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-35) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
-36) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-37) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-38) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
-39) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-40) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-41) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-42) kernel: net: vlan: propagate gso_max_segs.<br>
-43) kernel: net: gro: selective flush of packets.<br>
-44) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-45) kernel: net: gro: add checksuming helpers.<br>
-46) kernel: net: gro: only verify TCP checksums for candidates.<br>
-47) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-48) kernel: net: gro: change GRO overflow strategy.<br>
-49) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-50) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-51) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
-52) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
+24) kernel: bufferhead: force inlining of buffer head flag operations.<br>
+25) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+26) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+27) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+28) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
+29) kernel: mips: cache flush functions are reworked.<br>
+30) kernel: mips: fix bug in using flush_cache_vunmap.<br>
+31) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
+32) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
+33) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
+34) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+35) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+36) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
+37) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+38) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+39) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
+40) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+41) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+42) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+43) kernel: net: vlan: propagate gso_max_segs.<br>
+44) kernel: net: gro: selective flush of packets.<br>
+45) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+46) kernel: net: gro: add checksuming helpers.<br>
+47) kernel: net: gro: only verify TCP checksums for candidates.<br>
+48) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+49) kernel: net: gro: change GRO overflow strategy.<br>
+50) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+51) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+52) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+53) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
 <br>
 <br>
 <br>
