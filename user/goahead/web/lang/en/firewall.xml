@@ -14,7 +14,7 @@
 
   <message msgid="port title" msgstr="MAC/IP/Port Filtering Settings" />
   <message msgid="port introduction" msgstr="You can set up firewall rules to protect your network from viruses, worms and other malicious activity on the Internet." />
-  <message msgid="port basic setting" msgstr="Basic Settings" />
+  <message msgid="port basic setting" msgstr="Transit traffic filter settings" />
   <message msgid="port basic filter" msgstr="MAC/IP/Port Filtering" />
   <message msgid="port basic default policy" msgstr="Default Policy -- Packets that don't match any rules will be:" />
   <message msgid="port basic default policy accepted" msgstr="Accepted" />

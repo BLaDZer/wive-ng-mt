@@ -14,7 +14,7 @@
 
   <message msgid="port title" msgstr="Настройки фильтрации по MAC/IP/портам" />
   <message msgid="port introduction" msgstr="Вы можете настроить правила сетевого экрана для блокировки вирусов, червей и прочего нежелательного траффика из сети Интернет." />
-  <message msgid="port basic setting" msgstr="Основные настройки" />
+  <message msgid="port basic setting" msgstr="Настройки фильтрации транзитного трафика" />
   <message msgid="port basic filter" msgstr="Фильтрация MAC/IP/портов" />
   <message msgid="port basic default policy" msgstr="Правило по умолчанию -- пакеты, которые не подходят ни под одно правило, будут:" />
   <message msgid="port basic default policy accepted" msgstr="Пропущены" />
