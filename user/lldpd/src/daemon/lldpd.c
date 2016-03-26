@@ -127,13 +127,12 @@ usage(void)
 }
 
 struct lldpd_hardware *
-lldpd_get_hardware(struct lldpd *cfg, char *name, int index, struct lldpd_ops *ops)
+lldpd_get_hardware(struct lldpd *cfg, char *name, int index)
 {
 	struct lldpd_hardware *hardware;
 	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries) {
 		if ((strcmp(hardware->h_ifname, name) == 0) &&
-		    (hardware->h_ifindex == index) &&
-		    ((!ops) || (ops == hardware->h_ops)))
+		    (hardware->h_ifindex == index))
 			break;
 	}
 	return hardware;
@@ -425,9 +424,10 @@ lldpd_cleanup(struct lldpd *cfg)
 			TAILQ_REMOVE(&cfg->g_hardware, hardware, h_entries);
 			lldpd_remote_cleanup(hardware, notify_clients_deletion, 1);
 			lldpd_hardware_cleanup(cfg, hardware);
-		} else
+		} else {
 			lldpd_remote_cleanup(hardware, notify_clients_deletion,
 			    !(hardware->h_flags & IFF_RUNNING));
+	}
 	}
 
 	levent_schedule_cleanup(cfg);
@@ -1455,7 +1455,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	char *lsb_release = NULL;
 	const char *lldpcli = LLDPCLI_PATH;
 	int smart = 15;
-	int receiveonly = 0;
+	int receiveonly = 0, version = 0;
 	int ctl;
 
 #ifdef ENABLE_PRIVSEP
@@ -1488,8 +1488,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			usage();
 			break;
 		case 'v':
-			fprintf(stdout, "%s\n", PACKAGE_VERSION);
-			exit(0);
+			version++;
 			break;
 		case 'd':
 			if (daemonize)
@@ -1605,6 +1604,11 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			if (!found)
 				usage();
 		}
+	}
+
+	if (version) {
+		version_display(stdout, "lldpd", version > 1);
+		exit(0);
 	}
 
 	if (ctlname == NULL) ctlname = LLDPD_CTL_SOCKET;

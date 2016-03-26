@@ -246,7 +246,7 @@ static ssize_t
 client_handle_get_local_chassis(struct lldpd *cfg, enum hmsg_type *type,
     void *input, int input_len, void **output, int *subscribed)
 {
-    struct lldpd_chassis *chassis = LOCAL_CHASSIS(cfg);
+	struct lldpd_chassis *chassis = LOCAL_CHASSIS(cfg);
 	ssize_t output_len;
 
 	log_debug("rpc", "client request the local chassis");
@@ -312,7 +312,7 @@ client_handle_get_default_port(struct lldpd *cfg, enum hmsg_type *type,
 		return 0;
 	}
 	return output_len;
-	}
+}
 
 static int
 _client_handle_set_port(struct lldpd *cfg,
@@ -321,18 +321,18 @@ _client_handle_set_port(struct lldpd *cfg,
 #ifdef ENABLE_LLDPMED
 	struct lldpd_med_loc *loc = NULL;
 #endif
-		    if (set->local_id) {
-			    log_debug("rpc", "requested change to Port ID");
-			    free(port->p_id);
-			    port->p_id = strdup(set->local_id);
-			    port->p_id_len = strlen(set->local_id);
-			    port->p_id_subtype = LLDP_PORTID_SUBTYPE_LOCAL;
-		    }
-		    if (set->local_descr) {
-			    log_debug("rpc", "requested change to Port Description");
-			    free(port->p_descr);
-			    port->p_descr = strdup(set->local_descr);
-		    }
+	if (set->local_id) {
+		log_debug("rpc", "requested change to Port ID");
+		free(port->p_id);
+		port->p_id = strdup(set->local_id);
+		port->p_id_len = strlen(set->local_id);
+		port->p_id_subtype = LLDP_PORTID_SUBTYPE_LOCAL;
+	}
+	if (set->local_descr) {
+		log_debug("rpc", "requested change to Port Description");
+		free(port->p_descr);
+		port->p_descr = strdup(set->local_descr);
+	}
 	switch (set->rxtx) {
 	case LLDPD_RXTX_TXONLY:
 		log_debug("rpc", "requested TX only mode");
@@ -354,77 +354,85 @@ _client_handle_set_port(struct lldpd *cfg,
 		break;
 	}
 #ifdef ENABLE_LLDPMED
-		    if (set->med_policy && set->med_policy->type > 0) {
-			    log_debug("rpc", "requested change to MED policy");
-			    if (set->med_policy->type > LLDP_MED_APPTYPE_LAST) {
-				    log_warnx("rpc", "invalid policy provided: %d",
-					set->med_policy->type);
+	if (set->med_policy && set->med_policy->type > 0) {
+		log_debug("rpc", "requested change to MED policy");
+		if (set->med_policy->type > LLDP_MED_APPTYPE_LAST) {
+			log_warnx("rpc", "invalid policy provided: %d",
+			    set->med_policy->type);
 			return -1;
-			    }
-			    memcpy(&port->p_med_policy[set->med_policy->type - 1],
-				set->med_policy, sizeof(struct lldpd_med_policy));
-			    port->p_med_cap_enabled |= LLDP_MED_CAP_POLICY;
-		    }
-		    if (set->med_location && set->med_location->format > 0) {
-			    char *newdata = NULL;
-			    log_debug("rpc", "requested change to MED location");
-			    if (set->med_location->format > LLDP_MED_LOCFORMAT_LAST) {
-				    log_warnx("rpc", "invalid location format provided: %d",
-					set->med_location->format);
+		}
+		memcpy(&port->p_med_policy[set->med_policy->type - 1],
+		    set->med_policy, sizeof(struct lldpd_med_policy));
+		port->p_med_cap_enabled |= LLDP_MED_CAP_POLICY;
+	}
+	if (set->med_location && set->med_location->format > 0) {
+		char *newdata = NULL;
+		log_debug("rpc", "requested change to MED location");
+		if (set->med_location->format > LLDP_MED_LOCFORMAT_LAST) {
+			log_warnx("rpc", "invalid location format provided: %d",
+			    set->med_location->format);
 			return -1;
-			    }
-			    loc = \
-				&port->p_med_location[set->med_location->format - 1];
-			    free(loc->data);
-			    memcpy(loc, set->med_location, sizeof(struct lldpd_med_loc));
-			    if (!loc->data || !(newdata = malloc(loc->data_len))) loc->data_len = 0;
-			    if (newdata) memcpy(newdata, loc->data, loc->data_len);
-			    loc->data = newdata;
-			    port->p_med_cap_enabled |= LLDP_MED_CAP_LOCATION;
-		    }
-		    if (set->med_power) {
-			    log_debug("rpc", "requested change to MED power");
-			    memcpy(&port->p_med_power, set->med_power,
-				sizeof(struct lldpd_med_power));
-			    switch (set->med_power->devicetype) {
-			    case LLDP_MED_POW_TYPE_PD:
-				    port->p_med_cap_enabled |= LLDP_MED_CAP_MDI_PD;
-				    port->p_med_cap_enabled &= ~LLDP_MED_CAP_MDI_PSE;
-				    break;
-			    case LLDP_MED_POW_TYPE_PSE:
-				    port->p_med_cap_enabled |= LLDP_MED_CAP_MDI_PSE;
-				    port->p_med_cap_enabled &= ~LLDP_MED_CAP_MDI_PD;
-				    break;
-			    }
-		    }
+		}
+		loc = \
+		    &port->p_med_location[set->med_location->format - 1];
+		free(loc->data);
+		memcpy(loc, set->med_location, sizeof(struct lldpd_med_loc));
+		if (!loc->data || !(newdata = malloc(loc->data_len))) loc->data_len = 0;
+		if (newdata) memcpy(newdata, loc->data, loc->data_len);
+		loc->data = newdata;
+		port->p_med_cap_enabled |= LLDP_MED_CAP_LOCATION;
+	}
+	if (set->med_power) {
+		log_debug("rpc", "requested change to MED power");
+		memcpy(&port->p_med_power, set->med_power,
+		    sizeof(struct lldpd_med_power));
+		switch (set->med_power->devicetype) {
+		case LLDP_MED_POW_TYPE_PD:
+			port->p_med_cap_enabled |= LLDP_MED_CAP_MDI_PD;
+			port->p_med_cap_enabled &= ~LLDP_MED_CAP_MDI_PSE;
+			break;
+		case LLDP_MED_POW_TYPE_PSE:
+			port->p_med_cap_enabled |= LLDP_MED_CAP_MDI_PSE;
+			port->p_med_cap_enabled &= ~LLDP_MED_CAP_MDI_PD;
+			break;
+		}
+	}
 #endif
 #ifdef ENABLE_DOT3
-		    if (set->dot3_power) {
-			    log_debug("rpc", "requested change to Dot3 power");
-			    memcpy(&port->p_power, set->dot3_power,
-				sizeof(struct lldpd_dot3_power));
-		    }
+	if (set->dot3_power) {
+		log_debug("rpc", "requested change to Dot3 power");
+		memcpy(&port->p_power, set->dot3_power,
+		    sizeof(struct lldpd_dot3_power));
+	}
 #endif
 #ifdef ENABLE_CUSTOM
-		    if (set->custom_list_clear) {
-			    log_debug("rpc", "requested custom TLVs clear");
-			    lldpd_custom_list_cleanup(port);
+	if (set->custom_list_clear) {
+		log_debug("rpc", "requested custom TLVs clear");
+		lldpd_custom_list_cleanup(port);
 	} else {
-		    if (set->custom) {
-			    struct lldpd_custom *custom;
-			    log_debug("rpc", "requested custom TLV add");
-			    if ((custom = malloc(sizeof(struct lldpd_custom)))) {
-				    memcpy(custom, set->custom, sizeof(struct lldpd_custom));
-				    if ((custom->oui_info = malloc(custom->oui_info_len))) {
-					    memcpy(custom->oui_info, set->custom->oui_info, custom->oui_info_len);
-					    TAILQ_INSERT_TAIL(&port->p_custom_list, custom, next);
-				    } else {
-					    free(custom);
-					    log_warn("rpc", "could not allocate memory for custom TLV info");
-				    }
-			    } else
-				    log_warn("rpc", "could not allocate memory for custom TLV");
-		    }
+		if (set->custom) {
+			log_info("rpc", "custom TLV op %s oui %02x:%02x:%02x subtype %x",
+			    (set->custom_tlv_op == CUSTOM_TLV_REMOVE)?"remove":
+			    (set->custom_tlv_op == CUSTOM_TLV_ADD)?"add":
+			    "replace",
+			    set->custom->oui[0],
+			    set->custom->oui[1],
+			    set->custom->oui[2],
+			    set->custom->subtype);
+			switch (set->custom_tlv_op) {
+			case CUSTOM_TLV_REMOVE:
+				lldpd_custom_tlv_cleanup(port, set->custom);
+				break;
+			case CUSTOM_TLV_ADD:
+				lldpd_custom_tlv_add(port, set->custom);
+				break;
+			case CUSTOM_TLV_REPLACE:
+			default:
+				lldpd_custom_tlv_cleanup(port, set->custom);
+				lldpd_custom_tlv_add(port, set->custom);
+				break;
+			}
+		}
 	}
 #endif
 	return 0;
@@ -464,9 +472,9 @@ client_handle_set_port(struct lldpd *cfg, enum hmsg_type *type,
 			    struct lldpd_port *port = &hardware->h_lport;
 			    if (_client_handle_set_port(cfg, port, set) == -1)
 				    goto set_port_finished;
-		    ret = 1;
-		    break;
-	    }
+			    ret = 1;
+			    break;
+		    }
 		}
 	}
 
@@ -495,6 +503,7 @@ set_port_finished:
 		free(set->custom);
 	}
 #endif
+	free(set);
 	return 0;
 }
 

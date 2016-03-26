@@ -87,6 +87,20 @@ simpler alternatives:
            LDFLAGS="-mmacosx-version-min=10.6 -isysroot $SDK"
         make -C osx pkg
 
+    With recent SDK, you don't need to specify an alternate SDK. They
+    are organized in a way that should enable compatibility with older
+    versions of OSX:
+
+        mkdir build && cd build
+        ../configure --prefix=/usr/local --localstatedir=/var --sysconfdir=/private/etc --with-embedded-libevent \
+           --without-json --without-snmp \
+           CFLAGS="-mmacosx-version-min=10.9" \
+           LDFLAGS="-mmacosx-version-min=10.9"
+        make -C osx pkg
+
+    You can check with `otool -l` that you got what you expected in
+    term of supported versions.
+
 If you don't follow the above procedures, you will have to create the
 user/group `_lldpd`. Have a look at how this is done in
 `osx/scripts/postinstall`.
@@ -149,7 +163,7 @@ interfaces of the bond. In this case, lldpd will affect a received
 randomly to one of the interface (so a neighbor may be affected to the
 wrong interface).
 
-On 2.6.27, we are able to receive packets on real interface for bonded
+On 2.6.27, we are able to receive packets on real interface for enslaved
 devices. This allows one to get neighbor information on active/backup
 bonds. Without the 2.6.27, lldpd won't receive any information on
 inactive slaves. Here are the patchs (thanks to Joe Eykholt):
@@ -235,11 +249,8 @@ that:
     afl-fuzz -i inputs -o outputs ./decode @@
 
 There is a general test suite with `make check`. It's also possible to
-run integration tests with `make integration-tests && sh
-./integration-tests`. Those are not very flexible and may or may not
-work depending on your platform. Also check the content of
-`tests/lldpcli.conf`. It's a configuration file that should cover all
-commands present in lldpcli.
+run integration tests. They need [py.test](http://pytest.org/latest/)
+and rely on Linux containers to be executed.
 
 Embedding
 ---------

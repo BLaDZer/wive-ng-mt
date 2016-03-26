@@ -229,6 +229,14 @@ netlink_parse_link(struct nlmsghdr *msg,
 		case IFLA_LINK:
 			/* Index of "lower" interface */
 			iff->lower_idx = *(int*)RTA_DATA(attribute);
+			log_debug("netlink", "attribute IFLA_LINK for %s: %d",
+			    iff->name ? iff->name : "(unknown)", iff->lower_idx);
+			break;
+		case IFLA_LINK_NETNSID:
+			/* Is the lower interface into another namesapce? */
+			iff->lower_idx = -1;
+			log_debug("netlink", "attribute IFLA_LINK_NETNSID received for %s",
+			    iff->name ? iff->name : "(unknown)");
 			break;
 		case IFLA_MASTER:
 			/* Index of master interface */
@@ -345,6 +353,9 @@ netlink_merge(struct interfaces_device *old, struct interfaces_device *new)
 		new->type = old->type;
 	if (new->vlanid == 0)
 		new->vlanid = old->vlanid;
+
+	/* It's not possible for lower link to change */
+	new->lower_idx = old->lower_idx;
 }
 
 /**
@@ -553,6 +564,9 @@ end:
 			if (iface1->upper_idx != -1 && iface1->upper_idx != iface1->index) {
 				TAILQ_FOREACH(iface2, ifs, next) {
 					if (iface1->upper_idx == iface2->index) {
+						log_debug("netlink",
+						    "upper interface for %s is %s",
+						    iface1->name, iface2->name);
 						iface1->upper = iface2;
 						break;
 					}
@@ -575,7 +589,15 @@ end:
 						 * loop. */
 						if (iface2->lower_idx == iface1->index) {
 							iface1->lower = NULL;
-						} else iface1->lower = iface2;
+							log_debug("netlink",
+							    "link loop detected between %s and %s",
+							    iface1->name, iface2->name);
+						} else {
+							log_debug("netlink",
+							    "lower interface for %s is %s",
+							    iface1->name, iface2->name);
+							iface1->lower = iface2;
+						}
 						break;
 					}
 					if (iface2 == NULL)

@@ -107,7 +107,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libcommon_daemon_client_la_DEPENDENCIES = compat/libcompat.la
-am_libcommon_daemon_client_la_OBJECTS = log.lo
+am_libcommon_daemon_client_la_OBJECTS = log.lo version.lo
 libcommon_daemon_client_la_OBJECTS =  \
 	$(am_libcommon_daemon_client_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -115,8 +115,8 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 libcommon_daemon_lib_la_DEPENDENCIES = compat/libcompat.la
-am_libcommon_daemon_lib_la_OBJECTS = log.lo marshal.lo ctl.lo \
-	lldpd-structs.lo
+am_libcommon_daemon_lib_la_OBJECTS = log.lo version.lo marshal.lo \
+	ctl.lo lldpd-structs.lo
 libcommon_daemon_lib_la_OBJECTS =  \
 	$(am_libcommon_daemon_lib_la_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -396,19 +396,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS)
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS) -DSYSCONFDIR='"$(sysconfdir)"'
 AM_CPPFLAGS = $(LLDP_CPPFLAGS) $(LIBEVENT_CFLAGS)
 AM_LDFLAGS = $(LLDP_LDFLAGS)
 noinst_LTLIBRARIES = libcommon-daemon-lib.la libcommon-daemon-client.la
 include_HEADERS = lldp-const.h
 libcommon_daemon_lib_la_SOURCES = \
-	log.c log.h \
+	log.c log.h version.c \
 	marshal.c marshal.h \
 	ctl.c ctl.h \
 	lldpd-structs.c lldpd-structs.h lldp-const.h
 
 libcommon_daemon_lib_la_LIBADD = compat/libcompat.la
-libcommon_daemon_client_la_SOURCES = log.c log.h lldp-const.h
+libcommon_daemon_client_la_SOURCES = log.c log.h lldp-const.h version.c
 libcommon_daemon_client_la_LIBADD = compat/libcompat.la
 all: all-am
 
@@ -472,6 +472,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpd-structs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

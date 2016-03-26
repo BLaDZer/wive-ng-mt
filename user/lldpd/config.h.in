@@ -3,6 +3,9 @@
 /* Directory for AppArmor profiles (Linux) */
 #undef APPARMORDIR
 
+/* Build date and time */
+#undef BUILD_DATE
+
 /* Cisco Discovery Protocol */
 #undef ENABLE_CDP
 
@@ -35,6 +38,9 @@
 
 /* SynOptics Network Management Protocol */
 #undef ENABLE_SONMP
+
+/* Define if have both address and leak sanitizer */
+#undef HAVE_ADDRESS_SANITIZER
 
 /* Define if __alignof__ operator is available */
 #undef HAVE_ALIGNOF
@@ -222,6 +228,12 @@
 
 /* Path to lldpd PID file */
 #undef LLDPD_PID_FILE
+
+/* C compiler command */
+#undef LLDP_CC
+
+/* Linker compiler command */
+#undef LLDP_LD
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

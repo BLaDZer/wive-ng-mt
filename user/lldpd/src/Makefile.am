@@ -1,4 +1,4 @@
-AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS)
+AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS) -DSYSCONFDIR='"$(sysconfdir)"'
 AM_CPPFLAGS = $(LLDP_CPPFLAGS) $(LIBEVENT_CFLAGS)
 AM_LDFLAGS = $(LLDP_LDFLAGS)
 
@@ -6,11 +6,11 @@ noinst_LTLIBRARIES = libcommon-daemon-lib.la libcommon-daemon-client.la
 include_HEADERS    = lldp-const.h
 
 libcommon_daemon_lib_la_SOURCES = \
-	log.c log.h \
+	log.c log.h version.c \
 	marshal.c marshal.h \
 	ctl.c ctl.h \
 	lldpd-structs.c lldpd-structs.h lldp-const.h
 libcommon_daemon_lib_la_LIBADD  = compat/libcompat.la
 
-libcommon_daemon_client_la_SOURCES = log.c log.h lldp-const.h
+libcommon_daemon_client_la_SOURCES = log.c log.h lldp-const.h version.c
 libcommon_daemon_client_la_LIBADD  = compat/libcompat.la

@@ -49,7 +49,9 @@ DISTCHECK_CONFIGURE_FLAGS = $(CONFIGURE_ARGS) \
 	--with-sysusersdir=no \
 	--with-systemdsystemunitdir=no \
 	--with-launchddaemonsdir=no \
-	--with-apparmordir=no
+	--with-apparmordir=no \
+	--sysconfdir='$$(prefix)/etc'
+
 
 romfs: install
 	$(ROMFSINST) -S init.d/W84lldpd /etc/rc.d/W84lldpd

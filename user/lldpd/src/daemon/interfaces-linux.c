@@ -438,7 +438,7 @@ iface_bond_init(struct lldpd *cfg, struct lldpd_hardware *hardware)
 
 	if (!master) return -1;
 
-	log_debug("interfaces", "initialize bonded device %s",
+	log_debug("interfaces", "initialize enslaved device %s",
 	    hardware->h_ifname);
 
 	/* First, we get a socket to the raw physical interface */
@@ -449,7 +449,7 @@ iface_bond_init(struct lldpd *cfg, struct lldpd_hardware *hardware)
 	interfaces_setup_multicast(cfg, hardware->h_ifname, 0);
 
 	/* Then, we open a raw interface for the master */
-	log_debug("interfaces", "bonded device %s has master %s(%d)",
+	log_debug("interfaces", "enslaved device %s has master %s(%d)",
 	    hardware->h_ifname, master->name, master->index);
 	if ((fd = priv_iface_init(master->index, master->name)) == -1) {
 		close(hardware->h_sendfd);
@@ -485,7 +485,7 @@ iface_bond_recv(struct lldpd *cfg, struct lldpd_hardware *hardware,
 	socklen_t fromlen;
 	struct bond_master *master = hardware->h_data;
 
-	log_debug("interfaces", "receive PDU from bonded device %s",
+	log_debug("interfaces", "receive PDU from enslaved device %s",
 	    hardware->h_ifname);
 	fromlen = sizeof(from);
 	if ((n = recvfrom(fd, buffer, size, 0,
@@ -516,11 +516,11 @@ static int
 iface_bond_close(struct lldpd *cfg, struct lldpd_hardware *hardware)
 {
 	struct bond_master *master = hardware->h_data;
-	log_debug("interfaces", "closing bonded device %s",
+	log_debug("interfaces", "closing enslaved device %s",
 	    hardware->h_ifname);
 	interfaces_setup_multicast(cfg, hardware->h_ifname, 1);
 	interfaces_setup_multicast(cfg, master->name, 1);
-	free(hardware->h_data);
+	free(hardware->h_data); hardware->h_data = NULL;
 	return 0;
 }
 
@@ -537,18 +537,19 @@ iflinux_handle_bond(struct lldpd *cfg, struct interfaces_device_list *interfaces
 	struct interfaces_device *master;
 	struct lldpd_hardware *hardware;
 	struct bond_master *bmaster;
+	int created;
 	TAILQ_FOREACH(iface, interfaces, next) {
 		if (!(iface->type & IFACE_PHYSICAL_T)) continue;
 		if (iface->ignore) continue;
 		if (!iface->upper || !(iface->upper->type & IFACE_BOND_T)) continue;
 
 		master = iface->upper;
-		log_debug("interfaces", "%s is an acceptable bonded device (master=%s)",
+		log_debug("interfaces", "%s is an acceptable enslaved device (master=%s)",
 		    iface->name, master->name);
+		created = 0;
 		if ((hardware = lldpd_get_hardware(cfg,
 			    iface->name,
-			    iface->index,
-			    &bond_ops)) == NULL) {
+			    iface->index)) == NULL) {
 			if  ((hardware = lldpd_alloc_hardware(cfg,
 				    iface->name,
 				    iface->index)) == NULL) {
@@ -556,14 +557,29 @@ iflinux_handle_bond(struct lldpd *cfg, struct interfaces_device_list *interfaces
 				    iface->name);
 				continue;
 			}
+			created = 1;
+		}
+		if (hardware->h_flags) continue;
+		if (hardware->h_ops != &bond_ops) {
+			if (!created) {
+				log_debug("interfaces",
+				    "bond %s is converted from another type of interface",
+				    hardware->h_ifname);
+				if (hardware->h_ops && hardware->h_ops->cleanup)
+					hardware->h_ops->cleanup(cfg, hardware);
+				levent_hardware_release(hardware);
+				levent_hardware_init(hardware);
+			}
 			bmaster = hardware->h_data = calloc(1, sizeof(struct bond_master));
 			if (!bmaster) {
 				log_warn("interfaces", "not enough memory");
 				lldpd_hardware_cleanup(cfg, hardware);
 				continue;
 			}
+		} else bmaster = hardware->h_data;
 			bmaster->index = master->index;
 			strlcpy(bmaster->name, master->name, IFNAMSIZ);
+		if (hardware->h_ops != &bond_ops) {
 			if (iface_bond_init(cfg, hardware) != 0) {
 				log_warn("interfaces", "unable to initialize %s",
 				    hardware->h_ifname);
@@ -572,15 +588,11 @@ iflinux_handle_bond(struct lldpd *cfg, struct interfaces_device_list *interfaces
 			}
 			hardware->h_ops = &bond_ops;
 			hardware->h_mangle = 1;
-			interfaces_helper_add_hardware(cfg, hardware);
-		} else {
-			if (hardware->h_flags) continue; /* Already seen this time */
-			bmaster = hardware->h_data;
-			memset(bmaster, 0, sizeof(struct bond_master));
-			bmaster->index = master->index;
-			strlcpy(bmaster->name, master->name, IFNAMSIZ);
-			lldpd_port_cleanup(&hardware->h_lport, 0);
 		}
+		if (created)
+			interfaces_helper_add_hardware(cfg, hardware);
+		else
+			lldpd_port_cleanup(&hardware->h_lport, 0);
 
 		hardware->h_flags = iface->flags;
 		iface->ignore = 1;

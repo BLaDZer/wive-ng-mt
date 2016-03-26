@@ -115,6 +115,24 @@ if test x"$pie" = x"yes"; then
     [AX_LDFLAGS_OPTION([-fPIE -Wl,-pie], [LLDP_BIN_LDFLAGS])])
 fi
 
+# Sanitizers
+AC_ARG_ENABLE([sanitizers],
+  AS_HELP_STRING(
+    [--enable-sanitizers],
+    [Enable code instrumentation with selected sanitizers @<:@default=no@:>@]),
+  [
+case "$enableval" in
+    no) sanitizers= ;;
+    yes) sanitizers="-fsanitize=address,undefined" ;;
+    *) sanitizers="-fsanitize=$enableval" ;;
+esac
+if test x"$sanitizers" != x; then
+  LLDP_CFLAGS="$LLDP_CFLAGS $sanitizers"
+  LLDP_LDFLAGS="$LLDP_LDFLAGS $sanitizers"
+  AC_DEFINE([HAVE_ADDRESS_SANITIZER], 1, [Define if have both address and leak sanitizer])
+fi
+  ])
+
 # OS
 lldp_CHECK_OS
 lldp_CFLAGS_OS
@@ -170,9 +188,6 @@ AC_REPLACE_FUNCS([strlcpy
                   daemon])
 # Optional functions
 AC_CHECK_FUNCS([setresuid setresgid])
-
-CFLAGS="$_save_CFLAGS"
-LIBS="$_save_LIBS"
 
 # Check for res_init. On OSX, res_init is a symbol in libsystem_info
 # and a macro in resolv.h. We need to ensure we test with resolv.h.
@@ -339,6 +354,13 @@ if test x"$os" = x"Linux"; then
     fi
 fi
 
+# Build date
+if test x"$SOURCE_DATE_EPOCH" != x; then
+   AC_DEFINE_UNQUOTED(BUILD_DATE, "[$SOURCE_DATE_EPOCH]", [Build date and time])
+fi
+AC_DEFINE_UNQUOTED(LLDP_CC, "[$CC $LLDP_CFLAGS $LLDP_CPPFLAGS $CFLAGS $CPPFLAGS]", [C compiler command])
+AC_DEFINE_UNQUOTED(LLDP_LD, "[$LD $LLDP_LDFLAGS $LLDP_BIN_LDFLAGS $LDFLAGS $LIBS]", [Linker compiler command])
+
 #######################
 # Output results
 AC_SUBST([LLDP_CFLAGS])
@@ -384,6 +406,10 @@ cat <<EOF
   Enabled........: $enable_privsep
   User/group.....: ${with_privsep_user}/${with_privsep_group}
   Chroot.........: ${with_privsep_chroot}
+------------- Compiler version --------------
+$($CC --version || true)
+-------------- Linker version ---------------
+$($LD --version || true)
 ---------------------------------------------
 
 Check the above options and compile with:
