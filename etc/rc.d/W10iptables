@@ -250,22 +250,22 @@ forwardlimit() {
 	    fi
 	fi
 	if [ "$IPPortFilterEnable" = "1" ] && [ -e /etc/macipfilter ]; then
-	    $LOG "Set macipport_filter rules"
+	    $LOG "Set macipport filter rules"
 	    /etc/macipfilter
 	fi
 	if [ -e /etc/websfilter ]; then
-    	    $LOG "Add rules for web content filters"
+    	    $LOG "Add filter rules for web content filters"
     	    /etc/websfilter
 	fi
 	# add forward chain for vpn server
 	if [ "$l2tp_srv_enabled" = "1" ]; then
-    	    $LOG "Add chain for vpnserver"
+    	    $LOG "Add forward chain for vpnserver"
 	    iptables -N l2tpsrvfwd
 	    iptables -A FORWARD -j l2tpsrvfwd
 	fi
 	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
-    	    $LOG "Add rules for chillispot"
+    	    $LOG "Add forward rules for chillispot"
 	    if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
 		iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
 		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
