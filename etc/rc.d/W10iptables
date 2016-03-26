@@ -262,7 +262,7 @@ forwardlimit() {
 	    iptables -N l2tpsrvfwd
 	    iptables -A FORWARD -j l2tpsrvfwd
 	fi
-	# enable forward for chillispot networks (really acess manage direct from chillispot daemon)
+	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
 	    if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
 		iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
