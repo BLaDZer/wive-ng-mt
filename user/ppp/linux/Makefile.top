@@ -10,7 +10,7 @@ LIBS	 =
 CFLAGS = -Os
 DESTDIR = $(INSTROOT)@DESTDIR@
 BINDIR = $(DESTDIR)/sbin
-INCDIR = $(ROOTDIR)/linux/include $(DESTDIR)/include
+INCDIR = $(LINUXDIR)include $(DESTDIR)/include
 MANDIR = $(DESTDIR)/share/man
 ETCDIR = $(INSTROOT)@SYSCONF@/ppp
 
