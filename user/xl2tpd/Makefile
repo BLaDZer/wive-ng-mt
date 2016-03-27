@@ -47,14 +47,18 @@
 # trust pppd. This work around will be removed in the near future.
 
 # DFLAGS= -g -DDEBUG_HELLO -DDEBUG_CLOSE -DDEBUG_FLOW -DDEBUG_PAYLOAD -DDEBUG_CONTROL -DDEBUG_CONTROL_XMIT -DDEBUG_FLOW_MORE -DDEBUG_MAGIC -DDEBUG_ENTROPY -DDEBUG_HIDDEN -DDEBUG_PPPD -DDEBUG_AAA -DDEBUG_FILE -DDEBUG_FLOW -DDEBUG_HELLO -DDEBUG_CLOSE -DDEBUG_ZLB -DDEBUG_AUTH
-DFLAGS?= -DDEBUG_PPPD -DTRUST_PPPD_TO_DIE
+DFLAGS:= -DDEBUG_PPPD -DTRUST_PPPD_TO_DIE
+
+OSFLAGS:=-DLINUX
 
 # Uncomment the next line for Linux. KERNELSRC is needed for if_pppol2tp.h,
 # but we use a local copy if we don't find it.
 #
-#KERNELSRC=/lib/modules/`uname -r`/build/
-KERNELSRC?=./linux
-OSFLAGS?= -DLINUX -I$(KERNELSRC)/include/
+ifdef LINUXDIR
+KERNELINCLUDE:=$(LINUXDIR)/include
+OSFLAGS+=-I$(KERNELINCLUDE)
+endif
+
 #
 # Uncomment the following to use the kernel interface under Linux
 # This requires the pppol2tp-linux-2.4.27.patch patch from contrib
@@ -102,8 +106,8 @@ HDRS=l2tp.h avp.h misc.h control.h call.h scheduler.h file.h aaa.h md5.h
 OBJS=xl2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.o file.o aaa.o md5.o
 SRCS=${OBJS:.o=.c} ${HDRS}
 CONTROL_SRCS=xl2tpd-control.c
-#LIBS= $(OSLIBS) # -lefence # efence for malloc checking
 LDLIBS= -lm
+#EXEC=xl2tpd pfc
 EXEC=xl2tpd
 CONTROL_EXEC=xl2tpd-control
 
@@ -113,7 +117,7 @@ BINDIR?=$(DESTDIR)${PREFIX}/bin
 MANDIR?=$(DESTDIR)${PREFIX}/share/man
 
 
-all: $(EXEC) pfc $(CONTROL_EXEC)
+all: $(EXEC) $(CONTROL_EXEC)
 
 clean:
 	rm -f $(OBJS) $(EXEC) pfc.o pfc $(CONTROL_EXEC)
@@ -147,11 +151,6 @@ install: ${EXEC} pfc ${CONTROL_EXEC}
 	# control exec
 	install -d -m 0755 ${SBINDIR}
 	install -m 0755 $(CONTROL_EXEC) ${SBINDIR}/$(CONTROL_EXEC)
-	
-# openbsd
-#	install -d -m 0755 /var/run/xl2tpd
-#	mkfifo /var/run/l2tp-control
-
 
 TAGS:	${SRCS}
 	etags ${SRCS}
