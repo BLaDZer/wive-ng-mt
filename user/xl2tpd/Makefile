@@ -24,6 +24,7 @@
 # -DDEBUG_MAGIC
 # -DDEBUG_FLOW_MORE
 # -DDEBUG_AUTH
+# -DDEBUG_MORE
 #
 # -DTEST_HIDDEN makes Assigned Call ID sent as a hidden AVP
 #
@@ -36,6 +37,10 @@
 # The cost of not trusting pppd to die (and shoot it down hard), is that your
 # pppd's ip-down scripts will not have a chance to run.
 #
+# -DDISABLE_OCRP_OCCN
+# Defining DISABLE_OCRP_OCCN disable L2TPv3 extensions support.
+# Uncommented this if use only as l2tp client.
+#
 # For more details see: http://bugs.xelerance.com/view.php?id=739
 #
 # Confirmed bad versions of pppd:
@@ -47,7 +52,9 @@
 # trust pppd. This work around will be removed in the near future.
 
 # DFLAGS= -g -DDEBUG_HELLO -DDEBUG_CLOSE -DDEBUG_FLOW -DDEBUG_PAYLOAD -DDEBUG_CONTROL -DDEBUG_CONTROL_XMIT -DDEBUG_FLOW_MORE -DDEBUG_MAGIC -DDEBUG_ENTROPY -DDEBUG_HIDDEN -DDEBUG_PPPD -DDEBUG_AAA -DDEBUG_FILE -DDEBUG_FLOW -DDEBUG_HELLO -DDEBUG_CLOSE -DDEBUG_ZLB -DDEBUG_AUTH
-DFLAGS:= -DDEBUG_PPPD -DTRUST_PPPD_TO_DIE
+# DFLAGS?= -DDEBUG_PPPD -DTRUST_PPPD_TO_DIE
+
+DFLAGS= -g -DTRUST_PPPD_TO_DIE
 
 OSFLAGS:=-DLINUX
 
@@ -67,75 +74,68 @@ endif
 # Note: 2.6.23+ support still needs some changes in the xl2tpd source
 #
 OSFLAGS+= -DUSE_KERNEL
+
 #
+# Uncomment the following for set high prio for xl2tpd process
+#
+OSFLAGS+= -DHIGH_PRIO
 #
 # Uncomment the next line for FreeBSD
 #
-#OSFLAGS?= -DFREEBSD
-#
-# Uncomment the next three lines for NetBSD
-#
-#OSFLAGS?= -DNETBSD
-#CFLAGS+= -D_NETBSD_SOURCE
-#LDLIBS?= -lutil
+#OSFLAGS= -DFREEBSD
 #
 # Uncomment the next line for Solaris. For solaris, at least,
 # we don't want to specify -I/usr/include because it is in
 # the basic search path, and will over-ride some gcc-specific
 # include paths and cause problems.
 #
-#CC?=gcc
-# Change /opt/sfw/ to whereever your pcap library/include files are
-#OSFLAGS?= -DSOLARIS -DPPPD=\"/usr/bin/pppd\" -std=c99 -pedantic -D__EXTENSIONS__ -D_XPG4_2 -D_XPG6 -I/opt/sfw/include
-#OSLIBS?= -lnsl -lsocket
+#OSFLAGS= -DSOLARIS
+#OSLIBS= -lnsl -lsocket
 
 # Uncomment the next two lines for OpenBSD
 #
-#OSFLAGS?= -DOPENBSD
-#LDLIBS?= -lutil
+#OSFLAGS= -DOPENBSD
+#LDLIBS= -lutil
 
 # Feature flags
 #
 # Comment the following line to disable xl2tpd maintaining IP address
 # pools to pass to pppd to control IP address allocation
 
-IPFLAGS?= -DIP_ALLOCATION
+IPFLAGS= -DIP_ALLOCATION
 
-CFLAGS+= $(DFLAGS) -Os -fno-builtin -Wall -DSANITY $(OSFLAGS) $(IPFLAGS)
+CFLAGS+= $(DFLAGS) -fPIC -pipe -g -fno-builtin -Wall -DSANITY $(OSFLAGS) $(IPFLAGS)
 HDRS=l2tp.h avp.h misc.h control.h call.h scheduler.h file.h aaa.h md5.h
 OBJS=xl2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.o file.o aaa.o md5.o
 SRCS=${OBJS:.o=.c} ${HDRS}
 CONTROL_SRCS=xl2tpd-control.c
-LDLIBS= -lm
-#EXEC=xl2tpd pfc
 EXEC=xl2tpd
+LDLIBS= -lm
 CONTROL_EXEC=xl2tpd-control
 
-PREFIX?=/usr/local
+PREFIX?=./filesystem
 SBINDIR?=$(DESTDIR)${PREFIX}/sbin
 BINDIR?=$(DESTDIR)${PREFIX}/bin
 MANDIR?=$(DESTDIR)${PREFIX}/share/man
 
 
-all: $(EXEC) $(CONTROL_EXEC)
+all: $(EXEC)
 
 clean:
-	rm -f $(OBJS) $(EXEC) pfc.o pfc $(CONTROL_EXEC)
+	rm -f $(OBJS) $(EXEC) pfc.o pfc
 
 $(EXEC): $(OBJS) $(HDRS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
-
-$(CONTROL_EXEC): $(CONTROL_SRCS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(CONTROL_SRCS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 pfc:
 	$(CC) $(CFLAGS) -c contrib/pfc.c
 	$(CC) $(LDFLAGS) -o pfc pfc.o -lpcap $(LDLIBS)
 
-romfs:
-	$(ROMFSINST) /bin/$(EXEC)
 
-install: ${EXEC} pfc ${CONTROL_EXEC}
+install: ${EXEC}
+# pfc
+	install -d -m 0755 ${BINDIR}
+#	install -m 0755 pfc ${BINDIR}/pfc
 	install -d -m 0755 ${SBINDIR}
 	install -m 0755 $(EXEC) ${SBINDIR}/$(EXEC)
 	install -d -m 0755 ${MANDIR}/man5
@@ -143,14 +143,19 @@ install: ${EXEC} pfc ${CONTROL_EXEC}
 	install -m 0644 doc/xl2tpd.8 ${MANDIR}/man8/
 	install -m 0644 doc/xl2tpd.conf.5 doc/l2tp-secrets.5 \
 		 ${MANDIR}/man5/
-	# pfc
-	install -d -m 0755 ${BINDIR}
-	install -m 0755 pfc ${BINDIR}/pfc
-	install -d -m 0755 ${MANDIR}/man1
-	install -m 0644 contrib/pfc.1 ${MANDIR}/man1/
-	# control exec
-	install -d -m 0755 ${SBINDIR}
-	install -m 0755 $(CONTROL_EXEC) ${SBINDIR}/$(CONTROL_EXEC)
+#	# pfc
+#	install -d -m 0755 ${BINDIR}
+#	install -m 0755 pfc ${BINDIR}/pfc
+#	install -d -m 0755 ${MANDIR}/man1
+#	install -m 0644 contrib/pfc.1 ${MANDIR}/man1/
+
+# openbsd
+#	install -d -m 0755 /var/run/xl2tpd
+#	mkfifo /var/run/l2tp-control
+
+romfs:
+	$(ROMFSINST) -S /bin/$(EXEC)
+	$(ROMFSINST) -s /bin/$(EXEC) /bin/$(EXEC)-srv
 
 TAGS:	${SRCS}
 	etags ${SRCS}
