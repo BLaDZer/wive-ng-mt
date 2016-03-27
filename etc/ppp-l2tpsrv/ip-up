@@ -21,11 +21,12 @@ if [ "$l2tp_srv_proxyarp" != "1" ] && [ "$parproutedEnabled" != "1" ]; then
     ifconfig $PPP_IFACE -multicast
 fi
 
-$LOG "Allow forward for $PPP_IFACE interface"
+$LOG "Enable forwarding for $PPP_IFACE interface"
+sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
 iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
 iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
 
-if [ "$l2tp_srv_nat_enabled" != "" ] && [ "$l2tp_srv_nat_enabled" != "0" ]; then
+if [ "$l2tp_srv_nat_enabled" = "1" ]; then
     $LOG "Add masqrade for client $PPP_REMOTE"
     iptables -A POSTROUTING -t nat ! -o $PPP_IFACE -j MASQUERADE
 fi
@@ -42,9 +43,6 @@ if [ "$SmbEnabled" = "1" ]; then
     iptables -A servicelimit -i $PPP_IFACE -p udp --dport 137:138 -j ACCEPT
     iptables -A servicelimit -i $PPP_IFACE -m state --state NEW -p tcp -m multiport --dport 139,445 -j ACCEPT
 fi
-
-$LOG "Enable forwarding for $PPP_IFACE interface"
-sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
 
 if [ "$l2tp_srv_proxyarp" = "1" ] || [ "$parproutedEnabled" = "1" ]; then
     $LOG "Enable proxyarp for $PPP_IFACE"

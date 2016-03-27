@@ -12,10 +12,7 @@ PPP_IPPARAM="$6"
 PPP_NUM=`echo $PPP_IFACE | sed 's/[^0-65535]//g'`
 
 # disable proxyarp
-if [ "$l2tp_srv_proxyarp" = "1" ] || [ "$parproutedEnabled" = "1" ]; then
-    $LOG "Enable proxyarp for $PPP_IFACE"
-    sysctl -wq net.ipv4.conf.$PPP_IFACE.proxy_arp=0
-fi
+sysctl -wq net.ipv4.conf.$PPP_IFACE.proxy_arp=0
 
 # disable forward
 sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=0
