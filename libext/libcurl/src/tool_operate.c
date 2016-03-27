@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -98,7 +98,7 @@ CURLcode curl_easy_perform_ev(CURL *easy);
 #endif
 
 #define CURL_CA_CERT_ERRORMSG1                                              \
-  "More details here: http://curl.haxx.se/docs/sslcerts.html\n\n"           \
+  "More details here: https://curl.haxx.se/docs/sslcerts.html\n\n"           \
   "curl performs SSL certificate verification by default, "                 \
   "using a \"bundle\"\n"                                                    \
   " of Certificate Authority (CA) public keys (CA certs). If the default\n" \
@@ -543,15 +543,6 @@ static CURLcode operate_do(struct GlobalConfig *global,
             result = get_url_file_name(&outfile, this_url);
             if(result)
               goto show_error;
-
-#if defined(MSDOS) || defined(WIN32)
-            result = sanitize_file_name(&outfile);
-            if(result) {
-              Curl_safefree(outfile);
-              goto show_error;
-            }
-#endif /* MSDOS || WIN32 */
-
             if(!*outfile && !config->content_disposition) {
               helpf(global->errors, "Remote file name has no length!\n");
               result = CURLE_WRITE_ERROR;
@@ -563,17 +554,6 @@ static CURLcode operate_do(struct GlobalConfig *global,
             char *storefile = outfile;
             result = glob_match_url(&outfile, storefile, urls);
             Curl_safefree(storefile);
-
-#if defined(MSDOS) || defined(WIN32)
-            if(!result) {
-              result = sanitize_file_name(&outfile);
-              if(result) {
-                Curl_safefree(outfile);
-                goto show_error;
-              }
-            }
-#endif /* MSDOS || WIN32 */
-
             if(result) {
               /* bad globbing */
               warnf(config->global, "bad output glob!\n");
@@ -1373,6 +1353,10 @@ static CURLcode operate_do(struct GlobalConfig *global,
         if(config->expect100timeout > 0)
           my_setopt_str(curl, CURLOPT_EXPECT_100_TIMEOUT_MS,
                         (long)(config->expect100timeout*1000));
+
+        /* new in 7.48.0 */
+        if(config->tftp_no_options)
+          my_setopt(curl, CURLOPT_TFTP_NO_OPTIONS, 1L);
 
         /* initialize retry vars for loop below */
         retry_sleep_default = (config->retry_delay) ?

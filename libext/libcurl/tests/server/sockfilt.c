@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -509,8 +509,8 @@ static void lograw(unsigned char *buffer, ssize_t len)
  * other handle types supported by WaitForMultipleObjectsEx() as
  * well as disk files, anonymous and names pipes, and character input.
  *
- * http://msdn.microsoft.com/en-us/library/windows/desktop/ms687028.aspx
- * http://msdn.microsoft.com/en-us/library/windows/desktop/ms741572.aspx
+ * https://msdn.microsoft.com/en-us/library/windows/desktop/ms687028.aspx
+ * https://msdn.microsoft.com/en-us/library/windows/desktop/ms741572.aspx
  */
 struct select_ws_wait_data {
   HANDLE handle; /* actual handle to wait for during select */

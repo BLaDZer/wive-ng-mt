@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -29,9 +29,9 @@
  * (libgcrypt) so far.
  *
  * OpenSSL docs for this:
- *   http://www.openssl.org/docs/crypto/threads.html
+ *   https://www.openssl.org/docs/crypto/threads.html
  * gcrypt docs for this:
- *   http://gnupg.org/documentation/manuals/gcrypt/Multi_002dThreading.html
+ *   https://gnupg.org/documentation/manuals/gcrypt/Multi_002dThreading.html
  */
 
 #define USE_OPENSSL /* or USE_GNUTLS accordingly */
@@ -51,7 +51,7 @@ static void lock_callback(int mode, int type, char *file, int line)
 {
   (void)file;
   (void)line;
-  if (mode & CRYPTO_LOCK) {
+  if(mode & CRYPTO_LOCK) {
     pthread_mutex_lock(&(lockarray[type]));
   }
   else {
@@ -64,7 +64,7 @@ static unsigned long thread_id(void)
   unsigned long ret;
 
   ret=(unsigned long)pthread_self();
-  return(ret);
+  return ret;
 }
 
 static void init_locks(void)
@@ -73,8 +73,8 @@ static void init_locks(void)
 
   lockarray=(pthread_mutex_t *)OPENSSL_malloc(CRYPTO_num_locks() *
                                             sizeof(pthread_mutex_t));
-  for (i=0; i<CRYPTO_num_locks(); i++) {
-    pthread_mutex_init(&(lockarray[i]),NULL);
+  for(i=0; i<CRYPTO_num_locks(); i++) {
+    pthread_mutex_init(&(lockarray[i]), NULL);
   }
 
   CRYPTO_set_id_callback((unsigned long (*)())thread_id);
@@ -86,7 +86,7 @@ static void kill_locks(void)
   int i;
 
   CRYPTO_set_locking_callback(NULL);
-  for (i=0; i<CRYPTO_num_locks(); i++)
+  for(i=0; i<CRYPTO_num_locks(); i++)
     pthread_mutex_destroy(&(lockarray[i]));
 
   OPENSSL_free(lockarray);

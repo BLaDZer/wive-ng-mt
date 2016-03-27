@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -696,9 +696,9 @@ size_t Curl_ftp_parselist(char *buffer, size_t size, size_t nmemb,
             finfo->b_data[parser->item_offset + parser->item_length -1] = 0;
             parser->offsets.time = parser->item_offset;
             /*
-            if(ftp_pl_gettime(parser, finfo->b_data + parser->item_offset)) {
-              parser->file_data->flags |= CURLFINFOFLAG_KNOWN_TIME;
-            }
+              if(ftp_pl_gettime(parser, finfo->b_data + parser->item_offset)) {
+                parser->file_data->flags |= CURLFINFOFLAG_KNOWN_TIME;
+              }
             */
             if(finfo->filetype == CURLFILETYPE_SYMLINK) {
               parser->state.UNIX.main = PL_UNIX_SYMLINK;
@@ -834,7 +834,7 @@ size_t Curl_ftp_parselist(char *buffer, size_t size, size_t nmemb,
           }
           break;
         case PL_UNIX_SYMLINK_TARGET:
-          parser->item_length ++;
+          parser->item_length++;
           if(c == '\r') {
             parser->state.UNIX.sub.symlink = PL_UNIX_SYMLINK_WINDOWSEOL;
           }

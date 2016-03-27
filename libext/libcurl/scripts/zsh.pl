@@ -74,7 +74,7 @@ sub parse_main_opts {
     return @list;
 }
 
-sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
+sub trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
 
 sub call_curl {
     my ($cmd) = @_;

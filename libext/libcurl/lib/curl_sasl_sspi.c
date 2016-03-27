@@ -5,12 +5,12 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 2014 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
- * Copyright (C) 2014 - 2015, Steve Holme, <steve_holme@hotmail.com>.
+ * Copyright (C) 2014 - 2016 Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2014 - 2016, Steve Holme, <steve_holme@hotmail.com>.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -275,19 +275,19 @@ CURLcode Curl_sasl_create_digest_md5_message(struct SessionHandle *data,
 }
 
 /*
-* Curl_override_sspi_http_realm()
-*
-* This is used to populate the domain in a SSPI identity structure
-* The realm is extracted from the challenge message and used as the
-* domain if it is not already explicitly set.
-*
-* Parameters:
-*
-* chlg     [in]     - The challenge message.
-* identity [in/out] - The identity structure.
-*
-* Returns CURLE_OK on success.
-*/
+ * Curl_override_sspi_http_realm()
+ *
+ * This is used to populate the domain in a SSPI identity structure
+ * The realm is extracted from the challenge message and used as the
+ * domain if it is not already explicitly set.
+ *
+ * Parameters:
+ *
+ * chlg     [in]     - The challenge message.
+ * identity [in/out] - The identity structure.
+ *
+ * Returns CURLE_OK on success.
+ */
 CURLcode Curl_override_sspi_http_realm(const char *chlg,
                                        SEC_WINNT_AUTH_IDENTITY *identity)
 {
@@ -304,7 +304,7 @@ CURLcode Curl_override_sspi_http_realm(const char *chlg,
         chlg++;
 
       /* Extract a value=content pair */
-      if(!Curl_sasl_digest_get_pair(chlg, value, content, &chlg)) {
+      if(Curl_sasl_digest_get_pair(chlg, value, content, &chlg)) {
         if(Curl_raw_equal(value, "realm")) {
 
           /* Setup identity's domain and length */
@@ -316,6 +316,7 @@ CURLcode Curl_override_sspi_http_realm(const char *chlg,
             Curl_unicodefree(domain.tchar_ptr);
             return CURLE_OUT_OF_MEMORY;
           }
+          free(identity->Domain);
           identity->Domain = dup_domain.tbyte_ptr;
           identity->DomainLength = curlx_uztoul(_tcslen(dup_domain.tchar_ptr));
           dup_domain.tchar_ptr = NULL;
@@ -573,22 +574,22 @@ void Curl_sasl_digest_cleanup(struct digestdata *digest)
 
 #if defined USE_NTLM
 /*
-* Curl_sasl_create_ntlm_type1_message()
-*
-* This is used to generate an already encoded NTLM type-1 message ready for
-* sending to the recipient.
-*
-* Parameters:
-*
-* userp   [in]     - The user name in the format User or Domain\User.
-* passdwp [in]     - The user's password.
-* ntlm    [in/out] - The ntlm data struct being used and modified.
-* outptr  [in/out] - The address where a pointer to newly allocated memory
-*                    holding the result will be stored upon completion.
-* outlen  [out]    - The length of the output message.
-*
-* Returns CURLE_OK on success.
-*/
+ * Curl_sasl_create_ntlm_type1_message()
+ *
+ * This is used to generate an already encoded NTLM type-1 message ready for
+ * sending to the recipient.
+ *
+ * Parameters:
+ *
+ * userp   [in]     - The user name in the format User or Domain\User.
+ * passdwp [in]     - The user's password.
+ * ntlm    [in/out] - The NTLM data struct being used and modified.
+ * outptr  [in/out] - The address where a pointer to newly allocated memory
+ *                    holding the result will be stored upon completion.
+ * outlen  [out]    - The length of the output message.
+ *
+ * Returns CURLE_OK on success.
+ */
 CURLcode Curl_sasl_create_ntlm_type1_message(const char *userp,
                                              const char *passwdp,
                                              struct ntlmdata *ntlm,
@@ -685,18 +686,18 @@ CURLcode Curl_sasl_create_ntlm_type1_message(const char *userp,
 }
 
 /*
-* Curl_sasl_decode_ntlm_type2_message()
-*
-* This is used to decode an already encoded NTLM type-2 message.
-*
-* Parameters:
-*
-* data     [in]     - The session handle.
-* type2msg [in]     - The base64 encoded type-2 message.
-* ntlm     [in/out] - The ntlm data struct being used and modified.
-*
-* Returns CURLE_OK on success.
-*/
+ * Curl_sasl_decode_ntlm_type2_message()
+ *
+ * This is used to decode an already encoded NTLM type-2 message.
+ *
+ * Parameters:
+ *
+ * data     [in]     - The session handle.
+ * type2msg [in]     - The base64 encoded type-2 message.
+ * ntlm     [in/out] - The NTLM data struct being used and modified.
+ *
+ * Returns CURLE_OK on success.
+ */
 CURLcode Curl_sasl_decode_ntlm_type2_message(struct SessionHandle *data,
                                              const char *type2msg,
                                              struct ntlmdata *ntlm)
@@ -731,23 +732,23 @@ CURLcode Curl_sasl_decode_ntlm_type2_message(struct SessionHandle *data,
 }
 
 /*
-* Curl_sasl_create_ntlm_type3_message()
-*
-* This is used to generate an already encoded NTLM type-3 message ready for
-* sending to the recipient.
-*
-* Parameters:
-*
-* data    [in]     - The session handle.
-* userp   [in]     - The user name in the format User or Domain\User.
-* passdwp [in]     - The user's password.
-* ntlm    [in/out] - The ntlm data struct being used and modified.
-* outptr  [in/out] - The address where a pointer to newly allocated memory
-*                    holding the result will be stored upon completion.
-* outlen  [out]    - The length of the output message.
-*
-* Returns CURLE_OK on success.
-*/
+ * Curl_sasl_create_ntlm_type3_message()
+ *
+ * This is used to generate an already encoded NTLM type-3 message ready for
+ * sending to the recipient.
+ *
+ * Parameters:
+ *
+ * data    [in]     - The session handle.
+ * userp   [in]     - The user name in the format User or Domain\User.
+ * passdwp [in]     - The user's password.
+ * ntlm    [in/out] - The NTLM data struct being used and modified.
+ * outptr  [in/out] - The address where a pointer to newly allocated memory
+ *                    holding the result will be stored upon completion.
+ * outlen  [out]    - The length of the output message.
+ *
+ * Returns CURLE_OK on success.
+ */
 CURLcode Curl_sasl_create_ntlm_type3_message(struct SessionHandle *data,
                                              const char *userp,
                                              const char *passwdp,
@@ -810,11 +811,11 @@ CURLcode Curl_sasl_create_ntlm_type3_message(struct SessionHandle *data,
 /*
  * Curl_sasl_ntlm_cleanup()
  *
- * This is used to clean up the ntlm specific data.
+ * This is used to clean up the NTLM specific data.
  *
  * Parameters:
  *
- * ntlm    [in/out] - The ntlm data struct being cleaned up.
+ * ntlm    [in/out] - The NTLM data struct being cleaned up.
  *
  */
 void Curl_sasl_ntlm_cleanup(struct ntlmdata *ntlm)
@@ -862,7 +863,7 @@ void Curl_sasl_ntlm_cleanup(struct ntlmdata *ntlm)
  * mutual_auth [in]     - Flag specifing whether or not mutual authentication
  *                        is enabled.
  * chlg64      [in]     - The optional base64 encoded challenge message.
- * krb5        [in/out] - The gssapi data struct being used and modified.
+ * krb5        [in/out] - The Kerberos 5 data struct being used and modified.
  * outptr      [in/out] - The address where a pointer to newly allocated memory
  *                        holding the result will be stored upon completion.
  * outlen      [out]    - The length of the output message.
@@ -1030,7 +1031,7 @@ CURLcode Curl_sasl_create_gssapi_user_message(struct SessionHandle *data,
  *
  * data    [in]     - The session handle.
  * chlg64  [in]     - The optional base64 encoded challenge message.
- * krb5    [in/out] - The gssapi data struct being used and modified.
+ * krb5    [in/out] - The Kerberos 5 data struct being used and modified.
  * outptr  [in/out] - The address where a pointer to newly allocated memory
  *                    holding the result will be stored upon completion.
  * outlen  [out]    - The length of the output message.
@@ -1255,11 +1256,11 @@ CURLcode Curl_sasl_create_gssapi_security_message(struct SessionHandle *data,
 /*
  * Curl_sasl_gssapi_cleanup()
  *
- * This is used to clean up the gssapi specific data.
+ * This is used to clean up the GSSAPI (Kerberos V5) specific data.
  *
  * Parameters:
  *
- * krb5     [in/out] - The kerberos 5 data struct being cleaned up.
+ * krb5     [in/out] - The Kerberos 5 data struct being cleaned up.
  *
  */
 void Curl_sasl_gssapi_cleanup(struct kerberos5data *krb5)

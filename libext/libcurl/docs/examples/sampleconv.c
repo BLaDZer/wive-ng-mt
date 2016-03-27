@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -49,10 +49,11 @@ CURLcode my_conv_from_ascii_to_ebcdic(char *buffer, size_t length)
     int rc;
     tempptrin = tempptrout = buffer;
     rc = platform_a2e(&tempptrin, &bytes, &tempptrout, &bytes);
-    if (rc == PLATFORM_CONV_OK) {
-      return(CURLE_OK);
-    } else {
-      return(CURLE_CONV_FAILED);
+    if(rc == PLATFORM_CONV_OK) {
+      return CURLE_OK;
+    }
+    else {
+      return CURLE_CONV_FAILED;
     }
 }
 
@@ -63,10 +64,11 @@ CURLcode my_conv_from_ebcdic_to_ascii(char *buffer, size_t length)
     int rc;
     tempptrin = tempptrout = buffer;
     rc = platform_e2a(&tempptrin, &bytes, &tempptrout, &bytes);
-    if (rc == PLATFORM_CONV_OK) {
-      return(CURLE_OK);
-    } else {
-      return(CURLE_CONV_FAILED);
+    if(rc == PLATFORM_CONV_OK) {
+      return CURLE_OK;
+    }
+    else {
+      return CURLE_CONV_FAILED;
     }
 }
 
@@ -77,10 +79,11 @@ CURLcode my_conv_from_utf8_to_ebcdic(char *buffer, size_t length)
     int rc;
     tempptrin = tempptrout = buffer;
     rc = platform_u2e(&tempptrin, &bytes, &tempptrout, &bytes);
-    if (rc == PLATFORM_CONV_OK) {
-      return(CURLE_OK);
-    } else {
-      return(CURLE_CONV_FAILED);
+    if(rc == PLATFORM_CONV_OK) {
+      return CURLE_OK;
+    }
+    else {
+      return CURLE_CONV_FAILED;
     }
 }
 

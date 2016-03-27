@@ -974,13 +974,13 @@ static int do_tftp(struct testcase *test, struct tftphdr *tp, ssize_t size)
   filename = cp;
   do {
     bool endofit = true;
-  while (cp < &buf.storage[size]) {
+    while (cp < &buf.storage[size]) {
       if (*cp == '\0') {
         endofit = false;
-      break;
+        break;
       }
-    cp++;
-  }
+      cp++;
+    }
     if(endofit)
       /* no more options */
       break;

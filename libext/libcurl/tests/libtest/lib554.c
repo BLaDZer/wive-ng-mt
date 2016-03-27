@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -80,13 +80,13 @@ static int once(char *URL, bool oldstyle)
 
   /* Fill in the file upload field */
   if(oldstyle) {
-  formrc = curl_formadd(&formpost,
-                        &lastptr,
-                        CURLFORM_COPYNAME, "sendfile",
-                        CURLFORM_STREAM, &pooh,
-                        CURLFORM_CONTENTSLENGTH, (long)pooh.sizeleft,
-                        CURLFORM_FILENAME, "postit2.c",
-                        CURLFORM_END);
+    formrc = curl_formadd(&formpost,
+                          &lastptr,
+                          CURLFORM_COPYNAME, "sendfile",
+                          CURLFORM_STREAM, &pooh,
+                          CURLFORM_CONTENTSLENGTH, (long)pooh.sizeleft,
+                          CURLFORM_FILENAME, "postit2.c",
+                          CURLFORM_END);
   }
   else {
     /* new style */

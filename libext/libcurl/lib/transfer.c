@@ -5,11 +5,11 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -71,10 +71,6 @@
 #include "url.h"
 #include "getinfo.h"
 #include "vtls/vtls.h"
-#include "http_digest.h"
-#include "curl_ntlm.h"
-#include "http_negotiate.h"
-#include "share.h"
 #include "select.h"
 #include "multiif.h"
 #include "connect.h"
@@ -1454,7 +1450,7 @@ static void strcpy_url(char *output, const char *url)
         optr += 3;
       }
       else
-      *optr++=*iptr;
+        *optr++=*iptr;
       break;
     case ' ':
       if(left) {
@@ -1704,19 +1700,19 @@ CURLcode Curl_follow(struct SessionHandle *data,
   else {
     /* The new URL MAY contain space or high byte values, that means a mighty
        stupid redirect URL but we still make an effort to do "right". */
-      char *newest;
-      size_t newlen = strlen_url(newurl);
+    char *newest;
+    size_t newlen = strlen_url(newurl);
 
     /* This is an absolute URL, don't allow the custom port number */
     disallowport = TRUE;
 
-      newest = malloc(newlen+1); /* get memory for this */
-      if(!newest)
-        return CURLE_OUT_OF_MEMORY;
-      strcpy_url(newest, newurl); /* create a space-free URL */
+    newest = malloc(newlen+1); /* get memory for this */
+    if(!newest)
+      return CURLE_OUT_OF_MEMORY;
+    strcpy_url(newest, newurl); /* create a space-free URL */
 
-      free(newurl); /* that was no good */
-      newurl = newest; /* use this instead now */
+    free(newurl); /* that was no good */
+    newurl = newest; /* use this instead now */
 
   }
 

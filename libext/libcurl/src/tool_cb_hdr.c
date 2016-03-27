@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -115,16 +115,7 @@ size_t tool_header_cb(void *ptr, size_t size, size_t nmemb, void *userdata)
       */
       len = (ssize_t)cb - (p - str);
       filename = parse_filename(p, len);
-      if(!filename)
-        return failure;
-
-#if defined(MSDOS) || defined(WIN32)
-      if(sanitize_file_name(&filename)) {
-        free(filename);
-        return failure;
-      }
-#endif /* MSDOS || WIN32 */
-
+      if(filename) {
         outs->filename = filename;
         outs->alloc_filename = TRUE;
         outs->is_cd_filename = TRUE;
@@ -134,6 +125,9 @@ size_t tool_header_cb(void *ptr, size_t size, size_t nmemb, void *userdata)
         hdrcbdata->honor_cd_filename = FALSE;
         break;
       }
+      else
+        return failure;
+    }
   }
 
   return cb;
@@ -192,7 +186,7 @@ static char *parse_filename(const char *ptr, size_t len)
     if(*q == stop) {
       *q = '\0';
       break;
-  }
+    }
   }
 
   /* make sure the file name doesn't end in \r or \n */
@@ -206,6 +200,17 @@ static char *parse_filename(const char *ptr, size_t len)
 
   if(copy != p)
     memmove(copy, p, strlen(p) + 1);
+
+#if defined(MSDOS) || defined(WIN32)
+  {
+    char *sanitized;
+    SANITIZEcode sc = sanitize_file_name(&sanitized, copy, 0);
+    Curl_safefree(copy);
+    if(sc)
+      return NULL;
+    copy = sanitized;
+  }
+#endif /* MSDOS || WIN32 */
 
   /* in case we built debug enabled, we allow an evironment variable
    * named CURL_TESTDIR to prefix the given file name to put it into a

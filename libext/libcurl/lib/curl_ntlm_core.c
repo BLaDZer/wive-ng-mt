@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -143,14 +143,10 @@ static void setup_des_key(const unsigned char *key_56,
   DES_cblock key;
 
   /* Expand the 56-bit key to 64-bits */
-  extend_key_56_to_64(key_56, (char *) key);
+  extend_key_56_to_64(key_56, (char *) &key);
 
   /* Set the key parity to odd */
-#ifndef HAVE_DES_SET_ODD_PARITY /* older boringssl */
-  Curl_des_set_odd_parity((unsigned char *) &key, sizeof(key));
-#else
   DES_set_odd_parity(&key);
-#endif
 
   /* Set the key */
   DES_set_key(&key, ks);

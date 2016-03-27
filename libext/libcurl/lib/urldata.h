@@ -7,11 +7,11 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -110,6 +110,7 @@
 #include <polarssl/entropy.h>
 #include <polarssl/ctr_drbg.h>
 #endif /* POLARSSL_VERSION_NUMBER<0x01010000 */
+
 #endif /* USE_POLARSSL */
 
 #ifdef USE_CYASSL
@@ -273,22 +274,19 @@ struct ssl_connect_data {
      current state of the connection. */
   bool use;
   ssl_connection_state state;
-#ifdef USE_OPENSSL
+  ssl_connect_state connecting_state;
+#if defined(USE_OPENSSL)
   /* these ones requires specific SSL-types */
   SSL_CTX* ctx;
   SSL*     handle;
   X509*    server_cert;
-  ssl_connect_state connecting_state;
-#endif /* USE_OPENSSL */
-#ifdef USE_GNUTLS
+#elif defined(USE_GNUTLS)
   gnutls_session_t session;
   gnutls_certificate_credentials_t cred;
 #ifdef USE_TLS_SRP
   gnutls_srp_client_credentials_t srp_client_cred;
 #endif
-  ssl_connect_state connecting_state;
-#endif /* USE_GNUTLS */
-#ifdef USE_MBEDTLS
+#elif defined(USE_MBEDTLS)
   mbedtls_ctr_drbg_context ctr_drbg;
   mbedtls_entropy_context entropy;
   mbedtls_ssl_context ssl;
@@ -298,10 +296,9 @@ struct ssl_connect_data {
   mbedtls_x509_crt clicert;
   mbedtls_x509_crl crl;
   mbedtls_pk_context pk;
-  ssl_connect_state connecting_state;
   mbedtls_ssl_config config;
-#endif /* USE_MBEDTLS */
-#ifdef USE_POLARSSL
+  const char *protocols[3];
+#elif defined(USE_POLARSSL)
   ctr_drbg_context ctr_drbg;
   entropy_context entropy;
   ssl_context ssl;
@@ -311,36 +308,25 @@ struct ssl_connect_data {
   x509_crt clicert;
   x509_crl crl;
   rsa_context rsa;
-  ssl_connect_state connecting_state;
-#endif /* USE_POLARSSL */
-#ifdef USE_CYASSL
+#elif defined(USE_CYASSL)
   SSL_CTX* ctx;
   SSL*     handle;
-  ssl_connect_state connecting_state;
-#endif /* USE_CYASSL */
-#ifdef USE_NSS
+#elif defined(USE_NSS)
   PRFileDesc *handle;
   char *client_nickname;
   struct SessionHandle *data;
   struct curl_llist *obj_list;
   PK11GenericObject *obj_clicert;
-  ssl_connect_state connecting_state;
-#endif /* USE_NSS */
-#ifdef USE_GSKIT
+#elif defined(USE_GSKIT)
   gsk_handle handle;
   int iocport;
-  ssl_connect_state connecting_state;
-#endif
-#ifdef USE_AXTLS
+#elif defined(USE_AXTLS)
   SSL_CTX* ssl_ctx;
   SSL*     ssl;
-  ssl_connect_state connecting_state;
-#endif /* USE_AXTLS */
-#ifdef USE_SCHANNEL
+#elif defined(USE_SCHANNEL)
   struct curl_schannel_cred *cred;
   struct curl_schannel_ctxt *ctxt;
   SecPkgContext_StreamSizes stream_sizes;
-  ssl_connect_state connecting_state;
   size_t encdata_length, decdata_length;
   size_t encdata_offset, decdata_offset;
   unsigned char *encdata_buffer, *decdata_buffer;
@@ -348,14 +334,14 @@ struct ssl_connect_data {
   CURLcode recv_unrecoverable_err; /* schannel_recv had an unrecoverable err */
   bool recv_sspi_close_notify; /* true if connection closed by close_notify */
   bool recv_connection_closed; /* true if connection closed, regardless how */
-#endif /* USE_SCHANNEL */
-#ifdef USE_DARWINSSL
+#elif defined(USE_DARWINSSL)
   SSLContextRef ssl_ctx;
   curl_socket_t ssl_sockfd;
-  ssl_connect_state connecting_state;
   bool ssl_direction; /* true if writing, false if reading */
   size_t ssl_write_buffered_length;
-#endif /* USE_DARWINSSL */
+#elif defined(USE_SSL)
+#error "SSL backend specific information missing from ssl_connect_data"
+#endif
 };
 
 struct ssl_config_data {
@@ -935,6 +921,7 @@ struct connectdata {
 
   struct ssl_connect_data ssl[2]; /* this is for ssl-stuff */
   struct ssl_config_data ssl_config;
+  bool tls_upgraded;
 
   struct ConnectBits bits;    /* various state-flags for this connection */
 
@@ -1513,7 +1500,8 @@ struct UserDefined {
   long connecttimeout;  /* in milliseconds, 0 means no timeout */
   long accepttimeout;   /* in milliseconds, 0 means no timeout */
   long server_response_timeout; /* in milliseconds, 0 means no timeout */
-  long tftp_blksize ; /* in bytes, 0 means use default */
+  long tftp_blksize;    /* in bytes, 0 means use default */
+  bool tftp_no_options; /* do not send TFTP options requests */
   curl_off_t filesize;  /* size of file to upload, -1 means unknown */
   long low_speed_limit; /* bytes/second */
   long low_speed_time;  /* number of seconds */

@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -180,6 +180,7 @@ static const struct LongShort aliases[]= {
   {"$P", "service-name",             TRUE},
   {"$Q", "proto-default",            TRUE},
   {"$R", "expect100-timeout",        TRUE},
+  {"$S", "tftp-no-options",          FALSE},
   {"0",   "http1.0",                 FALSE},
   {"01",  "http1.1",                 FALSE},
   {"02",  "http2",                   FALSE},
@@ -1004,6 +1005,9 @@ ParameterError getparameter(char *flag,    /* f or -long-flag */
         err = str2udouble(&config->expect100timeout, nextarg);
         if(err)
           return err;
+        break;
+      case 'S': /* --tftp-no-options */
+        config->tftp_no_options = toggle;
         break;
       }
       break;

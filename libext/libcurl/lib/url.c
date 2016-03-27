@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -75,7 +75,7 @@ void idn_free (void *ptr);
 #endif
 #elif defined(USE_WIN32_IDN)
 /* prototype for curl_win32_idn_to_ascii() */
-int curl_win32_idn_to_ascii(const char *in, char **out);
+bool curl_win32_idn_to_ascii(const char *in, char **out);
 #endif  /* USE_LIBIDN */
 
 #include "urldata.h"
@@ -151,6 +151,8 @@ static CURLcode parse_url_login(struct SessionHandle *data,
 static CURLcode parse_login_details(const char *login, const size_t len,
                                     char **userptr, char **passwdptr,
                                     char **optionsptr);
+static unsigned int get_protocol_family(unsigned int protocol);
+
 /*
  * Protocol table.
  */
@@ -843,9 +845,16 @@ CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option,
      */
     data->set.server_response_timeout = va_arg( param , long ) * 1000;
     break;
+  case CURLOPT_TFTP_NO_OPTIONS:
+    /*
+     * Option that prevents libcurl from sending TFTP option requests to the
+     * server.
+     */
+    data->set.tftp_no_options = va_arg(param, long) != 0;
+    break;
   case CURLOPT_TFTP_BLKSIZE:
     /*
-     * TFTP option that specifies the block size to use for data transmission
+     * TFTP option that specifies the block size to use for data transmission.
      */
     data->set.tftp_blksize = va_arg(param, long);
     break;
@@ -2861,15 +2870,17 @@ static bool IsPipeliningPossible(const struct SessionHandle *handle,
 int Curl_removeHandleFromPipeline(struct SessionHandle *handle,
                                   struct curl_llist *pipeline)
 {
-  struct curl_llist_element *curr;
+  if(pipeline) {
+    struct curl_llist_element *curr;
 
-  curr = pipeline->head;
-  while(curr) {
-    if(curr->ptr == handle) {
-      Curl_llist_remove(pipeline, curr, NULL);
-      return 1; /* we removed a handle */
+    curr = pipeline->head;
+    while(curr) {
+      if(curr->ptr == handle) {
+        Curl_llist_remove(pipeline, curr, NULL);
+        return 1; /* we removed a handle */
+      }
+      curr = curr->next;
     }
-    curr = curr->next;
   }
 
   return 0;
@@ -3263,7 +3274,8 @@ ConnectionExists(struct SessionHandle *data,
       if((needle->handler->flags&PROTOPT_SSL) !=
          (check->handler->flags&PROTOPT_SSL))
         /* don't do mixed SSL and non-SSL connections */
-        if(!(needle->handler->protocol & check->handler->protocol))
+        if(get_protocol_family(check->handler->protocol) !=
+           needle->handler->protocol || !check->tls_upgraded)
           /* except protocols that have been upgraded via TLS */
           continue;
 
@@ -3318,14 +3330,16 @@ ConnectionExists(struct SessionHandle *data,
           Curl_raw_equal(needle->proxy.name, check->proxy.name) &&
           (needle->port == check->port))) {
         /* The requested connection does not use a HTTP proxy or it uses SSL or
-           it is a non-SSL protocol tunneled over the same http proxy name and
-           port number or it is a non-SSL protocol which is allowed to be
-           upgraded via TLS */
-
+           it is a non-SSL protocol tunneled over the same HTTP proxy name and
+           port number */
         if((Curl_raw_equal(needle->handler->scheme, check->handler->scheme) ||
-            needle->handler->protocol & check->handler->protocol) &&
+            (get_protocol_family(check->handler->protocol) ==
+             needle->handler->protocol && check->tls_upgraded)) &&
            Curl_raw_equal(needle->host.name, check->host.name) &&
            needle->remote_port == check->remote_port) {
+          /* The schemes match or the the protocol family is the same and the
+             previous connection was TLS upgraded, and the hostname and host
+             port match */
           if(needle->handler->flags & PROTOPT_SSL) {
             /* This is a SSL connection so verify that we're using the same
                SSL options as well */
@@ -3391,7 +3405,7 @@ ConnectionExists(struct SessionHandle *data,
 
         if(wantNTLMhttp || wantProxyNTLMhttp) {
           /* Credentials are already checked, we can use this connection */
-            chosen = check;
+          chosen = check;
 
           if((wantNTLMhttp &&
              (check->ntlm.state != NTLMSTATE_NONE)) ||
@@ -3406,7 +3420,6 @@ ConnectionExists(struct SessionHandle *data,
           continue;
         }
 #endif
-
         if(canPipeline) {
           /* We can pipeline if we want to. Let's continue looking for
              the optimal connection to use, i.e the shortest pipe that is not
@@ -3762,43 +3775,38 @@ static void fix_hostname(struct SessionHandle *data,
        there's no use for it */
     host->name[len-1]=0;
 
+  /* Check name for non-ASCII and convert hostname to ACE form if we can */
   if(!is_ASCII_name(host->name)) {
 #ifdef USE_LIBIDN
-  /*************************************************************
-   * Check name for non-ASCII and convert hostname to ACE form.
-   *************************************************************/
-  if(stringprep_check_version(LIBIDN_REQUIRED_VERSION)) {
-    char *ace_hostname = NULL;
-    int rc = idna_to_ascii_lz(host->name, &ace_hostname, 0);
-    infof (data, "Input domain encoded as `%s'\n",
-           stringprep_locale_charset ());
-    if(rc != IDNA_SUCCESS)
-      infof(data, "Failed to convert %s to ACE; %s\n",
-            host->name, Curl_idn_strerror(conn, rc));
-    else {
-      /* tld_check_name() displays a warning if the host name contains
-         "illegal" characters for this TLD */
-      (void)tld_check_name(data, ace_hostname);
+    if(stringprep_check_version(LIBIDN_REQUIRED_VERSION)) {
+      char *ace_hostname = NULL;
 
-      host->encalloc = ace_hostname;
-      /* change the name pointer to point to the encoded hostname */
-      host->name = host->encalloc;
+      int rc = idna_to_ascii_lz(host->name, &ace_hostname, 0);
+      infof(data, "Input domain encoded as `%s'\n",
+            stringprep_locale_charset());
+      if(rc == IDNA_SUCCESS) {
+        /* tld_check_name() displays a warning if the host name contains
+           "illegal" characters for this TLD */
+        (void)tld_check_name(data, ace_hostname);
+
+        host->encalloc = ace_hostname;
+        /* change the name pointer to point to the encoded hostname */
+        host->name = host->encalloc;
+      }
+      else
+        infof(data, "Failed to convert %s to ACE; %s\n", host->name,
+              Curl_idn_strerror(conn, rc));
     }
-  }
 #elif defined(USE_WIN32_IDN)
-  /*************************************************************
-   * Check name for non-ASCII and convert hostname to ACE form.
-   *************************************************************/
     char *ace_hostname = NULL;
-    int rc = curl_win32_idn_to_ascii(host->name, &ace_hostname);
-    if(rc == 0)
-      infof(data, "Failed to convert %s to ACE;\n",
-            host->name);
-    else {
+
+    if(curl_win32_idn_to_ascii(host->name, &ace_hostname)) {
       host->encalloc = ace_hostname;
       /* change the name pointer to point to the encoded hostname */
       host->name = host->encalloc;
     }
+    else
+      infof(data, "Failed to convert %s to ACE;\n", host->name);
 #else
     infof(data, "IDN support not present, can't parse Unicode domains\n");
 #endif
@@ -6148,10 +6156,11 @@ CURLcode Curl_done(struct connectdata **connp,
        another callback */
     CURLcode rc = Curl_pgrsDone(conn);
     if(!result && rc)
-    result = CURLE_ABORTED_BY_CALLBACK;
+      result = CURLE_ABORTED_BY_CALLBACK;
   }
 
-  if((conn->send_pipe->size + conn->recv_pipe->size != 0 &&
+  if((!premature &&
+      conn->send_pipe->size + conn->recv_pipe->size != 0 &&
       !data->set.reuse_forbid &&
       !conn->bits.close)) {
     /* Stop if pipeline is not empty and we do not have to close
@@ -6352,4 +6361,114 @@ CURLcode Curl_do_more(struct connectdata *conn, int *complete)
     do_complete(conn);
 
   return result;
+}
+
+/*
+* get_protocol_family()
+*
+* This is used to return the protocol family for a given protocol.
+*
+* Parameters:
+*
+* protocol  [in]  - A single bit protocol identifier such as HTTP or HTTPS.
+*
+* Returns the family as a single bit protocol identifier.
+*/
+
+unsigned int get_protocol_family(unsigned int protocol)
+{
+  unsigned int family;
+
+  switch(protocol) {
+  case CURLPROTO_HTTP:
+  case CURLPROTO_HTTPS:
+    family = CURLPROTO_HTTP;
+    break;
+
+  case CURLPROTO_FTP:
+  case CURLPROTO_FTPS:
+    family = CURLPROTO_IMAP;
+    break;
+
+  case CURLPROTO_SCP:
+    family = CURLPROTO_SCP;
+    break;
+
+  case CURLPROTO_SFTP:
+    family = CURLPROTO_SFTP;
+    break;
+
+  case CURLPROTO_TELNET:
+    family = CURLPROTO_TELNET;
+    break;
+
+  case CURLPROTO_LDAP:
+  case CURLPROTO_LDAPS:
+    family = CURLPROTO_IMAP;
+    break;
+
+  case CURLPROTO_DICT:
+    family = CURLPROTO_DICT;
+    break;
+
+  case CURLPROTO_FILE:
+    family = CURLPROTO_FILE;
+    break;
+
+  case CURLPROTO_TFTP:
+    family = CURLPROTO_TFTP;
+    break;
+
+  case CURLPROTO_IMAP:
+  case CURLPROTO_IMAPS:
+    family = CURLPROTO_IMAP;
+    break;
+
+  case CURLPROTO_POP3:
+  case CURLPROTO_POP3S:
+    family = CURLPROTO_POP3;
+    break;
+
+  case CURLPROTO_SMTP:
+  case CURLPROTO_SMTPS:
+      family = CURLPROTO_SMTP;
+      break;
+
+  case CURLPROTO_RTSP:
+    family = CURLPROTO_RTSP;
+    break;
+
+  case CURLPROTO_RTMP:
+  case CURLPROTO_RTMPS:
+    family = CURLPROTO_RTMP;
+    break;
+
+  case CURLPROTO_RTMPT:
+  case CURLPROTO_RTMPTS:
+    family = CURLPROTO_RTMPT;
+    break;
+
+  case CURLPROTO_RTMPE:
+    family = CURLPROTO_RTMPE;
+    break;
+
+  case CURLPROTO_RTMPTE:
+    family = CURLPROTO_RTMPTE;
+    break;
+
+  case CURLPROTO_GOPHER:
+    family = CURLPROTO_GOPHER;
+    break;
+
+  case CURLPROTO_SMB:
+  case CURLPROTO_SMBS:
+    family = CURLPROTO_SMB;
+    break;
+
+  default:
+      family = 0;
+      break;
+  }
+
+  return family;
 }

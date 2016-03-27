@@ -21,11 +21,12 @@ if [ "$l2tp_srv_proxyarp" != "1" ] && [ "$parproutedEnabled" != "1" ]; then
     ifconfig $PPP_IFACE -multicast
 fi
 
-#add rules
+$LOG "Allow forward for $PPP_IFACE interface"
+iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
+iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
+
 if [ "$l2tp_srv_nat_enabled" != "" ] && [ "$l2tp_srv_nat_enabled" != "0" ]; then
     $LOG "Add masqrade for client $PPP_REMOTE"
-    iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
-    iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
     iptables -A POSTROUTING -t nat ! -o $PPP_IFACE -j MASQUERADE
 fi
 

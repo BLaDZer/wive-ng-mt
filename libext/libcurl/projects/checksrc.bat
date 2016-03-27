@@ -6,11 +6,11 @@ rem *                             / __| | | | |_) | |
 rem *                            | (__| |_| |  _ <| |___
 rem *                             \___|\___/|_| \_\_____|
 rem *
-rem * Copyright (C) 2014 - 2015, Steve Holme, <steve_holme@hotmail.com>.
+rem * Copyright (C) 2014 - 2016, Steve Holme, <steve_holme@hotmail.com>.
 rem *
 rem * This software is licensed as described in the file COPYING, which
 rem * you should have received as part of this distribution. The terms
-rem * are also available at http://curl.haxx.se/docs/copyright.html.
+rem * are also available at https://curl.haxx.se/docs/copyright.html.
 rem *
 rem * You may opt to use, copy, modify, merge, publish, distribute and/or sell
 rem * copies of the Software, and permit persons to whom the Software is
@@ -27,6 +27,8 @@ rem ***************************************************************************
 
   rem Set our variables
   setlocal
+  set CHECK_LIB=TRUE
+  set CHECK_SRC=TRUE
 
 :parseArgs
   if "%~1" == "" goto prerequisites
@@ -37,6 +39,12 @@ rem ***************************************************************************
     goto syntax
   ) else if /i "%~1" == "-help" (
     goto syntax
+  ) else if /i "%~1" == "lib" (
+    set CHECK_LIB=TRUE
+    set CHECK_SRC=FALSE
+  ) else if /i "%~1" == "src" (
+    set CHECK_LIB=FALSE
+    set CHECK_SRC=TRUE
   ) else (
     if not defined SRC_DIR (
       set SRC_DIR=%~1%
@@ -48,11 +56,18 @@ rem ***************************************************************************
   shift & goto parseArgs
 
 :prerequisites
-  rem Check we have Perl installed
+  rem Check we have Perl in our path
   echo %PATH% | findstr /I /C:"\Perl" 1>nul
   if errorlevel 1 (
-    if not exist "%SystemDrive%\Perl" (
-      if not exist "%SystemDrive%\Perl64" goto noperl
+    rem It isn't so check we have it installed and set the path if it is
+    if exist "%SystemDrive%\Perl" (
+      set "PATH=%SystemDrive%\Perl\bin;%PATH%"
+    ) else (
+      if exist "%SystemDrive%\Perl64" (
+        set "PATH=%SystemDrive%\Perl64\bin;%PATH%"
+      ) else (
+        goto noperl
+      )
     )
   )
 
@@ -61,22 +76,26 @@ rem ***************************************************************************
   if not exist "%SRC_DIR%" goto nosrc
 
 :start
-  rem Check the src directory
-  if exist %SRC_DIR%\src (
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\src\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\src" -Wtool_hugehelp.c "%%i"
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\src\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\src" "%%i"
+  if "%CHECK_SRC%" == "TRUE" (
+    rem Check the src directory
+    if exist %SRC_DIR%\src (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\src\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\src" -Wtool_hugehelp.c "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\src\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\src" "%%i"
+    )
   )
 
-  rem Check the lib directory
-  if exist %SRC_DIR%\lib (
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib" "%%i"
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib" -Wcurl_config.h.cmake "%%i"
-  )
+  if "%CHECK_LIB%" == "TRUE" (
+    rem Check the lib directory
+    if exist %SRC_DIR%\lib (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib" -Wcurl_config.h.cmake "%%i"
+    )
 
-  rem Check the lib\vtls directory
-  if exist %SRC_DIR%\lib\vtls (
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
-    for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
+    rem Check the lib\vtls directory
+    if exist %SRC_DIR%\lib\vtls (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
+    )
   )
 
   goto success
@@ -84,7 +103,12 @@ rem ***************************************************************************
 :syntax
   rem Display the help
   echo.
-  echo Usage: checksrc [directory]
+  echo Usage: checksrc [product] [directory]
+  echo.
+  echo Product:
+  echo.
+  echo lib       - Scan the libcurl source
+  echo src       - Scan the command-line tool source
   echo.
   echo directory - Specifies the curl source directory
   goto success

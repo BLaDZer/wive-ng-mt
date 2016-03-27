@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -688,7 +688,7 @@ static int on_begin_headers(nghttp2_session *session,
     return 0;
   }
 
-    DEBUGF(infof(data_s, "on_begin_headers() was called\n"));
+  DEBUGF(infof(data_s, "on_begin_headers() was called\n"));
 
   if(frame->hd.type != NGHTTP2_HEADERS) {
     return 0;
@@ -1229,7 +1229,7 @@ static ssize_t http2_recv(struct connectdata *conn, int sockindex,
 
       if(nread == -1) {
         if(result != CURLE_AGAIN)
-        failf(data, "Failed receiving HTTP2 data");
+          failf(data, "Failed receiving HTTP2 data");
         *err = result;
         return -1;
       }
@@ -1452,25 +1452,25 @@ static ssize_t http2_send(struct connectdata *conn, int sockindex,
     if(!end)
       goto fail;
     if(!skip) {
-    nva[i].value = (unsigned char *)hdbuf;
-    nva[i].valuelen = (uint16_t)(end - hdbuf);
-    nva[i].flags = NGHTTP2_NV_FLAG_NONE;
-    /* Inspect Content-Length header field and retrieve the request
-       entity length so that we can set END_STREAM to the last DATA
-       frame. */
-    if(nva[i].namelen == 14 &&
-       Curl_raw_nequal("content-length", (char*)nva[i].name, 14)) {
-      size_t j;
-      stream->upload_left = 0;
-      for(j = 0; j < nva[i].valuelen; ++j) {
-        stream->upload_left *= 10;
-        stream->upload_left += nva[i].value[j] - '0';
+      nva[i].value = (unsigned char *)hdbuf;
+      nva[i].valuelen = (uint16_t)(end - hdbuf);
+      nva[i].flags = NGHTTP2_NV_FLAG_NONE;
+      /* Inspect Content-Length header field and retrieve the request
+         entity length so that we can set END_STREAM to the last DATA
+         frame. */
+      if(nva[i].namelen == 14 &&
+         Curl_raw_nequal("content-length", (char*)nva[i].name, 14)) {
+        size_t j;
+        stream->upload_left = 0;
+        for(j = 0; j < nva[i].valuelen; ++j) {
+          stream->upload_left *= 10;
+          stream->upload_left += nva[i].value[j] - '0';
+        }
+        DEBUGF(infof(conn->data,
+                     "request content-length=%"
+                     CURL_FORMAT_CURL_OFF_T
+                     "\n", stream->upload_left));
       }
-      DEBUGF(infof(conn->data,
-                   "request content-length=%"
-                   CURL_FORMAT_CURL_OFF_T
-                   "\n", stream->upload_left));
-    }
       ++i;
     }
     hdbuf = end + 2;
@@ -1536,7 +1536,7 @@ static ssize_t http2_send(struct connectdata *conn, int sockindex,
 
   return len;
 
-  fail:
+fail:
   free(nva);
   *err = CURLE_SEND_ERROR;
   return -1;

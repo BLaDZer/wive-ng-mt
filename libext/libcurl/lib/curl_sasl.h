@@ -7,11 +7,11 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 2012 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2012 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -56,14 +56,14 @@ struct kerberos5data;
 #define SASL_AUTH_DEFAULT       (SASL_AUTH_ANY & ~SASL_MECH_EXTERNAL)
 
 /* Authentication mechanism strings */
-#define SASL_MECH_STRING_LOGIN      "LOGIN"
-#define SASL_MECH_STRING_PLAIN      "PLAIN"
-#define SASL_MECH_STRING_CRAM_MD5   "CRAM-MD5"
-#define SASL_MECH_STRING_DIGEST_MD5 "DIGEST-MD5"
-#define SASL_MECH_STRING_GSSAPI     "GSSAPI"
-#define SASL_MECH_STRING_EXTERNAL   "EXTERNAL"
-#define SASL_MECH_STRING_NTLM       "NTLM"
-#define SASL_MECH_STRING_XOAUTH2    "XOAUTH2"
+#define SASL_MECH_STRING_LOGIN        "LOGIN"
+#define SASL_MECH_STRING_PLAIN        "PLAIN"
+#define SASL_MECH_STRING_CRAM_MD5     "CRAM-MD5"
+#define SASL_MECH_STRING_DIGEST_MD5   "DIGEST-MD5"
+#define SASL_MECH_STRING_GSSAPI       "GSSAPI"
+#define SASL_MECH_STRING_EXTERNAL     "EXTERNAL"
+#define SASL_MECH_STRING_NTLM         "NTLM"
+#define SASL_MECH_STRING_XOAUTH2      "XOAUTH2"
 #define SASL_MECH_STRING_OAUTHBEARER  "OAUTHBEARER"
 
 #if !defined(CURL_DISABLE_CRYPTO_AUTH)
@@ -149,8 +149,8 @@ char *Curl_sasl_build_gssapi_spn(const char *service, const char *instance);
 
 #ifndef CURL_DISABLE_CRYPTO_AUTH
 /* This is used to extract the realm from a challenge message */
-int Curl_sasl_digest_get_pair(const char *str, char *value, char *content,
-                              const char **endptr);
+bool Curl_sasl_digest_get_pair(const char *str, char *value, char *content,
+                               const char **endptr);
 
 /* This is used to generate a base64 encoded DIGEST-MD5 response message */
 CURLcode Curl_sasl_create_digest_md5_message(struct SessionHandle *data,

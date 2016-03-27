@@ -5,11 +5,11 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.haxx.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -113,16 +113,24 @@ VC_DIST = projects/README	\
  projects/Windows/VC9/src/curl.sln 	\
  projects/Windows/VC10/curl-all.sln	\
  projects/Windows/VC10/lib/libcurl.sln 	\
+ projects/Windows/VC10/lib/libcurl.vcxproj.filters  \
  projects/Windows/VC10/src/curl.sln  \
+ projects/Windows/VC10/src/curl.vcxproj.filters     \
  projects/Windows/VC11/curl-all.sln	\
  projects/Windows/VC11/lib/libcurl.sln 	\
+ projects/Windows/VC11/lib/libcurl.vcxproj.filters  \
  projects/Windows/VC11/src/curl.sln 	\
+ projects/Windows/VC11/src/curl.vcxproj.filters     \
  projects/Windows/VC12/curl-all.sln	\
  projects/Windows/VC12/lib/libcurl.sln 	\
+ projects/Windows/VC12/lib/libcurl.vcxproj.filters  \
  projects/Windows/VC12/src/curl.sln	\
+ projects/Windows/VC12/src/curl.vcxproj.filters     \
  projects/Windows/VC14/curl-all.sln	\
  projects/Windows/VC14/lib/libcurl.sln 	\
- projects/Windows/VC14/src/curl.sln
+ projects/Windows/VC14/lib/libcurl.vcxproj.filters  \
+ projects/Windows/VC14/src/curl.sln                 \
+ projects/Windows/VC14/src/curl.vcxproj.filters
 
 WINBUILD_DIST = winbuild/BUILD.WINDOWS.txt winbuild/gen_resp_file.bat	\
  winbuild/MakefileBuild.vc winbuild/Makefile.vc				\
@@ -130,7 +138,8 @@ WINBUILD_DIST = winbuild/BUILD.WINDOWS.txt winbuild/gen_resp_file.bat	\
 
 EXTRA_DIST = CHANGES COPYING maketgz Makefile.dist curl-config.in	\
  RELEASE-NOTES buildconf libcurl.pc.in MacOSX-Framework scripts/zsh.pl	\
- $(CMAKE_DIST) $(VC_DIST) $(WINBUILD_DIST) lib/libcurl.vers.in
+ $(CMAKE_DIST) $(VC_DIST) $(WINBUILD_DIST) lib/libcurl.vers.in          \
+ buildconf.bat
 
 CLEANFILES = $(VC6_LIBDSP) $(VC6_SRCDSP) $(VC7_LIBVCPROJ) $(VC7_SRCVCPROJ)	\
  $(VC71_LIBVCPROJ) $(VC71_SRCVCPROJ) $(VC8_LIBVCPROJ) $(VC8_SRCVCPROJ)	\

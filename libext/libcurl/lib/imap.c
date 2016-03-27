@@ -5,11 +5,11 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -227,7 +227,11 @@ static const struct SASLproto saslimap = {
 #ifdef USE_SSL
 static void imap_to_imaps(struct connectdata *conn)
 {
+  /* Change the connection handler */
   conn->handler = &Curl_handler_imaps;
+
+  /* Set the connection's upgraded to TLS flag */
+  conn->tls_upgraded = TRUE;
 }
 #else
 #define imap_to_imaps(x) Curl_nop_stmt
@@ -906,8 +910,8 @@ static CURLcode imap_state_capability_resp(struct connectdata *conn,
         wordlen -= 5;
 
         /* Test the word for a matching authentication mechanism */
-        if((mechbit = Curl_sasl_decode_mech(line, wordlen, &llen)) &&
-           llen == wordlen)
+        mechbit = Curl_sasl_decode_mech(line, wordlen, &llen);
+        if(mechbit && llen == wordlen)
           imapc->sasl.authmechs |= mechbit;
       }
 
@@ -1098,7 +1102,7 @@ static CURLcode imap_state_fetch_resp(struct connectdata *conn, int imapcode,
   struct pingpong *pp = &imapc->pp;
   const char *ptr = data->state.buffer;
   bool parsed = FALSE;
-  curl_off_t size;
+  curl_off_t size = 0;
 
   (void)instate; /* no use for this yet */
 
@@ -1738,6 +1742,10 @@ static CURLcode imap_setup_connection(struct connectdata *conn)
   if(result)
     return result;
 
+  /* Clear the TLS upgraded flag */
+  conn->tls_upgraded = FALSE;
+
+  /* Set up the proxy if necessary */
   if(conn->bits.httpproxy && !data->set.tunnel_thru_httpproxy) {
     /* Unless we have asked to tunnel IMAP operations through the proxy, we
        switch and use HTTP operations only */

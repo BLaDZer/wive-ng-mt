@@ -9,7 +9,7 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.haxx.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -19,7 +19,6 @@
 # KIND, either express or implied.
 #
 #***************************************************************************
-
 
 dnl CURL_CHECK_DEF (SYMBOL, [INCLUDES], [SILENT])
 dnl -------------------------------------------------
@@ -31,6 +30,10 @@ dnl result in a set of double-quoted strings the returned expansion will
 dnl actually be a single double-quoted string concatenating all them.
 
 AC_DEFUN([CURL_CHECK_DEF], [
+  AC_REQUIRE([CURL_CPP_P])dnl
+  OLDCPPFLAGS=$CPPFLAGS
+  # CPPPFLAGS comes from CURL_CPP_P
+  CPPFLAGS="$CPPPFLAGS"
   AS_VAR_PUSHDEF([ac_HaveDef], [curl_cv_have_def_$1])dnl
   AS_VAR_PUSHDEF([ac_Def], [curl_cv_def_$1])dnl
   if test -z "$SED"; then
@@ -67,6 +70,7 @@ CURL_DEF_TOKEN $1
   fi
   AS_VAR_POPDEF([ac_Def])dnl
   AS_VAR_POPDEF([ac_HaveDef])dnl
+  CPPFLAGS=$OLDCPPFLAGS
 ])
 
 
@@ -2570,7 +2574,8 @@ AC_DEFUN([CURL_CHECK_CA_BUNDLE], [
   AC_MSG_CHECKING([default CA cert bundle/path])
 
   AC_ARG_WITH(ca-bundle,
-AC_HELP_STRING([--with-ca-bundle=FILE], [File name to use as CA bundle])
+AC_HELP_STRING([--with-ca-bundle=FILE],
+[Path to a file containing CA certificates (example: /etc/ca-bundle.crt)])
 AC_HELP_STRING([--without-ca-bundle], [Don't use a default CA bundle]),
   [
     want_ca="$withval"
@@ -2580,7 +2585,11 @@ AC_HELP_STRING([--without-ca-bundle], [Don't use a default CA bundle]),
   ],
   [ want_ca="unset" ])
   AC_ARG_WITH(ca-path,
-AC_HELP_STRING([--with-ca-path=DIRECTORY], [Directory to use as CA path])
+AC_HELP_STRING([--with-ca-path=DIRECTORY],
+[Path to a directory containing CA certificates stored individually, with \
+their filenames in a hash format. This option can be used with OpenSSL, \
+GnuTLS and PolarSSL backends. Refer to OpenSSL c_rehash for details. \
+(example: /etc/certificates)])
 AC_HELP_STRING([--without-ca-path], [Don't use a default CA path]),
   [
     want_capath="$withval"
@@ -2589,6 +2598,10 @@ AC_HELP_STRING([--without-ca-path], [Don't use a default CA path]),
     fi
   ],
   [ want_capath="unset"])
+
+  ca_warning="   (warning: certs not found)"
+  capath_warning="   (warning: certs not found)"
+  check_capath=""
 
   if test "x$want_ca" != "xno" -a "x$want_ca" != "xunset" -a \
           "x$want_capath" != "xno" -a "x$want_capath" != "xunset"; then
@@ -2638,17 +2651,36 @@ AC_HELP_STRING([--without-ca-path], [Don't use a default CA path]),
       fi
       if test "x$want_capath" = "xunset" -a "x$ca" = "xno" -a \
               "x$OPENSSL_ENABLED" = "x1"; then
-        for a in /etc/ssl/certs/; do
-          if test -d "$a" && ls "$a"/[[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]].0 >/dev/null 2>/dev/null; then
-            capath="$a"
-            break
-          fi
-        done
+        check_capath="/etc/ssl/certs/"
       fi
     else
       dnl no option given and cross-compiling
       AC_MSG_WARN([skipped the ca-cert path detection when cross-compiling])
     fi
+  fi
+
+  if test "x$ca" = "xno" || test -f "$ca"; then
+    ca_warning=""
+  fi
+
+  if test "x$capath" != "xno"; then
+    check_capath="$capath"
+  fi
+
+  if test ! -z "$check_capath"; then
+    for a in "$check_capath"; do
+      if test -d "$a" && ls "$a"/[[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]].0 >/dev/null 2>/dev/null; then
+        if test "x$capath" = "xno"; then
+          capath="$a"
+        fi
+        capath_warning=""
+        break
+      fi
+    done
+  fi
+
+  if test "x$capath" = "xno"; then
+    capath_warning=""
   fi
 
   if test "x$ca" != "xno"; then
@@ -2664,6 +2696,24 @@ AC_HELP_STRING([--without-ca-path], [Don't use a default CA path]),
   fi
   if test "x$ca" = "xno" && test "x$capath" = "xno"; then
     AC_MSG_RESULT([no])
+  fi
+
+  AC_MSG_CHECKING([whether to use builtin CA store of SSL library])
+  AC_ARG_WITH(ca-fallback,
+AC_HELP_STRING([--with-ca-fallback], [Use the built in CA store of the SSL library])
+AC_HELP_STRING([--without-ca-fallback], [Don't use the built in CA store of the SSL library]),
+  [
+    if test "x$with_ca_fallback" != "xyes" -a "x$with_ca_fallback" != "xno"; then
+      AC_MSG_ERROR([--with-ca-fallback only allows yes or no as parameter])
+    fi
+  ],
+  [ with_ca_fallback="no"])
+  AC_MSG_RESULT([$with_ca_fallback])
+  if test "x$with_ca_fallback" = "xyes"; then
+    if test "x$OPENSSL_ENABLED" != "x1" -a "x$GNUTLS_ENABLED" != "x1"; then
+      AC_MSG_ERROR([--with-ca-fallback only works with OpenSSL or GnuTLS])
+    fi
+    AC_DEFINE_UNQUOTED(CURL_CA_FALLBACK, 1, [define "1" to use built in CA store of SSL library ])
   fi
 ])
 
@@ -3100,4 +3150,49 @@ use vars qw(
 
 1;
 _EOF
+])
+
+dnl CURL_CPP_P
+dnl
+dnl Check if $cpp -P should be used for extract define values due to gcc 5
+dnl splitting up strings and defines between line outputs. gcc by default
+dnl (without -P) will show TEST EINVAL TEST as
+dnl
+dnl # 13 "conftest.c"
+dnl TEST
+dnl # 13 "conftest.c" 3 4
+dnl     22
+dnl # 13 "conftest.c"
+dnl            TEST
+
+AC_DEFUN([CURL_CPP_P], [
+  AC_MSG_CHECKING([if cpp -P is needed])
+  AC_EGREP_CPP([TEST.*TEST], [
+ #include <errno.h>
+TEST EINVAL TEST
+  ], [cpp=no], [cpp=yes])
+  AC_MSG_RESULT([$cpp])
+
+  dnl we need cpp -P so check if it works then
+  if test "x$cpp" = "xyes"; then
+    AC_MSG_CHECKING([if cpp -P works])
+    OLDCPPFLAGS=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -P"
+    AC_EGREP_CPP([TEST.*TEST], [
+ #include <errno.h>
+TEST EINVAL TEST
+    ], [cpp_p=yes], [cpp_p=no])
+    AC_MSG_RESULT([$cpp_p])
+
+    if test "x$cpp_p" = "xno"; then
+      AC_MSG_WARN([failed to figure out cpp -P alternative])
+      # without -P
+      CPPPFLAGS=$OLDCPPFLAGS
+    else
+      # with -P
+      CPPPFLAGS=$CPPFLAGS
+    fi
+    dnl restore CPPFLAGS
+    CPPFLAGS=$OLDCPPFLAGS
+  fi
 ])

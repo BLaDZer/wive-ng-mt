@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -31,7 +31,7 @@
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
-  int written = fwrite(ptr, size, nmemb, (FILE *)stream);
+  size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
   return written;
 }
 
