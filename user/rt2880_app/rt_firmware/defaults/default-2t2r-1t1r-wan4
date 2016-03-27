@@ -302,7 +302,6 @@ TZ=OMST-6
 UDPXYMode=0
 UDPXYPort=81
 upnpEnabled=0
-use_snat=1
 VideoClassifierEnable=1
 VideoHighTxMode=1
 VideoTurbine=1

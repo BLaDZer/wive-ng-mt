@@ -11,15 +11,10 @@ PPP_REMOTE="$5"
 PPP_IPPARAM="$6"
 LOG="logger -t pppd"
 
-eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upnpEnabled parproutedEnabled`
+eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled parproutedEnabled`
 
     #export for goahead and vpnhelper
     echo -n "$PPP_IFACE" > /tmp/vpn_if_name
-
-    #if wan ip not get
-    if [ "$PPP_LOCAL" = "" ]; then
-	use_snat=0
-    fi
 
     if [ "$parproutedEnabled" != "1" ] && [ "$IPv6OpMode" != "1" ] && [ "$Ipv6InVPN" != "1" ]; then
 	#disable multicast on $PPP_IFACE interface
@@ -104,7 +99,9 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS use_snat PortForwardEnable upn
     echo "iptables -A FORWARD -o $PPP_IFACE -j ACCEPT" > $PPP_FIREWALL
     #NAT in vpn
     if [ "$vpnNAT" = "on" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-	if  [ "$use_snat" = "1" ] && [ "$PPP_LOCAL" != "" ] ; then
+	# default use SNAT istead of masqrade, more fast
+	# masqrade use only if IP adreess not exist on if
+	if [ "$PPP_LOCAL" != "" ] ; then
 	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
 	    if [ "$chilli_enable" = "on" ]; then
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL

@@ -318,26 +318,30 @@ natrules() {
 	fi
 	#######################NAT##################################
 	if [ "$natEnabled" = "1" ]; then
-	    if [ "$chilli_enable" != "on" ]; then
-		$LOG "Add NAT from $lan_ipaddr/$lan_netmask to $wan_if."
-		if  [ "$use_snat" = "1" ]; then
+	    # default use SNAT istead of masqrade, more fast
+	    # masqrade use only if IP adreess not exist on if
+	    if [ "$wan_ipaddr" != "" ]; then
+		if [ "$chilli_enable" != "on" ]; then
+		    $LOG "Add SNAT from $lan_ipaddr/$lan_netmask to $wan_ipaddr at $wan_if."
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $wan_ipaddr
 		else
-		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
+		    $LOG "Add SNAT from $chilli_net to $wan_ipaddr at $wan_if."
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
+		fi
+		if [ "$Lan2Enabled" = "1" ]; then
+		    $LOG "Add SNAT from $lan2_ip/$lan2_nm to $wan_ipaddr at $wan_if."
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
 		fi
 	    else
-		$LOG "Add NAT from $chilli_net to $wan_if."
-		if  [ "$use_snat" = "1" ]; then
-		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
+		if [ "$chilli_enable" != "on" ]; then
+		    $LOG "Add MASQRADE from $lan_ipaddr/$lan_netmask to $wan_if."
+		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
 		else
+		    $LOG "Add MASQRADE from $chilli_net to $wan_if."
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
 		fi
-	    fi
-	    if [ "$Lan2Enabled" = "1" ]; then
-		$LOG "Add NAT from $lan2_ip/$lan2_nm to $wan_if."
-		if  [ "$use_snat" = "1" ]; then
-		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
-		else
+		if [ "$Lan2Enabled" = "1" ]; then
+		    $LOG "Add MASQRADE from $lan2_ip/$lan2_nm to $wan_if."
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
 		fi
 	    fi
@@ -629,7 +633,7 @@ restartv6() {
 
 get_param() {
     # get network, vpn, netfiletrs and others config variables
-    eval `nvram_buf_get 2860 natEnabled use_snat DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
+    eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable FtSupport \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
 	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
@@ -652,10 +656,6 @@ get_param() {
 	LOCAL_PRT=`sysctl -n net.ipv4.ip_local_port_range | awk {' print $1":"$2 '}`
     else
 	LOCAL_PRT=""
-    fi
-    # if wan ip not get
-    if [ "$wan_ipaddr" = "" ]; then
-	use_snat=0
     fi
     # in pppoe pure mode no need add MASQ rules to uplink localnet
     if [ "$purepppoemode" = "1" ]; then
