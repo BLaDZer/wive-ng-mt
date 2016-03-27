@@ -288,17 +288,6 @@ forwardlimit() {
     	    $LOG "Parprouted enabled - allow forward any to any"
 	    iptables -I FORWARD -j ACCEPT
 	fi
-	# allow forward packets for portfw rules only if nat enabled, port filter disabled and portforward rules really generate
-	if [ "$IPPortFilterEnable" != "1" ] && [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ]; then
-	    if [ "$natEnabled" = "1" ]; then
-		$LOG "Allow forward from $wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward, please limit this by ipfilter for more secure."
-		iptables -A FORWARD -i $wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
-	    fi
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$vpnNAT" = "on" ] && [ "$real_wan_if" != "" ]; then
-		$LOG "Allow forward from $real_wan_if to $lan_if dest $lan_ipaddr/$lan_netmask for portforward, please limit this by ipfilter for more secure."
-		iptables -A FORWARD -i $real_wan_if -o $lan_if -d $lan_ipaddr/$lan_netmask -j ACCEPT
-	    fi
-	fi
 }
 
 simpleqos() {
@@ -310,10 +299,14 @@ simpleqos() {
 
 natrules() {
 	####################PORTFORWARD#############################
-	if [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ]; then
-	    if  [ "$wan_ipaddr" != "" ]; then
-		$LOG "Add portforward rules"
-		/etc/portforward "$wan_ipaddr"
+	# allow forward packets for portfw rules only if nat enabled
+	# and portforward rules really generated
+	if [ "$PortForwardEnable" = "1" ] && [ -e /etc/portforward ] && [ "$wan_ipaddr" != "" ]; then
+	    $LOG "Add portforward NAT rules"
+	    /etc/portforward "$wan_ipaddr"
+	    if [ -e /etc/portforward_access ]; then
+		$LOG "Add portforward FORWARD rules"
+		/etc/portforward_access
 	    fi
 	fi
 	#######################NAT##################################

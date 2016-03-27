@@ -91,6 +91,7 @@
 #define _PATH_PFW			"/etc"
 #define _PATH_PFW_FILE			_PATH_PFW "/portforward"
 #define _PATH_PFW_FILE_VPN		_PATH_PFW "/portforward_vpn"
+#define _PATH_PFW_FILE_ACCESS		_PATH_PFW "/portforward_access"
 #define _PATH_MACIP_FILE		_PATH_PFW "/macipfilter"
 #define _PATH_WEBS_FILE			_PATH_PFW "/websfilter"
 
