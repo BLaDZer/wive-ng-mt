@@ -154,7 +154,7 @@ get_param() {
     fi
     # final options compile
     gen_configs
-    full_l2tpd_opts="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid -C $var/l2tp-control $l2tp_srv_debug"
+    full_l2tpd_opts="-c $ppp/l2tpd.conf -s $ppp/chap-secrets -p $var/l2tpd.pid -C $var/l2tp-control $l2tp_srv_debug -l"
 }
 
 stop() {
