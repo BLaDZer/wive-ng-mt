@@ -122,36 +122,18 @@ MANDIR?=$(DESTDIR)${PREFIX}/share/man
 all: $(EXEC)
 
 clean:
-	rm -f $(OBJS) $(EXEC) pfc.o pfc
+	rm -f $(OBJS) $(EXEC)
 
 $(EXEC): $(OBJS) $(HDRS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
-pfc:
-	$(CC) $(CFLAGS) -c contrib/pfc.c
-	$(CC) $(LDFLAGS) -o pfc pfc.o -lpcap $(LDLIBS)
-
-
 install: ${EXEC}
-# pfc
-	install -d -m 0755 ${BINDIR}
-#	install -m 0755 pfc ${BINDIR}/pfc
 	install -d -m 0755 ${SBINDIR}
 	install -m 0755 $(EXEC) ${SBINDIR}/$(EXEC)
 	install -d -m 0755 ${MANDIR}/man5
 	install -d -m 0755 ${MANDIR}/man8
 	install -m 0644 doc/xl2tpd.8 ${MANDIR}/man8/
-	install -m 0644 doc/xl2tpd.conf.5 doc/l2tp-secrets.5 \
-		 ${MANDIR}/man5/
-#	# pfc
-#	install -d -m 0755 ${BINDIR}
-#	install -m 0755 pfc ${BINDIR}/pfc
-#	install -d -m 0755 ${MANDIR}/man1
-#	install -m 0644 contrib/pfc.1 ${MANDIR}/man1/
-
-# openbsd
-#	install -d -m 0755 /var/run/xl2tpd
-#	mkfifo /var/run/l2tp-control
+	install -m 0644 doc/xl2tpd.conf.5 doc/l2tp-secrets.5  ${MANDIR}/man5/
 
 romfs:
 	$(ROMFSINST) -S /bin/$(EXEC)
