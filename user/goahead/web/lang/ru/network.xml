@@ -58,7 +58,7 @@
     <message msgid="vpn lcp interval" msgstr="Интервал LCP эхо-запросов:" />
     <message msgid="vpn lcp failure" msgstr="Ошибок LCP эхо-запросов:" />
     <message msgid="vpn allow mppe" msgstr="Разрешить MPPE" />
-    <message msgid="vpn peer dns" msgstr="DNS провайдера" />
+    <message msgid="vpn peer dns" msgstr="Получать DNS от сервера" />
     <message msgid="vpn allow debug" msgstr="Включить отладку" />
     <message msgid="vpn enable nat" msgstr="Включить NAT" />
     <message msgid="vpn adaptive lcp" msgstr="Адаптивный LCP интервал" />
