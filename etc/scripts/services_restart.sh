@@ -187,6 +187,12 @@ if [ "$MODE" = "all" ]; then
 fi
 
 ##########################################################
+# need restart L2TP server every netfilter rules replaced
+# or ppp session to uplink restarted or new adress recived
+##########################################################
+service vpnserver restart
+
+##########################################################
 # last stage after apply all changes restart cwmp client
 ##########################################################
 if [ -e /bin/cwmpd ]; then

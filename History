@@ -1858,52 +1858,53 @@
 14) init.d: iptables: prevent allow forward for all at portmap enable without NAT enabled.<br>
 15) init.d: portforward allow forward packets only for needed ports and ip, if nat enabled and portforward rules really generate.<br>
 16) init.d: rewrite select SNAT/MASQRADE NAT mode (default allways try use SNAT).<br>
-17) goahead: allways use free verions of free/bfree.<br>
-18) goahead: fix b_stats debugging option work.<br>
-19) goahead: more safe internal strdup implementation.<br>
-20) goahead: generate /etc/portforward_access for forward allow only for needed ip of portforward activate.<br>
-21) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
-22) kernel: ralink_arch: move MT7621 GIC interrupts to base 8 (do not overlap with MIPS 0..7). Prepare to GIC timer support.<br>
-23) kernel: ralink_arch: MT7621: add support vectored interrupts.<br>
-24) kernel: ralink_arch: add CLKSRC_MIPS_GIC param for MT7621 and enable GIC timer by default.<br>
-25) kernel: ralink_arch: irq-legacy: fix broken masked MIPS c0_status on Timer, FE, PCIe, WLAN irq.<br>
-26) kernel: ralink_arch: irq-legacy: use chained interrupts for INTC HW0/HW1 lines.<br>
-27) kernel: ralink_arch: irq-legacy: route time-critical INTC interrupts to MIPS HW1 (IP3) interrupt line with higher priority.<br>
-28) kernel: ralink_arch: fix R2P IRQ description on GIC map.<br>
-29) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
-30) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
-31) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
-32) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
-33) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-34) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-35) kernel: pipe: Fix buffer offset after partially failed read.<br>
-36) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-37) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
-38) kernel: mips: cache flush functions are reworked.<br>
-39) kernel: mips: fix bug in using flush_cache_vunmap.<br>
-40) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
-41) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
-42) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
-43) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-44) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-45) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
-46) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-47) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-48) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
-49) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-50) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-51) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-52) kernel: net: vlan: propagate gso_max_segs.<br>
-53) kernel: net: gro: selective flush of packets.<br>
-54) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-55) kernel: net: gro: add checksuming helpers.<br>
-56) kernel: net: gro: only verify TCP checksums for candidates.<br>
-57) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-58) kernel: net: gro: change GRO overflow strategy.<br>
-59) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-60) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-61) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
-62) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
+17) init.d: move l2tp server form S to W runlevel for correct restart after apply new changes.<br>
+18) goahead: allways use free verions of free/bfree.<br>
+19) goahead: fix b_stats debugging option work.<br>
+20) goahead: more safe internal strdup implementation.<br>
+21) goahead: generate /etc/portforward_access for forward allow only for needed ip of portforward activate.<br>
+22) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
+23) kernel: ralink_arch: move MT7621 GIC interrupts to base 8 (do not overlap with MIPS 0..7). Prepare to GIC timer support.<br>
+24) kernel: ralink_arch: MT7621: add support vectored interrupts.<br>
+25) kernel: ralink_arch: add CLKSRC_MIPS_GIC param for MT7621 and enable GIC timer by default.<br>
+26) kernel: ralink_arch: irq-legacy: fix broken masked MIPS c0_status on Timer, FE, PCIe, WLAN irq.<br>
+27) kernel: ralink_arch: irq-legacy: use chained interrupts for INTC HW0/HW1 lines.<br>
+28) kernel: ralink_arch: irq-legacy: route time-critical INTC interrupts to MIPS HW1 (IP3) interrupt line with higher priority.<br>
+29) kernel: ralink_arch: fix R2P IRQ description on GIC map.<br>
+30) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
+31) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
+32) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
+33) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
+34) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+35) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+36) kernel: pipe: Fix buffer offset after partially failed read.<br>
+37) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+38) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
+39) kernel: mips: cache flush functions are reworked.<br>
+40) kernel: mips: fix bug in using flush_cache_vunmap.<br>
+41) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
+42) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
+43) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
+44) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+45) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+46) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
+47) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+48) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+49) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
+50) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+51) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+52) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+53) kernel: net: vlan: propagate gso_max_segs.<br>
+54) kernel: net: gro: selective flush of packets.<br>
+55) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+56) kernel: net: gro: add checksuming helpers.<br>
+57) kernel: net: gro: only verify TCP checksums for candidates.<br>
+58) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+59) kernel: net: gro: change GRO overflow strategy.<br>
+60) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+61) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+62) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+63) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
 <br>
 <br>
 <br>
