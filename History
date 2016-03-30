@@ -1911,7 +1911,8 @@
 67) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
 68) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
 69) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
-70) kernel: ubi: Fix out of bounds write in volume update code.<br>
+70) kernel: ubi: fix out of bounds write in volume update code.<br>
+71) kernel: libata: align ata_device's id on a cacheline.<br>
 <br>
 <br>
 <br>
