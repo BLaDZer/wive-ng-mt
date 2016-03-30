@@ -1875,45 +1875,46 @@
 31) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
 32) kernel: ralink_raeth: disable VLAN Leaky on TO_CPU operations, enable CPU port for MT7621/MT7530 GSW.<br>
 33) kernel: ralink_raeth: switch control: improve SW IGMP/MLD logic, allow fast leave for used groups.<br>
-34) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
-35) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
-36) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
-37) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-38) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-39) kernel: pipe: Fix buffer offset after partially failed read.<br>
-40) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-41) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
-42) kernel: mips: cache flush functions are reworked.<br>
-43) kernel: mips: fix bug in using flush_cache_vunmap.<br>
-44) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
-45) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
-46) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
-47) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-48) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-49) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
-50) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-51) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-52) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
-53) kernel: usb: option: add support for SIM7100E.<br>
-54) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-55) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-56) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-57) kernel: net: vlan: propagate gso_max_segs.<br>
-58) kernel: net: gro: selective flush of packets.<br>
-59) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-60) kernel: net: gro: add checksuming helpers.<br>
-61) kernel: net: gro: only verify TCP checksums for candidates.<br>
-62) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-63) kernel: net: gro: change GRO overflow strategy.<br>
-64) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-65) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-66) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
-67) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
-68) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
-69) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
-70) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
-71) kernel: ubi: fix out of bounds write in volume update code.<br>
-72) kernel: libata: align ata_device's id on a cacheline.<br>
+34) kernel: ralink_raeth: switch control: disable forcing IGMP/MLD TO_CPU for 2xGMAC case (fix IPTV regression).<br>
+35) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
+36) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
+37) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
+38) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+39) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+40) kernel: pipe: Fix buffer offset after partially failed read.<br>
+41) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+42) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
+43) kernel: mips: cache flush functions are reworked.<br>
+44) kernel: mips: fix bug in using flush_cache_vunmap.<br>
+45) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
+46) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
+47) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
+48) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+49) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+50) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
+51) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+52) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+53) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
+54) kernel: usb: option: add support for SIM7100E.<br>
+55) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+56) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+57) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+58) kernel: net: vlan: propagate gso_max_segs.<br>
+59) kernel: net: gro: selective flush of packets.<br>
+60) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+61) kernel: net: gro: add checksuming helpers.<br>
+62) kernel: net: gro: only verify TCP checksums for candidates.<br>
+63) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+64) kernel: net: gro: change GRO overflow strategy.<br>
+65) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+66) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+67) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+68) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
+69) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
+70) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
+71) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
+72) kernel: ubi: fix out of bounds write in volume update code.<br>
+73) kernel: libata: align ata_device's id on a cacheline.<br>
 <br>
 <br>
 <br>
