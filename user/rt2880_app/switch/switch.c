@@ -1660,7 +1660,7 @@ void set_mirror_from(int argc, char *argv[])
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
 void vlan_dump(int max_vid)
 {
-	int i, j, vid, mask, mask2, value, value2;
+	int i, j, mask, mask2, value, value2;
 
 	if (max_vid < 1)
 		max_vid = 1;
