@@ -1143,7 +1143,6 @@ static void br_multicast_leave_group(struct net_bridge *br,
 	struct net_bridge_mdb_entry *mp;
 	struct net_bridge_port_group *p;
 	unsigned long time;
-	int querier_exist;
 
 	spin_lock(&br->multicast_lock);
 	if (!netif_running(br->dev) ||
@@ -1176,14 +1175,13 @@ static void br_multicast_leave_group(struct net_bridge *br,
 		goto out;
 	}
 
-	querier_exist = timer_pending(&br->multicast_querier_timer);
-	if (querier_exist)
+	if (timer_pending(&br->multicast_querier_timer))
 		goto out;
 
 	time = jiffies + br->multicast_last_member_count *
 			 br->multicast_last_member_interval;
 
-	if (!querier_exist && br->multicast_querier) {
+	if (br->multicast_querier) {
 		__br_multicast_send_query(br, port, &mp->addr);
 
 		mod_timer(port ? &port->multicast_query_timer :
@@ -1191,7 +1189,7 @@ static void br_multicast_leave_group(struct net_bridge *br,
 	}
 
 	if (!port) {
-		if (!querier_exist && mp->mglist &&
+		if (mp->mglist &&
 		    (timer_pending(&mp->timer) ?
 		     time_after(mp->timer.expires, time) :
 		     try_to_del_timer_sync(&mp->timer) >= 0)) {
