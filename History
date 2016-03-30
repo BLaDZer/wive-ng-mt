@@ -1849,72 +1849,73 @@
 5) ntfs-3g: up to 2016.2.22 version.<br>
 6) lldpd: up to 0.9.2 version.<br>
 7) libcurl: up to 7.48.0 version.<br>
-8) xl2tpd: sync with devel tree 10 Mar 2016.<br>
-9) netcwnmp: rewrite for support cwmp 1.0.0 (tested with acs-test_1.0.14.01_amd64).<br>
-10) libnvram: always use safe version of free.<br>
-11) busybox: udhcpd: keep expired leases at startup.<br>
-12) system: enable ripd support (fixed in last quagga).<br>
-13) utils: switch: fix dump on switch workload.<br>
-14) init.d: shaper prio fix regression (do not use dst hash in sfq with root priomap class).<br>
-15) init.d: iptables: prevent allow forward for all at portmap enable without NAT enabled.<br>
-16) init.d: portforward allow forward packets only for needed ports and ip, if nat enabled and portforward rules really generate.<br>
-17) init.d: rewrite select SNAT/MASQRADE NAT mode (default allways try use SNAT).<br>
-18) init.d: move l2tp server form S to W runlevel for correct restart after apply new changes.<br>
-19) goahead: allways use free verions of free/bfree.<br>
-20) goahead: fix b_stats debugging option work.<br>
-21) goahead: more safe internal strdup implementation.<br>
-22) goahead: generate /etc/portforward_access for forward allow only for needed ip of portforward activate.<br>
-23) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
-24) kernel: ralink_arch: move MT7621 GIC interrupts to base 8 (do not overlap with MIPS 0..7). Prepare to GIC timer support.<br>
-25) kernel: ralink_arch: MT7621: add support vectored interrupts.<br>
-26) kernel: ralink_arch: add CLKSRC_MIPS_GIC param for MT7621 and enable GIC timer by default.<br>
-27) kernel: ralink_arch: irq-legacy: fix broken masked MIPS c0_status on Timer, FE, PCIe, WLAN irq.<br>
-28) kernel: ralink_arch: irq-legacy: use chained interrupts for INTC HW0/HW1 lines.<br>
-29) kernel: ralink_arch: irq-legacy: route time-critical INTC interrupts to MIPS HW1 (IP3) interrupt line with higher priority.<br>
-30) kernel: ralink_arch: fix R2P IRQ description on GIC map.<br>
-31) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
-32) kernel: ralink_raeth: disable VLAN Leaky on TO_CPU operations, enable CPU port for MT7621/MT7530 GSW.<br>
-33) kernel: ralink_raeth: switch control: improve SW IGMP/MLD logic, allow fast leave for used groups.<br>
-34) kernel: ralink_raeth: switch control: disable forcing IGMP/MLD TO_CPU for 2xGMAC case (fix IPTV regression).<br>
-35) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
-36) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
-37) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
-38) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
-39) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
-40) kernel: pipe: Fix buffer offset after partially failed read.<br>
-41) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
-42) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
-43) kernel: mips: cache flush functions are reworked.<br>
-44) kernel: mips: fix bug in using flush_cache_vunmap.<br>
-45) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
-46) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
-47) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
-48) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-49) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-50) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
-51) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-52) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-53) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
-54) kernel: usb: option: add support for SIM7100E.<br>
-55) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-56) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-57) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-58) kernel: net: vlan: propagate gso_max_segs.<br>
-59) kernel: net: gro: selective flush of packets.<br>
-60) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-61) kernel: net: gro: add checksuming helpers.<br>
-62) kernel: net: gro: only verify TCP checksums for candidates.<br>
-63) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-64) kernel: net: gro: change GRO overflow strategy.<br>
-65) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-66) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-67) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
-68) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
-69) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
-70) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
-71) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
-72) kernel: ubi: fix out of bounds write in volume update code.<br>
-73) kernel: libata: align ata_device's id on a cacheline.<br>
+8) busybox: update to 1.24.2 version and apply post patches.<br>
+9) xl2tpd: sync with devel tree 10 Mar 2016.<br>
+10) netcwnmp: rewrite for support cwmp 1.0.0 (tested with acs-test_1.0.14.01_amd64).<br>
+11) libnvram: always use safe version of free.<br>
+12) busybox: udhcpd: keep expired leases at startup.<br>
+13) system: enable ripd support (fixed in last quagga).<br>
+14) utils: switch: fix dump on switch workload.<br>
+15) init.d: shaper prio fix regression (do not use dst hash in sfq with root priomap class).<br>
+16) init.d: iptables: prevent allow forward for all at portmap enable without NAT enabled.<br>
+17) init.d: portforward allow forward packets only for needed ports and ip, if nat enabled and portforward rules really generate.<br>
+18) init.d: rewrite select SNAT/MASQRADE NAT mode (default allways try use SNAT).<br>
+19) init.d: move l2tp server form S to W runlevel for correct restart after apply new changes.<br>
+20) goahead: allways use free verions of free/bfree.<br>
+21) goahead: fix b_stats debugging option work.<br>
+22) goahead: more safe internal strdup implementation.<br>
+23) goahead: generate /etc/portforward_access for forward allow only for needed ip of portforward activate.<br>
+24) kernel: ralink_arch: fix build without pci-e port2 enabled (tube sample).<br>
+25) kernel: ralink_arch: move MT7621 GIC interrupts to base 8 (do not overlap with MIPS 0..7). Prepare to GIC timer support.<br>
+26) kernel: ralink_arch: MT7621: add support vectored interrupts.<br>
+27) kernel: ralink_arch: add CLKSRC_MIPS_GIC param for MT7621 and enable GIC timer by default.<br>
+28) kernel: ralink_arch: irq-legacy: fix broken masked MIPS c0_status on Timer, FE, PCIe, WLAN irq.<br>
+29) kernel: ralink_arch: irq-legacy: use chained interrupts for INTC HW0/HW1 lines.<br>
+30) kernel: ralink_arch: irq-legacy: route time-critical INTC interrupts to MIPS HW1 (IP3) interrupt line with higher priority.<br>
+31) kernel: ralink_arch: fix R2P IRQ description on GIC map.<br>
+32) kernel: ralink_raeth: apply GRO changes for our 3.4 tree.<br>
+33) kernel: ralink_raeth: disable VLAN Leaky on TO_CPU operations, enable CPU port for MT7621/MT7530 GSW.<br>
+34) kernel: ralink_raeth: switch control: improve SW IGMP/MLD logic, allow fast leave for used groups.<br>
+35) kernel: ralink_raeth: switch control: disable forcing IGMP/MLD TO_CPU for 2xGMAC case (fix IPTV regression).<br>
+36) kernel: ralink_wifi: do not hardcode RBUS irq.<br>
+37) kernel: bitops: do not default to __clear_bit() for __clear_bit_unlock().<br>
+38) kernel: force inlining of buffer head flag operations inbufferhead,swab,unaligned,atomic-long.h,page-flags.h (fix new gcc issue)<br>
+39) kernel: add cryptodev-linux driver 1.8 (http://cryptodev-linux.org).<br>
+40) kernel: add AES Engine driver for MT7628 (fully code refactoring).<br>
+41) kernel: pipe: Fix buffer offset after partially failed read.<br>
+42) kernel: mips: traps: fix SIGFPE information leak from `do_ov' and `do_trap_or_bp'.<br>
+43) kernel: mips: c-r4k: reapply fix cache flushing for MT cores.<br>
+44) kernel: mips: cache flush functions are reworked.<br>
+45) kernel: mips: fix bug in using flush_cache_vunmap.<br>
+46) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
+47) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
+48) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
+49) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+50) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+51) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
+52) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+53) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+54) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
+55) kernel: usb: option: add support for SIM7100E.<br>
+56) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+57) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+58) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+59) kernel: net: vlan: propagate gso_max_segs.<br>
+60) kernel: net: gro: selective flush of packets.<br>
+61) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+62) kernel: net: gro: add checksuming helpers.<br>
+63) kernel: net: gro: only verify TCP checksums for candidates.<br>
+64) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+65) kernel: net: gro: change GRO overflow strategy.<br>
+66) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+67) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+68) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+69) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
+70) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
+71) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
+72) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
+73) kernel: ubi: fix out of bounds write in volume update code.<br>
+74) kernel: libata: align ata_device's id on a cacheline.<br>
 <br>
 <br>
 <br>
