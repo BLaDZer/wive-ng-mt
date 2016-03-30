@@ -1910,6 +1910,7 @@
 66) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
 67) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
 68) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
+69) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
 <br>
 <br>
 <br>
