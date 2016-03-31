@@ -1890,32 +1890,33 @@
 46) kernel: mips: new GIC clocksource. Add new GIC clockevent driver.<br>
 47) kernel: mips: lost GIC CEVT/CSRC commits (fix switch to GIC timer issue).<br>
 48) kernel: mips: complete disable MIPS CEVT_R4K on enable CEVT_GIC.<br>
-49) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
-50) kernel: usb: usbnet: cleanup after bind() in probe().<br>
-51) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
-52) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
-53) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
-54) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
-55) kernel: usb: option: add support for SIM7100E.<br>
-56) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
-57) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
-58) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
-59) kernel: net: vlan: propagate gso_max_segs.<br>
-60) kernel: net: gro: selective flush of packets.<br>
-61) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
-62) kernel: net: gro: add checksuming helpers.<br>
-63) kernel: net: gro: only verify TCP checksums for candidates.<br>
-64) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
-65) kernel: net: gro: change GRO overflow strategy.<br>
-66) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
-67) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
-68) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
-69) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
-70) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
-71) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
-72) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
-73) kernel: ubi: fix out of bounds write in volume update code.<br>
-74) kernel: libata: align ata_device's id on a cacheline.<br>
+49) kernel: mips: irq-gic: disable GIC local compare interrupt on CEVT_GIC not used.<br>
+50) kernel: usb: qmi_wwan: add Sierra Wireless EM74xx device ID, Gemalto's Cinterion PHxx.<br>
+51) kernel: usb: usbnet: cleanup after bind() in probe().<br>
+52) kernel: usb: xhci: use non-interruptible sleep for XHCI commands.<br>
+53) kernel: usb: cdc_ncm: toggle altsetting to force reset before setup, do not call usbnet_link_change from cdc_ncm_bind.<br>
+54) kernel: usb: qcserial: add Sierra Wireless EM74xx device ID.<br>
+55) kernel: usb: xhci: correct the usage of USB_CTRL_SET_TIMEOUT.<br>
+56) kernel: usb: option: add support for SIM7100E.<br>
+57) kernel: net: fastpaths: remove old ugli hack and move flags to end of cb (fix compath with new GRO logic).<br>
+58) kernel: net: csum: update csum_block_add to use rotate instead of byteswap.<br>
+59) kernel: net: ppp: ensure file->private_data can't be overridden.<br>
+60) kernel: net: vlan: propagate gso_max_segs.<br>
+61) kernel: net: gro: selective flush of packets.<br>
+62) kernel: net: gro: fix possible panic in skb_gro_receive().<br>
+63) kernel: net: gro: add checksuming helpers.<br>
+64) kernel: net: gro: only verify TCP checksums for candidates.<br>
+65) kernel: net: gro: clean up tcpX_gro_receive checksum verification.<br>
+66) kernel: net: gro: change GRO overflow strategy.<br>
+67) kernel: net: ipv4: fix memory leaks in ip_cmsg_send() callers.<br>
+68) kernel: net: ipv6: gro: fix IPV6_GRO_CB(skb)->proto problem.<br>
+69) kernel: net: netfilter: nf_defrag_ipv4: drop redundant ip_send_check().<br>
+70) kernel: net: bridge: update max_gso_segs and max_gso_size.<br>
+71) kernel: net: bridge: multicast: notify eth switch on every leave event.<br>
+72) kernel: net: mld, igmp: fix reserved tailroom calculation.<br>
+73) kernel: sunrpc/cache: fix off-by-one in qword_get().<br>
+74) kernel: ubi: fix out of bounds write in volume update code.<br>
+75) kernel: libata: align ata_device's id on a cacheline.<br>
 <br>
 <br>
 <br>
