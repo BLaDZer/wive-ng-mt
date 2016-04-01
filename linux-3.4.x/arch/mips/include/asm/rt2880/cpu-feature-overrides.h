@@ -69,4 +69,5 @@
 #define cpu_dcache_line_size()		32
 #define cpu_icache_line_size()		32
 
+#define kernel_uses_smartmips_rixi	0
 #endif
