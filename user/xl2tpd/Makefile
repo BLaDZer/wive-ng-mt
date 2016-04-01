@@ -104,7 +104,7 @@ OSFLAGS+= -DHIGH_PRIO
 
 IPFLAGS= -DIP_ALLOCATION
 
-CFLAGS+= $(DFLAGS) -fPIC -pipe -g -fno-builtin -Wall -DSANITY $(OSFLAGS) $(IPFLAGS)
+CFLAGS+= $(DFLAGS) -fPIC -pipe -g -Wall -DSANITY $(OSFLAGS) $(IPFLAGS)
 HDRS=l2tp.h avp.h misc.h control.h call.h scheduler.h file.h aaa.h md5.h
 OBJS=xl2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.o file.o aaa.o md5.o
 SRCS=${OBJS:.o=.c} ${HDRS}
