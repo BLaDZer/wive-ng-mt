@@ -264,6 +264,10 @@ INT Set_AP_PACKET_FILTER_Proc(
     IN  PRTMP_ADAPTER    pAd,
     IN  PSTRING          arg);
 
+INT Set_AP_KickStaRssiLowPSM_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg);
+
 INT Set_AP_KickStaRssiLowDelay_Proc(
     IN  PRTMP_ADAPTER    pAd,
     IN  PSTRING          arg);
@@ -930,6 +934,7 @@ static struct {
 	{"AssocReqRssiThres",           Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD},
 	{"AssocRspIgnor",               Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD},
 	{"KickStaRssiLow",				Set_AP_KickStaRssiLow_Proc},
+	{"KickStaRssiLowPSM",				Set_AP_KickStaRssiLowPSM_Proc},
 	{"KickStaRssiLowDelay",				Set_AP_KickStaRssiLowDelay_Proc},
 	{"ProbeRspRssi",                Set_AP_PROBE_RSSI_THRESHOLD},
 	{"FilterUnused",				Set_AP_PACKET_FILTER_Proc},
@@ -6949,6 +6954,39 @@ INT     Set_AP_PACKET_FILTER_Proc(
 		pAd->ApCfg.MBSSID[apidx].FilterUnusedPacket = val;
 		
 		return TRUE;
+}
+
+INT Set_AP_KickStaRssiLowPSM_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable RssiLowForStaKickOutPSM Function\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("RssiLowForStaKickOutPSM Value Error.\n"));
+                return FALSE;
+        }
+
+
+        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutPSM = rssi;
+
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) RssiLowForStaKickOutPSM=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutPSM));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutPSM ));
+        }
+
+        return TRUE;
 }
 
 INT Set_AP_KickStaRssiLowDelay_Proc(

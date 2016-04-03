@@ -1232,11 +1232,14 @@ VOID MacTableMaintenance(
 #endif /* BAND_STEERING */
 
 		/* kickout low RSSI clients */
-		if (pMbss->RssiLowForStaKickOut != 0 && IS_ENTRY_CLIENT(pEntry))
+		if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && IS_ENTRY_CLIENT(pEntry))
 		{
 			CHAR avgRssi=RTMPAvgRssi(pAd, &pEntry->RssiSample);
 			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
-			if (avgRssi != 0 && avgRssi < pMbss->RssiLowForStaKickOut) {
+			if (avgRssi != 0 && (
+				    (pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
+				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
+			    )) {
 				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
 				    pEntry->RssiLowStaKickOutDelayCount = 0;
 				    bDisconnectSta = TRUE;

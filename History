@@ -1924,4 +1924,9 @@
 80) kernel: libata: align ata_device's id on a cacheline.<br>
 <br>
 <br>
+<b>4.2.x</b><br>
+1) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set SQ for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+2) init.d/goahead: add support KickStaRssiLowPSM.<br>
+<br>
+<br>
 <br>

@@ -1533,6 +1533,7 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR AuthFailRssiThreshold;
 	CHAR AuthNoRspRssiThreshold;
 	CHAR RssiLowForStaKickOut;
+	CHAR RssiLowForStaKickOutPSM;
 	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
 

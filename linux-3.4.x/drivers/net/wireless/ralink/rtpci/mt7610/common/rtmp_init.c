@@ -2866,6 +2866,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			pAd->ApCfg.MBSSID[j].AuthFailRssiThreshold = 0;
 			pAd->ApCfg.MBSSID[j].AuthNoRspRssiThreshold = 0;
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut = 0;
+			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutPSM = 0;
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutDelay = 5;
 			pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold = 0;
 

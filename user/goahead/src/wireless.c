@@ -559,6 +559,7 @@ parameter_fetch_t fast_roaming_flags[] =
 	{ T("AssocReqRssiThres"), "AssocReqRssiThres", 0, T("0") },
 	{ T("AssocRspIgnor"), "AssocRspIgnor", 0, T("0") },
 	{ T("KickStaRssiLow"), "KickStaRssiLow", 0, T("0") },
+	{ T("KickStaRssiLowPSM"), "KickStaRssiLowPSM", 0, T("0") },
 	{ T("KickStaRssiLowDelay"), "KickStaRssiLowDelay", 0, T("0") },
 	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("0") },
 	{ NULL, NULL, 0, NULL } // Terminator

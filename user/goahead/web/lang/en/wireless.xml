@@ -115,7 +115,8 @@
   <message msgid="basic roaming auth rssi" msgstr="Ignore auth req due to weak signal" />
   <message msgid="basic roaming rssi thres" msgstr="Reject assoc req due to weak signal" />
   <message msgid="basic roaming assoc ignor" msgstr="Ignore assoc req due to weak signal" />
-  <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low" />
+  <message msgid="basic roaming rssi low" msgstr="Auto disonnect sta if rssi low (active clients)" />
+  <message msgid="basic roaming rssi low psm" msgstr="Auto disonnect sta if rssi low (powersave clients)" />
   <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />

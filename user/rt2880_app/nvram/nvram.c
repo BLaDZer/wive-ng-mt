@@ -648,6 +648,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(AssocReqRssiThres);
 	FPRINT_NUM(AssocRspIgnor);
 	FPRINT_NUM(KickStaRssiLow);
+	FPRINT_NUM(KickStaRssiLowPSM);
 	FPRINT_NUM(KickStaRssiLowDelay);
 	FPRINT_NUM(ProbeRspRssi);
 #ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT

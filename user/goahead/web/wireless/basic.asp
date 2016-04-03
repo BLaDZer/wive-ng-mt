@@ -91,7 +91,7 @@ var ChannelList_24G =
 
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
-	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
+	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowPSM", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
 	displayElement( "row_RRMEnable", (form.FastRoaming.value == "1") && rrm_built);
 	displayElement( "row_FtSupport", (form.FastRoaming.value == "1") && ft_built);
 }
@@ -317,6 +317,7 @@ function initTranslation()
 	_TR("basicAssocReqRssiThres", "basic roaming rssi thres");
 	_TR("basicAssocRspIgnor", "basic roaming assoc ignor");
 	_TR("basicKickStaRssiLow", "basic roaming rssi low");
+	_TR("basicKickStaRssiLowPSM", "basic roaming rssi low psm");
 	_TR("basicKickStaRssiLowDelay", "basic roaming rssi low delay");
 	_TR("basicProbeRspRssi", "basic roaming probe rssi");
 	_TR("basic80211h", "basic dot11h");
@@ -1419,8 +1420,12 @@ function CheckValue(form)
         		<td width="50%"><input type="text" name="ProbeRspRssi" class="half" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_KickStaRssiLow" style="display:none;">
-        		<td class="head" id="basicKickStaRssiLow" width="50%">Auto disonnect sta if rssi low</td>
+        		<td class="head" id="basicKickStaRssiLow" width="50%">Auto disonnect sta if rssi low (active clients)</td>
         		<td width="50%"><input type="text" name="KickStaRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+        	</tr>
+        	<tr id="row_KickStaRssiLowPSM" style="display:none;">
+        		<td class="head" id="basicKickStaRssiLowPSM" width="50%">Auto disonnect sta if rssi low (powersave clients)</td>
+        		<td width="50%"><input type="text" name="KickStaRssiLowPSM" class="half" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLowPSM"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_KickStaRssiLowDelay" style="display:none;">
         		<td class="head" id="basicKickStaRssiLowDelay" width="50%">How time rssi check before kick</td>
