@@ -106,18 +106,6 @@ VOID APPeerProbeReqAction(
 		else
 			continue; /* check next BSS */
 
-		if (mbss->ProbeRspRssiThreshold != 0)
-		{
-			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
-                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
-                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
-
-			if (rssi != 0 && rssi < mbss->ProbeRspRssiThreshold) {
-			    DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
-			    continue;
-			}
-		}
-
 #ifdef BAND_STEERING
 		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
@@ -130,6 +118,18 @@ VOID APPeerProbeReqAction(
 		if (bBndStrgCheck == FALSE)
 			return;
 #endif /* BAND_STEERING */
+
+		if (mbss->ProbeRspRssiThreshold != 0)
+		{
+			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
+                                  ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
+
+			if (rssi != 0 && rssi < mbss->ProbeRspRssiThreshold) {
+			    DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
+			    continue;
+			}
+		}
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);

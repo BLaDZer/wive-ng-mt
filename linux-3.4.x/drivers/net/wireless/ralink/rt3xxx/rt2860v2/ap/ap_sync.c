@@ -167,6 +167,19 @@ VOID APPeerProbeReqAction(
 		else
 			continue; /* check next BSS */
 
+#ifdef BAND_STEERING
+		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+										NULL,
+										Addr2,
+										Elem->MsgType,
+										Elem->Rssi0,
+										Elem->Rssi1,
+										Elem->Rssi2,
+										&bBndStrgCheck);
+		if (bBndStrgCheck == FALSE)
+			return;
+#endif /* BAND_STEERING */
+
 		if (pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold != 0)
 		{
 			CHAR rssi = RTMPAvgMRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
@@ -178,19 +191,6 @@ VOID APPeerProbeReqAction(
 			    continue;
 			}
 		}
-
-#ifdef BAND_STEERING
-		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
-										NULL, 
-										Addr2,
-										Elem->MsgType,
-										Elem->Rssi0,
-										Elem->Rssi1,
-										Elem->Rssi2,
-										&bBndStrgCheck);
-		if (bBndStrgCheck == FALSE)
-			return;
-#endif /* BAND_STEERING */
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
