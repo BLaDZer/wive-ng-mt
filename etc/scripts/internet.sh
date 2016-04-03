@@ -139,14 +139,12 @@ ethcv_config() {
 }
 
 retune_wifi() {
-	$LOG "Tune wifi modules after load/ifup/ifdown."
-	# advanced postconfigure wifi parametrs
+	$LOG "Tune wifi advanced parametrs."
 	/etc/scripts/wifi_advanced.sh $first_wlan_root_if
 	if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
 	    /etc/scripts/wifi_advanced.sh $first_wlan_apcli
 	fi
 	if [ "$second_wlan_root_if" != "" ]; then
-	    # preconfigure second wlan root interface to
 	    /etc/scripts/wifi_advanced.sh $second_wlan_root_if "5GHZ"
 	    if [ "$second_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
 		/etc/scripts/wifi_advanced.sh $second_wlan_apcli "5GHZ"
@@ -158,12 +156,10 @@ roaming_wifi() {
 	eval `nvram_buf_get 2860 FastRoaming`
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
 	    $LOG "Tune wifi roaming parametrs."
-	    # roaming postconfigure wifi parametrs
 	    if [ "$first_wlan_root_if" != "" ]; then
 		/etc/scripts/wifi_roaming.sh $first_wlan_root_if
 	    fi
 	    if [ "$second_wlan_root_if" != "" ]; then
-		# preconfigure second wlan root interface to
 		/etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ"
 	    fi
 	fi
