@@ -145,6 +145,7 @@ int httpd_build_server(cwmp_t * cwmp)
 
     FD_ZERO(&readset);
     FD_SET(lsnfd, &readset);
+    fcntl(lsnfd, F_SETFD, FD_CLOEXEC);
 
     maxfd = lsnfd;
     /*maxi = -1;*/

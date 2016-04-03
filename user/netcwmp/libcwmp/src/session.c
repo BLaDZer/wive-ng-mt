@@ -375,6 +375,7 @@ cwmp_session_t * cwmp_session_create(cwmp_t * cwmp)
     session->timeout = 0;
     session->envpool = NULL;
     session->connpool = NULL;
+    session->parameter_value_changed = FALSE;
 
     session->root = cwmp->root;
     session->retry_count = 0;
@@ -907,10 +908,11 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
 
 xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
+    cwmp_log_error("DEBUG2: cwmp_session_create_setparameterattributes_response_message \n");
     header_t * header;
     int rv;
     parameter_list_t * pl = NULL;
-//    fault_code_t fault;
+    fault_code_t fault;
 
 
 //    parameter_t * parameter;
@@ -926,12 +928,14 @@ xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_ses
         cwmp_log_error("no header node \n");
     }
 
-/*    rv = cwmp_parse_setparametervalues_message(session->env, doc, session->root, &pl, &fault);
+    rv = cwmp_parse_setparameterattributes_message(session->env, doc, session->root, &pl, &fault);
 
 
-    if(rv != CWMP_OK)
+/*    if(rv != CWMP_OK)
     {
-        return cwmp_create_faultcode_setparametervalues_response_message(session->env, header, pl, &fault);
+	//FIXME STUB!
+//        return cwmp_create_faultcode_setparametervalues_response_message(session->env, header, pl, &fault);
+	return resdoc;
     }
 */
     xmldoc_t * resdoc = cwmp_create_setparameterattributes_response_message(session->env, header, 0, pl);

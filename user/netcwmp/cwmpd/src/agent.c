@@ -186,15 +186,20 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
             cwmp_log_debug("No new request from ACS\n");
             sleep(2);
 	    periodic++;
-            //cwmp->new_request = CWMP_YES;
 
-	    if (periodic<2000) 
+	    if (periodic<10) 
 	    {
         	continue;
 	    }
 	    else
 	    {
-	        cwmp_log_error("Periodic response\n");
+
+		if (cwmp_conf_get_int("cwmpd:notification") != 0)
+		{
+    	            cwmp_log_error("Periodic response\n");
+		    queue_push(cwmp->queue, NULL, TASK_NOTIFY_TAG);
+		}
+
 		periodic = 0;
 	    }
         }
@@ -341,6 +346,14 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
                     break;
                 }
                 session_close = CWMP_YES;
+		
+		if (session->parameter_value_changed == TRUE)
+
+		if (fork() == 0) 
+		{
+		    sleep(3);
+		    execl("/etc/scripts/internet.sh","/etc/scripts/internet.sh",(char*)NULL);
+		}
                 break;
 
 
@@ -431,6 +444,10 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     else if (TRstrcmp(method, CWMP_RPC_SETPARAMETERVALUES) == 0)
     {
         newdoc = cwmp_session_create_setparametervalues_response_message(session, doc, doctmppool);
+	if (newdoc != NULL)
+	{
+		session->parameter_value_changed = TRUE;
+	}
     }
 
     else if (TRstrcmp(method, CWMP_RPC_SETPARAMETERATTRIBUTES) == 0)
@@ -849,6 +866,15 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
 					system("reboot");
 				}
 				break;
+
+			case TASK_NOTIFY_TAG:
+				{
+					cwmp->new_request = CWMP_YES;
+					cwmp_event_set_value(cwmp, INFORM_PERIODIC, 1, NULL, 0, 0, 0);
+				}
+				break;
+
+
 
 			case TASK_FACTORYRESET_TAG:
 				{

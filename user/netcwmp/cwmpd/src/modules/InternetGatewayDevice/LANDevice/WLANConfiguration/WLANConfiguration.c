@@ -117,11 +117,11 @@ int cpe_get_igd_lan_wlan_standard(cwmp_t * cwmp, const char * name, char ** valu
 
     switch (standard) {
 
-	case 0: stdstr = "g";break;
+	case 0: stdstr = "b/g/n";break;
 	case 1: stdstr = "b";break;
 	case 4: stdstr = "g";break;
 	case 6: stdstr = "n";break;
-	case 7: stdstr = "n";break;
+	case 7: stdstr = "b/g/n";break;
 	case 9: stdstr = "b/g/n";break;
 	default: stdstr = "b/g/n";break;
     }
@@ -139,7 +139,7 @@ int cpe_set_igd_lan_wlan_standard(cwmp_t * cwmp, const char * name, const char *
 
     char* valStr = "9";
 
-    if (strcmp(value, "n") == 0) valStr="7";else
+    if (strcmp(value, "n") == 0) valStr="6";else
     if (strcmp(value, "g") == 0) valStr="4";else
     if (strcmp(value, "b") == 0) valStr="1";
 

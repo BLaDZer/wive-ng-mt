@@ -118,7 +118,7 @@
 					<param name="Standard" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_standard" set_func="cpe_set_igd_lan_wlan_standard"/>
 					<param name="BeaconType" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_beacontype" set_func="cpe_set_igd_lan_wlan_beacontype"/>
 					<param name="KeyPassphrase" noti_rw="1" rw="1" get_func="cpe_get_nvram_string" args="WPAPSK1" set_func="cpe_set_nvram_string"/>
-					<param name="TotalPSKFailures" noti_rw="1" rw="1" get_func="cpe_get_const_string" args="3600" set_func="cpe_set_null"/>
+					<param name="TotalPSKFailures" noti_rw="1" rw="1" get_func="cpe_get_nvram_string" args="RekeyInterval" set_func="cpe_set_nvram_string"/>
 					<param name="BasicAuthenticationMode" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_basicauthmode" set_func="cpe_set_igd_lan_wlan_basicauthmode"/>
 					<param name="WPAAuthenticationMode" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_wpaauthmode" set_func="cpe_set_igd_lan_wlan_wpaauthmode"/>
 					<param name="IEEE11iAuthenticationMode" noti_rw="1" rw="1" get_func="cpe_get_igd_lan_wlan_ieeeauthmode" set_func="cpe_set_igd_lan_wlan_ieeeauthmode"/>
@@ -171,8 +171,8 @@
 
 
 									<param name="PPPoEServiceName" rw="1" type="s" get_func="cpe_get_igd_wan_ppp_servicename" args="vpnService" set_func="cpe_set_nvram_string"/>
-									<param name="Name" rw="1" type="s" get_func="cpe_get_const_string" args="VPN" set_func=""/>
-									<param name="TransportType" noti_rw="1" rw="1" type="s" get_func="cpe_get_const_string" args="PPPoE" set_func=""/>
+									<param name="Name" rw="1" type="s" get_func="cpe_get_const_string" args="VPN" set_func="cpe_set_null"/>
+									<param name="TransportType" noti_rw="1" rw="1" type="s" get_func="cpe_get_const_string" args="PPPoE" set_func="cpe_set_null"/>
 									<param name="Enable" rw="1" type="s" get_func="cpe_get_nvram_bool_onoff" args="vpnEnabled" set_func="cpe_set_nvram_bool_onoff"/>
 									<param name="DefaultGateway" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
 									<param name="Username" noti_rw="1" rw="1" get_func="cpe_get_nvram_string" args="vpnUser" set_func="cpe_set_nvram_string"/>

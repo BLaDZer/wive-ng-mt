@@ -1624,6 +1624,81 @@ parameter_t*  cwmp_parameter_list_add_parameter(env_t * env, pool_t * pool , par
 	return parameter;
 }
 
+int  cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault)
+{
+    cwmp_log_error("cwmp_parse_setparameterattributes_message");
+
+    xmlnode_t * parameterListNode;
+    xmlnode_t * parameterNode;
+    parameter_t ** nextpv;
+    int rc = CWMP_OK;
+
+    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+
+    parameterListNode = cwmp_xml_get_child_with_name(cwmp_get_rpc_method_node(doc), "ParameterList");
+
+
+    if (!parameterListNode || !ppl)
+    {
+        return CWMP_ERROR;
+    }
+
+    *ppl = cwmp_create_parameter_list(env);
+    ESE(CWMP_ERROR, NULL, *ppl);
+
+    nextpv = (*ppl)->parameters;
+
+    parameterNode = XmlNodeGetFirstChild(parameterListNode);
+
+///////////////////////////////////////////////////////
+
+    const char * name;
+    const char * value;
+    parameter_t * parameter;
+
+    while (parameterNode)
+    {
+	xmlnode_t * pnode  = parameterNode;
+	parameterNode = XmlNodeGetNextSibling(parameterNode);
+
+        name = cwmp_xml_get_node_value(cwmp_xml_get_child_with_name(pnode, "Name"));
+        value = cwmp_xml_get_node_value(cwmp_xml_get_child_with_name(pnode, "Notification"));
+
+	parameter = cwmp_parameter_list_add_parameter(env, pool, ppl, root, name, value, 0, 0);//Add without execs
+
+        if(!parameter || parameter->fault_code != FAULT_CODE_OK)
+        {
+	    cwmp_set_faultcode(fault, FAULT_CODE_9003);
+	    cwmp_log_error("cwmp_parse_setparametervalues_message: parameter (%s) setter returned fault code %i", name, parameter->fault_code);
+	    rc = CWMP_ERROR;
+	}
+	else
+	{
+	    parameter_node_t * pn = cwmp_get_parameter_node(root, name);
+	    if (pn && pn->inform == 0) 
+	    {
+		switch (value[0])
+		{
+			case '0': pn->inform = 0;
+			case '1': pn->inform = 1;
+			case '2': pn->inform = 1;
+		}
+	    }
+	}
+	
+	if (parameter) {
+    	    *nextpv = parameter;
+	    nextpv++;
+	}
+    }
+
+    cwmp_log_error("cwmp_parse_setparameterattributes_message OK");
+    pool_destroy(pool);
+    return rc;
+}
+
+
+
 //cwmp_parse_setparametervalues_message
 int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault)
 {
