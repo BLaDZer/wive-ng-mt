@@ -138,6 +138,37 @@ ethcv_config() {
 	$LOG "Ethernet Converter OperationMode: $OperationMode"
 }
 
+retune_wifi() {
+	$LOG "Tune wifi modules after load/ifup/ifdown."
+	# advanced postconfigure wifi parametrs
+	/etc/scripts/wifi_advanced.sh $first_wlan_root_if
+	if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
+	    /etc/scripts/wifi_advanced.sh $first_wlan_apcli
+	fi
+	if [ "$second_wlan_root_if" != "" ]; then
+	    # preconfigure second wlan root interface to
+	    /etc/scripts/wifi_advanced.sh $second_wlan_root_if "5GHZ"
+	    if [ "$second_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
+		/etc/scripts/wifi_advanced.sh $second_wlan_apcli "5GHZ"
+	    fi
+	fi
+}
+
+roaming_wifi() {
+	eval `nvram_buf_get 2860 FastRoaming`
+	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
+	    $LOG "Tune wifi roaming parametrs."
+	    # roaming postconfigure wifi parametrs
+	    if [ "$first_wlan_root_if" != "" ]; then
+		/etc/scripts/wifi_roaming.sh $first_wlan_root_if
+	    fi
+	    if [ "$second_wlan_root_if" != "" ]; then
+		# preconfigure second wlan root interface to
+		/etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ"
+	    fi
+	fi
+}
+
 # some reload and reconfigure
 if [ "$MODE" != "connect_sta" ]; then
     if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then
@@ -181,6 +212,11 @@ config-vlan.sh $switchmode $switchpart
 
 # reconfigure external vlans
 service vlan restart
+
+# tune params not automatic readed from *.dat file
+# this need allways after ifup/ifdown or reload modules
+retune_wifi
+roaming_wifi
 
 # some daemons need restart
 services_restart.sh all

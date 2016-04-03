@@ -54,13 +54,6 @@ start() {
 		ip link set $second_wlan_apcli up
 	    fi
 	fi
-
-	# tune param not automatic readed from *.dat file
-	$LOG "Tune wifi modules after load."
-	retune_wifi
-	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
-	    roaming_wifi
-	fi
     fi
 }
 
@@ -135,32 +128,6 @@ gen_wifi_config() {
     fi
 }
 
-retune_wifi() {
-    # advanced postconfigure wifi parametrs
-    (sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_root_if) &
-    if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
-	(sleep 5 && /etc/scripts/wifi_advanced.sh $first_wlan_apcli) &
-    fi
-    if [ "$second_wlan_root_if" != "" ]; then
-	# preconfigure second wlan root interface to
-	(sleep 5 && /etc/scripts/wifi_advanced.sh $second_wlan_root_if "5GHZ") &
-	if [ "$second_wlan_apcli" != "" ]; then
-	    (sleep 5 && /etc/scripts/wifi_advanced.sh $second_wlan_apcli "5GHZ") &
-	fi
-    fi
-}
-
-roaming_wifi() {
-    # roaming postconfigure wifi parametrs
-    if [ "$first_wlan_root_if" != "" ]; then
-	(sleep 5 && /etc/scripts/wifi_roaming.sh $first_wlan_root_if) &
-    fi
-    if [ "$second_wlan_root_if" != "" ]; then
-	# preconfigure second wlan root interface to
-	(sleep 5 && /etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ") &
-    fi
-}
-
 wlan_down_all() {
     $LOG "Shutdown all wireless interfaces."
 
@@ -225,7 +192,7 @@ wifi_unload() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac FastRoaming`
+    eval `nvram_buf_get 2860 macCloneEnabled macCloneMac`
 }
 
 case "$1" in

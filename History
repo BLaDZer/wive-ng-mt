@@ -1927,6 +1927,8 @@
 <b>4.2.x</b><br>
 1) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set SQ for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
 2) init.d/goahead: add support KickStaRssiLowPSM.<br>
+3) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+4) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
 <br>
 <br>
 <br>
