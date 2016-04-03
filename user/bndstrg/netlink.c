@@ -145,6 +145,12 @@ void netlink_deinit(struct netlink_data *netlink)
 	os_free(netlink);
 }
 
+void * __hide_aliasing_typecast(void *foo)
+{
+    return foo;
+}
+#define aliasing_hide_typecast(a,t) (t *) __hide_aliasing_typecast((a))
+
 int netlink_send_oper_ifla(struct netlink_data *netlink, int ifindex,
 			   int linkmode, int operstate)
 {

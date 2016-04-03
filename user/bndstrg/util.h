@@ -1,6 +1,6 @@
 /*
  ***************************************************************************
- * MediaTek Inc. 
+ * MediaTek Inc.
  *
  * All rights reserved. source code is an unpublished work and the
  * use of a copyright notice does not imply otherwise. This source code
@@ -17,15 +17,12 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-u8 BtoH(char ch);
-void AtoH(char *src, char *dest, int destlen);
-
 /* Endian byte swapping codes */
 #define SWAP16(x) \
     ((u16) (\
            (((u16) (x) & (u16) 0x00ffU) << 8) | \
            (((u16) (x) & (u16) 0xff00U) >> 8))) 
- 
+
 #define SWAP32(x) \
     ((u32) (\
            (((u32) (x) & (u32) 0x000000ffUL) << 24) | \
@@ -43,7 +40,7 @@ void AtoH(char *src, char *dest, int destlen);
     (u64)(((UINT64)(x) & (u64) 0x0000ff0000000000ULL) >> 24) | \
     (u64)(((UINT64)(x) & (u64) 0x00ff000000000000ULL) >> 40) | \
     (u64)(((UINT64)(x) & (u64) 0xff00000000000000ULL) >> 56) ))
- 
+
 #ifdef RT_BIG_ENDIAN
 #define cpu2le64(x) SWAP64((x))
 #define le2cpu64(x) SWAP64((x))
@@ -72,12 +69,25 @@ void AtoH(char *src, char *dest, int destlen);
 #define be2cpu16(x) SWAP16((x))
 #endif /* RT_BIG_ENDIAN */
 
-void * __hide_aliasing_typecast(void *foo);
-#define aliasing_hide_typecast(a,t) (t *) __hide_aliasing_typecast((a))
+/*
+ * min()/max() macros that also do
+ * strict type-checking.. See the
+ * "unnecessary" pointer comparison.
+ */
+#define min(x, y) ({				\
+	typeof(x) _min1 = (x);			\
+	typeof(y) _min2 = (y);			\
+	(void) (&_min1 == &_min2);		\
+	_min1 < _min2 ? _min1 : _min2; })
 
-#define max(_a, _b)     (((_a) > (_b)) ? (_a) : (_b))
-#define MAC_ADDR_HASH(Addr)            (Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
-#define MAC_ADDR_HASH_INDEX(Addr)      (MAC_ADDR_HASH(Addr) & (HASH_TABLE_SIZE - 1))
+#define max(x, y) ({				\
+	typeof(x) _max1 = (x);			\
+	typeof(y) _max2 = (y);			\
+	(void) (&_max1 == &_max2);		\
+	_max1 > _max2 ? _max1 : _max2; })
+
+#define MAC_ADDR_HASH(Addr)			(Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
+#define MAC_ADDR_HASH_INDEX(Addr)		(MAC_ADDR_HASH(Addr) & (HASH_TABLE_SIZE - 1))
 #define MAC_ADDR_EQUAL(pAddr1,pAddr2)           !memcmp((void *)(pAddr1), (void *)(pAddr2), MAC_ADDR_LEN)
-#define PRINT_MAC(addr)	addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]
+#define PRINT_MAC(addr)				addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]
 #endif /* __UTIL_H__ */

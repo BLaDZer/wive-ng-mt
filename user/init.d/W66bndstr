@@ -9,7 +9,7 @@ fi
 # get params
 . /etc/scripts/global.sh
 
-LOG="logger -t apd"
+LOG="logger -t bndstr"
 
 start() {
     get_param

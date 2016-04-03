@@ -3,7 +3,7 @@ BNDSTRG_EXEC = bndstrg
 CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA
 LDFLAGS += -lpthread -Wl,--gc-sections
 
-BNDSTRG_OBJS = bndstrg.o driver_wext.o eloop.o os_internal.o main.o util.o netlink.o
+BNDSTRG_OBJS = bndstrg.o driver_wext.o eloop.o os_internal.o main.o netlink.o
 
 all: $(BNDSTRG_EXEC)
 

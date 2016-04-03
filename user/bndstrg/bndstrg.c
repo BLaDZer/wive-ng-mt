@@ -816,6 +816,7 @@ static u8 _bndstrg_allow_sta_conn_5g(
 	{
 		statistics_2G = &entry->statistics[0];
 		statistics_5G = &entry->statistics[1];
+#if 0 /* not reject 5GHz clients by RSSIDIFF, this bad practic */
 		/* Condition 1: 2G Rssi >> 5G Rssi */
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_RSSI_DIFF) &&
 				(statistics_2G->Rssi & statistics_5G->Rssi))
@@ -831,7 +832,7 @@ static u8 _bndstrg_allow_sta_conn_5g(
 				return FALSE;
 			}
 		}
-
+#endif
 		/* Condition 2: Client really don't want to connect 5G */
 		if ( (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_2G_PERSIST) && 
 		   entry->elapsed_time >= table->HoldTime &&
@@ -856,40 +857,40 @@ static u8 _bndstrg_allow_sta_conn_5g(
 				RED("check 5G HT support. client (%02x:%02x:%02x:%02x:%02x:%02x)"
 				" does not support HT.\n"), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
-			return FALSE;	
-		}
-	if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
-		(entry->statistics[1].Rssi != 0))
-	{
-		if (entry->statistics[1].Rssi > table->RssiLow)
-		//if (!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G))
-		{
-#ifdef BND_STRG_QA
-			if (!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G))
-			BND_STRG_PRINTQAMSG(table, entry,
-			YLW("check 5G Rssi(%d) > %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-			" is allowed to connect 5G.\n"),
-			entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-#if 1 // TODO: move to 2.4G check
-			entry->Control_Flags &=  (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-			/* bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);*/
-#endif
-			return TRUE;
-		}
-		else if (entry->statistics[1].Rssi < (table->RssiLow - 10 /*Test*/))
-		{
-#ifdef BND_STRG_QA
-			if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
-			BND_STRG_PRINTQAMSG(table, entry,
-			RED("check 5G Rssi(%d) < %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-			" is not allowed to connect 5G.\n"),
-			entry->statistics[1].Rssi, (table->RssiLow -10), PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
 			return FALSE;
 		}
-			else 
+
+		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
+			(entry->statistics[1].Rssi != 0))
+		{
+			if (entry->statistics[1].Rssi > table->RssiLow)
+			{
+#ifdef BND_STRG_QA
+				if (!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G))
+				BND_STRG_PRINTQAMSG(table, entry,
+				YLW("check 5G Rssi(%d) > %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				" is allowed to connect 5G.\n"),
+				entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
+#if 1 /* TODO: move to 2.4G check */
+				entry->Control_Flags &=  (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+				/* bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);*/
+#endif
+				return TRUE;
+			}
+#if 0 /* not reject 5GHz clients by RSSIDIFF, this bad practic */
+			else if (entry->statistics[1].Rssi < (table->RssiLow - table->RssiDiff))
+			{
+#ifdef BND_STRG_QA
+				if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
+				BND_STRG_PRINTQAMSG(table, entry,
+				RED("check 5G Rssi(%d) < %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				" is not allowed to connect 5G.\n"),
+				entry->statistics[1].Rssi, (table->RssiLow - table->RssiDiff), PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
 				return FALSE;
+			}
+#endif
 		}
 		else if(entry->statistics[1].Rssi == 0)
 		{

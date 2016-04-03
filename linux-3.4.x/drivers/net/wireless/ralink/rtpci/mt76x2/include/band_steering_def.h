@@ -27,11 +27,11 @@
 
 #define BND_STRG_MAX_TABLE_SIZE		64
 #define BND_STRG_TIMER_PERIOD		1000
-#define BND_STRG_AGE_TIME		600000	/* orig 150000 */
+#define BND_STRG_AGE_TIME		800000	/* orig 150000 */
 #define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
 #define BND_STRG_CHECK_TIME_5G		4000	/* orig 30000 */
-#define BND_STRG_RSSI_DIFF		30
-#define BND_STRG_RSSI_LOW		-70
+#define BND_STRG_RSSI_DIFF		20
+#define BND_STRG_RSSI_LOW		-80
 
 #define BND_STRG_AUTO_ONOFF_THRD 	4000
 #define P_BND_STRG_TABLE	(&pAd->ApCfg.BndStrgTable)
