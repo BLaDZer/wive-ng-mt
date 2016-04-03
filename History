@@ -1925,8 +1925,8 @@
 <br>
 <br>
 <b>4.2.x</b><br>
-1) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set SQ for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-2) kernel: ralink_wifi: fix coaxistence auth and probe rssi thresh`s with band steereing.<br>
+1) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+2) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
 3) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
 4) init.d/goahead: add support KickStaRssiLowPSM.<br>
 5) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
