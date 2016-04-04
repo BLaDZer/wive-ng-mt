@@ -1928,13 +1928,14 @@
 1) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
 2) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
 3) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-4) init.d/goahead: add support KickStaRssiLowPSM.<br>
-5) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
-6) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
-7) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
-8) netcwnmp: fix settings apply on the fly.<br>
-9) netcwnmp: fix socket close of services restart.<br>
-10) netcwnmp: fix wireless mode set.<br>
+4) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+5) init.d/goahead: add support KickStaRssiLowPSM.<br>
+6) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+7) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
+8) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
+9) netcwnmp: fix settings apply on the fly.<br>
+10) netcwnmp: fix socket close of services restart.<br>
+11) netcwnmp: fix wireless mode set.<br>
 <br>
 <br>
 <br>
