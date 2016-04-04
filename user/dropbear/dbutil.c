@@ -84,9 +84,9 @@ int debug_trace = 0;
 #endif
 
 #ifndef DISABLE_SYSLOG
-void startsyslog() {
+void startsyslog(const char *ident) {
 
-	openlog(PROGNAME, LOG_PID, LOG_AUTHPRIV);
+	openlog(ident, LOG_PID, LOG_AUTHPRIV);
 
 }
 #endif /* DISABLE_SYSLOG */
@@ -558,21 +558,6 @@ void * m_realloc(void* ptr, size_t size) {
 	}
 	return ret;
 }
-
-/* Clear the data, based on the method in David Wheeler's
- * "Secure Programming for Linux and Unix HOWTO" */
-/* Beware of calling this from within dbutil.c - things might get
- * optimised away */
-void m_burn(void *data, unsigned int len) {
-	volatile char *p = data;
-
-	if (data == NULL)
-		return;
-	while (len--) {
-		*p++ = 0x0;
-	}
-}
-
 
 void setnonblocking(int fd) {
 

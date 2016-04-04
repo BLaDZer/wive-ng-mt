@@ -1933,9 +1933,10 @@
 6) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
 7) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
 8) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
-9) netcwnmp: fix settings apply on the fly.<br>
-10) netcwnmp: fix socket close of services restart.<br>
-11) netcwnmp: fix wireless mode set.<br>
+9) dropbear: up to 2016.73 version.<br>
+10) netcwnmp: fix settings apply on the fly.<br>
+11) netcwnmp: fix socket close of services restart.<br>
+12) netcwnmp: fix wireless mode set.<br>
 <br>
 <br>
 <br>
