@@ -44,6 +44,7 @@
 #define cpu_has_mdmx			0
 #define cpu_has_mips3d			0
 #define cpu_has_smartmips		0
+#define cpu_has_rixi			0
 #define cpu_has_dsp			1
 #if defined (CONFIG_RALINK_MT7621)
 #define cpu_has_mipsmt			1
@@ -69,5 +70,4 @@
 #define cpu_dcache_line_size()		32
 #define cpu_icache_line_size()		32
 
-#define kernel_uses_smartmips_rixi	0
 #endif
