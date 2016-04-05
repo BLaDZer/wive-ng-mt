@@ -1927,22 +1927,23 @@
 <b>4.2.x</b><br>
 1) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
 2) dropbear: up to 2016.73 version.<br>
-3) netcwnmp: fix settings apply on the fly.<br>
-4) netcwnmp: fix socket close of services restart.<br>
-5) netcwnmp: fix wireless mode set.<br>
-6) init.d/goahead: add support KickStaRssiLowPSM.<br>
-7) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
-8) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
-9) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-10) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
-11) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-12) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
-13) kernel: mips: upstream RIXI changes.<br>
-14) kernel: mips: fix race condition in lazy cache flushing.<br>
-15) kernel: mips: sync icache & dcache in set_pte_at.<br>
-16) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-17) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-18) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+3) radvd: up to 2.13 version.<br>
+4) netcwnmp: fix settings apply on the fly.<br>
+5) netcwnmp: fix socket close of services restart.<br>
+6) netcwnmp: fix wireless mode set.<br>
+7) init.d/goahead: add support KickStaRssiLowPSM.<br>
+8) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+9) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
+10) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+11) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
+12) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
+13) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+14) kernel: mips: upstream RIXI changes.<br>
+15) kernel: mips: fix race condition in lazy cache flushing.<br>
+16) kernel: mips: sync icache & dcache in set_pte_at.<br>
+17) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+18) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+19) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
 <br>
 <br>
 <br>

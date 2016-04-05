@@ -34,8 +34,6 @@
 
 void process_netlink_msg(int sock, struct Interface * ifaces)
 {
-	int rc = 0;
-
 	char buf[4096];
 	struct iovec iov = { buf, sizeof(buf) };
 	struct sockaddr_nl sa;
@@ -72,7 +70,6 @@ void process_netlink_msg(int sock, struct Interface * ifaces)
 						dlog(LOG_DEBUG, 3, "netlink: %s, ifindex %d, flags is *NOT* running", ifname,
 						     ifinfo->ifi_index);
 					}
-					++rc;
 				}
 			}
 
@@ -109,12 +106,23 @@ void process_netlink_msg(int sock, struct Interface * ifaces)
 				break;
 			}
 
-			++rc;
-
 			struct Interface *iface = find_iface_by_index(ifaces, ifaddr->ifa_index);
 			if (iface) {
+				struct in6_addr *if_addrs = NULL;
+				int count = get_iface_addrs(iface->props.name, NULL, &if_addrs);
+
+				if (count != iface->props.addrs_count &&
+					0 != memcmp(if_addrs, iface->props.if_addrs, count * sizeof(struct in6_addr))) {
+					dlog(LOG_DEBUG, 3, "netlink: %s, ifindex %d, addresses are different",
+						ifname, ifaddr->ifa_index);
 				touch_iface(iface);
+				} else {
+					dlog(LOG_DEBUG, 3, "netlink: %s, ifindex %d, addresses are the same",
+						ifname, ifaddr->ifa_index);
+				}
+				free(if_addrs);
 			}
+
 		}
 	}
 }
@@ -124,6 +132,7 @@ int netlink_socket(void)
 	int sock = socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
 	if (sock == -1) {
 		flog(LOG_ERR, "Unable to open netlink socket: %s", strerror(errno));
+		return -1;
 	}
 #if defined SOL_NETLINK && defined NETLINK_NO_ENOBUFS
 	else if (setsockopt(sock, SOL_NETLINK, NETLINK_NO_ENOBUFS, (int[]){1}, sizeof(int)) < 0) {
