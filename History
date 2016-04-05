@@ -1930,14 +1930,16 @@
 3) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
 4) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
 5) kernel: mips: upstream RIXI changes.<br>
-6) init.d/goahead: add support KickStaRssiLowPSM.<br>
-7) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
-8) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
-9) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
-10) dropbear: up to 2016.73 version.<br>
-11) netcwnmp: fix settings apply on the fly.<br>
-12) netcwnmp: fix socket close of services restart.<br>
-13) netcwnmp: fix wireless mode set.<br>
+6) kernel: mips: fix race condition in lazy cache flushing.<br>
+7) kernel: mips: sync icache & dcache in set_pte_at.<br>
+8) init.d/goahead: add support KickStaRssiLowPSM.<br>
+9) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+10) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
+11) band steering: review managment code, fix dissalow 5GHz connect in some cases and more smooth transit 5->2.4 and back.<br>
+12) dropbear: up to 2016.73 version.<br>
+13) netcwnmp: fix settings apply on the fly.<br>
+14) netcwnmp: fix socket close of services restart.<br>
+15) netcwnmp: fix wireless mode set.<br>
 <br>
 <br>
 <br>
