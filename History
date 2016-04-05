@@ -1941,6 +1941,7 @@
 14) kernel: mips: fix race condition in lazy cache flushing.<br>
 15) kernel: mips: sync icache & dcache in set_pte_at.<br>
 16) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+17) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
 <br>
 <br>
 <br>
