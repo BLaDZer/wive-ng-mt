@@ -46,8 +46,16 @@ struct timeOutQueue {
     int                     time;   // Time offset for next event
 };
 
-// Method for dumping the Queue to the log.
-static void debugQueue(void);
+/**
+ * debugging utility
+ */
+static void debugQueue() {
+    struct timeOutQueue  *ptr;
+
+    for (ptr = queue; ptr; ptr = ptr->next) {
+            my_log(LOG_DEBUG, 0, "(Id:%d, Time:%d) ", ptr->id, ptr->time);
+    }
+}
 
 /**
 *   Initializes the callout queue
@@ -256,13 +264,3 @@ int timer_clearTimer(int  timer_id) {
     return 0;
 }
 
-/**
- * debugging utility
- */
-static void debugQueue() {
-    struct timeOutQueue  *ptr;
-
-    for (ptr = queue; ptr; ptr = ptr->next) {
-            my_log(LOG_DEBUG, 0, "(Id:%d, Time:%d) ", ptr->id, ptr->time);
-    }
-}
