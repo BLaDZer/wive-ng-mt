@@ -49,14 +49,11 @@ endif
 
 all: $(EXEC)
 
-igmpproxy: build.h $(IGMP_PROXY_OBJ)
+igmpproxy: $(IGMP_PROXY_OBJ)
 	$(CC) $(LDFLAGS) -o $@ $(IGMP_PROXY_OBJ)
 
 romfs:
 	$(ROMFSINST) -S /bin/$(EXEC)
 
 clean:
-	rm -f *.o *.asm build.h $(EXEC)
-
-build.h	:
-	echo '#define BUILD "' `date +%y%m%d` '"' >build.h
+	rm -f *.o *.asm $(EXEC)
