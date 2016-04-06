@@ -129,25 +129,20 @@ void sendJoinLeaveUpstream(struct RouteTable* route, int join) {
 
         // Only join a group if there are listeners downstream...
         if(route->vifBits > 0) {
-            my_log(LOG_DEBUG, 0, "Joining group %s upstream on IF address %s",
-                         inetFmt(route->group, s1), 
-                         inetFmt(upstrIf->InAdr.s_addr, s2));
+            my_log(LOG_DEBUG, 0, "Joining group %s upstream on IF address %s", inetFmt(route->group, s1), inetFmt(upstrIf->InAdr.s_addr, s2));
 
             //k_join(route->group, upstrIf->InAdr.s_addr);
             joinMcGroup( MRouterFD, upstrIf, route->group );
 
             route->upstrState = ROUTESTATE_JOINED;
         } else {
-            my_log(LOG_DEBUG, 0, "No downstream listeners for group %s. No join sent.",
-                inetFmt(route->group, s1));
+            my_log(LOG_DEBUG, 0, "No downstream listeners for group %s. No join sent.", inetFmt(route->group, s1));
         }
 
     } else {
         // Only leave if group is not left already...
         if(route->upstrState != ROUTESTATE_NOTJOINED) {
-            my_log(LOG_DEBUG, 0, "Leaving group %s upstream on IF address %s",
-                         inetFmt(route->group, s1), 
-                         inetFmt(upstrIf->InAdr.s_addr, s2));
+            my_log(LOG_DEBUG, 0, "Leaving group %s upstream on IF address %s", inetFmt(route->group, s1), inetFmt(upstrIf->InAdr.s_addr, s2));
 
             //k_leave(route->group, upstrIf->InAdr.s_addr);
             leaveMcGroup( MRouterFD, upstrIf, route->group );
@@ -254,9 +249,8 @@ int insertRoute(uint32_t group, int ifx) {
 
         // Set the listener flag...
         BIT_ZERO(newroute->vifBits);    // Initially no listeners...
-        if(ifx >= 0) {
+        if(ifx >= 0)
             BIT_SET(newroute->vifBits, ifx);
-        }
 
         // Check if there is a table already....
         if(routing_table == NULL) {
@@ -307,8 +301,7 @@ int insertRoute(uint32_t group, int ifx) {
         croute = newroute;
 
         // Log the cleanup in debugmode...
-        my_log(LOG_INFO, 0, "Inserted route table entry for %s on VIF #%d",
-            inetFmt(croute->group, s1),ifx);
+        my_log(LOG_INFO, 0, "Inserted route table entry for %s on VIF #%d", inetFmt(croute->group, s1), ifx);
 
     } else if(ifx >= 0) {
 
@@ -321,7 +314,7 @@ int insertRoute(uint32_t group, int ifx) {
         // Log the cleanup in debugmode...
         my_log(LOG_INFO, 0, "Updated route entry for %s on VIF #%d",
             inetFmt(croute->group, s1), ifx);
-        
+
         // Update route in kernel...
         if(!internUpdateKernelRoute(croute, 1)) {
             my_log(LOG_WARNING, 0, "The insertion into Kernel failed.");
@@ -330,10 +323,9 @@ int insertRoute(uint32_t group, int ifx) {
     }
 
     // Send join message upstream, if the route has no joined flag...
-    if(croute->upstrState != ROUTESTATE_JOINED) {
+    if(croute->upstrState != ROUTESTATE_JOINED)
         // Send Join request upstream
         sendJoinLeaveUpstream(croute, 1);
-    }
 
     logRouteTable("Insert Route");
 
@@ -352,9 +344,7 @@ int activateRoute(uint32_t group, uint32_t originAddr) {
     // Find the requested route.
     croute = findRoute(group);
     if(croute == NULL) {
-        my_log(LOG_DEBUG, 0,
-		"No table entry for %s [From: %s]. Inserting route.",
-		inetFmt(group, s1),inetFmt(originAddr, s2));
+        my_log(LOG_DEBUG, 0, "No table entry for %s [From: %s]. Inserting route.", inetFmt(group, s1),inetFmt(originAddr, s2));
 
 #ifdef RALINK_ESW_SUPPORT
 	insert_multicast_ip(ntohl(group), ntohl(originAddr));
@@ -377,19 +367,18 @@ int activateRoute(uint32_t group, uint32_t originAddr) {
                     break;
                 }
             }
-            
+
             if (i == MAX_ORIGINS) {
                 i = MAX_ORIGINS - 1;
-                
                 my_log(LOG_WARNING, 0, "Too many origins for route %s; replacing %s with %s",
                     inetFmt(croute->group, s1),
                     inetFmt(croute->originAddrs[i], s2),
                     inetFmt(originAddr, s3));
             }
-            
+
             // set origin
             croute->originAddrs[i] = originAddr;
-            
+
             // move it to the top
             while (i > 0) {
                 uint32_t t = croute->originAddrs[i - 1];
@@ -428,10 +417,9 @@ void ageActiveRoutes() {
         nroute = croute->nextroute;
 
         // Run the aging round algorithm.
-        if(croute->upstrState != ROUTESTATE_CHECK_LAST_MEMBER) {
+        if(croute->upstrState != ROUTESTATE_CHECK_LAST_MEMBER)
             // Only age routes if Last member probe is not active...
             internAgeRoute(croute);
-        }
     }
     logRouteTable("Age active routes");
 }
@@ -454,7 +442,6 @@ int numberOfInterfaces(struct RouteTable *croute) {
     return result;
 }
 
-
 /**
 *   Should be called when a leave message is recieved, to
 *   mark a route for the last member probe state.
@@ -464,14 +451,14 @@ void setRouteLastMemberMode(uint32_t group) {
     struct RouteTable   *croute;
 
     croute = findRoute(group);
-    if(croute!=NULL) {
+    if(croute != NULL) {
         // Check for fast leave mode...
         if(croute->upstrState == ROUTESTATE_JOINED && conf->fastUpstreamLeave) {
             // Send a leave message right away only when the route has been active on only one interface
             if (numberOfInterfaces(croute) <= 1) {
 		my_log(LOG_DEBUG, 0, "Leaving group %d now", group);
                 sendJoinLeaveUpstream(croute, 0);
-            } 
+            }
         }
         // Set the routingstate to Last member check...
         croute->upstrState = ROUTESTATE_CHECK_LAST_MEMBER;
@@ -504,16 +491,15 @@ int lastMemberGroupAge(uint32_t group) {
 *   and 0 if route was not found.
 */
 int removeRoute(struct RouteTable*  croute) {
-    struct Config       *conf = getCommonConfig();
+    struct Config *conf = getCommonConfig();
     int result = 1;
-    
+
     // If croute is null, no routes was found.
-    if(croute==NULL)
+    if(croute == NULL)
         return 0;
 
     // Log the cleanup in debugmode...
-    my_log(LOG_DEBUG, 0, "Removed route entry for %s from table.",
-                 inetFmt(croute->group, s1));
+    my_log(LOG_DEBUG, 0, "Removed route entry for %s from table.", inetFmt(croute->group, s1));
 
     //BIT_ZERO(croute->vifBits);
 
@@ -524,7 +510,7 @@ int removeRoute(struct RouteTable*  croute) {
     }
 
     // Send Leave request upstream if group is joined
-    if(croute->upstrState == ROUTESTATE_JOINED || (croute->upstrState == ROUTESTATE_CHECK_LAST_MEMBER && !conf->fastUpstreamLeave)) 
+    if(croute->upstrState == ROUTESTATE_JOINED || (croute->upstrState == ROUTESTATE_CHECK_LAST_MEMBER && !conf->fastUpstreamLeave))
         sendJoinLeaveUpstream(croute, 0);
 
     // Update pointers...
@@ -650,7 +636,7 @@ int internUpdateKernelRoute(struct RouteTable *route, int activate) {
         mrDesc.McAdr.s_addr     = route->group;
 	mrDesc.OriginAdr.s_addr = route->originAddrs[i];
 
-        // clear output interfaces 
+        // clear output interfaces
         memset( mrDesc.TtlVc, 0, sizeof( mrDesc.TtlVc ) );
 
         my_log(LOG_DEBUG, 0, "Vif bits : 0x%08x", route->vifBits);
@@ -720,7 +706,7 @@ void logRouteTable(char *header) {
 		my_log(LOG_DEBUG, 0, "#%d: %sDst: %s, Age:%d, St: %c, OutVifs: 0x%08x",
 		    rcount, src, inetFmt(croute->group, s2), croute->ageValue, st, croute->vifBits);
 
-                croute = croute->nextroute; 
+                croute = croute->nextroute;
 
                 rcount++;
             } while ( croute != NULL );
@@ -738,11 +724,11 @@ void logRouteTable(char *header) {
 /**
 *   Returns true when the given group belongs to the given interface
 */
-int interfaceInRoute(int32_t group, int Ix) {
-    struct RouteTable*  croute;
-    croute = findRoute(group);
+int interfaceInRoute(int32_t group, unsigned Ix) {
+    struct RouteTable* croute = findRoute(group);
+
     if (croute != NULL) {
-        my_log(LOG_DEBUG, 0, "Interface id %d is in group $d", Ix, group);
+        my_log(LOG_DEBUG, 0, "Interface id %d is in group %d", Ix, group);
         return BIT_TST(croute->vifBits, Ix);
     } else {
         return 0;

@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -40,7 +40,7 @@ static struct timeOutQueue  *queue = 0; /* pointer to the beginning of timeout q
 
 struct timeOutQueue {
     struct timeOutQueue    *next;   // Next event in queue
-    int                     id;  
+    int                     id;
     timer_f                 func;   // function to call
     void                    *data;  // Data for function
     int                     time;   // Time offset for next event
@@ -133,16 +133,16 @@ int timer_setTimer(int delay, timer_f action, void *data) {
     struct     timeOutQueue  *ptr, *node, *prev;
     int i = 0;
 
-    /* create a node */ 
+    /* create a node */
     node = (struct timeOutQueue *)malloc(sizeof(struct timeOutQueue));
     if (node == 0) {
         my_log(LOG_WARNING, 0, "Malloc Failed in timer_settimer\n");
         return -1;
     }
-    node->func = action; 
+    node->func = action;
     node->data = data;
-    node->time = delay; 
-    node->next = 0; 
+    node->time = delay;
+    node->next = 0;
     node->id   = ++id;
 
     prev = ptr = queue;

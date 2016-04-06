@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -64,8 +64,7 @@ void k_set_rcvbuf(int bufsize, int minsize) {
             }
         }
         if (bufsize < minsize) {
-            my_log(LOG_ERR, 0, "OS-allowed buffer size %u < app min %u",
-                bufsize, minsize);
+            my_log(LOG_ERR, 0, "OS-allowed buffer size %u < app min %u", bufsize, minsize);
             /*NOTREACHED*/
         }
     }
@@ -111,30 +110,3 @@ void k_set_if(uint32_t ifa) {
         my_log(LOG_ERR, errno, "setsockopt IP_MULTICAST_IF %s",
             inetFmt(ifa, s1));
 }
-
-/*
-void k_join(uint32_t grp, uint32_t ifa) {
-    struct ip_mreq mreq;
-
-    mreq.imr_multiaddr.s_addr = grp;
-    mreq.imr_interface.s_addr = ifa;
-
-    if (setsockopt(MRouterFD, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                   (char *)&mreq, sizeof(mreq)) < 0)
-        my_log(LOG_WARNING, errno, "can't join group %s on interface %s",
-            inetFmt(grp, s1), inetFmt(ifa, s2));
-}
-
-
-void k_leave(uint32_t grp, uint32_t ifa) {
-    struct ip_mreq mreq;
-
-    mreq.imr_multiaddr.s_addr = grp;
-    mreq.imr_interface.s_addr = ifa;
-
-    if (setsockopt(MRouterFD, IPPROTO_IP, IP_DROP_MEMBERSHIP,
-                   (char *)&mreq, sizeof(mreq)) < 0)
-        my_log(LOG_WARNING, errno, "can't leave group %s on interface %s",
-            inetFmt(grp, s1), inetFmt(ifa, s2));
-}
-*/

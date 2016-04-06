@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -45,11 +45,11 @@
 #include "igmpproxy.h"
 
 #define     READ_BUFFER_SIZE    512   // Inputbuffer size...
-        
+
 #ifndef MAX_TOKEN_LENGTH
   #define MAX_TOKEN_LENGTH  30     // Default max token length
 #endif
-                                     
+
 FILE            *confFilePtr;       // File handle pointer
 char            *iBuffer;           // Inputbuffer for reading...
 unsigned int    bufPtr;             // Buffer position pointer.
@@ -59,7 +59,7 @@ short   validToken;
 
 /**
 *   Opens config file specified by filename.
-*/    
+*/
 int openConfigFile(char *filename) {
 
     // Set the buffer to null initially...
@@ -67,20 +67,18 @@ int openConfigFile(char *filename) {
 
     // Open the file for reading...
     confFilePtr = fopen(filename, "r");
-    
-    // On error, return false
     if(confFilePtr == NULL) {
+	// On error, return false
         return 0;
     }
-    
+
     // Allocate memory for inputbuffer...
     iBuffer = (char*) malloc( sizeof(char) * READ_BUFFER_SIZE );
-    
     if(iBuffer == NULL) {
         closeConfigFile();
         return 0;
     }
-    
+
     // Reset bufferpointer and readsize
     bufPtr = 0;
     readSize = 0;
@@ -104,7 +102,7 @@ void closeConfigFile() {
 
 /**
 *   Returns the next token from the configfile. The function
-*   return NULL if there are no more tokens in the file.    
+*   return NULL if there are no more tokens in the file.
 */
 char *nextConfigToken() {
 
@@ -173,7 +171,6 @@ char *nextConfigToken() {
                         cToken[tokenPtr++] = iBuffer[bufPtr];
                         break;
                     }
-                
                 }
 
                 // Check end of token buffer !!!
@@ -210,4 +207,3 @@ char *nextConfigToken() {
 char *getCurrentConfigToken() {
     return validToken ? cToken : NULL;
 }
-

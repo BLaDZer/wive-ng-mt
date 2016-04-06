@@ -153,7 +153,7 @@ static void dump_entry(void)
 	printf("===\n");
 }
 
-static struct group *build_entry(uint32 m_ip_addr, uint32 u_ip_addr)
+static struct group *build_entry(uint32 m_ip_addr)
 {
 	unsigned char 		a1, a2, a3;
 	struct group 		*new_entry;
@@ -536,10 +536,11 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 	if(!auto_lan_snooping)
 		return;
 
-	if(!entry){
+	if(!entry) {
 		// This entry isn't in the list, create one.
-		if( (entry = build_entry(m_ip_addr, u_ip_addr)) == NULL)
-			return;
+		entry = build_entry(m_ip_addr);
+		if(entry == NULL)
+		    return;
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 		if(auto_wifi_snooping)
 		    rtwifi_insert_multicast_ip(m_ip_addr);
@@ -879,7 +880,7 @@ static int portLookUpByIP(char *ip)
 	return rc;
 }
 
-void sigUSR1Handler(int signo)
+void sigUSR1Handler(int unused __attribute__((unused)))
 {
 	if(!auto_lan_snooping)
 		return;

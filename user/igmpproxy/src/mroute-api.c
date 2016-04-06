@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -43,15 +43,14 @@
 #if MAX_MC_VIFS != MAXVIFS
 # error "constants don't match, correct mclab.h"
 #endif
-     
+
 // need an IGMP socket as interface for the mrouted API
 // - receives the IGMP messages
 int         MRouterFD = -1;      /* socket for all network I/O  */
 char        *recv_buf;           /* input packet buffer         */
 char        *send_buf;           /* output packet buffer        */
 
-
-// my internal virtual interfaces descriptor vector  
+// my internal virtual interfaces descriptor vector
 static struct VifDesc {
     struct IfDesc *IfDp;
 } VifDescVc[ MAXVIFS ];
@@ -60,8 +59,8 @@ static struct VifDesc {
 
 /*
 ** Initialises the mrouted API and locks it by this exclusively.
-**     
-** returns: - 0 if the functions succeeds     
+**
+** returns: - 0 if the functions succeeds
 **          - the errno value for non-fatal failure condition
 */
 int enableMRouter()
@@ -80,7 +79,7 @@ int enableMRouter()
 
 /*
 ** Diables the mrouted API and relases by this the lock.
-**          
+**
 */
 void disableMRouter()
 {
@@ -96,7 +95,7 @@ void disableMRouter()
 
 /*
 ** Adds the interface '*IfDp' as virtual interface to the mrouted API
-** 
+**
 */
 void addVIF( struct IfDesc *IfDp )
 {
@@ -128,7 +127,7 @@ void addVIF( struct IfDesc *IfDp )
     // Set the index...
     VifDp->IfDp->index = VifCtl.vifc_vifi;
 
-    my_log( LOG_NOTICE, 0, "adding VIF, Ix %d Fl 0x%x IP 0x%08x %s, Threshold: %d, Ratelimit: %d", 
+    my_log( LOG_NOTICE, 0, "adding VIF, Ix %d Fl 0x%x IP 0x%08x %s, Threshold: %d, Ratelimit: %d",
          VifCtl.vifc_vifi, VifCtl.vifc_flags,  VifCtl.vifc_lcl_addr.s_addr, VifDp->IfDp->Name,
          VifCtl.vifc_threshold, VifCtl.vifc_rate_limit);
 
@@ -139,7 +138,7 @@ void addVIF( struct IfDesc *IfDp )
 	    inetFmts(currSubnet->subnet_addr, currSubnet->subnet_mask, s1));
     }
 
-    if ( setsockopt( MRouterFD, IPPROTO_IP, MRT_ADD_VIF, 
+    if ( setsockopt( MRouterFD, IPPROTO_IP, MRT_ADD_VIF,
                      (char *)&VifCtl, sizeof( VifCtl ) ) )
         my_log( LOG_ERR, errno, "MRT_ADD_VIF" );
 

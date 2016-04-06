@@ -120,7 +120,7 @@ void dump_table(void)
 	}
 }
 
-static void sync_internal_mac_table(void *argu)
+static void sync_internal_mac_table(void)
 {
 	unsigned int value, value1, mac2, i = 0;
 
@@ -199,7 +199,7 @@ void rt_switch_init(void)
 	strncpy(ifr.ifr_name, "eth2", 5);
 	ifr.ifr_data = (caddr_t)&reg;
 
-	sync_internal_mac_table(NULL);
+	sync_internal_mac_table();
 }
 
 #if defined(CONFIG_RALINK_MT7621) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
@@ -269,7 +269,6 @@ static inline void wait_switch_done(void)
 	for (i = 0; i < 20; i++) {
 	    reg_read(REG_ESW_WT_MAC_ATC, &value);
 	    if ((value & 0x8000) == 0 ){ //mac address busy
-		my_log(LOG_INFO, 0, "mac table IO done.\n");
 		break;
 	    }
 	    usleep(1000);
@@ -402,7 +401,7 @@ int portLookUpByMac(char *mac)
 	unsigned int i = 0, mac_iter;
 	char mac_entry1[16], mac_entry2[16];
 
-	sync_internal_mac_table(NULL);
+	sync_internal_mac_table();
 
 	memset(mac_entry1, 0, sizeof(mac_entry1));
 	memset(mac_entry2, 0, sizeof(mac_entry2));

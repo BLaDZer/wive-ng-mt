@@ -55,30 +55,30 @@ typedef u_int32_t  uint32;
 #define WRITEMODE       0x1
 #define WRITE_DELAY     150                     /* ms */
 
+/* global vars */
 extern uint32_t WanPort;
 extern int auto_lan_snooping;
-
-extern void dump_table(void);
-
-extern void rt_init(void);
-extern void rt_fini(void);
-
-extern void rt_switch_init(void);
-extern void rt_switch_fini(void);
-
-extern void sweap_no_report_members(void);
-
-extern void sigUSR1Handler(int signo);
-
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 extern int auto_wifi_snooping;
-extern void rtwifi_enable(void);
-extern void rtwifi_disable(void);
 #endif
-extern int addRTWiFiIntf(char *wifi);
-extern int portLookUpByMac(char *mac);
 
-extern void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr);
-extern void remove_member(uint32 m_ip_addr, uint32 u_ip_addr);
-extern void remove_multicast_ip(uint32 m_ip_addr);
-extern void clear_all_entries_report(void);
+void sigUSR1Handler(int unused);
+void dump_table(void);
+
+void rt_init(void);
+void rt_fini(void);
+void rt_switch_init(void);
+void rt_switch_fini(void);
+#ifdef WIFI_IGMPSNOOP_SUPPORT
+void rtwifi_enable(void);
+void rtwifi_disable(void);
+#endif
+void sweap_no_report_members(void);
+
+void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr);
+void remove_member(uint32 m_ip_addr, uint32 u_ip_addr);
+void remove_multicast_ip(uint32 m_ip_addr);
+void clear_all_entries_report(void);
+
+int addRTWiFiIntf(char *wifi);
+int portLookUpByMac(char *mac);

@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,20 +24,20 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
 */
 /**
 *   config.c - Contains functions to load and parse config
-*              file, and functions to configure the daemon.              
+*              file, and functions to configure the daemon.
 */
 
 #include "igmpproxy.h"
-                                      
-// Structure to keep configuration for VIFs...    
+
+// Structure to keep configuration for VIFs...
 struct vifconfig {
     char                name[IF_NAMESIZE];
     short               state;
@@ -49,11 +49,11 @@ struct vifconfig {
 
     // Allowed Groups
     struct SubnetList*  allowedgroups;
-    
+
     // Next config in list...
     struct vifconfig*   next;
 };
-                 
+
 // Structure to keep vif configuration
 struct vifconfig*   vifconf;
 
@@ -94,14 +94,14 @@ struct Config *getCommonConfig() {
 }
 
 /**
-*   Loads the configuration from file, and stores the config in 
+*   Loads the configuration from file, and stores the config in
 *   respective holders...
-*/                 
+*/
 int loadConfig(char *configFile) {
     struct vifconfig  *tmpPtr;
     struct vifconfig  **currPtr = &vifconf;
     char *token;
-    
+
     // Initialize common config
     initCommonConfig();
 
@@ -146,7 +146,7 @@ int loadConfig(char *configFile) {
             // Got a quickleave token....
             my_log(LOG_DEBUG, 0, "Config: Quick leave mode enabled.");
             commonConfig.fastUpstreamLeave = 1;
-            
+
             // Read next token...
             token = nextConfigToken();
             continue;
@@ -175,9 +175,8 @@ void configureVifs() {
     struct vifconfig *confPtr;
 
     // If no config is availible, just return...
-    if(vifconf == NULL) {
+    if(vifconf == NULL)
         return;
-    }
 
     // Loop through all VIFs...
     for ( Ix = 0; (Dp = getIfByIx(Ix)); Ix++ ) {
@@ -193,15 +192,15 @@ void configureVifs() {
                     my_log(LOG_DEBUG, 0, "Found config for %s", Dp->Name);
 
 
-                    // Set the VIF state 
+                    // Set the VIF state
                     Dp->state = confPtr->state;
-                    
+
                     Dp->threshold = confPtr->threshold;
                     Dp->ratelimit = confPtr->ratelimit;
 
                     // Go to last allowed net on VIF...
                     for(vifLast = Dp->allowednets; vifLast->next; vifLast = vifLast->next);
-                        
+
                     // Insert the configured nets...
                     vifLast->next = confPtr->allowednets;
 
@@ -273,7 +272,7 @@ struct vifconfig *parsePhyintToken() {
 	    // Whitelist
 	    token = nextConfigToken();
 	    my_log(LOG_DEBUG, 0, "Config: IF: Got whitelist token %s.", token);
-	
+
 	    *agrpPtr = parseSubnetAddress(token);
 	    if(*agrpPtr == NULL) {
 		parseError = 1;
@@ -364,7 +363,7 @@ struct SubnetList *parseSubnetAddress(char *addrstr) {
     	    mask <<= (32 - bitcnt);
     }
 
-    if(addr == -1) {
+    if(addr == INADDR_NONE) {
         my_log(LOG_WARNING, 0, "Unable to parse address token '%s'.", addrstr);
         return NULL;
     }

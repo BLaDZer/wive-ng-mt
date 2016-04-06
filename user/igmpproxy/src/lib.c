@@ -143,6 +143,3 @@ uint16_t inetChksum(uint16_t *addr, int len) {
     answer = ~sum;              /* truncate to 16 bits */
     return(answer);
 }
-
-
-

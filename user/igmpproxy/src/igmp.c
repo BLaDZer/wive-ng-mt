@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,25 +24,25 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
 */
 /**
-*   igmp.h - Recieves IGMP requests, and handle them 
+*   igmp.h - Recieves IGMP requests, and handle them
 *            appropriately...
 */
 
 #include "igmpproxy.h"
 #include "igmpv3.h"
- 
-// Globals                  
+
+// Globals
 uint32_t     allhosts_group;          /* All hosts addr in net order */
 uint32_t     allrouters_group;          /* All hosts addr in net order */
 uint32_t     alligmp3_group;          /* IGMPv3 addr in net order */
-              
+
 extern int MRouterFD;
 
 /*
@@ -60,7 +60,7 @@ void initIgmp() {
     k_set_ttl(1);       /* restrict multicasts to one hop */
     k_set_loop(false);      /* disable multicast loopback     */
 
-    ip         = (struct ip *)send_buf;
+    ip = (struct ip *)send_buf;
     memset(ip, 0, sizeof(struct ip));
     /*
      * Fields zeroed that aren't filled in later:
@@ -91,7 +91,7 @@ char *igmpPacketKind(u_int type, u_int code) {
     case IGMP_V2_MEMBERSHIP_REPORT:  return "V2 member report  ";
     case IGMP_V3_MEMBERSHIP_REPORT:  return "V3 member report  ";
     case IGMP_V2_LEAVE_GROUP:        return "Leave message     ";
-    
+
     default:
         sprintf(unknown, "unk: 0x%02x/0x%02x    ", type, code);
         return unknown;
@@ -103,7 +103,7 @@ char *igmpPacketKind(u_int type, u_int code) {
  * Process a newly received IGMP packet that is sitting in the input
  * packet buffer.
  */
-void acceptIgmp(int recvlen) {
+void acceptIgmp(register int recvlen) {
     register uint32_t src, dst, group;
     struct ip *ip;
     struct igmp *igmp;
@@ -111,9 +111,8 @@ void acceptIgmp(int recvlen) {
     struct igmpv3_grec *grec;
     int ipdatalen, iphdrlen, ngrec, nsrcs;
 
-    if (recvlen < sizeof(struct ip)) {
-        my_log(LOG_WARNING, 0,
-            "received packet too short (%u bytes) for IP header", recvlen);
+    if (recvlen < (int)sizeof(struct ip)) {
+        my_log(LOG_WARNING, 0, "received packet too short (%u bytes) for IP header", recvlen);
         return;
     }
 
@@ -128,9 +127,9 @@ void acceptIgmp(int recvlen) {
         return;
     }
 
-    /* 
+    /*
      * this is most likely a message from the kernel indicating that
-     * a new src grp pair message has arrived and so, it would be 
+     * a new src grp pair message has arrived and so, it would be
      * necessary to install a route into the kernel for this.
      */
     if (ip->ip_p == 0) {
@@ -145,7 +144,7 @@ void acceptIgmp(int recvlen) {
             if(checkVIF == 0) {
                 my_log(LOG_WARNING, 0, "Upstream VIF was null.");
                 return;
-            } 
+            }
             else if(src == checkVIF->InAdr.s_addr) {
                 my_log(LOG_NOTICE, 0, "Route activation request from %s for %s is from myself. Ignoring.",
                     inetFmt(src, s1), inetFmt(dst, s2));
@@ -200,9 +199,8 @@ void acceptIgmp(int recvlen) {
     case IGMP_V1_MEMBERSHIP_REPORT:
     case IGMP_V2_MEMBERSHIP_REPORT:
         group = igmp->igmp_group.s_addr;
-        acceptGroupReport(src, group, igmp->igmp_type);
+        acceptGroupReport(src, group);
         return;
-    
     case IGMP_V3_MEMBERSHIP_REPORT:
         igmpv3 = (struct igmpv3_report *)(recv_buf + iphdrlen);
         grec = &igmpv3->igmp_grec[0];
@@ -222,7 +220,7 @@ void acceptIgmp(int recvlen) {
             case IGMPV3_MODE_IS_EXCLUDE:
             case IGMPV3_CHANGE_TO_EXCLUDE:
             case IGMPV3_ALLOW_NEW_SOURCES:
-                acceptGroupReport(src, group, IGMP_V2_MEMBERSHIP_REPORT);
+                acceptGroupReport(src, group);
                 break;
             case IGMPV3_BLOCK_OLD_SOURCES:
                 break;
@@ -237,15 +235,12 @@ void acceptIgmp(int recvlen) {
                 (&grec->grec_src[nsrcs] + grec->grec_auxwords * 4);
         }
         return;
-    
     case IGMP_V2_LEAVE_GROUP:
         group = igmp->igmp_group.s_addr;
         acceptLeaveMessage(src, group);
         return;
-    
     case IGMP_MEMBERSHIP_QUERY:
         return;
-
     default:
         my_log(LOG_INFO, 0,
             "ignoring unknown IGMP message type %x from %s to %s",
@@ -292,7 +287,7 @@ void buildIgmp(uint32_t src, uint32_t dst, int type, int code, uint32_t group, i
 
 }
 
-/* 
+/*
  * Call build_igmp() to build an IGMP message in the output packet buffer.
  * Then send the message from the interface with IP address 'src' to
  * destination 'dst'.

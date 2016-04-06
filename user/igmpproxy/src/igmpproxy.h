@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -138,7 +138,7 @@ void my_log( int Serverity, int Errno, const char *FmtSt, ... );
 #define ROUTESTATE_JOINED			1   // The group corresponding to route is joined
 #define ROUTESTATE_CHECK_LAST_MEMBER		2   // The router is checking for hosts
 
-// Linked list of networks... 
+// Linked list of networks...
 struct SubnetList {
     uint32_t              subnet_addr;
     uint32_t              subnet_mask;
@@ -150,7 +150,7 @@ struct IfDesc {
     struct in_addr      InAdr;          /* == 0 for non IP interfaces */
     short               Flags;
     short               state;
-    short               index;
+    short		index;
     uint8_t             robustness;
     uint8_t             threshold;   /* ttl limit */
     unsigned int        ratelimit;
@@ -158,7 +158,7 @@ struct IfDesc {
     struct SubnetList*  allowedgroups;
 };
 
-// Keeps common configuration settings 
+// Keeps common configuration settings
 struct Config {
     unsigned int        robustnessValue;
     unsigned int        queryInterval;
@@ -180,7 +180,7 @@ extern int upStreamVif;
  */
 void buildIfVc( void );
 struct IfDesc *getIfByName( const char *IfName );
-struct IfDesc *getIfByIx( int Ix );
+struct IfDesc *getIfByIx( unsigned Ix );
 struct IfDesc *getIfByAddress( uint32_t ipaddr );
 int isAdressValidForIf(struct IfDesc* intrface, uint32_t ipaddr);
 
@@ -214,7 +214,7 @@ extern uint32_t allhosts_group;
 extern uint32_t allrouters_group;
 extern uint32_t alligmp3_group;
 void initIgmp(void);
-void acceptIgmp(int);
+void acceptIgmp(register int);
 void sendIgmp (uint32_t, uint32_t, int, int, uint32_t,int);
 
 /* lib.c
@@ -241,7 +241,6 @@ void k_leave(uint32_t grp, uint32_t ifa);
 int joinMcGroup( int UdpSock, struct IfDesc *IfDp, uint32_t mcastaddr );
 int leaveMcGroup( int UdpSock, struct IfDesc *IfDp, uint32_t mcastaddr );
 
-
 /* rttable.c
  */
 void initRouteTable();
@@ -251,15 +250,15 @@ int activateRoute(uint32_t group, uint32_t originAddr);
 void ageActiveRoutes();
 void setRouteLastMemberMode(uint32_t group);
 int lastMemberGroupAge(uint32_t group);
-int interfaceInRoute(int32_t group, int Ix);
+int interfaceInRoute(int32_t group, unsigned Ix);
 
 /* request.c
  */
-void acceptGroupReport(uint32_t src, uint32_t group, uint8_t type);
+void acceptGroupReport(uint32_t src, uint32_t group);
 void acceptLeaveMessage(uint32_t src, uint32_t group);
 void sendGeneralMembershipQuery();
 
-/* callout.c 
+/* callout.c
 */
 typedef void (*timer_f)(void *);
 

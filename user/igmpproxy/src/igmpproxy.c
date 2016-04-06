@@ -1,5 +1,5 @@
 /*
-**  igmpproxy - IGMP proxy based multicast router 
+**  igmpproxy - IGMP proxy based multicast router
 **  Copyright (C) 2005 Johnny Egeland <johnny@rlo.org>
 **
 **  This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
-**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
+**
+**  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
 **
@@ -90,25 +90,28 @@ int         upStreamVif;
 */
 int main( int ArgCn, char *ArgVc[] ) {
 
-    int c;
+    int c = 0;
 
+    while(1) {
 #ifdef RALINK_ESW_SUPPORT
-    /* check esw exist */
-    FILE *fp = fopen(PROCREG_GMAC, "r");
-    if(!fp) {
-	fprintf(stderr, "igmpproxy: proc switch managment file not exist, disable LAN snooping.\n");
-	auto_lan_snooping = 0; /* disable if proc file not exist */
-    } else
-    	fclose(fp);
+	/* check esw exist */
+	FILE *fp = fopen(PROCREG_GMAC, "r");
+	if(!fp) {
+	    fprintf(stderr, "igmpproxy: proc switch managment file not exist, disable LAN snooping.\n");
+	    auto_lan_snooping = 0; /* disable if proc file not exist */
+	} else
+    	    fclose(fp);
 
-    // set default wan port position
-    WanPort = 0x1;
+	// set default wan port position
+	WanPort = 0x1;
 
-    // Parse the commandline options and setup basic settings..
-    for (c; (c = getopt(ArgCn, ArgVc, "dwnvha")) != -1;) {
+	// Parse the commandline options and setup basic settings..
+	c = getopt(ArgCn, ArgVc, "dwnvha");
 #else
-    for (c; (c = getopt(ArgCn, ArgVc, "dvh")) != -1;) {
+	c = getopt(ArgCn, ArgVc, "dvh");
 #endif
+	if (c == -1)
+	    break;
         switch (c) {
         case 'd':
             Log2Stderr = true;
@@ -226,8 +229,7 @@ void igmpCreateVIFs() {
                     if(upStreamVif == -1) {
                         upStreamVif = Ix;
                     } else {
-                        my_log(LOG_WARNING, 0, "Vif #%d was already upstream. Cannot set VIF #%d as upstream as well (skipping this VIF).",
-                         upStreamVif, Ix);
+                        my_log(LOG_WARNING, 0, "Vif #%d was already upstream. Cannot set VIF #%d as upstream as well (skipping this VIF).", upStreamVif, Ix);
                         Dp->state = IF_STATE_DISABLED;
 		    }
                 }
@@ -364,7 +366,8 @@ void igmpProxyRun() {
             if( FD_ISSET( MRouterFD, &ReadFDS ) ) {
                 recvlen = recvfrom(MRouterFD, recv_buf, RECV_BUF_SIZE, 0, NULL, &dummy);
                 if (recvlen < 0) {
-                    if (errno != EINTR) my_log(LOG_ERR, errno, "recvfrom");
+                    if (errno != EINTR)
+			my_log(LOG_ERR, errno, "recvfrom");
                     continue;
                 }
                 acceptIgmp(recvlen);

@@ -24,7 +24,7 @@
 **
 **  smcroute 0.92 - Copyright (C) 2001 Carsten Schill <carsten@cschill.de>
 **  - Licensed under the GNU General Public License, version 2
-**  
+**
 **  mrouted 3.9-beta3 - COPYRIGHT 1989 by The Board of Trustees of 
 **  Leland Stanford Junior University.
 **  - Original license can be found in the Stanford.txt file.
@@ -38,7 +38,7 @@ struct IfDesc IfDescVc[ MAX_IF ], *IfDescEp = IfDescVc;
 /*
 ** Builds up a vector with the interface of the machine. Calls to the other functions of 
 ** the module will fail if they are called before the vector is build.
-**          
+**
 */
 void buildIfVc() {
     struct ifreq IfVc[ sizeof( IfDescVc ) / sizeof( IfDescVc[ 0 ] )  ];
@@ -120,7 +120,7 @@ void buildIfVc() {
             ** typical flags:
             ** lo    0x0049 -> Running, Loopback, Up
             ** ethx  0x1043 -> Multicast, Running, Broadcast, Up
-            ** ipppx 0x0091 -> NoArp, PointToPoint, Up 
+            ** ipppx 0x0091 -> NoArp, PointToPoint, Up
             ** grex  0x00C1 -> NoArp, Running, Up
             ** ipipx 0x00C1 -> NoArp, Running, Up
             */
@@ -131,8 +131,9 @@ void buildIfVc() {
 
             // Insert the verified subnet as an allowed net...
             IfDescEp->allowednets = (struct SubnetList *)malloc(sizeof(struct SubnetList));
-            if(IfDescEp->allowednets == NULL) my_log(LOG_ERR, 0, "Out of memory !");
-            
+            if(IfDescEp->allowednets == NULL)
+		my_log(LOG_ERR, 0, "Out of memory !");
+
             // Create the network address for the IF..
             IfDescEp->allowednets->next = NULL;
             IfDescEp->allowednets->subnet_mask = mask;
@@ -143,7 +144,6 @@ void buildIfVc() {
             IfDescEp->robustness    = DEFAULT_ROBUSTNESS;
             IfDescEp->threshold     = DEFAULT_THRESHOLD;   /* ttl limit */
             IfDescEp->ratelimit     = DEFAULT_RATELIMIT; 
-            
 
             // Debug log the result...
             my_log( LOG_DEBUG, 0, "buildIfVc: Interface %s Addr: %s, Flags: 0x%04x, Network: %s",
@@ -164,7 +164,7 @@ void buildIfVc() {
 **
 ** returns: - pointer to the IfDesc of the requested interface
 **          - NULL if no interface 'IfName' exists
-**          
+**
 */
 struct IfDesc *getIfByName( const char *IfName ) {
     struct IfDesc *Dp;
@@ -181,13 +181,10 @@ struct IfDesc *getIfByName( const char *IfName ) {
 **
 ** returns: - pointer to the IfDesc of the requested interface
 **          - NULL if no interface 'Ix' exists
-**          
+**
 */
-struct IfDesc *getIfByIx( int Ix ) {
+struct IfDesc *getIfByIx( unsigned Ix ) {
     struct IfDesc *Dp;
-
-    if(Ix < 0)
-        return NULL;
 
     Dp = &IfDescVc[ Ix ];
     return Dp < IfDescEp ? Dp : NULL;
@@ -218,35 +215,16 @@ struct IfDesc *getIfByAddress( uint32_t ipaddr ) {
     return res;
 }
 
-
-/**
-*   Returns a pointer to the IfDesc whose subnet matches
-*   the supplied IP adress. The IP must match a interfaces
-*   subnet, or any configured allowed subnet on a interface.
-*/
-struct IfDesc *getIfByVifIndex( unsigned vifindex ) {
-    struct IfDesc       *Dp;
-    if(vifindex>0) {
-        for ( Dp = IfDescVc; Dp < IfDescEp; Dp++ ) {
-            if(Dp->index == vifindex) {
-                return Dp;
-            }
-        }
-    }
-    return NULL;
-}
-
-
 /**
 *   Function that checks if a given ipaddress is a valid
 *   address for the supplied VIF.
 */
 int isAdressValidForIf( struct IfDesc* intrface, uint32_t ipaddr ) {
     struct SubnetList   *currsubnet;
-    
-    if(intrface == NULL) {
+
+    if(intrface == NULL)
         return 0;
-    }
+
     // Loop through all registered allowed nets of the VIF...
     for(currsubnet = intrface->allowednets; currsubnet != NULL; currsubnet = currsubnet->next) {
         // Check if the ip falls in under the subnet....
@@ -256,5 +234,3 @@ int isAdressValidForIf( struct IfDesc* intrface, uint32_t ipaddr ) {
     }
     return 0;
 }
-
-
