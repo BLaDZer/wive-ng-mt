@@ -1944,6 +1944,7 @@
 17) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
 18) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
 19) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+20) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
 <br>
 <br>
 <br>
