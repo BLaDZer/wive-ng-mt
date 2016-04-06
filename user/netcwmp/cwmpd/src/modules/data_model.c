@@ -72,11 +72,18 @@ model_func_t ModelFunction[] =
 
     {"cpe_get_igd_wan_ip_rxtxbytes", cpe_get_igd_wan_ip_rxtxbytes},
 
+    {"cpe_set_igd_wan_ip_dnsenabled", cpe_set_igd_wan_ip_dnsenabled},
+
+    {"cpe_get_igd_wan_ip_dnsservers", cpe_get_igd_wan_ip_dnsservers},
+    {"cpe_set_igd_wan_ip_dnsservers", cpe_set_igd_wan_ip_dnsservers},
+
     {"cpe_get_igd_l3f_defaultconnection", cpe_get_igd_l3f_defaultconnection},
     {"cpe_set_igd_l3f_defaultconnection", cpe_set_igd_l3f_defaultconnection},
 
     {"cpe_get_conf_string", cpe_get_conf_string},
     {"cpe_set_conf_string", cpe_set_conf_string},
+
+    {"cpe_get_nvram_string_or_empty", cpe_get_nvram_string_or_empty},
 
     {"cpe_get_nvram_string", cpe_get_nvram_string},
     {"cpe_set_nvram_string", cpe_set_nvram_string},
@@ -174,6 +181,22 @@ int cpe_get_nvram_string(cwmp_t * cwmp, const char * name, char ** value, char *
 
     *value = nvval;
 //    cwmp_log_error("cpe_get_nvram_string: value is %s",*value);
+    return FAULT_CODE_OK;
+}
+
+int cpe_get_nvram_string_or_empty(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+
+    FUNCTION_TRACE();
+
+    char* nvval = cwmp_nvram_pool_get(pool, args);
+    if (nvval == NULL) {
+	*value = pool_pstrdup(pool, "0");
+	*value[0] = '\0';
+	return FAULT_CODE_OK;
+    }
+
+    *value = nvval;
     return FAULT_CODE_OK;
 }
 

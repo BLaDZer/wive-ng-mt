@@ -1,3 +1,32 @@
+int cpe_get_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+    FUNCTION_TRACE();
+
+    *value = cwmp_nvram_pool_get(pool, "wan_primary_dns");
+
+    return FAULT_CODE_OK;
+}
+
+int cpe_set_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+{
+    FUNCTION_TRACE();
+
+    cwmp_nvram_set("wan_primary_dns", value);
+    cwmp_nvram_set("wan_static_dns", "on");
+
+    return FAULT_CODE_OK;
+}
+
+
+int cpe_set_igd_wan_ip_dnsenabled(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
+{
+    FUNCTION_TRACE();
+
+    if (value[0] == '1') cwmp_nvram_set("wan_static_dns", "off");
+
+    return FAULT_CODE_OK;
+}
+
 
 int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool) {
     unsigned long long rxtx[12];

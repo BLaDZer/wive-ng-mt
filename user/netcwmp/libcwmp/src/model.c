@@ -295,10 +295,9 @@ int cwmp_model_create_child_parameter(parameter_node_t * child_param, xmlnode_t 
 
 int cwmp_model_create_parameter(parameter_node_t * param, xmlnode_t * node, model_func_t * func_list, int func_count,  pool_t * pool)
 {
-    //	FUNCTION_TRACE();
     cwmp_model_init_parameter(param, node, func_list, func_count, pool);
 
-    cwmp_log_debug("name %s: %p,%p", param->name, param->get, param->set);
+    cwmp_log_debug("param name %s: %p,%p", param->name, param->get, param->set);
 
     xmlnode_t * child_node = XmlNodeGetFirstChild(node);
     if(!child_node)
@@ -317,7 +316,8 @@ int cwmp_model_create_parameter(parameter_node_t * param, xmlnode_t * node, mode
 
 static int cwmp_model_init_object(cwmp_t * cwmp, parameter_node_t *param)
 {
-//    cwmp_log_error("DEBUG: cwmp_model_init_object \n");
+    FUNCTION_TRACE();
+
     parameter_node_t     *node = NULL;
 
     if(!param)
@@ -372,7 +372,8 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
 
 int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func_list, int func_count)
 {
-    cwmp_log_error("DEBUG: cwmp_model_load_parameter \n");
+    FUNCTION_TRACE();
+
     pool_t * pool = cwmp->pool;
     xmlnode_t *  root_node;
     xmlnode_t *  model_node;
@@ -400,7 +401,7 @@ int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func
     cwmp->root = root_param->child;
 
     cwmp_model_init_object(cwmp, cwmp->root);
-    cwmp_log_error("DEBUG: cwmp_model_load_parameter OK\n");
+    cwmp_log_debug("DEBUG: cwmp_model_load_parameter OK\n");
     return CWMP_OK;
 }
 

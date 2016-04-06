@@ -48,6 +48,7 @@ void cwmp_log_fini();
 
 void cwmp_log_debug(const char * fmt, ...);
 void cwmp_log_info(const char * fmt, ...);
+void cwmp_log_warn(const char * fmt, ...);
 void cwmp_log_error(const char * fmt, ...);
 void cwmp_log_alert(const char * fmt, ...);
 void cwmp_log_critical(const char * fmt, ...);

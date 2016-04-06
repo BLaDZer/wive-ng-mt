@@ -127,6 +127,17 @@ void cwmp_log_info(const char * fmt, ...)
     va_end(ap);
 }
 
+void cwmp_log_warn(const char * fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    cwmp_log_write(CWMP_LOG_WARN, NULL, fmt, ap);
+    va_end(ap);
+}
+
+
+
+
 void cwmp_log_error(const char * fmt, ...)
 {
     va_list ap;

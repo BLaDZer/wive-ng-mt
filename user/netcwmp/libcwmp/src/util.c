@@ -241,17 +241,17 @@ char* getIntIp(pool_t * pool)
 
     if (vpn_mode_enabled && vpnDGW) {
         if (getIfIp(getPPPIfName(), if_addr) != -1) {
-	return pool_pstrdup(pool, if_addr);
+	    cwmp_log_debug("getIntIp R %s", if_addr);
+	    return pool_pstrdup(pool, if_addr);
         }
     }
 
     /* if vpn disabled always get ip from wanif */
     if (getIfIp(getWanIfName(pool), if_addr) != -1) {
-	cwmp_log_error("getIntIp R %s", if_addr);
+	cwmp_log_debug("getIntIp R %s", if_addr);
 	return pool_pstrdup(pool, if_addr);
     }
 
-    cwmp_log_error("getIntIp RETURN 0");
 
     return 0;
 }
@@ -283,7 +283,7 @@ int getHWStatistic(unsigned long long* rxtx_count) {
 #endif
 
 	int i;
-	for (i=0;i<12;i++) cwmp_log_error("RX/TX Count %i : %llu", i, rxtx_count[i]);
+	for (i=0;i<12;i++) cwmp_log_debug("RX/TX Count %i : %llu", i, rxtx_count[i]);
 
 	return 0;
 }

@@ -1932,23 +1932,24 @@
 5) netcwnmp: fix settings apply on the fly.<br>
 6) netcwnmp: fix socket close of services restart.<br>
 7) netcwnmp: fix wireless mode set.<br>
-8) init.d/goahead: add support KickStaRssiLowPSM.<br>
-9) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
-10) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
-11) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-12) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
-13) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-14) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
-15) kernel: mips: upstream RIXI changes.<br>
-16) kernel: mips: fix race condition in lazy cache flushing.<br>
-17) kernel: mips: sync icache & dcache in set_pte_at.<br>
-18) kernel: mips: revert: cache flush functions are reworked.<br>
-19) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
-20) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-21) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-22) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-23) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-24) kernel: net: bridge: Fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+8) netcwnmp: fix vpn managment.<br>
+9) init.d/goahead: add support KickStaRssiLowPSM.<br>
+10) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+11) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
+12) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+13) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
+14) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
+15) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+16) kernel: mips: upstream RIXI changes.<br>
+17) kernel: mips: fix race condition in lazy cache flushing.<br>
+18) kernel: mips: sync icache & dcache in set_pte_at.<br>
+19) kernel: mips: revert: cache flush functions are reworked.<br>
+20) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
+21) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+22) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+23) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+24) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+25) kernel: net: bridge: Fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
 <br>
 <br>
 <br>

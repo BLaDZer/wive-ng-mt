@@ -24,6 +24,7 @@
 #include <libnvram.h>
 
 
+
 #define ASSERT assert
 #define XMLCAST(x)  ((XmlChar *)(x))
 
@@ -502,6 +503,7 @@ xmldoc_t *  cwmp_create_setparametervalues_response_message(env_t * env ,
     unsigned int status,
     parameter_list_t * pl);
 
+
 xmldoc_t *  cwmp_create_getrpcmethods_response_message(env_t * env ,
     header_t * header,
     char ** methods,
@@ -533,6 +535,8 @@ int cwmp_parse_upload_message(env_t * env , xmldoc_t *doc, upload_arg_t ** pular
 int     cwmp_parse_getparameternames_message(env_t * env, xmldoc_t * doc, char ** path_name, unsigned int * next_level, fault_code_t *fault);
 int     cwmp_parse_getparametervalues_message(env_t * env ,   xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
 int     cwmp_parse_setparametervalues_message(env_t * env ,   xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
+int     cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
+
 int     cwmp_parse_reboot_message(env_t * env , xmldoc_t *doc, char ** key, fault_code_t *fault);
 int cwmp_parse_addobject_message(env_t * env , xmldoc_t *doc, parameter_node_t * root,  int * instances, int* status, fault_code_t *fault);
 int cwmp_parse_deleteobject_message(env_t * env , xmldoc_t *doc, parameter_node_t * root, int* status, fault_code_t *fault);

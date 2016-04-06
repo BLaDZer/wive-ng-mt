@@ -1,3 +1,5 @@
+//FIXME: Multichannel auth functions!
+
 BOOL prefix(const char *str, const char *pre)
 {
     return strncmp(pre, str, strlen(pre)) == 0;
@@ -104,10 +106,6 @@ int cpe_set_igd_lan_wlan_channel(cwmp_t * cwmp, const char * name, const char * 
 }
 
 
-
-
-
-
 int cpe_get_igd_lan_wlan_standard(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_standard\n");
@@ -157,8 +155,6 @@ int cpe_get_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, char **
 {
     FUNCTION_TRACE();
 
-    cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_basicauthmode\n");
-
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
     if (authMode == NULL) {
 	cwmp_log_error("cpe_get_igd_lan_wlan_basicauthmode: undefined AuthMode param!");
@@ -177,7 +173,6 @@ int cpe_get_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, char **
 int cpe_set_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
     FUNCTION_TRACE();
-    cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_basicauthmode\n");
 
     if (strcmp(value,"None") == 0 ) cwmp_nvram_set("AuthMode", "Disable;Disable;Disable");
 
@@ -187,7 +182,6 @@ int cpe_set_igd_lan_wlan_basicauthmode(cwmp_t * cwmp, const char * name, const c
 
 int cpe_get_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-    cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_wpaauthmode\n");
     FUNCTION_TRACE();
 
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
@@ -211,7 +205,8 @@ int cpe_get_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, char ** v
 int cpe_set_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
     FUNCTION_TRACE();
-    //FIXME
+    //FIXME: STUB
+
     cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_wpaauthmode\n");
     return FAULT_CODE_OK;
 }
@@ -219,8 +214,6 @@ int cpe_set_igd_lan_wlan_wpaauthmode(cwmp_t * cwmp, const char * name, const cha
 int cpe_get_igd_lan_wlan_ieeeauthmode(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     FUNCTION_TRACE();
-    //FIXME
-    cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_ieeeauthmode\n");
 
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
     if (authMode == NULL) {
@@ -241,8 +234,9 @@ int cpe_get_igd_lan_wlan_ieeeauthmode(cwmp_t * cwmp, const char * name, char ** 
 
 int cpe_set_igd_lan_wlan_ieeeauthmode(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
-//FIXME
     FUNCTION_TRACE();
+    //FIXME: STUB
+
     cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_ieeeauthmode\n");
     return FAULT_CODE_OK;
 }
@@ -251,8 +245,6 @@ int cpe_set_igd_lan_wlan_ieeeauthmode(cwmp_t * cwmp, const char * name, const ch
 int cpe_get_igd_lan_wlan_beacontype(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     FUNCTION_TRACE();
-    //FIXME
-    cwmp_log_error("DEBUG3: cpe_get_igd_lan_wlan_beacontype\n");
 
     const char* authMode = cwmp_nvram_pool_get(pool, "AuthMode");
     if (authMode == NULL) {
@@ -279,21 +271,17 @@ int cpe_get_igd_lan_wlan_beacontype(cwmp_t * cwmp, const char * name, char ** va
 int cpe_set_igd_lan_wlan_beacontype(cwmp_t * cwmp, const char * name, const char * value, int length, callback_register_func_t callback_reg)
 {
     FUNCTION_TRACE();
-//FIXME
-    cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_beacontype\n");
+
     if (value == 0) cwmp_log_error("DEBUG3: cpe_set_igd_lan_wlan_beacontype VALUE IS NULL\n");
 
     char* authStr = "WPAPSKWPA2PSK;WPAPSKWPA2PSK;WPAPSKWPA2PSK";
-    cwmp_log_error("111\n");
     
     if (strcmp(value,"WPAand11i") == 0) authStr = "WPAPSKWPA2PSK;WPAPSKWPA2PSK;WPAPSKWPA2PSK"; else
     if (strcmp(value,"11i") == 0) authStr = "WPA2PSK;WPA2PSK;WPA2PSK"; else
     if (strcmp(value,"WPA") == 0) authStr = "WPAPSK;WPAPSK;WPAPSK"; else
     if (strcmp(value,"Basic") == 0) authStr = "Disable;Disable;Disable";
 
-    cwmp_log_error("222\n");
     cwmp_nvram_set("AuthMode", authStr);
-    cwmp_log_error("333\n");
 
     cwmp_log_error("cpe_set_igd_lan_wlan_beacontype: set value %s\n", authStr);
     return FAULT_CODE_OK;

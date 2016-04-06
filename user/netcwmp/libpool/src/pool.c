@@ -81,7 +81,7 @@ static void * pool_alloc(size_t size)
 
 	if (p == NULL)
 	{
-		//        cwmp_log_error("malloc() %d bytes failed", size);
+		cwmp_log_error("malloc() %d bytes failed", size);
 	}
 
 	return p;
@@ -97,7 +97,7 @@ void * pool_memalign(size_t alignment, size_t size)
 
 	if (posix_memalign(&p, alignment, size) == -1)
 	{
-		//        cwmp_log_error("posix_memalign() %uz bytes aligned to %uz failed",
+		cwmp_log_error("posix_memalign() %uz bytes aligned to %uz failed",
 		size, alignment);
 	}
 	return p;
@@ -112,7 +112,7 @@ static void * pool_memalign(size_t alignment, size_t size)
 	//p = memalign(alignment, size);
 	if (p == NULL)
 	{
-		//        cwmp_log_error("memalign() %uz bytes aligned to %uz failed",
+		cwmp_log_error("memalign() %uz bytes aligned to %uz failed",
 		size, alignment);
 	}
 

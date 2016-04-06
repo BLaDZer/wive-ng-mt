@@ -734,7 +734,6 @@ static void http_parse_headers(http_parser_t * parser, char **line, int lines, p
 
 int http_read_line(http_socket_t * sock, char * buffer, int max)
 {
-//    cwmp_log_error("DEBUG: http_read_line");
     char c;
     int readnum;
 
@@ -778,13 +777,11 @@ int http_read_line(http_socket_t * sock, char * buffer, int max)
     }
 
     buffer[i] = 0;
-//    cwmp_log_error("DEBUG: http_read_line OK");
     return i;
 }
 
 int http_read_header(http_socket_t * sock, cwmp_chunk_t * header, pool_t * pool)
 {
-//    cwmp_log_debug("DEBUG: http_read_header");
     char buffer[1024];
     int rc, bytes;
 
@@ -885,7 +882,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
     http_parser_t * parser;
     char data[2048];
 
-    cwmp_log_error("DEBUG: http_read_request");
+    cwmp_log_debug("DEBUG: http_read_request");
 
     FUNCTION_TRACE();
     bytes = 0;
@@ -902,7 +899,7 @@ int http_read_request(http_socket_t * sock, http_request_t * request, pool_t * p
 
 
     len = cwmp_chunk_copy(data, header, 2047);
-    cwmp_log_error("http read request: %s\n", data);
+    cwmp_log_debug("http read request: %s\n", data);
     bytes += len;
     lines = http_split_headers(data, len, line);
 
@@ -1206,7 +1203,8 @@ int http_parse_request(http_request_t * request, char *data, unsigned long len)
 
 int http_read_response(http_socket_t * sock, http_response_t * response, pool_t * pool)
 {
-    cwmp_log_error("DEBUG: http_read_response");
+    FUNCTION_TRACE();
+    
     char *line[MAX_HEADERS];
     int lines, slen,i, whitespace=0, where=0,code;
     char *version=NULL, *resp_code=NULL, *message=NULL;
@@ -1540,7 +1538,7 @@ int http_write_request(http_socket_t * sock , http_request_t * request, cwmp_chu
 
     size_t len1, len2;
 
-    cwmp_log_error("DEBUG: http_write_request");
+    FUNCTION_TRACE();
 
     const char * header_fmt =
         "%s %s HTTP/1.1\r\n"
@@ -1648,11 +1646,11 @@ size_t http_receive_file_callback(char *data, size_t size, size_t nmemb, void * 
 
 int http_send_file_request(http_socket_t * sock , http_request_t * request, const char  * fromfile, pool_t * pool)
 {
-    cwmp_log_error("DEBUG: http_send_file_request");
     char buffer[HTTP_DEFAULT_LEN+1];
 //    char * data;
-
     size_t len1, len2, totallen;
+
+    FUNCTION_TRACE();
 
 
     const char * header_fmt =
@@ -1686,14 +1684,14 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 
     if(!tf)
     {
-        cwmp_log_error("DEBUG: http_send_file_request ERR 1");
+        cwmp_log_error("DEBUG: http_send_file_request ERR: unable to open filename %s", fromfile);
 	return CWMP_ERROR;
     }
 
     fseek(tf,0L,SEEK_END);
     len2 = ftell(tf);
     fseek(tf,0L,SEEK_SET);
-    cwmp_log_error("DEBUG: http_send_file_request FILE LEN %lu",len2);
+    cwmp_log_info("DEBUG: http_send_file_request FILE LEN %lu",len2);
 
 
     len1 = TRsnprintf(buffer, HTTP_DEFAULT_LEN, header_fmt,
@@ -1706,7 +1704,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 
 //    len1 += TRsnprintf(buffer + len1, HTTP_DEFAULT_LEN - len1, "\r\n");
 
-    cwmp_log_error("SEND: %d[\n%s\n]", len1, buffer);
+    cwmp_log_debug("SEND: %d[\n%s\n]", len1, buffer);
 
     http_socket_write(sock, buffer, (int)len1);
 
@@ -1716,7 +1714,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     int rc = http_read_response(sock, response, pool);
     if(rc != HTTP_100)
     {
-        cwmp_log_error("DEBUG: http_send_file_request ERR 2 %i",rc);
+        cwmp_log_error("ERROR: http_send_file_request response code: %i",rc);
 	if(tf != NULL)
 	{
 		fclose(tf);
@@ -1730,14 +1728,14 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     while(1)
     {
 	len2 = fread(buffer, 1, HTTP_DEFAULT_LEN, tf);
-	cwmp_log_error("http_send_file_request TO SEND %lu",len2);
+	cwmp_log_debug("http_send_file_request TO SEND %lu",len2);
 	if(len2 <= 0)
 	{
 		break;
 	}
 	buffer[len2] = '\0';
 	len2 = http_socket_write(sock, buffer, (int)len2);
-	cwmp_log_error("http_send_file_request SENT %lu, ERRNO %i",len2, errno);
+	cwmp_log_debug("http_send_file_request SENT %lu, ERRNO %i",len2, errno);
 	if(len2 <= 0)
 	{
 		break;
@@ -1751,7 +1749,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     }
 
 
-    cwmp_log_error("DEBUG: http_send_file_request OK %i",totallen);
+    cwmp_log_info("INFO: http_send_file_request OK (len: %i)",totallen);
     return totallen;
 }
 
@@ -1765,7 +1763,7 @@ int http_send_file(const char * fromfile, const char *tourl )
 
 	http_response_t * response;
 
-        cwmp_log_error("DEBUG: http_send_file: from %s to %s",fromfile, tourl);
+        cwmp_log_info("INFO: http_send_file: from %s to %s",fromfile, tourl);
 	
 	
 	pool = pool_create(POOL_DEFAULT_SIZE);
@@ -1814,12 +1812,12 @@ out:
 
 	if(rc != HTTP_200)
 	{
-    	        cwmp_log_error("DEBUG: http_send_file ERR %i",rc);
+    	        cwmp_log_error("http_send_file response code %i",rc);
 		return CWMP_ERROR;
 	}
 	else
 	{
-    	        cwmp_log_error("DEBUG: http_send_file OK");
+    	        cwmp_log_debug("http_send_file OK");
 		return CWMP_OK;
 	}
 
@@ -1827,7 +1825,8 @@ out:
 
 int http_receive_file(const char *fromurl, const char * tofile)
 {
-        cwmp_log_error("DEBUG: http_receive_file: from %s to %s",fromurl, tofile);
+        cwmp_log_info("INFO: http_receive_file: from %s to %s",fromurl, tofile);
+
 	pool_t * pool;
 	http_dest_t *  dest;
 	http_socket_t * sock;
@@ -1857,7 +1856,7 @@ int http_receive_file(const char *fromurl, const char * tofile)
 	tf = fopen(tofile, "wb+");
 	if(!tf)
 	{
-		cwmp_log_error("create file faild. %s\n", tofile);
+		cwmp_log_error("Unable to create target file: %s\n", tofile);
 		goto out;
 	}
 
@@ -1869,7 +1868,7 @@ int http_receive_file(const char *fromurl, const char * tofile)
 	rc = http_get(sock, request, NULL, pool);
         if(rc <= 0)
         {
-            cwmp_log_error("http get host faild. Host is %s:%d.", dest->host, dest->port);
+            cwmp_log_error("http_get failed. Host is %s:%d.", dest->host, dest->port);
             goto out;
         }
 
@@ -1878,8 +1877,6 @@ int http_receive_file(const char *fromurl, const char * tofile)
 
 	rc = http_read_response(sock, response, pool);
 
-
-	
 out:
 	if(tf)
 	{
@@ -1890,7 +1887,6 @@ out:
 	return rc;
 		
 
-	
 }
 
 

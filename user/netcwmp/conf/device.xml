@@ -5,12 +5,13 @@
 
 
 			<object name="DeviceInfo">
+				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
+				<param name="OUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
+				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string" />
 				<param name="HardwareVersion" inform="1" get_func="cpe_get_conf_string" args="env:DEVNAME" set_func="cpe_set_conf_string" />
 				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string"/>
-				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
 				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
 				<param name="ProductClass" inform="1" get_func="cpe_get_igd_di_productclass"/>
-				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string" />
 				<param name="DeviceLog" inform="0" get_func="cpe_get_igd_di_devicelog"/>
 			</object>
 
@@ -140,16 +141,16 @@
 
 								<object name="1">
 									<param name="Name" rw="1" type="s" get_func="cpe_get_const_string" args="WAN" set_func="cpe_set_null"/>
-									<param name="DNSEnabled" rw="1" type="s" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
+									<param name="DNSEnabled" rw="1" type="s" get_func="cpe_get_const_string" args="1" set_func="cpe_set_igd_wan_ip_dnsenabled"/>
 									<param name="Enable" rw="1" type="1" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
 									<param name="X_COM_IGMPEnabled" rw="1" type="1" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
 									<param name="MaxMTUSize" rw="1" type="1" get_func="cpe_get_nvram_int" args="wan_manual_mtu" set_func="cpe_set_nvram_int"/>
 									<param name="NATEnabled" rw="1" type="1" get_func="cpe_get_nvram_bool" args="natEnabled" set_func="cpe_set_nvram_bool"/>
 									<param name="AddressingType" noti_rw="1" rw="1" type="s" get_func="cpe_get_igd_wan_ip_addrtype" args="Static" set_func="cpe_set_igd_wan_ip_addrtype"/>
-									<param name="ExternalIPAddress" inform="1" noti_rw="1" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_ipaddr" set_func="cpe_set_nvram_string"/>
+									<param name="ExternalIPAddress" inform="1" noti_rw="1" rw="1" type="s" get_func="cpe_get_nvram_string_or_empty" args="wan_ipaddr" set_func="cpe_set_nvram_string"/>
 									<param name="SubnetMask" noti_rw="1" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_netmask" set_func="cpe_set_nvram_string"/>
 									<param name="DefaultGateway" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
-									<param name="DNSServers" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_primary_dns" set_func="cpe_set_nvram_string"/>
+									<param name="DNSServers" rw="1" type="s" get_func="cpe_get_igd_wan_ip_dnsservers" args="wan_primary_dns" set_func="cpe_set_igd_wan_ip_dnsservers"/>
 									<param name="MACAddress" rw="1" type="s" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string"/>
 									<param name="DefaultConn" rw="1" type="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
 									<object name="Stats">
@@ -161,14 +162,14 @@
 								</object>
 							</object>
 
-							<object name="WANPPPConnection" rw="1">
+							<object name="WANPPPConnection" rw="1" add_func="cpe_add_null">
 								<object name="2">
 									<param name="PPPAuthenticationProtocol" rw="1" type="s" get_func="cpe_get_igd_wan_ppp_authprot" args="" set_func="cpe_set_igd_wan_ppp_authprot"/>
 									<param name="PPPLCPEcho" rw="1" type="1" get_func="cpe_get_nvram_int" args="vpnLCPInterval" set_func="cpe_set_nvram_int"/>
 									<param name="PPPLCPEchoRetry" rw="1" type="1" get_func="cpe_get_nvram_int" args="vpnLCPFailure" set_func="cpe_set_nvram_int"/>
 
 									<param name="MaxMRUSize" rw="1" type="1" get_func="cpe_get_nvram_int" args="vpnMTU" set_func="cpe_set_nvram_int"/>
-
+									<param name="NATEnabled" rw="1" type="1" get_func="cpe_get_nvram_bool" args="natEnabled" set_func="cpe_set_nvram_bool"/>
 
 									<param name="PPPoEServiceName" rw="1" type="s" get_func="cpe_get_igd_wan_ppp_servicename" args="vpnService" set_func="cpe_set_nvram_string"/>
 									<param name="Name" rw="1" type="s" get_func="cpe_get_const_string" args="VPN" set_func="cpe_set_null"/>
