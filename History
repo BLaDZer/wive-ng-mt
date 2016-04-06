@@ -1942,11 +1942,13 @@
 15) kernel: mips: upstream RIXI changes.<br>
 16) kernel: mips: fix race condition in lazy cache flushing.<br>
 17) kernel: mips: sync icache & dcache in set_pte_at.<br>
-18) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-19) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-20) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-21) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-22) kernel: net: bridge: Fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+18) kernel: mips: revert: cache flush functions are reworked.<br>
+19) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
+20) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+21) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+22) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+23) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+24) kernel: net: bridge: Fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
 <br>
 <br>
 <br>

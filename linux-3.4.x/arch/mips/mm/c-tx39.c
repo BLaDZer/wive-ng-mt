@@ -122,12 +122,12 @@ static inline void tx39_blast_icache(void)
 	local_irq_restore(flags);
 }
 
-static void tx39__flush_cache_vmap(unsigned long start, unsigned long end)
+static void tx39__flush_cache_vmap(void)
 {
 	tx39_blast_dcache();
 }
 
-static void tx39__flush_cache_vunmap(unsigned long start, unsigned long end)
+static void tx39__flush_cache_vunmap(void)
 {
 	tx39_blast_dcache();
 }

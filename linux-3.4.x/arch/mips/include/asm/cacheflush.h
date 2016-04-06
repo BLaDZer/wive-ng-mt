@@ -81,20 +81,20 @@ static inline void flush_icache_page(struct vm_area_struct *vma,
 extern void (*flush_icache_range)(unsigned long start, unsigned long end);
 extern void (*local_flush_icache_range)(unsigned long start, unsigned long end);
 
-extern void (*__flush_cache_vmap)(unsigned long start, unsigned long end);
+extern void (*__flush_cache_vmap)(void);
 
 static inline void flush_cache_vmap(unsigned long start, unsigned long end)
 {
 	if (cpu_has_dc_aliases)
-		__flush_cache_vmap(start,end);
+		__flush_cache_vmap();
 }
 
-extern void (*__flush_cache_vunmap)(unsigned long start, unsigned long end);
+extern void (*__flush_cache_vunmap)(void);
 
 static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
 {
 	if (cpu_has_dc_aliases)
-		__flush_cache_vunmap(start,end);
+		__flush_cache_vunmap();
 }
 
 extern void copy_to_user_page(struct vm_area_struct *vma,
