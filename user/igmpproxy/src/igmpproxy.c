@@ -222,10 +222,10 @@ void igmpCreateVIFs() {
     my_log(LOG_DEBUG, 0, "Create VIFs for all interfaces");
 
     for ( Ix = 0; (Dp = getIfByIx(Ix)); Ix++ ) {
-	my_log(LOG_DEBUG, 0, "getIf by Ix[%d]\n", Ix);
+	my_log(LOG_DEBUG, 0, "getIf by Ix[%d]", Ix);
     	    if ( Dp->InAdr.s_addr && ! (Dp->Flags & IFF_LOOPBACK) && Dp->state != IF_STATE_DISABLED ){
                 if(Dp->state == IF_STATE_UPSTREAM) {
-		    my_log(LOG_DEBUG, 0, "Dp state is UPSTREAM ViF %d\n", Ix);
+		    my_log(LOG_DEBUG, 0, "Dp state is UPSTREAM ViF %d", Ix);
                     if(upStreamVif == -1) {
                         upStreamVif = Ix;
                     } else {

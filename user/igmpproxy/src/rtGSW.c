@@ -120,19 +120,36 @@ void dump_table(void)
 	}
 }
 
+static inline void wait_switch_done(void)
+{
+	int i, value;
+
+	for (i = 0; i < 20; i++) {
+	    reg_read(REG_ESW_WT_MAC_ATC, &value);
+	    if ((value & 0x8000) == 0 ){ //mac address busy
+		break;
+	    }
+	    usleep(1000);
+	}
+	if (i == 20)
+	    my_log(LOG_WARNING, 0, "*** rtGSW: timeout.");
+}
+
 static void sync_internal_mac_table(void)
 {
 	unsigned int value, value1, mac2, i = 0;
 
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8004);
-	usleep(ITERATIONTIMEOUT);
-	while( i < 0x7fe) {
+	wait_switch_done();
+
+	while (i < 0x7fe) {
 		reg_read(REG_ESW_WT_MAC_ATC, &value);
 		if ((value & (0x1 << 13)) && (((value >> 15) &0x1) == 0)) { //search_rdy and Address Table is not busy
 			reg_read(REG_ESW_TABLE_ATRD, &value1);
 			if ((value1 & 0xff000000) == 0) {
 				my_log(LOG_WARNING, 0, "*** rtGSW: found an unused entry (age = 3'b000), stop check!");
 				reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
+				wait_switch_done();
 				break;
 			}
 
@@ -152,16 +169,18 @@ static void sync_internal_mac_table(void)
 				return;
 			}
 			reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
-			usleep(ITERATIONTIMEOUT);
+			wait_switch_done();
 			i++;
 		}else if (value & 0x4000) { //at_table_end
 			my_log(LOG_DEBUG, 0, "*** rtGSW: found the last entry (not ready). %d", i);
 			my_log(LOG_INFO, 0, "sync table at_table_end");
 			internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
 			return;
-		} else
-			usleep(ITERATIONTIMEOUT);
+		}
+
+		usleep(ITERATIONTIMEOUT);
 	}
+
 	internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
 	return;
 }
@@ -261,21 +280,6 @@ static inline int reg_write(int offset, int value)
     return 0;
 }
 #endif /* CONFIG_RALINK_MT7621 */
-
-static inline void wait_switch_done(void)
-{
-	int i, value;
-
-	for (i = 0; i < 20; i++) {
-	    reg_read(REG_ESW_WT_MAC_ATC, &value);
-	    if ((value & 0x8000) == 0 ){ //mac address busy
-		break;
-	    }
-	    usleep(1000);
-	}
-	if (i == 20)
-		my_log(LOG_WARNING, 0, "*** rtGSW: timeout.");
-}
 
 void updateMacTable(struct group *entry, int delay_delete)
 {
