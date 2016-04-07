@@ -69,7 +69,7 @@ static unsigned int rareg(int mode, unsigned int addr, long long int new_value)
 	unsigned int rc;
 
 	fd = open("/dev/mem", O_RDWR | O_SYNC );
-	if ( fd < 0 ) { 
+	if ( fd < 0 ) {
 		printf("open file /dev/mem error. %s\n", strerror(errno));
 		exit(-1);
 	}
@@ -137,20 +137,26 @@ static inline void wait_switch_done(void)
 
 static void sync_internal_mac_table(void)
 {
-	unsigned int value, value1, mac2, i = 0;
+	unsigned int value = 0, value1 = 0, mac2 = 0, i = 0;
 
 	reg_write(REG_ESW_WT_MAC_ATC, 0x8004);
 	wait_switch_done();
 
-	while (i < 0x7fe) {
+	while (i < 0x7fe && !(value & 0x4000)) {
 		reg_read(REG_ESW_WT_MAC_ATC, &value);
 		if ((value & (0x1 << 13)) && (((value >> 15) &0x1) == 0)) { //search_rdy and Address Table is not busy
 			reg_read(REG_ESW_TABLE_ATRD, &value1);
 			if ((value1 & 0xff000000) == 0) {
-				my_log(LOG_WARNING, 0, "*** rtGSW: found an unused entry (age = 3'b000), stop check!");
+				my_log(LOG_INFO, 0, "*** rtGSW: found an unused entry (age = 3'b000), skip this!");
+				/* NULL record for correct skip in lookup */
+				internal_mac_table[i].mac1 = 0;
+				internal_mac_table[i].mac2 = 0;
+				internal_mac_table[i].vid = 0;
+				internal_mac_table[i].port_map = 0;
 				reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 				wait_switch_done();
-				break;
+				i++;
+				continue;
 			}
 
 			// read mac1
@@ -163,8 +169,7 @@ static void sync_internal_mac_table(void)
 			internal_mac_table[i].port_map = (value1 & 0x0007f0) >> 4 ;
 
 			if (value & 0x4000) {
-				my_log(LOG_WARNING, 0, "*** rtGSW: end of table. %d", i);
-				my_log(LOG_INFO, 0, "sync table at_table_end 1");
+				my_log(LOG_INFO, 0, "*** rtGSW: end of table. %d", i);
 				internal_mac_table[i+1].mac1 = END_OF_MAC_TABLE;
 				return;
 			}
@@ -172,8 +177,7 @@ static void sync_internal_mac_table(void)
 			wait_switch_done();
 			i++;
 		}else if (value & 0x4000) { //at_table_end
-			my_log(LOG_DEBUG, 0, "*** rtGSW: found the last entry (not ready). %d", i);
-			my_log(LOG_INFO, 0, "sync table at_table_end");
+			my_log(LOG_INFO, 0, "*** rtGSW: found the last entry (not ready). %d", i);
 			internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
 			return;
 		}
