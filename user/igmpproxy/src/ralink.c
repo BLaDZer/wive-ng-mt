@@ -821,19 +821,23 @@ static void strip_mac(char *mac)
  */
 static void sendUDP(char *ip)
 {
-	int socket_fd;
+	int socket_fd, flags;
 	struct sockaddr_in user_addr;
 	char buf[16];
 
 	memset(&user_addr, 0, sizeof(struct sockaddr_in));
-	user_addr.sin_family	= AF_INET;
-	user_addr.sin_port		= htons(53);
+	user_addr.sin_family      = AF_INET;
+	user_addr.sin_port        = htons(53);
 	user_addr.sin_addr.s_addr = inet_addr(ip);
 
 	if((socket_fd = socket(AF_INET,SOCK_DGRAM, 0)) == -1) {
 		my_log(LOG_DEBUG, 0, "*** rtGSW: socket error");
 		return;
 	}
+
+        flags=1;
+        setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &flags, sizeof(flags));
+        setsockopt(socket_fd, SOL_SOCKET, SO_NO_CHECK, &flags, sizeof(flags));
 
 	strcpy(buf, "arp please");
 	sendto(socket_fd, buf, strlen(buf), 0, (struct sockaddr *)&user_addr, sizeof(user_addr));
@@ -857,7 +861,7 @@ static int portLookUpByIP(char *ip)
 		my_log(LOG_DEBUG, 0, "*** rtGSW: Warning, Can't get mac address for %s", ip);
 		/* send an udp then wait. */
 		sendUDP(ip);
-		usleep(20000);
+		usleep(25000);
 		if(arpLookUp(ip, mac) == -1){ 
 			my_log(LOG_DEBUG, 0, "*** rtGSW: Give up for %s", ip);
 			/* means flooding. */
