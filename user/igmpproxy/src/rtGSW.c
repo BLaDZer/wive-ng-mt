@@ -337,8 +337,8 @@ void updateMacTable(struct group *entry, int delay_delete)
 	value |= (1 << 15);//IVL=1
 
 #if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_BOTH_GMAC)
-#elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
-#elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
+	value |= ((LAN_VLAN_ID) << 0); //LAN ID ==1
+#elif defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
 	value |= ((LAN_VLAN_ID) << 0); //LAN ID ==1
 #endif
@@ -374,8 +374,8 @@ void updateMacTable(struct group *entry, int delay_delete)
 		        value = value1;
 			value = (value & 0xffffff00);
 #if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_RAETH_BOTH_GMAC)
-#elif defined(CONFIG_GE2_INTERNAL_GMAC_P5) || defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
-#elif defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
+			value |= ((WAN_VLAN_ID) << 0); //WAN ID ==2
+#elif defined(CONFIG_P4_RGMII_TO_MT7530_GMAC_P5) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 #else
 			value |= ((WAN_VLAN_ID) << 0); //WAN ID ==2
 #endif
