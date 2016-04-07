@@ -130,8 +130,11 @@ void buildIfVc() {
 
         // Insert the verified subnet as an allowed net...
         IfDescEp->allowednets = (struct SubnetList *)malloc(sizeof(struct SubnetList));
-        if(IfDescEp->allowednets == NULL)
+        if(IfDescEp->allowednets == NULL) {
 	    my_log(LOG_ERR, 0, "Out of memory !");
+	    close(Sock);
+	    return;
+	}
 
 	// Create the network address for the IF..
         IfDescEp->allowednets->next = NULL;
@@ -142,7 +145,7 @@ void buildIfVc() {
         IfDescEp->state         = IF_STATE_DISABLED;
         IfDescEp->robustness    = DEFAULT_ROBUSTNESS;
         IfDescEp->threshold     = DEFAULT_THRESHOLD;   /* ttl limit */
-        IfDescEp->ratelimit     = DEFAULT_RATELIMIT; 
+        IfDescEp->ratelimit     = DEFAULT_RATELIMIT;
 
         // Debug log the result...
         my_log( LOG_DEBUG, 0, "buildIfVc: Interface %s Addr: %s, Flags: 0x%04x, Network: %s",
@@ -216,14 +219,13 @@ int isAdressValidForIf( struct IfDesc* intrface, uint32_t ipaddr ) {
     struct SubnetList   *currsubnet;
 
     if(intrface == NULL)
-        return 0;
+	return 0;
 
     // Loop through all registered allowed nets of the VIF...
     for(currsubnet = intrface->allowednets; currsubnet != NULL; currsubnet = currsubnet->next) {
         // Check if the ip falls in under the subnet....
-        if((ipaddr & currsubnet->subnet_mask) == currsubnet->subnet_addr) {
+        if((ipaddr & currsubnet->subnet_mask) == currsubnet->subnet_addr)
             return 1;
-        }
     }
     return 0;
 }

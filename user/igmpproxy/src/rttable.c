@@ -105,11 +105,12 @@ void sendJoinLeaveUpstream(struct RouteTable* route, int join) {
     upstrIf = getIfByIx( upStreamVif );
     if(upstrIf == NULL) {
         my_log(LOG_ERR, 0 ,"FATAL: Unable to get Upstream IF.");
+	return;
     }
 
     // Check if there is a white list for the upstram VIF
     if (upstrIf->allowedgroups != NULL) {
-      uint32_t           group = route->group;
+	uint32_t group = route->group;
         struct SubnetList* sn;
 
         // Check if this Request is legit to be forwarded to upstream
@@ -520,7 +521,6 @@ int removeRoute(struct RouteTable*  croute) {
             croute->nextroute->prevroute = NULL;
         }
         routing_table = croute->nextroute;
-
     } else {
         croute->prevroute->nextroute = croute->nextroute;
         if(croute->nextroute != NULL) {

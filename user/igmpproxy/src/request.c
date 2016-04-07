@@ -103,17 +103,15 @@ void acceptGroupReport(uint32_t src, uint32_t group) {
     struct IfDesc  *sourceVif;
 
     // Sanitycheck the group adress...
-    if(!IN_MULTICAST( ntohl(group) )) {
-        my_log(LOG_WARNING, 0, "The group address %s is not a valid Multicast group.",
-            inetFmt(group, s1));
+    if(!IN_MULTICAST( ntohl(group))) {
+        my_log(LOG_WARNING, 0, "The group address %s is not a valid Multicast group.", inetFmt(group, s1));
         return;
     }
 
     // Find the interface on which the report was recieved.
-    sourceVif = getIfByAddress( src );
+    sourceVif = getIfByAddress(src);
     if(sourceVif == NULL) {
-        my_log(LOG_WARNING, 0, "No interfaces found for source %s",
-            inetFmt(src,s1));
+        my_log(LOG_WARNING, 0, "No interfaces found for source %s", inetFmt(src,s1));
         return;
     }
 
