@@ -1930,7 +1930,7 @@
 3) radvd: up to 2.13 version.<br>
 4) igmpproxy: code review and some fixups.<br>
 5) igmpproxy: more accurate timeouts in sync mac tables with switch.<br>
-6) igmpproxy: fix skip unused records in switch mac table.<br>
+6) igmpproxy: fix skip unused and unknown records in switch mac table.<br>
 7) igmpproxy: fix dump mac table.<br>
 8) igmpproxy: refactor buildIfVc function with fix error path.<br>
 9) igmpproxy: use reuse address and no_check flags in sendUDP.<br>

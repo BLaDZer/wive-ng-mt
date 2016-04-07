@@ -198,6 +198,16 @@ static void sync_internal_mac_table(void)
 			    internal_mac_table[i].vid = 0;
 			    internal_mac_table[i].port_map = 0;
 			    return;
+		} else {
+			    my_log(LOG_INFO, 0, "*** rtGSW: unknow record - skip. %d", i);
+			    /* NULL record for correct skip in lookup */
+			    internal_mac_table[i].mac1 = 0;
+			    internal_mac_table[i].mac2 = 0;
+			    internal_mac_table[i].vid = 0;
+			    internal_mac_table[i].port_map = 0;
+			    reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
+			    wait_switch_done();
+			    i++;
 		}
 		usleep(ITERATIONTIMEOUT);
 	}
