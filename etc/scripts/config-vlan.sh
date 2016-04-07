@@ -416,7 +416,7 @@ config_dualrgmii()
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port igmpSnoopMode`
+eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
