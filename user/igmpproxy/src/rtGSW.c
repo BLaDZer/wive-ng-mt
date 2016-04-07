@@ -109,14 +109,15 @@ void dump_table(void)
 	int i=0;
 	unsigned int mac1;
 	char show_buf[128];
-	while (i < 2048){
-	mac1 = internal_mac_table[i].mac1;
-	    if (mac1 != END_OF_MAC_TABLE){
+	while (i < 0x7fe) {
+	    mac1 = internal_mac_table[i].mac1;
+	    if (mac1 == END_OF_MAC_TABLE)
+		break;
+	    if (mac1) {
 		sprintf(show_buf, "%08x%04x, %08x %08x,\n", internal_mac_table[i].mac1, internal_mac_table[i].mac2, internal_mac_table[i].port_map, internal_mac_table[i].vid);
 		printf("%s\n", show_buf);
 		i++;
-	    }else
-		return;
+	    }
 	}
 }
 
