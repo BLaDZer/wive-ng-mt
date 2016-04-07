@@ -196,24 +196,6 @@ reinit_all_phys() {
 	set_physmode
 }
 
-igmpsnooping() {
-	# enable/disable HW igmpsnooping for bridge modes and per defaults
-	# in router mode igmpproxy direct tune snooping in switch
-	if [ "$igmpSnoopMode" = "n" ]; then
-	    switch igmpsnoop off
-    	    for port in `seq 0 6`; do
-		switch igmpsnoop disable $port
-	    done
-	else
-	    if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
-		switch igmpsnoop on 100 1111111
-    		for port in `seq 0 6`; do
-		    switch igmpsnoop enable $port
-		done
-	    fi
-	fi
-}
-
 restore_onergmii()
 {
         $LOG "Restore internal switch mode to dumb mode"
@@ -228,9 +210,6 @@ restore_onergmii()
 
 	# clear configured vlan parts
 	switch vlan clear
-
-	# config igmpsnoop
-	igmpsnooping
 
 	# reinit all ports
 	reinit_all_phys
@@ -376,9 +355,6 @@ restore_dualrgmii()
 
 	# clear configured vlan parts
 	switch vlan clear
-
-	# config igmpsnoop
-	igmpsnooping
 
 	# reinit all ports
 	reinit_all_phys
