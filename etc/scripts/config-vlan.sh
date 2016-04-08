@@ -196,6 +196,26 @@ reinit_all_phys() {
 	set_physmode
 }
 
+config_igmpsnoop() {
+	# hybrid snooping now not support in pormapped modes, use HW only snooping for this
+	if [ "$OperationMode" = "1" ] && [ "$igmpSnoopMode" != "n" ] && [ "$tv_port" = "1" -o "$sip_port" = "1" ]; then
+	    # mask for snooping is wan and cpu pors in one part, lan in second
+	    snoopmask=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "01" '}`
+	    $LOG "Full hardware mode igmp snooping enable, mask $snoopmask"
+	    switch igmpsnoop on 100 "$snoopmask"
+	    for port in `seq 0 6`; do
+		switch igmpsnoop enable $port
+	    done
+	fi
+}
+
+restore_igmpsnoop() {
+	switch igmpsnoop off
+	for port in `seq 0 6`; do
+	    switch igmpsnoop disable $port
+	done
+}
+
 restore_onergmii()
 {
         $LOG "Restore internal switch mode to dumb mode"
@@ -213,6 +233,9 @@ restore_onergmii()
 
 	# reinit all ports
 	reinit_all_phys
+
+	# disable snooping
+	restore_igmpsnoop
 
 	# clear mac table if vlan configuration changed
 	switch clear
@@ -254,6 +277,10 @@ config_onergmii()
 		let index=index+1
 	    done
 	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
+
+	    # config hawdware snooping
+	    config_igmpsnoop "$1"
+
 	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -359,6 +386,9 @@ restore_dualrgmii()
 	# reinit all ports
 	reinit_all_phys
 
+	# disable snooping
+	restore_igmpsnoop
+
 	#clear mac table if vlan configuration changed
 	switch clear
 }
@@ -388,6 +418,9 @@ config_dualrgmii()
 		let index=index+1
 	    done
 	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
+
+	    # config hawdware snooping
+	    config_igmpsnoop "$1"
          else
 	    ######################################################################
 	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
@@ -416,7 +449,7 @@ config_dualrgmii()
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode wan_port tv_port sip_port`
+eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
