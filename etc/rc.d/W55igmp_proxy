@@ -94,8 +94,8 @@ get_param() {
     ####################################
     # correct mode for igmpsnooping
     ####################################
-    if [ "$igmpSnoopMode" = "n" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
-        # force hibryd mode snooping disabled
+    if [ "$igmpSnoopMode" = "n" ] || [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
+        # if force HW by user or enabled portmapped switch config - hibryd mode snooping disable
 	igmpSnoopMode="n"
     else
         # default snooping auto mode enable

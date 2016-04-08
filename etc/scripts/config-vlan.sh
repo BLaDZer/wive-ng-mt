@@ -197,15 +197,18 @@ reinit_all_phys() {
 }
 
 config_igmpsnoop() {
-	# hybrid snooping now not support in pormapped modes, use HW only snooping for this
-	if [ "$OperationMode" = "1" ] && [ "$igmpSnoopMode" != "n" ] && [ "$tv_port" = "1" -o "$sip_port" = "1" ]; then
-	    # mask for snooping is wan and cpu pors in one part, lan in second
-	    snoopmask=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "01" '}`
-	    $LOG "Full hardware mode igmp snooping enable, mask $snoopmask"
-	    switch igmpsnoop on 100 "$snoopmask"
-	    for port in `seq 0 6`; do
-		switch igmpsnoop enable $port
-	    done
+	if [ "$OperationMode" = "1" ] && [ "$igmpSnoopMode" != "n" ]; then
+	    # hybrid snooping now not support in pormapped modes, use HW only snooping for this
+	    # and enable if forces by user
+	    if [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
+		# mask for snooping is wan and cpu pors in one part, lan in second
+		snoopmask=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "01" '}`
+		$LOG "Force pure hardware mode igmp snooping enable, mask $snoopmask"
+		switch igmpsnoop on 100 "$snoopmask"
+		for port in `seq 0 6`; do
+		    switch igmpsnoop enable $port
+		done
+	    fi
 	fi
 }
 
