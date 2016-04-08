@@ -5,7 +5,7 @@
  * "THE BEER-WARE LICENSE" (Revision 43):
  * <visir@telenet.ru> wrote this file.  As long as you retain this notice you
  * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.                    
+ * this stuff is worth it, you can buy me a beer in return.
  * compile: gcc -O2 -Wall -s -o lanauth lanauth.c
  * run: ./lanauth -p yourpassword
  */
@@ -16,6 +16,7 @@
 #include<signal.h>
 #include<errno.h>
 #include<netinet/in.h>
+#include<netinet/tcp.h>
 #include<arpa/inet.h>
 #include<sys/time.h>
 #include<sys/socket.h>
@@ -218,7 +219,7 @@ static void sigusr(int sig) {
 
 static void opensock() {
 	struct sockaddr_in sin;
-	int len;
+	int len, flags = 1;
 	while (1) {
 		/* create socket */
 		if ((sock = socket(PF_INET, SOCK_STREAM, 0)) == -1)
@@ -235,7 +236,7 @@ static void opensock() {
 			if(bind(sock, (struct sockaddr*)&sin, sizeof(sin)) == -1)
 				fatal("bind: %m");
 		}
-	
+
 		/* connect to server */
 		bzero(&sin, sizeof(sin));
 		sin.sin_family = AF_INET;
@@ -244,10 +245,13 @@ static void opensock() {
 		if (sin.sin_addr.s_addr == INADDR_NONE)
 			fatal("%s: invalid ip address", gateip);
 
+		/* set socket options */
+		setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&flags, sizeof(flags));
+
 		if (connect(sock, (struct sockaddr*)&sin, sizeof(sin)) == -1) {
 			syslog(LOG_NOTICE, "connect: %m");
 			indicate('0');
-			sleep(30);
+			sleep(40);
 			close(sock);
 			continue;
 		}
@@ -269,6 +273,7 @@ static int tmread(char *buf, int size, int timeout) {
 	/* wait */
 	FD_ZERO(&fds);
 	FD_SET(sock, &fds);
+	fcntl(sock, F_SETFD, FD_CLOEXEC);
 
 	tv.tv_sec = timeout;
 	tv.tv_usec = 0;
