@@ -38,10 +38,10 @@ start() {
 	lanauthpid=`pidof lanauth`
 	if [ "$lanauthpid" != "" ]; then
 	    $LOG "LANAUTH call reload."
-	    (sleep 5 && /etc/scripts/config-lanauth.sh reload) &
+	    /etc/scripts/config-lanauth.sh reload &
 	else
 	    $LOG "LANAUTH calling."
-	    (sleep 5 && /etc/scripts/config-lanauth.sh start) &
+	    (sleep 2 && /etc/scripts/config-lanauth.sh start) &
 	fi
       fi
     fi

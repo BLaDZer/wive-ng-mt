@@ -1764,11 +1764,11 @@ int http_send_file(const char * fromfile, const char *tourl )
 	http_response_t * response;
 
         cwmp_log_info("INFO: http_send_file: from %s to %s",fromfile, tourl);
-
-
+	
+	
 	pool = pool_create(POOL_DEFAULT_SIZE);
 	http_dest_create(&dest, tourl, pool);
-
+   
         int rc = http_socket_create(&sock, AF_INET, SOCK_STREAM, 0, pool);
         if (rc != CWMP_OK)
         {
