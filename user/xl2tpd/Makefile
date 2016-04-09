@@ -28,12 +28,12 @@
 #
 # -DTEST_HIDDEN makes Assigned Call ID sent as a hidden AVP
 #
-# -DTRUST_PPPD_TO_DIE 
+# -DTRUST_PPPD_TO_DIE
 #
 # Defining TRUST_PPPD_TO_DIE disables a workaround for broken pppds. Do NOT
 # define this unless you fully trust your version of pppd to honour SIGTERM. 
 # However, if you experience hanging pppd's, which cause xl2tpd to also hang,
-# enable this. 
+# enable this.
 # The cost of not trusting pppd to die (and shoot it down hard), is that your
 # pppd's ip-down scripts will not have a chance to run.
 #
@@ -61,10 +61,10 @@ OSFLAGS:=-DLINUX
 # Uncomment the next line for Linux. KERNELSRC is needed for if_pppol2tp.h,
 # but we use a local copy if we don't find it.
 #
-ifdef LINUXDIR
-KERNELINCLUDE:=$(LINUXDIR)/include
-OSFLAGS+=-I$(KERNELINCLUDE)
-endif
+#ifdef LINUXDIR
+#KERNELINCLUDE:=$(LINUXDIR)/include
+#OSFLAGS+=-I$(KERNELINCLUDE)
+#endif
 
 #
 # Uncomment the following to use the kernel interface under Linux
