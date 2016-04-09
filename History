@@ -1964,6 +1964,7 @@
 37) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
 38) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
 39) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+40) kernel: net: wext: fix message delay/ordering.<br>
 <br>
 <br>
 <br>
