@@ -231,8 +231,14 @@ void rt_switch_fini(void)
 
 void rt_switch_init(void)
 {
-#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 	unsigned int value;
+
+	/* clear switch table before first sync */
+	reg_write(REG_ESW_WT_MAC_ATC, 0x8002);
+	usleep(5000);
+	reg_read(REG_ESW_WT_MAC_ATC, &value);
+
+#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 	/* to check default IGMP flooding rule IGMP report forward to cpu/query: default policy */
 	value = rareg(READMODE, 0x1011001c, 0);
 	value = value | 0x00006000;
