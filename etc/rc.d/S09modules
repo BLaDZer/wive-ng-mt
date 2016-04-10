@@ -238,5 +238,4 @@ case "$1" in
 
 	*)
 	    echo $"Usage: $0 {start|stop|restart|full_reload|wlan_down_all|load_nat_helpers|retune_wifi|roaming_wifi|gen_wifi_config}"
-	    exit 1
 esac

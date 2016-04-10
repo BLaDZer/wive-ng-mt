@@ -425,5 +425,4 @@ case "$1" in
 
 	*)
 	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|dhcpradvdstop|dhcpcreconf|dhcpcstop|restart}"
-	    exit 1
 esac
