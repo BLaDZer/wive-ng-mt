@@ -17,5 +17,5 @@ if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
     fi
 fi
 
-$LOG "Call reconfigure radvd/dhcp6s"
-service six dhcpradvdreconf
+$LOG "Wait 2 seconds and call reconfigure radvd/dhcp6s"
+(sleep 2 && service six dhcpradvdreconf) &
