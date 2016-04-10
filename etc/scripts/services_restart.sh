@@ -33,17 +33,6 @@ $LOG "Restart needed services and scripts. Mode $MODE"
     service iptables restart
 
 ##########################################################
-# restart nodogsplash/chillispot hotspot daemon		 #
-# need always restart - netfilter reconfigure by daemon  #
-##########################################################
-if [ -e /bin/nodogsplash ]; then
-    service nodogsplash restart
-fi
-if [ -e /bin/chilli ]; then
-    service chillispot restart
-fi
-
-##########################################################
 # Regenerate resolv only if wan_static_dns on
 ##########################################################
 if [ "$wan_static_dns" = "on" ]; then
@@ -63,16 +52,27 @@ fi
 ##########################################################
 # Always reload some services				 #
 ##########################################################
-    if [ -e /etc/init.d/parprouted ]; then
-	service parprouted restart
-    fi
-    if [ -e /etc/init.d/dynroute ]; then
-	service dynroute restart
-    fi
-    service dnsserver reload
-    service ddns restart
-    service ntp restart
-    service miniupnpd restart
+if [ -e /etc/init.d/parprouted ]; then
+    service parprouted restart
+fi
+if [ -e /etc/init.d/dynroute ]; then
+    service dynroute restart
+fi
+service dnsserver reload
+service ddns restart
+service ntp restart
+service miniupnpd restart
+
+##########################################################
+# restart nodogsplash/chillispot hotspot daemon		 #
+# need always restart - netfilter reconfigure by daemon  #
+##########################################################
+if [ -e /bin/nodogsplash ]; then
+    service nodogsplash restart
+fi
+if [ -e /bin/chilli ]; then
+    service chillispot restart
+fi
 
 ##########################################################
 # Need restart this:					 #
