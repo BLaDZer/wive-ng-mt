@@ -347,9 +347,6 @@ int activateRoute(uint32_t group, uint32_t originAddr) {
     if(croute == NULL) {
         my_log(LOG_DEBUG, 0, "No table entry for %s [From: %s]. Inserting route.", inetFmt(group, s1),inetFmt(originAddr, s2));
 
-#ifdef RALINK_ESW_SUPPORT
-	insert_multicast_ip(ntohl(group), ntohl(originAddr));
-#endif
         // Insert route, but no interfaces have yet requested it downstream.
         insertRoute(group, -1);
 
