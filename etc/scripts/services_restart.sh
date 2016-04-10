@@ -33,20 +33,23 @@ $LOG "Restart needed services and scripts. Mode $MODE"
     service iptables restart
 
 ##########################################################
-# Regenerate resolv only if wan_static_dns on
-##########################################################
-if [ "$wan_static_dns" = "on" ]; then
-    service resolv start
-fi
-
-##########################################################
+# full reconfigure ipv6 if settings apply or first start
 # reconfigure ipv6 tunnels after wan/vpn adress renew
 # and reconfigure and start radvd/dhcp6s at apply in misc
 ##########################################################
-if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]  && [ "$MODE" = "dhcp" -o "$MODE" = "pppd" ]; then
+if [ "$MODE" = "all" ]; then
+    service six restart
+elif [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]  && [ "$MODE" = "dhcp" -o "$MODE" = "pppd" ]; then
     service six restart
 elif [ "$MODE" = "misc" ]; then
     service six dhcpradvdreconf
+fi
+
+##########################################################
+# Regenerate resolv only if wan_static_dns on
+##########################################################
+if [ "$wan_static_dns" = "on" ]; then
+    service resolv restart
 fi
 
 ##########################################################

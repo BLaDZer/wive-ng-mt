@@ -200,9 +200,6 @@ fi
 # reconfigure wan port
 service wan restart
 
-# reconfigure ipv6
-service six restart
-
 # rebuild switch part for full renew
 config-vlan.sh $switchmode $switchpart
 
