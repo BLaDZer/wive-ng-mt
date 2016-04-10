@@ -5,6 +5,13 @@ if [ ! -d /proc/sys/net/ipv6 ]; then
     exit 0
 fi
 
+# prevent double start reconfigure ipv6 in one time
+while [ -e /tmp/reconfigure_six_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+touch /tmp/reconfigure_six_runing
+
 #get params
 . /etc/scripts/global.sh
 
@@ -426,3 +433,6 @@ case "$1" in
 	*)
 	    echo $"Usage: $0 {start|stop|dhcpradvdreconf|dhcpradvdstop|dhcpcreconf|dhcpcstop|restart}"
 esac
+
+# remove running flag
+rm -f /tmp/reconfigure_six_runing
