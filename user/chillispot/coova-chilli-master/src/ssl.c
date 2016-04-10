@@ -125,7 +125,11 @@ _openssl_env_init(openssl_env *env, char *engine, int server) {
    * If ``server'' is 1, the environment is that of a SSL
    * server.
    */
+#ifdef SSL_OP_NO_COMPRESSION
   const long options = SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_COMPRESSION;
+#else /* openssl < 1.0.0 not support nocompression */
+  const long options = SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3;
+#endif
   env->meth = SSLv23_method();
   env->ctx = SSL_CTX_new(env->meth);
   SSL_CTX_set_options(env->ctx, options);

@@ -227,6 +227,7 @@ const char *gengetopt_args_info_help[] = {
   "      --sslkeypass=STRING       SSL private key password",
   "      --sslcertfile=STRING      SSL certificate file in PEM format",
   "      --sslcafile=STRING        SSL CA certificate file in PEM format",
+  "      --sslciphers=STRING       SSL ciphers to use",
   "      --unixipc=STRING          The UNIX IPC Filename to use when compiled with\n                                  --with-unixipc",
   "      --uamallowpost            Enable to allow a HTTP POST to the standard\n                                  uamport interface  (default=off)",
   "      --natip=STRING            IP to use when doing nat on WAN (routeidx)",
@@ -498,6 +499,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->sslkeypass_given = 0 ;
   args_info->sslcertfile_given = 0 ;
   args_info->sslcafile_given = 0 ;
+  args_info->sslciphers_given = 0 ;
   args_info->unixipc_given = 0 ;
   args_info->uamallowpost_given = 0 ;
   args_info->natip_given = 0 ;
@@ -850,6 +852,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->sslcertfile_orig = NULL;
   args_info->sslcafile_arg = NULL;
   args_info->sslcafile_orig = NULL;
+  args_info->sslciphers_arg = NULL;
+  args_info->sslciphers_orig = NULL;
   args_info->unixipc_arg = NULL;
   args_info->unixipc_orig = NULL;
   args_info->uamallowpost_flag = 0;
@@ -1108,40 +1112,41 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->sslkeypass_help = gengetopt_args_info_help[190] ;
   args_info->sslcertfile_help = gengetopt_args_info_help[191] ;
   args_info->sslcafile_help = gengetopt_args_info_help[192] ;
-  args_info->unixipc_help = gengetopt_args_info_help[193] ;
-  args_info->uamallowpost_help = gengetopt_args_info_help[194] ;
-  args_info->natip_help = gengetopt_args_info_help[195] ;
-  args_info->natport_help = gengetopt_args_info_help[196] ;
-  args_info->redirssl_help = gengetopt_args_info_help[197] ;
-  args_info->uamuissl_help = gengetopt_args_info_help[198] ;
-  args_info->dnslog_help = gengetopt_args_info_help[199] ;
-  args_info->ipwhitelist_help = gengetopt_args_info_help[200] ;
-  args_info->uamdomainfile_help = gengetopt_args_info_help[201] ;
-  args_info->layer3_help = gengetopt_args_info_help[202] ;
-  args_info->ipsrcallowed_help = gengetopt_args_info_help[203] ;
+  args_info->sslciphers_help = gengetopt_args_info_help[193] ;
+  args_info->unixipc_help = gengetopt_args_info_help[194] ;
+  args_info->uamallowpost_help = gengetopt_args_info_help[195] ;
+  args_info->natip_help = gengetopt_args_info_help[196] ;
+  args_info->natport_help = gengetopt_args_info_help[197] ;
+  args_info->redirssl_help = gengetopt_args_info_help[198] ;
+  args_info->uamuissl_help = gengetopt_args_info_help[199] ;
+  args_info->dnslog_help = gengetopt_args_info_help[200] ;
+  args_info->ipwhitelist_help = gengetopt_args_info_help[201] ;
+  args_info->uamdomainfile_help = gengetopt_args_info_help[202] ;
+  args_info->layer3_help = gengetopt_args_info_help[203] ;
+  args_info->ipsrcallowed_help = gengetopt_args_info_help[204] ;
   args_info->ipsrcallowed_min = 0;
   args_info->ipsrcallowed_max = 0;
-  args_info->patricia_help = gengetopt_args_info_help[204] ;
-  args_info->redirdnsreq_help = gengetopt_args_info_help[205] ;
-  args_info->kname_help = gengetopt_args_info_help[206] ;
-  args_info->moddir_help = gengetopt_args_info_help[207] ;
-  args_info->module_help = gengetopt_args_info_help[208] ;
+  args_info->patricia_help = gengetopt_args_info_help[205] ;
+  args_info->redirdnsreq_help = gengetopt_args_info_help[206] ;
+  args_info->kname_help = gengetopt_args_info_help[207] ;
+  args_info->moddir_help = gengetopt_args_info_help[208] ;
+  args_info->module_help = gengetopt_args_info_help[209] ;
   args_info->module_min = 0;
   args_info->module_max = 0;
-  args_info->dhcpopt_help = gengetopt_args_info_help[209] ;
+  args_info->dhcpopt_help = gengetopt_args_info_help[210] ;
   args_info->dhcpopt_min = 0;
   args_info->dhcpopt_max = 0;
-  args_info->extadmvsa_help = gengetopt_args_info_help[210] ;
+  args_info->extadmvsa_help = gengetopt_args_info_help[211] ;
   args_info->extadmvsa_min = 0;
   args_info->extadmvsa_max = 0;
-  args_info->dhcpnotidle_help = gengetopt_args_info_help[211] ;
-  args_info->forcedns1_help = gengetopt_args_info_help[212] ;
-  args_info->forcedns1port_help = gengetopt_args_info_help[213] ;
-  args_info->forcedns2_help = gengetopt_args_info_help[214] ;
-  args_info->forcedns2port_help = gengetopt_args_info_help[215] ;
-  args_info->ipv6_help = gengetopt_args_info_help[216] ;
-  args_info->ipv6mode_help = gengetopt_args_info_help[217] ;
-  args_info->ipv6only_help = gengetopt_args_info_help[218] ;
+  args_info->dhcpnotidle_help = gengetopt_args_info_help[212] ;
+  args_info->forcedns1_help = gengetopt_args_info_help[213] ;
+  args_info->forcedns1port_help = gengetopt_args_info_help[214] ;
+  args_info->forcedns2_help = gengetopt_args_info_help[215] ;
+  args_info->forcedns2port_help = gengetopt_args_info_help[216] ;
+  args_info->ipv6_help = gengetopt_args_info_help[217] ;
+  args_info->ipv6mode_help = gengetopt_args_info_help[218] ;
+  args_info->ipv6only_help = gengetopt_args_info_help[219] ;
   
 }
 
@@ -1475,6 +1480,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->sslcertfile_orig));
   free_string_field (&(args_info->sslcafile_arg));
   free_string_field (&(args_info->sslcafile_orig));
+  free_string_field (&(args_info->sslciphers_arg));
+  free_string_field (&(args_info->sslciphers_orig));
   free_string_field (&(args_info->unixipc_arg));
   free_string_field (&(args_info->unixipc_orig));
   free_string_field (&(args_info->natip_arg));
@@ -1919,6 +1926,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "sslcertfile", args_info->sslcertfile_orig, 0);
   if (args_info->sslcafile_given)
     write_into_file(outfile, "sslcafile", args_info->sslcafile_orig, 0);
+  if (args_info->sslciphers_given)
+    write_into_file(outfile, "sslciphers", args_info->sslciphers_orig, 0);
   if (args_info->unixipc_given)
     write_into_file(outfile, "unixipc", args_info->unixipc_orig, 0);
   if (args_info->uamallowpost_given)
@@ -2759,6 +2768,7 @@ cmdline_parser_internal (
         { "sslkeypass",	1, NULL, 0 },
         { "sslcertfile",	1, NULL, 0 },
         { "sslcafile",	1, NULL, 0 },
+        { "sslciphers",	1, NULL, 0 },
         { "unixipc",	1, NULL, 0 },
         { "uamallowpost",	0, NULL, 0 },
         { "natip",	1, NULL, 0 },
@@ -5335,6 +5345,20 @@ cmdline_parser_internal (
                 &(local_args_info.sslcafile_given), optarg, 0, 0, ARG_STRING,
                 check_ambiguity, override, 0, 0,
                 "sslcafile", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* SSL ciphers to use.  */
+          else if (strcmp (long_options[option_index].name, "sslciphers") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->sslciphers_arg), 
+                 &(args_info->sslciphers_orig), &(args_info->sslciphers_given),
+                &(local_args_info.sslciphers_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "sslciphers", '-',
                 additional_error))
               goto failure;
           

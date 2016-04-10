@@ -568,6 +568,9 @@ struct gengetopt_args_info
   char * sslcafile_arg;	/**< @brief SSL CA certificate file in PEM format.  */
   char * sslcafile_orig;	/**< @brief SSL CA certificate file in PEM format original value given at command line.  */
   const char *sslcafile_help; /**< @brief SSL CA certificate file in PEM format help description.  */
+  char * sslciphers_arg;	/**< @brief SSL ciphers to use.  */
+  char * sslciphers_orig;	/**< @brief SSL ciphers to use original value given at command line.  */
+  const char *sslciphers_help; /**< @brief SSL ciphers to use help description.  */
   char * unixipc_arg;	/**< @brief The UNIX IPC Filename to use when compiled with --with-unixipc.  */
   char * unixipc_orig;	/**< @brief The UNIX IPC Filename to use when compiled with --with-unixipc original value given at command line.  */
   const char *unixipc_help; /**< @brief The UNIX IPC Filename to use when compiled with --with-unixipc help description.  */
@@ -839,6 +842,7 @@ struct gengetopt_args_info
   unsigned int sslkeypass_given ;	/**< @brief Whether sslkeypass was given.  */
   unsigned int sslcertfile_given ;	/**< @brief Whether sslcertfile was given.  */
   unsigned int sslcafile_given ;	/**< @brief Whether sslcafile was given.  */
+  unsigned int sslciphers_given ;	/**< @brief Whether sslciphers was given.  */
   unsigned int unixipc_given ;	/**< @brief Whether unixipc was given.  */
   unsigned int uamallowpost_given ;	/**< @brief Whether uamallowpost was given.  */
   unsigned int natip_given ;	/**< @brief Whether natip was given.  */
