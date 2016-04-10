@@ -56,8 +56,6 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr);
 void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr);
 #endif
 
-#define MAX_MULTICASTS_GROUP		256
-
 #define IP_GET_LOST_MAPPING(mip)	((mip & 0x0F800000) >> 23)
 #define IP_MULTICAST_A0(a0)		((a0 >> 1) | 0xE0)
 #define IP_MULTICAST_A1(a0, a1)		(((a0 & 0x1) << 7) | a1)
@@ -158,12 +156,6 @@ static struct group *build_entry(uint32 m_ip_addr)
 	unsigned char 		a1, a2, a3;
 	struct group 		*new_entry;
 
-	static int group_count = 0;
-
-	// crowd control
-	if(group_count++ > MAX_MULTICASTS_GROUP)
-		return NULL;
-
 	a1 = ( m_ip_addr & 0x007F0000 ) >> 16;
 	a2 = ( m_ip_addr & 0x0000FF00 ) >> 8;
 	a3 = ( m_ip_addr & 0x000000FF );
@@ -202,7 +194,7 @@ static struct group_member *lookup_member(struct group *entry, uint32 m_ip_addr,
 		pos = pos->next;
 	}
 	return NULL;
-} 
+}
 
 void remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 {
