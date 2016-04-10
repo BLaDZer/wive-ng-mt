@@ -6,11 +6,11 @@ if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
     new_resolv_conf=/etc/resolvipv6.conf
     rm -f $new_resolv_conf
     if [ -n "$new_domain_name" ]; then
-	$LOG "IPV6 DOMAIN: $new_domain_name_servers"
+	$LOG "domain name - $new_domain_name"
         echo search $new_domain_name >> $new_resolv_conf
     fi
     if [ -n "$new_domain_name_servers" ]; then
-	$LOG "IPV6 DNS: $new_domain_name_servers"
+	$LOG "ipv6: domain name servers - $new_domain_name_servers"
         for nameserver in $new_domain_name_servers; do
             echo nameserver $nameserver >> $new_resolv_conf
         done
