@@ -46,20 +46,73 @@ struct mac_table{
 	unsigned char		port_map;
 };
 
-// function prototype
-static inline int reg_read(int offset, int *value);
-static inline int reg_write(int offset, int value);
-
 // global variables.
 static struct mac_table 	internal_mac_table[2048];
 static int 			esw_fd = -1;
 static struct ifreq		ifr;
 static esw_reg			reg;
+
 #if defined(CONFIG_RALINK_MT7621) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
 ra_mii_ioctl_data mii;
-#endif
 
-#if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
+int reg_read(int offset, int *value)
+{
+	strncpy(ifr.ifr_name, "eth2", 5);
+	ifr.ifr_data = (caddr_t)&mii;
+
+	mii.phy_id = 0x1f;
+	mii.reg_num = offset;
+
+	if (-1 == ioctl(esw_fd, RAETH_MII_READ, &ifr)) {
+		perror("ioctl");
+		close(esw_fd);
+		exit(0);
+	}
+	*value = mii.val_out;
+	return 0;
+}
+
+int reg_write(int offset, int value)
+{
+	strncpy(ifr.ifr_name, "eth2", 5);
+	ifr.ifr_data = (caddr_t)&mii;
+
+	mii.phy_id = 0x1f;
+	mii.reg_num = offset;
+	mii.val_in = value;
+
+	if (-1 == ioctl(esw_fd, RAETH_MII_WRITE, &ifr)) {
+		perror("ioctl");
+		close(esw_fd);
+		exit(0);
+	}
+	return 0;
+}
+#else
+static inline int reg_read(int offset, int *value)
+{
+    reg.off = offset;
+    if (-1 == ioctl(esw_fd, RAETH_ESW_REG_READ, &ifr)) {
+        perror("ioctl");
+        close(esw_fd);
+        exit(0);
+    }
+    *value = reg.val;
+    return 0;
+}
+
+static inline int reg_write(int offset, int value)
+{
+    reg.off = offset;
+    reg.val = value;
+    if (-1 == ioctl(esw_fd, RAETH_ESW_REG_WRITE, &ifr)) {
+        perror("ioctl");
+        close(esw_fd);
+        exit(0);
+    }
+    return 0;
+}
+
 static unsigned int rareg(int mode, unsigned int addr, long long int new_value)
 {
 	int fd;
@@ -226,19 +279,13 @@ void rt_switch_fini(void)
 
 #endif
 	if(esw_fd >= 0)
-		close(esw_fd);
+	    close(esw_fd);
 }
 
 void rt_switch_init(void)
 {
-	unsigned int value;
-
-	/* clear switch table before first sync */
-	reg_write(REG_ESW_WT_MAC_ATC, 0x8002);
-	usleep(5000);
-	reg_read(REG_ESW_WT_MAC_ATC, &value);
-
 #if !defined(CONFIG_RALINK_MT7621) && !defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
+	unsigned int value;
 	/* to check default IGMP flooding rule IGMP report forward to cpu/query: default policy */
 	value = rareg(READMODE, 0x1011001c, 0);
 	value = value | 0x00006000;
@@ -247,8 +294,8 @@ void rt_switch_init(void)
 #endif
 	esw_fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (esw_fd < 0) {
-		perror("socket");
-		exit(-1);
+	    perror("socket");
+	    exit(-1);
 	}
 
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -256,66 +303,6 @@ void rt_switch_init(void)
 
 	sync_internal_mac_table();
 }
-
-#if defined(CONFIG_RALINK_MT7621) || defined(CONFIG_P5_RGMII_TO_MT7530_MODE)
-int reg_read(int offset, int *value)
-{
-	strncpy(ifr.ifr_name, "eth2", 5);
-	ifr.ifr_data = (caddr_t)&mii;
-
-	mii.phy_id = 0x1f;
-	mii.reg_num = offset;
-
-	if (-1 == ioctl(esw_fd, RAETH_MII_READ, &ifr)) {
-		perror("ioctl");
-		close(esw_fd);
-		exit(0);
-	}
-	*value = mii.val_out;
-	return 0;
-}
-
-int reg_write(int offset, int value)
-{
-	strncpy(ifr.ifr_name, "eth2", 5);
-	ifr.ifr_data = (caddr_t)&mii;
-
-	mii.phy_id = 0x1f;
-	mii.reg_num = offset;
-	mii.val_in = value;
-
-	if (-1 == ioctl(esw_fd, RAETH_MII_WRITE, &ifr)) {
-		perror("ioctl");
-		close(esw_fd);
-		exit(0);
-	}
-	return 0;
-}
-#else
-static inline int reg_read(int offset, int *value)
-{
-    reg.off = offset;
-    if (-1 == ioctl(esw_fd, RAETH_ESW_REG_READ, &ifr)) {
-        perror("ioctl");
-        close(esw_fd);
-        exit(0);
-    }
-    *value = reg.val;
-    return 0;
-}
-
-static inline int reg_write(int offset, int value)
-{
-    reg.off = offset;
-    reg.val = value;
-    if (-1 == ioctl(esw_fd, RAETH_ESW_REG_WRITE, &ifr)) {
-        perror("ioctl");
-        close(esw_fd);
-        exit(0);
-    }
-    return 0;
-}
-#endif /* CONFIG_RALINK_MT7621 */
 
 void updateMacTable(struct group *entry, int delay_delete)
 {
