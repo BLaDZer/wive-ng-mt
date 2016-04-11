@@ -295,7 +295,7 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 	if(entry->members != NULL){
 		struct group_member *member = lookup_member(entry, m_ip_addr, u_ip_addr);
 		if(member){
-			 my_log(LOG_DEBUG, 0, "*** rtGSW: find the same member [%s] in [%s]. ", inetFmt(u_ip_addr, s1), inetFmt(m_ip_addr, s2));
+			 my_log(LOG_DEBUG, 0, "*** rtGSW: find the same member [%s] in [%s]. ", inetFmt(htonl(u_ip_addr), s1), inetFmt(htonl(m_ip_addr), s2));
 
 			/* check if port changed */
 			unsigned char port_num;
