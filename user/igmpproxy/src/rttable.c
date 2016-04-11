@@ -454,7 +454,7 @@ void setRouteLastMemberMode(uint32_t group) {
         if(croute->upstrState == ROUTESTATE_JOINED && conf->fastUpstreamLeave) {
             // Send a leave message right away only when the route has been active on only one interface
             if (numberOfInterfaces(croute) <= 1) {
-		my_log(LOG_DEBUG, 0, "Leaving group %d now", group);
+		my_log(LOG_DEBUG, 0, "Leaving group %s now", inetFmt(group, s1));
                 sendJoinLeaveUpstream(croute, 0);
             }
         }
@@ -725,7 +725,7 @@ int interfaceInRoute(uint32_t group, unsigned Ix) {
     struct RouteTable* croute = findRoute(group);
 
     if (croute != NULL) {
-        my_log(LOG_DEBUG, 0, "Interface id %d is in group %d", Ix, group);
+        my_log(LOG_DEBUG, 0, "Interface id %d is in group %s", Ix, inetFmt(group, s1));
         return BIT_TST(croute->vifBits, Ix);
     } else {
         return 0;
