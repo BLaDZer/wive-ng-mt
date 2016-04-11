@@ -291,6 +291,7 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 {
 	struct in_addr 		tmp;
 	struct group_member *new_member;
+
 	if(entry->members != NULL){
 		struct group_member *member = lookup_member(entry, m_ip_addr, u_ip_addr);
 		if(member){
@@ -407,6 +408,12 @@ void remove_multicast_ip(uint32 m_ip_addr)
 
 	if(!auto_lan_snooping)
 		return;
+
+	// Sanitycheck the group adress.
+	if(!IN_MULTICAST(m_ip_addr)) {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: cannot remove group %s, not valid.", inetFmt(htonl(m_ip_addr), s1));
+    		return;
+	}
 
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 	rtwifi_remove_multicast_ip(m_ip_addr);
@@ -529,8 +536,10 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 		return;
 
 	// Sanitycheck the group adress.
-	if(!IN_MULTICAST(m_ip_addr))
+	if(!IN_MULTICAST(m_ip_addr)) {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: cannot insert group %s, not valid.", inetFmt(htonl(m_ip_addr), s1));
     		return;
+	}
 
 	if(!entry) {
 		// This entry isn't in the list, create one.
@@ -708,6 +717,11 @@ void rtwifi_insert_multicast_ip(uint32 m_ip_addr)
 #ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char cmd[128];
+
+	// Sanitycheck the group adress.
+	if(!IN_MULTICAST(m_ip_addr))
+    		return;
+
 	for(i=0; i<rtwifi_intf_count ; i++) {
 		sprintf(cmd, "iwpriv %s set IgmpAdd=%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1));
 		my_log(LOG_DEBUG, 0, "Add %s to wifi driver snooping table", inetFmt(htonl(m_ip_addr), s1));
@@ -721,6 +735,11 @@ void rtwifi_remove_multicast_ip(uint32 m_ip_addr)
 #ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char cmd[128];
+
+	// Sanitycheck the group adress.
+	if(!IN_MULTICAST(m_ip_addr))
+    		return;
+
 	for(i=0; i<rtwifi_intf_count ; i++) {
 		sprintf(cmd, "iwpriv %s set IgmpDel=%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1));
 		my_log(LOG_DEBUG, 0, "Remove %s from wifi driver snooping table", inetFmt(htonl(m_ip_addr), s1));
