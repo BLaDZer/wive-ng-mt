@@ -528,6 +528,10 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 	if(!auto_lan_snooping)
 		return;
 
+	// Sanitycheck the group adress.
+	if(!IN_MULTICAST(m_ip_addr))
+    		return;
+
 	if(!entry) {
 		// This entry isn't in the list, create one.
 		entry = build_entry(m_ip_addr);
