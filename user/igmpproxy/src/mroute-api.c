@@ -101,6 +101,7 @@ void addVIF( struct IfDesc *IfDp )
 {
     struct vifctl VifCtl;
     struct VifDesc *VifDp;
+    struct SubnetList *currSubnet;
 
     /* search free VifDesc
      */
@@ -131,7 +132,6 @@ void addVIF( struct IfDesc *IfDp )
          VifCtl.vifc_vifi, VifCtl.vifc_flags,  VifCtl.vifc_lcl_addr.s_addr, VifDp->IfDp->Name,
          VifCtl.vifc_threshold, VifCtl.vifc_rate_limit);
 
-    struct SubnetList *currSubnet;
     for(currSubnet = IfDp->allowednets; currSubnet; currSubnet = currSubnet->next) {
 	my_log(LOG_DEBUG, 0, "        Network for [%s] : %s",
 	    IfDp->Name,

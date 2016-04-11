@@ -272,7 +272,8 @@ int timer_leftTimer(int);
 
 /* confread.c
  */
-#define MAX_TOKEN_LENGTH    30
+#define MAX_TOKEN_LENGTH    30		/* Default max token length */
+#define READ_BUFFER_SIZE    512		/* Inputbuffer size */
 
 int openConfigFile(char *filename);
 void closeConfigFile();

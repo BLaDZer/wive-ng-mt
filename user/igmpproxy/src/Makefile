@@ -3,8 +3,7 @@
 CFLAGS+=-Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual
 
 EXEC=igmpproxy
-IGMP_PROXY_OBJ= igmpproxy.o config.o confread.o request.o mcgroup.o rttable.o \
-		igmp.o ifvc.o callout.o kern.o syslog.o lib.o mroute-api.o
+IGMP_PROXY_OBJ= igmpproxy.o config.o confread.o request.o mcgroup.o rttable.o igmp.o ifvc.o callout.o kern.o syslog.o lib.o mroute-api.o
 
 ifdef CONFIG_RT2860V2_AP_IGMP_SNOOP
     WIFISNOOP:=y
