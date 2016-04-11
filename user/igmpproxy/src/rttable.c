@@ -721,7 +721,7 @@ void logRouteTable(char *header) {
 /**
 *   Returns true when the given group belongs to the given interface
 */
-int interfaceInRoute(int32_t group, unsigned Ix) {
+int interfaceInRoute(uint32_t group, unsigned Ix) {
     struct RouteTable* croute = findRoute(group);
 
     if (croute != NULL) {
