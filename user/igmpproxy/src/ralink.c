@@ -685,7 +685,7 @@ void rtwifi_insert_member(uint32 m_ip_addr, uint32 u_ip_addr)
 #ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
-	if( arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1) {
+	if(arpLookUp(inetFmt( htonl(u_ip_addr), mac), s1) != -1) {
 		for(i=0; i<rtwifi_intf_count ; i++){
 			my_log(LOG_DEBUG, 0, "Add %s to wifi driver snooping table %s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
 			sprintf(cmd, "iwpriv %s set IgmpAdd=%s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
@@ -701,7 +701,7 @@ void rtwifi_remove_member(uint32 m_ip_addr, uint32 u_ip_addr)
 #ifdef WIFI_IGMPSNOOP_SUPPORT_STATIC_MANAGMENT
 	int i;
 	char mac[32], cmd[128];
-	if( arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1) {
+	if(arpLookUp(inetFmt(htonl(u_ip_addr), s1), mac) != -1) {
 		for(i=0; i<rtwifi_intf_count ; i++){
 			my_log(LOG_DEBUG, 0, "Del %s from wifi driver snooping table %s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
 			sprintf(cmd, "iwpriv %s set IgmpDel=%s-%s", rtwifi_intfs[i], inetFmt(htonl(m_ip_addr), s1), mac);
@@ -833,6 +833,7 @@ static void strip_mac(char *mac)
 
 /*
  * send a udp packet to target if its mac address can't be found.
+ * ToDo use arping implementation instead this
  */
 static void sendUDP(char *ip)
 {
@@ -872,8 +873,9 @@ static int portLookUpByIP(char *ip)
 {
 	char mac[32];
 	int rc;
-	if( arpLookUp(ip, mac) == -1) {
-		my_log(LOG_DEBUG, 0, "*** rtGSW: Warning, Can't get mac address for %s", ip);
+
+	if(arpLookUp(ip, mac) == -1) {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: Warning, Can't get mac address for %s, try arping.", ip);
 		/* send an udp then wait. */
 		sendUDP(ip);
 		usleep(25000);
