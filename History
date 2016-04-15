@@ -1969,8 +1969,9 @@
 42) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
 43) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
 44) kernel: net: wext: fix message delay/ordering.<br>
-45) kernel: fs: cifs: fix erroneous return value.<br>
-46) kernel: fs: ext4: fix bh->b_state corruption.<br>
+45) kernel: net: fix use after free in the recvmmsg exit path.<br>
+46) kernel: fs: cifs: fix erroneous return value.<br>
+47) kernel: fs: ext4: fix bh->b_state corruption.<br>
 <br>
 <br>
 <br>
