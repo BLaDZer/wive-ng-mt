@@ -326,9 +326,11 @@ char *setNthValue(int index, char *old_values, char *new_value)
 	for ( i = 0, p = old_values, q = strchr(p, ';')  ;
 	      i < 8 && q != NULL                         ;
 	      i++, p = q + 1, q = strchr(p, ';')         )
-	{
 		strncpy(buf[i], p, q - p);
-	}
+
+	if (i > 7) /* limit of buf size = 8 */
+	    i=7;
+
 	strcpy(buf[i], p); /* the last one */
 
 	/* replace buf[index] with new_value */
@@ -341,7 +343,7 @@ char *setNthValue(int index, char *old_values, char *new_value)
 	strcat(ret, buf[0]);
 	for (i = 1; i <= index; i++) {
 		strncat(ret, ";", 2);
-		strncat(ret, buf[i], 256);
+		snprintf(ret, sizeof(ret), "%s%s", ret,  buf[i]);
 	}
 
 	p = ret;
