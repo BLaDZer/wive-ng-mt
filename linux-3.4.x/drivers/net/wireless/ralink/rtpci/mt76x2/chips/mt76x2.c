@@ -5879,7 +5879,7 @@ void mt76x2_pwrOn(RTMP_ADAPTER *pAd)
 #ifdef RTMP_PCI_SUPPORT
 VOID WlanResetB(RTMP_ADAPTER *pAd)
 {
-	UINT32 MacValue, Value, loop, WMMCtrlBackup;
+	UINT32 MacValue, Value, loop = 0, WMMCtrlBackup;
 	WPDMA_GLO_CFG_STRUC	DMACfg;
 	ULONG	WLANResetCounter = 0;
 

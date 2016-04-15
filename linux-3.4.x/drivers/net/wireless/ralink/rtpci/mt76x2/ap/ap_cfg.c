@@ -15029,7 +15029,9 @@ INT set_thermal_protection_criteria_proc(
 
 	return TRUE;
 
+#ifdef MT76x2
 error:
+#endif
         DBGPRINT(RT_DEBUG_ERROR, ("%s:: CmdFormat Error\n", __FUNCTION__));
         return TRUE;
 

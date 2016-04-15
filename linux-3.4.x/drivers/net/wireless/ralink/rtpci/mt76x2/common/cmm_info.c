@@ -10054,7 +10054,7 @@ static INT set_mt_rf(RTMP_ADAPTER *ad, PSTRING arg)
 
 INT set_rf(RTMP_ADAPTER *pAd, PSTRING arg)
 {
-	INT ret;
+	INT ret = 0;
 
 #ifdef RLT_RF
 	if (pAd->chipCap.rf_type == RF_RLT)

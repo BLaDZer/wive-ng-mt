@@ -3103,7 +3103,7 @@ VOID MlmeUpdateHtTxRates(
 	PHTTRANSMIT_SETTING		pMaxHtPhy = NULL;
 	PHTTRANSMIT_SETTING		pMinHtPhy = NULL;	
 	BOOLEAN 				*auto_rate_cur_p;
-	
+
 	DBGPRINT(RT_DEBUG_TRACE,("MlmeUpdateHtTxRates===> \n"));
 
 	auto_rate_cur_p = NULL;
@@ -3270,7 +3270,7 @@ VOID MlmeUpdateHtTxRates(
 		j = i/8; 
 		bitmask = (1<<(i-(j*8)));
 
-		if ((pActiveHtPhy->MCSSet[j] & bitmask) && (pDesireHtPhy->MCSSet[j] & bitmask))
+		if (pActiveHtPhy && (pActiveHtPhy->MCSSet[j] & bitmask) && (pDesireHtPhy->MCSSet[j] & bitmask))
 		{
 			pMaxHtPhy->field.MCS = i;
 			break;
@@ -3304,7 +3304,7 @@ VOID MlmeUpdateHtTxRates(
 		{	
 			j = i/8;	
 			bitmask = (1<<(i-(j*8)));
-			if ( (pDesireHtPhy->MCSSet[j] & bitmask) && (pActiveHtPhy->MCSSet[j] & bitmask))
+			if (pActiveHtPhy && (pDesireHtPhy->MCSSet[j] & bitmask) && (pActiveHtPhy->MCSSet[j] & bitmask))
 			{
 				pMaxHtPhy->field.MCS = i;
 				pMinHtPhy->field.MCS = i;
@@ -3329,7 +3329,6 @@ VOID MlmeUpdateHtTxRates(
 		*auto_rate_cur_p = FALSE;
 	else
 		*auto_rate_cur_p = TRUE;
-	
 	DBGPRINT(RT_DEBUG_TRACE, (" MlmeUpdateHtTxRates<---.AMsduSize = %d  \n", pAd->CommonCfg.DesiredHtPhy.AmsduSize ));
 	DBGPRINT(RT_DEBUG_TRACE,("TX: MCS[0] = %x (choose %d), BW = %d, ShortGI = %d, MODE = %d,  \n", pActiveHtPhy->MCSSet[0],pHtPhy->field.MCS,
 		pHtPhy->field.BW, pHtPhy->field.ShortGI, pHtPhy->field.MODE));

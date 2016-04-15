@@ -1823,7 +1823,7 @@ INT set_pbf_loopback(RTMP_ADAPTER *pAd, PSTRING arg)
 INT set_pbf_rx_drop(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	UINT8 enable = 0;
-	UINT32 value;
+	UINT32 value = 0;
 
 	enable = simple_strtol(arg, 0, 10);
 

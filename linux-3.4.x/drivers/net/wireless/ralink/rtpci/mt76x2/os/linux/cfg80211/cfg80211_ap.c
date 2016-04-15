@@ -582,7 +582,7 @@ BOOLEAN CFG80211DRV_ApKeyAdd(
 #ifdef CONFIG_AP_SUPPORT
     PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)pAdOrg;
     CMD_RTPRIV_IOCTL_80211_KEY *pKeyInfo;
-	MAC_TABLE_ENTRY *pEntry;
+	MAC_TABLE_ENTRY *pEntry = NULL;
 	PMULTISSID_STRUCT pMbss = &pAd->ApCfg.MBSSID[MAIN_MBSSID];
 	struct wifi_dev *pWdev = &pMbss->wdev;
 	UINT8 Wcid;

@@ -3418,7 +3418,7 @@ VOID MlmeUpdateHtTxRates(RTMP_ADAPTER *pAd, UCHAR apidx)
 		{	
 			j = i/8;	
 			bitmask = (1<<(i-(j*8)));
-			if ( (pDesireHtPhy->MCSSet[j] & bitmask) && (pActiveHtPhy->MCSSet[j] & bitmask))
+			if (pActiveHtPhy && (pDesireHtPhy->MCSSet[j] & bitmask) && (pActiveHtPhy->MCSSet[j] & bitmask))
 			{
 				pMaxHtPhy->field.MCS = i;
 				pMinHtPhy->field.MCS = i;

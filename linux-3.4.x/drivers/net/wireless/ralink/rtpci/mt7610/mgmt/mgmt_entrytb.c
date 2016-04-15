@@ -251,7 +251,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 #ifdef WFA_VHT_PF
 #ifdef IP_ASSEMBLY
 			if (pEntry->ip_queue_inited == 0) {
-				int q_idx, ac_idx;
+				int q_idx = 0, ac_idx = 0;
 				struct ip_frag_q *fragQ = &pEntry->ip_fragQ[q_idx];
 				
 				for (ac_idx = 0; ac_idx < 4; ac_idx++) {

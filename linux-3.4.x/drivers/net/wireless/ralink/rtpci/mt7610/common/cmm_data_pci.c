@@ -1401,7 +1401,7 @@ PNDIS_PACKET RxRingDeQueue(
 	*/
 	if (pRxRing->RxSwReadIdx & 0x01)
 	{
-		RTMP_DMACB *pRxCellLast;
+		RTMP_DMACB *pRxCellLast = NULL;
 #ifdef RT_BIG_ENDIAN
 		PRXD_STRUC pDestRxDLast;
 #endif
@@ -1424,7 +1424,8 @@ PNDIS_PACKET RxRingDeQueue(
 #endif
 
 		/* flush cache from last BD */
-		RTMP_DCACHE_FLUSH(pRxCellLast->AllocPa, 32); /* use RXD_SIZE should be OK */
+		if (pRxCellLast)
+		    RTMP_DCACHE_FLUSH(pRxCellLast->AllocPa, 32); /* use RXD_SIZE should be OK */
 
 		/* update SW read and CPU index */
 		INC_RING_INDEX(pRxRing->RxSwReadIdx, RX_RING_SIZE);

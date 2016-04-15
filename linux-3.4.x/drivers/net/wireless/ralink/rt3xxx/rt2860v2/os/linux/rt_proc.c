@@ -92,7 +92,7 @@ ssize_t video_Update_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -119,7 +119,7 @@ ssize_t video_Enable_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -146,7 +146,7 @@ ssize_t video_ClassifierEnable_set(struct file *file, const char __user * buffer
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -173,7 +173,7 @@ ssize_t video_HighTxMode_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -200,7 +200,7 @@ ssize_t video_TxPwr_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -227,7 +227,7 @@ ssize_t video_VideoMCSEnable_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -254,7 +254,7 @@ ssize_t video_VideoMCS_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -281,7 +281,7 @@ ssize_t video_TxBASize_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -308,7 +308,7 @@ ssize_t video_TxLifeTimeMode_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -335,7 +335,7 @@ ssize_t video_TxLifeTime_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -362,7 +362,7 @@ ssize_t video_TxRetryLimit_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val = 0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
