@@ -476,6 +476,10 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     else if (TRstrcmp(method, CWMP_RPC_ADDOBJECT) == 0)
     {
         newdoc = cwmp_session_create_addobject_response_message(session, doc, doctmppool);
+	if (newdoc != NULL)
+	{
+		session->parameter_value_changed = TRUE;
+	}
     }
     else if (TRstrcmp(method, CWMP_RPC_DELETEOBJECT) == 0)
     {

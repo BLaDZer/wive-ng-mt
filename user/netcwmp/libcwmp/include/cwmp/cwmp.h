@@ -384,6 +384,7 @@ struct parameter_node_st
 	cwmp_byte_t	rw;	//read / writable
 	cwmp_byte_t     type;
 	cwmp_byte_t	inform;	//informable parameter
+	cwmp_byte_t	inform_sort;	//informable parameter sorting
 	
 	size_t		value_length;
 	char *          value;

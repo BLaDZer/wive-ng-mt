@@ -78,6 +78,7 @@ int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_
     new_node->name = NULL;
     new_node->rw = 0;
     new_node->inform = 0;
+    new_node->inform_sort = 0;
     new_node->type = 0;
     new_node->value = NULL;
     new_node->parent = param;
@@ -211,6 +212,12 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
     if(value)
     {
         param->inform = TRatoi(value);
+    }
+
+    value = cwmp_xml_get_node_attribute(node, "inform_sort");
+    if(value)
+    {
+        param->inform_sort = TRatoi(value);
     }
 
 

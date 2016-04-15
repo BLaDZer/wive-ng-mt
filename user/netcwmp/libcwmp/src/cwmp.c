@@ -2323,7 +2323,7 @@ xmlnode_t * cwmp_create_parameter_list_node(env_t * env ,  xmlnode_t * parent, p
     return parameterListNode;
 }
 
-int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t ** ppl, parameter_node_t * rootNode, parameter_node_t * upperLevelNode, char* nodePath, pool_t * pool)
+int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t ** ppl, parameter_node_t * rootNode, parameter_node_t * upperLevelNode, char* nodePath, int sortFilter, pool_t * pool)
 {
 
     int rc = CWMP_OK;
@@ -2350,7 +2350,7 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
 
 //	cwmp_log_debug("cwmp_parameter_list_add_parameter: param name %s .", name);
 
-	if (pnode->inform > 0)
+	if (pnode->inform > 0 && pnode->inform_sort == sortFilter)
 	{
 	    if (pnode->inform == 2) pnode->inform = 0;
 
@@ -2367,7 +2367,7 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
 	}
 
 	if (pnode->child != NULL) {
-	    cwmp_create_inform_message_parameter_iterator(env, ppl, rootNode, pnode, name, pool);
+	    cwmp_create_inform_message_parameter_iterator(env, ppl, rootNode, pnode, name, sortFilter, pool);
 	}
     }
 
@@ -2421,7 +2421,14 @@ xmldoc_t* cwmp_create_inform_message(env_t * env ,  header_t * header,
     bodyNode        = cwmp_create_body_node(env ,  envelopeNode);
 
 //    cwmp_create_inform_message_iterate_parameters(env, root, pl);
-    cwmp_create_inform_message_parameter_iterator(env, &pl, root, root, root->name, env->pool);
+    int n = -2;
+    int k = 0;
+    while (pl->count > n)
+    {
+    	n = pl->count;
+	cwmp_create_inform_message_parameter_iterator(env, &pl, root, root, root->name, k, env->pool);
+	k++;
+    }
 
     ESA(informNode,     cwmp_xml_create_child_node(env ,  bodyNode, NULL, CWMP_RPC_INFORM, NULL));
     ESA(deviceIdNode    , cwmp_create_device_id_node(env ,  informNode, deviceid));
