@@ -1966,15 +1966,16 @@
 39) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
 40) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
 41) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
-42) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-43) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-44) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-45) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-46) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
-47) kernel: net: wext: fix message delay/ordering.<br>
-48) kernel: net: fix use after free in the recvmmsg exit path.<br>
-49) kernel: fs: cifs: fix erroneous return value.<br>
-50) kernel: fs: ext4: fix bh->b_state corruption.<br>
+42) kernel: mips: avoid using unwind_stack() with usermode.<br>
+43) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+44) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+45) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+46) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+47) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+48) kernel: net: wext: fix message delay/ordering.<br>
+49) kernel: net: fix use after free in the recvmmsg exit path.<br>
+50) kernel: fs: cifs: fix erroneous return value.<br>
+51) kernel: fs: ext4: fix bh->b_state corruption.<br>
 <br>
 <br>
 <br>
