@@ -1943,43 +1943,45 @@
 16) netcwnmp: fix wireless mode set.<br>
 17) netcwnmp: fix vpn managment.<br>
 18) netcwnmp: workarround for arrange fields d-link acs issue.<br>
-19) coovachilli: sync with git 09.04.2016 (commit 9f05673b).<br>
+19) coovachilli: sync with git 16.04.2016 (commit b56d3b05).<br>
 20) coovachilli: fix error in loading binary status file.<br>
 21) coovachilli: fix sequence number in the TCP RESET.<br>
-22) coovachilli: disable SSLv2 and SSLv3 protocol. Add sslciphers option.<br>
-23) coovachilli: add layer3 support to kmod_coova_sync.<br>
-24) goahead: fix setNthValue split strings.<br>
-25) init.d/goahead: add support KickStaRssiLowPSM.<br>
-26) init.d/goahead: allow force only HW mode (default hibryd mode) for igmpsnooping.<br>
-27) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
-28) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
-29) init.d: fix snooping in TV/SIP ports modes, use pure HW snooping (hibryd not support this modes now).<br>
-30) init.d: fix race in ipv6 reconfigure logic.<br>
-31) init.d: move ipv6 restart to true place.<br>
-32) kernel: fs: cifs: fix erroneous return value.<br>
-33) kernel: fs: ext4: fix bh->b_state corruption.<br>
-34) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-35) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
-36) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-37) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
-38) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
-39) kernel: mips: upstream RIXI changes.<br>
-40) kernel: mips: fix race condition in lazy cache flushing.<br>
-41) kernel: mips: sync icache & dcache in set_pte_at.<br>
-42) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
-43) kernel: mips: revert: cache flush functions are reworked.<br>
-44) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
-45) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
-46) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
-47) kernel: mips: avoid using unwind_stack() with usermode.<br>
-48) kernel: mips: don't unwind to user mode with EVA.<br>
-49) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-50) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-51) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-52) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-53) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
-54) kernel: net: wext: fix message delay/ordering.<br>
-55) kernel: net: fix use after free in the recvmmsg exit path.<br>
+22) coovachilli: fix AC_DEFUN call more compliant with modern autoconf.<br>
+23) coovachilli: fix size_t data wants %zu format string.<br>
+24) coovachilli: disable SSLv2 and SSLv3 protocol. Add sslciphers option.<br>
+25) coovachilli: add layer3 support to kmod_coova_sync.<br>
+26) goahead: fix setNthValue split strings.<br>
+27) init.d/goahead: add support KickStaRssiLowPSM.<br>
+28) init.d/goahead: allow force only HW mode (default hibryd mode) for igmpsnooping.<br>
+29) init.d: move tune roaming and advanced wifi parametrs to internet.sh (fix apply params by external logic reconfigure, as vlans and others).<br>
+30) init.d: wifi params apply linerazed, remove unneded sleeps and avoid call for not existent interfaces.<br>
+31) init.d: fix snooping in TV/SIP ports modes, use pure HW snooping (hibryd not support this modes now).<br>
+32) init.d: fix race in ipv6 reconfigure logic.<br>
+33) init.d: move ipv6 restart to true place.<br>
+34) kernel: fs: cifs: fix erroneous return value.<br>
+35) kernel: fs: ext4: fix bh->b_state corruption.<br>
+36) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+37) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
+38) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
+39) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
+40) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+41) kernel: mips: upstream RIXI changes.<br>
+42) kernel: mips: fix race condition in lazy cache flushing.<br>
+43) kernel: mips: sync icache & dcache in set_pte_at.<br>
+44) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
+45) kernel: mips: revert: cache flush functions are reworked.<br>
+46) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
+47) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
+48) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
+49) kernel: mips: avoid using unwind_stack() with usermode.<br>
+50) kernel: mips: don't unwind to user mode with EVA.<br>
+51) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+52) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+53) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+54) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+55) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+56) kernel: net: wext: fix message delay/ordering.<br>
+57) kernel: net: fix use after free in the recvmmsg exit path.<br>
 <br>
 <br>
 <br>
