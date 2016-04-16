@@ -1982,6 +1982,7 @@
 55) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
 56) kernel: net: wext: fix message delay/ordering.<br>
 57) kernel: net: fix use after free in the recvmmsg exit path.<br>
+58) kernel: net: force inlining of netif_tx_start/stop_queue, sock_hold, __sock_put.<br>
 <br>
 <br>
 <br>
