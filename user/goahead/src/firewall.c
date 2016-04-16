@@ -1323,6 +1323,9 @@ void firewall_rebuild_etc(void)
 	// Remove portforwards scripts
 	doSystem("rm -f " _PATH_PFW_FILE);
 	doSystem("rm -f " _PATH_PFW_FILE_VPN);
+	doSystem("rm -f " _PATH_PFW_FILE_ACCESS);
+
+	// Generate new
 	if (strcmp(pfw_enable, "1") == 0) // Turned on?
 		iptablesPortForwardBuildScript();
 

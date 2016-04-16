@@ -638,7 +638,7 @@ get_param() {
     else
 	ROUTE_MODE="off"
     fi
-    # if ppp enabled and not pure pppoe mode (type6 is lanauth not real ppp)
+    # if ppp enabled and not lanauth mode (type6 is lanauth not real ppp)
     if [ "$MODEMENABLED" = "1" ] || [ "$vpnEnabled" = "on" -a "$vpnType" != "6" ]; then
 	PPP_CONNECT="on"
     else
