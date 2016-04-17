@@ -14,6 +14,7 @@
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
 
+var wdsNum  = '<% getCfgZero(1, "WdsNum"); %>';
 var wdsMode  = '<% getCfgZero(1, "WdsEnable"); %>';
 var wdsList  = '<% getCfgGeneral(1, "WdsList"); %>'.split(';');
 var wdsPhyMode  = '<% getCfgZero(1, "WdsPhyMode"); %>'.split(';');
@@ -49,6 +50,8 @@ function wdsAdd(form) {
 		form.elements['wds_' + count].value = '';
 		form.elements['wds_encryp_type' + (count-1)].options.selectedIndex = 0;
 		form.elements['wds_encryp_key' + (count-1)].value = '';
+                // Increase counter of WDS rules
+		wdsNum++;
 	}
 }
 
@@ -76,6 +79,9 @@ function wdsRemove(form, index) {
 
 	// Enable controls
 	enableElements(form.basicWDSAdd, (count < WDS_NUM_MAX));
+
+        // Decrease counter of WDS rules
+	wdsNum--;
 }
 
 function WdsSecurityOnChange(form, i) {
@@ -124,7 +130,7 @@ function initValue()
 
 	count = (count < 1) ? 1 : count;
 	form.wds_num.value = count;
-	
+
 	initTranslation();
 
 	wdsMode = 1*wdsMode;
@@ -232,8 +238,11 @@ function CheckValue(form) {
 	var all_wds_enc_type = "";
 	var all_wds_phy_mode = "";
 
-	if (!CheckEncKey(form, 0) || !CheckEncKey(form, 1) || !CheckEncKey(form, 2) || !CheckEncKey(form, 3))
+	// check real used rules only
+	for (i = 0; i < wdsNum; i++) {
+	    if (!CheckEncKey(form, i))
 		return false;
+	}
 
 	if (form.wds_mode.options.selectedIndex >= 2) {
 		var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
