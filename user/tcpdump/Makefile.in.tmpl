@@ -43,7 +43,7 @@ AR = @AR@
 MKDEP = @MKDEP@
 PROG = tcpdump
 CCOPT = @V_CCOPT@
-INCLS = -I. @V_INCLS@
+INCLS = -I. @V_INCLS@ -I$(ROOTDIR)/lib/shared/include
 DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
 
 # Standard CFLAGS
@@ -51,7 +51,12 @@ CFLAGS = @CFLAGS@
 FULL_CFLAGS = $(CCOPT) $(DEFS) $(INCLS) $(CFLAGS)
 
 # Standard LDFLAGS
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ -L$(ROOTDIR)/lib/shared/lib
+
+# Decrease size
+CFLAGS      += -ffunction-sections -fdata-sections
+FULL_CFLAGS += -ffunction-sections -fdata-sections
+LDFLAGS     += -Wl,--gc-sections
 
 # Standard LIBS
 LIBS = @LIBS@
