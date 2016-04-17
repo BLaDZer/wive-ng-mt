@@ -1961,19 +1961,20 @@
 34) init.d: fix snooping in TV/SIP ports modes, use pure HW snooping (hibryd not support this modes now).<br>
 35) init.d: fix race in ipv6 reconfigure logic.<br>
 36) init.d: move ipv6 restart to true place.<br>
-37) kernel: fs: cifs: fix erroneous return value.<br>
-38) kernel: fs: ext4: fix bh->b_state corruption.<br>
-39) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-40) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
-41) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-42) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
-43) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
-44) kernel: mips: upstream RIXI changes.<br>
-45) kernel: mips: fix race condition in lazy cache flushing.<br>
-46) kernel: mips: sync icache & dcache in set_pte_at.<br>
-47) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
-48) kernel: mips: revert: cache flush functions are reworked.<br>
-49) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
+37) init.d: fix apply settings regression after ipv6 serialize.<br>
+38) kernel: fs: cifs: fix erroneous return value.<br>
+39) kernel: fs: ext4: fix bh->b_state corruption.<br>
+40) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+41) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
+42) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
+43) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
+44) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+45) kernel: mips: upstream RIXI changes.<br>
+46) kernel: mips: fix race condition in lazy cache flushing.<br>
+47) kernel: mips: sync icache & dcache in set_pte_at.<br>
+48) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
+49) kernel: mips: revert: cache flush functions are reworked.<br>
+50) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
 40) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
 41) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
 42) kernel: mips: avoid using unwind_stack() with usermode.<br>

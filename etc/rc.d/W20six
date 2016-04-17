@@ -5,6 +5,10 @@ if [ ! -d /proc/sys/net/ipv6 ]; then
     exit 0
 fi
 
+if [ "$OperationMode" = "0" ]; then
+    exit 0
+fi
+
 # prevent double start reconfigure ipv6 in one time
 while [ -e /tmp/reconfigure_six_runing ]; do
     # Sleep until file does exists/is created
@@ -14,10 +18,6 @@ touch /tmp/reconfigure_six_runing
 
 #get params
 . /etc/scripts/global.sh
-
-if [ "$OperationMode" = "0" ]; then
-    exit 0
-fi
 
 LOG="logger -t ipv6"
 
@@ -315,6 +315,8 @@ get_param() {
 	# check wan ip set, need v4 adress at wan for tunnels config
 	if [ "$IPv6OpMode" != "1" ] && [ "$tun_wan_ipaddr" = "" ]; then
     	    $LOG "No ipv4 adress on wan (need for tunnel mode), EXIT!"
+	    # remove running flag
+	    rm -f /tmp/reconfigure_six_runing
     	    exit 1
 	fi
 
