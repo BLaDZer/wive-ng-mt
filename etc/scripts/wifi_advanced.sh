@@ -15,7 +15,7 @@ echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
 eval `nvram_buf_get 2860 OperationMode RadioOn RadioOnINIC AutoConnect ApCliAutoConnect M2UEnabled`
 ################################################STAMODE param###################################################
 if [ "$OperationMode" = "2" ]; then
-    if [ "$AutoConnect" != "" ]; then
+    if [ "$AutoConnect" = "1" ]; then
 	iwpriv "$1" set AutoReconnect="$AutoConnect"
     fi
     # in sta mode exit

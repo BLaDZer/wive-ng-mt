@@ -3,6 +3,8 @@
 #include global config
 . /etc/scripts/global.sh
 
+LOG="logger -t vpn-server"
+
 PPP_IFACE="$1"
 PPP_TTY="$2"
 PPP_SPEED="$3"
@@ -10,10 +12,9 @@ PPP_LOCAL="$4"
 PPP_REMOTE="$5"
 PPP_IPPARAM="$6"
 PPP_NUM=`echo $PPP_IFACE | sed 's/[^0-65535]//g'`
-LOG="logger -t L2TP server"
 
 # get some variables
-eval `nvram_buf_get 2860 l2tp_srv_nat_enabled l2tp_srv_proxyarp parproutedEnabled SmbEnabled`
+eval `nvram_buf_get 2860 l2tp_srv_nat_enabled l2tp_srv_proxyarp parproutedEnabled SmbEnabled natEnabled vpnNAT`
 
 if [ "$l2tp_srv_proxyarp" != "1" ] && [ "$parproutedEnabled" != "1" ]; then
     #disable multicast on $PPP_IFACE interface
@@ -24,11 +25,23 @@ fi
 $LOG "Enable forwarding for $PPP_IFACE interface"
 sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
 iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
-iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
 
 if [ "$l2tp_srv_nat_enabled" = "1" ]; then
-    $LOG "Add masqrade for client $PPP_REMOTE"
-    iptables -A POSTROUTING -t nat ! -o $PPP_IFACE -j MASQUERADE
+    $LOG "Only reqested sessions allow forward back to tunnel"
+    iptables -A l2tpsrvfwd -o $PPP_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
+    if [ "$vpnEnabled" = "on" ] && [ "$vpnNAT" != "off" ]; then
+	$LOG "Add masqrade for client $PPP_REMOTE to VPN client net over any ppp interfaces"
+	iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o ppp+ -j MASQUERADE
+    fi
+    if [ "$natEnabled" = "1" ]; then
+	$LOG "Add masqrade for client $PPP_REMOTE to WAN net over $phys_wan_if"
+	iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $phys_wan_if -j MASQUERADE
+    fi
+    $LOG "Add masqrade for client $PPP_REMOTE to LAN net over $lan_if"
+    iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $lan_if -j MASQUERADE
+else
+    $LOG "Allow forward back to tunnel."
+    iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
 fi
 
 # allow udpxy for l2tp clients

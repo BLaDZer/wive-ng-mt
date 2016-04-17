@@ -1963,32 +1963,33 @@
 36) init.d: fix race in ipv6 reconfigure logic.<br>
 37) init.d: move ipv6 restart to true place.<br>
 38) init.d: fix apply settings regression after ipv6 serialize.<br>
-39) kernel: fs: cifs: fix erroneous return value.<br>
-40) kernel: fs: ext4: fix bh->b_state corruption.<br>
-41) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
-42) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
-43) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
-44) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
-45) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
-46) kernel: mips: upstream RIXI changes.<br>
-47) kernel: mips: fix race condition in lazy cache flushing.<br>
-48) kernel: mips: sync icache & dcache in set_pte_at.<br>
-49) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
-50) kernel: mips: revert: cache flush functions are reworked.<br>
-51) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
-52) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
-53) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
-54) kernel: mips: avoid using unwind_stack() with usermode.<br>
-55) kernel: mips: don't unwind to user mode with EVA.<br>
-56) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-57) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-58) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-59) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-60) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
-61) kernel: net: wext: fix message delay/ordering.<br>
-62) kernel: net: fix use after free in the recvmmsg exit path.<br>
-63) kernel: net: force inlining of netif_tx_start/stop_queue, sock_hold, __sock_put.<br>
-64) kernel: net: route: do not cache fib route info on local routes with oif.<br>
+39) init.d: l2tp server ip-up: split and fix masqrade rules, review for more secure.<br>
+40) kernel: fs: cifs: fix erroneous return value.<br>
+41) kernel: fs: ext4: fix bh->b_state corruption.<br>
+42) kernel: ralink_wifi: add KickStaRssiLowPSM to allow different set levels for kick PSM clietns (prevent infinitive kick/reuse at some mobile clients).<br>
+43) kernel: ralink_wifi: fix coexistence roaming and band steereing auth/probe reqests filter code.<br>
+44) kernel: ralink_wifi: allow show band steering info with iwpriv.<br>
+45) kernel: ralink_wifi: fix some errors founded by cppcheck.<br>
+46) kernel: mips: cpu_name_string: Use raw_smp_processor_id().<br>
+47) kernel: mips: upstream RIXI changes.<br>
+48) kernel: mips: fix race condition in lazy cache flushing.<br>
+49) kernel: mips: sync icache & dcache in set_pte_at.<br>
+50) kernel: mips: c-r4k: sync icache when it fills from dcache.<br>
+51) kernel: mips: revert: cache flush functions are reworked.<br>
+52) kernel: mips: revert: fix bug in using flush_cache_vunmap.<br>
+53) kernel: mips: module: fix incorrect IS_ERR_VALUE macro usages.<br>
+54) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
+55) kernel: mips: avoid using unwind_stack() with usermode.<br>
+56) kernel: mips: don't unwind to user mode with EVA.<br>
+57) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+58) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+59) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+60) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+61) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+62) kernel: net: wext: fix message delay/ordering.<br>
+63) kernel: net: fix use after free in the recvmmsg exit path.<br>
+64) kernel: net: force inlining of netif_tx_start/stop_queue, sock_hold, __sock_put.<br>
+65) kernel: net: route: do not cache fib route info on local routes with oif.<br>
 <br>
 <br>
 <br>

@@ -3,6 +3,8 @@
 #include global config
 . /etc/scripts/global.sh
 
+LOG="logger -t vpn-server"
+
 PPP_IFACE="$1"
 PPP_TTY="$2"
 PPP_SPEED="$3"
@@ -20,7 +22,11 @@ sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=0
 # del rules
 iptables -D l2tpsrvfwd -i $PPP_IFACE -j ACCEPT > /dev/null 2>&1
 iptables -D l2tpsrvfwd -o $PPP_IFACE -j ACCEPT > /dev/null 2>&1
-iptables -D POSTROUTING -t nat ! -o $PPP_IFACE -j MASQUERADE > /dev/null 2>&1
+iptables -D l2tpsrvfwd -o $PPP_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT 2>&1
+
+iptables -t nat -D POSTROUTING -s $PPP_REMOTE -o ppp+ -j MASQUERADE > /dev/null 2>&1
+iptables -t nat -D POSTROUTING -s $PPP_REMOTE -o $wan_if -j MASQUERADE > /dev/null 2>&1
+iptables -t nat -D POSTROUTING -s $PPP_REMOTE -o $lan_if -j MASQUERADE > /dev/null 2>&1
 
 # udpxy
 iptables -D servicelimit -i $PPP_IFACE -m state --state NEW -p tcp --dport $UDPXYPort -j ACCEPT > /dev/null 2>&1
