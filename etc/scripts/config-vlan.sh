@@ -27,7 +27,6 @@ usage() {
 	echo "_________"
 	echo " 	mode 3 for vlan parted, 4 for dual rgmii mode"
 	echo "_________"
-	exit 0
 }
 
 disable_all_ports() {
