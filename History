@@ -1981,15 +1981,16 @@
 54) kernel: mips: remove aliasing alignment if HW has antialising support.<br>
 55) kernel: mips: avoid using unwind_stack() with usermode.<br>
 56) kernel: mips: don't unwind to user mode with EVA.<br>
-57) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
-58) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
-59) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
-60) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
-61) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
-62) kernel: net: wext: fix message delay/ordering.<br>
-63) kernel: net: fix use after free in the recvmmsg exit path.<br>
-64) kernel: net: force inlining of netif_tx_start/stop_queue, sock_hold, __sock_put.<br>
-65) kernel: net: route: do not cache fib route info on local routes with oif.<br>
+57) kernel: mips: make PCI_DMA_BUS_IS_PHYS=1 constant.<br>
+58) kernel: usb: qmi_wwan: add D-Link DWM-221 B1 device id.<br>
+59) kernel: usb: cdc_ncm: adding Telit LE910 V2 mobile broadband card.<br>
+60) kernel: net: ipv4: l2tp: fix a potential issue in l2tp_ip_recv.<br>
+61) kernel: net: sock: convert sk_peek_offset functions to WRITE_ONCE.<br>
+62) kernel: net: bridge: fix incorrect variable assignment on error path in br_sysfs_addbr.<br>
+63) kernel: net: wext: fix message delay/ordering.<br>
+64) kernel: net: fix use after free in the recvmmsg exit path.<br>
+65) kernel: net: force inlining of netif_tx_start/stop_queue, sock_hold, __sock_put.<br>
+66) kernel: net: route: do not cache fib route info on local routes with oif.<br>
 <br>
 <br>
 <br>
