@@ -1328,8 +1328,9 @@ VOID PeerAddBAReqAction(
 		}
 	}
 
-	if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[Elem->Wcid]))
+	if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[Elem->Wcid])) {
 		ASSERT(pAd->MacTab.Content[Elem->Wcid].Sst == SST_ASSOC);
+	}
 
 	pAddreqFrame = (PFRAME_ADDBA_REQ)(&Elem->Msg[0]);
 	/* 2. Always send back ADDBA Response */

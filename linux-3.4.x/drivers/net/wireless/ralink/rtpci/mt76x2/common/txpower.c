@@ -1195,8 +1195,6 @@ VOID AsicPercentageDeltaPower(
 			{
 				*pDeltaPwr -= 6;
 			}
-			else
-				;
 		}
 #endif /* CONFIG_STA_SUPPORT */
 	}

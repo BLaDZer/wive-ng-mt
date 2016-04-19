@@ -1273,7 +1273,7 @@ VOID APPeerBeaconAtScanAction(
 	if (PeerBeaconAndProbeRspSanity(pAd,
 					Elem->Msg, Elem->MsgLen, Elem->Channel,
 					ie_list, &LenVIE, pVIE));
-    {
+	{
 		ULONG Idx;
 		CHAR  Rssi = -127;
 
@@ -1282,7 +1282,6 @@ VOID APPeerBeaconAtScanAction(
 								ConvertToRssi(pAd, Elem->Rssi2, RSSI_2));
 
 
-		
 		/* ignore BEACON not in this channel */
 		if (ie_list->Channel != pAd->MlmeAux.Channel
 #ifdef DOT11_N_SUPPORT

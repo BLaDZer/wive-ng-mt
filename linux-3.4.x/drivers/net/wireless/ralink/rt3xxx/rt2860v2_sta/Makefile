@@ -3,6 +3,8 @@ ifeq ($(CONFIG_RT2860V2_STA_ATE),y)
 EXTRA_CFLAGS += -Idrivers/net/wireless/ralink/rt3xxx/rt2860v2/ate/include
 endif
 
+EXTRA_CFLAGS += -Wall -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits
+
 obj-$(CONFIG_RT2860V2_STA) += rt2860v2_sta.o
 
 rt2860v2_sta-objs += ../rt2860v2/common/crypt_md5.o
@@ -212,9 +214,6 @@ EXTRA_CFLAGS += -DSTATS_COUNT_SUPPORT -DENHANCED_STAT_DISPLAY
 EXTRA_CFLAGS += -DRESOURCE_PRE_ALLOC -DCONFIG_SWMCU_SUPPORT
 EXTRA_CFLAGS += -DRTMP_RF_RW_SUPPORT -DRTMP_FLASH_SUPPORT
 EXTRA_CFLAGS += -DCONFIG_MAC_TO_MAC_MODE
-
-# disable some not safe flags
-EXTRA_CFLAGS += -fno-fast-math -fno-force-addr
 
 # do not lock CountryRegion from EEPROM
 EXTRA_CFLAGS += -DEEPROM_COUNTRY_UNLOCK

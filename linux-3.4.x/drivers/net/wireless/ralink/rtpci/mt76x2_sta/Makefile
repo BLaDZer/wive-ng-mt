@@ -148,9 +148,8 @@ endif
 ###################
 #  CFLAGS
 ##################
-# disable some not safe flags
-EXTRA_CFLAGS += -fno-fast-math -fno-force-addr
-EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/include
+EXTRA_CFLAGS := -Idrivers/net/wireless/$(RT_DRV_DIR)/include
+EXTRA_CFLAGS += -Wall -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits
 EXTRA_CFLAGS += -DAGGREGATION_SUPPORT -DPIGGYBACK_SUPPORT -DWMM_SUPPORT -DLINUX
 EXTRA_CFLAGS += -DCONFIG_STA_SUPPORT -DUAPSD_SUPPORT -DDOT11_N_SUPPORT
 EXTRA_CFLAGS += -DSTATS_COUNT_SUPPORT -DENHANCED_STAT_DISPLAY

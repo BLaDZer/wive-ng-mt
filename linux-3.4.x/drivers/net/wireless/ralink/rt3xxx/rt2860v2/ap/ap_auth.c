@@ -409,8 +409,7 @@ static VOID APPeerAuthReqAtIdleAction(
 			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_SUCCESS);
 
 		}
-		else
-			; /* MAC table full, what should we respond ????? */
+		/* else  MAC table full, what should we respond ????? */
 	}
 	else if ((Alg == AUTH_MODE_KEY) && 
 				((pAd->ApCfg.MBSSID[apidx].AuthMode == Ndis802_11AuthModeShared)
@@ -456,9 +455,8 @@ static VOID APPeerAuthReqAtIdleAction(
 			MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 			MlmeFreeMemory(pAd, pOutBuffer);
 		}
-		else
-			; /* MAC table full, what should we respond ???? */
-	} 
+		/* else  MAC table full, what should we respond ????? */
+	}
 	else
 	{
 		/* wrong algorithm */

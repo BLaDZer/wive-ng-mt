@@ -4068,11 +4068,12 @@ VOID APRxDErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			}
 
 			/* send wireless event - for icv error */
-			if ((pRxInfo->CipherErr & 1) == 1)
-				RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0); 
+			if ((pRxInfo->CipherErr & 1) == 1) {
+				RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0);
+			}
 		}
 		}
-		DBGPRINT(RT_DEBUG_TRACE, ("Rx u2me Cipher Err(MPDUsize=%d, WCID=%d, CipherErr=%d)\n", 
+		DBGPRINT(RT_DEBUG_TRACE, ("Rx u2me Cipher Err(MPDUsize=%d, WCID=%d, CipherErr=%d)\n",
 					pRxWI->RxWIMPDUByteCnt, pRxWI->RxWIWirelessCliID, pRxInfo->CipherErr));
 
 	}

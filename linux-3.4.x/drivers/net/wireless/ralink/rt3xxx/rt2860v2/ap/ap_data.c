@@ -3610,8 +3610,9 @@ VOID APRxDErrorHandle(
 			}
 
 			/* send wireless event - for icv error */
-			if ((pRxD->CipherErr & 1) == 1)
-				RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0); 
+			if ((pRxD->CipherErr & 1) == 1) {
+				RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0);
+			}
 		}
 		}
 		DBGPRINT(RT_DEBUG_TRACE, ("Rx u2me Cipher Err(MPDUsize=%d, WCID=%d, CipherErr=%d)\n", 

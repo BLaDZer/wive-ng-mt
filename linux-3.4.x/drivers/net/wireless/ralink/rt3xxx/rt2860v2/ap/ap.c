@@ -1857,10 +1857,8 @@ VOID APUpdateCapabilityAndErpIe(
 			ErpIeContent |= 0x02;                                     /* set Use_Protection bit */
 		}
 	}
-	else if (pAd->CommonCfg.UseBGProtection == 1)   
+	else if (pAd->CommonCfg.UseBGProtection == 1)
 		ErpIeContent |= 0x02;
-	else
-		;
 
 	bUseBGProtection = (pAd->CommonCfg.UseBGProtection == 1) ||    /* always use */
 						((pAd->CommonCfg.UseBGProtection == 0) && ERP_IS_USE_PROTECTION(ErpIeContent));

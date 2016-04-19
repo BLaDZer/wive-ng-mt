@@ -401,9 +401,9 @@ static USHORT update_associated_mac_entry(
 	}
 
 
-	if (pEntry->AuthMode < Ndis802_11AuthModeWPA)
+	if (pEntry->AuthMode < Ndis802_11AuthModeWPA) {
 		ApLogEvent(pAd, pEntry->Addr, EVENT_ASSOCIATED);
-
+	}
 	APUpdateCapabilityAndErpIe(pAd);
 #ifdef DOT11_N_SUPPORT
 	APUpdateOperationMode(pAd);
@@ -874,16 +874,17 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 #endif /* DOT11_VHT_AC */
 
-	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE)
+	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE) {
 			RTMPSendWirelessEvent(pAd, IW_STA_MODE_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0);
+	}
 
-    /* 3. send Association Response */
-    NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
-    if (NStatus != NDIS_STATUS_SUCCESS)
-        goto LabelOK;
-        
-    DBGPRINT(RT_DEBUG_TRACE, ("%s - Send %s response (Status=%d)...\n", sAssoc, sAssoc, StatusCode));
-    Aid |= 0xc000; /* 2 most significant bits should be ON */
+	/* 3. send Association Response */
+	NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
+	if (NStatus != NDIS_STATUS_SUCCESS)
+    	    goto LabelOK;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("%s - Send %s response (Status=%d)...\n", sAssoc, sAssoc, StatusCode));
+	Aid |= 0xc000; /* 2 most significant bits should be ON */
 
 	SubType = isReassoc ? SUBTYPE_REASSOC_RSP : SUBTYPE_ASSOC_RSP;
 

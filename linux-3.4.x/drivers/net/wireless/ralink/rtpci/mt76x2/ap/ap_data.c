@@ -4134,8 +4134,9 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				}
 
 				/* send wireless event - for icv error */
-				if ((pRxInfo->CipherErr & 1) == 1)
-					RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0); 
+				if ((pRxInfo->CipherErr & 1) == 1) {
+					RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0);
+				}
 			}
 		}
 

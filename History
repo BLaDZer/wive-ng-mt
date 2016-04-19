@@ -1995,6 +1995,7 @@
 <br>
 <br>
 <b>4.3.x</b><br>
+1) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
 <br>
 <br>
 <br>

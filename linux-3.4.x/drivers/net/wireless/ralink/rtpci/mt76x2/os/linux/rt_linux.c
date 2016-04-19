@@ -315,8 +315,9 @@ PNDIS_PACKET RtmpOSNetPktAlloc(VOID *dummy, int size)
 	struct sk_buff *skb;
 	/* Add 2 more bytes for ip header alignment */
 	skb = dev_alloc_skb(size + 2);
-	if (skb != NULL)
+	if (skb != NULL) {
 		MEM_DBG_PKT_ALLOC_INC(skb);
+	}
 
 	return ((PNDIS_PACKET) skb);
 }
