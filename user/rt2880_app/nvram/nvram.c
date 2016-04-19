@@ -165,7 +165,8 @@ static int nvram_load_default(void)
 {
 	/* default macs is OK */
 	int mac_err = 0;
-        char *LAN_MAC_ADDR, *WAN_MAC_ADDR, *WLAN_MAC_ADDR, *WLAN2_MAC_ADDR, *CHECKMAC, *MngmtLogin, *MngmtPassword, *MngmtStoreSettings, *cwmpdEnabled;
+        char *LAN_MAC_ADDR = NULL, *WAN_MAC_ADDR = NULL, *WLAN_MAC_ADDR = NULL, *WLAN2_MAC_ADDR = NULL, *CHECKMAC = NULL;
+        char  *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL;
 
 	/* copy old remotemanagment settings if enabled */
 	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
@@ -394,7 +395,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(StationKeepAlive);
 	FPRINT_STR(EntryLifeCheck);
 	FPRINT_STR(HideSSID);
-	FPRINT_STR(IEEE8021X);
 	FPRINT_STR(IEEE80211H);
 	FPRINT_STR(APAifsn);
 	FPRINT_STR(APCwmin);
@@ -406,12 +406,10 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(BSSCwmax);
 	FPRINT_STR(BSSTxop);
 	FPRINT_STR(BSSACM);
-	FPRINT_STR(PreAuth);
 	FPRINT_STR(AuthMode);
 	FPRINT_STR(EncrypType);
     	FPRINT_STR(RekeyMethod);
 	FPRINT_STR(RekeyInterval);
-	FPRINT_STR(PMKCachePeriod);
 
 	FPRINT_STR(WPAPSK1);
 	FPRINT_STR(WPAPSK2);
@@ -516,9 +514,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(AccessControlList6);
 	FPRINT_NUM(AccessPolicy7);
 	FPRINT_STR(AccessControlList7);
-	FPRINT_STR(RADIUS_Server);
-	FPRINT_STR(RADIUS_Port);
-	FPRINT_STR(RADIUS_Key);
 	FPRINT_STR(RADIUS_Key1);
 	FPRINT_STR(RADIUS_Key2);
 	FPRINT_STR(RADIUS_Key3);
@@ -527,9 +522,6 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(RADIUS_Key6);
 	FPRINT_STR(RADIUS_Key7);
 	FPRINT_STR(RADIUS_Key8);
-	FPRINT_STR(own_ip_addr);
-	FPRINT_STR(EAPifname);
-	FPRINT_STR(PreAuthifname);
 	FPRINT_STR(MaxStaNum);
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
@@ -641,6 +633,17 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(DeauthFloodThreshold);
 	FPRINT_NUM(EapReqFloodThreshold);
 #endif
+	/* 802.11x support */
+	FPRINT_STR(IEEE8021X);
+	FPRINT_STR(PreAuth);
+	FPRINT_STR(PMKCachePeriod);
+	FPRINT_STR(own_ip_addr);
+	FPRINT_STR(EAPifname);
+	FPRINT_STR(PreAuthifname);
+	FPRINT_STR(RADIUS_Server);
+	FPRINT_STR(RADIUS_Port);
+	FPRINT_STR(RADIUS_Key);
+
 	/* Basic Roaming, need add in profile instead of iwpriv usage in future */
 	FPRINT_NUM(ApProbeRspTimes);
 	FPRINT_NUM(AuthRspFail);
