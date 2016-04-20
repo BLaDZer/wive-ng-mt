@@ -1996,6 +1996,7 @@
 <br>
 <b>4.3.x</b><br>
 1) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+2) miniupnpd: up to 2.0 version.<br>
 <br>
 <br>
 <br>
