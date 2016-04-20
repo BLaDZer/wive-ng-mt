@@ -87,5 +87,6 @@ endif
 clean:
 	# ">>>>>>>>>>>>>>>>> START FULL LIB CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
 	-cd openssl ; $(MAKE) clean ; $(MAKE) dclean ; cd ..
-	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
-	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
+	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; done
+	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; done
+	-for i in $(SUBDIRS_LIBS); do $(RM) -rf $(ROOTDIR)/libext/$$i/filesystem/*; done

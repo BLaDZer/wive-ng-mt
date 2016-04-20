@@ -131,15 +131,16 @@ all:
 
 romfs:
 	# ">>>>>>>>>>>>>>>>>>>>> INSTALL USERAPPS  <<<<<<<<<<<<<<<<<<<<<<<<"
-	for i in $(sort $(dir_y)) ; do \
+	for i in $(dir_y) ; do \
 		[ ! -d $$i ] || $(MAKE) -C $$i romfs || exit $$? ; \
 	done
 
 clean:
 	# ">>>>>>>>>>>>>>>>>>>>>>> CLEAN USERAPPS  <<<<<<<<<<<<<<<<<<<<<<<<"
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i clean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i distclean; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i mrproper; $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
+	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i clean; done
+	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i distclean; done
+	-for i in $(SUBDIRS_APP); do $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
+	-$(MAKE) -C busybox mrproper;
 
 web:
 	$(MAKE) -C goahead all
