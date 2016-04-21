@@ -218,6 +218,7 @@ fulldump
 /libext/libpcap/configure
 /libext/libnl/configure
 /libext/libnl/lib/libnl.a
+/libext/libtalloc/mips.txt
 
 #
 # exclude enerated files from user apps
