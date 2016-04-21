@@ -809,63 +809,6 @@ dnl #
 AC_CHECK_LIB(nsl, inet_ntoa)
 AC_CHECK_LIB(ws2_32, htonl)
 
-dnl #
-dnl #  Check the pcap library for the RADIUS sniffer.
-dnl #
-dnl extra argument: --with-pcap-lib-dir=DIR
-pcap_lib_dir=
-AC_ARG_WITH(pcap-lib-dir,
-  [AS_HELP_STRING([--with-pcap-lib-dir=DIR],
-  [directory in which to look for pcap library files])],
-  [case "$withval" in
-    no)
-      AC_MSG_ERROR([Need pcap-lib-dir])
-      ;;
-    yes)
-      ;;
-    *)
-      pcap_lib_dir="$withval"
-      ;;
-  esac])
-
-dnl extra argument: --with-pcap-include-dir=DIR
-pcap_include_dir=
-AC_ARG_WITH(pcap-include-dir,
-  [AS_HELP_STRING([--with-pcap-include-dir=DIR],
-  [directory in which to look for pcap include files])],
-  [case "$withval" in
-    no)
-      AC_MSG_ERROR([Need pcap-include-dir])
-      ;;
-    yes)
-      ;;
-    *)
-      pcap_include_dir="$withval"
-      ;;
-  esac])
-
-smart_try_dir="$pcap_lib_dir"
-FR_SMART_CHECK_LIB(pcap, pcap_open_live)
-if test "x$ac_cv_lib_pcap_pcap_open_live" != "xyes"; then
-  AC_MSG_WARN([pcap library not found, silently disabling the RADIUS sniffer, and ARP listener.  Use --with-pcap-lib-dir=<path>.])
-else
-  AC_DEFINE(HAVE_LIBPCAP, 1,
-    [Define to 1 if you have the `pcap' library (-lpcap).]
-  )
-
-  AC_CHECK_FUNCS(\
-    pcap_fopen_offline \
-    pcap_dump_fopen \
-    pcap_create \
-    pcap_activate
-  )
-
-  PCAP_LIBS="${smart_lib}"
-  PCAP_LDFLAGS="${smart_ldflags}"
-fi
-dnl Set by FR_SMART_CHECK_LIB
-LIBS="${old_LIBS}"
-
 dnl Check for collectdclient
 dnl extra argument: --with-collectdclient-lib-dir=DIR
 collectdclient_lib_dir=
