@@ -318,25 +318,28 @@ whitespace:
 romfs: install
 	$(ROMFSINST) -S filesystem/sbin/radiusd /bin/radiusd
 	cp -rfva filesystem/lib/*.so* $(ROMFSDIR)/lib/
+	mkdir -p $(ROMFSDIR)/share/freeradius
+	cp -rfva filesystem/share/freeradius/* $(ROMFSDIR)/share/freeradius/
 	mkdir -p $(ROMFSDIR)/etc/raddb
 	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/radiusd.conf /etc/raddb/radiusd.conf
+	$(ROMFSINST) -S filesystem/etc/raddb/proxy.conf /etc/raddb/proxy.conf
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-available
 	$(ROMFSINST) -s /etc/raddb/mods-available /etc/raddb/mods-enabled
-	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/cache_eap /etc/raddb/mods-available/cache_eap
-	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/chap /etc/raddb/mods-available/chap
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/eap /etc/raddb/mods-available/eap
-	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/inner-eap /etc/raddb/mods-available/inner-eap
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/mschap /etc/raddb/mods-available/mschap
+	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/always /etc/raddb/mods-available/always
+	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/attr_filter /etc/raddb/mods-available/attr_filter
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/files /etc/raddb/mods-available/files
+	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/preprocess /etc/raddb/mods-available/preprocess
 	mkdir -p $(ROMFSDIR)/etc/raddb/policy.d
 	$(ROMFSINST) -S filesystem/etc/raddb/policy.d/eap /etc/raddb/policy.d/eap
 	mkdir -p $(ROMFSDIR)/etc/raddb/sites-available
 	$(ROMFSINST) -s /etc/raddb/sites-available /etc/raddb/sites-enabled
 	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/default /etc/raddb/sites-available/default
-	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/inner-tunnel /etc/raddb/sites-available/inner-tunnel
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-config
 	cp -rfva filesystem/etc/raddb/mods-config/files $(ROMFSDIR)/etc/raddb/mods-config/files
+	cp -rfva filesystem/etc/raddb/mods-config/attr_filter $(ROMFSDIR)/etc/raddb/mods-config/attr_filter
 	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
 	cp -rfva filesystem/etc/raddb/mods-config/preprocess $(ROMFSDIR)/etc/raddb/mods-config/preprocess
 	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/hints /etc/raddb/hints

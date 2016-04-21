@@ -28,14 +28,14 @@
 #
 ######################################################################
 
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-sysconfdir = @sysconfdir@
-localstatedir = @localstatedir@
-sbindir = @sbindir@
-logdir = @logdir@
-raddbdir = @raddbdir@
-radacctdir = @radacctdir@
+prefix =
+exec_prefix =
+sysconfdir = /etc
+localstatedir = /var
+sbindir = /sbin
+logdir = /var/log
+raddbdir = /etc/raddb
+radacctdir = /var/log/radacct
 
 #
 #  name of the running server.  See also the "-n" command-line option.

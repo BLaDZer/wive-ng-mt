@@ -10,17 +10,17 @@
 #
 
 # Location of files.
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-sysconfdir=@sysconfdir@
+prefix=
+exec_prefix=
+sysconfdir=/etc
 localstatedir=@localstatedir@
-libdir=@libdir@
-bindir=@bindir@
-sbindir=@sbindir@
+libdir=/lib
+bindir=/bin
+sbindir=/sbin
 mandir=@mandir@
-logdir=@logdir@
-raddbdir=@raddbdir@
-dictdir=@dictdir@
+logdir=/var/log
+raddbdir=/etc/raddb
+dictdir=/etc/raddb
 radacctdir=@radacctdir@
 datarootdir=@datarootdir@
 

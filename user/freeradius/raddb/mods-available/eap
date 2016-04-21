@@ -24,7 +24,7 @@ eap {
 	#  then that EAP type takes precedence over the
 	#  default type configured here.
 	#
-	default_eap_type = md5
+	default_eap_type = mschapv2
 
 	#  A list is maintained to correlate EAP-Response
 	#  packets with EAP-Request packets.  After a
@@ -119,7 +119,7 @@ eap {
 	#  the users password will go over the wire in plain-text,
 	#  for anyone to see.
 	#
-	gtc {
+	# gtc {
 		#  The default challenge, which many clients
 		#  ignore..
 		#challenge = "Password: "
@@ -136,8 +136,8 @@ eap {
 		#  configured for the request, and do the
 		#  authentication itself.
 		#
-		auth_type = PAP
-	}
+	#	auth_type = PAP
+	#}
 
 	## Common TLS configuration for TLS-based EAP types
 	#

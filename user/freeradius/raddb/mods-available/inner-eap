@@ -25,13 +25,13 @@ eap inner-eap {
 	md5 {
 	}
 
-	gtc {
+#	gtc {
 		#  The default challenge, which many clients
 		#  ignore..
 		#challenge = "Password: "
 
-		auth_type = PAP
-	}
+#		auth_type = PAP
+#	}
 
 	mschapv2 {
 		# See eap for documentation

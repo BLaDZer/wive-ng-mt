@@ -102,7 +102,7 @@ static const CONF_PARSER startup_log_config[] = {
 	{ "destination",  FR_CONF_POINTER(PW_TYPE_STRING, &radlog_dest), "files" },
 	{ "syslog_facility",  FR_CONF_POINTER(PW_TYPE_STRING, &syslog_facility), STRINGIFY(0) },
 
-	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "${prefix}/var"},
+	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "$/var"},
 	{ "logdir", FR_CONF_POINTER(PW_TYPE_STRING, &radlog_dir), "${localstatedir}/log"},
 	{ "file",  FR_CONF_POINTER(PW_TYPE_STRING, &main_config.log_file), "${logdir}/radius.log" },
 	{ "requests",  FR_CONF_POINTER(PW_TYPE_STRING | PW_TYPE_DEPRECATED, &default_log.file), NULL },
@@ -179,11 +179,11 @@ static const CONF_PARSER server_config[] = {
 	 */
 	{ "name", FR_CONF_POINTER(PW_TYPE_STRING, &my_name), "radiusd"},
 	{ "prefix", FR_CONF_POINTER(PW_TYPE_STRING, &prefix), "/usr/local"},
-	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "${prefix}/var"},
-	{ "sbindir", FR_CONF_POINTER(PW_TYPE_STRING, &sbindir), "${prefix}/sbin"},
+	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "$/var"},
+	{ "sbindir", FR_CONF_POINTER(PW_TYPE_STRING, &sbindir), "/sbin"},
 	{ "logdir", FR_CONF_POINTER(PW_TYPE_STRING, &radlog_dir), "${localstatedir}/log"},
 	{ "run_dir", FR_CONF_POINTER(PW_TYPE_STRING, &run_dir), "${localstatedir}/run/${name}"},
-	{ "libdir", FR_CONF_POINTER(PW_TYPE_STRING, &radlib_dir), "${prefix}/lib"},
+	{ "libdir", FR_CONF_POINTER(PW_TYPE_STRING, &radlib_dir), "/lib"},
 	{ "radacctdir", FR_CONF_POINTER(PW_TYPE_STRING, &radacct_dir), "${logdir}/radacct" },
 	{ "panic_action", FR_CONF_POINTER(PW_TYPE_STRING, &main_config.panic_action), NULL},
 	{ "hostname_lookups", FR_CONF_POINTER(PW_TYPE_BOOLEAN, &fr_dns_lookups), "no" },
@@ -248,7 +248,7 @@ static const CONF_PARSER bootstrap_config[] = {
 
 	{ "name", FR_CONF_POINTER(PW_TYPE_STRING, &my_name), "radiusd"},
 	{ "prefix", FR_CONF_POINTER(PW_TYPE_STRING, &prefix), "/usr/local"},
-	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "${prefix}/var"},
+	{ "localstatedir", FR_CONF_POINTER(PW_TYPE_STRING, &localstatedir), "/var"},
 
 	{ "logdir", FR_CONF_POINTER(PW_TYPE_STRING, &radlog_dir), "${localstatedir}/log"},
 	{ "run_dir", FR_CONF_POINTER(PW_TYPE_STRING, &run_dir), "${localstatedir}/run/${name}"},
