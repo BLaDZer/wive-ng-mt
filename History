@@ -1996,8 +1996,9 @@
 <br>
 <b>4.3.x</b><br>
 1) build_system: fix cleanup libext and optimize cleanup userdir.<br>
-2) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+2) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
 3) miniupnpd: up to 2.0 version.<br>
+4) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
 <br>
 <br>
 <br>
