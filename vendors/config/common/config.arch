@@ -51,6 +51,7 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	SLIBZ		=	-lz
 	SLIBXML2	=	-lxml2
 	SLIBNEON	=	-lneon
+	SLIBTALLOC	=	-ltalloc
 
 	# Dynamic versions
 	LIBDL		=	-ldl
@@ -80,6 +81,7 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	LIBZ		=	$(SLIBZ)
 	LIBXML2		=	$(SLIBXML2)
 	LIBNEON		=	$(SLIBNEON)
+	LIBTALLOC	=	$(SLIBTALLOC)
 
 	ifeq "$(shell export LC_ALL=C; $(LD) --fatal-warnings 2>&1 | grep 'unrecognized option')" ""
 		# Linker warnings are almost always a sign of badness

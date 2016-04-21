@@ -1996,9 +1996,11 @@
 <br>
 <b>4.3.x</b><br>
 1) build_system: fix cleanup libext and optimize cleanup userdir.<br>
-2) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
-3) miniupnpd: up to 2.0 version.<br>
-4) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+2) build_system: port and add libtalloc (need for free radius).<br>
+3) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
+4) miniupnpd: up to 2.0 version.<br>
+5) freeradius: start porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
+6) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
 <br>
 <br>
 <br>

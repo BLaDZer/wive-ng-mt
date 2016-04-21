@@ -242,6 +242,9 @@ CFLAGS += -fno-delete-null-pointer-checks
 # set cxx flags as cflags
 CXXFLAGS := $(CFLAGS)
 
+# set cpp flags as cflags
+CPPFLAGS := $(CFLAGS)
+
 # export for uclibc
 ifdef UCLINUX_BUILD_LIB
 UCLIB_CFLAG := $(CFLAGS)

@@ -87,6 +87,7 @@ dir_$(CONFIG_USER_DHCP6)                    += dhcp6
 dir_$(CONFIG_USER_ZEBRA)		    += quagga
 dir_$(CONFIG_USER_SNMPD)                    += snmpd
 dir_$(CONFIG_USER_CWMPD)                    += netcwmp
+dir_$(CONFIG_USER_RADIUS)                   += freeradius
 
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
 dir_$(CONFIG_USER_SAMBA)		    += samba
@@ -120,7 +121,6 @@ dir_$(CONFIG_USER_STRACE)		    += strace
 #need last busybox and goahead
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
-
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
