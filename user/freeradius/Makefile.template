@@ -322,7 +322,7 @@ romfs: install
 	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/radiusd.conf /etc/raddb/radiusd.conf
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-available
-	$(ROMFSINST) -s $(ROMFSDIR)/etc/raddb/mods-available $(ROMFSDIR)/etc/raddb/mods-enabled
+	$(ROMFSINST) -s /etc/raddb/mods-available /etc/raddb/mods-enabled
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/cache_eap /etc/raddb/mods-available/cache_eap
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/chap /etc/raddb/mods-available/chap
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/eap /etc/raddb/mods-available/eap
@@ -332,12 +332,12 @@ romfs: install
 	mkdir -p $(ROMFSDIR)/etc/raddb/policy.d
 	$(ROMFSINST) -S filesystem/etc/raddb/policy.d/eap /etc/raddb/policy.d/eap
 	mkdir -p $(ROMFSDIR)/etc/raddb/sites-available
-	$(ROMFSINST) -s $(ROMFSDIR)/etc/raddb/sites-available $(ROMFSDIR)/etc/raddb/sites-enabled
+	$(ROMFSINST) -s /etc/raddb/sites-available /etc/raddb/sites-enabled
 	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/default /etc/raddb/sites-available/default
 	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/inner-tunnel /etc/raddb/sites-available/inner-tunnel
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-config
 	cp -rfva filesystem/etc/raddb/mods-config/files $(ROMFSDIR)/etc/raddb/mods-config/files
-	$(ROMFSINST) -s $(ROMFSDIR)/etc/raddb/mods-config/files/authorize $(ROMFSDIR)/etc/raddb/users
+	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
 	cp -rfva filesystem/etc/raddb/mods-config/preprocess $(ROMFSDIR)/etc/raddb/mods-config/preprocess
-	$(ROMFSINST) -s $(ROMFSDIR)/etc/raddb/mods-config/preprocess/hints $(ROMFSDIR)/etc/raddb/hints
-	$(ROMFSINST) -s $(ROMFSDIR)/etc/raddb/mods-config/preprocess/huntgroups $(ROMFSDIR)/etc/raddb/huntgroups
+	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/hints /etc/raddb/hints
+	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/huntgroups /etc/raddb/huntgroups
