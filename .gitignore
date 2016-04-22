@@ -380,6 +380,9 @@ fulldump
 /user/strace/Makefile
 /user/strace/Mkaefile.in
 /user/strace/configure
+/user/freeradius/Makefile
+/user/freeradius/Make.inc
+/user/freeradius/configure
 
 #
 # exclude enerated files from kernel

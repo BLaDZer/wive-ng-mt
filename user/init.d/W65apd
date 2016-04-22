@@ -14,9 +14,9 @@ start() {
     get_param
     if [ "$RADIUS_Server" != "" ] && [ "$RADIUS_Server" != "0" ]; then
 	$LOG "Starting apd radius daemon"
-	rt2860apd
+	rt2860apd &
 	if [ "$second_wlan_root_if" != "" ]; then
-	    rtinicapd
+	    rtinicapd &
 	fi
     fi
 }

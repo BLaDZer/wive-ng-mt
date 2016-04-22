@@ -54,7 +54,7 @@ DISTCHECK_CONFIGURE_FLAGS = $(CONFIGURE_ARGS) \
 
 
 romfs: install
-	$(ROMFSINST) -S init.d/W84lldpd /etc/rc.d/W84lldpd
+	$(ROMFSINST) -S ../init.d/W84lldpd /etc/rc.d/W84lldpd
 	$(ROMFSINST) -s /etc/rc.d/W84lldpd /etc/init.d/lldpd
 	$(ROMFSINST) -S lldpd.conf /etc/lldpd.conf
 	cp -aprfv filesystem/lib/*.so* $(ROMFSDIR)/lib

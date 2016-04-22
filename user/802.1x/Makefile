@@ -26,7 +26,7 @@ clean:
 romfs:
 	$(ROMFSINST) rt2860apd /bin/rt2860apd
 	ln -sf rt2860apd $(ROMFSDIR)/bin/rtinicapd
-	$(ROMFSINST) -S init.d/W65apd /etc/rc.d/W65apd
+	$(ROMFSINST) -S ../init.d/W65apd /etc/rc.d/W65apd
 	$(ROMFSINST) -s /etc/rc.d/W65apd /etc/init.d/apd
 
 

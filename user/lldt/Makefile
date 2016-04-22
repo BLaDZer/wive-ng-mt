@@ -19,7 +19,7 @@ all: lld2d lld2test
 include src/common.mk
 
 romfs:
-	$(ROMFSINST) -S init.d/W80lld2d /etc/rc.d/W80lld2d
+	$(ROMFSINST) -S ../init.d/W80lld2d /etc/rc.d/W80lld2d
 	$(ROMFSINST) -s /etc/rc.d/W80lld2d /etc/init.d/lld2d
 	$(ROMFSINST) -S -e CONFIG_USER_LLTD	/bin/lld2d
 	$(ROMFSINST) -S -e CONFIG_USER_LLTD	/bin/icon.ico

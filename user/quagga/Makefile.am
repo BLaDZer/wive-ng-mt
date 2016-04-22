@@ -31,7 +31,7 @@ endif
 ACLOCAL_AMFLAGS = -I m4
 
 romfs: install
-	$(ROMFSINST) -S init.d/W60dynroute /etc/rc.d/W60dynroute
+	$(ROMFSINST) -S ../init.d/W60dynroute /etc/rc.d/W60dynroute
 	$(ROMFSINST) -s /etc/rc.d/W60dynroute /etc/init.d/dynroute
 	$(ROMFSINST) -S filesystem/sbin/zebra /bin/zebra
 	$(ROMFSINST) -S filesystem/sbin/ripd /bin/ripd

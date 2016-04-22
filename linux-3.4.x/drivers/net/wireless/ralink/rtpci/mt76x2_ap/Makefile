@@ -279,6 +279,9 @@ EXTRA_CFLAGS += -DEEPROM_COUNTRY_UNLOCK
 # provide external Flash memory support
 EXTRA_CFLAGS += -DRTMP_FLASH_SUPPORT
 
+# provide roaming support (allways enable - need for 802.1x preauth)
+EXTRA_CFLAGS += -DIAPP_SUPPORT
+
 # provide internal eFuse memory support
 #EXTRA_CFLAGS += -DRTMP_EFUSE_SUPPORT -DCAL_FREE_IC_SUPPORT
 
@@ -481,7 +484,7 @@ EXTRA_CFLAGS += -DBAND_STEERING
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT),y)
-EXTRA_CFLAGS += -DDOT11R_FT_SUPPORT -DIAPP_SUPPORT
+EXTRA_CFLAGS += -DDOT11R_FT_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT),y)

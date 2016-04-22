@@ -3,7 +3,7 @@
 #
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: all romfs clean
+.PHONY: all romfs shared clean
 
 #
 # Include architecture specific build rules.
@@ -20,24 +20,6 @@ UCLINUX_BUILD_USER=1
 
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections -Bsymbolic-functions
-
-ifdef CONFIG_RALINK_MT7620
-ifdef CONFIG_RAETH_ESW
-CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
-endif
-endif
-
-ifdef CONFIG_RALINK_MT7621
-ifdef CONFIG_MT7530_GSW
-CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
-endif
-endif
-
-ifdef CONFIG_RALINK_MT7628
-ifdef CONFIG_MT7530_GSW
-CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7628
-endif
-endif
 
 #for all cleanap
 SUBDIRS_LIBS = $(shell LC_ALL=C; ls)
@@ -91,3 +73,10 @@ clean:
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; done
 	-for i in $(SUBDIRS_LIBS); do $(RM) -rf $(ROOTDIR)/libext/$$i/filesystem/*; done
+
+# stubs for compat
+romfs:
+	echo OK
+
+shared:
+	echo OK

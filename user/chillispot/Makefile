@@ -66,7 +66,7 @@ all:
 
 romfs:
 	$(ROMFSINST) -S chilli.conf /etc/chilli.conf
-	$(ROMFSINST) -S init.d/W88chillispot /etc/rc.d/W88chillispot
+	$(ROMFSINST) -S ../init.d/W88chillispot /etc/rc.d/W88chillispot
 	$(ROMFSINST) -s /etc/rc.d/W88chillispot /etc/init.d/chillispot
 	cp -fva $(DIR)/filesystem/lib/*.so*  $(ROMFSDIR)/lib
 	cp -fva $(DIR)/filesystem/sbin/*  $(ROMFSDIR)/sbin

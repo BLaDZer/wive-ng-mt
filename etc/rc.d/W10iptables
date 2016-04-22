@@ -68,6 +68,20 @@ servicelimit() {
 	    $LOG "CWMP allow to callback connections (from all interfaces)."
 	    iptables -A servicelimit $STATE_NEW -p tcp --dport 1008 -j ACCEPT
 	fi
+	if [ "$RadiusSrvEnable" != "0" ]; then
+	    $LOG "Radius server allow to connect"
+	    if [ "$RadiusSrvEnable" = "1" ]; then
+    		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
+    		iptables -A servicelimit -i $lan_if $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
+		if [ "$RadiusSrvEnable" = "1" ]; then
+		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
+		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
+		fi
+	    elif [ "$RadiusSrvEnable" = "2" ]; then
+    		iptables -A servicelimit $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
+    		iptables -A servicelimit $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
+	    fi
+	fi
 	if [ "$RIPEnable" = "1" ]; then
 	    $LOG "Quagga allow to connections (from all interfaces)."
 	    iptables -A servicelimit $STATE_NEW -p tcp --dport 2601:2602 -j ACCEPT
@@ -632,7 +646,7 @@ get_param() {
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable FtSupport \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd SmbEnabled TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd \
-	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
+	    parproutedEnabled PrinterSrvEnabled vpnType vpnNAT l2tp_srv_enabled RadiusSrvEnable MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit QoSEnable`
 
     # use for route mode detect

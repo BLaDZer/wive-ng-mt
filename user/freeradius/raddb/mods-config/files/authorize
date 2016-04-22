@@ -84,9 +84,9 @@
 # The canonical testing user which is in most of the
 # examples.
 #
-#bob	Cleartext-Password := "hello"
+wifi	Cleartext-Password := "testtest"
 #	Reply-Message := "Hello, %{User-Name}"
-#
+
 
 #
 # This is an entry for a user with a space in their name.
@@ -185,15 +185,15 @@ DEFAULT	Framed-Protocol == PPP
 #
 # Default for CSLIP: dynamic IP address, SLIP mode, VJ-compression.
 #
-DEFAULT	Hint == "CSLIP"
-	Framed-Protocol = SLIP,
-	Framed-Compression = Van-Jacobson-TCP-IP
+# DEFAULT	Hint == "CSLIP"
+#	Framed-Protocol = SLIP,
+#	Framed-Compression = Van-Jacobson-TCP-IP
 
 #
 # Default for SLIP: dynamic IP address, SLIP mode.
 #
-DEFAULT	Hint == "SLIP"
-	Framed-Protocol = SLIP
+#DEFAULT	Hint == "SLIP"
+#	Framed-Protocol = SLIP
 
 #
 # Last default: rlogin to our main server.

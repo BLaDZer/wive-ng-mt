@@ -15,7 +15,7 @@ install:
 
 romfs:
 	$(ROMFSINST) /bin/$(BNDSTRG_EXEC)
-	$(ROMFSINST) -S init.d/W66bndstr /etc/rc.d/W66bndstr
+	$(ROMFSINST) -S ../init.d/W66bndstr /etc/rc.d/W66bndstr
 	$(ROMFSINST) -s /etc/rc.d/W66bndstr /etc/init.d/bndstr
 
 clean:

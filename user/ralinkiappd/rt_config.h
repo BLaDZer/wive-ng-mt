@@ -92,11 +92,12 @@ VOID os_free_mem(UCHAR *pAd, VOID *pMem)
 #define RT_DEBUG_TRACE					3
 #define RT_DEBUG_INFO					4
 
-static INT32 RTDebugLevel = RT_DEBUG_ERROR;
+extern INT32 RTDebugLevel;
+
 #ifdef DBG
 #ifdef SYSLOG
-#include<syslog.h>
-#define DBGPRINT(Level, fmt, args...) 					\
+#include <syslog.h>
+#define DBGPRINT(Level, fmt, args...)			\
 {                                   \
     if (Level <= RTDebugLevel)      \
     {                               \
@@ -104,17 +105,17 @@ static INT32 RTDebugLevel = RT_DEBUG_ERROR;
     }                               \
 }
 #else
-#define DBGPRINT(Level, Fmt)			\
+#define DBGPRINT(Level, fmt, args...)			\
 {										\
     if (Level <= RTDebugLevel)			\
     {									\
-        printf Fmt;						\
+	printf( fmt, ## args);			\
     }									\
 }
 #endif
 #else
-    /* no debug information */
-    #define DBGPRINT(Level, Fmt)
+/* no debug information */
+#define DBGPRINT(Level, fmt, args...)
 #endif
 
 #define MAX_NUM_OF_EVENT				30  /* entry # in EVENT table */

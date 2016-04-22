@@ -33,7 +33,7 @@ preprocess {
 	# This configuration entry SHOULD NOT be used.
 	# See the "realms" module for a better way to handle
 	# NT domains.
-	with_ntdomain_hack = no
+	with_ntdomain_hack = yes
 
 	# Specialix Jetstream 8500 24 port access server.
 	#

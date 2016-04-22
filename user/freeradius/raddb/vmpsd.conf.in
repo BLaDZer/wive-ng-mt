@@ -70,7 +70,7 @@ log_file = ${logdir}/vmpsd.log
 #  The command-line option "-X" over-rides this option, and forces
 #  logging to go to stdout.
 #
-log_destination = files
+log_destination = syslog
 
 #
 # libdir: Where to find the rlm_* modules.

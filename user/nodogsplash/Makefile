@@ -51,7 +51,7 @@ romfs:
 	cp -aprvf resources/nodogsplash.conf.template $(ROMFSDIR)/etc/nodogsplash/nodogsplash.conf.template
 	cp -aprvf resources/*.html $(ROMFSDIR)/etc/nodogsplash/htdocs/
 	cp -aprvf resources/*.jpg $(ROMFSDIR)/etc/nodogsplash/htdocs/images/
-	$(ROMFSINST) -S init.d/W89nodogsplash /etc/rc.d/W89nodogsplash
+	$(ROMFSINST) -S ../init.d/W89nodogsplash /etc/rc.d/W89nodogsplash
 	$(ROMFSINST) -s /etc/rc.d/W89nodogsplash /etc/init.d/nodogsplash
 
 checkastyle:

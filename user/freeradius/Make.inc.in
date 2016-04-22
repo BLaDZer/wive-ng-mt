@@ -108,6 +108,9 @@ bm_static_libs  = @USE_STATIC_LIBS@
 STATIC_MODULES	= @STATIC_MODULES@
 LIBREADLINE	= @LIBREADLINE@
 
+CFLAGS		+= -ffunction-sections -fdata-sections
+LDFLAGS		+= -Wl,--gc-sections
+
 #
 #  Version to use for packaging and other Make related things
 #

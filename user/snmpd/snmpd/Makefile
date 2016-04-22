@@ -15,7 +15,7 @@ $(EXEC): $(OBJS) $(USELIBS)
 	$(CC) $(LDFLAGS) -static -o $@ $(OBJS) $(USELIBS) $(LDLIBS)
 
 romfs:
-	$(ROMFSINST) -S init.d/W90snmpd /etc/rc.d/W90snmpd
+	$(ROMFSINST) -S ../../init.d/W90snmpd /etc/rc.d/W90snmpd
 	$(ROMFSINST) -s /etc/rc.d/W90snmpd /etc/init.d/snmpd
 	$(ROMFSINST) /bin/$(EXEC)
 

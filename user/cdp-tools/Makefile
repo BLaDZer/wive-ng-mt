@@ -10,6 +10,6 @@ clean:
 	rm -f cdp-send.o cdp-send
 
 romfs:
-	$(ROMFSINST) -S init.d/W82cdp /etc/rc.d/W82cdp
+	$(ROMFSINST) -S ../init.d/W82cdp /etc/rc.d/W82cdp
 	$(ROMFSINST) -s /etc/rc.d/W82cdp /etc/init.d/cdp
 	$(ROMFSINST) -S /bin/cdp-send

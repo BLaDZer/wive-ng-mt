@@ -226,8 +226,8 @@ EXTRA_CFLAGS += -DEEPROM_COUNTRY_UNLOCK
 # provide external Flash memory support
 EXTRA_CFLAGS += -DRTMP_FLASH_SUPPORT
 
-# provide roaming support
-#EXTRA_CFLAGS += -DIAPP_SUPPORT
+# provide roaming support (allways enable - need for 802.1x preauth)
+EXTRA_CFLAGS += -DIAPP_SUPPORT
 
 # provide information on the current STA population and traffic levels in the QBSS
 EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS

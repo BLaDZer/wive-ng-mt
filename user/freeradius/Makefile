@@ -316,11 +316,14 @@ whitespace:
 	@perl -p -i -e 'trim' $$(git ls-files src/)
 
 romfs: install
+	$(ROMFSINST) -S ../init.d/W69radius /etc/rc.d/W69radius
+	$(ROMFSINST) -s /etc/rc.d/W69radius /etc/init.d/radius
 	$(ROMFSINST) -S filesystem/sbin/radiusd /bin/radiusd
 	cp -rfva filesystem/lib/*.so* $(ROMFSDIR)/lib/
 	mkdir -p $(ROMFSDIR)/share/freeradius
 	cp -rfva filesystem/share/freeradius/* $(ROMFSDIR)/share/freeradius/
 	mkdir -p $(ROMFSDIR)/etc/raddb
+	cp -rfva filesystem/etc/raddb/certs $(ROMFSDIR)/etc/raddb/certs
 	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/radiusd.conf /etc/raddb/radiusd.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/proxy.conf /etc/raddb/proxy.conf
@@ -332,11 +335,13 @@ romfs: install
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/attr_filter /etc/raddb/mods-available/attr_filter
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/files /etc/raddb/mods-available/files
 	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/preprocess /etc/raddb/mods-available/preprocess
+	$(ROMFSINST) -S filesystem/etc/raddb/mods-available/radutmp /etc/raddb/mods-available/radutmp
 	mkdir -p $(ROMFSDIR)/etc/raddb/policy.d
 	$(ROMFSINST) -S filesystem/etc/raddb/policy.d/eap /etc/raddb/policy.d/eap
 	mkdir -p $(ROMFSDIR)/etc/raddb/sites-available
 	$(ROMFSINST) -s /etc/raddb/sites-available /etc/raddb/sites-enabled
 	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/default /etc/raddb/sites-available/default
+	$(ROMFSINST) -S filesystem/etc/raddb/sites-available/inner-tunnel /etc/raddb/sites-available/inner-tunnel
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-config
 	cp -rfva filesystem/etc/raddb/mods-config/files $(ROMFSDIR)/etc/raddb/mods-config/files
 	cp -rfva filesystem/etc/raddb/mods-config/attr_filter $(ROMFSDIR)/etc/raddb/mods-config/attr_filter

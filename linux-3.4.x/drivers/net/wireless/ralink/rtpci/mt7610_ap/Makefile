@@ -226,8 +226,8 @@ ifeq ($(CONFIG_MT7610_AP_INTERFERENCE_REDUCE),y)
 EXTRA_CFLAGS += -DDYNAMIC_VGA_SUPPORT
 endif
 
-# provide roaming support
-#EXTRA_CFLAGS += -DIAPP_SUPPORT
+# provide roaming support (allways enable - need for 802.1x preauth)
+EXTRA_CFLAGS += -DIAPP_SUPPORT
 
 # provide information on the current STA population and traffic levels in the QBSS
 EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS

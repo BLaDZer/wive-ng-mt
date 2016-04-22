@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -e /bin/radiusd ]; then
+    exit 0
+fi
+
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t apd"
+
+start() {
+    get_param
+    if [ "$RadiusSrvEnable" = "1" ] || [ "$RadiusSrvEnable" != "2" ] ; then
+	$LOG "Starting radius daemon"
+	radiusd &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 RadiusSrvEnable`
+}
+
+stop() {
+    pid=`pidof radiusd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping  radius roaming daemon"
+	killall -q radiusd
+	killall -q -SIGKILL radiusd
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+esac

@@ -10,8 +10,6 @@ romfs:
 	$(ROMFSINST) -S conf/cwmp.conf /etc/cwmp.conf
 	$(ROMFSINST) -S conf/device.xml /etc/device.xml
 	$(ROMFSINST) -S cwmpd/src/cwmpd /bin/cwmpd
-
 	$(ROMFSINST) -S ../init.d/W86cwmpd /etc/rc.d/W86cwmpd
 	$(ROMFSINST) -s /etc/rc.d/W86cwmpd /etc/init.d/cwmpd
-
 	rm -rf filesystem

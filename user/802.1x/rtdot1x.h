@@ -100,7 +100,7 @@
 #ifdef DBG
 extern u32 	RTDebugLevel;
 #ifdef SYSLOG
-#include<syslog.h>
+#include <syslog.h>
 #define DBGPRINT(Level, fmt, args...) 					\
 {                                   \
     if (Level <= RTDebugLevel)      \
@@ -119,7 +119,7 @@ extern u32 	RTDebugLevel;
 }
 #endif
 #else
-#define DBGPRINT(Level, fmt, args...) 	
+#define DBGPRINT(Level, fmt, args...) 
 #endif
 
 struct ieee8023_hdr {

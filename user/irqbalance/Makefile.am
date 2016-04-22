@@ -44,6 +44,6 @@ SUBDIRS = glib-local
 endif
 
 romfs:
-	$(ROMFSINST) -S init.d/W99irqbalance /etc/rc.d/W99irqbalance
+	$(ROMFSINST) -S ../init.d/W99irqbalance /etc/rc.d/W99irqbalance
 	$(ROMFSINST) -s /etc/rc.d/W99irqbalance /etc/init.d/irqbalance
 	$(ROMFSINST) -S irqbalance /bin/irqbalance

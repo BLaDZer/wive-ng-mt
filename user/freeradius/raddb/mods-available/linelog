@@ -15,7 +15,7 @@ linelog {
 	#
 	#  If the filename is "syslog", then the log messages will
 	#  go to syslog.
-	filename = ${logdir}/linelog
+	filename = syslog
 
 	#
 	#  Most file systems can handly nearly the full range of UTF-8

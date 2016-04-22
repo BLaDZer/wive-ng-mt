@@ -6,12 +6,11 @@ LOCAL_FILES :=		clients.conf dictionary radiusd.conf proxy.conf
 #LOCAL_FILES :=		clients.conf dictionary templates.conf experimental.conf \
 #			proxy.conf radiusd.conf trigger.conf README.rst panic.gdb
 
-DEFAULT_SITES :=	default
-#DEFAULT_SITES :=	default inner-tunnel
+DEFAULT_SITES :=	default inner-tunnel
 
 LOCAL_SITES :=		$(addprefix raddb/sites-enabled/,$(DEFAULT_SITES))
 
-DEFAULT_MODULES :=	always attr_filter eap mschap preprocess
+DEFAULT_MODULES :=	always attr_filter eap mschap preprocess files radutmp
 
 #DEFAULT_MODULES :=	always attr_filter cache_eap chap \
 #			detail digest dhcp dynamic_clients eap \

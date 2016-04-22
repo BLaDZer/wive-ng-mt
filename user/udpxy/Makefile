@@ -215,7 +215,7 @@ endif
 	@echo "Installation of udpxy is complete"
 
 romfs:
-	$(ROMFSINST) -S init.d/W70udpxy /etc/rc.d/W70udpxy
+	$(ROMFSINST) -S ../init.d/W70udpxy /etc/rc.d/W70udpxy
 	$(ROMFSINST) -s /etc/rc.d/W70udpxy /etc/init.d/udpxy
 	$(ROMFSINST) -S udpxy /bin/udpxy
 

@@ -47,6 +47,7 @@ bool 'radius server (802.1x managment)'		CONFIG_USER_RADIUS
 bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
 if [ "$CONFIG_USER_RADIUS" = "y" ]; then
     define_bool CONFIG_LIB_TALLOC y
+    define_bool CONFIG_LIB_OPENSSL y
 fi
 if [ "$CONFIG_USER_DAVFS" = "y" ]; then
     define_bool CONFIG_LIB_NEON y
@@ -100,6 +101,10 @@ bool 'iw wireless_tool support'			CONFIG_USER_WIRELESS_IW_TOOL
 bool 'Chillispot captive portal'		CONFIG_USER_CHILLISPOT
 bool 'Nodogsplash simple captive portal'	CONFIG_USER_NODOGSPLASH
 bool 'Strace debuggibg tool'			CONFIG_USER_STRACE
+
+if [ "$CONFIG_USER_802_1X" = "y" ]; then
+	define_bool CONFIG_USER_IAPPD y
+fi
 
 if [ "$CONFIG_USER_WIRELESS_IW_TOOL" = "y" ]; then
 	define_bool CONFIG_LIB_NL y

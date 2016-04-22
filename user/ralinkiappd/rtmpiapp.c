@@ -29,6 +29,7 @@
 #include "rtmpiapp.h"
 #include "iappdefs.h"
 
+INT32 RTDebugLevel = RT_DEBUG_ERROR;
 
 /* Local Variable */
 #define IAPP_SHOW_IP_HTONL(__IP)	\
@@ -67,9 +68,8 @@
 			__pBufMsg = __pRspBuf;								\
 	}
 
-static RTMP_IAPP	IAPP_Ctrl_Block;
-static UINT32		IAPP_MemAllocNum, IAPP_MemFreeNum;
-
+static RTMP_IAPP IAPP_Ctrl_Block;
+UINT32	IAPP_MemAllocNum=0, IAPP_MemFreeNum=0;
 
 /* Local Function */
 #ifdef IAPP_EVENT_LOG
@@ -287,8 +287,7 @@ static BOOLEAN IAPP_EventLogClean(
 
 	if (pFile == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> Open eventlog file %s failed!\n", EVENT_LOG_FILE));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open eventlog file %s failed!\n", EVENT_LOG_FILE);
 		return FALSE;
 	} /* End of if */
 
@@ -324,7 +323,7 @@ static BOOLEAN IAPP_EventLogHandle(
 	pFile = fopen(EVENT_LOG_FILE, "ab");
 	if (pFile == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open eventlog file failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open eventlog file failed!\n");
 		return FALSE;
 	} /* End of if */
 
@@ -332,18 +331,14 @@ static BOOLEAN IAPP_EventLogHandle(
 
 	if (FileLen > IAPP_MAX_SIZE_OF_EVENT_LOG)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> eventlog file size exceeds limitation(FileLen=%d)!\n",
-				FileLen));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> eventlog file size exceeds limitation(FileLen=%d)!\n", FileLen);
 		fclose(pFile);
 		return FALSE;
 	} /* End of if */
 
 	if (pEvtTab->Num > MAX_NUM_OF_EVENT)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> eventlog Num exceeds limitation(pEventTab->Num=%d)!\n",
-				pEvtTab->Num));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> eventlog Num exceeds limitation(pEventTab->Num=%d)!\n",	pEvtTab->Num);
 		fclose(pFile);
 		return FALSE;
 	} /* End of if */
@@ -353,11 +348,11 @@ static BOOLEAN IAPP_EventLogHandle(
 		if (fwrite(&pEvtTab->Log[IdEvt], sizeof(RT_802_11_EVENT_LOG),
 					1, pFile) != 1)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> File write error!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> File write error!\n");
 		} /* End of if */
 
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> (%d/%d): (Event=0x%x) (D:%02x:%02x:%02x:%02x:%02x:%02x) "
+				"iapp> (%d/%d): (Event=0x%x) (D:%02x:%02x:%02x:%02x:%02x:%02x) "
 				"(T:%02x:%02x:%02x:%02x:%02x:%02x)\n",
 				IdEvt, pEvtTab->Num, pEvtTab->Log[IdEvt].Event,
 				pEvtTab->Log[IdEvt].DetectorAddr[0],
@@ -371,7 +366,7 @@ static BOOLEAN IAPP_EventLogHandle(
 				pEvtTab->Log[IdEvt].TriggerAddr[2],
 				pEvtTab->Log[IdEvt].TriggerAddr[3],
 				pEvtTab->Log[IdEvt].TriggerAddr[4],
-				pEvtTab->Log[IdEvt].TriggerAddr[5]));
+				pEvtTab->Log[IdEvt].TriggerAddr[5]);
 	} /* End of for */
 
 	fclose(pFile);
@@ -403,7 +398,7 @@ static VOID IAPP_EventLog_Query(
 	IAPP_MEM_ALLOC(pEvtBuf, sizeof(RT_802_11_EVENT_TABLE));
 	if (pEvtBuf == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Out of memory!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Out of memory!\n");
 		return;
 	} /* End of if */
 
@@ -444,7 +439,7 @@ static VOID IAPP_SM_InfoHandle(
 
 	OID_req_p = (POID_REQ) pMsg;
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> (Receive IAPP_QUERY_OID_REQ)\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> (Receive IAPP_QUERY_OID_REQ)\n");
 
 	/* IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
 			OID_req_p->Buf, &OID_req_p->Len, 0, OID_req_p->OID); */
@@ -478,8 +473,7 @@ static VOID IAPP_SM_InfoHandle(
 		}
 		else
 		{
-			DBGPRINT(RT_DEBUG_INFO,
-					("iapp> RT_QUERY_EVENT_TABLE invalid or zero in length!\n"));
+			DBGPRINT(RT_DEBUG_INFO, "iapp> RT_QUERY_EVENT_TABLE invalid or zero in length!\n");
 		} /* End of if */
 	} /* End of if */
 } /* End of IAPP_SM_InfoHandle */
@@ -633,8 +627,7 @@ static BOOLEAN IAPP_ArgumentParse(
 				{
 					pArgv[0][IAPP_ENCRYPT_KEY_MAX_SIZE] = 0x00;
 
-					DBGPRINT(RT_DEBUG_TRACE, ("iapp> key length can not be larger than %d!",
-							IAPP_ENCRYPT_KEY_MAX_SIZE));
+					DBGPRINT(RT_DEBUG_TRACE,"iapp> key length can not be larger than %d!", IAPP_ENCRYPT_KEY_MAX_SIZE);
 				} /* End of if */
 
 				strcpy(pCtrlBK->CommonKey, pArgv[0]);
@@ -646,8 +639,11 @@ static BOOLEAN IAPP_ArgumentParse(
 		else if (strncmp(pArgv[0], "-d", 2) == 0)
 		{
 			IAPP_AGP_CMD_PARSE_NEXT_ONE;
-			RTDebugLevel = atoi(pArgv[0]);
-			IAPP_AGP_CMD_PARSE_NEXT_ONE;
+			if (Argc > 0)
+			{
+			    RTDebugLevel = atoi(pArgv[0]);
+			    IAPP_AGP_CMD_PARSE_NEXT_ONE;
+			}
 		}
 		else
 		{
@@ -656,8 +652,7 @@ static BOOLEAN IAPP_ArgumentParse(
 	} /* End of while */
 
 label_exit:
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> -e=%s, -w=%s\n",
-			pCtrlBK->IfNameEth, pCtrlBK->IfNameWlan));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> -e=%s, -w=%s\n", pCtrlBK->IfNameEth, pCtrlBK->IfNameWlan);
 	return TRUE;
 } /* End of IAPP_ArgumentParse */
 
@@ -691,15 +686,14 @@ static BOOLEAN IAPP_DSIfInfoGet(
 	/* open a UDP socket */
 	if ((SockIf = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open socket failed!\n");
 		return FALSE;
 	} /* End of if */
 
 	/* get own addr */
 	if (ioctl(SockIf, SIOCGIFADDR, (int) &ReqIf) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> Get own address of %s failed!\n", ReqIf.ifr_name));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get own address of %s failed!\n", ReqIf.ifr_name);
 		goto label_fail;
 	} /* End of if */
 
@@ -707,13 +701,12 @@ static BOOLEAN IAPP_DSIfInfoGet(
 				&((struct sockaddr_in *) &ReqIf.ifr_addr)->sin_addr,
 				sizeof(pCtrlBK->AddrOwn));
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> own address (%d.%d.%d.%d)\n",
-			IAPP_SHOW_IP_HTONL(pCtrlBK->AddrOwn.s_addr)));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> own address (%d.%d.%d.%d)\n", IAPP_SHOW_IP_HTONL(pCtrlBK->AddrOwn.s_addr));
 
 	/* get broadcast address */
 	if (ioctl(SockIf, SIOCGIFBRDADDR, (int) &ReqIf) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Get broadcast address failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get broadcast address failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -724,13 +717,12 @@ static BOOLEAN IAPP_DSIfInfoGet(
 	/* can not use 255.255.255.255 or we can not send any packet */
 //	NdisFillMemory(&pCtrlBK->AddrBroadcast, sizeof(pCtrlBK->AddrBroadcast), 0xFF);
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> broadcast address (%d.%d.%d.%d)\n",
-			IAPP_SHOW_IP_HTONL(pCtrlBK->AddrBroadcast.s_addr)));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> broadcast address (%d.%d.%d.%d)\n", IAPP_SHOW_IP_HTONL(pCtrlBK->AddrBroadcast.s_addr));
 
 	/* get network Mask */
 	if (ioctl(SockIf, SIOCGIFNETMASK, (int) &ReqIf) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Get network Mask failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get network Mask failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -738,8 +730,7 @@ static BOOLEAN IAPP_DSIfInfoGet(
 				&((struct sockaddr_in *) &ReqIf.ifr_addr)->sin_addr,
 				sizeof(pCtrlBK->AddrNetmask));
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> network Mask address (%d.%d.%d.%d)\n",
-			IAPP_SHOW_IP_HTONL(pCtrlBK->AddrNetmask.s_addr)));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> network Mask address (%d.%d.%d.%d)\n", IAPP_SHOW_IP_HTONL(pCtrlBK->AddrNetmask.s_addr));
 
 	close(SockIf);
 	return TRUE;
@@ -800,8 +791,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #ifdef IAPP_OS_LINUX
 	if (ioctl(pCtrlBK->SocketIoctl, Param, (int) &Wrq) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -809,8 +799,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #ifdef IAPP_OS_VXWORKS
 	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, (caddr_t) &Wrq) == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,
-				("iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
@@ -890,7 +879,7 @@ static BOOLEAN IAPP_L2UpdateFrameSend(
 	Status = send(pCtrlBK->SocketRawBr, pFrameL2, sizeof(FrameBody), 0);
 	if (Status < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send L2 packet failed %d!\n", Status));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send L2 packet failed %d!\n", Status);
 		return FALSE;
 	} /* End of if */
 #endif
@@ -908,7 +897,7 @@ static BOOLEAN IAPP_L2UpdateFrameSend(
 									     sizeof(FrameBody), M_DONTWAIT, 
 									     MT_DATA, TRUE)) == NULL)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Get packet buffer fail!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Get packet buffer fail!\n");
 			return FALSE;
 		} /* End of if */
 
@@ -919,13 +908,13 @@ static BOOLEAN IAPP_L2UpdateFrameSend(
 
 		if (muxSend(pCtrlBK->pBcCookie[IdIfNum], pUpdatePkt) == ERROR)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send L2 packet failed!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send L2 packet failed!\n");
 			netMblkClChainFree(pUpdatePkt);
 			return FALSE;
 		} /* End of if */
 	} /* End of for */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Send L2 packet OK!\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send L2 packet OK!\n");
 }
 #endif
 
@@ -959,12 +948,12 @@ static BOOLEAN IAPP_MsgProcess(
 	switch(MsgSubType)
 	{
 		case IAPP_OPEN_SERVICE_REQ:
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> (FlgIsMsgReady is TRUE)\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> (FlgIsMsgReady is TRUE)\n");
 			break;
 
 
 		case IAPP_CLOSE_SERVICE_REQ:
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> (FlgIsMsgReady is FALSE)\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> (FlgIsMsgReady is FALSE)\n");
 			break;
 
 
@@ -975,8 +964,7 @@ static BOOLEAN IAPP_MsgProcess(
 
 			OID_req_p = (POID_REQ) pMsg;
 
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> Command to WLAN (OID=%x, LEN=%d)\n",
-						OID_req_p->OID, OID_req_p->Len));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Command to WLAN (OID=%x, LEN=%d)\n", OID_req_p->OID, OID_req_p->Len);
 
 			IAPP_IOCTL_TO_WLAN( \
 							pCtrlBK, RT_IOCTL_IAPP,
@@ -992,7 +980,7 @@ static BOOLEAN IAPP_MsgProcess(
 
 
 		default:
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> (unknown subtype)\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> (unknown subtype)\n");
 			break;
 	} /* End of switch */
 
@@ -1030,15 +1018,15 @@ static BOOLEAN IAPP_SIG_Process(
 	pEvtHeader = (FT_KDP_EVT_HEADER *)(pSig->Content);
 
 	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> Sig = %d, pEvtHeader->EventLen = %d, "
+			"iapp> Sig = %d, pEvtHeader->EventLen = %d, "
 			"Peer IP = %d.%d.%d.%d\n",
 			pSig->Sig, pEvtHeader->EventLen,
-			IAPP_SHOW_IP_HTONL(pEvtHeader->PeerIpAddr)));
+			IAPP_SHOW_IP_HTONL(pEvtHeader->PeerIpAddr));
 
 	switch(pSig->Sig)
 	{
 		case FT_KDP_SIG_NOTHING:
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> NO event to handle.\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> NO event to handle.\n");
 			break;
 
 		case FT_KDP_SIG_IAPP_ASSOCIATION:
@@ -1115,8 +1103,8 @@ static BOOLEAN IAPP_SIG_Process(
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
 
 			DBGPRINT(RT_DEBUG_TRACE,
-					("iapp> (IAPP_SIG_ASSOCIATION), Rcv assoc signal, and send out "
-					"IAPP add-notify\n"));
+					"iapp> (IAPP_SIG_ASSOCIATION), Rcv assoc signal, and send out "
+					"IAPP add-notify\n");
 		} /* case IAPP_SIG_ASSOCIATION */
 		break;
 
@@ -1158,8 +1146,8 @@ static BOOLEAN IAPP_SIG_Process(
 				send the L2 update frame with broadcast address.
 			*/
 			DBGPRINT(RT_DEBUG_TRACE,
-					("iapp> (FT_KDP_SIG_FT_ASSOCIATION) Rcv a assoc signal and send out "
-					"IAPP add-notify!\n"));
+					"iapp> (FT_KDP_SIG_FT_ASSOCIATION) Rcv a assoc signal and send out "
+					"IAPP add-notify!\n");
 
 			IAPP_UDP_PACKET_SEND(pCtrlBK, pFrameNotify, DataLen, pRspBuf);
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
@@ -1218,8 +1206,8 @@ static BOOLEAN IAPP_SIG_Process(
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
 
 			DBGPRINT(RT_DEBUG_TRACE,
-					("iapp> (IAPP_SIG_REASSOCIATION) Rcv a reassoc signal and "
-					"send out IAPP move-notify!\n"));
+					"iapp> (IAPP_SIG_REASSOCIATION) Rcv a reassoc signal and "
+					"send out IAPP move-notify!\n");
 		}
 		break;
 
@@ -1301,13 +1289,13 @@ static BOOLEAN IAPP_SIG_Process(
 		case FT_KSP_SIG_DEBUG_TRACE:
 			/* change debug level */
 			RTDebugLevel = *(INT32 *)(pSig->Content+FT_KDP_EVT_HEADER_SIZE);
-			DBGPRINT(RT_DEBUG_OFF, ("iapp> Change debug level to %d!\n", RTDebugLevel));
+			DBGPRINT(RT_DEBUG_OFF, "iapp> Change debug level to %d!\n", RTDebugLevel);
 			break;
 
 
 		default:
 			DBGPRINT(RT_DEBUG_ERROR,
-					("iapp> Signal %d is not supported!\n", pSig->Sig));
+					"iapp> Signal %d is not supported!\n", pSig->Sig);
 			return FALSE;
 	} /* End of switch(pSig->Sig) */
 
@@ -1335,7 +1323,7 @@ static BOOLEAN IAPP_SocketClose(
 /*	struct ip_mreq MReq;*/
 
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Close TCP/UDP socket.\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Close TCP/UDP socket.\n");
 
 	if (pCtrlBK->SocketUdpSend >= 0)
 		close(pCtrlBK->SocketUdpSend);
@@ -1440,7 +1428,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 	if (pCtrlBK->pDrvCookieFrom == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> muxBind device failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> muxBind device failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1456,7 +1444,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 	if (pCtrlBK->pDrvCookieTo == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> muxBind device failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> muxBind device failed!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
@@ -1464,7 +1452,7 @@ static BOOLEAN IAPP_SocketOpen(
 	/* open a Send UDP socket */
 	if ((pCtrlBK->SocketUdpSend = socket(PF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open UDP socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open UDP socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1473,7 +1461,7 @@ static BOOLEAN IAPP_SocketOpen(
 	if (setsockopt(pCtrlBK->SocketUdpSend, SOL_SOCKET, SO_REUSEADDR,
 					&FlgIsReUsed, sizeof(FlgIsReUsed)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> setsockopt-SO_REUSEADDR failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> setsockopt-SO_REUSEADDR failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1498,7 +1486,7 @@ static BOOLEAN IAPP_SocketOpen(
 			(struct sockaddr *)&AddrUdp,
 			sizeof(AddrUdp)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Bind Send UDP failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Bind Send UDP failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1509,7 +1497,7 @@ static BOOLEAN IAPP_SocketOpen(
     if (setsockopt(pCtrlBK->SocketUdpSend, IPPROTO_IP, IP_MULTICAST_IF,
                     (char *) &AddrIf, sizeof(AddrIf)) == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> iapp> setsockopt error!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> iapp> setsockopt error!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
@@ -1522,7 +1510,7 @@ static BOOLEAN IAPP_SocketOpen(
 					&FlgIsLoop,
 					sizeof(FlgIsLoop)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> setsockopt-multicast failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> setsockopt-multicast failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1531,7 +1519,7 @@ static BOOLEAN IAPP_SocketOpen(
 	if (setsockopt(pCtrlBK->SocketUdpSend, SOL_SOCKET, SO_BROADCAST,
 				&FlgIsBroadcast, sizeof(FlgIsBroadcast)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> setsockopt-SO_BROADCAST failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> setsockopt-SO_BROADCAST failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1543,12 +1531,11 @@ static BOOLEAN IAPP_SocketOpen(
 	*/
 	IAPP_MEM_MOVE(ReqIf.ifr_name, pCtrlBK->IfNameEth, IFNAMSIZ);
 
-	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> Register ethernet interface as (%s)\n", ReqIf.ifr_name));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Register ethernet interface as (%s)\n", ReqIf.ifr_name);
 
 	if (ioctl(pCtrlBK->SocketUdpSend, SIOCGIFINDEX, &ReqIf) != 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> ioctl(SIOCGIFINDEX) failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> ioctl(SIOCGIFINDEX) failed!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -1561,7 +1548,7 @@ static BOOLEAN IAPP_SocketOpen(
 //										htons(ETH_P_ALL))) < 0)
 										htons(0x0008))) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open RAW socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open RAW socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1574,7 +1561,7 @@ static BOOLEAN IAPP_SocketOpen(
 			(struct sockaddr *) &AddrRaw,
 			sizeof(AddrRaw)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Bind RAW socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Bind RAW socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1583,7 +1570,7 @@ static BOOLEAN IAPP_SocketOpen(
 										SOCK_RAW,
 										htons(RRB_ETH_PRO))) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> open RRB RAW socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> open RRB RAW socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1596,7 +1583,7 @@ static BOOLEAN IAPP_SocketOpen(
 			(struct sockaddr *) &AddrRaw,
 			sizeof(AddrRaw)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Bind RRB RAW socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Bind RRB RAW socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -1627,7 +1614,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 		if (pCtrlBK->pBcCookie[IdIfNum] == NULL)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> muxBind BC failed!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> muxBind BC failed!\n");
 			goto label_fail;
 		} /* End of if */
 
@@ -1643,7 +1630,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 		if (pCtrlBK->pRrbCookieTo[IdIfNum] == NULL)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> iapp> muxBind RRB failed!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> iapp> muxBind RRB failed!\n");
 			goto label_fail;
 		} /* End of if */
 	} /* End of for */
@@ -1660,7 +1647,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 	if (pCtrlBK->pRrbCookieFrom == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> muxBind RRB failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> muxBind RRB failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1668,7 +1655,7 @@ static BOOLEAN IAPP_SocketOpen(
 										SOCK_RAW,
 										0)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open RAW socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open RAW socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1676,7 +1663,7 @@ static BOOLEAN IAPP_SocketOpen(
 	pCtrlBK->SocketRawDrv = open(IAPP_KDP_PIPE_DRV, O_RDWR, 0);
 	if (pCtrlBK->SocketRawDrv < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open a PIPE DRV failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open a PIPE DRV failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1684,7 +1671,7 @@ static BOOLEAN IAPP_SocketOpen(
 	pCtrlBK->SocketRawRRB = open(IAPP_KDP_PIPE_ETH, O_RDWR, 0);
 	if (pCtrlBK->SocketRawRRB < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open a PIPE RRB failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open a PIPE RRB failed!\n");
 		goto label_fail;
 	} /* End of if */
 }
@@ -1701,7 +1688,7 @@ static BOOLEAN IAPP_SocketOpen(
 											SOCK_STREAM,
 											IPPROTO_TCP)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open TcpSocketForOtherAP failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open TcpSocketForOtherAP failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1715,7 +1702,7 @@ static BOOLEAN IAPP_SocketOpen(
 			(struct sockaddr *)&AddrTcp,
 			sizeof(AddrTcp)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Bind Rcv TCP failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Bind Rcv TCP failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1728,7 +1715,7 @@ static BOOLEAN IAPP_SocketOpen(
 										SOCK_RAW,
 										htons(IAPP_ETH_PRO))) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open RAW DRV socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open RAW DRV socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1737,7 +1724,7 @@ static BOOLEAN IAPP_SocketOpen(
 
 	if (ioctl(pCtrlBK->SocketRawDrv, SIOCGIFINDEX, &ReqIf) != 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> ioctl(SIOCGIFINDEX) failed 2!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> ioctl(SIOCGIFINDEX) failed 2!\n");
 		goto label_fail;
 	} /* End of if */
 
@@ -1749,7 +1736,7 @@ static BOOLEAN IAPP_SocketOpen(
 			(struct sockaddr *) &AddrRaw,
 			sizeof(AddrRaw)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Bind RAW DRV socket failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Bind RAW DRV socket failed!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -1762,7 +1749,7 @@ static BOOLEAN IAPP_SocketOpen(
 	if ((pCtrlBK->PipeRawDrv[FT_KDP_PIPE_ID_READ] < 0) ||
 		(pCtrlBK->PipeRawDrv[FT_KDP_PIPE_ID_WRITE] < 0))
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open raw drv pipe failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open raw drv pipe failed!\n");
 		goto label_fail;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -1909,11 +1896,11 @@ static BOOLEAN IAPP_UDP_PacketSend(
 				(struct sockaddr *)&AddrMulticast,
 				sizeof(AddrMulticast)) != PktLen)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send UDP packet failed!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send UDP packet failed!\n");
 		Status = FALSE;
 	} /* End of if */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Send UDP packet ok (Len = %d)\n\n", PktLen));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send UDP packet ok (Len = %d)\n\n", PktLen);
 	return Status;
 } /* End of IAPP_UDP_PacketSend */
 
@@ -2139,8 +2126,8 @@ static VOID IAPP_RcvHandlerTcp(
 	if (SizeRcvMsg > 0)
 	{
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> Recv TCP successfully from %d.%d.%d.%d\n",
-				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr)));
+				"iapp> Recv TCP successfully from %d.%d.%d.%d\n",
+				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr));
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
@@ -2153,14 +2140,14 @@ static VOID IAPP_RcvHandlerTcp(
 
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP version not match %d!\n",
-					pIappHdr->Version));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n",
+					pIappHdr->Version);
 			IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
 
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> IAPP SysCmd = %d\n", pIappHdr->Command));
+				"iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
 
 		switch(pIappHdr->Command)
 		{
@@ -2188,8 +2175,8 @@ static VOID IAPP_RcvHandlerTcp(
 				*/
 
 				DBGPRINT(RT_DEBUG_TRACE,
-						("iapp> Receive IAPP_CMD_MOVE_RESPONSE! (size = %d)\n",
-						SizeRcvMsg));
+						"iapp> Receive IAPP_CMD_MOVE_RESPONSE! (size = %d)\n",
+						SizeRcvMsg);
 
 				/* not yet implement */
 			}
@@ -2223,7 +2210,7 @@ static VOID IAPP_RcvHandlerTcp(
 				/* End of if */
 
 				/* command to notify that a Key Req is received */
-				DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP_CMD_FT_ACK_SECURITY_BLOCK\n"));
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_CMD_FT_ACK_SECURITY_BLOCK\n");
 
 				OidReq = (POID_REQ) pBufMsg;
 				OidReq->OID = (RT_SET_FT_KEY_RSP | OID_GET_SET_TOGGLE);
@@ -2310,9 +2297,9 @@ static VOID IAPP_RcvHandlerMoveReq(
 	if (SWAP_16(pNotify->IappHeader.Length) != sizeof(RT_IAPP_MOVE_NOTIFY))
 	{
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> Len %d != Move Request Len %d!\n",
+				"iapp> Len %d != Move Request Len %d!\n",
 				SWAP_16(pNotify->IappHeader.Length),
-				sizeof(RT_IAPP_MOVE_NOTIFY)));
+				sizeof(RT_IAPP_MOVE_NOTIFY));
 		return;
 	} /* End of if */
 
@@ -2337,11 +2324,11 @@ static VOID IAPP_RcvHandlerMoveReq(
 	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen);
 
 	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> (Receive IAPP_CMD_MOVE_NOTIFY for "
+			"iapp> (Receive IAPP_CMD_MOVE_NOTIFY for "
 			"%02x:%02x:%02x:%02x:%02x:%02x)\n",
 			pNotify->MacAddr[0], pNotify->MacAddr[1],
 			pNotify->MacAddr[2], pNotify->MacAddr[3],
-			pNotify->MacAddr[4], pNotify->MacAddr[5]));
+			pNotify->MacAddr[4], pNotify->MacAddr[5]);
 
 	/* reponse the MOVE request */
 	pRsp = (RT_IAPP_MOVE_RSP *)pNotify;
@@ -2394,7 +2381,7 @@ static VOID IAPP_RcvHandlerSSB(
 	/* End of if */
 
 	/* command to notify that a Key Req is received */
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP_RcvHandlerSSB\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_RcvHandlerSSB\n");
 
 	OidReq = (POID_REQ) pBufMsg;
 	OidReq->OID = (RT_SET_FT_KEY_REQ | OID_GET_SET_TOGGLE);
@@ -2460,7 +2447,7 @@ static VOID IAPP_RcvHandlerApInfor(
 	/* sanity check */
 	if (Type >= IAPP_INFO_TYPE_MAX_NUM)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("iapp> Wrong Info Type %d\n", Type));
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> Wrong Info Type %d\n", Type);
 		return;
 	} /* End of if */
 
@@ -2476,7 +2463,7 @@ static VOID IAPP_RcvHandlerApInfor(
 	/* End of if */
 
 	/* command to notify that a Key Req is received */
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP_RcvHandlerApInfor %d\n", Type));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_RcvHandlerApInfor %d\n", Type);
 
 	OidReq = (POID_REQ) pBufMsg;
 	OidReq->OID = (OID[Type] | OID_GET_SET_TOGGLE);
@@ -2554,9 +2541,7 @@ static VOID IAPP_RcvHandlerRawDrv(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
-		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> Recvfrom RAW CMD successfully (%d, %d)!\n",
-				IAPP_MemAllocNum, IAPP_MemFreeNum));
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> Recvfrom RAW CMD successfully!\n");
 
 		/* handle the signal context, assoicate or reassociate or terminate */
 		pSignal = (RT_SIGNAL_STRUC *)(pPktBuf + sizeof(FT_ETH_HEADER));
@@ -2619,9 +2604,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
-		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> Recvfrom RRB RAW successfully! (len = %d)\n",
-				SizeRcvMsg));
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> Recvfrom RRB RAW successfully! (len = %d)\n", SizeRcvMsg);
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
@@ -2794,14 +2777,14 @@ static VOID IAPP_RcvHandlerUdp(
 	if (SizeRcvMsg > 0)
 	{
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> Recvfrom UDP (len%d) successfully from %d.%d.%d.%d\n",
+				"iapp> Recvfrom UDP (len%d) successfully from %d.%d.%d.%d\n",
 				SizeRcvMsg,
-				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr)));
+				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr));
 
 #ifndef IAPP_TEST
 		if (AddrPeer.sin_addr.s_addr == pCtrlBK->AddrOwn.s_addr)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> Skip packet from us!\n\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Skip packet from us!\n\n");
 			return; /* same IP source address */
 		} /* End of if */
 #endif // IAPP_TEST //
@@ -2817,8 +2800,8 @@ static VOID IAPP_RcvHandlerUdp(
 
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP version not match %d!\n",
-					pIappHdr->Version));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n",
+					pIappHdr->Version);
 			IAPP_HEX_DUMP("Wrong UDP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
@@ -2826,7 +2809,7 @@ static VOID IAPP_RcvHandlerUdp(
 
 		/* handle the IAPP */
 		DBGPRINT(RT_DEBUG_TRACE,
-				("iapp> IAPP SysCmd = %d\n", pIappHdr->Command));
+				"iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
 
 		switch(pIappHdr->Command)
 		{
@@ -2844,9 +2827,9 @@ static VOID IAPP_RcvHandlerUdp(
 				if (SWAP_16(pIappHdr->Length) != sizeof(RT_IAPP_ADD_NOTIFY))
 				{
 					DBGPRINT(RT_DEBUG_TRACE,
-							("iapp> Len 0x%x != ADD Notify Len %d!\n",
+							"iapp> Len 0x%x != ADD Notify Len %d!\n",
 							SWAP_16(pIappHdr->Length),
-							sizeof(RT_IAPP_ADD_NOTIFY)));
+							sizeof(RT_IAPP_ADD_NOTIFY));
 					break;
 				} /* End of if */
 
@@ -2892,12 +2875,12 @@ static VOID IAPP_RcvHandlerUdp(
 							(sizeof(INT32) + sizeof(INT32) + ETH_ALEN));
 
 				DBGPRINT(RT_DEBUG_TRACE,
-						("iapp> Receive IAPP_CMD_ADD_NOTIFY for "
+						"iapp> Receive IAPP_CMD_ADD_NOTIFY for "
 						"%02x:%02x:%02x:%02x:%02x:%02x (size = %d)\n",
 						pNotify->MacAddr[0], pNotify->MacAddr[1],
 						pNotify->MacAddr[2], pNotify->MacAddr[3],
 						pNotify->MacAddr[4], pNotify->MacAddr[5],
-						SizeRcvMsg));
+						SizeRcvMsg);
 
 				/* command to notify that this is for 11r station */
 				if (pNotify->Rsvd & FT_KDP_ADD_NOTIFY_RSVD_11R_SUPPORT)
@@ -2944,8 +2927,7 @@ static VOID IAPP_RcvHandlerUdp(
 
 				SM_p = (PRT_IAPP_SECURITY_MONITOR) pIappHdr;
 
-				DBGPRINT(RT_DEBUG_TRACE,
-						("iapp> pkt = IAPP_CMD_SECURITY_MONITOR\n"));
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> pkt = IAPP_CMD_SECURITY_MONITOR\n");
 
 				IAPP_EventLogHandle(&SM_p->EvtTab);
 			} /* IAPP_CMD_SECURITY_MONITOR */
@@ -2989,8 +2971,7 @@ static VOID IAPP_RcvHandlerUdp(
 
 
 			default:
-				DBGPRINT(RT_DEBUG_TRACE,
-						("iapp> Unknown IAPP command %d!\n", pIappHdr->Command));
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> Unknown IAPP command %d!\n", pIappHdr->Command);
 				break;
 		} /* End of switch(pIappHdr->Command) */
 	} /* End of if (SizeRcvMsg > 0) */
@@ -3051,14 +3032,14 @@ static VOID IAPP_USR2Handle(
 	IAPP_MEM_ALLOC(pSigBuf, DataLen);
 	if (pSigBuf == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Allocate signal buffer fail!\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Allocate signal buffer fail!\n");
 		return;
 	} /* End of if */
 
 	IAPP_IOCTL_TO_WLAN(&IAPP_Ctrl_Block, RT_IOCTL_IAPP,
 						pSigBuf, &DataLen, 0, RT_QUERY_SIGNAL_CONTEXT);
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Receive a signal (Len = %d)!\n", DataLen));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Receive a signal (Len = %d)!\n", DataLen);
 
 	/* pass event to raw drv socket */
 	if (DataLen > 0)
@@ -3122,19 +3103,19 @@ VOID IAPP_Task(
 	INT32 ComLen;
 
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> task start...\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> task start...\n");
 
 	/* here is the child background process */
 	if (IAPP_DSIfInfoGet(pCtrlBK) != TRUE)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Get interfce information failed\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get interfce information failed\n");
 		goto label_err;
 	} /* End of if */
 
 	/* init IPC message queue with 8021X deamon (obsolete) */
 	if (IAPP_IPC_MSG_Init(pCtrlBK) != TRUE)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Setup message failed\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Setup message failed\n");
 		goto label_err;
 	} /* End of if */
 
@@ -3145,7 +3126,7 @@ VOID IAPP_Task(
 	pCtrlBK->FlgIsRcvRunning = FALSE;
 	if (IAPP_SocketOpen(pCtrlBK) == FALSE)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Open Socket failed\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open Socket failed\n");
 		goto label_err;
 	} /* End of if */
 
@@ -3173,8 +3154,7 @@ VOID IAPP_Task(
 
 	pCtrlBK->PID = PidAuth;
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Process ID = 0x%x (%d %d)\n",
-			PidAuth, IAPP_MemAllocNum, IAPP_MemFreeNum));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Process ID = 0x%x\n", PidAuth);
 
 	ComLen = sizeof(INT32);
 	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
@@ -3191,9 +3171,7 @@ VOID IAPP_Task(
 	IAPP_Start(pCtrlBK);
 
 	/* will not be here except terminate signal */
-
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP_Task ends (%d, %d)!\n",
-			IAPP_MemAllocNum, IAPP_MemFreeNum));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_Task end!\n");
 
 label_err:
 	return;
@@ -3260,12 +3238,12 @@ STATUS IAPP_Init(INT32 Argc, CHAR *pArgv[])
 									0, 0, 0, 0, 0, 0, 0, 0, 0);
 	if (pCtrlBK->PID == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Task  spawn failed\n"));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Task  spawn failed\n");
 		goto label_err;
 	} /* End of if */
 #endif
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Exit daemon!\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Exit daemon!\n");
 	return 0;
 
 label_err:
@@ -3305,7 +3283,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 	IAPP_IN		BOOLEAN				FlgUsingUdpWhenNoIP,
 	IAPP_IN		UCHAR				*pRspBuf)
 {
-	INT32 SocketPeer;
+	INT32 SocketPeer = 0;
 	struct sockaddr_in AddrSockConn;
 	UCHAR *pBufEncrypt;
 	BOOLEAN FuncStatus;
@@ -3317,7 +3295,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 	/* End of if */
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> IAPP_TCP_PacketSend %x\n", PeerIP));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_TCP_PacketSend %x\n", PeerIP);
 	FuncStatus = FALSE;
 
 	if (PeerIP != 0)
@@ -3326,7 +3304,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 		SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (SocketPeer < 0)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> Open TCP socket fail!\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Open TCP socket fail!\n");
 			return FALSE;
 		} /* End of if */
 
@@ -3339,8 +3317,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 					(struct sockaddr *)&AddrSockConn,
 					sizeof(AddrSockConn)) < 0)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Connect socket failed %d.%d.%d.%d!\n",
-					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Connect socket failed %d.%d.%d.%d!\n", IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 			goto label_fail;
 		} /* End of if */
 	} /* End of if */
@@ -3365,8 +3342,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 
 		if (send(SocketPeer, pBufEncrypt, PktLen, 0) < 0)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send socket failed %d.%d.%d.%d!\n",
-					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n", IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 			goto label_fail;
 		} /* End of if */
 	}
@@ -3418,9 +3394,7 @@ static VOID FT_KDP_SecurityBlockSend(
 
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> FT_KDP_SecurityBlockSend to %d.%d.%d.%d\n\n",
-			IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr)));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockSend to %d.%d.%d.%d\n\n",	IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr));
 
 	SocketPeer = 0;
 	pBufFrame = NULL;
@@ -3432,7 +3406,7 @@ static VOID FT_KDP_SecurityBlockSend(
 		SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (SocketPeer < 0)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("iapp> Open TCP socket fail!\n"));
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Open TCP socket fail!\n");
 			return;
 		} /* End of if */
 
@@ -3449,8 +3423,7 @@ static VOID FT_KDP_SecurityBlockSend(
 					(struct sockaddr *)&AddrSockConn,
 					sizeof(AddrSockConn)) < 0)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Connect socket failed %d.%d.%d.%d!\n",
-					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Connect socket failed %d.%d.%d.%d!\n", IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 			goto label_fail;
 		} /* End of if */
 	} /* End of if */
@@ -3488,8 +3461,8 @@ static VOID FT_KDP_SecurityBlockSend(
 
 		if (send(SocketPeer, pBufFrame, PktLen, 0) < 0)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send socket failed %d.%d.%d.%d!\n",
-					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n",
+					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 			goto label_fail;
 		} /* End of if */
 	}
@@ -3537,7 +3510,7 @@ static VOID FT_KDP_SecurityBlockAck(
 
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> FT_KDP_SecurityBlockSend\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockSend\n");
 
 	SocketPeer = 0;
 	pBufFrame = NULL;
@@ -3546,7 +3519,7 @@ static VOID FT_KDP_SecurityBlockAck(
 	SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (SocketPeer < 0)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("iapp> Open TCP socket fail!\n"));
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> Open TCP socket fail!\n");
 		return;
 	} /* End of if */
 
@@ -3563,8 +3536,8 @@ static VOID FT_KDP_SecurityBlockAck(
 				(struct sockaddr *)&AddrSockConn,
 				sizeof(AddrSockConn)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Connect socket failed %d.%d.%d.%d!\n",
-				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Connect socket failed %d.%d.%d.%d!\n",
+				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 		goto label_fail;
 	} /* End of if */
 
@@ -3597,8 +3570,8 @@ static VOID FT_KDP_SecurityBlockAck(
 	/* send out the frame */
 	if (send(SocketPeer, pBufFrame, PktLen, 0) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send socket failed %d.%d.%d.%d!\n",
-				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n",
+				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 		goto label_fail;
 	} /* End of if */
 
@@ -3639,8 +3612,7 @@ static VOID FT_KDP_InformationRequestSend(
 
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> FT_KDP_InformationRequestSend\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_InformationRequestSend\n");
 
 	pBufFrame = NULL;
 
@@ -3701,9 +3673,7 @@ static VOID FT_KDP_InformationResponseSend(
 
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> FT_KDP_InformationResponseSend to %d.%d.%d.%d\n",
-			IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr)));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_InformationResponseSend to %d.%d.%d.%d\n", IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr));
 
 	if (pEvtHdr->PeerIpAddr == 0)
 		return;
@@ -3716,7 +3686,7 @@ static VOID FT_KDP_InformationResponseSend(
 	SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (SocketPeer < 0)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("iapp> Open TCP socket fail!\n"));
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> Open TCP socket fail!\n");
 		return;
 	} /* End of if */
 
@@ -3733,8 +3703,8 @@ static VOID FT_KDP_InformationResponseSend(
 				(struct sockaddr *)&AddrSockConn,
 				sizeof(AddrSockConn)) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Connect socket failed %d.%d.%d.%d!\n",
-				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Connect socket failed %d.%d.%d.%d!\n",
+				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 		goto label_fail;
 	} /* End of if */
 
@@ -3767,8 +3737,8 @@ static VOID FT_KDP_InformationResponseSend(
 	/* send out the frame */
 	if (send(SocketPeer, pBufFrame, PktLen, 0) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send socket failed %d.%d.%d.%d!\n",
-				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr)));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n",
+				IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 		goto label_fail;
 	} /* End of if */
 
@@ -3810,8 +3780,8 @@ static VOID FT_KDP_InformationReportSend(
 
 	/* init */
 	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> FT_KDP_InformationReportSend to %d.%d.%d.%d\n",
-			IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr)));
+			"iapp> FT_KDP_InformationReportSend to %d.%d.%d.%d\n",
+			IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr));
 
 	pBufFrame = NULL;
 
@@ -3880,10 +3850,10 @@ static VOID FT_RRB_ActionForward(
 
 	/* init the update frame body */
 	DBGPRINT(RT_DEBUG_TRACE,
-			("iapp> Forward a RRB packet (len = %d) to %02x:%02x:%02x:%02x:%02x:%02x!\n",
+			"iapp> Forward a RRB packet (len = %d) to %02x:%02x:%02x:%02x:%02x:%02x!\n",
 			pEvtHdr->EventLen,
 			pMacDa[0], pMacDa[1], pMacDa[2],
-			pMacDa[3], pMacDa[4], pMacDa[5]));
+			pMacDa[3], pMacDa[4], pMacDa[5]);
 
 	PktLen = sizeof(FT_RRB_FRAME)+pEvtHdr->EventLen;
 
@@ -3920,22 +3890,18 @@ static VOID FT_RRB_ActionForward(
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 #ifdef IAPP_OS_LINUX
-{
 	/* send the RRB frame */
 	Status = send(pCtrlBK->SocketRawRRB, pBufFrame, PktLen, 0);
 	if (Status < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send RRB packet failed %d!\n", Status));
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send RRB packet failed %d!\n", Status);
 		goto LabelFail;
 	} /* End of if */
-}
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-{
 	M_BLK_ID pUpdatePkt;
 	UINT32 IdIfNum;
-
 
 	/* loop for eth0, eth1, eth2...... */
 	for(IdIfNum=0; IdIfNum<FT_KDP_BR_ETH_IF_NUM; IdIfNum++)
@@ -3944,7 +3910,7 @@ static VOID FT_RRB_ActionForward(
 									     PktLen, M_DONTWAIT, 
 									     MT_DATA, TRUE)) == NULL)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> iapp> Get packet buffer fail!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> iapp> Get packet buffer fail!\n");
 			goto LabelFail;
 		} /* End of if */
 
@@ -3955,15 +3921,14 @@ static VOID FT_RRB_ActionForward(
 
 		if (muxSend(pCtrlBK->pRrbCookieTo[IdIfNum], pUpdatePkt) == ERROR)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("iapp> Send RRB packet failed!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send RRB packet failed!\n");
 			netMblkClChainFree(pUpdatePkt);
 			goto LabelFail;
 		} /* End of if */
 	} /* End of for */
-}
 #endif // IAPP_OS_VXWORKS //
 
-	DBGPRINT(RT_DEBUG_TRACE, ("iapp> Send RRB packet OK!\n"));
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send RRB packet OK!\n");
 
 LabelFail:
 	return;
