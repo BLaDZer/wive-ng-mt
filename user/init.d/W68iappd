@@ -13,7 +13,7 @@ LOG="logger -t iappd"
 
 start() {
     get_param
-    if [ "$FtSupport" != "" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
+    if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
 	$LOG "Starting iappd 802.11f daemon"
 	# ethernet if - lan_if
 	# wlan if for recive data - standalone if or bridge interface
