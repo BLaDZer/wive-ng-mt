@@ -319,11 +319,24 @@ romfs: install
 	$(ROMFSINST) -S ../init.d/W69radius /etc/rc.d/W69radius
 	$(ROMFSINST) -s /etc/rc.d/W69radius /etc/init.d/radius
 	$(ROMFSINST) -S filesystem/sbin/radiusd /bin/radiusd
-	cp -rfva filesystem/lib/*.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/*-radius.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/*-server.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/*-server.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/*eap*.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/*mschap*.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_always.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_attr_filter.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_detail.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_files.so* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_preprocess* $(ROMFSDIR)/lib/
+	cp -fva filesystem/lib/rlm_radutmp* $(ROMFSDIR)/lib/
 	mkdir -p $(ROMFSDIR)/share/freeradius
 	cp -rfva filesystem/share/freeradius/* $(ROMFSDIR)/share/freeradius/
 	mkdir -p $(ROMFSDIR)/etc/raddb
-	cp -rfva filesystem/etc/raddb/certs $(ROMFSDIR)/etc/raddb/certs
+	mkdir -p $(ROMFSDIR)/etc/raddb/certs
+	cp -fva filesystem/etc/raddb/certs/server.pem $(ROMFSDIR)/etc/raddb/certs/
+	cp -fva filesystem/etc/raddb/certs/ca.pem $(ROMFSDIR)/etc/raddb/certs/
+	cp -fva filesystem/etc/raddb/certs/dh $(ROMFSDIR)/etc/raddb/certs/
 	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/radiusd.conf /etc/raddb/radiusd.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/proxy.conf /etc/raddb/proxy.conf
@@ -345,7 +358,7 @@ romfs: install
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-config
 	cp -rfva filesystem/etc/raddb/mods-config/files $(ROMFSDIR)/etc/raddb/mods-config/files
 	cp -rfva filesystem/etc/raddb/mods-config/attr_filter $(ROMFSDIR)/etc/raddb/mods-config/attr_filter
-	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
 	cp -rfva filesystem/etc/raddb/mods-config/preprocess $(ROMFSDIR)/etc/raddb/mods-config/preprocess
+	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
 	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/hints /etc/raddb/hints
 	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/huntgroups /etc/raddb/huntgroups
