@@ -1997,14 +1997,15 @@
 <b>4.3.x</b><br>
 1) build_system: fix cleanup libext and optimize cleanup userdir.<br>
 2) build_system: port and add libtalloc (need for free radius).<br>
-3) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
-4) miniupnpd: up to 2.0 version.<br>
-5) ralinkiappd: fix segfault in debug mode with level trace.<br>
-6) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
-7) freeradius: strip configs and not install not used libs for save flash size.<br>
-8) init.d: add logic for radius server start.<br>
-9) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
-10) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+3) defaults: add base openspace roaming profile for help start configure at the current place.<br>
+4) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
+5) miniupnpd: up to 2.0 version.<br>
+6) ralinkiappd: fix segfault in debug mode with level trace.<br>
+7) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
+8) freeradius: strip configs and not install not used libs for save flash size.<br>
+9) init.d: add logic for radius server start.<br>
+10) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
+11) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
 <br>
 <br>
 <br>
