@@ -2009,6 +2009,7 @@
 12) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
 13) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
 14) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+15) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
 <br>
 <br>
 <br>
