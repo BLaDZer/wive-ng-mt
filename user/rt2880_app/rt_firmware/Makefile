@@ -85,6 +85,11 @@ else
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 endif
 endif
-# replace defaults for black horiontal 7620a+7612 and  7621 tube not production samples
+ifeq ($(CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
+	# replace defaults for outdor AP router config 7620+7612 with external amplifiers
 	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan0							/etc/default/nvram_default
+else
+	# replace defaults 7621 tube and metal not production samples
+	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan0							/etc/default/nvram_default
+endif
 endif
