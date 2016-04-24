@@ -87,7 +87,7 @@ endif
 endif
 ifeq ($(CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 	# replace defaults for outdor AP router config 7620+7612 with external amplifiers
-	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan0							/etc/default/nvram_default
+	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan4							/etc/default/nvram_default
 else
 	# replace defaults 7621 tube and metal not production samples
 	$(ROMFSINST) -S	defaults/default-2t2r-2t2r-wan0							/etc/default/nvram_default
