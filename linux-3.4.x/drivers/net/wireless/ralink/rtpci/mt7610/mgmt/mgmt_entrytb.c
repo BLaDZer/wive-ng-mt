@@ -909,14 +909,14 @@ VOID MacTableReset(
 	BOOLEAN     Cancelled;    
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags=0;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	PUCHAR      pOutBuffer = NULL;
 	NDIS_STATUS NStatus;
 	ULONG       FrameLen = 0;
 	HEADER_802_11 DeAuthHdr;
 	USHORT      Reason;
-    UCHAR       apidx = MAIN_MBSSID;
+	UCHAR       apidx = MAIN_MBSSID;
 #endif /* CONFIG_AP_SUPPORT */
 	UINT32		MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
 

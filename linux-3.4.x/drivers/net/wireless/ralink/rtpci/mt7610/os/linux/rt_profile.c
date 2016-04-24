@@ -393,7 +393,7 @@ void tbtt_tasklet(unsigned long data)
 			PQUEUE_ENTRY    pEntry;
 			BOOLEAN			bPS = FALSE;
 			UINT 			count = 0;
-			unsigned long 		IrqFlags;
+			ULONG IrqFlags = 0;
 
 /*			NdisAcquireSpinLock(&pAd->MacTabLock); */
 /*			NdisAcquireSpinLock(&pAd->TxSwQueueLock); */

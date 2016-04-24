@@ -253,7 +253,7 @@ NDIS_STATUS APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	UCHAR PsMode = PWR_ACTIVE, Rate;
 	USHORT Wcid;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
-	unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 #ifdef IGMP_SNOOP_SUPPORT
 	INT InIgmpGroup = IGMP_NONE;
 	MULTICAST_FILTER_TABLE_ENTRY *pGroupEntry = NULL;
@@ -3560,7 +3560,7 @@ VOID APHandleRxPsPoll(
 { 
 	PQUEUE_ENTRY	  pEntry;
 	PMAC_TABLE_ENTRY  pMacEntry;
-	unsigned long		IrqFlags;
+	ULONG IrqFlags = 0;
 
 	/*DBGPRINT(RT_DEBUG_TRACE,("rcv PS-POLL (AID=%d) from %02x:%02x:%02x:%02x:%02x:%02x\n", */
 	/*	  Aid, pAddr[0], pAddr[1], pAddr[2], pAddr[3], pAddr[4], pAddr[5])); */
@@ -6604,7 +6604,7 @@ NDIS_STATUS APInsertPsQueue(
 	IN MAC_TABLE_ENTRY *pMacEntry,
 	IN UCHAR QueIdx)
 {
-	ULONG IrqFlags;
+	ULONG IrqFlags = 0;
 #ifdef UAPSD_SUPPORT
 	/* put the U-APSD packet to its U-APSD queue by AC ID */
 	UINT32 ac_id = QueIdx - QID_AC_BE; /* should be >= 0 */

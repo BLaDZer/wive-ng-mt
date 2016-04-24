@@ -945,7 +945,7 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 	IN	INT_SOURCE_CSR_STRUC TxRingBitmap)
 {
 /*	UCHAR			Count = 0;*/
-    unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 	BOOLEAN			bReschedule = FALSE;
 	
 	/* Make sure Tx ring resource won't be used by other threads*/

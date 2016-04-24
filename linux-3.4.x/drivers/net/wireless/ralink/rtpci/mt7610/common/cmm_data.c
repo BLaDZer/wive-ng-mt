@@ -268,7 +268,7 @@ NDIS_STATUS MiniportMMRequest(
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
 	UCHAR rtmpHwHdr[40];
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	BOOLEAN bUseDataQ = FALSE, FlgDataQForce = FALSE, FlgIsLocked = FALSE;
 	int retryCnt = 0, hw_len = TXINFO_SIZE + TXWISize + TSO_SIZE;
@@ -529,7 +529,7 @@ Label_Legacy_PS:
 		}
         else
         {
-			ULONG IrqFlags=0;
+			ULONG IrqFlags = 0;
 
 			DBGPRINT(RT_DEBUG_TRACE, ("ps> mgmt to legacy ps queue... (%d)\n", FlgIsDeltsFrame));
 
@@ -1274,7 +1274,7 @@ VOID TxDoneCleanupExec(
 	IN PVOID SystemSpecific3)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)FunctionContext;
-	unsigned long IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	ULONG FreeNum;
 	UCHAR QueIdx;
 	int NeedCleanupTimer = 0;
@@ -1330,7 +1330,7 @@ VOID RTMPDeQueuePacket(
 	PQUEUE_HEADER   pQueue;
 	ULONG FreeNumber[NUM_OF_TX_RING];
 	UCHAR QueIdx, sQIdx, eQIdx;
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	BOOLEAN hasTxDesc = FALSE;
 	TX_BLK TxBlk, *pTxBlk;
 
@@ -3106,7 +3106,7 @@ BOOLEAN CmdRspEventCallbackHandle(PRTMP_ADAPTER pAd, PUCHAR pRspBuffer)
 	}
 	else
 	{
-		unsigned long IrqFlags;
+		ULONG IrqFlags = 0;
 		RTMP_IRQ_LOCK(&MCtrl->CmdRspEventListLock, IrqFlags);
 		DlListForEachSafe(CmdRspEvent, CmdRspEventTmp, &MCtrl->CmdRspEventList, struct CMD_RSP_EVENT, List)
 		{

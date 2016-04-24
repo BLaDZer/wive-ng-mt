@@ -4212,19 +4212,19 @@ INT RTMPSetInformation(
             {
                 UINT wsc_profile_index = 0; /* PIN or PBC */
                 PWSC_CTRL   pWscControl = &pAd->StaCfg.WscControl;
-                unsigned long	IrqFlags;
-                
+                ULONG IrqFlags = 0;
+
                 Status = copy_from_user(&wsc_profile_index, wrq->u.data.pointer, wrq->u.data.length);
                 if (wsc_profile_index < pWscControl->WscProfile.ProfileCnt)
-                {                    
+                {
                     RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
                     WscWriteConfToPortCfg(pAd, pWscControl, &pWscControl->WscProfile.Profile[wsc_profile_index], TRUE);
                     RTMP_IRQ_UNLOCK(&pAd->irq_lock, IrqFlags);
                     pAd->MlmeAux.CurrReqIsFromNdis = TRUE;
-                    LinkDown(pAd, TRUE);                    
+                    LinkDown(pAd, TRUE);
                 }
                 else
-                    DBGPRINT(RT_DEBUG_TRACE, ("RT_OID_WSC_SET_CONN_BY_PROFILE_INDEX:: wrong wsc_profile_index(%d)\n", wsc_profile_index));                
+                    DBGPRINT(RT_DEBUG_TRACE, ("RT_OID_WSC_SET_CONN_BY_PROFILE_INDEX:: wrong wsc_profile_index(%d)\n", wsc_profile_index));
             }
             break;
         case RT_OID_WSC_DRIVER_AUTO_CONNECT:

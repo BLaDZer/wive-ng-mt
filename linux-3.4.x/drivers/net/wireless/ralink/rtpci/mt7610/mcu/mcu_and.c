@@ -344,7 +344,7 @@ INT PCIKickOutCmd(
 	UINT32 Len)
 {
 	NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
-	ULONG	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	ULONG FreeNum;
 	UINT32 SwIdx = 0, SrcBufPA;
 	UCHAR *pSrcBufVA;
@@ -437,7 +437,7 @@ VOID MCUCtrlExit(PRTMP_ADAPTER pAd)
 {
 	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
 	struct CMD_RSP_EVENT *CmdRspEvent, *CmdRspEventTmp;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 
 	RtmpOsMsDelay(30);
 
@@ -483,7 +483,7 @@ INT AsicSendCmdToAndes(PRTMP_ADAPTER pAd, struct CMD_UNIT *CmdUnit)
 	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
 	struct CMD_RSP_EVENT *CmdRspEvent;
 	ULONG Expire;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 
 	if (!MCtrl->IsFWReady)
 	{

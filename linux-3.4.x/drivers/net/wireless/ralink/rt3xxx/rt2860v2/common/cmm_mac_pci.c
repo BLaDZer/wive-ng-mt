@@ -30,8 +30,7 @@ VOID RTMPResetTxRxRingMemory(
 	TXD_STRUC       TxD;
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET  pPacket;
-	ULONG IrqFlags;
-
+	ULONG IrqFlags = 0;
 
 	/* Free TxSwQueue Packet*/
 	for (index=0; index <NUM_OF_TX_RING; index++)
@@ -934,7 +933,7 @@ VOID RTMPFreeTxRxRingMemory(
 	TXD_STRUC       TxD;
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET  pPacket;
-	unsigned int  IrqFlags;
+	ULONG IrqFlags = 0;
 
 	/*POS_COOKIE pObj =(POS_COOKIE) pAd->OS_Cookie;*/
 
@@ -1135,7 +1134,7 @@ VOID	RTMPRingCleanUp(
 	PNDIS_PACKET	pPacket;
 	int				i;
 	PRTMP_TX_RING	pTxRing;
-	unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 	/*UINT32			RxSwReadIdx;*/
 
 
@@ -1361,7 +1360,7 @@ BOOLEAN AsicCheckCommanOk(
 	UINT32	CmdStatus = 0, CID = 0, i;
 	UINT32	ThisCIDMask = 0;
 #ifdef SPECIFIC_BCN_BUF_SUPPORT
-	ULONG	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 
 	RTMP_MAC_SHR_MSEL_PROTECT_LOCK(pAd, IrqFlags);
 #endif /* SPECIFIC_BCN_BUF_SUPPORT */

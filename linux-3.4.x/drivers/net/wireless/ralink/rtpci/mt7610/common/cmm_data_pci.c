@@ -918,7 +918,7 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 	IN RTMP_ADAPTER *pAd,
 	IN UINT32 int_source)
 {
-    unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 	BOOLEAN			bReschedule = FALSE;
 	INT_SOURCE_CSR_STRUC TxRingBitmap = (INT_SOURCE_CSR_STRUC)int_source;
 	

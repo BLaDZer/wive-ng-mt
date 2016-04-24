@@ -4332,7 +4332,7 @@ VOID P2PMacTableMaintenance(
 	BOOLEAN	bRdgActive;
 #endif /* DOT11_N_SUPPORT */
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	UINT	fAnyStationPortSecured[MAX_MBSSID_NUM(pAd)];
  	UINT 	bss_index;
@@ -4824,10 +4824,10 @@ VOID P2PMacTableReset(
 	IN  PRTMP_ADAPTER  pAd)
 {
 	int         i, FirstWcid;
-	BOOLEAN     Cancelled;    
+	BOOLEAN     Cancelled;
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	PUCHAR      pOutBuffer = NULL;
 	NDIS_STATUS NStatus;
