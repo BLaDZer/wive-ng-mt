@@ -13,7 +13,7 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$RadiusSrvEnable" = "1" ] || [ "$RadiusSrvEnable" != "2" ] ; then
+    if [ "$RadiusSrvEnable" = "1" ] || [ "$RadiusSrvEnable" = "2" ] ; then
 	$LOG "Starting radius daemon"
 	radiusd &
     fi
