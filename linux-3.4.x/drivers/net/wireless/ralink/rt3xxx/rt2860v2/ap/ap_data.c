@@ -4382,15 +4382,18 @@ VOID APHandleRxDataFrame(
 		{
 			PAPCLI_STRUCT pApCliEntry;
 
-			if (!(APCLI_IF_UP_CHECK(pAd, pEntry->MatchAPCLITabIdx)))
+			if (!(pEntry && APCLI_IF_UP_CHECK(pAd, pEntry->MatchAPCLITabIdx)))
 			{
 				goto err;
 			}
 
 			pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->MatchAPCLITabIdx];
-
-			/* APCli reconnect workaround - update ApCliRcvBeaconTime on RX activity too */
-			pApCliEntry->ApCliRcvBeaconTime = pAd->Mlme.Now32;
+			if (pApCliEntry)
+			{
+				NdisGetSystemUpTime(&pApCliEntry->ApCliRcvBeaconTime);
+				if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->CurrentAddress))
+					goto err;
+			}
 
 #ifdef STATS_COUNT_SUPPORT						
 			pApCliEntry->ApCliCounter.ReceivedByteCount.QuadPart += pRxWI->MPDUtotalByteCount;

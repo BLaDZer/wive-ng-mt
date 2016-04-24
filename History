@@ -2006,6 +2006,7 @@
 9) init.d: add logic for radius server start.<br>
 10) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
 11) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+12) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
 <br>
 <br>
 <br>

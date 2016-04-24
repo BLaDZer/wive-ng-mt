@@ -397,6 +397,7 @@ BOOLEAN PeerDisassocReqSanity(
     IN PRTMP_ADAPTER pAd, 
     IN VOID *Msg, 
     IN ULONG MsgLen, 
+    OUT PUCHAR pAddr1, 
     OUT PUCHAR pAddr2, 
     OUT	UINT16	*SeqNum,
     OUT USHORT *Reason);

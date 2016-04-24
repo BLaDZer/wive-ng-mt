@@ -30,7 +30,7 @@ VOID RTMPResetTxRxRingMemory(
 	TXD_STRUC       TxD;
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET  pPacket;
-	unsigned int  IrqFlags;
+	ULONG IrqFlags;
 
 
 	/* Free TxSwQueue Packet*/

@@ -169,6 +169,9 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		pEntry->LastTxPER = (TxTotalCnt == 0 ? 0 : (UCHAR)TxErrorRatio);
 		pEntry->LastTimeTxRateChangeAction = pEntry->LastSecTxRateChangeAction;
 
+		if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+			pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
+
 		/* different calculation in APQuickResponeForRateUpExec() */
 		Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
@@ -231,7 +234,11 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 		else
 		{
-			/* decide the next upgrade rate and downgrade rate, if any*/
+
+		if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+			pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
+
+		/* decide the next upgrade rate and downgrade rate, if any*/
 		if ((CurrRateIdx > 0) && (CurrRateIdx < (TableSize - 1)))
 		{
 				TmpIdx = CurrRateIdx + 1;
@@ -587,7 +594,9 @@ VOID APQuickResponeForRateUpExec(
 			MlmeRALog(pAd, pEntry, RAL_QUICK_DRS, TxErrorRatio, TxTotalCnt);
 #endif /* DBG_CTRL_SUPPORT */
 
-        if (TxCnt <= 15 && pEntry->HTPhyMode.field.MCS > 1)
+        if ((TxCnt <= 15) &&
+            (pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
+            (pEntry->HTPhyMode.field.MCS > 1))
         {
 			MlmeClearAllTxQuality(pEntry);
 
@@ -641,7 +650,8 @@ VOID APQuickResponeForRateUpExec(
 			}
 			else
 			{
-				OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
+				OneSecTxNoRetryOKRationCount = TxSuccess * ratio + (TxSuccess >> 1);
+				//OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
 			}
 
 			/* perform DRS - consider TxRate Down first, then rate up. */
@@ -673,7 +683,8 @@ VOID APQuickResponeForRateUpExec(
 				}
 				else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 				{
-					MlmeRestoreLastRate(pEntry);
+					if(TxErrorRatio >= TrainUp)
+					    MlmeRestoreLastRate(pEntry);
 				}
 				else
 				{

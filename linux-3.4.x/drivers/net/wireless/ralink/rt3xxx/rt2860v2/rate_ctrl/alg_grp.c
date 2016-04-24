@@ -1338,6 +1338,9 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(
 	/* Rssi = RTMPMaxRssi(pAd, (CHAR)pEntry->RssiSample.AvgRssi0, (CHAR)pEntry->RssiSample.AvgRssi1, (CHAR)pEntry->RssiSample.AvgRssi2); */
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
+
 	/*  decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
 	pCurrTxRate = PTX_RATE_SWITCH_ENTRY_3S(pTable, CurrRateIdx);
@@ -1881,6 +1884,9 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	pEntry->LastTxOkCount = TxSuccess;
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
 	pEntry->LastTimeTxRateChangeAction = pEntry->LastSecTxRateChangeAction;
+
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
 
 	/* decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;

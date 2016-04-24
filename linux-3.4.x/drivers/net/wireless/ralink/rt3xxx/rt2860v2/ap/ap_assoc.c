@@ -436,7 +436,6 @@ VOID ap_cmm_peer_assoc_req_action(
 	                      SupRateLen,               pAd->CommonCfg.SupRate,
 	                      END_OF_ARGS);
 		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		    MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
 		}
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, pEntry->apidx, 0);
@@ -454,6 +453,7 @@ VOID ap_cmm_peer_assoc_req_action(
 				MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 		}
 
+		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
 		goto LabelOK;
 	}
 
@@ -1065,27 +1065,39 @@ VOID APPeerDisassocReqAction(
     IN PRTMP_ADAPTER pAd,
     IN MLME_QUEUE_ELEM *Elem)
 {
-    UCHAR         Addr2[MAC_ADDR_LEN];
-    USHORT        Reason;
-	UINT16			SeqNum;		
-    MAC_TABLE_ENTRY       *pEntry;
+	UCHAR Addr1[MAC_ADDR_LEN];
+	UCHAR   Addr2[MAC_ADDR_LEN];
+	USHORT	Reason;
+	UINT16	SeqNum;
+	MAC_TABLE_ENTRY *pEntry;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - 1 receive DIS-ASSOC request \n"));
-    if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr2, &SeqNum, &Reason))
-        return;
+	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &SeqNum, &Reason))
+    		return;
 
-    DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", 
+	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", 
 								SeqNum, Addr2[0],Addr2[1],Addr2[2],Addr2[3],Addr2[4],Addr2[5],Reason));
-    
+
 	pEntry = MacTableLookup(pAd, Addr2);
 
 	if (pEntry == NULL)
 		return;
-		
+
 	if (Elem->Wcid < MAX_LEN_OF_MAC_TABLE)
     {
 
-#ifdef DOT1X_SUPPORT    
+		/*
+			iPhone sometimes sends disassoc frame which DA is old AP and BSSID is new AP.
+			@2016/1/26
+		*/
+		if (!MAC_ADDR_EQUAL(pAd->CommonCfg.Bssid, Addr1)) {
+			DBGPRINT(RT_DEBUG_TRACE,
+			("ASSOC - The DA of this DIS-ASSOC request is %02x:%02x:%02x:%02x:%02x:%02x, ignore.\n", 
+				PRINT_MAC(Addr1)));
+			return;
+		}
+
+#ifdef DOT1X_SUPPORT
 		/* Notify 802.1x daemon to clear this sta info */
 		if (pEntry->AuthMode == Ndis802_11AuthModeWPA || 
 			pEntry->AuthMode == Ndis802_11AuthModeWPA2 ||

@@ -3894,6 +3894,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	}
 
 	NdisZeroMemory(pMacTab, sizeof(RT_802_11_MAC_TABLE));
+	pMacTab->Num = 0;
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		pEntry = &(pAd->MacTab.Content[i]);
@@ -3911,8 +3912,8 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: copy_to_user() fail\n", __FUNCTION__));
 	}
-
-	os_free_mem(NULL, pMacTab);
+	if (pMacTab != NULL)
+	    os_free_mem(NULL, pMacTab);
 }
 /* +++ end of addition */
 #endif /* RTMP_RBUS_SUPPORT */
@@ -3946,6 +3947,7 @@ VOID RTMPIoctlGetMacTable(
 	}
 
 	NdisZeroMemory(pMacTab, sizeof(RT_802_11_MAC_TABLE));
+	pMacTab->Num = 0;
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		pEntry = &(pAd->MacTab.Content[i]);
@@ -4007,7 +4009,8 @@ VOID RTMPIoctlGetMacTable(
 
 LabelOK:
 #endif
-	os_free_mem(NULL, pMacTab);
+	if (pMacTab != NULL)
+	    os_free_mem(NULL, pMacTab);
 }
 #define	ASSO_MAC_LINE_LEN	(1+19+4+4+4+4+8+7+7+7+10+6+6+6+6+7+7+1)
 

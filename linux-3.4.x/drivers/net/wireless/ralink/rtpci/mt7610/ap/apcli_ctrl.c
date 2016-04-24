@@ -445,6 +445,7 @@ static VOID ApCliCtrlJoinReqAction(
 		(pWpsCtrl->bWscTrigger == TRUE))
     {
     	ULONG bss_idx = 0;
+	NdisZeroMemory(JoinReq.Bssid, MAC_ADDR_LEN);
         NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
         JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
 		NdisMoveMemory(JoinReq.Ssid, pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.Ssid, JoinReq.SsidLen);
@@ -580,14 +581,15 @@ static VOID ApCliCtrlJoinReqTimeoutAction(
 	}
 
 #ifdef WSC_AP_SUPPORT
-    if ((pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscConfMode != WSC_DISABLE) &&
+	if ((pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscConfMode != WSC_DISABLE) &&
 		(pAd->ApCfg.ApCliTab[ifIndex].WscControl.bWscTrigger == TRUE))
-    {
-        NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
-        JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
-		NdisMoveMemory(JoinReq.Ssid, pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.Ssid, JoinReq.SsidLen);
-    }
-    else
+	{
+	    NdisZeroMemory(JoinReq.Bssid, MAC_ADDR_LEN);
+    	    NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
+    	    JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
+	    NdisMoveMemory(JoinReq.Ssid, pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.Ssid, JoinReq.SsidLen);
+	}
+	else
 #endif /* WSC_AP_SUPPORT */
 	if (pApCliEntry->CfgSsidLen != 0)
 	{

@@ -1216,7 +1216,7 @@ VOID	NICReadEEPROMParameters(
 	 	if ((value & 0xff) != 0xff)
 	 	{
 	  		if ((value & 0x80))
-	   			pAd->BW_Power_Delta = (value&0x3F);
+				pAd->BW_Power_Delta = (value &0xf);
 
 	 		if ((value & 0x40) == 0)
 	   			pAd->BW_Power_Delta = -1* pAd->BW_Power_Delta;
@@ -4165,7 +4165,7 @@ UCHAR BtoH(STRING ch)
 
 /* IRQL = PASSIVE_LEVEL*/
 
-void AtoH(PSTRING src, PUCHAR dest, int destlen)
+VOID AtoH(PSTRING src, PUCHAR dest, INT srclen)
 {
 	PSTRING srcptr;
 	PUCHAR destTemp;
@@ -4173,7 +4173,7 @@ void AtoH(PSTRING src, PUCHAR dest, int destlen)
 	srcptr = src;	
 	destTemp = (PUCHAR) dest; 
 
-	while(destlen--)
+	while(srclen--)
 	{
 		*destTemp = BtoH(*srcptr++) << 4;    /* Put 1st ascii byte in upper nibble.*/
 		*destTemp += BtoH(*srcptr++);      /* Add 2nd ascii byte to above.*/

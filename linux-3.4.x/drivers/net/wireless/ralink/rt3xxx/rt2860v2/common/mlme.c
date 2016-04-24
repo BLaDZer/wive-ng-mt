@@ -1856,6 +1856,7 @@ VOID STAMlmePeriodicExec(
 			pAd->StaCfg.bSkipAutoScanConn = FALSE;
         
 		if ((pAd->StaCfg.bAutoReconnect == TRUE)
+			&& !RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF)
 			&& RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_START_UP)
 			&& (MlmeValidateSSID(pAd->MlmeAux.AutoReconnectSsid, pAd->MlmeAux.AutoReconnectSsidLen) == TRUE))
 		{

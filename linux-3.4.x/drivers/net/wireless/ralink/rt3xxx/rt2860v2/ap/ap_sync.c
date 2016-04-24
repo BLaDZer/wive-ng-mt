@@ -124,6 +124,7 @@ VOID APPeerProbeReqAction(
 	PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
 
 	COPY_MAC_ADDR(Addr3, pFrame->Hdr.Addr3);
+	COPY_MAC_ADDR(Addr2, pFrame->Hdr.Addr2);
 #endif /* WSC_AP_SUPPORT */
 
 #ifdef WDS_SUPPORT

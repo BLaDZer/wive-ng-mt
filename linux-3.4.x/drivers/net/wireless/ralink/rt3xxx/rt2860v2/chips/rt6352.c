@@ -528,7 +528,7 @@ UCHAR RT6352_NUM_RF_DCCAL_BW = (sizeof(RT6352_RFDCCal_BW) / sizeof(REG_PAIR_BW))
 
 RTMP_REG_PAIR	RT6352_MACRegTable[] =	{
 	{TX_SW_CFG0,		0x0401},   // Jason,2012-08-27
-	{TX_SW_CFG1,		0x000C0000},   // Jason,2012-09-13
+	{TX_SW_CFG1,            0x000C0001},   // Jason,2012-09-13, 2015-10-08
 	{TX_SW_CFG2,		0x00},   // Jason,2012-08-27
 	{MIMO_PS_CFG,		0x02},   // Jason,2012-09-13
 };

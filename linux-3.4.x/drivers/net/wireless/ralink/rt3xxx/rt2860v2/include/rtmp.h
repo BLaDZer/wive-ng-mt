@@ -5117,10 +5117,7 @@ VOID RTMPMoveMemory(
 	IN  PVOID   pSrc,
 	IN  ULONG   Length);
 
-VOID AtoH(
-	PSTRING	src,
-	PUCHAR dest,
-	int		destlen);
+VOID AtoH(PSTRING       src, UCHAR *dest, INT srclen);
 
 UCHAR BtoH(
 	char ch);

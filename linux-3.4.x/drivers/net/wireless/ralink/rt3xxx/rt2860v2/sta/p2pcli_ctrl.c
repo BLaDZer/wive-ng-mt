@@ -187,6 +187,7 @@ static VOID ApCliCtrlJoinReqAction(
 		(pWpsCtrl->bWscTrigger == TRUE))
     {
     	ULONG bss_idx = 0;
+	NdisZeroMemory(JoinReq.Bssid, MAC_ADDR_LEN);
         NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
         JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
 		NdisMoveMemory(JoinReq.Ssid, pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.Ssid, JoinReq.SsidLen);
@@ -350,8 +351,9 @@ static VOID ApCliCtrlJoinReqTimeoutAction(
 			ApSiteSurvey(pAd, NULL, SCAN_WSC_ACTIVE, FALSE);
 			return;
 		}
-        NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
-        JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
+		NdisZeroMemory(JoinReq.Bssid, MAC_ADDR_LEN);
+		NdisZeroMemory(JoinReq.Ssid, MAX_LEN_OF_SSID);
+		JoinReq.SsidLen = pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.SsidLength;
 		NdisMoveMemory(JoinReq.Ssid, pAd->ApCfg.ApCliTab[ifIndex].WscControl.WscSsid.Ssid, JoinReq.SsidLen);
     }
     else

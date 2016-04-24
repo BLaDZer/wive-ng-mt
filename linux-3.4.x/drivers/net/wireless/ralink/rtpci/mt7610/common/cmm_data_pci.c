@@ -1744,8 +1744,9 @@ BOOLEAN RxRing1DoneInterruptHandle(RTMP_ADAPTER *pAd)
 				b. be released if it is discarded
 		*/
 
+		NdisZeroMemory(&rxblk,sizeof(RX_BLK));
 		pRxBlk = &rxblk;
-		
+
 		pRxPacket = RxRingDeQueue(pAd, pRxBlk, &bReschedule, &RxPending, &bCmdRspPacket, 1);
 
 		if ((pRxPacket == NULL) && !bCmdRspPacket)

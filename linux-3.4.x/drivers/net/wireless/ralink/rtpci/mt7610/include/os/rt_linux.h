@@ -133,7 +133,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
  #define CARD_INFO_PATH			"/etc/Wireless/iNIC/RT2860APCard.dat"
 #endif
 #define AP_NIC_DEVICE_NAME		"MT7610_AP"
-#define AP_DRIVER_VERSION		"3.0.0.9"
+#define AP_DRIVER_VERSION		"3.0.0.9.P2"
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -316,6 +316,7 @@ typedef spinlock_t			OS_NDIS_SPIN_LOCK;
 #define OS_IRQ_LOCK(__lock, __irqflags)			\
 {													\
 	__irqflags = 0;									\
+	typecheck(unsigned long, __irqflags);                           \
 	spin_lock_irqsave((spinlock_t *)(__lock), __irqflags);			\
 }
 
@@ -327,6 +328,7 @@ typedef spinlock_t			OS_NDIS_SPIN_LOCK;
 #define OS_IRQ_LOCK(__lock, __irqflags)			\
 {												\
 	__irqflags = 0;								\
+	typecheck(unsigned long, __irqflags);                           \
 	spin_lock_bh((spinlock_t *)(__lock));		\
 }
 

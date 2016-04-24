@@ -9076,7 +9076,8 @@ INT	Set_ApCli_WPAPSK_Proc(
 	retval = RT_CfgSetWPAPSKKey(pAd, arg, strlen(arg), (PUCHAR)pApCliEntry->CfgSsid, pApCliEntry->CfgSsidLen, pApCliEntry->PMK);
 	if (retval == FALSE)
 		return FALSE;
-	
+
+	NdisZeroMemory(pApCliEntry->PSK, sizeof(pApCliEntry->PSK));
 	NdisMoveMemory(pApCliEntry->PSK, arg, strlen(arg));
 	pApCliEntry->PSKLen = strlen(arg);
 

@@ -411,12 +411,14 @@ BOOLEAN PeerDisassocReqSanity(
     IN PRTMP_ADAPTER pAd, 
     IN VOID *Msg, 
     IN ULONG MsgLen, 
+    OUT PUCHAR pAddr1, 
     OUT PUCHAR pAddr2, 
     OUT	UINT16	*SeqNum,
     OUT USHORT *Reason) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
 
+    COPY_MAC_ADDR(pAddr1, &Fr->Hdr.Addr1);
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
 	*SeqNum = Fr->Hdr.Sequence;
     NdisMoveMemory(Reason, &Fr->Octet[0], 2);

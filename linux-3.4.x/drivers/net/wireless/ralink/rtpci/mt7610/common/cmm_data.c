@@ -2299,7 +2299,7 @@ VOID Update_Rssi_Sample(
 	IN RXWI_STRUC *pRxWI)
 {
 	CHAR rssi[3] = {0};
-	UCHAR snr[3] = {0};
+	CHAR snr[3] = {0};
 	BOOLEAN bInitial = FALSE;
 	CHAR Phymode = get_pkt_phymode_by_rxwi(pRxWI);
 

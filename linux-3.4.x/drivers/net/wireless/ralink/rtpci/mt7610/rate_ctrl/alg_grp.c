@@ -1525,6 +1525,9 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	/* different calculation in APQuickResponeForRateUpExec() */
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
+
 	/*  decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);

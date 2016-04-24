@@ -4116,8 +4116,8 @@ VOID Update_Rssi_Sample(
 	CHAR rssi0 = pRxWI->RSSI0;
 	CHAR rssi1 = pRxWI->RSSI1;
 	CHAR rssi2 = pRxWI->RSSI2;
-	UCHAR snr0 = pRxWI->SNR0;
-	UCHAR snr1 = pRxWI->SNR1;
+	CHAR snr0 = pRxWI->SNR0;
+	CHAR snr1 = pRxWI->SNR1;
 	CHAR Phymode = pRxWI->PHYMODE;
 	BOOLEAN bInitial = FALSE;
  

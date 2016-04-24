@@ -309,9 +309,9 @@ VOID APMlmePeriodicExec(
     {
     	/*APUpdateCapabilityAndErpIe(pAd); */
     	APUpdateOperationMode(pAd);
-		if (pAd->CommonCfg.IOTestParm.bRTSLongProtOn == FALSE)
-		{
-        	AsicUpdateProtect(pAd, (USHORT)pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, pAd->MacTab.fAnyStationNonGF);
+	if (pAd->CommonCfg.IOTestParm.bRTSLongProtOn == FALSE)
+	{
+    	    AsicUpdateProtect(pAd, (USHORT)pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, pAd->MacTab.fAnyStationNonGF);
     	}
     }
 #endif /* DOT11_N_SUPPORT */

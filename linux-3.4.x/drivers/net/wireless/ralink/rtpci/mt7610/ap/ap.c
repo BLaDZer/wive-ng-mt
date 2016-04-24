@@ -815,7 +815,7 @@ VOID APStartUp(
 		ed_monitor_exit(pAd);
 }
 #endif /* ED_MONITOR */
-
+	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_BSS_SCAN_IN_PROGRESS);
 	DBGPRINT(RT_DEBUG_TRACE, ("<=== APStartUp\n"));
 }
 
@@ -1923,28 +1923,47 @@ VOID ApLogEvent(
 VOID APUpdateOperationMode(
 	IN PRTMP_ADAPTER pAd)
 {
-	pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 0;
+	BOOLEAN bDisableBGProtect = FALSE, bNonGFExist = FALSE;
 
+	pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 0;
 	if ((pAd->ApCfg.LastNoneHTOLBCDetectTime + (5 * OS_HZ)) > pAd->Mlme.Now32) /* non HT BSS exist within 5 sec */
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 1;
-    	AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, TRUE);
+		bDisableBGProtect = FALSE;
+		bNonGFExist = TRUE;
 	}
 
    	/* If I am 40MHz BSS, and there exist HT-20MHz station. */
 	/* Update to 2 when it's zero.  Because OperaionMode = 1 or 3 has more protection. */
-	if ((pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode == 0) && (pAd->MacTab.fAnyStation20Only) && (pAd->CommonCfg.DesiredHtPhy.ChannelWidth == 1))
+	if ((pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode == 0) &&
+		(pAd->MacTab.fAnyStation20Only) &&
+		(pAd->CommonCfg.DesiredHtPhy.ChannelWidth == 1))
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 2;
-		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, (ALLN_SETPROTECT), TRUE, pAd->MacTab.fAnyStationNonGF);
+		bDisableBGProtect = TRUE;
 	}
 		
 	if (pAd->MacTab.fAnyStationIsLegacy)
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 3;
-		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, (ALLN_SETPROTECT), TRUE, pAd->MacTab.fAnyStationNonGF);
+		bDisableBGProtect = TRUE;
+	}
+
+	if (pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode == 0 &&
+		!ERP_IS_USE_PROTECTION(pAd->ApCfg.ErpIeContent))
+	{
+		bDisableBGProtect = TRUE;
 	}
 	
+	if (bNonGFExist == FALSE)
+		bNonGFExist = pAd->MacTab.fAnyStationNonGF;
+
+	AsicUpdateProtect(pAd,
+						pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, 
+						(ALLN_SETPROTECT),
+						bDisableBGProtect,
+						bNonGFExist);
+
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = pAd->MacTab.fAnyStationNonGF;
 }
 #endif /* DOT11_N_SUPPORT */
@@ -2674,10 +2693,22 @@ VOID APOverlappingBSSScan(
 		pAd->CommonCfg.Bss2040CoexistFlag |= BSS_2040_COEXIST_INFO_SYNC;
 		/* 2012/10/11 MTK patch while AP fall back to 20M, base band register didn't fall back to 20M */
 		pAd->CommonCfg.Bss2040NeedFallBack = 1;
-		pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = 0;
+		//pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = 0;
 	}
 
-	return;	
+	/* Recover the bandwidth to support 20/40Mhz if the original setting does support that, and no need to fallback */
+	if ((needFallBack == FALSE)
+		&& (pAd->CommonCfg.ori_bw_before_2040_coex == BW_40)) {
+		pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth = pAd->CommonCfg.ori_bw_before_2040_coex;
+		pAd->CommonCfg.AddHTInfo.AddHtInfo.ExtChanOffset = pAd->CommonCfg.ori_ext_channel_before_2040_coex;
+		pAd->CommonCfg.LastBSSCoexist2040.field.BSS20WidthReq = 0;
+		pAd->CommonCfg.Bss2040CoexistFlag &= (~BSS_2040_COEXIST_INFO_SYNC);
+		pAd->CommonCfg.Bss2040NeedFallBack = 0;
+		pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = pAd->CommonCfg.ori_ext_channel_before_2040_coex;
+		DBGPRINT(RT_DEBUG_ERROR, ("rollback the bandwidth setting to support 20/40Mhz\n"));
+	}
+
+	return;
 }
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */

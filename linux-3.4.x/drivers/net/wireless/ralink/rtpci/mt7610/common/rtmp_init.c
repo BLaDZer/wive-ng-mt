@@ -3291,7 +3291,7 @@ UCHAR BtoH(STRING ch)
 
 /* IRQL = PASSIVE_LEVEL*/
 
-void AtoH(PSTRING src, PUCHAR dest, int destlen)
+VOID AtoH(PSTRING src, PUCHAR dest, INT srclen)
 {
 	PSTRING srcptr;
 	PUCHAR destTemp;
@@ -3299,7 +3299,7 @@ void AtoH(PSTRING src, PUCHAR dest, int destlen)
 	srcptr = src;	
 	destTemp = (PUCHAR) dest; 
 
-	while(destlen--)
+	while(srclen--)
 	{
 		*destTemp = BtoH(*srcptr++) << 4;    /* Put 1st ascii byte in upper nibble.*/
 		*destTemp += BtoH(*srcptr++);      /* Add 2nd ascii byte to above.*/

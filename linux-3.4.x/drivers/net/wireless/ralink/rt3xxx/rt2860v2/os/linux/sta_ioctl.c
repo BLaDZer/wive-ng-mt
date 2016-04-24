@@ -2560,6 +2560,7 @@ INT rt28xx_sta_ioctl(
 
 	wrq->u.data.pointer = wrqin->u.data.pointer;
 	wrq->u.data.length = wrqin->u.data.length;
+	wrq->u.data.flags = wrqin->u.data.flags;
 	org_len = wrq->u.data.length;
 
 /*	pObj = (POS_COOKIE) pAd->OS_Cookie; */

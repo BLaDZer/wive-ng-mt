@@ -2897,16 +2897,20 @@ BOOLEAN ApCliAutoConnectExec(
 	UCHAR			ifIdx, CfgSsidLen, entryIdx;
 	STRING			*pCfgSsid;
 	BSS_TABLE		*pScanTab, *pSsidBssTab;
+	PAPCLI_STRUCT pApCliEntry = NULL;
+	BOOLEAN bAddEntry	= FALSE;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("---> ApCliAutoConnectExec()\n"));
 
+	pObj->ioctl_if_type = INT_APCLI;
 	ifIdx = pObj->ioctl_if;
 	CfgSsidLen = pAd->ApCfg.ApCliTab[ifIdx].CfgSsidLen;
 	pCfgSsid = pAd->ApCfg.ApCliTab[ifIdx].CfgSsid;
 	pScanTab = &pAd->ScanTab;
 	pSsidBssTab = &pAd->MlmeAux.SsidBssTab;
 	pSsidBssTab->BssNr = 0;
-	
+	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIdx];
+
 	/*
 		Find out APs with the desired SSID.  
 	*/
@@ -2918,7 +2922,7 @@ BOOLEAN ApCliAutoConnectExec(
 			break;
 
 		if (NdisEqualMemory(pCfgSsid, pBssEntry->Ssid, CfgSsidLen) &&
-							(pBssEntry->SsidLen) &&
+							(CfgSsidLen == pBssEntry->SsidLen) &&
 							(pSsidBssTab->BssNr < MAX_LEN_OF_BSS_TABLE))
 		{	
 			if (ApcliCompareAuthEncryp(&pAd->ApCfg.ApCliTab[ifIdx],
@@ -2942,8 +2946,12 @@ BOOLEAN ApCliAutoConnectExec(
 						("I/F(%s%d) ApCliAutoConnectExec::(AuthMode=%s, EncrypType=%s)\n", INF_APCLI_DEV_NAME, ifIdx,
 						GetAuthMode(pBssEntry->AuthMode),
 						GetEncryptType(pBssEntry->WepStatus)) );
-				NdisMoveMemory(&pSsidBssTab->BssEntry[pSsidBssTab->BssNr++],
-								pBssEntry, sizeof(BSS_ENTRY));
+            			if(MAC_ADDR_EQUAL(pApCliEntry->CfgApCliBssid, ZERO_MAC_ADDR))
+                			bAddEntry = TRUE;
+            			else if(MAC_ADDR_EQUAL(pApCliEntry->CfgApCliBssid, pBssEntry->Bssid))
+                			bAddEntry = TRUE;
+            			if(bAddEntry)
+                			NdisMoveMemory(&pSsidBssTab->BssEntry[pSsidBssTab->BssNr++],pBssEntry, sizeof(BSS_ENTRY));
 			} 
 		}		
 	}
