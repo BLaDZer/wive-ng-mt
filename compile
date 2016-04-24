@@ -36,8 +36,8 @@ case "$MODE" in
 	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
 	    ;;
 	"MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M")
-	    # black horizont sample
-	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
+	    # outdor ap-router
+	    DEVNAME="SNR-CPE-AP2-5GHZ-MT"
 	    ;;
 	####################################
 	# dual band 7620A + 7610NE
