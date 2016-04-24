@@ -2007,6 +2007,8 @@
 10) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
 11) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
 12) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+13) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+14) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
 <br>
 <br>
 <br>
