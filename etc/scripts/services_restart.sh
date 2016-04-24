@@ -148,28 +148,28 @@ fi
 # restart 802.1x wireless daemon			 #
 ##########################################################
 if [ -e /bin/rt2860apd ]; then
-    service apd restart
+	service apd restart
 fi
 
 ##########################################################
 # restart bandsteering wireless daemon			 #
 ##########################################################
 if [ -e /bin/bndstrg ]; then
-    service bndstr restart
+	service bndstr restart
 fi
 
 ##########################################################
 # restart 802.1f wireless daemon			 #
 ##########################################################
 if [ -e /bin/ralinkiappd ]; then
-    service iappd restart
+	service iappd restart
 fi
 
 ##########################################################
 # restart radius auth daemon				 #
 ##########################################################
 if [ -e /bin/radiusd ]; then
-    service radius restart
+	service radius restart
 fi
 
 ##########################################################
