@@ -1337,15 +1337,11 @@ VOID FT_R1KHInfoMaintenance(
 
 		while (pEntry != NULL)
 		{
-			if((pEntry->AuthMode == Ndis802_11AuthModeWPA2)
-				&& ((pEntry->KeyLifeTime--) == 0))
+			if((pEntry->KeyLifeTime--) == 0)
 			{
 				PFT_R1HK_ENTRY pEntryTmp;
 				MLME_DISASSOC_REQ_STRUCT DisassocReq;
 
-				DBGPRINT(RT_DEBUG_OFF, ("%s: PMKCache timeout. Kick out the station and delete FT_R1khEntry!\n",
-					__FUNCTION__));
-				
 				/*
 					Kick out the station.
 					and Info KDP daemon to delete the key.
