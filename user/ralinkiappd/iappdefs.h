@@ -36,6 +36,8 @@
 	Authentication, and Association Request frames.
 */
 
+//#define IAPP_EVENT_LOG
+//#define IAPP_TEST
 
 /* Local use file */
 #define PROC_NET_ARP_PATH			"/proc/net/arp"

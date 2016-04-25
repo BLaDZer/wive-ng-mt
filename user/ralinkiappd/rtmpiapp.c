@@ -20,9 +20,6 @@
 
 ***************************************************************************/
 
-//#define IAPP_EVENT_LOG
-//#define IAPP_TEST
-
 /* Include */
 
 #include "rt_config.h"
