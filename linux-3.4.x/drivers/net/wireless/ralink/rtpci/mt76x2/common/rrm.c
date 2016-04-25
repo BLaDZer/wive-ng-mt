@@ -507,7 +507,6 @@ VOID RRM_CfgInit(
 
 		pRrmCfg->QuietCB.QuietState = RRM_QUIET_IDLE;
 		pRrmCfg->QuietCB.CurAid = 1;
-		pRrmCfg->bDot11kRRMEnable = TRUE;
 		pRrmCfg->bDot11kRRMNeighborRepTSFEnable = FALSE;
 	}
 

@@ -83,7 +83,7 @@
 /* ----- General ----- */
 #define FT_KDP_FUNC_SOCK_COMM			/* used socket to communicate with driver */
 #define FT_KDP_FUNC_R0KH_IP_RECORD		/* used to keep IP of any R0KH */
-#define FT_KDP_FUNC_INFO_BROADCAST		/* broadcast my AP information periodically */
+/*#define FT_KDP_FUNC_INFO_BROADCAST	broadcast my AP information periodically */
 #define FT_KDP_TEST
 
 #define FT_KDP_RALINK_PASSPHRASE		"Ralink"

@@ -2011,10 +2011,9 @@
 14) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
 15) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
 16) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-17) kernel: ralink_wifi: mt76x2 driver enable FastRoaming broadcast my AP information periodically.<br>
-18) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-19) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-20) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+17) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+18) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+19) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
 <br>
 <br>
 <br>
