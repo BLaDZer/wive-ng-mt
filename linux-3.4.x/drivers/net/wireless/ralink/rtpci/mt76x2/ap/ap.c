@@ -1264,9 +1264,14 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			    )) {
 				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
 				    pEntry->RssiLowStaKickOutDelayCount = 0;
-				    bDisconnectSta = TRUE;
-				    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
+				    /* workaround for DEASSOC PSM bug
+				     * accumulate statistic for all clients - kick only in active state
+				    */
+				    if (pEntry->PsMode != PWR_SAVE) {
+					bDisconnectSta = TRUE;
+					printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
 									PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+				    }
 				}
 			} else
 				pEntry->RssiLowStaKickOutDelayCount = 0;
