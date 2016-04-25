@@ -1619,9 +1619,6 @@ VOID TYPE_FUNC FT_KDP_NeighborReportHandle(
 	UINT32 PeerIP, DataLen;
 	UCHAR *pData;
 
-	UINT32 IdBssNum;
-
-
 	/* sanity check */
 	if (pAd->ApCfg.FtTab.FlgIsFtKdpInit == 0)
 	{

@@ -25,9 +25,6 @@
 
 #include "rt_config.h"
 
-
-#define TYPE_FUNC
-
 #ifdef CONFIG_STA_SUPPORT
 /* ----- RIC Linked List ----- */
 /* insert a resource request of a AP */
