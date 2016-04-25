@@ -2006,13 +2006,14 @@
 9) init.d: add logic for radius server start.<br>
 10) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
 11) uboot/kernel: add support EN25Q128 flash chip.<br>
-12) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-13) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-14) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-15) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-16) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-17) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-18) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+12) ralinkiappd: add support send messages to seconf wlan module.<br>
+13) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+14) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+15) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+16) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+17) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+18) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+19) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
 <br>
 <br>
 <br>

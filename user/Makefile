@@ -56,17 +56,18 @@ dir_  =
 dir_$(CONFIG_USER_WIRELESS_TOOLS)           += wireless_tools
 dir_$(CONFIG_USER_802_1X)                   += 802.1x
 dir_$(CONFIG_USER_WIRELESS_IW_TOOL)         += iw
+dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
+ifdef CONFIG_BAND_STEERING
+dir_$(CONFIG_USER_BNDSTR)                   += bndstrg
+endif
+dir_$(CONFIG_USER_WPA_SUPPLICANT)	    += wpa_supplicant
+
 dir_$(CONFIG_USER_IPTABLES_IPTABLES)        += iptables
 dir_$(CONFIG_USER_IPTABLES_IP6TABLES)       += iptables
 dir_$(CONFIG_USER_CDP)			    += cdp-tools
 dir_$(CONFIG_USER_LLTD)			    += lldt
 dir_$(CONFIG_USER_LLDPD)		    += lldpd
 dir_$(CONFIG_USER_INADYN)                   += inadyn
-dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
-ifdef CONFIG_BAND_STEERING
-dir_$(CONFIG_USER_BNDSTR)                   += bndstrg
-endif
-dir_$(CONFIG_USER_WPA_SUPPLICANT)	    += wpa_supplicant
 dir_$(CONFIG_USER_DNSMASQ)                  += dnsmasq
 dir_$(CONFIG_USER_DROPBEAR)                 += dropbear
 dir_$(CONFIG_USER_IPROUTE2)                 += iproute2
@@ -119,6 +120,9 @@ dir_$(CONFIG_USER_STRACE)		    += strace
 #need last busybox and goahead
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
+
+
+dir_$(CONFIG_USER_IAPPD)                    := ralinkiappd
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"

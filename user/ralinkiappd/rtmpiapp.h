@@ -66,6 +66,7 @@
 #define FT_KDP_DEFAULT_IF_ETH		"br0"
 #define FT_KDP_DEFAULT_IF_WLAN		"br0" /* used to receive command from WLAN */
 #define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"ra0" /* ioctl command to WLAN */
+#define FT_KDP_DEFAULT_IF_WLAN2_IOCTL	"rai0" /* ioctl command to second WLAN */
 
 /*
 	Inter-AP communications present opportunities to an attacker.
@@ -393,7 +394,9 @@ typedef struct _RTMP_IAPP {
 	CHAR			IfNameEth[IFNAMSIZ]; /* ethernet interface name */
 	CHAR			IfNameWlan[IFNAMSIZ]; /* wireless interface name */
 	CHAR			IfNameWlanIoctl[IFNAMSIZ]; /* wireless interface name */
-
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	CHAR			IfNameWlan2Ioctl[IFNAMSIZ]; /* wireless interface name */
+#endif
 	BOOLEAN			FlgIsTerminated; /* if terminate IAPP daemon */
 
 	struct in_addr	AddrOwn; /* IP address of ethernet interface */

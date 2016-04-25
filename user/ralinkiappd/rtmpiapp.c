@@ -91,9 +91,15 @@ static BOOLEAN IAPP_ArgumentParse(
 static BOOLEAN IAPP_DSIfInfoGet(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
 #define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
-	IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData),						\
-					(INT32 *)(__pLen), __ApIdx, __Flags)
+				{ IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); \
+				  IAPP_IoctlToWLAN2(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); };
+#else
+#define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
+				  IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
+#endif
+
 static BOOLEAN IAPP_IoctlToWLAN(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		INT32				Param,
@@ -101,6 +107,16 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	IAPP_IN		INT32				*pDataLen,
 	IAPP_IN		UCHAR				ApIdx,
 	IAPP_IN		INT32				Flags);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+static BOOLEAN IAPP_IoctlToWLAN2(
+	IAPP_IN		RTMP_IAPP			*pCtrlBK,
+	IAPP_IN		INT32				Param,
+	IAPP_IN		CHAR				*pData,
+	IAPP_IN		INT32				*pDataLen,
+	IAPP_IN		UCHAR				ApIdx,
+	IAPP_IN		INT32				Flags);
+#endif
 
 static INT32 IAPP_IPC_MSG_Init(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
@@ -557,6 +573,9 @@ static BOOLEAN IAPP_ArgumentParse(
 	strcpy(pCtrlBK->IfNameEth, FT_KDP_DEFAULT_IF_ETH);
 	strcpy(pCtrlBK->IfNameWlan, FT_KDP_DEFAULT_IF_WLAN);
 	strcpy(pCtrlBK->IfNameWlanIoctl, FT_KDP_DEFAULT_IF_WLAN_IOCTL);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	strcpy(pCtrlBK->IfNameWlan2Ioctl, FT_KDP_DEFAULT_IF_WLAN2_IOCTL);
+#endif
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 #ifdef FT_KDP_KEY_FROM_DAEMON
@@ -614,6 +633,19 @@ static BOOLEAN IAPP_ArgumentParse(
 				IAPP_AGP_CMD_PARSE_NEXT_ONE;
 			} /* End of if */
 		}
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		else if (strncmp(pArgv[0], "-wn", 2) == 0)
+		{
+			/* wireless ioctl interface */
+			IAPP_AGP_CMD_PARSE_NEXT_ONE;
+
+			if (Argc > 0)
+			{
+				strcpy(pCtrlBK->IfNameWlan2Ioctl, pArgv[0]);
+				IAPP_AGP_CMD_PARSE_NEXT_ONE;
+			} /* End of if */
+		}
+#endif
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 #ifdef FT_KDP_KEY_FROM_DAEMON
 		else if (strncmp(pArgv[0], "-k", 2) == 0)
@@ -807,6 +839,56 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	*pDataLen = Wrq.u.data.length;
 	return TRUE;
 } /* End of IAPP_IoctlToWLAN */
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+static BOOLEAN IAPP_IoctlToWLAN2(
+	IAPP_IN		RTMP_IAPP			*pCtrlBK,
+	IAPP_IN		INT32				Param,
+	IAPP_IN		CHAR				*pData,
+	IAPP_IN		INT32				*pDataLen,
+	IAPP_IN		UCHAR				ApIdx,
+	IAPP_IN		INT32				Flags)
+{
+	CHAR   IfName[12]; /* in VxWorks, no iwreq.ifr_name */
+	struct iwreq Wrq;
+
+
+#ifdef IAPP_OS_LINUX
+	if (strlen(pCtrlBK->IfNameWlanIoctl) >= sizeof(IfName))
+		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN2_IOCTL);
+	else
+		strcpy(IfName, pCtrlBK->IfNameWlan2Ioctl);
+	/* End of if */
+
+/*	sprintf(IfName, "ra%d", ApIdx);
+	IfName[3] = '\0'; */
+	strcpy(Wrq.ifr_name, IfName);
+#endif
+
+	Wrq.u.data.flags = Flags;
+	Wrq.u.data.length = *pDataLen;
+	Wrq.u.data.pointer = (caddr_t) pData;
+
+#ifdef IAPP_OS_LINUX
+	if (ioctl(pCtrlBK->SocketIoctl, Param, (int) &Wrq) < 0)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
+		return FALSE;
+	} /* End of if */
+#endif // IAPP_OS_LINUX //
+
+#ifdef IAPP_OS_VXWORKS
+	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, (caddr_t) &Wrq) == ERROR)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
+		return FALSE;
+	} /* End of if */
+#endif // IAPP_OS_VXWORKS //
+
+	*pDataLen = Wrq.u.data.length;
+	return TRUE;
+} /* End of IAPP_IoctlToWLAN */
+#endif
 
 
 /*

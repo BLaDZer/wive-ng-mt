@@ -18,7 +18,9 @@ start() {
 	# ethernet if - lan_if
 	# wlan if for recive data - standalone if or bridge interface
 	# wlan if for ioctl - standalone if
-	ralinkiappd -e "$lan_if" -w "$lan_if" -wi "$first_wlan_root_if" &
+	# for example ralinkiappd -e "$lan_if" -w "$lan_if" -wi "$first_wlan_root_if" -wn "$second_wlan_root_if" &
+	# this is defaults not need direct set ifnames in this case
+	ralinkiappd &
     fi
 }
 
