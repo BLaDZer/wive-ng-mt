@@ -9,7 +9,8 @@ if [ "$is_up" = "" ]; then
     exit 0
 fi
 
-echo ">>>>> RECONFIGURE WIFI IF = $1 <<<<<<<<<<"
+LOG="logger -t advanced"
+$LOG "Tune wifi advanced parametrs for $1."
 
 ################################################################################################################
 eval `nvram_buf_get 2860 OperationMode RadioOn RadioOnINIC AutoConnect ApCliAutoConnect M2UEnabled`

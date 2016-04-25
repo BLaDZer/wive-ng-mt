@@ -9,7 +9,8 @@ if [ "$is_up" = "" ]; then
     exit 0
 fi
 
-echo ">>>>> RECONFIGURE ROAMING WIFI IF = $1 <<<<<<<<<<"
+LOG="logger -t roaming"
+$LOG "Tune wifi roaming parametrs for $1."
 
 ###############################################PARAMETRS TABLE###################################################################################
 # ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 3

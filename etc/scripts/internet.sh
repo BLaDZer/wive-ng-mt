@@ -139,7 +139,6 @@ ethcv_config() {
 }
 
 retune_wifi() {
-	$LOG "Tune wifi advanced parametrs."
 	/etc/scripts/wifi_advanced.sh $first_wlan_root_if
 	if [ "$first_wlan_apcli" != "" ] && [ "$OperationMode" = "3" ]; then
 	    /etc/scripts/wifi_advanced.sh $first_wlan_apcli
@@ -155,7 +154,6 @@ retune_wifi() {
 roaming_wifi() {
 	eval `nvram_buf_get 2860 FastRoaming`
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
-	    $LOG "Tune wifi roaming parametrs."
 	    if [ "$first_wlan_root_if" != "" ]; then
 		/etc/scripts/wifi_roaming.sh $first_wlan_root_if
 	    fi
