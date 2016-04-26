@@ -535,6 +535,7 @@ done:
 }
 
 #ifdef RT65xx
+static int report_pa24_mode, report_pa5_mode;
 BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
 {
 	BOOLEAN pa_mode = FALSE;
@@ -546,6 +547,11 @@ BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
                         pa_mode = TRUE;
                 else
         	        pa_mode = FALSE;
+
+		if (!report_pa5_mode) {
+		    printk("5GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
+		    report_pa5_mode++;
+		}
         } else {
                 if (ad->chipCap.PAType == EXT_PA_2G_5G)
                         pa_mode = TRUE;
@@ -554,11 +560,17 @@ BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
                         pa_mode = FALSE;
                 else if (ad->chipCap.PAType == EXT_PA_2G_ONLY)
                         pa_mode = TRUE;
+
+		if (!report_pa24_mode) {
+		    printk("2.4GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
+		    report_pa24_mode++;
+		}
         }
 
 	return pa_mode;
 }
 
+static int report_lna24_mode, report_lna5_mode;
 BOOLEAN is_external_lna_mode(RTMP_ADAPTER *ad, INT channel)
 {
 	BOOLEAN lna_mode = FALSE;
@@ -569,13 +581,23 @@ BOOLEAN is_external_lna_mode(RTMP_ADAPTER *ad, INT channel)
 	            	lna_mode = TRUE;
 	    	else
 	        	lna_mode = FALSE;
+
+		if (!report_lna5_mode) {
+		    printk("5GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
+		    report_lna5_mode++;
+		}
 	} else {
 	    	if ((ad->chipCap.LNA_type == 0x0) || (ad->chipCap.LNA_type == 0x10))
 	            	lna_mode = TRUE;
 	    	else
 	            	lna_mode = FALSE;
+
+		if (!report_lna24_mode) {
+		    printk("2.4GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
+		    report_lna24_mode++;
+		}
 	}
-	
+
 	return lna_mode;
 }
 #endif /* RT65xx */

@@ -1231,6 +1231,7 @@ VOID SelectBandMT76x0(
 	Loop Filter Config: R33, R34
 	Pll_idiv: frac comp R35[6:0]
 */
+static int report_pa5_mode;
 VOID SetRfChFreqParametersMT76x0(
 	IN PRTMP_ADAPTER pAd, 
 	IN UCHAR Channel)
@@ -1489,8 +1490,13 @@ VOID SetRfChFreqParametersMT76x0(
 		((pAd->chipCap.PAType == EXT_PA_2G_ONLY) && (RfBand & RF_A_BAND)))
 	{
 		/* Internal PA */
+		if (!report_pa5_mode) {
+		    printk("5GHz iPA used.\n");
+		    report_pa5_mode++;
+		}
+
 		for(i = 0; i < MT76x0_RF_INT_PA_RegTb_Size; i++)
-	{
+		{
 			if (MT76x0_RF_INT_PA_RegTb[i].BwBand & RfBand)
 			{
 				rlt_rf_write(pAd, 
@@ -1525,8 +1531,13 @@ VOID SetRfChFreqParametersMT76x0(
 			MacReg |= (0x8);
 			RTMP_IO_WRITE32(pAd, RF_MISC, MacReg);
 		}
-		
+
 		/* External PA */
+		if (!report_pa5_mode) {
+		    printk("5GHz ePA used.\n");
+		    report_pa5_mode++;
+		}
+
 		for(i = 0; i < MT76x0_RF_EXT_PA_RegTb_Size; i++)
 		{
 			if (MT76x0_RF_EXT_PA_RegTb[i].BwBand & RfBand)

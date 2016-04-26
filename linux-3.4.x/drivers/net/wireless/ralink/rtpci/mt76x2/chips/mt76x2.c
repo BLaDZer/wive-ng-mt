@@ -1067,21 +1067,20 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 	/* Fine tune tx power ramp on time based on BBP Tx delay */
 	if (isExternalPAMode(ad, channel))
 	{
-       if (bw == 0)
+	    if (bw == 0)
        		RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x00101101);
-       else
-            RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x000B0C01);		
-
-		RTMP_IO_WRITE32(ad, TX_SW_CFG1, 0x00011414);
+    	    else
+        	RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x000B0C01);
+	    RTMP_IO_WRITE32(ad, TX_SW_CFG1, 0x00011414);
 	}
 	else
 	{
-		if (bw == 0)
-			RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x00101001);
-		else
-			RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x000B0B01);
+	    if (bw == 0)
+		RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x00101001);
+	    else
+		RTMP_IO_WRITE32(ad, TX_SW_CFG0, 0x000B0B01);
 
-		RTMP_IO_WRITE32(ad, TX_SW_CFG1, 0x00021414);
+	    RTMP_IO_WRITE32(ad, TX_SW_CFG1, 0x00021414);
 	}
 
 	/* tx pwr gain setting */
@@ -1089,7 +1088,7 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 
 	/* per-rate power delta */
 	mt76x2_adjust_per_rate_pwr_delta(ad, channel, 0);
-			
+
 	andes_switch_channel(ad, channel, scan, bw, tx_rx_setting, bbp_ch_idx);
 
 	UINT32 eLNA_gain_from_e2p = 0;

@@ -5262,24 +5262,29 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 #ifdef RT6352_EL_SUPPORT
 	if ((pAd->CommonCfg.PKG_ID == 1) && (pAd->NicConfig2.field.ExternalLNAForG))
 	{
-		DBGPRINT_RAW(RT_DEBUG_ERROR, ("%s: Enable Ext-LNA. \n", __FUNCTION__));
-
 		/* TFBGA Ext-LNA */
+		if (ReInit == FALSE)
+		    printk("2.4GHz eLNA used.\n");
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R14, 0x66);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R14, 0x66);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R17, 0x20);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R17, 0x20);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R18, 0x42);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R18, 0x42);
+	} else {
+#endif /* RT6352_EL_SUPPORT */
+		if (ReInit == FALSE)
+		    printk("2.4GHz iLNA used.\n");
+#ifdef RT6352_EL_SUPPORT
 	}
 #endif /* RT6352_EL_SUPPORT */
 
 #ifdef RT6352_EP_SUPPORT
 	if ((pAd->CommonCfg.PKG_ID == 1) && (pAd->bExtPA))
 	{
-		DBGPRINT_RAW(RT_DEBUG_ERROR, ("%s: Enable Ext-PA. \n", __FUNCTION__));
-
 		/* TFBGA Ext-PA */
+		if (ReInit == FALSE)
+		    printk("2.4GHz ePA used.\n");
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R43, 0x73);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R43, 0x73);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R44, 0x73);
@@ -5310,6 +5315,11 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R60, 0xA4);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R61, 0x05);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R61, 0x05);
+	} else {
+#endif /* RT6352_EP_SUPPORT */
+		if (ReInit == FALSE)
+		    printk("2.4GHz iPA used.\n");
+#ifdef RT6352_EP_SUPPORT
 	}
 #endif /* RT6352_EP_SUPPORT */
 
