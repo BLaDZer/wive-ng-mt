@@ -1244,7 +1244,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			}
 		}
 #ifdef BAND_STEERING
-		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
+		/* workaround for DEASSOC PSM bug, do not disconnect powersaved clients. BUGGY!!! */
+		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE  && pEntry->PsMode != PWR_SAVE)
 		{
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
