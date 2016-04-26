@@ -7,6 +7,16 @@ LOG="logger -t sysctl"
 
 start() {
     $LOG "Tune kernel with sysctl."
+
+    # core dump files to /dev/null
+    ulimit -c 0
+    # increase file descriptors
+    ulimit -n 32768
+    # virtual memory
+    ulimit -v unlimited
+    # max memory size
+    ulimit -m unlimited
+
     sysctl -wpneq /etc/sysctl.conf
 
     get_param
@@ -28,23 +38,6 @@ start() {
 	sysctl -wq net.ipv6.conf.default.forwarding=0
     fi
 
-###################### SECTION FOR SAMBA AND TRANSMISION KERNEL TUNE ###################
-    if [ "$SmbEnabled" = "1" ] || [ "$TransmissionEnabled" = "1" ] || [ "$xupnpd" = "1" ] || [ "$UDPXYMode" != "0" ]; then
-	# banish core dump files to /dev/null
-	ulimit -c 0
-	# increase file descriptors
-	ulimit -n 32768
-	# virtual memory
-	ulimit -v unlimited
-	# max memory size
-	ulimit -m unlimited
-	# always overommit
-	sysctl -wq vm.overcommit_ratio=100
-	sysctl -wq vm.overcommit_memory=2
-    else
-	# heruistic overcommit
-	sysctl -wq vm.overcommit_memory=0
-    fi
 }
 
 stop() {
@@ -52,7 +45,7 @@ stop() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 dhcpDomain SmbEnabled TransmissionEnabled xupnpd UDPXYMode`
+    eval `nvram_buf_get 2860 dhcpDomain`
 }
 
 case "$1" in
