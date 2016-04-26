@@ -83,13 +83,13 @@ NDIS_STATUS MiniportMMRequest(
 	NDIS_STATUS  	Status = NDIS_STATUS_SUCCESS;
 	ULONG	 		FreeNum;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
-	UCHAR rtmpHwHdr[TXINFO_SIZE +  pAd->chipCap.TXWISize]; /*RTMP_HW_HDR_LEN];*/
+	UCHAR rtmpHwHdr[40];
 #ifdef RTMP_MAC_PCI
 	ULONG IrqFlags = 0;
 //	UCHAR			IrqState;
 #endif /* RTMP_MAC_PCI */
 	BOOLEAN			bUseDataQ = FALSE, FlgDataQForce = FALSE, FlgIsLocked = FALSE;
-	int 			retryCnt = 0;
+	int 			retryCnt = 0, hw_len = TXINFO_SIZE + TXWISize;
 
 	ASSERT(Length <= MGMT_DMA_BUFFER_SIZE);
 	
@@ -156,17 +156,14 @@ NDIS_STATUS MiniportMMRequest(
 		if ((FreeNum > 0))
 		{
 			/* We need to reserve space for rtmp hardware header. i.e., TxWI for RT2860 and TxInfo+TxWI for RT2870*/
-			NdisZeroMemory(&rtmpHwHdr, (TXINFO_SIZE + TXWISize));
-			Status = RTMPAllocateNdisPacket(pAd, &pPacket, (PUCHAR)&rtmpHwHdr, (TXINFO_SIZE + TXWISize), pData, Length);
+			NdisZeroMemory(&rtmpHwHdr, hw_len);
+			Status = RTMPAllocateNdisPacket(pAd, &pPacket, (PUCHAR)&rtmpHwHdr, hw_len, pData, Length);
 			if (Status != NDIS_STATUS_SUCCESS)
 			{
 				DBGPRINT(RT_DEBUG_WARN, ("MiniportMMRequest (error:: can't allocate NDIS PACKET)\n"));
 				break;
 			}
 
-
-			/*pAd->CommonCfg.MlmeTransmit.field.MODE = MODE_CCK;*/
-			/*pAd->CommonCfg.MlmeRate = RATE_2;*/
 #ifdef DOT11Z_TDLS_SUPPORT
 #ifdef UAPSD_SUPPORT
 			UAPSD_MR_QOS_NULL_HANDLE(pAd, pData, pPacket);
