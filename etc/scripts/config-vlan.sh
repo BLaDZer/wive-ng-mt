@@ -228,7 +228,11 @@ restore_onergmii()
 
 	switch reg w 3500 00008000		#port 5 link down
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
-	switch reg w 3600 0005e33b		#port 6 force up, 1000FD
+
+	# do not restore cpuport mode if trgmii enabled
+	if [ "$CONFIG_GE1_TRGMII_FORCE_1200" != "y" ]; then
+	    switch reg w 3600 0005e33b		#port 6 force up, 1000FD
+	fi
 
 	# clear configured vlan parts
 	switch vlan clear
