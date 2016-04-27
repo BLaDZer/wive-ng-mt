@@ -7,7 +7,7 @@
 #define __UCLIBC_SUBLEVEL__ 33
 /* Automatically generated make config: don't edit */
 /* Version: 0.9.33.2 */
-/* Mon Feb 15 16:11:04 2016 */
+/* Thu Apr 28 01:03:54 2016 */
 #undef __TARGET_alpha__
 #undef __TARGET_arm__
 #undef __TARGET_avr32__
@@ -221,9 +221,9 @@
 #undef __UCLIBC_BUILD_PIE__
 #undef __UCLIBC_HAS_ARC4RANDOM__
 #undef __UCLIBC_HAS_SSP__
-#undef __UCLIBC_BUILD_RELRO__
-#undef __UCLIBC_BUILD_NOW__
-#undef __UCLIBC_BUILD_NOEXECSTACK__
+#define __UCLIBC_BUILD_RELRO__ 1
+#define __UCLIBC_BUILD_NOW__ 1
+#define __UCLIBC_BUILD_NOEXECSTACK__ 1
 
 /* Development/debugging options */
 #define __CROSS_COMPILER_PREFIX__ "$(PREFIX)/bin/mipsel-linux-uclibc-"

@@ -1996,29 +1996,30 @@
 <br>
 <b>4.3.x</b><br>
 1) kernel: up to 3.4.112 LTS version.<br>
-2) build_system: fix cleanup libext and optimize cleanup userdir.<br>
-3) build_system: port and add libtalloc (need for free radius).<br>
-4) build_system: add SNR-CPE-AP2-5GHZ-MT outdor AP support.<br>
-5) defaults: add base openspace roaming profile for help start configure at the current place.<br>
-6) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
-7) miniupnpd: up to 2.0 version.<br>
-8) irqbalance: update to 27.04.2016 git version.<br>
-9) ralinkiappd: fix segfault in debug mode with level trace.<br>
-10) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
-11) freeradius: strip configs and not install not used libs for save flash size.<br>
-12) init.d: add logic for radius server start.<br>
-13) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
-14) uboot/kernel: add support EN25Q128 flash chip.<br>
-15) ralinkiappd: add support send messages to seconf wlan module.<br>
-16) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
-17) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-18) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-19) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-20) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-21) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-22) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-23) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-24) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+2) toolchain: update kernel headers and rebuild.<br>
+3) build_system: fix cleanup libext and optimize cleanup userdir.<br>
+4) build_system: port and add libtalloc (need for free radius).<br>
+5) build_system: add SNR-CPE-AP2-5GHZ-MT outdor AP support.<br>
+6) defaults: add base openspace roaming profile for help start configure at the current place.<br>
+7) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
+8) miniupnpd: up to 2.0 version.<br>
+9) irqbalance: update to 27.04.2016 git version.<br>
+10) ralinkiappd: fix segfault in debug mode with level trace.<br>
+11) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
+12) freeradius: strip configs and not install not used libs for save flash size.<br>
+13) init.d: add logic for radius server start.<br>
+14) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
+15) uboot/kernel: add support EN25Q128 flash chip.<br>
+16) ralinkiappd: add support send messages to seconf wlan module.<br>
+17) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
+18) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+19) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+20) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+21) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+22) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
+23) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+24) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+25) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
 <br>
 <br>
 <br>
