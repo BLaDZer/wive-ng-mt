@@ -30,6 +30,21 @@ config RALINK_GPIO_LED_SYS
 	depends on RALINK_GPIO_LED
 	default y
 
+config RALINK_GPIO_LED_SYS2
+	bool "Ralink GPIO SYSTEM LED2 Support"
+	depends on RALINK_GPIO_LED
+	default y
+
+config RALINK_GPIO_LED_SYS3
+	bool "Ralink GPIO SYSTEM LED3 Support"
+	depends on RALINK_GPIO_LED
+	default y
+
+config RALINK_GPIO_LED_SYS4
+	bool "Ralink GPIO SYSTEM LED4 Support"
+	depends on RALINK_GPIO_LED
+	default y
+
 config RALINK_GPIO_LED_USB
 	bool "Ralink GPIO USB LED Support"
 	depends on RALINK_GPIO_LED && USB
@@ -41,8 +56,23 @@ config RALINK_GPIO_LED_VPN
 	default y
 
 config RALINK_GPIO_SYS_LED
-	int "GPIO for power led."
+	int "GPIO for system1 led."
 	depends on RALINK_GPIO_LED && RALINK_GPIO_LED_SYS
+	default 38
+
+config RALINK_GPIO_SYS_LED2
+	int "GPIO for system2 led."
+	depends on RALINK_GPIO_LED && RALINK_GPIO_LED_SYS2
+	default 38
+
+config RALINK_GPIO_SYS_LED3
+	int "GPIO for system3 led."
+	depends on RALINK_GPIO_LED && RALINK_GPIO_LED_SYS3
+	default 38
+
+config RALINK_GPIO_SYS_LED4
+	int "GPIO for system4 led."
+	depends on RALINK_GPIO_LED && RALINK_GPIO_LED_SYS4
 	default 38
 
 config RALINK_GPIO_USB_LED
