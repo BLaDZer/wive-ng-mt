@@ -23,8 +23,64 @@ $LOG "Tune wifi roaming parametrs for $1."
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low (PSM clients), default 0 (off)
 # KickStaRssiLowDelay	- range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
 #################################################################################################################################################
-eval `nvram_buf_get 2860 ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor KickStaRssiLow KickStaRssiLowPSM KickStaRssiLowDelay ProbeRspRssi`
+eval `nvram_buf_get 2860 BandDeltaRssi ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor \
+			    KickStaRssiLow KickStaRssiLowPSM ProbeRspRssi KickStaRssiLowDelay`
 #################################################################################################################################################
+
+if [ "$2" = "5GHZ" ]; then
+    if [ "$BandDeltaRssi" = "" ]; then
+	BandDeltaRssi=-5
+    fi
+    # calculate roaming parametrs for second band
+    # limit parametrs to minimul value
+    # min RSSI
+    minrssi=-100
+
+    if [ "$AuthRspFail" != "" ] && [ "$AuthRspFail" != "0" ]; then
+	let AuthRspFail=AuthRspFail+BandDeltaRssi
+	if [ $AuthRspFail -lt $minrssi ]; then
+	    AuthRspFail=$minrssi
+	fi
+    fi
+    if [ "$AuthRspRssi" != "" ] && [ "$AuthRspRssi" != "0" ]; then
+	let AuthRspRssi=AuthRspRssi+BandDeltaRssi
+	if [ $AuthRspRssi -lt $minrssi ]; then
+	    AuthRspRssi=$minrssi
+	fi
+    fi
+    if [ "$AssocReqRssiThres" != "" ] && [ "$AssocReqRssiThres" != "0" ]; then
+	let AssocReqRssiThres=AssocReqRssiThres+BandDeltaRssi
+	if [ $AssocReqRssiThres -lt $minrssi ]; then
+	    AssocReqRssiThres=$minrssi
+	fi
+    fi
+    if [ "$AssocRspIgnor" != "" ] && [ "$AssocRspIgnor" != "0" ]; then
+	let AssocRspIgnor=AssocRspIgnor+BandDeltaRssi
+	if [ $AssocRspIgnor -lt $minrssi ]; then
+	    AssocRspIgnor=$minrssi
+	fi
+    fi
+    if [ "$KickStaRssiLow" != "" ] && [ "$KickStaRssiLow" != "0" ]; then
+	let KickStaRssiLow=KickStaRssiLow+BandDeltaRssi
+	if [ $KickStaRssiLow -lt $minrssi ]; then
+	    KickStaRssiLow=$minrssi
+	fi
+    fi
+    if [ "$KickStaRssiLowPSM" != "" ] && [ "$KickStaRssiLowPSM" != "0" ]; then
+	let KickStaRssiLowPSM=KickStaRssiLowPSM+BandDeltaRssi
+	if [ $KickStaRssiLowPSM -lt $minrssi ]; then
+	    KickStaRssiLowPSM=$minrssi
+	fi
+    fi
+    if [ "$ProbeRspRssi" != "" ] && [ "$ProbeRspRssi" != "0" ]; then
+	let ProbeRspRssi=ProbeRspRssi+BandDeltaRssi
+	if [ $ProbeRspRssi -lt $minrssi ]; then
+	    ProbeRspRssi=$minrssi
+	fi
+    fi
+fi
+
+# set handover parametrs in driver
 if [ "$ApProbeRspTimes" != "" ]; then
     iwpriv "$1" set ApProbeRspTimes="$ApProbeRspTimes"
 fi
@@ -52,4 +108,4 @@ fi
 if [ "$KickStaRssiLowDelay" != "" ]; then
     iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
 fi
-################################################################################################################################
+$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowDelay;$ProbeRspRssi"

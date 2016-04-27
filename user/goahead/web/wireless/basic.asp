@@ -92,6 +92,10 @@ var ChannelList_24G =
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
 	displayElement(["row_ApProbeRspTimes", "row_AuthRspFail", "row_AuthRspRssi", "row_AssocReqRssiThres", "row_AssocRspIgnor", "row_KickStaRssiLow", "row_KickStaRssiLowPSM", "row_KickStaRssiLowDelay", "row_ProbeRspRssi"], form.FastRoaming.value == "1");
+	if (is5gh_support == 1)
+	{
+	    displayElement("row_BandDeltaRssi", form.FastRoaming.value == "1");
+	}
 	displayElement( "row_RRMEnable", (form.FastRoaming.value == "1") && rrm_built);
 	displayElement( "row_FtSupport", (form.FastRoaming.value == "1") && ft_built);
 }
@@ -312,6 +316,7 @@ function initTranslation()
 	_TR("basicFastRoaming", "basic roaming");
 	_TR("fast_roaming", "basic roaming");
 	_TR("basicApProbeRspTimes", "basic roaming probe times");
+	_TR("basicBandDeltaRssi", "basic roaming delta rssi");
 	_TR("basicAuthRspFail", "basic roaming auth fail");
 	_TR("basicAuthRspRssi", "basic roaming auth rssi");
 	_TR("basicAssocReqRssiThres", "basic roaming rssi thres");
@@ -1398,6 +1403,10 @@ function CheckValue(form)
         	<tr id="row_ApProbeRspTimes" style="display:none;">
         		<td class="head" id="basicApProbeRspTimes" width="50%">Limit probe reqest per client</td>
         		<td width="50%"><input type="text" name="ApProbeRspTimes" class="half" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font color="#808080"> 0 - 10 times, default 3</font></td>
+        	</tr>
+        	<tr id="row_BandDeltaRssi" style="display:none;">
+        		<td class="head" id="basicBandDeltaRssi" width="50%">Delta threshold rssi level for 5GHz band</td>
+        		<td width="50%"><input type="text" name="BandDeltaRssi" class="half" maxlength="4" value="<% getCfgZero(1, "BandDeltaRssi"); %>"><font color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
         	</tr>
         	<tr id="row_AuthRspFail" style="display:none;">
         		<td class="head" id="basicAuthRspFail" width="50%">Reject auth req due to weak signal</td>

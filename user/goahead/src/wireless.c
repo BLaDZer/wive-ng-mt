@@ -554,14 +554,15 @@ static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 parameter_fetch_t fast_roaming_flags[] =
 {
 	{ T("ApProbeRspTimes"), "ApProbeRspTimes", 0, T("3") },
+	{ T("BandDeltaRssi"), "BandDeltaRssi", 0, T("-5") },
 	{ T("AuthRspFail"), "AuthRspFail", 0, T("0") },
 	{ T("AuthRspRssi"), "AuthRspRssi", 0, T("0") },
-	{ T("AssocReqRssiThres"), "AssocReqRssiThres", 0, T("0") },
+	{ T("AssocReqRssiThres"), "AssocReqRssiThres", 0, T("-70") },
 	{ T("AssocRspIgnor"), "AssocRspIgnor", 0, T("0") },
-	{ T("KickStaRssiLow"), "KickStaRssiLow", 0, T("0") },
-	{ T("KickStaRssiLowPSM"), "KickStaRssiLowPSM", 0, T("0") },
-	{ T("KickStaRssiLowDelay"), "KickStaRssiLowDelay", 0, T("0") },
-	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("0") },
+	{ T("KickStaRssiLow"), "KickStaRssiLow", 0, T("-80") },
+	{ T("KickStaRssiLowPSM"), "KickStaRssiLowPSM", 0, T("-90") },
+	{ T("KickStaRssiLowDelay"), "KickStaRssiLowDelay", 0, T("5") },
+	{ T("ProbeRspRssi"), "ProbeRspRssi", 0, T("-95") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 

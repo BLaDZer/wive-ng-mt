@@ -111,6 +111,7 @@
   <message msgid="basic anac" msgstr="11an/ac mixed" />
   <message msgid="basic roaming" msgstr="Basic Roaming settings" />
   <message msgid="basic roaming probe times" msgstr="Limit probe request per client" />
+  <message msgid="basic roaming delta rssi" msgstr="Delta threshold rssi level for 5GHz band" />
   <message msgid="basic roaming auth fail" msgstr="Reject auth req due to weak signal" />
   <message msgid="basic roaming auth rssi" msgstr="Ignore auth req due to weak signal" />
   <message msgid="basic roaming rssi thres" msgstr="Reject assoc req due to weak signal" />

@@ -110,6 +110,7 @@
   <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
   <message msgid="basic roaming" msgstr="Настройки роуминга" />
   <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
+  <message msgid="basic roaming delta rssi" msgstr="Дельта значений для 5ГГц диапазона" />
   <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
   <message msgid="basic roaming auth rssi" msgstr="Игнорировать попытки авторизации при уровне ниже" />
   <message msgid="basic roaming rssi thres" msgstr="Отклонить запрос соединения при уровне ниже" />

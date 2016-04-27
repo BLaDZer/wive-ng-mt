@@ -383,6 +383,7 @@ HT_RxStreamINIC=1
 HT_EXTCHAINIC=1
 SSID1INIC=Wive-NG-MT-5GHZ
 FastRoaming=0
+BandDeltaRssi=-5
 ApProbeRspTimes=3
 AuthRspFail=0
 AuthRspRssi=0
