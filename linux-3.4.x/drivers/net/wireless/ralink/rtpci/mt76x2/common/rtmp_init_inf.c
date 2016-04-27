@@ -404,7 +404,7 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #if defined(RT6352_EP_SUPPORT) || defined(RT6352_EL_SUPPORT)
 		RT6352_Init_ExtPA_ExtLNA(pAd, FALSE);
 #else
-		printk("2.4GHz iPA/iLNA used.\n");
+		printk("MT7620: 2.4GHz iPA/iLNA used.\n");
 #endif /* defined(RT6352_EP_SUPPORT) || defined(RT6352_EL_SUPPORT) */
 	}
 #endif /* RT6352 */

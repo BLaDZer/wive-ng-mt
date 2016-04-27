@@ -1491,7 +1491,7 @@ VOID SetRfChFreqParametersMT76x0(
 	{
 		/* Internal PA */
 		if (!report_pa5_mode) {
-		    printk("5GHz iPA used.\n");
+		    printk("MT7610: 5GHz iPA used.\n");
 		    report_pa5_mode++;
 		}
 
@@ -1534,7 +1534,7 @@ VOID SetRfChFreqParametersMT76x0(
 
 		/* External PA */
 		if (!report_pa5_mode) {
-		    printk("5GHz ePA used.\n");
+		    printk("MT7610: 5GHz ePA used.\n");
 		    report_pa5_mode++;
 		}
 

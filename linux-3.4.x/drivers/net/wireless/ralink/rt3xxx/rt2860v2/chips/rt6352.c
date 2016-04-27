@@ -5179,7 +5179,7 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 	{
 		/* TFBGA Ext-LNA */
 		if (ReInit == FALSE)
-		    printk("2.4GHz eLNA used.\n");
+		    printk("MT7620: 2.4GHz eLNA used.\n");
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R14, 0x66);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R14, 0x66);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R17, 0x20);
@@ -5189,7 +5189,7 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 	} else {
 #endif /* RT6352_EL_SUPPORT */
 		if (ReInit == FALSE)
-		    printk("2.4GHz iLNA used.\n");
+		    printk("MT7620: 2.4GHz iLNA used.\n");
 #ifdef RT6352_EL_SUPPORT
 	}
 #endif /* RT6352_EL_SUPPORT */
@@ -5199,7 +5199,7 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 	{
 		/* TFBGA Ext-PA */
 		if (ReInit == FALSE)
-		    printk("2.4GHz ePA used.\n");
+		    printk("MT7620: 2.4GHz ePA used.\n");
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R43, 0x73);
 		RT635xWriteRFRegister(pAd, RF_BANK6, RF_R43, 0x73);
 		RT635xWriteRFRegister(pAd, RF_BANK4, RF_R44, 0x73);
@@ -5233,7 +5233,7 @@ VOID RT6352_Init_ExtPA_ExtLNA(
 	} else {
 #endif /* RT6352_EP_SUPPORT */
 		if (ReInit == FALSE)
-		    printk("2.4GHz iPA used.\n");
+		    printk("MT7620: 2.4GHz iPA used.\n");
 #ifdef RT6352_EP_SUPPORT
 	}
 #endif /* RT6352_EP_SUPPORT */

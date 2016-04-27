@@ -549,7 +549,7 @@ BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
         	        pa_mode = FALSE;
 
 		if (!report_pa5_mode) {
-		    printk("5GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
+		    printk("MT76x2: 5GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
 		    report_pa5_mode++;
 		}
         } else {
@@ -562,7 +562,7 @@ BOOLEAN isExternalPAMode(RTMP_ADAPTER *ad, INT channel)
                         pa_mode = TRUE;
 
 		if (!report_pa24_mode) {
-		    printk("2.4GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
+		    printk("MT76x2: 2.4GHz %s used.\n", (pa_mode == TRUE)?"ePA":"iPA");
 		    report_pa24_mode++;
 		}
         }
@@ -583,7 +583,7 @@ BOOLEAN is_external_lna_mode(RTMP_ADAPTER *ad, INT channel)
 	        	lna_mode = FALSE;
 
 		if (!report_lna5_mode) {
-		    printk("5GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
+		    printk("MT76x2: 5GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
 		    report_lna5_mode++;
 		}
 	} else {
@@ -593,7 +593,7 @@ BOOLEAN is_external_lna_mode(RTMP_ADAPTER *ad, INT channel)
 	            	lna_mode = FALSE;
 
 		if (!report_lna24_mode) {
-		    printk("2.4GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
+		    printk("MT76x2: 2.4GHz %s used.\n", (lna_mode == TRUE)?"eLNA":"iLNA");
 		    report_lna24_mode++;
 		}
 	}
