@@ -896,7 +896,9 @@ UCHAR DPD_Calibration(
 	{
 		DPD_Cal_success = FALSE;
 
-		DBGPRINT(RT_DEBUG_TRACE, ("Don't need do DPD Calibration  !!!\n"));
+		DBGPRINT(RT_DEBUG_TRACE, 
+				("Don't need do DPD Calibration  !!!, bInternalTxALC = %u\n",
+				bInternalTxALC));
 
 		return 0;
 	}
