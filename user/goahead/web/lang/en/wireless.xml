@@ -184,7 +184,7 @@
   <message msgid="adv idletimeout" msgstr="Idle timeout before disconnect" />
   <message msgid="adv entrylifecheck" msgstr="TX retry fail before disconnect " />
   <message msgid="adv mcast rate" msgstr="Multicast TX mode" />
-  <message msgid="adv ofdm" msgstr="Legacy OFDM" />
+  <message msgid="adv ofdm" msgstr="OFDM" />
   <message msgid="adv htmix" msgstr="HTMIX" />
   <message msgid="adv maximum stations range" msgstr="num" />
   <message msgid="adv station keep alive range" msgstr="sec (range 10 - 300)" />
