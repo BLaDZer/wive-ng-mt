@@ -5,12 +5,9 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
-// for max bssid num
-#include "oid.h"
 
+#include "oid.h"	/* for max bssid num */
 #include "libnvram.h"
-
-#define DEFAULT_FLASH_ZONE_NAME "2860"
 
 static int set_usage(char *aout)
 {
@@ -643,7 +640,15 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(RADIUS_Server);
 	FPRINT_STR(RADIUS_Port);
 	FPRINT_STR(RADIUS_Key);
-
+#ifdef CONFIG_BAND_STEERING
+	FPRINT_NUM(BandSteering);
+	/* not apply from read dat file now, need add in profile instead of iwpriv usage in future */
+	FPRINT_NUM(BndStrgRssiDiff);	/* if Rssi2.4G > Rssi5G by RssiDiff, then allow client to connect 2.4G */
+	FPRINT_NUM(BndStrgRssiLow);	/* if Rssi5G < RssiLow, then this client cannot connect to 5G */
+	FPRINT_NUM(BndStrgAge);		/* Entry Age Time (ms) */
+	FPRINT_NUM(BndStrgHoldTime);	/* Time for holding 2.4G connection rsp (ms) */
+	FPRINT_NUM(BndStrgCheckTime);	/* Time for deciding if a client is 2.4G only (ms) */
+#endif
 	/* Basic Roaming, need add in profile instead of iwpriv usage in future */
 	FPRINT_NUM(ApProbeRspTimes);
 	FPRINT_NUM(AuthRspFail);
@@ -681,9 +686,6 @@ static int gen_wifi_config(int mode, int genmode)
 #else
 	FPRINT_STR(RegulatoryClass);
 #endif
-#endif
-#ifdef CONFIG_BAND_STEERING
-	FPRINT_NUM(BandSteering);
 #endif
 	fclose(fp);
 	nvram_close(mode);

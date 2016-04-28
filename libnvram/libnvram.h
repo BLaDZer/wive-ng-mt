@@ -15,6 +15,7 @@
 
 #define NV_DEV				"/dev/nvram"
 #define DEFAULT_NVRAM                   "/etc/default/nvram_default"
+#define DEFAULT_FLASH_ZONE_NAME		"2860"
 
 #define BUFSZ				1024
 #define ENV_BLK_SIZE			0x1000

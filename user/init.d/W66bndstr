@@ -14,17 +14,17 @@ LOG="logger -t bndstr"
 start() {
     get_param
     if [ "$BandSteering" != "" ] && [ "$BandSteering" != "0" ] ; then
-	if [ "$SSID1" = "$SSID1INIC" ]; then
+	if [ "$RadioOn" = "1" ] && [ "$RadioOnINIC" = "1" ] && [ "$SSID1" = "$SSID1INIC" ]; then
 	    $LOG "Starting bandsteering daemon"
 	    bndstrg &
 	else
-	    $LOG "For bandsteering work are required identical SSID for 2.4GHz and 5GHz modules. Please change it and restart."
+	    $LOG "For bandsteering work are required enable all bands support and identical SSID for 2.4GHz and 5GHz modules. Please change it and restart."
 	fi
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 BandSteering SSID1 SSID1INIC`
+    eval `nvram_buf_get 2860 RadioOn RadioOnINIC BandSteering SSID1 SSID1INIC`
 }
 
 stop() {

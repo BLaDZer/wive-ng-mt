@@ -16,6 +16,8 @@
 */
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "libnvram.h"
 #include "bndstrg.h"
 
 int DebugLevel = DEBUG_TRACE;
@@ -1013,16 +1015,70 @@ end_of_periodic_exec:
 
 int bndstrg_table_init(struct bndstrg_cli_table *table)
 {
+	u32 BndStrgAge = 0, BndStrgHoldTime = 0, BndStrgCheckTime = 0;
+	char BndStrgRssiDiff = 0, BndStrgRssiLow = 0;
+	char *BndStrgRssiDiff_s, *BndStrgRssiLow_s, *BndStrgAge_s, *BndStrgHoldTime_s, *BndStrgCheckTime_s;
+	char cmd[256];
+
 	if (table->bInitialized == TRUE)
 		return BND_STRG_SUCCESS;
 
+	/* get params */
+	BndStrgRssiDiff_s  = nvram_get(RT2860_NVRAM, "BndStrgRssiDiff");
+	BndStrgRssiLow_s   = nvram_get(RT2860_NVRAM, "BndStrgRssiLow");
+	BndStrgAge_s       = nvram_get(RT2860_NVRAM, "BndStrgAge");
+	BndStrgHoldTime_s  = nvram_get(RT2860_NVRAM, "BndStrgHoldTime");
+	BndStrgCheckTime_s = nvram_get(RT2860_NVRAM, "BndStrgCheckTime");
+
+	/* convert to int */
+	BndStrgRssiDiff  = (BndStrgRssiDiff_s == NULL) ? 0 : atoi(BndStrgRssiDiff_s);
+	BndStrgRssiLow   = (BndStrgRssiLow_s == NULL) ? 0 : atoi(BndStrgRssiLow_s);
+	BndStrgAge       = (BndStrgAge_s == NULL) ? 0 : atoi(BndStrgAge_s);
+	BndStrgHoldTime  = (BndStrgHoldTime_s == NULL) ? 0 : atoi(BndStrgHoldTime_s);
+	BndStrgCheckTime = (BndStrgCheckTime_s == NULL) ? 0 : atoi(BndStrgCheckTime_s);
+
+
 	memset(table, 0, sizeof(struct bndstrg_cli_table));
-	//OS_NdisAllocateSpinLock(&table->Lock);
-	table->RssiDiff= BND_STRG_RSSI_DIFF;
-	table->RssiLow = BND_STRG_RSSI_LOW;
-	table->AgeTime = BND_STRG_AGE_TIME;
-	table->HoldTime = BND_STRG_HOLD_TIME;
-	table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
+
+	if (BndStrgRssiDiff != 0) {
+	    table->RssiDiff= BndStrgRssiDiff;
+	    sprintf(cmd, "iwpriv ra0 set BndStrgRssiDiff=%u && iwpriv rai0 set BndStrgRssiDiff=%u", BndStrgRssiDiff, BndStrgRssiDiff);
+	    system(cmd);
+	}
+	else
+	    table->RssiDiff= BND_STRG_RSSI_DIFF;
+
+	if (BndStrgRssiLow != 0) {
+	    table->RssiLow = BndStrgRssiLow;
+	    sprintf(cmd, "iwpriv ra0 set BndStrgRssiLow=%u && iwpriv rai0 set BndStrgRssiLow=%u", BndStrgRssiLow, BndStrgRssiLow);
+	    system(cmd);
+	}
+	else
+	    table->RssiLow = BND_STRG_RSSI_LOW;
+
+	if (BndStrgAge != 0) {
+	    table->AgeTime = BndStrgAge;
+	    sprintf(cmd, "iwpriv ra0 set BndStrgAge=%u && iwpriv rai0 set BndStrgAge=%u", BndStrgAge, BndStrgAge);
+	    system(cmd);
+	}
+	else
+	    table->AgeTime = BND_STRG_AGE_TIME;
+	if (BndStrgHoldTime != 0) {
+	    table->HoldTime = BndStrgHoldTime;
+	    sprintf(cmd, "iwpriv ra0 set BndStrgHoldTime=%u && iwpriv rai0 set BndStrgHoldTime=%u", BndStrgHoldTime, BndStrgHoldTime);
+	    system(cmd);
+	}
+	else
+	    table->HoldTime = BND_STRG_HOLD_TIME;
+
+	if (BndStrgCheckTime != 0) {
+	    table->CheckTime_5G = BndStrgCheckTime;
+	    sprintf(cmd, "iwpriv ra0 set BndStrgCheckTime=%u && iwpriv rai0 set BndStrgCheckTime=%u", BndStrgCheckTime , BndStrgCheckTime);
+	    system(cmd);
+	}
+	else
+	    table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
+
 	table->AlgCtrl.ConditionCheck = /*fBND_STRG_CND_RSSI_DIFF | \
 								fBND_STRG_CND_2G_PERSIST | \
 								fBND_STRG_CND_HT_SUPPORT | \ */
@@ -1063,6 +1119,9 @@ int bndstrg_init(struct bndstrg *bndstrg,
 	bndstrg->drv_data = bndstrg->drv_ops->drv_inf_init(bndstrg, opmode, drv_mode);
 
 	ret = bndstrg_table_init(&bndstrg->table);
+
+	/* show param init in table */
+	bndstrg_event_table_info(bndstrg);
 
 	if (ret == BND_STRG_SUCCESS)
 		ret = eloop_register_timeout(1, 0, bndstrg_periodic_exec, NULL, bndstrg);
