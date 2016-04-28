@@ -383,6 +383,13 @@ function CheckValue(form)
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
+          <tr id="dynvga_row">
+            <td class="head" id="advDynVGA">Adaptive LNA Gain</td>
+            <td><select name="dyn_vga" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
             <td><select id="country_region" name="country_region" style="width: 150px;">
@@ -415,13 +422,6 @@ function CheckValue(form)
           <tr id="video_turbine_row">
             <td class="head">Video turbine</td>
             <td><select name="video_turbine" size="1" class="half">
-                <option value="0" selected id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="dynvga_row">
-            <td class="head" id="advDynVGA">Adaptive LNA Gain</td>
-            <td><select name="dyn_vga" size="1" class="half">
                 <option value="0" selected id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
