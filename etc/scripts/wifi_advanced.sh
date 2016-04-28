@@ -61,7 +61,7 @@ if [ "$DyncVgaEnable" != "" ] && [ "$DyncVgaEnable" != "0" ]; then
 	if [ "$SkipLongRangeVga" != "" ] && [ "$SkipLongRangeVga" != "0" ]; then
 	    iwpriv "$1" set VgaClamp="$VgaClamp"
 	else
-	    iwpriv "$1" set SkipLongRangeVga=0
+	    iwpriv "$1" set VgaClamp=0
 	fi
     fi
 else
