@@ -140,8 +140,8 @@
   <message msgid="basic ack policy no" msgstr="No ack" />
 
   <message msgid="basic bandsteering" msgstr="Band Steering settings" />
-  <message msgid="basic bandsteering rssidiff" msgstr="Allow fallback to 2.4GHz if bands RSSI diff bigger this value" />
-  <message msgid="basic bandsteering rssilow" msgstr="Force fallback to 2.4GHz if rssi smaller this value" />
+  <message msgid="basic bandsteering rssidiff" msgstr="Allow fallback to 2.4GHz if bands RSSI diff bigger" />
+  <message msgid="basic bandsteering rssilow" msgstr="Force fallback to 2.4GHz if rssi smaller" />
   <message msgid="basic bandsteering age" msgstr="Inactive client entry age time" />
   <message msgid="basic bandsteering hold" msgstr="Time for holding 2.4G connection" />
   <message msgid="basic bandsteering check" msgstr="Time for deciding if a client is 2.4G only" />

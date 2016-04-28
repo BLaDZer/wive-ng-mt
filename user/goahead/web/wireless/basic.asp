@@ -1419,11 +1419,11 @@ function CheckValue(form)
         		</td>
         	</tr>
         	<tr id="row_BndStrgRssiDiff" style="display:none;">
-        		<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger this value</td>
+        		<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
         		<td width="50%"><input type="text" name="BndStrgRssiDiff" class="half" maxlength="2" value="<% getCfgZero(1, "BndStrgRssiDiff"); %>"><font color="#808080"> 0 - 40 db, default 20</font></td>
         	</tr>
         	<tr id="row_BndStrgRssiLow" style="display:none;">
-        		<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller this value</td>
+        		<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller</td>
         		<td width="50%"><input type="text" name="BndStrgRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "BndStrgRssiLow"); %>"><font color="#808080"> 0 - -100 db, default -80</font></td>
         	</tr>
         	<tr id="row_BndStrgAge" style="display:none;">
