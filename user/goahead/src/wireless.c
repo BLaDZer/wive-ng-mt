@@ -1027,7 +1027,7 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
-	char_t  *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable;
+	char_t  *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid = 0, ssid_num, tmp, i;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *token;
 	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";
@@ -1054,6 +1054,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
+	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
@@ -1145,6 +1146,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	nvram_bufset(RT2860_NVRAM, "AckPolicy", ackpolicy);
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
+	nvram_bufset(RT2860_NVRAM, "DyncVgaEnable", dyn_vga);
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);
 	nvram_bufset(RT2860_NVRAM, "McastMcs", mcast_mcs);

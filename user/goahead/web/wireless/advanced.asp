@@ -26,6 +26,7 @@ var McastPhyMode = defaultNumber('<% getCfgZero(1, "McastPhyMode"); %>', '2');
 var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
 var video_turbine_built='<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
+var dyn_vga = '<% getCfgZero(1, "DyncVgaEnable"); %>';
 var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
 var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
@@ -36,114 +37,118 @@ var ED_MODE = '<% getCfgZero(1, "ED_MODE"); %>';
 
 function initTranslation()
 {
-	_TR("advTitle", "adv title");
-	_TR("advIntroduction", "adv introduction");
+    _TR("advTitle", "adv title");
+    _TR("advIntroduction", "adv introduction");
 
-	_TR("advWireless", "adv wireless");
-	_TR("advBGProtect", "adv bgpro");
-	_TR("advBGProAuto", "wireless auto");
-	_TR("advBGProOn", "wireless on");
-	_TR("advBGProOff", "wireless off");
+    _TR("advWireless", "adv wireless");
+    _TR("advBGProtect", "adv bgpro");
+    _TR("advBGProAuto", "wireless auto");
+    _TR("advBGProOn", "wireless on");
+    _TR("advBGProOff", "wireless off");
 
-	_TR("advBeaconInterval", "adv beacon interval");
-	_TR("advBeaconIntervalRange", "adv beacon interval range");
-	_TR("advDTIM", "adv dtim");
-	_TR("advDTIMRange", "adv dtim range");
-	_TR("advFrag", "adv fragment threshold");
-	_TR("advFragRange", "adv fragment threshold range");
-	_TR("advRTS", "adv rts threshold");
-	_TR("advRTSRange", "adv rts threshold range");
-	_TR("advShortPre", "adv short preamble");
-	_TR("advShortSlot", "adv short slot");
-	_TR("advTxBurst", "adv tx burst");
-	_TR("advPktAggr", "adv pkt aggregate");
-	_TR("advWmm", "adv wmm");
-	_TR("advBSAuto", "wireless auto");
+    _TR("advBeaconInterval", "adv beacon interval");
+    _TR("advBeaconIntervalRange", "adv beacon interval range");
+    _TR("advDTIM", "adv dtim");
+    _TR("advDTIMRange", "adv dtim range");
+    _TR("advFrag", "adv fragment threshold");
+    _TR("advFragRange", "adv fragment threshold range");
+    _TR("advRTS", "adv rts threshold");
+    _TR("advRTSRange", "adv rts threshold range");
+    _TR("advShortPre", "adv short preamble");
+    _TR("advShortSlot", "adv short slot");
+    _TR("advTxBurst", "adv tx burst");
+    _TR("advPktAggr", "adv pkt aggregate");
+    _TR("advWmm", "adv wmm");
+    _TR("advBSAuto", "wireless auto");
 
-  _TR("advMaxStaNumRange", "adv maximum stations range");
-  _TR("advKeepAliveSec", "adv station keep alive range");
-  _TR("advIdleTimeoutSec", "adv idletimeout range");
-  _TR("advEntryLifeCheckTimes", "adv entrylifecheck range");
+    _TR("advMaxStaNumRange", "adv maximum stations range");
+    _TR("advKeepAliveSec", "adv station keep alive range");
+    _TR("advIdleTimeoutSec", "adv idletimeout range");
+    _TR("advEntryLifeCheckTimes", "adv entrylifecheck range");
 
-	_TR("staadvRegion", "staadv region");
-	_TR("advCountryCodeNONE", "wireless none");
+    _TR("staadvRegion", "staadv region");
+    _TR("advCountryCodeNONE", "wireless none");
 
-	_TR("advMul2UniConver", "adv multicast2unicast converter");
-	_TR("advMul2Uni", "adv multicast2unicast");
-	_TR("advMul2UniEnable", "wireless enable");
-	_TR("advMul2UniDisable", "wireless disable");
-	_TR("advMaxStaNum", "adv maximum stations number");
-	_TR("advStationKeepAlive", "adv station keep alive");
-  _TR("advIdleTimeout", "adv idletimeout");
-  _TR("advEntryLifeCheck", "adv entrylifecheck");
-  _TR("advMcastRate", "adv mcast rate");
-  _TR("advOFDM", "adv ofdm");
-  _TR("advHTMIX", "adv htmix");
-  _TR("advAckPolicy", "basic ack policy");
-  _TR("advNormalAck", "basic ack policy normal");
-  _TR("advNoAck", "basic ack policy no");
-  _TR("advED_MODE", "adv ed mode");
+    _TR("advMul2UniConver", "adv multicast2unicast converter");
+    _TR("advMul2Uni", "adv multicast2unicast");
+    _TR("advMul2UniEnable", "wireless enable");
+    _TR("advMul2UniDisable", "wireless disable");
+    _TR("advMaxStaNum", "adv maximum stations number");
+    _TR("advStationKeepAlive", "adv station keep alive");
+    _TR("advIdleTimeout", "adv idletimeout");
+    _TR("advEntryLifeCheck", "adv entrylifecheck");
+    _TR("advMcastRate", "adv mcast rate");
+    _TR("advOFDM", "adv ofdm");
+    _TR("advHTMIX", "adv htmix");
+    _TR("advAckPolicy", "basic ack policy");
+    _TR("advNormalAck", "basic ack policy normal");
+    _TR("advNoAck", "basic ack policy no");
+    _TR("advED_MODE", "adv ed mode");
+    _TR("advDynVGA", "adv dynvga mode");
 
-	_TRV("advApply", "button apply");
-	_TRV("advCancel", "button cancel");
+    _TRV("advApply", "button apply");
+    _TRV("advCancel", "button cancel");
 
-  var elements = document.getElementsByTagName('option');
+    var elements = document.getElementsByTagName('option');
     for (var i = 0; i < elements.length; i++)
-      if (elements[i].id == "disable")
-      elements[i].innerHTML = _("button disable");
-    else if (elements[i].id == "enable")
-      elements[i].innerHTML = _("button enable");
-  var elements = document.getElementsByTagName('font');
+	if (elements[i].id == "disable")
+	    elements[i].innerHTML = _("button disable");
+	else if (elements[i].id == "enable")
+	    elements[i].innerHTML = _("button enable");
+
+    var elements = document.getElementsByTagName('font');
     for (var i = 0; i < elements.length; i++)
-      if (elements[i].id == "disable")
-      elements[i].innerHTML = _("button disable");
-    else if (elements[i].id == "enable")
-      elements[i].innerHTML = _("button enable");
+	if (elements[i].id == "disable")
+	    elements[i].innerHTML = _("button disable");
+	else if (elements[i].id == "enable")
+	    elements[i].innerHTML = _("button enable");
 }
 
 function initValue()
 {
-	var datarateArray;
-	var form = document.wireless_advanced;
-  var AckPolicyArray = ackpolicy.split(";");
+    var datarateArray;
+    var form = document.wireless_advanced;
+    var AckPolicyArray = ackpolicy.split(";");
 
-	initTranslation();
-	form.bg_protection.options.selectedIndex = 1*bgProtection;
-  form.short_preamble.options.selectedIndex = (shortPreamble == '1') ? 1 : 0;
-  form.short_slot.options.selectedIndex = (shortSlot == '1') ? 1 : 0;
-  form.tx_burst.options.selectedIndex = (txBurst == '1') ? 1 : 0;
-  form.pkt_aggregate.options.selectedIndex = (pktAggregate == '1') ? 1 : 0;
+    initTranslation();
+    form.bg_protection.options.selectedIndex = 1*bgProtection;
+    form.short_preamble.options.selectedIndex = (shortPreamble == '1') ? 1 : 0;
+    form.short_slot.options.selectedIndex = (shortSlot == '1') ? 1 : 0;
+    form.tx_burst.options.selectedIndex = (txBurst == '1') ? 1 : 0;
+    form.pkt_aggregate.options.selectedIndex = (pktAggregate == '1') ? 1 : 0;
 
-	form.McastPhyMode.value = McastPhyMode;
-  McastSwitch(form);
+    form.McastPhyMode.value = McastPhyMode;
+    McastSwitch(form);
 
-	//multicase to unicast converter
-  displayElement('div_m2u', m2uBuilt == '1');
-  form.m2u_enable.options.selectedIndex = (m2uEnabled == '1') ? 1 : 0;
-  displayElement('video_turbine_row', (m2uBuilt == '1') && (video_turbine_built == '1'));
-  form.video_turbine.options.selectedIndex = (video_turbine == '1') ? 1 : 0;
+    //multicase to unicast converter
+    displayElement('div_m2u', m2uBuilt == '1');
+    form.m2u_enable.options.selectedIndex = (m2uEnabled == '1') ? 1 : 0;
+    displayElement('video_turbine_row', (m2uBuilt == '1') && (video_turbine_built == '1'));
+    form.video_turbine.options.selectedIndex = (video_turbine == '1') ? 1 : 0;
+    form.WmmCapable.options.selectedIndex = (wmmCapable == '1') ? 1 : 0;
 
-  form.WmmCapable.options.selectedIndex = (wmmCapable == '1') ? 1 : 0;
+    displayElement('dynvga_row', true);
+    form.dyn_vga.options.selectedIndex = (dyn_vga == '1') ? 1 : 0;
 
-  if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
-    form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
-  else
-    form.maxstanum.value = maxstanum;
+    if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
+	form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
+    else
+	form.maxstanum.value = maxstanum;
 
-	if (isNaN(keepalive) || keepalive < 10 || keepalive > 300)
-	    form.keepalive.value = 60;
-	else
-	    form.keepalive.value = keepalive;
+    if (isNaN(keepalive) || keepalive < 10 || keepalive > 300)
+	form.keepalive.value = 60;
+    else
+	form.keepalive.value = keepalive;
 
-	if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300)
-	    form.idletimeout.value = 200;
-	else
-	    form.idletimeout.value = idletimeout;
+    if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300)
+	form.idletimeout.value = 200;
+    else
+	form.idletimeout.value = idletimeout;
 
-  form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
+    form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 
-  form.ED_MODE.options.selectedIndex = (ED_MODE == '1') ? 1 : 0;
-  displayElement('div_ED_MODE', EDCCABuilt == "1");
+    form.ED_MODE.options.selectedIndex = (ED_MODE == '1') ? 1 : 0;
+    displayElement('div_ED_MODE', EDCCABuilt == "1");
 }
 
 function McastSwitch(form) {
@@ -410,6 +415,13 @@ function CheckValue(form)
           <tr id="video_turbine_row">
             <td class="head">Video turbine</td>
             <td><select name="video_turbine" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="dynvga_row">
+            <td class="head" id="advDynVGA">Adaptive LNA Gain</td>
+            <td><select name="dyn_vga" size="1" class="half">
                 <option value="0" selected id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>

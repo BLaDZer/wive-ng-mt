@@ -15,7 +15,7 @@ get_param()
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
 	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck \
-	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime`
+	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime DyncVgaEnable`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -83,12 +83,22 @@ checkminimalconfig()
 	nvram_set 2860 RadioOnINIC 1
     fi
 
+    #
+    #	for correct migration from prevision version (remove in future)
+    #
     if [ "$BndStrgRssiDiff" = "" ] || [ "$BndStrgRssiLow" = "" ] || [ "$BndStrgAge" = "" ] || [ "$BndStrgHoldTime" = "" ] || [ "$BndStrgCheckTime" = "" ]; then
 	nvram_set 2860 BndStrgRssiDiff 20
 	nvram_set 2860 BndStrgRssiLow -80
 	nvram_set 2860 BndStrgAge 800000
 	nvram_set 2860 BndStrgHoldTime 8000
 	nvram_set 2860 BndStrgCheckTime 4000
+    fi
+
+    #
+    #	for correct migration from prevision version (remove in future)
+    #
+    if [ "$DyncVgaEnable" = "" ]; then
+	nvram_set 2860 DyncVgaEnable 1
     fi
 }
 

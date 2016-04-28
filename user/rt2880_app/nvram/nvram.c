@@ -640,16 +640,33 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(RADIUS_Server);
 	FPRINT_STR(RADIUS_Port);
 	FPRINT_STR(RADIUS_Key);
+
+	/* LNA Control, not apply from read dat file now, need add in profile instead of iwpriv usage in future */
+	FPRINT_NUM(DyncVgaEnable);	/* enable/disable dynamic LNA gain */
+	FPRINT_NUM(SkipLongRangeVga);	/* skip tune gain for long distanse clients */
+	FPRINT_NUM(VgaClamp);		/* limit dynamic maximum gain to reduce impact interference (1 - -4dB, 2 - -8dB, 3 - -12dB, 4 -16dB) */
 #ifdef CONFIG_BAND_STEERING
 	FPRINT_NUM(BandSteering);
-	/* not apply from read dat file now, need add in profile instead of iwpriv usage in future */
+	/* Band Steering, not apply from read dat file now, need add in profile instead of iwpriv usage in future */
 	FPRINT_NUM(BndStrgRssiDiff);	/* if Rssi2.4G > Rssi5G by RssiDiff, then allow client to connect 2.4G */
 	FPRINT_NUM(BndStrgRssiLow);	/* if Rssi5G < RssiLow, then this client cannot connect to 5G */
 	FPRINT_NUM(BndStrgAge);		/* Entry Age Time (ms) */
 	FPRINT_NUM(BndStrgHoldTime);	/* Time for holding 2.4G connection rsp (ms) */
 	FPRINT_NUM(BndStrgCheckTime);	/* Time for deciding if a client is 2.4G only (ms) */
 #endif
-	/* Basic Roaming, need add in profile instead of iwpriv usage in future */
+	/* Basic Roaming, need add in profile instead of iwpriv usage in future
+	 *
+	 * ApProbeRspTimes       - range 0 - 10 times, limit probe reqest per client, default 3
+	 * AuthRspFail           - range 0 - -100 dBm, reject auth req due to weak signal, default 0 (off)
+	 * AuthRspRssi           - range 0 - -100 dBm, ignore auth req due to weak signal, default 0 (off)
+	 * AssocReqRssiThres     - range 0 - -100 dBm, reject assoc req due to weak signal, default 0 (off)
+	 * AssocRspIgnor         - range 0 - -100 dBm, ignore assoc req due to weak signal, default 0 (off)
+	 * ProbeRspRssi          - range 0 - -100 dBm, auto disonnect sta if rssi low at probe requests, default 0 (off)
+	 * KickStaRssiLow        - range 0 - -100 dBm, auto disonnect sta if rssi low (active clients), default 0 (off)
+	 * KickStaRssiLow        - range 0 - -100 dBm, auto disonnect sta if rssi low (PSM clients), default 0 (off)
+	 * KickStaRssiLowDelay   - range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
+	 *
+	*/
 	FPRINT_NUM(ApProbeRspTimes);
 	FPRINT_NUM(AuthRspFail);
 	FPRINT_NUM(AuthRspRssi);
@@ -661,15 +678,15 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(ProbeRspRssi);
 #ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
 	/* Fast roaming auth transitions config */
-	FPRINT_STR(FtSupport);  /* Enable Fast BSS Transition */
-	FPRINT_STR(FtRic);	/* Enable FT resource request */
-	FPRINT_STR(FtOtd);	/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Oveк-the-Air only) */
-				/* Mobility domain ID of Fast Bss. */
+	FPRINT_STR(FtSupport);  	/* Enable Fast BSS Transition */
+	FPRINT_STR(FtRic);		/* Enable FT resource request */
+	FPRINT_STR(FtOtd);		/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Oveк-the-Air only) */
+					/* Mobility domain ID of Fast Bss. */
 	FPRINT_STR(FtMdId1);
 	FPRINT_STR(FtMdId2);
 	FPRINT_STR(FtMdId3);
 	FPRINT_STR(FtMdId4);
-				/* R0 Key Handler Identification. */
+					/* R(N) Key Handler Identification. */
 	FPRINT_STR(FtR0khId1);
 	FPRINT_STR(FtR0khId2);
 	FPRINT_STR(FtR0khId3);

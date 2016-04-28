@@ -205,6 +205,8 @@
   <message msgid="adv invalid entrylifecheck" msgstr="Invalid EntryLifeCheck parametr" />
   <message msgid="adv ed mode" msgstr="Clear-Channel Assessment Monitor" />
 
+  <message msgid="adv dynvga mode" msgstr="Adaptive LNA Gain" />
+
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />
   <message msgid="secure ssid introduction" msgstr="You can configure wireless security and encryption to prevent unauthorized access to the router (WPA2-PSK+AES recomended)." />

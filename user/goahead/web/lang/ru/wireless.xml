@@ -206,6 +206,8 @@
   <message msgid="adv invalid entrylifecheck" msgstr="Неверное количество ошибок отправки пакетов" />
   <message msgid="adv ed mode" msgstr="Монитор CCA" />
 
+  <message msgid="adv dynvga mode" msgstr="Автоматическая подстройка усиления LNA" />
+
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />
   <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных (рекомендуется использовать WPA2-PSK+AES)." />

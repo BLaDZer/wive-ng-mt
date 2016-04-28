@@ -13,7 +13,8 @@ LOG="logger -t advanced"
 $LOG "Tune wifi advanced parametrs for $1."
 
 ################################################################################################################
-eval `nvram_buf_get 2860 OperationMode RadioOn RadioOnINIC AutoConnect ApCliAutoConnect M2UEnabled`
+eval `nvram_buf_get 2860 OperationMode RadioOn RadioOnINIC AutoConnect ApCliAutoConnect M2UEnabled \
+	DyncVgaEnable SkipLongRangeVga VgaClamp`
 ################################################STAMODE param###################################################
 if [ "$OperationMode" = "2" ]; then
     if [ "$AutoConnect" = "1" ]; then
@@ -42,5 +43,31 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT7610_AP_IGMP_SNOOP
 	else
 	    iwpriv "$1" set IgmpSnEnable=0
 	fi
+    fi
+fi
+
+# enable/disable dynamic LNA gain
+if [ "$DyncVgaEnable" != "" ] && [ "$DyncVgaEnable" != "0" ]; then
+    iwpriv "$1" set DyncVgaEnable=1
+    if [ "$CONFIG_RT_FIRST_IF_MT7602E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7612E" = "y" ]; then
+	# skip tune gain for long distanse clients
+	if [ "$SkipLongRangeVga" != "" ] && [ "$SkipLongRangeVga" != "0" ]; then
+	    iwpriv "$1" set SkipLongRangeVga=1
+	else
+	    iwpriv "$1" set SkipLongRangeVga=0
+	fi
+	# limit dynamic maximum gain to reduce impact interference
+	# 1 - -4dB, 2 - -8dB, 3 - -12dB, 4 - -16dB
+	if [ "$SkipLongRangeVga" != "" ] && [ "$SkipLongRangeVga" != "0" ]; then
+	    iwpriv "$1" set VgaClamp="$VgaClamp"
+	else
+	    iwpriv "$1" set SkipLongRangeVga=0
+	fi
+    fi
+else
+    iwpriv "$1" set DyncVgaEnable=0
+    if [ "$CONFIG_RT_FIRST_IF_MT7602E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7612E" = "y" ]; then
+	iwpriv "$1" set SkipLongRangeVga=0
+	iwpriv "$1" set VgaClamp=0
     fi
 fi
