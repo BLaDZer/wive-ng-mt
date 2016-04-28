@@ -15,7 +15,7 @@ get_param()
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
 	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck \
-	BandSteering BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime`
+	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -84,7 +84,6 @@ checkminimalconfig()
     fi
 
     if [ "$BndStrgRssiDiff" = "" ] || [ "$BndStrgRssiLow" = "" ] || [ "$BndStrgAge" = "" ] || [ "$BndStrgHoldTime" = "" ] || [ "$BndStrgCheckTime" = "" ]; then
-	nvram_set 2860 BandSteering 0
 	nvram_set 2860 BndStrgRssiDiff 20
 	nvram_set 2860 BndStrgRssiLow -80
 	nvram_set 2860 BndStrgAge 800000
