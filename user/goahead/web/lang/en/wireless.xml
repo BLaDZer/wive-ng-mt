@@ -205,7 +205,10 @@
   <message msgid="adv invalid entrylifecheck" msgstr="Invalid EntryLifeCheck parametr" />
   <message msgid="adv ed mode" msgstr="Clear-Channel Assessment Monitor" />
 
+  <message msgid="adv dynvga title" msgstr="PA/LNA control (WARNING!!! FOR EXPERTS ONLY!)" />
   <message msgid="adv dynvga mode" msgstr="Adaptive LNA Gain" />
+  <message msgid="adv dynvga long" msgstr="Skip auto gain for long distance clients" />
+  <message msgid="adv dynvga clamp" msgstr="Clamp maximum LNA GAIN in dynvga mode" />
 
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />

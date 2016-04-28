@@ -2015,17 +2015,18 @@
 18) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
 19) goahead: add band steering options.<br>
 20) goahead: add contol dynamic adaptive LNA gain.<br>
-21) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-22) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-23) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-24) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-25) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-26) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-27) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-28) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-29) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-30) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-31) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+21) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
+22) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+23) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+24) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+25) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+26) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
+27) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+28) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+29) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+30) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+31) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+32) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
 <br>
 <br>
 <br>

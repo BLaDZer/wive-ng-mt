@@ -24,9 +24,14 @@ var m2uBuilt = '<% getWlanM2UBuilt(); %>';
 var m2uEnabled = '<% getCfgZero(1, "M2UEnabled"); %>';
 var McastPhyMode = defaultNumber('<% getCfgZero(1, "McastPhyMode"); %>', '2');
 var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
-var video_turbine_built='<% getVideoTurbineBuilt(); %>';
+var video_turbine_built = '<% getVideoTurbineBuilt(); %>';
 var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
+
+var clamp = '<% getClampBuilt(); %>';
 var dyn_vga = '<% getCfgZero(1, "DyncVgaEnable"); %>';
+var dyn_vga_long = '<% getCfgZero(1, "SkipLongRangeVga"); %>';
+var dyn_vga_clamp = '<% getCfgZero(1, "VgaClamp"); %>';
+
 var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
 var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
@@ -84,7 +89,11 @@ function initTranslation()
     _TR("advNormalAck", "basic ack policy normal");
     _TR("advNoAck", "basic ack policy no");
     _TR("advED_MODE", "adv ed mode");
+
+    _TR("advDynVGATitle", "adv dynvga title");
     _TR("advDynVGA", "adv dynvga mode");
+    _TR("advDynVGALong", "adv dynvga long");
+    _TR("advDynVGAClamp", "adv dynvga clamp");
 
     _TRV("advApply", "button apply");
     _TRV("advCancel", "button cancel");
@@ -129,6 +138,13 @@ function initValue()
 
     displayElement('dynvga_row', true);
     form.dyn_vga.options.selectedIndex = (dyn_vga == '1') ? 1 : 0;
+    if (clamp == '1')
+    {
+	displayElement('dynvga_long_row', true);
+	form.dyn_vga_long.options.selectedIndex = (dyn_vga_long == '1') ? 1 : 0;
+	displayElement('dynvga_clamp_row', true);
+	form.dyn_vga_clamp.options.selectedIndex = 1*dyn_vga_clamp;
+    }
 
     if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
 	form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
@@ -383,13 +399,6 @@ function CheckValue(form)
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
-          <tr id="dynvga_row">
-            <td class="head" id="advDynVGA">Adaptive LNA Gain</td>
-            <td><select name="dyn_vga" size="1" class="half">
-                <option value="0" selected id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
           <tr>
             <td class="head" id="staadvRegion">Region settings</td>
             <td><select id="country_region" name="country_region" style="width: 150px;">
@@ -404,6 +413,35 @@ function CheckValue(form)
               </select>&nbsp;&nbsp;&nbsp;
               <select name="country_code" class="mid">
                 <% listCountryCodes(); %>
+              </select></td>
+          </tr>
+        </table>
+        <table class="form">
+          <tr>
+            <td class="title" colspan="2" id="advDynVGATitle">PA/LNA control (WARNING!!! FOR EXPERTS ONLY!)</td>
+          </tr>
+          <tr id="dynvga_row">
+            <td class="head" id="advDynVGA">Adaptive LNA Gain</td>
+            <td><select name="dyn_vga" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="dynvga_long_row">
+            <td class="head" id="advDynVGALong">Skip auto gain for long distance clients</td>
+            <td><select name="dyn_vga_long" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1" id="enable">Enable</option>
+              </select></td>
+          </tr>
+          <tr id="dynvga_clamp_row">
+            <td class="head" id="advDynVGAClamp">Clamp maximum LNA GAIN in dynvga mode</td>
+            <td><select name="dyn_vga_clamp" size="1" class="half">
+                <option value="0" selected id="disable">Disable</option>
+                <option value="1">-4dB</option>
+                <option value="2">-8dB</option>
+                <option value="3">-12dB</option>
+                <option value="4">-16dB</option>
               </select></td>
           </tr>
         </table>

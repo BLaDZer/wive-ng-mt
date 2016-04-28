@@ -15,7 +15,7 @@ get_param()
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
 	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck \
-	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime DyncVgaEnable`
+	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime DyncVgaEnable SkipLongRangeVga VgaClamp`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"

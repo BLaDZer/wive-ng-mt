@@ -18,8 +18,8 @@ Butterlate.setTextDomain("hint");
 Butterlate.setTextDomain("buttons");
 
 var old_profile = "<% getCfgZero(1, "chilli_profile"); %>";
-var chilli_built='<% getChilliBuilt(); %>' == '1';
-var nodog_built='<% getNoDogBuilt(); %>' == '1';
+var chilli_built = '<% getChilliBuilt(); %>' == '1';
+var nodog_built = '<% getNoDogBuilt(); %>' == '1';
 
 var Profiles = [
   // "Profile", "Provider name", "IP", "Netmask", "Start DHCP IP", "End DHCP IP", "Primary DNS", "Secondary DNS", "Domain name", "Lease time", "Radius server auth address", "Radius server acct address", "Radius server secret", "Radius NAS ID", "Radius Location ID", "Radius Location Name", "Radius CoA/DM port", "No IP check for CoA/DM request", "UAM server URL", "UAM homepage URL", "UAM secret", "UAM allowed hosts", "UAM allowed domains", "Allow all DNS requests", "Allowed MAC"

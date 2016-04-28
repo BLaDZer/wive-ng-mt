@@ -180,7 +180,7 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 					// Read all ifaces and check match
 					while ((fgets(line, sizeof(line), fd)) != NULL) {
 						// Filter only 'pppXX'
-						if (sscanf(line, " ppp%d", &ppp_id)==1) {
+						if (sscanf(line, " ppp%d", &ppp_id) == 1) {
 							// Check if ppp interface has number at least 8
 							if ((ppp_id >= 0) && (ppp_id <= 8)) {
 								status++; // Status is set to 'connected'

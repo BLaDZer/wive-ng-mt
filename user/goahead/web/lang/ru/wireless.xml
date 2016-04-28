@@ -206,7 +206,10 @@
   <message msgid="adv invalid entrylifecheck" msgstr="Неверное количество ошибок отправки пакетов" />
   <message msgid="adv ed mode" msgstr="Монитор CCA" />
 
+  <message msgid="adv dynvga title" msgstr="Настройки усиления (ВНИМАНИЕ!!! НЕ ИЗМЕНЯЙТЕ ЕСЛИ НЕ УВЕРЕНЫ В РЕЗУЛЬТАТЕ!)" />
   <message msgid="adv dynvga mode" msgstr="Автоматическая подстройка усиления LNA" />
+  <message msgid="adv dynvga long" msgstr="Отключить АРУ для дальних клиентов" />
+  <message msgid="adv dynvga clamp" msgstr="Ограничение уровня АРУ" />
 
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />

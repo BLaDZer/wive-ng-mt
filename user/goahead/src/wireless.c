@@ -1031,6 +1031,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	int ssid = 0, ssid_num, tmp, i;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *token;
 	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	char_t *dyn_vga_long, *dyn_vga_clamp;
+#endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	char_t	*mcast_mode, *mcast_mcs;
 #endif
@@ -1055,6 +1058,10 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	dyn_vga_long = websGetVar(wp, T("dyn_vga_long"), T("0"));
+	dyn_vga_clamp = websGetVar(wp, T("dyn_vga_clamp"), T("0"));
+#endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
@@ -1147,6 +1154,10 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "AckPolicy", ackpolicy);
 	nvram_bufset(RT2860_NVRAM, "WmmCapable", wmm_capable);
 	nvram_bufset(RT2860_NVRAM, "DyncVgaEnable", dyn_vga);
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	nvram_bufset(RT2860_NVRAM, "SkipLongRangeVga", dyn_vga_long);
+	nvram_bufset(RT2860_NVRAM, "VgaClamp", dyn_vga_clamp);
+#endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
 	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);
 	nvram_bufset(RT2860_NVRAM, "McastMcs", mcast_mcs);
@@ -1827,6 +1838,14 @@ static int getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #endif
 }
 
+static int getClampBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
 void formDefineWireless(void)
 {
 	websAspDefine(T("getVideoTurbineBuilt"), getVideoTurbineBuilt);
@@ -1854,6 +1873,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getRRMBuilt"), getRRMBuilt);
 	websAspDefine(T("getFTBuilt"), getFTBuilt);
 	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
+	websAspDefine(T("getClampBuilt"), getClampBuilt);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
