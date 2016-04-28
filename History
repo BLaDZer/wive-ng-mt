@@ -2021,7 +2021,8 @@
 24) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
 25) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
 26) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-27) kernek: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+27) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+27) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
 <br>
 <br>
 <br>
