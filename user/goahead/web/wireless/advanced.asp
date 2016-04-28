@@ -29,8 +29,6 @@ var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
 var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
 var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
 var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
-var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
-var bandsteering = '<% getCfgZero(1, "BandSteering"); %>';
 var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
 var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
 var EDCCABuilt = '<% getEDCCABuilt(); %>';
@@ -141,9 +139,6 @@ function initValue()
 	    form.idletimeout.value = 200;
 	else
 	    form.idletimeout.value = idletimeout;
-
-	form.BandSteering.options.selectedIndex = 1*bandsteering;
-	displayElement('bandsteering_row', bandsteeringBuilt == "1");
 
   form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 
@@ -359,14 +354,6 @@ function CheckValue(form)
             <td><select name="WmmCapable" size="1" class="half">
                 <option value="0" selected id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
-              </select></td>
-          </tr>
-          <tr id="bandsteering_row">
-            <td class="head">BandSteering</td>
-            <td><select name="BandSteering" size="1" class="half">
-                <option value="0" selected id="disable">Disable</option>
-                <option value="1" id="enable">Enable</option>
-                <option value="2" id="advBSAuto">Auto</option>
               </select></td>
           </tr>
           <tr id="div_ackpolicy">

@@ -550,6 +550,17 @@ static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+// BandSteering parametrs
+parameter_fetch_t band_steering_flags[] =
+{
+	{ T("BndStrgRssiDiff"), "BndStrgRssiDiff", 0, T("20") },
+	{ T("BndStrgRssiLow"), "BndStrgRssiLow", 0, T("-80") },
+	{ T("BndStrgAge"), "BndStrgAge", 0, T("800000") },
+	{ T("BndStrgHoldTime"), "BndStrgHoldTime", 0, T("8000") },
+	{ T("BndStrgCheckTime"), "BndStrgCheckTime", 0, T("4000") },
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+
 // Fast roaming parametrs
 parameter_fetch_t fast_roaming_flags[] =
 {
@@ -587,7 +598,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
-	char_t  *fastroaming, *token, *LanWifiIsolate;
+	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
 	char_t *ids_enable;
 #endif
@@ -655,6 +666,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
 	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
 	a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
+	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
+	bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
 	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
 	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
@@ -918,6 +931,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	nvram_bufset(RT2860_NVRAM, "RadioOnINIC", web_radio_ac_on);
 #endif
+
+	// Band Steering
+	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
+	if (CHK_IF_DIGIT(bandsteering, 1))
+		setupParameters(wp, band_steering_flags, 0);
 
 	// Fast roaming
 	nvram_bufset(RT2860_NVRAM, "FastRoaming", fastroaming);

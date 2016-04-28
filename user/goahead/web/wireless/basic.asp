@@ -51,6 +51,7 @@ var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
 var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
 var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
 
+var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
 var mbssid = "<% getMBSSIDBuilt(); %>";
 var apcli = "<% getWlanApcliBuilt(); %>";
 var wds = "<% getWlanWdsBuilt(); %>";
@@ -88,6 +89,14 @@ var ChannelList_24G =
 	"2472MHz (" + _("station channel") + " 13)",
 	"2484MHz (" + _("station channel") + " 14)"
 ];
+
+function bandSteeringChange(form) {
+	if (bandsteeringBuilt == 1)
+	{
+	    displayElement('div_bandsteering', true);
+	    displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], form.BandSteering.value == "1");
+	}
+}
 
 function fastRoamingChange(form) {
 	displayElement('div_roaming', true);
@@ -313,7 +322,6 @@ function initTranslation()
 	_TR("basicLDPC", "basic ldpc");
 	_TR("basicAction", "basic action");
 
-	_TR("basicFastRoaming", "basic roaming");
 	_TR("fast_roaming", "basic roaming");
 	_TR("basicApProbeRspTimes", "basic roaming probe times");
 	_TR("basicBandDeltaRssi", "basic roaming delta rssi");
@@ -328,6 +336,13 @@ function initTranslation()
 	_TR("basic80211h", "basic dot11h");
 	_TR("basicRRMEnable", "basic roaming rrm");
 	_TR("basicFtSupport", "basic roaming ft");
+
+	_TR("band_steering", "basic bandsteering");
+	_TR("basicBndStrgRssiDiff", "basic bandsteering rssidiff");
+	_TR("basicBndStrgRssiLow", "basic bandsteering rssilow");
+	_TR("basicBndStrgAge", "basic bandsteering age");
+	_TR("basicBndStrgHoldTime", "basic bandsteering hold");
+	_TR("basicBndStrgCheckTime", "basic bandsteering check");
 
 	_TR("basicIDS", "basic ids");
 	_TR("ids", "basic ids");
@@ -795,6 +810,8 @@ function initValue()
 	hideElement("div_auto_a");
 	hideElement("div_auto_g");
 	AutoChannelSelect(form);
+	form.BandSteering.options.selectedIndex = ('<% getCfgGeneral(1, "BandSteering"); %>' ==  '1') ? 1 : 0;
+	bandSteeringChange(form);
 	form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "FastRoaming"); %>' ==  '1') ? 1 : 0;
 	fastRoamingChange(form);
 	form.IdsEnable.options.selectedIndex = ('<% getCfgGeneral(1, "IdsEnable"); %>' ==  '1') ? 1 : 0;
@@ -990,6 +1007,7 @@ function wirelessModeChange(form)
 		}
 	}
 	wirelessOnChange(form);
+	bandSteeringChange(form);
 	fastRoamingChange(form);
 	show_abg_rate(form);
 }
@@ -1390,9 +1408,40 @@ function CheckValue(form)
               </select></td>
           </tr>
         </table>
+        <table id="div_bandsteering" name="div_bandsteering" class="form" style="display:none;">
+        	<tr>
+        		<td class="title" id="band_steering" width="50%">Band steering</td>
+        		<td class="title" width="50%" style="text-align:right">
+        			<select name="BandSteering" size="1" class="half" onChange="bandSteeringChange(this.form);">
+        				<option value="0" id="disable">Disable</option>
+        				<option value="1" id="enable">Enable</option>
+        			</select>
+        		</td>
+        	</tr>
+        	<tr id="row_BndStrgRssiDiff" style="display:none;">
+        		<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger this value</td>
+        		<td width="50%"><input type="text" name="BndStrgRssiDiff" class="half" maxlength="2" value="<% getCfgZero(1, "BndStrgRssiDiff"); %>"><font color="#808080"> 0 - 40 db, default 20</font></td>
+        	</tr>
+        	<tr id="row_BndStrgRssiLow" style="display:none;">
+        		<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller this value</td>
+        		<td width="50%"><input type="text" name="BndStrgRssiLow" class="half" maxlength="4" value="<% getCfgZero(1, "BndStrgRssiLow"); %>"><font color="#808080"> 0 - -100 db, default -80</font></td>
+        	</tr>
+        	<tr id="row_BndStrgAge" style="display:none;">
+        		<td class="head" id="basicBndStrgAge" width="50%">Inactive client entry age time</td>
+        		<td width="50%"><input type="text" name="BndStrgAge" class="half" maxlength="6" value="<% getCfgZero(1, "BndStrgAge"); %>"><font color="#808080"> ms, default 800000</font></td>
+        	</tr>
+        	<tr id="row_BndStrgHoldTime" style="display:none;">
+        		<td class="head" id="basicBndStrgHoldTime" width="50%">Time for holding 2.4G connection</td>
+        		<td width="50%"><input type="text" name="BndStrgHoldTime" class="half" maxlength="4" value="<% getCfgZero(1, "BndStrgHoldTime"); %>"><font color="#808080"> ms, default 8000</font></td>
+        	</tr>
+        	<tr id="row_BndStrgCheckTime" style="display:none;">
+        		<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
+        		<td width="50%"><input type="text" name="BndStrgCheckTime" class="half" maxlength="4" value="<% getCfgZero(1, "BndStrgCheckTime"); %>"><font color="#808080"> ms, default 4000</font></td>
+        	</tr>
+        </table>
         <table id="div_roaming" name="div_roaming" class="form" style="display:none;">
         	<tr>
-        		<td class="title" id="fast_roaming" width="50%">Fast-roaming</td>
+        		<td class="title" id="fast_roaming" width="50%">Fast roaming</td>
         		<td class="title" width="50%" style="text-align:right">
         			<select name="FastRoaming" size="1" class="half" onChange="fastRoamingChange(this.form);">
         				<option value="0" id="disable">Disable</option>
@@ -1445,14 +1494,14 @@ function CheckValue(form)
         		<td width="50%"><select name="RRMEnable" class="half">
         			<option value="0" id="disable">Disable</option>
         			<option value="1" id="enable">Enable</option>
-              </select></td>
+            	</select></td>
         	</tr>
         	<tr id="row_FtSupport" style="display:none;">
         		<td class="head" id="basicFtSupport" width="50%">FtSupport</td>
         		<td width="50%"><select name="FtSupport" class="half">
         			<option value="0" id="disable">Disable</option>
         			<option value="1" id="enable">Enable</option>
-              </select></td>
+                </select></td>
         	</tr>
         </table>
         <table id="div_ids" name="div_ids" class="form" style="display:none;">
