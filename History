@@ -2024,12 +2024,13 @@
 27) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
 28) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
 29) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-30) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-31) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-32) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-33) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-34) kernel: net: ethtool: fix phy adress get from user.<br>
-35) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+30) kernel: usb: cdc-acm: more sanity checking.<br>
+31) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+32) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+33) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+34) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+35) kernel: net: ethtool: fix phy adress get from user.<br>
+36) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
 <br>
 <br>
 <br>
