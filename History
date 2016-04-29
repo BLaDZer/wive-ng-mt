@@ -2028,7 +2028,8 @@
 31) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
 32) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
 33) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-34) kernel: net: ethtool: fix phy adress get from user.<br.
+34) kernel: net: ethtool: fix phy adress get from user.<br>
+35) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
 <br>
 <br>
 <br>
