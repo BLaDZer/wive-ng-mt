@@ -298,6 +298,8 @@ static int __ethtool_set_flags(struct net_device *dev, u32 data)
 
 int __ethtool_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 {
+	const u8 phy_address = cmd->phy_address;
+
 	ASSERT_RTNL();
 
 	if (!dev->ethtool_ops->get_settings)
@@ -305,6 +307,7 @@ int __ethtool_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 
 	memset(cmd, 0, sizeof(struct ethtool_cmd));
 	cmd->cmd = ETHTOOL_GSET;
+	cmd->phy_address = phy_address;
 	return dev->ethtool_ops->get_settings(dev, cmd);
 }
 EXPORT_SYMBOL(__ethtool_get_settings);
@@ -313,6 +316,12 @@ static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
 {
 	int err;
 	struct ethtool_cmd cmd;
+	struct ethtool_cmd ucmd;
+
+	if (copy_from_user(&ucmd, useraddr, sizeof(cmd)))
+		return -EFAULT;
+
+	cmd.phy_address = ucmd.phy_address;
 
 	err = __ethtool_get_settings(dev, &cmd);
 	if (err < 0)
