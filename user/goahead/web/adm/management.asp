@@ -221,7 +221,7 @@ function onReset2DefaultsSubmit(form)
           <tr>
             <td class="head" id="uploadFWLocation">Filename:</td>
             <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
-                <input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Reset RWFS on update</span><br>
+                <input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Replace(update) RWFS</span><br>
                 <input name="filename" size="20" maxlength="256" type="file">
                 <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
                 <br>

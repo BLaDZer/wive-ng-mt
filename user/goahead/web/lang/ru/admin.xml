@@ -10,7 +10,7 @@
     <message msgid="management administrator password" msgstr="Пароль" />
     <message msgid="management firmware" msgstr="Обновление прошивки" />
     <message msgid="management filename" msgstr="Имя файла:" />
-    <message msgid="management reset rwfs" msgstr="Сброс RWFS при обновлении" />
+    <message msgid="management reset rwfs" msgstr="Заменить (обновить) RWFS" />
     <message msgid="management upload rwfs" msgstr="Загрузка RW-FS" />
     <message msgid="management settings" msgstr="Управление настройками" />
     <message msgid="management backup file" msgstr="Сохранить настройки в файл" />
