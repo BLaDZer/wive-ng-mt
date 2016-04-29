@@ -138,13 +138,11 @@ function initValue()
 
     displayElement('dynvga_row', true);
     form.dyn_vga.options.selectedIndex = (dyn_vga == '1') ? 1 : 0;
-    if (clamp == '1')
-    {
-	displayElement('dynvga_long_row', true);
-	form.dyn_vga_long.options.selectedIndex = (dyn_vga_long == '1') ? 1 : 0;
-	displayElement('dynvga_clamp_row', true);
-	form.dyn_vga_clamp.options.selectedIndex = 1*dyn_vga_clamp;
-    }
+
+    displayElement('dynvga_long_row', clamp == '1');
+    form.dyn_vga_long.options.selectedIndex = (dyn_vga_long == '1') ? 1 : 0;
+    displayElement('dynvga_clamp_row', clamp == '1');
+    form.dyn_vga_clamp.options.selectedIndex = 1*dyn_vga_clamp;
 
     if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
 	form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
