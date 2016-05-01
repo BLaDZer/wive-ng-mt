@@ -43,6 +43,14 @@ checkminimalconfig()
     fi
 
     #
+    # if device have only one port - not allow gate config -> set bridge ap by default
+    #
+    if [ "$CONFIG_RTESW_SWITCH_ONEPORT" = "y" ] && [ "$OperationMode" = "1" ]; then
+	nvram_set 2860 OperationMode 0
+	OperationMode="0"
+    fi
+
+    #
     #	drop apcli specific flags in not apcli enabled modes
     #
     if [ "$OperationMode" != "3" ]; then

@@ -66,6 +66,10 @@ case "$MODE" in
 	    # white oneband release
 	    DEVNAME="SNR-CPE-W4N-MT"
 	    ;;
+	"MT7620-2T2R-8M-AP")
+	    # celling one port AP
+	    DEVNAME="SNR-CPE-W4N-AP1"
+	    ;;
 	*)
 	    echo "Not supported (unknown) mode or mode not set."
 	    exit 1
@@ -165,6 +169,11 @@ elif [ "$MODE" = "MT7620-2T2R-8M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7620-2T2R-8M-AP" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-AP					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 else
     echo "Config files not found."

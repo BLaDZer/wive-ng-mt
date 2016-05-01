@@ -9,6 +9,7 @@ SSTRIP=./tools/sstrip/sstrip
 
 echo --------------------------------GENERATE CONFIG-----------------------------
 . linux/.config
+. config/.config
 
 SCONFIG_SH=$RO_ROOT/etc/scripts/config.sh
 :>"$SCONFIG_SH"
