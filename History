@@ -2003,7 +2003,7 @@
 6) build_system: add SNR-CPE-AP1 celling AP support.<br>
 7) defaults: add base openspace roaming profile for help start configure at the current place.<br>
 8) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
-9) coovachilli: refactor radius packet send function (sync with git 30.04.2016 commit c1debcd3).<br>
+9) coovachilli: refactor radius packet send function (sync with git 02.05.2016 commit 10a73639).<br>
 10) miniupnpd: up to 2.0 version.<br>
 11) irqbalance: update to 27.04.2016 git version.<br>
 12) ralinkiappd: fix segfault in debug mode with level trace.<br>
