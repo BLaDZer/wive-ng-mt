@@ -2037,7 +2037,8 @@
 40) kernel: net: fix net_gso_ok for new GSO types.<br>
 41) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
 42) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-43) kernel: net: validate variable length ll headers.<br>
+43) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+44) kernel: net: validate variable length ll headers.<br>
 <br>
 <br>
 <br>
