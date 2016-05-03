@@ -2035,6 +2035,7 @@
 38) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
 39) kernel: net: ethtool: fix phy adress get from user.<br>
 40) kernel: net: fix net_gso_ok for new GSO types.<br>
+41) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
 <br>
 <br>
 <br>
