@@ -653,17 +653,15 @@ static void cleanup_match(struct xt_entry_match *m, struct net *net)
 
 static int
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
-check_entry(struct ipt_entry *e, const char *name)
+check_entry(struct ipt_entry *e)
 #else
-check_entry(const struct ipt_entry *e, const char *name)
+check_entry(const struct ipt_entry *e)
 #endif
 {
 	const struct xt_entry_target *t;
 
-	if (!ip_checkentry(&e->ip)) {
-		duprintf("ip check failed %p %s.\n", e, name);
+	if (!ip_checkentry(&e->ip))
 		return -EINVAL;
-	}
 
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
 	ip_checkdefault(&e->ip);
@@ -757,10 +755,6 @@ find_check_entry(struct ipt_entry *e, struct net *net, const char *name,
 	struct xt_mtchk_param mtpar;
 	struct xt_entry_match *ematch;
 
-	ret = check_entry(e, name);
-	if (ret)
-		return ret;
-
 	j = 0;
 	mtpar.net	= net;
 	mtpar.table     = name;
@@ -824,6 +818,7 @@ check_entry_size_and_hooks(struct ipt_entry *e,
 			   unsigned int valid_hooks)
 {
 	unsigned int h;
+	int err;
 
 	if ((unsigned long)e % __alignof__(struct ipt_entry) != 0 ||
 	    (unsigned char *)e + sizeof(struct ipt_entry) >= limit) {
@@ -837,6 +832,10 @@ check_entry_size_and_hooks(struct ipt_entry *e,
 			 e, e->next_offset);
 		return -EINVAL;
 	}
+
+	err = check_entry(e);
+	if (err)
+		return err;
 
 	/* Check hooks & underflows */
 	for (h = 0; h < NF_INET_NUMHOOKS; h++) {
@@ -1646,7 +1645,7 @@ check_compat_entry_size_and_hooks(struct compat_ipt_entry *e,
 	}
 
 	/* For purposes of check_entry casting the compat entry is fine */
-	ret = check_entry((struct ipt_entry *)e, name);
+	ret = check_entry((struct ipt_entry *)e);
 	if (ret)
 		return ret;
 
