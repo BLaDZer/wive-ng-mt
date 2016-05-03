@@ -14,7 +14,7 @@ PPP_IPPARAM="$6"
 PPP_NUM=`echo $PPP_IFACE | sed 's/[^0-65535]//g'`
 
 # get some variables
-eval `nvram_buf_get 2860 l2tp_srv_nat_enabled l2tp_srv_proxyarp parproutedEnabled SmbEnabled natEnabled vpnNAT`
+eval `nvram_buf_get 2860 l2tp_srv_nat_enabled l2tp_srv_proxyarp parproutedEnabled natEnabled vpnNAT`
 
 if [ "$l2tp_srv_proxyarp" != "1" ] && [ "$parproutedEnabled" != "1" ]; then
     #disable multicast on $PPP_IFACE interface
@@ -42,6 +42,13 @@ if [ "$l2tp_srv_nat_enabled" = "1" ]; then
 else
     $LOG "Allow forward back to tunnel."
     iptables -A l2tpsrvfwd -o $PPP_IFACE -j ACCEPT
+fi
+
+# allow dns for l2tp clients
+if [ "$dnsPEnabled" = "1" ]; then
+    $LOG "Dnsproxy allow from $PPP_IFACE"
+    iptables -A servicelimit -i $PPP_IFACE -p udp --dport 53 -j ACCEPT
+    iptables -A servicelimit -i $PPP_IFACE -m state --state NEW -p tcp --dport 53 -j ACCEPT
 fi
 
 # allow udpxy for l2tp clients

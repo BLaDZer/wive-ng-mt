@@ -36,7 +36,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	WAN_MAC_ADDR LAN_MAC_ADDR \
 	ApCliAutoConnect ApCliBridgeOnly \
 	ApCliIfName WdsIfName BssidIfName \
-	dnsPEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
+	dnsPEnabled SmbEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc Ipv6InVPN \
 	chilli_enable chilli_net`

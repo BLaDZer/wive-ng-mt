@@ -132,7 +132,7 @@ set_dns()
 
 get_param() {
     # dhcpd params
-    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpARPPTimeout dhcpLease SmbEnabled dnsPEnabled dhcpStatic`
+    eval `nvram_buf_get 2860 dhcpDomain dhcpStart dhcpEnd dhcpMask dhcpPriDns dhcpSecDns dhcpGateway dhcpARPPTimeout dhcpLease dhcpStatic`
     # log to syslog
     DHCEXTARGS="-S"
     # tune arp ping interval for adress dubliction check
