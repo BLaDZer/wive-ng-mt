@@ -2024,15 +2024,16 @@
 27) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
 28) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
 29) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-30) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-31) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-32) kernel: usb: cdc-acm: more sanity checking.<br>
-33) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-34) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-35) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-36) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-37) kernel: net: ethtool: fix phy adress get from user.<br>
-38) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+30) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+31) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+32) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+33) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+34) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+35) kernel: usb: cdc-acm: more sanity checking.<br>
+36) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+37) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+38) kernel: net: ethtool: fix phy adress get from user.<br>
+39) kernel: net: fix net_gso_ok for new GSO types.<br>
 <br>
 <br>
 <br>
