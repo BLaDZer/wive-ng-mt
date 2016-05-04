@@ -578,7 +578,11 @@ static int getLanNetmask(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getGWBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
+	return websWrite(wp, T("0"));
+#else
 	return websWrite(wp, T("1"));
+#endif
 }
 
 static int getDnsmasqBuilt(int eid, webs_t wp, int argc, char_t **argv)
