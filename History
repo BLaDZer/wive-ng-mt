@@ -2019,25 +2019,26 @@
 22) goahead: add band steering options.<br>
 23) goahead: add contol dynamic adaptive LNA gain.<br>
 24) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
-25) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
-26) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-27) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-28) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-29) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-30) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-31) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-32) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-33) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-34) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-35) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-36) kernel: usb: cdc-acm: more sanity checking.<br>
-37) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-38) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-39) kernel: net: ethtool: fix phy adress get from user.<br>
-40) kernel: net: fix net_gso_ok for new GSO types.<br>
-41) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-42) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-43) kernel: net: validate variable length ll headers.<br>
+25) goahead: add support ap-only mode.<br>
+26) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
+27) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+28) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+29) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+30) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+31) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
+32) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+33) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+34) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+35) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+36) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+37) kernel: usb: cdc-acm: more sanity checking.<br>
+38) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+39) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+40) kernel: net: ethtool: fix phy adress get from user.<br>
+41) kernel: net: fix net_gso_ok for new GSO types.<br>
+42) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+43) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+44) kernel: net: validate variable length ll headers.<br>
 <br>
 <br>
 <br>
