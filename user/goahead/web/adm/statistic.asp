@@ -60,7 +60,7 @@ function showPortStatistics() {
 	if (gwb == "0")
 	    maxport = 1;
 	else
-	    maxport = 0;
+	    maxport = 5;
 
 	if ((el == null) || (pstatus.length <= 0))
 		return;
