@@ -104,19 +104,19 @@ function initValue()
         <dl>
           <dt>
             <input type="radio" name="opMode" id="opMode" value="0" onClick="changeMode()">
-            <b id="oModeB">Bridge</b>: </dt>
+            <b id="oModeB">AP-Bridge</b>: </dt>
           <dd id="oModeBIntro"></dd>
           <dt id="gwdt">
             <input type="radio" name="opMode" id="opMode" value="1" onClick="changeMode()">
-            <b id="oModeG">Gateway</b>: </dt>
+            <b id="oModeG">AP-Gateway</b>: </dt>
           <dd id="oModeGIntro"></dd>
           <dt id="stadt">
             <input type="radio" name="opMode" id="opMode" value="2" onClick="changeMode()">
-            <b id="oModeE">Ethernet Converter</b>: </dt>
+            <b id="oModeE">Client-Gateway</b>: </dt>
           <dd id="stadd"></dd>
           <dt id="apclidt">
             <input type="radio" name="opMode" id="opMode" value="3" onClick="changeMode()">
-            <b id="oModeA">AP Client</b>: </dt>
+            <b id="oModeA">Client-AP-Gateway(WISP)/Client-AP-Bridge(Repeater)</b>: </dt>
           <dd id="apclidd"></dd>
         </dl>
         <p></p>
