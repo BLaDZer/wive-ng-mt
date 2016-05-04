@@ -67,7 +67,7 @@ case "$MODE" in
 	    ;;
 	"MT7620-2T2R-8M-AP")
 	    # celling one port AP
-	    DEVNAME="SNR-CPE-W4N-AP1"
+	    DEVNAME="SNR-CPE-AP1"
 	    ;;
 	*)
 	    echo "Not supported (unknown) mode or mode not set."
