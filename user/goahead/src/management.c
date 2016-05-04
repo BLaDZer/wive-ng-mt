@@ -332,10 +332,14 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	    return -1;
 	}
 
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
 	for (port=4; port>-1; port--)
+#else
+	for (port=0; port>-1; port--)
+#endif
 	{
 		char buf[16];
-		int sd, link, speed, duplex;
+		int sd = -1, link, speed, duplex;
 		FILE *proc_file;
 
 		/* switch phy to needed port */
@@ -347,7 +351,8 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		fprintf(proc_file, "%d\n", port);
 		fclose(proc_file);
 
-		if((sd = socket(AF_INET,SOCK_DGRAM,0)) < 0) {
+		sd = socket(AF_INET, SOCK_DGRAM, 0);
+		if(sd < 0) {
 			syslog(LOG_ERR, "error ethtool socket open, %s", __FUNCTION__);
 			return -1;
 		}
@@ -686,14 +691,22 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 #endif
 
 	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
+	for (i = 0; i >= 0; i--)
+#else
 	for (i = 4; i >= 0; i--)
+#endif
 	{
 		char *tmpstr = scale((uint64_t)rx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
 		bfree(B_L, tmpstr);
 	}
 	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
+	for (i = 0; i >= 0; i--)
+#else
 	for (i = 4; i >= 0; i--)
+#endif
 	{
 		char *tmpstr = scale((uint64_t)tx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);

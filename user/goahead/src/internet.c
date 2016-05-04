@@ -143,16 +143,16 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int status = 0; // Status is 'disabled'
 	const vpn_status_t *st_table = vpn_statuses;
-
-	// Get value
 	char *vpn_enabled = nvram_get(RT2860_NVRAM, "vpnEnabled");
-	char *vpn_type = nvram_get(RT2860_NVRAM, "vpnType");
+
 	if ((vpn_enabled==NULL) || (vpn_enabled[0]=='\0'))
 		vpn_enabled = "off";
 
 	// Do not perform other checks if VPN is turned off
 	if (strcmp(vpn_enabled, "on")==0) {
 #ifdef CONFIG_USER_KABINET
+		char *vpn_type = nvram_get(RT2860_NVRAM, "vpnType");
+
 		if (CHK_IF_DIGIT(vpn_type, 3)) {
 			status = (get_LANAUTHState() + 1) % 5;
 			st_table = lanauth_statuses;

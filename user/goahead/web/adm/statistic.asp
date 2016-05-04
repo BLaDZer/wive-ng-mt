@@ -56,9 +56,14 @@ function showPortStatistics() {
 	var sip_port = ('1' != '<% getCfgZero(1, "sip_port"); %>') ? -1 :
 			(wan == 0) ? 2 : wan - 2;
 
-	if ((el == null) || (pstatus.length <= 0)) {
+	var gwb = "<% getGWBuilt(); %>";
+	if (gwb == "0")
+	    maxport = 1;
+	else
+	    maxport = 0;
+
+	if ((el == null) || (pstatus.length <= 0))
 		return;
-	}
 
 	if (!((wan >= 0) && (wan <= 4)))
 		wan = 4;
@@ -68,7 +73,7 @@ function showPortStatistics() {
 		lan = 'near';
 
 	var content = '<td class="head" id="statusEthPortStatus">Port Status</td>';
-	for (i=0; i<5; i++) {
+	for (i=0; i<maxport; i++) {
 		var port = pstatus[i].split(',');
 		var image = 'empty';
 

@@ -47,6 +47,7 @@ checkminimalconfig()
     #
     if [ "$CONFIG_RTESW_SWITCH_ONEPORT" = "y" ] && [ "$OperationMode" = "1" ]; then
 	nvram_set 2860 OperationMode 0
+	nvram_set 2860 wan_port 0
 	OperationMode="0"
     fi
 
