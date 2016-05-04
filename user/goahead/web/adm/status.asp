@@ -86,14 +86,33 @@ function initTranslation()
 
 function PageInit()
 {
-	var ethtoolb       = "<% getETHTOOLBuilt(); %>";
-	var tv_stb         = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
-	var sip_stb        = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
+	var gwb 	   = "<% getGWBuilt(); %>"; // Only one port (pure AP device)
+	var tv_stb_on         = "<% getCfgZero(1, "tv_port"); %>"; // TV/STB/VLAN1
+	var sip_stb_on        = "<% getCfgZero(1, "sip_port"); %>"; // SIP/STB/VLAN2
 	var tv_stb_mcast   = "<% getCfgZero(1, "tv_port_mcast"); %>"; // TV/STB/VLAN1
 	var sip_stb_mcast  = "<% getCfgZero(1, "sip_port_mcast"); %>"; // SIP/STB/VLAN2
 
-	if (ethtoolb == "1")
-		showElement('div_ethtool');
+	if (gwb == "0") {
+	    // hide unused elements in pure AP mode
+	    hideElement(tv_stb);
+	    hideElement(tv_stb_en);
+	    hideElement(tv_stb_vlan);
+	    hideElement(sip_stb);
+	    hideElement(sip_stb_en);
+	    hideElement(sip_stb_vlan);
+	    hideElement(statusWANport);
+	    hideElement(statusWANportSel);
+	    hideElement(statusFirstLANport);
+	    hideElement(statusFirstLANportSel);
+	    hideElement(statusPortMode2);
+	    hideElement(port2_swmode);
+	    hideElement(statusPortMode3);
+	    hideElement(port3_swmode);
+	    hideElement(statusPortMode4);
+	    hideElement(port4_swmode);
+	    hideElement(statusPortMode5);
+	    hideElement(port5_swmode);
+	}
 
 	if (!((wan_port >= '0') && (wan_port <= '4')))
 		wan_port = '4';
@@ -109,8 +128,8 @@ function PageInit()
 
 	form.wan_port.value = wan_port;
 	form.lan_port.value = lan_port;
-	form.tv_stbEnabled.checked = (tv_stb == '1');
-	form.sip_stbEnabled.checked = (sip_stb == '1');
+	form.tv_stbEnabled.checked = (tv_stb_on == '1');
+	form.sip_stbEnabled.checked = (sip_stb_on == '1');
 	form.tv_stbMcast.checked = (tv_stb_mcast == '1');
 	form.sip_stbMcast.checked = (sip_stb_mcast == '1');
 
@@ -196,7 +215,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusWANport">WAN port</td>
-            <td colspan="2"><select name="wan_port" onChange="showPortStatus();" class="short">
+            <td colspan="2" id="statusWANportSel"><select name="wan_port" onChange="showPortStatus();" class="short">
                 <option value="0">1</option>
                 <option value="4">5</option>
               </select>
@@ -204,7 +223,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusFirstLANport">First LAN port</td>
-            <td colspan="2"><select name="lan_port" onChange="showPortStatus();" class="mid">
+            <td colspan="2" id="statusFirstLANportSel"><select name="lan_port" onChange="showPortStatus();" class="mid">
                 <option value="near" id="statusNearToWAN">Near to the WAN port</option>
                 <option value="distant" id="statusDistantFromWAN">Distant from the WAN port</option>
               </select>
@@ -212,20 +231,20 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="tv_stb">TV/STB/VLAN1</td>
-            <td>Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">
+            <td id="tv_stb_en">Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">
                 McastProxy:<input name="tv_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
-            <td>VlanID(s):<input name="tv_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
+            <td id="tv_stb_vlan">VlanID(s):<input name="tv_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
           </tr>
           <tr>
             <td class="head" id="sip_stb">SIP/STB/VLAN2</td>
-            <td>Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">
+            <td id="sip_stb_en">Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">
                 McastProxy:<input name="sip_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
-            <td>VlanID(s):<input name="sip_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
+            <td id="sip_stb_vlan">VlanID(s):<input name="sip_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
           </tr>
           <tr>
           <tr>
             <td class="head" id="statusPortMode1">Port 1 mode</td>
-            <td colspan="2"><select name="port1_swmode" class="mid">
+            <td colspan="2" id="port1_swmode"><select name="port1_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
@@ -235,7 +254,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusPortMode2">Port 2 mode</td>
-            <td colspan="2"><select name="port2_swmode" class="mid">
+            <td colspan="2" id="port2_swmode"><select name="port2_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
@@ -245,7 +264,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusPortMode3">Port 3 mode</td>
-            <td colspan="2"><select name="port3_swmode" class="mid">
+            <td colspan="2" id="port3_swmode"><select name="port3_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
@@ -255,7 +274,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusPortMode4">Port 4 mode</td>
-            <td colspan="2"><select name="port4_swmode" class="mid">
+            <td colspan="2" id="port4_swmode"><select name="port4_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>
@@ -265,7 +284,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusPortMode5">Port 5 mode</td>
-            <td colspan="2"><select name="port5_swmode" class="mid">
+            <td colspan="2" id="port5_swmode"><select name="port5_swmode" class="mid">
                 <option value="auto">auto</option>
                 <option value="10h">10 mbit/s half duplex</option>
                 <option value="10f">10 mbit/s full duplex</option>

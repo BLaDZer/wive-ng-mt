@@ -525,15 +525,6 @@ static int getSysLogBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
-static int getETHTOOLBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#ifdef CONFIG_ETHTOOL
-	return websWrite(wp, T("1"));
-#else
-	return websWrite(wp, T("0"));
-#endif
-}
-
 /*
  * description: write LAN ip address accordingly
  */
@@ -2188,7 +2179,6 @@ void formDefineInternet(void) {
 	websAspDefine(T("getLANAUTHBuilt"), getLANAUTHBuilt);
 
 	websAspDefine(T("getSysLogBuilt"), getSysLogBuilt);
-	websAspDefine(T("getETHTOOLBuilt"), getETHTOOLBuilt);
 
 	websAspDefine(T("vpnShowVPNStatus"), vpnShowVPNStatus);
 	websAspDefine(T("vpnIfaceList"), vpnIfaceList);
