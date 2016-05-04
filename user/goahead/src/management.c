@@ -332,11 +332,7 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	    return -1;
 	}
 
-#ifdef CONFIG_RTESW_SWITCH_ONEPORT
 	for (port=4; port>-1; port--)
-#else
-	for (port=0; port>-1; port--)
-#endif
 	{
 		char buf[16];
 		int sd = -1, link, speed, duplex;
@@ -692,7 +688,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 
 	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
-	for (i = 0; i >= 0; i--)
+	for (i = 4; i >= 4; i--)
 #else
 	for (i = 4; i >= 0; i--)
 #endif
@@ -703,7 +699,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	}
 	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
-	for (i = 0; i >= 0; i--)
+	for (i = 4; i >= 4; i--)
 #else
 	for (i = 4; i >= 0; i--)
 #endif
