@@ -215,7 +215,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusWANport">WAN port</td>
-            <td colspan="2" id="statusWANportSel"><select name="wan_port" onChange="showPortStatus();" class="short">
+            <td colspan="2" id="statusWANportSel"><select name="wan_port" class="short">
                 <option value="0">1</option>
                 <option value="4">5</option>
               </select>
@@ -223,7 +223,7 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="statusFirstLANport">First LAN port</td>
-            <td colspan="2" id="statusFirstLANportSel"><select name="lan_port" onChange="showPortStatus();" class="mid">
+            <td colspan="2" id="statusFirstLANportSel"><select name="lan_port" class="mid">
                 <option value="near" id="statusNearToWAN">Near to the WAN port</option>
                 <option value="distant" id="statusDistantFromWAN">Distant from the WAN port</option>
               </select>
@@ -231,14 +231,14 @@ function setWanPort(form)
           </tr>
           <tr>
             <td class="head" id="tv_stb">TV/STB/VLAN1</td>
-            <td id="tv_stb_en">Enable:<input name="tv_stbEnabled" type="checkbox" onChange="showPortStatus();">
-                McastProxy:<input name="tv_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
+            <td id="tv_stb_en">Enable:<input name="tv_stbEnabled" type="checkbox">
+                McastProxy:<input name="tv_stbMcast" type="checkbox"></td>
             <td id="tv_stb_vlan">VlanID(s):<input name="tv_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "tv_portVLAN"); %>"</td>
           </tr>
           <tr>
             <td class="head" id="sip_stb">SIP/STB/VLAN2</td>
-            <td id="sip_stb_en">Enable:<input name="sip_stbEnabled" type="checkbox" onChange="showPortStatus();">
-                McastProxy:<input name="sip_stbMcast" type="checkbox" onChange="showPortStatus();"></td>
+            <td id="sip_stb_en">Enable:<input name="sip_stbEnabled" type="checkbox">
+                McastProxy:<input name="sip_stbMcast" type="checkbox"></td>
             <td id="sip_stb_vlan">VlanID(s):<input name="sip_stbVLAN" class="wide" size="30" maxlength="60" type="text" value="<% getCfgGeneral(1, "sip_portVLAN"); %>"</td>
           </tr>
           <tr>
