@@ -113,6 +113,17 @@
 			(_pAd->BcnRing.TxSwFreeIdx + BCN_RING_SIZE - _pAd->BcnRing.TxCpuIdx - 1);
 #endif /* MT_MAC */
 
+
+#ifdef USE_BMC
+//DATA_QUEUE_RESERVE
+#define GET_BMCRING_FREENO(_pAd) \
+	(_pAd->TxBmcRing.TxSwFreeIdx > _pAd->TxBmcRing.TxCpuIdx)	? \
+			(_pAd->TxBmcRing.TxSwFreeIdx - _pAd->TxBmcRing.TxCpuIdx - 1) \
+			 :	\
+			(_pAd->TxBmcRing.TxSwFreeIdx + TX_RING_SIZE - _pAd->TxBmcRing.TxCpuIdx - 1);
+#endif /* USE_MBC */
+
+
 #ifdef CONFIG_ANDES_SUPPORT
 #define GET_CTRLRING_FREENO(_pAd) \
 	(_pAd->CtrlRing.TxSwFreeIdx > _pAd->CtrlRing.TxCpuIdx)	? \

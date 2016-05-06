@@ -1470,10 +1470,14 @@ SendAssocResponse:
 #endif /* WSC_AP_SUPPORT */
 	
 	/* fail in ACL checking => send an Assoc-Fail resp. */
+#ifdef DYNAMIC_RX_RATE_ADJ
+	SupRateLen = pAd->ApCfg.MBSSID[pEntry->func_tb_idx].SupRateLen;
+#else
 	SupRateLen = pAd->CommonCfg.SupRateLen;
+#endif /* DYNAMIC_RX_RATE_ADJ */
 
 	/* TODO: need to check rate in support rate element, not number */
-	if (FlgIs11bSta == 1)
+	if (PhyMode == WMODE_B)
 		SupRateLen = 4;
 
 	/* YF@20120419: Refuse the weak signal of AssocReq */
@@ -1502,7 +1506,11 @@ SendAssocResponse:
 			              2,                        &Aid,
 			              1,                        &SupRateIe,
 			              1,                        &SupRateLen,
+#ifdef DYNAMIC_RX_RATE_ADJ
+						SupRateLen, 				pAd->ApCfg.MBSSID[pEntry->func_tb_idx].SupRate,
+#else
 			              SupRateLen, pAd->CommonCfg.SupRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 			              END_OF_ARGS);
 		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
@@ -1535,17 +1543,31 @@ SendAssocResponse:
 	                  2,                        &Aid,
 	                  1,                        &SupRateIe,
 	                  1,                        &SupRateLen,
+#ifdef DYNAMIC_RX_RATE_ADJ
+					SupRateLen, 			pAd->ApCfg.MBSSID[pEntry->func_tb_idx].SupRate,
+#else
 	                  SupRateLen, pAd->CommonCfg.SupRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 	                  END_OF_ARGS);
 	}
 
+#ifdef DYNAMIC_RX_RATE_ADJ
+	if ((pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExtRateLen) && (PhyMode != WMODE_B) && (FlgIs11bSta == 0))
+#else
 	if ((pAd->CommonCfg.ExtRateLen) && (PhyMode != WMODE_B) && (FlgIs11bSta == 0))
+#endif /* DYNAMIC_RX_RATE_ADJ */
 	{
 		ULONG TmpLen;
 		MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen,
 		                  1,                        &ExtRateIe,
+#ifdef DYNAMIC_RX_RATE_ADJ
+							1,						&pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExtRateLen,
+							pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExtRateLen,	pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExtRate,
+			
+#else
 		                  1,                        &pAd->CommonCfg.ExtRateLen,
 		                  pAd->CommonCfg.ExtRateLen,    pAd->CommonCfg.ExtRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 		                  END_OF_ARGS);
 		FrameLen += TmpLen;
 	}
@@ -1727,6 +1749,10 @@ SendAssocResponse:
 #endif
 
 		NdisMoveMemory(&HtCapabilityRsp, &pAd->CommonCfg.HtCapability, ie_list->ht_cap_len);
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+		NdisMoveMemory(HtCapabilityRsp.MCSSet, pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
 
 		/* add HT Capability IE */
 #ifndef RT_BIG_ENDIAN
@@ -2304,10 +2330,11 @@ VOID APPeerReassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
         TRUE if all parameters are OK, FALSE otherwise
     ==========================================================================
  */
-BOOLEAN PeerDisassocReqSanity(
+static BOOLEAN PeerDisassocReqSanity(
     IN PRTMP_ADAPTER pAd, 
     IN VOID *Msg, 
     IN ULONG MsgLen, 
+    OUT PUCHAR pDA,
     OUT PUCHAR pAddr2, 
     OUT	UINT16	*SeqNum,
     OUT USHORT *Reason) 
@@ -2315,6 +2342,7 @@ BOOLEAN PeerDisassocReqSanity(
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
 
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
+	COPY_MAC_ADDR(pDA, &Fr->Hdr.Addr1);
 	*SeqNum = Fr->Hdr.Sequence;
     NdisMoveMemory(Reason, &Fr->Octet[0], 2);
 
@@ -2333,13 +2361,14 @@ BOOLEAN PeerDisassocReqSanity(
 VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 {
 	UCHAR Addr2[MAC_ADDR_LEN];
+	UCHAR Addr1[MAC_ADDR_LEN];
 	USHORT Reason;
 	UINT16 SeqNum;		
 	MAC_TABLE_ENTRY *pEntry;
 	struct wifi_dev *wdev;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - 1 receive DIS-ASSOC request \n"));
-	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr2, &SeqNum, &Reason))
+	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &SeqNum, &Reason))
 		return;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", 
@@ -2352,8 +2381,17 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	if (pEntry->wcid < MAX_LEN_OF_MAC_TABLE)
     {
 
-#ifdef DOT1X_SUPPORT
 		wdev = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev;
+		/*
+			iPhone sometimes sends disassoc frame which DA is old AP and BSSID is new AP.
+			@2016/1/26
+		*/
+		if (!MAC_ADDR_EQUAL(wdev->if_addr, Addr1)) {
+			DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - The DA of this DIS-ASSOC request is %02x:%02x:%02x:%02x:%02x:%02x, ignore.\n", 
+				PRINT_MAC(Addr1)));
+			return;
+		}
+#ifdef DOT1X_SUPPORT
 		/* Notify 802.1x daemon to clear this sta info */
 		if (pEntry->AuthMode == Ndis802_11AuthModeWPA || 
 			pEntry->AuthMode == Ndis802_11AuthModeWPA2 ||
@@ -2388,10 +2426,10 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
 		{
-			UCHAR apCliIdx, CliIdx;
+			UCHAR apCliIdx, CliIdx, isLinkValid;
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && (pReptEntry->CliConnectState != 0))
 			{
 				apCliIdx = pReptEntry->MatchApCliIdx;

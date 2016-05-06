@@ -128,6 +128,9 @@ VOID write_tmac_info_beacon(RTMP_ADAPTER *pAd, INT apidx, UCHAR *tmac_buf, HTTRA
 #endif /* MT_MAC */
 	mac_info.hdr_len = 24;
 	mac_info.bss_idx = apidx;
+	if(pAd->CommonCfg.TxStream == 1)
+            mac_info.SpeEn = 0;
+	else
 	mac_info.SpeEn = 1;
 	mac_info.Preamble = LONG_PREAMBLE;
 	NdisZeroMemory(tmac_buf, sizeof(TMAC_TXD_L));
@@ -295,7 +298,12 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 						pMbss->wdev.bssid);
 
 	/* for update framelen to TxWI later. */
+#ifdef DYNAMIC_RX_RATE_ADJ
+	SupRateLen = pAd->ApCfg.MBSSID[apidx].SupRateLen;
+#else
 	SupRateLen = pAd->CommonCfg.SupRateLen;
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 	if (PhyMode == WMODE_B)
 		SupRateLen = 4;
 
@@ -309,19 +317,32 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 					SsidLen,                      pMbss->Ssid,
 					1,                               &SupRateIe,
 					1,                               &SupRateLen,
+#ifdef DYNAMIC_RX_RATE_ADJ
+					SupRateLen, 					&pAd->ApCfg.MBSSID[apidx].SupRate,
+#else
 					SupRateLen,                pAd->CommonCfg.SupRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 					1,                               &DsIe,
 					1,                               &DsLen,
 					1,                               &pAd->CommonCfg.Channel,
 					END_OF_ARGS);
 
+#ifdef DYNAMIC_RX_RATE_ADJ
+		if ((pAd->ApCfg.MBSSID[apidx].ExtRateLen) && (PhyMode != WMODE_B))
+#else
 	if ((pAd->CommonCfg.ExtRateLen) && (PhyMode != WMODE_B))
+#endif /* DYNAMIC_RX_RATE_ADJ */
 	{
 		ULONG TmpLen;
 		MakeOutgoingFrame(pBeaconFrame+FrameLen,         &TmpLen,
 						1,                               &ExtRateIe,
+#ifdef DYNAMIC_RX_RATE_ADJ
+						1,									&pAd->ApCfg.MBSSID[apidx].ExtRateLen,
+						pAd->ApCfg.MBSSID[apidx].ExtRateLen,	pAd->ApCfg.MBSSID[apidx].ExtRate,
+#else
 						1,                               &pAd->CommonCfg.ExtRateLen,
 						pAd->CommonCfg.ExtRateLen,           pAd->CommonCfg.ExtRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 						END_OF_ARGS);
 		FrameLen += TmpLen;
 	}
@@ -590,7 +611,11 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
                             pMbss->wdev.bssid);
 
         /* for update framelen to TxWI later. */
+#ifdef DYNAMIC_RX_RATE_ADJ
+		SupRateLen = pAd->ApCfg.MBSSID[apidx].SupRateLen;
+#else
         SupRateLen = pAd->CommonCfg.SupRateLen;
+#endif /* DYNAMIC_RX_RATE_ADJ */
         if (PhyMode == WMODE_B)
             SupRateLen = 4;
 
@@ -604,19 +629,32 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
                         SsidLen,                      pMbss->Ssid,
                         1,                               &SupRateIe,
                         1,                               &SupRateLen,
+#ifdef DYNAMIC_RX_RATE_ADJ
+						SupRateLen, 					pAd->ApCfg.MBSSID[apidx].SupRate,
+#else
                         SupRateLen,                pAd->CommonCfg.SupRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
                         1,                               &DsIe,
                         1,                               &DsLen,
                         1,                               &pAd->CommonCfg.Channel,
                         END_OF_ARGS);
 
+#ifdef DYNAMIC_RX_RATE_ADJ
+		if ((pAd->ApCfg.MBSSID[apidx].ExtRateLen) && (PhyMode != WMODE_B))
+#else
         if ((pAd->CommonCfg.ExtRateLen) && (PhyMode != WMODE_B))
+#endif /* DYNAMIC_RX_RATE_ADJ */
         {
             ULONG TmpLen;
             MakeOutgoingFrame(pBeaconFrame+FrameLen,         &TmpLen,
                             1,                               &ExtRateIe,
+#ifdef DYNAMIC_RX_RATE_ADJ
+							1,									&pAd->ApCfg.MBSSID[apidx].ExtRateLen,
+							pAd->ApCfg.MBSSID[apidx].ExtRateLen,	pAd->ApCfg.MBSSID[apidx].ExtRate,
+#else
                             1,                               &pAd->CommonCfg.ExtRateLen,
                             pAd->CommonCfg.ExtRateLen,           pAd->CommonCfg.ExtRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
                             END_OF_ARGS);
             FrameLen += TmpLen;
         }
@@ -964,7 +1002,11 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 
 	/* Update ERP */
+#ifdef DYNAMIC_RX_RATE_ADJ
+	if ((pAd->ApCfg.MBSSID[apidx].ExtRateLen) && (PhyMode != WMODE_B))
+#else
     if ((pComCfg->ExtRateLen) && (PhyMode != WMODE_B))
+#endif /* DYNAMIC_RX_RATE_ADJ */
     {
         /* fill ERP IE */
         ptr = (UCHAR *)pBeaconFrame + FrameLen; /* pTxD->DataByteCnt; */
@@ -1070,6 +1112,9 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		HtLen1 = sizeof(pComCfg->AddHTInfo);
 #ifndef RT_BIG_ENDIAN
 		NdisMoveMemory(&HtCapabilityTmp, &pComCfg->HtCapability, HtLen);
+#ifdef DYNAMIC_RX_RATE_ADJ
+		NdisMoveMemory(HtCapabilityTmp.MCSSet, pAd->ApCfg.MBSSID[apidx].ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
 		HtCapabilityTmp.HtCapInfo.ChannelWidth = pComCfg->AddHTInfo.AddHtInfo.RecomWidth;
 
 		MakeOutgoingFrame(pBeaconFrame+FrameLen,         &TmpLen,
@@ -1082,6 +1127,9 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 						  END_OF_ARGS);
 #else
 		NdisMoveMemory(&HtCapabilityTmp, &pComCfg->HtCapability, HtLen);
+#ifdef DYNAMIC_RX_RATE_ADJ
+		NdisMoveMemory(HtCapabilityTmp.MCSSet, pAd->ApCfg.MBSSID[apidx].ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
 		HtCapabilityTmp.HtCapInfo.ChannelWidth = pComCfg->AddHTInfo.AddHtInfo.RecomWidth;
 		*(USHORT *)(&HtCapabilityTmp.HtCapInfo) = SWAP16(*(USHORT *)(&HtCapabilityTmp.HtCapInfo));
 #ifdef UNALIGNMENT_SUPPORT
@@ -1409,8 +1457,8 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	{
 		ULONG TmpLen;
 		UCHAR HtLen, HtLen1;
-#ifdef RT_BIG_ENDIAN
 		HT_CAPABILITY_IE HtCapabilityTmp;
+#ifdef RT_BIG_ENDIAN
 		ADD_HT_INFO_IE	addHTInfoTmp;
 #endif
 		/* add HT Capability IE */
@@ -1425,15 +1473,21 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 
 			epigram_ie_len = HtLen + 4;
+
+			NdisMoveMemory(&HtCapabilityTmp, &pComCfg->HtCapability, HtLen);
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+			NdisMoveMemory(HtCapabilityTmp.MCSSet, pAd->ApCfg.MBSSID[apidx].ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 #ifndef RT_BIG_ENDIAN
 			MakeOutgoingFrame(pBeaconFrame + FrameLen,      &TmpLen,
 						  1,                                &WpaIe,
 						  1,                                &epigram_ie_len,
 						  4,                                &BROADCOM_HTC[0],
-						  HtLen,          					&pComCfg->HtCapability,
+						  HtLen,          					&HtCapabilityTmp,
 						  END_OF_ARGS);
 #else
-			NdisMoveMemory(&HtCapabilityTmp, &pComCfg->HtCapability, HtLen);
 			*(USHORT *)(&HtCapabilityTmp.HtCapInfo) = SWAP16(*(USHORT *)(&HtCapabilityTmp.HtCapInfo));
 #ifdef UNALIGNMENT_SUPPORT
 		{

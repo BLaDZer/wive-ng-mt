@@ -108,6 +108,10 @@ BUILD_TIMER_FUNCTION(WscEapReqIdRetryTimeout);
 BUILD_TIMER_FUNCTION(ATEPeriodicExec);
 #endif /* CONFIG_ATE */
 
+#ifdef APCLI_SUPPORT
+BUILD_TIMER_FUNCTION(ApCliWpaDisassocApAndBlockAssoc);
+#endif /* APCLI_SUPPORT */
+
 #ifdef RTMP_TIMER_TASK_SUPPORT
 static void RtmpTimerQHandle(RTMP_ADAPTER *pAd)
 {

@@ -304,6 +304,9 @@ INT Set_ApCli_TxMcs_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
 INT Set_ApCli_AutoConnect_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
+#ifdef APCLI_CONNECTION_TRIAL
+INT Set_ApCli_Trial_Ch_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+#endif /* APCLI_CONNECTION_TRIAL */
 
 
 #ifdef MAC_REPEATER_SUPPORT
@@ -317,6 +320,11 @@ INT Set_MACReptMACShowAll_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 #ifdef WSC_AP_SUPPORT
 INT Set_AP_WscSsid_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 #endif /* WSC_AP_SUPPORT */
+
+#ifdef APCLI_CERT_SUPPORT
+INT Set_ApCli_Cert_Enable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+#endif /* APCLI_CERT_SUPPORT */
+
 #endif /* APCLI_SUPPORT */
 #ifdef UAPSD_SUPPORT
 INT Set_UAPSD_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
@@ -476,7 +484,15 @@ INT    Set_BcnStateCtrl_Proc(
        IN      RTMP_STRING     *arg);
 #endif
 
+#ifdef DBG
 INT set_ping_log_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+#endif /* DBG */
+
+#ifdef DATA_QUEUE_RESERVE
+INT set_queue_rsv_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT set_dump_on_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT set_rsv_cnt_clear_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+#endif /* DATA_QUEUE_RESERVE */
 
 #endif /* MT_MAC */
 
@@ -764,6 +780,13 @@ static struct {
 	{"ApCliKey4",					Set_ApCli_Key4_Proc},
 	{"ApCliTxMode",					Set_ApCli_TxMode_Proc},
 	{"ApCliTxMcs",					Set_ApCli_TxMcs_Proc},
+#ifdef APCLI_CONNECTION_TRIAL
+	/* 
+	 for Trial the root AP which locates on another channel 
+	 what if the connection is ok, it will make BSSID switch to the new channel.
+	*/
+	{"ApCliTrialCh",				Set_ApCli_Trial_Ch_Proc},
+#endif /* APCLI_CONNECTION_TRIAL */
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
 	{"ApCliAutoConnect", 			Set_ApCli_AutoConnect_Proc},
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
@@ -779,6 +802,14 @@ static struct {
 #ifdef WSC_AP_SUPPORT
 	{"ApCliWscSsid",				Set_AP_WscSsid_Proc},
 #endif /* WSC_AP_SUPPORT */
+#ifdef APCLI_CERT_SUPPORT
+	{"ApCliCertEnable",				Set_ApCli_Cert_Enable_Proc},
+#endif /* APCLI_CERT_SUPPORT */
+#ifdef DOT11W_PMF_SUPPORT
+    {"ApCliPMFMFPC",                                         Set_ApCliPMFMFPC_Proc},
+    {"ApCliPMFMFPR",                                         Set_ApCliPMFMFPR_Proc},
+    {"ApCliPMFSHA256",                                       Set_ApCliPMFSHA256_Proc},
+#endif /* DOT11W_PMF_SUPPORT */
 #endif /* APCLI_SUPPORT */
 #ifdef WSC_AP_SUPPORT
 	{"WscConfMode",				Set_AP_WscConfMode_Proc},
@@ -841,6 +872,17 @@ static struct {
 #ifdef VHT_TXBF_SUPPORT
 	{"VhtNDPA",					Set_VhtNDPA_Sounding_Proc},
 #endif /* VHT_TXBF_SUPPORT */
+
+#if defined (CONFIG_WIFI_PKT_FWD)
+	{"wf_fwd",		Set_WifiFwd_Proc},
+	{"wf_fwd_acs",	Set_WifiFwdAccessSchedule_Proc},
+	{"wf_fwd_hij",  	Set_WifiFwdHijack_Proc},
+	{"wf_fwd_rep",	Set_WifiFwdRepDevice},
+	{"wf_fwd_show",  	Set_WifiFwdShowEntry},
+	{"wf_fwd_del",    	Set_WifiFwdDeleteEntry},
+	{"pkt_src_show",   Set_PacketSourceShowEntry},
+	{"pkt_src_del",   	Set_PacketSourceDeleteEntry},
+#endif /* CONFIG_WIFI_PKT_FWD */
 
 
 #ifdef PRE_ANT_SWITCH
@@ -1081,8 +1123,14 @@ static struct {
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 	{"SCSEnable", SetSCSEnable_Proc},
 #endif /* SMART_CARRIER_SENSE_SUPPORT */
+#ifdef DBG
 	{"ping_log", set_ping_log_proc},
-
+#endif /* DBG */
+#ifdef DATA_QUEUE_RESERVE
+	{"queue_rsv", set_queue_rsv_proc},
+	{"dumpon", set_dump_on_proc},
+	{"rsv_cnt_clear", set_rsv_cnt_clear_proc},
+#endif /* DATA_QUEUE_RESERVE */
 #ifdef BAND_STEERING
 	{"BndStrgEnable", 		Set_BndStrg_Enable},
 	{"BndStrgRssiDiff", 	Set_BndStrg_RssiDiff},
@@ -1623,6 +1671,31 @@ INT RTMPAPSetInformation(
 				pEntry = MacTableLookup(pAd, Addr);
 				if (pEntry)
 				{
+#ifdef MAC_REPEATER_SUPPORT
+					/*
+						Need to delete repeater entry if this is mac repeater entry.
+					*/
+					if (pAd->ApCfg.bMACRepeaterEn)
+					{
+						UCHAR apCliIdx, CliIdx, isLinkValid;
+						REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
+						pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, pEntry->Addr, TRUE, &isLinkValid);
+					
+						DBGPRINT(RT_DEBUG_TRACE, ("Delete (%02x:%02x:%02x:%02x:%02x:%02x) mac repeater entry\n", 
+							Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]));
+						
+						if (pReptEntry)
+						{
+							apCliIdx = pReptEntry->MatchApCliIdx;
+							CliIdx = pReptEntry->MatchLinkIdx;
+							MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_DISCONNECT_REQ, 0, NULL,
+											(64 + MAX_EXT_MAC_ADDR_SIZE*apCliIdx + CliIdx));
+							RTMP_MLME_HANDLER(pAd);
+						}
+						
+					}
+#endif /* MAC_REPEATER_SUPPORT */
+
 #ifdef DOT11R_FT_SUPPORT
 					/*
 						If AP send de-auth to Apple STA, 
@@ -2979,6 +3052,10 @@ INT RTMPAPQueryInformation(
 #endif /*HOSTAPD_SUPPORT*/
 
 #ifdef APCLI_SUPPORT
+	BOOLEAN apcliEn=FALSE;	
+	UCHAR ifIndex;
+	NDIS_802_11_SSID                    Ssid;
+	PAPCLI_STRUCT pApCliEntry=NULL;
 #endif/*APCLI_SUPPORT*/
 
 
@@ -3023,6 +3100,56 @@ INT RTMPAPQueryInformation(
                 break;
 
 #ifdef APCLI_SUPPORT
+
+       case OID_802_11_BSSID:
+
+			if (pObj->ioctl_if_type != INT_APCLI)
+				return FALSE;
+
+			ifIndex = pObj->ioctl_if;
+			pApCliEntry=&pAd->ApCfg.ApCliTab[ifIndex];
+			apcliEn = pAd->ApCfg.ApCliTab[ifIndex].Enable;
+
+			if (!apcliEn)
+				return FALSE;
+/*
+	PMF STA Sigma DUT will call this IOCTL to get the BSSID.
+*/
+		     if(1)
+	         {
+	                Status = copy_to_user(wrq->u.data.pointer, pApCliEntry->MlmeAux.Bssid, sizeof(NDIS_802_11_MAC_ADDRESS));
+
+
+	               DBGPRINT(RT_DEBUG_ERROR, ("IOCTL::SIOCGIWAP(=%02x:%02x:%02x:%02x:%02x:%02x)\n",PRINT_MAC(pApCliEntry->MlmeAux.Bssid)));
+
+	         }
+            else
+            {
+                DBGPRINT(RT_DEBUG_TRACE, ("Query::OID_802_11_BSSID(=EMPTY)\n"));
+                Status = -ENOTCONN;
+            }
+            break;
+        case OID_802_11_SSID:
+
+			if (pObj->ioctl_if_type != INT_APCLI)
+				return FALSE;
+
+			ifIndex = pObj->ioctl_if;
+			pApCliEntry=&pAd->ApCfg.ApCliTab[ifIndex];
+			apcliEn = pAd->ApCfg.ApCliTab[ifIndex].Enable;
+
+			if (!apcliEn)
+				return FALSE;
+
+			NdisZeroMemory(&Ssid, sizeof(NDIS_802_11_SSID));
+			NdisZeroMemory(Ssid.Ssid, MAX_LEN_OF_SSID);
+            		Ssid.SsidLength = pApCliEntry->CfgSsidLen;
+			NdisMoveMemory(Ssid.Ssid, pApCliEntry->CfgSsid,Ssid.SsidLength);
+            		wrq->u.data.length = sizeof(NDIS_802_11_SSID);
+            		Status = copy_to_user(wrq->u.data.pointer, &Ssid, wrq->u.data.length);
+           		 DBGPRINT(RT_DEBUG_TRACE, ("Query Apcli::OID_802_11_SSID (Len=%d, ssid=%s)\n", Ssid.SsidLength,Ssid.Ssid));
+            break;
+			
 #endif/*APCLI_SUPPORT*/
 
 		case RT_OID_VERSION_INFO:
@@ -8502,6 +8629,7 @@ VOID RTMPIoctlStatistics(RTMP_ADAPTER *pAd, RTMP_IOCTL_INPUT_STRUCT *wrq)
 									(ULONG)pAd->WlanCounters.FailedCount.u.LowPart, plr/100, plr%100);
 	}
     sprintf(msg+strlen(msg), "Rx success                      = %ld\n", (ULONG)rxCount);
+    sprintf(msg+strlen(msg), "Rx ICV Error                    = %ld\n", (ULONG)pAd->WlanCounters.RxICVErrorCount.u.LowPart);
 #ifdef CONFIG_QA
 	if(ATE_ON(pAd))
 	per = rxCount==0? 0: 1000*(pAd->WlanCounters.FCSErrorCount.u.LowPart)/(pAd->WlanCounters.FCSErrorCount.u.LowPart+rxCount);
@@ -8909,7 +9037,9 @@ INT Set_ApCli_Enable_Proc(
 
 	pAd->ApCfg.ApCliTab[ifIndex].Enable = (Enable > 0) ? TRUE : FALSE;
 	DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) Set_ApCli_Enable_Proc::(enable = %d)\n", ifIndex, pAd->ApCfg.ApCliTab[ifIndex].Enable));
-
+#ifdef APCLI_CONNECTION_TRIAL
+	if (pAd->ApCfg.ApCliTab[ifIndex].TrialCh == 0)
+#endif /* APCLI_CONNECTION_TRIAL */
 	ApCliIfDown(pAd);
 
 	return TRUE;
@@ -8940,15 +9070,45 @@ INT Set_ApCli_Ssid_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 		/* bring apcli interface down first */
 		apcliEn = apcli_entry->Enable;
+#ifdef APCLI_CONNECTION_TRIAL
+		if (pAd->ApCfg.ApCliTab[ifIndex].TrialCh == 0)
+		{
+#endif /* APCLI_CONNECTION_TRIAL */
 		if(apcliEn == TRUE )
 		{
 			apcli_entry->Enable = FALSE;
 			ApCliIfDown(pAd);
 		}
-
+#ifdef APCLI_CONNECTION_TRIAL
+	}
+#endif /* APCLI_CONNECTION_TRIAL */
 		NdisZeroMemory(apcli_entry->CfgSsid, MAX_LEN_OF_SSID);
 		NdisMoveMemory(apcli_entry->CfgSsid, arg, strlen(arg));
 		apcli_entry->CfgSsidLen = (UCHAR)strlen(arg);
+#ifdef APCLI_CERT_SUPPORT
+/* APCLI TGn 5.2.39 Sigma Workaound  to force turn on RTS to protect traffic */
+		if (pAd->bApCliCertTest == TRUE)
+		{
+			//AP1-5.2.39 (set by UCC)
+			if(apcli_entry->CfgSsidLen)
+			{
+				if (!strcmp(arg, "AP1-5.2.39"))
+				{
+					pAd->bApCliCertForceRTS = TRUE;
+				}
+				else
+				{
+					pAd->bApCliCertForceRTS = FALSE;
+				}
+					
+			}
+			else
+			{
+				pAd->bApCliCertForceRTS = FALSE;
+			}
+		}
+#endif /* APCLI_CERT_SUPPORT */
+
 		success = TRUE;
 
 		/* Upadte PMK and restart WPAPSK state machine for ApCli link */
@@ -9116,6 +9276,9 @@ INT Set_ApCli_Bssid_Proc(
 	if(apcliEn == TRUE )
 	{
 		pAd->ApCfg.ApCliTab[ifIndex].Enable = FALSE;
+#ifdef APCLI_CONNECTION_TRIAL
+		if (pAd->ApCfg.ApCliTab[ifIndex].TrialCh == 0)
+#endif /* APCLI_CONNECTION_TRIAL */
 		ApCliIfDown(pAd);
 	}
 
@@ -9176,8 +9339,13 @@ INT	Set_ApCli_AuthMode_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		wdev->AuthMode = Ndis802_11AuthModeShared;
 	else if (rtstrcasecmp(arg, "WPAPSK") == TRUE)
 		wdev->AuthMode = Ndis802_11AuthModeWPAPSK;
-	else if ((rtstrcasecmp(arg, "WPA2PSK") == TRUE) || (rtstrcasecmp(arg, "WPAPSKWPA2PSK") == TRUE))
+	else if (rtstrcasecmp(arg, "WPA2PSK") == TRUE)
 		wdev->AuthMode = Ndis802_11AuthModeWPA2PSK;
+	else if (rtstrcasecmp(arg, "WPAPSKWPA2PSK") == TRUE)
+	{
+		wdev->AuthMode = Ndis802_11AuthModeWPA1PSKWPA2PSK;
+		wdev->bWpaAutoMode = TRUE;		
+	}
 
 	else
 		wdev->AuthMode = Ndis802_11AuthModeOpen;
@@ -9515,6 +9683,52 @@ INT Set_ApCli_TxMcs_Proc(
 	return TRUE;
 }
 
+#ifdef APCLI_CONNECTION_TRIAL
+INT Set_ApCli_Trial_Ch_Proc(
+	RTMP_ADAPTER *pAd, 
+	RTMP_STRING *arg)
+{
+	POS_COOKIE 		pObj;
+	UCHAR 			ifIndex;
+	PAPCLI_STRUCT	pApCliEntry = NULL;
+
+	pObj = (POS_COOKIE) pAd->OS_Cookie;
+	if (pObj->ioctl_if_type != INT_APCLI)
+		return FALSE;
+
+	ifIndex = pObj->ioctl_if;
+	if (ifIndex != (pAd->ApCfg.ApCliNum-1)) {
+		DBGPRINT(RT_DEBUG_ERROR, 
+				 ("\n\rI/F(apcli%d) can not run connection trial, use apcli%d\n", 
+				  ifIndex,(MAX_APCLI_NUM-1)));
+		return FALSE;
+	}
+	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
+
+	pApCliEntry->TrialCh = simple_strtol(arg, 0, 10);
+	
+	if (pApCliEntry->TrialCh)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) pApCliEntry->TrialCh = %d\n", ifIndex, pApCliEntry->TrialCh));
+	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) pApCliEntry->TrialCh = %d\n", ifIndex, pApCliEntry->TrialCh));
+	}
+#ifdef DBDC_MODE
+	if (HcGetBandByWdev(&pApCliEntry->wdev) != 
+	HcGetBandByChannel(pAd,pApCliEntry->TrialCh)) {
+		pApCliEntry->TrialCh = 0;
+		DBGPRINT(RT_DEBUG_ERROR, 
+				 ("I/F(apcli%d) TrialCh = %d is not in this phy mode(%s)\n", 
+				  ifIndex, pApCliEntry->TrialCh,wmode_2_str(pApCliEntry->wdev.PhyMode)));
+		return FALSE;
+	}
+#endif
+
+	return TRUE;
+}
+#endif /* APCLI_CONNECTION_TRIAL */
 
 
 #ifdef MAC_REPEATER_SUPPORT
@@ -9571,7 +9785,6 @@ INT Set_ReptOUIMode_Proc(
 }
 #endif /* MAC_REPEATER_SUPPORT */
 
-
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
 /*
     ==========================================================================
@@ -9604,6 +9817,9 @@ INT Set_ApCli_AutoConnect_Proc(
 		DBGPRINT(RT_DEBUG_TRACE, ("Set_ApCli_AutoConnect_Proc() is still running\n"));
 		return TRUE;
 	}
+
+	pApCfg->ApCliTab[ifIndex].AutoConnectFlag =  TRUE;
+	
 	DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) Set_ApCli_AutoConnect_Proc::(Len=%d,Ssid=%s)\n",
 			ifIndex, pApCfg->ApCliTab[ifIndex].CfgSsidLen, pApCfg->ApCliTab[ifIndex].CfgSsid));
 
@@ -9651,6 +9867,34 @@ INT Set_AP_WscSsid_Proc(
 
 }
 #endif /* WSC_AP_SUPPORT */
+
+#ifdef APCLI_CERT_SUPPORT
+INT Set_ApCli_Cert_Enable_Proc(
+	IN  PRTMP_ADAPTER pAd, 
+	IN  RTMP_STRING *arg)
+{
+	UINT Enable;
+	POS_COOKIE pObj;
+	UCHAR ifIndex;
+					
+	pObj = (POS_COOKIE) pAd->OS_Cookie;
+	if (pObj->ioctl_if_type != INT_APCLI)
+		return FALSE;
+
+	ifIndex = pObj->ioctl_if;
+								
+	Enable = simple_strtol(arg, 0, 16);
+
+	pAd->bApCliCertTest = (Enable > 0) ? TRUE : FALSE;
+
+	pAd->bApCliCertForceRTS = (pAd->bApCliCertTest == FALSE) ? FALSE : pAd->bApCliCertForceRTS;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) Set_ApCli_Cert_Enable_Proc::(enable = %d)\n", ifIndex, pAd->bApCliCertTest));
+											
+	return TRUE;
+}
+#endif /* APCLI_CERT_SUPPORT */
+
 #endif /* APCLI_SUPPORT */
 
 
@@ -13339,6 +13583,8 @@ INT Set_Airplay_Enable(
 }
 
 #endif /* AIRPLAY_SUPPORT*/
+
+#ifdef DBG
 INT set_ping_log_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 	UINT32 value;
@@ -13348,14 +13594,79 @@ INT set_ping_log_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	if (value != 0)
 	{
 		pAd->bPingLog = TRUE;	
-		printk("\033[1;32m ping log on \033[0m\n");
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m ping log on \033[0m\n"));
 	}
 	else
 	{
 		pAd->bPingLog = FALSE;
-		printk("\033[1;32m ping log off \033[0m\n");
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m ping log off \033[0m\n"));
+	}
+	
+	return TRUE;
+}
+#endif /* DBG */
+
+
+#ifdef DATA_QUEUE_RESERVE
+INT set_queue_rsv_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
+{
+	UINT32 value;
+	
+	value = simple_strtol(arg, 0, 10);
+	
+	if (value != 0)
+	{
+		pAd->bQueueRsv = TRUE;	
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m queue rsv on \033[0m\n"));
+	}
+	else
+	{
+		pAd->bQueueRsv = FALSE;
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m queue rsv off \033[0m\n"));
 	}
 	
 	return TRUE;
 }
 
+
+INT set_dump_on_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
+{
+	UINT32 value;
+	
+	value = simple_strtol(arg, 0, 10);
+	
+	if (value != 0)
+	{
+		pAd->bDump = TRUE;	
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m dump on \033[0m\n"));
+	}
+	else
+	{
+		pAd->bDump = FALSE;
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m dump off \033[0m\n"));
+	}
+	
+	return TRUE;
+}
+
+
+INT set_rsv_cnt_clear_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
+{
+	UINT32 value;
+	INT i;
+	value = simple_strtol(arg, 0, 10);
+	
+	if (value != 0)
+	{
+		for (i=0; i<MAX_LEN_OF_TR_TABLE; i++)
+		{
+	           STA_TR_ENTRY *tr_entry = &pAd->MacTab.tr_entry[i];
+	           tr_entry->high_pkt_cnt = 0;
+	           tr_entry->high_pkt_drop_cnt = 0;
+		}
+		DBGPRINT(RT_DEBUG_ERROR,("\033[1;32m clear cnts \033[0m\n"));
+	}
+	
+	return TRUE;
+}
+#endif /* DATA_QUEUE_RESERVE */

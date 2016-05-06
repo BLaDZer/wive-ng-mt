@@ -567,7 +567,7 @@ VOID MtPsRecovery(
 				|| (tr_entry->ps_state == APPS_RETRIEVE_GOING))
 			{
 				if (tr_entry->ps_queue.Number) {
-					MtEnqTxSwqFromPsQueue(pAd, i, tr_entry);
+					MtEnqTxSwqFromPsQueue(pAd, QID_AC_BE, tr_entry);
 				}
 
 

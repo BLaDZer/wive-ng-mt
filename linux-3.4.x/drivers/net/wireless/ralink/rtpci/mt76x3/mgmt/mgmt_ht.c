@@ -434,6 +434,10 @@ VOID RTMPSetHT(
 		rt_ht_cap->ShortGIfor40 = 0;
 	}
 	
+#ifdef DYNAMIC_RX_RATE_ADJ
+	UpdateSuppHTRateBitmap(pAd);
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 	/* We support link adaptation for unsolicit MCS feedback, set to 2.*/
 	pAd->CommonCfg.AddHTInfo.ControlChan = pAd->CommonCfg.Channel;
 	/* 1, the extension channel above the control channel. */
@@ -720,6 +724,8 @@ INT	SetCommonHT(RTMP_ADAPTER *pAd)
 		RTMPDisableDesiredHtInfo(pAd);
 		return FALSE;
 	}
+
+	N_ChannelCheck(pAd); 
 
 #ifdef DOT11_VHT_AC
 	SetCommonVHT(pAd);

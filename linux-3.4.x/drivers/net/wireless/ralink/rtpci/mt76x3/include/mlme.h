@@ -913,6 +913,7 @@ typedef struct _BSS_ENTRY{
 	UCHAR SupRateLen;
 	UCHAR ExtRate[MAX_LEN_OF_SUPPORTED_RATES];
 	UCHAR ExtRateLen;
+	UCHAR Erp;
 	HT_CAPABILITY_IE HtCapability;
 	UCHAR HtCapabilityLen;
 	ADD_HT_INFO_IE AddHtInfo;	/* AP might use this additional ht info IE */
@@ -987,6 +988,10 @@ typedef struct _BSS_ENTRY{
 #endif /* WSC_INCLUDED */
 
 
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+	BOOLEAN	 bHasMDIE;
+	FT_MDIE FT_MDIE;
+#endif /* defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
 
 #ifdef DOT11K_RRM_SUPPORT
 	UINT8 RegulatoryClass;
@@ -1136,6 +1141,11 @@ typedef struct _MLME_AUX {
     UCHAR               VarIEs[MAX_VIE_LEN];
     LONG				Rssi; /* Record the rssi value when receive Probe Rsp. */
 	RALINK_TIMER_STRUCT ProbeTimer, ApCliAssocTimer, ApCliAuthTimer;
+	RALINK_TIMER_STRUCT WpaDisassocAndBlockAssocTimer;
+#ifdef DOT11W_PMF_SUPPORT
+	RSN_CAPABILITIES	RsnCap;
+	BOOLEAN			IsSupportSHA256KeyDerivation;
+#endif /* DOT11W_PMF_SUPPORT */
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 

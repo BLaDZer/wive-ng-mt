@@ -678,7 +678,9 @@ static PUCHAR MATProto_IP_Tx(
 #ifdef MAC_REPEATER_SUPPORT
 			if (pMatCfg->bMACRepeaterEn)
 			{
-				if (RTMPLookupRepeaterCliEntry(pMatCfg->pPriv, FALSE, pDevMacAdr) != NULL)
+				UCHAR isLinkValid;
+			
+				if (RTMPLookupRepeaterCliEntry(pMatCfg->pPriv, FALSE, pDevMacAdr, TRUE, &isLinkValid) != NULL)
 				{
 					NdisMoveMemory((bootpHdr+28), pDevMacAdr, MAC_ADDR_LEN);
 

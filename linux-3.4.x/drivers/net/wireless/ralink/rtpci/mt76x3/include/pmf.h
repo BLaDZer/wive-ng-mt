@@ -60,7 +60,9 @@ VOID PMF_InsertIGTKKDE(
 BOOLEAN PMF_ExtractIGTKKDE(
 	IN PRTMP_ADAPTER pAd,
 	IN PUCHAR pBuf,
-	IN INT buf_len);
+	IN INT buf_len,
+	IN MAC_TABLE_ENTRY *pEntry);
+
 
 VOID PMF_MakeRsnIeGMgmtCipher(	
 	IN PRTMP_ADAPTER pAd,	

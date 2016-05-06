@@ -68,7 +68,8 @@ BOOLEAN MulticastFilterTableDeleteEntry(
 	IN PRTMP_ADAPTER pAd,
 	IN PUCHAR pGrpId,
 	IN PUCHAR pMemberAddr,
-	IN PNET_DEV dev);
+	IN PNET_DEV dev,
+	IN MulticastFilterEntryType type);
 
 PMULTICAST_FILTER_TABLE_ENTRY MulticastFilterTableLookup(
 	IN PMULTICAST_FILTER_TABLE pMulticastFilterTable,
@@ -132,6 +133,15 @@ NDIS_STATUS IgmpPktInfoQuery(
 	OUT INT *pInIgmpGroup,
 	OUT PMULTICAST_FILTER_TABLE_ENTRY *ppGroupEntry);
 
+NDIS_STATUS IgmpProtocolPktClone(
+	IN PRTMP_ADAPTER pAd,
+	IN PNDIS_PACKET pPacket,
+	IN INT IgmpPktInGroup,
+	IN PMULTICAST_FILTER_TABLE_ENTRY pGroupEntry,
+	IN UCHAR QueIdx,
+	IN UINT8 UserPriority,
+	IN PNET_DEV pNetDev);
+	
 NDIS_STATUS IgmpPktClone(
 	IN PRTMP_ADAPTER pAd,
 	IN PNDIS_PACKET pPacket,

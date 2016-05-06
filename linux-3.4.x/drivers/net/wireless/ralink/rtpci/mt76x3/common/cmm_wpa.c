@@ -258,8 +258,27 @@ VOID WpaEAPOLKeyAction(
 	{
 #ifdef MAC_REPEATER_SUPPORT
 		if (CliIdx != 0xFF)
-			pEntry = &pAd->MacTab.Content[pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].MacTabWCID];
+		{
+
+			DBGPRINT(RT_DEBUG_TRACE, ("%s: CliIdx != 0xFF  ifIndex(%d), CliIdx(%d) !!!\n",
+								__FUNCTION__,ifIndex, CliIdx));
+
+			if ((pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].CliValid == FALSE) ||
+				(pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].CliEnable == FALSE) ||
+				(pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].MacTabWCID > (MAX_LEN_OF_MAC_TABLE - 1)))
+			{
+				pEntry = NULL;
+	
+				DBGPRINT(RT_DEBUG_TRACE, ("%s: calculate wrong wcid(%d), ifIndex(%d), CliIdx(%d) !!!\n",
+										__FUNCTION__, pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].MacTabWCID,
+										ifIndex, CliIdx));				
+				break;
+			}
 		else
+			{
+			pEntry = &pAd->MacTab.Content[pAd->ApCfg.ApCliTab[ifIndex].RepeaterCli[CliIdx].MacTabWCID];
+			}
+		}		else
 #endif /* MAC_REPEATER_SUPPORT */
 			pEntry = MacTableLookup(pAd, pHeader->Addr2);
 
@@ -1944,6 +1963,7 @@ VOID PeerPairMsg4Action(
 				pR1khEntry = FT_R1khEntryTabLookup(pAd, pEntry->FT_PMK_R1_NAME);
 				if (pR1khEntry != NULL)
 				{
+					pR1khEntry->AuthMode = pEntry->AuthMode;
 					hex_dump("R1KHTab-R0KHID", pR1khEntry->R0khId, pR1khEntry->R0khIdLen);
 					hex_dump("R1KHTab-PairwiseCipher", pR1khEntry->PairwisChipher, 4);
 					hex_dump("R1KHTab-AKM", pR1khEntry->AkmSuite, 4);
@@ -3362,6 +3382,29 @@ static VOID RTMPMakeRsnIeAKM(
 #ifdef CONFIG_AP_SUPPORT
                 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
                 {
+#ifdef APCLI_SUPPORT
+			if (apidx >= MIN_NET_DEVICE_FOR_APCLI)
+			{
+				PAPCLI_STRUCT pApCliEntry = &pAd->ApCfg.ApCliTab[apidx - MIN_NET_DEVICE_FOR_APCLI];
+
+				if (pApCliEntry)
+				{
+					DBGPRINT(RT_DEBUG_WARN, ("[PMF]%s: IsSupportSHA256KeyDerivation = %d, MFPR = %d\n",
+										__FUNCTION__, pApCliEntry->MlmeAux.IsSupportSHA256KeyDerivation,
+													pApCliEntry->MlmeAux.RsnCap.field.MFPR));
+
+					if ((pApCliEntry->PmfCfg.PMFSHA256 && pApCliEntry->MlmeAux.IsSupportSHA256KeyDerivation)
+						 || (pApCliEntry->PmfCfg.MFPC && pApCliEntry->MlmeAux.RsnCap.field.MFPR)
+						 || (pApCliEntry->PmfCfg.MFPC && pApCliEntry->MlmeAux.IsSupportSHA256KeyDerivation))
+					{
+						NdisMoveMemory(pRsnie_auth->auth[0].oui, OUI_WPA2_PSK_SHA256, 4);
+						DBGPRINT(RT_DEBUG_WARN, ("[PMF]%s: Insert PSK-SHA256 to AKM of RSNIE\n", __FUNCTION__));
+					}
+				}
+			}
+			else
+#endif /* APCLI_SUPPORT */                
+	                {
                         if (pAd->ApCfg.MBSSID[apidx].PmfCfg.MFPR) {
                                 NdisMoveMemory(pRsnie_auth->auth[0].oui, OUI_WPA2_PSK_SHA256, 4);
                                 DBGPRINT(RT_DEBUG_WARN, ("[PMF]%s: Insert PSK-SHA256 to AKM of RSNIE\n", __FUNCTION__));
@@ -3370,6 +3413,7 @@ static VOID RTMPMakeRsnIeAKM(
                                 AkmCnt++;
                                 DBGPRINT(RT_DEBUG_WARN, ("[PMF]%s: Insert PSK-SHA256 to AKM of RSNIE\n", __FUNCTION__));
                         }
+                }
                 }
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -3448,6 +3492,21 @@ static VOID RTMPMakeRsnIeCap(
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
+#ifdef DOT11W_PMF_SUPPORT
+#ifdef APCLI_SUPPORT
+		if (apidx >= MIN_NET_DEVICE_FOR_APCLI)
+		{
+			PAPCLI_STRUCT pApCliEntry = &pAd->ApCfg.ApCliTab[apidx - MIN_NET_DEVICE_FOR_APCLI];
+
+			pRSN_Cap->field.MFPC = (pApCliEntry->PmfCfg.MFPC) ? 1 : 0;
+			pRSN_Cap->field.MFPR = (pApCliEntry->PmfCfg.MFPR) ? 1 : 0;
+
+			DBGPRINT(RT_DEBUG_ERROR, ("[PMF]%s: RSNIE Capability MFPC=%d, MFPR=%d\n",
+							__FUNCTION__, pRSN_Cap->field.MFPC, pRSN_Cap->field.MFPR));
+		}
+		else
+#endif /* APCLI_SUPPORT */
+#endif /* DOT11W_PMF_SUPPORT */	
 		if (apidx < pAd->ApCfg.BssidNum)
 		{
 			BSS_STRUCT *pMbss = &pAd->ApCfg.MBSSID[apidx];
@@ -3507,6 +3566,16 @@ static VOID RTMPInsertRsnIeZeroPMKID(
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
+#ifdef APCLI_SUPPORT
+		if (apidx >= MIN_NET_DEVICE_FOR_APCLI)
+		{
+			PAPCLI_STRUCT pApCliEntry = &pAd->ApCfg.ApCliTab[apidx - MIN_NET_DEVICE_FOR_APCLI];
+
+			if (pApCliEntry->PmfCfg.MFPC)
+				goto InsertPMKIDCount;
+		}
+		else
+#endif /* APCLI_SUPPORT */		
 		if (apidx < pAd->ApCfg.BssidNum)
 		{
 			BSS_STRUCT *pMbss = &pAd->ApCfg.MBSSID[apidx];
@@ -4078,7 +4147,7 @@ BOOLEAN RTMPParseEapolKeyData(
 							else if (pKDE->DataType == KDE_IGTK
                                                                 && (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_PMF_CAPABLE)))
     						{
-								if (PMF_ExtractIGTKKDE(pAd, &pKDE->octet[0], pKDE->Len - 4) == FALSE)
+								if (PMF_ExtractIGTKKDE(pAd, &pKDE->octet[0], pKDE->Len - 4, pEntry) == FALSE)
 	        						return FALSE;
     						}
 #endif /* DOT11W_PMF_SUPPORT */
@@ -4132,13 +4201,13 @@ BOOLEAN RTMPParseEapolKeyData(
 
             WPAInstallSharedKey(pAd,
                 pApcli_entry->GroupCipher,
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 		pEntry->func_tb_idx,
 #else /* MULTI_APCLI_SUPPORT */
                 BSS0,
 #endif /* !MULTI_APCLI_SUPPORT */
                 DefaultIdx,
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
                 APCLI_MCAST_WCID(IfIdx),
 #else /* MULTI_APCLI_SUPPORT */
                 APCLI_MCAST_WCID,
@@ -4609,6 +4678,9 @@ VOID ConstructEapolKeyData(
 #ifdef DOT11R_FT_SUPPORT
 			(keyDescVer == KEY_DESC_EXT) ||
 #endif /* DOT11R_FT_SUPPORT */
+#ifdef DOT11W_PMF_SUPPORT
+                        (keyDescVer == KEY_DESC_EXT) ||
+#endif /* DOT11W_PMF_SUPPORT */
 #ifdef CONFIG_HOTSPOT_R2
             (keyDescVer == KEY_DESC_OSEN) ||
 #endif /* CONFIG_HOTSPOT_R2 */
@@ -5532,7 +5604,7 @@ VOID WPAInstallSharedKey(
 	}
 
 #if (defined(MT_MAC) && defined(APCLI_SUPPORT))
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
     if (Wcid == APCLI_MCAST_WCID(BssIdx))
     {
         PAPCLI_STRUCT pApCliEntry = NULL;
@@ -5716,4 +5788,24 @@ VOID RTMPSetWcidSecurityInfo(
 
 }
 
+
+/*
+ * inc_byte_array - Increment arbitrary length byte array by one
+ * @counter: Pointer to byte array
+ * @len: Length of the counter in bytes
+ *
+ * This function increments the last byte of the counter by one and continues
+ * rolling over to more significant bytes if the byte was incremented from
+ * 0xff to 0x00.
+ */
+void inc_byte_array(UCHAR *counter, int len)
+{
+	int pos = len - 1;
+	while (pos >= 0) {
+		counter[pos]++;
+		if (counter[pos] != 0)
+			break;
+		pos--;
+	}
+}
 

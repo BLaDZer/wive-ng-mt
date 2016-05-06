@@ -849,6 +849,11 @@ VOID APStartUp(RTMP_ADAPTER *pAd)
 	for (idx = 0; idx < pAd->ApCfg.BssidNum; idx++)
 	{
 		MlmeUpdateTxRates(pAd, FALSE, idx);
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+		UpdateSuppRateBitmap(pAd);
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 #ifdef DOT11_N_SUPPORT
 		if (WMODE_CAP_N(pAd->CommonCfg.PhyMode))
 			MlmeUpdateHtTxRates(pAd, idx);
@@ -954,6 +959,8 @@ VOID APStartUp(RTMP_ADAPTER *pAd)
 #ifdef CONFIG_MAC_PCI
 	RTMP_ASIC_INTERRUPT_ENABLE(pAd);
 #endif
+
+	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_BSS_SCAN_IN_PROGRESS);
 
 	DBGPRINT(RT_DEBUG_OFF, ("Main bssid = %02x:%02x:%02x:%02x:%02x:%02x\n",
 						PRINT_MAC(pAd->ApCfg.MBSSID[BSS0].wdev.bssid)));
@@ -1131,6 +1138,17 @@ static VOID CheckApEntryInTraffic(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ST
 						pAd->ApClientTxopAbledCnt++;
 				}
 			}
+			else
+			{
+				/* BI-DI for traffic rule */
+				if ((RxTotalByteCnt/TxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
+				{
+				 	if (IS_ENTRY_CLIENT(pEntry))
+               			pAd->StaTxopAbledCnt++;
+                	else
+                    	pAd->ApClientTxopAbledCnt++;					
+				}
+			}
 		}
 	}
 
@@ -1246,7 +1264,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			{
 				pEntry->ReptCliIdleCount++;
 
-				if ((pEntry->bReptEthCli) && (pEntry->ReptCliIdleCount >= MAC_TABLE_AGEOUT_TIME))
+				if ((pEntry->bReptEthCli) 
+					&& (pEntry->ReptCliIdleCount >= MAC_TABLE_AGEOUT_TIME)
+					&& (pEntry->bReptEthBridgeCli == FALSE)) /* Do NOT ageout br0 link. @2016/1/27 */
 				{
 					MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_DISCONNECT_REQ, 0, NULL,
 									(64 + (MAX_EXT_MAC_ADDR_SIZE * pEntry->func_tb_idx) + pEntry->MatchReptCliIdx));
@@ -1569,10 +1589,10 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #ifdef MAC_REPEATER_SUPPORT
 				if ((pAd->ApCfg.bMACRepeaterEn == TRUE) && IS_ENTRY_CLIENT(pEntry))
 				{
-					UCHAR apCliIdx, CliIdx;
+					UCHAR apCliIdx, CliIdx, isLinkValid ;
 					REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 
-					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, pEntry->Addr);
+					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, pEntry->Addr, TRUE, &isLinkValid);
 					if (pReptEntry && (pReptEntry->CliConnectState != 0))
 					{
 						apCliIdx = pReptEntry->MatchApCliIdx;
@@ -2032,6 +2052,12 @@ VOID APUpdateOperationMode(RTMP_ADAPTER *pAd)
 	if (pAd->MacTab.fAnyStationIsLegacy || pAd->MacTab.Size > 1)
 	{
 		pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode = 3;
+		bDisableBGProtect = TRUE;
+	}
+
+	if (pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode == 0 &&
+		!ERP_IS_USE_PROTECTION(pAd->ApCfg.ErpIeContent))
+	{
 		bDisableBGProtect = TRUE;
 	}
 

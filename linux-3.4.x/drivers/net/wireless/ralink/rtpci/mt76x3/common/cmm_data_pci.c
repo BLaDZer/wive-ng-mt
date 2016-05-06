@@ -2081,8 +2081,9 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 		{
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			UCHAR MacTabWCID=0;
+			UCHAR isLinkValid;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && pReptEntry->CliValid)
 			{
 				MacTabWCID = pReptEntry->MacTabWCID;
@@ -2105,8 +2106,9 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 		{
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			UCHAR MacTabWCID=0;
+			UCHAR isLinkValid;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && pReptEntry->CliValid)
 			{
 				MacTabWCID = pReptEntry->MacTabWCID;
@@ -2247,8 +2249,9 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 				{
 					REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 					UCHAR MacTabWCID=0;
+					UCHAR isLinkValid;
 
-					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 					if (pReptEntry && pReptEntry->CliValid)
 					{
 						MacTabWCID = pReptEntry->MacTabWCID;
@@ -2364,6 +2367,9 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 
 	mac_info.TxRate = tx_rate;
 	mac_info.Txopmode = IFS_BACKOFF;
+	if(pAd->CommonCfg.TxStream == 1)
+            mac_info.SpeEn = 0;
+	else
 	mac_info.SpeEn = 1;
 	mac_info.Preamble = LONG_PREAMBLE;
 

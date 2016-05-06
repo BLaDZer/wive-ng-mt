@@ -73,7 +73,7 @@ RTMP_DECLARE_DRV_OPS_FUNCTION(pci);
 #else
 
 #ifdef MT_MAC
-#define RTMP_DRV_NAME   "mt_drv"
+#define RTMP_DRV_NAME   "mt7603_drv"
 #else
 #define RTMP_DRV_NAME	"rt2860"
 #endif /* RTMP_MAC_USB */
@@ -462,6 +462,12 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 #define MGMT_RING_SIZE          128
 #endif
 #endif
+
+#ifdef DATA_QUEUE_RESERVE
+// TX_RING_SIZE_RSV must small than TX_RING_SIZE
+#define TX_RING_SIZE_RSV    16
+#endif  /* DATA_QUEUE_RESERVE */
+
 
 #ifdef MT_MAC
 #ifdef MEMORY_OPTIMIZATION

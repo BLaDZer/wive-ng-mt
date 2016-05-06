@@ -994,6 +994,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				*(USHORT *)(&ie_list->AddHtInfo.AddHtInfo2) = cpu2le16(*(USHORT *)(&ie_list->AddHtInfo.AddHtInfo2));
 				*(USHORT *)(&ie_list->AddHtInfo.AddHtInfo3) = cpu2le16(*(USHORT *)(&ie_list->AddHtInfo.AddHtInfo3));
 
+				ie_list->NewExtChannelOffset = ie_list->AddHtInfo.AddHtInfo.ExtChanOffset;
 			}
 			else
 			{

@@ -310,6 +310,9 @@ int main(int argc ,char *argv[])
 		} else if ((strncmp(chipset, "mt7603e", 7) == 0)
 					|| (strncmp(chipset, "mt7603u", 7) == 0)) {
 			strcat(infname, "/mcu/bin/WIFI_RAM_CODE_MT7603_e1.bin");
+			if (strncmp(rt28xx_mode, "AP", 2) == 0)
+				strcat(infname1, "/mcu/bin/MT7603EAP/WIFI_RAM_CODE_MT7603_e2.bin");
+			else
 			strcat(infname1, "/mcu/bin/WIFI_RAM_CODE_MT7603_e2.bin");
 			strcat(outfname, "/include/mcu/mt7603_firmware.h");
 			strcat(outfname1, "/include/mcu/mt7603_e2_firmware.h");

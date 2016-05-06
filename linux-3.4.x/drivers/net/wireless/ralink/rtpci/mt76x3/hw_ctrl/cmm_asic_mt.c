@@ -226,7 +226,13 @@ NTSTATUS MtCmdAsicUpdateProtect(RTMP_ADAPTER *pAd, PCmdQElmt CMDQelmt)
         }
         else
         {
+#ifdef APCLI_CERT_SUPPORT
+            if (pAd->bApCliCertForceRTS)
+            	Value |= RTS_THRESHOLD(1);
+            else
+#endif /* APCLI_CERT_SUPPORT */
             Value |= RTS_THRESHOLD(pAd->CommonCfg.RtsThreshold);
+			
             Value |= RTS_PKT_NUM_THRESHOLD(1);
 
 
@@ -515,7 +521,7 @@ VOID AsicSetMbssMode(RTMP_ADAPTER *pAd, UCHAR NumOfBcns)
 			2.If the Mesh link is included, its MAC address shall follow the last MBSSID's MAC by increasing 1.
 			3.If the AP-Client link is included, its MAC address shall follow the Mesh interface MAC by increasing 1.
 	*/
-	NumOfMacs = pAd->ApCfg.BssidNum + MAX_MESH_NUM + MAX_APCLI_NUM;
+	NumOfMacs = pAd->ApCfg.BssidNum + MAX_MESH_NUM;
 
 	/* set Multiple BSSID mode */
 	if (NumOfMacs <= 1)
@@ -965,7 +971,7 @@ INT AsicGetTsfTime(RTMP_ADAPTER *pAd, UINT32 *high_part, UINT32 *low_part)
 
 
 #ifdef LINUX
-#ifdef RTMP_WLAN_HOOK_SUPPORT
+#ifdef MT7603_WLAN_HOOK_SUPPORT
 EXPORT_SYMBOL(AsicGetTsfTime);
 #endif /* RTMP_WLAN_HOOK_SUPPORT */
 #endif /* LINUX */
@@ -1682,6 +1688,22 @@ VOID AsicSetEdcaParm(RTMP_ADAPTER *pAd, PEDCA_PARM pEdcaParm)
 									 pEdcaParm->Cwmax[3],
 									 pEdcaParm->Txop[3]<<5,
 									 pEdcaParm->bACM[3]));
+
+//APCLI 5.2.32 TGn negtive test AIFS of VI, woraround to let BE higher TP, so set BE TxOP from 0x00 to 0x60
+#ifdef APCLI_CERT_SUPPORT
+				if (pAd->bApCliCertTest == TRUE)
+				{
+					if (pEdcaParm->Aifsn[0] == 2 && pEdcaParm->Aifsn[1] == 2 &&  pEdcaParm->Aifsn[2] == 10 &&  pEdcaParm->Aifsn[3] == 2)
+						pAd->bApCliCertForceTxOP = 0x60;
+					else
+						pAd->bApCliCertForceTxOP = 0x0;
+				}
+				else
+				{
+					pAd->bApCliCertForceTxOP = 0x0;					
+				}
+#endif /* APCLI_CERT_SUPPORT */
+
 		}
 
 		if (pAd->chipCap.hif_type == HIF_MT)
@@ -1713,7 +1735,7 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 
 	return;
 
-	pAd->OneSecondnonBEpackets = 0;
+	//pAd->OneSecondnonBEpackets = 0;
 }
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -2576,6 +2598,9 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 //		rssi = RTMPMaxRssi(pAd, pEntry->RssiSample.AvgRssi[0], pEntry->RssiSample.AvgRssi[1], pEntry->RssiSample.AvgRssi[2]);
 //		if (rssi < -50 )
 		{
+		    if(pAd->CommonCfg.TxStream == 1)
+		        wtbl_2_d9.field.spe_en = 0;
+		    else
 			wtbl_2_d9.field.spe_en = 1;
 		}
 	}
@@ -2939,7 +2964,7 @@ VOID AsicUpdateRxWCIDTable(RTMP_ADAPTER *pAd, USHORT WCID, UCHAR *pAddr)
 	dw0->field.rc_a1 = 1;
 	dw0->field.rc_a2 = 1;
     }
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
     else if (WCID == APCLI_MCAST_WCID(0) || WCID == APCLI_MCAST_WCID(1)) {
 #else /* MULTI_APCLI_SUPPORT */
     else if (WCID == APCLI_MCAST_WCID ) {
@@ -2969,7 +2994,7 @@ VOID AsicUpdateRxWCIDTable(RTMP_ADAPTER *pAd, USHORT WCID, UCHAR *pAddr)
 
         }
         else if (IS_ENTRY_APCLI(mac_entry)) {
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 		dw0->field.muar_idx = (0x1 + mac_entry->func_tb_idx);
 #else /* MULTI_APCLI_SUPPORT */
 		dw0->field.muar_idx = 0x1;//Carter, MT_MAC apcli use HWBSSID1 to go.
@@ -3561,7 +3586,7 @@ VOID CmdProcAddRemoveKey(
 		dw0->field.wm = 0;
 		if((Wcid != MCAST_WCID)
 #ifdef APCLI_SUPPORT
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
           && ((Wcid != APCLI_MCAST_WCID(0)) && (Wcid != APCLI_MCAST_WCID(1)) )
 #else /* MULTI_APCLI_SUPPORT */
           && (Wcid != APCLI_MCAST_WCID)
@@ -3582,7 +3607,7 @@ VOID CmdProcAddRemoveKey(
 				dw0->field.rv = 0;
 				dw0->field.rkv = 0;
 #ifdef APCLI_SUPPORT
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
             	if ((Wcid == APCLI_MCAST_WCID(0)) || (Wcid == APCLI_MCAST_WCID(1))) {
 #else /* MULTI_APCLI_SUPPORT */
             	if (Wcid == APCLI_MCAST_WCID) {
@@ -5776,6 +5801,10 @@ VOID MTPciPollTxRxEmpty(RTMP_ADAPTER *pAd)
 	}
 #endif /* CONFIG_ATE */
 
+#ifdef  CONFIG_ATE
+/* reduce the production time */
+	if (!ATE_ON(pAd))
+#endif /* CONFIG_ATE */
 	RtmpOsMsDelay(100);
 
 	/* Fix Rx Ring FULL lead DMA Busy, when DUT is in reset stage */

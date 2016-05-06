@@ -487,8 +487,20 @@ enum WIFI_MODE{
 #undef MAX_APCLI_NUM
 #ifdef MULTI_APCLI_SUPPORT
 #define MAX_APCLI_NUM				2
+#ifdef APCLI_CONNECTION_TRIAL
+#ifdef MT7603
+#error "MULTI_APCLI_SUPPORT is exclusive with APCLI_CONNECTION_TRIAL"
+#else
+#undef	MAX_APCLI_NUM
+#define MAX_APCLI_NUM				(2+1)
+#endif
+#endif /* APCLI_CONNECTION_TRIAL */
 #else /* MULTI_APCLI_SUPPORT*/
 #define MAX_APCLI_NUM				1
+#ifdef APCLI_CONNECTION_TRIAL
+#undef	MAX_APCLI_NUM
+#define MAX_APCLI_NUM				(1+1)
+#endif /* APCLI_CONNECTION_TRIAL */
 #endif /* !MULTI_APCLI_SUPPORT */
 #endif /* APCLI_SUPPORT */
 
@@ -617,7 +629,7 @@ enum WIFI_MODE{
 #define BSSID_WCID		1	/* in infra mode, always put bssid with this WCID */
 #define MCAST_WCID	0x0
 
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 #define APCLI_MCAST_WCID(_num)\
 	(MAX_LEN_OF_MAC_TABLE + HW_BEACON_MAX_NUM + MAX_APCLI_NUM + _num)
 #else /* MULTI_APCLI_SUPPORT */
@@ -1350,7 +1362,13 @@ enum WIFI_MODE{
 #define APCLI_CTRL_ASSOC                  4
 #define APCLI_CTRL_DEASSOC                5
 #define APCLI_CTRL_CONNECTED              6
+#ifndef	APCLI_CONNECTION_TRIAL
 #define APCLI_MAX_CTRL_STATE              7
+#else
+#undef APCLI_MAC_CTRL_STATE
+#define APCLI_CTRL_TRIAL_TRIGGERED        7
+#define APCLI_MAX_CTRL_STATE              8
+#endif	/* APCLI_CONNECTION_TRIAL */
 
 #define APCLI_CTRL_MACHINE_BASE           0
 #define APCLI_CTRL_JOIN_REQ               0
@@ -1365,8 +1383,18 @@ enum WIFI_MODE{
 #define APCLI_CTRL_ASSOC_REQ_TIMEOUT      9
 #define APCLI_CTRL_MT2_AUTH_REQ			  10
 #define APCLI_CTRL_MT2_ASSOC_REQ		  11
-#define APCLI_MAX_CTRL_MSG                12
-
+#define APCLI_CTRL_SCAN_DONE              12
+#define APCLI_MIC_FAILURE_REPORT_FRAME 	  13
+#ifndef APCLI_CONNECTION_TRIAL
+#define APCLI_MAX_CTRL_MSG                14
+#else
+#undef APCLI_MAX_CTRL_MSG
+#define	APCLI_CTRL_TRIAL_CONNECT		  14
+#define APCLI_CTRL_TRIAL_CONNECT_TIMEOUT  15
+#define APCLI_CTRL_TRIAL_PHASE2_TIMEOUT	  16
+#define APCLI_CTRL_TRIAL_RETRY_TIMEOUT	  17
+#define APCLI_MAX_CTRL_MSG				  18
+#endif	/* APCLI_CONNECTION_TRIAL */
 #define APCLI_CTRL_FUNC_SIZE              (APCLI_MAX_CTRL_STATE * APCLI_MAX_CTRL_MSG)
 
 
@@ -2051,6 +2079,11 @@ enum {
 #define MO_MEAS_PERIOD	0	/* 0 ~ 100 ms */
 #define MO_IDLE_PERIOD	1	/* 100 ~ 1000 ms */
 #endif /* MICROWAVE_OVEN_SUPPORT */
+
+typedef enum _ETHER_BAND_BINDDING {
+	EtherTrafficBand2G,
+ 	EtherTrafficBand5G,
+} ETHER_BAND_BINDDING, *PETHER_BAND_BINDDING;
 
 /* definition for Antenna Diversity flag */
 typedef enum {

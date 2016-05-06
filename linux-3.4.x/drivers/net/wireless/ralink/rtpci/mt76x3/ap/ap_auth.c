@@ -217,8 +217,18 @@ static VOID APPeerDeauthReqAction(
 			pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
 		}
 
+#ifdef APCLI_SUPPORT
+                                if (pEntry && !(IS_ENTRY_APCLI(pEntry)))
+#endif /* APCLI_SUPPORT */
+                                {
 		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
-
+					}
+#ifdef APCLI_SUPPORT
+                                else
+                                {
+						DBGPRINT(RT_DEBUG_TRACE,("%s: receive not client de-auth ###\n", __FUNCTION__));
+					}
+#endif /* APCLI_SUPPORT */
 		DBGPRINT(RT_DEBUG_TRACE,
 					("AUTH - receive DE-AUTH(seq-%d) from "
 					"%02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
@@ -227,10 +237,10 @@ static VOID APPeerDeauthReqAction(
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
 		{
-			UCHAR apCliIdx, CliIdx;
+			UCHAR apCliIdx, CliIdx, isLinkValid;
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && (pReptEntry->CliConnectState != 0))
 			{
 				apCliIdx = pReptEntry->MatchApCliIdx;

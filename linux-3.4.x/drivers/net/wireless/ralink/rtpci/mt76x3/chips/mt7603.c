@@ -306,7 +306,7 @@ static VOID mt7603_init_mac_cr(RTMP_ADAPTER *pAd)
 
 	/* When WAPI + RDG, don't mask ORDER bit  */
 	RTMP_IO_READ32(pAd, SEC_SCR, &mac_val);
-	mac_val &= 0xfffffffc;
+	mac_val &= 0xfffbfffc; //zero bit [18] for ICV error issue.
 	RTMP_IO_WRITE32(pAd, SEC_SCR, mac_val);
 
 	/* Enable Spatial Extension for RTS/CTS  */

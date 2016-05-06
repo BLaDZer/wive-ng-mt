@@ -415,13 +415,71 @@ if (0) {
 				{
 					PUCHAR bootpHdr/*, dhcpHdr*/, pCliHwAddr;
 					REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
+					UCHAR isLinkValid;
+#ifdef DATA_QUEUE_RESERVE
+					PUCHAR dhcp_msg_type;
+					/*
+						1 = DHCP Discover message (DHCPDiscover).
+						2 = DHCP Offer message (DHCPOffer).
+						3 = DHCP Request message (DHCPRequest).
+						4 = DHCP Decline message (DHCPDecline).
+						5 = DHCP Acknowledgment message (DHCPAck).
+						6 = DHCP Negative Acknowledgment message (DHCPNak).
+						7 = DHCP Release message (DHCPRelease).
+						8 = DHCP Informational message (DHCPInform).
+					*/
+#endif /* DATA_QUEUE_RESERVE */
 
 					bootpHdr = pUdpHdr + 8;
 					//dhcpHdr = bootpHdr + 236;
 					pCliHwAddr = (bootpHdr+28);
-					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pCliHwAddr);
+
+#ifdef DATA_QUEUE_RESERVE
+					if (pAd->bDump)
+					{
+						dhcp_msg_type = (bootpHdr+ (28 + 6 + 10 + 64+ 128 + 4));
+						dhcp_msg_type += 2;
+
+						if (*(dhcp_msg_type) == 2)
+	 						DBGPRINT(RT_DEBUG_ERROR, ("### %s() DHCP OFFER to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+						if (*(dhcp_msg_type) == 5)
+	 						DBGPRINT(RT_DEBUG_ERROR, ("### %s() DHCP ACK to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+						if (*(dhcp_msg_type) == 6)
+	 						DBGPRINT(RT_DEBUG_ERROR, ("### %s() DHCP NACK to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+						if (*(dhcp_msg_type) == 8)
+	 						DBGPRINT(RT_DEBUG_ERROR, ("### %s() DHCP INFORM to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+					}
+#endif /* DATA_QUEUE_RESERVE */
+
+
+					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pCliHwAddr, TRUE, &isLinkValid);
 					if (pReptEntry)
 						NdisMoveMemory(pCliHwAddr, pReptEntry->OriginalAddress, MAC_ADDR_LEN);
+#if defined (CONFIG_WIFI_PKT_FWD)
+					else
+					{	
+						VOID *opp_band_tbl = NULL;
+						VOID *band_tbl = NULL;
+
+						if (wf_fwd_feedback_map_table)
+							wf_fwd_feedback_map_table(pAd, &band_tbl, &opp_band_tbl);
+
+						if (opp_band_tbl != NULL) {
+							/* 
+								check the ReptTable of the opposite band due to dhcp packet (BC)
+									may come-in 2/5G band when STA send dhcp broadcast to Root AP 
+							*/
+							pReptEntry = RTMPLookupRepeaterCliEntry(opp_band_tbl, FALSE, pCliHwAddr, FALSE, &isLinkValid);
+							if (pReptEntry)
+								NdisMoveMemory(pCliHwAddr, pReptEntry->OriginalAddress, MAC_ADDR_LEN);
+						}
+						else
+							DBGPRINT(RT_DEBUG_INFO, ("cannot find the adapter of the oppsite band\n")); 
+					}
+#endif /* CONFIG_WIFI_PKT_FWD */
 					bHdrChanged = TRUE;
 				}
 
@@ -880,7 +938,23 @@ DBGPRINT(RT_DEBUG_FPGA, ("-->%s()\n", __FUNCTION__));
 #endif /* DOT11W_PMF_SUPPORT */
 
 	if (pRxBlk->wcid < MAX_LEN_OF_MAC_TABLE)
+	{
 		pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
+	}
+	else
+	{
+#ifdef CONFIG_AP_SUPPORT
+#ifdef APCLI_SUPPORT
+#ifdef DOT11W_PMF_SUPPORT
+		pEntry = MacTableLookup(pAd, pHeader->Addr2);
+#endif /* APCLI_SUPPORT */
+#endif /* DOT11W_PMF_SUPPORT */
+#endif /* CONFIG_AP_SUPPORT */
+		if (pEntry)
+			pRxBlk->wcid = pEntry->wcid;
+	}
+	
+
 
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
@@ -904,6 +978,33 @@ DBGPRINT(RT_DEBUG_FPGA, ("-->%s()\n", __FUNCTION__));
 		{
 			if ((pHeader->FC.SubType != SUBTYPE_BEACON) && (pHeader->FC.SubType != SUBTYPE_PROBE_REQ))
 			{
+				BOOLEAN bDrop = TRUE;
+#ifdef DOT11W_PMF_SUPPORT
+/* For PMF TEST Plan 5.4.3.1 & 5.4.3.2 */
+#ifdef APCLI_SUPPORT
+				if (pEntry && ((pHeader->FC.SubType == SUBTYPE_DISASSOC) || (pHeader->FC.SubType == SUBTYPE_DEAUTH)))
+				{
+					if (IS_ENTRY_APCLI(pEntry))
+					{
+						bDrop = FALSE;
+					}
+						
+				}
+#endif /* APCLI_SUPPORT */
+#endif /* DOT11W_PMF_SUPPORT */
+
+
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+				if  (pAd->bApCliCertTest == TRUE)
+				{
+					if ((pHeader->FC.SubType == SUBTYPE_ACTION) && (pEntry) && IS_ENTRY_APCLI(pEntry))
+						bDrop = FALSE;			
+				}
+#endif /* APCLI_CERT_SUPPOR */
+#endif /* APCLI_SUPPORT */
+
+				if (bDrop == TRUE)
 					goto done;
 			}
 		}
@@ -1174,7 +1275,8 @@ static INT rtmp_chk_rx_err(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, HEADER_802_11 *pHd
 		RXD_BASE_STRUCT *rxd_base = (RXD_BASE_STRUCT *)pRxBlk->rmac_info;
 
 		if (rxd_base->rxd_2.icv_err) {
-			DBGPRINT(RT_DEBUG_OFF, ("ICV Error\n"));
+			DBGPRINT(RT_DEBUG_TRACE, ("ICV Error\n"));
+			INC_COUNTER64(pAd->WlanCounters.RxICVErrorCount);
 			dump_rxblk(pAd, pRxBlk);
 			return NDIS_STATUS_FAILURE;
 		}
@@ -1585,12 +1687,15 @@ VOID rx_data_frm_announce(
 		}
 #endif /* IGMP_SNOOP_SUPPORT */
 
+#ifdef DBG
 		if(pAd->bPingLog)
 		{
 			CheckICMPPacket(pAd, pRxBlk->pData, 1);
 		}
+#endif /* DBG */
+
 #ifdef CONFIG_HOTSPOT
-		if (pEntry->pMbss->HotSpotCtrl.HotSpotEnable) {
+		if (IS_ENTRY_CLIENT(pEntry) && (pEntry->pMbss) && pEntry->pMbss->HotSpotCtrl.HotSpotEnable) {
 			if (hotspot_rx_handler(pAd, pEntry, pRxBlk) == TRUE)
 				return;
 		}
@@ -1890,11 +1995,25 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	if (pFmeCtrl->SubType & 0x08)
 	{
 		UserPriority = *(pData) & 0x0f;
+		if ( UserPriority >= NUM_OF_UP )//sanity check UserPriority,maybe it is invalid number
+			goto drop;
 
 #ifdef CONFIG_AP_SUPPORT
 
+#if defined(RTMP_MAC) || defined(RLT_MAC)
+		if  ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT))
+		{
 		/* count packets priroity more than BE */
 		detect_wmm_traffic(pAd, UserPriority, 0);
+		}
+#endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
+#ifdef MT_MAC
+		if (pAd->chipCap.hif_type == HIF_MT)
+		{
+			/* count packets priroity more than BE */
+			detect_wmm_traffic_2(pAd, UserPriority, 0);
+		}
+#endif /* MT_MAC */
 #endif /* CONFIG_AP_SUPPORT */
 
 		/* bit 7 in QoS Control field signals the HT A-MSDU format */
@@ -1975,6 +2094,80 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 
 	pRxBlk->pData = pData;
+
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+{
+	PUCHAR pPktHdr, pLayerHdr;
+
+	pPktHdr = pData+8;// get ip header start addr
+	pLayerHdr = (pPktHdr );
+	
+	
+	if ((*(pPktHdr + 9) == 0x1) &&pData[6] == 0x08 &&pData[7]==0x00)//mark packet for ping
+	{
+
+		UCHAR icmpType;
+		unsigned char * srcip,*dstip;
+		unsigned short *seq;
+		unsigned char a,b,c,d;
+
+		srcip=pLayerHdr+12;
+		dstip=pLayerHdr+16;
+		pLayerHdr += 20;
+		seq=(unsigned short *)(pLayerHdr+6);
+		icmpType = *pLayerHdr;
+		if((icmpType == 0x00 || icmpType == 0x08) )			
+		{
+#ifdef DBG
+			if (RTDebugLevel >= RT_DEBUG_INFO)
+			{
+				char tmpchar[50];
+				if (icmpType == 0x00)
+				{
+					NdisMoveMemory(tmpchar,"Replay",6);
+					tmpchar[6]=0;
+				}
+				else
+				{
+					NdisMoveMemory(tmpchar,"Request",7);
+					tmpchar[7]=0;
+				}			
+				a=srcip[0];
+				b=srcip[1];
+				c=srcip[2];
+				d=srcip[3];	
+				DBGPRINT(RT_DEBUG_INFO,("%s recieve the icmp pkg icmpType=%s\n",__FUNCTION__,tmpchar));
+				DBGPRINT(RT_DEBUG_INFO,("SRC IP: %u.%u.%u.%u   \n",a,b,c,d));
+				a=dstip[0];
+				b=dstip[1];
+				c=dstip[2];
+				d=dstip[3];	
+				DBGPRINT(RT_DEBUG_INFO,("dst IP: %u.%u.%u.%u   \n",a,b,c,d));
+				DBGPRINT(RT_DEBUG_INFO,("ID:%u\n",ntohs(*seq)));	
+		    }
+#endif
+		    pRxBlk->Ping = 1;
+		}
+
+	} else if (pData[6] == 0x08 &&pData[7]==0x06)//mark packet is ARP
+	{
+		pRxBlk->Arp = 1;
+	} else if ((*(pPktHdr + 9) == 0x11) &&pData[6] == 0x08 &&pData[7]==0x00)//mark packet as DHCP
+	{
+		PUCHAR pUdpHdr;
+		UINT16 srcPort, dstPort;
+				
+		pUdpHdr = pPktHdr + 20;
+		srcPort = OS_NTOHS(get_unaligned((PUINT16)(pUdpHdr)));
+		dstPort = OS_NTOHS(get_unaligned((PUINT16)(pUdpHdr+2)));
+		if ((srcPort==67 && dstPort==68)||(srcPort==68 && dstPort==67)) /*It's a DHCP packet */
+			{
+				pRxBlk->Dhcp=1;
+			}
+	}
+
+}
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 
 #if defined(SOFT_ENCRYPT) || defined(ADHOC_WPA2PSK_SUPPORT)
 	/* Use software to decrypt the encrypted frame if necessary.

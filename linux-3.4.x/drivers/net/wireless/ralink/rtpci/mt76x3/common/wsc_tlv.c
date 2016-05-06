@@ -713,11 +713,20 @@ int BuildMessageM1(
 
 
 		if ((CurOpMode == AP_MODE) && ((pWscControl->WscConfMode & WSC_ENROLLEE) != 0)
-		     && (pWscControl->WscMode == WSC_PBC_MODE))
+		     && (pWscControl->WscMode == WSC_PBC_MODE)
+#ifdef APCLI_SUPPORT                                 
+            		&& !(pWscControl->EntryIfIdx & MIN_NET_DEVICE_FOR_APCLI)
+#endif /* APCLI_SUPPORT  */
+		     )
 		{
 		        ConfigMethods |= WSC_CONFMET_PBC;
 		        DBGPRINT(RT_DEBUG_TRACE, ("[NOTICE] BuildMessageM1 - Add PBC in ConfigMethods for AP_MODE & WSC_ENROLLEE & PBC\n"));
-		}else if( CurOpMode == AP_MODE ){
+		}else if ((CurOpMode == AP_MODE)
+#ifdef APCLI_SUPPORT                                 
+            && !(pWscControl->EntryIfIdx & MIN_NET_DEVICE_FOR_APCLI)
+#endif /* APCLI_SUPPORT  */
+			)
+		{
 			ConfigMethods = (pWscControl->WscConfigMethods & 0x210F);
 		}
 		}
@@ -919,11 +928,28 @@ int BuildMessageM2(
     }
 	
    	DH_Len = sizeof(pReg->SecretKey);
+	NdisZeroMemory(pReg->SecretKey, sizeof(pReg->SecretKey));
 	RT_DH_SecretKey_Generate (
 	    pReg->Pke, sizeof(pReg->Pke),
 	    WPS_DH_P_VALUE, sizeof(WPS_DH_P_VALUE),
 	    pReg->EnrolleeRandom,  sizeof(pReg->EnrolleeRandom),
 	    pReg->SecretKey, (UINT *) &DH_Len);
+
+	/* Need to prefix zero padding */
+	if((DH_Len != sizeof(pReg->SecretKey)) && 
+	    (DH_Len < sizeof(pReg->SecretKey)))
+	{
+	    UCHAR TempKey[192];
+	    INT DiffCnt;
+	    DiffCnt = sizeof(pReg->SecretKey) - DH_Len;
+
+	    NdisFillMemory(&TempKey, DiffCnt, 0);
+	    NdisCopyMemory(&TempKey[DiffCnt], pReg->SecretKey, DH_Len);
+	    NdisCopyMemory(pReg->SecretKey, TempKey, sizeof(TempKey));
+	    DH_Len += DiffCnt;
+	    DBGPRINT(RT_DEBUG_TRACE, ("%s: Do zero padding!\n", __func__));
+	}
+	
 	RT_SHA256(&pReg->SecretKey[0], 192, &DHKey[0]);
 
 	/* 1. Version */
@@ -2576,6 +2602,7 @@ int ProcessMessageM1(
 	{
 
     DH_Len = sizeof(pReg->Pkr);
+	NdisZeroMemory(pReg->Pkr, sizeof(pReg->Pkr));
 	/* Enrollee 192 random bytes for DH key generation */
 	for (idx = 0; idx < 192; idx++)
 		pWscControl->RegData.EnrolleeRandom[idx] = RandomByte(pAdapter);
@@ -2585,6 +2612,21 @@ int ProcessMessageM1(
 	    WPS_DH_P_VALUE, sizeof(WPS_DH_P_VALUE),
 	    pWscControl->RegData.EnrolleeRandom, sizeof(pWscControl->RegData.EnrolleeRandom),
 	    pReg->Pkr, (UINT *) &DH_Len);
+
+        /* Need to prefix zero padding */
+        if((DH_Len != sizeof(pReg->Pkr)) &&
+            (DH_Len < sizeof(pReg->Pkr)))
+        {
+            UCHAR TempKey[192];
+            INT DiffCnt;
+            DiffCnt = sizeof(pReg->Pkr) - DH_Len;
+
+            NdisFillMemory(&TempKey, DiffCnt, 0);
+            NdisCopyMemory(&TempKey[DiffCnt], pReg->Pkr, DH_Len);
+            NdisCopyMemory(pReg->Pkr, TempKey, sizeof(TempKey));
+            DH_Len += DiffCnt;
+            DBGPRINT(RT_DEBUG_TRACE, ("%s: Do zero padding!\n", __func__));
+        }	
 #ifdef WSC_NFC_SUPPORT
 		if (pWscControl->bTriggerByNFC)
 		{
@@ -3110,12 +3152,28 @@ int ProcessMessageM2(
 
 
     DH_Len = sizeof(pReg->SecretKey);
+	NdisZeroMemory(pReg->SecretKey, sizeof(pReg->SecretKey));
    	RT_DH_SecretKey_Generate (
    	    pReg->Pkr, sizeof(pReg->Pkr),
    	    WPS_DH_P_VALUE, sizeof(WPS_DH_P_VALUE),
    	    pReg->EnrolleeRandom,  sizeof(pReg->EnrolleeRandom),
    	    pReg->SecretKey, (UINT *) &DH_Len);
 
+	/* Need to prefix zero padding */
+	if((DH_Len != sizeof(pReg->SecretKey)) &&
+	   (DH_Len < sizeof(pReg->SecretKey)))
+	{
+	    UCHAR TempKey[192];
+	    INT DiffCnt;
+	    DiffCnt = sizeof(pReg->SecretKey) - DH_Len;
+	    
+	    NdisFillMemory(&TempKey, DiffCnt, 0);
+	    NdisCopyMemory(&TempKey[DiffCnt], pReg->SecretKey, DH_Len);
+	    NdisCopyMemory(pReg->SecretKey, TempKey, sizeof(TempKey));
+	    DH_Len += DiffCnt;
+	    DBGPRINT(RT_DEBUG_TRACE, ("%s: Do zero padding!\n", __func__));
+	}
+	
 	/* Compute the DHKey based on the DH secret */
 	RT_SHA256(&pReg->SecretKey[0], 192, &DHKey[0]);
 

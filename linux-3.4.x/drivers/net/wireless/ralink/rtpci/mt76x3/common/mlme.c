@@ -598,6 +598,9 @@ VOID RtmpPrepareHwNullFrame(
 	mac_info.TID = 0;
 	mac_info.Txopmode = IFS_HTTXOP;
 	mac_info.Preamble = LONG_PREAMBLE;
+	if(pAd->CommonCfg.TxStream == 1)
+            mac_info.SpeEn = 0;
+	else
 	mac_info.SpeEn = 1;
 	
 		if (Index == 1)
@@ -1252,6 +1255,13 @@ VOID MlmeHalt(RTMP_ADAPTER *pAd)
 			RTMPCancelTimer(&pApCliEntry->MlmeAux.ApCliAssocTimer, &Cancelled);
 			RTMPCancelTimer(&pApCliEntry->MlmeAux.ApCliAuthTimer, &Cancelled);
 
+			RTMPCancelTimer(&pApCliEntry->MlmeAux.WpaDisassocAndBlockAssocTimer, &Cancelled);
+#ifdef APCLI_CONNECTION_TRIAL
+			RTMPReleaseTimer(&pApCliEntry->TrialConnectTimer, &Cancelled);
+			RTMPReleaseTimer(&pApCliEntry->TrialConnectPhase2Timer, &Cancelled);
+			RTMPReleaseTimer(&pApCliEntry->TrialConnectRetryTimer, &Cancelled);
+#endif /* APCLI_CONNECTION_TRIAL */
+
 #ifdef WSC_AP_SUPPORT
 			if (pApCliEntry->WscControl.WscProfileRetryTimerRunning)
 		{
@@ -1454,6 +1464,14 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 
 		if (pAd->PSEWatchDogEn)
 		{
+#ifdef DMA_RESET_SUPPORT
+			//check every second
+			if ((pAd->Mlme.PeriodicRound % 10) == 0)
+			{
+				PSEACStuckWatchDog(pAd);
+			}
+#endif /* DMA_RESET_SUPPORT */
+		
 			PSEWatchDog(pAd);	
 		}
 #endif
@@ -1480,46 +1498,10 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 		}
 #endif /* MT_MAC */
 
-		if (RTMPAutoRateSwitchCheck(pAd) == TRUE )
-		{
 #ifdef CONFIG_AP_SUPPORT
 			IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 				APMlmeDynamicTxRateSwitching(pAd);
 #endif /* CONFIG_AP_SUPPORT */
-		}else {
-#ifdef MT_MAC
-			if (pAd->chipCap.hif_type == HIF_MT) {
-				MAC_TABLE_ENTRY *pEntry;
-				MT_TX_COUNTER TxInfo;
-				UINT16 i;
-				for (i = 1; i < MAX_LEN_OF_MAC_TABLE; i++) 
-				{
-					/* point to information of the individual station */
-					pEntry = &pAd->MacTab.Content[i];
-
-					if (IS_ENTRY_NONE(pEntry))
-						continue;
-
-					if (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst != SST_ASSOC))
-						continue;
-
-#ifdef APCLI_SUPPORT
-					if (IS_ENTRY_APCLI(pEntry) && (pEntry->Sst != SST_ASSOC))
-						continue;
-#endif /* APCLI_SUPPORT */
-
-#ifdef WDS_SUPPORT
-					if (IS_ENTRY_WDS(pEntry) && !WDS_IF_UP_CHECK(pAd, pEntry->func_tb_idx))
-						continue;
-#endif /* WDS_SUPPORT */
-
-
-					DBGPRINT(RT_DEBUG_TRACE,("%s::(line=%d)\n", __FUNCTION__, __LINE__));
-					AsicTxCntUpdate(pAd, pEntry, &TxInfo);
-				}
-			}
-#endif /* MT_MAC */
-		}
 	}
 
 #ifdef DFS_SUPPORT
@@ -1535,8 +1517,24 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 		pAd->Mlme.OneSecPeriodicRound ++;
 
 #ifdef CONFIG_AP_SUPPORT
+#if defined(RTMP_MAC) || defined(RLT_MAC)
+		if (pAd->chipCap.hif_type == HIF_RTMP || pAd->chipCap.hif_type == HIF_RLT)
+		{
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+			if (pAd->bApCliCertTest == FALSE )
+			{
+#endif /* APCLI_CERT_SUPPORT */		
+#endif /* APCLI_SUPPORT */
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 			dynamic_tune_be_tx_op(pAd, 50);	/* change form 100 to 50 for WMM WiFi test @20070504*/
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+			}
+#endif /* APCLI_CERT_SUPPORT */		
+#endif /* APCLI_SUPPORT */
+		}
+#endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
 #endif /* CONFIG_AP_SUPPORT */
 
 		NdisGetSystemUpTime(&pAd->Mlme.Now32);
@@ -1932,7 +1930,11 @@ VOID MlmeSetTxPreamble(RTMP_ADAPTER *pAd, USHORT TxPreamble)
         Update basic rate bitmap
     ==========================================================================
 */
+#ifdef DYNAMIC_RX_RATE_ADJ
+VOID UpdateBasicRateBitmap(RTMP_ADAPTER *pAdapter, UCHAR apidx)
+#else
 VOID UpdateBasicRateBitmap(RTMP_ADAPTER *pAdapter)
+#endif /* DYNAMIC_RX_RATE_ADJ */
 {
     INT  i, j;
                   /* 1  2  5.5, 11,  6,  9, 12, 18, 24, 36, 48,  54 */
@@ -1940,6 +1942,14 @@ VOID UpdateBasicRateBitmap(RTMP_ADAPTER *pAdapter)
     UCHAR *sup_p = pAdapter->CommonCfg.SupRate;
     UCHAR *ext_p = pAdapter->CommonCfg.ExtRate;
     ULONG bitmap = pAdapter->CommonCfg.BasicRateBitmap;
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+	if (apidx < MIN_NET_DEVICE_FOR_WDS)
+	{
+		sup_p = pAdapter->ApCfg.MBSSID[apidx].SupRate;
+		ext_p = pAdapter->ApCfg.MBSSID[apidx].ExtRate;
+	}
+#endif /* DYNAMIC_RX_RATE_ADJ */
 
     /* if A mode, always use fix BasicRateBitMap */
     /*if (pAdapter->CommonCfg.Channel == WMODE_A)*/
@@ -2014,7 +2024,14 @@ VOID MlmeUpdateTxRates(RTMP_ADAPTER *pAd, BOOLEAN bLinkUp, UCHAR apidx)
 
 
 	/* find max desired rate*/
+#ifdef DYNAMIC_RX_RATE_ADJ
+	if (apidx < MIN_NET_DEVICE_FOR_WDS)
+		UpdateBasicRateBitmap(pAd, apidx);
+
+	UpdateBasicRateBitmap(pAd, 0xFF);
+#else
 	UpdateBasicRateBitmap(pAd);
+#endif /* DYNAMIC_RX_RATE_ADJ */	
 	
 	num = 0;
 	auto_rate_cur_p = NULL;
@@ -2831,6 +2848,7 @@ VOID BssEntrySet(
 	NdisMoveMemory(pBss->ExtRate, ie_list->ExtRate, ie_list->ExtRateLen);
 	pBss->NewExtChanOffset = ie_list->NewExtChannelOffset;
 	pBss->ExtRateLen = ie_list->ExtRateLen;
+	pBss->Erp = ie_list->Erp;
 	pBss->Channel = ie_list->Channel;
 	pBss->CentralChannel = ie_list->Channel;
 	pBss->Rssi = Rssi;
@@ -2922,6 +2940,11 @@ VOID BssEntrySet(
 		pBss->WscDPIDFromWpsAP = 0xFFFF;
 #endif /* WSC_INCLUDED */
 
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+		pBss->bHasMDIE = FALSE;
+		NdisZeroMemory(&pBss->FT_MDIE, sizeof(FT_MDIE));
+#endif /* defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
+
 		pEid = (PEID_STRUCT) pVIE;
 		while ((Length + 2 + (USHORT)pEid->Len) <= LengthVIE)    
 		{
@@ -2941,6 +2964,16 @@ VOID BssEntrySet(
 						break;
 					}
 					break;
+
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+				case IE_FT_MDIE:
+					if (pEid->Len == sizeof(FT_MDIE))
+					{
+						pBss->bHasMDIE = TRUE;
+						NdisMoveMemory(&pBss->FT_MDIE, pEid->Octet, pEid->Len);
+					}
+					break;
+#endif /* defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
 
 			}
 			Length = Length + 2 + (USHORT)pEid->Len;  /* Eid[1] + Len[1]+ content[Len]*/
@@ -3052,8 +3085,87 @@ ULONG BssTableSetEntry(
 }
 
 
+#if defined(CONFIG_STA_SUPPORT) || defined(APCLI_SUPPORT)
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+VOID  TriEventInit(RTMP_ADAPTER *pAd) 
+{
+	UCHAR i;
 
-#if defined(CONFIG_STA_SUPPORT) || defined(APCLI_AUTO_CONNECT_SUPPORT)
+	for (i = 0;i < MAX_TRIGGER_EVENT;i++)
+		pAd->CommonCfg.TriggerEventTab.EventA[i].bValid = FALSE;
+	
+	pAd->CommonCfg.TriggerEventTab.EventANo = 0;
+	pAd->CommonCfg.TriggerEventTab.EventBCountDown = 0;
+}
+
+
+INT TriEventTableSetEntry(
+	IN RTMP_ADAPTER *pAd, 
+	OUT TRIGGER_EVENT_TAB *Tab, 
+	IN UCHAR *pBssid, 
+	IN HT_CAPABILITY_IE *pHtCapability,
+	IN UCHAR HtCapabilityLen,
+	IN UCHAR RegClass,
+	IN UCHAR ChannelNo)
+{
+	/* Event A, legacy AP exist.*/
+	if (HtCapabilityLen == 0)
+	{
+		UCHAR index;
+		
+		/*
+			Check if we already set this entry in the Event Table.
+		*/
+		for (index = 0; index<MAX_TRIGGER_EVENT; index++)
+		{
+			if ((Tab->EventA[index].bValid == TRUE) && 
+				(Tab->EventA[index].Channel == ChannelNo) && 
+				(Tab->EventA[index].RegClass == RegClass)
+			)
+			{
+				return 0;
+			}
+		}
+		
+		/*
+			If not set, add it to the Event table
+		*/
+		if (Tab->EventANo < MAX_TRIGGER_EVENT)
+		{
+			RTMPMoveMemory(Tab->EventA[Tab->EventANo].BSSID, pBssid, 6);
+			Tab->EventA[Tab->EventANo].bValid = TRUE;
+			Tab->EventA[Tab->EventANo].Channel = ChannelNo;
+			if (RegClass != 0)
+			{
+				/* Beacon has Regulatory class IE. So use beacon's*/
+				Tab->EventA[Tab->EventANo].RegClass = RegClass;
+			}
+			else
+			{
+				/* Use Station's Regulatory class instead.*/
+				/* If no Reg Class in Beacon, set to "unknown"*/
+				/* TODO:  Need to check if this's valid*/
+				Tab->EventA[Tab->EventANo].RegClass = 0; /* ????????????????? need to check*/
+			}
+			Tab->EventANo ++;
+		}
+	}
+#ifdef DOT11V_WNM_SUPPORT
+	/* Not complete yet. Ignore for compliing successfully.*/
+#else
+	else if (pHtCapability->HtCapInfo.Forty_Mhz_Intolerant)
+	{
+		/* Event B.   My BSS beacon has Intolerant40 bit set*/
+		Tab->EventBCountDown = pAd->CommonCfg.Dot11BssWidthChanTranDelay;
+	}
+#endif /* DOT11V_WNM_SUPPORT */
+
+	return 0;
+}
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+
 /* IRQL = DISPATCH_LEVEL*/
 VOID BssTableSortByRssi(
 	IN OUT BSS_TABLE *OutTab,
@@ -3091,7 +3203,7 @@ VOID BssTableSortByRssi(
 	if (pTmpBss != NULL)
 		os_free_mem(NULL, pTmpBss);
 }
-#endif /* defined(CONFIG_STA_SUPPORT) || defined(APCLI_AUTO_CONNECT_SUPPORT) */
+#endif /* defined(CONFIG_STA_SUPPORT) || defined(APCLI_SUPPORT) */
 
 
 VOID BssCipherParse(BSS_ENTRY *pBss)
@@ -4001,13 +4113,13 @@ BOOLEAN MlmeEnqueueForRecv(
 			for (i = 0; i < pAd->ApCfg.ApCliNum; i++)
 			{
 				if (MAC_ADDR_EQUAL(pAd->ApCfg.ApCliTab[i].MlmeAux.Bssid, pFrame->Hdr.Addr2)
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 					|| MAC_ADDR_EQUAL(pAd->ApCfg.ApCliTab[i].wdev.if_addr, pFrame->Hdr.Addr1)
 #endif /* MULTI_APCLI_SUPPORT */
 					
 					)
 				{
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 					ApCliIdx  = i;
 #endif /* MULTI_APCLI_SUPPORT */
 					bToApCli = TRUE;
@@ -4054,7 +4166,7 @@ BOOLEAN MlmeEnqueueForRecv(
 
 
 #ifdef EAPOL_QUEUE_SUPPORT
-	if (Machine == WPA_STATE_MACHINE)
+	if ((Machine == WPA_STATE_MACHINE) || (Machine == WSC_STATE_MACHINE))
 	{
 
 		if (EAPMlmeQueueFull(EAP_Queue)) 
@@ -5235,4 +5347,195 @@ NDIS_STATUS RtmpEnqueueTokenFrame(
    return NState;
 }
 
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+VOID UpdateSuppRateBitmap(
+	IN RTMP_ADAPTER *pAd)
+{
+	UCHAR idx = 0, j = 0, supp_rate_num = 0;
+	UCHAR ext_rate_num = 0, des_rate_num = 0;
+	ULONG bitmap = 0;
+	BOOLEAN bABandPhyMode = FALSE;
+	UCHAR apidx = 0;
+
+	for(apidx = 0; apidx < pAd->ApCfg.BssidNum; apidx++)
+	{
+		idx = 0;
+		j = 0;
+		supp_rate_num = 0;
+		ext_rate_num = 0;
+		des_rate_num = 0;
+		bitmap = pAd->ApCfg.MBSSID[apidx].SuppRateBitmap;
+		bABandPhyMode = FALSE;
+
+		if (pAd->ApCfg.MBSSID[apidx].wdev.PhyMode == WMODE_B)
+			pAd->ApCfg.MBSSID[apidx].SuppRateBitmap &= 0x0F;
+
+		if (WMODE_CAP_5G(pAd->ApCfg.MBSSID[apidx].wdev.PhyMode))
+		{
+			pAd->ApCfg.MBSSID[apidx].SuppRateBitmap &= 0xFF0;
+			bABandPhyMode = TRUE;
+		}
+
+	    for(idx=0; idx < MAX_LEN_OF_SUPPORTED_RATES; idx++)
+	    {
+	        if (bitmap & (1 << idx))
+	        {
+				switch (idx)
+				{
+					case 0 :
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x02;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 2;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_1 */
+					case 1 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x04;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 4;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_2 */
+					case 2 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x0B;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 11;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_5_5 */
+					case 3 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x16;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 22;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_11 */
+					case 4 :
+							if (bABandPhyMode == TRUE)
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x8C;
+								supp_rate_num++;
+							}
+							else
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedExtRate[ext_rate_num]= 0x0C;
+								ext_rate_num++;
+							}
+							
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 12;
+							des_rate_num++;
+							break; /* RATE_6 */
+					case 5 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x12;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 18;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_9 */
+					case 6 :
+							if (bABandPhyMode == TRUE)
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x98;
+								supp_rate_num++;
+							}
+							else
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedExtRate[ext_rate_num]= 0x18;
+								ext_rate_num++;
+							}
+
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 24;
+							des_rate_num++;
+							break; /* RATE_12 */
+					case 7 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x24;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 36;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_18 */
+					case 8 :
+							if (bABandPhyMode == TRUE)
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0xB0;
+								supp_rate_num++;
+							}
+							else
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedExtRate[ext_rate_num]= 0x30;
+								ext_rate_num++;
+							}
+							
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 48;
+							des_rate_num++;
+							break; /* RATE_24 */
+					case 9 :	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x48;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 72;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_36 */
+					case 10:
+							if (bABandPhyMode == TRUE)
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x60;
+								supp_rate_num++;
+							}
+							else
+							{
+								pAd->ApCfg.MBSSID[apidx].ExpectedExtRate[ext_rate_num]= 0x60;
+								ext_rate_num++;
+							}
+							
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 96;
+							des_rate_num++;
+							break; /* RATE_48 */
+					case 11:	
+							pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate[supp_rate_num]= 0x6C;
+							pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate[des_rate_num] = 108;
+							supp_rate_num++;
+							des_rate_num++;
+							break; /* RATE_54 */
+				}
+	        }
+	    }
+
+		pAd->ApCfg.MBSSID[apidx].ExpectedSuppRateLen = supp_rate_num;
+		pAd->ApCfg.MBSSID[apidx].ExpectedExtRateLen = ext_rate_num;
+
+		NdisZeroMemory(pAd->ApCfg.MBSSID[apidx].SupRate, MAX_LEN_OF_SUPPORTED_RATES);
+		NdisZeroMemory(pAd->ApCfg.MBSSID[apidx].ExtRate, MAX_LEN_OF_SUPPORTED_RATES);
+		NdisZeroMemory(pAd->ApCfg.MBSSID[apidx].DesireRate, MAX_LEN_OF_SUPPORTED_RATES);
+
+		NdisMoveMemory(pAd->ApCfg.MBSSID[apidx].SupRate, pAd->ApCfg.MBSSID[apidx].ExpectedSuppRate, supp_rate_num);
+		pAd->ApCfg.MBSSID[apidx].SupRateLen = supp_rate_num;
+		DBGPRINT(RT_DEBUG_OFF, ("BSS%d SupRateLen=%x\n", apidx, pAd->ApCfg.MBSSID[apidx].SupRateLen));
+		NdisMoveMemory(pAd->ApCfg.MBSSID[apidx].ExtRate, pAd->ApCfg.MBSSID[apidx].ExpectedExtRate, ext_rate_num);
+		pAd->ApCfg.MBSSID[apidx].ExtRateLen = ext_rate_num;
+		DBGPRINT(RT_DEBUG_OFF, ("BSS%d ExtRateLen=%x\n", apidx, pAd->ApCfg.MBSSID[apidx].ExtRateLen));
+		NdisMoveMemory(pAd->ApCfg.MBSSID[apidx].DesireRate, pAd->ApCfg.MBSSID[apidx].ExpectedDesireRate, des_rate_num);
+	}
+}
+
+VOID UpdateSuppHTRateBitmap(
+	IN RTMP_ADAPTER *pAd)
+{
+	UCHAR idx = 0, j = 0;
+	ULONG bitmap = 0;
+	UCHAR apidx = 0;
+
+	for(apidx = 0; apidx < pAd->ApCfg.BssidNum; apidx++)
+	{
+		idx = 0;
+		j = 0;
+		bitmap = pAd->ApCfg.MBSSID[apidx].SuppHTRateBitmap;
+
+		NdisZeroMemory(&pAd->ApCfg.MBSSID[apidx].ExpectedSuppHTMCSSet[0], 16);
+
+		for(idx=0; idx < MAX_LEN_OF_HT_RATES; idx++)
+		{
+			if (bitmap & (1 << idx))
+			{
+				j = idx / 8;
+				pAd->ApCfg.MBSSID[apidx].ExpectedSuppHTMCSSet[j] |= (1 << (idx % 8));
+			}
+		}
+	}
+}
+#endif /* DYNAMIC_RX_RATE_ADJ */
 

@@ -260,11 +260,8 @@ VOID ParseRxVPacket(RTMP_ADAPTER *pAd, UINT32 Type, RX_BLK *RxBlk, UCHAR *Data)
 	RX_VECTOR1_3TH_CYCLE *RXV1_3TH_CYCLE = NULL;
 #endif  /* CONFIG_QA */
 	RX_VECTOR1_4TH_CYCLE *RXV1_4TH_CYCLE = NULL;
-#ifdef CONFIG_QA
 	RX_VECTOR1_5TH_CYCLE *RXV1_5TH_CYCLE = NULL;
-#endif  /* CONFIG_QA */
-#ifndef CONFIG_QA
-#endif
+
 	//RX_VECTOR1_6TH_CYCLE *RXV1_6TH_CYCLE = NULL;
 	RX_VECTOR2_1ST_CYCLE *RXV2_1ST_CYCLE = NULL;
 	RX_VECTOR2_2ND_CYCLE *RXV2_2ND_CYCLE = NULL;
@@ -278,11 +275,7 @@ VOID ParseRxVPacket(RTMP_ADAPTER *pAd, UINT32 Type, RX_BLK *RxBlk, UCHAR *Data)
 		RXV1_3TH_CYCLE = (RX_VECTOR1_3TH_CYCLE *)(Data + 8);
 #endif  /* CONFIG_QA */
 		RXV1_4TH_CYCLE = (RX_VECTOR1_4TH_CYCLE *)(Data + 12);
-#ifdef CONFIG_QA
 		RXV1_5TH_CYCLE = (RX_VECTOR1_5TH_CYCLE *)(Data + 16);
-#endif  /* CONFIG_QA */
-#ifndef CONFIG_QA
-#endif
 		//RXV1_6TH_CYCLE = (RX_VECTOR1_6TH_CYCLE *)(Data + 20);
 		RXV2_2ND_CYCLE = (RX_VECTOR2_2ND_CYCLE *)(Data + 28);
 	}
@@ -296,11 +289,8 @@ VOID ParseRxVPacket(RTMP_ADAPTER *pAd, UINT32 Type, RX_BLK *RxBlk, UCHAR *Data)
 		RXV1_3TH_CYCLE = (RX_VECTOR1_3TH_CYCLE *)(Data + 16);
 #endif  /* CONFIG_QA */
 		RXV1_4TH_CYCLE = (RX_VECTOR1_4TH_CYCLE *)(Data + 20);
-#ifdef CONFIG_QA
 		RXV1_5TH_CYCLE = (RX_VECTOR1_5TH_CYCLE *)(Data + 24);
-#endif  /* CONFIG_QA */
-#ifndef CONFIG_QA
-#endif
+
 		//RXV1_6TH_CYCLE = (RX_VECTOR1_6TH_CYCLE *)(Data + 28);
 		RXV2_1ST_CYCLE = (RX_VECTOR2_1ST_CYCLE *)(Data + 32);
 		RXV2_2ND_CYCLE = (RX_VECTOR2_2ND_CYCLE *)(Data + 36);
@@ -313,8 +303,12 @@ VOID ParseRxVPacket(RTMP_ADAPTER *pAd, UINT32 Type, RX_BLK *RxBlk, UCHAR *Data)
 #ifdef CONFIG_QA
         pAd->ATECtrl.RCPI0 = RXV1_3TH_CYCLE->Rcpi0;
         pAd->ATECtrl.RCPI1 = RXV1_3TH_CYCLE->Rcpi1;
+        if(RXV1_5TH_CYCLE)
+        {   
         pAd->ATECtrl.FreqOffsetFromRx = RXV1_5TH_CYCLE->FoE;
         pAd->ATECtrl.SNR0 = RXV1_5TH_CYCLE->LTF_SNR0;
+        }
+        if(RXV2_2ND_CYCLE)
         pAd->ATECtrl.SNR1 = RXV2_2ND_CYCLE->OfdmLtfSNR1;
 	pAd->ATECtrl.RSSI0 = RXV1_3TH_CYCLE->Rcpi0/2 - 110;
 	pAd->ATECtrl.RSSI1 = RXV1_3TH_CYCLE->Rcpi1/2 - 110;
@@ -330,6 +324,11 @@ VOID ParseRxVPacket(RTMP_ADAPTER *pAd, UINT32 Type, RX_BLK *RxBlk, UCHAR *Data)
     //RxBlk->rx_signal.raw_rssi[1] = (RXV1_3TH_CYCLE->Rcpi1 - 220) / 2;
     RxBlk->rx_signal.raw_rssi[0] = (CHAR)RXV1_4TH_CYCLE->IBRssi0;
     RxBlk->rx_signal.raw_rssi[1] = (CHAR)RXV1_4TH_CYCLE->IBRssi1;
+    if(RXV1_5TH_CYCLE)
+        RxBlk->rx_signal.raw_snr[0] = RXV1_5TH_CYCLE->LTF_SNR0;
+    if(RXV2_2ND_CYCLE)
+        RxBlk->rx_signal.raw_snr[1] = RXV2_2ND_CYCLE->OfdmLtfSNR1;
+
     //RxBlk->rx_signal.raw_snr[0] = rxwi_n->bbp_rxinfo[0];
     //RxBlk->rx_signal.raw_snr[1] = rxwi_n->bbp_rxinfo[1];
     //RxBlk->rx_signal.freq_offset = rxwi_n->bbp_rxinfo[4];
@@ -1272,8 +1271,9 @@ NDIS_STATUS MlmeHardTransmit(
 		{
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			UCHAR MacTabWCID=0;
+			UCHAR isLinkValid;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && pReptEntry->CliValid)
 			{
 				MacTabWCID = pReptEntry->MacTabWCID;
@@ -1440,8 +1440,9 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACK
 		{
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			UCHAR MacTabWCID=0;
+			UCHAR isLinkValid;
 			
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && pReptEntry->CliValid)
 			{
 				MacTabWCID = pReptEntry->MacTabWCID;
@@ -1463,8 +1464,9 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACK
 		{
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			UCHAR MacTabWCID=0;
+			UCHAR isLinkValid;
 	
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && pReptEntry->CliValid)
 			{
 				MacTabWCID = pReptEntry->MacTabWCID;
@@ -1641,8 +1643,9 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACK
 				{
 					REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 					UCHAR MacTabWCID=0;
+					UCHAR isLinkValid;
 					
-					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2);
+					pReptEntry = RTMPLookupRepeaterCliEntry(pAd, FALSE, pHeader_802_11->Addr2, TRUE, &isLinkValid);
 					if (pReptEntry && pReptEntry->CliValid)
 					{
 						MacTabWCID = pReptEntry->MacTabWCID;
@@ -1773,6 +1776,9 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACK
 #endif /* MT7603 */
 	mac_info.PID = PID;
 	mac_info.TxRate = tx_rate;
+	if(pAd->CommonCfg.TxStream == 1)
+            mac_info.SpeEn = 0;
+	else
 	mac_info.SpeEn = 1;
 	mac_info.Preamble = LONG_PREAMBLE;
 
@@ -2344,13 +2350,24 @@ VOID rtmp_tx_swq_dump(RTMP_ADAPTER *pAd, INT qidx)
 	ULONG IrqFlags = 0;
 	INT deq_id, enq_id;
 
+#ifdef DATA_QUEUE_RESERVE	
+	UINT capCount;
+#endif  /* DATA_QUEUE_RESERVE */
 	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
 	deq_id = pAd->tx_swq[qidx].deqIdx;
 	enq_id = pAd->tx_swq[qidx].enqIdx;
+#ifdef DATA_QUEUE_RESERVE	
+	capCount = (enq_id >=deq_id) ? (TX_SWQ_FIFO_LEN-enq_id+deq_id) : (deq_id-enq_id); 
+	DBGPRINT(RT_DEBUG_OFF, ("\nDump TxSwQ[%d]: DeqIdx=%d, EnqIdx=%d, %s, capCount=%u\n",
+							qidx, deq_id, enq_id,
+							(pAd->tx_swq[qidx].swq[deq_id] == 0 ? "Empty" : "HasEntry"), capCount));
+#else /* DATA_QUEUE_RESERVE */
 	DBGPRINT(RT_DEBUG_OFF, ("\nDump TxSwQ[%d]: DeqIdx=%d, EnqIdx=%d, %s\n",
 							qidx, deq_id, enq_id,
 							(pAd->tx_swq[qidx].swq[deq_id] == 0 ? "Empty" : "HasEntry")));
-	for (; deq_id != enq_id; (deq_id =  (deq_id == 511 ? 0 : deq_id+1)))
+#endif /* !DATA_QUEUE_RESERVE */
+
+	for (; deq_id != enq_id; (deq_id =  (deq_id == /*511*/ (TX_SWQ_FIFO_LEN-1) ? 0 : deq_id+1)))
 	{
 		DBGPRINT(RT_DEBUG_OFF, (" %d ", pAd->tx_swq[qidx].swq[deq_id]));
 	}
@@ -2414,19 +2431,14 @@ INT rtmp_psDeq_req(RTMP_ADAPTER *pAd)
 {
 	
 	STA_TR_ENTRY *tr_entry = NULL;
-	struct WCID_TABLE *psEntry = NULL;
+	struct WCID_TABLE *psEntry = NULL, *tmp;
 	struct tx_swq_fifo *fifo_swq;
 	
 	UCHAR cnt=0,i=0;
 	INT32 capCount=0;
 	/*remove first psToken now, should check WCID requeue when report*/
-	do {
-		psEntry = DlListFirst(&pAd->psTokenQueue,struct WCID_TABLE,list);
 		
-		if(psEntry==NULL)
-		{
-			break;
-		}
+	DlListForEachSafe(psEntry,tmp,&pAd->psTokenQueue,struct WCID_TABLE,list){
 		DlListDel(&psEntry->list);
 		if( psEntry->wcid >=  MAX_LEN_OF_TR_TABLE)
 		{
@@ -2470,7 +2482,7 @@ INT rtmp_psDeq_req(RTMP_ADAPTER *pAd)
 	
 		DBGPRINT(RT_DEBUG_LOUD,("%s(): deq  for PS retrieve and PSM change. WCID: %d,stat: %d\n",__FUNCTION__,tr_entry->wcid,tr_entry->PsTokenFlag));
 		return TRUE;
-	}while(TRUE);
+	}
 
 	return TRUE;
 }
@@ -2629,6 +2641,29 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 	if(pkt)
 	{
 	enq_idx = fifo_swq->enqIdx;
+#ifdef DATA_QUEUE_RESERVE
+		if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
+						|| RTMP_GET_PACKET_ICMP(pkt))
+		{
+			tr_entry->high_pkt_cnt ++;
+		}
+#endif /* DATA_QUEUE_RESERVE */
+
+#ifdef DATA_QUEUE_RESERVE
+		if (pAd->bQueueRsv)
+		{
+			capCount = (fifo_swq->enqIdx >=fifo_swq->deqIdx) ? (TX_SWQ_FIFO_LEN-fifo_swq->enqIdx+fifo_swq->deqIdx) : (fifo_swq->deqIdx-fifo_swq->enqIdx);
+			if (!(RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
+					|| RTMP_GET_PACKET_ICMP(pkt)))
+			{
+				if (capCount < FIFO_RSV_FOR_HIGH_PRIORITY)
+				{
+					goto enq_end;
+				}
+			}
+		}
+#endif /* DATA_QUEUE_RESERVE */
+
 		if ((fifo_swq->swq[enq_idx] == 0) && (tr_entry->enq_cap))
 		{
 		InsertTailQueueAc(pAd, tr_entry, &tr_entry->tx_queue[qidx],
@@ -2647,6 +2682,14 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 		occupied_wcid = fifo_swq->swq[enq_idx];
 		enq_done = FALSE;
 #endif /* DBG */
+#ifdef DATA_QUEUE_RESERVE
+			if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
+							|| RTMP_GET_PACKET_ICMP(pkt))
+			{
+				tr_entry->high_pkt_drop_cnt ++;
+			}
+#endif /* DATA_QUEUE_RESERVE */
+
 			goto enq_end;
 		}
 	}
@@ -2753,6 +2796,9 @@ INT rtmp_deq_req(RTMP_ADAPTER *pAd, INT cnt, struct dequeue_info *info)
 	if (info->target_wcid < MAX_LEN_OF_TR_TABLE) {
 		if (info->pkt_cnt <= 0) {
 			info->status = NDIS_STATUS_FAILURE;
+#ifdef DATA_QUEUE_RESERVE
+			info->status_2 = 1;
+#endif /* DATA_QUEUE_RESERVE */
 			goto done;
 		}
 
@@ -2767,6 +2813,9 @@ INT rtmp_deq_req(RTMP_ADAPTER *pAd, INT cnt, struct dequeue_info *info)
 			deq_qid = info->target_que;
 		} else {
 			info->status = NDIS_STATUS_FAILURE;
+#ifdef DATA_QUEUE_RESERVE
+			info->status_2 = 2;
+#endif /* DATA_QUEUE_RESERVE */
 			goto done;
 		}
 
@@ -2775,6 +2824,9 @@ INT rtmp_deq_req(RTMP_ADAPTER *pAd, INT cnt, struct dequeue_info *info)
 			info->cur_wcid = deq_wcid;
 		} else {
 			info->status = NDIS_STATUS_FAILURE;
+#ifdef DATA_QUEUE_RESERVE
+			info->status_2 = 3;
+#endif /* DATA_QUEUE_RESERVE */
 		}
 
 		goto done;
@@ -2842,6 +2894,9 @@ INT rtmp_deq_req(RTMP_ADAPTER *pAd, INT cnt, struct dequeue_info *info)
 	if (deq_qid < end_q) {
 		info->cur_q = deq_qid;
 		info->status = NDIS_STATUS_FAILURE;
+#ifdef DATA_QUEUE_RESERVE
+			info->status_2 = 4;
+#endif /* DATA_QUEUE_RESERVE */
 	}
 
 done:
@@ -3066,6 +3121,22 @@ dequeue:
 			}
 
 			pTxBlk->TxFrameType = TxPktClassification(pAd, pPacket, pTxBlk);
+
+#ifdef DATA_QUEUE_RESERVE
+			if (pAd->bQueueRsv)
+			{
+				if (pTxBlk->TxFrameType & TX_LEGACY_FRAME)
+				{
+					//reserved Tx Ring
+					if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket)
+						|| RTMP_GET_PACKET_ICMP(pPacket)))
+					{
+						hwd_cnt  = (hwd_cnt < TX_RING_SIZE_RSV) ? 0 : (hwd_cnt-TX_RING_SIZE_RSV);
+					}
+				}
+			}
+#endif /* DATA_QUEUE_RESERVE */
+
 			if (pTxBlk->TxFrameType & (TX_RALINK_FRAME | TX_AMSDU_FRAME)) {
 				if (pTxBlk->TotalFrameNum == 0) {
 					struct tx_swq_fifo *tx_swq = &pAd->tx_swq[QueIdx];
@@ -3114,7 +3185,11 @@ dequeue:
 #ifdef MT_MAC
 #ifdef USE_BMC
 			if ((pAd->chipCap.hif_type == HIF_MT) && (pAd->MacTab.fAnyStationInPsm == 1) && (tr_entry->EntryType == ENTRY_CAT_MCAST))
+			{
 				pTxBlk->QueIdx = QID_BMC;
+				//DATA_QUEUE_RESERVE
+				hwd_cnt = GET_BMCRING_FREENO(pAd);
+			}
 #endif /* USE_BMC */
 #endif
 
@@ -3250,6 +3325,10 @@ VOID RTMPDeQueuePacket(
 	unsigned long	IrqFlags = 0;
 	struct dequeue_info deq_info = {0};
 
+#ifdef DATA_QUEUE_RESERVE
+	INT real_tx = 0;
+#endif /* DATA_QUEUE_RESERVE */
+
 
 #ifdef DBG_DIAGNOSE
 	if (pAd->DiagStruct.inited)
@@ -3291,6 +3370,9 @@ VOID RTMPDeQueuePacket(
 
 		deq_packet_gatter(pAd, &deq_info, pTxBlk, in_hwIRQ);
 		if (pTxBlk->TotalFrameNum) {
+#ifdef DATA_QUEUE_RESERVE
+			real_tx += pTxBlk->TotalFrameNum;
+#endif /* DATA_QUEUE_RESERVE */
 			ASSERT(pTxBlk->wdev);
 			ASSERT(pTxBlk->wdev->wdev_hard_tx);
 			if (pTxBlk->wdev && pTxBlk->wdev->wdev_hard_tx) {
@@ -3336,6 +3418,23 @@ VOID RTMPDeQueuePacket(
 		}
 
 	}while(1);
+
+
+#ifdef DATA_QUEUE_RESERVE
+	if(pAd->bDump)
+	{
+		//(TBTT's) de-queue BE bcast pkt check point 
+		if ((wcid == MAX_LEN_OF_MAC_TABLE) && (max_cnt !=0) && (QIdx ==0))
+		{
+				 if (real_tx!= max_cnt)
+				 {
+					pAd->dequeu_fail_cnt++;
+
+				 					 }
+			 			}
+	}
+#endif /* DATA_QUEUE_RESERVE */
+
 
 #ifdef DBG_DEQUE
 	DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_TXQ,
@@ -3458,6 +3557,59 @@ static inline VOID Sniff2BytesFromNdisBuffer(
 #define IP_HDR_LEN		20
 #define ETH_HDR_LEN		14
 
+#if defined (CONFIG_WIFI_PKT_FWD)
+BOOLEAN is_gratuitous_arp(UCHAR *pData)
+{
+	UCHAR *Pos = pData;
+	UINT16 ProtoType;
+	UCHAR *SenderIP;
+	UCHAR *TargetIP;
+
+	NdisMoveMemory(&ProtoType, pData, 2);
+	ProtoType = OS_NTOHS(ProtoType);
+	Pos += 2;
+
+	if (ProtoType == ETH_P_ARP)
+	{
+		/* 
+ 		 * Check if Gratuitous ARP, Sender IP equal Target IP
+ 		 */
+		SenderIP = Pos + 14;
+		TargetIP = Pos + 24;
+		if (NdisCmpMemory(SenderIP, TargetIP, 4) == 0) {
+			DBGPRINT(RT_DEBUG_TRACE, ("The Packet is GratuitousARP\n"));
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+BOOLEAN is_dad_packet(RTMP_ADAPTER *pAd, UCHAR *pData)
+{
+	UCHAR isLinkValid;
+	UCHAR *pSenderIP = pData + 16;
+	UCHAR *pSourceMac = pData + 10;
+	UCHAR *pDestMac = pData + 20;
+	UCHAR ZERO_IP_ADDR[4] = {0x00, 0x00, 0x00, 0x00};
+	UCHAR ZERO_MAC_ADDR[MAC_ADDR_LEN] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	UCHAR BROADCAST_ADDR[MAC_ADDR_LEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+
+	/* 
+	* Check if DAD packet
+	*/
+	if ((RTMPLookupRepeaterCliEntry(pAd, FALSE, pSourceMac, TRUE, &isLinkValid) != NULL) &&
+		((MAC_ADDR_EQUAL(pDestMac, BROADCAST_ADDR) == TRUE) ||
+		(MAC_ADDR_EQUAL(pDestMac, ZERO_MAC_ADDR) == TRUE)) &&
+		(RTMPEqualMemory(pSenderIP, ZERO_IP_ADDR, 4) == TRUE)) {
+		DBGPRINT(RT_DEBUG_TRACE, ("DAD found, and do not send this packet\n"));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif /* CONFIG_WIFI_PKT_FWD */
+
 VOID CheckQosMapUP(PMAC_TABLE_ENTRY pEntry, UCHAR DSCP, PUCHAR pUserPriority)
 {				
 #if defined(CONFIG_AP_SUPPORT) && defined(CONFIG_HOTSPOT_R2)
@@ -3520,12 +3672,19 @@ BOOLEAN RTMPCheckEtherType(
 {
 	UINT16 TypeLen;
 	UCHAR Byte0, Byte1, *pSrcBuf, up = 0;
+
+#ifdef DATA_QUEUE_RESERVE
+	UCHAR *pUdpHdr, *bootpHdr, *dhcp_msg_type, *pCliHwAddr;
+#endif /* DATA_QUEUE_RESERVE */
+
 	MAC_TABLE_ENTRY *pMacEntry = &pAd->MacTab.Content[tr_entry->wcid];
+#ifdef DBG
 	if(pAd->bPingLog)
 	{
 		pSrcBuf = GET_OS_PKT_DATAPTR(pPacket);
 		CheckICMPPacket(pAd, pSrcBuf, 0);
 	}
+#endif /* DBG */
 	pSrcBuf = GET_OS_PKT_DATAPTR(pPacket);
 	ASSERT(pSrcBuf);
 
@@ -3643,6 +3802,11 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 				{
 					UINT16 srcPort, dstPort;
 
+#ifdef DATA_QUEUE_RESERVE
+					pUdpHdr = (pSrcBuf + IP_HDR_LEN);
+					bootpHdr = pUdpHdr + 8;
+#endif /* DATA_QUEUE_RESERVE */
+
 					pSrcBuf += IP_HDR_LEN;
 					srcPort = OS_NTOHS(get_unaligned((PUINT16)(pSrcBuf)));
 					dstPort = OS_NTOHS(get_unaligned((PUINT16)(pSrcBuf+2)));
@@ -3651,6 +3815,28 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 					{	/*It's a BOOTP/DHCP packet*/
 						RTMP_SET_PACKET_DHCP(pPacket, 1);
 						RTMP_SET_PACKET_TXTYPE(pPacket, TX_LEGACY_FRAME);
+
+#ifdef DATA_QUEUE_RESERVE
+						if(pAd->bDump)
+						{
+							dhcp_msg_type = (bootpHdr+ (28 + 6 + 10 + 64+ 128 + 4));
+							dhcp_msg_type += 2;
+							pCliHwAddr = (bootpHdr+28);
+
+							if (*(dhcp_msg_type) == 2)
+		 						DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s() DHCP OFFER to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+							if (*(dhcp_msg_type) == 5)
+		 						DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s() DHCP ACK to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+							if (*(dhcp_msg_type) == 6)
+		 						DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s() DHCP NACK to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+
+							if (*(dhcp_msg_type) == 8)
+		 						DBGPRINT(RT_DEBUG_ERROR, ("@@@ %s() DHCP INFORM to rept mac=%02x:%02x:%02x:%02x:%02x:%02x\n", __FUNCTION__, PRINT_MAC(pCliHwAddr)));
+						}
+#endif /* DATA_QUEUE_RESERVE */
+						
 					}
 #ifdef AIRPLAY_SUPPORT
 					if ((srcPort==5353 && dstPort==5353))
@@ -3674,6 +3860,17 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 #endif
 #endif
 				}
+
+
+#ifdef DATA_QUEUE_RESERVE
+				if (*(pSrcBuf + 9) == 0x01)
+				{
+		                    RTMP_SET_PACKET_ICMP(pPacket, 1);
+		                    RTMP_SET_PACKET_TXTYPE(pPacket, TX_LEGACY_FRAME);
+				}
+#endif /* DATA_QUEUE_RESERVE */
+
+				
 			}
 			break;
 		case ETH_TYPE_ARP:
@@ -3707,6 +3904,14 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 
 #endif
 #endif
+#if defined (CONFIG_WIFI_PKT_FWD)
+				if (wdev->wdev_type == WDEV_TYPE_AP) {
+					/* AP's tx shall check DAD.*/
+					if (is_dad_packet(pAd, pSrcBuf - 2) || is_gratuitous_arp(pSrcBuf - 2))
+						return FALSE;
+				}
+#endif /* CONFIG_WIFI_PKT_FWD */
+
 				RTMP_SET_PACKET_DHCP(pPacket, 1);
 				RTMP_SET_PACKET_TXTYPE(pPacket, TX_LEGACY_FRAME);
 			}
@@ -3830,7 +4035,43 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 	return TRUE;
 }
 
+VOID RTMP_RxPacketClassify(
+	IN RTMP_ADAPTER *pAd,
+	IN RX_BLK		*pRxBlk,
+	IN MAC_TABLE_ENTRY *pEntry)
+{
+	PUCHAR pData = NdisEqualMemory(SNAP_802_1H, pRxBlk->pData, 6) ? (pRxBlk->pData + 6) : pRxBlk->pData;
+	UINT16 protoType = OS_NTOHS(*((UINT16 *)(pData)));
 
+	RTMP_SET_PACKET_ETHTYPE(pRxBlk->pRxPacket, 0);
+
+	if (protoType == ETH_P_ARP)
+	{
+		UINT16 ArpOp;
+
+		pData = pData + 8;
+		ArpOp = OS_NTOHS(*((UINT16 *)(pData)));
+
+		DBGPRINT(RT_DEBUG_WARN, ("rx path ARP #(aid=%d,wcid=%d,arp op = %d, ampdu = %d)\n",
+						pEntry->Aid, pRxBlk->wcid, ArpOp, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
+
+
+		RTMP_SET_PACKET_ETHTYPE(pRxBlk->pRxPacket, 0x1);
+	}
+	else if (protoType == ETH_P_IP)
+	{
+		UINT8 protocol = *(pData + 11);
+
+		if (protocol == 0x1)
+		{
+			RTMP_SET_PACKET_ETHTYPE(pRxBlk->pRxPacket, 0x2);
+		}
+	}
+}
+
+
+
+#ifdef DBG
 BOOLEAN CheckICMPPacket(RTMP_ADAPTER *pAd, UCHAR *pSrcBuf, UINT8 Direction)
 {
 	UINT16 TypeLen;
@@ -3931,7 +4172,7 @@ BOOLEAN CheckICMPPacket(RTMP_ADAPTER *pAd, UCHAR *pSrcBuf, UINT8 Direction)
 
 	return FALSE;
 }
-
+#endif /* DBG */
 
 #ifdef SOFT_ENCRYPT
 BOOLEAN RTMPExpandPacketForSwEncrypt(
@@ -4446,6 +4687,41 @@ INT TxOPUpdatingAlgo(RTMP_ADAPTER *pAd)
 #endif /* APCLI_SUPPORT */
 
 
+#ifdef MT_MAC
+/*
+	auto detect the WMM non-BE pkts is sent/ received, then turn the BE txop to zero.
+*/
+
+	DBGPRINT(RT_DEBUG_INFO,("@@@ pAd->OneSecondnonBEpackets =%lu, bEnableTxBurst=%d \n", pAd->OneSecondnonBEpackets , pAd->CommonCfg.bEnableTxBurst));
+	if (pAd->CommonCfg.bEnableTxBurst 
+#ifdef DOT11_N_SUPPORT
+		|| pAd->CommonCfg.bRdg
+		|| pAd->CommonCfg.bRalinkBurstMode
+#endif /* DOT11_N_SUPPORT */
+	)
+	{
+
+		if (
+#ifdef DOT11_N_SUPPORT
+			(pAd->WIFItestbed.bGreenField && pAd->MacTab.fAnyStationNonGF == TRUE) ||
+			((pAd->OneSecondnonBEpackets > /*nonBEpackets*/ 50) || pAd->MacTab.fAnyStationMIMOPSDynamic) || 
+#endif /* DOT11_N_SUPPORT */
+			(pAd->MacTab.fAnyTxOPForceDisable))
+		{
+			UpdateTxOP = 0x0;
+
+#ifdef APCLI_CERT_SUPPORT
+			if (pAd->bApCliCertTest == TRUE)
+			{
+				if (pAd->bApCliCertForceTxOP != UpdateTxOP)
+					UpdateTxOP = pAd->bApCliCertForceTxOP;
+			}
+#endif /* APCLI_CERT_SUPPORT */
+			
+		}
+	}
+#endif /* MT_MAC */
+
 	if ((pAd->MacTab.Size >= 30)
 #ifdef APCLI_SUPPORT
 		&& (apcliNum == 0)
@@ -4471,6 +4747,10 @@ INT TxOPUpdatingAlgo(RTMP_ADAPTER *pAd)
 
         pAd->TxTotalByteCnt = 0;
         pAd->RxTotalByteCnt = 0;
+
+#ifdef MT_MAC
+	pAd->OneSecondnonBEpackets = 0;
+#endif /* MT_MAC */
 
     return TRUE;
 }

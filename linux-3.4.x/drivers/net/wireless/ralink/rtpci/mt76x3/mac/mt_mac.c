@@ -812,7 +812,7 @@ VOID write_tmac_info(
 
 	if (mac_entry && IS_ENTRY_APCLI(mac_entry))
 	{
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 		txd_1->own_mac = (0x1 + mac_entry->func_tb_idx);
 #else /* MULTI_APCLI_SUPPORT */
 		txd_1->own_mac = 0x1; //Carter, refine this

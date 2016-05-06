@@ -2356,6 +2356,19 @@ INT ed_status_read(RTMP_ADAPTER *pAd)
 		}
 	}
 
+	if (pAd->ed_trigger_cnt > pAd->ed_block_tx_threshold) {
+		if (pAd->ed_tx_stoped == FALSE) {
+			pAd->ed_tx_stoped = TRUE;
+			DBGPRINT(RT_DEBUG_WARN, ("\n====\n### %s: EDCCA ed_tx_stoped is set to TRUE\n====\n", __FUNCTION__));
+		}
+	}
+
+	if (pAd->ed_silent_cnt > pAd->ed_block_tx_threshold) {
+		if (pAd->ed_tx_stoped == TRUE) {
+			pAd->ed_tx_stoped = FALSE;
+			DBGPRINT(RT_DEBUG_WARN, ("\n====\n### %s: EDCCA ed_tx_stoped is set to FALSE\n====\n", __FUNCTION__));
+		}
+	}
 
 	return TRUE;
 }

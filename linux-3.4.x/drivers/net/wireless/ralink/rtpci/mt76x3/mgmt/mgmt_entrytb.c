@@ -87,6 +87,12 @@ VOID tr_tb_reset_entry(RTMP_ADAPTER *pAd, UCHAR tr_tb_idx)
 
 	tr_entry->enq_cap = FALSE;
 	tr_entry->deq_cap = FALSE;
+
+#ifdef DATA_QUEUE_RESERVE
+	tr_entry->high_pkt_cnt = 0;
+	tr_entry->high_pkt_drop_cnt = 0;
+#endif /* DATA_QUEUE_RESERVE */
+	
 	rtmp_tx_swq_exit(pAd, tr_tb_idx);
 
 	SET_ENTRY_NONE(tr_entry);
@@ -195,6 +201,10 @@ VOID tr_tb_set_mcast_entry(RTMP_ADAPTER *pAd, UCHAR tr_tb_idx, struct wifi_dev *
 	tr_entry->enq_cap = TRUE;
 	tr_entry->deq_cap = TRUE;
 	tr_entry->PsTokenFlag = 0;
+#ifdef DATA_QUEUE_RESERVE
+	tr_entry->high_pkt_cnt = 0;
+	tr_entry->high_pkt_drop_cnt = 0;
+#endif /* DATA_QUEUE_RESERVE */
 
 	NdisMoveMemory(tr_entry->bssid, wdev->bssid, MAC_ADDR_LEN);
 	
@@ -505,6 +515,10 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			} while (FALSE);
 
 			tr_tb_set_entry(pAd, i, pEntry);
+#ifdef DATA_QUEUE_RESERVE
+			tr_entry->high_pkt_cnt = 0;
+			tr_entry->high_pkt_drop_cnt = 0;
+#endif /* DATA_QUEUE_RESERVE */
 			
 			RTMPInitTimer(pAd, &pEntry->EnqueueStartForPSKTimer, GET_TIMER_FUNCTION(EnqueueStartForPSKExec), pEntry, FALSE);
 
@@ -528,7 +542,14 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 
 #ifdef APCLI_SUPPORT
 				if (IS_ENTRY_APCLI(pEntry))
+				{
 					RTMPInitTimer(pAd, &pEntry->RetryTimer, GET_TIMER_FUNCTION(WPARetryExec), pEntry, FALSE);
+#ifdef DOT11W_PMF_SUPPORT
+					RTMPInitTimer(pAd, &pEntry->SAQueryTimer, GET_TIMER_FUNCTION(PMF_SAQueryTimeOut), pEntry, FALSE);
+					RTMPInitTimer(pAd, &pEntry->SAQueryConfirmTimer, GET_TIMER_FUNCTION(PMF_SAQueryConfirmTimeOut), pEntry, FALSE);
+#endif /* DOT11W_PMF_SUPPORT */
+					
+				}
 #endif /* APCLI_SUPPORT */
 			}
 #endif /* CONFIG_AP_SUPPORT */
@@ -682,6 +703,11 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 
 	if (pEntry && !IS_ENTRY_NONE(pEntry))
 	{
+#ifdef CONFIG_WIFI_PKT_FWD
+		if(wf_fwd_delete_entry_inform_hook)
+			wf_fwd_delete_entry_inform_hook(pEntry->Addr);
+#endif /* CONFIG_WIFI_PKT_FWD */
+
 #ifdef MT_PS
 		MtPsRedirectDisableCheck(pAd, wcid);
 		tr_entry->ps_state = APPS_RETRIEVE_IDLE;

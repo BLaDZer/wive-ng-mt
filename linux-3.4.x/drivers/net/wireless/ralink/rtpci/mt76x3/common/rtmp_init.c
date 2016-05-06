@@ -1373,6 +1373,12 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 			for(i = 0; i < WLAN_MAX_NUM_OF_TIM; i++)
 	        		mbss->TimBitmaps[i] = 0;
+
+#ifdef DYNAMIC_RX_RATE_ADJ
+			mbss->SuppRateBitmap = 0xFFF;
+			mbss->SuppHTRateBitmap = 0xFFFF;
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 		}
 		pAd->ApCfg.DtimCount  = 0;
 		pAd->ApCfg.DtimPeriod = DEFAULT_DTIM_PERIOD;
@@ -1408,6 +1414,13 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef APCLI_SUPPORT
 		pAd->ApCfg.FlgApCliIsUapsdInfoUpdated = FALSE;
+
+#ifdef APCLI_CERT_SUPPORT
+		pAd->bApCliCertTest = TRUE;
+		pAd->bApCliCertForceRTS = FALSE;
+		pAd->bApCliCertForceTxOP = 0x0;
+#endif /* APCLI_CERT_SUPPORT */
+
 		pAd->ApCfg.ApCliNum = MAX_APCLI_NUM;
 		for(j = 0; j < MAX_APCLI_NUM; j++)
 		{
@@ -1421,6 +1434,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			apcli_entry->wdev.UapsdInfo.bAPSDCapable = FALSE;
 
 
+			pAd->ApCfg.ApCliTab[j].bBlockAssoc=FALSE;
+			pAd->ApCfg.ApCliTab[j].MicErrCnt=0;
 		}
 #endif /* APCLI_SUPPORT */
 		pAd->ApCfg.EntryClientCount = 0;
@@ -1658,6 +1673,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->dma_force_reset_count = 0;
 	pAd-> pse_reset_flag = FALSE;
 	pAd->bcn_reset_en = FALSE;
+	pAd->AC0HitCount = 0;
+	pAd->AC1HitCount = 0;
+	pAd->AC2HitCount = 0;
+	pAd->AC3HitCount = 0;
+	pAd->MgtHitCount = 0;
 #endif  /* DMA_RESET_SUPPORT */
 #endif /* MT_MAC */
 
@@ -1720,6 +1740,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->ed_block_tx_threshold = 10;
 	pAd->ed_big_rssi_count = 0;
 #endif /* ED_MONITOR */
+#ifdef DATA_QUEUE_RESERVE
+	pAd->bQueueRsv = TRUE;
+#endif /* DATA_QUEUE_RESERVE */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<-- UserCfgInit\n"));
 }

@@ -616,7 +616,7 @@ NDIS_STATUS RTMPInitTxRxRingMemory(RTMP_ADAPTER *pAd)
 			}
 
 			/* Zero init this memory block */
-			NdisZeroMemory(pDmaBuf->AllocVa, pDmaBuf->AllocSize);
+			//NdisZeroMemory(pDmaBuf->AllocVa, pDmaBuf->AllocSize);
 
 			/* Write RxD buffer address & allocated buffer length */
 			pRxD = (RXD_STRUC *)dma_cb->AllocVa;
@@ -2412,6 +2412,37 @@ VOID PSEResetAndRecovery(RTMP_ADAPTER *pAd)
 		pAd->PSEResetFailRecover = FALSE;
 		pAd->PSEResetFailRetryQuota = 0;
 	}
+
+	//clear the AC / Mgmt Hit event.
+	RTMP_IO_READ32(pAd, 0x816c, &Value);
+	if((Value & (1 << 2)) == (1 << 2))
+	{
+		Value &= ~(1 << 2);
+		RTMP_IO_WRITE32(pAd, 0x816c, Value);
+	}
+
+	if((Value & (1 << 3)) == (1 << 3))
+	{
+		Value &= ~(1 << 3);
+		RTMP_IO_WRITE32(pAd, 0x816c, Value);
+	}
+		if((Value & (1 << 4)) == (1 << 4))
+	{
+		Value &= ~(1 << 4);
+		RTMP_IO_WRITE32(pAd, 0x816c, Value);
+	}
+
+	if((Value & (1 << 5)) == (1 << 5))
+	{
+		Value &= ~(1 << 5);
+		RTMP_IO_WRITE32(pAd, 0x816c, Value);
+	}
+
+	if((Value & (1 << 6)) == (1 << 6))
+	{
+		Value &= ~(1 << 6);
+		RTMP_IO_WRITE32(pAd, 0x816c, Value);
+	}	
 #endif /* DMA_RESET_SUPPORT */
 
 
@@ -2423,6 +2454,85 @@ VOID PSEResetAndRecovery(RTMP_ADAPTER *pAd)
 }
 
 
+
+#ifdef DMA_RESET_SUPPORT
+VOID PSEACStuckWatchDog(RTMP_ADAPTER *pAd)
+{
+	UINT32 Value;
+
+	RTMP_IO_READ32(pAd, 0x816c, &Value);
+
+	//AC
+	if((Value & (1 << 2)) == (1 << 2))
+	{
+		//clear after reset
+		//Value &= ~(1 << 2);
+		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
+
+		DBGPRINT(RT_DEBUG_WARN, ("HIT AC0 !\n"));
+
+		pAd->AC0HitCount++;
+		pAd->pse_reset_flag = TRUE;
+	}
+
+
+	if((Value & (1 << 3)) == (1 << 3))
+	{
+		//clear after reset	
+		//Value &= ~(1 << 3);
+		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
+
+		DBGPRINT(RT_DEBUG_WARN, ("HIT AC1 !\n"));
+
+		pAd->AC1HitCount++;
+		pAd->pse_reset_flag = TRUE;
+	}
+
+	if((Value & (1 << 4)) == (1 << 4))
+	{
+		//clear after reset	
+		//Value &= ~(1 << 4);
+		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
+
+		DBGPRINT(RT_DEBUG_WARN, ("HIT AC2 !\n"));
+
+		pAd->AC2HitCount++;
+		pAd->pse_reset_flag = TRUE;
+	}
+	
+
+	if((Value & (1 << 5)) == (1 << 5))
+	{
+		//clear after reset
+		//Value &= ~(1 << 5);
+		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
+
+		DBGPRINT(RT_DEBUG_WARN, ("HIT AC3 !\n"));
+
+		pAd->AC3HitCount++;
+		pAd->pse_reset_flag = TRUE;
+		//return TRUE;
+	}
+
+
+	if((Value & (1 << 6)) == (1 << 6))
+	{
+		//clear after reset
+		//Value &= ~(1 << 6);
+		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
+
+		if (RTDebugLevel >= RT_DEBUG_WARN)
+		{
+			printk("HIT MGMT !\n");
+		}
+
+		pAd->MgtHitCount ++;
+		pAd->pse_reset_flag = TRUE;
+		//return TRUE;
+	}
+	
+}
+#endif /* DMA_RESET_SUPPORT */
 
 VOID PSEWatchDog(RTMP_ADAPTER *pAd)
 {

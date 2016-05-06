@@ -85,7 +85,8 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_main_dev.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_rbus_pci_drv.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_rbus_pci_util.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_pci_rbus.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_txrx_hook.o
+# for dual MT driver conflict
+#$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/rt_txrx_hook.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/pci_main_dev.o
 
 ### MT7603
@@ -280,9 +281,16 @@ EXTRA_CFLAGS += -DFIFO_EXT_SUPPORT
 EXTRA_CFLAGS += -DMCS_LUT_SUPPORT
 EXTRA_CFLAGS += -DMT_PS
 EXTRA_CFLAGS += -DEAPOL_QUEUE_SUPPORT
-EXTRA_CFLAGS += -DRTMP_WLAN_HOOK_SUPPORT -DUSE_BMC -DDMA_RESET_SUPPORT
+#prevent dual driver conflict
+#EXTRA_CFLAGS += -DRTMP_WLAN_HOOK_SUPPORT -DUSE_BMC -DDMA_RESET_SUPPORT
+EXTRA_CFLAGS += -DUSE_BMC
 EXTRA_CFLAGS += -DRTMP_EFUSE_SUPPORT -DCAL_FREE_IC_SUPPORT
 #EXTRA_CFLAGS += -DLIMIT_GLOBAL_SW_QUEUE
+
+#support reserve high priority pkt queue
+EXTRA_CFLAGS += -DDATA_QUEUE_RESERVE
+#force announce critical pkts
+EXTRA_CFLAGS += -DFORCE_ANNOUNCE_CRITICAL_AMPDU
 
 ifeq ($(CONFIG_MT76X3_AP_READ_MAC_FROM_MTD),y)
 EXTRA_CFLAGS += -DREAD_MAC_FROM_EEPROM

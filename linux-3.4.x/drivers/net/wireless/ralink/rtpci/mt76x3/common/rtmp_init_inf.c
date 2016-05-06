@@ -702,10 +702,10 @@ VOID RTMPDrvOpen(VOID *pAdSrc)
 			pWpsCtrl->pAd = pAd;
 			NdisZeroMemory(pWpsCtrl->EntryAddr, MAC_ADDR_LEN);
 #ifdef WSC_V2_SUPPORT
-			pWpsCtrl->WscConfigMethods= 0x278C;
-#else
+			pWpsCtrl->WscConfigMethods= 0x238C;
+#else /* WSC_V2_SUPPORT */
 			pWpsCtrl->WscConfigMethods= 0x018C;
-#endif /* WSC_V2_SUPPORT */
+#endif /* !WSC_V2_SUPPORT */
 			RTMP_AP_IoctlHandle(pAd, NULL, CMD_RTPRIV_IOCTL_WSC_INIT, 0, (VOID *)&pAd->ApCfg.ApCliTab[index], index);
 		}
 #endif /* APCLI_SUPPORT */

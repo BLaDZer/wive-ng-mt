@@ -2193,8 +2193,14 @@ INT Set_MeasureReq_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	//TotalLen = sizeof(MEASURE_REQ_INFO) + sizeof(MEASURE_REQ);
 
+	/*
+		according to 802.11h-2003.pdf 
+		Page#26
+		Table 19a!XCategory values
+		Spectrum management (CATEGORY_SPECTRUM) ==> 0
+	*/
 	MakeMeasurementReqFrame(pAd, pOutBuffer, &FrameLen,
-		sizeof(MEASURE_REQ_INFO), CATEGORY_RM, RM_BASIC,
+		sizeof(MEASURE_REQ_INFO), CATEGORY_SPECTRUM, SPEC_MRQ,
 		MeasureReqToken, MeasureReqMode.word,
 		MeasureReqType, 1);
 

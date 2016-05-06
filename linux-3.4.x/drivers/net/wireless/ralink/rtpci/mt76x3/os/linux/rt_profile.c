@@ -411,10 +411,14 @@ void tbtt_tasklet(unsigned long data)
 						RTMP_IRQ_UNLOCK(&pAd->irq_lock, IrqFlags);
 #endif /* RTMP_MAC_PCI */
 
-
+						if (deq_cnt)
+						{
 						RTMPDeQueuePacket(pAd, FALSE, QID_AC_BE, wcid, deq_cnt); 
-			
-						DBGPRINT(RT_DEBUG_INFO, ("%s: bss:%d, deq_cnt = %d\n", __FUNCTION__, apidx, deq_cnt));
+#ifdef DATA_QUEUE_RESERVE
+							if (pAd->bDump)
+								DBGPRINT(RT_DEBUG_WARN, (" %s: bss:%u, deq_cnt = %u\n", __FUNCTION__, apidx, deq_cnt));
+#endif /* DATA_QUEUE_RESERVE */	
+						}
 					}
 			
 					if (WLAN_MR_TIM_BCMC_GET(apidx) == 0x01)
@@ -532,6 +536,56 @@ static INT process_nbns_packet(
 }
 #endif /* INF_PPA_SUPPORT */
 
+#if defined (CONFIG_WIFI_PKT_FWD)
+struct net_device *rlt_dev_get_by_name(const char *name)
+{
+	struct net_device *dev;
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
+	dev = dev_get_by_name(&init_net, name);
+#else
+	dev = dev_get_by_name(name);
+#endif
+
+	if (dev)
+		dev_put(dev);
+	
+	return dev;
+
+}
+
+
+VOID ApCliLinkCoverRxPolicy(
+	IN PRTMP_ADAPTER pAd,
+	IN PNDIS_PACKET pPacket,
+	OUT BOOLEAN *DropPacket)
+{
+	VOID *opp_band_tbl = NULL;
+	VOID *band_tbl = NULL;
+	INVAILD_TRIGGER_MAC_ENTRY *pInvalidEntry = NULL;
+	REPEATER_CLIENT_ENTRY *pOtherBandReptEntry = NULL;
+	PNDIS_PACKET pRxPkt = pPacket;
+	UCHAR *pPktHdr = NULL;
+	UCHAR isLinkValid;
+	
+	pPktHdr = GET_OS_PKT_DATAPTR(pRxPkt);
+
+	if (wf_fwd_feedback_map_table)
+		wf_fwd_feedback_map_table(pAd, &band_tbl, &opp_band_tbl);
+	
+	if (opp_band_tbl == NULL)
+		return;
+
+	if (IS_GROUP_MAC(pPktHdr)) {
+		pInvalidEntry = RepeaterInvaildMacLookup(pAd, pPktHdr+6);
+		pOtherBandReptEntry = RTMPLookupRepeaterCliEntry(opp_band_tbl, FALSE, pPktHdr+6, FALSE, &isLinkValid);
+
+		if ((pInvalidEntry != NULL) || (pOtherBandReptEntry != NULL)) {
+			DBGPRINT(RT_DEBUG_INFO, ("%s, recv broadcast from InvalidRept Entry, drop this packet\n", __func__));
+			*DropPacket = TRUE;
+		}
+	}
+}
+#endif /* CONFIG_WIFI_PKT_FWD */
 void announce_802_3_packet(
 	IN VOID *pAdSrc,
 	IN PNDIS_PACKET pNetPkt,
@@ -554,8 +608,20 @@ void announce_802_3_packet(
 	{
 #ifdef MAT_SUPPORT
 		if (RTMP_MATPktRxNeedConvert(pAd, pRxPkt->dev))
+		{
+#if defined (CONFIG_WIFI_PKT_FWD)
+			BOOLEAN	 need_drop = FALSE;
+
+			ApCliLinkCoverRxPolicy(pAd, pPacket, &need_drop);
+
+			if (need_drop == TRUE) {
+				RELEASE_NDIS_PACKET(pAd, pRxPkt, NDIS_STATUS_FAILURE);
+				return;
+			}
+#endif /* CONFIG_WIFI_PKT_FWD */
 			RTMP_MATEngineRxHandle(pAd, pNetPkt, 0);
 #endif /* MAT_SUPPORT */
+		 }
 	}
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
@@ -671,7 +737,74 @@ void announce_802_3_packet(
 			return;
 	}
 #endif
+#if defined (CONFIG_WIFI_PKT_FWD)
+		{
+			struct sk_buff *pOsRxPkt = RTPKT_TO_OSPKT(pRxPkt);
+			PNET_DEV rx_dev = RtmpOsPktNetDevGet(pRxPkt);
 
+			/* all incoming packets should set CB to mark off which net device received and in which band */
+			if ((rx_dev == rlt_dev_get_by_name("rai0")) || (rx_dev == rlt_dev_get_by_name("apclii0")) ||
+				(rx_dev == rlt_dev_get_by_name("rai1")) || (rx_dev == rlt_dev_get_by_name("apclii1"))) {
+				RTMP_SET_PACKET_BAND(pOsRxPkt, RTMP_PACKET_SPECIFIC_5G);
+
+				if (NdisEqualMemory(pOsRxPkt->dev->name, "apcli", 5))
+					RTMP_SET_PACKET_RECV_FROM(pOsRxPkt, RTMP_PACKET_RECV_FROM_5G_CLIENT);
+				else
+					RTMP_SET_PACKET_RECV_FROM(pOsRxPkt, RTMP_PACKET_RECV_FROM_5G_AP);
+			} else {
+				RTMP_SET_PACKET_BAND(pOsRxPkt, RTMP_PACKET_SPECIFIC_2G);
+			
+				if (NdisEqualMemory(pOsRxPkt->dev->name, "apcli", 5))
+					RTMP_SET_PACKET_RECV_FROM(pOsRxPkt, RTMP_PACKET_RECV_FROM_2G_CLIENT);
+				else
+					RTMP_SET_PACKET_RECV_FROM(pOsRxPkt, RTMP_PACKET_RECV_FROM_2G_AP);
+			}
+
+			if (wf_fwd_rx_hook != NULL)
+			{
+				struct ethhdr *mh = eth_hdr(pRxPkt);
+				int ret = 0;
+				
+				if ((mh->h_dest[0] & 0x1) == 0x1)
+				{
+					if (NdisEqualMemory(pOsRxPkt->dev->name, "apcli", 5)) 
+					{
+#ifdef MAC_REPEATER_SUPPORT
+						if ((pAd->ApCfg.bMACRepeaterEn == TRUE) &&
+							(RTMPQueryLookupRepeaterCliEntryMT(pAd, mh->h_source) == TRUE)) {
+							RELEASE_NDIS_PACKET(pAd, pRxPkt, NDIS_STATUS_FAILURE);
+							return;
+						}
+						else
+#endif /* MAC_REPEATER_SUPPORT */
+						{
+							VOID *opp_band_tbl = NULL;
+							VOID *band_tbl = NULL;
+
+							if (wf_fwd_feedback_map_table)
+								wf_fwd_feedback_map_table(pAd, &band_tbl, &opp_band_tbl);
+							
+							
+							if ((opp_band_tbl != NULL) 
+								&& MAC_ADDR_EQUAL(((UCHAR *)((REPEATER_ADAPTER_DATA_TABLE *)opp_band_tbl)->Wdev_ifAddr), mh->h_source)) {
+								RELEASE_NDIS_PACKET(pAd, pRxPkt, NDIS_STATUS_FAILURE);
+								return;
+							}
+						}
+					}
+				}
+				
+				ret = wf_fwd_rx_hook(pRxPkt);
+
+				if (ret == 0) {
+					return;
+				} else if (ret == 2) {
+					RELEASE_NDIS_PACKET(pAd, pRxPkt, NDIS_STATUS_FAILURE);
+					return;
+				}
+			}
+		}
+#endif /* CONFIG_WIFI_PKT_FWD */
 	netif_rx(pRxPkt);
 }
 
@@ -1100,6 +1233,17 @@ int RTMPSendPackets(
 	}
 #endif /* CONFIG_5VT_ENHANCE */
 
+
+#if defined (CONFIG_WIFI_PKT_FWD)
+	if (wf_fwd_tx_hook != NULL)
+	{
+		if (wf_fwd_tx_hook(pPacket) == 1)
+		{
+			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+			return 0;
+		}
+	}
+#endif /* CONFIG_WIFI_PKT_FWD */
 
 	return wdev_tx_pkts((NDIS_HANDLE)pAd, (PPNDIS_PACKET) &pPacket, 1, wdev);
 }

@@ -1483,12 +1483,27 @@ VOID WscEapEnrolleeAction(
 					/* Enrollee 192 random bytes for DH key generation */
 					for (idx = 0; idx < 192; idx++)
 						pWscControl->RegData.EnrolleeRandom[idx] = RandomByte(pAdapter);
+					NdisZeroMemory(pWscControl->RegData.Pke, sizeof(pWscControl->RegData.Pke));
             		RT_DH_PublicKey_Generate (
                     	WPS_DH_G_VALUE, sizeof(WPS_DH_G_VALUE),
             	    	WPS_DH_P_VALUE, sizeof(WPS_DH_P_VALUE),
             	    	pWscControl->RegData.EnrolleeRandom, sizeof(pWscControl->RegData.EnrolleeRandom),
             	    	pWscControl->RegData.Pke, (UINT *) &DH_Len);
 				
+			/* Need to prefix zero padding */
+			if((DH_Len != sizeof(pWscControl->RegData.Pke)) &&
+			    (DH_Len < sizeof(pWscControl->RegData.Pke)))
+			{
+			    UCHAR TempKey[192];
+			    INT DiffCnt;
+			    DiffCnt = sizeof(pWscControl->RegData.Pke) - DH_Len;
+
+			    NdisFillMemory(&TempKey, DiffCnt, 0);
+			    NdisCopyMemory(&TempKey[DiffCnt], pWscControl->RegData.Pke, DH_Len);
+			    NdisCopyMemory(pWscControl->RegData.Pke, TempKey, sizeof(TempKey));
+			    DH_Len += DiffCnt;
+			    DBGPRINT(RT_DEBUG_TRACE, ("%s: Do zero padding!\n", __func__));
+			}
 					pWscControl->RegData.ReComputePke = 0;
 				}
 			}
@@ -1575,21 +1590,26 @@ VOID WscEapEnrolleeAction(
 			if (pWscControl->WscState == WSC_STATE_SENT_M1 ||
 				pWscControl->WscState == WSC_STATE_RX_M2D)
 			{
+
+				BOOLEAN bReplyNack = FALSE;
+				
 				if ((rv = ProcessMessageM2D(pAdapter, Elem->Msg, Elem->MsgLen, &pWscControl->RegData)))
 					goto Fail;
 
 				pWscControl->WscStatus = STATUS_WSC_EAP_M2D_RECEIVED;
 				
-				if ((CurOpMode == STA_MODE)
-					)
+				if (CurOpMode == AP_MODE)
 				{
-					/* When external registrar is Marvell station, */
-					/* wps station sends NACK may confuse or reset Marvell wps state machine. */
-					OpCode |= WSC_OPCODE_ACK;
-					DataLen = BuildMessageACK(pAdapter, pWscControl, WscData);
-	 				RTMPSendWirelessEvent(pAdapter, IW_WSC_SEND_ACK, NULL, (pWscControl->EntryIfIdx & 0x0F), 0);
-				}
+					bReplyNack = TRUE;
+#ifdef APCLI_SUPPORT
+					if (pEntry && !IS_ENTRY_APCLI(pEntry))
+						bReplyNack = TRUE;
 				else
+						bReplyNack = FALSE;
+#endif
+				}
+
+				if (bReplyNack)
 				{
 					/* For VISTA SP1 internal registrar test */
 					OpCode |= WSC_OPCODE_NACK;
@@ -1597,6 +1617,15 @@ VOID WscEapEnrolleeAction(
 					DataLen = BuildMessageNACK(pAdapter, pWscControl, WscData);
 	 				RTMPSendWirelessEvent(pAdapter, IW_WSC_SEND_NACK, NULL, (pWscControl->EntryIfIdx & 0x0F), 0);
 				}
+				else
+				{
+					/* When external registrar is Marvell station, */
+					/* wps station sends NACK may confuse or reset Marvell wps state machine. */
+					OpCode |= WSC_OPCODE_ACK;
+					DataLen = BuildMessageACK(pAdapter, pWscControl, WscData);
+	 				RTMPSendWirelessEvent(pAdapter, IW_WSC_SEND_ACK, NULL, (pWscControl->EntryIfIdx & 0x0F), 0);
+				}
+				
 				/* Change the state to next one */
 				pWscControl->WscState = WSC_STATE_RX_M2D;
 			}
@@ -4973,7 +5002,11 @@ VOID WscBuildProbeReqIE(
 	PUCHAR			pData;
 	USHORT          tempVal = 0;
 
-	PWSC_REG_DATA	pReg = (PWSC_REG_DATA) &pWpsCtrl->RegData;
+#ifdef APCLI_SUPPORT
+	PWSC_REG_DATA	pReg = (PWSC_REG_DATA)&pAd->ApCfg.ApCliTab[0].WscControl.RegData;
+#else /* APCLI_SUPPORT */
+	PWSC_REG_DATA	pReg = (PWSC_REG_DATA) &pAd->StaCfg.WscControl.RegData;
+#endif /* !APCLI_SUPPORT */
 
 
 	DBGPRINT(RT_DEBUG_INFO, ("-----> WscBuildProbeReqIE\n"));
@@ -5001,46 +5034,51 @@ VOID WscBuildProbeReqIE(
 	Len   += templen;
 
 	/* 2. Request Type */	
-	if (pWpsCtrl->WscConfMode == WSC_REGISTRAR)
+#ifdef APCLI_SUPPORT	
+	if (pAd->ApCfg.ApCliTab[0].WscControl.WscConfMode == WSC_REGISTRAR)
 		tempVal = WSC_MSGTYPE_REGISTRAR;
-	else if (pWpsCtrl->WscConfMode == WSC_ENROLLEE)
+	else if (pAd->ApCfg.ApCliTab[0].WscControl.WscConfMode == WSC_ENROLLEE)
 		tempVal = WSC_MSGTYPE_ENROLLEE_OPEN_8021X;
 	else
 		tempVal = WSC_MSGTYPE_ENROLLEE_INFO_ONLY;
+#else /* APCLI_SUPPORT */
+	if (pAd->StaCfg.WscControl.WscConfMode == WSC_REGISTRAR)
+		tempVal = WSC_MSGTYPE_REGISTRAR;
+	else if (pAd->StaCfg.WscControl.WscConfMode == WSC_ENROLLEE)
+		tempVal = WSC_MSGTYPE_ENROLLEE_OPEN_8021X;
+	else
+		tempVal = WSC_MSGTYPE_ENROLLEE_INFO_ONLY;
+#endif /* !APCLI_SUPPORT */
 
     templen = AppendWSCTLV(WSC_ID_REQ_TYPE, pData, (UINT8 *)&tempVal, 0);
 	pData += templen;
 	Len   += templen;
 
 	/* 3. Config method */	
-#ifdef WSC_V2_SUPPORT
-	if (pWpsCtrl->WscV2Info.bEnableWpsV2)
-	{
+
 #ifdef APCLI_SUPPORT
-		if (pWpsCtrl->bWscTrigger)
-		{
-			DBGPRINT(RT_DEBUG_INFO, ("WscBuildProbeReqIE : Apclient WPS2 enable trigger\n"));
-			if (pWpsCtrl->WscMode == WSC_PIN_MODE)
+#ifdef WSC_V2_SUPPORT
+	if (pAd->ApCfg.ApCliTab[0].WscControl.WscV2Info.bEnableWpsV2)
 			{
-				tempVal = (pWpsCtrl->WscConfigMethods & 0x200F);
+		tempVal = pAd->ApCfg.ApCliTab[0].WscControl.WscConfigMethods;
 			}
 			else
+#endif /* WSC_V2_SUPPORT */
 			{
-				DBGPRINT(RT_DEBUG_INFO, ("WscBuildProbeReqIE : Apclient WPS2 enable trigger & PBC mode\n"));
-				tempVal = (pWpsCtrl->WscConfigMethods & 0x02F0);
-			}
+		tempVal = (pAd->ApCfg.ApCliTab[0].WscControl.WscConfigMethods & 0x00FF);
 		}
-		else
-			tempVal = pWpsCtrl->WscConfigMethods;
-#else
-		tempVal = pWpsCtrl->WscConfigMethods;
-#endif /* APCLI_SUPPORT */
+#else /* APCLI_SUPPORT */
+#ifdef WSC_V2_SUPPORT
+	if (pAd->StaCfg.WscControl.WscV2Info.bEnableWpsV2)
+	{
+			tempVal = pAd->StaCfg.WscControl.WscConfigMethods;
 	}
 	else
 #endif /* WSC_V2_SUPPORT */
 	{
-		tempVal = (pWpsCtrl->WscConfigMethods & 0x00FF);
+		tempVal = (pAd->StaCfg.WscControl.WscConfigMethods & 0x00FF);
 	}
+#endif /* !APCLI_SUPPORT */
 
 	
 	tempVal = cpu2be16(tempVal);
@@ -5083,7 +5121,11 @@ VOID WscBuildProbeReqIE(
 
 
 #ifdef WSC_V2_SUPPORT
-	if (pWpsCtrl->WscV2Info.bEnableWpsV2)
+#ifdef APCLI_SUPPORT	
+	if (pAd->ApCfg.ApCliTab[0].WscControl.WscV2Info.bEnableWpsV2)
+#else /* APCLI_SUPPORT */
+	if (pAd->StaCfg.WscControl.WscV2Info.bEnableWpsV2)
+#endif /* !APCLI_SUPPORT */
 	{
 		/* 10. Manufacturer */
 		NdisZeroMemory(pData, 64 + 4);
@@ -5110,12 +5152,22 @@ VOID WscBuildProbeReqIE(
 		Len   += templen;
 
 		/* Version2 */	
-		WscGenV2Msg(pWpsCtrl,
+#ifdef APCLI_SUPPORT		
+		WscGenV2Msg(&pAd->ApCfg.ApCliTab[0].WscControl,
 					FALSE, 
 					NULL, 
 					0, 
 					&pData, 
 					&Len);
+#else /* APCLI_SUPPORT */
+		WscGenV2Msg(&pAd->StaCfg.WscControl,
+					FALSE,
+					NULL,
+					0,
+					&pData,
+					&Len);
+#endif /* !APCLI_SUPPORT */
+
 	}
 #endif /* WSC_V2_SUPPORT */
 

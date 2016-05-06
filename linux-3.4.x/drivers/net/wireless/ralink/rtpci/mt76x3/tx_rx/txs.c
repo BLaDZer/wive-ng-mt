@@ -207,12 +207,12 @@ INT32 APQoSNullTxSHandler(RTMP_ADAPTER *pAd, CHAR *Data, UINT32 Priv)
 		return 0;
 	}
 
-	DBGPRINT(RT_DEBUG_TRACE,("%s: (RE=%d, LE=%d, ME=%d), wlan_idx = %d\n",__FUNCTION__, txs_d0->RE, txs_d0->LE, txs_d0->ME, txs_d3->wlan_idx));  
+	DBGPRINT(RT_DEBUG_INFO,("%s: (RE=%d, LE=%d, ME=%d), wlan_idx = %d\n",__FUNCTION__, txs_d0->RE, txs_d0->LE, txs_d0->ME, txs_d3->wlan_idx));  
 
 	if ((txs_d0->RE == 0) && (txs_d0->LE == 0) && (txs_d0->ME == 0))
 	{
 		pEntry = &pAd->MacTab.Content[txs_d3->wlan_idx];
-		DBGPRINT(RT_DEBUG_TRACE,("%s: wlan_idx = %d,  pEntry->NoDataIdleCount=%lu go to clear!!\n",__FUNCTION__, txs_d3->wlan_idx, pEntry->NoDataIdleCount));
+		DBGPRINT(RT_DEBUG_INFO,("%s: wlan_idx = %d,  pEntry->NoDataIdleCount=%lu go to clear!!\n",__FUNCTION__, txs_d3->wlan_idx, pEntry->NoDataIdleCount));
 		pEntry->NoDataIdleCount	= 0 ;
 	}
 

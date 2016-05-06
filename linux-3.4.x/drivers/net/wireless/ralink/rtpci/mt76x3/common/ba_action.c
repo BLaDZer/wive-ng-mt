@@ -1515,7 +1515,7 @@ VOID SendBeaconRequest(RTMP_ADAPTER *pAd, UCHAR Wcid)
 	ActHeaderInit(pAd, &Frame.Hdr, pAd->MacTab.Content[Wcid].Addr, pAd->ApCfg.MBSSID[apidx].wdev.if_addr, pAd->ApCfg.MBSSID[apidx].wdev.bssid);
 
 	Frame.Category = CATEGORY_RM;
-	Frame.Action = RADIO_MEASUREMENT_REQUEST_ACTION;
+	Frame.Action = RADIO_MEASUREMENT_REQUEST_ACTION /*RRM_MEASURE_REQ*/;
 	Frame.Token = 1;
 	Frame.Repetition = 0;	/* executed once*/
 
@@ -1750,6 +1750,66 @@ VOID Rtmp_Chk_Reset_Ba_Sequence(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			  or pre_AMSDU format
 	==========================================================================
 */
+#ifdef DBG
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+void dump_ping(PUCHAR pData)
+{
+	PUCHAR pPktHdr, pLayerHdr;
+
+	if (RTDebugLevel < RT_DEBUG_TRACE)
+		return;
+		
+	pPktHdr = pData+8;// get ip header start addr
+	pLayerHdr = (pPktHdr );
+	
+	/*For UDP packet, we need to check about the icmp packet. */
+	if (*(pPktHdr + 9) == 0x1)
+	{
+
+		UCHAR icmpType;
+		unsigned char * srcip,*dstip;
+		unsigned short *seq;
+		unsigned char a,b,c,d;
+
+		srcip=pLayerHdr+12;
+		dstip=pLayerHdr+16;
+		pLayerHdr += 20;
+		seq=(unsigned short *)(pLayerHdr+6);
+		icmpType = *pLayerHdr;
+		if((icmpType == 0x00 || icmpType == 0x08))			
+		{ 
+		char tmpchar[50];
+		if (icmpType == 0x00)
+			{
+			NdisMoveMemory(tmpchar,"Replay",6);
+			tmpchar[6]=0;
+			}
+		else
+			{
+			NdisMoveMemory(tmpchar,"Request",7);
+			tmpchar[7]=0;
+			}			
+		a=srcip[0];
+		b=srcip[1];
+		c=srcip[2];
+		d=srcip[3];	
+		DBGPRINT(RT_DEBUG_TRACE,("%s recieve the icmp pkg icmpType=%s\n",__FUNCTION__,tmpchar));
+		DBGPRINT(RT_DEBUG_TRACE,("SRC IP: %u.%u.%u.%u   \n",a,b,c,d));
+		a=dstip[0];
+		b=dstip[1];
+		c=dstip[2];
+		d=dstip[3];	
+		DBGPRINT(RT_DEBUG_TRACE,("dst IP: %u.%u.%u.%u   \n",a,b,c,d));
+		DBGPRINT(RT_DEBUG_TRACE,("ID:%u\n",ntohs(*seq)));		
+		}
+
+	}
+
+
+}
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
+#endif /* DBG */
+
 VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 {
 	USHORT Idx;
@@ -1850,7 +1910,26 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 #ifdef MAC_REPEATER_SUPPORT
 		Rtmp_Chk_Reset_Ba_Sequence(pAd, pRxBlk);
 #endif /* MAC_REPEATER_SUPPORT */
+
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+		if (pRxBlk->Ping)
+		{
+#ifdef DBG
+			dump_ping(pRxBlk->pData);
+#endif /* DBG */
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d Ping  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		} else if (pRxBlk->Arp)
+		{
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d Arp  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		} else	if (pRxBlk->Dhcp){
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d DHCP  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		}else
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+
 	}
 	/* III. Drop Old Received Packet*/
 	else if (SEQ_SMALLER(Sequence, pBAEntry->LastIndSeq, MAXSEQ))
@@ -1860,7 +1939,26 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 #ifdef MAC_REPEATER_SUPPORT
 		Rtmp_Chk_Reset_Ba_Sequence(pAd, pRxBlk);
 #endif /* MAC_REPEATER_SUPPORT */
+
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+		if (pRxBlk->Ping)
+		{
+#ifdef DBG
+			dump_ping(pRxBlk->pData);
+#endif /* DBG */
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d Ping  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		} else if (pRxBlk->Arp)
+		{
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d Arp  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		} else	if (pRxBlk->Dhcp){
+			DBGPRINT(RT_DEBUG_TRACE, ("%s %d DHCP  wcid=%d Sequence=%d  pBAEntry->LastIndSeq=%d, TID=%d\n",__FUNCTION__,__LINE__,pRxBlk->wcid,Sequence,pBAEntry->LastIndSeq, pBAEntry->TID));
+			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
+		}else
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+
 	}
 	/* IV. Receive Sequence within Window Size*/
 	else if (SEQ_SMALLER(Sequence, (((pBAEntry->LastIndSeq+pBAEntry->BAWinSize+1)) & MAXSEQ), MAXSEQ))

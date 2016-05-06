@@ -27,7 +27,7 @@
 #include "rt_config.h"
 
 #ifdef SCAN_SUPPORT
-static INT scan_ch_restore(RTMP_ADAPTER *pAd, UCHAR OpMode)
+static INT scan_ch_restore(RTMP_ADAPTER *pAd, UCHAR OpMode, UCHAR ScanType)
 {
 	INT bw, ch;
 		
@@ -104,6 +104,22 @@ static INT scan_ch_restore(RTMP_ADAPTER *pAd, UCHAR OpMode)
 		if (!((pAd->CommonCfg.Channel > 14) && (pAd->CommonCfg.bIEEE80211H == TRUE) && (pAd->Dot11_H.RDMode != RD_NORMAL_MODE)))
 			AsicEnableBssSync(pAd, pAd->CommonCfg.BeaconPeriod);
 	}
+
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+	if (APCLI_IF_UP_CHECK(pAd, 0) && pAd->bApCliCertTest == TRUE && ScanType == SCAN_2040_BSS_COEXIST)
+	{
+		UCHAR Status=1;
+		DBGPRINT(RT_DEBUG_TRACE, ("@(%s)  Scan Done ScanType=%d\n", __FUNCTION__, ScanType));
+		MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_SCAN_DONE, sizeof(Status), &Status, 0);			
+	}
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+#endif /* APCLI_CERT_SUPPORT */		
+#endif /* APCLI_SUPPORT */
+
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -154,6 +170,16 @@ static INT scan_active(RTMP_ADAPTER *pAd, UCHAR OpMode, UCHAR ScanType)
 		/*IF_DEV_CONFIG_OPMODE_ON_AP(pAd) */
 		if (OpMode == OPMODE_AP)
 		{
+
+#ifdef APCLI_SUPPORT
+#ifdef WSC_INCLUDED
+			if (ScanType == SCAN_WSC_ACTIVE) 
+				MgtMacHeaderInitExt(pAd, &Hdr80211, SUBTYPE_PROBE_REQ, 0, BROADCAST_ADDR, 
+								pAd->ApCfg.ApCliTab[0].wdev.if_addr,
+								BROADCAST_ADDR);	
+			else
+#endif /* WSC_INCLUDED */						
+#endif /* APCLI_SUPPORT */
 			MgtMacHeaderInitExt(pAd, &Hdr80211, SUBTYPE_PROBE_REQ, 0, BROADCAST_ADDR,
 								pAd->ApCfg.MBSSID[0].wdev.bssid,
 								BROADCAST_ADDR);
@@ -247,6 +273,50 @@ static INT scan_active(RTMP_ADAPTER *pAd, UCHAR OpMode, UCHAR ScanType)
 	}
 #endif /* DOT11_VHT_AC */
 
+#ifdef APCLI_SUPPORT
+#ifdef WSC_INCLUDED
+		if ((ScanType == SCAN_WSC_ACTIVE) && (OpMode == OPMODE_AP))
+		{
+			BOOLEAN bHasWscIe = FALSE;
+			/* 
+				Append WSC information in probe request if WSC state is running
+			*/
+			if (pAd->ApCfg.ApCliTab[0].WscControl.bWscTrigger)
+			{
+				bHasWscIe = TRUE;
+			}
+#ifdef WSC_V2_SUPPORT
+			else if (pAd->ApCfg.ApCliTab[0].WscControl.WscV2Info.bEnableWpsV2)
+			{
+				bHasWscIe = TRUE;	
+			}
+#endif /* WSC_V2_SUPPORT */
+
+			if (bHasWscIe)
+			{
+				UCHAR		*pWscBuf = NULL, WscIeLen = 0;
+				ULONG 		WscTmpLen = 0;
+
+				os_alloc_mem(NULL, (UCHAR **)&pWscBuf, 512);
+				if (pWscBuf != NULL)
+				{
+					NdisZeroMemory(pWscBuf, 512);
+					WscBuildProbeReqIE(pAd, STA_MODE, &pAd->ApCfg.ApCliTab[0].WscControl, pWscBuf, &WscIeLen);
+
+					MakeOutgoingFrame(frm_buf + FrameLen,              &WscTmpLen,
+									WscIeLen,                             pWscBuf,
+									END_OF_ARGS);
+
+					FrameLen += WscTmpLen;
+					os_free_mem(NULL, pWscBuf);
+				}
+				else
+					DBGPRINT(RT_DEBUG_WARN, ("%s:: WscBuf Allocate failed!\n", __FUNCTION__));					
+			}
+		}
+#endif /* WSC_INCLUDED */			
+#endif /* APCLI_SUPPORT */
+
 #ifdef WSC_STA_SUPPORT
 	if (OpMode == OPMODE_STA)
 	{
@@ -334,7 +404,7 @@ VOID ScanNextChannel(RTMP_ADAPTER *pAd, UCHAR OpMode)
 	}
 	if ((pAd->ScanCtrl.Channel == 0) || ScanPending) 
 	{
-		scan_ch_restore(pAd, OpMode);
+		scan_ch_restore(pAd, OpMode, ScanType);
 	} 
 	else 
 	{

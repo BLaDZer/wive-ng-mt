@@ -146,7 +146,11 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #endif /* WAPI_SUPPORT */
 
 		{
+#ifdef DYNAMIC_RX_RATE_ADJ
+		SupRateLen = mbss->SupRateLen;
+#else
 		SupRateLen = pAd->CommonCfg.SupRateLen;
+#endif /* DYNAMIC_RX_RATE_ADJ */
 		if (PhyMode == WMODE_B)
 			SupRateLen = 4;
 
@@ -160,22 +164,35 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 						  mbss->SsidLen,     mbss->Ssid,
 						  1,                          &SupRateIe,
 						  1,                          &SupRateLen,
+#ifdef DYNAMIC_RX_RATE_ADJ
+						SupRateLen, 				mbss->SupRate,
+#else
 						  SupRateLen,                 pAd->CommonCfg.SupRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 						  1,                          &DsIe,
 						  1,                          &DsLen,
 						  1,                          &pAd->CommonCfg.Channel,
 						  END_OF_ARGS);
 		}
 
+#ifdef DYNAMIC_RX_RATE_ADJ
+		if ((mbss->ExtRateLen) && (PhyMode != WMODE_B))
+#else
 		if ((pAd->CommonCfg.ExtRateLen) && (PhyMode != WMODE_B))
+#endif /* DYNAMIC_RX_RATE_ADJ */
 		{
 			MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen,
 							  1,                        &ErpIe,
 							  1,                        &ErpIeLen,
 							  1,                        &pAd->ApCfg.ErpIeContent,
 							  1,                        &ExtRateIe,
+#ifdef DYNAMIC_RX_RATE_ADJ
+								1,						&mbss->ExtRateLen,
+								mbss->ExtRateLen,		mbss->ExtRate,
+#else
 							  1,                        &pAd->CommonCfg.ExtRateLen,
 							  pAd->CommonCfg.ExtRateLen,    pAd->CommonCfg.ExtRate,
+#endif /* DYNAMIC_RX_RATE_ADJ */
 							  END_OF_ARGS);
 			FrameLen += TmpLen;
 		}
@@ -220,6 +237,9 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			/*New extension channel offset IE is included in Beacon, Probe Rsp or channel Switch Announcement Frame */
 #ifndef RT_BIG_ENDIAN
 			NdisMoveMemory(&HtCapabilityTmp, &pAd->CommonCfg.HtCapability, HtLen);
+#ifdef DYNAMIC_RX_RATE_ADJ
+			NdisMoveMemory(HtCapabilityTmp.MCSSet, mbss->ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
 			HtCapabilityTmp.HtCapInfo.ChannelWidth = pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth;
 
 			MakeOutgoingFrame(pOutBuffer + FrameLen,            &TmpLen,
@@ -232,6 +252,9 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 							  END_OF_ARGS);
 #else
 			NdisMoveMemory(&HtCapabilityTmp, &pAd->CommonCfg.HtCapability, HtLen);
+#ifdef DYNAMIC_RX_RATE_ADJ
+			NdisMoveMemory(HtCapabilityTmp.MCSSet, mbss->ExpectedSuppHTMCSSet, 4);
+#endif /* DYNAMIC_RX_RATE_ADJ */
 			HtCapabilityTmp.HtCapInfo.ChannelWidth = pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth;
 			*(USHORT *)(&HtCapabilityTmp.HtCapInfo) = SWAP16(*(USHORT *)(&HtCapabilityTmp.HtCapInfo));
 #ifdef UNALIGNMENT_SUPPORT
@@ -1067,7 +1090,7 @@ VOID APPeerBeaconAction(
 
 #ifdef APCLI_SUPPORT
 #ifdef MT_MAC
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
         if (Elem->Wcid == APCLI_MCAST_WCID(0) || Elem->Wcid == APCLI_MCAST_WCID(1))
         {
         	ApCliWcid = TRUE;
@@ -1166,6 +1189,32 @@ VOID APPeerBeaconAction(
 					}
 				}
 			}
+
+
+#ifdef APCLI_CERT_SUPPORT
+#ifdef DOT11N_DRAFT3 
+		if (pAd->bApCliCertTest == TRUE)
+		{
+			UCHAR RegClass;
+			OVERLAP_BSS_SCAN_IE	BssScan;
+			BOOLEAN					brc;
+			
+			brc = PeerBeaconAndProbeRspSanity2(pAd, Elem->Msg, Elem->MsgLen, &BssScan, &RegClass);
+			if (brc == TRUE)
+			{
+				pAd->CommonCfg.Dot11BssWidthTriggerScanInt = le2cpu16(BssScan.TriggerScanInt); /*APBssScan.TriggerScanInt[1] * 256 + APBssScan.TriggerScanInt[0];*/
+				/*MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_ERROR,("Update Dot11BssWidthTriggerScanInt=%d \n", pAd->CommonCfg.Dot11BssWidthTriggerScanInt)); */
+				/* out of range defined in MIB... So fall back to default value.*/
+				if ((pAd->CommonCfg.Dot11BssWidthTriggerScanInt < 10) ||(pAd->CommonCfg.Dot11BssWidthTriggerScanInt > 900))
+				{
+					/*MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_ERROR,("ACT - UpdateBssScanParm( Dot11BssWidthTriggerScanInt out of range !!!!)  \n"));*/
+					pAd->CommonCfg.Dot11BssWidthTriggerScanInt = 900;
+				}
+			}
+		}
+#endif /* APCLI_CERT_SUPPORT */		
+#endif/*11nDRAFT3*/
+
 
 			//ApCliWaitProbRsp(pAd, ApCliIndex);
 			if ( /*ApCliWaitProbRsp(pAd, ApCliIndex) && */
@@ -1513,6 +1562,49 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 		Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE
 							);
+
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+		/* Check if this scan channel is the effeced channel */
+		if (APCLI_IF_UP_CHECK(pAd, 0) && pAd->bApCliCertTest == TRUE
+			&& (pAd->CommonCfg.bBssCoexEnable == TRUE) 
+			&& ((ie_list->Channel > 0) && (ie_list->Channel <= 14)))
+		{
+			int chListIdx;
+
+			/* 
+				First we find the channel list idx by the channel number
+			*/
+			for (chListIdx = 0; chListIdx < pAd->ChannelListNum; chListIdx++)
+			{
+				if (ie_list->Channel == pAd->ChannelList[chListIdx].Channel)
+					break;
+			}
+
+			if (chListIdx < pAd->ChannelListNum)
+			{
+				/* 
+					If this channel is effected channel for the 20/40 coex operation. Check the related IEs.
+				*/
+				if (pAd->ChannelList[chListIdx].bEffectedChannel == TRUE)
+				{
+					UCHAR RegClass;
+					OVERLAP_BSS_SCAN_IE	BssScan;
+
+					/* Read Beacon's Reg Class IE if any. */
+					PeerBeaconAndProbeRspSanity2(pAd, Elem->Msg, Elem->MsgLen, &BssScan, &RegClass);
+					//printk("\x1b[31m TriEventTableSetEntry \x1b[m\n");
+					TriEventTableSetEntry(pAd, &pAd->CommonCfg.TriggerEventTab, ie_list->Bssid, &ie_list->HtCapability, ie_list->HtCapabilityLen, RegClass, ie_list->Channel);
+				}
+			}
+		}
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+#endif /* APCLI_CERT_SUPPORT */
+#endif /* APCLI_SUPPORT */
+
 		if (Idx != BSS_NOT_FOUND)
 		{
 			NdisMoveMemory(pAd->ScanTab.BssEntry[Idx].PTSF, &Elem->Msg[24], 4);

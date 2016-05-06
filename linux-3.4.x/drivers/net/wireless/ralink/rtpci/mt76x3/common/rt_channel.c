@@ -1503,7 +1503,8 @@ CH_REGION ChRegion[] =
 	{"IL", CE, Country_IL_ChDesp, FALSE}, /* Israel */
 	{"IT", CE, Country_IT_ChDesp, TRUE}, /* Italy */
 	{"JM", CE, Country_JM_ChDesp, TRUE}, /* Jamaica */
-	{"JP", JAP,Country_JP_ChDesp, FALSE}, /* Japan */		
+	{"JP", JAP,Country_JP_ChDesp, TRUE}, /* Japan */  
+	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */		
 	{"JO", CE, Country_JO_ChDesp, TRUE}, /* Jordan */	
 	{"KZ", CE, Country_KZ_ChDesp, TRUE}, /* Kazakhstan */			
 	{"KE", CE, Country_KE_ChDesp, TRUE}, /* Kenya */	
@@ -1864,7 +1865,8 @@ COUNTRY_PROP CountryProp[]=
 	{"IL", CE, FALSE }, /* Israel */
 	{"IT", CE, TRUE }, /* Italy */
 	{"JM", CE, TRUE }, /* Jamaica */
-	{"JP", JAP, FALSE}, /* Japan */		
+	{"JP", JAP, TRUE}, /* Japan */	
+	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */	
 	{"JO", CE, TRUE }, /* Jordan */	
 	{"KZ", CE, TRUE }, /* Kazakhstan */			
 	{"KE", CE, TRUE }, /* Kenya */	
@@ -1968,7 +1970,7 @@ BOOLEAN GetEDCCASupport(
 	
 	pChReg = GetChRegion(pAd->CommonCfg.CountryCode);
 
-	if ((pChReg->DfsType == CE) && (pChReg->edcca_on == TRUE) )
+	if ((pChReg->DfsType != FCC) && (pChReg->edcca_on == TRUE) )
 	{
 		// actually need to check PM's table in CE country
 		ret = TRUE;
@@ -1978,7 +1980,7 @@ BOOLEAN GetEDCCASupport(
 	
 	pCountryProp = GetCountryProp(pAd->CommonCfg.CountryCode);
 
-	if ((pCountryProp->DfsType == CE) && (pCountryProp->edcca_on == TRUE))
+	if ((pCountryProp->DfsType != FCC) && (pCountryProp->edcca_on == TRUE))
 	{
 		// actually need to check PM's table in CE country
 		ret = TRUE;

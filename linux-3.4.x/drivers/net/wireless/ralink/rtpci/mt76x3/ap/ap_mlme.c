@@ -28,6 +28,7 @@
 #include "rt_config.h"
 #include <stdarg.h>
 
+extern UCHAR  ZeroSsid[32];
 #ifdef BTCOEX_CONCURRENT
 extern void MT7662ReceCoexFromOtherCHip(
 	IN UCHAR channel,
@@ -255,12 +256,73 @@ VOID APMlmePeriodicExec(
 		for (loop = 0; loop < MAX_APCLI_NUM; loop++)
 		{
 			PAPCLI_STRUCT pApCliEntry = &pAd->ApCfg.ApCliTab[loop];
+			if (pAd->ApCfg.ApCliTab[loop].bBlockAssoc == TRUE
+					&& pAd->ApCfg.ApCliTab[loop].bBlockAssoc
+					&& RTMP_TIME_AFTER(Now32, pAd->ApCfg.ApCliTab[loop].LastMicErrorTime + (60*OS_HZ)))
+				pAd->ApCfg.ApCliTab[loop].bBlockAssoc = FALSE;
+			
 			if ((pApCliEntry->Valid == TRUE)
 				&& (pApCliEntry->MacTabWCID < MAX_LEN_OF_MAC_TABLE))
 			{
 				/* update channel quality for Roaming and UI LinkQuality display */
 				MlmeCalculateChannelQuality(pAd,
 					&pAd->MacTab.Content[pApCliEntry->MacTabWCID], Now32);
+
+#ifdef APCLI_CERT_SUPPORT
+				if (pAd->bApCliCertTest == TRUE)
+				{
+#if defined(RTMP_MAC) || defined(RLT_MAC)	
+					BOOLEAN IsUseBA = TRUE;
+					PMAC_TABLE_ENTRY pEntry = &pAd->MacTab.Content[pApCliEntry->MacTabWCID];
+					
+					if (pEntry->RXBAbitmap == 0 && pEntry->TXBAbitmap == 0)
+						IsUseBA = FALSE;
+					
+					if((IS_RT5392(pAd) || IS_RT5592(pAd)) && 
+						pApCliEntry->DesiredHtPhyInfo.bHtEnable && 
+						IsUseBA == FALSE   )
+					{
+						EDCA_AC_CFG_STRUC   Ac2Cfg, Ac1Cfg;                                                            
+
+						RTMP_IO_READ32(pAd, EDCA_AC2_CFG, &Ac2Cfg.word);
+						RTMP_IO_READ32(pAd, EDCA_AC1_CFG, &Ac1Cfg.word);																			
+
+						if ((pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VO] == 0) &&
+							(pAd->RalinkCounters.OneSecOsTxCount[QID_AC_BK] >= 1000) &&
+							(pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VI] == 0))
+						{       
+							/*5.2.27 T7 */
+							if (Ac1Cfg.field.Aifsn!=0x1)
+							{
+									Ac1Cfg.field.Aifsn = 0x1;
+									RTMP_IO_WRITE32(pAd, EDCA_AC1_CFG, Ac1Cfg.word);
+									DBGPRINT(RT_DEBUG_TRACE,("Change EDCA_AC1_CFG to %x \n", Ac1Cfg.word));
+							}
+						}
+						else if ((pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VO] == 0) &&
+							(pAd->RalinkCounters.OneSecOsTxCount[QID_AC_BK] == 0) &&
+							(pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VI] == 0) &&
+							(pAd->RalinkCounters.OneSecOsTxCount[QID_AC_BE] < 10))
+						{
+							/* restore default parameter of BK*/
+							if (Ac1Cfg.field.Aifsn!=0x7)
+							{
+								Ac1Cfg.field.Aifsn = 0x7;
+								RTMP_IO_WRITE32(pAd, EDCA_AC1_CFG, Ac1Cfg.word);
+								DBGPRINT(RT_DEBUG_TRACE,("Restore EDCA_AC1_CFG to %x \n", Ac1Cfg.word));
+							}
+						}       
+
+						pAd->RalinkCounters.OneSecOsTxCount[QID_AC_BE] = 0;
+						pAd->RalinkCounters.OneSecOsTxCount[QID_AC_BK] = 0;
+						pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VI] = 0;
+						pAd->RalinkCounters.OneSecOsTxCount[QID_AC_VO] = 0;
+
+					}
+#endif /* defined(RTMP_MAC) || defined(RLT_MAC) */	
+				}	
+#endif /* APCLI_CERT_SUPPORT */	
+				
 			}
 		}
 	}
@@ -299,6 +361,51 @@ VOID APMlmePeriodicExec(
 #ifdef DOT11R_FT_SUPPORT
 	FT_R1KHInfoMaintenance(pAd);
 #endif /* DOT11R_FT_SUPPORT */
+
+#ifdef APCLI_SUPPORT
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+#ifdef APCLI_CERT_SUPPORT
+	/* Perform 20/40 BSS COEX scan every Dot11BssWidthTriggerScanInt	*/
+	if (APCLI_IF_UP_CHECK(pAd, 0) && (pAd->bApCliCertTest == TRUE))
+	{
+		if ((OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_SCAN_2040)) && 
+			(pAd->CommonCfg.Dot11BssWidthTriggerScanInt != 0) && 
+			((pAd->Mlme.OneSecPeriodicRound % pAd->CommonCfg.Dot11BssWidthTriggerScanInt) == (pAd->CommonCfg.Dot11BssWidthTriggerScanInt-1)))
+		{
+			DBGPRINT(RT_DEBUG_TRACE,("MMCHK - LastOneSecTotalTxCount/LastOneSecRxOkDataCnt  = %d/%d \n", 
+									pAd->RalinkCounters.LastOneSecTotalTxCount,
+									pAd->RalinkCounters.LastOneSecRxOkDataCnt));
+
+			/* Check last scan time at least 30 seconds from now. 		*/
+			/* Check traffic is less than about 1.5~2Mbps.*/
+			/* it might cause data lost if we enqueue scanning.*/
+			/* This criteria needs to be considered*/
+			if ((pAd->RalinkCounters.LastOneSecTotalTxCount < 70) && (pAd->RalinkCounters.LastOneSecRxOkDataCnt < 70)
+				/*&& ((pAd->StaCfg.LastScanTime + 10 * OS_HZ) < pAd->Mlme.Now32) */)		
+			{
+				MLME_SCAN_REQ_STRUCT            ScanReq;
+				/* Fill out stuff for scan request and kick to scan*/
+				ScanParmFill(pAd, &ScanReq, ZeroSsid, 0, BSS_ANY, SCAN_2040_BSS_COEXIST);
+				/* Before scan, reset trigger event table. */
+				TriEventInit(pAd);
+
+				MlmeEnqueue(pAd, AP_SYNC_STATE_MACHINE, APMT2_MLME_SCAN_REQ, sizeof(MLME_SCAN_REQ_STRUCT), &ScanReq, 0);
+
+				/* Set InfoReq = 1, So after scan , alwats sebd 20/40 Coexistence frame to AP*/
+				pAd->CommonCfg.BSSCoexist2040.field.InfoReq = 1;
+				RTMP_MLME_HANDLER(pAd);
+			}
+
+			DBGPRINT(RT_DEBUG_TRACE, (" LastOneSecTotalTxCount/LastOneSecRxOkDataCnt  = %d/%d \n", 
+					pAd->RalinkCounters.LastOneSecTotalTxCount, 
+					pAd->RalinkCounters.LastOneSecRxOkDataCnt));	
+		}
+	}	
+#endif /* APCLI_CERT_SUPPORT */
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+#endif /* APCLI_SUPPORT */
 
 }
 

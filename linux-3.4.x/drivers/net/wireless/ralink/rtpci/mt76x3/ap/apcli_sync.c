@@ -96,7 +96,7 @@ VOID ApCliSyncStateMachineInit(
 	for (i = 0; i < MAX_APCLI_NUM; i++)
 	{
 		/* timer init */
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 		pAd->ApCfg.ApCliTab[i].TimerInfo.pAd = pAd;
 		pAd->ApCfg.ApCliTab[i].TimerInfo.Ifindex= i;
 		RTMPInitTimer(pAd, &pAd->ApCfg.ApCliTab[i].MlmeAux.ProbeTimer, GET_TIMER_FUNCTION(ApCliProbeTimeout), &pAd->ApCfg.ApCliTab[i].TimerInfo, FALSE);
@@ -122,7 +122,7 @@ static VOID ApCliProbeTimeout(
 	IN PVOID SystemSpecific3)
 {
 		
-#ifdef MULTI_APCLI_SUPPORT
+#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
 	PRTMP_ADAPTER pAd;
 	USHORT ifIndex = 0;
 	PTIMER_INFO TimerInfo = (PTIMER_INFO)FunctionContext;
@@ -169,8 +169,14 @@ static VOID ApCliMlmeProbeReqAction(
 
 	pApCliEntry->MlmeAux.Rssi = -9999;
 
+#ifdef APCLI_CONNECTION_TRIAL
+	if (pApCliEntry->TrialCh ==0)
 	pApCliEntry->MlmeAux.Channel = pAd->CommonCfg.Channel;
-
+	else
+		pApCliEntry->MlmeAux.Channel = pApCliEntry->TrialCh;
+#else
+	pApCliEntry->MlmeAux.Channel = pAd->CommonCfg.Channel;
+#endif /* APCLI_CONNECTION_TRIAL */
 	pApCliEntry->MlmeAux.SupRateLen = pAd->CommonCfg.SupRateLen;
 	NdisMoveMemory(pApCliEntry->MlmeAux.SupRate, pAd->CommonCfg.SupRate, pAd->CommonCfg.SupRateLen);
 
@@ -179,6 +185,12 @@ static VOID ApCliMlmeProbeReqAction(
 	NdisMoveMemory(pApCliEntry->MlmeAux.ExtRate, pAd->CommonCfg.ExtRate, pAd->CommonCfg.ExtRateLen);
 
 	RTMPSetTimer(&(pApCliEntry->MlmeAux.ProbeTimer), PROBE_TIMEOUT);
+#ifdef APCLI_CONNECTION_TRIAL
+	NdisZeroMemory(pAd->ApCfg.ApCliTab[ifIndex].MlmeAux.Bssid, MAC_ADDR_LEN);
+	NdisZeroMemory(pAd->ApCfg.ApCliTab[ifIndex].MlmeAux.Ssid, MAX_LEN_OF_SSID);
+	NdisCopyMemory(pAd->ApCfg.ApCliTab[ifIndex].MlmeAux.Bssid, pAd->ApCfg.ApCliTab[ifIndex].CfgApCliBssid, MAC_ADDR_LEN);
+	NdisCopyMemory(pAd->ApCfg.ApCliTab[ifIndex].MlmeAux.Ssid, pAd->ApCfg.ApCliTab[ifIndex].CfgSsid, pAd->ApCfg.ApCliTab[ifIndex].CfgSsidLen);
+#endif /* APCLI_CONNECTION_TRIAL */
 
 	ApCliEnqueueProbeRequest(pAd, Info->SsidLen, (PCHAR) Info->Ssid, ifIndex);
 
@@ -260,7 +272,7 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 		INT bssidEmptyFlag = FALSE;
 		INT matchFlag = FALSE;
 
-		ULONG   Bssidx;
+		ULONG   Bssidx = BSS_NOT_FOUND;
 
 
 		/* Update ScanTab */
@@ -329,6 +341,19 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 #endif /* WSC_AP_SUPPORT */
                 	)
 			{
+#ifdef DOT11W_PMF_SUPPORT
+				BSS_ENTRY *pInBss = NULL;
+
+				pApCliEntry->MlmeAux.RsnCap.word = 0;
+				pApCliEntry->MlmeAux.IsSupportSHA256KeyDerivation = FALSE;
+
+				pInBss = &pAd->ScanTab.BssEntry[Bssidx];
+				if (pInBss)
+				{
+					NdisMoveMemory(&pApCliEntry->MlmeAux.RsnCap, &pInBss->WPA2.RsnCapability, sizeof(RSN_CAPABILITIES));
+					pApCliEntry->MlmeAux.IsSupportSHA256KeyDerivation = pInBss->IsSupportSHA256KeyDerivation;
+				}
+#endif /* DOT11W_PMF_SUPPORT */
 				if (ApCliValidateRSNIE(pAd, (PEID_STRUCT)pVIE, LenVIE, ifIndex))
 				{
 					pApCliEntry->MlmeAux.VarIELen = LenVIE;
@@ -405,6 +430,21 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 			NdisMoveMemory(pApCliEntry->MlmeAux.ExtRate, ie_list->ExtRate, ie_list->ExtRateLen);
 			RTMPCheckRates(pAd, pApCliEntry->MlmeAux.ExtRate, &pApCliEntry->MlmeAux.ExtRateLen);
 
+#ifdef APCLI_CERT_SUPPORT
+			/*  Get the ext capability info element */
+			if (pAd->bApCliCertTest == TRUE)
+			{
+				NdisMoveMemory(&pApCliEntry->MlmeAux.ExtCapInfo, &ie_list->ExtCapInfo,sizeof(ie_list->ExtCapInfo));
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+				DBGPRINT(RT_DEBUG_TRACE, ("\x1b[31m ApCliMlmeAux.ExtCapInfo=%d \x1b[m\n", pApCliEntry->MlmeAux.ExtCapInfo.BssCoexistMgmtSupport)); //zero debug 210121122
+				if (pAd->CommonCfg.bBssCoexEnable == TRUE)
+					pAd->CommonCfg.ExtCapIE.BssCoexistMgmtSupport = 1;
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+			}
+#endif /* APCLI_CERT_SUPPORT */
+
 #ifdef DOT11_N_SUPPORT
 			NdisZeroMemory(pApCliEntry->RxMcsSet,sizeof(pApCliEntry->RxMcsSet));
 			/* filter out un-supported ht rates */
@@ -428,6 +468,46 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 														&ie_list->HtCapability);
 		 			DBGPRINT(RT_DEBUG_TRACE, ("PeerBeaconAtJoinAction HT===>CentralCh = %d, ControlCh = %d\n",
 									CentralChannel, ie_list->AddHtInfo.ControlChan));
+
+#ifdef APCLI_CERT_SUPPORT
+/*
+	Peer's Ext channel is different with DUT's,  force follow peer's for APCLI TGn test.
+*/
+		       		 if (pAd->bApCliCertTest == TRUE )
+#endif /* APCLI_CERT_SUPPORT */
+					{
+						ADD_HTINFO RootApHtInfo, ApHtInfo;
+						ApHtInfo = pAd->CommonCfg.AddHTInfo.AddHtInfo;
+						RootApHtInfo = ie_list->AddHtInfo.AddHtInfo;
+						if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth  == BW_40) &&
+							(RootApHtInfo.RecomWidth) &&
+							(RootApHtInfo.ExtChanOffset != ApHtInfo.ExtChanOffset))
+						{
+							  UINT8 ext_ch = EXTCHA_NONE;
+							  pApCliEntry->MlmeAux.CentralChannel = CentralChannel;
+					                pAd->CommonCfg.CentralChannel = pApCliEntry->MlmeAux.CentralChannel;
+					                pAd->CommonCfg.Channel = pApCliEntry->MlmeAux.Channel;
+
+					                if (pAd->CommonCfg.CentralChannel > pAd->CommonCfg.Channel)
+					                {
+					                	ext_ch = EXTCHA_ABOVE;
+					                }
+					                else if (pAd->CommonCfg.CentralChannel < pAd->CommonCfg.Channel)
+					                {
+					                	ext_ch = EXTCHA_BELOW;
+					                }
+									
+         						  AsicSetChannel(pAd, pAd->CommonCfg.CentralChannel, BW_40, ext_ch, FALSE);
+
+							  if (RootApHtInfo.ExtChanOffset == EXTCHA_ABOVE)
+								Set_HtExtcha_Proc(pAd, "1");
+							  else
+								Set_HtExtcha_Proc(pAd, "0");
+
+	         				}
+
+					}				
+
 				}
 #endif /* DBG */
 			}
@@ -521,6 +601,9 @@ static VOID ApCliProbeTimeoutAtJoinAction(
 	APCLI_CTRL_MSG_STRUCT ApCliCtrlMsg;
 	USHORT ifIndex = (USHORT)(Elem->Priv);
 	PULONG pCurrState = &pAd->ApCfg.ApCliTab[ifIndex].SyncCurrState;
+#ifdef APCLI_CONNECTION_TRIAL
+	PULONG pCtrl_CurrState = &pAd->ApCfg.ApCliTab[ifIndex].CtrlCurrState;
+#endif
 	APCLI_STRUCT *pApCliEntry = NULL;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("APCLI_SYNC - ProbeTimeoutAtJoinAction\n"));
@@ -530,11 +613,19 @@ static VOID ApCliProbeTimeoutAtJoinAction(
 
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
 	*pCurrState = SYNC_IDLE;
-
+#ifdef APCLI_CONNECTION_TRIAL
+	if (ifIndex == (pAd->ApCfg.ApCliNum-1)) // last interface is for connection trial
+		*pCtrl_CurrState = APCLI_CTRL_DISCONNECTED;
+#endif /* APCLI_CONNECTION_TRIAL */
 	DBGPRINT(RT_DEBUG_TRACE, ("APCLI_SYNC - MlmeAux.Bssid=%02x:%02x:%02x:%02x:%02x:%02x\n",
 								PRINT_MAC(pApCliEntry->MlmeAux.Bssid)));
 
+#ifdef APCLI_CONNECTION_TRIAL
+	if(!MAC_ADDR_EQUAL(pApCliEntry->MlmeAux.Bssid, ZERO_MAC_ADDR) &&
+			(*pCtrl_CurrState != APCLI_CTRL_DISCONNECTED))
+#else
 	if(!MAC_ADDR_EQUAL(pApCliEntry->MlmeAux.Bssid, ZERO_MAC_ADDR))
+#endif /* APCLI_CONNECTION_TRIAL */
 	{
 		ApCliCtrlMsg.Status = MLME_SUCCESS;
 #ifdef MAC_REPEATER_SUPPORT

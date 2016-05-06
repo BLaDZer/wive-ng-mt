@@ -146,6 +146,7 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	UCHAR NumberOfFrag;
 	UCHAR wcid = RESERVED_WCID, QueIdx, UserPriority;
 #ifdef IGMP_SNOOP_SUPPORT
+	UCHAR Repeat;
 	INT InIgmpGroup = IGMP_NONE;
 	MULTICAST_FILTER_TABLE_ENTRY *pGroupEntry = NULL;
 #endif /* IGMP_SNOOP_SUPPORT */
@@ -306,14 +307,29 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 			if (((InIgmpGroup == IGMP_IN_GROUP)
 				&& pGroupEntry
 				&& (IgmpMemberCnt(&pGroupEntry->MemberList) > 0)
-				)
-				|| (InIgmpGroup == IGMP_PKT)
-			)
+				))
 			{
 				NDIS_STATUS PktCloneResult = IgmpPktClone(pAd, pPacket, InIgmpGroup, 	pGroupEntry,
 													QueIdx, UserPriority, GET_OS_PKT_NETDEV(pPacket));
 				RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
 				return PktCloneResult; // need to alway return to prevent skb double free.
+			} else if (InIgmpGroup == IGMP_PKT) {
+				NDIS_STATUS CloneResult =0;
+				UserPriority = 0;
+				QueIdx = QID_AC_BE;
+				RTMP_SET_PACKET_UP(pPacket, UserPriority);
+				RTMP_SET_PACKET_TXTYPE(pPacket, TX_MCAST_FRAME);
+
+				for (Repeat=0; Repeat<3; Repeat++)
+				{
+					CloneResult = IgmpProtocolPktClone(pAd, pPacket, InIgmpGroup, NULL,
+														QueIdx, UserPriority, GET_OS_PKT_NETDEV(pPacket));
+					if (CloneResult == NDIS_STATUS_FAILURE)
+						break;
+				
+				}
+					RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
+					return CloneResult;
 			}
 		}
 		else 
@@ -333,6 +349,13 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 		if  ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT))
 			detect_wmm_traffic(pAd, UserPriority, 1);
 #endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
+
+#ifdef MT_MAC
+		if (pAd->chipCap.hif_type == HIF_MT)
+		{	
+			detect_wmm_traffic_2(pAd, UserPriority, 1);
+		}
+#endif /* MT_MAC */
 
 		RTMP_SET_PACKET_UP(pPacket, UserPriority);
 
@@ -462,6 +485,10 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	RTMP_BASetup(pAd, tr_entry, UserPriority);
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef APCLI_CERT_SUPPORT
+	pAd->RalinkCounters.OneSecOsTxCount[QueIdx]++;
+#endif /* APCLI_CERT_SUPPORT */
+
 	return NDIS_STATUS_SUCCESS;
 
 drop_pkt:	
@@ -503,7 +530,10 @@ static inline VOID APFindCipherAlgorithm(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 
 	ASSERT(pTxBlk->wdev_idx < WDEV_NUM_MAX);
 	wdev = pAd->wdev_list[pTxBlk->wdev_idx];
+
+	if (!TX_BLK_TEST_FLAG(pTxBlk, fTX_bApCliPacket))
 	ASSERT(wdev->func_idx < pAd->ApCfg.BssidNum);
+
 #ifdef WAPI_SUPPORT
 	pMbss = &pAd->ApCfg.MBSSID[wdev->func_idx];
 #endif /* WAPI_SUPPORT */
@@ -3299,6 +3329,18 @@ VOID detect_wmm_traffic(
 }
 
 
+#ifdef MT_MAC
+VOID detect_wmm_traffic_2(
+	IN RTMP_ADAPTER *pAd, 
+	IN UCHAR UserPriority,
+	IN UCHAR FlgIsOutput)
+{
+	/* count packets which priority is more than BE */
+	if (UserPriority > 3)
+		pAd->OneSecondnonBEpackets++;
+}
+#endif /* MT_MAC */
+
 VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 {
 	MAC_TABLE_ENTRY *pEntry = NULL;
@@ -3312,6 +3354,31 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		if (pRxBlk->wcid < MAX_LEN_OF_MAC_TABLE)
 		{
 #ifdef APCLI_SUPPORT
+			//UCHAR bss_idx = BSS0;
+			UCHAR Wcid;
+			PHEADER_802_11 pHeader = pRxBlk->pHeader;
+
+			Wcid = pRxBlk->wcid;
+			if (VALID_WCID(Wcid))
+				pEntry = ApCliTableLookUpByWcid(pAd, Wcid, pHeader->Addr2);
+			else
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
+
+			if (pEntry && IS_ENTRY_APCLI(pEntry))
+			{
+				if (pRxInfo->CipherErr == 2)
+				{	
+
+#ifdef APCLI_CERT_SUPPORT
+					{
+						ApCliRTMPReportMicError(pAd, 1, pEntry->func_tb_idx);
+						DBGPRINT(RT_DEBUG_ERROR,("Rx MIC Value error, Unicast!\n"));					
+					}
+#endif /* APCLI_CERT_SUPPORT */
+					DBGPRINT_RAW(RT_DEBUG_ERROR,("Rx MIC Value error\n"));
+				}
+			}
+			else
 #endif /* APCLI_SUPPORT */
 			{
 				pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
@@ -3344,6 +3411,29 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 					pRxBlk->MPDUtotalByteCnt, pRxBlk->wcid, pRxInfo->CipherErr));
 
 	}
+#ifdef APCLI_SUPPORT
+#ifdef APCLI_CERT_SUPPORT
+	else if (pRxInfo->Mcast || pRxInfo->Bcast)
+	{
+
+		PHEADER_802_11 pHeader = pRxBlk->pHeader;
+		pEntry = MacTableLookup(pAd, pHeader->Addr2);
+
+		if (pEntry &&
+			(IS_ENTRY_APCLI(pEntry)
+			)) {
+			if (pRxInfo->CipherErr == 2)
+			{
+				ApCliRTMPReportMicError(pAd, 0, pEntry->func_tb_idx);	
+				DBGPRINT(RT_DEBUG_ERROR,("Rx MIC Value error, Bcast!\n"));
+			}
+		}
+
+		DBGPRINT(RT_DEBUG_TRACE, ("Rx bc/mc Cipher Err(MPDUsize=%d, WCID=%d, CipherErr=%d)\n",
+				pRxBlk->MPDUtotalByteCnt, pRxBlk->wcid, pRxInfo->CipherErr));
+	}
+#endif /* APCLI_CERT_SUPPORT */
+#endif /* APCLI_SUPPORT */	
 }
 
 #ifdef RLT_MAC_DBG

@@ -719,6 +719,15 @@ static void rtmp_read_ap_client_from_file(
 
 	NdisZeroMemory(KeyType, sizeof(KeyType));
 
+#ifdef DOT11W_PMF_SUPPORT
+	for (i = 0; i < MAX_APCLI_NUM; i++)
+	{
+		pAd->ApCfg.ApCliTab[i].PmfCfg.Desired_MFPC = FALSE;
+		pAd->ApCfg.ApCliTab[i].PmfCfg.Desired_MFPR = FALSE;
+		pAd->ApCfg.ApCliTab[i].PmfCfg.Desired_PMFSHA256 = FALSE;
+	}
+#endif /* DOT11W_PMF_SUPPORT */
+
 	/*ApCliEnable*/
 	if(RTMPGetKeyParameter("ApCliEnable", tmpbuf, 128, buffer, TRUE))
 	{
@@ -798,6 +807,11 @@ static void rtmp_read_ap_client_from_file(
 				wdev->AuthMode = Ndis802_11AuthModeAutoSwitch;
 			else if (rtstrcasecmp(macptr, "SHARED") == TRUE)
 				wdev->AuthMode = Ndis802_11AuthModeShared;
+			else if ((rtstrcasecmp(macptr, "WPAPSKWPA2PSK") == TRUE) || (rtstrcasecmp(macptr, "wpapskwpa2psk") == TRUE))
+			{
+				wdev->AuthMode = Ndis802_11AuthModeWPA1PSKWPA2PSK;
+				wdev->bWpaAutoMode = TRUE;
+			}				
 			else if (rtstrcasecmp(macptr, "WPAPSK") == TRUE)
 				wdev->AuthMode = Ndis802_11AuthModeWPAPSK;
 			else if (rtstrcasecmp(macptr, "WPA2PSK") == TRUE)
@@ -1027,6 +1041,49 @@ static void rtmp_read_ap_client_from_file(
 		}
 		DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli) ApCliNum=%d\n", pAd->ApCfg.ApCliNum));
 	}
+
+#ifdef DOT11W_PMF_SUPPORT
+	/* Protection Management Frame Capable */
+	if (RTMPGetKeyParameter("ApCliPMFMFPC", tmpbuf, 32, buffer, TRUE))
+	{
+		for (i = 0, macptr = rstrtok(tmpbuf,";"); (macptr && i < MAX_APCLI_NUM); macptr = rstrtok(NULL,";"), i++)
+		{
+			Set_ApCliPMFMFPC_Proc(pAd, macptr);
+		}
+	}
+
+	/* Protection Management Frame Required */
+	if (RTMPGetKeyParameter("ApCliPMFMFPR", tmpbuf, 32, buffer, TRUE))
+	{
+		for (i = 0, macptr = rstrtok(tmpbuf,";"); (macptr && i < MAX_APCLI_NUM); macptr = rstrtok(NULL,";"), i++)
+		{
+			Set_ApCliPMFMFPR_Proc(pAd, macptr);
+		}	        
+	}
+
+	if (RTMPGetKeyParameter("ApCliPMFSHA256", tmpbuf, 32, buffer, TRUE))
+	{
+		for (i = 0, macptr = rstrtok(tmpbuf,";"); (macptr && i < MAX_APCLI_NUM); macptr = rstrtok(NULL,";"), i++)
+		{
+			Set_ApCliPMFSHA256_Proc(pAd, macptr);
+		}        	
+	}
+#endif /* DOT11W_PMF_SUPPORT */
+#ifdef APCLI_CONNECTION_TRIAL
+	if (pAd->ApCfg.ApCliNum <= 1) { /* apcli num need  large than 1 if APCLI_CONNECTION_TRIAL support */
+		DBGPRINT(RT_DEBUG_ERROR,("ApCliNum from %d to %d\n", pAd->ApCfg.ApCliNum, MAX_APCLI_NUM));
+		pAd->ApCfg.ApCliNum = MAX_APCLI_NUM;
+	}	
+
+	/* ApCliTrialCh */
+	if(RTMPGetKeyParameter("ApCliTrialCh", tmpbuf, 128, buffer, TRUE))
+	{
+		// last IF is for apcli connection trial
+		pApCliEntry = &pAd->ApCfg.ApCliTab[pAd->ApCfg.ApCliNum-1];
+		pApCliEntry->TrialCh = (UCHAR) simple_strtol(tmpbuf, 0, 10);
+		DBGPRINT(RT_DEBUG_TRACE,("TrialChannel=%d\n", pApCliEntry->TrialCh));
+	}
+#endif /* APCLI_CONNECTION_TRIAL */
 }
 #endif /* APCLI_SUPPORT */
 
@@ -2406,6 +2463,16 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				pAd->Dot11_H.org_ch = pAd->CommonCfg.Channel;
 		}
 
+		/* EtherTrafficBand */
+		if (RTMPGetKeyParameter("EtherTrafficBand", tmpbuf, 10, pBuffer, TRUE))
+		{
+			pAd->CommonCfg.EtherTrafficBand = (UCHAR) simple_strtol(tmpbuf, 0, 10);
+			DBGPRINT(RT_DEBUG_TRACE, ("EtherTrafficBand=%d\n", pAd->CommonCfg.EtherTrafficBand));
+			
+			if (pAd->CommonCfg.EtherTrafficBand > EtherTrafficBand5G)
+				pAd->CommonCfg.EtherTrafficBand = EtherTrafficBand5G;
+		}
+
 		/*WirelessMode*/
 		/*Note: BssidNum must be put before WirelessMode in dat file*/
 		if(RTMPGetKeyParameter("WirelessMode", tmpbuf, 32, pBuffer, TRUE))
@@ -2455,6 +2522,59 @@ NDIS_STATUS	RTMPSetProfileParameters(
 			pAd->CommonCfg.BasicRateBitmapOld = (ULONG) simple_strtol(tmpbuf, 0, 10);
 			DBGPRINT(RT_DEBUG_TRACE, ("BasicRate=%ld\n", pAd->CommonCfg.BasicRateBitmap));
 		}
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef DYNAMIC_RX_RATE_ADJ
+		/* 1,2,5.5,11,6,9,12,18,24,36,48,54 */
+		if(RTMPGetKeyParameter("SupportRate", tmpbuf, 64, pBuffer, TRUE))
+		{
+			for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
+			{
+				if (i >= pAd->ApCfg.BssidNum)
+					break;
+
+				pAd->ApCfg.MBSSID[i].SuppRateBitmap = (ULONG) simple_strtol(macptr, 0, 16);
+				DBGPRINT(RT_DEBUG_TRACE, ("BSS%d SupportRate=%lx\n", i, pAd->ApCfg.MBSSID[i].SuppRateBitmap));
+		
+				if (i == 0)
+				{
+#ifdef MBSS_SUPPORT
+					/* for fist time, update all phy mode is same as ra0 */
+					UINT32 IdBss;
+
+					for(IdBss = 1; IdBss < pAd->ApCfg.BssidNum; IdBss++)
+						pAd->ApCfg.MBSSID[IdBss].SuppRateBitmap = pAd->ApCfg.MBSSID[0].SuppRateBitmap;
+#endif /* MBSS_SUPPORT */
+				}
+			}
+		}
+
+		/* MCS0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15*/
+		if(RTMPGetKeyParameter("SupportHTRate", tmpbuf, 64, pBuffer, TRUE))
+		{
+			for (i = 0, macptr = rstrtok(tmpbuf,";"); macptr; macptr = rstrtok(NULL,";"), i++)
+			{
+				if (i >= pAd->ApCfg.BssidNum)
+					break;
+
+				pAd->ApCfg.MBSSID[i].SuppHTRateBitmap = (ULONG) simple_strtol(macptr, 0, 16);
+				DBGPRINT(RT_DEBUG_TRACE, ("BSS%d SupportHTRate=%lx\n", i, pAd->ApCfg.MBSSID[i].SuppHTRateBitmap));
+
+				if (i == 0)
+				{
+#ifdef MBSS_SUPPORT
+					/* for fist time, update all phy mode is same as ra0 */
+					UINT32 IdBss;
+
+					for(IdBss = 1; IdBss < pAd->ApCfg.BssidNum; IdBss++)
+						pAd->ApCfg.MBSSID[IdBss].SuppHTRateBitmap = pAd->ApCfg.MBSSID[0].SuppHTRateBitmap;
+#endif /* MBSS_SUPPORT */
+				}
+			}
+		}
+#endif /* DYNAMIC_RX_RATE_ADJ */
+#endif /* CONFIG_AP_SUPPORT */
+
 		/*BeaconPeriod*/
 		if(RTMPGetKeyParameter("BeaconPeriod", tmpbuf, 10, pBuffer, TRUE))
 		{
@@ -2465,7 +2585,9 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				pAd->CommonCfg.BeaconPeriod = bcn_val;
 			else
 				pAd->CommonCfg.BeaconPeriod = 100;	/* Default value*/
-			
+#ifdef APCLI_CONNECTION_TRIAL
+			pAd->CommonCfg.BeaconPeriod = 200;
+#endif /* APCLI_CONNECTION_TRIAL */
 			DBGPRINT(RT_DEBUG_TRACE, ("BeaconPeriod=%d\n", pAd->CommonCfg.BeaconPeriod));
 		}
 

@@ -87,7 +87,7 @@ INT MTSmartCarrierSense(RTMP_ADAPTER *pAd)
 	if (RxTxBytes != 0)
 		RxRatio = ((pAd->RalinkCounters.OneSecReceivedByteCount * 100) / RxTxBytes);
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s():Enter ---> BssNr=%d, miniRSSI=%d, TotalByteCount=%d RxByteCount=%d TxByteCount=%d EDCCA=%d RxRatio=%d\n", __FUNCTION__,
+	DBGPRINT(RT_DEBUG_INFO, ("%s():Enter ---> BssNr=%d, miniRSSI=%d, TotalByteCount=%d RxByteCount=%d TxByteCount=%d EDCCA=%d RxRatio=%d\n", __FUNCTION__,
 		pAd->SCSCtrl.SCSBssTab.BssNr, pAd->SCSCtrl.SCSMinRssi, RxTxBytes, 
 		pAd->RalinkCounters.OneSecReceivedByteCount, pAd->RalinkCounters.OneSecTransmittedByteCount,
 		pAd->SCSCtrl.EDCCA_Status, RxRatio));

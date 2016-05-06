@@ -86,7 +86,16 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 
 		/* check if this entry need to switch rate automatically */
 		if (RTMPCheckEntryEnableAutoRateSwitch(pAd, pEntry) == FALSE)
+		{
+#ifdef MT_MAC
+			if (pAd->chipCap.hif_type == HIF_MT) {
+				MT_TX_COUNTER TxInfo;
+
+				AsicTxCntUpdate(pAd, pEntry, &TxInfo);
+			}
+#endif /* MT_MAC */
 			continue;
+		}
 
 
 		MlmeSelectTxRateTable(pAd, pEntry, &pTable, &TableSize, &InitTxRateIdx);
@@ -619,7 +628,9 @@ VOID APQuickResponeForRateUpExec(
 			MlmeRALog(pAd, pEntry, RAL_QUICK_DRS, TxErrorRatio, TxTotalCnt);
 #endif /* DBG_CTRL_SUPPORT */
 
-        if (TxCnt <= 15 && pEntry->HTPhyMode.field.MCS > 1)
+		if ((TxCnt <= 15) && 
+			(pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
+			(pEntry->HTPhyMode.field.MCS > 1))
         {
 			MlmeClearAllTxQuality(pEntry);
 

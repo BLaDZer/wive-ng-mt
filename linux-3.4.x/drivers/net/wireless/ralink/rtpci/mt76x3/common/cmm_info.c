@@ -2047,6 +2047,10 @@ VOID RTMPSetPhyMode(RTMP_ADAPTER *pAd, ULONG phymode)
 			break;
 	}
 
+#ifdef DYNAMIC_RX_RATE_ADJ
+	UpdateSuppRateBitmap(pAd);
+#endif /* DYNAMIC_RX_RATE_ADJ */
+
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
@@ -5207,6 +5211,8 @@ static INT dump_mac_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 	printk("\n");
 #endif /* DOT11_N_SUPPORT */
 	
+	printk("OneSecondnonBEpackets : %lu\n", pAd->OneSecondnonBEpackets);
+	printk("\n");
 	printk("\n%-19s%-5s%-5s%-4s%-4s%-4s%-7s%-10s%-6s%-4s%-6s%-6s%-6s%-7s%-7s%-7s\n",
 		         "MAC", "MODE", "AID", "BSS", "PSM", "WMM", "MIMOPS", "RSSI0/1/2", "PhMd", "BW", "MCS", "SGI", "STBC", "Idle", "Rate", "QosMap");
 		
@@ -5357,6 +5363,10 @@ static INT dump_ps_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 	printk("\n");
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef DATA_QUEUE_RESERVE
+	printk("pAd->MacTab.fAnyStationInPsm : %d\n", pAd->MacTab.fAnyStationInPsm);
+	printk("pAd->dequeu_fail_cnt : %u\n", pAd->dequeu_fail_cnt);
+#endif /* DATA_QUEUE_RESERVE */
 
 #ifdef LIMIT_GLOBAL_SW_QUEUE
           for (i = 0; i < WMM_QUE_NUM; i++)
@@ -5366,8 +5376,8 @@ static INT dump_ps_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
         printk("\n\n\n");
 #endif /* LIMIT_GLOBAL_SW_QUEUE */
 	
-	printk("\n%-19s\t%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-6s\t%-6s\t%-6s",
-	         "MAC", "EntryType", "AID", "BSS", "PSM", "psm", "ipsm", "iips", "sktx", "redt", "port", "queu", "pktnum","psnum","TXOK/PER");
+	printk("\n%-19s\t%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-6s\t%-6s\t%-6s\t%-6s\t%-6s",
+	         "MAC", "EntryType", "AID", "BSS", "PSM", "psm", "ipsm", "iips", "sktx", "redt", "port", "queu", "pktnum","psnum","hinum#","hidrp#","TXOK/PER");
 #ifdef UAPSD_SUPPORT
 	printk("\t%-7s", "APSD");
 #endif /* UAPSD_SUPPORT */
@@ -5450,6 +5460,15 @@ static INT dump_ps_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 			printk("\t%-5d", (int)pucQueue);
 			printk("\t%-6d", (int)Total_Packet_Number);
 			printk("\t%-6d", (int)tr_entry->ps_queue.Number);
+
+#ifdef DATA_QUEUE_RESERVE
+			printk("\t%-6u", tr_entry->high_pkt_cnt);
+			printk("\t%-6u", tr_entry->high_pkt_drop_cnt);
+#else /* DATA_QUEUE_RESERVE */
+			printk("\t%-6u", 0);
+			printk("\t%-6u", 0);
+#endif /* !DATA_QUEUE_RESERVE */
+
 			printk("\t%-6d/%d", (int)pEntry->LastTxOkCount,(int)pEntry->LastTxPER);
 #ifdef UAPSD_SUPPORT
 			printk("\t%d,%d,%d,%d", 
@@ -5509,6 +5528,15 @@ static INT dump_ps_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 			printk("\t%-5d", (int)pucQueue);
 			printk("\t%-6d", (int)Total_Packet_Number);
 			printk("\t%-6d", (int)tr_entry->ps_queue.Number);
+
+#ifdef DATA_QUEUE_RESERVE
+			printk("\t%-6u", tr_entry->high_pkt_cnt);
+			printk("\t%-6u", tr_entry->high_pkt_drop_cnt);
+#else /* DATA_QUEUE_RESERVE */
+			printk("\t%-6u", 0);
+			printk("\t%-6u", 0);
+#endif /* !DATA_QUEUE_RESERVE */
+
 #ifdef UAPSD_SUPPORT
 			printk("\t%d,%d,%d,%d", 
 				(int)0, 0, 0, 0);
@@ -6876,6 +6904,7 @@ INT show_trinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		DBGPRINT(RT_DEBUG_OFF, ("PSE Info\n"));
 #ifdef DMA_RESET_SUPPORT
 		DBGPRINT(RT_DEBUG_OFF, ("\tPSEMonitorEn=%d, bcn_reset_en=%d, RCounter = %lu, RxPseCheckTimes = %u, PSETriggerType1Count = %lu, PSETriggerType2Count = %lu, PSERFailCount = %lu, PSEResetFailRecover=%d, PSEResetFailRetryQuota=%lu\n", pAd->PSEWatchDogEn, pAd->bcn_reset_en, pAd->PSEResetCount, pAd->RxPseCheckTimes, pAd->PSETriggerType1Count, pAd->PSETriggerType2Count, pAd->PSEResetFailCount, pAd->PSEResetFailRecover, pAd->PSEResetFailRetryQuota));
+		DBGPRINT(RT_DEBUG_OFF, ("\tAC0HitCount=%lu, AC1HitCount=%lu,AC2HitCount=%lu,AC3HitCount=%lu,MgtHitCount=%lu\n", pAd->AC0HitCount,  pAd->AC1HitCount, pAd->AC2HitCount, pAd->AC3HitCount,pAd->MgtHitCount));
 #else /* DMA_RESET_SUPPORT */
 		DBGPRINT(RT_DEBUG_OFF, ("\tPSEMonitorEn=%d, RCounter = %lu, RxPseCheckTimes = %u, PSETriggerType1Count = %lu, PSETriggerType2Count = %lu, PSERFailCount = %lu\n", pAd->PSEWatchDogEn, pAd->PSEResetCount, pAd->RxPseCheckTimes, pAd->PSETriggerType1Count, pAd->PSETriggerType2Count, pAd->PSEResetFailCount));
 #endif /* !DMA_RESET_SUPPORT */
@@ -7102,6 +7131,126 @@ void  getRate(HTTRANSMIT_SETTING HTSetting, ULONG* fLastTxRxRate)
 	return;
 }
 
+#if defined (CONFIG_WIFI_PKT_FWD)
+INT Set_WifiFwd_Proc(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int active = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::active=%d\n", __FUNCTION__, active));
+
+	if (active == 0) {
+		if (wf_fwd_pro_halt_hook)
+			wf_fwd_pro_halt_hook();
+	} else  {
+		if (wf_fwd_pro_active_hook)
+			wf_fwd_pro_active_hook();
+	}
+	
+	return TRUE;
+}
+
+INT Set_WifiFwdAccessSchedule_Proc(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int active = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::active=%d\n", __FUNCTION__, active));
+
+	if (active == 0) {
+		if (wf_fwd_access_schedule_halt_hook)
+			wf_fwd_access_schedule_halt_hook();
+	} else  {
+		if (wf_fwd_access_schedule_active_hook)
+			wf_fwd_access_schedule_active_hook();
+	}
+	
+	return TRUE;
+}
+
+INT Set_WifiFwdHijack_Proc(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int active = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::active=%d\n", __FUNCTION__, active));
+
+	if (active == 0) {
+		if (wf_fwd_hijack_halt_hook)
+			wf_fwd_hijack_halt_hook();
+	} else  {
+		if (wf_fwd_hijack_active_hook)
+			wf_fwd_hijack_active_hook();
+	}
+	
+	return TRUE;
+}
+
+INT Set_WifiFwdRepDevice(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int rep = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::rep=%d\n", __FUNCTION__, rep));
+
+	if (wf_fwd_get_rep_hook)
+		wf_fwd_get_rep_hook(rep);
+
+	return TRUE;
+}
+
+INT Set_WifiFwdShowEntry(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	if (wf_fwd_show_entry_hook)
+		wf_fwd_show_entry_hook();
+
+	return TRUE;
+}
+
+INT Set_WifiFwdDeleteEntry(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int idx = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::idx=%d\n", __FUNCTION__, idx));
+
+	if (wf_fwd_delete_entry_hook)
+		wf_fwd_delete_entry_hook(idx);
+
+	return TRUE;
+}
+
+INT Set_PacketSourceShowEntry(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	if (packet_source_show_entry_hook)
+		packet_source_show_entry_hook();
+
+	return TRUE;
+}
+
+INT Set_PacketSourceDeleteEntry(
+    	IN PRTMP_ADAPTER pAd,
+	IN PSTRING arg)
+{
+	int idx = simple_strtol(arg, 0, 10);
+	
+	DBGPRINT(RT_DEBUG_OFF, ("%s::idx=%d\n", __FUNCTION__, idx));
+
+	if (packet_source_delete_entry_hook)
+		packet_source_delete_entry_hook(idx);
+
+	return TRUE;
+}
+#endif /* CONFIG_WIFI_PKT_FWD */
 
 
 

@@ -89,6 +89,11 @@ VOID PMF_MlmeSAQueryReq(
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{									
+#ifdef APCLI_SUPPORT
+		if ((pEntry) && IS_ENTRY_APCLI(pEntry))
+			pPmfCfg = &pAd->ApCfg.ApCliTab[pEntry->func_tb_idx].PmfCfg;
+		else
+#endif /* APCLI_SUPPORT */
                 pPmfCfg = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].PmfCfg;
         }
 #endif /* CONFIG_AP_SUPPORT */
@@ -103,9 +108,23 @@ VOID PMF_MlmeSAQueryReq(
 #ifdef CONFIG_AP_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 		{		
+#ifdef APCLI_SUPPORT
+			if ((pEntry) && IS_ENTRY_APCLI(pEntry))
+			{
+				ApCliMgtMacHeaderInit(pAd,
+							&SAQReqHdr,
+							SUBTYPE_ACTION, 0,
+							pEntry->Addr,
+							pEntry->Addr,
+							pEntry->func_tb_idx);
+			}
+			else
+#endif /* APCLI_SUPPORT */
+			{
                 MgtMacHeaderInit(pAd, &SAQReqHdr, SUBTYPE_ACTION, 0, pEntry->Addr,
                                 pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev.bssid,
                                 pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev.bssid);
+		}
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -183,9 +202,22 @@ VOID PMF_PeerSAQueryReqAction(
 #ifdef CONFIG_AP_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 		{		
+#ifdef APCLI_SUPPORT
+			if (pEntry && IS_ENTRY_APCLI(pEntry))
+			{
+				ApCliMgtMacHeaderInit(pAd, &SAQRspHdr,
+										SUBTYPE_ACTION, 0,
+										pHeader->Hdr.Addr2,
+										pHeader->Hdr.Addr2,
+										pEntry->func_tb_idx);
+			}
+			else
+#endif /* APCLI_SUPPORT */		
+			{
 			MgtMacHeaderInit(pAd, &SAQRspHdr, SUBTYPE_ACTION, 0, pHeader->Hdr.Addr2,
 							pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev.bssid,
 						pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev.bssid);
+		}
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -263,6 +295,7 @@ VOID PMF_SAQueryTimeOut(
 {
         MAC_TABLE_ENTRY *pEntry = (MAC_TABLE_ENTRY *)FunctionContext;
 
+		USHORT ifIndex = 0;
         if (pEntry)
         {
 		RTMP_ADAPTER *pAd = (RTMP_ADAPTER*)pEntry->pAd;
@@ -273,6 +306,32 @@ VOID PMF_SAQueryTimeOut(
 #ifdef CONFIG_AP_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 		{		
+#ifdef APCLI_SUPPORT
+			if (IS_ENTRY_APCLI(pEntry))
+			{
+				BOOLEAN Cancelled;
+				MLME_DISASSOC_REQ_STRUCT DisassocReq;
+				PULONG pCurrState = NULL;
+				
+				RTMPCancelTimer(&pEntry->SAQueryTimer, &Cancelled);
+				RTMPCancelTimer(&pEntry->SAQueryConfirmTimer, &Cancelled);
+				DisassocParmFill(pAd, &DisassocReq,
+									pAd->ApCfg.ApCliTab[pEntry->func_tb_idx].MlmeAux.Bssid,
+									REASON_DISASSOC_STA_LEAVING);
+
+				pCurrState = &pAd->ApCfg.ApCliTab[pEntry->func_tb_idx].CtrlCurrState;
+				ifIndex = pEntry->func_tb_idx;
+
+				*pCurrState = APCLI_CTRL_DEASSOC;
+
+				MlmeEnqueue(pAd, APCLI_ASSOC_STATE_MACHINE,
+								APCLI_MT2_MLME_DISASSOC_REQ,
+								sizeof(MLME_DISASSOC_REQ_STRUCT), &DisassocReq, ifIndex);
+
+				RTMP_MLME_HANDLER(pAd);
+			}
+			else
+#endif /* APCLI_SUPPORT */		
 			MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 		}
 #endif /* CONFIG_AP_SUPPORT */
@@ -531,12 +590,21 @@ VOID PMF_InsertIGTKKDE(
 BOOLEAN PMF_ExtractIGTKKDE(
 	IN PRTMP_ADAPTER pAd,
 	IN PUCHAR pBuf,
-	IN INT buf_len)
+	IN INT buf_len,
+	IN MAC_TABLE_ENTRY *pEntry)
 {
 	PPMF_IGTK_KDE igtk_kde_ptr;
 	UINT8 idx = 0;
 	UINT8 offset = 0;
 	PPMF_CFG pPmfCfg = NULL;
+#ifdef CONFIG_AP_SUPPORT
+#ifdef APCLI_SUPPORT
+	if (IS_ENTRY_APCLI(pEntry))
+	{
+		pPmfCfg = &pAd->ApCfg.ApCliTab[pEntry->func_tb_idx].PmfCfg;
+	}
+#endif /* APCLI_SUPPORT */
+#endif /* CONFIG_STA_SUPPORT */
 
 
 	if (pPmfCfg == NULL)
@@ -605,6 +673,15 @@ VOID PMF_MakeRsnIeGMgmtCipher(
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
+#ifdef APCLI_SUPPORT
+		if (apidx >= MIN_NET_DEVICE_FOR_APCLI)
+		{
+			PAPCLI_STRUCT pApCliEntry = &pAd->ApCfg.ApCliTab[apidx - MIN_NET_DEVICE_FOR_APCLI];
+
+			MFP_Enabled = pApCliEntry->PmfCfg.MFPC;
+		}
+		else
+#endif /* APCLI_SUPPORT */	
 		if (apidx < pAd->ApCfg.BssidNum)		
 		{
 			BSS_STRUCT *pMbss = &pAd->ApCfg.MBSSID[apidx];
@@ -1080,6 +1157,11 @@ INT PMF_ExtractBIPAction(
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{		
+#ifdef APCLI_SUPPORT
+		if (IS_ENTRY_APCLI(pEntry))
+			pPmfCfg = &pAd->ApCfg.ApCliTab[pEntry->func_tb_idx].PmfCfg;
+		else
+#endif /* APCLI_SUPPORT */	
                 pPmfCfg = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].PmfCfg;
 	}
 #endif // CONFIG_AP_SUPPORT //
@@ -1244,12 +1326,54 @@ BOOLEAN	PMF_PerformRxFrameAction(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
 	else
 	{
+#if defined (CONFIG_STA_SUPPORT) || defined (APCLI_SUPPORT)
+			if ((pHeader->Addr1[0] & 0x01) &&
+					(pHeader->FC.Type == FC_TYPE_MGMT) &&
+					((pHeader->FC.SubType == SUBTYPE_DISASSOC) || (pHeader->FC.SubType == SUBTYPE_DEAUTH)))
+			{
+
+#ifdef APCLI_SUPPORT
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
+#endif /* APCLI_SUPPORT */
+
+
+				if (!pEntry)
+					return TRUE;
+				else
+				{
+					if (!CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_PMF_CAPABLE))
+						return TRUE;
+				}
+			}
+			else
+			{
 		return TRUE;
 	}
+#endif /* defined (CONFIG_STA_SUPPORT) || defined (APCLI_SUPPORT) */
+	}
+
+	if(pEntry == NULL)
+		return TRUE;
 
 	if (!CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_PMF_CAPABLE))
 	{
+#if defined (CONFIG_STA_SUPPORT) || defined (APCLI_SUPPORT)
+			if ((pHeader->Addr1[0] & 0x01) &&
+					(pHeader->FC.Type == FC_TYPE_MGMT) &&
+					((pHeader->FC.SubType == SUBTYPE_DISASSOC) || (pHeader->FC.SubType == SUBTYPE_DEAUTH)))
+			{
+
+#ifdef APCLI_SUPPORT
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
+#endif /* APCLI_SUPPORT */
+
+
+				if (!pEntry)
+					return TRUE;
+			}
+			else
 		return TRUE;
+#endif /* defined (CONFIG_STA_SUPPORT) || defined (APCLI_SUPPORT) */
 	}
 
 	FrameType = PMF_RobustFrameClassify(pHeader,
@@ -1268,8 +1392,28 @@ BOOLEAN	PMF_PerformRxFrameAction(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			return FALSE;
 		case NORMAL_FRAME:
                 case NOT_ROBUST_GROUP_FRAME:   
+#ifdef APCLI_SUPPORT
+				if ((pEntry) && IS_ENTRY_APCLI(pEntry))
+				{
+					if (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_PMF_CAPABLE))
+						return FALSE;
+				}
+#endif /* APCLI_SUPPORT */
+
 			break;
 		case NOT_ROBUST_UNICAST_FRAME:
+#ifdef APCLI_SUPPORT
+				if ((pEntry) && IS_ENTRY_APCLI(pEntry))
+				{
+					if (((pHeader->FC.SubType == SUBTYPE_DISASSOC) || (pHeader->FC.SubType == SUBTYPE_DEAUTH))
+						&& CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_PMF_CAPABLE))
+					{
+						PMF_MlmeSAQueryReq(pAd, pEntry);
+						return FALSE;
+					}
+				}
+#endif /* APCLI_SUPPORT */
+
 				DBGPRINT(RT_DEBUG_ERROR, ("[PMF]%s: ERROR FRAME\n", __FUNCTION__));
 				return FALSE;
 		case UNICAST_ROBUST_FRAME:
@@ -1287,7 +1431,7 @@ BOOLEAN	PMF_PerformRxFrameAction(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		}
 		case GROUP_ROBUST_FRAME:
 		{
-			if (pAd->chipCap.hif_type != HIF_MT)
+			//if (pAd->chipCap.hif_type != HIF_MT) //MT7603 Mgmt pkt Bcast is S/W Procress.
 			{
 			if (PMF_ExtractBIPAction(pAd, 
 				pMgmtFrame, 

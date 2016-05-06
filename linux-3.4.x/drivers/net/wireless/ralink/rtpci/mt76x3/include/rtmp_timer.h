@@ -198,6 +198,9 @@ DECLARE_TIMER_FUNCTION(PostReplyTimeout);
 DECLARE_TIMER_FUNCTION(ATEPeriodicExec);
 #endif /* CONFIG_ATE */
 
+#ifdef APCLI_SUPPORT
+DECLARE_TIMER_FUNCTION(ApCliWpaDisassocApAndBlockAssoc);
+#endif /* APCLI_SUPPORT */
 
 #endif /* __RTMP_TIMER_H__ */
 

@@ -247,7 +247,7 @@ VOID	WscSendEapFragAck(
 		}
 	}
 	else if (IS_ENTRY_APCLI(pEntry))
-		WscSendMessage(pAdapter, WSC_OPCODE_FRAG_ACK, NULL, 0, pWscControl, AP_CLIENT_MODE, EAP_CODE_REQ);
+		WscSendMessage(pAdapter, WSC_OPCODE_FRAG_ACK, NULL, 0, pWscControl, AP_CLIENT_MODE, EAP_CODE_RSP);
 }
 
 VOID	WscSendEapFragData(

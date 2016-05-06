@@ -399,7 +399,8 @@ INT NICReadEEPROMParameters(RTMP_ADAPTER *pAd, RTMP_STRING *mac_addr)
 		RTMP_CHIP_ANTENNA_INFO_DEFAULT_RESET(pAd, &Antenna);
 
 // TODO: shiang-7603
-	if (IS_MT7603(pAd) || IS_MT7628(pAd))
+	/* Add (Antenna.word & 0xFF00) == 0xFF00) to prevent changing eeprom 's antenna setting. */
+	if ((IS_MT7603(pAd) || IS_MT7628(pAd))&&((Antenna.word & 0xFF00) == 0xFF00))
 		RTMP_CHIP_ANTENNA_INFO_DEFAULT_RESET(pAd, &Antenna);
 
 	/* Choose the desired Tx&Rx stream.*/
