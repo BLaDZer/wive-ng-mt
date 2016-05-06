@@ -586,9 +586,6 @@ device_id_t * cwmp_session_create_inform_device(cwmp_session_t * session, pool_t
     name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,SerialNumberModule);
     device->serial_number = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
 
-//    name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,DeviceLogModule);
-//    device->device_log = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
-
     device->name = session->cwmp->cpe_name;
 
     return device;

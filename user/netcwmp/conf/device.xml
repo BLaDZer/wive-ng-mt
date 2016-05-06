@@ -12,6 +12,7 @@
 				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string"/>
 				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
 				<param name="ProductClass" inform="1" get_func="cpe_get_igd_di_productclass"/>
+				<param name="ProvisioningCode" rw="1" inform="1" get_func="cpe_get_conf_string" args="cwmp:cpe_prov" set_func="cpe_set_conf_string"/>
 				<param name="DeviceLog" inform="0" get_func="cpe_get_igd_di_devicelog"/>
 			</object>
 

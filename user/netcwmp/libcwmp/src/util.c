@@ -642,6 +642,8 @@ int firmware_upgrade(char* filename)
 		return 3;
 	}
 
+	system("fs restore > /dev/null 2>&1");
+
 	// flash write
 	if (mtd_write_firmware(filename, 0, (int)file_size) == -1) {
 		cwmp_log_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");

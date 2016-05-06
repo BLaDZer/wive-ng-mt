@@ -126,11 +126,33 @@ int main(int argc, char **argv)
     cwmp_daemon();
     cwmp_conf_init(cwmp);
 
+    cwmp_conf_set("env:DEVNAME", DEVNAME);
+    cwmp_conf_set("env:VERSIONPKG", VERSIONPKG);
+
+/*
     char* envDevName = getenv("DEVNAME");
     char* envVersion = getenv("VERSIONPKG");
-    if (envDevName != NULL) cwmp_conf_set("env:DEVNAME", envDevName);
-    if (envVersion != NULL) cwmp_conf_set("env:VERSIONPKG", envVersion);
 
+
+    if (envDevName != NULL) 
+    {
+	cwmp_log_error("DEVNAME parameter: %s", envDevName);
+    }
+    else
+    {
+	cwmp_log_error("DEVNAME parameter not found!");
+    }
+
+    if (envVersion != NULL) 
+    {
+	cwmp_conf_set("env:VERSIONPKG", envVersion);
+	cwmp_log_error("VERSIONPKG parameter: %s", envVersion);
+    }
+    else
+    {
+	cwmp_log_error("VERSIONPKG parameter not found!");
+    }
+*/
 #ifdef USE_CWMP_OPENSSL
     cwmp_init_ssl(cwmp);
 #endif

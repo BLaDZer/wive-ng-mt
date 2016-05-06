@@ -12,8 +12,8 @@ model_func_t ModelFunction[] =
     {"cpe_get_igd_di_specversion", cpe_get_igd_di_specversion},
     {"cpe_get_igd_di_hardwareversion", cpe_get_igd_di_hardwareversion},
     {"cpe_get_igd_di_softwareversion", cpe_get_igd_di_softwareversion},
-*/
     {"cpe_get_igd_di_provisioningcode", cpe_get_igd_di_provisioningcode},
+*/
     {"cpe_get_igd_di_devicelog", cpe_get_igd_di_devicelog},
 
     {"cpe_get_igd_ms_username", cpe_get_igd_ms_username},
