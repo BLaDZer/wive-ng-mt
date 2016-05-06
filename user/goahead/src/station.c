@@ -2690,7 +2690,7 @@ static int getStaTrModes(int eid, webs_t wp, int argc, char_t **argv)
 	char_t *result= "0";
 #if defined(CONFIG_RT_FIRST_IF_MT7610E)
 	result = "1";
-#elif defined(CONFIG_RALINK_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E)
+#elif defined(CONFIG_RALINK_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
 	result = "2";
 #elif defined(CONFIG_RT_FIRST_IF_MT7603E)
 	result = "3";

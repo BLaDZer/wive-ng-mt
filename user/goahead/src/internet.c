@@ -1365,7 +1365,7 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
  */
 void initInternet(void)
 {
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	char *opmode;
 #endif
 	//first generate user routes and fierwall scripts
@@ -1375,7 +1375,7 @@ void initInternet(void)
 	//configure system
 	doSystem("internet.sh");
 
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	//automatically connect to AP according to the active profile
 	opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	if (!strcmp(opmode, "2")) {

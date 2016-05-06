@@ -187,7 +187,7 @@ if [ "$OperationMode" = "0" ]; then
     bridge_config
 elif [ "$OperationMode" = "1" ]; then
     gate_config
-elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" != "" -o "$CONFIG_MT76X2_STA" != "" ]; then
+elif [ "$OperationMode" = "2" ] && [ "$CONFIG_RT2860V2_STA" != "" -o "$CONFIG_MT76X2_STA" != "" -o "$CONFIG_MT76X3_STA" != "" ]; then
     ethcv_config
 elif [ "$OperationMode" = "3" ] && [ "$first_wlan_apcli" != "" -o  "$second_wlan_apcli" != "" ]; then
     apcli_config

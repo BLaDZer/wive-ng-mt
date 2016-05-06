@@ -52,6 +52,10 @@ choice
 	config RT_FIRST_IF_MT7602E
 	bool "MT7602E PCIe"
 	depends on RALINK_MT7621
+
+	config RT_FIRST_IF_MT7603E
+	bool "MT7603E PCIe"
+	depends on RALINK_MT7621
 endchoice
 
 choice
@@ -97,6 +101,7 @@ config  RT_FIRST_CARD
 	default 7610 if RT_FIRST_IF_MT7610E
 	default 7612 if RT_FIRST_IF_MT7612E
 	default 7602 if RT_FIRST_IF_MT7602E
+	default 7603 if RT_FIRST_IF_MT7603E
 
 config RT_FIRST_CARD_EEPROM
 	string
@@ -120,6 +125,9 @@ choice
 
 	config RT_SECOND_IF_MT7602E
 	bool "MT7602E PCIe"
+
+	config RT_SECOND_IF_MT7603E
+	bool "MT7603E PCIe"
 endchoice
 
 choice
@@ -160,6 +168,7 @@ config  RT_SECOND_CARD
 	default 7610 if RT_SECOND_IF_MT7610E
 	default 7612 if RT_SECOND_IF_MT7612E
 	default 7602 if RT_SECOND_IF_MT7602E
+	default 7603 if RT_SECOND_IF_MT7603E
 
 config RT_SECOND_CARD_EEPROM
 	string
@@ -224,6 +233,12 @@ if (RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7612E || RT_FIRST_IF_MT7602E || RT_SECON
 menu "AP MODE MediaTek MT7620/MT7602E/MT7612E RBUS/PCIe Wireless Driver"
 source "drivers/net/wireless/ralink/rtpci/mt76x2_ap/Kconfig"
 source "drivers/net/wireless/ralink/rtpci/mt76x2_sta/Kconfig"
+endmenu
+endif
+
+if (RT_FIRST_IF_MT7603E || RT_SECOND_IF_MT7603E)
+menu "AP MODE MediaTek MT7603E PCIe Wireless driver"
+source "drivers/net/wireless/ralink/rtpci/mt76x3_ap/Kconfig"
 endmenu
 endif
 

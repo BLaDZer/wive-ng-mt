@@ -60,7 +60,7 @@ config  RT2860V2_AP_CARRIER
 config  RT2860V2_AP_EXT_CHANNEL_LIST
 	bool "Extension Channel List 802.11d compat"
 	depends on RT2860V2_AP
-	default n
+	default y
 
 config  RT2860V2_AP_DLS
 	bool "DLS (Direct-Link Setup) Support"

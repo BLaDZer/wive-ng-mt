@@ -14,7 +14,7 @@ unload_modules() {
     rmmod_mod=`lsmod | awk {' print $1'}`
     for mod in $rmmod_mod
     do
-	if [ "$mod" != "rt2860v2_ap" -a "$mod" != "rt2860v2_sta" -a "$mod" != "mt7610_ap" -a "$mod" != "mt76x2_ap" -a "$mod" != "mt76x2_sta" -a "$mod" != "hw_nat" ]; then
+	if [ "$mod" != "rt2860v2_ap" -a "$mod" != "rt2860v2_sta" -a "$mod" != "mt7610_ap" -a "$mod" != "mt76x2_ap" -a "$mod" != "mt76x2_sta" -a "$mod" != "mt76x3_ap" -a "$mod" != "mt76x3_sta" -a "$mod" != "hw_nat" ]; then
     	    rmmod $mod > /dev/null 2>&1
 	fi
     done

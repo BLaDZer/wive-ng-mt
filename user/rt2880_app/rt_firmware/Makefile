@@ -57,6 +57,13 @@ else ifeq ($(CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 endif
 endif
 ###################################################################################################################################################
+# external PCI-E 76x3 WiFi module
+###################################################################################################################################################
+# 7603 module
+ifdef CONFIG_RT_FIRST_IF_MT7603E
+	$(ROMFSINST) -S eeproms-defaults/MT7603E_EEPROM-FEM-INTERNALPALNA.bin				/etc/Wireless/MT7603E_EEPROM.bin
+endif
+###################################################################################################################################################
 # full backups dualband devices
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E
@@ -83,6 +90,9 @@ ifdef CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 else
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7602_MT7612_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+endif
+ifdef CONFIG_RT_FIRST_IF_MT7603E
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7603_MT7612_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 endif
 endif
 ifeq ($(CONFIG_RT_SECOND_IF_EXTERNAL_PA_EXTERNAL_LNA),y)

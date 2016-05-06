@@ -18,6 +18,13 @@ export LC_ALL=POSIX
 MODE="$1"
 case "$MODE" in
 	####################################
+	# dual band 7621A + 7603NE + 7612NE
+	####################################
+	"MT7621-MT7603-MT7612-2T2R-16M-USB")
+	    # metal sample
+	    DEVNAME="SNR-CPE-ME3-5GHZ-MT"
+	    ;;
+	####################################
 	# dual band 7621A + 7602NE + 7612NE
 	####################################
 	"MT7621-MT7602-MT7612-2T2R-16M-USB")
@@ -124,7 +131,12 @@ ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-16M-USB" ]; then
+if [ "$MODE" = "MT7621-MT7603-MT7612-2T2R-16M-USB" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7612-2T2R-16M-USB			$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7602-MT7612-2T2R-16M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config

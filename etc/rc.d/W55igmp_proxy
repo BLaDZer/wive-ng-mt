@@ -86,7 +86,7 @@ get_param() {
     ####################################
     # auto M2U enable in wifi drivers
     ####################################
-    if [ "$M2UEnabled" = "1" ] && [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" ]; then
+    if [ "$M2UEnabled" = "1" ] && [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" -o "$CONFIG_MT76X3_AP_IGMP_SNOOP" != "" ]; then
 	M2UEnabled="a"
     else
 	M2UEnabled=""

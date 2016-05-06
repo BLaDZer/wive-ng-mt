@@ -521,32 +521,32 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(RADIUS_Key8);
 	FPRINT_STR(MaxStaNum);
 
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	FPRINT_STR(PSMode);
 	FPRINT_NUM(AutoConnect);
 	FPRINT_NUM(FastConnect);
 	FPRINT_NUM(AutoRoaming);
 #endif
-#if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) ||  defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST)
+#if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X3_AP_EXT_CHANNEL_LIST)
 	FPRINT_NUM(ChannelGeography);
 #endif
-#if defined(CONFIG_RT2860V2_AP_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG)
+#if defined(CONFIG_RT2860V2_AP_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG) || defined(CONFIG_MT76X3_AP_DBG)
 	FPRINT_NUM(WirelessEvent);
 #endif
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE)
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
 	FPRINT_NUM(VideoTurbine);
 	FPRINT_NUM(VideoClassifierEnable);
 	FPRINT_NUM(VideoHighTxMode);
 	FPRINT_NUM(VideoTxLifeTimeMode);
 #endif
-#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP)
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
 	FPRINT_NUM(M2UEnabled);
 #endif
-#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	FPRINT_NUM(McastPhyMode);
 	FPRINT_NUM(McastMcs);
 #endif
-#if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER)
+#if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER) || defined(CONFIG_MT76X3_AP_CARRIER)
 	FPRINT_NUM(CarrierDetect);
 #endif
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT)
@@ -583,21 +583,21 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(JAPW53ParamCh2);
 	FPRINT_STR(JAPW53ParamCh3);
 #endif
-#if defined(CONFIG_MT7610_AP_ED_MONITOR) ||  defined(CONFIG_MT76X2_AP_ED_MONITOR)
+#if defined(CONFIG_MT7610_AP_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
 	FPRINT_NUM(EDCCA_ED_TH);
 	FPRINT_NUM(ED_MODE);
 	FPRINT_NUM(EDCCA_FALSE_CCA_TH);
 	FPRINT_NUM(ED_LEARN_TH);
 	FPRINT_NUM(EDCCA_BLOCK_CHECK_TH);
 #endif
-#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP)
+#if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP) || defined(CONFIG_MT76X3_AP_GREENAP)
 	FPRINT_NUM(GreenAP);
 #endif
-#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3)
+#if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3) || defined(CONFIG_MT76X3_AP_80211N_DRAFT3)
 	FPRINT_NUM(HT_BSSCoexistence);
 	FPRINT_NUM(HT_BSSCoexApCntThr);
 #endif
-#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
+#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
 	FPRINT_NUM(WdsEnable);
 	FPRINT_STR(WdsPhyMode);
 	FPRINT_STR(WdsTxMcs);
@@ -608,7 +608,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(Wds2Key);
 	FPRINT_STR(Wds3Key);
 #endif
-#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI)
+#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 	FPRINT_NUM(ApCliEnable);
 	FPRINT_STR(ApCliSsid);
 	FPRINT_STR(ApCliBssid);
@@ -620,7 +620,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(ApCliTxMcs);
 	FPRINT_STR(ApCliAPSDCapable);
 #endif
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS)
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
 	FPRINT_NUM(IdsEnable);
 	FPRINT_NUM(AuthFloodThreshold);
 	FPRINT_NUM(AssocReqFloodThreshold);
@@ -676,7 +676,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_NUM(KickStaRssiLowPSM);
 	FPRINT_NUM(KickStaRssiLowDelay);
 	FPRINT_NUM(ProbeRspRssi);
-#ifdef CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT
+#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)
 	/* Fast roaming auth transitions config */
 	FPRINT_STR(FtSupport);  	/* Enable Fast BSS Transition */
 	FPRINT_STR(FtRic);		/* Enable FT resource request */
@@ -692,7 +692,7 @@ static int gen_wifi_config(int mode, int genmode)
 	FPRINT_STR(FtR0khId3);
 	FPRINT_STR(FtR0khId4);
 #endif
-#ifdef CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT
+#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {

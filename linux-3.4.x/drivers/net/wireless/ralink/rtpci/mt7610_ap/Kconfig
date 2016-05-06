@@ -84,7 +84,7 @@ config  MT7610_ED_MONITOR
 config  MT7610_AP_EXT_CHANNEL_LIST
 	bool "Extension Channel List 802.11d compat"
 	depends on MT7610_AP
-	default n
+	default y
 
 #config  MT7610_AP_VIDEO_TURBINE
 #	bool "Video Turbine support"

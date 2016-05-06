@@ -240,7 +240,11 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, 100FDX"));
 #endif
 #elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
-    return websWrite(wp, T("MT7621 1000FDX MT76x2 2T2R dualband"));
+#ifdef CONFIG_MT76X3_AP
+    return websWrite(wp, T("MT7621 1000FDX MT7603 MT7612 2T2R dualband"));
+#else
+    return websWrite(wp, T("MT7621 1000FDX MT7602 MT7612 2T2R dualband"));
+#endif
 #else
     return websWrite(wp, T("Unknown switch mode"));
 #endif
@@ -249,7 +253,7 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getStationBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

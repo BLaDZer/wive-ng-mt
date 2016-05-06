@@ -90,17 +90,17 @@ config  MT76X2_AP_ED_MONITOR
 config  MT76X2_AP_DOT11R_FT_SUPPORT
 	bool "802.11r Fast BSS Transition"
 	depends on MT76X2_AP
-	default n
+	default y
 
 config  MT76X2_AP_DOT11K_RRM_SUPPORT
 	bool "802.11k Radio Resource Management"
 	depends on MT76X2_AP
-	default n
+	default y
 
 config  MT76X2_AP_EXT_CHANNEL_LIST
 	bool "Extension Channel List 802.11d compat"
 	depends on MT76X2_AP
-	default n
+	default y
 
 #config  MT76X2_AP_VIDEO_TURBINE
 #	bool "Video Turbine support"
@@ -126,7 +126,7 @@ config  MT76X2_AP_WAPI
 config  MT76X2_AP_IDS
 	bool "IDS (Intrusion Detection System) support"
 	depends on MT76X2_AP
-	default n
+	default y
 
 config  MT76X2_AP_80211N_DRAFT3
 	bool "802.11n Draft3 (BSS Coexistence)"
