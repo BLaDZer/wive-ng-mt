@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.111.103 Kernel Configuration
+# Linux/mips 3.4.112.111 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1735,6 +1735,7 @@ CONFIG_RAETH_SNMPD=y
 # CONFIG_RT_FIRST_IF_MT7610E is not set
 # CONFIG_RT_FIRST_IF_MT7612E is not set
 CONFIG_RT_FIRST_IF_MT7602E=y
+# CONFIG_RT_FIRST_IF_MT7603E is not set
 CONFIG_RT_FIRST_IF_RANGE_2GHZ=y
 CONFIG_RT_FIRST_IF_EEPROM_FLASH=y
 # CONFIG_RT_FIRST_IF_EEPROM_EFUSE is not set
