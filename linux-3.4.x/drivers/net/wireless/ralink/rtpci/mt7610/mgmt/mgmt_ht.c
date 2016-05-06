@@ -686,6 +686,8 @@ INT	SetCommonHT(RTMP_ADAPTER *pAd)
 		return FALSE;
 	}
 
+	N_ChannelCheck(pAd);
+
 #ifdef DOT11_VHT_AC
 	SetCommonVHT(pAd);
 #endif /* DOT11_VHT_AC */

@@ -432,6 +432,7 @@ static inline UCHAR SelectClearChannelCCA(
 		if (pChannelInfo->FalseCCA[channel_idx] <= CCA_THRESHOLD)
 		{
 			UINT32 dirtyness = pChannelInfo->dirtyness[channel_idx];
+			UINT ExtBelowDirtyness=0xFFFFFFFF,ExtAboveDirtyness=0xFFFFFFFF,ExtDirtyness=0;
 			ch = pAd->ChannelList[channel_idx].Channel;
 
 #ifdef AP_QLOAD_SUPPORT
@@ -473,26 +474,46 @@ static inline UCHAR SelectClearChannelCCA(
 				}
 				else
 				{
-					UCHAR ExChannel_idx = 0;
-					if (pAd->ChannelList[channel_idx].Channel == 14)
+					if ((pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40))
 					{
-						dirtyness = 0xFFFFFFFF;
-						break;
-					}
-					else
-					{
-						NdisZeroMemory(ExChannel, sizeof(ExChannel));
 						if (((channel_idx - 4) >=0) && ((channel_idx - 4) < pAd->ChannelListNum))
 						{
-							dirtyness += pChannelInfo->dirtyness[channel_idx - 4];
-							ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx - 4].Channel;
-					    }
 
+							if ((pChannelInfo->FalseCCA[channel_idx-1] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx-2] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx-3] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx-4] > CCA_THRESHOLD))
+								continue;								
+							
+							ExtBelowDirtyness = pChannelInfo->dirtyness[channel_idx-1] +
+ 												pChannelInfo->dirtyness[channel_idx-2] +
+ 												pChannelInfo->dirtyness[channel_idx-3] +
+ 												pChannelInfo->dirtyness[channel_idx-4];
+						}
 						if (((channel_idx + 4) >=0) && ((channel_idx + 4) < pAd->ChannelListNum))
 						{
-						    dirtyness += pChannelInfo->dirtyness[channel_idx + 4];
-						    ExChannel[ExChannel_idx++] = pAd->ChannelList[channel_idx + 4].Channel;
+
+							if ((pChannelInfo->FalseCCA[channel_idx+1] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx+2] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx+3] > CCA_THRESHOLD) ||
+								(pChannelInfo->FalseCCA[channel_idx+4] > CCA_THRESHOLD))
+								continue;								
+							
+							ExtAboveDirtyness = pChannelInfo->dirtyness[channel_idx+1] +
+												pChannelInfo->dirtyness[channel_idx+2] +
+												pChannelInfo->dirtyness[channel_idx+3] +
+												pChannelInfo->dirtyness[channel_idx+4];
 						}
+
+						ExtDirtyness = (ExtBelowDirtyness < ExtAboveDirtyness)?ExtBelowDirtyness:ExtAboveDirtyness;						
+						
+						// amplify dirtyness of primary channel to avoid 
+						// selecting above ext_channel always
+						// ex: ch 13 has lower dirtyness than ch 9
+						// but select [9, 13] above instead of [13, 9] below
+						// update dirtyness within 40M (primary + second channel)
+						//
+						dirtyness = dirtyness*2 + ExtDirtyness;
 					}
 				}
 			}
@@ -503,6 +524,11 @@ static inline UCHAR SelectClearChannelCCA(
 				min_dirty = dirtyness;
 				candidate_ch = channel_idx;
 				NdisMoveMemory(candidate_ExChannel, ExChannel, 2);
+				if ((pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40))
+				{
+					pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = \
+						(ExtBelowDirtyness < ExtAboveDirtyness)?EXTCHA_BELOW:EXTCHA_ABOVE;
+				}				
 			}
 		}
 	}
