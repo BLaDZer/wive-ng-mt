@@ -2634,7 +2634,7 @@ VOID APOverlappingBSSScan(RTMP_ADAPTER *pAd)
 				curPriChIdx = index;
 				curSecChIdx = ((index - 4) >=0 ) ? (index - 4) : 0;
 				chStartIdx =(curSecChIdx >= 3) ? (curSecChIdx - 3) : 0;
-				chEndIdx =  ((curPriChIdx + 3) < pAd->ChannelListNum) ? (curPriChIdx + 3) : (pAd->ChannelListNum - 1);;
+				chEndIdx =  ((curPriChIdx + 3) < pAd->ChannelListNum) ? (curPriChIdx + 3) : (pAd->ChannelListNum - 1);
 			}
 		}
 		else

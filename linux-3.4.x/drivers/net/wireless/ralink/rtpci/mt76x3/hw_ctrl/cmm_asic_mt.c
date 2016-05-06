@@ -1605,7 +1605,7 @@ INT AsicSetAllWmmParam(RTMP_ADAPTER *pAd,PEDCA_PARM pEdcaParm)
 {
 	CMD_EDCA_SET_T EdcaParam;
 	P_TX_AC_PARAM_T pAcParam;
-	UINT32 ac=0,index=0;;
+	UINT32 ac=0,index=0;
 
 	NdisZeroMemory(&EdcaParam,sizeof(CMD_EDCA_SET_T));
 	EdcaParam.ucTotalNum = CMD_EDCA_AC_MAX;
@@ -3713,7 +3713,9 @@ VOID AsicAddPairwiseKeyEntry(
 	UCHAR *pKey = pCipherKey->Key;
 	UCHAR *pTxMic = pCipherKey->TxMic;
 	UCHAR *pRxMic = pCipherKey->RxMic;
+#ifdef DBG
 	UCHAR CipherAlg = pCipherKey->CipherAlg;
+#endif
 #ifdef RTMP_MAC
 #ifdef RTMP_MAC_PCI
 #endif /* RTMP_MAC_PCI */
@@ -3777,10 +3779,7 @@ VOID AsicAddPairwiseKeyEntry(
 		}
 #endif /* RTMP_MAC_PCI */
 	}
-#ifdef RTMP_MAC
-#ifdef RTMP_MAC_PCI
-#endif /* RTMP_MAC_PCI */
-#endif /* RTMP_MAC */
+
 	DBGPRINT(RT_DEBUG_TRACE,("AsicAddPairwiseKeyEntry: WCID #%d Alg=%s\n",WCID, CipherName[CipherAlg]));
 	DBGPRINT(RT_DEBUG_TRACE,("	Key = %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
 		pKey[0],pKey[1],pKey[2],pKey[3],pKey[4],pKey[5],pKey[6],pKey[7],pKey[8],pKey[9],pKey[10],pKey[11],pKey[12],pKey[13],pKey[14],pKey[15]));
@@ -6081,12 +6080,13 @@ VOID AsicSetRxGroup(RTMP_ADAPTER *pAd, UINT32 Port, UINT32 Group, BOOLEAN Enable
 
 
 #if defined(RTMP_MAC_PCI) || defined(RTMP_MAC_USB)
+#ifdef CONFIG_FPGA_MODE
 static CHAR *dma_sch_str[] = {
 	"LMAC",
 	"ByPass",
 	"HyBrid",
 	};
-
+#endif
 
 /*
     DMA scheduer reservation page assignment

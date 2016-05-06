@@ -329,7 +329,7 @@ VOID ReceiveGASInitReq(
 	UCHAR APIndex, *Pos, *Buf;
 	UINT16 VarLen;
 	UINT32 Len = 0;
-	BOOLEAN IsFound = FALSE, Cancelled;;
+	BOOLEAN IsFound = FALSE, Cancelled;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s\n", __FUNCTION__));
 	

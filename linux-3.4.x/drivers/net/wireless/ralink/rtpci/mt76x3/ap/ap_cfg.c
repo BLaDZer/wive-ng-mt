@@ -1407,9 +1407,8 @@ INT RTMPAPSetInformation(
 
 #ifdef SNMP_SUPPORT
 	/*snmp */
-    UINT						KeyIdx = 0;
-    PNDIS_AP_802_11_KEY			pKey = NULL;
-	ULONG						ShortRetryLimit, LongRetryLimit;
+	PNDIS_AP_802_11_KEY			pKey = NULL;
+	ULONG					ShortRetryLimit, LongRetryLimit;
 #endif /* SNMP_SUPPORT */
 
 
@@ -3035,7 +3034,6 @@ INT RTMPAPQueryInformation(
 #endif /* WSC_AP_SUPPORT */
 
 #ifdef SNMP_SUPPORT
-	ULONG ulInfo;
 	DefaultKeyIdxValue *pKeyIdxValue;
 	INT valueLen;
 	ULONG ShortRetryLimit, LongRetryLimit;

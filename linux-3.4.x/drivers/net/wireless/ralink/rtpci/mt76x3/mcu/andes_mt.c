@@ -1982,7 +1982,9 @@ error:
 
 static VOID EventExtNicCapability(struct cmd_msg *msg, char *Data, UINT16 Len)
 {
+#ifdef DBG
 	struct _EXT_EVENT_NIC_CAPABILITY_T *ExtEventNicCapability = (EXT_EVENT_NIC_CAPABILITY *)Data;
+#endif
 	UINT32 Loop;
 
 	DBGPRINT(RT_DEBUG_OFF, ("The data code of firmware:"));
@@ -3357,7 +3359,6 @@ VOID CmdSetTxPowerCtrl(RTMP_ADAPTER *pAd, UINT8 central_chl)
 	int i, j;
 	UINT8 PwrPercentageDelta = 0;
 	USHORT Value;
-	struct MT_TX_PWR_CAP *cap = &pAd->chipCap.MTTxPwrCap;
 
 	msg = AndesAllocCmdMsg(pAd, sizeof(EXT_CMD_TX_POWER_CTRL_T));
 

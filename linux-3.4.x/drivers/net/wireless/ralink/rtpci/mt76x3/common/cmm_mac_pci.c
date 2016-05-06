@@ -586,7 +586,7 @@ NDIS_STATUS RTMPInitTxRxRingMemory(RTMP_ADAPTER *pAd)
 			dma_cb->AllocSize = RXD_SIZE;
 			dma_cb->AllocVa = RingBaseVa;
 			RTMP_SetPhysicalAddressHigh(dma_cb->AllocPa, 0/*RingBasePaHigh*/);
-			RTMP_SetPhysicalAddressLow (dma_cb->AllocPa, RingBasePaLow);;
+			RTMP_SetPhysicalAddressLow (dma_cb->AllocPa, RingBasePaLow);
 
 			/* Offset to next ring descriptor address */
 			RingBasePaLow += RXD_SIZE;

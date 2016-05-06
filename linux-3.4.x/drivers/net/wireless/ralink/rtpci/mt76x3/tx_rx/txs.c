@@ -76,15 +76,13 @@ INT32 UAPSDTxSHandler(RTMP_ADAPTER *pAd, CHAR *Data, UINT32 Priv)
 #endif
 
 INT32 BcnTxSHandler(RTMP_ADAPTER *pAd, CHAR *Data, UINT32 Priv)
-{	
+{
+#if defined(CONFIG_AP_SUPPORT) && defined(DBG)
 	TXS_STRUC *txs_entry = (TXS_STRUC *)Data;
 	//TXS_D_0 *txs_d0 = &txs_entry->txs_d0;
-#if defined(CONFIG_AP_SUPPORT) && defined(DBG)
 	TXS_D_1 *txs_d1 = &txs_entry->txs_d1;
-#endif /* defined(CONFIG_AP_SUPPORT) && defined(DBG) */
 	//TXS_D_2 *txs_d2 = &txs_entry->txs_d2;
 	//TXS_D_3 *txs_d3 = &txs_entry->txs_d3;
-#if defined(CONFIG_AP_SUPPORT) && defined(DBG)
 	TXS_D_4 *txs_d4 = &txs_entry->txs_d4;
 #endif /* defined(CONFIG_AP_SUPPORT) && defined(DBG) */
 
@@ -568,13 +566,14 @@ INT32 TxSTypeCtlPerPktType(RTMP_ADAPTER *pAd, UINT8 PktType, UINT8 PktSubType, U
 
 static VOID DumpTxSFormat(RTMP_ADAPTER *pAd, UINT8 Format, CHAR *Data)
 { 
+#ifdef DBG
 	TXS_STRUC *txs_entry = (TXS_STRUC *)Data;
 	TXS_D_0 *txs_d0 = &txs_entry->txs_d0;
 	TXS_D_1 *txs_d1 = &txs_entry->txs_d1;
 	TXS_D_2 *txs_d2 = &txs_entry->txs_d2;
 	TXS_D_3 *txs_d3 = &txs_entry->txs_d3;
 	TXS_D_4 *txs_d4 = &txs_entry->txs_d4;
-
+#endif
 	DBGPRINT(RT_DEBUG_OFF, ("\t\t(TXSFM=%d, TXS2M=%d, TXS2H=%d)\n", txs_d0->txsfm, txs_d0->txs2m, txs_d0->txs2h));
 	
 	DBGPRINT(RT_DEBUG_OFF, ("\t\tFR=%d, TxRate=0x%x\n", txs_d0->fr, txs_d0->tx_rate));

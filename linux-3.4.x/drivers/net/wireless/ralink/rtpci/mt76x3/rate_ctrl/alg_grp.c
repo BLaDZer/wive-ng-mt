@@ -1569,7 +1569,7 @@ static UCHAR LowTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry,  MT_T
 	UINT32 TxSuccCount = 0;
 	RTMP_RA_GRP_TB *pCurrTxRate;
 	PUCHAR pTable = pEntry->pTable;
-	UCHAR CurrRateIdx = pEntry->CurrTxRateIndex;;
+	UCHAR CurrRateIdx = pEntry->CurrTxRateIndex;
 
 
 	TxSuccCount = (pEntry->OneSecTxRetryOkCount + pEntry->OneSecTxNoRetryOkCount - pEntry->OneSecTxFailCount);
@@ -1580,7 +1580,7 @@ static UCHAR LowTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry,  MT_T
 		ErrToSuccRatio = 0xff;
 
 
-	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);;
+	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
 	if (TxSuccCount)
 	{

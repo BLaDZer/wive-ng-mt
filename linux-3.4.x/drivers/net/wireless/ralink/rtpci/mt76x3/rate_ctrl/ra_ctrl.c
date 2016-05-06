@@ -1934,7 +1934,10 @@ VOID MlmeRALog(
 #endif /* DBG_CTRL_SUPPORT */
 	)
 	{
-		BOOLEAN stbc, csd=FALSE;
+		BOOLEAN stbc;
+#ifdef STREAM_MODE_SUPPORT
+		BOOLEAN csd=FALSE;
+#endif
 		ULONG tp;
 
 		/*  Get STBC and StreamMode state */

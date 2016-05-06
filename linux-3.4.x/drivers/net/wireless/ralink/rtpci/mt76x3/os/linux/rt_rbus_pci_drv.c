@@ -1536,7 +1536,9 @@ redo:
 			RTMP_INT_LOCK(&pAd->LockInterrupt, flags);
 			if ((pAd->int_disable_mask & WF_MAC_INT_3) == 0)
 			{
+#ifdef DBG
                 UINT32   Lowpart, Highpart;
+#endif
                 rt2860_int_disable(pAd, WF_MAC_INT_3);
                 RTMP_IO_WRITE32(pAd, HWIER3, en_reg);
                 if (stat_reg & BIT31) {

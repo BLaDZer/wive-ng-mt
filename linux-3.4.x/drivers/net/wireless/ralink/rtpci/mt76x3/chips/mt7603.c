@@ -26,7 +26,9 @@
 
 static VOID mt7603_bbp_adjust(RTMP_ADAPTER *pAd)
 {
+#ifdef DBG
 	static char *ext_str[]={"extNone", "extAbove", "", "extBelow"};
+#endif
 	UCHAR rf_bw, ext_ch;
 
 #ifdef DOT11_N_SUPPORT
@@ -765,7 +767,9 @@ void mt7603_get_tx_pwr_info(RTMP_ADAPTER *pAd)
 
 static VOID mt7603_show_pwr_info(RTMP_ADAPTER *pAd)
 {
+#ifdef DBG
 	struct MT_TX_PWR_CAP *cap = &pAd->chipCap.MTTxPwrCap;
+#endif
 	UINT32 value;
 
 	DBGPRINT(RT_DEBUG_OFF, ("\n===================================\n"));

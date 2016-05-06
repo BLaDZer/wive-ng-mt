@@ -7584,7 +7584,7 @@ INT Set_ModuleTxpower_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 #ifdef CAPTURE_MODE
 INT set_cap_dump(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
-	ULONG seg = simple_strtol(arg, 0, 10);;
+	ULONG seg = simple_strtol(arg, 0, 10);
 	CHAR *buf1, *buf2;
 	UINT32 offset = 0;
 	

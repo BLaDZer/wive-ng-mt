@@ -6958,7 +6958,7 @@ VOID IterateOnBssTab(
 	IN  RTMP_ADAPTER *pAd);
 
 VOID IterateOnBssTab2(
-	IN  RTMP_ADAPTER *pAd);;
+	IN  RTMP_ADAPTER *pAd);
 
 VOID JoinParmFill(
 	IN  RTMP_ADAPTER *pAd,

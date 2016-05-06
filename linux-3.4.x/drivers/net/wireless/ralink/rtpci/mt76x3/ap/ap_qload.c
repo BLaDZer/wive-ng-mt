@@ -73,10 +73,10 @@ typedef struct GNU_PACKED _ELM_QBSS_LOAD{
 #define QBSS_LOAD_ALARM_DURATION				100 /* unit: TBTT */
 
 
+#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 static VOID QBSS_LoadAlarmSuspend(
  	IN		RTMP_ADAPTER	*pAd);
 
-#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 /* handle a alarm */
 static VOID QBSS_LoadAlarm(
  	IN		RTMP_ADAPTER	*pAd);
@@ -367,13 +367,13 @@ Return Value:
 Note:
 ========================================================================
 */
+#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 static VOID QBSS_LoadAlarmSuspend(
  	IN		RTMP_ADAPTER	*pAd)
 {
-#ifdef QLOAD_FUNC_BUSY_TIME_ALARM
 	pAd->phy_ctrl.FlgQloadAlarmIsSuspended = TRUE;
-#endif /* QLOAD_FUNC_BUSY_TIME_ALARM */
 }
+#endif /* QLOAD_FUNC_BUSY_TIME_ALARM */
 
 
 /*

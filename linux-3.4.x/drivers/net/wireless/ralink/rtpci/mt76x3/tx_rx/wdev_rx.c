@@ -2109,8 +2109,9 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		UCHAR icmpType;
 		unsigned char * srcip,*dstip;
 		unsigned short *seq;
+#ifdef DBG
 		unsigned char a,b,c,d;
-
+#endif
 		srcip=pLayerHdr+12;
 		dstip=pLayerHdr+16;
 		pLayerHdr += 20;

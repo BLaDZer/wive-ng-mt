@@ -258,7 +258,7 @@ INT NfcBuildOOBDevPasswdTLV(
 	OUT	UCHAR *pbuf,
 	OUT USHORT *pBufLen)
 {
-	UCHAR *TB = NULL;;
+	UCHAR *TB = NULL;
 	PUCHAR pData = NULL;
 	PUCHAR pSrcData = NULL;
 	USHORT PasswdID = 0, len;

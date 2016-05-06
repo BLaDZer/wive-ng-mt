@@ -1167,8 +1167,9 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		}
 	}
 
-	if (IS_ENTRY_CLIENT(pMacEntry))
+	if (IS_ENTRY_CLIENT(pMacEntry)) {
 		ASSERT(pMacEntry->Sst == SST_ASSOC);
+	}
 
 	/* 2. Always send back ADDBA Response */
 	NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);	 /*Get an unused nonpaged memory*/
