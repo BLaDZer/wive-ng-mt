@@ -159,7 +159,7 @@ struct myoption {
 #define LOPT_SCRIPT_ARP    347
 #define LOPT_DHCPTTL       348
 #define LOPT_TFTP_MTU      349
-
+ 
 #ifdef HAVE_GETOPT_LONG
 static const struct option opts[] =  
 #else
@@ -459,7 +459,7 @@ static struct {
   { LOPT_TEST, 0, NULL, gettext_noop("Check configuration syntax."), NULL },
   { LOPT_ADD_MAC, ARG_DUP, "[=base64|text]", gettext_noop("Add requestor's MAC address to forwarded DNS queries."), NULL },
   { LOPT_ADD_SBNET, ARG_ONE, "<v4 pref>[,<v6 pref>]", gettext_noop("Add specified IP subnet to forwarded DNS queries."), NULL },
-   { LOPT_CPE_ID, ARG_ONE, "<text>", gettext_noop("Add client identification to forwarded DNS queries."), NULL },
+  { LOPT_CPE_ID, ARG_ONE, "<text>", gettext_noop("Add client identification to forwarded DNS queries."), NULL },
   { LOPT_DNSSEC, OPT_DNSSEC_PROXY, NULL, gettext_noop("Proxy DNSSEC validation results from upstream nameservers."), NULL },
   { LOPT_INCR_ADDR, OPT_CONSEC_ADDR, NULL, gettext_noop("Attempt to allocate sequential IP addresses to DHCP clients."), NULL },
   { LOPT_CONNTRACK, OPT_CONNTRACK, NULL, gettext_noop("Copy connection-track mark from queries to upstream connections."), NULL },
@@ -1199,7 +1199,8 @@ static int parse_dhcp_opt(char *errstr, char *arg, int flags)
 	      cp = comma;
 	      comma = split(cp);
 	      slash = split_chr(cp, '/');
-	      inet_pton(AF_INET, cp, &in);
+	      if (!inet_pton(AF_INET, cp, &in))
+		ret_err(_("bad IPv4 address"));
 	      if (!slash)
 		{
 		  memcpy(op, &in, INADDRSZ);
@@ -1650,9 +1651,9 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
           if (comma)
             {
 	      new = opt_malloc(sizeof(struct mysubnet));
-              if ((end = split_chr(comma, '/')))
-                {
-                  /* has subnet+len */
+	      if ((end = split_chr(comma, '/')))
+		{
+		  /* has subnet+len */
                   err = parse_mysockaddr(comma, &new->addr);
                   if (err)
                     ret_err(err);
@@ -1666,8 +1667,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
                     ret_err(gen_err);
                 }
           
-          daemon->add_subnet6 = new;
-	}
+	      daemon->add_subnet6 = new;
+	    }
 	}
       break;
 
@@ -2774,13 +2775,13 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		  ret_err(_("inconsistent DHCP range"));
 		
 	    
-	    if (k >= 4 && strchr(a[3], '.') &&  
-		(inet_pton(AF_INET, a[3], &new->broadcast) > 0))
-	      {
-		new->flags |= CONTEXT_BRDCAST;
-		leasepos = 4;
+		if (k >= 4 && strchr(a[3], '.') &&  
+		    (inet_pton(AF_INET, a[3], &new->broadcast) > 0))
+		  {
+		    new->flags |= CONTEXT_BRDCAST;
+		    leasepos = 4;
+		  }
 	      }
-	  }
 	  }
 #ifdef HAVE_DHCP6
 	else if (inet_pton(AF_INET6, a[0], &new->start6))
@@ -2966,7 +2967,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 			}
 
 		      if (len == -1)
-
 			ret_err(_("bad hex constant"));
 		      else if ((new->clid = opt_malloc(len)))
 			{
@@ -3659,8 +3659,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    (!(inet_pton(AF_INET, a[1], &new->out) > 0)))
 	  option = '?';
 	
-	if (k == 3)
-	  inet_pton(AF_INET, a[2], &new->mask);
+	if (k == 3 && !inet_pton(AF_INET, a[2], &new->mask))
+	  option = '?';
 	
 	if (dash && 
 	    (!(inet_pton(AF_INET, dash, &new->end) > 0) ||
@@ -3800,7 +3800,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case LOPT_RR: /* dns-rr */
       {
        	struct txt_record *new;
-	size_t len = len;
+	size_t len = 0;
 	char *data;
 	int val;
 
@@ -3909,10 +3909,10 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		      ret_err(_("invalid priority"));
 			
 		    if (comma && !atoi_check16(comma, &weight))
-			  ret_err(_("invalid weight"));
-		      }
+		      ret_err(_("invalid weight"));
 		  }
 	      }
+	  }
 	
 	new = opt_malloc(sizeof(struct mx_srv_record));
 	new->next = daemon->mxnames;
@@ -3931,7 +3931,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	struct host_record *new = opt_malloc(sizeof(struct host_record));
 	memset(new, 0, sizeof(struct host_record));
 	new->ttl = -1;
-	
+
 	if (!arg || !(comma = split(arg)))
 	  ret_err(_("Bad host-record"));
 	
@@ -4612,20 +4612,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
     {
       struct server *tmp;
       for (tmp = daemon->servers; tmp; tmp = tmp->next)
-	{
-	  tmp->edns_pktsz = daemon->edns_pktsz;
-	 
-	  if (!(tmp->flags & SERV_HAS_SOURCE))
-	    {
-	      if (tmp->source_addr.sa.sa_family == AF_INET)
-		tmp->source_addr.in.sin_port = htons(daemon->query_port);
+	if (!(tmp->flags & SERV_HAS_SOURCE))
+	  {
+	    if (tmp->source_addr.sa.sa_family == AF_INET)
+	      tmp->source_addr.in.sin_port = htons(daemon->query_port);
 #ifdef HAVE_IPV6
-	      else if (tmp->source_addr.sa.sa_family == AF_INET6)
-		tmp->source_addr.in6.sin6_port = htons(daemon->query_port);
+	    else if (tmp->source_addr.sa.sa_family == AF_INET6)
+	      tmp->source_addr.in6.sin6_port = htons(daemon->query_port);
 #endif 
-	    }
-	} 
-    }
+	  }
+    } 
   
   if (daemon->host_records)
     {

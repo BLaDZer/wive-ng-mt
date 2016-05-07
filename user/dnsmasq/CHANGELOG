@@ -40,15 +40,32 @@ version 2.76
 
 	    Extend --add-mac to allow a new encoding of the MAC address 
 	    as base64, by configurting --add-mac=base64
-
+ 
 	    Add --add-cpe-id option.
 
             Don't crash with divide-by-zero if an IPv6 dhcp-range
 	    is declared as a whole /64.
 	    (ie xx::0 to xx::ffff:ffff:ffff:ffff) 
 	    Thanks to Laurent Bendel for spotting this problem.
-	    
-	
+
+	    Add support for a TTL parameter in --host-record and
+	    --cname.
+
+	    Add --dhcp-ttl option.
+
+	    Add --tftp-mtu option. Thanks to Patrick McLean for the 
+	    initial patch.
+
+	    Check return-code of inet_pton() when parsing dhcp-option.
+	    Bad addresses could fail to generate errors and result in
+	    garbage dhcp-options being sent. Thanks to Marc Branchaud 
+	    for spotting this.
+
+	    Fix wrong value for EDNS UDP packet size when using 
+	    --servers-file to define upstream DNS servers. Thanks to
+	    Scott Bonar for the bug report.
+
+
 version 2.75
             Fix reversion on 2.74 which caused 100% CPU use when a 
 	    dhcp-script is configured. Thanks to Adrian Davey for
@@ -172,7 +189,7 @@ version 2.73
 	    Previously we provided correct answers to PTR queries
 	    in such zones (including NS and SOA) but not direct
 	    NS and SOA queries. Thanks to Johnny S. Lee for 
-	    pointing out the problem.
+ 	    pointing out the problem.
 
 	    Fix logging of DHCPREPLY which should be suppressed 
 	    by quiet-dhcp6. Thanks to J. Pablo Abonia for 
@@ -194,7 +211,7 @@ version 2.73
 	    in the correct subnet, even of not in dynamic address 
 	    allocation range. Thanks to Steve Hirsch for spotting
 	    the problem.
-	
+
 	    Add AddDhcpLease and DeleteDhcpLease DBus methods. Thanks
 	    to Nicolas Cavallari for the patch.
 
@@ -248,15 +265,7 @@ version 2.72
             Fix problem with --local-service option on big-endian platforms
 	    Thanks to Richard Genoud for the patch.
 
-	    Add support for a TTL parameter in --host-record and
-	    --cname.
-
-	    Add --dhcp-ttl option.
-
-	    Add --tftp-mtu option. Thanks to Patrick McLean for the 
-	    initial patch.
-
-
+	
 version 2.71
             Subtle change to error handling to help DNSSEC validation 
 	    when servers fail to provide NODATA answers for 

@@ -95,6 +95,8 @@ unsigned char *find_pseudoheader(struct dns_header *header, size_t plen, size_t 
   return ret;
 }
  
+
+/* replace == 2 ->delete existing option only. */
 size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *limit, 
 			unsigned short udp_sz, int optno, unsigned char *opt, size_t optlen, int set_do, int replace)
 { 
@@ -120,7 +122,7 @@ size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *l
 
       if (set_do)
 	{
-	  p -=2;
+	  p -= 2;
 	  flags |= 0x8000;
 	  PUTSHORT(flags, p);
 	}
@@ -145,13 +147,14 @@ size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *l
 	  if (i + len > rdlen)
 	    {
 	      rdlen = 0;
+	      is_last = 0;
 	      break;
 	    }
 	  
 	  if (code == optno)
 	    {
-	      if (!replace)
-	    return plen;
+	      if (replace == 0)
+		return plen;
 
 	      /* delete option if we're to replace it. */
 	      p -= 4;
@@ -162,7 +165,7 @@ size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *l
 	    }
 	  else
 	    {
-	  p += len;
+	      p += len;
 	      i += len + 4;
 	    }
 	}
@@ -212,7 +215,7 @@ size_t add_pseudoheader(struct dns_header *header, size_t plen, unsigned char *l
     return plen; /* Too big */
   
   /* Add new option */
-  if (optno != 0)
+  if (optno != 0 && replace != 2)
     {
       PUTSHORT(optno, p);
       PUTSHORT(optlen, p);
@@ -243,24 +246,25 @@ static void encoder(unsigned char *in, char *out)
 
 static size_t add_dns_client(struct dns_header *header, size_t plen, unsigned char *limit, union mysockaddr *l3, time_t now)
 {
-  int maclen;
+  int maclen, replace = 2; /* can't get mac address, just delete any incoming. */
   unsigned char mac[DHCP_CHADDR_MAX];
   char encode[18]; /* handle 6 byte MACs */
 
   if ((maclen = find_mac(l3, mac, 1, now)) == 6)
     {
+      replace = 1;
+
       if (option_bool(OPT_MAC_HEX))
 	print_mac(encode, mac, maclen);
       else
 	{
-      encoder(mac, encode);
-      encoder(mac+3, encode+4);
+	  encoder(mac, encode);
+	  encoder(mac+3, encode+4);
 	  encode[8] = 0;
 	}
-      plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_NOMDEVICEID, (unsigned char *)encode, strlen(encode), 0, 1); 
     }
 
-  return plen; 
+  return add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_NOMDEVICEID, (unsigned char *)encode, strlen(encode), 0, replace); 
 }
 
 
@@ -328,14 +332,14 @@ static size_t calc_subnet_opt(struct subnet_opt *opt, union mysockaddr *source)
 	  sa_family = daemon->add_subnet4->addr.sa.sa_family;
 	  addrp = get_addrp(&daemon->add_subnet4->addr, sa_family);
 	} 
-      else 
-	addrp = &source->in.sin_addr;
+	else 
+	  addrp = &source->in.sin_addr;
     }
   
 #ifdef HAVE_IPV6
-      opt->family = htons(sa_family == AF_INET6 ? 2 : 1);
+  opt->family = htons(sa_family == AF_INET6 ? 2 : 1);
 #else
-      opt->family = htons(1);
+  opt->family = htons(1);
 #endif
   
   len = 0;
@@ -347,7 +351,7 @@ static size_t calc_subnet_opt(struct subnet_opt *opt, union mysockaddr *source)
       if (opt->source_netmask & 7)
 	opt->addr[len-1] &= 0xff << (8 - (opt->source_netmask & 7));
     }
-
+  
   return len + 4;
 }
  
