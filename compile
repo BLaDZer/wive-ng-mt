@@ -204,6 +204,8 @@ if [ "$FMODE" = "YES" ]; then
     cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt7610/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
     mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
     cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
+    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x3/ate
+    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x3/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x3/ate
 
     echo "Reconfigure kernel"
     sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
@@ -211,6 +213,8 @@ if [ "$FMODE" = "YES" ]; then
     sed 's/# CONFIG_MT7610_AP_ATE is not set/CONFIG_MT7610_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
     sed 's/# CONFIG_MT76X2_AP_ATE is not set/CONFIG_MT76X2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
+    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
+    sed 's/# CONFIG_MT76X3_AP_ATE is not set/CONFIG_MT76X3_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
     mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
 
     echo "Reconfigure userspace"

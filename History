@@ -2031,19 +2031,20 @@
 34) kernel: ralink_wifi: add mt7603 driver support.<br>
 35) kernel: ralink_wifi: mt76x3: driver update to 4.1.0.0 pre version.<br>
 36) kernel: ralink_wifi: mt76x3: fix build warnings.<br>
-37) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-38) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-39) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-40) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-41) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-42) kernel: usb: cdc-acm: more sanity checking.<br>
-43) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-44) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-45) kernel: net: ethtool: fix phy adress get from user.<br>
-46) kernel: net: fix net_gso_ok for new GSO types.<br>
-47) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-48) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-49) kernel: net: validate variable length ll headers.<br>
+37) kernel: ralink_wifi: mt76x3: fix ate build and work.<br>
+38) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+39) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+40) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+41) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+42) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+43) kernel: usb: cdc-acm: more sanity checking.<br>
+44) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+45) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+46) kernel: net: ethtool: fix phy adress get from user.<br>
+47) kernel: net: fix net_gso_ok for new GSO types.<br>
+48) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+49) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+50) kernel: net: validate variable length ll headers.<br>
 <br>
 <br>
 <br>

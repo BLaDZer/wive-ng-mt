@@ -4482,6 +4482,7 @@ MONITOR_STRUCT monitor_ctrl;
 
 
 #ifdef CONFIG_ATE
+	ATE_INFO ate;
 	ATE_CTRL ATECtrl;
 #endif
 
