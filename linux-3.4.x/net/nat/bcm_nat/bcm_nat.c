@@ -77,8 +77,8 @@ int __fastpathnet bcm_fast_path(struct sk_buff *skb)
 {
 	if (skb_dst(skb) == NULL) {
 		const struct iphdr *iph = ip_hdr(skb);
-
-		if (unlikely(ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev))) {
+		int err = ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
+		if (unlikely(err)) {
 			kfree_skb(skb);
 			return -EINVAL;
 		}
@@ -160,8 +160,8 @@ int __fastpathnet bcm_do_fastnat(struct nf_conn *ct,
 
 			if (skb_dst(skb) == NULL && mtype == NF_NAT_MANIP_SRC) {
 				const struct iphdr *iph = ip_hdr(skb);
-
-				if (unlikely(ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev)))
+				int err = ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
+				if (unlikely(err))
 					return NF_DROP;
 
 				/* Change skb owner to output device */
