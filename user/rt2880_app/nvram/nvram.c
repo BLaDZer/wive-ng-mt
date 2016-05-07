@@ -694,6 +694,9 @@ static int gen_wifi_config(int mode, int genmode)
 #endif
 #if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
+#ifdef CONFIG_MT76X3_AP_SMART_CARRIER_SENSE
+	FPRINT_NUM(SCSEnable);
+#endif
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 	    FPRINT_STR(RegulatoryClass);
