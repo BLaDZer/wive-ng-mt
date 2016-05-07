@@ -65,14 +65,14 @@ static inline u32 __sfhash_nwords(const void *key, u32 len, u32 initval)
 
 /* The generic version
  */
-static inline u32 sfhash(const void *key, u32 length, u32 initval)
+static __always_inline u32 sfhash(const void *key, u32 length, u32 initval)
 {
 	return __sfhash_nwords(key, length, initval);
 }
 
 /* Special versions for hashing exactly 3 words.
  */
-static inline u32 sfhash_3words(u32 a, u32 b, u32 c, u32 initval)
+static __always_inline u32 sfhash_3words(u32 a, u32 b, u32 c, u32 initval)
 {
 	u32 data[3] = {a,b,c};
 
@@ -81,14 +81,14 @@ static inline u32 sfhash_3words(u32 a, u32 b, u32 c, u32 initval)
 
 /* Special versions for hashing exactly 2 words.
  */
-static inline u32 sfhash_2words(u32 a, u32 b, u32 initval)
+static __always_inline u32 sfhash_2words(u32 a, u32 b, u32 initval)
 {
 	return sfhash_3words(a, b, 0, initval);
 }
 
 /* Special versions for hashing exactly 1 words.
  */
-static inline u32 sfhash_1word(u32 a, u32 initval)
+static __always_inline u32 sfhash_1word(u32 a, u32 initval)
 {
 	return sfhash_3words(a, 0, 0, initval);
 }

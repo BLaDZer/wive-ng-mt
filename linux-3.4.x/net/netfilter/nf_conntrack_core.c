@@ -94,7 +94,7 @@ EXPORT_SYMBOL_GPL(web_str_loaded);
 #endif
 
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
-static inline unsigned int is_local_svc(u_int8_t protonm)
+static __always_inline unsigned int is_local_svc(u_int8_t protonm)
 {
 	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4/icmp proto must be skip from hardware offload
 	    and mark as interested by ALG  for correct tracking this */
@@ -120,7 +120,7 @@ static inline unsigned int is_local_svc(u_int8_t protonm)
 /*
  * check SKB really accesseble
  */
-static inline unsigned int skb_is_ready(struct sk_buff *skb)
+static __always_inline unsigned int skb_is_ready(struct sk_buff *skb)
 {
 	/*
 	 * cloned in non writable mode pakets must skip from fastpaths
@@ -136,7 +136,7 @@ static inline unsigned int skb_is_ready(struct sk_buff *skb)
  * 1 - clean route without adress changes
  * 0 - route with adress changes
  */
-static inline unsigned int is_pure_routing(struct nf_conn *ct)
+static __always_inline unsigned int is_pure_routing(struct nf_conn *ct)
 {
 	struct nf_conntrack_tuple *t1, *t2;
 
@@ -180,23 +180,23 @@ static u32 hash_conntrack_raw(const struct nf_conntrack_tuple *tuple)
 	}
 }
 
-static inline u32 __hash_bucket(u32 hash, unsigned int size)
+static __always_inline u32 __hash_bucket(u32 hash, unsigned int size)
 {
 	return ((u64)hash * size) >> 32;
 }
 
-static inline u32 hash_bucket(u32 hash, const struct net *net)
+static __always_inline u32 hash_bucket(u32 hash, const struct net *net)
 {
 	return __hash_bucket(hash, net->ct.htable_size);
 }
 
-static u_int32_t __hash_conntrack(const struct nf_conntrack_tuple *tuple,
+static __always_inline u_int32_t __hash_conntrack(const struct nf_conntrack_tuple *tuple,
 				  unsigned int size)
 {
 	return __hash_bucket(hash_conntrack_raw(tuple), size);
 }
 
-static inline u_int32_t hash_conntrack(const struct net *net,
+static __always_inline u_int32_t hash_conntrack(const struct net *net,
 				       const struct nf_conntrack_tuple *tuple)
 {
 	return __hash_conntrack(tuple, net->ct.htable_size);

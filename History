@@ -2046,6 +2046,7 @@
 49) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
 50) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
 51) kernel: net: validate variable length ll headers.<br>
+52) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
 <br>
 <br>
 <br>
