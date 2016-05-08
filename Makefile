@@ -15,7 +15,7 @@
 
 ROOTDIR	:= $(shell pwd)
 
-all: tools linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
+all: tools prep_romfs linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
 
 CONFIG_VENDOR	:= Mediatek
 CONFIG_LINUXDIR := linux
@@ -147,14 +147,18 @@ toolchain_headers_update:
 	cp -Lrf $(LIBCDIRSHARED)/include $(ROOTDIR)/toolchain/include
 	cp -Lrf $(LIBCDIRSHARED)/include $(ROOTDIR)/toolchain/usr/include
 
+.PHONY: prep_romfs
+prep_romfs:
+	####################PREPARE-ROMFS####################
+	[ -d $(IMAGEDIR) ] || mkdir -p $(IMAGEDIR)
+	$(MAKEARCH) -C vendors romfs
+
 .PHONY: romfs
 romfs: romfs.subdirs modules_install romfs.post
 
 .PHONY: romfs.subdirs
 romfs.subdirs:
-	####################PREPARE-ROMFS####################
-	[ -d $(IMAGEDIR) ] || mkdir -p $(IMAGEDIR)
-	$(MAKEARCH) -C vendors romfs
+	#################INSTALL-APPS-ROMFS###################
 	cd $(ROOTDIR)
 	cp -vfra $(ROOTDIR)/etc/* $(ROMFSDIR)/etc
 	cp -vfa  $(ROOTDIR)/etc/rc.d/rcS $(ROMFSDIR)/bin/rcS
@@ -163,7 +167,6 @@ romfs.subdirs:
 	cp $(ROOTDIR)/version $(ROMFSDIR)/etc/version
 	cd $(ROMFSDIR)/bin && /bin/ln -fvs ../etc/scripts/* . && cd $(ROOTDIR)
 	cd $(ROOTDIR)
-	#################INSTALL-APPS-ROMFS###################
 	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir romfs || exit 1 ; done
 
 .PHONY: modules_install

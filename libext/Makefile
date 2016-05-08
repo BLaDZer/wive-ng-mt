@@ -37,6 +37,7 @@ dir_  =
 
 #base user libs
 dir_$(CONFIG_LIB_ZLIB)            += zlib
+dir_$(CONFIG_LIB_OPENSSL)         += libssl
 dir_$(CONFIG_LIB_EVENT)           += libevent
 dir_$(CONFIG_LIB_PCAP)            += libpcap
 dir_$(CONFIG_LIB_USB1)            += libusb-1.0
@@ -49,18 +50,7 @@ dir_$(CONFIG_LIB_NEON)            += libneon
 dir_$(CONFIG_LIB_CURL)            += libcurl
 dir_$(CONFIG_LIB_TALLOC)          += libtalloc
 
-OPENSSL_CONFIG = RT2880 no-camellia no-capieng no-cms no-gmp no-jpake no-krb5 no-mdc2 no-rfc3779 no-seed \
-                  no-ec no-ecdh no-ec2m no-ecdsa no-err no-threads no-idea no-rc2 no-rc5 \
-                  no-hw no-md2 no-sse2 no-dso no-ts no-ripemd no-rmd160 no-sha0 \
-                  no-smime no-ans1 no-cast no-whirlpool no-sctp no-srp no-jpake no-ssl2 no-ssl3 no-speed
-
 all:
-ifeq ($(CONFIG_LIB_OPENSSL),y)
-	# ">>>>>>>>>>>>>>>> CONFIGURE AND BUILD SSL <<<<<<<<<<<<<<<<<<<<<<<"
-	if [ ! -e openssl/libssl.so ]; then  cd openssl ; ./Configure $(OPENSSL_CONFIG) ; $(MAKE) -j1 || exit 1 ; cd .. ; fi
-	if [ -e openssl/libssl.so ]; then  cp -fap openssl/*.so* $(LIBCDIRSHARED)/lib ; fi
-	if [ -e openssl/libssl.so ]; then  $(RM) -rf $(ROOTDIR)/lib/shared/include/openssl ; cp -faprL openssl/include/* $(ROOTDIR)/lib/shared/include ; fi
-endif
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERLIBS  <<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \
 	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
@@ -69,7 +59,6 @@ endif
 
 clean:
 	# ">>>>>>>>>>>>>>>>> START FULL LIB CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
-	-cd openssl ; $(MAKE) clean ; $(MAKE) dclean ; cd ..
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; done
 	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; done
 	-for i in $(SUBDIRS_LIBS); do $(RM) -rf $(ROOTDIR)/libext/$$i/filesystem/*; done
