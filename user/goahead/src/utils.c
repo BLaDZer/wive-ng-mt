@@ -274,7 +274,7 @@ static int gigaphy(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getSdkVersion(int eid, webs_t wp, int argc, char_t **argv)
 {
-	return websWrite(wp, T("%s"), RT288X_SDK_VERSION);
+	return websWrite(wp, T("%s"), VERSIONPKG);
 }
 
 /*

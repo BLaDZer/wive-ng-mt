@@ -73,7 +73,6 @@ CROSS_COMPILER_PREFIX		:= $(CROSS_COMPILE)
 # NUM MAKE PROCESS = CPU NUMBER IN THE SYSTEM * CPU_OVERLOAD
 CPU_OVERLOAD		:= 4
 HOST_NCPU		:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/cpuinfo`; if [ $$n -gt 1 ];then expr $$n \* ${CPU_OVERLOAD}; else echo $$n; fi; else echo 1; fi)
-BUILD_START_STRING	:= $(shell date "+%a, %d %b %Y %T %z")
 CONFIG_SHELL		:= $(shell if [ -x "$$BASH" ]; then echo $$BASH; else if [ -x /bin/bash ]; then echo /bin/bash; else echo sh; fi ; fi)
 
 # Include configs
@@ -100,10 +99,9 @@ export KCONFIG_NOTIMESTAMP
 export CONFIG_VENDOR CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
 export CONFIG_CROSS_COMPILER_PATH CROSS_COMPILE KERNEL_CROSS_COMPILE CROSS_COMPILER_PREFIX
 export CONFIG_CONFIG LINUX_CONFIG ARCH_CONFIG
-export RT288X_SDK_VERSION DEVNAME REALNAME VERSIONPKG VERSIONSTR
-export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST IMAGEDIR RELFILES TFTPDIR
+export DEVNAME REALNAME VERSIONPKG VERSIONSTR
+export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST
 export IMAGEDIR RELFILES TFTPDIR
-export BUILD_START_STRING
 export HOST_NCPU DIRS PATH
 
 ############################################################################
@@ -150,7 +148,6 @@ toolchain_headers_update:
 .PHONY: prep_romfs
 prep_romfs:
 	####################PREPARE-ROMFS####################
-	[ -d $(IMAGEDIR) ] || mkdir -p $(IMAGEDIR)
 	$(MAKEARCH) -C vendors romfs
 
 .PHONY: romfs
@@ -160,11 +157,12 @@ romfs: romfs.subdirs modules_install romfs.post
 romfs.subdirs:
 	#################INSTALL-APPS-ROMFS###################
 	cd $(ROOTDIR)
-	cp -vfra $(ROOTDIR)/etc/* $(ROMFSDIR)/etc
-	cp -vfa  $(ROOTDIR)/etc/rc.d/rcS $(ROMFSDIR)/bin/rcS
 	fakeroot tar -zxvf dev.tgz
 	fakeroot cp -rfva dev/* $(ROMFSDIR)/dev
-	cp $(ROOTDIR)/version $(ROMFSDIR)/etc/version
+	$(ROMFSINST) -S version /share/version
+	$(ROMFSINST) -s /share/version /etc/version
+	cp -vfra $(ROOTDIR)/etc/* $(ROMFSDIR)/etc
+	cp -vfa  $(ROOTDIR)/etc/rc.d/rcS $(ROMFSDIR)/bin/rcS
 	cd $(ROMFSDIR)/bin && /bin/ln -fvs ../etc/scripts/* . && cd $(ROOTDIR)
 	cd $(ROOTDIR)
 	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir romfs || exit 1 ; done
@@ -196,7 +194,7 @@ romfs.post:
 
 .PHONY: image
 image:
-	[ -d $(IMAGEDIR) ] || mkdir -p $(IMAGEDIR)
+	mkdir -p $(IMAGEDIR)
 	$(MAKEARCH) -C vendors image
 
 .PHONY: release

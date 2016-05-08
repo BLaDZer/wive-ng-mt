@@ -2002,52 +2002,53 @@
 5) build_system: add SNR-CPE-AP2-5GHZ-MT outdor AP support.<br>
 6) build_system: add SNR-CPE-AP1 celling AP support.<br>
 7) build_system: add SNR-CPE-ME3-5GHZ-MT gigabit router support.<br>
-8) defaults: add base openspace roaming profile for help start configure at the current place.<br>
-9) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
-10) coovachilli: refactor radius packet send function (sync with git 02.05.2016 commit 10a73639).<br>
-11) miniupnpd: up to 2.0 version.<br>
-12) irqbalance: update to 27.04.2016 git version.<br>
-13) dnsmasq: up to 2.76test13 version.<br>
-14) openssl: up to 1.0.1t version (0.9.8 EOL).<br>
-15) ralinkiappd: fix segfault in debug mode with level trace.<br>
-16) ralinkiappd: add support send messages to seconf wlan module.<br>
-17) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
-18) freeradius: strip configs and not install not used libs for save flash size.<br>
-19) init.d: add logic for radius server start.<br>
-20) init.d: fix dns for l2tp server clients work.<br>
-21) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
-22) band_steering: add support read parametrs from nvram.<br>
-23) uboot/kernel: add support EN25Q128 flash chip.<br>
-24) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
-25) nvram: fix smart carrier support enable in mt7603.<br>
-26) goahead: add band steering options.<br>
-27) goahead: add contol dynamic adaptive LNA gain.<br>
-28) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
-29) goahead: add support ap-only mode.<br>
-30) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
-31) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-32) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-33) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-34) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-35) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-36) kernel: ralink_wifi: add mt7603 driver support.<br>
-37) kernel: ralink_wifi: mt76x3: driver update to 4.1.0.0 pre version.<br>
-38) kernel: ralink_wifi: mt76x3: fix build warnings.<br>
-39) kernel: ralink_wifi: mt76x3: fix ate build and work.<br>
-40) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-41) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-42) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-43) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-44) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-45) kernel: usb: cdc-acm: more sanity checking.<br>
-46) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-47) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-48) kernel: net: ethtool: fix phy adress get from user.<br>
-49) kernel: net: fix net_gso_ok for new GSO types.<br>
-50) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-51) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-52) kernel: net: validate variable length ll headers.<br>
-53) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+8) build_system: review some logic and cleanup.<br>
+9) defaults: add base openspace roaming profile for help start configure at the current place.<br>
+10) coovachilli: bstring: sync with git 21.04.2016 (commit 9a86b71).<br>
+11) coovachilli: refactor radius packet send function (sync with git 02.05.2016 commit 10a73639).<br>
+12) miniupnpd: up to 2.0 version.<br>
+13) irqbalance: update to 27.04.2016 git version.<br>
+14) dnsmasq: up to 2.76test13 version.<br>
+15) openssl: up to 1.0.1t version (0.9.8 EOL).<br>
+16) ralinkiappd: fix segfault in debug mode with level trace.<br>
+17) ralinkiappd: add support send messages to seconf wlan module.<br>
+18) freeradius: porting 3.0.11 freeradius (need for standalone EAP auth for 802.1x support need).<br>
+19) freeradius: strip configs and not install not used libs for save flash size.<br>
+20) init.d: add logic for radius server start.<br>
+21) init.d: fix dns for l2tp server clients work.<br>
+22) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
+23) band_steering: add support read parametrs from nvram.<br>
+24) uboot/kernel: add support EN25Q128 flash chip.<br>
+25) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
+26) nvram: fix smart carrier support enable in mt7603.<br>
+27) goahead: add band steering options.<br>
+28) goahead: add contol dynamic adaptive LNA gain.<br>
+29) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
+30) goahead: add support ap-only mode.<br>
+31) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
+32) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+33) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+34) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+35) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+36) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
+37) kernel: ralink_wifi: add mt7603 driver support.<br>
+38) kernel: ralink_wifi: mt76x3: driver update to 4.1.0.0 pre version.<br>
+39) kernel: ralink_wifi: mt76x3: fix build warnings.<br>
+40) kernel: ralink_wifi: mt76x3: fix ate build and work.<br>
+41) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+42) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+43) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+44) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+45) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+46) kernel: usb: cdc-acm: more sanity checking.<br>
+47) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+48) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+49) kernel: net: ethtool: fix phy adress get from user.<br>
+50) kernel: net: fix net_gso_ok for new GSO types.<br>
+51) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+52) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+53) kernel: net: validate variable length ll headers.<br>
+54) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
 <br>
 <br>
 <br>

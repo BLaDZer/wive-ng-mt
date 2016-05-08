@@ -106,14 +106,12 @@ echo "> Building for $PRODUCTID version $KERNEL_VER <"
 echo "_________________________________________________________"
 
 echo ""								>  $ROOTDIR/sdk_version.h
-echo "#define RT288X_SDK_VERSION \"$DEVNAME-$VERSIONPKG\""	>> $ROOTDIR/sdk_version.h
 echo "#define DEVNAME  \"$DEVNAME\""				>> $ROOTDIR/sdk_version.h
 echo "#define REALNAME \"$MODE\""				>> $ROOTDIR/sdk_version.h
 echo "#define VERSIONPKG  \"$VERSIONPKG\""			>> $ROOTDIR/sdk_version.h
 echo "#define VERSIONSTR \"$DEVNAME-$VERSIONPKG\""		>> $ROOTDIR/sdk_version.h
 echo ""								>> $ROOTDIR/sdk_version.h
 echo ""								>  $ROOTDIR/version
-echo "RT288X_SDK_VERSION = \"$VERSIONPKG\""			>> $ROOTDIR/version
 echo "DEVNAME = \"$DEVNAME\""					>> $ROOTDIR/version
 echo "VERSIONPKG = \"$VERSIONPKG\""				>> $ROOTDIR/version
 echo "VERSIONSTR = \"$DEVNAME-$VERSIONPKG\""			>> $ROOTDIR/version

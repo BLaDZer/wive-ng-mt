@@ -1058,7 +1058,6 @@ function load_config_file () {
 
 #
 # Load skd version from a file.
-# Converts all "#define RT288X_SDK_VERSION "x.x.x.x"" lines to "RT288X_SDK_VERSION=x.x.x.x" lines
 #
 function load_sdk_ver_file () {
 	sed -e '/\/*/,/*\//d' $1 >.tmp_config  #strip /*...*/
@@ -1395,7 +1394,7 @@ else
 	echo "No $SDK_VER_FILE found"
 fi
 
-backtitle="Ralink Linux SDK ${RT288X_SDK_VERSION} Configuration"
+backtitle="Ralink Linux SDK ${VERSIONPKG} Configuration"
 
 trap "cleanup ; exit 1" 1 2 15
 
