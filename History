@@ -2039,17 +2039,18 @@
 42) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
 43) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
 44) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-45) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-46) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-47) kernel: usb: cdc-acm: more sanity checking.<br>
-48) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-49) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-50) kernel: net: ethtool: fix phy adress get from user.<br>
-51) kernel: net: fix net_gso_ok for new GSO types.<br>
-52) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-53) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-54) kernel: net: validate variable length ll headers.<br>
-55) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+45) kernel: bio: return EINTR if copying to user space got interrupted.<br>
+46) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+47) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+48) kernel: usb: cdc-acm: more sanity checking.<br>
+49) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+50) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+51) kernel: net: ethtool: fix phy adress get from user.<br>
+52) kernel: net: fix net_gso_ok for new GSO types.<br>
+53) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+54) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+55) kernel: net: validate variable length ll headers.<br>
+56) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
 <br>
 <br>
 <br>
