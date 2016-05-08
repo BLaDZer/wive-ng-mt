@@ -1,5 +1,5 @@
 #
-#	Makefile -- Build instructions for user level apps
+#	Makefile -- Build instructions for user level libs
 #
 
 .EXPORT_ALL_VARIABLES:
