@@ -196,11 +196,10 @@ case "$1" in
 			for (i=4; i>0; i--) {if (a[i]==0) w-=8; else {\
 			while (a[i]%2==0) {w--; a[i]=a[i]/2}; break}\
 			}; print w }'`
-		    if [ "$GW" = "0.0.0.0" ] || [ -z "$GW" ]; then
-			ip -4 route replace $NW/$MASK dev $interface
-		    else
-			ROUTELIST_CS="$ROUTELIST_CS $NW/$MASK:$GW:$interface:"
-		    fi
+		    if [ -z "$GW" ]; then
+			GW="0.0.0.0"
+                    fi
+		    ROUTELIST_CS="$ROUTELIST_CS $NW/$MASK:$GW:$interface:"
 		done
 	    fi
 	    # MSSTATIC ROUTES AND STATIC ROUTES (rfc3442)
