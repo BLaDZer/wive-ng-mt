@@ -219,8 +219,9 @@ case "$1" in
 	    # first add stub for routes next add static routes and
 	    # default gateways need replace/add at end route parces
 	    # replace dgw must be replaced only if ip selected
+	    # after route table modification reapply replace DGW (workaround for some ISP`s)
 	    if [ "$REPLACE_DGW" = "1" ] && [ "$FULL_RENEW" = "1" ]; then
-		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS"
+		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS $ROUTELIST_DGW"
 		$LOG "Apply route list. And replace DGW."
 	    else
 		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_ST $ROUTELIST_CS"
