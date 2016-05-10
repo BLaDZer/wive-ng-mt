@@ -302,7 +302,7 @@ static void fq_codel_reset(struct Qdisc *sch)
 		while (flow->head) {
 			struct sk_buff *skb = dequeue_head(flow);
 
-			qdisc_qstats_backlog_dec(sch, skb);
+			sch->qstats.backlog -= qdisc_pkt_len(skb);
 			kfree_skb(skb);
 		}
 
