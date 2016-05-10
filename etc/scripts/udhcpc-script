@@ -219,15 +219,9 @@ case "$1" in
 	    # first add stub for routes next add static routes and
 	    # default gateways need replace/add at end route parces
 	    # replace dgw must be replaced only if ip selected
-	    # after route table modification reapply replace DGW (workaround for some ISP`s)
 	    if [ "$REPLACE_DGW" = "1" ] && [ "$FULL_RENEW" = "1" ]; then
-		if [ "$ROUTELIST_ST" != "" ] || [ "$ROUTELIST_CS" != "" ]; then
-		    ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS $ROUTELIST_DGW"
-		    $LOG "Apply route list. And replace DGW (static routes recived)."
-		else
-		    ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW"
-		    $LOG "Apply route list. And replace DGW."
-		fi
+		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS"
+		$LOG "Apply route list. And replace DGW."
 	    else
 		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_ST $ROUTELIST_CS"
 		$LOG "Apply route list without modify DGW."
@@ -242,7 +236,7 @@ case "$1" in
 	    done
 	    # workaround for some buggy ISP
 	    if [ "$REPLACE_DGW" = "1" ] && [ "$FULL_RENEW" = "1" ] && [ "$first_dgw" != "" ]; then
-		$LOG "Set fist default gateway to $first_dgw dev $interface metric 0"
+		$LOG "Set fist default gateway to $first_dgw dev $interface via "$first_dgw" metric 0"
 		ip -4 route replace default dev "$interface" via "$first_dgw" metric 0
 	    fi
 	    # add route to multicast subnet
