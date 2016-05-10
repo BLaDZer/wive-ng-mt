@@ -55,6 +55,7 @@ VOID APPeerProbeReqAction(
 	UCHAR RSNIe=IE_WPA, RSNIe2=IE_WPA2;
 	BSS_STRUCT *mbss;
 	struct wifi_dev *wdev;
+	CHAR idx = 0;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
@@ -127,6 +128,18 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 		if (bBndStrgCheck == FALSE)
 			return;
 #endif /* BAND_STEERING */
+
+		if (mbss->ProbeRspRssiThreshold != 0)
+		{
+			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+                                  ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
+                                  ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
+
+			if (rssi != 0 && rssi < mbss->ProbeRspRssiThreshold) {
+			    DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
+			    continue;
+			}
+		}
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
@@ -228,9 +241,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #ifdef RT_BIG_ENDIAN
 			ADD_HT_INFO_IE	addHTInfoTmp;
 #endif
-
-/* YF@20120419: Fix IOT Issue with Atheros STA on Windows 7 When IEEE80211H flag turn on. */
-
+			/* YF@20120419: Fix IOT Issue with Atheros STA on Windows 7 When IEEE80211H flag turn on. */
 			HtLen = sizeof(pAd->CommonCfg.HtCapability);
 			AddHtLen = sizeof(pAd->CommonCfg.AddHTInfo);
 			//NewExtLen = 1;
@@ -899,11 +910,11 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 		}
 #endif /* AIRPLAY_SUPPORT*/
 
-	/* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
-	MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-	MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-	MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-	MlmeFreeMemory(pAd, pOutBuffer);
+	    /* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
+	    for (idx = 0; idx < mbss->ProbeRspTimes; idx++)
+		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+
+	    MlmeFreeMemory(pAd, pOutBuffer);
 	}
 }
 

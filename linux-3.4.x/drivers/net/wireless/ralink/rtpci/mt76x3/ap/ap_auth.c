@@ -455,6 +455,7 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	BSS_STRUCT *pMbss;
 	struct wifi_dev *wdev;
 	UINT32 u4MaxMBSSIDSize = sizeof(pAd->ApCfg.MBSSID)/sizeof(pAd->ApCfg.MBSSID[0]);
+	CHAR rssi;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
@@ -573,6 +574,29 @@ SendAuth:
 		return;
 #endif /* BAND_STEERING */
 
+	 /* YF@20130102: Refuse the weak signal of AuthReq */
+         rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+                                  ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
+                                  ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
+
+         if ((pMbss->AuthFailRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AuthFailRssiThreshold) ||
+             (pMbss->AuthNoRspRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AuthNoRspRssiThreshold))
+         {
+    		DBGPRINT(RT_DEBUG_TRACE, ("%s: AUTH_FAIL_REQ Threshold = %d, AUTH_NO_RSP_REQ Threshold = %d, AUTH RSSI = %d\n",
+ 				  wdev->if_dev->name, pMbss->AuthFailRssiThreshold, pMbss->AuthNoRspRssiThreshold, rssi));
+
+		if (pMbss->AuthFailRssiThreshold != 0 && rssi < pMbss->AuthFailRssiThreshold) {
+            		DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
+                	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
+		}
+
+                /* If this STA exists, delete it. */
+                if (pEntry)
+                        MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+
+                RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
+                return;
+         }
 
 #ifdef DOT11R_FT_SUPPORT
 	pFtCfg = &pMbss->FtCfg;

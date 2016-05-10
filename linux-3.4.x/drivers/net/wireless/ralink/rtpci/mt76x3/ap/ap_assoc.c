@@ -1149,6 +1149,7 @@ VOID ap_cmm_peer_assoc_req_action(
 	struct wifi_dev *wdev;
 	BSS_STRUCT *pMbss;
 	BOOLEAN bAssocSkip = FALSE;
+	BOOLEAN bAssocNoRsp = FALSE;
 	CHAR rssi;
 	IE_LISTS *ie_list = NULL;
 	HEADER_802_11 AssocRspHdr;
@@ -1481,25 +1482,30 @@ SendAssocResponse:
 		SupRateLen = 4;
 
 	/* YF@20120419: Refuse the weak signal of AssocReq */
-	rssi = RTMPMaxRssi(pAd,
-						ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
-						ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
-						ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
-	DBGPRINT(RT_DEBUG_TRACE, ("ra[%d] ASSOC_REQ Threshold = %d, PktMaxRssi=%d\n",
-				pEntry->func_tb_idx, pAd->ApCfg.MBSSID[pEntry->func_tb_idx].AssocReqRssiThreshold,
-				rssi));
-	if ((pAd->ApCfg.MBSSID[pEntry->func_tb_idx].AssocReqRssiThreshold != 0) && (rssi < pAd->ApCfg.MBSSID[pEntry->func_tb_idx].AssocReqRssiThreshold))
+	rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+				 ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
+				 ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
+
+	if (pMbss->AssocReqFailRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AssocReqFailRssiThreshold)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_REQ due to Weak Signal.\n"));
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
 		bAssocSkip = TRUE;
 	}
 
-	if (bACLReject == TRUE || bAssocSkip)
+	if (pMbss->AssocReqNoRspRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AssocReqNoRspRssiThreshold)
 	{
-		MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
+		DBGPRINT(RT_DEBUG_TRACE, ("Ignore this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		bAssocNoRsp = TRUE;
+	}
+
+	if (bACLReject == TRUE || bAssocSkip == TRUE || bAssocNoRsp == TRUE)
+	{
+		if (bAssocNoRsp == FALSE)
+		{
+		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 							wdev->if_addr, wdev->bssid);
-		StatusCode = MLME_UNSPECIFY_FAIL;
-		MakeOutgoingFrame(pOutBuffer, &FrameLen,
+		    StatusCode = MLME_UNSPECIFY_FAIL;
+		    MakeOutgoingFrame(pOutBuffer, &FrameLen,
 			              sizeof(HEADER_802_11), &AssocRspHdr,
 			              2,                        &CapabilityInfoForAssocResp,
 			              2,                        &StatusCode,
@@ -1512,8 +1518,9 @@ SendAssocResponse:
 			              SupRateLen, pAd->CommonCfg.SupRate,
 #endif /* DYNAMIC_RX_RATE_ADJ */
 			              END_OF_ARGS);
-		MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
+		    MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+		}
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, ie_list->Addr2, wdev->wdev_idx, 0);
 

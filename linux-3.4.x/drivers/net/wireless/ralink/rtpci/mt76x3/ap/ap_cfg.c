@@ -201,9 +201,15 @@ INT Set_AP_RekeyMethod_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
 INT Set_AP_PMKCachePeriod_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
-INT Set_AP_ASSOC_REQ_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-
-INT	Set_AP_KickStaRssiLow_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_KickStaRssiLow_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_KickStaRssiLowPSM_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_KickStaRssiLowDelay_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_PROBE_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_AUTH_FAIL_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_PROBE_RSP_TIMES(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
 INT Set_AP_DefaultKeyID_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_Key1_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
@@ -624,8 +630,15 @@ static struct {
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 	{"PktPwr",						Set_AP_PKT_PWR},
 #endif /* SPECIFIC_TX_POWER_SUPPORT */
-	{"AssocReqRssiThres",           Set_AP_ASSOC_REQ_RSSI_THRESHOLD},
+	{"ApProbeRspTimes",		Set_AP_PROBE_RSP_TIMES},
+	{"AuthRspFail",                 Set_AP_AUTH_FAIL_RSSI_THRESHOLD},
+	{"AuthRspRssi",                 Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD},
+	{"AssocReqRssiThres",           Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD},
+	{"AssocRspIgnor",               Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD},
 	{"KickStaRssiLow",				Set_AP_KickStaRssiLow_Proc},
+	{"KickStaRssiLowPSM",				Set_AP_KickStaRssiLowPSM_Proc},
+	{"KickStaRssiLowDelay",				Set_AP_KickStaRssiLowDelay_Proc},
+	{"ProbeRspRssi",                Set_AP_PROBE_RSSI_THRESHOLD},
 #ifdef AP_SCAN_SUPPORT
 	{"SiteSurvey",					Set_SiteSurvey_Proc},
 	{"AutoChannelSel",				Set_AutoChannelSel_Proc},
@@ -5327,74 +5340,6 @@ INT	Set_AP_RekeyMethod_Proc(
 /*
     ==========================================================================
     Description:
-        Set PMK-cache period
-    Return:
-        TRUE if all parameters are OK, FALSE otherwise
-    ==========================================================================
-*/
-INT	Set_AP_PMKCachePeriod_Proc(
-	IN	PRTMP_ADAPTER	pAd,
-	IN	RTMP_STRING *arg)
-{
-	POS_COOKIE 	pObj = (POS_COOKIE) pAd->OS_Cookie;
-	UCHAR		apidx = pObj->ioctl_if;
-	UINT32 val = simple_strtol(arg, 0, 10);
-
-	pAd->ApCfg.MBSSID[apidx].PMKCachePeriod = val * 60 * OS_HZ;
-
-	DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_PMKCachePeriod_Proc=%ld\n",
-									apidx, pAd->ApCfg.MBSSID[apidx].PMKCachePeriod));
-
-	return TRUE;
-}
-
-
-/*
-    ==========================================================================
-    Description:
-        Set AssocReq RSSI Threshold to reject STA with weak signal.
-    Return:
-        TRUE if all parameters are OK, FALSE otherwise
-    ==========================================================================
-*/
-INT Set_AP_ASSOC_REQ_RSSI_THRESHOLD(
-    IN  PRTMP_ADAPTER    pAd,
-    IN  RTMP_STRING *arg)
-{
-	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
-	UCHAR           apidx = pObj->ioctl_if;
-	UINT j;
-        CHAR rssi;
-        rssi = simple_strtol(arg, 0, 10);
-
-        if (rssi == 0)
-        {
-                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_ASSOC_REQ_RSSI_THRESHOLD\n"));
-        }
-        else if (rssi > 0 || rssi < -100)
-        {
-                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_ASSOC_REQ_RSSI_THRESHOLD Value Error.\n"));
-                return FALSE;
-        }
-
-
-        pAd->ApCfg.MBSSID[apidx].AssocReqRssiThreshold = rssi;
-
-        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_ASSOC_REQ_RSSI_THRESHOLD=%d\n", apidx,
-                                                                        pAd->ApCfg.MBSSID[apidx].AssocReqRssiThreshold ));
-
-	for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
-	{
-		DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AssocReqRssiThreshold ));
-	}
-
-
-        return TRUE;
-}
-
-/*
-    ==========================================================================
-    Description:
         Set lower limit for AP kicking out a STA.
     Return:
         TRUE if all parameters are OK, FALSE otherwise
@@ -5402,7 +5347,7 @@ INT Set_AP_ASSOC_REQ_RSSI_THRESHOLD(
 */
 INT Set_AP_KickStaRssiLow_Proc(
     IN  PRTMP_ADAPTER    pAd,
-    IN  RTMP_STRING *arg)
+    IN  PSTRING          arg)
 {
         POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
         UCHAR           apidx = pObj->ioctl_if;
@@ -5423,18 +5368,293 @@ INT Set_AP_KickStaRssiLow_Proc(
 
         pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOut = rssi;
 
-        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) RssiLowForStaKickOut=%d\n", apidx,
-                                                                        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOut ));
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) RssiLowForStaKickOut=%d\n", 
+				  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOut));
 
         for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
         {
                 DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut ));
         }
 
+        return TRUE;
+}
+
+INT Set_AP_KickStaRssiLowPSM_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable RssiLowForStaKickOutPSM Function\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("RssiLowForStaKickOutPSM Value Error.\n"));
+                return FALSE;
+        }
+
+
+        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutPSM = rssi;
+
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) RssiLowForStaKickOutPSM=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutPSM));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutPSM ));
+        }
 
         return TRUE;
 }
 
+INT Set_AP_KickStaRssiLowDelay_Proc(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        CHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        UCHAR timeout;
+        timeout = simple_strtol(arg, 0, 10);
+
+        if (timeout < 0 || timeout > 200)
+	    timeout = 5;
+
+        pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutDelay = timeout;
+
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) RssiLowForStaKickOutDelay=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].RssiLowForStaKickOutDelay));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutDelay));
+        }
+
+        return TRUE;
+}
+
+INT Set_AP_PROBE_RSP_TIMES(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        INT input;
+        input = simple_strtol(arg, 0, 10);
+
+        if ((input >= 0) && (input <= 10))
+                pAd->ApCfg.MBSSID[apidx].ProbeRspTimes = input;
+        else
+                DBGPRINT(RT_DEBUG_ERROR, ("AP[%d]->ProbeRspTimes: Out of Range\n", apidx));
+
+	DBGPRINT(RT_DEBUG_TRACE, ("AP[%d]->ProbeRspTimes: %d\n", apidx, pAd->ApCfg.MBSSID[apidx].ProbeRspTimes));
+
+	return TRUE;
+
+}
+
+INT     Set_AP_PROBE_RSSI_THRESHOLD(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_PROBE_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_PROBE_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) Set_AP_PROBE_RSSI_THRESHOLD=%d\n",
+                                  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+INT     Set_AP_AUTH_FAIL_RSSI_THRESHOLD(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_AUTH_FAIL_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_AUTH_FAIL_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].AuthFailRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) Set_AP_AUTH_RSSI_THRESHOLD=%d\n",
+				  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,			
+                                  pAd->ApCfg.MBSSID[apidx].AuthFailRssiThreshold));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+        	DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AuthFailRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+INT     Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_AUTH_NO_RSP_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].AuthNoRspRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD=%d\n",
+                                  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].AuthNoRspRssiThreshold));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AuthNoRspRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+/*
+    ==========================================================================
+    Description:
+        Set AssocReq RSSI Threshold to reject STA with weak signal.
+    Return:
+        TRUE if all parameters are OK, FALSE otherwise
+    ==========================================================================
+*/
+INT Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+	UCHAR           apidx = pObj->ioctl_if;
+	UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+        pAd->ApCfg.MBSSID[apidx].AssocReqFailRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD=%d\n", 
+				  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].AssocReqFailRssiThreshold ));
+
+	for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AssocReqFailRssiThreshold ));	
+	}
+
+        return TRUE;
+}
+
+INT Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD(
+    IN  PRTMP_ADAPTER    pAd,
+    IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR rssi;
+        rssi = simple_strtol(arg, 0, 10);
+
+        if (rssi == 0)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD\n"));
+        }
+        else if (rssi > 0 || rssi < -100)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD Value Error.\n"));
+                return FALSE;
+        }
+
+
+        pAd->ApCfg.MBSSID[apidx].AssocReqNoRspRssiThreshold = rssi;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(%s) Set_AP_ASSOC_REQ_NO_RSP_RSSI_THRESHOLD=%d\n",
+                                  pAd->ApCfg.MBSSID[apidx].wdev.if_dev->name,
+                                  pAd->ApCfg.MBSSID[apidx].AssocReqNoRspRssiThreshold ));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].AssocReqNoRspRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+/*
+    ==========================================================================
+    Description:
+        Set PMK-cache period
+    Return:
+        TRUE if all parameters are OK, FALSE otherwise
+    ==========================================================================
+*/
+INT	Set_AP_PMKCachePeriod_Proc(
+	IN	PRTMP_ADAPTER	pAd,
+	IN	RTMP_STRING *arg)
+{
+	POS_COOKIE 	pObj = (POS_COOKIE) pAd->OS_Cookie;
+	UCHAR		apidx = pObj->ioctl_if;
+	UINT32 val = simple_strtol(arg, 0, 10);
+
+	pAd->ApCfg.MBSSID[apidx].PMKCachePeriod = val * 60 * OS_HZ;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_PMKCachePeriod_Proc=%ld\n",
+									apidx, pAd->ApCfg.MBSSID[apidx].PMKCachePeriod));
+
+	return TRUE;
+}
 
 /*
     ==========================================================================

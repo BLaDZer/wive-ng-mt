@@ -4837,6 +4837,28 @@ CHAR RTMPAvgRssi(RTMP_ADAPTER *pAd, RSSI_SAMPLE *pRssi)
 	return Rssi;
 }
 
+CHAR RTMPAvgMRssi(RTMP_ADAPTER *pAd, CHAR Rssi0, CHAR Rssi1, CHAR Rssi2)
+{
+	CHAR Rssi = -127;
+
+	if(pAd->Antenna.field.RxPath == 3)
+	{
+		Rssi = (Rssi0 + Rssi1 + Rssi2)/3;
+	}
+	else if(pAd->Antenna.field.RxPath == 2)
+	{
+		Rssi = (Rssi0 + Rssi1)>>1;
+	}
+	else
+	{
+		Rssi = Rssi0;
+	}
+
+	if (Rssi == -127)
+		Rssi = 0;
+
+	return Rssi;
+}
 
 CHAR RTMPMaxRssi(RTMP_ADAPTER *pAd, CHAR Rssi0, CHAR Rssi1, CHAR Rssi2)
 {

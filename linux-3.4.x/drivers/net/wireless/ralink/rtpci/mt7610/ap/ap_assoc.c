@@ -929,9 +929,9 @@ VOID ap_cmm_peer_assoc_req_action(
 		bAssocNoRsp = TRUE;
 	}
 
-	if (bACLReject == TRUE || bAssocSkip || bAssocNoRsp)
+	if (bACLReject == TRUE || bAssocSkip == TRUE || bAssocNoRsp == TRUE)
 	{
-		if (!bAssocNoRsp)
+		if (bAssocNoRsp == FALSE)
 		{
 		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 							wdev->Bssid);

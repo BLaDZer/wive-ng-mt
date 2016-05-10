@@ -1745,6 +1745,17 @@ typedef struct _BSS_STRUCT {
 	CHAR RssiOfRcvdReplayAttack;
 #endif /* IDS_SUPPORT */
 
+	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
+	CHAR AssocReqFailRssiThreshold;
+	CHAR AssocReqNoRspRssiThreshold;
+	CHAR AuthFailRssiThreshold;
+	CHAR AuthNoRspRssiThreshold;
+	CHAR RssiLowForStaKickOut;
+	CHAR RssiLowForStaKickOutPSM;
+	UCHAR RssiLowForStaKickOutDelay;
+	CHAR ProbeRspRssiThreshold;
+	CHAR ProbeRspTimes;
+
 #ifdef DOT11R_FT_SUPPORT
 	FT_CFG FtCfg;
 #endif /* DOT11R_FT_SUPPORT */
@@ -1760,11 +1771,6 @@ typedef struct _BSS_STRUCT {
 #ifdef DOT11W_PMF_SUPPORT
 	PMF_CFG PmfCfg;
 #endif /* DOT11W_PMF_SUPPORT */
-
-
-	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
-	CHAR AssocReqRssiThreshold;
-	CHAR RssiLowForStaKickOut;
 
 #ifdef CONFIG_DOT11U_INTERWORKING
 	GAS_CTRL GASCtrl;
@@ -2460,7 +2466,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	SST Sst;
 	AUTH_STATE AuthState;	/* for SHARED KEY authentication state machine used only */
 
-
+	UCHAR RssiLowStaKickOutDelayCount;
 
 	/* Rx status related parameters */
 	RSSI_SAMPLE RssiSample;
@@ -2869,6 +2875,7 @@ typedef struct _MAC_TABLE {
 	UINT16 Size;
 	QUEUE_HEADER McastPsQueue;
 	ULONG PsQIdleCount;
+
 	MAC_ENT_STATUS sta_status;
 
 	BOOLEAN fAnyStationInPsm;
@@ -7380,6 +7387,12 @@ CHAR RTMPMaxRssi(
 CHAR RTMPAvgRssi(
         IN RTMP_ADAPTER *pAd,
         IN RSSI_SAMPLE		*pRssi);
+
+CHAR RTMPAvgMRssi(
+	IN RTMP_ADAPTER *pAd,
+	IN CHAR				Rssi0,
+	IN CHAR				Rssi1,
+	IN CHAR				Rssi2);
 
 CHAR RTMPMinRssi(
 		IN RTMP_ADAPTER *pAd,

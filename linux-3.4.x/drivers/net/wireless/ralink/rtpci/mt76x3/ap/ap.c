@@ -1190,7 +1190,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #if defined(PRE_ANT_SWITCH) || defined(CFO_TRACK)
 	int lastClient=0;
 #endif /* defined(PRE_ANT_SWITCH) || defined(CFO_TRACK) */
-	CHAR avgRssi;
 	BSS_STRUCT *pMbss;
 #ifdef WFA_VHT_PF
 	RSSI_SAMPLE *worst_rssi = NULL;
@@ -1507,16 +1506,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		}
 #endif /* BAND_STEERING */
 
-		if ((pMbss->RssiLowForStaKickOut != 0) &&
-			  ( (avgRssi=RTMPAvgRssi(pAd, &pEntry->RssiSample)) < pMbss->RssiLowForStaKickOut))
-		{
-			bDisconnectSta = TRUE;
-			DBGPRINT(RT_DEBUG_WARN, ("Disassoc STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d]-[%d]\n",
-					PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut,
-					avgRssi));
-
-		}
-
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		if (pAd->SCSCtrl.SCSEnable == SCS_ENABLE)
 		{
@@ -1551,6 +1540,25 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		}
 #endif /* ALL_NET_EVENT */
 
+
+		/* kickout low RSSI clients */
+		if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && IS_ENTRY_CLIENT(pEntry))
+		{
+			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
+			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
+			if (avgRssi != 0 && (
+				    (pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
+				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
+			    )) {
+				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+				    pEntry->RssiLowStaKickOutDelayCount = 0;
+				    bDisconnectSta = TRUE;
+				    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
+								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+				}
+			} else
+				pEntry->RssiLowStaKickOutDelayCount = 0;
+		}
 
 		if (bDisconnectSta)
 		{

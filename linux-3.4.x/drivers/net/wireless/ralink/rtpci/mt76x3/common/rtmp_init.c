@@ -1239,6 +1239,16 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			BSS_STRUCT *mbss = &pAd->ApCfg.MBSSID[j];
 			struct wifi_dev *wdev = &pAd->ApCfg.MBSSID[j].wdev;
 
+			mbss->AssocReqFailRssiThreshold = 0;
+			mbss->AssocReqNoRspRssiThreshold = 0;
+			mbss->AuthFailRssiThreshold = 0;
+			mbss->AuthNoRspRssiThreshold = 0;
+			mbss->RssiLowForStaKickOut = 0;
+			mbss->RssiLowForStaKickOutPSM = 0;
+			mbss->RssiLowForStaKickOutDelay = 5;
+			mbss->ProbeRspRssiThreshold = 0;
+			mbss->ProbeRspTimes = 3;
+
 			wdev->AuthMode = Ndis802_11AuthModeOpen;
 			wdev->WepStatus = Ndis802_11EncryptionDisabled;
 			wdev->GroupKeyWepStatus = Ndis802_11EncryptionDisabled;
