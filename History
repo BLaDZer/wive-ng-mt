@@ -2047,13 +2047,14 @@
 50) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
 51) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
 52) kernel: net: ethtool: fix phy adress get from user.<br>
-53) kernel: net: fix net_gso_ok for new GSO types.<br>
-54) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-55) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-56) kernel: net: validate variable length ll headers.<br>
-57) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-58) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-59) kernel: net: ppp: take reference on channels netns.<br>
+53) kernel: net: ethtool: issue with querying phy settings.<br>
+54) kernel: net: fix net_gso_ok for new GSO types.<br>
+55) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+56) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+57) kernel: net: validate variable length ll headers.<br>
+58) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+59) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+60) kernel: net: ppp: take reference on channels netns.<br>
 <br>
 <br>
 <br>

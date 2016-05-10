@@ -323,7 +323,15 @@ static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
 
 	cmd.phy_address = ucmd.phy_address;
 
-	err = __ethtool_get_settings(dev, &cmd);
+	if (!dev->ethtool_ops->get_settings)
+		return -EOPNOTSUPP;
+
+	if (copy_from_user(&cmd, useraddr, sizeof(cmd)))
+		return -EFAULT;
+
+	cmd.cmd = ETHTOOL_GSET;
+
+	err = dev->ethtool_ops->get_settings(dev, &cmd);
 	if (err < 0)
 		return err;
 
