@@ -46,7 +46,7 @@ static void ap_assoc_info_debugshow(
 	struct wifi_dev *wdev;
 	wdev = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev;
 
-	printk("%s - \n\tAssign AID=%d to STA %02x:%02x:%02x:%02x:%02x:%02x\n",	sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
+	printk("%s - Assign AID=%d to STA %02x:%02x:%02x:%02x:%02x:%02x\n",	sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
 
 #ifdef DOT11_N_SUPPORT
 	if (ie_list->ht_cap_len && WMODE_CAP_N(pAd->CommonCfg.PhyMode))
