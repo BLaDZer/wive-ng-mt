@@ -1357,7 +1357,7 @@ INT	Set_DebugFunc_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	return TRUE;
 }
-
+#endif
 
 static BOOLEAN ascii2hex(RTMP_STRING *in, UINT32 *out)
 {
@@ -1807,8 +1807,6 @@ INT	Show_DescInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	return TRUE;
 }
-#endif /* DBG */
-
 
 /* 
     ==========================================================================
@@ -5196,8 +5194,6 @@ INT	Show_STA_RAInfo_Proc(
 	return 0;
 }
 
-
-#ifdef DBG
 static INT dump_mac_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 {
 	INT i;
@@ -5309,7 +5305,6 @@ static INT dump_mac_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 	return TRUE;
 }
 
-
 INT Show_MacTable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 	UINT32 ent_type = ENTRY_CLIENT;
@@ -5338,7 +5333,7 @@ INT Show_StationKeepAliveTime_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		{
 			BSS_STRUCT *mbss = &pAd->ApCfg.MBSSID[i];
 
-			DBGPRINT(RT_DEBUG_OFF, ("[%d] : StationKeepAliveTime=%d\n", i, mbss->StationKeepAliveTime));
+			printk("[%d] : StationKeepAliveTime=%d\n", i, mbss->StationKeepAliveTime);
 		}
 
 		return TRUE;
@@ -6949,7 +6944,6 @@ INT show_txqinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	
 	return TRUE;
 }
-#endif /* DBG */
 
 #ifdef WSC_STA_SUPPORT
 INT	Show_WpsManufacturer_Proc(
@@ -7028,7 +7022,7 @@ INT	Show_ModuleTxpower_Proc(
  
  	ifIndex = pObj->ioctl_if;
  	
- 	DBGPRINT(RT_DEBUG_OFF, ("=============================================================\n"));
+ 	printk("=============================================================\n");
  	if((pAd->ApCfg.ApCliTab[ifIndex].CtrlCurrState == APCLI_CTRL_CONNECTED)
  		&& (pAd->ApCfg.ApCliTab[ifIndex].SsidLen != 0))
  	{
@@ -7041,20 +7035,20 @@ INT	Show_ModuleTxpower_Proc(
 				&& (pEntry->Sst == SST_ASSOC)
 				&& (tr_entry->PortSecured == WPA_802_1X_PORT_SECURED))
  				{
-					DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : %02X:%02X:%02X:%02X:%02X:%02X   SSID:%s\n",
-							ifIndex, PRINT_MAC(pEntry->Addr), pAd->ApCfg.ApCliTab[ifIndex].Ssid));
+					printk("ApCli%d Connected AP : %02X:%02X:%02X:%02X:%02X:%02X   SSID:%s\n",
+							ifIndex, PRINT_MAC(pEntry->Addr), pAd->ApCfg.ApCliTab[ifIndex].Ssid);
 					bConnect=TRUE;
  				}
  		}
 
 		if (!bConnect)
-			DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : Disconnect\n",ifIndex));
+			printk("ApCli%d Connected AP : Disconnect\n",ifIndex);
  	}
  	else
  	{
- 		DBGPRINT(RT_DEBUG_OFF, ("ApCli%d Connected AP : Disconnect\n",ifIndex));
+ 		printk("ApCli%d Connected AP : Disconnect\n",ifIndex);
  	}
- 	DBGPRINT(RT_DEBUG_OFF, ("=============================================================\n"));
+ 	printk("=============================================================\n");
      	DBGPRINT(RT_DEBUG_TRACE, ("<==RTMPIoctlConnStatus\n"));
  	return TRUE;
 }
@@ -8330,7 +8324,6 @@ INT RTMPShowCfgValue(
 
 
 	
-#ifdef DBG
 INT show_pwr_info(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 	if (pAd->chipOps.show_pwr_info) {
@@ -8356,5 +8349,4 @@ INT32 ShowRFInfo(RTMP_ADAPTER *pAd, RTMP_STRING *Arg)
 
 	return 0;
 }
-#endif /* DBG */
 	

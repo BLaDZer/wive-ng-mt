@@ -1988,6 +1988,7 @@ VOID MlmeRALog(
 #endif /*  INCLUDE_DEBUG_QUEUE */
 #endif /*  DBG_CTRL_SUPPORT */
 		{
+#ifdef STREAM_MODE_SUPPORT
 			DBGPRINT_RAW(RT_DEBUG_ERROR,("%s[%d]: M=%d %c%c%c%c- PER=%ld%% TP=%ld ",
 				raLogType==RAL_QUICK_DRS? " Q": (raLogType==RAL_NEW_DRS? "\nRA": "\nra"),
 				pEntry->wcid, pEntry->HTPhyMode.field.MCS,
@@ -1996,6 +1997,7 @@ VOID MlmeRALog(
 				stbc? 'S': 's',
 				csd? 'C': 'c',
 				TxErrorRatio, tp) );
+#endif
 		}
 	}
 

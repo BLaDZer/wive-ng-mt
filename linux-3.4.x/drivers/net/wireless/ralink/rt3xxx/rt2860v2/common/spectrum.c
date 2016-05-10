@@ -30,7 +30,7 @@
 
 
 /* The regulatory information in the Russia (RU) */
-DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
+static DOT11_REGULATORY_INFORMATION RURegulatoryInfo[] =
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/

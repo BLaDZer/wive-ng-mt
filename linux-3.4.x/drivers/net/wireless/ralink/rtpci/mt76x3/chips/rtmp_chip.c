@@ -430,11 +430,11 @@ INT WaitForAsicReady(RTMP_ADAPTER *pAd)
 		RtmpOsMsDelay(5);
 	} while (idx++ < 500);
 
-#endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
-
 	DBGPRINT(RT_DEBUG_ERROR,
 				("%s(0x%x):AsicNotReady!\n",
 				__FUNCTION__, mac_val));
+#endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
+
 	
 	return FALSE;
 }

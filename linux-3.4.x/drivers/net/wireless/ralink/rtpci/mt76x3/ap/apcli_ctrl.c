@@ -1400,10 +1400,10 @@ static VOID ApCliCtrlDeAssocRspAction(
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
 	if (Status == MLME_SUCCESS)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("(%s) Receive DeAssoc Rsp Success.\n", __FUNCTION__));
+		printk("Receive DeAssoc Rsp Success.\n");
 	} else
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("(%s) Receive DeAssoc Rsp Failure.\n", __FUNCTION__));
+		printk("Receive DeAssoc Rsp Failure.\n");
 	}
 
 #ifdef MAC_REPEATER_SUPPORT
@@ -1536,7 +1536,7 @@ static VOID ApCliCtrlDisconnectReqAction(
 	UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("(%s) MLME Request disconnect.\n", __FUNCTION__));
+	printk("MLME Request disconnect.\n");
 
 	if ((ifIndex >= MAX_APCLI_NUM)
 #ifdef MAC_REPEATER_SUPPORT
@@ -1617,7 +1617,7 @@ static VOID ApCliCtrlPeerDeAssocReqAction(
 		UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("(%s) Peer DeAssoc Req.\n", __FUNCTION__));
+	printk("Peer DeAssoc Req.\n");
 
 	if ((ifIndex >= MAX_APCLI_NUM)
 #ifdef MAC_REPEATER_SUPPORT
@@ -1733,7 +1733,7 @@ static VOID ApCliCtrlDeAssocAction(
 	UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("(%s) MLME Request Disconnect.\n", __FUNCTION__));
+	printk("MLME Request Disconnect.\n");
 
 	if ((ifIndex >= MAX_APCLI_NUM)
 #ifdef MAC_REPEATER_SUPPORT
@@ -1820,7 +1820,7 @@ static VOID ApCliCtrlDeAuthAction(
 	UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("(%s) MLME Request Disconnect.\n", __FUNCTION__));
+	printk("MLME Request Disconnect.\n");
 
 	if ((ifIndex >= MAX_APCLI_NUM)
 #ifdef MAC_REPEATER_SUPPORT

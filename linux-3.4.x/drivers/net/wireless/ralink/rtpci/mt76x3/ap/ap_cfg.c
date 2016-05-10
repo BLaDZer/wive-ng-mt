@@ -125,7 +125,7 @@ COUNTRY_CODE_TO_COUNTRY_REGION allCountry[] = {
 	{630,	"PR",	"PUERTO RICO",			TRUE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_0},
 	{634,	"QA",	"QATAR",				FALSE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_1},
 	{642,	"RO",	"ROMANIA",				FALSE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_1},
-	{643,	"RU",	"RUSSIA FEDERATION",	FALSE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_1},
+	{643,	"RU",	"RUSSIA FEDERATION",		TRUE,	A_BAND_REGION_7,	TRUE,	G_BAND_REGION_5},
 	{682,	"SA",	"SAUDI ARABIA",			FALSE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_1},
 	{702,	"SG",	"SINGAPORE",			TRUE,	A_BAND_REGION_0,	TRUE,	G_BAND_REGION_1},
 	{703,	"SK",	"SLOVAKIA",				TRUE,	A_BAND_REGION_1,	TRUE,	G_BAND_REGION_1},
@@ -256,14 +256,14 @@ INT Set_AutoChannelSelCheckTime_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 #endif /* AP_SCAN_SUPPORT */
 
 INT Set_BADecline_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-#ifdef DBG
+
 INT Show_StaCount_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_StaSecurityInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_DriverInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_Sat_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_RAInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_Sat_Reset_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-#endif /* DBG */
+
 #ifdef RTMP_MAC_PCI
 #ifdef DBG_DIAGNOSE
 INT Set_DiagOpt_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
@@ -1166,10 +1166,10 @@ static struct {
 	RTMP_STRING *name;
 	INT (*set_proc)(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 } *PRTMP_PRIVATE_SHOW_PROC, RTMP_PRIVATE_SHOW_SUPPORT_PROC[] = {
-#ifdef DBG
 	{"stainfo",			Show_MacTable_Proc},
 	{"StationKeepAlive",	Show_StationKeepAliveTime_Proc},
 #ifdef MT_MAC
+#ifdef DBG
 	{"psinfo",			Show_PSTable_Proc},
 	{"wtbl",				show_wtbl_proc},
 	{"mibinfo", show_mib_proc},
@@ -1180,6 +1180,7 @@ static struct {
 	{"psedata", ShowPseData},
 #if defined(RTMP_PCI_SUPPORT) || defined(RTMP_USB_SUPPORT)
 	{"dschinfo", ShowDMASchInfo},
+#endif
 #endif
 #endif /* MT_MAC */
 	{"sta_tr",				Show_sta_tr_proc},
@@ -1242,7 +1243,9 @@ static struct {
 	{"rainfo",				Show_RAInfo_Proc},
 
 #ifdef MBSS_SUPPORT
+#ifdef DBG
 	{"mbss",			Show_MbssInfo_Display_Proc},
+#endif
 #endif /* MBSS_SUPPORT */
 #ifdef WSC_AP_SUPPORT
 	{"WscPeerList", 		WscApShowPeerList},
@@ -1256,7 +1259,6 @@ static struct {
 #endif /* ACL_V2_SUPPORT */
 #endif /* WSC_AP_SUPPORT */
 	{"bbpinfo", ShowBBPInfo},
-#endif /* DBG */
 #ifdef BAND_STEERING
 	{"BndStrgList", 		Show_BndStrg_List},
 	{"BndStrgInfo", 		Show_BndStrg_Info},
@@ -3591,7 +3593,7 @@ INT RTMPAPQueryInformation(
 			wrq->u.data.length = sizeof(DefaultKeyIdxValue);
 
 			Status = copy_to_user(wrq->u.data.pointer, pKeyIdxValue, wrq->u.data.length);
-			DBGPRINT(RT_DEBUG_TRACE,("DefaultKeyId = %d, total len = %d, str len=%d, KeyValue= %02x %02x %02x %02x \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId, wrq->u.data.length, pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].DefaultKeyId].KeyLen,
+			DBGPRINT(RT_DEBUG_TRACE,("DefaultKeyId = %d, total len = %d, str len=%d, KeyValue= %02x %02x %02x %02x \n", pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId, wrq->u.data.length, pAd->SharedKey[pObj->ioctl_if][pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DefaultKeyId].KeyLen,
 			pAd->SharedKey[pObj->ioctl_if][0].Key[0],
 			pAd->SharedKey[pObj->ioctl_if][1].Key[0],
 			pAd->SharedKey[pObj->ioctl_if][2].Key[0],
@@ -6612,7 +6614,6 @@ INT Set_ARPSpoofChk_Enable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 }
 #endif /* PREVENT_ARP_SPOOFING */
 
-#ifdef DBG
 INT Show_DriverInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 	DBGPRINT(RT_DEBUG_OFF, ("driver version: %s (%s %s) .\n", AP_DRIVER_VERSION, __DATE__, __TIME__));
@@ -6773,35 +6774,34 @@ INT Show_StaSecurityInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 INT Show_RAInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 #ifdef PRE_ANT_SWITCH
-	DBGPRINT(RT_DEBUG_OFF, ("PreAntSwitch: %d\n", pAd->CommonCfg.PreAntSwitch));
-	DBGPRINT(RT_DEBUG_OFF, ("PreAntSwitchRSSI: %d\n", pAd->CommonCfg.PreAntSwitchRSSI));
+	printk("PreAntSwitch: %d\n", pAd->CommonCfg.PreAntSwitch);
+	printk("PreAntSwitchRSSI: %d\n", pAd->CommonCfg.PreAntSwitchRSSI);
 #endif /* PRE_ANT_SWITCH */
 
 #ifdef CFO_TRACK
-	DBGPRINT(RT_DEBUG_OFF, ("CFOTrack: %d\n", pAd->CommonCfg.CFOTrack));
+	printk("CFOTrack: %d\n", pAd->CommonCfg.CFOTrack);
 #endif /* CFO_TRACK */
 
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
-	DBGPRINT(RT_DEBUG_OFF, ("LowTrafficThrd: %d\n", pAd->CommonCfg.lowTrafficThrd));
-	DBGPRINT(RT_DEBUG_OFF, ("TrainUpRule: %d\n", pAd->CommonCfg.TrainUpRule));
-	DBGPRINT(RT_DEBUG_OFF, ("TrainUpRuleRSSI: %d\n", pAd->CommonCfg.TrainUpRuleRSSI));
-	DBGPRINT(RT_DEBUG_OFF, ("TrainUpLowThrd: %d\n", pAd->CommonCfg.TrainUpLowThrd));
-	DBGPRINT(RT_DEBUG_OFF, ("TrainUpHighThrd: %d\n", pAd->CommonCfg.TrainUpHighThrd));
+	printk("LowTrafficThrd: %d\n", pAd->CommonCfg.lowTrafficThrd);
+	printk("TrainUpRule: %d\n", pAd->CommonCfg.TrainUpRule);
+	printk("TrainUpRuleRSSI: %d\n", pAd->CommonCfg.TrainUpRuleRSSI);
+	printk("TrainUpLowThrd: %d\n", pAd->CommonCfg.TrainUpLowThrd);
+	printk("TrainUpHighThrd: %d\n", pAd->CommonCfg.TrainUpHighThrd);
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 
 #ifdef STREAM_MODE_SUPPORT
-	DBGPRINT(RT_DEBUG_OFF, ("StreamMode: %d\n", pAd->CommonCfg.StreamMode));
-	DBGPRINT(RT_DEBUG_OFF, ("StreamModeMCS: 0x%04x\n", pAd->CommonCfg.StreamModeMCS));
+	printk("StreamMode: %d\n", pAd->CommonCfg.StreamMode);
+	printk("StreamModeMCS: 0x%04x\n", pAd->CommonCfg.StreamModeMCS);
 #endif /* STREAM_MODE_SUPPORT */
 
 #ifdef DBG_CTRL_SUPPORT
-	DBGPRINT(RT_DEBUG_OFF, ("DebugFlags: 0x%lx\n", pAd->CommonCfg.DebugFlags));
+	printk("DebugFlags: 0x%lx\n", pAd->CommonCfg.DebugFlags);
 #endif /* DBG_CTRL_SUPPORT */
 
 	return TRUE;
 }
-#endif /* DBG */
 
 #ifdef RTMP_MAC_PCI
 #ifdef DBG_DIAGNOSE
@@ -7233,8 +7233,6 @@ done:
 #endif /* DBG_DIAGNOSE */
 #endif /* RTMP_MAC_PCI */
 
-
-#ifdef DBG
 INT Show_Sat_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {
 	/* Sanity check for calculation of sucessful count */
@@ -7466,8 +7464,6 @@ INT Show_Sat_Reset_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	return TRUE;
 }
-#endif /* DBG */
-
 
 #ifdef MAT_SUPPORT
 INT Show_MATTable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)

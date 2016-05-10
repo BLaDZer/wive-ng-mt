@@ -280,7 +280,7 @@ static inline UCHAR SelectClearChannelRandom(
 		if (ch == 0)
 			ch = FirstChannel(pAd);
 	}
-	DBGPRINT(RT_DEBUG_TRACE,("%s(): Select Channel %d\n", __FUNCTION__, ch));
+	printk("%s(): Select Channel %d\n", __FUNCTION__, ch);
 	return ch;
 
 }

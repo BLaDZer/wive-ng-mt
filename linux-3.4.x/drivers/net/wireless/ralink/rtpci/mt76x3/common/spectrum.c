@@ -28,9 +28,20 @@
 #include "rt_config.h"
 #include "action.h"
 
+/* The regulatory information in the Russia (RU) */
+static DOT11_REGULATORY_INFO RURegulatoryInfo[] =
+{
+/*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
+    {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
+    {3,                 {5,                  23,            {149, 153, 157, 161, 165}}},
+    {4,                 {14,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}}}
+};
+#define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFO))
 
 /* The regulatory information in the USA (US) */
-DOT11_REGULATORY_INFO USARegulatoryInfo[] = 
+static DOT11_REGULATORY_INFO USARegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,	                {0,                   0,           {0}}}, /* Invlid entry*/
@@ -51,7 +62,7 @@ DOT11_REGULATORY_INFO USARegulatoryInfo[] =
 
 
 /* The regulatory information in Europe */
-DOT11_REGULATORY_INFO EuropeRegulatoryInfo[] = 
+static DOT11_REGULATORY_INFO EuropeRegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
@@ -64,7 +75,7 @@ DOT11_REGULATORY_INFO EuropeRegulatoryInfo[] =
 
 
 /* The regulatory information in Japan */
-DOT11_REGULATORY_INFO JapanRegulatoryInfo[] = 
+static DOT11_REGULATORY_INFO JapanRegulatoryInfo[] = 
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
@@ -113,10 +124,20 @@ UINT8 GetRegulatoryMaxTxPwr(RTMP_ADAPTER *pAd, UINT8 channel)
 	RTMP_STRING *pCountry = (RTMP_STRING *)(pAd->CommonCfg.CountryCode);
 
 
-	if (strncmp(pCountry, "US", 2) == 0)
+	if (strncmp(pCountry, "RU", 2) == 0)
+	{
+		MaxRegulatoryClassNum = RU_REGULATORY_INFO_SIZE;
+		pRegulatoryClass = &RURegulatoryInfo[0];
+	}
+	else if (strncmp(pCountry, "US", 2) == 0)
 	{
 		MaxRegulatoryClassNum = USA_REGULATORY_INFO_SIZE;
 		pRegulatoryClass = &USARegulatoryInfo[0];
+	}
+	else if (strncmp(pCountry, "EU", 2) == 0)
+	{
+		MaxRegulatoryClassNum = EU_REGULATORY_INFO_SIZE;
+		pRegulatoryClass = &EuropeRegulatoryInfo[0];
 	}
 	else if (strncmp(pCountry, "JP", 2) == 0)
 	{
@@ -824,7 +845,17 @@ VOID InsertChannelRepIE(
 	DOT11_CHANNEL_SET *pChannelSet = NULL;
 
 	Len = 1;
-	if (strncmp(pCountry, "US", 2) == 0)
+	if (strncmp(pCountry, "RU", 2) == 0)
+	{
+		if (RegulatoryClass >= RU_REGULATORY_INFO_SIZE)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("%s: RU Unknow Requlatory class (%d)\n",
+						__FUNCTION__, RegulatoryClass));
+			return;
+		}
+		pChannelSet = &RURegulatoryInfo[RegulatoryClass].ChannelSet;
+	}
+	else if (strncmp(pCountry, "US", 2) == 0)
 	{
 		if (RegulatoryClass >= USA_REGULATORY_INFO_SIZE)
 		{
@@ -833,6 +864,16 @@ VOID InsertChannelRepIE(
 			return;
 		}
 		pChannelSet = &USARegulatoryInfo[RegulatoryClass].ChannelSet;
+	}
+	else if (strncmp(pCountry, "EU", 2) == 0)
+	{
+		if (RegulatoryClass >= EU_REGULATORY_INFO_SIZE)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("%s: EU Unknow Requlatory class (%d)\n",
+						__FUNCTION__, RegulatoryClass));
+			return;
+		}
+		pChannelSet = &EuropeRegulatoryInfo[RegulatoryClass].ChannelSet;
 	}
 	else if (strncmp(pCountry, "JP", 2) == 0)
 	{
@@ -2328,11 +2369,25 @@ static DOT11_REGULATORY_INFO *GetRugClassRegion(RTMP_STRING *pCountryCode, UINT8
 	pRugClass = NULL;
 	do
 	{
+		if (strncmp(pCountryCode, "RU", 2) == 0)
+		{
+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
+				break;
+			pRugClass = &RURegulatoryInfo[RugClass];
+		}
+
 		if (strncmp(pCountryCode, "US", 2) == 0)
 		{
 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &USARegulatoryInfo[RugClass];
+		}
+
+		if (strncmp(pCountryCode, "EU", 2) == 0)
+		{
+			if (RugClass >= EU_REGULATORY_INFO_SIZE)
+				break;
+			pRugClass = &EuropeRegulatoryInfo[RugClass];
 		}
 
 		if (strncmp(pCountryCode, "JP", 2) == 0)

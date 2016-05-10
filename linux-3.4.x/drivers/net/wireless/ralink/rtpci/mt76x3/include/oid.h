@@ -834,14 +834,12 @@ typedef struct _NDIS_802_11_CAPABILITY {
 
 
 
-#ifdef DBG
 /*
 	When use private ioctl oid get/set the configuration, we can use following flags to provide specific rules when handle the cmd
  */
 #define RTPRIV_IOCTL_FLAG_UI			0x0001	/* Notidy this private cmd send by UI. */
 #define RTPRIV_IOCTL_FLAG_NODUMPMSG	0x0002	/* Notify driver cannot dump msg to stdio/stdout when run this private ioctl cmd */
 #define RTPRIV_IOCTL_FLAG_NOSPACE		0x0004	/* Notify driver didn't need copy msg to caller due to the caller didn't reserve space for this cmd */
-#endif /* DBG */
 
 
 #ifdef SNMP_SUPPORT

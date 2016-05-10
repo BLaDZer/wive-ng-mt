@@ -116,10 +116,8 @@ static VOID APMlmeDeauthReqAction(
         if (NStatus != NDIS_STATUS_SUCCESS) 
             return;
 
-        DBGPRINT(RT_DEBUG_TRACE,
-				("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n",
-				PRINT_MAC(pInfo->Addr)));
-           		
+        printk("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(pInfo->Addr));
+
         MgtMacHeaderInit(pAd, &Hdr, SUBTYPE_DEAUTH, 0, pInfo->Addr,
 						pAd->ApCfg.MBSSID[apidx].wdev.if_addr,
 						pAd->ApCfg.MBSSID[apidx].wdev.bssid);
@@ -229,10 +227,7 @@ static VOID APPeerDeauthReqAction(
 						DBGPRINT(RT_DEBUG_TRACE,("%s: receive not client de-auth ###\n", __FUNCTION__));
 					}
 #endif /* APCLI_SUPPORT */
-		DBGPRINT(RT_DEBUG_TRACE,
-					("AUTH - receive DE-AUTH(seq-%d) from "
-					"%02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
-					SeqNum, PRINT_MAC(Addr2), Reason));
+		printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
@@ -594,7 +589,7 @@ SendAuth:
                 if (pEntry)
                         MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 
-                RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
+                RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, auth_info.addr2, apidx, 0);
                 return;
          }
 
@@ -655,8 +650,7 @@ SendAuth:
 			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_SUCCESS);
 
 		}
-		else
-			; /* MAC table full, what should we respond ????? */
+		/* else ; MAC table full, what should we respond ????? */
 	}
 	else if ((auth_info.auth_alg == AUTH_MODE_KEY) && 
 				((wdev->AuthMode == Ndis802_11AuthModeShared)
@@ -700,8 +694,7 @@ SendAuth:
 			MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 			MlmeFreeMemory(pAd, pOutBuffer);
 		}
-		else
-			; /* MAC table full, what should we respond ???? */
+		/* else ; MAC table full, what should we respond ???? */
 	} 
 	else
 	{

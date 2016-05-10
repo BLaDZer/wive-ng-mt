@@ -2285,7 +2285,7 @@ INT RtmpRaDevCtrlInit(VOID *pAdSrc, RTMP_INF_TYPE infType)
 	DBGPRINT(RT_DEBUG_TRACE, ("pAd->infType=%d\n", pAd->infType));
 
 
-    RTMP_SEM_EVENT_INIT(&(pAd->AutoRateLock), &pAd->RscSemMemList);
+	RTMP_SEM_EVENT_INIT(&(pAd->AutoRateLock), &pAd->RscSemMemList);
 	RTMP_SEM_EVENT_INIT(&(pAd->e2p_read_lock), &pAd->RscSemMemList);
 
 #ifdef MULTIPLE_CARD_SUPPORT

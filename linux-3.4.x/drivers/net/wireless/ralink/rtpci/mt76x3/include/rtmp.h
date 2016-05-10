@@ -8508,13 +8508,9 @@ BOOLEAN WscGetDataFromPeerByTag(
 
 #endif /* WSC_INCLUDED */
 
-#ifdef DBG
 INT32 ShowRFInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT32 ShowBBPInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-#endif /* DBG */
 INT32 show_redirect_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-
-
 
 
 BOOLEAN rtstrmactohex(RTMP_STRING *s1, RTMP_STRING *s2);
@@ -8631,7 +8627,6 @@ void dbQueueEnqueueTxFrame(UCHAR *pTxWI, UCHAR *pDot11Hdr);
 void dbQueueEnqueueRxFrame(UCHAR *pRxWI, UCHAR *pDot11Hdr ULONG flags);
 #endif /* INCLUDE_DEBUG_QUEUE */
 #endif /* DBG_CTRL_SUPPORT */
-#ifdef DBG
 INT Show_DescInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Show_MacTable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
@@ -8663,7 +8658,6 @@ INT show_devinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT show_sysinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT show_trinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT show_txqinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-#endif /* DBG */
 
 INT	Set_ResetStatCounter_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
@@ -9473,9 +9467,8 @@ INT set_force_ext_cca(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT SetRF(RTMP_ADAPTER *pAd, RTMP_STRING *Arg);
 int write_reg(RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 value);
 int read_reg(struct _RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 *value);
-#ifdef DBG
+
 INT show_pwr_info(RTMP_ADAPTER *ad, RTMP_STRING *arg);
-#endif /* DBG */
 
 #ifdef WSC_INCLUDED
 #ifdef WSC_NFC_SUPPORT

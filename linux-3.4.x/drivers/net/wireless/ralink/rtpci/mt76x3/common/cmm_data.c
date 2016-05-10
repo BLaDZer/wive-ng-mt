@@ -2320,8 +2320,6 @@ BOOLEAN CanDoAggregateTransmit(RTMP_ADAPTER *pAd, NDIS_PACKET *pPacket, TX_BLK *
 
 }
 
-
-#ifdef DBG
 VOID rtmp_sta_txq_dump(RTMP_ADAPTER *pAd, STA_TR_ENTRY *tr_entry, INT qidx)
 {
 	ULONG IrqFlags = 0;
@@ -2374,8 +2372,6 @@ VOID rtmp_tx_swq_dump(RTMP_ADAPTER *pAd, INT qidx)
 	RTMP_IRQ_UNLOCK(&pAd->irq_lock, IrqFlags);
 	DBGPRINT(RT_DEBUG_OFF, ("\n"));
 }
-#endif /* DBG */
-
 
 VOID rtmp_ps_init(RTMP_ADAPTER *pAd)
 {

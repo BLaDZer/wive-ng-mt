@@ -641,18 +641,13 @@ static VOID D_ShowTableEntries(PBND_STRG_CLI_TABLE table)
 	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER) table->priv;
 
 	INT i;
-	BND_STRG_DBGPRINT(RT_DEBUG_OFF,
-						("\t%s Accessible Clients:\n",
-						(table->Band == BAND_24G) ?
-						"2.4G" : "5G"));
+	printk("\t%s Accessible Clients:\n", (table->Band == BAND_24G) ? "2.4G" : "5G");
 
 	for (i = 0; i < BND_STRG_MAX_TABLE_SIZE; i++)
 	{
 		if (table->Entry[i].bValid)
 		{
-			BND_STRG_DBGPRINT(RT_DEBUG_OFF,
-							("\t%d: %02x:%02x:%02x:%02x:%02x:%02x\n",
-							 i, PRINT_MAC(table->Entry[i].Addr)));
+			printk("\t%d: %02x:%02x:%02x:%02x:%02x:%02x\n", i, PRINT_MAC(table->Entry[i].Addr));
 		}
 	}
 
