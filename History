@@ -2018,50 +2018,51 @@
 21) init.d: fix dns for l2tp server clients work.<br>
 22) init.d: udhcpc-script: fix parse routes in some case.<br>
 23) init.d: udhcpc-script: add workaound for ISP with DGW over others net.<br>
-24) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
-25) band_steering: add support read parametrs from nvram.<br>
-26) uboot/kernel: add support EN25Q128 flash chip.<br>
-27) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
-28) nvram: fix smart carrier support enable in mt7603.<br>
-29) goahead: add band steering options.<br>
-30) goahead: add contol dynamic adaptive LNA gain.<br>
-31) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
-32) goahead: add support ap-only mode.<br>
-33) goahead: fix wds disable.<br>
-34) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
-35) kernel: ralink_arch: raeth: fixes & code refactoring.<br>
-36) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
-37) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
-38) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
-39) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
-40) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
-41) kernel: ralink_wifi: add mt7603 driver support.<br>
-42) kernel: ralink_wifi: mt76x3: driver update to 4.1.0.0 pre version.<br>
-43) kernel: ralink_wifi: mt76x3: fix build warnings.<br>
-44) kernel: ralink_wifi: mt76x3: fix ate build and work.<br>
-45) kernel: ralink_wifi: mt76x3: port auto handover logic (basic roaming).<br>
-46) kernel: ralink_wifi: mt76x3: port spectrum fixes.<br>
-47) kernel: ralink_wifi: mt76x3: allow some getinfo from iwpriv without DBG build flag.<br>
-48) kernel: ralink_wifi: mt76x3: allow log connect/disconnect and others info.<br>
-49) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-50) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-51) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-52) kernel: bio: return EINTR if copying to user space got interrupted.<br>
-53) kernel: fs/exec.c: fix minor memory leak.<br>
-54) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-55) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-56) kernel: usb: cdc-acm: more sanity checking.<br>
-57) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-58) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-59) kernel: net: ethtool: fix phy adress get from user.<br>
-60) kernel: net: ethtool: issue with querying phy settings.<br>
-61) kernel: net: fix net_gso_ok for new GSO types.<br>
-62) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-63) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-64) kernel: net: validate variable length ll headers.<br>
-65) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-66) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-67) kernel: net: ppp: take reference on channels netns.<br>
+24) init.d: udhcpc-script: flush route cache after route table modifications.<br>
+25) fastroaming: fix work 802.1x preauth (use iappd daemon for client migrations events).<br>
+26) band_steering: add support read parametrs from nvram.<br>
+27) uboot/kernel: add support EN25Q128 flash chip.<br>
+28) init.d/goahead: add delta threshold rssi level for 5GHz band parametr for tune 5GHz band roaming.<br>
+29) nvram: fix smart carrier support enable in mt7603.<br>
+30) goahead: add band steering options.<br>
+31) goahead: add contol dynamic adaptive LNA gain.<br>
+32) goahead: add clamp and skip long range vga options for 7602/7612 modules (USB3/HDMI interference reduce).<br>
+33) goahead: add support ap-only mode.<br>
+34) goahead: fix wds disable.<br>
+35) configs: disable VGA for long distance clients and clamp VGA of -4dB for all per default for 7602/7612 modules.<br>
+36) kernel: ralink_arch: raeth: fixes & code refactoring.<br>
+37) kernel: ralink_wifi: fix build warnings if build with -Wall flag.<br>
+38) kernel: ralink_wifi: backport some fixes to MT7620 and MT7610 stable drivers.<br>
+39) kernel: ralink_wifi: fix variables type used as irqlock flags (MT7620 and MT7610 stable drivers).<br>
+40) kernel: ralink_wifi: mt76x2 driver add workaround for DEASSOC PSM bug.<br>
+41) kernel: ralink_wifi: print PA/LNA modes to syslog (for easy fabric control).<br>
+42) kernel: ralink_wifi: add mt7603 driver support.<br>
+43) kernel: ralink_wifi: mt76x3: driver update to 4.1.0.0 pre version.<br>
+44) kernel: ralink_wifi: mt76x3: fix build warnings.<br>
+45) kernel: ralink_wifi: mt76x3: fix ate build and work.<br>
+46) kernel: ralink_wifi: mt76x3: port auto handover logic (basic roaming).<br>
+47) kernel: ralink_wifi: mt76x3: port spectrum fixes.<br>
+48) kernel: ralink_wifi: mt76x3: allow some getinfo from iwpriv without DBG build flag.<br>
+49) kernel: ralink_wifi: mt76x3: allow log connect/disconnect and others info.<br>
+50) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+51) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+52) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+53) kernel: bio: return EINTR if copying to user space got interrupted.<br>
+54) kernel: fs/exec.c: fix minor memory leak.<br>
+55) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+56) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+57) kernel: usb: cdc-acm: more sanity checking.<br>
+58) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+59) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+60) kernel: net: ethtool: fix phy adress get from user.<br>
+61) kernel: net: ethtool: issue with querying phy settings.<br>
+62) kernel: net: fix net_gso_ok for new GSO types.<br>
+63) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+64) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+65) kernel: net: validate variable length ll headers.<br>
+66) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+67) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+68) kernel: net: ppp: take reference on channels netns.<br>
 <br>
 <br>
 <br>

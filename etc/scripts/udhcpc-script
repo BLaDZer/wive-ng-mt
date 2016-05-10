@@ -249,6 +249,10 @@ case "$1" in
 		$LOG "Apply user routes."
 		/etc/routes_replace replace $lan_if $interface
 	    fi
+
+	    $LOG "Flush route cache"
+	    ip route flush cache
+
 	    # set routes applied flag
 	    touch /tmp/routes_applied
 	fi
