@@ -2051,6 +2051,7 @@
 54) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
 55) kernel: net: validate variable length ll headers.<br>
 56) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+57) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
 <br>
 <br>
 <br>
