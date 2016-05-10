@@ -209,12 +209,11 @@ case "$1" in
 		while [ -n "$1" ]; do
 		    NW="$1"
 		    GW="$2"
+		    if [ -z "$GW" ]; then
+			GW="0.0.0.0"
+                    fi
 		    shift 2
-		    if [ "$GW" = "0.0.0.0" ] || [ -z "$GW" ]; then
-			ip -4 route replace $NW dev $interface
-		    else
-			ROUTELIST_ST="$ROUTELIST_ST $NW:$GW:$interface:"
-		    fi
+		    ROUTELIST_ST="$ROUTELIST_ST $NW:$GW:$interface:"
 		done
 	    fi
 	    # first add stub for routes next add static routes and
