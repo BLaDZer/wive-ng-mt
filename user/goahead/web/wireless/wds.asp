@@ -238,6 +238,10 @@ function CheckValue(form) {
 	var all_wds_enc_type = "";
 	var all_wds_phy_mode = "";
 
+	// if disabled - not need check
+	if (form.wds_mode.options.selectedIndex == 0)
+		return true;
+
 	// check real used rules only
 	for (i = 0; i < wdsNum; i++) {
 	    if (!CheckEncKey(form, i))
