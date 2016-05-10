@@ -221,8 +221,13 @@ case "$1" in
 	    # replace dgw must be replaced only if ip selected
 	    # after route table modification reapply replace DGW (workaround for some ISP`s)
 	    if [ "$REPLACE_DGW" = "1" ] && [ "$FULL_RENEW" = "1" ]; then
-		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS $ROUTELIST_DGW"
-		$LOG "Apply route list. And replace DGW."
+		if [ "$ROUTELIST_ST" != "" ] || [ "$ROUTELIST_CS" != "" ]; then
+		    ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW $ROUTELIST_ST $ROUTELIST_CS $ROUTELIST_DGW"
+		    $LOG "Apply route list. And replace DGW (static routes recived)."
+		else
+		    ROUTELIST="$ROUTELIST_FGW $ROUTELIST_DGW"
+		    $LOG "Apply route list. And replace DGW."
+		fi
 	    else
 		ROUTELIST="$ROUTELIST_FGW $ROUTELIST_ST $ROUTELIST_CS"
 		$LOG "Apply route list without modify DGW."
