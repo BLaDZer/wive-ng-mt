@@ -7314,7 +7314,6 @@ INT Set_VhtNDPA_Sounding_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 #ifdef DOT11_N_SUPPORT
 
-#ifdef DBG
 void assoc_ht_info_debugshow(
 	IN PRTMP_ADAPTER pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
@@ -7370,7 +7369,6 @@ void assoc_ht_info_debugshow(
 #endif /* DOT11N_DRAFT3 */
 	}
 }
-#endif /* DBG */
 
 INT	Set_BurstMode_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 {

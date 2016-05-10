@@ -8750,13 +8750,11 @@ void build_ext_channel_switch_ie(
 	IN RTMP_ADAPTER *pAd,
 	IN HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE *pIE);
 
-#ifdef DBG
 void assoc_ht_info_debugshow(
 	IN RTMP_ADAPTER *pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
 	IN UCHAR ht_cap_len,
 	IN HT_CAPABILITY_IE *pHTCapability);
-#endif /* DBG */
 #endif /* DOT11_N_SUPPORT */
 
 BOOLEAN rtmp_rx_done_handle(RTMP_ADAPTER *pAd);
