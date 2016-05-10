@@ -36,7 +36,6 @@ extern UCHAR	RALINK_OUI[];
 extern UCHAR BROADCOM_OUI[];
 extern UCHAR WPS_OUI[];
 
-#ifdef DBG
 static void ap_assoc_info_debugshow(
 	IN RTMP_ADAPTER *pAd,
 	IN BOOLEAN isReassoc,
@@ -107,8 +106,6 @@ static void ap_assoc_info_debugshow(
 		pEntry->StaIdleTimeout));
 
 }
-#endif /* DBG */
-
 
 static USHORT update_associated_mac_entry(
 	IN RTMP_ADAPTER *pAd,
@@ -2086,9 +2083,7 @@ SendAssocResponse:
 		
 #endif /* IAPP_SUPPORT */
 
-#ifdef DBG
 		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
-#endif /* DBG */
 
 		/* send wireless event - for association */
 		RTMPSendWirelessEvent(pAd, IW_ASSOC_EVENT_FLAG, pEntry->Addr, 0, 0);

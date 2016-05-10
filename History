@@ -2040,25 +2040,26 @@
 43) kernel: ralink_wifi: mt76x3: port auto handover logic (basic roaming).<br>
 44) kernel: ralink_wifi: mt76x3: port spectrum fixes.<br>
 45) kernel: ralink_wifi: mt76x3: allow some getinfo from iwpriv without DBG build flag.<br>
-46) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-47) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-48) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-49) kernel: bio: return EINTR if copying to user space got interrupted.<br>
-50) kernel: fs/exec.c: fix minor memory leak.<br>
-51) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-52) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-53) kernel: usb: cdc-acm: more sanity checking.<br>
-54) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-55) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-56) kernel: net: ethtool: fix phy adress get from user.<br>
-57) kernel: net: ethtool: issue with querying phy settings.<br>
-58) kernel: net: fix net_gso_ok for new GSO types.<br>
-59) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-60) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-61) kernel: net: validate variable length ll headers.<br>
-62) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-63) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-64) kernel: net: ppp: take reference on channels netns.<br>
+46) kernel: ralink_wifi: mt76x3: allow log connect/disconnect and others info.<br>
+47) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
+48) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+49) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+50) kernel: bio: return EINTR if copying to user space got interrupted.<br>
+51) kernel: fs/exec.c: fix minor memory leak.<br>
+52) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+53) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+54) kernel: usb: cdc-acm: more sanity checking.<br>
+55) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+56) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+57) kernel: net: ethtool: fix phy adress get from user.<br>
+58) kernel: net: ethtool: issue with querying phy settings.<br>
+59) kernel: net: fix net_gso_ok for new GSO types.<br>
+60) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+61) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+62) kernel: net: validate variable length ll headers.<br>
+63) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+64) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+65) kernel: net: ppp: take reference on channels netns.<br>
 <br>
 <br>
 <br>
