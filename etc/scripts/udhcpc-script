@@ -167,6 +167,8 @@ case "$1" in
 		    while ip -4 route del default dev $interface ; do
 		        :
 		    done
+		    # low cost stub for all default not replaced routes to WAN
+		    ip route replace default dev $interface metric 100
 		fi
 		# always parse router variable
 		metric=0
