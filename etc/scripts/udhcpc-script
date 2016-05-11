@@ -202,7 +202,9 @@ case "$1" in
 			for (i=4; i>0; i--) {if (a[i]==0) w-=8; else {\
 			while (a[i]%2==0) {w--; a[i]=a[i]/2}; break}\
 			}; print w }'`
-		    ROUTELIST_CS="$ROUTELIST_CS $NW/$MASK:$GW:$interface:"
+		    if [ ! -z "$NW" ] && [ ! -z "$GW" ]; then
+			ROUTELIST_CS="$ROUTELIST_CS $NW/$MASK:$GW:$interface:"
+		    fi
 		done
 	    fi
 	    # MSSTATIC ROUTES AND STATIC ROUTES (rfc3442)
@@ -216,7 +218,9 @@ case "$1" in
 			GW="0.0.0.0"
                     fi
 		    shift 2
-		    ROUTELIST_ST="$ROUTELIST_ST $NW:$GW:$interface:"
+		    if [ ! -z "$NW" ] && [ ! -z "$GW" ]; then
+			ROUTELIST_ST="$ROUTELIST_ST $NW:$GW:$interface:"
+		    fi
 		done
 	    fi
 	    # first add stub for routes next add static routes and
