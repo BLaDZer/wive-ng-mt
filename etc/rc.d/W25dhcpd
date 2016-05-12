@@ -73,7 +73,7 @@ start() {
 	# wins servers for clients
 	if [ "$SmbEnabled" = "1" ] || [ -e /tmp/wins.dhcp ]; then
 		if [ -e /tmp/wins.dhcp ]; then
-		    # use uplink wins if adress recived by uplink dhcp
+		    # use uplink wins if adress recieved by uplink dhcp
 		    wins_srvs=`cat /tmp/wins.dhcp | tail -n1`
 		    config-udhcpd.sh -w "$wins_srvs"
 		else

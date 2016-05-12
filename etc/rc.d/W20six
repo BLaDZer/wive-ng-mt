@@ -138,7 +138,7 @@ dhcpradvdreconf() {
 	# read dnsservers reciverd from dhcp
 	if [ -e /etc/resolvipv6.conf ]; then
 	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
-	    $LOG "Use DNS recived from ISP $DNSADRESSES"
+	    $LOG "Use DNS recieved from ISP $DNSADRESSES"
 	fi
 
 	if [ "$DNSADRESSES" = "" ]; then

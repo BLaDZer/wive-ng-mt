@@ -141,7 +141,7 @@ case "$1" in
 	    # MTU is default for all session time.
 	    # Get MTU from dhcp server and set
 	    if [ "$mtu" = "576" ]; then
-		$LOG "MTU size recived from DHCP server is incorrect (ugly ISP? QWERTY?), use 1500bytes instead"
+		$LOG "MTU size recieved from DHCP server is incorrect (ugly ISP? QWERTY?), use 1500bytes instead"
 		mtu=1500
 	    fi
 	    if [ "$mtu" ] && [ "$wan_manual_mtu" = "0" -o "$wan_manual_mtu" = "" ]; then

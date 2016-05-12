@@ -196,22 +196,22 @@ if [ "$MODE" = "all" ]; then
     fi
 fi
 
-##########################################################
+###########################################################
 # need restart L2TP server every netfilter rules replaced
-# or ppp session to uplink restarted or new adress recived
-##########################################################
+# or ppp session to uplink restarted or new adress recieved
+###########################################################
 service vpnserver restart
 
-##########################################################
+###########################################################
 # last stage after apply all changes restart cwmp client
-##########################################################
+###########################################################
 if [ -e /bin/cwmpd ]; then
     service cwmpd restart
 fi
 
-##########################################################
-# Always rebalance irq by cpus				 #
-##########################################################
+###########################################################
+# Always rebalance irq by cpus				  #
+###########################################################
 if [ -e /bin/irqbalance ]; then
     service irqbalance restart
 fi
