@@ -23,8 +23,9 @@
 #define KEYBLOCK_LEN 40 /* choose to mininise fragmentation when storing DNSSEC keys */
 #define DNSSEC_WORK 50 /* Max number of queries to validate one question */
 #define TIMEOUT 10 /* drop UDP queries after TIMEOUT seconds */
-#define FORWARD_TEST 250 /* try all servers every 250 queries */
-#define FORWARD_TIME 60 /* or 60 seconds */
+#define FORWARD_TEST 50 /* try all servers every 50 queries */
+#define FORWARD_TIME 20 /* or 20 seconds */
+#define SERVERS_LOGGED 30 /* Only log this many servers when logging state */
 #define RANDOM_SOCKS 64 /* max simultaneous random ports */
 #define LEASE_RETRY 60 /* on error, retry writing leasefile after LEASE_RETRY seconds */
 #define CACHESIZ 150 /* default cache size */

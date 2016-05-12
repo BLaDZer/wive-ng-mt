@@ -2008,7 +2008,7 @@
 11) coovachilli: refactor radius packet send function (sync with git 02.05.2016 commit 10a73639).<br>
 12) miniupnpd: up to 2.0 version.<br>
 13) irqbalance: update to 27.04.2016 git version.<br>
-14) dnsmasq: up to 2.76test13 version.<br>
+14) dnsmasq: up to 2.76rc1 version.<br>
 15) openssl: up to 1.0.1t version (0.9.8 EOL).<br>
 16) ralinkiappd: fix segfault in debug mode with level trace.<br>
 17) ralinkiappd: add support send messages to seconf wlan module.<br>
