@@ -2066,6 +2066,7 @@
 69) kernel: net: ppp: take reference on channels netns.<br>
 70) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
 71) kernel: net: bridge: fix igmp / mld query parsing.<br>
+72) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <br>
