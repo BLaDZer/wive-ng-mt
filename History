@@ -2064,6 +2064,7 @@
 67) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
 68) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
 69) kernel: net: ppp: take reference on channels netns.<br>
+70) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
 <br>
 <br>
 <br>
