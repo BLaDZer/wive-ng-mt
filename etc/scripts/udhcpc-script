@@ -134,7 +134,7 @@ case "$1" in
 	    FULL_RENEW=1
 	fi
 
-	# set ip/netmask
+	# set ip/netmask/mtu
 	if [ "$FULL_RENEW" = "1" ]; then
 	    $LOG "Renew ip adress $NEW_IP and $NETMASK for $interface from dhcp"
 	    ifconfig $interface $NEW_IP $BROADCAST $NETMASK
