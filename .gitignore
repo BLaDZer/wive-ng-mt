@@ -241,6 +241,8 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/ntfs-3g/include/Makefile
 /user/ntfs-3g/include/ntfs-3g/Makefile
 /user/ntfs-3g/include/fuse-lite/Makefile
+/user/ntfs-3g/src/ntfs-3g.8
+/user/ntfs-3g/src/ntfs-3g.probe.8
 /user/ppp/chat/Makefile
 /user/ppp/Makefile
 /user/ppp/*/Makefile
