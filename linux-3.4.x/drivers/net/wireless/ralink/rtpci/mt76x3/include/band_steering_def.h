@@ -24,14 +24,16 @@
 
 /* use daemon */
 #define BNDSTRG_DAEMON
-#define BND_STRG_MAX_TABLE_SIZE	64
-#define BND_STRG_TIMER_PERIOD	1000
-#define BND_STRG_AGE_TIME		150000
-#define BND_STRG_HOLD_TIME		90000
-#define BND_STRG_CHECK_TIME_5G	30000
-#define BND_STRG_RSSI_DIFF		30
-#define BND_STRG_RSSI_LOW		-70
-#define BND_STRG_AUTO_ONOFF_THRD 4000
+
+#define BND_STRG_MAX_TABLE_SIZE		64
+#define BND_STRG_TIMER_PERIOD		1000
+#define BND_STRG_AGE_TIME		800000	/* orig 150000 */
+#define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
+#define BND_STRG_CHECK_TIME_5G		4000	/* orig 30000 */
+#define BND_STRG_RSSI_DIFF		20
+#define BND_STRG_RSSI_LOW		-80
+
+#define BND_STRG_AUTO_ONOFF_THRD 	4000
 #define P_BND_STRG_TABLE	(&pAd->ApCfg.BndStrgTable)
 
 #define BND_STRG_DBG
@@ -73,7 +75,7 @@ typedef struct _BND_STRG_CLI_TABLE{
 	BOOLEAN b5GInfReady;
 	CHAR	RssiDiff;	/* if Rssi2.4G > Rssi5G by RssiDiff, then allow client to connect 2.4G */
 	CHAR	RssiLow;	/* if Rssi5G < RssiLow, then this client cannot connect to 5G */
-	UINT32	AgeTime;		/* Entry Age Time (ms) */
+	UINT32	AgeTime;			/* Entry Age Time (ms) */
 	UINT32	HoldTime;		/* Time for holding 2.4G connection rsp (ms) */
 	UINT32	CheckTime_5G;	/* Time for deciding if a client is 2.4G only (ms) */
 	RALINK_TIMER_STRUCT Timer;
