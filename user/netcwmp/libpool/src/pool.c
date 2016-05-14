@@ -6,7 +6,7 @@
 #include <unistd.h>
 #endif
 
-
+#include "../../libcwmp/include/cwmp/log.h"
 
 #define POOL_ALIGNMENT sizeof(unsigned long)
 #define pool_align(d, a)     (((d) + (a - 1)) & ~(a - 1))
