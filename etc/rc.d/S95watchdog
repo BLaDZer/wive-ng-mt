@@ -25,9 +25,10 @@ stop() {
 	$LOG "Stop watchdog"
 	killall -q watchdog
 	killall -q -SIGKILL watchdog
-	killall -q pinger.sh
-	killall -q -SIGKILL pinger.sh
+	rm -f /var/run/watchdog.pid
     fi
+    killall -q pinger.sh
+    killall -q -SIGKILL pinger.sh
 }
 
 case "$1" in
