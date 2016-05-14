@@ -2051,24 +2051,25 @@
 54) kernel: bio: return EINTR if copying to user space got interrupted.<br>
 55) kernel: fs/exec.c: fix minor memory leak.<br>
 56) kernel: mips: reimplement get_cycles().<br>
-57) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-58) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-59) kernel: usb: cdc-acm: more sanity checking.<br>
-60) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-61) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-62) kernel: net: ethtool: fix phy adress get from user.<br>
-63) kernel: net: ethtool: issue with querying phy settings.<br>
-64) kernel: net: fix net_gso_ok for new GSO types.<br>
-65) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-66) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-67) kernel: net: validate variable length ll headers.<br>
-68) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-69) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-70) kernel: net: ppp: take reference on channels netns.<br>
-71) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
-72) kernel: net: bridge: fix igmp / mld query parsing.<br>
-73) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
-74) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
+57) kernel: mips: mm: c-r4k: panic if IL or DL fields have a reserved value.<br>
+58) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+59) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+60) kernel: usb: cdc-acm: more sanity checking.<br>
+61) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+62) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+63) kernel: net: ethtool: fix phy adress get from user.<br>
+64) kernel: net: ethtool: issue with querying phy settings.<br>
+65) kernel: net: fix net_gso_ok for new GSO types.<br>
+66) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+67) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+68) kernel: net: validate variable length ll headers.<br>
+69) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+70) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+71) kernel: net: ppp: take reference on channels netns.<br>
+72) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
+73) kernel: net: bridge: fix igmp / mld query parsing.<br>
+74) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
+75) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <br>
