@@ -95,7 +95,7 @@ WOPT	+= -Wno-pointer-sign
 # disable variable unused warnings in gcc 4.6.0
 WOPT	+= -Wno-unused-but-set-variable
 
-# disable const variable unused warnings in gcc 4.6.0
+# disable const variable unused warnings in gcc 6.0
 # WOPT	+= -Wno-unused-const-variable
 
 ########################### BUILD FLAGS/OPTIONS##############################################
