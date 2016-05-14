@@ -972,7 +972,7 @@ static int br_ip4_multicast_query(struct net_bridge *br,
 	struct igmpv3_query *ih3;
 	struct net_bridge_port_group *p;
 	struct net_bridge_port_group __rcu **pp;
-	unsigned long max_delay;
+	unsigned long max_delay = 0;
 	unsigned long now = jiffies;
 	unsigned int offset = skb_transport_offset(skb);
 	__be32 group;
