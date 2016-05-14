@@ -127,14 +127,31 @@ start() {
 }
 
 stop() {
+    # flush route cache for deadloop prevent
+    ip route flush
+
     # stop all vpn services
     service vpnhelper stop
 
-    # stop dhcp and zeroconf clients
-    killall -q udhcpc
-    killall -q zcip
-    killall -q -SIGKILL udhcpc
-    killall -q -SIGKILL zcip
+    pid=`pidof udhcpc`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop DHCP client"
+	while killall -q udhcpc; do
+	    # wait release procedure
+	    sleep 2
+	    killall -q -SIGKILL udhcpc
+	done
+    fi
+
+    pid=`pidof zcip`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop ZCIP client"
+	while killall -q zcip; do
+	    # wait release procedure
+	    sleep 1
+	    killall -q -SIGKILL zcip
+	done
+    fi
 
     # in gw mode down wlan if not bridge and not apcli_bridge
     if [ "$OperationMode" = "1" ] || [ "$OperationMode" = "3" -a "$ApCliBridgeOnly" != "1" ]; then

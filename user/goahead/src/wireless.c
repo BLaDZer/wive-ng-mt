@@ -999,7 +999,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
-
+	/* reconfigure system */
 	doSystem("internet.sh");
 }
 
@@ -1204,7 +1204,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
 	websWrite(wp, T("beacon: %s<br>\n"), beacon);
@@ -1232,7 +1231,7 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 
-	// restart wireless network
+	/* reconfigure system */
 	doSystem("internet.sh");
 }
 
@@ -1275,7 +1274,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 
-	// restart wireless network
+	/* reconfigure system */
 	doSystem("internet.sh");
 }
 #endif
@@ -1661,7 +1660,6 @@ out:
 	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h2>MBSSID index: %d, Security Mode: %s Done</h2><br>\n"), mbssid, security_mode);
 	websFooter(wp);
@@ -1670,6 +1668,7 @@ out:
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
+	/* reconfigure system */
 	doSystem("internet.sh");
 }
 

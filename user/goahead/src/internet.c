@@ -1310,11 +1310,9 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 
 	staticRoutingInit();
 
-	// run script to rebuild routing
-	//configure system
+	/* reconfigure system */
 	doSystem("internet.sh");
 
-	// Write OK
 	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/routing.asp', true);</script>\n"));
 	websFooter(wp);
 
@@ -1345,7 +1343,6 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 	doSystem("service dynroute restart");
 
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h3>Dynamic Routing:</h3><br>\n"));
 	websWrite(wp, T("RIPEnable %s<br>\n"), rip);
@@ -1368,15 +1365,15 @@ void initInternet(void)
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	char *opmode;
 #endif
-	//first generate user routes and fierwall scripts
+	/* first generate user routes and fierwall scripts */
 	staticRoutingInit();
 	firewall_rebuild_etc();
 
-	//configure system
+	/* reconfigure system */
 	doSystem("internet.sh");
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
-	//automatically connect to AP according to the active profile
+	/* automatically connect to AP according to the active profile */
 	opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	if (!strcmp(opmode, "2")) {
 	    initStaProfile();
@@ -1483,7 +1480,6 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h3>LAN Interface Setup</h3><br>\n"));
 	websWrite(wp, T("Hostname: %s<br>\n"), host);
@@ -1504,6 +1500,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	submitUrl = "http://%s%s", ip, websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
+	/* reconfigure system */
 	doSystem("internet.sh");
 #if defined(CONFIG_USER_SAMBA)
 	doSystem("service samba restart");
@@ -1715,10 +1712,8 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 	websRedirect(wp, submitUrl);
-
-	/* Prevent deadloop at WAN apply change if VPN started */
-	doSystem("ip route flush cache && service vpnhelper stop && service wan stop");
-	initInternet();
+	/* reconfigure system */
+	doSystem("internet.sh");
 }
 
 #ifdef CONFIG_IPV6
@@ -1791,7 +1786,6 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 out:
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
 	websWrite(wp, T("ipv6_opmode: %s<br>\n"), opmode);
@@ -1814,7 +1808,7 @@ out:
 	    websWrite(wp, T("IPv6SrvAddr: %s<br>\n"), ipaddr);
 #endif
 	}
-	// Write OK
+
 	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/ipv6.asp', true);</script>\n"));
 	websFooter(wp);
 	websDone(wp, 200);
@@ -1822,6 +1816,7 @@ out:
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
+	/* reconfigure system */
 	doSystem("internet.sh");
 }
 
@@ -2092,7 +2087,6 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 
 out:
 #ifdef PRINT_DEBUG
-	//debug print
 	websHeader(wp);
 	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"));
 	websFooter(wp);
