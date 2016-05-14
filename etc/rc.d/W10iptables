@@ -54,7 +54,7 @@ servicelimit() {
 	    $LOG "DHCP server allow"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi
-	if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
+	if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
 	    $LOG "802.11f daemon allow to connect"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 3517 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p tcp --dport 3517 -j ACCEPT
