@@ -123,9 +123,8 @@ start() {
 
 dhcpradvdreconf() {
     get_param
+    dhcpradvdstop
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
-	dhcpradvdstop
-
 	$LOG "Configure and start radvd and dhcpv6 server"
 	# get prefix direct from lan iface if not set
 	if [ "$PREFIX" = "" ]; then
@@ -305,7 +304,6 @@ get_param() {
     fi
 
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
-
 	# switch tun over wan/vpn
 	if [ "$Ipv6InVPN" = "1" ]; then
 	    tun_wan_if="$real_wan_if"
