@@ -10,6 +10,10 @@
 
 #ifdef __KERNEL__
 
+#include <linux/compiler.h>
+
+#include <asm/cpu.h>
+#include <asm/cpu-features.h>
 #include <asm/mipsregs.h>
 
 /*
@@ -33,9 +37,22 @@
 
 typedef unsigned int cycles_t;
 
+/*
+ * On R4000/R4400 before version 5.0 an erratum exists such that if the
+ * cycle counter is read in the exact moment that it is matching the
+ * compare register, no interrupt will be generated.
+ *
+ * There is a suggested workaround and also the erratum can't strike if
+ * the compare interrupt isn't being used as the clock source device.
+ * However for now the implementaton of this function doesn't get these
+ * fine details right.
+ */
 static inline cycles_t get_cycles(void)
 {
-	return 0;
+	if (cpu_has_counter)
+		return read_c0_count();
+
+	return 0;	/* no usable counter */
 }
 
 #endif /* __KERNEL__ */
