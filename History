@@ -2047,30 +2047,31 @@
 50) kernel: ralink_wifi: mt76x3: allow log connect/disconnect and others info.<br>
 51) kernel: ralink_wifi: mt76x3: fix band steering defaults.<br>
 52) kernel: compiler-gcc: disable -ftracer for __noclone functions.<br>
-53) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
-54) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
-55) kernel: bio: return EINTR if copying to user space got interrupted.<br>
-56) kernel: fs/exec.c: fix minor memory leak.<br>
-57) kernel: mips: reimplement get_cycles().<br>
-58) kernel: mips: mm: c-r4k: panic if IL or DL fields have a reserved value.<br>
-59) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-60) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-61) kernel: usb: cdc-acm: more sanity checking.<br>
-62) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-63) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-64) kernel: net: ethtool: fix phy adress get from user.<br>
-65) kernel: net: ethtool: issue with querying phy settings.<br>
-66) kernel: net: fix net_gso_ok for new GSO types.<br>
-67) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-68) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-69) kernel: net: validate variable length ll headers.<br>
-70) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-71) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-72) kernel: net: ppp: take reference on channels netns.<br>
-73) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
-74) kernel: net: bridge: fix igmp / mld query parsing.<br>
-75) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
-76) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
+53) kernel: compiler.h: add support for malloc attribute.<br>
+54) kernel: mm: fix page_group_by_mobility_disabled breakage.<br>
+55) kernel: ext4: fix NULL pointer dereference in ext4_mark_inode_dirty().<br>
+56) kernel: bio: return EINTR if copying to user space got interrupted.<br>
+57) kernel: fs/exec.c: fix minor memory leak.<br>
+58) kernel: mips: reimplement get_cycles().<br>
+59) kernel: mips: mm: c-r4k: panic if IL or DL fields have a reserved value.<br>
+60) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+61) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+62) kernel: usb: cdc-acm: more sanity checking.<br>
+63) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+64) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+65) kernel: net: ethtool: fix phy adress get from user.<br>
+66) kernel: net: ethtool: issue with querying phy settings.<br>
+67) kernel: net: fix net_gso_ok for new GSO types.<br>
+68) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+69) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+70) kernel: net: validate variable length ll headers.<br>
+71) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+72) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+73) kernel: net: ppp: take reference on channels netns.<br>
+74) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
+75) kernel: net: bridge: fix igmp / mld query parsing.<br>
+76) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
+77) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <br>
