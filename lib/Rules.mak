@@ -245,9 +245,7 @@ OPTIMIZATION += $(CFLAG_-fmerge-all-constants) $(CFLAG_-fstrict-aliasing)
 $(eval $(call cache-output-var,GCC_VER,$(CC) -dumpversion))
 GCC_VER := $(subst ., ,$(GCC_VER))
 GCC_MAJOR_VER ?= $(word 1,$(GCC_VER))
-#GCC_MINOR_VER ?= $(word 2,$(GCC_VER))
 
-ifeq ($(GCC_MAJOR_VER),4)
 # shrinks code, results are from 4.0.2
 # 0.36%
 $(eval $(call check-gcc-var,-fno-tree-loop-optimize))
@@ -258,11 +256,26 @@ OPTIMIZATION += $(CFLAG_-fno-tree-dominator-opts)
 # 0.1%
 $(eval $(call check-gcc-var,-fno-strength-reduce))
 OPTIMIZATION += $(CFLAG_-fno-strength-reduce)
-# fix ~10% performance regression at gcc 4.8.x
+# fix gcc 6.0 and later build
+$(eval $(call check-gcc-var,-fWno-unused-const-variable))
+OPTIMIZATION += $(CFLAG_-fWno-var-unused-const-variable)
+# fix performance regression at gcc > 4.8.x
+# disable new loop optimization mode in 4.8.x and later breaks broken SPEC 2006 benchmarks
+# and uncorrect codeganeration in some situations (slowdown and buggy)
+# disable invalid "can't wrap" optimizations for signed / pointers
+# prevent null check delete and others tricks
+$(eval $(call check-gcc-var,-fno-strict-overflow))
+OPTIMIZATION += $(CFLAG_-fno-strict-overflow)
+$(eval $(call check-gcc-var,-fno-delete-null-pointer-checks))
+OPTIMIZATION += $(CFLAG_-fno-delete-null-pointer-checks)
+$(eval $(call check-gcc-var,-fno-aggressive-loop-optimizations))
+OPTIMIZATION += $(CFLAG_-fno-aggressive-loop-optimizations)
+$(eval $(call check-gcc-var,-fno-tree-partial-pre))
+OPTIMIZATION += $(CFLAG_-fno-tree-partial-pre)
 $(eval $(call check-gcc-var,-fno-tree-slsr))
 OPTIMIZATION += $(CFLAG_-fno-tree-slsr)
-endif
-
+$(eval $(call check-gcc-var,-fno-var-tracking-assignments))
+OPTIMIZATION += $(CFLAG_-fno-var-tracking-assignments)
 
 # CPU_CFLAGS-y contain options which are not warnings,
 # not include or library paths, and not optimizations.

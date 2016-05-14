@@ -632,6 +632,9 @@ KBUILD_CFLAGS += $(call cc-disable-warning, pointer-sign)
 # disable variable unused warnings in gcc 4.6.0 and later
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 
+# disable const variable unused warnings in gcc 6.0 and later
+KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
+
 ifdef CONFIG_FRAME_POINTER
 KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
 else
