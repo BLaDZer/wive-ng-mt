@@ -370,7 +370,7 @@ stop() {
     sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
     sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
     sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
-    sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.$lan_if.forwarding=0	> /dev/null 2>&1
     sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
     sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
 
@@ -385,7 +385,7 @@ stop() {
     rm -f /tmp/ip6addrdel
 
     ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
-    ip -6 route flush scope all dev sit0				> /dev/null 2>&1
+    ip -6 route flush scope all dev sit0			> /dev/null 2>&1
     ip -6 route flush scope all dev $tun_wan_if			> /dev/null 2>&1
     ip -6 route flush scope all dev $six_wan_if			> /dev/null 2>&1
     ip link set dev 6rd down					> /dev/null 2>&1
