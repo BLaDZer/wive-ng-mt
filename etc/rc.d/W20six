@@ -356,46 +356,43 @@ get_param() {
 }
 
 stop() {
-    if [ -e /var/run/radvd.pid ] || [ -e /var/run/dhcp6s.pid ]; then
-	$LOG  "Deconfigure ipv6 interfaces/route."
+    $LOG  "Deconfigure ipv6 interfaces/route."
 
-	# always clear conntrack and routes tables/caches
-	flush_net_caches
+    # always clear conntrack and routes tables/caches
+    flush_net_caches
 
-        # disable ra for all ifaces
-	sysctl -wq net.ipv6.conf.all.accept_ra=0		> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
-	sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
+    # disable ra for all ifaces
+    sysctl -wq net.ipv6.conf.all.accept_ra=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.all.forwarding=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.6rd.forwarding=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.sit0.forwarding=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.$lan_if.forwarding=0		> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0	> /dev/null 2>&1
+    sysctl -wq net.ipv6.conf.$six_wan_if.forwarding=0	> /dev/null 2>&1
 
-	# disable ipv6
-	sysctl -wq net.ipv6.conf.all.disable_ipv6=1
+    # disable ipv6
+    sysctl -wq net.ipv6.conf.all.disable_ipv6=1
 
-	# cleanup global adresses
-	echo "#!/bin/sh" > /tmp/ip6addrdel
-	ip -6 -o addr show scope global | awk {' print "ip -6 addr del " $4 " dev " $2 '} >> /tmp/ip6addrdel
-	chmod 755 /tmp/ip6addrdel
-	sh /tmp/ip6addrdel
-	rm -f /tmp/ip6addrdel
+    # cleanup global adresses
+    echo "#!/bin/sh" > /tmp/ip6addrdel
+    ip -6 -o addr show scope global | awk {' print "ip -6 addr del " $4 " dev " $2 '} >> /tmp/ip6addrdel
+    chmod 755 /tmp/ip6addrdel
+    sh /tmp/ip6addrdel
+    rm -f /tmp/ip6addrdel
 
-	ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
-	ip -6 route flush scope all dev sit0				> /dev/null 2>&1
-	ip -6 route flush scope all dev $tun_wan_if			> /dev/null 2>&1
-	ip -6 route flush scope all dev $six_wan_if			> /dev/null 2>&1
+    ip -6 route flush scope all dev 6rd				> /dev/null 2>&1
+    ip -6 route flush scope all dev sit0				> /dev/null 2>&1
+    ip -6 route flush scope all dev $tun_wan_if			> /dev/null 2>&1
+    ip -6 route flush scope all dev $six_wan_if			> /dev/null 2>&1
+    ip link set dev 6rd down					> /dev/null 2>&1
+    ip link set dev sit0 down					> /dev/null 2>&1
+    ip tunnel del 6rd						> /dev/null 2>&1
 
-	ip link set dev 6rd down					> /dev/null 2>&1
-	ip link set dev sit0 down					> /dev/null 2>&1
-	ip tunnel del 6rd						> /dev/null 2>&1
+    # always remove sit module if auto loaded after call ip tool
+    rmmod sit > /dev/null 2>&1
 
-	# always remove sit module if auto loaded after call ip tool
-	rmmod sit > /dev/null 2>&1
-
-	# always clear conntrack and routes tables/caches
-	flush_net_caches
-    fi
+    # always clear conntrack and routes tables/caches
+    flush_net_caches
 }
 
 case "$1" in
