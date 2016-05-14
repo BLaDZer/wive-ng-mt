@@ -124,8 +124,9 @@ start() {
 dhcpradvdreconf() {
     get_param
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
-	$LOG "Reconfigure radvd and dhcpv6 server"
+	dhcpradvdstop
 
+	$LOG "Configure and start radvd and dhcpv6 server"
 	# get prefix direct from lan iface if not set
 	if [ "$PREFIX" = "" ]; then
 	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
@@ -234,6 +235,8 @@ dhcpradvdstop() {
 }
 
 dhcpcreconf() {
+    dhcpcstop
+
     if [ -e /bin/dhcp6c ] && [ "$IPv6OpMode" = "1" ] && [ "$IPv6Dhcpc" = "1" ]; then
 	$LOG "Native IPv6 support with DHCP/RA uplink. Always accept router advertisements for autoconfigure from wan $six_wan_if and forward enable."
 	# ipv6 mode preconfig for wan
@@ -356,6 +359,9 @@ get_param() {
 }
 
 stop() {
+    dhcpcstop
+    dhcpradvdstop
+
     $LOG  "Deconfigure ipv6 interfaces/route."
 
     # always clear conntrack and routes tables/caches
@@ -401,13 +407,10 @@ case "$1" in
 	    ;;
 
 	stop)
-	    dhcpradvdstop
-	    dhcpcstop
 	    stop
 	    ;;
 
 	dhcpradvdreconf)
-	    dhcpradvdstop
 	    dhcpradvdreconf
 	    ;;
 
@@ -416,7 +419,6 @@ case "$1" in
 	    ;;
 
 	dhcpcreconf)
-	    dhcpcstop
 	    dhcpcreconf
 	    ;;
 
