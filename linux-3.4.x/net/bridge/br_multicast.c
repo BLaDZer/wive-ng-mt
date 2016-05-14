@@ -1056,7 +1056,7 @@ static int br_ip6_multicast_query(struct net_bridge *br,
 	struct mld2_query *mld2q;
 	struct net_bridge_port_group *p;
 	struct net_bridge_port_group __rcu **pp;
-	unsigned long max_delay;
+	unsigned long max_delay = 0;
 	unsigned long now = jiffies;
 	unsigned int offset = skb_transport_offset(skb);
 	const struct in6_addr *group = NULL;
