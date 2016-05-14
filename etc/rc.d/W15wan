@@ -127,9 +127,6 @@ start() {
 }
 
 stop() {
-    # flush route cache for deadloop prevent
-    ip route flush
-
     # stop all vpn services
     service vpnhelper stop
 
