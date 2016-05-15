@@ -50,7 +50,7 @@ servicelimit() {
 		fi
 	    fi
 	fi
-	if [ "$dhcpEnabled" != "0" ]; then
+	if [ "$dhcpEnabled" = "1" ]; then
 	    $LOG "DHCP server allow"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi

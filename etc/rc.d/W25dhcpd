@@ -6,7 +6,7 @@
 LOG="logger -t dhcpd"
 
 start() {
-  dhcpEnabled=`nvram_get 2860 dhcpEnabled`
+    dhcpEnabled=`nvram_get 2860 dhcpEnabled`
     if [ "$dhcpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$chilli_enable" != "on" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	$LOG "Configure dhcpserver"
 	get_param
@@ -104,19 +104,14 @@ start() {
 	fi
 	$LOG "Start dhcpserver"
 	config-udhcpd.sh -r "$DHCEXTARGS"
-    elif [ "$dhcpEnabled" = "2" ]; then
-	$LOG "Start dhcprelay"
-	dhcprelay $lan_if $wan_if &
     else
 	$LOG "DHCP server disabled. OPMODE=$OperationMode APCLIBR=$ApCliBridgeOnly"
     fi
 
     # if dnsmasq disabled need reset LAN ports for clients renew params
-    if [ "$dnsPEnabled" = "0" -a "$wan_static_dns" != "on" ] || [ "$dhcpEnabled" = "2" ]; then
-	if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchpart" != "LLLLL" ]; then
-	    $LOG "Reinit LAN ports."
-	    config-vlan.sh $switchmode RRRRR
-	fi
+    if [ "$dnsPEnabled" = "0" ] && [ "$wan_static_dns" != "on" ] && [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchpart" != "LLLLL" ]; then
+	$LOG "Reinit LAN ports."
+	config-vlan.sh $switchmode RRRRR
     fi
 
 }
