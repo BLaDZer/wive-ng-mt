@@ -2077,8 +2077,9 @@
 80) kernel: net: ppp: take reference on channels netns.<br>
 81) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
 82) kernel: net: bridge: fix igmp / mld query parsing.<br>
-83) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
-84) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
+83) kernel: net: bridge: fix igmpv3 / mldv2 report parsing.<br>
+84) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
+85) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <br>
