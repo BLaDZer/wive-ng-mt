@@ -34,7 +34,7 @@ servicelimit() {
         iptables -F servicelimit > /dev/null 2>&1
         iptables -A INPUT -j servicelimit > /dev/null 2>&1
 	# INPUT needed by unpxy and igmpproxy
-	if [ "$igmpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ] || [ "$xupnpd" != "0" ]; then
+	if [ "$igmpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
 	    $LOG "Set igmp input rules"
 	    iptables -A servicelimit -p igmp -i $lan_if -j ACCEPT
 	    iptables -A servicelimit -d $mcast_net -i $wan_if -j ACCEPT
@@ -440,7 +440,7 @@ dmzrules() {
 }
 
 clampmss() {
-	if [ "$mss_use_pmtu" != "0" ]; then
+	if [ "$mss_use_pmtu" = "1" ]; then
 	    # automatic correct mss based from pmtu discovery
 	    iptables -t mangle -A FORWARD -p tcp ! -o $lan_if --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 	else
