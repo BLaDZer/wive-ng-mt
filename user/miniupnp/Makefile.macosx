@@ -16,7 +16,7 @@ CFLAGS = -Wall -O -g3 -DDEBUG
 #CFLAGS = -Wall -Os
 #CC = gcc  #better use clang !
 RM = rm -f
-MV = mv
+MV = mv -f
 INSTALL = install
 STRIP = strip
 

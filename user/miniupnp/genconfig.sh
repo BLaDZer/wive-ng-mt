@@ -52,7 +52,7 @@ esac
 done
 
 RM="rm -f"
-MV="mv"
+MV="mv -f"
 CONFIGFILE=`mktemp tmp.config.h.XXXXXXXXXX`
 CONFIGFILE_FINAL="config.h"
 CONFIGMACRO="CONFIG_H_INCLUDED"
