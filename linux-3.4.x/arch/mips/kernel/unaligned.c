@@ -447,6 +447,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
 	case ldc1_op:
 	case swc1_op:
 	case sdc1_op:
+	case cop1x_op:
 		/*
 		 * I herewith declare: this does not happen.  So send SIGBUS.
 		 */

@@ -2060,26 +2060,27 @@
 63) kernel: fs/exec.c: fix minor memory leak.<br>
 64) kernel: mips: reimplement get_cycles().<br>
 65) kernel: mips: mm: c-r4k: panic if IL or DL fields have a reserved value.<br>
-66) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
-67) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
-68) kernel: usb: cdc-acm: more sanity checking.<br>
-69) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
-70) kernel: net: ipv6: recursive check rt->dst.from when call rt6_check_expired.<br>
-71) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
-72) kernel: net: ethtool: fix phy adress get from user.<br>
-73) kernel: net: ethtool: issue with querying phy settings.<br>
-74) kernel: net: fix net_gso_ok for new GSO types.<br>
-75) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
-76) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-77) kernel: net: validate variable length ll headers.<br>
-78) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-79) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-80) kernel: net: ppp: take reference on channels netns.<br>
-81) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
-82) kernel: net: bridge: fix igmp / mld query parsing.<br>
-83) kernel: net: bridge: fix igmpv3 / mldv2 report parsing.<br>
-84) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
-85) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
+66) kernel: mips: allow emulation for unaligned [LS]DXC1 instructions.<br>
+67) kernel: usb: option: add D-Link DWM-221 B1 device id.<br>
+68) kernel: usb: cdc_mbim: apply NDP to end quirk to all Huawei devices.<br>
+69) kernel: usb: cdc-acm: more sanity checking.<br>
+70) kernel: net: ipv6: count in extension headers in skb->network_header.<br>
+71) kernel: net: ipv6: recursive check rt->dst.from when call rt6_check_expired.<br>
+72) kernel: net: xfrm: fix crash observed during device unregistration and decryption.<br>
+73) kernel: net: ethtool: fix phy adress get from user.<br>
+74) kernel: net: ethtool: issue with querying phy settings.<br>
+75) kernel: net: fix net_gso_ok for new GSO types.<br>
+76) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
+77) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
+78) kernel: net: validate variable length ll headers.<br>
+79) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+80) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+81) kernel: net: ppp: take reference on channels netns.<br>
+82) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
+83) kernel: net: bridge: fix igmp / mld query parsing.<br>
+84) kernel: net: bridge: fix igmpv3 / mldv2 report parsing.<br>
+85) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
+86) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <br>
