@@ -365,6 +365,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/tcpdump/Mkaefile.in
 /user/tcpdump/configure
 /user/miniupnp/config.h
+/user/miniupnp/tmp.config.h.*
 /user/dhcp6/wide-dhcpv6/configure
 /user/dhcp6/wide-dhcpv6/Makefile
 /user/udpxy/udpxy.dep
