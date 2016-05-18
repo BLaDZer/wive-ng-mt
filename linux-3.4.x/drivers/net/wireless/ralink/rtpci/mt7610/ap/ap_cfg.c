@@ -2051,7 +2051,8 @@ INT RTMPAPSetInformation(
 				}
     			else
     			{
-					RTMP_GET_OS_PID(pObj->IappPid, IappPid);
+					// TODO:  correct the following line
+					/* RTMP_GET_OS_PID(pObj->IappPid, IappPid); */
 					pObj->IappPid_nr = IappPid;
 					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_APD_PID::(IappPid=%lu(0x%lx))\n", IappPid, IappPid));
 				}
