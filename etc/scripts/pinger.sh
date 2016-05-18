@@ -1,6 +1,6 @@
 #!/bin/sh
 
-eval `nvram_buf_get 2860 ping_check_time ping_check_interval RadioOn`
+eval `nvram_buf_get 2860 ping_check_time ping_check_interval`
 
 if [ "$ping_check_time" = "" ] || [ "$ping_check_time" = "0" ] || \
    [ "$ping_check_interval" = "" ] || [ "$ping_check_interval" = "0" ]; then

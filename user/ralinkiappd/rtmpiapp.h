@@ -23,6 +23,8 @@
 #ifndef __RTMP_IAPP_H__
 #define __RTMP_IAPP_H__
 
+#include "rt_config.h"
+
 #define IAPP_OS_LINUX
 //#define IAPP_OS_VXWORKS
 
@@ -94,11 +96,11 @@
 #define FT_KDP_DEFAULT_PTK			"1234567812345678"
 
 #ifdef IAPP_OS_LINUX
-#define RT_IOCTL_IAPP				(SIOCIWFIRSTPRIV + 0x01)
+#define RT_IOCTL_IAPP				RT_PRIV_IOCTL
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-#define PF_PACKET					AF_INET
+#define PF_PACKET				AF_INET
 #define RT_IOCTL_IAPP				VX_RT_PRIV_IOCTL
 #define FT_KDP_WLAN_NAME			"ra"
 #define FT_KDP_WLAN_UNIT			0
