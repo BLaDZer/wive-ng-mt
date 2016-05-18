@@ -13,14 +13,16 @@ LOG="logger -t iappd"
 
 start() {
     get_param
-    if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
-	$LOG "Starting iappd 802.11f daemon"
-	# ethernet if - lan_if
-	# wlan if for recive data - standalone if or bridge interface
-	# wlan if for ioctl - standalone if
-	# for example ralinkiappd -e "$lan_if" -w "$lan_if" -wi "$first_wlan_root_if" -wn "$second_wlan_root_if" &
-	# this is defaults not need direct set ifnames in this case
-	ralinkiappd &
+    if [ "$RadioOn" = "1" -o "$RadioOnINIC" = "1" ]; then
+	if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
+	    $LOG "Starting iappd 802.11f daemon"
+	    # ethernet if - lan_if
+	    # wlan if for recive data - standalone if or bridge interface
+	    # wlan if for ioctl - standalone if
+	    # for example ralinkiappd -e "$lan_if" -w "$lan_if" -wi "$first_wlan_root_if" -wn "$second_wlan_root_if" &
+	    # this is defaults not need direct set ifnames in this case
+	    ralinkiappd &
+	fi
     fi
 }
 

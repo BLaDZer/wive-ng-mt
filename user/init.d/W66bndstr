@@ -24,7 +24,7 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 RadioOn RadioOnINIC BandSteering SSID1 SSID1INIC`
+    eval `nvram_buf_get 2860 BandSteering SSID1 SSID1INIC`
 }
 
 stop() {

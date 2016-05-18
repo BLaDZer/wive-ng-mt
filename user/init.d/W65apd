@@ -12,7 +12,7 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$RADIUS_Server" != "" ] && [ "$RADIUS_Server" != "0" ]; then
+    if [ "$RadioOn" = "1" -o "$RadioOnINIC" = "1" ] && [ "$RADIUS_Server" != "" ] && [ "$RADIUS_Server" != "0" ]; then
 	$LOG "Starting apd radius daemon"
 	rt2860apd &
 	if [ "$second_wlan_root_if" != "" ]; then
