@@ -793,17 +793,16 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	CHAR   IfName[12]; /* in VxWorks, no iwreq.ifr_name */
 	struct iwreq Wrq;
 
+	memset(&Wrq, 0, sizeof(Wrq));
 
 #ifdef IAPP_OS_LINUX
 	if (strlen(pCtrlBK->IfNameWlanIoctl) >= sizeof(IfName))
 		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN_IOCTL);
 	else
 		strcpy(IfName, pCtrlBK->IfNameWlanIoctl);
-	/* End of if */
 
-/*	sprintf(IfName, "ra%d", ApIdx);
-	IfName[3] = '\0'; */
-	strcpy(Wrq.ifr_name, IfName);
+	strncpy(Wrq.ifr_name, IfName, 11);
+	Wrq.ifr_name[11] = '\0';
 #endif
 
 	Wrq.u.data.flags = Flags;
@@ -811,7 +810,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	Wrq.u.data.pointer = (caddr_t) pData;
 
 #ifdef IAPP_OS_LINUX
-	if (ioctl(pCtrlBK->SocketIoctl, Param, (int) &Wrq) < 0)
+	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
@@ -842,17 +841,16 @@ static BOOLEAN IAPP_IoctlToWLAN2(
 	CHAR   IfName[12]; /* in VxWorks, no iwreq.ifr_name */
 	struct iwreq Wrq;
 
+	memset(&Wrq, 0, sizeof(Wrq));
 
 #ifdef IAPP_OS_LINUX
 	if (strlen(pCtrlBK->IfNameWlanIoctl) >= sizeof(IfName))
 		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN2_IOCTL);
 	else
 		strcpy(IfName, pCtrlBK->IfNameWlan2Ioctl);
-	/* End of if */
 
-/*	sprintf(IfName, "ra%d", ApIdx);
-	IfName[3] = '\0'; */
-	strcpy(Wrq.ifr_name, IfName);
+	strncpy(Wrq.ifr_name, IfName, 11);
+	Wrq.ifr_name[11] = '\0';
 #endif
 
 	Wrq.u.data.flags = Flags;
@@ -860,7 +858,7 @@ static BOOLEAN IAPP_IoctlToWLAN2(
 	Wrq.u.data.pointer = (caddr_t) pData;
 
 #ifdef IAPP_OS_LINUX
-	if (ioctl(pCtrlBK->SocketIoctl, Param, (int) &Wrq) < 0)
+	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
 		return FALSE;
