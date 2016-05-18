@@ -713,7 +713,7 @@ static BOOLEAN IAPP_DSIfInfoGet(
 	} /* End of if */
 
 	/* get own addr */
-	if (ioctl(SockIf, SIOCGIFADDR, (int) &ReqIf) < 0)
+	if (ioctl(SockIf, SIOCGIFADDR, &ReqIf) < 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get own address of %s failed!\n", ReqIf.ifr_name);
 		goto label_fail;
@@ -726,7 +726,7 @@ static BOOLEAN IAPP_DSIfInfoGet(
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> own address (%d.%d.%d.%d)\n", IAPP_SHOW_IP_HTONL(pCtrlBK->AddrOwn.s_addr));
 
 	/* get broadcast address */
-	if (ioctl(SockIf, SIOCGIFBRDADDR, (int) &ReqIf) < 0)
+	if (ioctl(SockIf, SIOCGIFBRDADDR, &ReqIf) < 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get broadcast address failed!\n");
 		goto label_fail;
@@ -742,7 +742,7 @@ static BOOLEAN IAPP_DSIfInfoGet(
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> broadcast address (%d.%d.%d.%d)\n", IAPP_SHOW_IP_HTONL(pCtrlBK->AddrBroadcast.s_addr));
 
 	/* get network Mask */
-	if (ioctl(SockIf, SIOCGIFNETMASK, (int) &ReqIf) < 0)
+	if (ioctl(SockIf, SIOCGIFNETMASK, &ReqIf) < 0)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Get network Mask failed!\n");
 		goto label_fail;
@@ -818,7 +818,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, (caddr_t) &Wrq) == ERROR)
+	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
@@ -866,7 +866,7 @@ static BOOLEAN IAPP_IoctlToWLAN2(
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, (caddr_t) &Wrq) == ERROR)
+	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
 		return FALSE;
