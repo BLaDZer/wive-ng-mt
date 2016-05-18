@@ -33,7 +33,7 @@ get_param() {
 stop() {
     pid=`pidof ralinkiappd`
     if [ "$pid" != "" ]; then
-	$LOG "Stopping  iappd roaming daemon"
+	$LOG "Stopping 802.11f roaming daemon"
 	killall -q ralinkiappd
 	killall -q -SIGKILL ralinkiappd
     fi
