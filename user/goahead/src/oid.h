@@ -300,7 +300,7 @@ typedef struct _NDIS_802_11_STATISTICS
 //For SetBATable use
 typedef struct {
 	unsigned char   IsRecipient;
-	unsigned char   MACAddr[6];
+	unsigned char   MACAddr[ETH_ALEN];
 	unsigned char   TID;
 	unsigned char   BufSize;
 	unsigned short  TimeOut;
@@ -339,7 +339,7 @@ typedef unsigned char  NDIS_802_11_RATES_EX[NDIS_802_11_LENGTH_RATES_EX];  // Se
 typedef struct PACKED _NDIS_WLAN_BSSID
 {
 	unsigned long                       Length;             // Length of this structure
-	unsigned char                       MacAddress[6];      // BSSID
+	unsigned char                       MacAddress[ETH_ALEN];      // BSSID
 	unsigned char                       Reserved[2];
 	NDIS_802_11_SSID                    Ssid;               // SSID
 	unsigned long                       Privacy;            // WEP encryption requirement
@@ -355,7 +355,7 @@ typedef struct PACKED _NDIS_WLAN_BSSID
 typedef struct PACKED _NDIS_WLAN_BSSID_EX
 {
 	unsigned long                       Length;             // Length of this structure
-	unsigned char                       MacAddress[6];      // BSSID
+	unsigned char                       MacAddress[ETH_ALEN];      // BSSID
 	unsigned char                       Reserved[2];
 	NDIS_802_11_SSID                    Ssid;               // SSID
 	unsigned int						Privacy;            // WEP encryption requirement
@@ -492,21 +492,16 @@ typedef struct _RT_PROFILE_SETTING {
 	unsigned int                        AntennaTx;
 	unsigned int                        CountryRegion;
 	//Advance
-	//RT_802_11_TX_RATES                  ConfigSta;
 	unsigned int                        AdhocMode;
-	//unsigned char                       reserved[64];
 	unsigned int                        Active; // 0 is the profile is set as connection profile, 1 is not.
 	struct  _RT_PROFILE_SETTING         *Next;
 } RT_PROFILE_SETTING, *PRT_PROFILE_SETTING;
-
-// move to station.c
-//PRT_PROFILE_SETTING selectedProfileSetting = NULL, headerProfileSetting = NULL, currentProfileSetting = NULL;
 
 typedef struct _NDIS_802_11_REMOVE_KEY
 {
 	unsigned int        Length;             // Length of this structure
 	unsigned int        KeyIndex;
-	unsigned char       BSSID[6];
+	unsigned char       BSSID[ETH_ALEN];
 } NDIS_802_11_REMOVE_KEY, *PNDIS_802_11_REMOVE_KEY;
 
 // Key mapping keys require a BSSID
@@ -515,7 +510,7 @@ typedef struct _NDIS_802_11_KEY
     unsigned int        Length;             // Length of this structure
 	unsigned int        KeyIndex;
 	unsigned int        KeyLength;          // length of key in bytes
-	unsigned char       BSSID[6];
+	unsigned char       BSSID[ETH_ALEN];
 	NDIS_802_11_KEY_RSC KeyRSC;
 	unsigned char       KeyMaterial[1];     // variable length depending on above field
 } NDIS_802_11_KEY, *PNDIS_802_11_KEY;
@@ -530,7 +525,7 @@ typedef struct _NDIS_802_11_WEP                                                 
 typedef struct _NDIS_802_11_PASSPHRASE
 {
 	unsigned int			KeyLength;          // length of key in bytes
-	unsigned char			BSSID[6];
+	unsigned char			BSSID[ETH_ALEN];
 	unsigned char           KeyMaterial[1];     // variable length depending on above field
 } NDIS_802_11_PASSPHRASE, *PNDIS_802_11_PASSPHRASE;
 
