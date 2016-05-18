@@ -145,34 +145,6 @@ if [ -e /bin/lldpd ]; then
 fi
 
 ##########################################################
-# restart 802.1x wireless daemon			 #
-##########################################################
-if [ -e /bin/rt2860apd ]; then
-	service apd restart
-fi
-
-##########################################################
-# restart bandsteering wireless daemon			 #
-##########################################################
-if [ -e /bin/bndstrg ]; then
-	service bndstr restart
-fi
-
-##########################################################
-# restart 802.1f wireless daemon			 #
-##########################################################
-if [ -e /bin/ralinkiappd ]; then
-	service iappd restart
-fi
-
-##########################################################
-# restart radius auth daemon				 #
-##########################################################
-if [ -e /bin/radiusd ]; then
-	service radius restart
-fi
-
-##########################################################
 # After physical reinit 				 #
 ##########################################################
 if [ "$MODE" = "all" ]; then
@@ -201,6 +173,34 @@ fi
 # or ppp session to uplink restarted or new adress recieved
 ###########################################################
 service vpnserver restart
+
+##########################################################
+# restart bandsteering wireless daemon			 #
+##########################################################
+if [ -e /bin/bndstrg ]; then
+    service bndstr restart
+fi
+
+##########################################################
+# restart radius auth daemon				 #
+##########################################################
+if [ -e /bin/radiusd ]; then
+    service radius restart
+fi
+
+##########################################################
+# restart 802.1x wireless daemon			 #
+##########################################################
+if [ -e /bin/rt2860apd ]; then
+    service apd restart
+fi
+
+##########################################################
+# restart 802.1f wireless daemon			 #
+##########################################################
+if [ -e /bin/ralinkiappd ]; then
+    service iappd restart
+fi
 
 ###########################################################
 # last stage after apply all changes restart cwmp client
