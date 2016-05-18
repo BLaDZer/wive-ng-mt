@@ -124,7 +124,6 @@ typedef struct _RT_802_11_EVENT_LOG {
 
 	ULONG	SystemTime;				/* timestammp (jiffies) */
 	UCHAR	TriggerAddr[ETH_ALEN];
-	UCHAR	DetectorAddr[ETH_ALEN];
 	UINT16	Event;					/* EVENT_xxx */
 } RT_802_11_EVENT_LOG, *PRT_802_11_EVENT_LOG;
 

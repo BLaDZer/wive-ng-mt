@@ -365,15 +365,8 @@ static BOOLEAN IAPP_EventLogHandle(
 		} /* End of if */
 
 		DBGPRINT(RT_DEBUG_TRACE,
-				"iapp> (%d/%d): (Event=0x%x) (D:%02x:%02x:%02x:%02x:%02x:%02x) "
-				"(T:%02x:%02x:%02x:%02x:%02x:%02x)\n",
+				"iapp> (%d/%d): (Event=0x%x) (T:%02x:%02x:%02x:%02x:%02x:%02x)\n",
 				IdEvt, pEvtTab->Num, pEvtTab->Log[IdEvt].Event,
-				pEvtTab->Log[IdEvt].DetectorAddr[0],
-				pEvtTab->Log[IdEvt].DetectorAddr[1],
-				pEvtTab->Log[IdEvt].DetectorAddr[2],
-				pEvtTab->Log[IdEvt].DetectorAddr[3],
-				pEvtTab->Log[IdEvt].DetectorAddr[4],
-				pEvtTab->Log[IdEvt].DetectorAddr[5],
 				pEvtTab->Log[IdEvt].TriggerAddr[0],
 				pEvtTab->Log[IdEvt].TriggerAddr[1],
 				pEvtTab->Log[IdEvt].TriggerAddr[2],

@@ -297,55 +297,6 @@ typedef struct _NDIS_802_11_STATISTICS
 	LARGE_INTEGER   FourWayHandshakeFailures;
 } NDIS_802_11_STATISTICS, *PNDIS_802_11_STATISTICS;
 
-typedef struct _RT_VERSION_INFO {
-	unsigned char   DriverVersionW;
-	unsigned char   DriverVersionX;
-	unsigned char   DriverVersionY;
-	unsigned char   DriverVersionZ;
-	unsigned int    DriverBuildYear;
-	unsigned int    DriverBuildMonth;
-	unsigned int    DriverBuildDay;
-} RT_VERSION_INFO, *PRT_VERSION_INFO;
-
-//Block ACK
-#define TID_SIZE 8
-
-typedef enum _REC_BLOCKACK_STATUS
-{
-	Recipient_NONE=0,
-	Recipient_USED,
-	Recipient_HandleRes,
-	Recipient_Accept
-} REC_BLOCKACK_STATUS, *PREC_BLOCKACK_STATUS;
-
-typedef enum _ORI_BLOCKACK_STATUS
-{
-	Originator_NONE=0,
-	Originator_USED,
-	Originator_WaitRes,
-	Originator_Done
-} ORI_BLOCKACK_STATUS, *PORI_BLOCKACK_STATUS;
-
-//For QureyBATableOID use
-typedef struct  _OID_BA_REC_ENTRY
-{
-	unsigned char   MACAddr[6];
-	unsigned char   BaBitmap;   // if (BaBitmap&(1<<TID)), this session with{MACAddr, TID}exists, so read BufSize[TID] for BufferSize
-	unsigned char   rsv;
-	unsigned char   BufSize[8];
-	REC_BLOCKACK_STATUS REC_BA_Status[8];
-} OID_BA_REC_ENTRY, *POID_BA_REC_ENTRY;
-
-//For QureyBATableOID use
-typedef struct  _OID_BA_ORI_ENTRY
-{
-	unsigned char   MACAddr[6];
-	unsigned char   BaBitmap;  // if (BaBitmap&(1<<TID)), this session with{MACAddr, TID}exists, so read BufSize[TID] for BufferSize, read ORI_BA_Status[TID] for status
-	unsigned char   rsv;
-	unsigned char   BufSize[8];
-	ORI_BLOCKACK_STATUS  ORI_BA_Status[8];
-} OID_BA_ORI_ENTRY, *POID_BA_ORI_ENTRY;
-
 //For SetBATable use
 typedef struct {
 	unsigned char   IsRecipient;
@@ -369,6 +320,7 @@ typedef enum _NDIS_802_11_NETWORK_TYPE
 	Ndis802_11Automode,
 	Ndis802_11OFDM5_N,
 	Ndis802_11OFDM24_N,
+	Ndis802_11OFDM5_AC,
 	Ndis802_11NetworkTypeMax    // not a real type, defined as an upper bound
 } NDIS_802_11_NETWORK_TYPE, *PNDIS_802_11_NETWORK_TYPE;
 
@@ -454,54 +406,6 @@ typedef struct  _OID_BACAP_STRUC {
 	unsigned char   MMPSmode;   // MIMO power save more, 0:static, 1:dynamic, 2:rsv, 3:mimo enable
 	unsigned char   AutoBA;     // Auto BA will automatically , BOOLEAN
 } OID_BACAP_STRUC, *POID_BACAP_STRUC;
-
-typedef enum _RT_802_11_PHY_MODE {
-	PHY_11BG_MIXED = 0,
-	PHY_11B,
-	PHY_11A,
-	PHY_11ABG_MIXED,
-	PHY_11G,
-	PHY_11ABGN_MIXED,	/* both band   5 */
-	PHY_11N_2_4G,		/* 11n-only with 2.4G band      6 */
-	PHY_11GN_MIXED,		/* 2.4G band      7 */
-	PHY_11AN_MIXED,		/* 5G  band       8 */
-	PHY_11BGN_MIXED,	/* if check 802.11b.      9 */
-	PHY_11AGN_MIXED,	/* if check 802.11b.      10 */
-	PHY_11N_5G,		/* 11n-only with 5G band                11 */
-} RT_802_11_PHY_MODE;
-
-typedef struct {
-	RT_802_11_PHY_MODE  PhyMode;
-	unsigned char       TransmitNo;
-	unsigned char       HtMode;     //HTMODE_GF or HTMODE_MM
-	unsigned char       ExtOffset;  //extension channel above or below
-	unsigned char       MCS;
-	unsigned char       BW;
-	unsigned char       STBC;
-	unsigned char       SHORTGI;
-	unsigned char       rsv;
-} OID_SET_HT_PHYMODE, *POID_SET_HT_PHYMODE;
-
-#define MAX_NUM_OF_DLS_ENTRY        4
-// structure for DLS
-typedef struct _RT_802_11_DLS_UI {
-	unsigned short      TimeOut;        // unit: second , set by UI
-	unsigned short      CountDownTimer; // unit: second , used by driver only
-	unsigned char       MacAddr[6];     // set by UI
-	unsigned char       Status;         // 0: none, 1: wait STAkey, 2: finish DLS setup, set by driver only
-	unsigned char       Valid;          // 1: valid, 0: invalid, set by UI, use to setup or tear down DLS link
-} RT_802_11_DLS_UI, *PRT_802_11_DLS;
-
-typedef struct _RT_802_11_DLS_INFO {
-	RT_802_11_DLS_UI        Entry[MAX_NUM_OF_DLS_ENTRY];
-	unsigned char           num;
-} RT_802_11_DLS_INFO, *PRT_802_11_DLS_INFO;
-
-typedef enum _RT_802_11_DLS_MODE {
-	DLS_NONE,
-	DLS_WAIT_KEY,
-	DLS_FINISH
-} RT_802_11_DLS_MODE;
 
 typedef enum _NDIS_802_11_AUTHENTICATION_MODE
 {
@@ -659,7 +563,6 @@ typedef union _MACHTTRANSMIT_SETTING {
 	} field;
 	unsigned short      word;
 } MACHTTRANSMIT_SETTING;
-
 
 typedef struct _RT_802_11_MAC_ENTRY {
 	unsigned char	ApIdx;

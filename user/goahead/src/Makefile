@@ -92,7 +92,7 @@ DEPEND_FILES += storage.o
 endif
 
 # debug flags
-CFLAGS	+= -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter
+CFLAGS	+= -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter -Wno-sign-compare
 
 # Enable web print debug commit nvram values
 # CFLAGS += PRINT_DEBUG

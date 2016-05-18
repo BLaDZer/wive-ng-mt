@@ -310,15 +310,15 @@ static int getStaBSSIDList(int eid, webs_t wp, int argc, char_t **argv)
 			if (strcmp((char *)pBssid->Ssid.Ssid, "") == 0)
 				sprintf((char *)tmpSSID, "&nbsp;");
 			else {
-				int i = 0;
+				int c = 0;
 				do {
-					if (pBssid->Ssid.Ssid[i] < 32 || pBssid->Ssid.Ssid[i] > 126 || pBssid->Ssid.Ssid[i] == 13) // 13 is string end of Dos
+					if (pBssid->Ssid.Ssid[c] < 32 || pBssid->Ssid.Ssid[c] > 126 || pBssid->Ssid.Ssid[c] == 13) // 13 is string end of Dos
 					{
 						strcpy((char *)pBssid->Ssid.Ssid, "&nbsp;");
 						break;
 					}
-					i++;
-				} while(i < pBssid->Ssid.SsidLength-1);
+					c++;
+				} while(c < pBssid->Ssid.SsidLength-1);
 				sprintf((char *)tmpSSID, "%s", pBssid->Ssid.Ssid);
 			}
 
