@@ -1,6 +1,6 @@
 LUA     = lua-5.1.x
 STATIC  = false
-CFLAGS  += -Os -fno-exceptions -fno-rtti -I$(LUA) -L$(LUA) -DLUA_COMPAT_APIINTCASTS
+CFLAGS  += -Os -fno-exceptions -fno-rtti -Wno-sign-compare -I$(LUA) -L$(LUA) -DLUA_COMPAT_APIINTCASTS
 SRC     = main.cpp soap.cpp mem.cpp mcast.cpp luaxlib.cpp luaxcore.cpp luajson.cpp luajson_parser.cpp
 LUAMYCFLAGS = -DLUA_USE_LINUX
 

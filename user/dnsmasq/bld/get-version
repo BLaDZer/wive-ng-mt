@@ -13,7 +13,7 @@
 
 if which git >/dev/null 2>&1 && \
     ([ -d $1/.git ] || grep '^gitdir:' $1/.git >/dev/null 2>&1); then 
-     cd $1; git describe | sed 's/^v//'
+    cd $1; git describe | sed 's/^v//'
 elif grep '\$Format:%d\$' $1/VERSION >/dev/null 2>&1; then
 # unsubstituted VERSION, but no git available.
     echo UNKNOWN

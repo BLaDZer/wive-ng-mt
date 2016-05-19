@@ -8,7 +8,7 @@
 PLAT= none
 
 CC= gcc
-CFLAGS= -Os -Wall $(MYCFLAGS)
+CFLAGS= -Os -Wall -Wno-sign-compare $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f
