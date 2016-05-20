@@ -29,6 +29,8 @@ rem ***************************************************************************
   setlocal
   set CHECK_LIB=TRUE
   set CHECK_SRC=TRUE
+  set CHECK_TESTS=TRUE
+  set CHECK_EXAMPLES=TRUE
 
 :parseArgs
   if "%~1" == "" goto prerequisites
@@ -42,9 +44,23 @@ rem ***************************************************************************
   ) else if /i "%~1" == "lib" (
     set CHECK_LIB=TRUE
     set CHECK_SRC=FALSE
+    set CHECK_TESTS=FALSE
+    set CHECK_EXAMPLES=FALSE
   ) else if /i "%~1" == "src" (
     set CHECK_LIB=FALSE
     set CHECK_SRC=TRUE
+    set CHECK_TESTS=FALSE
+    set CHECK_EXAMPLES=FALSE
+  ) else if /i "%~1" == "tests" (
+    set CHECK_LIB=FALSE
+    set CHECK_SRC=FALSE
+    set CHECK_TESTS=TRUE
+    set CHECK_EXAMPLES=FALSE
+  ) else if /i "%~1" == "examples" (
+    set CHECK_LIB=FALSE
+    set CHECK_SRC=FALSE
+    set CHECK_TESTS=FALSE
+    set CHECK_EXAMPLES=TRUE
   ) else (
     if not defined SRC_DIR (
       set SRC_DIR=%~1%
@@ -91,10 +107,43 @@ rem ***************************************************************************
       for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib" -Wcurl_config.h.cmake "%%i"
     )
 
+    rem Check the lib\vauth directory
+    if exist %SRC_DIR%\lib\vauth (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vauth\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vauth" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vauth\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vauth" "%%i"
+    )
+
     rem Check the lib\vtls directory
     if exist %SRC_DIR%\lib\vtls (
       for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
       for /f "delims=" %%i in ('dir "%SRC_DIR%\lib\vtls\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\lib\vtls" "%%i"
+    )
+  )
+
+  if "%CHECK_TESTS%" == "TRUE" (
+    rem Check the tests\libtest directory
+    if exist %SRC_DIR%\tests\libtest (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\libtest\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\libtest" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\libtest\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\libtest" "%%i"
+    )
+
+    rem Check the tests\unit directory
+    if exist %SRC_DIR%\tests\unit (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\unit\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\unit" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\unit\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\unit" "%%i"
+    )
+
+    rem Check the tests\server directory
+    if exist %SRC_DIR%\tests\server (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\server\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\server" "%%i"
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\tests\server\*.h.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\tests\server" "%%i"
+    )
+  )
+
+  if "%CHECK_EXAMPLES%" == "TRUE" (
+    rem Check the docs\examples directory
+    if exist %SRC_DIR%\docs\examples (
+      for /f "delims=" %%i in ('dir "%SRC_DIR%\docs\examples\*.c.*" /b 2^>NUL') do @perl "%SRC_DIR%\lib\checksrc.pl" "-D%SRC_DIR%\docs\examples" "%%i"
     )
   )
 
@@ -103,12 +152,14 @@ rem ***************************************************************************
 :syntax
   rem Display the help
   echo.
-  echo Usage: checksrc [product] [directory]
+  echo Usage: checksrc [what] [directory]
   echo.
-  echo Product:
+  echo What to scan:
   echo.
   echo lib       - Scan the libcurl source
   echo src       - Scan the command-line tool source
+  echo tests     - Scan the library tests and unit tests
+  echo examples  - Scan the examples
   echo.
   echo directory - Specifies the curl source directory
   goto success

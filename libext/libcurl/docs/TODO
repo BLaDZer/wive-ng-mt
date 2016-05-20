@@ -32,12 +32,14 @@
  1.14 Typesafe curl_easy_setopt()
  1.15 TCP Fast Open
  1.16 Try to URL encode given URL
+ 1.17 Add support for IRIs
 
  2. libcurl - multi interface
  2.1 More non-blocking
  2.2 Better support for same name resolves
  2.3 Non-blocking curl_multi_remove_handle()
  2.4 Split connect and authentication process
+ 2.5 Edge-triggered sockets should work
 
  3. Documentation
  3.1 Update date and version in man pages
@@ -111,6 +113,7 @@
  16. SASL
  16.1 Other authentication mechanisms
  16.2 Add QOP support to GSSAPI authentication
+ 16.3 Support binary messages (i.e.: non-base64)
 
  17. Command line tool
  17.1 sync
@@ -125,6 +128,8 @@
  17.10 improve how curl works in a windows console window
  17.11 -w output to stderr
  17.12 keep running, read instructions from pipe/socket
+ 17.13 support metalink in http headers
+ 17.14 --fail without --location should treat 3xx as a failure
 
  18. Build
  18.1 roffit
@@ -297,6 +302,16 @@
 
  https://github.com/curl/curl/issues/514
 
+1.17 Add support for IRIs
+
+ IRIs (RFC 3987) allow localized, non-ascii, names in the URL. To properly
+ support this, curl/libcurl would need to translate/encode the given input
+ from the input string encoding into percent encoded output "over the wire".
+
+ To make that work smoothly for curl users even on Windows, curl would
+ probably need to be able to convert from several input encodings.
+
+
 2. libcurl - multi interface
 
 2.1 More non-blocking
@@ -335,6 +350,12 @@
  The multi interface treats the authentication process as part of the connect
  phase. As such any failures during authentication won't trigger the relevant
  QUIT or LOGOFF for protocols such as IMAP, POP3 and SMTP.
+
+2.5 Edge-triggered sockets should work
+
+ The multi_socket API should work with edge-triggered socket events. One of
+ the internal actions that need to be improved for this to work perfectly is
+ the 'maxloops' handling in transfer.c:readwrite_data().
 
 3. Documentation
 
@@ -660,6 +681,10 @@ that doesn't exist on the server, just like --ftp-create-dirs.
  with integrity protection) and auth-conf (Authentication with integrity and
  privacy protection).
 
+16.3 Support binary messages (i.e.: non-base64)
+
+  Mandatory to support LDAP SASL authentication.
+
 17. Command line tool
 
 17.1 sync
@@ -755,6 +780,31 @@ that doesn't exist on the server, just like --ftp-create-dirs.
  over a socket to make further instructions so that a second subsequent curl
  invoke can talk to the still running instance and ask for transfers to get
  done, and thus maintain its connection pool, DNS cache and more.
+
+17.13 support metalink in http headers
+
+ Curl has support for downloading a metalink xml file, processing it, and then
+ downloading the target of the metalink. This is done via the --metalink option.
+ It would be nice if metalink also supported downloading via metalink
+ information that is stored in HTTP headers (RFC 6249). Theoretically this could
+ also be supported with the --metalink option.
+
+ See https://tools.ietf.org/html/rfc6249
+
+ See also https://lists.gnu.org/archive/html/bug-wget/2015-06/msg00034.html for
+ an implematation of this in wget.
+
+17.14 --fail without --location should treat 3xx as a failure
+
+ To allow a command line like this to detect a redirect and consider it a
+ failure:
+
+    curl -v --fail -O https://example.com/curl-7.48.0.tar.gz
+
+ ... --fail must treat 3xx responses as failures too. The least problematic
+ way to implement this is probably to add that new logic in the command line
+ tool only and not in the underlying CURLOPT_FAILONERROR logic.
+
 
 18. Build
 

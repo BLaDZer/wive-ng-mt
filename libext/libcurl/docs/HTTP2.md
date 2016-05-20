@@ -7,7 +7,8 @@ HTTP/2 with curl
 Build prerequisites
 -------------------
   - nghttp2
-  - OpenSSL, NSS, GnutTLS or PolarSSL with a new enough version
+  - OpenSSL, libressl, BoringSSL, NSS, GnutTLS, mbedTLS, wolfSSL or SChannel
+    with a new enough version.
 
 [nghttp2](https://nghttp2.org/)
 -------------------------------
@@ -51,13 +52,17 @@ SSL libs
 --------
 
 The challenge is the ALPN and NPN support and all our different SSL
-backends. You may need a fairly updated SSL library version for it to
-provide the necessary TLS features. Right now we support:
+backends. You may need a fairly updated SSL library version for it to provide
+the necessary TLS features. Right now we support:
 
-  - OpenSSL:  ALPN and NPN
-  - NSS:      ALPN and NPN
-  - GnuTLS:   ALPN
-  - PolarSSL: ALPN
+  - OpenSSL:   ALPN and NPN
+  - libressl:  ALPN and NPN
+  - BoringSSL: ALPN and NPN
+  - NSS:       ALPN and NPN
+  - GnuTLS:    ALPN
+  - mbedTLS:   ALPN
+  - SChannel:  ALPN
+  - wolfSSL:   ALPN
 
 Multiplexing
 ------------
@@ -91,6 +96,9 @@ curl tool
 
 curl offers the `--http2` command line option to enable use of HTTP/2.
 
+curl offers the `--http2-prior-knowledge` command line option to enable use of 
+HTTP/2 without HTTP/1.1 Upgrade.
+
 Since 7.47.0, the curl tool enables HTTP/2 by default for HTTPS connections.
 
 HTTP Alternative Services
@@ -103,9 +111,3 @@ client can use that hint to create a new connection asynchronously.  For
 libcurl, we may introduce a way to bring such clues to the applicaton and/or
 let a subsequent request use the alternate route
 automatically. [Spec](https://tools.ietf.org/html/draft-ietf-httpbis-alt-svc-14)
-
-TODO
-----
-
-  - Implement "prior-knowledge" HTTP/2 connections over clear text so that
-    curl can connect with HTTP/2 at once without 1.1+Upgrade.

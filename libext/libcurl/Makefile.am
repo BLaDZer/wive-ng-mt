@@ -149,8 +149,8 @@ CLEANFILES = $(VC6_LIBDSP) $(VC6_SRCDSP) $(VC7_LIBVCPROJ) $(VC7_SRCVCPROJ)	\
 
 bin_SCRIPTS = curl-config
 
-SUBDIRS = lib src include scripts
-DIST_SUBDIRS = $(SUBDIRS) tests packages docs
+SUBDIRS = lib src include
+DIST_SUBDIRS = $(SUBDIRS) tests packages docs scripts
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libcurl.pc
@@ -288,6 +288,9 @@ ca-firefox: lib/firefox-db2pem.sh
 checksrc:
 	cd lib && $(MAKE) checksrc
 	cd src && $(MAKE) checksrc
+	cd tests && $(MAKE) checksrc
+	cd include/curl && $(MAKE) checksrc
+	cd docs/examples && $(MAKE) checksrc
 
 .PHONY: vc-ide
 
@@ -300,6 +303,8 @@ vc-ide: $(VC6_LIBDSP_DEPS) $(VC6_SRCDSP_DEPS) $(VC7_LIBVCPROJ_DEPS)	\
 	@(win32_lib_srcs='$(LIB_CFILES)'; \
 	win32_lib_hdrs='$(LIB_HFILES) config-win32.h'; \
 	win32_lib_rc='$(LIB_RCFILES)'; \
+	win32_lib_vauth_srcs='$(LIB_VAUTH_CFILES)'; \
+	win32_lib_vauth_hdrs='$(LIB_VAUTH_HFILES)'; \
 	win32_lib_vtls_srcs='$(LIB_VTLS_CFILES)'; \
 	win32_lib_vtls_hdrs='$(LIB_VTLS_HFILES)'; \
 	win32_src_srcs='$(CURL_CFILES)'; \
@@ -310,6 +315,8 @@ vc-ide: $(VC6_LIBDSP_DEPS) $(VC6_SRCDSP_DEPS) $(VC7_LIBVCPROJ_DEPS)	\
 	\
 	sorted_lib_srcs=`for file in $$win32_lib_srcs; do echo $$file; done | sort`; \
 	sorted_lib_hdrs=`for file in $$win32_lib_hdrs; do echo $$file; done | sort`; \
+	sorted_lib_vauth_srcs=`for file in $$win32_lib_vauth_srcs; do echo $$file; done | sort`; \
+	sorted_lib_vauth_hdrs=`for file in $$win32_lib_vauth_hdrs; do echo $$file; done | sort`; \
 	sorted_lib_vtls_srcs=`for file in $$win32_lib_vtls_srcs; do echo $$file; done | sort`; \
 	sorted_lib_vtls_hdrs=`for file in $$win32_lib_vtls_hdrs; do echo $$file; done | sort`; \
 	sorted_src_srcs=`for file in $$win32_src_srcs; do echo $$file; done | sort`; \
@@ -320,10 +327,11 @@ vc-ide: $(VC6_LIBDSP_DEPS) $(VC6_SRCDSP_DEPS) $(VC7_LIBVCPROJ_DEPS)	\
 	awk_code='\
 function gen_element(type, dir, file)\
 {\
+  sub(/vauth\//, "", file);\
   sub(/vtls\//, "", file);\
 \
   spaces="    ";\
-  if(dir == "lib\\vtls")\
+  if(dir == "lib\\vauth" || dir == "lib\\vtls")\
     tabs="				";\
   else\
     tabs="			";\
@@ -377,6 +385,14 @@ function gen_element(type, dir, file)\
     split(lib_rc, arr);\
     for(val in arr) gen_element(proj_type, "lib", arr[val]);\
   }\
+  else if($$0 == "CURL_LIB_VAUTH_C_FILES") {\
+    split(lib_vauth_srcs, arr);\
+    for(val in arr) gen_element(proj_type, "lib\\vauth", arr[val]);\
+  }\
+  else if($$0 == "CURL_LIB_VAUTH_H_FILES") {\
+    split(lib_vauth_hdrs, arr);\
+    for(val in arr) gen_element(proj_type, "lib\\vauth", arr[val]);\
+  }\
   else if($$0 == "CURL_LIB_VTLS_C_FILES") {\
     split(lib_vtls_srcs, arr);\
     for(val in arr) gen_element(proj_type, "lib\\vtls", arr[val]);\
@@ -420,6 +436,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC6_LIBTMPL) > $(VC6_LIBDSP) || { exit 1; }; \
@@ -438,6 +456,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC7_LIBTMPL) > $(VC7_LIBVCPROJ) || { exit 1; }; \
@@ -456,6 +476,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC71_LIBTMPL) > $(VC71_LIBVCPROJ) || { exit 1; }; \
@@ -474,6 +496,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC8_LIBTMPL) > $(VC8_LIBVCPROJ) || { exit 1; }; \
@@ -492,6 +516,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC9_LIBTMPL) > $(VC9_LIBVCPROJ) || { exit 1; }; \
@@ -510,6 +536,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC10_LIBTMPL) > $(VC10_LIBVCXPROJ) || { exit 1; }; \
@@ -528,6 +556,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC11_LIBTMPL) > $(VC11_LIBVCXPROJ) || { exit 1; }; \
@@ -546,6 +576,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC12_LIBTMPL) > $(VC12_LIBVCXPROJ) || { exit 1; }; \
@@ -564,6 +596,8 @@ function gen_element(type, dir, file)\
 		-v lib_srcs="$$sorted_lib_srcs" \
 		-v lib_hdrs="$$sorted_lib_hdrs" \
 		-v lib_rc="$$win32_lib_rc" \
+		-v lib_vauth_srcs="$$sorted_lib_vauth_srcs" \
+		-v lib_vauth_hdrs="$$sorted_lib_vauth_hdrs" \
 		-v lib_vtls_srcs="$$sorted_lib_vtls_srcs" \
 		-v lib_vtls_hdrs="$$sorted_lib_vtls_hdrs" \
 		"$$awk_code" $(srcdir)/$(VC14_LIBTMPL) > $(VC14_LIBVCXPROJ) || { exit 1; }; \
