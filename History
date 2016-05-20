@@ -2086,4 +2086,8 @@
 89) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
+<b>4.4.x</b><br>
+1) kernel: ralink_arch: allow highmem region for 512M devices.<br>
+<br>
+<br>
 <br>
