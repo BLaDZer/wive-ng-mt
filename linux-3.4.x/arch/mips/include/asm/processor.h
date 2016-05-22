@@ -317,6 +317,14 @@ extern long kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
 extern unsigned long thread_saved_pc(struct task_struct *tsk);
 
+static __always_inline void flush_thread(void)
+{
+}
+
+static __always_inline void exit_thread(void)
+{
+}
+
 /*
  * Do necessary setup to start up a newly executed thread.
  */
