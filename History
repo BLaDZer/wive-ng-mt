@@ -2092,6 +2092,7 @@
 3) kernel: net: do not block BH while processing socket backlog.<br>
 4) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
 5) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+6) kernel: sched: Always inline context_switch().<br>
 <br>
 <br>
 <br>
