@@ -186,7 +186,7 @@ endif
 ##################
 EXTRA_CFLAGS := -Idrivers/net/wireless/$(RT_DRV_DIR)/include
 ifeq ($(CONFIG_MT7610_AP_ATE),y)
-EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/ate/include
+EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/ate/include -Wno-unused-variable
 endif
 
 EXTRA_CFLAGS += -Wall -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits

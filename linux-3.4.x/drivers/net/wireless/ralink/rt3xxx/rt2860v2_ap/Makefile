@@ -1,7 +1,7 @@
 
 EXTRA_CFLAGS := -Idrivers/net/wireless/ralink/rt3xxx/rt2860v2/include
 ifeq ($(CONFIG_RT2860V2_AP_ATE),y)
-EXTRA_CFLAGS += -Idrivers/net/wireless/ralink/rt3xxx/rt2860v2/ate/include
+EXTRA_CFLAGS += -Idrivers/net/wireless/ralink/rt3xxx/rt2860v2/ate/include -Wno-unused-variable
 endif
 
 EXTRA_CFLAGS += -Wall -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits
