@@ -7267,9 +7267,9 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 	int calFunction = simple_strtol(arg, 0, 10);
 	int calParams[2];
 	int ret;
+#ifdef RALINK_ATE
 	ITXBF_PHASE_PARAMS phaseParams;
 	UCHAR phaseValues[2] = {0};
-#ifdef RALINK_ATE
 	int idx;
 	UCHAR channel = pAd->CommonCfg.Channel;
 
@@ -7296,11 +7296,11 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 	switch (calFunction)
 	{
 		case 0:  //Verification Flow 
+#ifdef RALINK_ATE
 
 	 		phaseValues[0] = calParams[0];
 			
 			DBGPRINT(RT_DEBUG_TRACE, ("ITxBfCal Result_case0 = [0x%02x]\n", phaseValues[0]));
-#ifdef RALINK_ATE
 			pAd->ate.calParams[0] = (UCHAR)phaseValues[0];
 
 			/* Update EEPROM */
@@ -7330,7 +7330,6 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 			/* Double check */
 			DBGPRINT((calFunction==0? RT_DEBUG_OFF: RT_DEBUG_WARN),
 					("ITxBfCal Result in ATE = [0x%02x]\n", pAd->ate.calParams[0]));
-#endif /* RALINK_ATE */
 
 			//mt_rf_write(pAd, RF_Path0,	   RFDIGI_TRX4, 0x28585); // Auto LNA gain
 			//mt_rf_write(pAd, RF_Path1,	   RFDIGI_TRX4, 0x28585); // Auto LNA gain
@@ -7356,12 +7355,10 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 
 			/* Update EEPROM */
 			ITxBFGetEEPROM(pAd, &phaseParams, 0, 0, 0);
-#ifdef RALINK_ATE
             idx = ate_txbf_get_chan_idx(pAd, channel, 1);
 
             if(idx >=0)               
                 phaseParams.E1aPhase[idx] = phaseValues[0];
-#endif
 			ITxBFSetEEPROM(pAd, &phaseParams, 0, 0, 0);
 
             DBGPRINT(RT_DEBUG_TRACE, (
@@ -7372,6 +7369,7 @@ INT	mt76x2_Set_ITxBfCal_Proc(
 
 			DBGPRINT(RT_DEBUG_WARN, ("Set_ITxBfCal_Proc: Calibration Parameters updated\n"));
 
+#endif
 			break;
 		default:
 			break;

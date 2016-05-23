@@ -1869,7 +1869,7 @@ INT mt76x2_ITxBFDividerCalibration(
 	UINT32 value32;
 	int chanidx,groupIdx;
 	ITXBF_PHASE_PARAMS phaseParams;
-	UCHAR phaseValues[2];
+	UCHAR phaseValues[2] = {0};
 #endif
 	UCHAR divPhaseValue[2];
 
