@@ -226,19 +226,19 @@ VOID TxBFInit(
 BOOLEAN rtmp_chk_itxbf_calibration(
 	IN RTMP_ADAPTER *pAd)
 {
+#ifndef MT76x2
 	INT calIdx, calCnt;
 	USHORT offset, eeVal, *calptr;
-#ifndef MT76x2
+    UINT32 ee_sum;
 	USHORT g_caladdr[] = {0x1a0, 0x1a2, 0x1b0, 0x1b2, 0x1b6, 0x1b8};
 	USHORT a_caladdr[] = {0x1a4, 0x1a6, 0x1a8, 0x1aa, 0x1ac, 0x1ae, 0x1b4, 0x1ba, 0x1bc, 0x1be, 0x1c0, 0x1c2, 0x1c4, 0x1c6, 0x1c8};
 #else
-	USHORT g_caladdr[] = {0xc0, 0xc2, 0xd4, 0xd6, 0xd8};
-	USHORT a_caladdr[] = {0xc4, 0xc6, 0xc8, 0xca, 0xcc, 0xce, 0xd0, 0xd2, 0xda, 0xdc, 0xde, 0xe0, 0xe2, 0xe4, 0xe6, 0xe8, 0xea, 0xec, 0xee, 0xf0};
+    ITXBF_PHASE_PARAMS phaseParams;
+
 #endif
-	UINT32 ee_sum;
 	BOOLEAN bCalibrated = TRUE;
 	
-
+#ifndef MT76x2
 	if (pAd->CommonCfg.Channel <= 14)
 	{
 		calCnt = sizeof(g_caladdr) / sizeof(USHORT);
@@ -266,7 +266,17 @@ BOOLEAN rtmp_chk_itxbf_calibration(
 		bCalibrated = FALSE;
 		printk("TxBF EEPROM all 0xffff(cnt =%d, sum=0x%x), not valid calibration value!\n", calCnt, ee_sum);
 	}
+#else
+    if (pAd->CommonCfg.Channel <= 14)
+	{
+		bCalibrated = FALSE;
+	}
+	else
+	{
+        bCalibrated = ITxBFGetEEPROM(pAd, &phaseParams, 0, 0, 0);
+	}
 
+#endif /*MT76x2*/
 	return bCalibrated;
 }
 
@@ -301,18 +311,25 @@ VOID eTxBFProbing(
  	IN PRTMP_ADAPTER pAd,
 	IN MAC_TABLE_ENTRY	*pEntry)
 {
-	if (pEntry->eTxBfEnCond == 0)	{
+	if (pEntry->eTxBfEnCond == 0)
+	{
 		pEntry->bfState = READY_FOR_SNDG0;
-	}	else if (pEntry->noSndgCnt>=pEntry->noSndgCntThrd)	{
+	}
+	else if (pEntry->noSndgCnt>=pEntry->noSndgCntThrd)
+	{
 		/* Select NDP sounding, maximum streams */
 		pEntry->sndgMcs = (pEntry->ndpSndgStreams==3) ? 16 : 8;
 		Trigger_Sounding_Packet(pAd, SNDG_TYPE_NDP, 0, pEntry->sndgMcs, pEntry);
 
 		pEntry->bfState = WAIT_SNDG_FB0;
 		pEntry->noSndgCnt = 0;
-	}	else if (pEntry->bfState == READY_FOR_SNDG0)	{
+	}
+	else if (pEntry->bfState == READY_FOR_SNDG0)
+	{
 		pEntry->noSndgCnt++;
-	}	else		pEntry->noSndgCnt = 0;
+	}
+	else
+		pEntry->noSndgCnt = 0;
 }
 
 

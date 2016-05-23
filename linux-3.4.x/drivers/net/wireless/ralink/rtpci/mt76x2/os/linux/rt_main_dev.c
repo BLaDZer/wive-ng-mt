@@ -514,9 +514,6 @@ VOID *RtmpNetEthConvertDevSearch(VOID *net_dev_, UCHAR *pData)
 	return (VOID *)pNetDev;
 }
 
-
-
-
 /*
 ========================================================================
 Routine Description:

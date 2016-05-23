@@ -86,6 +86,10 @@ INT ApAllowToSendPacket(
 
 	if (MAC_ADDR_IS_GROUP(pSrcBufVA)) /* mcast & broadcast address */
 	{
+#ifdef MWDS
+        /* If we check an ethernet source move to this device, we should remove it. */
+        MWDSProxyEntryDelete(pAd, (pSrcBufVA + MAC_ADDR_LEN));
+#endif /* MWDS */
 		*pWcid = MCAST_WCID;
 		return TRUE;
 	} 
@@ -114,6 +118,23 @@ INT ApAllowToSendPacket(
 			}
 		}
 #endif /* CLIENT_WDS */
+
+#ifdef MWDS
+		if (pEntry == NULL) {
+			UCHAR Wcid;
+            /* If we check an ethernet source move to this device, we should remove it. */
+            MWDSProxyEntryDelete(pAd, (pSrcBufVA + MAC_ADDR_LEN));
+			if (MWDSProxyLookup(pAd, pSrcBufVA, FALSE, &Wcid)) {
+				if (VALID_WCID(Wcid))
+					pEntry = &pAd->MacTab.Content[Wcid];
+				
+				if (pEntry && (pEntry->Sst == SST_ASSOC)){
+					*pWcid = Wcid;
+					return TRUE;
+				}
+			}
+		}
+#endif /* MWDS */
 	}
 
 	return FALSE;
@@ -405,7 +426,12 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 		NdisGetSystemUpTime(&Now32);
 #endif /* WDS_SUPPORT */
 
+#ifdef DATA_QUEUE_RESERVE
+		if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket) || RTMP_GET_PACKET_ICMP(pPacket))
+			&& (pAd->TxSwQueue[QueIdx].Number >= (pAd->TxSwQMaxLen - pAd->TxRsvLen)))
+#else /* DATA_QUEUE_RESERVE */
 		if (pAd->TxSwQueue[QueIdx].Number >= pAd->TxSwQMaxLen)
+#endif /* !DATA_QUEUE_RESERVE */
 		{
 #ifdef BLOCK_NET_IF
 			StopNetIfQueue(pAd, QueIdx, pPacket);
@@ -447,7 +473,7 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 		if (pAd->MacTab.McastPsQueue.Number >= MAX_PACKETS_IN_MCAST_PS_QUEUE)
 		{
 			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
-			DBGPRINT(RT_DEBUG_TRACE, ("M/BCAST PSQ(=%d) full, drop it!\n", pAd->MacTab.McastPsQueue.Number));
+			DBGPRINT(RT_DEBUG_TRACE, ("M/BCAST PSQ(=%u) full, drop it!\n", pAd->MacTab.McastPsQueue.Number));
 			return NDIS_STATUS_FAILURE;
 		}
 		else
@@ -492,13 +518,22 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 		{
 			NDIS_STATUS PktCloneResult = IgmpPktClone(pAd, pSrcBufVA, pPacket, InIgmpGroup, pGroupEntry, QueIdx, UserPriority);
 			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
+#ifdef IGMP_MESH
+			return NDIS_STATUS_FAILURE;
+#endif /* IGMP_MESH */
 			if (PktCloneResult != NDIS_STATUS_SUCCESS)
 				return NDIS_STATUS_FAILURE;
 		}
 		else
 #endif /* IGMP_SNOOP_SUPPORT */
 		{
+
+#ifdef DATA_QUEUE_RESERVE 
+			if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket) || RTMP_GET_PACKET_ICMP(pPacket))
+			&& (pAd->TxSwQueue[QueIdx].Number >= (pAd->TxSwQMaxLen - pAd->TxRsvLen)))
+#else /* DATA_QUEUE_RESERVE */
 			if (pAd->TxSwQueue[QueIdx].Number >= pAd->TxSwQMaxLen)
+#endif /* !DATA_QUEUE_RESERVE */		
 			{
 				{
 #ifdef BLOCK_NET_IF
@@ -777,16 +812,59 @@ static inline VOID APBuildCache802_11Header(
 	}
 	else
 #endif /* WDS_SUPPORT || CLIENT_WDS */
+#ifdef MWDS
+	if(TX_BLK_TEST_FLAG(pTxBlk, fTX_bMWDSFrame))
+	{
+		pHeader80211->FC.ToDs = 1;
+		pHeader80211->FC.FrDs = 1;
+		if(pTxBlk->pMacEntry)
+		{
+#ifdef APCLI_SUPPORT
+			if(IS_MWDS_OPMODE_APCLI(pTxBlk->pMacEntry))
+			{
+				COPY_MAC_ADDR(pHeader80211->Addr1, APCLI_ROOT_BSSID_GET(pAd, pTxBlk->Wcid)); /* to AP2 */
+				COPY_MAC_ADDR(pHeader80211->Addr2, pTxBlk->pApCliEntry->wdev.if_addr);	
+			}
+			else
+#endif /* APCLI_SUPPORT */
+			if(IS_MWDS_OPMODE_AP(pTxBlk->pMacEntry))
+			{
+				COPY_MAC_ADDR(pHeader80211->Addr1, pTxBlk->pMacEntry->Addr);/* to AP2 */
+				COPY_MAC_ADDR(pHeader80211->Addr2, pAd->CurrentAddress); /* from AP1 */
+			}
+			COPY_MAC_ADDR(pHeader80211->Addr3, pTxBlk->pSrcBufHeader);	/* DA */
+			COPY_MAC_ADDR(pHeader80211->Octet, pTxBlk->pSrcBufHeader + MAC_ADDR_LEN);/* ADDR4 = SA */
+			pTxBlk->MpduHeaderLen += MAC_ADDR_LEN; 
+		}
+		else
+			DBGPRINT(RT_DEBUG_ERROR, ("%s pTxBlk->pMacEntry == NULL!\n", __FUNCTION__));
+	}
+	else
+#endif /* MWDS */
 #ifdef APCLI_SUPPORT
 	if(IS_ENTRY_APCLI(pMacEntry))
-	{	/* The addr3 of Ap-client packet is Destination Mac address. */
+	{	
+#ifdef MAC_REPEATER_SUPPORT
+		if (pTxBlk->pMacEntry && (pTxBlk->pMacEntry->bReptCli == TRUE))
+			COPY_MAC_ADDR(pHeader80211->Addr2, pTxBlk->pMacEntry->ReptCliAddr);		/* from AP1 */
+		else
+#endif /* MAC_REPEATER_SUPPORT */
+			COPY_MAC_ADDR(pHeader80211->Addr2, pTxBlk->pApCliEntry->wdev.if_addr);	/* from AP1 */
+
+		/* The addr3 of Ap-client packet is Destination Mac address. */
 		COPY_MAC_ADDR(pHeader80211->Addr3, pTxBlk->pSrcBufHeader);
 	}
 	else
 #endif /* APCLI_SUPPORT */
-	{	/* The addr3 of normal packet send from DS is Src Mac address. */
+	{	
+		/* The addr3 of normal packet send from DS is Src Mac address. */
 		COPY_MAC_ADDR(pHeader80211->Addr3, pTxBlk->pSrcBufHeader + MAC_ADDR_LEN);
 	}
+
+#ifdef SMART_MESH
+    if(pTxBlk->pMacEntry)
+        Update_CliPktStats(pAd, pTxBlk->pMacEntry, pHeader80211->Sequence, TRUE);
+#endif /* SMART_MESH */
 }
 
 
@@ -867,6 +945,11 @@ static inline VOID APBuildWifiInfo(
 
 	if (pTxBlk->CipherAlg != CIPHER_NONE)
 		pWI->field.WEP = 1;
+
+#ifdef SMART_MESH
+    if(pTxBlk->pMacEntry)
+        Update_CliPktStats(pAd, pTxBlk->pMacEntry, pWI->field.Seq_Num, TRUE);
+#endif /* SMART_MESH */
 }
 #endif /* HDR_TRANS_TX_SUPPORT */
 
@@ -911,6 +994,35 @@ static inline VOID APBuildCommon802_11Header(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 	wifi_hdr->Frag = 0;
 	wifi_hdr->FC.MoreData = TX_BLK_TEST_FLAG(pTxBlk, fTX_bMoreData);
 
+#ifdef MWDS
+	if(TX_BLK_TEST_FLAG(pTxBlk, fTX_bMWDSFrame))
+	{
+		wifi_hdr->FC.ToDs = 1;
+		wifi_hdr->FC.FrDs = 1;
+		if(pTxBlk->pMacEntry)
+		{
+#ifdef APCLI_SUPPORT
+			if(IS_MWDS_OPMODE_APCLI(pTxBlk->pMacEntry))
+			{
+				COPY_MAC_ADDR(wifi_hdr->Addr1, APCLI_ROOT_BSSID_GET(pAd, pTxBlk->Wcid)); /* to AP2 */
+				COPY_MAC_ADDR(wifi_hdr->Addr2, pTxBlk->pApCliEntry->wdev.if_addr);	
+			}
+			else
+#endif /* APCLI_SUPPORT */
+			if(IS_MWDS_OPMODE_AP(pTxBlk->pMacEntry))
+			{
+				COPY_MAC_ADDR(wifi_hdr->Addr1, pTxBlk->pMacEntry->Addr);/* to AP2 */
+				COPY_MAC_ADDR(wifi_hdr->Addr2, pAd->CurrentAddress); /* from AP1 */
+			}
+			COPY_MAC_ADDR(wifi_hdr->Addr3, pTxBlk->pSrcBufHeader);	/* DA */
+			COPY_MAC_ADDR(wifi_hdr->Octet, pTxBlk->pSrcBufHeader + MAC_ADDR_LEN);/* ADDR4 = SA */
+			pTxBlk->MpduHeaderLen += MAC_ADDR_LEN; 
+		}
+		else
+			DBGPRINT(RT_DEBUG_ERROR, ("%s pTxBlk->pMacEntry == NULL!\n", __FUNCTION__));
+	}
+	else
+#endif /* MWDS*/
 #ifdef APCLI_SUPPORT
 	if (TX_BLK_TEST_FLAG(pTxBlk, fTX_bApCliPacket))
 	{
@@ -987,6 +1099,11 @@ static inline VOID APBuildCommon802_11Header(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 
 	if (pTxBlk->CipherAlg != CIPHER_NONE)
 		wifi_hdr->FC.Wep = 1;
+
+#ifdef SMART_MESH
+    if(pTxBlk->pMacEntry)
+        Update_CliPktStats(pAd, pTxBlk->pMacEntry, wifi_hdr->Sequence, TRUE);
+#endif /* SMART_MESH */
 }
 
 
@@ -1085,7 +1202,9 @@ static inline PUCHAR AP_Build_AMSDU_Frame_Header(
 	IN TX_BLK *pTxBlk)
 {
 	UCHAR *pHeaderBufPtr;
+#ifdef TXBF_SUPPORT
 	HEADER_802_11 *pHeader_802_11;
+#endif /* TXBF_SUPPORT */
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
 
 
@@ -1093,7 +1212,9 @@ static inline PUCHAR AP_Build_AMSDU_Frame_Header(
 	APBuildCommon802_11Header(pAd, pTxBlk);
 
 	pHeaderBufPtr = &pTxBlk->HeaderBuf[TXINFO_SIZE + TXWISize];
+#ifdef TXBF_SUPPORT
 	pHeader_802_11 = (HEADER_802_11 *) pHeaderBufPtr;
+#endif /* TXBF_SUPPORT */
 
 	/* skip common header */
 	pHeaderBufPtr += pTxBlk->MpduHeaderLen;
@@ -1639,14 +1760,12 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 	}
 
 	/* calculate Tx count and ByteCount per BSS */
-#ifdef WAPI_SUPPORT
-	if (IS_ENTRY_CLIENT(pMacEntry))
-#endif /* WAPI_SUPPORT */
 	{
 		MULTISSID_STRUCT *pMbss = pTxBlk->pMbss;
 
 #ifdef WAPI_SUPPORT
-		if (pMacEntry->WapiUskRekeyTimerRunning && 
+		if (IS_ENTRY_CLIENT(pMacEntry) &&
+			pMacEntry->WapiUskRekeyTimerRunning &&
 			pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
 			pMacEntry->wapi_usk_rekey_cnt += pTxBlk->SrcBufLen;
 #endif /* WAPI_SUPPORT */
@@ -1686,6 +1805,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		{
 			INC_COUNTER64(pMacEntry->TxPackets);
 			pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+			pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 		}
 	}
 
@@ -1851,14 +1971,12 @@ VOID AP_AMPDU_Frame_Tx_Hdr_Trns(
 	}
 
 	/* calculate Tx count and ByteCount per BSS */
-#ifdef WAPI_SUPPORT
-	if (IS_ENTRY_CLIENT(pMacEntry))
-#endif /* WAPI_SUPPORT */
 	{
 		MULTISSID_STRUCT *pMbss = pTxBlk->pMbss;
 
 #ifdef WAPI_SUPPORT
-		if (pMacEntry->WapiUskRekeyTimerRunning && 
+		if (IS_ENTRY_CLIENT(pMacEntry) && 
+			pMacEntry->WapiUskRekeyTimerRunning && 
 			pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
 			pMacEntry->wapi_usk_rekey_cnt += pTxBlk->SrcBufLen;
 #endif /* WAPI_SUPPORT */
@@ -2167,6 +2285,7 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			{
 				INC_COUNTER64(pMacEntry->TxPackets);
 				pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+				pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 			}
 		}
 
@@ -2506,15 +2625,16 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 
 #ifdef STATS_COUNT_SUPPORT
 	/* calculate Tx count and ByteCount per BSS */
-#ifdef WAPI_SUPPORT	
-	if (pTxBlk->pMacEntry && IS_ENTRY_CLIENT(pTxBlk->pMacEntry))
-#endif /* WAPI_SUPPORT */
 	{
 		MULTISSID_STRUCT *pMbss = pTxBlk->pMbss;
 		MAC_TABLE_ENTRY *pMacEntry=pTxBlk->pMacEntry;
 
 #ifdef WAPI_SUPPORT	
-		if (pTxBlk->pMacEntry->WapiUskRekeyTimerRunning && pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
+		if (pTxBlk->pMacEntry &&
+			IS_ENTRY_CLIENT(pTxBlk->pMacEntry) && 
+			pTxBlk->pMacEntry->WapiUskRekeyTimerRunning && 
+			pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
+
 			pTxBlk->pMacEntry->wapi_usk_rekey_cnt += pTxBlk->SrcBufLen;
 #endif /* WAPI_SUPPORT */		
 #ifdef CUSTOMER_DCC_FEATURE
@@ -2567,6 +2687,7 @@ VOID AP_Legacy_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		{
 			INC_COUNTER64(pMacEntry->TxPackets);
 			pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+			pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 		}
 	}
 
@@ -3031,15 +3152,16 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 
 #ifdef STATS_COUNT_SUPPORT
 	/* calculate Tx count and ByteCount per BSS */
-#ifdef WAPI_SUPPORT
-	if (pTxBlk->pMacEntry && IS_ENTRY_CLIENT(pTxBlk->pMacEntry))
-#endif /* WAPI_SUPPORT */
 	{
 		MULTISSID_STRUCT *pMbss = pTxBlk->pMbss;
 		MAC_TABLE_ENTRY	*pMacEntry=pTxBlk->pMacEntry;
 
 #ifdef WAPI_SUPPORT	
-		if (pTxBlk->pMacEntry->WapiUskRekeyTimerRunning && pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
+		if (pTxBlk->pMacEntry && 
+			IS_ENTRY_CLIENT(pTxBlk->pMacEntry) && 
+			pTxBlk->pMacEntry->WapiUskRekeyTimerRunning && 
+			pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
+
 			pTxBlk->pMacEntry->wapi_usk_rekey_cnt += pTxBlk->SrcBufLen;
 #endif /* WAPI_SUPPORT */		
 	
@@ -3071,6 +3193,7 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		{
 			INC_COUNTER64(pMacEntry->TxPackets);
 			pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+			pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 		}
 	}
 
@@ -3414,14 +3537,16 @@ VOID AP_ARalink_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 #ifdef STATS_COUNT_SUPPORT
 		/* calculate Tx count and ByteCount per BSS */
 #ifdef WAPI_SUPPORT
-		if (pTxBlk->pMacEntry && IS_ENTRY_CLIENT(pTxBlk->pMacEntry))
 #endif /* WAPI_SUPPORT */
 		{
 			MULTISSID_STRUCT *pMbss = pTxBlk->pMbss;
 			MAC_TABLE_ENTRY *pMacEntry=pTxBlk->pMacEntry;
 
 #ifdef WAPI_SUPPORT	
-			if (pTxBlk->pMacEntry->WapiUskRekeyTimerRunning && pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
+			if (pTxBlk->pMacEntry &&
+			    IS_ENTRY_CLIENT(pTxBlk->pMacEntry) &&
+                pTxBlk->pMacEntry->WapiUskRekeyTimerRunning &&
+                pAd->CommonCfg.wapi_usk_rekey_method == REKEY_METHOD_PKT)
 				pTxBlk->pMacEntry->wapi_usk_rekey_cnt += totalMPDUSize;
 #endif /* WAPI_SUPPORT */
 
@@ -3459,6 +3584,7 @@ VOID AP_ARalink_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 			{
 				INC_COUNTER64(pMacEntry->TxPackets);
 				pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+				pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 			}
 
 		}
@@ -3784,7 +3910,7 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	/* If no mathed wcid index in ASIC on chip, do we need more check???  need to check again. 06-06-2006 */
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
-		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%d) > %d\n",
+		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%u) > %d\n",
 					__FUNCTION__, PRINT_MAC(hdr->Addr2),
 					wcid, MAX_LEN_OF_MAC_TABLE));
 
@@ -4047,6 +4173,16 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 
 				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
 
+#ifdef APCLI_SUPPORT
+#ifdef TRAFFIC_BASED_TXOP
+				/* Traffic Base Txop Rule */
+				if (((txop_value == 0) || (txop_value == 0x20)) &&
+					((pAd->StaTxopAbledCnt >= 1) || (pAd->ApClientTxopAbledCnt >= 1))) {
+					txop_value = 0x60;
+				}
+#endif /* TRAFFIC_BASED_TXOP */
+#endif /* APCLI_SUPPORT */
+
 				RegValue  &= 0xFFFFFF00;
 				/*if ((RegValue & 0x0000FF00) == 0x00005400)
 					RegValue -= 0x00001100; */
@@ -4069,9 +4205,12 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	MAC_TABLE_ENTRY *pEntry = NULL;
 	RXINFO_STRUC *pRxInfo = pRxBlk->pRxInfo;
 	PCIPHER_KEY pWpaKey;
-	UCHAR							FromWhichBSSID = BSS0;
+
 	UCHAR			Wcid;
 	PHEADER_802_11	pHeader = pRxBlk->pHeader;
+#ifdef WPA_SUPPLICANT_SUPPORT 
+	UCHAR	FromWhichBSSID = BSS0;
+#endif /* WPA_SUPPLICANT_SUPPORT */
 
 	if (pRxInfo->CipherErr)
 		INC_COUNTER64(pAd->WlanCounters.WEPUndecryptableCount);
@@ -4090,11 +4229,11 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 			if (pEntry && IS_ENTRY_APCLI(pEntry))
 			{			
-				FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_APCLI;
 				if (pRxInfo->CipherErr == 2)
 				{	
 					pWpaKey = &pEntry->PairwiseKey;
 #ifdef WPA_SUPPLICANT_SUPPORT 
+					FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_APCLI;
 					if (pAd->ApCfg.ApCliTab[pEntry->wdev_idx].wpa_supplicant_info.WpaSupplicantUP)
 					{
 						WpaSendMicFailureToWpaSupplicant(pAd->net_dev, pHeader->Addr2,
@@ -4138,6 +4277,8 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 					RTMPSendWirelessEvent(pAd, IW_ICV_ERROR_EVENT_FLAG, pEntry->Addr, 0, 0);
 				}
 			}
+			if (pEntry && IS_ENTRY_CLIENT(pEntry))
+				pEntry->RxDecryptErrCnt++;
 		}
 
 		DBGPRINT(RT_DEBUG_TRACE, ("Rx u2me Cipher Err(MPDUsize=%d, WCID=%d, CipherErr=%d)\n", 
@@ -4182,7 +4323,7 @@ BOOLEAN APCheckVaildDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			if (pRxBlk->wcid >= MAX_LEN_OF_MAC_TABLE) {
 				MAC_TABLE_ENTRY *pEntry = NULL;
 
-				DBGPRINT(RT_DEBUG_INFO, ("ErrWcidPkt: seq=%d, ts=0x%02x%02x%02x%02x\n",
+				DBGPRINT(RT_DEBUG_WARN, ("ErrWcidPkt: seq=%d, ts=0x%02x%02x%02x%02x\n",
 									pHeader->Sequence,
 									pRxBlk->pRxWI->RXWI_N.rssi[0],
 									pRxBlk->pRxWI->RXWI_N.rssi[1],
@@ -4503,6 +4644,24 @@ VOID APRxDataFrameAnnounce(
 		}			
 #endif /* WAPI_SUPPORT */
 
+#ifdef MWDS
+		if (pEntry && IS_ENTRY_MWDS(pEntry))
+		{
+			if (!((pRxBlk->pHeader->FC.FrDs == 1) && (pRxBlk->pHeader->FC.ToDs == 1)))
+			{
+				/* release packet */
+				RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+				return;
+			}
+
+            if(IS_MWDS_OPMODE_AP(pEntry))
+            {
+                PUCHAR pSrcBuf = NdisEqualMemory(SNAP_802_1H, pRxBlk->pData, 6) ? (pRxBlk->pData + 6) : pRxBlk->pData;
+                MWDSARPLookupUpdate(pAd, pSrcBuf);
+            }
+		}
+#endif /* MWDS */
+
 		/* 	
 			drop all non-EAP DATA frame before
 			this client's Port-Access-Control is secured
@@ -4538,6 +4697,11 @@ VOID APRxDataFrameAnnounce(
 			PUCHAR pData = NdisEqualMemory(SNAP_802_1H, pRxBlk->pData, 6) ? (pRxBlk->pData + 6) : pRxBlk->pData;
 			UINT16 protoType = OS_NTOHS(*((UINT16 *)(pData)));
 
+#ifdef IGMP_MESH
+			if (pEntry && IS_MWDS_OPMODE_AP(pEntry))
+				pSA = pRxBlk->pHeader->Octet;
+#endif /* IGMP_MESH */
+
 			if (protoType == ETH_P_IP)
 				IGMPSnooping(pAd, pDA, pSA, pData, get_netdev_from_bssid(pAd, FromWhichBSSID));
 			else if (protoType == ETH_P_IPV6)
@@ -4546,11 +4710,15 @@ VOID APRxDataFrameAnnounce(
 #endif /* IGMP_SNOOP_SUPPORT */
 
 #ifdef CONFIG_HOTSPOT
-		if (pEntry->pMbss->HotSpotCtrl.HotSpotEnable) {
+		if (IS_ENTRY_CLIENT(pEntry) && (pEntry->pMbss) && pEntry->pMbss->HotSpotCtrl.HotSpotEnable) {
 			if (hotspot_rx_handler(pAd, pEntry, pRxBlk) == TRUE)
 					return;
 				}
 #endif /* CONFIG_HOTSPOT */
+
+		if (pEntry && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
+			RTMP_RxPacketClassify(pAd, pRxBlk, pEntry);
+		
 
 #ifdef STATS_COUNT_SUPPORT
 		if (pEntry
@@ -4563,7 +4731,9 @@ VOID APRxDataFrameAnnounce(
 				pMbss->mcPktsRx++;
 			else if(IS_BROADCAST_MAC_ADDR(pRxBlk->pHeader->Addr3) ||
 				IS_BROADCAST_MAC_ADDR(pRxBlk->pHeader->Addr1))
+			{
 				pMbss->bcPktsRx++;
+			}
 			else
 				pMbss->ucPktsRx++;
 		}
@@ -4650,6 +4820,24 @@ VOID APRxDataFrameAnnounce_Hdr_Trns(
 		}			
 #endif /* WAPI_SUPPORT */
 
+#ifdef MWDS
+        if (pEntry && IS_ENTRY_MWDS(pEntry))
+        {
+            if (!((pRxBlk->pHeader->FC.FrDs == 1) && (pRxBlk->pHeader->FC.ToDs == 1)))
+            {
+                /* release packet */
+                RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+                return;
+            }
+
+            if(IS_MWDS_OPMODE_AP(pEntry))
+            {
+                PUCHAR pSrcBuf = NdisEqualMemory(SNAP_802_1H, pRxBlk->pData, 6) ? (pRxBlk->pData + 6) : pRxBlk->pData;
+                MWDSARPLookupUpdate(pAd, pSrcBuf);
+            }
+        }
+#endif /* MWDS */
+
 		/* 	
 			drop all non-EAP DATA frame before
 			this client's Port-Access-Control is secured
@@ -4684,6 +4872,10 @@ VOID APRxDataFrameAnnounce_Hdr_Trns(
 			PUCHAR pSA = pRxBlk->pHeader->Addr2;
 			PUCHAR pData = NdisEqualMemory(SNAP_802_1H, pRxBlk->pData, 6) ? (pRxBlk->pData + 6) : pRxBlk->pData;
 			UINT16 protoType = OS_NTOHS(*((UINT16 *)(pData)));
+#ifdef MWDS
+			if(pEntry && IS_MWDS_OPMODE_AP(pEntry))
+				pSA = pRxBlk->pHeader->Octet;
+#endif /* MWDS */
 
 			if (protoType == ETH_P_IP)
 				IGMPSnooping(pAd, pDA, pSA, pData, get_netdev_from_bssid(pAd, FromWhichBSSID));
@@ -4857,7 +5049,92 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			}
 #endif /* CLIENT_WDS */
 
+#ifdef MWDS
+			if(VALID_WCID(pRxBlk->wcid))
+				pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
+			else
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
 
+			if(pEntry &&
+			   IS_MWDS_OPMODE_AP(pEntry))
+			{
+			    /* 
+                                It means this source entry has moved to another one and hidden behind it. 
+                                So delete this source entry! 
+                           */
+    		    MAC_TABLE_ENTRY *pMovedEntry = MacTableLookup(pAd, pHeader->Octet);
+                if(pMovedEntry)
+                    MacTableDeleteEntry(pAd, pMovedEntry->wcid, pMovedEntry->Addr);
+            
+				FromWhichBSSID = pEntry->apidx;
+				/* Increase received byte counter per BSS */
+				if (FromWhichBSSID < pAd->ApCfg.BssidNum)
+				{
+					MULTISSID_STRUCT *pMbss = pEntry->pMbss;
+					if (pMbss != NULL)
+					{
+						pMbss->ReceivedByteCount += pRxBlk->MPDUtotalByteCnt;
+						pMbss->RxCount++;
+					}
+				}
+				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
+				hdr_len = LENGTH_802_11_WITH_ADDR4;
+				MWDSProxyTabUpdate(pAd, pEntry->wcid, pHeader->Octet);
+				break;
+			}
+			else
+				pEntry = NULL;
+#ifdef APCLI_SUPPORT
+			if (VALID_WCID(pRxBlk->wcid))
+				pEntry = ApCliTableLookUpByWcid(pAd, pRxBlk->wcid, pHeader->Addr2);
+			else
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
+
+			if(pEntry &&
+			   IS_MWDS_OPMODE_APCLI(pEntry) &&
+			   (pEntry->wdev_idx < MAX_APCLI_NUM))
+			{
+                 /*  
+                                For ApCli, we have to avoid to delete the bridge MAC(SA) and AP MAC(TA) 
+                                is the same case.
+                            */
+                if(!MAC_ADDR_EQUAL(pHeader->Octet, pEntry->Addr))
+                {
+                    /*  
+                                    It means this source entry has moved to another one and hidden behind it. 
+                                    So delete this source entry! 
+                                */
+                    MAC_TABLE_ENTRY *pMovedEntry = MacTableLookup(pAd, pHeader->Octet);
+                    if(pMovedEntry)
+                        MacTableDeleteEntry(pAd, pMovedEntry->wcid, pMovedEntry->Addr);
+                }
+
+				pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->wdev_idx];
+				if(pApCliEntry)
+				{
+					NdisGetSystemUpTime(&pApCliEntry->ApCliRcvBeaconTime);
+					if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->wdev.if_addr) ||
+					   MAC_ADDR_EQUAL(pHeader->Octet, pApCliEntry->wdev.if_addr))
+						goto err;
+				}
+				FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_APCLI;
+				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
+				hdr_len = LENGTH_802_11_WITH_ADDR4;
+
+				/* Process broadcast packets */
+				if (pRxInfo->Mcast || pRxInfo->Bcast)
+				{
+					/* Process the received broadcast frame for AP-Client. */
+					if (!ApCliHandleRxBroadcastFrame(pAd, pRxBlk, pEntry, FromWhichBSSID))			
+						goto err;
+					return;
+				}
+				break;
+			}
+			else
+				pEntry = NULL;
+#endif /* APCLI_SUPPORT */
+#endif /* MWDS */
 #ifdef WDS_SUPPORT
 			/* handle WDS */
 			{
@@ -5042,6 +5319,9 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	if (pRxInfo->U2M)
 	{
 		pEntry->LastRxRate = (ULONG)(pRxBlk->rx_rate.word);
+#ifdef SMART_MESH
+        Update_CliPktStats(pAd, pEntry, pHeader->Sequence, FALSE);
+#endif /* SMART_MESH */
 
 #ifdef TXBF_SUPPORT
 		if (pRxBlk->rx_rate.field.ShortGI)
@@ -5249,6 +5529,7 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		if (pEntry)
 		{
 			pEntry->RxBytes += pRxBlk->MPDUtotalByteCnt;
+			pEntry->OneSecRxBytes += pRxBlk->MPDUtotalByteCnt;
 			INC_COUNTER64(pEntry->RxPackets);
 		}
 #ifdef IKANOS_VX_1X0
@@ -5310,9 +5591,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	UCHAR FromWhichBSSID = BSS0;
 	UCHAR OldPwrMgmt = PWR_ACTIVE;	/* UAPSD AP SUPPORT */
 	UCHAR UserPriority = 0;
-#if defined(WDS_SUPPORT) || defined(CLIENT_WDS)
+#if defined(WDS_SUPPORT) || defined(CLIENT_WDS) || defined(MWDS)
 	BOOLEAN bWdsPacket = FALSE;
-#endif /* WDS_SUPPORT || CLIENT_WDS */
+#endif /* WDS_SUPPORT || CLIENT_WDS || defined(MWDS) */
 	FRAME_CONTROL *pFmeCtrl = &pHeader->FC;
 	COUNTER_RALINK *pCounter = &pAd->RalinkCounters;
 	UCHAR *pData;
@@ -5373,7 +5654,92 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 			}
 #endif /* CLIENT_WDS */
 
+#ifdef MWDS
+			if(VALID_WCID(pRxBlk->wcid))
+				pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
+			else
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
 
+			if(pEntry &&
+			   IS_MWDS_OPMODE_AP(pEntry))
+			{
+			    /* 
+                                It means this source entry has moved to another one and hidden behind it. 
+                                So delete this source entry! 
+                           */
+    		    MAC_TABLE_ENTRY *pMovedEntry = MacTableLookup(pAd, pHeader->Octet);
+                if(pMovedEntry)
+                    MacTableDeleteEntry(pAd, pMovedEntry->wcid, pMovedEntry->Addr);
+				FromWhichBSSID = pEntry->apidx;
+				/* Increase received byte counter per BSS */
+				if (FromWhichBSSID < pAd->ApCfg.BssidNum)
+				{
+					MULTISSID_STRUCT *pMbss = pEntry->pMbss;
+					if (pMbss != NULL)
+					{
+						pMbss->ReceivedByteCount += pRxBlk->MPDUtotalByteCnt;
+						pMbss->RxCount++;
+					}
+				}
+				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
+				bWdsPacket = TRUE;
+				MWDSProxyTabUpdate(pAd, pEntry->wcid, pHeader->Octet);
+				break;
+			}
+			else
+				pEntry = NULL;
+#ifdef APCLI_SUPPORT
+			if (VALID_WCID(pRxBlk->wcid))
+				pEntry = ApCliTableLookUpByWcid(pAd, pRxBlk->wcid, pHeader->Addr2);
+			else
+				pEntry = MacTableLookup(pAd, pHeader->Addr2);
+
+			if(pEntry &&
+			   IS_MWDS_OPMODE_APCLI(pEntry) &&
+			   (pEntry->wdev_idx < MAX_APCLI_NUM))
+			{
+               /*  
+                            For ApCli, we have to avoid to delete the bridge MAC(SA) and AP MAC(TA) 
+                            is the same case.
+                          */
+                if(!MAC_ADDR_EQUAL(pHeader->Octet, pEntry->Addr))
+                {
+                    /*  
+                                    It means this source entry has moved to another one and hidden behind it. 
+                                    So delete this source entry! 
+                                */
+                    MAC_TABLE_ENTRY *pMovedEntry = MacTableLookup(pAd, pHeader->Octet);
+                    if(pMovedEntry)
+                        MacTableDeleteEntry(pAd, pMovedEntry->wcid, pMovedEntry->Addr);
+                }
+
+				PAPCLI_STRUCT pApCliEntry = NULL;
+				pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->wdev_idx];
+				if(pApCliEntry)
+				{
+					NdisGetSystemUpTime(&pApCliEntry->ApCliRcvBeaconTime);
+					if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->wdev.if_addr) ||
+					   MAC_ADDR_EQUAL(pHeader->Octet, pApCliEntry->wdev.if_addr))
+						goto err;
+				}
+				FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_APCLI;
+				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
+				bWdsPacket = TRUE;
+
+				/* Process broadcast packets */
+				if (pRxInfo->Mcast || pRxInfo->Bcast)
+				{
+					/* Process the received broadcast frame for AP-Client. */
+					if (!ApCliHandleRxBroadcastFrame(pAd, pRxBlk, pEntry, FromWhichBSSID))			
+						goto err;
+					return;
+				}
+				break;
+			}
+			else
+				pEntry = NULL;
+#endif /* APCLI_SUPPORT */
+#endif /* MWDS */
 #ifdef WDS_SUPPORT
 			/* handle WDS */
 			{
@@ -5429,6 +5795,18 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 			{
 				goto err;
 			}
+			PAPCLI_STRUCT pApCliEntry = NULL;
+			pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->wdev_idx];
+			if (pApCliEntry)
+			{
+				NdisGetSystemUpTime(&pApCliEntry->ApCliRcvBeaconTime);
+				if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->wdev.if_addr))
+					goto err;
+			}
+#ifdef MWDS
+			if(IS_MWDS_OPMODE_APCLI(pEntry))
+				goto err;
+#endif /* MWDS */
 			FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_APCLI;
 			RX_BLK_SET_FLAG(pRxBlk, fRX_APCLI);
 
@@ -5543,6 +5921,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	if (pRxInfo->U2M)
 	{
 		pEntry->LastRxRate = pRxBlk->rx_rate.word;
+#ifdef SMART_MESH
+		Update_CliPktStats(pAd, pEntry, pHeader->Sequence, FALSE);
+#endif /* SMART_MESH */
 
 #ifdef TXBF_SUPPORT
 		if (pRxBlk->rx_rate.field.ShortGI)
@@ -5550,6 +5931,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 		else
 			pEntry->OneSecRxLGICount++;
 #endif // TXBF_SUPPORT //
+#ifdef DYNAMIC_VGA_SUPPORT
+		pEntry->DyncVgaOneSecRxCount++;
+#endif /*DYNAMIC_VGA_SUPPORT*/
 	}
 
 	pAd->ApCfg.LastSNR0 = (UCHAR)(pRxBlk->snr[0]);
@@ -5621,17 +6005,17 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	*/
 
 	/* 1. skip 802.11 HEADER */
-#if defined(WDS_SUPPORT) || defined(CLIENT_WDS) || defined(MESH_SUPPORT)
+#if defined(WDS_SUPPORT) || defined(CLIENT_WDS) || defined(MESH_SUPPORT) || defined(MWDS)
 	if (FALSE
-#if defined(WDS_SUPPORT) || defined(CLIENT_WDS)
+#if defined(WDS_SUPPORT) || defined(CLIENT_WDS) || defined(MWDS)
 		|| bWdsPacket
-#endif /* WDS_SUPPORT || CLIENT_WDS */
+#endif /* WDS_SUPPORT || CLIENT_WDS || defined(MWDS) */
 		)
 	{
 		pData += LENGTH_802_11_WITH_ADDR4;
 	}
 	else
-#endif /* WDS_SUPPORT || CLIENT_WDS || MESH_SUPPORT */
+#endif /* WDS_SUPPORT || CLIENT_WDS || MESH_SUPPORT || defined(MWDS) */
 	{
 		pData += LENGTH_802_11;
 	}
@@ -5805,7 +6189,11 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 	BOOLEAN bAnnounce, bDirectForward;
 	UCHAR *pHeader802_3;
 	PNDIS_PACKET pForwardPacket;
-
+	BOOLEAN bResult;
+#ifdef MWDS
+	UCHAR wcid = 0;
+	UCHAR *pSrcAddr = NULL;
+#endif /* MWDS */
 
 #ifdef INF_AMAZON_SE
 	/*Iverson patch for WMM A5-T07 ,WirelessStaToWirelessSta do not bulk out aggregate */
@@ -5857,8 +6245,21 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 		/* if destinated STA is a associated wireless STA */
 		pEntry = MacTableLookup(pAd, pHeader802_3);
 		if (pEntry && (pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
-		{
 			bDirectForward = TRUE;
+#ifdef MWDS
+		else if(!pEntry)
+		{
+            if(MWDSProxyLookup(pAd, pHeader802_3, FALSE, &wcid))
+            {      
+                if (VALID_WCID(wcid))
+                    pEntry = &pAd->MacTab.Content[wcid];
+                if(pEntry && (pEntry->Sst == SST_ASSOC) && IS_MWDS_OPMODE_AP(pEntry))
+			bDirectForward = TRUE;
+            }
+		}
+#endif /* MWDS */
+		if(bDirectForward)
+		{
 			bAnnounce = FALSE;
 
 			if (FromWhichBSSID == pEntry->apidx)
@@ -5890,7 +6291,6 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 		else
 		{
 			/* announce this packet to upper layer (bridge) */
-			bDirectForward = FALSE;
 			bAnnounce = TRUE;
 		}
 	}
@@ -5941,7 +6341,21 @@ BOOLEAN APFowardWirelessStaToWirelessSta(
 			RTMP_SET_PACKET_NOBULKOUT(pForwardPacket, TRUE);
 #endif /* INF_AMAZON_SE */
 
-			APSendPacket(pAd, pForwardPacket);
+#ifdef REDUCE_TCP_ACK_SUPPORT
+			ReduceAckUpdateDataCnx(pAd,pForwardPacket);
+			if (ReduceTcpAck(pAd,pForwardPacket) == FALSE)
+#endif /* REDUCE_TCP_ACK_SUPPORT */
+			{
+				bResult = APSendPacket(pAd, pForwardPacket);
+#ifdef MWDS
+				/* send bc/mc frame back to the same bss */
+				if (!pEntry && (bResult == NDIS_STATUS_SUCCESS))
+				{
+				    pSrcAddr = pHeader802_3+MAC_ADDR_LEN;
+				    MWDSSendClonePacket(pAd,pPacket,pSrcAddr);
+				}
+#endif /* MWDS */
+			}
 		}
 
 		/* Dequeue outgoing frames from TxSwQueue0..3 queue and process it */

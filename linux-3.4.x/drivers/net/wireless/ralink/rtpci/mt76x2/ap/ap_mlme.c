@@ -232,6 +232,10 @@ VOID APMlmePeriodicExec(
 #ifdef CLIENT_WDS
 	CliWds_ProxyTabMaintain(pAd);
 #endif /* CLIENT_WDS */
+
+#ifdef MWDS
+		MWDSProxyTabMaintain(pAd);
+#endif /* MWDS */
 	}
 	
 #ifdef AP_SCAN_SUPPORT

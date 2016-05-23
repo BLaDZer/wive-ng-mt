@@ -51,7 +51,8 @@ static VOID APPeerAuthSimpleRspGenAndSend(
     IN  PHEADER_802_11 pHdr80211, 
     IN  USHORT Alg, 
     IN  USHORT Seq, 
-    IN  USHORT StatusCode);
+    IN  USHORT StatusCode,
+    IN  UINT32 apidx);
 
 /*
     ==========================================================================
@@ -148,6 +149,17 @@ static VOID APMlmeDeauthReqAction(
         MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 
         MlmeFreeMemory(pAd, pOutBuffer);
+
+#ifdef SMART_MESH_MONITOR
+		{
+			struct nsmpif_drvevnt_buf drvevnt;
+			drvevnt.data.leave.type = NSMPIF_DRVEVNT_STA_LEAVE;
+			drvevnt.data.leave.channel = pAd->CommonCfg.Channel;
+			NdisCopyMemory(drvevnt.data.leave.sta_mac, pInfo->Addr, MAC_ADDR_LEN);
+			RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_CUSTOM,NSMPIF_DRVEVNT_STA_LEAVE,
+									NULL, (PUCHAR)&drvevnt.data.leave, sizeof(drvevnt.data.leave));
+		}
+#endif /* SMART_MESH_MONITOR */
     }
 }
 
@@ -213,26 +225,37 @@ static VOID APPeerDeauthReqAction(
 		/* send wireless event - for deauthentication */
 		RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, Addr2, 0, 0);  
 		ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
-		
-        if (pEntry->CMTimerRunning == TRUE)
-        {
-		/*
+
+    		if (pEntry->CMTimerRunning == TRUE)
+    		{
+		    /*
 			If one who initilized Counter Measure deauth itself,
 			AP doesn't log the MICFailTime
-		*/
-		pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
-        }
+		    */
+		    pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
+    		}
 
-		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
-        printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
+#ifdef APCLI_SUPPORT
+                if (pEntry && !(IS_ENTRY_APCLI(pEntry)))
+#endif /* APCLI_SUPPORT */
+                {
+		    MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+		    printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
+                }
+#ifdef APCLI_SUPPORT
+                else
+                {
+                    DBGPRINT(RT_DEBUG_OFF, ("%s: receive not client de-auth ###\n", __FUNCTION__));
+                }
+#endif /* APCLI_SUPPORT */
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
 		{
-			UCHAR apCliIdx, CliIdx;
+			UCHAR apCliIdx, CliIdx, isLinkValid;
 			REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 
-			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2);
+			pReptEntry = RTMPLookupRepeaterCliEntry(pAd, TRUE, Addr2, TRUE, &isLinkValid);
 			if (pReptEntry && (pReptEntry->CliConnectState != 0))
 			{
 				apCliIdx = pReptEntry->MatchApCliIdx;
@@ -246,6 +269,17 @@ static VOID APPeerDeauthReqAction(
 			}
 		}
 #endif /* MAC_REPEATER_SUPPORT */
+
+#ifdef SMART_MESH_MONITOR
+		{
+			struct nsmpif_drvevnt_buf drvevnt;
+			drvevnt.data.leave.type = NSMPIF_DRVEVNT_STA_LEAVE;
+			drvevnt.data.leave.channel = pAd->CommonCfg.Channel;
+			NdisCopyMemory(drvevnt.data.leave.sta_mac, Addr2, MAC_ADDR_LEN);
+			RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_CUSTOM,NSMPIF_DRVEVNT_STA_LEAVE,
+									NULL, (PUCHAR)&drvevnt.data.leave, sizeof(drvevnt.data.leave));
+		}
+#endif /* SMART_MESH_MONITOR */
     }
 }
 
@@ -363,7 +397,12 @@ SendAuth:
 
 #ifdef WSC_V2_SUPPORT
 	/* Do not check ACL when WPS V2 is enabled and ACL policy is positive. */
-	if ((pMbss->WscControl.WscConfMode != WSC_DISABLE) &&
+	if (
+        /* We don't be restricted by this check for SMART_MESH. */ 
+#ifdef SMART_MESH
+        FALSE &&
+#endif /* SMART_MESH */
+        (pMbss->WscControl.WscConfMode != WSC_DISABLE) &&
 		(pMbss->WscControl.WscV2Info.bEnableWpsV2) &&
 		(pMbss->WscControl.WscV2Info.bWpsEnable) &&
 		(pMbss->AccessControlList.Policy == 1))
@@ -375,13 +414,76 @@ SendAuth:
     {
 		ASSERT(Seq == 1);
 		ASSERT(pEntry == NULL);
-		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+#ifdef SMART_MESH
+        /* If a MAC address is not within the list, 
+                  driver MUST not respond to any 802.11 frames including AuthResp, ProbeResp, nor ACK. 
+              */
+        if(FALSE)
+#endif /* SMART_MESH */
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL, apidx);
 
 		/* If this STA exists, delete it. */
 		if (pEntry)
 			MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
+
+#ifdef SMART_MESH_MONITOR
+		struct nsmpif_drvevnt_buf drvevnt;
+		drvevnt.data.authreject.type = NSMPIF_DRVEVNT_STA_AUTH_REJECT;
+		drvevnt.data.authreject.channel = pAd->CommonCfg.Channel;
+		NdisCopyMemory(drvevnt.data.authreject.sta_mac, Addr2, MAC_ADDR_LEN);
+        drvevnt.data.authreject.is_ucast = 0;
+        drvevnt.data.authreject.cap = 0;
+		drvevnt.data.authreject.rate = pAd->LastMgmtRxRate;
+		drvevnt.data.authreject.rssi = rssi;
+		drvevnt.data.authreject.snr = ConvertToSnr(pAd, Elem->Signal);
+#ifdef RTMP_MAC
+		if (pAd->chipCap.hif_type == HIF_RTMP)
+		{
+			if (IS_RT6352(pAd))
+			{
+				if ((42 - drvevnt.data.authreject.snr) >= 0)
+					drvevnt.data.authreject.snr = (42 - drvevnt.data.authreject.snr);
+				else
+					drvevnt.data.authreject.snr = 0;
+			}
+		}
+#endif /* RTMP_MAC */
+        drvevnt.data.authreject.ntgr_vie_len = 0;
+        NdisZeroMemory(drvevnt.data.authreject.ntgr_vie,sizeof(drvevnt.data.authreject.ntgr_vie));
+        if (Seq == 1)
+        {
+            PFRAME_802_11 Fr = (PFRAME_802_11)Elem->Msg;
+            ULONG MsgLen = Elem->MsgLen;
+            PEID_STRUCT eid_ptr = NULL;
+            BOOLEAN bNTGRIeFound = FALSE;
+            eid_ptr = (PEID_STRUCT) &Fr->Octet[6];
+            while (((UCHAR *)eid_ptr + eid_ptr->Len + 1) < ((UCHAR *)Fr + MsgLen))
+            {
+                switch(eid_ptr->Eid)
+                {
+                    case IE_VENDOR_SPECIFIC:
+                        if((eid_ptr->Len >= NTGR_OUI_LEN) && NdisEqualMemory(eid_ptr->Octet, NETGEAR_OUI, NTGR_OUI_LEN))
+                        {
+                            bNTGRIeFound = TRUE;
+                            drvevnt.data.authreject.ntgr_vie_len = (eid_ptr->Len - NTGR_OUI_LEN);
+                            if(drvevnt.data.authreject.ntgr_vie_len > 0)
+                                NdisCopyMemory(drvevnt.data.authreject.ntgr_vie, &eid_ptr->Octet[NTGR_OUI_LEN], drvevnt.data.authreject.ntgr_vie_len );
+                        }
+                        break;
+                        
+                    default:
+                        break;
+                }
+                if(bNTGRIeFound)
+                    break;
+                eid_ptr = (PEID_STRUCT)((UCHAR*)eid_ptr + 2 + eid_ptr->Len);
+            }
+        }
+		RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_CUSTOM,NSMPIF_DRVEVNT_STA_AUTH_REJECT,
+								NULL, (PUCHAR)&drvevnt.data.authreject, sizeof(drvevnt.data.authreject));
+#endif /* SMART_MESH_MONITOR */
 
 		DBGPRINT(RT_DEBUG_TRACE,
 				("Failed in ACL checking => send an AUTH seq#2 with "
@@ -451,7 +553,7 @@ SendAuth:
 
 		if (pMbss->AuthFailRssiThreshold != 0 && rssi < pMbss->AuthFailRssiThreshold) {
             		DBGPRINT(RT_DEBUG_TRACE, ("Reject this AUTH_REQ due to Weak Signal.\n"));
-                	APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL, apidx);
 		}
 
                 /* If this STA exists, delete it. */
@@ -478,7 +580,7 @@ SendAuth:
 			pEntry->AuthState = AS_AUTH_OPEN;
 			pEntry->Sst = SST_AUTH; /* what if it already in SST_ASSOC ??????? */
                         }
-			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_SUCCESS);
+			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_SUCCESS, apidx);
 
 		}
 		/* else  MAC table full, what should we respond ????? */
@@ -522,6 +624,12 @@ SendAuth:
 								1,                     &ChTxtLen,
 								CIPHER_TEXT_LEN,       pAd->ApMlmeAux.Challenge,
 								END_OF_ARGS);
+#ifdef SMART_MESH
+			SMART_MESH_INSERT_IE(pMbss->SmartMeshCfg,
+								 pOutBuffer,
+								 FrameLen,
+								 SM_IE_AUTH_RSP);
+#endif /* SMART_MESH */
 			MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 			MlmeFreeMemory(pAd, pOutBuffer);
 		}
@@ -530,7 +638,7 @@ SendAuth:
 	else
 	{
 		/* wrong algorithm */
-		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_ALG_NOT_SUPPORT);
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_ALG_NOT_SUPPORT, apidx);
 
 		/* If this STA exists, delete it. */
 		if (pEntry)
@@ -539,6 +647,12 @@ SendAuth:
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - Alg=%d, Seq=%d, AuthMode=%d\n",
 				Alg, Seq, pAd->ApCfg.MBSSID[apidx].wdev.AuthMode));
 	}
+
+#ifdef SMART_MESH_MONITOR
+	if (pAd->MntEnable &&
+		(Elem->Wcid >= WCID_OF_MONITOR_STA_BASE && Elem->Wcid <= MAX_WCID_OF_MONITOR_STA))
+			UpdateMonitorEntry(pAd,Elem->Wcid,pEntry->Addr,FALSE);
+#endif /* SMART_MESH_MONITOR */
 }
 
 
@@ -661,7 +775,7 @@ static VOID APPeerAuthConfirmAction(
 			NdisEqualMemory(Chtxt, pAd->ApMlmeAux.Challenge, CIPHER_TEXT_LEN)) 
 		{
 			/* Successful */
-			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_SUCCESS);
+			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_SUCCESS, apidx);
 			pEntry->AuthState = AS_AUTH_KEY;
 			pEntry->Sst = SST_AUTH;
 		}
@@ -672,7 +786,7 @@ static VOID APPeerAuthConfirmAction(
 			RTMPSendWirelessEvent(pAd, IW_AUTH_REJECT_CHALLENGE_FAILURE, pEntry->Addr, 0, 0);  
 
 			/* fail - wep bit is not set or challenge text is not equal */
-			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_REJ_CHALLENGE_FAILURE);
+			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_REJ_CHALLENGE_FAILURE, apidx);
 			MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 
 			/*Chtxt[127]='\0'; */
@@ -687,7 +801,7 @@ static VOID APPeerAuthConfirmAction(
 	{
 		/* fail for unknown reason. most likely is AuthRspAux machine be overwritten by another */
 		/* STA also using SHARED_KEY authentication */
-		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL, apidx);
 
 		/* If this STA exists, delete it. */
 		if (pEntry)
@@ -770,7 +884,8 @@ VOID APPeerAuthSimpleRspGenAndSend(
     IN PHEADER_802_11 pHdr, 
     IN USHORT Alg, 
     IN USHORT Seq, 
-    IN USHORT StatusCode) 
+    IN USHORT StatusCode,
+    IN UINT32 apidx) 
 {
     HEADER_802_11     AuthHdr;
     ULONG             FrameLen = 0;
@@ -801,6 +916,13 @@ VOID APPeerAuthSimpleRspGenAndSend(
 					  2,						&Seq,
 					  2,						&StatusCode,
 					  END_OF_ARGS);
+#ifdef SMART_MESH
+	SMART_MESH_INSERT_IE(pAd->ApCfg.MBSSID[apidx].SmartMeshCfg,
+							pOutBuffer,
+							FrameLen,
+							SM_IE_AUTH_RSP);
+#endif /*SMART_MESH*/	
+
 	MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 	MlmeFreeMemory(pAd, pOutBuffer);
 }

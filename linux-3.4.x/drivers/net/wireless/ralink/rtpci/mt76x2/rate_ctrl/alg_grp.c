@@ -630,10 +630,7 @@ VOID MlmeGetSupportedMcsAdapt(
 
 UCHAR get_rate_idx_by_rate(RTMP_ADAPTER *pAd, UCHAR *rate_tb,  USHORT rate)
 {
-	UCHAR mode, mcs, tb_idx = 0;
-
-	mode = (rate & 0xff00) >> 8;
-	mcs = (rate & 0xff);
+	UCHAR tb_idx = 0;
 
 #ifdef DOT11_N_SUPPORT
 	if (ADAPT_RATE_TABLE(rate_tb))
@@ -790,7 +787,6 @@ UCHAR MlmeSelectTxRateAdapt(
 					|| pTable == RateTableVht2S_2G_BW40
 					)
 	{
-		USHORT tx_rate;
 		if (pTable == RateTableVht2S || pTable == RateTableVht2S_BW40
 			|| (pTable == RateTableVht2S_2G_BW40))
 		{
@@ -798,43 +794,33 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[19] && (Rssi > (-65 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS9;
 				TxRateIdx = mcs[19];
 			}
 			else if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else {
-				tx_rate = MCS_VHT_2SS_MCS0;
 				TxRateIdx = mcs[10];
 			}
 
@@ -844,35 +830,27 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else {
-				tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[0];
 			}
 
@@ -886,43 +864,33 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-85 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-92 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else if (mcs[11] && (Rssi > (-94 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS0;
 				TxRateIdx = mcs[10];
 			}
 			else {
-				tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[0];
 			}
 
@@ -1156,7 +1124,8 @@ BOOLEAN MlmeRAHybridRule(
 	IN ULONG			TxErrorRatio)
 {
 
-    DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %ld %ld\n", NewTxOkCount , pEntry->LastTxOkCount));
+
+    DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %lu %lu\n", NewTxOkCount , pEntry->LastTxOkCount));
 
 	if ((120*NewTxOkCount > pAd->CommonCfg.TrainUpHighThrd*pEntry->LastTxOkCount) ||
         (TxErrorRatio < 10))
@@ -1191,7 +1160,7 @@ VOID MlmeNewRateAdapt(
 #ifdef TXBF_SUPPORT
 #ifdef TXBF_AWARE
 	BOOLEAN 	invertTxBf = FALSE;
-#endif /*  TXBF_AWARE */
+#endif /*  TXBF_AWARE*/
 #endif /*  TXBF_SUPPORT */
 	UCHAR *pTable = pEntry->pTable;
 	UCHAR CurrRateIdx = pEntry->CurrTxRateIndex;
@@ -1600,7 +1569,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
         return;
 #endif
 
-	DBGPRINT(RT_DEBUG_INFO, ("Quick PER %ld, Total Cnt %ld\n", TxErrorRatio, TxTotalCnt));
+	DBGPRINT(RT_DEBUG_INFO, ("Quick PER %ld, Total Cnt %lг\n", TxErrorRatio, TxTotalCnt));
 
 #ifdef MFB_SUPPORT
 	if (pEntry->fLastChangeAccordingMfb == TRUE)
@@ -1643,7 +1612,9 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 #endif /* DBG_CTRL_SUPPORT */
 
 	/*  Handle the low traffic case */
-	if (TxCnt <= 15)
+	if ((TxCnt <= 15) && 
+		(pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
+		(pEntry->HTPhyMode.field.MCS > 1))
 	{
 		/*  Go back to the original rate */
 		MlmeRestoreLastRate(pEntry);
@@ -1915,6 +1886,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
 	pEntry->LastTxOkCount = TxSuccess;
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
@@ -1922,6 +1895,9 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 
 	/* different calculation in APQuickResponeForRateUpExec() */
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
+
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;		
 
 	/*  decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
@@ -1938,7 +1914,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	//Down Rate
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 
-	DBGPRINT(RT_DEBUG_TRACE, ("Average PER %ld, Cur %d, Up %d, Dn %d\n", TxErrorRatio,
+	DBGPRINT(RT_DEBUG_TRACE, ("Average PER %lu, Cur %d, Up %d, Dn %d\n", TxErrorRatio,
 								CurrRateIdx, UpRateIdx, DownRateIdx));
 
 	DBGPRINT(RT_DEBUG_TRACE, ("RAA:Tx Quality 1SS %d, 2SS %d\n",
@@ -2462,6 +2438,9 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	pEntry->LastTxOkCount = TxSuccess;
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
 	pEntry->LastTimeTxRateChangeAction = pEntry->LastSecTxRateChangeAction;
+
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;	
 
 	/* decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;

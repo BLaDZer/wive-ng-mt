@@ -226,7 +226,7 @@ UCHAR *wmode_2_str(UCHAR wmode)
 
 RT_802_11_PHY_MODE wmode_2_cfgmode(UCHAR wmode)
 {
-	INT i, mode_cnt = sizeof(CFG_WMODE_MAP) / sizeof(UCHAR);
+	INT i, mode_cnt = sizeof(CFG_WMODE_MAP) / (sizeof(UCHAR) * 2);
 
 	for (i = 1; i < mode_cnt; i+=2)
 	{	
@@ -251,7 +251,7 @@ UCHAR cfgmode_2_wmode(UCHAR cfg_mode)
 }
 
 
-static BOOLEAN wmode_valid(RTMP_ADAPTER *pAd, enum WIFI_MODE wmode)
+BOOLEAN wmode_valid(RTMP_ADAPTER *pAd, enum WIFI_MODE wmode)
 {
 	if ((WMODE_CAP_5G(wmode) && (!PHY_CAP_5G(pAd->chipCap.phy_caps))) ||
 		(WMODE_CAP_2G(wmode) && (!PHY_CAP_2G(pAd->chipCap.phy_caps))) ||
@@ -261,46 +261,6 @@ static BOOLEAN wmode_valid(RTMP_ADAPTER *pAd, enum WIFI_MODE wmode)
 	else
 		return TRUE;
 }
-
-#if 0
-static BOOLEAN wmode_valid_and_correct(RTMP_ADAPTER *pAd, UCHAR* wmode)
-{
-	BOOLEAN ret = TRUE;
-
-	if (*wmode == WMODE_INVALID)
-		*wmode = (WMODE_B | WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC);
-
-	while(1)
-	{
-	if (WMODE_CAP_5G(*wmode) && (!PHY_CAP_5G(pAd->chipCap.phy_caps)))
-	{
-		*wmode = *wmode & ~(WMODE_A | WMODE_AN | WMODE_AC);
-	}
-	else if (WMODE_CAP_2G(*wmode) && (!PHY_CAP_2G(pAd->chipCap.phy_caps)))
-	{
-		*wmode = *wmode & ~(WMODE_B | WMODE_G | WMODE_GN);
-	}
-		else if (WMODE_CAP_N(*wmode) && ((!PHY_CAP_N(pAd->chipCap.phy_caps)) || RTMP_TEST_MORE_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DOT_11N)))
-	{
-		*wmode = *wmode & ~(WMODE_GN | WMODE_AN);
-	}
-		else if (WMODE_CAP_AC(*wmode) && (!PHY_CAP_AC(pAd->chipCap.phy_caps)))
-		{
-			*wmode = *wmode & ~(WMODE_AC);
-		}
-
-	if ( *wmode == 0 )
-		{
-			*wmode = (WMODE_B | WMODE_G | WMODE_GN |WMODE_A | WMODE_AN | WMODE_AC);
-			break;
-		}
-		else
-			break;
-	}
-
-	return ret;
-}
-#endif
 
 BOOLEAN wmode_band_equal(UCHAR smode, UCHAR tmode)
 {
@@ -1181,11 +1141,22 @@ INT RTMP_COM_IoctlHandle(
 
 			if (VIRTUAL_IF_NUM(pAd) == 0)
 			{
+#ifdef DBG
+                ULONG start, end, diff_ms;
+                /* Get the current time for calculating startup time */
+                NdisGetSystemUpTime(&start);
+#endif /* DBG */	
 				if (pInfConf->rt28xx_open(pAd->net_dev) != 0)
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("rt28xx_open return fail!\n"));
 					return NDIS_STATUS_FAILURE;
 				}
+#ifdef DBG				
+                /* Get the current time for calculating startup time */
+                NdisGetSystemUpTime(&end); diff_ms = (end-start)*1000/OS_HZ;
+                DBGPRINT(RT_DEBUG_OFF, ("WiFi Interface Up Time (%s): %lu.%03lus\n",
+                        RTMP_OS_NETDEV_GET_DEVNAME(pAd->net_dev),diff_ms/1000,diff_ms%1000));
+#endif /* DBG */
 			}
 			else
 			{
@@ -1207,7 +1178,20 @@ INT RTMP_COM_IoctlHandle(
 
 			VIRTUAL_IF_DEC(pAd);
 			if (VIRTUAL_IF_NUM(pAd) == 0)
+            {
+#ifdef DBG
+                ULONG start, end, diff_ms;
+                /* Get the current time for calculating startup time */
+                NdisGetSystemUpTime(&start);
+#endif /* DBG */	            
 				pInfConf->rt28xx_close(pAd->net_dev);
+#ifdef DBG				
+                /* Get the current time for calculating startup time */
+                NdisGetSystemUpTime(&end); diff_ms = (end-start)*1000/OS_HZ;
+                DBGPRINT(RT_DEBUG_OFF, ("WiFi Interface Down Time (%s): %lu.%03lus\n",
+                        RTMP_OS_NETDEV_GET_DEVNAME(pAd->net_dev),diff_ms/1000,diff_ms%1000));
+#endif /* DBG */
+            }
 		}
 			break;
 
@@ -1423,7 +1407,6 @@ INT RTMP_COM_IoctlHandle(
 				return NDIS_STATUS_FAILURE;
 			break;
 #endif /* WDS_SUPPORT */
-
 #ifdef APCLI_SUPPORT
 		case CMD_RTPRIV_IOCTL_APCLI_STATS_GET:
 			if (Data == INT_APCLI)
@@ -1551,10 +1534,11 @@ INT Set_SiteSurvey_Proc(
 	IN	PSTRING			arg)
 {
 	NDIS_802_11_SSID Ssid;
-	POS_COOKIE pObj;
-
-	pObj = (POS_COOKIE) pAd->OS_Cookie;
-
+#ifndef APCLI_CONNECTION_TRIAL
+#ifdef APCLI_SUPPORT
+	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+#endif
+#endif
 	//check if the interface is down
 	if (!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_IN_USE))
 	{
@@ -1592,11 +1576,68 @@ INT Set_SiteSurvey_Proc(
 			RTMP_IO_WRITE32(pAd, CH_TIME_CFG, mac_val);
 		}
 #endif
+
+#ifdef AIRPLAY_SUPPORT 
+		if(arg[0] == '0' && (arg[1] == 'x' || arg[1] == 'X'))
+		{
+				int ii,jj;
+				CHAR temp[MAX_LEN_OF_SSID*2+1];
+
+				NdisZeroMemory(Ssid.Ssid, MAX_LEN_OF_SSID);
+				for(ii=2; ii<strlen(arg); ii++)
+				{
+						if(arg[ii] >= '0' && arg[ii] <= '9')
+								temp[ii-2] = arg[ii] - '0';
+						else if(arg[ii] >= 'A' && arg[ii] <= 'F')
+								temp[ii-2] = arg[ii] - 'A' + 10;
+						else if(arg[ii] >= 'a' && arg[ii] <= 'f')
+								temp[ii-2] = arg[ii] - 'a' + 10;
+				}
+
+				temp[strlen(arg)-2]= '\0';
+				DBGPRINT(RT_DEBUG_TRACE,("%s=>arg:",__FUNCTION__));
+				for(ii=0; ii<strlen(arg)-2; ii++)
+						DBGPRINT(RT_DEBUG_TRACE,("%x",temp[ii]));
+				DBGPRINT(RT_DEBUG_TRACE,("\n"));
+
+				jj=0;
+				for(ii=0; ii<strlen(arg)-2; ii+=2)
+				{
+						if (jj > MAX_LEN_OF_SSID)
+						{
+								DBGPRINT(RT_DEBUG_TRACE, ("%s=> unicode SSID len error.",__FUNCTION__));
+								NdisZeroMemory(&Ssid, sizeof(NDIS_802_11_SSID));
+								goto ret;
+						}
+
+						Ssid.Ssid[jj++] = (UCHAR)(temp[ii]*16+temp[ii+1]);
+				}
+				Ssid.Ssid[jj] = '\0';
+				Ssid.SsidLength = jj;
+
+ret:
+
+				DBGPRINT(RT_DEBUG_TRACE, ("%s=>SSID:",__FUNCTION__));
+				for(ii=0; ii<jj; ii++)
+						DBGPRINT(RT_DEBUG_TRACE,("%x",(UCHAR)Ssid.Ssid[ii]));
+				DBGPRINT(RT_DEBUG_TRACE,("\n"));
+		}
+#endif /* AIRPLAY_SUPPORT */
+
 #ifndef APCLI_CONNECTION_TRIAL
+#ifdef APCLI_SUPPORT
+		if (pObj->ioctl_if_type == INT_APCLI)
+		{
+			ApCliSiteSurvey(pAd, &Ssid, SCAN_ACTIVE, FALSE);
+		}
+		else
+#endif /* APCLI_SUPPORT */
+		{
 		if (Ssid.SsidLength == 0)
 			ApSiteSurvey(pAd, &Ssid, SCAN_PASSIVE, FALSE);
 		else
 			ApSiteSurvey(pAd, &Ssid, SCAN_ACTIVE, FALSE);
+		}
 #else
 		/*for shorter scan time. use active scan and send probe req.*/
 		DBGPRINT(RT_DEBUG_TRACE, ("!!! Fast Scan for connection trial !!!\n"));

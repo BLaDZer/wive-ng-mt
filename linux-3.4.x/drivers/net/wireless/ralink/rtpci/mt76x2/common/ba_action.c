@@ -1191,7 +1191,7 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	PUCHAR pOutBuffer = NULL;
 	NDIS_STATUS NStatus;
 	PFRAME_ADDBA_REQ pAddreqFrame = NULL;
-	ULONG FrameLen, *ptemp;
+	ULONG FrameLen;
 	MAC_TABLE_ENTRY *pMacEntry;
 #ifdef CONFIG_AP_SUPPORT
 	INT apidx;
@@ -1204,9 +1204,22 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	if (Elem->Wcid >= MAX_LEN_OF_MAC_TABLE)
 		return;
 	
+#ifdef SMART_MESH_MONITOR
+#ifdef CONFIG_AP_SUPPORT
+    IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+    {
+         /*
+                  To avoid control frames captured by sniffer confusing due to lack of Addr 3
+              */
+        pAddreqFrame = (PFRAME_ADDBA_REQ)(&Elem->Msg[0]);
+        if(!IsValidUnicastToMe(pAd, Elem->Wcid, pAddreqFrame->Hdr.Addr1))
+            return;
+    }
+#endif /* CONFIG_AP_SUPPORT */
+#endif /* SMART_MESH_MONITOR */
+	
 	pMacEntry = &pAd->MacTab.Content[Elem->Wcid];
 	DBGPRINT(RT_DEBUG_TRACE,("BA - PeerAddBAReqAction----> \n"));
-	ptemp = (PULONG)Elem->Msg;
 
 	if (PeerAddBAReqActionSanity(pAd, Elem->Msg, Elem->MsgLen, pAddr))
 	{
@@ -1377,7 +1390,7 @@ VOID PeerAddBARspAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	
 	/*hex_dump("PeerAddBARspAction()", Elem->Msg, Elem->MsgLen);*/
 
-	if (PeerAddBARspActionSanity(pAd, Elem->Msg, Elem->MsgLen))
+	if (PeerAddBARspActionSanity(pAd, Elem->Wcid, Elem->Msg, Elem->MsgLen))
 	{
 		pFrame = (PFRAME_ADDBA_RSP)(&Elem->Msg[0]);
 
@@ -1623,7 +1636,7 @@ VOID SendBeaconRequest(RTMP_ADAPTER *pAd, UCHAR Wcid)
 	ActHeaderInit(pAd, &Frame.Hdr, pAd->MacTab.Content[Wcid].Addr, pAd->ApCfg.MBSSID[apidx].wdev.if_addr, pAd->ApCfg.MBSSID[apidx].wdev.bssid);
 
 	Frame.Category = CATEGORY_RM;
-	Frame.Action = RADIO_MEASUREMENT_REQUEST_ACTION;
+	Frame.Action = RADIO_MEASUREMENT_REQUEST_ACTION /*RRM_MEASURE_REQ*/;
 	Frame.Token = 1;
 	Frame.Repetition = 0;	/* executed once*/
 
@@ -2016,7 +2029,17 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBSS
 	{
 		
 		pBAEntry->nDropPacket++;
+		if (pRxBlk->Ping)
+		{
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else if (pRxBlk->Arp)
+		{
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else if (pRxBlk->Dhcp){
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+
 	}
 	
 	/* III. Drop Old Received Packet*/
@@ -2024,7 +2047,17 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBSS
 	{
 		
 		pBAEntry->nDropPacket++;
+		if (pRxBlk->Ping)
+		{
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else if (pRxBlk->Arp)
+		{
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else if (pRxBlk->Dhcp){
+				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
+		} else
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+
 	}
 	
 	/* IV. Receive Sequence within Window Size*/

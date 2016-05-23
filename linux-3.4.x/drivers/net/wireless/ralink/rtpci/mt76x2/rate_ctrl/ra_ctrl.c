@@ -1119,7 +1119,7 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 					__FUNCTION__, wcid_offset, pEntry->HTPhyMode.word, pEntry->wcid));
 
 		DBGPRINT_RAW(RT_DEBUG_INFO, ("\tWcid=%d, APMlmeSetTxRate - CurrTxRateIdx=%d, MCS=%d, STBC=%d, ShortGI=%d, Mode=%d, BW=%d \n"
-			                                     "\t                            ETxBf=%d, ITxBf=%d\n\n",
+			                                     "\t ETxBf=%d, ITxBf=%d\n\n",
 			pEntry->wcid,
 			pEntry->CurrTxRateIndex,
 			pEntry->HTPhyMode.field.MCS,
@@ -1171,12 +1171,6 @@ VOID APMlmeSetTxRate(
 					else
 						bw_cap = pAdaptTbEntry->BW;
 					break;
-#if 0
-/* MaxHTPhyMode.field.BW length is 2bits, no BW_10 caps */
-				case BW_10:
-					bw_cap = BW_10;
-					break;
-#endif
 				case BW_20:
 				default:
 					if (pAdaptTbEntry->BW == BW_80 || pAdaptTbEntry->BW == BW_40)

@@ -859,6 +859,14 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			}
 #endif /* WSC_AP_SUPPORT */
 
+
+#ifdef CONFIG_WIFI_PKT_FWD
+            if(IS_ENTRY_CLIENT(pEntry) && 
+               wf_fwd_add_entry_inform_hook)
+            {
+               wf_fwd_add_entry_inform_hook(pEntry->Addr);
+            }
+#endif /* CONFIG_WIFI_PKT_FWD */
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -910,6 +918,11 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 		return FALSE;
 
+	DBGPRINT(RT_DEBUG_TRACE, ("MacTableDelete Entry->wcid=%d\n",wcid));
+
+	if (pAddr != NULL)
+		DBGPRINT(RT_DEBUG_TRACE, ("MacTableDelete %02x:%02x:%02x:%02x:%02x:%02x\n",PRINT_MAC(pAddr)));
+
 	NdisAcquireSpinLock(&pAd->MacTabLock);
 
 	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
@@ -917,6 +930,27 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 
 	if (pEntry && !IS_ENTRY_NONE(pEntry))
 	{
+#ifdef SMART_MESH_MONITOR
+		if(pEntry->MonitorWCID > 0)
+			UpdateMonitorEntry(pAd,pEntry->MonitorWCID,NULL,TRUE);
+#endif /* SMART_MESH_MONITOR */
+#ifdef SMART_MESH
+		pEntry->bHyperFiPeer = FALSE;
+		pEntry->bSupportSmartMesh= FALSE;
+		pEntry->bEnableSmartMesh = FALSE;
+#endif /* SMART_MESH */
+#ifdef MWDS
+		pEntry->bSupportMWDS = FALSE;
+		pEntry->bEnableMWDS= FALSE;
+		if(IS_MWDS_OPMODE_AP(pEntry))
+			MWDSConnEntryDelete(pAd,pEntry->wcid);
+		SET_MWDS_OPMODE_NONE(pEntry);
+#endif /* MWDS */
+#ifdef CONFIG_WIFI_PKT_FWD
+		if(wf_fwd_delete_entry_inform_hook)
+			wf_fwd_delete_entry_inform_hook(pEntry->Addr);
+#endif /* CONFIG_WIFI_PKT_FWD */
+
 		/* ENTRY PREEMPTION: Cancel all timers */
 		RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
 		RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
@@ -1327,10 +1361,10 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 #ifdef RTMP_MAC_PCI
 		RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
 #endif /* RTMP_MAC_PCI */
-		DBGPRINT(RT_DEBUG_TRACE, ("McastPsQueue.Number %d...\n", pAd->MacTab.McastPsQueue.Number));
+		DBGPRINT(RT_DEBUG_TRACE, ("McastPsQueue.Number %u...\n", pAd->MacTab.McastPsQueue.Number));
 		if (pAd->MacTab.McastPsQueue.Number > 0)
 			APCleanupPsQueue(pAd, &pAd->MacTab.McastPsQueue);
-		DBGPRINT(RT_DEBUG_TRACE, ("2McastPsQueue.Number %d...\n", pAd->MacTab.McastPsQueue.Number));
+		DBGPRINT(RT_DEBUG_TRACE, ("2McastPsQueue.Number %u...\n", pAd->MacTab.McastPsQueue.Number));
 
 		/* ENTRY PREEMPTION: Zero Mac Table but entry's content */
 /*		NdisZeroMemory(&pAd->MacTab, sizeof(MAC_TABLE));*/

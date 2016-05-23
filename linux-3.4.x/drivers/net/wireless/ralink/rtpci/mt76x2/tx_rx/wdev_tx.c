@@ -127,8 +127,8 @@ VOID RTMPQueueAckPeriodicExec(
         IN PVOID SystemSpecific3) 
 {
     MAC_TABLE_ENTRY *pEntry = (MAC_TABLE_ENTRY *)FunctionContext;
-	PNDIS_PACKET	pPacket;
-   	UINT cnt= 0;
+    UINT cnt= 0;
+
     if (pEntry)
     {
      	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)pEntry->pAd;

@@ -243,8 +243,16 @@ VOID BuildChannelList(RTMP_ADAPTER *pAd)
 				for (j=0; j<16; j++)
 				{
 					if (pChannelList[i] == RadarCh[j])
+					{
 						pAd->ChannelList[index+i].DfsReq = TRUE;
+#ifdef SMART_MESH
+						pAd->ChannelList[index+i].bDfsAPExist = FALSE;
+#endif /* SMART_MESH */
+					}
 				}
+#ifdef SMART_MESH
+						pAd->ChannelList[index+i].FalseCCA = 0;
+#endif /* SMART_MESH */	
 				pAd->ChannelList[index+i].MaxTxPwr = 20;
 			}
 			index += num;

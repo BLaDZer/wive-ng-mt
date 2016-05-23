@@ -482,6 +482,13 @@ loadfw_protect:
 #ifdef MT76x2
 	if (IS_MT76x2(ad))
 	{
+		UCHAR e2p_type;
+		e2p_type = ad->E2pAccessMode;
+		e2p_type = ((e2p_type != 0) && (e2p_type < NUM_OF_E2P_MODE)) ? e2p_type : RtmpEepromGetDefault(ad);
+
+
+		if (e2p_type == E2P_FLASH_MODE)
+		{
 		USHORT ee_val = 0;
 		
 		rtmp_nv_init(ad);
@@ -496,6 +503,7 @@ loadfw_protect:
 			mac_value |= (1 << 30);
 			RTMP_IO_WRITE32(ad, COM_REG0, mac_value);
 		}
+	}
 	}
 #endif /* MT76x2 */
 #endif /* RTMP_FLASH_SUPPORT */
@@ -1103,7 +1111,12 @@ int pci_kick_out_cmd_msg(
 	ad->CtrlRing.Cell[SwIdx].pNdisPacket = net_pkt;
 	ad->CtrlRing.Cell[SwIdx].pNextNdisPacket = NULL;
 
+#ifndef RT_SECURE_DMA
 	SrcBufPA = PCI_MAP_SINGLE(ad, (pSrcBufVA) + 4, (SrcBufLen) - 4, 0, RTMP_PCI_DMA_TODEVICE);
+#else
+	NdisMoveMemory(ad->CtrlSecureDMA.AllocVa + (SwIdx * 4096), pSrcBufVA + 4, (SrcBufLen - TXINFO_SIZE));
+	SrcBufPA = ad->CtrlSecureDMA.AllocPa + (SwIdx * 4096);
+#endif
 
 	pTxD->LastSec0 = 1;
 	pTxD->LastSec1 = 0;
@@ -1237,8 +1250,8 @@ void andes_ctrl_init(RTMP_ADAPTER *ad)
 #ifdef RTMP_PCI_SUPPORT
 static void andes_ctrl_pci_exit(RTMP_ADAPTER *ad)
 {
-	unsigned long flags;
 	struct MCU_CTRL *ctl = &ad->MCUCtrl;
+	unsigned long flags;
 
 	RTMP_SPIN_LOCK_IRQSAVE(&ad->mcu_atomic, &flags);
 	RTMP_CLEAR_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD);
@@ -1288,7 +1301,7 @@ static int andes_dequeue_and_kick_out_cmd_msgs(RTMP_ADAPTER *ad)
 	int ret = NDIS_STATUS_SUCCESS;
 	TXINFO_NMAC_CMD *tx_info;
 
-	while ((msg = andes_dequeue_cmd_msg(ctl, &ctl->txq))) {
+	while ((msg = andes_dequeue_cmd_msg(ctl, &ctl->txq)) != NULL) {
 		if (!RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD) 
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_NIC_NOT_EXIST)
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_SUSPEND)) { 
@@ -1372,7 +1385,6 @@ int andes_send_cmd_msg(PRTMP_ADAPTER ad, struct cmd_msg *msg)
 #endif
 	
 
-
 	if (!RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_MCU_SEND_IN_BAND_CMD) 
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_NIC_NOT_EXIST) 
 				|| RTMP_TEST_FLAG(ad, fRTMP_ADAPTER_SUSPEND)) { 
@@ -1381,8 +1393,6 @@ int andes_send_cmd_msg(PRTMP_ADAPTER ad, struct cmd_msg *msg)
 		RTMP_SPIN_UNLOCK(&ad->mcu_atomic);
 #endif
 		
-
-
 		return NDIS_STATUS_FAILURE;
 	}
 
@@ -1446,7 +1456,7 @@ retransmit:
 #ifdef RTMP_PCI_SUPPORT
 	RTMP_SPIN_UNLOCK(&ad->mcu_atomic);
 	RtmpOsMsDelay(10);
-#endif
+#endif 
 	
 	return ret;
 }
@@ -2067,6 +2077,11 @@ int andes_pwr_saving(RTMP_ADAPTER *ad, u32 op, u32 level,
 	int ret = 0;
 	BOOLEAN need_wait = FALSE;
 
+#ifdef CONFIG_STA_SUPPORT
+#ifdef RTMP_MAC_PCI
+	need_wait = TRUE;
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_STA_SUPPORT */
 
 	/* Power operation and Power Level */
 	var_len = 8;

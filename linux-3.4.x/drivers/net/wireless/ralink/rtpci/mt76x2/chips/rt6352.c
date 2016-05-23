@@ -528,7 +528,7 @@ UCHAR RT6352_NUM_RF_DCCAL_BW = (sizeof(RT6352_RFDCCal_BW) / sizeof(REG_PAIR_BW))
 
 RTMP_REG_PAIR	RT6352_MACRegTable[] =	{
 	{TX_SW_CFG0,		0x0401},   // Jason,2012-08-27
-	{TX_SW_CFG1,		0x000C0000},   // Jason,2012-09-13
+	{TX_SW_CFG1,		0x000C0001},   // Jason,2012-09-13, 2015-10-08
 	{TX_SW_CFG2,		0x00},   // Jason,2012-08-27
 	{MIMO_PS_CFG,		0x02},   // Jason,2012-09-13
 };
@@ -4095,7 +4095,6 @@ UCHAR RT6352_GetSkuChannelBasePwr(
 	UINT8 i, j;
 	CHAR tx_pwr1;
 	CHAR max_tx1_pwr;
-	UINT16 TargetPwr = 0;
 	UINT32 MacReg;
 #ifdef RT6352
 	if (IS_RT6352(pAd))
@@ -4173,7 +4172,7 @@ CHAR RT6352_AdjustChannelPwr(
 	CHAR target_power;
 	UCHAR sku_min_pwr = 0;
 	UINT32 mac_value;
-	USHORT e2p_data;
+	//USHORT e2p_data;
 	
 	//RT28xx_EEPROM_READ16(pAd, 0xD0, e2p_data);
 	target_power = (pAd->E2p_D0_Value & 0x3F);
@@ -4186,7 +4185,6 @@ CHAR RT6352_AdjustChannelPwr(
 	/* TSSI mode */
 	if (pAd->TxPowerCtrl.bInternalTxALC == TRUE)
 	{
-		CHAR bw_delta = 0;
 		CHAR target_power_ori = 0;
 		target_power = (target_power > sku_min_pwr) ? sku_min_pwr : target_power;
 
@@ -4395,13 +4393,11 @@ UCHAR GetSkuPerRatePwr(
 	IN UCHAR bw,
 	IN INT32 paValue)
 {
-	INT i = 0;
 	CH_POWER *ch, *ch_temp;
 	UCHAR start_ch, end_ch;
 	UCHAR rate_pwr, rate_pwr1;
 	CHAR tx_pwr1;
 	CHAR max_tx1_pwr;
-	UINT16 TargetPwr = 0;
 	UINT32 MacReg;
 	INT32 pwr_diff = 0;
 
@@ -4409,7 +4405,7 @@ UCHAR GetSkuPerRatePwr(
 	max_tx1_pwr = (MacReg >> 16) & 0x3F;
 
 	tx_pwr1 = (pAd->E2p_D0_Value & 0x3F);
-	
+
 	if(pAd->bSingleSkuDebug)
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: EEPROM 0xD0 = 0x%x\n", __FUNCTION__, tx_pwr1));
 

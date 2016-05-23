@@ -3504,10 +3504,15 @@ INT RTMPAPQueryInformation(
             	{
             		if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[i]) && (pAd->MacTab.Content[i].Sst == SST_ASSOC))
             		{
-            			COPY_MAC_ADDR(AssocTab.Entry[AssocTab.Num].Addr, &pAd->MacTab.Content[i].Addr);
-                        AssocTab.Entry[AssocTab.Num].phyMode = pAd->CommonCfg.PhyMode;
-                        AssocTab.Entry[AssocTab.Num].MOR = RateIdToMbps[pAd->ApCfg.MBSSID[apidx].MaxTxRate] * 2;
-            			AssocTab.Num += 1;
+				if (AssocTab.Num < 64) /* avoid the size out of definition from LLTD daemon */
+				{
+            			    COPY_MAC_ADDR(AssocTab.Entry[AssocTab.Num].Addr, &pAd->MacTab.Content[i].Addr);
+                    		    AssocTab.Entry[AssocTab.Num].phyMode = pAd->CommonCfg.PhyMode;
+                    		    AssocTab.Entry[AssocTab.Num].MOR = RateIdToMbps[pAd->ApCfg.MBSSID[apidx].MaxTxRate] * 2;
+            			    AssocTab.Num += 1;
+				} else {
+				    break;
+				}
             		}
             	}
                 wrq->u.data.length = sizeof(RT_LLTD_ASSOICATION_TABLE);

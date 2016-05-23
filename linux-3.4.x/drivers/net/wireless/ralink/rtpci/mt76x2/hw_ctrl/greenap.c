@@ -57,6 +57,7 @@ VOID EnableAPMIMOPSv1(
 	ULONG	TxPinCfg = 0x00050F0A;/*Gary 2007/08/09 0x050A0A*/
 	UCHAR	CentralChannel;
 
+
 	if(pAd->CommonCfg.Channel>14)
 		TxPinCfg=0x00050F05;
 		
@@ -93,6 +94,7 @@ VOID DisableAPMIMOPSv1(
 {
 	ULONG	TxPinCfg = 0x00050F0A; /* Gary 2007/08/09 0x050A0A */
 	UCHAR	CentralChannel;
+
 
 	if(pAd->CommonCfg.Channel>14)
 		TxPinCfg=0x00050F05;

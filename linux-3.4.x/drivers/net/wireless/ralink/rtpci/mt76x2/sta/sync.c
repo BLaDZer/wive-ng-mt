@@ -160,7 +160,7 @@ VOID ScanTimeout(
 	{
 		/* To prevent SyncMachine.CurrState is SCAN_LISTEN forever. */
 		pAd->MlmeAux.Channel = 0;
-		ScanNextChannel(pAd, OPMODE_STA);
+		ScanNextChannel(pAd, OPMODE_STA, pAd->MlmeAux.ScanInfType);
 			RTMPSendWirelessEvent(pAd, IW_SCAN_ENQUEUE_FAIL_EVENT_FLAG, NULL, BSS0, 0); 
 	}
 }
@@ -467,7 +467,7 @@ VOID MlmeForceScanReqAction(
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
-		ScanNextChannel(pAd, OPMODE_STA);
+		ScanNextChannel(pAd, OPMODE_STA, INT_MAIN);
 		if(pAd->StaCfg.ConnectinfoChannel != 0)
 			pAd->MlmeAux.Channel = 0;
 		pAd->Mlme.CntlMachine.CurrState = CNTL_WAIT_SCAN_FOR_CONNECT;
@@ -616,7 +616,7 @@ VOID MlmeScanReqAction(
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
-		ScanNextChannel(pAd, OPMODE_STA);
+		ScanNextChannel(pAd, OPMODE_STA, INT_MAIN);
 	} 
 	else 
 	{
@@ -1079,6 +1079,12 @@ VOID rtmp_dbg_sanity_diff(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	USHORT LenVIE;
 	UCHAR *VarIE = NULL;
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
+#ifdef CONFIG_STA_SUPPORT
+#ifdef NATIVE_WPA_SUPPLICANT_SUPPORT
+	UCHAR SelReg = 0;
+#endif /* NATIVE_WPA_SUPPLICANT_SUPPORT */
+#endif /* CONFIG_STA_SUPPORT */
+
 
 
 	BCN_IE_LIST *ie_list = NULL;
@@ -1551,6 +1557,9 @@ VOID PeerBeaconAtJoinAction(
 	BOOLEAN bAllowNrate = FALSE;
 #endif /* DOT11_N_SUPPORT */
 	BCN_IE_LIST *ie_list = NULL;
+#ifdef NATIVE_WPA_SUPPLICANT_SUPPORT
+	UCHAR SelReg = 0;
+#endif /* NATIVE_WPA_SUPPLICANT_SUPPORT */
 
 
 	/* allocate memory */	
@@ -1946,8 +1955,10 @@ VOID PeerBeacon(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
 	struct wifi_dev *wdev = &pAd->StaCfg.wdev;
 
-
 	BCN_IE_LIST *bcn_ie_list = NULL;
+#ifdef NATIVE_WPA_SUPPLICANT_SUPPORT
+	UCHAR SelReg = 0;
+#endif /* NATIVE_WPA_SUPPLICANT_SUPPORT */
 
 #ifdef RALINK_ATE
     if (ATE_ON(pAd))
@@ -3035,7 +3046,7 @@ VOID ScanTimeoutAction(
 		pAd->MlmeAux.Channel = 0;
 
 	/* this routine will stop if pAd->MlmeAux.Channel == 0 */
-	ScanNextChannel(pAd, OPMODE_STA); 
+	ScanNextChannel(pAd, OPMODE_STA, pAd->MlmeAux.ScanInfType); 
 }
 
 /* 
@@ -3264,7 +3275,7 @@ VOID ScanCnclAction(
 
 	RTMPCancelTimer(&pAd->MlmeAux.ScanTimer, &Cancelled);
 	pAd->MlmeAux.Channel = 0;
-	ScanNextChannel(pAd, OPMODE_STA);
+	ScanNextChannel(pAd, OPMODE_STA, INT_MAIN);
 
 	return;
 }
