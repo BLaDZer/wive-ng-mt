@@ -1233,6 +1233,10 @@ VOID PeerAssocRspAction(
 								HtCapabilityLen);
 
 			}
+
+			if(Status == MLME_ASSOC_REJ_DATA_RATE)
+				printk("APCLI_ASSOC - receive ASSOC_RSP reject - AP not support reqested rates or modes");
+
 			pAd->Mlme.AssocMachine.CurrState = ASSOC_IDLE;
 			MlmeEnqueue(pAd, MLME_CNTL_STATE_MACHINE,
 				    MT2_ASSOC_CONF, 2, &Status, 0);
