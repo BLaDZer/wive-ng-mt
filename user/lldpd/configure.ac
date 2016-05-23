@@ -89,7 +89,6 @@ AX_CFLAGS_GCC_OPTION([-Wno-missing-field-initializers], [LLDP_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-Wno-sign-compare], [LLDP_CFLAGS]) dnl Should be fixed later
 AX_LDFLAGS_OPTION([-Wl,-z,relro], [LLDP_LDFLAGS])
 AX_LDFLAGS_OPTION([-Wl,-z,now], [LLDP_LDFLAGS])
-lldp_CHECK_CTORS
 
 # Hardening
 AC_ARG_ENABLE([hardening],
@@ -182,6 +181,7 @@ AC_CHECK_FUNCS([setproctitle_init])
 AC_REPLACE_FUNCS([strlcpy
                   strnlen
                   strndup
+                  strtonum
                   getline
                   asprintf
                   vsyslog
@@ -312,7 +312,7 @@ lldp_ARG_WITH([apparmordir], [Directory for AppArmor profiles (Linux)],
                              [no])
 AC_SUBST([apparmordir], [$with_apparmordir])
 AM_CONDITIONAL(HAVE_APPARMORDIR,
-    [test -n "$with_apparmordir" -a "x$with_apprmordir" != xno ])
+    [test -n "$with_apparmordir" -a "x$with_apparmordir" != xno ])
 
 # Systemtap/DTrace
 lldp_SYSTEMTAP
@@ -374,6 +374,11 @@ AM_CONDITIONAL([USE_JSON], [test x"$with_json" = x"json-c" || test -x"$with_json
 AM_CONDITIONAL([USE_JANSSON], [test x"$with_json" = x"jansson"])
 AM_CONDITIONAL([USE_JSONC], [test x"$with_json" = x"json-c"])
 AM_CONDITIONAL([USE_SECCOMP], [test x"$with_seccomp" = x"yes"])
+dnl If old default of AR_FLAGS is otherwise being used (because of older automake),
+dnl replace it with one without 'u'
+if test "x$AR_FLAGS" = "xcru" ; then
+  AR_FLAGS="cr"
+fi
 AC_OUTPUT
 
 libevent=system

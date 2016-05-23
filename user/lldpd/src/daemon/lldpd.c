@@ -320,11 +320,11 @@ lldpd_count_neighbors(struct lldpd *cfg)
 	}
 	neighbors--;
 	if (neighbors == 0)
-		setproctitle("no neighbor");
+		setproctitle("no neighbor.");
 	else if (neighbors == 1 && neighbor && *neighbor != '\0')
-		setproctitle("connected to %s", neighbor);
+		setproctitle("connected to %s.", neighbor);
 	else
-		setproctitle("%d neighbor%s", neighbors,
+		setproctitle("%d neighbor%s.", neighbors,
 		    (neighbors > 1)?"s":"");
 #endif
 	lldpd_display_neighbors(cfg);
@@ -1432,6 +1432,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	struct lldpd *cfg;
 	struct lldpd_chassis *lchassis;
 	int ch, debug = 0, use_syslog = 1, daemonize = 1;
+	const char *errstr;
 #ifdef USE_SNMP
 	int snmp = 0;
 	const char *agentx = NULL;	/* AgentX socket */
@@ -1541,8 +1542,8 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			break;
 #ifdef ENABLE_LLDPMED
 		case 'M':
-			lldpmed = atoi(optarg);
-			if ((lldpmed < 1) || (lldpmed > 4)) {
+			lldpmed = strtonum(optarg, 1, 4, &errstr);
+			if (errstr) {
 				fprintf(stderr, "-M requires an argument between 1 and 4\n");
 				usage();
 			}
@@ -1591,7 +1592,13 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			platform_override = strdup(optarg);
 			break;
 		case 'H':
-			smart = atoi(optarg);
+			smart = strtonum(optarg, 0, sizeof(filters)/sizeof(filters[0]),
+			    &errstr);
+			if (errstr) {
+				fprintf(stderr, "-H requires an int between 0 and %zu\n",
+				    sizeof(filters)/sizeof(filters[0]));
+				usage();
+			}
 			break;
 		default:
 			found = 0;
@@ -1630,10 +1637,10 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	/* Grab uid and gid to use for priv sep */
 #ifdef ENABLE_PRIVSEP
 	if ((user = getpwnam(PRIVSEP_USER)) == NULL)
-		fatal("main", "no " PRIVSEP_USER " user for privilege separation");
+		fatalx("main", "no " PRIVSEP_USER " user for privilege separation, please create it");
 	uid = user->pw_uid;
 	if ((group = getgrnam(PRIVSEP_GROUP)) == NULL)
-		fatal("main", "no " PRIVSEP_GROUP " group for privilege separation");
+		fatalx("main", "no " PRIVSEP_GROUP " group for privilege separation, please create it");
 	gid = group->gr_gid;
 #endif
 	/* Create and setup socket */
@@ -1659,7 +1666,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			log_warn("main", "cannot determine if another daemon is already running");
 			fatalx("main", "giving up");
 		}
-		log_warn("main", "unable to create control socket");
+		log_warn("main", "unable to create control socket at %s", ctlname);
 		fatalx("main", "giving up");
 	}
 #ifdef ENABLE_PRIVSEP

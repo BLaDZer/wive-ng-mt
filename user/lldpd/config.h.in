@@ -60,16 +60,6 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define to 1 if the system has the `constructor' function attribute */
-#undef HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR
-
-/* Define to 1 if the system has the `constructor_priority' function attribute
-   */
-#undef HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR_PRIORITY
-
-/* Define to 1 if the system has the `destructor' function attribute */
-#undef HAVE_FUNC_ATTRIBUTE_DESTRUCTOR
-
 /* Define to 1 if you have the `getline' function. */
 #undef HAVE_GETLINE
 
@@ -162,6 +152,9 @@
 
 /* Define to 1 if you have the `strnlen' function. */
 #undef HAVE_STRNLEN
+
+/* Define to 1 if you have the `strtonum' function. */
+#undef HAVE_STRTONUM
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H

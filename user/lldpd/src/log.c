@@ -143,9 +143,21 @@ vlog(int pri, const char *token, const char *fmt, va_list ap)
 			free(result);
 			return;
 		}
-		/* Otherwise, fallback to output on stderr. */
+		/* Otherwise, abort. We don't know if "ap" is still OK. We could
+		 * have made a copy, but this is too much overhead for a
+		 * situation that shouldn't happen. */
+		return;
 	}
-	if (!use_syslog || logh) {
+
+	/* Log to syslog if requested */
+	if (use_syslog) {
+		va_list ap2;
+		va_copy(ap2, ap);
+		vsyslog(pri, fmt, ap2);
+		va_end(ap2);
+	}
+
+	/* Log to standard error in all cases */
 		char *nfmt;
 		/* best effort in out of mem situations */
 		if (asprintf(&nfmt, "%s %s%s%s]%s %s\n",
@@ -161,8 +173,6 @@ vlog(int pri, const char *token, const char *fmt, va_list ap)
 			free(nfmt);
 		}
 		fflush(stderr);
-	} else
-		vsyslog(pri, fmt, ap);
 }
 
 

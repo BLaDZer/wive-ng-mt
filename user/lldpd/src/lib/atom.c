@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include "lldpctl.h"
 #include "atom.h"
 #include "../log.h"
@@ -136,8 +137,8 @@ lldpctl_atom_set_str(lldpctl_atom_t *atom, lldpctl_key_t key,
 	const char *value)
 {
 	lldpctl_atom_t *result = NULL;
-	char *end;
-	long int converted = 0;
+	const char *errstr;
+	long long converted = 0;
 	int isint = 0;
 	int bad = 0;
 
@@ -154,8 +155,8 @@ lldpctl_atom_set_str(lldpctl_atom_t *atom, lldpctl_key_t key,
 	}
 
 	if (value) {
-		converted = strtol(value, &end, 0);
-		isint = (end != value && *end == '\0');
+		converted = strtonum(value, LLONG_MIN, LLONG_MAX, &errstr);
+		isint = (errstr == NULL);
 	}
 
 	RESET_ERROR(atom->conn);
@@ -514,6 +515,7 @@ static struct atom_map atom_map_list = {
 lldpctl_map_t*
 lldpctl_key_get_map(lldpctl_key_t key)
 {
+	init_atom_map();
 	struct atom_map *map;
 	for (map = atom_map_list.next; map ; map = map->next) {
 		if (map->key == key)
@@ -522,8 +524,9 @@ lldpctl_key_get_map(lldpctl_key_t key)
 	return empty_map;
 }
 
-void atom_map_register(struct atom_map *map)
+void atom_map_register(struct atom_map *map, int prio)
 {
+	(void)prio;
 	struct atom_map* iter = &atom_map_list;
 
 	while (iter->next)
@@ -536,8 +539,9 @@ static struct atom_builder atom_builder_list = {
 	.nextb = NULL
 };
 
-void atom_builder_register(struct atom_builder *builder)
+void atom_builder_register(struct atom_builder *builder, int prio)
 {
+	(void)prio;
 	struct atom_builder* iter = &atom_builder_list;
 
 	while (iter->nextb)
@@ -549,6 +553,7 @@ void atom_builder_register(struct atom_builder *builder)
 lldpctl_atom_t*
 _lldpctl_new_atom(lldpctl_conn_t *conn, atom_t type, ...)
 {
+	init_atom_builder();
 	struct atom_builder *builder;
 	struct lldpctl_atom_t *atom;
 	va_list(ap);

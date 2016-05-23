@@ -90,10 +90,9 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
-	$(top_srcdir)/m4/ax_gcc_func_attribute.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
-	$(top_srcdir)/m4/ax_prog_doxygen.m4 $(top_srcdir)/m4/ctors.m4 \
+	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
 	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -147,11 +146,14 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 am__dirstamp = $(am__leading_dot)dirstamp
+am__objects_1 = atoms/config.lo atoms/dot1.lo atoms/dot3.lo \
+	atoms/interface.lo atoms/med.lo atoms/mgmt.lo atoms/port.lo \
+	atoms/custom.lo atoms/chassis.lo
 am_liblldpctl_la_OBJECTS = errors.lo connection.lo atom.lo helpers.lo \
-	atoms/config.lo atoms/dot1.lo atoms/dot3.lo atoms/interface.lo \
-	atoms/med.lo atoms/mgmt.lo atoms/port.lo atoms/custom.lo \
-	atoms/chassis.lo
-liblldpctl_la_OBJECTS = $(am_liblldpctl_la_OBJECTS)
+	$(am__objects_1)
+nodist_liblldpctl_la_OBJECTS = atom-glue.lo
+liblldpctl_la_OBJECTS = $(am_liblldpctl_la_OBJECTS) \
+	$(nodist_liblldpctl_la_OBJECTS)
 liblldpctl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(liblldpctl_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -189,7 +191,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libfixedpoint_la_SOURCES) $(liblldpctl_la_SOURCES)
+SOURCES = $(libfixedpoint_la_SOURCES) $(liblldpctl_la_SOURCES) \
+	$(nodist_liblldpctl_la_SOURCES)
 DIST_SOURCES = $(libfixedpoint_la_SOURCES) $(liblldpctl_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -410,13 +413,19 @@ lib_LTLIBRARIES = liblldpctl.la
 include_HEADERS = lldpctl.h
 noinst_LTLIBRARIES = libfixedpoint.la
 libfixedpoint_la_SOURCES = fixedpoint.h fixedpoint.c
-liblldpctl_la_SOURCES = \
-	lldpctl.h atom.h errors.c connection.c atom.c helpers.c helpers.h \
+ATOM_FILES = \
 	atoms/config.c atoms/dot1.c atoms/dot3.c \
 	atoms/interface.c atoms/med.c atoms/mgmt.c atoms/port.c \
 	atoms/custom.c atoms/chassis.c
 
+liblldpctl_la_SOURCES = \
+	lldpctl.h atom.h helpers.h \
+	errors.c connection.c atom.c helpers.c \
+	$(ATOM_FILES)
+
+nodist_liblldpctl_la_SOURCES = atom-glue.c
 liblldpctl_la_LIBADD = $(top_builddir)/src/libcommon-daemon-lib.la libfixedpoint.la
+CLEANFILES = atom-glue.c $(TEMPLATES)
 
 # -version-info format is `current`:`revision`:`age`. For more details, see:
 #   https://www.sourceware.org/autobook/autobook/autobook_61.html#Library-Versioning
@@ -430,7 +439,6 @@ liblldpctl_la_DEPENDENCIES = libfixedpoint.la $(am__append_1)
 pkgconfig_DATA = lldpctl.pc
 TEMPLATES = lldpctl.pc
 EXTRA_DIST = lldpctl.pc.in lldpctl.map
-CLEANFILES = $(TEMPLATES)
 edit = $(SED) \
         -e 's|@bindir[@]|$(bindir)|g' \
         -e 's|@sbindir[@]|$(sbindir)|g' \
@@ -566,6 +574,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/atom-glue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/atom.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/errors.Plo@am__quote@
@@ -866,6 +875,32 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	tags tags-am uninstall uninstall-am uninstall-includeHEADERS \
 	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 
+
+atom-glue.c: $(ATOM_FILES) Makefile
+	$(AM_V_GEN)($(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+		$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(filter %.c,$^) | \
+		$(SED) -n 's+^void init_atom_builder_\([^(]*\)().*, \([0-9]*\)).*+\2 \1+p' | \
+		sort | \
+		$(AWK) '{ atoms[$$2] = 1 } \
+			 END { for (atom in atoms) { print "void init_atom_builder_"atom"(void);" } \
+			       print "void init_atom_builder() {"; \
+                               print " static int init = 0; if (init) return; init++;"; \
+			       for (atom in atoms) { print " init_atom_builder_"atom"();" } \
+			       print "}"; }' && \
+		$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+		$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(filter %.c,$^) | \
+		$(SED) -n 's+^void init_atom_map_\([^(]*\)().*, \([0-9]*\)).*+\2 \1+p' | \
+		sort -n | \
+		$(AWK) '{ atoms[$$2] = 1 } \
+			 END { for (atom in atoms) { print "void init_atom_map_"atom"(void);" } \
+			       print "void init_atom_map() {"; \
+                               print " static int init = 0; if (init) return; init++;"; \
+			       for (atom in atoms) { print " init_atom_map_"atom"();" } \
+			       print "}"; }' ) \
+		> $@.tmp
+	@$(GREP) -q init_atom_builder_ $@.tmp
+	@$(GREP) -q init_atom_map_ $@.tmp
+	@mv $@.tmp $@
 lldpctl.pc: lldpctl.pc.in
 
 $(TEMPLATES): Makefile

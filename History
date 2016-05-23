@@ -2088,15 +2088,16 @@
 <br>
 <b>4.4.x</b><br>
 1) libcurl: up to 7.49.0 version.<br>
-2) kernel: ralink_arch: allow highmem region for 512M devices.<br>
-3) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
-4) kernel: net: do not block BH while processing socket backlog.<br>
-5) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-6) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-7) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-8) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-9) kernel: sched: always inline context_switch().<br>
-10) kernel: mips: make flush_thread and exit_thread always inline.<br>
+2) lldpd: up to 0.9.3 version.<br>
+3) kernel: ralink_arch: allow highmem region for 512M devices.<br>
+4) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
+5) kernel: net: do not block BH while processing socket backlog.<br>
+6) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+7) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+8) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+10) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+11) kernel: sched: always inline context_switch().<br>
+12) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

@@ -34,94 +34,101 @@
 
 struct xml_writer_private {
 	FILE *fh;
+	ssize_t depth;
 	xmlTextWriterPtr xw;
 	xmlDocPtr doc;
 };
 
-void xml_start(struct writer * w , const char * tag, const char * descr ) {
-	struct xml_writer_private * p = w->priv;
+void xml_new_writer(struct xml_writer_private *priv)
+{
+	priv->xw = xmlNewTextWriterDoc(&(priv->doc), 0);
+	if (!priv->xw)
+		fatalx("lldpctl", "cannot create xml writer");
+
+	xmlTextWriterSetIndent(priv->xw, 4);
+
+	if (xmlTextWriterStartDocument(priv->xw, NULL, "UTF-8", NULL) < 0 )
+		fatalx("lldpctl", "cannot start xml document");
+}
+
+void xml_start(struct writer *w , const char *tag, const char *descr ) {
+	struct xml_writer_private *p = w->priv;
+
+	if (p->depth == 0)
+		xml_new_writer(p);
 
 	if (xmlTextWriterStartElement(p->xw, BAD_CAST tag) < 0)
 		log_warnx("lldpctl", "cannot start '%s' element", tag);
 
-	if ( descr && (strlen(descr) > 0) ) {
+	if (descr && (strlen(descr) > 0)) {
 		if (xmlTextWriterWriteFormatAttribute(p->xw, BAD_CAST "label", "%s", descr) < 0)
 			log_warnx("lldpctl", "cannot add attribute 'label' to element %s", tag);
 	}
+
+	p->depth++;
 }
 
-void xml_attr(struct writer * w, const char * tag, const char * descr, const char * value ) {
-	struct xml_writer_private * p = w->priv;
+void xml_attr(struct writer *w, const char *tag, const char *descr, const char *value ) {
+	struct xml_writer_private *p = w->priv;
 
 	if (xmlTextWriterWriteFormatAttribute(p->xw, BAD_CAST tag, "%s", value?value:"") < 0)
 		log_warnx("lldpctl", "cannot add attribute %s with value %s", tag, value?value:"(none)");
 }
 
-void xml_data(struct writer * w, const char * data) {
-	struct xml_writer_private * p = w->priv;
+void xml_data(struct writer *w, const char *data) {
+	struct xml_writer_private *p = w->priv;
 	if (xmlTextWriterWriteString(p->xw, BAD_CAST (data?data:"")) < 0 )
 		log_warnx("lldpctl", "cannot add '%s' as data to element", data?data:"(none)");
 }
 
-void xml_end(struct writer * w) {
-	struct xml_writer_private * p = w->priv;
+void xml_end(struct writer *w) {
+	struct xml_writer_private *p = w->priv;
 
 	if (xmlTextWriterEndElement(p->xw) < 0 )
 		log_warnx("lldpctl", "cannot end element");
+
+	if (--p->depth == 0) {
+		int failed = 0;
+
+		if (xmlTextWriterEndDocument(p->xw) < 0 ) {
+			log_warnx("lldpctl", "cannot finish document");
+			failed = 1;
+		}
+
+		xmlFreeTextWriter(p->xw);
+		if (!failed)
+			xmlDocDump(p->fh, p->doc);
+		xmlFreeDoc(p->doc);
+	}
 }
 
-#define MY_ENCODING "UTF-8"
-
-void xml_finish(struct writer * w) {
-	struct xml_writer_private * p = w->priv;
-	int failed = 0;
-
-	if (xmlTextWriterEndDocument(p->xw) < 0 ) {
-		log_warnx("lldpctl", "cannot finish document");
-		failed = 1;
+void xml_finish(struct writer *w) {
+	struct xml_writer_private *p = w->priv;
+	if (p->depth != 0) {
+		log_warnx("lldpctl", "unbalanced tags");
+		/* memory leak... */
 	}
 
-	xmlFreeTextWriter(p->xw);
-	
-	if ( ! failed )
-		xmlDocDump(p->fh, p->doc);
-
-	xmlFreeDoc(p->doc);
-
-	free( w->priv );
-	free( w );
+	free(p);
+	free(w);
 }
 
-struct writer * xml_init(FILE * fh) {
+struct writer *xml_init(FILE *fh) {
 
-	struct writer * result;
-	struct xml_writer_private * priv;
+	struct writer *result;
+	struct xml_writer_private *priv;
 
-	priv = malloc( sizeof( *priv ) );
+	priv = malloc(sizeof(*priv));
+	if (!priv) {
+		fatalx("lldpctl", "out of memory");
+		return NULL;
+	}
 	priv->fh = fh;
-	if ( ! priv ) {
+	priv->depth = 0;
+
+	result = malloc(sizeof(struct writer));
+	if (!result)
 		fatalx("lldpctl", "out of memory");
-		return NULL;
-	}
-
-	priv->xw = xmlNewTextWriterDoc(&(priv->doc), 0);
-	if ( ! priv->xw ) {
-		fatalx("lldpctl", "cannot create xml writer");
-		return NULL;
-	}
-
-	xmlTextWriterSetIndent(priv->xw, 4);
-
-	if (xmlTextWriterStartDocument(priv->xw, NULL, MY_ENCODING, NULL) < 0 ) {
-		fatalx("lldpctl", "cannot start xml document");
-		return NULL;
-	}
-
-	result = malloc( sizeof( struct writer ) );
-	if ( ! result ) {
-		fatalx("lldpctl", "out of memory");
-		return NULL;
-	}
 
 	result->priv  = priv;
 	result->start = xml_start;
@@ -132,4 +139,3 @@ struct writer * xml_init(FILE * fh) {
 
 	return result;
 }
-

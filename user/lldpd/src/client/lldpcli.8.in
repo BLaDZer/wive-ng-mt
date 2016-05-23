@@ -142,6 +142,7 @@ view.
 .Op ports Ar ethX Op ,...
 .Op Cd details | summary
 .Op Cd hidden
+.Op Cd limit Ar X
 .Bd -ragged -offset XXXXXX
 Watch for any neighbor changes and report them as soon as they
 happen. When specifying ports, the changes are only reported when
@@ -149,7 +150,11 @@ happening on the given ports.
 .Cd hidden , summary
 and
 .Cd details
-have the same meaning than previously described.
+have the same meaning than previously described. If
+.Cd limit
+is specificed,
+.Nm
+will exit after receiving the specified number of events.
 .Ed
 
 .Cd show configuration
@@ -270,7 +275,7 @@ is found or with the number of neighbors found.
 .Ed
 
 .Cd unconfigure
-.Cd system interface descripton
+.Cd system interface description
 .Bd -ragged -offset XXXXXX
 Do not update interface description with the name of the peer
 neighbor. This option undoes the previous one.
@@ -624,7 +629,6 @@ ports if no port was provided). Only the application type is
 mandatory.
 .Ar application
 should be one of the following values:
-static const struct value_string port_med_policy_map[] = {
 .Bl -bullet -compact -offset XXXXXXXX
 .It
 voice
@@ -719,7 +723,7 @@ PSE shall not reduce power allocated to PD when this power is in use.
 .It
 PSE may request reduced power using conservation mode
 .It
-Being PSE or PD is a global paremeter, not a per-port parameter.
+Being PSE or PD is a global parameter, not a per-port parameter.
 .Nm
 does not enforce this: a port can be set as PD or PSE. LLDP-MED also
 requires for a PSE to only have one power source (primary or
