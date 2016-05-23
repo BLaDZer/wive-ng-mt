@@ -15,7 +15,7 @@
 LDFLAGS += -static
 
 # system cgi scripts always optimize for size
-CFLAGS  += -Os -DUPLOAD_FIRMWARE_SUPPORT
+CFLAGS  += -Os
 
 UPLOAD_CGI 		= upload.cgi
 UPLOAD_RWFS		= upload_rwfs.cgi

@@ -54,7 +54,7 @@ case "$MODE" in
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
 	    ;;
 	"MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
-	    # black sample
+	    # black multi ANT sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
 	    ;;
 	"MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")

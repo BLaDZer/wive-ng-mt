@@ -1,7 +1,5 @@
 #include "upload.h"
 
-#ifdef UPLOAD_FIRMWARE_SUPPORT
-
 /* ========================================================================
  * Table of CRC-32's of all single-byte values (made by make_crc_table)
  */
@@ -395,6 +393,3 @@ int main(int argc, char *argv[])
 	reboot(RB_AUTOBOOT);
 	return 0;
 }
-#else
-#error "no upload support defined!"
-#endif
