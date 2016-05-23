@@ -765,6 +765,7 @@ static ssize_t do_tcp_sendpages(struct sock *sk, struct page *page, int offset,
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	int mss_now, size_goal;
+	bool process_backlog = false;
 	int err;
 	ssize_t copied;
 	long timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
@@ -794,13 +795,16 @@ new_segment:
 			if (!sk_stream_memory_free(sk))
 				goto wait_for_sndbuf;
 
-			if (sk_flush_backlog(sk))
+			if (process_backlog && sk_flush_backlog(sk)) {
+				 process_backlog = false;
 				goto restart;
+			}
 
 			skb = sk_stream_alloc_skb(sk, 0, sk->sk_allocation);
 			if (!skb)
 				goto wait_for_memory;
 
+			process_backlog = true;
 			skb_entail(sk, skb);
 			copy = size_goal;
 		}

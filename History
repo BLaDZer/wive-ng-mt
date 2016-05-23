@@ -2092,10 +2092,11 @@
 3) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
 4) kernel: net: do not block BH while processing socket backlog.<br>
 5) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-6) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-7) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-8) kernel: sched: always inline context_switch().<br>
-9) kernel: mips: make flush_thread and exit_thread always inline.<br>
+6) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+7) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+8) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+9) kernel: sched: always inline context_switch().<br>
+10) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>
