@@ -290,6 +290,8 @@ dhcpcstop() {
     if [ "$pid" != "" ]; then
 	$LOG  "Stop dhcp6c."
 	killall -q dhcp6c
+        # wait release procedure
+	sleep 1
 	killall -q -SIGKILL dhcp6c
     fi
 }
