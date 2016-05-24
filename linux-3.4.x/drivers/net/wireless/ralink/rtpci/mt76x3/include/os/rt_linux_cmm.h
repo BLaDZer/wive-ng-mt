@@ -442,26 +442,18 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 #ifdef RTMP_MAC_PCI
 #ifdef MEMORY_OPTIMIZATION
 #define TX_RING_SIZE            64
-#define MGMT_RING_SIZE          32
 #define RX_RING_SIZE            64
+#define MGMT_RING_SIZE          32
 #else
 #ifdef DOT11_VHT_AC
-#define TX_RING_SIZE            256 /* 64 */ /*64 */
-#define RX_RING_SIZE            256 /*64 */
+#define TX_RING_SIZE            256
+#define RX_RING_SIZE            256
 #else
-#define TX_RING_SIZE            64 /*64 */
-#ifdef BB_SOC
-#define RX_RING_SIZE            64 
-#else
-#define RX_RING_SIZE            128 /*64 */
-#endif
+#define TX_RING_SIZE            128
+#define RX_RING_SIZE            128
 #endif /* DOT11_VHT_AC */
-#ifdef BB_SOC
-#define MGMT_RING_SIZE          64
-#else
 #define MGMT_RING_SIZE          128
-#endif
-#endif
+#endif /* MEMORY_OPTIMIZATION */
 
 #ifdef DATA_QUEUE_RESERVE
 // TX_RING_SIZE_RSV must small than TX_RING_SIZE
