@@ -312,7 +312,9 @@ VOID    WscStateMachineInit(
 			WscInitCommonTimers(pAd, pWScControl);
 			pWScControl->WscUpdatePortCfgTimerRunning = FALSE;
 			WSC_TIMER_INIT(pAd, pWScControl, &pWScControl->WscUpdatePortCfgTimer, pWScControl->WscUpdatePortCfgTimerRunning, WscUpdatePortCfgTimeout);
+#ifdef WSC_V2_SUPPORT
 			WSC_TIMER_INIT(pAd, pWScControl, &pWScControl->WscSetupLockTimer, pWScControl->WscSetupLockTimerRunning, WscSetupLockTimeout);
+#endif
 		}
 
 #ifdef APCLI_SUPPORT
