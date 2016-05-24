@@ -2876,8 +2876,8 @@ int read_reg(RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 *value)
 
 INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 {
-	ULONG _irqFlags;
 	UINT32 reg_mask = 0;
+	unsigned long _irqFlags = 0;
 
 #ifdef RLT_MAC
 	if (pAd->chipCap.hif_type == HIF_RLT) {

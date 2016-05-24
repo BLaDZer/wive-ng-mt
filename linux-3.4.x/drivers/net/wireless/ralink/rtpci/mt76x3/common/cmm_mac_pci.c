@@ -3206,11 +3206,11 @@ int read_reg(RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 *value)
 	return 0;
 }
 
-	
+
 INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 {
-	ULONG IrqFlags = 0;
 	UINT32 reg_mask = 0;
+	unsigned long _irqFlags = 0;
 
 #ifdef RLT_MAC
 	if (pAd->chipCap.hif_type == HIF_RLT)
@@ -3228,11 +3228,11 @@ INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 		reg_mask = ((MT_DELAYINTMASK) |(MT_RxINT|MT_TxDataInt|MT_TxMgmtInt)|MT_INT_BMC_DLY);
 #endif /* MT_MAC */
 
-	RTMP_INT_LOCK(&pAd->irq_lock, irqFlags);
+	RTMP_INT_LOCK(&pAd->irq_lock, _irqFlags);
 	pAd->int_enable_reg = reg_mask;
 	pAd->int_disable_mask = 0;
 	pAd->int_pending = 0;
-	RTMP_INT_UNLOCK(&pAd->irq_lock, irqFlags);
+	RTMP_INT_UNLOCK(&pAd->irq_lock, _irqFlags);
 
 	return 0;
 }
