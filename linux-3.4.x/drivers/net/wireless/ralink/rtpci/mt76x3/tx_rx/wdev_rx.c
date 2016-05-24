@@ -2252,7 +2252,6 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	{
 #ifdef CONFIG_AP_SUPPORT
 		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, &pRxBlk->rx_signal, pRxBlk->rx_rate.field.MODE, pRxBlk->rx_rate.field.BW);
-		pAd->ApCfg.NumOfAvgRssiSample ++;
 #endif /* CONFIG_AP_SUPPORT */
 
 		pEntry->LastRxRate = (ULONG)(pRxBlk->rx_rate.word);

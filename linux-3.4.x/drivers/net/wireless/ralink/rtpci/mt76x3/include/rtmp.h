@@ -1480,7 +1480,6 @@ struct wifi_dev{
 	INT32 BF_SNR[3];	/* Last RXWI BF SNR. Units=0.25 dB */
 #endif /* DOT11N_SS3_SUPPORT */
 	RSSI_SAMPLE RssiSample;
-	ULONG NumOfAvgRssiSample;
 
 #if defined(RT_CFG80211_SUPPORT) || defined(HOSTAPD_SUPPORT)
 	NDIS_HOSTAPD_STATUS Hostapd;
@@ -3208,7 +3207,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	ULONG MICFailureCounter;
 
 	RSSI_SAMPLE RssiSample;
-	ULONG NumOfAvgRssiSample;
 
 	BOOLEAN bAutoChannelAtBootup;	/* 0: disable, 1: enable */
 	ChannelSel_Alg AutoChannelAlg;	/* Alg for selecting Channel */
