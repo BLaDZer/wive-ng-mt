@@ -135,11 +135,11 @@
 */
 
 #ifdef NOISE_TEST_ADJUST
-#define MAX_PACKETS_IN_MCAST_PS_QUEUE	128 /*64*/
-#define MAX_PACKETS_IN_PS_QUEUE			256 /*32 */
+#define MAX_PACKETS_IN_MCAST_PS_QUEUE       128 /*64*/
+#define MAX_PACKETS_IN_PS_QUEUE             256 /*32 */
 #else
-#define MAX_PACKETS_IN_MCAST_PS_QUEUE		32
-#define MAX_PACKETS_IN_PS_QUEUE				128	/*32 */
+#define MAX_PACKETS_IN_MCAST_PS_QUEUE       16
+#define MAX_PACKETS_IN_PS_QUEUE             128	/*32 */
 #endif /* NOISE_TEST_ADJUST */
 #define WMM_NUM_OF_AC                       4	/* AC0, AC1, AC2, and AC3 */
 
