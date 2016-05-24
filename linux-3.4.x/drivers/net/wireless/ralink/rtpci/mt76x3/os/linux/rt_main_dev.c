@@ -40,13 +40,7 @@
 #endif
 #endif
 
-// TODO: shiang-6590, remove it when MP
-#ifdef RTMP_MAC_PCI
 MODULE_LICENSE("GPL");
-#endif /* RTMP_MAC_PCI */
-// TODO: End---
-
-
 
 /*---------------------------------------------------------------------*/
 /* Private Variables Used                                              */
