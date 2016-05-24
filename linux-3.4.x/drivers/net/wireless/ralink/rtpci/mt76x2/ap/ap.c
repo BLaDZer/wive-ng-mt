@@ -1024,7 +1024,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 	BOOLEAN bRalinkBurstMode;
 #endif /* DOT11_N_SUPPORT */
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	UINT fAnyStationPortSecured[HW_BEACON_MAX_NUM];
  	UINT bss_index;

@@ -45,7 +45,7 @@ NDIS_STATUS RtmpInsertPsQueue(
 	MAC_TABLE_ENTRY *pMacEntry,
 	UCHAR QueIdx)
 {
-	ULONG IrqFlags;
+	ULONG IrqFlags = 0;
 #ifdef UAPSD_SUPPORT
 	/* put the U-APSD packet to its U-APSD queue by AC ID */
 	UINT32 ac_id = QueIdx - QID_AC_BE; /* should be >= 0 */
@@ -138,7 +138,7 @@ VOID RtmpHandleRxPsPoll(RTMP_ADAPTER *pAd, UCHAR *pAddr, USHORT wcid, BOOLEAN is
 { 
 	QUEUE_ENTRY *pQEntry;
 	MAC_TABLE_ENTRY *pMacEntry;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 
 	/*
 	DBGPRINT(RT_DEBUG_TRACE, ("rcv PS-POLL (AID=%d) from %02x:%02x:%02x:%02x:%02x:%02x\n",

@@ -34,7 +34,7 @@ VOID RalHandleRxPsPoll(RTMP_ADAPTER *pAd, UCHAR *pAddr, USHORT wcid, BOOLEAN isA
 { 
 	QUEUE_ENTRY *pQEntry;
 	MAC_TABLE_ENTRY *pMacEntry;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 	STA_TR_ENTRY *tr_entry;
 
 	/*

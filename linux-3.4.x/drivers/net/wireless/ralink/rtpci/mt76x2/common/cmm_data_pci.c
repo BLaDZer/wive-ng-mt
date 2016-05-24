@@ -1105,7 +1105,7 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 
 /* really need ? */
 #if 0
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 
 	/* Make sure Tx ring resource won't be used by other threads*/
 	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);

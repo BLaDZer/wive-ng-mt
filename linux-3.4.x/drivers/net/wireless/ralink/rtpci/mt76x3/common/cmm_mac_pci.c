@@ -3209,7 +3209,7 @@ int read_reg(RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 *value)
 	
 INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 {
-	unsigned long irqFlags;
+	ULONG IrqFlags = 0;
 	UINT32 reg_mask = 0;
 
 #ifdef RLT_MAC

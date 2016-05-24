@@ -303,7 +303,7 @@ void tbtt_tasklet(unsigned long data)
 			QUEUE_ENTRY *pEntry;	
 			QUEUE_ENTRY *pTail;
 			UINT count = 0;
-			unsigned long IrqFlags;			
+			ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 		
 #ifndef MT_MAC

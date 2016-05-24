@@ -4621,7 +4621,7 @@ INT RTMPSetInformation(
             {
                 UINT wsc_profile_index = 0; /* PIN or PBC */
                 PWSC_CTRL   pWscControl = &pAd->StaCfg.WscControl;
-                unsigned long	IrqFlags;
+                ULONG IrqFlags = 0;
                 
                 Status = copy_from_user(&wsc_profile_index, wrq->u.data.pointer, wrq->u.data.length);
                 if (wsc_profile_index < pWscControl->WscProfile.ProfileCnt)

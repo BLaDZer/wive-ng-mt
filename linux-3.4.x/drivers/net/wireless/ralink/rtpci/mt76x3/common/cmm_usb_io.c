@@ -275,7 +275,7 @@ static NTSTATUS ResetBulkOutHdlr(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 	UCHAR Index = 0;
 	int ret=0;
 	PHT_TX_CONTEXT	pHTTXContext;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("CMDTHREAD_RESET_BULK_OUT(ResetPipeid=0x%0x)===>\n", pAd->bulkResetPipeid));
 
@@ -498,7 +498,7 @@ static NTSTATUS ResetBulkInHdlr(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 			PRX_CONTEXT		pRxContext;
 			PURB			pUrb;
 			int				ret = 0;
-			unsigned long	IrqFlags;
+			ULONG IrqFlags = 0;
 
 			RTMP_IRQ_LOCK(&pAd->BulkInLock, IrqFlags);
 			pRxContext = &(pAd->RxContext[pAd->NextRxBulkInIndex]);
@@ -1160,7 +1160,7 @@ VOID CMDHandler(RTMP_ADAPTER *pAd)
 	PCmdQElmt		cmdqelmt;
 	//NDIS_STATUS		NdisStatus = NDIS_STATUS_SUCCESS;
 	//NTSTATUS		ntStatus;
-/*	unsigned long	IrqFlags;*/
+/*	ULONG IrqFlags = 0;*/
 
 	while (pAd && pAd->CmdQ.size > 0)
 	{

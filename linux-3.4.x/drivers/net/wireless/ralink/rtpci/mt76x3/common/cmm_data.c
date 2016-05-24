@@ -604,8 +604,8 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
             UCHAR hdr_info = txd_1->hdr_info*2;
             UCHAR *da, *sa;
             STA_TR_ENTRY *tr_entry;
-			MAC_TABLE_ENTRY *pEntry;
-         	unsigned long IrqFlags;
+	    MAC_TABLE_ENTRY *pEntry;
+	    ULONG IrqFlags = 0;
             UINT32 q_idx = QID_AC_BE;
             HEADER_802_11 *pWifi_hdr;
             UCHAR *qos_p;
@@ -866,7 +866,7 @@ NDIS_STATUS MiniportMMRequest(RTMP_ADAPTER *pAd, UCHAR QueIdx, UCHAR *pData, UIN
 	NDIS_STATUS Status = NDIS_STATUS_FAILURE;
 	ULONG FreeNum;
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	BOOLEAN bUseDataQ = FALSE;
 #endif /* RTMP_MAC_PCI */
 	BOOLEAN FlgDataQForce = FALSE, FlgIsLocked = FALSE;
@@ -2979,7 +2979,7 @@ INT rtmp_deq_report(RTMP_ADAPTER *pAd, struct dequeue_info *info)
 INT deq_mgmt_frame(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qIdx, BOOLEAN bLocked)
 {
 	NDIS_STATUS Status;
-	//unsigned long IrqFlags;
+	//ULONG IrqFlags = 0;
 
 #ifdef RTMP_MAC_PCI
 	if (RTMP_GET_PACKET_MGMT_PKT_DATA_QUE(pkt) == 1)
@@ -3055,7 +3055,7 @@ INT deq_packet_gatter(RTMP_ADAPTER *pAd, struct dequeue_info *deq_info, TX_BLK *
 	PQUEUE_ENTRY qEntry = NULL;
 	PNDIS_PACKET pPacket;
 	PQUEUE_HEADER pQueue;
-	//unsigned long IrqFlags;
+	//ULONG IrqFlags = 0;
 	UCHAR QueIdx = deq_info->cur_q;
 	UCHAR wcid = deq_info->cur_wcid;
 
@@ -3318,7 +3318,7 @@ VOID RTMPDeQueuePacket(
 	INT Count = 0, round  = 0;
 	TX_BLK TxBlk, *pTxBlk = &TxBlk;
 	UCHAR QueIdx = 0;
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	struct dequeue_info deq_info = {0};
 
 #ifdef DATA_QUEUE_RESERVE

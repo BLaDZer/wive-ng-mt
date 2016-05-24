@@ -4516,7 +4516,7 @@ TDLS_SendOutActionFrame(
 	UCHAR NumberOfFrag;
 	UCHAR RTSRequired;
 	UCHAR QueIdx, UserPriority;
-	unsigned int IrqFlags;
+	ULONG IrqFlags = 0;
 	UCHAR Rate;
 	TX_BLK TxBlk;
 	TX_BLK *pTxBlk;

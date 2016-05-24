@@ -199,7 +199,7 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	UCHAR QueIdx;
 	UCHAR UserPriority, PsMode = PWR_ACTIVE;
 	UCHAR Wcid;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 #ifdef IGMP_SNOOP_SUPPORT
 	INT InIgmpGroup = IGMP_NONE;
 	MULTICAST_FILTER_TABLE_ENTRY *pGroupEntry = NULL;

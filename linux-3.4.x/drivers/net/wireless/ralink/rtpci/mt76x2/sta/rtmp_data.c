@@ -1498,7 +1498,7 @@ INT STASendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	UCHAR QueIdx;
 	UCHAR UserPriority;
 	UCHAR Wcid;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
 	struct wifi_dev *wdev;
 

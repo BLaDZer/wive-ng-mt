@@ -333,7 +333,7 @@ NDIS_STATUS MiniportMMRequest(
 	NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
 	ULONG FreeNum;
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	BOOLEAN bUseDataQ = FALSE, FlgDataQForce = FALSE, FlgIsLocked = FALSE;
 	int retryCnt = 0;
@@ -677,7 +677,7 @@ Label_Legacy_PS:
 		}
 		else
 		{
-			ULONG IrqFlags=0;
+			ULONG IrqFlags = 0;
 
 			DBGPRINT(RT_DEBUG_TRACE, ("ps> mgmt to legacy ps queue... (%d)\n", FlgIsDeltsFrame));
 
@@ -1902,7 +1902,7 @@ VOID TxDoneCleanupExec(
 	IN PVOID SystemSpecific3)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)FunctionContext;
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	UCHAR QueIdx;
 
 	DEQUEUE_LOCK(&pAd->irq_lock, FALSE, IrqFlags);
@@ -1954,7 +1954,7 @@ VOID RTMPDeQueuePacket(
 	PQUEUE_HEADER   pQueue;
 	ULONG FreeNumber[NUM_OF_TX_RING];
 	CHAR QueIdx, sQIdx, eQIdx;
-	unsigned long	IrqFlags = 0;
+	ULONG IrqFlags = 0;
 	BOOLEAN hasTxDesc = FALSE;
 	TX_BLK TxBlk, *pTxBlk;
 #ifdef TXBF_SUPPORT 

@@ -444,7 +444,7 @@ void tbtt_tasklet(unsigned long data)
 				PQUEUE_ENTRY pEntry;
 			BOOLEAN bPS = FALSE;
 			UINT count = 0;
-			unsigned long IrqFlags;
+			ULONG IrqFlags = 0;
 			
 			RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
 			while (pAd->MacTab.McastPsQueue.Head)
@@ -530,7 +530,7 @@ void pretbtt_tasklet(unsigned long data)
 		PQUEUE_ENTRY pEntry;
 		BOOLEAN bPS = FALSE;
 		UINT count = 0;
-		unsigned long IrqFlags;
+		ULONG IrqFlags = 0;
 
 #ifdef RLT_MAC
 		if (pAd->chipCap.hif_type == HIF_RLT) 

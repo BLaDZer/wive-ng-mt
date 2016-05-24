@@ -1274,7 +1274,7 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 	BOOLEAN Cancelled;    
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
-	unsigned long	IrqFlags=0;
+	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
 	UCHAR *pOutBuffer = NULL;
 	NDIS_STATUS NStatus;

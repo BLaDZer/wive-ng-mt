@@ -72,8 +72,7 @@ VOID RTMPResetTxRxRingMemory(RTMP_ADAPTER *pAd)
 	UCHAR tx_hw_info[TXD_SIZE];
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET pPacket;
-	ULONG IrqFlags;
-
+	ULONG IrqFlags = 0;
 
 	/* Free TxSwQueue Packet*/
 	for (index=0; index <NUM_OF_TX_RING; index++)
@@ -1117,7 +1116,7 @@ VOID RTMPFreeTxRxRingMemory(RTMP_ADAPTER *pAd)
 	UCHAR tx_hw_info[TXD_SIZE];
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET pPacket;
-	ULONG IrqFlags;
+	ULONG IrqFlags = 0;
 	RTMP_DMACB *dma_cb;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("--> RTMPFreeTxRxRingMemory\n"));
@@ -1416,7 +1415,7 @@ VOID RTMPRingCleanUp(RTMP_ADAPTER *pAd, UCHAR RingType)
 	QUEUE_ENTRY *pEntry;
 	PNDIS_PACKET pPacket;
 	RTMP_TX_RING *pTxRing;
-	ULONG IrqFlags;
+	ULONG IrqFlags = 0;
 	int i, ring_id;
 
 	/*
@@ -2877,7 +2876,7 @@ int read_reg(RTMP_ADAPTER *ad, UINT32 base, UINT16 offset, UINT32 *value)
 
 INT rtmp_irq_init(RTMP_ADAPTER *pAd)
 {
-	unsigned long _irqFlags;
+	ULONG _irqFlags;
 	UINT32 reg_mask = 0;
 
 #ifdef RLT_MAC

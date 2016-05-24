@@ -1152,7 +1152,7 @@ NDIS_STATUS IgmpPktClone(
 	SST	Sst = SST_ASSOC;
 	UCHAR PsMode = PWR_ACTIVE;
 	UCHAR Rate;
-	unsigned long IrqFlags;
+	ULONG IrqFlags = 0;
 	INT MacEntryIdx;
 	BOOLEAN bContinue;
 	BOOLEAN bClone;
