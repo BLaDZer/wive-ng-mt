@@ -2067,9 +2067,10 @@ INT RTMPAPSetInformation(
 				{
 					Status = -EFAULT; 	
 				}
-    			else
-    			{
-					RTMP_GET_OS_PID(pObj->apd_pid, apd_pid);
+    				else
+    				{
+    					// TODO:  correct the following line
+					/*RTMP_GET_OS_PID(pObj->apd_pid, apd_pid);*/
 					pObj->apd_pid_nr = apd_pid;
 					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_APD_PID::(ApdPid=%lu(0x%lx))\n", apd_pid, apd_pid));
 				}
@@ -3739,6 +3740,7 @@ INT RTMPAPQueryInformation(
                     		    AssocTab.Entry[AssocTab.Num].MOR = RateIdToMbps[pAd->ApCfg.MBSSID[apidx].MaxTxRate] * 2;
             			    AssocTab.Num += 1;
 				} else {
+				    DBGPRINT(RT_DEBUG_ERROR, ("Query::Get LLTD association table But of out table\n"));
 				    break;
 				}
             		}

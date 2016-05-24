@@ -1972,11 +1972,9 @@ VOID Indicate_AMSDU_Packet(
 	IN	RX_BLK			*pRxBlk,
 	IN	UCHAR			FromWhichBSSID)
 {
-	UINT			nMSDU;
-
 	RTMP_UPDATE_OS_PACKET_INFO(pAd, pRxBlk, FromWhichBSSID);
 	RTMP_SET_PACKET_IF(pRxBlk->pRxPacket, FromWhichBSSID);
-	nMSDU = deaggregate_AMSDU_announce(pAd, pRxBlk->pRxPacket, pRxBlk->pData, pRxBlk->DataSize, pRxBlk->OpMode);
+	deaggregate_AMSDU_announce(pAd, pRxBlk->pRxPacket, pRxBlk->pData, pRxBlk->DataSize, pRxBlk->OpMode);
 }
 #endif /* DOT11_N_SUPPORT */
 

@@ -1466,7 +1466,8 @@ INT RTMPAPSetInformation(
 				}
     			else
     			{
-					RTMP_GET_OS_PID(pObj->apd_pid, apd_pid);
+    					// TODO:  correct the following line
+					/*RTMP_GET_OS_PID(pObj->apd_pid, apd_pid);*/
 					pObj->apd_pid_nr = apd_pid;
 					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_APD_PID::(ApdPid=%lu(0x%x))\n", apd_pid, pObj->apd_pid));
 				}

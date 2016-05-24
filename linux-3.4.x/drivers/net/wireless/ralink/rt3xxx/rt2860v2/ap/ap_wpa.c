@@ -843,8 +843,9 @@ VOID GREKEYPeriodicExec(
 					/* Disable Drop Mask */
 					set_drop_mask_per_client(pAd, pEntry, 0, 0);
 #endif /* DROP_MASK_SUPPORT */
-                	WPAStart2WayGroupHS(pAd, pEntry);
-                    DBGPRINT(RT_DEBUG_TRACE, ("Rekey interval excess, Update Group Key for  %x %x %x  %x %x %x , DefaultKeyId= %x \n",\
+                			WPAStart2WayGroupHS(pAd, pEntry);
+					pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
+                			DBGPRINT(RT_DEBUG_TRACE, ("Rekey interval excess, Update Group Key for  %x %x %x  %x %x %x , DefaultKeyId= %x \n",\
 												pEntry->Addr[0],pEntry->Addr[1],\
 												pEntry->Addr[2],pEntry->Addr[3],\
 												pEntry->Addr[4],pEntry->Addr[5],\

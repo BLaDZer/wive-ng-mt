@@ -416,6 +416,7 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 			pApCliEntry->MlmeAux.BssType = ie_list->BssType;
 			pApCliEntry->MlmeAux.BeaconPeriod = ie_list->BeaconPeriod;
 			pApCliEntry->MlmeAux.Channel = ie_list->Channel;
+			pApCliEntry->MlmeAux.CentralChannel = ie_list->Channel; /* by default */
 			pApCliEntry->MlmeAux.AtimWin = ie_list->AtimWin;
 			pApCliEntry->MlmeAux.CfpPeriod = ie_list->CfParm.CfpPeriod;
 			pApCliEntry->MlmeAux.CfpMaxDuration = ie_list->CfParm.CfpMaxDuration;
@@ -466,6 +467,7 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 		 			/* Check again the Bandwidth capability of this AP. */
 					CentralChannel = get_cent_ch_by_htinfo(pAd, &ie_list->AddHtInfo,
 														&ie_list->HtCapability);
+					pApCliEntry->MlmeAux.CentralChannel = CentralChannel;
 		 			DBGPRINT(RT_DEBUG_TRACE, ("PeerBeaconAtJoinAction HT===>CentralCh = %d, ControlCh = %d\n",
 									CentralChannel, ie_list->AddHtInfo.ControlChan));
 

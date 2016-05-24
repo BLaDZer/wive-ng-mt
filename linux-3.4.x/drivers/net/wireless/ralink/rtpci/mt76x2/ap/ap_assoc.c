@@ -1162,7 +1162,7 @@ SendAssocResponse:
 				MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 		}
 
-        MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
+    		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
 		goto LabelOK;
 	}
 

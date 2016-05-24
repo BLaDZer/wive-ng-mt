@@ -272,9 +272,7 @@ INT rt28xx_ap_ioctl(
 			break;
 		case SIOCGIWRANGE:	/*Get range of parameters */
 		    {
-/*				struct iw_range range; */
 				struct iw_range *prange = NULL;
-				UINT32 len;
 
 				/* allocate memory */
 				os_alloc_mem(NULL, (UCHAR **)&prange, sizeof(struct iw_range));
@@ -296,7 +294,7 @@ INT rt28xx_ap_ioctl(
 				prange->max_qual.qual = 100;
 				prange->max_qual.level = 0; /* dB */
 				prange->max_qual.noise = 0; /* dB */
-				len = copy_to_user(wrq->u.data.pointer, prange, sizeof(struct iw_range));
+				copy_to_user(wrq->u.data.pointer, prange, sizeof(struct iw_range));
 				os_free_mem(NULL, prange);
 		    }
 		    break;

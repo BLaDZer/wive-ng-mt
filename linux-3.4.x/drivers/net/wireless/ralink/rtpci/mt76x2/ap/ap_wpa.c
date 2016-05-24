@@ -848,7 +848,7 @@ VOID GREKEYPeriodicExec(
 				if (IS_ENTRY_CLIENT(pEntry) && 
 					(pEntry->WpaState == AS_PTKINITDONE) &&
 						(pEntry->apidx == apidx))
-                {
+            			{
 #ifdef MWDS
 					if(IS_MWDS_OPMODE_AP(pEntry))
 						continue;
@@ -861,9 +861,9 @@ VOID GREKEYPeriodicExec(
 					set_drop_mask_per_client(pAd, pEntry, 0, 0);
 #endif /* DROP_MASK_SUPPORT */
 
-                	WPAStart2WayGroupHS(pAd, pEntry);
-                	pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
-                    DBGPRINT(RT_DEBUG_TRACE, ("Rekey interval excess, Update Group Key for  %x %x %x  %x %x %x , DefaultKeyId= %x \n",\
+                			WPAStart2WayGroupHS(pAd, pEntry);
+                			pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
+                			DBGPRINT(RT_DEBUG_TRACE, ("Rekey interval excess, Update Group Key for  %x %x %x  %x %x %x , DefaultKeyId= %x \n",\
 										PRINT_MAC(pEntry->Addr), wdev->DefaultKeyId));
 				}
 			}

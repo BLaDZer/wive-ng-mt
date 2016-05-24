@@ -8699,8 +8699,7 @@ INT	Show_LinkInfo_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 		return FALSE;
 
 
-	DBGPRINT(RT_DEBUG_OFF, ("\n%-19s%-4s%-8s%-8s%-12s%-8s\n",
-		   "MAC", "AID", "TX Rate", "RX Rate", "Tx Retry", "PER"));
+	printk("\n%-19s%-4s%-8s%-8s%-12s%-8s\n", "MAC", "AID", "TX Rate", "RX Rate", "Tx Retry", "PER");
 					
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
@@ -8732,16 +8731,13 @@ INT	Show_LinkInfo_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 			RxDataRate /= 2;
 
 			
-			DBGPRINT(RT_DEBUG_OFF, ("%02X:%02X:%02X:%02X:%02X:%02X  ",
-									PRINT_MAC(pEntry->Addr)));
-			DBGPRINT(RT_DEBUG_OFF, ("%-4d", (int)pEntry->Aid));
-			DBGPRINT(RT_DEBUG_OFF, ("%-8d", (int)TxDataRate));
-			DBGPRINT(RT_DEBUG_OFF, ("%-8d", (int)RxDataRate));
-			DBGPRINT(RT_DEBUG_OFF, ("%-12d", pEntry->StatTxRetryOkCount));
-			DBGPRINT(RT_DEBUG_OFF, ("%d%%",  pEntry->LastTxPER));
-			DBGPRINT(RT_DEBUG_OFF, ("\n"));
-
-
+			printk("%02X:%02X:%02X:%02X:%02X:%02X  ", PRINT_MAC(pEntry->Addr));
+			printk("%-4d", (int)pEntry->Aid);
+			printk("%-8d", (int)TxDataRate);
+			printk("%-8d", (int)RxDataRate);
+			printk("%-12d", pEntry->StatTxRetryOkCount);
+			printk("%d%%",  pEntry->LastTxPER);
+			printk("\n");
 		}
 	} 
 
