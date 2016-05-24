@@ -1563,10 +1563,12 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
-/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
-    if(QuickInitMCSRate(pAd,pEntry, TxSuccess, TxRetransmit) == TRUE)
-        return;
+	/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
+	if(QuickInitMCSRate(pAd,pEntry, TxSuccess, TxRetransmit) == TRUE)
+    		return;
 #endif
 
 	DBGPRINT(RT_DEBUG_INFO, ("Quick PER %ld, Total Cnt %lг\n", TxErrorRatio, TxTotalCnt));
@@ -2046,15 +2048,15 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* TXBF_SUPPORT */
 
-        pEntry->fLastSecAccordingRSSI = TRUE;
+    		pEntry->fLastSecAccordingRSSI = TRUE;
 
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
-/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
-        if(TxTotalCnt) {
-    		TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
-    		DBGPRINT(RT_DEBUG_TRACE ,("Trigger @ RSSI Mapping (Light Packet)\n"));
-    		MlmeClearAllTxQuality(pEntry);	/* clear all history */
-        }
+		/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
+    		if(TxTotalCnt) {
+    			TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
+    			DBGPRINT(RT_DEBUG_TRACE ,("Trigger @ RSSI Mapping (Light Packet)\n"));
+    			MlmeClearAllTxQuality(pEntry);	/* clear all history */
+    		}
 #endif
 		return;
 	}
@@ -2079,12 +2081,12 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		RESET_ONE_SEC_TX_CNT(pEntry);
 
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
-/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
-        if(TxTotalCnt) {
-    		TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
-	    	DBGPRINT(RT_DEBUG_TRACE ,("Trigger @ RSSI Mapping (Light to Heavy Packet)\n"));
-		    MlmeClearAllTxQuality(pEntry);	/* clear all history */
-        }
+		/* QuickInitMCSRate now has bad algorithm and periodic drop PhyMode to CCK/0 */
+    		if(TxTotalCnt) {
+    			TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
+	    		DBGPRINT(RT_DEBUG_TRACE ,("Trigger @ RSSI Mapping (Light to Heavy Packet)\n"));
+			MlmeClearAllTxQuality(pEntry);	/* clear all history */
+    		}
 #endif
 		return;
 	}
@@ -2166,8 +2168,8 @@ VOID StaQuickResponeForRateUpExecAdapt(
 	}
 #endif	/* MFB_SUPPORT */
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
-    if(QuickInitMCSRate(pAd,pEntry, TxSuccess, TxRetransmit) == TRUE)
-        return;
+	if(QuickInitMCSRate(pAd,pEntry, TxSuccess, TxRetransmit) == TRUE)
+    		return;
 #endif
 	/* Remember the current rate */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
@@ -2588,9 +2590,7 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 #endif /* TXBF_SUPPORT */
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
 		if (TxTotalCnt > 0)
-		{
 			TriggerQuickInitMCSRate(pAd, pEntry, pAd->ra_fast_interval >> 1);
-		}
 #endif
 		return;
 	}
