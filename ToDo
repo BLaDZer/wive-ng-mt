@@ -1,13 +1,14 @@
 1) full russian ui (work end ~99%).
-2) need add in webui SCSEnable.
-3) need add subchannel select for 5GHz module.
-4) need add checkbox in webui for allow access to LAN net from VPN server net.<br>
-5) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
-6) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
-7) rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
-8) need add vlan bridges to webui.
-9) add change nvram settings without apply mode.
-10) in very far future: need add in firewall support xt_time matches for parental control.
-11) in very far future: need add perip shaper script and webui.
-12) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
-13) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
+2) wifi_drivers/goahead: add RX/TX bytes per clients, parse LastRx Rate and compute TX rate to human readable format.<br>
+3) need add in webui SCSEnable.
+4) need add subchannel select for 5GHz module.
+5) need add checkbox in webui for allow access to LAN net from VPN server net.<br>
+6) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
+7) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
+8) rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
+9) need add vlan bridges to webui.
+10) add change nvram settings without apply mode.
+11) in very far future: need add in firewall support xt_time matches for parental control.
+12) in very far future: need add perip shaper script and webui.
+13) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
+14) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
