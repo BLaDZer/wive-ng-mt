@@ -11,8 +11,8 @@
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
-# system cgi scripts must be static
-LDFLAGS += -static
+# system cgi scripts must be static include libgcc
+LDFLAGS += -static -static-libgcc
 
 # system cgi scripts always optimize for size
 CFLAGS  += -Os
