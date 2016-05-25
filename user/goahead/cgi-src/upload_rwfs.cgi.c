@@ -130,7 +130,9 @@ int main (int argc, char *argv[])
 	import(filename, file_begin, file_end - file_begin);
 
 	sleep (3);
-	reboot(RB_AUTOBOOT);
+	fflush(stdout);
+	// direct call to kernel for reboot
+	syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
 err:
 	free(boundary);
 	exit(0);

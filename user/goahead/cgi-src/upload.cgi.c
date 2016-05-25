@@ -388,6 +388,8 @@ int main(int argc, char *argv[])
 	    html_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
 
 	sleep (3);
-	reboot(RB_AUTOBOOT);
+	fflush(stdout);
+	// direct call to kernel for reboot
+	syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
 	return 0;
 }

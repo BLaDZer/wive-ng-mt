@@ -15,6 +15,7 @@
 #include <wait.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/syscall.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <sys/socket.h>
@@ -24,7 +25,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/reboot.h>
-#include <sys/reboot.h>
 
 #include <linux/autoconf.h>  				/* kernel config		*/
 #include "../../../tools/mkimage/include/image.h"	/* For Uboot image header format */
