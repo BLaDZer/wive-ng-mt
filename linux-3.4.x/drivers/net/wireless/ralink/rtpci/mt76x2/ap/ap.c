@@ -2395,9 +2395,14 @@ VOID APOverlappingBSSScan(RTMP_ADAPTER *pAd)
 	UCHAR Channel = pAd->CommonCfg.Channel;
 	INT chStartIdx, chEndIdx, index,curPriChIdx, curSecChIdx;
 
-	if ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) || (pAd->CommonCfg.Channel > 14)) {
-		DBGPRINT(RT_DEBUG_TRACE, ("The PhyMode=%d, Channel=%d didn't need channel adjustment!\n", 
-				pAd->CommonCfg.PhyMode, pAd->CommonCfg.Channel));
+	/* We just care BSS who operating in 40MHz N Mode. */
+	if ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) ||
+		(pAd->CommonCfg.RegTransmitSetting.field.BW  == BW_20)
+		|| (pAd->CommonCfg.Channel > 14)
+		)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("The pAd->PhyMode=%d, BW=%d, didn't need channel adjustment!\n",
+				pAd->CommonCfg.PhyMode, pAd->CommonCfg.RegTransmitSetting.field.BW));
 		return;
 	}
 
@@ -2494,15 +2499,12 @@ VOID APOverlappingBSSScan(RTMP_ADAPTER *pAd)
 		RTMP_IRQ_ENABLE(pAd);
 #endif /* RTMP_MAC_PCI */
 
-
-		/* Now Enable RxTx */
-		RTMPEnableRxTx(pAd);
-
 		/* rtmp_rx_done_handle() API will check this flag to decide accept incoming packet or not. */
 		/* Set the flag be ready to receive Beacon frame for autochannel select. */
 		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_START_UP);
 	}
 
+	RTMPEnableRxTx(pAd);
 
 	DBGPRINT(RT_DEBUG_TRACE, ("Ready to do passive scanning for Channel[%d] to Channel[%d]!\n", 
 			pAd->ChannelList[chStartIdx].Channel, pAd->ChannelList[chEndIdx].Channel));

@@ -158,9 +158,11 @@ COUNTRY_REGION_CH_DESC Country_Region_ChDesc_2GHZ[] =
 
 UINT16 const Country_Region_GroupNum_2GHZ = sizeof(Country_Region_ChDesc_2GHZ) / sizeof(COUNTRY_REGION_CH_DESC);
 
+#ifdef DFS_SUPPORT
 CH_DESC Country_Region0_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
+	{52, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
@@ -184,6 +186,33 @@ CH_DESC Country_Region3_ChDesc_5GHZ[] =
 	{149, 4, CHANNEL_DEFAULT_PROP},
 	{}
 };
+#else
+CH_DESC Country_Region0_ChDesc_5GHZ[] =
+{
+	{36, 4, CHANNEL_DEFAULT_PROP},
+	{52, 4, CHANNEL_DEFAULT_PROP},
+	{149, 5, CHANNEL_DEFAULT_PROP},
+	{}
+};
+
+CH_DESC Country_Region1_ChDesc_5GHZ[] =
+{
+	{36, 4, CHANNEL_DEFAULT_PROP},
+	{}
+};
+
+CH_DESC Country_Region2_ChDesc_5GHZ[] =
+{
+	{36, 4, CHANNEL_DEFAULT_PROP},
+	{}
+};
+
+CH_DESC Country_Region3_ChDesc_5GHZ[] =
+{
+	{149, 4, CHANNEL_DEFAULT_PROP},
+	{}
+};
+#endif
 
 CH_DESC Country_Region4_ChDesc_5GHZ[] =
 {
@@ -205,8 +234,7 @@ CH_DESC Country_Region6_ChDesc_5GHZ[] =
 CH_DESC Country_Region7_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
-	{149, 7, CHANNEL_DEFAULT_PROP},
+	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
 
@@ -216,6 +244,7 @@ CH_DESC Country_Region8_ChDesc_5GHZ[] =
 	{}
 };
 
+#ifdef DFS_SUPPORT
 CH_DESC Country_Region9_ChDesc_5GHZ[] =
 {
 	{36, 8 , CHANNEL_DEFAULT_PROP},
@@ -224,6 +253,13 @@ CH_DESC Country_Region9_ChDesc_5GHZ[] =
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
+#else
+CH_DESC Country_Region9_ChDesc_5GHZ[] =
+{
+	{36, 4 , CHANNEL_DEFAULT_PROP},
+	{}
+};
+#endif
 
 CH_DESC Country_Region10_ChDesc_5GHZ[] =
 {
@@ -240,26 +276,27 @@ CH_DESC Country_Region11_ChDesc_5GHZ[] =
 	{}		
 };
 
+/* for FCC capable of using 144 , mapping of Country_Region1 */
 CH_DESC Country_Region12_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
+	{100, 12, CHANNEL_DEFAULT_PROP},
 	{}
 };
-
+/* for FCC capable of using 144 , mapping of Country_Region7 */
 CH_DESC Country_Region13_ChDesc_5GHZ[] =
 {
-	{52, 4, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
-	{149, 4, CHANNEL_DEFAULT_PROP},
+	{36, 8, CHANNEL_DEFAULT_PROP},
+	{100, 12, CHANNEL_DEFAULT_PROP},
+	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}	
 };
-
+/* for FCC capable of using 144 , mapping of Country_Region9 */
 CH_DESC Country_Region14_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 5, CHANNEL_DEFAULT_PROP},
-	{136, 2, CHANNEL_DEFAULT_PROP},
+	{132, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}	
 };
@@ -296,7 +333,7 @@ CH_DESC Country_Region19_ChDesc_5GHZ[] =
 {
 	{56, 3, CHANNEL_DEFAULT_PROP},
 	{100, 11, CHANNEL_DEFAULT_PROP},
-	{149, 4, CHANNEL_DEFAULT_PROP},
+	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
 
@@ -591,7 +628,7 @@ CH_DESP Country_CA_ChDesp[] =
 	{ 1,   11, 27, BOTH, FALSE},	/*2402~2472MHz, Ch 1~11,   Max BW: 40 */
 	{ 36,   4, 17, IDOR, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */ 
 	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 100, 11, 20, BOTH, TRUE}, 	/*5490~5710MHz, Ch 100~140, Max BW: 40 */
+	{ 100, 12, 20, BOTH, TRUE}, 	/*5490~5710MHz, Ch 100~140, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };
@@ -1371,7 +1408,7 @@ CH_DESP Country_US_ChDesp[] =
 	{ 36,   4, 17, IDOR, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
 	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
 	{ 100,  5, 20, BOTH, TRUE}, 	/*5490~5600MHz, Ch 100~116, Max BW: 40 */
-	{ 132,  3, 20, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~140, Max BW: 40 */
+	{ 132,  4, 20, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~140, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };		
@@ -1505,8 +1542,7 @@ CH_REGION ChRegion[] =
 	{"IL", CE, Country_IL_ChDesp, FALSE}, /* Israel */
 	{"IT", CE, Country_IT_ChDesp, TRUE}, /* Italy */
 	{"JM", CE, Country_JM_ChDesp, TRUE}, /* Jamaica */
-	{"JP", JAP,Country_JP_ChDesp, TRUE}, /* Japan */  
-	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */		
+	{"JP", JAP,Country_JP_ChDesp, FALSE}, /* Japan */		
 	{"JO", CE, Country_JO_ChDesp, TRUE}, /* Jordan */	
 	{"KZ", CE, Country_KZ_ChDesp, TRUE}, /* Kazakhstan */			
 	{"KE", CE, Country_KE_ChDesp, TRUE}, /* Kenya */	
@@ -1570,7 +1606,7 @@ CH_REGION ChRegion[] =
 	{"ZW", CE, Country_ZW_ChDesp, TRUE}, /* Zimbabwe */	
 	{"EU", CE, Country_EU_ChDesp, TRUE}, /* Europe */
 	{"NA", FCC,Country_NA_ChDesp, FALSE}, /* North America */
-	{"WO", FCC, Country_WO_ChDesp, FALSE}, /* World Wide */
+	{"WO", CE, Country_WO_ChDesp, FALSE}, /* World Wide */
 	{""  , 0,  NULL, FALSE}	     , /* End */	
 };
 
@@ -1867,8 +1903,7 @@ COUNTRY_PROP CountryProp[]=
 	{"IL", CE, FALSE }, /* Israel */
 	{"IT", CE, TRUE }, /* Italy */
 	{"JM", CE, TRUE }, /* Jamaica */
-	{"JP", JAP, TRUE}, /* Japan */	
-	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */	
+	{"JP", JAP, FALSE}, /* Japan */		
 	{"JO", CE, TRUE }, /* Jordan */	
 	{"KZ", CE, TRUE }, /* Kazakhstan */			
 	{"KE", CE, TRUE }, /* Kenya */	
@@ -1932,7 +1967,7 @@ COUNTRY_PROP CountryProp[]=
 	{"ZW", CE, TRUE }, /* Zimbabwe */	
 	{"EU", CE, TRUE }, /* Europe */
 	{"NA", FCC, FALSE}, /* North America */
-	{"WO", FCC, FALSE}, /* World Wide */
+	{"WO", CE, FALSE}, /* World Wide */
 	{""  , 0, FALSE}	     , /* End */	
 };
 

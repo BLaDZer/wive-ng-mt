@@ -1744,6 +1744,13 @@ VOID TYPE_FUNC FT_KDP_NeighborResponseHandle(
 	/* init */
 	IAPP_DAEMON_CMD_PARSE(pInfo, InfoLen, PeerIP, pData, DataLen);
 
+	if (pData == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR,
+				("ap_ftkd> %s: pData is NULL????? (DataLen=%d)\n", __FUNCTION__, DataLen));
+		return;
+	}
+
 #ifdef FT_KDP_DEBUG
 	DBGPRINT(RT_DEBUG_TRACE,
 			("ap_ftkd> Neighbor Response from Peer IP = %d.%d.%d.%d\n",

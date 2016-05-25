@@ -311,7 +311,7 @@ static USHORT update_associated_mac_entry(
 				pEntry->MaxHTPhyMode.field.MCS = 9;
 			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
 				pEntry->MaxHTPhyMode.field.MCS = 8;
-			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
+			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {
 				pEntry->MaxHTPhyMode.field.MCS = 7;
 			}
 			
@@ -1432,8 +1432,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 #endif /* DOT11_VHT_AC */
 
-	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE)
+	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE) {
 		RTMPSendWirelessEvent(pAd, IW_STA_MODE_EVENT_FLAG, pEntry->Addr, wdev->wdev_idx, 0);
+	}
 
 #ifdef DOT11W_PMF_SUPPORT
 SendAssocResponse:
@@ -1514,7 +1515,6 @@ SendAssocResponse:
 #endif /* DYNAMIC_RX_RATE_ADJ */
 			              END_OF_ARGS);
 		    MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
-		    MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
 		}
 
 		RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, ie_list->Addr2, wdev->wdev_idx, 0);
@@ -1532,6 +1532,7 @@ SendAssocResponse:
 				MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 		}
 
+		MlmeFreeMemory(pAd, (PVOID) pOutBuffer);
 		goto LabelOK;
 	}
 
