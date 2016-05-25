@@ -139,6 +139,7 @@ endchoice
 config  MT7610_AP_SNMP
 	bool "Net-SNMP Support"
 	depends on MT7610_AP
+	default y
 
 config  MT7610_AP_SINGLE_SKU
 	bool "Single SKU"
@@ -154,10 +155,10 @@ config  MT7610_AP_READ_MAC_FROM_MTD
 #	depends on MT7610_AP
 #	default n
 
-config  MT7610_AP_MC_SUPPORT
-	bool "Multiple Card Support"
-	default n
-	depends on MT7610_AP
+#config  MT7610_AP_MC_SUPPORT
+#	bool "Multiple Card Support"
+#	default n
+#	depends on MT7610_AP
 
 config  MT7610_AP_ATE
 	bool "Provide ATE testmode commands support"

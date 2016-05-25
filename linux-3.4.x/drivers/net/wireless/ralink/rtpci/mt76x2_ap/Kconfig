@@ -213,10 +213,10 @@ config  MT76X2_AP_READ_MAC_FROM_MTD
 #	depends on !RT_FIRST_IF_MT7620
 #	default n
 
-config  MT76X2_AP_MC_SUPPORT
-	bool "Multiple Card support"
-	default n
-	depends on MT76X2_AP
+#config  MT76X2_AP_MC_SUPPORT
+#	bool "Multiple Card support"
+#	default n
+#	depends on MT76X2_AP
 
 config  MT76X2_AP_ATE
 	bool "Provide ATE testmode commands support"
