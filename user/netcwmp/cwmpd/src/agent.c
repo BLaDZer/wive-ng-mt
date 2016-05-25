@@ -649,8 +649,6 @@ int cwmp_agent_download_file(download_arg_t * dlarg)
 	if (access("/tmp/download.img", F_OK) != -1)
 	{
         	firmware_upgrade("/tmp/download.img");
-		system("rm /tmp/download.img");
-		system("( sleep 10 && reboot ) &");
 	}
 	else
 	{

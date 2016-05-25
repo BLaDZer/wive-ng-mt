@@ -463,23 +463,23 @@ static int mtd_write_firmware(char *filename, int offset, int len)
 /* check image size before erase flash and write image */
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
