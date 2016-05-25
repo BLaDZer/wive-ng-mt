@@ -2094,7 +2094,7 @@
 5) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
 6) netcwmpd: fix reboot afer firmware update in some cases.<br>
 7) goahead: use direct call to kernel if need fast reboot.<br>
-8) goahead cgi and mtd_write must be link with libgcc as static to (prevent reboot after write freez).<br>
+8) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
 9) kernel: ralink_arch: allow highmem region for 512M devices.<br>
 10) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
 11) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
@@ -2102,8 +2102,8 @@
 13) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
 14) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
 15) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-16) kernel: ralink_wifi: small fixes backport from 3.0.5.0 drivers to others versions.<br>
-17) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+16) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+17) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
 18) kernel: net: do not block BH while processing socket backlog.<br>
 19) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
 20) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
