@@ -3247,6 +3247,10 @@ BOOLEAN ApCli_Close(RTMP_ADAPTER *pAd, PNET_DEV dev_p)
 				MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_DISCONNECT_REQ, 0, NULL, ifIndex);
 				RTMP_MLME_HANDLER(pAd);
 				DBGPRINT(RT_DEBUG_TRACE, ("(%s) ApCli interface[%d] startdown.\n", __FUNCTION__, ifIndex));
+
+				//clean CfgApCliBssid
+				NdisZeroMemory(&(apcli_entry->CfgApCliBssid), MAC_ADDR_LEN);
+
 			}
 			return TRUE;
 		}
