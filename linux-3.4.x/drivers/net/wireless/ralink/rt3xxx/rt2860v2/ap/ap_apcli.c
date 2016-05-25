@@ -237,6 +237,13 @@ BOOLEAN ApCliCheckHt(
 	pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.ShortGIfor40 =  (pAd->CommonCfg.DesiredHtPhy.ShortGIfor40) & (pHtCapability->HtCapInfo.ShortGIfor40);
 	pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.TxSTBC =  (pAd->CommonCfg.DesiredHtPhy.TxSTBC)&(pHtCapability->HtCapInfo.RxSTBC);
 	pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.RxSTBC =  (pAd->CommonCfg.DesiredHtPhy.RxSTBC)&(pHtCapability->HtCapInfo.TxSTBC);
+
+	/* Fix throughput issue for some vendor AP with AES mode */
+	if (pAddHtInfo->AddHtInfo.RecomWidth & pAd->CommonCfg.DesiredHtPhy.ChannelWidth)
+		pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.CCKmodein40 = pHtCapability->HtCapInfo.CCKmodein40;
+	else
+		pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.CCKmodein40 = 0;
+
 	pApCliEntry->ApCliMlmeAux.HtCapability.HtCapParm.MaxRAmpduFactor = (pAd->CommonCfg.DesiredHtPhy.MaxRAmpduFactor) & (pHtCapability->HtCapParm.MaxRAmpduFactor);
 	pApCliEntry->ApCliMlmeAux.HtCapability.HtCapParm.MpduDensity = pHtCapability->HtCapParm.MpduDensity;
 	pApCliEntry->ApCliMlmeAux.HtCapability.ExtHtCapInfo.PlusHTC = pHtCapability->ExtHtCapInfo.PlusHTC;
