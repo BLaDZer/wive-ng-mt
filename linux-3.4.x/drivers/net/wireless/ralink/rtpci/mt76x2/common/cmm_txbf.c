@@ -273,7 +273,9 @@ BOOLEAN rtmp_chk_itxbf_calibration(
 	}
 	else
 	{
-        bCalibrated = ITxBFGetEEPROM(pAd, &phaseParams, 0, 0, 0);
+    		bCalibrated = ITxBFGetEEPROM(pAd, &phaseParams, 0, 0, 0);
+		if (bCalibrated == FALSE)
+		    printk("TxBF EEPROM not valid calibration values in eeprom!\n");
 	}
 
 #endif /*MT76x2*/
