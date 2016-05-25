@@ -251,6 +251,8 @@ static int nvram_load_default(void)
         return 0;
 }
 
+#define FPRINT_DAT(x) fprintf(fp, #x"=%s\n", nvram_get(mode, #x));
+
 static int gen_wifi_config(int mode, int genmode)
 {
 	FILE *fp = NULL;
@@ -292,9 +294,6 @@ static int gen_wifi_config(int mode, int genmode)
 	fprintf(fp, "#The word of \"Default\" must not be removed\n");
 	fprintf(fp, "Default\n");
 
-#define FPRINT_NUM(x) fprintf(fp, #x"=%d\n", atoi(nvram_get(mode, #x)));
-#define FPRINT_STR(x) fprintf(fp, #x"=%s\n", nvram_get(mode, #x));
-
 	// MAC adresses per devices
 	if (genmode == RT2860_NVRAM)
 	    fprintf(fp, "MacAddress=%s\n", nvram_get(mode, "WLAN_MAC_ADDR"));
@@ -316,14 +315,14 @@ static int gen_wifi_config(int mode, int genmode)
 		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessMode"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
-	    FPRINT_NUM(RadioOn);
-	    FPRINT_NUM(TxPower);
-	    FPRINT_NUM(Channel);
-	    FPRINT_NUM(AutoChannelSelect);
-	    FPRINT_STR(AutoChannelSkipList);
-	    FPRINT_NUM(ACSCheckTime);
-	    FPRINT_NUM(BasicRate);
-	    FPRINT_STR(SSID1);
+	    FPRINT_DAT(RadioOn);
+	    FPRINT_DAT(TxPower);
+	    FPRINT_DAT(Channel);
+	    FPRINT_DAT(AutoChannelSelect);
+	    FPRINT_DAT(AutoChannelSkipList);
+	    FPRINT_DAT(ACSCheckTime);
+	    FPRINT_DAT(BasicRate);
+	    FPRINT_DAT(SSID1);
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
 	    // WirelessMode -> need move per ssid to goahead
@@ -333,13 +332,13 @@ static int gen_wifi_config(int mode, int genmode)
 		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessModeINIC"));
 	    fprintf(fp, "WirelessMode=%s\n", w_mode);
 
-	    fprintf(fp, "RadioOn=%d\n", atoi(nvram_get(mode, "RadioOnINIC")));
-	    fprintf(fp, "TxPower=%d\n", atoi(nvram_get(mode, "TxPowerINIC")));
-	    fprintf(fp, "Channel=%d\n", atoi(nvram_get(mode, "ChannelINIC")));
-	    fprintf(fp, "AutoChannelSelect=%d\n", atoi(nvram_get(mode, "AutoChannelSelectINIC")));
-	    fprintf(fp, "AutoChannelSkipList=%d\n", atoi(nvram_get(mode, "AutoChannelSkipListINIC")));
-	    fprintf(fp, "ACSCheckTime=%d\n", atoi(nvram_get(mode, "ACSCheckTimeINIC")));
-	    fprintf(fp, "BasicRate=%d\n", atoi(nvram_get(mode, "BasicRateINIC")));
+	    fprintf(fp, "RadioOn=%s\n", nvram_get(mode, "RadioOnINIC"));
+	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
+	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
+	    fprintf(fp, "AutoChannelSelect=%s\n", nvram_get(mode, "AutoChannelSelectINIC"));
+	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
+	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
+	    fprintf(fp, "BasicRate=%s\n", nvram_get(mode, "BasicRateINIC"));
 	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
 	}
 #endif
@@ -353,306 +352,306 @@ static int gen_wifi_config(int mode, int genmode)
 		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_get(mode, "WmmCapable"));
 	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
-	FPRINT_NUM(CountryRegion);
-	FPRINT_NUM(CountryRegionABand);
-	FPRINT_STR(CountryCode);
-	FPRINT_STR(RDRegion);
-	FPRINT_NUM(BssidNum);
-	FPRINT_STR(SSID2);
-	FPRINT_STR(SSID3);
-	FPRINT_STR(SSID4);
-	FPRINT_STR(SSID5);
-	FPRINT_STR(SSID6);
-	FPRINT_STR(SSID7);
-	FPRINT_STR(SSID8);
+	FPRINT_DAT(CountryRegion);
+	FPRINT_DAT(CountryRegionABand);
+	FPRINT_DAT(CountryCode);
+	FPRINT_DAT(RDRegion);
+	FPRINT_DAT(BssidNum);
+	FPRINT_DAT(SSID2);
+	FPRINT_DAT(SSID3);
+	FPRINT_DAT(SSID4);
+	FPRINT_DAT(SSID5);
+	FPRINT_DAT(SSID6);
+	FPRINT_DAT(SSID7);
+	FPRINT_DAT(SSID8);
 
-	FPRINT_NUM(BeaconPeriod);
-	FPRINT_NUM(DtimPeriod);
-	FPRINT_NUM(DisableOLBC);
-	FPRINT_NUM(BGProtection);
-	FPRINT_NUM(RTSThreshold);
-	FPRINT_NUM(TxPreamble);
-	FPRINT_NUM(TxPower);
-	FPRINT_NUM(TxBurst);
-	FPRINT_NUM(BurstMode);
-	FPRINT_NUM(PktAggregate);
-	FPRINT_NUM(FragThreshold);
-	FPRINT_NUM(MaxSPLength);
-	FPRINT_NUM(ShortSlot);
-	FPRINT_NUM(NoForwardingBTNBSSID);
-	FPRINT_NUM(session_timeout_interval);
-	FPRINT_NUM(quiet_interval);
-	FPRINT_NUM(IdleTimeout);
+	FPRINT_DAT(BeaconPeriod);
+	FPRINT_DAT(DtimPeriod);
+	FPRINT_DAT(DisableOLBC);
+	FPRINT_DAT(BGProtection);
+	FPRINT_DAT(RTSThreshold);
+	FPRINT_DAT(TxPreamble);
+	FPRINT_DAT(TxPower);
+	FPRINT_DAT(TxBurst);
+	FPRINT_DAT(BurstMode);
+	FPRINT_DAT(PktAggregate);
+	FPRINT_DAT(FragThreshold);
+	FPRINT_DAT(MaxSPLength);
+	FPRINT_DAT(ShortSlot);
+	FPRINT_DAT(NoForwardingBTNBSSID);
+	FPRINT_DAT(session_timeout_interval);
+	FPRINT_DAT(quiet_interval);
+	FPRINT_DAT(IdleTimeout);
 
-	FPRINT_STR(APSDCapable);
-	FPRINT_STR(AckPolicy);
-	FPRINT_STR(DLSCapable);
-	FPRINT_STR(NoForwarding);
-	FPRINT_STR(NoForwardingMBCast);
-	FPRINT_STR(StationKeepAlive);
-	FPRINT_STR(EntryLifeCheck);
-	FPRINT_STR(HideSSID);
-	FPRINT_STR(IEEE80211H);
-	FPRINT_STR(APAifsn);
-	FPRINT_STR(APCwmin);
-	FPRINT_STR(APCwmax);
-	FPRINT_STR(APTxop);
-	FPRINT_STR(APACM);
-	FPRINT_STR(BSSAifsn);
-	FPRINT_STR(BSSCwmin);
-	FPRINT_STR(BSSCwmax);
-	FPRINT_STR(BSSTxop);
-	FPRINT_STR(BSSACM);
-	FPRINT_STR(AuthMode);
-	FPRINT_STR(EncrypType);
-    	FPRINT_STR(RekeyMethod);
-	FPRINT_STR(RekeyInterval);
+	FPRINT_DAT(APSDCapable);
+	FPRINT_DAT(AckPolicy);
+	FPRINT_DAT(DLSCapable);
+	FPRINT_DAT(NoForwarding);
+	FPRINT_DAT(NoForwardingMBCast);
+	FPRINT_DAT(StationKeepAlive);
+	FPRINT_DAT(EntryLifeCheck);
+	FPRINT_DAT(HideSSID);
+	FPRINT_DAT(IEEE80211H);
+	FPRINT_DAT(APAifsn);
+	FPRINT_DAT(APCwmin);
+	FPRINT_DAT(APCwmax);
+	FPRINT_DAT(APTxop);
+	FPRINT_DAT(APACM);
+	FPRINT_DAT(BSSAifsn);
+	FPRINT_DAT(BSSCwmin);
+	FPRINT_DAT(BSSCwmax);
+	FPRINT_DAT(BSSTxop);
+	FPRINT_DAT(BSSACM);
+	FPRINT_DAT(AuthMode);
+	FPRINT_DAT(EncrypType);
+    	FPRINT_DAT(RekeyMethod);
+	FPRINT_DAT(RekeyInterval);
 
-	FPRINT_STR(WPAPSK1);
-	FPRINT_STR(WPAPSK2);
-	FPRINT_STR(WPAPSK3);
-	FPRINT_STR(WPAPSK4);
-	FPRINT_STR(WPAPSK5);
-	FPRINT_STR(WPAPSK6);
-	FPRINT_STR(WPAPSK7);
-	FPRINT_STR(WPAPSK8);
+	FPRINT_DAT(WPAPSK1);
+	FPRINT_DAT(WPAPSK2);
+	FPRINT_DAT(WPAPSK3);
+	FPRINT_DAT(WPAPSK4);
+	FPRINT_DAT(WPAPSK5);
+	FPRINT_DAT(WPAPSK6);
+	FPRINT_DAT(WPAPSK7);
+	FPRINT_DAT(WPAPSK8);
 
-	FPRINT_STR(DefaultKeyID);
-	FPRINT_STR(Key1Type);
-	FPRINT_STR(Key1Str1);
-	FPRINT_STR(Key1Str2);
-	FPRINT_STR(Key1Str3);
-	FPRINT_STR(Key1Str4);
-	FPRINT_STR(Key1Str5);
-	FPRINT_STR(Key1Str6);
-	FPRINT_STR(Key1Str7);
-	FPRINT_STR(Key1Str8);
-	FPRINT_STR(Key2Type);
-	FPRINT_STR(Key2Str1);
-	FPRINT_STR(Key2Str2);
-	FPRINT_STR(Key2Str3);
-	FPRINT_STR(Key2Str4);
-	FPRINT_STR(Key2Str5);
-	FPRINT_STR(Key2Str6);
-	FPRINT_STR(Key2Str7);
-	FPRINT_STR(Key2Str8);
-	FPRINT_STR(Key3Type);
-	FPRINT_STR(Key3Str1);
-	FPRINT_STR(Key3Str2);
-	FPRINT_STR(Key3Str3);
-	FPRINT_STR(Key3Str4);
-	FPRINT_STR(Key3Str5);
-	FPRINT_STR(Key3Str6);
-	FPRINT_STR(Key3Str7);
-	FPRINT_STR(Key3Str8);
-	FPRINT_STR(Key4Type);
-	FPRINT_STR(Key4Str1);
-	FPRINT_STR(Key4Str2);
-	FPRINT_STR(Key4Str3);
-	FPRINT_STR(Key4Str4);
-	FPRINT_STR(Key4Str5);
-	FPRINT_STR(Key4Str6);
-	FPRINT_STR(Key4Str7);
-	FPRINT_STR(Key4Str8);
+	FPRINT_DAT(DefaultKeyID);
+	FPRINT_DAT(Key1Type);
+	FPRINT_DAT(Key1Str1);
+	FPRINT_DAT(Key1Str2);
+	FPRINT_DAT(Key1Str3);
+	FPRINT_DAT(Key1Str4);
+	FPRINT_DAT(Key1Str5);
+	FPRINT_DAT(Key1Str6);
+	FPRINT_DAT(Key1Str7);
+	FPRINT_DAT(Key1Str8);
+	FPRINT_DAT(Key2Type);
+	FPRINT_DAT(Key2Str1);
+	FPRINT_DAT(Key2Str2);
+	FPRINT_DAT(Key2Str3);
+	FPRINT_DAT(Key2Str4);
+	FPRINT_DAT(Key2Str5);
+	FPRINT_DAT(Key2Str6);
+	FPRINT_DAT(Key2Str7);
+	FPRINT_DAT(Key2Str8);
+	FPRINT_DAT(Key3Type);
+	FPRINT_DAT(Key3Str1);
+	FPRINT_DAT(Key3Str2);
+	FPRINT_DAT(Key3Str3);
+	FPRINT_DAT(Key3Str4);
+	FPRINT_DAT(Key3Str5);
+	FPRINT_DAT(Key3Str6);
+	FPRINT_DAT(Key3Str7);
+	FPRINT_DAT(Key3Str8);
+	FPRINT_DAT(Key4Type);
+	FPRINT_DAT(Key4Str1);
+	FPRINT_DAT(Key4Str2);
+	FPRINT_DAT(Key4Str3);
+	FPRINT_DAT(Key4Str4);
+	FPRINT_DAT(Key4Str5);
+	FPRINT_DAT(Key4Str6);
+	FPRINT_DAT(Key4Str7);
+	FPRINT_DAT(Key4Str8);
 
-	FPRINT_NUM(HT_HTC);
-	FPRINT_NUM(HT_RDG);
-	FPRINT_NUM(HT_OpMode);
-	FPRINT_NUM(HT_MpduDensity);
-	FPRINT_NUM(HT_BW);
-	FPRINT_NUM(HT_AutoBA);
-	FPRINT_NUM(HT_BADecline);
-	FPRINT_NUM(HT_AMSDU);
-	FPRINT_NUM(HT_BAWinSize);
-	FPRINT_NUM(HT_GI);
-	FPRINT_NUM(HT_STBC);
-	FPRINT_NUM(HT_LDPC);
-	FPRINT_STR(HT_MCS);
-	FPRINT_NUM(HT_PROTECT);
-	FPRINT_NUM(HT_DisallowTKIP);
-	FPRINT_NUM(HT_40MHZ_INTOLERANT);
-	FPRINT_NUM(HT_MIMOPSMode);
+	FPRINT_DAT(HT_HTC);
+	FPRINT_DAT(HT_RDG);
+	FPRINT_DAT(HT_OpMode);
+	FPRINT_DAT(HT_MpduDensity);
+	FPRINT_DAT(HT_BW);
+	FPRINT_DAT(HT_AutoBA);
+	FPRINT_DAT(HT_BADecline);
+	FPRINT_DAT(HT_AMSDU);
+	FPRINT_DAT(HT_BAWinSize);
+	FPRINT_DAT(HT_GI);
+	FPRINT_DAT(HT_STBC);
+	FPRINT_DAT(HT_LDPC);
+	FPRINT_DAT(HT_MCS);
+	FPRINT_DAT(HT_PROTECT);
+	FPRINT_DAT(HT_DisallowTKIP);
+	FPRINT_DAT(HT_40MHZ_INTOLERANT);
+	FPRINT_DAT(HT_MIMOPSMode);
 
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
-	    FPRINT_NUM(HT_TxStream);
-	    FPRINT_NUM(HT_RxStream);
-	    FPRINT_NUM(HT_EXTCHA);
+	    FPRINT_DAT(HT_TxStream);
+	    FPRINT_DAT(HT_RxStream);
+	    FPRINT_DAT(HT_EXTCHA);
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
-	    fprintf(fp, "HT_EXTCHA=%d\n", atoi(nvram_get(mode, "HT_EXTCHAINIC")));
-	    fprintf(fp, "HT_TxStream=%d\n", atoi(nvram_get(mode, "HT_TxStreamINIC")));
-	    fprintf(fp, "HT_RxStream=%d\n", atoi(nvram_get(mode, "HT_RxStreamINIC")));
+	    fprintf(fp, "HT_EXTCHA=%s\n", nvram_get(mode, "HT_EXTCHAINIC"));
+	    fprintf(fp, "HT_TxStream=%s\n", nvram_get(mode, "HT_TxStreamINIC"));
+	    fprintf(fp, "HT_RxStream=%s\n", nvram_get(mode, "HT_RxStreamINIC"));
 	}
 #endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// VHT
-	FPRINT_NUM(VHT_BW);
-	FPRINT_NUM(VHT_BW_SIGNAL);
-	FPRINT_NUM(VHT_DisallowNonVHT);
-	FPRINT_NUM(VHT_LDPC);
-	FPRINT_NUM(VHT_SGI);
-	FPRINT_NUM(VHT_STBC);
+	FPRINT_DAT(VHT_BW);
+	FPRINT_DAT(VHT_BW_SIGNAL);
+	FPRINT_DAT(VHT_DisallowNonVHT);
+	FPRINT_DAT(VHT_LDPC);
+	FPRINT_DAT(VHT_SGI);
+	FPRINT_DAT(VHT_STBC);
 #endif
-        FPRINT_NUM(AccessPolicy0);
-	FPRINT_STR(AccessControlList0);
-	FPRINT_NUM(AccessPolicy1);
-	FPRINT_STR(AccessControlList1);
-	FPRINT_NUM(AccessPolicy2);
-	FPRINT_STR(AccessControlList2);
-	FPRINT_NUM(AccessPolicy3);
-	FPRINT_STR(AccessControlList3);
-	FPRINT_NUM(AccessPolicy4);
-	FPRINT_STR(AccessControlList4);
-	FPRINT_NUM(AccessPolicy5);
-	FPRINT_STR(AccessControlList5);
-	FPRINT_NUM(AccessPolicy6);
-	FPRINT_STR(AccessControlList6);
-	FPRINT_NUM(AccessPolicy7);
-	FPRINT_STR(AccessControlList7);
-	FPRINT_STR(RADIUS_Key1);
-	FPRINT_STR(RADIUS_Key2);
-	FPRINT_STR(RADIUS_Key3);
-	FPRINT_STR(RADIUS_Key4);
-	FPRINT_STR(RADIUS_Key5);
-	FPRINT_STR(RADIUS_Key6);
-	FPRINT_STR(RADIUS_Key7);
-	FPRINT_STR(RADIUS_Key8);
-	FPRINT_STR(MaxStaNum);
+	FPRINT_DAT(AccessPolicy0);
+	FPRINT_DAT(AccessControlList0);
+	FPRINT_DAT(AccessPolicy1);
+	FPRINT_DAT(AccessControlList1);
+	FPRINT_DAT(AccessPolicy2);
+	FPRINT_DAT(AccessControlList2);
+	FPRINT_DAT(AccessPolicy3);
+	FPRINT_DAT(AccessControlList3);
+	FPRINT_DAT(AccessPolicy4);
+	FPRINT_DAT(AccessControlList4);
+	FPRINT_DAT(AccessPolicy5);
+	FPRINT_DAT(AccessControlList5);
+	FPRINT_DAT(AccessPolicy6);
+	FPRINT_DAT(AccessControlList6);
+	FPRINT_DAT(AccessPolicy7);
+	FPRINT_DAT(AccessControlList7);
+	FPRINT_DAT(RADIUS_Key1);
+	FPRINT_DAT(RADIUS_Key2);
+	FPRINT_DAT(RADIUS_Key3);
+	FPRINT_DAT(RADIUS_Key4);
+	FPRINT_DAT(RADIUS_Key5);
+	FPRINT_DAT(RADIUS_Key6);
+	FPRINT_DAT(RADIUS_Key7);
+	FPRINT_DAT(RADIUS_Key8);
+	FPRINT_DAT(MaxStaNum);
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
-	FPRINT_STR(PSMode);
-	FPRINT_NUM(AutoConnect);
-	FPRINT_NUM(FastConnect);
-	FPRINT_NUM(AutoRoaming);
+	FPRINT_DAT(PSMode);
+	FPRINT_DAT(AutoConnect);
+	FPRINT_DAT(FastConnect);
+	FPRINT_DAT(AutoRoaming);
 #endif
 #if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X3_AP_EXT_CHANNEL_LIST)
-	FPRINT_NUM(ChannelGeography);
+	FPRINT_DAT(ChannelGeography);
 #endif
 #if defined(CONFIG_RT2860V2_AP_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG) || defined(CONFIG_MT76X3_AP_DBG)
-	FPRINT_NUM(WirelessEvent);
+	FPRINT_DAT(WirelessEvent);
 #endif
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
-	FPRINT_NUM(VideoTurbine);
-	FPRINT_NUM(VideoClassifierEnable);
-	FPRINT_NUM(VideoHighTxMode);
-	FPRINT_NUM(VideoTxLifeTimeMode);
+	FPRINT_DAT(VideoTurbine);
+	FPRINT_DAT(VideoClassifierEnable);
+	FPRINT_DAT(VideoHighTxMode);
+	FPRINT_DAT(VideoTxLifeTimeMode);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
-	FPRINT_NUM(M2UEnabled);
+	FPRINT_DAT(M2UEnabled);
 #endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
-	FPRINT_NUM(McastPhyMode);
-	FPRINT_NUM(McastMcs);
+	FPRINT_DAT(McastPhyMode);
+	FPRINT_DAT(McastMcs);
 #endif
 #if defined(CONFIG_RT2860V2_AP_CARRIER) || defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER) || defined(CONFIG_MT76X3_AP_CARRIER)
-	FPRINT_NUM(CarrierDetect);
+	FPRINT_DAT(CarrierDetect);
 #endif
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT)
-	FPRINT_NUM(ITxBfEn);
-	FPRINT_NUM(ITxBfTimeout);
-	FPRINT_NUM(ETxBfEnCond);
-	FPRINT_NUM(ETxBfeeEn);
-	FPRINT_NUM(ETxBfTimeout);
-	FPRINT_NUM(ETxBfNoncompress);
-	FPRINT_NUM(ETxBfIncapable);
+	FPRINT_DAT(ITxBfEn);
+	FPRINT_DAT(ITxBfTimeout);
+	FPRINT_DAT(ETxBfEnCond);
+	FPRINT_DAT(ETxBfeeEn);
+	FPRINT_DAT(ETxBfTimeout);
+	FPRINT_DAT(ETxBfNoncompress);
+	FPRINT_DAT(ETxBfIncapable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
-	FPRINT_NUM(CSPeriod);
-	FPRINT_NUM(DfsIndoor);
-	FPRINT_NUM(SymRoundFromCfg);
-	FPRINT_NUM(BusyIdleFromCfg);
-	FPRINT_NUM(DfsRssiHighFromCfg);
-	FPRINT_NUM(DfsRssiLowFromCfg);
-	FPRINT_NUM(DFSParamFromConfig);
-	FPRINT_STR(FCCParamCh0);
-	FPRINT_STR(FCCParamCh1);
-	FPRINT_STR(FCCParamCh2);
-	FPRINT_STR(FCCParamCh3);
-	FPRINT_STR(CEParamCh0);
-	FPRINT_STR(CEParamCh1);
-	FPRINT_STR(CEParamCh2);
-	FPRINT_STR(CEParamCh3);
-	FPRINT_STR(JAPParamCh0);
-	FPRINT_STR(JAPParamCh1);
-	FPRINT_STR(JAPParamCh2);
-	FPRINT_STR(JAPParamCh3);
-	FPRINT_STR(JAPW53ParamCh0);
-	FPRINT_STR(JAPW53ParamCh1);
-	FPRINT_STR(JAPW53ParamCh2);
-	FPRINT_STR(JAPW53ParamCh3);
+	FPRINT_DAT(CSPeriod);
+	FPRINT_DAT(DfsIndoor);
+	FPRINT_DAT(SymRoundFromCfg);
+	FPRINT_DAT(BusyIdleFromCfg);
+	FPRINT_DAT(DfsRssiHighFromCfg);
+	FPRINT_DAT(DfsRssiLowFromCfg);
+	FPRINT_DAT(DFSParamFromConfig);
+	FPRINT_DAT(FCCParamCh0);
+	FPRINT_DAT(FCCParamCh1);
+	FPRINT_DAT(FCCParamCh2);
+	FPRINT_DAT(FCCParamCh3);
+	FPRINT_DAT(CEParamCh0);
+	FPRINT_DAT(CEParamCh1);
+	FPRINT_DAT(CEParamCh2);
+	FPRINT_DAT(CEParamCh3);
+	FPRINT_DAT(JAPParamCh0);
+	FPRINT_DAT(JAPParamCh1);
+	FPRINT_DAT(JAPParamCh2);
+	FPRINT_DAT(JAPParamCh3);
+	FPRINT_DAT(JAPW53ParamCh0);
+	FPRINT_DAT(JAPW53ParamCh1);
+	FPRINT_DAT(JAPW53ParamCh2);
+	FPRINT_DAT(JAPW53ParamCh3);
 #endif
 #if defined(CONFIG_MT7610_AP_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
-	FPRINT_NUM(EDCCA_ED_TH);
-	FPRINT_NUM(ED_MODE);
-	FPRINT_NUM(EDCCA_FALSE_CCA_TH);
-	FPRINT_NUM(ED_LEARN_TH);
-	FPRINT_NUM(EDCCA_BLOCK_CHECK_TH);
+	FPRINT_DAT(EDCCA_ED_TH);
+	FPRINT_DAT(ED_MODE);
+	FPRINT_DAT(EDCCA_FALSE_CCA_TH);
+	FPRINT_DAT(ED_LEARN_TH);
+	FPRINT_DAT(EDCCA_BLOCK_CHECK_TH);
 #endif
 #if defined(CONFIG_RT2860V2_AP_GREENAP) || defined(CONFIG_MT76X2_AP_GREENAP) || defined(CONFIG_MT76X3_AP_GREENAP)
-	FPRINT_NUM(GreenAP);
+	FPRINT_DAT(GreenAP);
 #endif
 #if defined(CONFIG_RT2860V2_AP_80211N_DRAFT3) || defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3) || defined(CONFIG_MT76X3_AP_80211N_DRAFT3)
-	FPRINT_NUM(HT_BSSCoexistence);
-	FPRINT_NUM(HT_BSSCoexApCntThr);
+	FPRINT_DAT(HT_BSSCoexistence);
+	FPRINT_DAT(HT_BSSCoexApCntThr);
 #endif
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
-	FPRINT_NUM(WdsEnable);
-	FPRINT_STR(WdsPhyMode);
-	FPRINT_STR(WdsTxMcs);
-	FPRINT_STR(WdsEncrypType);
-	FPRINT_STR(WdsList);
-	FPRINT_STR(Wds0Key);
-	FPRINT_STR(Wds1Key);
-	FPRINT_STR(Wds2Key);
-	FPRINT_STR(Wds3Key);
+	FPRINT_DAT(WdsEnable);
+	FPRINT_DAT(WdsPhyMode);
+	FPRINT_DAT(WdsTxMcs);
+	FPRINT_DAT(WdsEncrypType);
+	FPRINT_DAT(WdsList);
+	FPRINT_DAT(Wds0Key);
+	FPRINT_DAT(Wds1Key);
+	FPRINT_DAT(Wds2Key);
+	FPRINT_DAT(Wds3Key);
 #endif
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
-	FPRINT_NUM(ApCliEnable);
-	FPRINT_STR(ApCliSsid);
-	FPRINT_STR(ApCliBssid);
-	FPRINT_STR(ApCliAuthMode);
-	FPRINT_STR(ApCliEncrypType);
-	FPRINT_STR(ApCliDefaultKeyID);
-	FPRINT_STR(ApCliWPAPSK);
-	FPRINT_STR(ApCliTxMode);
-	FPRINT_STR(ApCliTxMcs);
-	FPRINT_STR(ApCliAPSDCapable);
+	FPRINT_DAT(ApCliEnable);
+	FPRINT_DAT(ApCliSsid);
+	FPRINT_DAT(ApCliBssid);
+	FPRINT_DAT(ApCliAuthMode);
+	FPRINT_DAT(ApCliEncrypType);
+	FPRINT_DAT(ApCliDefaultKeyID);
+	FPRINT_DAT(ApCliWPAPSK);
+	FPRINT_DAT(ApCliTxMode);
+	FPRINT_DAT(ApCliTxMcs);
+	FPRINT_DAT(ApCliAPSDCapable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
-	FPRINT_NUM(IdsEnable);
-	FPRINT_NUM(AuthFloodThreshold);
-	FPRINT_NUM(AssocReqFloodThreshold);
-	FPRINT_NUM(ReassocReqFloodThreshold);
-	FPRINT_NUM(ProbeReqFloodThreshold);
-	FPRINT_NUM(DisassocFloodThreshold);
-	FPRINT_NUM(DeauthFloodThreshold);
-	FPRINT_NUM(EapReqFloodThreshold);
+	FPRINT_DAT(IdsEnable);
+	FPRINT_DAT(AuthFloodThreshold);
+	FPRINT_DAT(AssocReqFloodThreshold);
+	FPRINT_DAT(ReassocReqFloodThreshold);
+	FPRINT_DAT(ProbeReqFloodThreshold);
+	FPRINT_DAT(DisassocFloodThreshold);
+	FPRINT_DAT(DeauthFloodThreshold);
+	FPRINT_DAT(EapReqFloodThreshold);
 #endif
 	/* 802.11x support */
-	FPRINT_STR(IEEE8021X);
-	FPRINT_STR(PreAuth);
-	FPRINT_STR(PMKCachePeriod);
-	FPRINT_STR(own_ip_addr);
-	FPRINT_STR(EAPifname);
-	FPRINT_STR(PreAuthifname);
-	FPRINT_STR(RADIUS_Server);
-	FPRINT_STR(RADIUS_Port);
-	FPRINT_STR(RADIUS_Key);
+	FPRINT_DAT(IEEE8021X);
+	FPRINT_DAT(PreAuth);
+	FPRINT_DAT(PMKCachePeriod);
+	FPRINT_DAT(own_ip_addr);
+	FPRINT_DAT(EAPifname);
+	FPRINT_DAT(PreAuthifname);
+	FPRINT_DAT(RADIUS_Server);
+	FPRINT_DAT(RADIUS_Port);
+	FPRINT_DAT(RADIUS_Key);
 
 	/* LNA Control, not apply from read dat file now, need add in profile instead of iwpriv usage in future */
-	FPRINT_NUM(DyncVgaEnable);	/* enable/disable dynamic LNA gain */
-	FPRINT_NUM(SkipLongRangeVga);	/* skip tune gain for long distanse clients */
-	FPRINT_NUM(VgaClamp);		/* limit dynamic maximum gain to reduce impact interference (1 - -4dB, 2 - -8dB, 3 - -12dB, 4 -16dB) */
+	FPRINT_DAT(DyncVgaEnable);	/* enable/disable dynamic LNA gain */
+	FPRINT_DAT(SkipLongRangeVga);	/* skip tune gain for long distanse clients */
+	FPRINT_DAT(VgaClamp);		/* limit dynamic maximum gain to reduce impact interference (1 - -4dB, 2 - -8dB, 3 - -12dB, 4 -16dB) */
 #ifdef CONFIG_BAND_STEERING
-	FPRINT_NUM(BandSteering);
+	FPRINT_DAT(BandSteering);
 	/* Band Steering, not apply from read dat file now, need add in profile instead of iwpriv usage in future */
-	FPRINT_NUM(BndStrgRssiDiff);	/* if Rssi2.4G > Rssi5G by RssiDiff, then allow client to connect 2.4G */
-	FPRINT_NUM(BndStrgRssiLow);	/* if Rssi5G < RssiLow, then this client cannot connect to 5G */
-	FPRINT_NUM(BndStrgAge);		/* Entry Age Time (ms) */
-	FPRINT_NUM(BndStrgHoldTime);	/* Time for holding 2.4G connection rsp (ms) */
-	FPRINT_NUM(BndStrgCheckTime);	/* Time for deciding if a client is 2.4G only (ms) */
+	FPRINT_DAT(BndStrgRssiDiff);	/* if Rssi2.4G > Rssi5G by RssiDiff, then allow client to connect 2.4G */
+	FPRINT_DAT(BndStrgRssiLow);	/* if Rssi5G < RssiLow, then this client cannot connect to 5G */
+	FPRINT_DAT(BndStrgAge);		/* Entry Age Time (ms) */
+	FPRINT_DAT(BndStrgHoldTime);	/* Time for holding 2.4G connection rsp (ms) */
+	FPRINT_DAT(BndStrgCheckTime);	/* Time for deciding if a client is 2.4G only (ms) */
 #endif
 	/* Basic Roaming, need add in profile instead of iwpriv usage in future
 	 *
@@ -667,45 +666,45 @@ static int gen_wifi_config(int mode, int genmode)
 	 * KickStaRssiLowDelay   - range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
 	 *
 	*/
-	FPRINT_NUM(ApProbeRspTimes);
-	FPRINT_NUM(AuthRspFail);
-	FPRINT_NUM(AuthRspRssi);
-	FPRINT_NUM(AssocReqRssiThres);
-	FPRINT_NUM(AssocRspIgnor);
-	FPRINT_NUM(KickStaRssiLow);
-	FPRINT_NUM(KickStaRssiLowPSM);
-	FPRINT_NUM(KickStaRssiLowDelay);
-	FPRINT_NUM(ProbeRspRssi);
+	FPRINT_DAT(ApProbeRspTimes);
+	FPRINT_DAT(AuthRspFail);
+	FPRINT_DAT(AuthRspRssi);
+	FPRINT_DAT(AssocReqRssiThres);
+	FPRINT_DAT(AssocRspIgnor);
+	FPRINT_DAT(KickStaRssiLow);
+	FPRINT_DAT(KickStaRssiLowPSM);
+	FPRINT_DAT(KickStaRssiLowDelay);
+	FPRINT_DAT(ProbeRspRssi);
 #if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)
 	/* Fast roaming auth transitions config */
-	FPRINT_STR(FtSupport);  	/* Enable Fast BSS Transition */
-	FPRINT_STR(FtRic);		/* Enable FT resource request */
-	FPRINT_STR(FtOtd);		/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Oveк-the-Air only) */
+	FPRINT_DAT(FtSupport);  	/* Enable Fast BSS Transition */
+	FPRINT_DAT(FtRic);		/* Enable FT resource request */
+	FPRINT_DAT(FtOtd);		/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Oveк-the-Air only) */
 					/* Mobility domain ID of Fast Bss. */
-	FPRINT_STR(FtMdId1);
-	FPRINT_STR(FtMdId2);
-	FPRINT_STR(FtMdId3);
-	FPRINT_STR(FtMdId4);
+	FPRINT_DAT(FtMdId1);
+	FPRINT_DAT(FtMdId2);
+	FPRINT_DAT(FtMdId3);
+	FPRINT_DAT(FtMdId4);
 					/* R(N) Key Handler Identification. */
-	FPRINT_STR(FtR0khId1);
-	FPRINT_STR(FtR0khId2);
-	FPRINT_STR(FtR0khId3);
-	FPRINT_STR(FtR0khId4);
+	FPRINT_DAT(FtR0khId1);
+	FPRINT_DAT(FtR0khId2);
+	FPRINT_DAT(FtR0khId3);
+	FPRINT_DAT(FtR0khId4);
 #endif
 #if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
-	FPRINT_STR(RRMEnable);  	/* Enable Resource Radio Managment */
+	FPRINT_DAT(RRMEnable);  	/* Enable Resource Radio Managment */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
-	    FPRINT_STR(RegulatoryClass);
+	    FPRINT_DAT(RegulatoryClass);
 	} else {
-	    fprintf(fp, "RegulatoryClass=%d\n", atoi(nvram_get(mode, "RegulatoryClassINIC")));
+	    fprintf(fp, "RegulatoryClass=%s\n", nvram_get(mode, "RegulatoryClassINIC"));
 	}
 #else
-	FPRINT_STR(RegulatoryClass);
+	FPRINT_DAT(RegulatoryClass);
 #endif
 #endif /* END RRM */
 #ifdef CONFIG_MT76X3_AP_SMART_CARRIER_SENSE
-	FPRINT_NUM(SCSEnable);
+	FPRINT_DAT(SCSEnable);
 #endif
 	fclose(fp);
 	nvram_close(mode);

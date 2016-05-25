@@ -2090,22 +2090,23 @@
 1) libcurl: up to 7.49.0 version.<br>
 2) lldpd: up to 0.9.3 version.<br>
 3) coovachilli: up to 1.3.1.4 version from git 24.05.2016 (commit d4df98a3).<br>
-4) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
-5) kernel: ralink_arch: allow highmem region for 512M devices.<br>
-6) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
-7) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
-8) kernel: ralink_wifi: mt7603 fix proc path name.<br>
-9) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-10) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-11) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-12) kernel: ralink_wifi: small fixes backport from 3.0.5.0 drivers to others versions.<br>
-13) kernel: net: do not block BH while processing socket backlog.<br>
-14) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-15) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-16) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-17) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-18) kernel: sched: always inline context_switch().<br>
-19) kernel: mips: make flush_thread and exit_thread always inline.<br>
+4) nvram: allways copy values as string, not need convert str->int->str.<br>
+5) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
+6) kernel: ralink_arch: allow highmem region for 512M devices.<br>
+7) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
+8) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
+9) kernel: ralink_wifi: mt7603 fix proc path name.<br>
+10) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+11) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+12) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+13) kernel: ralink_wifi: small fixes backport from 3.0.5.0 drivers to others versions.<br>
+14) kernel: net: do not block BH while processing socket backlog.<br>
+15) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+16) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+17) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+18) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+19) kernel: sched: always inline context_switch().<br>
+20) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>
