@@ -1,7 +1,8 @@
 EXEC = mtd_write
 OBJS = led.o mtd.o
 
-LDFLAGS += -static
+# mtd_write must be static include libgcc
+LDFLAGS += -static -static-libgcc
 
 all: $(EXEC)
 
