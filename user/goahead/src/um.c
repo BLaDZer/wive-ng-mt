@@ -22,8 +22,8 @@
 
 /********************************** Defines ***********************************/
 
-#define UM_DB_FILENAME	T("um.xml")
-#define UM_TXT_FILENAME	T("umconfig.txt")
+#define UM_DB_FILENAME		T("/etc/um.xml")
+#define UM_TXT_FILENAME		T("/etc/umconfig.txt")
 
 /*
  *	Table names
@@ -41,7 +41,7 @@
 #define UM_PROT			T("prot")
 #define UM_DISABLE		T("disable")
 #define UM_METHOD		T("method")
-#define UM_PRIVILEGE	T("priv")
+#define UM_PRIVILEGE		T("priv")
 #define UM_SECURE		T("secure")
 
 /*
