@@ -456,7 +456,7 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 #endif /* BAND_STEERING */
 
 
-	if (pAd->ApCfg.BANClass3Data == TRUE)
+	if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
 		return;

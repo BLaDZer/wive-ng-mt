@@ -2104,15 +2104,16 @@
 15) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
 16) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
 17) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-18) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-19) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-20) kernel: net: do not block BH while processing socket backlog.<br>
-21) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-22) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-23) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-24) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-25) kernel: sched: always inline context_switch().<br>
-26) kernel: mips: make flush_thread and exit_thread always inline.<br>
+18) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+19) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+20) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+21) kernel: net: do not block BH while processing socket backlog.<br>
+22) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+23) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+24) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+25) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+26) kernel: sched: always inline context_switch().<br>
+27) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>
