@@ -572,6 +572,7 @@ VOID APUpdateBeaconFrame(
 						  END_OF_ARGS);
 #else
 		NdisMoveMemory(&HtCapabilityTmp, &pComCfg->HtCapability, HtLen);
+		HtCapabilityTmp.HtCapInfo.ChannelWidth = pComCfg->AddHTInfo.AddHtInfo.RecomWidth;
 		*(USHORT *)(&HtCapabilityTmp.HtCapInfo) = SWAP16(*(USHORT *)(&HtCapabilityTmp.HtCapInfo));
 #ifdef UNALIGNMENT_SUPPORT
 		{
