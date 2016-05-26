@@ -3247,10 +3247,6 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		AckDuration = RTMPCalcDuration(pAd, RATE_6_5, 14);
 	/*DBGPRINT(RT_DEBUG_INFO, ("!!!Fragment AckDuration(%d), TxRate(%d)!!!\n", AckDuration, pTxBlk->TxRate)); */
 
-	/* Init the total payload length of this frame. */
-	SrcRemainingBytes = pTxBlk->SrcBufLen;
-	
-	pTxBlk->TotalFragNum = 0xff;
 
 #ifdef SOFT_ENCRYPT
 	if (TX_BLK_TEST_FLAG(pTxBlk, fTX_bSwEncrypt))
@@ -3267,6 +3263,10 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		NdisMoveMemory(tmp_ptr, pTxBlk->pSrcBufData, pTxBlk->SrcBufLen);
 	}
 #endif /* SOFT_ENCRYPT */
+
+	/* Init the total payload length of this frame. */
+	SrcRemainingBytes = pTxBlk->SrcBufLen;
+	pTxBlk->TotalFragNum = 0xff;
 
 	do {
 
