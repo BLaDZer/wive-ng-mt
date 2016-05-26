@@ -2103,14 +2103,15 @@
 14) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
 15) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
 16) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-17) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-18) kernel: net: do not block BH while processing socket backlog.<br>
-19) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-20) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-21) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-22) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-23) kernel: sched: always inline context_switch().<br>
-24) kernel: mips: make flush_thread and exit_thread always inline.<br>
+17) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+18) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+19) kernel: net: do not block BH while processing socket backlog.<br>
+20) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+21) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+22) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+23) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+24) kernel: sched: always inline context_switch().<br>
+25) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

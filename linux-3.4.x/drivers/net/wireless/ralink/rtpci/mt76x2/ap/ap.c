@@ -680,6 +680,7 @@ VOID APStartUp(RTMP_ADAPTER *pAd)
 	ApLogEvent(pAd, pAd->CurrentAddress, EVENT_RESET_ACCESS_POINT);
 	pAd->Mlme.PeriodicRound = 0;
 	pAd->Mlme.OneSecPeriodicRound = 0;
+	pAd->MacTab.MsduLifeTime = 5; /* default 5 seconds */
 
 	OPSTATUS_SET_FLAG(pAd, fOP_AP_STATUS_MEDIA_STATE_CONNECTED);
 
