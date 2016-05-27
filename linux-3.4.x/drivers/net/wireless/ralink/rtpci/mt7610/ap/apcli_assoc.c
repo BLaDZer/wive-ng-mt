@@ -874,7 +874,7 @@ static VOID ApCliPeerAssocRspAction(
 			else
 			{
 				if(Status == MLME_ASSOC_REJ_DATA_RATE)
-					printk("APCLI_ASSOC - receive ASSOC_RSP reject - AP not support reqested rates or modes");
+					printk("APCLI_ASSOC - receive ASSOC_RSP reject - AP not support reqested rates or modes\n");
 
 				ApCliCtrlMsg.Status = Status;
 				MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_ASSOC_RSP,
