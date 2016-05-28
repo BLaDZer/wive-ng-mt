@@ -96,7 +96,7 @@ extern int current_httpd_threads;
 int
 execute(const char cmd_line[], int quiet)
 {
-	int status = 0, retval = 0;
+	int status, retval;
 	pid_t pid, rc;
 	struct sigaction sa, oldsa;
 	const char *new_argv[4];
