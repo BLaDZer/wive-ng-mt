@@ -14,7 +14,7 @@ if [ "$is_up" = "" ]; then
 fi
 
 usage() {
-  echo "Usage: $0 | showstat | showcalib | setmaxpwr " >&2
+  echo "Usage: $0 | showstat | showcalib " >&2
   echo "_____________________________________________________________________________________________________________________" >&2
   echo " " >&2
   echo " wl scan ra0 - scan and show result of wireless interface ra0" >&2
