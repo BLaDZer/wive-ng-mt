@@ -290,7 +290,9 @@ static VOID ApCliMlmeAssocReqAction(
 
 	apcli_entry = &pAd->ApCfg.ApCliTab[ifIndex];
 	wdev = &apcli_entry->wdev;
-        PhyMode = wdev->PhyMode;
+#ifdef APCLI_AUTO_BW_SUPPORT
+	PhyMode = wdev->PhyMode;
+#endif /* APCLI_AUTO_BW_SUPPORT */
 
 	/* Block all authentication request durning WPA block period */
 	if (apcli_entry->bBlockAssoc == TRUE)
