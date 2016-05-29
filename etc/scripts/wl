@@ -37,7 +37,6 @@ showstat()
 	echo "Need iface name as argument."
 	exit 1
     fi
-    iwpriv $1 get_mac_table
     iwpriv $1 show stainfo
     iwpriv $1 show stacountinfo
     iwpriv $1 show stasecinfo

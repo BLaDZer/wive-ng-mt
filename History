@@ -2109,15 +2109,14 @@
 20) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
 21) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
 22) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
-23) kernel: ralink_wifi: allow iwpriv get_mac_table in not debug build.<br>
-24) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-25) kernel: net: do not block BH while processing socket backlog.<br>
-26) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-27) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-28) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-29) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-30) kernel: sched: always inline context_switch().<br>
-31) kernel: mips: make flush_thread and exit_thread always inline.<br>
+23) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+24) kernel: net: do not block BH while processing socket backlog.<br>
+25) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+26) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+27) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+28) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+29) kernel: sched: always inline context_switch().<br>
+30) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

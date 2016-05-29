@@ -3451,7 +3451,9 @@ VOID RTMPIoctlGetMacTable(
 	RT_802_11_MAC_TABLE *pMacTab = NULL;
 	RT_802_11_MAC_ENTRY *pDst;
 	MAC_TABLE_ENTRY *pEntry;
+#ifdef DBG
 	char *msg;
+#endif
 
 	wrq->u.data.length = 0;
 
@@ -3486,6 +3488,7 @@ VOID RTMPIoctlGetMacTable(
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: copy_to_user() fail\n", __FUNCTION__));
 	}
 
+#ifdef DBG
 	os_alloc_mem(NULL, (UCHAR **)&msg, sizeof(CHAR)*(MAX_LEN_OF_MAC_TABLE*MAC_LINE_LEN));
 	if (msg == NULL)
 	{
@@ -3525,6 +3528,7 @@ VOID RTMPIoctlGetMacTable(
 	os_free_mem(NULL, msg);
 
 LabelOK:
+#endif
 	os_free_mem(NULL, pMacTab);
 }
 
