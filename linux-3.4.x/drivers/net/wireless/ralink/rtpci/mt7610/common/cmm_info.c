@@ -2200,6 +2200,10 @@ copy_mac_table_entry(RT_802_11_MAC_ENTRY *pDst, MAC_TABLE_ENTRY *pEntry)
 	pDst->AvgRssi1 = pEntry->RssiSample.AvgRssi1;
 	pDst->AvgRssi2 = pEntry->RssiSample.AvgRssi2;
 
+	/* Fill TX/Rx Bytes per clients */
+	pDst->TxBytes = pEntry->TxBytes;
+	pDst->RxBytes = pEntry->RxBytes;
+
 	/* the connected time per entry*/
 	pDst->ConnectedTime = pEntry->StaConnectTime;
 

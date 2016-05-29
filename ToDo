@@ -1,5 +1,5 @@
 1) full russian ui (work end ~99%).
-2) wifi_drivers/goahead: add RX/TX bytes per clients, parse LastRx Rate and compute TX rate to human readable format.<br>
+2) wifi_drivers/goahead: add parse LastRx Rate and compute TX rate to human readable format.<br>
 3) need add in webui SCSEnable.
 4) need add subchannel select for 5GHz module.
 5) need add checkbox in webui for allow access to LAN net from VPN server net.<br>

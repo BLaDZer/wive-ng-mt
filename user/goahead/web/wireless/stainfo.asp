@@ -51,7 +51,7 @@ function PageInit()
       <form name="sta" action="/goform/disconnectSta" method="POST">
         <table class="form">
           <tr>
-            <td class="title" colspan="14" id="stalistWirelessNet">Wireless Network</td>
+            <td class="title" colspan="15" id="stalistWirelessNet">Wireless Network</td>
           </tr>
           <tr>
             <th id="stalistMacAddr">MAC ADDRESS</th>
@@ -67,6 +67,7 @@ function PageInit()
             <th>MODE</th>
             <th>RSSI</th>
             <th>QUALITY</th>
+            <th>RX/TX Bytes</th>
             <th id="stalistAction">ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>

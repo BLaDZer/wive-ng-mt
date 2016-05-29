@@ -454,6 +454,9 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
 	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
+	    // Rx/Tx bytes
+	    websWrite(wp, T("<td>%s,%s</td>"), scale(pe->RxBytes), scale(pe->TxBytes));
+
 	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
@@ -530,6 +533,9 @@ out24:
 	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
 	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
+	    // Rx/Tx bytes
+	    websWrite(wp, T("<td>%s,%s</td>"), scale(pe->RxBytes), scale(pe->TxBytes));
+
 	    // Action
 	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);

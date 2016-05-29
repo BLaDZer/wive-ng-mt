@@ -568,6 +568,8 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	char		AvgRssi0;
 	char		AvgRssi1;
 	char		AvgRssi2;
+	unsigned long	TxBytes;
+	unsigned long	RxBytes;
 	unsigned int	ConnectedTime;
 	MACHTTRANSMIT_SETTING	TxRate;
 	unsigned int	LastRxRate;

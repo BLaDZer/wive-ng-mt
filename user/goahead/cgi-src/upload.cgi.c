@@ -379,9 +379,9 @@ int main(int argc, char *argv[])
 	if (reset_rwfs)
 	{
 		system("fs restore > /dev/null 2>&1");
-		html_success(18*(IMAGE1_SIZE/0x100000) + 35);
+		html_success(16*(IMAGE1_SIZE/0x100000) + 35);
 	} else
-		html_success(18*(IMAGE1_SIZE/0x100000) + 25);
+		html_success(16*(IMAGE1_SIZE/0x100000) + 25);
 
 	// flash write
 	if (mtd_write_firmware(filename, (int)file_begin, (int)file_size) == -1)
