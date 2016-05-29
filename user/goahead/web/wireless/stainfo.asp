@@ -67,7 +67,7 @@ function PageInit()
             <th>MODE</th>
             <th>RSSI</th>
             <th>QUALITY</th>
-            <th>RX/TX Bytes</th>
+            <th>RX/TX COUNT</th>
             <th id="stalistAction">ACTIONS</th>
           </tr>
           <% getWlanStaInfo(); %>
