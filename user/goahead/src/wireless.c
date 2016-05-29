@@ -411,11 +411,11 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, T("<tr><td bgcolor=\"#c4d7ff\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 
-	    // Power Save mode, MIMO Power Save
 	    // Connection Time
 	    websWrite(wp, T("<td>%02u:%02u:%02u</td>"), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
 
-	    websWrite(wp, T("<td>%s</td><td>%d</td>"), (pe->Psm == 0)? "NO " : "YES", pe->MimoPs);
+	    // Power Save mode, MIMO Power Save
+	    websWrite(wp, T("<td>%s</td><td>%d</td>") (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
 
 	    // TX Rate
 	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
@@ -497,7 +497,7 @@ out24:
 	    websWrite(wp, T("<td>%02u:%02u:%02u</td>"), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
 
 	    // Power Save mode, MIMO Power Save
-	    websWrite(wp, T("<td>%s</td><td>%d</td>") (pe->Psm == 0)? "NO " : "YES", pe->MimoPs);
+	    websWrite(wp, T("<td>%s</td><td>%d</td>") (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
 
 	    // TX Rate
 	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
