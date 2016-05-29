@@ -54,9 +54,9 @@ function PageInit()
             <td class="title" colspan="15" id="stalistWirelessNet">Wireless Network</td>
           </tr>
           <tr>
+            <th>AID</th>
             <th id="stalistMacAddr">MAC ADDRESS</th>
             <th id="stalistConnTime">CONN TIME</th>
-            <th>AID</th>
             <th>PSM</th>
             <th>MIMO PS</th>
             <th>MCS</th>
