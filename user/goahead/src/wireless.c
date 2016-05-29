@@ -405,7 +405,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
 
 	    // AID
-	    websWrite(wp, T("<td  bgcolor=\"#c4d7ff\>%d</td>"), pe->Aid);
+	    websWrite(wp, T("<td  bgcolor=\"#c4d7ff\">%d</td>"), pe->Aid);
 
 	    // MAC Address
 	    websWrite(wp, T("<tr><td bgcolor=\"#c4d7ff\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
@@ -487,7 +487,7 @@ out24:
 	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
 
 	    // AID
-	    websWrite(wp, T("<td  bgcolor=\"#c4ffc4\>%d</td>"), pe->Aid);
+	    websWrite(wp, T("<td  bgcolor=\"#c4ffc4\">%d</td>"), pe->Aid);
 
 	    // MAC Address
 	    websWrite(wp, T("<tr><td bgcolor=\"#c4ffc4\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
