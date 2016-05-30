@@ -26,9 +26,17 @@ config RTC_HCTOSYS
 	  the value read from a specified RTC device. This is useful to avoid
 	  unnecessary fsck runs at boot time, and to network better.
 
+config RTC_SYSTOHC
+	bool "Set the RTC time based on NTP synchronization"
+	default y
+	help
+	  If you say yes here, the system time (wall clock) will be stored
+	  in the RTC specified by RTC_HCTOSYS_DEVICE approximately every 11
+	  minutes if userspace reports synchronized NTP status.
+
 config RTC_HCTOSYS_DEVICE
 	string "RTC used to set the system time"
-	depends on RTC_HCTOSYS = y
+	depends on RTC_HCTOSYS=y || RTC_SYSTOHC = y
 	default "rtc0"
 	help
 	  The RTC device that will be used to (re)initialize the system
@@ -135,6 +143,7 @@ config RTC_DRV_88PM860X
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-88pm860x.
 
+
 config RTC_DRV_DS1307
 	tristate "Dallas/Maxim DS1307/37/38/39/40, ST M41T00, EPSON RX-8025"
 	help
@@ -184,6 +193,7 @@ config RTC_DRV_DS3232
 	  This driver can also be built as a module.  If so, the module
 	  will be called rtc-ds3232.
 
+
 config RTC_DRV_MAX6900
 	tristate "Maxim MAX6900"
 	help
@@ -192,6 +202,7 @@ config RTC_DRV_MAX6900
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-max6900.
+
 
 config RTC_DRV_MAX8925
 	tristate "Maxim MAX8925"
@@ -212,6 +223,7 @@ config RTC_DRV_MAX8998
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-max8998.
+
 
 config RTC_DRV_RS5C372
 	tristate "Ricoh R2025S/D, RS5C372A/B, RV5C386, RV5C387A"
@@ -248,6 +260,7 @@ config RTC_DRV_X1205
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-x1205.
+
 
 config RTC_DRV_PCF8563
 	tristate "Philips PCF8563/Epson RTC8564"
@@ -322,6 +335,7 @@ config RTC_DRV_TWL4030
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-twl.
+
 
 config RTC_DRV_S35390A
 	tristate "Seiko Instruments S-35390A"
@@ -470,6 +484,7 @@ config RTC_DRV_PCF2123
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-pcf2123.
 
+
 endif # SPI_MASTER
 
 comment "Platform RTC drivers"
@@ -561,6 +576,7 @@ config RTC_DRV_DA9052
 	  Say y here to support the RTC driver for Dialog Semiconductor
 	  DA9052-BC and DA9053-AA/Bx PMICs.
 
+
 config RTC_DRV_EFI
 	tristate "EFI RTC"
 	depends on IA64
@@ -640,7 +656,6 @@ config RTC_MXC
 
 	   This driver can also be built as a module, if so, the module
 	   will be called "rtc-mxc".
-
 config RTC_DRV_BQ4802
 	tristate "TI BQ4802"
 	help
@@ -668,6 +683,7 @@ config RTC_DRV_V3020
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-v3020.
+
 
 config RTC_DRV_WM831X
 	tristate "Wolfson Microelectronics WM831x RTC"
@@ -737,6 +753,7 @@ config RTC_DRV_DAVINCI
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-davinci.
+
 
 config RTC_DRV_OMAP
 	tristate "TI OMAP1"
@@ -1086,5 +1103,7 @@ config RTC_DRV_LOONGSON1
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-ls1x.
+
+
 
 endif # RTC_CLASS

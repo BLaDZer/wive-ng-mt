@@ -15,6 +15,7 @@
 #include <linux/time.h>
 #include <linux/mm.h>
 #include <linux/module.h>
+#include <linux/rtc.h>
 
 #include "tick-internal.h"
 
@@ -485,7 +486,7 @@ out:
 	return leap;
 }
 
-#ifdef CONFIG_GENERIC_CMOS_UPDATE
+#if defined(CONFIG_GENERIC_CMOS_UPDATE) || defined(CONFIG_RTC_SYSTOHC)
 
 static void sync_cmos_clock(struct work_struct *work);
 
@@ -512,8 +513,14 @@ static void sync_cmos_clock(struct work_struct *work)
 	}
 
 	getnstimeofday(&now);
-	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec / 2)
+	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec / 2){
 		fail = update_persistent_clock(now);
+#ifdef CONFIG_RTC_SYSTOHC
+		struct timespec adjust = now;
+//		adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
+		rtc_set_ntp_time(adjust);
+#endif
+	}
 
 	next.tv_nsec = (NSEC_PER_SEC / 2) - now.tv_nsec - (TICK_NSEC / 2);
 	if (next.tv_nsec <= 0)

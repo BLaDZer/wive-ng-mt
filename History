@@ -2113,13 +2113,14 @@
 25) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
 26) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
 27) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-28) kernel: net: do not block BH while processing socket backlog.<br>
-29) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-30) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-31) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-32) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-33) kernel: sched: always inline context_switch().<br>
-34) kernel: mips: make flush_thread and exit_thread always inline.<br>
+28) kernel: backport RTC_SYSTOHC from upstream.<br>
+29) kernel: net: do not block BH while processing socket backlog.<br>
+30) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+31) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+32) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+33) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+34) kernel: sched: always inline context_switch().<br>
+35) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

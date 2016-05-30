@@ -31,6 +31,8 @@ static int __init rtc_hctosys(void)
 	struct timespec tv = {
 		.tv_nsec = NSEC_PER_SEC >> 1,
 	};
+	struct timespec now;
+
 	struct rtc_device *rtc = rtc_class_open(CONFIG_RTC_HCTOSYS_DEVICE);
 
 	if (rtc == NULL) {
@@ -64,6 +66,18 @@ static int __init rtc_hctosys(void)
 		tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
 		tm.tm_hour, tm.tm_min, tm.tm_sec,
 		(unsigned int) tv.tv_sec);
+
+	getnstimeofday(&now);
+	if (now.tv_nsec < (NSEC_PER_SEC >> 1))
+		rtc_time_to_tm(now.tv_sec, &tm);
+	else
+		rtc_time_to_tm(now.tv_sec + 1, &tm);
+	dev_info(rtc->dev.parent,
+		"system clock has been set to "
+		"%d-%02d-%02d %02d:%02d:%02d UTC\n",
+		tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+		tm.tm_hour, tm.tm_min, tm.tm_sec);
+	
 
 err_invalid:
 err_read:
