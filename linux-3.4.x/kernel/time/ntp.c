@@ -516,9 +516,7 @@ static void sync_cmos_clock(struct work_struct *work)
 	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec / 2){
 		fail = update_persistent_clock(now);
 #ifdef CONFIG_RTC_SYSTOHC
-		struct timespec adjust = now;
-//		adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
-		rtc_set_ntp_time(adjust);
+		rtc_set_ntp_time(now);
 #endif
 	}
 
