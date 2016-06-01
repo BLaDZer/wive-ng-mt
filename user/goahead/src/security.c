@@ -115,12 +115,12 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		if (!umUserExists(userid)) {
 			websStats.access++;
 			websError(wp, 401, T("Access Denied\nUnknown User"));
-			syslog(LOG_WARNING, T("Access Denied - Unknown User: %s from %s:%s"), userid, wp->ipaddr, wp->userAgent);
+			syslog(LOG_WARNING, T("Access Denied - Unknown User: %s from %s"), userid, wp->ipaddr);
 			nRet = 1;
 		} else if (!umUserCanAccessURL(userid, accessLimit)) {
 			websStats.access++;
 			websError(wp, 403, T("Access Denied\nProhibited User"));
-			syslog(LOG_WARNING, T("Access Denied - Prohibited User: %s from %s:%s"), userid, wp->ipaddr, wp->userAgent);
+			syslog(LOG_WARNING, T("Access Denied - Prohibited User: %s from %s"), userid, wp->ipaddr);
 			nRet = 1;
 		} else if (password && * password) {
 			char_t * userpass = umGetUserPassword(userid);
@@ -128,7 +128,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 				if (strcmp(password, userpass) != 0) {
 					websStats.access++;
 					websError(wp, 401, T("Access Denied\nWrong Password"));
-					syslog(LOG_WARNING, T("Access Denied - Wrong Password: %s-%s from %s:%s"), userid, password, wp->ipaddr, wp->userAgent);
+					syslog(LOG_WARNING, T("Access Denied - Wrong Password: %s-%s from %s"), userid, password, wp->ipaddr);
 					nRet = 1;
 				}
 
@@ -157,7 +157,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
              * Jay Chalfant.
              */
 				websError(wp, 401, T("Access Denied\nWrong Password"));
-				syslog(LOG_WARNING, T("Access Denied - Wrong Password from %s:%s"), wp->ipaddr, wp->userAgent);
+				syslog(LOG_WARNING, T("Access Denied - Wrong Password from %s"), wp->ipaddr);
 				nRet = 1;
 			}
 
@@ -174,7 +174,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 #endif
 			websStats.errors++;
 			websError(wp, 401, T("Access to this document requires a password"));
-			syslog(LOG_WARNING, T("Access Denied - Requires Password from %s:%s"), wp->ipaddr, wp->userAgent);
+			syslog(LOG_WARNING, T("Access Denied - Requires Password from %s"), wp->ipaddr);
 			nRet = 1;
 		}
 	} else if (am != AM_FULL) {
@@ -189,7 +189,7 @@ int websSecurityHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 #endif
 		websStats.errors++;
 		websError(wp, 401, T("Access to this document requires a User ID"));
-		syslog(LOG_WARNING, T("Access Denied - Requires User ID from %s:%s"), wp->ipaddr, wp->userAgent);
+		syslog(LOG_WARNING, T("Access Denied - Requires User ID from %s"), wp->ipaddr);
 		nRet = 1;
 	}
 

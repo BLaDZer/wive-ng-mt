@@ -106,7 +106,6 @@ typedef struct websRec {
 	char_t			*password;			/* Authorization password */
 	char_t			*userName;			/* Authorization username */
 	char_t			*cookie;			/* Cookie string */
-	char_t			*userAgent;			/* User agent (browser) */
 	char_t			*protocol;			/* Protocol (normally HTTP) */
 	char_t			*protoVersion;		/* Protocol version */
 	int				sid;				/* Socket id (handler) */

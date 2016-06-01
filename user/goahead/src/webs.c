@@ -896,8 +896,8 @@ static void websParseRequest(webs_t wp)
  *		Track the requesting agent (browser) type
  */
 		if (strcmp(key, T("user-agent")) == 0) {
-			wp->userAgent = bstrdup(B_L, value);
-
+			/* stub */
+			;
 /*
  *		Parse the user authorization. ie. password
  */
@@ -2112,8 +2112,6 @@ void websFree(webs_t wp)
 		bfree(B_L, wp->userName);
 	if (wp->cookie)
 		bfree(B_L, wp->cookie);
-	if (wp->userAgent)
-		bfree(B_L, wp->userAgent);
 	if (wp->dir)
 		bfree(B_L, wp->dir);
 	if (wp->protocol)
