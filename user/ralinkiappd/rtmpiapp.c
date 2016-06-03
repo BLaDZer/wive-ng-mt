@@ -2207,10 +2207,14 @@ static VOID IAPP_RcvHandlerTcp(
 		/* get IAPP frame body */
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
 
+		if (!pIappHdr) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> ip header unpasable!\n");
+			return;
+		}
+
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n",
-					pIappHdr->Version);
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n", pIappHdr->Version);
 			IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
@@ -2864,18 +2868,21 @@ static VOID IAPP_RcvHandlerUdp(
 		/* get IAPP frame body */
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
 
+		if (!pIappHdr) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> ip header unpasable!\n");
+			return;
+		}
+
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n",
-					pIappHdr->Version);
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n", pIappHdr->Version);
 			IAPP_HEX_DUMP("Wrong UDP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
 
 
 		/* handle the IAPP */
-		DBGPRINT(RT_DEBUG_TRACE,
-				"iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
 
 		switch(pIappHdr->Command)
 		{
