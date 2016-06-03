@@ -2204,6 +2204,12 @@ static VOID IAPP_RcvHandlerTcp(
 		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
+		if (!pPktBuf) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> pPktBuf is null!\n");
+			return;
+		}
+
+
 		/* get IAPP frame body */
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
 
@@ -2864,6 +2870,11 @@ static VOID IAPP_RcvHandlerUdp(
 		/* ioctl to decrypt */
 		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
+
+		if (!pPktBuf) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> pPktBuf is null!\n");
+			return;
+		}
 
 		/* get IAPP frame body */
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
