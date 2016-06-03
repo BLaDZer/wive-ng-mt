@@ -38,7 +38,6 @@
 #include <pthread.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <sys/unistd.h>
 #include <netinet/in.h>
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
@@ -195,7 +194,6 @@ get_iface_ip(const char ifname[])
 	const struct ifaddrs *cur;
 	struct ifaddrs *addrs;
 	s_config *config;
-	int sockd;
 
 	if(getifaddrs(&addrs) < 0) {
 		debug(LOG_ERR, "getifaddrs(): %s", strerror(errno));
@@ -238,7 +236,7 @@ get_iface_mac(const char ifname[])
 	int r, s;
 	s_config *config;
 	struct ifreq ifr;
-	char *hwaddr, mac[13];
+	char *hwaddr, mac[18];
 
 	config = config_get_config();
 	strcpy(ifr.ifr_name, ifname);
@@ -258,7 +256,7 @@ get_iface_mac(const char ifname[])
 
 	hwaddr = ifr.ifr_hwaddr.sa_data;
 	close(s);
-	snprintf(mac, sizeof(mac), "%02X%02X%02X%02X%02X%02X",
+	snprintf(mac, sizeof(mac), "%02x:%02x:%02x:%02x:%02x:%02x",
 			 hwaddr[0] & 0xFF,
 			 hwaddr[1] & 0xFF,
 			 hwaddr[2] & 0xFF,
@@ -271,7 +269,7 @@ get_iface_mac(const char ifname[])
 #elif defined(__NetBSD__)
 	struct ifaddrs *ifa, *ifap;
 	const char *hwaddr;
-	char mac[13], *str = NULL;
+	char mac[18], *str = NULL;
 	struct sockaddr_dl *sdl;
 
 	if (getifaddrs(&ifap) == -1) {
@@ -289,7 +287,7 @@ get_iface_mac(const char ifname[])
 	}
 	sdl = (struct sockaddr_dl *)ifa->ifa_addr;
 	hwaddr = LLADDR(sdl);
-	snprintf(mac, sizeof(mac), "%02X%02X%02X%02X%02X%02X",
+	snprintf(mac, sizeof(mac), "%02x:%02x:%02x:%02x:%02x:%02x",
 			 hwaddr[0] & 0xFF, hwaddr[1] & 0xFF,
 			 hwaddr[2] & 0xFF, hwaddr[3] & 0xFF,
 			 hwaddr[4] & 0xFF, hwaddr[5] & 0xFF);
@@ -703,6 +701,94 @@ get_clients_text(void)
 
 	return safe_strdup(buffer);
 }
+
+/*
+ * @return A string containing json clients list.
+ */
+char *
+get_clients_json(void)
+{
+	char buffer[STATUS_BUF_SIZ];
+	ssize_t len;
+	t_client *client;
+	int	   indx;
+	unsigned long int now, durationsecs = 0;
+	unsigned long long int download_bytes, upload_bytes;
+
+	now = time(NULL);
+	len = 0;
+
+	/* Update the client's counters so info is current */
+	iptables_fw_counters_update();
+
+	LOCK_CLIENT_LIST();
+
+	snprintf((buffer + len), (sizeof(buffer) - len), "{\n\"client_length\": %d,\n", get_client_list_length());
+	len = strlen(buffer);
+
+	client = client_get_first_client();
+	indx = 0;
+
+	snprintf((buffer + len), (sizeof(buffer) - len), "\"clients\":{\n");
+	len = strlen(buffer);
+	
+	while (client != NULL) {
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"%s\":{\n", client->mac);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"client_id\":%d,\n", indx);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"ip\":\"%s\",\n\"mac\":\"%s\",\n", client->ip, client->mac);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"added\":%lld,\n", (long long) client->added_time);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"active\":%lld,\n", (long long) client->counters.last_updated);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"duration\":%lu,\n", now - client->added_time);
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"token\":\"%s\",\n", client->token ? client->token : "none");
+		len = strlen(buffer);
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "\"state\":\"%s\",\n",
+				 fw_connection_state_as_string(client->fw_connection_state));
+		len = strlen(buffer);
+
+		durationsecs = now - client->added_time;
+		download_bytes = client->counters.incoming;
+		upload_bytes = client->counters.outgoing;
+
+		snprintf((buffer + len), (sizeof(buffer) - len),
+				 "\"downloaded\":\"%llu\",\n\"avg_down_speed\":\"%.6g\",\n\"uploaded\":\"%llu\",\n\"avg_up_speed\":\"%.6g\"\n",
+				 download_bytes/1000, ((double)download_bytes)/125/durationsecs,
+				 upload_bytes/1000, ((double)upload_bytes)/125/durationsecs);
+		len = strlen(buffer);
+
+		indx++;
+		client = client->next;
+
+		snprintf((buffer + len), (sizeof(buffer) - len), "}");
+		len = strlen(buffer);
+
+		if(client) {
+			snprintf((buffer + len), (sizeof(buffer) - len), ",\n");
+			len = strlen(buffer);
+		}
+
+	}
+
+	snprintf((buffer + len), (sizeof(buffer) - len), "}}" );
+	len = strlen(buffer);
+
+	UNLOCK_CLIENT_LIST();
+
+	return safe_strdup(buffer);
+}
+
 
 unsigned short
 rand16(void)

@@ -2089,14 +2089,15 @@
 <b>4.4.x</b><br>
 1) libcurl: up to 7.49.0 version.<br>
 2) lldpd: up to 0.9.3 version.<br>
-3) coovachilli: up to 1.3.1.4 version from git 27.05.2016 (commit d992c478).<br>
-4) nodogsplash: up to version 1.0.0 (commit: f914909b).<br>
-5) nvram: allways copy values as string, not need convert str->int->str.<br>
-6) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
-7) netcwmpd: fix reboot afer firmware update in some cases.<br>
-8) goahead: use direct call to kernel if need fast reboot.<br>
-9) goahead: add Rx/Tx bytes per client in WebUI.<br>
-10) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
+3) build_system: add libmicrohttpd 0.9.50 (need for new version nodogsplash).<br>
+4) coovachilli: up to 1.3.1.4 version from git 27.05.2016 (commit d992c478).<br>
+5) nodogsplash: up to version 1.0.0 (commit: 5c9154c2).<br>
+6) nvram: allways copy values as string, not need convert str->int->str.<br>
+7) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
+8) netcwmpd: fix reboot afer firmware update in some cases.<br>
+9) goahead: use direct call to kernel if need fast reboot.<br>
+10) goahead: add Rx/Tx bytes per client in WebUI.<br>
+11) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
 12) kernel: ralink_arch: allow highmem region for 512M devices.<br>
 13) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
 14) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>

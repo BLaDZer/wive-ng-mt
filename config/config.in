@@ -17,6 +17,7 @@ bool 'Build libiconv'           CONFIG_LIB_ICONV
 bool 'Build libxml2'		CONFIG_LIB_XML2
 bool 'Build libneon'		CONFIG_LIB_NEON
 bool 'Build libtalloc'		CONFIG_LIB_TALLOC
+bool 'Build libmicrohttpd'	CONFIG_LIB_MICROHTTPD
 
 if [ "$CONFIG_LIB_XML2" = "y" ]; then
     define_bool CONFIG_LIB_ICONV y
@@ -116,6 +117,10 @@ fi
 
 if [ "$CONFIG_USER_WPA_SUPPLICANT" = "y" ]; then
 	define_bool CONFIG_LIB_OPENSSL y
+fi
+
+if [ "$CONFIG_USER_NODOGSPLASH" = "y" ]; then
+	define_bool CONFIG_LIB_MICROHTTPD y
 fi
 
 #############################################################################

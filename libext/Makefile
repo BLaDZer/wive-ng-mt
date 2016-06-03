@@ -49,6 +49,7 @@ dir_$(CONFIG_LIB_XML2)            += libxml2
 dir_$(CONFIG_LIB_NEON)            += libneon
 dir_$(CONFIG_LIB_CURL)            += libcurl
 dir_$(CONFIG_LIB_TALLOC)          += libtalloc
+dir_$(CONFIG_LIB_MICROHTTPD)      += libmicrohttpd
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERLIBS  <<<<<<<<<<<<<<<<<<<"

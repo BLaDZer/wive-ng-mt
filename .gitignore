@@ -220,6 +220,9 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /libext/libnl/configure
 /libext/libnl/lib/libnl.a
 /libext/libtalloc/mips.txt
+/libext/libmicrohttpd/Makefile
+/libext/libmicrohttpd/Mkaefile.in
+/libext/libmicrohttpd/configure
 
 #
 # exclude enerated files from user apps
