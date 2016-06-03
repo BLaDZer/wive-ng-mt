@@ -1040,10 +1040,7 @@ static BOOLEAN IAPP_MsgProcess(
 
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> Command to WLAN (OID=%x, LEN=%d)\n", OID_req_p->OID, OID_req_p->Len);
 
-			IAPP_IOCTL_TO_WLAN( \
-							pCtrlBK, RT_IOCTL_IAPP,
-							OID_req_p->Buf, &OID_req_p->Len,
-							0, OID_req_p->OID);
+			IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, OID_req_p->Buf, &OID_req_p->Len, 0, OID_req_p->OID);
 		} /* case IAPP_SET_OID_REQ */
 		break;
 
@@ -3105,8 +3102,7 @@ static VOID IAPP_USR2Handle(
 		return;
 	} /* End of if */
 
-	IAPP_IOCTL_TO_WLAN(&IAPP_Ctrl_Block, RT_IOCTL_IAPP,
-						pSigBuf, &DataLen, 0, RT_QUERY_SIGNAL_CONTEXT);
+	IAPP_IOCTL_TO_WLAN(&IAPP_Ctrl_Block, RT_IOCTL_IAPP, pSigBuf, &DataLen, 0, RT_QUERY_SIGNAL_CONTEXT);
 
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> Receive a signal (Len = %d)!\n", DataLen);
 
@@ -3226,14 +3222,11 @@ VOID IAPP_Task(
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> Process ID = 0x%x\n", PidAuth);
 
 	ComLen = sizeof(INT32);
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						&PidAuth, &ComLen, 0,
-						RT_SET_IAPP_PID | OID_GET_SET_TOGGLE);
+	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, &PidAuth, &ComLen, 0, RT_SET_IAPP_PID | OID_GET_SET_TOGGLE);
+
 #ifdef FT_KDP_KEY_FROM_DAEMON
 	ComLen = strlen(pCtrlBK->CommonKey);
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						pCtrlBK->CommonKey, &ComLen, 0,
-						RT_FT_KEY_SET | OID_GET_SET_TOGGLE);
+	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pCtrlBK->CommonKey, &ComLen, 0, RT_FT_KEY_SET | OID_GET_SET_TOGGLE);
 #endif // FT_KDP_KEY_FROM_DAEMON //
 
 	/* start IAPP function (while FlgIsLoop in the function) */
