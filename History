@@ -2098,30 +2098,32 @@
 9) goahead: use direct call to kernel if need fast reboot.<br>
 10) goahead: add Rx/Tx bytes per client in WebUI.<br>
 11) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
-12) kernel: ralink_arch: allow highmem region for 512M devices.<br>
-13) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
-14) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
-15) kernel: ralink_wifi: mt7603 fix proc path name.<br>
-16) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-17) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-18) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-19) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-20) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-21) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
-22) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
-23) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-24) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
-25) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
-26) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
-27) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-28) kernel: backport RTC_SYSTOHC from upstream.<br>
-29) kernel: net: do not block BH while processing socket backlog.<br>
-30) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-31) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-32) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-33) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-34) kernel: sched: always inline context_switch().<br>
-35) kernel: mips: make flush_thread and exit_thread always inline.<br>
+12) ralinkiappd: temp disable crypt for iappd frames (need for debug, compat with dual radio and others iappd implementations).<br>
+13) ralinkiappd: fix encrypt/decrypt function for dual band operations (if used).<br>
+14) kernel: ralink_arch: allow highmem region for 512M devices.<br>
+15) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
+16) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
+17) kernel: ralink_wifi: mt7603 fix proc path name.<br>
+18) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+19) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+20) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+21) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+22) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+23) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
+24) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+25) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+26) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
+27) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
+28) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
+29) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+30) kernel: backport RTC_SYSTOHC from upstream.<br>
+31) kernel: net: do not block BH while processing socket backlog.<br>
+32) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+33) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+34) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+35) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+36) kernel: sched: always inline context_switch().<br>
+37) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

@@ -61,7 +61,7 @@
 /* ---------------------------- User Definition ------------------------ */
 
 #define FT_KDP_FUNC_SOCK_COMM		/* use socket to communicate with driver */
-#define FT_KDP_FUNC_PKT_ENCRYPT		/* do encryption for each IAPP packet */
+//#define FT_KDP_FUNC_PKT_ENCRYPT		/* do encryption for each IAPP packet */
 #define FT_KDP_SELECT_TIMEOUT		/* use timeout to wait for any packet */
 //#define FT_KDP_KEY_FROM_DAEMON		/* key is set in daemon */
 

@@ -92,8 +92,12 @@ static BOOLEAN IAPP_DSIfInfoGet(
 #define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
 				{ IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); \
 				  IAPP_IoctlToWLAN2(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); };
+#define IAPP_IOCTL_TO_WLAN_CRYPT(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
+				  IAPP_IoctlToWLAN2(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
 #else
 #define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
+				  IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
+#define IAPP_IOCTL_TO_WLAN_CRYPT(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
 				  IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
 #endif
 
@@ -1954,8 +1958,7 @@ static BOOLEAN IAPP_UDP_PacketSend(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* send out the packet */
@@ -2201,8 +2204,7 @@ static VOID IAPP_RcvHandlerTcp(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		/* get IAPP frame body */
@@ -2689,9 +2691,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 		SizeRcvMsg = pFrameRRB->FTActionLength;
 		IAPP_ENCRYPTED_DATA_SIZE_CAL(SizeRcvMsg);
 
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pPktBuf+FT_RRB_HEADER_SIZE,
-							&SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
 
 		SizeRcvMsg += FT_RRB_HEADER_SIZE;
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
@@ -2861,8 +2861,7 @@ static VOID IAPP_RcvHandlerUdp(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		/* get IAPP frame body */
@@ -3406,8 +3405,7 @@ static BOOLEAN IAPP_TCP_PacketSend(
 	{
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to encrypt */
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (send(SocketPeer, pBufEncrypt, PktLen, 0) < 0)
@@ -3525,8 +3523,7 @@ static VOID FT_KDP_SecurityBlockSend(
 	{
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to encrypt */
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (send(SocketPeer, pBufFrame, PktLen, 0) < 0)
@@ -3633,8 +3630,7 @@ static VOID FT_KDP_SecurityBlockAck(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* send out the frame */
@@ -3800,8 +3796,7 @@ static VOID FT_KDP_InformationResponseSend(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* send out the frame */
@@ -3951,9 +3946,7 @@ static VOID FT_RRB_ActionForward(
 	/* the address of pEvtHdr->EventLen is not 4B align */
 	EvtLen = pEvtHdr->EventLen;
 
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-						pFrameRRB->FTActionFrame, &EvtLen,
-						0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pFrameRRB->FTActionFrame, &EvtLen, 0, RT_FT_DATA_ENCRYPT);
 
 	/* reassign the packet length due to changed pEvtHdr->EventLen */
 	PktLen = sizeof(FT_RRB_FRAME) + EvtLen;
