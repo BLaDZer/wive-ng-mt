@@ -2102,29 +2102,30 @@
 13) ralinkiappd: fix encrypt/decrypt function for dual band operations (if used).<br>
 14) ralinkiappd: fix potentioanl null pointer dereference.<br>
 15) kernel: ralink_arch: allow highmem region for 512M devices.<br>
-16) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
-17) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
-18) kernel: ralink_wifi: mt7603 fix proc path name.<br>
-19) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-20) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-21) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-22) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-23) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-24) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
-25) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
-26) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-27) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
-28) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
-29) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
-30) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-31) kernel: backport RTC_SYSTOHC from upstream.<br>
-32) kernel: net: do not block BH while processing socket backlog.<br>
-33) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-34) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-35) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-36) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-37) kernel: sched: always inline context_switch().<br>
-38) kernel: mips: make flush_thread and exit_thread always inline.<br>
+16) kernel: ralink_arch: fix memory size autodetect with highmmem.<br>
+17) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
+18) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
+19) kernel: ralink_wifi: mt7603 fix proc path name.<br>
+20) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+21) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+22) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+23) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+24) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+25) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
+26) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+27) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+28) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
+29) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
+30) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
+31) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+32) kernel: backport RTC_SYSTOHC from upstream.<br>
+33) kernel: net: do not block BH while processing socket backlog.<br>
+34) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+35) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+36) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+37) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+38) kernel: sched: always inline context_switch().<br>
+39) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>

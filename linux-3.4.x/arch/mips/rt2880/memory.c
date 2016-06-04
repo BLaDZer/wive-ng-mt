@@ -100,7 +100,7 @@ static char *mtypes[3] = {
 /* References to section boundaries */
 extern char _end;
 
-#ifdef CONFIG_UBOOT_CMDLINE
+#if defined (CONFIG_UBOOT_CMDLINE) && !defined(CONFIG_RAM_SIZE_AUTO)
 static unsigned int __init prom_get_ramsize(void)
 {
 	char *argptr;
@@ -150,6 +150,12 @@ void __init prom_meminit(void)
 	if (mem < MIN_RAM_SIZE)
 	    mem = MIN_RAM_SIZE;
 
+#if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_HIGHMEM)
+	/* autodetect support only low mem scan, need correct for full size regions */
+	if (mem == 448*1024*1024)
+	    mem = 512*1024*1024;
+#endif
+
 	detect_ram_sequence[2] = mem;
 
 	spin_unlock_irq(&testmem_lock);
@@ -165,10 +171,11 @@ void __init prom_meminit(void)
 
 #endif	/* CONFIG_RAM_SIZE_AUTO */
 #if defined(CONFIG_RALINK_MT7621)
+	/* if ramsize > 448Mb */
 	if (ramsize > 0x1c000000) {
 		/* 1. Normal region 0..448MB */
 		add_memory_region(RAM_BASE, 0x1c000000, BOOT_MEM_RAM);
-#if defined(CONFIG_RT2880_DRAM_512M) && defined(CONFIG_HIGHMEM)
+#ifdef CONFIG_HIGHMEM
 		/* 2. Highmem region */
 		add_memory_region(0x20000000, (ramsize - 0x1c000000), BOOT_MEM_RAM);
 #endif

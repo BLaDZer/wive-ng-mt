@@ -162,7 +162,6 @@ config  CLKSRC_MIPS_GIC
 #--------------------------
 config RAM_SIZE_AUTO
         bool "Autodetect RAM size"
-	depends on !HIGHMEM
 	default y
 
 choice
