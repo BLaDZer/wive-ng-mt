@@ -2125,10 +2125,11 @@
 36) kernel: net: do not block BH while processing socket backlog.<br>
 37) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
 38) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-39) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-40) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-41) kernel: sched: always inline context_switch().<br>
-42) kernel: mips: make flush_thread and exit_thread always inline.<br>
+39) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+40) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+41) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+42) kernel: sched: always inline context_switch().<br>
+43) kernel: mips: make flush_thread and exit_thread always inline.<br>
 <br>
 <br>
 <br>
