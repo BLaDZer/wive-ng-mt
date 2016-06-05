@@ -14,6 +14,11 @@
 
 #include <asm/sgidefs.h>
 
+#ifdef GCC5_SFT
+#define S_HF .set hardfloat
+#else
+#define S_HF
+#endif
 #if _MIPS_SIM == _MIPS_SIM_ABI32
 
 /*

@@ -88,7 +88,11 @@ all-$(CONFIG_SYS_SUPPORTS_ZBOOT)+= vmlinuz
 # crossformat linking we rely on the elf2ecoff tool for format conversion.
 #
 cflags-y			+= -G 0 -mno-abicalls -fno-pic -pipe -mno-branch-likely
+if_gcc5 = $(shell if echo __GNUC__ | $(CC) -E -xc - | grep ^5$ > /dev/null 2>&1; then echo 1; else echo 0; fi)
 cflags-y			+= -msoft-float
+ifeq ($(if_gcc5),1)
+cflags-y			+= -Wa,-msoft-float -DGCC5_SFT
+endif
 LDFLAGS_vmlinux			+= -G 0 -static -n -nostdlib
 
 ifdef CONFIG_LONG_CALLS

@@ -21,6 +21,7 @@
 
 	.macro	EX insn, reg, src
 	.set	push
+	S_HF
 	.set	nomacro
 .ex\@:	\insn	\reg, \src
 	.set	pop
