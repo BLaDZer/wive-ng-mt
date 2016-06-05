@@ -103,16 +103,27 @@ extern char _end;
 #if defined (CONFIG_UBOOT_CMDLINE) && !defined(CONFIG_RAM_SIZE_AUTO)
 static unsigned int __init prom_get_ramsize(void)
 {
-	char *argptr;
+	char *arg;
 	unsigned int ramsize = 0;
 
-	argptr = prom_getcmdline();
+	arg = prom_getenv("ramsize");
 
-	if ((argptr = strstr(argptr, "ramsize=")) != NULL) {
-		argptr += strlen("ramsize=");
-		ramsize = simple_strtoul(&argptr[0], NULL, 0);
+	if (!arg)
+		arg = prom_getenv("memsize");
+
+	if (arg) {
+		ramsize = memparse(arg, NULL);
+
+		if (ramsize < 1024 * 1024)
+			ramsize *= 1024 * 1024;
+
+		prom_printf("Memory: got memory size from u-boot: %dM\n", (ramsize / ( 1024 * 1024 )));
 	}
-
+	else 
+	{
+		ramsize =  CONFIG_RALINK_RAM_SIZE * 1024 * 1024;
+		prom_printf("Memory: u-boot memory size is invalid or missing, using internal value: %dM\n", CONFIG_RALINK_RAM_SIZE);
+	}
 	return ramsize;
 }
 #endif
