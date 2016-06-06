@@ -2087,7 +2087,7 @@
 <br>
 <br>
 <b>4.4.x</b><br>
-1) libcurl: up to 7.49.0 version.<br>
+1) libcurl: up to 7.49.1 version.<br>
 2) lldpd: up to 0.9.3 version.<br>
 3) build_system: add libmicrohttpd 0.9.50 (need for new version nodogsplash).<br>
 4) coovachilli: up to 1.3.1.4 version from git 27.05.2016 (commit d992c478).<br>
