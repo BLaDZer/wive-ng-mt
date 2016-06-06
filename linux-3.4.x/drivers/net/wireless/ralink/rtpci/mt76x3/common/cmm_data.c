@@ -2676,7 +2676,6 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 	        {
 #ifdef DBG
 		occupied_wcid = fifo_swq->swq[enq_idx];
-		enq_done = FALSE;
 #endif /* DBG */
 #ifdef DATA_QUEUE_RESERVE
 			if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
@@ -2685,7 +2684,7 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 				tr_entry->high_pkt_drop_cnt ++;
 			}
 #endif /* DATA_QUEUE_RESERVE */
-
+			enq_done = FALSE;
 			goto enq_end;
 		}
 	}
