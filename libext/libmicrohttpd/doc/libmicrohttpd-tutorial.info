@@ -1,4 +1,4 @@
-This is libmicrohttpd-tutorial.info, produced by makeinfo version 6.1
+This is libmicrohttpd-tutorial.info, produced by makeinfo version 5.2
 from libmicrohttpd-tutorial.texi.
 
 This tutorial documents GNU libmicrohttpd version 0.9.48, last updated 2
@@ -1760,9 +1760,9 @@ documented in the GnuTLS API for the
           use the function 'gnutls_x509_rdn_get()'.
 
      PK_ALGOS
-          contains a list with server’s acceptable signature algorithms.
-          The certificate returned should support the server’s given
-          algorithms.
+          contains a list with server’s acceptable signature
+          algorithms.  The certificate returned should support the
+          server’s given algorithms.
 
      PCERT
           should contain a single certificate and public or a list of
@@ -2753,6 +2753,11 @@ C.5 simplepost.c
      #include <string.h>
      #include <stdlib.h>
 
+     #if defined(_MSC_VER) && _MSC_VER+0 <= 1800
+     /* Substitution is OK while return value is not used */
+     #define snprintf _snprintf
+     #endif
+
      #define PORT            8888
      #define POSTBUFFERSIZE  512
      #define MAXNAMESIZE     20
@@ -2953,6 +2958,17 @@ C.6 largepost.c
      #include <string.h>
      #include <microhttpd.h>
 
+     #ifdef _MSC_VER
+     #ifndef strcasecmp
+     #define strcasecmp(a,b) _stricmp((a),(b))
+     #endif /* !strcasecmp */
+     #endif /* _MSC_VER */
+
+     #if defined(_MSC_VER) && _MSC_VER+0 <= 1800
+     /* Substitution is OK while return value is not used */
+     #define snprintf _snprintf
+     #endif
+
      #define PORT            8888
      #define POSTBUFFERSIZE  512
      #define MAXCLIENTS      2
@@ -2994,6 +3010,8 @@ C.6 largepost.c
        "<html><body>An internal server error has occured.</body></html>";
      const char *fileexistspage =
        "<html><body>This file already exists.</body></html>";
+     const char* const postprocerror =
+       "<html><head><title>Error</title></head><body>Error processing POST data</body></html>";
 
 
      static int
@@ -3170,9 +3188,14 @@ C.6 largepost.c
 
            if (0 != *upload_data_size)
              {
-               MHD_post_process (con_info->postprocessor,
-                                 upload_data,
-                                 *upload_data_size);
+               if (MHD_post_process (con_info->postprocessor,
+                                     upload_data,
+                                     *upload_data_size) != MHD_YES)
+                 {
+                   return send_page (connection,
+                                     postprocerror,
+                                     MHD_HTTP_BAD_REQUEST);
+                 }
                *upload_data_size = 0;
 
                return MHD_YES;
@@ -4288,16 +4311,16 @@ Node: Processing POST data35190
 Node: Improved processing of POST data43853
 Node: Session management54564
 Node: Adding a layer of security57459
-Node: Bibliography72024
-Node: License text73218
-Node: Example programs98374
-Node: hellobrowser.c98687
-Node: logging.c100230
-Node: responseheaders.c101813
-Node: basicauthentication.c104439
-Node: simplepost.c106978
-Node: largepost.c112659
-Node: sessions.c120994
-Node: tlsauthentication.c143339
+Node: Bibliography72025
+Node: License text73219
+Node: Example programs98375
+Node: hellobrowser.c98688
+Node: logging.c100231
+Node: responseheaders.c101814
+Node: basicauthentication.c104440
+Node: simplepost.c106979
+Node: largepost.c112815
+Node: sessions.c121812
+Node: tlsauthentication.c144157
 
 End Tag Table
