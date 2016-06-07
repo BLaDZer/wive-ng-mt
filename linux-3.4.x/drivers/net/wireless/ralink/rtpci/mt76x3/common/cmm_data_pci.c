@@ -2680,10 +2680,8 @@ VOID RTMPHandleBcnDmaDoneInterrupt(RTMP_ADAPTER *pAd)
 				pMbss->bcn_buf.bcn_state = BCN_TX_DMA_DONE;
 
 #ifdef DBG
-#ifdef MT_MAC
 			AsicGetTsfTime(pAd, &Highpart, &Lowpart);
 			pMbss->BcnDmaDoneTime[pMbss->timer_loop] = Lowpart;//update TSF time to corresponding field.
-#endif
 #endif
 
 			DBGPRINT(RT_DEBUG_LOUD, ("%s():change state as idle\n", __FUNCTION__));

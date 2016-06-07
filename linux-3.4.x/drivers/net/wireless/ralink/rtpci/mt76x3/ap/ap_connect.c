@@ -1618,12 +1618,14 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif
 	RT28xx_UpdateBeaconToAsic(pAd, apidx, FrameLen, UpdatePos);
 
+#if defined(MT_MAC)
 	{
 	    UINT32   Lowpart, Highpart;
 
 	    AsicGetTsfTime(pAd, &Highpart, &Lowpart);
 	    pMbss->WriteBcnDoneTime[pMbss->timer_loop] = Lowpart;
 	}
+#endif
 }
 
 

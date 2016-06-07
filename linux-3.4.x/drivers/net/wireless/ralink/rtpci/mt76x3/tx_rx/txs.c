@@ -102,9 +102,11 @@ INT32 BcnTxSHandler(RTMP_ADAPTER *pAd, CHAR *Data, UINT32 Priv)
 			pMbss->TXS_TSF[pMbss->timer_loop] = txs_d1->timestamp;
 			pMbss->TXS_SN[pMbss->timer_loop] = txs_d4->sn;
 #endif /* DBG */
-			pMbss->timer_loop++;
-			if (pMbss->timer_loop >= MAX_TIME_RECORD)
+			if (pMbss->timer_loop < MAX_TIME_RECORD - 1)
+				pMbss->timer_loop++;
+			else
 				pMbss->timer_loop = 0;
+			
 			return 0;
 		}
 #endif /* CONFIG_AP_SUPPORT */
