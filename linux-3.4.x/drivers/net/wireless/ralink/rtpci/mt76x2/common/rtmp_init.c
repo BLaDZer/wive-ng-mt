@@ -1335,7 +1335,7 @@ retry:
 
 	/* pbf hardware reset, asic simulation sequence put this ahead before loading firmware */
 #ifdef MT76x2
-	// TODO: shiang-usw, check why MT762x don't need to do this!
+	// TODO: shiang-usw, check why MT76x2 don't need to do this!
 	if (!IS_MT76x2(pAd))
 #endif /* MT76x2 */
 		RTMP_IO_WRITE32(pAd, WPDMA_RST_IDX, 0xffffffff /*0x1003f*/);

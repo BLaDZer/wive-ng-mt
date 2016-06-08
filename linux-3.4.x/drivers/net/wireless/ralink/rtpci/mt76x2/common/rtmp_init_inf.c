@@ -556,7 +556,7 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #ifdef MT76x2
 				// TODO: shiang-usw, check why MT76x2 don't need to set this flag here!
 				if (!IS_MT76x2(pAd))
-#endif /* MT762x */
+#endif /* MT76x2 */
 					RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_START_UP);
 
 				/* Let BBP register at 20MHz to do scan */
