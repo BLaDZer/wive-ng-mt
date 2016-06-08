@@ -12,7 +12,7 @@ endif
 ###################################################################################################################################################
 # internal MT7620 WiFi module
 ###################################################################################################################################################
-ifeq($(CONFIG_RT_FIRST_CARD),7620)
+ifeq ($(CONFIG_RT_FIRST_CARD),7620)
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	cp -f eeproms-backups/MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
