@@ -89,7 +89,7 @@ INT get_dev_config_idx(RTMP_ADAPTER *pAd)
 
 	A2Hex(first_card, FIRST_CHIP_ID);
 	A2Hex(second_card, SECOND_CHIP_ID);
-	DBGPRINT(RT_DEBUG_TRACE, ("chip_id1=0x%x, chip_id2=0x%x, pAd->MACVersion=0x%x\n", first_card, second_card, pAd->MACVersion));
+	printk("chip_id1=0x%x, chip_id2=0x%x, pAd->MACVersion=0x%x\n", first_card, second_card, pAd->MACVersion);
 
 	if (IS_RT8592(pAd))
 		idx = 0;

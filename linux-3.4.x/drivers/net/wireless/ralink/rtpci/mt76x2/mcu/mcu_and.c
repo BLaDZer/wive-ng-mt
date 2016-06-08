@@ -218,9 +218,6 @@ int andes_pci_erasefw(RTMP_ADAPTER *ad)
 #ifdef DBG
 	u32 loop = 0;
 #endif
-#ifdef DBG
-	u32 val = 0;
-#endif
 	u32 idx = 0, mac_value;
 	u32 start_offset, end_offset;
 	RTMP_CHIP_CAP *cap = &ad->chipCap;

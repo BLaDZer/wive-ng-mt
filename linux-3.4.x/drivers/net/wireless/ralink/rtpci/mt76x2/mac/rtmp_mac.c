@@ -269,8 +269,9 @@ VOID RTMPWriteTxWI(
 		txwi_n->GroupID = FALSE;
 		txwi_n->TxEAPId = pAd->CommonCfg.Bssid[5];
 #endif /*CONFIG_STA_SUPPORT*/				
-
+#ifdef MT76x2
 		txwi_n->TxStreamMode = tx_stream_mode;
+#endif
 #ifdef TXBF_SUPPORT
 		txwi_n->Sounding = sounding;
 		txwi_n->eTxBF = eTxBf;
@@ -652,8 +653,9 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 		txwi_n->ShortGI = sgi;
 		txwi_n->STBC = stbc;
 		txwi_n->LDPC = ldpc;
+#ifdef MT76x2
 		txwi_n->TxStreamMode = tx_stream_mode;
-		
+#endif
 #ifdef CONFIG_AP_SUPPORT
 		if((phy_mode == MODE_CCK) && 
 			(OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_SHORT_PREAMBLE_INUSED)) 
@@ -1018,7 +1020,9 @@ VOID RTMPWriteTxWI_Cache(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 		txwi_n->ShortGI = sgi;
 		txwi_n->STBC = stbc;
 		txwi_n->LDPC = ldpc;
+#ifdef MT76x2
 		txwi_n->TxStreamMode = tx_stream_mode;
+#endif
 		txwi_n->MCS = mcs;
 		txwi_n->PHYMODE = phy_mode;
 		txwi_n->TxPktId = pkt_id;

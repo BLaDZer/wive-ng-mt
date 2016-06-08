@@ -89,7 +89,7 @@ VOID get_dev_config_idx(RTMP_ADAPTER *pAd)
 #if defined (DRIVER_HAS_MULTI_DEV)
 	INT first_card = 0, second_card = 0;
 	static int probe_cnt = 1;
-	
+
 	A2Hex(first_card, FIRST_CHIP_ID);
 	A2Hex(second_card, SECOND_CHIP_ID);
 
@@ -112,8 +112,7 @@ VOID get_dev_config_idx(RTMP_ADAPTER *pAd)
 			idx = 1;
 	}
 
-	DBGPRINT(RT_DEBUG_OFF, ("chip_id1=0x%x, chip_id2=0x%x, pAd->MACVersion=0x%x, pAd->ChipID=0x%x, dev_idx=%d\n",
-		first_card, second_card, pAd->MACVersion, pAd->ChipID, idx));
+	printk("chip_id1=0x%x, chip_id2=0x%x, pAd->MACVersion=0x%x, pAd->ChipID=0x%x, dev_idx=%d\n", first_card, second_card, pAd->MACVersion, pAd->ChipID, idx);
 #endif
 
 	pAd->dev_idx = idx;

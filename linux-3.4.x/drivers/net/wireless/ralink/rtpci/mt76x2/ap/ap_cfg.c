@@ -801,7 +801,9 @@ INT set_ed_debug_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT show_ed_cnt_for_channel_quality(RTMP_ADAPTER *pAd, PSTRING arg);
 #endif /* ED_MONITOR */
 
+#if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 INT Set_Enable_Channel_Timer_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
+#endif
 
 #ifdef THERMAL_PROTECT_SUPPORT	
 INT set_thermal_protection_criteria_proc(
@@ -1592,9 +1594,9 @@ static struct {
 	{"ed_debug", set_ed_debug_proc},
 	{"ed_count_show", show_ed_cnt_for_channel_quality},
 #endif /* ED_MONITOR */
-
+#if defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT)
 	{"chtimer_en",				Set_Enable_Channel_Timer_Proc},	
-
+#endif
 #ifdef RT_CFG80211_SUPPORT
 	{"DisableCfg2040Scan",				Set_DisableCfg2040Scan_Proc},
 #endif /* RT_CFG80211_SUPPORT */
@@ -7036,7 +7038,7 @@ INT	Set_NoForwardingBTNSSID_Proc(
 	else
 		return FALSE;  /*Invalid argument */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("Set_NoForwardingBTNSSID_Proc::(NoForwarding=%ld)\n", pAd->ApCfg.IsolateInterStaTrafficBTNBSSID));
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_NoForwardingBTNSSID_Proc::(NoForwarding=%d)\n", pAd->ApCfg.IsolateInterStaTrafficBTNBSSID));
 
 	return TRUE;
 }
@@ -8837,7 +8839,7 @@ INT	Show_RtsInfo_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 	rts_fail_count = RtsCount.field.RtsTxFailCount;
 	rts_count = rts_ok_count + rts_fail_count;
 	
-	DBGPRINT(RT_DEBUG_OFF, ("%-20s= %d (ms)\n", "Measured Time", measured_time));
+	DBGPRINT(RT_DEBUG_OFF, ("%-20s= %ld (ms)\n", "Measured Time", measured_time));
 	DBGPRINT(RT_DEBUG_OFF, ("%-20s= %d\n", "RTS TX OK count", rts_ok_count));
 	DBGPRINT(RT_DEBUG_OFF, ("%-20s= %d\n", "RTS TX fail count", rts_fail_count));
 	DBGPRINT(RT_DEBUG_OFF, ("%-20s= %d\n", "Total amount of RTS", rts_count));

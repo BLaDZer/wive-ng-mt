@@ -1132,7 +1132,7 @@ static VOID FullCalibration(
 //
 // Initialize FCE
 //
-VOID InitFce(
+static VOID InitFce(
 	PRTMP_ADAPTER pAd)
 {
 	L2_STUFFING_STRUC L2Stuffing;
@@ -1152,7 +1152,7 @@ VOID InitFce(
 /*
 	Select 2.4/5GHz band
 */
-VOID SelectBandMT76x0(
+static VOID SelectBandMT76x0(
 	IN PRTMP_ADAPTER pAd, 
 	IN UCHAR Channel)
 {

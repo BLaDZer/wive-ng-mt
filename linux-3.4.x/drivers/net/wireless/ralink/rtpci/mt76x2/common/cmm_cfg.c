@@ -301,9 +301,9 @@ INT RT_CfgSetWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	LONG cfg_mode;
 	UCHAR wmode, *mode_str;
-#ifdef MT76x2
+#ifdef DOT11_VHT_AC
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
-#endif /* MT76x2 */
+#endif /* DOT11_VHT_AC */
 	cfg_mode = simple_strtol(arg, 0, 10);
 
 	/* check if chip support 5G band when WirelessMode is 5G band */
@@ -316,14 +316,12 @@ INT RT_CfgSetWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 		return FALSE;
 	}
 
-#ifdef MT76x2
 #ifdef DOT11_VHT_AC
 	if (pChipCap->ac_off_mode && WMODE_CAP_AC(wmode)) {
 		DBGPRINT(RT_DEBUG_ERROR, ("it doesn't support VHT AC!\n"));
 		wmode &= ~(WMODE_AC);
 	}
 #endif /* DOT11_VHT_AC */
-#endif /* MT76x2 */
 
 	if (wmode_band_equal(pAd->CommonCfg.PhyMode, wmode) == TRUE)
 		DBGPRINT(RT_DEBUG_OFF, ("wmode_band_equal(): Band Equal!\n"));
@@ -389,9 +387,9 @@ INT RT_CfgSetMbssWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 {
 	INT cfg_mode;
 	UCHAR wmode;
-#ifdef MT76x2
+#ifdef DOT11_VHT_AC
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
-#endif /* MT76x2 */
+#endif /* DOT11_VHT_AC */
 
 	cfg_mode = simple_strtol(arg, 0, 10);
 
@@ -410,15 +408,12 @@ INT RT_CfgSetMbssWirelessMode(RTMP_ADAPTER *pAd, PSTRING arg)
 		return FALSE;
 	}
 
-
-#ifdef MT76x2
 #ifdef DOT11_VHT_AC
 	if (pChipCap->ac_off_mode && WMODE_CAP_AC(wmode)) {
 		DBGPRINT(RT_DEBUG_ERROR, ("it doesn't support VHT AC!\n"));
 		wmode &= ~(WMODE_AC);
 	}
 #endif /* DOT11_VHT_AC */
-#endif /* MT76x2 */
 
 	if (pAd->ApCfg.BssidNum > 1)
 	{
