@@ -10,9 +10,18 @@ ifndef CONFIG_RT_SECOND_IF_NONE
 	mkdir -p $(ROMFSDIR)/etc/Wireless/iNIC
 endif
 ###################################################################################################################################################
-# internal MT7620 WiFi module
+# internal MT7620 WiFi module (2860 - old stable driver, 7620 new driver)
 ###################################################################################################################################################
+CHIP7620=
+ifdef CONFIG_RALINK_MT7620
+ifeq ($(CONFIG_RT_FIRST_CARD),2860)
+CHIP7620=y
+endif
 ifeq ($(CONFIG_RT_FIRST_CARD),7620)
+CHIP7620=y
+endif
+endif
+ifdef CHIP7620
 	rm -f MT7620_AP_2T2R-4L_V15.BIN
 ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	cp -f eeproms-backups/MT7620_AP_2T2R-4L_internal_LNA_internal_PA_V15.BIN			MT7620_AP_2T2R-4L_V15.BIN
