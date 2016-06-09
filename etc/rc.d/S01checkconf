@@ -15,7 +15,7 @@ get_param()
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
 	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck \
-	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime DyncVgaEnable SkipLongRangeVga VgaClamp`
+	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime FtMdId1 DyncVgaEnable SkipLongRangeVga VgaClamp`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -101,6 +101,18 @@ checkminimalconfig()
 	nvram_set 2860 BndStrgAge 800000
 	nvram_set 2860 BndStrgHoldTime 8000
 	nvram_set 2860 BndStrgCheckTime 4000
+    fi
+
+    if [ "$FtMdId1" = "" ] || [ "$FtMdId1" = "RT1" ]; then
+	nvram_set 2860 FtMdId1 R1
+	nvram_set 2860 FtMdId2 R2
+	nvram_set 2860 FtMdId3 R3
+	nvram_set 2860 FtMdId4 R4
+	nvram_set 2860 FtR0khId1 4f577274
+	nvram_set 2860 FtR0khId2 4f577276
+	nvram_set 2860 FtR0khId3 4f577278
+	nvram_set 2860 FtR0khId4 4f57727A
+	nvram_set 2860 FtOtd "1;1;1;1"
     fi
 
     #

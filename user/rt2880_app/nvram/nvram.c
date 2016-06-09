@@ -679,7 +679,7 @@ static int gen_wifi_config(int mode, int genmode)
 	/* Fast roaming auth transitions config */
 	FPRINT_DAT(FtSupport);  	/* Enable Fast BSS Transition */
 	FPRINT_DAT(FtRic);		/* Enable FT resource request */
-	FPRINT_DAT(FtOtd);		/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Oveк-the-Air only) */
+	FPRINT_DAT(FtOtd);		/* Support Over-the-DS Fast BSS Transition (over LAN/WDS, need iappd daemon? Default suppoty Over-the-Air only) */
 					/* Mobility domain ID of Fast Bss. */
 	FPRINT_DAT(FtMdId1);
 	FPRINT_DAT(FtMdId2);
