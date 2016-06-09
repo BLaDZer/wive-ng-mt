@@ -447,10 +447,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    }
 
 	    // RSSI
-#if defined(CONFIG_RT_FIRST_IF_MT7610E)
-	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
-	    websWrite(wp, T("<td>%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
-#elif defined(CONFIG_RALINK_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
+#if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
 	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
 	    websWrite(wp, T("<td>%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
