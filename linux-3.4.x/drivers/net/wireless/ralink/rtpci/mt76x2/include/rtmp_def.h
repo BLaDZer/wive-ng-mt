@@ -1857,7 +1857,7 @@ enum WIFI_MODE{
 #define IS_OPMODE_AP(_x)		((_x)->OpMode == OPMODE_AP)
 #define IS_OPMODE_STA(_x)		((_x)->OpMode == OPMODE_STA)
 
-#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_FIRST_CARD == 7620)
+#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 (CONFIG_RT_FIRST_CARD == 7620 && !defined CONFIG_RT2860V2_AP))
 #define INF_MAIN_DEV_NAME		"ra"
 #define INF_MBSSID_DEV_NAME		"ra"
 #define INF_WDS_DEV_NAME		"wds"
@@ -1872,7 +1872,7 @@ enum WIFI_MODE{
 #define INF_APCLI_DEV_NAME		"apclii"
 #define INF_MESH_DEV_NAME		"meshi"
 #define INF_P2P_DEV_NAME		"p2pi"
-#define INF_MONITOR_DEV_NAME	"moni"
+#define INF_MONITOR_DEV_NAME		"moni"
 #endif
 
 /* WEP Key TYPE */

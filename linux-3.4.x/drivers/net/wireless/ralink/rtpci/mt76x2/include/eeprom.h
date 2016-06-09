@@ -34,7 +34,7 @@
   *
   ************************************************************************/
 
-#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || CONFIG_RT_FIRST_CARD == 7620)
+#if (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_FIRST_CARD == 7612 || (CONFIG_RT_FIRST_CARD == 7620 && !defined CONFIG_RT2860V2_AP))
 #if defined (CONFIG_RT_FIRST_IF_RF_OFFSET)
 #define DEFAULT_RF_OFFSET		CONFIG_RT_FIRST_IF_RF_OFFSET
 #else
@@ -52,7 +52,7 @@
 #define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/MT7612E_EEPROM.bin"
 #elif (CONFIG_RT_FIRST_CARD == 7602 || CONFIG_RT_SECOND_CARD == 7602)
 #define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/MT7602E_EEPROM.bin"
-#elif (CONFIG_RT_FIRST_CARD == 7620)
+#elif ((CONFIG_RT_FIRST_CARD == 7620 && !defined CONFIG_RT2860V2_AP))
 #define EEPROM_DEFAULT_FILE_PATH	"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #endif
 

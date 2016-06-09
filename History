@@ -2116,23 +2116,24 @@
 27) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
 28) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
 29) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
-30) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
-31) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
-32) kernel: ralink_wifi: mt7603 fix proc path name.<br>
-33) kernel: ralink_wifi: mt7603 fix set enq_done in drop path of rtmp_enq_req.<br>
-34) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-35) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-36) kernel: backport RTC_SYSTOHC from upstream.<br>
-37) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-38) kernel: net: do not block BH while processing socket backlog.<br>
-39) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-40) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-41) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-42) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-43) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-44) kernel: sched: always inline context_switch().<br>
-45) kernel: mips: make flush_thread and exit_thread always inline.<br>
-46) kernel: mips: lib: mark intrinsics notrace.<br>
+30) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
+31) kernel: ralink_wifi: mt76x2 update to 3.0.5.0_DPA_20160229 version.<br>
+32) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
+33) kernel: ralink_wifi: mt7603 fix proc path name.<br>
+34) kernel: ralink_wifi: mt7603 fix set enq_done in drop path of rtmp_enq_req.<br>
+35) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+36) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+37) kernel: backport RTC_SYSTOHC from upstream.<br>
+38) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+39) kernel: net: do not block BH while processing socket backlog.<br>
+40) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+41) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+42) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+43) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+44) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+45) kernel: sched: always inline context_switch().<br>
+46) kernel: mips: make flush_thread and exit_thread always inline.<br>
+47) kernel: mips: lib: mark intrinsics notrace.<br>
 <br>
 <br>
 <br>
