@@ -2131,6 +2131,7 @@
 42) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
 43) kernel: sched: always inline context_switch().<br>
 44) kernel: mips: make flush_thread and exit_thread always inline.<br>
+45) kernel: mips: lib: mark intrinsics notrace.<br>
 <br>
 <br>
 <br>
