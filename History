@@ -2135,6 +2135,7 @@
 46) kernel: mips: make flush_thread and exit_thread always inline.<br>
 47) kernel: mips: lib: mark intrinsics notrace.<br>
 48) kernel: usb: serial: option: add more ZTE device ids.<br>
+49) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
 <br>
 <br>
 <br>
