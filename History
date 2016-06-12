@@ -2134,9 +2134,10 @@
 45) kernel: sched: always inline context_switch().<br>
 46) kernel: mips: make flush_thread and exit_thread always inline.<br>
 47) kernel: mips: lib: mark intrinsics notrace.<br>
-48) kernel: usb: serial: option: add more ZTE device ids.<br>
-49) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-50) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+48) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+49) kernel: usb: serial: option: add more ZTE device ids.<br>
+50) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+51) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
 <br>
 <br>
 <br>
