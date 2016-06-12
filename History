@@ -2134,6 +2134,7 @@
 45) kernel: sched: always inline context_switch().<br>
 46) kernel: mips: make flush_thread and exit_thread always inline.<br>
 47) kernel: mips: lib: mark intrinsics notrace.<br>
+48) kernel: usb: serial: option: add more ZTE device ids.<br>
 <br>
 <br>
 <br>
