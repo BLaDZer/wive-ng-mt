@@ -2136,6 +2136,7 @@
 47) kernel: mips: lib: mark intrinsics notrace.<br>
 48) kernel: usb: serial: option: add more ZTE device ids.<br>
 49) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+50) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
 <br>
 <br>
 <br>
