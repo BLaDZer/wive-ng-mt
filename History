@@ -2139,6 +2139,7 @@
 50) kernel: usb: serial: option: add more ZTE device ids.<br>
 51) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
 52) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+53) kernel: usb: core: fix crash on unlink urb.<br>
 <br>
 <br>
 <br>
