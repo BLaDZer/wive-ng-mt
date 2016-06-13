@@ -2124,20 +2124,21 @@
 35) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
 36) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
 37) kernel: backport RTC_SYSTOHC from upstream.<br>
-38) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-39) kernel: net: do not block BH while processing socket backlog.<br>
-40) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-41) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-42) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-43) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-44) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-45) kernel: sched: always inline context_switch().<br>
-46) kernel: mips: make flush_thread and exit_thread always inline.<br>
-47) kernel: mips: lib: mark intrinsics notrace.<br>
-48) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-49) kernel: usb: serial: option: add more ZTE device ids.<br>
-50) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-51) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+38) kernel: kernel/relay.c: fix potential memory leak.<br>
+39) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+40) kernel: net: do not block BH while processing socket backlog.<br>
+41) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+42) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+43) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+44) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+45) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+46) kernel: sched: always inline context_switch().<br>
+47) kernel: mips: make flush_thread and exit_thread always inline.<br>
+48) kernel: mips: lib: mark intrinsics notrace.<br>
+49) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+50) kernel: usb: serial: option: add more ZTE device ids.<br>
+51) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+52) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
 <br>
 <br>
 <br>
