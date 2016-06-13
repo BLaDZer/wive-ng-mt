@@ -53,8 +53,6 @@
 
 /* control the number of times echo packets will be logged */
 
-static int debug = 0;
-
 static struct thread_specific {
     struct sigaction old_sigaction; /* evil signals */
     PPTP_CONN * conn;
@@ -261,7 +259,7 @@ static void ctrlp_rep( void * buffer, int size, int isbuff)
 	return;
 
     /* don't keep reporting sending of echo's */
-    if((type == PPTP_ECHO_RQST || type == PPTP_ECHO_RPLY) && debug == 0)
+    if((type == PPTP_ECHO_RQST || type == PPTP_ECHO_RPLY) && !debug)
 	return;
 
     if (debug)
