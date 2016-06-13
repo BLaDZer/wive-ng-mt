@@ -2142,6 +2142,7 @@
 53) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
 54) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
 55) kernel: usb: core: fix crash on unlink urb.<br>
+56) kernel: usb: retry reset if a device times out.<br>
 <br>
 <br>
 <br>
