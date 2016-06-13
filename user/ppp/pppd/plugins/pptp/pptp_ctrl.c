@@ -25,6 +25,7 @@
 #include "pptp_ctrl.h"
 #include "pptp_options.h"
 #include "vector.h"
+#include "pppd.h"
 #include "util.h"
 #include "pptp_quirks.h"
 
