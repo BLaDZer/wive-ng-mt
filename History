@@ -2127,20 +2127,21 @@
 38) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
 39) kernel: kernel/relay.c: fix potential memory leak.<br>
 40) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-41) kernel: net: do not block BH while processing socket backlog.<br>
-42) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-43) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-44) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-45) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-46) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-47) kernel: sched: always inline context_switch().<br>
-48) kernel: mips: make flush_thread and exit_thread always inline.<br>
-49) kernel: mips: lib: mark intrinsics notrace.<br>
-50) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-51) kernel: usb: serial: option: add more ZTE device ids.<br>
-52) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-53) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-54) kernel: usb: core: fix crash on unlink urb.<br>
+41) kernel: nfs: fix nfs_size_to_loff_t.<br>
+42) kernel: net: do not block BH while processing socket backlog.<br>
+43) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+44) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+45) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+46) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+47) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+48) kernel: sched: always inline context_switch().<br>
+49) kernel: mips: make flush_thread and exit_thread always inline.<br>
+50) kernel: mips: lib: mark intrinsics notrace.<br>
+51) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+52) kernel: usb: serial: option: add more ZTE device ids.<br>
+53) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+54) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+55) kernel: usb: core: fix crash on unlink urb.<br>
 <br>
 <br>
 <br>
