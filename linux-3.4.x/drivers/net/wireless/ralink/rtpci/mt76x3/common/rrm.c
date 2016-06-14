@@ -458,29 +458,24 @@ INT RRM_InfoDisplay_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	for (loop = 0; loop < pAd->ApCfg.BssidNum; loop++)
 	{
-		DBGPRINT(RT_DEBUG_OFF, ("%d: bDot11kRRMEnable=%d\n",
-			loop, pAd->ApCfg.MBSSID[loop].RrmCfg.bDot11kRRMEnable));
+		printk("%d: bDot11kRRMEnable=%d\n", loop, pAd->ApCfg.MBSSID[loop].RrmCfg.bDot11kRRMEnable);
 	}
 
-	DBGPRINT(RT_DEBUG_OFF, ("Country Code=%s\n",
-		pAd->CommonCfg.CountryCode));
+	printk("Country Code=%s\n", pAd->CommonCfg.CountryCode);
 
-	DBGPRINT(RT_DEBUG_OFF, ("Power Constraint=%d\n",
-		pAd->CommonCfg.PwrConstraint));
+	printk("Power Constraint=%d\n",	pAd->CommonCfg.PwrConstraint);
 
-	DBGPRINT(RT_DEBUG_OFF, ("Regulator Class="));
+	printk("Regulator Class=");
 	for (loop = 0; loop < MAX_NUM_OF_REGULATORY_CLASS; loop++)
 	{
 		if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
 			break;
 
-		DBGPRINT(RT_DEBUG_OFF, ("%d ",
-			pAd->CommonCfg.RegulatoryClass[loop]));
+		printk("%d ", pAd->CommonCfg.RegulatoryClass[loop]);
 	}
-	DBGPRINT(RT_DEBUG_OFF, ("\n"));	
+	printk("\n");
 
-	DBGPRINT(RT_DEBUG_OFF, ("Regulator TxPowerPercentage=%ld\n",
-		pAd->CommonCfg.TxPowerPercentage));
+	printk("Regulator TxPowerPercentage=%ld\n", pAd->CommonCfg.TxPowerPercentage);
 	return TRUE;
 }
 

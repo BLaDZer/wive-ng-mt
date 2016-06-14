@@ -3169,11 +3169,11 @@ INT	Show_FTConfig_Proc(
 
 	pFtCfg = &pAd->ApCfg.MBSSID[pObj->ioctl_if].FtCfg;
 
-	DBGPRINT(RT_DEBUG_OFF, ("MDID=%c%c\n", pFtCfg->FtMdId[0], pFtCfg->FtMdId[1]));
-	DBGPRINT(RT_DEBUG_OFF, ("R0KHID=%s, Len=%d\n", pFtCfg->FtR0khId, pFtCfg->FtR0khIdLen));
-	DBGPRINT(RT_DEBUG_OFF, ("FT Enable=%d\n", pFtCfg->FtCapFlag.Dot11rFtEnable));
-	DBGPRINT(RT_DEBUG_OFF, ("FT RIC=%d\n", pFtCfg->FtCapFlag.RsrReqCap));
-	DBGPRINT(RT_DEBUG_OFF, ("FT OTD=%d\n", pFtCfg->FtCapFlag.FtOverDs));
+	printk("MDID=%c%c\n", pFtCfg->FtMdId[0], pFtCfg->FtMdId[1]);
+	printk("R0KHID=%s, Len=%d\n", pFtCfg->FtR0khId, pFtCfg->FtR0khIdLen);
+	printk("FT Enable=%d\n", pFtCfg->FtCapFlag.Dot11rFtEnable);
+	printk("FT RIC=%d\n", pFtCfg->FtCapFlag.RsrReqCap);
+	printk("FT OTD=%d\n", pFtCfg->FtCapFlag.FtOverDs);
 
 	return TRUE;
 }
