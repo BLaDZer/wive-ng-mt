@@ -445,8 +445,7 @@ INT Set_RRM_Selftest_Proc(
 
 	PMAC_TABLE_ENTRY pEntry;
 	UCHAR StaAddr[MAC_ADDR_LEN] = {0x00,0x0c,0x43,0x00,0x00,0x00};
-	struct wifi_dev *wdev = &pAd->ApCfg.MBSSID[0/*pEntry->apidx*/].wdev;
-	
+
 	Cmd = simple_strtol(arg, 0, 10);
 
 	switch(Cmd)
