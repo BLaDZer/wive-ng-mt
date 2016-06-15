@@ -36,7 +36,7 @@ function initValue()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1 id="printerTitle">Printer Server Settings</h1>

@@ -147,7 +147,7 @@ function smb_enable_switch()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1 id="smbTitle">SAMBA Settings </h1>

@@ -193,7 +193,7 @@ function showModemStatus()
 </script>
 </head>
 
-<body onLoad="bodyOnLoad(document.usbmodem);">
+<body bgcolor="#FFFFFF" onLoad="bodyOnLoad(document.usbmodem);">
 <table class="body">
   <tr>
     <td><h1>USB Modem setup</h1>

@@ -145,7 +145,7 @@ function submit_apply()
 </script>
 </head>
 
-<body onLoad="initValue()" onUnload="partedClose()">
+<body bgcolor="#FFFFFF" onLoad="initValue()" onUnload="partedClose()">
 <table class="body">
   <tr>
     <td><form method=post name="disk_parted" action="/goform/storageDiskPart">

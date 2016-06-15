@@ -913,7 +913,7 @@ function createSurveyProfile()
 </script>
 </head>
 
-<body onLoad="PageInit();">
+<body bgcolor="#FFFFFF" onLoad="PageInit();">
 <table class="body">
   <tr>
     <td><h1 id="profTitle">Station Profile</h1>

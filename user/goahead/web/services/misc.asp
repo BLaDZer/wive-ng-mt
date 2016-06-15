@@ -433,7 +433,7 @@ function submitForm(form) {
 </script>
 </head>
 
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="lTitle">Miscellaneous Services Setup</h1>

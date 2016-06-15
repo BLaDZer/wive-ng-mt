@@ -161,7 +161,7 @@ function onReset2DefaultsSubmit(form)
 }
 </script>
 </head>
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body" style="width:600px;">
   <tr>
     <td><h1 id="manTitle">System Management</h1>

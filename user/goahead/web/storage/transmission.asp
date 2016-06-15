@@ -98,7 +98,7 @@ function submit_apply(parm)
 </script>
 </head>
 
-<body onLoad="initValue(document.formTrans)">
+<body bgcolor="#FFFFFF" onLoad="initValue(document.formTrans)">
 <table class="body">
   <tr>
     <td><h1>Transmission settings</h1>

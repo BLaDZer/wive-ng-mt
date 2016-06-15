@@ -90,7 +90,7 @@ function submit_apply()
 </script>
 </head>
 
-<body onLoad="initValue()" onUnload="addDirClose()">
+<body bgcolor="#FFFFFF" onLoad="initValue()" onUnload="addDirClose()">
 <table class="body">
   <tr>
     <td><form method=post name="disk_adddir" action="/goform/storageDiskAdm">

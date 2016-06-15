@@ -64,7 +64,7 @@ function setLanguage()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1>Wive-NG-MT - firmware for Mediatek based Wi-Fi CPE productions by NAG</h1>

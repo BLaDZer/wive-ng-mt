@@ -49,7 +49,7 @@ function PageInit()
 </script>
 </head>
 
-<body onLoad="PageInit()">
+<body bgcolor="#FFFFFF" onLoad="PageInit()">
 <table class="body">
   <tr>
     <td><h1 id="linkTitle">Station Link Status</h1>

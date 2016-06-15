@@ -137,7 +137,7 @@ function loadStatistics() {
 
 </script>
 </head>
-<body onLoad="loadStatistics();">
+<body bgcolor="#FFFFFF" onLoad="loadStatistics();">
 <table class="body">
   <tr>
     <td><h1 id="statisticTitle">Statistics</h1>

@@ -133,7 +133,7 @@ function displayServiceStatus()
 </script>
 </head>
 
-<body onLoad="initValue(document.formSamba);">
+<body bgcolor="#FFFFFF" onLoad="initValue(document.formSamba);">
 <table class="body">
   <tr>
     <td><h1 id="sambaTitle">Samba/WINS Setup</h1>

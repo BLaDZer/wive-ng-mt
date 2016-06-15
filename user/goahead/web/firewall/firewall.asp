@@ -531,7 +531,7 @@ function initTranslation()
 </script>
 </head>
 
-<body onLoad="initState();">
+<body bgcolor="#FFFFFF" onLoad="initState();">
 <table class="body">
   <tr>
     <td><!-- Port forwarding -->

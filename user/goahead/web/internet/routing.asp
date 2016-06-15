@@ -240,7 +240,7 @@ function formRoutingTable(form)
 </script>
 </head>
 
-<body onLoad="onInit()">
+<body bgcolor="#FFFFFF" onLoad="onInit()">
 <table class="body">
   <tbody>
     <tr>

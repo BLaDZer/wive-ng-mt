@@ -38,7 +38,7 @@ function selectedBSSID(tmp)
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1>Add AMPDU Originator</h1>

@@ -132,15 +132,15 @@ function displayServiceStatus()
 }
 </script>
 </head>
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="ntpTitle">NTP Management</h1>
       <p id="ntpIntroduction">Here you can configure time synchronization.</p>
       <hr />
-      
+
       <!-- ================= NTP Settings ================= -->
-      
+
       <form method="POST" name="NTP" action="/goform/NTP" >
         <table class="form">
           <tbody>

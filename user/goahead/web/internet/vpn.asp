@@ -360,7 +360,7 @@ function initTranslation()
 </script>
 </head>
 
-<body onLoad="bodyOnLoad(document.formVPNSetup);">
+<body bgcolor="#FFFFFF" onLoad="bodyOnLoad(document.formVPNSetup);">
 <table class="body">
   <tr>
     <td><h1 id="vTitle">Virtual Private Network setup</h1>

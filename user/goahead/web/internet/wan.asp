@@ -211,7 +211,7 @@ function submitForm(form) {
 </script>
 </head>
 
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <form name="rebootForm" style="display: none;" method="GET" action="/goform/restoremac" >
   <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>

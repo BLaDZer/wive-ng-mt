@@ -108,7 +108,7 @@ function resetClick(form)
 </script>
 </head>
 <!--     body      -->
-<body onLoad="bodyOnLoad(document.QoSSetup);">
+<body bgcolor="#FFFFFF" onLoad="bodyOnLoad(document.QoSSetup);">
 <table class="body">
   <tr>
     <td><h1 id="QoSTitleStr">Quality of Service Settings </h1>

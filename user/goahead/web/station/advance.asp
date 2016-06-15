@@ -236,7 +236,7 @@ function init11NValues()
 </script>
 </head>
 
-<body onLoad="PageInit();">
+<body bgcolor="#FFFFFF" onLoad="PageInit();">
 <table class="body">
   <tr>
     <td><h1 id="staadvTitle">Station Advanced Configurations</h1>

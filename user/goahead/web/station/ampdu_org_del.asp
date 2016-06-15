@@ -59,7 +59,7 @@ function selectedBSSID()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1>Delete AMPDU Originator</h1>

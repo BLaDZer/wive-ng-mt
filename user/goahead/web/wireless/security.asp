@@ -1002,7 +1002,7 @@ function onPreAuthenticationClick(type)
 </script>
 </head>
 
-<body onLoad="initAll();">
+<body bgcolor="#FFFFFF" onLoad="initAll();">
 <table class="body">
   <tbody>
     <tr>

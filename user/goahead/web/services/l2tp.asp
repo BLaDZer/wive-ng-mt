@@ -304,7 +304,7 @@ function resetClick(form)
 </script>
 </head>
 
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="l2tpServerTitle">L2TP Server Setup</h1>

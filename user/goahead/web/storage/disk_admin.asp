@@ -166,7 +166,7 @@ function open_diskrepart_window()
 </script>
 </head>
 
-<body onLoad="initValue()">
+<body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
   <tr>
     <td><h1 id="storageDiskAdmTitle">Disk Management</h1>

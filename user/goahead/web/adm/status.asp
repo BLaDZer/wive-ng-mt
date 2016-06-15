@@ -198,7 +198,7 @@ function setWanPort(form)
 </script>
 </head>
 
-<body onLoad="PageInit();">
+<body bgcolor="#FFFFFF" onLoad="PageInit();">
 <table class="body">
   <tr>
     <td><h1 id="statusTitle">Access Point Status</h1>

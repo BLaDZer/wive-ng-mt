@@ -101,7 +101,7 @@ function resetClick(form) {
 }
 </script>
 </head>
-<body onLoad="pageInit()">
+<body bgcolor="#FFFFFF" onLoad="pageInit()">
 <table class="body">
   <tr>
     <td><h1 id="dmzTitle"> DMZ Settings </h1>

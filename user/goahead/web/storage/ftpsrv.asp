@@ -61,7 +61,7 @@ function CheckValue(form)
 </script>
 </head>
 
-<body onLoad="initValue(document.storage_ftp);" >
+<body bgcolor="#FFFFFF" onLoad="initValue(document.storage_ftp);" >
 <table class="body">
   <tr>
     <td><h1 id="ftpTitle">FTP Settings </h1>

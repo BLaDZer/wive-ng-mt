@@ -44,7 +44,7 @@ function initTranslation()
 
 </script>
 </head>
-<body onLoad="updateState();">
+<body bgcolor="#FFFFFF" onLoad="updateState();">
 <table class="body">
   <tr>
     <td><h1 id="algTitle">ALG Settings</h1>

@@ -281,7 +281,7 @@ function CheckValue(form)
 </script>
 </head>
 
-<body onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
   <tr>
     <td><h1 id="advTitle">Advanced Wireless Settings </h1>

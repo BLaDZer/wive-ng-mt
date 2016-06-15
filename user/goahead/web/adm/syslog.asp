@@ -104,7 +104,7 @@ function syslogdSelect(form)
 
 </script>
 </head>
-<body onLoad="pageInit()">
+<body bgcolor="#FFFFFF" onLoad="pageInit()">
 <table class="body">
   <tr>
     <td><h1 id="syslogTitle">System Log</h1>

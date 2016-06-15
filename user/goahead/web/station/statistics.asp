@@ -32,7 +32,7 @@ function PageInit()
 </script>
 </head>
 
-<body onLoad="PageInit()">
+<body bgcolor="#FFFFFF" onLoad="PageInit()">
 <table class="body">
   <tr>
     <td><h1 id="statisticTitle">Station Statistics</h1>
