@@ -52,7 +52,7 @@ struct dev_type_name_map{
 #define FIRST_AP_SINGLE_SKU_PATH	"/etc/Wireless/RT2860/SingleSKU.dat"
 #define FIRST_CHIP_ID	xdef_to_str(CONFIG_RT_FIRST_CARD)
 
-#define SECOND_AP_PROFILE_PATH "/etc/Wireless/iNIC/iNIC_ap.dat"
+#define SECOND_AP_PROFILE_PATH 		"/etc/Wireless/iNIC/iNIC_ap.dat"
 #define SECOND_AP_SINGLE_SKU_PATH	"/etc/Wireless/iNIC/SingleSKU.dat"
 #define SECOND_CHIP_ID	xdef_to_str(CONFIG_RT_SECOND_CARD)
 
@@ -208,9 +208,9 @@ static CHAR *get_sku_profile(RTMP_ADAPTER *pAd)
 	INT card_idx = pAd->dev_idx;
 
 	if (card_idx == 0)
-		src = FIRST_IF_SINGLE_SKU_PATH;
+		src = FIRST_AP_SINGLE_SKU_PATH;
 	else if (card_idx == 1)
-		src = SECOND_IF_SINGLE_SKU_PATH;
+		src = SECOND_AP_SINGLE_SKU_PATH;
 #endif
 
 	return src;
