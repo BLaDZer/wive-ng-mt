@@ -35,6 +35,11 @@
 #include "wpa_cmm.h"
 
 
+#ifdef DOT11R_FT_SUPPORT
+#include "link_list.h"
+#include "ft_cmm.h"
+#endif /* DOT11R_FT_SUPPORT */
+
 /* maximum supported capability information - */
 /* ESS, IBSS, Privacy, Short Preamble, Spectrum mgmt, Short Slot */
 #define SUPPORTED_CAPABILITY_INFO   0x0533
@@ -116,14 +121,8 @@ extern UINT32 CW_MAX_IN_BITS;
 #define BSS_NOT_FOUND                    0xFFFFFFFF
 
 #ifdef CONFIG_AP_SUPPORT
-#ifndef CONFIG_STA_SUPPORT
 #define MAX_LEN_OF_MLME_QUEUE            64 /*20*/ /*10 */
-#endif
 #endif /* CONFIG_AP_SUPPORT */
-
-#ifdef CONFIG_STA_SUPPORT
-#define MAX_LEN_OF_MLME_QUEUE            40 /*10 */
-#endif /* CONFIG_STA_SUPPORT */
 
 enum SCAN_MODE{
 	/* Active scan, send probe request, and wait beacon and probe response */
@@ -1210,6 +1209,18 @@ typedef struct {
 
 	UCHAR   MacAddr[MAC_ADDR_LEN];
 	ULONG ClientStatusFlags;
+
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+	BOOLEAN	 bHasMDIE;
+	FT_MDIE FT_MDIE;
+#endif /* (DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
+
+#ifdef DOT11K_RRM_SUPPORT
+	UINT8 RegulatoryClass;
+	UINT8 CondensedPhyType;
+	UINT8 RSNI;
+#endif /* DOT11K_RRM_SUPPORT */
+
 } BSS_ENTRY, *PBSS_ENTRY;
 
 typedef struct {
@@ -1465,6 +1476,12 @@ typedef struct _IE_lists {
 	ULONG RalinkIe;
 	ULONG MediatekIe;
 	EXT_CAP_INFO_ELEMENT ExtCapInfo;
+#ifdef DOT11R_FT_SUPPORT
+	FT_INFO FtInfo;
+#endif /* DOT11R_FT_SUPPORT */
+#ifdef DOT11K_RRM_SUPPORT
+	RRM_EN_CAP_IE RrmEnCap;
+#endif /* DOT11K_RRM_SUPPORT */
 	UCHAR ht_cap_len;
 	HT_CAPABILITY_IE HTCapability;
 #ifdef DOT11_VHT_AC

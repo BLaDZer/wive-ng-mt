@@ -85,6 +85,9 @@ VOID ActionStateMachineInit(
 
 
 #ifdef CONFIG_AP_SUPPORT
+#ifdef DOT11R_FT_SUPPORT
+	StateMachineSetAction(S, ACT_IDLE, FT_CATEGORY_BSS_TRANSITION, (STATE_MACHINE_FUNC)FT_FtAction);
+#endif /* DOT11R_FT_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -782,6 +785,33 @@ VOID PeerRMAction(
 
 {
 #ifdef CONFIG_AP_SUPPORT
+#ifdef DOT11K_RRM_SUPPORT
+	UCHAR Action = Elem->Msg[LENGTH_802_11+1];
+	MAC_TABLE_ENTRY *pEntry = NULL;
+
+	if (VALID_WCID(Elem->Wcid))
+		pEntry = &pAd->MacTab.Content[Elem->Wcid];
+	else
+		return;
+
+	if ((pEntry->apidx < pAd->ApCfg.BssidNum) &&
+		!IS_RRM_ENABLE(pAd, pEntry->apidx))
+		return;
+
+	switch(Action)
+	{
+		case RRM_MEASURE_REP:
+			DBGPRINT(RT_DEBUG_TRACE, ("%s: Get RRM Measure report.\n",
+				__FUNCTION__));
+
+			RRM_PeerMeasureRepAction(pAd, Elem);
+			break;
+
+		case RRM_NEIGHTBOR_REQ:
+			RRM_PeerNeighborReqAction(pAd, Elem);
+			break;
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 	return;
 }

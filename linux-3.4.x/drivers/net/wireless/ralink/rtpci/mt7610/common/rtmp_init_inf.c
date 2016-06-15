@@ -26,6 +26,9 @@
 	--------    ----------    ----------------------------------------------
 */
 #include	"rt_config.h"
+#ifdef DOT11R_FT_SUPPORT
+#include	"ft.h"
+#endif /* DOT11R_FT_SUPPORT */
 
 
 
@@ -287,8 +290,12 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 	CfgInitHook(pAd);
 
 #ifdef CONFIG_AP_SUPPORT
-	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd) {
 		APInitialize(pAd);
+#ifdef DOT11K_RRM_SUPPORT
+                RRM_CfgInit(pAd);
+#endif /* DOT11K_RRM_SUPPORT */
+	}
 #endif /* CONFIG_AP_SUPPORT */	
 
 #ifdef BLOCK_NET_IF

@@ -3130,6 +3130,9 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #ifdef CONFIG_AP_SUPPORT
 	pAd->ApCfg.EntryLifeCheck = MAC_ENTRY_LIFE_CHECK_CNT;
 
+#ifdef DOT11R_FT_SUPPORT
+	FT_CfgInitial(pAd);
+#endif /* DOT11R_FT_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -3149,7 +3152,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif /* TXRX_SW_ANTDIV_SUPPORT */
 
 
-#if defined(AP_SCAN_SUPPORT) || defined(CONFIG_STA_SUPPORT)
+#if defined(AP_SCAN_SUPPORT)
 	for (i = 0; i < MAX_LEN_OF_BSS_TABLE; i++) 
 	{
 		PBSS_ENTRY	pBssEntry = &pAd->ScanTab.BssEntry[i];
@@ -3159,7 +3162,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		else
 			pBssEntry->pVarIeFromProbRsp = NULL;
 	}
-#endif /* defined(AP_SCAN_SUPPORT) || defined(CONFIG_STA_SUPPORT) */
+#endif /* defined(AP_SCAN_SUPPORT) */
 
 
 #ifdef WSC_INCLUDED

@@ -373,6 +373,9 @@ void tbtt_tasklet(unsigned long data)
 		QBSS_LoadUpdate(pAd, 0);
 #endif /* AP_QLOAD_SUPPORT */
 
+#ifdef DOT11K_RRM_SUPPORT
+		RRM_QuietUpdata(pAd);
+#endif /* DOT11K_RRM_SUPPORT */
 	}
 #endif /* RTMP_MAC_PCI */
 

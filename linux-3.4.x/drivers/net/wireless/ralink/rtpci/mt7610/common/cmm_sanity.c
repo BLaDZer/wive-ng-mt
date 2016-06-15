@@ -26,6 +26,10 @@
 	John Chang  2004-09-01      add WMM support
 */
 #include "rt_config.h"
+#ifdef DOT11R_FT_SUPPORT
+#include "ft.h"
+#include "ft_cmm.h"
+#endif /* DOT11R_FT_SUPPORT */
 
 extern UCHAR	CISCO_OUI[];
 
@@ -748,6 +752,14 @@ BOOLEAN PeerBeaconAndProbeRspSanity_Old(
                 
 
 
+#ifdef DOT11R_FT_SUPPORT
+			case IE_FT_MDIE:
+				Ptr = (PUCHAR) pVIE;
+                NdisMoveMemory(Ptr + *LengthVIE, &pEid->Eid, pEid->Len + 2);
+                *LengthVIE += (pEid->Len + 2);
+				break;
+#endif /* DOT11R_FT_SUPPORT */
+
 			case IE_EXT_CAPABILITY:
 				if (pEid->Len >= 1)
 				{
@@ -1249,6 +1261,14 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 
 
 
+#ifdef DOT11R_FT_SUPPORT
+		case IE_FT_MDIE:
+			Ptr = (PUCHAR) pVIE;
+			NdisMoveMemory(Ptr + *LengthVIE, &pEid->Eid, pEid->Len + 2);
+			*LengthVIE += (pEid->Len + 2);
+			break;
+#endif /* DOT11R_FT_SUPPORT */
+
 		case IE_EXT_CAPABILITY:
 			if (pEid->Len >= 1)
 			{
@@ -1418,7 +1438,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity2(
 }
 #endif /* DOT11N_DRAFT3 */
 
-#if defined(AP_SCAN_SUPPORT) || defined(CONFIG_STA_SUPPORT)
+#if defined(AP_SCAN_SUPPORT)
 /* 
     ==========================================================================
     Description:
@@ -1560,6 +1580,12 @@ BOOLEAN PeerAuthSanity(
             return FALSE;
         }
     } 
+#ifdef DOT11R_FT_SUPPORT
+	else if (*pAlg == AUTH_MODE_FT)
+	{
+		return TRUE;
+	}
+#endif /* DOT11R_FT_SUPPORT */
     else 
     {
         DBGPRINT(RT_DEBUG_TRACE, ("PeerAuthSanity fail - wrong algorithm\n"));
@@ -1591,6 +1617,9 @@ BOOLEAN MlmeAuthReqSanity(
     *pAlg = pInfo->Alg;
     
     if (((*pAlg == AUTH_MODE_KEY) ||(*pAlg == AUTH_MODE_OPEN)
+#ifdef DOT11R_FT_SUPPORT
+		|| (*pAlg == AUTH_MODE_FT)
+#endif /* DOT11R_FT_SUPPORT */
      	) && 
         ((*pAddr & 0x01) == 0)) 
     {

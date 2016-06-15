@@ -155,6 +155,20 @@ ifeq ($(CONFIG_BAND_STEERING),y)
 $(RT_DRV_NAME)-objs +=   $(RT_DRV_PATH)/ap/ap_band_steering.o
 endif
 
+ifeq ($(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT),y)
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/ft.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/ft_tlv.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/ft_iocl.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/ft_rc.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_ftkd.o
+endif
+
+ifeq ($(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT),y)
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm_tlv.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm_sanity.o
+$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm.o
+endif
+
 ifeq ($(CONFIG_MT7610_AP_WAPI),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_sms4.o
@@ -366,6 +380,14 @@ endif
 
 ifeq ($(CONFIG_BAND_STEERING),y)
 EXTRA_CFLAGS += -DBAND_STEERING
+endif
+
+ifeq ($(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT),y)
+EXTRA_CFLAGS += -DDOT11R_FT_SUPPORT
+endif
+
+ifeq ($(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT),y)
+EXTRA_CFLAGS += -DDOT11K_RRM_SUPPORT -DQUIET_SUPPORT -DAPPLE_11K_IOT
 endif
 
 ifeq ($(CONFIG_MT7610_AP_EXT_CHANNEL_LIST),y)

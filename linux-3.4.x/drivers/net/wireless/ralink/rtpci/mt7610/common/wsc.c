@@ -8579,8 +8579,6 @@ extern INT	Set_AP_WscGetConf_Proc(
 	IN	PUCHAR			arg);
 #endif /* CONFIG_AP_SUPPORT */
 
-/*#ifdef CONFIG_STA_SUPPORT */
-
 VOID WSC_HDR_BTN_CheckHandler(
 	IN	PRTMP_ADAPTER	pAd)
 {

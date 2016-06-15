@@ -245,6 +245,11 @@ VOID APStartUp(
 											SpectrumMgmt);
 
 		
+#ifdef DOT11K_RRM_SUPPORT
+		if (IS_RRM_ENABLE(pAd, apidx))
+			pMbss->CapabilityInfo |= RRM_CAP_BIT;
+#endif /* DOT11K_RRM_SUPPORT */
+		
 		if (bWmmCapable == TRUE)
 		{
 			/*
@@ -799,6 +804,9 @@ VOID APStartUp(
 #endif /* IDS_SUPPORT */
 
 
+#ifdef DOT11R_FT_SUPPORT
+	FT_Init(pAd);
+#endif /* DOT11R_FT_SUPPORT */
 
 
 
@@ -924,7 +932,9 @@ VOID APStop(
 	RTMPIdsStop(pAd);
 #endif /* IDS_SUPPORT */
 
-
+#ifdef DOT11R_FT_SUPPORT
+	FT_Release(pAd);
+#endif /* DOT11R_FT_SUPPORT */
 
 }
 

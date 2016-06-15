@@ -1123,6 +1123,18 @@ static struct {
 	{"MeasureReq",					Set_MeasureReq_Proc},
 	{"TpcReq",						Set_TpcReq_Proc},
 	{"PwrConstraint",				Set_PwrConstraint},
+#ifdef DOT11K_RRM_SUPPORT
+	{"BcnReq",						Set_BeaconReq_Proc},
+	{"LinkReq",						Set_LinkMeasureReq_Proc},
+	{"RrmEnable",					Set_Dot11kRRM_Enable_Proc},
+	{"TxReq",						Set_TxStreamMeasureReq_Proc},
+
+	/* only for voice enterprise power constraint testing. */
+	{"vopwrc",						Set_VoPwrConsTest},
+
+	/* only for selftesting and debugging. */
+	{"rrm", 						Set_RRM_Selftest_Proc},
+#endif /* DOT11K_RRM_SUPPORT */
 #ifdef DOT11N_DRAFT3
 	{"OBSSScanParam",				Set_OBSSScanParam_Proc},
 	{"AP2040Rescan",			Set_AP2040ReScan_Proc},
@@ -1130,7 +1142,14 @@ static struct {
 	{"HtBssCoexApCntThr",				Set_HT_BssCoexApCntThr_Proc},
 #endif /* DOT11N_DRAFT3 */
 	{"EntryLifeCheck",				Set_EntryLifeCheck_Proc},
-
+#ifdef DOT11R_FT_SUPPORT
+	{"ft",							FT_Ioctl},
+	{"ftenable",					Set_FT_Enable},
+	{"ftmdid",						Set_FT_Mdid},
+	{"ftr0khid",					Set_FT_R0khid},
+	{"ftric",						Set_FT_RIC},
+	{"ftotd",						Set_FT_OTD},
+#endif /* DOT11R_FT_SUPPORT */
 #ifdef RTMP_EFUSE_SUPPORT
 	{"efuseFreeNumber",				set_eFuseGetFreeBlockCount_Proc},
 	{"efuseDump",					set_eFusedump_Proc},
@@ -1282,6 +1301,12 @@ static struct {
 #ifdef DFS_SUPPORT
 	{"blockch", 			Show_BlockCh_Proc},
 #endif /* DFS_SUPPORT */
+#ifdef DOT11R_FT_SUPPORT
+	{"ftinfo",				Show_FTConfig_Proc},
+#endif /* DOT11R_FT_SUPPORT */
+#ifdef DOT11K_RRM_SUPPORT
+	{"rrminfo",				RRM_InfoDisplay_Proc},
+#endif /* DOT11K_RRM_SUPPORT */
 #ifdef AP_QLOAD_SUPPORT
 	{"qload",				Show_QoSLoad_Proc},
 #endif /* AP_QLOAD_SUPPORT */
@@ -2060,6 +2085,144 @@ INT RTMPAPSetInformation(
 			break;
 #endif /* IAPP_SUPPORT */
 
+#ifdef DOT11R_FT_SUPPORT
+		case RT_SET_FT_STATION_NOTIFY:
+		case RT_SET_FT_KEY_REQ:
+		case RT_SET_FT_KEY_RSP:
+		case RT_FT_KEY_SET:
+		case RT_FT_NEIGHBOR_REPORT:
+		case RT_FT_NEIGHBOR_REQUEST:
+		case RT_FT_NEIGHBOR_RESPONSE:
+		case RT_FT_ACTION_FORWARD:
+		{
+			UCHAR *pBuffer;
+
+			FT_MEM_ALLOC(pAd, &pBuffer, wrq->u.data.length+1);
+			if (pBuffer == NULL)
+				break;
+
+			if (copy_from_user(pBuffer, wrq->u.data.pointer, wrq->u.data.length))
+			{
+				Status = -EFAULT;
+				FT_MEM_FREE(pAd, pBuffer);
+				break;
+			}
+
+			switch(cmd & 0x7FFF)
+			{
+				case RT_SET_FT_STATION_NOTIFY:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_FT_STATION_NOTIFY\n"));
+					FT_KDP_StationInform(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_SET_FT_KEY_REQ:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_FT_KEY_REQ\n"));
+					FT_KDP_IOCTL_KEY_REQ(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_SET_FT_KEY_RSP:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_FT_KEY_RSP\n"));
+					FT_KDP_KeyResponseToUs(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_FT_KEY_SET:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_FT_KEY_SET\n"));
+					/* Note: the key must be ended by 0x00 */
+					pBuffer[wrq->u.data.length] = 0x00;
+					FT_KDP_CryptKeySet(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_FT_NEIGHBOR_REPORT:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_FT_NEIGHBOR_REPORT\n"));
+#ifdef FT_KDP_FUNC_INFO_BROADCAST
+					FT_KDP_NeighborReportHandle(pAd, pBuffer, wrq->u.data.length);
+#endif /* FT_KDP_FUNC_INFO_BROADCAST */
+					break;
+				case RT_FT_NEIGHBOR_REQUEST:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_FT_NEIGHBOR_REPORT\n"));
+					FT_KDP_NeighborRequestHandle(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_FT_NEIGHBOR_RESPONSE:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_FT_NEIGHBOR_RESPONSE\n"));
+					FT_KDP_NeighborResponseHandle(pAd, pBuffer, wrq->u.data.length);
+					break;
+				case RT_FT_ACTION_FORWARD:
+					DBGPRINT(RT_DEBUG_TRACE, ("RT_FT_ACTION_FORWARD\n"));
+					FT_RRB_ActionHandle(pAd, pBuffer, wrq->u.data.length);
+					break;
+			}
+
+			FT_MEM_FREE(pAd, pBuffer);
+		}
+			break;
+
+		case OID_802_11R_SUPPORT:
+			if (wrq->u.data.length != sizeof(BOOLEAN))
+				Status  = -EINVAL;
+			else
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				ULONG value;
+				Status = copy_from_user(&value, wrq->u.data.pointer, wrq->u.data.length);
+				pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable = (value == 0 ? FALSE : TRUE);
+				DBGPRINT(RT_DEBUG_TRACE,("Set::OID_802_11R_SUPPORT(=%d) \n",
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable));
+			}
+			break;
+
+		case OID_802_11R_MDID:
+			if (wrq->u.data.length != FT_MDID_LEN)
+				Status  = -EINVAL;
+			else
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				Status = copy_from_user(pAd->ApCfg.MBSSID[apidx].FtCfg.FtMdId, wrq->u.data.pointer, wrq->u.data.length);				
+				DBGPRINT(RT_DEBUG_TRACE,("Set::OID_802_11R_MDID(=%c%c) \n",
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtMdId[0],
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtMdId[0]));
+			}
+
+			break;
+
+
+		case OID_802_11R_R0KHID:
+			if (wrq->u.data.length <= FT_ROKH_ID_LEN)
+				Status  = -EINVAL;
+			else
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				Status = copy_from_user(pAd->ApCfg.MBSSID[apidx].FtCfg.FtR0khId, wrq->u.data.pointer, wrq->u.data.length);
+				pAd->ApCfg.MBSSID[apidx].FtCfg.FtR0khIdLen = wrq->u.data.length;
+				DBGPRINT(RT_DEBUG_TRACE,("Set::OID_802_11R_OID_802_11R_R0KHID(=%s) Len=%d\n",
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtR0khId,
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtR0khIdLen));
+			}
+			break;
+
+		case OID_802_11R_RIC:
+			if (wrq->u.data.length != sizeof(BOOLEAN))
+				Status  = -EINVAL;
+			else
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				ULONG value;
+				Status = copy_from_user(&value, wrq->u.data.pointer, wrq->u.data.length);
+				pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.RsrReqCap = (value == 0 ? FALSE : TRUE);
+				DBGPRINT(RT_DEBUG_TRACE,("Set::OID_802_11R_RIC(=%d) \n",
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable));
+			}
+			break;
+
+		case OID_802_11R_OTD:
+			if (wrq->u.data.length != sizeof(BOOLEAN))
+				Status  = -EINVAL;
+			else
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				ULONG value;
+				Status = copy_from_user(&value, wrq->u.data.pointer, wrq->u.data.length);
+				pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.FtOverDs = (value == 0 ? FALSE : TRUE);
+				DBGPRINT(RT_DEBUG_TRACE,("Set::OID_802_11R_OTD(=%d) \n",
+							pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable));
+			}
+			break;
+#endif /* DOT11R_FT_SUPPORT */
     	case RT_SET_APD_PID:
 			{
 				unsigned long apd_pid;
@@ -2090,8 +2253,19 @@ INT RTMPAPSetInformation(
 			pEntry = MacTableLookup(pAd, Addr);
 			if (pEntry)
 			{
-				MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
-/*					MacTableDeleteEntry(pAd, pEntry->Aid, Addr); */
+#ifdef DOT11R_FT_SUPPORT
+					/*
+						If AP send de-auth to Apple STA, 
+						Apple STA will re-do auth/assoc and security handshaking with AP again.
+						@20150313
+					*/
+					if (IS_FT_RSN_STA(pEntry))
+					{
+						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
+					}
+					else
+#endif /* DOT11R_FT_SUPPORT */
+					MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
 			}
     		}
 			break;
@@ -3565,15 +3739,139 @@ INT RTMPAPQueryInformation(
 			DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_QUERY_SIGNAL_CONTEXT \n"));
 
 
+#ifdef DOT11R_FT_SUPPORT
+			FlgIs11rSup = TRUE;
+#endif /* DOT11R_FT_SUPPORT */
+
 			if (FlgIs11rSup == FALSE)
 			{
 			{
 				Status = -EFAULT;
 			}
 		}
+#ifdef DOT11R_FT_SUPPORT
+			else
+			{
+				FT_KDP_SIGNAL *pFtKdp;
+				FT_KDP_EVT_HEADER *pEvtHdr;
+
+
+				/* query signal content for 11r */
+				DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_QUERY_FT_KDP_CONTEXT \n"));
+
+				FT_KDP_EventGet(pAd, &pFtKdp);
+				if (pFtKdp != NULL)
+					pEvtHdr = (FT_KDP_EVT_HEADER *)pFtKdp->Content;
+				/* End of if */
+
+				if ((pFtKdp != NULL) &&
+					((RT_SIGNAL_STRUC_HDR_SIZE + pEvtHdr->EventLen) <=
+														wrq->u.data.length))
+				{
+					/* copy the event */
+					if (copy_to_user(
+								wrq->u.data.pointer,
+								pFtKdp,
+								RT_SIGNAL_STRUC_HDR_SIZE + pEvtHdr->EventLen))
+					{
+						wrq->u.data.length = 0;
+						Status = -EFAULT;
+					}
+					else
+					{
+						wrq->u.data.length = RT_SIGNAL_STRUC_HDR_SIZE;
+						wrq->u.data.length += pEvtHdr->EventLen;
+					}
+
+					FT_MEM_FREE(pAd, pFtKdp);
+				}
+				else
+				{
+					/* no event is queued */
+					DBGPRINT(RT_DEBUG_TRACE, ("ft_kdp> no event is queued!\n"));
+					wrq->u.data.length = 0;
+				}
+			}
+#endif /* DOT11R_FT_SUPPORT */
 		}
 			break;
 
+#ifdef DOT11R_FT_SUPPORT
+		case RT_FT_DATA_ENCRYPT:
+		case RT_FT_DATA_DECRYPT:
+		{
+			UCHAR *pBuffer;
+			UINT32 DataLen;
+
+			DataLen = wrq->u.data.length;
+
+			/*
+				Make sure the data length is multiple of 8
+				due to AES_KEY_WRAP() limitation.
+			*/
+			if (DataLen & 0x07)
+				DataLen += 8 - (DataLen & 0x07);
+			/* End of if */
+
+			FT_MEM_ALLOC(pAd, &pBuffer, DataLen+FT_KDP_KEY_ENCRYPTION_EXTEND);
+			if (pBuffer == NULL)
+				break;
+			NdisZeroMemory(pBuffer, DataLen+FT_KDP_KEY_ENCRYPTION_EXTEND);
+
+			if (copy_from_user(pBuffer, wrq->u.data.pointer, wrq->u.data.length))
+			{
+				Status = -EFAULT;
+				FT_MEM_FREE(pAd, pBuffer);
+				break;
+			}
+
+			switch(cmd)
+			{
+				case RT_FT_DATA_ENCRYPT:
+					DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_FT_DATA_ENCRYPT \n"));
+					FT_KDP_DataEncrypt(pAd, (UCHAR *)pBuffer, &DataLen);
+					break;
+
+				case RT_FT_DATA_DECRYPT:
+					DBGPRINT(RT_DEBUG_TRACE, ("Query::RT_FT_DATA_DECRYPT \n"));
+					FT_KDP_DataDecrypt(pAd, (UCHAR *)pBuffer, &DataLen);
+					break;
+			}
+
+			wrq->u.data.length = DataLen;
+			if (copy_to_user(wrq->u.data.pointer, pBuffer, wrq->u.data.length))
+				Status = -EFAULT;
+			FT_MEM_FREE(pAd, pBuffer);
+		}
+		break;
+
+		case RT_OID_802_11R_INFO:
+			{
+				UCHAR apidx = pObj->ioctl_if;
+				PFT_CONFIG_INFO pFtConfig;
+				PFT_CFG pFtCfg;
+
+/*				pFtConfig = kmalloc(sizeof(FT_CONFIG_INFO), GFP_ATOMIC); */
+				os_alloc_mem(pAd, (UCHAR **)&pFtConfig, sizeof(FT_CONFIG_INFO));
+				if (pFtConfig == NULL)
+					break;
+
+				pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
+				NdisZeroMemory(pFtConfig, sizeof(FT_CONFIG_INFO));
+
+				pFtConfig->FtSupport = pFtCfg->FtCapFlag.Dot11rFtEnable;
+				pFtConfig->FtRicSupport = pFtCfg->FtCapFlag.RsrReqCap;
+				pFtConfig->FtOtdSupport = pFtCfg->FtCapFlag.FtOverDs;
+				NdisMoveMemory(pFtConfig->MdId, pFtCfg->FtMdId, FT_MDID_LEN);
+				pFtConfig->R0KHIdLen = pFtCfg->FtR0khIdLen;
+				NdisMoveMemory(pFtConfig->R0KHId, pFtCfg->FtR0khId, pFtCfg->FtR0khIdLen);
+
+				wrq->u.data.length = sizeof(FT_CONFIG_INFO);
+				Status = copy_to_user(wrq->u.data.pointer, pFtConfig, wrq->u.data.length);
+				os_free_mem(NULL, pFtConfig);
+			}
+			break;
+#endif /* DOT11R_FT_SUPPORT */
 
 #endif /* IAPP_SUPPORT */
 
@@ -7209,6 +7507,11 @@ VOID RTMPIoctlAddWPAKey(
 			{
 				INT	k_offset = 0;
 			
+#ifdef DOT11R_FT_SUPPORT
+				/* The key shall be the second 256 bits of the MSK. */
+				if (IS_FT_RSN_STA(pEntry) && pKey->KeyLength == 64)
+					k_offset = 32;					
+#endif /* DOT11R_FT_SUPPORT */				
 		
 				NdisMoveMemory(pAd->ApCfg.MBSSID[apidx].PMK, pKey->KeyMaterial + k_offset, 32);				
     	        DBGPRINT(RT_DEBUG_TRACE, ("RTMPIoctlAddWPAKey-IF(ra%d) : Add PMK=%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x....\n", apidx,
@@ -12081,7 +12384,7 @@ INT RTMP_AP_IoctlHandle(
 			RTMPIoctlGetMacTable(pAd,wrq);
 		    break;
 
-#if defined (AP_SCAN_SUPPORT) || defined (CONFIG_STA_SUPPORT)
+#if defined (AP_SCAN_SUPPORT)
 		case CMD_RTPRIV_IOCTL_GSITESURVEY:
 			RTMPIoctlGetSiteSurvey(pAd,wrq);
 			break;

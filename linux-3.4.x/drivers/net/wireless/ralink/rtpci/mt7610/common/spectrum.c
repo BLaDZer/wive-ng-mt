@@ -2360,6 +2360,66 @@ typedef struct __PWR_CONSTRAIN_CFG
 }
 
 
+#ifdef DOT11K_RRM_SUPPORT
+INT Set_VoPwrConsTest(
+	IN	PRTMP_ADAPTER	pAd,
+	IN	PSTRING			arg)
+{
+	POS_COOKIE	pObj= (POS_COOKIE)pAd->OS_Cookie;
+
+	/* 
+		Set AP Supported Rate Set to signle rate 54Mbps.
+	*/
+	pAd->CommonCfg.SupRate[0]  = 0x8c;	  /* 54 mbps, in units of 0.5 Mbps*/
+	pAd->CommonCfg.SupRateLen  = 1;
+	pAd->CommonCfg.ExtRateLen = 0;
+
+	/* 
+		1. disable AP Dynamic rate switch 
+		2. and fix it as 54Mbps
+		3. set G only mode.
+	*/
+	APStop(pAd);
+	APStartUp(pAd);
+
+#ifdef DOT11_N_SUPPORT
+	if (pAd->CommonCfg.Channel > 14)
+		pAd->CommonCfg.PhyMode = (WMODE_A | WMODE_AN);
+	else
+		pAd->CommonCfg.PhyMode = (WMODE_B | WMODE_G |WMODE_GN);
+#endif /* DOT11_N_SUPPORT */
+
+	pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DesiredTransmitSetting.field.FixedTxMode = FIXED_TXMODE_OFDM;
+	pAd->ApCfg.MBSSID[pObj->ioctl_if].wdev.DesiredTransmitSetting.field.MCS = 0;
+
+#ifdef DOT11_N_SUPPORT
+	SetCommonHT(pAd);
+#endif /* DOT11_N_SUPPORT */
+
+	pAd->MacTab.Content[0].HTPhyMode.field.MODE = MODE_OFDM;
+	pAd->MacTab.Content[0].HTPhyMode.field.iTxBF = 0;
+	pAd->MacTab.Content[0].HTPhyMode.field.eTxBF = 0;
+	pAd->MacTab.Content[0].HTPhyMode.field.STBC = 0;
+	pAd->MacTab.Content[0].HTPhyMode.field.ShortGI = 0;
+	pAd->MacTab.Content[0].HTPhyMode.field.BW = 0;
+	pAd->MacTab.Content[0].HTPhyMode.field.MCS = 0;
+
+	pAd->CommonCfg.BasicMlmeRate = RATE_6;
+	pAd->CommonCfg.MlmeRate = RATE_6;
+
+	pAd->CommonCfg.MlmeRate = RATE_6;
+	pAd->CommonCfg.RtsRate = RATE_6;
+	pAd->CommonCfg.MlmeTransmit.field.MODE = MODE_OFDM;
+	pAd->CommonCfg.MlmeTransmit.field.MCS = OfdmRateToRxwiMCS[pAd->CommonCfg.MlmeRate];
+
+	/* Stop all auto fall back. */
+	RTMP_IO_WRITE32(pAd, LG_FBK_CFG0, 0x08080808);
+	RTMP_IO_WRITE32(pAd, LG_FBK_CFG1, 0x08080808);
+
+	return TRUE;
+}
+#endif /* DOT11K_RRM_SUPPORT */
+
 static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
 	IN PSTRING pCountryCode,
 	IN UINT8 RugClass)

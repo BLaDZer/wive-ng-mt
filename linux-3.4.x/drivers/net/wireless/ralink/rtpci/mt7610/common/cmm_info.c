@@ -1434,7 +1434,7 @@ BOOLEAN RTMPCheckStrPrintAble(
 	========================================================================
 */
 
-#if defined(CONFIG_STA_SUPPORT) || defined(APCLI_WPA_SUPPLICANT_SUPPORT)
+#if defined(APCLI_WPA_SUPPLICANT_SUPPORT)
 NDIS_STATUS RTMPWPARemoveKeyProc(
 	IN	PRTMP_ADAPTER	pAd,
 	IN	PVOID			pBuf)
@@ -1517,9 +1517,7 @@ NDIS_STATUS RTMPWPARemoveKeyProc(
 
 	return (Status);
 }
-#endif /* defined(CONFIG_STA_SUPPORT) || defined(APCLI_WPA_SUPPLICANT_SUPPORT) */
-
-
+#endif /* defined(APCLI_WPA_SUPPLICANT_SUPPORT) */
 
 
 /*
@@ -2101,7 +2099,7 @@ VOID	RTMPCommSiteSurveyData(
 	return;
 }
 
-#if defined (AP_SCAN_SUPPORT) || defined (CONFIG_STA_SUPPORT)
+#if defined (AP_SCAN_SUPPORT)
 VOID RTMPIoctlGetSiteSurvey(
 	IN	PRTMP_ADAPTER	pAdapter, 
 	IN	RTMP_IOCTL_INPUT_STRUCT	*wrq)
@@ -2200,11 +2198,9 @@ copy_mac_table_entry(RT_802_11_MAC_ENTRY *pDst, MAC_TABLE_ENTRY *pEntry)
 	pDst->AvgRssi1 = pEntry->RssiSample.AvgRssi1;
 	pDst->AvgRssi2 = pEntry->RssiSample.AvgRssi2;
 
-#ifndef CONFIG_STA_SUPPORT
 	/* Fill TX/Rx Bytes per clients */
 	pDst->TxBytes = pEntry->TxBytes;
 	pDst->RxBytes = pEntry->RxBytes;
-#endif
 
 	/* the connected time per entry*/
 	pDst->ConnectedTime = pEntry->StaConnectTime;

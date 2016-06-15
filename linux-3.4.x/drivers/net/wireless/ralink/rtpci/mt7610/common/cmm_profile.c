@@ -3889,6 +3889,9 @@ NDIS_STATUS	RTMPSetProfileParameters(
 #endif /* WSC_INCLUDED */
 
 #ifdef CONFIG_AP_SUPPORT
+#ifdef DOT11R_FT_SUPPORT
+				FT_rtmp_read_parameters_from_file(pAd, tmpbuf, pBuffer);
+#endif /* DOT11R_FT_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -3906,6 +3909,9 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					DBGPRINT(RT_DEBUG_ERROR, ("EntryLifeCheck=%ld\n", pAd->ApCfg.EntryLifeCheck));
 				}
 
+#ifdef DOT11K_RRM_SUPPORT
+				RRM_ReadParametersFromFile(pAd, tmpbuf, pBuffer);
+#endif /* DOT11K_RRM_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 

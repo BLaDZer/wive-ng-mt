@@ -400,6 +400,15 @@ VOID APPeerProbeReqAction(
 					}
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
+#ifdef DOT11K_RRM_SUPPORT
+				if (IS_RRM_ENABLE(pAd, apidx)
+					&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+				{
+					TmpLen2 = 0;
+					NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+					RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
+				}
+#endif /* DOT11K_RRM_SUPPORT */
 
 					os_free_mem(NULL, TmpFrame);
 				}
@@ -407,6 +416,36 @@ VOID APPeerProbeReqAction(
 					DBGPRINT(RT_DEBUG_ERROR, ("%s: Allocate memory fail!!!\n", __FUNCTION__));
 			}
 
+#ifdef DOT11K_RRM_SUPPORT
+		if (IS_RRM_ENABLE(pAd, apidx))
+		{
+			InsertTpcReportIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+			RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
+			RRM_InsertRRMEnCapIE(pAd, pOutBuffer+FrameLen, &FrameLen, apidx);
+		}
+
+
+		{
+			INT loop;
+			for (loop=0; loop<MAX_NUM_OF_REGULATORY_CLASS; loop++)
+			{
+				if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
+					break;
+				InsertChannelRepIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+									(PSTRING)pAd->CommonCfg.CountryCode,
+									pAd->CommonCfg.RegulatoryClass[loop]);
+			}
+		}
+
+#ifndef APPLE_11K_IOT
+		/* Insert BSS AC Access Delay IE. */
+		RRM_InsertBssACDelayIE(pAd, pOutBuffer+FrameLen, &FrameLen);
+
+		/* Insert BSS Available Access Capacity IE. */
+		RRM_InsertBssAvailableACIE(pAd, pOutBuffer+FrameLen, &FrameLen);
+#endif /* !APPLE_11K_IOT */
+
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
@@ -732,6 +771,20 @@ VOID APPeerProbeReqAction(
 			FrameLen += TempLen1;
 	    }
 
+#ifdef DOT11R_FT_SUPPORT
+		/* The Mobility Domain information element (MDIE) is present in Probe-
+		** Request frame when dot11FastBssTransitionEnable is set to true. */
+		if (pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable)
+		{
+			PFT_CFG pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
+			FT_CAP_AND_POLICY FtCap;
+			FtCap.field.FtOverDs = pFtCfg->FtCapFlag.FtOverDs;
+			FtCap.field.RsrReqCap = pFtCfg->FtCapFlag.RsrReqCap;
+			FT_InsertMdIE(pAd, pOutBuffer + FrameLen, &FrameLen,
+							pFtCfg->FtMdId, FtCap);
+		}
+#endif /* DOT11R_FT_SUPPORT */
+
         /* add Simple Config Information Element */
         if ((pAd->ApCfg.MBSSID[apidx].WscControl.WscConfMode > WSC_DISABLE) && (pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.ValueLen))
         {
@@ -742,8 +795,6 @@ VOID APPeerProbeReqAction(
     		FrameLen += WscTmpLen;
         }
 #endif /* WSC_AP_SUPPORT */
-
-
 
 
 #ifdef RT_CFG80211_SUPPORT

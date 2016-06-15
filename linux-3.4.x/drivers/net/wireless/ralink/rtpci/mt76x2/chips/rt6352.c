@@ -5557,7 +5557,7 @@ VOID RT6352_ReCalibration(
 #ifdef DYNAMIC_VGA_SUPPORT
 void RT6352_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 {
-	INT32 rx0_rssi, rx1_rssi;
+	INT32 rx0_rssi = 0, rx1_rssi = 0;
 
 #ifdef CONFIG_STA_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)

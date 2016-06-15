@@ -641,7 +641,16 @@ NDIS_STATUS MlmeHardTransmit(
 			pEntry = MacTableLookup(pAd, pHeader_802_11->Addr1);
 	}
 
-
+#ifdef DOT11K_RRM_SUPPORT
+#ifdef QUIET_SUPPORT
+	if ((pEntry != NULL)
+		&& (pEntry->apidx < pAd->ApCfg.BssidNum)
+		&& IS_RRM_QUIET(pAd, pEntry->apidx))
+	{
+		return NDIS_STATUS_FAILURE;
+	}
+#endif /* QUIET_SUPPORT */
+#endif /* DOT11K_RRM_SUPPORT */
 
 	if ((pEntry != NULL) &&
 		(pEntry->PsMode == PWR_SAVE) &&
@@ -759,7 +768,6 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 #ifdef CONFIG_AP_SUPPORT
 	pHeader_802_11->FC.MoreData = RTMP_GET_PACKET_MOREDATA(pPacket);
 #endif /* CONFIG_AP_SUPPORT */
-
 
 	bInsertTimestamp = FALSE;
 	if (pHeader_802_11->FC.Type == BTYPE_CNTL) /* must be PS-POLL*/
@@ -2036,7 +2044,7 @@ BOOLEAN RTMPCheckEtherType(
 	UINT32	pktLen;
 	UINT16 	srcPort, dstPort;
 #ifdef CONFIG_AP_SUPPORT
-	MULTISSID_STRUCT *pMbss;
+	MULTISSID_STRUCT *pMbss = NULL;
 #endif /* CONFIG_AP_SUPPORT */
 	BOOLEAN bWmmReq;
 
@@ -2063,7 +2071,7 @@ BOOLEAN RTMPCheckEtherType(
 	bWmmReq = (
 #ifdef CONFIG_AP_SUPPORT
 				(
-				(pMbss->bWmmCapable)) || 
+				(pMbss && pMbss->bWmmCapable)) || 
 #endif /* CONFIG_AP_SUPPORT */
 				OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_WMM_INUSED))
 				&& ((pMacEntry) &&

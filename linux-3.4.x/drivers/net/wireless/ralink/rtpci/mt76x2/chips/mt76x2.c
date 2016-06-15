@@ -5186,7 +5186,7 @@ void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 #ifdef DYNAMIC_VGA_SUPPORT
 void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 {
-	INT32 rx0_rssi, rx1_rssi;
+	INT32 rx0_rssi = 0, rx1_rssi = 0;
 	
 #ifdef CONFIG_STA_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)

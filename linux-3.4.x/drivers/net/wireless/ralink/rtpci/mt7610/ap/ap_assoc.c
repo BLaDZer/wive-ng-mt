@@ -671,6 +671,10 @@ VOID ap_cmm_peer_assoc_req_action(
 	PUINT8 pPmkid = NULL;
 	UINT8 pmkid_count = 0;
 #endif /* DOT1X_SUPPORT */	
+#ifdef DOT11R_FT_SUPPORT
+	PFT_CFG pFtCfg = NULL;
+	FT_INFO FtInfoBuf;
+#endif /* DOT11R_FT_SUPPORT */
 	MULTISSID_STRUCT *wdev;
 #ifdef RT_BIG_ENDIAN
 	UINT32 tmp_1;
@@ -995,7 +999,125 @@ VOID ap_cmm_peer_assoc_req_action(
         FrameLen += TmpLen;
     }
 
+#ifdef DOT11R_FT_SUPPORT
+	if ((pFtCfg != NULL) && (pFtCfg->FtCapFlag.Dot11rFtEnable))
+	{
+		PUINT8	mdie_ptr;
+		UINT8	mdie_len;
+		PUINT8	ftie_ptr = NULL;
+		UINT8	ftie_len = 0;
+		PUINT8  ricie_ptr = NULL;
+		UINT8   ricie_len = 0;
+				
+		/* Insert RSNIE if necessary */
+		if (FtInfoBuf.RSNIE_Len != 0)
+		{ 
+	        ULONG TmpLen;
+	        MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen, 
+							  FtInfoBuf.RSNIE_Len,		FtInfoBuf.RSN_IE,
+	                          END_OF_ARGS);
+	        FrameLen += TmpLen;
+	    }	
 
+		/* Insert MDIE. */
+		mdie_ptr = pOutBuffer+FrameLen;
+		mdie_len = 5;
+		FT_InsertMdIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+				FtInfoBuf.MdIeInfo.MdId, FtInfoBuf.MdIeInfo.FtCapPlc);
+
+		/* Insert FTIE. */
+		if (FtInfoBuf.FtIeInfo.Len != 0)
+		{
+			ftie_ptr = pOutBuffer+FrameLen;
+			ftie_len = (2 + FtInfoBuf.FtIeInfo.Len);
+			FT_InsertFTIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+				FtInfoBuf.FtIeInfo.Len, FtInfoBuf.FtIeInfo.MICCtr,
+				FtInfoBuf.FtIeInfo.MIC, FtInfoBuf.FtIeInfo.ANonce,
+				FtInfoBuf.FtIeInfo.SNonce);
+		}
+		/* Insert R1KH IE into FTIE. */
+		if (FtInfoBuf.FtIeInfo.R1khIdLen!= 0)
+			FT_FTIE_InsertKhIdSubIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+					FT_R1KH_ID, FtInfoBuf.FtIeInfo.R1khId,
+					FtInfoBuf.FtIeInfo.R1khIdLen);
+
+		/* Insert GTK Key info into FTIE. */
+		if (FtInfoBuf.FtIeInfo.GtkLen!= 0)
+	 		FT_FTIE_InsertGTKSubIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+	 			FtInfoBuf.FtIeInfo.GtkSubIE, FtInfoBuf.FtIeInfo.GtkLen);
+
+		/* Insert R0KH IE into FTIE. */
+		if (FtInfoBuf.FtIeInfo.R0khIdLen!= 0)
+			FT_FTIE_InsertKhIdSubIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+					FT_R0KH_ID, FtInfoBuf.FtIeInfo.R0khId,
+					FtInfoBuf.FtIeInfo.R0khIdLen);
+
+		/* Insert RIC. */
+		if (ie_list->FtInfo.RicInfo.Len)
+		{
+			ULONG TempLen;
+
+			FT_RIC_ResourceRequestHandle(pAd, pEntry,
+						(PUCHAR)ie_list->FtInfo.RicInfo.pRicInfo,
+						ie_list->FtInfo.RicInfo.Len,
+						(PUCHAR)pOutBuffer+FrameLen,
+						(PUINT32)&TempLen);
+			ricie_ptr = (PUCHAR)(pOutBuffer+FrameLen);
+			ricie_len = TempLen;
+			FrameLen += TempLen;
+		}
+
+		/* Calculate the FT MIC for FT procedure */
+		if (FtInfoBuf.FtIeInfo.MICCtr.field.IECnt)
+		{
+			UINT8	ft_mic[FT_MIC_LEN];
+			PFT_FTIE	pFtIe;
+		
+			FT_CalculateMIC(pEntry->Addr, 
+							wdev->Bssid, 
+							pEntry->PTK, 
+							6, 
+							FtInfoBuf.RSN_IE, 
+							FtInfoBuf.RSNIE_Len, 
+							mdie_ptr, 
+							mdie_len, 
+							ftie_ptr, 
+							ftie_len,
+							ricie_ptr,
+							ricie_len,
+							ft_mic);
+
+			/* Update the MIC field of FTIE */
+			pFtIe = (PFT_FTIE)(ftie_ptr + 2);
+			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
+
+			/* Install pairwise key */
+			WPAInstallPairwiseKey(pAd, pEntry->apidx, pEntry, TRUE);
+
+			/* Update status and set Port as Secured */
+			pEntry->WpaState = AS_PTKINITDONE;
+			pEntry->PrivacyFilter = Ndis802_11PrivFilterAcceptAll;
+		    pEntry->PortSecured = WPA_802_1X_PORT_SECURED;
+		}
+
+		/* 	Record the MDIE & FTIE of (re)association response of
+			Initial Mobility Domain Association. It's used in 
+			FT 4-Way handshaking */
+		if (pEntry->AuthMode >= Ndis802_11AuthModeWPA2 &&
+			ie_list->FtInfo.FtIeInfo.Len == 0)
+		{
+			NdisMoveMemory(&pEntry->InitialMDIE, mdie_ptr, mdie_len);
+
+			pEntry->InitialFTIE_Len = ftie_len;
+			NdisMoveMemory(pEntry->InitialFTIE, ftie_ptr, ftie_len);					
+		}
+	}
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+	if (IS_RRM_ENABLE(pAd, pEntry->apidx))
+		RRM_InsertRRMEnCapIE(pAd, pOutBuffer+FrameLen, &FrameLen, pEntry->apidx);
+#endif /* DOT11K_RRM_SUPPORT */
 
     /* add WMM IE here */
 	if (wdev->bWmmCapable && CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE))
@@ -1152,6 +1274,29 @@ VOID ap_cmm_peer_assoc_req_action(
 	 	}
 #endif /* DOT11N_DRAFT3 */
 
+#ifdef DOT11R_FT_SUPPORT
+	if (pEntry->apidx < pAd->ApCfg.BssidNum)
+	{
+		pFtCfg = &(pAd->ApCfg.MBSSID[pEntry->apidx].FtCfg);
+		if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
+			&& (StatusCode == MLME_SUCCESS))
+			StatusCode = FT_AssocReqHandler(pAd, isReassoc, pFtCfg, pEntry,
+							&ie_list->FtInfo, &FtInfoBuf);
+
+		/* just silencely discard this frame */
+		if (StatusCode == 0xFFFF)
+			goto LabelOK;
+	}
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+	if ((pEntry->apidx < pAd->ApCfg.BssidNum)
+		&& IS_RRM_ENABLE(pAd, pEntry->apidx))
+	{
+		pEntry->RrmEnCap.word = ie_list->RrmEnCap.word;
+	}
+#endif /* DOT11K_RRM_SUPPORT */
+
 #ifdef DOT11_VHT_AC
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14) &&
@@ -1284,6 +1429,25 @@ VOID ap_cmm_peer_assoc_req_action(
 
 /*		SendSingalToDaemon(SIGUSR2, pObj->IappPid); */
 
+#ifdef DOT11R_FT_SUPPORT		
+		/*
+			Do not do any check here.
+			We need to send MOVE-Req frame to AP1 even open mode.
+		*/
+/*		if (IS_FT_RSN_STA(pEntry) && (FtInfo.FtIeInfo.Len != 0)) */
+		if (isReassoc == 1)
+		{					
+			/* only for reassociation frame */
+			FT_KDP_EVT_REASSOC EvtReAssoc;
+
+			EvtReAssoc.SeqNum = 0;
+			NdisMoveMemory(EvtReAssoc.MacAddr, pEntry->Addr, MAC_ADDR_LEN);
+			NdisMoveMemory(EvtReAssoc.OldApMacAddr, ie_list->ApAddr, MAC_ADDR_LEN);
+
+			FT_KDP_EVENT_INFORM(pAd, pEntry->apidx, FT_KDP_SIG_FT_REASSOCIATION,
+								&EvtReAssoc, sizeof(EvtReAssoc), NULL);
+		}
+#endif /* DOT11R_FT_SUPPORT */
 		
 #endif /* IAPP_SUPPORT */
 
@@ -1310,12 +1474,19 @@ VOID ap_cmm_peer_assoc_req_action(
 			/*BAOriSessionSetUp(pAd, pEntry, 0, 0, 3000, FALSE); */
 		}
 #endif /* DOT11_N_SUPPORT */
-
-
+#ifdef DOT11R_FT_SUPPORT
+		/* 	If the length of FTIE field of the (re)association-request frame
+			is larger than zero, it shall indicate the Fast-BSS transition is in progress. */
+		if (ie_list->FtInfo.FtIeInfo.Len > 0)
+		{
+			;
+		}
+		else
+#endif /* DOT11R_FT_SUPPORT */
 		/* enqueue a EAPOL_START message to trigger EAP state machine doing the authentication */
-	    if ((pEntry->AuthMode == Ndis802_11AuthModeWPAPSK) || 
+		if ((pEntry->AuthMode == Ndis802_11AuthModeWPAPSK) || 
 			(pEntry->AuthMode == Ndis802_11AuthModeWPA2PSK))
-    	{
+    		{
 #ifdef WSC_AP_SUPPORT
             /*
                 In WPA-PSK mode,

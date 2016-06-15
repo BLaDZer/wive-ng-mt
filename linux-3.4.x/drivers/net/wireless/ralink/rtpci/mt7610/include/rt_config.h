@@ -145,7 +145,9 @@
 #include "wapi.h"
 #endif /* WAPI_SUPPORT */
 
-
+#ifdef DOT11K_RRM_SUPPORT
+#include "rrm.h"
+#endif /* DOT11K_RRM_SUPPORT */
 
 #if defined(AP_WSC_INCLUDED) || defined(STA_WSC_INCLUDED)
 #define WSC_INCLUDED
@@ -206,6 +208,13 @@
 #include "rt_txbf.h"
 #endif /* TXBF_SUPPORT */
 
+#ifdef DOT11R_FT_SUPPORT
+#include	"ft.h"
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+#include "rrm.h"
+#endif /* DOT11K_RRM_SUPPORT */
 
 #include "mac_ral/fce.h"
 

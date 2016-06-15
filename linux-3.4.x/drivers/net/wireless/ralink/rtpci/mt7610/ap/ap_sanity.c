@@ -63,6 +63,12 @@ BOOLEAN PeerAssocReqCmmSanity(
     UCHAR			WPA1_OUI[4] = { 0x00, 0x50, 0xF2, 0x01 };
     UCHAR			WPA2_OUI[3] = { 0x00, 0x0F, 0xAC };
     MAC_TABLE_ENTRY *pEntry = (MAC_TABLE_ENTRY *)NULL;
+#ifdef DOT11R_FT_SUPPORT
+	PFT_INFO pFtInfo = &ie_lists->FtInfo;
+#endif /* DOT11R_FT_SUPPORT */
+#ifdef DOT11K_RRM_SUPPORT
+	RRM_EN_CAP_IE *pRrmEnCap = &ie_lists->RrmEnCap;
+#endif /* DOT11K_RRM_SUPPORT */
 	HT_CAPABILITY_IE *pHtCapability = &ie_lists->HTCapability;
 
 
@@ -301,6 +307,10 @@ BOOLEAN PeerAssocReqCmmSanity(
                     NdisMoveMemory(&ie_lists->RSN_IE[0], eid_ptr, eid_ptr->Len + 2);
 					ie_lists->RSNIE_Len =eid_ptr->Len + 2;
 
+#ifdef DOT11R_FT_SUPPORT
+					NdisMoveMemory(pFtInfo->RSN_IE, eid_ptr, eid_ptr->Len + 2);
+					pFtInfo->RSNIE_Len = eid_ptr->Len + 2;
+#endif /* DOT11R_FT_SUPPORT */					
                 }
                 else
                 {
@@ -327,6 +337,42 @@ BOOLEAN PeerAssocReqCmmSanity(
 #endif /* WAPI_SUPPORT */				
 
 
+
+#ifdef DOT11R_FT_SUPPORT
+			case IE_FT_MDIE:
+				FT_FillMdIeInfo(eid_ptr, &pFtInfo->MdIeInfo);
+				break;
+
+			case IE_FT_FTIE:
+				FT_FillFtIeInfo(eid_ptr, &pFtInfo->FtIeInfo);
+				break;
+
+			case IE_FT_RIC_DATA:
+				/* record the pointer of first RDIE. */
+				if (pFtInfo->RicInfo.pRicInfo == NULL)
+				{
+					pFtInfo->RicInfo.pRicInfo = &eid_ptr->Eid;
+					pFtInfo->RicInfo.Len = ((UCHAR*)Fr + MsgLen) - (UCHAR*)eid_ptr + 1;
+				}
+			case IE_FT_RIC_DESCRIPTOR:
+				if ((pFtInfo->RicInfo.RicIEsLen + eid_ptr->Len + 2) < MAX_RICIES_LEN)
+				{
+					NdisMoveMemory(&pFtInfo->RicInfo.RicIEs[pFtInfo->RicInfo.RicIEsLen],
+									&eid_ptr->Eid, eid_ptr->Len + 2);
+					pFtInfo->RicInfo.RicIEsLen += eid_ptr->Len + 2;
+				}
+				break;
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+			case IE_RRM_EN_CAP:
+				{
+					UINT64 value;
+					NdisMoveMemory(&value, eid_ptr->Octet, sizeof(UINT64));
+					pRrmEnCap->word = le2cpu64(value);
+				}
+				break;
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_VHT_AC
 		case IE_VHT_CAP:
@@ -444,6 +490,9 @@ BOOLEAN APPeerAuthSanity(
     OUT USHORT *Seq, 
     OUT USHORT *Status, 
     CHAR *ChlgText
+#ifdef DOT11R_FT_SUPPORT
+	,PFT_INFO pFtInfo
+#endif /* DOT11R_FT_SUPPORT */
     ) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
@@ -483,6 +532,73 @@ BOOLEAN APPeerAuthSanity(
             return FALSE;
         }
     } 
+#ifdef DOT11R_FT_SUPPORT
+	else if (*Alg == AUTH_MODE_FT)
+	{
+		PEID_STRUCT eid_ptr;
+		UCHAR *Ptr;
+		UCHAR WPA2_OUI[3]={0x00,0x0F,0xAC};
+
+		NdisZeroMemory(pFtInfo, sizeof(FT_INFO));
+
+		Ptr = &Fr->Octet[6];
+		eid_ptr = (PEID_STRUCT) Ptr;
+
+	    /* get variable fields from payload and advance the pointer */
+		while(((UCHAR*)eid_ptr + eid_ptr->Len + 1) < ((UCHAR*)Fr + MsgLen))
+		{
+			switch(eid_ptr->Eid)
+			{
+				case IE_FT_MDIE:
+					FT_FillMdIeInfo(eid_ptr, &pFtInfo->MdIeInfo);
+					break;
+
+				case IE_FT_FTIE:
+					FT_FillFtIeInfo(eid_ptr, &pFtInfo->FtIeInfo);
+					break;
+
+				case IE_FT_RIC_DATA:
+					/* record the pointer of first RDIE. */
+					if (pFtInfo->RicInfo.pRicInfo == NULL)
+					{
+						pFtInfo->RicInfo.pRicInfo = &eid_ptr->Eid;
+						pFtInfo->RicInfo.Len = ((UCHAR*)Fr + MsgLen)
+												- (UCHAR*)eid_ptr + 1;
+					}
+
+					if ((pFtInfo->RicInfo.RicIEsLen + eid_ptr->Len + 2) < MAX_RICIES_LEN)
+					{
+						NdisMoveMemory(&pFtInfo->RicInfo.RicIEs[pFtInfo->RicInfo.RicIEsLen],
+										&eid_ptr->Eid, eid_ptr->Len + 2);
+						pFtInfo->RicInfo.RicIEsLen += eid_ptr->Len + 2;
+					}
+					break;
+
+					
+				case IE_FT_RIC_DESCRIPTOR:
+					if ((pFtInfo->RicInfo.RicIEsLen + eid_ptr->Len + 2) < MAX_RICIES_LEN)
+					{
+						NdisMoveMemory(&pFtInfo->RicInfo.RicIEs[pFtInfo->RicInfo.RicIEsLen],
+										&eid_ptr->Eid, eid_ptr->Len + 2);
+						pFtInfo->RicInfo.RicIEsLen += eid_ptr->Len + 2;
+					}
+					break;
+
+				case IE_RSN:
+					if (NdisEqualMemory(&eid_ptr->Octet[2], WPA2_OUI, sizeof(WPA2_OUI)))
+					{
+	                    NdisMoveMemory(pFtInfo->RSN_IE, eid_ptr, eid_ptr->Len + 2);
+						pFtInfo->RSNIE_Len = eid_ptr->Len + 2;
+					}
+					break;
+
+				default:
+					break;
+			}
+	        eid_ptr = (PEID_STRUCT)((UCHAR*)eid_ptr + 2 + eid_ptr->Len);        
+		}
+	}
+#endif /* DOT11R_FT_SUPPORT */
     else 
     {
         DBGPRINT(RT_DEBUG_TRACE, ("APPeerAuthSanity fail - wrong algorithm (=%d)\n", *Alg));

@@ -156,6 +156,12 @@ INT Set_PwrConstraint(
 	IN	PSTRING			arg);
 
 
+#ifdef DOT11K_RRM_SUPPORT
+INT Set_VoPwrConsTest(
+	IN	PRTMP_ADAPTER	pAd,
+	IN	PSTRING			arg);
+#endif /* DOT11K_RRM_SUPPORT */
+
 NDIS_STATUS	MeasureReqTabInit(
 	IN PRTMP_ADAPTER pAd);
 

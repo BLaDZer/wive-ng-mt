@@ -81,6 +81,16 @@ config  MT7610_ED_MONITOR
 	depends on MT7610_AP
 	default n
 
+config  MT7610_AP_DOT11R_FT_SUPPORT
+	bool "802.11r Fast BSS Transition"
+	depends on MT7610_AP
+	default y
+
+config  MT7610_AP_DOT11K_RRM_SUPPORT
+	bool "802.11k Radio Resource Management"
+	depends on MT7610_AP
+	default y
+
 config  MT7610_AP_EXT_CHANNEL_LIST
 	bool "Extension Channel List 802.11d compat"
 	depends on MT7610_AP

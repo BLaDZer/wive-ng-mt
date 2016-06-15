@@ -64,6 +64,9 @@ BUILD_TIMER_FUNCTION(APQuickResponeForRateUpExec);
 BUILD_TIMER_FUNCTION(RTMPIdsPeriodicExec);
 #endif /* IDS_SUPPORT */
 
+#ifdef DOT11R_FT_SUPPORT
+BUILD_TIMER_FUNCTION(FT_KDP_InfoBroadcast);
+#endif /* DOT11R_FT_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -94,8 +97,6 @@ BUILD_TIMER_FUNCTION(WscSetupLockTimeout);
 #if defined(BAND_STEERING) && !defined(BNDSTRG_DAEMON)
 BUILD_TIMER_FUNCTION(BndStrg_PeriodicExec);
 #endif /* BAND_STEERING && !BNDSTRG_DAEMON */
-
-
 
 #ifdef TXBF_SUPPORT
 BUILD_TIMER_FUNCTION(eTxBfProbeTimerExec);

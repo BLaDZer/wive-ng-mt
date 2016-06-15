@@ -356,7 +356,6 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 	}	
 #endif /* INF_AMAZON_SE */	
 
-
 #ifdef FPGA_MODE
 	if (pAd->fpga_on & 0x6)
 	{

@@ -26,6 +26,9 @@
  */
 
 #include "rt_config.h"
+#ifdef DOT11R_FT_SUPPORT
+#include "ft.h"
+#endif /* DOT11R_FT_SUPPORT */
 
 static VOID APMlmeDeauthReqAction(
     IN PRTMP_ADAPTER pAd, 
@@ -244,6 +247,11 @@ static VOID APPeerAuthReqAtIdleAction(
 	ULONG FrameLen = 0;
 	MAC_TABLE_ENTRY *pEntry;
 	UCHAR ChTxtIe = 16, ChTxtLen = CIPHER_TEXT_LEN;
+#ifdef DOT11R_FT_SUPPORT
+	PFT_CFG pFtCfg;
+	FT_INFO FtInfo;
+	PFT_INFO pFtInfoBuf;
+#endif /* DOT11R_FT_SUPPORT */
 	MULTISSID_STRUCT *pMbss;
 	CHAR rssi;
 #ifdef BAND_STEERING
@@ -263,7 +271,11 @@ static VOID APPeerAuthReqAtIdleAction(
 		return;
 	}
 
-	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt))
+	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt
+#ifdef DOT11R_FT_SUPPORT
+							,&FtInfo
+#endif /* DOT11R_FT_SUPPORT */
+	    ))
 		return;
     
 
@@ -351,6 +363,42 @@ static VOID APPeerAuthReqAtIdleAction(
 		return;
     }
 
+#ifdef DOT11R_FT_SUPPORT
+	pFtCfg = &pMbss->FtCfg;
+	if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
+		&& (Alg == AUTH_MODE_FT))
+	{
+		USHORT result;
+
+		if (!pEntry)
+			pEntry = MacTableInsertEntry(pAd, Addr2, apidx, OPMODE_AP, TRUE);
+
+		if (pEntry != NULL)
+		{
+		    os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
+
+            if (pFtInfoBuf)
+            {
+    			result = FT_AuthReqHandler(pAd, pEntry, &FtInfo, pFtInfoBuf);
+    			if (result == MLME_SUCCESS)
+    			{
+    				NdisMoveMemory(&pEntry->MdIeInfo, &FtInfo.MdIeInfo, sizeof(FT_MDIE_INFO));
+
+    				pEntry->AuthState = AS_AUTH_OPEN;
+    				pEntry->Sst = SST_AUTH;
+    			}
+
+    			FT_EnqueueAuthReply(pAd, pRcvHdr, Alg, 2, result,
+    						&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo, NULL,
+    						pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
+
+                os_free_mem(NULL, pFtInfoBuf);
+            }
+		}
+		return;
+	}
+	else
+#endif /* DOT11R_FT_SUPPORT */
 #ifdef BAND_STEERING
 	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
@@ -475,13 +523,23 @@ static VOID APPeerAuthConfirmAction(
 	UCHAR			Addr1[MAC_ADDR_LEN];
 	UINT32			apidx;
 
+#ifdef DOT11R_FT_SUPPORT
+	PFT_CFG pFtCfg;
+	FT_INFO FtInfo;
+	PFT_INFO pFtInfoBuf;
+#endif /* DOT11R_FT_SUPPORT */
+
 	if (pAd == NULL)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
  		return;
 	}
 
-	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt))
+	if (! APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &Alg, &Seq, &Status, Chtxt
+#ifdef DOT11R_FT_SUPPORT
+							,&FtInfo
+#endif /* DOT11R_FT_SUPPORT */
+	    ))
 		return;
 
 	for (apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)
@@ -542,6 +600,34 @@ static VOID APPeerAuthConfirmAction(
 
 	if (pEntry && MAC_ADDR_EQUAL(Addr2, pAd->ApMlmeAux.Addr)) 
 	{
+#ifdef DOT11R_FT_SUPPORT
+		pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
+		if ((pFtCfg->FtCapFlag.Dot11rFtEnable) && (Alg == AUTH_MODE_FT))
+		{
+			USHORT result;
+
+            os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
+            if (pFtInfoBuf)
+            {
+                NdisZeroMemory(pFtInfoBuf, sizeof(FT_INFO));
+                os_alloc_mem(pAd, (UCHAR **)&(pFtInfoBuf->RicInfo.pRicInfo), 512);
+                if (pFtInfoBuf->RicInfo.pRicInfo != NULL)
+                {
+                    result = FT_AuthConfirmHandler(pAd, pEntry, &FtInfo,	pFtInfoBuf);
+    				FT_EnqueueAuthReply(pAd, pRcvHdr, Alg, 4, result,
+    					&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo,
+    					&pFtInfoBuf->RicInfo, pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
+    				os_free_mem(NULL, pFtInfoBuf->RicInfo.pRicInfo);
+                }
+                os_free_mem(NULL, pFtInfoBuf);
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+#endif /* DOT11R_FT_SUPPORT */
 		if ((pRcvHdr->FC.Wep == 1) &&
 			NdisEqualMemory(Chtxt, pAd->ApMlmeAux.Challenge, CIPHER_TEXT_LEN)) 
 		{

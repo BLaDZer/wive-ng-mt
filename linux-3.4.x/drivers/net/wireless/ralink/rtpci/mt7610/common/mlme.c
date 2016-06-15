@@ -29,6 +29,9 @@
 
 #include "rt_config.h"
 #include <stdarg.h>
+#ifdef DOT11R_FT_SUPPORT
+#include "ft.h"
+#endif /* DOT11R_FT_SUPPORT */
 
 
 UCHAR CISCO_OUI[] = {0x00, 0x40, 0x96};
@@ -2257,6 +2260,11 @@ VOID BssEntrySet(
 		pBss->WscDPIDFromWpsAP = 0xFFFF;
 #endif /* WSC_INCLUDED */
 
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+		pBss->bHasMDIE = FALSE;
+		NdisZeroMemory(&pBss->FT_MDIE, sizeof(FT_MDIE));
+#endif /* defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
+
 		pEid = (PEID_STRUCT) pVIE;
 		while ((Length + 2 + (USHORT)pEid->Len) <= LengthVIE)    
 		{
@@ -2276,7 +2284,15 @@ VOID BssEntrySet(
 						break;
 					}
 					break;
-
+#if defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT)
+				case IE_FT_MDIE:
+					if (pEid->Len == sizeof(FT_MDIE))
+					{
+						pBss->bHasMDIE = TRUE;
+						NdisMoveMemory(&pBss->FT_MDIE, pEid->Octet, pEid->Len);
+					}
+					break;
+#endif /* defined(DOT11R_FT_SUPPORT) || defined(DOT11K_RRM_SUPPORT) */
 			}
 			Length = Length + 2 + (USHORT)pEid->Len;  /* Eid[1] + Len[1]+ content[Len]*/
 			pEid = (PEID_STRUCT)((UCHAR*)pEid + 2 + pEid->Len);        
@@ -2716,6 +2732,9 @@ VOID BssCipherParse(
 								pBss->AuthModeAux = Ndis802_11AuthModeWPANone;
 							break;                                                        
 						case 1:
+#ifdef DOT11R_FT_SUPPORT
+						case 3:
+#endif /* DOT11R_FT_SUPPORT */
 							/* Set AP support WPA-enterprise mode*/
 							if (pBss->AuthMode == Ndis802_11AuthModeOpen)
 								pBss->AuthMode = Ndis802_11AuthModeWPA2;
@@ -2723,6 +2742,9 @@ VOID BssCipherParse(
 								pBss->AuthModeAux = Ndis802_11AuthModeWPA2;
 							break;
 						case 2:
+#ifdef DOT11R_FT_SUPPORT
+						case 4:
+#endif /* DOT11R_FT_SUPPORT */
 							/* Set AP support WPA-PSK mode*/
 							if (pBss->AuthMode == Ndis802_11AuthModeOpen)
 								pBss->AuthMode = Ndis802_11AuthModeWPA2PSK;

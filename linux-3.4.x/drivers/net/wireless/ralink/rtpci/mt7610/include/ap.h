@@ -31,6 +31,10 @@
 #ifndef __AP_H__
 #define __AP_H__
 
+#ifdef DOT11R_FT_SUPPORT
+#include "ft_cmm.h"
+#endif /* DOT11R_FT_SUPPORT */
+
 
 
 
@@ -420,6 +424,9 @@ BOOLEAN APPeerAuthSanity(
     OUT USHORT *Seq, 
     OUT USHORT *Status, 
     OUT CHAR *ChlgText
+#ifdef DOT11R_FT_SUPPORT
+	,OUT PFT_INFO pFtInfo
+#endif /* DOT11R_FT_SUPPORT */
 	);
 
 

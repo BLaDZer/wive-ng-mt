@@ -594,6 +594,7 @@ enum WIFI_MODE{
 /* Auth and Assoc mode related definitions */
 #define AUTH_MODE_OPEN                  0x00
 #define AUTH_MODE_KEY                   0x01
+#define AUTH_MODE_FT                    0x02
 /*#define AUTH_MODE_AUTO_SWITCH         0x03 */
 /*#define AUTH_MODE_DEAUTH              0x04 */
 /*#define AUTH_MODE_UPLAYER             0x05 // reserved for 802.11i use */
@@ -901,6 +902,10 @@ enum WIFI_MODE{
 
 #define MAX_ACT_MSG				(MAX_IEEE_STD_CATE + 7)
 
+#ifdef DOT11R_FT_SUPPORT
+#define FT_OTA_AUTH_STATE_MACHINE      	27
+#define FT_OTD_ACT_STATE_MACHINE      	28
+#endif /* DOT11R_FT_SUPPORT */
 
 #define MT2_ACT_VENDOR				0x7F
 

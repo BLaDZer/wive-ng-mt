@@ -221,7 +221,7 @@ typedef enum _RTMP_INF_TYPE_
 	RTMP_DEV_INF_PCIE = 5,
 }RTMP_INF_TYPE;
 
-#if defined(CONFIG_AP_SUPPORT) && defined(CONFIG_STA_SUPPORT)
+#if defined(CONFIG_AP_SUPPORT)
 #define IF_DEV_CONFIG_OPMODE_ON_AP(_pAd)		if(_pAd->OpMode == OPMODE_AP)
 #define IF_DEV_CONFIG_OPMODE_ON_STA(_pAd)		if(_pAd->OpMode == OPMODE_STA)
 #define RT_CONFIG_IF_OPMODE_ON_AP(__OpMode)		if (__OpMode == OPMODE_AP)

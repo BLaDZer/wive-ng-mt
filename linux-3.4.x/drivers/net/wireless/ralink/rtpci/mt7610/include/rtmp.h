@@ -57,9 +57,13 @@
 
 #include "rtmp_chip.h"
 
+#ifdef DOT11R_FT_SUPPORT
+#include "ft_cmm.h"
+#endif /* DOT11R_FT_SUPPORT */
 
-
-
+#ifdef DOT11K_RRM_SUPPORT
+#include "rrm_cmm.h"
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef CLIENT_WDS
 #include "client_wds_cmm.h"
@@ -1483,6 +1487,14 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR RssiOfRcvdReplayAttack;
 #endif /* IDS_SUPPORT */
 
+#ifdef DOT11R_FT_SUPPORT
+	FT_CFG FtCfg;
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+	RRM_CONFIG RrmCfg;
+#endif /* DOT11K_RRM_SUPPORT */
+
 	/* YF@20120417: Avoid connecting to AP in Poor Env, value 0 fOr disable. */
 	CHAR AssocReqFailRssiThreshold;
 	CHAR AssocReqNoRspRssiThreshold;
@@ -2258,6 +2270,28 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT32 wapi_usk_rekey_cnt;
 #endif /* WAPI_SUPPORT */
 
+#ifdef DOT11R_FT_SUPPORT
+	FT_MDIE_INFO MdIeInfo;
+	FT_FTIE_INFO FtIeInfo;
+
+	UINT8 InitialMDIE[5];
+	UINT8 InitialFTIE[256];
+	UINT InitialFTIE_Len;
+
+	UCHAR FT_PMK_R0[32];
+	UCHAR FT_PMK_R0_NAME[16];
+	UCHAR FT_PMK_R1[32];
+	UCHAR FT_PMK_R1_NAME[16];
+	UCHAR PTK_NAME[16];
+
+	UCHAR FT_UCipher[4];
+	UCHAR FT_Akm[4];
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+	RRM_EN_CAP_IE RrmEnCap;
+#endif /* DOT11K_RRM_SUPPORT */
+
 
 	ULONG AssocDeadLine;
 
@@ -2754,6 +2788,10 @@ typedef struct _AP_ADMIN_CONFIG {
 	BOOLEAN IgmpSnoopEnable;	/* 0: disable, 1: enable. */
 #endif				/* IGMP_SNOOP_SUPPORT */
 
+
+#ifdef DOT11R_FT_SUPPORT
+	FT_TAB FtTab;
+#endif /* DOT11R_FT_SUPPORT */
 
 #ifdef CLIENT_WDS
 	NDIS_SPIN_LOCK CliWdsTabLock;
@@ -3579,9 +3617,9 @@ struct _RTMP_ADAPTER {
 
 	/* AP needs those vaiables for site survey feature. */
 	MLME_AUX MlmeAux;	/* temporary settings used during MLME state machine */
-#if defined(AP_SCAN_SUPPORT) || defined(CONFIG_STA_SUPPORT)
+#if defined(AP_SCAN_SUPPORT)
 	BSS_TABLE ScanTab;	/* store the latest SCAN result */
-#endif /* defined(AP_SCAN_SUPPORT) || defined(CONFIG_STA_SUPPORT) */
+#endif /* defined(AP_SCAN_SUPPORT) */
 
 	/*About MacTab, the sta driver will use #0 and #1 for multicast and AP. */
 	MAC_TABLE MacTab;	/* ASIC on-chip WCID entry table.  At TX, ASIC always use key according to this on-chip table. */
@@ -8304,7 +8342,7 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 
 /*////////////////////////////////////*/
 
-#if defined (AP_SCAN_SUPPORT) || defined (CONFIG_STA_SUPPORT)
+#if defined (AP_SCAN_SUPPORT)
 VOID RTMPIoctlGetSiteSurvey(
 	IN	PRTMP_ADAPTER	pAdapter, 
 	IN	RTMP_IOCTL_INPUT_STRUCT *wrq);

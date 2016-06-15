@@ -272,6 +272,9 @@ VOID QBSS_LoadInit(
 	for(IdBss=0; IdBss<pAd->ApCfg.BssidNum; IdBss++)
 	{
 		if ((pAd->ApCfg.MBSSID[IdBss].bWmmCapable)
+#ifdef DOT11K_RRM_SUPPORT
+			|| (IS_RRM_ENABLE(pAd, IdBss))
+#endif /* DOT11K_RRM_SUPPORT */
 			)
 		{
 			pAd->FlgQloadEnable = TRUE;

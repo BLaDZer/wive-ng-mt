@@ -622,11 +622,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	char_t	*rrm;
 	char 	ieee80211k[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 	char_t	*ft;
 	char 	ieee80211r[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
@@ -706,10 +706,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
 	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	rrm = websGetVar(wp, T("RRMEnable"), T("1"));
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)|| defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)|| defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 	ft = websGetVar(wp, T("FtSupport"), T("1"));
 #endif
 
@@ -782,11 +782,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
 #endif
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 			sprintf(ieee80211k, "%s%s", ieee80211k, (CHK_IF_DIGIT(rrm, 1)) ? "1" : "0");
 			sprintf(ieee80211k, "%s%s", ieee80211k, token);
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 			sprintf(ieee80211r, "%s%s", ieee80211r, (CHK_IF_DIGIT(ft, 1)) ? "1" : "0");
 			sprintf(ieee80211r, "%s%s", ieee80211r, token);
 #endif
@@ -807,10 +807,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	nvram_bufset(RT2860_NVRAM, "RRMEnable", ieee80211k);
 #endif
-#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 	nvram_bufset(RT2860_NVRAM, "FtSupport", ieee80211r);
 #endif
 
@@ -825,7 +825,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 		if (atoi(sz11aChannel) >= 149)
 		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "3");
 		else if (atoi(sz11aChannel) >= 52)
@@ -844,7 +844,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
 		}
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "4");
 #endif
 	}
@@ -1823,7 +1823,7 @@ static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1831,7 +1831,7 @@ static int getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getFTBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
