@@ -2075,15 +2075,14 @@
 78) kernel: net: fix net_gso_ok for new GSO types.<br>
 79) kernel: net: netfilter: x_tables: fix unconditional helper.<br>
 80) kernel: net: netfilter: x_tables: make sure e->next_offset covers remaining blob size.<br>
-81) kernel: net: validate variable length ll headers.<br>
-82) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
-83) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
-84) kernel: net: ppp: take reference on channels netns.<br>
-85) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
-86) kernel: net: bridge: fix igmp / mld query parsing.<br>
-87) kernel: net: bridge: fix igmpv3 / mldv2 report parsing.<br>
-88) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
-89) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
+81) kernel: net: make *sfhash and real small functions in conntrack always inline (small optimize).<br>
+82) kernel: net: fq_codel: explicitly reset flows in ->reset().<br>
+83) kernel: net: ppp: take reference on channels netns.<br>
+84) kernel: net: bridge: fix old ioctl unlocked net device walk.<br>
+85) kernel: net: bridge: fix igmp / mld query parsing.<br>
+86) kernel: net: bridge: fix igmpv3 / mldv2 report parsing.<br>
+87) kernel: net: bridge: fix potential use-after-free when hook returns QUEUE or STOLEN verdict.<br>
+88) kernel: net: revert - mld, igmp: fix reserved tailroom calculation.<br>
 <br>
 <br>
 <b>4.4.x</b><br>
