@@ -2136,17 +2136,18 @@
 48) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
 49) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
 50) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-51) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-52) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-53) kernel: sched: always inline context_switch().<br>
-54) kernel: mips: make flush_thread and exit_thread always inline.<br>
-55) kernel: mips: lib: mark intrinsics notrace.<br>
-56) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-57) kernel: usb: serial: option: add more ZTE device ids.<br>
-58) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-59) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-60) kernel: usb: core: fix crash on unlink urb.<br>
-61) kernel: usb: retry reset if a device times out.<br>
+51) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+52) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+53) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+54) kernel: sched: always inline context_switch().<br>
+55) kernel: mips: make flush_thread and exit_thread always inline.<br>
+56) kernel: mips: lib: mark intrinsics notrace.<br>
+57) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+58) kernel: usb: serial: option: add more ZTE device ids.<br>
+59) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+60) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+61) kernel: usb: core: fix crash on unlink urb.<br>
+62) kernel: usb: retry reset if a device times out.<br>
 <br>
 <br>
 <br>
