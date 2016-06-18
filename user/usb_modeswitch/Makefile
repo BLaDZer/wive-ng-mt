@@ -1,5 +1,5 @@
 PROG        = usb_modeswitch
-VERS        = 2.3.0
+VERS        = 2.4.0
 LIBUSB      = $(ROOTDIR)/lib/libusb
 CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections
 LDFLAGS	    += -Wl,--gc-sections
