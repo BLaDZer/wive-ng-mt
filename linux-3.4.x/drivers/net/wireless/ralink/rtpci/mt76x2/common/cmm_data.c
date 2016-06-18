@@ -330,7 +330,7 @@ NDIS_STATUS MiniportMMRequest(
 	IN UINT Length)
 {
 	PNDIS_PACKET pPacket;
-	NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
+	NDIS_STATUS Status = NDIS_STATUS_FAILURE;
 	ULONG FreeNum;
 #ifdef RTMP_MAC_PCI
 	ULONG IrqFlags = 0;
@@ -364,7 +364,7 @@ NDIS_STATUS MiniportMMRequest(
 			return NDIS_STATUS_FAILURE;
 		
 		QueIdx = 0;
-		bUseDataQ = TRUE;
+		//bUseDataQ = TRUE;
 	}
 #endif /* CONFIG_FPGA_MODE */
 	if ((QueIdx & MGMT_USE_PS_FLAG) == MGMT_USE_PS_FLAG)
@@ -431,9 +431,6 @@ NDIS_STATUS MiniportMMRequest(
 			Status = NDIS_STATUS_FAILURE;
 			break;
 		}
-
-#ifdef CONFIG_STA_SUPPORT
-#endif /* CONFIG_STA_SUPPORT */
 
 		/* Check Free priority queue*/
 		/* Since we use PBF Queue2 for management frame.  Its corresponding DMA ring should be using TxRing.*/
@@ -524,9 +521,12 @@ NDIS_STATUS MiniportMMRequest(
 											QueIdx, pAd->RalinkCounters.MgmtRingFullCount));
 				}
 			}
+			else
 #endif /* RTMP_MAC_PCI */
-			DBGPRINT(RT_DEBUG_ERROR, ("Qidx(%d), not enough space in MgmtRing, MgmtRingFullCount=%ld!\n",
+			{
+				DBGPRINT(RT_DEBUG_ERROR, ("Qidx(%d), not enough space in MgmtRing, MgmtRingFullCount=%ld!\n",
 										QueIdx, pAd->RalinkCounters.MgmtRingFullCount));
+			}
 		}
 	} while (retryCnt > 0);
 #ifdef CUSTOMER_DCC_FEATURE

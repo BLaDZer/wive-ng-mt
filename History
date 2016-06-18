@@ -2124,33 +2124,35 @@
 36) kernel: ralink_wifi: mt7603 set ring sizes for lab tested results.<br>
 37) kernel: ralink_wifi: mt7603 fix proc path name.<br>
 38) kernel: ralink_wifi: mt7603 fix set enq_done in drop path of rtmp_enq_req.<br>
-39) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
-40) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
-41) kernel: ralink_wifi: mt7610 backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
-42) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-43) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-44) kernel: backport RTC_SYSTOHC from upstream.<br>
-45) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-46) kernel: kernel/relay.c: fix potential memory leak.<br>
-47) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-48) kernel: nfs: fix nfs_size_to_loff_t.<br>
-49) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-50) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-51) kernel: sched: always inline context_switch().<br>
-52) kernel: mips: make flush_thread and exit_thread always inline.<br>
-53) kernel: mips: lib: mark intrinsics notrace.<br>
-54) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-55) kernel: usb: serial: option: add more ZTE device ids.<br>
-56) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-57) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-58) kernel: usb: core: fix crash on unlink urb.<br>
-59) kernel: usb: retry reset if a device times out.<br>
-60) kernel: net: do not block BH while processing socket backlog.<br>
-61) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-62) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-63) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-64) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-65) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+39) kernel: ralink_wifi: mt7603 avoid not needed flush txring at try insert managment reqests.<br>
+40) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+41) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
+42) kernel: ralink_wifi: mt7610 backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
+43) kernel: ralink_wifi: fix mlme request success handle.<br>
+44) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+45) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+46) kernel: backport RTC_SYSTOHC from upstream.<br>
+47) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+48) kernel: kernel/relay.c: fix potential memory leak.<br>
+49) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+50) kernel: nfs: fix nfs_size_to_loff_t.<br>
+51) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+52) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+53) kernel: sched: always inline context_switch().<br>
+54) kernel: mips: make flush_thread and exit_thread always inline.<br>
+55) kernel: mips: lib: mark intrinsics notrace.<br>
+56) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+57) kernel: usb: serial: option: add more ZTE device ids.<br>
+58) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+59) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+60) kernel: usb: core: fix crash on unlink urb.<br>
+61) kernel: usb: retry reset if a device times out.<br>
+62) kernel: net: do not block BH while processing socket backlog.<br>
+63) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+64) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+65) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+66) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+67) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
 <br>
 <br>
 <br>

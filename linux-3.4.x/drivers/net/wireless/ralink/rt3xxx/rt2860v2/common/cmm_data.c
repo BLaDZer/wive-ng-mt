@@ -80,7 +80,7 @@ NDIS_STATUS MiniportMMRequest(
 	IN	UINT			Length)
 {
 	PNDIS_PACKET	pPacket;
-	NDIS_STATUS  	Status = NDIS_STATUS_SUCCESS;
+	NDIS_STATUS Status = NDIS_STATUS_FAILURE;
 	ULONG	 		FreeNum;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
 	UCHAR rtmpHwHdr[40];

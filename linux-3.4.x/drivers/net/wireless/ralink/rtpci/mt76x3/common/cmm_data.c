@@ -934,14 +934,17 @@ NDIS_STATUS MiniportMMRequest(RTMP_ADAPTER *pAd, UCHAR QueIdx, UCHAR *pData, UIN
 			break;
 		}
 
-
 		/* Check Free priority queue*/
 		/* Since we use PBF Queue2 for management frame.  Its corresponding DMA ring should be using TxRing.*/
 #ifdef RTMP_MAC_PCI
 		if (bUseDataQ)
 		{
-			/* free Tx(QueIdx) resources*/
-			RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);
+			FreeNum = GET_TXRING_FREENO(pAd, QueIdx);
+			if (FreeNum <= 5)
+			{
+				/* free Tx(QueIdx) resources*/
+				RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);
+			}
 			FreeNum = GET_TXRING_FREENO(pAd, QueIdx);
 		}
 		else
