@@ -180,6 +180,7 @@ static RTMP_REG_PAIR	MT76x0_MACRegTable[] = {
 	{LDO_CTRL1, 0x6B006464}, /* Default LDO_DIG supply 1.26V, change to 1.2V */
 	{HT_BASIC_RATE, 0x00004003}, /*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
 	{HT_CTRL_CFG, 0x000001FF},	/*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
+	{TXOP_HLDR_ET,  0x00000000}, /* 76x0 don't need TGac, initial disable secondary EDCCA */
 };
 
 static UCHAR MT76x0_NUM_MAC_REG_PARMS = (sizeof(MT76x0_MACRegTable) / sizeof(RTMP_REG_PAIR));
@@ -2310,7 +2311,7 @@ VOID MT76x0_NICInitAsicFromEEPROM(
 static UCHAR mt76x0_txpwr_chlist[] = {
 	1, 2,3,4,5,6,7,8,9,10,11,12,13,14,
 	36,38,40,44,46,48,52,54,56,60,62,64,
-	100,102,104,108,110,112,116,118,120,124,126,128,132,134,136,140,
+	100,102,104,108,110,112,116,118,120,124,126,128,132,134,136,140,144,
 	149,151,153,157,159,161,165,167,169,171,173,
 	42, 58, 106, 122, 155,
 };
@@ -2633,9 +2634,10 @@ VOID MT76x0_DisableTxRx(
 
 
 #ifdef ED_MONITOR
-void MT76x0_Set_ED_CCA(RTMP_ADAPTER *pAd, BOOLEAN enable)
-{
+void MT76x0_Set_ED_CCA(RTMP_ADAPTER *pAd, BOOLEAN enable) {
 	UINT32 MacReg = 0;
+	UINT32 reg_val = 0;
+	UCHAR ED_TH = 0x0e;
 	if (enable) {
 		RTMP_IO_READ32(pAd, CH_TIME_CFG, &MacReg);
 		MacReg |= 0x45;   // enable channel status check
@@ -2644,10 +2646,23 @@ void MT76x0_Set_ED_CCA(RTMP_ADAPTER *pAd, BOOLEAN enable)
 		RTMP_IO_READ32(pAd, TXOP_CTRL_CFG, &MacReg);
 		MacReg |= (1 << 20);
 		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, MacReg);
-	} else {
+		
+		RTMP_BBP_IO_READ32(pAd, AGC1_R2, &reg_val);
+		reg_val = (reg_val & 0xFFFF0000) | (ED_TH << 8) | ED_TH;
+		RTMP_BBP_IO_WRITE32(pAd, AGC1_R2, reg_val); 
+		
+		RTMP_IO_READ32(pAd, TXOP_HLDR_ET, &MacReg);
+		MacReg |= (1 << 1);  /* enable secondary EDCCA */
+		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, MacReg);
+	}
+	else { 		
 		RTMP_IO_READ32(pAd, TXOP_CTRL_CFG, &MacReg);
 		MacReg &= ~(1 << 20);
 		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, MacReg);
+		
+		RTMP_IO_READ32(pAd, TXOP_HLDR_ET, &MacReg); 
+		MacReg &= ~(1 << 1); /* disable secondary EDCCA */
+		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, MacReg);
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::0x%x: 0x%08X\n", __FUNCTION__, TXOP_CTRL_CFG, MacReg));
