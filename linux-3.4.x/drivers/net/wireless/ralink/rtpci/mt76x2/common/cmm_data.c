@@ -927,10 +927,9 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	if ((pAd->LatchRfRegs.Channel > 14) && (MlmeRate < RATE_6)) /* 11A band*/
 		MlmeRate = RATE_6;
 	
-	if (((pHeader_802_11->FC.Type == FC_TYPE_DATA) &&
-	    (pHeader_802_11->FC.SubType == SUBTYPE_QOS_NULL)) ||
-	    ((pHeader_802_11->FC.Type == FC_TYPE_CNTL) &&
-	    (pHeader_802_11->FC.SubType == SUBTYPE_VHT_NDPA)))
+	if (((pHeader_802_11->FC.Type == FC_TYPE_DATA) && (pHeader_802_11->FC.SubType == SUBTYPE_QOS_NULL)) ||
+	    ((pHeader_802_11->FC.Type == FC_TYPE_CNTL) && (pHeader_802_11->FC.SubType == SUBTYPE_BLOCK_ACK_REQ)) ||
+	    ((pHeader_802_11->FC.Type == FC_TYPE_CNTL) && (pHeader_802_11->FC.SubType == SUBTYPE_VHT_NDPA)))
 	{
 		pMacEntry = MacTableLookup(pAd, pHeader_802_11->Addr1);
 	}

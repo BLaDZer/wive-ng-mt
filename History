@@ -2135,30 +2135,31 @@
 47) kernel: ralink_wifi: fix mlme request success handle.<br>
 48) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
 49) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
-50) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-51) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-52) kernel: backport RTC_SYSTOHC from upstream.<br>
-53) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-54) kernel: kernel/relay.c: fix potential memory leak.<br>
-55) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-56) kernel: nfs: fix nfs_size_to_loff_t.<br>
-57) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-58) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-59) kernel: sched: always inline context_switch().<br>
-60) kernel: mips: make flush_thread and exit_thread always inline.<br>
-61) kernel: mips: lib: mark intrinsics notrace.<br>
-62) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-63) kernel: usb: serial: option: add more ZTE device ids.<br>
-64) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-65) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-66) kernel: usb: core: fix crash on unlink urb.<br>
-67) kernel: usb: retry reset if a device times out.<br>
-68) kernel: net: do not block BH while processing socket backlog.<br>
-69) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-70) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-71) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-72) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-73) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+50) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
+51) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+52) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+53) kernel: backport RTC_SYSTOHC from upstream.<br>
+54) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+55) kernel: kernel/relay.c: fix potential memory leak.<br>
+56) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+57) kernel: nfs: fix nfs_size_to_loff_t.<br>
+58) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+59) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+60) kernel: sched: always inline context_switch().<br>
+61) kernel: mips: make flush_thread and exit_thread always inline.<br>
+62) kernel: mips: lib: mark intrinsics notrace.<br>
+63) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+64) kernel: usb: serial: option: add more ZTE device ids.<br>
+65) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+66) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+67) kernel: usb: core: fix crash on unlink urb.<br>
+68) kernel: usb: retry reset if a device times out.<br>
+69) kernel: net: do not block BH while processing socket backlog.<br>
+70) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+71) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+72) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+73) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+74) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
 <br>
 <br>
 <br>
