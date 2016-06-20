@@ -2520,11 +2520,7 @@ VOID PSEACStuckWatchDog(RTMP_ADAPTER *pAd)
 		//clear after reset
 		//Value &= ~(1 << 6);
 		//RTMP_IO_WRITE32(pAd, 0x816c, Value);
-
-		if (RTDebugLevel >= RT_DEBUG_WARN)
-		{
-			printk("HIT MGMT !\n");
-		}
+		DBGPRINT(RT_DEBUG_WARN, ("HIT MGMT !\n"));
 
 		pAd->MgtHitCount ++;
 		pAd->pse_reset_flag = TRUE;

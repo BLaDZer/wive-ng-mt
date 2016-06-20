@@ -973,7 +973,7 @@ INT AsicGetTsfTime(RTMP_ADAPTER *pAd, UINT32 *high_part, UINT32 *low_part)
 #ifdef LINUX
 #ifdef MT7603_WLAN_HOOK_SUPPORT
 EXPORT_SYMBOL(AsicGetTsfTime);
-#endif /* RTMP_WLAN_HOOK_SUPPORT */
+#endif /* MT7603_WLAN_HOOK_SUPPORT */
 #endif /* LINUX */
 
 

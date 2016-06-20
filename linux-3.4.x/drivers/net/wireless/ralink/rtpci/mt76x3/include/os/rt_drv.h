@@ -147,9 +147,9 @@ typedef char 				* PNDIS_BUFFER;
 #define MAX_PACKETS_IN_QUEUE				1024
 #else /* LIMIT_GLOBAL_SW_QUEUE */
 #ifdef DOT11_VHT_AC
-#define MAX_PACKETS_IN_QUEUE				1024 /*(512)*/
+#define MAX_PACKETS_IN_QUEUE				1024 /* 512 */
 #else
-#define MAX_PACKETS_IN_QUEUE				(512)
+#define MAX_PACKETS_IN_QUEUE				512
 #endif /* DOT11_VHT_AC */
 #endif /* !LIMIT_GLOBAL_SW_QUEUE */
 
