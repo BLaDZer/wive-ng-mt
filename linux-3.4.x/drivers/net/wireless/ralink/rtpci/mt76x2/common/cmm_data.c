@@ -4202,14 +4202,13 @@ VOID RtmpEnqueueNullFrame(
 
 		pEntry = MacTableLookup(pAd, pAddr);
 #ifdef CONFIG_AP_SUPPORT
-		if ((pEntry != NULL) && (IS_ENTRY_CLIENT(pEntry)))
+		if (pEntry && pEntry->wdev->wdev_type == WDEV_TYPE_AP)
 		{
 			MgtMacHeaderInit(pAd, pNullFr, SUBTYPE_DATA_NULL, 0, pAddr, 
 							pAd->ApCfg.MBSSID[apidx].wdev.if_addr,
 							pAd->ApCfg.MBSSID[apidx].wdev.bssid);
+			pNullFr->FC.ToDs = 0;
 			pNullFr->FC.FrDs = 1;
-			pNullFr->FC.ToDs = 0;	
-			
 			goto body;
 		}
 #endif /* CONFIG_AP_SUPPORT */

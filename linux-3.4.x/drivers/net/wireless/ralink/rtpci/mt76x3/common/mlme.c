@@ -398,7 +398,6 @@ VOID RtmpEnqueueNullFrame(
 		frm_len = sizeof(HEADER_802_11);
 
 #ifdef CONFIG_AP_SUPPORT
-//		IF_DEV_CONFIG_OPMODE_ON_AP(pAd) 
 		if (pEntry && pEntry->wdev->wdev_type == WDEV_TYPE_AP)
 		{
 			MgtMacHeaderInit(pAd, pNullFr, SUBTYPE_DATA_NULL, 0, pAddr, 
