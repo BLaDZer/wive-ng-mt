@@ -2801,7 +2801,8 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: copy_to_user() fail\n", __FUNCTION__));
 	}
 
-	os_free_mem(NULL, pMacTab);
+	if (pMacTab != NULL)
+	    os_free_mem(NULL, pMacTab);
 }
 
 
@@ -2889,7 +2890,8 @@ VOID RTMPIoctlGetMacTable(
 
 LabelOK:
 #endif
-	os_free_mem(NULL, pMacTab);
+	if (pMacTab != NULL)
+	    os_free_mem(NULL, pMacTab);
 }
 
 #if defined(INF_AR9) || defined(BB_SOC)
