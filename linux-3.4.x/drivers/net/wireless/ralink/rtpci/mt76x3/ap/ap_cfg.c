@@ -10023,11 +10023,22 @@ INT Set_ApCli_AutoConnect_Proc(
 	POS_COOKIE  		pObj= (POS_COOKIE) pAd->OS_Cookie;
 	UCHAR				ifIndex;
 	AP_ADMIN_CONFIG *pApCfg;
+	NDIS_802_11_SSID Ssid;
+	LONG scan_mode = simple_strtol(arg, 0, 10);
 
 	if (pObj->ioctl_if_type != INT_APCLI)
 		return FALSE;
 	pApCfg = &pAd->ApCfg;
 	ifIndex = pObj->ioctl_if;
+
+	if (scan_mode == 0)
+	{
+		pApCfg->ApCliTab[ifIndex].AutoConnectFlag = FALSE;
+		pApCfg->ApCliAutoConnectRunning = FALSE;
+		return TRUE;
+	}
+
+	pApCfg->ApCliTab[ifIndex].AutoConnectFlag = TRUE;
 
 	if (pApCfg->ApCliAutoConnectRunning == FALSE)
 	{
@@ -10040,8 +10051,6 @@ INT Set_ApCli_AutoConnect_Proc(
 		return TRUE;
 	}
 
-	pApCfg->ApCliTab[ifIndex].AutoConnectFlag =  TRUE;
-	
 	DBGPRINT(RT_DEBUG_TRACE, ("I/F(apcli%d) Set_ApCli_AutoConnect_Proc::(Len=%d,Ssid=%s)\n",
 			ifIndex, pApCfg->ApCliTab[ifIndex].CfgSsidLen, pApCfg->ApCliTab[ifIndex].CfgSsid));
 
@@ -10049,7 +10058,8 @@ INT Set_ApCli_AutoConnect_Proc(
 	/*
 		use site survey function to trigger auto connecting (when pAd->ApCfg.ApAutoConnectRunning == TRUE)
 	*/
-	Set_SiteSurvey_Proc(pAd, "");//pApCfg->ApCliTab[ifIndex].CfgSsid);
+	NdisZeroMemory(&Ssid, sizeof(NDIS_802_11_SSID));
+	ApSiteSurvey(pAd, &Ssid, SCAN_ACTIVE, FALSE);
 
 	return TRUE;
 }

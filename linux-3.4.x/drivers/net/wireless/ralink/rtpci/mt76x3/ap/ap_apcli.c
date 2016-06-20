@@ -1301,7 +1301,7 @@ VOID ApCliIfMonitor(RTMP_ADAPTER *pAd)
 				&& (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliLinkUpTime + (30 * OS_HZ)))))
 				bForceBrocken = TRUE;
 
-			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (12 * OS_HZ))))
+			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (8 * OS_HZ))))
 			{
 #ifdef ED_MONITOR
 				if (pAd->ed_tx_stoped == FALSE)
@@ -3250,19 +3250,23 @@ BOOLEAN ApCliAutoConnectExec(
 			Switch to the channel of the candidate AP
 		*/
 		UCHAR tempBuf[20];
-		if (pAd->CommonCfg.Channel != pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Channel)
+		BSS_ENTRY *pBssEntry = &pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1];
+		
+		if (pAd->CommonCfg.Channel != pBssEntry->Channel ||
+			pAd->CommonCfg.RegTransmitSetting.field.EXTCHA != pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
 		{
-			sprintf(tempBuf, "%d", pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Channel);
+			sprintf(tempBuf, "%d", pBssEntry->Channel);
 			DBGPRINT(RT_DEBUG_TRACE, ("Switch to channel :%s\n", tempBuf));
+			pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset;
 			Set_Channel_Proc(pAd, tempBuf);
 		}
 			sprintf(tempBuf, "%02X:%02X:%02X:%02X:%02X:%02X",
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[0],
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[1],
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[2],
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[3],
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[4],
-					pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Bssid[5]);
+					pBssEntry->Bssid[0],
+					pBssEntry->Bssid[1],
+					pBssEntry->Bssid[2],
+					pBssEntry->Bssid[3],
+					pBssEntry->Bssid[4],
+					pBssEntry->Bssid[5]);
 			Drv_ApCli_Bssid_Fill(pAd, ifIdx, tempBuf);			
 	}
 	else
@@ -3299,13 +3303,24 @@ BOOLEAN ApCliAutoConnectExec(
 VOID ApCliSwitchCandidateAP(
 	IN PRTMP_ADAPTER pAd)
 {
-	POS_COOKIE  	pObj = (POS_COOKIE) pAd->OS_Cookie;
 	BSS_TABLE 		*pSsidBssTab;
 	PAPCLI_STRUCT	pApCliEntry;
-	UCHAR			lastEntryIdx, ifIdx = pObj->ioctl_if;
-
+	UCHAR		ifIdx;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("---> ApCliSwitchCandidateAP()\n"));
+
+	for(ifIdx=0; ifIdx<MAX_APCLI_NUM; ifIdx++)
+	{
+		if (pAd->ApCfg.ApCliTab[ifIdx].AutoConnectFlag== TRUE)
+			break;
+	}
+
+	if(ifIdx >= MAX_APCLI_NUM)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("Error  ifIdx=%d \n", ifIdx));
+		return;
+	}
+
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIdx];
 	pSsidBssTab = &pApCliEntry->MlmeAux.SsidBssTab;
 
@@ -3314,25 +3329,27 @@ VOID ApCliSwitchCandidateAP(
 		connect to the last entry in talbe until the talbe is empty.
 	*/
 	NdisZeroMemory(&pSsidBssTab->BssEntry[--pSsidBssTab->BssNr], sizeof(BSS_ENTRY));
-	lastEntryIdx = pSsidBssTab->BssNr -1;
 
 	if ((pSsidBssTab->BssNr > 0) && (pSsidBssTab->BssNr < MAX_LEN_OF_BSS_TABLE))
 	{
 		UCHAR	tempBuf[20];
+		BSS_ENTRY *pBssEntry = &pSsidBssTab->BssEntry[pSsidBssTab->BssNr - 1];
 
 		sprintf(tempBuf, "%02X:%02X:%02X:%02X:%02X:%02X",
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[0],
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[1],
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[2],
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[3],
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[4],
-				pSsidBssTab->BssEntry[lastEntryIdx].Bssid[5]);
+				pBssEntry->Bssid[0],
+				pBssEntry->Bssid[1],
+				pBssEntry->Bssid[2],
+				pBssEntry->Bssid[3],
+				pBssEntry->Bssid[4],
+				pBssEntry->Bssid[5]);
 		Drv_ApCli_Bssid_Fill(pAd, ifIdx, tempBuf);
-		if (pAd->CommonCfg.Channel != pSsidBssTab->BssEntry[lastEntryIdx].Channel)
+		if (pAd->CommonCfg.Channel != pBssEntry->Channel ||
+			pAd->CommonCfg.RegTransmitSetting.field.EXTCHA != pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
 		{
 			Set_ApCli_Enable_Proc(pAd, "0");
-			sprintf(tempBuf, "%d", pSsidBssTab->BssEntry[lastEntryIdx].Channel);
+			sprintf(tempBuf, "%d", pBssEntry->Channel);
 			DBGPRINT(RT_DEBUG_TRACE, ("Switch to channel :%s\n", tempBuf));
+			pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset;
 			Set_Channel_Proc(pAd, tempBuf);
 		}
 	}

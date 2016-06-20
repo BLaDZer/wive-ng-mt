@@ -1526,7 +1526,7 @@ VOID ApCliIfMonitor(RTMP_ADAPTER *pAd)
 				bForceBrocken = TRUE;
             }
  
-			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (12 * OS_HZ))))
+			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (8 * OS_HZ))))
 			{
 				printk("ApCliIfMonitor: IF(%s%d) - no Beacon is received from Root-AP.\n", INF_APCLI_DEV_NAME, index);
 				bForceBrocken = TRUE;

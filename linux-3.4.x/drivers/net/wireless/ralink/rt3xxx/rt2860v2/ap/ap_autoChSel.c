@@ -279,7 +279,7 @@ static inline UCHAR SelectClearChannelRandom(
 		if (ch == 0)
 			ch = FirstChannel(pAd);
 	}
-	printk("%s(): Select Channel %d\n", __FUNCTION__, ch);
+	printk("Select Channel %d\n", ch);
 	return ch;
 }
 

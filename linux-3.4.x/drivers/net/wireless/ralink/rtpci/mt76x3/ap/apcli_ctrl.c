@@ -742,10 +742,10 @@ static VOID ApCliCtrlJoinReqTimeoutAction(
 	DBGPRINT(RT_DEBUG_TRACE, ("(%s) Probe Req Timeout. ProbeReqCnt=%d\n",
 				__FUNCTION__, pApCliEntry->ProbeReqCnt));
 
-	if (pApCliEntry->ProbeReqCnt > 7)
+	if (pApCliEntry->ProbeReqCnt > APCLI_MAX_PROBE_RETRY_NUM)
 	{
 		/*
-			if exceed the APCLI_MAX_PROBE_RETRY_NUM (7),
+			if exceed the APCLI_MAX_PROBE_RETRY_NUM,
 			switch to try next candidate AP.
 		*/
 		*pCurrState = APCLI_CTRL_DISCONNECTED;
@@ -805,9 +805,9 @@ static VOID ApCliCtrlJoinReqTimeoutAction(
 		NdisMoveMemory(&(JoinReq.Ssid), pApCliEntry->CfgSsid, JoinReq.SsidLen);
 	}
 
-	DBGPRINT(RT_DEBUG_TRACE, ("(%s) Probe Ssid=%s, Bssid=%02x:%02x:%02x:%02x:%02x:%02x\n",
-		__FUNCTION__, JoinReq.Ssid, JoinReq.Bssid[0], JoinReq.Bssid[1], JoinReq.Bssid[2],
-		JoinReq.Bssid[3], JoinReq.Bssid[4], JoinReq.Bssid[5]));
+	printk("AP-Client probe: SSID=%s, BSSID=%02x:%02x:%02x:%02x:%02x:%02x\n",
+		JoinReq.Ssid, PRINT_MAC(JoinReq.Bssid));
+
 	MlmeEnqueue(pAd, APCLI_SYNC_STATE_MACHINE, APCLI_MT2_MLME_PROBE_REQ,
 		sizeof(APCLI_MLME_JOIN_REQ_STRUCT), &JoinReq, ifIndex);
 
@@ -1121,7 +1121,7 @@ static VOID ApCliCtrlAuth2RspAction(
 	} 
 	else
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("(%s) Apcli Auth Rsp Failure.\n", __FUNCTION__));
+		printk("AP-Client: authentication failed!\n");
 
 		*pCurrState = APCLI_CTRL_DISCONNECTED;
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
@@ -1617,7 +1617,7 @@ static VOID ApCliCtrlPeerDeAssocReqAction(
 		UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	printk("Peer DeAssoc Req.\n");
+	printk("AP-Client: disconnected by peer\n");
 
 	if ((ifIndex >= MAX_APCLI_NUM)
 #ifdef MAC_REPEATER_SUPPORT

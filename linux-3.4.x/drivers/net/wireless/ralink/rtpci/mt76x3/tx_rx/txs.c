@@ -567,15 +567,15 @@ INT32 TxSTypeCtlPerPktType(RTMP_ADAPTER *pAd, UINT8 PktType, UINT8 PktSubType, U
 
 
 static VOID DumpTxSFormat(RTMP_ADAPTER *pAd, UINT8 Format, CHAR *Data)
-{ 
-#ifdef DBG
+{
+#if defined(CONFIG_AP_SUPPORT) && defined(DBG)
 	TXS_STRUC *txs_entry = (TXS_STRUC *)Data;
 	TXS_D_0 *txs_d0 = &txs_entry->txs_d0;
 	TXS_D_1 *txs_d1 = &txs_entry->txs_d1;
 	TXS_D_2 *txs_d2 = &txs_entry->txs_d2;
 	TXS_D_3 *txs_d3 = &txs_entry->txs_d3;
 	TXS_D_4 *txs_d4 = &txs_entry->txs_d4;
-#endif
+
 	DBGPRINT(RT_DEBUG_OFF, ("\t\t(TXSFM=%d, TXS2M=%d, TXS2H=%d)\n", txs_d0->txsfm, txs_d0->txs2m, txs_d0->txs2h));
 	
 	DBGPRINT(RT_DEBUG_OFF, ("\t\tFR=%d, TxRate=0x%x\n", txs_d0->fr, txs_d0->tx_rate));
@@ -605,6 +605,7 @@ static VOID DumpTxSFormat(RTMP_ADAPTER *pAd, UINT8 Format, CHAR *Data)
 	DBGPRINT(RT_DEBUG_OFF, ("\t\tTxDelay=0x%x(unit 32us), RxVSeqNum=0x%x, Wlan Idx=0x%x\n",\
                              txs_d3->transmission_delay, txs_d3->rxv_sn, txs_d3->wlan_idx));
 	DBGPRINT(RT_DEBUG_OFF, ("\t\tSN=0x%x, TxBW=0x%x, AMPDU=%d, Final MPDU=%d PID=0x%x, MPDU TxCnt=%d, MCS Idx=%d\n", txs_d4->sn, txs_d4->tbw, txs_d4->am, txs_d4->fm, txs_d4->pid, txs_d4->mpdu_tx_cnt, txs_d4->last_tx_rate_idx));
+#endif
 }
  
 
