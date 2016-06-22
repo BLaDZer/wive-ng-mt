@@ -2096,70 +2096,71 @@
 8) nvram: allways copy values as string, not need convert str->int->str.<br>
 9) defaults: fix fast roaming defaults and add check this.<br>
 10) init.d: six: add wait release procedure end in dhcp6c stop path.<br>
-11) netcwmpd: fix reboot afer firmware update in some cases.<br>
-12) pppd: pptp plugin: use global debug flag in pptp_ctrl.<br>
-13) goahead: use direct call to kernel if need fast reboot.<br>
-14) goahead: add Rx/Tx bytes per client in WebUI.<br>
-15) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
-16) nodogsplash: web pages: use meta tag viewport for more usable at mobile browsers.<br>
-17) ralinkiappd: temp disable crypt for iappd frames (need for debug, compat with dual radio and others iappd implementations).<br>
-18) ralinkiappd: fix encrypt/decrypt function for dual band operations (if used).<br>
-19) ralinkiappd: fix potentioanl null pointer dereference.<br>
-20) kernel: ralink_arch: allow highmem region for 512M devices.<br>
-21) kernel: ralink_arch: fix memory size autodetect with highmmem.<br>
-22) kernel: ralink_arch: fix parse uboot cmdline.<br>
-23) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-24) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-25) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-26) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-27) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-28) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
-29) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
-30) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-31) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
-32) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
-33) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
-34) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
-35) kernel: ralink_wifi: mt76x2: fix sanity check in RtmpEnqueueNullFrame.<br>
-36) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
-37) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
-38) kernel: ralink_wifi: mt7603: fix proc path name.<br>
-39) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
-40) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
-41) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
-42) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
-43) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
-44) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
-45) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
-46) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
-47) kernel: ralink_wifi: fix mlme request success handle.<br>
-48) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
-49) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
-50) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
-51) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-52) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-53) kernel: backport RTC_SYSTOHC from upstream.<br>
-54) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-55) kernel: kernel/relay.c: fix potential memory leak.<br>
-56) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-57) kernel: nfs: fix nfs_size_to_loff_t.<br>
-58) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-59) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-60) kernel: sched: always inline context_switch().<br>
-61) kernel: mips: make flush_thread and exit_thread always inline.<br>
-62) kernel: mips: lib: mark intrinsics notrace.<br>
-63) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-64) kernel: usb: serial: option: add more ZTE device ids.<br>
-65) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-66) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-67) kernel: usb: core: fix crash on unlink urb.<br>
-68) kernel: usb: retry reset if a device times out.<br>
-69) kernel: net: do not block BH while processing socket backlog.<br>
-70) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-71) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-72) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-73) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-74) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+11) init.d: six: fix static ipv6 support.<br>
+12) netcwmpd: fix reboot afer firmware update in some cases.<br>
+13) pppd: pptp plugin: use global debug flag in pptp_ctrl.<br>
+14) goahead: use direct call to kernel if need fast reboot.<br>
+15) goahead: add Rx/Tx bytes per client in WebUI.<br>
+16) goahead cgi and mtd_write must be link with libgcc as static to (prevent freez after write before reboot).<br>
+17) nodogsplash: web pages: use meta tag viewport for more usable at mobile browsers.<br>
+18) ralinkiappd: temp disable crypt for iappd frames (need for debug, compat with dual radio and others iappd implementations).<br>
+19) ralinkiappd: fix encrypt/decrypt function for dual band operations (if used).<br>
+20) ralinkiappd: fix potentioanl null pointer dereference.<br>
+21) kernel: ralink_arch: allow highmem region for 512M devices.<br>
+22) kernel: ralink_arch: fix memory size autodetect with highmmem.<br>
+23) kernel: ralink_arch: fix parse uboot cmdline.<br>
+24) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+25) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+26) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+27) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+28) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+29) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
+30) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+31) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+32) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
+33) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
+34) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
+35) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
+36) kernel: ralink_wifi: mt76x2: fix sanity check in RtmpEnqueueNullFrame.<br>
+37) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
+38) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
+39) kernel: ralink_wifi: mt7603: fix proc path name.<br>
+40) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
+41) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
+42) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
+43) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
+44) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+45) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
+46) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
+47) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
+48) kernel: ralink_wifi: fix mlme request success handle.<br>
+49) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
+50) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
+51) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
+52) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+53) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+54) kernel: backport RTC_SYSTOHC from upstream.<br>
+55) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+56) kernel: kernel/relay.c: fix potential memory leak.<br>
+57) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+58) kernel: nfs: fix nfs_size_to_loff_t.<br>
+59) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+60) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+61) kernel: sched: always inline context_switch().<br>
+62) kernel: mips: make flush_thread and exit_thread always inline.<br>
+63) kernel: mips: lib: mark intrinsics notrace.<br>
+64) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+65) kernel: usb: serial: option: add more ZTE device ids.<br>
+66) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+67) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+68) kernel: usb: core: fix crash on unlink urb.<br>
+69) kernel: usb: retry reset if a device times out.<br>
+70) kernel: net: do not block BH while processing socket backlog.<br>
+71) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+72) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+73) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+74) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+75) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
 <br>
 <br>
 <br>

@@ -57,14 +57,14 @@ start() {
 
                 $LOG "Set ${IPv6WANIPAddr}/${IPv6WANPrefixLen} to $six_wan_if"
 		ip -6 addr del ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $six_wan_if			> /dev/null 2>&1
-		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} $six_wan_if
+		ip -6 addr add ${IPv6WANIPAddr}/${IPv6WANPrefixLen} dev $six_wan_if
 
                 $LOG "Set ${IPv6IPAddr}/${IPv6PrefixLen} to $lan_if"
 		ip -6 addr del ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if				> /dev/null 2>&1
-		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} $lan_if
+		ip -6 addr add ${IPv6IPAddr}/${IPv6PrefixLen} dev $lan_if
 
 		$LOG "Replace Ipv6 DGW to $six_wan_if via $IPv6GWAddr"
-		ip -6 route replace default dev "$six_wan_if" via "$IPv6WANIPAddr" metric 0
+		ip -6 route replace default dev "$six_wan_if" via "$IPv6GWAddr" metric 0
 		flush_net_caches
 		dhcpradvdreconf
 	    fi
