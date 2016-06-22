@@ -1948,8 +1948,6 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
-	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
-
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
 	pEntry->LastTxOkCount = TxSuccess;
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
