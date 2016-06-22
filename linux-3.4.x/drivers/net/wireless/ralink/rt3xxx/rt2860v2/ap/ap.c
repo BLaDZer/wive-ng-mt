@@ -524,7 +524,7 @@ VOID APStartUp(
 			MlmeUpdateHtTxRates(pAd, apidx);
 #endif /* DOT11_N_SUPPORT */
 	}
-	
+
 	/* Set the RadarDetect Mode as Normal, bc the APUpdateAllBeaconFram() will refer this parameter. */
 	pAd->Dot11_H.RDMode = RD_NORMAL_MODE;
 	

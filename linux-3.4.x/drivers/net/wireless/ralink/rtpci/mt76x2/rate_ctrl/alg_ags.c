@@ -877,6 +877,8 @@ VOID StaQuickResponeForRateUpExecAGS(
 
 	pAd->StaCfg.StaQuickResponeForRateUpTimerRunning = FALSE;
 
+	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+
 	DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,
 		("%s: QuickAGS: AccuTxTotalCnt = %lu, TxSuccess = %lu, "
 		"TxRetransmit = %lu, TxFailCount = %lu, TxErrorRatio = %lu\n",

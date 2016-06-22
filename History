@@ -2137,7 +2137,7 @@
 49) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
 50) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
 51) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
-52) kernel: ralink_wifi: backport some fixes from 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+52) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
 53) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
 54) kernel: backport RTC_SYSTOHC from upstream.<br>
 55) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>

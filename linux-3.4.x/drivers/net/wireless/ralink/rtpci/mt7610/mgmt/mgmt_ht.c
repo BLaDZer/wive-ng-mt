@@ -625,6 +625,8 @@ VOID RTMPSetIndividualHT(
 	else
 		MlmeUpdateHtTxRates(pAd, apidx);
 
+	N_ChannelCheck(pAd);
+
 #ifdef DOT11_VHT_AC
 	if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode)) {
 		pDesired_ht_phy->bVhtEnable = TRUE;

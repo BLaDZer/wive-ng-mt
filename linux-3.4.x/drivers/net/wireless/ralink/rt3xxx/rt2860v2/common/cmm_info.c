@@ -3090,10 +3090,12 @@ VOID	RTMPSetIndividualHT(
 			MlmeUpdateHtTxRates(pAd, apidx);
 		else
 #endif /* P2P_SUPPORT */
-        MlmeUpdateHtTxRates(pAd, BSS0);
+    		MlmeUpdateHtTxRates(pAd, BSS0);
 	}
     else
 	    MlmeUpdateHtTxRates(pAd, apidx);
+
+    N_ChannelCheck(pAd);
 }
 
 /*

@@ -483,7 +483,15 @@ VOID MlmeGetSupportedMcsAdapt(
 		for (idx = 0; idx < RATE_TABLE_SIZE(pTable); idx++)
 		{
 			pCurrTxRate = PTX_RA_GRP_ENTRY(pEntry->pTable, idx);
-			if ((pCurrTxRate->CurrMCS == MCS_0) && (pCurrTxRate->dataRate == 1) && (mcs[0] == -1))
+			if (pCurrTxRate->CurrMCS == MCS_RATE_6 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[20] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_9 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[21] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_12 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[22] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_18 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[23] = idx;
+			else if ((pCurrTxRate->CurrMCS == MCS_0) && (pCurrTxRate->dataRate == 1) && (mcs[0] == -1))
 				mcs[0] = idx;
 			else if (pCurrTxRate->CurrMCS == MCS_1 && pCurrTxRate->dataRate == 1)
 				mcs[1] = idx;
@@ -533,7 +541,15 @@ VOID MlmeGetSupportedMcsAdapt(
 		for (idx = 0; idx < RATE_TABLE_SIZE(pTable); idx++)
 		{
 			pCurrTxRate = PTX_RA_GRP_ENTRY(pEntry->pTable, idx);
-			if ((pCurrTxRate->CurrMCS == MCS_0) && (pCurrTxRate->dataRate == 1) && (mcs[0] == -1))
+			if (pCurrTxRate->CurrMCS == MCS_RATE_6 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[20] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_9 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[21] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_12 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[22] = idx;
+			else if (pCurrTxRate->CurrMCS == MCS_RATE_18 && pCurrTxRate->dataRate == 1 && pCurrTxRate->Mode == MODE_OFDM)
+				mcs[23] = idx;
+			else if ((pCurrTxRate->CurrMCS == MCS_0) && (pCurrTxRate->dataRate == 1) && (mcs[0] == -1))
 				mcs[0] = idx;
 			else if (pCurrTxRate->CurrMCS == MCS_1 && pCurrTxRate->dataRate == 1)
 				mcs[1] = idx;
@@ -787,6 +803,7 @@ UCHAR MlmeSelectTxRateAdapt(
 					|| pTable == RateTableVht2S_2G_BW40
 					)
 	{
+		USHORT tx_rate;
 		if (pTable == RateTableVht2S || pTable == RateTableVht2S_BW40
 			|| (pTable == RateTableVht2S_2G_BW40))
 		{
@@ -794,64 +811,91 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[19] && (Rssi > (-65 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS9;
 				TxRateIdx = mcs[19];
 			}
 			else if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
-			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				TxRateIdx = mcs[13];
+			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
+				tx_rate = MCS_VHT_1SS_MCS3;
+				TxRateIdx = mcs[3];
 			}
-			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				TxRateIdx = mcs[12];
+			else if (mcs[2] && (Rssi > (-82 + RssiOffset))) {
+				tx_rate = MCS_VHT_1SS_MCS2;
+				TxRateIdx = mcs[2];
 			}
-			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				TxRateIdx = mcs[11];
+			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {
+				tx_rate = MCS_RATE_18;
+				TxRateIdx = mcs[23]; // OFDM 1x1 MCS3 BW20
+			}
+			else if (mcs[22] && (Rssi > (-87 + RssiOffset))) {
+				tx_rate = MCS_RATE_12;
+				TxRateIdx = mcs[22]; // OFDM 1x1 MCS2 BW20
 			}
 			else {
-				TxRateIdx = mcs[10];
+				tx_rate = MCS_RATE_6;
+				TxRateIdx = mcs[20]; // OFDM 1x1 MCS0 BW20
 			}
 
+			
 			pEntry->mcsGroup = 2;
 		} else if (pTable == RateTableVht2S_MCS7) {
 			DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s: GRP: 2*2, RssiOffset=%d\n", __FUNCTION__, RssiOffset));
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
-			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				TxRateIdx = mcs[13];
+			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
+				tx_rate = MCS_VHT_1SS_MCS3;
+				TxRateIdx = mcs[3];
 			}
-			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				TxRateIdx = mcs[12];
+			else if (mcs[2] && (Rssi > (-82 + RssiOffset))) {
+				tx_rate = MCS_VHT_1SS_MCS2;
+				TxRateIdx = mcs[2];
 			}
-			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				TxRateIdx = mcs[11];
+			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {  // add new condition
+				tx_rate = MCS_RATE_18;
+				TxRateIdx = mcs[23]; // OFDM 1x1 MCS3 BW20
+			}
+			else if (mcs[22] && (Rssi > (-87 + RssiOffset))) {
+				tx_rate = MCS_RATE_12;
+				TxRateIdx = mcs[22]; // OFDM 1x1 MCS2 BW20
 			}
 			else {
-				TxRateIdx = mcs[0];
+				tx_rate = MCS_RATE_6;
+				TxRateIdx = mcs[20];  // OFDM 1x1 MCS0 BW20
 			}
 
 			pEntry->mcsGroup = 2;
@@ -864,34 +908,44 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
+				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
-			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				TxRateIdx = mcs[13];
+			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
+				tx_rate = MCS_VHT_1SS_MCS3;
+				TxRateIdx = mcs[3];
 			}
-			else if (mcs[12] && (Rssi > (-85 + RssiOffset))) {
-				TxRateIdx = mcs[12];
+			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {
+				tx_rate = MCS_RATE_18;
+				TxRateIdx = mcs[23];
 			}
-			else if (mcs[11] && (Rssi > (-92 + RssiOffset))) {
-				TxRateIdx = mcs[11];
+			else if (mcs[22] && (Rssi > (-92 + RssiOffset))) {
+				tx_rate = MCS_RATE_12;
+				TxRateIdx = mcs[22];
 			}
-			else if (mcs[11] && (Rssi > (-94 + RssiOffset))) {
-				TxRateIdx = mcs[10];
+			else if (mcs[20] && (Rssi > (-94 + RssiOffset))) {
+				tx_rate = MCS_RATE_9;
+				TxRateIdx = mcs[21];
 			}
 			else {
-				TxRateIdx = mcs[0];
+				tx_rate = MCS_RATE_6;
+				TxRateIdx = mcs[20]; 
 			}
 
 			pEntry->mcsGroup = 2;
@@ -913,16 +967,20 @@ UCHAR MlmeSelectTxRateAdapt(
 				TxRateIdx = mcs[6];
 			else if (mcs[5] && (Rssi > (-76 + RssiOffset)))
 				TxRateIdx = mcs[5];
-			else if (mcs[4] && (Rssi > (-78 + RssiOffset)))
-				TxRateIdx = mcs[4];
-			else if (mcs[3] && (Rssi > (-82 + RssiOffset)))
+			else if (mcs[3] && (Rssi > (-78 + RssiOffset)))
 				TxRateIdx = mcs[3];
-			else if (mcs[2] && (Rssi > (-84 + RssiOffset)))
+			else if (mcs[2] && (Rssi > (-80 + RssiOffset))) // new
 				TxRateIdx = mcs[2];
-			else if (mcs[1] && (Rssi > (-89 + RssiOffset)))
-				TxRateIdx = mcs[1];
+			else if (mcs[23] && (Rssi > (-82 + RssiOffset)))
+				TxRateIdx = mcs[23]; // MCS_RATE_18
+			else if (mcs[22] && (Rssi > (-84 + RssiOffset)))
+				TxRateIdx = mcs[22]; // MCS_RATE_12
+			else if (mcs[21] && (Rssi > (-87 + RssiOffset))) // new
+				TxRateIdx = mcs[21]; // MCS_RATE_9
+			//else if (mcs[20] && (Rssi > (-89 + RssiOffset)))
+			//	TxRateIdx = mcs[20]; // MCS_RATE_9
 			else
-				TxRateIdx = mcs[0];
+				TxRateIdx = mcs[20]; // MCS_RATE_6
 
 			pEntry->mcsGroup = 1;
 		}
@@ -939,12 +997,12 @@ UCHAR MlmeSelectTxRateAdapt(
 				TxRateIdx = mcs[5];
 			else if (mcs[4] && (Rssi > (-78 + RssiOffset)))
 				TxRateIdx = mcs[4];
-			else if (mcs[3] && (Rssi > (-82 + RssiOffset)))
-				TxRateIdx = mcs[3];
-			else if (mcs[2] && (Rssi > (-84 + RssiOffset)))
-				TxRateIdx = mcs[2];
-			else if (mcs[1] && (Rssi > (-89 + RssiOffset)))
-				TxRateIdx = mcs[1];
+			else if (mcs[23] && (Rssi > (-82 + RssiOffset)))
+				TxRateIdx = mcs[23]; // MCS_RATE_18
+			else if (mcs[22] && (Rssi > (-84 + RssiOffset)))
+				TxRateIdx = mcs[22]; // MCS_RATE_12
+			else if (mcs[21] && (Rssi > (-89 + RssiOffset)))
+				TxRateIdx = mcs[21]; // MCS_RATE_9
 			else
 				TxRateIdx = mcs[0];
 
@@ -1887,6 +1945,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
+
+	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 

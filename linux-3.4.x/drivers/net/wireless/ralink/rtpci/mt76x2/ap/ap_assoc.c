@@ -1594,6 +1594,10 @@ SendAssocResponse:
 
 		if (bNeedAppendExtIE == TRUE)
 		{
+#ifdef RT_BIG_ENDIAN
+		*((UINT32*)(pInfo)) = SWAP32(*((UINT32*)(pInfo)));
+		*((UINT32*)(pInfo+4)) = SWAP32(*((UINT32*)(pInfo+4)))
+#endif		
 			MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
 							1,			&ExtCapIe,
 							1,			&extInfoLen,

@@ -340,7 +340,7 @@ NDIS_STATUS RTMPInitTxRxRingMemory
 		}
 
 		/* Zero init this memory block*/
-		NdisZeroMemory(pDmaBuf->AllocVa, pDmaBuf->AllocSize);
+		// NdisZeroMemory(pDmaBuf->AllocVa, pDmaBuf->AllocSize);
 
 		/* Write RxD buffer address & allocated buffer length*/
 		pRxD = (PRXD_STRUC) pAd->RxRing.Cell[index].AllocVa;

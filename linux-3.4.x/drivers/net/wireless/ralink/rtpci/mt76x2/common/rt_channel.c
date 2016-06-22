@@ -2008,7 +2008,6 @@ static PCOUNTRY_PROP GetCountryProp(
 }
 #endif /* !EXT_BUILD_CHANNEL_LIST */
 
-#ifdef ED_MONITOR
 BOOLEAN GetEDCCASupport(
 	IN PRTMP_ADAPTER pAd)
 {
@@ -2039,7 +2038,7 @@ BOOLEAN GetEDCCASupport(
 	return ret;
 	
 }
-#endif /* ED_MONITOR */
+
 
 UCHAR GetCountryRegionFromCountryCode(
 	IN PRTMP_ADAPTER pAd)
