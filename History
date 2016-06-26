@@ -2162,6 +2162,7 @@
 74) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
 75) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
 76) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+77) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
 <br>
 <br>
 <br>
