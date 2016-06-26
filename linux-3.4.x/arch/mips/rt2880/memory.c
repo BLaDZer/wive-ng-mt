@@ -163,8 +163,10 @@ void __init prom_meminit(void)
 
 #if defined(CONFIG_RALINK_MT7621) && defined(CONFIG_HIGHMEM)
 	/* autodetect support only low mem scan, need correct for full size regions */
-	if (mem == 448*1024*1024)
+	if (mem == 448*1024*1024) {
 	    mem = 512*1024*1024;
+	    detect_ram_sequence[0] = 512*1024*1024;
+	}
 #endif
 
 	detect_ram_sequence[2] = mem;
