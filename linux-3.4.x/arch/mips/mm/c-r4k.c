@@ -620,6 +620,7 @@ static void __fastpathsys r4k_dma_cache_wback_inv(unsigned long addr, unsigned l
 			r4k_blast_scache();
 		else
 			blast_scache_range(addr, addr + size);
+		preempt_enable();
 		__sync();
 		return;
 	}
@@ -661,6 +662,7 @@ static void __fastpathsys r4k_dma_cache_inv(unsigned long addr, unsigned long si
 			 */
 			blast_inv_scache_range(addr, addr + size);
 		}
+		preempt_enable();
 		__sync();
 		return;
 	}
