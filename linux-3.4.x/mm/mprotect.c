@@ -98,7 +98,6 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma, pud_t *
 			if (next - addr != HPAGE_PMD_SIZE)
 				split_huge_page_pmd(vma->vm_mm, pmd);
 			else if (change_huge_pmd(vma, pmd, addr, newprot)) {
-				pages += HPAGE_PMD_NR;
 				pages++;
 				continue;
 			}
