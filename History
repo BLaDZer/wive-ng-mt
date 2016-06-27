@@ -2151,17 +2151,18 @@
 63) kernel: sched: always inline context_switch().<br>
 64) kernel: mips: make flush_thread and exit_thread always inline.<br>
 65) kernel: mips: lib: mark intrinsics notrace.<br>
-66) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-67) kernel: usb: serial: option: add more ZTE device ids.<br>
-68) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-69) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-70) kernel: usb: core: fix crash on unlink urb.<br>
-71) kernel: usb: retry reset if a device times out.<br>
-72) kernel: net: do not block BH while processing socket backlog.<br>
-73) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-74) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-75) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-76) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+66) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
+67) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+68) kernel: usb: serial: option: add more ZTE device ids.<br>
+69) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+70) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+71) kernel: usb: core: fix crash on unlink urb.<br>
+72) kernel: usb: retry reset if a device times out.<br>
+73) kernel: net: do not block BH while processing socket backlog.<br>
+74) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+75) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+76) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+77) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
 78) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
 79) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
 <br>
