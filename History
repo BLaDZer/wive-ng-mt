@@ -2149,23 +2149,24 @@
 61) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
 62) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
 63) kernel: sched: always inline context_switch().<br>
-64) kernel: mips: make flush_thread and exit_thread always inline.<br>
-65) kernel: mips: lib: mark intrinsics notrace.<br>
-66) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
-67) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
-68) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-69) kernel: usb: serial: option: add more ZTE device ids.<br>
-70) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-71) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-72) kernel: usb: core: fix crash on unlink urb.<br>
-73) kernel: usb: retry reset if a device times out.<br>
-74) kernel: net: do not block BH while processing socket backlog.<br>
-75) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-76) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-77) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-78) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-79) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
-80) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+64) kernel: mm/mlock: prepare params outside critical region.<br>
+65) kernel: mips: make flush_thread and exit_thread always inline.<br>
+66) kernel: mips: lib: mark intrinsics notrace.<br>
+67) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
+68) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
+69) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+70) kernel: usb: serial: option: add more ZTE device ids.<br>
+71) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+72) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+73) kernel: usb: core: fix crash on unlink urb.<br>
+74) kernel: usb: retry reset if a device times out.<br>
+75) kernel: net: do not block BH while processing socket backlog.<br>
+76) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+77) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+78) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+79) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+80) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+81) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
 <br>
 <br>
 <br>
