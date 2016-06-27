@@ -556,6 +556,7 @@ int RtmpPCIMgmtKickOut(
 	pTxD->SDLen1 = 0;
 	pTxD->SDPtr0 = PCI_MAP_SINGLE(pAd, (pSrcBufVA + TXINFO_SIZE), pkt_len, 0, RTMP_PCI_DMA_TODEVICE);
 	pTxD->SDLen0 = pkt_len;
+	pTxD->Burst = 0;
 
 	ral_write_txd(pAd, NULL, pTxD, pTxInfo, TRUE, FIFO_MGMT);
 

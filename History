@@ -2134,35 +2134,36 @@
 46) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
 47) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
 48) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
-49) kernel: ralink_wifi: fix mlme request success handle.<br>
-50) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
-51) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
-52) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
-53) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-54) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-55) kernel: backport RTC_SYSTOHC from upstream.<br>
-56) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-57) kernel: kernel/relay.c: fix potential memory leak.<br>
-58) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-59) kernel: nfs: fix nfs_size_to_loff_t.<br>
-60) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-61) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-62) kernel: sched: always inline context_switch().<br>
-63) kernel: mips: make flush_thread and exit_thread always inline.<br>
-64) kernel: mips: lib: mark intrinsics notrace.<br>
-65) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-66) kernel: usb: serial: option: add more ZTE device ids.<br>
-67) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-68) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-69) kernel: usb: core: fix crash on unlink urb.<br>
-70) kernel: usb: retry reset if a device times out.<br>
-71) kernel: net: do not block BH while processing socket backlog.<br>
-72) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-73) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-74) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-75) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-76) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
-77) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+49) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
+50) kernel: ralink_wifi: fix mlme request success handle.<br>
+51) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
+52) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
+53) kernel: ralink_wifi: fix handle block ack reqs in managment ring.<br>
+54) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+55) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+56) kernel: backport RTC_SYSTOHC from upstream.<br>
+57) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+58) kernel: kernel/relay.c: fix potential memory leak.<br>
+59) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+60) kernel: nfs: fix nfs_size_to_loff_t.<br>
+61) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+62) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+63) kernel: sched: always inline context_switch().<br>
+64) kernel: mips: make flush_thread and exit_thread always inline.<br>
+65) kernel: mips: lib: mark intrinsics notrace.<br>
+66) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+67) kernel: usb: serial: option: add more ZTE device ids.<br>
+68) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+69) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+70) kernel: usb: core: fix crash on unlink urb.<br>
+71) kernel: usb: retry reset if a device times out.<br>
+72) kernel: net: do not block BH while processing socket backlog.<br>
+73) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+74) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+75) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+76) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+78) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+79) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
 <br>
 <br>
 <br>
