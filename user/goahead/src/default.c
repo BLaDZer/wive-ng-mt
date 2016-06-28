@@ -339,7 +339,7 @@ int websValidateUrl(webs_t wp, char_t *path)
 
 static void websDefaultWriteEvent(webs_t wp)
 {
-	int		len, wrote, flags, bytes, written;
+	int	len, wrote, flags, bytes, written;
 	char	*buf;
 
 	a_assert(websValid(wp));
@@ -369,7 +369,11 @@ static void websDefaultWriteEvent(webs_t wp)
 				}
 				written += wrote;
 				if (wrote != len) {
-					websPageSeek(wp, - (len - wrote));
+					int err = socketGetError();
+
+					if (err == EWOULDBLOCK || err == EAGAIN) {
+					    websPageSeek(wp, - (len - wrote));
+					}
 					break;
 				}
 			}
