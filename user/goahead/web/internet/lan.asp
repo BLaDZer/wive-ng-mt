@@ -7,9 +7,11 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
@@ -26,32 +28,6 @@ var lanmask = "<% getLanNetmask(); %>";
 var hostname = "<% getCfgGeneral(1, "HostName"); %>";
 var lan2 = "<% getCfgZero(1, "Lan2Enabled"); %>";
 var dhcp = "<% getCfgZero(1, "dhcpEnabled"); %>";
-
-function StartTheTimer()
-{
-	if (secs==0)
-	{
-		TimeoutReload(10);
-		//window.location.reload();
-		window.location.href=window.location.href;	//reload page
-	}
-	else
-	{
-		self.status = secs;
-		secs = secs - 1;
-		timerRunning = true;
-		timerID = self.setTimeout("StartTheTimer()", 1000);
-	}
-}
-
-function TimeoutReload(timeout)
-{
-	secs = timeout;
-	if (timerRunning)
-		clearTimeout(timerID);
-	timerRunning = false;
-	StartTheTimer();
-}
 
 function initTranslation()
 {
@@ -149,6 +125,7 @@ function CheckValue()
 				form.dhcpGateway.value = form.lanIp.value;
 		}
 	}
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -167,6 +144,7 @@ function lan2_enable_switch(form)
       <p id="lIntroduction"></p>
       <hr>
       <form method="POST" name="lanCfg" action="/goform/setLan" onSubmit="return CheckValue();">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="lSetup">LAN Interface Setup</td>
@@ -214,7 +192,7 @@ function lan2_enable_switch(form)
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">
+            <td><input type="submit" class="normal" value="Apply" id="lApply">
               &nbsp;&nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">
               <input type="hidden" value="/internet/lan.asp" name="submit-url" >

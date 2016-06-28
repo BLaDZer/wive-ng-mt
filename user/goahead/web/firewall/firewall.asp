@@ -7,9 +7,11 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("firewall");
@@ -435,6 +437,7 @@ function addFilteringItem(form)
 function submitForwardForm(form)
 {
 	form.portForwardRules.value = genTableData(portForwardingRules, form);
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -442,12 +445,14 @@ function submitFilterForm(form)
 {
 	form.portFilteringRules.value = genTableData(portFilteringRules, form);
 	form.defaultFirewallPolicy.value = defaultFilterPolicy;
+	ajaxShowTimer(form, 'timerReloader2', _('message apply'), 15);
 	return true;
 }
 
 function submitFirewallForm(form)
 {
 	form.ForwardSesLimit.value = defaultNumber(form.ForwardSesLimit.value, "0");
+	ajaxShowTimer(form, 'timerReloader3', _('message apply'), 15);
 	return true;
 }
 
@@ -539,6 +544,7 @@ function initTranslation()
       <p id="forwardIntroduction">Here you can setup port forwarding to provide services to the Internet.</p>
       <hr>
       <form method="POST" name="portForward" action="/goform/portForward" onSubmit="return submitForwardForm(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
@@ -568,6 +574,7 @@ function initTranslation()
       <p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
       <hr>
       <form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
+        <iframe name="timerReloader2" id="timerReloader2" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="portBasicSet">Basic Settings</td>
@@ -600,6 +607,7 @@ function initTranslation()
       </div>
       <hr>
       <form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
+        <iframe name="timerReloader3" id="timerReloader3" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>

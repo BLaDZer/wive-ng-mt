@@ -13,6 +13,7 @@
     <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
     <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
     <message msgid="inet invalid mtu" msgstr="Неверное значение MTU" />
+    <message msgid="inet invalid mac" msgstr="Введен некорректный MAC адрес" />
     <message msgid="inet auto" msgstr="Автоматически" />
 
     <message msgid="wan title" msgstr="Настройки Wide Area Network (WAN)" />

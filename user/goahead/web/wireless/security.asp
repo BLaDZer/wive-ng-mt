@@ -7,6 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -276,7 +278,7 @@ function parseAllData(str)
 	}
 }
 
-function checkData()
+function checkData(form)
 {
 	var securitymode;
 
@@ -364,7 +366,7 @@ function checkData()
 			}
 		}
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -703,9 +705,9 @@ function check_Wep(securitymode)
 	return true;
 }
 
-function submit_apply()
+function submit_apply(form)
 {
-	if (checkData() == true)
+	if (checkData(form) == true)
 	{
 		changed = 0;
 		return true;
@@ -1009,7 +1011,8 @@ function onPreAuthenticationClick(type)
       <td><h1 id="securityTitle">Wireless Security/Encryption Settings </h1>
         <p id="securityIntroduction">Here you can configure wireless security and encryption to prevent unauthorized access to the router.</p>
         <hr />
-        <form method="post" name="security_form" action="/goform/APSecurity" onSubmit="return submit_apply();">
+        <form method="post" name="security_form" action="/goform/APSecurity" onSubmit="return submit_apply(this);">
+          <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
           <!-- ---------------------  MBSSID Selection  --------------------- -->
           <table class="form">
             <tr>

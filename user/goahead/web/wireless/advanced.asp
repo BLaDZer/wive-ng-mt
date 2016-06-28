@@ -8,6 +8,8 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -275,6 +277,7 @@ function CheckValue(form)
     return false;
   }
 
+  ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
   return true;
 }
 
@@ -288,6 +291,7 @@ function CheckValue(form)
       <p id="advIntroduction">Here you can change advanced wireless settings, such as Beacon Interval, Control Tx Rates and Basic Data Rates. </p>
       <hr>
       <form method="post" name="wireless_advanced" action="/goform/wirelessAdvanced" onsubmit="return CheckValue(this)">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="advWireless">Advanced Wireless</td>

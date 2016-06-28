@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -64,6 +65,7 @@ function checkForm(form)
 			return false;
 		}
 	}
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -140,6 +142,7 @@ function displayServiceStatus()
       <p id="sambaIntroduction">Here you can configure Samba/WINS service.</p>
       <hr>
       <form action="/goform/formSamba" method="POST" name="formSamba" onSubmit="return checkForm(this);" >
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="3" id="sambaSettings">Samba/WINS Settings</td>

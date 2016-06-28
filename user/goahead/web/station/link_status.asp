@@ -7,9 +7,12 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 function initTranslation()
 {
@@ -55,7 +58,8 @@ function PageInit()
     <td><h1 id="linkTitle">Station Link Status</h1>
       <p id="linkIntroduction">The Status page shows the settings and current operation status of the Station.</p>
       <hr />
-      <form method="post" name="sta_link_status" action="/goform/setStaDbm">
+      <form method="post" name="sta_link_status" action="/goform/setStaDbm" OnSubmit="ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td colspan="3" class="title" id="linkLinkStatus">Link Status</td>

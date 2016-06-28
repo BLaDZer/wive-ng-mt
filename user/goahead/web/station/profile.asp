@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -601,7 +602,7 @@ function submitForm(form)
 		if (form.elements[key] != null)
 			form.elements[key].value = config[key].join(';');
 	}
-	
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -948,6 +949,7 @@ function createSurveyProfile()
           </tbody>
         </table>
         <form method="POST" name="sta_profile" action="/goform/setStaProfile" onSubmit="return submitForm(this);">
+          <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
           <table class="buttons">
             <tr>
               <td><input type="button" value="Add profile" onClick="addProfile();" >

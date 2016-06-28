@@ -11,12 +11,13 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("services");
 Butterlate.setTextDomain("buttons");
 
-function DDNSFormCheck()
+function DDNSFormCheck(form)
 {
 	if(document.DDNS.DDNSProvider.value != "none" &&
 		document.DDNS.DDNSProvider.value != "freedns.afraid.org" &&
@@ -33,7 +34,7 @@ function DDNSFormCheck()
 		alert(_("services ddns specify"));
 		return false;
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -139,7 +140,8 @@ function displayServiceStatus()
       <p id="manIntroduction">Here you can configure Dynamic DNS settings.</p>
       <hr>
       <!-- ================= DDNS  ================= -->
-      <form method="post" name="DDNS" action="/goform/DDNS">
+      <form method="post" name="DDNS" action="/goform/DDNS" OnSubmit="return DDNSFormCheck(this)">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table id="div_ddns" class="form">
           <tr>
             <td class="title" colspan="3" id="manDdnsSet">DDNS Settings</td>
@@ -171,7 +173,7 @@ function displayServiceStatus()
         <table id="div_ddns_submit" class="buttons">
           <tr>
             <td><input type="hidden" name="submit-url" value="/services/ddns.asp" >
-              <input type="submit" class="normal" value="Apply" id="manDdnsApply" onClick="return DDNSFormCheck()">
+              <input type="submit" class="normal" value="Apply" id="manDdnsApply">
               &nbsp; &nbsp;
               <input type="reset" class="normal" value="Cancel" id="manDdnsCancel" onClick="window.location.reload()"></td>
           </tr>

@@ -370,3 +370,45 @@ function ajaxReloadDelayedPage(delay, url, local)
 
 	reloader();
 }
+
+function ajaxShowTimer(form, reloader, message, delay)
+{
+	window.scrollTo(0, 0);
+	var submitForm = function()
+	{
+		form.submit();
+	};
+
+	if (reloader != null)
+		form.target = reloader;
+
+	ajaxPopupWindow('ajxLoadParams', message, submitForm, ajaxShowProgress);
+
+	if (delay == null)
+		delay = 15;
+
+	var elem = ajaxSearchElementById("ajxCounterIndicator");
+	var pw = ajaxGetRootWindow();
+
+	var reloader = function()
+	{
+		if (pw.currentProgressHandler == reloader)
+		{
+			if (elem != null)
+				elem.innerHTML = delay;
+		}
+
+		if (delay > 0) // check counter
+		{
+			delay--;
+			pw.setTimeout(reloader, 1000);
+		}
+		else // Reload page
+		{
+		ajaxCloseWindow('ajxLoadParams');
+			window.location.href=window.location.href;
+		}
+	}
+	pw.currentProgressHandler = reloader;
+	reloader();
+}

@@ -3,9 +3,11 @@
 <head>
 <title>System Log</title>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -93,7 +95,7 @@ function checkSetupForm(form)
 			form.RemoteSysLogIP.focus();
 		}
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
 	return true;
 }
 
@@ -112,6 +114,7 @@ function syslogdSelect(form)
       <hr>
       <!-- ================= System log setup ================= -->
       <form method="post" name="LogdSetup" action="/goform/setuplog" onSubmit="checkSetupForm(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="syslogSetup">System Log Setup:</td>

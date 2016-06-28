@@ -19,6 +19,7 @@
     <message msgid="button clear" msgstr="Отчистить" />
     <message msgid="button remove" msgstr="Удалить" />
 
+    <message msgid="message apply" msgstr="Пожалуйста, подождите пока будут применены новые настройки..." />
     <message msgid="message reboot" msgstr="Пожалуйста, подождите пока маршрутизатор перезагрузится..." />
     <message msgid="message chmode" msgstr="Пожалуйста, подождите пока применяются изменения режима работы..." />
     <message msgid="message config" msgstr="Пожалуйста, подождите пока применяются новые параметры..." />

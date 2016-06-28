@@ -6,9 +6,12 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("usb");
+Butterlate.setTextDomain("buttons");
 var part_count = 0;
 
 function initTranslation()
@@ -27,7 +30,7 @@ function initValue()
 	initTranslation();
 }
 
-function checkData()
+function checkData(form)
 {
 	// alert("part_count: " +part_count);
 	if (document.disk_adddir.adddir_name.value == "")
@@ -69,7 +72,7 @@ function checkData()
 			return false;
 		}
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -78,9 +81,9 @@ function addDirClose()
 	opener.location.reload();
 }
 
-function submit_apply()
+function submit_apply(form)
 {
-	if (checkData() == true)
+	if (checkData(form) == true)
 	{
 		document.disk_adddir.hiddenButton.value = "add";
 		document.disk_adddir.submit();
@@ -94,6 +97,7 @@ function submit_apply()
 <table class="body">
   <tr>
     <td><form method=post name="disk_adddir" action="/goform/storageDiskAdm">
+	<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <input type="hidden" name="hiddenButton" value="">
         <table width="90%" border="1" cellspacing="1" cellpadding="3" vspace="2" hspace="2" bordercolor="#9BABBD">
           <tr>
@@ -121,7 +125,7 @@ part_count = parseInt('<% getCount(1, "AllPart"); %>');
         <br />
         <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1">
           <tr align="center">
-            <td><input type=button style="{width:120px;}" value="Apply" id="adddirApply" onClick="submit_apply()">
+            <td><input type=button style="{width:120px;}" value="Apply" id="adddirApply" onClick="submit_apply(this.form)">
               &nbsp; &nbsp;
               <input type=reset  style="{width:120px;}" value="Cancel" id="adddirCancel" onClick="window.close()"></td>
           </tr>

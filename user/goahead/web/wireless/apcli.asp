@@ -101,6 +101,9 @@ function CheckValue(form)
 			return false;
 		}
 	}
+	
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+	return true;
 }
 
 function submitForm(form) {
@@ -119,6 +122,7 @@ function submitForm(form) {
       <p id="apcliAbout">For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect.</p>
       <hr />
       <form method="POST" name="wireless_apcli" action="/goform/wirelessApcli" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="3" id="apcliClientParam">AP Client Parameters</td>

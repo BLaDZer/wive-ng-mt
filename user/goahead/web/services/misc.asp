@@ -23,34 +23,6 @@ var timerRunning = false;
 var rmtManagementPort = '<% getCfgZero(1, "RemoteManagementPort"); %>';
 var serviceStatusTimer = null;
 
-function StartTheTimer()
-{
-	if (secs==0)
-	{
-		TimeoutReload(10);
-		window.location.href=window.location.href;	//reload page
-	}
-	else
-	{
-		self.status = secs;
-		secs = secs - 1;
-		timerRunning = true;
-		timerID = self.setTimeout("StartTheTimer()", 1000);
-	}
-}
-
-function TimeoutReload(timeout)
-{
-	secs = timeout;
-	if (serviceStatusTimer != null)
-		clearTimeout(serviceStatusTimer);
-	if (timerRunning)
-		clearTimeout(timerID);
-	serviceStatusTimer = null;
-	timerRunning = false;
-	StartTheTimer();
-}
-
 function initTranslation()
 {
 	_TR("lTitle", "services misc title");
@@ -294,9 +266,7 @@ function CheckValue(form)
 
 	form.rmt_http_port_changed.value = (form.RemoteManagementPort.value != rmtManagementPort) ? '1' : '0';
 
-	// Timeout reload
-	TimeoutReload(20);
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -426,6 +396,7 @@ function submitForm(form) {
     		form.submit();
 		}
 	} else {
+		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 		form.reboot.value = "0";
 		form.submit();
 	}
@@ -443,6 +414,7 @@ function submitForm(form) {
       <p id="miscImportant">IMPORTANT: If you have problems with SIP or other applications by using UDP, try to disable UDP offload(some ppe revisions not correct work with udp).</p>
       <hr>
       <form method="POST" name="miscServiceCfg" action="/goform/setMiscServices" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <!-- Offload engine -->
           <tr>

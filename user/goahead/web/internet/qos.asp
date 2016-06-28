@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/share.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -96,7 +97,7 @@ function bodyOnLoad(form)
 {
 	initializeForm(form);
 	QoSSelectChange(form);
-  initTranslation();
+	 initTranslation();
 }
 
 function resetClick(form)
@@ -115,7 +116,8 @@ function resetClick(form)
       <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>
       <div style="display:none;" id="fastpath_warning">For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>. Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</div>
       <hr>
-      <form method="post" name="QoSSetup" action="/goform/QoSSetup">
+      <form method="post" name="QoSSetup" action="/goform/QoSSetup" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="QoSSetupStr">QoS Setup</td>

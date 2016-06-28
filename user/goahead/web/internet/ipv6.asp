@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -197,6 +198,7 @@ function CheckValue(form)
 		form.radvdEnbl.options.selectedIndex = 0;
 		form.dhcpv6Enbl.options.selectedIndex = 0;
 	}
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -303,6 +305,7 @@ function resetClick(form) {
 			<p id="v6Introduction"></p>
 			<hr />
 			<form method=post name="ipv6_cfg" action="/goform/setIPv6" onSubmit="return CheckValue(this);">
+				<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 				<table class="form">
 					<tr>
 						<td class="title" colspan="2" id="v6ConnType">IPv6 Connection Type</td>

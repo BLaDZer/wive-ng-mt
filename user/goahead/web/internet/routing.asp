@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
@@ -234,6 +235,7 @@ function formRoutingTable(form)
 			trans.push(routingRules[i]);
 	}
 	form.routingTableDiff.value = trans.join(';');
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -248,6 +250,7 @@ function formRoutingTable(form)
         <p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>
         <hr>
         <form action="/goform/editRouting" method="post" name="editRouting" onSubmit="return formRoutingTable(this);">
+          <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
           <!-- Rule adding -->
           <table class="form">
             <tr>

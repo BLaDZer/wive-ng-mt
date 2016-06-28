@@ -7,18 +7,21 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("firewall");
 Butterlate.setTextDomain("buttons");
 
-function formCheck()
+function formCheck(form)
 {
 	if(!document.DMZ.DMZEnabled.options.selectedIndex){
 		// user choose disable
+		ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
 		return true;
 	}
 
@@ -26,7 +29,7 @@ function formCheck()
 		document.DMZ.DMZIPAddress.focus();
 		return false;
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
 	return true;
 }
 
@@ -110,7 +113,8 @@ function resetClick(form) {
       </div>
       <p id="dmzIntroduction"> Here you can setup the De-Militarized Zone (DMZ) to separate your external services from the rest of LAN.</p>
       <hr>
-      <form method="POST" name="DMZ" action="/goform/DMZ">
+      <form method="POST" name="DMZ" action="/goform/DMZ" OnSubmit="return formCheck(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="dmzSetting">DMZ Settings</td>
@@ -136,7 +140,7 @@ function resetClick(form) {
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ" onClick="return formCheck()">
+            <td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ"">
               <input type="button" class="normal" value="Reset" id="dmzReset" name="reset_button" onClick="resetClick(this.form);">
               <input type="hidden" name="submit-url" value="/firewall/DMZ.asp" >
               <input type="hidden" name="reset" value="0">

@@ -7,6 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -1021,6 +1023,7 @@ function wirelessOnChange(form)
 
 function CheckValue(form)
 {
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 </script>
@@ -1034,6 +1037,7 @@ function CheckValue(form)
 				These settings are sufficient to have a working Access Point. </p>
       <hr>
       <form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="3" id="basicWirelessNet">Wireless Network</td>

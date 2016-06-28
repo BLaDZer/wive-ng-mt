@@ -92,6 +92,7 @@ function CheckValue(form)
 
 	if (!validateMAC(form.wanMac.value))
 	{
+		alert(_("inet invalid mac"));
 		form.wanMac.focus();
 		return false;
 	}
@@ -102,7 +103,7 @@ function CheckValue(form)
 		alert(_("inet invalid mtu"));
 		return false;
 	}
-
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -221,6 +222,7 @@ function submitForm(form) {
       <p id="wIntroduction"></p>
       <hr>
       <form method="POST" name="wanCfg" action="/goform/setWan" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
       	<table class="form">
           <tr>
             <td class="title" colspan="2" id="wConnection">WAN connection type</td>

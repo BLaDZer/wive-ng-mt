@@ -8,8 +8,10 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("network");
@@ -499,7 +501,8 @@ function CheckValue(form) {
       form.PasswordAttempts.select();
       return false;
     }
-  return true;
+    ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+    return true;
 }
 
 function resetClick(form) {
@@ -516,6 +519,7 @@ function resetClick(form) {
         <p id="sIntroduction"></p>
         <hr />
         <form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
+          <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
           <table class="form">
             <tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
               <td class="title" id="spotSetup">Hotspot Setup</td>

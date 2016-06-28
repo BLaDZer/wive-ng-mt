@@ -1243,9 +1243,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 	int i = 0, iaction;
 	char_t *submitUrl;
 
-	websHeader(wp);
-	websWrite(wp, T("<h3>Edit routing table:</h3><br>\n"));
-
 	while (getNthValueSafe(i++, trans, ';', rec, sizeof(rec)) != -1)
 	{
 		// Get true interface
@@ -1299,12 +1296,10 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 		if (iaction == 1) // Add route
 		{
 			addRoutingRuleNvram(iface, destination, netmask, gateway, true_iface, c_iface, comment);
-			websWrite(wp, T("Add route: %s, %s, %s, %s, %s<br>\n"), iface, destination, netmask, gateway, true_iface);
 		}
 		else if (iaction == 2) // Remove route
 		{
 			removeRoutingRuleNvram(iface, destination, netmask, gateway);
-			websWrite(wp, T("Delete route: %s, %s, %s, %s<br>\n"), iface, destination, netmask, gateway);
 		}
 	}
 
@@ -1312,9 +1307,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 
 	/* reconfigure system */
 	doSystem("internet.sh");
-
-	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/routing.asp', true);</script>\n"));
-	websFooter(wp);
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);

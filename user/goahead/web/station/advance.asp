@@ -7,10 +7,13 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" language="JavaScript">
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 function macCloneMacFillSubmit()
 {
@@ -242,7 +245,8 @@ function init11NValues()
     <td><h1 id="staadvTitle">Station Advanced Configurations</h1>
       <p id="staadvIntroduction">The Status page shows the settings and current operation status of the Station.</p>
       <hr>
-      <form method="POST" name="sta_advance" action="/goform/setStaAdvance">
+      <form method="POST" name="sta_advance" action="/goform/setStaAdvance" OnSubmit="ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="6" id="staadvConfig">Advance Configuration</td>

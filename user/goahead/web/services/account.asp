@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -45,7 +46,7 @@ function initValue()
 	var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
 	displayElement('fastpath_warning', (nat_fp == '1') || (nat_fp == '2') || (nat_fp == '3'));
 	displayElement('fastpath_form', (nat_fp == '0'));
-  initTranslation();
+	initTranslation();
 }
 </script>
 </head>
@@ -64,7 +65,8 @@ function initValue()
         <p>To get correct statistics you need to shut down <b>NAT offload mode</b> option on the <a href="/services/misc.asp#nat_fastpath_ref">MISC&nbsp;Services</a> configuration page.</p>
         <p>Please note that turning off <b>NAT offload mode</b> will increase CPU usage up to 50%.</p>
       </div>
-      <form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form">
+      <form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="accountSettings">IP Accounting Settings</td>

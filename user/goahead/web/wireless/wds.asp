@@ -7,6 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -240,7 +242,10 @@ function CheckValue(form) {
 
 	// if disabled - not need check
 	if (form.wds_mode.options.selectedIndex == 0)
+	{
+		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 		return true;
+	}
 
 	// check real used rules only
 	for (i = 0; i < wdsNum; i++) {
@@ -284,6 +289,8 @@ function CheckValue(form) {
 	}
 	form.wds_encryp_type.value = all_wds_enc_type;
 	form.wds_phy_mode.value = all_wds_phy_mode;
+	
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 </script>
@@ -296,6 +303,7 @@ function CheckValue(form) {
       <p id="basicWDSIntroduction">Wireless Distribution System Settings</p>
       <hr />
       <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" id="basicWDSTitle" colspan="4">Wireless Distribution System</td>

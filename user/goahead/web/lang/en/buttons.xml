@@ -19,6 +19,7 @@
     <message msgid="button clear" msgstr="Clear" />
     <message msgid="button remove" msgstr="Remove" />
 
+    <message msgid="message apply" msgstr="Please wait while settings are applied..." />
     <message msgid="message reboot" msgstr="Please wait while the router is rebooting..." />
     <message msgid="message chmode" msgstr="Please wait while the new operating mode is applied..." />
     <message msgid="message config" msgstr="Please wait while parameters are applied..." />

@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/share.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -264,7 +265,6 @@ function submitClick(form)
 			return false;
 		}
 	}
-
 	return true;
 }
 
@@ -314,6 +314,8 @@ function formCheck(form)
 {
 	if ((form.vpn_type.value != '0') || (!form.vpn_enabled.checked))
 		form.vpn_pure_pppoe.checked = false;
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+
 }
 
 function initTranslation()
@@ -367,6 +369,7 @@ function initTranslation()
       <p id="vIntroduction"> This page is used to configure the <acronym title="Virtual Private Network">VPN</acronym> tunnel on your Router. </p>
       <hr>
       <form action="/goform/formVPNSetup" method="POST" name="formVPNSetup" onSubmit="return formCheck(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="vConfig">VPN configuration</td>

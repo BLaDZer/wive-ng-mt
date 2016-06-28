@@ -7,6 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -50,7 +52,8 @@ function initTranslation()
     <td><h1 id="algTitle">ALG Settings</h1>
       <p id="algIntroduction">On this page you can enable/disable ALG services.</p>
       <hr>
-      <form method="post" name="alg" action="/goform/setFirewallAlg">
+      <form method="post" name="alg" action="/goform/setFirewallAlg" onSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 5);">
+      <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="algSetting">ALG Settings</td>

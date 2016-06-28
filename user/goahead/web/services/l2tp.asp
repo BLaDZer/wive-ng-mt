@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -192,7 +193,7 @@ function CheckValue(form)
 			return false;
 		}
 	}
-	
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 
@@ -311,6 +312,7 @@ function resetClick(form)
       <p id="l2tpServerIntroduction">Here you can configure L2TP server settings.</p>
       <hr>
       <form method="POST" name="l2tpConfig" action="/goform/l2tpConfig" onSubmit="return CheckValue(this);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="3" id="l2tpServerSetup">L2TP Server Setup</td>

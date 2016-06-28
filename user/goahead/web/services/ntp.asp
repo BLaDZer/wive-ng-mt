@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/js/sprintf.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("services");
@@ -23,12 +24,12 @@ function initTranslation()
 	_TR("ntpTitle", "services ntp title");
 	_TR("ntpIntroduction", "services ntp introduction");
 	_TR("ntpSetup", "services ntp setup");
-  _TR("ntpEnabled", "services ntp enabled");
-  _TR("ntpDisable", "button disable");
-  _TR("ntpEnable", "button enable");
-  _TR("ntpCurrentTime", "services ntp current time");
-  _TR("ntpTimeZone", "services ntp timezone");
-  _TR("ntpServer", "services ntp server");
+	_TR("ntpEnabled", "services ntp enabled");
+	_TR("ntpDisable", "button disable");
+	_TR("ntpEnable", "button enable");
+	_TR("ntpCurrentTime", "services ntp current time");
+	_TR("ntpTimeZone", "services ntp timezone");
+	_TR("ntpServer", "services ntp server");
 
 	_TRV("ntpApply", "button apply");
 	_TRV("ntpCancel", "button cancel");
@@ -141,7 +142,8 @@ function displayServiceStatus()
 
       <!-- ================= NTP Settings ================= -->
 
-      <form method="POST" name="NTP" action="/goform/NTP" >
+      <form method="POST" name="NTP" action="/goform/NTP" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tbody>
             <tr>

@@ -6,9 +6,12 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
+<link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
+Butterlate.setTextDomain("buttons");
 
 function initTranslation()
 {
@@ -38,7 +41,8 @@ function PageInit()
     <td><h1 id="statisticTitle">Station Statistics</h1>
       <p id="statisticIntroduction">The Status page shows the settings and current operation status of the Station.</p>
       <hr />
-      <form method="post" name="sta_statistics" action="/goform/resetStaCounters">
+      <form method="post" name="sta_statistics" action="/goform/resetStaCounters" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table class="form">
           <tr>
             <td class="title" colspan="2" id="statisticTx">Transmit Statistics</td>
