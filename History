@@ -2129,15 +2129,15 @@
 41) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
 42) kernel: ralink_wifi: mt76x2: fix sanity check in RtmpEnqueueNullFrame.<br>
 43) kernel: ralink_wifi: mt76x2: fix ed cca disable in bbp if build without ed_monitor support.<br>
-44) kernel: ralink_wifi: mt76x2: restore R35/37 value instead of hardcode 0x08080808 (try fix lost beacon at high noise level).<br>
-45) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
-46) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
-47) kernel: ralink_wifi: mt7603: fix proc path name.<br>
-48) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
-49) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
-50) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
-51) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
-52) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+44) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
+45) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
+46) kernel: ralink_wifi: mt7603: fix proc path name.<br>
+47) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
+48) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
+49) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
+50) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
+51) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+52) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
 53) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
 54) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
 55) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
