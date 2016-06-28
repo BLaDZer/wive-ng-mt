@@ -764,10 +764,6 @@ INT	Set_AP_DyncVgaEnable_Proc(
 	IN RTMP_ADAPTER		*pAd, 
 	IN	PSTRING			arg);
 
-INT set_dynamic_lna_trigger_timer_proc(
-	IN RTMP_ADAPTER		*pAd, 
-	IN PSTRING			arg);
-
 INT set_agc_vga_clamp_proc(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_false_cca_hi_th(RTMP_ADAPTER *pAd, PSTRING arg);
 INT set_false_cca_low_th(RTMP_ADAPTER *pAd, PSTRING arg);
@@ -1549,7 +1545,6 @@ static struct {
 	{"DyncVgaEnable", Set_AP_DyncVgaEnable_Proc},
 	{"SkipLongRangeVga", Set_SkipLongRangeVga_Proc},
 	{"VgaClamp", set_agc_vga_clamp_proc},
-	{"lna_timer", set_dynamic_lna_trigger_timer_proc},
 	{"fc_hth", set_false_cca_hi_th},
 	{"fc_lth", set_false_cca_low_th},
 #endif /* DYNAMIC_VGA_SUPPORT */
@@ -15683,20 +15678,6 @@ INT Set_AP_DyncVgaEnable_Proc(
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_DyncVgaEnable_Proc::(enable = %d)\n", pAd->CommonCfg.lna_vga_ctl.bDyncVgaEnable));
-
-	return TRUE;
-}
-
-INT set_dynamic_lna_trigger_timer_proc(
-	IN PRTMP_ADAPTER	pAd, 
-	IN PSTRING			arg)
-{
-	INT32 val = simple_strtol(arg, 0, 10);
-
-	pAd->chipCap.dynamic_lna_trigger_timer = (val <= 0) ? 1 : val;
-
-	DBGPRINT(RT_DEBUG_OFF, ("%s::(lna trigger timer = %d)\n", 
-		__FUNCTION__, pAd->chipCap.dynamic_lna_trigger_timer));
 
 	return TRUE;
 }

@@ -702,11 +702,8 @@ struct _RTMP_CHIP_CAP_ {
 	BOOLEAN dynamic_chE_trigger;
 	BOOLEAN skip_long_range_dync_vga; /* for 76x2 runtime turn long_range_dync_vga on/off , default do long_range_dync_vga */
 #ifdef CONFIG_AP_SUPPORT
-	INT32 dynamic_lna_trigger_timer;
-	BOOLEAN microwave_enable;
 	INT32 agc1_r35_backup;
-	INT32 agc1_r39_backup;
-	INT32 agc1_r41_backup;
+	INT32 agc1_r37_backup;
 #endif /* CONFIG_AP_SUPPORT */
 #endif /* DYNAMIC_VGA_SUPPORT */
 

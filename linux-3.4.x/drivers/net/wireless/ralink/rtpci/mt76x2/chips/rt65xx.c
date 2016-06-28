@@ -300,24 +300,22 @@ void MT76xx_PciMlmeRadioOn(RTMP_ADAPTER *pAd)
 	}
 #endif
 
-
 	/* Enable Tx/Rx*/
 	RTMPEnableRxTx(pAd);
-	
+
        if (pAd->chipCap.ed_cca_enable == TRUE) {
 		RTMP_IO_READ32(pAd, TXOP_CTRL_CFG, &mac_val);
 		mac_val |= (1 << 20);
 		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, mac_val);
 	}
 
-		RTMP_IO_READ32(pAd, TXOP_HLDR_ET, &mac_val);
-		mac_val |= 2;
-		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, mac_val);
-	
+	RTMP_IO_READ32(pAd, TXOP_HLDR_ET, &mac_val);
+	mac_val |= 2;
+	RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, mac_val);
 
 	/* Restore RTS retry count */
-	RTMP_IO_WRITE32(pAd, 0x1344, pAd->rts_tx_retry_num);		
-	
+	RTMP_IO_WRITE32(pAd, 0x1344, pAd->rts_tx_retry_num);
+
 	/* Clear Radio off flag*/
 	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF);
 	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_IDLE_RADIO_OFF);
