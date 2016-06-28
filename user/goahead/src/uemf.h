@@ -497,7 +497,6 @@ int socketSetBlock(int sid, int flags);
 int socketGetBlock(int sid);
 int socketAlloc(int port, socketAccept_t accept, int flags);
 void socketFree(int sid);
-int socketGetError();
 socket_t *socketPtr(int sid);
 int socketWaitForEvent(socket_t *sp, int events, int *errCode);
 void socketRegisterInterest(socket_t *sp, int handlerMask);

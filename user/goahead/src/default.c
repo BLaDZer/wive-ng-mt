@@ -369,7 +369,7 @@ static void websDefaultWriteEvent(webs_t wp)
 				}
 				written += wrote;
 				if (wrote != len) {
-					int err = socketGetError();
+					int err = getSocketError();
 
 					if (err == EWOULDBLOCK || err == EAGAIN) {
 					    websPageSeek(wp, - (len - wrote));
