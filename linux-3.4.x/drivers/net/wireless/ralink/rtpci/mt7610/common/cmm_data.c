@@ -749,11 +749,8 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	if ((pAd->LatchRfRegs.Channel > 14) && (MlmeRate < RATE_6)) /* 11A band*/
 		MlmeRate = RATE_6;
 
-	if ((pHeader_802_11->FC.Type == BTYPE_DATA) && (pHeader_802_11->FC.SubType == SUBTYPE_QOS_NULL)
-	{
+	if (pHeader_802_11->FC.Type == BTYPE_DATA && pHeader_802_11->FC.SubType == SUBTYPE_QOS_NULL)
 		pMacEntry = MacTableLookup(pAd, pHeader_802_11->Addr1);
-	}
-
 
 	/* Should not be hard code to set PwrMgmt to 0 (PWR_ACTIVE)*/
 	/* Snice it's been set to 0 while on MgtMacHeaderInit*/
