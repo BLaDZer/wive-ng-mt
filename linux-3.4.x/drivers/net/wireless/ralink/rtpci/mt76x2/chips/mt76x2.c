@@ -1372,10 +1372,14 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 	mt76x2_single_sku(ad, channel);
 #endif /* SINGLE_SKU_V2 */
 
-
+	
 	percentage_delta_pwr(ad);
-
+	
 #ifdef DYNAMIC_VGA_SUPPORT
+#ifdef CONFIG_AP_SUPPORT
+	RTMP_BBP_IO_READ32(ad, AGC1_R35, &ad->chipCap.agc1_r35_backup);
+	RTMP_BBP_IO_READ32(ad, AGC1_R37, &ad->chipCap.agc1_r37_backup);
+#endif /* CONFIG_AP_SUPPORT */
 	RTMP_BBP_IO_WRITE32(ad, AGC1_R61, 0xFF64A4E2); /* microwave's function initial gain */
 	RTMP_BBP_IO_WRITE32(ad, AGC1_R7, 0x08081010); /* microwave's ED CCA threshold */
 	RTMP_BBP_IO_WRITE32(ad, AGC1_R11, 0x00000404); /* microwave's ED CCA threshold */	
@@ -5341,17 +5345,17 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 	DBGPRINT(RT_DEBUG_INFO, ("%s:: pAd->chipCap.avg_rssi_all (%d)\n", 
 			__FUNCTION__, pAd->chipCap.avg_rssi_all));
 
-	if (((pAd->chipCap.avg_rssi_all > -62) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
+	if (pAd->chipCap.avg_rssi_all < 0 && (((pAd->chipCap.avg_rssi_all > -62) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
 		|| ((pAd->chipCap.avg_rssi_all > -65) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
-		|| ((pAd->chipCap.avg_rssi_all > -68) && (pAd->CommonCfg.BBPCurrentBW == BW_20))) 
-	{
+		|| ((pAd->chipCap.avg_rssi_all > -68) && (pAd->CommonCfg.BBPCurrentBW == BW_20))))
+	    {
 		RTMP_BBP_IO_WRITE32(pAd, RXO_R18, 0xF000A990);
 		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
 			if (is_external_lna_mode(pAd, pAd->CommonCfg.Channel))
 				mode = 0xA0; /* BW80::eLNA lower VGA/PD */
 			else
 				mode = 0xA1; /* BW80::iLNA lower VGA/PD */
-				
+
 			RTMP_BBP_IO_READ32(pAd, AGC1_R26, &value);
 			value = (value & ~0xF) | 0x3;
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R26, value);	
@@ -5366,7 +5370,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			else
 				mode = 0x81; /* BW20::iLNA lower VGA/PD */
 		}
-	} else {
+	    } else {
 		RTMP_BBP_IO_WRITE32(pAd, RXO_R18, 0xF000A991);	
 		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
 			if (is_external_lna_mode(pAd, pAd->CommonCfg.Channel))
@@ -5388,14 +5392,14 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			else
 				mode = 0x01; /* BW20::iLNA default */
 		}
-	}	
+	}
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", 
-		__FUNCTION__, mode));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", __FUNCTION__, mode));
 
-	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
+	/* start level is -90, do not need touch vga before not samples rssi agregate */
+	if (pAd->chipCap.avg_rssi_all > -90 && (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
-		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
+		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20))))
 	{
     		/* MT7662_SW_based_solution_20151202_longestDist_FalseCCA_reduceGain2db_tradeoff.pptx */
 		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
@@ -5410,7 +5414,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
 		}
 	}
-	
+
 	if ((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode ) {
 		pAd->chipCap.dynamic_chE_trigger = TRUE;
 		default_init_vga = pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0;
@@ -5428,8 +5432,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		{
 			case 0xA0: /* BW80::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0xA0;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
@@ -5437,8 +5441,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0xA1: /* BW80::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0xA1;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
@@ -5446,8 +5450,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x90: /* BW40::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x90;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
@@ -5455,8 +5459,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x91: /* BW40::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x91;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
@@ -5464,8 +5468,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x80: /* BW20::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x80;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				if (pAd->CommonCfg.Channel > 14){
 					value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				}
@@ -5479,8 +5483,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x81: /* BW20::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x81;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x08080808); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x08080808); /* BBP 0x2394 */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, pAd->chipCap.agc1_r35_backup); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, pAd->chipCap.agc1_r37_backup); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	

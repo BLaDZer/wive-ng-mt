@@ -701,6 +701,10 @@ struct _RTMP_CHIP_CAP_ {
 	UCHAR dynamic_chE_mode;
 	BOOLEAN dynamic_chE_trigger;
 	BOOLEAN skip_long_range_dync_vga; /* for 76x2 runtime turn long_range_dync_vga on/off , default do long_range_dync_vga */
+#ifdef CONFIG_AP_SUPPORT
+	INT32 agc1_r35_backup;
+	INT32 agc1_r37_backup;
+#endif /* CONFIG_AP_SUPPORT */
 #endif /* DYNAMIC_VGA_SUPPORT */
 
 	/* ---------------------------- signal ---------------------------------- */
