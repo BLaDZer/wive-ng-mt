@@ -373,6 +373,14 @@ function ajaxReloadDelayedPage(delay, url, local)
 
 function ajaxShowTimer(form, reloader, message, delay)
 {
+	var hmf = parent.document.getElementById("homeMenuFrameset");
+	var hmfOrigCols;
+	if (hmf != null)
+	{
+		hmfOrigCols = hmf.cols;
+		hmf.cols = "0, 1*";
+	}
+	
 	window.scrollTo(0, 0);
 	var submitForm = function()
 	{
@@ -397,7 +405,6 @@ function ajaxShowTimer(form, reloader, message, delay)
 			if (elem != null)
 				elem.innerHTML = delay;
 		}
-
 		if (delay > 0) // check counter
 		{
 			delay--;
@@ -405,7 +412,8 @@ function ajaxShowTimer(form, reloader, message, delay)
 		}
 		else // Reload page
 		{
-		ajaxCloseWindow('ajxLoadParams');
+			ajaxCloseWindow('ajxLoadParams');
+			hmf.cols = origCols;
 			window.location.href=window.location.href;
 		}
 	}
