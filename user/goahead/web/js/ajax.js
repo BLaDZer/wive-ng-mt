@@ -413,7 +413,7 @@ function ajaxShowTimer(form, reloader, message, delay)
 		else // Reload page
 		{
 			ajaxCloseWindow('ajxLoadParams');
-			hmf.cols = origCols;
+			hmf.cols = hmfOrigCols
 			window.location.href=window.location.href;
 		}
 	}
