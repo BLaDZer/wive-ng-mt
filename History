@@ -2179,6 +2179,7 @@
 91) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
 92) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
 93) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+94) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
 <br>
 <br>
 <br>
