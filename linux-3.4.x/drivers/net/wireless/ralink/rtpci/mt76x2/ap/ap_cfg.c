@@ -12343,9 +12343,8 @@ INT Set_ApCli_AutoConnect_Proc(
 	UCHAR				ifIndex;
 	PAP_ADMIN_CONFIG	pApCfg;
 	NDIS_802_11_SSID Ssid;
-#ifdef AP_PARTIAL_SCAN_SUPPORT
 	long scan_mode = simple_strtol(arg, 0, 10);
-#endif
+
 	if (pObj->ioctl_if_type != INT_APCLI)
 		return FALSE;
 

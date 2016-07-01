@@ -491,42 +491,6 @@ SendAuth:
 		return;
     }
 
-#ifdef DOT11R_FT_SUPPORT
-	pFtCfg = &pMbss->FtCfg;
-	if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
-		&& (Alg == AUTH_MODE_FT))
-	{
-		USHORT result;
-
-		if (!pEntry)
-			pEntry = MacTableInsertEntry(pAd, Addr2, wdev, apidx, OPMODE_AP, TRUE);
-		
-		if (pEntry != NULL)
-		{
-		    os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
-
-            if (pFtInfoBuf)
-            {
-    			result = FT_AuthReqHandler(pAd, pEntry, &FtInfo, pFtInfoBuf);
-    			if (result == MLME_SUCCESS)
-    			{
-    				NdisMoveMemory(&pEntry->MdIeInfo, &FtInfo.MdIeInfo, sizeof(FT_MDIE_INFO));
-
-    				pEntry->AuthState = AS_AUTH_OPEN;
-    				pEntry->Sst = SST_AUTH;
-    			}
-
-    			FT_EnqueueAuthReply(pAd, pRcvHdr, Alg, 2, result,
-    						&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo, NULL,
-    						pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
-
-                os_free_mem(NULL, pFtInfoBuf);
-            }
-		}
-		return;
-	}
-	else
-#endif /* DOT11R_FT_SUPPORT */
 #ifdef BAND_STEERING
 	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
@@ -563,6 +527,43 @@ SendAuth:
                 RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
                 return;
          }
+
+#ifdef DOT11R_FT_SUPPORT
+	pFtCfg = &pMbss->FtCfg;
+	if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
+		&& (Alg == AUTH_MODE_FT))
+	{
+		USHORT result;
+
+		if (!pEntry)
+			pEntry = MacTableInsertEntry(pAd, Addr2, wdev, apidx, OPMODE_AP, TRUE);
+		
+		if (pEntry != NULL)
+		{
+		    os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
+
+            if (pFtInfoBuf)
+            {
+    			result = FT_AuthReqHandler(pAd, pEntry, &FtInfo, pFtInfoBuf);
+    			if (result == MLME_SUCCESS)
+    			{
+    				NdisMoveMemory(&pEntry->MdIeInfo, &FtInfo.MdIeInfo, sizeof(FT_MDIE_INFO));
+
+    				pEntry->AuthState = AS_AUTH_OPEN;
+    				pEntry->Sst = SST_AUTH;
+    			}
+
+    			FT_EnqueueAuthReply(pAd, pRcvHdr, Alg, 2, result,
+    						&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo, NULL,
+    						pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
+
+                os_free_mem(NULL, pFtInfoBuf);
+            }
+		}
+		return;
+	}
+	else
+#endif /* DOT11R_FT_SUPPORT */
 
 	if ((Alg == AUTH_MODE_OPEN) &&
 		(pMbss->wdev.AuthMode != Ndis802_11AuthModeShared)) 
