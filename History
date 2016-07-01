@@ -2131,7 +2131,7 @@
 43) kernel: ralink_wifi: mt76x2: fix ed cca disable in bbp if build without ed_monitor support.<br>
 44) kernel: ralink_wifi: mt76x2: fix drop to BW_20 regression.<br>
 45) kernel: ralink_wifi: mt76x2: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
-46) kernel: ralink_wifi: mt76x2: restore R35/37 value instead of hardcode 0x08080808 (try fix lost beacon at high noise level).<br>
+46) kernel: ralink_wifi: mt76x2: fix lost beacons at high noise level.<br>
 47) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
 48) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
 49) kernel: ralink_wifi: mt7603: fix proc path name.<br>
