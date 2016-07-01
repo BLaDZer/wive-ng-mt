@@ -2668,12 +2668,16 @@ BOOLEAN PeerProbeReqSanity(
 	COPY_MAC_ADDR(ie_lists->Addr2, Fr->Hdr.Addr2);
 #endif /* SMART_MESH_MONITOR */
 
-    Ptr = Fr->Octet;
-    eid = Ptr[0];
-    eid_len = Ptr[1];
+	Ptr = Fr->Octet;
+	eid = Ptr[0];
+	eid_len = Ptr[1];
 	total_ie_len = eid_len + 2;
 	eid_data = Ptr+2;
-    
+
+#ifdef RSSI_FEEDBACK
+	ProbeReqParam->bRequestRssi = FALSE;
+#endif /* RSSI_FEEDBACK */
+
     /* get variable fields from payload and advance the pointer*/
 	while((eid_data + eid_len) <= ((UCHAR*)Fr + MsgLen))
     {    	

@@ -3247,6 +3247,9 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		AckDuration = RTMPCalcDuration(pAd, RATE_6_5, 14);
 	/*DBGPRINT(RT_DEBUG_INFO, ("!!!Fragment AckDuration(%d), TxRate(%d)!!!\n", AckDuration, pTxBlk->TxRate)); */
 
+	/* Init the total payload length of this frame. */
+	SrcRemainingBytes = pTxBlk->SrcBufLen;
+	pTxBlk->TotalFragNum = 0xff;
 
 #ifdef SOFT_ENCRYPT
 	if (TX_BLK_TEST_FLAG(pTxBlk, fTX_bSwEncrypt))
@@ -3263,10 +3266,6 @@ VOID AP_Fragment_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 		NdisMoveMemory(tmp_ptr, pTxBlk->pSrcBufData, pTxBlk->SrcBufLen);
 	}
 #endif /* SOFT_ENCRYPT */
-
-	/* Init the total payload length of this frame. */
-	SrcRemainingBytes = pTxBlk->SrcBufLen;
-	pTxBlk->TotalFragNum = 0xff;
 
 	do {
 
@@ -3910,9 +3909,15 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	/* If no mathed wcid index in ASIC on chip, do we need more check???  need to check again. 06-06-2006 */
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
+		MAC_TABLE_ENTRY *pEntry;
+
 		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%u) > %d\n",
 					__FUNCTION__, PRINT_MAC(hdr->Addr2),
 					wcid, MAX_LEN_OF_MAC_TABLE));
+
+		pEntry = MacTableLookup(pAd, hdr->Addr2);
+		if (pEntry)
+			return FALSE;
 
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
@@ -5073,7 +5078,7 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 					MULTISSID_STRUCT *pMbss = pEntry->pMbss;
 					if (pMbss != NULL)
 					{
-						pMbss->ReceivedByteCount += pRxBlk->MPDUtotalByteCnt;
+						pMbss->ReceivedByteCount.QuadPart += pRxBlk->MPDUtotalByteCnt;
 						pMbss->RxCount++;
 					}
 				}
@@ -5194,6 +5199,13 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			/* ApCli reconnect workaround - update ApCliRcvBeaconTime on RX activity too */
 			pApCliEntry->ApCliRcvBeaconTime = pAd->Mlme.Now32;
 
+			if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->wdev.if_addr))
+				goto err;
+
+#ifdef MWDS
+			if(IS_MWDS_OPMODE_APCLI(pEntry))
+				goto err;
+#endif /* MWDS */
 #ifdef STATS_COUNT_SUPPORT
 			pApCliEntry->ApCliCounter.ReceivedByteCount.QuadPart += pRxBlk->MPDUtotalByteCnt;
 			pApCliEntry->ApCliCounter.ReceivedFragmentCount++;
@@ -5677,7 +5689,7 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 					MULTISSID_STRUCT *pMbss = pEntry->pMbss;
 					if (pMbss != NULL)
 					{
-						pMbss->ReceivedByteCount += pRxBlk->MPDUtotalByteCnt;
+						pMbss->ReceivedByteCount.QuadPart += pRxBlk->MPDUtotalByteCnt;
 						pMbss->RxCount++;
 					}
 				}

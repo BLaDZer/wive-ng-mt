@@ -1273,6 +1273,12 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 #endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
+	/* fix drop to CCK in 5GHz */
+	if (tx_mode == MODE_CCK && pAd->LatchRfRegs.Channel > 14)
+	{
+		tx_mode = MODE_OFDM;
+	}
+
 	if (pTxRate->CurrMCS < MCS_AUTO)
 		pEntry->HTPhyMode.field.MCS = pTxRate->CurrMCS;
 
@@ -2512,6 +2518,7 @@ UCHAR MlmeSelectTxRate(
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	)
 	{/*  N mode with 1 stream */
+		{
 			if (mcs[7]>=0 && (Rssi > (-72+RssiOffset)) && (pEntry->SupportHTMCS[MCS_7]))
 				TxRateIdx = mcs[7];
 			else if (mcs[6]>=0 && (Rssi > (-74+RssiOffset)) && (pEntry->SupportHTMCS[MCS_6]))
@@ -2529,6 +2536,7 @@ UCHAR MlmeSelectTxRate(
 			else
 				TxRateIdx = mcs[0];
 		}
+	}
 	else
 #endif /*  DOT11_N_SUPPORT */
 	{/*  Legacy mode */

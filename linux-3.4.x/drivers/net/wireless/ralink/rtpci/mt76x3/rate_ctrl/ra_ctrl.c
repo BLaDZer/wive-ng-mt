@@ -1824,7 +1824,6 @@ UCHAR MlmeSelectTxRate(
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	)
 	{/*  N mode with 1 stream */
-		{
 			if (mcs[7]>=0 && (Rssi > (-72+RssiOffset)) && (pEntry->SupportHTMCS[MCS_7]))
 				TxRateIdx = mcs[7];
 			else if (mcs[6]>=0 && (Rssi > (-74+RssiOffset)) && (pEntry->SupportHTMCS[MCS_6]))
@@ -1841,7 +1840,6 @@ UCHAR MlmeSelectTxRate(
 				TxRateIdx = mcs[1];
 			else
 				TxRateIdx = mcs[0];
-		}
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */

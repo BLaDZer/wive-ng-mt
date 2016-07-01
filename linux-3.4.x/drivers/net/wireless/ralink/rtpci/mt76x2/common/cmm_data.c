@@ -1227,7 +1227,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
                 PrevMode = transmit->field.MODE;
 
                 transmit->field.MODE = MODE_OFDM;
-                transmit->field.MCS = MCS_RATE_6;
+                transmit->field.MCS = MCS_RATE_24;
                 RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, 
                             bAckRequired, FALSE, 0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), 
 			    PID, 0, SNDG_TYPE_NDP, IFS_BACKOFF, transmit);
@@ -1902,17 +1902,21 @@ VOID TxDoneCleanupExec(
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)FunctionContext;
 	ULONG IrqFlags = 0;
 	UCHAR QueIdx;
+	int NeedCleanupTimer = 0;
 
 	DEQUEUE_LOCK(&pAd->irq_lock, FALSE, IrqFlags);
 	for( QueIdx=0; QueIdx<NUM_OF_TX_RING; QueIdx++ ) {
 		ULONG FreeNum;
 		FreeNum = GET_TXRING_FREENO(pAd, QueIdx);
-		if( FreeNum != (TX_RING_SIZE-1) ) {
+		if( FreeNum < (TX_RING_SIZE-1) ) {
 			RTMPFreeTXDUponTxDmaDone(pAd, QueIdx);
-			RTMPModTimer(&pAd->TxDoneCleanupTimer, 50);
+			NeedCleanupTimer = 1;
 		}
 	}
 	DEQUEUE_UNLOCK(&pAd->irq_lock, FALSE, IrqFlags);
+
+	if (NeedCleanupTimer)
+		RTMPModTimer(&pAd->TxDoneCleanupTimer, 50);
 }
 #endif /* RTMP_MAC_PCI */
 
