@@ -3830,7 +3830,6 @@ VOID RT28xxAndesWOWDisable(
 VOID thermal_protection(
 	IN RTMP_ADAPTER 	*pAd)
 {
-	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;
 	INT32 temp_diff = 0, current_temp = 0;	
 #ifdef CONFIG_STA_SUPPORT
 #endif /* RTMP_MAC_USB  */
