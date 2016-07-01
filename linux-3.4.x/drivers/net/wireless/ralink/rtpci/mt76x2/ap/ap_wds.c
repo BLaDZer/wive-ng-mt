@@ -373,6 +373,7 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 			pEntry->wdev = wdev;
 			COPY_MAC_ADDR(&wdev->bssid[0], &pEntry->Addr[0]);
 
+			AsicUpdateRxWCIDTable(pAd, pEntry->wcid, pAddr);
 			AsicUpdateWdsEncryption(pAd, pEntry->wcid);
 
 			DBGPRINT(RT_DEBUG_OFF, ("%s() - allocate entry #%d(link to WCID %d), Total= %d\n",
