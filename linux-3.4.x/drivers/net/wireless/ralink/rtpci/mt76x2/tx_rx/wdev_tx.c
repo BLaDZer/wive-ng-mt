@@ -290,10 +290,12 @@ VOID wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, str
 				if (ReduceTcpAck(pAd, pPacket) == FALSE)
 #endif /* REDUCE_TCP_ACK_SUPPORT */
 				{
-					BOOLEAN bResult = APSendPacket(pAd, pPacket);
 #ifdef MWDS
+					BOOLEAN bResult = APSendPacket(pAd, pPacket);
 					if((wcid == MCAST_WCID) && (bResult == NDIS_STATUS_SUCCESS))
 						MWDSSendClonePacket(pAd, pPacket, NULL);
+#else
+					APSendPacket(pAd, pPacket);
 #endif /* MWDS */
 				}
 			}
