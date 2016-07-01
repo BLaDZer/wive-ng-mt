@@ -5795,7 +5795,7 @@ static const RTMP_CHIP_CAP MT76x2_ChipCap = {
 #ifdef DYNAMIC_VGA_SUPPORT
 	.dynamic_vga_support = TRUE,
 	.compensate_level = 0,
-	.dynamic_chE_mode = 0xFF,
+	.dynamic_chE_mode = 0xEE,
 	.dynamic_chE_trigger = FALSE,
 	.avg_rssi_all = -90,
 	.avg_rssi_0 = -90,
