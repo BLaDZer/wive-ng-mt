@@ -3328,7 +3328,19 @@ BOOLEAN ApCliAutoConnectExec(
 	DBGPRINT(RT_DEBUG_TRACE, ("---> ApCliAutoConnectExec()\n"));
 
 	pObj->ioctl_if_type = INT_APCLI;
-	ifIdx = pObj->ioctl_if;
+
+	for(ifIdx=0; ifIdx<MAX_APCLI_NUM; ifIdx++)
+	{
+		if (pAd->ApCfg.ApCliTab[ifIdx].AutoConnectFlag == TRUE)
+			break;
+	}
+
+	if(ifIdx >= MAX_APCLI_NUM)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("Error  ifIdx=%d\n", ifIdx));
+		return FALSE;
+	}
+
 	CfgSsidLen = pAd->ApCfg.ApCliTab[ifIdx].CfgSsidLen;
 	pCfgSsid = pAd->ApCfg.ApCliTab[ifIdx].CfgSsid;
 	pScanTab = &pAd->ScanTab;
@@ -3492,13 +3504,17 @@ BOOLEAN ApCliAutoConnectExec(
 		
 		if(bChangeToCandidateAP)
 		{
-			if (pAd->CommonCfg.Channel != pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Channel)
+			BSS_ENTRY *pBssEntry = &pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1];
+			
+			if (pAd->CommonCfg.Channel != pBssEntry->Channel)
 			{
-				sprintf(CandidateAPChannel, "%d", pSsidBssTab->BssEntry[pSsidBssTab->BssNr -1].Channel);
+				Set_ApCli_Enable_Proc(pAd, "0");
+				
+				sprintf(CandidateAPChannel, "%d", pBssEntry->Channel);
 				DBGPRINT(RT_DEBUG_TRACE, ("Switch to channel :%s\n", CandidateAPChannel));
-				Set_Channel_Proc(pAd, CandidateAPChannel);		
+				Set_Channel_Proc(pAd, CandidateAPChannel);
 			}
-            Set_ApCli_Bssid_Proc(pAd, CandidateAPBssid);
+			Set_ApCli_Bssid_Proc(pAd, CandidateAPBssid);
 		}
 	}
 	else 
@@ -3561,10 +3577,10 @@ VOID ApCliSwitchCandidateAP(
 		UCHAR	CandidateAPChannel[8],CandidateAPBssid[20];
 		BOOLEAN bChangeToCandidateAP = TRUE;
 		if(!MAC_ADDR_EQUAL(pApCliEntry->CfgApCliBssid, ZERO_MAC_ADDR))
-	    {
-	    	/*
-           		We don't want this feature to impact desired bssid.
-        	*/
+		{
+			/*
+			We don't want this feature to impact desired bssid.
+			*/
 			if(!MAC_ADDR_EQUAL(pApCliEntry->CfgApCliBssid, pSsidBssTab->BssEntry[lastEntryIdx].Bssid))
 			{
 				bChangeToCandidateAP = FALSE;
@@ -3583,7 +3599,7 @@ VOID ApCliSwitchCandidateAP(
 					pApCliEntry->CfgApCliBssid[4],
 					pApCliEntry->CfgApCliBssid[5]);
 			}
-	    }
+		}
 		else
 		{
 			sprintf(CandidateAPBssid, "%02X:%02X:%02X:%02X:%02X:%02X", 
@@ -3597,14 +3613,18 @@ VOID ApCliSwitchCandidateAP(
 
 		if(bChangeToCandidateAP)
 		{
-		if (pAd->CommonCfg.Channel != pSsidBssTab->BssEntry[lastEntryIdx].Channel)
-		{
-			Set_ApCli_Enable_Proc(pAd, "0");
-				sprintf(CandidateAPChannel, "%d", pSsidBssTab->BssEntry[lastEntryIdx].Channel);
+			BSS_ENTRY *pBssEntry = &pSsidBssTab->BssEntry[lastEntryIdx];
+			
+			if (pAd->CommonCfg.Channel != pBssEntry->Channel)
+			{
+				Set_ApCli_Enable_Proc(pAd, "0");
+				
+				sprintf(CandidateAPChannel, "%d", pBssEntry->Channel);
 				DBGPRINT(RT_DEBUG_TRACE, ("Switch to channel :%s\n", CandidateAPChannel));
-				Set_Channel_Proc(pAd, CandidateAPChannel);		
-			}		
-            Set_ApCli_Bssid_Proc(pAd, CandidateAPBssid);	
+				Set_Channel_Proc(pAd, CandidateAPChannel);
+			}
+			
+			Set_ApCli_Bssid_Proc(pAd, CandidateAPBssid);
 		}
 	}
 	else
