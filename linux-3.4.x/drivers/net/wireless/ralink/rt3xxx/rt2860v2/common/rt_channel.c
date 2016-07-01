@@ -1940,6 +1940,10 @@ VOID N_ChannelCheck(
 	/*UCHAR ChannelNum = pAd->ChannelListNum;*/
 	UCHAR Channel = pAd->CommonCfg.Channel;
 
+	/* channel is not set yet (e.g. AutoChannelSelect > 0) */
+	if (Channel == 0)
+		return;
+
 	if ((pAd->CommonCfg.PhyMode >= PHY_11ABGN_MIXED) && (pAd->CommonCfg.RegTransmitSetting.field.BW  == BW_40))
 	{
 		if (Channel > 14)

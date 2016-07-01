@@ -1561,8 +1561,7 @@ VOID RTMPSetPhyMode(
 	{
 #ifdef CONFIG_AP_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-		if (pAd->CommonCfg.Channel != 0)
-				pAd->CommonCfg.Channel = FirstChannel(pAd);
+			pAd->CommonCfg.Channel = FirstChannel(pAd);
 #endif /* CONFIG_AP_SUPPORT */
 		DBGPRINT(RT_DEBUG_ERROR, ("RTMPSetPhyMode: channel is out of range, use first channel=%d \n", pAd->CommonCfg.Channel));
 	}
