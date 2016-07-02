@@ -15716,7 +15716,6 @@ INT set_agc_vga_clamp_proc(RTMP_ADAPTER *pAd, PSTRING arg)
 		agc_vga_ori = agc_vga_init - (agc_vga_step * val);
 
 		pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 = agc_vga_ori;
-		pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_1 = agc_vga_ori;
 		pAd->chipCap.dynamic_chE_mode = 0xEE;	// force update VGA
 		RTMP_ASIC_DYNAMIC_VGA_GAIN_CONTROL(pAd);
 	}

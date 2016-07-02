@@ -1993,7 +1993,6 @@ void mt76x2_get_agc_gain(RTMP_ADAPTER *ad, BOOLEAN init_phase)
 		DBGPRINT(RT_DEBUG_OFF, ("original vga value(chain0) = %x\n",  ad->CommonCfg.lna_vga_ctl.agc_vga_ori_0));
 	}
 	val16 = ((bbp_val & (0xffff0000)) >> 16) & (0xffff);
-	ad->CommonCfg.lna_vga_ctl.agc_0_vga_set1_2 = val16;
 	DBGPRINT(RT_DEBUG_TRACE, ("initial vga value(chain0) = %x\n",  ad->CommonCfg.lna_vga_ctl.agc_vga_init_0));
 
 	if (ad->CommonCfg.RxStream >= 2) {
@@ -2001,12 +2000,7 @@ void mt76x2_get_agc_gain(RTMP_ADAPTER *ad, BOOLEAN init_phase)
 		val = ((bbp_val & (0x00007f00)) >> 8) & 0x7f;
 		ad->CommonCfg.lna_vga_ctl.agc_vga_init_1 = val;
 		ad->CommonCfg.lna_vga_ctl.agc1_r9_backup = bbp_val;
-		if (init_phase == TRUE) {
-			ad->CommonCfg.lna_vga_ctl.agc_vga_ori_1= ad->CommonCfg.lna_vga_ctl.agc_vga_init_1;
-			DBGPRINT(RT_DEBUG_OFF, ("original vga value(chain1) = %x\n",  ad->CommonCfg.lna_vga_ctl.agc_vga_ori_1));
-		}
 		val16 = ((bbp_val & (0xffff0000)) >> 16) & (0xffff);
-		ad->CommonCfg.lna_vga_ctl.agc_1_vga_set1_2 = val16;
 
 		DBGPRINT(RT_DEBUG_TRACE, ("initial vga value(chain1) = %x\n",  ad->CommonCfg.lna_vga_ctl.agc_vga_init_1));
 	}

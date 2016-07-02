@@ -947,11 +947,8 @@ typedef struct _LNA_VGA_CTL_STRUCT {
 	UINT32		agc1_r8_backup;
 	UCHAR		agc_vga_init_0;
 	UCHAR 		agc_vga_ori_0; /* the original vga gain initialized by firmware at start up */
-	UINT16		agc_0_vga_set1_2;
 	UINT32		agc1_r9_backup;
-	UCHAR 		agc_vga_init_1;
-	UCHAR 		agc_vga_ori_1; /* the original vga gain initialized by firmware at start up */
-	UINT16		agc_1_vga_set1_2;	
+	UCHAR 		agc_vga_init_1; /* the original vga gain initialized by firmware at start up */
 } LNA_VGA_CTL_STRUCT, *PLNA_VGA_CTL_STRUCT;
 #endif /* DYNAMIC_VGA_SUPPORT */
 

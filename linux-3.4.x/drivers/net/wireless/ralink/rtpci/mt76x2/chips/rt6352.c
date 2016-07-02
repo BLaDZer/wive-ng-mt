@@ -1754,7 +1754,6 @@ static VOID RT6352_RTMPSetAGCInitValue(
 #ifdef DYNAMIC_VGA_SUPPORT
 	/* Backup BBP_R66  */
 	pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 = R66;
-	pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_1 = R66;
 #endif /* DYNAMIC_VGA_SUPPORT */
 
 }
