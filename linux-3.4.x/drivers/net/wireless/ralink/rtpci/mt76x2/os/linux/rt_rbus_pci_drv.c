@@ -196,6 +196,7 @@ static inline void rt2860_int_enable(PRTMP_ADAPTER pAd, unsigned int mode)
 
 	pAd->int_disable_mask &= ~(mode);
 #ifdef RLT_MAC
+	if (pAd->chipCap.hif_type == HIF_RLT)
 	{
 		if(IS_MT76x2(pAd))
 			regValue = pAd->int_enable_reg & ~(pAd->int_disable_mask | RLT_INT_AC0_DLY);

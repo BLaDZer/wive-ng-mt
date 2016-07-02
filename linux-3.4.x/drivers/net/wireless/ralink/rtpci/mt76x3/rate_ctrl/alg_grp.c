@@ -546,50 +546,39 @@ UCHAR MlmeSelectTxRateAdapt(
 					|| pTable == RateTableVht2S_BW40
 					|| pTable == RateTableVht2S_MCS7)
 	{
-		//USHORT tx_rate;
 		if (pTable == RateTableVht2S || pTable == RateTableVht2S_BW40)
 		{
 			DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s: GRP: 2*2, RssiOffset=%d\n", __FUNCTION__, RssiOffset));
 			
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[19] && (Rssi > (-65 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS9;
 				TxRateIdx = mcs[19];
 			}
 			else if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else {
-				//tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[0];
 			}
 			
@@ -599,35 +588,27 @@ UCHAR MlmeSelectTxRateAdapt(
 			
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else {
-				//tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[0];
 			}
 			
@@ -638,39 +619,30 @@ UCHAR MlmeSelectTxRateAdapt(
 			
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[13] && (Rssi > (-80 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS3;
 				TxRateIdx = mcs[13];
 			}
 			else if (mcs[12] && (Rssi > (-82 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS2;
 				TxRateIdx = mcs[12];
 			}
 			else if (mcs[11] && (Rssi > (-87 + RssiOffset))) {
-				//tx_rate = MCS_VHT_2SS_MCS1;
 				TxRateIdx = mcs[11];
 			}
 			else {
-				//tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[0];
 			}
 			

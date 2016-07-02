@@ -803,7 +803,6 @@ UCHAR MlmeSelectTxRateAdapt(
 					|| pTable == RateTableVht2S_2G_BW40
 					)
 	{
-		USHORT tx_rate;
 		if (pTable == RateTableVht2S || pTable == RateTableVht2S_BW40
 			|| (pTable == RateTableVht2S_2G_BW40))
 		{
@@ -811,47 +810,36 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[19] && (Rssi > (-65 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS9;
 				TxRateIdx = mcs[19];
 			}
 			else if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_1SS_MCS3;
 				TxRateIdx = mcs[3];
 			}
 			else if (mcs[2] && (Rssi > (-82 + RssiOffset))) {
-				tx_rate = MCS_VHT_1SS_MCS2;
 				TxRateIdx = mcs[2];
 			}
 			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {
-				tx_rate = MCS_RATE_18;
 				TxRateIdx = mcs[23]; // OFDM 1x1 MCS3 BW20
 			}
 			else if (mcs[22] && (Rssi > (-87 + RssiOffset))) {
-				tx_rate = MCS_RATE_12;
 				TxRateIdx = mcs[22]; // OFDM 1x1 MCS2 BW20
 			}
 			else {
-				tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[20]; // OFDM 1x1 MCS0 BW20
 			}
 
@@ -862,39 +850,30 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_1SS_MCS3;
 				TxRateIdx = mcs[3];
 			}
 			else if (mcs[2] && (Rssi > (-82 + RssiOffset))) {
-				tx_rate = MCS_VHT_1SS_MCS2;
 				TxRateIdx = mcs[2];
 			}
 			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {  // add new condition
-				tx_rate = MCS_RATE_18;
 				TxRateIdx = mcs[23]; // OFDM 1x1 MCS3 BW20
 			}
 			else if (mcs[22] && (Rssi > (-87 + RssiOffset))) {
-				tx_rate = MCS_RATE_12;
 				TxRateIdx = mcs[22]; // OFDM 1x1 MCS2 BW20
 			}
 			else {
-				tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[20];  // OFDM 1x1 MCS0 BW20
 			}
 
@@ -908,43 +887,33 @@ UCHAR MlmeSelectTxRateAdapt(
 
 			/* 2x2 peer device (Adhoc, DLS or AP) */
 			if (mcs[18] && (Rssi > (-67 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS8;
 				TxRateIdx = mcs[18];
 			}
 			else if (mcs[17] && (Rssi > (-69 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS7;
 				TxRateIdx = mcs[17];
 			}
 			else if (mcs[16] && (Rssi > (-71 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS6;
 				TxRateIdx = mcs[16];
 			}
 			else if (mcs[15] && (Rssi > (-74 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS5;
 				TxRateIdx = mcs[15];
 			}
 			else if (mcs[14] && (Rssi > (-76 + RssiOffset))) {
-				tx_rate = MCS_VHT_2SS_MCS4;
 				TxRateIdx = mcs[14];
 			}
 			else if (mcs[3] && (Rssi > (-80 + RssiOffset))) {
-				tx_rate = MCS_VHT_1SS_MCS3;
 				TxRateIdx = mcs[3];
 			}
 			else if (mcs[23] && (Rssi > (-85 + RssiOffset))) {
-				tx_rate = MCS_RATE_18;
 				TxRateIdx = mcs[23];
 			}
 			else if (mcs[22] && (Rssi > (-92 + RssiOffset))) {
-				tx_rate = MCS_RATE_12;
 				TxRateIdx = mcs[22];
 			}
 			else if (mcs[20] && (Rssi > (-94 + RssiOffset))) {
-				tx_rate = MCS_RATE_9;
 				TxRateIdx = mcs[21];
 			}
 			else {
-				tx_rate = MCS_RATE_6;
 				TxRateIdx = mcs[20]; 
 			}
 
