@@ -400,7 +400,7 @@ static void rx_done_tasklet(unsigned long data)
 	/*
 	 * double check to avoid rotting packet 
 	 */
-	if (pAd->int_pending & INT_RX || bReschedule) 
+	if ((pAd->int_pending & INT_RX) || bReschedule) 
 	{
 #ifdef WORKQUEUE_BH
 		RTMP_OS_TASKLET_SCHE(&pObj->rx_done_work);

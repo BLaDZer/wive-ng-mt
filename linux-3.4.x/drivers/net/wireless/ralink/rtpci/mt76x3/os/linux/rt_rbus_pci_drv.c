@@ -397,7 +397,7 @@ DBGPRINT(RT_DEBUG_FPGA, ("-->%s():\n", __FUNCTION__));
 
 	RTMP_INT_LOCK(&pAd->LockInterrupt, flags);
 	/* double check to avoid rotting packet  */
-	if (pAd->int_pending & INT_RX || bReschedule)
+	if ((pAd->int_pending & INT_RX) || bReschedule)
 	{
 		RTMP_OS_TASKLET_SCHE(&pObj->rx_done_task);
 		RTMP_INT_UNLOCK(&pAd->LockInterrupt, flags);

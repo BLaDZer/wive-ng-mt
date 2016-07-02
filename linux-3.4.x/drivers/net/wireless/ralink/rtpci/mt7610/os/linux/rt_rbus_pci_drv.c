@@ -334,7 +334,7 @@ static void rx_done_tasklet(unsigned long data)
 #ifdef RLT_MAC
 	if (pAd->int_pending & INT_R0_DONE || bReschedule) 
 #else /* RLT_MAC */
-	if (pAd->int_pending & INT_RX || bReschedule) 
+	if ((pAd->int_pending & INT_RX) || bReschedule) 
 #endif /* !RLT_MAC */
 	{
 		RTMP_OS_TASKLET_SCHE(&pObj->rx_done_task);
