@@ -5299,7 +5299,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 	if(pAd->OpMode == OPMODE_AP && pAd->MacTab.Size > 0)
 	{
 		INT k = 0;
-		//UINT64 one_sec_total_traffic = pAd->RalinkCounters.OneSecRxOkCnt+pAd->RalinkCounters.OneSecTxFailCount+pAd->RalinkCounters.OneSecTxNoRetryOkCount+pAd->RalinkCounters.OneSecTxRetryOkCount;
 
 		for(k=0;k<MAX_LEN_OF_MAC_TABLE;k++)
 		{
@@ -5307,13 +5306,10 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			if (IS_ENTRY_CLIENT(pEntry) || (IS_ENTRY_APCLI(pEntry)))
 			{
 				CHAR avg_rssi = 0;
-				//UINT32 one_sec_total_trafficA = 0,one_sec_total_trafficB = 0,one_sec_total_trafficC = 0;
 				UINT32 one_sec_total_trafficB = 0;
-				
+
 				avg_rssi = (pEntry->RssiSample.AvgRssi0 + pEntry->RssiSample.AvgRssi1)/2;
-				//one_sec_total_trafficA = pEntry->DyncVgaOneSecTxCount;
 				one_sec_total_trafficB = pEntry->DyncVgaOneSecRxCount;
-				//one_sec_total_trafficC = pEntry->DyncVgaOneSecTxCount + pEntry->DyncVgaOneSecRxCount;
 
 				pEntry->DyncVgaOneSecTxCount = 0;
 				pEntry->DyncVgaOneSecRxCount = 0;
@@ -5323,15 +5319,14 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 					DBGPRINT(RT_DEBUG_TRACE, 
 					("%s: long range sta %02X:%02X:%02X:%02X:%02X:%02X  rssi (%d) & one_sec_RX_traffic %d >20 change AVG RSSI to (%d)\n"
 					,__FUNCTION__,PRINT_MAC(pEntry->Addr), avg_rssi,one_sec_total_trafficB,avg_rssi));
-					
+
 					pAd->chipCap.avg_rssi_all = avg_rssi;
 				}
 
-			}			
-		}			
+			}
+		}
 	}
 
-	
 	DBGPRINT(RT_DEBUG_INFO, ("%s:: pAd->chipCap.avg_rssi_all (%d)\n", 
 			__FUNCTION__, pAd->chipCap.avg_rssi_all));
 
@@ -5386,23 +5381,18 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", __FUNCTION__, mode));
 
-	/* start level is -90, do not need touch vga before not samples rssi agregate */
-	if (pAd->chipCap.avg_rssi_all > -90 && (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
+	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
-		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20))))
+		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
 	{
     		/* MT7662_SW_based_solution_20151202_longestDist_FalseCCA_reduceGain2db_tradeoff.pptx */
 		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
 		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
 
 		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
-		{
 			mt76x2_long_range_dync_vga(pAd);
-		}
 		else
-		{
 			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
-		}
 	}
 
 	if ((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) {
