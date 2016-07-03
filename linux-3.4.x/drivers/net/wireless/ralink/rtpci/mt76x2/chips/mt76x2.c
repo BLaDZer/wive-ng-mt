@@ -5412,7 +5412,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		{
 			case 0xA0: /* BW80::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0xA0;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111518); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5421,7 +5421,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 
 			case 0xA1: /* BW80::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0xA1;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111518); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5430,7 +5430,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x90: /* BW40::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x90;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5439,7 +5439,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x91: /* BW40::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x91;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5448,7 +5448,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x80: /* BW20::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x80;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				if (pAd->CommonCfg.Channel > 14){
 					value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
@@ -5463,7 +5463,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x81: /* BW20::iLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x81;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(iLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5472,7 +5472,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x20: /* BW80::eLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x20;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x10101014); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
@@ -5481,7 +5481,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x21: /* BW80::iLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x21;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x10101014); /* BBP 0x238C */
+				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
