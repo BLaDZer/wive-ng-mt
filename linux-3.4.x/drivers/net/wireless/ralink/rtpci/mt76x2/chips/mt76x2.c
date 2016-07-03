@@ -5389,9 +5389,9 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
 		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
 
+#if 0
 		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
 			mt76x2_long_range_dync_vga(pAd);
-#if 0
 		else     // this no good idea - after restore with low rssi clients ap lost beacons
 			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
 #endif
