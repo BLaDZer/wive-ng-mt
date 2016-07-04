@@ -93,7 +93,7 @@ case "$1" in
 		$LOG "Restart WAN switch port."
 		config-vlan.sh $switchmode WWWWW
 	    fi
-	elif [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
+	elif [ "$OperationMode" = "2" ]; then
 	    $LOG "Try reconnect to AP."
 	    wifi_reconnect
 	fi

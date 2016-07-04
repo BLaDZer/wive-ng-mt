@@ -227,13 +227,6 @@ wifi_reconnect() {
 	    iwpriv $first_wlan_root_if set SSID="$staCur_SSID"
 	    usleep 500000
 	fi
-    elif [ "$OperationMode" = "3" ] && [ "$ApCliAutoConnect" != "1" ]; then
-	    # Reenable apcli and rescan for reconnect
-	    iwpriv $ApCliIfName set ApCliEnable=0
-	    usleep 100000
-	    iwpriv $ApCliIfName set ApCliEnable=1
-	    usleep 100000
-	    iwpriv $ApCliIfName set SiteSurvey=1
     fi
 }
 
