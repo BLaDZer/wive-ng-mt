@@ -3038,7 +3038,13 @@ VOID ApCliSwitchCandidateAP(
 
 	pSsidBssTab = &pAd->MlmeAux.SsidBssTab;
 	pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
-	
+
+	if (pSsidBssTab->BssNr == 0)
+	{
+		pAd->ApCfg.ApCliAutoConnectRunning = FALSE;
+		goto exit_and_enable;
+	}
+
 	/*
 		delete (zero) the previous connected-failled entry and always 
 		connect to the last entry in talbe until the talbe is empty.
@@ -3071,6 +3077,8 @@ VOID ApCliSwitchCandidateAP(
 		DBGPRINT(RT_DEBUG_TRACE, ("No candidate AP, the process is about to stop.\n"));
 		pAd->ApCfg.ApCliAutoConnectRunning = FALSE;
 	}
+
+exit_and_enable:
 
 	Set_ApCli_Enable_Proc(pAd, "1");
 	DBGPRINT(RT_DEBUG_TRACE, ("---> ApCliSwitchCandidateAP()\n"));
