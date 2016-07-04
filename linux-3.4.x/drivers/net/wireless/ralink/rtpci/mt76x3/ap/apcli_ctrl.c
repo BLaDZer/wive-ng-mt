@@ -754,7 +754,7 @@ static VOID ApCliCtrlJoinReqTimeoutAction(
 		pApCliEntry->ProbeReqCnt = 0;
 		
 		if (pAd->ApCfg.ApCliAutoConnectRunning == TRUE)
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 		if ((pAd->ApCfg.ApCliAutoConnectRunning == FALSE) && (pAd->ApCfg.ApCliTab[ifIndex].AutoConnectFlag == TRUE)) 
 		{
 			NDIS_802_11_SSID Ssid;
@@ -865,8 +865,56 @@ static VOID ApCliCtrlProbeRspAction(
 
 	if (Status == MLME_SUCCESS)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, ("%s():ProbeResp success. SSID=%s, Bssid=%02x:%02x:%02x:%02x:%02x:%02x\n",
-					__FUNCTION__, pApCliEntry->Ssid, PRINT_MAC(pApCliEntry->MlmeAux.Bssid)));
+		if (pApCliEntry->SsidLen > 0) {
+			printk(KERN_INFO "AP-Client probe response: SSID=%s, BSSID=%02x:%02x:%02x:%02x:%02x:%02x\n",
+				pApCliEntry->Ssid, PRINT_MAC(pApCliEntry->MlmeAux.Bssid));
+		}
+
+#ifdef DOT11_N_SUPPORT
+		if ((pAd->CommonCfg.Channel < 14)
+#ifdef MAC_REPEATER_SUPPORT
+			&& (CliIdx == 0xFF)
+#endif /* MAC_REPEATER_SUPPORT */
+			)
+		{
+			ADD_HTINFO RootApHtInfo = pApCliEntry->MlmeAux.AddHtInfo.AddHtInfo;
+
+			if (pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40 &&
+			    RootApHtInfo.ExtChanOffset != pAd->CommonCfg.AddHTInfo.AddHtInfo.ExtChanOffset &&
+			    RootApHtInfo.RecomWidth)
+			{
+				if (RootApHtInfo.ExtChanOffset == EXTCHA_ABOVE) {
+					pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = EXTCHA_ABOVE;
+					pApCliEntry->MlmeAux.CentralChannel = pApCliEntry->MlmeAux.Channel + 2;
+				} else {
+					pAd->CommonCfg.RegTransmitSetting.field.EXTCHA = EXTCHA_BELOW;
+					pApCliEntry->MlmeAux.CentralChannel = pApCliEntry->MlmeAux.Channel - 2;
+				}
+
+				pAd->CommonCfg.Channel = pApCliEntry->MlmeAux.Channel;
+				pAd->CommonCfg.CentralChannel = pApCliEntry->MlmeAux.CentralChannel;
+#ifdef DOT11N_DRAFT3
+				pAd->CommonCfg.Bss2040NeedFallBack = 0;
+				pAd->CommonCfg.LastBSSCoexist2040.field.BSS20WidthReq = 0;
+#endif /* DOT11N_DRAFT3 */
+				SetCommonHT(pAd);
+				
+				pAd->hw_cfg.cent_ch = pAd->CommonCfg.CentralChannel;
+				AsicSwitchChannel(pAd, pAd->hw_cfg.cent_ch, FALSE);
+				AsicLockChannel(pAd, pAd->hw_cfg.cent_ch);
+
+				DBGPRINT(RT_DEBUG_OFF, ("%s(): ch(%d), cent_ch(%d), extcha(%d), bbp bw(%d)\n",
+							__FUNCTION__,
+							pAd->CommonCfg.Channel,
+							pAd->CommonCfg.CentralChannel,
+							pAd->CommonCfg.RegTransmitSetting.field.EXTCHA,
+							pAd->CommonCfg.BBPCurrentBW));
+#ifdef DOT11N_DRAFT3
+				pAd->CommonCfg.Bss2040CoexistFlag |= BSS_2040_COEXIST_INFO_SYNC;
+#endif /* DOT11N_DRAFT3 */
+			}
+		}
+#endif /* DOT11_N_SUPPORT */
 
 		*pCurrState = APCLI_CTRL_AUTH;
 
@@ -911,7 +959,7 @@ static VOID ApCliCtrlProbeRspAction(
 			&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 			)
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 	}
 
@@ -1047,7 +1095,7 @@ static VOID ApCliCtrlAuthRspAction(
 				&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 				)
-				ApCliSwitchCandidateAP(pAd);
+				ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 		}
 	}
@@ -1130,7 +1178,7 @@ static VOID ApCliCtrlAuth2RspAction(
 			&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 			)
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 	}
 
@@ -1206,7 +1254,7 @@ static VOID ApCliCtrlAuthReqTimeoutAction(
 			&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 			)
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 			return;
 	}
@@ -1322,7 +1370,7 @@ static VOID ApCliCtrlAssocRspAction(
 				&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 				)
-				ApCliSwitchCandidateAP(pAd);
+				ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 
 
@@ -1350,7 +1398,7 @@ static VOID ApCliCtrlAssocRspAction(
 			&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 			&& (pApCliEntry->bBlockAssoc == FALSE) )
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 
 
@@ -1494,7 +1542,7 @@ static VOID ApCliCtrlAssocReqTimeoutAction(
 				&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */
 				)
-				ApCliSwitchCandidateAP(pAd);
+				ApCliSwitchCandidateAP(pAd, ifIndex);
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */
 			return;
 		}
@@ -1684,7 +1732,7 @@ static VOID ApCliCtrlPeerDeAssocReqAction(
 	{
 		STA_TR_ENTRY *tr_entry = &pAd->MacTab.tr_entry[pApCliEntry->MacTabWCID];
 		if (tr_entry->PortSecured == WPA_802_1X_PORT_NOT_SECURED)
-			ApCliSwitchCandidateAP(pAd);
+			ApCliSwitchCandidateAP(pAd, ifIndex);
 	}
 #endif /* APCLI_AUTO_CONNECT_SUPPORT */	
 

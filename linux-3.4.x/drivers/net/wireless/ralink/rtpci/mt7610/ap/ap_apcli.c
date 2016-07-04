@@ -254,7 +254,6 @@ BOOLEAN ApCliCheckHt(
 	}
 
 	if (pAd->CommonCfg.Channel <= 14) {
-		pApCliEntry->ApCliMlmeAux.HtCapability.HtCapInfo.ChannelWidth = pHtCapability->HtCapInfo.ChannelWidth;
 		pApCliEntry->ApCliMlmeAux.AddHtInfo.AddHtInfo.RecomWidth = pAddHtInfo->AddHtInfo.RecomWidth;
 		pApCliEntry->ApCliMlmeAux.AddHtInfo.AddHtInfo.ExtChanOffset = pAddHtInfo->AddHtInfo.ExtChanOffset;
 		pApCliEntry->ApCliMlmeAux.AddHtInfo.ControlChan = pAddHtInfo->ControlChan;

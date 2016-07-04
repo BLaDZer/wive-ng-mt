@@ -2149,43 +2149,44 @@
 61) kernel: ralink_wifi: prevent drop 5GHz clients to CCK mode.<br>
 62) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
 63) kernel: ralink_wifi: fix fastroaming coexistence with band steering and handover logic.<br>
-64) kernel: ralink_wifi: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
-65) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-66) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-67) kernel: backport RTC_SYSTOHC from upstream.<br>
-68) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-69) kernel: kernel/relay.c: fix potential memory leak.<br>
-70) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-71) kernel: nfs: fix nfs_size_to_loff_t.<br>
-72) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-73) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-74) kernel: sched: always inline context_switch().<br>
-75) kernel: sections: fix section conflicts in mm/percpu.c.<br>
-76) kernel: sg: fix dxferp in from_to case.<br>
-77) kernel: mm/mlock: prepare params outside critical region.<br>
-78) kernel: mm: reorder can_do_mlock to fix audit denial.<br>
-79) kernel: mm/msync.c: sync only the requested range in msync().<br>
-80) kernel: mm/msync: fix incorrect fstart calculation.<br>
-81) kernel: mm/mempool: add @gfp_mask to mempool_create_node().<br>
-82) kernel: mm/mempool: convert kmalloc_node(...GFP_ZERO...) to kzalloc_node(...).<br>
-83) kernel: mips: make flush_thread and exit_thread always inline.<br>
-84) kernel: mips: lib: mark intrinsics notrace.<br>
-85) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
-86) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
-87) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-88) kernel: usb: serial: option: add more ZTE device ids.<br>
-89) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-90) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-91) kernel: usb: core: fix crash on unlink urb.<br>
-92) kernel: usb: retry reset if a device times out.<br>
-93) kernel: net: do not block BH while processing socket backlog.<br>
-94) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-95) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-96) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-97) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-98) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
-99) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
-100) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
+64) kernel: ralink_wifi: ap-cli HT-40 connection fixes.<br>
+65) kernel: ralink_wifi: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
+66) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+67) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+68) kernel: backport RTC_SYSTOHC from upstream.<br>
+69) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+70) kernel: kernel/relay.c: fix potential memory leak.<br>
+71) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+72) kernel: nfs: fix nfs_size_to_loff_t.<br>
+73) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+74) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+75) kernel: sched: always inline context_switch().<br>
+76) kernel: sections: fix section conflicts in mm/percpu.c.<br>
+77) kernel: sg: fix dxferp in from_to case.<br>
+78) kernel: mm/mlock: prepare params outside critical region.<br>
+79) kernel: mm: reorder can_do_mlock to fix audit denial.<br>
+80) kernel: mm/msync.c: sync only the requested range in msync().<br>
+81) kernel: mm/msync: fix incorrect fstart calculation.<br>
+82) kernel: mm/mempool: add @gfp_mask to mempool_create_node().<br>
+83) kernel: mm/mempool: convert kmalloc_node(...GFP_ZERO...) to kzalloc_node(...).<br>
+84) kernel: mips: make flush_thread and exit_thread always inline.<br>
+85) kernel: mips: lib: mark intrinsics notrace.<br>
+86) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
+87) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
+88) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+89) kernel: usb: serial: option: add more ZTE device ids.<br>
+90) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+91) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+92) kernel: usb: core: fix crash on unlink urb.<br>
+93) kernel: usb: retry reset if a device times out.<br>
+94) kernel: net: do not block BH while processing socket backlog.<br>
+95) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+96) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+97) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+98) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+99) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+100) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+101) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
 <br>
 <br>
 <br>
