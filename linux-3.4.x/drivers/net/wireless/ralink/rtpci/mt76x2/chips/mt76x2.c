@@ -5389,9 +5389,9 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
 		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
 
-#if 0
 		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
 			mt76x2_long_range_dync_vga(pAd);
+#if 0
 		else     // this no good idea - after restore with low rssi clients ap lost beacons
 			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
 #endif
@@ -5410,7 +5410,21 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		else
 			RTMP_BBP_IO_WRITE32(pAd, RXO_R14, 0x00560423);
 
+
 		/* VGA settings : MT7612e_RSSI_dynamic_VGA_CSD20141203 */
+
+		/* allways rewrite noise floor threshold */
+		if (pAd->CommonCfg.BBPCurrentBW == BW_80) {
+			//RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x10101014); /* BBP 0x238C */
+			RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111111); /* BBP 0x238C */
+		} else {
+			if (pAd->CommonCfg.Channel > 14)
+			    RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
+			else
+			    RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
+		}
+		RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
+
 		switch (mode & 0xFF)
 		{
 			case 0xA0: /* BW80::eLNA lower VGA/PD */
@@ -5429,7 +5443,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x90: /* BW40::eLNA lower VGA/PD */
 				pAd->chipCap.dynamic_chE_mode = 0x90;
-				value = shift_left16(0x0F36) | shift_left8(eLNA_lower_init_vga) | 0xF8;
+				value = shift_left16(0x1836) | shift_left8(eLNA_lower_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
 				break;
@@ -5458,8 +5472,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x20: /* BW80::eLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x20;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111520); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
@@ -5467,8 +5479,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x21: /* BW80::iLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x21;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111520); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
@@ -5476,8 +5486,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x10: /* BW40::eLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x10;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */	
@@ -5485,8 +5493,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x11: /* BW40::iLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x11;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1E42) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
@@ -5494,8 +5500,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x00: /* BW20::eLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x00;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x0F36) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
@@ -5503,15 +5507,12 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		
 			case 0x01: /* BW20::iLNA default */
 				pAd->chipCap.dynamic_chE_mode = 0x01;
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
-				RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 				value = shift_left16(0x1836) | shift_left8(default_init_vga) | 0xF8;
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, value); /* BBP 0x2320 */
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
 				break;
 			default:
-				DBGPRINT(RT_DEBUG_ERROR, ("%s:: no such dynamic ChE mode(0x%x)\n", 
-					__FUNCTION__, mode));
+				DBGPRINT(RT_DEBUG_ERROR, ("%s:: no such dynamic ChE mode(0x%x)\n", __FUNCTION__, mode));
 				break;
 		}
 
