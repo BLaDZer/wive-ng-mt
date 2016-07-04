@@ -2907,7 +2907,6 @@ BOOLEAN ApCli_StatsGet(
 BOOLEAN ApCliAutoConnectExec(
 	IN  PRTMP_ADAPTER   pAd)
 {
-	POS_COOKIE  	pObj = (POS_COOKIE) pAd->OS_Cookie;
 	UCHAR			ifIdx, CfgSsidLen, entryIdx;
 	STRING			*pCfgSsid;
 	BSS_TABLE		*pScanTab, *pSsidBssTab;
@@ -2916,8 +2915,18 @@ BOOLEAN ApCliAutoConnectExec(
 
 	DBGPRINT(RT_DEBUG_TRACE, ("---> ApCliAutoConnectExec()\n"));
 
-	pObj->ioctl_if_type = INT_APCLI;
-	ifIdx = pObj->ioctl_if;
+	for(ifIdx=0; ifIdx<MAX_APCLI_NUM; ifIdx++)
+	{
+		if (pAd->ApCfg.ApCliTab[ifIdx].AutoConnectFlag == TRUE)
+			break;
+	}
+
+	if(ifIdx >= MAX_APCLI_NUM)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("Error  ifIdx=%d\n", ifIdx));
+		return FALSE;
+	}
+
 	CfgSsidLen = pAd->ApCfg.ApCliTab[ifIdx].CfgSsidLen;
 	pCfgSsid = pAd->ApCfg.ApCliTab[ifIdx].CfgSsid;
 	pScanTab = &pAd->ScanTab;
