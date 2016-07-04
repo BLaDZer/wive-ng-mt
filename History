@@ -2115,41 +2115,41 @@
 27) kernel: ralink_arch: allow highmem region for 512M devices.<br>
 28) kernel: ralink_arch: fix memory size autodetect with highmmem.<br>
 29) kernel: ralink_arch: fix parse uboot cmdline.<br>
-30) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-31) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-32) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-33) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-34) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-35) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
-36) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
-37) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-38) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
-39) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
-40) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
-41) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
-42) kernel: ralink_wifi: mt76x2: fix sanity check in RtmpEnqueueNullFrame.<br>
-43) kernel: ralink_wifi: mt76x2: fix ed cca disable in bbp if build without ed_monitor support.<br>
-44) kernel: ralink_wifi: mt76x2: fix drop to BW_20 regression.<br>
-45) kernel: ralink_wifi: mt76x2: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
-46) kernel: ralink_wifi: mt76x2: fix lost beacons at high noise level.<br>
-47) kernel: ralink_wifi: mt76x2: fix drop Main-AP to BW 20MHz after AP-Client connected to 20MHz Root-AP.<br>
-48) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
-49) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
-50) kernel: ralink_wifi: mt7603: fix proc path name.<br>
-51) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
-52) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
-53) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
-54) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
-55) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
-56) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
-57) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
-58) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
-59) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
-60) kernel: ralink_wifi: fix mlme request success handle.<br>
-61) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
-62) kernel: ralink_wifi: prevent drop 5GHz clients to CCK mode.<br>
-63) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
-64) kernel: ralink_wifi: fix fastroaming coexistence with band steering and handover logic.<br>
+30) kernel: ralink_wifi: mt76x2: fix apcli phymode regression after 3.0.5.0 up.<br>
+31) kernel: ralink_wifi: mt76x2: vgaclamp do not hardcode init value, read real value.<br>
+32) kernel: ralink_wifi: mt76x2: fix build driver options in 7620 2.7 driver + 7612 3.0.5 driver config.<br>
+33) kernel: ralink_wifi: mt76x2: fix sanity check in RtmpEnqueueNullFrame.<br>
+34) kernel: ralink_wifi: mt76x2: fix ed cca disable in bbp if build without ed_monitor support.<br>
+35) kernel: ralink_wifi: mt76x2: fix drop to BW_20 regression.<br>
+36) kernel: ralink_wifi: mt76x2: fix lost beacons at high noise level.<br>
+37) kernel: ralink_wifi: mt76x2: fix drop Main-AP to BW 20MHz after AP-Client connected to 20MHz Root-AP.<br>
+38) kernel: ralink_wifi: mt76x2: update to 3.0.5.0_DPA_20160229 version.<br>
+39) kernel: ralink_wifi: mt7603: set ring sizes for lab tested results.<br>
+40) kernel: ralink_wifi: mt7603: fix proc path name.<br>
+41) kernel: ralink_wifi: mt7603: fix set enq_done in drop path of rtmp_enq_req.<br>
+42) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
+43) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
+44) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
+45) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+46) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
+47) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
+48) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
+49) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
+50) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+51) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+52) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+53) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+54) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+55) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
+56) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+57) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+58) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
+59) kernel: ralink_wifi: fix mlme request success handle.<br>
+60) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
+61) kernel: ralink_wifi: prevent drop 5GHz clients to CCK mode.<br>
+62) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
+63) kernel: ralink_wifi: fix fastroaming coexistence with band steering and handover logic.<br>
+64) kernel: ralink_wifi: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
 65) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
 66) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
 67) kernel: backport RTC_SYSTOHC from upstream.<br>
