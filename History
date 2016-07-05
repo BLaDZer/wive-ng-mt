@@ -2130,63 +2130,64 @@
 42) kernel: ralink_wifi: mt7603: avoid not needed flush txring at try insert managment reqests.<br>
 43) kernel: ralink_wifi: mt7603: fix rtmp_ee_prom_read16.<br>
 44) kernel: ralink_wifi: mt7603: improve apcli autoconnect.<br>
-45) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
-46) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
-47) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
-48) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
-49) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
-50) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
-51) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
-52) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
-53) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
-54) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
-55) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
-56) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
-57) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
-58) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
-59) kernel: ralink_wifi: fix mlme request success handle.<br>
-60) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
-61) kernel: ralink_wifi: prevent drop 5GHz clients to CCK mode.<br>
-62) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
-63) kernel: ralink_wifi: fix fastroaming coexistence with band steering and handover logic.<br>
-64) kernel: ralink_wifi: ap-cli HT-40 connection fixes.<br>
-65) kernel: ralink_wifi: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
-66) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
-67) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
-68) kernel: backport RTC_SYSTOHC from upstream.<br>
-69) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
-70) kernel: kernel/relay.c: fix potential memory leak.<br>
-71) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
-72) kernel: nfs: fix nfs_size_to_loff_t.<br>
-73) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
-74) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
-75) kernel: sched: always inline context_switch().<br>
-76) kernel: sections: fix section conflicts in mm/percpu.c.<br>
-77) kernel: sg: fix dxferp in from_to case.<br>
-78) kernel: mm/mlock: prepare params outside critical region.<br>
-79) kernel: mm: reorder can_do_mlock to fix audit denial.<br>
-80) kernel: mm/msync.c: sync only the requested range in msync().<br>
-81) kernel: mm/msync: fix incorrect fstart calculation.<br>
-82) kernel: mm/mempool: add @gfp_mask to mempool_create_node().<br>
-83) kernel: mm/mempool: convert kmalloc_node(...GFP_ZERO...) to kzalloc_node(...).<br>
-84) kernel: mips: make flush_thread and exit_thread always inline.<br>
-85) kernel: mips: lib: mark intrinsics notrace.<br>
-86) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
-87) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
-88) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
-89) kernel: usb: serial: option: add more ZTE device ids.<br>
-90) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
-91) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
-92) kernel: usb: core: fix crash on unlink urb.<br>
-93) kernel: usb: retry reset if a device times out.<br>
-94) kernel: net: do not block BH while processing socket backlog.<br>
-95) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-96) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-97) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-98) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-99) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
-100) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
-101) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
+45) kernel: ralink_wifi: mt7603: use full rescan on AP-Client auto-connect.<br>
+46) kernel: ralink_wifi: mt7603/mt76x2: allow get rrminfo and ftinfo without debug.<br>
+47) kernel: ralink_wifi: mt7603/mt76x2: allow RRM Quiet IE support.<br>
+48) kernel: ralink_wifi: mt7610: backport support 802.11K/R from 3.0.5.0 76x2 driver.<br>
+49) kernel: ralink_wifi: mt7610: fix disable secondary EDCCA.<br>
+50) kernel: ralink_wifi: mt7610: add lost drop burst flag in RtmpPCIMgmtKickOut.<br>
+51) kernel: ralink_wifi: fix rekey interval allways exeed at preauth clients.<br>
+52) kernel: ralink_wifi: set max mcast pkt`s in psq=16 (as mt7620 2.7.2.0 production drivers).<br>
+53) kernel: ralink_wifi: convert all IrqFlags to ulong.<br>
+54) kernel: ralink_wifi: fix throughput issue for some vendor AP with AES mode.<br>
+55) kernel: ralink_wifi: fix default set MsduLifeTime at startup.<br>
+56) kernel: ralink_wifi: fix set channel width in HT_CAP.<br>
+57) kernel: ralink_wifi: fix potentional null pointer dereference in some case.<br>
+58) kernel: ralink_wifi: do not disable HT protect if only one station connected to AP.<br>
+59) kernel: ralink_wifi: in RT_802_11_MAC_ENTRY add Rx/TxBytes for read in UI.<br>
+60) kernel: ralink_wifi: fix mlme request success handle.<br>
+61) kernel: ralink_wifi: fix apcli lost beacon timeout.<br>
+62) kernel: ralink_wifi: prevent drop 5GHz clients to CCK mode.<br>
+63) kernel: ralink_wifi: more readable log for apcli connect procedure.<br>
+64) kernel: ralink_wifi: fix fastroaming coexistence with band steering and handover logic.<br>
+65) kernel: ralink_wifi: ap-cli HT-40 connection fixes.<br>
+66) kernel: ralink_wifi: backport AP-Client auto-connect ability from 4.1.X.X tree.<br>
+67) kernel: ralink_wifi: backport some fixes from 3.0.4.0.P2, 3.0.5.0 and 4.1.0.0 drivers to stable tree versions.<br>
+68) kernel: fix build with gcc5 (soft/hardfloat issue workaround).<br>
+69) kernel: backport RTC_SYSTOHC from upstream.<br>
+70) kernel: locking, compiler.h: Cast away attributes in the WRITE_ONCE() magic.<br>
+71) kernel: kernel/relay.c: fix potential memory leak.<br>
+72) kernel: splice: handle zero nr_pages in splice_to_pipe().<br>
+73) kernel: nfs: fix nfs_size_to_loff_t.<br>
+74) kernel: rcu: make rcu_is_cpu_rrupt_from_idle helper functions static.<br>
+75) kernel: wait: allow sys_waitid() to accept __WNOTHREAD/__WCLONE/__WALL.<br>
+76) kernel: sched: always inline context_switch().<br>
+77) kernel: sections: fix section conflicts in mm/percpu.c.<br>
+78) kernel: sg: fix dxferp in from_to case.<br>
+79) kernel: mm/mlock: prepare params outside critical region.<br>
+80) kernel: mm: reorder can_do_mlock to fix audit denial.<br>
+81) kernel: mm/msync.c: sync only the requested range in msync().<br>
+82) kernel: mm/msync: fix incorrect fstart calculation.<br>
+83) kernel: mm/mempool: add @gfp_mask to mempool_create_node().<br>
+84) kernel: mm/mempool: convert kmalloc_node(...GFP_ZERO...) to kzalloc_node(...).<br>
+85) kernel: mips: make flush_thread and exit_thread always inline.<br>
+86) kernel: mips: lib: mark intrinsics notrace.<br>
+87) kernel: mips: fix accessing to per-cpu data when flushing the cache.<br>
+88) kernel: mips: fix forgotten preempt_enable() when CPU has inclusive pcaches.<br>
+89) kernel: usb: xhci: fix wild pointers in xhci_mem_cleanup.<br>
+90) kernel: usb: serial: option: add more ZTE device ids.<br>
+91) kernel: usb: serial: option: add support for Cinterion PH8 and AHxx.<br>
+92) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
+93) kernel: usb: core: fix crash on unlink urb.<br>
+94) kernel: usb: retry reset if a device times out.<br>
+95) kernel: net: do not block BH while processing socket backlog.<br>
+96) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+97) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+98) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+99) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+100) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+101) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+102) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
 <br>
 <br>
 <br>
