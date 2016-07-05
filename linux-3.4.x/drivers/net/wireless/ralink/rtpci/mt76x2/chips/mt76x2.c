@@ -5421,7 +5421,8 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			if (pAd->CommonCfg.Channel > 14)
 			    RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111116); /* BBP 0x238C */
 			else
-			    RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
+			    //RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111516); /* BBP 0x238C */
+			    RTMP_BBP_IO_WRITE32(pAd, AGC1_R35, 0x11111316); /* BBP 0x238C */
 		}
 		RTMP_BBP_IO_WRITE32(pAd, AGC1_R37, 0x2121262C); /* BBP 0x2394 */
 
