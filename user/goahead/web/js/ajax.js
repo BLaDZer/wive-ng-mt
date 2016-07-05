@@ -257,7 +257,7 @@ function ajaxPostForm(question, form, reloader, message, handler)
 		if (obj != null)
 			obj.cols = "0,1*"; // Hide menu
 	}
-	
+	window.scrollTo(0, 0);
 	var submitForm = function()
 	{
 		if (handler != null)
