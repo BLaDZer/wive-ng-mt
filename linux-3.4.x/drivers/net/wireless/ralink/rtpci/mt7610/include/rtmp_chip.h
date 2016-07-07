@@ -769,6 +769,7 @@ struct _RTMP_CHIP_CAP_ {
 	UCHAR *RFRegisterVer;
 	
 #ifdef MT76x0
+	UINT32	RXIQBackup;
 	BOOLEAN bDoTemperatureSensor;
 	SHORT TemperatureOffset;			/* reference temperature(e2p[D1h]) */  
 	SHORT LastTemperatureforVCO;

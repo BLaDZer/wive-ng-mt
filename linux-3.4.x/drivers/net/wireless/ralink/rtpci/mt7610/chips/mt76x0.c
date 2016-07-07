@@ -2281,6 +2281,8 @@ static VOID MT76x0_ChipSwitchChannel(
 
 	percentage_delta_pwr(pAd);
 
+	/* 7610 RXIQ Workaround */
+	MT76x0Check_RXIQ_Result(pAd);
 	return;
 }
 
@@ -4291,6 +4293,8 @@ static VOID FullCalibration(
 			RTMP_CHIP_CALIBRATION(pAd, DPD_CALIBRATION, 0x0);
 	}
 }
+
+	MT76x0Check_RXIQ_Result(pAd);
 }
 
 
@@ -6663,4 +6667,28 @@ INT Set_AntennaSelect_Proc(
 }
 /******************************* Command API end ***************************/
 
+VOID MT76x0Check_RXIQ_Result(
+    IN PRTMP_ADAPTER pAd)
+{
+	/* 7610E RXIQ workaround , if 0x2C70[15:0] calibration result is 0, use 0x2C74[15:0] */
+	UINT32 reg_val=0;	
+	RTMP_IO_READ32(pAd, 0x2C70, &reg_val);
+
+	DBGPRINT(RT_DEBUG_OFF,("==== 2C70 [%x] ,RXBackup [%x]\n",reg_val,pAd->chipCap.RXIQBackup));  
+	if((reg_val & 0xffff) == 0)
+	{
+		DBGPRINT(RT_DEBUG_OFF,(" RX Cal =0 , use RXBackup [%x] to restore!!\n",pAd->chipCap.RXIQBackup));  
+		reg_val = pAd->chipCap.RXIQBackup;
+		RTMP_IO_WRITE32(pAd, 0x2C70, reg_val);
+		RTMP_IO_READ32(pAd, 0x2C70, &reg_val);
+		DBGPRINT(RT_DEBUG_OFF,(" result [%x]!!\n",reg_val)); 
+	}
+	else
+	{
+		pAd->chipCap.RXIQBackup = reg_val;
+		DBGPRINT(RT_DEBUG_OFF,("2C70 [%x] not 0 , backup [%x] \n"
+		,reg_val,pAd->chipCap.RXIQBackup));
+				
+	}
+}
 

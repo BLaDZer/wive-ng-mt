@@ -306,6 +306,10 @@ VOID MT76x0_TemperatureCompensation(
 VOID MT76x0_Read_TSSI_From_EEPROM( 
 	IN struct _RTMP_ADAPTER *pAd);
 
+
+VOID MT76x0Check_RXIQ_Result(
+    IN struct _RTMP_ADAPTER *pAd);
+
 #define MT7610_TS_STATE_NORMAL 0x00
 #define MT7610_TS_STATE_HIGH   0x01
 #define MT7610_TS_STATE_LOW    0x02

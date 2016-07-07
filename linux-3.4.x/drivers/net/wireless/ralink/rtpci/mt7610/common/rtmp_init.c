@@ -3228,6 +3228,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->chipCap.LastTemperatureforVCO = 0x7FFF;
 	pAd->chipCap.LastTemperatureforCal = 0x7FFF;
 	pAd->chipCap.NowTemperature = 0x7FFF;
+
+	pAd->chipCap.RXIQBackup = 0;
 #endif /* MT76x0 */
 
 	pAd->chipCap.LastTempSensorState = 0;
