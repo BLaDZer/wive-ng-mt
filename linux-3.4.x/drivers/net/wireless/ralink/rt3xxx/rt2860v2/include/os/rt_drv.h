@@ -71,7 +71,7 @@ typedef VOID	pregs;
 #define AP_PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME	"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define AP_NIC_DEVICE_NAME		"RT2860AP"
-#define AP_DRIVER_VERSION		"2.7.2.0.P4"
+#define AP_DRIVER_VERSION		"2.7.2.0.P5"
 #ifdef MULTIPLE_CARD_SUPPORT
 #define CARD_INFO_PATH			"/etc/Wireless/RT2860/RT2860APCard.dat"
 #endif /* MULTIPLE_CARD_SUPPORT */
@@ -90,7 +90,7 @@ typedef VOID	pregs;
 #ifdef CONFIG_STA_SUPPORT
 #ifdef RTMP_MAC_PCI
 #define STA_PROFILE_PATH		"/etc/Wireless/RT2860/RT2860.dat"
-#define STA_DRIVER_VERSION		"2.6.2.0.P4"
+#define STA_DRIVER_VERSION		"2.6.2.0.P5"
 #ifdef MULTIPLE_CARD_SUPPORT
 #define CARD_INFO_PATH			"/etc/Wireless/RT2860/RT2860STACard.dat"
 #endif /* MULTIPLE_CARD_SUPPORT */
