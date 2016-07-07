@@ -1153,7 +1153,7 @@ static VOID InitFce(
 /*
 	Select 2.4/5GHz band
 */
-static VOID SelectBandMT76x0(
+VOID SelectBandMT76x0(
 	IN PRTMP_ADAPTER pAd, 
 	IN UCHAR Channel)
 {
