@@ -2192,7 +2192,8 @@
 <br>
 <br>
 <b>4.5.x</b><br>
-1) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+1) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+2) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
 <br>
 <br>
 <br>
