@@ -2192,13 +2192,15 @@
 <br>
 <br>
 <b>4.5.x</b><br>
-1) radvd: up to 2.14 version.<br>
-2) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-3) kernel: mips: fix siginfo.h to use strict posix types.<br>
-4) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-5) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-6) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-7) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+1) busybox: update to 1.25.0 version.<br>
+2) radvd: up to 2.14 version.<br>
+3) goahead: merge wireless basic and advanced page.<br>
+4) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+5) kernel: mips: fix siginfo.h to use strict posix types.<br>
+6) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+7) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+8) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+9) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
 <br>
 <br>
 <br>

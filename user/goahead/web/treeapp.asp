@@ -134,14 +134,13 @@ if (opmode == '2')
 else
 {
 	a.add(400,   0, _("treeapp wireless settings"),		"javascript:a.oo(400);");
-	a.add(401, 400, _("treeapp basic"),			"javascript:go('wireless/basic.asp');");
-	a.add(402, 400, _("treeapp advanced"),			"javascript:go('wireless/advanced.asp');");
-	a.add(403, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
+	a.add(401, 400, _("treeapp main"),			"javascript:go('wireless/main.asp');");
+	a.add(402, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
 	if (wdsb == "1")
-		a.add(404, 400, _("treeapp wds"),                   "javascript:go('wireless/wds.asp');");
+		a.add(403, 400, _("treeapp wds"),                   "javascript:go('wireless/wds.asp');");
 	if (opmode == '3')
-		a.add(406, 400, _("treeapp ap client"),     "javascript:go('wireless/apcli.asp');");
-	a.add(407, 400, _("treeapp station list"),          "javascript:go('wireless/stainfo.asp');");
+		a.add(404, 400, _("treeapp ap client"),     "javascript:go('wireless/apcli.asp');");
+	a.add(405, 400, _("treeapp station list"),          "javascript:go('wireless/stainfo.asp');");
 }
 
 // Firewall

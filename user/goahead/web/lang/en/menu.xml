@@ -21,8 +21,7 @@
     <message msgid="treeapp link status" msgstr="Link Status" />
     <message msgid="treeapp statistics" msgstr="Statistics" />
     <message msgid="treeapp advance" msgstr="Advance" />
-    <message msgid="treeapp basic" msgstr="Basic" />
-    <message msgid="treeapp advanced" msgstr="Advanced" />
+    <message msgid="treeapp main" msgstr="Main" />
     <message msgid="treeapp security" msgstr="Security" />
     <message msgid="treeapp wds" msgstr="WDS" />
     <message msgid="treeapp ap client" msgstr="Client/Repeater" />

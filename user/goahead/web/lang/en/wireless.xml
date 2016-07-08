@@ -28,7 +28,7 @@
 
   <message msgid="basic tx power" msgstr="TX Power (2.4GHz)" />
   <message msgid="basic tx power ac" msgstr="TX Power (5GHz)" />
-  <message msgid="basic title" msgstr="Basic Wireless Settings" />
+  <message msgid="basic title" msgstr="Main Wireless Settings" />
   <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point." />
   <message msgid="basic wireless" msgstr="Wireless (2.4GHz)" />
   <message msgid="basic wireless ac" msgstr="Wireless (5GHz)" />
@@ -110,6 +110,7 @@
   <message msgid="basic anc" msgstr="11a/an/ac mixed" />
   <message msgid="basic anac" msgstr="11an/ac mixed" />
   <message msgid="basic roaming" msgstr="Basic Roaming settings" />
+  <message msgid="basic roaming hangover" msgstr="Handoff settings" />
   <message msgid="basic roaming probe times" msgstr="Limit probe request per client" />
   <message msgid="basic roaming delta rssi" msgstr="Delta threshold rssi level for 5GHz band" />
   <message msgid="basic roaming auth fail" msgstr="Reject auth req due to weak signal" />
@@ -120,8 +121,19 @@
   <message msgid="basic roaming rssi low psm" msgstr="Auto disonnect sta if rssi low (powersave clients)" />
   <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
+  <message msgid="basic roaming probe times range" msgstr="  0 - 10 times, default 3" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 5" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
   <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
+  
   <message msgid="basic dot11h" msgstr="IEEE 802.11h support" />
   <message msgid="basic ids" msgstr="Intrusion Detection settings" />
   <message msgid="basic ids auth" msgstr="Authentication flood threshold" />
@@ -136,8 +148,8 @@
   <message msgid="basic etxbfeeen" msgstr="BFee feature" />
   <message msgid="basic etxbfencond" msgstr="Sending of sounding and beamforming" />
   <message msgid="basic ack policy" msgstr="ACK Policy" />
-  <message msgid="basic ack policy normal" msgstr="Normal ack" />
-  <message msgid="basic ack policy no" msgstr="No ack" />
+  <message msgid="basic ack policy normal" msgstr="Normal ACK" />
+  <message msgid="basic ack policy no" msgstr="No ACK" />
 
   <message msgid="basic bandsteering" msgstr="Band Steering settings" />
   <message msgid="basic bandsteering rssidiff" msgstr="Allow fallback to 2.4GHz if bands RSSI diff bigger" />

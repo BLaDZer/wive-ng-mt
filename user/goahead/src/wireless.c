@@ -633,13 +633,31 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
 	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
-	char_t	*submitUrl;
 
 	// Get current mode & new mode
 	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
+
+	char_t *bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
+	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
+	int ssid_num, tmp;
+	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
+	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";	
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	char_t *dyn_vga_long, *dyn_vga_clamp;
+#endif
+#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+	char_t *mcast_mode, *mcast_mcs;
+#endif
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+	char_t *m2u_enable;
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+	char_t *video_turbine;
+#endif
+#endif
+
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
 	mode = atoi(wirelessmode);
@@ -712,6 +730,42 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)|| defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
 	ft = websGetVar(wp, T("FtSupport"), T("1"));
 #endif
+
+	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
+	beacon = websGetVar(wp, T("beacon"), T("100"));
+	dtim = websGetVar(wp, T("dtim"), T("1"));
+	fragment = websGetVar(wp, T("fragment"), T("2346"));
+	rts = websGetVar(wp, T("rts"), T("2347"));
+	short_preamble = websGetVar(wp, T("short_preamble"), T("0"));
+	short_slot = websGetVar(wp, T("short_slot"), T("0"));
+	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
+	pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
+	rd_region = websGetVar(wp, T("rd_region"), T("CE"));
+	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
+	country_region = websGetVar(wp, T("country_region"), T("0"));
+	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
+	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+	dyn_vga_long = websGetVar(wp, T("dyn_vga_long"), T("0"));
+	dyn_vga_clamp = websGetVar(wp, T("dyn_vga_clamp"), T("0"));
+#endif
+#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
+	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
+#endif
+#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
+#endif
+#endif
+	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
+	keepalive = websGetVar(wp, T("keepalive"), T("0"));
+	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
+	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
+	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
+	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
+
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -957,140 +1011,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		setupParameters(wp, ids_flags, 0);
 #endif
 
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-#ifdef PRINT_DEBUG
-	// debug print
-	websHeader(wp);
-	websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
-	websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
-	websWrite(wp, T("hssid: %s<br>\n"), hssid);
-	websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
-	websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
-	websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
-	websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
-	websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
-	if (strncmp(abg_rate, "", 1)) {
-		websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
-	}
-	if (is_ht) {
-		websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
-		websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
-		websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
-		websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
-		websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);
-		websWrite(wp, T("n_rdg: %s<br>\n"), n_rdg);
-		websWrite(wp, T("n_extcha: %s<br>\n"), n_extcha);
-		websWrite(wp, T("n_amsdu: %s<br>\n"), n_amsdu);
-		websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
-		websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
-
-	}
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
-	websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
-	websWrite(wp, T("tx_power_ac: %s<br>\n"), tx_power_ac);
-	if (is_vht)
-	{
-		websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
-		websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
-		websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
-		websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
-		websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
-	}
-#endif
-	websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
-	websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
-	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
-	/* reconfigure system */
-	doSystem("internet.sh");
-}
-
-static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
-	websWrite(wp, T("1"));
-#else
-	websWrite(wp, T("0"));
-#endif
-	return 0;
-}
-
-static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
-	websWrite(wp, T("1"));
-#else
-	websWrite(wp, T("0"));
-#endif
-	return 0;
-}
-
-/* goform/wirelessAdvanced */
-static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
-{
-	char_t	*bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
-	char_t  *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
-	int ssid = 0, ssid_num, tmp, i;
-	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *token;
-	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	char_t *dyn_vga_long, *dyn_vga_clamp;
-#endif
-#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
-	char_t	*mcast_mode, *mcast_mcs;
-#endif
-#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
-	char_t	*m2u_enable;
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
-	char_t *video_turbine;
-#endif
-#endif
-	//fetch from web input
-	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
-	beacon = websGetVar(wp, T("beacon"), T("100"));
-	dtim = websGetVar(wp, T("dtim"), T("1"));
-	fragment = websGetVar(wp, T("fragment"), T("2346"));
-	rts = websGetVar(wp, T("rts"), T("2347"));
-	short_preamble = websGetVar(wp, T("short_preamble"), T("0"));
-	short_slot = websGetVar(wp, T("short_slot"), T("0"));
-	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
-	pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
-	rd_region = websGetVar(wp, T("rd_region"), T("CE"));
-	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
-	country_region = websGetVar(wp, T("country_region"), T("0"));
-	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
-	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	dyn_vga_long = websGetVar(wp, T("dyn_vga_long"), T("0"));
-	dyn_vga_clamp = websGetVar(wp, T("dyn_vga_clamp"), T("0"));
-#endif
-#if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
-	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
-	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
-#endif
-#if defined(CONFIG_RT2860V2_AP_IGMP_SNOOP) || defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
-	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
-#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
-	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
-#endif
-#endif
-#if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
-	char_t *bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
-#endif
-	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
-	keepalive = websGetVar(wp, T("keepalive"), T("0"));
-	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
-	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
-	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
-	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
-
 	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
 	if (NULL != num_s)
 		ssid_num = atoi(num_s);
@@ -1154,9 +1074,9 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	i = 1;
 	for (ssid=0; ssid < ssid_num; ssid++) {
-		token = (i != ssid_num) ? ";" : "";
+		tokenadv = (i != ssid_num) ? ";" : "";
 		sprintf(ackpolicy, "%s%s", ackpolicy, (strchr(ackpolicy_ssid, ssid + '0') != NULL) ? "0" : "1");
-		sprintf(ackpolicy, "%s%s", ackpolicy, token);
+		sprintf(ackpolicy, "%s%s", ackpolicy, tokenadv);
 		i++;
 	}
 
@@ -1176,9 +1096,6 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
-#endif
-#if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
-	nvram_bufset(RT2860_NVRAM, "BandSteering", bandsteering);
 #endif
 	nvram_bufset(RT2860_NVRAM, "CountryCode", countrycode);
 	if (!strncmp(countrycode, "US", 3)) {
@@ -1206,14 +1123,53 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 
 	// Set-up country region
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", country_region);
-
 	nvram_bufset(RT2860_NVRAM, "ED_MODE", ed_mode);
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
+	// debug print
 	websHeader(wp);
+	websWrite(wp, T("<h2>mode: %s</h2><br>\n"), wirelessmode);
+	websWrite(wp, T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
+	websWrite(wp, T("hssid: %s<br>\n"), hssid);
+	websWrite(wp, T("isolated_ssid: %s<br>\n"), isolated_ssid);
+	websWrite(wp, T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
+	websWrite(wp, T("sz11aChannel: %s<br>\n"), sz11aChannel);
+	websWrite(wp, T("sz11gChannel: %s<br>\n"), sz11gChannel);
+	websWrite(wp, T("tx_power: %s<br>\n"), tx_power);
+	if (strncmp(abg_rate, "", 1)) {
+		websWrite(wp, T("abg_rate: %s<br>\n"), abg_rate);
+	}
+	if (is_ht) {
+		websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
+		websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
+		websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
+		websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
+		websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);
+		websWrite(wp, T("n_rdg: %s<br>\n"), n_rdg);
+		websWrite(wp, T("n_extcha: %s<br>\n"), n_extcha);
+		websWrite(wp, T("n_amsdu: %s<br>\n"), n_amsdu);
+		websWrite(wp, T("n_autoba: %s<br>\n"), n_autoba);
+		websWrite(wp, T("n_badecline: %s<br>\n"), n_badecline);
+
+	}
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	websWrite(wp, T("mode ac: %s<br>\n"), wirelessmodeac);
+	websWrite(wp, T("mssidac_1: %s<br>\n"), ssid1ac);
+	websWrite(wp, T("tx_power_ac: %s<br>\n"), tx_power_ac);
+	if (is_vht)
+	{
+		websWrite(wp, T("ac_gi: %s<br>\n"), ac_gi);
+		websWrite(wp, T("ac_stbc: %s<br>\n"), ac_gi);
+		websWrite(wp, T("ac_ldpc: %s<br>\n"), ac_ldpc);
+		websWrite(wp, T("ac_bw: %s<br>\n"), ac_bw);
+		websWrite(wp, T("ac_bwsig: %s<br>\n"), ac_bwsig);
+	}
+#endif
+	websWrite(wp, T("tx_stream: %s<br>\n"), tx_stream);
+	websWrite(wp, T("rx_stream: %s<br>\n"), rx_stream);
 	websWrite(wp, T("bg_protection: %s<br>\n"), bg_protection);
 	websWrite(wp, T("beacon: %s<br>\n"), beacon);
 	websWrite(wp, T("dtim: %s<br>\n"), dtim);
@@ -1233,15 +1189,35 @@ static void wirelessAdvanced(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
 #endif
 	websWrite(wp, T("ED_MODE: %s<br>\n"), ed_mode);
+
 	websFooter(wp);
 	websDone(wp, 200);
 #else
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
-
 	/* reconfigure system */
 	doSystem("internet.sh");
+}
+
+static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
+}
+
+static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+	websWrite(wp, T("1"));
+#else
+	websWrite(wp, T("0"));
+#endif
+	return 0;
 }
 
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
@@ -1884,7 +1860,6 @@ void formDefineWireless(void)
 	websAspDefine(T("getClampBuilt"), getClampBuilt);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
-	websFormDefine(T("wirelessAdvanced"), wirelessAdvanced);
 	websFormDefine(T("wirelessWds"), wirelessWds);
 	websFormDefine(T("wirelessApcli"), wirelessApcli);
 	websFormDefine(T("wirelessGetSecurity"), wirelessGetSecurity);

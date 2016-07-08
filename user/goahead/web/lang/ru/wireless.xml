@@ -109,6 +109,7 @@
   <message msgid="basic anc" msgstr="Смешанный 11a/an/ac" />
   <message msgid="basic anac" msgstr="Смешанный 11an/ac" />
   <message msgid="basic roaming" msgstr="Настройки роуминга" />
+  <message msgid="basic roaming hangover" msgstr="Настройки миграции" />
   <message msgid="basic roaming probe times" msgstr="Максимальное число probe запросов от клиента" />
   <message msgid="basic roaming delta rssi" msgstr="Дельта значений для 5ГГц диапазона" />
   <message msgid="basic roaming auth fail" msgstr="Отклонять авторизацию при уровне ниже" />
@@ -119,6 +120,16 @@
   <message msgid="basic roaming rssi low psm" msgstr="Отключить клиента в режиме энергосбережения при уровне ниже" />
   <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного отключения" />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
+  <message msgid="basic roaming probe times range" msgstr="  0 - 10 запросов, по умолчанию 3" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 секунд, по умолчанию 5" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />
+  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию 0 (Выкл.)" />  
   <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
   <message msgid="basic roaming ft" msgstr="Быстрое подключение 802.11R" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
@@ -183,7 +194,7 @@
   <message msgid="adv maximum stations number" msgstr="Максимальное количество клиентов на каждый SSID" />
   <message msgid="adv station keep alive" msgstr="Интервал опроса клиентов" />
   <message msgid="adv idletimeout" msgstr="Время бездействия до отключения клиента" />
-  <message msgid="adv entrylifecheck" msgstr="Число попыток отправки пакета до отключения клиента" />
+  <message msgid="adv entrylifecheck" msgstr="Попыток отправки пакета до отключения клиента" />
   <message msgid="adv mcast rate" msgstr="Режим передачи Multicast" />
   <message msgid="adv ofdm" msgstr="OFDM" />
   <message msgid="adv htmix" msgstr="HTMIX" />

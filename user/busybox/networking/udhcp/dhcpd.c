@@ -478,14 +478,14 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 		switch (udhcp_sp_read(&rfds)) {
 		case SIGUSR1:
 #ifdef DEBUG
-			bb_info_msg("received %s", "SIGUSR1");
+			bb_error_msg("received %s", "SIGUSR1");
 #endif
 			write_leases();
 			/* why not just reset the timeout, eh */
 			goto continue_with_autotime;
 		case SIGTERM:
 #ifdef DEBUG
-			bb_info_msg("received %s", "SIGTERM");
+			bb_error_msg("received %s", "SIGTERM");
 #endif
 			write_leases();
 			goto ret0;

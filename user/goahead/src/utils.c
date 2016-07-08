@@ -393,17 +393,11 @@ static void setWanPort(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (CHK_IF_DIGIT(reboot_flag, 1)) {
-		/* Output timer for reloading */
-		outputTimerForReload(wp, "" /* submitUrl */, 80000);
+	/* Output timer for reloading */
+	outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
-		/* Reboot */
-		reboot_now();
-	} else {
-		websRedirect(wp, submitUrl);
-	}
+	/* Reboot */
+	reboot_now();
 }
 
 /* goform/reboot */

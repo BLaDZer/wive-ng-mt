@@ -717,7 +717,7 @@ static NOINLINE int send_discover(uint32_t xid, uint32_t requested)
 	 */
 	add_client_options(&packet);
 
-	bb_info_msg("sending %s", "discover");
+	bb_error_msg("sending %s", "discover");
 	return raw_bcast_from_client_config_ifindex(&packet, INADDR_ANY);
 }
 
@@ -761,7 +761,7 @@ static NOINLINE int send_select(uint32_t xid, uint32_t server, uint32_t requeste
 	add_client_options(&packet);
 
 	addr.s_addr = requested;
-	bb_info_msg("sending select for %s", inet_ntoa(addr));
+	bb_error_msg("sending select for %s", inet_ntoa(addr));
 	return raw_bcast_from_client_config_ifindex(&packet, INADDR_ANY);
 }
 
@@ -829,7 +829,7 @@ static NOINLINE int send_decline(/*uint32_t xid,*/ uint32_t server, uint32_t req
 
 	udhcp_add_simple_option(&packet, DHCP_SERVER_ID, server);
 
-	bb_info_msg("sending %s", "decline");
+	bb_error_msg("sending %s", "decline");
 	return raw_bcast_from_client_config_ifindex(&packet, INADDR_ANY);
 }
 #endif

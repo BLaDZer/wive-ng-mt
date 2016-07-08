@@ -64,8 +64,8 @@ table {
 table.body {
 	border: 0px;
 	border-width: 0px;
-	min-width: 700px;
-	width: 700px;
+	min-width: 800px;
+	width: 800px;
 }
 
 td.title {
@@ -146,8 +146,8 @@ td {
 }
 
 table.buttons {
-	min-width: 700px;
-	width: 700px;
+	min-width: 800px;
+	width: 800px;
 }
 
 table.buttons tr, table.buttons td {
@@ -155,8 +155,8 @@ table.buttons tr, table.buttons td {
 }
 
 table.form {
-	min-width: 700px;
-	width: 700px;
+	min-width: 800px;
+	width: 800px;
 
 	border-width: 1px;
 	border-style: solid;
