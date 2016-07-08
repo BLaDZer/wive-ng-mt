@@ -183,7 +183,7 @@ static void log_option(const char *pfx, const uint8_t *opt)
 	if (dhcp_verbose >= 2) {
 		char buf[256 * 2 + 2];
 		*bin2hex(buf, (void*) (opt + OPT_DATA), opt[OPT_LEN]) = '\0';
-		bb_info_msg("%s: 0x%02x %s", pfx, opt[OPT_CODE], buf);
+		bb_error_msg("%s: 0x%02x %s", pfx, opt[OPT_CODE], buf);
 	}
 }
 #else
@@ -257,7 +257,7 @@ uint8_t* FAST_FUNC udhcp_get_option(struct dhcp_packet *packet, int code)
 			continue; /* complain and return NULL */
 
 		if (optionptr[OPT_CODE] == code) {
-			log_option("Option found", optionptr);
+			log_option("option found", optionptr);
 			return optionptr + OPT_DATA;
 		}
 
@@ -269,7 +269,7 @@ uint8_t* FAST_FUNC udhcp_get_option(struct dhcp_packet *packet, int code)
 	}
 
 	/* log3 because udhcpc uses it a lot - very noisy */
-	log3("Option 0x%02x not found", code);
+	log3("option 0x%02x not found", code);
 	return NULL;
 }
 
@@ -303,7 +303,7 @@ void FAST_FUNC udhcp_add_binary_option(struct dhcp_packet *packet, uint8_t *addo
 				addopt[OPT_CODE]);
 		return;
 	}
-	log_option("Adding option", addopt);
+	log_option("adding option", addopt);
 	memcpy(optionptr + end, addopt, len);
 	optionptr[end + len] = DHCP_END;
 }
@@ -402,7 +402,7 @@ static NOINLINE void attach_option(
 		struct option_set *new, **curr;
 
 		/* make a new option */
-		log2("Attaching option %02x to list", optflag->code);
+		log2("attaching option %02x to list", optflag->code);
 		new = xmalloc(sizeof(*new));
 		new->data = xmalloc(length + OPT_DATA);
 		new->data[OPT_CODE] = optflag->code;
@@ -422,7 +422,7 @@ static NOINLINE void attach_option(
 		unsigned old_len;
 
 		/* add it to an existing option */
-		log2("Attaching option %02x to existing member of list", optflag->code);
+		log2("attaching option %02x to existing member of list", optflag->code);
 		old_len = existing->data[OPT_LEN];
 		if (old_len + length < 255) {
 			/* actually 255 is ok too, but adding a space can overlow it */
