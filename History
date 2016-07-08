@@ -2205,6 +2205,7 @@
 11) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
 12) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
 13) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+14) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
 <br>
 <br>
 <br>
