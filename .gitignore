@@ -259,6 +259,8 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/ppp/pppd/plugins/radius/Makefile
 /user/ppp/pppd/plugins/rp-pppoe/Makefile
 /user/ppp/pppstats/Makefile
+/user/radvd/Makefile.in
+/user/radvd/configure
 /user/radvd/confcache
 /user/radvd/config.h
 /user/radvd/configure
