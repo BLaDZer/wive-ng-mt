@@ -2204,6 +2204,7 @@
 10) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
 11) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
 12) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+13) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
 <br>
 <br>
 <br>
