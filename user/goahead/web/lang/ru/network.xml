@@ -75,13 +75,16 @@
     <message msgid="ipv6 connection type" msgstr="Тип подключения IPv6" />
     <message msgid="ipv6 operation mode" msgstr="Режим работы IPv6" />
     <message msgid="ipv6 static" msgstr="Прямое динамическое или статическое подключение" />
-    <message msgid="ipv6 dhcp6c" msgstr="Автоматическая настройка IPv6 через dhcp/ra" />
+    <message msgid="ipv6 dhcp6c" msgstr="Автоматическая настройка IPv6 через DHCP/RA" />
     <message msgid="ipv6 6rd" msgstr="Туннель 6RD" />
     <message msgid="ipv6 6to4" msgstr="Туннель 6TO4" />
     <message msgid="ipv6 allow forward" msgstr="Разрешить доступ в локальную сеть из интернета" />
     <message msgid="ipv6 static ip" msgstr="Настройка статического IP" />
     <message msgid="ipv6 static lan address" msgstr="LAN IPv6 адрес / Префикс подсети" />
     <message msgid="ipv6 static wan address" msgstr="WAN IPv6 адрес / Префикс подсети" />
+    <message msgid="ipv6 static gateway" msgstr="Шлюз по умолчанию" />
+    <message msgid="ipv6 static dns primary" msgstr="Основной DNS" />
+    <message msgid="ipv6 static dns secondary" msgstr="Альтернативный DNS" />
     <message msgid="ipv6 6rd enabled" msgstr="Настройка туннеля 6RD" />
     <message msgid="ipv6 6rd prefix" msgstr="ISP 6rd Prefix / Prefix Length" />
     <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />

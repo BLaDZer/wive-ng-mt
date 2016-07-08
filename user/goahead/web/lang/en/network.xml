@@ -77,13 +77,16 @@
     <message msgid="ipv6 connection type" msgstr="IPv6 Connection Type" />
     <message msgid="ipv6 operation mode" msgstr="IPv6 Operation Mode" />
     <message msgid="ipv6 static" msgstr="Native dynamic/static IP Connection" />
-    <message msgid="ipv6 dhcp6c" msgstr="IPv6 autoconfigure by dhcp/ra" />
+    <message msgid="ipv6 dhcp6c" msgstr="IPv6 autoconfigure by DHCP/RA" />
     <message msgid="ipv6 6rd" msgstr="Tunneling Connection (6RD)" />
     <message msgid="ipv6 6to4" msgstr="Tunneling Connection (6TO4)" />
     <message msgid="ipv6 allow forward" msgstr="Allow access to LAN from internet" />
     <message msgid="ipv6 static ip" msgstr="IPv6 Static IP Setup" />
     <message msgid="ipv6 static lan address" msgstr="LAN IPv6 Address / Subnet Prefix Length" />
     <message msgid="ipv6 static wan address" msgstr="WAN IPv6 Address / Subnet Prefix Length" />
+    <message msgid="ipv6 static gateway" msgstr="Default Gateway" />
+    <message msgid="ipv6 static dns primary" msgstr="Primary DNS Address" />
+    <message msgid="ipv6 static dns secondary" msgstr="Secondary DNS Address" />
     <message msgid="ipv6 6rd enabled" msgstr="Tunneling Connection (6RD) Setup" />
     <message msgid="ipv6 6rd prefix" msgstr="ISP 6rd Prefix / Prefix Length" />
     <message msgid="ipv6 6rd relay address" msgstr="ISP Border Relay IPv4 Address" />
@@ -100,10 +103,10 @@
     <message msgid="ipv6 number" msgstr="It should be a [0-9] number." />
     <message msgid="ipv6 ip format error" msgstr="IP address format error." />
     <message msgid="ipv6 hex" msgstr="It should be a [0-F] number." />
-    <message msgid="ipv6 invalid addr" msgstr="Invalid IPv6 IP address!" />
+    <message msgid="ipv6 invalid addr" msgstr="Invalid IPv6 address!" />
     <message msgid="ipv6 invalid prefix" msgstr="Invalid prefix length!" />
     <message msgid="ipv6 fill all" msgstr="Please fill all fields!" />
-    <message msgid="ipv6 invalid ipv4" msgstr="Invalid IPv4 ip address!" />
+    <message msgid="ipv6 invalid ipv4" msgstr="Invalid IPv4 address!" />
 
     <message msgid="qos title" msgstr="Quality of Service Settings" />
     <message msgid="qos introduction" msgstr="Here you can setup rules to provide desired Quality of Service for specific applications." />
