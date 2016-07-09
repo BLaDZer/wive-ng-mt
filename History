@@ -2193,19 +2193,20 @@
 <br>
 <b>4.5.x</b><br>
 1) busybox: update to 1.25.0 version.<br>
-2) radvd: up to 2.14 version.<br>
-3) goahead: merge wireless basic and advanced page.<br>
-4) goahead: add input values check to ipv6 page.<br>
-5) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-6) kernel: mips: fix siginfo.h to use strict posix types.<br>
-7) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-8) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-9) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-10) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-11) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-12) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-13) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-14) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+2) xupnpd: up to 1.034 version commit dffe9c55 (use old style ui).<br>
+3) radvd: up to 2.14 version.<br>
+4) goahead: merge wireless basic and advanced page.<br>
+5) goahead: add input values check to ipv6 page.<br>
+6) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+7) kernel: mips: fix siginfo.h to use strict posix types.<br>
+8) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+9) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+10) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+11) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+12) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+13) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+14) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+15) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
 <br>
 <br>
 <br>
