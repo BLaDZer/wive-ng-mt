@@ -101,7 +101,7 @@ mythread_sigmask(int how, const sigset_t *restrict set,
 ////////////////////
 
 #include <sys/time.h>
-#	include <pthread.h>
+#include <pthread.h>
 #include <signal.h>
 #include <time.h>
 #include <errno.h>
@@ -125,7 +125,7 @@ typedef struct timespec mythread_condtime;
 
 
 // Calls the given function once in a thread-safe way.
-#	define mythread_once(func) \
+#define mythread_once(func) \
 	do { \
 		static pthread_once_t once_ = PTHREAD_ONCE_INIT; \
 		pthread_once(&once_, &func); \
@@ -364,7 +364,7 @@ typedef struct {
 
 // mythread_once() is only available with Vista threads.
 #ifdef MYTHREAD_VISTA
-#	define mythread_once(func) \
+#define mythread_once(func) \
 	do { \
 		static INIT_ONCE once_ = INIT_ONCE_STATIC_INIT; \
 		BOOL pending_; \

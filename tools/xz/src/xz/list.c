@@ -479,7 +479,7 @@ parse_block_header(file_pair *pair, const lzma_index_iter *iter,
 		if (block.uncompressed_size == LZMA_VLI_UNKNOWN
 				|| block.uncompressed_size
 					== iter->block.uncompressed_size)
-		break;
+			break;
 
 		// If the above fails, the file is corrupt so
 		// LZMA_DATA_ERROR is a good error code.

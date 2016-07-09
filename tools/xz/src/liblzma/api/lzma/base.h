@@ -293,7 +293,7 @@ typedef enum {
 		 *
 		 * All the input data going to the current Block must have
 		 * been given to the encoder (the last bytes can still be
-		 * pending in* next_in). Call lzma_code() with LZMA_FULL_FLUSH
+		 * pending in *next_in). Call lzma_code() with LZMA_FULL_FLUSH
 		 * until it returns LZMA_STREAM_END. Then continue normally
 		 * with LZMA_RUN or finish the Stream with LZMA_FINISH.
 		 *

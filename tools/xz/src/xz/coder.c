@@ -237,7 +237,7 @@ coder_set_compression_settings(void)
 		} else
 #endif
 		{
-		memory_usage = lzma_raw_encoder_memusage(filters);
+			memory_usage = lzma_raw_encoder_memusage(filters);
 		}
 	} else {
 		memory_usage = lzma_raw_decoder_memusage(filters);
@@ -260,13 +260,13 @@ coder_set_compression_settings(void)
 	if (memory_usage <= memory_limit)
 		return;
 
-		// If --no-adjust was used or we didn't find LZMA1 or
-		// LZMA2 as the last filter, give an error immediately.
-		// --format=raw implies --no-adjust.
-		if (!opt_auto_adjust || opt_format == FORMAT_RAW)
-			memlimit_too_small(memory_usage);
+	// If --no-adjust was used or we didn't find LZMA1 or
+	// LZMA2 as the last filter, give an error immediately.
+	// --format=raw implies --no-adjust.
+	if (!opt_auto_adjust || opt_format == FORMAT_RAW)
+		memlimit_too_small(memory_usage);
 
-		assert(opt_mode == MODE_COMPRESS);
+	assert(opt_mode == MODE_COMPRESS);
 
 #ifdef MYTHREAD_ENABLED
 	if (opt_format == FORMAT_XZ && mt_options.threads > 1) {
@@ -302,52 +302,52 @@ coder_set_compression_settings(void)
 
 	// Look for the last filter if it is LZMA2 or LZMA1, so we can make
 	// it use less RAM. With other filters we don't know what to do.
-		size_t i = 0;
-		while (filters[i].id != LZMA_FILTER_LZMA2
-				&& filters[i].id != LZMA_FILTER_LZMA1) {
-			if (filters[i].id == LZMA_VLI_UNKNOWN)
-				memlimit_too_small(memory_usage);
+	size_t i = 0;
+	while (filters[i].id != LZMA_FILTER_LZMA2
+			&& filters[i].id != LZMA_FILTER_LZMA1) {
+		if (filters[i].id == LZMA_VLI_UNKNOWN)
+			memlimit_too_small(memory_usage);
 
-			++i;
-		}
+		++i;
+	}
 
-		// Decrease the dictionary size until we meet the memory
-		// usage limit. First round down to full mebibytes.
-		lzma_options_lzma *opt = filters[i].options;
-		const uint32_t orig_dict_size = opt->dict_size;
-		opt->dict_size &= ~((UINT32_C(1) << 20) - 1);
-		while (true) {
+	// Decrease the dictionary size until we meet the memory
+	// usage limit. First round down to full mebibytes.
+	lzma_options_lzma *opt = filters[i].options;
+	const uint32_t orig_dict_size = opt->dict_size;
+	opt->dict_size &= ~((UINT32_C(1) << 20) - 1);
+	while (true) {
 		// If it is below 1 MiB, auto-adjusting failed. We could be
 		// more sophisticated and scale it down even more, but let's
 		// see if many complain about this version.
-			//
-			// FIXME: Displays the scaled memory usage instead
-			// of the original.
-			if (opt->dict_size < (UINT32_C(1) << 20))
-				memlimit_too_small(memory_usage);
+		//
+		// FIXME: Displays the scaled memory usage instead
+		// of the original.
+		if (opt->dict_size < (UINT32_C(1) << 20))
+			memlimit_too_small(memory_usage);
 
-			memory_usage = lzma_raw_encoder_memusage(filters);
-			if (memory_usage == UINT64_MAX)
-				message_bug();
+		memory_usage = lzma_raw_encoder_memusage(filters);
+		if (memory_usage == UINT64_MAX)
+			message_bug();
 
-			// Accept it if it is low enough.
-			if (memory_usage <= memory_limit)
-				break;
+		// Accept it if it is low enough.
+		if (memory_usage <= memory_limit)
+			break;
 
-			// Otherwise 1 MiB down and try again. I hope this
-			// isn't too slow method for cases where the original
-			// dict_size is very big.
-			opt->dict_size -= UINT32_C(1) << 20;
-		}
+		// Otherwise 1 MiB down and try again. I hope this
+		// isn't too slow method for cases where the original
+		// dict_size is very big.
+		opt->dict_size -= UINT32_C(1) << 20;
+	}
 
-		// Tell the user that we decreased the dictionary size.
-		message(V_WARNING, _("Adjusted LZMA%c dictionary size "
-				"from %s MiB to %s MiB to not exceed "
-				"the memory usage limit of %s MiB"),
-				filters[i].id == LZMA_FILTER_LZMA2
-					? '2' : '1',
-				uint64_to_str(orig_dict_size >> 20, 0),
-				uint64_to_str(opt->dict_size >> 20, 1),
+	// Tell the user that we decreased the dictionary size.
+	message(V_WARNING, _("Adjusted LZMA%c dictionary size "
+			"from %s MiB to %s MiB to not exceed "
+			"the memory usage limit of %s MiB"),
+			filters[i].id == LZMA_FILTER_LZMA2
+				? '2' : '1',
+			uint64_to_str(orig_dict_size >> 20, 0),
+			uint64_to_str(opt->dict_size >> 20, 1),
 			uint64_to_str(round_up_to_mib(memory_limit), 2));
 
 	return;
@@ -862,8 +862,8 @@ coder_run(const char *filename)
 	} else {
 		// Read the first chunk of input data. This is needed
 		// to detect the input file type.
-	strm.next_in = in_buf.u8;
-	strm.avail_in = io_read(pair, &in_buf, IO_BUFFER_SIZE);
+		strm.next_in = in_buf.u8;
+		strm.avail_in = io_read(pair, &in_buf, IO_BUFFER_SIZE);
 	}
 
 	if (strm.avail_in != SIZE_MAX) {

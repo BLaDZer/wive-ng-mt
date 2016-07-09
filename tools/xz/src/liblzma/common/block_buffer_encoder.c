@@ -269,7 +269,7 @@ block_buffer_encode(lzma_block *block, const lzma_allocator *allocator,
 	lzma_ret ret = LZMA_BUF_ERROR;
 	if (try_to_compress)
 		ret = block_encode_normal(block, allocator,
-			in, in_size, out, out_pos, out_size);
+				in, in_size, out, out_pos, out_size);
 
 	if (ret != LZMA_OK) {
 		// If the error was something else than output buffer

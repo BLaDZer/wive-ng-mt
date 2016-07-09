@@ -82,13 +82,7 @@ io_init(void)
 	// we are root.
 	warn_fchown = geteuid() == 0;
 
-	// Create a pipe for the self-pipe trick. If pipe2() is available,
-	// we can avoid the fcntl() calls.
-#	ifdef HAVE_PIPE2
-	if (pipe2(user_abort_pipe, O_NONBLOCK))
-		message_fatal(_("Error creating a pipe: %s"),
-				strerror(errno));
-#	else
+	// Create a pipe for the self-pipe trick.
 	if (pipe(user_abort_pipe))
 		message_fatal(_("Error creating a pipe: %s"),
 				strerror(errno));
@@ -101,7 +95,6 @@ io_init(void)
 			message_fatal(_("Error creating a pipe: %s"),
 					strerror(errno));
 	}
-#	endif
 #endif
 
 #ifdef __DJGPP__
@@ -449,7 +442,7 @@ io_open_src_real(file_pair *pair)
 	//     special files, which is good if we want to accept only
 	//     regular files.
 	//   - It can help avoiding some race conditions with signal handling.
-		flags |= O_NONBLOCK;
+	flags |= O_NONBLOCK;
 #endif
 
 #if defined(O_NOFOLLOW)
@@ -479,7 +472,7 @@ io_open_src_real(file_pair *pair)
 
 	// Try to open the file. Signals have been blocked so EINTR shouldn't
 	// be possible.
-		pair->src_fd = open(pair->src_name, flags);
+	pair->src_fd = open(pair->src_name, flags);
 
 	if (pair->src_fd == -1) {
 		// Signals (that have a signal handler) have been blocked.
@@ -794,14 +787,14 @@ io_open_dest_real(file_pair *pair)
 	// argument to io_unlink(), so don't fstat() on such systems.
 	if (fstat(pair->dest_fd, &pair->dest_st)) {
 		// If fstat() really fails, we have a safe fallback here.
-#if defined(__VMS)
+#	if defined(__VMS)
 		pair->dest_st.st_ino[0] = 0;
 		pair->dest_st.st_ino[1] = 0;
 		pair->dest_st.st_ino[2] = 0;
 #	else
 		pair->dest_st.st_dev = 0;
 		pair->dest_st.st_ino = 0;
-#endif
+#	endif
 	} else if (try_sparse && opt_mode == MODE_DECOMPRESS) {
 		// When writing to standard output, we need to be extra
 		// careful:

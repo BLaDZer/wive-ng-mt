@@ -101,8 +101,8 @@ block_decode(lzma_coder *coder, const lzma_allocator *allocator,
 			return LZMA_DATA_ERROR;
 
 		if (!coder->ignore_check)
-		lzma_check_update(&coder->check, coder->block->check,
-				out + out_start, out_used);
+			lzma_check_update(&coder->check, coder->block->check,
+					out + out_start, out_used);
 
 		if (ret != LZMA_STREAM_END)
 			return ret;
@@ -145,7 +145,7 @@ block_decode(lzma_coder *coder, const lzma_allocator *allocator,
 			return LZMA_STREAM_END;
 
 		if (!coder->ignore_check)
-		lzma_check_finish(&coder->check, coder->block->check);
+			lzma_check_finish(&coder->check, coder->block->check);
 
 		coder->sequence = SEQ_CHECK;
 
