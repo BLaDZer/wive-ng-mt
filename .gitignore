@@ -399,6 +399,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 # exclude enerated files from kernel
 #
 /linux/*
+/linux-3.4.x/linux-3.4.x
 /linux-3.4.x/include/linux/autoconf.h
 /linux-3.4.x/include/linux/utsrelease.h
 /linux-3.4.x/arch/mips/kernel/vmlinux.lds

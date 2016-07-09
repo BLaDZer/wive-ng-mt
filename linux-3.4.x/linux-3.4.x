@@ -1,1 +1,0 @@
-/opt/Wive-MT/linux-3.4.x

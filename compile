@@ -125,7 +125,10 @@ fi
 
 rm -rfv $ROOTDIR/romfs/*
 rm -rfv $ROOTDIR/images/*
-ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
+
+if [ ! -e $ROOTDIR/linux ]; then
+    ln -sf  $ROOTDIR/linux-3.4.x $ROOTDIR/linux
+fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
