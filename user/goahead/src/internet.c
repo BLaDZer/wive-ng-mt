@@ -1727,15 +1727,15 @@ parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *opmode, *submitUrl;
-	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr;
+	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
-	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = NULL;
+	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 12, "IPv6OpMode", "IPv6IPAddr",
 			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
-			"IPv6GWAddr", "IPv6SrvAddr", "IPv6Dhcpc", "IPv6AllowForward",
+			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc", "IPv6AllowForward",
 			"Ipv6InVPN", "radvdEnabled", "dhcpv6Enabled");
 		goto out;
 	}
@@ -1745,16 +1745,21 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	nvram_init(RT2860_NVRAM);
 
 	if (!strcmp(opmode, "1")) {
-		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T("2a02:2560"));
-		prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T("32"));
+		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
+		prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T(""));
 		wan_ipaddr = websGetVar(wp, T("ipv6_wan_ipaddr"), T(""));
 		wan_prefix_len = websGetVar(wp, T("ipv6_wan_prefix_len"), T(""));
 		srv_ipaddr = websGetVar(wp, T("ipv6_static_gw"), T(""));
+		srv_dns_primary = websGetVar(wp, T("ipv6_static_dns_primary"), T(""));
+		srv_dns_secondary = websGetVar(wp, T("ipv6_static_dns_secondary"), T(""));
+		
 		nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
 		nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
 		nvram_bufset(RT2860_NVRAM, "IPv6WANIPAddr", wan_ipaddr);
 		nvram_bufset(RT2860_NVRAM, "IPv6WANPrefixLen", wan_prefix_len);
 		nvram_bufset(RT2860_NVRAM, "IPv6GWAddr", srv_ipaddr);
+		nvram_bufset(RT2860_NVRAM, "IPv6DNSPrimary", srv_dns_primary);
+		nvram_bufset(RT2860_NVRAM, "IPv6DNSSecondary", srv_dns_secondary);
 #if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
 	} else if (!strcmp(opmode, "2")) {
