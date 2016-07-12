@@ -163,7 +163,7 @@ roaming_wifi() {
 	fi
 }
 
-# regenerate staticroutes and iptables rules scripts before processing
+# regenerate staticroutes and iptables rules scripts from nvram before processing
 nvram_genstaticroutes 2860
 nvram_geniptablesrules 2860
 
