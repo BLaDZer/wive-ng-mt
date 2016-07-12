@@ -2451,6 +2451,17 @@ static void setSta11nCfg(webs_t wp, char_t *path, char_t *query)
 	close(s);
 }
 
+void StartStaConnect(void)
+{
+	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
+
+	/* automatically connect to AP according to the active profile */
+	if (!strcmp(opmode, "2")) {
+	    initStaProfile();
+	    initStaConnection();
+	}
+}
+
 /*
  * description: goform - set advanced configuration
  */
@@ -2544,7 +2555,7 @@ static void setStaAdvance(webs_t wp, char_t *path, char_t *query)
 	doSystem("service modules gen_wifi_config > /dev/console 2>&1");
 
 	// reconnect to AP and renew dhcp, pppoe etc
-	initInternet();
+	initStaConnection();
 
 	websRedirect(wp,"station/advance.asp");
 	return;

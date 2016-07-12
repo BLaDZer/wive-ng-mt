@@ -131,7 +131,7 @@ static int initWebs(void)
 #endif
 
 	/*
-	 * get ip address from nvram configuration (we executed initInternet)
+	 * get ip address from nvram configuration
 	 */
 	if (NULL == lan_ip) {
 		syslog(LOG_ERR, "cannot find lan_ip in NVRAM, %s", __FUNCTION__);
@@ -187,11 +187,17 @@ static int initWebs(void)
 	/*
 	 *	Define our functions
 	 */
-	formDefineUtilities();
 	formDefineInternet();
 	formDefineServices();
+	formDefineFirewall();
+	formDefineManagement();
+	formDefineUtilities();
 #ifdef CONFIG_RALINKAPP_SWQOS
 	formDefineQoS();
+#endif
+	formDefineWireless();
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+	formDefineStation();
 #endif
 #ifdef CONFIG_USB
 	formDefineUSB();
@@ -199,12 +205,6 @@ static int initWebs(void)
 #ifdef CONFIG_USER_STORAGE
 	formDefineSTORAGE();
 #endif
-	formDefineWireless();
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
-	formDefineStation();
-#endif
-	formDefineFirewall();
-	formDefineManagement();
 
 	/*
 	 *	Create a handler for the default home page
@@ -295,7 +295,10 @@ int main(int argcn, char *argvc[])
 #endif
     	    /* Start needed services */
 	    if (firstboot && !restore) {
-		initInternet();
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+		/* Station mode prepare and connect */
+		StartStaConnect();
+#endif
 #ifdef CONFIG_USB
 		/* Rescan usb devices after start */
 		doSystem("service hotplug rescan");

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOG="logger -t goahead"
+LOG="logger -t 2nd_stage"
 
 # include kernel config
 . /etc/scripts/config.sh
@@ -8,17 +8,20 @@ LOG="logger -t goahead"
 WAITBOOTCOMPLETE="20"
 
 start() {
- $LOG "Start goahead"
     #set bootcomplite flag
     touch /tmp/bootgood
 
-    if [ -e /bin/goahead ]; then
-	#blink only sys led limit blink time 20 sec after goahead start
-	if [ -e /bin/gpio ]; then
-	    if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
-		gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 $WAITBOOTCOMPLETE
-	    fi
+    $LOG "Switch to 2nd boot stage and start webui."
+    internet.sh
+
+    #blink only sys led limit blink time 20 sec after second satge init start
+    if [ -e /bin/gpio ]; then
+	if [ "$CONFIG_RALINK_GPIO_SYS_LED" != "" ]; then
+	    gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 $WAITBOOTCOMPLETE
 	fi
+    fi
+
+    if [ -e /bin/goahead ]; then
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
 	cp -rpf /web/* /tmp/web
@@ -39,13 +42,13 @@ start() {
 	    chmod 555 /tmp/webmon
 	    /tmp/webmon &
 	fi
-	if [ -e /tmp/needrwfssave ]; then
-	    $LOG "Wait 20sec for rwfs changes save"
-	    sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
-	    rm -f /tmp/needrwfssave
-	fi
-    else
-	echo "GOAHEAD NOT FOUND!!! FIX THIS AND REBUILD FIRMWARE."
+    fi
+
+    # wait and save rwfs if need
+    if [ -e /tmp/needrwfssave ]; then
+	$LOG "Wait 20sec for rwfs changes save"
+	sh `(sleep $WAITBOOTCOMPLETE && fs save > /dev/console)` &
+	rm -f /tmp/needrwfssave
     fi
 
 }

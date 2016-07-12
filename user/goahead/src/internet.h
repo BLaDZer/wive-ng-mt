@@ -10,5 +10,4 @@
 #define _h_INTERNET 1
 
 void formDefineInternet(void);
-void initInternet(void);
 #endif

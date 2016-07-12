@@ -1154,29 +1154,6 @@ static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 }
 #endif
 
-/*
- * description: setup internet according to nvram configurations
- *              (assume that nvram_init has already been called)
- *              return value: 0 = successful, -1 = failed
- */
-void initInternet(void)
-{
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
-	char *opmode;
-#endif
-	/* reconfigure system */
-	doSystem("internet.sh");
-
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
-	/* automatically connect to AP according to the active profile */
-	opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	if (!strcmp(opmode, "2")) {
-	    initStaProfile();
-	    initStaConnection();
-	}
-#endif
-}
-
 static void getMyMAC(webs_t wp, char_t *path, char_t *query)
 {
 	char myMAC[32];

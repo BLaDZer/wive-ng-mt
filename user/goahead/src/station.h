@@ -15,5 +15,6 @@
 void formDefineStation(void);
 void initStaProfile(void);
 void initStaConnection(void);
+void StartStaConnect(void);
 void freeHeaderProfileSettings(void);
 #endif
