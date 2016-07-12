@@ -141,6 +141,11 @@ dhcpradvdreconf() {
 	    $LOG "Use DNS recieved from ISP $DNSADRESSES"
 	fi
 
+	if [ "$DNSADRESSES" = "" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
+	    DNSADRESSES="$IPv6DNSPrimary $IPv6DNSSecondary"
+	    $LOG "Use user configured DNS $DNSADRESSES"
+	fi
+
 	if [ "$DNSADRESSES" = "" ]; then
 	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
 	    $LOG "Use public DNS $DNSADRESSES"
@@ -297,7 +302,7 @@ dhcpcstop() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr`
+    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary`
 
     if [ "$SysLogd" = "1" ]; then
 	logto="syslog"

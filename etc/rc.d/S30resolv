@@ -36,9 +36,19 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 	    $LOG "Add ISP ipv6 servers for local resolv"
 	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
 	else
-	    $LOG "Add google ipv6 servers for local resolv"
-	    echo "nameserver 2001:4860:4860::8888" >> $fname
-	    echo "nameserver 2001:4860:4860::8844" >> $fname
+	    if [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
+		$LOG "Add user ipv6 servers $IPv6DNSPrimary $IPv6DNSSecondary for local resolv"
+		if [ "$IPv6DNSPrimary" != "" ]; then
+		    echo "nameserver $IPv6DNSPrimary" >> $fname
+		fi
+		if [ "$IPv6DNSSecondary" != "" ]; then
+		    echo "nameserver $IPv6DNSSecondary" >> $fname
+		fi
+	    else
+		$LOG "Add google ipv6 servers for local resolv"
+		echo "nameserver 2001:4860:4860::8888" >> $fname
+		echo "nameserver 2001:4860:4860::8844" >> $fname
+	    fi
 	fi
     fi
     # read for all write by root
@@ -47,7 +57,7 @@ fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName`
+    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName IPv6DNSPrimary IPv6DNSSecondary`
     fname="/etc/resolv.conf"
 
     #if no file create
